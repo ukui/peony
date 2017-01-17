@@ -1,0 +1,697 @@
+Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: Caja (old name: mate-file-manager)
+Upstream-Contact: Stefano Karapetsas <stefano@karapetsas.com>
+Source: http://git.mate-desktop.org/caja/
+
+Files: eel/check-program.c
+       eel/eel-art-extensions.c
+       eel/eel-art-extensions.h
+       eel/eel-art-gtk-extensions.c
+       eel/eel-art-gtk-extensions.h
+       eel/eel-debug.c
+       eel/eel-debug.h
+       eel/eel-gdk-extensions.c
+       eel/eel-gdk-extensions.h
+       eel/eel-gdk-pixbuf-extensions.c
+       eel/eel-gdk-pixbuf-extensions.h
+       eel/eel-glib-extensions.c
+       eel/eel-glib-extensions.h
+       eel/eel-graphic-effects.c
+       eel/eel-graphic-effects.h
+       eel/eel-gtk-extensions.c
+       eel/eel-gtk-extensions.h
+       eel/eel-gtk-macros.h
+       eel/eel-image-table.c
+       eel/eel-image-table.h
+       eel/eel-labeled-image.c
+       eel/eel-labeled-image.h
+       eel/eel-lib-self-check-functions.c
+       eel/eel-lib-self-check-functions.h
+       eel/eel-mate-extensions.c
+       eel/eel-mate-extensions.h
+       eel/eel-self-checks.c
+       eel/eel-self-checks.h
+       eel/eel-stock-dialogs.c
+       eel/eel-stock-dialogs.h
+       eel/eel-string.c
+       eel/eel-string.h
+       eel/eel-vfs-extensions.c
+       eel/eel-vfs-extensions.h
+       eel/eel-wrap-table.c
+       eel/eel-wrap-table.h
+       eel/eel-xml-extensions.c
+       eel/eel-xml-extensions.h
+       eel/eel.h
+Copyright: 1999-2001, Eazel, Inc.
+License: LGPL-2+
+
+Files: libcaja-private/caja-bookmark.c
+       libcaja-private/caja-bookmark.h
+       libcaja-private/caja-customization-data.c
+       libcaja-private/caja-customization-data.h
+       libcaja-private/caja-default-file-icon.c
+       libcaja-private/caja-default-file-icon.h
+       libcaja-private/caja-directory-async.c
+       libcaja-private/caja-directory-notify.h
+       libcaja-private/caja-directory-private.h
+       libcaja-private/caja-directory.c
+       libcaja-private/caja-directory.h
+       libcaja-private/caja-dnd.c
+       libcaja-private/caja-dnd.h
+       libcaja-private/caja-entry.c
+       libcaja-private/caja-entry.h
+       libcaja-private/caja-file-attributes.h
+       libcaja-private/caja-file-changes-queue.c
+       libcaja-private/caja-file-changes-queue.h
+       libcaja-private/caja-file-dnd.c
+       libcaja-private/caja-file-dnd.h
+       libcaja-private/caja-file-private.h
+       libcaja-private/caja-file.c
+       libcaja-private/caja-file.h
+       libcaja-private/caja-file-utilities.c
+       libcaja-private/caja-file-utilities.h
+       libcaja-private/caja-global-preferences.c
+       libcaja-private/caja-global-preferences.h
+       libcaja-private/caja-icon-canvas-item.c
+       libcaja-private/caja-icon-canvas-item.h
+       libcaja-private/caja-keep-last-vertical-box.c
+       libcaja-private/caja-keep-last-vertical-box.h
+       libcaja-private/caja-lib-self-check-functions.c
+       libcaja-private/caja-lib-self-check-functions.h
+       libcaja-private/caja-metadata.h
+       libcaja-private/caja-mime-actions.c
+       libcaja-private/caja-mime-actions.h
+       libcaja-private/caja-monitor.c
+       libcaja-private/caja-monitor.h
+       libcaja-private/caja-program-choosing.c
+       libcaja-private/caja-program-choosing.h
+       libcaja-private/caja-signaller.c
+       libcaja-private/caja-signaller.h
+       libcaja-private/caja-thumbnails.h
+       libcaja-private/caja-trash-monitor.c
+       libcaja-private/caja-trash-monitor.h
+       libcaja-private/caja-vfs-directory.c
+       libcaja-private/caja-vfs-directory.h
+       libcaja-private/caja-vfs-file.c
+       libcaja-private/caja-vfs-file.h
+       src/caja-bookmark-list.c
+       src/caja-bookmark-list.h
+       src/caja-bookmarks-window.c
+       src/caja-bookmarks-window.h
+       src/caja-desktop-window.c
+       src/caja-desktop-window.h
+       src/caja-emblem-sidebar.h
+       src/caja-information-panel.c
+       src/caja-information-panel.h
+       src/caja-location-bar.c
+       src/caja-location-bar.h
+       src/caja-location-entry.c
+       src/caja-location-entry.h
+       src/caja-navigation-window-menus.c
+       src/caja-notes-viewer.c
+       src/caja-property-browser.c
+       src/caja-property-browser.h
+       src/caja-self-check-functions.c
+       src/caja-self-check-functions.h
+       src/caja-sidebar-title.c
+       src/caja-sidebar-title.h
+       src/caja-window-menus.c
+       src/caja-window-toolbars.c
+       src/caja-zoom-control.h
+Copyright: 1999-2001, Eazel, Inc.
+License: GPL-2+
+
+Files: src/file-manager/fm-desktop-icon-view.h
+       src/file-manager/fm-error-reporting.c
+       src/file-manager/fm-error-reporting.h
+       src/file-manager/fm-list-view-private.h
+       src/file-manager/fm-icon-view.c
+       src/file-manager/fm-icon-view.h
+       src/file-manager/fm-properties-window.c
+       src/file-manager/fm-properties-window.h
+Copyright: 1999-2001, Eazel, Inc.
+License: LGPL-2+
+
+Files: libcaja-private/caja-autorun.c
+       libcaja-private/caja-autorun.h
+       libcaja-private/caja-clipboard-monitor.c
+       libcaja-private/caja-clipboard-monitor.h
+       libcaja-private/caja-desktop-directory-file.c
+       libcaja-private/caja-desktop-directory-file.h
+       libcaja-private/caja-desktop-directory.c
+       libcaja-private/caja-desktop-directory.h
+       libcaja-private/caja-desktop-icon-file.c
+       libcaja-private/caja-desktop-icon-file.h
+       libcaja-private/caja-desktop-link-monitor.c
+       libcaja-private/caja-desktop-link-monitor.h
+       libcaja-private/caja-desktop-link.c
+       libcaja-private/caja-desktop-link.h
+       libcaja-private/caja-desktop-metadata.c
+       libcaja-private/caja-desktop-metadata.h
+       libcaja-private/caja-emblem-utils.c
+       libcaja-private/caja-emblem-utils.h
+       libcaja-private/caja-link.c
+       libcaja-private/caja-link.h
+       libcaja-private/caja-progress-info.c
+       libcaja-private/caja-progress-info.h
+       libcaja-private/caja-saved-search-file.c
+       libcaja-private/caja-saved-search-file.h
+       libcaja-private/caja-search-directory-file.h
+       libcaja-private/caja-search-engine-simple.c
+       libcaja-private/caja-search-engine-simple.h
+       src/caja-actions.h
+       src/caja-application.h
+       src/caja-connect-server-dialog-nonmain.c
+       src/caja-image-properties-page.h
+       src/caja-query-editor.c
+       src/caja-query-editor.h
+       src/caja-view-as-action.c
+       src/caja-view-as-action.h
+       src/caja-window-bookmarks.h
+       src/caja-zoom-action.c
+       src/caja-zoom-action.h
+       src/file-manager/fm-actions.h
+Copyright: 2000-2011, Red Hat, Inc
+License: GPL-2+
+
+Files: cut-n-paste-code/libegg/eggdesktopfile.h
+       cut-n-paste-code/libegg/eggsmclient-private.h
+       cut-n-paste-code/libegg/eggsmclient.c
+       cut-n-paste-code/libegg/eggsmclient.h
+       libcaja-extension/caja-column-provider.c
+       libcaja-extension/caja-column-provider.h
+       libcaja-extension/caja-column.c
+       libcaja-extension/caja-column.h
+       libcaja-extension/caja-extension-types.c
+       libcaja-extension/caja-extension-types.h
+       libcaja-extension/caja-file-info.c
+       libcaja-extension/caja-file-info.h
+       libcaja-extension/caja-info-provider.c
+       libcaja-extension/caja-info-provider.h
+       libcaja-extension/caja-menu-item.c
+       libcaja-extension/caja-menu-item.h
+       libcaja-extension/caja-menu-provider.c
+       libcaja-extension/caja-menu-provider.h
+       libcaja-extension/caja-property-page-provider.c
+       libcaja-extension/caja-property-page-provider.h
+       libcaja-extension/caja-property-page.c
+       libcaja-extension/caja-property-page.h
+       libcaja-private/caja-column-chooser.c
+       libcaja-private/caja-column-chooser.h
+       libcaja-private/caja-column-utilities.c
+       libcaja-private/caja-column-utilities.h
+       libcaja-private/caja-mime-application-chooser.h
+       libcaja-private/caja-module.c
+       libcaja-private/caja-module.h
+       libcaja-private/caja-open-with-dialog.h
+Copyright: 2003-2007, Novell, Inc.
+License: LGPL-2+
+
+Files: libcaja-private/caja-thumbnails.c
+       src/caja-application.c
+       src/caja-emblem-sidebar.c
+       src/caja-history-sidebar.c
+       src/caja-history-sidebar.h
+       src/caja-main.c
+       src/caja-main.h
+       src/caja-notes-viewer.h
+       src/caja-spatial-window.c
+       src/caja-window-bookmarks.c
+       src/caja-window-manage-views.c
+       src/caja-window-manage-views.h
+       src/caja-window-private.h
+       src/caja-window.c
+       src/caja-window.h
+       src/caja-zoom-control.c
+Copyright: 1999-2005, Red Hat, Inc.
+           1999-2001, Eazel, Inc.
+License: GPL-2+
+
+Files: libcaja-private/caja-debug-log.c
+       libcaja-private/caja-debug-log.h
+       libcaja-private/caja-query.c
+       libcaja-private/caja-query.h
+       libcaja-private/caja-search-directory-file.c
+       libcaja-private/caja-search-directory.c
+       libcaja-private/caja-search-directory.h
+       libcaja-private/caja-search-engine-beagle.c
+       libcaja-private/caja-search-engine-beagle.h
+       libcaja-private/caja-search-engine.c
+       libcaja-private/caja-search-engine.h
+       src/caja-search-bar.c
+       src/caja-search-bar.h
+Copyright: 2005-2006, Novell, Inc.
+License: GPL-2+
+
+Files: libcaja-private/caja-window-slot-info.c
+       libcaja-private/caja-window-slot-info.h
+       src/caja-navigation-window-pane.c
+       src/caja-navigation-window-pane.h
+       src/caja-navigation-window-slot.c
+       src/caja-navigation-window-slot.h
+       src/caja-window-pane.c
+       src/caja-window-pane.h
+       src/caja-window-slot.c
+       src/caja-window-slot.h
+Copyright: 2008, Free Software Foundation, Inc.
+License: GPL-2+
+
+Files: libcaja-private/caja-sidebar-provider.c
+       libcaja-private/caja-sidebar-provider.h
+       libcaja-private/caja-sidebar.c
+       libcaja-private/caja-sidebar.h
+       libcaja-private/caja-view-factory.c
+       libcaja-private/caja-view-factory.h
+       libcaja-private/caja-view.c
+       libcaja-private/caja-view.h
+       libcaja-private/caja-window-info.c
+       libcaja-private/caja-window-info.h
+Copyright: 2004, Red Hat, Inc.
+License: GPL-2+
+
+Files: cut-n-paste-code/libegg/eggtreemultidnd.c
+       cut-n-paste-code/libegg/eggtreemultidnd.h
+       libcaja-extension/caja-extension-private.h
+       libcaja-extension/caja-location-widget-provider.c
+       libcaja-private/caja-ui-utilities.c
+       libcaja-private/caja-ui-utilities.h
+       src/caja-autorun-software.c
+Copyright: 2001-2009, Red Hat, Inc.
+License: LGPL-2+
+
+Files: eel/eel-canvas-rect-ellipse.c
+       eel/eel-canvas-rect-ellipse.h
+       eel/eel-canvas.c
+       eel/eel-canvas.h
+Copyright: 1997-2000, Free Software Foundation, Inc.
+License: LGPL-2+
+
+Files: libcaja-private/caja-icon-container.h
+       libcaja-private/caja-icon-dnd.c
+       libcaja-private/caja-icon-dnd.h
+       libcaja-private/caja-icon-private.h
+Copyright: 1999-2000, Free Software Foundation, Inc.
+           2000, Eazel, Inc
+License: LGPL-2+
+
+Files: eel/eel-background-box.c
+       eel/eel-background-box.h
+       src/file-manager/fm-icon-container.c
+       src/file-manager/fm-icon-container.h
+Copyright: 2002, Sun Microsystems, Inc.
+License: LGPL-2+
+
+Files: src/caja-navigation-window.c
+       src/caja-navigation-window.h
+       src/caja-spatial-window.h
+Copyright: 1999-2000, Red Hat, Inc.
+          1999-2001, Eazel, Inc.
+          2003, Ximian, Inc.
+License: GPL-2+
+
+Files: libcaja-private/caja-recent.c
+       src/file-manager/fm-ditem-page.c
+       src/file-manager/fm-ditem-page.h
+Copyright: 2002-2004, James Willcox
+License: GPL-2+
+
+Files: src/caja-location-dialog.c
+       src/caja-location-dialog.h
+       src/caja-side-pane.h
+Copyright: 2002-2003, Ximian, Inc.
+License: GPL-2+
+
+Files: src/caja-file-management-properties-main.c
+       src/caja-file-management-properties.c
+       src/caja-file-management-properties.h
+Copyright: 2002, Jan Arne Petersen
+License: LGPL-2+
+
+Files: libcaja-extension/caja-location-widget-provider.h
+       libcaja-private/caja-mime-application-chooser.c
+       libcaja-private/caja-open-with-dialog.c
+Copyright: 2003-2004, Novell, Inc.
+           2005-2007, Red Hat, Inc.
+License: LGPL-2+
+
+Files: libcaja-private/caja-undostack-manager.c
+       libcaja-private/caja-undostack-manager.h
+Copyright: 2007-2010, Amos Brocco
+           2011, Stefano Karapetsas
+License: GPL-2+
+
+Files: libcaja-private/caja-extensions.c
+       libcaja-private/caja-extensions.h
+Copyright: 2014, Alexander van der Meij <alexandervdm@gliese.me>
+License: GPL-2+
+
+Files: src/caja-notebook.c
+       src/caja-notebook.h
+Copyright: 2002, Christophe Fergeau
+           2003-2004, Marco Pesenti Gritti
+           2003-2005, Christian Persch
+           2008, Free Software Foundation, Inc.
+License: GPL-2+
+
+Files: libcaja-private/caja-file-conflict-dialog.c
+       libcaja-private/caja-file-conflict-dialog.h
+       src/caja-connect-server-operation.c
+       src/caja-connect-server-operation.h
+Copyright: 2008-2010, Cosimo Cecchi <cosimoc@gnome.org>
+License: GPL-2+
+
+Files: src/caja-connect-server-dialog.c
+       src/caja-connect-server-dialog.h
+Copyright: 2003, Red Hat, Inc
+           2010, Cosimo Cecchi <cosimoc@gnome.org>
+License: GPL-2+
+
+Files: libcaja-private/caja-file-operations.h
+       src/file-manager/fm-directory-view.c
+Copyright: 1999-2000, Free Software Foundation, Inc.
+           2000-2001, Eazel, Inc.
+License: GPL-2+
+
+Files: libcaja-private/caja-directory-background.c
+       libcaja-private/caja-directory-background.h
+Copyright: 2000, Eazel, Inc
+           2012, Jasmine Hassan <jasmine.aura@gmail.com>
+License: GPL-2+
+
+Files: libcaja-private/caja-file-queue.c
+       libcaja-private/caja-file-queue.h
+Copyright: 2001, Maciej Stachowiak
+License: GPL-2+
+
+Files: src/caja-navigation-action.c
+       src/caja-navigation-action.h
+Copyright: 2003, Marco Pesenti Gritti
+           2004, Red Hat, Inc.
+License: GPL-2+
+
+Files: libcaja-private/caja-cell-renderer-text-ellipsized.c
+       libcaja-private/caja-cell-renderer-text-ellipsized.h
+Copyright: 2007, Martin Wehner
+License: GPL-2+
+
+Files: libcaja-private/caja-search-engine-tracker.c
+       libcaja-private/caja-search-engine-tracker.h
+Copyright: 2005, Mr Jamie McCracken
+License: GPL-2+
+
+Files: src/caja-trash-bar.c
+       src/caja-trash-bar.h
+Copyright: 2006, Paolo Borelli <pborelli@katamail.com>
+License: GPL-2+
+
+Files: src/caja-x-content-bar.c
+       src/caja-x-content-bar.h
+Copyright: 2006, Paolo Borelli <pborelli@katamail.com>
+           2008, Red Hat, Inc.
+License: GPL-2+
+
+Files: libcaja-private/caja-tree-view-drag-dest.c
+       libcaja-private/caja-tree-view-drag-dest.h
+Copyright: 2002, Sun Microsystems, Inc.
+License: GPL-2+
+
+Files: eel/eel-accessibility.h
+       src/file-manager/fm-list-model.h
+Copyright: 2001-2002, Anders Carlsson
+License: LGPL-2+
+
+Files: src/file-manager/fm-list-view.c
+       src/file-manager/fm-list-view.h
+Copyright: 2000, Eazel, Inc.
+           2001-2002, Anders Carlsson <andersca@gnu.org>
+License: LGPL-2+
+
+Files: libcaja-private/caja-clipboard.c
+       libcaja-private/caja-clipboard.h
+Copyright: 1999-2000, Free Software Foundaton, Inc.
+           2000-2001, Eazel, Inc
+License: GPL-2+
+
+Files: eel/eel-background.c
+       eel/eel-background.h
+Copyright: 2000, Eazel, Inc.
+           2012, Jasmine Hassan <jasmine.aura@gmail.com>
+License: GPL-2+
+
+Files: src/file-manager/fm-empty-view.c
+       src/file-manager/fm-empty-view.h
+Copyright: 2006, Free Software Foundation, Inc.
+License: LGPL-2+
+
+Files: eel/eel-editable-label.c
+       eel/eel-editable-label.h
+Copyright: 1995-1997, Peter Mattis, Spencer Kimball and Josh MacDonald
+License: LGPL-2+
+
+Files: eel/eel-gtk-container.c
+       eel/eel-gtk-container.h
+Copyright: 2001, Ramiro Estrugo
+License: LGPL-2+
+
+Files: src/caja-convert-metadata.c
+Copyright: 2009, Alexander Larsson
+License: GPL-2+
+
+Files: src/file-manager/fm-tree-model.h
+Copyright: 2002, Anders Carlsson
+           2002, Bent Spoon Software
+License: GPL-2+
+
+Files: src/file-manager/fm-tree-model.c
+Copyright: 2002, Anders Carlsson
+           2002, Bent Spoon Software
+           2000-2001, Eazel, Inc.
+License: GPL-2+
+
+Files: src/file-manager/fm-tree-view.c
+Copyright: 2000-2001, Eazel, Inc.
+           2002, Anders Carlsson
+           2002, Darin Adler
+License: GPL-2+
+
+Files: src/file-manager/fm-tree-view.h
+Copyright: 2000-2001, Eazel, Inc.
+           2002, Anders Carlsson
+License: GPL-2+
+
+Files: libcaja-private/caja-file-operations.c
+Copyright: 1999-2000, Free Software Foundation
+           2000-2001, Eazel, Inc.
+           2007, Red Hat, Inc.
+License: GPL-2+
+
+Files: src/file-manager/fm-directory-view.h
+Copyright: 1999-2000, Free Software Foundaton
+  2000-2001, Eazel, Inc
+License: GPL-2+
+
+Files: src/caja-image-properties-page.c
+Copyright: 2004, Red Hat, Inc.
+           2007, Novell, Inc.
+License: GPL-2+
+
+Files: src/caja-connect-server-dialog-main.c
+Copyright: 2005, Vincent Untz
+License: GPL-2+
+
+Files: src/caja-side-pane.c
+Copyright: 2002, Ximian Inc
+License: GPL-2+
+
+Files: src/file-manager/fm-list-model.c
+Copyright: 2001-2002, Anders Carlsson
+           2003, Soeren Sandmann
+           2004, Novell, Inc
+License: LGPL-2+
+
+Files: eel/eel-accessibility.c
+Copyright: 2002, Anders Carlsson, Sun Microsystems, Inc.
+License: LGPL-2+
+
+Files: cut-n-paste-code/libegg/eggsmclient-xsmp.c
+Copyright: 1998, Carsten Schaar
+           1998, The Open Group
+           2007, Novell, Inc.
+License: LGPL-2+
+
+Files: libcaja-private/caja-icon-container.c
+Copyright: 1999-2000, Free Software Foundation, Inc.
+           2000-2001, Eazel, Inc.
+           2002-2003, Red Hat, Inc.
+License: LGPL-2+
+
+Files: src/file-manager/fm-desktop-icon-view.c
+Copyright: 2000-2001, Eazel, Inc.
+License: LGPL-2+
+
+Files: cut-n-paste-code/libegg/eggdesktopfile.c
+Copyright: 1999-2000, Red Hat, Inc.
+           2001, George Lebl
+           2007, Novell, Inc.
+License: LGPL-2+
+
+Files: libcaja-extension/caja-menu.h
+Copyright: 2003, Novell, Inc.
+           2005, Raffaele Sandrini
+License: LGPL-2+
+
+Files: libcaja-extension/caja-menu.c
+Copyright: 2005, Raffaele Sandrini
+License: LGPL-2+
+
+Files: libcaja-private/caja-icon-info.c
+Copyright: 2007, Red Hat, Inc., Alexander Larsson <alexl@redhat.com>
+License: LGPL-2+
+
+Files: src/caja-pathbar.c
+Copyright: 2004, Red Hat, Inc., Jonathan Blandford <jrb@gnome.org>
+License: LGPL-2+
+
+Files: src/caja-pathbar.h
+Copyright: *No copyright*
+License: LGPL-2+
+
+Files: src/caja-freedesktop-dbus.c
+       src/caja-freedesktop-dbus.h
+       src/caja-places-sidebar.c
+       src/caja-places-sidebar.h
+Copyright: *No copyright*
+License: GPL-2+
+
+Files: libcaja-private/caja-metadata.c
+Copyright: 2009, Red Hat, Inc.
+License: LGPL-2+
+
+Files:  .tx/config
+       cut-n-paste-code/README
+       cut-n-paste-code/libegg/update-from-egg.sh
+       data/icons/*.png
+       data/icons/*.svg
+       data/patterns/*.png
+       data/patterns/*.jpg
+       data/caja.xml.in
+       data/*.css
+       data/*.desktop*
+       data/*.service*
+       data/*.placeholder
+       data/*.xml
+       data/*.xml.in
+       docs/*
+       eel/README
+       eel/check-eel
+       icons/*.svg
+       icons/*.png
+       libcaja-extension/caja-extension-i18n.h
+       libcaja-extension/*.pc.in
+       libcaja-private/README
+       libcaja-private/caja-icon-info.h
+       libcaja-private/caja-icon-names.h
+       libcaja-private/caja-recent.h
+       libcaja-private/*.xml
+       po/LINGUAS
+       po/POTFILES.*
+       src/file-manager/caja-audio-mime-types.h
+       src/file-manager/*.xml
+       src/check-caja
+       src/*.ui
+       src/*.xml
+       src/*.desktop.in
+       test/test-caja-directory-async.c
+       test/test-caja-search-engine.c
+       test/test-caja-wrap-table.c
+       test/test-copy.c
+       test/test-eel-background.c
+       test/test-eel-editable-label.c
+       test/test-eel-image-table.c
+       test/test-eel-labeled-image.c
+       test/test-eel-pixbuf-scale.c
+       test/test.c
+       test/test.h
+       cut-n-paste-code/libegg/Makefile.am
+       cut-n-paste-code/Makefile.am
+       data/icons/Makefile.am
+       data/Makefile.am
+       data/patterns/Makefile.am
+       docs/Makefile.am
+       eel/Makefile.am
+       icons/Makefile.am
+       libcaja-extension/Makefile.am
+       libcaja-private/Makefile.am
+       src/file-manager/Makefile.am
+       src/Makefile.am
+       test/Makefile.am
+       AUTHORS
+       COPYING
+       COPYING.EXTENSIONS
+       COPYING.LIB
+       ChangeLog
+       HACKING
+       Makefile.am
+       Makefile.shared
+       NEWS
+       README
+       autogen.sh
+       configure.ac
+Copyright: *No copyright*
+License: GPL-2+ or LGPL-2+
+Comment:
+ Appropriately apply licenses as found in COPYING or COPYING.LIBS.
+
+Files: po/*.po
+       po/gnome-copyrights.txt
+Copyright: 1999-2001, Eazel, Inc.
+           1999-2008, Aŭtary Cajaa
+           1999-2009, The Nautilus authors
+           2002-2005, Red Hat, Inc.
+           2002-2004, Novell, Inc.
+           2009, Free Software Foundation, Inc.
+           2010, Rosetta Contributors and Canonical Ltd.
+           2011-2013, The Caja authors
+License: GPL-2+ or LGPL-2+
+Comment:
+ Assuming either license from COPYING or COPYING.LIB file.
+
+
+Files: debian/*
+Copyright: 2011-2014, Stefano Karapetsas <stefano@karapetsas.com>
+           2014, Mike Gabriel <sunweaver@debian.org>
+License: GPL-2+ or LGPL-2+
+
+License: GPL-2+
+ This package is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
+ .
+ This package is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ GNU Genaral Public License for more details.
+ .
+ You should have received a copy og the GNU General Public License
+ along with this program. If not, see <http://www.gnu.org/licenses/>
+ .
+ On Debian systems, the complete text of the GNU General
+ Public License version 2 can be found in "/usr/share/common-licenses/GPL-2".
+
+License: LGPL-2+
+ This library is free software; you can redistribute it and/or
+ modify it under the terms of the GNU Library General Public
+ License as published by the Free Software Foundation; either
+ version 2 of the License, or (at your option) any later version.
+ .
+ This library is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ Library General Public License for more details.
+ .
+ You should have received a copy of the GNU Library General Public
+ License along with this library. If not, see <http://www.gnu.org/licenses/>
+ .
+ On Debian systems, the complete text of the GNU Library General
+ Public License version 2 can be found in "/usr/share/common-licenses/LGPL-2".

@@ -1,0 +1,40 @@
+#!/usr/bin/make -f
+
+DHFLAGS=--parallel
+
+export DEB_BUILD_MAINT_OPTIONS = hardening=+all
+DPKG_EXPORT_BUILDFLAGS = 1
+include /usr/share/dpkg/buildflags.mk
+
+%:
+	dh $@ $(DHFLAGS)
+
+override_dh_install:
+	rm -fv debian/tmp/usr/lib/*/*.la
+	rm -rfv debian/tmp/usr/share/omf/
+	rm -rfv debian/tmp/usr/share/help/
+	dh_install --fail-missing
+
+override_dh_auto_configure:
+	# upstream tarball is without configure. autogen.sh will create it
+	NOCONFIGURE=1 ./autogen.sh
+	dh_auto_configure $(DHFLAGS) -- \
+		--disable-silent-rules \
+		--libexecdir=/usr/lib/caja \
+		--includedir=/usr/include/$(dpkg-architecture -qDEB_BUILD_MULTIARCH) \
+		--disable-update-mimedb \
+		--disable-static \
+		--localstatedir=/var \
+		--enable-introspection \
+		--enable-gtk-doc \
+		--with-gtk=3.0
+
+override_dh_auto_test:
+	DEB_BUILD_OPTIONS=nocheck dh_auto_test
+
+override_dh_strip:
+	dh_strip -pcaja --dbgsym-migration='caja-dbg (<< 1.14.1-2~)'
+	dh_strip -plibcaja-extension1 --dbgsym-migration='libcaja-extension1-dbg (<< 1.14.1-2~)'
+
+get-orig-source:
+	uscan --noconf --force-download --rename --download-current-version --destdir=..

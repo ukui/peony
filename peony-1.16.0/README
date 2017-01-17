@@ -1,0 +1,14 @@
+This is Caja, the file manager for the MATE desktop.
+
+Caja is a fork of Nautilus.
+
+Hacking on Caja
+===================
+
+Please see the HACKING file for information about hacking on caja.
+
+How to report bugs
+==================
+
+Bugs should be reported in GitHub
+https://github.com/mate-desktop/caja/issues

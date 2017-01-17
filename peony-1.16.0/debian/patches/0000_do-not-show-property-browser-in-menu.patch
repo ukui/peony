@@ -1,0 +1,24 @@
+From 6e024f2c10da712eac45d698396d36c5072ea33e Mon Sep 17 00:00:00 2001
+From: raveit65 <chat-to-me@raveit.de>
+Date: Mon, 27 Jun 2016 17:45:11 +0200
+Subject: [PATCH] do not show property browser in menu
+
+---
+ src/caja-shell-ui.xml | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/src/caja-shell-ui.xml b/src/caja-shell-ui.xml
+index ce9268a..291a2c7 100644
+--- a/src/caja-shell-ui.xml
++++ b/src/caja-shell-ui.xml
+@@ -39,7 +39,6 @@
+ 		<separator/>
+ 		<placeholder name="Extension Actions"/>
+ 		<separator/>
+-		<menuitem name="Backgrounds and Emblems" action="Backgrounds and Emblems"/>
+ 		<menuitem name="Preferences" action="Preferences"/>
+ 	</menu>
+ 	<menu action="View">
+-- 
+2.7.4
+

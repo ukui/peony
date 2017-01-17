@@ -1,0 +1,120 @@
+Major changes in 1.16.0 are:
+* Use GtkAboutDialog instead of MateAboutDialog
+* Pathbar: always show right arrow button
+* Fix changing taskbar icon when switching between tabs with different
+  icons
+* Fix lots of warnings when building docs for libcaja-extension
+* GTK+3: add style classes for elements of pathbar
+* GTK+3: fix drawing and changing of desktop background with 3.21
+* GTK+3: fix a large amount of deprecations
+* Some more fixes and cleanups
+* Translations update
+
+Major changes in 1.14.2 are:
+* Translations update
+* Make distcheck use currently selected GTK+ version
+
+Major changes in 1.14.1 are:
+* prefs dialog: don't crash on toggling "Show hidden and backup files"
+* GTK+-3 theming: add a CSS file for caja, and initialize it at startup
+* GTK+3: add style class caja-desktop-window at top level
+* Translation update
+
+Major changes in 1.14.0 are:
+* Drop MateConf migration script
+* Allow closing tabs on middle-click
+* List Python extensions separately in extensions list
+* GTK+3: add several style classes to simplify theming
+* GTK+3: fix desktop flash issue
+* GTK+3: a lot of deprecation fixes
+* Some more fixes and cleanups
+* Translations update
+* Add Changelog generation
+
+Major changes in 1.12.7 are:
+* Fix remaining random changes of font color in icon view
+
+Major changes in 1.12.6 are:
+* Really fix loading multiple python extensions: revert the commit
+  that proved to broke the fix. NOTE: as a side effect, the extensions
+  list will now have duplicate Python entries if more than one Python
+  extension is loaded.
+
+Major changes in 1.12.5 are:
+* Fix loading multiple python extensions
+* GTK+3: fix crash on Ctrl + scroll wheel
+
+Major changes in 1.12.4 are:
+* Fix random crash on startup when python-caja extension is enabled
+* Fix crash when restoring file with special characters from trash
+* Fix a few memleaks
+
+Major changes in 1.12.3 are:
+* Fix wrong text color in icon view with some light themes
+* Fix crash due to unneeded assert
+
+Major changes in 1.12.2 are:
+* Set smclient mode to "no restart" when either running as root
+  or on other desktops
+* Properties -> custom icon dialog: add missing /usr/share/icons
+  to Places
+* Some more fixes
+
+Major changes in 1.12.1 are:
+* Assorted bugfixes
+* Translations update
+
+Major changes in 1.12.0 are:
+* Connect to server dialog: add support for AFP
+* Retrieve strings directly from gschema (requires intltool 0.50.1)
+* Switch to org.gnome.SessionManager for logout/suspend inhibit
+* Improve multi-monitor support
+* GTK+3 fixes
+* Some UI fixes
+
+Major changes in 1.10.4 are:
+* Fix a crash when using undo following a file deletion.
+
+Major changes in 1.10.3 are:
+* File properties dialog: bring back missing Notes and Image Properties tabs
+
+Major changes in 1.10.2 are:
+* Places sidebar: enable both creating bookmarks and dropping files
+* Compact view: don't auto-scroll to the right on long filenames
+* Don't manage desktop and exit with last window when either running
+  as root or on other desktops
+* Fix double-click behavior when clicking on a folder and then
+  on a file/folder inside it
+* GTK+3 fixes
+* Translations update
+
+Major changes in 1.10.1 are:
+* Do not automount USB flash drives and CD/DVD drives while session is locked
+* Reverted dropping of files to Bookmarks sidebar
+  * See https://github.com/mate-desktop/caja/issues/423
+* UI bugfixes
+
+Major changes in 1.10.0 are:
+* Allow extensions to be enabled/disabled at runtime
+* Bugfixes
+
+Major changes in 1.8.0 are:
+* Add GTK3 support
+* Re add bookmark section in connect server dialog
+* Add option to show file sizes with IEC units instead of SI units
+* Add "Open parent location" in menu if we are in search view
+
+Major changes in 1.6.0 are:
+* Replace mateconf with gsettings
+  (much code taken from Nautilus 3.0 patches by Alexander Larsson)
+* "Show backup files" option merged in "Show hidden files"
+* Add support for freedesktop.org File Manager DBus Interface
+  (http://www.freedesktop.org/wiki/Specifications/file-manager-interface)
+* Allow to open files, if passed as arguments
+
+Major changes in 1.3.0 are:
+* Restore toggle button for button and text-based location bar
+* Add the ability to open bookmarks in the places side pane via the enter and space keys
+* Add diff button for text files in file conflict dialog
+* Fix autocompletion for remote locations
+* Makes the filename column expand to its maximum instead of shrinking to a hardcoded value

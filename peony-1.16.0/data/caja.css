@@ -1,0 +1,69 @@
+
+.caja-canvas-item {
+    border-radius: 3px;
+}
+
+.caja-desktop-window,
+.caja-desktop:not(:selected):not(:active):not(.rubberband){
+	background-color: transparent;
+}
+
+/* desktop mode */
+.caja-desktop.caja-canvas-item {
+    color: #ffffff;
+    text-shadow: 1px 1px alpha (#000000, 0.8);
+}
+
+.caja-desktop.caja-canvas-item:selected,
+.caja-desktop.caja-canvas-item:active,
+.caja-desktop.caja-canvas-item:hover {
+    text-shadow: none;
+}
+
+/* EelEditableLabel (icon labels) */
+.caja-desktop.view .entry,
+.caja-desktop.view .entry:focus,
+.caja-desktop.view .entry:backdrop,
+.caja-navigation-window .view .entry,
+.caja-navigation-window .view .entry:active,
+.caja-navigation-window .view .entry:focus,
+.caja-navigation-window .view .entry:backdrop {
+    border-image: none;
+    border-style: solid;
+    border-width: 1px;
+    border-color: #000000;
+    border-radius: 3px;
+    color: #000000;
+    text-shadow: none;
+    background-image: -gtk-gradient(linear,
+                                    left top, left bottom,
+                                    from       (shade(rgba(255,255,255,1), 0.86)),
+                                    color-stop (0.15, shade(rgba(255,255,255,1), 0.96)),
+                                    color-stop (0.50, shade(rgba(255,255,255,1), 0.98)),
+                                    to         (shade(rgba(255,255,255,1), 1.00)));
+}
+
+.caja-desktop.view .entry:selected,
+.caja-desktop.view .entry:focus:selected,
+.caja-desktop.view .entry:backdrop:selected
+.caja-navigation-window .view .entry:active,
+.caja-navigation-window .view .entry:selected,
+.caja-navigation-window .view .entry:focus:selected,
+.caja-navigation-window .view .entry:backdrop:selected {
+    background-color: @theme_selected_bg_color;
+    color: @theme_selected_fg_color;
+    text-shadow: none;
+}
+
+/* remove possible theme settings for borders on scrolledwindow with gtk+-3.20 */
+.caja-desktop-window > widget > box.vertical > box.vertical > box.vertical > scrolledwindow,
+.caja-desktop-window > widget > box.vertical > box.vertical > box.vertical > scrolledwindow.frame,
+.caja-desktop-window > widget > box.vertical > box.vertical > box.vertical > scrolledwindow > widget.view.caja-desktop {
+   border-width: 0px;
+   border-style: none;
+}
+
+/* Padding in slider buttons causes GTK errors in GTK 3.20 or later */
+.caja-navigation-window .slider-button {
+	padding: 0px;
+}
