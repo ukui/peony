@@ -1,8 +1,8 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 
-/* fm-empty-view.c - implementation of empty view of directory.
+/* fm-computer-view.c - implementation of computer view of directory.
 
-   Copyright (C) 2006 Free Software Foundation, Inc.
+   Copyright (C) 2016 Tianjin KYLIN Information Technology Co., Ltd. 
 
    The Ukui Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public License as
@@ -16,10 +16,9 @@
 
    You should have received a copy of the GNU Library General Public
    License along with the Ukui Library; see the file COPYING.LIB.  If not,
-   write to the Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
-   Boston, MA 02110-1301, USA.
+   write to the Free Software Foundation, Inc.
 
-   Authors: Christian Neumair <chris@mate-de.org>
+   Authors: zuxun Yang <yangzuxun@kylinos.cn>
 */
 
 #include <config.h>

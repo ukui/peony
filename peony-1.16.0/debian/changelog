@@ -1,39 +1,39 @@
-peony (1.16.0-1k5) yakkety; urgency=medium
+peony (1.16.0.6) yakkety; urgency=medium
 
   * Do something but it is not important;
 
  -- zuxunyang (yangzuxun) <yangzuxun@kylinos.cn>  Fri, 20 Jan 2017 11:15:42 +0800
 
-peony (1.16.0-1k4) yakkety; urgency=medium
+peony (1.16.0.5) yakkety; urgency=medium
 
   * add fm-computer-view.c/fm-computer-view.h/fm-computer-container.c/fm-computer-container.h
   * update the toolbar
 
  -- zuxunyang (yangzuxun) <yangzuxun@kylinos.cn>  Mon, 16 Jan 2017 15:17:42 +0800
 
-peony (1.16.0-1k3) yakkety; urgency=medium
+peony (1.16.0.4) yakkety; urgency=medium
 
   * Code polished
 
- -- Xiaodong Liu <liuxiaodong@kylinos.cn>  Fri, 06 Jan 2017 11:56:42 +0200
+ -- Xiaodong Liu <liuxiaodong@kylinos.cn>  Fri, 06 Jan 2017 11:56:42 +0800
 
-peony (1.16.0-1k2) yakkety; urgency=medium
+peony (1.16.0.3) yakkety; urgency=medium
 
   * Modified emblem pngs to be compatible with caja
 
- -- Xiaodong Liu <liuxiaodong@kylinos.cn>  Thu, 05 Jan 2017 09:08:42 +0200
+ -- Xiaodong Liu <liuxiaodong@kylinos.cn>  Thu, 05 Jan 2017 09:08:42 +0800
 
-peony (1.16.0-1k1) yakkety; urgency=medium
+peony (1.16.0.2) yakkety; urgency=medium
 
   * Update for UKUI PPA
 
- -- Xiaodong Liu <liuxiaodong@kylinos.cn>  Wed, 04 Jan 2017 08:51:42 +0200
+ -- Xiaodong Liu <liuxiaodong@kylinos.cn>  Wed, 04 Jan 2017 08:51:42 +0800
 
-peony (1.16.0-1) yakkety; urgency=medium
+peony (1.16.0.1) yakkety; urgency=medium
 
   * Fork from caja，rename to peony
 
- -- Xiaodong Liu <liuxiaodong@kylinos.cn>  Mon, 02 Jan 2017 22:29:42 +0200
+ -- Xiaodong Liu <liuxiaodong@kylinos.cn>  Mon, 02 Jan 2017 22:29:42 +0800
 
 caja (1.16.0-1) unstable; urgency=medium
 
