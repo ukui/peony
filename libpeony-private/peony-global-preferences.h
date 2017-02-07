@@ -216,6 +216,7 @@ GSettings *peony_desktop_preferences;
 GSettings *peony_tree_sidebar_preferences;
 GSettings *peony_compact_view_preferences;
 GSettings *peony_list_view_preferences;
+GSettings *peony_computer_view_preferences;
 GSettings *peony_extension_preferences;
 
 GSettings *ukui_background_preferences;

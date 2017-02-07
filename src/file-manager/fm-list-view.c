@@ -3461,7 +3461,7 @@ fm_list_view_supports_uri (const char *uri,
 {
     if (g_str_has_prefix (uri, "computer:"))
     {
-        return TRUE;
+        return FALSE;
     }
     if (file_type == G_FILE_TYPE_DIRECTORY)
     {

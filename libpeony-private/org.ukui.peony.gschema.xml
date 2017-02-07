@@ -20,6 +20,7 @@
     <value nick="icon-view" value="0"/>
     <value nick="compact-view" value="1"/>
     <value nick="list-view" value="2"/>
+    <value nick="computer-view" value="3"/>
   </enum>
 
   <enum id="org.ukui.peony.DateFormat">
@@ -60,6 +61,7 @@
     <child name="icon-view" schema="org.ukui.peony.icon-view"/>
     <child name="compact-view" schema="org.ukui.peony.compact-view"/>
     <child name="list-view" schema="org.ukui.peony.list-view"/>
+    <child name="computer-view" schema="org.ukui.peony.computer-view"/>
     <child name="sidebar-panels" schema="org.ukui.peony.sidebar-panels"/>
     <child name="desktop" schema="org.ukui.peony.desktop"/>
     <child name="window-state" schema="org.ukui.peony.window-state"/>
@@ -221,6 +223,7 @@
         <alias value='icon_view' target='icon-view'/>
         <alias value='compact_view' target='compact-view'/>
         <alias value='list_view' target='list-view'/>
+	<alias value='computer_view' target='computer-view'/>
       </aliases>
       <default>'icon-view'</default>
       <summary>Default folder viewer</summary>
@@ -244,6 +247,61 @@
   </schema>
 
   <schema id="org.ukui.peony.icon-view" path="/org.ukui/peony/icon-view/" gettext-domain="peony">
+    <key name="captions" type="as">
+      <default>[ 'none', 'size', 'date_modified' ]</default>
+      <summary>List of possible captions on icons</summary>
+      <description>A list of captions below an icon in the icon view and
+      the desktop.  The actual number of captions shown depends on
+      the zoom level.  Some possible values are:
+      "size", "type", "date_modified", "date_changed", "date_accessed", "owner",
+      "group", "permissions", "octal_permissions" and "mime_type".</description>
+    </key>
+    <key name="default-use-tighter-layout" type="b">
+      <default>false</default>
+      <summary>Use tighter layout in new windows</summary>
+      <description>If true, icons will be laid out tighter by default in new windows.</description>
+    </key>
+    <key name="labels-beside-icons" type="b">
+      <default>false</default>
+      <summary>Put labels beside icons</summary>
+      <description>If true, labels will be placed beside icons rather than underneath them.</description>
+    </key>
+    <key name="default-zoom-level" enum="org.ukui.peony.ZoomLevel">
+      <default>'standard'</default>
+      <summary>Default icon zoom level</summary>
+      <description>Default zoom level used by the icon view.</description>
+    </key>
+    <key name="thumbnail-size" type="i">
+      <default>64</default>
+      <summary>Default Thumbnail Icon Size</summary>
+      <description>The default size of an icon for a thumbnail in the icon view.</description>
+    </key>
+    <key name="text-ellipsis-limit" type="as">
+      <default>[ '3' ]</default>
+      <summary>Text Ellipsis Limit</summary>
+      <description>A string specifying how parts of overlong file names
+         should be replaced by ellipses, depending on the zoom
+         level.
+         Each of the list entries is of the form "Zoom Level:Integer".
+         For each specified zoom level, if the given integer is
+         larger than 0, the file name will not exceed the given number of lines.
+         If the integer is 0 or smaller, no limit is imposed on the specified zoom level.
+         A default entry of the form "Integer" without any specified zoom level
+         is also allowed. It defines the maximum number of lines for all other zoom levels.
+         Examples:
+         0 - always display overlong file names;
+         3 - shorten file names if they exceed three lines;
+         smallest:5,smaller:4,0 - shorten file names if they exceed five lines
+         for zoom level "smallest". Shorten file names if they exceed four lines
+         for zoom level "smaller". Do not shorten file names for other zoom levels.
+
+         Available zoom levels:
+         smallest (33%), smaller (50%), small (66%), standard (100%), large (150%),
+         larger (200%), largest (400%)</description>
+    </key>
+  </schema>
+
+<schema id="org.ukui.peony.computer-view" path="/org/ukui/peony/computer-view/" gettext-domain="peony">
     <key name="captions" type="as">
       <default>[ 'none', 'size', 'date_modified' ]</default>
       <summary>List of possible captions on icons</summary>

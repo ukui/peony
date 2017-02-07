@@ -80,6 +80,7 @@ peony_global_preferences_init (void)
     peony_window_state = g_settings_new("org.ukui.peony.window-state");
     peony_icon_view_preferences = g_settings_new("org.ukui.peony.icon-view");
     peony_compact_view_preferences = g_settings_new("org.ukui.peony.compact-view");
+    peony_computer_view_preferences = g_settings_new("org.ukui.peony.computer-view");
     peony_desktop_preferences = g_settings_new("org.ukui.peony.desktop");
     peony_tree_sidebar_preferences = g_settings_new("org.ukui.peony.sidebar-panels.tree");
     peony_list_view_preferences = g_settings_new("org.ukui.peony.list-view");

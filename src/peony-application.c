@@ -313,7 +313,7 @@ peony_application_init (PeonyApplication *application)
     /* TODO: Should connect to quit_requested and block logout on active transfer? */
 
     /* register views */
-   // fm_computer_view_register();
+    fm_computer_view_register();
     fm_icon_view_register ();
     fm_desktop_icon_view_register ();
     fm_list_view_register ();

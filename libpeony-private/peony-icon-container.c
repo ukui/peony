@@ -4610,6 +4610,25 @@ size_allocate (GtkWidget *widget,
 
     container = PEONY_ICON_CONTAINER (widget);
 
+    if(container->name)
+    {
+        GList *l;
+        PeonyIcon *icon;
+        EelDRect rect;
+        int temp=0;
+        for(l = container->details->icons;l!=NULL;l=l->next)
+        {
+                icon = l->data;
+                rect = peony_icon_canvas_item_get_icon_rectangle( icon->item);
+                if(rect.y1>temp)
+                        temp = rect.y1;
+        }
+        allocation->height +=temp;
+        gtk_widget_set_size_request(GTK_WIDGET(container),
+        allocation->width/2,
+        allocation->height/2+temp/2);
+    }
+
     need_layout_redone = !container->details->has_been_allocated;
     gtk_widget_get_allocation (widget, &wid_allocation);
 

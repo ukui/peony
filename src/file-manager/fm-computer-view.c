@@ -89,7 +89,9 @@
 
 #include "peony-audio-mime-types.h"
 
-
+#if GTK_CHECK_VERSION (3, 0, 0)
+#define gtk_vbox_new(X,Y) gtk_box_new(GTK_ORIENTATION_VERTICAL,Y)
+#endif
 
 #define POPUP_PATH_ICON_APPEARANCE      "/selection/Icon Appearance Items"
 #define DISK "disk"
@@ -3976,29 +3978,20 @@ fm_computer_view_init (FMComputerView *computer_view)
     /*disk-expander*/
     expander[0] = gtk_expander_new(_("Disk"));
     elabel_1 = gtk_expander_get_label_widget(expander[0]);
-   // g_object_set(GTK_CONTAINER(expander[0]), "border-width",8,NULL);
-    //g_object_set(elabel_1, "xpad",8,NULL);
 
     /*movable-disk-expander*/
     expander[1] = gtk_expander_new(_("Movable-Disk"));
     elabel_2 = gtk_expander_get_label_widget(expander[1]);
-   // g_object_set(GTK_CONTAINER(expander[1]), "border-width",8,NULL);
-   // g_object_set(elabel_2, "xpad",8,NULL);
 
     /*other-expander*/  
     expander[2]= gtk_expander_new(_("Other"));
     elabel_3 = gtk_expander_get_label_widget(expander[2]);
-//    g_object_set(GTK_CONTAINER(expander[2]), "border-width",8,NULL);
-  //  g_object_set(elabel_3, "xpad",8,NULL);
-// gtk_container_set_reallocate_redraws(GTK_CONTAINER(expander[0]),TRUE);
-    //gtk_container_set_reallocate_redraws(GTK_CONTAINER(expander[1]),TRUE);
-  //  gtk_container_set_reallocate_redraws(GTK_CONTAINER(expander[2]),TRUE);
 
     for(i=0;i<3;i++)
     {
         gtk_container_add(GTK_CONTAINER(viewport1[i]),GTK_WIDGET (icon_container[i]));
         gtk_container_add(GTK_CONTAINER(expander[i]),GTK_WIDGET (viewport1[i]));
-        gtk_expander_set_expanded(GTK_EXPANDER(expander[i]),TRUE);
+        gtk_expander_set_expanded(GTK_EXPANDER(expander[i]),FALSE);
         gtk_box_pack_start(GTK_BOX(box),expander[i],FALSE,TRUE,0);
     }
     
