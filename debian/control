@@ -48,8 +48,8 @@ Recommends: gvfs-backends,
 Suggests: engrampa,
           gstreamer1.0-tools,
           meld,
-Breaks: libpeony-extension (<< 1.10.0),
-        libpeony-extension1 (<< 1.10.0),
+Breaks: libpeony-extension,
+        libpeony-extension1,
         ukui-session-manager,
 Description: file manager for the UKUI desktop
  Peony, a fork of caja, is the official file manager for the UKUI desktop. It allows one
@@ -61,8 +61,8 @@ Package: peony-common
 Architecture: all
 Multi-Arch: foreign
 Depends: ${misc:Depends},
-Replaces: peony (<< 1.9.0),
-Breaks: peony (<< 1.9.0),
+Replaces: peony,
+Breaks: peony,
 Description: file manager for the UKUI desktop (common files)
  Peony, a fork of caja, is the official file manager for the UKUI desktop. It allows one
  to browse directories, preview files and launch applications associated
@@ -78,8 +78,8 @@ Multi-Arch: same
 Pre-Depends: ${misc:Pre-Depends},
 Depends: ${misc:Depends},
          ${shlibs:Depends},
-Replaces: libpeony-extension (<< 1.7.0),
-Breaks: libpeony-extension (<< 1.7.0),
+Replaces: libpeony-extension,
+Breaks: libpeony-extension,
 Provides: libpeony-extension,
 Description: libraries for Peony components
  Peony, a fork of caja, is the official file manager for the UKUI desktop. It allows one
@@ -111,7 +111,7 @@ Package: libpeony-extension-doc
 Section: doc
 Architecture: all
 Depends: ${misc:Depends},
-Breaks: libpeony-extension-dev (<< 1.12.3-2~),
+Breaks: libpeony-extension-dev,
 Description: libraries for Peony components (API documentation files)
  Peony, a fork of caja, is the official file manager for the UKUI desktop. It allows one
  to browse directories, preview files and launch applications associated
