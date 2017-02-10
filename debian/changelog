@@ -1,3 +1,9 @@
+peony (0.9.6) yakkety; urgency=medium
+
+  * Update debian/control
+
+ -- zuxunyang (yangzuxun) <yangzuxun@kylinos.cn>  Fri, 10 Feb 2017 11:06:42 +0800
+
 peony (0.9.5) yakkety; urgency=medium
 
   * Update My Computer and make it look better
