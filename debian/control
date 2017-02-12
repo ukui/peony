@@ -2,10 +2,7 @@ Source: peony
 Section: utils
 Priority: optional
 Maintainer: Kylin Team  <ukui@kylinos.cn>
-Uploaders: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-           Stefano Karapetsas <stefano@karapetsas.com>,
-           Mike Gabriel <sunweaver@debian.org>,
-           Xiaodong Liu <liuxiaodong@kylinos.cn>,
+Uploaders: Xiaodong Liu <liuxiaodong@kylinos.cn>,
            Zuxun Yang <yangzuxun@kylinos.cn>
 Build-Depends: debhelper (>= 9),
                dpkg-dev (>= 1.16.1.1),
@@ -27,7 +24,6 @@ Build-Depends: debhelper (>= 9),
                libx11-dev,
                libxml2-dev,
                ukui-common,
-               quilt,
                shared-mime-info,
 Standards-Version: 3.9.8
 Homepage: http://www.ukui.org/
