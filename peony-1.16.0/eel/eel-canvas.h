@@ -3,27 +3,27 @@
  * Copyright (C) 1997, 1998, 1999, 2000 Free Software Foundation
  * All rights reserved.
  *
- * This file is part of the Mate Library.
+ * This file is part of the Ukui Library.
  *
- * The Mate Library is free software; you can redistribute it and/or
+ * The Ukui Library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public License as
  * published by the Free Software Foundation; either version 2 of the
  * License, or (at your option) any later version.
  *
- * The Mate Library is distributed in the hope that it will be useful,
+ * The Ukui Library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with the Mate Library; see the file COPYING.LIB.  If not,
+ * License along with the Ukui Library; see the file COPYING.LIB.  If not,
  * write to the Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
 /*
   @NOTATION@
  */
-/* EelCanvas widget - Tk-like canvas widget for Mate
+/* EelCanvas widget - Tk-like canvas widget for UKUI
  *
  * EelCanvas is basically a port of the Tk toolkit's most excellent canvas
  * widget.  Tk is copyrighted by the Regents of the University of California,
@@ -469,7 +469,7 @@ extern "C" {
                                   int x, int y, int width, int height);
 #endif
 
-        /* Private Virtual methods for groping the canvas inside matecomponent */
+        /* Private Virtual methods for groping the canvas inside ukuicomponent */
         void (* request_update) (EelCanvas *canvas);
 
         /* Reserved for future expansion */

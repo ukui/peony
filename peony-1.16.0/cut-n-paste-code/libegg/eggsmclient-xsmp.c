@@ -2,7 +2,7 @@
  * Copyright (C) 2007 Novell, Inc.
  *
  * Inspired by various other pieces of code including GsmClient (C)
- * 2001 Havoc Pennington, MateClient (C) 1998 Carsten Schaar, and twm
+ * 2001 Havoc Pennington, UKUIClient (C) 1998 Carsten Schaar, and twm
  * session code (C) 1998 The Open Group.
  *
  * This library is free software; you can redistribute it and/or
@@ -232,7 +232,7 @@ sm_client_xsmp_set_initial_properties (gpointer user_data)
         if (xsmp->restart_style == SmRestartIfRunning)
         {
             if (egg_desktop_file_get_boolean (desktop_file,
-                                              "X-MATE-AutoRestart", NULL))
+                                              "X-UKUI-AutoRestart", NULL))
                 xsmp->restart_style = SmRestartImmediately;
         }
 
@@ -520,7 +520,7 @@ sm_client_xsmp_end_session (EggSMClient         *client,
     }
 
     /* xfce4-session will do the wrong thing if we pass SmSaveGlobal and
-     * the user chooses to save the session. But mate-session will do
+     * the user chooses to save the session. But ukui-session will do
      * the wrong thing if we pass SmSaveBoth and the user chooses NOT to
      * save the session... Sigh.
      */
@@ -1263,7 +1263,7 @@ card8_prop (const char *name, unsigned char value)
  * libICE.)
  *
  * When this moves to gtk, it will need to be cleverer, to avoid
- * tripping over old apps that use MateClient or that use libSM
+ * tripping over old apps that use UKUIClient or that use libSM
  * directly.
  */
 

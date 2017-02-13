@@ -4,18 +4,18 @@
 
    Copyright (C) 2006 Free Software Foundation, Inc.
 
-   The Mate Library is free software; you can redistribute it and/or
+   The Ukui Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public License as
    published by the Free Software Foundation; either version 2 of the
    License, or (at your option) any later version.
 
-   The Mate Library is distributed in the hope that it will be useful,
+   The Ukui Library is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
    Library General Public License for more details.
 
    You should have received a copy of the GNU Library General Public
-   License along with the Mate Library; see the file COPYING.LIB.  If not,
+   License along with the Ukui Library; see the file COPYING.LIB.  If not,
    write to the Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
    Boston, MA 02110-1301, USA.
 
@@ -26,9 +26,9 @@
 #include "fm-empty-view.h"
 
 #include <string.h>
-#include <libcaja-private/caja-file-utilities.h>
-#include <libcaja-private/caja-view.h>
-#include <libcaja-private/caja-view-factory.h>
+#include <libpeony-private/peony-file-utilities.h>
+#include <libpeony-private/peony-view.h>
+#include <libpeony-private/peony-view-factory.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-vfs-extensions.h>
@@ -40,19 +40,19 @@ struct FMEmptyViewDetails
 
 static GList *fm_empty_view_get_selection                   (FMDirectoryView   *view);
 static GList *fm_empty_view_get_selection_for_file_transfer (FMDirectoryView   *view);
-static void   fm_empty_view_scroll_to_file                  (CajaView      *view,
+static void   fm_empty_view_scroll_to_file                  (PeonyView      *view,
         const char        *uri);
-static void   fm_empty_view_iface_init                      (CajaViewIface *iface);
+static void   fm_empty_view_iface_init                      (PeonyViewIface *iface);
 
 G_DEFINE_TYPE_WITH_CODE (FMEmptyView, fm_empty_view, FM_TYPE_DIRECTORY_VIEW,
-                         G_IMPLEMENT_INTERFACE (CAJA_TYPE_VIEW,
+                         G_IMPLEMENT_INTERFACE (PEONY_TYPE_VIEW,
                                  fm_empty_view_iface_init));
 
 /* for EEL_CALL_PARENT */
 #define parent_class fm_empty_view_parent_class
 
 static void
-fm_empty_view_add_file (FMDirectoryView *view, CajaFile *file, CajaDirectory *directory)
+fm_empty_view_add_file (FMDirectoryView *view, PeonyFile *file, PeonyDirectory *directory)
 {
     static GTimer *timer = NULL;
     static gdouble cumu = 0, elaps;
@@ -62,7 +62,7 @@ fm_empty_view_add_file (FMDirectoryView *view, CajaFile *file, CajaDirectory *di
     if (!timer) timer = g_timer_new ();
 
     g_timer_start (timer);
-    icon = caja_file_get_icon_pixbuf (file, caja_get_icon_size_for_zoom_level (CAJA_ZOOM_LEVEL_STANDARD), TRUE, 0);
+    icon = peony_file_get_icon_pixbuf (file, peony_get_icon_size_for_zoom_level (PEONY_ZOOM_LEVEL_STANDARD), TRUE, 0);
 
     elaps = g_timer_elapsed (timer, NULL);
     g_timer_stop (timer);
@@ -86,7 +86,7 @@ fm_empty_view_clear (FMDirectoryView *view)
 
 
 static void
-fm_empty_view_file_changed (FMDirectoryView *view, CajaFile *file, CajaDirectory *directory)
+fm_empty_view_file_changed (FMDirectoryView *view, PeonyFile *file, PeonyDirectory *directory)
 {
 }
 
@@ -127,7 +127,7 @@ fm_empty_view_end_file_changes (FMDirectoryView *view)
 }
 
 static void
-fm_empty_view_remove_file (FMDirectoryView *view, CajaFile *file, CajaDirectory *directory)
+fm_empty_view_remove_file (FMDirectoryView *view, PeonyFile *file, PeonyDirectory *directory)
 {
     FM_EMPTY_VIEW (view)->details->number_of_files--;
     g_assert (FM_EMPTY_VIEW (view)->details->number_of_files >= 0);
@@ -172,15 +172,15 @@ fm_empty_view_bump_zoom_level (FMDirectoryView *view, int zoom_increment)
 {
 }
 
-static CajaZoomLevel
+static PeonyZoomLevel
 fm_empty_view_get_zoom_level (FMDirectoryView *view)
 {
-    return CAJA_ZOOM_LEVEL_STANDARD;
+    return PEONY_ZOOM_LEVEL_STANDARD;
 }
 
 static void
 fm_empty_view_zoom_to_level (FMDirectoryView *view,
-                             CajaZoomLevel zoom_level)
+                             PeonyZoomLevel zoom_level)
 {
 }
 
@@ -203,7 +203,7 @@ fm_empty_view_can_zoom_out (FMDirectoryView *view)
 
 static void
 fm_empty_view_start_renaming_file (FMDirectoryView *view,
-                                   CajaFile *file,
+                                   PeonyFile *file,
                                    gboolean select_all)
 {
 }
@@ -215,7 +215,7 @@ fm_empty_view_click_policy_changed (FMDirectoryView *directory_view)
 
 
 static int
-fm_empty_view_compare_files (FMDirectoryView *view, CajaFile *file1, CajaFile *file2)
+fm_empty_view_compare_files (FMDirectoryView *view, PeonyFile *file1, PeonyFile *file2)
 {
     if (file1 < file2)
     {
@@ -259,19 +259,19 @@ fm_empty_view_emblems_changed (FMDirectoryView *directory_view)
 }
 
 static char *
-fm_empty_view_get_first_visible_file (CajaView *view)
+fm_empty_view_get_first_visible_file (PeonyView *view)
 {
     return NULL;
 }
 
 static void
-fm_empty_view_scroll_to_file (CajaView *view,
+fm_empty_view_scroll_to_file (PeonyView *view,
                               const char *uri)
 {
 }
 
 static void
-fm_empty_view_grab_focus (CajaView *view)
+fm_empty_view_grab_focus (PeonyView *view)
 {
     gtk_widget_grab_focus (GTK_WIDGET (view));
 }
@@ -323,14 +323,14 @@ fm_empty_view_class_init (FMEmptyViewClass *class)
 }
 
 static const char *
-fm_empty_view_get_id (CajaView *view)
+fm_empty_view_get_id (PeonyView *view)
 {
     return FM_EMPTY_VIEW_ID;
 }
 
 
 static void
-fm_empty_view_iface_init (CajaViewIface *iface)
+fm_empty_view_iface_init (PeonyViewIface *iface)
 {
     fm_directory_view_init_view_iface (iface);
 
@@ -348,18 +348,18 @@ fm_empty_view_init (FMEmptyView *empty_view)
     empty_view->details = g_new0 (FMEmptyViewDetails, 1);
 }
 
-static CajaView *
-fm_empty_view_create (CajaWindowSlotInfo *slot)
+static PeonyView *
+fm_empty_view_create (PeonyWindowSlotInfo *slot)
 {
     FMEmptyView *view;
 
-    g_assert (CAJA_IS_WINDOW_SLOT_INFO (slot));
+    g_assert (PEONY_IS_WINDOW_SLOT_INFO (slot));
 
     view = g_object_new (FM_TYPE_EMPTY_VIEW,
                          "window-slot", slot,
                          NULL);
 
-    return CAJA_VIEW (view);
+    return PEONY_VIEW (view);
 }
 
 static gboolean
@@ -371,7 +371,7 @@ fm_empty_view_supports_uri (const char *uri,
     {
         return TRUE;
     }
-    if (strcmp (mime_type, CAJA_SAVED_SEARCH_MIMETYPE) == 0)
+    if (strcmp (mime_type, PEONY_SAVED_SEARCH_MIMETYPE) == 0)
     {
         return TRUE;
     }
@@ -387,7 +387,7 @@ fm_empty_view_supports_uri (const char *uri,
     return FALSE;
 }
 
-static CajaViewInfo fm_empty_view =
+static PeonyViewInfo fm_empty_view =
 {
     FM_EMPTY_VIEW_ID,
     "Empty",
@@ -408,5 +408,5 @@ fm_empty_view_register (void)
     fm_empty_view.error_label = fm_empty_view.error_label;
     fm_empty_view.display_location_label = fm_empty_view.display_location_label;
 
-    caja_view_factory_register (&fm_empty_view);
+    peony_view_factory_register (&fm_empty_view);
 }

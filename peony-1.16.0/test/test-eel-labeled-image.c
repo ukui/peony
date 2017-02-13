@@ -6,7 +6,7 @@
 #define gtk_vbox_new(X,Y) gtk_box_new(GTK_ORIENTATION_VERTICAL,Y)
 #endif
 
-static const char pixbuf_name[] = "/usr/share/pixmaps/mate-globe.png";
+static const char pixbuf_name[] = "/usr/share/pixmaps/ukui-globe.png";
 
 static void
 button_callback (GtkWidget *button,

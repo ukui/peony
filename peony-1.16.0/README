@@ -1,11 +1,11 @@
-This is Caja, the file manager for the MATE desktop.
+This is Peony, the file manager for the UKUI desktop.
 
-Caja is a fork of Nautilus.
+Peony is a fork of Caja.
 
-Hacking on Caja
+Hacking on Peony
 ===================
 
-Please see the HACKING file for information about hacking on caja.
+Please see the HACKING file for information about hacking on peony.
 
 How to report bugs
 ==================

@@ -1,13 +1,13 @@
 include $(top_srcdir)/Makefile.shared
 
-noinst_LTLIBRARIES=libcaja-file-manager.la
+noinst_LTLIBRARIES=libpeony-file-manager.la
 
 AM_CPPFLAGS = \
 	-I$(top_srcdir) \
 	-I$(top_srcdir)/cut-n-paste-code \
 	$(CORE_CFLAGS) \
 	$(WARNING_CFLAGS) \
-	-DCAJA_DATADIR=\""$(datadir)/caja"\" \
+	-DPEONY_DATADIR=\""$(datadir)/peony"\" \
 	-DDATADIR=\""$(datadir)"\" \
 	$(DISABLE_DEPRECATED_CFLAGS) \
 	$(NULL)
@@ -17,7 +17,7 @@ BUILT_SOURCES = \
 	fm-marshal.h \
 	$(NULL)
 
-libcaja_file_manager_la_SOURCES = \
+libpeony_file_manager_la_SOURCES = \
 	fm-actions.h \
 	fm-desktop-icon-view.c \
 	fm-desktop-icon-view.h \
@@ -42,17 +42,21 @@ libcaja_file_manager_la_SOURCES = \
 	fm-tree-model.h \
 	fm-tree-view.c \
 	fm-tree-view.h \
-	caja-audio-mime-types.h \
+	peony-audio-mime-types.h \
+	fm-computer-view.c \
+	fm-computer-view.h \
+	fm-computer-container.c \
+	fm-computer-container.h \
 	$(NULL)
 
-nodist_libcaja_file_manager_la_SOURCES=\
+nodist_libpeony_file_manager_la_SOURCES=\
 	$(BUILT_SOURCES) \
 	$(NULL)
 
-fm-marshal.list: $(libcaja_file_manager_la_SOURCES) Makefile.am
+fm-marshal.list: $(libpeony_file_manager_la_SOURCES) Makefile.am
 	$(AM_V_GEN)( cd $(srcdir) && \
 	sed -n -e 's/.*fm_marshal_\([[:upper:][:digit:]]*__[[:upper:][:digit:]_]*\).*/\1/p' \
-	$(libcaja_file_manager_la_SOURCES) ) \
+	$(libpeony_file_manager_la_SOURCES) ) \
 	| sed -e 's/__/:/' -e 'y/_/,/' | sort -u > $@.tmp
 	@if cmp -s $@.tmp $@; then \
 		rm $@.tmp; \
@@ -72,15 +76,15 @@ EMPTY_VIEW_SOURCES = \
 	fm-empty-view.h
 
 if ENABLE_EMPTY_VIEW
-libcaja_file_manager_la_SOURCES += $(EMPTY_VIEW_SOURCES)
+libpeony_file_manager_la_SOURCES += $(EMPTY_VIEW_SOURCES)
 endif
 
-uidir = $(datadir)/caja/ui
+uidir = $(datadir)/peony/ui
 ui_DATA = \
-	caja-desktop-icon-view-ui.xml \
-	caja-directory-view-ui.xml \
-	caja-icon-view-ui.xml \
-	caja-list-view-ui.xml \
+	peony-desktop-icon-view-ui.xml \
+	peony-directory-view-ui.xml \
+	peony-icon-view-ui.xml \
+	peony-list-view-ui.xml \
 	$(NULL)
 
 EXTRA_DIST = \

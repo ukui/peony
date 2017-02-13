@@ -3,10 +3,10 @@ NULL =
 SUBDIRS = reference
 
 man_MANS = \
-	caja.1 \
-	caja-autorun-software.1 \
-	caja-connect-server.1 \
-	caja-file-management-properties.1 \
+	peony.1 \
+	peony-autorun-software.1 \
+	peony-connect-server.1 \
+	peony-file-management-properties.1 \
 	$(NULL)
 
 EXTRA_DIST = \
@@ -14,10 +14,10 @@ EXTRA_DIST = \
 	architecture.txt \
 	dnd.txt \
 	load-states.dia \
-	caja-internals.sxw \
-	caja-internals.pdf \
-	caja-io.txt \
-	caja.faq \
+	peony-internals.sxw \
+	peony-internals.pdf \
+	peony-io.txt \
+	peony.faq \
 	recommended-books.html \
 	smoketests.html \
 	state-machines.txt \

@@ -1,8 +1,8 @@
-		Caja dnd code.
+		Peony dnd code.
 		------------------
 
 
-Caja dnd code is pretty compilcated, it has a lot of entry points and exit points.
+Peony dnd code is pretty compilcated, it has a lot of entry points and exit points.
 Trying to clarify this now.
 
 You have to implement:
@@ -39,13 +39,13 @@ those 3 signals and it should not have any memory management issue.
 
 Things get a little bit complicated.
 when the dragging cursor gets in your window, you will get drag_motion 
-events. In caja, we do many things in this function:
+events. In peony, we do many things in this function:
 	- we start auto-scrolling if it is necessary.
-	- we call caja_*_ensure_data
+	- we call peony_*_ensure_data
 	- we prelight what is under the cursor if it can accept the drag.
 	- we try to expand what is under you if it can accept the drop (tree view)
 
-caja_*_ensure_data is vital. It calls gtk_drag_get_data to get the 
+peony_*_ensure_data is vital. It calls gtk_drag_get_data to get the 
 data from the source. this allows the destination to store it in advance and use it
 to know if what is under the cursor can accept the drag.
 

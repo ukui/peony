@@ -3,7 +3,7 @@ Major changes in 1.16.0 are:
 * Pathbar: always show right arrow button
 * Fix changing taskbar icon when switching between tabs with different
   icons
-* Fix lots of warnings when building docs for libcaja-extension
+* Fix lots of warnings when building docs for libpeony-extension
 * GTK+3: add style classes for elements of pathbar
 * GTK+3: fix drawing and changing of desktop background with 3.21
 * GTK+3: fix a large amount of deprecations

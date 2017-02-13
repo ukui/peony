@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <categories>
   <category name="patterns" _display_name="_Patterns" image="backgrounds.png"
-   columns="5" mode="directory" path="caja/patterns" type="property/bgimage"
+   columns="5" mode="directory" path="peony/patterns" type="property/bgimage"
    _description="Drag a pattern tile to an object to change it">
   	<pattern _display_name="Blue Ridge" filename="blue_ridge"/> 
   	<pattern _display_name="Blue Rough" filename="blue_gray_rough"/>  	
@@ -12,13 +12,13 @@
   	<pattern _display_name="Chalk" filename="chalk"/>
   	<pattern _display_name="Cork" filename="cork"/>
   	<pattern _display_name="Countertop" filename="countertop"/>
-  	<pattern _display_name="Dark MATE" filename="dark-mate"/>
+  	<pattern _display_name="Dark UKUI" filename="dark-ukui"/>
   	<pattern _display_name="Dots" filename="dots"/>
   	<pattern _display_name="Fibers" filename="fibers"/>
   	<pattern _display_name="Fleur De Lis" filename="fleur_de_lis"/>
   	<pattern _display_name="Floral" filename="floral"/>
   	<pattern _display_name="Fossil" filename="fossil"/>
-  	<pattern _display_name="MATE" filename="mate"/>
+  	<pattern _display_name="UKUI" filename="ukui"/>
   	<pattern _display_name="Green Weave" filename="green_weave"/>
    	<pattern _display_name="Ice" filename="ice"/>	
   	<pattern _display_name="Manila Paper" filename="manila_paper"/>
@@ -69,7 +69,7 @@
     <color _name="Black">#000000</color>   
   </category>
  
- <category name="emblems" _display_name="_Emblems" image="emblems.png" columns="6" mode="directory" path="caja/emblems" type="property/keyword" _description="Drag an emblem to an object to add it to the object">
+ <category name="emblems" _display_name="_Emblems" image="emblems.png" columns="6" mode="directory" path="peony/emblems" type="property/keyword" _description="Drag an emblem to an object to add it to the object">
 	<!-- translators: this is the name of an emblem -->
  	<emblem _display_name="Erase" filename="erase"/>
  </category>

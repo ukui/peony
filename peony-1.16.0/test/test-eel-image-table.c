@@ -4,7 +4,7 @@
 #include <gtk/gtk.h>
 #include <stdlib.h>
 
-static const char pixbuf_name[] = "/usr/share/pixmaps/mate-about-logo.png";
+static const char pixbuf_name[] = "/usr/share/pixmaps/ukui-about-logo.png";
 
 #define BG_COLOR 0xFFFFFF
 #define BG_COLOR_SPEC "white"

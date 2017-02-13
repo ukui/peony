@@ -11,7 +11,7 @@ AM_CPPFLAGS = \
 	$(DISABLE_DEPRECATED_CFLAGS) \
 	-DDATADIR=\""$(datadir)"\" \
 	-DSOURCE_DATADIR=\""$(top_srcdir)/data"\" \
-	-DMATELOCALEDIR=\""$(prefix)/${DATADIRNAME}/locale"\" \
+	-DUKUILOCALEDIR=\""$(prefix)/${DATADIRNAME}/locale"\" \
 	$(NULL)
 
 BUILT_SOURCES = \
@@ -43,7 +43,7 @@ eel_headers = \
 	eel-gdk-extensions.h \
 	eel-gdk-pixbuf-extensions.h \
 	eel-glib-extensions.h \
-	eel-mate-extensions.h \
+	eel-ukui-extensions.h \
 	eel-graphic-effects.h \
 	eel-gtk-container.h \
 	eel-gtk-extensions.h \
@@ -72,7 +72,7 @@ libeel_2_la_SOURCES = \
 	eel-gdk-extensions.c \
 	eel-gdk-pixbuf-extensions.c \
 	eel-glib-extensions.c \
-	eel-mate-extensions.c \
+	eel-ukui-extensions.c \
 	eel-graphic-effects.c \
 	eel-gtk-container.c \
 	eel-gtk-extensions.c \

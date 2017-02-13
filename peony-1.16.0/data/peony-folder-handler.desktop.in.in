@@ -1,0 +1,16 @@
+[Desktop Entry]
+_Name=Peony
+_GenericName=Open Folder
+TryExec=peony
+Exec=peony --no-desktop %U
+NoDisplay=true
+Terminal=false
+Icon=folder-open
+StartupNotify=true
+Type=Application
+MimeType=inode/directory;application/x-ukui-saved-search;
+OnlyShowIn=UKUI;
+X-UKUI-Bugzilla-Bugzilla=UKUI
+X-UKUI-Bugzilla-Product=peony
+X-UKUI-Bugzilla-Component=general
+X-UKUI-Bugzilla-Version=@VERSION@

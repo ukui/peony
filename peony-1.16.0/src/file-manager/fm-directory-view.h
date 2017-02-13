@@ -30,13 +30,13 @@
 
 #include <gtk/gtk.h>
 #include <eel/eel-background.h>
-#include <libcaja-private/caja-directory.h>
-#include <libcaja-private/caja-file.h>
-#include <libcaja-private/caja-icon-container.h>
-#include <libcaja-private/caja-link.h>
-#include <libcaja-private/caja-view.h>
-#include <libcaja-private/caja-window-info.h>
-#include <libcaja-private/caja-window-slot-info.h>
+#include <libpeony-private/peony-directory.h>
+#include <libpeony-private/peony-file.h>
+#include <libpeony-private/peony-icon-container.h>
+#include <libpeony-private/peony-link.h>
+#include <libpeony-private/peony-view.h>
+#include <libpeony-private/peony-window-info.h>
+#include <libpeony-private/peony-window-slot-info.h>
 #include <gio/gio.h>
 
 typedef struct FMDirectoryView FMDirectoryView;
@@ -82,19 +82,19 @@ struct FMDirectoryViewClass
      * It must be replaced by each subclass.
      */
     void    (* add_file) 		 (FMDirectoryView *view,
-                                  CajaFile *file,
-                                  CajaDirectory *directory);
+                                  PeonyFile *file,
+                                  PeonyDirectory *directory);
     void    (* remove_file)		 (FMDirectoryView *view,
-                                  CajaFile *file,
-                                  CajaDirectory *directory);
+                                  PeonyFile *file,
+                                  PeonyDirectory *directory);
 
     /* The 'file_changed' signal is emitted to signal a change in a file,
      * including the file being removed.
      * It must be replaced by each subclass.
      */
     void 	(* file_changed)         (FMDirectoryView *view,
-                                      CajaFile *file,
-                                      CajaDirectory *directory);
+                                      PeonyFile *file,
+                                      PeonyDirectory *directory);
 
     /* The 'end_file_changes' signal is emitted after a set of files
      * are added to the view. It can be replaced by a subclass to do any
@@ -148,14 +148,14 @@ struct FMDirectoryViewClass
     /* get_selection is not a signal; it is just a function pointer for
      * subclasses to replace (override). Subclasses must replace it
      * with a function that returns a newly-allocated GList of
-     * CajaFile pointers.
+     * PeonyFile pointers.
      */
     GList *	(* get_selection) 	 	(FMDirectoryView *view);
 
     /* get_selection_for_file_transfer  is a function pointer for
      * subclasses to replace (override). Subclasses must replace it
      * with a function that returns a newly-allocated GList of
-     * CajaFile pointers. The difference from get_selection is
+     * PeonyFile pointers. The difference from get_selection is
      * that any files in the selection that also has a parent folder
      * in the selection is not included.
      */
@@ -167,7 +167,7 @@ struct FMDirectoryViewClass
 
     /* set_selection is a function pointer that subclasses must
      * override to select the specified items (and unselect all
-     * others). The argument is a list of CajaFiles. */
+     * others). The argument is a list of PeonyFiles. */
 
     void     (* set_selection)	 	(FMDirectoryView *view,
                                      GList *selection);
@@ -190,9 +190,9 @@ struct FMDirectoryViewClass
     /* zoom_to_level is a function pointer that subclasses must override
      * to set the zoom level of an object to the specified level. */
     void    (* zoom_to_level) 		(FMDirectoryView *view,
-                                     CajaZoomLevel level);
+                                     PeonyZoomLevel level);
 
-    CajaZoomLevel (* get_zoom_level)    (FMDirectoryView *view);
+    PeonyZoomLevel (* get_zoom_level)    (FMDirectoryView *view);
 
     /* restore_default_zoom_level is a function pointer that subclasses must override
          * to restore the zoom level of an object to a default setting. */
@@ -237,13 +237,13 @@ struct FMDirectoryViewClass
      * presented when only a partial list is provided.
      */
     int     (* compare_files)              (FMDirectoryView *view,
-                                            CajaFile    *a,
-                                            CajaFile    *b);
+                                            PeonyFile    *a,
+                                            PeonyFile    *b);
 
     /* get_emblem_names_to_exclude is a function pointer that subclasses
      * may override to specify a set of emblem names that should not
      * be displayed with each file. By default, all emblems returned by
-     * CajaFile are displayed.
+     * PeonyFile are displayed.
      */
     char ** (* get_emblem_names_to_exclude)	(FMDirectoryView *view);
 
@@ -296,17 +296,17 @@ struct FMDirectoryViewClass
     gboolean (* accepts_dragged_files)	(FMDirectoryView *view);
 
     gboolean (* can_rename_file)            (FMDirectoryView *view,
-            CajaFile *file);
+            PeonyFile *file);
     /* select_all specifies whether the whole filename should be selected
      * or only its basename (i.e. everything except the extension)
      * */
     void	 (* start_renaming_file)        (FMDirectoryView *view,
-            CajaFile *file,
+            PeonyFile *file,
             gboolean select_all);
 
     gboolean (* file_still_belongs)		(FMDirectoryView *view,
-                                         CajaFile	 *file,
-                                         CajaDirectory *directory);
+                                         PeonyFile	 *file,
+                                         PeonyDirectory *directory);
 
     /* convert *point from widget's coordinate system to a coordinate
      * system used for specifying file operation positions, which is view-specific.
@@ -341,11 +341,11 @@ struct FMDirectoryViewClass
 GType               fm_directory_view_get_type                         (void);
 
 /* Functions callable from the user interface and elsewhere. */
-CajaWindowInfo *fm_directory_view_get_caja_window              (FMDirectoryView  *view);
-CajaWindowSlotInfo *fm_directory_view_get_caja_window_slot     (FMDirectoryView  *view);
+PeonyWindowInfo *fm_directory_view_get_peony_window              (FMDirectoryView  *view);
+PeonyWindowSlotInfo *fm_directory_view_get_peony_window_slot     (FMDirectoryView  *view);
 char *              fm_directory_view_get_uri                          (FMDirectoryView  *view);
 char *              fm_directory_view_get_backing_uri                  (FMDirectoryView  *view);
-gboolean            fm_directory_view_can_accept_item                  (CajaFile     *target_item,
+gboolean            fm_directory_view_can_accept_item                  (PeonyFile     *target_item,
         const char       *item_uri,
         FMDirectoryView  *view);
 void                fm_directory_view_display_selection_info           (FMDirectoryView  *view);
@@ -360,8 +360,8 @@ GtkWidget *         fm_directory_view_get_background_widget            (FMDirect
 void                fm_directory_view_bump_zoom_level                  (FMDirectoryView  *view,
         int               zoom_increment);
 void                fm_directory_view_zoom_to_level                    (FMDirectoryView  *view,
-        CajaZoomLevel zoom_level);
-CajaZoomLevel   fm_directory_view_get_zoom_level                   (FMDirectoryView  *view);
+        PeonyZoomLevel zoom_level);
+PeonyZoomLevel   fm_directory_view_get_zoom_level                   (FMDirectoryView  *view);
 void                fm_directory_view_restore_default_zoom_level       (FMDirectoryView  *view);
 void                fm_directory_view_reset_to_defaults                (FMDirectoryView  *view);
 void                fm_directory_view_select_all                       (FMDirectoryView  *view);
@@ -402,23 +402,23 @@ gboolean            fm_directory_view_get_loading                      (FMDirect
  */
 void                fm_directory_view_activate_files                   (FMDirectoryView        *view,
         GList                  *files,
-        CajaWindowOpenMode  mode,
-        CajaWindowOpenFlags flags,
+        PeonyWindowOpenMode  mode,
+        PeonyWindowOpenFlags flags,
         gboolean                confirm_multiple);
 void                fm_directory_view_activate_file                    (FMDirectoryView        *view,
-        CajaFile           *file,
-        CajaWindowOpenMode  mode,
-        CajaWindowOpenFlags flags);
+        PeonyFile           *file,
+        PeonyWindowOpenMode  mode,
+        PeonyWindowOpenFlags flags);
 void                fm_directory_view_start_batching_selection_changes (FMDirectoryView  *view);
 void                fm_directory_view_stop_batching_selection_changes  (FMDirectoryView  *view);
 void                fm_directory_view_queue_file_change                (FMDirectoryView  *view,
-        CajaFile     *file);
+        PeonyFile     *file);
 void                fm_directory_view_notify_selection_changed         (FMDirectoryView  *view);
 GtkUIManager *      fm_directory_view_get_ui_manager                   (FMDirectoryView  *view);
 char **             fm_directory_view_get_emblem_names_to_exclude      (FMDirectoryView  *view);
-CajaDirectory  *fm_directory_view_get_model                        (FMDirectoryView  *view);
+PeonyDirectory  *fm_directory_view_get_model                        (FMDirectoryView  *view);
 GtkWindow	   *fm_directory_view_get_containing_window	       (FMDirectoryView  *view);
-CajaFile       *fm_directory_view_get_directory_as_file            (FMDirectoryView  *view);
+PeonyFile       *fm_directory_view_get_directory_as_file            (FMDirectoryView  *view);
 EelBackground *     fm_directory_view_get_background                   (FMDirectoryView  *view);
 gboolean            fm_directory_view_get_allow_moves                  (FMDirectoryView  *view);
 void                fm_directory_view_pop_up_background_context_menu   (FMDirectoryView  *view,
@@ -430,17 +430,17 @@ void                fm_directory_view_pop_up_location_context_menu     (FMDirect
         const char       *location);
 void                fm_directory_view_send_selection_change            (FMDirectoryView *view);
 gboolean            fm_directory_view_should_show_file                 (FMDirectoryView  *view,
-        CajaFile     *file);
+        PeonyFile     *file);
 gboolean	    fm_directory_view_should_sort_directories_first    (FMDirectoryView  *view);
 void                fm_directory_view_update_menus                     (FMDirectoryView  *view);
 void                fm_directory_view_new_folder                       (FMDirectoryView  *view);
 void                fm_directory_view_new_file                         (FMDirectoryView  *view,
         const char       *parent_uri,
-        CajaFile     *source);
+        PeonyFile     *source);
 void                fm_directory_view_ignore_hidden_file_preferences   (FMDirectoryView  *view);
 void                fm_directory_view_set_show_foreign                 (FMDirectoryView  *view,
         gboolean          show_foreign);
-void                fm_directory_view_init_view_iface                  (CajaViewIface *iface);
+void                fm_directory_view_init_view_iface                  (PeonyViewIface *iface);
 gboolean            fm_directory_view_handle_scroll_event              (FMDirectoryView  *view,
         GdkEventScroll   *event);
 void                fm_directory_view_handle_netscape_url_drop         (FMDirectoryView  *view,
@@ -472,9 +472,9 @@ void                fm_directory_view_handle_raw_drop                 (FMDirecto
 void                fm_directory_view_freeze_updates                   (FMDirectoryView  *view);
 void                fm_directory_view_unfreeze_updates                 (FMDirectoryView  *view);
 void                fm_directory_view_add_subdirectory                (FMDirectoryView  *view,
-        CajaDirectory*directory);
+        PeonyDirectory*directory);
 void                fm_directory_view_remove_subdirectory             (FMDirectoryView  *view,
-        CajaDirectory*directory);
+        PeonyDirectory*directory);
 
 gboolean            fm_directory_view_is_editable                     (FMDirectoryView *view);
 void		    fm_directory_view_set_initiated_unmount	      (FMDirectoryView *view,

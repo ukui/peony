@@ -6,7 +6,7 @@
 
 #include <eel/eel-debug.h>
 #include <eel/eel.h>
-#include <libcaja-private/caja-file-utilities.h>
+#include <libpeony-private/peony-file-utilities.h>
 
 void       test_init                            (int                         *argc,
 						 char                      ***argv);

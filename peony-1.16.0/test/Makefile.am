@@ -5,20 +5,20 @@ AM_CPPFLAGS =\
 	$(CORE_CFLAGS) \
 	$(WARNING_CFLAGS) \
 	-DVERSION="\"$(VERSION)\"" \
-	-DCAJA_DATADIR=\""$(datadir)/caja"\" \
-	-DMATELOCALEDIR=\""$(prefix)/${DATADIRNAME}/locale"\" \
+	-DPEONY_DATADIR=\""$(datadir)/peony"\" \
+	-DUKUILOCALEDIR=\""$(prefix)/${DATADIRNAME}/locale"\" \
 	$(NULL)
 
 LDADD =\
-	$(top_builddir)/libcaja-private/libcaja-private.la \
+	$(top_builddir)/libpeony-private/libpeony-private.la \
 	$(CORE_LIBS) \
 	$(NULL)
 
 noinst_PROGRAMS =\
-	test-caja-wrap-table \
-	test-caja-search-engine \
-	test-caja-directory-async \
-	test-caja-copy \
+	test-peony-wrap-table \
+	test-peony-search-engine \
+	test-peony-directory-async \
+	test-peony-copy \
 	test-eel-background \
 	test-eel-editable-label \
 	test-eel-image-table \
@@ -26,13 +26,13 @@ noinst_PROGRAMS =\
 	test-eel-pixbuf-scale \
 	$(NULL)
 
-test_caja_copy_SOURCES = test-copy.c test.c
+test_peony_copy_SOURCES = test-copy.c test.c
 
-test_caja_wrap_table_SOURCES = test-caja-wrap-table.c test.c
+test_peony_wrap_table_SOURCES = test-peony-wrap-table.c test.c
 
-test_caja_search_engine_SOURCES = test-caja-search-engine.c 
+test_peony_search_engine_SOURCES = test-peony-search-engine.c 
 
-test_caja_directory_async_SOURCES = test-caja-directory-async.c
+test_peony_directory_async_SOURCES = test-peony-directory-async.c
 
 test_eel_background_SOURCES = test-eel-background.c
 test_eel_image_table_SOURCES = test-eel-image-table.c test.c

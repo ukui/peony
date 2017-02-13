@@ -1,9 +1,9 @@
 # List of source files that should NOT be translated.
 # Please keep this file sorted alphabetically.
-data/caja-autorun-software.desktop.in
-data/caja-browser.desktop.in
-data/caja-computer.desktop.in
-data/caja-file-management-properties.desktop.in
-data/caja-folder-handler.desktop.in
-data/caja-home.desktop.in
-data/caja.desktop.in
+data/peony-autorun-software.desktop.in
+data/peony-browser.desktop.in
+data/peony-computer.desktop.in
+data/peony-file-management-properties.desktop.in
+data/peony-folder-handler.desktop.in
+data/peony-home.desktop.in
+data/peony.desktop.in

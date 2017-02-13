@@ -29,10 +29,10 @@
 #include <eel/eel-glib-extensions.h>
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
-#include <libcaja-extension/caja-extension-types.h>
-#include <libcaja-extension/caja-file-info.h>
-#include <libcaja-private/caja-file.h>
-#include <libcaja-private/caja-file-attributes.h>
+#include <libpeony-extension/peony-extension-types.h>
+#include <libpeony-extension/peony-file-info.h>
+#include <libpeony-private/peony-file.h>
+#include <libpeony-private/peony-file-attributes.h>
 
 #define MAIN_GROUP "Desktop Entry"
 
@@ -208,7 +208,7 @@ fm_ditem_page_exec_drag_data_received (GtkWidget *widget, GdkDragContext *contex
 {
     char **uris;
     gboolean exactly_one;
-    CajaFile *file;
+    PeonyFile *file;
     GKeyFile *key_file;
     char *uri, *type, *exec;
 
@@ -221,13 +221,13 @@ fm_ditem_page_exec_drag_data_received (GtkWidget *widget, GdkDragContext *contex
         return;
     }
 
-    file = caja_file_get_by_uri (uris[0]);
+    file = peony_file_get_by_uri (uris[0]);
     g_strfreev (uris);
 
     g_return_if_fail (file != NULL);
 
-    uri = caja_file_get_uri (file);
-    if (caja_file_is_mime_type (file, "application/x-desktop"))
+    uri = peony_file_get_uri (file);
+    if (peony_file_is_mime_type (file, "application/x-desktop"))
     {
         key_file = _g_key_file_new_from_uri (uri, G_KEY_FILE_NONE, NULL);
         if (key_file != NULL)
@@ -252,7 +252,7 @@ fm_ditem_page_exec_drag_data_received (GtkWidget *widget, GdkDragContext *contex
 
     g_free (uri);
 
-    caja_file_unref (file);
+    peony_file_unref (file);
 }
 
 static void
@@ -582,7 +582,7 @@ GtkWidget *
 fm_ditem_page_make_box (GtkSizeGroup *label_size_group,
                         GList *files)
 {
-    CajaFileInfo *info;
+    PeonyFileInfo *info;
     char *uri;
     GtkWidget *box;
 
@@ -592,9 +592,9 @@ fm_ditem_page_make_box (GtkSizeGroup *label_size_group,
     g_object_set_data_full (G_OBJECT (box), "label-size-group",
                             label_size_group, (GDestroyNotify) g_object_unref);
 
-    info = CAJA_FILE_INFO (files->data);
+    info = PEONY_FILE_INFO (files->data);
 
-    uri = caja_file_info_get_uri (info);
+    uri = peony_file_info_get_uri (info);
     fm_ditem_page_create_begin (uri, box);
     g_free (uri);
 
@@ -604,16 +604,16 @@ fm_ditem_page_make_box (GtkSizeGroup *label_size_group,
 gboolean
 fm_ditem_page_should_show (GList *files)
 {
-    CajaFileInfo *info;
+    PeonyFileInfo *info;
 
     if (!files || files->next)
     {
         return FALSE;
     }
 
-    info = CAJA_FILE_INFO (files->data);
+    info = PEONY_FILE_INFO (files->data);
 
-    if (!caja_file_info_is_mime_type (info, "application/x-desktop"))
+    if (!peony_file_info_is_mime_type (info, "application/x-desktop"))
     {
         return FALSE;
     }

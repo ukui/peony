@@ -3,7 +3,7 @@
 #include <eel/eel-background.h>
 #include <gtk/gtk.h>
 
-#define PATTERNS_DIR "/mate-source/eel/data/patterns"
+#define PATTERNS_DIR "/ukui-source/eel/data/patterns"
 
 int
 main  (int argc, char *argv[])

@@ -4,18 +4,18 @@
 
    Copyright (C) 2002 Sun Microsystems, Inc.
 
-   The Mate Library is free software; you can redistribute it and/or
+   The Ukui Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public License as
    published by the Free Software Foundation; either version 2 of the
    License, or (at your option) any later version.
 
-   The Mate Library is distributed in the hope that it will be useful,
+   The Ukui Library is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
    Library General Public License for more details.
 
    You should have received a copy of the GNU Library General Public
-   License along with the Mate Library; see the file COPYING.LIB.  If not,
+   License along with the Ukui Library; see the file COPYING.LIB.  If not,
    write to the Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
    Boston, MA 02110-1301, USA.
 
@@ -25,7 +25,7 @@
 #ifndef FM_ICON_CONTAINER_H
 #define FM_ICON_CONTAINER_H
 
-#include <libcaja-private/caja-icon-container.h>
+#include <libpeony-private/peony-icon-container.h>
 #include "fm-icon-view.h"
 
 typedef struct FMIconContainer FMIconContainer;
@@ -47,7 +47,7 @@ typedef struct FMIconContainerDetails FMIconContainerDetails;
 
 struct FMIconContainer
 {
-    CajaIconContainer parent;
+    PeonyIconContainer parent;
 
     FMIconView *view;
     gboolean    sort_for_desktop;
@@ -55,13 +55,13 @@ struct FMIconContainer
 
 struct FMIconContainerClass
 {
-    CajaIconContainerClass parent_class;
+    PeonyIconContainerClass parent_class;
 };
 
 GType                  fm_icon_container_get_type         (void);
-CajaIconContainer *fm_icon_container_construct        (FMIconContainer *icon_container,
+PeonyIconContainer *fm_icon_container_construct        (FMIconContainer *icon_container,
         FMIconView      *view);
-CajaIconContainer *fm_icon_container_new              (FMIconView      *view);
+PeonyIconContainer *fm_icon_container_new              (FMIconView      *view);
 void                   fm_icon_container_set_sort_desktop (FMIconContainer *container,
         gboolean         desktop);
 

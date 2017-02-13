@@ -37,7 +37,7 @@ extern "C" {
     void eel_make_warnings_and_criticals_stop_in_debugger (void);
 
     /* A way to do cleanup at exit for compatibility with shutdown tools
-     * like the ones in MateComponent.
+     * like the ones in UkuiComponent.
      */
     void eel_debug_shut_down                              (void);
     void eel_debug_call_at_shutdown                       (EelFunction function);

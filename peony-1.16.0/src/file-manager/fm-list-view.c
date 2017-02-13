@@ -5,18 +5,18 @@
    Copyright (C) 2000 Eazel, Inc.
    Copyright (C) 2001, 2002 Anders Carlsson <andersca@gnu.org>
 
-   The Mate Library is free software; you can redistribute it and/or
+   The Ukui Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public License as
    published by the Free Software Foundation; either version 2 of the
    License, or (at your option) any later version.
 
-   The Mate Library is distributed in the hope that it will be useful,
+   The Ukui Library is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
    Library General Public License for more details.
 
    You should have received a copy of the GNU Library General Public
-   License along with the Mate Library; see the file COPYING.LIB.  If not,
+   License along with the Ukui Library; see the file COPYING.LIB.  If not,
    write to the Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
    Boston, MA 02110-1301, USA.
 
@@ -42,26 +42,26 @@
 #include <libegg/eggtreemultidnd.h>
 #include <glib/gi18n.h>
 #include <glib-object.h>
-#include <libcaja-extension/caja-column-provider.h>
-#include <libcaja-private/caja-clipboard-monitor.h>
-#include <libcaja-private/caja-column-chooser.h>
-#include <libcaja-private/caja-column-utilities.h>
-#include <libcaja-private/caja-debug-log.h>
+#include <libpeony-extension/peony-column-provider.h>
+#include <libpeony-private/peony-clipboard-monitor.h>
+#include <libpeony-private/peony-column-chooser.h>
+#include <libpeony-private/peony-column-utilities.h>
+#include <libpeony-private/peony-debug-log.h>
 #if !GTK_CHECK_VERSION(3, 21, 0)
-#include <libcaja-private/caja-directory-background.h>
+#include <libpeony-private/peony-directory-background.h>
 #endif
-#include <libcaja-private/caja-dnd.h>
-#include <libcaja-private/caja-file-dnd.h>
-#include <libcaja-private/caja-file-utilities.h>
-#include <libcaja-private/caja-ui-utilities.h>
-#include <libcaja-private/caja-global-preferences.h>
-#include <libcaja-private/caja-icon-dnd.h>
-#include <libcaja-private/caja-metadata.h>
-#include <libcaja-private/caja-module.h>
-#include <libcaja-private/caja-tree-view-drag-dest.h>
-#include <libcaja-private/caja-view-factory.h>
-#include <libcaja-private/caja-clipboard.h>
-#include <libcaja-private/caja-cell-renderer-text-ellipsized.h>
+#include <libpeony-private/peony-dnd.h>
+#include <libpeony-private/peony-file-dnd.h>
+#include <libpeony-private/peony-file-utilities.h>
+#include <libpeony-private/peony-ui-utilities.h>
+#include <libpeony-private/peony-global-preferences.h>
+#include <libpeony-private/peony-icon-dnd.h>
+#include <libpeony-private/peony-metadata.h>
+#include <libpeony-private/peony-module.h>
+#include <libpeony-private/peony-tree-view-drag-dest.h>
+#include <libpeony-private/peony-view-factory.h>
+#include <libpeony-private/peony-clipboard.h>
+#include <libpeony-private/peony-cell-renderer-text-ellipsized.h>
 
 #if GTK_CHECK_VERSION (3, 0, 0)
 #define gtk_vbox_new(X,Y) gtk_box_new(GTK_ORIENTATION_VERTICAL,Y)
@@ -82,9 +82,9 @@ struct FMListViewDetails
     GList *cells;
     GtkCellEditable *editable_widget;
 
-    CajaZoomLevel zoom_level;
+    PeonyZoomLevel zoom_level;
 
-    CajaTreeViewDragDest *drag_dest;
+    PeonyTreeViewDragDest *drag_dest;
 
     GtkTreePath *double_click_path[2]; /* Both clicks in a double click need to be on the same row */
 
@@ -109,7 +109,7 @@ struct FMListViewDetails
 
     char *original_name;
 
-    CajaFile *renaming_file;
+    PeonyFile *renaming_file;
     gboolean rename_done;
     guint renaming_file_activate_timeout;
 
@@ -138,9 +138,9 @@ struct SelectionForeachData
 #define WAIT_FOR_RENAME_ON_ACTIVATE 200
 
 static int                      click_policy_auto_value;
-static CajaFileSortType         default_sort_order_auto_value;
+static PeonyFileSortType         default_sort_order_auto_value;
 static gboolean			default_sort_reversed_auto_value;
-static CajaZoomLevel        default_zoom_level_auto_value;
+static PeonyZoomLevel        default_zoom_level_auto_value;
 static char **                  default_visible_columns_auto_value;
 static char **                  default_column_order_auto_value;
 static GdkCursor *              hand_cursor = NULL;
@@ -150,21 +150,21 @@ static GtkTargetList *          source_target_list = NULL;
 static GList *fm_list_view_get_selection                   (FMDirectoryView   *view);
 static GList *fm_list_view_get_selection_for_file_transfer (FMDirectoryView   *view);
 static void   fm_list_view_set_zoom_level                  (FMListView        *view,
-        CajaZoomLevel  new_level,
+        PeonyZoomLevel  new_level,
         gboolean           always_set_level);
 static void   fm_list_view_scale_font_size                 (FMListView        *view,
-        CajaZoomLevel  new_level);
+        PeonyZoomLevel  new_level);
 static void   fm_list_view_scroll_to_file                  (FMListView        *view,
-        CajaFile      *file);
-static void   fm_list_view_iface_init                      (CajaViewIface *iface);
-static void   fm_list_view_rename_callback                 (CajaFile      *file,
+        PeonyFile      *file);
+static void   fm_list_view_iface_init                      (PeonyViewIface *iface);
+static void   fm_list_view_rename_callback                 (PeonyFile      *file,
         GFile             *result_location,
         GError            *error,
         gpointer           callback_data);
 
 
 G_DEFINE_TYPE_WITH_CODE (FMListView, fm_list_view, FM_TYPE_DIRECTORY_VIEW,
-                         G_IMPLEMENT_INTERFACE (CAJA_TYPE_VIEW,
+                         G_IMPLEMENT_INTERFACE (PEONY_TYPE_VIEW,
                                  fm_list_view_iface_init));
 
 static const char * default_trash_visible_columns[] =
@@ -181,7 +181,7 @@ static const char * default_trash_columns_order[] =
 #define parent_class fm_list_view_parent_class
 
 static const gchar*
-get_default_sort_order (CajaFile *file, gboolean *reversed)
+get_default_sort_order (PeonyFile *file, gboolean *reversed)
 {
     const gchar *retval;
     const char *attributes[] = {
@@ -197,7 +197,7 @@ get_default_sort_order (CajaFile *file, gboolean *reversed)
         NULL
     };
 
-    retval = caja_file_get_default_sort_attribute (file, reversed);
+    retval = peony_file_get_default_sort_attribute (file, reversed);
 
     if (retval == NULL)
     {
@@ -275,35 +275,35 @@ activate_selected_items (FMListView *view)
 
     fm_directory_view_activate_files (FM_DIRECTORY_VIEW (view),
                                       file_list,
-                                      CAJA_WINDOW_OPEN_ACCORDING_TO_MODE,
+                                      PEONY_WINDOW_OPEN_ACCORDING_TO_MODE,
                                       0,
                                       TRUE);
-    caja_file_list_free (file_list);
+    peony_file_list_free (file_list);
 
 }
 
 static void
 activate_selected_items_alternate (FMListView *view,
-                                   CajaFile *file,
+                                   PeonyFile *file,
                                    gboolean open_in_tab)
 {
     GList *file_list;
-    CajaWindowOpenFlags flags;
+    PeonyWindowOpenFlags flags;
 
-    flags = CAJA_WINDOW_OPEN_FLAG_CLOSE_BEHIND;
+    flags = PEONY_WINDOW_OPEN_FLAG_CLOSE_BEHIND;
 
     if (open_in_tab)
     {
-        flags |= CAJA_WINDOW_OPEN_FLAG_NEW_TAB;
+        flags |= PEONY_WINDOW_OPEN_FLAG_NEW_TAB;
     }
     else
     {
-        flags |= CAJA_WINDOW_OPEN_FLAG_NEW_WINDOW;
+        flags |= PEONY_WINDOW_OPEN_FLAG_NEW_WINDOW;
     }
 
     if (file != NULL)
     {
-        caja_file_ref (file);
+        peony_file_ref (file);
         file_list = g_list_prepend (NULL, file);
     }
     else
@@ -312,10 +312,10 @@ activate_selected_items_alternate (FMListView *view,
     }
     fm_directory_view_activate_files (FM_DIRECTORY_VIEW (view),
                                       file_list,
-                                      CAJA_WINDOW_OPEN_ACCORDING_TO_MODE,
+                                      PEONY_WINDOW_OPEN_ACCORDING_TO_MODE,
                                       flags,
                                       TRUE);
-    caja_file_list_free (file_list);
+    peony_file_list_free (file_list);
 
 }
 
@@ -355,7 +355,7 @@ fm_list_view_did_not_drag (FMListView *view,
             }
         }
 
-        if ((click_policy_auto_value == CAJA_CLICK_POLICY_SINGLE)
+        if ((click_policy_auto_value == PEONY_CLICK_POLICY_SINGLE)
                 && !button_event_modifies_selection(event))
         {
             if (event->button == 1)
@@ -543,7 +543,7 @@ motion_notify_callback (GtkWidget *widget,
         return FALSE;
     }
 
-    if (click_policy_auto_value == CAJA_CLICK_POLICY_SINGLE)
+    if (click_policy_auto_value == PEONY_CLICK_POLICY_SINGLE)
     {
         GtkTreePath *old_hover_path;
 
@@ -606,7 +606,7 @@ leave_notify_callback (GtkWidget *widget,
 
     view = FM_LIST_VIEW (callback_data);
 
-    if (click_policy_auto_value == CAJA_CLICK_POLICY_SINGLE &&
+    if (click_policy_auto_value == PEONY_CLICK_POLICY_SINGLE &&
             view->details->hover_path != NULL)
     {
         gtk_tree_path_free (view->details->hover_path);
@@ -625,7 +625,7 @@ enter_notify_callback (GtkWidget *widget,
 
     view = FM_LIST_VIEW (callback_data);
 
-    if (click_policy_auto_value == CAJA_CLICK_POLICY_SINGLE)
+    if (click_policy_auto_value == PEONY_CLICK_POLICY_SINGLE)
     {
         if (view->details->hover_path != NULL)
         {
@@ -709,7 +709,7 @@ button_press_callback (GtkWidget *widget, GdkEventButton *event, gpointer callba
     last_click_time = current_time;
 
     /* Ignore double click if we are in single click mode */
-    if (click_policy_auto_value == CAJA_CLICK_POLICY_SINGLE && click_count >= 2)
+    if (click_policy_auto_value == PEONY_CLICK_POLICY_SINGLE && click_count >= 2)
     {
         return TRUE;
     }
@@ -766,12 +766,12 @@ button_press_callback (GtkWidget *widget, GdkEventButton *event, gpointer callba
                 else if (event->button == 1 &&
                          (event->state & GDK_SHIFT_MASK) != 0)
                 {
-                    CajaFile *file;
+                    PeonyFile *file;
                     file = fm_list_model_file_for_path (view->details->model, path);
                     if (file != NULL)
                     {
                         activate_selected_items_alternate (view, file, TRUE);
-                        caja_file_unref (file);
+                        peony_file_unref (file);
                     }
                 }
             }
@@ -937,7 +937,7 @@ popup_menu_callback (GtkWidget *widget, gpointer callback_data)
 }
 
 static void
-subdirectory_done_loading_callback (CajaDirectory *directory, FMListView *view)
+subdirectory_done_loading_callback (PeonyDirectory *directory, FMListView *view)
 {
     fm_list_model_subdirectory_done_loading (view->details->model, directory);
 }
@@ -946,7 +946,7 @@ static void
 row_expanded_callback (GtkTreeView *treeview, GtkTreeIter *iter, GtkTreePath *path, gpointer callback_data)
 {
     FMListView *view;
-    CajaDirectory *directory;
+    PeonyDirectory *directory;
 
     view = FM_LIST_VIEW (callback_data);
 
@@ -954,8 +954,8 @@ row_expanded_callback (GtkTreeView *treeview, GtkTreeIter *iter, GtkTreePath *pa
     {
         char *uri;
 
-        uri = caja_directory_get_uri (directory);
-        caja_debug_log (FALSE, CAJA_DEBUG_LOG_DOMAIN_USER,
+        uri = peony_directory_get_uri (directory);
+        peony_debug_log (FALSE, PEONY_DEBUG_LOG_DOMAIN_USER,
                         "list view row expanded window=%p: %s",
                         fm_directory_view_get_containing_window (FM_DIRECTORY_VIEW (view)),
                         uri);
@@ -963,7 +963,7 @@ row_expanded_callback (GtkTreeView *treeview, GtkTreeIter *iter, GtkTreePath *pa
 
         fm_directory_view_add_subdirectory (FM_DIRECTORY_VIEW (view), directory);
 
-        if (caja_directory_are_all_files_seen (directory))
+        if (peony_directory_are_all_files_seen (directory))
         {
             fm_list_model_subdirectory_done_loading (view->details->model,
                     directory);
@@ -975,14 +975,14 @@ row_expanded_callback (GtkTreeView *treeview, GtkTreeIter *iter, GtkTreePath *pa
                                      view, 0);
         }
 
-        caja_directory_unref (directory);
+        peony_directory_unref (directory);
     }
 }
 
 struct UnloadDelayData
 {
-    CajaFile *file;
-    CajaDirectory *directory;
+    PeonyFile *file;
+    PeonyDirectory *directory;
     FMListView *view;
 };
 
@@ -1016,9 +1016,9 @@ unload_file_timeout (gpointer data)
 
     if (unload_data->directory)
     {
-        caja_directory_unref (unload_data->directory);
+        peony_directory_unref (unload_data->directory);
     }
-    caja_file_unref (unload_data->file);
+    peony_file_unref (unload_data->file);
     g_free (unload_data);
     return FALSE;
 }
@@ -1027,8 +1027,8 @@ static void
 row_collapsed_callback (GtkTreeView *treeview, GtkTreeIter *iter, GtkTreePath *path, gpointer callback_data)
 {
     FMListView *view;
-    CajaFile *file;
-    CajaDirectory *directory;
+    PeonyFile *file;
+    PeonyDirectory *directory;
     GtkTreeIter parent;
     struct UnloadDelayData *unload_data;
     GtkTreeModel *model;
@@ -1050,8 +1050,8 @@ row_collapsed_callback (GtkTreeView *treeview, GtkTreeIter *iter, GtkTreePath *p
     }
 
 
-    uri = caja_file_get_uri (file);
-    caja_debug_log (FALSE, CAJA_DEBUG_LOG_DOMAIN_USER,
+    uri = peony_file_get_uri (file);
+    peony_debug_log (FALSE, PEONY_DEBUG_LOG_DOMAIN_USER,
                     "list view row collapsed window=%p: %s",
                     fm_directory_view_get_containing_window (FM_DIRECTORY_VIEW (view)),
                     uri);
@@ -1078,13 +1078,13 @@ row_activated_callback (GtkTreeView *treeview, GtkTreePath *path,
 
 static void
 subdirectory_unloaded_callback (FMListModel *model,
-                                CajaDirectory *directory,
+                                PeonyDirectory *directory,
                                 gpointer callback_data)
 {
     FMListView *view;
 
     g_return_if_fail (FM_IS_LIST_MODEL (model));
-    g_return_if_fail (CAJA_IS_DIRECTORY (directory));
+    g_return_if_fail (PEONY_IS_DIRECTORY (directory));
 
     view = FM_LIST_VIEW(callback_data);
 
@@ -1204,7 +1204,7 @@ fm_list_view_reveal_selection (FMDirectoryView *view)
     if (selection != NULL)
     {
         FMListView *list_view;
-        CajaFile *file;
+        PeonyFile *file;
         GtkTreeIter iter;
         GtkTreePath *path;
 
@@ -1220,7 +1220,7 @@ fm_list_view_reveal_selection (FMDirectoryView *view)
         }
     }
 
-    caja_file_list_free (selection);
+    peony_file_list_free (selection);
 }
 
 static gboolean
@@ -1253,7 +1253,7 @@ static void
 sort_column_changed_callback (GtkTreeSortable *sortable,
                               FMListView *view)
 {
-    CajaFile *file;
+    PeonyFile *file;
     gint sort_column_id, default_sort_column_id;
     GtkSortType reversed;
     GQuark sort_attr, default_sort_attr;
@@ -1268,7 +1268,7 @@ sort_column_changed_callback (GtkTreeSortable *sortable,
     default_sort_column_id = fm_list_model_get_sort_column_id_from_attribute (view->details->model,
                              g_quark_from_string (get_default_sort_order (file, &default_sort_reversed)));
     default_sort_attr = fm_list_model_get_attribute_from_sort_column_id (view->details->model, default_sort_column_id);
-    caja_file_set_metadata (file, CAJA_METADATA_KEY_LIST_VIEW_SORT_COLUMN,
+    peony_file_set_metadata (file, PEONY_METADATA_KEY_LIST_VIEW_SORT_COLUMN,
                             g_quark_to_string (default_sort_attr), g_quark_to_string (sort_attr));
 
     default_reversed_attr = (default_sort_reversed ? "true" : "false");
@@ -1282,11 +1282,11 @@ sort_column_changed_callback (GtkTreeSortable *sortable,
         if (sort_attr == default_sort_attr)
         {
             /* use value from preferences */
-            reversed = g_settings_get_boolean (caja_preferences, CAJA_PREFERENCES_DEFAULT_SORT_IN_REVERSE_ORDER);
+            reversed = g_settings_get_boolean (peony_preferences, PEONY_PREFERENCES_DEFAULT_SORT_IN_REVERSE_ORDER);
         }
         else
         {
-            reversed = caja_file_is_date_sort_attribute_q (sort_attr);
+            reversed = peony_file_is_date_sort_attribute_q (sort_attr);
         }
 
         if (reversed)
@@ -1301,7 +1301,7 @@ sort_column_changed_callback (GtkTreeSortable *sortable,
 
 
     reversed_attr = (reversed ? "true" : "false");
-    caja_file_set_metadata (file, CAJA_METADATA_KEY_LIST_VIEW_SORT_REVERSED,
+    peony_file_set_metadata (file, PEONY_METADATA_KEY_LIST_VIEW_SORT_REVERSED,
                             default_reversed_attr, reversed_attr);
 
     /* Make sure selected item(s) is visible after sort */
@@ -1326,7 +1326,7 @@ cell_renderer_editing_started_cb (GtkCellRenderer *renderer,
 
     list_view->details->original_name = g_strdup (gtk_entry_get_text (entry));
 
-    caja_clipboard_set_up_editable
+    peony_clipboard_set_up_editable
     (GTK_EDITABLE (entry),
      fm_directory_view_get_ui_manager (FM_DIRECTORY_VIEW (list_view)),
      FALSE);
@@ -1348,7 +1348,7 @@ cell_renderer_edited (GtkCellRendererText *cell,
                       FMListView          *view)
 {
     GtkTreePath *path;
-    CajaFile *file;
+    PeonyFile *file;
     GtkTreeIter iter;
 
     view->details->editable_widget = NULL;
@@ -1380,14 +1380,14 @@ cell_renderer_edited (GtkCellRendererText *cell,
     /* Only rename if name actually changed */
     if (strcmp (new_text, view->details->original_name) != 0)
     {
-        view->details->renaming_file = caja_file_ref (file);
+        view->details->renaming_file = peony_file_ref (file);
         view->details->rename_done = FALSE;
         fm_rename_file (file, new_text, fm_list_view_rename_callback, g_object_ref (view));
         g_free (view->details->original_name);
         view->details->original_name = g_strdup (new_text);
     }
 
-    caja_file_unref (file);
+    peony_file_unref (file);
 
     /*We're done editing - make the filename-cells readonly again.*/
     g_object_set (G_OBJECT (view->details->file_name_cell),
@@ -1398,7 +1398,7 @@ cell_renderer_edited (GtkCellRendererText *cell,
 }
 
 static char *
-get_root_uri_callback (CajaTreeViewDragDest *dest,
+get_root_uri_callback (PeonyTreeViewDragDest *dest,
                        gpointer user_data)
 {
     FMListView *view;
@@ -1408,8 +1408,8 @@ get_root_uri_callback (CajaTreeViewDragDest *dest,
     return fm_directory_view_get_uri (FM_DIRECTORY_VIEW (view));
 }
 
-static CajaFile *
-get_file_for_path_callback (CajaTreeViewDragDest *dest,
+static PeonyFile *
+get_file_for_path_callback (PeonyTreeViewDragDest *dest,
                             GtkTreePath *path,
                             gpointer user_data)
 {
@@ -1422,7 +1422,7 @@ get_file_for_path_callback (CajaTreeViewDragDest *dest,
 
 /* Handles an URL received from Mozilla */
 static void
-list_view_handle_netscape_url (CajaTreeViewDragDest *dest, const char *encoded_url,
+list_view_handle_netscape_url (PeonyTreeViewDragDest *dest, const char *encoded_url,
                                const char *target_uri, GdkDragAction action, int x, int y, FMListView *view)
 {
     fm_directory_view_handle_netscape_url_drop (FM_DIRECTORY_VIEW (view),
@@ -1430,7 +1430,7 @@ list_view_handle_netscape_url (CajaTreeViewDragDest *dest, const char *encoded_u
 }
 
 static void
-list_view_handle_uri_list (CajaTreeViewDragDest *dest, const char *item_uris,
+list_view_handle_uri_list (PeonyTreeViewDragDest *dest, const char *item_uris,
                            const char *target_uri,
                            GdkDragAction action, int x, int y, FMListView *view)
 {
@@ -1439,7 +1439,7 @@ list_view_handle_uri_list (CajaTreeViewDragDest *dest, const char *item_uris,
 }
 
 static void
-list_view_handle_text (CajaTreeViewDragDest *dest, const char *text,
+list_view_handle_text (PeonyTreeViewDragDest *dest, const char *text,
                        const char *target_uri,
                        GdkDragAction action, int x, int y, FMListView *view)
 {
@@ -1448,7 +1448,7 @@ list_view_handle_text (CajaTreeViewDragDest *dest, const char *text,
 }
 
 static void
-list_view_handle_raw (CajaTreeViewDragDest *dest, const char *raw_data,
+list_view_handle_raw (PeonyTreeViewDragDest *dest, const char *raw_data,
                       int length, const char *target_uri, const char *direct_save_uri,
                       GdkDragAction action, int x, int y, FMListView *view)
 {
@@ -1458,7 +1458,7 @@ list_view_handle_raw (CajaTreeViewDragDest *dest, const char *raw_data,
 }
 
 static void
-move_copy_items_callback (CajaTreeViewDragDest *dest,
+move_copy_items_callback (PeonyTreeViewDragDest *dest,
                           const GList *item_uris,
                           const char *target_uri,
                           guint action,
@@ -1469,7 +1469,7 @@ move_copy_items_callback (CajaTreeViewDragDest *dest,
 {
     FMDirectoryView *view = user_data;
 
-    caja_clipboard_clear_if_colliding_uris (GTK_WIDGET (view),
+    peony_clipboard_clear_if_colliding_uris (GTK_WIDGET (view),
                                             item_uris,
                                             fm_directory_view_get_copied_files_atom (view));
     fm_directory_view_move_copy_items (item_uris,
@@ -1486,7 +1486,7 @@ apply_columns_settings (FMListView *list_view,
                         char **visible_columns)
 {
     GList *all_columns;
-    CajaFile *file;
+    PeonyFile *file;
     GList *old_view_columns, *view_columns;
     GHashTable *visible_columns_hash;
     GtkTreeViewColumn *prev_view_column;
@@ -1498,8 +1498,8 @@ apply_columns_settings (FMListView *list_view,
     /* prepare ordered list of view columns using column_order and visible_columns */
     view_columns = NULL;
 
-    all_columns = caja_get_columns_for_file (file);
-    all_columns = caja_sort_columns (all_columns, column_order);
+    all_columns = peony_get_columns_for_file (file);
+    all_columns = peony_sort_columns (all_columns, column_order);
 
     /* hash table to lookup if a given column should be visible */
     visible_columns_hash = g_hash_table_new_full (g_str_hash,
@@ -1537,7 +1537,7 @@ apply_columns_settings (FMListView *list_view,
     }
 
     g_hash_table_destroy (visible_columns_hash);
-    caja_column_list_free (all_columns);
+    peony_column_list_free (all_columns);
 
     view_columns = g_list_reverse (view_columns);
 
@@ -1588,7 +1588,7 @@ filename_cell_data_func (GtkTreeViewColumn *column,
                         view->details->file_name_column_num, &text,
                         -1);
 
-    if (click_policy_auto_value == CAJA_CLICK_POLICY_SINGLE)
+    if (click_policy_auto_value == PEONY_CLICK_POLICY_SINGLE)
     {
         path = gtk_tree_model_get_path (model, iter);
 
@@ -1619,12 +1619,12 @@ filename_cell_data_func (GtkTreeViewColumn *column,
 static gboolean
 focus_in_event_callback (GtkWidget *widget, GdkEventFocus *event, gpointer user_data)
 {
-    CajaWindowSlotInfo *slot_info;
+    PeonyWindowSlotInfo *slot_info;
     FMListView *list_view = FM_LIST_VIEW (user_data);
 
     /* make the corresponding slot (and the pane that contains it) active */
-    slot_info = fm_directory_view_get_caja_window_slot (FM_DIRECTORY_VIEW (list_view));
-    caja_window_slot_info_make_hosting_pane_active (slot_info);
+    slot_info = fm_directory_view_get_peony_window_slot (FM_DIRECTORY_VIEW (list_view));
+    peony_window_slot_info_make_hosting_pane_active (slot_info);
 
     return FALSE;
 }
@@ -1636,7 +1636,7 @@ create_and_set_up_tree_view (FMListView *view)
     GtkTreeViewColumn *column;
     GtkBindingSet *binding_set;
     AtkObject *atk_obj;
-    GList *caja_columns;
+    GList *peony_columns;
     GList *l;
 
     view->details->tree_view = GTK_TREE_VIEW (gtk_tree_view_new ());
@@ -1651,7 +1651,7 @@ create_and_set_up_tree_view (FMListView *view)
 	gtk_binding_entry_remove (binding_set, GDK_KEY_BackSpace, 0);
 
     view->details->drag_dest =
-        caja_tree_view_drag_dest_new (view->details->tree_view);
+        peony_tree_view_drag_dest_new (view->details->tree_view);
 
     g_signal_connect_object (view->details->drag_dest,
                              "get_root_uri",
@@ -1723,25 +1723,25 @@ create_and_set_up_tree_view (FMListView *view)
     gtk_tree_view_set_rules_hint (view->details->tree_view, TRUE);
 #endif
 
-    caja_columns = caja_get_all_columns ();
+    peony_columns = peony_get_all_columns ();
 
-    for (l = caja_columns; l != NULL; l = l->next)
+    for (l = peony_columns; l != NULL; l = l->next)
     {
-        CajaColumn *caja_column;
+        PeonyColumn *peony_column;
         int column_num, font_size;
         char *name;
         char *label;
         float xalign;
 
-        caja_column = CAJA_COLUMN (l->data);
+        peony_column = PEONY_COLUMN (l->data);
 
-        g_object_get (caja_column,
+        g_object_get (peony_column,
                       "name", &name,
                       "label", &label,
                       "xalign", &xalign, NULL);
 
         column_num = fm_list_model_add_column (view->details->model,
-                                               caja_column);
+                                               peony_column);
 
         /* Created the name column specially, because it
          * has the icon in it.*/
@@ -1818,7 +1818,7 @@ create_and_set_up_tree_view (FMListView *view)
         g_free (name);
         g_free (label);
     }
-    caja_column_list_free (caja_columns);
+    peony_column_list_free (peony_columns);
 
     /* Apply the default column order and visible columns, to get it
      * right most of the time. The metadata will be checked when a
@@ -1836,7 +1836,7 @@ create_and_set_up_tree_view (FMListView *view)
 }
 
 static void
-fm_list_view_add_file (FMDirectoryView *view, CajaFile *file, CajaDirectory *directory)
+fm_list_view_add_file (FMDirectoryView *view, PeonyFile *file, PeonyDirectory *directory)
 {
     FMListModel *model;
 
@@ -1847,7 +1847,7 @@ fm_list_view_add_file (FMDirectoryView *view, CajaFile *file, CajaDirectory *dir
 static char **
 get_visible_columns (FMListView *list_view)
 {
-    CajaFile *file;
+    PeonyFile *file;
     GList *visible_columns;
     char **ret;
 
@@ -1855,9 +1855,9 @@ get_visible_columns (FMListView *list_view)
 
     file = fm_directory_view_get_directory_as_file (FM_DIRECTORY_VIEW (list_view));
 
-    visible_columns = caja_file_get_metadata_list
+    visible_columns = peony_file_get_metadata_list
                       (file,
-                       CAJA_METADATA_KEY_LIST_VIEW_VISIBLE_COLUMNS);
+                       PEONY_METADATA_KEY_LIST_VIEW_VISIBLE_COLUMNS);
 
     if (visible_columns)
     {
@@ -1880,7 +1880,7 @@ get_visible_columns (FMListView *list_view)
         return ret;
     }
 
-    return caja_file_is_in_trash (file) ?
+    return peony_file_is_in_trash (file) ?
            g_strdupv ((gchar **) default_trash_visible_columns) :
            g_strdupv (default_visible_columns_auto_value);
 }
@@ -1888,7 +1888,7 @@ get_visible_columns (FMListView *list_view)
 static char **
 get_column_order (FMListView *list_view)
 {
-    CajaFile *file;
+    PeonyFile *file;
     GList *column_order;
     char **ret;
 
@@ -1896,9 +1896,9 @@ get_column_order (FMListView *list_view)
 
     file = fm_directory_view_get_directory_as_file (FM_DIRECTORY_VIEW (list_view));
 
-    column_order = caja_file_get_metadata_list
+    column_order = peony_file_get_metadata_list
                    (file,
-                    CAJA_METADATA_KEY_LIST_VIEW_COLUMN_ORDER);
+                    PEONY_METADATA_KEY_LIST_VIEW_COLUMN_ORDER);
 
     if (column_order)
     {
@@ -1921,7 +1921,7 @@ get_column_order (FMListView *list_view)
         return ret;
     }
 
-    return caja_file_is_in_trash (file) ?
+    return peony_file_is_in_trash (file) ?
            g_strdupv ((gchar **) default_trash_columns_order) :
            g_strdupv (default_column_order_auto_value);
 }
@@ -1946,13 +1946,13 @@ set_sort_order_from_metadata_and_preferences (FMListView *list_view)
 {
     char *sort_attribute;
     int sort_column_id;
-    CajaFile *file;
+    PeonyFile *file;
     gboolean sort_reversed, default_sort_reversed;
     const gchar *default_sort_order;
 
     file = fm_directory_view_get_directory_as_file (FM_DIRECTORY_VIEW (list_view));
-    sort_attribute = caja_file_get_metadata (file,
-                     CAJA_METADATA_KEY_LIST_VIEW_SORT_COLUMN,
+    sort_attribute = peony_file_get_metadata (file,
+                     PEONY_METADATA_KEY_LIST_VIEW_SORT_COLUMN,
                      NULL);
     sort_column_id = fm_list_model_get_sort_column_id_from_attribute (list_view->details->model,
                      g_quark_from_string (sort_attribute));
@@ -1967,8 +1967,8 @@ set_sort_order_from_metadata_and_preferences (FMListView *list_view)
                     g_quark_from_string (default_sort_order));
     }
 
-    sort_reversed = caja_file_get_boolean_metadata (file,
-                    CAJA_METADATA_KEY_LIST_VIEW_SORT_REVERSED,
+    sort_reversed = peony_file_get_boolean_metadata (file,
+                    PEONY_METADATA_KEY_LIST_VIEW_SORT_REVERSED,
                     default_sort_reversed);
 
     gtk_tree_sortable_set_sort_column_id (GTK_TREE_SORTABLE (list_view->details->model),
@@ -1986,17 +1986,17 @@ list_view_changed_foreach (GtkTreeModel *model,
     return FALSE;
 }
 
-static CajaZoomLevel
+static PeonyZoomLevel
 get_default_zoom_level (void)
 {
-    CajaZoomLevel default_zoom_level;
+    PeonyZoomLevel default_zoom_level;
 
     default_zoom_level = default_zoom_level_auto_value;
 
-    if (default_zoom_level <  CAJA_ZOOM_LEVEL_SMALLEST
-            || CAJA_ZOOM_LEVEL_LARGEST < default_zoom_level)
+    if (default_zoom_level <  PEONY_ZOOM_LEVEL_SMALLEST
+            || PEONY_ZOOM_LEVEL_LARGEST < default_zoom_level)
     {
-        default_zoom_level = CAJA_ZOOM_LEVEL_SMALL;
+        default_zoom_level = PEONY_ZOOM_LEVEL_SMALL;
     }
 
     return default_zoom_level;
@@ -2005,14 +2005,14 @@ get_default_zoom_level (void)
 static void
 set_zoom_level_from_metadata_and_preferences (FMListView *list_view)
 {
-    CajaFile *file;
+    PeonyFile *file;
     int level;
 
     if (fm_directory_view_supports_zooming (FM_DIRECTORY_VIEW (list_view)))
     {
         file = fm_directory_view_get_directory_as_file (FM_DIRECTORY_VIEW (list_view));
-        level = caja_file_get_integer_metadata (file,
-                                                CAJA_METADATA_KEY_LIST_VIEW_ZOOM_LEVEL,
+        level = peony_file_get_integer_metadata (file,
+                                                PEONY_METADATA_KEY_LIST_VIEW_ZOOM_LEVEL,
                                                 get_default_zoom_level ());
         fm_list_view_set_zoom_level (list_view, level, TRUE);
 
@@ -2066,7 +2066,7 @@ fm_list_view_clear (FMDirectoryView *view)
 }
 
 static void
-fm_list_view_rename_callback (CajaFile *file,
+fm_list_view_rename_callback (PeonyFile *file,
                               GFile *result_location,
                               GError *error,
                               gpointer callback_data)
@@ -2085,7 +2085,7 @@ fm_list_view_rename_callback (CajaFile *file,
              * We won't get a change event for the rename, so otherwise
              * it would stay around forever.
              */
-            caja_file_unref (view->details->renaming_file);
+            peony_file_unref (view->details->renaming_file);
             view->details->renaming_file = NULL;
         }
     }
@@ -2095,7 +2095,7 @@ fm_list_view_rename_callback (CajaFile *file,
 
 
 static void
-fm_list_view_file_changed (FMDirectoryView *view, CajaFile *file, CajaDirectory *directory)
+fm_list_view_file_changed (FMDirectoryView *view, PeonyFile *file, PeonyDirectory *directory)
 {
     FMListView *listview;
     GtkTreeIter iter;
@@ -2122,7 +2122,7 @@ fm_list_view_file_changed (FMDirectoryView *view, CajaFile *file, CajaDirectory 
             gtk_tree_path_free (file_path);
         }
 
-        caja_file_unref (listview->details->renaming_file);
+        peony_file_unref (listview->details->renaming_file);
         listview->details->renaming_file = NULL;
     }
 }
@@ -2139,7 +2139,7 @@ static void
 fm_list_view_get_selection_foreach_func (GtkTreeModel *model, GtkTreePath *path, GtkTreeIter *iter, gpointer data)
 {
     GList **list;
-    CajaFile *file;
+    PeonyFile *file;
 
     list = data;
 
@@ -2169,7 +2169,7 @@ fm_list_view_get_selection (FMDirectoryView *view)
 static void
 fm_list_view_get_selection_for_file_transfer_foreach_func (GtkTreeModel *model, GtkTreePath *path, GtkTreeIter *iter, gpointer data)
 {
-    CajaFile *file;
+    PeonyFile *file;
     struct SelectionForeachData *selection_data;
     GtkTreeIter parent, child;
 
@@ -2196,7 +2196,7 @@ fm_list_view_get_selection_for_file_transfer_foreach_func (GtkTreeModel *model, 
             child = parent;
         }
 
-        caja_file_ref (file);
+        peony_file_ref (file);
         selection_data->list = g_list_prepend (selection_data->list, file);
     }
 }
@@ -2251,7 +2251,7 @@ fm_list_view_end_file_changes (FMDirectoryView *view)
 }
 
 static void
-fm_list_view_remove_file (FMDirectoryView *view, CajaFile *file, CajaDirectory *directory)
+fm_list_view_remove_file (FMDirectoryView *view, PeonyFile *file, PeonyDirectory *directory)
 {
     GtkTreePath *path;
     GtkTreePath *file_path;
@@ -2325,7 +2325,7 @@ fm_list_view_set_selection (FMDirectoryView *view, GList *selection)
     GtkTreeSelection *tree_selection;
     GList *node;
     GList *iters, *l;
-    CajaFile *file;
+    PeonyFile *file;
 
     list_view = FM_LIST_VIEW (view);
     tree_selection = gtk_tree_view_get_selection (list_view->details->tree_view);
@@ -2357,7 +2357,7 @@ fm_list_view_invert_selection (FMDirectoryView *view)
     GtkTreeSelection *tree_selection;
     GList *node;
     GList *iters, *l;
-    CajaFile *file;
+    PeonyFile *file;
     GList *selection = NULL;
 
     list_view = FM_LIST_VIEW (view);
@@ -2404,10 +2404,10 @@ column_editor_response_callback (GtkWidget *dialog,
 }
 
 static void
-column_chooser_changed_callback (CajaColumnChooser *chooser,
+column_chooser_changed_callback (PeonyColumnChooser *chooser,
                                  FMListView *view)
 {
-    CajaFile *file;
+    PeonyFile *file;
     char **visible_columns;
     char **column_order;
     GList *list;
@@ -2415,7 +2415,7 @@ column_chooser_changed_callback (CajaColumnChooser *chooser,
 
     file = fm_directory_view_get_directory_as_file (FM_DIRECTORY_VIEW (view));
 
-    caja_column_chooser_get_settings (chooser,
+    peony_column_chooser_get_settings (chooser,
                                       &visible_columns,
                                       &column_order);
 
@@ -2425,8 +2425,8 @@ column_chooser_changed_callback (CajaColumnChooser *chooser,
         list = g_list_prepend (list, visible_columns[i]);
     }
     list = g_list_reverse (list);
-    caja_file_set_metadata_list (file,
-                                 CAJA_METADATA_KEY_LIST_VIEW_VISIBLE_COLUMNS,
+    peony_file_set_metadata_list (file,
+                                 PEONY_METADATA_KEY_LIST_VIEW_VISIBLE_COLUMNS,
                                  list);
     g_list_free (list);
 
@@ -2436,8 +2436,8 @@ column_chooser_changed_callback (CajaColumnChooser *chooser,
         list = g_list_prepend (list, column_order[i]);
     }
     list = g_list_reverse (list);
-    caja_file_set_metadata_list (file,
-                                 CAJA_METADATA_KEY_LIST_VIEW_COLUMN_ORDER,
+    peony_file_set_metadata_list (file,
+                                 PEONY_METADATA_KEY_LIST_VIEW_COLUMN_ORDER,
                                  list);
     g_list_free (list);
 
@@ -2448,7 +2448,7 @@ column_chooser_changed_callback (CajaColumnChooser *chooser,
 }
 
 static void
-column_chooser_set_from_arrays (CajaColumnChooser *chooser,
+column_chooser_set_from_arrays (PeonyColumnChooser *chooser,
                                 FMListView *view,
                                 char **visible_columns,
                                 char **column_order)
@@ -2456,7 +2456,7 @@ column_chooser_set_from_arrays (CajaColumnChooser *chooser,
     g_signal_handlers_block_by_func
     (chooser, G_CALLBACK (column_chooser_changed_callback), view);
 
-    caja_column_chooser_set_settings (chooser,
+    peony_column_chooser_set_settings (chooser,
                                       visible_columns,
                                       column_order);
 
@@ -2465,7 +2465,7 @@ column_chooser_set_from_arrays (CajaColumnChooser *chooser,
 }
 
 static void
-column_chooser_set_from_settings (CajaColumnChooser *chooser,
+column_chooser_set_from_settings (PeonyColumnChooser *chooser,
                                   FMListView *view)
 {
     char **visible_columns;
@@ -2482,27 +2482,27 @@ column_chooser_set_from_settings (CajaColumnChooser *chooser,
 }
 
 static void
-column_chooser_use_default_callback (CajaColumnChooser *chooser,
+column_chooser_use_default_callback (PeonyColumnChooser *chooser,
                                      FMListView *view)
 {
-    CajaFile *file;
+    PeonyFile *file;
     char **default_columns;
     char **default_order;
 
     file = fm_directory_view_get_directory_as_file
            (FM_DIRECTORY_VIEW (view));
 
-    caja_file_set_metadata_list (file, CAJA_METADATA_KEY_LIST_VIEW_COLUMN_ORDER, NULL);
-    caja_file_set_metadata_list (file, CAJA_METADATA_KEY_LIST_VIEW_VISIBLE_COLUMNS, NULL);
+    peony_file_set_metadata_list (file, PEONY_METADATA_KEY_LIST_VIEW_COLUMN_ORDER, NULL);
+    peony_file_set_metadata_list (file, PEONY_METADATA_KEY_LIST_VIEW_VISIBLE_COLUMNS, NULL);
 
     /* set view values ourselves, as new metadata could not have been
      * updated yet.
      */
-    default_columns = caja_file_is_in_trash (file) ?
+    default_columns = peony_file_is_in_trash (file) ?
                       g_strdupv ((gchar **) default_trash_visible_columns) :
                       g_strdupv (default_visible_columns_auto_value);
 
-    default_order = caja_file_is_in_trash (file) ?
+    default_order = peony_file_is_in_trash (file) ?
                     g_strdupv ((gchar **) default_trash_columns_order) :
                     g_strdupv (default_column_order_auto_value);
 
@@ -2524,13 +2524,13 @@ create_column_editor (FMListView *view)
 #if !GTK_CHECK_VERSION (3, 0, 0)
     GtkWidget *alignment;
 #endif
-    CajaFile *file;
+    PeonyFile *file;
     char *str;
     char *name;
     const char *label_text;
 
     file = fm_directory_view_get_directory_as_file (FM_DIRECTORY_VIEW (view));
-    name = caja_file_get_display_name (file);
+    name = peony_file_get_display_name (file);
     str = g_strdup_printf (_("%s Visible Columns"), name);
     g_free (name);
 
@@ -2567,7 +2567,7 @@ create_column_editor (FMListView *view)
     g_free (str);
 
 #if GTK_CHECK_VERSION (3, 0, 0)
-    column_chooser = caja_column_chooser_new (file);
+    column_chooser = peony_column_chooser_new (file);
     gtk_widget_set_margin_start (column_chooser, 12);
     gtk_widget_show (column_chooser);
     gtk_box_pack_start (GTK_BOX (box), column_chooser, TRUE, TRUE, 0);
@@ -2578,7 +2578,7 @@ create_column_editor (FMListView *view)
     gtk_widget_show (alignment);
     gtk_box_pack_start (GTK_BOX (box), alignment, TRUE, TRUE, 0);
 
-    column_chooser = caja_column_chooser_new (file);
+    column_chooser = peony_column_chooser_new (file);
     gtk_widget_show (column_chooser);
     gtk_container_add (GTK_CONTAINER (alignment), column_chooser);
 #endif
@@ -2591,7 +2591,7 @@ create_column_editor (FMListView *view)
                       view);
 
     column_chooser_set_from_settings
-    (CAJA_COLUMN_CHOOSER (column_chooser), view);
+    (PEONY_COLUMN_CHOOSER (column_chooser), view);
 
     return window;
 }
@@ -2650,7 +2650,7 @@ fm_list_view_merge_menus (FMDirectoryView *view)
     gtk_ui_manager_insert_action_group (ui_manager, action_group, 0);
     g_object_unref (action_group); /* owned by ui manager */
 
-    ui = caja_ui_string_get ("caja-list-view-ui.xml");
+    ui = peony_ui_string_get ("peony-list-view-ui.xml");
     list_view->details->list_merge_id = gtk_ui_manager_add_ui_from_string (ui_manager, ui, -1, NULL);
 
     list_view->details->menus_ready = TRUE;
@@ -2669,7 +2669,7 @@ fm_list_view_unmerge_menus (FMDirectoryView *view)
     ui_manager = fm_directory_view_get_ui_manager (view);
     if (ui_manager != NULL)
     {
-        caja_ui_unmerge_ui (ui_manager,
+        peony_ui_unmerge_ui (ui_manager,
                             &list_view->details->list_merge_id,
                             &list_view->details->list_action_group);
     }
@@ -2695,17 +2695,17 @@ fm_list_view_update_menus (FMDirectoryView *view)
 static void
 fm_list_view_reset_to_defaults (FMDirectoryView *view)
 {
-    CajaFile *file;
+    PeonyFile *file;
     const gchar *default_sort_order;
     gboolean default_sort_reversed;
 
     file = fm_directory_view_get_directory_as_file (view);
 
-    caja_file_set_metadata (file, CAJA_METADATA_KEY_LIST_VIEW_SORT_COLUMN, NULL, NULL);
-    caja_file_set_metadata (file, CAJA_METADATA_KEY_LIST_VIEW_SORT_REVERSED, NULL, NULL);
-    caja_file_set_metadata (file, CAJA_METADATA_KEY_LIST_VIEW_ZOOM_LEVEL, NULL, NULL);
-    caja_file_set_metadata_list (file, CAJA_METADATA_KEY_LIST_VIEW_COLUMN_ORDER, NULL);
-    caja_file_set_metadata_list (file, CAJA_METADATA_KEY_LIST_VIEW_VISIBLE_COLUMNS, NULL);
+    peony_file_set_metadata (file, PEONY_METADATA_KEY_LIST_VIEW_SORT_COLUMN, NULL, NULL);
+    peony_file_set_metadata (file, PEONY_METADATA_KEY_LIST_VIEW_SORT_REVERSED, NULL, NULL);
+    peony_file_set_metadata (file, PEONY_METADATA_KEY_LIST_VIEW_ZOOM_LEVEL, NULL, NULL);
+    peony_file_set_metadata_list (file, PEONY_METADATA_KEY_LIST_VIEW_COLUMN_ORDER, NULL);
+    peony_file_set_metadata_list (file, PEONY_METADATA_KEY_LIST_VIEW_VISIBLE_COLUMNS, NULL);
 
     default_sort_order = get_default_sort_order (file, &default_sort_reversed);
 
@@ -2721,7 +2721,7 @@ fm_list_view_reset_to_defaults (FMDirectoryView *view)
 
 static void
 fm_list_view_scale_font_size (FMListView *view,
-                              CajaZoomLevel new_level)
+                              PeonyZoomLevel new_level)
 {
     GList *l;
     static gboolean first_time = TRUE;
@@ -2729,19 +2729,19 @@ fm_list_view_scale_font_size (FMListView *view,
     int medium;
     int i;
 
-    g_return_if_fail (new_level >= CAJA_ZOOM_LEVEL_SMALLEST &&
-                      new_level <= CAJA_ZOOM_LEVEL_LARGEST);
+    g_return_if_fail (new_level >= PEONY_ZOOM_LEVEL_SMALLEST &&
+                      new_level <= PEONY_ZOOM_LEVEL_LARGEST);
 
     if (first_time)
     {
         first_time = FALSE;
-        medium = CAJA_ZOOM_LEVEL_SMALLER;
+        medium = PEONY_ZOOM_LEVEL_SMALLER;
         pango_scale[medium] = PANGO_SCALE_MEDIUM;
-        for (i = medium; i > CAJA_ZOOM_LEVEL_SMALLEST; i--)
+        for (i = medium; i > PEONY_ZOOM_LEVEL_SMALLEST; i--)
         {
             pango_scale[i - 1] = (1 / 1.2) * pango_scale[i];
         }
-        for (i = medium; i < CAJA_ZOOM_LEVEL_LARGEST; i++)
+        for (i = medium; i < PEONY_ZOOM_LEVEL_LARGEST; i++)
         {
             pango_scale[i + 1] = 1.2 * pango_scale[i];
         }
@@ -2760,15 +2760,15 @@ fm_list_view_scale_font_size (FMListView *view,
 
 static void
 fm_list_view_set_zoom_level (FMListView *view,
-                             CajaZoomLevel new_level,
+                             PeonyZoomLevel new_level,
                              gboolean always_emit)
 {
     int icon_size;
     int column;
 
     g_return_if_fail (FM_IS_LIST_VIEW (view));
-    g_return_if_fail (new_level >= CAJA_ZOOM_LEVEL_SMALLEST &&
-                      new_level <= CAJA_ZOOM_LEVEL_LARGEST);
+    g_return_if_fail (new_level >= PEONY_ZOOM_LEVEL_SMALLEST &&
+                      new_level <= PEONY_ZOOM_LEVEL_LARGEST);
 
     if (view->details->zoom_level == new_level)
     {
@@ -2782,9 +2782,9 @@ fm_list_view_set_zoom_level (FMListView *view,
     view->details->zoom_level = new_level;
     g_signal_emit_by_name (FM_DIRECTORY_VIEW(view), "zoom_level_changed");
 
-    caja_file_set_integer_metadata
+    peony_file_set_integer_metadata
     (fm_directory_view_get_directory_as_file (FM_DIRECTORY_VIEW (view)),
-     CAJA_METADATA_KEY_LIST_VIEW_ZOOM_LEVEL,
+     PEONY_METADATA_KEY_LIST_VIEW_ZOOM_LEVEL,
      get_default_zoom_level (),
      new_level);
 
@@ -2799,7 +2799,7 @@ fm_list_view_set_zoom_level (FMListView *view,
     fm_list_view_scale_font_size (view, new_level);
 
     /* Make all rows the same size. */
-    icon_size = caja_get_icon_size_for_zoom_level (new_level);
+    icon_size = peony_get_icon_size_for_zoom_level (new_level);
     gtk_cell_renderer_set_fixed_size (GTK_CELL_RENDERER (view->details->pixbuf_cell),
                                       -1, icon_size);
 
@@ -2817,19 +2817,19 @@ fm_list_view_bump_zoom_level (FMDirectoryView *view, int zoom_increment)
     list_view = FM_LIST_VIEW (view);
     new_level = list_view->details->zoom_level + zoom_increment;
 
-    if (new_level >= CAJA_ZOOM_LEVEL_SMALLEST &&
-            new_level <= CAJA_ZOOM_LEVEL_LARGEST)
+    if (new_level >= PEONY_ZOOM_LEVEL_SMALLEST &&
+            new_level <= PEONY_ZOOM_LEVEL_LARGEST)
     {
         fm_list_view_set_zoom_level (list_view, new_level, FALSE);
     }
 }
 
-static CajaZoomLevel
+static PeonyZoomLevel
 fm_list_view_get_zoom_level (FMDirectoryView *view)
 {
     FMListView *list_view;
 
-    g_return_val_if_fail (FM_IS_LIST_VIEW (view), CAJA_ZOOM_LEVEL_STANDARD);
+    g_return_val_if_fail (FM_IS_LIST_VIEW (view), PEONY_ZOOM_LEVEL_STANDARD);
 
     list_view = FM_LIST_VIEW (view);
 
@@ -2838,7 +2838,7 @@ fm_list_view_get_zoom_level (FMDirectoryView *view)
 
 static void
 fm_list_view_zoom_to_level (FMDirectoryView *view,
-                            CajaZoomLevel zoom_level)
+                            PeonyZoomLevel zoom_level)
 {
     FMListView *list_view;
 
@@ -2866,7 +2866,7 @@ fm_list_view_can_zoom_in (FMDirectoryView *view)
 {
     g_return_val_if_fail (FM_IS_LIST_VIEW (view), FALSE);
 
-    return FM_LIST_VIEW (view)->details->zoom_level	< CAJA_ZOOM_LEVEL_LARGEST;
+    return FM_LIST_VIEW (view)->details->zoom_level	< PEONY_ZOOM_LEVEL_LARGEST;
 }
 
 static gboolean
@@ -2874,12 +2874,12 @@ fm_list_view_can_zoom_out (FMDirectoryView *view)
 {
     g_return_val_if_fail (FM_IS_LIST_VIEW (view), FALSE);
 
-    return FM_LIST_VIEW (view)->details->zoom_level > CAJA_ZOOM_LEVEL_SMALLEST;
+    return FM_LIST_VIEW (view)->details->zoom_level > PEONY_ZOOM_LEVEL_SMALLEST;
 }
 
 static void
 fm_list_view_start_renaming_file (FMDirectoryView *view,
-                                  CajaFile *file,
+                                  PeonyFile *file,
                                   gboolean select_all)
 {
     FMListView *list_view;
@@ -2948,7 +2948,7 @@ fm_list_view_click_policy_changed (FMDirectoryView *directory_view)
     display = gtk_widget_get_display (GTK_WIDGET (view));
 
     /* ensure that we unset the hand cursor and refresh underlined rows */
-    if (click_policy_auto_value == CAJA_CLICK_POLICY_DOUBLE)
+    if (click_policy_auto_value == PEONY_CLICK_POLICY_DOUBLE)
     {
         if (view->details->hover_path != NULL)
         {
@@ -2985,7 +2985,7 @@ fm_list_view_click_policy_changed (FMDirectoryView *directory_view)
         }
 #endif
     }
-    else if (click_policy_auto_value == CAJA_CLICK_POLICY_SINGLE)
+    else if (click_policy_auto_value == PEONY_CLICK_POLICY_SINGLE)
     {
         if (hand_cursor == NULL)
         {
@@ -3046,7 +3046,7 @@ fm_list_view_sort_directories_first_changed (FMDirectoryView *view)
 }
 
 static int
-fm_list_view_compare_files (FMDirectoryView *view, CajaFile *file1, CajaFile *file2)
+fm_list_view_compare_files (FMDirectoryView *view, PeonyFile *file1, PeonyFile *file2)
 {
     FMListView *list_view;
 
@@ -3090,7 +3090,7 @@ fm_list_view_dispose (GObject *object)
 
     if (list_view->details->clipboard_handler_id != 0)
     {
-        g_signal_handler_disconnect (caja_clipboard_monitor_get (),
+        g_signal_handler_disconnect (peony_clipboard_monitor_get (),
                                      list_view->details->clipboard_handler_id);
         list_view->details->clipboard_handler_id = 0;
     }
@@ -3136,16 +3136,16 @@ fm_list_view_finalize (GObject *object)
 
     g_free (list_view->details);
 
-    g_signal_handlers_disconnect_by_func (caja_preferences,
+    g_signal_handlers_disconnect_by_func (peony_preferences,
                                           default_sort_order_changed_callback,
                                           list_view);
-    g_signal_handlers_disconnect_by_func (caja_list_view_preferences,
+    g_signal_handlers_disconnect_by_func (peony_list_view_preferences,
                                           default_zoom_level_changed_callback,
                                           list_view);
-    g_signal_handlers_disconnect_by_func (caja_list_view_preferences,
+    g_signal_handlers_disconnect_by_func (peony_list_view_preferences,
                                           default_visible_columns_changed_callback,
                                           list_view);
-    g_signal_handlers_disconnect_by_func (caja_list_view_preferences,
+    g_signal_handlers_disconnect_by_func (peony_list_view_preferences,
                                           default_column_order_changed_callback,
                                           list_view);
 
@@ -3163,9 +3163,9 @@ fm_list_view_emblems_changed (FMDirectoryView *directory_view)
 }
 
 static char *
-fm_list_view_get_first_visible_file (CajaView *view)
+fm_list_view_get_first_visible_file (PeonyView *view)
 {
-    CajaFile *file;
+    PeonyFile *file;
     GtkTreePath *path;
     GtkTreeIter iter;
     FMListView *list_view;
@@ -3189,9 +3189,9 @@ fm_list_view_get_first_visible_file (CajaView *view)
         {
             char *uri;
 
-            uri = caja_file_get_uri (file);
+            uri = peony_file_get_uri (file);
 
-            caja_file_unref (file);
+            peony_file_unref (file);
 
             return uri;
         }
@@ -3202,7 +3202,7 @@ fm_list_view_get_first_visible_file (CajaView *view)
 
 static void
 fm_list_view_scroll_to_file (FMListView *view,
-                             CajaFile *file)
+                             PeonyFile *file)
 {
     GtkTreePath *path;
     GtkTreeIter iter;
@@ -3222,27 +3222,27 @@ fm_list_view_scroll_to_file (FMListView *view,
 }
 
 static void
-list_view_scroll_to_file (CajaView *view,
+list_view_scroll_to_file (PeonyView *view,
                           const char *uri)
 {
-    CajaFile *file;
+    PeonyFile *file;
 
     if (uri != NULL)
     {
         /* Only if existing, since we don't want to add the file to
            the directory if it has been removed since then */
-        file = caja_file_get_existing_by_uri (uri);
+        file = peony_file_get_existing_by_uri (uri);
         if (file != NULL)
         {
             fm_list_view_scroll_to_file (FM_LIST_VIEW (view), file);
-            caja_file_unref (file);
+            peony_file_unref (file);
         }
     }
 }
 
 static void
-list_view_notify_clipboard_info (CajaClipboardMonitor *monitor,
-                                 CajaClipboardInfo *info,
+list_view_notify_clipboard_info (PeonyClipboardMonitor *monitor,
+                                 PeonyClipboardInfo *info,
                                  FMListView *view)
 {
     /* this could be called as a result of _end_loading() being
@@ -3267,11 +3267,11 @@ static void
 fm_list_view_end_loading (FMDirectoryView *view,
                           gboolean all_files_seen)
 {
-    CajaClipboardMonitor *monitor;
-    CajaClipboardInfo *info;
+    PeonyClipboardMonitor *monitor;
+    PeonyClipboardInfo *info;
 
-    monitor = caja_clipboard_monitor_get ();
-    info = caja_clipboard_monitor_get_clipboard_info (monitor);
+    monitor = peony_clipboard_monitor_get ();
+    info = peony_clipboard_monitor_get_clipboard_info (monitor);
 
     list_view_notify_clipboard_info (monitor, info, FM_LIST_VIEW (view));
 }
@@ -3362,35 +3362,35 @@ fm_list_view_class_init (FMListViewClass *class)
     fm_directory_view_class->using_manual_layout = fm_list_view_using_manual_layout;
     fm_directory_view_class->set_is_active = real_set_is_active;
 
-    eel_g_settings_add_auto_enum (caja_preferences,
-                                  CAJA_PREFERENCES_CLICK_POLICY,
+    eel_g_settings_add_auto_enum (peony_preferences,
+                                  PEONY_PREFERENCES_CLICK_POLICY,
                                   &click_policy_auto_value);
-    eel_g_settings_add_auto_enum (caja_preferences,
-                                  CAJA_PREFERENCES_DEFAULT_SORT_ORDER,
+    eel_g_settings_add_auto_enum (peony_preferences,
+                                  PEONY_PREFERENCES_DEFAULT_SORT_ORDER,
                                   (int *) &default_sort_order_auto_value);
-    eel_g_settings_add_auto_boolean (caja_preferences,
-                                     CAJA_PREFERENCES_DEFAULT_SORT_IN_REVERSE_ORDER,
+    eel_g_settings_add_auto_boolean (peony_preferences,
+                                     PEONY_PREFERENCES_DEFAULT_SORT_IN_REVERSE_ORDER,
                                      &default_sort_reversed_auto_value);
-    eel_g_settings_add_auto_enum (caja_list_view_preferences,
-                                  CAJA_PREFERENCES_LIST_VIEW_DEFAULT_ZOOM_LEVEL,
+    eel_g_settings_add_auto_enum (peony_list_view_preferences,
+                                  PEONY_PREFERENCES_LIST_VIEW_DEFAULT_ZOOM_LEVEL,
                                   (int *) &default_zoom_level_auto_value);
-    eel_g_settings_add_auto_strv (caja_list_view_preferences,
-                                  CAJA_PREFERENCES_LIST_VIEW_DEFAULT_VISIBLE_COLUMNS,
+    eel_g_settings_add_auto_strv (peony_list_view_preferences,
+                                  PEONY_PREFERENCES_LIST_VIEW_DEFAULT_VISIBLE_COLUMNS,
                                   &default_visible_columns_auto_value);
-    eel_g_settings_add_auto_strv (caja_list_view_preferences,
-                                  CAJA_PREFERENCES_LIST_VIEW_DEFAULT_COLUMN_ORDER,
+    eel_g_settings_add_auto_strv (peony_list_view_preferences,
+                                  PEONY_PREFERENCES_LIST_VIEW_DEFAULT_COLUMN_ORDER,
                                   &default_column_order_auto_value);
 }
 
 static const char *
-fm_list_view_get_id (CajaView *view)
+fm_list_view_get_id (PeonyView *view)
 {
     return FM_LIST_VIEW_ID;
 }
 
 
 static void
-fm_list_view_iface_init (CajaViewIface *iface)
+fm_list_view_iface_init (PeonyViewIface *iface)
 {
     fm_directory_view_init_view_iface (iface);
 
@@ -3408,24 +3408,24 @@ fm_list_view_init (FMListView *list_view)
 
     create_and_set_up_tree_view (list_view);
 
-    g_signal_connect_swapped (caja_preferences,
-                              "changed::" CAJA_PREFERENCES_DEFAULT_SORT_ORDER,
+    g_signal_connect_swapped (peony_preferences,
+                              "changed::" PEONY_PREFERENCES_DEFAULT_SORT_ORDER,
                               G_CALLBACK (default_sort_order_changed_callback),
                               list_view);
-    g_signal_connect_swapped (caja_preferences,
-                              "changed::" CAJA_PREFERENCES_DEFAULT_SORT_IN_REVERSE_ORDER,
+    g_signal_connect_swapped (peony_preferences,
+                              "changed::" PEONY_PREFERENCES_DEFAULT_SORT_IN_REVERSE_ORDER,
                               G_CALLBACK (default_sort_order_changed_callback),
                               list_view);
-    g_signal_connect_swapped (caja_list_view_preferences,
-                              "changed::" CAJA_PREFERENCES_LIST_VIEW_DEFAULT_ZOOM_LEVEL,
+    g_signal_connect_swapped (peony_list_view_preferences,
+                              "changed::" PEONY_PREFERENCES_LIST_VIEW_DEFAULT_ZOOM_LEVEL,
                               G_CALLBACK (default_zoom_level_changed_callback),
                               list_view);
-    g_signal_connect_swapped (caja_list_view_preferences,
-                              "changed::" CAJA_PREFERENCES_LIST_VIEW_DEFAULT_VISIBLE_COLUMNS,
+    g_signal_connect_swapped (peony_list_view_preferences,
+                              "changed::" PEONY_PREFERENCES_LIST_VIEW_DEFAULT_VISIBLE_COLUMNS,
                               G_CALLBACK (default_visible_columns_changed_callback),
                               list_view);
-    g_signal_connect_swapped (caja_list_view_preferences,
-                              "changed::" CAJA_PREFERENCES_LIST_VIEW_DEFAULT_COLUMN_ORDER,
+    g_signal_connect_swapped (peony_list_view_preferences,
+                              "changed::" PEONY_PREFERENCES_LIST_VIEW_DEFAULT_COLUMN_ORDER,
                               G_CALLBACK (default_column_order_changed_callback),
                               list_view);
 
@@ -3434,24 +3434,24 @@ fm_list_view_init (FMListView *list_view)
     fm_list_view_sort_directories_first_changed (FM_DIRECTORY_VIEW (list_view));
 
     /* ensure that the zoom level is always set in begin_loading */
-    list_view->details->zoom_level = CAJA_ZOOM_LEVEL_SMALLEST - 1;
+    list_view->details->zoom_level = PEONY_ZOOM_LEVEL_SMALLEST - 1;
 
     list_view->details->hover_path = NULL;
     list_view->details->clipboard_handler_id =
-        g_signal_connect (caja_clipboard_monitor_get (),
+        g_signal_connect (peony_clipboard_monitor_get (),
                           "clipboard_info",
                           G_CALLBACK (list_view_notify_clipboard_info), list_view);
 }
 
-static CajaView *
-fm_list_view_create (CajaWindowSlotInfo *slot)
+static PeonyView *
+fm_list_view_create (PeonyWindowSlotInfo *slot)
 {
     FMListView *view;
 
     view = g_object_new (FM_TYPE_LIST_VIEW,
                          "window-slot", slot,
                          NULL);
-    return CAJA_VIEW (view);
+    return PEONY_VIEW (view);
 }
 
 static gboolean
@@ -3459,11 +3459,15 @@ fm_list_view_supports_uri (const char *uri,
                            GFileType file_type,
                            const char *mime_type)
 {
+    if (g_str_has_prefix (uri, "computer:"))
+    {
+        return TRUE;
+    }
     if (file_type == G_FILE_TYPE_DIRECTORY)
     {
         return TRUE;
     }
-    if (strcmp (mime_type, CAJA_SAVED_SEARCH_MIMETYPE) == 0)
+    if (strcmp (mime_type, PEONY_SAVED_SEARCH_MIMETYPE) == 0)
     {
         return TRUE;
     }
@@ -3479,7 +3483,7 @@ fm_list_view_supports_uri (const char *uri,
     return FALSE;
 }
 
-static CajaViewInfo fm_list_view =
+static PeonyViewInfo fm_list_view =
 {
     FM_LIST_VIEW_ID,
     /* translators: this is used in the view selection dropdown
@@ -3503,7 +3507,7 @@ fm_list_view_register (void)
     fm_list_view.startup_error_label = _(fm_list_view.startup_error_label);
     fm_list_view.display_location_label = _(fm_list_view.display_location_label);
 
-    caja_view_factory_register (&fm_list_view);
+    peony_view_factory_register (&fm_list_view);
 }
 
 GtkTreeView*

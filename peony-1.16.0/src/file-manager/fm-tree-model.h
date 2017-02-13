@@ -30,7 +30,7 @@
 #include <glib-object.h>
 #include <gtk/gtk.h>
 #include <gio/gio.h>
-#include <libcaja-private/caja-file.h>
+#include <libpeony-private/peony-file.h>
 
 #define FM_TYPE_TREE_MODEL fm_tree_model_get_type()
 #define FM_TREE_MODEL(obj) \
@@ -75,7 +75,7 @@ void               fm_tree_model_set_show_hidden_files     (FMTreeModel *model,
         gboolean           show_hidden_files);
 void               fm_tree_model_set_show_only_directories (FMTreeModel *model,
         gboolean           show_only_directories);
-CajaFile *     fm_tree_model_iter_get_file             (FMTreeModel *model,
+PeonyFile *     fm_tree_model_iter_get_file             (FMTreeModel *model,
         GtkTreeIter       *iter);
 void               fm_tree_model_add_root_uri              (FMTreeModel *model,
         const char        *root_uri,
@@ -91,12 +91,12 @@ int                fm_tree_model_iter_compare_roots        (FMTreeModel *model,
         GtkTreeIter *iter_b);
 gboolean           fm_tree_model_file_get_iter             (FMTreeModel *model,
         GtkTreeIter *iter,
-        CajaFile *file,
+        PeonyFile *file,
         GtkTreeIter *currentIter);
 
 GMount *         fm_tree_model_get_mount_for_root_node_file
 (FMTreeModel  *model,
- CajaFile *file);
+ PeonyFile *file);
 void             fm_tree_model_set_highlight_for_files    (FMTreeModel *model,
         GList *files);
 

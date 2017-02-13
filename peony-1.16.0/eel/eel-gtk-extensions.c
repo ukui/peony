@@ -6,18 +6,18 @@
 
    Copyright (C) 1999, 2000, 2001 Eazel, Inc.
 
-   The Mate Library is free software; you can redistribute it and/or
+   The Ukui Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public License as
    published by the Free Software Foundation; either version 2 of the
    License, or (at your option) any later version.
 
-   The Mate Library is distributed in the hope that it will be useful,
+   The Ukui Library is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
    Library General Public License for more details.
 
    You should have received a copy of the GNU Library General Public
-   License along with the Mate Library; see the file COPYING.LIB.  If not,
+   License along with the Ukui Library; see the file COPYING.LIB.  If not,
    write to the Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
    Boston, MA 02110-1301, USA.
 
@@ -31,7 +31,7 @@
 
 #include "eel-gdk-pixbuf-extensions.h"
 #include "eel-glib-extensions.h"
-#include "eel-mate-extensions.h"
+#include "eel-ukui-extensions.h"
 #include "eel-marshal.h"
 #include "eel-string.h"
 
@@ -50,7 +50,7 @@
 #define MAXIMUM_MENU_TITLE_LENGTH	48
 
 /* Used for window position & size sanity-checking. The sizes are big enough to prevent
- * at least normal-sized mate panels from obscuring the window at the screen edges.
+ * at least normal-sized ukui-ukui panels from obscuring the window at the screen edges.
  */
 #define MINIMUM_ON_SCREEN_WIDTH		100
 #define MINIMUM_ON_SCREEN_HEIGHT	100
@@ -175,7 +175,7 @@ eel_gtk_window_set_initial_geometry (GtkWindow *window,
          * to South/East types, which should be done if using negative
          * positions (so that the right or bottom edge of the window
          * appears at the specified position, not the left or top).
-         * However it does seem to be consistent with other MATE apps.
+         * However it does seem to be consistent with other UKUI apps.
          */
         if (geometry_flags & EEL_GDK_X_NEGATIVE)
         {

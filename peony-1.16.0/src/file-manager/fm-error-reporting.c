@@ -5,18 +5,18 @@
 
    Copyright (C) 2000 Eazel, Inc.
 
-   The Mate Library is free software; you can redistribute it and/or
+   The Ukui Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public License as
    published by the Free Software Foundation; either version 2 of the
    License, or (at your option) any later version.
 
-   The Mate Library is distributed in the hope that it will be useful,
+   The Ukui Library is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
    Library General Public License for more details.
 
    You should have received a copy of the GNU Library General Public
-   License along with the Mate Library; see the file COPYING.LIB.  If not,
+   License along with the Ukui Library; see the file COPYING.LIB.  If not,
    write to the Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
    Boston, MA 02110-1301, USA.
 
@@ -28,18 +28,18 @@
 
 #include <string.h>
 #include <glib/gi18n.h>
-#include <libcaja-private/caja-debug-log.h>
-#include <libcaja-private/caja-file.h>
+#include <libpeony-private/peony-debug-log.h>
+#include <libpeony-private/peony-file.h>
 #include <eel/eel-string.h>
 #include <eel/eel-stock-dialogs.h>
 
-#define NEW_NAME_TAG "Caja: new name"
+#define NEW_NAME_TAG "Peony: new name"
 #define MAXIMUM_DISPLAYED_FILE_NAME_LENGTH	50
 
-static void finish_rename (CajaFile *file, gboolean stop_timer, GError *error);
+static void finish_rename (PeonyFile *file, gboolean stop_timer, GError *error);
 
 void
-fm_report_error_loading_directory (CajaFile *file,
+fm_report_error_loading_directory (PeonyFile *file,
                                    GError *error,
                                    GtkWindow *parent_window)
 {
@@ -59,7 +59,7 @@ fm_report_error_loading_directory (CajaFile *file,
         return;
     }
 
-    file_name = caja_file_get_display_name (file);
+    file_name = peony_file_get_display_name (file);
 
     if (error->domain == G_IO_ERROR)
     {
@@ -90,7 +90,7 @@ fm_report_error_loading_directory (CajaFile *file,
 }
 
 void
-fm_report_error_renaming_file (CajaFile *file,
+fm_report_error_renaming_file (PeonyFile *file,
                                const char *new_name,
                                GError *error,
                                GtkWindow *parent_window)
@@ -102,7 +102,7 @@ fm_report_error_renaming_file (CajaFile *file,
     /* Truncate names for display since very long file names with no spaces
      * in them won't get wrapped, and can create insanely wide dialog boxes.
      */
-    original_name = caja_file_get_display_name (file);
+    original_name = peony_file_get_display_name (file);
     original_name_truncated = eel_str_middle_truncate (original_name, MAXIMUM_DISPLAYED_FILE_NAME_LENGTH);
     g_free (original_name);
 
@@ -165,7 +165,7 @@ fm_report_error_renaming_file (CajaFile *file,
 }
 
 void
-fm_report_error_setting_group (CajaFile *file,
+fm_report_error_setting_group (PeonyFile *file,
                                GError *error,
                                GtkWindow *parent_window)
 {
@@ -177,7 +177,7 @@ fm_report_error_setting_group (CajaFile *file,
         return;
     }
 
-    file_name = caja_file_get_display_name (file);
+    file_name = peony_file_get_display_name (file);
 
     message = NULL;
     if (error->domain == G_IO_ERROR)
@@ -211,7 +211,7 @@ fm_report_error_setting_group (CajaFile *file,
 }
 
 void
-fm_report_error_setting_owner (CajaFile *file,
+fm_report_error_setting_owner (PeonyFile *file,
                                GError *error,
                                GtkWindow *parent_window)
 {
@@ -223,7 +223,7 @@ fm_report_error_setting_owner (CajaFile *file,
         return;
     }
 
-    file_name = caja_file_get_display_name (file);
+    file_name = peony_file_get_display_name (file);
 
     message = g_strdup_printf (_("Sorry, could not change the owner of \"%s\": %s"), file_name, error->message);
 
@@ -234,7 +234,7 @@ fm_report_error_setting_owner (CajaFile *file,
 }
 
 void
-fm_report_error_setting_permissions (CajaFile *file,
+fm_report_error_setting_permissions (PeonyFile *file,
                                      GError *error,
                                      GtkWindow *parent_window)
 {
@@ -246,7 +246,7 @@ fm_report_error_setting_permissions (CajaFile *file,
         return;
     }
 
-    file_name = caja_file_get_display_name (file);
+    file_name = peony_file_get_display_name (file);
 
     message = g_strdup_printf (_("Sorry, could not change the permissions of \"%s\": %s"), file_name, error->message);
 
@@ -259,7 +259,7 @@ fm_report_error_setting_permissions (CajaFile *file,
 typedef struct _FMRenameData
 {
     char *name;
-    CajaFileOperationCallback callback;
+    PeonyFileOperationCallback callback;
     gpointer callback_data;
 } FMRenameData;
 
@@ -271,12 +271,12 @@ fm_rename_data_free (FMRenameData *data)
 }
 
 static void
-rename_callback (CajaFile *file, GFile *result_location,
+rename_callback (PeonyFile *file, GFile *result_location,
                  GError *error, gpointer callback_data)
 {
     FMRenameData *data;
 
-    g_assert (CAJA_IS_FILE (file));
+    g_assert (PEONY_IS_FILE (file));
     g_assert (callback_data == NULL);
 
     data = g_object_get_data (G_OBJECT (file), NEW_NAME_TAG);
@@ -298,12 +298,12 @@ cancel_rename_callback (gpointer callback_data)
     GError *error;
 
     error = g_error_new (G_IO_ERROR, G_IO_ERROR_CANCELLED, "Cancelled");
-    finish_rename (CAJA_FILE (callback_data), FALSE, error);
+    finish_rename (PEONY_FILE (callback_data), FALSE, error);
     g_error_free (error);
 }
 
 static void
-finish_rename (CajaFile *file, gboolean stop_timer, GError *error)
+finish_rename (PeonyFile *file, gboolean stop_timer, GError *error)
 {
     FMRenameData *data;
 
@@ -314,7 +314,7 @@ finish_rename (CajaFile *file, gboolean stop_timer, GError *error)
     }
 
     /* Cancel both the rename and the timed wait. */
-    caja_file_cancel (file, rename_callback, NULL);
+    peony_file_cancel (file, rename_callback, NULL);
     if (stop_timer)
     {
         eel_timed_wait_stop (cancel_rename_callback, file);
@@ -330,9 +330,9 @@ finish_rename (CajaFile *file, gboolean stop_timer, GError *error)
 }
 
 void
-fm_rename_file (CajaFile *file,
+fm_rename_file (PeonyFile *file,
                 const char *new_name,
-                CajaFileOperationCallback callback,
+                PeonyFileOperationCallback callback,
                 gpointer callback_data)
 {
     char *old_name, *wait_message;
@@ -340,7 +340,7 @@ fm_rename_file (CajaFile *file,
     char *uri;
     GError *error;
 
-    g_return_if_fail (CAJA_IS_FILE (file));
+    g_return_if_fail (PEONY_IS_FILE (file));
     g_return_if_fail (new_name != NULL);
 
     /* Stop any earlier rename that's already in progress. */
@@ -359,7 +359,7 @@ fm_rename_file (CajaFile *file,
                             data, (GDestroyNotify)fm_rename_data_free);
 
     /* Start the timed wait to cancel the rename. */
-    old_name = caja_file_get_display_name (file);
+    old_name = peony_file_get_display_name (file);
     wait_message = g_strdup_printf (_("Renaming \"%s\" to \"%s\"."),
                                     old_name,
                                     new_name);
@@ -368,13 +368,13 @@ fm_rename_file (CajaFile *file,
                           NULL); /* FIXME bugzilla.gnome.org 42395: Parent this? */
     g_free (wait_message);
 
-    uri = caja_file_get_uri (file);
-    caja_debug_log (FALSE, CAJA_DEBUG_LOG_DOMAIN_USER,
+    uri = peony_file_get_uri (file);
+    peony_debug_log (FALSE, PEONY_DEBUG_LOG_DOMAIN_USER,
                     "rename file old=\"%s\", new=\"%s\"",
                     uri, new_name);
     g_free (uri);
 
     /* Start the rename. */
-    caja_file_rename (file, new_name,
+    peony_file_rename (file, new_name,
                       rename_callback, NULL);
 }

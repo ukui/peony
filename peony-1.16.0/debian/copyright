@@ -1,7 +1,7 @@
 Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
-Upstream-Name: Caja (old name: mate-file-manager)
-Upstream-Contact: Stefano Karapetsas <stefano@karapetsas.com>
-Source: http://git.mate-desktop.org/caja/
+Upstream-Name: Peony (old name: mate-file-manager)
+Upstream-Contact: Stefano Karapetsas <stefano@karapetsas.com>, Xiaodong Liu <liuxiaodong@kylinos.cn>,Zuxun Yang <yangzuxun@kylinos.cn>
+Source: http://www.ukui.org/peony/
 
 Files: eel/check-program.c
        eel/eel-art-extensions.c
@@ -27,8 +27,8 @@ Files: eel/check-program.c
        eel/eel-labeled-image.h
        eel/eel-lib-self-check-functions.c
        eel/eel-lib-self-check-functions.h
-       eel/eel-mate-extensions.c
-       eel/eel-mate-extensions.h
+       eel/eel-ukui-extensions.c
+       eel/eel-ukui-extensions.h
        eel/eel-self-checks.c
        eel/eel-self-checks.h
        eel/eel-stock-dialogs.c
@@ -43,82 +43,84 @@ Files: eel/check-program.c
        eel/eel-xml-extensions.h
        eel/eel.h
 Copyright: 1999-2001, Eazel, Inc.
+Copyright: 2016, Tianjin KYLIN Information Technology Co., Ltd.
 License: LGPL-2+
 
-Files: libcaja-private/caja-bookmark.c
-       libcaja-private/caja-bookmark.h
-       libcaja-private/caja-customization-data.c
-       libcaja-private/caja-customization-data.h
-       libcaja-private/caja-default-file-icon.c
-       libcaja-private/caja-default-file-icon.h
-       libcaja-private/caja-directory-async.c
-       libcaja-private/caja-directory-notify.h
-       libcaja-private/caja-directory-private.h
-       libcaja-private/caja-directory.c
-       libcaja-private/caja-directory.h
-       libcaja-private/caja-dnd.c
-       libcaja-private/caja-dnd.h
-       libcaja-private/caja-entry.c
-       libcaja-private/caja-entry.h
-       libcaja-private/caja-file-attributes.h
-       libcaja-private/caja-file-changes-queue.c
-       libcaja-private/caja-file-changes-queue.h
-       libcaja-private/caja-file-dnd.c
-       libcaja-private/caja-file-dnd.h
-       libcaja-private/caja-file-private.h
-       libcaja-private/caja-file.c
-       libcaja-private/caja-file.h
-       libcaja-private/caja-file-utilities.c
-       libcaja-private/caja-file-utilities.h
-       libcaja-private/caja-global-preferences.c
-       libcaja-private/caja-global-preferences.h
-       libcaja-private/caja-icon-canvas-item.c
-       libcaja-private/caja-icon-canvas-item.h
-       libcaja-private/caja-keep-last-vertical-box.c
-       libcaja-private/caja-keep-last-vertical-box.h
-       libcaja-private/caja-lib-self-check-functions.c
-       libcaja-private/caja-lib-self-check-functions.h
-       libcaja-private/caja-metadata.h
-       libcaja-private/caja-mime-actions.c
-       libcaja-private/caja-mime-actions.h
-       libcaja-private/caja-monitor.c
-       libcaja-private/caja-monitor.h
-       libcaja-private/caja-program-choosing.c
-       libcaja-private/caja-program-choosing.h
-       libcaja-private/caja-signaller.c
-       libcaja-private/caja-signaller.h
-       libcaja-private/caja-thumbnails.h
-       libcaja-private/caja-trash-monitor.c
-       libcaja-private/caja-trash-monitor.h
-       libcaja-private/caja-vfs-directory.c
-       libcaja-private/caja-vfs-directory.h
-       libcaja-private/caja-vfs-file.c
-       libcaja-private/caja-vfs-file.h
-       src/caja-bookmark-list.c
-       src/caja-bookmark-list.h
-       src/caja-bookmarks-window.c
-       src/caja-bookmarks-window.h
-       src/caja-desktop-window.c
-       src/caja-desktop-window.h
-       src/caja-emblem-sidebar.h
-       src/caja-information-panel.c
-       src/caja-information-panel.h
-       src/caja-location-bar.c
-       src/caja-location-bar.h
-       src/caja-location-entry.c
-       src/caja-location-entry.h
-       src/caja-navigation-window-menus.c
-       src/caja-notes-viewer.c
-       src/caja-property-browser.c
-       src/caja-property-browser.h
-       src/caja-self-check-functions.c
-       src/caja-self-check-functions.h
-       src/caja-sidebar-title.c
-       src/caja-sidebar-title.h
-       src/caja-window-menus.c
-       src/caja-window-toolbars.c
-       src/caja-zoom-control.h
+Files: libpeony-private/peony-bookmark.c
+       libpeony-private/peony-bookmark.h
+       libpeony-private/peony-customization-data.c
+       libpeony-private/peony-customization-data.h
+       libpeony-private/peony-default-file-icon.c
+       libpeony-private/peony-default-file-icon.h
+       libpeony-private/peony-directory-async.c
+       libpeony-private/peony-directory-notify.h
+       libpeony-private/peony-directory-private.h
+       libpeony-private/peony-directory.c
+       libpeony-private/peony-directory.h
+       libpeony-private/peony-dnd.c
+       libpeony-private/peony-dnd.h
+       libpeony-private/peony-entry.c
+       libpeony-private/peony-entry.h
+       libpeony-private/peony-file-attributes.h
+       libpeony-private/peony-file-changes-queue.c
+       libpeony-private/peony-file-changes-queue.h
+       libpeony-private/peony-file-dnd.c
+       libpeony-private/peony-file-dnd.h
+       libpeony-private/peony-file-private.h
+       libpeony-private/peony-file.c
+       libpeony-private/peony-file.h
+       libpeony-private/peony-file-utilities.c
+       libpeony-private/peony-file-utilities.h
+       libpeony-private/peony-global-preferences.c
+       libpeony-private/peony-global-preferences.h
+       libpeony-private/peony-icon-canvas-item.c
+       libpeony-private/peony-icon-canvas-item.h
+       libpeony-private/peony-keep-last-vertical-box.c
+       libpeony-private/peony-keep-last-vertical-box.h
+       libpeony-private/peony-lib-self-check-functions.c
+       libpeony-private/peony-lib-self-check-functions.h
+       libpeony-private/peony-metadata.h
+       libpeony-private/peony-mime-actions.c
+       libpeony-private/peony-mime-actions.h
+       libpeony-private/peony-monitor.c
+       libpeony-private/peony-monitor.h
+       libpeony-private/peony-program-choosing.c
+       libpeony-private/peony-program-choosing.h
+       libpeony-private/peony-signaller.c
+       libpeony-private/peony-signaller.h
+       libpeony-private/peony-thumbnails.h
+       libpeony-private/peony-trash-monitor.c
+       libpeony-private/peony-trash-monitor.h
+       libpeony-private/peony-vfs-directory.c
+       libpeony-private/peony-vfs-directory.h
+       libpeony-private/peony-vfs-file.c
+       libpeony-private/peony-vfs-file.h
+       src/peony-bookmark-list.c
+       src/peony-bookmark-list.h
+       src/peony-bookmarks-window.c
+       src/peony-bookmarks-window.h
+       src/peony-desktop-window.c
+       src/peony-desktop-window.h
+       src/peony-emblem-sidebar.h
+       src/peony-information-panel.c
+       src/peony-information-panel.h
+       src/peony-location-bar.c
+       src/peony-location-bar.h
+       src/peony-location-entry.c
+       src/peony-location-entry.h
+       src/peony-navigation-window-menus.c
+       src/peony-notes-viewer.c
+       src/peony-property-browser.c
+       src/peony-property-browser.h
+       src/peony-self-check-functions.c
+       src/peony-self-check-functions.h
+       src/peony-sidebar-title.c
+       src/peony-sidebar-title.h
+       src/peony-window-menus.c
+       src/peony-window-toolbars.c
+       src/peony-zoom-control.h
 Copyright: 1999-2001, Eazel, Inc.
+Copyright: 2016, Tianjin KYLIN Information Technology Co., Ltd.
 License: GPL-2+
 
 Files: src/file-manager/fm-desktop-icon-view.h
@@ -130,153 +132,161 @@ Files: src/file-manager/fm-desktop-icon-view.h
        src/file-manager/fm-properties-window.c
        src/file-manager/fm-properties-window.h
 Copyright: 1999-2001, Eazel, Inc.
+Copyright: 2016, Tianjin KYLIN Information Technology Co., Ltd.
 License: LGPL-2+
 
-Files: libcaja-private/caja-autorun.c
-       libcaja-private/caja-autorun.h
-       libcaja-private/caja-clipboard-monitor.c
-       libcaja-private/caja-clipboard-monitor.h
-       libcaja-private/caja-desktop-directory-file.c
-       libcaja-private/caja-desktop-directory-file.h
-       libcaja-private/caja-desktop-directory.c
-       libcaja-private/caja-desktop-directory.h
-       libcaja-private/caja-desktop-icon-file.c
-       libcaja-private/caja-desktop-icon-file.h
-       libcaja-private/caja-desktop-link-monitor.c
-       libcaja-private/caja-desktop-link-monitor.h
-       libcaja-private/caja-desktop-link.c
-       libcaja-private/caja-desktop-link.h
-       libcaja-private/caja-desktop-metadata.c
-       libcaja-private/caja-desktop-metadata.h
-       libcaja-private/caja-emblem-utils.c
-       libcaja-private/caja-emblem-utils.h
-       libcaja-private/caja-link.c
-       libcaja-private/caja-link.h
-       libcaja-private/caja-progress-info.c
-       libcaja-private/caja-progress-info.h
-       libcaja-private/caja-saved-search-file.c
-       libcaja-private/caja-saved-search-file.h
-       libcaja-private/caja-search-directory-file.h
-       libcaja-private/caja-search-engine-simple.c
-       libcaja-private/caja-search-engine-simple.h
-       src/caja-actions.h
-       src/caja-application.h
-       src/caja-connect-server-dialog-nonmain.c
-       src/caja-image-properties-page.h
-       src/caja-query-editor.c
-       src/caja-query-editor.h
-       src/caja-view-as-action.c
-       src/caja-view-as-action.h
-       src/caja-window-bookmarks.h
-       src/caja-zoom-action.c
-       src/caja-zoom-action.h
+Files: libpeony-private/peony-autorun.c
+       libpeony-private/peony-autorun.h
+       libpeony-private/peony-clipboard-monitor.c
+       libpeony-private/peony-clipboard-monitor.h
+       libpeony-private/peony-desktop-directory-file.c
+       libpeony-private/peony-desktop-directory-file.h
+       libpeony-private/peony-desktop-directory.c
+       libpeony-private/peony-desktop-directory.h
+       libpeony-private/peony-desktop-icon-file.c
+       libpeony-private/peony-desktop-icon-file.h
+       libpeony-private/peony-desktop-link-monitor.c
+       libpeony-private/peony-desktop-link-monitor.h
+       libpeony-private/peony-desktop-link.c
+       libpeony-private/peony-desktop-link.h
+       libpeony-private/peony-desktop-metadata.c
+       libpeony-private/peony-desktop-metadata.h
+       libpeony-private/peony-emblem-utils.c
+       libpeony-private/peony-emblem-utils.h
+       libpeony-private/peony-link.c
+       libpeony-private/peony-link.h
+       libpeony-private/peony-progress-info.c
+       libpeony-private/peony-progress-info.h
+       libpeony-private/peony-saved-search-file.c
+       libpeony-private/peony-saved-search-file.h
+       libpeony-private/peony-search-directory-file.h
+       libpeony-private/peony-search-engine-simple.c
+       libpeony-private/peony-search-engine-simple.h
+       src/peony-actions.h
+       src/peony-application.h
+       src/peony-connect-server-dialog-nonmain.c
+       src/peony-image-properties-page.h
+       src/peony-query-editor.c
+       src/peony-query-editor.h
+       src/peony-view-as-action.c
+       src/peony-view-as-action.h
+       src/peony-window-bookmarks.h
+       src/peony-zoom-action.c
+       src/peony-zoom-action.h
        src/file-manager/fm-actions.h
 Copyright: 2000-2011, Red Hat, Inc
+Copyright: 2016, Tianjin KYLIN Information Technology Co., Ltd.
 License: GPL-2+
 
 Files: cut-n-paste-code/libegg/eggdesktopfile.h
        cut-n-paste-code/libegg/eggsmclient-private.h
        cut-n-paste-code/libegg/eggsmclient.c
        cut-n-paste-code/libegg/eggsmclient.h
-       libcaja-extension/caja-column-provider.c
-       libcaja-extension/caja-column-provider.h
-       libcaja-extension/caja-column.c
-       libcaja-extension/caja-column.h
-       libcaja-extension/caja-extension-types.c
-       libcaja-extension/caja-extension-types.h
-       libcaja-extension/caja-file-info.c
-       libcaja-extension/caja-file-info.h
-       libcaja-extension/caja-info-provider.c
-       libcaja-extension/caja-info-provider.h
-       libcaja-extension/caja-menu-item.c
-       libcaja-extension/caja-menu-item.h
-       libcaja-extension/caja-menu-provider.c
-       libcaja-extension/caja-menu-provider.h
-       libcaja-extension/caja-property-page-provider.c
-       libcaja-extension/caja-property-page-provider.h
-       libcaja-extension/caja-property-page.c
-       libcaja-extension/caja-property-page.h
-       libcaja-private/caja-column-chooser.c
-       libcaja-private/caja-column-chooser.h
-       libcaja-private/caja-column-utilities.c
-       libcaja-private/caja-column-utilities.h
-       libcaja-private/caja-mime-application-chooser.h
-       libcaja-private/caja-module.c
-       libcaja-private/caja-module.h
-       libcaja-private/caja-open-with-dialog.h
+       libpeony-extension/peony-column-provider.c
+       libpeony-extension/peony-column-provider.h
+       libpeony-extension/peony-column.c
+       libpeony-extension/peony-column.h
+       libpeony-extension/peony-extension-types.c
+       libpeony-extension/peony-extension-types.h
+       libpeony-extension/peony-file-info.c
+       libpeony-extension/peony-file-info.h
+       libpeony-extension/peony-info-provider.c
+       libpeony-extension/peony-info-provider.h
+       libpeony-extension/peony-menu-item.c
+       libpeony-extension/peony-menu-item.h
+       libpeony-extension/peony-menu-provider.c
+       libpeony-extension/peony-menu-provider.h
+       libpeony-extension/peony-property-page-provider.c
+       libpeony-extension/peony-property-page-provider.h
+       libpeony-extension/peony-property-page.c
+       libpeony-extension/peony-property-page.h
+       libpeony-private/peony-column-chooser.c
+       libpeony-private/peony-column-chooser.h
+       libpeony-private/peony-column-utilities.c
+       libpeony-private/peony-column-utilities.h
+       libpeony-private/peony-mime-application-chooser.h
+       libpeony-private/peony-module.c
+       libpeony-private/peony-module.h
+       libpeony-private/peony-open-with-dialog.h
 Copyright: 2003-2007, Novell, Inc.
+Copyright: 2016, Tianjin KYLIN Information Technology Co., Ltd.
 License: LGPL-2+
 
-Files: libcaja-private/caja-thumbnails.c
-       src/caja-application.c
-       src/caja-emblem-sidebar.c
-       src/caja-history-sidebar.c
-       src/caja-history-sidebar.h
-       src/caja-main.c
-       src/caja-main.h
-       src/caja-notes-viewer.h
-       src/caja-spatial-window.c
-       src/caja-window-bookmarks.c
-       src/caja-window-manage-views.c
-       src/caja-window-manage-views.h
-       src/caja-window-private.h
-       src/caja-window.c
-       src/caja-window.h
-       src/caja-zoom-control.c
+Files: libpeony-private/peony-thumbnails.c
+       src/peony-application.c
+       src/peony-emblem-sidebar.c
+       src/peony-history-sidebar.c
+       src/peony-history-sidebar.h
+       src/peony-main.c
+       src/peony-main.h
+       src/peony-notes-viewer.h
+       src/peony-spatial-window.c
+       src/peony-window-bookmarks.c
+       src/peony-window-manage-views.c
+       src/peony-window-manage-views.h
+       src/peony-window-private.h
+       src/peony-window.c
+       src/peony-window.h
+       src/peony-zoom-control.c
 Copyright: 1999-2005, Red Hat, Inc.
            1999-2001, Eazel, Inc.
+Copyright: 2016, Tianjin KYLIN Information Technology Co., Ltd.
 License: GPL-2+
 
-Files: libcaja-private/caja-debug-log.c
-       libcaja-private/caja-debug-log.h
-       libcaja-private/caja-query.c
-       libcaja-private/caja-query.h
-       libcaja-private/caja-search-directory-file.c
-       libcaja-private/caja-search-directory.c
-       libcaja-private/caja-search-directory.h
-       libcaja-private/caja-search-engine-beagle.c
-       libcaja-private/caja-search-engine-beagle.h
-       libcaja-private/caja-search-engine.c
-       libcaja-private/caja-search-engine.h
-       src/caja-search-bar.c
-       src/caja-search-bar.h
+Files: libpeony-private/peony-debug-log.c
+       libpeony-private/peony-debug-log.h
+       libpeony-private/peony-query.c
+       libpeony-private/peony-query.h
+       libpeony-private/peony-search-directory-file.c
+       libpeony-private/peony-search-directory.c
+       libpeony-private/peony-search-directory.h
+       libpeony-private/peony-search-engine-beagle.c
+       libpeony-private/peony-search-engine-beagle.h
+       libpeony-private/peony-search-engine.c
+       libpeony-private/peony-search-engine.h
+       src/peony-search-bar.c
+       src/peony-search-bar.h
 Copyright: 2005-2006, Novell, Inc.
+Copyright: 2016, Tianjin KYLIN Information Technology Co., Ltd.
 License: GPL-2+
 
-Files: libcaja-private/caja-window-slot-info.c
-       libcaja-private/caja-window-slot-info.h
-       src/caja-navigation-window-pane.c
-       src/caja-navigation-window-pane.h
-       src/caja-navigation-window-slot.c
-       src/caja-navigation-window-slot.h
-       src/caja-window-pane.c
-       src/caja-window-pane.h
-       src/caja-window-slot.c
-       src/caja-window-slot.h
+Files: libpeony-private/peony-window-slot-info.c
+       libpeony-private/peony-window-slot-info.h
+       src/peony-navigation-window-pane.c
+       src/peony-navigation-window-pane.h
+       src/peony-navigation-window-slot.c
+       src/peony-navigation-window-slot.h
+       src/peony-window-pane.c
+       src/peony-window-pane.h
+       src/peony-window-slot.c
+       src/peony-window-slot.h
 Copyright: 2008, Free Software Foundation, Inc.
+Copyright: 2016, Tianjin KYLIN Information Technology Co., Ltd.
 License: GPL-2+
 
-Files: libcaja-private/caja-sidebar-provider.c
-       libcaja-private/caja-sidebar-provider.h
-       libcaja-private/caja-sidebar.c
-       libcaja-private/caja-sidebar.h
-       libcaja-private/caja-view-factory.c
-       libcaja-private/caja-view-factory.h
-       libcaja-private/caja-view.c
-       libcaja-private/caja-view.h
-       libcaja-private/caja-window-info.c
-       libcaja-private/caja-window-info.h
+Files: libpeony-private/peony-sidebar-provider.c
+       libpeony-private/peony-sidebar-provider.h
+       libpeony-private/peony-sidebar.c
+       libpeony-private/peony-sidebar.h
+       libpeony-private/peony-view-factory.c
+       libpeony-private/peony-view-factory.h
+       libpeony-private/peony-view.c
+       libpeony-private/peony-view.h
+       libpeony-private/peony-window-info.c
+       libpeony-private/peony-window-info.h
 Copyright: 2004, Red Hat, Inc.
+Copyright: 2016, Tianjin KYLIN Information Technology Co., Ltd.
 License: GPL-2+
 
 Files: cut-n-paste-code/libegg/eggtreemultidnd.c
        cut-n-paste-code/libegg/eggtreemultidnd.h
-       libcaja-extension/caja-extension-private.h
-       libcaja-extension/caja-location-widget-provider.c
-       libcaja-private/caja-ui-utilities.c
-       libcaja-private/caja-ui-utilities.h
-       src/caja-autorun-software.c
+       libpeony-extension/peony-extension-private.h
+       libpeony-extension/peony-location-widget-provider.c
+       libpeony-private/peony-ui-utilities.c
+       libpeony-private/peony-ui-utilities.h
+       src/peony-autorun-software.c
 Copyright: 2001-2009, Red Hat, Inc.
+Copyright: 2016, Tianjin KYLIN Information Technology Co., Ltd.
 License: LGPL-2+
 
 Files: eel/eel-canvas-rect-ellipse.c
@@ -284,14 +294,16 @@ Files: eel/eel-canvas-rect-ellipse.c
        eel/eel-canvas.c
        eel/eel-canvas.h
 Copyright: 1997-2000, Free Software Foundation, Inc.
+Copyright: 2016, Tianjin KYLIN Information Technology Co., Ltd.
 License: LGPL-2+
 
-Files: libcaja-private/caja-icon-container.h
-       libcaja-private/caja-icon-dnd.c
-       libcaja-private/caja-icon-dnd.h
-       libcaja-private/caja-icon-private.h
+Files: libpeony-private/peony-icon-container.h
+       libpeony-private/peony-icon-dnd.c
+       libpeony-private/peony-icon-dnd.h
+       libpeony-private/peony-icon-private.h
 Copyright: 1999-2000, Free Software Foundation, Inc.
            2000, Eazel, Inc
+Copyright: 2016, Tianjin KYLIN Information Technology Co., Ltd.
 License: LGPL-2+
 
 Files: eel/eel-background-box.c
@@ -299,272 +311,322 @@ Files: eel/eel-background-box.c
        src/file-manager/fm-icon-container.c
        src/file-manager/fm-icon-container.h
 Copyright: 2002, Sun Microsystems, Inc.
+Copyright: 2016, Tianjin KYLIN Information Technology Co., Ltd.
 License: LGPL-2+
 
-Files: src/caja-navigation-window.c
-       src/caja-navigation-window.h
-       src/caja-spatial-window.h
+Files: src/peony-navigation-window.c
+       src/peony-navigation-window.h
+       src/peony-spatial-window.h
 Copyright: 1999-2000, Red Hat, Inc.
           1999-2001, Eazel, Inc.
           2003, Ximian, Inc.
+Copyright: 2016, Tianjin KYLIN Information Technology Co., Ltd.
 License: GPL-2+
 
-Files: libcaja-private/caja-recent.c
+Files: libpeony-private/peony-recent.c
        src/file-manager/fm-ditem-page.c
        src/file-manager/fm-ditem-page.h
 Copyright: 2002-2004, James Willcox
+Copyright: 2016, Tianjin KYLIN Information Technology Co., Ltd.
 License: GPL-2+
 
-Files: src/caja-location-dialog.c
-       src/caja-location-dialog.h
-       src/caja-side-pane.h
+Files: src/peony-location-dialog.c
+       src/peony-location-dialog.h
+       src/peony-side-pane.h
 Copyright: 2002-2003, Ximian, Inc.
+Copyright: 2016, Tianjin KYLIN Information Technology Co., Ltd.
 License: GPL-2+
 
-Files: src/caja-file-management-properties-main.c
-       src/caja-file-management-properties.c
-       src/caja-file-management-properties.h
+Files: src/peony-file-management-properties-main.c
+       src/peony-file-management-properties.c
+       src/peony-file-management-properties.h
 Copyright: 2002, Jan Arne Petersen
+Copyright: 2016, Tianjin KYLIN Information Technology Co., Ltd.
 License: LGPL-2+
 
-Files: libcaja-extension/caja-location-widget-provider.h
-       libcaja-private/caja-mime-application-chooser.c
-       libcaja-private/caja-open-with-dialog.c
+Files: libpeony-extension/peony-location-widget-provider.h
+       libpeony-private/peony-mime-application-chooser.c
+       libpeony-private/peony-open-with-dialog.c
 Copyright: 2003-2004, Novell, Inc.
            2005-2007, Red Hat, Inc.
+Copyright: 2016, Tianjin KYLIN Information Technology Co., Ltd.
 License: LGPL-2+
 
-Files: libcaja-private/caja-undostack-manager.c
-       libcaja-private/caja-undostack-manager.h
+Files: libpeony-private/peony-undostack-manager.c
+       libpeony-private/peony-undostack-manager.h
 Copyright: 2007-2010, Amos Brocco
            2011, Stefano Karapetsas
+Copyright: 2016, Tianjin KYLIN Information Technology Co., Ltd.
 License: GPL-2+
 
-Files: libcaja-private/caja-extensions.c
-       libcaja-private/caja-extensions.h
+Files: libpeony-private/peony-extensions.c
+       libpeony-private/peony-extensions.h
 Copyright: 2014, Alexander van der Meij <alexandervdm@gliese.me>
+Copyright: 2016, Tianjin KYLIN Information Technology Co., Ltd.
 License: GPL-2+
 
-Files: src/caja-notebook.c
-       src/caja-notebook.h
+Files: src/peony-notebook.c
+       src/peony-notebook.h
 Copyright: 2002, Christophe Fergeau
            2003-2004, Marco Pesenti Gritti
            2003-2005, Christian Persch
            2008, Free Software Foundation, Inc.
+Copyright: 2016, Tianjin KYLIN Information Technology Co., Ltd.
 License: GPL-2+
 
-Files: libcaja-private/caja-file-conflict-dialog.c
-       libcaja-private/caja-file-conflict-dialog.h
-       src/caja-connect-server-operation.c
-       src/caja-connect-server-operation.h
+Files: libpeony-private/peony-file-conflict-dialog.c
+       libpeony-private/peony-file-conflict-dialog.h
+       src/peony-connect-server-operation.c
+       src/peony-connect-server-operation.h
 Copyright: 2008-2010, Cosimo Cecchi <cosimoc@gnome.org>
+Copyright: 2016, Tianjin KYLIN Information Technology Co., Ltd.
 License: GPL-2+
 
-Files: src/caja-connect-server-dialog.c
-       src/caja-connect-server-dialog.h
+Files: src/peony-connect-server-dialog.c
+       src/peony-connect-server-dialog.h
 Copyright: 2003, Red Hat, Inc
            2010, Cosimo Cecchi <cosimoc@gnome.org>
+Copyright: 2016, Tianjin KYLIN Information Technology Co., Ltd.
 License: GPL-2+
 
-Files: libcaja-private/caja-file-operations.h
+Files: libpeony-private/peony-file-operations.h
        src/file-manager/fm-directory-view.c
 Copyright: 1999-2000, Free Software Foundation, Inc.
            2000-2001, Eazel, Inc.
+Copyright: 2016, Tianjin KYLIN Information Technology Co., Ltd.
 License: GPL-2+
 
-Files: libcaja-private/caja-directory-background.c
-       libcaja-private/caja-directory-background.h
+Files: libpeony-private/peony-directory-background.c
+       libpeony-private/peony-directory-background.h
 Copyright: 2000, Eazel, Inc
            2012, Jasmine Hassan <jasmine.aura@gmail.com>
+Copyright: 2016, Tianjin KYLIN Information Technology Co., Ltd.
 License: GPL-2+
 
-Files: libcaja-private/caja-file-queue.c
-       libcaja-private/caja-file-queue.h
+Files: libpeony-private/peony-file-queue.c
+       libpeony-private/peony-file-queue.h
 Copyright: 2001, Maciej Stachowiak
+Copyright: 2016, Tianjin KYLIN Information Technology Co., Ltd.
 License: GPL-2+
 
-Files: src/caja-navigation-action.c
-       src/caja-navigation-action.h
+Files: src/peony-navigation-action.c
+       src/peony-navigation-action.h
 Copyright: 2003, Marco Pesenti Gritti
            2004, Red Hat, Inc.
+Copyright: 2016, Tianjin KYLIN Information Technology Co., Ltd.
 License: GPL-2+
 
-Files: libcaja-private/caja-cell-renderer-text-ellipsized.c
-       libcaja-private/caja-cell-renderer-text-ellipsized.h
+Files: libpeony-private/peony-cell-renderer-text-ellipsized.c
+       libpeony-private/peony-cell-renderer-text-ellipsized.h
 Copyright: 2007, Martin Wehner
+Copyright: 2016, Tianjin KYLIN Information Technology Co., Ltd.
 License: GPL-2+
 
-Files: libcaja-private/caja-search-engine-tracker.c
-       libcaja-private/caja-search-engine-tracker.h
+Files: libpeony-private/peony-search-engine-tracker.c
+       libpeony-private/peony-search-engine-tracker.h
 Copyright: 2005, Mr Jamie McCracken
+Copyright: 2016, Tianjin KYLIN Information Technology Co., Ltd.
 License: GPL-2+
 
-Files: src/caja-trash-bar.c
-       src/caja-trash-bar.h
+Files: src/peony-trash-bar.c
+       src/peony-trash-bar.h
 Copyright: 2006, Paolo Borelli <pborelli@katamail.com>
+Copyright: 2016, Tianjin KYLIN Information Technology Co., Ltd.
 License: GPL-2+
 
-Files: src/caja-x-content-bar.c
-       src/caja-x-content-bar.h
+Files: src/peony-x-content-bar.c
+       src/peony-x-content-bar.h
 Copyright: 2006, Paolo Borelli <pborelli@katamail.com>
            2008, Red Hat, Inc.
+Copyright: 2016, Tianjin KYLIN Information Technology Co., Ltd.
 License: GPL-2+
 
-Files: libcaja-private/caja-tree-view-drag-dest.c
-       libcaja-private/caja-tree-view-drag-dest.h
+Files: libpeony-private/peony-tree-view-drag-dest.c
+       libpeony-private/peony-tree-view-drag-dest.h
 Copyright: 2002, Sun Microsystems, Inc.
+Copyright: 2016, Tianjin KYLIN Information Technology Co., Ltd.
 License: GPL-2+
 
 Files: eel/eel-accessibility.h
        src/file-manager/fm-list-model.h
 Copyright: 2001-2002, Anders Carlsson
+Copyright: 2016, Tianjin KYLIN Information Technology Co., Ltd.
 License: LGPL-2+
 
 Files: src/file-manager/fm-list-view.c
        src/file-manager/fm-list-view.h
 Copyright: 2000, Eazel, Inc.
            2001-2002, Anders Carlsson <andersca@gnu.org>
+Copyright: 2016, Tianjin KYLIN Information Technology Co., Ltd.
 License: LGPL-2+
 
-Files: libcaja-private/caja-clipboard.c
-       libcaja-private/caja-clipboard.h
+Files: libpeony-private/peony-clipboard.c
+       libpeony-private/peony-clipboard.h
 Copyright: 1999-2000, Free Software Foundaton, Inc.
            2000-2001, Eazel, Inc
+Copyright: 2016, Tianjin KYLIN Information Technology Co., Ltd.
 License: GPL-2+
 
 Files: eel/eel-background.c
        eel/eel-background.h
 Copyright: 2000, Eazel, Inc.
            2012, Jasmine Hassan <jasmine.aura@gmail.com>
+Copyright: 2016, Tianjin KYLIN Information Technology Co., Ltd.
 License: GPL-2+
 
 Files: src/file-manager/fm-empty-view.c
        src/file-manager/fm-empty-view.h
 Copyright: 2006, Free Software Foundation, Inc.
+Copyright: 2016, Tianjin KYLIN Information Technology Co., Ltd.
 License: LGPL-2+
 
 Files: eel/eel-editable-label.c
        eel/eel-editable-label.h
 Copyright: 1995-1997, Peter Mattis, Spencer Kimball and Josh MacDonald
+Copyright: 2016, Tianjin KYLIN Information Technology Co., Ltd.
 License: LGPL-2+
 
 Files: eel/eel-gtk-container.c
        eel/eel-gtk-container.h
 Copyright: 2001, Ramiro Estrugo
+Copyright: 2016, Tianjin KYLIN Information Technology Co., Ltd.
 License: LGPL-2+
 
-Files: src/caja-convert-metadata.c
+Files: src/peony-convert-metadata.c
 Copyright: 2009, Alexander Larsson
+Copyright: 2016, Tianjin KYLIN Information Technology Co., Ltd.
 License: GPL-2+
 
 Files: src/file-manager/fm-tree-model.h
 Copyright: 2002, Anders Carlsson
            2002, Bent Spoon Software
+Copyright: 2016, Tianjin KYLIN Information Technology Co., Ltd.
 License: GPL-2+
 
 Files: src/file-manager/fm-tree-model.c
 Copyright: 2002, Anders Carlsson
            2002, Bent Spoon Software
            2000-2001, Eazel, Inc.
+Copyright: 2016, Tianjin KYLIN Information Technology Co., Ltd.
 License: GPL-2+
 
 Files: src/file-manager/fm-tree-view.c
 Copyright: 2000-2001, Eazel, Inc.
            2002, Anders Carlsson
            2002, Darin Adler
+Copyright: 2016, Tianjin KYLIN Information Technology Co., Ltd.
 License: GPL-2+
 
 Files: src/file-manager/fm-tree-view.h
 Copyright: 2000-2001, Eazel, Inc.
            2002, Anders Carlsson
+Copyright: 2016, Tianjin KYLIN Information Technology Co., Ltd.
 License: GPL-2+
 
-Files: libcaja-private/caja-file-operations.c
+Files: libpeony-private/peony-file-operations.c
 Copyright: 1999-2000, Free Software Foundation
            2000-2001, Eazel, Inc.
            2007, Red Hat, Inc.
+Copyright: 2016, Tianjin KYLIN Information Technology Co., Ltd.
 License: GPL-2+
 
 Files: src/file-manager/fm-directory-view.h
 Copyright: 1999-2000, Free Software Foundaton
   2000-2001, Eazel, Inc
+Copyright: 2016, Tianjin KYLIN Information Technology Co., Ltd.
 License: GPL-2+
 
-Files: src/caja-image-properties-page.c
+Files: src/peony-image-properties-page.c
 Copyright: 2004, Red Hat, Inc.
            2007, Novell, Inc.
+Copyright: 2016, Tianjin KYLIN Information Technology Co., Ltd.
 License: GPL-2+
 
-Files: src/caja-connect-server-dialog-main.c
+Files: src/peony-connect-server-dialog-main.c
 Copyright: 2005, Vincent Untz
+Copyright: 2016, Tianjin KYLIN Information Technology Co., Ltd.
 License: GPL-2+
 
-Files: src/caja-side-pane.c
+Files: src/peony-side-pane.c
 Copyright: 2002, Ximian Inc
+Copyright: 2016, Tianjin KYLIN Information Technology Co., Ltd.
 License: GPL-2+
 
 Files: src/file-manager/fm-list-model.c
 Copyright: 2001-2002, Anders Carlsson
            2003, Soeren Sandmann
            2004, Novell, Inc
+Copyright: 2016, Tianjin KYLIN Information Technology Co., Ltd.
 License: LGPL-2+
 
 Files: eel/eel-accessibility.c
 Copyright: 2002, Anders Carlsson, Sun Microsystems, Inc.
+Copyright: 2016, Tianjin KYLIN Information Technology Co., Ltd.
 License: LGPL-2+
 
 Files: cut-n-paste-code/libegg/eggsmclient-xsmp.c
 Copyright: 1998, Carsten Schaar
            1998, The Open Group
            2007, Novell, Inc.
+Copyright: 2016, Tianjin KYLIN Information Technology Co., Ltd.
 License: LGPL-2+
 
-Files: libcaja-private/caja-icon-container.c
+Files: libpeony-private/peony-icon-container.c
 Copyright: 1999-2000, Free Software Foundation, Inc.
            2000-2001, Eazel, Inc.
            2002-2003, Red Hat, Inc.
+Copyright: 2016, Tianjin KYLIN Information Technology Co., Ltd.
 License: LGPL-2+
 
 Files: src/file-manager/fm-desktop-icon-view.c
 Copyright: 2000-2001, Eazel, Inc.
+Copyright: 2016, Tianjin KYLIN Information Technology Co., Ltd.
 License: LGPL-2+
 
 Files: cut-n-paste-code/libegg/eggdesktopfile.c
 Copyright: 1999-2000, Red Hat, Inc.
            2001, George Lebl
            2007, Novell, Inc.
+Copyright: 2016, Tianjin KYLIN Information Technology Co., Ltd.
 License: LGPL-2+
 
-Files: libcaja-extension/caja-menu.h
+Files: libpeony-extension/peony-menu.h
 Copyright: 2003, Novell, Inc.
            2005, Raffaele Sandrini
+Copyright: 2016, Tianjin KYLIN Information Technology Co., Ltd.
 License: LGPL-2+
 
-Files: libcaja-extension/caja-menu.c
+Files: libpeony-extension/peony-menu.c
 Copyright: 2005, Raffaele Sandrini
+Copyright: 2016, Tianjin KYLIN Information Technology Co., Ltd.
 License: LGPL-2+
 
-Files: libcaja-private/caja-icon-info.c
+Files: libpeony-private/peony-icon-info.c
 Copyright: 2007, Red Hat, Inc., Alexander Larsson <alexl@redhat.com>
+Copyright: 2016, Tianjin KYLIN Information Technology Co., Ltd.
 License: LGPL-2+
 
-Files: src/caja-pathbar.c
+Files: src/peony-pathbar.c
 Copyright: 2004, Red Hat, Inc., Jonathan Blandford <jrb@gnome.org>
+Copyright: 2016, Tianjin KYLIN Information Technology Co., Ltd.
 License: LGPL-2+
 
-Files: src/caja-pathbar.h
+Files: src/peony-pathbar.h
 Copyright: *No copyright*
+Copyright: 2016, Tianjin KYLIN Information Technology Co., Ltd.
 License: LGPL-2+
 
-Files: src/caja-freedesktop-dbus.c
-       src/caja-freedesktop-dbus.h
-       src/caja-places-sidebar.c
-       src/caja-places-sidebar.h
+Files: src/peony-freedesktop-dbus.c
+       src/peony-freedesktop-dbus.h
+       src/peony-places-sidebar.c
+       src/peony-places-sidebar.h
 Copyright: *No copyright*
+Copyright: 2016, Tianjin KYLIN Information Technology Co., Ltd.
 License: GPL-2+
 
-Files: libcaja-private/caja-metadata.c
+Files: libpeony-private/peony-metadata.c
 Copyright: 2009, Red Hat, Inc.
+Copyright: 2016, Tianjin KYLIN Information Technology Co., Ltd.
 License: LGPL-2+
 
 Files:  .tx/config
@@ -574,7 +636,7 @@ Files:  .tx/config
        data/icons/*.svg
        data/patterns/*.png
        data/patterns/*.jpg
-       data/caja.xml.in
+       data/peony.xml.in
        data/*.css
        data/*.desktop*
        data/*.service*
@@ -586,24 +648,24 @@ Files:  .tx/config
        eel/check-eel
        icons/*.svg
        icons/*.png
-       libcaja-extension/caja-extension-i18n.h
-       libcaja-extension/*.pc.in
-       libcaja-private/README
-       libcaja-private/caja-icon-info.h
-       libcaja-private/caja-icon-names.h
-       libcaja-private/caja-recent.h
-       libcaja-private/*.xml
+       libpeony-extension/peony-extension-i18n.h
+       libpeony-extension/*.pc.in
+       libpeony-private/README
+       libpeony-private/peony-icon-info.h
+       libpeony-private/peony-icon-names.h
+       libpeony-private/peony-recent.h
+       libpeony-private/*.xml
        po/LINGUAS
        po/POTFILES.*
-       src/file-manager/caja-audio-mime-types.h
+       src/file-manager/peony-audio-mime-types.h
        src/file-manager/*.xml
-       src/check-caja
+       src/check-peony
        src/*.ui
        src/*.xml
        src/*.desktop.in
-       test/test-caja-directory-async.c
-       test/test-caja-search-engine.c
-       test/test-caja-wrap-table.c
+       test/test-peony-directory-async.c
+       test/test-peony-search-engine.c
+       test/test-peony-wrap-table.c
        test/test-copy.c
        test/test-eel-background.c
        test/test-eel-editable-label.c
@@ -620,8 +682,8 @@ Files:  .tx/config
        docs/Makefile.am
        eel/Makefile.am
        icons/Makefile.am
-       libcaja-extension/Makefile.am
-       libcaja-private/Makefile.am
+       libpeony-extension/Makefile.am
+       libpeony-private/Makefile.am
        src/file-manager/Makefile.am
        src/Makefile.am
        test/Makefile.am
@@ -638,6 +700,7 @@ Files:  .tx/config
        autogen.sh
        configure.ac
 Copyright: *No copyright*
+Copyright: 2016, Tianjin KYLIN Information Technology Co., Ltd.
 License: GPL-2+ or LGPL-2+
 Comment:
  Appropriately apply licenses as found in COPYING or COPYING.LIBS.
@@ -645,13 +708,14 @@ Comment:
 Files: po/*.po
        po/gnome-copyrights.txt
 Copyright: 1999-2001, Eazel, Inc.
-           1999-2008, Aŭtary Cajaa
+           1999-2008, Aŭtary Peonya
            1999-2009, The Nautilus authors
            2002-2005, Red Hat, Inc.
            2002-2004, Novell, Inc.
            2009, Free Software Foundation, Inc.
            2010, Rosetta Contributors and Canonical Ltd.
-           2011-2013, The Caja authors
+           2011-2013, The Peony authors
+Copyright: 2016, Tianjin KYLIN Information Technology Co., Ltd.
 License: GPL-2+ or LGPL-2+
 Comment:
  Assuming either license from COPYING or COPYING.LIB file.
@@ -660,6 +724,7 @@ Comment:
 Files: debian/*
 Copyright: 2011-2014, Stefano Karapetsas <stefano@karapetsas.com>
            2014, Mike Gabriel <sunweaver@debian.org>
+Copyright: 2016, Tianjin KYLIN Information Technology Co., Ltd.
 License: GPL-2+ or LGPL-2+
 
 License: GPL-2+

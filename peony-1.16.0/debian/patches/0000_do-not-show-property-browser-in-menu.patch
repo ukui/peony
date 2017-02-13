@@ -4,13 +4,13 @@ Date: Mon, 27 Jun 2016 17:45:11 +0200
 Subject: [PATCH] do not show property browser in menu
 
 ---
- src/caja-shell-ui.xml | 1 -
+ src/peony-shell-ui.xml | 1 -
  1 file changed, 1 deletion(-)
 
-diff --git a/src/caja-shell-ui.xml b/src/caja-shell-ui.xml
+diff --git a/src/peony-shell-ui.xml b/src/peony-shell-ui.xml
 index ce9268a..291a2c7 100644
---- a/src/caja-shell-ui.xml
-+++ b/src/caja-shell-ui.xml
+--- a/src/peony-shell-ui.xml
++++ b/src/peony-shell-ui.xml
 @@ -39,7 +39,6 @@
  		<separator/>
  		<placeholder name="Extension Actions"/>

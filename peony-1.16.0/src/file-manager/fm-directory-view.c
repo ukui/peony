@@ -37,11 +37,11 @@
 #include "fm-error-reporting.h"
 #include "fm-marshal.h"
 #include "fm-properties-window.h"
-#include "libcaja-private/caja-open-with-dialog.h"
+#include "libpeony-private/peony-open-with-dialog.h"
 
 #include <eel/eel-background.h>
 #include <eel/eel-glib-extensions.h>
-#include <eel/eel-mate-extensions.h>
+#include <eel/eel-ukui-extensions.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-stock-dialogs.h>
@@ -52,41 +52,41 @@
 #include <glib/gi18n.h>
 #include <glib/gstdio.h>
 #include <gio/gio.h>
-#include <libcaja-private/caja-recent.h>
-#include <libcaja-extension/caja-menu-provider.h>
-#include <libcaja-private/caja-clipboard.h>
-#include <libcaja-private/caja-clipboard-monitor.h>
-#include <libcaja-private/caja-debug-log.h>
-#include <libcaja-private/caja-desktop-icon-file.h>
-#include <libcaja-private/caja-desktop-directory.h>
-#include <libcaja-private/caja-extensions.h>
-#include <libcaja-private/caja-search-directory.h>
+#include <libpeony-private/peony-recent.h>
+#include <libpeony-extension/peony-menu-provider.h>
+#include <libpeony-private/peony-clipboard.h>
+#include <libpeony-private/peony-clipboard-monitor.h>
+#include <libpeony-private/peony-debug-log.h>
+#include <libpeony-private/peony-desktop-icon-file.h>
+#include <libpeony-private/peony-desktop-directory.h>
+#include <libpeony-private/peony-extensions.h>
+#include <libpeony-private/peony-search-directory.h>
 #if !GTK_CHECK_VERSION(3, 21, 0)
-#include <libcaja-private/caja-directory-background.h>
+#include <libpeony-private/peony-directory-background.h>
 #endif
-#include <libcaja-private/caja-directory.h>
-#include <libcaja-private/caja-dnd.h>
-#include <libcaja-private/caja-file-attributes.h>
-#include <libcaja-private/caja-file-changes-queue.h>
-#include <libcaja-private/caja-file-dnd.h>
-#include <libcaja-private/caja-file-operations.h>
-#include <libcaja-private/caja-file-utilities.h>
-#include <libcaja-private/caja-file-private.h> /* for caja_file_get_existing_by_uri */
-#include <libcaja-private/caja-global-preferences.h>
-#include <libcaja-private/caja-link.h>
-#include <libcaja-private/caja-metadata.h>
-#include <libcaja-private/caja-mime-actions.h>
-#include <libcaja-private/caja-module.h>
-#include <libcaja-private/caja-program-choosing.h>
-#include <libcaja-private/caja-trash-monitor.h>
-#include <libcaja-private/caja-ui-utilities.h>
-#include <libcaja-private/caja-signaller.h>
-#include <libcaja-private/caja-autorun.h>
-#include <libcaja-private/caja-icon-names.h>
-#include <libcaja-private/caja-undostack-manager.h>
+#include <libpeony-private/peony-directory.h>
+#include <libpeony-private/peony-dnd.h>
+#include <libpeony-private/peony-file-attributes.h>
+#include <libpeony-private/peony-file-changes-queue.h>
+#include <libpeony-private/peony-file-dnd.h>
+#include <libpeony-private/peony-file-operations.h>
+#include <libpeony-private/peony-file-utilities.h>
+#include <libpeony-private/peony-file-private.h> /* for peony_file_get_existing_by_uri */
+#include <libpeony-private/peony-global-preferences.h>
+#include <libpeony-private/peony-link.h>
+#include <libpeony-private/peony-metadata.h>
+#include <libpeony-private/peony-mime-actions.h>
+#include <libpeony-private/peony-module.h>
+#include <libpeony-private/peony-program-choosing.h>
+#include <libpeony-private/peony-trash-monitor.h>
+#include <libpeony-private/peony-ui-utilities.h>
+#include <libpeony-private/peony-signaller.h>
+#include <libpeony-private/peony-autorun.h>
+#include <libpeony-private/peony-icon-names.h>
+#include <libpeony-private/peony-undostack-manager.h>
 
-#define MATE_DESKTOP_USE_UNSTABLE_API
-#include <libmate-desktop/mate-desktop-utils.h>
+#define UKUI_DESKTOP_USE_UNSTABLE_API
+#include <libukui-desktop/ukui-desktop-utils.h>
 
 /* Minimum starting update inverval */
 #define UPDATE_INTERVAL_MIN 100
@@ -166,11 +166,11 @@ static int scripts_directory_uri_length;
 
 struct FMDirectoryViewDetails
 {
-	CajaWindowInfo *window;
-	CajaWindowSlotInfo *slot;
-	CajaDirectory *model;
-	CajaFile *directory_as_file;
-	CajaFile *location_popup_directory_as_file;
+	PeonyWindowInfo *window;
+	PeonyWindowSlotInfo *slot;
+	PeonyDirectory *model;
+	PeonyFile *directory_as_file;
+	PeonyFile *location_popup_directory_as_file;
 	GdkEventButton *location_popup_event;
 	GtkActionGroup *dir_action_group;
 	guint dir_merge_id;
@@ -272,8 +272,8 @@ struct FMDirectoryViewDetails
 };
 
 typedef struct {
-	CajaFile *file;
-	CajaDirectory *directory;
+	PeonyFile *file;
+	PeonyDirectory *directory;
 } FileAndDirectory;
 
 /* forward declarations */
@@ -292,13 +292,13 @@ static void     trash_or_delete_files                          (GtkWindow       
 								gboolean              delete_if_all_already_in_trash,
 								FMDirectoryView      *view);
 static void     load_directory                                 (FMDirectoryView      *view,
-								CajaDirectory    *directory);
+								PeonyDirectory    *directory);
 static void     fm_directory_view_merge_menus                  (FMDirectoryView      *view);
 static void     fm_directory_view_unmerge_menus                (FMDirectoryView      *view);
 static void     fm_directory_view_init_show_hidden_files       (FMDirectoryView      *view);
-static void     fm_directory_view_load_location                (CajaView         *caja_view,
+static void     fm_directory_view_load_location                (PeonyView         *peony_view,
 								const char           *location);
-static void     fm_directory_view_stop_loading                 (CajaView         *caja_view);
+static void     fm_directory_view_stop_loading                 (PeonyView         *peony_view);
 static void     fm_directory_view_drop_proxy_received_uris     (FMDirectoryView *view,
 								const GList *source_uri_list,
 								const char *target_uri,
@@ -307,7 +307,7 @@ static void     fm_directory_view_drop_proxy_received_netscape_url (FMDirectoryV
 								    const char *netscape_url,
 								    const char *target_uri,
 								    GdkDragAction action);
-static void     clipboard_changed_callback                     (CajaClipboardMonitor *monitor,
+static void     clipboard_changed_callback                     (PeonyClipboardMonitor *monitor,
 								FMDirectoryView      *view);
 static void     open_one_in_new_window                         (gpointer              data,
 								gpointer              callback_data);
@@ -322,16 +322,16 @@ static void     reset_update_interval                          (FMDirectoryView 
 static void     schedule_idle_display_of_pending_files         (FMDirectoryView      *view);
 static void     unschedule_display_of_pending_files            (FMDirectoryView      *view);
 static void     disconnect_model_handlers                      (FMDirectoryView      *view);
-static void     metadata_for_directory_as_file_ready_callback  (CajaFile         *file,
+static void     metadata_for_directory_as_file_ready_callback  (PeonyFile         *file,
 								gpointer              callback_data);
-static void     metadata_for_files_in_directory_ready_callback (CajaDirectory    *directory,
+static void     metadata_for_files_in_directory_ready_callback (PeonyDirectory    *directory,
 								GList                *files,
 								gpointer              callback_data);
-static void     fm_directory_view_trash_state_changed_callback (CajaTrashMonitor *trash,
+static void     fm_directory_view_trash_state_changed_callback (PeonyTrashMonitor *trash,
 								gboolean              state,
 								gpointer              callback_data);
 static void     fm_directory_view_select_file                  (FMDirectoryView      *view,
-								CajaFile         *file);
+								PeonyFile         *file);
 
 static GdkDragAction ask_link_action                           (FMDirectoryView      *view);
 static void     update_templates_directory                     (FMDirectoryView *view);
@@ -401,7 +401,7 @@ static void        fm_directory_view_widget_to_file_operation_position_xy (FMDir
 
 /* undo-related actions */
 
-static void undo_redo_menu_update_callback (CajaUndoStackManager* manager, gpointer arg1, gpointer data);
+static void undo_redo_menu_update_callback (PeonyUndoStackManager* manager, gpointer arg1, gpointer data);
 
 static void undo_update_menu (FMDirectoryView *view);
 
@@ -445,12 +445,12 @@ typedef struct {
 } ApplicationLaunchParameters;
 
 typedef struct {
-	CajaFile *file;
+	PeonyFile *file;
 	FMDirectoryView *directory_view;
 } ScriptLaunchParameters;
 
 typedef struct {
-	CajaFile *file;
+	PeonyFile *file;
 	FMDirectoryView *directory_view;
 } CreateTemplateParameters;
 
@@ -463,7 +463,7 @@ application_launch_parameters_new (GAppInfo *application,
 
 	result = g_new0 (ApplicationLaunchParameters, 1);
 	result->application = g_object_ref (application);
-	result->files = caja_file_list_copy (files);
+	result->files = peony_file_list_copy (files);
 
 	if (directory_view != NULL) {
 		g_object_ref (directory_view);
@@ -477,7 +477,7 @@ static void
 application_launch_parameters_free (ApplicationLaunchParameters *parameters)
 {
 	g_object_unref (parameters->application);
-	caja_file_list_free (parameters->files);
+	peony_file_list_free (parameters->files);
 
 	if (parameters->directory_view != NULL) {
 		g_object_unref (parameters->directory_view);
@@ -495,14 +495,14 @@ file_and_directory_list_to_files (GList *fad_list)
 	res = NULL;
 	for (l = fad_list; l != NULL; l = l->next) {
 		fad = l->data;
-		res = g_list_prepend (res, caja_file_ref (fad->file));
+		res = g_list_prepend (res, peony_file_ref (fad->file));
 	}
 	return g_list_reverse (res);
 }
 
 
 static GList *
-file_and_directory_list_from_files (CajaDirectory *directory, GList *files)
+file_and_directory_list_from_files (PeonyDirectory *directory, GList *files)
 {
 	GList *res, *l;
 	FileAndDirectory *fad;
@@ -510,8 +510,8 @@ file_and_directory_list_from_files (CajaDirectory *directory, GList *files)
 	res = NULL;
 	for (l = files; l != NULL; l = l->next) {
 		fad = g_new0 (FileAndDirectory, 1);
-		fad->directory = caja_directory_ref (directory);
-		fad->file = caja_file_ref (l->data);
+		fad->directory = peony_directory_ref (directory);
+		fad->file = peony_file_ref (l->data);
 		res = g_list_prepend (res, fad);
 	}
 	return g_list_reverse (res);
@@ -520,8 +520,8 @@ file_and_directory_list_from_files (CajaDirectory *directory, GList *files)
 static void
 file_and_directory_free (FileAndDirectory *fad)
 {
-	caja_directory_unref (fad->directory);
-	caja_file_unref (fad->file);
+	peony_directory_unref (fad->directory);
+	peony_file_unref (fad->file);
 	g_free (fad);
 }
 
@@ -563,7 +563,7 @@ file_and_directory_hash  (gconstpointer  v)
 
 
 static ScriptLaunchParameters *
-script_launch_parameters_new (CajaFile *file,
+script_launch_parameters_new (PeonyFile *file,
 			      FMDirectoryView *directory_view)
 {
 	ScriptLaunchParameters *result;
@@ -571,7 +571,7 @@ script_launch_parameters_new (CajaFile *file,
 	result = g_new0 (ScriptLaunchParameters, 1);
 	g_object_ref (directory_view);
 	result->directory_view = directory_view;
-	caja_file_ref (file);
+	peony_file_ref (file);
 	result->file = file;
 
 	return result;
@@ -581,12 +581,12 @@ static void
 script_launch_parameters_free (ScriptLaunchParameters *parameters)
 {
 	g_object_unref (parameters->directory_view);
-	caja_file_unref (parameters->file);
+	peony_file_unref (parameters->file);
 	g_free (parameters);
 }
 
 static CreateTemplateParameters *
-create_template_parameters_new (CajaFile *file,
+create_template_parameters_new (PeonyFile *file,
 				FMDirectoryView *directory_view)
 {
 	CreateTemplateParameters *result;
@@ -594,7 +594,7 @@ create_template_parameters_new (CajaFile *file,
 	result = g_new0 (CreateTemplateParameters, 1);
 	g_object_ref (directory_view);
 	result->directory_view = directory_view;
-	caja_file_ref (file);
+	peony_file_ref (file);
 	result->file = file;
 
 	return result;
@@ -604,20 +604,20 @@ static void
 create_templates_parameters_free (CreateTemplateParameters *parameters)
 {
 	g_object_unref (parameters->directory_view);
-	caja_file_unref (parameters->file);
+	peony_file_unref (parameters->file);
 	g_free (parameters);
 }
 
-CajaWindowInfo *
-fm_directory_view_get_caja_window (FMDirectoryView  *view)
+PeonyWindowInfo *
+fm_directory_view_get_peony_window (FMDirectoryView  *view)
 {
 	g_assert (view->details->window != NULL);
 
 	return view->details->window;
 }
 
-CajaWindowSlotInfo *
-fm_directory_view_get_caja_window_slot (FMDirectoryView  *view)
+PeonyWindowSlotInfo *
+fm_directory_view_get_peony_window_slot (FMDirectoryView  *view)
 {
 	g_assert (view->details->slot != NULL);
 
@@ -719,10 +719,10 @@ get_view_directory (FMDirectoryView *view)
 	char *uri, *path;
 	GFile *f;
 
-	uri = caja_directory_get_uri (view->details->model);
+	uri = peony_directory_get_uri (view->details->model);
 	if (eel_uri_is_desktop (uri)) {
 		g_free (uri);
-		uri = caja_get_desktop_directory_uri ();
+		uri = peony_get_desktop_directory_uri ();
 
 	}
 	f = g_file_new_for_uri (uri);
@@ -736,14 +736,14 @@ get_view_directory (FMDirectoryView *view)
 void
 fm_directory_view_activate_files (FMDirectoryView *view,
 				  GList *files,
-				  CajaWindowOpenMode mode,
-				  CajaWindowOpenFlags flags,
+				  PeonyWindowOpenMode mode,
+				  PeonyWindowOpenFlags flags,
 				  gboolean confirm_multiple)
 {
 	char *path;
 
 	path = get_view_directory (view);
-	caja_mime_activate_files (fm_directory_view_get_containing_window (view),
+	peony_mime_activate_files (fm_directory_view_get_containing_window (view),
 				      view->details->slot,
 				      files,
 				      path,
@@ -756,14 +756,14 @@ fm_directory_view_activate_files (FMDirectoryView *view,
 
 void
 fm_directory_view_activate_file (FMDirectoryView *view,
-				 CajaFile *file,
-				 CajaWindowOpenMode mode,
-				 CajaWindowOpenFlags flags)
+				 PeonyFile *file,
+				 PeonyWindowOpenMode mode,
+				 PeonyWindowOpenFlags flags)
 {
 	char *path;
 
 	path = get_view_directory (view);
-	caja_mime_activate_file (fm_directory_view_get_containing_window (view),
+	peony_mime_activate_file (fm_directory_view_get_containing_window (view),
 				     view->details->slot,
 				     file,
 				     path,
@@ -785,10 +785,10 @@ action_open_callback (GtkAction *action,
 	selection = fm_directory_view_get_selection (view);
 	fm_directory_view_activate_files (view,
 					  selection,
-					  CAJA_WINDOW_OPEN_ACCORDING_TO_MODE,
+					  PEONY_WINDOW_OPEN_ACCORDING_TO_MODE,
 					  0,
 					  TRUE);
-	caja_file_list_free (selection);
+	peony_file_list_free (selection);
 }
 
 static void
@@ -803,10 +803,10 @@ action_open_close_parent_callback (GtkAction *action,
 	selection = fm_directory_view_get_selection (view);
 	fm_directory_view_activate_files (view,
 					  selection,
-					  CAJA_WINDOW_OPEN_ACCORDING_TO_MODE,
-					  CAJA_WINDOW_OPEN_FLAG_CLOSE_BEHIND,
+					  PEONY_WINDOW_OPEN_ACCORDING_TO_MODE,
+					  PEONY_WINDOW_OPEN_FLAG_CLOSE_BEHIND,
 					  TRUE);
-	caja_file_list_free (selection);
+	peony_file_list_free (selection);
 }
 
 
@@ -827,7 +827,7 @@ action_open_alternate_callback (GtkAction *action,
 		g_list_foreach (selection, open_one_in_new_window, view);
 	}
 
-	caja_file_list_free (selection);
+	peony_file_list_free (selection);
 }
 
 static void
@@ -846,12 +846,12 @@ action_open_new_tab_callback (GtkAction *action,
 	if (fm_directory_view_confirm_multiple (window, g_list_length (selection), TRUE)) {
 		fm_directory_view_activate_files (view,
 						  selection,
-						  CAJA_WINDOW_OPEN_ACCORDING_TO_MODE,
-						  CAJA_WINDOW_OPEN_FLAG_NEW_TAB,
+						  PEONY_WINDOW_OPEN_ACCORDING_TO_MODE,
+						  PEONY_WINDOW_OPEN_FLAG_NEW_TAB,
 						  FALSE);
 	}
 
-	caja_file_list_free (selection);
+	peony_file_list_free (selection);
 }
 
 static void
@@ -871,14 +871,14 @@ action_open_folder_window_callback (GtkAction *action,
 		g_list_foreach (selection, open_one_in_folder_window, view);
 	}
 
-	caja_file_list_free (selection);
+	peony_file_list_free (selection);
 }
 
 static void
 open_location (FMDirectoryView *directory_view,
 	       const char *new_uri,
-	       CajaWindowOpenMode mode,
-	       CajaWindowOpenFlags flags)
+	       PeonyWindowOpenMode mode,
+	       PeonyWindowOpenFlags flags)
 {
 	GtkWindow *window;
 	GFile *location;
@@ -887,21 +887,21 @@ open_location (FMDirectoryView *directory_view,
 	g_assert (new_uri != NULL);
 
 	window = fm_directory_view_get_containing_window (directory_view);
-	caja_debug_log (FALSE, CAJA_DEBUG_LOG_DOMAIN_USER,
+	peony_debug_log (FALSE, PEONY_DEBUG_LOG_DOMAIN_USER,
 			    "directory view open_location window=%p: %s", window, new_uri);
 	location = g_file_new_for_uri (new_uri);
-	caja_window_slot_info_open_location (directory_view->details->slot,
+	peony_window_slot_info_open_location (directory_view->details->slot,
 						 location, mode, flags, NULL);
 	g_object_unref (location);
 }
 
 static void
-application_selected_cb (CajaOpenWithDialog *dialog,
+application_selected_cb (PeonyOpenWithDialog *dialog,
 			 GAppInfo *app,
 			 gpointer user_data)
 {
 	GtkWindow *parent_window;
-	CajaFile *file;
+	PeonyFile *file;
 	GList files;
 
 	parent_window = GTK_WINDOW (user_data);
@@ -911,25 +911,25 @@ application_selected_cb (CajaOpenWithDialog *dialog,
 	files.next = NULL;
 	files.prev = NULL;
 	files.data = file;
-	caja_launch_application (app, &files, parent_window);
+	peony_launch_application (app, &files, parent_window);
 }
 
 static void
 choose_program (FMDirectoryView *view,
-		CajaFile *file)
+		PeonyFile *file)
 {
 	GtkWidget *dialog;
 	char *uri;
 	char *mime_type;
 
 	g_assert (FM_IS_DIRECTORY_VIEW (view));
-	g_assert (CAJA_IS_FILE (file));
+	g_assert (PEONY_IS_FILE (file));
 
-	caja_file_ref (file);
-	uri = caja_file_get_uri (file);
-	mime_type = caja_file_get_mime_type (file);
+	peony_file_ref (file);
+	uri = peony_file_get_uri (file);
+	mime_type = peony_file_get_mime_type (file);
 
-	dialog = caja_open_with_dialog_new (uri, mime_type, NULL);
+	dialog = peony_open_with_dialog_new (uri, mime_type, NULL);
 	g_object_set_data_full (G_OBJECT (dialog),
 				"directory-view:file",
 				g_object_ref (file),
@@ -947,7 +947,7 @@ choose_program (FMDirectoryView *view,
 
  	g_free (uri);
 	g_free (mime_type);
-	caja_file_unref (file);
+	peony_file_unref (file);
 }
 
 static void
@@ -960,10 +960,10 @@ open_with_other_program (FMDirectoryView *view)
        	selection = fm_directory_view_get_selection (view);
 
 	if (selection_contains_one_item_in_menu_callback (view, selection)) {
-		choose_program (view, CAJA_FILE (selection->data));
+		choose_program (view, PEONY_FILE (selection->data));
 	}
 
-	caja_file_list_free (selection);
+	peony_file_list_free (selection);
 }
 
 static void
@@ -989,7 +989,7 @@ trash_or_delete_selected_files (FMDirectoryView *view)
 		trash_or_delete_files (fm_directory_view_get_containing_window (view),
 				       selection, TRUE,
 				       view);
-		caja_file_list_free (selection);
+		peony_file_list_free (selection);
 		view->details->selection_was_removed = TRUE;
 	}
 }
@@ -1031,14 +1031,14 @@ delete_selected_files (FMDirectoryView *view)
 	locations = NULL;
 	for (node = selection; node != NULL; node = node->next) {
 		locations = g_list_prepend (locations,
-					    caja_file_get_location ((CajaFile *) node->data));
+					    peony_file_get_location ((PeonyFile *) node->data));
 	}
 	locations = g_list_reverse (locations);
 
-	caja_file_operations_delete (locations, fm_directory_view_get_containing_window (view), NULL, NULL);
+	peony_file_operations_delete (locations, fm_directory_view_get_containing_window (view), NULL, NULL);
 
 	g_list_free_full (locations, g_object_unref);
-        caja_file_list_free (selection);
+        peony_file_list_free (selection);
 }
 
 static void
@@ -1058,10 +1058,10 @@ action_restore_from_trash_callback (GtkAction *action,
 	view = FM_DIRECTORY_VIEW (callback_data);
 
 	selection = fm_directory_view_get_selection_for_file_transfer (view);
-	caja_restore_files_from_trash (selection,
+	peony_restore_files_from_trash (selection,
 					   fm_directory_view_get_containing_window (view));
 
-	caja_file_list_free (selection);
+	peony_file_list_free (selection);
 
 }
 
@@ -1102,7 +1102,7 @@ action_duplicate_callback (GtkAction *action,
 	        g_array_free (selected_item_locations, TRUE);
 	}
 
-        caja_file_list_free (selection);
+        peony_file_list_free (selection);
 }
 
 static void
@@ -1123,7 +1123,7 @@ action_create_link_callback (GtkAction *action,
 	        g_array_free (selected_item_locations, TRUE);
 	}
 
-        caja_file_list_free (selection);
+        peony_file_list_free (selection);
 }
 
 static void
@@ -1149,7 +1149,7 @@ static void
 pattern_select_response_cb (GtkWidget *dialog, int response, gpointer user_data)
 {
 	FMDirectoryView *view;
-	CajaDirectory *directory;
+	PeonyDirectory *directory;
 	GtkWidget *entry;
 	GList *selection;
 	GError *error;
@@ -1160,12 +1160,12 @@ pattern_select_response_cb (GtkWidget *dialog, int response, gpointer user_data)
 	case GTK_RESPONSE_OK :
 		entry = g_object_get_data (G_OBJECT (dialog), "entry");
 		directory = fm_directory_view_get_model (view);
-		selection = caja_directory_match_pattern (directory,
+		selection = peony_directory_match_pattern (directory,
 					gtk_entry_get_text (GTK_ENTRY (entry)));
 
 		if (selection) {
 			fm_directory_view_set_selection (view, selection);
-			caja_file_list_free (selection);
+			peony_file_list_free (selection);
 
 			fm_directory_view_reveal_selection(view);
 		}
@@ -1178,7 +1178,7 @@ pattern_select_response_cb (GtkWidget *dialog, int response, gpointer user_data)
 	case GTK_RESPONSE_HELP :
 		error = NULL;
 		gtk_show_uri (gtk_window_get_screen (GTK_WINDOW (dialog)),
-			      "help:mate-user-guide/caja-select-pattern",
+			      "help:ukui-user-guide/peony-select-pattern",
 			      gtk_get_current_event_time (), &error);
 		if (error) {
 			eel_show_error_dialog (_("There was an error displaying help."), error->message,
@@ -1314,7 +1314,7 @@ action_reset_to_defaults_callback (GtkAction *action,
 
 
 static void
-hidden_files_mode_changed (CajaWindow *window,
+hidden_files_mode_changed (PeonyWindow *window,
 			   gpointer callback_data)
 {
 	FMDirectoryView *directory_view;
@@ -1328,15 +1328,15 @@ static void
 action_save_search_callback (GtkAction *action,
 			     gpointer callback_data)
 {
-	CajaSearchDirectory *search;
+	PeonySearchDirectory *search;
 	FMDirectoryView	*directory_view;
 
         directory_view = FM_DIRECTORY_VIEW (callback_data);
 
 	if (directory_view->details->model &&
-	    CAJA_IS_SEARCH_DIRECTORY (directory_view->details->model)) {
-		search = CAJA_SEARCH_DIRECTORY (directory_view->details->model);
-		caja_search_directory_save_search (search);
+	    PEONY_IS_SEARCH_DIRECTORY (directory_view->details->model)) {
+		search = PEONY_SEARCH_DIRECTORY (directory_view->details->model);
+		peony_search_directory_save_search (search);
 
 		/* Save search is disabled */
 		schedule_update_menus (directory_view);
@@ -1362,7 +1362,7 @@ action_save_search_as_callback (GtkAction *action,
 				gpointer callback_data)
 {
 	FMDirectoryView	*directory_view;
-	CajaSearchDirectory *search;
+	PeonySearchDirectory *search;
 #if GTK_CHECK_VERSION (3, 0, 0)
 	GtkWidget *dialog, *grid, *label, *entry, *chooser, *save_button;
 #else
@@ -1375,8 +1375,8 @@ action_save_search_as_callback (GtkAction *action,
         directory_view = FM_DIRECTORY_VIEW (callback_data);
 
 	if (directory_view->details->model &&
-	    CAJA_IS_SEARCH_DIRECTORY (directory_view->details->model)) {
-		search = CAJA_SEARCH_DIRECTORY (directory_view->details->model);
+	    PEONY_IS_SEARCH_DIRECTORY (directory_view->details->model)) {
+		search = PEONY_SEARCH_DIRECTORY (directory_view->details->model);
 
 		dialog = gtk_dialog_new_with_buttons (_("Save Search as"),
 						      fm_directory_view_get_containing_window (directory_view),
@@ -1470,10 +1470,10 @@ action_save_search_as_callback (GtkAction *action,
 
 		if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_OK) {
 			entry_text = gtk_entry_get_text (GTK_ENTRY (entry));
-			if (g_str_has_suffix (entry_text, CAJA_SAVED_SEARCH_EXTENSION)) {
+			if (g_str_has_suffix (entry_text, PEONY_SAVED_SEARCH_EXTENSION)) {
 				filename_utf8 = g_strdup (entry_text);
 			} else {
-				filename_utf8 = g_strconcat (entry_text, CAJA_SAVED_SEARCH_EXTENSION, NULL);
+				filename_utf8 = g_strconcat (entry_text, PEONY_SAVED_SEARCH_EXTENSION, NULL);
 			}
 
 			filename = g_filename_from_utf8 (filename_utf8, -1, NULL, NULL, NULL);
@@ -1488,11 +1488,11 @@ action_save_search_as_callback (GtkAction *action,
 			uri = g_filename_to_uri (path, NULL, NULL);
 			g_free (path);
 
-			caja_search_directory_save_to_file (search, uri);
+			peony_search_directory_save_to_file (search, uri);
 			location = g_file_new_for_uri (uri);
-			caja_file_changes_queue_file_added (location);
+			peony_file_changes_queue_file_added (location);
 			g_object_unref (location);
-			caja_file_changes_consume_changes (TRUE);
+			peony_file_changes_consume_changes (TRUE);
 			g_free (uri);
 		}
 
@@ -1507,7 +1507,7 @@ action_empty_trash_callback (GtkAction *action,
 {
         g_assert (FM_IS_DIRECTORY_VIEW (callback_data));
 
-	caja_file_operations_empty_trash (GTK_WIDGET (callback_data));
+	peony_file_operations_empty_trash (GTK_WIDGET (callback_data));
 }
 
 static void
@@ -1543,11 +1543,11 @@ action_new_launcher_callback (GtkAction *action,
 	parent_uri = fm_directory_view_get_backing_uri (view);
 
 	window = fm_directory_view_get_containing_window (view);
-	caja_debug_log (FALSE, CAJA_DEBUG_LOG_DOMAIN_USER,
+	peony_debug_log (FALSE, PEONY_DEBUG_LOG_DOMAIN_USER,
 			    "directory view create new launcher in window=%p: %s", window, parent_uri);
-	caja_launch_application_from_command (gtk_widget_get_screen (GTK_WIDGET (view)),
-						  "mate-desktop-item-edit",
-						  "mate-desktop-item-edit",
+	peony_launch_application_from_command (gtk_widget_get_screen (GTK_WIDGET (view)),
+						  "ukui-desktop-item-edit",
+						  "ukui-desktop-item-edit",
 						  FALSE,
 						  "--create-new", parent_uri, NULL);
 
@@ -1568,16 +1568,16 @@ action_properties_callback (GtkAction *action,
 	selection = fm_directory_view_get_selection (view);
 	if (g_list_length (selection) == 0) {
 		if (view->details->directory_as_file != NULL) {
-			files = g_list_append (NULL, caja_file_ref (view->details->directory_as_file));
+			files = g_list_append (NULL, peony_file_ref (view->details->directory_as_file));
 
 			fm_properties_window_present (files, GTK_WIDGET (view));
 
-			caja_file_list_free (files);
+			peony_file_list_free (files);
 		}
 	} else {
 		fm_properties_window_present (selection, GTK_WIDGET (view));
 	}
-        caja_file_list_free (selection);
+        peony_file_list_free (selection);
 }
 
 static void
@@ -1590,13 +1590,13 @@ action_location_properties_callback (GtkAction *action,
 	g_assert (FM_IS_DIRECTORY_VIEW (callback_data));
 
 	view = FM_DIRECTORY_VIEW (callback_data);
-	g_assert (CAJA_IS_FILE (view->details->location_popup_directory_as_file));
+	g_assert (PEONY_IS_FILE (view->details->location_popup_directory_as_file));
 
-	files = g_list_append (NULL, caja_file_ref (view->details->location_popup_directory_as_file));
+	files = g_list_append (NULL, peony_file_ref (view->details->location_popup_directory_as_file));
 
 	fm_properties_window_present (files, GTK_WIDGET (view));
 
-	caja_file_list_free (files);
+	peony_file_list_free (files);
 }
 
 static gboolean
@@ -1608,7 +1608,7 @@ all_files_in_trash (GList *files)
 	g_return_val_if_fail (files != NULL, FALSE);
 
 	for (node = files; node != NULL; node = node->next) {
-		if (!caja_file_is_in_trash (CAJA_FILE (node->data))) {
+		if (!peony_file_is_in_trash (PEONY_FILE (node->data))) {
 			return FALSE;
 		}
 	}
@@ -1628,7 +1628,7 @@ all_selected_items_in_trash (FMDirectoryView *view)
 	 */
 	selection = fm_directory_view_get_selection (view);
 	result = (selection == NULL) ? FALSE : all_files_in_trash (selection);
-	caja_file_list_free (selection);
+	peony_file_list_free (selection);
 
 	return result;
 }
@@ -1636,7 +1636,7 @@ all_selected_items_in_trash (FMDirectoryView *view)
 static gboolean
 we_are_in_vfolder_desktop_dir (FMDirectoryView *view)
 {
-	CajaFile *file;
+	PeonyFile *file;
 	char *mime_type;
 
 	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), FALSE);
@@ -1645,9 +1645,9 @@ we_are_in_vfolder_desktop_dir (FMDirectoryView *view)
 		return FALSE;
 	}
 
-	file = caja_directory_get_corresponding_file (view->details->model);
-	mime_type = caja_file_get_mime_type (file);
-	caja_file_unref (file);
+	file = peony_directory_get_corresponding_file (view->details->model);
+	mime_type = peony_file_get_mime_type (file);
+	peony_file_unref (file);
 
 	if (mime_type != NULL
 	    && strcmp (mime_type, "x-directory/vfolder-desktop") == 0) {
@@ -1711,7 +1711,7 @@ sort_directories_first_changed_callback (gpointer callback_data)
 	view = FM_DIRECTORY_VIEW (callback_data);
 
 	preference_value =
-		g_settings_get_boolean (caja_preferences, CAJA_PREFERENCES_SORT_DIRECTORIES_FIRST);
+		g_settings_get_boolean (peony_preferences, PEONY_PREFERENCES_SORT_DIRECTORIES_FIRST);
 
 	if (preference_value != view->details->sort_directories_first) {
 		view->details->sort_directories_first = preference_value;
@@ -1729,15 +1729,15 @@ static void set_up_scripts_directory_global(void)
 	}
 
 	char* scripts_directory_path;
-	const char* override = g_getenv ("MATE22_USER_DIR"); //TODO: remove?
+	const char* override = g_getenv ("UKUI22_USER_DIR"); //TODO: remove?
 
 	if (override)
 	{
-		scripts_directory_path = g_build_filename(override, "caja", "scripts", NULL);
+		scripts_directory_path = g_build_filename(override, "peony", "scripts", NULL);
 	}
 	else
 	{
-		scripts_directory_path = g_build_filename(g_get_user_config_dir(), "caja", "scripts", NULL);
+		scripts_directory_path = g_build_filename(g_get_user_config_dir(), "peony", "scripts", NULL);
 	}
 
 	if (g_mkdir_with_parents(scripts_directory_path, 0755) == 0)
@@ -1751,7 +1751,7 @@ static void set_up_scripts_directory_global(void)
 
 		if (g_file_test(nautilus_scripts_path, G_FILE_TEST_IS_DIR) == TRUE)
 		{
-			char* nautilus_syslink = g_build_filename(g_get_user_config_dir(), "caja", "scripts", "nautilus", NULL);
+			char* nautilus_syslink = g_build_filename(g_get_user_config_dir(), "peony", "scripts", "nautilus", NULL);
 			/* If link already exists, or also any other kind of file/dir with same name, ignore it */
 			if (g_file_test(nautilus_syslink, G_FILE_TEST_IS_SYMLINK) == FALSE &&
 				g_file_test(nautilus_syslink, G_FILE_TEST_EXISTS) == FALSE &&
@@ -1792,7 +1792,7 @@ static void set_up_scripts_directory_global(void)
 }
 
 static void
-scripts_added_or_changed_callback (CajaDirectory *directory,
+scripts_added_or_changed_callback (PeonyDirectory *directory,
 				   GList *files,
 				   gpointer callback_data)
 {
@@ -1807,7 +1807,7 @@ scripts_added_or_changed_callback (CajaDirectory *directory,
 }
 
 static void
-templates_added_or_changed_callback (CajaDirectory *directory,
+templates_added_or_changed_callback (PeonyDirectory *directory,
 				     GList *files,
 				     gpointer callback_data)
 {
@@ -1823,23 +1823,23 @@ templates_added_or_changed_callback (CajaDirectory *directory,
 
 static void
 add_directory_to_directory_list (FMDirectoryView *view,
-				 CajaDirectory *directory,
+				 PeonyDirectory *directory,
 				 GList **directory_list,
 				 GCallback changed_callback)
 {
-	CajaFileAttributes attributes;
+	PeonyFileAttributes attributes;
 
 	if (g_list_find (*directory_list, directory) == NULL) {
-		caja_directory_ref (directory);
+		peony_directory_ref (directory);
 
 		attributes =
-			CAJA_FILE_ATTRIBUTES_FOR_ICON |
-			CAJA_FILE_ATTRIBUTE_INFO |
-			CAJA_FILE_ATTRIBUTE_DIRECTORY_ITEM_COUNT;
+			PEONY_FILE_ATTRIBUTES_FOR_ICON |
+			PEONY_FILE_ATTRIBUTE_INFO |
+			PEONY_FILE_ATTRIBUTE_DIRECTORY_ITEM_COUNT;
 
-		caja_directory_file_monitor_add (directory, directory_list,
+		peony_directory_file_monitor_add (directory, directory_list,
 						     FALSE, attributes,
-						     (CajaDirectoryCallback)changed_callback, view);
+						     (PeonyDirectoryCallback)changed_callback, view);
 
 		g_signal_connect_object (directory, "files_added",
 					 G_CALLBACK (changed_callback), view, 0);
@@ -1852,7 +1852,7 @@ add_directory_to_directory_list (FMDirectoryView *view,
 
 static void
 remove_directory_from_directory_list (FMDirectoryView *view,
-				      CajaDirectory *directory,
+				      PeonyDirectory *directory,
 				      GList **directory_list,
 				      GCallback changed_callback)
 {
@@ -1862,15 +1862,15 @@ remove_directory_from_directory_list (FMDirectoryView *view,
 					      G_CALLBACK (changed_callback),
 					      view);
 
-	caja_directory_file_monitor_remove (directory, directory_list);
+	peony_directory_file_monitor_remove (directory, directory_list);
 
-	caja_directory_unref (directory);
+	peony_directory_unref (directory);
 }
 
 
 static void
 add_directory_to_scripts_directory_list (FMDirectoryView *view,
-					 CajaDirectory *directory)
+					 PeonyDirectory *directory)
 {
 	add_directory_to_directory_list (view, directory,
 					 &view->details->scripts_directory_list,
@@ -1879,7 +1879,7 @@ add_directory_to_scripts_directory_list (FMDirectoryView *view,
 
 static void
 remove_directory_from_scripts_directory_list (FMDirectoryView *view,
-					      CajaDirectory *directory)
+					      PeonyDirectory *directory)
 {
 	remove_directory_from_directory_list (view, directory,
 					      &view->details->scripts_directory_list,
@@ -1888,7 +1888,7 @@ remove_directory_from_scripts_directory_list (FMDirectoryView *view,
 
 static void
 add_directory_to_templates_directory_list (FMDirectoryView *view,
-					   CajaDirectory *directory)
+					   PeonyDirectory *directory)
 {
 	add_directory_to_directory_list (view, directory,
 					 &view->details->templates_directory_list,
@@ -1897,7 +1897,7 @@ add_directory_to_templates_directory_list (FMDirectoryView *view,
 
 static void
 remove_directory_from_templates_directory_list (FMDirectoryView *view,
-						CajaDirectory *directory)
+						PeonyDirectory *directory)
 {
 	remove_directory_from_directory_list (view, directory,
 					      &view->details->templates_directory_list,
@@ -1905,7 +1905,7 @@ remove_directory_from_templates_directory_list (FMDirectoryView *view,
 }
 
 static void
-slot_active (CajaWindowSlot *slot,
+slot_active (PeonyWindowSlot *slot,
 	     FMDirectoryView *view)
 {
 	g_assert (!view->details->active);
@@ -1916,7 +1916,7 @@ slot_active (CajaWindowSlot *slot,
 }
 
 static void
-slot_inactive (CajaWindowSlot *slot,
+slot_inactive (PeonyWindowSlot *slot,
 	       FMDirectoryView *view)
 {
 	g_assert (view->details->active ||
@@ -1928,7 +1928,7 @@ slot_inactive (CajaWindowSlot *slot,
 }
 
 static void
-fm_directory_view_grab_focus (CajaView *view)
+fm_directory_view_grab_focus (PeonyView *view)
 {
 	/* focus the child of the scrolled window if it exists */
 	GtkWidget *child;
@@ -1939,19 +1939,19 @@ fm_directory_view_grab_focus (CajaView *view)
 }
 
 static void
-view_iface_update_menus (CajaView *view)
+view_iface_update_menus (PeonyView *view)
 {
 	fm_directory_view_update_menus (FM_DIRECTORY_VIEW (view));
 }
 
 static GtkWidget *
-fm_directory_view_get_widget (CajaView *view)
+fm_directory_view_get_widget (PeonyView *view)
 {
 	return GTK_WIDGET (view);
 }
 
 static int
-fm_directory_view_get_selection_count (CajaView *view)
+fm_directory_view_get_selection_count (PeonyView *view)
 {
 	/* FIXME: This could be faster if we special cased it in subclasses */
 	GList *files;
@@ -1959,13 +1959,13 @@ fm_directory_view_get_selection_count (CajaView *view)
 
 	files = fm_directory_view_get_selection (FM_DIRECTORY_VIEW (view));
 	len = g_list_length (files);
-	caja_file_list_free (files);
+	peony_file_list_free (files);
 
 	return len;
 }
 
 static GList *
-fm_directory_view_get_selection_locations (CajaView *view)
+fm_directory_view_get_selection_locations (PeonyView *view)
 {
 	GList *files;
 	GList *locations;
@@ -1975,10 +1975,10 @@ fm_directory_view_get_selection_locations (CajaView *view)
 	files = fm_directory_view_get_selection (FM_DIRECTORY_VIEW (view));
 	locations = NULL;
 	for (l = files; l != NULL; l = l->next) {
-		location = caja_file_get_location (CAJA_FILE (l->data));
+		location = peony_file_get_location (PEONY_FILE (l->data));
 		locations = g_list_prepend (locations, location);
 	}
-	caja_file_list_free (files);
+	peony_file_list_free (files);
 
 	return g_list_reverse (locations);
 }
@@ -1993,19 +1993,19 @@ file_list_from_location_list (const GList *uri_list)
 	for (node = uri_list; node != NULL; node = node->next) {
 		file_list = g_list_prepend
 			(file_list,
-			 caja_file_get (node->data));
+			 peony_file_get (node->data));
 	}
 	return g_list_reverse (file_list);
 }
 
 static void
-fm_directory_view_set_selection_locations (CajaView *caja_view,
+fm_directory_view_set_selection_locations (PeonyView *peony_view,
 					   GList *selection_locations)
 {
 	GList *selection;
 	FMDirectoryView *view;
 
-	view = FM_DIRECTORY_VIEW (caja_view);
+	view = FM_DIRECTORY_VIEW (peony_view);
 
 	if (!view->details->loading) {
 		/* If we aren't still loading, set the selection right now,
@@ -2016,7 +2016,7 @@ fm_directory_view_set_selection_locations (CajaView *caja_view,
 		fm_directory_view_set_selection (view, selection);
 		view->details->selection_change_is_due_to_shell = FALSE;
 		fm_directory_view_reveal_selection (view);
-		caja_file_list_free (selection);
+		peony_file_list_free (selection);
 	} else {
 		/* If we are still loading, set the list of pending URIs instead.
 		 * done_loading() will eventually select the pending URIs and reveal them.
@@ -2029,7 +2029,7 @@ fm_directory_view_set_selection_locations (CajaView *caja_view,
 
 
 void
-fm_directory_view_init_view_iface (CajaViewIface *iface)
+fm_directory_view_init_view_iface (PeonyViewIface *iface)
 {
 	iface->grab_focus = fm_directory_view_grab_focus;
 	iface->update_menus = view_iface_update_menus;
@@ -2059,8 +2059,8 @@ fm_directory_view_init_view_iface (CajaViewIface *iface)
 static void
 fm_directory_view_init (FMDirectoryView *view)
 {
-	CajaDirectory *scripts_directory;
-	CajaDirectory *templates_directory;
+	PeonyDirectory *scripts_directory;
+	PeonyDirectory *templates_directory;
 	char *templates_uri;
 
 	view->details = g_new0 (FMDirectoryViewDetails, 1);
@@ -2082,60 +2082,60 @@ fm_directory_view_init (FMDirectoryView *view)
 	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (view), GTK_SHADOW_ETCHED_IN);
 
 	set_up_scripts_directory_global ();
-	scripts_directory = caja_directory_get_by_uri (scripts_directory_uri);
+	scripts_directory = peony_directory_get_by_uri (scripts_directory_uri);
 	add_directory_to_scripts_directory_list (view, scripts_directory);
-	caja_directory_unref (scripts_directory);
+	peony_directory_unref (scripts_directory);
 
-	if (caja_should_use_templates_directory ()) {
-		templates_uri = caja_get_templates_directory_uri ();
-		templates_directory = caja_directory_get_by_uri (templates_uri);
+	if (peony_should_use_templates_directory ()) {
+		templates_uri = peony_get_templates_directory_uri ();
+		templates_directory = peony_directory_get_by_uri (templates_uri);
 		g_free (templates_uri);
 		add_directory_to_templates_directory_list (view, templates_directory);
-		caja_directory_unref (templates_directory);
+		peony_directory_unref (templates_directory);
 	}
 	update_templates_directory (view);
-	g_signal_connect_object (caja_signaller_get_current (),
+	g_signal_connect_object (peony_signaller_get_current (),
 				 "user_dirs_changed",
 				 G_CALLBACK (user_dirs_changed),
 				 view, G_CONNECT_SWAPPED);
 
 	view->details->sort_directories_first =
-		g_settings_get_boolean (caja_preferences, CAJA_PREFERENCES_SORT_DIRECTORIES_FIRST);
+		g_settings_get_boolean (peony_preferences, PEONY_PREFERENCES_SORT_DIRECTORIES_FIRST);
 
-	g_signal_connect_object (caja_trash_monitor_get (), "trash_state_changed",
+	g_signal_connect_object (peony_trash_monitor_get (), "trash_state_changed",
 				 G_CALLBACK (fm_directory_view_trash_state_changed_callback), view, 0);
 
 	/* React to clipboard changes */
-	g_signal_connect_object (caja_clipboard_monitor_get (), "clipboard_changed",
+	g_signal_connect_object (peony_clipboard_monitor_get (), "clipboard_changed",
 				 G_CALLBACK (clipboard_changed_callback), view, 0);
 
         /* Register to menu provider extension signal managing menu updates */
-        g_signal_connect_object (caja_signaller_get_current (), "popup_menu_changed",
+        g_signal_connect_object (peony_signaller_get_current (), "popup_menu_changed",
                          G_CALLBACK (fm_directory_view_update_menus), view, G_CONNECT_SWAPPED);
 
 	gtk_widget_show (GTK_WIDGET (view));
 
-	g_signal_connect_swapped (caja_preferences,
-							  "changed::" CAJA_PREFERENCES_ENABLE_DELETE,
+	g_signal_connect_swapped (peony_preferences,
+							  "changed::" PEONY_PREFERENCES_ENABLE_DELETE,
 							  G_CALLBACK (schedule_update_menus_callback), view);
-	g_signal_connect_swapped (caja_icon_view_preferences,
-							  "changed::" CAJA_PREFERENCES_ICON_VIEW_CAPTIONS,
+	g_signal_connect_swapped (peony_icon_view_preferences,
+							  "changed::" PEONY_PREFERENCES_ICON_VIEW_CAPTIONS,
 							  G_CALLBACK(text_attribute_names_changed_callback),
 							  view);
-	g_signal_connect_swapped (caja_preferences,
-							  "changed::" CAJA_PREFERENCES_SHOW_IMAGE_FILE_THUMBNAILS,
+	g_signal_connect_swapped (peony_preferences,
+							  "changed::" PEONY_PREFERENCES_SHOW_IMAGE_FILE_THUMBNAILS,
 							  G_CALLBACK (image_display_policy_changed_callback),
 							  view);
-	g_signal_connect_swapped (caja_preferences,
-							  "changed::" CAJA_PREFERENCES_CLICK_POLICY,
+	g_signal_connect_swapped (peony_preferences,
+							  "changed::" PEONY_PREFERENCES_CLICK_POLICY,
 							  G_CALLBACK(click_policy_changed_callback),
 							  view);
-	g_signal_connect_swapped (caja_preferences,
-							  "changed::" CAJA_PREFERENCES_SORT_DIRECTORIES_FIRST, 
+	g_signal_connect_swapped (peony_preferences,
+							  "changed::" PEONY_PREFERENCES_SORT_DIRECTORIES_FIRST, 
 							  G_CALLBACK(sort_directories_first_changed_callback),
 							  view);
-	g_signal_connect_swapped (mate_lockdown_preferences,
-							  "changed::" CAJA_PREFERENCES_LOCKDOWN_COMMAND_LINE,
+	g_signal_connect_swapped (ukui_lockdown_preferences,
+							  "changed::" PEONY_PREFERENCES_LOCKDOWN_COMMAND_LINE,
 							  G_CALLBACK (schedule_update_menus), view);
 
 	/* Update undo actions stuff and connect signals from the undostack manager */
@@ -2146,12 +2146,12 @@ fm_directory_view_init (FMDirectoryView *view)
 	view->details->redo_action_description = NULL;
 	view->details->redo_action_label = NULL;
 
-	CajaUndoStackManager* manager = caja_undostack_manager_instance ();
+	PeonyUndoStackManager* manager = peony_undostack_manager_instance ();
 
 	g_signal_connect_object (G_OBJECT(manager), "request-menu-update",
 		   G_CALLBACK(undo_redo_menu_update_callback), view, 0);
 
-	caja_undostack_manager_request_menu_update (caja_undostack_manager_instance());
+	peony_undostack_manager_request_menu_update (peony_undostack_manager_instance());
 }
 
 static void
@@ -2163,21 +2163,21 @@ real_unmerge_menus (FMDirectoryView *view)
 		return;
 	}
 
-	ui_manager = caja_window_info_get_ui_manager (view->details->window);
+	ui_manager = peony_window_info_get_ui_manager (view->details->window);
 
-	caja_ui_unmerge_ui (ui_manager,
+	peony_ui_unmerge_ui (ui_manager,
 				&view->details->dir_merge_id,
 				&view->details->dir_action_group);
-	caja_ui_unmerge_ui (ui_manager,
+	peony_ui_unmerge_ui (ui_manager,
 				&view->details->extensions_menu_merge_id,
 				&view->details->extensions_menu_action_group);
-	caja_ui_unmerge_ui (ui_manager,
+	peony_ui_unmerge_ui (ui_manager,
 				&view->details->open_with_merge_id,
 				&view->details->open_with_action_group);
-	caja_ui_unmerge_ui (ui_manager,
+	peony_ui_unmerge_ui (ui_manager,
 				&view->details->scripts_merge_id,
 				&view->details->scripts_action_group);
-	caja_ui_unmerge_ui (ui_manager,
+	peony_ui_unmerge_ui (ui_manager,
 				&view->details->templates_merge_id,
 				&view->details->templates_action_group);
 }
@@ -2239,12 +2239,12 @@ fm_directory_view_destroy (GtkObject *object)
 	}
 
 	if (view->details->model) {
-		caja_directory_unref (view->details->model);
+		peony_directory_unref (view->details->model);
 		view->details->model = NULL;
 	}
 
 	if (view->details->directory_as_file) {
-		caja_file_unref (view->details->directory_as_file);
+		peony_file_unref (view->details->directory_as_file);
 		view->details->directory_as_file = NULL;
 	}
 
@@ -2262,17 +2262,17 @@ fm_directory_view_finalize (GObject *object)
 
 	view = FM_DIRECTORY_VIEW (object);
 
-	g_signal_handlers_disconnect_by_func (caja_preferences,
+	g_signal_handlers_disconnect_by_func (peony_preferences,
         				      schedule_update_menus_callback, view);
-	g_signal_handlers_disconnect_by_func (caja_icon_view_preferences,
+	g_signal_handlers_disconnect_by_func (peony_icon_view_preferences,
         				      text_attribute_names_changed_callback, view);
-	g_signal_handlers_disconnect_by_func (caja_preferences,
+	g_signal_handlers_disconnect_by_func (peony_preferences,
         				      image_display_policy_changed_callback, view);
-	g_signal_handlers_disconnect_by_func (caja_preferences,
+	g_signal_handlers_disconnect_by_func (peony_preferences,
         				      click_policy_changed_callback, view);
-	g_signal_handlers_disconnect_by_func (caja_preferences,
+	g_signal_handlers_disconnect_by_func (peony_preferences,
         				      sort_directories_first_changed_callback, view);
-	g_signal_handlers_disconnect_by_func (mate_lockdown_preferences,
+	g_signal_handlers_disconnect_by_func (ukui_lockdown_preferences,
         				      schedule_update_menus, view);
 
 	unschedule_pop_up_location_context_menu (view);
@@ -2311,7 +2311,7 @@ fm_directory_view_display_selection_info (FMDirectoryView *view)
 	char *status_string;
 	char *free_space_str;
 	char *obj_selected_free_space_str;
-	CajaFile *file;
+	PeonyFile *file;
 
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
 
@@ -2332,27 +2332,27 @@ fm_directory_view_display_selection_info (FMDirectoryView *view)
 
 	for (p = selection; p != NULL; p = p->next) {
 		file = p->data;
-		if (caja_file_is_directory (file)) {
+		if (peony_file_is_directory (file)) {
 			folder_count++;
-			if (caja_file_get_directory_item_count (file, &file_item_count, NULL)) {
+			if (peony_file_get_directory_item_count (file, &file_item_count, NULL)) {
 				folder_item_count += file_item_count;
 			} else {
 				folder_item_count_known = FALSE;
 			}
 		} else {
 			non_folder_count++;
-			if (!caja_file_can_get_size (file)) {
+			if (!peony_file_can_get_size (file)) {
 				non_folder_size_known = TRUE;
-				non_folder_size += caja_file_get_size (file);
+				non_folder_size += peony_file_get_size (file);
 			}
 		}
 
 		if (first_item_name == NULL) {
-			first_item_name = caja_file_get_display_name (file);
+			first_item_name = peony_file_get_display_name (file);
 		}
 	}
 
-	caja_file_list_free (selection);
+	peony_file_list_free (selection);
 
 	/* Break out cases for localization's sake. But note that there are still pieces
 	 * being assembled in a particular order, which may be a problem for some localizers.
@@ -2416,7 +2416,7 @@ fm_directory_view_display_selection_info (FMDirectoryView *view)
 		if (non_folder_size_known) {
 			char *size_string;
 
-			if (g_settings_get_boolean (caja_preferences, CAJA_PREFERENCES_USE_IEC_UNITS))
+			if (g_settings_get_boolean (peony_preferences, PEONY_PREFERENCES_USE_IEC_UNITS))
 				size_string = g_format_size_full (non_folder_size, G_FORMAT_SIZE_IEC_UNITS);
 			else
 				size_string = g_format_size(non_folder_size);
@@ -2437,7 +2437,7 @@ fm_directory_view_display_selection_info (FMDirectoryView *view)
 		}
 	}
 
-	free_space_str = caja_file_get_volume_free_space (view->details->directory_as_file);
+	free_space_str = peony_file_get_volume_free_space (view->details->directory_as_file);
 	if (free_space_str != NULL) {
 		obj_selected_free_space_str = g_strdup_printf (_("Free space: %s"), free_space_str);
 	}
@@ -2526,7 +2526,7 @@ fm_directory_view_display_selection_info (FMDirectoryView *view)
 	g_free (folder_item_count_str);
 	g_free (non_folder_str);
 
-	caja_window_slot_info_set_status (view->details->slot,
+	peony_window_slot_info_set_status (view->details->slot,
 					      status_string);
 	g_free (status_string);
 }
@@ -2534,7 +2534,7 @@ fm_directory_view_display_selection_info (FMDirectoryView *view)
 void
 fm_directory_view_send_selection_change (FMDirectoryView *view)
 {
-	caja_window_info_report_selection_changed (view->details->window);
+	peony_window_info_report_selection_changed (view->details->window);
 
 	view->details->send_selection_change_to_shell = FALSE;
 }
@@ -2546,13 +2546,13 @@ fm_directory_view_get_allow_moves (FMDirectoryView *view)
 }
 
 static void
-fm_directory_view_load_location (CajaView *caja_view,
+fm_directory_view_load_location (PeonyView *peony_view,
 				 const char *location)
 {
-	CajaDirectory *directory;
+	PeonyDirectory *directory;
 	FMDirectoryView *directory_view;
 
-	directory_view = FM_DIRECTORY_VIEW (caja_view);
+	directory_view = FM_DIRECTORY_VIEW (peony_view);
 
 	if (eel_uri_is_search (location)) {
 		directory_view->details->allow_moves = FALSE;
@@ -2560,15 +2560,15 @@ fm_directory_view_load_location (CajaView *caja_view,
 		directory_view->details->allow_moves = TRUE;
 	}
 
-	directory = caja_directory_get_by_uri (location);
+	directory = peony_directory_get_by_uri (location);
 	load_directory (directory_view, directory);
-	caja_directory_unref (directory);
+	peony_directory_unref (directory);
 }
 
 static void
-fm_directory_view_stop_loading (CajaView *caja_view)
+fm_directory_view_stop_loading (PeonyView *peony_view)
 {
-	fm_directory_view_stop (FM_DIRECTORY_VIEW (caja_view));
+	fm_directory_view_stop (FM_DIRECTORY_VIEW (peony_view));
 }
 
 static gboolean
@@ -2595,11 +2595,11 @@ done_loading (FMDirectoryView *view,
 	}
 
 	/* This can be called during destruction, in which case there
-	 * is no CajaWindowInfo any more.
+	 * is no PeonyWindowInfo any more.
 	 */
 	if (view->details->window != NULL) {
 		if (all_files_seen) {
-			caja_window_info_report_load_complete (view->details->window, CAJA_VIEW (view));
+			peony_window_info_report_load_complete (view->details->window, PEONY_VIEW (view));
 		}
 
 		schedule_update_menus (view);
@@ -2615,7 +2615,7 @@ done_loading (FMDirectoryView *view,
 			view->details->selection_change_is_due_to_shell = TRUE;
 			fm_directory_view_set_selection (view, selection);
 			view->details->selection_change_is_due_to_shell = FALSE;
-			caja_file_list_free (selection);
+			peony_file_list_free (selection);
 
 			if (FM_IS_LIST_VIEW (view)) {
 				/* HACK: We should be able to directly call reveal_selection here,
@@ -2653,7 +2653,7 @@ static void
 debuting_files_data_free (DebutingFilesData *data)
 {
 	g_hash_table_unref (data->debuting_files);
-	caja_file_list_free (data->added_files);
+	peony_file_list_free (data->added_files);
 	g_free (data);
 }
 
@@ -2663,16 +2663,16 @@ debuting_files_data_free (DebutingFilesData *data)
  */
 static void
 debuting_files_add_file_callback (FMDirectoryView *view,
-				  CajaFile *new_file,
-				  CajaDirectory *directory,
+				  PeonyFile *new_file,
+				  PeonyDirectory *directory,
 				  DebutingFilesData *data)
 {
 	GFile *location;
 
-	location = caja_file_get_location (new_file);
+	location = peony_file_get_location (new_file);
 
 	if (g_hash_table_remove (data->debuting_files, location)) {
-		caja_file_ref (new_file);
+		peony_file_ref (new_file);
 		data->added_files = g_list_prepend (data->added_files, new_file);
 
 		if (g_hash_table_size (data->debuting_files) == 0) {
@@ -2698,21 +2698,21 @@ copy_move_done_data_free (CopyMoveDoneData *data)
 	g_assert (data != NULL);
 
 	eel_remove_weak_pointer (&data->directory_view);
-	caja_file_list_free (data->added_files);
+	peony_file_list_free (data->added_files);
 	g_free (data);
 }
 
 static void
 pre_copy_move_add_file_callback (FMDirectoryView *view,
-				 CajaFile *new_file,
-				 CajaDirectory *directory,
+				 PeonyFile *new_file,
+				 PeonyDirectory *directory,
 				 CopyMoveDoneData *data)
 {
-	caja_file_ref (new_file);
+	peony_file_ref (new_file);
 	data->added_files = g_list_prepend (data->added_files, new_file);
 }
 
-/* This needs to be called prior to caja_file_operations_copy_move.
+/* This needs to be called prior to peony_file_operations_copy_move.
  * It hooks up a signal handler to catch any icons that get added before
  * the copy_done_callback is invoked. The return value should  be passed
  * as the data for uri_copy_move_done_callback.
@@ -2746,7 +2746,7 @@ copy_move_done_partition_func (gpointer data, gpointer callback_data)
  	GFile *location;
  	gboolean result;
 
-	location = caja_file_get_location (CAJA_FILE (data));
+	location = peony_file_get_location (PEONY_FILE (data));
 	result = g_hash_table_remove ((GHashTable *) callback_data, location);
 	g_object_unref (location);
 
@@ -2769,7 +2769,7 @@ remove_not_really_moved_files (gpointer key,
 
 	added_files = callback_data;
 	*added_files = g_list_prepend (*added_files,
-				       caja_file_get (loc));
+				       peony_file_get (loc));
 	return TRUE;
 }
 
@@ -2849,28 +2849,28 @@ copy_move_done_callback (GHashTable *debuting_files, gpointer data)
 }
 
 static gboolean
-real_file_still_belongs (FMDirectoryView *view, CajaFile *file, CajaDirectory *directory)
+real_file_still_belongs (FMDirectoryView *view, PeonyFile *file, PeonyDirectory *directory)
 {
 	if (view->details->model != directory &&
 	    g_list_find (view->details->subdirectory_list, directory) == NULL) {
 		return FALSE;
 	}
 
-	return caja_directory_contains_file (directory, file);
+	return peony_directory_contains_file (directory, file);
 }
 
 static gboolean
-still_should_show_file (FMDirectoryView *view, CajaFile *file, CajaDirectory *directory)
+still_should_show_file (FMDirectoryView *view, PeonyFile *file, PeonyDirectory *directory)
 {
 	return fm_directory_view_should_show_file (view, file)
 		&& EEL_INVOKE_METHOD (FM_DIRECTORY_VIEW_CLASS, view, file_still_belongs, (view, file, directory));
 }
 
 static gboolean
-ready_to_load (CajaFile *file)
+ready_to_load (PeonyFile *file)
 {
-	return caja_file_check_if_ready (file,
-					     CAJA_FILE_ATTRIBUTES_FOR_ICON);
+	return peony_file_check_if_ready (file,
+					     PEONY_FILE_ATTRIBUTES_FOR_ICON);
 }
 
 static int
@@ -3022,8 +3022,8 @@ process_old_files (FMDirectoryView *view)
 			files = file_and_directory_list_to_files (files_changed);
 			send_selection_change = eel_g_lists_sort_and_check_for_intersection
 				(&files, &selection);
-			caja_file_list_free (files);
-			caja_file_list_free (selection);
+			peony_file_list_free (files);
+			peony_file_list_free (selection);
 		}
 
 		file_and_directory_list_free (view->details->old_added_files);
@@ -3054,7 +3054,7 @@ display_pending_files (FMDirectoryView *view)
 	process_old_files (view);
 
 	if (view->details->model != NULL
-	    && caja_directory_are_all_files_seen (view->details->model)
+	    && peony_directory_are_all_files_seen (view->details->model)
 	    && g_hash_table_size (view->details->non_ready_files) == 0) {
 		done_loading (view, TRUE);
 	}
@@ -3196,7 +3196,7 @@ unschedule_display_of_pending_files (FMDirectoryView *view)
 
 static void
 queue_pending_files (FMDirectoryView *view,
-		     CajaDirectory *directory,
+		     PeonyDirectory *directory,
 		     GList *files,
 		     GList **pending_list)
 {
@@ -3225,7 +3225,7 @@ queue_pending_files (FMDirectoryView *view,
 	*pending_list = g_list_concat (file_and_directory_list_from_files (directory, files),
 				       *pending_list);
 
-	if (! view->details->loading || caja_directory_are_all_files_seen (directory)) {
+	if (! view->details->loading || peony_directory_are_all_files_seen (directory)) {
 		schedule_timeout_display_of_pending_files (view, view->details->update_interval);
 	}
 }
@@ -3314,7 +3314,7 @@ action_redo_callback (GtkAction *action,
 }
 
 static void
-files_added_callback (CajaDirectory *directory,
+files_added_callback (PeonyDirectory *directory,
 		      GList *files,
 		      gpointer callback_data)
 {
@@ -3326,7 +3326,7 @@ files_added_callback (CajaDirectory *directory,
 
 	window = fm_directory_view_get_containing_window (view);
 	uri = fm_directory_view_get_uri (view);
-	caja_debug_log_with_file_list (FALSE, CAJA_DEBUG_LOG_DOMAIN_ASYNC, files,
+	peony_debug_log_with_file_list (FALSE, PEONY_DEBUG_LOG_DOMAIN_ASYNC, files,
 					   "files added in window %p: %s",
 					   window,
 					   uri ? uri : "(no directory)");
@@ -3341,7 +3341,7 @@ files_added_callback (CajaDirectory *directory,
 }
 
 static void
-files_changed_callback (CajaDirectory *directory,
+files_changed_callback (PeonyDirectory *directory,
 			GList *files,
 			gpointer callback_data)
 {
@@ -3353,7 +3353,7 @@ files_changed_callback (CajaDirectory *directory,
 
 	window = fm_directory_view_get_containing_window (view);
 	uri = fm_directory_view_get_uri (view);
-	caja_debug_log_with_file_list (FALSE, CAJA_DEBUG_LOG_DOMAIN_ASYNC, files,
+	peony_debug_log_with_file_list (FALSE, PEONY_DEBUG_LOG_DOMAIN_ASYNC, files,
 					   "files changed in window %p: %s",
 					   window,
 					   uri ? uri : "(no directory)");
@@ -3373,7 +3373,7 @@ files_changed_callback (CajaDirectory *directory,
 }
 
 static void
-done_loading_callback (CajaDirectory *directory,
+done_loading_callback (PeonyDirectory *directory,
 		       gpointer callback_data)
 {
 	FMDirectoryView *view;
@@ -3392,7 +3392,7 @@ done_loading_callback (CajaDirectory *directory,
 }
 
 static void
-load_error_callback (CajaDirectory *directory,
+load_error_callback (PeonyDirectory *directory,
 		     GError *error,
 		     gpointer callback_data)
 {
@@ -3416,7 +3416,7 @@ static void
 real_load_error (FMDirectoryView *view, GError *error)
 {
 	/* Report only one error per failed directory load (from the UI
-	 * point of view, not from the CajaDirectory point of view).
+	 * point of view, not from the PeonyDirectory point of view).
 	 * Otherwise you can get multiple identical errors caused by
 	 * unrelated code that just happens to try to iterate this
 	 * directory.
@@ -3432,23 +3432,23 @@ real_load_error (FMDirectoryView *view, GError *error)
 
 void
 fm_directory_view_add_subdirectory (FMDirectoryView  *view,
-				    CajaDirectory*directory)
+				    PeonyDirectory*directory)
 {
-	CajaFileAttributes attributes;
+	PeonyFileAttributes attributes;
 
 	g_assert (!g_list_find (view->details->subdirectory_list, directory));
 
-	caja_directory_ref (directory);
+	peony_directory_ref (directory);
 
 	attributes =
-		CAJA_FILE_ATTRIBUTES_FOR_ICON |
-		CAJA_FILE_ATTRIBUTE_DIRECTORY_ITEM_COUNT |
-		CAJA_FILE_ATTRIBUTE_INFO |
-		CAJA_FILE_ATTRIBUTE_LINK_INFO |
-		CAJA_FILE_ATTRIBUTE_MOUNT |
-		CAJA_FILE_ATTRIBUTE_EXTENSION_INFO;
+		PEONY_FILE_ATTRIBUTES_FOR_ICON |
+		PEONY_FILE_ATTRIBUTE_DIRECTORY_ITEM_COUNT |
+		PEONY_FILE_ATTRIBUTE_INFO |
+		PEONY_FILE_ATTRIBUTE_LINK_INFO |
+		PEONY_FILE_ATTRIBUTE_MOUNT |
+		PEONY_FILE_ATTRIBUTE_EXTENSION_INFO;
 
-	caja_directory_file_monitor_add (directory,
+	peony_directory_file_monitor_add (directory,
 					     &view->details->model,
 					     view->details->show_hidden_files,
 					     attributes,
@@ -3467,7 +3467,7 @@ fm_directory_view_add_subdirectory (FMDirectoryView  *view,
 
 void
 fm_directory_view_remove_subdirectory (FMDirectoryView  *view,
-				       CajaDirectory*directory)
+				       PeonyDirectory*directory)
 {
 	g_assert (g_list_find (view->details->subdirectory_list, directory));
 
@@ -3481,9 +3481,9 @@ fm_directory_view_remove_subdirectory (FMDirectoryView  *view,
 					      G_CALLBACK (files_changed_callback),
 					      view);
 
-	caja_directory_file_monitor_remove (directory, &view->details->model);
+	peony_directory_file_monitor_remove (directory, &view->details->model);
 
-	caja_directory_unref (directory);
+	peony_directory_unref (directory);
 }
 
 /**
@@ -3581,7 +3581,7 @@ fm_directory_view_bump_zoom_level (FMDirectoryView *view, int zoom_increment)
  **/
 void
 fm_directory_view_zoom_to_level (FMDirectoryView *view,
-				 CajaZoomLevel zoom_level)
+				 PeonyZoomLevel zoom_level)
 {
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
 
@@ -3595,13 +3595,13 @@ fm_directory_view_zoom_to_level (FMDirectoryView *view,
 }
 
 
-CajaZoomLevel
+PeonyZoomLevel
 fm_directory_view_get_zoom_level (FMDirectoryView *view)
 {
-	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), CAJA_ZOOM_LEVEL_STANDARD);
+	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), PEONY_ZOOM_LEVEL_STANDARD);
 
 	if (!fm_directory_view_supports_zooming (view)) {
-		return CAJA_ZOOM_LEVEL_STANDARD;
+		return PEONY_ZOOM_LEVEL_STANDARD;
 	}
 
 	return EEL_CALL_METHOD_WITH_RETURN_VALUE
@@ -3656,13 +3656,13 @@ fm_directory_view_can_zoom_in (FMDirectoryView *view)
  * fm_directory_view_can_rename_file
  *
  * Determine whether a file can be renamed.
- * @file: A CajaFile
+ * @file: A PeonyFile
  *
  * Return value: TRUE if @file can be renamed, FALSE otherwise.
  *
  **/
 static gboolean
-fm_directory_view_can_rename_file (FMDirectoryView *view, CajaFile *file)
+fm_directory_view_can_rename_file (FMDirectoryView *view, PeonyFile *file)
 {
 	return EEL_CALL_METHOD_WITH_RETURN_VALUE
 		(FM_DIRECTORY_VIEW_CLASS, view,
@@ -3732,13 +3732,13 @@ fm_directory_view_set_is_active (FMDirectoryView *view,
 /**
  * fm_directory_view_get_selection:
  *
- * Get a list of CajaFile pointers that represents the
+ * Get a list of PeonyFile pointers that represents the
  * currently-selected items in this view. Subclasses must override
  * the signal handler for the 'get_selection' signal. Callers are
  * responsible for g_free-ing the list (but not its data).
  * @view: FMDirectoryView whose selected items are of interest.
  *
- * Return value: GList of CajaFile pointers representing the selection.
+ * Return value: GList of PeonyFile pointers representing the selection.
  *
  **/
 GList *
@@ -3787,7 +3787,7 @@ fm_directory_view_get_ui_manager (FMDirectoryView  *view)
 	if (view->details->window == NULL) {
 		return NULL;
 	}
-	return caja_window_info_get_ui_manager (view->details->window);
+	return peony_window_info_get_ui_manager (view->details->window);
 }
 
 /**
@@ -3796,10 +3796,10 @@ fm_directory_view_get_ui_manager (FMDirectoryView  *view)
  * Get the model for this FMDirectoryView.
  * @view: FMDirectoryView of interest.
  *
- * Return value: CajaDirectory for this view.
+ * Return value: PeonyDirectory for this view.
  *
  **/
-CajaDirectory *
+PeonyDirectory *
 fm_directory_view_get_model (FMDirectoryView *view)
 {
 	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), NULL);
@@ -3818,15 +3818,15 @@ fm_directory_view_get_copied_files_atom (FMDirectoryView *view)
 static void
 prepend_uri_one (gpointer data, gpointer callback_data)
 {
-	CajaFile *file;
+	PeonyFile *file;
 	GList **result;
 
-	g_assert (CAJA_IS_FILE (data));
+	g_assert (PEONY_IS_FILE (data));
 	g_assert (callback_data != NULL);
 
 	result = (GList **) callback_data;
-	file = (CajaFile *) data;
-	*result = g_list_prepend (*result, caja_file_get_uri (file));
+	file = (PeonyFile *) data;
+	*result = g_list_prepend (*result, peony_file_get_uri (file));
 }
 
 static void
@@ -3874,7 +3874,7 @@ fm_directory_view_create_links_for_files (FMDirectoryView *view, GList *files,
 
         copy_move_done_data = pre_copy_move (view);
 	dir_uri = fm_directory_view_get_backing_uri (view);
-	caja_file_operations_copy_move (uris, relative_item_points, dir_uri, GDK_ACTION_LINK,
+	peony_file_operations_copy_move (uris, relative_item_points, dir_uri, GDK_ACTION_LINK,
 					    GTK_WIDGET (view), copy_move_done_callback, copy_move_done_data);
 	g_free (dir_uri);
 	g_list_free_full (uris, g_free);
@@ -3907,7 +3907,7 @@ fm_directory_view_duplicate_selection (FMDirectoryView *view, GList *files,
 			    DUPLICATE_VERTICAL_ICON_OFFSET);
 
         copy_move_done_data = pre_copy_move (view);
-	caja_file_operations_copy_move (uris, relative_item_points, NULL, GDK_ACTION_COPY,
+	peony_file_operations_copy_move (uris, relative_item_points, NULL, GDK_ACTION_COPY,
 		GTK_WIDGET (view), copy_move_done_callback, copy_move_done_data);
 	g_list_free_full (uris, g_free);
 }
@@ -3916,7 +3916,7 @@ fm_directory_view_duplicate_selection (FMDirectoryView *view, GList *files,
  *
  * Return TRUE if one of our special links is in the selection.
  * Special links include the following:
- *	 CAJA_DESKTOP_LINK_TRASH, CAJA_DESKTOP_LINK_HOME, CAJA_DESKTOP_LINK_MOUNT
+ *	 PEONY_DESKTOP_LINK_TRASH, PEONY_DESKTOP_LINK_HOME, PEONY_DESKTOP_LINK_MOUNT
  */
 
 static gboolean
@@ -3924,7 +3924,7 @@ special_link_in_selection (FMDirectoryView *view)
 {
 	gboolean saw_link;
 	GList *selection, *node;
-	CajaFile *file;
+	PeonyFile *file;
 
 	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), FALSE);
 
@@ -3933,16 +3933,16 @@ special_link_in_selection (FMDirectoryView *view)
 	selection = fm_directory_view_get_selection (FM_DIRECTORY_VIEW (view));
 
 	for (node = selection; node != NULL; node = node->next) {
-		file = CAJA_FILE (node->data);
+		file = PEONY_FILE (node->data);
 
-		saw_link = CAJA_IS_DESKTOP_ICON_FILE (file);
+		saw_link = PEONY_IS_DESKTOP_ICON_FILE (file);
 
 		if (saw_link) {
 			break;
 		}
 	}
 
-	caja_file_list_free (selection);
+	peony_file_list_free (selection);
 
 	return saw_link;
 }
@@ -3957,7 +3957,7 @@ desktop_or_home_dir_in_selection (FMDirectoryView *view)
 {
 	gboolean saw_desktop_or_home_dir;
 	GList *selection, *node;
-	CajaFile *file;
+	PeonyFile *file;
 
 	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), FALSE);
 
@@ -3966,18 +3966,18 @@ desktop_or_home_dir_in_selection (FMDirectoryView *view)
 	selection = fm_directory_view_get_selection (FM_DIRECTORY_VIEW (view));
 
 	for (node = selection; node != NULL; node = node->next) {
-		file = CAJA_FILE (node->data);
+		file = PEONY_FILE (node->data);
 
 		saw_desktop_or_home_dir =
-			caja_file_is_home (file)
-			|| caja_file_is_desktop_directory (file);
+			peony_file_is_home (file)
+			|| peony_file_is_desktop_directory (file);
 
 		if (saw_desktop_or_home_dir) {
 			break;
 		}
 	}
 
-	caja_file_list_free (selection);
+	peony_file_list_free (selection);
 
 	return saw_desktop_or_home_dir;
 }
@@ -4004,27 +4004,27 @@ trash_or_delete_files (GtkWindow *parent_window,
 	locations = NULL;
 	for (node = files; node != NULL; node = node->next) {
 		locations = g_list_prepend (locations,
-					    caja_file_get_location ((CajaFile *) node->data));
+					    peony_file_get_location ((PeonyFile *) node->data));
 	}
 
 	locations = g_list_reverse (locations);
 
-	caja_file_operations_trash_or_delete (locations,
+	peony_file_operations_trash_or_delete (locations,
 						  parent_window,
-						  (CajaDeleteCallback) trash_or_delete_done_cb,
+						  (PeonyDeleteCallback) trash_or_delete_done_cb,
 						  view);
 	g_list_free_full (locations, g_object_unref);
 }
 
 static gboolean
-can_rename_file (FMDirectoryView *view, CajaFile *file)
+can_rename_file (FMDirectoryView *view, PeonyFile *file)
 {
-	return caja_file_can_rename (file);
+	return peony_file_can_rename (file);
 }
 
 static void
 start_renaming_file (FMDirectoryView *view,
-		     CajaFile *file,
+		     PeonyFile *file,
 		     gboolean select_all)
 {
 	if (file !=  NULL) {
@@ -4034,14 +4034,14 @@ start_renaming_file (FMDirectoryView *view,
 
 typedef struct {
 	FMDirectoryView *view;
-	CajaFile *new_file;
+	PeonyFile *new_file;
 } RenameData;
 
 static gboolean
 delayed_rename_file_hack_callback (RenameData *data)
 {
 	FMDirectoryView *view;
-	CajaFile *new_file;
+	PeonyFile *new_file;
 
 	view = data->view;
 	new_file = data->new_file;
@@ -4059,13 +4059,13 @@ static void
 delayed_rename_file_hack_removed (RenameData *data)
 {
 	g_object_unref (data->view);
-	caja_file_unref (data->new_file);
+	peony_file_unref (data->new_file);
 	g_free (data);
 }
 
 
 static void
-rename_file (FMDirectoryView *view, CajaFile *new_file)
+rename_file (FMDirectoryView *view, PeonyFile *new_file)
 {
 	RenameData *data;
 
@@ -4084,7 +4084,7 @@ rename_file (FMDirectoryView *view, CajaFile *new_file)
 
 		data = g_new (RenameData, 1);
 		data->view = g_object_ref (view);
-		data->new_file = caja_file_ref (new_file);
+		data->new_file = peony_file_ref (new_file);
 		if (view->details->delayed_rename_file_id != 0) {
 			g_source_remove (view->details->delayed_rename_file_id);
 		}
@@ -4104,12 +4104,12 @@ rename_file (FMDirectoryView *view, CajaFile *new_file)
 }
 
 static void
-reveal_newly_added_folder (FMDirectoryView *view, CajaFile *new_file,
-			   CajaDirectory *directory, GFile *target_location)
+reveal_newly_added_folder (FMDirectoryView *view, PeonyFile *new_file,
+			   PeonyDirectory *directory, GFile *target_location)
 {
 	GFile *location;
 
-	location = caja_file_get_location (new_file);
+	location = peony_file_get_location (new_file);
 	if (g_file_equal (location, target_location)) {
 		g_signal_handlers_disconnect_by_func (view,
 						      G_CALLBACK (reveal_newly_added_folder),
@@ -4126,21 +4126,21 @@ typedef struct {
 
 
 static void
-track_newly_added_locations (FMDirectoryView *view, CajaFile *new_file,
-			     CajaDirectory *directory, gpointer user_data)
+track_newly_added_locations (FMDirectoryView *view, PeonyFile *new_file,
+			     PeonyDirectory *directory, gpointer user_data)
 {
 	NewFolderData *data;
 
 	data = user_data;
 
-	g_hash_table_insert (data->added_locations, caja_file_get_location (new_file), NULL);
+	g_hash_table_insert (data->added_locations, peony_file_get_location (new_file), NULL);
 }
 
 static void
 new_folder_done (GFile *new_folder, gpointer user_data)
 {
 	FMDirectoryView *directory_view;
-	CajaFile *file;
+	PeonyFile *file;
 	char screen_string[32];
 	GdkScreen *screen;
 	NewFolderData *data;
@@ -4165,9 +4165,9 @@ new_folder_done (GFile *new_folder, gpointer user_data)
 	g_snprintf (screen_string, sizeof (screen_string), "%d", gdk_screen_get_number (screen));
 
 
-	file = caja_file_get (new_folder);
-	caja_file_set_metadata
-		(file, CAJA_METADATA_KEY_SCREEN,
+	file = peony_file_get (new_folder);
+	peony_file_set_metadata
+		(file, PEONY_METADATA_KEY_SCREEN,
 		 NULL,
 		 screen_string);
 
@@ -4186,7 +4186,7 @@ new_folder_done (GFile *new_folder, gpointer user_data)
 				       (GClosureNotify)g_object_unref,
 				       G_CONNECT_AFTER);
 	}
-	caja_file_unref (file);
+	peony_file_unref (file);
 
  fail:
 	g_hash_table_destroy (data->added_locations);
@@ -4260,7 +4260,7 @@ fm_directory_view_new_folder (FMDirectoryView *directory_view)
 	pos = context_menu_to_file_operation_position (directory_view);
 
 	parent_uri = fm_directory_view_get_backing_uri (directory_view);
-	caja_file_operations_new_folder (GTK_WIDGET (directory_view),
+	peony_file_operations_new_folder (GTK_WIDGET (directory_view),
 					     pos, parent_uri,
 					     new_folder_done, data);
 
@@ -4302,7 +4302,7 @@ fm_directory_view_new_file_with_initial_contents (FMDirectoryView *directory_vie
 		pos = context_menu_to_file_operation_position (directory_view);
 	}
 
-	caja_file_operations_new_file (GTK_WIDGET (directory_view),
+	peony_file_operations_new_file (GTK_WIDGET (directory_view),
 					   pos, parent_uri, filename,
 					   initial_contents, length,
 					   new_folder_done, data);
@@ -4311,7 +4311,7 @@ fm_directory_view_new_file_with_initial_contents (FMDirectoryView *directory_vie
 void
 fm_directory_view_new_file (FMDirectoryView *directory_view,
 			    const char *parent_uri,
-			    CajaFile *source)
+			    PeonyFile *source)
 {
 	GdkPoint *pos;
 	NewFolderData *data;
@@ -4335,15 +4335,15 @@ fm_directory_view_new_file (FMDirectoryView *directory_view,
 		return;
 	}
 
-	g_return_if_fail (caja_file_is_local (source));
+	g_return_if_fail (peony_file_is_local (source));
 
 	pos = context_menu_to_file_operation_position (directory_view);
 
 	data = setup_new_folder_data (directory_view);
 
-	source_uri = caja_file_get_uri (source);
+	source_uri = peony_file_get_uri (source);
 
-	caja_file_operations_new_file_from_template (GTK_WIDGET (directory_view),
+	peony_file_operations_new_file_from_template (GTK_WIDGET (directory_view),
 							 pos,
 							 parent_uri != NULL ? parent_uri : container_uri,
 							 NULL,
@@ -4359,28 +4359,28 @@ fm_directory_view_new_file (FMDirectoryView *directory_view,
 static void
 open_one_in_new_window (gpointer data, gpointer callback_data)
 {
-	g_assert (CAJA_IS_FILE (data));
+	g_assert (PEONY_IS_FILE (data));
 	g_assert (FM_IS_DIRECTORY_VIEW (callback_data));
 
 	fm_directory_view_activate_file (FM_DIRECTORY_VIEW (callback_data),
-					 CAJA_FILE (data),
-					 CAJA_WINDOW_OPEN_IN_NAVIGATION,
+					 PEONY_FILE (data),
+					 PEONY_WINDOW_OPEN_IN_NAVIGATION,
 					 0);
 }
 
 static void
 open_one_in_folder_window (gpointer data, gpointer callback_data)
 {
-	g_assert (CAJA_IS_FILE (data));
+	g_assert (PEONY_IS_FILE (data));
 	g_assert (FM_IS_DIRECTORY_VIEW (callback_data));
 
 	fm_directory_view_activate_file (FM_DIRECTORY_VIEW (callback_data),
-					 CAJA_FILE (data),
-					 CAJA_WINDOW_OPEN_IN_SPATIAL,
+					 PEONY_FILE (data),
+					 PEONY_WINDOW_OPEN_IN_SPATIAL,
 					 0);
 }
 
-CajaFile *
+PeonyFile *
 fm_directory_view_get_directory_as_file (FMDirectoryView *view)
 {
 	g_assert (FM_IS_DIRECTORY_VIEW (view));
@@ -4395,7 +4395,7 @@ open_with_launch_application_callback (GtkAction *action,
 	ApplicationLaunchParameters *launch_parameters;
 
 	launch_parameters = (ApplicationLaunchParameters *) callback_data;
-	caja_launch_application
+	peony_launch_application
 		(launch_parameters->application,
 		 launch_parameters->files,
 		 fm_directory_view_get_containing_window (launch_parameters->directory_view));
@@ -4591,7 +4591,7 @@ add_application_to_open_with_menu (FMDirectoryView *view,
 				     action);
 	g_object_unref (action);
 
-	gtk_ui_manager_add_ui (caja_window_info_get_ui_manager (view->details->window),
+	gtk_ui_manager_add_ui (peony_window_info_get_ui_manager (view->details->window),
 			       view->details->open_with_merge_id,
 			       menu_placeholder,
 			       action_name,
@@ -4601,12 +4601,12 @@ add_application_to_open_with_menu (FMDirectoryView *view,
 
 	path = g_strdup_printf ("%s/%s", menu_placeholder, action_name);
 	menuitem = gtk_ui_manager_get_widget (
-			caja_window_info_get_ui_manager (view->details->window),
+			peony_window_info_get_ui_manager (view->details->window),
 			path);
 	gtk_image_menu_item_set_always_show_image (GTK_IMAGE_MENU_ITEM (menuitem), TRUE);
 	g_free (path);
 
-	gtk_ui_manager_add_ui (caja_window_info_get_ui_manager (view->details->window),
+	gtk_ui_manager_add_ui (peony_window_info_get_ui_manager (view->details->window),
 			       view->details->open_with_merge_id,
 			       popup_placeholder,
 			       action_name,
@@ -4616,7 +4616,7 @@ add_application_to_open_with_menu (FMDirectoryView *view,
 
 	path = g_strdup_printf ("%s/%s", popup_placeholder, action_name);
 	menuitem = gtk_ui_manager_get_widget (
-			caja_window_info_get_ui_manager (view->details->window),
+			peony_window_info_get_ui_manager (view->details->window),
 			path);
 	gtk_image_menu_item_set_always_show_image (GTK_IMAGE_MENU_ITEM (menuitem), TRUE);
 
@@ -4632,7 +4632,7 @@ add_parent_folder_to_open_menu (FMDirectoryView *view,
 				const char *menu_placeholder,
 				const char *popup_placeholder)
 {
-	CajaFile *file;
+	PeonyFile *file;
 	gchar *uri;
 	char *tip;
 	char *label;
@@ -4643,10 +4643,10 @@ add_parent_folder_to_open_menu (FMDirectoryView *view,
 
 	file = g_list_first(files)->data;
 
-	if (caja_file_is_directory (file))
+	if (peony_file_is_directory (file))
 		return;
 
-	uri = caja_file_get_parent_uri (file);
+	uri = peony_file_get_parent_uri (file);
 
 	label = g_strdup (_("Open parent location"));
 	tip = g_strdup (_("Open parent location for the selected item"));
@@ -4667,7 +4667,7 @@ add_parent_folder_to_open_menu (FMDirectoryView *view,
 				     action);
 	g_object_unref (action);
 
-	gtk_ui_manager_add_ui (caja_window_info_get_ui_manager (view->details->window),
+	gtk_ui_manager_add_ui (peony_window_info_get_ui_manager (view->details->window),
 			       view->details->open_with_merge_id,
 			       menu_placeholder,
 			       action_name,
@@ -4677,12 +4677,12 @@ add_parent_folder_to_open_menu (FMDirectoryView *view,
 
 	path = g_strdup_printf ("%s/%s", menu_placeholder, action_name);
 	menuitem = gtk_ui_manager_get_widget (
-			caja_window_info_get_ui_manager (view->details->window),
+			peony_window_info_get_ui_manager (view->details->window),
 			path);
 	gtk_image_menu_item_set_always_show_image (GTK_IMAGE_MENU_ITEM (menuitem), TRUE);
 	g_free (path);
 
-	gtk_ui_manager_add_ui (caja_window_info_get_ui_manager (view->details->window),
+	gtk_ui_manager_add_ui (peony_window_info_get_ui_manager (view->details->window),
 			       view->details->open_with_merge_id,
 			       popup_placeholder,
 			       action_name,
@@ -4692,7 +4692,7 @@ add_parent_folder_to_open_menu (FMDirectoryView *view,
 
 	path = g_strdup_printf ("%s/%s", popup_placeholder, action_name);
 	menuitem = gtk_ui_manager_get_widget (
-			caja_window_info_get_ui_manager (view->details->window),
+			peony_window_info_get_ui_manager (view->details->window),
 			path);
 	gtk_image_menu_item_set_always_show_image (GTK_IMAGE_MENU_ITEM (menuitem), TRUE);
 
@@ -4717,7 +4717,7 @@ get_x_content_async_callback (char **content,
 }
 
 static void
-add_x_content_apps (FMDirectoryView *view, CajaFile *file, GList **applications)
+add_x_content_apps (FMDirectoryView *view, PeonyFile *file, GList **applications)
 {
 	GMount *mount;
 	char **x_content_types;
@@ -4725,13 +4725,13 @@ add_x_content_apps (FMDirectoryView *view, CajaFile *file, GList **applications)
 
 	g_return_if_fail (applications != NULL);
 
-	mount = caja_file_get_mount (file);
+	mount = peony_file_get_mount (file);
 
 	if (mount == NULL) {
 		return;
 	}
 
-	x_content_types = caja_autorun_get_cached_x_content_types_for_mount (mount);
+	x_content_types = peony_autorun_get_cached_x_content_types_for_mount (mount);
 	if (x_content_types != NULL) {
 		for (n = 0; x_content_types[n] != NULL; n++) {
 			char *x_content_type = x_content_types[n];
@@ -4742,7 +4742,7 @@ add_x_content_apps (FMDirectoryView *view, CajaFile *file, GList **applications)
 		}
 		g_strfreev (x_content_types);
 	} else {
-		caja_autorun_get_x_content_types_for_mount_async (mount,
+		peony_autorun_get_x_content_types_for_mount_async (mount,
 								      get_x_content_async_callback,
 								      NULL,
 								      g_object_ref (view));
@@ -4756,7 +4756,7 @@ static void
 reset_open_with_menu (FMDirectoryView *view, GList *selection)
 {
 	GList *applications, *node;
-	CajaFile *file;
+	PeonyFile *file;
 	gboolean submenu_visible, filter_default;
 	int num_applications;
 	int index;
@@ -4768,12 +4768,12 @@ reset_open_with_menu (FMDirectoryView *view, GList *selection)
 
 	/* Clear any previous inserted items in the applications and viewers placeholders */
 
-	ui_manager = caja_window_info_get_ui_manager (view->details->window);
-	caja_ui_unmerge_ui (ui_manager,
+	ui_manager = peony_window_info_get_ui_manager (view->details->window);
+	peony_ui_unmerge_ui (ui_manager,
 				&view->details->open_with_merge_id,
 				&view->details->open_with_action_group);
 
-	caja_ui_prepare_merge_ui (ui_manager,
+	peony_ui_prepare_merge_ui (ui_manager,
 				      "OpenWithGroup",
 				      &view->details->open_with_merge_id,
 				      &view->details->open_with_action_group);
@@ -4785,25 +4785,25 @@ reset_open_with_menu (FMDirectoryView *view, GList *selection)
 
 	for (node = selection; node != NULL; node = node->next) {
 
-		file = CAJA_FILE (node->data);
+		file = PEONY_FILE (node->data);
 
 		other_applications_visible &=
-			(!caja_mime_file_opens_in_view (file) ||
-			 caja_file_is_directory (file));
+			(!peony_mime_file_opens_in_view (file) ||
+			 peony_file_is_directory (file));
 	}
 
 	default_app = NULL;
 	if (filter_default) {
-		default_app = caja_mime_get_default_application_for_files (selection);
+		default_app = peony_mime_get_default_application_for_files (selection);
 	}
 
 	applications = NULL;
 	if (other_applications_visible) {
-		applications = caja_mime_get_applications_for_files (selection);
+		applications = peony_mime_get_applications_for_files (selection);
 	}
 
 	if (g_list_length (selection) == 1) {
-		add_x_content_apps (view, CAJA_FILE (selection->data), &applications);
+		add_x_content_apps (view, PEONY_FILE (selection->data), &applications);
 	}
 
 
@@ -4834,7 +4834,7 @@ reset_open_with_menu (FMDirectoryView *view, GList *selection)
 			popup_path = FM_DIRECTORY_VIEW_POPUP_PATH_APPLICATIONS_PLACEHOLDER;
 		}
 
-		gtk_ui_manager_add_ui (caja_window_info_get_ui_manager (view->details->window),
+		gtk_ui_manager_add_ui (peony_window_info_get_ui_manager (view->details->window),
 				       view->details->open_with_merge_id,
 				       menu_path,
 				       "separator",
@@ -4889,28 +4889,28 @@ get_all_extension_menu_items (GtkWidget *window,
 	GList *providers;
 	GList *l;
 
-	providers = caja_extensions_get_for_type (CAJA_TYPE_MENU_PROVIDER);
+	providers = peony_extensions_get_for_type (PEONY_TYPE_MENU_PROVIDER);
 	items = NULL;
 
 	for (l = providers; l != NULL; l = l->next) {
-		CajaMenuProvider *provider;
+		PeonyMenuProvider *provider;
 		GList *file_items;
 
-		provider = CAJA_MENU_PROVIDER (l->data);
-		file_items = caja_menu_provider_get_file_items (provider,
+		provider = PEONY_MENU_PROVIDER (l->data);
+		file_items = peony_menu_provider_get_file_items (provider,
 								    window,
 								    selection);
 		items = g_list_concat (items, file_items);
 	}
 
-	caja_module_extension_list_free (providers);
+	peony_module_extension_list_free (providers);
 
 	return items;
 }
 
 typedef struct
 {
-	CajaMenuItem *item;
+	PeonyMenuItem *item;
 	FMDirectoryView *view;
 	GList *selection;
 	GtkAction *action;
@@ -4921,7 +4921,7 @@ static void
 extension_action_callback_data_free (ExtensionActionCallbackData *data)
 {
 	g_object_unref (data->item);
-	caja_file_list_free (data->selection);
+	peony_file_list_free (data->selection);
 
 	g_free (data);
 }
@@ -4932,7 +4932,7 @@ search_in_menu_items (GList* items, const char *item_name)
 	GList* list;
 
 	for (list = items; list != NULL; list = list->next) {
-		CajaMenu* menu;
+		PeonyMenu* menu;
 		char *name;
 
 		g_object_get (list->data, "name", &name, NULL);
@@ -4948,9 +4948,9 @@ search_in_menu_items (GList* items, const char *item_name)
 			gboolean ret;
 			GList* submenus;
 
-			submenus = caja_menu_get_items (menu);
+			submenus = peony_menu_get_items (menu);
 			ret = search_in_menu_items (submenus, item_name);
-			caja_menu_item_list_free (submenus);
+			peony_menu_item_list_free (submenus);
 			g_object_unref (menu);
 			if (ret) {
 			    return TRUE;
@@ -4988,41 +4988,41 @@ extension_action_callback (GtkAction *action,
 	g_free (item_name);
 
 	if (is_valid) {
-		caja_menu_item_activate (data->item);
+		peony_menu_item_activate (data->item);
 	}
 }
 
 static GdkPixbuf *
 get_menu_icon (const char *icon_name)
 {
-	CajaIconInfo *info;
+	PeonyIconInfo *info;
 	GdkPixbuf *pixbuf;
 	int size;
 
-	size = caja_get_icon_size_for_stock_size (GTK_ICON_SIZE_MENU);
+	size = peony_get_icon_size_for_stock_size (GTK_ICON_SIZE_MENU);
 
 	if (g_path_is_absolute (icon_name)) {
-		info = caja_icon_info_lookup_from_path (icon_name, size);
+		info = peony_icon_info_lookup_from_path (icon_name, size);
 	} else {
-		info = caja_icon_info_lookup_from_name (icon_name, size);
+		info = peony_icon_info_lookup_from_name (icon_name, size);
 	}
-	pixbuf = caja_icon_info_get_pixbuf_nodefault_at_size (info, size);
+	pixbuf = peony_icon_info_get_pixbuf_nodefault_at_size (info, size);
 	g_object_unref (info);
 
 	return pixbuf;
 }
 
 static GdkPixbuf *
-get_menu_icon_for_file (CajaFile *file)
+get_menu_icon_for_file (PeonyFile *file)
 {
-	CajaIconInfo *info;
+	PeonyIconInfo *info;
 	GdkPixbuf *pixbuf;
 	int size;
 
-	size = caja_get_icon_size_for_stock_size (GTK_ICON_SIZE_MENU);
+	size = peony_get_icon_size_for_stock_size (GTK_ICON_SIZE_MENU);
 
-	info = caja_file_get_icon (file, size, 0);
-	pixbuf = caja_icon_info_get_pixbuf_nodefault_at_size (info, size);
+	info = peony_file_get_icon (file, size, 0);
+	pixbuf = peony_icon_info_get_pixbuf_nodefault_at_size (info, size);
 	g_object_unref (info);
 
 	return pixbuf;
@@ -5030,7 +5030,7 @@ get_menu_icon_for_file (CajaFile *file)
 
 static GtkAction *
 add_extension_action_for_files (FMDirectoryView *view,
-				CajaMenuItem *item,
+				PeonyMenuItem *item,
 				GList *files)
 {
 	char *name, *label, *tip, *icon;
@@ -5066,7 +5066,7 @@ add_extension_action_for_files (FMDirectoryView *view,
 	data = g_new0 (ExtensionActionCallbackData, 1);
 	data->item = g_object_ref (item);
 	data->view = view;
-	data->selection = caja_file_list_copy (files);
+	data->selection = peony_file_list_copy (files);
 	data->action = action;
 
 	g_signal_connect_data (action, "activate",
@@ -5095,15 +5095,15 @@ add_extension_menu_items (FMDirectoryView *view,
 	GtkUIManager *ui_manager;
 	GList *l;
 
-	ui_manager = caja_window_info_get_ui_manager (view->details->window);
+	ui_manager = peony_window_info_get_ui_manager (view->details->window);
 
 	for (l = menu_items; l; l = l->next) {
-		CajaMenuItem *item;
-		CajaMenu *menu;
+		PeonyMenuItem *item;
+		PeonyMenu *menu;
 		GtkAction *action;
 		char *path;
 
-		item = CAJA_MENU_ITEM (l->data);
+		item = PEONY_MENU_ITEM (l->data);
 
 		g_object_get (item, "menu", &menu, NULL);
 
@@ -5134,7 +5134,7 @@ add_extension_menu_items (FMDirectoryView *view,
 			char *subdir;
 			GList *children;
 
-			children = caja_menu_get_items (menu);
+			children = peony_menu_get_items (menu);
 
 			subdir = g_build_path ("/", subdirectory, gtk_action_get_name (action), NULL);
 			add_extension_menu_items (view,
@@ -5142,7 +5142,7 @@ add_extension_menu_items (FMDirectoryView *view,
 						  children,
 						  subdir);
 
-			caja_menu_item_list_free (children);
+			peony_menu_item_list_free (children);
 			g_free (subdir);
 		}
 	}
@@ -5155,13 +5155,13 @@ reset_extension_actions_menu (FMDirectoryView *view, GList *selection)
 	GtkUIManager *ui_manager;
 
 	/* Clear any previous inserted items in the extension actions placeholder */
-	ui_manager = caja_window_info_get_ui_manager (view->details->window);
+	ui_manager = peony_window_info_get_ui_manager (view->details->window);
 
-	caja_ui_unmerge_ui (ui_manager,
+	peony_ui_unmerge_ui (ui_manager,
 				&view->details->extensions_menu_merge_id,
 				&view->details->extensions_menu_action_group);
 
-	caja_ui_prepare_merge_ui (ui_manager,
+	peony_ui_prepare_merge_ui (ui_manager,
 				      "DirExtensionsMenuGroup",
 				      &view->details->extensions_menu_merge_id,
 				      &view->details->extensions_menu_action_group);
@@ -5197,9 +5197,9 @@ change_to_view_directory (FMDirectoryView *view)
 
 static char **
 get_file_names_as_parameter_array (GList *selection,
-				   CajaDirectory *model)
+				   PeonyDirectory *model)
 {
-	CajaFile *file;
+	PeonyFile *file;
 	char **parameters;
 	GList *node;
 	GFile *file_location;
@@ -5212,18 +5212,18 @@ get_file_names_as_parameter_array (GList *selection,
 
 	parameters = g_new (char *, g_list_length (selection) + 1);
 
-	model_location = caja_directory_get_location (model);
+	model_location = peony_directory_get_location (model);
 
 	for (node = selection, i = 0; node != NULL; node = node->next, i++) {
-		file = CAJA_FILE (node->data);
+		file = PEONY_FILE (node->data);
 
-		if (!caja_file_is_local (file)) {
+		if (!peony_file_is_local (file)) {
 			parameters[i] = NULL;
 			g_strfreev (parameters);
 			return NULL;
 		}
 
-		file_location = caja_file_get_location (CAJA_FILE (node->data));
+		file_location = peony_file_get_location (PEONY_FILE (node->data));
 		parameters[i] = g_file_get_relative_path (model_location, file_location);
 		if (parameters[i] == NULL) {
 			parameters[i] = g_file_get_path (file_location);
@@ -5243,7 +5243,7 @@ get_file_paths_or_uris_as_newline_delimited_string (GList *selection, gboolean g
 	char *path;
 	char *uri;
 	char *result;
-	CajaDesktopLink *link;
+	PeonyDesktopLink *link;
 	GString *expanding_string;
 	GList *node;
 	GFile *location;
@@ -5251,16 +5251,16 @@ get_file_paths_or_uris_as_newline_delimited_string (GList *selection, gboolean g
 	expanding_string = g_string_new ("");
 	for (node = selection; node != NULL; node = node->next) {
 		uri = NULL;
-		if (CAJA_IS_DESKTOP_ICON_FILE (node->data)) {
-			link = caja_desktop_icon_file_get_link (CAJA_DESKTOP_ICON_FILE (node->data));
+		if (PEONY_IS_DESKTOP_ICON_FILE (node->data)) {
+			link = peony_desktop_icon_file_get_link (PEONY_DESKTOP_ICON_FILE (node->data));
 			if (link != NULL) {
-				location = caja_desktop_link_get_activation_location (link);
+				location = peony_desktop_link_get_activation_location (link);
 				uri = g_file_get_uri (location);
 				g_object_unref (location);
 				g_object_unref (G_OBJECT (link));
 			}
 		} else {
-			uri = caja_file_get_uri (CAJA_FILE (node->data));
+			uri = peony_file_get_uri (PEONY_FILE (node->data));
 		}
 		if (uri == NULL) {
 			continue;
@@ -5306,9 +5306,9 @@ get_strings_for_environment_variables (FMDirectoryView *view, GList *selected_fi
 	char *directory_uri;
 
 	/* We need to check that the directory uri starts with "file:" since
-	 * caja_directory_is_local returns FALSE for nfs.
+	 * peony_directory_is_local returns FALSE for nfs.
 	 */
-	directory_uri = caja_directory_get_uri (view->details->model);
+	directory_uri = peony_directory_get_uri (view->details->model);
 	if (eel_str_has_prefix (directory_uri, "file:") ||
 	    eel_uri_is_desktop (directory_uri) ||
 	    eel_uri_is_trash (directory_uri)) {
@@ -5320,22 +5320,22 @@ get_strings_for_environment_variables (FMDirectoryView *view, GList *selected_fi
 
 	*uris = get_file_uris_as_newline_delimited_string (selected_files);
 
-	*uri = caja_directory_get_uri (view->details->model);
+	*uri = peony_directory_get_uri (view->details->model);
 	if (eel_uri_is_desktop (*uri)) {
 		g_free (*uri);
-		*uri = caja_get_desktop_directory_uri ();
+		*uri = peony_get_desktop_directory_uri ();
 	}
 }
 
 static FMDirectoryView *
 get_directory_view_of_extra_pane (FMDirectoryView *view)
 {
-	CajaWindowSlotInfo *slot;
-	CajaView *next_view;
+	PeonyWindowSlotInfo *slot;
+	PeonyView *next_view;
 
-	slot = caja_window_info_get_extra_slot (fm_directory_view_get_caja_window (view));
+	slot = peony_window_info_get_extra_slot (fm_directory_view_get_peony_window (view));
 	if (slot != NULL) {
-		next_view = caja_window_slot_info_get_current_view (slot);
+		next_view = peony_window_slot_info_get_current_view (slot);
 
 		if (FM_IS_DIRECTORY_VIEW (next_view)) {
 			return FM_DIRECTORY_VIEW (next_view);
@@ -5346,7 +5346,7 @@ get_directory_view_of_extra_pane (FMDirectoryView *view)
 
 /*
  * Set up some environment variables that scripts can use
- * to take advantage of the current Caja state.
+ * to take advantage of the current Peony state.
  */
 static void set_script_environment_variables(FMDirectoryView* view, GList* selected_files)
 {
@@ -5358,17 +5358,17 @@ static void set_script_environment_variables(FMDirectoryView* view, GList* selec
 
 	get_strings_for_environment_variables(view, selected_files, &file_paths, &uris, &uri);
 
-	g_setenv("CAJA_SCRIPT_SELECTED_FILE_PATHS", file_paths, TRUE);
+	g_setenv("PEONY_SCRIPT_SELECTED_FILE_PATHS", file_paths, TRUE);
 	g_setenv("NAUTILUS_SCRIPT_SELECTED_FILE_PATHS", file_paths, TRUE); // compatibilidad GNOME
 
 	g_free(file_paths);
 
-	g_setenv("CAJA_SCRIPT_SELECTED_URIS", uris, TRUE);
+	g_setenv("PEONY_SCRIPT_SELECTED_URIS", uris, TRUE);
 	g_setenv("NAUTILUS_SCRIPT_SELECTED_URIS", uris, TRUE); // compatibilidad GNOME
 
 	g_free(uris);
 
-	g_setenv("CAJA_SCRIPT_CURRENT_URI", uri, TRUE);
+	g_setenv("PEONY_SCRIPT_CURRENT_URI", uri, TRUE);
 	g_setenv("NAUTILUS_SCRIPT_CURRENT_URI", uri, TRUE); // compatibilidad GNOME
 
 
@@ -5376,7 +5376,7 @@ static void set_script_environment_variables(FMDirectoryView* view, GList* selec
 
 	geometry_string = eel_gtk_window_get_geometry_string(GTK_WINDOW (fm_directory_view_get_containing_window (view)));
 
-	g_setenv("CAJA_SCRIPT_WINDOW_GEOMETRY", geometry_string, TRUE);
+	g_setenv("PEONY_SCRIPT_WINDOW_GEOMETRY", geometry_string, TRUE);
 	g_setenv("NAUTILUS_SCRIPT_WINDOW_GEOMETRY", geometry_string, TRUE); // compatibilidad GNOME
 
 	g_free(geometry_string);
@@ -5390,7 +5390,7 @@ static void set_script_environment_variables(FMDirectoryView* view, GList* selec
 
 		get_strings_for_environment_variables(next_view, next_pane_selected_files, &file_paths, &uris, &uri);
 
-		caja_file_list_free(next_pane_selected_files);
+		peony_file_list_free(next_pane_selected_files);
 	}
 	else
 	{
@@ -5399,15 +5399,15 @@ static void set_script_environment_variables(FMDirectoryView* view, GList* selec
 		uri = g_strdup("");
 	}
 
-	g_setenv("CAJA_SCRIPT_NEXT_PANE_SELECTED_FILE_PATHS", file_paths, TRUE);
+	g_setenv("PEONY_SCRIPT_NEXT_PANE_SELECTED_FILE_PATHS", file_paths, TRUE);
 	g_setenv("NAUTILUS_SCRIPT_NEXT_PANE_SELECTED_FILE_PATHS", file_paths, TRUE); // compatibilidad GNOME
 	g_free(file_paths);
 
-	g_setenv("CAJA_SCRIPT_NEXT_PANE_SELECTED_URIS", uris, TRUE);
+	g_setenv("PEONY_SCRIPT_NEXT_PANE_SELECTED_URIS", uris, TRUE);
 	g_setenv("NAUTILUS_SCRIPT_NEXT_PANE_SELECTED_URIS", uris, TRUE); // compatibilidad GNOME
 	g_free(uris);
 
-	g_setenv("CAJA_SCRIPT_NEXT_PANE_CURRENT_URI", uri, TRUE);
+	g_setenv("PEONY_SCRIPT_NEXT_PANE_CURRENT_URI", uri, TRUE);
 	g_setenv("NAUTILUS_SCRIPT_NEXT_PANE_CURRENT_URI", uri, TRUE); // compatibilidad GNOME
 	g_free(uri);
 }
@@ -5415,25 +5415,25 @@ static void set_script_environment_variables(FMDirectoryView* view, GList* selec
 /* Unset all the special script environment variables. */
 static void unset_script_environment_variables(void)
 {
-	g_unsetenv("CAJA_SCRIPT_SELECTED_FILE_PATHS");
+	g_unsetenv("PEONY_SCRIPT_SELECTED_FILE_PATHS");
 	g_unsetenv("NAUTILUS_SCRIPT_SELECTED_FILE_PATHS");
 
-	g_unsetenv("CAJA_SCRIPT_SELECTED_URIS");
+	g_unsetenv("PEONY_SCRIPT_SELECTED_URIS");
 	g_unsetenv("NAUTILUS_SCRIPT_SELECTED_URIS");
 
-	g_unsetenv("CAJA_SCRIPT_CURRENT_URI");
+	g_unsetenv("PEONY_SCRIPT_CURRENT_URI");
 	g_unsetenv("NAUTILUS_SCRIPT_CURRENT_URI");
 
-	g_unsetenv("CAJA_SCRIPT_WINDOW_GEOMETRY");
+	g_unsetenv("PEONY_SCRIPT_WINDOW_GEOMETRY");
 	g_unsetenv("NAUTILUS_SCRIPT_WINDOW_GEOMETRY");
 
-	g_unsetenv("CAJA_SCRIPT_NEXT_PANE_SELECTED_FILE_PATHS");
+	g_unsetenv("PEONY_SCRIPT_NEXT_PANE_SELECTED_FILE_PATHS");
 	g_unsetenv("NAUTILUS_SCRIPT_NEXT_PANE_SELECTED_FILE_PATHS");
 
-	g_unsetenv("CAJA_SCRIPT_NEXT_PANE_SELECTED_URIS");
+	g_unsetenv("PEONY_SCRIPT_NEXT_PANE_SELECTED_URIS");
 	g_unsetenv("NAUTILUS_SCRIPT_NEXT_PANE_SELECTED_URIS");
 
-	g_unsetenv("CAJA_SCRIPT_NEXT_PANE_CURRENT_URI");
+	g_unsetenv("PEONY_SCRIPT_NEXT_PANE_CURRENT_URI");
 	g_unsetenv("NAUTILUS_SCRIPT_NEXT_PANE_CURRENT_URI");
 }
 
@@ -5452,7 +5452,7 @@ run_script_callback (GtkAction *action, gpointer callback_data)
 
 	launch_parameters = (ScriptLaunchParameters *) callback_data;
 
-	file_uri = caja_file_get_uri (launch_parameters->file);
+	file_uri = peony_file_get_uri (launch_parameters->file);
 	local_file_path = g_filename_from_uri (file_uri, NULL, NULL);
 	g_assert (local_file_path != NULL);
 	g_free (file_uri);
@@ -5470,18 +5470,18 @@ run_script_callback (GtkAction *action, gpointer callback_data)
 
 	screen = gtk_widget_get_screen (GTK_WIDGET (launch_parameters->directory_view));
 
-	name = caja_file_get_name (launch_parameters->file);
+	name = peony_file_get_name (launch_parameters->file);
 	/* FIXME: handle errors with dialog? Or leave up to each script? */
 	window = fm_directory_view_get_containing_window (launch_parameters->directory_view);
-	caja_debug_log (FALSE, CAJA_DEBUG_LOG_DOMAIN_USER,
+	peony_debug_log (FALSE, PEONY_DEBUG_LOG_DOMAIN_USER,
 			    "directory view run_script_callback, window=%p, name=\"%s\", script_path=\"%s\" (omitting script parameters)",
 			    window, name, local_file_path);
-	caja_launch_application_from_command_array (screen, name, quoted_path, FALSE,
+	peony_launch_application_from_command_array (screen, name, quoted_path, FALSE,
 							(const char * const *) parameters);
 	g_free (name);
 	g_strfreev (parameters);
 
-	caja_file_list_free (selected_files);
+	peony_file_list_free (selected_files);
 	unset_script_environment_variables ();
 	g_chdir (old_working_dir);
 	g_free (old_working_dir);
@@ -5490,7 +5490,7 @@ run_script_callback (GtkAction *action, gpointer callback_data)
 
 static void
 add_script_to_scripts_menus (FMDirectoryView *directory_view,
-			     CajaFile *file,
+			     PeonyFile *file,
 			     const char *menu_path,
 			     const char *popup_path,
 			     const char *popup_bg_path)
@@ -5505,8 +5505,8 @@ add_script_to_scripts_menus (FMDirectoryView *directory_view,
 	GtkUIManager *ui_manager;
 	GtkAction *action;
 
-	name = caja_file_get_display_name (file);
-	uri = caja_file_get_uri (file);
+	name = peony_file_get_display_name (file);
+	uri = peony_file_get_uri (file);
 	tip = g_strdup_printf (_("Run \"%s\" on any selected items"), name);
 
 	launch_parameters = script_launch_parameters_new (file, directory_view);
@@ -5535,7 +5535,7 @@ add_script_to_scripts_menus (FMDirectoryView *directory_view,
 						action, NULL);
 	g_object_unref (action);
 
-	ui_manager = caja_window_info_get_ui_manager (directory_view->details->window);
+	ui_manager = peony_window_info_get_ui_manager (directory_view->details->window);
 
 	gtk_ui_manager_add_ui (ui_manager,
 			       directory_view->details->scripts_merge_id,
@@ -5570,7 +5570,7 @@ static void
 add_submenu_to_directory_menus (FMDirectoryView *directory_view,
 				GtkActionGroup *action_group,
 				guint merge_id,
-				CajaFile *file,
+				PeonyFile *file,
 				const char *menu_path,
 				const char *popup_path,
 				const char *popup_bg_path)
@@ -5580,9 +5580,9 @@ add_submenu_to_directory_menus (FMDirectoryView *directory_view,
 	char *uri;
 	GtkUIManager *ui_manager;
 
-	ui_manager = caja_window_info_get_ui_manager (directory_view->details->window);
-	uri = caja_file_get_uri (file);
-	name = caja_file_get_display_name (file);
+	ui_manager = peony_window_info_get_ui_manager (directory_view->details->window);
+	uri = peony_file_get_uri (file);
+	name = peony_file_get_display_name (file);
 	pixbuf = get_menu_icon_for_file (file);
 	add_submenu (ui_manager, action_group, merge_id, menu_path, uri, name, pixbuf, TRUE);
 	add_submenu (ui_manager, action_group, merge_id, popup_path, uri, name, pixbuf, FALSE);
@@ -5619,17 +5619,17 @@ directory_belongs_in_scripts_menu (const char *uri)
 }
 
 static gboolean
-update_directory_in_scripts_menu (FMDirectoryView *view, CajaDirectory *directory)
+update_directory_in_scripts_menu (FMDirectoryView *view, PeonyDirectory *directory)
 {
 	char *menu_path, *popup_path, *popup_bg_path;
 	GList *file_list, *filtered, *node;
 	gboolean any_scripts;
-	CajaFile *file;
-	CajaDirectory *dir;
+	PeonyFile *file;
+	PeonyDirectory *dir;
 	char *uri;
 	char *escaped_path;
 
-	uri = caja_directory_get_uri (directory);
+	uri = peony_directory_get_uri (directory);
 	escaped_path = escape_action_path (uri + scripts_directory_uri_length);
 	g_free (uri);
 	menu_path = g_strconcat (FM_DIRECTORY_VIEW_MENU_PATH_SCRIPTS_PLACEHOLDER,
@@ -5643,25 +5643,25 @@ update_directory_in_scripts_menu (FMDirectoryView *view, CajaDirectory *director
 				  NULL);
 	g_free (escaped_path);
 
-	file_list = caja_directory_get_file_list (directory);
-	filtered = caja_file_list_filter_hidden (file_list, FALSE);
-	caja_file_list_free (file_list);
+	file_list = peony_directory_get_file_list (directory);
+	filtered = peony_file_list_filter_hidden (file_list, FALSE);
+	peony_file_list_free (file_list);
 
-	file_list = caja_file_list_sort_by_display_name (filtered);
+	file_list = peony_file_list_sort_by_display_name (filtered);
 
 	any_scripts = FALSE;
 	for (node = file_list; node != NULL; node = node->next) {
 		file = node->data;
 
-		if (caja_file_is_launchable (file)) {
+		if (peony_file_is_launchable (file)) {
 			add_script_to_scripts_menus (view, file, menu_path, popup_path, popup_bg_path);
 			any_scripts = TRUE;
-		} else if (caja_file_is_directory (file)) {
-			uri = caja_file_get_uri (file);
+		} else if (peony_file_is_directory (file)) {
+			uri = peony_file_get_uri (file);
 			if (directory_belongs_in_scripts_menu (uri)) {
-				dir = caja_directory_get_by_uri (uri);
+				dir = peony_directory_get_by_uri (uri);
 				add_directory_to_scripts_directory_list (view, dir);
-				caja_directory_unref (dir);
+				peony_directory_unref (dir);
 
 				add_submenu_to_directory_menus (view,
 								view->details->scripts_action_group,
@@ -5674,7 +5674,7 @@ update_directory_in_scripts_menu (FMDirectoryView *view, CajaDirectory *director
 		}
 	}
 
-	caja_file_list_free (file_list);
+	peony_file_list_free (file_list);
 
 	g_free (popup_path);
 	g_free (popup_bg_path);
@@ -5688,7 +5688,7 @@ update_scripts_menu (FMDirectoryView *view)
 {
 	gboolean any_scripts;
 	GList *sorted_copy, *node;
-	CajaDirectory *directory;
+	PeonyDirectory *directory;
 	char *uri;
 	GtkUIManager *ui_manager;
 	GtkAction *action;
@@ -5698,24 +5698,24 @@ update_scripts_menu (FMDirectoryView *view)
 	   occur before we finish. */
 	view->details->scripts_invalid = FALSE;
 
-	ui_manager = caja_window_info_get_ui_manager (view->details->window);
-	caja_ui_unmerge_ui (ui_manager,
+	ui_manager = peony_window_info_get_ui_manager (view->details->window);
+	peony_ui_unmerge_ui (ui_manager,
 				&view->details->scripts_merge_id,
 				&view->details->scripts_action_group);
 
-	caja_ui_prepare_merge_ui (ui_manager,
+	peony_ui_prepare_merge_ui (ui_manager,
 				      "ScriptsGroup",
 				      &view->details->scripts_merge_id,
 				      &view->details->scripts_action_group);
 
 	/* As we walk through the directories, remove any that no longer belong. */
 	any_scripts = FALSE;
-	sorted_copy = caja_directory_list_sort_by_uri
-		(caja_directory_list_copy (view->details->scripts_directory_list));
+	sorted_copy = peony_directory_list_sort_by_uri
+		(peony_directory_list_copy (view->details->scripts_directory_list));
 	for (node = sorted_copy; node != NULL; node = node->next) {
 		directory = node->data;
 
-		uri = caja_directory_get_uri (directory);
+		uri = peony_directory_get_uri (directory);
 		if (!directory_belongs_in_scripts_menu (uri)) {
 			remove_directory_from_scripts_directory_list (view, directory);
 		} else if (update_directory_in_scripts_menu (view, directory)) {
@@ -5723,7 +5723,7 @@ update_scripts_menu (FMDirectoryView *view)
 		}
 		g_free (uri);
 	}
-	caja_directory_list_free (sorted_copy);
+	peony_directory_list_free (sorted_copy);
 
 	action = gtk_action_group_get_action (view->details->dir_action_group, FM_ACTION_SCRIPTS);
 	gtk_action_set_visible (action, any_scripts);
@@ -5741,7 +5741,7 @@ create_template_callback (GtkAction *action, gpointer callback_data)
 
 static void
 add_template_to_templates_menus (FMDirectoryView *directory_view,
-				 CajaFile *file,
+				 PeonyFile *file,
 				 const char *menu_path,
 				 const char *popup_bg_path)
 {
@@ -5753,11 +5753,11 @@ add_template_to_templates_menus (FMDirectoryView *directory_view,
 	GtkUIManager *ui_manager;
 	GtkAction *action;
 
-	tmp = caja_file_get_display_name (file);
+	tmp = peony_file_get_display_name (file);
 	name = eel_filename_strip_extension (tmp);
 	g_free (tmp);
 
-	uri = caja_file_get_uri (file);
+	uri = peony_file_get_uri (file);
 	tip = g_strdup_printf (_("Create Document from template \"%s\""), name);
 
 	action_name = escape_action_name (uri, "template_");
@@ -5786,7 +5786,7 @@ add_template_to_templates_menus (FMDirectoryView *directory_view,
 				     action);
 	g_object_unref (action);
 
-	ui_manager = caja_window_info_get_ui_manager (directory_view->details->window);
+	ui_manager = peony_window_info_get_ui_manager (directory_view->details->window);
 
 	gtk_ui_manager_add_ui (ui_manager,
 			       directory_view->details->templates_merge_id,
@@ -5814,7 +5814,7 @@ add_template_to_templates_menus (FMDirectoryView *directory_view,
 static void
 update_templates_directory (FMDirectoryView *view)
 {
-	CajaDirectory *templates_directory;
+	PeonyDirectory *templates_directory;
 	GList *node, *next;
 	char *templates_uri;
 
@@ -5823,12 +5823,12 @@ update_templates_directory (FMDirectoryView *view)
 		remove_directory_from_templates_directory_list (view, node->data);
 	}
 
-	if (caja_should_use_templates_directory ()) {
-		templates_uri = caja_get_templates_directory_uri ();
-		templates_directory = caja_directory_get_by_uri (templates_uri);
+	if (peony_should_use_templates_directory ()) {
+		templates_uri = peony_get_templates_directory_uri ();
+		templates_directory = peony_directory_get_by_uri (templates_uri);
 		g_free (templates_uri);
 		add_directory_to_templates_directory_list (view, templates_directory);
-		caja_directory_unref (templates_directory);
+		peony_directory_unref (templates_directory);
 	}
 }
 
@@ -5872,13 +5872,13 @@ directory_belongs_in_templates_menu (const char *templates_directory_uri,
 static gboolean
 update_directory_in_templates_menu (FMDirectoryView *view,
 				    const char *templates_directory_uri,
-				    CajaDirectory *directory)
+				    PeonyDirectory *directory)
 {
 	char *menu_path, *popup_bg_path;
 	GList *file_list, *filtered, *node;
 	gboolean any_templates;
-	CajaFile *file;
-	CajaDirectory *dir;
+	PeonyFile *file;
+	PeonyDirectory *dir;
 	char *escaped_path;
 	char *uri;
 	int num;
@@ -5886,7 +5886,7 @@ update_directory_in_templates_menu (FMDirectoryView *view,
 	/* We know this directory belongs to the template dir, so it must exist */
 	g_assert (templates_directory_uri);
 
-	uri = caja_directory_get_uri (directory);
+	uri = peony_directory_get_uri (directory);
 	escaped_path = escape_action_path (uri + strlen (templates_directory_uri));
 	g_free (uri);
 	menu_path = g_strconcat (FM_DIRECTORY_VIEW_MENU_PATH_NEW_DOCUMENTS_PLACEHOLDER,
@@ -5897,23 +5897,23 @@ update_directory_in_templates_menu (FMDirectoryView *view,
 				     NULL);
 	g_free (escaped_path);
 
-	file_list = caja_directory_get_file_list (directory);
-	filtered = caja_file_list_filter_hidden (file_list, FALSE);
-	caja_file_list_free (file_list);
+	file_list = peony_directory_get_file_list (directory);
+	filtered = peony_file_list_filter_hidden (file_list, FALSE);
+	peony_file_list_free (file_list);
 
-	file_list = caja_file_list_sort_by_display_name (filtered);
+	file_list = peony_file_list_sort_by_display_name (filtered);
 
 	num = 0;
 	any_templates = FALSE;
 	for (node = file_list; num < TEMPLATE_LIMIT && node != NULL; node = node->next, num++) {
 		file = node->data;
 
-		if (caja_file_is_directory (file)) {
-			uri = caja_file_get_uri (file);
+		if (peony_file_is_directory (file)) {
+			uri = peony_file_get_uri (file);
 			if (directory_belongs_in_templates_menu (templates_directory_uri, uri)) {
-				dir = caja_directory_get_by_uri (uri);
+				dir = peony_directory_get_by_uri (uri);
 				add_directory_to_templates_directory_list (view, dir);
-				caja_directory_unref (dir);
+				peony_directory_unref (dir);
 
 				add_submenu_to_directory_menus (view,
 								view->details->templates_action_group,
@@ -5923,13 +5923,13 @@ update_directory_in_templates_menu (FMDirectoryView *view,
 				any_templates = TRUE;
 			}
 			g_free (uri);
-		} else if (caja_file_can_read (file)) {
+		} else if (peony_file_can_read (file)) {
 			add_template_to_templates_menus (view, file, menu_path, popup_bg_path);
 			any_templates = TRUE;
 		}
 	}
 
-	caja_file_list_free (file_list);
+	peony_file_list_free (file_list);
 
 	g_free (popup_bg_path);
 	g_free (menu_path);
@@ -5944,14 +5944,14 @@ update_templates_menu (FMDirectoryView *view)
 {
 	gboolean any_templates;
 	GList *sorted_copy, *node;
-	CajaDirectory *directory;
+	PeonyDirectory *directory;
 	GtkUIManager *ui_manager;
 	char *uri;
 	GtkAction *action;
 	char *templates_directory_uri;
 
-	if (caja_should_use_templates_directory ()) {
-		templates_directory_uri = caja_get_templates_directory_uri ();
+	if (peony_should_use_templates_directory ()) {
+		templates_directory_uri = peony_get_templates_directory_uri ();
 	} else {
 		templates_directory_uri = NULL;
 	}
@@ -5961,24 +5961,24 @@ update_templates_menu (FMDirectoryView *view)
 	   occur before we finish. */
 	view->details->templates_invalid = FALSE;
 
-	ui_manager = caja_window_info_get_ui_manager (view->details->window);
-	caja_ui_unmerge_ui (ui_manager,
+	ui_manager = peony_window_info_get_ui_manager (view->details->window);
+	peony_ui_unmerge_ui (ui_manager,
 				&view->details->templates_merge_id,
 				&view->details->templates_action_group);
 
-	caja_ui_prepare_merge_ui (ui_manager,
+	peony_ui_prepare_merge_ui (ui_manager,
 				      "TemplatesGroup",
 				      &view->details->templates_merge_id,
 				      &view->details->templates_action_group);
 
 	/* As we walk through the directories, remove any that no longer belong. */
 	any_templates = FALSE;
-	sorted_copy = caja_directory_list_sort_by_uri
-		(caja_directory_list_copy (view->details->templates_directory_list));
+	sorted_copy = peony_directory_list_sort_by_uri
+		(peony_directory_list_copy (view->details->templates_directory_list));
 	for (node = sorted_copy; node != NULL; node = node->next) {
 		directory = node->data;
 
-		uri = caja_directory_get_uri (directory);
+		uri = peony_directory_get_uri (directory);
 		if (!directory_belongs_in_templates_menu (templates_directory_uri, uri)) {
 			remove_directory_from_templates_directory_list (view, directory);
 		} else if (update_directory_in_templates_menu (view,
@@ -5988,7 +5988,7 @@ update_templates_menu (FMDirectoryView *view)
 		}
 		g_free (uri);
 	}
-	caja_directory_list_free (sorted_copy);
+	peony_directory_list_free (sorted_copy);
 
 	action = gtk_action_group_get_action (view->details->dir_action_group, FM_ACTION_NO_TEMPLATES);
 	gtk_action_set_visible (action, !any_templates);
@@ -6005,7 +6005,7 @@ action_open_scripts_folder_callback (GtkAction *action,
 
 	view = FM_DIRECTORY_VIEW (callback_data);
 
-	open_location (view, scripts_directory_uri, CAJA_WINDOW_OPEN_ACCORDING_TO_MODE, 0);
+	open_location (view, scripts_directory_uri, PEONY_WINDOW_OPEN_ACCORDING_TO_MODE, 0);
 
 	eel_show_info_dialog_with_details
 		(_("All executable files in this folder will appear in the "
@@ -6020,14 +6020,14 @@ action_open_scripts_folder_callback (GtkAction *action,
 		   "(e.g. a folder showing web or ftp content), scripts will "
 		   "be passed no parameters.\n\n"
 		   "In all cases, the following environment variables will be "
-		   "set by Caja, which the scripts may use:\n\n"
-		   "CAJA_SCRIPT_SELECTED_FILE_PATHS: newline-delimited paths for selected files (only if local)\n\n"
-		   "CAJA_SCRIPT_SELECTED_URIS: newline-delimited URIs for selected files\n\n"
-		   "CAJA_SCRIPT_CURRENT_URI: URI for current location\n\n"
-		   "CAJA_SCRIPT_WINDOW_GEOMETRY: position and size of current window\n\n"
-		   "CAJA_SCRIPT_NEXT_PANE_SELECTED_FILE_PATHS: newline-delimited paths for selected files in the inactive pane of a split-view window (only if local)\n\n"
-		   "CAJA_SCRIPT_NEXT_PANE_SELECTED_URIS: newline-delimited URIs for selected files in the inactive pane of a split-view window\n\n"
-		   "CAJA_SCRIPT_NEXT_PANE_CURRENT_URI: URI for current location in the inactive pane of a split-view window"),
+		   "set by Peony, which the scripts may use:\n\n"
+		   "PEONY_SCRIPT_SELECTED_FILE_PATHS: newline-delimited paths for selected files (only if local)\n\n"
+		   "PEONY_SCRIPT_SELECTED_URIS: newline-delimited URIs for selected files\n\n"
+		   "PEONY_SCRIPT_CURRENT_URI: URI for current location\n\n"
+		   "PEONY_SCRIPT_WINDOW_GEOMETRY: position and size of current window\n\n"
+		   "PEONY_SCRIPT_NEXT_PANE_SELECTED_FILE_PATHS: newline-delimited paths for selected files in the inactive pane of a split-view window (only if local)\n\n"
+		   "PEONY_SCRIPT_NEXT_PANE_SELECTED_URIS: newline-delimited URIs for selected files in the inactive pane of a split-view window\n\n"
+		   "PEONY_SCRIPT_NEXT_PANE_CURRENT_URI: URI for current location in the inactive pane of a split-view window"),
 		 fm_directory_view_get_containing_window (view));
 }
 
@@ -6036,7 +6036,7 @@ create_popup_menu (FMDirectoryView *view, const char *popup_path)
 {
 	GtkWidget *menu;
 
-	menu = gtk_ui_manager_get_widget (caja_window_info_get_ui_manager (view->details->window),
+	menu = gtk_ui_manager_get_widget (peony_window_info_get_ui_manager (view->details->window),
 					  popup_path);
 	gtk_menu_set_screen (GTK_MENU (menu),
 			     gtk_widget_get_screen (GTK_WIDGET (view)));
@@ -6052,7 +6052,7 @@ copy_or_cut_files (FMDirectoryView *view,
 {
 	int count;
 	char *status_string, *name;
-	CajaClipboardInfo info;
+	PeonyClipboardInfo info;
         GtkTargetList *target_list;
         GtkTargetEntry *targets;
         int n_targets;
@@ -6068,17 +6068,17 @@ copy_or_cut_files (FMDirectoryView *view,
         targets = gtk_target_table_new_from_list (target_list, &n_targets);
         gtk_target_list_unref (target_list);
 
-	gtk_clipboard_set_with_data (caja_clipboard_get (GTK_WIDGET (view)),
+	gtk_clipboard_set_with_data (peony_clipboard_get (GTK_WIDGET (view)),
 				     targets, n_targets,
-				     caja_get_clipboard_callback, caja_clear_clipboard_callback,
+				     peony_get_clipboard_callback, peony_clear_clipboard_callback,
 				     NULL);
         gtk_target_table_free (targets, n_targets);
 
-	caja_clipboard_monitor_set_clipboard_info (caja_clipboard_monitor_get (), &info);
+	peony_clipboard_monitor_set_clipboard_info (peony_clipboard_monitor_get (), &info);
 
 	count = g_list_length (clipboard_contents);
 	if (count == 1) {
-		name = caja_file_get_display_name (clipboard_contents->data);
+		name = peony_file_get_display_name (clipboard_contents->data);
 		if (cut) {
 			status_string = g_strdup_printf (_("\"%s\" will be moved "
 							   "if you select the Paste command"),
@@ -6107,7 +6107,7 @@ copy_or_cut_files (FMDirectoryView *view,
 		}
 	}
 
-	caja_window_slot_info_set_status (view->details->slot,
+	peony_window_slot_info_set_status (view->details->slot,
 					      status_string);
 	g_free (status_string);
 }
@@ -6123,7 +6123,7 @@ action_copy_files_callback (GtkAction *action,
 
 	selection = fm_directory_view_get_selection_for_file_transfer (view);
 	copy_or_cut_files (view, selection, FALSE);
-	caja_file_list_free (selection);
+	peony_file_list_free (selection);
 }
 
 static void
@@ -6141,7 +6141,7 @@ move_copy_selection_to_location (FMDirectoryView *view,
 	uris = NULL;
 	for (l = selection; l != NULL; l = l->next) {
 		uris = g_list_prepend (uris,
-				       caja_file_get_uri ((CajaFile *) l->data));
+				       peony_file_get_uri ((PeonyFile *) l->data));
 	}
 	uris = g_list_reverse (uris);
 
@@ -6151,20 +6151,20 @@ move_copy_selection_to_location (FMDirectoryView *view,
 					   view);
 
 	g_list_free_full (uris, g_free);
-	caja_file_list_free (selection);
+	peony_file_list_free (selection);
 }
 
 static void
 move_copy_selection_to_next_pane (FMDirectoryView *view,
 				  int copy_action)
 {
-	CajaWindowSlotInfo *slot;
+	PeonyWindowSlotInfo *slot;
 	char *dest_location;
 
-	slot = caja_window_info_get_extra_slot (fm_directory_view_get_caja_window (view));
+	slot = peony_window_info_get_extra_slot (fm_directory_view_get_peony_window (view));
 	g_return_if_fail (slot != NULL);
 
-	dest_location = caja_window_slot_info_get_current_location (slot);
+	dest_location = peony_window_slot_info_get_current_location (slot);
 	g_return_if_fail (dest_location != NULL);
 
 	move_copy_selection_to_location (view, copy_action, dest_location);
@@ -6183,16 +6183,16 @@ action_copy_to_next_pane_callback (GtkAction *action, gpointer callback_data)
 static void
 action_move_to_next_pane_callback (GtkAction *action, gpointer callback_data)
 {
-	CajaWindowSlotInfo *slot;
+	PeonyWindowSlotInfo *slot;
 	char *dest_location;
 	FMDirectoryView *view;
 
 	view = FM_DIRECTORY_VIEW (callback_data);
 
-	slot = caja_window_info_get_extra_slot (fm_directory_view_get_caja_window (view));
+	slot = peony_window_info_get_extra_slot (fm_directory_view_get_peony_window (view));
 	g_return_if_fail (slot != NULL);
 
-	dest_location = caja_window_slot_info_get_current_location (slot);
+	dest_location = peony_window_slot_info_get_current_location (slot);
 	g_return_if_fail (dest_location != NULL);
 
 	move_copy_selection_to_location (view, GDK_ACTION_MOVE, dest_location);
@@ -6206,7 +6206,7 @@ action_copy_to_home_callback (GtkAction *action, gpointer callback_data)
 
 	view = FM_DIRECTORY_VIEW (callback_data);
 
-	dest_location = caja_get_home_directory_uri ();
+	dest_location = peony_get_home_directory_uri ();
 	move_copy_selection_to_location (view, GDK_ACTION_COPY, dest_location);
 	g_free (dest_location);
 }
@@ -6219,7 +6219,7 @@ action_move_to_home_callback (GtkAction *action, gpointer callback_data)
 
 	view = FM_DIRECTORY_VIEW (callback_data);
 
-	dest_location = caja_get_home_directory_uri ();
+	dest_location = peony_get_home_directory_uri ();
 	move_copy_selection_to_location (view, GDK_ACTION_MOVE, dest_location);
 	g_free (dest_location);
 }
@@ -6232,7 +6232,7 @@ action_copy_to_desktop_callback (GtkAction *action, gpointer callback_data)
 
 	view = FM_DIRECTORY_VIEW (callback_data);
 
-	dest_location = caja_get_desktop_directory_uri ();
+	dest_location = peony_get_desktop_directory_uri ();
 	move_copy_selection_to_location (view, GDK_ACTION_COPY, dest_location);
 	g_free (dest_location);
 }
@@ -6245,7 +6245,7 @@ action_move_to_desktop_callback (GtkAction *action, gpointer callback_data)
 
 	view = FM_DIRECTORY_VIEW (callback_data);
 
-	dest_location = caja_get_desktop_directory_uri ();
+	dest_location = peony_get_desktop_directory_uri ();
 	move_copy_selection_to_location (view, GDK_ACTION_MOVE, dest_location);
 	g_free (dest_location);
 }
@@ -6261,7 +6261,7 @@ action_cut_files_callback (GtkAction *action,
 
 	selection = fm_directory_view_get_selection_for_file_transfer (view);
 	copy_or_cut_files (view, selection, TRUE);
-	caja_file_list_free (selection);
+	peony_file_list_free (selection);
 }
 
 static void
@@ -6273,11 +6273,11 @@ paste_clipboard_data (FMDirectoryView *view,
 	GList *item_uris;
 
 	cut = FALSE;
-	item_uris = caja_clipboard_get_uri_list_from_selection_data (selection_data, &cut,
+	item_uris = peony_clipboard_get_uri_list_from_selection_data (selection_data, &cut,
 									 copied_files_atom);
 
 	if (item_uris == NULL|| destination_uri == NULL) {
-		caja_window_slot_info_set_status (view->details->slot,
+		peony_window_slot_info_set_status (view->details->slot,
 						      _("There is nothing on the clipboard to paste."));
 	} else {
 		fm_directory_view_move_copy_items (item_uris, NULL, destination_uri,
@@ -6287,7 +6287,7 @@ paste_clipboard_data (FMDirectoryView *view,
 
 		/* If items are cut then remove from clipboard */
 		if (cut) {
-			gtk_clipboard_clear (caja_clipboard_get (GTK_WIDGET (view)));
+			gtk_clipboard_clear (peony_clipboard_get (GTK_WIDGET (view)));
 		}
 
     		g_list_free_full (item_uris, g_free);
@@ -6317,7 +6317,7 @@ paste_clipboard_received_callback (GtkClipboard     *clipboard,
 
 typedef struct {
 	FMDirectoryView *view;
-	CajaFile *target;
+	PeonyFile *target;
 } PasteIntoData;
 
 static void
@@ -6334,7 +6334,7 @@ paste_into_clipboard_received_callback (GtkClipboard     *clipboard,
 	view = FM_DIRECTORY_VIEW (data->view);
 
 	if (view->details->window != NULL) {
-		directory_uri = caja_file_get_activation_uri (data->target);
+		directory_uri = peony_file_get_activation_uri (data->target);
 
 		paste_clipboard_data (view, selection_data, directory_uri);
 
@@ -6342,7 +6342,7 @@ paste_into_clipboard_received_callback (GtkClipboard     *clipboard,
 	}
 
 	g_object_unref (view);
-	caja_file_unref (data->target);
+	peony_file_unref (data->target);
 	g_free (data);
 }
 
@@ -6355,7 +6355,7 @@ action_paste_files_callback (GtkAction *action,
 	view = FM_DIRECTORY_VIEW (callback_data);
 
 	g_object_ref (view);
-	gtk_clipboard_request_contents (caja_clipboard_get (GTK_WIDGET (view)),
+	gtk_clipboard_request_contents (peony_clipboard_get (GTK_WIDGET (view)),
 					copied_files_atom,
 					paste_clipboard_received_callback,
 					view);
@@ -6363,19 +6363,19 @@ action_paste_files_callback (GtkAction *action,
 
 static void
 paste_into (FMDirectoryView *view,
-	    CajaFile *target)
+	    PeonyFile *target)
 {
 	PasteIntoData *data;
 
 	g_assert (FM_IS_DIRECTORY_VIEW (view));
-	g_assert (CAJA_IS_FILE (target));
+	g_assert (PEONY_IS_FILE (target));
 
 	data = g_new (PasteIntoData, 1);
 
 	data->view = g_object_ref (view);
-	data->target = caja_file_ref (target);
+	data->target = peony_file_ref (target);
 
-	gtk_clipboard_request_contents (caja_clipboard_get (GTK_WIDGET (view)),
+	gtk_clipboard_request_contents (peony_clipboard_get (GTK_WIDGET (view)),
 					copied_files_atom,
 					paste_into_clipboard_received_callback,
 					data);
@@ -6391,8 +6391,8 @@ action_paste_files_into_callback (GtkAction *action,
 	view = FM_DIRECTORY_VIEW (callback_data);
 	selection = fm_directory_view_get_selection (view);
 	if (selection != NULL) {
-		paste_into (view, CAJA_FILE (selection->data));
-		caja_file_list_free (selection);
+		paste_into (view, PEONY_FILE (selection->data));
+		peony_file_list_free (selection);
 	}
 
 }
@@ -6400,34 +6400,34 @@ action_paste_files_into_callback (GtkAction *action,
 static void
 real_action_undo (FMDirectoryView *view)
 {
-	CajaUndoStackManager *manager = caja_undostack_manager_instance ();
+	PeonyUndoStackManager *manager = peony_undostack_manager_instance ();
 
 	/* Disable menus because they are in an untrustworthy status */
 	view->details->undo_active = FALSE;
 	view->details->redo_active = FALSE;
 	fm_directory_view_update_menus (view);
 
-	caja_undostack_manager_undo (manager, GTK_WIDGET (view), finish_undoredo_callback);
+	peony_undostack_manager_undo (manager, GTK_WIDGET (view), finish_undoredo_callback);
 }
 
 static void
 real_action_redo (FMDirectoryView *view)
 {
-	CajaUndoStackManager *manager = caja_undostack_manager_instance ();
+	PeonyUndoStackManager *manager = peony_undostack_manager_instance ();
 
 	/* Disable menus because they are in an untrustworthy status */
 	view->details->undo_active = FALSE;
 	view->details->redo_active = FALSE;
 	fm_directory_view_update_menus (view);
 
-	caja_undostack_manager_redo (manager, GTK_WIDGET (view), finish_undoredo_callback);
+	peony_undostack_manager_redo (manager, GTK_WIDGET (view), finish_undoredo_callback);
 }
 
 static void
 real_action_rename (FMDirectoryView *view,
 		    gboolean select_all)
 {
-	CajaFile *file;
+	PeonyFile *file;
 	GList *selection;
 
 	g_assert (FM_IS_DIRECTORY_VIEW (view));
@@ -6435,16 +6435,16 @@ real_action_rename (FMDirectoryView *view,
 	selection = fm_directory_view_get_selection (view);
 
 	if (selection_not_empty_in_menu_callback (view, selection)) {
-		file = CAJA_FILE (selection->data);
+		file = PEONY_FILE (selection->data);
 		if (!select_all) {
 			/* directories don't have a file extension, so
 			 * they are always pre-selected as a whole */
-			select_all = caja_file_is_directory (file);
+			select_all = peony_file_is_directory (file);
 		}
 		EEL_CALL_METHOD (FM_DIRECTORY_VIEW_CLASS, view, start_renaming_file, (view, file, select_all));
 	}
 
-	caja_file_list_free (selection);
+	peony_file_list_free (selection);
 }
 
 static void
@@ -6462,7 +6462,7 @@ action_rename_select_all_callback (GtkAction *action,
 }
 
 static void
-file_mount_callback (CajaFile  *file,
+file_mount_callback (PeonyFile  *file,
 		     GFile         *result_location,
 		     GError        *error,
 		     gpointer       callback_data)
@@ -6478,7 +6478,7 @@ file_mount_callback (CajaFile  *file,
 }
 
 static void
-file_unmount_callback (CajaFile  *file,
+file_unmount_callback (PeonyFile  *file,
 		       GFile         *result_location,
 		       GError        *error,
 		       gpointer       callback_data)
@@ -6499,7 +6499,7 @@ file_unmount_callback (CajaFile  *file,
 }
 
 static void
-file_eject_callback (CajaFile  *file,
+file_eject_callback (PeonyFile  *file,
 		     GFile         *result_location,
 		     GError        *error,
 		     gpointer       callback_data)
@@ -6520,7 +6520,7 @@ file_eject_callback (CajaFile  *file,
 }
 
 static void
-file_stop_callback (CajaFile  *file,
+file_stop_callback (PeonyFile  *file,
 		    GFile         *result_location,
 		    GError        *error,
 		    gpointer       callback_data)
@@ -6538,7 +6538,7 @@ static void
 action_mount_volume_callback (GtkAction *action,
 			      gpointer data)
 {
-	CajaFile *file;
+	PeonyFile *file;
 	GList *selection, *l;
 	FMDirectoryView *view;
 	GMountOperation *mount_op;
@@ -6547,24 +6547,24 @@ action_mount_volume_callback (GtkAction *action,
 
 	selection = fm_directory_view_get_selection (view);
 	for (l = selection; l != NULL; l = l->next) {
-		file = CAJA_FILE (l->data);
+		file = PEONY_FILE (l->data);
 
-		if (caja_file_can_mount (file)) {
+		if (peony_file_can_mount (file)) {
 			mount_op = gtk_mount_operation_new (fm_directory_view_get_containing_window (view));
 			g_mount_operation_set_password_save (mount_op, G_PASSWORD_SAVE_FOR_SESSION);
-			caja_file_mount (file, mount_op, NULL,
+			peony_file_mount (file, mount_op, NULL,
 					     file_mount_callback, NULL);
 			g_object_unref (mount_op);
 		}
 	}
-	caja_file_list_free (selection);
+	peony_file_list_free (selection);
 }
 
 static void
 action_unmount_volume_callback (GtkAction *action,
 				gpointer data)
 {
-	CajaFile *file;
+	PeonyFile *file;
 	GList *selection, *l;
 	FMDirectoryView *view;
 
@@ -6573,17 +6573,17 @@ action_unmount_volume_callback (GtkAction *action,
 	selection = fm_directory_view_get_selection (view);
 
 	for (l = selection; l != NULL; l = l->next) {
-		file = CAJA_FILE (l->data);
-		if (caja_file_can_unmount (file)) {
+		file = PEONY_FILE (l->data);
+		if (peony_file_can_unmount (file)) {
 			GMountOperation *mount_op;
 			mount_op = gtk_mount_operation_new (fm_directory_view_get_containing_window (view));
 			fm_directory_view_set_initiated_unmount (view, TRUE);
-			caja_file_unmount (file, mount_op, NULL,
+			peony_file_unmount (file, mount_op, NULL,
 					       file_unmount_callback, g_object_ref (view));
 			g_object_unref (mount_op);
 		}
 	}
-	caja_file_list_free (selection);
+	peony_file_list_free (selection);
 }
 
 static void
@@ -6591,7 +6591,7 @@ action_format_volume_callback (GtkAction *action,
 			       gpointer   data)
 {
 #ifdef TODO_GIO
-	CajaFile *file;
+	PeonyFile *file;
 	GList *selection, *l;
 	FMDirectoryView *view;
 
@@ -6599,13 +6599,13 @@ action_format_volume_callback (GtkAction *action,
 
 	selection = fm_directory_view_get_selection (view);
 	for (l = selection; l != NULL; l = l->next) {
-		file = CAJA_FILE (l->data);
+		file = PEONY_FILE (l->data);
 
 		if (something) {
 			g_spawn_command_line_async ("gfloppy", NULL);
 		}
 	}
-	caja_file_list_free (selection);
+	peony_file_list_free (selection);
 #endif
 }
 
@@ -6613,7 +6613,7 @@ static void
 action_eject_volume_callback (GtkAction *action,
 			      gpointer data)
 {
-	CajaFile *file;
+	PeonyFile *file;
 	GList *selection, *l;
 	FMDirectoryView *view;
 
@@ -6621,22 +6621,22 @@ action_eject_volume_callback (GtkAction *action,
 
 	selection = fm_directory_view_get_selection (view);
 	for (l = selection; l != NULL; l = l->next) {
-		file = CAJA_FILE (l->data);
+		file = PEONY_FILE (l->data);
 
-		if (caja_file_can_eject (file)) {
+		if (peony_file_can_eject (file)) {
 			GMountOperation *mount_op;
 			mount_op = gtk_mount_operation_new (fm_directory_view_get_containing_window (view));
 			fm_directory_view_set_initiated_unmount (view, TRUE);
-			caja_file_eject (file, mount_op, NULL,
+			peony_file_eject (file, mount_op, NULL,
 					     file_eject_callback, g_object_ref (view));
 			g_object_unref (mount_op);
 		}
 	}
-	caja_file_list_free (selection);
+	peony_file_list_free (selection);
 }
 
 static void
-file_start_callback (CajaFile  *file,
+file_start_callback (PeonyFile  *file,
 		     GFile         *result_location,
 		     GError        *error,
 		     gpointer       callback_data)
@@ -6655,7 +6655,7 @@ static void
 action_start_volume_callback (GtkAction *action,
 			      gpointer   data)
 {
-	CajaFile *file;
+	PeonyFile *file;
 	GList *selection, *l;
 	FMDirectoryView *view;
 	GMountOperation *mount_op;
@@ -6664,23 +6664,23 @@ action_start_volume_callback (GtkAction *action,
 
 	selection = fm_directory_view_get_selection (view);
 	for (l = selection; l != NULL; l = l->next) {
-		file = CAJA_FILE (l->data);
+		file = PEONY_FILE (l->data);
 
-		if (caja_file_can_start (file) || caja_file_can_start_degraded (file)) {
+		if (peony_file_can_start (file) || peony_file_can_start_degraded (file)) {
 			mount_op = gtk_mount_operation_new (fm_directory_view_get_containing_window (view));
-			caja_file_start (file, mount_op, NULL,
+			peony_file_start (file, mount_op, NULL,
 					     file_start_callback, NULL);
 			g_object_unref (mount_op);
 		}
 	}
-	caja_file_list_free (selection);
+	peony_file_list_free (selection);
 }
 
 static void
 action_stop_volume_callback (GtkAction *action,
 			     gpointer   data)
 {
-	CajaFile *file;
+	PeonyFile *file;
 	GList *selection, *l;
 	FMDirectoryView *view;
 
@@ -6688,24 +6688,24 @@ action_stop_volume_callback (GtkAction *action,
 
 	selection = fm_directory_view_get_selection (view);
 	for (l = selection; l != NULL; l = l->next) {
-		file = CAJA_FILE (l->data);
+		file = PEONY_FILE (l->data);
 
-		if (caja_file_can_stop (file)) {
+		if (peony_file_can_stop (file)) {
 			GMountOperation *mount_op;
 			mount_op = gtk_mount_operation_new (fm_directory_view_get_containing_window (view));
-			caja_file_stop (file, mount_op, NULL,
+			peony_file_stop (file, mount_op, NULL,
 					    file_stop_callback, NULL);
 			g_object_unref (mount_op);
 		}
 	}
-	caja_file_list_free (selection);
+	peony_file_list_free (selection);
 }
 
 static void
 action_detect_media_callback (GtkAction *action,
 			      gpointer   data)
 {
-	CajaFile *file;
+	PeonyFile *file;
 	GList *selection, *l;
 	FMDirectoryView *view;
 
@@ -6713,20 +6713,20 @@ action_detect_media_callback (GtkAction *action,
 
 	selection = fm_directory_view_get_selection (view);
 	for (l = selection; l != NULL; l = l->next) {
-		file = CAJA_FILE (l->data);
+		file = PEONY_FILE (l->data);
 
-		if (caja_file_can_poll_for_media (file) && !caja_file_is_media_check_automatic (file)) {
-			caja_file_poll_for_media (file);
+		if (peony_file_can_poll_for_media (file) && !peony_file_is_media_check_automatic (file)) {
+			peony_file_poll_for_media (file);
 		}
 	}
-	caja_file_list_free (selection);
+	peony_file_list_free (selection);
 }
 
 static void
 action_self_mount_volume_callback (GtkAction *action,
 				   gpointer data)
 {
-	CajaFile *file;
+	PeonyFile *file;
 	FMDirectoryView *view;
 	GMountOperation *mount_op;
 
@@ -6739,7 +6739,7 @@ action_self_mount_volume_callback (GtkAction *action,
 
 	mount_op = gtk_mount_operation_new (fm_directory_view_get_containing_window (view));
 	g_mount_operation_set_password_save (mount_op, G_PASSWORD_SAVE_FOR_SESSION);
-	caja_file_mount (file, mount_op, NULL, file_mount_callback, NULL);
+	peony_file_mount (file, mount_op, NULL, file_mount_callback, NULL);
 	g_object_unref (mount_op);
 }
 
@@ -6747,7 +6747,7 @@ static void
 action_self_unmount_volume_callback (GtkAction *action,
 				     gpointer data)
 {
-	CajaFile *file;
+	PeonyFile *file;
 	FMDirectoryView *view;
 	GMountOperation *mount_op;
 
@@ -6760,7 +6760,7 @@ action_self_unmount_volume_callback (GtkAction *action,
 
 	mount_op = gtk_mount_operation_new (fm_directory_view_get_containing_window (view));
 	fm_directory_view_set_initiated_unmount (view, TRUE);
-	caja_file_unmount (file, mount_op, NULL, file_unmount_callback, g_object_ref (view));
+	peony_file_unmount (file, mount_op, NULL, file_unmount_callback, g_object_ref (view));
 	g_object_unref (mount_op);
 }
 
@@ -6768,7 +6768,7 @@ static void
 action_self_eject_volume_callback (GtkAction *action,
 				   gpointer data)
 {
-	CajaFile *file;
+	PeonyFile *file;
 	FMDirectoryView *view;
 	GMountOperation *mount_op;
 
@@ -6781,7 +6781,7 @@ action_self_eject_volume_callback (GtkAction *action,
 
 	mount_op = gtk_mount_operation_new (fm_directory_view_get_containing_window (view));
 	fm_directory_view_set_initiated_unmount (view, TRUE);
-	caja_file_eject (file, mount_op, NULL, file_eject_callback, g_object_ref (view));
+	peony_file_eject (file, mount_op, NULL, file_eject_callback, g_object_ref (view));
 	g_object_unref (mount_op);
 }
 
@@ -6789,7 +6789,7 @@ static void
 action_self_format_volume_callback (GtkAction *action,
 				    gpointer   data)
 {
-	CajaFile *file;
+	PeonyFile *file;
 	FMDirectoryView *view;
 
 	view = FM_DIRECTORY_VIEW (data);
@@ -6810,7 +6810,7 @@ static void
 action_self_start_volume_callback (GtkAction *action,
 				   gpointer   data)
 {
-	CajaFile *file;
+	PeonyFile *file;
 	FMDirectoryView *view;
 	GMountOperation *mount_op;
 
@@ -6822,7 +6822,7 @@ action_self_start_volume_callback (GtkAction *action,
 	}
 
 	mount_op = gtk_mount_operation_new (fm_directory_view_get_containing_window (view));
-	caja_file_start (file, mount_op, NULL, file_start_callback, NULL);
+	peony_file_start (file, mount_op, NULL, file_start_callback, NULL);
 	g_object_unref (mount_op);
 }
 
@@ -6830,7 +6830,7 @@ static void
 action_self_stop_volume_callback (GtkAction *action,
 				  gpointer   data)
 {
-	CajaFile *file;
+	PeonyFile *file;
 	FMDirectoryView *view;
 	GMountOperation *mount_op;
 
@@ -6842,7 +6842,7 @@ action_self_stop_volume_callback (GtkAction *action,
 	}
 
 	mount_op = gtk_mount_operation_new (fm_directory_view_get_containing_window (view));
-	caja_file_stop (file, mount_op, NULL,
+	peony_file_stop (file, mount_op, NULL,
 			    file_stop_callback, NULL);
 	g_object_unref (mount_op);
 }
@@ -6851,7 +6851,7 @@ static void
 action_self_detect_media_callback (GtkAction *action,
 				   gpointer   data)
 {
-	CajaFile *file;
+	PeonyFile *file;
 	FMDirectoryView *view;
 
 	view = FM_DIRECTORY_VIEW (data);
@@ -6861,14 +6861,14 @@ action_self_detect_media_callback (GtkAction *action,
 		return;
 	}
 
-	caja_file_poll_for_media (file);
+	peony_file_poll_for_media (file);
 }
 
 static void
 action_location_mount_volume_callback (GtkAction *action,
 				       gpointer data)
 {
-	CajaFile *file;
+	PeonyFile *file;
 	FMDirectoryView *view;
 	GMountOperation *mount_op;
 
@@ -6881,7 +6881,7 @@ action_location_mount_volume_callback (GtkAction *action,
 
 	mount_op = gtk_mount_operation_new (fm_directory_view_get_containing_window (view));
 	g_mount_operation_set_password_save (mount_op, G_PASSWORD_SAVE_FOR_SESSION);
-	caja_file_mount (file, mount_op, NULL, file_mount_callback, NULL);
+	peony_file_mount (file, mount_op, NULL, file_mount_callback, NULL);
 	g_object_unref (mount_op);
 }
 
@@ -6889,7 +6889,7 @@ static void
 action_location_unmount_volume_callback (GtkAction *action,
 					 gpointer data)
 {
-	CajaFile *file;
+	PeonyFile *file;
 	FMDirectoryView *view;
 	GMountOperation *mount_op;
 
@@ -6902,7 +6902,7 @@ action_location_unmount_volume_callback (GtkAction *action,
 
 	mount_op = gtk_mount_operation_new (fm_directory_view_get_containing_window (view));
 	fm_directory_view_set_initiated_unmount (view, TRUE);
-	caja_file_unmount (file, mount_op, NULL,
+	peony_file_unmount (file, mount_op, NULL,
 			       file_unmount_callback, g_object_ref (view));
 	g_object_unref (mount_op);
 }
@@ -6911,7 +6911,7 @@ static void
 action_location_eject_volume_callback (GtkAction *action,
 				       gpointer data)
 {
-	CajaFile *file;
+	PeonyFile *file;
 	FMDirectoryView *view;
 	GMountOperation *mount_op;
 
@@ -6924,7 +6924,7 @@ action_location_eject_volume_callback (GtkAction *action,
 
 	mount_op = gtk_mount_operation_new (fm_directory_view_get_containing_window (view));
 	fm_directory_view_set_initiated_unmount (view, TRUE);
-	caja_file_eject (file, mount_op, NULL,
+	peony_file_eject (file, mount_op, NULL,
 			     file_eject_callback, g_object_ref (view));
 	g_object_unref (mount_op);
 }
@@ -6933,7 +6933,7 @@ static void
 action_location_format_volume_callback (GtkAction *action,
 					gpointer   data)
 {
-	CajaFile *file;
+	PeonyFile *file;
 	FMDirectoryView *view;
 
 	view = FM_DIRECTORY_VIEW (data);
@@ -6954,7 +6954,7 @@ static void
 action_location_start_volume_callback (GtkAction *action,
 				       gpointer   data)
 {
-	CajaFile *file;
+	PeonyFile *file;
 	FMDirectoryView *view;
 	GMountOperation *mount_op;
 
@@ -6966,7 +6966,7 @@ action_location_start_volume_callback (GtkAction *action,
 	}
 
 	mount_op = gtk_mount_operation_new (fm_directory_view_get_containing_window (view));
-	caja_file_start (file, mount_op, NULL, file_start_callback, NULL);
+	peony_file_start (file, mount_op, NULL, file_start_callback, NULL);
 	g_object_unref (mount_op);
 }
 
@@ -6974,7 +6974,7 @@ static void
 action_location_stop_volume_callback (GtkAction *action,
 				      gpointer   data)
 {
-	CajaFile *file;
+	PeonyFile *file;
 	FMDirectoryView *view;
 	GMountOperation *mount_op;
 
@@ -6986,7 +6986,7 @@ action_location_stop_volume_callback (GtkAction *action,
 	}
 
 	mount_op = gtk_mount_operation_new (fm_directory_view_get_containing_window (view));
-	caja_file_stop (file, mount_op, NULL,
+	peony_file_stop (file, mount_op, NULL,
 			    file_stop_callback, NULL);
 	g_object_unref (mount_op);
 }
@@ -6995,7 +6995,7 @@ static void
 action_location_detect_media_callback (GtkAction *action,
 				       gpointer   data)
 {
-	CajaFile *file;
+	PeonyFile *file;
 	FMDirectoryView *view;
 
 	view = FM_DIRECTORY_VIEW (data);
@@ -7005,7 +7005,7 @@ action_location_detect_media_callback (GtkAction *action,
 		return;
 	}
 
-	caja_file_poll_for_media (file);
+	peony_file_poll_for_media (file);
 }
 
 static void
@@ -7026,7 +7026,7 @@ connect_to_server_response_callback (GtkDialog *dialog,
 		uri = g_object_get_data (G_OBJECT (dialog), "link-uri");
 		icon = g_object_get_data (G_OBJECT (dialog), "link-icon");
 		name = gtk_entry_get_text (entry);
-		mate_vfs_connect_to_server (uri, (char *)name, icon);
+		ukui_vfs_connect_to_server (uri, (char *)name, icon);
 		gtk_widget_destroy (GTK_WIDGET (dialog));
 		break;
 	case GTK_RESPONSE_NONE:
@@ -7056,11 +7056,11 @@ static void
 action_connect_to_server_link_callback (GtkAction *action,
 					gpointer data)
 {
-	CajaFile *file;
+	PeonyFile *file;
 	GList *selection;
 	FMDirectoryView *view;
 	char *uri;
-	CajaIconInfo *icon;
+	PeonyIconInfo *icon;
 	const char *icon_name;
 	char *name;
 	GtkWidget *dialog;
@@ -7074,16 +7074,16 @@ action_connect_to_server_link_callback (GtkAction *action,
 	selection = fm_directory_view_get_selection (view);
 
 	if (!eel_g_list_exactly_one_item (selection)) {
-		caja_file_list_free (selection);
+		peony_file_list_free (selection);
 		return;
 	}
 
-	file = CAJA_FILE (selection->data);
+	file = PEONY_FILE (selection->data);
 
-	uri = caja_file_get_activation_uri (file);
-	icon = caja_file_get_icon (file, CAJA_ICON_SIZE_STANDARD, 0);
-	icon_name = caja_icon_info_get_used_name (icon);
-	name = caja_file_get_display_name (file);
+	uri = peony_file_get_activation_uri (file);
+	icon = peony_file_get_icon (file, PEONY_ICON_SIZE_STANDARD, 0);
+	icon_name = peony_icon_info_get_used_name (icon);
+	name = peony_file_get_display_name (file);
 
 	if (uri != NULL) {
 		title = g_strdup_printf (_("Connect to Server %s"), name);
@@ -7142,7 +7142,7 @@ action_location_open_alternate_callback (GtkAction *action,
 					 gpointer   callback_data)
 {
 	FMDirectoryView *view;
-	CajaFile *file;
+	PeonyFile *file;
 
 	view = FM_DIRECTORY_VIEW (callback_data);
 
@@ -7153,7 +7153,7 @@ action_location_open_alternate_callback (GtkAction *action,
 
 	fm_directory_view_activate_file (view,
 					 file,
-					 CAJA_WINDOW_OPEN_IN_NAVIGATION,
+					 PEONY_WINDOW_OPEN_IN_NAVIGATION,
 					 0);
 }
 
@@ -7162,7 +7162,7 @@ action_location_open_in_new_tab_callback (GtkAction *action,
 					  gpointer   callback_data)
 {
 	FMDirectoryView *view;
-	CajaFile *file;
+	PeonyFile *file;
 
 	view = FM_DIRECTORY_VIEW (callback_data);
 
@@ -7173,8 +7173,8 @@ action_location_open_in_new_tab_callback (GtkAction *action,
 
 	fm_directory_view_activate_file (view,
 					 file,
-					 CAJA_WINDOW_OPEN_ACCORDING_TO_MODE,
-					 CAJA_WINDOW_OPEN_FLAG_NEW_TAB);
+					 PEONY_WINDOW_OPEN_ACCORDING_TO_MODE,
+					 PEONY_WINDOW_OPEN_FLAG_NEW_TAB);
 }
 
 static void
@@ -7182,7 +7182,7 @@ action_location_open_folder_window_callback (GtkAction *action,
 					     gpointer   callback_data)
 {
 	FMDirectoryView *view;
-	CajaFile *file;
+	PeonyFile *file;
 
 	view = FM_DIRECTORY_VIEW (callback_data);
 
@@ -7191,7 +7191,7 @@ action_location_open_folder_window_callback (GtkAction *action,
 
 	fm_directory_view_activate_file (view,
 					 file,
-					 CAJA_WINDOW_OPEN_IN_SPATIAL,
+					 PEONY_WINDOW_OPEN_IN_SPATIAL,
 					 0);
 }
 
@@ -7200,7 +7200,7 @@ action_location_cut_callback (GtkAction *action,
 			      gpointer   callback_data)
 {
 	FMDirectoryView *view;
-	CajaFile *file;
+	PeonyFile *file;
 	GList *files;
 
 	view = FM_DIRECTORY_VIEW (callback_data);
@@ -7218,7 +7218,7 @@ action_location_copy_callback (GtkAction *action,
 			       gpointer   callback_data)
 {
 	FMDirectoryView *view;
-	CajaFile *file;
+	PeonyFile *file;
 	GList *files;
 
 	view = FM_DIRECTORY_VIEW (callback_data);
@@ -7236,7 +7236,7 @@ action_location_paste_files_into_callback (GtkAction *action,
 					   gpointer callback_data)
 {
 	FMDirectoryView *view;
-	CajaFile *file;
+	PeonyFile *file;
 
 	view = FM_DIRECTORY_VIEW (callback_data);
 
@@ -7251,7 +7251,7 @@ action_location_trash_callback (GtkAction *action,
 				gpointer   callback_data)
 {
 	FMDirectoryView *view;
-	CajaFile *file;
+	PeonyFile *file;
 	GList *files;
 
 	view = FM_DIRECTORY_VIEW (callback_data);
@@ -7271,7 +7271,7 @@ action_location_delete_callback (GtkAction *action,
 				 gpointer   callback_data)
 {
 	FMDirectoryView *view;
-	CajaFile *file;
+	PeonyFile *file;
 	GFile *location;
 	GList *files;
 
@@ -7280,10 +7280,10 @@ action_location_delete_callback (GtkAction *action,
 	file = view->details->location_popup_directory_as_file;
 	g_return_if_fail (file != NULL);
 
-	location = caja_file_get_location (file);
+	location = peony_file_get_location (file);
 
 	files = g_list_append (NULL, location);
-	caja_file_operations_delete (files, fm_directory_view_get_containing_window (view),
+	peony_file_operations_delete (files, fm_directory_view_get_containing_window (view),
 					 NULL, NULL);
 
 	g_list_free_full (files, g_object_unref);
@@ -7294,7 +7294,7 @@ action_location_restore_from_trash_callback (GtkAction *action,
 					     gpointer callback_data)
 {
 	FMDirectoryView *view;
-	CajaFile *file;
+	PeonyFile *file;
 	GList l;
 
 	view = FM_DIRECTORY_VIEW (callback_data);
@@ -7303,14 +7303,14 @@ action_location_restore_from_trash_callback (GtkAction *action,
 	l.prev = NULL;
 	l.next = NULL;
 	l.data = file;
-	caja_restore_files_from_trash (&l,
+	peony_restore_files_from_trash (&l,
 					   fm_directory_view_get_containing_window (view));
 }
 
 static void
 fm_directory_view_init_show_hidden_files (FMDirectoryView *view)
 {
-	CajaWindowShowHiddenFilesMode mode;
+	PeonyWindowShowHiddenFilesMode mode;
 	gboolean show_hidden_changed;
 	gboolean show_hidden_default_setting;
 
@@ -7319,16 +7319,16 @@ fm_directory_view_init_show_hidden_files (FMDirectoryView *view)
 	}
 
 	show_hidden_changed = FALSE;
-	mode = caja_window_info_get_hidden_files_mode (view->details->window);
+	mode = peony_window_info_get_hidden_files_mode (view->details->window);
 
-	if (mode == CAJA_WINDOW_SHOW_HIDDEN_FILES_DEFAULT) {
-		show_hidden_default_setting = g_settings_get_boolean (caja_preferences, CAJA_PREFERENCES_SHOW_HIDDEN_FILES);
+	if (mode == PEONY_WINDOW_SHOW_HIDDEN_FILES_DEFAULT) {
+		show_hidden_default_setting = g_settings_get_boolean (peony_preferences, PEONY_PREFERENCES_SHOW_HIDDEN_FILES);
 		if (show_hidden_default_setting != view->details->show_hidden_files) {
 			view->details->show_hidden_files = show_hidden_default_setting;
 			show_hidden_changed = TRUE;
 		}
 	} else {
-		if (mode == CAJA_WINDOW_SHOW_HIDDEN_FILES_ENABLE) {
+		if (mode == PEONY_WINDOW_SHOW_HIDDEN_FILES_ENABLE) {
 			show_hidden_changed = !view->details->show_hidden_files;
 			view->details->show_hidden_files = TRUE;
 		} else {
@@ -7589,7 +7589,7 @@ static const GtkActionEntry directory_view_entries[] = {
   /* label, accelerator */       N_("Mo_ve to Trash"), "",
   /* tooltip */                  N_("Move this folder to the Trash"),
                                  G_CALLBACK (action_location_trash_callback) },
-  /* name, stock id */         { FM_ACTION_LOCATION_DELETE, CAJA_ICON_DELETE,
+  /* name, stock id */         { FM_ACTION_LOCATION_DELETE, PEONY_ICON_DELETE,
   /* label, accelerator */       N_("_Delete"), "",
   /* tooltip */                  N_("Delete this folder, without moving to the Trash"),
                                  G_CALLBACK (action_location_delete_callback) },
@@ -7637,19 +7637,19 @@ static const GtkActionEntry directory_view_entries[] = {
   /* name, stock id, label */  {FM_ACTION_MOVE_TO_NEXT_PANE, NULL, N_("_Other pane"),
 				NULL, N_("Move the current selection to the other pane in the window"),
 				G_CALLBACK (action_move_to_next_pane_callback) },
-  /* name, stock id, label */  {FM_ACTION_COPY_TO_HOME, CAJA_ICON_HOME,
+  /* name, stock id, label */  {FM_ACTION_COPY_TO_HOME, PEONY_ICON_HOME,
 				N_("_Home Folder"), NULL,
 				N_("Copy the current selection to the home folder"),
 				G_CALLBACK (action_copy_to_home_callback) },
-  /* name, stock id, label */  {FM_ACTION_MOVE_TO_HOME, CAJA_ICON_HOME,
+  /* name, stock id, label */  {FM_ACTION_MOVE_TO_HOME, PEONY_ICON_HOME,
 				N_("_Home Folder"), NULL,
 				N_("Move the current selection to the home folder"),
 				G_CALLBACK (action_move_to_home_callback) },
-  /* name, stock id, label */  {FM_ACTION_COPY_TO_DESKTOP, CAJA_ICON_DESKTOP,
+  /* name, stock id, label */  {FM_ACTION_COPY_TO_DESKTOP, PEONY_ICON_DESKTOP,
 				N_("_Desktop"), NULL,
 				N_("Copy the current selection to the desktop"),
 				G_CALLBACK (action_copy_to_desktop_callback) },
-  /* name, stock id, label */  {FM_ACTION_MOVE_TO_DESKTOP, CAJA_ICON_DESKTOP,
+  /* name, stock id, label */  {FM_ACTION_MOVE_TO_DESKTOP, PEONY_ICON_DESKTOP,
 				N_("_Desktop"), NULL,
 				N_("Move the current selection to the desktop"),
 				G_CALLBACK (action_move_to_desktop_callback) },
@@ -7721,7 +7721,7 @@ real_merge_menus (FMDirectoryView *view)
 	const char *ui;
 	char *tooltip;
 
-	ui_manager = caja_window_info_get_ui_manager (view->details->window);
+	ui_manager = peony_window_info_get_ui_manager (view->details->window);
 
 	action_group = gtk_action_group_new ("DirViewActions");
 	gtk_action_group_set_translation_domain (action_group, GETTEXT_PACKAGE);
@@ -7731,7 +7731,7 @@ real_merge_menus (FMDirectoryView *view)
 				      view);
 
 	/* Translators: %s is a directory */
-	tooltip = g_strdup_printf(_("Run or manage scripts from %s"), "~/.config/caja/scripts");
+	tooltip = g_strdup_printf(_("Run or manage scripts from %s"), "~/.config/peony/scripts");
 	/* Create a script action here specially because its tooltip is dynamic */
 	action = gtk_action_new ("Scripts", _("_Scripts"), tooltip, NULL);
 	gtk_action_group_add_action (action_group, action);
@@ -7752,7 +7752,7 @@ real_merge_menus (FMDirectoryView *view)
 	gtk_ui_manager_insert_action_group (ui_manager, action_group, -1);
 	g_object_unref (action_group); /* owned by ui manager */
 
-	ui = caja_ui_string_get ("caja-directory-view-ui.xml");
+	ui = peony_ui_string_get ("peony-directory-view-ui.xml");
 	view->details->dir_merge_id = gtk_ui_manager_add_ui_from_string (ui_manager, ui, -1, NULL);
 #if !GTK_CHECK_VERSION(3, 21, 0)
 	g_signal_connect_object (fm_directory_view_get_background (view), "settings_changed",
@@ -7765,29 +7765,29 @@ real_merge_menus (FMDirectoryView *view)
 
 
 static gboolean
-can_paste_into_file (CajaFile *file)
+can_paste_into_file (PeonyFile *file)
 {
-	if (caja_file_is_directory (file) &&
-	    caja_file_can_write (file)) {
+	if (peony_file_is_directory (file) &&
+	    peony_file_can_write (file)) {
 		return TRUE;
 	}
-	if (caja_file_has_activation_uri (file)) {
+	if (peony_file_has_activation_uri (file)) {
 		GFile *location;
-		CajaFile *activation_file;
+		PeonyFile *activation_file;
 		gboolean res;
 
-		location = caja_file_get_activation_location (file);
-		activation_file = caja_file_get (location);
+		location = peony_file_get_activation_location (file);
+		activation_file = peony_file_get (location);
 		g_object_unref (location);
 
 		/* The target location might not have data for it read yet,
 		   and we can't want to do sync I/O, so treat the unknown
 		   case as can-write */
-		res = (caja_file_get_file_type (activation_file) == G_FILE_TYPE_UNKNOWN) ||
-			(caja_file_get_file_type (activation_file) == G_FILE_TYPE_DIRECTORY &&
-			 caja_file_can_write (activation_file));
+		res = (peony_file_get_file_type (activation_file) == G_FILE_TYPE_UNKNOWN) ||
+			(peony_file_get_file_type (activation_file) == G_FILE_TYPE_DIRECTORY &&
+			 peony_file_can_write (activation_file));
 
-		caja_file_unref (activation_file);
+		peony_file_unref (activation_file);
 
 		return res;
 	}
@@ -7839,7 +7839,7 @@ clipboard_targets_received (GtkClipboard     *clipboard,
 					      FM_ACTION_PASTE_FILES_INTO);
 	gtk_action_set_sensitive (action,
 	                          can_paste && count == 1 &&
-	                          can_paste_into_file (CAJA_FILE (selection->data)));
+	                          can_paste_into_file (PEONY_FILE (selection->data)));
 
 	action = gtk_action_group_get_action (view->details->dir_action_group,
 					      FM_ACTION_LOCATION_PASTE_FILES_INTO);
@@ -7852,7 +7852,7 @@ clipboard_targets_received (GtkClipboard     *clipboard,
 				  GPOINTER_TO_INT (g_object_get_data (G_OBJECT (action),
 						   "can-paste-according-to-destination")));
 
-	caja_file_list_free (selection);
+	peony_file_list_free (selection);
 
 	g_object_unref (view);
 }
@@ -7860,11 +7860,11 @@ clipboard_targets_received (GtkClipboard     *clipboard,
 static gboolean
 showing_trash_directory (FMDirectoryView *view)
 {
-	CajaFile *file;
+	PeonyFile *file;
 
 	file = fm_directory_view_get_directory_as_file (view);
 	if (file != NULL) {
-		return caja_file_is_in_trash (file);
+		return peony_file_is_in_trash (file);
 	}
 	return FALSE;
 }
@@ -7872,33 +7872,33 @@ showing_trash_directory (FMDirectoryView *view)
 static gboolean
 should_show_empty_trash (FMDirectoryView *view)
 {
-	return (showing_trash_directory (view) || caja_window_info_get_window_type (view->details->window) == CAJA_WINDOW_NAVIGATION);
+	return (showing_trash_directory (view) || peony_window_info_get_window_type (view->details->window) == PEONY_WINDOW_NAVIGATION);
 }
 
 static gboolean
 file_list_all_are_folders (GList *file_list)
 {
 	GList *l;
-	CajaFile *file, *linked_file;
+	PeonyFile *file, *linked_file;
 	char *activation_uri;
 	gboolean is_dir;
 
 	for (l = file_list; l != NULL; l = l->next) {
-		file = CAJA_FILE (l->data);
-		if (caja_file_is_caja_link (file) &&
-		    !CAJA_IS_DESKTOP_ICON_FILE (file)) {
-			if (caja_file_is_launcher (file)) {
+		file = PEONY_FILE (l->data);
+		if (peony_file_is_peony_link (file) &&
+		    !PEONY_IS_DESKTOP_ICON_FILE (file)) {
+			if (peony_file_is_launcher (file)) {
 				return FALSE;
 			}
 
-			activation_uri = caja_file_get_activation_uri (file);
+			activation_uri = peony_file_get_activation_uri (file);
 
 			if (activation_uri == NULL) {
 				g_free (activation_uri);
 				return FALSE;
 			}
 
-			linked_file = caja_file_get_existing_by_uri (activation_uri);
+			linked_file = peony_file_get_existing_by_uri (activation_uri);
 
 			/* We might not actually know the type of the linked file yet,
 			 * however we don't want to schedule a read, since that might do things
@@ -7908,18 +7908,18 @@ file_list_all_are_folders (GList *file_list)
 			 */
 			is_dir =
 				(linked_file != NULL &&
-				 caja_file_is_directory (linked_file)) ||
+				 peony_file_is_directory (linked_file)) ||
 				(activation_uri != NULL &&
 				 activation_uri[strlen (activation_uri) - 1] == '/');
 
-			caja_file_unref (linked_file);
+			peony_file_unref (linked_file);
 			g_free (activation_uri);
 
 			if (!is_dir) {
 				return FALSE;
 			}
-		} else if (!(caja_file_is_directory (file) ||
-			     CAJA_IS_DESKTOP_ICON_FILE (file))) {
+		} else if (!(peony_file_is_directory (file) ||
+			     PEONY_IS_DESKTOP_ICON_FILE (file))) {
 			return FALSE;
 		}
 	}
@@ -7927,7 +7927,7 @@ file_list_all_are_folders (GList *file_list)
 }
 
 static void
-file_should_show_foreach (CajaFile        *file,
+file_should_show_foreach (PeonyFile        *file,
 			  gboolean            *show_mount,
 			  gboolean            *show_unmount,
 			  gboolean            *show_eject,
@@ -7949,11 +7949,11 @@ file_should_show_foreach (CajaFile        *file,
 	*show_stop = FALSE;
 	*show_poll = FALSE;
 
-	if (caja_file_can_eject (file)) {
+	if (peony_file_can_eject (file)) {
 		*show_eject = TRUE;
 	}
 
-	if (caja_file_can_mount (file)) {
+	if (peony_file_can_mount (file)) {
 		*show_mount = TRUE;
 
 #ifdef TODO_GIO
@@ -7964,28 +7964,28 @@ file_should_show_foreach (CajaFile        *file,
 #endif
 	}
 
-	if (caja_file_can_start (file) || caja_file_can_start_degraded (file)) {
+	if (peony_file_can_start (file) || peony_file_can_start_degraded (file)) {
 		*show_start = TRUE;
 	}
 
-	if (caja_file_can_stop (file)) {
+	if (peony_file_can_stop (file)) {
 		*show_stop = TRUE;
 	}
 
 	/* Dot not show both Unmount and Eject/Safe Removal; too confusing to
 	 * have too many menu entries */
-	if (caja_file_can_unmount (file) && !*show_eject && !*show_stop) {
+	if (peony_file_can_unmount (file) && !*show_eject && !*show_stop) {
 		*show_unmount = TRUE;
 	}
 
-	if (caja_file_can_poll_for_media (file) && !caja_file_is_media_check_automatic (file)) {
+	if (peony_file_can_poll_for_media (file) && !peony_file_is_media_check_automatic (file)) {
 		*show_poll = TRUE;
 	}
 
-	*start_stop_type = caja_file_get_start_stop_type (file);
+	*start_stop_type = peony_file_get_start_stop_type (file);
 
-	if (caja_file_is_caja_link (file)) {
-		uri = caja_file_get_activation_uri (file);
+	if (peony_file_is_peony_link (file)) {
+		uri = peony_file_get_activation_uri (file);
 		if (uri != NULL &&
 		    (eel_istr_has_prefix (uri, "ftp:") ||
 		     eel_istr_has_prefix (uri, "ssh:") ||
@@ -7999,7 +7999,7 @@ file_should_show_foreach (CajaFile        *file,
 }
 
 static void
-file_should_show_self (CajaFile        *file,
+file_should_show_self (PeonyFile        *file,
 		       gboolean            *show_mount,
 		       gboolean            *show_unmount,
 		       gboolean            *show_eject,
@@ -8021,11 +8021,11 @@ file_should_show_self (CajaFile        *file,
 		return;
 	}
 
-	if (caja_file_can_eject (file)) {
+	if (peony_file_can_eject (file)) {
 		*show_eject = TRUE;
 	}
 
-	if (caja_file_can_mount (file)) {
+	if (peony_file_can_mount (file)) {
 		*show_mount = TRUE;
 	}
 
@@ -8035,40 +8035,40 @@ file_should_show_self (CajaFile        *file,
 	}
 #endif
 
-	if (caja_file_can_start (file) || caja_file_can_start_degraded (file)) {
+	if (peony_file_can_start (file) || peony_file_can_start_degraded (file)) {
 		*show_start = TRUE;
 	}
 
-	if (caja_file_can_stop (file)) {
+	if (peony_file_can_stop (file)) {
 		*show_stop = TRUE;
 	}
 
 	/* Dot not show both Unmount and Eject/Safe Removal; too confusing to
 	 * have too many menu entries */
-	if (caja_file_can_unmount (file) && !*show_eject && !*show_stop) {
+	if (peony_file_can_unmount (file) && !*show_eject && !*show_stop) {
 		*show_unmount = TRUE;
 	}
 
-	if (caja_file_can_poll_for_media (file) && !caja_file_is_media_check_automatic (file)) {
+	if (peony_file_can_poll_for_media (file) && !peony_file_is_media_check_automatic (file)) {
 		*show_poll = TRUE;
 	}
 
-	*start_stop_type = caja_file_get_start_stop_type (file);
+	*start_stop_type = peony_file_get_start_stop_type (file);
 
 }
 
 static gboolean
 files_are_all_directories (GList *files)
 {
-	CajaFile *file;
+	PeonyFile *file;
 	GList *l;
 	gboolean all_directories;
 
 	all_directories = TRUE;
 
 	for (l = files; l != NULL; l = l->next) {
-		file = CAJA_FILE (l->data);
-		all_directories &= caja_file_is_directory (file);
+		file = PEONY_FILE (l->data);
+		all_directories &= peony_file_is_directory (file);
 	}
 
 	return all_directories;
@@ -8077,15 +8077,15 @@ files_are_all_directories (GList *files)
 static gboolean
 files_is_none_directory (GList *files)
 {
-	CajaFile *file;
+	PeonyFile *file;
 	GList *l;
 	gboolean no_directory;
 
 	no_directory = TRUE;
 
 	for (l = files; l != NULL; l = l->next) {
-		file = CAJA_FILE (l->data);
-		no_directory &= !caja_file_is_directory (file);
+		file = PEONY_FILE (l->data);
+		no_directory &= !peony_file_is_directory (file);
 	}
 
 	return no_directory;
@@ -8096,8 +8096,8 @@ update_restore_from_trash_action (GtkAction *action,
 				  GList *files,
 				  gboolean is_self)
 {
-	CajaFile *original_file;
-	CajaFile *original_dir;
+	PeonyFile *original_file;
+	PeonyFile *original_dir;
 	GHashTable *original_dirs_hash;
 	GList *original_dirs;
 	GFile *original_location;
@@ -8112,13 +8112,13 @@ update_restore_from_trash_action (GtkAction *action,
 
 	if (files != NULL) {
 		if (g_list_length (files) == 1) {
-			original_file = caja_file_get_trash_original_file (files->data);
+			original_file = peony_file_get_trash_original_file (files->data);
 		} else {
-			original_dirs_hash = caja_trashed_files_get_original_directories (files, NULL);
+			original_dirs_hash = peony_trashed_files_get_original_directories (files, NULL);
 			if (original_dirs_hash != NULL) {
 				original_dirs = g_hash_table_get_keys (original_dirs_hash);
 				if (g_list_length (original_dirs) == 1) {
-					original_dir = caja_file_ref (CAJA_FILE (original_dirs->data));
+					original_dir = peony_file_ref (PEONY_FILE (original_dirs->data));
 				}
 			}
 		}
@@ -8128,9 +8128,9 @@ update_restore_from_trash_action (GtkAction *action,
 		gtk_action_set_visible (action, TRUE);
 
 		if (original_file != NULL) {
-			original_location = caja_file_get_location (original_file);
+			original_location = peony_file_get_location (original_file);
 		} else if (original_dir != NULL) {
-			original_location = caja_file_get_location (original_dir);
+			original_location = peony_file_get_location (original_dir);
 		}
 
 		if (original_location != NULL) {
@@ -8183,8 +8183,8 @@ update_restore_from_trash_action (GtkAction *action,
 		gtk_action_set_visible (action, FALSE);
 	}
 
-	caja_file_unref (original_file);
-	caja_file_unref (original_dir);
+	peony_file_unref (original_file);
+	peony_file_unref (original_dir);
 	g_list_free (original_dirs);
 
 	if (original_dirs_hash != NULL) {
@@ -8198,7 +8198,7 @@ real_update_menus_volumes (FMDirectoryView *view,
 			   gint selection_count)
 {
 	GList *l;
-	CajaFile *file;
+	PeonyFile *file;
 	gboolean show_mount;
 	gboolean show_unmount;
 	gboolean show_eject;
@@ -8243,7 +8243,7 @@ real_update_menus_volumes (FMDirectoryView *view,
 		gboolean show_stop_one;
 		gboolean show_poll_one;
 
-		file = CAJA_FILE (l->data);
+		file = PEONY_FILE (l->data);
 		file_should_show_foreach (file,
 					  &show_mount_one,
 					  &show_unmount_one,
@@ -8445,7 +8445,7 @@ static void
 real_update_location_menu_volumes (FMDirectoryView *view)
 {
 	GtkAction *action;
-	CajaFile *file;
+	PeonyFile *file;
 	gboolean show_mount;
 	gboolean show_unmount;
 	gboolean show_eject;
@@ -8457,9 +8457,9 @@ real_update_location_menu_volumes (FMDirectoryView *view)
 	GDriveStartStopType start_stop_type;
 
 	g_assert (FM_IS_DIRECTORY_VIEW (view));
-	g_assert (CAJA_IS_FILE (view->details->location_popup_directory_as_file));
+	g_assert (PEONY_IS_FILE (view->details->location_popup_directory_as_file));
 
-	file = CAJA_FILE (view->details->location_popup_directory_as_file);
+	file = PEONY_FILE (view->details->location_popup_directory_as_file);
 	file_should_show_foreach (file,
 				  &show_mount,
 				  &show_unmount,
@@ -8565,13 +8565,13 @@ real_update_paste_menu (FMDirectoryView *view,
 	GtkAction *action;
 
 	selection_is_read_only = selection_count == 1 &&
-		(!caja_file_can_write (CAJA_FILE (selection->data)) &&
-		 !caja_file_has_activation_uri (CAJA_FILE (selection->data)));
+		(!peony_file_can_write (PEONY_FILE (selection->data)) &&
+		 !peony_file_has_activation_uri (PEONY_FILE (selection->data)));
 
 	is_read_only = fm_directory_view_is_read_only (view);
 
 	can_paste_files_into = (selection_count == 1 &&
-	                        can_paste_into_file (CAJA_FILE (selection->data)));
+	                        can_paste_into_file (PEONY_FILE (selection->data)));
 
 	action = gtk_action_group_get_action (view->details->dir_action_group,
 					      FM_ACTION_PASTE);
@@ -8584,7 +8584,7 @@ real_update_paste_menu (FMDirectoryView *view,
 
 	/* Ask the clipboard */
 	g_object_ref (view); /* Need to keep the object alive until we get the reply */
-	gtk_clipboard_request_targets (caja_clipboard_get (GTK_WIDGET (view)),
+	gtk_clipboard_request_targets (peony_clipboard_get (GTK_WIDGET (view)),
 				       clipboard_targets_received,
 				       view);
 }
@@ -8593,7 +8593,7 @@ static void
 real_update_location_menu (FMDirectoryView *view)
 {
 	GtkAction *action;
-	CajaFile *file;
+	PeonyFile *file;
 	gboolean is_special_link;
 	gboolean is_desktop_or_home_dir;
 	gboolean can_delete_file, show_delete;
@@ -8607,8 +8607,8 @@ real_update_location_menu (FMDirectoryView *view)
 	show_open_folder_window = FALSE;
 	show_open_in_new_tab = FALSE;
 
-	if (caja_window_info_get_window_type (view->details->window) == CAJA_WINDOW_NAVIGATION) {
-		if (g_settings_get_boolean (caja_preferences, CAJA_PREFERENCES_ALWAYS_USE_BROWSER)) {
+	if (peony_window_info_get_window_type (view->details->window) == PEONY_WINDOW_NAVIGATION) {
+		if (g_settings_get_boolean (peony_preferences, PEONY_PREFERENCES_ALWAYS_USE_BROWSER)) {
 			label = _("Open in New _Window");
 		} else {
 			label = _("Browse in New _Window");
@@ -8631,7 +8631,7 @@ real_update_location_menu (FMDirectoryView *view)
 	gtk_action_set_visible (action, show_open_in_new_tab);
 
 	if (show_open_in_new_tab) {
-		if (g_settings_get_boolean (caja_preferences, CAJA_PREFERENCES_ALWAYS_USE_BROWSER)) {
+		if (g_settings_get_boolean (peony_preferences, PEONY_PREFERENCES_ALWAYS_USE_BROWSER)) {
 			label = _("Open in New _Tab");
 		} else {
 			label = _("Browse in New _Tab");
@@ -8646,17 +8646,17 @@ real_update_location_menu (FMDirectoryView *view)
 	gtk_action_set_visible (action, show_open_folder_window);
 
 	file = view->details->location_popup_directory_as_file;
-	g_assert (CAJA_IS_FILE (file));
-	g_assert (caja_file_check_if_ready (file, CAJA_FILE_ATTRIBUTE_INFO |
-						      CAJA_FILE_ATTRIBUTE_MOUNT |
-						      CAJA_FILE_ATTRIBUTE_FILESYSTEM_INFO));
+	g_assert (PEONY_IS_FILE (file));
+	g_assert (peony_file_check_if_ready (file, PEONY_FILE_ATTRIBUTE_INFO |
+						      PEONY_FILE_ATTRIBUTE_MOUNT |
+						      PEONY_FILE_ATTRIBUTE_FILESYSTEM_INFO));
 
-	is_special_link = CAJA_IS_DESKTOP_ICON_FILE (file);
-	is_desktop_or_home_dir = caja_file_is_home (file)
-		|| caja_file_is_desktop_directory (file);
+	is_special_link = PEONY_IS_DESKTOP_ICON_FILE (file);
+	is_desktop_or_home_dir = peony_file_is_home (file)
+		|| peony_file_is_desktop_directory (file);
 
 	can_delete_file =
-		caja_file_can_delete (file) &&
+		peony_file_can_delete (file) &&
 		!is_special_link &&
 		!is_desktop_or_home_dir;
 
@@ -8678,8 +8678,8 @@ real_update_location_menu (FMDirectoryView *view)
 	show_delete = TRUE;
 
 	if (file != NULL &&
-	    caja_file_is_in_trash (file)) {
-		if (caja_file_is_self_owned (file)) {
+	    peony_file_is_in_trash (file)) {
+		if (peony_file_is_self_owned (file)) {
 			show_delete = FALSE;
 		}
 
@@ -8689,7 +8689,7 @@ real_update_location_menu (FMDirectoryView *view)
 	} else {
 		label = _("Mo_ve to Trash");
 		tip = _("Move the open folder to the Trash");
-		show_separate_delete_command = g_settings_get_boolean (caja_preferences, CAJA_PREFERENCES_ENABLE_DELETE);
+		show_separate_delete_command = g_settings_get_boolean (peony_preferences, PEONY_PREFERENCES_ENABLE_DELETE);
 	}
 
 	action = gtk_action_group_get_action (view->details->dir_action_group,
@@ -8698,8 +8698,8 @@ real_update_location_menu (FMDirectoryView *view)
 		      "label", label,
 		      "tooltip", tip,
 		      "icon-name", (file != NULL &&
-				   caja_file_is_in_trash (file)) ?
-					CAJA_ICON_DELETE : CAJA_ICON_TRASH_FULL,
+				   peony_file_is_in_trash (file)) ?
+					PEONY_ICON_DELETE : PEONY_ICON_TRASH_FULL,
 		      NULL);
 	gtk_action_set_sensitive (action, can_delete_file);
 	gtk_action_set_visible (action, show_delete);
@@ -8710,7 +8710,7 @@ real_update_location_menu (FMDirectoryView *view)
 	if (show_separate_delete_command) {
 		gtk_action_set_sensitive (action, can_delete_file);
 		g_object_set (action,
-			      "icon-name", CAJA_ICON_DELETE,
+			      "icon-name", PEONY_ICON_DELETE,
 			      "sensitive", can_delete_file,
 			      NULL);
 	}
@@ -8729,7 +8729,7 @@ real_update_location_menu (FMDirectoryView *view)
 }
 
 static void
-clipboard_changed_callback (CajaClipboardMonitor *monitor, FMDirectoryView *view)
+clipboard_changed_callback (PeonyClipboardMonitor *monitor, FMDirectoryView *view)
 {
 	GList *selection;
 	gint selection_count;
@@ -8743,19 +8743,19 @@ clipboard_changed_callback (CajaClipboardMonitor *monitor, FMDirectoryView *view
 
 	real_update_paste_menu (view, selection, selection_count);
 
-	caja_file_list_free (selection);
+	peony_file_list_free (selection);
 
 }
 
 static gboolean
 can_delete_all (GList *files)
 {
-	CajaFile *file;
+	PeonyFile *file;
 	GList *l;
 
 	for (l = files; l != NULL; l = l->next) {
 		file = l->data;
-		if (!caja_file_can_delete (file)) {
+		if (!peony_file_can_delete (file)) {
 			return FALSE;
 		}
 	}
@@ -8842,11 +8842,11 @@ real_update_menus (FMDirectoryView *view)
 	can_open = show_app = selection_count != 0;
 
 	for (l = selection; l != NULL; l = l->next) {
-		CajaFile *file;
+		PeonyFile *file;
 
-		file = CAJA_FILE (selection->data);
+		file = PEONY_FILE (selection->data);
 
-		if (!caja_mime_file_opens_in_external_app (file)) {
+		if (!peony_mime_file_opens_in_external_app (file)) {
 			show_app = FALSE;
 		}
 
@@ -8861,7 +8861,7 @@ real_update_menus (FMDirectoryView *view)
 	app_icon = NULL;
 
 	if (can_open && show_app) {
-		app = caja_mime_get_default_application_for_files (selection);
+		app = peony_mime_get_default_application_for_files (selection);
 	}
 
 	if (app != NULL) {
@@ -8885,7 +8885,7 @@ real_update_menus (FMDirectoryView *view)
 		      NULL);
 
 	menuitem = gtk_ui_manager_get_widget (
-			caja_window_info_get_ui_manager (view->details->window),
+			peony_window_info_get_ui_manager (view->details->window),
 			FM_DIRECTORY_VIEW_MENU_PATH_OPEN);
 
 	/* Only force displaying the icon if it is an application icon */
@@ -8893,7 +8893,7 @@ real_update_menus (FMDirectoryView *view)
 		GTK_IMAGE_MENU_ITEM (menuitem), app_icon != NULL);
 
 	menuitem = gtk_ui_manager_get_widget (
-			caja_window_info_get_ui_manager (view->details->window),
+			peony_window_info_get_ui_manager (view->details->window),
 			FM_DIRECTORY_VIEW_POPUP_PATH_OPEN);
 
 	/* Only force displaying the icon if it is an application icon */
@@ -8913,11 +8913,11 @@ real_update_menus (FMDirectoryView *view)
 
 	show_open_alternate = file_list_all_are_folders (selection) &&
 				selection_count > 0 &&
-				!(caja_window_info_get_window_type (view->details->window) == CAJA_WINDOW_DESKTOP &&
-					g_settings_get_boolean (caja_preferences, CAJA_PREFERENCES_ALWAYS_USE_BROWSER));
+				!(peony_window_info_get_window_type (view->details->window) == PEONY_WINDOW_DESKTOP &&
+					g_settings_get_boolean (peony_preferences, PEONY_PREFERENCES_ALWAYS_USE_BROWSER));
 	show_open_folder_window = FALSE;
-	if (caja_window_info_get_window_type (view->details->window) == CAJA_WINDOW_NAVIGATION) {
-		if (g_settings_get_boolean (caja_preferences, CAJA_PREFERENCES_ALWAYS_USE_BROWSER)) {
+	if (peony_window_info_get_window_type (view->details->window) == PEONY_WINDOW_NAVIGATION) {
+		if (g_settings_get_boolean (peony_preferences, PEONY_PREFERENCES_ALWAYS_USE_BROWSER)) {
 			if (selection_count == 0 || selection_count == 1) {
 				label_with_underscore = g_strdup (_("Open in New _Window"));
 			} else {
@@ -8954,9 +8954,9 @@ real_update_menus (FMDirectoryView *view)
 	gtk_action_set_visible (action, show_open_alternate);
 
 	/* Open in New Tab action */
-	if (caja_window_info_get_window_type (view->details->window) == CAJA_WINDOW_NAVIGATION) {
+	if (peony_window_info_get_window_type (view->details->window) == PEONY_WINDOW_NAVIGATION) {
 
-		if (g_settings_get_boolean (caja_preferences, CAJA_PREFERENCES_ALWAYS_USE_BROWSER)) {
+		if (g_settings_get_boolean (peony_preferences, PEONY_PREFERENCES_ALWAYS_USE_BROWSER)) {
 			if (selection_count == 0 || selection_count == 1) {
 				label_with_underscore = g_strdup (_("Open in New _Tab"));
 			} else {
@@ -8990,7 +8990,7 @@ real_update_menus (FMDirectoryView *view)
 	}
 
 	/* next pane actions, only in navigation mode */
-	if (caja_window_info_get_window_type (view->details->window) != CAJA_WINDOW_NAVIGATION) {
+	if (peony_window_info_get_window_type (view->details->window) != PEONY_WINDOW_NAVIGATION) {
 		action = gtk_action_group_get_action (view->details->dir_action_group,
 						      FM_ACTION_COPY_TO_NEXT_PANE);
 		gtk_action_set_visible (action, FALSE);
@@ -9014,7 +9014,7 @@ real_update_menus (FMDirectoryView *view)
 	} else {
 		label = _("Mo_ve to Trash");
 		tip = _("Move each selected item to the Trash");
-		show_separate_delete_command = g_settings_get_boolean (caja_preferences, CAJA_PREFERENCES_ENABLE_DELETE);
+		show_separate_delete_command = g_settings_get_boolean (peony_preferences, PEONY_PREFERENCES_ENABLE_DELETE);
 	}
 
 	action = gtk_action_group_get_action (view->details->dir_action_group,
@@ -9023,7 +9023,7 @@ real_update_menus (FMDirectoryView *view)
 		      "label", label,
 		      "tooltip", tip,
 		      "icon-name", all_selected_items_in_trash (view) ?
-					CAJA_ICON_DELETE : CAJA_ICON_TRASH_FULL,
+					PEONY_ICON_DELETE : PEONY_ICON_TRASH_FULL,
 		      NULL);
 	gtk_action_set_sensitive (action, can_delete_files);
 
@@ -9034,7 +9034,7 @@ real_update_menus (FMDirectoryView *view)
 	if (show_separate_delete_command) {
 		g_object_set (action,
 			      "label", _("_Delete"),
-			      "icon-name", CAJA_ICON_DELETE,
+			      "icon-name", PEONY_ICON_DELETE,
 			      NULL);
 	}
 	gtk_action_set_sensitive (action, can_delete_files);
@@ -9083,20 +9083,20 @@ real_update_menus (FMDirectoryView *view)
 	g_object_set (action,
 		      "label", _("E_mpty Trash"),
 		      NULL);
-	gtk_action_set_sensitive (action, !caja_trash_monitor_is_empty ());
+	gtk_action_set_sensitive (action, !peony_trash_monitor_is_empty ());
 	gtk_action_set_visible (action, should_show_empty_trash (view));
 
 	show_save_search = FALSE;
 	save_search_sensitive = FALSE;
 	show_save_search_as = FALSE;
 	if (view->details->model &&
-	    CAJA_IS_SEARCH_DIRECTORY (view->details->model)) {
-		CajaSearchDirectory *search;
+	    PEONY_IS_SEARCH_DIRECTORY (view->details->model)) {
+		PeonySearchDirectory *search;
 
-		search = CAJA_SEARCH_DIRECTORY (view->details->model);
-		if (caja_search_directory_is_saved_search (search)) {
+		search = PEONY_SEARCH_DIRECTORY (view->details->model);
+		if (peony_search_directory_is_saved_search (search)) {
 			show_save_search = TRUE;
-			save_search_sensitive = caja_search_directory_is_modified (search);
+			save_search_sensitive = peony_search_directory_is_modified (search);
 		} else {
 			show_save_search_as = TRUE;
 		}
@@ -9132,7 +9132,7 @@ real_update_menus (FMDirectoryView *view)
 
 	real_update_paste_menu (view, selection, selection_count);
 
-	disable_command_line = g_settings_get_boolean (mate_lockdown_preferences, CAJA_PREFERENCES_LOCKDOWN_COMMAND_LINE);
+	disable_command_line = g_settings_get_boolean (ukui_lockdown_preferences, PEONY_PREFERENCES_LOCKDOWN_COMMAND_LINE);
 	action = gtk_action_group_get_action (view->details->dir_action_group,
 					      FM_ACTION_NEW_LAUNCHER);
 	gtk_action_set_visible (action, vfolder_directory && !disable_command_line);
@@ -9142,7 +9142,7 @@ real_update_menus (FMDirectoryView *view)
 
 	undo_update_menu (view);
 
-	caja_file_list_free (selection);
+	peony_file_list_free (selection);
 
 	if (view->details->scripts_invalid) {
 		update_scripts_menu (view);
@@ -9198,7 +9198,7 @@ real_update_menus (FMDirectoryView *view)
  * @view: FMDirectoryView of interest.
  * @event: The event that triggered this context menu.
  *
- * Return value: CajaDirectory for this view.
+ * Return value: PeonyDirectory for this view.
  *
  **/
 void
@@ -9227,7 +9227,7 @@ fm_directory_view_pop_up_selection_context_menu  (FMDirectoryView *view,
  * Pop up a context menu appropriate to the view globally at the last right click location.
  * @view: FMDirectoryView of interest.
  *
- * Return value: CajaDirectory for this view.
+ * Return value: PeonyDirectory for this view.
  *
  **/
 void
@@ -9267,7 +9267,7 @@ real_pop_up_location_context_menu (FMDirectoryView *view)
 }
 
 static void
-location_popup_file_attributes_ready (CajaFile *file,
+location_popup_file_attributes_ready (PeonyFile *file,
 				      gpointer      data)
 {
 	FMDirectoryView *view;
@@ -9284,11 +9284,11 @@ static void
 unschedule_pop_up_location_context_menu (FMDirectoryView *view)
 {
 	if (view->details->location_popup_directory_as_file != NULL) {
-		g_assert (CAJA_IS_FILE (view->details->location_popup_directory_as_file));
-		caja_file_cancel_call_when_ready (view->details->location_popup_directory_as_file,
+		g_assert (PEONY_IS_FILE (view->details->location_popup_directory_as_file));
+		peony_file_cancel_call_when_ready (view->details->location_popup_directory_as_file,
 						      location_popup_file_attributes_ready,
 						      view);
-		caja_file_unref (view->details->location_popup_directory_as_file);
+		peony_file_unref (view->details->location_popup_directory_as_file);
 		view->details->location_popup_directory_as_file = NULL;
 	}
 }
@@ -9296,9 +9296,9 @@ unschedule_pop_up_location_context_menu (FMDirectoryView *view)
 static void
 schedule_pop_up_location_context_menu (FMDirectoryView *view,
 				       GdkEventButton  *event,
-				       CajaFile    *file)
+				       PeonyFile    *file)
 {
-	g_assert (CAJA_IS_FILE (file));
+	g_assert (PEONY_IS_FILE (file));
 
 	if (view->details->location_popup_event != NULL) {
 		gdk_event_free ((GdkEvent *) view->details->location_popup_event);
@@ -9306,19 +9306,19 @@ schedule_pop_up_location_context_menu (FMDirectoryView *view,
 	view->details->location_popup_event = (GdkEventButton *) gdk_event_copy ((GdkEvent *)event);
 
 	if (file == view->details->location_popup_directory_as_file) {
-		if (caja_file_check_if_ready (file, CAJA_FILE_ATTRIBUTE_INFO |
-							CAJA_FILE_ATTRIBUTE_MOUNT |
-							CAJA_FILE_ATTRIBUTE_FILESYSTEM_INFO)) {
+		if (peony_file_check_if_ready (file, PEONY_FILE_ATTRIBUTE_INFO |
+							PEONY_FILE_ATTRIBUTE_MOUNT |
+							PEONY_FILE_ATTRIBUTE_FILESYSTEM_INFO)) {
 			real_pop_up_location_context_menu (view);
 		}
 	} else {
 		unschedule_pop_up_location_context_menu (view);
 
-		view->details->location_popup_directory_as_file = caja_file_ref (file);
-		caja_file_call_when_ready (view->details->location_popup_directory_as_file,
-					       CAJA_FILE_ATTRIBUTE_INFO |
-					       CAJA_FILE_ATTRIBUTE_MOUNT |
-					       CAJA_FILE_ATTRIBUTE_FILESYSTEM_INFO,
+		view->details->location_popup_directory_as_file = peony_file_ref (file);
+		peony_file_call_when_ready (view->details->location_popup_directory_as_file,
+					       PEONY_FILE_ATTRIBUTE_INFO |
+					       PEONY_FILE_ATTRIBUTE_MOUNT |
+					       PEONY_FILE_ATTRIBUTE_FILESYSTEM_INFO,
 					       location_popup_file_attributes_ready,
 					       view);
 	}
@@ -9339,19 +9339,19 @@ fm_directory_view_pop_up_location_context_menu (FMDirectoryView *view,
 						GdkEventButton  *event,
 						const char      *location)
 {
-	CajaFile *file;
+	PeonyFile *file;
 
 	g_assert (FM_IS_DIRECTORY_VIEW (view));
 
 	if (location != NULL) {
-		file = caja_file_get_by_uri (location);
+		file = peony_file_get_by_uri (location);
 	} else {
-		file = caja_file_ref (view->details->directory_as_file);
+		file = peony_file_ref (view->details->directory_as_file);
 	}
 
 	if (file != NULL) {
 		schedule_pop_up_location_context_menu (view, event, file);
-		caja_file_unref (file);
+		peony_file_unref (file);
 	}
 }
 
@@ -9370,7 +9370,7 @@ fm_directory_view_drop_proxy_received_uris (FMDirectoryView *view,
 	}
 
 	if (action == GDK_ACTION_ASK) {
-		action = caja_drag_drop_action_ask
+		action = peony_drag_drop_action_ask
 			(GTK_WIDGET (view),
 			 GDK_ACTION_MOVE | GDK_ACTION_COPY | GDK_ACTION_LINK);
 		if (action == 0) {
@@ -9378,7 +9378,7 @@ fm_directory_view_drop_proxy_received_uris (FMDirectoryView *view,
 		}
 	}
 
-	caja_clipboard_clear_if_colliding_uris (GTK_WIDGET (view),
+	peony_clipboard_clear_if_colliding_uris (GTK_WIDGET (view),
 						    source_uri_list,
 						    fm_directory_view_get_copied_files_atom (view));
 
@@ -9481,14 +9481,14 @@ fm_directory_view_notify_selection_changed (FMDirectoryView *view)
 
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
 
-	if (caja_debug_log_is_domain_enabled (CAJA_DEBUG_LOG_DOMAIN_USER)) {
+	if (peony_debug_log_is_domain_enabled (PEONY_DEBUG_LOG_DOMAIN_USER)) {
 		selection = fm_directory_view_get_selection (view);
 
 		window = fm_directory_view_get_containing_window (view);
-		caja_debug_log_with_file_list (FALSE, CAJA_DEBUG_LOG_DOMAIN_USER, selection,
+		peony_debug_log_with_file_list (FALSE, PEONY_DEBUG_LOG_DOMAIN_USER, selection,
 						   "selection changed in window %p",
 						   window);
-		caja_file_list_free (selection);
+		peony_file_list_free (selection);
 	}
 
 	view->details->selection_was_removed = FALSE;
@@ -9519,7 +9519,7 @@ fm_directory_view_notify_selection_changed (FMDirectoryView *view)
 }
 
 static void
-file_changed_callback (CajaFile *file, gpointer callback_data)
+file_changed_callback (PeonyFile *file, gpointer callback_data)
 {
 	FMDirectoryView *view = FM_DIRECTORY_VIEW (callback_data);
 
@@ -9533,7 +9533,7 @@ file_changed_callback (CajaFile *file, gpointer callback_data)
 	 * Don't do this for trash, as it never changes writability
 	 * but does change a lot for the file count attribute.
 	 */
-	if (!caja_file_is_in_trash (file)) {
+	if (!peony_file_is_in_trash (file)) {
 		EEL_CALL_METHOD
 			(FM_DIRECTORY_VIEW_CLASS, view, emblems_changed, (view));
 	}
@@ -9550,14 +9550,14 @@ file_changed_callback (CajaFile *file, gpointer callback_data)
  **/
 static void
 load_directory (FMDirectoryView *view,
-		CajaDirectory *directory)
+		PeonyDirectory *directory)
 {
-	CajaDirectory *old_directory;
-	CajaFile *old_file;
-	CajaFileAttributes attributes;
+	PeonyDirectory *old_directory;
+	PeonyFile *old_file;
+	PeonyFileAttributes attributes;
 
 	g_assert (FM_IS_DIRECTORY_VIEW (view));
-	g_assert (CAJA_IS_DIRECTORY (directory));
+	g_assert (PEONY_IS_DIRECTORY (directory));
 
 	fm_directory_view_stop (view);
 	fm_directory_view_clear (view);
@@ -9578,14 +9578,14 @@ load_directory (FMDirectoryView *view,
 	disconnect_model_handlers (view);
 
 	old_directory = view->details->model;
-	caja_directory_ref (directory);
+	peony_directory_ref (directory);
 	view->details->model = directory;
-	caja_directory_unref (old_directory);
+	peony_directory_unref (old_directory);
 
 	old_file = view->details->directory_as_file;
 	view->details->directory_as_file =
-		caja_directory_get_corresponding_file (directory);
-	caja_file_unref (old_file);
+		peony_directory_get_corresponding_file (directory);
+	peony_file_unref (old_file);
 
 	view->details->reported_load_error = FALSE;
 
@@ -9594,16 +9594,16 @@ load_directory (FMDirectoryView *view,
          * change the directory's file metadata.
 	 */
 	attributes =
-		CAJA_FILE_ATTRIBUTE_INFO |
-		CAJA_FILE_ATTRIBUTE_MOUNT |
-		CAJA_FILE_ATTRIBUTE_FILESYSTEM_INFO;
+		PEONY_FILE_ATTRIBUTE_INFO |
+		PEONY_FILE_ATTRIBUTE_MOUNT |
+		PEONY_FILE_ATTRIBUTE_FILESYSTEM_INFO;
 	view->details->metadata_for_directory_as_file_pending = TRUE;
 	view->details->metadata_for_files_in_directory_pending = TRUE;
-	caja_file_call_when_ready
+	peony_file_call_when_ready
 		(view->details->directory_as_file,
 		 attributes,
 		 metadata_for_directory_as_file_ready_callback, view);
-	caja_directory_call_when_ready
+	peony_directory_call_when_ready
 		(view->details->model,
 		 attributes,
 		 FALSE,
@@ -9613,9 +9613,9 @@ load_directory (FMDirectoryView *view,
 	 * because of New Folder, and relative emblems.
 	 */
 	attributes =
-		CAJA_FILE_ATTRIBUTE_INFO |
-		CAJA_FILE_ATTRIBUTE_FILESYSTEM_INFO;
-	caja_file_monitor_add (view->details->directory_as_file,
+		PEONY_FILE_ATTRIBUTE_INFO |
+		PEONY_FILE_ATTRIBUTE_FILESYSTEM_INFO;
+	peony_file_monitor_add (view->details->directory_as_file,
 				   &view->details->directory_as_file,
 				   attributes);
 
@@ -9627,10 +9627,10 @@ load_directory (FMDirectoryView *view,
 static void
 finish_loading (FMDirectoryView *view)
 {
-	CajaFileAttributes attributes;
+	PeonyFileAttributes attributes;
 
-	caja_window_info_report_load_underway (view->details->window,
-						   CAJA_VIEW (view));
+	peony_window_info_report_load_underway (view->details->window,
+						   PEONY_VIEW (view));
 
 	/* Tell interested parties that we've begun loading this directory now.
 	 * Subclasses use this to know that the new metadata is now available.
@@ -9638,9 +9638,9 @@ finish_loading (FMDirectoryView *view)
 	fm_directory_view_begin_loading (view);
 
 	/* Assume we have now all information to show window */
-	caja_window_info_view_visible  (view->details->window, CAJA_VIEW (view));
+	peony_window_info_view_visible  (view->details->window, PEONY_VIEW (view));
 
-	if (caja_directory_are_all_files_seen (view->details->model)) {
+	if (peony_directory_are_all_files_seen (view->details->model)) {
 		/* Unschedule a pending update and schedule a new one with the minimal
 		 * update interval. This gives the view a short chance at gathering the
 		 * (cached) deep counts.
@@ -9665,14 +9665,14 @@ finish_loading (FMDirectoryView *view)
 	 * and possible custom name.
 	 */
 	attributes =
-		CAJA_FILE_ATTRIBUTES_FOR_ICON |
-		CAJA_FILE_ATTRIBUTE_DIRECTORY_ITEM_COUNT |
-		CAJA_FILE_ATTRIBUTE_INFO |
-		CAJA_FILE_ATTRIBUTE_LINK_INFO |
-		CAJA_FILE_ATTRIBUTE_MOUNT |
-		CAJA_FILE_ATTRIBUTE_EXTENSION_INFO;
+		PEONY_FILE_ATTRIBUTES_FOR_ICON |
+		PEONY_FILE_ATTRIBUTE_DIRECTORY_ITEM_COUNT |
+		PEONY_FILE_ATTRIBUTE_INFO |
+		PEONY_FILE_ATTRIBUTE_LINK_INFO |
+		PEONY_FILE_ATTRIBUTE_MOUNT |
+		PEONY_FILE_ATTRIBUTE_EXTENSION_INFO;
 
-	caja_directory_file_monitor_add (view->details->model,
+	peony_directory_file_monitor_add (view->details->model,
 					     &view->details->model,
 					     view->details->show_hidden_files,
 					     attributes,
@@ -9696,7 +9696,7 @@ finish_loading_if_all_metadata_loaded (FMDirectoryView *view)
 }
 
 static void
-metadata_for_directory_as_file_ready_callback (CajaFile *file,
+metadata_for_directory_as_file_ready_callback (PeonyFile *file,
 			      		       gpointer callback_data)
 {
 	FMDirectoryView *view;
@@ -9713,7 +9713,7 @@ metadata_for_directory_as_file_ready_callback (CajaFile *file,
 }
 
 static void
-metadata_for_files_in_directory_ready_callback (CajaDirectory *directory,
+metadata_for_files_in_directory_ready_callback (PeonyDirectory *directory,
 				   		GList *files,
 			           		gpointer callback_data)
 {
@@ -9756,10 +9756,10 @@ real_get_emblem_names_to_exclude (FMDirectoryView *view)
 	excludes = g_new (char *, 3);
 
 	i = 0;
-	excludes[i++] = g_strdup (CAJA_FILE_EMBLEM_NAME_TRASH);
+	excludes[i++] = g_strdup (PEONY_FILE_EMBLEM_NAME_TRASH);
 
-	if (!caja_file_can_write (view->details->directory_as_file)) {
-		excludes[i++] = g_strdup (CAJA_FILE_EMBLEM_NAME_CANT_WRITE);
+	if (!peony_file_can_write (view->details->directory_as_file)) {
+		excludes[i++] = g_strdup (PEONY_FILE_EMBLEM_NAME_CANT_WRITE);
 	}
 
 	excludes[i++] = NULL;
@@ -9825,15 +9825,15 @@ disconnect_model_handlers (FMDirectoryView *view)
 	disconnect_directory_handler (view, &view->details->done_loading_handler_id);
 	disconnect_directory_handler (view, &view->details->load_error_handler_id);
 	disconnect_directory_as_file_handler (view, &view->details->file_changed_handler_id);
-	caja_file_cancel_call_when_ready (view->details->directory_as_file,
+	peony_file_cancel_call_when_ready (view->details->directory_as_file,
 					      metadata_for_directory_as_file_ready_callback,
 					      view);
-	caja_directory_cancel_callback (view->details->model,
+	peony_directory_cancel_callback (view->details->model,
 					    metadata_for_files_in_directory_ready_callback,
 					    view);
-	caja_directory_file_monitor_remove (view->details->model,
+	peony_directory_file_monitor_remove (view->details->model,
 						&view->details->model);
-	caja_file_monitor_remove (view->details->directory_as_file,
+	peony_file_monitor_remove (view->details->directory_as_file,
 				      &view->details->directory_as_file);
 }
 
@@ -9846,17 +9846,17 @@ disconnect_model_handlers (FMDirectoryView *view)
 void
 fm_directory_view_reset_to_defaults (FMDirectoryView *view)
 {
-	CajaWindowShowHiddenFilesMode mode;
+	PeonyWindowShowHiddenFilesMode mode;
 
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
 
 	EEL_CALL_METHOD
 		(FM_DIRECTORY_VIEW_CLASS, view,
 		 reset_to_defaults, (view));
-	mode = caja_window_info_get_hidden_files_mode (view->details->window);
-	if (mode != CAJA_WINDOW_SHOW_HIDDEN_FILES_DEFAULT) {
-		caja_window_info_set_hidden_files_mode (view->details->window,
-							    CAJA_WINDOW_SHOW_HIDDEN_FILES_DEFAULT);
+	mode = peony_window_info_get_hidden_files_mode (view->details->window);
+	if (mode != PEONY_WINDOW_SHOW_HIDDEN_FILES_DEFAULT) {
+		peony_window_info_set_hidden_files_mode (view->details->window,
+							    PEONY_WINDOW_SHOW_HIDDEN_FILES_DEFAULT);
 	}
 }
 
@@ -9880,7 +9880,7 @@ fm_directory_view_select_all (FMDirectoryView *view)
  * fm_directory_view_set_selection:
  *
  * set the selection to the items identified in @selection. @selection
- * should be a list of CajaFiles
+ * should be a list of PeonyFiles
  *
  **/
 void
@@ -9894,7 +9894,7 @@ fm_directory_view_set_selection (FMDirectoryView *view, GList *selection)
 }
 
 static void
-fm_directory_view_select_file (FMDirectoryView *view, CajaFile *file)
+fm_directory_view_select_file (FMDirectoryView *view, PeonyFile *file)
 {
 	GList file_list;
 
@@ -9965,7 +9965,7 @@ fm_directory_view_stop (FMDirectoryView *view)
 	view->details->pending_locations_selected = NULL;
 
 	if (view->details->model != NULL) {
-		caja_directory_file_monitor_remove (view->details->model, view);
+		peony_directory_file_monitor_remove (view->details->model, view);
 	}
 	done_loading (view, FALSE);
 }
@@ -9993,12 +9993,12 @@ fm_directory_view_is_empty (FMDirectoryView *view)
 gboolean
 fm_directory_view_is_editable (FMDirectoryView *view)
 {
-	CajaDirectory *directory;
+	PeonyDirectory *directory;
 
 	directory = fm_directory_view_get_model (view);
 
 	if (directory != NULL) {
-		return caja_directory_is_editable (directory);
+		return peony_directory_is_editable (directory);
 	}
 
 	return TRUE;
@@ -10009,7 +10009,7 @@ fm_directory_view_set_initiated_unmount (FMDirectoryView *view,
 					 gboolean initiated_unmount)
 {
 	if (view->details->window != NULL) {
-		caja_window_info_set_initiated_unmount(view->details->window,
+		peony_window_info_set_initiated_unmount(view->details->window,
 							   initiated_unmount);
 	}
 }
@@ -10017,7 +10017,7 @@ fm_directory_view_set_initiated_unmount (FMDirectoryView *view,
 static gboolean
 real_is_read_only (FMDirectoryView *view)
 {
-	CajaFile *file;
+	PeonyFile *file;
 
 	if (!fm_directory_view_is_editable (view)) {
 		return TRUE;
@@ -10025,7 +10025,7 @@ real_is_read_only (FMDirectoryView *view)
 
 	file = fm_directory_view_get_directory_as_file (view);
 	if (file != NULL) {
-		return !caja_file_can_write (file);
+		return !peony_file_can_write (file);
 	}
 	return FALSE;
 }
@@ -10057,9 +10057,9 @@ fm_directory_view_accepts_dragged_files (FMDirectoryView *view)
  * current filtering options.
  */
 gboolean
-fm_directory_view_should_show_file (FMDirectoryView *view, CajaFile *file)
+fm_directory_view_should_show_file (FMDirectoryView *view, PeonyFile *file)
 {
-	return caja_file_should_show (file,
+	return peony_file_should_show (file,
 					  view->details->show_hidden_files,
 					  view->details->show_foreign_files);
 }
@@ -10190,14 +10190,14 @@ fm_directory_view_get_uri (FMDirectoryView *view)
 	if (view->details->model == NULL) {
 		return NULL;
 	}
-	return caja_directory_get_uri (view->details->model);
+	return peony_directory_get_uri (view->details->model);
 }
 
 /* Get the real directory where files will be stored and created */
 char *
 fm_directory_view_get_backing_uri (FMDirectoryView *view)
 {
-	CajaDirectory *directory;
+	PeonyDirectory *directory;
 	char *uri;
 
 	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), NULL);
@@ -10208,15 +10208,15 @@ fm_directory_view_get_backing_uri (FMDirectoryView *view)
 
 	directory = view->details->model;
 
-	if (CAJA_IS_DESKTOP_DIRECTORY (directory)) {
-		directory = caja_desktop_directory_get_real_directory (CAJA_DESKTOP_DIRECTORY (directory));
+	if (PEONY_IS_DESKTOP_DIRECTORY (directory)) {
+		directory = peony_desktop_directory_get_real_directory (PEONY_DESKTOP_DIRECTORY (directory));
 	} else {
-		caja_directory_ref (directory);
+		peony_directory_ref (directory);
 	}
 
-	uri = caja_directory_get_uri (directory);
+	uri = peony_directory_get_uri (directory);
 
-	caja_directory_unref (directory);
+	peony_directory_unref (directory);
 
 	return uri;
 }
@@ -10229,7 +10229,7 @@ fm_directory_view_move_copy_items (const GList *item_uris,
 				   int x, int y,
 				   FMDirectoryView *view)
 {
-	CajaFile *target_file;
+	PeonyFile *target_file;
 
 	g_assert (relative_item_points == NULL
 		  || relative_item_points->len == 0
@@ -10238,26 +10238,26 @@ fm_directory_view_move_copy_items (const GList *item_uris,
 	/* add the drop location to the icon offsets */
 	offset_drop_points (relative_item_points, x, y);
 
-	target_file = caja_file_get_existing_by_uri (target_uri);
+	target_file = peony_file_get_existing_by_uri (target_uri);
 	/* special-case "command:" here instead of starting a move/copy */
-	if (target_file != NULL && caja_file_is_launcher (target_file)) {
-		caja_file_unref (target_file);
-		caja_launch_desktop_file (
+	if (target_file != NULL && peony_file_is_launcher (target_file)) {
+		peony_file_unref (target_file);
+		peony_launch_desktop_file (
 				gtk_widget_get_screen (GTK_WIDGET (view)),
 				target_uri, item_uris,
 				fm_directory_view_get_containing_window (view));
 		return;
 	} else if (copy_action == GDK_ACTION_COPY &&
-		   caja_is_engrampa_installed () &&
+		   peony_is_engrampa_installed () &&
 		   target_file != NULL &&
-		   caja_file_is_archive (target_file)) {
+		   peony_file_is_archive (target_file)) {
 		char *command, *quoted_uri, *tmp;
 		const GList *l;
 		GdkScreen  *screen;
 
 		/* Handle dropping onto a engrampa archiver file, instead of starting a move/copy */
 
-		caja_file_unref (target_file);
+		peony_file_unref (target_file);
 
 		quoted_uri = g_shell_quote (target_uri);
 		command = g_strconcat ("engrampa -a ", quoted_uri, NULL);
@@ -10278,33 +10278,33 @@ fm_directory_view_move_copy_items (const GList *item_uris,
 			screen = gdk_screen_get_default ();
 		}
 
-		mate_gdk_spawn_command_line_on_screen(screen, command, NULL);
+		ukui_gdk_spawn_command_line_on_screen(screen, command, NULL);
 		g_free (command);
 
 		return;
 	}
-	caja_file_unref (target_file);
+	peony_file_unref (target_file);
 
-	caja_file_operations_copy_move
+	peony_file_operations_copy_move
 		(item_uris, relative_item_points,
 		 target_uri, copy_action, GTK_WIDGET (view),
 		 copy_move_done_callback, pre_copy_move (view));
 }
 
 gboolean
-fm_directory_view_can_accept_item (CajaFile *target_item,
+fm_directory_view_can_accept_item (PeonyFile *target_item,
 				   const char *item_uri,
 				   FMDirectoryView *view)
 {
-	g_return_val_if_fail (CAJA_IS_FILE (target_item), FALSE);
+	g_return_val_if_fail (PEONY_IS_FILE (target_item), FALSE);
 	g_return_val_if_fail (item_uri != NULL, FALSE);
 	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), FALSE);
 
-	return caja_drag_can_accept_item (target_item, item_uri);
+	return peony_drag_can_accept_item (target_item, item_uri);
 }
 
 static void
-fm_directory_view_trash_state_changed_callback (CajaTrashMonitor *trash_monitor,
+fm_directory_view_trash_state_changed_callback (PeonyTrashMonitor *trash_monitor,
 						gboolean state, gpointer callback_data)
 {
 	FMDirectoryView *view;
@@ -10631,10 +10631,10 @@ fm_directory_view_handle_netscape_url_drop (FMDirectoryView  *view,
 			screen = gtk_widget_get_screen (GTK_WIDGET (view));
 			screen_num = gdk_screen_get_number (screen);
 
-			caja_link_local_create (target_uri != NULL ? target_uri : container_uri,
+			peony_link_local_create (target_uri != NULL ? target_uri : container_uri,
 						    link_name,
 						    link_display_name,
-						    "mate-fs-bookmark",
+						    "ukui-fs-bookmark",
 						    url,
 						    &point,
 						    screen_num,
@@ -10689,7 +10689,7 @@ fm_directory_view_handle_uri_list_drop (FMDirectoryView  *view,
 	}
 
 	if (action == GDK_ACTION_ASK) {
-		action = caja_drag_drop_action_ask
+		action = peony_drag_drop_action_ask
 			(GTK_WIDGET (view),
 			 GDK_ACTION_MOVE | GDK_ACTION_COPY | GDK_ACTION_LINK);
 		if (action == 0) {
@@ -10858,8 +10858,8 @@ fm_directory_view_set_property (GObject         *object,
 				GParamSpec      *pspec)
 {
   FMDirectoryView *directory_view;
-  CajaWindowSlotInfo *slot;
-  CajaWindowInfo *window;
+  PeonyWindowSlotInfo *slot;
+  PeonyWindowInfo *window;
 
   directory_view = FM_DIRECTORY_VIEW (object);
 
@@ -10867,8 +10867,8 @@ fm_directory_view_set_property (GObject         *object,
   case PROP_WINDOW_SLOT:
 	  g_assert (directory_view->details->slot == NULL);
 
-	  slot = CAJA_WINDOW_SLOT_INFO (g_value_get_object (value));
-          window = caja_window_slot_info_get_window (slot);
+	  slot = PEONY_WINDOW_SLOT_INFO (g_value_get_object (value));
+          window = peony_window_slot_info_get_window (slot);
 
 	  directory_view->details->slot = slot;
 	  directory_view->details->window = window;
@@ -10984,7 +10984,7 @@ fm_directory_view_parent_set (GtkWidget *widget,
 		g_assert (old_parent == NULL);
 
 		if (view->details->slot ==
-		    caja_window_info_get_active_slot (view->details->window)) {
+		    peony_window_info_get_active_slot (view->details->window)) {
 			view->details->active = TRUE;
 
 			fm_directory_view_merge_menus (view);
@@ -11028,7 +11028,7 @@ fm_directory_view_class_init (FMDirectoryViewClass *klass)
 		              G_STRUCT_OFFSET (FMDirectoryViewClass, add_file),
 		              NULL, NULL,
 		              fm_marshal_VOID__OBJECT_OBJECT,
-		              G_TYPE_NONE, 2, CAJA_TYPE_FILE, CAJA_TYPE_DIRECTORY);
+		              G_TYPE_NONE, 2, PEONY_TYPE_FILE, PEONY_TYPE_DIRECTORY);
 	signals[BEGIN_FILE_CHANGES] =
 		g_signal_new ("begin_file_changes",
 		              G_TYPE_FROM_CLASS (klass),
@@ -11084,7 +11084,7 @@ fm_directory_view_class_init (FMDirectoryViewClass *klass)
 		              G_STRUCT_OFFSET (FMDirectoryViewClass, file_changed),
 		              NULL, NULL,
 		              fm_marshal_VOID__OBJECT_OBJECT,
-		              G_TYPE_NONE, 2, CAJA_TYPE_FILE, CAJA_TYPE_DIRECTORY);
+		              G_TYPE_NONE, 2, PEONY_TYPE_FILE, PEONY_TYPE_DIRECTORY);
 	signals[LOAD_ERROR] =
 		g_signal_new ("load_error",
 		              G_TYPE_FROM_CLASS (klass),
@@ -11100,7 +11100,7 @@ fm_directory_view_class_init (FMDirectoryViewClass *klass)
 		              G_STRUCT_OFFSET (FMDirectoryViewClass, remove_file),
 		              NULL, NULL,
 		              fm_marshal_VOID__OBJECT_OBJECT,
-		              G_TYPE_NONE, 2, CAJA_TYPE_FILE, CAJA_TYPE_DIRECTORY);
+		              G_TYPE_NONE, 2, PEONY_TYPE_FILE, PEONY_TYPE_DIRECTORY);
 
 	klass->accepts_dragged_files = real_accepts_dragged_files;
 	klass->file_still_belongs = real_file_still_belongs;
@@ -11142,14 +11142,14 @@ fm_directory_view_class_init (FMDirectoryViewClass *klass)
 	EEL_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, zoom_to_level);
 	EEL_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, get_zoom_level);
 
-	copied_files_atom = gdk_atom_intern ("x-special/mate-copied-files", FALSE);
+	copied_files_atom = gdk_atom_intern ("x-special/ukui-copied-files", FALSE);
 
 	g_object_class_install_property (G_OBJECT_CLASS (klass),
 					 PROP_WINDOW_SLOT,
 					 g_param_spec_object ("window-slot",
 							      "Window Slot",
 							      "The parent window slot reference",
-							      CAJA_TYPE_WINDOW_SLOT_INFO,
+							      PEONY_TYPE_WINDOW_SLOT_INFO,
 							      G_PARAM_WRITABLE |
 							      G_PARAM_CONSTRUCT_ONLY));
 
@@ -11183,12 +11183,12 @@ fm_directory_view_class_init (FMDirectoryViewClass *klass)
 }
 
 static void
-undo_redo_menu_update_callback (CajaUndoStackManager* manager, gpointer arg, gpointer data)
+undo_redo_menu_update_callback (PeonyUndoStackManager* manager, gpointer arg, gpointer data)
 {
 	FMDirectoryView *view;
 	view = FM_DIRECTORY_VIEW (data);
 
-	CajaUndoStackMenuData* menudata = (CajaUndoStackMenuData*) arg;
+	PeonyUndoStackMenuData* menudata = (PeonyUndoStackMenuData*) arg;
 
 	g_free(view->details->undo_action_label);
 	g_free(view->details->undo_action_description);

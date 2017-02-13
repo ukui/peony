@@ -1,7 +1,7 @@
 ========== af.po ==========
-# Afrikaans translation of caja.
+# Afrikaans translation of peony.
 # Copyright (C) 2004 Zuza Software Foundation
-# This file is distributed under the same license as the caja package.
+# This file is distributed under the same license as the peony package.
 # Zuza Software Foundation <info@translate.org.za>, 2004
 # F Wolff <friedel@translate.org.za>, 2008
 
@@ -9,7 +9,7 @@
 
 
 ========== am.po ==========
-# #-#-#-#-#  am.po (caja)  #-#-#-#-#
+# #-#-#-#-#  am.po (peony)  #-#-#-#-#
 # Translations into the Amharic Language.
 # Copyright (C) 2002 Free Software Foundation, Inc.
 # This file is distributed under the same license as the Caja package.
@@ -27,9 +27,9 @@
 
 
 ========== ar.po ==========
-# translation of caja.HEAD.po to Arabic
-# This file is distributed under the same license as the caja.HEAD.ar package.
-# Copyright (C) 2004 THE caja.HEAD.ar'S COPYRIGHT HOLDER.
+# translation of peony.HEAD.po to Arabic
+# This file is distributed under the same license as the peony.HEAD.ar package.
+# Copyright (C) 2004 THE peony.HEAD.ar'S COPYRIGHT HOLDER.
 # Sayed Jaffer Al-Mosawi <mosawi@arabeyes.org>, 2002, 2004.
 # Abdulaziz Al-Arfaj <alarfaj0@yahoo.com>, 2004.
 # Ayman Hourieh <aymanh@gmail.com>, 2004.
@@ -62,10 +62,10 @@
 
 
 ========== ast.po ==========
-# translation of caja.po to Asturian
-# Asturian; Bable translation for caja
+# translation of peony.po to Asturian
+# Asturian; Bable translation for peony
 # Copyright (c) (c) 2006 Canonical Ltd, and Rosetta Contributors 2006
-# This file is distributed under the same license as the caja package.
+# This file is distributed under the same license as the peony package.
 #
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2006.
 # Xose S. Puente <xspuente@gmail.com>, 2007.
@@ -74,9 +74,9 @@
 
 
 ========== az.po ==========
-# #-#-#-#-#  az.po (caja.HEAD.az)  #-#-#-#-#
-# translation of caja.HEAD.az.po to Azerbaijani
-# translation of caja.HEAD.po to Azerbaijani Turkish
+# #-#-#-#-#  az.po (peony.HEAD.az)  #-#-#-#-#
+# translation of peony.HEAD.az.po to Azerbaijani
+# translation of peony.HEAD.po to Azerbaijani Turkish
 # Copyright (C) 2000,2003, 2004 Free Software Foundation, Inc.
 # Vasif Ismailoglu MD <azerb_linux@hotmail.com>, 2001.
 # Mətin Əmirov <metin@karegen.com>, 2003, 2004.
@@ -94,9 +94,9 @@
 
 
 ========== be.po ==========
-# #-#-#-#-#  be.po (caja.HEAD.be)  #-#-#-#-#
-# translation of caja.HEAD.be.po to Belarusian
-# Беларускі пераклад caja.HEAD.
+# #-#-#-#-#  be.po (peony.HEAD.be)  #-#-#-#-#
+# translation of peony.HEAD.be.po to Belarusian
+# Беларускі пераклад peony.HEAD.
 # Copyright (C) 2003, 2004, 2005 Free Software Foundation, Inc.
 # Vital Khilko <dojlid@mova.org>, 2002, 2003, 2005.
 # Ales Nyakhaychyk <nab@mail.by>, 2003, 2004, 2008.
@@ -126,10 +126,10 @@
 
 
 ========== bg.po ==========
-# Bulgarian translation of caja po-file.
+# Bulgarian translation of peony po-file.
 # Copyright (C) 2002, 2004, 2005, 2006, 2007, 2008 Free Software Foundation, Inc.
 # Copyright (C) 2009, 2010 Free Software Foundation, Inc.
-# This file is distributed under the same license as the caja package.
+# This file is distributed under the same license as the peony package.
 # Borislav Aleksandrov <B.Aleksandrov@cnsys.bg>, 2002.
 # Vladimir Petkov <kaladan@gmail.com>, 2004, 2005, 2006, 2007.
 # Rostislav "zbrox" Raykov <zbrox@i-space.org>,2004, 2005, 2006.
@@ -173,9 +173,9 @@
 
 
 ========== br.po ==========
-# Breton translation for caja
+# Breton translation for peony
 # Copyright (c) (c) 2006 Canonical Ltd, and Rosetta Contributors 2006
-# This file is distributed under the same license as the caja package.
+# This file is distributed under the same license as the peony package.
 #
 # Giulia <oublieuse@gmail.com>, 2006.
 # Alan Monfort <alan.monfort@free.fr>, 2010.
@@ -185,8 +185,8 @@
 
 
 ========== bs.po ==========
-# #-#-#-#-#  bs.po (caja.HEAD.bs)  #-#-#-#-#
-# translation of caja.HEAD.bs.po to Bosnian
+# #-#-#-#-#  bs.po (peony.HEAD.bs)  #-#-#-#-#
+# translation of peony.HEAD.bs.po to Bosnian
 # This file is distributed under the same license as the PACKAGE package.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER, 2004.
 # Kenan Hadžiavdić <kenan@bgnett.no>, 2004.
@@ -204,7 +204,7 @@
 
 
 ========== ca.po ==========
-# Traducció del caja de l'equip de Softcatalà.
+# Traducció del peony de l'equip de Softcatalà.
 # Copyright © 2000-2009 Free Software Foundation, Inc.
 # Softcatalà <info@softcatala.org>, 2000, 2001.
 # Valentín Trilles <vtrilles@yahoo.es>, 2002.
@@ -219,7 +219,7 @@
 
 
 ========== ca@valencia.po ==========
-# Traducció del caja de l'equip de Softcatalà.
+# Traducció del peony de l'equip de Softcatalà.
 # Copyright © 2000-2009 Free Software Foundation, Inc.
 # Softcatalà <info@softcatala.org>, 2000, 2001.
 # Valentín Trilles <vtrilles@yahoo.es>, 2002.
@@ -234,8 +234,8 @@
 
 
 ========== crh.po ==========
-# Qırımtatarca caja.
-# This file is distributed under the same license as the caja package.
+# Qırımtatarca peony.
+# This file is distributed under the same license as the peony package.
 #
 # Reşat SABIQ <tilde.birlik@gmail.com>, 2009, 2010.
 
@@ -247,7 +247,7 @@
 # Copyright (C) 2001, 2003, 2006, 2007, 2008, 2009 the author(s) of Caja.
 # Copyright (C) 2004, 2005, 2006 Miloslav Trmac <mitr@volny.cz>.
 # Copyright (C) 2006 Lukas Novotny <lukasnov@cvs.gnome.org>.
-# This file is distributed under the same license as the caja package.
+# This file is distributed under the same license as the peony package.
 # George Lebl <jirka@5z.com>, 2001.
 # Miloslav Trmac <mitr@volny.cz>, 2002, 2003, 2004, 2005, 2006.
 # Minor fixes by Michal Bukovjan <bukm@centrum.cz>, 2002, 2003.
@@ -264,9 +264,9 @@
 
 
 ========== cy.po ==========
-# #-#-#-#-#  cy.po (caja)  #-#-#-#-#
-# caja yn Gymraeg.
-# This file is distributed under the same license as the caja package.
+# #-#-#-#-#  cy.po (peony)  #-#-#-#-#
+# peony yn Gymraeg.
+# This file is distributed under the same license as the peony package.
 # Chris Jackson <chris@www.linux.org.uk>, 2003.
 # Dafydd Harries <daf@muse.19inch.net>, 2003 2004.
 # Bryn Salisbury <bryn@randomlyevil.org.uk>, 2003 2004.
@@ -325,7 +325,7 @@
 ========== da.po ==========
 # Danish translation of Caja.
 # Copyright (C) 2000-2009
-# This file is distributed under the same license as the caja package.
+# This file is distributed under the same license as the peony package.
 # Kenneth Christiansen <kenneth@gnu.org>, 2000, 2001.
 # Keld Simonsen <keld@dkuug.dk>, 2000.
 # Kim Schulz <kim@schulz.dk>, 2001.
@@ -413,8 +413,8 @@
 
 
 ========== dz.po ==========
-# #-#-#-#-#  dz.po (caja.HEAD.dz)  #-#-#-#-#
-# Dzongkha translation of caja.
+# #-#-#-#-#  dz.po (peony.HEAD.dz)  #-#-#-#-#
+# Dzongkha translation of peony.
 # Copyright @ 2006 Free software foundation, Inc.
 # Mindu Dorji.
 #
@@ -482,7 +482,7 @@
 # simos: 1870 messages, 27Feb2001, 79 messages remaining.
 # simos: 1926 messages, 01Mar2001, 86 messages remaining.
 # simos: 2009 messages, 02Mar2001, full translation.
-# simos: 38 messages,04Jun2001, drawn from caja.
+# simos: 38 messages,04Jun2001, drawn from peony.
 # simos: 17 messages,19Aug2002, full translation and UTF-8 conversion.
 # kostas: 37 messages,25Jan2004.
 # Nikos: 52 messages, 4aug2004, update.
@@ -496,7 +496,7 @@
 
 
 ========== en@shaw.po ==========
-# Shavian translation for caja.
+# Shavian translation for peony.
 # Copyright (C) 2010 The Mate Foundation.
 # Thomas Thurman <tthurman@gnome.org>, 2010.
 # Transliterate Caja as ·𐑯𐑷𐑑𐑦𐑤𐑩𐑕
@@ -505,10 +505,10 @@
 
 
 ========== en_CA.po ==========
-# #-#-#-#-#  en_CA.po (caja)  #-#-#-#-#
-# English/Canada translation of caja.
+# #-#-#-#-#  en_CA.po (peony)  #-#-#-#-#
+# English/Canada translation of peony.
 # Copyright (C) 2004-2006 Adam Weinberger and the MATE Foundation
-# This file is distributed under the same licence as the caja package.
+# This file is distributed under the same licence as the peony package.
 # Adam Weinberger <adamw@gnome.org>, 2004, 2005, 2006.
 #
 #
@@ -526,7 +526,7 @@
 ========== en_GB.po ==========
 # English (British) translation.
 # Copyright (C) 2003 The MATE Foundation
-# This file is distributed under the same license as the caja package.
+# This file is distributed under the same license as the peony package.
 # Abigail Brady <morwen@evilmagic.org>, Bastien Nocera <hadess@hadess.net>, 2003.
 # Gareth Owen <gowen72@yahoo.com>, David Lodge <dave@cirt.net>, 2004
 # Bruce Cowan <bruce@bcowan.me.uk>, 2009, 2010.`
@@ -535,9 +535,9 @@
 
 
 ========== eo.po ==========
-# Esperanto translation for caja
+# Esperanto translation for peony
 # Copyright (c) 2006 Canonical Ltd, and Rosetta Contributors 2006
-# This file is distributed under the same license as the caja package.
+# This file is distributed under the same license as the peony package.
 #
 # Ed GLEZ <herzo2@gmail.com>, 2006.
 # Joop EGGEN <joop_eggen@yahoo.de>, 2006.
@@ -552,11 +552,11 @@
 
 
 ========== es.po ==========
-# #-#-#-#-#  es.po (caja.HEAD)  #-#-#-#-#
-# translation of caja.mate-2-32.es.po to Español
-# translation of caja to Spanish
+# #-#-#-#-#  es.po (peony.HEAD)  #-#-#-#-#
+# translation of peony.mate-2-32.es.po to Español
+# translation of peony to Spanish
 # Copyright © 2000-2003, 2006, 2007, 2008 Free Software Foundation, Inc.
-# This file is distributed under the same license as the caja package.
+# This file is distributed under the same license as the peony package.
 #
 # Jorge Carrasquilla Soares <jorge@conectiva.com.br>, 2000.
 # Carlos Perelló Marín <carlos@mate-db.org>, 2000,2002.
@@ -564,7 +564,7 @@
 # Francisco Javier F. Serrador <serrador@cvs.gnome.org>, 2003-2006.
 # Pablo Gonzalo del Campo <pablodc@bigfoot.com>, 2000-2004.
 # #-#-#-#-#  es.po (eel.HEAD.es)  #-#-#-#-#
-# translation of caja to Spanish
+# translation of peony to Spanish
 # Copyright (C) 2000,2002, 2003, 2004, 2005, 2006, 2007 Free Software Foundation, Inc.
 #
 # Pablo Gonzalo del Campo <pablodc@bigfoot.com>, 2000-2002.
@@ -583,7 +583,7 @@
 #
 # Copyright (C) 2002-2006 Free Software Foundation, Inc.
 # Copyright (C) 2007-2010 The MATE Project.
-# This file is distributed under the same license as the caja package.
+# This file is distributed under the same license as the peony package.
 #
 # Lauri Kasvandik <lauri.kasvandik mail ee>, 2002.
 # Ilmar Kerm <ikerm hot ee>, 2002.
@@ -612,8 +612,8 @@
 
 
 ========== fa.po ==========
-# #-#-#-#-#  fa.po (caja HEAD)  #-#-#-#-#
-# Persian translation of caja.
+# #-#-#-#-#  fa.po (peony HEAD)  #-#-#-#-#
+# Persian translation of peony.
 # Copyright (C) 2003, 2004, 2005, 2008 Sharif FarsiWeb, Inc.
 # Roozbeh Pournader <roozbeh@farsiweb.info>, 2003, 2005.
 # Meelad Zakaria <meelad@farsiweb.info>, 2004.
@@ -672,9 +672,9 @@
 
 
 ========== fr.po ==========
-# French translation of caja.
+# French translation of peony.
 # Copyright (C) 2000-2010 Free Software Foundation, Inc.
-# This file is distributed under the same license as the caja package.
+# This file is distributed under the same license as the peony package.
 #
 # Jean-Michel Ardantz <jmardantz@ifrance.com>, 2000.
 # Christophe Merlet <redfox@redfoxcenter.org>, 2001-2006.
@@ -698,7 +698,7 @@
 
 
 ========== fur.po ==========
-# Friulian translation for caja.
+# Friulian translation for peony.
 # Copyright (C) 2007 Free Software Foundation, Inc
 # Andrea Decorte <adecorte@gmail.com>, 2008.
 #
@@ -707,9 +707,9 @@
 
 
 ========== fy.po ==========
-# Frisian translation for caja
+# Frisian translation for peony
 #
-# This file is distributed under the same license as the caja package.
+# This file is distributed under the same license as the peony package.
 # ElWeeVII <lieuwestra@gmail.com>, 2009.
 # Peter Hoogsteen <p.hoogsteen@chello.nl >, 2010.
 # Dooitze de Jong <dooitzedejong@gmail.com>, 2010.
@@ -722,9 +722,9 @@
 
 
 ========== ga.po ==========
-# Irish translations for caja package.
+# Irish translations for peony package.
 # Copyright (C) 2000-2009 Free Software Foundation, Inc.
-# This file is distributed under the same license as the caja package.
+# This file is distributed under the same license as the peony package.
 # Alastair McKinstry <mckinstry@computer.org>, 2000.
 # Paul Duffy <dubhthach@frink.nuigalway.ie>, 2003.
 # Seán de Búrca <leftmostcat@gmail.com>, 2007, 2008, 2009.
@@ -734,8 +734,8 @@
 
 
 ========== gl.po ==========
-# translation of caja-master-po-gl-54706.po to Galego
-# Galician translation of caja.
+# translation of peony-master-po-gl-54706.po to Galego
+# Galician translation of peony.
 # Copyright (C) 2000-2004 Jesús Bravo Álvarez.
 #
 # First Version: 2000-05-06 20:53+0200
@@ -760,22 +760,22 @@
 
 
 ========== gu.po ==========
-# translation of caja1.po to Gujarati
+# translation of peony1.po to Gujarati
 # Ankit Patel <ankit644@yahoo.com>, 2005, 2006.
 # Ankit Patel <ankit@redhat.com>, 2005, 2006, 2007.
 # MagNet <magnet@magnet-i.com>, 2004.
 # Ankit Patel <ankit@redhat.com>, 2004, 2005, 2007, 2008, 2009.
 # Sweta Kothari <swkothar@redhat.com>, 2009, 2010.
-# #-#-#-#-#  gu.po (caja.HEAD.gu)  #-#-#-#-#
+# #-#-#-#-#  gu.po (peony.HEAD.gu)  #-#-#-#-#
 # Copyright (C) 2004, 2005, 2006, 2007, 2008, 2009, 2010 Free Software Foundation, Inc.
 
 
 
 
 ========== gv.po ==========
-# Manx translation for caja
+# Manx translation for peony
 # Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
-# This file is distributed under the same license as the caja package.
+# This file is distributed under the same license as the peony package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
 #
 
@@ -788,8 +788,8 @@
 
 
 ========== he.po ==========
-# #-#-#-#-#  he.po (caja.HEAD.he)  #-#-#-#-#
-# translation of caja.HEAD.he.po to Hebrew
+# #-#-#-#-#  he.po (peony.HEAD.he)  #-#-#-#-#
+# translation of peony.HEAD.he.po to Hebrew
 # This file is distributed under the same license as the PACKAGE package.
 # Copyright (C) 2005 THE PACKAGE'S COPYRIGHT HOLDER.
 # Gil 'Dolfin' Osher <dolfin@rpg.org.il>, 2002,2003.
@@ -810,8 +810,8 @@
 
 
 ========== hi.po ==========
-# translation of caja.master.po to Hindi
-# #-#-#-#-#  hi.po (caja.HEAD.hi)  #-#-#-#-#
+# translation of peony.master.po to Hindi
+# #-#-#-#-#  hi.po (peony.HEAD.hi)  #-#-#-#-#
 # This file is distributed under the same license as the PACKAGE package.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER.
 # #-#-#-#-#  hi.po (eel.HEAD.hi)  #-#-#-#-#
@@ -826,8 +826,8 @@
 
 
 ========== hr.po ==========
-# #-#-#-#-#  hr.po (caja 0)  #-#-#-#-#
-# Translation of caja to Croatiann
+# #-#-#-#-#  hr.po (peony 0)  #-#-#-#-#
+# Translation of peony to Croatiann
 # Copyright (C) Croatiann team
 # Translators: Automatski Prijevod <>,Boris Tudan <boris.tudan@ka.htnet.hr>,Danijel Studen <dstuden@vuka.hr>,Denis Lackovic <delacko@fly.srk.fer.hr>,Mato Kutlić <mate@iskraemeco.hr>,Nikola Planinac <>,pr pr <delacko@192.168.0.1>,Robert Sedak <robert.sedak@sk.tel.hr>,Robert Vuković <robi@surfer.hr>,Sinisa Habek <sinisa_habek@inet.hr>,
 # #-#-#-#-#  hr.po (eel 0)  #-#-#-#-#
@@ -839,9 +839,9 @@
 
 
 ========== hu.po ==========
-# Hungarian translation of caja.
+# Hungarian translation of peony.
 # Copyright (C) 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010 Free Software Foundation, Inc.
-# This file is distributed under the same license as the caja package.
+# This file is distributed under the same license as the peony package.
 #
 # Szabolcs Ban <shooby at mate dot hu>, 2000, 2001.
 # Emese Kovacs <emese at mate dot hu>, 2001, 2002.
@@ -857,7 +857,7 @@
 
 
 ========== hy.po ==========
-# translation of caja.HEAD.po to armenian
+# translation of peony.HEAD.po to armenian
 # This file is distributed under the same license as the PACKAGE package.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER, 2005.
 # Ruzanna Khachatryan <ruzannak@hotmail.com>, 2005
@@ -890,9 +890,9 @@
 
 
 ========== io.po ==========
-# Ido translation of caja.
+# Ido translation of peony.
 # Copyright (C) 2008 Free Software Foundation, Inc.
-# This file is distributed under the same license as the caja package.
+# This file is distributed under the same license as the peony package.
 # Michael Terry <mike@mterry.name>, 2008.
 #
 
@@ -907,14 +907,14 @@
 # Samúel Jón Gunnarsson <sammi@techattack.nu>, 2003.
 # Anna Jonna Ármannsdóttir <annajonna@gmail.com> 2009.
 # Sveinn í Felli <sveinki@nett.is>, 2009.
-# íslenskun caja.mate
+# íslenskun peony.mate
 
 
 
 
 ========== it.po ==========
 # Italian translation of Caja
-# This file is distributed under the same license as caja package
+# This file is distributed under the same license as peony package
 # Copyright (C) 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010 Free Software Foundation, Inc.
 # Christopher R. Gabriel <cgabriel@cgabriel.org>, 2000.
 # Pier Luigi Fiorini <plfiorini@supereva.it>, 2001,2002.
@@ -925,7 +925,7 @@
 
 
 ========== ja.po ==========
-# caja ja.po.
+# peony ja.po.
 # Copyright (C) 2000-2010 Free Software Foundation, Inc.
 # Akira TAGOH <tagoh@mate.gr.jp>, 2000-2002.
 # Takuo Kitame <kitame@debian.org>, 2001.
@@ -962,7 +962,7 @@
 
 
 ========== kk.po ==========
-# Kazakh translation of caja.
+# Kazakh translation of peony.
 # Copyright (C) 2010 HZ
 # This file is distributed under the same license as the brasero package.
 # Baurzhan Muftakhidinov <baurthefirst@gmail.com>, 2010.
@@ -981,7 +981,7 @@
 
 
 ========== kn.po ==========
-# translation of caja.master.kn.po to Kannada
+# translation of peony.master.kn.po to Kannada
 # #-#-#-#-#  kn.po (kn)  #-#-#-#-#
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
@@ -997,8 +997,8 @@
 
 
 ========== ko.po ==========
-# caja ko.po
-# This file is distributed under the same license as the caja package.
+# peony ko.po
+# This file is distributed under the same license as the peony package.
 #
 # Young-Ho Cha <ganadist@mizi.com>, 2000~2002, 2003, 2004, 2006~2008.
 # Eunju Kim <eukim@redhat.com>, 2007.
@@ -1015,8 +1015,8 @@
 
 
 ========== ku.po ==========
-# #-#-#-#-#  ku.po (caja.HEAD)  #-#-#-#-#
-# translation of caja.HEAD.po to Kurdish
+# #-#-#-#-#  ku.po (peony.HEAD)  #-#-#-#-#
+# translation of peony.HEAD.po to Kurdish
 # This file is distributed under the same license as the PACKAGE package.
 # Copyright (C) 2005 THE PACKAGE'S COPYRIGHT HOLDER.
 # Erdal Ronahi <erdal.ronahi@gmail.com, pckurd@hotmail.com>, 2005.
@@ -1074,7 +1074,7 @@
 
 
 ========== mai.po ==========
-# translation of caja.HEAD.po to Maithili
+# translation of peony.HEAD.po to Maithili
 # Copyright (C) 2006 The MATE Foundation
 # This file is distributed under the same license as the PACKAGE package.
 # BOSS GNU/Linux <bosslinux@cdac.in>, 2008.
@@ -1083,9 +1083,9 @@
 
 
 ========== mg.po ==========
-# Malagasy translation of caja.
-# Copyright (C) 2007 THE caja'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the caja package.
+# Malagasy translation of peony.
+# Copyright (C) 2007 THE peony'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the peony package.
 # RAJ  FANO HARIN <rajfanhar@yahoo.fr>, 2006.
 # Thierry Randrianiriana <randrianiriana@gmail.com>, 2007.
 
@@ -1093,9 +1093,9 @@
 
 
 ========== mi.po ==========
-# Māori translation of caja.
+# Māori translation of peony.
 # Copyright © 2001, 2004 Caja
-# Distributed under the same licence as the caja package
+# Distributed under the same licence as the peony package
 # John C Barstow <jbowtie@amathaine.com>, 2004.
 #
 
@@ -1103,11 +1103,11 @@
 
 
 ========== mk.po ==========
-# #-#-#-#-#  mk.po (caja.HEAD.mk)  #-#-#-#-#
-# translation of caja.HEAD.mk.po to Macedonian
-# translation of caja.HEAD.mk.po to
-# translation of caja.HEAD.po to
-# translation of caja.HEAD.mk.po to
+# #-#-#-#-#  mk.po (peony.HEAD.mk)  #-#-#-#-#
+# translation of peony.HEAD.mk.po to Macedonian
+# translation of peony.HEAD.mk.po to
+# translation of peony.HEAD.po to
+# translation of peony.HEAD.mk.po to
 # Copyright (C) 2002,2003, 2004, 2005, 2006, 2007, 2008 Free Software Foundation, Inc.
 #
 #
@@ -1148,10 +1148,10 @@
 
 ========== ml.po ==========
 # translation of ml.po to
-# translation of caja.master.ml.po to
-# #-#-#-#-#  ml.po (caja.HEAD.ml)  #-#-#-#-#
-# This file is distributed under the same license as the caja package.
-# Copyright (C) 2003-2008 caja' COPYRIGHT HOLDER.
+# translation of peony.master.ml.po to
+# #-#-#-#-#  ml.po (peony.HEAD.ml)  #-#-#-#-#
+# This file is distributed under the same license as the peony package.
+# Copyright (C) 2003-2008 peony' COPYRIGHT HOLDER.
 # FSF-India <locale@gnu.org.in>, 2003.
 # Santhosh Thottingal <santhosh.thottingal@gmail.com>, 2008.
 # Ani Peter <apeter@redhat.com>, 2006, 2007, 2008.
@@ -1171,7 +1171,7 @@
 ========== mn.po ==========
 # #-#-#-#-#  mn.po (mn)  #-#-#-#-#
 # translation of mn.po to Mongolian
-# translation of caja.HEAD.po to Mongolian
+# translation of peony.HEAD.po to Mongolian
 # This file is distributed under the same license as the PACKAGE package.
 # Copyright (C) 2003
 # Ochirbat Batzaya <buuvei@yahoo.com>, 2003.
@@ -1231,9 +1231,9 @@
 
 
 ========== nds.po ==========
-# Low German translation for caja.
-# Copyright (C) 2009 caja's COPYRIGHT HOLDER
-# This file is distributed under the same license as the caja package.
+# Low German translation for peony.
+# Copyright (C) 2009 peony's COPYRIGHT HOLDER
+# This file is distributed under the same license as the peony package.
 # Nils-Christoph Fiedler <ncfiedler@gnome.org>, 2009.
 #
 
@@ -1241,8 +1241,8 @@
 
 
 ========== ne.po ==========
-# #-#-#-#-#  ne.po (caja.mate-2-20.ne)  #-#-#-#-#
-# translation of caja.mate-2-20.ne.po to Nepali
+# #-#-#-#-#  ne.po (peony.mate-2-20.ne)  #-#-#-#-#
+# translation of peony.mate-2-20.ne.po to Nepali
 # This file is distributed under the same license as the PACKAGE package.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER.
 #
@@ -1303,7 +1303,7 @@
 
 ========== nn.po ==========
 # #-#-#-#-#  nn.po (nn)  #-#-#-#-#
-# translation of caja.po to Norwegian Nynorsk
+# translation of peony.po to Norwegian Nynorsk
 # Norwegian nynorsk translation of Caja
 # Copyright (C) 2001, 2003, 2004, 2006, 2008 Free Software Foundation, Inc.
 # Copyright (C) 2005 Yahoo! Inc.
@@ -1331,9 +1331,9 @@
 
 
 ========== nso.po ==========
-# Northern Sotho translation of caja.
+# Northern Sotho translation of peony.
 # Copyright (C) 2004 Zuza Software Foundation (Translate.org.za)
-# This file is distributed under the same license as the caja package.
+# This file is distributed under the same license as the peony package.
 # Zuza Software Foundation <info@translate.org.za>, 2004
 # Dwayne Bailey <dwayne@translate.org.za>, 2009
 
@@ -1342,9 +1342,9 @@
 
 ========== oc.po ==========
 # #-#-#-#-#  oc.po (oc)  #-#-#-#-#
-# Occitan translation of caja.
+# Occitan translation of peony.
 # Copyright (C) 2007 Free Software Foundation, Inc.
-# This file is distributed under the same license as the caja package.
+# This file is distributed under the same license as the peony package.
 #
 # Yannig Marchegay (Kokoyaya) <yannig@marchegay.org>, 2007-2008.
 # #-#-#-#-#  oc.po (oc)  #-#-#-#-#
@@ -1359,12 +1359,12 @@
 
 
 ========== or.po ==========
-# translation of caja.mate-2-30.or.po to Oriya
+# translation of peony.mate-2-30.or.po to Oriya
 # Subhransu Behera <arya_subhransu@yahoo.co.in>, 2006, 2007.
 # Gora Mohanty <gora_mohanty@yahoo.co.in>, 2004.
 # Manoj Kumar Giri <giri.manojkr@gmail.com>, 2008.
 # Manoj Kumar Giri <mgiri@redhat.com>, 2009, 2010.
-# #-#-#-#-#  or.po (caja.HEAD.or)  #-#-#-#-#
+# #-#-#-#-#  or.po (peony.HEAD.or)  #-#-#-#-#
 # This file is distributed under the same license as the PACKAGE package.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER.
 # #-#-#-#-#  or.po (eel.HEAD.or)  #-#-#-#-#
@@ -1377,9 +1377,9 @@
 
 
 ========== pa.po ==========
-# #-#-#-#-#  pa.po (caja.HEAD)  #-#-#-#-#
-# translation of caja.HEAD.po to Punjabi
-# Translation of caja.pa.po to Punjabi
+# #-#-#-#-#  pa.po (peony.HEAD)  #-#-#-#-#
+# translation of peony.HEAD.po to Punjabi
+# Translation of peony.pa.po to Punjabi
 # Amanpreet Singh Alam <amanliunx@netscapet.net>, 2004.
 # A S Alam <aalam@users.sf.net>, 2005,2006, 2007, 2009, 2010.
 # Amanpreet Singh Alam <aalam@users.sf.net>, 2008, 2009.
@@ -1409,9 +1409,9 @@
 
 
 ========== pt.po ==========
-# caja's Portuguese Translation
+# peony's Portuguese Translation
 # Copyright © 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010 Caja
-# Distributed under the same licence as the caja package
+# Distributed under the same licence as the peony package
 # Duarte Loreto <happyguy_pt@hotmail.com>, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010.
 #
 
@@ -1419,9 +1419,9 @@
 
 
 ========== pt_BR.po ==========
-# Brazilian Portuguese translation of caja.
+# Brazilian Portuguese translation of peony.
 # Copyright (C) 2000-2009 Free Software Foundation, Inc.
-# This file is distributed under the same license as the caja package.
+# This file is distributed under the same license as the peony package.
 # Gustavo Maciel Dias Vieira <gdvieira@zaz.com.br>, 2000-2001.
 # Evandro Fernandes Giovanini <evandrofg@ig.com.br>, 2002-2003, 2006.
 # Gustavo Noronha Silva <kov@debian.org>, 2002-2003.
@@ -1445,7 +1445,7 @@
 
 
 ========== ro.po ==========
-# caja RO translation
+# peony RO translation
 # Copyright (C) 2001,2003, 2004, 2005, 2006, 2007 Free Software Foundation, Inc.
 # Marius Andreiana <marius galuna.ro>, 2001, 2002, 2003.
 # Mugurel Tudor <mugurelu@mate.ro>, 2003-2004, 2005, 2006, 2007.
@@ -1456,7 +1456,7 @@
 
 
 ========== ru.po ==========
-# translation of caja to Russian
+# translation of peony to Russian
 # Copyright (C) 2000-2009, 2010 Free Software Foundation, Inc.
 #
 # Valek Filippov <frob@df.ru>, 2000-2002.
@@ -1472,10 +1472,10 @@
 
 
 ========== rw.po ==========
-# #-#-#-#-#  rw.po (caja 2.12)  #-#-#-#-#
-# translation of caja to Kinyarwanda.
+# #-#-#-#-#  rw.po (peony 2.12)  #-#-#-#-#
+# translation of peony to Kinyarwanda.
 # Copyright (C) 2005 Free Software Foundation, Inc.
-# This file is distributed under the same license as the caja package.
+# This file is distributed under the same license as the peony package.
 # Steve Murphy <murf@e-tools.com>, 2005
 # Steve performed initial rough translation from compendium built from translations provided by the following translators:
 # Philibert Ndandali  <ndandali@yahoo.fr>, 2005.
@@ -1537,9 +1537,9 @@
 
 
 ========== sl.po ==========
-# Slovenian translation for caja.
-# Copyright (C) 2009 caja COPYRIGHT HOLDER
-# This file is distributed under the same license as the caja package.
+# Slovenian translation for peony.
+# Copyright (C) 2009 peony COPYRIGHT HOLDER
+# This file is distributed under the same license as the peony package.
 #
 # Andraž Tori <andraz.tori1@guest.arnes.si>, 2000.
 # Matjaž Horvat <m@owca.info>, 2006.
@@ -1550,10 +1550,10 @@
 
 
 ========== sq.po ==========
-# #-#-#-#-#  sq.po (caja HEAD)  #-#-#-#-#
-# Përkthimi i caja në shqip.
+# #-#-#-#-#  sq.po (peony HEAD)  #-#-#-#-#
+# Përkthimi i peony në shqip.
 # Copyright (C) 2002-2008 Free Software Foundation, Inc.
-# This file is distributed under the same license as caja package
+# This file is distributed under the same license as peony package
 #
 # Laurent Dhima <laurenti@alblinux.net>, 2002-2008.
 # #-#-#-#-#  sq.po (eel HEAD)  #-#-#-#-#
@@ -1566,10 +1566,10 @@
 
 
 ========== sr.po ==========
-# Serbian translationџ of caja
+# Serbian translationџ of peony
 # Courtesy of Prevod.org team (http://prevod.org/) -- 2003 - 2009.
 #
-# This file is distributed under the same license as the caja package.
+# This file is distributed under the same license as the peony package.
 #
 # EX Maintainer: Данило Шеган <danilo@gnome.org>
 # Reviewed on 2005-07-09 by: Данило Шеган <danilo@gnome.org>
@@ -1581,10 +1581,10 @@
 
 
 ========== sr@ije.po ==========
-# Serbian translation of caja
+# Serbian translation of peony
 # Courtesy of Prevod.org team (http://prevod.org/) -- 2003, 2004.
 #
-# This file is distributed under the same license as the caja package.
+# This file is distributed under the same license as the peony package.
 #
 # Maintainer: Данило Шеган <dsegan@gmx.net>
 #
@@ -1593,10 +1593,10 @@
 
 
 ========== sr@latin.po ==========
-# Serbian translationdž of caja
+# Serbian translationdž of peony
 # Courtesy of Prevod.org team (http://prevod.org/) -- 2003 - 2009.
 #
-# This file is distributed under the same license as the caja package.
+# This file is distributed under the same license as the peony package.
 #
 # EX Maintainer: Danilo Šegan <danilo@gnome.org>
 # Reviewed on 2005-07-09 by: Danilo Šegan <danilo@gnome.org>
@@ -1608,7 +1608,7 @@
 
 
 ========== sv.po ==========
-# Swedish messages for caja.
+# Swedish messages for peony.
 # Copyright (C) 2000-2010 Free Software Foundation, Inc.
 # Andreas Hyden <a.hyden@cyberpoint.se>, 2000.
 # Richard Hult <rhult@hem.passagen.se>, 2000.
@@ -1621,8 +1621,8 @@
 
 
 ========== ta.po ==========
-# translation of caja.master.ta.po to Tamil
-# translation of caja.HEAD.ta.po to
+# translation of peony.master.ta.po to Tamil
+# translation of peony.HEAD.ta.po to
 # translation of ta.po to
 # This file is distributed under the same license as the PACKAGE package.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER.
@@ -1638,10 +1638,10 @@
 
 
 ========== te.po ==========
-# translation of caja.master.te.po to Telugu
-# Telugu translation of caja
+# translation of peony.master.te.po to Telugu
+# Telugu translation of peony
 # Copyright (C) 2005 Free Software Foundation, Andhra Pradesh.
-# This file is distributed under the same license as the caja package.
+# This file is distributed under the same license as the peony package.
 #
 #
 # Prajasakti Localisation Team <localisation@prajasakti.com>, 2005.
@@ -1653,9 +1653,9 @@
 
 
 ========== th.po ==========
-# Thai caja translation.
+# Thai peony translation.
 # Copyright (C) 2003-2010 Free Software Foundation, Inc.
-# This file is distributed under the same license as the caja package.
+# This file is distributed under the same license as the peony package.
 # Paisa Seeluangsawat <paisa@users.sf.net>, 2003, 2004.
 # Supranee Thirawatthanasuk <supranee@opentle.org>, 2005.
 # Theppitak Karoonboonyanan <thep@linux.thai.net>, 2005-2010.
@@ -1697,9 +1697,9 @@
 
 
 ========== ug.po ==========
-# Uyghur translation for caja
+# Uyghur translation for peony
 # Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
-# This file is distributed under the same license as the caja package.
+# This file is distributed under the same license as the peony package.
 # Sahran <sahran@live.com>,2010
 #
 
@@ -1719,7 +1719,7 @@
 ========== uz.po ==========
 # translation of uz@cyrillic.po to Uzbek
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the caja package.
+# This file is distributed under the same license as the peony package.
 #
 # Nurali Abdurahomonov <mavnur@gmail.com>, 2008.
 # Nurali Abdurahmonov <mavnur@gmail.com>, 2009.
@@ -1728,9 +1728,9 @@
 
 
 ========== uz@cyrillic.po ==========
-# translation of caja to Uzbek
+# translation of peony to Uzbek
 # Copyright (C) 2009 Free Software Foundation, Inc.
-# This file is distributed under the same license as the caja package.
+# This file is distributed under the same license as the peony package.
 #
 # Nurali Abdurahomonov <mavnur@gmail.com>, 2008.
 # Nurali Abdurahmonov <mavnur@gmail.com>, 2009.
@@ -1776,10 +1776,10 @@
 
 
 ========== xh.po ==========
-# #-#-#-#-#  xh.po (caja)  #-#-#-#-#
-# Xhosa translation of caja
+# #-#-#-#-#  xh.po (peony)  #-#-#-#-#
+# Xhosa translation of peony
 # Copyright (C) 2005 Canonical Ltd.
-# This file is distributed under the same license as the caja package.
+# This file is distributed under the same license as the peony package.
 # Translation by Canonical Ltd <translations@canonical.com> with thanks to
 # Translation World CC in South Africa, 2005.
 #
@@ -1811,7 +1811,7 @@
 ========== zh_CN.po ==========
 # zh_CN translation for Caja.
 # Copyright (C) 2009 Free Software Foundation, Inc.
-# This file is distributed under the same license as caja package.
+# This file is distributed under the same license as peony package.
 # Wang Jian <lark@linux.net.cn>, 2001
 # Sarah Smith <sarahs@redhat.com>, 2002
 # Funda Wang <fundawang@gmail.com>, 2003, 2009
@@ -1824,7 +1824,7 @@
 
 
 ========== zh_HK.po ==========
-# Chinese (Hong Kong) translation for caja.
+# Chinese (Hong Kong) translation for peony.
 # Copyright (C) 2000-07 Free Software Foundation, Inc.
 # Gong Yi LIAO <granziliao@sinamail.com>, 2000.
 # Abel Cheung <abel@oaka.org>, 2001-2004.
@@ -1838,7 +1838,7 @@
 
 
 ========== zh_TW.po ==========
-# Chinese (Hong Kong) translation for caja.
+# Chinese (Hong Kong) translation for peony.
 # Copyright (C) 2000-07 Free Software Foundation, Inc.
 # Gong Yi LIAO <granziliao@sinamail.com>, 2000.
 # Abel Cheung <abel@oaka.org>, 2001-2004.
@@ -1852,9 +1852,9 @@
 
 
 ========== zu.po ==========
-# Zulu translation of caja.
+# Zulu translation of peony.
 # Copyright (C) 2004 Zuza Software Foundation (Translate.org.za)
-# This file is distributed under the same license as the caja package.
+# This file is distributed under the same license as the peony package.
 #
 # Zuza Software Foundation <info@translate.org.za>, 2004
 #

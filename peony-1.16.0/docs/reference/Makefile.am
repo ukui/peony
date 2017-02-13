@@ -1,1 +1,1 @@
-SUBDIRS = libcaja-extension
+SUBDIRS = libpeony-extension

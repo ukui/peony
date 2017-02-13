@@ -1,7 +1,7 @@
 /* eggdesktopfile.c - Freedesktop.Org Desktop Files
  * Copyright (C) 2007 Novell, Inc.
  *
- * Based on mate-desktop-item.c
+ * Based on ukui-desktop-item.c
  * Copyright (C) 1999, 2000 Red Hat Inc.
  * Copyright (C) 2001 George Lebl
  *

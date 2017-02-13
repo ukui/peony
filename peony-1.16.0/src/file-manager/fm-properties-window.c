@@ -4,18 +4,18 @@
 
    Copyright (C) 2000 Eazel, Inc.
 
-   The Mate Library is free software; you can redistribute it and/or
+   The Ukui Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public License as
    published by the Free Software Foundation; either version 2 of the
    License, or (at your option) any later version.
 
-   The Mate Library is distributed in the hope that it will be useful,
+   The Ukui Library is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
    Library General Public License for more details.
 
    You should have received a copy of the GNU Library General Public
-   License along with the Mate Library; see the file COPYING.LIB.  If not,
+   License along with the Ukui Library; see the file COPYING.LIB.  If not,
    write to the Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
    Boston, MA 02110-1301, USA.
 
@@ -26,14 +26,14 @@
 #include "fm-properties-window.h"
 #include "fm-ditem-page.h"
 
-#define MATE_DESKTOP_USE_UNSTABLE_API
+#define UKUI_DESKTOP_USE_UNSTABLE_API
 
 #include "fm-error-reporting.h"
-#include "libcaja-private/caja-mime-application-chooser.h"
+#include "libpeony-private/peony-mime-application-chooser.h"
 #include <eel/eel-accessibility.h>
 #include <eel/eel-gdk-pixbuf-extensions.h>
 #include <eel/eel-glib-extensions.h>
-#include <eel/eel-mate-extensions.h>
+#include <eel/eel-ukui-extensions.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-labeled-image.h>
 #include <eel/eel-stock-dialogs.h>
@@ -42,19 +42,19 @@
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
 #include <glib/gi18n.h>
-#include <libmate-desktop/mate-desktop-thumbnail.h>
-#include <libcaja-extension/caja-property-page-provider.h>
-#include <libcaja-private/caja-entry.h>
-#include <libcaja-private/caja-extensions.h>
-#include <libcaja-private/caja-file-attributes.h>
-#include <libcaja-private/caja-file-operations.h>
-#include <libcaja-private/caja-desktop-icon-file.h>
-#include <libcaja-private/caja-global-preferences.h>
-#include <libcaja-private/caja-emblem-utils.h>
-#include <libcaja-private/caja-link.h>
-#include <libcaja-private/caja-metadata.h>
-#include <libcaja-private/caja-module.h>
-#include <libcaja-private/caja-mime-actions.h>
+#include <libukui-desktop/ukui-desktop-thumbnail.h>
+#include <libpeony-extension/peony-property-page-provider.h>
+#include <libpeony-private/peony-entry.h>
+#include <libpeony-private/peony-extensions.h>
+#include <libpeony-private/peony-file-attributes.h>
+#include <libpeony-private/peony-file-operations.h>
+#include <libpeony-private/peony-desktop-icon-file.h>
+#include <libpeony-private/peony-global-preferences.h>
+#include <libpeony-private/peony-emblem-utils.h>
+#include <libpeony-private/peony-link.h>
+#include <libpeony-private/peony-metadata.h>
+#include <libpeony-private/peony-module.h>
+#include <libpeony-private/peony-mime-actions.h>
 #include <string.h>
 #include <sys/stat.h>
 #include <cairo.h>
@@ -125,10 +125,10 @@ struct FMPropertiesWindowDetails {
 	GList *emblem_buttons;
 	GHashTable *initial_emblems;
 
-	CajaFile *group_change_file;
+	PeonyFile *group_change_file;
 	char         *group_change_group;
 	unsigned int  group_change_timeout;
-	CajaFile *owner_change_file;
+	PeonyFile *owner_change_file;
 	char         *owner_change_owner;
 	unsigned int  owner_change_timeout;
 
@@ -206,14 +206,14 @@ typedef struct {
 
 enum {
 	TARGET_URI_LIST,
-	TARGET_MATE_URI_LIST,
+	TARGET_UKUI_URI_LIST,
 	TARGET_RESET_BACKGROUND
 };
 
 static const GtkTargetEntry target_table[] = {
 	{ "text/uri-list",  0, TARGET_URI_LIST },
-	{ "x-special/mate-icon-list",  0, TARGET_MATE_URI_LIST },
-	{ "x-special/mate-reset-background", 0, TARGET_RESET_BACKGROUND }
+	{ "x-special/ukui-icon-list",  0, TARGET_UKUI_URI_LIST },
+	{ "x-special/ukui-reset-background", 0, TARGET_RESET_BACKGROUND }
 };
 
 #define DIRECTORY_CONTENTS_UPDATE_INTERVAL	200 /* milliseconds */
@@ -232,7 +232,7 @@ static const GtkTargetEntry target_table[] = {
 #define CHOWN_CHGRP_TIMEOUT			300 /* milliseconds */
 
 static void directory_contents_value_field_update (FMPropertiesWindow *window);
-static void file_changed_callback                 (CajaFile       *file,
+static void file_changed_callback                 (PeonyFile       *file,
 						   gpointer            user_data);
 static void permission_button_update              (FMPropertiesWindow *window,
 						   GtkToggleButton    *button);
@@ -242,7 +242,7 @@ static void value_field_update                    (FMPropertiesWindow *window,
 						   GtkLabel           *field);
 static void properties_window_update              (FMPropertiesWindow *window,
 						   GList              *files);
-static void is_directory_ready_callback           (CajaFile       *file,
+static void is_directory_ready_callback           (PeonyFile       *file,
 						   gpointer            data);
 static void cancel_group_change_callback          (FMPropertiesWindow *window);
 static void cancel_owner_change_callback          (FMPropertiesWindow *window);
@@ -258,10 +258,10 @@ static void remove_pending                        (StartupData        *data,
 						   gboolean            cancel_destroy_handler);
 static void append_extension_pages                (FMPropertiesWindow *window);
 
-static gboolean name_field_focus_out              (CajaEntry *name_field,
+static gboolean name_field_focus_out              (PeonyEntry *name_field,
 						   GdkEventFocus *event,
 						   gpointer callback_data);
-static void name_field_activate                   (CajaEntry *name_field,
+static void name_field_activate                   (PeonyEntry *name_field,
 						   gpointer callback_data);
 #if GTK_CHECK_VERSION (3, 0, 0)
 static GtkLabel *attach_ellipsizing_value_label   (GtkGrid *grid,
@@ -289,7 +289,7 @@ is_multi_file_window (FMPropertiesWindow *window)
 	count = 0;
 
 	for (l = window->details->original_files; l != NULL; l = l->next) {
-		if (!caja_file_is_gone (CAJA_FILE (l->data))) {
+		if (!peony_file_is_gone (PEONY_FILE (l->data))) {
 			count++;
 			if (count > 1) {
 				return TRUE;
@@ -309,7 +309,7 @@ get_not_gone_original_file_count (FMPropertiesWindow *window)
 	count = 0;
 
 	for (l = window->details->original_files; l != NULL; l = l->next) {
-		if (!caja_file_is_gone (CAJA_FILE (l->data))) {
+		if (!peony_file_is_gone (PEONY_FILE (l->data))) {
 			count++;
 		}
 	}
@@ -317,7 +317,7 @@ get_not_gone_original_file_count (FMPropertiesWindow *window)
 	return count;
 }
 
-static CajaFile *
+static PeonyFile *
 get_original_file (FMPropertiesWindow *window)
 {
 	g_return_val_if_fail (!is_multi_file_window (window), NULL);
@@ -326,35 +326,35 @@ get_original_file (FMPropertiesWindow *window)
 		return NULL;
 	}
 
-	return CAJA_FILE (window->details->original_files->data);
+	return PEONY_FILE (window->details->original_files->data);
 }
 
-static CajaFile *
-get_target_file_for_original_file (CajaFile *file)
+static PeonyFile *
+get_target_file_for_original_file (PeonyFile *file)
 {
-	CajaFile *target_file;
+	PeonyFile *target_file;
 	GFile *location;
 	char *uri_to_display;
-	CajaDesktopLink *link;
+	PeonyDesktopLink *link;
 
 	target_file = NULL;
-	if (CAJA_IS_DESKTOP_ICON_FILE (file)) {
-		link = caja_desktop_icon_file_get_link (CAJA_DESKTOP_ICON_FILE (file));
+	if (PEONY_IS_DESKTOP_ICON_FILE (file)) {
+		link = peony_desktop_icon_file_get_link (PEONY_DESKTOP_ICON_FILE (file));
 
 		if (link != NULL) {
 			/* map to linked URI for these types of links */
-			location = caja_desktop_link_get_activation_location (link);
+			location = peony_desktop_link_get_activation_location (link);
 			if (location) {
-				target_file = caja_file_get (location);
+				target_file = peony_file_get (location);
 				g_object_unref (location);
 			}
 
 			g_object_unref (link);
 		}
         } else {
-		uri_to_display = caja_file_get_activation_uri (file);
+		uri_to_display = peony_file_get_activation_uri (file);
 		if (uri_to_display != NULL) {
-			target_file = caja_file_get_by_uri (uri_to_display);
+			target_file = peony_file_get_by_uri (uri_to_display);
 			g_free (uri_to_display);
 		}
 	}
@@ -364,14 +364,14 @@ get_target_file_for_original_file (CajaFile *file)
 	}
 
 	/* Ref passed-in file here since we've decided to use it. */
-	caja_file_ref (file);
+	peony_file_ref (file);
 	return file;
 }
 
-static CajaFile *
+static PeonyFile *
 get_target_file (FMPropertiesWindow *window)
 {
-	return CAJA_FILE (window->details->target_files->data);
+	return PEONY_FILE (window->details->target_files->data);
 }
 
 static void
@@ -411,19 +411,19 @@ get_image_for_properties_window (FMPropertiesWindow *window,
 				 char **icon_name,
 				 GdkPixbuf **icon_pixbuf)
 {
-	CajaIconInfo *icon, *new_icon;
+	PeonyIconInfo *icon, *new_icon;
 	GList *l;
 
 	icon = NULL;
 	for (l = window->details->original_files; l != NULL; l = l->next) {
-		CajaFile *file;
+		PeonyFile *file;
 
-		file = CAJA_FILE (l->data);
+		file = PEONY_FILE (l->data);
 
 		if (!icon) {
-			icon = caja_file_get_icon (file, CAJA_ICON_SIZE_STANDARD, CAJA_FILE_ICON_FLAGS_USE_THUMBNAILS | CAJA_FILE_ICON_FLAGS_IGNORE_VISITING);
+			icon = peony_file_get_icon (file, PEONY_ICON_SIZE_STANDARD, PEONY_FILE_ICON_FLAGS_USE_THUMBNAILS | PEONY_FILE_ICON_FLAGS_IGNORE_VISITING);
 		} else {
-			new_icon = caja_file_get_icon (file, CAJA_ICON_SIZE_STANDARD, CAJA_FILE_ICON_FLAGS_USE_THUMBNAILS | CAJA_FILE_ICON_FLAGS_IGNORE_VISITING);
+			new_icon = peony_file_get_icon (file, PEONY_ICON_SIZE_STANDARD, PEONY_FILE_ICON_FLAGS_USE_THUMBNAILS | PEONY_FILE_ICON_FLAGS_IGNORE_VISITING);
 			if (!new_icon || new_icon != icon) {
 				g_object_unref (icon);
 				g_object_unref (new_icon);
@@ -435,15 +435,15 @@ get_image_for_properties_window (FMPropertiesWindow *window,
 	}
 
 	if (!icon) {
-		icon = caja_icon_info_lookup_from_name ("text-x-generic", CAJA_ICON_SIZE_STANDARD);
+		icon = peony_icon_info_lookup_from_name ("text-x-generic", PEONY_ICON_SIZE_STANDARD);
 	}
 
 	if (icon_name != NULL) {
-		*icon_name = g_strdup (caja_icon_info_get_used_name (icon));
+		*icon_name = g_strdup (peony_icon_info_get_used_name (icon));
 	}
 
 	if (icon_pixbuf != NULL) {
-		*icon_pixbuf = caja_icon_info_get_pixbuf_at_size (icon, CAJA_ICON_SIZE_STANDARD);
+		*icon_pixbuf = peony_icon_info_get_pixbuf_at_size (icon, PEONY_ICON_SIZE_STANDARD);
 	}
 
 	g_object_unref (icon);
@@ -502,15 +502,15 @@ reset_icon (FMPropertiesWindow *properties_window)
 	GList *l;
 
 	for (l = properties_window->details->original_files; l != NULL; l = l->next) {
-		CajaFile *file;
+		PeonyFile *file;
 
-		file = CAJA_FILE (l->data);
+		file = PEONY_FILE (l->data);
 
-		caja_file_set_metadata (file,
-					    CAJA_METADATA_KEY_ICON_SCALE,
+		peony_file_set_metadata (file,
+					    PEONY_METADATA_KEY_ICON_SCALE,
 					    NULL, NULL);
-		caja_file_set_metadata (file,
-					    CAJA_METADATA_KEY_CUSTOM_ICON,
+		peony_file_set_metadata (file,
+					    PEONY_METADATA_KEY_CUSTOM_ICON,
 					    NULL, NULL);
 	}
 }
@@ -631,8 +631,8 @@ set_name_field (FMPropertiesWindow *window, const gchar *original_name,
 	 * 3) Creating label (potentially replacing entry)
 	 * 4) Creating entry (potentially replacing label)
 	 */
-	use_label = is_multi_file_window (window) || !caja_file_can_rename (get_original_file (window));
-	new_widget = !window->details->name_field || (use_label ? CAJA_IS_ENTRY (window->details->name_field) : GTK_IS_LABEL (window->details->name_field));
+	use_label = is_multi_file_window (window) || !peony_file_can_rename (get_original_file (window));
+	new_widget = !window->details->name_field || (use_label ? PEONY_IS_ENTRY (window->details->name_field) : GTK_IS_LABEL (window->details->name_field));
 
 	if (new_widget) {
 		if (window->details->name_field) {
@@ -653,7 +653,7 @@ set_name_field (FMPropertiesWindow *window, const gchar *original_name,
 					    VALUE_COLUMN, name));
 #endif
 		} else {
-			window->details->name_field = caja_entry_new ();
+			window->details->name_field = peony_entry_new ();
 			gtk_entry_set_text (GTK_ENTRY (window->details->name_field), name);
 			gtk_widget_show (window->details->name_field);
 #if GTK_CHECK_VERSION (3, 0, 0)
@@ -702,7 +702,7 @@ set_name_field (FMPropertiesWindow *window, const gchar *original_name,
 static void
 update_name_field (FMPropertiesWindow *window)
 {
-	CajaFile *file;
+	PeonyFile *file;
 
 	gtk_label_set_text_with_mnemonic (window->details->name_label,
 					  ngettext ("_Name:", "_Names:",
@@ -720,15 +720,15 @@ update_name_field (FMPropertiesWindow *window)
 		first = TRUE;
 
 		for (l = window->details->target_files; l != NULL; l = l->next) {
-			file = CAJA_FILE (l->data);
+			file = PEONY_FILE (l->data);
 
-			if (!caja_file_is_gone (file)) {
+			if (!peony_file_is_gone (file)) {
 				if (!first) {
 					g_string_append (str, ", ");
 				}
 				first = FALSE;
 
-				name = caja_file_get_display_name (file);
+				name = peony_file_get_display_name (file);
 				g_string_append (str, name);
 				g_free (name);
 			}
@@ -741,10 +741,10 @@ update_name_field (FMPropertiesWindow *window)
 
 		file = get_original_file (window);
 
-		if (file == NULL || caja_file_is_gone (file)) {
+		if (file == NULL || peony_file_is_gone (file)) {
 			current_name = g_strdup ("");
 		} else {
-			current_name = caja_file_get_display_name (file);
+			current_name = peony_file_get_display_name (file);
 		}
 
 		/* If the file name has changed since the original name was stored,
@@ -771,7 +771,7 @@ update_name_field (FMPropertiesWindow *window)
 }
 
 static void
-name_field_restore_original_name (CajaEntry *name_field)
+name_field_restore_original_name (PeonyEntry *name_field)
 {
 	const char *original_name;
 	char *displayed_name;
@@ -788,13 +788,13 @@ name_field_restore_original_name (CajaEntry *name_field)
 	if (strcmp (original_name, displayed_name) != 0) {
 		gtk_entry_set_text (GTK_ENTRY (name_field), original_name);
 	}
-	caja_entry_select_all (name_field);
+	peony_entry_select_all (name_field);
 
 	g_free (displayed_name);
 }
 
 static void
-rename_callback (CajaFile *file, GFile *res_loc, GError *error, gpointer callback_data)
+rename_callback (PeonyFile *file, GFile *res_loc, GError *error, gpointer callback_data)
 {
 	FMPropertiesWindow *window;
 
@@ -807,7 +807,7 @@ rename_callback (CajaFile *file, GFile *res_loc, GError *error, gpointer callbac
 					       error,
 					       GTK_WINDOW (window));
 		if (window->details->name_field != NULL) {
-			name_field_restore_original_name (CAJA_ENTRY (window->details->name_field));
+			name_field_restore_original_name (PEONY_ENTRY (window->details->name_field));
 		}
 	}
 
@@ -822,13 +822,13 @@ set_pending_name (FMPropertiesWindow *window, const char *name)
 }
 
 static void
-name_field_done_editing (CajaEntry *name_field, FMPropertiesWindow *window)
+name_field_done_editing (PeonyEntry *name_field, FMPropertiesWindow *window)
 {
-	CajaFile *file;
+	PeonyFile *file;
 	char *new_name;
 	const char *original_name;
 
-	g_return_if_fail (CAJA_IS_ENTRY (name_field));
+	g_return_if_fail (PEONY_IS_ENTRY (name_field));
 
 	/* Don't apply if the dialog has more than one file */
 	if (is_multi_file_window (window)) {
@@ -840,7 +840,7 @@ name_field_done_editing (CajaEntry *name_field, FMPropertiesWindow *window)
 	/* This gets called when the window is closed, which might be
 	 * caused by the file having been deleted.
 	 */
-	if (file == NULL || caja_file_is_gone  (file)) {
+	if (file == NULL || peony_file_is_gone  (file)) {
 		return;
 	}
 
@@ -848,7 +848,7 @@ name_field_done_editing (CajaEntry *name_field, FMPropertiesWindow *window)
 
 	/* Special case: silently revert text if new text is empty. */
 	if (strlen (new_name) == 0) {
-		name_field_restore_original_name (CAJA_ENTRY (name_field));
+		name_field_restore_original_name (PEONY_ENTRY (name_field));
 	} else {
 		original_name = (const char *) g_object_get_data (G_OBJECT (window->details->name_field),
 								  "original_name");
@@ -858,7 +858,7 @@ name_field_done_editing (CajaEntry *name_field, FMPropertiesWindow *window)
 		if (strcmp (new_name, original_name) != 0) {
 			set_pending_name (window, new_name);
 			g_object_ref (window);
-			caja_file_rename (file, new_name,
+			peony_file_rename (file, new_name,
 					      rename_callback, window);
 		}
 	}
@@ -867,7 +867,7 @@ name_field_done_editing (CajaEntry *name_field, FMPropertiesWindow *window)
 }
 
 static gboolean
-name_field_focus_out (CajaEntry *name_field,
+name_field_focus_out (PeonyEntry *name_field,
 		      GdkEventFocus *event,
 		      gpointer callback_data)
 {
@@ -881,23 +881,23 @@ name_field_focus_out (CajaEntry *name_field,
 }
 
 static void
-name_field_activate (CajaEntry *name_field, gpointer callback_data)
+name_field_activate (PeonyEntry *name_field, gpointer callback_data)
 {
-	g_assert (CAJA_IS_ENTRY (name_field));
+	g_assert (PEONY_IS_ENTRY (name_field));
 	g_assert (FM_IS_PROPERTIES_WINDOW (callback_data));
 
 	/* Accept changes. */
 	name_field_done_editing (name_field, FM_PROPERTIES_WINDOW (callback_data));
 
-	caja_entry_select_all_at_idle (name_field);
+	peony_entry_select_all_at_idle (name_field);
 }
 
 static gboolean
-file_has_keyword (CajaFile *file, const char *keyword)
+file_has_keyword (PeonyFile *file, const char *keyword)
 {
 	GList *keywords, *word;
 
-	keywords = caja_file_get_keywords (file);
+	keywords = peony_file_get_keywords (file);
 	word = g_list_find_custom (keywords, keyword, (GCompareFunc) strcmp);
     	g_list_free_full (keywords, g_free);
 
@@ -940,7 +940,7 @@ emblem_button_toggled (GtkToggleButton *button,
 	GList *files_on;
 	GList *files_off;
 
-	name = g_object_get_data (G_OBJECT (button), "caja_emblem_name");
+	name = g_object_get_data (G_OBJECT (button), "peony_emblem_name");
 
 	files_on = NULL;
 	files_off = NULL;
@@ -978,33 +978,33 @@ emblem_button_toggled (GtkToggleButton *button,
 					   window);
 
 	for (l = files_on; l != NULL; l = l->next) {
-		CajaFile *file;
+		PeonyFile *file;
 
-		file = CAJA_FILE (l->data);
+		file = PEONY_FILE (l->data);
 
-		keywords = caja_file_get_keywords (file);
+		keywords = peony_file_get_keywords (file);
 
 		word = g_list_find_custom (keywords, name,  (GCompareFunc)strcmp);
 		if (!word) {
 			keywords = g_list_prepend (keywords, g_strdup (name));
 		}
-		caja_file_set_keywords (file, keywords);
+		peony_file_set_keywords (file, keywords);
     		g_list_free_full (keywords, g_free);
 	}
 
 	for (l = files_off; l != NULL; l = l->next) {
-		CajaFile *file;
+		PeonyFile *file;
 
-		file = CAJA_FILE (l->data);
+		file = PEONY_FILE (l->data);
 
-		keywords = caja_file_get_keywords (file);
+		keywords = peony_file_get_keywords (file);
 
 		word = g_list_find_custom (keywords, name,  (GCompareFunc)strcmp);
 		if (word) {
 			keywords = g_list_remove_link (keywords, word);
     			g_list_free_full (word, g_free);
 		}
-		caja_file_set_keywords (file, keywords);
+		peony_file_set_keywords (file, keywords);
     		g_list_free_full (keywords, g_free);
 	}
 
@@ -1021,15 +1021,15 @@ emblem_button_update (FMPropertiesWindow *window,
 	gboolean all_set;
 	gboolean all_unset;
 
-	name = g_object_get_data (G_OBJECT (button), "caja_emblem_name");
+	name = g_object_get_data (G_OBJECT (button), "peony_emblem_name");
 
 	all_set = TRUE;
 	all_unset = TRUE;
 	for (l = window->details->original_files; l != NULL; l = l->next) {
 		gboolean has_keyword;
-		CajaFile *file;
+		PeonyFile *file;
 
-		file = CAJA_FILE (l->data);
+		file = PEONY_FILE (l->data);
 
 		has_keyword = file_has_keyword (file, name);
 
@@ -1057,7 +1057,7 @@ static void
 update_properties_window_title (FMPropertiesWindow *window)
 {
 	char *name, *title;
-	CajaFile *file;
+	PeonyFile *file;
 
 	g_return_if_fail (GTK_IS_WINDOW (window));
 
@@ -1068,7 +1068,7 @@ update_properties_window_title (FMPropertiesWindow *window)
 
 		if (file != NULL) {
 			g_free (title);
-			name = caja_file_get_display_name (file);
+			name = peony_file_get_display_name (file);
 			title = g_strdup_printf (_("%s Properties"), name);
 			g_free (name);
 		}
@@ -1111,13 +1111,13 @@ refresh_extension_pages (FMPropertiesWindow *window)
 
 static void
 remove_from_dialog (FMPropertiesWindow *window,
-		    CajaFile *file)
+		    PeonyFile *file)
 {
 	int index;
 	GList *original_link;
 	GList *target_link;
-	CajaFile *original_file;
-	CajaFile *target_file;
+	PeonyFile *original_file;
+	PeonyFile *target_file;
 
 	index = g_list_index (window->details->target_files, file);
 	if (index == -1) {
@@ -1130,8 +1130,8 @@ remove_from_dialog (FMPropertiesWindow *window,
 
 	g_return_if_fail (original_link && target_link);
 
-	original_file = CAJA_FILE (original_link->data);
-	target_file = CAJA_FILE (target_link->data);
+	original_file = PEONY_FILE (original_link->data);
+	target_file = PEONY_FILE (target_link->data);
 
 	window->details->original_files = g_list_remove_link (window->details->original_files, original_link);
 	g_list_free (original_link);
@@ -1149,11 +1149,11 @@ remove_from_dialog (FMPropertiesWindow *window,
 					      G_CALLBACK (file_changed_callback),
 					      window);
 
-	caja_file_monitor_remove (original_file, &window->details->original_files);
-	caja_file_monitor_remove (target_file, &window->details->target_files);
+	peony_file_monitor_remove (original_file, &window->details->original_files);
+	peony_file_monitor_remove (target_file, &window->details->target_files);
 
-	caja_file_unref (original_file);
-	caja_file_unref (target_file);
+	peony_file_unref (original_file);
+	peony_file_unref (target_file);
 
 }
 
@@ -1179,7 +1179,7 @@ get_mime_list (FMPropertiesWindow *window)
 
 	ret = NULL;
 	for (l = window->details->target_files; l != NULL; l = l->next) {
-		ret = g_list_append (ret, caja_file_get_mime_type (CAJA_FILE (l->data)));
+		ret = g_list_append (ret, peony_file_get_mime_type (PEONY_FILE (l->data)));
 	}
 	ret = g_list_reverse (ret);
 	return ret;
@@ -1192,7 +1192,7 @@ properties_window_update (FMPropertiesWindow *window,
 	GList *l;
 	GList *mime_list;
 	GList *tmp;
-	CajaFile *changed_file;
+	PeonyFile *changed_file;
 	gboolean dirty_original = FALSE;
 	gboolean dirty_target = FALSE;
 
@@ -1202,9 +1202,9 @@ properties_window_update (FMPropertiesWindow *window,
 	}
 
 	for (tmp = files; tmp != NULL; tmp = tmp->next) {
-		changed_file = CAJA_FILE (tmp->data);
+		changed_file = PEONY_FILE (tmp->data);
 
-		if (changed_file && caja_file_is_gone (changed_file)) {
+		if (changed_file && peony_file_is_gone (changed_file)) {
 			/* Remove the file from the property dialog */
 			remove_from_dialog (window, changed_file);
 			changed_file = NULL;
@@ -1281,7 +1281,7 @@ update_files_callback (gpointer data)
 		/* Close the window if no files are left */
 		gtk_widget_destroy (GTK_WIDGET (window));
 	} else {
-		caja_file_list_free (window->details->changed_files);
+		peony_file_list_free (window->details->changed_files);
 		window->details->changed_files = NULL;
 	}
 
@@ -1312,19 +1312,19 @@ file_list_attributes_identical (GList *file_list, const char *attribute_name)
 	identical = TRUE;
 
 	for (l = file_list; l != NULL; l = l->next) {
-		CajaFile *file;
+		PeonyFile *file;
 
-		file = CAJA_FILE (l->data);
+		file = PEONY_FILE (l->data);
 
-		if (caja_file_is_gone (file)) {
+		if (peony_file_is_gone (file)) {
 			continue;
 		}
 
 		if (first_attr == NULL) {
-			first_attr = caja_file_get_string_attribute_with_default (file, attribute_name);
+			first_attr = peony_file_get_string_attribute_with_default (file, attribute_name);
 		} else {
 			char *attr;
-			attr = caja_file_get_string_attribute_with_default (file, attribute_name);
+			attr = peony_file_get_string_attribute_with_default (file, attribute_name);
 			if (strcmp (attr, first_attr)) {
 				identical = FALSE;
 				g_free (attr);
@@ -1347,11 +1347,11 @@ file_list_get_string_attribute (GList *file_list,
 		GList *l;
 
 		for (l = file_list; l != NULL; l = l->next) {
-			CajaFile *file;
+			PeonyFile *file;
 
-			file = CAJA_FILE (l->data);
-			if (!caja_file_is_gone (file)) {
-				return caja_file_get_string_attribute_with_default
+			file = PEONY_FILE (l->data);
+			if (!peony_file_is_gone (file)) {
+				return peony_file_get_string_attribute_with_default
 					(file,
 					 attribute_name);
 			}
@@ -1368,7 +1368,7 @@ file_list_all_directories (GList *file_list)
 {
 	GList *l;
 	for (l = file_list; l != NULL; l = l->next) {
-		if (!caja_file_is_directory (CAJA_FILE (l->data))) {
+		if (!peony_file_is_directory (PEONY_FILE (l->data))) {
 			return FALSE;
 		}
 	}
@@ -1622,7 +1622,7 @@ attach_ellipsizing_value_field (FMPropertiesWindow *window,
 }
 
 static void
-group_change_callback (CajaFile *file,
+group_change_callback (PeonyFile *file,
 		       GFile *res_loc,
 		       GError *error,
 		       FMPropertiesWindow *window)
@@ -1639,7 +1639,7 @@ group_change_callback (CajaFile *file,
 	eel_timed_wait_stop ((EelCancelCallback) cancel_group_change_callback, window);
 	fm_report_error_setting_group (file, error, GTK_WINDOW (window));
 
-	caja_file_unref (file);
+	peony_file_unref (file);
 	g_free (group);
 
 	window->details->group_change_file = NULL;
@@ -1650,19 +1650,19 @@ group_change_callback (CajaFile *file,
 static void
 cancel_group_change_callback (FMPropertiesWindow *window)
 {
-	CajaFile *file;
+	PeonyFile *file;
 	char *group;
 
 	file = window->details->group_change_file;
-	g_assert (CAJA_IS_FILE (file));
+	g_assert (PEONY_IS_FILE (file));
 
 	group = window->details->group_change_group;
 	g_assert (group != NULL);
 
-	caja_file_cancel (file, (CajaFileOperationCallback) group_change_callback, window);
+	peony_file_cancel (file, (PeonyFileOperationCallback) group_change_callback, window);
 
 	g_free (group);
-	caja_file_unref (file);
+	peony_file_unref (file);
 
 	window->details->group_change_file = NULL;
 	window->details->group_change_group = NULL;
@@ -1672,13 +1672,13 @@ cancel_group_change_callback (FMPropertiesWindow *window)
 static gboolean
 schedule_group_change_timeout (FMPropertiesWindow *window)
 {
-	CajaFile *file;
+	PeonyFile *file;
 	char *group;
 
 	g_assert (FM_IS_PROPERTIES_WINDOW (window));
 
 	file = window->details->group_change_file;
-	g_assert (CAJA_IS_FILE (file));
+	g_assert (PEONY_IS_FILE (file));
 
 	group = window->details->group_change_group;
 	g_assert (group != NULL);
@@ -1689,9 +1689,9 @@ schedule_group_change_timeout (FMPropertiesWindow *window)
 		 _("Cancel Group Change?"),
 		 GTK_WINDOW (window));
 
-	caja_file_set_group
+	peony_file_set_group
 		(file,  group,
-		 (CajaFileOperationCallback) group_change_callback, window);
+		 (PeonyFileOperationCallback) group_change_callback, window);
 
 	window->details->group_change_timeout = 0;
 	return FALSE;
@@ -1699,15 +1699,15 @@ schedule_group_change_timeout (FMPropertiesWindow *window)
 
 static void
 schedule_group_change (FMPropertiesWindow *window,
-		       CajaFile       *file,
+		       PeonyFile       *file,
 		       const char         *group)
 {
 	g_assert (FM_IS_PROPERTIES_WINDOW (window));
 	g_assert (window->details->group_change_group == NULL);
 	g_assert (window->details->group_change_file == NULL);
-	g_assert (CAJA_IS_FILE (file));
+	g_assert (PEONY_IS_FILE (file));
 
-	window->details->group_change_file = caja_file_ref (file);
+	window->details->group_change_file = peony_file_ref (file);
 	window->details->group_change_group = g_strdup (group);
 	g_object_ref (G_OBJECT (window));
 	window->details->group_change_timeout =
@@ -1719,7 +1719,7 @@ schedule_group_change (FMPropertiesWindow *window,
 static void
 unschedule_or_cancel_group_change (FMPropertiesWindow *window)
 {
-	CajaFile *file;
+	PeonyFile *file;
 	char *group;
 
 	g_assert (FM_IS_PROPERTIES_WINDOW (window));
@@ -1731,15 +1731,15 @@ unschedule_or_cancel_group_change (FMPropertiesWindow *window)
 		  (file != NULL && group != NULL));
 
 	if (file != NULL) {
-		g_assert (CAJA_IS_FILE (file));
+		g_assert (PEONY_IS_FILE (file));
 
 		if (window->details->group_change_timeout == 0) {
-			caja_file_cancel (file,
-					      (CajaFileOperationCallback) group_change_callback, window);
+			peony_file_cancel (file,
+					      (PeonyFileOperationCallback) group_change_callback, window);
 			eel_timed_wait_stop ((EelCancelCallback) cancel_group_change_callback, window);
 		}
 
-		caja_file_unref (file);
+		peony_file_unref (file);
 		g_free (group);
 
 		window->details->group_change_file = NULL;
@@ -1755,17 +1755,17 @@ unschedule_or_cancel_group_change (FMPropertiesWindow *window)
 }
 
 static void
-changed_group_callback (GtkComboBox *combo_box, CajaFile *file)
+changed_group_callback (GtkComboBox *combo_box, PeonyFile *file)
 {
 	FMPropertiesWindow *window;
 	char *group;
 	char *cur_group;
 
 	g_assert (GTK_IS_COMBO_BOX (combo_box));
-	g_assert (CAJA_IS_FILE (file));
+	g_assert (PEONY_IS_FILE (file));
 
 	group = gtk_combo_box_text_get_active_text (GTK_COMBO_BOX_TEXT (combo_box));
-	cur_group = caja_file_get_group_name (file);
+	cur_group = peony_file_get_group_name (file);
 
 	if (group != NULL && strcmp (group, cur_group) != 0) {
 		/* Try to change file group. If this fails, complain to user. */
@@ -1886,7 +1886,7 @@ tree_model_get_entry_index (GtkTreeModel *model,
 
 
 static void
-synch_groups_combo_box (GtkComboBox *combo_box, CajaFile *file)
+synch_groups_combo_box (GtkComboBox *combo_box, PeonyFile *file)
 {
 	GList *groups;
 	GList *node;
@@ -1898,13 +1898,13 @@ synch_groups_combo_box (GtkComboBox *combo_box, CajaFile *file)
 	int current_group_index;
 
 	g_assert (GTK_IS_COMBO_BOX (combo_box));
-	g_assert (CAJA_IS_FILE (file));
+	g_assert (PEONY_IS_FILE (file));
 
-	if (caja_file_is_gone (file)) {
+	if (peony_file_is_gone (file)) {
 		return;
 	}
 
-	groups = caja_file_get_settable_group_names (file);
+	groups = peony_file_get_settable_group_names (file);
 
 	model = gtk_combo_box_get_model (combo_box);
 	store = GTK_LIST_STORE (model);
@@ -1923,7 +1923,7 @@ synch_groups_combo_box (GtkComboBox *combo_box, CajaFile *file)
 		}
 	}
 
-	current_group_name = caja_file_get_group_name (file);
+	current_group_name = peony_file_get_group_name (file);
 	current_group_index = tree_model_get_entry_index (model, 0, current_group_name);
 
 	/* If current group wasn't in list, we prepend it (with a separator).
@@ -2039,7 +2039,7 @@ attach_group_combo_box (GtkGrid *grid,
 attach_group_combo_box (GtkTable *table,
                         int row,
 #endif
-                        CajaFile *file)
+                        PeonyFile *file)
 {
 	GtkComboBox *combo_box;
 
@@ -2057,14 +2057,14 @@ attach_group_combo_box (GtkTable *table,
 				 combo_box, G_CONNECT_SWAPPED);
 	g_signal_connect_data (combo_box, "changed",
 			       G_CALLBACK (changed_group_callback),
-			       caja_file_ref (file),
-			       (GClosureNotify)caja_file_unref, 0);
+			       peony_file_ref (file),
+			       (GClosureNotify)peony_file_unref, 0);
 
 	return combo_box;
 }
 
 static void
-owner_change_callback (CajaFile *file,
+owner_change_callback (PeonyFile *file,
                        GFile 	    *result_location,
 		       GError        *error,
 		       FMPropertiesWindow *window)
@@ -2081,7 +2081,7 @@ owner_change_callback (CajaFile *file,
 	eel_timed_wait_stop ((EelCancelCallback) cancel_owner_change_callback, window);
 	fm_report_error_setting_owner (file, error, GTK_WINDOW (window));
 
-	caja_file_unref (file);
+	peony_file_unref (file);
 	g_free (owner);
 
 	window->details->owner_change_file = NULL;
@@ -2092,18 +2092,18 @@ owner_change_callback (CajaFile *file,
 static void
 cancel_owner_change_callback (FMPropertiesWindow *window)
 {
-	CajaFile *file;
+	PeonyFile *file;
 	char *owner;
 
 	file = window->details->owner_change_file;
-	g_assert (CAJA_IS_FILE (file));
+	g_assert (PEONY_IS_FILE (file));
 
 	owner = window->details->owner_change_owner;
 	g_assert (owner != NULL);
 
-	caja_file_cancel (file, (CajaFileOperationCallback) owner_change_callback, window);
+	peony_file_cancel (file, (PeonyFileOperationCallback) owner_change_callback, window);
 
-	caja_file_unref (file);
+	peony_file_unref (file);
 	g_free (owner);
 
 	window->details->owner_change_file = NULL;
@@ -2114,13 +2114,13 @@ cancel_owner_change_callback (FMPropertiesWindow *window)
 static gboolean
 schedule_owner_change_timeout (FMPropertiesWindow *window)
 {
-	CajaFile *file;
+	PeonyFile *file;
 	char *owner;
 
 	g_assert (FM_IS_PROPERTIES_WINDOW (window));
 
 	file = window->details->owner_change_file;
-	g_assert (CAJA_IS_FILE (file));
+	g_assert (PEONY_IS_FILE (file));
 
 	owner = window->details->owner_change_owner;
 	g_assert (owner != NULL);
@@ -2131,9 +2131,9 @@ schedule_owner_change_timeout (FMPropertiesWindow *window)
 		 _("Cancel Owner Change?"),
 		 GTK_WINDOW (window));
 
-	caja_file_set_owner
+	peony_file_set_owner
 		(file,  owner,
-		 (CajaFileOperationCallback) owner_change_callback, window);
+		 (PeonyFileOperationCallback) owner_change_callback, window);
 
 	window->details->owner_change_timeout = 0;
 	return FALSE;
@@ -2141,15 +2141,15 @@ schedule_owner_change_timeout (FMPropertiesWindow *window)
 
 static void
 schedule_owner_change (FMPropertiesWindow *window,
-		       CajaFile       *file,
+		       PeonyFile       *file,
 		       const char         *owner)
 {
 	g_assert (FM_IS_PROPERTIES_WINDOW (window));
 	g_assert (window->details->owner_change_owner == NULL);
 	g_assert (window->details->owner_change_file == NULL);
-	g_assert (CAJA_IS_FILE (file));
+	g_assert (PEONY_IS_FILE (file));
 
-	window->details->owner_change_file = caja_file_ref (file);
+	window->details->owner_change_file = peony_file_ref (file);
 	window->details->owner_change_owner = g_strdup (owner);
 	g_object_ref (G_OBJECT (window));
 	window->details->owner_change_timeout =
@@ -2161,7 +2161,7 @@ schedule_owner_change (FMPropertiesWindow *window,
 static void
 unschedule_or_cancel_owner_change (FMPropertiesWindow *window)
 {
-	CajaFile *file;
+	PeonyFile *file;
 	char *owner;
 
 	g_assert (FM_IS_PROPERTIES_WINDOW (window));
@@ -2173,15 +2173,15 @@ unschedule_or_cancel_owner_change (FMPropertiesWindow *window)
 		  (file != NULL && owner != NULL));
 
 	if (file != NULL) {
-		g_assert (CAJA_IS_FILE (file));
+		g_assert (PEONY_IS_FILE (file));
 
 		if (window->details->owner_change_timeout == 0) {
-			caja_file_cancel (file,
-					      (CajaFileOperationCallback) owner_change_callback, window);
+			peony_file_cancel (file,
+					      (PeonyFileOperationCallback) owner_change_callback, window);
 			eel_timed_wait_stop ((EelCancelCallback) cancel_owner_change_callback, window);
 		}
 
-		caja_file_unref (file);
+		peony_file_unref (file);
 		g_free (owner);
 
 		window->details->owner_change_file = NULL;
@@ -2197,7 +2197,7 @@ unschedule_or_cancel_owner_change (FMPropertiesWindow *window)
 }
 
 static void
-changed_owner_callback (GtkComboBox *combo_box, CajaFile* file)
+changed_owner_callback (GtkComboBox *combo_box, PeonyFile* file)
 {
 	FMPropertiesWindow *window;
 	char *owner_text;
@@ -2206,7 +2206,7 @@ changed_owner_callback (GtkComboBox *combo_box, CajaFile* file)
 	char *cur_owner;
 
 	g_assert (GTK_IS_COMBO_BOX (combo_box));
-	g_assert (CAJA_IS_FILE (file));
+	g_assert (PEONY_IS_FILE (file));
 
 	owner_text = combo_box_get_active_entry (combo_box, 0);
         if (! owner_text)
@@ -2214,7 +2214,7 @@ changed_owner_callback (GtkComboBox *combo_box, CajaFile* file)
     	name_array = g_strsplit (owner_text, " - ", 2);
 	new_owner = name_array[0];
 	g_free (owner_text);
-	cur_owner = caja_file_get_owner_name (file);
+	cur_owner = peony_file_get_owner_name (file);
 
 	if (strcmp (new_owner, cur_owner) != 0) {
 		/* Try to change file owner. If this fails, complain to user. */
@@ -2228,7 +2228,7 @@ changed_owner_callback (GtkComboBox *combo_box, CajaFile* file)
 }
 
 static void
-synch_user_menu (GtkComboBox *combo_box, CajaFile *file)
+synch_user_menu (GtkComboBox *combo_box, PeonyFile *file)
 {
 	GList *users;
 	GList *node;
@@ -2243,13 +2243,13 @@ synch_user_menu (GtkComboBox *combo_box, CajaFile *file)
 	char *combo_text;
 
 	g_assert (GTK_IS_COMBO_BOX (combo_box));
-	g_assert (CAJA_IS_FILE (file));
+	g_assert (PEONY_IS_FILE (file));
 
-	if (caja_file_is_gone (file)) {
+	if (peony_file_is_gone (file)) {
 		return;
 	}
 
-	users = caja_get_user_names ();
+	users = peony_get_user_names ();
 
 	model = gtk_combo_box_get_model (combo_box);
 	store = GTK_LIST_STORE (model);
@@ -2283,7 +2283,7 @@ synch_user_menu (GtkComboBox *combo_box, CajaFile *file)
 		}
 	}
 
-	owner_name = caja_file_get_string_attribute (file, "owner");
+	owner_name = peony_file_get_string_attribute (file, "owner");
 	owner_index = tree_model_get_entry_index (model, 0, owner_name);
 
 	/* If owner wasn't in list, we prepend it (with a separator).
@@ -2332,7 +2332,7 @@ attach_owner_combo_box (GtkGrid *grid,
 attach_owner_combo_box (GtkTable *table,
                         int row,
 #endif
-                        CajaFile *file)
+                        PeonyFile *file)
 {
 	GtkComboBox *combo_box;
 
@@ -2350,8 +2350,8 @@ attach_owner_combo_box (GtkTable *table,
 				 combo_box, G_CONNECT_SWAPPED);
 	g_signal_connect_data (combo_box, "changed",
 			       G_CALLBACK (changed_owner_callback),
-			       caja_file_ref (file),
-			       (GClosureNotify)caja_file_unref, 0);
+			       peony_file_ref (file),
+			       (GClosureNotify)peony_file_unref, 0);
 
 	return combo_box;
 }
@@ -2375,20 +2375,20 @@ append_row (GtkTable *table)
 #endif
 
 static gboolean
-file_has_prefix (CajaFile *file,
+file_has_prefix (PeonyFile *file,
 		 GList *prefix_candidates)
 {
 	GList *p;
 	GFile *location, *candidate_location;
 
-	location = caja_file_get_location (file);
+	location = peony_file_get_location (file);
 
 	for (p = prefix_candidates; p != NULL; p = p->next) {
 		if (file == p->data) {
 			continue;
 		}
 
-		candidate_location = caja_file_get_location (CAJA_FILE (p->data));
+		candidate_location = peony_file_get_location (PEONY_FILE (p->data));
 		if (g_file_has_prefix (location, candidate_location)) {
 			g_object_unref (location);
 			g_object_unref (candidate_location);
@@ -2405,7 +2405,7 @@ file_has_prefix (CajaFile *file,
 static void
 directory_contents_value_field_update (FMPropertiesWindow *window)
 {
-	CajaRequestStatus file_status, status;
+	PeonyRequestStatus file_status, status;
 	char *text, *temp;
 	guint directory_count;
 	guint file_count;
@@ -2413,29 +2413,29 @@ directory_contents_value_field_update (FMPropertiesWindow *window)
 	guint unreadable_directory_count;
 	goffset total_size;
 	gboolean used_two_lines;
-	CajaFile *file;
+	PeonyFile *file;
 	GList *l;
 	guint file_unreadable;
 	goffset file_size;
 
 	g_assert (FM_IS_PROPERTIES_WINDOW (window));
 
-	status = CAJA_REQUEST_DONE;
-	file_status = CAJA_REQUEST_NOT_STARTED;
+	status = PEONY_REQUEST_DONE;
+	file_status = PEONY_REQUEST_NOT_STARTED;
 	total_count = window->details->total_count;
 	total_size = window->details->total_size;
 	unreadable_directory_count = FALSE;
 
 	for (l = window->details->target_files; l; l = l->next) {
-		file = CAJA_FILE (l->data);
+		file = PEONY_FILE (l->data);
 
 		if (file_has_prefix (file, window->details->target_files)) {
 			/* don't count nested files twice */
 			continue;
 		}
 
-		if (caja_file_is_directory (file)) {
-			file_status = caja_file_get_deep_counts (file,
+		if (peony_file_is_directory (file)) {
+			file_status = peony_file_get_deep_counts (file,
 					 &directory_count,
 					 &file_count,
 					 &file_unreadable,
@@ -2448,12 +2448,12 @@ directory_contents_value_field_update (FMPropertiesWindow *window)
 				unreadable_directory_count = TRUE;
 			}
 
-			if (file_status != CAJA_REQUEST_DONE) {
+			if (file_status != PEONY_REQUEST_DONE) {
 				status = file_status;
 			}
 		} else {
 			++total_count;
-			total_size += caja_file_get_size (file);
+			total_size += peony_file_get_size (file);
 		}
 	}
 
@@ -2462,7 +2462,7 @@ directory_contents_value_field_update (FMPropertiesWindow *window)
 	 * But still display the new total, since it might have changed.
 	 */
 	if (window->details->deep_count_finished &&
-	    status != CAJA_REQUEST_DONE) {
+	    status != PEONY_REQUEST_DONE) {
 		return;
 	}
 
@@ -2471,7 +2471,7 @@ directory_contents_value_field_update (FMPropertiesWindow *window)
 
 	if (total_count == 0) {
 		switch (status) {
-		case CAJA_REQUEST_DONE:
+		case PEONY_REQUEST_DONE:
 			if (unreadable_directory_count == 0) {
 				text = g_strdup (_("nothing"));
 			} else {
@@ -2485,7 +2485,7 @@ directory_contents_value_field_update (FMPropertiesWindow *window)
 	} else {
 		char *size_str;
 
-		if (g_settings_get_boolean (caja_preferences, CAJA_PREFERENCES_USE_IEC_UNITS))
+		if (g_settings_get_boolean (peony_preferences, PEONY_PREFERENCES_USE_IEC_UNITS))
 			size_str = g_format_size_full (total_size, G_FORMAT_SIZE_IEC_UNITS);
 		else
 			size_str = g_format_size(total_size);
@@ -2526,7 +2526,7 @@ directory_contents_value_field_update (FMPropertiesWindow *window)
 			    text);
 	g_free (text);
 
-	if (status == CAJA_REQUEST_DONE) {
+	if (status == PEONY_REQUEST_DONE) {
 		window->details->deep_count_finished = TRUE;
 	}
 }
@@ -2569,7 +2569,7 @@ attach_directory_contents_value_field (FMPropertiesWindow *window,
 {
 	GtkLabel *value_field;
 	GList *l;
-	CajaFile *file;
+	PeonyFile *file;
 
 #if GTK_CHECK_VERSION (3, 0, 0)
 	value_field = attach_value_label (grid, sibling, "");
@@ -2586,8 +2586,8 @@ attach_directory_contents_value_field (FMPropertiesWindow *window,
 	directory_contents_value_field_update (window);
 
 	for (l = window->details->target_files; l; l = l->next) {
-		file = CAJA_FILE (l->data);
-		caja_file_recompute_deep_counts (file);
+		file = PEONY_FILE (l->data);
+		peony_file_recompute_deep_counts (file);
 
 		g_signal_connect_object (file,
 					 "updated_deep_count_in_progress",
@@ -2870,12 +2870,12 @@ create_attribute_value_table (GtkBox *vbox, int row_count)
 #endif
 
 static gboolean
-is_merged_trash_directory (CajaFile *file)
+is_merged_trash_directory (PeonyFile *file)
 {
 	char *file_uri;
 	gboolean result;
 
-	file_uri = caja_file_get_uri (file);
+	file_uri = peony_file_get_uri (file);
 	result = strcmp (file_uri, "trash:///") == 0;
 	g_free (file_uri);
 
@@ -2883,12 +2883,12 @@ is_merged_trash_directory (CajaFile *file)
 }
 
 static gboolean
-is_computer_directory (CajaFile *file)
+is_computer_directory (PeonyFile *file)
 {
 	char *file_uri;
 	gboolean result;
 
-	file_uri = caja_file_get_uri (file);
+	file_uri = peony_file_get_uri (file);
 	result = strcmp (file_uri, "computer:///") == 0;
 	g_free (file_uri);
 
@@ -2896,12 +2896,12 @@ is_computer_directory (CajaFile *file)
 }
 
 static gboolean
-is_network_directory (CajaFile *file)
+is_network_directory (PeonyFile *file)
 {
 	char *file_uri;
 	gboolean result;
 
-	file_uri = caja_file_get_uri (file);
+	file_uri = peony_file_get_uri (file);
 	result = strcmp (file_uri, "network:///") == 0;
 	g_free (file_uri);
 
@@ -2909,12 +2909,12 @@ is_network_directory (CajaFile *file)
 }
 
 static gboolean
-is_burn_directory (CajaFile *file)
+is_burn_directory (PeonyFile *file)
 {
 	char *file_uri;
 	gboolean result;
 
-	file_uri = caja_file_get_uri (file);
+	file_uri = peony_file_get_uri (file);
 	result = strcmp (file_uri, "burn:///") == 0;
 	g_free (file_uri);
 
@@ -2978,7 +2978,7 @@ static gboolean
 should_show_link_target (FMPropertiesWindow *window)
 {
 	if (!is_multi_file_window (window)
-	    && caja_file_is_symbolic_link (get_target_file (window))) {
+	    && peony_file_is_symbolic_link (get_target_file (window))) {
 		return TRUE;
 	}
 
@@ -3007,7 +3007,7 @@ should_show_free_space (FMPropertiesWindow *window)
 static gboolean
 should_show_volume_usage (FMPropertiesWindow *window)
 {
-	CajaFile 		*file;
+	PeonyFile 		*file;
 	gboolean 		success = FALSE;
 
 	if (is_multi_file_window (window)) {
@@ -3020,7 +3020,7 @@ should_show_volume_usage (FMPropertiesWindow *window)
 		return FALSE;
 	}
 
-	if (caja_file_can_unmount (file)) {
+	if (peony_file_can_unmount (file)) {
 		return TRUE;
 	}
 
@@ -3458,7 +3458,7 @@ _pie_style_shade (GdkColor *a,
 static GtkWidget*
 create_pie_widget (FMPropertiesWindow *window)
 {
-	CajaFile		*file;
+	PeonyFile		*file;
 #if GTK_CHECK_VERSION (3, 0, 0)
 	GtkGrid                 *grid;
 	GtkStyleContext		*style;
@@ -3481,7 +3481,7 @@ create_pie_widget (FMPropertiesWindow *window)
 	GFile *location;
 	GFileInfo *info;
 
-	if (g_settings_get_boolean (caja_preferences, CAJA_PREFERENCES_USE_IEC_UNITS)) {
+	if (g_settings_get_boolean (peony_preferences, PEONY_PREFERENCES_USE_IEC_UNITS)) {
 		capacity = g_format_size_full(window->details->volume_capacity, G_FORMAT_SIZE_IEC_UNITS);
 		free = g_format_size_full(window->details->volume_free, G_FORMAT_SIZE_IEC_UNITS);
 		used = g_format_size_full(window->details->volume_capacity - window->details->volume_free, G_FORMAT_SIZE_IEC_UNITS);
@@ -3494,7 +3494,7 @@ create_pie_widget (FMPropertiesWindow *window)
 
 	file = get_original_file (window);
 
-	uri = caja_file_get_activation_uri (file);
+	uri = peony_file_get_activation_uri (file);
 
 #if GTK_CHECK_VERSION (3, 0, 0)
 	grid = GTK_GRID (gtk_grid_new ());
@@ -3637,13 +3637,13 @@ create_volume_usage_widget (FMPropertiesWindow *window)
 {
 	GtkWidget *piewidget;
 	gchar *uri;
-	CajaFile *file;
+	PeonyFile *file;
 	GFile *location;
 	GFileInfo *info;
 
 	file = get_original_file (window);
 
-	uri = caja_file_get_activation_uri (file);
+	uri = peony_file_get_activation_uri (file);
 
 	location = g_file_new_for_uri (uri);
 	info = g_file_query_filesystem_info (location, "filesystem::*", NULL, NULL);
@@ -3743,8 +3743,8 @@ create_basic_page (FMPropertiesWindow *window)
 	update_name_field (window);
 
 	/* Start with name field selected, if it's an entry. */
-	if (CAJA_IS_ENTRY (window->details->name_field)) {
-		caja_entry_select_all (CAJA_ENTRY (window->details->name_field));
+	if (PEONY_IS_ENTRY (window->details->name_field)) {
+		peony_entry_select_all (PEONY_ENTRY (window->details->name_field));
 		gtk_widget_grab_focus (GTK_WIDGET (window->details->name_field));
 	}
 
@@ -3785,7 +3785,7 @@ create_basic_page (FMPropertiesWindow *window)
 	}
 
 	if (is_multi_file_window (window) ||
-	    caja_file_is_directory (get_target_file (window))) {
+	    peony_file_is_directory (get_target_file (window))) {
 		append_directory_contents_fields (window, grid);
 	} else {
 		append_title_value_pair (window, grid, _("Size:"),
@@ -3862,7 +3862,7 @@ create_basic_page (FMPropertiesWindow *window)
 	}
 
 	if (is_multi_file_window (window) ||
-	    caja_file_is_directory (get_target_file (window))) {
+	    peony_file_is_directory (get_target_file (window))) {
 		append_directory_contents_fields (window, table);
 	} else {
 		append_title_value_pair (window, table, _("Size:"),
@@ -3928,12 +3928,12 @@ get_initial_emblems (GList *files)
 				     (GDestroyNotify) eel_g_list_free_deep);
 
 	for (l = files; l != NULL; l = l->next) {
-		CajaFile *file;
+		PeonyFile *file;
 		GList *keywords;
 
-		file = CAJA_FILE (l->data);
+		file = PEONY_FILE (l->data);
 
-		keywords = caja_file_get_keywords (file);
+		keywords = peony_file_get_keywords (file);
 		g_hash_table_insert (ret, file, keywords);
 	}
 
@@ -3946,9 +3946,9 @@ files_has_directory (FMPropertiesWindow *window)
 	GList *l;
 
 	for (l = window->details->target_files; l != NULL; l = l->next) {
-		CajaFile *file;
-		file = CAJA_FILE (l->data);
-		if (caja_file_is_directory (file)) {
+		PeonyFile *file;
+		file = PEONY_FILE (l->data);
+		if (peony_file_is_directory (file)) {
 			return TRUE;
 		}
 
@@ -3963,11 +3963,11 @@ files_has_changable_permissions_directory (FMPropertiesWindow *window)
 	GList *l;
 
 	for (l = window->details->target_files; l != NULL; l = l->next) {
-		CajaFile *file;
-		file = CAJA_FILE (l->data);
-		if (caja_file_is_directory (file) &&
-		    caja_file_can_get_permissions (file) &&
-		    caja_file_can_set_permissions (file)) {
+		PeonyFile *file;
+		file = PEONY_FILE (l->data);
+		if (peony_file_is_directory (file) &&
+		    peony_file_can_get_permissions (file) &&
+		    peony_file_can_set_permissions (file)) {
 			return TRUE;
 		}
 
@@ -3983,9 +3983,9 @@ files_has_file (FMPropertiesWindow *window)
 	GList *l;
 
 	for (l = window->details->target_files; l != NULL; l = l->next) {
-		CajaFile *file;
-		file = CAJA_FILE (l->data);
-		if (!caja_file_is_directory (file)) {
+		PeonyFile *file;
+		file = PEONY_FILE (l->data);
+		if (!peony_file_is_directory (file)) {
 			return TRUE;
 		}
 
@@ -4003,7 +4003,7 @@ create_emblems_page (FMPropertiesWindow *window)
 	GdkPixbuf *pixbuf;
 	char *label;
 	GList *icons, *l;
-	CajaIconInfo *info;
+	PeonyIconInfo *info;
 
 	/* The emblems wrapped table */
 	scroller = eel_scrolled_wrap_table_new (TRUE, GTK_SHADOW_NONE, &emblems_table);
@@ -4018,7 +4018,7 @@ create_emblems_page (FMPropertiesWindow *window)
 	gtk_notebook_append_page (window->details->notebook,
 				  scroller, gtk_label_new (_("Emblems")));
 
-	icons = caja_emblem_list_available ();
+	icons = peony_emblem_list_available ();
 
 	window->details->initial_emblems = get_initial_emblems (window->details->original_files);
 
@@ -4027,22 +4027,22 @@ create_emblems_page (FMPropertiesWindow *window)
 		emblem_name = l->data;
 		l = l->next;
 
-		if (!caja_emblem_should_show_in_list (emblem_name)) {
+		if (!peony_emblem_should_show_in_list (emblem_name)) {
 			continue;
 		}
 
-		info = caja_icon_info_lookup_from_name (emblem_name, CAJA_ICON_SIZE_SMALL);
-		pixbuf = caja_icon_info_get_pixbuf_nodefault_at_size (info, CAJA_ICON_SIZE_SMALL);
+		info = peony_icon_info_lookup_from_name (emblem_name, PEONY_ICON_SIZE_SMALL);
+		pixbuf = peony_icon_info_get_pixbuf_nodefault_at_size (info, PEONY_ICON_SIZE_SMALL);
 
 		if (pixbuf == NULL) {
 			continue;
 		}
 
-		label = g_strdup (caja_icon_info_get_display_name (info));
+		label = g_strdup (peony_icon_info_get_display_name (info));
 		g_object_unref (info);
 
 		if (label == NULL) {
-			label = caja_emblem_get_keyword_from_icon_name (emblem_name);
+			label = peony_emblem_get_keyword_from_icon_name (emblem_name);
 		}
 
 		button = eel_labeled_image_check_button_new (label, pixbuf);
@@ -4053,8 +4053,8 @@ create_emblems_page (FMPropertiesWindow *window)
 		g_object_unref (pixbuf);
 
 		/* Attach parameters and signal handler. */
-		g_object_set_data_full (G_OBJECT (button), "caja_emblem_name",
-					caja_emblem_get_keyword_from_icon_name (emblem_name), g_free);
+		g_object_set_data_full (G_OBJECT (button), "peony_emblem_name",
+					peony_emblem_get_keyword_from_icon_name (emblem_name), g_free);
 
 		window->details->emblem_buttons =
 			g_list_append (window->details->emblem_buttons,
@@ -4103,7 +4103,7 @@ end_long_operation (FMPropertiesWindow *window)
 }
 
 static void
-permission_change_callback (CajaFile *file,
+permission_change_callback (PeonyFile *file,
 			    GFile *res_loc,
 			    GError *error,
 			    gpointer callback_data)
@@ -4131,22 +4131,22 @@ update_permissions (FMPropertiesWindow *window,
 	GList *l;
 
 	for (l = window->details->target_files; l != NULL; l = l->next) {
-		CajaFile *file;
+		PeonyFile *file;
 		guint32 permissions;
 
-		file = CAJA_FILE (l->data);
+		file = PEONY_FILE (l->data);
 
-		if (!caja_file_can_get_permissions (file)) {
+		if (!peony_file_can_get_permissions (file)) {
 			continue;
 		}
 
 		if (!apply_to_both_folder_and_dir &&
-		    ((caja_file_is_directory (file) && !is_folder) ||
-		     (!caja_file_is_directory (file) && is_folder))) {
+		    ((peony_file_is_directory (file) && !is_folder) ||
+		     (!peony_file_is_directory (file) && is_folder))) {
 			continue;
 		}
 
-		permissions = caja_file_get_permissions (file);
+		permissions = peony_file_get_permissions (file);
 		if (use_original) {
 			gpointer ptr;
 			if (g_hash_table_lookup_extended (window->details->initial_permissions,
@@ -4159,7 +4159,7 @@ update_permissions (FMPropertiesWindow *window,
 
 		start_long_operation (window);
 		g_object_ref (window);
-		caja_file_set_permissions
+		peony_file_set_permissions
 			(file, permissions,
 			 permission_change_callback,
 			 window);
@@ -4179,14 +4179,14 @@ initial_permission_state_consistent (FMPropertiesWindow *window,
 	first = TRUE;
 	first_permissions = 0;
 	for (l = window->details->target_files; l != NULL; l = l->next) {
-		CajaFile *file;
+		PeonyFile *file;
 		guint32 permissions;
 
 		file = l->data;
 
 		if (!both_folder_and_dir &&
-		    ((caja_file_is_directory (file) && !is_folder) ||
-		     (!caja_file_is_directory (file) && is_folder))) {
+		    ((peony_file_is_directory (file) && !is_folder) ||
+		     (!peony_file_is_directory (file) && is_folder))) {
 			continue;
 		}
 
@@ -4301,24 +4301,24 @@ permission_button_update (FMPropertiesWindow *window,
 	all_cannot_set = TRUE;
 	no_match = TRUE;
 	for (l = window->details->target_files; l != NULL; l = l->next) {
-		CajaFile *file;
+		PeonyFile *file;
 		guint32 file_permissions;
 
-		file = CAJA_FILE (l->data);
+		file = PEONY_FILE (l->data);
 
-		if (!caja_file_can_get_permissions (file)) {
+		if (!peony_file_can_get_permissions (file)) {
 			continue;
 		}
 
 		if (!is_special &&
-		    ((caja_file_is_directory (file) && !is_folder) ||
-		     (!caja_file_is_directory (file) && is_folder))) {
+		    ((peony_file_is_directory (file) && !is_folder) ||
+		     (!peony_file_is_directory (file) && is_folder))) {
 			continue;
 		}
 
 		no_match = FALSE;
 
-		file_permissions = caja_file_get_permissions (file);
+		file_permissions = peony_file_get_permissions (file);
 
 		if ((file_permissions & button_permission) == button_permission) {
 			all_unset = FALSE;
@@ -4329,7 +4329,7 @@ permission_button_update (FMPropertiesWindow *window,
 			all_set = FALSE;
 		}
 
-		if (caja_file_can_set_permissions (file)) {
+		if (peony_file_can_set_permissions (file)) {
 			all_cannot_set = FALSE;
 		}
 	}
@@ -4669,26 +4669,26 @@ permission_combo_update (FMPropertiesWindow *window,
 	all_file_cannot_set = TRUE;
 
 	for (l = window->details->target_files; l != NULL; l = l->next) {
-		CajaFile *file;
+		PeonyFile *file;
 		guint32 file_permissions;
 
-		file = CAJA_FILE (l->data);
+		file = PEONY_FILE (l->data);
 
-		if (!caja_file_can_get_permissions (file)) {
+		if (!peony_file_can_get_permissions (file)) {
 			continue;
 		}
 
-		if (caja_file_is_directory (file)) {
+		if (peony_file_is_directory (file)) {
 			mask = PERMISSION_READ|PERMISSION_WRITE|PERMISSION_EXEC;
 		} else {
 			mask = PERMISSION_READ|PERMISSION_WRITE;
 		}
 
-		file_permissions = caja_file_get_permissions (file);
+		file_permissions = peony_file_get_permissions (file);
 
 		perm = permission_from_vfs (type, file_permissions) & mask;
 
-		if (caja_file_is_directory (file)) {
+		if (peony_file_is_directory (file)) {
 			if (no_dirs) {
 				all_dir_perm = perm;
 				no_dirs = FALSE;
@@ -4696,7 +4696,7 @@ permission_combo_update (FMPropertiesWindow *window,
 				all_dir_same = FALSE;
 			}
 
-			if (caja_file_can_set_permissions (file)) {
+			if (peony_file_can_set_permissions (file)) {
 				all_dir_cannot_set = FALSE;
 			}
 		} else {
@@ -4707,7 +4707,7 @@ permission_combo_update (FMPropertiesWindow *window,
 				all_file_same = FALSE;
 			}
 
-			if (caja_file_can_set_permissions (file)) {
+			if (peony_file_can_set_permissions (file)) {
 				all_file_cannot_set = FALSE;
 			}
 		}
@@ -4989,11 +4989,11 @@ all_can_get_permissions (GList *file_list)
 {
 	GList *l;
 	for (l = file_list; l != NULL; l = l->next) {
-		CajaFile *file;
+		PeonyFile *file;
 
-		file = CAJA_FILE (l->data);
+		file = PEONY_FILE (l->data);
 
-		if (!caja_file_can_get_permissions (file)) {
+		if (!peony_file_can_get_permissions (file)) {
 			return FALSE;
 		}
 	}
@@ -5006,11 +5006,11 @@ all_can_set_permissions (GList *file_list)
 {
 	GList *l;
 	for (l = file_list; l != NULL; l = l->next) {
-		CajaFile *file;
+		PeonyFile *file;
 
-		file = CAJA_FILE (l->data);
+		file = PEONY_FILE (l->data);
 
-		if (!caja_file_can_set_permissions (file)) {
+		if (!peony_file_can_set_permissions (file)) {
 			return FALSE;
 		}
 	}
@@ -5029,11 +5029,11 @@ get_initial_permissions (GList *file_list)
 
 	for (l = file_list; l != NULL; l = l->next) {
 		guint32 permissions;
-		CajaFile *file;
+		PeonyFile *file;
 
-		file = CAJA_FILE (l->data);
+		file = PEONY_FILE (l->data);
 
-		permissions = caja_file_get_permissions (file);
+		permissions = peony_file_get_permissions (file);
 		g_hash_table_insert (ret, file,
 				     GINT_TO_POINTER (permissions));
 	}
@@ -5056,7 +5056,7 @@ create_simple_permissions (FMPropertiesWindow *window, GtkGrid *page_grid)
 	has_file = files_has_file (window);
 	has_directory = files_has_directory (window);
 
-	if (!is_multi_file_window (window) && caja_file_can_set_owner (get_target_file (window))) {
+	if (!is_multi_file_window (window) && peony_file_can_set_owner (get_target_file (window))) {
 		owner_label = attach_title_field (page_grid, _("_Owner:"));
 		/* Combo box in this case. */
 		owner_combo_box = attach_owner_combo_box (page_grid,
@@ -5086,7 +5086,7 @@ create_simple_permissions (FMPropertiesWindow *window, GtkGrid *page_grid)
 
 	append_blank_slim_row (page_grid);
 
-	if (!is_multi_file_window (window) && caja_file_can_set_group (get_target_file (window))) {
+	if (!is_multi_file_window (window) && peony_file_can_set_group (get_target_file (window))) {
 		group_label = attach_title_field (page_grid, _("_Group:"));
 
 		/* Combo box in this case. */
@@ -5159,7 +5159,7 @@ create_simple_permissions (FMPropertiesWindow *window, GtkTable *page_table)
 	has_file = files_has_file (window);
 	has_directory = files_has_directory (window);
 
-	if (!is_multi_file_window (window) && caja_file_can_set_owner (get_target_file (window))) {
+	if (!is_multi_file_window (window) && peony_file_can_set_owner (get_target_file (window))) {
 		owner_label = attach_title_field (page_table, last_row, _("_Owner:"));
 		/* Combo box in this case. */
 		owner_combo_box = attach_owner_combo_box (page_table, last_row, get_target_file (window));
@@ -5188,7 +5188,7 @@ create_simple_permissions (FMPropertiesWindow *window, GtkTable *page_table)
 	g_object_get (page_table, "n-rows", &nrows, NULL);
 	gtk_table_set_row_spacing (page_table, nrows - 1, 18);
 
-	if (!is_multi_file_window (window) && caja_file_can_set_group (get_target_file (window))) {
+	if (!is_multi_file_window (window) && peony_file_can_set_group (get_target_file (window))) {
 		last_row = append_title_field (page_table,
 					       _("_Group:"),
 					       &group_label);
@@ -5458,7 +5458,7 @@ create_advanced_permissions (FMPropertiesWindow *window, GtkGrid *page_grid)
 	GtkComboBox *owner_combo_box;
 	gboolean has_directory, has_file;
 
-	if (!is_multi_file_window (window) && caja_file_can_set_owner (get_target_file (window))) {
+	if (!is_multi_file_window (window) && peony_file_can_set_owner (get_target_file (window))) {
 
 		owner_label  = attach_title_field (page_grid, _("_Owner:"));
 		/* Combo box in this case. */
@@ -5481,7 +5481,7 @@ create_advanced_permissions (FMPropertiesWindow *window, GtkGrid *page_grid)
 		gtk_label_set_mnemonic_widget (owner_label, value);
 	}
 
-	if (!is_multi_file_window (window) && caja_file_can_set_group (get_target_file (window))) {
+	if (!is_multi_file_window (window) && peony_file_can_set_group (get_target_file (window))) {
 		group_label = attach_title_field (page_grid, _("_Group:"));
 
 		/* Combo box in this case. */
@@ -5539,7 +5539,7 @@ create_advanced_permissions (FMPropertiesWindow *window, GtkTable *page_table)
 
 	last_row = 0;
 
-	if (!is_multi_file_window (window) && caja_file_can_set_owner (get_target_file (window))) {
+	if (!is_multi_file_window (window) && peony_file_can_set_owner (get_target_file (window))) {
 
 		owner_label  = attach_title_field (page_table, last_row, _("_Owner:"));
 		/* Combo box in this case. */
@@ -5559,7 +5559,7 @@ create_advanced_permissions (FMPropertiesWindow *window, GtkTable *page_table)
 		gtk_label_set_mnemonic_widget (owner_label, value);
 	}
 
-	if (!is_multi_file_window (window) && caja_file_can_set_group (get_target_file (window))) {
+	if (!is_multi_file_window (window) && peony_file_can_set_group (get_target_file (window))) {
 		last_row = append_title_field (page_table,
 					       _("_Group:"),
 					       &group_label);
@@ -5716,17 +5716,17 @@ apply_recursive_clicked (GtkWidget *recursive_button,
 	}
 
 	for (l = window->details->target_files; l != NULL; l = l->next) {
-		CajaFile *file;
+		PeonyFile *file;
 		char *uri;
 
-		file = CAJA_FILE (l->data);
+		file = PEONY_FILE (l->data);
 
-		if (caja_file_is_directory (file) &&
-		    caja_file_can_set_permissions (file)) {
-			uri = caja_file_get_uri (file);
+		if (peony_file_is_directory (file) &&
+		    peony_file_can_set_permissions (file)) {
+			uri = peony_file_get_uri (file);
 			start_long_operation (window);
 			g_object_ref (window);
-			caja_file_set_permissions_recursive (uri,
+			peony_file_set_permissions_recursive (uri,
 								 file_permission,
 								 file_permission_mask,
 								 dir_permission,
@@ -5771,7 +5771,7 @@ create_permissions_page (FMPropertiesWindow *window)
 				    GTK_WIDGET (page_grid),
 				    TRUE, TRUE, 0);
 
-		if (g_settings_get_boolean (caja_preferences, CAJA_PREFERENCES_SHOW_ADVANCED_PERMISSIONS)) {
+		if (g_settings_get_boolean (peony_preferences, PEONY_PREFERENCES_SHOW_ADVANCED_PERMISSIONS)) {
 			create_advanced_permissions (window, page_grid);
 		} else {
 			create_simple_permissions (window, page_grid);
@@ -5833,7 +5833,7 @@ create_permissions_page (FMPropertiesWindow *window)
 				    GTK_WIDGET (page_table),
 				    TRUE, TRUE, 0);
 
-		if (g_settings_get_boolean (caja_preferences, CAJA_PREFERENCES_SHOW_ADVANCED_PERMISSIONS)) {
+		if (g_settings_get_boolean (peony_preferences, PEONY_PREFERENCES_SHOW_ADVANCED_PERMISSIONS)) {
 			window->details->advanced_permissions = TRUE;
 			create_advanced_permissions (window, page_table);
 		} else {
@@ -5879,7 +5879,7 @@ create_permissions_page (FMPropertiesWindow *window)
 		}
 	} else {
 		if (!is_multi_file_window (window)) {
-			file_name = caja_file_get_display_name (get_target_file (window));
+			file_name = peony_file_get_display_name (get_target_file (window));
 			prompt_text = g_strdup_printf (_("The permissions of \"%s\" could not be determined."), file_name);
 			g_free (file_name);
 		} else {
@@ -5898,37 +5898,37 @@ append_extension_pages (FMPropertiesWindow *window)
 	GList *module_providers;
 	GList *p;
 
-	providers = caja_extensions_get_for_type (CAJA_TYPE_PROPERTY_PAGE_PROVIDER);
+	providers = peony_extensions_get_for_type (PEONY_TYPE_PROPERTY_PAGE_PROVIDER);
 
 	/* FIXME: we also need the property pages from two old modules that
 	 * are not registered as proper extensions. This is going to work
 	 * this way until some generic solution is introduced.
 	 */
-	module_providers = caja_module_get_extensions_for_type (CAJA_TYPE_PROPERTY_PAGE_PROVIDER);
+	module_providers = peony_module_get_extensions_for_type (PEONY_TYPE_PROPERTY_PAGE_PROVIDER);
 	for (p = module_providers; p != NULL; p = p->next) {
 		const gchar *type_name = G_OBJECT_TYPE_NAME (G_OBJECT (p->data));
-		if (g_strcmp0 (type_name, "CajaNotesViewerProvider") == 0 ||
-		    g_strcmp0 (type_name, "CajaImagePropertiesPageProvider") == 0) {
+		if (g_strcmp0 (type_name, "PeonyNotesViewerProvider") == 0 ||
+		    g_strcmp0 (type_name, "PeonyImagePropertiesPageProvider") == 0) {
 			providers = g_list_prepend (providers, p->data);
 		}
 	}
 
 	for (p = providers; p != NULL; p = p->next) {
-		CajaPropertyPageProvider *provider;
+		PeonyPropertyPageProvider *provider;
 		GList *pages;
 		GList *l;
 
-		provider = CAJA_PROPERTY_PAGE_PROVIDER (p->data);
+		provider = PEONY_PROPERTY_PAGE_PROVIDER (p->data);
 
-		pages = caja_property_page_provider_get_pages
+		pages = peony_property_page_provider_get_pages
 			(provider, window->details->original_files);
 
 		for (l = pages; l != NULL; l = l->next) {
-			CajaPropertyPage *page;
+			PeonyPropertyPage *page;
 			GtkWidget *page_widget;
 			GtkWidget *label;
 
-			page = CAJA_PROPERTY_PAGE (l->data);
+			page = PEONY_PROPERTY_PAGE (l->data);
 
 			g_object_get (G_OBJECT (page),
 				      "page", &page_widget, "label", &label,
@@ -5950,7 +5950,7 @@ append_extension_pages (FMPropertiesWindow *window)
 		g_list_free (pages);
 	}
 
-	caja_module_extension_list_free (providers);
+	peony_module_extension_list_free (providers);
 }
 
 static gboolean
@@ -5972,7 +5972,7 @@ should_show_emblems (FMPropertiesWindow *window)
 static gboolean
 should_show_permissions (FMPropertiesWindow *window)
 {
-	CajaFile *file;
+	PeonyFile *file;
 
 	file = get_target_file (window);
 
@@ -5998,7 +5998,7 @@ get_pending_key (GList *file_list)
 
 	uris = NULL;
 	for (l = file_list; l != NULL; l = l->next) {
-		uris = g_list_prepend (uris, caja_file_get_uri (CAJA_FILE (l->data)));
+		uris = g_list_prepend (uris, peony_file_get_uri (PEONY_FILE (l->data)));
 	}
 	uris = g_list_sort (uris, (GCompareFunc)strcmp);
 
@@ -6026,8 +6026,8 @@ startup_data_new (GList *original_files,
 	GList *l;
 
 	data = g_new0 (StartupData, 1);
-	data->original_files = caja_file_list_copy (original_files);
-	data->target_files = caja_file_list_copy (target_files);
+	data->original_files = peony_file_list_copy (original_files);
+	data->target_files = peony_file_list_copy (target_files);
 	data->parent_widget = parent_widget;
 	data->pending_key = g_strdup (pending_key);
 	data->pending_files = g_hash_table_new (g_direct_hash,
@@ -6043,20 +6043,20 @@ startup_data_new (GList *original_files,
 static void
 startup_data_free (StartupData *data)
 {
-	caja_file_list_free (data->original_files);
-	caja_file_list_free (data->target_files);
+	peony_file_list_free (data->original_files);
+	peony_file_list_free (data->target_files);
 	g_hash_table_destroy (data->pending_files);
 	g_free (data->pending_key);
 	g_free (data);
 }
 
 static void
-file_changed_callback (CajaFile *file, gpointer user_data)
+file_changed_callback (PeonyFile *file, gpointer user_data)
 {
 	FMPropertiesWindow *window = FM_PROPERTIES_WINDOW (user_data);
 
 	if (!g_list_find (window->details->changed_files, file)) {
-		caja_file_ref (file);
+		peony_file_ref (file);
 		window->details->changed_files = g_list_prepend (window->details->changed_files, file);
 
 		schedule_files_update (window);
@@ -6064,11 +6064,11 @@ file_changed_callback (CajaFile *file, gpointer user_data)
 }
 
 static gboolean
-is_a_special_file (CajaFile *file)
+is_a_special_file (PeonyFile *file)
 {
 	if (file == NULL ||
-	    CAJA_IS_DESKTOP_ICON_FILE (file) ||
-	    caja_file_is_caja_link (file) ||
+	    PEONY_IS_DESKTOP_ICON_FILE (file) ||
+	    peony_file_is_peony_link (file) ||
 	    is_merged_trash_directory (file) ||
 	    is_computer_directory (file)) {
 		return TRUE;
@@ -6079,7 +6079,7 @@ is_a_special_file (CajaFile *file)
 static gboolean
 should_show_open_with (FMPropertiesWindow *window)
 {
-	CajaFile *file;
+	PeonyFile *file;
 
 	/* Don't show open with tab for desktop special icons (trash, etc)
 	 * or desktop files. We don't get the open-with menu for these anyway.
@@ -6097,8 +6097,8 @@ should_show_open_with (FMPropertiesWindow *window)
 			GList *l;
 
 			for (l = window->details->original_files; l; l = l->next) {
-				file = CAJA_FILE (l->data);
-				if (caja_file_is_directory (file) ||
+				file = PEONY_FILE (l->data);
+				if (peony_file_is_directory (file) ||
 				    is_a_special_file (file)) {
 					return FALSE;
 				}
@@ -6106,7 +6106,7 @@ should_show_open_with (FMPropertiesWindow *window)
 		}
 	} else {
 		file = get_original_file (window);
-		if (caja_file_is_directory (file) ||
+		if (peony_file_is_directory (file) ||
 		    is_a_special_file (file)) {
 			return FALSE;
 		}
@@ -6121,14 +6121,14 @@ create_open_with_page (FMPropertiesWindow *window)
 	char *mime_type;
 	char *uri;
 
-	mime_type = caja_file_get_mime_type (get_target_file (window));
+	mime_type = peony_file_get_mime_type (get_target_file (window));
 
 	if (!is_multi_file_window (window)) {
-		uri = caja_file_get_uri (get_target_file (window));
+		uri = peony_file_get_uri (get_target_file (window));
 		if (uri == NULL) {
 			return;
 		}
-		vbox = caja_mime_application_chooser_new (uri, mime_type);
+		vbox = peony_mime_application_chooser_new (uri, mime_type);
 
 		g_free (uri);
 	} else {
@@ -6138,7 +6138,7 @@ create_open_with_page (FMPropertiesWindow *window)
 		if (uris == NULL) {
 			return;
 		}
-		vbox = caja_mime_application_chooser_new_for_multiple_files (uris, mime_type);
+		vbox = peony_mime_application_chooser_new_for_multiple_files (uris, mime_type);
 	}
 
 	gtk_widget_show (vbox);
@@ -6157,11 +6157,11 @@ create_properties_window (StartupData *startup_data)
 
 	window = FM_PROPERTIES_WINDOW (gtk_widget_new (fm_properties_window_get_type (), NULL));
 
-	window->details->original_files = caja_file_list_copy (startup_data->original_files);
+	window->details->original_files = peony_file_list_copy (startup_data->original_files);
 
-	window->details->target_files = caja_file_list_copy (startup_data->target_files);
+	window->details->target_files = peony_file_list_copy (startup_data->target_files);
 
-	gtk_window_set_wmclass (GTK_WINDOW (window), "file_properties", "Caja");
+	gtk_window_set_wmclass (GTK_WINDOW (window), "file_properties", "Peony");
 	gtk_window_set_screen (GTK_WINDOW (window),
 			       gtk_widget_get_screen (startup_data->parent_widget));
 
@@ -6176,38 +6176,38 @@ create_properties_window (StartupData *startup_data)
 	 */
 
 	for (l = window->details->original_files; l != NULL; l = l->next) {
-		CajaFile *file;
-		CajaFileAttributes attributes;
+		PeonyFile *file;
+		PeonyFileAttributes attributes;
 
-		file = CAJA_FILE (l->data);
+		file = PEONY_FILE (l->data);
 
 		attributes =
-			CAJA_FILE_ATTRIBUTES_FOR_ICON |
-			CAJA_FILE_ATTRIBUTE_INFO |
-			CAJA_FILE_ATTRIBUTE_LINK_INFO;
+			PEONY_FILE_ATTRIBUTES_FOR_ICON |
+			PEONY_FILE_ATTRIBUTE_INFO |
+			PEONY_FILE_ATTRIBUTE_LINK_INFO;
 
-		caja_file_monitor_add (file,
+		peony_file_monitor_add (file,
 					   &window->details->original_files,
 					   attributes);
 	}
 
 	for (l = window->details->target_files; l != NULL; l = l->next) {
-		CajaFile *file;
-		CajaFileAttributes attributes;
+		PeonyFile *file;
+		PeonyFileAttributes attributes;
 
-		file = CAJA_FILE (l->data);
+		file = PEONY_FILE (l->data);
 
 		attributes = 0;
-		if (caja_file_is_directory (file)) {
-			attributes |= CAJA_FILE_ATTRIBUTE_DEEP_COUNTS;
+		if (peony_file_is_directory (file)) {
+			attributes |= PEONY_FILE_ATTRIBUTE_DEEP_COUNTS;
 		}
 
-		attributes |= CAJA_FILE_ATTRIBUTE_INFO;
-		caja_file_monitor_add (file, &window->details->target_files, attributes);
+		attributes |= PEONY_FILE_ATTRIBUTE_INFO;
+		peony_file_monitor_add (file, &window->details->target_files, attributes);
 	}
 
 	for (l = window->details->target_files; l != NULL; l = l->next) {
-		g_signal_connect_object (CAJA_FILE (l->data),
+		g_signal_connect_object (PEONY_FILE (l->data),
 					 "changed",
 					 G_CALLBACK (file_changed_callback),
 					 G_OBJECT (window),
@@ -6215,7 +6215,7 @@ create_properties_window (StartupData *startup_data)
 	}
 
 	for (l = window->details->original_files; l != NULL; l = l->next) {
-		g_signal_connect_object (CAJA_FILE (l->data),
+		g_signal_connect_object (PEONY_FILE (l->data),
 					 "changed",
 					 G_CALLBACK (file_changed_callback),
 					 G_OBJECT (window),
@@ -6275,9 +6275,9 @@ get_target_file_list (GList *original_files)
 	ret = NULL;
 
 	for (l = original_files; l != NULL; l = l->next) {
-		CajaFile *target;
+		PeonyFile *target;
 
-		target = get_target_file_for_original_file (CAJA_FILE (l->data));
+		target = get_target_file_for_original_file (PEONY_FILE (l->data));
 
 		ret = g_list_prepend (ret, target);
 	}
@@ -6339,8 +6339,8 @@ cancel_call_when_ready_callback (gpointer key,
 				 gpointer value,
 				 gpointer user_data)
 {
-	caja_file_cancel_call_when_ready
-		(CAJA_FILE (key),
+	peony_file_cancel_call_when_ready
+		(PEONY_FILE (key),
 		 is_directory_ready_callback,
 		 user_data);
 }
@@ -6373,7 +6373,7 @@ remove_pending (StartupData *startup_data,
 }
 
 static void
-is_directory_ready_callback (CajaFile *file,
+is_directory_ready_callback (PeonyFile *file,
 			     gpointer data)
 {
 	StartupData *startup_data;
@@ -6445,7 +6445,7 @@ fm_properties_window_present (GList *original_files,
 					 pending_key,
 					 parent_widget);
 
-	caja_file_list_free (target_files);
+	peony_file_list_free (target_files);
 	g_free(pending_key);
 
 	/* Wait until we can tell whether it's a directory before showing, since
@@ -6467,9 +6467,9 @@ fm_properties_window_present (GList *original_files,
 
 	for (l = startup_data->target_files; l != NULL; l = next) {
 		next = l->next;
-		caja_file_call_when_ready
-			(CAJA_FILE (l->data),
-			 CAJA_FILE_ATTRIBUTE_INFO,
+		peony_file_call_when_ready
+			(PEONY_FILE (l->data),
+			 PEONY_FILE_ATTRIBUTE_INFO,
 			 is_directory_ready_callback,
 			 startup_data);
 	}
@@ -6484,7 +6484,7 @@ real_response (GtkDialog *dialog,
 	switch (response) {
 	case GTK_RESPONSE_HELP:
 		gtk_show_uri (gtk_window_get_screen (GTK_WINDOW (dialog)),
-			      "help:mate-user-guide/goscaja-51",
+			      "help:ukui-user-guide/gospeony-51",
 			      gtk_get_current_event_time (),
 			      &error);
 		if (error != NULL) {
@@ -6521,18 +6521,18 @@ real_destroy (GtkObject *object)
 	remove_window (window);
 
 	for (l = window->details->original_files; l != NULL; l = l->next) {
-		caja_file_monitor_remove (CAJA_FILE (l->data), &window->details->original_files);
+		peony_file_monitor_remove (PEONY_FILE (l->data), &window->details->original_files);
 	}
-	caja_file_list_free (window->details->original_files);
+	peony_file_list_free (window->details->original_files);
 	window->details->original_files = NULL;
 
 	for (l = window->details->target_files; l != NULL; l = l->next) {
-		caja_file_monitor_remove (CAJA_FILE (l->data), &window->details->target_files);
+		peony_file_monitor_remove (PEONY_FILE (l->data), &window->details->target_files);
 	}
-	caja_file_list_free (window->details->target_files);
+	peony_file_list_free (window->details->target_files);
 	window->details->target_files = NULL;
 
-	caja_file_list_free (window->details->changed_files);
+	peony_file_list_free (window->details->changed_files);
 	window->details->changed_files = NULL;
 
 	window->details->name_field = NULL;
@@ -6634,7 +6634,7 @@ make_relative_uri_from_full (const char *uri,
 static void
 set_icon (const char* icon_uri, FMPropertiesWindow *properties_window)
 {
-	CajaFile *file;
+	PeonyFile *file;
 	char *file_uri;
 	char *icon_path;
 	char *real_icon_uri;
@@ -6648,15 +6648,15 @@ set_icon (const char* icon_uri, FMPropertiesWindow *properties_window)
 		GList *l;
 
 		for (l = properties_window->details->original_files; l != NULL; l = l->next) {
-			file = CAJA_FILE (l->data);
+			file = PEONY_FILE (l->data);
 
-			file_uri = caja_file_get_uri (file);
+			file_uri = peony_file_get_uri (file);
 
-			if (caja_file_is_mime_type (file, "application/x-desktop")) {
-				if (caja_link_local_set_icon (file_uri, icon_path)) {
-					caja_file_invalidate_attributes (file,
-									     CAJA_FILE_ATTRIBUTE_INFO |
-									     CAJA_FILE_ATTRIBUTE_LINK_INFO);
+			if (peony_file_is_mime_type (file, "application/x-desktop")) {
+				if (peony_link_local_set_icon (file_uri, icon_path)) {
+					peony_file_invalidate_attributes (file,
+									     PEONY_FILE_ATTRIBUTE_INFO |
+									     PEONY_FILE_ATTRIBUTE_LINK_INFO);
 				}
 			} else {
 				real_icon_uri = make_relative_uri_from_full (icon_uri, file_uri);
@@ -6664,8 +6664,8 @@ set_icon (const char* icon_uri, FMPropertiesWindow *properties_window)
 					real_icon_uri = g_strdup (icon_uri);
 				}
 
-				caja_file_set_metadata (file, CAJA_METADATA_KEY_CUSTOM_ICON, NULL, real_icon_uri);
-				caja_file_set_metadata (file, CAJA_METADATA_KEY_ICON_SCALE, NULL, NULL);
+				peony_file_set_metadata (file, PEONY_METADATA_KEY_CUSTOM_ICON, NULL, real_icon_uri);
+				peony_file_set_metadata (file, PEONY_METADATA_KEY_ICON_SCALE, NULL, NULL);
 
 				g_free (real_icon_uri);
 			}
@@ -6701,7 +6701,7 @@ update_preview_callback (GtkFileChooser *icon_chooser,
 			scale = (double)gdk_pixbuf_get_height (pixbuf) /
 				gdk_pixbuf_get_width (pixbuf);
 
-			scaled_pixbuf = mate_desktop_thumbnail_scale_down_pixbuf
+			scaled_pixbuf = ukui_desktop_thumbnail_scale_down_pixbuf
 				(pixbuf,
 				 PREVIEW_IMAGE_WIDTH,
 				 scale * PREVIEW_IMAGE_WIDTH);
@@ -6753,7 +6753,7 @@ select_image_button_callback (GtkWidget *widget,
 	GtkWidget *dialog, *preview;
 	GtkFileFilter *filter;
 	GList *l;
-	CajaFile *file;
+	PeonyFile *file;
 	char *uri;
 	char *image_path;
 	gboolean revert_is_sensitive;
@@ -6794,10 +6794,10 @@ select_image_button_callback (GtkWidget *widget,
 
 	/* it's likely that the user wants to pick an icon that is inside a local directory */
 	if (g_list_length (window->details->original_files) == 1) {
-		file = CAJA_FILE (window->details->original_files->data);
+		file = PEONY_FILE (window->details->original_files->data);
 
-		if (caja_file_is_directory (file)) {
-			uri = caja_file_get_uri (file);
+		if (peony_file_is_directory (file)) {
+			uri = peony_file_get_uri (file);
 
 			image_path = g_filename_from_uri (uri, NULL, NULL);
 			if (image_path != NULL) {
@@ -6811,8 +6811,8 @@ select_image_button_callback (GtkWidget *widget,
 
 	revert_is_sensitive = FALSE;
 	for (l = window->details->original_files; l != NULL; l = l->next) {
-		file = CAJA_FILE (l->data);
-		image_path = caja_file_get_metadata (file, CAJA_METADATA_KEY_CUSTOM_ICON, NULL);
+		file = PEONY_FILE (l->data);
+		image_path = peony_file_get_metadata (file, PEONY_METADATA_KEY_CUSTOM_ICON, NULL);
 		revert_is_sensitive = (image_path != NULL);
 		g_free (image_path);
 

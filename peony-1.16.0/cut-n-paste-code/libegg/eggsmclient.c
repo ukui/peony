@@ -238,14 +238,14 @@ egg_sm_client_get_option_group (void)
             G_OPTION_ARG_STRING, &sm_client_id,
             N_("Specify session management ID"), N_("ID")
         },
-        /* MateClient compatibility option */
+        /* UKUIClient compatibility option */
         {
             "sm-disable", 0, G_OPTION_FLAG_HIDDEN,
             G_OPTION_ARG_NONE, &sm_client_disable,
             NULL, NULL
         },
-        /* MateClient compatibility option. This is a dummy option that only
-         * exists so that sessions saved by apps with MateClient can be restored
+        /* UKUIClient compatibility option. This is a dummy option that only
+         * exists so that sessions saved by apps with UKUIClient can be restored
          * later when they've switched to EggSMClient. See bug #575308.
          */
         {

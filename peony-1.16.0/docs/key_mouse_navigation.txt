@@ -1,7 +1,7 @@
 This document describes the keyboard and mouse navigation model used
-in the default Caja views in detail. This is useful as a a guide
-for people implementing a Caja view or something else that wants
-to have a feel that is compatible with Caja.
+in the default Peony views in detail. This is useful as a a guide
+for people implementing a Peony view or something else that wants
+to have a feel that is compatible with Peony.
 
 *********** Icon view ********************
 

@@ -4,18 +4,18 @@
 
    Copyright (C) 2000 Eazel, Inc.
 
-   The Mate Library is free software; you can redistribute it and/or
+   The Ukui Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public License as
    published by the Free Software Foundation; either version 2 of the
    License, or (at your option) any later version.
 
-   The Mate Library is distributed in the hope that it will be useful,
+   The Ukui Library is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
    Library General Public License for more details.
 
    You should have received a copy of the GNU Library General Public
-   License along with the Mate Library; see the file COPYING.LIB.  If not,
+   License along with the Ukui Library; see the file COPYING.LIB.  If not,
    write to the Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
    Boston, MA 02110-1301, USA.
 
@@ -42,8 +42,8 @@ typedef struct FMIconViewClass FMIconViewClass;
 #define FM_ICON_VIEW_GET_CLASS(obj) \
   (G_TYPE_INSTANCE_GET_CLASS ((obj), FM_TYPE_ICON_VIEW, FMIconViewClass))
 
-#define FM_ICON_VIEW_ID "OAFIID:Caja_File_Manager_Icon_View"
-#define FM_COMPACT_VIEW_ID "OAFIID:Caja_File_Manager_Compact_View"
+#define FM_ICON_VIEW_ID "OAFIID:Peony_File_Manager_Icon_View"
+#define FM_COMPACT_VIEW_ID "OAFIID:Peony_File_Manager_Compact_View"
 
 typedef struct FMIconViewDetails FMIconViewDetails;
 
@@ -63,27 +63,27 @@ struct FMIconViewClass
     /* Note: get_directory_sort_by must return a string that can/will be g_freed.
      */
     char *	 (* get_directory_sort_by)       (FMIconView *icon_view,
-            CajaFile *file);
+            PeonyFile *file);
     void     (* set_directory_sort_by)       (FMIconView *icon_view,
-            CajaFile *file,
+            PeonyFile *file,
             const char* sort_by);
 
     gboolean (* get_directory_sort_reversed) (FMIconView *icon_view,
-            CajaFile *file);
+            PeonyFile *file);
     void     (* set_directory_sort_reversed) (FMIconView *icon_view,
-            CajaFile *file,
+            PeonyFile *file,
             gboolean sort_reversed);
 
     gboolean (* get_directory_auto_layout)   (FMIconView *icon_view,
-            CajaFile *file);
+            PeonyFile *file);
     void     (* set_directory_auto_layout)   (FMIconView *icon_view,
-            CajaFile *file,
+            PeonyFile *file,
             gboolean auto_layout);
 
     gboolean (* get_directory_tighter_layout) (FMIconView *icon_view,
-            CajaFile *file);
+            PeonyFile *file);
     void     (* set_directory_tighter_layout)   (FMIconView *icon_view,
-            CajaFile *file,
+            PeonyFile *file,
             gboolean tighter_layout);
 
     /* Override "clean_up" if your subclass has its own notion of where icons should be positioned */
@@ -124,8 +124,8 @@ struct FMIconViewClass
 /* GObject support */
 GType   fm_icon_view_get_type      (void);
 int     fm_icon_view_compare_files (FMIconView   *icon_view,
-                                    CajaFile *a,
-                                    CajaFile *b);
+                                    PeonyFile *a,
+                                    PeonyFile *b);
 void    fm_icon_view_filter_by_screen (FMIconView *icon_view, gboolean filter);
 gboolean fm_icon_view_is_compact   (FMIconView *icon_view);
 

@@ -1,17 +1,17 @@
 <html>
 
 <head>
-<title>Caja Coding Style Guide</title>
+<title>Peony Coding Style Guide</title>
 </head>
 
 <body>
 
-<p>To make code written for Caja look and act in a predictable way,
+<p>To make code written for Peony look and act in a predictable way,
 we follow a set of guidelines that specify some details of how we write code.
 To start, we follow all the guidelines outlined in the
-<a href="http://developer.gnome.org/doc/guides/programming-guidelines/">MATE Programming Guidelines</a>.</p>
+<a href="http://developer.gnome.org/doc/guides/programming-guidelines/">UKUI Programming Guidelines</a>.</p>
 
-<p>This document covers both things that are not mentioned in the MATE
+<p>This document covers both things that are not mentioned in the UKUI
 Programming Guidelines and things that are mentioned there but need
 to be re-emphasized because people don't follow them often enough.</p>
 
@@ -24,7 +24,7 @@ Eventually I'd like better organization and tons of examples.</p>
 
 <hr>
 
-<p><b>We use the most-recommended coding style from the MATE Programming
+<p><b>We use the most-recommended coding style from the UKUI Programming
 Guidelines.</b> This means that we use the Linux kernel brace style with
 8-character tabs (not the GNU brace style), we put spaces before
 the parentheses that introduce function argument lists, we put the
@@ -32,7 +32,7 @@ braces that open the block for an if statement on the same line as the
 if statement (part of Linux kernel brace style).</p>
 
 <p><b>We prefer to use words rather than acronyms or abbreviations.</b> This means that
-we name classes with a prefix like Caja, not Ntl, for example. And we use variables
+we name classes with a prefix like Peony, not Ntl, for example. And we use variables
 named result rather than retval or rv.</p>
 
 <p><b>We strive to have a minimum number of local variables.</b> This makes it
@@ -109,7 +109,7 @@ is the include of &lt;config.h>, which goes first. Here's an example:</p>
 <pre>
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*-
  *
- * caja-icon-factory.c: Class for obtaining icons for files and other objects.
+ * peony-icon-factory.c: Class for obtaining icons for files and other objects.
  *
  * Copyright (C) 1999, 2000 Red Hat Inc.
  * Copyright (C) 1999, 2000 Eazel, Inc.
@@ -120,7 +120,7 @@ is the include of &lt;config.h>, which goes first. Here's an example:</p>
  */
 
 #include &lt;config.h>
-#include "caja-icon-factory.h"
+#include "peony-icon-factory.h"
 
 #include &lt;string.h>
 #include &lt;stdio.h>

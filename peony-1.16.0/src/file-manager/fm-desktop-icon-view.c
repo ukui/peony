@@ -4,18 +4,18 @@
 
    Copyright (C) 2000, 2001 Eazel, Inc.mou
 
-   The Mate Library is free software; you can redistribute it and/or
+   The Ukui Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public License as
    published by the Free Software Foundation; either version 2 of the
    License, or (at your option) any later version.
 
-   The Mate Library is distributed in the hope that it will be useful,
+   The Ukui Library is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
    Library General Public License for more details.
 
    You should have received a copy of the GNU Library General Public
-   License along with the Mate Library; see the file COPYING.LIB.  If not,
+   License along with the Ukui Library; see the file COPYING.LIB.  If not,
    write to the Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
    Boston, MA 02110-1301, USA.
 
@@ -37,22 +37,22 @@
 #include <fcntl.h>
 #include <gdk/gdkx.h>
 #include <glib/gi18n.h>
-#include <libcaja-private/caja-desktop-icon-file.h>
+#include <libpeony-private/peony-desktop-icon-file.h>
 #if !GTK_CHECK_VERSION(3, 21, 0)
-#include <libcaja-private/caja-directory-background.h>
+#include <libpeony-private/peony-directory-background.h>
 #endif
-#include <libcaja-private/caja-directory-notify.h>
-#include <libcaja-private/caja-file-changes-queue.h>
-#include <libcaja-private/caja-file-operations.h>
-#include <libcaja-private/caja-file-utilities.h>
-#include <libcaja-private/caja-ui-utilities.h>
-#include <libcaja-private/caja-global-preferences.h>
-#include <libcaja-private/caja-view-factory.h>
-#include <libcaja-private/caja-link.h>
-#include <libcaja-private/caja-metadata.h>
-#include <libcaja-private/caja-monitor.h>
-#include <libcaja-private/caja-program-choosing.h>
-#include <libcaja-private/caja-trash-monitor.h>
+#include <libpeony-private/peony-directory-notify.h>
+#include <libpeony-private/peony-file-changes-queue.h>
+#include <libpeony-private/peony-file-operations.h>
+#include <libpeony-private/peony-file-utilities.h>
+#include <libpeony-private/peony-ui-utilities.h>
+#include <libpeony-private/peony-global-preferences.h>
+#include <libpeony-private/peony-view-factory.h>
+#include <libpeony-private/peony-link.h>
+#include <libpeony-private/peony-metadata.h>
+#include <libpeony-private/peony-monitor.h>
+#include <libpeony-private/peony-program-choosing.h>
+#include <libpeony-private/peony-trash-monitor.h>
 #include <limits.h>
 #include <stddef.h>
 #include <stdio.h>
@@ -103,20 +103,20 @@ static void
 desktop_directory_changed_callback (gpointer callback_data)
 {
     g_free (desktop_directory);
-    desktop_directory = caja_get_desktop_directory ();
+    desktop_directory = peony_get_desktop_directory ();
 }
 
-static CajaIconContainer *
+static PeonyIconContainer *
 get_icon_container (FMDesktopIconView *icon_view)
 {
     g_return_val_if_fail (FM_IS_DESKTOP_ICON_VIEW (icon_view), NULL);
-    g_return_val_if_fail (CAJA_IS_ICON_CONTAINER (gtk_bin_get_child (GTK_BIN (icon_view))), NULL);
+    g_return_val_if_fail (PEONY_IS_ICON_CONTAINER (gtk_bin_get_child (GTK_BIN (icon_view))), NULL);
 
-    return CAJA_ICON_CONTAINER (gtk_bin_get_child (GTK_BIN (icon_view)));
+    return PEONY_ICON_CONTAINER (gtk_bin_get_child (GTK_BIN (icon_view)));
 }
 
 static void
-icon_container_set_workarea (CajaIconContainer *icon_container,
+icon_container_set_workarea (PeonyIconContainer *icon_container,
                              GdkScreen             *screen,
                              long                  *workareas,
                              int                    n_items)
@@ -146,7 +146,7 @@ icon_container_set_workarea (CajaIconContainer *icon_container,
         bottom = MAX (bottom, screen_height - height - y);
     }
 
-    caja_icon_container_set_margins (icon_container,
+    peony_icon_container_set_margins (icon_container,
                                      left, right, top, bottom);
 }
 
@@ -159,7 +159,7 @@ net_workarea_changed (FMDesktopIconView *icon_view,
     GdkAtom type_returned;
     int format_returned;
     int length_returned;
-    CajaIconContainer *icon_container;
+    PeonyIconContainer *icon_container;
     GdkScreen *screen;
 
     g_return_if_fail (FM_IS_DESKTOP_ICON_VIEW (icon_view));
@@ -220,7 +220,7 @@ net_workarea_changed (FMDesktopIconView *icon_view,
             || format_returned != 32)
     {
         g_warning("Can not determine workarea, guessing at layout");
-        caja_icon_container_set_margins (icon_container,
+        peony_icon_container_set_margins (icon_container,
                                          0, 0, 0, 0);
     }
     else
@@ -279,22 +279,22 @@ fm_desktop_icon_view_dispose (GObject *object)
     ui_manager = fm_directory_view_get_ui_manager (FM_DIRECTORY_VIEW (icon_view));
     if (ui_manager != NULL)
     {
-        caja_ui_unmerge_ui (ui_manager,
+        peony_ui_unmerge_ui (ui_manager,
                             &icon_view->details->desktop_merge_id,
                             &icon_view->details->desktop_action_group);
     }
 
-    g_signal_handlers_disconnect_by_func (caja_icon_view_preferences,
+    g_signal_handlers_disconnect_by_func (peony_icon_view_preferences,
                                           default_zoom_level_changed,
                                           icon_view);
-    g_signal_handlers_disconnect_by_func (caja_preferences,
+    g_signal_handlers_disconnect_by_func (peony_preferences,
                                           font_changed_callback,
                                           icon_view);
 
-    g_signal_handlers_disconnect_by_func (mate_lockdown_preferences,
+    g_signal_handlers_disconnect_by_func (ukui_lockdown_preferences,
                                           fm_directory_view_update_menus,
                                           icon_view);
-    g_signal_handlers_disconnect_by_func (caja_preferences,
+    g_signal_handlers_disconnect_by_func (peony_preferences,
                                           desktop_directory_changed_callback,
                                           NULL);
 
@@ -319,7 +319,7 @@ fm_desktop_icon_view_class_init (FMDesktopIconViewClass *class)
 }
 
 static void
-fm_desktop_icon_view_handle_middle_click (CajaIconContainer *icon_container,
+fm_desktop_icon_view_handle_middle_click (PeonyIconContainer *icon_container,
         GdkEventButton *event,
         FMDesktopIconView *desktop_icon_view)
 {
@@ -452,7 +452,7 @@ realized_callback (GtkWidget *widget, FMDesktopIconView *desktop_icon_view)
 
     /* Ugly HACK for the problem that the views realize at the
      * wrong size and then get resized. (This is a problem with
-     * MateComponentPlug.) This was leading to problems where initial
+     * UkuiComponentPlug.) This was leading to problems where initial
      * layout was done at 60x60 stacking all desktop icons in
      * the top left corner.
      */
@@ -478,33 +478,33 @@ realized_callback (GtkWidget *widget, FMDesktopIconView *desktop_icon_view)
 
 }
 
-static CajaZoomLevel
+static PeonyZoomLevel
 get_default_zoom_level (void)
 {
     static gboolean auto_storage_added = FALSE;
-    static CajaZoomLevel default_zoom_level = CAJA_ZOOM_LEVEL_STANDARD;
+    static PeonyZoomLevel default_zoom_level = PEONY_ZOOM_LEVEL_STANDARD;
 
     if (!auto_storage_added)
     {
         auto_storage_added = TRUE;
-        eel_g_settings_add_auto_enum (caja_icon_view_preferences,
-                                      CAJA_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL,
+        eel_g_settings_add_auto_enum (peony_icon_view_preferences,
+                                      PEONY_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL,
                                       (int *) &default_zoom_level);
     }
 
-    return CLAMP (default_zoom_level, CAJA_ZOOM_LEVEL_SMALLEST, CAJA_ZOOM_LEVEL_LARGEST);
+    return CLAMP (default_zoom_level, PEONY_ZOOM_LEVEL_SMALLEST, PEONY_ZOOM_LEVEL_LARGEST);
 }
 
 static void
 default_zoom_level_changed (gpointer user_data)
 {
-    CajaZoomLevel new_level;
+    PeonyZoomLevel new_level;
     FMDesktopIconView *desktop_icon_view;
 
     desktop_icon_view = FM_DESKTOP_ICON_VIEW (user_data);
     new_level = get_default_zoom_level ();
 
-    caja_icon_container_set_zoom_level (get_icon_container (desktop_icon_view),
+    peony_icon_container_set_zoom_level (get_icon_container (desktop_icon_view),
                                         new_level);
 }
 
@@ -532,14 +532,14 @@ do_desktop_rescan (gpointer data)
 
     desktop_icon_view->details->pending_rescan = TRUE;
 
-    caja_directory_force_reload (
+    peony_directory_force_reload (
         fm_directory_view_get_model (
             FM_DIRECTORY_VIEW (desktop_icon_view)));
     return TRUE;
 }
 
 static void
-done_loading (CajaDirectory *model,
+done_loading (PeonyDirectory *model,
 	      FMDesktopIconView *desktop_icon_view)
 {
     struct stat buf;
@@ -553,7 +553,7 @@ done_loading (CajaDirectory *model,
     desktop_dir_modify_time = buf.st_ctime;
 }
 
-/* This function is used because the CajaDirectory model does not
+/* This function is used because the PeonyDirectory model does not
  * exist always in the desktop_icon_view, so we wait until it has been
  * instantiated.
  */
@@ -586,15 +586,15 @@ font_changed_callback (gpointer callback_data)
 static void
 fm_desktop_icon_view_update_icon_container_fonts (FMDesktopIconView *icon_view)
 {
-    CajaIconContainer *icon_container;
+    PeonyIconContainer *icon_container;
     char *font;
 
     icon_container = get_icon_container (icon_view);
     g_assert (icon_container != NULL);
 
-    font = g_settings_get_string (caja_desktop_preferences, CAJA_PREFERENCES_DESKTOP_FONT);
+    font = g_settings_get_string (peony_desktop_preferences, PEONY_PREFERENCES_DESKTOP_FONT);
 
-    caja_icon_container_set_font (icon_container, font);
+    peony_icon_container_set_font (icon_container, font);
 
     g_free (font);
 }
@@ -602,7 +602,7 @@ fm_desktop_icon_view_update_icon_container_fonts (FMDesktopIconView *icon_view)
 static void
 fm_desktop_icon_view_init (FMDesktopIconView *desktop_icon_view)
 {
-    CajaIconContainer *icon_container;
+    PeonyIconContainer *icon_container;
     GtkAllocation allocation;
     GtkAdjustment *hadj, *vadj;
 
@@ -612,7 +612,7 @@ fm_desktop_icon_view_init (FMDesktopIconView *desktop_icon_view)
 
     if (desktop_directory == NULL)
     {
-        g_signal_connect_swapped (caja_preferences, "changed::" CAJA_PREFERENCES_DESKTOP_IS_HOME_DIR,
+        g_signal_connect_swapped (peony_preferences, "changed::" PEONY_PREFERENCES_DESKTOP_IS_HOME_DIR,
                                   G_CALLBACK(desktop_directory_changed_callback),
                                   NULL);
         desktop_directory_changed_callback (NULL);
@@ -620,22 +620,22 @@ fm_desktop_icon_view_init (FMDesktopIconView *desktop_icon_view)
 
     fm_icon_view_filter_by_screen (FM_ICON_VIEW (desktop_icon_view), TRUE);
     icon_container = get_icon_container (desktop_icon_view);
-    caja_icon_container_set_use_drop_shadows (icon_container, TRUE);
+    peony_icon_container_set_use_drop_shadows (icon_container, TRUE);
     fm_icon_container_set_sort_desktop (FM_ICON_CONTAINER (icon_container), TRUE);
 
     /* Do a reload on the desktop if we don't have FAM, a smarter
      * way to keep track of the items on the desktop.
      */
-    if (!caja_monitor_active ())
+    if (!peony_monitor_active ())
     {
         desktop_icon_view->details->delayed_init_signal = g_signal_connect_object
                 (desktop_icon_view, "begin_loading",
                  G_CALLBACK (delayed_init), desktop_icon_view, 0);
     }
 
-    caja_icon_container_set_is_fixed_size (icon_container, TRUE);
-    caja_icon_container_set_is_desktop (icon_container, TRUE);
-    caja_icon_container_set_store_layout_timestamps (icon_container, TRUE);
+    peony_icon_container_set_is_fixed_size (icon_container, TRUE);
+    peony_icon_container_set_is_desktop (icon_container, TRUE);
+    peony_icon_container_set_store_layout_timestamps (icon_container, TRUE);
 
     /* Set allocation to be at 0, 0 */
     gtk_widget_get_allocation (GTK_WIDGET (icon_container), &allocation);
@@ -661,10 +661,10 @@ fm_desktop_icon_view_init (FMDesktopIconView *desktop_icon_view)
                                         FALSE);
 
     /* Set our default layout mode */
-    caja_icon_container_set_layout_mode (icon_container,
+    peony_icon_container_set_layout_mode (icon_container,
                                          gtk_widget_get_direction (GTK_WIDGET(icon_container)) == GTK_TEXT_DIR_RTL ?
-                                         CAJA_ICON_LAYOUT_T_B_R_L :
-                                         CAJA_ICON_LAYOUT_T_B_L_R);
+                                         PEONY_ICON_LAYOUT_T_B_R_L :
+                                         PEONY_ICON_LAYOUT_T_B_L_R);
 
     g_signal_connect_object (icon_container, "middle_click",
                              G_CALLBACK (fm_desktop_icon_view_handle_middle_click), desktop_icon_view, 0);
@@ -675,20 +675,20 @@ fm_desktop_icon_view_init (FMDesktopIconView *desktop_icon_view)
 
     default_zoom_level_changed (desktop_icon_view);
 
-    g_signal_connect_swapped (caja_icon_view_preferences,
-                              "changed::" CAJA_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL,
+    g_signal_connect_swapped (peony_icon_view_preferences,
+                              "changed::" PEONY_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL,
                               G_CALLBACK (default_zoom_level_changed),
                               desktop_icon_view);
 
-    g_signal_connect_swapped (caja_desktop_preferences,
-                              "changed::" CAJA_PREFERENCES_DESKTOP_FONT,
+    g_signal_connect_swapped (peony_desktop_preferences,
+                              "changed::" PEONY_PREFERENCES_DESKTOP_FONT,
                               G_CALLBACK (font_changed_callback),
                               desktop_icon_view);
 
     fm_desktop_icon_view_update_icon_container_fonts (desktop_icon_view);
 
-    g_signal_connect_swapped (mate_lockdown_preferences,
-                              "changed::" CAJA_PREFERENCES_LOCKDOWN_COMMAND_LINE,
+    g_signal_connect_swapped (ukui_lockdown_preferences,
+                              "changed::" PEONY_PREFERENCES_LOCKDOWN_COMMAND_LINE,
                               G_CALLBACK (fm_directory_view_update_menus),
                               desktop_icon_view);
 
@@ -701,11 +701,11 @@ action_new_launcher_callback (GtkAction *action, gpointer data)
 
     g_assert (FM_DIRECTORY_VIEW (data));
 
-    desktop_directory = caja_get_desktop_directory ();
+    desktop_directory = peony_get_desktop_directory ();
 
-    caja_launch_application_from_command (gtk_widget_get_screen (GTK_WIDGET (data)),
-                                          "mate-desktop-item-edit",
-                                          "mate-desktop-item-edit",
+    peony_launch_application_from_command (gtk_widget_get_screen (GTK_WIDGET (data)),
+                                          "ukui-desktop-item-edit",
+                                          "ukui-desktop-item-edit",
                                           FALSE,
                                           "--create-new", desktop_directory, NULL);
     g_free (desktop_directory);
@@ -718,9 +718,9 @@ action_change_background_callback (GtkAction *action,
 {
     g_assert (FM_DIRECTORY_VIEW (data));
 
-    caja_launch_application_from_command (gtk_widget_get_screen (GTK_WIDGET (data)),
+    peony_launch_application_from_command (gtk_widget_get_screen (GTK_WIDGET (data)),
                                           _("Background"),
-                                          "mate-appearance-properties",
+                                          "ukui-appearance-properties",
                                           FALSE,
                                           "--show-page=background", NULL);
 }
@@ -731,14 +731,14 @@ action_empty_trash_conditional_callback (GtkAction *action,
 {
     g_assert (FM_IS_DIRECTORY_VIEW (data));
 
-    caja_file_operations_empty_trash (GTK_WIDGET (data));
+    peony_file_operations_empty_trash (GTK_WIDGET (data));
 }
 
 static gboolean
 trash_link_is_selection (FMDirectoryView *view)
 {
     GList *selection;
-    CajaDesktopLink *link;
+    PeonyDesktopLink *link;
     gboolean result;
 
     result = FALSE;
@@ -746,12 +746,12 @@ trash_link_is_selection (FMDirectoryView *view)
     selection = fm_directory_view_get_selection (view);
 
     if (eel_g_list_exactly_one_item (selection) &&
-            CAJA_IS_DESKTOP_ICON_FILE (selection->data))
+            PEONY_IS_DESKTOP_ICON_FILE (selection->data))
     {
-        link = caja_desktop_icon_file_get_link (CAJA_DESKTOP_ICON_FILE (selection->data));
+        link = peony_desktop_icon_file_get_link (PEONY_DESKTOP_ICON_FILE (selection->data));
         /* link may be NULL if the link was recently removed (unmounted) */
         if (link != NULL &&
-                caja_desktop_link_get_link_type (link) == CAJA_DESKTOP_LINK_TRASH)
+                peony_desktop_link_get_link_type (link) == PEONY_DESKTOP_LINK_TRASH)
         {
             result = TRUE;
         }
@@ -761,7 +761,7 @@ trash_link_is_selection (FMDirectoryView *view)
         }
     }
 
-    caja_file_list_free (selection);
+    peony_file_list_free (selection);
 
     return result;
 }
@@ -782,7 +782,7 @@ real_update_menus (FMDirectoryView *view)
     desktop_view = FM_DESKTOP_ICON_VIEW (view);
 
     /* New Launcher */
-    disable_command_line = g_settings_get_boolean (mate_lockdown_preferences, CAJA_PREFERENCES_LOCKDOWN_COMMAND_LINE);
+    disable_command_line = g_settings_get_boolean (ukui_lockdown_preferences, PEONY_PREFERENCES_LOCKDOWN_COMMAND_LINE);
     action = gtk_action_group_get_action (desktop_view->details->desktop_action_group,
                                           FM_ACTION_NEW_LAUNCHER_DESKTOP);
     gtk_action_set_visible (action,
@@ -799,7 +799,7 @@ real_update_menus (FMDirectoryView *view)
         label = g_strdup (_("E_mpty Trash"));
         g_object_set (action , "label", label, NULL);
         gtk_action_set_sensitive (action,
-                                  !caja_trash_monitor_is_empty ());
+                                  !peony_trash_monitor_is_empty ());
         g_free (label);
     }
 }
@@ -859,7 +859,7 @@ real_merge_menus (FMDirectoryView *view)
     gtk_ui_manager_insert_action_group (ui_manager, action_group, 0);
     g_object_unref (action_group); /* owned by ui manager */
 
-    ui = caja_ui_string_get ("caja-desktop-icon-view-ui.xml");
+    ui = peony_ui_string_get ("peony-desktop-icon-view-ui.xml");
     desktop_view->details->desktop_merge_id =
         gtk_ui_manager_add_ui_from_string (ui_manager, ui, -1, NULL);
 }
@@ -901,15 +901,15 @@ real_supports_zooming (FMDirectoryView *view)
     return FALSE;
 }
 
-static CajaView *
-fm_desktop_icon_view_create (CajaWindowSlotInfo *slot)
+static PeonyView *
+fm_desktop_icon_view_create (PeonyWindowSlotInfo *slot)
 {
     FMIconView *view;
 
     view = g_object_new (FM_TYPE_DESKTOP_ICON_VIEW,
                          "window-slot", slot,
                          NULL);
-    return CAJA_VIEW (view);
+    return PEONY_VIEW (view);
 }
 
 static gboolean
@@ -925,7 +925,7 @@ fm_desktop_icon_view_supports_uri (const char *uri,
     return FALSE;
 }
 
-static CajaViewInfo fm_desktop_icon_view =
+static PeonyViewInfo fm_desktop_icon_view =
 {
     FM_DESKTOP_ICON_VIEW_ID,
     "Desktop View",
@@ -943,5 +943,5 @@ fm_desktop_icon_view_register (void)
     fm_desktop_icon_view.error_label = _(fm_desktop_icon_view.error_label);
     fm_desktop_icon_view.startup_error_label = _(fm_desktop_icon_view.startup_error_label);
 
-    caja_view_factory_register (&fm_desktop_icon_view);
+    peony_view_factory_register (&fm_desktop_icon_view);
 }

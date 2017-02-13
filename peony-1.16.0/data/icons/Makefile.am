@@ -5,23 +5,23 @@ public_icons_themes = \
 	$(NULL)
 
 public_icons = \
-	hicolor_apps_16x16_caja.png \
-	hicolor_apps_22x22_caja.png \
-	hicolor_apps_24x24_caja.png \
-	hicolor_apps_32x32_caja.png \
-	hicolor_apps_scalable_caja.svg \
+	hicolor_apps_16x16_peony.png \
+	hicolor_apps_22x22_peony.png \
+	hicolor_apps_24x24_peony.png \
+	hicolor_apps_32x32_peony.png \
+	hicolor_apps_scalable_peony.svg \
 	$(NULL)
 
 private_icons = \
-	hicolor_emblems_16x16_emblem-note.png \
-	hicolor_emblems_24x24_emblem-note.png \
-	hicolor_emblems_48x48_emblem-note.png \
+	hicolor_emblems_16x16_emblem-note-ukui.png \
+	hicolor_emblems_24x24_emblem-note-ukui.png \
+	hicolor_emblems_48x48_emblem-note-ukui.png \
 	$(NULL)
 
 noinst_DATA = \
-	hicolor_apps_16x16_caja.svg \
-	hicolor_apps_22x22_caja.svg \
-	hicolor_apps_32x32_caja.svg \
+	hicolor_apps_16x16_peony.svg \
+	hicolor_apps_22x22_peony.svg \
+	hicolor_apps_32x32_peony.svg \
 	$(NULL)
 
 EXTRA_DIST = \

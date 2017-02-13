@@ -1,6 +1,6 @@
 NULL=
 
-backdir = $(datadir)/caja/patterns
+backdir = $(datadir)/peony/patterns
 
 back_DATA = \
 	blue_gray_rough.png \
@@ -12,13 +12,13 @@ back_DATA = \
 	chalk.jpg \
 	cork.png \
 	countertop.png \
-	dark-mate.jpg \
+	dark-ukui.jpg \
 	dots.png \
 	fibers.png \
 	fleur_de_lis.png \
 	floral.png \
 	fossil.png \
-	mate.jpg \
+	ukui.jpg \
 	green_weave.png \
 	ice.png \
 	manila_paper.png \

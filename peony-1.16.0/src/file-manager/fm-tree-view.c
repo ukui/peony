@@ -39,26 +39,26 @@
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
 #include <gio/gio.h>
-#include <libcaja-private/caja-clipboard.h>
-#include <libcaja-private/caja-clipboard-monitor.h>
-#include <libcaja-private/caja-desktop-icon-file.h>
-#include <libcaja-private/caja-debug-log.h>
-#include <libcaja-private/caja-file-attributes.h>
-#include <libcaja-private/caja-file-operations.h>
-#include <libcaja-private/caja-file-utilities.h>
-#include <libcaja-private/caja-global-preferences.h>
-#include <libcaja-private/caja-icon-names.h>
-#include <libcaja-private/caja-mime-actions.h>
-#include <libcaja-private/caja-program-choosing.h>
-#include <libcaja-private/caja-tree-view-drag-dest.h>
-#include <libcaja-private/caja-sidebar-provider.h>
-#include <libcaja-private/caja-module.h>
-#include <libcaja-private/caja-window-info.h>
-#include <libcaja-private/caja-window-slot-info.h>
-#include <libcaja-private/caja-directory.h>
-#include <libcaja-private/caja-directory-private.h>
-#include <libcaja-private/caja-file.h>
-#include <libcaja-private/caja-file-private.h>
+#include <libpeony-private/peony-clipboard.h>
+#include <libpeony-private/peony-clipboard-monitor.h>
+#include <libpeony-private/peony-desktop-icon-file.h>
+#include <libpeony-private/peony-debug-log.h>
+#include <libpeony-private/peony-file-attributes.h>
+#include <libpeony-private/peony-file-operations.h>
+#include <libpeony-private/peony-file-utilities.h>
+#include <libpeony-private/peony-global-preferences.h>
+#include <libpeony-private/peony-icon-names.h>
+#include <libpeony-private/peony-mime-actions.h>
+#include <libpeony-private/peony-program-choosing.h>
+#include <libpeony-private/peony-tree-view-drag-dest.h>
+#include <libpeony-private/peony-sidebar-provider.h>
+#include <libpeony-private/peony-module.h>
+#include <libpeony-private/peony-window-info.h>
+#include <libpeony-private/peony-window-slot-info.h>
+#include <libpeony-private/peony-directory.h>
+#include <libpeony-private/peony-directory-private.h>
+#include <libpeony-private/peony-file.h>
+#include <libpeony-private/peony-file-private.h>
 
 typedef struct
 {
@@ -73,17 +73,17 @@ typedef struct
 
 struct FMTreeViewDetails
 {
-    CajaWindowInfo *window;
+    PeonyWindowInfo *window;
     GtkTreeView *tree_widget;
     GtkTreeModelSort *sort_model;
     FMTreeModel *child_model;
 
     GVolumeMonitor *volume_monitor;
 
-    CajaFile *activation_file;
-    CajaWindowOpenFlags activation_flags;
+    PeonyFile *activation_file;
+    PeonyWindowOpenFlags activation_flags;
 
-    CajaTreeViewDragDest *drag_dest;
+    PeonyTreeViewDragDest *drag_dest;
 
     char *selection_location;
     gboolean selecting;
@@ -105,7 +105,7 @@ struct FMTreeViewDetails
     GtkWidget *popup_unmount_separator;
     GtkWidget *popup_unmount;
     GtkWidget *popup_eject;
-    CajaFile *popup_file;
+    PeonyFile *popup_file;
     guint popup_file_idle_handler;
 
     guint selection_changed_timer;
@@ -119,28 +119,28 @@ typedef struct
 
 static GdkAtom copied_files_atom;
 
-static void  fm_tree_view_iface_init        (CajaSidebarIface         *iface);
-static void  sidebar_provider_iface_init    (CajaSidebarProviderIface *iface);
+static void  fm_tree_view_iface_init        (PeonySidebarIface         *iface);
+static void  sidebar_provider_iface_init    (PeonySidebarProviderIface *iface);
 static void  fm_tree_view_activate_file     (FMTreeView *view,
-        CajaFile *file,
-        CajaWindowOpenFlags flags);
+        PeonyFile *file,
+        PeonyWindowOpenFlags flags);
 static GType fm_tree_view_provider_get_type (void);
 static GtkWindow *fm_tree_view_get_containing_window (FMTreeView *view);
 
 static void create_popup_menu (FMTreeView *view);
 
 G_DEFINE_TYPE_WITH_CODE (FMTreeView, fm_tree_view, GTK_TYPE_SCROLLED_WINDOW,
-                         G_IMPLEMENT_INTERFACE (CAJA_TYPE_SIDEBAR,
+                         G_IMPLEMENT_INTERFACE (PEONY_TYPE_SIDEBAR,
                                  fm_tree_view_iface_init));
 #define parent_class fm_tree_view_parent_class
 
 G_DEFINE_TYPE_WITH_CODE (FMTreeViewProvider, fm_tree_view_provider, G_TYPE_OBJECT,
-                         G_IMPLEMENT_INTERFACE (CAJA_TYPE_SIDEBAR_PROVIDER,
+                         G_IMPLEMENT_INTERFACE (PEONY_TYPE_SIDEBAR_PROVIDER,
                                  sidebar_provider_iface_init));
 
 static void
-notify_clipboard_info (CajaClipboardMonitor *monitor,
-                       CajaClipboardInfo *info,
+notify_clipboard_info (PeonyClipboardMonitor *monitor,
+                       PeonyClipboardInfo *info,
                        FMTreeView *view)
 {
     if (info != NULL && info->cut)
@@ -155,10 +155,10 @@ notify_clipboard_info (CajaClipboardMonitor *monitor,
 
 
 static gboolean
-show_iter_for_file (FMTreeView *view, CajaFile *file, GtkTreeIter *iter)
+show_iter_for_file (FMTreeView *view, PeonyFile *file, GtkTreeIter *iter)
 {
     GtkTreeModel *model;
-    CajaFile *parent_file;
+    PeonyFile *parent_file;
     GtkTreeIter parent_iter;
     GtkTreePath *path, *sort_path;
     GtkTreeIter cur_iter;
@@ -189,7 +189,7 @@ show_iter_for_file (FMTreeView *view, CajaFile *file, GtkTreeIter *iter)
         return TRUE;
     }
 
-    parent_file = caja_file_get_parent (file);
+    parent_file = peony_file_get_parent (file);
 
     if (parent_file == NULL)
     {
@@ -197,10 +197,10 @@ show_iter_for_file (FMTreeView *view, CajaFile *file, GtkTreeIter *iter)
     }
     if (!show_iter_for_file (view, parent_file, &parent_iter))
     {
-        caja_file_unref (parent_file);
+        peony_file_unref (parent_file);
         return FALSE;
     }
-    caja_file_unref (parent_file);
+    peony_file_unref (parent_file);
 
     if (parent_iter.user_data == NULL || parent_iter.stamp == 0)
     {
@@ -219,11 +219,11 @@ show_iter_for_file (FMTreeView *view, CajaFile *file, GtkTreeIter *iter)
 static void
 refresh_highlight (FMTreeView *view)
 {
-    CajaClipboardMonitor *monitor;
-    CajaClipboardInfo *info;
+    PeonyClipboardMonitor *monitor;
+    PeonyClipboardInfo *info;
 
-    monitor = caja_clipboard_monitor_get ();
-    info = caja_clipboard_monitor_get_clipboard_info (monitor);
+    monitor = peony_clipboard_monitor_get ();
+    info = peony_clipboard_monitor_get_clipboard_info (monitor);
 
     notify_clipboard_info (monitor, info, view);
 }
@@ -232,7 +232,7 @@ static gboolean
 show_selection_idle_callback (gpointer callback_data)
 {
     FMTreeView *view;
-    CajaFile *file, *old_file;
+    PeonyFile *file, *old_file;
     GtkTreeIter iter;
     GtkTreePath *path, *sort_path;
 
@@ -240,17 +240,17 @@ show_selection_idle_callback (gpointer callback_data)
 
     view->details->show_selection_idle_id = 0;
 
-    file = caja_file_get_by_uri (view->details->selection_location);
+    file = peony_file_get_by_uri (view->details->selection_location);
     if (file == NULL)
     {
         return FALSE;
     }
 
-    if (!caja_file_is_directory (file))
+    if (!peony_file_is_directory (file))
     {
         old_file = file;
-        file = caja_file_get_parent (file);
-        caja_file_unref (old_file);
+        file = peony_file_get_parent (file);
+        peony_file_unref (old_file);
         if (file == NULL)
         {
             return FALSE;
@@ -260,7 +260,7 @@ show_selection_idle_callback (gpointer callback_data)
     view->details->selecting = TRUE;
     if (!show_iter_for_file (view, file, &iter))
     {
-        caja_file_unref (file);
+        peony_file_unref (file);
         return FALSE;
     }
     view->details->selecting = FALSE;
@@ -276,7 +276,7 @@ show_selection_idle_callback (gpointer callback_data)
     }
     gtk_tree_path_free (sort_path);
 
-    caja_file_unref (file);
+    peony_file_unref (file);
     refresh_highlight (view);
 
     return FALSE;
@@ -307,7 +307,7 @@ row_loaded_callback (GtkTreeModel     *tree_model,
                      GtkTreeIter      *iter,
                      FMTreeView *view)
 {
-    CajaFile *file, *tmp_file, *selection_file;
+    PeonyFile *file, *tmp_file, *selection_file;
 
     if (view->details->selection_location == NULL
             || !view->details->selecting
@@ -321,32 +321,32 @@ row_loaded_callback (GtkTreeModel     *tree_model,
     {
         return;
     }
-    if (!caja_file_is_directory (file))
+    if (!peony_file_is_directory (file))
     {
-        caja_file_unref(file);
+        peony_file_unref(file);
         return;
     }
 
     /* if iter is ancestor of wanted selection_location then update selection */
-    selection_file = caja_file_get_by_uri (view->details->selection_location);
+    selection_file = peony_file_get_by_uri (view->details->selection_location);
     while (selection_file != NULL)
     {
         if (file == selection_file)
         {
-            caja_file_unref (file);
-            caja_file_unref (selection_file);
+            peony_file_unref (file);
+            peony_file_unref (selection_file);
 
             schedule_show_selection (view);
             return;
         }
-        tmp_file = caja_file_get_parent (selection_file);
-        caja_file_unref (selection_file);
+        tmp_file = peony_file_get_parent (selection_file);
+        peony_file_unref (selection_file);
         selection_file = tmp_file;
     }
-    caja_file_unref (file);
+    peony_file_unref (file);
 }
 
-static CajaFile *
+static PeonyFile *
 sort_model_iter_to_file (FMTreeView *view, GtkTreeIter *iter)
 {
     GtkTreeIter child_iter;
@@ -355,7 +355,7 @@ sort_model_iter_to_file (FMTreeView *view, GtkTreeIter *iter)
     return fm_tree_model_iter_get_file (view->details->child_model, &child_iter);
 }
 
-static CajaFile *
+static PeonyFile *
 sort_model_path_to_file (FMTreeView *view, GtkTreePath *path)
 {
     GtkTreeIter iter;
@@ -368,13 +368,13 @@ sort_model_path_to_file (FMTreeView *view, GtkTreePath *path)
 }
 
 static void
-got_activation_uri_callback (CajaFile *file, gpointer callback_data)
+got_activation_uri_callback (PeonyFile *file, gpointer callback_data)
 {
     char *uri, *file_uri;
     FMTreeView *view;
     GdkScreen *screen;
     GFile *location;
-    CajaWindowSlotInfo *slot;
+    PeonyWindowSlotInfo *slot;
     gboolean open_in_same_slot;
 
     view = FM_TREE_VIEW (callback_data);
@@ -385,25 +385,25 @@ got_activation_uri_callback (CajaFile *file, gpointer callback_data)
 
     open_in_same_slot =
         (view->details->activation_flags &
-         (CAJA_WINDOW_OPEN_FLAG_NEW_WINDOW |
-          CAJA_WINDOW_OPEN_FLAG_NEW_TAB)) == 0;
+         (PEONY_WINDOW_OPEN_FLAG_NEW_WINDOW |
+          PEONY_WINDOW_OPEN_FLAG_NEW_TAB)) == 0;
 
-    slot = caja_window_info_get_active_slot (view->details->window);
+    slot = peony_window_info_get_active_slot (view->details->window);
 
-    uri = caja_file_get_activation_uri (file);
-    if (caja_file_is_launcher (file))
+    uri = peony_file_get_activation_uri (file);
+    if (peony_file_is_launcher (file))
     {
-        file_uri = caja_file_get_uri (file);
-        caja_debug_log (FALSE, CAJA_DEBUG_LOG_DOMAIN_USER,
+        file_uri = peony_file_get_uri (file);
+        peony_debug_log (FALSE, PEONY_DEBUG_LOG_DOMAIN_USER,
                         "tree view launch_desktop_file window=%p: %s",
                         view->details->window, file_uri);
-        caja_launch_desktop_file (screen, file_uri, NULL, NULL);
+        peony_launch_desktop_file (screen, file_uri, NULL, NULL);
         g_free (file_uri);
     }
     else if (uri != NULL
-             && caja_file_is_executable (file)
-             && caja_file_can_execute (file)
-             && !caja_file_is_directory (file))
+             && peony_file_is_executable (file)
+             && peony_file_can_execute (file)
+             && !peony_file_is_directory (file))
     {
 
         file_uri = g_filename_from_uri (uri, NULL, NULL);
@@ -411,24 +411,24 @@ got_activation_uri_callback (CajaFile *file, gpointer callback_data)
         /* Non-local executables don't get launched. They act like non-executables. */
         if (file_uri == NULL)
         {
-            caja_debug_log (FALSE, CAJA_DEBUG_LOG_DOMAIN_USER,
+            peony_debug_log (FALSE, PEONY_DEBUG_LOG_DOMAIN_USER,
                             "tree view window_info_open_location window=%p: %s",
                             view->details->window, uri);
             location = g_file_new_for_uri (uri);
-            caja_window_slot_info_open_location
+            peony_window_slot_info_open_location
             (slot,
              location,
-             CAJA_WINDOW_OPEN_ACCORDING_TO_MODE,
+             PEONY_WINDOW_OPEN_ACCORDING_TO_MODE,
              view->details->activation_flags,
              NULL);
             g_object_unref (location);
         }
         else
         {
-            caja_debug_log (FALSE, CAJA_DEBUG_LOG_DOMAIN_USER,
+            peony_debug_log (FALSE, PEONY_DEBUG_LOG_DOMAIN_USER,
                             "tree view launch_application_from_command window=%p: %s",
                             view->details->window, file_uri);
-            caja_launch_application_from_command (screen, NULL, file_uri, FALSE, NULL);
+            peony_launch_application_from_command (screen, NULL, file_uri, FALSE, NULL);
             g_free (file_uri);
         }
 
@@ -448,14 +448,14 @@ got_activation_uri_callback (CajaFile *file, gpointer callback_data)
                 view->details->selection_location = g_strdup (uri);
             }
 
-            caja_debug_log (FALSE, CAJA_DEBUG_LOG_DOMAIN_USER,
+            peony_debug_log (FALSE, PEONY_DEBUG_LOG_DOMAIN_USER,
                             "tree view window_info_open_location window=%p: %s",
                             view->details->window, uri);
             location = g_file_new_for_uri (uri);
-            caja_window_slot_info_open_location
+            peony_window_slot_info_open_location
             (slot,
              location,
-             CAJA_WINDOW_OPEN_ACCORDING_TO_MODE,
+             PEONY_WINDOW_OPEN_ACCORDING_TO_MODE,
              view->details->activation_flags,
              NULL);
             g_object_unref (location);
@@ -463,7 +463,7 @@ got_activation_uri_callback (CajaFile *file, gpointer callback_data)
     }
 
     g_free (uri);
-    caja_file_unref (view->details->activation_file);
+    peony_file_unref (view->details->activation_file);
     view->details->activation_file = NULL;
 }
 
@@ -475,10 +475,10 @@ cancel_activation (FMTreeView *view)
         return;
     }
 
-    caja_file_cancel_call_when_ready
+    peony_file_cancel_call_when_ready
     (view->details->activation_file,
      got_activation_uri_callback, view);
-    caja_file_unref (view->details->activation_file);
+    peony_file_unref (view->details->activation_file);
     view->details->activation_file = NULL;
 }
 
@@ -500,7 +500,7 @@ row_activated_callback (GtkTreeView *treeview, GtkTreePath *path,
 static gboolean
 selection_changed_timer_callback(FMTreeView *view)
 {
-    CajaFileAttributes attributes;
+    PeonyFileAttributes attributes;
     GtkTreeIter iter;
     GtkTreeSelection *selection;
 
@@ -526,8 +526,8 @@ selection_changed_timer_callback(FMTreeView *view)
     }
     view->details->activation_flags = 0;
 
-    attributes = CAJA_FILE_ATTRIBUTE_INFO | CAJA_FILE_ATTRIBUTE_LINK_INFO;
-    caja_file_call_when_ready (view->details->activation_file, attributes,
+    attributes = PEONY_FILE_ATTRIBUTE_INFO | PEONY_FILE_ATTRIBUTE_LINK_INFO;
+    peony_file_call_when_ready (view->details->activation_file, attributes,
                                got_activation_uri_callback, view);
     return FALSE; /* remove timeout */
 }
@@ -568,7 +568,7 @@ selection_changed_callback (GtkTreeSelection *selection,
 static int
 compare_rows (GtkTreeModel *model, GtkTreeIter *a, GtkTreeIter *b, gpointer callback_data)
 {
-    CajaFile *file_a, *file_b;
+    PeonyFile *file_a, *file_b;
     int result;
 
     /* Dummy rows are always first */
@@ -605,28 +605,28 @@ compare_rows (GtkTreeModel *model, GtkTreeIter *a, GtkTreeIter *b, gpointer call
     }
     else
     {
-        result = caja_file_compare_for_sort (file_a, file_b,
-                                             CAJA_FILE_SORT_BY_DISPLAY_NAME,
+        result = peony_file_compare_for_sort (file_a, file_b,
+                                             PEONY_FILE_SORT_BY_DISPLAY_NAME,
                                              FALSE, FALSE);
     }
 
-    caja_file_unref (file_a);
-    caja_file_unref (file_b);
+    peony_file_unref (file_a);
+    peony_file_unref (file_b);
 
     return result;
 }
 
 
 static char *
-get_root_uri_callback (CajaTreeViewDragDest *dest,
+get_root_uri_callback (PeonyTreeViewDragDest *dest,
                        gpointer user_data)
 {
     /* Don't allow drops on background */
     return NULL;
 }
 
-static CajaFile *
-get_file_for_path_callback (CajaTreeViewDragDest *dest,
+static PeonyFile *
+get_file_for_path_callback (PeonyTreeViewDragDest *dest,
                             GtkTreePath *path,
                             gpointer user_data)
 {
@@ -638,7 +638,7 @@ get_file_for_path_callback (CajaTreeViewDragDest *dest,
 }
 
 static void
-move_copy_items_callback (CajaTreeViewDragDest *dest,
+move_copy_items_callback (PeonyTreeViewDragDest *dest,
                           const GList *item_uris,
                           const char *target_uri,
                           GdkDragAction action,
@@ -650,10 +650,10 @@ move_copy_items_callback (CajaTreeViewDragDest *dest,
 
     view = FM_TREE_VIEW (user_data);
 
-    caja_clipboard_clear_if_colliding_uris (GTK_WIDGET (view),
+    peony_clipboard_clear_if_colliding_uris (GTK_WIDGET (view),
                                             item_uris,
                                             copied_files_atom);
-    caja_file_operations_copy_move
+    peony_file_operations_copy_move
     (item_uris,
      NULL,
      target_uri,
@@ -732,12 +732,12 @@ clipboard_contents_received_callback (GtkClipboard     *clipboard,
 }
 
 static gboolean
-is_parent_writable (CajaFile *file)
+is_parent_writable (PeonyFile *file)
 {
-    CajaFile *parent;
+    PeonyFile *parent;
     gboolean result;
 
-    parent = caja_file_get_parent (file);
+    parent = peony_file_get_parent (file);
 
     /* No parent directory, return FALSE */
     if (parent == NULL)
@@ -745,8 +745,8 @@ is_parent_writable (CajaFile *file)
         return FALSE;
     }
 
-    result = caja_file_can_write (parent);
-    caja_file_unref (parent);
+    result = peony_file_can_write (parent);
+    peony_file_unref (parent);
 
     return result;
 }
@@ -792,27 +792,27 @@ button_pressed_callback (GtkTreeView *treeview, GdkEventButton *event,
         create_popup_menu (view);
 
         gtk_widget_set_sensitive (view->details->popup_open_in_new_window,
-                                  caja_file_is_directory (view->details->popup_file));
+                                  peony_file_is_directory (view->details->popup_file));
         gtk_widget_set_sensitive (view->details->popup_create_folder,
-                                  caja_file_is_directory (view->details->popup_file) &&
-                                  caja_file_can_write (view->details->popup_file));
+                                  peony_file_is_directory (view->details->popup_file) &&
+                                  peony_file_can_write (view->details->popup_file));
         gtk_widget_set_sensitive (view->details->popup_paste, FALSE);
-        if (caja_file_is_directory (view->details->popup_file) &&
-                caja_file_can_write (view->details->popup_file))
+        if (peony_file_is_directory (view->details->popup_file) &&
+                peony_file_can_write (view->details->popup_file))
         {
-            gtk_clipboard_request_contents (caja_clipboard_get (GTK_WIDGET (view->details->tree_widget)),
+            gtk_clipboard_request_contents (peony_clipboard_get (GTK_WIDGET (view->details->tree_widget)),
                                             copied_files_atom,
                                             clipboard_contents_received_callback, g_object_ref (view));
         }
-        can_move_file_to_trash = caja_file_can_trash (view->details->popup_file);
+        can_move_file_to_trash = peony_file_can_trash (view->details->popup_file);
         gtk_widget_set_sensitive (view->details->popup_trash, can_move_file_to_trash);
 
-        if (g_settings_get_boolean (caja_preferences, CAJA_PREFERENCES_ENABLE_DELETE))
+        if (g_settings_get_boolean (peony_preferences, PEONY_PREFERENCES_ENABLE_DELETE))
         {
             parent_file_is_writable = is_parent_writable (view->details->popup_file);
-            file_is_home_or_desktop = caja_file_is_home (view->details->popup_file)
-                                      || caja_file_is_desktop_directory (view->details->popup_file);
-            file_is_special_link = CAJA_IS_DESKTOP_ICON_FILE (view->details->popup_file);
+            file_is_home_or_desktop = peony_file_is_home (view->details->popup_file)
+                                      || peony_file_is_desktop_directory (view->details->popup_file);
+            file_is_special_link = PEONY_IS_DESKTOP_ICON_FILE (view->details->popup_file);
 
             can_delete_file = parent_file_is_writable
                               && !file_is_home_or_desktop
@@ -871,7 +871,7 @@ button_pressed_callback (GtkTreeView *treeview, GdkEventButton *event,
     }
     else if (event->button == 2 && event->type == GDK_BUTTON_PRESS)
     {
-        CajaFile *file;
+        PeonyFile *file;
 
         if (!gtk_tree_view_get_path_at_pos (treeview, event->x, event->y,
                                             &path, NULL, NULL, NULL))
@@ -884,9 +884,9 @@ button_pressed_callback (GtkTreeView *treeview, GdkEventButton *event,
         {
             fm_tree_view_activate_file (view, file,
                                         (event->state & GDK_CONTROL_MASK) != 0 ?
-                                        CAJA_WINDOW_OPEN_FLAG_NEW_WINDOW :
-                                        CAJA_WINDOW_OPEN_FLAG_NEW_TAB);
-            caja_file_unref (file);
+                                        PEONY_WINDOW_OPEN_FLAG_NEW_WINDOW :
+                                        PEONY_WINDOW_OPEN_FLAG_NEW_TAB);
+            peony_file_unref (file);
         }
 
         gtk_tree_path_free (path);
@@ -899,18 +899,18 @@ button_pressed_callback (GtkTreeView *treeview, GdkEventButton *event,
 
 static void
 fm_tree_view_activate_file (FMTreeView *view,
-                            CajaFile *file,
-                            CajaWindowOpenFlags flags)
+                            PeonyFile *file,
+                            PeonyWindowOpenFlags flags)
 {
-    CajaFileAttributes attributes;
+    PeonyFileAttributes attributes;
 
     cancel_activation (view);
 
-    view->details->activation_file = caja_file_ref (file);
+    view->details->activation_file = peony_file_ref (file);
     view->details->activation_flags = flags;
 
-    attributes = CAJA_FILE_ATTRIBUTE_INFO | CAJA_FILE_ATTRIBUTE_LINK_INFO;
-    caja_file_call_when_ready (view->details->activation_file, attributes,
+    attributes = PEONY_FILE_ATTRIBUTE_INFO | PEONY_FILE_ATTRIBUTE_LINK_INFO;
+    peony_file_call_when_ready (view->details->activation_file, attributes,
                                got_activation_uri_callback, view);
 }
 
@@ -925,20 +925,20 @@ static void
 fm_tree_view_open_in_new_tab_cb (GtkWidget *menu_item,
                                  FMTreeView *view)
 {
-    fm_tree_view_activate_file (view, view->details->popup_file, CAJA_WINDOW_OPEN_FLAG_NEW_TAB);
+    fm_tree_view_activate_file (view, view->details->popup_file, PEONY_WINDOW_OPEN_FLAG_NEW_TAB);
 }
 
 static void
 fm_tree_view_open_in_new_window_cb (GtkWidget *menu_item,
                                     FMTreeView *view)
 {
-    /* fm_tree_view_activate_file (view, view->details->popup_file, CAJA_WINDOW_OPEN_FLAG_NEW_WINDOW); */
+    /* fm_tree_view_activate_file (view, view->details->popup_file, PEONY_WINDOW_OPEN_FLAG_NEW_WINDOW); */
 
-    caja_mime_activate_file  (fm_tree_view_get_containing_window (view),
-                              caja_window_info_get_active_slot (view->details->window),
+    peony_mime_activate_file  (fm_tree_view_get_containing_window (view),
+                              peony_window_info_get_active_slot (view->details->window),
                               view->details->popup_file,
                               g_file_get_path (view->details->popup_file->details->directory->details->location),
-                              CAJA_WINDOW_OPEN_FLAG_NEW_WINDOW,
+                              PEONY_WINDOW_OPEN_FLAG_NEW_WINDOW,
                               0);
 }
 
@@ -950,11 +950,11 @@ new_folder_done (GFile *new_folder, gpointer data)
     /* show the properties window for the newly created
      * folder so the user can change its name
      */
-    list = g_list_prepend (NULL, caja_file_get (new_folder));
+    list = g_list_prepend (NULL, peony_file_get (new_folder));
 
     fm_properties_window_present (list, GTK_WIDGET (data));
 
-    caja_file_list_free (list);
+    peony_file_list_free (list);
 }
 
 static void
@@ -963,8 +963,8 @@ fm_tree_view_create_folder_cb (GtkWidget *menu_item,
 {
     char *parent_uri;
 
-    parent_uri = caja_file_get_uri (view->details->popup_file);
-    caja_file_operations_new_folder (GTK_WIDGET (view->details->tree_widget),
+    parent_uri = peony_file_get_uri (view->details->popup_file);
+    peony_file_operations_new_folder (GTK_WIDGET (view->details->tree_widget),
                                      NULL,
                                      parent_uri,
                                      new_folder_done, view->details->tree_widget);
@@ -977,7 +977,7 @@ copy_or_cut_files (FMTreeView *view,
                    gboolean cut)
 {
     char *status_string, *name;
-    CajaClipboardInfo info;
+    PeonyClipboardInfo info;
     GtkTargetList *target_list;
     GtkTargetEntry *targets;
     int n_targets;
@@ -993,17 +993,17 @@ copy_or_cut_files (FMTreeView *view,
     targets = gtk_target_table_new_from_list (target_list, &n_targets);
     gtk_target_list_unref (target_list);
 
-    gtk_clipboard_set_with_data (caja_clipboard_get (GTK_WIDGET (view->details->tree_widget)),
+    gtk_clipboard_set_with_data (peony_clipboard_get (GTK_WIDGET (view->details->tree_widget)),
                                  targets, n_targets,
-                                 caja_get_clipboard_callback, caja_clear_clipboard_callback,
+                                 peony_get_clipboard_callback, peony_clear_clipboard_callback,
                                  NULL);
     gtk_target_table_free (targets, n_targets);
 
-    caja_clipboard_monitor_set_clipboard_info (caja_clipboard_monitor_get (),
+    peony_clipboard_monitor_set_clipboard_info (peony_clipboard_monitor_get (),
             &info);
     g_list_free (info.files);
 
-    name = caja_file_get_display_name (view->details->popup_file);
+    name = peony_file_get_display_name (view->details->popup_file);
     if (cut)
     {
         status_string = g_strdup_printf (_("\"%s\" will be moved "
@@ -1018,7 +1018,7 @@ copy_or_cut_files (FMTreeView *view,
     }
     g_free (name);
 
-    caja_window_info_push_status (view->details->window,
+    peony_window_info_push_status (view->details->window,
                                   status_string);
     g_free (status_string);
 }
@@ -1046,17 +1046,17 @@ paste_clipboard_data (FMTreeView *view,
     GList *item_uris;
 
     cut = FALSE;
-    item_uris = caja_clipboard_get_uri_list_from_selection_data (selection_data, &cut,
+    item_uris = peony_clipboard_get_uri_list_from_selection_data (selection_data, &cut,
                 copied_files_atom);
 
     if (item_uris == NULL|| destination_uri == NULL)
     {
-        caja_window_info_push_status (view->details->window,
+        peony_window_info_push_status (view->details->window,
                                       _("There is nothing on the clipboard to paste."));
     }
     else
     {
-        caja_file_operations_copy_move
+        peony_file_operations_copy_move
         (item_uris, NULL, destination_uri,
          cut ? GDK_ACTION_MOVE : GDK_ACTION_COPY,
          GTK_WIDGET (view->details->tree_widget),
@@ -1065,7 +1065,7 @@ paste_clipboard_data (FMTreeView *view,
         /* If items are cut then remove from clipboard */
         if (cut)
         {
-            gtk_clipboard_clear (caja_clipboard_get (GTK_WIDGET (view)));
+            gtk_clipboard_clear (peony_clipboard_get (GTK_WIDGET (view)));
         }
 
     	g_list_free_full (item_uris, g_free);
@@ -1082,7 +1082,7 @@ paste_into_clipboard_received_callback (GtkClipboard     *clipboard,
 
     view = FM_TREE_VIEW (data);
 
-    directory_uri = caja_file_get_uri (view->details->popup_file);
+    directory_uri = peony_file_get_uri (view->details->popup_file);
 
     paste_clipboard_data (view, selection_data, directory_uri);
 
@@ -1093,7 +1093,7 @@ static void
 fm_tree_view_paste_cb (GtkWidget *menu_item,
                        FMTreeView *view)
 {
-    gtk_clipboard_request_contents (caja_clipboard_get (GTK_WIDGET (view->details->tree_widget)),
+    gtk_clipboard_request_contents (peony_clipboard_get (GTK_WIDGET (view->details->tree_widget)),
                                     copied_files_atom,
                                     paste_into_clipboard_received_callback, view);
 }
@@ -1120,15 +1120,15 @@ fm_tree_view_trash_cb (GtkWidget *menu_item,
 {
     GList *list;
 
-    if (!caja_file_can_trash (view->details->popup_file))
+    if (!peony_file_can_trash (view->details->popup_file))
     {
         return;
     }
 
     list = g_list_prepend (NULL,
-                           caja_file_get_location (view->details->popup_file));
+                           peony_file_get_location (view->details->popup_file));
 
-    caja_file_operations_trash_or_delete (list,
+    peony_file_operations_trash_or_delete (list,
                                           fm_tree_view_get_containing_window (view),
                                           NULL, NULL);
     g_list_free_full (list, g_object_unref);
@@ -1140,15 +1140,15 @@ fm_tree_view_delete_cb (GtkWidget *menu_item,
 {
     GList *location_list;
 
-    if (!g_settings_get_boolean (caja_preferences, CAJA_PREFERENCES_ENABLE_DELETE))
+    if (!g_settings_get_boolean (peony_preferences, PEONY_PREFERENCES_ENABLE_DELETE))
     {
         return;
     }
 
     location_list = g_list_prepend (NULL,
-                                    caja_file_get_location (view->details->popup_file));
+                                    peony_file_get_location (view->details->popup_file));
 
-    caja_file_operations_delete (location_list, fm_tree_view_get_containing_window (view), NULL, NULL);
+    peony_file_operations_delete (location_list, fm_tree_view_get_containing_window (view), NULL, NULL);
     g_list_free_full (location_list, g_object_unref);
 }
 
@@ -1158,18 +1158,18 @@ fm_tree_view_properties_cb (GtkWidget *menu_item,
 {
     GList *list;
 
-    list = g_list_prepend (NULL, caja_file_ref (view->details->popup_file));
+    list = g_list_prepend (NULL, peony_file_ref (view->details->popup_file));
 
     fm_properties_window_present (list, GTK_WIDGET (view->details->tree_widget));
 
-    caja_file_list_free (list);
+    peony_file_list_free (list);
 }
 
 static void
 fm_tree_view_unmount_cb (GtkWidget *menu_item,
                          FMTreeView *view)
 {
-    CajaFile *file = view->details->popup_file;
+    PeonyFile *file = view->details->popup_file;
     GMount *mount;
 
     if (file == NULL)
@@ -1181,7 +1181,7 @@ fm_tree_view_unmount_cb (GtkWidget *menu_item,
 
     if (mount != NULL)
     {
-        caja_file_operations_unmount_mount (fm_tree_view_get_containing_window (view),
+        peony_file_operations_unmount_mount (fm_tree_view_get_containing_window (view),
                                             mount, FALSE, TRUE);
     }
 }
@@ -1190,7 +1190,7 @@ static void
 fm_tree_view_eject_cb (GtkWidget *menu_item,
                        FMTreeView *view)
 {
-    CajaFile *file = view->details->popup_file;
+    PeonyFile *file = view->details->popup_file;
     GMount *mount;
 
     if (file == NULL)
@@ -1202,7 +1202,7 @@ fm_tree_view_eject_cb (GtkWidget *menu_item,
 
     if (mount != NULL)
     {
-        caja_file_operations_unmount_mount (fm_tree_view_get_containing_window (view),
+        peony_file_operations_unmount_mount (fm_tree_view_get_containing_window (view),
                                             mount, TRUE, TRUE);
     }
 }
@@ -1216,7 +1216,7 @@ free_popup_file_in_idle_cb (gpointer data)
 
     if (view->details->popup_file != NULL)
     {
-        caja_file_unref (view->details->popup_file);
+        peony_file_unref (view->details->popup_file);
         view->details->popup_file = NULL;
     }
     view->details->popup_file_idle_handler = 0;
@@ -1340,7 +1340,7 @@ create_popup_menu (FMTreeView *view)
     eel_gtk_menu_append_separator (GTK_MENU (popup));
 
     /* add the "move to trash" menu item */
-    menu_image = gtk_image_new_from_icon_name (CAJA_ICON_TRASH_FULL,
+    menu_image = gtk_image_new_from_icon_name (PEONY_ICON_TRASH_FULL,
                  GTK_ICON_SIZE_MENU);
     gtk_widget_show (menu_image);
     menu_item = gtk_image_menu_item_new_with_mnemonic (_("Mo_ve to Trash"));
@@ -1354,7 +1354,7 @@ create_popup_menu (FMTreeView *view)
     view->details->popup_trash = menu_item;
 
     /* add the "delete" menu item */
-    menu_image = gtk_image_new_from_icon_name (CAJA_ICON_DELETE,
+    menu_image = gtk_image_new_from_icon_name (PEONY_ICON_DELETE,
                  GTK_ICON_SIZE_MENU);
     gtk_widget_show (menu_image);
     menu_item = gtk_image_menu_item_new_with_mnemonic (_("_Delete"));
@@ -1413,7 +1413,8 @@ create_tree (FMTreeView *view)
     GList *mounts, *l;
     char *location;
     GIcon *icon;
-    CajaWindowSlotInfo *slot;
+    PeonyWindowSlotInfo *slot;
+    PeonyFile *file;
 
     view->details->child_model = fm_tree_model_new ();
     view->details->sort_model = GTK_TREE_MODEL_SORT
@@ -1429,27 +1430,51 @@ create_tree (FMTreeView *view)
     (view->details->child_model, "row_loaded",
      G_CALLBACK (row_loaded_callback),
      view, G_CONNECT_AFTER);
-    home_uri = caja_get_home_directory_uri ();
-    icon = g_themed_icon_new (CAJA_ICON_HOME);
+ /*   home_uri = peony_get_home_directory_uri ();
+    icon = g_themed_icon_new (PEONY_ICON_HOME);
     fm_tree_model_add_root_uri (view->details->child_model, home_uri, _("Home Folder"), icon, NULL);
     g_object_unref (icon);
     g_free (home_uri);
-    icon = g_themed_icon_new (CAJA_ICON_FILESYSTEM);
+    icon = g_themed_icon_new (PEONY_ICON_FILESYSTEM);
     fm_tree_model_add_root_uri (view->details->child_model, "file:///", _("File System"), icon, NULL);
     g_object_unref (icon);
-    icon = g_themed_icon_new (CAJA_ICON_TRASH);
+    icon = g_themed_icon_new (PEONY_ICON_TRASH);
     fm_tree_model_add_root_uri (view->details->child_model, "trash:///", _("Trash"), icon, NULL);
     g_object_unref (icon);
+
+*/
+    /*create header*/
+/*    icon = g_themed_icon_new (CAJA_ICON_FAVORITE);
+    fm_tree_model_add_root_uri (view->details->child_model, "favorite:///", _("Favorite"), icon, NULL);
+    g_object_unref (icon);
+    file = peony_file_get_by_uri("favorite:///");
+    peony_file_call_when_ready(file,attributes,NULL,NULL);
+    peony_file_unref (file);
+*/
+    icon = g_themed_icon_new ("personal");
+    GString *personal = g_string_new(NULL);
+    g_string_append(personal, "file://");
+    g_string_append(personal, g_get_home_dir());
+    fm_tree_model_add_root_uri (view->details->child_model, personal->str, _("Personal"), icon, NULL);
+    g_string_free(personal, TRUE);
+    g_object_unref (icon);
+
+    icon = g_themed_icon_new ("uk-computer");
+    fm_tree_model_add_root_uri (view->details->child_model, "computer:///", _("My Computer"), icon, NULL);
+    g_object_unref (icon);
+    file = peony_file_get_by_uri ("computer:///");
+    //peony_file_call_when_ready(file,attributes,NULL,NULL);
+    peony_file_unref (file);
 
 
     volume_monitor = g_volume_monitor_get ();
     view->details->volume_monitor = volume_monitor;
     mounts = g_volume_monitor_get_mounts (volume_monitor);
-    for (l = mounts; l != NULL; l = l->next)
+    /*for (l = mounts; l != NULL; l = l->next)
     {
         add_root_for_mount (view, l->data);
         g_object_unref (l->data);
-    }
+    }*/
     g_list_free (mounts);
 
     g_signal_connect_object (volume_monitor, "mount_added",
@@ -1462,7 +1487,7 @@ create_tree (FMTreeView *view)
     gtk_tree_view_set_headers_visible (view->details->tree_widget, FALSE);
 
     view->details->drag_dest =
-        caja_tree_view_drag_dest_new (view->details->tree_widget);
+        peony_tree_view_drag_dest_new (view->details->tree_widget);
     g_signal_connect_object (view->details->drag_dest,
                              "get_root_uri",
                              G_CALLBACK (get_root_uri_callback),
@@ -1512,8 +1537,8 @@ create_tree (FMTreeView *view)
                       "button_press_event", G_CALLBACK (button_pressed_callback),
                       view);
 
-    slot = caja_window_info_get_active_slot (view->details->window);
-    location = caja_window_slot_info_get_current_location (slot);
+    slot = peony_window_info_get_active_slot (view->details->window);
+    location = peony_window_slot_info_get_current_location (slot);
     schedule_select_and_show_location (view, location);
     g_free (location);
 }
@@ -1521,30 +1546,30 @@ create_tree (FMTreeView *view)
 static void
 update_filtering_from_preferences (FMTreeView *view)
 {
-    CajaWindowShowHiddenFilesMode mode;
+    PeonyWindowShowHiddenFilesMode mode;
 
     if (view->details->child_model == NULL)
     {
         return;
     }
 
-    mode = caja_window_info_get_hidden_files_mode (view->details->window);
+    mode = peony_window_info_get_hidden_files_mode (view->details->window);
 
-    if (mode == CAJA_WINDOW_SHOW_HIDDEN_FILES_DEFAULT)
+    if (mode == PEONY_WINDOW_SHOW_HIDDEN_FILES_DEFAULT)
     {
         fm_tree_model_set_show_hidden_files
         (view->details->child_model,
-         g_settings_get_boolean (caja_preferences, CAJA_PREFERENCES_SHOW_HIDDEN_FILES));
+         g_settings_get_boolean (peony_preferences, PEONY_PREFERENCES_SHOW_HIDDEN_FILES));
     }
     else
     {
         fm_tree_model_set_show_hidden_files
         (view->details->child_model,
-         mode == CAJA_WINDOW_SHOW_HIDDEN_FILES_ENABLE);
+         mode == PEONY_WINDOW_SHOW_HIDDEN_FILES_ENABLE);
     }
     fm_tree_model_set_show_only_directories
     (view->details->child_model,
-     g_settings_get_boolean (caja_tree_sidebar_preferences, CAJA_PREFERENCES_TREE_SHOW_ONLY_DIRECTORIES));
+     g_settings_get_boolean (peony_tree_sidebar_preferences, PEONY_PREFERENCES_TREE_SHOW_ONLY_DIRECTORIES));
 }
 
 static void
@@ -1570,7 +1595,7 @@ filtering_changed_callback (gpointer callback_data)
 }
 
 static void
-loading_uri_callback (CajaWindowInfo *window,
+loading_uri_callback (PeonyWindowInfo *window,
                       char *location,
                       gpointer callback_data)
 {
@@ -1601,17 +1626,17 @@ fm_tree_view_init (FMTreeView *view)
 
     view->details->selecting = FALSE;
 
-    g_signal_connect_swapped (caja_preferences,
-                              "changed::" CAJA_PREFERENCES_SHOW_HIDDEN_FILES,
+    g_signal_connect_swapped (peony_preferences,
+                              "changed::" PEONY_PREFERENCES_SHOW_HIDDEN_FILES,
                               G_CALLBACK(filtering_changed_callback),
                               view);
-    g_signal_connect_swapped (caja_tree_sidebar_preferences,
-                              "changed::" CAJA_PREFERENCES_TREE_SHOW_ONLY_DIRECTORIES,
+    g_signal_connect_swapped (peony_tree_sidebar_preferences,
+                              "changed::" PEONY_PREFERENCES_TREE_SHOW_ONLY_DIRECTORIES,
                               G_CALLBACK (filtering_changed_callback), view);
     view->details->popup_file = NULL;
 
     view->details->clipboard_handler_id =
-        g_signal_connect (caja_clipboard_monitor_get (),
+        g_signal_connect (peony_clipboard_monitor_get (),
                           "clipboard_info",
                           G_CALLBACK (notify_clipboard_info), view);
 }
@@ -1643,7 +1668,7 @@ fm_tree_view_dispose (GObject *object)
 
     if (view->details->clipboard_handler_id != 0)
     {
-        g_signal_handler_disconnect (caja_clipboard_monitor_get (),
+        g_signal_handler_disconnect (peony_clipboard_monitor_get (),
                                      view->details->clipboard_handler_id);
         view->details->clipboard_handler_id = 0;
     }
@@ -1664,7 +1689,7 @@ fm_tree_view_dispose (GObject *object)
 
     if (view->details->popup_file != NULL)
     {
-        caja_file_unref (view->details->popup_file);
+        peony_file_unref (view->details->popup_file);
         view->details->popup_file = NULL;
     }
 
@@ -1680,11 +1705,11 @@ fm_tree_view_dispose (GObject *object)
         view->details->volume_monitor = NULL;
     }
 
-    g_signal_handlers_disconnect_by_func (caja_preferences,
+    g_signal_handlers_disconnect_by_func (peony_preferences,
                                           G_CALLBACK(filtering_changed_callback),
                                           view);
 
-    g_signal_handlers_disconnect_by_func (caja_tree_sidebar_preferences,
+    g_signal_handlers_disconnect_by_func (peony_tree_sidebar_preferences,
                                           G_CALLBACK(filtering_changed_callback),
                                           view);
 
@@ -1711,49 +1736,49 @@ fm_tree_view_class_init (FMTreeViewClass *class)
     G_OBJECT_CLASS (class)->dispose = fm_tree_view_dispose;
     G_OBJECT_CLASS (class)->finalize = fm_tree_view_finalize;
 
-    copied_files_atom = gdk_atom_intern ("x-special/mate-copied-files", FALSE);
+    copied_files_atom = gdk_atom_intern ("x-special/ukui-copied-files", FALSE);
 }
 
 static const char *
-fm_tree_view_get_sidebar_id (CajaSidebar *sidebar)
+fm_tree_view_get_sidebar_id (PeonySidebar *sidebar)
 {
     return TREE_SIDEBAR_ID;
 }
 
 static char *
-fm_tree_view_get_tab_label (CajaSidebar *sidebar)
+fm_tree_view_get_tab_label (PeonySidebar *sidebar)
 {
     return g_strdup (_("Tree"));
 }
 
 static char *
-fm_tree_view_get_tab_tooltip (CajaSidebar *sidebar)
+fm_tree_view_get_tab_tooltip (PeonySidebar *sidebar)
 {
     return g_strdup (_("Show Tree"));
 }
 
 static GdkPixbuf *
-fm_tree_view_get_tab_icon (CajaSidebar *sidebar)
+fm_tree_view_get_tab_icon (PeonySidebar *sidebar)
 {
     return NULL;
 }
 
 static void
-fm_tree_view_is_visible_changed (CajaSidebar *sidebar,
+fm_tree_view_is_visible_changed (PeonySidebar *sidebar,
                                  gboolean         is_visible)
 {
     /* Do nothing */
 }
 
 static void
-hidden_files_mode_changed_callback (CajaWindowInfo *window,
+hidden_files_mode_changed_callback (PeonyWindowInfo *window,
                                     FMTreeView *view)
 {
     update_filtering_from_preferences (view);
 }
 
 static void
-fm_tree_view_iface_init (CajaSidebarIface *iface)
+fm_tree_view_iface_init (PeonySidebarIface *iface)
 {
     iface->get_sidebar_id = fm_tree_view_get_sidebar_id;
     iface->get_tab_label = fm_tree_view_get_tab_label;
@@ -1764,18 +1789,18 @@ fm_tree_view_iface_init (CajaSidebarIface *iface)
 
 static void
 fm_tree_view_set_parent_window (FMTreeView *sidebar,
-                                CajaWindowInfo *window)
+                                PeonyWindowInfo *window)
 {
     char *location;
-    CajaWindowSlotInfo *slot;
+    PeonyWindowSlotInfo *slot;
 
     sidebar->details->window = window;
 
-    slot = caja_window_info_get_active_slot (window);
+    slot = peony_window_info_get_active_slot (window);
 
     g_signal_connect_object (window, "loading_uri",
                              G_CALLBACK (loading_uri_callback), sidebar, 0);
-    location = caja_window_slot_info_get_current_location (slot);
+    location = peony_window_slot_info_get_current_location (slot);
     loading_uri_callback (window, location, sidebar);
     g_free (location);
 
@@ -1784,9 +1809,9 @@ fm_tree_view_set_parent_window (FMTreeView *sidebar,
 
 }
 
-static CajaSidebar *
-fm_tree_view_create (CajaSidebarProvider *provider,
-                     CajaWindowInfo *window)
+static PeonySidebar *
+fm_tree_view_create (PeonySidebarProvider *provider,
+                     PeonyWindowInfo *window)
 {
     FMTreeView *sidebar;
 
@@ -1794,11 +1819,11 @@ fm_tree_view_create (CajaSidebarProvider *provider,
     fm_tree_view_set_parent_window (sidebar, window);
     g_object_ref_sink (sidebar);
 
-    return CAJA_SIDEBAR (sidebar);
+    return PEONY_SIDEBAR (sidebar);
 }
 
 static void
-sidebar_provider_iface_init (CajaSidebarProviderIface *iface)
+sidebar_provider_iface_init (PeonySidebarProviderIface *iface)
 {
     iface->create = fm_tree_view_create;
 }
@@ -1816,5 +1841,5 @@ fm_tree_view_provider_class_init (FMTreeViewProviderClass *class)
 void
 fm_tree_view_register (void)
 {
-    caja_module_add_type (fm_tree_view_provider_get_type ());
+    peony_module_add_type (fm_tree_view_provider_get_type ());
 }

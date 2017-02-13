@@ -1,0 +1,40 @@
+.\" Man page for peony-connect-server
+.TH PEONY-CONNECT-SERVER 1 "29 January 2014" "UKUI Desktop Environment" "General Manual"
+.\" Please adjust this date whenever revising the manpage.
+.\"
+.SH "NAME"
+Peony\-connect\-server \- Connect to Server dialog for Peony
+.SH "SYNOPSIS"
+.B peony\-connect\-server [OPTIONS]
+.SH "DESCRIPTION"
+Peony Connect Server is the connection manager for Peony/UKUI. It is provided as a part of the Peony package for the UKUI Desktop Environment.
+.PP
+Simply running "\fBpeony\-connection\-server\fR" will open a simple dialog allowing you to select the server type, and specify the server address, port, and login credentials for the server you want to connect to. This is the same dialog accessible via the Peony "File" menu, and the UKUI Desktop "Places" menu.
+.PP
+You can use the Peony file manager to access remote servers such as SSH, FTP, and WebDav (HTTP/HTTPS) Servers.
+.PP
+If you desire to mount and access remote servers via console commands, you should use \fBpeony\fR directly. See: \fBpeony\fR(1)
+.SH "OPTIONS"
+.TP
+\fB\-\-display=DISPLAY\fR
+X display to use.
+.TP
+\fB\-?, \-h, \-\-help\fR
+Print standard command line options.
+.TP
+\fB\-\-help\-all\fR
+Print all command line options.
+.SH "BUGS"
+.SS Should you encounter any bugs, they may be reported at: 
+http://github.com/ukui-desktop/peony/issues
+.SH "AUTHORS"
+.SS This Man Page has been written for the UKUI Desktop Environment by:
+Adam Erdman <hekel@archlinux.info> (2014)
+.SH "SEE ALSO"
+.SS
+Peony documentation can be found from the "Help" menu, or by pressing the F1 key. 
+Further information may also be available at: http://wiki.ukui.org/docs
+.P
+.BR "peony" (1),
+.BR "peony-autorun-software" (1),
+.BR "peony-file-management-properties" (1)

@@ -20,7 +20,7 @@ override_dh_auto_configure:
 	NOCONFIGURE=1 ./autogen.sh
 	dh_auto_configure $(DHFLAGS) -- \
 		--disable-silent-rules \
-		--libexecdir=/usr/lib/caja \
+		--libexecdir=/usr/lib/peony \
 		--includedir=/usr/include/$(dpkg-architecture -qDEB_BUILD_MULTIARCH) \
 		--disable-update-mimedb \
 		--disable-static \
@@ -33,8 +33,8 @@ override_dh_auto_test:
 	DEB_BUILD_OPTIONS=nocheck dh_auto_test
 
 override_dh_strip:
-	dh_strip -pcaja --dbgsym-migration='caja-dbg (<< 1.14.1-2~)'
-	dh_strip -plibcaja-extension1 --dbgsym-migration='libcaja-extension1-dbg (<< 1.14.1-2~)'
+	dh_strip -ppeony --dbgsym-migration='peony-dbg (<< 1.14.1-2~)'
+	dh_strip -plibpeony-extension1 --dbgsym-migration='libpeony-extension1-dbg (<< 1.14.1-2~)'
 
 get-orig-source:
 	uscan --noconf --force-download --rename --download-current-version --destdir=..

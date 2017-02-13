@@ -1,0 +1,78 @@
+.\" Man page for Peony.
+.TH PEONY 1 "29 January 2014" "UKUI Desktop Environment"
+.\" Please adjust this date when revising the manpage.
+.\"
+.SH "NAME"
+Peony \- The UKUI File Manager
+.SH "SYNOPSIS"
+.B peony [OPTIONS...] [URI...]
+.SH "DESCRIPTION"
+Peony is the default file manager for the UKUI Desktop Environment. It makes it easy to manage, manipulate, and customize files and directories. Peony can access local and remote filesystems such as SSH, FTP, and WebDav (HTTP/HTTPS).
+.PP
+Peony also provides the desktop background and the icons it uses for launching links and applications, as well as accessing files, directories, the trash, and removable media like CD/DVD/BD and USB drives.
+.PP
+This manual page briefly documents the \fBpeony\fR command.
+.SH "OPTIONS"
+.TP
+\fB\-\-browser\fR
+Open a browser window.
+.TP
+\fB\-c, \-\-check\fR
+Perform a quick set of self-check tests.
+.TP
+\fB\-\-display=DISPLAY\fR
+X display to use.
+.TP
+\fB\-g, \-\-geometry=\fIGEOMETRY\fR
+Create the initial window with the given geometry.
+.TP
+\fB\-n, \-\-no\-default\-window\fR
+Only create windows for explicitly specified URIs.
+.TP
+\fB\-\-no\-desktop\fR
+Do not manage the desktop (ignore the preference set in the preferences dialog).
+.TP
+\fB\-q, \-\-quit\fR
+Quit Peony.
+.TP
+\fB\-\-version\fR
+Print current version information and exit.
+.TP
+\fB\-?, \-h, \-\-help\fR
+Print standard command line options.
+.TP
+\fB\-\-help\-all\fR
+Print all command line options.
+.P
+This program also accepts the standard GTK options.
+
+.SH "EXAMPLES"
+\fBpeony ftp://ftp.kernel.org/\fR
+.RS 4
+Open a new Peony window on the Linux Kernel ftp server.
+.RE
+.PP
+\fBpeony \-\-no\-desktop /home/user/\fR
+.RS 4
+Open a Peony window in "user's" home directory without managing the desktop.
+.RE
+.PP
+\fBpeony \-g 600x400\fR
+.RS 4
+Open a Peony window that is 600 pixels wide by 400 pixels high.
+.SH "BUGS"
+.SS Should you encounter any bugs, they may be reported at: 
+http://github.com/ukui-desktop/peony/issues
+.SH "AUTHORS"
+.SS This Man Page has been updated/re-written for the UKUI Desktop Environment by:
+Adam Erdman <hekel@archlinux.info> (2014)
+.SH "HISTORY"
+This manual page was originally written by Takuo KITAME <kitame@debian.org> and Dafydd Harries <daf@muse.19inch.net> to accompany the Nautilus file manager for the GNOME Desktop Environment on Debian GNU/Linux. (2004)
+.SH "SEE ALSO"
+.SS
+Peony documentation can be found from the "Help" menu, or by pressing the F1 key. 
+Further information may also be available at: http://wiki.ukui.org/docs
+.P
+.BR "peony-file-management-properties" (1),
+.BR "peony-autorun-software" (1),
+.BR "peony-connect-server" (1)

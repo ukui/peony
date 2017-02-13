@@ -2,9 +2,9 @@ include $(top_srcdir)/Makefile.shared
 
 SUBDIRS = \
 	eel \
-	libcaja-extension \
+	libpeony-extension \
 	cut-n-paste-code \
-	libcaja-private \
+	libpeony-private \
 	src \
 	test \
 	po \

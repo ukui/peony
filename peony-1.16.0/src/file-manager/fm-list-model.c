@@ -6,18 +6,18 @@
    Copyright (C) 2003, Soeren Sandmann
    Copyright (C) 2004, Novell, Inc.
 
-   The Mate Library is free software; you can redistribute it and/or
+   The Ukui Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public License as
    published by the Free Software Foundation; either version 2 of the
    License, or (at your option) any later version.
 
-   The Mate Library is distributed in the hope that it will be useful,
+   The Ukui Library is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
    Library General Public License for more details.
 
    You should have received a copy of the GNU Library General Public
-   License along with the Mate Library; see the file COPYING.LIB.  If not,
+   License along with the Ukui Library; see the file COPYING.LIB.  If not,
    write to the Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
    Boston, MA 02110-1301, USA.
 
@@ -36,7 +36,7 @@
 #endif
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
-#include <libcaja-private/caja-dnd.h>
+#include <libpeony-private/peony-dnd.h>
 #include <glib.h>
 
 enum
@@ -94,9 +94,9 @@ typedef struct FileEntry FileEntry;
 
 struct FileEntry
 {
-    CajaFile *file;
+    PeonyFile *file;
     GHashTable *reverse_map;	/* map from files to GSequenceIter's */
-    CajaDirectory *subdirectory;
+    PeonyDirectory *subdirectory;
     FileEntry *parent;
     GSequence *files;
     GSequenceIter *ptr;
@@ -113,8 +113,8 @@ G_DEFINE_TYPE_WITH_CODE (FMListModel, fm_list_model, G_TYPE_OBJECT,
 
 static const GtkTargetEntry drag_types [] =
 {
-    { CAJA_ICON_DND_MATE_ICON_LIST_TYPE, 0, CAJA_ICON_DND_MATE_ICON_LIST },
-    { CAJA_ICON_DND_URI_LIST_TYPE, 0, CAJA_ICON_DND_URI_LIST },
+    { PEONY_ICON_DND_UKUI_ICON_LIST_TYPE, 0, PEONY_ICON_DND_UKUI_ICON_LIST },
+    { PEONY_ICON_DND_URI_LIST_TYPE, 0, PEONY_ICON_DND_URI_LIST },
 };
 
 static GtkTargetList *drag_target_list = NULL;
@@ -122,7 +122,7 @@ static GtkTargetList *drag_target_list = NULL;
 static void
 file_entry_free (FileEntry *file_entry)
 {
-    caja_file_unref (file_entry->file);
+    peony_file_unref (file_entry->file);
     if (file_entry->reverse_map)
     {
         g_hash_table_destroy (file_entry->reverse_map);
@@ -130,7 +130,7 @@ file_entry_free (FileEntry *file_entry)
     }
     if (file_entry->subdirectory != NULL)
     {
-        caja_directory_unref (file_entry->subdirectory);
+        peony_directory_unref (file_entry->subdirectory);
     }
     if (file_entry->files != NULL)
     {
@@ -157,9 +157,9 @@ fm_list_model_get_column_type (GtkTreeModel *tree_model, int index)
     switch (index)
     {
     case FM_LIST_MODEL_FILE_COLUMN:
-        return CAJA_TYPE_FILE;
+        return PEONY_TYPE_FILE;
     case FM_LIST_MODEL_SUBDIRECTORY_COLUMN:
-        return CAJA_TYPE_DIRECTORY;
+        return PEONY_TYPE_DIRECTORY;
     case FM_LIST_MODEL_SMALLEST_ICON_COLUMN:
     case FM_LIST_MODEL_SMALLER_ICON_COLUMN:
     case FM_LIST_MODEL_SMALL_ICON_COLUMN:
@@ -268,19 +268,19 @@ fm_list_model_get_value (GtkTreeModel *tree_model, GtkTreeIter *iter, int column
 {
     FMListModel *model;
     FileEntry *file_entry;
-    CajaFile *file;
+    PeonyFile *file;
     char *str;
     GdkPixbuf *icon, *rendered_icon;
     GIcon *gicon, *emblemed_icon, *emblem_icon;
-    CajaIconInfo *icon_info;
+    PeonyIconInfo *icon_info;
     GEmblem *emblem;
     GList *emblem_icons, *l;
     int icon_size;
-    CajaZoomLevel zoom_level;
-    CajaFile *parent_file;
+    PeonyZoomLevel zoom_level;
+    PeonyFile *parent_file;
     char *emblems_to_ignore[3];
     int i;
-    CajaFileIconFlags flags;
+    PeonyFileIconFlags flags;
 
     model = (FMListModel *)tree_model;
 
@@ -293,12 +293,12 @@ fm_list_model_get_value (GtkTreeModel *tree_model, GtkTreeIter *iter, int column
     switch (column)
     {
     case FM_LIST_MODEL_FILE_COLUMN:
-        g_value_init (value, CAJA_TYPE_FILE);
+        g_value_init (value, PEONY_TYPE_FILE);
 
         g_value_set_object (value, file);
         break;
     case FM_LIST_MODEL_SUBDIRECTORY_COLUMN:
-        g_value_init (value, CAJA_TYPE_DIRECTORY);
+        g_value_init (value, PEONY_TYPE_DIRECTORY);
 
         g_value_set_object (value, file_entry->subdirectory);
         break;
@@ -314,11 +314,11 @@ fm_list_model_get_value (GtkTreeModel *tree_model, GtkTreeIter *iter, int column
         if (file != NULL)
         {
             zoom_level = fm_list_model_get_zoom_level_from_column_id (column);
-            icon_size = caja_get_icon_size_for_zoom_level (zoom_level);
+            icon_size = peony_get_icon_size_for_zoom_level (zoom_level);
 
-            flags = CAJA_FILE_ICON_FLAGS_USE_THUMBNAILS |
-                    CAJA_FILE_ICON_FLAGS_FORCE_THUMBNAIL_SIZE |
-                    CAJA_FILE_ICON_FLAGS_USE_MOUNT_ICON_AS_EMBLEM;
+            flags = PEONY_FILE_ICON_FLAGS_USE_THUMBNAILS |
+                    PEONY_FILE_ICON_FLAGS_FORCE_THUMBNAIL_SIZE |
+                    PEONY_FILE_ICON_FLAGS_USE_MOUNT_ICON_AS_EMBLEM;
             if (model->details->drag_view != NULL)
             {
                 GtkTreePath *path_a, *path_b;
@@ -332,7 +332,7 @@ fm_list_model_get_value (GtkTreeModel *tree_model, GtkTreeIter *iter, int column
 
                     if (gtk_tree_path_compare (path_a, path_b) == 0)
                     {
-                        flags |= CAJA_FILE_ICON_FLAGS_FOR_DRAG_ACCEPT;
+                        flags |= PEONY_FILE_ICON_FLAGS_FOR_DRAG_ACCEPT;
                     }
 
                     gtk_tree_path_free (path_a);
@@ -340,22 +340,22 @@ fm_list_model_get_value (GtkTreeModel *tree_model, GtkTreeIter *iter, int column
                 }
             }
 
-            gicon = caja_file_get_gicon (file, flags);
+            gicon = peony_file_get_gicon (file, flags);
 
             /* render emblems with GEmblemedIcon */
-            parent_file = caja_file_get_parent (file);
+            parent_file = peony_file_get_parent (file);
             i = 0;
-            emblems_to_ignore[i++] = CAJA_FILE_EMBLEM_NAME_TRASH;
+            emblems_to_ignore[i++] = PEONY_FILE_EMBLEM_NAME_TRASH;
             if (parent_file) {
-            	if (!caja_file_can_write (parent_file)) {
-                    emblems_to_ignore[i++] = CAJA_FILE_EMBLEM_NAME_CANT_WRITE;
+            	if (!peony_file_can_write (parent_file)) {
+                    emblems_to_ignore[i++] = PEONY_FILE_EMBLEM_NAME_CANT_WRITE;
             	}
-            	caja_file_unref (parent_file);
+            	peony_file_unref (parent_file);
             }
             emblems_to_ignore[i++] = NULL;
 
             emblem = NULL;
-            emblem_icons = caja_file_get_emblem_icons (file,
+            emblem_icons = peony_file_get_emblem_icons (file,
             					       emblems_to_ignore);
 
             if (emblem_icons != NULL) {
@@ -380,15 +380,15 @@ fm_list_model_get_value (GtkTreeModel *tree_model, GtkTreeIter *iter, int column
             	gicon = emblemed_icon;
             }
 
-            icon_info = caja_icon_info_lookup (gicon, icon_size);
-            icon = caja_icon_info_get_pixbuf_at_size (icon_info, icon_size);
+            icon_info = peony_icon_info_lookup (gicon, icon_size);
+            icon = peony_icon_info_get_pixbuf_at_size (icon_info, icon_size);
 
             g_object_unref (icon_info);
             g_object_unref (gicon);
 
             if (model->details->highlight_files != NULL &&
                     g_list_find_custom (model->details->highlight_files,
-                                        file, (GCompareFunc) caja_file_compare_location))
+                                        file, (GCompareFunc) peony_file_compare_location))
             {
 #if GTK_CHECK_VERSION(3,0,0)
                 rendered_icon = eel_create_spotlight_pixbuf (icon);
@@ -410,22 +410,22 @@ fm_list_model_get_value (GtkTreeModel *tree_model, GtkTreeIter *iter, int column
     case FM_LIST_MODEL_FILE_NAME_IS_EDITABLE_COLUMN:
         g_value_init (value, G_TYPE_BOOLEAN);
 
-        g_value_set_boolean (value, file != NULL && caja_file_can_rename (file));
+        g_value_set_boolean (value, file != NULL && peony_file_can_rename (file));
         break;
     default:
         if (column >= FM_LIST_MODEL_NUM_COLUMNS || column < FM_LIST_MODEL_NUM_COLUMNS + model->details->columns->len)
         {
-            CajaColumn *caja_column;
+            PeonyColumn *peony_column;
             GQuark attribute;
-            caja_column = model->details->columns->pdata[column - FM_LIST_MODEL_NUM_COLUMNS];
+            peony_column = model->details->columns->pdata[column - FM_LIST_MODEL_NUM_COLUMNS];
 
             g_value_init (value, G_TYPE_STRING);
-            g_object_get (caja_column,
+            g_object_get (peony_column,
                           "attribute_q", &attribute,
                           NULL);
             if (file != NULL)
             {
-                str = caja_file_get_string_attribute_with_default_q (file,
+                str = peony_file_get_string_attribute_with_default_q (file,
                         attribute);
                 g_value_take_string (value, str);
             }
@@ -584,8 +584,8 @@ fm_list_model_iter_parent (GtkTreeModel *tree_model, GtkTreeIter *iter, GtkTreeI
 }
 
 static GSequenceIter *
-lookup_file (FMListModel *model, CajaFile *file,
-             CajaDirectory *directory)
+lookup_file (FMListModel *model, PeonyFile *file,
+             PeonyDirectory *directory)
 {
     FileEntry *file_entry;
     GSequenceIter *ptr, *parent_ptr;
@@ -619,7 +619,7 @@ lookup_file (FMListModel *model, CajaFile *file,
 struct GetIters
 {
     FMListModel *model;
-    CajaFile *file;
+    PeonyFile *file;
     GList *iters;
 };
 
@@ -653,7 +653,7 @@ file_to_iter_cb (gpointer  key,
 }
 
 GList *
-fm_list_model_get_all_iters_for_file (FMListModel *model, CajaFile *file)
+fm_list_model_get_all_iters_for_file (FMListModel *model, PeonyFile *file)
 {
     struct GetIters data;
 
@@ -670,7 +670,7 @@ fm_list_model_get_all_iters_for_file (FMListModel *model, CajaFile *file)
 
 gboolean
 fm_list_model_get_first_iter_for_file (FMListModel          *model,
-                                       CajaFile         *file,
+                                       PeonyFile         *file,
                                        GtkTreeIter          *iter)
 {
     GList *list;
@@ -691,8 +691,8 @@ fm_list_model_get_first_iter_for_file (FMListModel          *model,
 
 
 gboolean
-fm_list_model_get_tree_iter_from_file (FMListModel *model, CajaFile *file,
-                                       CajaDirectory *directory,
+fm_list_model_get_tree_iter_from_file (FMListModel *model, PeonyFile *file,
+                                       PeonyDirectory *directory,
                                        GtkTreeIter *iter)
 {
     GSequenceIter *ptr;
@@ -725,7 +725,7 @@ fm_list_model_file_entry_compare_func (gconstpointer a,
 
     if (file_entry1->file != NULL && file_entry2->file != NULL)
     {
-        result = caja_file_compare_for_sort_by_attribute_q (file_entry1->file, file_entry2->file,
+        result = peony_file_compare_for_sort_by_attribute_q (file_entry1->file, file_entry2->file,
                  model->details->sort_attribute,
                  model->details->sort_directories_first,
                  (model->details->order == GTK_SORT_DESCENDING));
@@ -744,12 +744,12 @@ fm_list_model_file_entry_compare_func (gconstpointer a,
 
 int
 fm_list_model_compare_func (FMListModel *model,
-                            CajaFile *file1,
-                            CajaFile *file2)
+                            PeonyFile *file1,
+                            PeonyFile *file2)
 {
     int result;
 
-    result = caja_file_compare_for_sort_by_attribute_q (file1, file2,
+    result = peony_file_compare_for_sort_by_attribute_q (file1, file2,
              model->details->sort_attribute,
              model->details->sort_directories_first,
              (model->details->order == GTK_SORT_DESCENDING));
@@ -894,13 +894,13 @@ fm_list_model_multi_row_draggable (EggTreeMultiDragSource *drag_source, GList *p
 }
 
 static void
-each_path_get_data_binder (CajaDragEachSelectedItemDataGet data_get,
+each_path_get_data_binder (PeonyDragEachSelectedItemDataGet data_get,
                            gpointer context,
                            gpointer data)
 {
     DragDataGetInfo *info;
     GList *l;
-    CajaFile *file;
+    PeonyFile *file;
     GtkTreeRowReference *row;
     GtkTreePath *path;
     char *uri;
@@ -927,7 +927,7 @@ each_path_get_data_binder (CajaDragEachSelectedItemDataGet data_get,
              column,
              &cell_area);
 
-            uri = caja_file_get_uri (file);
+            uri = peony_file_get_uri (file);
 
             (*data_get) (uri,
                          0,
@@ -937,7 +937,7 @@ each_path_get_data_binder (CajaDragEachSelectedItemDataGet data_get,
 
             g_free (uri);
 
-            caja_file_unref (file);
+            peony_file_unref (file);
         }
 
         gtk_tree_path_free (path);
@@ -967,7 +967,7 @@ fm_list_model_multi_drag_data_get (EggTreeMultiDragSource *drag_source,
                               gtk_selection_data_get_target (selection_data),
                               &target_info))
     {
-        caja_drag_drag_data_get (NULL,
+        peony_drag_drag_data_get (NULL,
                                  NULL,
                                  selection_data,
                                  target_info,
@@ -1008,8 +1008,8 @@ add_dummy_row (FMListModel *model, FileEntry *parent_entry)
 }
 
 gboolean
-fm_list_model_add_file (FMListModel *model, CajaFile *file,
-                        CajaDirectory *directory)
+fm_list_model_add_file (FMListModel *model, PeonyFile *file,
+                        PeonyDirectory *directory)
 {
     GtkTreeIter iter;
     GtkTreePath *path;
@@ -1039,7 +1039,7 @@ fm_list_model_add_file (FMListModel *model, CajaFile *file,
     }
 
     file_entry = g_new0 (FileEntry, 1);
-    file_entry->file = caja_file_ref (file);
+    file_entry->file = peony_file_ref (file);
     file_entry->parent = NULL;
     file_entry->subdirectory = NULL;
     file_entry->files = NULL;
@@ -1093,7 +1093,7 @@ fm_list_model_add_file (FMListModel *model, CajaFile *file,
         gtk_tree_model_row_inserted (GTK_TREE_MODEL (model), path, &iter);
     }
 
-    if (caja_file_is_directory (file))
+    if (peony_file_is_directory (file))
     {
         file_entry->files = g_sequence_new ((GDestroyNotify)file_entry_free);
 
@@ -1108,8 +1108,8 @@ fm_list_model_add_file (FMListModel *model, CajaFile *file,
 }
 
 void
-fm_list_model_file_changed (FMListModel *model, CajaFile *file,
-                            CajaDirectory *directory)
+fm_list_model_file_changed (FMListModel *model, PeonyFile *file,
+                            PeonyDirectory *directory)
 {
     FileEntry *parent_file_entry;
     GtkTreeIter iter;
@@ -1286,8 +1286,8 @@ fm_list_model_remove (FMListModel *model, GtkTreeIter *iter)
 }
 
 void
-fm_list_model_remove_file (FMListModel *model, CajaFile *file,
-                           CajaDirectory *directory)
+fm_list_model_remove_file (FMListModel *model, PeonyFile *file,
+                           PeonyDirectory *directory)
 {
     GtkTreeIter iter;
 
@@ -1326,10 +1326,10 @@ fm_list_model_clear (FMListModel *model)
     fm_list_model_clear_directory (model, model->details->files);
 }
 
-CajaFile *
+PeonyFile *
 fm_list_model_file_for_path (FMListModel *model, GtkTreePath *path)
 {
-    CajaFile *file;
+    PeonyFile *file;
     GtkTreeIter iter;
 
     file = NULL;
@@ -1345,11 +1345,11 @@ fm_list_model_file_for_path (FMListModel *model, GtkTreePath *path)
 }
 
 gboolean
-fm_list_model_load_subdirectory (FMListModel *model, GtkTreePath *path, CajaDirectory **directory)
+fm_list_model_load_subdirectory (FMListModel *model, GtkTreePath *path, PeonyDirectory **directory)
 {
     GtkTreeIter iter;
     FileEntry *file_entry;
-    CajaDirectory *subdirectory;
+    PeonyDirectory *subdirectory;
 
     if (!gtk_tree_model_get_iter (GTK_TREE_MODEL (model), &iter, path))
     {
@@ -1363,12 +1363,12 @@ fm_list_model_load_subdirectory (FMListModel *model, GtkTreePath *path, CajaDire
         return FALSE;
     }
 
-    subdirectory = caja_directory_get_for_file (file_entry->file);
+    subdirectory = peony_directory_get_for_file (file_entry->file);
 
     if (g_hash_table_lookup (model->details->directory_reverse_map,
                              subdirectory) != NULL)
     {
-        caja_directory_unref (subdirectory);
+        peony_directory_unref (subdirectory);
         g_warning ("Already in directory_reverse_map, failing\n");
         return FALSE;
     }
@@ -1379,7 +1379,7 @@ fm_list_model_load_subdirectory (FMListModel *model, GtkTreePath *path, CajaDire
     file_entry->reverse_map = g_hash_table_new (g_direct_hash, g_direct_equal);
 
     /* Return a ref too */
-    caja_directory_ref (subdirectory);
+    peony_directory_ref (subdirectory);
     *directory = subdirectory;
 
     return TRUE;
@@ -1427,7 +1427,7 @@ fm_list_model_unload_subdirectory (FMListModel *model, GtkTreeIter *iter)
     /* actually unload */
     g_hash_table_remove (model->details->directory_reverse_map,
                          file_entry->subdirectory);
-    caja_directory_unref (file_entry->subdirectory);
+    peony_directory_unref (file_entry->subdirectory);
     file_entry->subdirectory = NULL;
 
     g_assert (g_hash_table_size (file_entry->reverse_map) == 0);
@@ -1470,11 +1470,11 @@ fm_list_model_get_sort_column_id_from_attribute (FMListModel *model,
 
     for (i = 0; i < model->details->columns->len; i++)
     {
-        CajaColumn *column;
+        PeonyColumn *column;
         GQuark column_attribute;
 
         column =
-            CAJA_COLUMN (model->details->columns->pdata[i]);
+            PEONY_COLUMN (model->details->columns->pdata[i]);
         g_object_get (G_OBJECT (column),
                       "attribute_q", &column_attribute,
                       NULL);
@@ -1491,7 +1491,7 @@ GQuark
 fm_list_model_get_attribute_from_sort_column_id (FMListModel *model,
         int sort_column_id)
 {
-    CajaColumn *column;
+    PeonyColumn *column;
     int index;
     GQuark attribute;
 
@@ -1503,54 +1503,54 @@ fm_list_model_get_attribute_from_sort_column_id (FMListModel *model,
         return 0;
     }
 
-    column = CAJA_COLUMN (model->details->columns->pdata[index]);
+    column = PEONY_COLUMN (model->details->columns->pdata[index]);
     g_object_get (G_OBJECT (column), "attribute_q", &attribute, NULL);
 
     return attribute;
 }
 
-CajaZoomLevel
+PeonyZoomLevel
 fm_list_model_get_zoom_level_from_column_id (int column)
 {
     switch (column)
     {
     case FM_LIST_MODEL_SMALLEST_ICON_COLUMN:
-        return CAJA_ZOOM_LEVEL_SMALLEST;
+        return PEONY_ZOOM_LEVEL_SMALLEST;
     case FM_LIST_MODEL_SMALLER_ICON_COLUMN:
-        return CAJA_ZOOM_LEVEL_SMALLER;
+        return PEONY_ZOOM_LEVEL_SMALLER;
     case FM_LIST_MODEL_SMALL_ICON_COLUMN:
-        return CAJA_ZOOM_LEVEL_SMALL;
+        return PEONY_ZOOM_LEVEL_SMALL;
     case FM_LIST_MODEL_STANDARD_ICON_COLUMN:
-        return CAJA_ZOOM_LEVEL_STANDARD;
+        return PEONY_ZOOM_LEVEL_STANDARD;
     case FM_LIST_MODEL_LARGE_ICON_COLUMN:
-        return CAJA_ZOOM_LEVEL_LARGE;
+        return PEONY_ZOOM_LEVEL_LARGE;
     case FM_LIST_MODEL_LARGER_ICON_COLUMN:
-        return CAJA_ZOOM_LEVEL_LARGER;
+        return PEONY_ZOOM_LEVEL_LARGER;
     case FM_LIST_MODEL_LARGEST_ICON_COLUMN:
-        return CAJA_ZOOM_LEVEL_LARGEST;
+        return PEONY_ZOOM_LEVEL_LARGEST;
     }
 
-    g_return_val_if_reached (CAJA_ZOOM_LEVEL_STANDARD);
+    g_return_val_if_reached (PEONY_ZOOM_LEVEL_STANDARD);
 }
 
 int
-fm_list_model_get_column_id_from_zoom_level (CajaZoomLevel zoom_level)
+fm_list_model_get_column_id_from_zoom_level (PeonyZoomLevel zoom_level)
 {
     switch (zoom_level)
     {
-    case CAJA_ZOOM_LEVEL_SMALLEST:
+    case PEONY_ZOOM_LEVEL_SMALLEST:
         return FM_LIST_MODEL_SMALLEST_ICON_COLUMN;
-    case CAJA_ZOOM_LEVEL_SMALLER:
+    case PEONY_ZOOM_LEVEL_SMALLER:
         return FM_LIST_MODEL_SMALLER_ICON_COLUMN;
-    case CAJA_ZOOM_LEVEL_SMALL:
+    case PEONY_ZOOM_LEVEL_SMALL:
         return FM_LIST_MODEL_SMALL_ICON_COLUMN;
-    case CAJA_ZOOM_LEVEL_STANDARD:
+    case PEONY_ZOOM_LEVEL_STANDARD:
         return FM_LIST_MODEL_STANDARD_ICON_COLUMN;
-    case CAJA_ZOOM_LEVEL_LARGE:
+    case PEONY_ZOOM_LEVEL_LARGE:
         return FM_LIST_MODEL_LARGE_ICON_COLUMN;
-    case CAJA_ZOOM_LEVEL_LARGER:
+    case PEONY_ZOOM_LEVEL_LARGER:
         return FM_LIST_MODEL_LARGER_ICON_COLUMN;
-    case CAJA_ZOOM_LEVEL_LARGEST:
+    case PEONY_ZOOM_LEVEL_LARGEST:
         return FM_LIST_MODEL_LARGEST_ICON_COLUMN;
     }
 
@@ -1578,14 +1578,14 @@ fm_list_model_get_drag_target_list ()
     GtkTargetList *target_list;
 
     target_list = gtk_target_list_new (drag_types, G_N_ELEMENTS (drag_types));
-    gtk_target_list_add_text_targets (target_list, CAJA_ICON_DND_TEXT);
+    gtk_target_list_add_text_targets (target_list, PEONY_ICON_DND_TEXT);
 
     return target_list;
 }
 
 int
 fm_list_model_add_column (FMListModel *model,
-                          CajaColumn *column)
+                          PeonyColumn *column)
 {
     g_ptr_array_add (model->details->columns, column);
     g_object_ref (column);
@@ -1640,7 +1640,7 @@ fm_list_model_finalize (GObject *object)
 
     if (model->details->highlight_files != NULL)
     {
-        caja_file_list_free (model->details->highlight_files);
+        peony_file_list_free (model->details->highlight_files);
         model->details->highlight_files = NULL;
     }
 
@@ -1682,7 +1682,7 @@ fm_list_model_class_init (FMListModelClass *klass)
                       NULL, NULL,
                       g_cclosure_marshal_VOID__OBJECT,
                       G_TYPE_NONE, 1,
-                      CAJA_TYPE_DIRECTORY);
+                      PEONY_TYPE_DIRECTORY);
 }
 
 static void
@@ -1719,7 +1719,7 @@ fm_list_model_multi_drag_source_init (EggTreeMultiDragSourceIface *iface)
 }
 
 void
-fm_list_model_subdirectory_done_loading (FMListModel *model, CajaDirectory *directory)
+fm_list_model_subdirectory_done_loading (FMListModel *model, PeonyDirectory *directory)
 {
     GtkTreeIter iter;
     GtkTreePath *path;
@@ -1744,7 +1744,7 @@ fm_list_model_subdirectory_done_loading (FMListModel *model, CajaDirectory *dire
     /* Only swap loading -> empty if we saw no files yet at "done",
      * otherwise, toggle loading at first added file to the model.
      */
-    if (!caja_directory_is_not_empty (directory) &&
+    if (!peony_directory_is_not_empty (directory) &&
             g_sequence_get_length (files) == 1)
     {
         dummy_ptr = g_sequence_get_iter_at_pos (file_entry->files, 0);
@@ -1768,7 +1768,7 @@ static void
 refresh_row (gpointer data,
              gpointer user_data)
 {
-    CajaFile *file;
+    PeonyFile *file;
     FMListModel *model;
     GList *iters, *l;
     GtkTreePath *path;
@@ -1796,13 +1796,13 @@ fm_list_model_set_highlight_for_files (FMListModel *model,
     {
         g_list_foreach (model->details->highlight_files,
                         refresh_row, model);
-        caja_file_list_free (model->details->highlight_files);
+        peony_file_list_free (model->details->highlight_files);
         model->details->highlight_files = NULL;
     }
 
     if (files != NULL)
     {
-        model->details->highlight_files = caja_file_list_copy (files);
+        model->details->highlight_files = peony_file_list_copy (files);
         g_list_foreach (model->details->highlight_files,
                         refresh_row, model);
 

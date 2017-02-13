@@ -4,7 +4,7 @@
 srcdir=`dirname $0`
 test -z "$srcdir" && srcdir=.
 
-PKG_NAME="caja"
+PKG_NAME="peony"
 
 (test -f $srcdir/configure.ac) || {
     echo -n "**Error**: Directory "\`$srcdir\'" does not look like the"
@@ -12,14 +12,14 @@ PKG_NAME="caja"
     exit 1
 }
 
-which mate-autogen || {
-    echo "You need to install mate-common from the MATE Git"
+which ukui-autogen || {
+    echo "You need to install ukui-common from the UKUI Git"
     exit 1
 }
 
 REQUIRED_AUTOMAKE_VERSION=1.9
-USE_MATE2_MACROS=1
+USE_UKUI2_MACROS=1
 USE_COMMON_DOC_BUILD=yes
 
-. mate-autogen
+. ukui-autogen
 

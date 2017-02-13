@@ -33,7 +33,7 @@ extern "C" {
 #endif
 
     /* This is a mis-nomer. Launcher editables initially were displayed on separate
-     * a property notebook page, which implemented the CajaPropertyPageProvider
+     * a property notebook page, which implemented the PeonyPropertyPageProvider
      * interface.
      *
      * Nowadays, they are displayed on the "Basic" page, so just the setup

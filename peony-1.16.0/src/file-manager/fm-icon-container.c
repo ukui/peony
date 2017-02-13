@@ -4,18 +4,18 @@
 
    Copyright (C) 2002 Sun Microsystems, Inc.
 
-   The Mate Library is free software; you can redistribute it and/or
+   The Ukui Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public License as
    published by the Free Software Foundation; either version 2 of the
    License, or (at your option) any later version.
 
-   The Mate Library is distributed in the hope that it will be useful,
+   The Ukui Library is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
    Library General Public License for more details.
 
    You should have received a copy of the GNU Library General Public
-   License along with the Mate Library; see the file COPYING.LIB.  If not,
+   License along with the Ukui Library; see the file COPYING.LIB.  If not,
    write to the Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
    Boston, MA 02110-1301, USA.
 
@@ -27,30 +27,30 @@
 #include <glib/gi18n.h>
 #include <gio/gio.h>
 #include <eel/eel-glib-extensions.h>
-#include <libcaja-private/caja-global-preferences.h>
-#include <libcaja-private/caja-file-attributes.h>
-#include <libcaja-private/caja-thumbnails.h>
-#include <libcaja-private/caja-desktop-icon-file.h>
+#include <libpeony-private/peony-global-preferences.h>
+#include <libpeony-private/peony-file-attributes.h>
+#include <libpeony-private/peony-thumbnails.h>
+#include <libpeony-private/peony-desktop-icon-file.h>
 
 #include "fm-icon-container.h"
 
 #define ICON_TEXT_ATTRIBUTES_NUM_ITEMS		3
 #define ICON_TEXT_ATTRIBUTES_DEFAULT_TOKENS	"size,date_modified,type"
 
-G_DEFINE_TYPE (FMIconContainer, fm_icon_container, CAJA_TYPE_ICON_CONTAINER);
+G_DEFINE_TYPE (FMIconContainer, fm_icon_container, PEONY_TYPE_ICON_CONTAINER);
 
 static GQuark attribute_none_q;
 
 static FMIconView *
-get_icon_view (CajaIconContainer *container)
+get_icon_view (PeonyIconContainer *container)
 {
     /* Type unsafe comparison for performance */
     return ((FMIconContainer *)container)->view;
 }
 
-static CajaIconInfo *
-fm_icon_container_get_icon_images (CajaIconContainer *container,
-                                   CajaIconData      *data,
+static PeonyIconInfo *
+fm_icon_container_get_icon_images (PeonyIconContainer *container,
+                                   PeonyIconData      *data,
                                    int                    size,
                                    GList                **emblem_pixbufs,
                                    char                 **embedded_text,
@@ -61,27 +61,27 @@ fm_icon_container_get_icon_images (CajaIconContainer *container,
 {
     FMIconView *icon_view;
     char **emblems_to_ignore;
-    CajaFile *file;
+    PeonyFile *file;
     gboolean use_embedding;
-    CajaFileIconFlags flags;
+    PeonyFileIconFlags flags;
     guint emblem_size;
 
-    file = (CajaFile *) data;
+    file = (PeonyFile *) data;
 
-    g_assert (CAJA_IS_FILE (file));
+    g_assert (PEONY_IS_FILE (file));
     icon_view = get_icon_view (container);
     g_return_val_if_fail (icon_view != NULL, NULL);
 
     use_embedding = FALSE;
     if (embedded_text)
     {
-        *embedded_text = caja_file_peek_top_left_text (file, need_large_embeddded_text, embedded_text_needs_loading);
+        *embedded_text = peony_file_peek_top_left_text (file, need_large_embeddded_text, embedded_text_needs_loading);
         use_embedding = *embedded_text != NULL;
     }
 
     if (emblem_pixbufs != NULL)
     {
-        emblem_size = caja_icon_get_emblem_size_for_icon_size (size);
+        emblem_size = peony_icon_get_emblem_size_for_icon_size (size);
         /* don't return images larger than the actual icon size */
         emblem_size = MIN (emblem_size, size);
 
@@ -89,7 +89,7 @@ fm_icon_container_get_icon_images (CajaIconContainer *container,
         {
             emblems_to_ignore = fm_directory_view_get_emblem_names_to_exclude
                                 (FM_DIRECTORY_VIEW (icon_view));
-            *emblem_pixbufs = caja_file_get_emblem_pixbufs (file,
+            *emblem_pixbufs = peony_file_get_emblem_pixbufs (file,
                               emblem_size,
                               FALSE,
                               emblems_to_ignore);
@@ -97,103 +97,103 @@ fm_icon_container_get_icon_images (CajaIconContainer *container,
         }
     }
 
-    *has_window_open = caja_file_has_open_window (file);
+    *has_window_open = peony_file_has_open_window (file);
 
-    flags = CAJA_FILE_ICON_FLAGS_USE_MOUNT_ICON_AS_EMBLEM;
+    flags = PEONY_FILE_ICON_FLAGS_USE_MOUNT_ICON_AS_EMBLEM;
     if (!fm_icon_view_is_compact (icon_view) ||
-            caja_icon_container_get_zoom_level (container) > CAJA_ZOOM_LEVEL_STANDARD)
+            peony_icon_container_get_zoom_level (container) > PEONY_ZOOM_LEVEL_STANDARD)
     {
-        flags |= CAJA_FILE_ICON_FLAGS_USE_THUMBNAILS;
+        flags |= PEONY_FILE_ICON_FLAGS_USE_THUMBNAILS;
         if (fm_icon_view_is_compact (icon_view))
         {
-            flags |= CAJA_FILE_ICON_FLAGS_FORCE_THUMBNAIL_SIZE;
+            flags |= PEONY_FILE_ICON_FLAGS_FORCE_THUMBNAIL_SIZE;
         }
     }
 
     if (use_embedding)
     {
-        flags |= CAJA_FILE_ICON_FLAGS_EMBEDDING_TEXT;
+        flags |= PEONY_FILE_ICON_FLAGS_EMBEDDING_TEXT;
     }
     if (for_drag_accept)
     {
-        flags |= CAJA_FILE_ICON_FLAGS_FOR_DRAG_ACCEPT;
+        flags |= PEONY_FILE_ICON_FLAGS_FOR_DRAG_ACCEPT;
     }
 
-    return caja_file_get_icon (file, size, flags);
+    return peony_file_get_icon (file, size, flags);
 }
 
 static char *
-fm_icon_container_get_icon_description (CajaIconContainer *container,
-                                        CajaIconData      *data)
+fm_icon_container_get_icon_description (PeonyIconContainer *container,
+                                        PeonyIconData      *data)
 {
-    CajaFile *file;
+    PeonyFile *file;
     char *mime_type;
     const char *description;
 
-    file = CAJA_FILE (data);
-    g_assert (CAJA_IS_FILE (file));
+    file = PEONY_FILE (data);
+    g_assert (PEONY_IS_FILE (file));
 
-    if (CAJA_IS_DESKTOP_ICON_FILE (file))
+    if (PEONY_IS_DESKTOP_ICON_FILE (file))
     {
         return NULL;
     }
 
-    mime_type = caja_file_get_mime_type (file);
+    mime_type = peony_file_get_mime_type (file);
     description = g_content_type_get_description (mime_type);
     g_free (mime_type);
     return g_strdup (description);
 }
 
 static void
-fm_icon_container_start_monitor_top_left (CajaIconContainer *container,
-        CajaIconData      *data,
+fm_icon_container_start_monitor_top_left (PeonyIconContainer *container,
+        PeonyIconData      *data,
         gconstpointer          client,
         gboolean               large_text)
 {
-    CajaFile *file;
-    CajaFileAttributes attributes;
+    PeonyFile *file;
+    PeonyFileAttributes attributes;
 
-    file = (CajaFile *) data;
+    file = (PeonyFile *) data;
 
-    g_assert (CAJA_IS_FILE (file));
+    g_assert (PEONY_IS_FILE (file));
 
-    attributes = CAJA_FILE_ATTRIBUTE_TOP_LEFT_TEXT;
+    attributes = PEONY_FILE_ATTRIBUTE_TOP_LEFT_TEXT;
     if (large_text)
     {
-        attributes |= CAJA_FILE_ATTRIBUTE_LARGE_TOP_LEFT_TEXT;
+        attributes |= PEONY_FILE_ATTRIBUTE_LARGE_TOP_LEFT_TEXT;
     }
-    caja_file_monitor_add (file, client, attributes);
+    peony_file_monitor_add (file, client, attributes);
 }
 
 static void
-fm_icon_container_stop_monitor_top_left (CajaIconContainer *container,
-        CajaIconData      *data,
+fm_icon_container_stop_monitor_top_left (PeonyIconContainer *container,
+        PeonyIconData      *data,
         gconstpointer          client)
 {
-    CajaFile *file;
+    PeonyFile *file;
 
-    file = (CajaFile *) data;
+    file = (PeonyFile *) data;
 
-    g_assert (CAJA_IS_FILE (file));
+    g_assert (PEONY_IS_FILE (file));
 
-    caja_file_monitor_remove (file, client);
+    peony_file_monitor_remove (file, client);
 }
 
 static void
-fm_icon_container_prioritize_thumbnailing (CajaIconContainer *container,
-        CajaIconData      *data)
+fm_icon_container_prioritize_thumbnailing (PeonyIconContainer *container,
+        PeonyIconData      *data)
 {
-    CajaFile *file;
+    PeonyFile *file;
     char *uri;
 
-    file = (CajaFile *) data;
+    file = (PeonyFile *) data;
 
-    g_assert (CAJA_IS_FILE (file));
+    g_assert (PEONY_IS_FILE (file));
 
-    if (caja_file_is_thumbnailing (file))
+    if (peony_file_is_thumbnailing (file))
     {
-        uri = caja_file_get_uri (file);
-        caja_thumbnail_prioritize (uri);
+        uri = peony_file_get_uri (file);
+        peony_thumbnail_prioritize (uri);
         g_free (uri);
     }
 }
@@ -209,8 +209,8 @@ fm_icon_container_get_icon_text_attributes_from_preferences (void)
 
     if (attributes == NULL)
     {
-        eel_g_settings_add_auto_strv_as_quarks (caja_icon_view_preferences,
-                                                CAJA_PREFERENCES_ICON_VIEW_CAPTIONS,
+        eel_g_settings_add_auto_strv_as_quarks (peony_icon_view_preferences,
+                                                PEONY_PREFERENCES_ICON_VIEW_CAPTIONS,
                                                 &attributes);
     }
 
@@ -222,12 +222,12 @@ fm_icon_container_get_icon_text_attributes_from_preferences (void)
      * 1) The user picks "bad" values.  "bad" values are those that result in
      *    there being duplicate attributes in the list.
      *
-     * 2) Value stored in MateConf are tampered with.  Its possible physically do
-     *    this by pulling the rug underneath MateConf and manually editing its
-     *    config files.  Its also possible to use a third party MateConf key
+     * 2) Value stored in UkuiConf are tampered with.  Its possible physically do
+     *    this by pulling the rug underneath UkuiConf and manually editing its
+     *    config files.  Its also possible to use a third party UkuiConf key
      *    editor and store garbage for the keys in question.
      *
-     * Thankfully, the Caja preferences machinery deals with both of
+     * Thankfully, the Peony preferences machinery deals with both of
      * these cases.
      *
      * In the first case, the preferences dialog widgetry prevents
@@ -265,7 +265,7 @@ quarkv_length (GQuark *attributes)
  *
  **/
 static GQuark *
-fm_icon_container_get_icon_text_attribute_names (CajaIconContainer *container,
+fm_icon_container_get_icon_text_attribute_names (PeonyIconContainer *container,
         int *len)
 {
     GQuark *attributes;
@@ -273,16 +273,16 @@ fm_icon_container_get_icon_text_attribute_names (CajaIconContainer *container,
 
     const int pieces_by_level[] =
     {
-        0,	/* CAJA_ZOOM_LEVEL_SMALLEST */
-        0,	/* CAJA_ZOOM_LEVEL_SMALLER */
-        0,	/* CAJA_ZOOM_LEVEL_SMALL */
-        1,	/* CAJA_ZOOM_LEVEL_STANDARD */
-        2,	/* CAJA_ZOOM_LEVEL_LARGE */
-        2,	/* CAJA_ZOOM_LEVEL_LARGER */
-        3	/* CAJA_ZOOM_LEVEL_LARGEST */
+        0,	/* PEONY_ZOOM_LEVEL_SMALLEST */
+        0,	/* PEONY_ZOOM_LEVEL_SMALLER */
+        0,	/* PEONY_ZOOM_LEVEL_SMALL */
+        1,	/* PEONY_ZOOM_LEVEL_STANDARD */
+        2,	/* PEONY_ZOOM_LEVEL_LARGE */
+        2,	/* PEONY_ZOOM_LEVEL_LARGER */
+        3	/* PEONY_ZOOM_LEVEL_LARGEST */
     };
 
-    piece_count = pieces_by_level[caja_icon_container_get_zoom_level (container)];
+    piece_count = pieces_by_level[peony_icon_container_get_zoom_level (container)];
 
     attributes = fm_icon_container_get_icon_text_attributes_from_preferences ();
 
@@ -295,8 +295,8 @@ fm_icon_container_get_icon_text_attribute_names (CajaIconContainer *container,
  * part below that is not editable.
  */
 static void
-fm_icon_container_get_icon_text (CajaIconContainer *container,
-                                 CajaIconData      *data,
+fm_icon_container_get_icon_text (PeonyIconContainer *container,
+                                 PeonyIconData      *data,
                                  char                 **editable_text,
                                  char                 **additional_text,
                                  gboolean               include_invisible)
@@ -307,12 +307,12 @@ fm_icon_container_get_icon_text (CajaIconContainer *container,
     char *text_array[4];
     int i, j, num_attributes;
     FMIconView *icon_view;
-    CajaFile *file;
+    PeonyFile *file;
     gboolean use_additional;
 
-    file = CAJA_FILE (data);
+    file = PEONY_FILE (data);
 
-    g_assert (CAJA_IS_FILE (file));
+    g_assert (PEONY_IS_FILE (file));
     g_assert (editable_text != NULL);
     icon_view = get_icon_view (container);
     g_return_if_fail (icon_view != NULL);
@@ -320,15 +320,15 @@ fm_icon_container_get_icon_text (CajaIconContainer *container,
     use_additional = (additional_text != NULL);
 
     /* In the smallest zoom mode, no text is drawn. */
-    if (caja_icon_container_get_zoom_level (container) == CAJA_ZOOM_LEVEL_SMALLEST &&
+    if (peony_icon_container_get_zoom_level (container) == PEONY_ZOOM_LEVEL_SMALLEST &&
             !include_invisible)
     {
         *editable_text = NULL;
     }
     else
     {
-        /* Strip the suffix for caja object xml files. */
-        *editable_text = caja_file_get_display_name (file);
+        /* Strip the suffix for peony object xml files. */
+        *editable_text = peony_file_get_display_name (file);
     }
 
     if (!use_additional)
@@ -342,7 +342,7 @@ fm_icon_container_get_icon_text (CajaIconContainer *container,
         return;
     }
 
-    if (CAJA_IS_DESKTOP_ICON_FILE (file))
+    if (PEONY_IS_DESKTOP_ICON_FILE (file))
     {
         /* Don't show the normal extra information for desktop icons, it doesn't
          * make sense. */
@@ -351,14 +351,14 @@ fm_icon_container_get_icon_text (CajaIconContainer *container,
     }
 
     /* Handle link files specially. */
-    if (caja_file_is_caja_link (file))
+    if (peony_file_is_peony_link (file))
     {
         /* FIXME bugzilla.gnome.org 42531: Does sync. I/O and works only locally. */
         *additional_text = NULL;
-        if (caja_file_is_local (file))
+        if (peony_file_is_local (file))
         {
-            actual_uri = caja_file_get_uri (file);
-            description = caja_link_local_get_additional_text (actual_uri);
+            actual_uri = peony_file_get_uri (file);
+            description = peony_link_local_get_additional_text (actual_uri);
             if (description)
                 *additional_text = g_strdup_printf (" \n%s\n ", description);
             g_free (description);
@@ -383,7 +383,7 @@ fm_icon_container_get_icon_text (CajaIconContainer *container,
         }
 
         text_array[j++] =
-            caja_file_get_string_attribute_with_default_q (file, attributes[i]);
+            peony_file_get_string_attribute_with_default_q (file, attributes[i]);
     }
     text_array[j] = NULL;
 
@@ -427,33 +427,33 @@ typedef enum
 } SortCategory;
 
 static SortCategory
-get_sort_category (CajaFile *file)
+get_sort_category (PeonyFile *file)
 {
-    CajaDesktopLink *link;
+    PeonyDesktopLink *link;
     SortCategory category;
 
     category = SORT_OTHER;
 
-    if (CAJA_IS_DESKTOP_ICON_FILE (file))
+    if (PEONY_IS_DESKTOP_ICON_FILE (file))
     {
-        link = caja_desktop_icon_file_get_link (CAJA_DESKTOP_ICON_FILE (file));
+        link = peony_desktop_icon_file_get_link (PEONY_DESKTOP_ICON_FILE (file));
         if (link != NULL)
         {
-            switch (caja_desktop_link_get_link_type (link))
+            switch (peony_desktop_link_get_link_type (link))
             {
-            case CAJA_DESKTOP_LINK_COMPUTER:
+            case PEONY_DESKTOP_LINK_COMPUTER:
                 category = SORT_COMPUTER_LINK;
                 break;
-            case CAJA_DESKTOP_LINK_HOME:
+            case PEONY_DESKTOP_LINK_HOME:
                 category = SORT_HOME_LINK;
                 break;
-            case CAJA_DESKTOP_LINK_MOUNT:
+            case PEONY_DESKTOP_LINK_MOUNT:
                 category = SORT_MOUNT_LINK;
                 break;
-            case CAJA_DESKTOP_LINK_TRASH:
+            case PEONY_DESKTOP_LINK_TRASH:
                 category = SORT_TRASH_LINK;
                 break;
-            case CAJA_DESKTOP_LINK_NETWORK:
+            case PEONY_DESKTOP_LINK_NETWORK:
                 category = SORT_NETWORK_LINK;
                 break;
             default:
@@ -468,17 +468,17 @@ get_sort_category (CajaFile *file)
 }
 
 static int
-fm_desktop_icon_container_icons_compare (CajaIconContainer *container,
-        CajaIconData      *data_a,
-        CajaIconData      *data_b)
+fm_desktop_icon_container_icons_compare (PeonyIconContainer *container,
+        PeonyIconData      *data_a,
+        PeonyIconData      *data_b)
 {
-    CajaFile *file_a;
-    CajaFile *file_b;
+    PeonyFile *file_a;
+    PeonyFile *file_b;
     FMDirectoryView *directory_view;
     SortCategory category_a, category_b;
 
-    file_a = (CajaFile *) data_a;
-    file_b = (CajaFile *) data_b;
+    file_a = (PeonyFile *) data_a;
+    file_b = (PeonyFile *) data_b;
 
     directory_view = FM_DIRECTORY_VIEW (FM_ICON_CONTAINER (container)->view);
     g_return_val_if_fail (directory_view != NULL, 0);
@@ -488,8 +488,8 @@ fm_desktop_icon_container_icons_compare (CajaIconContainer *container,
 
     if (category_a == category_b)
     {
-        return caja_file_compare_for_sort
-               (file_a, file_b, CAJA_FILE_SORT_BY_DISPLAY_NAME,
+        return peony_file_compare_for_sort
+               (file_a, file_b, PEONY_FILE_SORT_BY_DISPLAY_NAME,
                 fm_directory_view_should_sort_directories_first (directory_view),
                 FALSE);
     }
@@ -505,9 +505,9 @@ fm_desktop_icon_container_icons_compare (CajaIconContainer *container,
 }
 
 static int
-fm_icon_container_compare_icons (CajaIconContainer *container,
-                                 CajaIconData      *icon_a,
-                                 CajaIconData      *icon_b)
+fm_icon_container_compare_icons (PeonyIconContainer *container,
+                                 PeonyIconData      *icon_a,
+                                 PeonyIconData      *icon_b)
 {
     FMIconView *icon_view;
 
@@ -522,24 +522,24 @@ fm_icon_container_compare_icons (CajaIconContainer *container,
 
     /* Type unsafe comparisons for performance */
     return fm_icon_view_compare_files (icon_view,
-                                       (CajaFile *)icon_a,
-                                       (CajaFile *)icon_b);
+                                       (PeonyFile *)icon_a,
+                                       (PeonyFile *)icon_b);
 }
 
 static int
-fm_icon_container_compare_icons_by_name (CajaIconContainer *container,
-        CajaIconData      *icon_a,
-        CajaIconData      *icon_b)
+fm_icon_container_compare_icons_by_name (PeonyIconContainer *container,
+        PeonyIconData      *icon_a,
+        PeonyIconData      *icon_b)
 {
-    return caja_file_compare_for_sort
-           (CAJA_FILE (icon_a),
-            CAJA_FILE (icon_b),
-            CAJA_FILE_SORT_BY_DISPLAY_NAME,
+    return peony_file_compare_for_sort
+           (PEONY_FILE (icon_a),
+            PEONY_FILE (icon_b),
+            PEONY_FILE_SORT_BY_DISPLAY_NAME,
             FALSE, FALSE);
 }
 
 static void
-fm_icon_container_freeze_updates (CajaIconContainer *container)
+fm_icon_container_freeze_updates (PeonyIconContainer *container)
 {
     FMIconView *icon_view;
     icon_view = get_icon_view (container);
@@ -548,7 +548,7 @@ fm_icon_container_freeze_updates (CajaIconContainer *container)
 }
 
 static void
-fm_icon_container_unfreeze_updates (CajaIconContainer *container)
+fm_icon_container_unfreeze_updates (PeonyIconContainer *container)
 {
     FMIconView *icon_view;
     icon_view = get_icon_view (container);
@@ -571,7 +571,7 @@ fm_icon_container_dispose (GObject *object)
 static void
 fm_icon_container_class_init (FMIconContainerClass *klass)
 {
-    CajaIconContainerClass *ic_class;
+    PeonyIconContainerClass *ic_class;
 
     ic_class = &klass->parent_class;
 
@@ -601,7 +601,7 @@ fm_icon_container_init (FMIconContainer *icon_container)
 #endif
 }
 
-CajaIconContainer *
+PeonyIconContainer *
 fm_icon_container_construct (FMIconContainer *icon_container, FMIconView *view)
 {
     AtkObject *atk_obj;
@@ -612,10 +612,10 @@ fm_icon_container_construct (FMIconContainer *icon_container, FMIconView *view)
     atk_obj = gtk_widget_get_accessible (GTK_WIDGET (icon_container));
     atk_object_set_name (atk_obj, _("Icon View"));
 
-    return CAJA_ICON_CONTAINER (icon_container);
+    return PEONY_ICON_CONTAINER (icon_container);
 }
 
-CajaIconContainer *
+PeonyIconContainer *
 fm_icon_container_new (FMIconView *view)
 {
     return fm_icon_container_construct

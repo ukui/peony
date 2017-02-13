@@ -1,7 +1,7 @@
 #include "test.h"
 
-#include <libcaja-private/caja-file-operations.h>
-#include <libcaja-private/caja-progress-info.h>
+#include <libpeony-private/peony-file-operations.h>
+#include <libpeony-private/peony-progress-info.h>
 
 static void
 copy_done (GHashTable *debuting_uris, gpointer data)
@@ -10,24 +10,24 @@ copy_done (GHashTable *debuting_uris, gpointer data)
 }
 
 static void
-changed_cb (CajaProgressInfo *info,
+changed_cb (PeonyProgressInfo *info,
 	    gpointer data)
 {
 	g_print ("Changed: %s -- %s\n",
-		 caja_progress_info_get_status (info),
-		 caja_progress_info_get_details (info));
+		 peony_progress_info_get_status (info),
+		 peony_progress_info_get_details (info));
 }
 
 static void
-progress_changed_cb (CajaProgressInfo *info,
+progress_changed_cb (PeonyProgressInfo *info,
 		     gpointer data)
 {
 	g_print ("Progress changed: %f\n",
-		 caja_progress_info_get_progress (info));
+		 peony_progress_info_get_progress (info));
 }
 
 static void
-finished_cb (CajaProgressInfo *info,
+finished_cb (PeonyProgressInfo *info,
 	     gpointer data)
 {
 	g_print ("Finished\n");
@@ -43,7 +43,7 @@ main (int argc, char* argv[])
 	GFile *source;
 	int i;
 	GList *infos;
-	CajaProgressInfo *progress_info;
+	PeonyProgressInfo *progress_info;
 
 	test_init (&argc, &argv);
 
@@ -65,19 +65,19 @@ main (int argc, char* argv[])
 	
 	gtk_widget_show (window);
 
-	caja_file_operations_copy (sources,
+	peony_file_operations_copy (sources,
 				       NULL /* GArray *relative_item_points */,
 				       dest,
 				       GTK_WINDOW (window),
 				       copy_done, NULL);
 
-	infos = caja_get_all_progress_info ();
+	infos = peony_get_all_progress_info ();
 
 	if (infos == NULL) {
 		return 0;
 	}
 
-	progress_info = CAJA_PROGRESS_INFO (infos->data);
+	progress_info = PEONY_PROGRESS_INFO (infos->data);
 
 	g_signal_connect (progress_info, "changed", (GCallback)changed_cb, NULL);
 	g_signal_connect (progress_info, "progress-changed", (GCallback)progress_changed_cb, NULL);

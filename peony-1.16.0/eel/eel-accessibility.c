@@ -48,10 +48,10 @@ eel_accessibility_set_up_label_widget_relation (GtkWidget *label, GtkWidget *wid
 
 /**
  * eel_accessibility_create_derived_type:
- * @type_name: the name for the new accessible type eg. CajaIconCanvasItemAccessible
+ * @type_name: the name for the new accessible type eg. PeonyIconCanvasItemAccessible
  * @existing_gobject_with_proxy: the GType of an object that has a registered factory that
  *      manufactures the type we want to inherit from. ie. to inherit from a GailCanvasItem
- *      we need to pass MATE_TYPE_CANVAS_ITEM - since GailCanvasItem is registered against
+ *      we need to pass UKUI_TYPE_CANVAS_ITEM - since GailCanvasItem is registered against
  *      that type.
  * @opt_gail_parent_class: the name of the Gail class to derive from eg. GailCanvasItem
  * @class_init: the init function to run for this class

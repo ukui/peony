@@ -4,7 +4,7 @@ dnl ===========================================================================
 
 m4_define(glib_minver,                 2.36.0)
 m4_define(gio_minver,                  2.26.0)
-m4_define(mate_desktop_minver,         1.15.1)
+m4_define(ukui_desktop_minver,         1.15.1)
 m4_define(pango_minver,                1.1.2)
 m4_define(gtk_minver,                  2.24.0)
 m4_define(xml_minver,                  2.4.7)
@@ -16,10 +16,10 @@ m4_define(gail_minver,                 0.16)
 dnl 1. If the library code has changed at all since last release, then increment revision.
 dnl 2. If any interfaces have been added, then increment current and set revision to 0.
 dnl Interface break is not allowed.
-m4_define(caja_extension_current,  5)
-m4_define(caja_extension_revision, 0)
+m4_define(peony_extension_current,  5)
+m4_define(peony_extension_revision, 0)
 
-AC_INIT([caja], [1.16.0], [http://www.mate-desktop.org])
+AC_INIT([peony], [1.16.0], [http://www.ukui.org])
 
 dnl ---------------------------------------------------------------------------
 dnl GTK library version
@@ -63,7 +63,7 @@ AC_SUBST([ACLOCAL_AMFLAGS], ["\${ACLOCAL_FLAGS}"])
 
 AC_SUBST(GLIB_REQUIRED, [glib_minver])
 AC_SUBST(GIO_REQUIRED, [gio_minver])
-AC_SUBST(MATE_DESKTOP_REQUIRED, [mate_desktop_minver])
+AC_SUBST(UKUI_DESKTOP_REQUIRED, [ukui_desktop_minver])
 AC_SUBST(PANGO_REQUIRED, [pango_minver])
 AC_SUBST(GTK_REQUIRED, [$GTK_REQUIRED])
 AC_SUBST(XML_REQUIRED, [xml_minver])
@@ -71,7 +71,7 @@ AC_SUBST(GAIL_REQUIRED)
 
 dnl We need to decrement current by one in the calculation of the age because
 dnl the library was started with version "1:0:0" instead of "0:0:0"
-AC_SUBST(CAJA_EXTENSION_VERSION_INFO, [caja_extension_current]:[caja_extension_revision]:`expr [caja_extension_current] - 1`)
+AC_SUBST(PEONY_EXTENSION_VERSION_INFO, [peony_extension_current]:[peony_extension_revision]:`expr [peony_extension_current] - 1`)
 
 AC_C_BIGENDIAN
 AC_C_CONST
@@ -88,7 +88,7 @@ AC_CHECK_LIB(m, floor)
 
 PKG_CHECK_MODULES(ALL, [
     glib-2.0 >= glib_minver
-    mate-desktop-2.0 >= mate_desktop_minver
+    ukui-desktop-2.0 >= ukui_desktop_minver
     gthread-2.0
     gio-unix-2.0
     gio-2.0 >= gio_minver
@@ -99,7 +99,7 @@ PKG_CHECK_MODULES(ALL, [
 ])
 dnl ==========================================================================
 
-GETTEXT_PACKAGE=caja
+GETTEXT_PACKAGE=peony
 AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE",
     [the gettext translation domain])
@@ -133,7 +133,7 @@ AH_TEMPLATE([HAVE_EXIF])
 AH_TEMPLATE([HAVE_RENDER])
 
 AM_GLIB_GNU_GETTEXT
-GLIB_DEFINE_LOCALEDIR(MATELOCALEDIR)
+GLIB_DEFINE_LOCALEDIR(UKUILOCALEDIR)
 
 IT_PROG_INTLTOOL([0.50.1])
 
@@ -330,16 +330,16 @@ AC_SUBST(LIBEGG_CFLAGS)
 LIBEGG_LIBS="`$PKG_CONFIG --libs $LIBEGG_MODULES`"
 AC_SUBST(LIBEGG_LIBS)
 
-dnl libcaja-extension
-LIBCAJA_EXTENSION_MODULES="glib-2.0 gtk+-$GTK_API_VERSION"
-LIBCAJA_EXTENSION_CFLAGS="`$PKG_CONFIG --cflags $LIBCAJA_EXTENSION_MODULES`"
-AC_SUBST(LIBCAJA_EXTENSION_CFLAGS)
-LIBCAJA_EXTENSION_LIBS="`$PKG_CONFIG --libs $LIBCAJA_EXTENSION_MODULES`"
-AC_SUBST(LIBCAJA_EXTENSION_LIBS)
+dnl libpeony-extension
+LIBPEONY_EXTENSION_MODULES="glib-2.0 gtk+-$GTK_API_VERSION"
+LIBPEONY_EXTENSION_CFLAGS="`$PKG_CONFIG --cflags $LIBPEONY_EXTENSION_MODULES`"
+AC_SUBST(LIBPEONY_EXTENSION_CFLAGS)
+LIBPEONY_EXTENSION_LIBS="`$PKG_CONFIG --libs $LIBPEONY_EXTENSION_MODULES`"
+AC_SUBST(LIBPEONY_EXTENSION_LIBS)
 
-dnl core caja
+dnl core peony
 PKG_CHECK_MODULES(GMODULE, gmodule-2.0, [GMODULE_ADD="gmodule-2.0"],[GMODULE_ADD=""])
-CORE_MODULES="glib-2.0 $GMODULE_ADD mate-desktop-2.0 gthread-2.0 gio-2.0 gio-unix-2.0 gail$GAIL_API_VERSION libxml-2.0 $EXTRA_CORE_MODULES gtk+-$GTK_API_VERSION x11"
+CORE_MODULES="glib-2.0 $GMODULE_ADD ukui-desktop-2.0 gthread-2.0 gio-2.0 gio-unix-2.0 gail$GAIL_API_VERSION libxml-2.0 $EXTRA_CORE_MODULES gtk+-$GTK_API_VERSION x11"
 CORE_CFLAGS="`$PKG_CONFIG --cflags $CORE_MODULES`"
 AC_SUBST(CORE_CFLAGS)
 CORE_LIBS="`$PKG_CONFIG --libs $CORE_MODULES`"
@@ -386,23 +386,23 @@ cut-n-paste-code/libegg/Makefile
 data/Makefile
 data/icons/Makefile
 data/patterns/Makefile
-data/caja-computer.desktop.in
-data/caja-file-management-properties.desktop.in
-data/caja-home.desktop.in
-data/caja.desktop.in
-data/caja-folder-handler.desktop.in
-data/caja-browser.desktop.in
-data/caja-autorun-software.desktop.in
+data/peony-computer.desktop.in
+data/peony-file-management-properties.desktop.in
+data/peony-home.desktop.in
+data/peony.desktop.in
+data/peony-folder-handler.desktop.in
+data/peony-browser.desktop.in
+data/peony-autorun-software.desktop.in
 docs/Makefile
 docs/reference/Makefile
-docs/reference/libcaja-extension/Makefile
-docs/reference/libcaja-extension/version.xml
+docs/reference/libpeony-extension/Makefile
+docs/reference/libpeony-extension/version.xml
 eel/Makefile
 icons/Makefile
-libcaja-private/Makefile
-libcaja-extension/Makefile
-libcaja-extension/libcaja-extension.pc
-libcaja-extension/libcaja-extension-uninstalled.pc
+libpeony-private/Makefile
+libpeony-extension/Makefile
+libpeony-extension/libpeony-extension.pc
+libpeony-extension/libpeony-extension-uninstalled.pc
 po/Makefile.in
 src/Makefile
 src/file-manager/Makefile
@@ -414,7 +414,7 @@ AC_OUTPUT
 dnl ==========================================================================
 
 echo "
-caja-$VERSION:
+peony-$VERSION:
 
     prefix:                       ${prefix}
     source code location:         ${srcdir}
@@ -423,6 +423,6 @@ caja-$VERSION:
     Gtk+ version:                 ${GTK_API_VERSION}
     PackageKit support:           $msg_packagekit
 
-    caja-extension documentation: ${enable_gtk_doc}
-    caja-extension introspection: ${found_introspection}
+    peony-extension documentation: ${enable_gtk_doc}
+    peony-extension introspection: ${found_introspection}
 "

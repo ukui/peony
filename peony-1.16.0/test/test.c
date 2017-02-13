@@ -60,7 +60,7 @@ test_gtk_widget_set_background_image (GtkWidget *widget,
 
 	background = eel_get_widget_background (widget);
 	
-	uri = g_strdup_printf ("file://%s/%s", CAJA_DATADIR, image_name);
+	uri = g_strdup_printf ("file://%s/%s", PEONY_DATADIR, image_name);
 
 	eel_background_set_image_uri (background, uri);
 
@@ -93,7 +93,7 @@ test_pixbuf_new_named (const char *name, float scale)
 	if (name[0] == '/') {
 		path = g_strdup (name);
 	} else {
-		path = g_strdup_printf ("%s/%s", CAJA_DATADIR, name);
+		path = g_strdup_printf ("%s/%s", PEONY_DATADIR, name);
 	}
 
 	pixbuf = gdk_pixbuf_new_from_file (path, NULL);

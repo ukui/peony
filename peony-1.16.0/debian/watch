@@ -1,3 +1,3 @@
 version=3
-http://git.mate-desktop.org/caja/ \
-    snapshot/caja-(\d\.(?:[0-9]+|)[24680]\.\d)\.tar\.xz
+http://www.ukui.org/peony/ \
+    snapshot/peony-(\d\.(?:[0-9]+|)[24680]\.\d)\.tar\.xz
