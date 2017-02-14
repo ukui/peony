@@ -26,7 +26,7 @@
 #include "fm-properties-window.h"
 #include "fm-ditem-page.h"
 
-#define UKUI_DESKTOP_USE_UNSTABLE_API
+#define MATE_DESKTOP_USE_UNSTABLE_API
 
 #include "fm-error-reporting.h"
 #include "libpeony-private/peony-mime-application-chooser.h"
@@ -42,7 +42,7 @@
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
 #include <glib/gi18n.h>
-#include <libukui-desktop/ukui-desktop-thumbnail.h>
+#include <libmate-desktop/mate-desktop-thumbnail.h>
 #include <libpeony-extension/peony-property-page-provider.h>
 #include <libpeony-private/peony-entry.h>
 #include <libpeony-private/peony-extensions.h>
@@ -6701,7 +6701,7 @@ update_preview_callback (GtkFileChooser *icon_chooser,
 			scale = (double)gdk_pixbuf_get_height (pixbuf) /
 				gdk_pixbuf_get_width (pixbuf);
 
-			scaled_pixbuf = ukui_desktop_thumbnail_scale_down_pixbuf
+			scaled_pixbuf = mate_desktop_thumbnail_scale_down_pixbuf
 				(pixbuf,
 				 PREVIEW_IMAGE_WIDTH,
 				 scale * PREVIEW_IMAGE_WIDTH);

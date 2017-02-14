@@ -74,8 +74,8 @@
 #include <libpeony-private/peony-signaller.h>
 #include <libpeony-extension/peony-menu-provider.h>
 #include <libpeony-private/peony-autorun.h>
-#define UKUI_DESKTOP_USE_UNSTABLE_API
-#include <libukui-desktop/ukui-bg.h>
+#define MATE_DESKTOP_USE_UNSTABLE_API
+#include <libmate-desktop/mate-bg.h>
 
 enum {
 	COMMAND_0, /* unused: 0 is an invalid command */
@@ -1073,7 +1073,7 @@ peony_application_startup (PeonyApplication *application,
         char *accel_map_filename;
 
         if (!no_desktop &&
-            !g_settings_get_boolean (ukui_background_preferences, UKUI_BG_KEY_SHOW_DESKTOP))
+            !g_settings_get_boolean (ukui_background_preferences, MATE_BG_KEY_SHOW_DESKTOP))
         {
             no_desktop = TRUE;
         }
@@ -1107,7 +1107,7 @@ peony_application_startup (PeonyApplication *application,
 
         /* Monitor the preference to show or hide the desktop */
         g_signal_connect_swapped (ukui_background_preferences,
-                                  "changed::" UKUI_BG_KEY_SHOW_DESKTOP,
+                                  "changed::" MATE_BG_KEY_SHOW_DESKTOP,
                                   G_CALLBACK(desktop_changed_callback),
                                   G_OBJECT (application));
 
@@ -1657,7 +1657,7 @@ desktop_changed_callback (gpointer user_data)
     PeonyApplication *application;
 
     application = PEONY_APPLICATION (user_data);
-    if (g_settings_get_boolean (ukui_background_preferences, UKUI_BG_KEY_SHOW_DESKTOP))
+    if (g_settings_get_boolean (ukui_background_preferences, MATE_BG_KEY_SHOW_DESKTOP))
     {
         peony_application_open_desktop (application);
     }

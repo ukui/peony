@@ -46,11 +46,11 @@
 #define cairo_xlib_surface_get_display  GDK_PIXMAP_XDISPLAY
 #define cairo_xlib_surface_get_drawable GDK_PIXMAP_XID
 #define cairo_set_source_surface gdk_cairo_set_source_pixmap
-#define ukui_bg_create_surface              ukui_bg_create_pixmap
-#define ukui_bg_set_surface_as_root         ukui_bg_set_pixmap_as_root
-#define ukui_bg_get_surface_from_root       ukui_bg_get_pixmap_from_root
-#define ukui_bg_crossfade_set_start_surface ukui_bg_crossfade_set_start_pixmap
-#define ukui_bg_crossfade_set_end_surface   ukui_bg_crossfade_set_end_pixmap
+#define mate_bg_create_surface              mate_bg_create_pixmap
+#define mate_bg_set_surface_as_root         mate_bg_set_pixmap_as_root
+#define mate_bg_get_surface_from_root       mate_bg_get_pixmap_from_root
+#define mate_bg_crossfade_set_start_surface mate_bg_crossfade_set_start_pixmap
+#define mate_bg_crossfade_set_end_surface   mate_bg_crossfade_set_end_pixmap
 #endif
 
 G_DEFINE_TYPE (EelBackground, eel_background, G_TYPE_OBJECT);
@@ -68,13 +68,13 @@ static guint signals[LAST_SIGNAL] = { 0 };
 struct EelBackgroundDetails
 {
     GtkWidget *widget;
-    UkuiBG *bg;
+    MateBG *bg;
     char *color;
 
     /* Realized data: */
     cairo_surface_t *bg_surface;
     gboolean unset_root_surface;
-    UkuiBGCrossfade *fade;
+    MateBGCrossfade *fade;
     int bg_entire_width;
     int bg_entire_height;
 #if GTK_CHECK_VERSION (3, 0, 0)
@@ -205,7 +205,7 @@ make_color_inactive (EelBackground *self,
 gchar *
 eel_bg_get_desktop_color (EelBackground *self)
 {
-    UkuiBGColorType type;
+    MateBGColorType type;
 #if GTK_CHECK_VERSION (3, 0, 0)
     GdkRGBA    primary, secondary;
 #else
@@ -215,17 +215,17 @@ eel_bg_get_desktop_color (EelBackground *self)
     gboolean   use_gradient = TRUE;
     gboolean   is_horizontal = FALSE;
 
-    ukui_bg_get_color (self->details->bg, &type, &primary, &secondary);
+    mate_bg_get_color (self->details->bg, &type, &primary, &secondary);
 
-    if (type == UKUI_BG_COLOR_V_GRADIENT)
+    if (type == MATE_BG_COLOR_V_GRADIENT)
     {
         is_horizontal = FALSE;
     }
-    else if (type == UKUI_BG_COLOR_H_GRADIENT)
+    else if (type == MATE_BG_COLOR_H_GRADIENT)
     {
         is_horizontal = TRUE;
     }
-    else	/* implicit (type == UKUI_BG_COLOR_SOLID) */
+    else	/* implicit (type == MATE_BG_COLOR_SOLID) */
     {
         use_gradient = FALSE;
     }
@@ -268,13 +268,13 @@ set_image_properties (EelBackground *self)
     {
         c = self->details->default_color;
         make_color_inactive (self, &c);
-        ukui_bg_set_color (self->details->bg, UKUI_BG_COLOR_SOLID, &c, NULL);
+        mate_bg_set_color (self->details->bg, MATE_BG_COLOR_SOLID, &c, NULL);
     }
     else if (!eel_gradient_is_gradient (self->details->color))
     {
         eel_gdk_rgba_parse_with_white_default (&c, self->details->color);
         make_color_inactive (self, &c);
-        ukui_bg_set_color (self->details->bg, UKUI_BG_COLOR_SOLID, &c, NULL);
+        mate_bg_set_color (self->details->bg, MATE_BG_COLOR_SOLID, &c, NULL);
     }
     else
     {
@@ -292,9 +292,9 @@ set_image_properties (EelBackground *self)
         g_free (spec);
 
         if (eel_gradient_is_horizontal (self->details->color)) {
-            ukui_bg_set_color (self->details->bg, UKUI_BG_COLOR_H_GRADIENT, &c1, &c2);
+            mate_bg_set_color (self->details->bg, MATE_BG_COLOR_H_GRADIENT, &c1, &c2);
         } else {
-            ukui_bg_set_color (self->details->bg, UKUI_BG_COLOR_V_GRADIENT, &c1, &c2);
+            mate_bg_set_color (self->details->bg, MATE_BG_COLOR_V_GRADIENT, &c1, &c2);
         }
     }
 }
@@ -311,13 +311,13 @@ set_image_properties (EelBackground *self)
     {
         c = self->details->default_color;
         make_color_inactive (self, &c);
-        ukui_bg_set_color (self->details->bg, UKUI_BG_COLOR_SOLID, &c, NULL);
+        mate_bg_set_color (self->details->bg, MATE_BG_COLOR_SOLID, &c, NULL);
     }
     else if (!eel_gradient_is_gradient (self->details->color))
     {
         eel_gdk_color_parse_with_white_default (self->details->color, &c);
         make_color_inactive (self, &c);
-        ukui_bg_set_color (self->details->bg, UKUI_BG_COLOR_SOLID, &c, NULL);
+        mate_bg_set_color (self->details->bg, MATE_BG_COLOR_SOLID, &c, NULL);
     }
     else
     {
@@ -335,9 +335,9 @@ set_image_properties (EelBackground *self)
         g_free (spec);
 
         if (eel_gradient_is_horizontal (self->details->color)) {
-            ukui_bg_set_color (self->details->bg, UKUI_BG_COLOR_H_GRADIENT, &c1, &c2);
+            mate_bg_set_color (self->details->bg, MATE_BG_COLOR_H_GRADIENT, &c1, &c2);
         } else {
-            ukui_bg_set_color (self->details->bg, UKUI_BG_COLOR_V_GRADIENT, &c1, &c2);
+            mate_bg_set_color (self->details->bg, MATE_BG_COLOR_V_GRADIENT, &c1, &c2);
         }
     }
 }
@@ -437,7 +437,7 @@ eel_background_ensure_realized (EelBackground *self)
     set_image_properties (self);
 
     window = gtk_widget_get_window (self->details->widget);
-    self->details->bg_surface = ukui_bg_create_surface (self->details->bg,
+    self->details->bg_surface = mate_bg_create_surface (self->details->bg,
         						window, width, height,
         						self->details->is_desktop);
     self->details->unset_root_surface = self->details->is_desktop;
@@ -528,12 +528,12 @@ set_root_surface (EelBackground *self,
     } else {
         int width, height;
         drawable_get_adjusted_size (self, &width, &height);
-        self->details->bg_surface = ukui_bg_create_surface (self->details->bg, window,
+        self->details->bg_surface = mate_bg_create_surface (self->details->bg, window,
         						    width, height, TRUE);
     }
 
     if (self->details->bg_surface != NULL)
-        ukui_bg_set_surface_as_root (screen, self->details->bg_surface);
+        mate_bg_set_surface_as_root (screen, self->details->bg_surface);
 }
 
 static void
@@ -547,7 +547,7 @@ init_fade (EelBackground *self)
     }
 
     do_fade = g_settings_get_boolean (ukui_background_preferences,
-                                      UKUI_BG_KEY_BACKGROUND_FADE);
+                                      MATE_BG_KEY_BACKGROUND_FADE);
     if (!do_fade) {
     	return;
     }
@@ -563,7 +563,7 @@ init_fade (EelBackground *self)
         if (width == self->details->bg_entire_width &&
             height == self->details->bg_entire_height)
         {
-            self->details->fade = ukui_bg_crossfade_new (width, height);
+            self->details->fade = mate_bg_crossfade_new (width, height);
             g_signal_connect_swapped (self->details->fade,
                                       "finished",
                                       G_CALLBACK (free_fade),
@@ -571,24 +571,24 @@ init_fade (EelBackground *self)
         }
     }
 
-    if (self->details->fade != NULL && !ukui_bg_crossfade_is_started (self->details->fade))
+    if (self->details->fade != NULL && !mate_bg_crossfade_is_started (self->details->fade))
     {
         if (self->details->bg_surface == NULL)
         {
             cairo_surface_t *start_surface;
-            start_surface = ukui_bg_get_surface_from_root (gtk_widget_get_screen (widget));
-            ukui_bg_crossfade_set_start_surface (self->details->fade, start_surface);
+            start_surface = mate_bg_get_surface_from_root (gtk_widget_get_screen (widget));
+            mate_bg_crossfade_set_start_surface (self->details->fade, start_surface);
             cairo_surface_destroy (start_surface);
         }
         else
         {
-            ukui_bg_crossfade_set_start_surface (self->details->fade, self->details->bg_surface);
+            mate_bg_crossfade_set_start_surface (self->details->fade, self->details->bg_surface);
         }
     }
 }
 
 static void
-on_fade_finished (UkuiBGCrossfade *fade,
+on_fade_finished (MateBGCrossfade *fade,
                   GdkWindow       *window,
 		  gpointer         user_data)
 {
@@ -603,14 +603,14 @@ fade_to_surface (EelBackground   *self,
                  cairo_surface_t *surface)
 {
     if (self->details->fade == NULL ||
-        !ukui_bg_crossfade_set_end_surface (self->details->fade, surface))
+        !mate_bg_crossfade_set_end_surface (self->details->fade, surface))
     {
         return FALSE;
     }
 
-    if (!ukui_bg_crossfade_is_started (self->details->fade))
+    if (!mate_bg_crossfade_is_started (self->details->fade))
     {
-        ukui_bg_crossfade_start (self->details->fade, window);
+        mate_bg_crossfade_start (self->details->fade, window);
         if (self->details->is_desktop)
         {
             g_signal_connect (self->details->fade,
@@ -619,7 +619,7 @@ fade_to_surface (EelBackground   *self,
         }
     }
 
-    return ukui_bg_crossfade_is_started (self->details->fade);
+    return mate_bg_crossfade_is_started (self->details->fade);
 }
 
 static void
@@ -729,7 +729,7 @@ widget_style_set_cb (GtkWidget *widget,
 }
 
 static void
-eel_background_changed (UkuiBG *bg,
+eel_background_changed (MateBG *bg,
                         gpointer user_data)
 {
     EelBackground *self = EEL_BACKGROUND (user_data);
@@ -739,7 +739,7 @@ eel_background_changed (UkuiBG *bg,
 }
 
 static void
-eel_background_transitioned (UkuiBG *bg, gpointer user_data)
+eel_background_transitioned (MateBG *bg, gpointer user_data)
 {
     EelBackground *self = EEL_BACKGROUND (user_data);
 
@@ -927,7 +927,7 @@ eel_background_init (EelBackground *self)
         			       EEL_TYPE_BACKGROUND,
         			       EelBackgroundDetails);
 
-    self->details->bg = ukui_bg_new ();
+    self->details->bg = mate_bg_new ();
     self->details->default_color.red = 0xffff;
     self->details->default_color.green = 0xffff;
     self->details->default_color.blue = 0xffff;
@@ -951,7 +951,7 @@ eel_background_is_set (EelBackground *self)
     g_assert (EEL_IS_BACKGROUND (self));
 
     return self->details->color != NULL ||
-           ukui_bg_get_filename (self->details->bg) != NULL;
+           mate_bg_get_filename (self->details->bg) != NULL;
 }
 
 /**
@@ -1009,7 +1009,7 @@ eel_background_is_dark (EelBackground *self)
     GdkScreen *screen = gdk_screen_get_default ();
     gdk_screen_get_monitor_geometry (screen, 0, &rect);
 
-    return ukui_bg_is_dark (self->details->bg, rect.width, rect.height);
+    return mate_bg_is_dark (self->details->bg, rect.width, rect.height);
 }
 
 gchar *
@@ -1017,7 +1017,7 @@ eel_background_get_image_uri (EelBackground *self)
 {
     g_return_val_if_fail (EEL_IS_BACKGROUND (self), NULL);
 
-    const gchar *filename = ukui_bg_get_filename (self->details->bg);
+    const gchar *filename = mate_bg_get_filename (self->details->bg);
 
     if (filename) {
         return g_filename_to_uri (filename, NULL, NULL);
@@ -1038,7 +1038,7 @@ eel_bg_set_image_uri_helper (EelBackground *self,
         filename = g_strdup ("");    /* GSettings expects a string, not NULL */
     }
 
-    ukui_bg_set_filename (self->details->bg, filename);
+    mate_bg_set_filename (self->details->bg, filename);
     g_free (filename);
 
     if (emit_signal)
@@ -1068,9 +1068,9 @@ eel_bg_set_image_uri_and_color (EelBackground *self,
                                 const gchar   *color)
 {
     if (self->details->is_desktop &&
-        !ukui_bg_get_draw_background (self->details->bg))
+        !mate_bg_get_draw_background (self->details->bg))
     {
-        ukui_bg_set_draw_background (self->details->bg, TRUE);
+        mate_bg_set_draw_background (self->details->bg, TRUE);
     }
 
     eel_bg_set_image_uri_helper (self, image_uri, FALSE);
@@ -1083,10 +1083,10 @@ eel_bg_set_image_uri_and_color (EelBackground *self,
 
 void
 eel_bg_set_placement (EelBackground   *self,
-		      UkuiBGPlacement  placement)
+		      MateBGPlacement  placement)
 {
     if (self->details->bg)
-        ukui_bg_set_placement (self->details->bg,
+        mate_bg_set_placement (self->details->bg,
         		       placement);
 }
 
@@ -1095,7 +1095,7 @@ eel_bg_save_to_gsettings (EelBackground *self,
 			  GSettings     *settings)
 {
     if (self->details->bg)
-        ukui_bg_save_to_gsettings (self->details->bg,
+        mate_bg_save_to_gsettings (self->details->bg,
         			   settings);
 }
 
@@ -1104,7 +1104,7 @@ eel_bg_load_from_gsettings (EelBackground *self,
 			    GSettings     *settings)
 {
     if (self->details->bg)
-        ukui_bg_load_from_gsettings (self->details->bg,
+        mate_bg_load_from_gsettings (self->details->bg,
         			     settings);
 }
 
@@ -1114,7 +1114,7 @@ eel_bg_load_from_system_gsettings (EelBackground *self,
 				   gboolean       apply)
 {
     if (self->details->bg)
-        ukui_bg_load_from_system_gsettings (self->details->bg,
+        mate_bg_load_from_system_gsettings (self->details->bg,
         				    settings,
         				    apply);
 }
@@ -1126,7 +1126,7 @@ eel_background_set_dropped_image (EelBackground *self,
                                   const gchar   *image_uri)
 {
     /* Currently, we only support tiled images. So we set the placement. */
-    ukui_bg_set_placement (self->details->bg, UKUI_BG_PLACEMENT_TILED);
+    mate_bg_set_placement (self->details->bg, MATE_BG_PLACEMENT_TILED);
 
     eel_bg_set_image_uri_and_color (self, action, image_uri, NULL);
 }

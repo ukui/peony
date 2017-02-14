@@ -36,8 +36,8 @@
 #include <gio/gio.h>
 #include <glib/gi18n.h>    
 #if GTK_CHECK_VERSION(3, 21, 0)
-#define UKUI_DESKTOP_USE_UNSTABLE_API
-#include <libukui-desktop/ukui-bg.h>
+#define MATE_DESKTOP_USE_UNSTABLE_API
+#include <libmate-desktop/mate-bg.h>
 #endif
 
 struct PeonyDesktopWindowDetails
@@ -65,7 +65,7 @@ background_changed (PeonyDesktopWindow *window)
         cairo_surface_destroy (window->details->surface);
     }
 
-    window->details->surface = ukui_bg_get_surface_from_root (screen);
+    window->details->surface = mate_bg_get_surface_from_root (screen);
     gtk_widget_queue_draw (GTK_WIDGET (window));
 }
 

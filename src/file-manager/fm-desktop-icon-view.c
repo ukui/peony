@@ -704,8 +704,8 @@ action_new_launcher_callback (GtkAction *action, gpointer data)
     desktop_directory = peony_get_desktop_directory ();
 
     peony_launch_application_from_command (gtk_widget_get_screen (GTK_WIDGET (data)),
-                                          "ukui-desktop-item-edit",
-                                          "ukui-desktop-item-edit",
+                                          "mate-desktop-item-edit",
+                                          "mate-desktop-item-edit",
                                           FALSE,
                                           "--create-new", desktop_directory, NULL);
     g_free (desktop_directory);

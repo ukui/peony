@@ -26,7 +26,7 @@
 #include <config.h>
 #include "peony-thumbnails.h"
 
-#define UKUI_DESKTOP_USE_UNSTABLE_API
+#define MATE_DESKTOP_USE_UNSTABLE_API
 
 #include "peony-directory-notify.h"
 #include "peony-global-preferences.h"
@@ -44,7 +44,7 @@
 #include <sys/wait.h>
 #include <unistd.h>
 #include <signal.h>
-#include <libukui-desktop/ukui-desktop-thumbnail.h>
+#include <libmate-desktop/mate-desktop-thumbnail.h>
 
 #include "peony-file-private.h"
 
@@ -101,7 +101,7 @@ static GHashTable *thumbnails_to_make_hash = NULL;
  * to avoid adding it again. Lock thumbnails_mutex when accessing this. */
 static PeonyThumbnailInfo *currently_thumbnailing = NULL;
 
-static UkuiDesktopThumbnailFactory *thumbnail_factory = NULL;
+static MakeDesktopThumbnailFactory *thumbnail_factory = NULL;
 
 static gboolean
 get_file_mtime (const char *file_uri, time_t* mtime)
@@ -138,14 +138,14 @@ free_thumbnail_info (PeonyThumbnailInfo *info)
     g_free (info);
 }
 
-static UkuiDesktopThumbnailFactory *
+static MakeDesktopThumbnailFactory *
 get_thumbnail_factory (void)
 {
-    static UkuiDesktopThumbnailFactory *thumbnail_factory = NULL;
+    static MakeDesktopThumbnailFactory *thumbnail_factory = NULL;
 
     if (thumbnail_factory == NULL)
     {
-        thumbnail_factory = ukui_desktop_thumbnail_factory_new (UKUI_DESKTOP_THUMBNAIL_SIZE_NORMAL);
+        thumbnail_factory = mate_desktop_thumbnail_factory_new (MATE_DESKTOP_THUMBNAIL_SIZE_NORMAL);
     }
 
     return thumbnail_factory;
@@ -368,7 +368,7 @@ peony_thumbnail_is_mimetype_limited_by_size (const char *mime_type)
 gboolean
 peony_can_thumbnail (PeonyFile *file)
 {
-    UkuiDesktopThumbnailFactory *factory;
+    MakeDesktopThumbnailFactory *factory;
     gboolean res;
     char *uri;
     time_t mtime;
@@ -379,7 +379,7 @@ peony_can_thumbnail (PeonyFile *file)
     mtime = peony_file_get_mtime (file);
 
     factory = get_thumbnail_factory ();
-    res = ukui_desktop_thumbnail_factory_can_thumbnail (factory,
+    res = mate_desktop_thumbnail_factory_can_thumbnail (factory,
             uri,
             mime_type,
             mtime);
@@ -576,7 +576,7 @@ thumbnail_thread_func (GTask        *task,
                    info->image_uri);
 #endif
 
-        pixbuf = ukui_desktop_thumbnail_factory_generate_thumbnail (thumbnail_factory,
+        pixbuf = mate_desktop_thumbnail_factory_generate_thumbnail (thumbnail_factory,
                  info->image_uri,
                  info->mime_type);
 
@@ -586,7 +586,7 @@ thumbnail_thread_func (GTask        *task,
 			g_message ("(Thumbnail Thread) Saving thumbnail: %s\n",
 				   info->image_uri);
 #endif
-            ukui_desktop_thumbnail_factory_save_thumbnail (thumbnail_factory,
+            mate_desktop_thumbnail_factory_save_thumbnail (thumbnail_factory,
                     pixbuf,
                     info->image_uri,
                     current_orig_mtime);
@@ -598,7 +598,7 @@ thumbnail_thread_func (GTask        *task,
 			g_message ("(Thumbnail Thread) Thumbnail failed: %s\n",
 				   info->image_uri);
 #endif
-            ukui_desktop_thumbnail_factory_create_failed_thumbnail (thumbnail_factory,
+            mate_desktop_thumbnail_factory_create_failed_thumbnail (thumbnail_factory,
                     info->image_uri,
                     current_orig_mtime);
         }

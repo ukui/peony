@@ -26,12 +26,12 @@
 
 #include <config.h>
 
-#define UKUI_DESKTOP_USE_UNSTABLE_API
+#define MATE_DESKTOP_USE_UNSTABLE_API
 
 #include "eel-ukui-extensions.h"
 
 #include <gtk/gtk.h>
-#include <libukui-desktop/ukui-desktop-utils.h>
+#include <libmate-desktop/mate-desktop-utils.h>
 
 
 /* Return a command string containing the path to a terminal on this system. */
@@ -118,7 +118,7 @@ get_terminal_command_prefix (gboolean for_command)
      */
     argc = 0;
     argv = g_new0 (char *, 1);
-    ukui_desktop_prepend_terminal_to_vector (&argc, &argv);
+    mate_desktop_prepend_terminal_to_vector (&argc, &argv);
 
     command = NULL;
     if (argc != 0)
@@ -196,6 +196,6 @@ eel_ukui_open_terminal_on_screen (const char *command,
         return;
     }
 
-    ukui_gdk_spawn_command_line_on_screen(screen, command_line, NULL);
+    mate_gdk_spawn_command_line_on_screen(screen, command_line, NULL);
     g_free (command_line);
 }

@@ -4,7 +4,7 @@ dnl ===========================================================================
 
 m4_define(glib_minver,                 2.36.0)
 m4_define(gio_minver,                  2.26.0)
-m4_define(ukui_desktop_minver,         1.15.1)
+m4_define(mate_desktop_minver,         1.15.1)
 m4_define(pango_minver,                1.1.2)
 m4_define(gtk_minver,                  2.24.0)
 m4_define(xml_minver,                  2.4.7)
@@ -63,7 +63,7 @@ AC_SUBST([ACLOCAL_AMFLAGS], ["\${ACLOCAL_FLAGS}"])
 
 AC_SUBST(GLIB_REQUIRED, [glib_minver])
 AC_SUBST(GIO_REQUIRED, [gio_minver])
-AC_SUBST(UKUI_DESKTOP_REQUIRED, [ukui_desktop_minver])
+AC_SUBST(MATE_DESKTOP_REQUIRED, [mate_desktop_minver])
 AC_SUBST(PANGO_REQUIRED, [pango_minver])
 AC_SUBST(GTK_REQUIRED, [$GTK_REQUIRED])
 AC_SUBST(XML_REQUIRED, [xml_minver])
@@ -88,7 +88,7 @@ AC_CHECK_LIB(m, floor)
 
 PKG_CHECK_MODULES(ALL, [
     glib-2.0 >= glib_minver
-    ukui-desktop-2.0 >= ukui_desktop_minver
+    mate-desktop-2.0 >= mate_desktop_minver
     gthread-2.0
     gio-unix-2.0
     gio-2.0 >= gio_minver
@@ -339,7 +339,7 @@ AC_SUBST(LIBPEONY_EXTENSION_LIBS)
 
 dnl core peony
 PKG_CHECK_MODULES(GMODULE, gmodule-2.0, [GMODULE_ADD="gmodule-2.0"],[GMODULE_ADD=""])
-CORE_MODULES="glib-2.0 $GMODULE_ADD ukui-desktop-2.0 gthread-2.0 gio-2.0 gio-unix-2.0 gail$GAIL_API_VERSION libxml-2.0 $EXTRA_CORE_MODULES gtk+-$GTK_API_VERSION x11"
+CORE_MODULES="glib-2.0 $GMODULE_ADD mate-desktop-2.0 gthread-2.0 gio-2.0 gio-unix-2.0 gail$GAIL_API_VERSION libxml-2.0 $EXTRA_CORE_MODULES gtk+-$GTK_API_VERSION x11"
 CORE_CFLAGS="`$PKG_CONFIG --cflags $CORE_MODULES`"
 AC_SUBST(CORE_CFLAGS)
 CORE_LIBS="`$PKG_CONFIG --libs $CORE_MODULES`"

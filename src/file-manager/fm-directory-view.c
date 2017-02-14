@@ -85,8 +85,8 @@
 #include <libpeony-private/peony-icon-names.h>
 #include <libpeony-private/peony-undostack-manager.h>
 
-#define UKUI_DESKTOP_USE_UNSTABLE_API
-#include <libukui-desktop/ukui-desktop-utils.h>
+#define MATE_DESKTOP_USE_UNSTABLE_API
+#include <libmate-desktop/mate-desktop-utils.h>
 
 /* Minimum starting update inverval */
 #define UPDATE_INTERVAL_MIN 100
@@ -1546,8 +1546,8 @@ action_new_launcher_callback (GtkAction *action,
 	peony_debug_log (FALSE, PEONY_DEBUG_LOG_DOMAIN_USER,
 			    "directory view create new launcher in window=%p: %s", window, parent_uri);
 	peony_launch_application_from_command (gtk_widget_get_screen (GTK_WIDGET (view)),
-						  "ukui-desktop-item-edit",
-						  "ukui-desktop-item-edit",
+						  "mate-desktop-item-edit",
+						  "mate-desktop-item-edit",
 						  FALSE,
 						  "--create-new", parent_uri, NULL);
 
@@ -10278,7 +10278,7 @@ fm_directory_view_move_copy_items (const GList *item_uris,
 			screen = gdk_screen_get_default ();
 		}
 
-		ukui_gdk_spawn_command_line_on_screen(screen, command, NULL);
+		mate_gdk_spawn_command_line_on_screen(screen, command, NULL);
 		g_free (command);
 
 		return;

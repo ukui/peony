@@ -1,10 +1,4 @@
-peony (1.0.0) zesty; urgency=medium
-
-  * New release. 
-
- -- handsome_feng <jianfengli@ubuntukylin.com>  Sun, 12 Feb 2017 14:45:08 +0800
-
-peony (0.9.6) yakkety; urgency=medium
+peony (0.9.6.4) yakkety; urgency=medium
 
   * Update debian/control
 

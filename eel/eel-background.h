@@ -47,8 +47,8 @@
 
 #include <gdk-pixbuf/gdk-pixbuf.h>
 
-#define UKUI_DESKTOP_USE_UNSTABLE_API
-#include <libukui-desktop/ukui-bg.h>
+#define MATE_DESKTOP_USE_UNSTABLE_API
+#include <libmate-desktop/mate-bg.h>
 
 typedef struct EelBackground EelBackground;
 typedef struct EelBackgroundClass EelBackgroundClass;
@@ -78,7 +78,7 @@ void                        eel_background_set_image_uri         (EelBackground 
         							  const gchar      *image_uri);
 void                        eel_background_reset                 (EelBackground   *self);
 void                        eel_bg_set_placement                 (EelBackground   *self,
-        							  UkuiBGPlacement  placement);
+        							  MateBGPlacement  placement);
 
 /* Should be TRUE for desktop background */
 gboolean		    eel_background_is_desktop 		 (EelBackground   *self);

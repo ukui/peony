@@ -82,7 +82,7 @@ peony_background_load_from_file_metadata (PeonyFile      *file,
 
     eel_background_set_color (background, color);
     /* non-tiled only available for desktop, at least for now */
-    eel_bg_set_placement (background, UKUI_BG_PLACEMENT_TILED);
+    eel_bg_set_placement (background, MATE_BG_PLACEMENT_TILED);
     eel_background_set_image_uri (background, image);
 
     /* Unblock the handler. */
