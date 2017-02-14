@@ -101,7 +101,7 @@ static GHashTable *thumbnails_to_make_hash = NULL;
  * to avoid adding it again. Lock thumbnails_mutex when accessing this. */
 static PeonyThumbnailInfo *currently_thumbnailing = NULL;
 
-static MakeDesktopThumbnailFactory *thumbnail_factory = NULL;
+static MateDesktopThumbnailFactory *thumbnail_factory = NULL;
 
 static gboolean
 get_file_mtime (const char *file_uri, time_t* mtime)
@@ -138,10 +138,10 @@ free_thumbnail_info (PeonyThumbnailInfo *info)
     g_free (info);
 }
 
-static MakeDesktopThumbnailFactory *
+static MateDesktopThumbnailFactory *
 get_thumbnail_factory (void)
 {
-    static MakeDesktopThumbnailFactory *thumbnail_factory = NULL;
+    static MateDesktopThumbnailFactory *thumbnail_factory = NULL;
 
     if (thumbnail_factory == NULL)
     {
@@ -368,7 +368,7 @@ peony_thumbnail_is_mimetype_limited_by_size (const char *mime_type)
 gboolean
 peony_can_thumbnail (PeonyFile *file)
 {
-    MakeDesktopThumbnailFactory *factory;
+    MateDesktopThumbnailFactory *factory;
     gboolean res;
     char *uri;
     time_t mtime;
