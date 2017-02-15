@@ -86,6 +86,6 @@ peony_global_preferences_init (void)
     peony_list_view_preferences = g_settings_new("org.ukui.peony.list-view");
     peony_extension_preferences = g_settings_new("org.ukui.peony.extensions");
 
-    ukui_background_preferences = g_settings_new("org.ukui.background");
-    ukui_lockdown_preferences = g_settings_new("org.ukui.lockdown");
+    ukui_background_preferences = g_settings_new("org.mate.background");
+    ukui_lockdown_preferences = g_settings_new("org.mate.lockdown");
 }

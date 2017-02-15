@@ -1,4 +1,10 @@
-peony (0.9.6.4) yakkety; urgency=medium
+peony (1.0.0) zesty; urgency=medium
+
+  * Changed some dependence from ukui to mate. 
+
+ -- handsome_feng <jianfengli@ubuntukylin.com>  Wed, 15 Feb 2017 13:54:21 +0800
+
+peony (0.9.6.8) yakkety; urgency=medium
 
   * Update debian/control
 
