@@ -56,18 +56,17 @@
     <value nick="end" value="1"/>
   </enum>
 
-  <schema id="org.ukui.peony" path="/org.ukui/peony/" gettext-domain="peony">
+  <schema id="org.ukui.peony" path="/org/ukui/peony/" gettext-domain="peony">
     <child name="preferences" schema="org.ukui.peony.preferences"/>
     <child name="icon-view" schema="org.ukui.peony.icon-view"/>
     <child name="compact-view" schema="org.ukui.peony.compact-view"/>
     <child name="list-view" schema="org.ukui.peony.list-view"/>
-    <child name="computer-view" schema="org.ukui.peony.computer-view"/>
     <child name="sidebar-panels" schema="org.ukui.peony.sidebar-panels"/>
     <child name="desktop" schema="org.ukui.peony.desktop"/>
     <child name="window-state" schema="org.ukui.peony.window-state"/>
   </schema>
 
-  <schema id="org.ukui.peony.preferences" path="/org.ukui/peony/preferences/" gettext-domain="peony">
+  <schema id="org.ukui.peony.preferences" path="/org/ukui/peony/preferences/" gettext-domain="peony">
     <key name="tabs-open-position" enum="org.ukui.peony.TabPosition">
       <aliases>
     <alias value='after_current_tab' target='after-current-tab'/>
@@ -79,7 +78,7 @@
     <key name="exit-with-last-window" type="b">
       <default>false</default>
       <summary>Peony will exit when last window destroyed.</summary>
-      <description>If set to true, then Peony will exit when all windows are destroyed. This is the default setting. If set to false, it can be started without any window, so peony can serve as a daemon to monitor media automount, or similar tasks.</description>
+      <description>If set to true, then Peony will exit when all windows are destroyed. This is the default setting. If set to false, it can be started without any window, so Peony can serve as a daemon to monitor media automount, or similar tasks.</description>
     </key>
     <key name="always-use-browser" type="b">
       <default>true</default>
@@ -95,6 +94,11 @@
       <default>true</default>
       <summary>Whether to ask for confirmation when deleting files, or emptying Trash</summary>
       <description>If set to true, then Peony will ask for confirmation when  you attempt to delete files, or empty the Trash.</description>
+    </key>
+    <key name="confirm-move-to-trash" type="b">
+      <default>false</default>
+      <summary>Whether to ask for confirmation when moving files to the Trash</summary>
+      <description>If set to true, then Peony will ask for confirmation when you attempt to move files to the Trash.</description>
     </key>
     <key name="enable-delete" type="b">
       <default>false</default>
@@ -125,8 +129,8 @@
     </key>
     <key name="install-mime-activation" type="b">
       <default>true</default>
-      <summary>Show the package installer for unknown mime types</summary>
-      <description>Whether to show the user a package installer dialog in case an unknown mime type is opened, in order to search for an application to handle it.</description>
+      <summary>Show the package installer for unknown MIME types</summary>
+      <description>Whether to show the user a package installer dialog in case an unknown MIME type is opened, in order to search for an application to handle it.</description>
     </key>
     <key name="mouse-use-extra-buttons" type="b">
       <default>true</default>
@@ -222,7 +226,7 @@
       <aliases>
         <alias value='icon_view' target='icon-view'/>
         <alias value='compact_view' target='compact-view'/>
-        <alias value='list_view' target='list-view'/>
+	<alias value='list_view' target='list-view'/>
 	<alias value='computer_view' target='computer-view'/>
       </aliases>
       <default>'icon-view'</default>
@@ -244,9 +248,14 @@
       <summary>Whether to show file sizes with IEC units</summary>
       <description>If set to true, file sizes are shown using IEC (base 1024) units with "KiB" style suffixes, instead of default with SI units.</description>
     </key>
+    <key name="show-notifications" type="b">
+      <default>true</default>
+      <summary>Whether to show desktop notifications</summary>
+      <description>If set to true, Peony will show desktop notifications for eject events</description>
+    </key>
   </schema>
 
-  <schema id="org.ukui.peony.icon-view" path="/org.ukui/peony/icon-view/" gettext-domain="peony">
+  <schema id="org.ukui.peony.icon-view" path="/org/ukui/peony/icon-view/" gettext-domain="peony">
     <key name="captions" type="as">
       <default>[ 'none', 'size', 'date_modified' ]</default>
       <summary>List of possible captions on icons</summary>
@@ -355,8 +364,7 @@
          larger (200%), largest (400%)</description>
     </key>
   </schema>
-
-  <schema id="org.ukui.peony.compact-view" path="/org.ukui/peony/compact-view/" gettext-domain="peony">
+  <schema id="org.ukui.peony.compact-view" path="/org/ukui/peony/compact-view/" gettext-domain="peony">
     <key name="default-zoom-level" enum="org.ukui.peony.ZoomLevel">
       <default>'standard'</default>
       <summary>Default compact view zoom level</summary>
@@ -369,7 +377,7 @@
     </key>
   </schema>
 
-  <schema id="org.ukui.peony.list-view" path="/org.ukui/peony/list-view/" gettext-domain="peony">
+  <schema id="org.ukui.peony.list-view" path="/org/ukui/peony/list-view/" gettext-domain="peony">
     <key name="default-zoom-level" enum="org.ukui.peony.ZoomLevel">
       <default>'smaller'</default>
       <summary>Default list zoom level</summary>
@@ -387,11 +395,11 @@
     </key>
   </schema>
 
-  <schema id="org.ukui.peony.sidebar-panels" path="/org.ukui/peony/sidebar-panels/" gettext-domain="peony">
+  <schema id="org.ukui.peony.sidebar-panels" path="/org/ukui/peony/sidebar-panels/" gettext-domain="peony">
     <child name="tree" schema="org.ukui.peony.sidebar-panels.tree"/>
   </schema>
 
-  <schema id="org.ukui.peony.sidebar-panels.tree" path="/org.ukui/peony/sidebar-panels/tree/" gettext-domain="peony">
+  <schema id="org.ukui.peony.sidebar-panels.tree" path="/org/ukui/peony/sidebar-panels/tree/" gettext-domain="peony">
     <key name="show-only-directories" type="b">
       <default>true</default>
       <summary>Only show folders in the tree side pane</summary>
@@ -399,7 +407,7 @@
     </key>
   </schema>
 
-  <schema id="org.ukui.peony.desktop" path="/org.ukui/peony/desktop/" gettext-domain="peony">
+  <schema id="org.ukui.peony.desktop" path="/org/ukui/peony/desktop/" gettext-domain="peony">
     <key name="font" type="s">
       <default>'Sans 10'</default>
       <summary>Desktop font</summary>
@@ -457,7 +465,7 @@
     </key>
   </schema>
 
-  <schema id="org.ukui.peony.window-state" path="/org.ukui/peony/window-state/" gettext-domain="peony">
+  <schema id="org.ukui.peony.window-state" path="/org/ukui/peony/window-state/" gettext-domain="peony">
     <key name="geometry" type="s">
       <default>''</default>
       <summary>The geometry string for a navigation window.</summary>
@@ -516,7 +524,7 @@
     </key>
   </schema>
 
-  <schema path="/org.ukui/peony/extensions/" id="org.ukui.peony.extensions" gettext-domain="peony">
+  <schema path="/org/ukui/peony/extensions/" id="org.ukui.peony.extensions" gettext-domain="peony">
     <key type="as" name="disabled-extensions">
       <default>[  ]</default>
       <summary>List of extensions in disabled state.</summary>

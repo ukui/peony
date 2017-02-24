@@ -37,16 +37,13 @@
 #include <eel/eel-graphic-effects.h>
 #include <eel/eel-gtk-extensions.h>
 #include <gtk/gtk.h>
+#include <gtk/gtk-a11y.h>
 #include <gdk/gdkkeysyms.h>
 #include <libpeony-private/peony-file-utilities.h>
 #include <libpeony-private/peony-global-preferences.h>
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>
-
-#if !GTK_CHECK_VERSION(3,0,0)
-#define gtk_widget_get_preferred_size(x,y,z) gtk_widget_size_request(x,y)
-#endif
 
 enum
 {
@@ -110,11 +107,7 @@ static GType peony_zoom_control_accessible_get_type (void);
 
 #define NUM_ACTIONS ((int)G_N_ELEMENTS (peony_zoom_control_accessible_action_names))
 
-#if GTK_CHECK_VERSION (3, 0, 0)
 G_DEFINE_TYPE (PeonyZoomControl, peony_zoom_control, GTK_TYPE_BOX);
-#else
-G_DEFINE_TYPE (PeonyZoomControl, peony_zoom_control, GTK_TYPE_HBOX);
-#endif
 
 static void
 peony_zoom_control_finalize (GObject *object)
@@ -289,11 +282,7 @@ set_label_size (PeonyZoomControl *zoom_control)
 
 static void
 label_style_set_callback (GtkWidget *label,
-#if GTK_CHECK_VERSION (3, 0, 0)
                           GtkStyleContext *style,
-#else
-                          GtkStyle *style,
-#endif
                           gpointer user_data)
 {
     set_label_size (PEONY_ZOOM_CONTROL (user_data));
@@ -322,7 +311,7 @@ peony_zoom_control_init (PeonyZoomControl *zoom_control)
 
     image = gtk_image_new_from_icon_name ("zoom-out", GTK_ICON_SIZE_MENU);
     zoom_control->details->zoom_out = gtk_button_new ();
-#if GTK_CHECK_VERSION(3,20,0)
+#if GTK_CHECK_VERSION (3, 20, 0)
     gtk_widget_set_focus_on_click (zoom_control->details->zoom_out, FALSE);
 #else
     gtk_button_set_focus_on_click (GTK_BUTTON (zoom_control->details->zoom_out), FALSE);
@@ -334,15 +323,15 @@ peony_zoom_control_init (PeonyZoomControl *zoom_control)
     g_signal_connect (G_OBJECT (zoom_control->details->zoom_out),
                       "clicked", G_CALLBACK (zoom_out_clicked),
                       zoom_control);
-#if GTK_CHECK_VERSION (3, 0, 0)
+
     gtk_orientable_set_orientation (GTK_ORIENTABLE (zoom_control), GTK_ORIENTATION_HORIZONTAL);
-#endif
+
     gtk_container_add (GTK_CONTAINER (zoom_control->details->zoom_out), image);
     gtk_box_pack_start (GTK_BOX (zoom_control),
                         zoom_control->details->zoom_out, FALSE, FALSE, 0);
 
     zoom_control->details->zoom_button = gtk_button_new ();
-#if GTK_CHECK_VERSION(3,20,0)
+#if GTK_CHECK_VERSION (3, 20, 0)
     gtk_widget_set_focus_on_click (zoom_control->details->zoom_button, FALSE);
 #else
     gtk_button_set_focus_on_click (GTK_BUTTON (zoom_control->details->zoom_button), FALSE);
@@ -384,7 +373,7 @@ peony_zoom_control_init (PeonyZoomControl *zoom_control)
 
     image = gtk_image_new_from_icon_name ("zoom-in", GTK_ICON_SIZE_MENU);
     zoom_control->details->zoom_in = gtk_button_new ();
-#if GTK_CHECK_VERSION(3,20,0)
+#if GTK_CHECK_VERSION (3, 20, 0)
     gtk_widget_set_focus_on_click (zoom_control->details->zoom_in, FALSE);
 #else
     gtk_button_set_focus_on_click (GTK_BUTTON (zoom_control->details->zoom_in), FALSE);
@@ -529,24 +518,6 @@ create_zoom_menu (PeonyZoomControl *zoom_control)
     return menu;
 }
 
-static AtkObject *
-peony_zoom_control_get_accessible (GtkWidget *widget)
-{
-    AtkObject *accessible;
-
-    accessible = eel_accessibility_get_atk_object (widget);
-
-    if (accessible)
-    {
-        return accessible;
-    }
-
-    accessible = g_object_new
-                 (peony_zoom_control_accessible_get_type (), NULL);
-
-    return eel_accessibility_set_atk_object_return (widget, accessible);
-}
-
 static void
 peony_zoom_control_change_value (PeonyZoomControl *zoom_control,
                                 GtkScrollType scroll)
@@ -689,7 +660,10 @@ peony_zoom_control_class_init (PeonyZoomControlClass *class)
 
     widget_class = GTK_WIDGET_CLASS (class);
 
-    widget_class->get_accessible = peony_zoom_control_get_accessible;
+
+    gtk_widget_class_set_accessible_type (widget_class,
+                                          peony_zoom_control_accessible_get_type ());
+
     widget_class->scroll_event = peony_zoom_control_scroll_event;
 
     class->change_value = peony_zoom_control_change_value;
@@ -968,53 +942,40 @@ peony_zoom_control_accessible_initialize (AtkObject *accessible,
     atk_object_set_role (accessible, ATK_ROLE_DIAL);
 }
 
-static void
-peony_zoom_control_accessible_class_init (AtkObjectClass *klass)
+typedef struct _PeonyZoomControlAccessible PeonyZoomControlAccessible;
+typedef struct _PeonyZoomControlAccessibleClass PeonyZoomControlAccessibleClass;
+
+struct _PeonyZoomControlAccessible
 {
+    GtkContainerAccessible parent;
+};
+
+struct _PeonyZoomControlAccessibleClass
+{
+    GtkContainerAccessibleClass parent_class;
+};
+
+G_DEFINE_TYPE_WITH_CODE (PeonyZoomControlAccessible,
+                         peony_zoom_control_accessible,
+                         GTK_TYPE_CONTAINER_ACCESSIBLE,
+                         G_IMPLEMENT_INTERFACE (ATK_TYPE_ACTION,
+                                                peony_zoom_control_accessible_action_interface_init)
+                         G_IMPLEMENT_INTERFACE (ATK_TYPE_VALUE,
+                                                peony_zoom_control_accessible_value_interface_init));
+static void
+peony_zoom_control_accessible_class_init (PeonyZoomControlAccessibleClass *klass)
+{
+    AtkObjectClass *atk_class = ATK_OBJECT_CLASS (klass);
     accessible_parent_class = g_type_class_peek_parent (klass);
 
-    klass->get_name = peony_zoom_control_accessible_get_name;
-    klass->get_description = peony_zoom_control_accessible_get_description;
-    klass->initialize = peony_zoom_control_accessible_initialize;
+    atk_class->get_name = peony_zoom_control_accessible_get_name;
+    atk_class->get_description = peony_zoom_control_accessible_get_description;
+    atk_class->initialize = peony_zoom_control_accessible_initialize;
 }
 
-static GType
-peony_zoom_control_accessible_get_type (void)
+static void
+peony_zoom_control_accessible_init (PeonyZoomControlAccessible *accessible)
 {
-    static GType type = 0;
-
-    if (!type)
-    {
-        static GInterfaceInfo atk_action_info =
-        {
-            (GInterfaceInitFunc)peony_zoom_control_accessible_action_interface_init,
-            (GInterfaceFinalizeFunc)NULL,
-            NULL
-        };
-
-        static GInterfaceInfo atk_value_info =
-        {
-            (GInterfaceInitFunc)peony_zoom_control_accessible_value_interface_init,
-            (GInterfaceFinalizeFunc)NULL,
-            NULL
-        };
-
-        type = eel_accessibility_create_derived_type
-               ("PeonyZoomControlAccessible",
-#if GTK_CHECK_VERSION (3, 0, 0)
-                GTK_TYPE_BOX,
-#else
-                GTK_TYPE_HBOX,
-#endif
-                peony_zoom_control_accessible_class_init);
-
-        g_type_add_interface_static (type, ATK_TYPE_ACTION,
-                                     &atk_action_info);
-        g_type_add_interface_static (type, ATK_TYPE_VALUE,
-                                     &atk_value_info);
-    }
-
-    return type;
 }
 
 void

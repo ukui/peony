@@ -53,6 +53,14 @@ G_DEFINE_TYPE (EggSMClient, egg_sm_client, G_TYPE_OBJECT)
 static EggSMClient *global_client;
 static EggSMClientMode global_client_mode = EGG_SM_CLIENT_MODE_NORMAL;
 
+static gboolean
+running_in_ukui (void)
+{
+    return (g_strcmp0 (g_getenv ("XDG_CURRENT_DESKTOP"), "UKUI") == 0)
+        || (g_strcmp0 (g_getenv ("XDG_SESSION_DESKTOP"), "UKUI") == 0)
+        || (g_strcmp0 (g_getenv ("DESKTOP_SESSION"), "UKUI") == 0);
+}
+
 static void
 egg_sm_client_init (EggSMClient *client)
 {
@@ -238,14 +246,14 @@ egg_sm_client_get_option_group (void)
             G_OPTION_ARG_STRING, &sm_client_id,
             N_("Specify session management ID"), N_("ID")
         },
-        /* UKUIClient compatibility option */
+        /* UkuiClient compatibility option */
         {
             "sm-disable", 0, G_OPTION_FLAG_HIDDEN,
             G_OPTION_ARG_NONE, &sm_client_disable,
             NULL, NULL
         },
-        /* UKUIClient compatibility option. This is a dummy option that only
-         * exists so that sessions saved by apps with UKUIClient can be restored
+        /* UkuiClient compatibility option. This is a dummy option that only
+         * exists so that sessions saved by apps with UkuiClient can be restored
          * later when they've switched to EggSMClient. See bug #575308.
          */
         {
@@ -351,6 +359,15 @@ egg_sm_client_get (void)
          */
         if (!global_client)
             global_client = g_object_new (EGG_TYPE_SM_CLIENT, NULL);
+        /*FIXME
+        /*Disabling when root/not in UKUI in GtkApplication builds
+        /*as egg_sm_client_set_mode must be called prior to start of main loop
+        /*to stop peony restart but this is diffcult in GtkApplication
+        */
+
+		if (geteuid () == 0 || !running_in_ukui ()){
+        global_client = g_object_new (EGG_TYPE_SM_CLIENT, NULL);
+        }
     }
 
     return global_client;

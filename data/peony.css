@@ -1,23 +1,8 @@
+/*Sane defaults for themes that do not specify them, themes can override these */
+/*This is loaded with GTK_STYLE_PROVIDER_PRIORITY_THEME so themes can override */
 
 .peony-canvas-item {
     border-radius: 3px;
-}
-
-.peony-desktop-window,
-.peony-desktop:not(:selected):not(:active):not(.rubberband){
-	background-color: transparent;
-}
-
-/* desktop mode */
-.peony-desktop.peony-canvas-item {
-    color: #ffffff;
-    text-shadow: 1px 1px alpha (#000000, 0.8);
-}
-
-.peony-desktop.peony-canvas-item:selected,
-.peony-desktop.peony-canvas-item:active,
-.peony-desktop.peony-canvas-item:hover {
-    text-shadow: none;
 }
 
 /* EelEditableLabel (icon labels) */
@@ -45,7 +30,7 @@
 
 .peony-desktop.view .entry:selected,
 .peony-desktop.view .entry:focus:selected,
-.peony-desktop.view .entry:backdrop:selected
+.peony-desktop.view .entry:backdrop:selected,
 .peony-navigation-window .view .entry:active,
 .peony-navigation-window .view .entry:selected,
 .peony-navigation-window .view .entry:focus:selected,
@@ -55,15 +40,4 @@
     text-shadow: none;
 }
 
-/* remove possible theme settings for borders on scrolledwindow with gtk+-3.20 */
-.peony-desktop-window > widget > box.vertical > box.vertical > box.vertical > scrolledwindow,
-.peony-desktop-window > widget > box.vertical > box.vertical > box.vertical > scrolledwindow.frame,
-.peony-desktop-window > widget > box.vertical > box.vertical > box.vertical > scrolledwindow > widget.view.peony-desktop {
-   border-width: 0px;
-   border-style: none;
-}
 
-/* Padding in slider buttons causes GTK errors in GTK 3.20 or later */
-.peony-navigation-window .slider-button {
-	padding: 0px;
-}

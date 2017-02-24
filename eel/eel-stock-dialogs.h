@@ -50,7 +50,7 @@ int        eel_run_simple_dialog              (GtkWidget         *parent,
         const char        *secondary_text,
         ...);
 
-/* Variations on ukui-ukui stock dialogs; these do line wrapping, we don't
+/* Variations on ukui stock dialogs; these do line wrapping, we don't
  * bother with non-parented versions, we allow setting the title,
  * primary, and secondary messages, and we return GtkDialog pointers
  * instead of GtkWidget pointers.

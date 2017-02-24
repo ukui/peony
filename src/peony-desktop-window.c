@@ -35,7 +35,7 @@
 #include <libpeony-private/peony-icon-names.h>
 #include <gio/gio.h>
 #include <glib/gi18n.h>    
-#if GTK_CHECK_VERSION(3, 21, 0)
+#if GTK_CHECK_VERSION (3, 22, 0)
 #define MATE_DESKTOP_USE_UNSTABLE_API
 #include <libmate-desktop/mate-bg.h>
 #endif
@@ -45,7 +45,7 @@ struct PeonyDesktopWindowDetails
     gulong size_changed_id;
 
     gboolean loaded;
-#if GTK_CHECK_VERSION(3, 21, 0)
+#if GTK_CHECK_VERSION (3, 22, 0)
     gboolean composited;
     cairo_surface_t *surface;
 #endif
@@ -54,7 +54,7 @@ struct PeonyDesktopWindowDetails
 G_DEFINE_TYPE (PeonyDesktopWindow, peony_desktop_window,
                PEONY_TYPE_SPATIAL_WINDOW);
 
-#if GTK_CHECK_VERSION(3, 21, 0) 
+#if GTK_CHECK_VERSION (3, 22, 0)
 
 static void
 background_changed (PeonyDesktopWindow *window)
@@ -155,7 +155,7 @@ peony_desktop_window_finalize (GObject *obj)
 
     G_OBJECT_CLASS (peony_desktop_window_parent_class)->finalize (obj);
 }
-#endif
+#endif  /* GTK_CHECK_VERSION (3, 22, 0) */
 
 static void
 peony_desktop_window_init (PeonyDesktopWindow *window)
@@ -166,14 +166,12 @@ peony_desktop_window_init (PeonyDesktopWindow *window)
     window->details = G_TYPE_INSTANCE_GET_PRIVATE (window, PEONY_TYPE_DESKTOP_WINDOW,
                                                    PeonyDesktopWindowDetails);
 
-#if GTK_CHECK_VERSION(3, 0, 0)
     GtkStyleContext *context;
 
     context = gtk_widget_get_style_context (GTK_WIDGET (window));
     gtk_style_context_add_class (context, "peony-desktop-window");
-#endif
 
-#if GTK_CHECK_VERSION(3, 21, 0) 
+#if GTK_CHECK_VERSION (3, 22, 0)
     window->details->composited = TRUE;
     peony_desktop_window_composited_changed (GTK_WIDGET (window));
 #endif
@@ -261,7 +259,7 @@ peony_desktop_window_new (PeonyApplication *application,
     /* Stop wrong desktop window size in GTK 3.20*/
     /* We don't want to set a default size, which the parent does, since this */
     /* will cause the desktop window to open at the wrong size in gtk 3.20 */
-#if GTK_CHECK_VERSION (3, 19, 0) 
+#if GTK_CHECK_VERSION (3, 20, 0)
     gtk_window_set_default_size (GTK_WINDOW (window), -1, -1);
 #endif
     /* Special sawmill setting*/
@@ -283,7 +281,7 @@ map (GtkWidget *widget)
     /* Chain up to realize our children */
     GTK_WIDGET_CLASS (peony_desktop_window_parent_class)->map (widget);
     gdk_window_lower (gtk_widget_get_window (widget));
-#if GTK_CHECK_VERSION(3, 21, 0)
+#if GTK_CHECK_VERSION (3, 22, 0)
     GdkWindow *window;
     GdkRGBA transparent = { 0, 0, 0, 0 };
 
@@ -342,11 +340,7 @@ set_desktop_window_id (PeonyDesktopWindow *window,
     root_window = gdk_screen_get_root_window (
                       gtk_window_get_screen (GTK_WINDOW (window)));
 
-#if GTK_CHECK_VERSION (3, 0, 0)
     window_xid = GDK_WINDOW_XID (gdkwindow);
-#else
-    window_xid = GDK_WINDOW_XWINDOW (gdkwindow);
-#endif
 
     gdk_property_change (root_window,
                          gdk_atom_intern ("PEONY_DESKTOP_WINDOW_ID", FALSE),
@@ -359,7 +353,7 @@ realize (GtkWidget *widget)
 {
     PeonyDesktopWindow *window;
     PeonyDesktopWindowDetails *details;
-#if GTK_CHECK_VERSION(3, 21, 0)
+#if GTK_CHECK_VERSION (3, 22, 0)
     GdkVisual *visual;
 #endif
     window = PEONY_DESKTOP_WINDOW (widget);
@@ -368,7 +362,7 @@ realize (GtkWidget *widget)
     /* Make sure we get keyboard events */
     gtk_widget_set_events (widget, gtk_widget_get_events (widget)
                            | GDK_KEY_PRESS_MASK | GDK_KEY_RELEASE_MASK);
-#if GTK_CHECK_VERSION(3, 21, 0)
+#if GTK_CHECK_VERSION (3, 22, 0)
     visual = gdk_screen_get_rgba_visual (gtk_widget_get_screen (widget));
     if (visual) {
         gtk_widget_set_visual (widget, visual);
@@ -405,7 +399,7 @@ peony_desktop_window_class_init (PeonyDesktopWindowClass *klass)
 {
     GtkWidgetClass *wclass = GTK_WIDGET_CLASS (klass);
     PeonyWindowClass *nclass = PEONY_WINDOW_CLASS (klass);
-#if GTK_CHECK_VERSION(3, 21, 0)
+#if GTK_CHECK_VERSION (3, 22, 0)
     GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
     object_class->finalize = peony_desktop_window_finalize;
@@ -414,7 +408,7 @@ peony_desktop_window_class_init (PeonyDesktopWindowClass *klass)
     wclass->realize = realize;
     wclass->unrealize = unrealize;
     wclass->map = map;
-#if GTK_CHECK_VERSION(3, 21, 0)
+#if GTK_CHECK_VERSION (3, 22, 0)
     wclass->composited_changed = peony_desktop_window_composited_changed;
     wclass->draw = peony_desktop_window_draw;
 #endif

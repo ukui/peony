@@ -1,5 +1,5 @@
 <schemalist>
-  <schema id="org.ukui.media-handling" path="/org.ukui/desktop/media-handling/" gettext-domain="peony">
+  <schema id="org.ukui.media-handling" path="/org/ukui/desktop/media-handling/" gettext-domain="peony">
     <key name="automount" type="b">
       <default>true</default>
       <summary>Whether to automatically mount media</summary>

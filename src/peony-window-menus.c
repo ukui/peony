@@ -98,8 +98,11 @@ bookmark_holder_new (PeonyBookmark *bookmark,
 static void
 bookmark_holder_free (BookmarkHolder *bookmark_holder)
 {
+    if (g_signal_handler_is_connected(bookmark_holder->bookmark,
+                                      bookmark_holder->changed_handler_id)){
     g_signal_handler_disconnect (bookmark_holder->bookmark,
-                                 bookmark_holder->changed_handler_id);
+                                      bookmark_holder->changed_handler_id);
+    }
     g_object_unref (bookmark_holder->bookmark);
     g_free (bookmark_holder);
 }
@@ -217,7 +220,6 @@ peony_menus_append_bookmark_to_menu (PeonyWindow *window,
     path = g_strdup_printf ("%s/%s", parent_path, action_name);
     menuitem = gtk_ui_manager_get_widget (window->details->ui_manager,
                                           path);
-    if(menuitem!=NULL)
     gtk_image_menu_item_set_always_show_image (GTK_IMAGE_MENU_ITEM (menuitem),
             TRUE);
 
@@ -502,7 +504,6 @@ action_about_peony_callback (GtkAction *action,
         "Steve Zesch",
         "Stefano Karapetsas",
         "Jasmine Hassan",
-        "Xiaodong Liu",
         NULL
     };
     const gchar *documenters[] =
@@ -537,8 +538,7 @@ action_about_peony_callback (GtkAction *action,
                                          "files and folders, both on "
                                          "your computer and online."),
                            "copyright", _("Copyright \xC2\xA9 1999-2009 The Nautilus authors\n"
-                                          "Copyright \xC2\xA9 2011-2016 The Caja authors\n"
-                                          "Copyright \xC2\xA9 2016 The Peony authors"),
+                                          "Copyright \xC2\xA9 2011-2016 The Peony authors"),
                            "license", license_trans,
                            "wrap-license", TRUE,
                            "authors", authors,
@@ -549,7 +549,7 @@ action_about_peony_callback (GtkAction *action,
                             */
                            "translator-credits", _("translator-credits"),
                            "logo-icon-name", "system-file-manager",
-                           "website", "http://www.ukui.org",
+                           "website", "http://www.ukui-desktop.org",
                            "website-label", _("UKUI Web Site"),
                            NULL);
 

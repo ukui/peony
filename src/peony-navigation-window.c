@@ -34,7 +34,6 @@
 #include "peony-actions.h"
 #include "peony-application.h"
 #include "peony-bookmarks-window.h"
-#include "peony-main.h"
 #include "peony-location-bar.h"
 #include "peony-query-editor.h"
 #include "peony-search-bar.h"
@@ -92,10 +91,6 @@ static PeonyWindowSlot *create_extra_pane         (PeonyNavigationWindow *window
 G_DEFINE_TYPE (PeonyNavigationWindow, peony_navigation_window, PEONY_TYPE_WINDOW)
 #define parent_class peony_navigation_window_parent_class
 
-#if GTK_CHECK_VERSION (3, 0, 0)
-#define gtk_vbox_new(X,Y) gtk_box_new(GTK_ORIENTATION_VERTICAL,Y)
-#endif
-
 static const struct
 {
     unsigned int keyval;
@@ -117,18 +112,16 @@ peony_navigation_window_init (PeonyNavigationWindow *window)
     PeonyNavigationWindowPane *pane;
     GtkWidget *hpaned;
     GtkWidget *vbox;
-
     GtkWidget *add_toolbar_vbox;
+    
     win = PEONY_WINDOW (window);
 
     window->details = G_TYPE_INSTANCE_GET_PRIVATE (window, PEONY_TYPE_NAVIGATION_WINDOW, PeonyNavigationWindowDetails);
 
-#if GTK_CHECK_VERSION(3, 0, 0)
     GtkStyleContext *context;
 
     context = gtk_widget_get_style_context (GTK_WIDGET (window));
     gtk_style_context_add_class (context, "peony-navigation-window");
-#endif
 
     pane = peony_navigation_window_pane_new (win);
     win->details->panes = g_list_prepend (win->details->panes, pane);
@@ -136,39 +129,25 @@ peony_navigation_window_init (PeonyNavigationWindow *window)
     window->details->header_size_group = gtk_size_group_new (GTK_SIZE_GROUP_VERTICAL);
     gtk_size_group_set_ignore_hidden (window->details->header_size_group, FALSE);
 
-#if GTK_CHECK_VERSION(3, 0, 0)
     window->details->content_paned = gtk_paned_new (GTK_ORIENTATION_HORIZONTAL);
     gtk_widget_set_hexpand (window->details->content_paned, TRUE);
     gtk_widget_set_vexpand (window->details->content_paned, TRUE);
     gtk_grid_attach (GTK_GRID (PEONY_WINDOW (window)->details->grid),
                      window->details->content_paned,
                      0, 3, 1, 1);
-#else
-    window->details->content_paned = gtk_hpaned_new ();
-    gtk_table_attach (GTK_TABLE (PEONY_WINDOW (window)->details->table),
-                      window->details->content_paned,
-                      /* X direction */                   /* Y direction */
-                      0, 1,                               3, 4,
-                      GTK_EXPAND | GTK_FILL | GTK_SHRINK, GTK_EXPAND | GTK_FILL | GTK_SHRINK,
-                      0,                                  0);
-#endif
     gtk_widget_show (window->details->content_paned);
 
-    vbox = gtk_vbox_new (FALSE, 0);
+    vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
+    gtk_box_set_homogeneous (vbox,FALSE);
     gtk_paned_pack2 (GTK_PANED (window->details->content_paned), vbox,
     		     TRUE, FALSE);
     gtk_widget_show (vbox);
-
-#if GTK_CHECK_VERSION(3, 0, 0)    
+   
     hpaned = gtk_paned_new (GTK_ORIENTATION_HORIZONTAL);
-#else
-    hpaned = gtk_hpaned_new ();
-#endif
     gtk_box_pack_start (GTK_BOX (vbox), hpaned, TRUE, TRUE, 0);
     gtk_widget_show (hpaned);
- 
-    window->toolbar_table= gtk_grid_new();
 
+    window->toolbar_table= gtk_grid_new();
     window->details->split_view_hpane = hpaned;
 
     gtk_box_pack_start (GTK_BOX (vbox), win->details->statusbar, FALSE, FALSE, 0);
@@ -193,47 +172,34 @@ peony_navigation_window_init (PeonyNavigationWindow *window)
     gtk_widget_set_size_request(toolbar,-1,24);
     gtk_toolbar_set_style(GTK_TOOLBAR(toolbar),GTK_TOOLBAR_ICONS);
     gtk_toolbar_set_show_arrow(GTK_TOOLBAR(toolbar),FALSE);
-
+    gtk_style_context_add_class (gtk_widget_get_style_context (toolbar), GTK_STYLE_CLASS_PRIMARY_TOOLBAR);
     window->toolbarViewAs = gtk_ui_manager_get_widget(ui_manager, "/ToolbarViewAs");
     gtk_toolbar_set_icon_size(GTK_TOOLBAR(window->toolbarViewAs),GTK_ICON_SIZE_SMALL_TOOLBAR);
     gtk_toolbar_set_style(GTK_TOOLBAR(window->toolbarViewAs), GTK_TOOLBAR_ICONS);
     gtk_widget_set_size_request(window->toolbarViewAs, 50, 32);
-#if GTK_CHECK_VERSION(3, 0, 0)
-    gtk_style_context_add_class (gtk_widget_get_style_context (toolbar), GTK_STYLE_CLASS_PRIMARY_TOOLBAR);
     window->details->toolbar = toolbar;
-
-    gtk_widget_show(window->toolbar_table);
+    gtk_widget_set_hexpand (toolbar, FALSE);
     add_toolbar_vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL,0);
     gtk_box_set_homogeneous (add_toolbar_vbox,TRUE);
     gtk_container_set_border_width(GTK_CONTAINER(add_toolbar_vbox),3);
     gtk_box_pack_start(GTK_BOX(add_toolbar_vbox),toolbar,TRUE,TRUE,0);
-    gtk_widget_show(toolbar);
-    gtk_widget_show(add_toolbar_vbox);
-   gtk_widget_set_size_request(add_toolbar_vbox,36,36);
+    gtk_widget_show (add_toolbar_vbox);
+    gtk_widget_set_size_request (add_toolbar_vbox,36,36);
 
-    gtk_widget_set_hexpand (toolbar,FALSE);
     gtk_grid_attach (window->toolbar_table,
-		    add_toolbar_vbox,
-		    0,1,1,1);
+                        add_toolbar_vbox,
+	                    0,1,1,1);
     gtk_grid_attach (window->toolbar_table,
-		    window->toolbarViewAs,
-		    2,1,1,1);
+                    window->toolbarViewAs,
+                        2,1,1,1);
+
     gtk_grid_attach (GTK_GRID (PEONY_WINDOW (window)->details->grid),
-                     //toolbar,
-                     window->toolbar_table,
+                    // toolbar,
+		    window->toolbar_table,
                      0, 1, 1, 1);
-
-    gtk_widget_show(window->toolbarViewAs);
-#else
-    window->details->toolbar = toolbar;
-    gtk_table_attach (GTK_TABLE (PEONY_WINDOW (window)->details->table),
-                      toolbar,
-                      /* X direction */                   /* Y direction */
-                      0, 1,                               1, 2,
-                      GTK_EXPAND | GTK_FILL | GTK_SHRINK, 0,
-                      0,                                  0);
-#endif
-    //gtk_widget_show (toolbar);
+    gtk_widget_show (toolbar);
+    gtk_widget_show_all (window->toolbar_table);
+    gtk_widget_show (window->toolbarViewAs);
 
     peony_navigation_window_initialize_toolbars (window);
 
@@ -632,11 +598,7 @@ peony_navigation_window_button_press_event (GtkWidget *widget,
 }
 
 static void
-#if GTK_CHECK_VERSION (3, 0, 0)
 peony_navigation_window_destroy (GtkWidget *object)
-#else
-peony_navigation_window_destroy (GtkObject *object)
-#endif
 {
     PeonyNavigationWindow *window;
 
@@ -652,11 +614,7 @@ peony_navigation_window_destroy (GtkObject *object)
     window->details->content_paned = NULL;
     window->details->split_view_hpane = NULL;
 
-#if GTK_CHECK_VERSION (3, 0, 0)
     GTK_WIDGET_CLASS (parent_class)->destroy (object);
-#else
-    GTK_OBJECT_CLASS (parent_class)->destroy (object);
-#endif
 }
 
 static void
@@ -1287,11 +1245,8 @@ peony_navigation_window_class_init (PeonyNavigationWindowClass *class)
     PEONY_WINDOW_CLASS (class)->bookmarks_placeholder = MENU_PATH_BOOKMARKS_PLACEHOLDER;
 
     G_OBJECT_CLASS (class)->finalize = peony_navigation_window_finalize;
-#if GTK_CHECK_VERSION (3, 0, 0)
+
     GTK_WIDGET_CLASS (class)->destroy = peony_navigation_window_destroy;
-#else
-    GTK_OBJECT_CLASS (class)->destroy = peony_navigation_window_destroy;
-#endif
     GTK_WIDGET_CLASS (class)->show = peony_navigation_window_show;
     GTK_WIDGET_CLASS (class)->window_state_event = peony_navigation_window_state_event;
     GTK_WIDGET_CLASS (class)->key_press_event = peony_navigation_window_key_press_event;

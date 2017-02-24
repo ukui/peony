@@ -860,9 +860,7 @@ get_default_executable_text_file_action (void)
 gboolean
 peony_mime_file_opens_in_view (PeonyFile *file)
 {
-    return (peony_file_is_directory (file) ||
-            PEONY_IS_DESKTOP_ICON_FILE (file) ||
-            peony_file_is_peony_link (file));
+    return (peony_file_is_directory (file));
 }
 
 static ActivationAction
@@ -871,7 +869,7 @@ get_activation_action (PeonyFile *file)
     ActivationAction action;
     char *activation_uri;
 
-    if (peony_file_is_launcher (file))
+    if (peony_file_is_peony_link (file))
     {
         return ACTIVATION_ACTION_LAUNCH_DESKTOP_FILE;
     }

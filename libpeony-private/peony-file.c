@@ -552,8 +552,7 @@ modify_link_hash_table (PeonyFile *file,
 
 	/* Create the hash table first time through. */
 	if (symbolic_links == NULL) {
-		symbolic_links = eel_g_hash_table_new_free_at_exit
-			(g_str_hash, g_str_equal, "peony-file.c: symbolic_links");
+		symbolic_links = g_hash_table_new (g_str_hash, g_str_equal);
 	}
 
 	target_uri = peony_file_get_symbolic_link_target_uri (file);
@@ -6965,9 +6964,12 @@ peony_file_get_symbolic_link_target_uri (PeonyFile *file)
 gboolean
 peony_file_is_peony_link (PeonyFile *file)
 {
-	/* NOTE: I removed the historical link here, because i don't think we
-	   even detect that mimetype anymore */
-	return peony_file_is_mime_type (file, "application/x-desktop");
+    if (file->details->mime_type == NULL) {
+        return FALSE;
+        }
+    return g_content_type_equals (eel_ref_str_peek (file->details->mime_type),
+                                                   "application/x-desktop");
+	
 }
 
 /**

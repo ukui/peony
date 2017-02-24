@@ -19,7 +19,7 @@
    write to the Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
    Boston, MA 02110-1301, USA.
 
-   Authors: Christian Neumair <chris@mate-de.org>
+   Authors: Christian Neumair <chris@ukui-de.org>
 */
 
 #ifndef FM_EMPTY_VIEW_H

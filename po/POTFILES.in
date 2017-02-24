@@ -45,8 +45,8 @@ libpeony-private/peony-search-directory-file.c
 libpeony-private/peony-tree-view-drag-dest.c
 libpeony-private/peony-undostack-manager.c
 libpeony-private/peony-vfs-file.c
-[type: gettext/gsettings]libpeony-private/org.mate.peony.gschema.xml
-[type: gettext/gsettings]libpeony-private/org.mate.media-handling.gschema.xml
+[type: gettext/gsettings]libpeony-private/org.ukui.peony.gschema.xml
+[type: gettext/gsettings]libpeony-private/org.ukui.media-handling.gschema.xml
 data/peony-autorun-software.desktop.in.in
 data/peony-browser.desktop.in.in
 data/peony-computer.desktop.in.in

@@ -138,5 +138,6 @@ void peony_file_mark_desktop_file_trusted (GFile           *file,
         PeonyOpCallback done_callback,
         gpointer          done_callback_data);
 
+void peony_application_notify_unmount_show (const gchar *message);
 
 #endif /* PEONY_FILE_OPERATIONS_H */

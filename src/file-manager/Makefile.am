@@ -9,6 +9,7 @@ AM_CPPFLAGS = \
 	$(WARNING_CFLAGS) \
 	-DPEONY_DATADIR=\""$(datadir)/peony"\" \
 	-DDATADIR=\""$(datadir)"\" \
+	-DUIDIR=\""$(datadir)/peony/ui"\" \
 	$(DISABLE_DEPRECATED_CFLAGS) \
 	$(NULL)
 
@@ -43,10 +44,10 @@ libpeony_file_manager_la_SOURCES = \
 	fm-tree-view.c \
 	fm-tree-view.h \
 	peony-audio-mime-types.h \
-	fm-computer-view.c \
 	fm-computer-view.h \
-	fm-computer-container.c \
+	fm-computer-view.c \
 	fm-computer-container.h \
+	fm-computer-container.c \
 	$(NULL)
 
 nodist_libpeony_file_manager_la_SOURCES=\
@@ -85,6 +86,7 @@ ui_DATA = \
 	peony-directory-view-ui.xml \
 	peony-icon-view-ui.xml \
 	peony-list-view-ui.xml \
+	forcomputerview.ui \
 	$(NULL)
 
 EXTRA_DIST = \

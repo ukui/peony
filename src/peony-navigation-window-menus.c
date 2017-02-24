@@ -63,11 +63,15 @@
 
 static void                  schedule_refresh_go_menu                      (PeonyNavigationWindow   *window);
 
+
 static void
 action_close_all_windows_callback (GtkAction *action,
                                    gpointer user_data)
 {
-    peony_application_close_all_navigation_windows ();
+    PeonyApplication *app;
+
+    app = PEONY_APPLICATION (g_application_get_default ());
+    peony_application_close_all_navigation_windows (app);
 }
 
 static gboolean
@@ -480,9 +484,9 @@ refresh_go_menu (PeonyNavigationWindow *window)
         menuitem = gtk_ui_manager_get_widget (
                        ui_manager,
                        icon_entries[i]);
-	if(menuitem!=NULL)
-        	gtk_image_menu_item_set_always_show_image (
-            		GTK_IMAGE_MENU_ITEM (menuitem), TRUE);
+
+        gtk_image_menu_item_set_always_show_image (
+            GTK_IMAGE_MENU_ITEM (menuitem), TRUE);
     }
 
     /* Add in a new set of history items. */
@@ -610,7 +614,6 @@ action_new_window_callback (GtkAction *action,
     current_window = PEONY_WINDOW (user_data);
     new_window = peony_application_create_navigation_window (
                      current_window->application,
-                     NULL,
                      gtk_window_get_screen (GTK_WINDOW (current_window)));
     peony_window_go_home (new_window);
 }

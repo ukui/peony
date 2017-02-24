@@ -15,7 +15,6 @@ AM_CPPFLAGS = \
 	-DSYSCONFDIR=\""$(sysconfdir)"\" \
 	-DPEONY_DATADIR=\""$(datadir)/peony"\" \
 	-DPEONY_EXTENSIONDIR=\""$(libdir)/peony/extensions-2.0"\" \
-	$(UNIQUE_CFLAGS) \
 	$(NULL)
 
 BUILT_SOURCES = \
@@ -39,6 +38,7 @@ libpeony_private_la_LIBADD = \
 	$(top_builddir)/eel/libeel-2.la \
 	$(top_builddir)/libpeony-extension/libpeony-extension.la \
 	$(CORE_LIBS) \
+    -lnotify
 	$(NULL)
 
 libpeony_private_la_SOURCES = \

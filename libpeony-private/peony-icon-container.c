@@ -44,6 +44,7 @@
 #include <eel/eel-art-extensions.h>
 #include <eel/eel-editable-label.h>
 #include <eel/eel-string.h>
+#include <eel/eel-canvas.h>
 #include <eel/eel-canvas-rect-ellipse.h>
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
@@ -51,20 +52,6 @@
 #include <glib/gi18n.h>
 #include <stdio.h>
 #include <string.h>
-
-#if !GTK_CHECK_VERSION(3, 0, 0)
-#define gtk_scrollable_get_hadjustment gtk_layout_get_hadjustment
-#define gtk_scrollable_get_vadjustment gtk_layout_get_vadjustment
-#define GTK_SCROLLABLE GTK_LAYOUT
-#endif
-
-#if GTK_CHECK_VERSION (3, 0, 0)
-#define gtk_vbox_new(X,Y) gtk_box_new(GTK_ORIENTATION_VERTICAL,Y)
-#endif
-
-#if !GTK_CHECK_VERSION(3,0,0)
-#define gtk_widget_get_preferred_size(x,y,z) gtk_widget_size_request(x,y)
-#endif
 
 #define TAB_NAVIGATION_DISABLED
 
@@ -124,22 +111,8 @@
 #define DEFAULT_HIGHLIGHT_ALPHA 0xff
 #define DEFAULT_NORMAL_ALPHA 0xff
 #define DEFAULT_PRELIGHT_ALPHA 0xff
-#if GTK_CHECK_VERSION(3,0,0)
 #define DEFAULT_LIGHT_INFO_COLOR "#AAAAFD"
 #define DEFAULT_DARK_INFO_COLOR  "#33337F"
-#else
-#define DEFAULT_LIGHT_INFO_COLOR 0xAAAAFD
-#define DEFAULT_DARK_INFO_COLOR  0x33337F
-
-#define DEFAULT_NORMAL_ICON_RENDER_MODE 0
-#define DEFAULT_PRELIGHT_ICON_RENDER_MODE 1
-#define DEFAULT_NORMAL_ICON_SATURATION 255
-#define DEFAULT_PRELIGHT_ICON_SATURATION 255
-#define DEFAULT_NORMAL_ICON_BRIGHTNESS 255
-#define DEFAULT_PRELIGHT_ICON_BRIGHTNESS 255
-#define DEFAULT_NORMAL_ICON_LIGHTEN 0
-#define DEFAULT_PRELIGHT_ICON_LIGHTEN 0
-#endif
 
 #define MINIMUM_EMBEDDED_TEXT_RECT_WIDTH       20
 #define MINIMUM_EMBEDDED_TEXT_RECT_HEIGHT      20
@@ -182,12 +155,22 @@ typedef struct
 
 static GType         peony_icon_container_accessible_get_type (void);
 
+typedef struct _PeonyIconContainerAccessible PeonyIconContainerAccessible;
+typedef struct _PeonyIconContainerAccessibleClass PeonyIconContainerAccessibleClass;
+
+struct _PeonyIconContainerAccessible
+{
+    EelCanvasAccessible parent;
+};
+
+struct _PeonyIconContainerAccessibleClass
+{
+    EelCanvasAccessibleClass parent_class;
+};
+
 static void          activate_selected_items                        (PeonyIconContainer *container);
 static void          activate_selected_items_alternate              (PeonyIconContainer *container,
         PeonyIcon          *icon);
-#if !GTK_CHECK_VERSION(3, 0, 0)
-static void          peony_icon_container_theme_changed          (gpointer               user_data);
-#endif
 static void          compute_stretch                                (StretchState          *start,
         StretchState          *current);
 static PeonyIcon *get_first_selected_icon                        (PeonyIconContainer *container);
@@ -213,9 +196,6 @@ static inline void   icon_get_bounding_box                          (PeonyIcon  
 static gboolean      is_renaming                                    (PeonyIconContainer *container);
 static gboolean      is_renaming_pending                            (PeonyIconContainer *container);
 static void          process_pending_icon_to_rename                 (PeonyIconContainer *container);
-#if !GTK_CHECK_VERSION(3, 0, 0)
-static void          setup_label_gcs                                (PeonyIconContainer *container);
-#endif
 static void          peony_icon_container_stop_monitor_top_left  (PeonyIconContainer *container,
         PeonyIconData      *data,
         gconstpointer          client);
@@ -876,10 +856,10 @@ clear_keyboard_focus (PeonyIconContainer *container)
 }
 
 static void inline
-emit_atk_focus_tracker_notify (PeonyIcon *icon)
+emit_atk_focus_state_change (PeonyIcon *icon, gboolean focused)
 {
     AtkObject *atk_object = atk_gobject_accessible_for_object (G_OBJECT (icon->item));
-    atk_focus_tracker_notify (atk_object);
+    atk_object_notify_state_change (atk_object, ATK_STATE_FOCUSED, focused);
 }
 
 /* Set @icon as the icon currently selected for keyboard operations. */
@@ -902,7 +882,7 @@ set_keyboard_focus (PeonyIconContainer *container,
                          "highlighted_as_keyboard_focus", 1,
                          NULL);
 
-    emit_atk_focus_tracker_notify (icon);
+    emit_atk_focus_state_change (icon, TRUE);
 }
 
 static void
@@ -1263,20 +1243,6 @@ resort (PeonyIconContainer *container)
     sort_icons (container, &container->details->icons);
 }
 
-#if 0
-static double
-get_grid_width (PeonyIconContainer *container)
-{
-    if (container->details->label_position == PEONY_ICON_LABEL_POSITION_BESIDE)
-    {
-        return TEXT_BESIDE_ICON_GRID_WIDTH;
-    }
-    else
-    {
-        return STANDARD_ICON_GRID_WIDTH;
-    }
-}
-#endif
 typedef struct
 {
     double width;
@@ -2576,7 +2542,7 @@ select_range (PeonyIconContainer *container,
 
     if (selection_changed && icon2 != NULL)
     {
-        emit_atk_focus_tracker_notify (icon2);
+        emit_atk_focus_state_change (icon2, TRUE);
     }
     return selection_changed;
 }
@@ -2602,7 +2568,7 @@ select_one_unselect_others (PeonyIconContainer *container,
 
     if (selection_changed && icon_to_select != NULL)
     {
-        emit_atk_focus_tracker_notify (icon_to_select);
+        emit_atk_focus_state_change (icon_to_select, TRUE);
         reveal_icon (container, icon_to_select);
     }
     return selection_changed;
@@ -2750,7 +2716,7 @@ rubberband_timeout_callback (gpointer data)
     double world_x, world_y;
     int x_scroll, y_scroll;
     int adj_x, adj_y;
-#if GTK_CHECK_VERSION(3, 20, 0)
+#if GTK_CHECK_VERSION (3, 20, 0)
     GdkDisplay *display;
     GdkSeat *seat;
 #endif
@@ -2783,21 +2749,19 @@ rubberband_timeout_callback (gpointer data)
         band_info->last_adj_y = adj_y;
         adj_changed = TRUE;
     }
-#if GTK_CHECK_VERSION(3, 20, 0)
+#if GTK_CHECK_VERSION (3, 20, 0)
     display = gtk_widget_get_display (widget);
     seat = gdk_display_get_default_seat (display);
 
     gdk_window_get_device_position (gtk_widget_get_window (widget),
                                     gdk_seat_get_pointer (seat),
                                     &x, &y, NULL);
-#elif GTK_CHECK_VERSION (3, 0, 0)
+#else
     gdk_window_get_device_position (gtk_widget_get_window (widget),
                                     gdk_device_manager_get_client_pointer (
                                     gdk_display_get_device_manager (
                                     gtk_widget_get_display (widget))),
                                     &x, &y, NULL);
-#else
-    gtk_widget_get_pointer (widget, &x, &y);
 #endif
 
     if (x < 0)
@@ -2897,7 +2861,6 @@ rubberband_timeout_callback (gpointer data)
     return TRUE;
 }
 
-#if GTK_CHECK_VERSION(3,0,0)
 /*borrowed from Nemo, makes Peony rubberbanding follow same selectors as Nemo and presumably Nautilus */
 static void
 start_rubberbanding (PeonyIconContainer *container,
@@ -2969,7 +2932,7 @@ start_rubberbanding (PeonyIconContainer *container,
 				(GDK_POINTER_MOTION_MASK
 				 | GDK_BUTTON_RELEASE_MASK
 				 | GDK_SCROLL_MASK),
-#if GTK_CHECK_VERSION(3, 20, 0)
+#if GTK_CHECK_VERSION (3, 20, 0)
 				NULL,
 				(GdkEvent *)event);
 #else
@@ -2977,96 +2940,8 @@ start_rubberbanding (PeonyIconContainer *container,
 #endif
 }
 
-
-#else
 static void
-start_rubberbanding (PeonyIconContainer *container,
-                     GdkEventButton *event)
-{
-    AtkObject *accessible;
-    PeonyIconContainerDetails *details;
-    PeonyIconRubberbandInfo *band_info;
-    guint fill_color, outline_color;
-    GdkColor *fill_color_gdk;
-    guchar fill_color_alpha;
-    GList *p;
-    PeonyIcon *icon;
-    GtkStyle *style;
-
-    details = container->details;
-    band_info = &details->rubberband_info;
-
-    g_signal_emit (container,
-                   signals[BAND_SELECT_STARTED], 0);
-
-    for (p = details->icons; p != NULL; p = p->next)
-    {
-        icon = p->data;
-        icon->was_selected_before_rubberband = icon->is_selected;
-    }
-
-    eel_canvas_window_to_world
-    (EEL_CANVAS (container), event->x, event->y,
-     &band_info->start_x, &band_info->start_y);
-
-    gtk_widget_style_get (GTK_WIDGET (container),
-                          "selection_box_color", &fill_color_gdk,
-                          "selection_box_alpha", &fill_color_alpha,
-                          NULL);
-
-    if (!fill_color_gdk)
-    {
-        style = gtk_widget_get_style (GTK_WIDGET (container));
-        fill_color_gdk = gdk_color_copy (&style->base[GTK_STATE_SELECTED]);
-    }
-
-    fill_color = eel_gdk_color_to_rgb (fill_color_gdk) << 8 | fill_color_alpha;
-
-    gdk_color_free (fill_color_gdk);
-
-    outline_color = fill_color | 255;
-
-    band_info->selection_rectangle = eel_canvas_item_new
-                                     (eel_canvas_root
-                                      (EEL_CANVAS (container)),
-                                      EEL_TYPE_CANVAS_RECT,
-                                      "x1", band_info->start_x,
-                                      "y1", band_info->start_y,
-                                      "x2", band_info->start_x,
-                                      "y2", band_info->start_y,
-                                      "fill_color_rgba", fill_color,
-                                      "outline_color_rgba", outline_color,
-                                      "width_pixels", 1,
-                                      NULL);
-
-    accessible = atk_gobject_accessible_for_object
-                 (G_OBJECT (band_info->selection_rectangle));
-    atk_object_set_name (accessible, "selection");
-    atk_object_set_description (accessible, _("The selection rectangle"));
-
-    band_info->prev_x = event->x - gtk_adjustment_get_value (gtk_scrollable_get_hadjustment (GTK_SCROLLABLE (container)));
-    band_info->prev_y = event->y - gtk_adjustment_get_value (gtk_scrollable_get_vadjustment (GTK_SCROLLABLE (container)));
-
-    band_info->active = TRUE;
-
-    if (band_info->timer_id == 0)
-    {
-        band_info->timer_id = g_timeout_add
-                              (RUBBERBAND_TIMEOUT_INTERVAL,
-                               rubberband_timeout_callback,
-                               container);
-    }
-
-    eel_canvas_item_grab (band_info->selection_rectangle,
-                          (GDK_POINTER_MOTION_MASK
-                           | GDK_BUTTON_RELEASE_MASK
-                           | GDK_SCROLL_MASK),
-                          NULL, event->time);
-}
-#endif
-
-static void
-#if GTK_CHECK_VERSION(3, 20, 0)
+#if GTK_CHECK_VERSION (3, 20, 0)
 stop_rubberbanding (PeonyIconContainer *container)
 #else
 stop_rubberbanding (PeonyIconContainer *container,
@@ -3085,7 +2960,7 @@ stop_rubberbanding (PeonyIconContainer *container,
     band_info->active = FALSE;
 
     /* Destroy this canvas item; the parent will unref it. */
-#if GTK_CHECK_VERSION(3, 20, 0)
+#if GTK_CHECK_VERSION (3, 20, 0)
     eel_canvas_item_ungrab (band_info->selection_rectangle);
 #else
     eel_canvas_item_ungrab (band_info->selection_rectangle, time);
@@ -4092,7 +3967,7 @@ keyboard_arrow_key (PeonyIconContainer *container,
                     IsBetterIconFunction better_start,
                     IsBetterIconFunction empty_start,
                     IsBetterIconFunction better_destination,
-                    IsBetterIconFunction better_destination_fallback_if_no_a11y,
+                    IsBetterIconFunction better_destination_fallback,
                     IsBetterIconFunction better_destination_fallback_fallback,
                     IsBetterIconFunction better_destination_manual)
 {
@@ -4149,16 +4024,12 @@ keyboard_arrow_key (PeonyIconContainer *container,
               container->details->auto_layout ? better_destination : better_destination_manual,
               &data);
 
-        /* only wrap around to next/previous row/column if no a11y is used.
-         * Visually impaired people may be easily confused by this.
-         */
+        /* Wrap around to next/previous row/column */
         if (to == NULL &&
-                better_destination_fallback_if_no_a11y != NULL &&
-                ATK_IS_NO_OP_OBJECT (gtk_widget_get_accessible (GTK_WIDGET (container))))
-        {
+            better_destination_fallback != NULL) {
             to = find_best_icon
                  (container, from,
-                  better_destination_fallback_if_no_a11y,
+                  better_destination_fallback,
                   &data);
         }
 
@@ -4210,15 +4081,15 @@ static void
 keyboard_right (PeonyIconContainer *container,
                 GdkEventKey *event)
 {
-    IsBetterIconFunction no_a11y;
+    IsBetterIconFunction fallback;
     IsBetterIconFunction next_column_fallback;
 
-    no_a11y = NULL;
+    fallback = NULL;
     if (container->details->auto_layout &&
             !peony_icon_container_is_layout_vertical (container) &&
             !is_rectangle_selection_event (event))
     {
-        no_a11y = next_row_leftmost;
+        fallback = next_row_leftmost;
     }
 
     next_column_fallback = NULL;
@@ -4238,7 +4109,7 @@ keyboard_right (PeonyIconContainer *container,
                         peony_icon_container_is_layout_rtl (container) ?
                         rightmost_in_top_row : leftmost_in_top_row,
                         same_row_right_side_leftmost,
-                        no_a11y,
+                        fallback,
                         next_column_fallback,
                         closest_in_90_degrees);
 }
@@ -4247,15 +4118,15 @@ static void
 keyboard_left (PeonyIconContainer *container,
                GdkEventKey *event)
 {
-    IsBetterIconFunction no_a11y;
+    IsBetterIconFunction fallback;
     IsBetterIconFunction previous_column_fallback;
 
-    no_a11y = NULL;
+    fallback = NULL;
     if (container->details->auto_layout &&
             !peony_icon_container_is_layout_vertical (container) &&
             !is_rectangle_selection_event (event))
     {
-        no_a11y = previous_row_rightmost;
+        fallback = previous_row_rightmost;
     }
 
     previous_column_fallback = NULL;
@@ -4275,7 +4146,7 @@ keyboard_left (PeonyIconContainer *container,
                         peony_icon_container_is_layout_rtl (container) ?
                         rightmost_in_top_row : leftmost_in_top_row,
                         same_row_left_side_rightmost,
-                        no_a11y,
+                        fallback,
                         previous_column_fallback,
                         closest_in_90_degrees);
 }
@@ -4284,21 +4155,21 @@ static void
 keyboard_down (PeonyIconContainer *container,
                GdkEventKey *event)
 {
-    IsBetterIconFunction no_a11y;
+    IsBetterIconFunction fallback;
     IsBetterIconFunction next_row_fallback;
 
-    no_a11y = NULL;
+    fallback = NULL;
     if (container->details->auto_layout &&
             peony_icon_container_is_layout_vertical (container) &&
             !is_rectangle_selection_event (event))
     {
         if (gtk_widget_get_direction (GTK_WIDGET (container)) == GTK_TEXT_DIR_RTL)
         {
-            no_a11y = previous_column_highest;
+            fallback = previous_column_highest;
         }
         else
         {
-            no_a11y = next_column_highest;
+            fallback = next_column_highest;
         }
     }
 
@@ -4325,7 +4196,7 @@ keyboard_down (PeonyIconContainer *container,
                         peony_icon_container_is_layout_rtl (container) ?
                         rightmost_in_top_row : leftmost_in_top_row,
                         same_column_below_highest,
-                        no_a11y,
+                        fallback,
                         next_row_fallback,
                         closest_in_90_degrees);
 }
@@ -4334,20 +4205,20 @@ static void
 keyboard_up (PeonyIconContainer *container,
              GdkEventKey *event)
 {
-    IsBetterIconFunction no_a11y;
+    IsBetterIconFunction fallback;
 
-    no_a11y = NULL;
+    fallback = NULL;
     if (container->details->auto_layout &&
             peony_icon_container_is_layout_vertical (container) &&
             !is_rectangle_selection_event (event))
     {
         if (gtk_widget_get_direction (GTK_WIDGET (container)) == GTK_TEXT_DIR_RTL)
         {
-            no_a11y = next_column_bottommost;
+            fallback = next_column_bottommost;
         }
         else
         {
-            no_a11y = previous_column_lowest;
+            fallback = previous_column_lowest;
         }
     }
 
@@ -4361,7 +4232,7 @@ keyboard_up (PeonyIconContainer *container,
                         peony_icon_container_is_layout_rtl (container) ?
                         rightmost_in_top_row : leftmost_in_top_row,
                         same_column_above_lowest,
-                        no_a11y,
+                        fallback,
                         NULL,
                         closest_in_90_degrees);
 }
@@ -4480,11 +4351,7 @@ select_previous_or_next_icon (PeonyIconContainer *container,
 #endif
 
 static void
-#if GTK_CHECK_VERSION(3, 0, 0)
 destroy (GtkWidget *object)
-#else
-destroy (GtkObject *object)
-#endif
 {
     PeonyIconContainer *container;
 
@@ -4541,11 +4408,7 @@ destroy (GtkObject *object)
         }
     }
 
-#if GTK_CHECK_VERSION(3, 0, 0)
     GTK_WIDGET_CLASS (peony_icon_container_parent_class)->destroy (object);
-#else
-    GTK_OBJECT_CLASS (peony_icon_container_parent_class)->destroy (object);
-#endif
 }
 
 static void
@@ -4610,25 +4473,6 @@ size_allocate (GtkWidget *widget,
 
     container = PEONY_ICON_CONTAINER (widget);
 
-    if(container->name)
-    {
-        GList *l;
-        PeonyIcon *icon;
-        EelDRect rect;
-        int temp=0;
-        for(l = container->details->icons;l!=NULL;l=l->next)
-        {
-                icon = l->data;
-                rect = peony_icon_canvas_item_get_icon_rectangle( icon->item);
-                if(rect.y1>temp)
-                        temp = rect.y1;
-        }
-        allocation->height +=temp;
-        gtk_widget_set_size_request(GTK_WIDGET(container),
-        allocation->width/2,
-        allocation->height/2+temp/2);
-    }
-
     need_layout_redone = !container->details->has_been_allocated;
     gtk_widget_get_allocation (widget, &wid_allocation);
 
@@ -4686,16 +4530,12 @@ realize (GtkWidget *widget)
 
     container = PEONY_ICON_CONTAINER (widget);
      /* Unless GTK 3.21 or later is in use and the desktop must be transparent*/
-#if !GTK_CHECK_VERSION(3, 21, 0)
+#if !GTK_CHECK_VERSION (3, 22, 0)
     /* Ensure that the desktop window is native so the background
        set on it is drawn by X. */
     if (container->details->is_desktop)
     {
-#if GTK_CHECK_VERSION (3, 0, 0)
         gdk_x11_window_get_xid (gtk_layout_get_bin_window (GTK_LAYOUT (widget)));
-#else
-        gdk_x11_drawable_get_xid (gtk_layout_get_bin_window (GTK_LAYOUT (widget)));
-#endif
     }
 #endif
     /* Set up DnD.  */
@@ -4730,7 +4570,6 @@ unrealize (GtkWidget *widget)
 }
 
 static void
-#if GTK_CHECK_VERSION(3,0,0)
 style_updated (GtkWidget *widget)
 {
     PeonyIconContainer *container;
@@ -4750,32 +4589,6 @@ style_updated (GtkWidget *widget)
         invalidate_labels (container);
         peony_icon_container_request_update_all (container);
     }
-#else
-style_set (GtkWidget *widget,
-           GtkStyle  *previous_style)
-{
-    PeonyIconContainer *container;
-    gboolean frame_text;
-
-    container = PEONY_ICON_CONTAINER (widget);
-
-    gtk_widget_style_get (GTK_WIDGET (container),
-                          "frame_text", &frame_text,
-                          NULL);
-
-    container->details->use_drop_shadows = container->details->drop_shadows_requested && !frame_text;
-
-    peony_icon_container_theme_changed (PEONY_ICON_CONTAINER (widget));
-
-    if (gtk_widget_get_realized (widget))
-    {
-        invalidate_label_sizes (container);
-        peony_icon_container_request_update_all (container);
-    }
-
-    /* Don't chain up to parent, because that sets the background of the window and we're doing
-       that ourself with some delay, so this would cause flickering */
-#endif
 }
 
 static gboolean
@@ -5010,7 +4823,7 @@ clear_drag_state (PeonyIconContainer *container)
 }
 
 static gboolean
-#if GTK_CHECK_VERSION(3, 20, 0)
+#if GTK_CHECK_VERSION (3, 20, 0)
 start_stretching (PeonyIconContainer *container,
 		  GdkEvent *event)
 #else
@@ -5073,17 +4886,13 @@ start_stretching (PeonyIconContainer *container)
                           (GDK_POINTER_MOTION_MASK
                            | GDK_BUTTON_RELEASE_MASK),
                           cursor,
-#if GTK_CHECK_VERSION(3, 20, 0)
+#if GTK_CHECK_VERSION (3, 20, 0)
                           event);
 #else
                           GDK_CURRENT_TIME);
 #endif
     if (cursor)
-#if GTK_CHECK_VERSION(3,0,0)
         g_object_unref (cursor);
-#else
-        gdk_cursor_unref (cursor);
-#endif
 
     /* Ensure the window itself is focused.. */
     toplevel = gtk_widget_get_toplevel (GTK_WIDGET (container));
@@ -5189,7 +4998,7 @@ keyboard_stretching (PeonyIconContainer *container,
 static void
 ungrab_stretch_icon (PeonyIconContainer *container)
 {
-#if GTK_CHECK_VERSION(3, 20, 0)
+#if GTK_CHECK_VERSION (3, 20, 0)
     eel_canvas_item_ungrab (EEL_CANVAS_ITEM (container->details->stretch_icon->item));
 #else
     eel_canvas_item_ungrab (EEL_CANVAS_ITEM (container->details->stretch_icon->item),
@@ -5277,7 +5086,7 @@ button_release_event (GtkWidget *widget,
 
     if (event->button == RUBBERBAND_BUTTON && details->rubberband_info.active)
     {
-#if GTK_CHECK_VERSION(3, 20, 0)
+#if GTK_CHECK_VERSION (3, 20, 0)
         stop_rubberbanding (container);
 #else
         stop_rubberbanding (container, event->time);
@@ -5923,7 +5732,7 @@ peony_icon_container_ensure_interactive_directory (PeonyIconContainer *container
     gtk_widget_show (frame);
     gtk_container_add (GTK_CONTAINER (container->details->search_window), frame);
 
-    vbox = gtk_vbox_new (FALSE, 0);
+    vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
     gtk_widget_show (vbox);
     gtk_container_add (GTK_CONTAINER (frame), vbox);
     gtk_container_set_border_width (GTK_CONTAINER (vbox), 3);
@@ -6263,49 +6072,14 @@ popup_menu (GtkWidget *widget)
     return TRUE;
 }
 
-#if !GTK_CHECK_VERSION(3, 21, 0)
+#if !GTK_CHECK_VERSION (3, 22, 0)
 static void
 draw_canvas_background (EelCanvas *canvas,
-#if GTK_CHECK_VERSION(3,0,0)
                         cairo_t   *cr)
-#else
-                        int x, int y, int width, int height)
-#endif
 {
     /* Don't chain up to the parent to avoid clearing and redrawing */
 }
 #endif
-
-
-#if !GTK_CHECK_VERSION(3,0,0)
-static gboolean
-expose_event (GtkWidget      *widget,
-              GdkEventExpose *event)
-{
-    /*	g_warning ("Expose Icon Container %p '%d,%d: %d,%d'",
-    		   widget,
-    		   event->area.x, event->area.y,
-    		   event->area.width, event->area.height); */
-
-    return GTK_WIDGET_CLASS (peony_icon_container_parent_class)->expose_event (widget, event);
-}
-#endif
-
-static AtkObject *
-get_accessible (GtkWidget *widget)
-{
-    AtkObject *accessible;
-
-    if ((accessible = eel_accessibility_get_atk_object (widget)))
-    {
-        return accessible;
-    }
-
-    accessible = g_object_new
-                 (peony_icon_container_accessible_get_type (), NULL);
-
-    return eel_accessibility_set_atk_object_return (widget, accessible);
-}
 
 static void
 grab_notify_cb  (GtkWidget        *widget,
@@ -6323,7 +6097,7 @@ grab_notify_cb  (GtkWidget        *widget,
          * up (e.g. authentication or an error). Stop
          * the rubberbanding so that we can handle the
          * dialog. */
-#if GTK_CHECK_VERSION(3, 20, 0)
+#if GTK_CHECK_VERSION (3, 20, 0)
         stop_rubberbanding (container);
 #else
         stop_rubberbanding (container,
@@ -6386,11 +6160,7 @@ peony_icon_container_class_init (PeonyIconContainerClass *class)
     G_OBJECT_CLASS (class)->constructor = peony_icon_container_constructor;
     G_OBJECT_CLASS (class)->finalize = finalize;
 
-#if GTK_CHECK_VERSION(3, 0, 0)
     GTK_WIDGET_CLASS (class)->destroy = destroy;
-#else
-    GTK_OBJECT_CLASS (class)->destroy = destroy;
-#endif
 
     /* Signals.  */
 
@@ -6749,22 +6519,17 @@ peony_icon_container_class_init (PeonyIconContainerClass *class)
     widget_class->motion_notify_event = motion_notify_event;
     widget_class->key_press_event = key_press_event;
     widget_class->popup_menu = popup_menu;
-    widget_class->get_accessible = get_accessible;
-#if GTK_CHECK_VERSION(3,0,0)
     widget_class->style_updated = style_updated;
-#else
-    widget_class->style_set = style_set;
-    widget_class->expose_event = expose_event;
-#endif
     widget_class->grab_notify = grab_notify_cb;
 
+    gtk_widget_class_set_accessible_type (widget_class, peony_icon_container_accessible_get_type ());
+
     canvas_class = EEL_CANVAS_CLASS (class);
-#if !GTK_CHECK_VERSION(3, 21, 0)
+#if !GTK_CHECK_VERSION (3, 22, 0)
     canvas_class->draw_background = draw_canvas_background;
 #endif
     class->start_interactive_search = peony_icon_container_start_interactive_search;
 
-#if GTK_CHECK_VERSION(3,0,0)
     gtk_widget_class_install_style_property (widget_class,
             g_param_spec_boxed ("selection_box_rgba",
                                 "Selection Box RGBA",
@@ -6783,130 +6548,6 @@ peony_icon_container_class_init (PeonyIconContainerClass *class)
                                 "Color used for information text against a light background",
                                 GDK_TYPE_RGBA,
                                 G_PARAM_READABLE));
-#else
-    gtk_widget_class_install_style_property (widget_class,
-            g_param_spec_boolean ("frame_text",
-                                  "Frame Text",
-                                  "Draw a frame around unselected text",
-                                  FALSE,
-                                  G_PARAM_READABLE));
-    gtk_widget_class_install_style_property (widget_class,
-            g_param_spec_boxed ("selection_box_color",
-                                "Selection Box Color",
-                                "Color of the selection box",
-                                GDK_TYPE_COLOR,
-                                G_PARAM_READABLE));
-    gtk_widget_class_install_style_property (widget_class,
-            g_param_spec_uchar ("selection_box_alpha",
-                                "Selection Box Alpha",
-                                "Opacity of the selection box",
-                                0, 0xff,
-                                DEFAULT_SELECTION_BOX_ALPHA,
-                                G_PARAM_READABLE));
-
-    gtk_widget_class_install_style_property (widget_class,
-            g_param_spec_uchar ("highlight_alpha",
-                                "Highlight Alpha",
-                                "Opacity of the highlight for selected icons",
-                                0, 0xff,
-                                DEFAULT_HIGHLIGHT_ALPHA,
-                                G_PARAM_READABLE));
-    gtk_widget_class_install_style_property (widget_class,
-            g_param_spec_uchar ("normal_alpha",
-                                "Normal Alpha",
-                                "Opacity of the normal icons if frame_text is set",
-                                0, 0xff,
-                                DEFAULT_NORMAL_ALPHA,
-                                G_PARAM_READABLE));
-    gtk_widget_class_install_style_property (widget_class,
-            g_param_spec_uchar ("prelight_alpha",
-                                "Prelight Alpha",
-                                "Opacity of the prelight icons if frame_text is set",
-                                0, 0xff,
-                                DEFAULT_PRELIGHT_ALPHA,
-                                G_PARAM_READABLE));
-    gtk_widget_class_install_style_property (widget_class,
-            g_param_spec_boxed ("light_info_color",
-                                "Light Info Color",
-                                "Color used for information text against a dark background",
-                                GDK_TYPE_COLOR,
-                                G_PARAM_READABLE));
-    gtk_widget_class_install_style_property (widget_class,
-            g_param_spec_boxed ("dark_info_color",
-                                "Dark Info Color",
-                                "Color used for information text against a light background",
-                                GDK_TYPE_COLOR,
-                                G_PARAM_READABLE));
-
-    gtk_widget_class_install_style_property (widget_class,
-            g_param_spec_uint ("normal_icon_render_mode",
-                               "Normal Icon Render Mode",
-                               "Mode of normal icons being rendered (0=normal, 1=spotlight, 2=colorize, 3=colorize-monochromely)",
-                               0, 3,
-                               DEFAULT_NORMAL_ICON_RENDER_MODE,
-                               G_PARAM_READABLE));
-    gtk_widget_class_install_style_property (widget_class,
-            g_param_spec_uint ("prelight_icon_render_mode",
-                               "Prelight Icon Render Mode",
-                               "Mode of prelight icons being rendered (0=normal, 1=spotlight, 2=colorize, 3=colorize-monochromely)",
-                               0, 3,
-                               DEFAULT_PRELIGHT_ICON_RENDER_MODE,
-                               G_PARAM_READABLE));
-    gtk_widget_class_install_style_property (widget_class,
-            g_param_spec_boxed ("normal_icon_color",
-                                "Icon Normal Color",
-                                "Color used for colorizing icons in normal state (default base[NORMAL])",
-                                GDK_TYPE_COLOR,
-                                G_PARAM_READABLE));
-    gtk_widget_class_install_style_property (widget_class,
-            g_param_spec_boxed ("prelight_icon_color",
-                                "Icon Prelight Color",
-                                "Color used for colorizing prelighted icons (default base[PRELIGHT])",
-                                GDK_TYPE_COLOR,
-                                G_PARAM_READABLE));
-    gtk_widget_class_install_style_property (widget_class,
-            g_param_spec_uint ("normal_icon_saturation",
-                               "Normal Icon Saturation",
-                               "Saturation of icons in normal state",
-                               0, 255,
-                               DEFAULT_NORMAL_ICON_SATURATION,
-                               G_PARAM_READABLE));
-    gtk_widget_class_install_style_property (widget_class,
-            g_param_spec_uint ("prelight_icon_saturation",
-                               "Prelight Icon Saturation",
-                               "Saturation of icons in prelight state",
-                               0, 255,
-                               DEFAULT_PRELIGHT_ICON_SATURATION,
-                               G_PARAM_READABLE));
-    gtk_widget_class_install_style_property (widget_class,
-            g_param_spec_uint ("normal_icon_brightness",
-                               "Normal Icon Brightness",
-                               "Brightness of icons in normal state",
-                               0, 255,
-                               DEFAULT_NORMAL_ICON_BRIGHTNESS,
-                               G_PARAM_READABLE));
-    gtk_widget_class_install_style_property (widget_class,
-            g_param_spec_uint ("prelight_icon_brightness",
-                               "Prelight Icon Brightness",
-                               "Brightness of icons in prelight state",
-                               0, 255,
-                               DEFAULT_PRELIGHT_ICON_BRIGHTNESS,
-                               G_PARAM_READABLE));
-    gtk_widget_class_install_style_property (widget_class,
-            g_param_spec_uint ("normal_icon_lighten",
-                               "Normal Icon Lighten",
-                               "Lighten icons in normal state",
-                               0, 255,
-                               DEFAULT_NORMAL_ICON_LIGHTEN,
-                               G_PARAM_READABLE));
-    gtk_widget_class_install_style_property (widget_class,
-            g_param_spec_uint ("prelight_icon_lighten",
-                               "Prelight Icon Lighten",
-                               "Lighten icons in prelight state",
-                               0, 255,
-                               DEFAULT_PRELIGHT_ICON_LIGHTEN,
-                               G_PARAM_READABLE));
-#endif
     gtk_widget_class_install_style_property (widget_class,
             g_param_spec_boolean ("activate_prelight_icon_label",
                                   "Activate Prelight Icon Label",
@@ -7072,22 +6713,12 @@ peony_icon_container_init (PeonyIconContainer *container)
     /* when the background changes, we must set up the label text color */
     background = eel_get_widget_background (GTK_WIDGET (container));
 
-#if !GTK_CHECK_VERSION(3,0,0)
-    g_signal_connect_object (background, "appearance_changed",
-                             G_CALLBACK (update_label_color), container, 0);
-#endif
-
     g_signal_connect (container, "focus-in-event",
                       G_CALLBACK (handle_focus_in_event), NULL);
     g_signal_connect (container, "focus-out-event",
                       G_CALLBACK (handle_focus_out_event), NULL);
 
     eel_background_set_use_base (background, TRUE);
-
-#if !GTK_CHECK_VERSION(3,0,0)
-    /* read in theme-dependent data */
-    peony_icon_container_theme_changed (container);
-#endif
 
     if (!setup_prefs)
     {
@@ -7214,7 +6845,7 @@ handle_icon_button_press (PeonyIconContainer *container,
          */
         if (icon == container->details->stretch_icon)
         {
-#if GTK_CHECK_VERSION(3, 20, 0)
+#if GTK_CHECK_VERSION (3, 20, 0)
             if (start_stretching (container, (GdkEvent *)event))
             {
 #else
@@ -9315,14 +8946,10 @@ peony_icon_container_start_renaming_selected_item (PeonyIconContainer *container
             eel_editable_label_set_justify (EEL_EDITABLE_LABEL (details->rename_widget), GTK_JUSTIFY_CENTER);
         }
 
-#if GTK_CHECK_VERSION (3, 0, 0)
         gtk_widget_set_margin_start (details->rename_widget, 1);
         gtk_widget_set_margin_end (details->rename_widget, 1);
         gtk_widget_set_margin_top (details->rename_widget, 1);
         gtk_widget_set_margin_bottom (details->rename_widget, 1);
-#else
-        gtk_misc_set_padding (GTK_MISC (details->rename_widget), 1, 1);
-#endif
         gtk_layout_put (GTK_LAYOUT (container),
                         details->rename_widget, 0, 0);
     }
@@ -9391,21 +9018,12 @@ peony_icon_container_start_renaming_selected_item (PeonyIconContainer *container
     {
         eel_filename_get_rename_region (editable_text, &start_offset, &end_offset);
     }
-
-#if GTK_CHECK_VERSION (3, 0, 0)
     gtk_widget_show (details->rename_widget);
     gtk_widget_grab_focus (details->rename_widget);
-#endif
 
     eel_editable_label_select_region (EEL_EDITABLE_LABEL (details->rename_widget),
                                       start_offset,
                                       end_offset);
-
-#if !GTK_CHECK_VERSION (3, 0, 0)
-    gtk_widget_show (details->rename_widget);
-    gtk_widget_grab_focus (details->rename_widget);
-#endif
-
     g_signal_emit (container,
                    signals[RENAMING_ICON], 0,
                    GTK_EDITABLE (details->rename_widget));
@@ -9520,174 +9138,6 @@ peony_icon_container_set_single_click_mode (PeonyIconContainer *container,
     container->details->single_click_mode = single_click_mode;
 }
 
-#if !GTK_CHECK_VERSION(3,0,0)
-/* update the label color when the background changes */
-
-void
-peony_icon_container_get_label_color (PeonyIconContainer *container,
-        GdkColor             **color,
-        gboolean             is_name,
-        gboolean             is_highlight,
-        gboolean             is_prelit)
-{
-    int idx;
-
-    if (is_name)
-    {
-        if (is_highlight)
-        {
-            if (gtk_widget_has_focus (GTK_WIDGET (container)))
-            {
-                idx = LABEL_COLOR_HIGHLIGHT;
-            }
-            else
-            {
-                idx = LABEL_COLOR_ACTIVE;
-            }
-        }
-        else
-        {
-            if (is_prelit)
-            {
-                idx = LABEL_COLOR_PRELIGHT;
-            }
-            else
-            {
-                idx = LABEL_COLOR;
-            }
-        }
-    }
-    else
-    {
-        if (is_highlight)
-        {
-            if (gtk_widget_has_focus (GTK_WIDGET (container)))
-            {
-                idx = LABEL_INFO_COLOR_HIGHLIGHT;
-            }
-            else
-            {
-                idx = LABEL_INFO_COLOR_ACTIVE;
-            }
-        }
-        else
-        {
-            idx = LABEL_INFO_COLOR;
-        }
-    }
-
-    if (color)
-    {
-        *color = &container->details->label_colors [idx];
-    }
-}
-
-static void
-setup_gc_with_fg (PeonyIconContainer *container, int idx, guint32 color)
-{
-    container->details->label_colors [idx] = eel_gdk_rgb_to_color (color);
-}
-
-static void
-setup_label_gcs (PeonyIconContainer *container)
-{
-    EelBackground *background;
-    GtkWidget *widget;
-    GdkColor *light_info_color, *dark_info_color;
-    guint light_info_value, dark_info_value;
-    gboolean frame_text;
-    GtkStyle *style;
-
-    if (!gtk_widget_get_realized (GTK_WIDGET (container)))
-        return;
-
-    widget = GTK_WIDGET (container);
-
-    g_assert (PEONY_IS_ICON_CONTAINER (container));
-
-    background = eel_get_widget_background (GTK_WIDGET (container));
-
-    /* read the info colors from the current theme; use a reasonable default if undefined */
-    gtk_widget_style_get (GTK_WIDGET (container),
-                          "light_info_color", &light_info_color,
-                          "dark_info_color", &dark_info_color,
-                          NULL);
-    style = gtk_widget_get_style (widget);
-
-    if (light_info_color)
-    {
-        light_info_value = eel_gdk_color_to_rgb (light_info_color);
-        gdk_color_free (light_info_color);
-    }
-    else
-    {
-        light_info_value = DEFAULT_LIGHT_INFO_COLOR;
-    }
-
-    if (dark_info_color)
-    {
-        dark_info_value = eel_gdk_color_to_rgb (dark_info_color);
-        gdk_color_free (dark_info_color);
-    }
-    else
-    {
-        dark_info_value = DEFAULT_DARK_INFO_COLOR;
-    }
-
-    setup_gc_with_fg (container, LABEL_COLOR_HIGHLIGHT, eel_gdk_color_to_rgb (&style->text[GTK_STATE_SELECTED]));
-    setup_gc_with_fg (container, LABEL_COLOR_ACTIVE, eel_gdk_color_to_rgb (&style->text[GTK_STATE_ACTIVE]));
-    setup_gc_with_fg (container, LABEL_COLOR_PRELIGHT, eel_gdk_color_to_rgb (&style->text[GTK_STATE_PRELIGHT]));
-    setup_gc_with_fg (container,
-                      LABEL_INFO_COLOR_HIGHLIGHT,
-                      eel_gdk_color_is_dark (&style->base[GTK_STATE_SELECTED]) ? light_info_value : dark_info_value);
-    setup_gc_with_fg (container,
-                      LABEL_INFO_COLOR_ACTIVE,
-                      eel_gdk_color_is_dark (&style->base[GTK_STATE_ACTIVE]) ? light_info_value : dark_info_value);
-
-    /* If PeonyIconContainer::frame_text is set, we can safely
-     * use the foreground color from the theme, because it will
-     * always be displayed against the gtk background */
-    gtk_widget_style_get (widget,
-                          "frame_text", &frame_text,
-                          NULL);
-
-    if (frame_text || !eel_background_is_set (background))
-    {
-        setup_gc_with_fg (container, LABEL_COLOR,
-                          eel_gdk_color_to_rgb (&style->text[GTK_STATE_NORMAL]));
-        setup_gc_with_fg (container,
-                          LABEL_INFO_COLOR,
-                          eel_gdk_color_is_dark (&style->base[GTK_STATE_NORMAL]) ? light_info_value : dark_info_value);
-    }
-    else
-    {
-        if (container->details->use_drop_shadows || eel_background_is_dark (background))
-        {
-            setup_gc_with_fg (container, LABEL_COLOR, 0xEFEFEF);
-            setup_gc_with_fg (container,
-                              LABEL_INFO_COLOR,
-                              light_info_value);
-        }
-        else     /* converse */
-        {
-            setup_gc_with_fg (container, LABEL_COLOR, 0x000000);
-            setup_gc_with_fg (container,
-                              LABEL_INFO_COLOR,
-                              dark_info_value);
-        }
-    }
-}
-
-static void
-update_label_color (EelBackground         *background,
-                    PeonyIconContainer *container)
-{
-    g_assert (EEL_IS_BACKGROUND (background));
-
-    setup_label_gcs (container);
-}
-#endif
-
 /* Return if the icon container is a fixed size */
 gboolean
 peony_icon_container_get_is_fixed_size (PeonyIconContainer *container)
@@ -9723,14 +9173,12 @@ peony_icon_container_set_is_desktop (PeonyIconContainer *container,
 
     container->details->is_desktop = is_desktop;
 
-#if GTK_CHECK_VERSION (3, 0, 0)
     if (is_desktop) {
             GtkStyleContext *context;
 
             context = gtk_widget_get_style_context (GTK_WIDGET (container));
             gtk_style_context_add_class (context, "peony-desktop");
     }
-#endif
 }
 
 void
@@ -9755,131 +9203,18 @@ void
 peony_icon_container_set_use_drop_shadows (PeonyIconContainer  *container,
         gboolean                use_drop_shadows)
 {
-#if !GTK_CHECK_VERSION(3,0,0)
-    gboolean frame_text;
-
-    gtk_widget_style_get (GTK_WIDGET (container),
-                          "frame_text", &frame_text,
-                          NULL);
-#endif
-
     if (container->details->drop_shadows_requested == use_drop_shadows)
     {
         return;
     }
 
     container->details->drop_shadows_requested = use_drop_shadows;
-#if GTK_CHECK_VERSION(3,0,0)
     container->details->use_drop_shadows = use_drop_shadows;
-#else
-    container->details->use_drop_shadows = use_drop_shadows && !frame_text;
-#endif
+
     gtk_widget_queue_draw (GTK_WIDGET (container));
 }
 
 /* handle theme changes */
-
-#if !GTK_CHECK_VERSION(3,0,0)
-static void
-peony_icon_container_theme_changed (gpointer user_data)
-{
-    PeonyIconContainer *container;
-    GtkStyle *style;
-    GdkColor *prelight_icon_color, *normal_icon_color;
-    guchar highlight_alpha, normal_alpha, prelight_alpha;
-
-    container = PEONY_ICON_CONTAINER (user_data);
-
-    /* load the highlight color */
-    gtk_widget_style_get (GTK_WIDGET (container),
-                          "highlight_alpha", &highlight_alpha,
-                          NULL);
-
-    style = gtk_widget_get_style (GTK_WIDGET (container));
-
-    container->details->highlight_color_rgba =
-        EEL_RGBA_COLOR_PACK (style->base[GTK_STATE_SELECTED].red >> 8,
-                             style->base[GTK_STATE_SELECTED].green >> 8,
-                             style->base[GTK_STATE_SELECTED].blue >> 8,
-                             highlight_alpha);
-    container->details->active_color_rgba =
-        EEL_RGBA_COLOR_PACK (style->base[GTK_STATE_ACTIVE].red >> 8,
-                             style->base[GTK_STATE_ACTIVE].green >> 8,
-                             style->base[GTK_STATE_ACTIVE].blue >> 8,
-                             highlight_alpha);
-
-    /* load the prelight icon color */
-    gtk_widget_style_get (GTK_WIDGET (container),
-                          "prelight_icon_color", &prelight_icon_color,
-                          NULL);
-
-    if (prelight_icon_color)
-    {
-        container->details->prelight_icon_color_rgba =
-            EEL_RGBA_COLOR_PACK (prelight_icon_color->red >> 8,
-                                 prelight_icon_color->green >> 8,
-                                 prelight_icon_color->blue >> 8,
-                                 255);
-    }
-    else     /* if not defined by rc, set to default value */
-    {
-        container->details->prelight_icon_color_rgba =
-            EEL_RGBA_COLOR_PACK (style->base[GTK_STATE_PRELIGHT].red >> 8,
-                                 style->base[GTK_STATE_PRELIGHT].green >> 8,
-                                 style->base[GTK_STATE_PRELIGHT].blue >> 8,
-                                 255);
-    }
-
-
-    /* load the normal icon color */
-    gtk_widget_style_get (GTK_WIDGET (container),
-                          "normal_icon_color", &normal_icon_color,
-                          NULL);
-
-    if (normal_icon_color)
-    {
-        container->details->normal_icon_color_rgba =
-            EEL_RGBA_COLOR_PACK (normal_icon_color->red >> 8,
-                                 normal_icon_color->green >> 8,
-                                 normal_icon_color->blue >> 8,
-                                 255);
-    }
-    else     /* if not defined by rc, set to default value */
-    {
-        container->details->normal_icon_color_rgba =
-            EEL_RGBA_COLOR_PACK (style->base[GTK_STATE_NORMAL].red >> 8,
-                                 style->base[GTK_STATE_NORMAL].green >> 8,
-                                 style->base[GTK_STATE_NORMAL].blue >> 8,
-                                 255);
-    }
-
-
-    /* load the normal color */
-    gtk_widget_style_get (GTK_WIDGET (container),
-                          "normal_alpha", &normal_alpha,
-                          NULL);
-
-    container->details->normal_color_rgba =
-        EEL_RGBA_COLOR_PACK (style->base[GTK_STATE_NORMAL].red >> 8,
-                             style->base[GTK_STATE_NORMAL].green >> 8,
-                             style->base[GTK_STATE_NORMAL].blue >> 8,
-                             normal_alpha);
-
-
-    /* load the prelight color */
-    gtk_widget_style_get (GTK_WIDGET (container),
-                          "prelight_alpha", &prelight_alpha,
-                          NULL);
-
-    container->details->prelight_color_rgba =
-        EEL_RGBA_COLOR_PACK (style->base[GTK_STATE_PRELIGHT].red >> 8,
-                             style->base[GTK_STATE_PRELIGHT].green >> 8,
-                             style->base[GTK_STATE_PRELIGHT].blue >> 8,
-                             prelight_alpha);
-
-    setup_label_gcs (container);
-}
-#endif
 
 void
 peony_icon_container_set_font (PeonyIconContainer *container,
@@ -10575,55 +9910,34 @@ peony_icon_container_accessible_finalize (GObject *object)
 }
 
 static void
-peony_icon_container_accessible_class_init (AtkObjectClass *klass)
+peony_icon_container_accessible_init (PeonyIconContainerAccessible *accessible)
+{
+}
+
+static void
+peony_icon_container_accessible_class_init (PeonyIconContainerAccessibleClass *klass)
 {
     GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
+    AtkObjectClass *atk_class = ATK_OBJECT_CLASS (klass);
 
     accessible_parent_class = g_type_class_peek_parent (klass);
 
     gobject_class->finalize = peony_icon_container_accessible_finalize;
 
-    klass->get_n_children = peony_icon_container_accessible_get_n_children;
-    klass->ref_child = peony_icon_container_accessible_ref_child;
-    klass->initialize = peony_icon_container_accessible_initialize;
+    atk_class->get_n_children = peony_icon_container_accessible_get_n_children;
+    atk_class->ref_child = peony_icon_container_accessible_ref_child;
+    atk_class->initialize = peony_icon_container_accessible_initialize;
 
     accessible_private_data_quark = g_quark_from_static_string ("icon-container-accessible-private-data");
 }
 
-static GType
-peony_icon_container_accessible_get_type (void)
-{
-    static GType type = 0;
-
-    if (!type)
-    {
-        static GInterfaceInfo atk_action_info =
-        {
-            (GInterfaceInitFunc) peony_icon_container_accessible_action_interface_init,
-            (GInterfaceFinalizeFunc) NULL,
-            NULL
-        };
-
-        static GInterfaceInfo atk_selection_info =
-        {
-            (GInterfaceInitFunc) peony_icon_container_accessible_selection_interface_init,
-            (GInterfaceFinalizeFunc) NULL,
-            NULL
-        };
-
-        type = eel_accessibility_create_derived_type
-               ("PeonyIconContainerAccessible",
-                EEL_TYPE_CANVAS,
-                peony_icon_container_accessible_class_init);
-
-        g_type_add_interface_static (type, ATK_TYPE_ACTION,
-                                     &atk_action_info);
-        g_type_add_interface_static (type, ATK_TYPE_SELECTION,
-                                     &atk_selection_info);
-    }
-
-    return type;
-}
+G_DEFINE_TYPE_WITH_CODE (PeonyIconContainerAccessible,
+                         peony_icon_container_accessible,
+                         eel_canvas_accessible_get_type (),
+                         G_IMPLEMENT_INTERFACE (ATK_TYPE_ACTION,
+                                                peony_icon_container_accessible_action_interface_init)
+                         G_IMPLEMENT_INTERFACE (ATK_TYPE_SELECTION,
+                                                peony_icon_container_accessible_selection_interface_init));
 
 #if ! defined (PEONY_OMIT_SELF_CHECK)
 

@@ -49,21 +49,13 @@ typedef struct PeonySidebarTitleDetails PeonySidebarTitleDetails;
 
 typedef struct
 {
-#if GTK_CHECK_VERSION (3, 0, 0)
     GtkBox box;
-#else
-    GtkVBox box;
-#endif
     PeonySidebarTitleDetails *details;
 } PeonySidebarTitle;
 
 typedef struct
 {
-#if GTK_CHECK_VERSION (3, 0, 0)
     GtkBoxClass parent_class;
-#else
-    GtkVBoxClass parent_class;
-#endif
 } PeonySidebarTitleClass;
 
 GType      peony_sidebar_title_get_type          (void);

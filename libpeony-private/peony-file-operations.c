@@ -55,7 +55,7 @@
 #include <gtk/gtk.h>
 #include <gio/gio.h>
 #include <glib.h>
-
+#include <libnotify/notify.h>
 #include "peony-file-changes-queue.h"
 #include "peony-file-private.h"
 #include "peony-desktop-icon-file.h"
@@ -192,6 +192,35 @@ typedef struct {
 #define MERGE_ALL _("Merge _All")
 #define COPY_FORCE _("Copy _Anyway")
 
+NotifyNotification *unmount_notify;
+
+void
+peony_application_notify_unmount_show (const gchar *message)
+{
+    gchar **strings;
+    strings = g_strsplit (message, "\n", 0);
+
+    if (!g_settings_get_boolean (peony_preferences, PEONY_PREFERENCES_SHOW_NOTIFICATIONS)) return;
+
+    if (unmount_notify == NULL) {
+        unmount_notify =
+                        notify_notification_new (strings[0], strings[1],
+                                                 "media-removable");
+
+        notify_notification_set_hint (unmount_notify,
+                                      "transient", g_variant_new_boolean (TRUE));
+        notify_notification_set_urgency (unmount_notify,
+                                         NOTIFY_URGENCY_CRITICAL);
+    } else {
+        notify_notification_update (unmount_notify,
+                                    strings[0], strings[1],
+                                    "media-removable");
+    }
+
+    notify_notification_show (unmount_notify, NULL);
+    g_strfreev (strings);
+}
+
 static void
 mark_desktop_file_trusted (CommonJob *common,
 			   GCancellable *cancellable,
@@ -298,8 +327,8 @@ format_time (int seconds)
 		return res;
 	}
 
-	return g_strdup_printf (ngettext ("approximately %'d hour",
-					  "approximately %'d hours",
+	return g_strdup_printf (ngettext ("approxiukuily %'d hour",
+					  "approxiukuily %'d hours",
 					  hours), hours);
 }
 
@@ -913,11 +942,12 @@ f (const char *format, ...) {
 	return res;
 }
 
-#define op_job_new(__type, parent_window) ((__type *)(init_common (sizeof(__type), parent_window)))
+#define op_job_new(__type, parent_window, should_start, can_pause) ((__type *)(init_common (sizeof(__type), parent_window, should_start, can_pause)))
 
 static gpointer
 init_common (gsize job_size,
-	     GtkWindow *parent_window)
+	     GtkWindow *parent_window,
+	     gboolean should_start, gboolean can_pause)
 {
 	CommonJob *common;
 	GdkScreen *screen;
@@ -928,7 +958,7 @@ init_common (gsize job_size,
 		common->parent_window = parent_window;
 		eel_add_weak_pointer (&common->parent_window);
 	}
-	common->progress = peony_progress_info_new ();
+	common->progress = peony_progress_info_new (should_start, can_pause);
 	common->cancellable = peony_progress_info_get_cancellable (common->progress);
 	common->time = g_timer_new ();
 	common->inhibit_cookie = -1;
@@ -1286,6 +1316,18 @@ should_confirm_trash (void)
 }
 
 static gboolean
+should_confirm_move_to_trash (void)
+{
+	GSettings *prefs;
+	gboolean confirm_trash;
+
+	prefs = g_settings_new ("org.ukui.peony.preferences");
+	confirm_trash = g_settings_get_boolean (prefs, PEONY_PREFERENCES_CONFIRM_MOVE_TO_TRASH);
+	g_object_unref (prefs);
+	return confirm_trash;
+}
+
+static gboolean
 job_aborted (CommonJob *job)
 {
 	return g_cancellable_is_cancelled (job->cancellable);
@@ -1391,6 +1433,48 @@ confirm_delete_directly (CommonJob *job,
 				NULL,
 				FALSE,
 				GTK_STOCK_CANCEL, GTK_STOCK_DELETE,
+				NULL);
+
+	return response == 1;
+}
+
+static gboolean
+confirm_trash (CommonJob *job,
+	       GList *files)
+{
+	char *prompt;
+	int file_count;
+	int response;
+
+	/* Just Say Yes if the preference says not to confirm. */
+	if (!should_confirm_move_to_trash ()) {
+		return TRUE;
+	}
+
+	file_count = g_list_length (files);
+	g_assert (file_count > 0);
+
+	if (can_delete_files_without_confirm (files)) {
+		return TRUE;
+	}
+
+	if (file_count == 1) {
+		prompt = f (_("Are you sure you want to trash \"%B\"?"),
+			    files->data);
+	} else {
+		prompt = f (ngettext("Are you sure you want to trash "
+				     "the %'d selected item?",
+				     "Are you sure you want to trash "
+				     "the %'d selected items?", file_count),
+			    file_count);
+	}
+
+	response = run_warning (job,
+				prompt,
+				f (_("Items moved to the trash may be recovered until the trash is emptied.")),
+				NULL,
+				FALSE,
+				GTK_STOCK_CANCEL, _("Move to _Trash"),
 				NULL);
 
 	return response == 1;
@@ -1779,6 +1863,8 @@ trash_files (CommonJob *job, GList *files, int *files_skipped)
 	for (l = files;
 	     l != NULL && !job_aborted (job);
 	     l = l->next) {
+        peony_progress_info_get_ready (job->progress);
+
 		file = l->data;
 
 		error = NULL;
@@ -1885,6 +1971,7 @@ delete_job (GIOSchedulerJob *io_job,
 	CommonJob *common;
 	gboolean must_confirm_delete_in_trash;
 	gboolean must_confirm_delete;
+	gboolean must_confirm_trash;
 	int files_skipped;
 
 	common = (CommonJob *)job;
@@ -1897,6 +1984,7 @@ delete_job (GIOSchedulerJob *io_job,
 
 	must_confirm_delete_in_trash = FALSE;
 	must_confirm_delete = FALSE;
+	must_confirm_trash = FALSE;
 	files_skipped = 0;
 
 	for (l = job->files; l != NULL; l = l->next) {
@@ -1910,6 +1998,7 @@ delete_job (GIOSchedulerJob *io_job,
 			to_delete_files = g_list_prepend (to_delete_files, file);
 		} else {
 			if (job->try_trash) {
+				must_confirm_trash = TRUE;
 				to_trash_files = g_list_prepend (to_trash_files, file);
 			} else {
 				must_confirm_delete = TRUE;
@@ -1936,7 +2025,11 @@ delete_job (GIOSchedulerJob *io_job,
 	if (to_trash_files != NULL) {
 		to_trash_files = g_list_reverse (to_trash_files);
 
-		trash_files (common, to_trash_files, &files_skipped);
+		if (! must_confirm_trash || confirm_trash (common, to_trash_files)) {
+			trash_files (common, to_trash_files, &files_skipped);
+		} else {
+			job->user_cancel = TRUE;
+		}
 	}
 
 	g_list_free (to_trash_files);
@@ -1966,7 +2059,7 @@ trash_or_delete_internal (GList                  *files,
 
 	/* TODO: special case desktop icon link files ... */
 
-	job = op_job_new (DeleteJob, parent_window);
+	job = op_job_new (DeleteJob, parent_window, TRUE, FALSE);
 	job->files = eel_g_object_list_copy (files);
 	job->try_trash = try_trash;
 	job->user_cancel = FALSE;
@@ -2041,6 +2134,7 @@ unmount_mount_callback (GObject *source_object,
 	if (data->eject) {
 		unmounted = g_mount_eject_with_operation_finish (G_MOUNT (source_object),
 								 res, &error);
+                peony_application_notify_unmount_show ("It is now safe to remove the drive");
 	} else {
 		unmounted = g_mount_unmount_with_operation_finish (G_MOUNT (source_object),
 								   res, &error);
@@ -2086,6 +2180,9 @@ do_unmount (UnmountData *data)
 					      NULL,
 					      unmount_mount_callback,
 					      data);
+
+		peony_application_notify_unmount_show ("writing data to the drive-do not unplug");
+
 	} else {
 		g_mount_unmount_with_operation (data->mount,
 						0,
@@ -2267,7 +2364,7 @@ peony_file_operations_unmount_mount_full (GtkWindow                      *parent
 		if (response == GTK_RESPONSE_ACCEPT) {
 			EmptyTrashJob *job;
 
-			job = op_job_new (EmptyTrashJob, parent_window);
+			job = op_job_new (EmptyTrashJob, parent_window, TRUE, FALSE);
 			job->should_confirm = FALSE;
 			job->trash_dirs = get_trash_dirs_for_mount (mount);
 			job->done_callback = (PeonyOpCallback)do_unmount;
@@ -3295,7 +3392,8 @@ static void copy_move_file (CopyMoveJob *job,
 			    GdkPoint *point,
 			    gboolean overwrite,
 			    gboolean *skipped_file,
-			    gboolean readonly_source_fs);
+			    gboolean readonly_source_fs,
+			    gboolean last_item);
 
 typedef enum {
 	CREATE_DEST_DIR_RETRY,
@@ -3408,9 +3506,10 @@ copy_move_directory (CopyMoveJob *copy_job,
 		     TransferInfo *transfer_info,
 		     GHashTable *debuting_files,
 		     gboolean *skipped_file,
-		     gboolean readonly_source_fs)
+		     gboolean readonly_source_fs,
+		     gboolean last_item_above)
 {
-	GFileInfo *info;
+	GFileInfo *info, *nextinfo;
 	GError *error;
 	GFile *src_file;
 	GFileEnumerator *enumerator;
@@ -3421,6 +3520,7 @@ copy_move_directory (CopyMoveJob *copy_job,
 	gboolean local_skipped_file;
 	CommonJob *job;
 	GFileCopyFlags flags;
+	gboolean last_item;
 
 	job = (CommonJob *)copy_job;
 
@@ -3462,16 +3562,25 @@ copy_move_directory (CopyMoveJob *copy_job,
 	if (enumerator) {
 		error = NULL;
 
+		nextinfo = g_file_enumerator_next_file (enumerator, job->cancellable, skip_error?NULL:&error);
 		while (!job_aborted (job) &&
-		       (info = g_file_enumerator_next_file (enumerator, job->cancellable, skip_error?NULL:&error)) != NULL) {
+		       (info = nextinfo) != NULL) {
+			peony_progress_info_get_ready (job->progress);
+
+			nextinfo = g_file_enumerator_next_file (enumerator, job->cancellable, skip_error?NULL:&error);
 			src_file = g_file_get_child (src,
 						     g_file_info_get_name (info));
+
+			last_item = (last_item_above) && (!nextinfo);
 			copy_move_file (copy_job, src_file, *dest, same_fs, FALSE, &dest_fs_type,
 					source_info, transfer_info, NULL, NULL, FALSE, &local_skipped_file,
-					readonly_source_fs);
+					readonly_source_fs, last_item);
 			g_object_unref (src_file);
 			g_object_unref (info);
 		}
+		if (nextinfo)
+			g_object_unref (nextinfo);
+
 		g_file_enumerator_close (enumerator, job->cancellable, NULL);
 		g_object_unref (enumerator);
 
@@ -3976,7 +4085,8 @@ copy_move_file (CopyMoveJob *copy_job,
 		GdkPoint *position,
 		gboolean overwrite,
 		gboolean *skipped_file,
-		gboolean readonly_source_fs)
+		gboolean readonly_source_fs,
+		gboolean last_item)
 {
 	GFile *dest, *new_dest;
 	GError *error;
@@ -4082,7 +4192,6 @@ copy_move_file (CopyMoveJob *copy_job,
 
 
  retry:
-
 	error = NULL;
 	flags = G_FILE_COPY_NOFOLLOW_SYMLINKS;
 	if (overwrite) {
@@ -4096,6 +4205,10 @@ copy_move_file (CopyMoveJob *copy_job,
 	pdata.last_size = 0;
 	pdata.source_info = source_info;
 	pdata.transfer_info = transfer_info;
+
+	if (!is_dir(src) && last_item)
+		/* this is the last file for this operation, cannot pause anymore */
+		peony_progress_info_disable_pause (job->progress);
 
 	if (copy_job->is_move) {
 		res = g_file_move (src, dest,
@@ -4318,7 +4431,8 @@ copy_move_file (CopyMoveJob *copy_job,
 					  would_recurse, dest_fs_type,
 					  source_info, transfer_info,
 					  debuting_files, skipped_file,
-					  readonly_source_fs)) {
+					  readonly_source_fs,
+					  last_item)) {
 			/* destination changed, since it was an invalid file name */
 			g_assert (*dest_fs_type != NULL);
 			handled_invalid_filename = TRUE;
@@ -4411,6 +4525,8 @@ copy_files (CopyMoveJob *job,
 	for (l = job->files;
 	     l != NULL && !job_aborted (common);
 	     l = l->next) {
+		peony_progress_info_get_ready (common->progress);
+
 		src = l->data;
 
 		if (i < job->n_icon_positions) {
@@ -4433,13 +4549,15 @@ copy_files (CopyMoveJob *job,
 		}
 		if (dest) {
 			skipped_file = FALSE;
+
 			copy_move_file (job, src, dest,
 					same_fs, unique_names,
 					&dest_fs_type,
 					source_info, transfer_info,
 					job->debuting_files,
 					point, FALSE, &skipped_file,
-					readonly_source_fs);
+					readonly_source_fs,
+					!l->next);
 			g_object_unref (dest);
 		}
 		i++;
@@ -4539,6 +4657,24 @@ copy_job (GIOSchedulerJob *io_job,
 	return FALSE;
 }
 
+static gboolean
+contains_multiple_items (GList *files)
+{
+	GFile *first;
+
+	if (g_list_length (files) > 1) {
+		return TRUE;
+	} else {
+		if (files) {
+			first = files->data;
+			if (is_dir (first))
+				return TRUE;
+		}
+	}
+
+	return FALSE;
+}
+
 void
 peony_file_operations_copy (GList *files,
 			       GArray *relative_item_points,
@@ -4549,7 +4685,7 @@ peony_file_operations_copy (GList *files,
 {
 	CopyMoveJob *job;
 
-	job = op_job_new (CopyMoveJob, parent_window);
+	job = op_job_new (CopyMoveJob, parent_window, FALSE,  contains_multiple_items (files));
 	job->desktop_location = peony_get_desktop_location ();
 	job->done_callback = done_callback;
 	job->done_callback_data = done_callback_data;
@@ -4707,6 +4843,7 @@ move_file_prepare (CopyMoveJob *move_job,
 	}
 
  retry:
+    peony_progress_info_get_ready (job->progress);
 
 	flags = G_FILE_COPY_NOFOLLOW_SYMLINKS | G_FILE_COPY_NO_FALLBACK_FOR_MOVE;
 	if (overwrite) {
@@ -4873,6 +5010,7 @@ move_files_prepare (CopyMoveJob *job,
 	GList *l;
 	GFile *src;
 	gboolean same_fs;
+	gboolean last_item;
 	int i;
 	GdkPoint *point;
 	int total, left;
@@ -4881,6 +5019,7 @@ move_files_prepare (CopyMoveJob *job,
 
 	total = left = g_list_length (job->files);
 
+	peony_progress_info_get_ready (common->progress);
 	report_move_progress (job, total, left);
 
 	i = 0;
@@ -4888,6 +5027,11 @@ move_files_prepare (CopyMoveJob *job,
 	     l != NULL && !job_aborted (common);
 	     l = l->next) {
 		src = l->data;
+
+		last_item = (!l->next) && (!is_dir(src)) && (!(*fallbacks));
+		if (last_item)
+			/* this is the last file and there are no fallbacks to process, cannot pause anymore */
+			peony_progress_info_disable_pause (common->progress);
 
 		if (i < job->n_icon_positions) {
 			point = &job->icon_positions[i];
@@ -4940,6 +5084,8 @@ common = &job->common;
 	for (l = fallbacks;
 	     l != NULL && !job_aborted (common);
 	     l = l->next) {
+        peony_progress_info_get_ready (common->progress);
+
 		fallback = l->data;
 		src = fallback->file;
 
@@ -4961,7 +5107,8 @@ common = &job->common;
 				same_fs, FALSE, dest_fs_type,
 				source_info, transfer_info,
 				job->debuting_files,
-				point, fallback->overwrite, &skipped_file, FALSE);
+				point, fallback->overwrite, &skipped_file, FALSE,
+				!l->next);
 		i++;
 	}
 }
@@ -5080,7 +5227,7 @@ peony_file_operations_move (GList *files,
 {
 	CopyMoveJob *job;
 
-	job = op_job_new (CopyMoveJob, parent_window);
+	job = op_job_new (CopyMoveJob, parent_window, FALSE,  contains_multiple_items (files));
 	job->is_move = TRUE;
 	job->done_callback = done_callback;
 	job->done_callback_data = done_callback_data;
@@ -5360,6 +5507,8 @@ link_job (GIOSchedulerJob *io_job,
 	for (l = job->files;
 	     l != NULL && !job_aborted (common);
 	     l = l->next) {
+        peony_progress_info_get_ready (common->progress);
+
 		src = l->data;
 
 		if (i < job->n_icon_positions) {
@@ -5398,7 +5547,7 @@ peony_file_operations_link (GList *files,
 {
 	CopyMoveJob *job;
 
-	job = op_job_new (CopyMoveJob, parent_window);
+	job = op_job_new (CopyMoveJob, parent_window, TRUE, FALSE);
 	job->done_callback = done_callback;
 	job->done_callback_data = done_callback_data;
 	job->files = eel_g_object_list_copy (files);
@@ -5439,7 +5588,7 @@ peony_file_operations_duplicate (GList *files,
 {
 	CopyMoveJob *job;
 
-	job = op_job_new (CopyMoveJob, parent_window);
+	job = op_job_new (CopyMoveJob, parent_window, FALSE, contains_multiple_items (files));
 	job->done_callback = done_callback;
 	job->done_callback_data = done_callback_data;
 	job->files = eel_g_object_list_copy (files);
@@ -5504,6 +5653,8 @@ set_permissions_file (SetPermissionsJob *job,
 	common = (CommonJob *)job;
 
 	peony_progress_info_pulse_progress (common->progress);
+
+    peony_progress_info_get_ready (common->progress);
 
 	free_info = FALSE;
 	if (info == NULL) {
@@ -5609,7 +5760,7 @@ peony_file_set_permissions_recursive (const char *directory,
 {
 	SetPermissionsJob *job;
 
-	job = op_job_new (SetPermissionsJob, NULL);
+	job = op_job_new (SetPermissionsJob, NULL, TRUE, FALSE);
 	job->file = g_file_new_for_uri (directory);
 	job->file_permissions = file_permissions;
 	job->file_mask = file_mask;
@@ -5865,6 +6016,7 @@ create_job (GIOSchedulerJob *io_job,
 	count = 1;
 
  retry:
+    peony_progress_info_get_ready (common->progress);
 
 	error = NULL;
 	if (job->make_dir) {
@@ -6076,7 +6228,7 @@ peony_file_operations_new_folder (GtkWidget *parent_view,
 		parent_window = (GtkWindow *)gtk_widget_get_ancestor (parent_view, GTK_TYPE_WINDOW);
 	}
 
-	job = op_job_new (CreateJob, parent_window);
+	job = op_job_new (CreateJob, parent_window, TRUE, FALSE);
 	job->done_callback = done_callback;
 	job->done_callback_data = done_callback_data;
 	job->dest_dir = g_file_new_for_uri (parent_dir);
@@ -6116,7 +6268,7 @@ peony_file_operations_new_file_from_template (GtkWidget *parent_view,
 		parent_window = (GtkWindow *)gtk_widget_get_ancestor (parent_view, GTK_TYPE_WINDOW);
 	}
 
-	job = op_job_new (CreateJob, parent_window);
+	job = op_job_new (CreateJob, parent_window, TRUE, FALSE);
 	job->done_callback = done_callback;
 	job->done_callback_data = done_callback_data;
 	job->dest_dir = g_file_new_for_uri (parent_dir);
@@ -6161,7 +6313,7 @@ peony_file_operations_new_file (GtkWidget *parent_view,
 		parent_window = (GtkWindow *)gtk_widget_get_ancestor (parent_view, GTK_TYPE_WINDOW);
 	}
 
-	job = op_job_new (CreateJob, parent_window);
+	job = op_job_new (CreateJob, parent_window, TRUE, FALSE);
 	job->done_callback = done_callback;
 	job->done_callback_data = done_callback_data;
 	job->dest_dir = g_file_new_for_uri (parent_dir);
@@ -6197,6 +6349,8 @@ delete_trash_file (CommonJob *job,
 	GFileInfo *info;
 	GFile *child;
 	GFileEnumerator *enumerator;
+
+    peony_progress_info_get_ready (job->progress);
 
 	if (job_aborted (job)) {
 		return;
@@ -6295,7 +6449,7 @@ peony_file_operations_empty_trash (GtkWidget *parent_view)
 		parent_window = (GtkWindow *)gtk_widget_get_ancestor (parent_view, GTK_TYPE_WINDOW);
 	}
 
-	job = op_job_new (EmptyTrashJob, parent_window);
+	job = op_job_new (EmptyTrashJob, parent_window, TRUE, FALSE);
 	job->trash_dirs = g_list_prepend (job->trash_dirs,
 					  g_file_new_for_uri ("trash:"));
 	job->should_confirm = TRUE;
@@ -6340,6 +6494,8 @@ mark_desktop_file_trusted (CommonJob *common,
 	GFileInfo *info;
 
  retry:
+    peony_progress_info_get_ready (common->progress);
+
 	error = NULL;
 	if (!g_file_load_contents (file,
 				  cancellable,
@@ -6519,7 +6675,7 @@ peony_file_mark_desktop_file_trusted (GFile *file,
 {
 	MarkTrustedJob *job;
 
-	job = op_job_new (MarkTrustedJob, parent_window);
+	job = op_job_new (MarkTrustedJob, parent_window, TRUE, FALSE);
 	job->file = g_object_ref (file);
 	job->interactive = interactive;
 	job->done_callback = done_callback;

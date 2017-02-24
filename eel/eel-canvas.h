@@ -23,7 +23,7 @@
 /*
   @NOTATION@
  */
-/* EelCanvas widget - Tk-like canvas widget for UKUI
+/* EelCanvas widget - Tk-like canvas widget for Ukui
  *
  * EelCanvas is basically a port of the Tk toolkit's most excellent canvas
  * widget.  Tk is copyrighted by the Regents of the University of California,
@@ -38,6 +38,7 @@
 #define EEL_CANVAS_H
 
 #include <gtk/gtk.h>
+#include <gtk/gtk-a11y.h>
 #include <gdk/gdk.h>
 #include <stdarg.h>
 
@@ -159,11 +160,7 @@ extern "C" {
          * coordinates of the drawable, a temporary pixmap, where things get
          * drawn.  (width, height) are the dimensions of the drawable.
          */
-#if GTK_CHECK_VERSION(3,0,0)
 	void (* draw) (EelCanvasItem *item, cairo_t *cr, cairo_region_t *region);
-#else
-        void (* draw) (EelCanvasItem *item, GdkDrawable *drawable, GdkEventExpose *expose);
-#endif
 
         /* Calculate the distance from an item to the specified point.  It also
              * returns a canvas item which is the item itself in the case of the
@@ -250,7 +247,7 @@ extern "C" {
      */
     void eel_canvas_item_hide (EelCanvasItem *item);
 
-#if GTK_CHECK_VERSION(3, 20, 0)
+#if GTK_CHECK_VERSION (3, 20, 0)
     /* Grab the seat for the specified item.  Only the events in event_mask will be
      * reported. If cursor is non-NULL, it will be used during the duration of the
      * grab. event is the event, triggering the grab. Returns the same values as gdk_seat_grab().
@@ -262,21 +259,16 @@ extern "C" {
      * XGrabPointer().
      */
 #endif
-#if GTK_CHECK_VERSION (3, 0, 0)
      GdkGrabStatus eel_canvas_item_grab (EelCanvasItem *item,
                                          GdkEventMask event_mask,
                                          GdkCursor *cursor,
-#if GTK_CHECK_VERSION(3, 20, 0)
+#if GTK_CHECK_VERSION (3, 20, 0)
                                          const GdkEvent* event);
 #else
                                          guint32 etime);
 #endif
-#else
-    int eel_canvas_item_grab (EelCanvasItem *item, unsigned int event_mask,
-                              GdkCursor *cursor, guint32 etime);
-#endif
 
-#if GTK_CHECK_VERSION(3, 20, 0)
+#if GTK_CHECK_VERSION (3, 20, 0)
     /* Ungrabs the seat -- the specified item must be the same that was passed to
      * eel_canvas_item_grab().
      */
@@ -463,11 +455,7 @@ extern "C" {
         /* Draw the background for the area given.
          */
         void (* draw_background) (EelCanvas *canvas,
-#if GTK_CHECK_VERSION(3,0,0)
                                   cairo_t *cr);
-#else
-                                  int x, int y, int width, int height);
-#endif
 
         /* Private Virtual methods for groping the canvas inside ukuicomponent */
         void (* request_update) (EelCanvas *canvas);
@@ -554,6 +542,36 @@ extern "C" {
     /* This is the inverse of eel_canvas_window_to_world() */
     void eel_canvas_world_to_window (EelCanvas *canvas,
                                      double worldx, double worldy, double *winx, double *winy);
+
+    GType eel_canvas_accessible_get_type (void);
+
+    typedef struct _EelCanvasAccessible EelCanvasAccessible;
+    typedef struct _EelCanvasAccessibleClass EelCanvasAccessibleClass;
+
+    struct _EelCanvasAccessible
+    {
+        GtkContainerAccessible parent;
+    };
+
+    struct _EelCanvasAccessibleClass
+    {
+        GtkContainerAccessibleClass parent_class;
+    };
+
+    GType eel_canvas_item_accessible_get_type (void);
+
+    typedef struct _EelCanvasItemAccessible EelCanvasItemAccessible;
+    typedef struct _EelCanvasItemAccessibleClass EelCanvasItemAccessibleClass;
+
+    struct _EelCanvasItemAccessible
+    {
+        GtkAccessible parent;
+    };
+
+    struct _EelCanvasItemAccessibleClass
+    {
+        GtkAccessibleClass parent_class;
+    };
 
 #ifdef __cplusplus
 }

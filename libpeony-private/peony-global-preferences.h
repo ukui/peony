@@ -55,10 +55,12 @@ G_BEGIN_DECLS
 
 /* Trash options */
 #define PEONY_PREFERENCES_CONFIRM_TRASH			"confirm-trash"
+#define PEONY_PREFERENCES_CONFIRM_MOVE_TO_TRASH	"confirm-move-to-trash"
 #define PEONY_PREFERENCES_ENABLE_DELETE			"enable-delete"
 
 /* Desktop options */
 #define PEONY_PREFERENCES_DESKTOP_IS_HOME_DIR		"desktop-is-home-dir"
+#define PEONY_PREFERENCES_SHOW_NOTIFICATIONS             "show-notifications"
 
 /* Display  */
 #define PEONY_PREFERENCES_SHOW_HIDDEN_FILES  		"show-hidden-files"
@@ -216,7 +218,6 @@ GSettings *peony_desktop_preferences;
 GSettings *peony_tree_sidebar_preferences;
 GSettings *peony_compact_view_preferences;
 GSettings *peony_list_view_preferences;
-GSettings *peony_computer_view_preferences;
 GSettings *peony_extension_preferences;
 
 GSettings *ukui_background_preferences;

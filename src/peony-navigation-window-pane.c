@@ -45,11 +45,6 @@ G_DEFINE_TYPE (PeonyNavigationWindowPane,
                PEONY_TYPE_WINDOW_PANE)
 #define parent_class peony_navigation_window_pane_parent_class
 
-#if GTK_CHECK_VERSION (3, 0, 0)
-#define gtk_hbox_new(X,Y) gtk_box_new(GTK_ORIENTATION_HORIZONTAL,Y)
-#define gtk_vbox_new(X,Y) gtk_box_new(GTK_ORIENTATION_VERTICAL,Y)
-#endif
-
 static void
 real_set_active (PeonyWindowPane *pane, gboolean is_active)
 {
@@ -746,11 +741,11 @@ peony_navigation_window_pane_setup (PeonyNavigationWindowPane *pane)
     GtkWidget *hbox;
     PeonyEntry *entry;
     GtkSizeGroup *header_size_group;
-    GtkWidget *toolbar_table;
+    GtkWidget *toolbar_table;	
 
-    pane->widget = gtk_vbox_new (FALSE, 0);
+    pane->widget = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
 
-    hbox = gtk_hbox_new (FALSE, 12);
+    hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 12);
     pane->location_bar = hbox;
     gtk_container_set_border_width (GTK_CONTAINER (hbox), 4);
     /*gtk_box_pack_start (GTK_BOX (pane->widget), hbox,
@@ -761,8 +756,9 @@ peony_navigation_window_pane_setup (PeonyNavigationWindowPane *pane)
     header_size_group = PEONY_NAVIGATION_WINDOW (PEONY_WINDOW_PANE (pane)->window)->details->header_size_group;
     gtk_size_group_add_widget (header_size_group, pane->location_bar);
     toolbar_table = PEONY_NAVIGATION_WINDOW(PEONY_WINDOW_PANE(pane)->window)->toolbar_table;
+
     pane->location_button = location_button_create (pane);
-  /*  gtk_box_pack_start (GTK_BOX (hbox), pane->location_button, FALSE, FALSE, 0);
+/*    gtk_box_pack_start (GTK_BOX (hbox), pane->location_button, FALSE, FALSE, 0);
     gtk_widget_show (pane->location_button);
 */
     pane->path_bar = g_object_new (PEONY_TYPE_PATH_BAR, NULL);
@@ -773,10 +769,10 @@ peony_navigation_window_pane_setup (PeonyNavigationWindowPane *pane)
     g_signal_connect_object (pane->path_bar, "path_set",
                              G_CALLBACK (path_bar_path_set_callback), pane, 0);
 
-  /*  gtk_box_pack_start (GTK_BOX (hbox),
+    /*gtk_box_pack_start (GTK_BOX (hbox),
                         pane->path_bar,
-                        TRUE, TRUE, 0);
-*/
+                        TRUE, TRUE, 0);*/
+
     pane->navigation_bar = peony_location_bar_new (pane);
     g_signal_connect_object (pane->navigation_bar, "location_changed",
                              G_CALLBACK (navigation_bar_location_changed_callback), pane, 0);
@@ -802,10 +798,9 @@ peony_navigation_window_pane_setup (PeonyNavigationWindowPane *pane)
                         FALSE, FALSE, 0);
 
     gtk_grid_attach(toolbar_table,
-		   hbox,
-		  1,1,1,1);
+                   hbox,
+                   1,1,1,1);
     gtk_widget_set_hexpand(hbox,TRUE);
-
     gtk_widget_show(pane->search_bar);
     pane->notebook = g_object_new (PEONY_TYPE_NOTEBOOK, NULL);
     gtk_box_pack_start (GTK_BOX (pane->widget), pane->notebook,
@@ -898,8 +893,8 @@ peony_navigation_window_pane_set_bar_mode (PeonyNavigationWindowPane *pane,
 
     case PEONY_BAR_SEARCH:
         gtk_widget_show (pane->search_bar);
-     //   gtk_widget_hide (pane->path_bar);
-     //   gtk_widget_hide (pane->navigation_bar);
+//        gtk_widget_hide (pane->path_bar);
+  //      gtk_widget_hide (pane->navigation_bar);
         break;
     }
     

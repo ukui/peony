@@ -7,7 +7,7 @@ DPKG_EXPORT_BUILDFLAGS = 1
 include /usr/share/dpkg/buildflags.mk
 
 %:
-	dh $@ $(DHFLAGS)
+	dh $@ $(DHFLAGS) --with gir
 
 override_dh_install:
 	rm -fv debian/tmp/usr/lib/*/*.la
@@ -26,15 +26,14 @@ override_dh_auto_configure:
 		--disable-static \
 		--localstatedir=/var \
 		--enable-introspection \
-		--enable-gtk-doc \
-		--with-gtk=3.0
+		--enable-gtk-doc
 
 override_dh_auto_test:
 	DEB_BUILD_OPTIONS=nocheck dh_auto_test
 
 override_dh_strip:
-	dh_strip -ppeony --dbgsym-migration='peony-dbg (<< 1.14.1-2~)'
-	dh_strip -plibpeony-extension1 --dbgsym-migration='libpeony-extension1-dbg (<< 1.14.1-2~)'
+	dh_strip -ppeony --dbg-package=peony-dbg
+	dh_strip -plibpeony-extension1 --dbg-package=libpeony-extension1-dbg
 
 get-orig-source:
 	uscan --noconf --force-download --rename --download-current-version --destdir=..

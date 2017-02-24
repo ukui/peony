@@ -1,7 +1,7 @@
 /*
  *  peony-extension.c - extension management functions
  *
- *  Copyright (C) 2014 MATE Desktop.
+ *  Copyright (C) 2014 UKUI Desktop.
  *
  *  This library is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU Library General Public

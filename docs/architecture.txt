@@ -57,7 +57,7 @@ left, typically one at a time. The meta-views should be panels that
 display information about the content being displayed, or that provide
 navigation aids.
 
-However, ultimately multiple content views will be available and may
+However, ultiukuily multiple content views will be available and may
 be switched by using an option menu.
 
 The peony application has a PeonyWindow object for each window

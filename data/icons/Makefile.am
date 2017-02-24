@@ -13,9 +13,9 @@ public_icons = \
 	$(NULL)
 
 private_icons = \
-	hicolor_emblems_16x16_emblem-note-ukui.png \
-	hicolor_emblems_24x24_emblem-note-ukui.png \
-	hicolor_emblems_48x48_emblem-note-ukui.png \
+	hicolor_emblems_16x16_emblem-note.png \
+	hicolor_emblems_24x24_emblem-note.png \
+	hicolor_emblems_48x48_emblem-note.png \
 	$(NULL)
 
 noinst_DATA = \

@@ -42,21 +42,13 @@ typedef struct PeonyImagePropertiesPageDetails PeonyImagePropertiesPageDetails;
 
 typedef struct
 {
-#if GTK_CHECK_VERSION (3, 0, 0)
     GtkBox parent;
-#else
-    GtkVBox parent;
-#endif
     PeonyImagePropertiesPageDetails *details;
 } PeonyImagePropertiesPage;
 
 typedef struct
 {
-#if GTK_CHECK_VERSION (3, 0, 0)
     GtkBoxClass parent;
-#else
-    GtkVBoxClass parent;
-#endif
 } PeonyImagePropertiesPageClass;
 
 GType peony_image_properties_page_get_type (void);

@@ -32,7 +32,6 @@
 #include "peony-application.h"
 #include "peony-bookmarks-window.h"
 #include "peony-information-panel.h"
-#include "peony-main.h"
 #include "peony-window-manage-views.h"
 #include "peony-window-bookmarks.h"
 #include "peony-window-slot.h"
@@ -130,15 +129,10 @@ static const struct
 static void
 peony_window_init (PeonyWindow *window)
 {
-#if GTK_CHECK_VERSION (3, 0, 0)
     GtkWidget *grid;
-#else
-    GtkWidget *table;
-#endif
     GtkWidget *menu;
     GtkWidget *statusbar;
 
-#if GTK_CHECK_VERSION (3, 0, 0)
 #if GTK_CHECK_VERSION (3, 20, 0)
     static const gchar css_custom[] =
       "#peony-extra-view-widget {"
@@ -167,7 +161,6 @@ peony_window_init (PeonyWindow *window)
     }
 
     g_object_unref (provider);
-#endif
     window->details = G_TYPE_INSTANCE_GET_PRIVATE (window, PEONY_TYPE_WINDOW, PeonyWindowDetails);
 
     window->details->panes = NULL;
@@ -175,40 +168,21 @@ peony_window_init (PeonyWindow *window)
 
     window->details->show_hidden_files_mode = PEONY_WINDOW_SHOW_HIDDEN_FILES_DEFAULT;
 
-#if !GTK_CHECK_VERSION (3, 0, 0)
-    /* Remove Top border on GtkStatusBar */
-    gtk_rc_parse_string (
-        "style \"statusbar-no-border\"\n"
-        "{\n"
-        "   GtkStatusbar::shadow_type = GTK_SHADOW_NONE\n"
-        "}\n"
-        "widget \"*.statusbar-noborder\" style \"statusbar-no-border\"");
-#endif
-
     /* Set initial window title */
     gtk_window_set_title (GTK_WINDOW (window), _("Peony"));
 
-#if GTK_CHECK_VERSION (3, 0, 0)
     grid = gtk_grid_new ();
     gtk_orientable_set_orientation (GTK_ORIENTABLE (grid), GTK_ORIENTATION_VERTICAL);
     window->details->grid = grid;
     gtk_widget_show (grid);
     gtk_container_add (GTK_CONTAINER (window), grid);
-#else
-    table = gtk_table_new (1, 6, FALSE);
-    window->details->table = table;
-    gtk_widget_show (table);
-    gtk_container_add (GTK_CONTAINER (window), table);
-#endif
 
     statusbar = gtk_statusbar_new ();
     gtk_widget_set_name (statusbar, "statusbar-noborder");
 
 /* set margin to zero to reduce size of statusbar */
-#if GTK_CHECK_VERSION (3, 0, 0)
 	gtk_widget_set_margin_top (GTK_WIDGET (statusbar), 0);
 	gtk_widget_set_margin_bottom (GTK_WIDGET (statusbar), 0);
-#endif
 
     window->details->statusbar = statusbar;
     window->details->help_message_cid = gtk_statusbar_get_context_id
@@ -219,33 +193,13 @@ peony_window_init (PeonyWindow *window)
 
     menu = gtk_ui_manager_get_widget (window->details->ui_manager, "/MenuBar");
     window->details->menubar = menu;
-#if GTK_CHECK_VERSION(3, 0, 0)
     gtk_widget_set_hexpand (menu, TRUE);
     gtk_widget_show (menu);
     gtk_grid_attach (GTK_GRID (grid), menu, 0, 0, 1, 1);
-#else
-    gtk_widget_show (menu);
-    gtk_table_attach (GTK_TABLE (table),
-                      menu,
-                      /* X direction */                   /* Y direction */
-                      0, 1,                               0, 1,
-                      GTK_EXPAND | GTK_FILL | GTK_SHRINK, 0,
-                      0,                                  0);
-#endif
 
     /* Register to menu provider extension signal managing menu updates */
     g_signal_connect_object (peony_signaller_get_current (), "popup_menu_changed",
                              G_CALLBACK (peony_window_load_extension_menus), window, G_CONNECT_SWAPPED);
-
-/* Keep the main event loop alive as long as the window exists */
-#if GTK_CHECK_VERSION(3, 0, 0)
-    /* FIXME: port to GtkApplication with GTK3 */
-    //gtk_quit_add_destroy (1, GTK_WIDGET (window));
-    peony_main_event_loop_register (GTK_WIDGET (window));
-#else
-    gtk_quit_add_destroy (1, GTK_OBJECT (window));
-    peony_main_event_loop_register (GTK_OBJECT (window));
-#endif
 }
 
 /* Unconditionally synchronize the GtkUIManager of WINDOW. */
@@ -438,11 +392,7 @@ update_cursor (PeonyWindow *window)
         display = gtk_widget_get_display (GTK_WIDGET (window));
         cursor = gdk_cursor_new_for_display (display, GDK_WATCH);
         gdk_window_set_cursor (gtk_widget_get_window (GTK_WIDGET (window)), cursor);
-#if GTK_CHECK_VERSION(3,0,0)
         g_object_unref (cursor);
-#else
-        gdk_cursor_unref (cursor);
-#endif
     }
     else
     {
@@ -587,26 +537,13 @@ peony_window_set_initial_window_geometry (PeonyWindow *window)
 {
     GdkScreen *screen;
     guint max_width_for_screen, max_height_for_screen;
-#if !GTK_CHECK_VERSION(3,0,0)
-    guint min_width, min_height;
-#endif
+
     guint default_width, default_height;
 
     screen = gtk_window_get_screen (GTK_WINDOW (window));
 
     max_width_for_screen = get_max_forced_width (screen);
     max_height_for_screen = get_max_forced_height (screen);
-
-#if !GTK_CHECK_VERSION(3,0,0)
-    EEL_CALL_METHOD (PEONY_WINDOW_CLASS, window,
-                     get_min_size, (window, &min_width, &min_height));
-
-    gtk_widget_set_size_request (GTK_WIDGET (window),
-                                 MIN (min_width,
-                                      max_width_for_screen),
-                                 MIN (min_height,
-                                      max_height_for_screen));
-#endif
 
     EEL_CALL_METHOD (PEONY_WINDOW_CLASS, window,
                      get_default_size, (window, &default_width, &default_height));
@@ -670,13 +607,8 @@ free_stored_viewers (PeonyWindow *window)
     window->details->extra_viewer = NULL;
 }
 
-#if GTK_CHECK_VERSION (3, 0, 0)
 static void
 peony_window_destroy (GtkWidget *object)
-#else
-static void
-peony_window_destroy (GtkObject *object)
-#endif
 {
     PeonyWindow *window;
     GList *panes_copy;
@@ -691,11 +623,7 @@ peony_window_destroy (GtkObject *object)
     g_assert (window->details->panes == NULL);
     g_assert (window->details->active_pane == NULL);
 
-#if GTK_CHECK_VERSION (3, 0, 0)
     GTK_WIDGET_CLASS (peony_window_parent_class)->destroy (object);
-#else
-    GTK_OBJECT_CLASS (peony_window_parent_class)->destroy (object);
-#endif
 }
 
 static void
@@ -1050,51 +978,6 @@ peony_window_slot_close (PeonyWindowSlot *slot)
     peony_window_pane_slot_close (slot->pane, slot);
 }
 
-#if GTK_CHECK_VERSION(3,0,0)
-static void
-peony_window_get_preferred_width (GtkWidget *widget,
-    			     gint *minimal_width,
-    			     gint *natural_width)
-{
-    GdkScreen *screen;
-    gint max_w, min_w, min_h, default_w, default_h;
-    PeonyWindow *window = PEONY_WINDOW (widget);
-
-    screen = gtk_window_get_screen (GTK_WINDOW (widget));	
-
-    max_w = get_max_forced_width (screen);
-    EEL_CALL_METHOD (PEONY_WINDOW_CLASS, window,
-    		 get_min_size, (window, &min_w, &min_h));
-    EEL_CALL_METHOD (PEONY_WINDOW_CLASS, window,
-    		 get_default_size, (window, &default_w, &default_h));
-
-    *minimal_width = MIN (min_w, max_w);
-    *natural_width = MIN (default_w, max_w);
-}
-
-static void
-peony_window_get_preferred_height (GtkWidget *widget,
-    			      gint *minimal_height,
-    			      gint *natural_height)
-{
-    GdkScreen *screen;
-    gint max_h, min_w, min_h, default_w, default_h;
-    PeonyWindow *window = PEONY_WINDOW (widget);
-
-    screen = gtk_window_get_screen (GTK_WINDOW (widget));	
-
-    max_h = get_max_forced_height (screen);
-    EEL_CALL_METHOD (PEONY_WINDOW_CLASS, window,
-    		 get_min_size, (window, &min_w, &min_h));
-    EEL_CALL_METHOD (PEONY_WINDOW_CLASS, window,
-    		 get_default_size, (window, &default_w, &default_h));
-
-    *minimal_height = MIN (min_h, max_h);
-    *natural_height = MIN (default_h, max_h);
-}
-
-#else /* GTK_CHECK_VERSION(3,0,0) */
-
 static void
 peony_window_size_request (GtkWidget		*widget,
                           GtkRequisition	*requisition)
@@ -1105,8 +988,6 @@ peony_window_size_request (GtkWidget		*widget,
 
     g_assert (PEONY_IS_WINDOW (widget));
     g_assert (requisition != NULL);
-
-    GTK_WIDGET_CLASS (peony_window_parent_class)->size_request (widget, requisition);
 
     screen = gtk_window_get_screen (GTK_WINDOW (widget));
 
@@ -1136,7 +1017,6 @@ peony_window_size_request (GtkWidget		*widget,
         requisition->height = max_height;
     }
 }
-#endif  /* GTK_CHECK_VERSION(3,0,0) */
 
 static void
 peony_window_realize (GtkWidget *widget)
@@ -1949,12 +1829,14 @@ peony_forget_history (void)
     PeonyWindowSlot *slot;
     PeonyNavigationWindowSlot *navigation_slot;
     GList *window_node, *l, *walk;
+    PeonyApplication *app;
 
+    app = PEONY_APPLICATION (g_application_get_default ());
     /* Clear out each window's back & forward lists. Also, remove
      * each window's current location bookmark from history list
      * so it doesn't get clobbered.
      */
-    for (window_node = peony_application_get_window_list ();
+    for (window_node = gtk_application_get_windows (GTK_APPLICATION (app));
             window_node != NULL;
             window_node = window_node->next)
     {
@@ -1997,7 +1879,7 @@ peony_forget_history (void)
     free_history_list ();
 
     /* Re-add each window's current location to history list. */
-    for (window_node = peony_application_get_window_list ();
+    for (window_node = gtk_application_get_windows (GTK_APPLICATION (app));
             window_node != NULL;
             window_node = window_node->next)
     {
@@ -2205,19 +2087,10 @@ peony_window_class_init (PeonyWindowClass *class)
     G_OBJECT_CLASS (class)->set_property = peony_window_set_property;
     G_OBJECT_CLASS (class)->finalize = peony_window_finalize;
 
-#if !GTK_CHECK_VERSION (3, 0, 0)
-    GTK_OBJECT_CLASS (class)->destroy = peony_window_destroy;
-#else
     GTK_WIDGET_CLASS (class)->destroy = peony_window_destroy;
-#endif
 
     GTK_WIDGET_CLASS (class)->show = peony_window_show;
-#if GTK_CHECK_VERSION (3,0,0)
-    GTK_WIDGET_CLASS (class)->get_preferred_width = peony_window_get_preferred_width;
-    GTK_WIDGET_CLASS (class)->get_preferred_height = peony_window_get_preferred_height;
-#else
-    GTK_WIDGET_CLASS (class)->size_request = peony_window_size_request;
-#endif
+
     GTK_WIDGET_CLASS (class)->realize = peony_window_realize;
     GTK_WIDGET_CLASS (class)->key_press_event = peony_window_key_press_event;
     class->get_title = real_get_title;
@@ -2289,17 +2162,7 @@ peony_window_class_init (PeonyWindowClass *class)
     class->reload = peony_window_reload;
     class->go_up = peony_window_go_up_signal;
 
-#if !GTK_CHECK_VERSION (3,0,0)
-    /* Allow to set the colors of the extra view widgets */
-    gtk_rc_parse_string ("\n"
-                         "   style \"peony-extra-view-widgets-style-internal\"\n"
-                         "   {\n"
-                         "      bg[NORMAL] = \"" EXTRA_VIEW_WIDGETS_BACKGROUND "\"\n"
-                         "   }\n"
-                         "\n"
-                         "    widget \"*.peony-extra-view-widget\" style:rc \"peony-extra-view-widgets-style-internal\" \n"
-                         "\n");
-#endif
+
 
     g_type_class_add_private (G_OBJECT_CLASS (class), sizeof (PeonyWindowDetails));
 }

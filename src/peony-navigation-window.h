@@ -67,8 +67,6 @@ struct _PeonyNavigationWindow
 
     /* Current views stuff */
     GList *sidebar_panels;
-
-    
     GtkWidget *toolbar_table;
     GtkWidget *toolbarViewAs;
 };

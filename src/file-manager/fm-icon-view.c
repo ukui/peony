@@ -30,7 +30,7 @@
 #include "fm-desktop-icon-view.h"
 #include "fm-error-reporting.h"
 #include <stdlib.h>
-#if !GTK_CHECK_VERSION(3, 21, 0)
+#if !GTK_CHECK_VERSION (3, 22, 0)
 #include <eel/eel-background.h>
 #endif
 #include <eel/eel-glib-extensions.h>
@@ -45,7 +45,7 @@
 #include <glib/gi18n.h>
 #include <gio/gio.h>
 #include <libpeony-private/peony-clipboard-monitor.h>
-#if !GTK_CHECK_VERSION(3, 21, 0)
+#if !GTK_CHECK_VERSION (3, 22, 0)
 #include <libpeony-private/peony-directory-background.h>
 #endif
 #include <libpeony-private/peony-directory.h>
@@ -212,11 +212,7 @@ G_DEFINE_TYPE_WITH_CODE (FMIconView, fm_icon_view, FM_TYPE_DIRECTORY_VIEW,
                                  fm_icon_view_iface_init));
 
 static void
-#if GTK_CHECK_VERSION (3, 0, 0)
 fm_icon_view_destroy (GtkWidget *object)
-#else
-fm_icon_view_destroy (GtkObject *object)
-#endif
 {
     FMIconView *icon_view;
 
@@ -244,11 +240,7 @@ fm_icon_view_destroy (GtkObject *object)
         icon_view->details->icons_not_positioned = NULL;
     }
 
-#if GTK_CHECK_VERSION (3, 0, 0)
     GTK_WIDGET_CLASS (fm_icon_view_parent_class)->destroy (object);
-#else
-    GTK_OBJECT_CLASS (fm_icon_view_parent_class)->destroy (object);
-#endif
 }
 
 static void
@@ -1281,7 +1273,7 @@ fm_icon_view_begin_loading (FMDirectoryView *view)
 
     /* kill any sound preview process that is ongoing */
     preview_audio (icon_view, NULL, FALSE);
-#if !GTK_CHECK_VERSION(3, 21, 0)
+#if !GTK_CHECK_VERSION (3, 22, 0)
     /* FIXME bugzilla.gnome.org 45060: Should use methods instead
      * of hardcoding desktop knowledge in here.
      */
@@ -1304,8 +1296,8 @@ fm_icon_view_begin_loading (FMDirectoryView *view)
 
         peony_connect_background_to_file_metadata (icon_container, file, default_action);
     }
-
 #endif
+
     /* Set up the zoom level from the metadata. */
     if (fm_directory_view_supports_zooming (FM_DIRECTORY_VIEW (icon_view)))
     {
@@ -1511,7 +1503,7 @@ fm_icon_view_can_zoom_out (FMDirectoryView *view)
            > PEONY_ZOOM_LEVEL_SMALLEST;
 }
 
-#if !GTK_CHECK_VERSION(3, 21, 0)
+#if !GTK_CHECK_VERSION (3, 22, 0)
 static GtkWidget *
 fm_icon_view_get_background_widget (FMDirectoryView *view)
 {
@@ -2493,11 +2485,10 @@ fm_icon_view_scroll_event (GtkWidget *widget,
     gboolean ret;
 
     icon_view = FM_ICON_VIEW (widget);
-
     if (icon_view->details->compact &&
-            (scroll_event->direction == GDK_SCROLL_UP ||
-             scroll_event->direction == GDK_SCROLL_DOWN))
-    {
+        (scroll_event->direction == GDK_SCROLL_UP ||
+        scroll_event->direction == GDK_SCROLL_DOWN ||
+        scroll_event->direction == GDK_SCROLL_SMOOTH)) {
         ret = fm_directory_view_handle_scroll_event (FM_DIRECTORY_VIEW (icon_view), scroll_event);
         if (!ret)
         {
@@ -2506,7 +2497,18 @@ fm_icon_view_scroll_event (GtkWidget *widget,
             event_copy = gdk_event_copy ((GdkEvent *) scroll_event);
 
             scroll_event_copy = (GdkEventScroll *) event_copy;
-            if (scroll_event_copy->direction == GDK_SCROLL_UP)
+
+            /* transform vertical integer smooth scroll events into horizontal events */
+            if (scroll_event_copy->direction == GDK_SCROLL_SMOOTH && scroll_event_copy->delta_x == 0) {
+                if (scroll_event_copy->delta_y == 1.0) {
+                    scroll_event_copy->direction = GDK_SCROLL_DOWN;
+                } else if (scroll_event_copy->delta_y == -1.0) {
+                    scroll_event_copy->direction = GDK_SCROLL_UP;
+                }
+            }
+            if ((scroll_event_copy->direction == GDK_SCROLL_UP) || (scroll_event_copy->delta_x == -1.0))
+
+
             {
                 scroll_event_copy->direction = GDK_SCROLL_LEFT;
             }
@@ -3156,11 +3158,8 @@ fm_icon_view_class_init (FMIconViewClass *klass)
 
     G_OBJECT_CLASS (klass)->set_property = fm_icon_view_set_property;
     G_OBJECT_CLASS (klass)->finalize = fm_icon_view_finalize;
-#if !GTK_CHECK_VERSION (3, 0, 0)
-    GTK_OBJECT_CLASS (klass)->destroy = fm_icon_view_destroy;
-#else
+
     GTK_WIDGET_CLASS (klass)->destroy = fm_icon_view_destroy;
-#endif
     GTK_WIDGET_CLASS (klass)->screen_changed = fm_icon_view_screen_changed;
     GTK_WIDGET_CLASS (klass)->scroll_event = fm_icon_view_scroll_event;
 
@@ -3174,7 +3173,7 @@ fm_icon_view_class_init (FMIconViewClass *klass)
     fm_directory_view_class->clear = fm_icon_view_clear;
     fm_directory_view_class->end_loading = fm_icon_view_end_loading;
     fm_directory_view_class->file_changed = fm_icon_view_file_changed;
-#if !GTK_CHECK_VERSION(3, 21, 0)
+#if !GTK_CHECK_VERSION (3, 22, 0)
     fm_directory_view_class->get_background_widget = fm_icon_view_get_background_widget;
 #endif
     fm_directory_view_class->get_selected_icon_locations = fm_icon_view_get_selected_icon_locations;
@@ -3341,7 +3340,7 @@ fm_icon_view_create (PeonyWindowSlotInfo *slot)
                          "window-slot", slot,
                          "compact", FALSE,
                          NULL);
-#if GTK_CHECK_VERSION (3, 19, 0)
+#if GTK_CHECK_VERSION (3, 20, 0)
     gtk_style_context_add_class (gtk_widget_get_style_context (GTK_WIDGET (view)), GTK_STYLE_CLASS_VIEW);
 #endif
     return PEONY_VIEW (view);
@@ -3356,7 +3355,7 @@ fm_compact_view_create (PeonyWindowSlotInfo *slot)
                          "window-slot", slot,
                          "compact", TRUE,
                          NULL);
-#if GTK_CHECK_VERSION (3, 19, 0)
+#if GTK_CHECK_VERSION (3, 20, 0)
     gtk_style_context_add_class (gtk_widget_get_style_context (GTK_WIDGET (view)), GTK_STYLE_CLASS_VIEW);
 #endif
     return PEONY_VIEW (view);
@@ -3367,9 +3366,9 @@ fm_icon_view_supports_uri (const char *uri,
                            GFileType file_type,
                            const char *mime_type)
 {
-    if (g_str_has_prefix(uri, "computer:"))
+    if (g_str_has_prefix (uri, "computer:"))
     {
-        return TRUE;
+    return TRUE;
     }
     if (file_type == G_FILE_TYPE_DIRECTORY)
     {

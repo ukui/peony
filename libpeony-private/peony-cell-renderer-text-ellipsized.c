@@ -29,7 +29,6 @@
 G_DEFINE_TYPE (PeonyCellRendererTextEllipsized, peony_cell_renderer_text_ellipsized,
                GTK_TYPE_CELL_RENDERER_TEXT);
 
-#if GTK_CHECK_VERSION(3,0,0)
 static void
 peony_cell_renderer_text_ellipsized_init (PeonyCellRendererTextEllipsized *cell)
 {
@@ -59,44 +58,13 @@ peony_cell_renderer_text_ellipsized_get_preferred_width (GtkCellRenderer *cell,
                   "ellipsize-set", TRUE,
                   NULL);
 }
-#else /* GTK_CHECK_VERSION(3,0,0) */
-static void
-peony_cell_renderer_text_ellipsized_init (PeonyCellRendererTextEllipsized *cell)
-{
-    g_object_set (cell, "ellipsize", PANGO_ELLIPSIZE_END, NULL);
-}
-
-static void
-peony_cell_renderer_text_ellipsized_get_size (GtkCellRenderer *cell,
-    					     GtkWidget       *widget,
-    					     GdkRectangle    *cell_area,
-    					     gint            *x_offset,
-    					     gint            *y_offset,
-    					     gint            *width,
-    					     gint            *height)
-{
-    g_object_set (cell, "ellipsize", PANGO_ELLIPSIZE_NONE, NULL);
-
-    GTK_CELL_RENDERER_CLASS 
-            (peony_cell_renderer_text_ellipsized_parent_class)->get_size (cell, widget,
-            								 cell_area,
-            								 x_offset, y_offset,
-            								 width, height);
-
-    g_object_set (cell, "ellipsize", PANGO_ELLIPSIZE_END, NULL);
-}
-#endif /* GTK_CHECK_VERSION(3,0,0) */
 
 static void
 peony_cell_renderer_text_ellipsized_class_init (PeonyCellRendererTextEllipsizedClass *klass)
 {
     GtkCellRendererClass *cell_class = GTK_CELL_RENDERER_CLASS (klass);
-
-#if GTK_CHECK_VERSION(3,0,0)
     cell_class->get_preferred_width = peony_cell_renderer_text_ellipsized_get_preferred_width;
-#else
-    cell_class->get_size = peony_cell_renderer_text_ellipsized_get_size;
-#endif
+
 }
 
 GtkCellRenderer *

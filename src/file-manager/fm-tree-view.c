@@ -1414,7 +1414,6 @@ create_tree (FMTreeView *view)
     char *location;
     GIcon *icon;
     PeonyWindowSlotInfo *slot;
-    PeonyFile *file;
 
     view->details->child_model = fm_tree_model_new ();
     view->details->sort_model = GTK_TREE_MODEL_SORT
@@ -1430,7 +1429,7 @@ create_tree (FMTreeView *view)
     (view->details->child_model, "row_loaded",
      G_CALLBACK (row_loaded_callback),
      view, G_CONNECT_AFTER);
- /*   home_uri = peony_get_home_directory_uri ();
+    home_uri = peony_get_home_directory_uri ();
     icon = g_themed_icon_new (PEONY_ICON_HOME);
     fm_tree_model_add_root_uri (view->details->child_model, home_uri, _("Home Folder"), icon, NULL);
     g_object_unref (icon);
@@ -1442,39 +1441,15 @@ create_tree (FMTreeView *view)
     fm_tree_model_add_root_uri (view->details->child_model, "trash:///", _("Trash"), icon, NULL);
     g_object_unref (icon);
 
-*/
-    /*create header*/
-/*    icon = g_themed_icon_new (CAJA_ICON_FAVORITE);
-    fm_tree_model_add_root_uri (view->details->child_model, "favorite:///", _("Favorite"), icon, NULL);
-    g_object_unref (icon);
-    file = peony_file_get_by_uri("favorite:///");
-    peony_file_call_when_ready(file,attributes,NULL,NULL);
-    peony_file_unref (file);
-*/
-    icon = g_themed_icon_new ("personal");
-    GString *personal = g_string_new(NULL);
-    g_string_append(personal, "file://");
-    g_string_append(personal, g_get_home_dir());
-    fm_tree_model_add_root_uri (view->details->child_model, personal->str, _("Personal"), icon, NULL);
-    g_string_free(personal, TRUE);
-    g_object_unref (icon);
-
-    icon = g_themed_icon_new ("uk-computer");
-    fm_tree_model_add_root_uri (view->details->child_model, "computer:///", _("My Computer"), icon, NULL);
-    g_object_unref (icon);
-    file = peony_file_get_by_uri ("computer:///");
-    //peony_file_call_when_ready(file,attributes,NULL,NULL);
-    peony_file_unref (file);
-
 
     volume_monitor = g_volume_monitor_get ();
     view->details->volume_monitor = volume_monitor;
     mounts = g_volume_monitor_get_mounts (volume_monitor);
-    /*for (l = mounts; l != NULL; l = l->next)
+    for (l = mounts; l != NULL; l = l->next)
     {
         add_root_for_mount (view, l->data);
         g_object_unref (l->data);
-    }*/
+    }
     g_list_free (mounts);
 
     g_signal_connect_object (volume_monitor, "mount_added",

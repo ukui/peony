@@ -1,8 +1,8 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 
 /* eel-ukui-extensions.h - interface for new functions that operate on
-                                 ukui-ukui classes. Perhaps some of these should be
-  			         rolled into ukui-ukui someday.
+                                 ukui classes. Perhaps some of these should be
+  			         rolled into ukui someday.
 
    Copyright (C) 1999, 2000, 2001 Eazel, Inc.
 

@@ -75,6 +75,6 @@
         </placeholder-->
 </toolbar>
 <toolbar name="ToolbarViewAs">
-    <toolitem name="ViewAs" action="ViewAs"/>
-</toolbar>
+	<toolitem name="ViewAs" action="ViewAs"/>
+</toolbar>	
 </ui>

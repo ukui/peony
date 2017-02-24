@@ -33,7 +33,6 @@
 #include "peony-location-bar.h"
 #include "peony-search-bar.h"
 #include "peony-pathbar.h"
-#include "peony-main.h"
 #include "peony-window-private.h"
 #include "peony-window-slot.h"
 #include "peony-navigation-window-slot.h"
@@ -275,7 +274,6 @@ handle_go_forward (PeonyNavigationWindowSlot *navigation_slot,
 static void
 handle_go_elsewhere (PeonyWindowSlot *slot, GFile *location)
 {
-#if !NEW_UI_COMPLETE
     PeonyNavigationWindowSlot *navigation_slot;
 
     if (PEONY_IS_NAVIGATION_WINDOW_SLOT (slot))
@@ -302,7 +300,6 @@ handle_go_elsewhere (PeonyWindowSlot *slot, GFile *location)
             }
         }
     }
-#endif
 }
 
 void
@@ -601,7 +598,6 @@ peony_window_slot_open_location_full (PeonyWindowSlot *slot,
     } else if (target_navigation) {
         target_window = peony_application_create_navigation_window
             (window->application,
-             NULL,
              gtk_window_get_screen (GTK_WINDOW (window)));
     } else {
         target_window = peony_application_get_spatial_window
@@ -774,18 +770,6 @@ peony_window_slot_go_home (PeonyWindowSlot *slot, gboolean new_tab)
                                          flags, NULL, NULL, NULL);
     g_object_unref (home);
 }
-
-#if 0
-static char *
-peony_window_slot_get_view_label (PeonyWindowSlot *slot)
-{
-    const PeonyViewInfo *info;
-
-    info = peony_view_factory_lookup (peony_window_slot_get_content_view_id (slot));
-
-    return g_strdup (info->label);
-}
-#endif
 
 static char *
 peony_window_slot_get_view_error_label (PeonyWindowSlot *slot)
@@ -1195,7 +1179,7 @@ got_file_info_for_view_selection_callback (PeonyFile *file,
     GFile *location;
     GMountOperation *mount_op;
     MountNotMountedData *data;
-
+    PeonyApplication *app;
     slot = callback_data;
     g_assert (PEONY_IS_WINDOW_SLOT (slot));
     g_assert (slot->determine_view_file == file);
@@ -1308,9 +1292,9 @@ got_file_info_for_view_selection_callback (PeonyFile *file,
              * happens when a new window cannot display its initial URI.
              */
             /* if this is the only window, we don't want to quit, so we redirect it to home */
-            if (peony_application_get_n_windows () <= 1)
-            {
-                g_assert (peony_application_get_n_windows () == 1);
+            app = PEONY_APPLICATION (g_application_get_default ());
+			
+            if (g_list_length (gtk_application_get_windows (GTK_APPLICATION (app))) == 1) {
 
                 /* the user could have typed in a home directory that doesn't exist,
                    in which case going home would cause an infinite loop, so we
@@ -2170,7 +2154,7 @@ display_view_selection_failure (PeonyWindow *window, PeonyFile *file,
         case G_IO_ERROR_HOST_NOT_FOUND:
             /* This case can be hit for user-typed strings like "foo" due to
              * the code that guesses web addresses when there's no initial "/".
-             * But this case is also hit for legitimate web addresses when
+             * But this case is also hit for legitiukui web addresses when
              * the proxy is set up wrong.
              */
             error_message = g_strdup_printf (_("Could not display \"%s\", because the host could not be found."),

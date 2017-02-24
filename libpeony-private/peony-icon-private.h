@@ -1,5 +1,5 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
-/* peony-icon-container-private.h
+/* ukui-icon-container-private.h
 
    Copyright (C) 1999, 2000 Free Software Foundation
    Copyright (C) 2000 Eazel, Inc.
@@ -210,19 +210,6 @@ struct PeonyIconContainerDetails
     /* font sizes used to draw labels */
     int font_size_table[PEONY_ZOOM_LEVEL_LARGEST + 1];
 
-    /* pixbuf and color for label highlighting */
-#if !GTK_CHECK_VERSION(3,0,0)
-    guint32    highlight_color_rgba;
-    guint32    active_color_rgba;
-    guint32    normal_color_rgba;
-    guint32    prelight_color_rgba;
-    guint32    prelight_icon_color_rgba;
-    guint32    normal_icon_color_rgba;
-
-    /* colors for text labels */
-    GdkColor label_colors [LAST_LABEL_COLOR];
-#endif
-
     /* State used so arrow keys don't wander if icons aren't lined up.
      */
     int arrow_key_start_x;
@@ -327,13 +314,6 @@ gboolean      peony_icon_container_scroll                      (PeonyIconContain
         int                    delta_y);
 void          peony_icon_container_update_scroll_region        (PeonyIconContainer *container);
 
-#if !GTK_CHECK_VERSION(3,0,0)
-/* label color for items */
-void          peony_icon_container_get_label_color             (PeonyIconContainer *container,
-        GdkColor             **color,
-        gboolean               first_line,
-        gboolean               needs_highlight,
-        gboolean	       is_prelit);
-#endif
+
 
 #endif /* PEONY_ICON_CONTAINER_PRIVATE_H */

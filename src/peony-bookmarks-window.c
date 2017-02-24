@@ -595,7 +595,6 @@ open_selected_bookmark (gpointer user_data, GdkScreen *screen)
     } else { /* window that opened bookmarks window has been closed */
         if (parent_is_browser_window || g_settings_get_boolean (peony_preferences, PEONY_PREFERENCES_ALWAYS_USE_BROWSER)) {
             window = peony_application_create_navigation_window (application,
-                     NULL,
                      screen);
         }
         else

@@ -50,7 +50,7 @@
 #define MAXIMUM_MENU_TITLE_LENGTH	48
 
 /* Used for window position & size sanity-checking. The sizes are big enough to prevent
- * at least normal-sized ukui-ukui panels from obscuring the window at the screen edges.
+ * at least normal-sized ukui panels from obscuring the window at the screen edges.
  */
 #define MINIMUM_ON_SCREEN_WIDTH		100
 #define MINIMUM_ON_SCREEN_HEIGHT	100
@@ -374,11 +374,7 @@ eel_gtk_label_make_bold (GtkLabel *label)
      * theme or user prefs, since the font desc only has the
      * weight flag turned on.
      */
-#if GTK_CHECK_VERSION(3,0,0)
     gtk_widget_override_font (GTK_WIDGET (label), font_desc);
-#else
-     gtk_widget_modify_font (GTK_WIDGET (label), font_desc);
-#endif
 
     pango_font_description_free (font_desc);
 }

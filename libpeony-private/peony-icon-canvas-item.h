@@ -74,13 +74,9 @@ extern "C" {
     /* attributes */
     void        peony_icon_canvas_item_set_image                (PeonyIconCanvasItem       *item,
             GdkPixbuf                    *image);
-#if GTK_CHECK_VERSION(3,0,0)
+
     cairo_surface_t* peony_icon_canvas_item_get_drag_surface    (PeonyIconCanvasItem       *item);
-#else
-    GdkPixmap * peony_icon_canvas_item_get_image                (PeonyIconCanvasItem       *item,
-    								GdkBitmap                **mask,
-    								GdkColormap		 *colormap);
-#endif
+
     void        peony_icon_canvas_item_set_emblems              (PeonyIconCanvasItem       *item,
             GList                        *emblem_pixbufs);
     void        peony_icon_canvas_item_set_show_stretch_handles (PeonyIconCanvasItem       *item,

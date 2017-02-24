@@ -45,21 +45,13 @@ typedef struct PeonyQueryEditorDetails PeonyQueryEditorDetails;
 
 typedef struct PeonyQueryEditor
 {
-#if GTK_CHECK_VERSION (3, 0, 0)
     GtkBox parent;
-#else
-    GtkVBox parent;
-#endif
     PeonyQueryEditorDetails *details;
 } PeonyQueryEditor;
 
 typedef struct
 {
-#if GTK_CHECK_VERSION (3, 0, 0)
     GtkBoxClass parent_class;
-#else
-    GtkVBoxClass parent_class;
-#endif
 
     void (* changed) (PeonyQueryEditor  *editor,
                       PeonyQuery        *query,

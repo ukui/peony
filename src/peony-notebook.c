@@ -40,10 +40,6 @@
 
 #define AFTER_ALL_TABS -1
 
-#if GTK_CHECK_VERSION (3, 0, 0)
-#define gtk_hbox_new(X,Y) gtk_box_new(GTK_ORIENTATION_HORIZONTAL,Y)
-#endif
-
 static void peony_notebook_init		 (PeonyNotebook *notebook);
 static void peony_notebook_class_init	 (PeonyNotebookClass *klass);
 static int  peony_notebook_insert_page	 (GtkNotebook *notebook,
@@ -80,17 +76,6 @@ peony_notebook_class_init (PeonyNotebookClass *klass)
     container_class->remove = peony_notebook_remove;
 
     notebook_class->insert_page = peony_notebook_insert_page;
-
-#if !GTK_CHECK_VERSION (3, 0, 0)
-    gtk_rc_parse_string ("style \"peony-tab-close-button-style\"\n"
-                         "{\n"
-                         "GtkWidget::focus-padding = 0\n"
-                         "GtkWidget::focus-line-width = 0\n"
-                         "xthickness = 0\n"
-                         "ythickness = 0\n"
-                         "}\n"
-                         "widget \"*.peony-tab-close-button\" style \"peony-tab-close-button-style\"");
-#endif
 
     signals[TAB_CLOSE_REQUEST] =
         g_signal_new ("tab-close-request",
@@ -186,12 +171,10 @@ button_press_cb (PeonyNotebook *notebook,
 static void
 peony_notebook_init (PeonyNotebook *notebook)
 {
-#if GTK_CHECK_VERSION (3, 0, 0)
     GtkStyleContext *context;
 
     context = gtk_widget_get_style_context (GTK_WIDGET (notebook));
     gtk_style_context_add_class (context, "peony-notebook");
-#endif
 
     gtk_notebook_set_scrollable (GTK_NOTEBOOK (notebook), TRUE);
     gtk_notebook_set_show_border (GTK_NOTEBOOK (notebook), FALSE);
@@ -307,7 +290,7 @@ build_tab_label (PeonyNotebook *nb, PeonyWindowSlot *slot)
 
     /* set hbox spacing and label padding (see below) so that there's an
      * equal amount of space around the label */
-    hbox = gtk_hbox_new (FALSE, 4);
+    hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 4);
     gtk_widget_show (hbox);
 
     /* setup load feedback */
@@ -329,14 +312,11 @@ build_tab_label (PeonyNotebook *nb, PeonyWindowSlot *slot)
 #else
     gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
 #endif
-#if GTK_CHECK_VERSION (3, 0, 0)
     gtk_widget_set_margin_start (label, 0);
     gtk_widget_set_margin_end (label, 0);
     gtk_widget_set_margin_top (label, 0);
     gtk_widget_set_margin_bottom (label, 0);
-#else
-    gtk_misc_set_padding (GTK_MISC (label), 0, 0);
-#endif
+
     gtk_box_pack_start (GTK_BOX (hbox), label, TRUE, TRUE, 0);
     gtk_widget_show (label);
 
@@ -345,7 +325,7 @@ build_tab_label (PeonyNotebook *nb, PeonyWindowSlot *slot)
     gtk_button_set_relief (GTK_BUTTON (close_button),
                            GTK_RELIEF_NONE);
     /* don't allow focus on the close button */
-#if GTK_CHECK_VERSION(3,20,0)
+#if GTK_CHECK_VERSION (3, 20, 0)
     gtk_widget_set_focus_on_click (close_button, FALSE);
 #else
     gtk_button_set_focus_on_click (GTK_BUTTON (close_button), FALSE);

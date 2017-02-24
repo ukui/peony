@@ -39,21 +39,13 @@ typedef struct _PeonyMimeApplicationChooserDetails PeonyMimeApplicationChooserDe
 
 struct _PeonyMimeApplicationChooser
 {
-#if GTK_CHECK_VERSION (3, 0, 0)
     GtkBox parent;
-#else
-    GtkVBox parent;
-#endif
     PeonyMimeApplicationChooserDetails *details;
 };
 
 struct _PeonyMimeApplicationChooserClass
 {
-#if GTK_CHECK_VERSION (3, 0, 0)
     GtkBoxClass parent_class;
-#else
-    GtkVBoxClass parent_class;
-#endif
 };
 
 GType      peony_mime_application_chooser_get_type (void);

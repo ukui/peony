@@ -74,12 +74,7 @@ enum
 static void  peony_history_sidebar_iface_init        (PeonySidebarIface         *iface);
 static void  sidebar_provider_iface_init                (PeonySidebarProviderIface *iface);
 static GType peony_history_sidebar_provider_get_type (void);
-#if GTK_CHECK_VERSION (3, 0, 0)
 static void  peony_history_sidebar_style_updated	        (GtkWidget *widget);
-#else
-static void  peony_history_sidebar_style_set	        (GtkWidget *widget,
-        GtkStyle  *previous_style);
-#endif
 
 G_DEFINE_TYPE_WITH_CODE (PeonyHistorySidebar, peony_history_sidebar, GTK_TYPE_SCROLLED_WINDOW,
                          G_IMPLEMENT_INTERFACE (PEONY_TYPE_SIDEBAR,
@@ -325,11 +320,7 @@ peony_history_sidebar_class_init (PeonyHistorySidebarClass *class)
 {
     G_OBJECT_CLASS (class)->finalize = peony_history_sidebar_finalize;
 
-#if GTK_CHECK_VERSION (3, 0, 0)
     GTK_WIDGET_CLASS (class)->style_updated = peony_history_sidebar_style_updated;
-#else
-    GTK_WIDGET_CLASS (class)->style_set = peony_history_sidebar_style_set;
-#endif
 }
 
 static const char *
@@ -382,12 +373,7 @@ peony_history_sidebar_set_parent_window (PeonyHistorySidebar *sidebar,
 }
 
 static void
-#if GTK_CHECK_VERSION (3, 0, 0)
 peony_history_sidebar_style_updated (GtkWidget *widget)
-#else
-peony_history_sidebar_style_set (GtkWidget *widget,
-                                GtkStyle  *previous_style)
-#endif
 {
     PeonyHistorySidebar *sidebar;
 

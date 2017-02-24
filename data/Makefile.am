@@ -34,6 +34,7 @@ peonydata_DATA = \
 	peony-extras.placeholder  \
 	peony-suggested.placeholder \
 	peony.css \
+    peony-desktop.css \
 	$(NULL)
 
 # app data file

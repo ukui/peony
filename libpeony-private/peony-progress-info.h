@@ -50,7 +50,9 @@ GType peony_progress_info_get_type (void) G_GNUC_CONST;
    All methods are threadsafe.
  */
 
-PeonyProgressInfo *peony_progress_info_new (void);
+PeonyProgressInfo *peony_progress_info_new (gboolean should_start, gboolean can_pause);
+void peony_progress_info_get_ready (PeonyProgressInfo *info);
+void peony_progress_info_disable_pause (PeonyProgressInfo *info);
 
 GList *       peony_get_all_progress_info (void);
 
@@ -79,7 +81,6 @@ void          peony_progress_info_set_progress    (PeonyProgressInfo *info,
         double                current,
         double                total);
 void          peony_progress_info_pulse_progress  (PeonyProgressInfo *info);
-
 
 
 #endif /* PEONY_PROGRESS_INFO_H */

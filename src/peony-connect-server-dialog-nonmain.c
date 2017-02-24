@@ -83,7 +83,6 @@ peony_connect_server_dialog_display_location_async (PeonyConnectServerDialog *se
 
     if (g_settings_get_boolean (peony_preferences, PEONY_PREFERENCES_ALWAYS_USE_BROWSER)) {
         window = peony_application_create_navigation_window (application,
-        						    NULL,
         						    gtk_widget_get_screen (widget));
     } else {
     	window = peony_application_get_spatial_window (application,

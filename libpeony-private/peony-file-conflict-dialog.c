@@ -70,11 +70,6 @@ G_DEFINE_TYPE (PeonyFileConflictDialog,
 	(G_TYPE_INSTANCE_GET_PRIVATE ((object), PEONY_TYPE_FILE_CONFLICT_DIALOG, \
 				      PeonyFileConflictDialogDetails))
 
-#if GTK_CHECK_VERSION (3, 0, 0)
-#define gtk_hbox_new(X,Y) gtk_box_new(GTK_ORIENTATION_HORIZONTAL,Y)
-#define gtk_vbox_new(X,Y) gtk_box_new(GTK_ORIENTATION_VERTICAL,Y)
-#endif
-
 static void
 file_icons_changed (PeonyFile *file,
                     PeonyFileConflictDialog *fcd)
@@ -115,11 +110,7 @@ file_list_ready_cb (GList *files,
     GdkPixbuf *pixbuf;
     GtkWidget *label;
     GString *str;
-#if GTK_CHECK_VERSION(3,0,0)
     PangoAttrList *attr_list;
-#else
-    PangoFontDescription *desc;
-#endif
 
     details = fcd->details;
 
@@ -220,7 +211,6 @@ file_list_ready_cb (GList *files,
     label = gtk_label_new (primary_text);
     gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
     gtk_label_set_line_wrap_mode (GTK_LABEL (label), PANGO_WRAP_WORD_CHAR);
-#if GTK_CHECK_VERSION (3, 0, 0)
 #if GTK_CHECK_VERSION (3, 16, 0)
     gtk_label_set_xalign (GTK_LABEL (label), 0.0);
 #else
@@ -238,30 +228,9 @@ file_list_ready_cb (GList *files,
                   NULL);
 
     pango_attr_list_unref (attr_list);
-#else
-    gtk_widget_set_size_request (label, 350, -1);
-    gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
-    gtk_box_pack_start (GTK_BOX (details->titles_vbox),
-                        label, FALSE, FALSE, 0);
-
-    gtk_widget_modify_font (label, NULL);
-
-    desc = pango_font_description_new ();
-    pango_font_description_set_weight (desc, PANGO_WEIGHT_BOLD);
-    pango_font_description_set_size (desc,
-                                     pango_font_description_get_size (gtk_widget_get_style (label)->font_desc) * PANGO_SCALE_LARGE);
-    gtk_widget_modify_font (label, desc);
-    pango_font_description_free (desc);
-    gtk_widget_show (label);
-#endif
-
     label = gtk_label_new (secondary_text);
     gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
-#if GTK_CHECK_VERSION (3, 0, 0)
     gtk_label_set_max_width_chars (GTK_LABEL (label), 60);
-#else
-    gtk_widget_set_size_request (label, 350, -1);
-#endif
 #if GTK_CHECK_VERSION (3, 16, 0)
     gtk_label_set_xalign (GTK_LABEL (label), 0.0);
 #else
@@ -306,8 +275,14 @@ file_list_ready_cb (GList *files,
     }
 
     str = g_string_new (NULL);
-    g_string_append_printf (str, "<b>%s</b>\n", _("Original file"));
-    g_string_append_printf (str, "%s %s\n", _("Size:"), size);
+    if (dest_is_dir) {
+        g_string_append_printf (str, "<b>%s</b>\n", _("Original folder"));
+        g_string_append_printf (str, "%s %s\n", _("Items:"), size);
+    }
+    else {
+        g_string_append_printf (str, "<b>%s</b>\n", _("Original file"));
+        g_string_append_printf (str, "%s %s\n", _("Size:"), size);
+    }
 
     if (should_show_type)
     {
@@ -339,8 +314,14 @@ file_list_ready_cb (GList *files,
         type = peony_file_get_string_attribute (src, "type");
     }
 
-    g_string_append_printf (str, "<b>%s</b>\n", _("Replace with"));
-    g_string_append_printf (str, "%s %s\n", _("Size:"), size);
+    if (source_is_dir) {
+        g_string_append_printf (str, "<b>%s</b>\n", dest_is_dir ? _("Merge with") : _("Replace with"));
+        g_string_append_printf (str, "%s %s\n", _("Items:"), size);
+    }
+    else {
+        g_string_append_printf (str, "<b>%s</b>\n", _("Replace with"));
+        g_string_append_printf (str, "%s %s\n", _("Size:"), size);
+    }
 
     if (should_show_type)
     {
@@ -584,20 +565,19 @@ diff_button_clicked_cb (GtkButton *w,
 static void
 peony_file_conflict_dialog_init (PeonyFileConflictDialog *fcd)
 {
-#if GTK_CHECK_VERSION (3, 0, 0)
     GtkWidget *hbox, *vbox, *vbox2;
-#else
-    GtkWidget *hbox, *vbox, *vbox2, *alignment;
-#endif
     GtkWidget *widget, *dialog_area;
     PeonyFileConflictDialogDetails *details;
     GtkDialog *dialog;
+    gboolean source_is_dir;
 
     details = fcd->details = PEONY_FILE_CONFLICT_DIALOG_GET_PRIVATE (fcd);
     dialog = GTK_DIALOG (fcd);
 
+    source_is_dir = peony_file_is_directory (details->source);
+
     /* Setup the main hbox */
-    hbox = gtk_hbox_new (FALSE, 12);
+    hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 12);
     dialog_area = gtk_dialog_get_content_area (dialog);
     gtk_box_pack_start (GTK_BOX (dialog_area), hbox, FALSE, FALSE, 0);
     gtk_container_set_border_width (GTK_CONTAINER (hbox), 6);
@@ -606,42 +586,30 @@ peony_file_conflict_dialog_init (PeonyFileConflictDialog *fcd)
     widget = gtk_image_new_from_icon_name ("dialog-warning",
                                        GTK_ICON_SIZE_DIALOG);
     gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
-#if GTK_CHECK_VERSION (3, 0, 0)
     gtk_widget_set_halign (widget, GTK_ALIGN_CENTER);
     gtk_widget_set_valign (widget, GTK_ALIGN_START);
-#else
-    gtk_misc_set_alignment (GTK_MISC (widget), 0.5, 0.0);
-#endif
 
     /* Setup the vbox containing the dialog body */
-    vbox = gtk_vbox_new (FALSE, 12);
+    vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 12);
     gtk_box_pack_start (GTK_BOX (hbox), vbox, FALSE, FALSE, 0);
 
     /* Setup the vbox for the dialog labels */
-    widget = gtk_vbox_new (FALSE, 12);
+    widget = gtk_box_new (GTK_ORIENTATION_VERTICAL, 12);
     gtk_box_pack_start (GTK_BOX (vbox), widget, FALSE, FALSE, 0);
     details->titles_vbox = widget;
 
     /* Setup the hboxes to pack file infos into */
-#if GTK_CHECK_VERSION (3, 0, 0)
-    vbox2 = gtk_vbox_new (FALSE, 12);
+    vbox2 = gtk_box_new (GTK_ORIENTATION_VERTICAL, 12);
     gtk_widget_set_halign (vbox2, GTK_ALIGN_START);
     gtk_widget_set_valign (vbox2, GTK_ALIGN_START);
     gtk_widget_set_margin_start (vbox2, 12);
     gtk_box_pack_start (GTK_BOX (vbox), vbox2, FALSE, FALSE, 0);
-#else
-    alignment = gtk_alignment_new (0.0, 0.0, 0.0, 0.0);
-    g_object_set (alignment, "left-padding", 12, NULL);
-    vbox2 = gtk_vbox_new (FALSE, 12);
-    gtk_container_add (GTK_CONTAINER (alignment), vbox2);
-    gtk_box_pack_start (GTK_BOX (vbox), alignment, FALSE, FALSE, 0);
-#endif
 
-    hbox = gtk_hbox_new (FALSE, 12);
+    hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 12);
     gtk_box_pack_start (GTK_BOX (vbox2), hbox, FALSE, FALSE, 0);
     details->first_hbox = hbox;
 
-    hbox = gtk_hbox_new (FALSE, 12);
+    hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 12);
     gtk_box_pack_start (GTK_BOX (vbox2), hbox, FALSE, FALSE, 0);
     details->second_hbox = hbox;
 
@@ -651,7 +619,7 @@ peony_file_conflict_dialog_init (PeonyFileConflictDialog *fcd)
     g_signal_connect (details->expander, "activate",
                       G_CALLBACK (expander_activated_cb), dialog);
 
-    hbox = gtk_hbox_new (FALSE, 6);
+    hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
     gtk_container_add (GTK_CONTAINER (details->expander), hbox);
 
     widget = gtk_entry_new ();
@@ -668,11 +636,7 @@ peony_file_conflict_dialog_init (PeonyFileConflictDialog *fcd)
     g_signal_connect (widget, "clicked",
                       G_CALLBACK (reset_button_clicked_cb), dialog);
 
-#if GTK_CHECK_VERSION (3, 0, 0)
     gtk_widget_show_all (vbox2);
-#else
-    gtk_widget_show_all (alignment);
-#endif
 
     /* Setup the diff button for text files */
     details->diff_button = gtk_button_new_with_label (_("Differences..."));
@@ -685,7 +649,8 @@ peony_file_conflict_dialog_init (PeonyFileConflictDialog *fcd)
     gtk_widget_hide (details->diff_button);
 
     /* Setup the checkbox to apply the action to all files */
-    widget = gtk_check_button_new_with_mnemonic (_("Apply this action to all files"));
+    widget = gtk_check_button_new_with_mnemonic (_("Apply this action to all files and folders"));
+
     gtk_box_pack_start (GTK_BOX (vbox),
                         widget, FALSE, FALSE, 0);
     details->checkbox = widget;
@@ -780,10 +745,26 @@ peony_file_conflict_dialog_new (GtkWindow *parent,
                                GFile *dest_dir)
 {
     GtkWidget *dialog;
+    PeonyFile *src, *dest;
+    gboolean source_is_dir, dest_is_dir;
 
-    dialog = GTK_WIDGET (g_object_new (PEONY_TYPE_FILE_CONFLICT_DIALOG,
-                                       "title", _("File conflict"),
-                                       NULL));
+    src = peony_file_get (source);
+    dest = peony_file_get (destination);
+
+    source_is_dir = peony_file_is_directory (src);
+    dest_is_dir = peony_file_is_directory (dest);
+
+    if (source_is_dir) {
+        dialog = GTK_WIDGET (g_object_new (PEONY_TYPE_FILE_CONFLICT_DIALOG,
+                                           "title", dest_is_dir ? _("Merge Folder") : _("File and Folder conflict"),
+                                           NULL));
+    }
+    else {
+        dialog = GTK_WIDGET (g_object_new (PEONY_TYPE_FILE_CONFLICT_DIALOG,
+                                           "title", dest_is_dir ? _("File and Folder conflict") : _("File conflict"),
+                                           NULL));
+    }
+
     set_source_and_destination (dialog,
                                 source,
                                 destination,

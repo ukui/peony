@@ -28,7 +28,7 @@
 const int peony_default_file_icon_width = 48;
 const int peony_default_file_icon_height = 48;
 const unsigned char peony_default_file_icon[] =
-    /* This is from text-x-preview.svg in the ukui-ukui icon theme */
+    /* This is from text-x-preview.svg in the ukui icon theme */
     "\377\377\377\0\377\377\377\0\377\377\377\0\377\377\377\0\377\377\377"
     "\0\377\377\377\0\377\377\377\0\377\377\377\0\377\377\377\0\377\377\377"
     "\0\377\377\377\0\377\377\377\0\377\377\377\0\377\377\377\0\377\377\377"

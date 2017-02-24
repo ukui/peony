@@ -44,22 +44,14 @@ typedef struct _PeonyColumnChooserDetails PeonyColumnChooserDetails;
 
 typedef struct
 {
-#if GTK_CHECK_VERSION (3, 0, 0)
     GtkBox parent;
-#else
-    GtkHBox parent;
-#endif
 
     PeonyColumnChooserDetails *details;
 } PeonyColumnChooser;
 
 typedef struct
 {
-#if GTK_CHECK_VERSION (3, 0, 0)
     GtkBoxClass parent_slot;
-#else
-    GtkHBoxClass parent_slot;
-#endif
 
     void (*changed) (PeonyColumnChooser *chooser);
     void (*use_default) (PeonyColumnChooser *chooser);

@@ -1,8 +1,8 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 
 /* eel-ukui-extensions.c - implementation of new functions that operate on
-                            ukui-ukui classes. Perhaps some of these should be
-  			    rolled into ukui-ukui someday.
+                            ukui classes. Perhaps some of these should be
+  			    rolled into ukui someday.
 
    Copyright (C) 1999, 2000, 2001 Eazel, Inc.
 
@@ -105,7 +105,7 @@ get_terminal_command_prefix (gboolean for_command)
     guint i;
     static const char *const commands[][3] =
     {
-        { "gnome-terminal", "-x",                                      "" },
+        { "ukui-terminal", "-x",                                      "" },
         { "dtterm",         "-e",                                      "-ls" },
         { "nxterm",         "-e",                                      "-ls" },
         { "color-xterm",    "-e",                                      "-ls" },

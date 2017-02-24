@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Copyright 2014 MATE team <mate-dev@ml.mate-desktop.org> 
-Copyright 2016 UKUI team <ukui@kylinos.cn> 
--->
+<!-- Copyright 2014 UKUI team <ukui-dev@ml.ukui-desktop.org> -->
 <component type="desktop">
  <id>peony.desktop</id>
  <metadata_license>CC0-1.0</metadata_license>
@@ -37,7 +35,7 @@ Copyright 2016 UKUI team <ukui@kylinos.cn>
    </image>
   </screenshot>
  </screenshots>
- <url type="homepage">http://www.ukui.org</url>
- <updatecontact>ukui@kylinos.cn</updatecontact>
+ <url type="homepage">http://www.ukui-desktop.org</url>
+ <updatecontact>ukui-dev@ml.ukui-desktop.org</updatecontact>
  <project_group>UKUI</project_group>
 </component>

@@ -27,14 +27,9 @@
 #include <eel/eel-debug.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-glib-extensions.h>
-#if GTK_CHECK_VERSION(3,0,0)
 #include <eel/eel-graphic-effects.h>
-#endif
 #include <eel/eel-string.h>
 #include <eel/eel-stock-dialogs.h>
-#if !GTK_CHECK_VERSION(3,0,0)
-#include <eel/eel-gdk-pixbuf-extensions.h>
-#endif
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
@@ -53,11 +48,11 @@
 #include <libpeony-private/peony-window-info.h>
 #include <libpeony-private/peony-window-slot-info.h>
 #include <gio/gio.h>
+#include <libnotify/notify.h>
 
 #include "peony-bookmark-list.h"
 #include "peony-places-sidebar.h"
 #include "peony-window.h"
-
 #define EJECT_BUTTON_XPAD 6
 #define ICON_CELL_XPAD 6
 
@@ -156,6 +151,8 @@ typedef enum {
     SECTION_DEVICES,
     SECTION_BOOKMARKS,
     SECTION_NETWORK,
+    SECTION_PERSONAL,
+    SECTION_FAVORITE,
 } SectionType;
 
 static void  peony_places_sidebar_iface_init        (PeonySidebarIface         *iface);
@@ -166,12 +163,8 @@ static void  open_selected_bookmark                    (PeonyPlacesSidebar      
         GtkTreePath                  *path,
         PeonyWindowOpenFlags flags);
 
-#if GTK_CHECK_VERSION (3, 0, 0)
 static void  peony_places_sidebar_style_updated         (GtkWidget                    *widget);
-#else
-static void  peony_places_sidebar_style_set             (GtkWidget                    *widget,
-        GtkStyle                     *previous_style);
-#endif
+
 static gboolean eject_or_unmount_bookmark              (PeonyPlacesSidebar *sidebar,
         GtkTreePath *path);
 static gboolean eject_or_unmount_selection             (PeonyPlacesSidebar *sidebar);
@@ -254,11 +247,7 @@ get_eject_icon (gboolean highlighted)
 
     if (highlighted) {
         GdkPixbuf *high;
-#if GTK_CHECK_VERSION(3,0,0)
         high = eel_create_spotlight_pixbuf (eject);
-#else
-        high = eel_gdk_pixbuf_render (eject, 1, 255, 255, 0, 0);
-#endif
         g_object_unref (eject);
         eject = high;
     }
@@ -322,7 +311,7 @@ check_heading_for_section (PeonyPlacesSidebar *sidebar,
     case SECTION_DEVICES:
         if (!sidebar->devices_header_added) {
             add_heading (sidebar, SECTION_DEVICES,
-                     _("Devices"));
+                     _("Computer"));
             sidebar->devices_header_added = TRUE;
         }
 
@@ -501,12 +490,54 @@ update_places (PeonyPlacesSidebar *sidebar)
 
     volume_monitor = sidebar->volume_monitor;
 
-    /* COMPUTER */
-    last_iter = add_heading (sidebar, SECTION_COMPUTER,
-                             _("Computer"));
+    /*new layout*/
+    last_iter = add_heading(sidebar,SECTION_FAVORITE,_("Favorite"));
 
-    /* add built in bookmarks */
     desktop_path = peony_get_desktop_directory ();
+
+    /* desktop */
+    mount_uri = g_filename_to_uri (desktop_path, NULL, NULL);
+    icon = g_themed_icon_new (PEONY_ICON_DESKTOP);
+    last_iter = add_place (sidebar, PLACES_BUILT_IN,
+                           SECTION_FAVORITE,
+                           _("Desktop"), icon,
+                           mount_uri, NULL, NULL, NULL, 0,
+                           _("Open the contents of your desktop in a folder"));
+    g_object_unref (icon);
+    compare_for_selection (sidebar,
+                           location, mount_uri, last_uri,
+                           &last_iter, &select_path);
+    g_free (mount_uri);
+    g_free (desktop_path);
+
+    /*trash:*/
+    mount_uri = "trash:///"; /* No need to strdup */
+    icon = peony_trash_monitor_get_icon ();
+    last_iter = add_place (sidebar, PLACES_BUILT_IN,
+                           SECTION_FAVORITE,
+                           _("Trash"), icon, mount_uri,
+                           NULL, NULL, NULL, 0,
+                           _("Open the trash"));
+    compare_for_selection (sidebar,
+                           location, mount_uri, last_uri,
+                           &last_iter, &select_path);
+    g_object_unref (icon);
+
+    /*recent:*/
+    mount_uri = "recent:///";/*No need to strdup*/
+    icon = g_themed_icon_new_with_default_fallbacks("folder-recent");
+    last_iter = add_place (sidebar,PLACES_BUILT_IN,
+                           SECTION_FAVORITE,
+                           _("Recent"),icon,mount_uri,
+                           NULL,NULL,NULL,0,
+                           _("Open the recent"));
+    compare_for_selection (sidebar,
+                           location, mount_uri, last_uri,
+                           &last_iter, &select_path);
+    g_object_unref (icon);
+
+    /*pesonal*/
+    last_iter = add_heading(sidebar,SECTION_PERSONAL,_("Personal"));
 
     /* home folder */
     if (strcmp (g_get_home_dir(), desktop_path) != 0) {
@@ -516,7 +547,7 @@ update_places (PeonyPlacesSidebar *sidebar)
         display_name = g_filename_display_basename (g_get_home_dir ());
         icon = g_themed_icon_new (PEONY_ICON_HOME);
         last_iter = add_place (sidebar, PLACES_BUILT_IN,
-                               SECTION_COMPUTER,
+                               SECTION_PERSONAL,
                                display_name, icon,
                                mount_uri, NULL, NULL, NULL, 0,
                                _("Open your personal folder"));
@@ -528,35 +559,6 @@ update_places (PeonyPlacesSidebar *sidebar)
         g_free (mount_uri);
     }
 
-    /* desktop */
-    mount_uri = g_filename_to_uri (desktop_path, NULL, NULL);
-    icon = g_themed_icon_new (PEONY_ICON_DESKTOP);
-    last_iter = add_place (sidebar, PLACES_BUILT_IN,
-                           SECTION_COMPUTER,
-                           _("Desktop"), icon,
-                           mount_uri, NULL, NULL, NULL, 0,
-                           _("Open the contents of your desktop in a folder"));
-    g_object_unref (icon);
-    compare_for_selection (sidebar,
-                           location, mount_uri, last_uri,
-                           &last_iter, &select_path);
-    g_free (mount_uri);
-    g_free (desktop_path);
-
-    /* file system root */
-    mount_uri = "file:///"; /* No need to strdup */
-    icon = g_themed_icon_new (PEONY_ICON_FILESYSTEM);
-    last_iter = add_place (sidebar, PLACES_BUILT_IN,
-                           SECTION_COMPUTER,
-                           _("File System"), icon,
-                           mount_uri, NULL, NULL, NULL, 0,
-                           _("Open the contents of the File System"));
-    g_object_unref (icon);
-    compare_for_selection (sidebar,
-                           location, mount_uri, last_uri,
-                           &last_iter, &select_path);
-
-    
     /* XDG directories */
     xdg_dirs = NULL;
     for (index = 0; index < G_USER_N_DIRECTORIES; index++) {
@@ -586,7 +588,7 @@ update_places (PeonyPlacesSidebar *sidebar)
         tooltip = g_file_get_parse_name (root);
 
         last_iter = add_place (sidebar, PLACES_BUILT_IN,
-                               SECTION_COMPUTER,
+                               SECTION_PERSONAL,
                                name, icon, mount_uri,
                                NULL, NULL, NULL, 0,
                                tooltip);
@@ -603,17 +605,21 @@ update_places (PeonyPlacesSidebar *sidebar)
     }
     g_list_free (xdg_dirs);
 
-    mount_uri = "trash:///"; /* No need to strdup */
-    icon = peony_trash_monitor_get_icon ();
+    /*Computer*/
+    last_iter = add_heading(sidebar,SECTION_COMPUTER,_("Computer"));
+
+    /* file system root */
+    mount_uri = "file:///"; /* No need to strdup */
+    icon = g_themed_icon_new (PEONY_ICON_FILESYSTEM);
     last_iter = add_place (sidebar, PLACES_BUILT_IN,
                            SECTION_COMPUTER,
-                           _("Trash"), icon, mount_uri,
-                           NULL, NULL, NULL, 0,
-                           _("Open the trash"));
+                           _("File System"), icon,
+                           mount_uri, NULL, NULL, NULL, 0,
+                           _("Open the contents of the File System"));
+    g_object_unref (icon);
     compare_for_selection (sidebar,
                            location, mount_uri, last_uri,
                            &last_iter, &select_path);
-    g_object_unref (icon);
 
     /* first go through all connected drives */
     drives = g_volume_monitor_get_connected_drives (volume_monitor);
@@ -639,7 +645,7 @@ update_places (PeonyPlacesSidebar *sidebar)
                     tooltip = g_file_get_parse_name (root);
 
                     last_iter = add_place (sidebar, PLACES_MOUNTED_VOLUME,
-                                           SECTION_DEVICES,
+                                           SECTION_COMPUTER,
                                            name, icon, mount_uri,
                                            drive, volume, mount, 0, tooltip);
                     compare_for_selection (sidebar,
@@ -667,7 +673,7 @@ update_places (PeonyPlacesSidebar *sidebar)
                     tooltip = g_strdup_printf (_("Mount and open %s"), name);
 
                     last_iter = add_place (sidebar, PLACES_MOUNTED_VOLUME,
-                                           SECTION_DEVICES,
+                                           SECTION_COMPUTER,
                                            name, icon, NULL,
                                            drive, volume, NULL, 0, tooltip);
                     g_object_unref (icon);
@@ -695,7 +701,7 @@ update_places (PeonyPlacesSidebar *sidebar)
                 tooltip = g_strdup_printf (_("Mount and open %s"), name);
 
                 last_iter = add_place (sidebar, PLACES_BUILT_IN,
-                                       SECTION_DEVICES,
+                                       SECTION_COMPUTER,
                                        name, icon, NULL,
                                        drive, NULL, NULL, 0, tooltip);
                 g_object_unref (icon);
@@ -729,7 +735,7 @@ update_places (PeonyPlacesSidebar *sidebar)
             g_object_unref (root);
             name = g_mount_get_name (mount);
             last_iter = add_place (sidebar, PLACES_MOUNTED_VOLUME,
-                                   SECTION_DEVICES,
+                                   SECTION_COMPUTER,
                                    name, icon, mount_uri,
                                    NULL, volume, mount, 0, tooltip);
             compare_for_selection (sidebar,
@@ -747,7 +753,7 @@ update_places (PeonyPlacesSidebar *sidebar)
             icon = g_volume_get_icon (volume);
             name = g_volume_get_name (volume);
             last_iter = add_place (sidebar, PLACES_MOUNTED_VOLUME,
-                                   SECTION_DEVICES,
+                                   SECTION_COMPUTER,
                                    name, icon, NULL,
                                    NULL, volume, NULL, 0, name);
             g_object_unref (icon);
@@ -802,47 +808,6 @@ update_places (PeonyPlacesSidebar *sidebar)
         g_free (tooltip);
     }
     g_list_free (mounts);
-
-
-    /* add bookmarks */
-    bookmark_count = peony_bookmark_list_length (sidebar->bookmarks);
-
-    for (index = 0; index < bookmark_count; ++index) {
-        bookmark = peony_bookmark_list_item_at (sidebar->bookmarks, index);
-
-        if (peony_bookmark_uri_known_not_to_exist (bookmark)) {
-            continue;
-        }
-
-        root = peony_bookmark_get_location (bookmark);
-        file = peony_file_get (root);
-
-        if (is_built_in_bookmark (file)) {
-            g_object_unref (root);
-            peony_file_unref (file);
-            continue;
-        }
-
-        name = peony_bookmark_get_name (bookmark);
-        icon = peony_bookmark_get_icon (bookmark);
-        mount_uri = peony_bookmark_get_uri (bookmark);
-        tooltip = g_file_get_parse_name (root);
-
-        last_iter = add_place (sidebar, PLACES_BOOKMARK,
-                               SECTION_BOOKMARKS,
-                               name, icon, mount_uri,
-                               NULL, NULL, NULL, index,
-                               tooltip);
-        compare_for_selection (sidebar,
-                               location, mount_uri, last_uri,
-                               &last_iter, &select_path);
-        g_free (name);
-        g_object_unref (root);
-        g_object_unref (icon);
-        g_free (mount_uri);
-        g_free (tooltip);
-    }
-
     /* network */
     last_iter = add_heading (sidebar, SECTION_NETWORK,
                              _("Network"));
@@ -884,7 +849,47 @@ update_places (PeonyPlacesSidebar *sidebar)
     compare_for_selection (sidebar,
                            location, mount_uri, last_uri,
                            &last_iter, &select_path);
-    
+    /*/new layout*/
+
+    /* add bookmarks */
+    bookmark_count = peony_bookmark_list_length (sidebar->bookmarks);
+
+    for (index = 0; index < bookmark_count; ++index) {
+        bookmark = peony_bookmark_list_item_at (sidebar->bookmarks, index);
+
+        if (peony_bookmark_uri_known_not_to_exist (bookmark)) {
+            continue;
+        }
+
+        root = peony_bookmark_get_location (bookmark);
+        file = peony_file_get (root);
+
+        if (is_built_in_bookmark (file)) {
+            g_object_unref (root);
+            peony_file_unref (file);
+            continue;
+        }
+
+        name = peony_bookmark_get_name (bookmark);
+        icon = peony_bookmark_get_icon (bookmark);
+        mount_uri = peony_bookmark_get_uri (bookmark);
+        tooltip = g_file_get_parse_name (root);
+
+        last_iter = add_place (sidebar, PLACES_BOOKMARK,
+                               SECTION_BOOKMARKS,
+                               name, icon, mount_uri,
+                               NULL, NULL, NULL, index,
+                               tooltip);
+        compare_for_selection (sidebar,
+                               location, mount_uri, last_uri,
+                               &last_iter, &select_path);
+        g_free (name);
+        g_object_unref (root);
+        g_object_unref (icon);
+        g_free (mount_uri);
+        g_free (tooltip);
+    }
+
     g_free (location);
 
     if (select_path != NULL) {
@@ -1035,11 +1040,9 @@ over_eject_button (PeonyPlacesSidebar *sidebar,
         eject_button_size = peony_get_icon_size_for_stock_size (GTK_ICON_SIZE_MENU);
 
         if (x - total_width >= 0 &&
-#if GTK_CHECK_VERSION (3, 0, 0)
             /* fix unwanted unmount requests if clicking on the label */
             x >= total_width - eject_button_size &&
             x >= 80 &&
-#endif
             x - total_width <= eject_button_size) {
             return TRUE;
         }
@@ -1895,7 +1898,6 @@ volume_mounted_cb (GVolume *volume,
 
                 cur = PEONY_WINDOW (sidebar->window);
                 new = peony_application_create_navigation_window (cur->application,
-                        NULL,
                         gtk_window_get_screen (GTK_WINDOW (cur)));
                 peony_window_go_to (new, location);
             }
@@ -1978,7 +1980,6 @@ open_selected_bookmark (PeonyPlacesSidebar   *sidebar,
 
             cur = PEONY_WINDOW (sidebar->window);
             new = peony_application_create_navigation_window (cur->application,
-                    NULL,
                     gtk_window_get_screen (GTK_WINDOW (cur)));
             peony_window_go_to (new, location);
         }
@@ -2237,6 +2238,9 @@ drive_eject_cb (GObject *source_object,
         }
         g_error_free (error);
     }
+    else {
+        peony_application_notify_unmount_show ("It is now safe to remove the drive");
+    }
 }
 
 static void
@@ -2266,7 +2270,11 @@ volume_eject_cb (GObject *source_object,
                                    NULL);
             g_free (primary);
         }
-        g_error_free (error);
+        g_error_free (error); 
+    }
+
+    else {
+        peony_application_notify_unmount_show ("It is now safe to remove the drive");
     }
 }
 
@@ -2299,6 +2307,10 @@ mount_eject_cb (GObject *source_object,
         }
         g_error_free (error);
     }
+
+    else {
+        peony_application_notify_unmount_show ("It is now safe to remove the drive");
+    }
 }
 
 static void
@@ -2307,9 +2319,11 @@ do_eject (GMount *mount,
           GDrive *drive,
           PeonyPlacesSidebar *sidebar)
 {
+
     GMountOperation *mount_op;
 
     mount_op = gtk_mount_operation_new (GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (sidebar))));
+
     if (mount != NULL)
     {
         peony_window_info_set_initiated_unmount (sidebar->window, TRUE);
@@ -2328,6 +2342,8 @@ do_eject (GMount *mount,
         g_drive_eject_with_operation (drive, 0, mount_op, NULL, drive_eject_cb,
                                       g_object_ref (sidebar->window));
     }
+
+    peony_application_notify_unmount_show ("writing data to the drive-do not unplug");
     g_object_unref (mount_op);
 }
 
@@ -3393,11 +3409,7 @@ peony_places_sidebar_class_init (PeonyPlacesSidebarClass *class)
 {
     G_OBJECT_CLASS (class)->dispose = peony_places_sidebar_dispose;
 
-#if GTK_CHECK_VERSION (3, 0, 0)
     GTK_WIDGET_CLASS (class)->style_updated = peony_places_sidebar_style_updated;
-#else
-    GTK_WIDGET_CLASS (class)->style_set = peony_places_sidebar_style_set;
-#endif
 }
 
 static const char *
@@ -3485,12 +3497,7 @@ peony_places_sidebar_set_parent_window (PeonyPlacesSidebar *sidebar,
 }
 
 static void
-#if GTK_CHECK_VERSION (3, 0, 0)
 peony_places_sidebar_style_updated (GtkWidget *widget)
-#else
-peony_places_sidebar_style_set (GtkWidget *widget,
-                               GtkStyle  *previous_style)
-#endif
 {
     PeonyPlacesSidebar *sidebar;
 

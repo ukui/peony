@@ -82,9 +82,6 @@ GFile *  peony_path_bar_get_path_for_button (PeonyPathBar *path_bar,
         GtkWidget       *button);
 void     peony_path_bar_clear_buttons (PeonyPathBar *path_bar);
 
-void     peony_path_bar_up              (PeonyPathBar *path_bar);
-void     peony_path_bar_down            (PeonyPathBar *path_bar);
-
 GtkWidget * peony_path_bar_get_button_from_button_list_entry (gpointer entry);
 
 #endif /* PEONY_PATHBAR_H */

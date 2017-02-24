@@ -11,7 +11,6 @@ AM_CPPFLAGS = \
 	$(WARNING_CFLAGS) \
 	$(DISABLE_DEPRECATED_CFLAGS) \
 	-DDATADIR=\""$(datadir)"\" \
-	$(UNIQUE_CFLAGS) \
 	$(NULL)
 
 libpeony_extension_la_LDFLAGS=\
@@ -70,7 +69,7 @@ introspection_files = \
 	$(libpeony_extension_include_HEADERS) \
 	$(libpeony_extension_la_SOURCES)
 Peony-2.0.gir: libpeony-extension.la Makefile
-Peony_2_0_gir_INCLUDES = Gtk-${GTK_API_VERSION} Gio-2.0 GLib-2.0
+Peony_2_0_gir_INCLUDES = Gtk-3.0 Gio-2.0 GLib-2.0
 Peony_2_0_gir_CFLAGS = \
 	-I$(top_srcdir) \
 	-I$(top_builddir) \

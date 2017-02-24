@@ -9,10 +9,6 @@ bin_PROGRAMS = \
 	peony-connect-server \
 	$(NULL)
 
-libexec_PROGRAMS = \
-	peony-convert-metadata \
-	$(NULL)
-
 AM_CPPFLAGS = \
 	-I$(top_srcdir) \
 	-I$(top_srcdir)/cut-n-paste-code \
@@ -23,7 +19,6 @@ AM_CPPFLAGS = \
 	$(EXEMPI_CFLAGS) \
 	-DDATADIR=\""$(datadir)"\" \
 	-DLIBDIR=\""$(libdir)"\" \
-	-DLIBEXECDIR=\""$(libexecdir)"\" \
 	-DPEONY_DATADIR=\""$(datadir)/peony"\" \
 	-DUIDIR=\""$(datadir)/peony/ui"\" \
 	-DPEONY_PIXMAPDIR=\""$(datadir)/pixmaps/peony"\" \
@@ -31,7 +26,6 @@ AM_CPPFLAGS = \
 	-DSYSCONFDIR=\""$(sysconfdir)"\" \
 	-DVERSION="\"$(VERSION)\"" \
 	$(DISABLE_DEPRECATED_CFLAGS) \
-	$(UNIQUE_CFLAGS) \
 	$(NULL)
 
 LDADD = \
@@ -41,6 +35,7 @@ LDADD = \
 	$(EXIF_LIBS) \
 	$(EXEMPI_LIBS) \
 	$(POPT_LIBS) \
+    -lnotify
 	$(NULL)
 
 dbus_freedesktop_built_sources =			\
@@ -70,7 +65,6 @@ BUILT_SOURCES = \
 	peony-src-marshal.h \
 	$(dbus_freedesktop_built_sources) \
 	$(NULL)
-
 peony_SOURCES = \
 	peony-actions.h \
 	peony-application.c \
@@ -105,7 +99,6 @@ peony_SOURCES = \
 	peony-location-entry.c \
 	peony-location-entry.h \
 	peony-main.c \
-	peony-main.h \
 	peony-navigation-action.c \
 	peony-navigation-action.h \
 	peony-navigation-window-menus.c \
@@ -204,9 +197,6 @@ peony_connect_server_SOURCES = \
 	peony-connect-server-operation.h     \
 	$(NULL)
 
-peony_convert_metadata_SOURCES = \
-	peony-convert-metadata.c \
-	$(NULL)
 
 TESTS=check-peony
 

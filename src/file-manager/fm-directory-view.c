@@ -61,7 +61,7 @@
 #include <libpeony-private/peony-desktop-directory.h>
 #include <libpeony-private/peony-extensions.h>
 #include <libpeony-private/peony-search-directory.h>
-#if !GTK_CHECK_VERSION(3, 21, 0)
+#if !GTK_CHECK_VERSION (3, 22, 0)
 #include <libpeony-private/peony-directory-background.h>
 #endif
 #include <libpeony-private/peony-directory.h>
@@ -128,10 +128,6 @@
 
 #define MAX_MENU_LEVELS 5
 #define TEMPLATE_LIMIT 30
-
-#if GTK_CHECK_VERSION (3, 0, 0)
-#define gtk_hbox_new(X,Y) gtk_box_new(GTK_ORIENTATION_HORIZONTAL,Y)
-#endif
 
 enum {
 	ADD_FILE,
@@ -423,7 +419,7 @@ EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, can_zoom_in)
 EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, can_zoom_out)
 EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, clear)
 EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, file_changed)
-#if !GTK_CHECK_VERSION(3, 21, 0)
+#if !GTK_CHECK_VERSION (3, 22, 0)
 EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, get_background_widget)
 #endif
 EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, get_selection)
@@ -1197,11 +1193,7 @@ select_pattern (FMDirectoryView *view)
 	GtkWidget *dialog;
 	GtkWidget *label;
 	GtkWidget *example;
-#if GTK_CHECK_VERSION (3, 0, 0)
 	GtkWidget *grid;
-#else
-	GtkWidget *table;
-#endif
 	GtkWidget *entry;
 	char *example_pattern;
 
@@ -1222,27 +1214,19 @@ select_pattern (FMDirectoryView *view)
 
 	label = gtk_label_new_with_mnemonic (_("_Pattern:"));
 
-#if GTK_CHECK_VERSION (3, 0, 0)
 	gtk_widget_set_halign (label, GTK_ALIGN_START);
 
 	example = gtk_label_new (NULL);
 	gtk_widget_set_halign (example, GTK_ALIGN_START);
-#else
-	example = gtk_label_new (NULL);
-#endif
 	example_pattern = g_strdup_printf ("<b>%s</b><i>%s</i>",
 					   _("Examples: "),
 					   "*.png, file\?\?.txt, pict*.\?\?\?");
 	gtk_label_set_markup (GTK_LABEL (example), example_pattern);
 	g_free (example_pattern);
-#if GTK_CHECK_VERSION (3, 0, 0)
 	gtk_widget_set_halign (example, GTK_ALIGN_START);
-#else
-	gtk_misc_set_alignment (GTK_MISC (example), 0.0, 0.5);
-#endif
+
 	entry = gtk_entry_new ();
 	gtk_entry_set_activates_default (GTK_ENTRY (entry), TRUE);
-#if GTK_CHECK_VERSION (3, 0, 0)
 	gtk_widget_set_hexpand (entry, TRUE);
 
 	grid = gtk_grid_new ();
@@ -1262,31 +1246,7 @@ select_pattern (FMDirectoryView *view)
 	gtk_label_set_mnemonic_widget (GTK_LABEL (label), entry);
 	gtk_widget_show_all (grid);
 	gtk_container_add (GTK_CONTAINER (gtk_dialog_get_content_area (GTK_DIALOG (dialog))), grid);
-#else
-	table = gtk_table_new (2, 2, FALSE);
 
-	gtk_table_attach (GTK_TABLE (table), label,
-			  0, 1,
-			  0, 1,
-			  GTK_FILL, GTK_FILL,
-			  5, 5);
-
-	gtk_table_attach (GTK_TABLE (table), entry,
-			  1, 2,
-			  0, 1,
-			  GTK_EXPAND | GTK_FILL, GTK_FILL,
-			  5, 5);
-
-	gtk_table_attach (GTK_TABLE (table), example,
-			  1, 2,
-			  1, 2,
-			  GTK_FILL, GTK_FILL,
-			  5, 0);
-
-	gtk_label_set_mnemonic_widget (GTK_LABEL (label), entry);
-	gtk_widget_show_all (table);
-	gtk_container_add (GTK_CONTAINER (gtk_dialog_get_content_area (GTK_DIALOG (dialog))), table);
-#endif
 	g_object_set_data (G_OBJECT (dialog), "entry", entry);
 	g_signal_connect (dialog, "response",
 			  G_CALLBACK (pattern_select_response_cb),
@@ -1363,11 +1323,8 @@ action_save_search_as_callback (GtkAction *action,
 {
 	FMDirectoryView	*directory_view;
 	PeonySearchDirectory *search;
-#if GTK_CHECK_VERSION (3, 0, 0)
 	GtkWidget *dialog, *grid, *label, *entry, *chooser, *save_button;
-#else
-	GtkWidget *dialog, *table, *label, *entry, *chooser, *save_button;
-#endif
+
 	const char *entry_text;
 	char *filename, *filename_utf8, *dirname, *path, *uri;
 	GFile *location;
@@ -1391,7 +1348,6 @@ action_save_search_as_callback (GtkAction *action,
 		gtk_box_set_spacing (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (dialog))), 2);
 		gtk_window_set_resizable (GTK_WINDOW (dialog), FALSE);
 
-#if GTK_CHECK_VERSION (3, 0, 0)
 		grid = gtk_grid_new ();
 		g_object_set (grid,
 			      "orientation", GTK_ORIENTATION_VERTICAL,
@@ -1401,14 +1357,6 @@ action_save_search_as_callback (GtkAction *action,
 			      NULL);
 		gtk_box_pack_start (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (dialog))), grid, TRUE, TRUE, 0);
 		gtk_widget_show (grid);
-#else
-		table = gtk_table_new (2, 2, FALSE);
-		gtk_container_set_border_width (GTK_CONTAINER (table), 5);
-		gtk_table_set_row_spacings (GTK_TABLE (table), 6);
-		gtk_table_set_col_spacings (GTK_TABLE (table), 12);
-		gtk_box_pack_start (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (dialog))), table, TRUE, TRUE, 0);
-		gtk_widget_show (table);
-#endif
 
 		label = gtk_label_new_with_mnemonic (_("Search _name:"));
 #if GTK_CHECK_VERSION (3, 16, 0)
@@ -1416,20 +1364,12 @@ action_save_search_as_callback (GtkAction *action,
 #else
 		gtk_misc_set_alignment (GTK_MISC(label), 0.0, 0.5);
 #endif
-#if GTK_CHECK_VERSION (3, 0, 0)
 		gtk_container_add (GTK_CONTAINER (grid), label);
-#else
-		gtk_table_attach (GTK_TABLE (table), label, 0, 1, 0, 1, GTK_FILL, 0, 0, 0);
-#endif
 		gtk_widget_show (label);
 		entry = gtk_entry_new ();
-#if GTK_CHECK_VERSION (3, 0, 0)
 		gtk_widget_set_hexpand (entry, TRUE);
 		gtk_grid_attach_next_to (GTK_GRID (grid), entry, label,
 					 GTK_POS_RIGHT, 1, 1);
-#else
-		gtk_table_attach (GTK_TABLE (table), entry, 1, 2, 0, 1, GTK_FILL | GTK_EXPAND, 0, 0, 0);
-#endif
 		gtk_entry_set_activates_default (GTK_ENTRY (entry), TRUE);
 		gtk_label_set_mnemonic_widget (GTK_LABEL (label), entry);
 
@@ -1444,22 +1384,14 @@ action_save_search_as_callback (GtkAction *action,
 #else
 		gtk_misc_set_alignment (GTK_MISC(label), 0.0, 0.5);
 #endif
-#if GTK_CHECK_VERSION (3, 0, 0)
 		gtk_container_add (GTK_CONTAINER (grid), label);
-#else
-		gtk_table_attach (GTK_TABLE (table), label, 0, 1, 1, 2, GTK_FILL, 0, 0, 0);
-#endif
 		gtk_widget_show (label);
 
 		chooser = gtk_file_chooser_button_new (_("Select Folder to Save Search In"),
 						      GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER);
-#if GTK_CHECK_VERSION (3, 0, 0)
 		gtk_widget_set_hexpand (chooser, TRUE);
 		gtk_grid_attach_next_to (GTK_GRID (grid), chooser, label,
 					 GTK_POS_RIGHT, 1, 1);
-#else
-		gtk_table_attach (GTK_TABLE (table), chooser, 1, 2, 1, 2, GTK_FILL | GTK_EXPAND, 0, 0, 0);
-#endif
 		gtk_label_set_mnemonic_widget (GTK_LABEL (label), chooser);
 		gtk_widget_show (chooser);
 
@@ -2183,11 +2115,7 @@ real_unmerge_menus (FMDirectoryView *view)
 }
 
 static void
-#if GTK_CHECK_VERSION (3, 0, 0)
 fm_directory_view_destroy (GtkWidget *object)
-#else
-fm_directory_view_destroy (GtkObject *object)
-#endif
 {
 	FMDirectoryView *view;
 	GList *node, *next;
@@ -2248,11 +2176,7 @@ fm_directory_view_destroy (GtkObject *object)
 		view->details->directory_as_file = NULL;
 	}
 
-#if GTK_CHECK_VERSION (3, 0, 0)
 	EEL_CALL_PARENT (GTK_WIDGET_CLASS, destroy, (object));
-#else
-	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
-#endif
 }
 
 static void
@@ -3692,7 +3616,7 @@ fm_directory_view_can_zoom_out (FMDirectoryView *view)
 		 can_zoom_out, (view));
 }
 
-#if !GTK_CHECK_VERSION(3, 21, 0)
+#if !GTK_CHECK_VERSION (3, 22, 0)
 GtkWidget *
 fm_directory_view_get_background_widget (FMDirectoryView *view)
 {
@@ -3719,6 +3643,7 @@ real_set_is_active (FMDirectoryView *view,
 	eel_background_set_active (bg, is_active);
 }
 #endif
+
 static void
 fm_directory_view_set_is_active (FMDirectoryView *view,
 				 gboolean is_active)
@@ -4782,15 +4707,6 @@ reset_open_with_menu (FMDirectoryView *view, GList *selection)
 
 	other_applications_visible = (selection != NULL);
 	filter_default = (selection != NULL);
-
-	for (node = selection; node != NULL; node = node->next) {
-
-		file = PEONY_FILE (node->data);
-
-		other_applications_visible &=
-			(!peony_mime_file_opens_in_view (file) ||
-			 peony_file_is_directory (file));
-	}
 
 	default_app = NULL;
 	if (filter_default) {
@@ -7100,7 +7016,7 @@ action_connect_to_server_link_callback (GtkAction *action,
 		gtk_container_set_border_width (GTK_CONTAINER (dialog), 5);
 		gtk_box_set_spacing (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (dialog))), 2);
 
-		box = gtk_hbox_new (FALSE, 12);
+		box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 12);
 		gtk_widget_show (box);
 		gtk_box_pack_start (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (dialog))),
 				    box, TRUE, TRUE, 0);
@@ -7754,7 +7670,7 @@ real_merge_menus (FMDirectoryView *view)
 
 	ui = peony_ui_string_get ("peony-directory-view-ui.xml");
 	view->details->dir_merge_id = gtk_ui_manager_add_ui_from_string (ui_manager, ui, -1, NULL);
-#if !GTK_CHECK_VERSION(3, 21, 0)
+#if !GTK_CHECK_VERSION (3, 22, 0)
 	g_signal_connect_object (fm_directory_view_get_background (view), "settings_changed",
 				 G_CALLBACK (schedule_update_menus), G_OBJECT (view),
 				 G_CONNECT_SWAPPED);
@@ -10896,10 +10812,8 @@ gboolean
 fm_directory_view_handle_scroll_event (FMDirectoryView *directory_view,
 				       GdkEventScroll *event)
 {
-#if GTK_CHECK_VERSION (3, 0, 0)
 	static gdouble total_delta_y = 0;
 	gdouble delta_x, delta_y;
-#endif
 
 	if (event->state & GDK_CONTROL_MASK) {
 		switch (event->direction) {
@@ -10913,7 +10827,6 @@ fm_directory_view_handle_scroll_event (FMDirectoryView *directory_view,
 			fm_directory_view_bump_zoom_level (directory_view, -1);
 			return TRUE;
 
-#if GTK_CHECK_VERSION (3, 0, 0)
 		case GDK_SCROLL_SMOOTH:
 			gdk_event_get_scroll_deltas ((const GdkEvent *) event,
 			                             &delta_x, &delta_y);
@@ -10935,7 +10848,7 @@ fm_directory_view_handle_scroll_event (FMDirectoryView *directory_view,
 				/* eat event */
 				return TRUE;
 			}
-#endif
+
 		case GDK_SCROLL_LEFT:
 		case GDK_SCROLL_RIGHT:
 			break;
@@ -11008,11 +10921,9 @@ fm_directory_view_class_init (FMDirectoryViewClass *klass)
 
 	G_OBJECT_CLASS (klass)->set_property = fm_directory_view_set_property;
 	G_OBJECT_CLASS (klass)->finalize = fm_directory_view_finalize;
-#if !GTK_CHECK_VERSION (3, 0, 0)
-	GTK_OBJECT_CLASS (klass)->destroy = fm_directory_view_destroy;
-#else
+
 	widget_class->destroy = fm_directory_view_destroy;
-#endif
+
 	widget_class->scroll_event = fm_directory_view_scroll_event;
 	widget_class->parent_set = fm_directory_view_parent_set;
 
@@ -11114,11 +11025,11 @@ fm_directory_view_class_init (FMDirectoryViewClass *klass)
 	klass->supports_properties = real_supports_properties;
 	klass->supports_zooming = real_supports_zooming;
 	klass->using_manual_layout = real_using_manual_layout;
-        klass->merge_menus = real_merge_menus;
-        klass->unmerge_menus = real_unmerge_menus;
-        klass->update_menus = real_update_menus;
-#if !GTK_CHECK_VERSION(3, 21, 0)
-        klass->set_is_active = real_set_is_active;
+	klass->merge_menus = real_merge_menus;
+	klass->unmerge_menus = real_unmerge_menus;
+	klass->update_menus = real_update_menus;
+#if !GTK_CHECK_VERSION (3, 22, 0)
+	klass->set_is_active = real_set_is_active;
 #endif
 	/* Function pointers that subclasses must override */
 	EEL_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, add_file);
@@ -11127,8 +11038,8 @@ fm_directory_view_class_init (FMDirectoryViewClass *klass)
 	EEL_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, can_zoom_out);
 	EEL_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, clear);
 	EEL_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, file_changed);
-#if !GTK_CHECK_VERSION(3, 21, 0)
-       EEL_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, get_background_widget);
+#if !GTK_CHECK_VERSION (3, 22, 0)
+	EEL_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, get_background_widget);
 #endif
 	EEL_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, get_selection);
 	EEL_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, get_selection_for_file_transfer);

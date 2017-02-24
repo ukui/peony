@@ -27,9 +27,11 @@
 #ifndef PEONY_APPLICATION_H
 #define PEONY_APPLICATION_H
 
+#include <config.h>
 #include <gdk/gdk.h>
 #include <gio/gio.h>
-#include <unique/unique.h>
+#include <gtk/gtk.h>
+
 #include <libegg/eggsmclient.h>
 
 #define PEONY_DESKTOP_ICON_VIEW_IID "OAFIID:Peony_File_Manager_Desktop_Icon_View"
@@ -57,12 +59,13 @@ typedef struct PeonyWindow PeonyWindow;
 typedef struct _PeonySpatialWindow PeonySpatialWindow;
 #endif
 
-typedef struct PeonyShell PeonyShell;
+typedef struct _PeonyApplicationPriv PeonyApplicationPriv;
 
 typedef struct
 {
-    GObject parent;
-    UniqueApp* unique_app;
+    GtkApplication parent;
+    PeonyApplicationPriv *priv;
+
     EggSMClient* smclient;
     GVolumeMonitor* volume_monitor;
     unsigned int automount_idle_id;
@@ -74,21 +77,12 @@ typedef struct
 
 typedef struct
 {
-    GObjectClass parent_class;
+	GtkApplicationClass parent_class;
 } PeonyApplicationClass;
 
-GType                peony_application_get_type          (void);
-PeonyApplication *peony_application_new               (void);
-void                 peony_application_startup           (PeonyApplication *application,
-        gboolean             kill_shell,
-        gboolean             no_default_window,
-        gboolean             no_desktop,
-        gboolean             browser_window,
-        const char          *default_geometry,
-        char               **urls);
-GList *              peony_application_get_window_list           (void);
-GList *              peony_application_get_spatial_window_list    (void);
-unsigned int         peony_application_get_n_windows            (void);
+GType peony_application_get_type (void);
+
+PeonyApplication *peony_application_new (void);
 
 PeonyWindow *     peony_application_get_spatial_window     (PeonyApplication *application,
         PeonyWindow      *requesting_window,
@@ -98,15 +92,11 @@ PeonyWindow *     peony_application_get_spatial_window     (PeonyApplication *ap
         gboolean        *existing);
 
 PeonyWindow *     peony_application_create_navigation_window     (PeonyApplication *application,
-        const char          *startup_id,
         GdkScreen           *screen);
-
-void peony_application_close_all_navigation_windows (void);
+void peony_application_close_all_navigation_windows (PeonyApplication *self);
 void peony_application_close_parent_windows     (PeonySpatialWindow *window);
 void peony_application_close_all_spatial_windows  (void);
-void peony_application_open_desktop      (PeonyApplication *application);
-void peony_application_close_desktop     (void);
-gboolean peony_application_save_accel_map    (gpointer data);
+
 void peony_application_open_location (PeonyApplication *application,
         GFile *location,
         GFile *selection,

@@ -50,11 +50,7 @@ enum
     PROP_X_CONTENT_TYPE,
 };
 
-#if GTK_CHECK_VERSION (3, 0, 0)
 G_DEFINE_TYPE (PeonyXContentBar, peony_x_content_bar, GTK_TYPE_BOX)
-#else
-G_DEFINE_TYPE (PeonyXContentBar, peony_x_content_bar, GTK_TYPE_HBOX)
-#endif
 
 void
 peony_x_content_bar_set_x_content_type (PeonyXContentBar *bar, const char *x_content_type)
@@ -308,9 +304,9 @@ peony_x_content_bar_init (PeonyXContentBar *bar)
 
     bar->priv->label = gtk_label_new (NULL);
     gtk_label_set_ellipsize (GTK_LABEL (bar->priv->label), PANGO_ELLIPSIZE_END);
-#if GTK_CHECK_VERSION (3, 0, 0)
+
     gtk_orientable_set_orientation (GTK_ORIENTABLE (bar), GTK_ORIENTATION_HORIZONTAL);
-#endif
+
 #if GTK_CHECK_VERSION (3, 16, 0)
     gtk_label_set_xalign (GTK_LABEL (bar->priv->label), 0.0);
 #else

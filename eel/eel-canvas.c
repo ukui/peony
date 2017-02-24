@@ -24,7 +24,7 @@
   @NOTATION@
  */
 /*
- * EelCanvas widget - Tk-like canvas widget for Ukui-ukui
+ * EelCanvas widget - Tk-like canvas widget for Ukui
  *
  * EelCanvas is basically a port of the Tk toolkit's most excellent canvas widget.  Tk is
  * copyrighted by the Regents of the University of California, Sun Microsystems, and other parties.
@@ -68,21 +68,12 @@
 #include <stdio.h>
 #include <gdk/gdkprivate.h>
 #include <gtk/gtk.h>
+#include <gtk/gtk-a11y.h>
 #include <glib/gi18n-lib.h>
-#if GTK_CHECK_VERSION(3,0,0)
-# include <cairo/cairo-gobject.h>
-#endif
+#include <cairo/cairo-gobject.h>
 #include "eel-canvas.h"
 
 #include "eel-marshal.h"
-
-#if !GTK_CHECK_VERSION(3, 0, 0)
-#define gtk_scrollable_get_hadjustment gtk_layout_get_hadjustment
-#define gtk_scrollable_get_vadjustment gtk_layout_get_vadjustment
-#define gtk_scrollable_set_hadjustment gtk_layout_set_hadjustment
-#define gtk_scrollable_set_vadjustment gtk_layout_set_vadjustment
-#define GTK_SCROLLABLE GTK_LAYOUT
-#endif
 
 static void eel_canvas_request_update (EelCanvas      *canvas);
 static void group_add                   (EelCanvasGroup *group,
@@ -341,19 +332,10 @@ eel_canvas_item_dispose (GObject *object)
             item->canvas->need_repick = TRUE;
         }
 
-#if GTK_CHECK_VERSION(3, 0, 0)
-#if GTK_CHECK_VERSION(3, 20, 0)
+#if GTK_CHECK_VERSION (3, 20, 0)
         eel_canvas_item_ungrab (item);
 #else
         eel_canvas_item_ungrab (item, GDK_CURRENT_TIME);
-#endif
-#else
-        if (item == item->canvas->grabbed_item)
-        {
-            GdkDisplay *display = gtk_widget_get_display (GTK_WIDGET (item->canvas));
-            item->canvas->grabbed_item = NULL;
-            gdk_display_pointer_ungrab (display, GDK_CURRENT_TIME);
-        }
 #endif
 
         if (item == item->canvas->focused_item)
@@ -877,7 +859,7 @@ eel_canvas_item_hide (EelCanvasItem *item)
     }
 }
 
-#if GTK_CHECK_VERSION(3, 20, 0)
+#if GTK_CHECK_VERSION (3, 20, 0)
 /*
  * Prepare the window for grabbing, i.e. show it.
  */
@@ -925,12 +907,11 @@ seat_grab_prepare_window (GdkSeat *seat,
  * gdk_pointer_grab().
  **/
 #endif
-#if GTK_CHECK_VERSION(3, 0, 0)
 GdkGrabStatus
 eel_canvas_item_grab (EelCanvasItem *item,
                       GdkEventMask event_mask,
                       GdkCursor *cursor,
-#if GTK_CHECK_VERSION(3, 20, 0)
+#if GTK_CHECK_VERSION (3, 20, 0)
                       const GdkEvent *event)
 {
     GdkGrabStatus retval;
@@ -956,7 +937,7 @@ eel_canvas_item_grab (EelCanvasItem *item,
         return GDK_GRAB_NOT_VIEWABLE;
 
     display = gtk_widget_get_display (GTK_WIDGET (item->canvas));
-#if GTK_CHECK_VERSION(3, 20, 0)
+#if GTK_CHECK_VERSION (3, 20, 0)
     seat = gdk_display_get_default_seat (display);
 
     retval = gdk_seat_grab (seat,
@@ -979,29 +960,6 @@ eel_canvas_item_grab (EelCanvasItem *item,
                               cursor,
                               timestamp);
 #endif
-#else
-int
-eel_canvas_item_grab (EelCanvasItem *item, guint event_mask, GdkCursor *cursor, guint32 etime)
-{
-    int retval;
-
-    g_return_val_if_fail (EEL_IS_CANVAS_ITEM (item), GDK_GRAB_NOT_VIEWABLE);
-    g_return_val_if_fail (gtk_widget_get_mapped (GTK_WIDGET (item->canvas)),
-                          GDK_GRAB_NOT_VIEWABLE);
-
-    if (item->canvas->grabbed_item)
-        return GDK_GRAB_ALREADY_GRABBED;
-
-    if (!(item->flags & EEL_CANVAS_ITEM_MAPPED))
-        return GDK_GRAB_NOT_VIEWABLE;
-
-    retval = gdk_pointer_grab (gtk_layout_get_bin_window (&item->canvas->layout),
-                               FALSE,
-                               event_mask,
-                               NULL,
-                               cursor,
-                               etime);
-#endif
 
     if (retval != GDK_GRAB_SUCCESS)
         return retval;
@@ -1013,7 +971,7 @@ eel_canvas_item_grab (EelCanvasItem *item, guint event_mask, GdkCursor *cursor, 
     return retval;
 }
 
-#if GTK_CHECK_VERSION(3, 20, 0)
+#if GTK_CHECK_VERSION (3, 20, 0)
 /**
  * eel_canvas_item_ungrab:
  * @item: A canvas item that holds a grab.
@@ -1031,9 +989,8 @@ eel_canvas_item_grab (EelCanvasItem *item, guint event_mask, GdkCursor *cursor, 
  * mouse.
  **/
 #endif
-#if GTK_CHECK_VERSION(3, 0, 0)
 void
-#if GTK_CHECK_VERSION(3, 20, 0)
+#if GTK_CHECK_VERSION (3, 20, 0)
 eel_canvas_item_ungrab (EelCanvasItem *item)
 {
     GdkDisplay *display;
@@ -1068,22 +1025,6 @@ eel_canvas_item_ungrab (EelCanvasItem *item, guint32 etime)
 
     item->canvas->grabbed_item = NULL;
     gdk_device_ungrab (device, etime);
-}
-#endif
-#else
-void
-eel_canvas_item_ungrab (EelCanvasItem *item, guint32 etime)
-{
-    GdkDisplay *display;
-
-    g_return_if_fail (EEL_IS_CANVAS_ITEM (item));
-
-    if (item->canvas->grabbed_item != item)
-        return;
-
-    display = gtk_widget_get_display (GTK_WIDGET (item->canvas));
-    item->canvas->grabbed_item = NULL;
-    gdk_display_pointer_ungrab (display, etime);
 }
 #endif
 
@@ -1364,14 +1305,9 @@ static void   eel_canvas_group_update      (EelCanvasItem *item,
 static void   eel_canvas_group_unrealize   (EelCanvasItem *item);
 static void   eel_canvas_group_map         (EelCanvasItem *item);
 static void   eel_canvas_group_unmap       (EelCanvasItem *item);
-#if GTK_CHECK_VERSION(3,0,0)
 static void   eel_canvas_group_draw        (EelCanvasItem  *item,
                                             cairo_t        *cr,
                                             cairo_region_t *region);
-#else
-static void   eel_canvas_group_draw        (EelCanvasItem *item, GdkDrawable *drawable,
-        GdkEventExpose *expose);
-#endif
 static double eel_canvas_group_point       (EelCanvasItem *item, double x, double y,
         int cx, int cy,
         EelCanvasItem **actual_item);
@@ -1692,14 +1628,9 @@ eel_canvas_group_unmap (EelCanvasItem *item)
 
 /* Draw handler for canvas groups */
 static void
-#if GTK_CHECK_VERSION(3,0,0)
 eel_canvas_group_draw (EelCanvasItem  *item,
                        cairo_t        *cr,
                        cairo_region_t *region)
-#else
-eel_canvas_group_draw (EelCanvasItem *item, GdkDrawable *drawable,
-                       GdkEventExpose *expose)
-#endif
 {
     EelCanvasGroup *group;
     GList *list;
@@ -1721,13 +1652,8 @@ eel_canvas_group_draw (EelCanvasItem *item, GdkDrawable *drawable,
             child_rect.width = child->x2 - child->x1 + 1;
             child_rect.height = child->y2 - child->y1 + 1;
 
-#if GTK_CHECK_VERSION (3, 0, 0)
             if (cairo_region_contains_rectangle (region, &child_rect) != CAIRO_REGION_OVERLAP_OUT)
                 EEL_CANVAS_ITEM_GET_CLASS (child)->draw (child, cr, region);
-#else
-            if (gdk_region_rect_in (expose->region, &child_rect) != GDK_OVERLAP_RECTANGLE_OUT)
-                (* EEL_CANVAS_ITEM_GET_CLASS (child)->draw) (child, drawable, expose);
-#endif
         }
     }
 }
@@ -1955,11 +1881,7 @@ enum
 
 static void eel_canvas_class_init          (EelCanvasClass *klass);
 static void eel_canvas_init                (EelCanvas      *canvas);
-#if GTK_CHECK_VERSION (3, 0, 0)
 static void eel_canvas_destroy             (GtkWidget        *object);
-#else
-static void eel_canvas_destroy             (GtkObject        *object);
-#endif
 static void eel_canvas_map                 (GtkWidget        *widget);
 static void eel_canvas_unmap               (GtkWidget        *widget);
 static void eel_canvas_realize             (GtkWidget        *widget);
@@ -1970,13 +1892,8 @@ static gint eel_canvas_button              (GtkWidget        *widget,
         GdkEventButton   *event);
 static gint eel_canvas_motion              (GtkWidget        *widget,
         GdkEventMotion   *event);
-#if GTK_CHECK_VERSION (3, 0, 0)
 static gint eel_canvas_draw                (GtkWidget        *widget,
                                             cairo_t          *cr);
-#else
-static gint eel_canvas_expose              (GtkWidget        *widget,
-        GdkEventExpose   *event);
-#endif
 static gint eel_canvas_key                 (GtkWidget        *widget,
         GdkEventKey      *event);
 static gint eel_canvas_crossing            (GtkWidget        *widget,
@@ -1987,14 +1904,7 @@ static gint eel_canvas_focus_out           (GtkWidget        *widget,
         GdkEventFocus    *event);
 static void eel_canvas_request_update_real (EelCanvas      *canvas);
 static void eel_canvas_draw_background     (EelCanvas      *canvas,
-#if GTK_CHECK_VERSION (3, 0, 0)
                                             cairo_t        *cr);
-#else
-        int               x,
-        int               y,
-        int               width,
-        int               height);
-#endif
 
 static GtkLayoutClass *canvas_parent_class;
 
@@ -2158,124 +2068,23 @@ eel_canvas_accessible_ref_child (AtkObject *obj,
     return atk_object;
 }
 
+G_DEFINE_TYPE (EelCanvasAccessible, eel_canvas_accessible, GTK_TYPE_CONTAINER_ACCESSIBLE)
+
 static void
-eel_canvas_accessible_class_init (AtkObjectClass *klass)
+eel_canvas_accessible_class_init (EelCanvasAccessibleClass *klass)
 {
-    accessible_parent_class = g_type_class_peek_parent (klass);
+    AtkObjectClass *atk_class = ATK_OBJECT_CLASS (klass);
+    accessible_parent_class = g_type_class_peek_parent (atk_class);
 
-    klass->initialize = eel_canvas_accessible_initialize;
-    klass->get_n_children = eel_canvas_accessible_get_n_children;
-    klass->ref_child = eel_canvas_accessible_ref_child;
-}
-
-static GType
-eel_canvas_accessible_get_type (void)
-{
-    static GType type = 0;
-
-    if (!type)
-    {
-        AtkObjectFactory *factory;
-        GType parent_atk_type;
-        GTypeQuery query;
-        GTypeInfo tinfo = { 0 };
-
-        factory = atk_registry_get_factory (atk_get_default_registry(),
-                                            GTK_TYPE_WIDGET);
-        if (!factory)
-        {
-            return G_TYPE_INVALID;
-        }
-        parent_atk_type = atk_object_factory_get_accessible_type (factory);
-        if (!parent_atk_type)
-        {
-            return G_TYPE_INVALID;
-        }
-        g_type_query (parent_atk_type, &query);
-        tinfo.class_init = (GClassInitFunc) eel_canvas_accessible_class_init;
-        tinfo.class_size = query.class_size;
-        tinfo.instance_size = query.instance_size;
-        type = g_type_register_static (parent_atk_type,
-                                       "EelCanvasAccessibility",
-                                       &tinfo, 0);
-    }
-    return type;
-}
-
-static AtkObject *
-eel_canvas_accessible_create (GObject *for_object)
-{
-    GType type;
-    AtkObject *accessible;
-    EelCanvas *canvas;
-
-    canvas = EEL_CANVAS (for_object);
-    g_return_val_if_fail (canvas != NULL, NULL);
-
-    type = eel_canvas_accessible_get_type ();
-
-    if (type == G_TYPE_INVALID)
-    {
-        return atk_no_op_object_new (for_object);
-    }
-
-    accessible = g_object_new (type, NULL);
-    atk_object_initialize (accessible, for_object);
-    return accessible;
-}
-
-static GType
-eel_canvas_accessible_factory_get_accessible_type (void)
-{
-    return eel_canvas_accessible_get_type ();
-}
-
-static AtkObject*
-eel_canvas_accessible_factory_create_accessible (GObject *obj)
-{
-    AtkObject *accessible;
-
-    g_return_val_if_fail (G_IS_OBJECT (obj), NULL);
-
-    accessible = eel_canvas_accessible_create (obj);
-
-    return accessible;
+    atk_class->initialize = eel_canvas_accessible_initialize;
+    atk_class->get_n_children = eel_canvas_accessible_get_n_children;
+    atk_class->ref_child = eel_canvas_accessible_ref_child;
 }
 
 static void
-eel_canvas_accessible_factory_class_init (AtkObjectFactoryClass *klass)
+eel_canvas_accessible_init (EelCanvasAccessible *accessible)
 {
-    klass->create_accessible = eel_canvas_accessible_factory_create_accessible;
-    klass->get_accessible_type = eel_canvas_accessible_factory_get_accessible_type;
 }
-
-static GType
-eel_canvas_accessible_factory_get_type (void)
-{
-    static GType type = 0;
-
-    if (!type)
-    {
-        static const GTypeInfo tinfo =
-        {
-            sizeof (AtkObjectFactoryClass),
-            (GBaseInitFunc) NULL,
-            (GBaseFinalizeFunc) NULL,
-            (GClassInitFunc) eel_canvas_accessible_factory_class_init,
-            NULL,		/* class_finalize */
-            NULL,		/* class_data */
-            sizeof (AtkObjectFactory),
-            0,		/* n_preallocs */
-            NULL
-        };
-        type = g_type_register_static (ATK_TYPE_OBJECT_FACTORY,
-                                       "EelCanvasAccessibilityFactory",
-                                       &tinfo, 0);
-    }
-
-    return type;
-}
-
 
 /* Class initialization function for EelCanvasClass */
 static void
@@ -2292,11 +2101,7 @@ eel_canvas_class_init (EelCanvasClass *klass)
     gobject_class->set_property = eel_canvas_set_property;
     gobject_class->get_property = eel_canvas_get_property;
 
-#if !GTK_CHECK_VERSION (3, 0, 0)
-    GTK_OBJECT_CLASS (klass)->destroy = eel_canvas_destroy;
-#else
     widget_class->destroy = eel_canvas_destroy;
-#endif
     widget_class->map = eel_canvas_map;
     widget_class->unmap = eel_canvas_unmap;
     widget_class->realize = eel_canvas_realize;
@@ -2305,11 +2110,7 @@ eel_canvas_class_init (EelCanvasClass *klass)
     widget_class->button_press_event = eel_canvas_button;
     widget_class->button_release_event = eel_canvas_button;
     widget_class->motion_notify_event = eel_canvas_motion;
-#if GTK_CHECK_VERSION (3, 0, 0)
     widget_class->draw = eel_canvas_draw;
-#else
-    widget_class->expose_event = eel_canvas_expose;
-#endif
     widget_class->key_press_event = eel_canvas_key;
     widget_class->key_release_event = eel_canvas_key;
     widget_class->enter_notify_event = eel_canvas_crossing;
@@ -2326,19 +2127,11 @@ eel_canvas_class_init (EelCanvasClass *klass)
                       G_SIGNAL_RUN_LAST,
                       G_STRUCT_OFFSET (EelCanvasClass, draw_background),
                       NULL, NULL,
-#if GTK_CHECK_VERSION (3, 0, 0)
                       g_cclosure_marshal_VOID__BOXED,
                       G_TYPE_NONE, 1,
                       CAIRO_GOBJECT_TYPE_CONTEXT);
-#else
-                      eel_marshal_VOID__INT_INT_INT_INT,
-                      G_TYPE_NONE, 4,
-                      G_TYPE_INT, G_TYPE_INT, G_TYPE_INT, G_TYPE_INT);
-#endif
 
-    atk_registry_set_factory_type (atk_get_default_registry (),
-                                   EEL_TYPE_CANVAS,
-                                   eel_canvas_accessible_factory_get_type ());
+    gtk_widget_class_set_accessible_type (widget_class, eel_canvas_accessible_get_type ());
 }
 
 /* Callback used when the root item of a canvas is destroyed.  The user should
@@ -2416,14 +2209,10 @@ shutdown_transients (EelCanvas *canvas)
 
     if (canvas->grabbed_item)
     {
-#if GTK_CHECK_VERSION(3, 20, 0)
+#if GTK_CHECK_VERSION (3, 20, 0)
         eel_canvas_item_ungrab (canvas->grabbed_item);
-#elif GTK_CHECK_VERSION(3, 0, 0)
-        eel_canvas_item_ungrab (canvas->grabbed_item, GDK_CURRENT_TIME);
 #else
-        GdkDisplay *display = gtk_widget_get_display (GTK_WIDGET (canvas));
-        canvas->grabbed_item = NULL;
-        gdk_display_pointer_ungrab (display, GDK_CURRENT_TIME);
+        eel_canvas_item_ungrab (canvas->grabbed_item, GDK_CURRENT_TIME);
 #endif
     }
 
@@ -2432,11 +2221,7 @@ shutdown_transients (EelCanvas *canvas)
 
 /* Destroy handler for EelCanvas */
 static void
-#if GTK_CHECK_VERSION (3, 0, 0)
 eel_canvas_destroy (GtkWidget *object)
-#else
-eel_canvas_destroy (GtkObject *object)
-#endif
 {
     EelCanvas *canvas;
 
@@ -2461,13 +2246,8 @@ eel_canvas_destroy (GtkObject *object)
 
     shutdown_transients (canvas);
 
-#if GTK_CHECK_VERSION (3, 0, 0)
     if (GTK_WIDGET_CLASS (canvas_parent_class)->destroy)
         (* GTK_WIDGET_CLASS (canvas_parent_class)->destroy) (object);
-#else
-    if (GTK_OBJECT_CLASS (canvas_parent_class)->destroy)
-        (* GTK_OBJECT_CLASS (canvas_parent_class)->destroy) (object);
-#endif
 }
 
 /**
@@ -2826,7 +2606,7 @@ emit_event (EelCanvas *canvas, GdkEvent *event)
         break;
 
     case GDK_MOTION_NOTIFY:
-#if !GTK_CHECK_VERSION(3, 20, 0)
+#if !GTK_CHECK_VERSION (3, 20, 0)
         eel_canvas_window_to_world (canvas,
                                     ev.motion.x, ev.motion.y,
                                     &ev.motion.x, &ev.motion.y);
@@ -2836,7 +2616,7 @@ emit_event (EelCanvas *canvas, GdkEvent *event)
     case GDK_BUTTON_PRESS:
     case GDK_2BUTTON_PRESS:
     case GDK_3BUTTON_PRESS:
-#if GTK_CHECK_VERSION(3, 20, 0)
+#if GTK_CHECK_VERSION (3, 20, 0)
     case GDK_BUTTON_RELEASE:
 #endif
         eel_canvas_window_to_world (canvas,
@@ -2844,7 +2624,7 @@ emit_event (EelCanvas *canvas, GdkEvent *event)
                                     &ev.motion.x, &ev.motion.y);
         break;
 
-#if !GTK_CHECK_VERSION(3, 20, 0)
+#if !GTK_CHECK_VERSION (3, 20, 0)
     case GDK_BUTTON_RELEASE:
         eel_canvas_window_to_world (canvas,
                                     ev.motion.x, ev.motion.y,
@@ -3057,6 +2837,10 @@ eel_canvas_button (GtkWidget *widget, GdkEventButton *event)
 
     canvas = EEL_CANVAS (widget);
 
+    /* Don't handle extra mouse button events */
+    if (event->button > 5)
+        return FALSE;
+
     /*
      * dispatch normally regardless of the event's window if an item has
      * has a pointer grab in effect
@@ -3093,9 +2877,11 @@ eel_canvas_button (GtkWidget *widget, GdkEventButton *event)
         /* Pick the current item as if the button were not pressed, and
          * then process the event.
          */
+        event->state ^= mask;
         canvas->state = event->state;
         pick_current_item (canvas, (GdkEvent *) event);
-        canvas->state ^= mask;
+        event->state ^= mask;
+        canvas->state = event->state;
         retval = emit_event (canvas, (GdkEvent *) event);
         break;
 
@@ -3203,8 +2989,6 @@ eel_canvas_focus_out (GtkWidget *widget, GdkEventFocus *event)
         return FALSE;
 }
 
-
-#if GTK_CHECK_VERSION(3,0,0)
 static cairo_region_t *
 eel_cairo_get_clip_region (cairo_t *cr)
 {
@@ -3244,19 +3028,12 @@ eel_cairo_get_clip_region (cairo_t *cr)
     cairo_rectangle_list_destroy (list);
     return region;
 }
-#endif
 
 /* Expose handler for the canvas */
-#if GTK_CHECK_VERSION(3,0,0)
 static gboolean
 eel_canvas_draw (GtkWidget *widget, cairo_t *cr)
-#else
-static gint
-eel_canvas_expose (GtkWidget *widget, GdkEventExpose *event)
-#endif
 {
     EelCanvas *canvas = EEL_CANVAS (widget);
-#if GTK_CHECK_VERSION(3,0,0)
     GdkWindow *bin_window;
     cairo_region_t *region;
 
@@ -3277,14 +3054,9 @@ eel_canvas_expose (GtkWidget *widget, GdkEventExpose *event)
         cairo_restore (cr);
         return FALSE;
     }
-#else
-    if (!gtk_widget_is_drawable (widget) || (event->window != gtk_layout_get_bin_window (&canvas->layout))) return FALSE;
-#endif
 
-#if defined VERBOSE && GTK_CHECK_VERSION(3,0,0)
+#if defined VERBOSE
       g_print ("Draw\n");
-#elif defined VERBOSE
-      g_print ("Expose\n");
 #endif
     /* If there are any outstanding items that need updating, do them now */
     if (canvas->idle_id)
@@ -3310,39 +3082,23 @@ eel_canvas_expose (GtkWidget *widget, GdkEventExpose *event)
        anything that is gonna get redrawn as invalid */
 
     g_signal_emit (G_OBJECT (canvas), canvas_signals[DRAW_BACKGROUND], 0,
-#if GTK_CHECK_VERSION(3,0,0)
                    cr);
-#else
-                   event->area.x, event->area.y,
-                   event->area.width, event->area.height);
-#endif
 
     if (canvas->root->flags & EEL_CANVAS_ITEM_MAPPED)
         EEL_CANVAS_ITEM_GET_CLASS (canvas->root)->draw (canvas->root,
-#if GTK_CHECK_VERSION(3,0,0)
     							cr, region);
-#else
-    							gtk_layout_get_bin_window (&canvas->layout),
-    							event);
-#endif
 
     /* Chain up to get exposes on child widgets */
-#if GTK_CHECK_VERSION(3,0,0)
     cairo_restore (cr);
 
     if (GTK_WIDGET_CLASS (canvas_parent_class)->draw)
         GTK_WIDGET_CLASS (canvas_parent_class)->draw (widget, cr);
 
     cairo_region_destroy (region);
-#else
-    GTK_WIDGET_CLASS (canvas_parent_class)->expose_event (widget, event);
-#endif
 
     return FALSE;
 }
 
-
-#if GTK_CHECK_VERSION(3,0,0)
 static void
 eel_canvas_draw_background (EelCanvas *canvas,
                             cairo_t   *cr)
@@ -3363,21 +3119,6 @@ eel_canvas_draw_background (EelCanvas *canvas,
     cairo_fill (cr);
     cairo_restore (cr);
 }
-#else /* GTK_CHECK_VERSION(3,0,0) */
-static void
-eel_canvas_draw_background (EelCanvas *canvas,
-                            int x, int y, int width, int height)
-{
-    cairo_t *cr = gdk_cairo_create (gtk_layout_get_bin_window (&canvas->layout));
-
-    /* By default, we use the style background. */
-    gdk_cairo_set_source_color (cr, &gtk_widget_get_style (GTK_WIDGET (canvas))->bg[GTK_STATE_NORMAL]);
-    cairo_rectangle (cr, x, y, width, height);
-    cairo_fill (cr);
-
-    cairo_destroy (cr);
-}
-#endif /* GTK_CHECK_VERSION(3,0,0) */
 
 static void
 do_update (EelCanvas *canvas)
@@ -3424,19 +3165,11 @@ idle_handler (gpointer data)
 {
     EelCanvas *canvas;
 
-#if !GTK_CHECK_VERSION (3, 0, 0)
-    GDK_THREADS_ENTER ();
-#endif
-
     canvas = EEL_CANVAS (data);
     do_update (canvas);
 
     /* Reset idle id */
     canvas->idle_id = 0;
-
-#if !GTK_CHECK_VERSION (3, 0, 0)
-    GDK_THREADS_LEAVE ();
-#endif
 
     return FALSE;
 }
@@ -3646,18 +3379,11 @@ eel_canvas_set_pixels_per_unit (EelCanvas *canvas, double n)
         attributes.visual = gtk_widget_get_visual (widget);
         attributes.event_mask = GDK_VISIBILITY_NOTIFY_MASK;
 
-#if GTK_CHECK_VERSION(3,0,0)
         attributes_mask = GDK_WA_X | GDK_WA_Y | GDK_WA_VISUAL;
-#else
-        attributes.colormap = gtk_widget_get_colormap (widget);
-        attributes_mask = GDK_WA_X | GDK_WA_Y | GDK_WA_VISUAL | GDK_WA_COLORMAP;
-#endif
 
         window = gdk_window_new (gtk_widget_get_parent_window (widget),
                                  &attributes, attributes_mask);
-#if !GTK_CHECK_VERSION(3,0,0)
-        gdk_window_set_back_pixmap (window, NULL, FALSE);
-#endif
+
         gdk_window_set_user_data (window, widget);
 
         gdk_window_show (window);
@@ -4051,11 +3777,7 @@ eel_canvas_item_accessible_is_item_in_window (EelCanvasItem *item,
         int window_width, window_height;
 
         gdk_window_get_geometry (gtk_widget_get_window (widget), NULL, NULL,
-#if GTK_CHECK_VERSION (3, 0, 0)
                                  &window_width, &window_height);
-#else
-                                 &window_width, &window_height, NULL);
-#endif
         /*
                  * Check whether rectangles intersect
          */
@@ -4270,58 +3992,25 @@ eel_canvas_item_accessible_ref_state_set (AtkObject *accessible)
     return state_set;
 }
 
-static void
-eel_canvas_item_accessible_class_init (AtkObjectClass *klass)
-{
-    accessible_item_parent_class = g_type_class_peek_parent (klass);
+G_DEFINE_TYPE_WITH_CODE (EelCanvasItemAccessible,
+                         eel_canvas_item_accessible,
+                         ATK_TYPE_GOBJECT_ACCESSIBLE,
+                         G_IMPLEMENT_INTERFACE (ATK_TYPE_COMPONENT,
+                                                eel_canvas_item_accessible_component_interface_init));
 
-    klass->initialize = eel_canvas_item_accessible_initialize;
-    klass->ref_state_set = eel_canvas_item_accessible_ref_state_set;
+static void
+eel_canvas_item_accessible_class_init (EelCanvasItemAccessibleClass *klass)
+{
+    AtkObjectClass *atk_class = ATK_OBJECT_CLASS (klass);
+    accessible_item_parent_class = g_type_class_peek_parent (atk_class);
+
+    atk_class->initialize = eel_canvas_item_accessible_initialize;
+    atk_class->ref_state_set = eel_canvas_item_accessible_ref_state_set;
 }
 
-static GType
-eel_canvas_item_accessible_get_type (void)
+static void
+eel_canvas_item_accessible_init (EelCanvasItemAccessible *accessible)
 {
-    static GType type = 0;
-
-    if (!type)
-    {
-        static const GInterfaceInfo atk_component_info =
-        {
-            (GInterfaceInitFunc) eel_canvas_item_accessible_component_interface_init,
-            (GInterfaceFinalizeFunc) NULL,
-            NULL
-        };
-        AtkObjectFactory *factory;
-        GType parent_atk_type;
-        GTypeQuery query;
-        GTypeInfo tinfo = { 0 };
-
-        factory = atk_registry_get_factory (atk_get_default_registry(),
-                                            G_TYPE_INITIALLY_UNOWNED);
-        if (!factory)
-        {
-            return G_TYPE_INVALID;
-        }
-        parent_atk_type = atk_object_factory_get_accessible_type (factory);
-        if (!parent_atk_type)
-        {
-            return G_TYPE_INVALID;
-        }
-        g_type_query (parent_atk_type, &query);
-        tinfo.class_init = (GClassInitFunc) eel_canvas_item_accessible_class_init;
-        tinfo.class_size = query.class_size;
-        tinfo.instance_size = query.instance_size;
-        type = g_type_register_static (parent_atk_type,
-                                       "EelCanvasItemAccessibility",
-                                       &tinfo, 0);
-
-        g_type_add_interface_static (type, ATK_TYPE_COMPONENT,
-                                     &atk_component_info);
-
-    }
-
-    return type;
 }
 
 static AtkObject *
@@ -4370,31 +4059,16 @@ eel_canvas_item_accessible_factory_class_init (AtkObjectFactoryClass *klass)
     klass->get_accessible_type = eel_canvas_item_accessible_factory_get_accessible_type;
 }
 
-static GType
-eel_canvas_item_accessible_factory_get_type (void)
+static GType eel_canvas_item_accessible_factory_get_type (void);
+
+typedef AtkObjectFactory EelCanvasItemAccessibleFactory;
+typedef AtkObjectFactoryClass EelCanvasItemAccessibleFactoryClass;
+G_DEFINE_TYPE (EelCanvasItemAccessibleFactory, eel_canvas_item_accessible_factory,
+               ATK_TYPE_OBJECT_FACTORY)
+
+static void
+eel_canvas_item_accessible_factory_init (EelCanvasItemAccessibleFactory *accessible)
 {
-    static GType type = 0;
-
-    if (!type)
-    {
-        static const GTypeInfo tinfo =
-        {
-            sizeof (AtkObjectFactoryClass),
-            (GBaseInitFunc) NULL,
-            (GBaseFinalizeFunc) NULL,
-            (GClassInitFunc) eel_canvas_item_accessible_factory_class_init,
-            NULL,		/* class_finalize */
-            NULL,		/* class_data */
-            sizeof (AtkObjectFactory),
-            0,		/* n_preallocs */
-            NULL
-        };
-        type = g_type_register_static (ATK_TYPE_OBJECT_FACTORY,
-                                       "EelCanvasItemAccessibilityFactory",
-                                       &tinfo, 0);
-    }
-
-    return type;
 }
 
 /* Class initialization function for EelCanvasItemClass */

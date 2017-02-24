@@ -49,21 +49,13 @@ typedef struct PeonyZoomControlDetails PeonyZoomControlDetails;
 
 struct PeonyZoomControl
 {
-#if GTK_CHECK_VERSION (3, 0, 0)
     GtkBox parent;
-#else
-    GtkHBox parent;
-#endif
     PeonyZoomControlDetails *details;
 };
 
 struct PeonyZoomControlClass
 {
-#if GTK_CHECK_VERSION (3, 0, 0)
     GtkBoxClass parent_class;
-#else
-    GtkHBoxClass parent_class;
-#endif
 
     void (*zoom_in)		(PeonyZoomControl *control);
     void (*zoom_out) 	(PeonyZoomControl *control);
