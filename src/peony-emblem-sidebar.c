@@ -968,7 +968,7 @@ peony_emblem_sidebar_populate (PeonyEmblemSidebar *emblem_sidebar)
 
     erase_pixbuf = NULL;
 
-    path = peony_pixmap_file ("erase.png");
+    path = peony_pixmap_file ("ukui-ukui-erase.png");
     if (path != NULL)
     {
         erase_pixbuf = gdk_pixbuf_new_from_file (path, NULL);

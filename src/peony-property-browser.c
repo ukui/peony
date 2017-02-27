@@ -181,7 +181,7 @@ static GdkPixbuf * make_color_drag_image                        (PeonyPropertyBr
 #define IMAGE_TABLE_X_SPACING 6
 #define IMAGE_TABLE_Y_SPACING 4
 
-#define ERASE_OBJECT_NAME "erase.png"
+#define ERASE_OBJECT_NAME "ukui-ukui-erase.png"
 
 enum
 {
@@ -278,7 +278,7 @@ peony_property_browser_init (PeonyPropertyBrowser *property_browser)
     property_browser->details->category_type = PEONY_PROPERTY_PATTERN;
 
     /* load the chit frame */
-    temp_str = peony_pixmap_file ("chit_frame.png");
+    temp_str = peony_pixmap_file ("ukui-chit_frame.png");
     if (temp_str != NULL)
     {
         property_browser->details->property_chit = gdk_pixbuf_new_from_file (temp_str, NULL);
@@ -1139,7 +1139,7 @@ peony_emblem_dialog_new (PeonyPropertyBrowser *property_browser)
 
     /* default image is the generic emblem */
     g_free (property_browser->details->image_path);
-    property_browser->details->image_path = g_build_filename (PEONY_PIXMAPDIR, "emblems.png", NULL);
+    property_browser->details->image_path = g_build_filename (PEONY_PIXMAPDIR, "ukui-emblems.png", NULL);
 
     /* set up a file chooser to pick the image file */
     label = gtk_label_new_with_mnemonic (_("_Image:"));

@@ -1440,7 +1440,7 @@ get_knob_pixbuf (void)
                                             8, 0, NULL);
     if (!knob_pixbuf)
     {
-        knob_filename = peony_pixmap_file ("knob.png");
+        knob_filename = peony_pixmap_file ("ukui-knob.png");
         knob_pixbuf = gdk_pixbuf_new_from_file (knob_filename, NULL);
         g_free (knob_filename);
     }
@@ -1704,7 +1704,7 @@ real_map_pixbuf (PeonyIconCanvasItem *icon_item)
         {
             emblem_size = peony_icon_get_emblem_size_for_icon_size (gdk_pixbuf_get_width (temp_pixbuf));
             /* Load the audio symbol. */
-            audio_filename = peony_pixmap_file ("audio.svg");
+            audio_filename = peony_pixmap_file ("ukui-audio.svg");
             if (audio_filename != NULL)
             {
                 audio_pixbuf = gdk_pixbuf_new_from_file_at_scale (audio_filename,

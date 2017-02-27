@@ -266,7 +266,7 @@ peony_get_thumbnail_frame (void)
 
     if (thumbnail_frame == NULL)
     {
-        image_path = peony_pixmap_file ("thumbnail_frame.png");
+        image_path = peony_pixmap_file ("ukui-thumbnail_frame.png");
         if (image_path != NULL)
         {
             thumbnail_frame = gdk_pixbuf_new_from_file (image_path, NULL);

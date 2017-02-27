@@ -170,7 +170,7 @@ peony_customization_data_new (const char *customization_name,
     /* load the frame if necessary */
     if (strcmp (customization_name, "patterns") == 0)
     {
-        temp_str = peony_pixmap_file ("chit_frame.png");
+        temp_str = peony_pixmap_file ("ukui-chit_frame.png");
         if (temp_str != NULL)
         {
             data->pattern_frame = gdk_pixbuf_new_from_file (temp_str, NULL);

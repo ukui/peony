@@ -3,13 +3,13 @@ NULL=
 icondir = $(datadir)/pixmaps/peony
 
 icon_DATA =\
-	audio.svg \
-	backgrounds.png \
-	chit_frame.png \
-	colors.png \
-	emblems.png \
-	erase.png \
-	knob.png \
+	ukui-audio.svg \
+	ukui-backgrounds.png \
+	ukui-chit_frame.png \
+	ukui-colors.png \
+	ukui-emblems.png \
+	ukui-ukui-erase.png \
+	ukui-knob.png \
         peony-view-as-compact.png \
         peony-view-as-list.png \
         peony-view-as-normal.png \
@@ -18,7 +18,7 @@ icon_DATA =\
         peony-view-menu-larger.png \
         peony-view-menu-compact.png \
         peony-view-menu-list.png \
-	thumbnail_frame.png \
+	ukui-thumbnail_frame.png \
 	$(NULL)
 
 EXTRA_DIST = $(icon_DATA)
