@@ -27,12 +27,9 @@ Build-Depends: debhelper (>= 9),
                libx11-dev,
                libxml2-dev,
                mate-common (>= 1.17),
-               quilt,
                shared-mime-info,
-Standards-Version: 3.9.7
-Homepage: http://www.mate-desktop.org/
-Vcs-Browser: https://github.com/mate-desktop/debian-packages
-Vcs-Git: git://github.com/mate-desktop/debian-packages.git
+Standards-Version: 3.9.8
+Homepage: http://www.ukui.org/
 
 Package: peony
 Architecture: any

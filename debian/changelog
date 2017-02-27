@@ -1,5 +1,11 @@
-Peony (1.0.0) zesty; urgency=medium
+peony (0.9.1) zesty; urgency=medium
 
-  * change functions 
+  * make computer-view can be used
+
+ -- zuxunyang (yangzuxun) <yangzuxun@kylinos.cn>  Mon, 27 Feb 2017 14:00:28 +0800
+
+peony (0.9.0) zesty; urgency=medium
+
+  * Rebased on upstream caja. 
 
  -- zuxunyang (yangzuxun) <yangzuxun@kylinos.cn>  Thu, 19 Jan 2017 11:58:28 +0300
