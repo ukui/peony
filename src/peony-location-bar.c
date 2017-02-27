@@ -501,7 +501,7 @@ peony_location_bar_init (PeonyLocationBar *bar)
     g_signal_connect (label, "style_set",
                       G_CALLBACK (style_set_handler), NULL);
 
-    gtk_box_pack_start (GTK_BOX (bar), event_box, FALSE, TRUE, 4);
+   // gtk_box_pack_start (GTK_BOX (bar), event_box, FALSE, TRUE, 4);
 
     entry = peony_location_entry_new ();
 

@@ -687,7 +687,8 @@ location_button_clicked_callback (GtkWidget             *widget,
 
         name = peony_file_get_display_name (file);
         menu_item = gtk_image_menu_item_new_with_label (name);
-        gtk_image_menu_item_set_always_show_image (GTK_IMAGE_MENU_ITEM (menu_item), TRUE);
+        if(menu_item!=NULL)
+            gtk_image_menu_item_set_always_show_image (GTK_IMAGE_MENU_ITEM (menu_item), TRUE);
         g_free (name);
 
         if (first_item == NULL) {
@@ -1091,7 +1092,8 @@ peony_spatial_window_init (PeonySpatialWindow *window)
     for (i = 0; i < G_N_ELEMENTS (icon_entries); i++)
     {
         menuitem = gtk_ui_manager_get_widget (ui_manager, icon_entries[i]);
-        gtk_image_menu_item_set_always_show_image (GTK_IMAGE_MENU_ITEM (menuitem), TRUE);
+        if(menuitem!=NULL)
+            gtk_image_menu_item_set_always_show_image (GTK_IMAGE_MENU_ITEM (menuitem), TRUE);
     }
     peony_window_set_active_pane (win, pane);
 }

@@ -283,6 +283,7 @@ enum
     ICON_REMOVED,
     CLEARED,
     START_INTERACTIVE_SEARCH,
+    SIZE_CHANGED,
     LAST_SIGNAL
 };
 
@@ -4473,6 +4474,24 @@ size_allocate (GtkWidget *widget,
 
     container = PEONY_ICON_CONTAINER (widget);
 
+    if (container->name)
+    {
+        GList *l;
+        PeonyIcon *icon;
+        EelDRect rect;
+        int temp = 0;
+        for (l = container->details->icons;l != NULL;l = l->next)
+        {
+            icon = l->data;
+            rect = peony_icon_canvas_item_get_icon_rectangle (icon->item);
+            if (rect.y1 > temp)
+                temp = rect.y1;
+        }
+
+        allocation->height +=temp;
+        gtk_widget_set_size_request(GTK_WIDGET(container),allocation->width/2,allocation->height/2+temp/2);
+    }
+
     need_layout_redone = !container->details->has_been_allocated;
     gtk_widget_get_allocation (widget, &wid_allocation);
 
@@ -4517,6 +4536,12 @@ size_allocate (GtkWidget *widget,
     if (need_layout_redone)
     {
         redo_layout (container);
+    }
+
+    if (peony_icon_container_get_is_desktop (container) && container->details->size_changed)
+    {
+        g_signal_emit(container,signals[SIZE_CHANGED],0);
+        container->details->size_changed = FALSE;
     }
 }
 
@@ -6507,6 +6532,14 @@ peony_icon_container_class_init (PeonyIconContainerClass *class)
                         NULL, NULL,
                         peony_marshal_BOOLEAN__VOID,
                         G_TYPE_BOOLEAN, 0);
+    signals[SIZE_CHANGED]
+        = g_signal_new ("size_changed",
+                        G_TYPE_FROM_CLASS (class),
+                        G_SIGNAL_RUN_LAST,
+                        G_STRUCT_OFFSET (PeonyIconContainerClass,size_changed),
+                        NULL,NULL,
+                        g_cclosure_marshal_VOID__POINTER,
+                        G_TYPE_NONE,0);
 
     /* GtkWidget class.  */
 
@@ -9165,6 +9198,19 @@ peony_icon_container_get_is_desktop (PeonyIconContainer *container)
     return container->details->is_desktop;
 }
 
+static void
+screen_reload (PeonyIconContainer *container)
+{
+    resort (container);
+    lay_down_icons(container,container->details->icons,0);
+}
+
+static void
+container_sort (GdkScreen *screen,PeonyIconContainer *container)
+{
+    container->details->size_changed = TRUE;
+}
+
 void
 peony_icon_container_set_is_desktop (PeonyIconContainer *container,
                                     gboolean is_desktop)
@@ -9172,6 +9218,7 @@ peony_icon_container_set_is_desktop (PeonyIconContainer *container,
     g_return_if_fail (PEONY_IS_ICON_CONTAINER (container));
 
     container->details->is_desktop = is_desktop;
+    container->details->size_changed = FALSE;
 
     if (is_desktop) {
             GtkStyleContext *context;
@@ -9179,6 +9226,10 @@ peony_icon_container_set_is_desktop (PeonyIconContainer *container,
             context = gtk_widget_get_style_context (GTK_WIDGET (container));
             gtk_style_context_add_class (context, "peony-desktop");
     }
+    g_signal_connect (gtk_widget_get_screen (GTK_WIDGET(container)),"size-changed",
+                                                G_CALLBACK(container_sort),container);
+
+    g_signal_connect (container,"size_changed",G_CALLBACK(screen_reload),container);
 }
 
 void

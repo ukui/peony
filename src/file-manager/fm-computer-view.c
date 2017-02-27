@@ -3965,33 +3965,33 @@ fm_computer_view_init (FMComputerView *computer_view)
     viewport1[2]=gtk_viewport_new (hadjustment, vadjustment);
 
 /*create a box*/
-    box = gtk_vbox_new(TRUE,0);
-    
+    box = gtk_box_new(GTK_ORIENTATION_VERTICAL,0);
+    gtk_box_set_homogeneous (box,FALSE);
+
     icon_container[0] = create_icon_container (computer_view);
     icon_container[0]->name = "disk";
+    gtk_widget_set_size_request(GTK_WIDGET(icon_container[0]),-1,90);
     icon_container[1] = create_icon_container (computer_view);
     icon_container[1]->name = "movable-disk";
+    gtk_widget_set_size_request(GTK_WIDGET(icon_container[1]),-1,90);
     icon_container[2] = create_icon_container (computer_view);
     icon_container[2]->name = "other";
+    gtk_widget_set_size_request(GTK_WIDGET(icon_container[2]),-1,90);
 
-    GtkWidget *elabel_1,*elabel_2,*elabel_3;
     /*disk-expander*/
     expander[0] = gtk_expander_new(_("Disk"));
-    elabel_1 = gtk_expander_get_label_widget(expander[0]);
 
     /*movable-disk-expander*/
     expander[1] = gtk_expander_new(_("Movable-Disk"));
-    elabel_2 = gtk_expander_get_label_widget(expander[1]);
 
     /*other-expander*/  
     expander[2]= gtk_expander_new(_("Other"));
-    elabel_3 = gtk_expander_get_label_widget(expander[2]);
 
     for(i=0;i<3;i++)
     {
         gtk_container_add(GTK_CONTAINER(viewport1[i]),GTK_WIDGET (icon_container[i]));
         gtk_container_add(GTK_CONTAINER(expander[i]),GTK_WIDGET (viewport1[i]));
-        gtk_expander_set_expanded(GTK_EXPANDER(expander[i]),FALSE);
+        gtk_expander_set_expanded(GTK_EXPANDER(expander[i]),TRUE);
         gtk_box_pack_start(GTK_BOX(box),expander[i],FALSE,TRUE,0);
     }
     

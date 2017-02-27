@@ -239,6 +239,7 @@ typedef struct
     void         (* icon_removed)             (PeonyIconContainer *container,
             PeonyIconData *data);
     void         (* cleared)                  (PeonyIconContainer *container);
+    void          (* size_changed)              (PeonyIconContainer *container);
     gboolean     (* start_interactive_search) (PeonyIconContainer *container);
 } PeonyIconContainerClass;
 

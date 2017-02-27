@@ -179,8 +179,8 @@ peony_navigation_window_init (PeonyNavigationWindow *window)
     gtk_widget_set_size_request(window->toolbarViewAs, 50, 32);
     window->details->toolbar = toolbar;
     gtk_widget_set_hexpand (toolbar, FALSE);
-    add_toolbar_vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL,0);
-    gtk_box_set_homogeneous (add_toolbar_vbox,TRUE);
+    add_toolbar_vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL,3);
+    gtk_box_set_homogeneous (add_toolbar_vbox,FALSE);
     gtk_container_set_border_width(GTK_CONTAINER(add_toolbar_vbox),3);
     gtk_box_pack_start(GTK_BOX(add_toolbar_vbox),toolbar,TRUE,TRUE,0);
     gtk_widget_show (add_toolbar_vbox);

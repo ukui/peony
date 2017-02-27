@@ -184,6 +184,8 @@ struct PeonyIconContainerDetails
 
     PeonyIcon *range_selection_base_icon;
 
+    gboolean size_changed;
+
     /* Renaming Details */
     gboolean renaming;
     GtkWidget *rename_widget;	/* Editable text item */

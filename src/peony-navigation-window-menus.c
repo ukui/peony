@@ -479,14 +479,14 @@ refresh_go_menu (PeonyNavigationWindow *window)
                                         -1);
     g_object_unref (window->details->go_menu_action_group);
 
-    for (i = 0; i < G_N_ELEMENTS (icon_entries); i++)
+   for (i = 0; i < G_N_ELEMENTS (icon_entries); i++)
     {
         menuitem = gtk_ui_manager_get_widget (
                        ui_manager,
                        icon_entries[i]);
-
-        gtk_image_menu_item_set_always_show_image (
-            GTK_IMAGE_MENU_ITEM (menuitem), TRUE);
+        if(menuitem!=NULL)
+            gtk_image_menu_item_set_always_show_image (
+                    GTK_IMAGE_MENU_ITEM (menuitem), TRUE);
     }
 
     /* Add in a new set of history items. */
