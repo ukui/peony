@@ -8,7 +8,7 @@ icon_DATA =\
 	ukui-chit_frame.png \
 	ukui-colors.png \
 	ukui-emblems.png \
-	ukui-ukui-erase.png \
+	ukui-erase.png \
 	ukui-knob.png \
         peony-view-as-compact.png \
         peony-view-as-list.png \

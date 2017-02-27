@@ -181,7 +181,7 @@ static GdkPixbuf * make_color_drag_image                        (PeonyPropertyBr
 #define IMAGE_TABLE_X_SPACING 6
 #define IMAGE_TABLE_Y_SPACING 4
 
-#define ERASE_OBJECT_NAME "ukui-ukui-erase.png"
+#define ERASE_OBJECT_NAME "ukui-erase.png"
 
 enum
 {
