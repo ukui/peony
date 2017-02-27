@@ -1,3 +1,9 @@
+peony (1.0.0) zesty; urgency=medium
+
+  * New release. 
+
+ -- handsome_feng <jianfengli@ubuntukylin.com>  Mon, 27 Feb 2017 16:51:28 +0800
+
 peony (0.9.1) zesty; urgency=medium
 
   * make computer-view can be used
