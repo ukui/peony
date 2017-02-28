@@ -3,6 +3,7 @@
 /* peony-file-management-properties.c - Functions to create and show the peony preference dialog.
 
    Copyright (C) 2002 Jan Arne Petersen
+   Copyright (C) 2017, Tianjin KYLIN Information Technology Co., Ltd.
 
    The Ukui Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public License as
@@ -20,6 +21,7 @@
    Boston, MA 02110-1301, USA.
 
    Authors: Jan Arne Petersen <jpetersen@uni-bonn.de>
+            Zuxun Yang <yangzuxun@kylinos.cn>
 */
 
 #include <config.h>

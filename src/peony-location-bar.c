@@ -4,6 +4,7 @@
  * Peony
  *
  * Copyright (C) 2000 Eazel, Inc.
+ * Copyright (C) 2017, Tianjin KYLIN Information Technology Co., Ltd.
  *
  * Peony is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -24,6 +25,7 @@
  *         Ettore Perazzoli <ettore@gnu.org>
  *         Michael Meeks <michael@nuclecu.unam.mx>
  *	   Andy Hertzfeld <andy@eazel.com>
+ *         Zuxun Yang <yangzuxun@kylinos.cn>
  *
  */
 

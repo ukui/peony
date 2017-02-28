@@ -6,6 +6,7 @@
  *  Copyright (C) 1999, 2000 Red Hat, Inc.
  *  Copyright (C) 1999, 2000, 2001 Eazel, Inc.
  *  Copyright (C) 2003 Ximian, Inc.
+ *  Copyright (C) 2017, Tianjin KYLIN Information Technology Co., Ltd.
  *
  *  Peony is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU General Public
@@ -23,6 +24,7 @@
  *
  *  Authors: Elliot Lee <sopwith@redhat.com>
  *  	     John Sullivan <sullivan@eazel.com>
+ *           Zuxun Yang <yangzuxun@kylinos.cn>
  *
  */
 

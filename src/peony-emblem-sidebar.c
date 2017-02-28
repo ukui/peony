@@ -5,6 +5,7 @@
  *
  * Copyright (C) 1999, 2000, 2001 Eazel, Inc.
  * Copyright (C) 2001 Red Hat, Inc.
+ * Copyright (C) 2017, Tianjin KYLIN Information Technology Co., Ltd.
  *
  * Peony is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +23,7 @@
  *
  * Authors:  James Willcox  <jwillcox@gnome.org>
  *           Alexander Larsson <alexl@redhat.com>
+ *           Zuxun Yang <yangzuxun@kylinos.cn>
  *
  * This is a sidebar displaying emblems which can be dragged onto files to
  * set/unset the chosen emblem.

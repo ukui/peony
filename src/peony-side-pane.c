@@ -3,6 +3,7 @@
 /*  peony-side-pane.c
  *
  *  Copyright (C) 2002 Ximian Inc.
+ *  Copyright (C) 2017, Tianjin KYLIN Information Technology Co., Ltd.
  *
  *  Peony is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU General Public License as
@@ -19,6 +20,7 @@
  *  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
  *
  *  Author: Dave Camp <dave@ximian.com>
+ *          Zuxun Yang <yangzuxun@kylinos.cn>
  */
 
 #include <config.h>

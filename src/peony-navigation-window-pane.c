@@ -3,6 +3,7 @@
    peony-navigation-window-pane.c: Peony navigation window pane
 
    Copyright (C) 2008 Free Software Foundation, Inc.
+   Copyright (C) 2017, Tianjin KYLIN Information Technology Co., Ltd.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
@@ -20,6 +21,7 @@
    Boston, MA 02110-1301, USA.
 
    Author: Holger Berndt <berndth@gmx.de>
+           Zuxun Yang <yangzuxun@kylinos.cn>
 */
 
 #include "peony-navigation-window-pane.h"

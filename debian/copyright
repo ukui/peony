@@ -10,6 +10,59 @@ Files: src/file-manager/fm-computer-view.c
 Copyright: 2017, Tianjin KYLIN Information Technology Co., Ltd. 
 License: GPL-2+
 
+Files: libpeony-extension/peony-extension-private.h
+       libpeony-extension/peony-location-widget-provider.c
+       libpeony-private/peony-ui-utilities.c
+       libpeony-private/peony-ui-utilities.h
+       src/peony-autorun-software.c
+Copyright: 2017, Tianjin KYLIN Information Technology Co., Ltd. 
+License: GPL-2+
+
+Files: libpeony-extension/peony-column-provider.c
+       libpeony-extension/peony-column-provider.h
+       libpeony-extension/peony-column.c
+       libpeony-extension/peony-column.h
+       libpeony-extension/peony-extension-types.c
+       libpeony-extension/peony-extension-types.h
+       libpeony-extension/peony-file-info.c
+       libpeony-extension/peony-file-info.h
+       libpeony-extension/peony-info-provider.c
+       libpeony-extension/peony-info-provider.h
+       libpeony-extension/peony-menu-item.c
+       libpeony-extension/peony-menu-item.h
+       libpeony-extension/peony-menu-provider.c
+       libpeony-extension/peony-menu-provider.h
+       libpeony-extension/peony-property-page-provider.c
+       libpeony-extension/peony-property-page-provider.h
+       libpeony-extension/peony-property-page.c
+       libpeony-extension/peony-property-page.h
+       libpeony-private/peony-column-chooser.c
+       libpeony-private/peony-column-chooser.h
+       libpeony-private/peony-column-utilities.c
+       libpeony-private/peony-column-utilities.h
+       libpeony-private/peony-mime-application-chooser.h
+       libpeony-private/peony-module.c
+       libpeony-private/peony-module.h
+       libpeony-private/peony-open-with-dialog.h
+       src/file-manager/fm-icon-container.c
+       src/file-manager/fm-icon-container.h
+Copyright: 2017, Tianjin KYLIN Information Technology Co., Ltd. 
+License: GPL-2+
+
+Files: eel/eel-vfs-extensions.c
+       eel/eel-vfs-extensions.h
+       eel/eel-ukui-extensions.c
+       eel/eel-ukui-extensions.h
+       eel/eel.h
+       eel/eel-canvas.h
+       eel/eel-xml-extensions.c
+       eel/eel-gtk-extensions.c
+       eel/eel-stock-dialogs.h
+       eel/eel-ukui-extensions.c
+       eel/eel-ukui-extensions.h
+Copyright: 2017, Tianjin KYLIN Information Technology Co., Ltd. 
+License: GPL-2+
+
 Files: eel/check-program.c
        eel/eel-art-extensions.c
        eel/eel-art-extensions.h
@@ -49,8 +102,7 @@ Files: eel/check-program.c
        eel/eel-xml-extensions.c
        eel/eel-xml-extensions.h
        eel/eel.h
-Copyright: 1999-2001, Eazel, Inc.
-           2017, Tianjin KYLIN Information Technology Co., Ltd. 
+Copyright: 1999-2001, Eazel, Inc. 
 License: LGPL-2+
 
 Files: libpeony-private/peony-bookmark.c
@@ -155,7 +207,32 @@ Files: libpeony-private/peony-autorun.c
        libpeony-private/peony-desktop-link-monitor.c
        libpeony-private/peony-desktop-link-monitor.h
        libpeony-private/peony-desktop-link.c
-       libpeony-private/peony-desktop-link.h
+       libpeony-private/peony-desktop-link.h       libpeony-extension/peony-column-provider.c
+       libpeony-extension/peony-column-provider.h
+       libpeony-extension/peony-column.c
+       libpeony-extension/peony-column.h
+       libpeony-extension/peony-extension-types.c
+       libpeony-extension/peony-extension-types.h
+       libpeony-extension/peony-file-info.c
+       libpeony-extension/peony-file-info.h
+       libpeony-extension/peony-info-provider.c
+       libpeony-extension/peony-info-provider.h
+       libpeony-extension/peony-menu-item.c
+       libpeony-extension/peony-menu-item.h
+       libpeony-extension/peony-menu-provider.c
+       libpeony-extension/peony-menu-provider.h
+       libpeony-extension/peony-property-page-provider.c
+       libpeony-extension/peony-property-page-provider.h
+       libpeony-extension/peony-property-page.c
+       libpeony-extension/peony-property-page.h
+       libpeony-private/peony-column-chooser.c
+       libpeony-private/peony-column-chooser.h
+       libpeony-private/peony-column-utilities.c
+       libpeony-private/peony-column-utilities.h
+       libpeony-private/peony-mime-application-chooser.h
+       libpeony-private/peony-module.c
+       libpeony-private/peony-module.h
+       libpeony-private/peony-open-with-dialog.h
        libpeony-private/peony-desktop-metadata.c
        libpeony-private/peony-desktop-metadata.h
        libpeony-private/peony-emblem-utils.c
@@ -216,7 +293,6 @@ Files: cut-n-paste-code/libegg/eggdesktopfile.h
        libpeony-private/peony-module.h
        libpeony-private/peony-open-with-dialog.h
 Copyright: 2003-2007, Novell, Inc.
-           2017, Tianjin KYLIN Information Technology Co., Ltd.
 License: LGPL-2+
 
 Files: libpeony-private/peony-thumbnails.c
@@ -253,6 +329,7 @@ Files: libpeony-private/peony-debug-log.c
        src/peony-search-bar.c
        src/peony-search-bar.h
 Copyright: 2005-2006, Novell, Inc.
+           2017, Tianjin KYLIN Information Technology Co., Ltd.
 License: GPL-2+
 
 Files: libpeony-private/peony-window-slot-info.c
@@ -291,7 +368,6 @@ Files: cut-n-paste-code/libegg/eggtreemultidnd.c
        libpeony-private/peony-ui-utilities.h
        src/peony-autorun-software.c
 Copyright: 2001-2009, Red Hat, Inc.
-           2017, Tianjin KYLIN Information Technology Co., Ltd. 
 License: LGPL-2+
 
 Files: eel/eel-canvas-rect-ellipse.c
@@ -299,7 +375,6 @@ Files: eel/eel-canvas-rect-ellipse.c
        eel/eel-canvas.c
        eel/eel-canvas.h
 Copyright: 1997-2000, Free Software Foundation, Inc.
-           2017, Tianjin KYLIN Information Technology Co., Ltd. 
 License: LGPL-2+
 
 Files: libpeony-private/peony-icon-container.h
@@ -316,7 +391,6 @@ Files: eel/eel-background-box.c
        src/file-manager/fm-icon-container.c
        src/file-manager/fm-icon-container.h
 Copyright: 2002, Sun Microsystems, Inc.
-           2017, Tianjin KYLIN Information Technology Co., Ltd. 
 License: LGPL-2+
 
 Files: src/peony-navigation-window.c
@@ -488,13 +562,11 @@ License: LGPL-2+
 Files: eel/eel-editable-label.c
        eel/eel-editable-label.h
 Copyright: 1995-1997, Peter Mattis, Spencer Kimball and Josh MacDonald
-           2017, Tianjin KYLIN Information Technology Co., Ltd. 
 License: LGPL-2+
 
 Files: eel/eel-gtk-container.c
        eel/eel-gtk-container.h
 Copyright: 2001, Ramiro Estrugo
-           2017, Tianjin KYLIN Information Technology Co., Ltd. 
 License: LGPL-2+
 
 Files: src/file-manager/fm-tree-model.h
@@ -561,14 +633,12 @@ License: LGPL-2+
 
 Files: eel/eel-accessibility.c
 Copyright: 2002, Anders Carlsson, Sun Microsystems, Inc.
-           2017, Tianjin KYLIN Information Technology Co., Ltd. 
 License: LGPL-2+
 
 Files: cut-n-paste-code/libegg/eggsmclient-xsmp.c
 Copyright: 1998, Carsten Schaar
            1998, The Open Group
            2007, Novell, Inc.
-           2017, Tianjin KYLIN Information Technology Co., Ltd. 
 License: LGPL-2+
 
 Files: libpeony-private/peony-icon-container.c
@@ -587,7 +657,6 @@ Files: cut-n-paste-code/libegg/eggdesktopfile.c
 Copyright: 1999-2000, Red Hat, Inc.
            2001, George Lebl
            2007, Novell, Inc.
-           2017, Tianjin KYLIN Information Technology Co., Ltd. 
 License: LGPL-2+
 
 Files: libpeony-extension/peony-menu.h
