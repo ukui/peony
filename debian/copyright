@@ -1,7 +1,8 @@
 Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: Peony (old name: mate-file-manager)
-Upstream-Contact: Stefano Karapetsas <stefano@karapetsas.com>, Xiaodong Liu <liuxiaodong@kylinos.cn>,Zuxun Yang <yangzuxun@kylinos.cn>
-Source: http://www.ukui.org/peony/
+Upstream-Contact: Xiaodong Liu <liuxiaodong@kylinos.cn>
+                  Zuxun Yang <yangzuxun@kylinos.cn>
+Source: https://github.com/ukui/peony
 
 Files: src/file-manager/fm-computer-view.c
        src/file-manager/fm-computer-view.h
@@ -83,7 +84,7 @@ Files: eel/check-program.c
        eel/eel-xml-extensions.c
        eel/eel-xml-extensions.h
        eel/eel.h
-Copyright: 1999-2001, Eazel, Inc. 
+Copyright: 1999-2001, Eazel, Inc.
 License: LGPL-2+
 
 Files: libpeony-private/peony-bookmark.c
@@ -288,7 +289,6 @@ Files: libpeony-private/peony-thumbnails.c
        src/peony-zoom-control.c
 Copyright: 1999-2005, Red Hat, Inc.
            1999-2001, Eazel, Inc.
-           2017, Tianjin KYLIN Information Technology Co., Ltd.
 License: GPL-2+
 
 Files: libpeony-private/peony-debug-log.c
@@ -555,7 +555,7 @@ License: GPL-2+
 
 Files: src/peony-side-pane.c
 Copyright: 2002, Ximian Inc
-           2017, Tianjin KYLIN Information Technology Co., Ltd. 
+           2017, Tianjin KYLIN Information Technology Co., Ltd.
 License: GPL-2+
 
 Files: src/file-manager/fm-list-model.c
@@ -613,7 +613,7 @@ License: LGPL-2+
 
 Files: src/peony-pathbar.c
 Copyright: 2004, Red Hat, Inc., Jonathan Blandford <jrb@gnome.org>
-           2017, Tianjin KYLIN Information Technology Co., Ltd. 
+           2017, Tianjin KYLIN Information Technology Co., Ltd.
 License: LGPL-2+
 
 Files: src/peony-pathbar.h
@@ -700,7 +700,7 @@ Files:  .tx/config
        autogen.sh
        configure.ac
 Copyright: *No copyright*
-           2017, Tianjin KYLIN Information Technology Co., Ltd. 
+           2017, Tianjin KYLIN Information Technology Co., Ltd.
 License: GPL-2+ or LGPL-2+
 Comment:
  Appropriately apply licenses as found in COPYING or COPYING.LIBS.
@@ -715,7 +715,7 @@ Copyright: 1999-2001, Eazel, Inc.
            2009, Free Software Foundation, Inc.
            2010, Rosetta Contributors and Canonical Ltd.
            2011-2013, The Peony authors
-           2017, Tianjin KYLIN Information Technology Co., Ltd. 
+           2017, Tianjin KYLIN Information Technology Co., Ltd.
 License: GPL-2+ or LGPL-2+
 Comment:
  Assuming either license from COPYING or COPYING.LIB file.

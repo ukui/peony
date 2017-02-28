@@ -1,17 +1,19 @@
 peony (1.0.0) zesty; urgency=medium
 
-  * New release. 
+  * Update copyright.
+  * Rename some pictures.
+  * Modify place and sidebar in peony.
 
  -- handsome_feng <jianfengli@ubuntukylin.com>  Mon, 27 Feb 2017 16:51:28 +0800
 
 peony (0.9.1) zesty; urgency=medium
 
-  * make computer-view can be used
+  * Fix computer-view.
 
  -- zuxunyang (yangzuxun) <yangzuxun@kylinos.cn>  Mon, 27 Feb 2017 14:00:28 +0800
 
 peony (0.9.0) zesty; urgency=medium
 
-  * Rebased on upstream caja. 
+  * Rebased on upstream caja.
 
  -- zuxunyang (yangzuxun) <yangzuxun@kylinos.cn>  Thu, 19 Jan 2017 11:58:28 +0300
