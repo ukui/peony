@@ -1,7 +1,7 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: 8; c-basic-offset: 8 -*- */
 /*
  * Copyright (C) 1997, 1998, 1999, 2000 Free Software Foundation
- * Copyright (C) 2017, Tianjin KYLIN Information Technology Co., Ltd.
+ * 
  * All rights reserved.
  *
  * This file is part of the Ukui Library.

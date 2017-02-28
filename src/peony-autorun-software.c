@@ -3,7 +3,6 @@
 /* Peony
 
    Copyright (C) 2008 Red Hat, Inc.
-   Copyright (C) 2017, Tianjin KYLIN Information Technology Co., Ltd.
 
    The Ukui Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public License as
@@ -21,7 +20,6 @@
    Boston, MA 02110-1301, USA.
 
    Author: David Zeuthen <davidz@redhat.com>
-           Zuxun Yang <yangzuxun@kylinos.cn>
 */
 
 

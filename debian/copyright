@@ -7,60 +7,41 @@ Files: src/file-manager/fm-computer-view.c
        src/file-manager/fm-computer-view.h
        src/file-manager/fm-computer-container.h
        src/file-manager/fm-computer-container.c
-Copyright: 2017, Tianjin KYLIN Information Technology Co., Ltd. 
+Copyright: 2017, Tianjin KYLIN Information Technology Co., Ltd.
 License: GPL-2+
 
-Files: libpeony-extension/peony-extension-private.h
-       libpeony-extension/peony-location-widget-provider.c
-       libpeony-private/peony-ui-utilities.c
-       libpeony-private/peony-ui-utilities.h
-       src/peony-autorun-software.c
-Copyright: 2017, Tianjin KYLIN Information Technology Co., Ltd. 
+Files: src/peony-navigation-window-pane.c
+Copyright: 2008, Free Software Foundation, Inc.
+           2017, Tianjin KYLIN Information Technology Co., Ltd.
 License: GPL-2+
 
-Files: libpeony-extension/peony-column-provider.c
-       libpeony-extension/peony-column-provider.h
-       libpeony-extension/peony-column.c
-       libpeony-extension/peony-column.h
-       libpeony-extension/peony-extension-types.c
-       libpeony-extension/peony-extension-types.h
-       libpeony-extension/peony-file-info.c
-       libpeony-extension/peony-file-info.h
-       libpeony-extension/peony-info-provider.c
-       libpeony-extension/peony-info-provider.h
-       libpeony-extension/peony-menu-item.c
-       libpeony-extension/peony-menu-item.h
-       libpeony-extension/peony-menu-provider.c
-       libpeony-extension/peony-menu-provider.h
-       libpeony-extension/peony-property-page-provider.c
-       libpeony-extension/peony-property-page-provider.h
-       libpeony-extension/peony-property-page.c
-       libpeony-extension/peony-property-page.h
-       libpeony-private/peony-column-chooser.c
-       libpeony-private/peony-column-chooser.h
-       libpeony-private/peony-column-utilities.c
-       libpeony-private/peony-column-utilities.h
-       libpeony-private/peony-mime-application-chooser.h
-       libpeony-private/peony-module.c
-       libpeony-private/peony-module.h
-       libpeony-private/peony-open-with-dialog.h
-       src/file-manager/fm-icon-container.c
-       src/file-manager/fm-icon-container.h
-Copyright: 2017, Tianjin KYLIN Information Technology Co., Ltd. 
+Files: src/peony-places-sidebar.c
+       src/peony-places-sidebar.h
+Copyright: 2017, Tianjin KYLIN Information Technology Co., Ltd.
 License: GPL-2+
 
-Files: eel/eel-vfs-extensions.c
-       eel/eel-vfs-extensions.h
-       eel/eel-ukui-extensions.c
-       eel/eel-ukui-extensions.h
-       eel/eel.h
-       eel/eel-canvas.h
-       eel/eel-xml-extensions.c
-       eel/eel-gtk-extensions.c
-       eel/eel-stock-dialogs.h
-       eel/eel-ukui-extensions.c
-       eel/eel-ukui-extensions.h
-Copyright: 2017, Tianjin KYLIN Information Technology Co., Ltd. 
+Files: src/peony-application.c
+Copyright: 1999-2005, Red Hat, Inc.
+           1999-2001, Eazel, Inc.
+           2017, Tianjin KYLIN Information Technology Co., Ltd.
+License: GPL-2+
+
+Files: src/peony-navigation-window.c
+       src/peony-navigation-window.h
+Copyright: 1999-2000, Red Hat, Inc.
+           1999-2001, Eazel, Inc.
+           2003, Ximian, Inc.
+           2017, Tianjin KYLIN Information Technology Co., Ltd.
+License: GPL-2+
+
+Files: src/peony-search-bar.c
+Copyright: 2005-2006, Novell, Inc.
+           2017, Tianjin KYLIN Information Technology Co., Ltd.
+License: GPL-2+
+
+Files: src/peony-view-as-action.c
+Copyright: 2000-2011, Red Hat, Inc
+           2017, Tianjin KYLIN Information Technology Co., Ltd.
 License: GPL-2+
 
 Files: eel/check-program.c
@@ -179,7 +160,6 @@ Files: libpeony-private/peony-bookmark.c
        src/peony-window-toolbars.c
        src/peony-zoom-control.h
 Copyright: 1999-2001, Eazel, Inc.
-	   2017, Tianjin KYLIN Information Technology Co., Ltd.
 License: GPL-2+
 
 Files: src/file-manager/fm-desktop-icon-view.h
@@ -191,7 +171,6 @@ Files: src/file-manager/fm-desktop-icon-view.h
        src/file-manager/fm-properties-window.c
        src/file-manager/fm-properties-window.h
 Copyright: 1999-2001, Eazel, Inc.
-	   2017, Tianjin KYLIN Information Technology Co., Ltd.
 License: LGPL-2+
 
 Files: libpeony-private/peony-autorun.c
@@ -252,14 +231,12 @@ Files: libpeony-private/peony-autorun.c
        src/peony-image-properties-page.h
        src/peony-query-editor.c
        src/peony-query-editor.h
-       src/peony-view-as-action.c
        src/peony-view-as-action.h
        src/peony-window-bookmarks.h
        src/peony-zoom-action.c
        src/peony-zoom-action.h
        src/file-manager/fm-actions.h
 Copyright: 2000-2011, Red Hat, Inc
-	   2017, Tianjin KYLIN Information Technology Co., Ltd.
 License: GPL-2+
 
 Files: cut-n-paste-code/libegg/eggdesktopfile.h
@@ -296,7 +273,6 @@ Copyright: 2003-2007, Novell, Inc.
 License: LGPL-2+
 
 Files: libpeony-private/peony-thumbnails.c
-       src/peony-application.c
        src/peony-emblem-sidebar.c
        src/peony-history-sidebar.c
        src/peony-history-sidebar.h
@@ -326,15 +302,12 @@ Files: libpeony-private/peony-debug-log.c
        libpeony-private/peony-search-engine-beagle.h
        libpeony-private/peony-search-engine.c
        libpeony-private/peony-search-engine.h
-       src/peony-search-bar.c
        src/peony-search-bar.h
 Copyright: 2005-2006, Novell, Inc.
-           2017, Tianjin KYLIN Information Technology Co., Ltd.
 License: GPL-2+
 
 Files: libpeony-private/peony-window-slot-info.c
        libpeony-private/peony-window-slot-info.h
-       src/peony-navigation-window-pane.c
        src/peony-navigation-window-pane.h
        src/peony-navigation-window-slot.c
        src/peony-navigation-window-slot.h
@@ -343,7 +316,6 @@ Files: libpeony-private/peony-window-slot-info.c
        src/peony-window-slot.c
        src/peony-window-slot.h
 Copyright: 2008, Free Software Foundation, Inc.
-           2017, Tianjin KYLIN Information Technology Co., Ltd. 
 License: GPL-2+
 
 Files: libpeony-private/peony-sidebar-provider.c
@@ -357,7 +329,6 @@ Files: libpeony-private/peony-sidebar-provider.c
        libpeony-private/peony-window-info.c
        libpeony-private/peony-window-info.h
 Copyright: 2004, Red Hat, Inc.
-           2017, Tianjin KYLIN Information Technology Co., Ltd. 
 License: GPL-2+
 
 Files: cut-n-paste-code/libegg/eggtreemultidnd.c
@@ -377,13 +348,10 @@ Files: eel/eel-canvas-rect-ellipse.c
 Copyright: 1997-2000, Free Software Foundation, Inc.
 License: LGPL-2+
 
-Files: libpeony-private/peony-icon-container.h
-       libpeony-private/peony-icon-dnd.c
+Files: libpeony-private/peony-icon-dnd.c
        libpeony-private/peony-icon-dnd.h
-       libpeony-private/peony-icon-private.h
 Copyright: 1999-2000, Free Software Foundation, Inc.
-           2000, Eazel, Inc
-           2017, Tianjin KYLIN Information Technology Co., Ltd. 
+           2000, Eazel, Inc.
 License: LGPL-2+
 
 Files: eel/eel-background-box.c
@@ -393,34 +361,28 @@ Files: eel/eel-background-box.c
 Copyright: 2002, Sun Microsystems, Inc.
 License: LGPL-2+
 
-Files: src/peony-navigation-window.c
-       src/peony-navigation-window.h
-       src/peony-spatial-window.h
+Files: src/peony-spatial-window.h
 Copyright: 1999-2000, Red Hat, Inc.
           1999-2001, Eazel, Inc.
           2003, Ximian, Inc.
-           2017, Tianjin KYLIN Information Technology Co., Ltd. 
 License: GPL-2+
 
 Files: libpeony-private/peony-recent.c
        src/file-manager/fm-ditem-page.c
        src/file-manager/fm-ditem-page.h
 Copyright: 2002-2004, James Willcox
-           2017, Tianjin KYLIN Information Technology Co., Ltd. 
 License: GPL-2+
 
 Files: src/peony-location-dialog.c
        src/peony-location-dialog.h
        src/peony-side-pane.h
 Copyright: 2002-2003, Ximian, Inc.
-           2017, Tianjin KYLIN Information Technology Co., Ltd. 
 License: GPL-2+
 
 Files: src/peony-file-management-properties-main.c
        src/peony-file-management-properties.c
        src/peony-file-management-properties.h
 Copyright: 2002, Jan Arne Petersen
-           2017, Tianjin KYLIN Information Technology Co., Ltd. 
 License: LGPL-2+
 
 Files: libpeony-extension/peony-location-widget-provider.h
@@ -428,20 +390,17 @@ Files: libpeony-extension/peony-location-widget-provider.h
        libpeony-private/peony-open-with-dialog.c
 Copyright: 2003-2004, Novell, Inc.
            2005-2007, Red Hat, Inc.
-           2017, Tianjin KYLIN Information Technology Co., Ltd. 
 License: LGPL-2+
 
 Files: libpeony-private/peony-undostack-manager.c
        libpeony-private/peony-undostack-manager.h
 Copyright: 2007-2010, Amos Brocco
            2011, Stefano Karapetsas
-           2017, Tianjin KYLIN Information Technology Co., Ltd. 
 License: GPL-2+
 
 Files: libpeony-private/peony-extensions.c
        libpeony-private/peony-extensions.h
 Copyright: 2014, Alexander van der Meij <alexandervdm@gliese.me>
-           2017, Tianjin KYLIN Information Technology Co., Ltd. 
 License: GPL-2+
 
 Files: src/peony-notebook.c
@@ -450,7 +409,6 @@ Copyright: 2002, Christophe Fergeau
            2003-2004, Marco Pesenti Gritti
            2003-2005, Christian Persch
            2008, Free Software Foundation, Inc.
-           2017, Tianjin KYLIN Information Technology Co., Ltd. 
 License: GPL-2+
 
 Files: libpeony-private/peony-file-conflict-dialog.c
@@ -458,105 +416,89 @@ Files: libpeony-private/peony-file-conflict-dialog.c
        src/peony-connect-server-operation.c
        src/peony-connect-server-operation.h
 Copyright: 2008-2010, Cosimo Cecchi <cosimoc@gnome.org>
-           2017, Tianjin KYLIN Information Technology Co., Ltd. 
 License: GPL-2+
 
 Files: src/peony-connect-server-dialog.c
        src/peony-connect-server-dialog.h
 Copyright: 2003, Red Hat, Inc
            2010, Cosimo Cecchi <cosimoc@gnome.org>
-           2017, Tianjin KYLIN Information Technology Co., Ltd. 
 License: GPL-2+
 
 Files: libpeony-private/peony-file-operations.h
        src/file-manager/fm-directory-view.c
 Copyright: 1999-2000, Free Software Foundation, Inc.
            2000-2001, Eazel, Inc.
-           2017, Tianjin KYLIN Information Technology Co., Ltd. 
 License: GPL-2+
 
 Files: libpeony-private/peony-directory-background.c
        libpeony-private/peony-directory-background.h
 Copyright: 2000, Eazel, Inc
            2012, Jasmine Hassan <jasmine.aura@gmail.com>
-           2017, Tianjin KYLIN Information Technology Co., Ltd. 
 License: GPL-2+
 
 Files: libpeony-private/peony-file-queue.c
        libpeony-private/peony-file-queue.h
 Copyright: 2001, Maciej Stachowiak
-           2017, Tianjin KYLIN Information Technology Co., Ltd. 
 License: GPL-2+
 
 Files: src/peony-navigation-action.c
        src/peony-navigation-action.h
 Copyright: 2003, Marco Pesenti Gritti
            2004, Red Hat, Inc.
-           2017, Tianjin KYLIN Information Technology Co., Ltd. 
 License: GPL-2+
 
 Files: libpeony-private/peony-cell-renderer-text-ellipsized.c
        libpeony-private/peony-cell-renderer-text-ellipsized.h
 Copyright: 2007, Martin Wehner
-           2017, Tianjin KYLIN Information Technology Co., Ltd. 
 License: GPL-2+
 
 Files: libpeony-private/peony-search-engine-tracker.c
        libpeony-private/peony-search-engine-tracker.h
 Copyright: 2005, Mr Jamie McCracken
-           2017, Tianjin KYLIN Information Technology Co., Ltd. 
 License: GPL-2+
 
 Files: src/peony-trash-bar.c
        src/peony-trash-bar.h
 Copyright: 2006, Paolo Borelli <pborelli@katamail.com>
-           2017, Tianjin KYLIN Information Technology Co., Ltd. 
 License: GPL-2+
 
 Files: src/peony-x-content-bar.c
        src/peony-x-content-bar.h
 Copyright: 2006, Paolo Borelli <pborelli@katamail.com>
            2008, Red Hat, Inc.
-           2017, Tianjin KYLIN Information Technology Co., Ltd. 
 License: GPL-2+
 
 Files: libpeony-private/peony-tree-view-drag-dest.c
        libpeony-private/peony-tree-view-drag-dest.h
 Copyright: 2002, Sun Microsystems, Inc.
-           2017, Tianjin KYLIN Information Technology Co., Ltd. 
 License: GPL-2+
 
 Files: eel/eel-accessibility.h
        src/file-manager/fm-list-model.h
 Copyright: 2001-2002, Anders Carlsson
-           2017, Tianjin KYLIN Information Technology Co., Ltd. 
 License: LGPL-2+
 
 Files: src/file-manager/fm-list-view.c
        src/file-manager/fm-list-view.h
 Copyright: 2000, Eazel, Inc.
            2001-2002, Anders Carlsson <andersca@gnu.org>
-           2017, Tianjin KYLIN Information Technology Co., Ltd. 
 License: LGPL-2+
 
 Files: libpeony-private/peony-clipboard.c
        libpeony-private/peony-clipboard.h
 Copyright: 1999-2000, Free Software Foundaton, Inc.
            2000-2001, Eazel, Inc
-           2017, Tianjin KYLIN Information Technology Co., Ltd. 
 License: GPL-2+
 
 Files: eel/eel-background.c
        eel/eel-background.h
 Copyright: 2000, Eazel, Inc.
            2012, Jasmine Hassan <jasmine.aura@gmail.com>
-           2017, Tianjin KYLIN Information Technology Co., Ltd.
 License: GPL-2+
 
 Files: src/file-manager/fm-empty-view.c
        src/file-manager/fm-empty-view.h
 Copyright: 2006, Free Software Foundation, Inc.
-           2017, Tianjin KYLIN Information Technology Co., Ltd. 
 License: LGPL-2+
 
 Files: eel/eel-editable-label.c
@@ -572,51 +514,43 @@ License: LGPL-2+
 Files: src/file-manager/fm-tree-model.h
 Copyright: 2002, Anders Carlsson
            2002, Bent Spoon Software
-           2017, Tianjin KYLIN Information Technology Co., Ltd. 
 License: GPL-2+
 
 Files: src/file-manager/fm-tree-model.c
 Copyright: 2002, Anders Carlsson
            2002, Bent Spoon Software
            2000-2001, Eazel, Inc.
-           2017, Tianjin KYLIN Information Technology Co., Ltd. 
 License: GPL-2+
 
 Files: src/file-manager/fm-tree-view.c
 Copyright: 2000-2001, Eazel, Inc.
            2002, Anders Carlsson
            2002, Darin Adler
-           2017, Tianjin KYLIN Information Technology Co., Ltd. 
 License: GPL-2+
 
 Files: src/file-manager/fm-tree-view.h
 Copyright: 2000-2001, Eazel, Inc.
            2002, Anders Carlsson
-           2017, Tianjin KYLIN Information Technology Co., Ltd. 
 License: GPL-2+
 
 Files: libpeony-private/peony-file-operations.c
 Copyright: 1999-2000, Free Software Foundation
            2000-2001, Eazel, Inc.
            2007, Red Hat, Inc.
-           2017, Tianjin KYLIN Information Technology Co., Ltd. 
 License: GPL-2+
 
 Files: src/file-manager/fm-directory-view.h
 Copyright: 1999-2000, Free Software Foundaton
   2000-2001, Eazel, Inc
-           2017, Tianjin KYLIN Information Technology Co., Ltd. 
 License: GPL-2+
 
 Files: src/peony-image-properties-page.c
 Copyright: 2004, Red Hat, Inc.
            2007, Novell, Inc.
-           2017, Tianjin KYLIN Information Technology Co., Ltd. 
 License: GPL-2+
 
 Files: src/peony-connect-server-dialog-main.c
 Copyright: 2005, Vincent Untz
-           2017, Tianjin KYLIN Information Technology Co., Ltd. 
 License: GPL-2+
 
 Files: src/peony-side-pane.c
@@ -628,7 +562,6 @@ Files: src/file-manager/fm-list-model.c
 Copyright: 2001-2002, Anders Carlsson
            2003, Soeren Sandmann
            2004, Novell, Inc
-           2017, Tianjin KYLIN Information Technology Co., Ltd. 
 License: LGPL-2+
 
 Files: eel/eel-accessibility.c
@@ -646,11 +579,17 @@ Copyright: 1999-2000, Free Software Foundation, Inc.
            2000-2001, Eazel, Inc.
            2002-2003, Red Hat, Inc.
            2017, Tianjin KYLIN Information Technology Co., Ltd. 
-License: LGPL-2+
+License: GPL-2+
+
+Files: libpeony-private/peony-icon-container.h
+       libpeony-private/peony-icon-private.h
+Copyright: 1999-2000, Free Software Foundation, Inc.
+           2000, Eazel, Inc.
+           2017, Tianjin KYLIN Information Technology Co., Ltd.
+License: GPL-2+
 
 Files: src/file-manager/fm-desktop-icon-view.c
 Copyright: 2000-2001, Eazel, Inc.
-           2017, Tianjin KYLIN Information Technology Co., Ltd. 
 License: LGPL-2+
 
 Files: cut-n-paste-code/libegg/eggdesktopfile.c
@@ -662,17 +601,14 @@ License: LGPL-2+
 Files: libpeony-extension/peony-menu.h
 Copyright: 2003, Novell, Inc.
            2005, Raffaele Sandrini
-           2017, Tianjin KYLIN Information Technology Co., Ltd.
 License: LGPL-2+
 
 Files: libpeony-extension/peony-menu.c
 Copyright: 2005, Raffaele Sandrini
-           2017, Tianjin KYLIN Information Technology Co., Ltd. 
 License: LGPL-2+
 
 Files: libpeony-private/peony-icon-info.c
 Copyright: 2007, Red Hat, Inc., Alexander Larsson <alexl@redhat.com>
-           2017, Tianjin KYLIN Information Technology Co., Ltd. 
 License: LGPL-2+
 
 Files: src/peony-pathbar.c
@@ -682,20 +618,15 @@ License: LGPL-2+
 
 Files: src/peony-pathbar.h
 Copyright: *No copyright*
-           2017, Tianjin KYLIN Information Technology Co., Ltd. 
 License: LGPL-2+
 
 Files: src/peony-freedesktop-dbus.c
        src/peony-freedesktop-dbus.h
-       src/peony-places-sidebar.c
-       src/peony-places-sidebar.h
-Copyright: *No copyright*
-           2017, Tianjin KYLIN Information Technology Co., Ltd. 
+Copyright: *No copyright* 
 License: GPL-2+
 
 Files: libpeony-private/peony-metadata.c
 Copyright: 2009, Red Hat, Inc.
-           2017, Tianjin KYLIN Information Technology Co., Ltd. 
 License: LGPL-2+
 
 Files:  .tx/config

@@ -4,7 +4,6 @@
  * Peony
  *
  * Copyright (C) 1999, 2000 Eazel, Inc.
- * Copyright (C) 2017, Tianjin KYLIN Information Technology Co., Ltd.
  *
  * Peony is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -21,7 +20,6 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
  *
  * Authors: John Sullivan <sullivan@eazel.com>
-            Zuxun Yang <yangzuxun@kylinos.cn>
  */
 
 /* peony-bookmark-list.c - implementation of centralized list of bookmarks.

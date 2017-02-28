@@ -4,7 +4,6 @@
  * Peony
  *
  * Copyright (C) 2005 Vincent Untz
- * Copyright (C) 2017, Tianjin KYLIN Information Technology Co., Ltd.
  *
  * Peony is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -24,7 +23,6 @@
  * Authors:
  *   Vincent Untz <vincent@vuntz.net>
  *   Cosimo Cecchi <cosimoc@gnome.org>
- *   Zuxun Yang <yangzuxun@kylinos.cn>
  */
 
 #include <config.h>

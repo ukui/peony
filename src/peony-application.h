@@ -4,7 +4,6 @@
  * Peony
  *
  * Copyright (C) 2000 Red Hat, Inc.
- * Copyright (C) 2017, Tianjin KYLIN Information Technology Co., Ltd.
  *
  * Peony is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as

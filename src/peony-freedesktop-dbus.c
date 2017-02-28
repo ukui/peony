@@ -1,6 +1,5 @@
 /*
  * peony-freedesktop-dbus: Implementation for the org.freedesktop DBus file-management interfaces
- * Copyright (C) 2017, Tianjin KYLIN Information Technology Co., Ltd.
  * Peony is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
  * published by the Free Software Foundation; either version 2 of the
@@ -19,7 +18,6 @@
  * Authors: Akshay Gupta <kitallis@gmail.com>
  *          Federico Mena Quintero <federico@gnome.org>
  *          Stefano Karapetsas <stefano@karapetsas.com>
- *          Zuxun Yang <yangzuxun@kylinos.cn>
  */
 
 #include <config.h>

@@ -3,7 +3,6 @@
  * Peony
  *
  * Copyright (C) 2010 Cosimo Cecchi <cosimoc@gnome.org>
- * Copyright (C) 2017, Tianjin KYLIN Information Technology Co., Ltd.
  *
  * Peony is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -21,7 +20,6 @@
  * Boston, MA 02110-1301, USA.
  *
  * Author: Cosimo Cecchi <cosimoc@gnome.org>
- *         Zuxun Yang <yangzuxun@kylinos.cn>
  */
 
 #include <config.h>

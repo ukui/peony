@@ -3,6 +3,7 @@
 
    Copyright (C) 1999, 2000 Free Software Foundation
    Copyright (C) 2000 Eazel, Inc.
+   Copyright (C) 2017, Tianjin KYLIN Information Technology Co., Ltd.
 
    The Ukui Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public License as
