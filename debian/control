@@ -1,7 +1,7 @@
 Source: peony
 Section: utils
 Priority: optional
-Maintainer: Kylin Team <ukui@kylinos.cn>
+Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
 Uploaders: Xiaodong Liu <liuxiaodong@kylinos.cn>,
            Zuxun Yang <yangzuxun@kylinos.cn>,
 Build-Depends: debhelper (>= 9),

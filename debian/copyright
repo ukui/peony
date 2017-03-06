@@ -187,7 +187,8 @@ Files: libpeony-private/peony-autorun.c
        libpeony-private/peony-desktop-link-monitor.c
        libpeony-private/peony-desktop-link-monitor.h
        libpeony-private/peony-desktop-link.c
-       libpeony-private/peony-desktop-link.h       libpeony-extension/peony-column-provider.c
+       libpeony-private/peony-desktop-link.h
+       libpeony-extension/peony-column-provider.c
        libpeony-extension/peony-column-provider.h
        libpeony-extension/peony-column.c
        libpeony-extension/peony-column.h
@@ -622,7 +623,7 @@ License: LGPL-2+
 
 Files: src/peony-freedesktop-dbus.c
        src/peony-freedesktop-dbus.h
-Copyright: *No copyright* 
+Copyright: *No copyright*
 License: GPL-2+
 
 Files: libpeony-private/peony-metadata.c
@@ -700,7 +701,6 @@ Files:  .tx/config
        autogen.sh
        configure.ac
 Copyright: *No copyright*
-           2017, Tianjin KYLIN Information Technology Co., Ltd.
 License: GPL-2+ or LGPL-2+
 Comment:
  Appropriately apply licenses as found in COPYING or COPYING.LIBS.

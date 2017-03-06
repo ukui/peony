@@ -5,7 +5,6 @@
   			    rolled into ukui someday.
 
    Copyright (C) 1999, 2000, 2001 Eazel, Inc.
-   
 
    The Ukui Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public License as
