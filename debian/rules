@@ -31,9 +31,9 @@ override_dh_auto_configure:
 override_dh_auto_test:
 	DEB_BUILD_OPTIONS=nocheck dh_auto_test
 
-override_dh_strip:
-	dh_strip -ppeony --dbg-package=peony-dbg
-	dh_strip -plibpeony-extension1 --dbg-package=libpeony-extension1-dbg
+#override_dh_strip:
+#	dh_strip -ppeony --dbg-package=peony-dbg
+#	dh_strip -plibpeony-extension1 --dbg-package=libpeony-extension1-dbg
 
 get-orig-source:
 	uscan --noconf --force-download --rename --download-current-version --destdir=..
