@@ -539,7 +539,8 @@ action_about_peony_callback (GtkAction *action,
                                          "files and folders, both on "
                                          "your computer and online."),
                            "copyright", _("Copyright \xC2\xA9 1999-2009 The Nautilus authors\n"
-                                          "Copyright \xC2\xA9 2011-2016 The Peony authors"),
+                                          "Copyright \xC2\xA9 2011-2016 The Caja authors\n"
+					  "Copyright \xC2\xA9 2016-2017 The Peony authors"),
                            "license", license_trans,
                            "wrap-license", TRUE,
                            "authors", authors,
@@ -550,7 +551,7 @@ action_about_peony_callback (GtkAction *action,
                             */
                            "translator-credits", _("translator-credits"),
                            "logo-icon-name", "system-file-manager",
-                           "website", "http://www.ukui-desktop.org",
+                           "website", "http://www.ukui.org",
                            "website-label", _("UKUI Web Site"),
                            NULL);
 

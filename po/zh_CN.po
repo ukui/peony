@@ -7127,8 +7127,9 @@ msgstr "Peony 可让您组织本机和网络上的文件和文件夹。"
 #: ../src/peony-window-menus.c:540
 msgid ""
 "Copyright © 1999-2009 The Nautilus authors\n"
-"Copyright © 2011-2016 The Peony authors"
-msgstr "Copyright © 1999-2009 Nautilus 作者\nCopyright © 2011-2016 Peony 作者"
+"Copyright © 2011-2016 The Caja authors\n"
+"Copyright © 2016-2017 The Peony authors"
+msgstr "Copyright © 1999-2009 Nautilus 作者\nCopyright © 2011-2016 Caja 作者\nCopyright © 2016-2017 The Peony 作者"
 
 #. Translators should localize the following string
 #. * which will be displayed at the bottom of the about

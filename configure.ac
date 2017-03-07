@@ -20,7 +20,7 @@ dnl Interface break is not allowed.
 m4_define(peony_extension_current,  5)
 m4_define(peony_extension_revision, 0)
 
-AC_INIT([peony], [1.17.4], [http://www.ukui.org])
+AC_INIT([peony], [1.0.0], [http://www.ukui.org])
 
 dnl ---------------------------------------------------------------------------
 
