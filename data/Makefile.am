@@ -38,7 +38,7 @@ peonydata_DATA = \
 	$(NULL)
 
 # app data file
-appdatadir = $(datadir)/appdata
+appdatadir = $(datadir)/metainfo
 appdata_in_files = peony.appdata.xml.in
 appdata_DATA = $(appdata_in_files:.xml.in=.xml)
 
