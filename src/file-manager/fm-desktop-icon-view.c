@@ -706,9 +706,9 @@ action_change_background_callback (GtkAction *action,
 
     peony_launch_application_from_command (gtk_widget_get_screen (GTK_WIDGET (data)),
                                           _("Background"),
-                                          "ukui-appearance-properties",
+                                          "ukui-control-center",
                                           FALSE,
-                                          "--show-page=background", NULL);
+                                          "-a", NULL);
 }
 
 static void
