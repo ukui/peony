@@ -186,8 +186,6 @@ static void          end_renaming_mode                              (PeonyIconCo
         gboolean               commit);
 static PeonyIcon *get_icon_being_renamed                         (PeonyIconContainer *container);
 static void          finish_adding_new_icons                        (PeonyIconContainer *container);
-static void          update_label_color                             (EelBackground         *background,
-        PeonyIconContainer *icon_container);
 static inline void   icon_get_bounding_box                          (PeonyIcon          *icon,
         int                   *x1_return,
         int                   *y1_return,
@@ -4546,6 +4544,18 @@ size_allocate (GtkWidget *widget,
     }
 }
 
+static gboolean
+draw (GtkWidget *widget, cairo_t *cr)
+{
+    if (!CAJA_ICON_CONTAINER (widget)->details->is_desktop)
+    {
+        eel_background_draw (widget, cr);
+    }
+
+    return GTK_WIDGET_CLASS (caja_icon_container_parent_class)->draw (widget,
+                                                                      cr);
+}
+
 static void
 realize (GtkWidget *widget)
 {
@@ -6547,6 +6557,7 @@ peony_icon_container_class_init (PeonyIconContainerClass *class)
     widget_class = GTK_WIDGET_CLASS (class);
     widget_class->size_allocate = size_allocate;
     widget_class->realize = realize;
+    widget_class->draw = draw;
     widget_class->unrealize = unrealize;
     widget_class->button_press_event = button_press_event;
     widget_class->button_release_event = button_release_event;
