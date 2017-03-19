@@ -4547,12 +4547,12 @@ size_allocate (GtkWidget *widget,
 static gboolean
 draw (GtkWidget *widget, cairo_t *cr)
 {
-    if (!CAJA_ICON_CONTAINER (widget)->details->is_desktop)
+    if (!PEONY_ICON_CONTAINER (widget)->details->is_desktop)
     {
         eel_background_draw (widget, cr);
     }
 
-    return GTK_WIDGET_CLASS (caja_icon_container_parent_class)->draw (widget,
+    return GTK_WIDGET_CLASS (peony_icon_container_parent_class)->draw (widget,
                                                                       cr);
 }
 

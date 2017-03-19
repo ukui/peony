@@ -510,8 +510,8 @@ fade_to_surface (EelBackground   *self,
         {
             window = gtk_widget_get_window (widget);
         }
-#endif
         mate_bg_crossfade_start (self->details->fade, window);
+#endif
         if (self->details->is_desktop)
         {
             g_signal_connect (self->details->fade,
@@ -616,7 +616,7 @@ static void
 widget_style_updated_cb (GtkWidget *widget,
                      gpointer   user_data)
 {
-    widget_queue_background_changed (widget,user_data);
+    widget_queue_background_change (widget,user_data);
 }
 
 static void

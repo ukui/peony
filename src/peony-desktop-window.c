@@ -389,7 +389,7 @@ draw (GtkWidget *widget,
 {
     eel_background_draw (widget, cr);
 
-    return GTK_WIDGET_CLASS (caja_desktop_window_parent_class)->draw (widget, cr);
+    return GTK_WIDGET_CLASS (peony_desktop_window_parent_class)->draw (widget, cr);
 }
 #endif
 
