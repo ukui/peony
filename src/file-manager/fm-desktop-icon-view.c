@@ -38,9 +38,7 @@
 #include <gdk/gdkx.h>
 #include <glib/gi18n.h>
 #include <libpeony-private/peony-desktop-icon-file.h>
-#if !GTK_CHECK_VERSION (3, 22, 0)
 #include <libpeony-private/peony-directory-background.h>
-#endif
 #include <libpeony-private/peony-directory-notify.h>
 #include <libpeony-private/peony-file-changes-queue.h>
 #include <libpeony-private/peony-file-operations.h>

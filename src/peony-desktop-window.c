@@ -36,172 +36,56 @@
 #include <libpeony-private/peony-icon-names.h>
 #include <gio/gio.h>
 #include <glib/gi18n.h>    
-#if GTK_CHECK_VERSION (3, 22, 0)
-#define MATE_DESKTOP_USE_UNSTABLE_API
-#include <libmate-desktop/mate-bg.h>
-#endif
 
 struct PeonyDesktopWindowDetails
 {
     gulong size_changed_id;
 
     gboolean loaded;
-#if GTK_CHECK_VERSION (3, 22, 0)
-    gboolean composited;
-    cairo_surface_t *surface;
-#endif
 };
 
 G_DEFINE_TYPE (PeonyDesktopWindow, peony_desktop_window,
                PEONY_TYPE_SPATIAL_WINDOW);
 
-#if GTK_CHECK_VERSION (3, 22, 0)
-
-static void
-background_changed (PeonyDesktopWindow *window)
-{
-    GdkScreen *screen = gdk_screen_get_default ();
-
-    if (window->details->surface) {
-        cairo_surface_destroy (window->details->surface);
-    }
-
-    window->details->surface = mate_bg_get_surface_from_root (screen);
-    gtk_widget_queue_draw (GTK_WIDGET (window));
-}
-
-static GdkFilterReturn
-filter_func (GdkXEvent             *xevent,
-             GdkEvent              *event,
-             PeonyDesktopWindow *window)
-{
-    XEvent *xev = (XEvent *) xevent;
-    GdkAtom gdkatom;
-
-    if (xev->type != PropertyNotify) {
-        return GDK_FILTER_CONTINUE;
-    }
-
-    gdkatom = gdk_atom_intern_static_string ("_XROOTPMAP_ID");
-    if (xev->xproperty.atom != gdk_x11_atom_to_xatom (gdkatom)) {
-        return GDK_FILTER_CONTINUE;
-    }
-
-    background_changed (window);
-
-    return GDK_FILTER_CONTINUE;
-}
-
-static void
-peony_desktop_window_composited_changed (GtkWidget *widget)
-{
-    PeonyDesktopWindow *window = PEONY_DESKTOP_WINDOW (widget);
-    GdkScreen *screen = gdk_screen_get_default ();
-    gboolean composited = gdk_screen_is_composited (screen);
-    GdkWindow *root;
-
-    if (window->details->composited == composited) {
-        return;
-    }
-
-    window->details->composited = composited;
-    root = gdk_screen_get_root_window (screen);
-
-    if (composited) {
-        gdk_window_remove_filter (root, (GdkFilterFunc) filter_func, window);
-
-        if (window->details->surface) {
-            cairo_surface_destroy (window->details->surface);
-            window->details->surface = NULL;
-        }
-    } else {
-        gint events = gdk_window_get_events (root);
-
-        gdk_window_set_events (root, events | GDK_PROPERTY_CHANGE_MASK);
-        gdk_window_add_filter (root, (GdkFilterFunc) filter_func, window);
-        background_changed (window);
-    }
-}
-
-static gboolean
-peony_desktop_window_draw (GtkWidget *widget,
-                              cairo_t   *cr)
-{
-    PeonyDesktopWindow *window = PEONY_DESKTOP_WINDOW (widget);
-
-    if (window->details->surface) {
-        cairo_set_source_surface (cr, window->details->surface, 0, 0);
-        cairo_paint (cr);
-    }
-
-    return GTK_WIDGET_CLASS (peony_desktop_window_parent_class)->draw (widget, cr);
-}
-
-static void
-peony_desktop_window_finalize (GObject *obj)
-{
-    PeonyDesktopWindow *window = PEONY_DESKTOP_WINDOW (obj);
-
-    if (window->details->composited == FALSE) {
-        GdkScreen *screen = gdk_screen_get_default ();
-        GdkWindow *root = gdk_screen_get_root_window (screen);
-
-        gdk_window_remove_filter (root, (GdkFilterFunc) filter_func, window);
-    }
-
-    if (window->details->surface) {
-        cairo_surface_destroy (window->details->surface);
-        window->details->surface = NULL;
-    }
-
-    G_OBJECT_CLASS (peony_desktop_window_parent_class)->finalize (obj);
-}
-#endif  /* GTK_CHECK_VERSION (3, 22, 0) */
 
 static void
 peony_desktop_window_init (PeonyDesktopWindow *window)
 {
-    GtkAction *action;
-    AtkObject *accessible;
+	    GtkAction *action;
+	        AtkObject *accessible;
 
-    window->details = G_TYPE_INSTANCE_GET_PRIVATE (window, PEONY_TYPE_DESKTOP_WINDOW,
-                                                   PeonyDesktopWindowDetails);
+		    window->details = G_TYPE_INSTANCE_GET_PRIVATE (window, PEONY_TYPE_DESKTOP_WINDOW,
+				                                                       PeonyDesktopWindowDetails);
 
-    GtkStyleContext *context;
+		        GtkStyleContext *context;
 
-    context = gtk_widget_get_style_context (GTK_WIDGET (window));
-    gtk_style_context_add_class (context, "peony-desktop-window");
+			    context = gtk_widget_get_style_context (GTK_WIDGET (window));
+			        gtk_style_context_add_class (context, "peony-desktop-window");
 
-#if GTK_CHECK_VERSION (3, 22, 0)
-    window->details->composited = TRUE;
-    peony_desktop_window_composited_changed (GTK_WIDGET (window));
-#endif
+				    gtk_window_move (GTK_WINDOW (window), 0, 0);
 
-    gtk_window_move (GTK_WINDOW (window), 0, 0);
+				        /* shouldn't really be needed given our semantic type
+					 *      * of _NET_WM_TYPE_DESKTOP, but why not
+					 *           */
+				        gtk_window_set_resizable (GTK_WINDOW (window),
+							                              FALSE);
 
-    /* shouldn't really be needed given our semantic type
-     * of _NET_WM_TYPE_DESKTOP, but why not
-     */
-    gtk_window_set_resizable (GTK_WINDOW (window),
-                              FALSE);
+					    g_object_set_data (G_OBJECT (window), "is_desktop_window",
+							                           GINT_TO_POINTER (1));
 
-    g_object_set_data (G_OBJECT (window), "is_desktop_window",
-                       GINT_TO_POINTER (1));
+					        gtk_widget_hide (PEONY_WINDOW (window)->details->statusbar);
+						    gtk_widget_hide (PEONY_WINDOW (window)->details->menubar);
+						    /* Don't allow close action on desktop */
+						        action = gtk_action_group_get_action (PEONY_WINDOW (window)->details->main_action_group,
+									                                          PEONY_ACTION_CLOSE);
+							    gtk_action_set_sensitive (action, FALSE);
 
-    gtk_widget_hide (PEONY_WINDOW (window)->details->statusbar);
-    gtk_widget_hide (PEONY_WINDOW (window)->details->menubar);
+							        /* Set the accessible name so that it doesn't inherit the cryptic desktop URI. */
+							        accessible = gtk_widget_get_accessible (GTK_WIDGET (window));
 
-    /* Don't allow close action on desktop */
-    action = gtk_action_group_get_action (PEONY_WINDOW (window)->details->main_action_group,
-                                          PEONY_ACTION_CLOSE);
-    gtk_action_set_sensitive (action, FALSE);
-
-    /* Set the accessible name so that it doesn't inherit the cryptic desktop URI. */
-    accessible = gtk_widget_get_accessible (GTK_WIDGET (window));
-
-    if (accessible) {
-        atk_object_set_name (accessible, _("Desktop"));
-    }
+								    if (accessible) {
+									            atk_object_set_name (accessible, _("Desktop"));
+										        }
 }
 
 static gint
@@ -282,13 +166,6 @@ map (GtkWidget *widget)
     /* Chain up to realize our children */
     GTK_WIDGET_CLASS (peony_desktop_window_parent_class)->map (widget);
     gdk_window_lower (gtk_widget_get_window (widget));
-#if GTK_CHECK_VERSION (3, 22, 0)
-    GdkWindow *window;
-    GdkRGBA transparent = { 0, 0, 0, 0 };
-
-    window = gtk_widget_get_window (widget);
-    gdk_window_set_background_rgba (window, &transparent);
-#endif
 }
 
 static void
@@ -354,21 +231,12 @@ realize (GtkWidget *widget)
 {
     PeonyDesktopWindow *window;
     PeonyDesktopWindowDetails *details;
-#if GTK_CHECK_VERSION (3, 22, 0)
-    GdkVisual *visual;
-#endif
     window = PEONY_DESKTOP_WINDOW (widget);
     details = window->details;
 
     /* Make sure we get keyboard events */
     gtk_widget_set_events (widget, gtk_widget_get_events (widget)
                            | GDK_KEY_PRESS_MASK | GDK_KEY_RELEASE_MASK);
-#if GTK_CHECK_VERSION (3, 22, 0)
-    visual = gdk_screen_get_rgba_visual (gtk_widget_get_screen (widget));
-    if (visual) {
-        gtk_widget_set_visual (widget, visual);
-    }
-#endif
     /* Do the work of realizing. */
     GTK_WIDGET_CLASS (peony_desktop_window_parent_class)->realize (widget);
 
@@ -411,17 +279,11 @@ peony_desktop_window_class_init (PeonyDesktopWindowClass *klass)
 {
     GtkWidgetClass *wclass = GTK_WIDGET_CLASS (klass);
     PeonyWindowClass *nclass = PEONY_WINDOW_CLASS (klass);
-#if GTK_CHECK_VERSION (3, 22, 0)
-    GObjectClass *object_class = G_OBJECT_CLASS (klass);
-
-    object_class->finalize = peony_desktop_window_finalize;
-#endif
 
     wclass->realize = realize;
     wclass->unrealize = unrealize;
     wclass->map = map;
 #if GTK_CHECK_VERSION (3, 22, 0)
-    wclass->composited_changed = peony_desktop_window_composited_changed;
     wclass->draw = draw;
 #endif
     nclass->window_type = PEONY_WINDOW_DESKTOP;

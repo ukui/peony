@@ -47,9 +47,7 @@
 #include <libpeony-private/peony-column-chooser.h>
 #include <libpeony-private/peony-column-utilities.h>
 #include <libpeony-private/peony-debug-log.h>
-#if !GTK_CHECK_VERSION (3, 22, 0)
 #include <libpeony-private/peony-directory-background.h>
-#endif
 #include <libpeony-private/peony-dnd.h>
 #include <libpeony-private/peony-file-dnd.h>
 #include <libpeony-private/peony-file-utilities.h>
@@ -2119,13 +2117,11 @@ fm_list_view_file_changed (FMDirectoryView *view, PeonyFile *file, PeonyDirector
     }
 }
 
-#if !GTK_CHECK_VERSION (3, 22, 0)
 static GtkWidget *
 fm_list_view_get_background_widget (FMDirectoryView *view)
 {
     return GTK_WIDGET (view);
 }
-#endif
 
 static void
 fm_list_view_get_selection_foreach_func (GtkTreeModel *model, GtkTreePath *path, GtkTreeIter *iter, gpointer data)
@@ -3290,9 +3286,7 @@ fm_list_view_class_init (FMListViewClass *class)
     fm_directory_view_class->click_policy_changed = fm_list_view_click_policy_changed;
     fm_directory_view_class->clear = fm_list_view_clear;
     fm_directory_view_class->file_changed = fm_list_view_file_changed;
-#if !GTK_CHECK_VERSION (3, 22, 0)
     fm_directory_view_class->get_background_widget = fm_list_view_get_background_widget;
-#endif
     fm_directory_view_class->get_selection = fm_list_view_get_selection;
     fm_directory_view_class->get_selection_for_file_transfer = fm_list_view_get_selection_for_file_transfer;
     fm_directory_view_class->get_item_count = fm_list_view_get_item_count;
