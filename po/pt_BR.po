@@ -6509,7 +6509,7 @@ msgstr "Mes_ma localização como no outro painel"
 
 #: ../src/peony-navigation-window-menus.c:856
 msgid "Go to the same location as in the extra pane"
-msgstr "Vai para a mesma localização como no painel extra"
+msgstr "Ir para a mesma localização como no painel extra"
 
 #. name, stock id, label
 #: ../src/peony-navigation-window-menus.c:859 ../src/peony-spatial-window.c:956
@@ -6644,7 +6644,7 @@ msgstr "_Voltar"
 
 #: ../src/peony-navigation-window-menus.c:958
 msgid "Go to the previous visited location"
-msgstr "Vai para a última localização visitada"
+msgstr "Ir para a última localização visitada"
 
 #: ../src/peony-navigation-window-menus.c:959
 msgid "Back history"
@@ -6656,7 +6656,7 @@ msgstr "_Avançar"
 
 #: ../src/peony-navigation-window-menus.c:975
 msgid "Go to the next visited location"
-msgstr "Vai para a próxima localização visitada"
+msgstr "Ir para a próxima localização visitada"
 
 #: ../src/peony-navigation-window-menus.c:976
 msgid "Forward history"
@@ -7181,7 +7181,7 @@ msgstr "Erro: %s\nSelecione outro visualizador e tente novamente."
 
 #: ../src/peony-window-menus.c:195
 msgid "Go to the location specified by this bookmark"
-msgstr "Vai para a localização especificada por este marcador"
+msgstr "Ir para a localização especificada por este marcador"
 
 #: ../src/peony-window-menus.c:517
 msgid ""
