@@ -23,6 +23,21 @@ msgstr ""
 "Language: zh_CN\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
+#: ../src/peony-places-sidebar.c:540
+#,c-format
+msgid "Personal"
+msgstr "个人"
+
+#: ../src/peony-places-sidebar.c:494
+#,c-format
+msgid "Favorite"
+msgstr "收藏夹"
+
+#: ../src/peony-places-sidebar.c:531
+#,c-format
+msgid "Recent"
+msgstr "最近"
+
 #: ../cut-n-paste-code/libegg/eggdesktopfile.c:166
 #, c-format
 msgid "File is not a valid .desktop file"
