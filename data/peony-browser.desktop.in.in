@@ -10,7 +10,6 @@ StartupNotify=false
 Type=Application
 Categories=GTK;System;Utility;Core;
 Keywords=files;browser;manager;UKUI;
-OnlyShowIn=UKUI;
 X-UKUI-Bugzilla-Bugzilla=UKUI
 X-UKUI-Bugzilla-Product=peony
 X-UKUI-Bugzilla-Component=general

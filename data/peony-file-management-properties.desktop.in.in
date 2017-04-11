@@ -8,7 +8,6 @@ Type=Application
 StartupNotify=true
 Categories=GTK;Settings;X-UKUI-PersonalSettings;
 Keywords=file;manager;change;properties;behaviour;appearance;windows;UKUI;
-OnlyShowIn=UKUI;
 X-UKUI-Bugzilla-Bugzilla=UKUI
 X-UKUI-Bugzilla-Product=peony
 X-UKUI-Bugzilla-Component=Preferences

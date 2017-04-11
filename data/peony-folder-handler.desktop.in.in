@@ -9,7 +9,6 @@ Icon=folder-open
 StartupNotify=false
 Type=Application
 MimeType=inode/directory;application/x-ukui-saved-search;
-OnlyShowIn=UKUI;
 X-UKUI-Bugzilla-Bugzilla=UKUI
 X-UKUI-Bugzilla-Product=peony
 X-UKUI-Bugzilla-Component=general

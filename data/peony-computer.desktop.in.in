@@ -9,7 +9,6 @@ StartupNotify=true
 Type=Application
 Categories=GTK;System;Core;
 Keywords=browse;disks;folders;local;remote;computer;UKUI;
-OnlyShowIn=UKUI;
 NoDisplay=true
 X-UKUI-Bugzilla-Bugzilla=UKUI
 X-UKUI-Bugzilla-Product=peony
