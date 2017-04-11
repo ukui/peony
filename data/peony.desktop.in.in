@@ -7,7 +7,6 @@ Terminal=false
 Type=Application
 StartupNotify=false
 NoDisplay=true
-OnlyShowIn=UKUI;
 X-UKUI-Bugzilla-Bugzilla=UKUI
 X-UKUI-Bugzilla-Product=peony
 X-UKUI-Bugzilla-Component=general

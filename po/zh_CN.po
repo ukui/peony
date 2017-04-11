@@ -23,6 +23,7 @@ msgstr ""
 "Language: zh_CN\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
+
 #: ../src/peony-places-sidebar.c:540
 #,c-format
 msgid "Personal"
@@ -3460,7 +3461,7 @@ msgstr "自动运行提示"
 #: ../data/peony.desktop.in.in.h:1 ../src/peony-spatial-window.c:373
 #: ../src/peony-window-menus.c:535 ../src/peony-window.c:172
 msgid "Peony"
-msgstr "Peony"
+msgstr "文件浏览器"
 
 #: ../data/peony-browser.desktop.in.in.h:2
 msgid "File Browser"
@@ -3486,7 +3487,7 @@ msgstr "更改文件管理器窗口的行为和外观"
 
 #: ../data/peony-home.desktop.in.in.h:1 ../src/file-manager/fm-tree-view.c:1434
 msgid "Home Folder"
-msgstr "主文件夹"
+msgstr "个人"
 
 #. tooltip
 #: ../data/peony-home.desktop.in.in.h:2 ../src/peony-places-sidebar.c:509
@@ -4391,7 +4392,7 @@ msgstr "把选中的文件(夹)移动到本窗口的另一个窗格"
 #: ../src/file-manager/fm-directory-view.c:7565
 #: ../src/file-manager/fm-directory-view.c:7569 ../src/peony-window-menus.c:891
 msgid "_Home Folder"
-msgstr "主文件夹(_H)"
+msgstr "个人(_H)"
 
 #: ../src/file-manager/fm-directory-view.c:7566
 msgid "Copy the current selection to the home folder"
