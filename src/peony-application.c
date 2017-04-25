@@ -2397,6 +2397,8 @@ peony_application_startup (GApplication *app)
     g_signal_connect_object ( self->priv->volume_monitor, "drive_connected",
                              G_CALLBACK (drive_connected_callback), self, 0);
 
+    fdb_manager = peony_freedesktop_dbus_new (self);
+
     /* listen for eject button presses */
     drives = g_volume_monitor_get_connected_drives ( self->priv->volume_monitor);
     self->automount_idle_id =
