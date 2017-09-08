@@ -306,7 +306,10 @@ get_stored_icon_position_callback (PeonyIconContainer *container,
                     (position_string, " %d , %d %c",
                      &position->x, &position->y, &c) == 2;
     g_free (position_string);
-
+	if(position->x < 0 || position->y < 0)
+	{
+		position_good = FALSE;
+	}
     /* If it is the desktop directory, maybe the ukui-libs metadata has information about it */
 
     /* Disable scaling if not on the desktop */

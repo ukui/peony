@@ -127,6 +127,12 @@ entry_icon_release_cb (GtkEntry *entry,
 }
 
 static void
+entry_changed_cb (GtkWidget *entry, PeonySearchBar *bar)
+{
+    g_signal_emit_by_name (entry, "activate", 0);
+}
+
+static void
 entry_activate_cb (GtkWidget *entry, PeonySearchBar *bar)
 {
     if (entry_has_text (bar) && !bar->details->entry_borrowed)
@@ -186,6 +192,8 @@ peony_search_bar_init (PeonySearchBar *bar)
                       G_CALLBACK (entry_icon_release_cb), bar);
     g_signal_connect (bar->details->entry, "focus-in-event",
                       G_CALLBACK (focus_in_event_callback), bar);
+    g_signal_connect (bar->details->entry, "changed",
+                      G_CALLBACK (entry_changed_cb), bar);
 
     gtk_widget_show (bar->details->entry);
 }

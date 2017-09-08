@@ -3492,6 +3492,12 @@ msgstr "背景"
 msgid "E_mpty Trash"
 msgstr "清理回收筒(_M)"
 
+msgid "E_mpty Recent"
+msgstr "清空最近使用記錄"
+
+msgid "D_elete Recent"
+msgstr "刪除使用記錄"
+
 #. label, accelerator
 #. name, stock id
 #. label, accelerator
@@ -6658,6 +6664,10 @@ msgstr "電源開啟(_P)"
 #: ../src/peony-places-sidebar.c:1820
 msgid "_Connect Drive"
 msgstr "連接裝置(_C)"
+
+#: ../src/caja-places-sidebar.c:552
+msgid "Open the recent"
+msgstr "打開最近使用的項目"
 
 #: ../src/peony-places-sidebar.c:1821
 msgid "_Disconnect Drive"

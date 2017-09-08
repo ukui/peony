@@ -3511,6 +3511,12 @@ msgstr "背景"
 msgid "E_mpty Trash"
 msgstr "清空回收站(_M)"
 
+msgid "E_mpty Recent"
+msgstr "清空最近使用记录"
+
+msgid "D_elete Recent"
+msgstr "删除使用记录"
+
 #. label, accelerator
 #. name, stock id
 #. label, accelerator
@@ -6651,6 +6657,10 @@ msgstr "打开文件系统目录"
 #: ../src/peony-places-sidebar.c:599
 msgid "Open the trash"
 msgstr "打开回收站"
+
+#: ../src/caja-places-sidebar.c:552
+msgid "Open the recent"
+msgstr "打开最近使用的项目"
 
 #: ../src/peony-places-sidebar.c:654 ../src/peony-places-sidebar.c:682
 #, c-format

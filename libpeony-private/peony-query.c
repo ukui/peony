@@ -394,3 +394,17 @@ peony_query_save (PeonyQuery *query, char *file)
     }
     return res;
 }
+
+gboolean
+query_is_go_to_location (PeonyQuery *query)
+{
+    if(NULL != query && NULL != query->details && NULL != query->details->text && 0 == strcmp(query->details->text,GO_TO_LOCATION))
+    {
+		return TRUE;
+	}
+	else
+	{
+		return FALSE;
+	}
+}
+

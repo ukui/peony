@@ -108,7 +108,23 @@ query_editor_changed_callback (PeonySearchBar *bar,
                                PeonyWindowSlot *slot)
 {
     PeonyDirectory *directory;
-
+	GFile *location = NULL;
+	
+	if(TRUE == query_is_go_to_location(query))
+	{
+        if (NULL != slot && NULL != slot->query_editor && NULL != slot->query_editor->local_uri)
+        {
+			location = g_file_new_for_uri (slot->query_editor->local_uri);
+			if(NULL != location)
+			{
+				peony_window_slot_go_to (slot, location, FALSE);
+        		g_object_unref (location);
+			}
+        }
+		g_object_unref (query);
+		return;
+	}
+	
     g_assert (PEONY_IS_FILE (slot->viewed_file));
 
     directory = peony_directory_get_for_file (slot->viewed_file);

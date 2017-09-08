@@ -118,6 +118,7 @@
 		<separator name="Clipboard separator"/>
 		<placeholder name="File Clipboard Actions">
 			<menuitem name="Paste" action="Paste"/>
+			<menuitem name="Empty Recent" action="Empty Recent"/>
 		</placeholder>
 	</placeholder>
 
@@ -182,6 +183,7 @@
 	<placeholder name="Dangerous File Actions">
 		<menuitem name="Trash" action="Trash"/>
 		<menuitem name="Delete" action="Delete"/>
+		<menuitem name="Delete Recent" action="Delete Recent"/>
 		<menuitem name="Restore From Trash" action="Restore From Trash"/>
 	</placeholder>
 	<separator name="Appearance separator"/>

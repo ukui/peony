@@ -47,6 +47,7 @@ typedef struct PeonyQueryEditor
 {
     GtkBox parent;
     PeonyQueryEditorDetails *details;
+	char *local_uri;
 } PeonyQueryEditor;
 
 typedef struct

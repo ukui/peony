@@ -3519,6 +3519,12 @@ msgstr "顯示一個可設定桌面背景圖樣或顏色的視窗"
 msgid "Empty Trash"
 msgstr "清理回收筒"
 
+msgid "E_mpty Recent"
+msgstr "清空最近使用記錄"
+
+msgid "D_elete Recent"
+msgstr "刪除使用記錄"
+
 #. tooltip
 #: ../src/file-manager/fm-desktop-icon-view.c:819
 #: ../src/file-manager/fm-directory-view.c:7330 ../src/peony-trash-bar.c:204
@@ -6659,6 +6665,10 @@ msgstr "連接裝置(_C)"
 #: ../src/peony-places-sidebar.c:1821
 msgid "_Disconnect Drive"
 msgstr "中斷裝置(_D)"
+
+#: ../src/caja-places-sidebar.c:552
+msgid "Open the recent"
+msgstr "打開最近使用的項目"
 
 #: ../src/peony-places-sidebar.c:1824
 msgid "_Start Multi-disk Device"

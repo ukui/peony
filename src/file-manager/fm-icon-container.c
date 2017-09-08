@@ -198,6 +198,31 @@ fm_icon_container_prioritize_thumbnailing (PeonyIconContainer *container,
     }
 }
 
+static void
+update_auto_strv_as_quarks_everytime (GSettings   *settings,
+                            const gchar *key,
+                            gpointer     user_data)
+{
+    GQuark **storage = user_data;
+    int i = 0;
+    char **value;
+
+    value = g_settings_get_strv (settings, key);
+
+	if(NULL != *storage)
+	{
+	    g_free (*storage);
+		*storage = NULL;
+	}
+    *storage = g_new (GQuark, g_strv_length (value) + 1);
+
+    for (i = 0; value[i] != NULL; ++i) {
+        (*storage)[i] = g_quark_from_string (value[i]);
+    }
+    (*storage)[i] = 0;
+
+    g_strfreev (value);
+}
 /*
  * Get the preference for which caption text should appear
  * beneath icons.
@@ -212,6 +237,12 @@ fm_icon_container_get_icon_text_attributes_from_preferences (void)
         eel_g_settings_add_auto_strv_as_quarks (peony_icon_view_preferences,
                                                 PEONY_PREFERENCES_ICON_VIEW_CAPTIONS,
                                                 &attributes);
+    }
+    else
+    {
+    	update_auto_strv_as_quarks_everytime(peony_icon_view_preferences,
+    		                        PEONY_PREFERENCES_ICON_VIEW_CAPTIONS,
+    		                        &attributes);
     }
 
     /* We don't need to sanity check the attributes list even though it came
@@ -248,6 +279,11 @@ quarkv_length (GQuark *attributes)
 {
     int i;
     i = 0;
+	if(NULL == attributes)
+	{
+		return 0;
+	}
+	
     while (attributes[i] != 0)
     {
         i++;

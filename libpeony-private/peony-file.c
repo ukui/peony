@@ -6145,7 +6145,10 @@ char *
 peony_file_get_string_attribute_q (PeonyFile *file, GQuark attribute_q)
 {
 	char *extension_attribute;
-
+	if(NULL == file)
+	{
+		return NULL;
+	}
 	if (attribute_q == attribute_name_q) {
 		return peony_file_get_display_name (file);
 	}

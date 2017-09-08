@@ -100,6 +100,7 @@ static void entry_changed_cb  (GtkWidget *entry, PeonyQueryEditor *editor);
 static void peony_query_editor_changed_force (PeonyQueryEditor *editor,
         gboolean             force);
 static void peony_query_editor_changed (PeonyQueryEditor *editor);
+static void search_location_dir_cb (PeonyQueryEditor *editor);
 static PeonyQueryEditorRow * peony_query_editor_add_row (PeonyQueryEditor *editor,
         PeonyQueryEditorRowType type);
 
@@ -244,6 +245,7 @@ typing_timeout_cb (gpointer user_data)
 static void
 entry_changed_cb (GtkWidget *entry, PeonyQueryEditor *editor)
 {
+	#if 0
     if (editor->details->change_frozen)
     {
         return;
@@ -258,6 +260,9 @@ entry_changed_cb (GtkWidget *entry, PeonyQueryEditor *editor)
         g_timeout_add (TYPING_TIMEOUT,
                        typing_timeout_cb,
                        editor);
+	#else
+	entry_activate_cb(entry,editor);
+	#endif
 }
 
 static void
@@ -283,6 +288,9 @@ location_row_create_widgets (PeonyQueryEditorRow *row)
 
     g_signal_connect_swapped (chooser, "current-folder-changed",
                               G_CALLBACK (peony_query_editor_changed),
+                              row->editor);
+   g_signal_connect_swapped (chooser, "file-set",
+                              G_CALLBACK (search_location_dir_cb),
                               row->editor);
 
     gtk_box_pack_start (GTK_BOX (row->hbox), chooser, FALSE, FALSE, 0);
@@ -1191,6 +1199,17 @@ query_is_valid (PeonyQueryEditor *editor)
     return text != NULL && text[0] != '\0';
 }
 
+static PeonyQuery *
+peony_query_editor_get_null_query ()
+{
+    PeonyQuery *query;
+
+    query = peony_query_new ();
+    peony_query_set_text (query, GO_TO_LOCATION);
+
+    return query;
+}
+
 static void
 peony_query_editor_changed_force (PeonyQueryEditor *editor, gboolean force_reload)
 {
@@ -1208,12 +1227,30 @@ peony_query_editor_changed_force (PeonyQueryEditor *editor, gboolean force_reloa
                        query, editor->details->is_indexed || force_reload);
         g_object_unref (query);
     }
+	else
+	{
+        query = peony_query_editor_get_null_query ();
+        g_signal_emit (editor, signals[CHANGED], 0,
+                       query, editor->details->is_indexed || force_reload);
+        g_object_unref (query);
+	}
 }
 
 static void
 peony_query_editor_changed (PeonyQueryEditor *editor)
 {
-    peony_query_editor_changed_force (editor, FALSE);
+    //peony_query_editor_changed_force (editor, FALSE);
+    peony_query_editor_changed_force (editor, TRUE);
+}
+static void
+search_location_dir_cb (PeonyQueryEditor *editor)
+{
+	if(NULL == editor)
+	{
+		return;
+	}
+	
+	peony_query_editor_changed((PeonyQueryEditor *)editor);
 }
 
 void
@@ -1387,8 +1424,8 @@ peony_query_editor_set_query (PeonyQueryEditor *editor, PeonyQuery *query)
     {
         row_type[type].add_rows_from_query (editor, query);
     }
-
-    editor->details->change_frozen = FALSE;
+	editor->local_uri = peony_query_get_location(query);
+    editor->details->change_frozen = FALSE;	
 
     g_free (editor->details->last_set_query_text);
     editor->details->last_set_query_text = text;

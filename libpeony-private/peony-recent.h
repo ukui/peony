@@ -9,5 +9,6 @@
 
 void peony_recent_add_file (PeonyFile *file,
                            GAppInfo *application);
+void empty_recent_file();
 
 #endif

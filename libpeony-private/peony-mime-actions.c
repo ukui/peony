@@ -1338,10 +1338,20 @@ show_unhandled_type_error (ActivateParametersInstall *parameters)
         				 GTK_MESSAGE_ERROR,
         				 0,
         				 NULL);
-        g_object_set (dialog,
+		if(TRUE != g_file_test(parameters->uri,G_FILE_TEST_EXISTS))
+		{
+			g_object_set (dialog,
+        	      "text", error_message,
+        	      "secondary-text", _("File not found"),
+        	      NULL);
+		}
+		else
+		{
+        	g_object_set (dialog,
         	      "text", error_message,
         	      "secondary-text", _("The file is of an unknown type"),
         	      NULL);
+		}
     } else {
         char *text;
         text = g_strdup_printf (_("There is no application installed for %s files"), g_content_type_get_description (mime_type));

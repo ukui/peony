@@ -3234,6 +3234,89 @@ action_redo_callback (GtkAction *action,
 }
 
 static void
+delete_recent_files (FMDirectoryView *view)
+{
+	GList *selection = NULL;
+	GList *node = NULL;
+	GList *locations = NULL;
+	GFile *file = NULL;
+	char  *pUri = NULL;
+	PeonyDirectory *pDirectory = NULL;
+	PeonyFile *pCajaFile = NULL;
+	GFile *parent = NULL;
+	
+	selection = fm_directory_view_get_selection_for_file_transfer (view);
+	if (selection == NULL) {
+		return;
+	}
+
+	locations = NULL;
+	for (node = selection; node != NULL; node = node->next) {
+		locations = g_list_prepend (locations,
+					    peony_file_get_location ((PeonyFile *) node->data));
+	}
+	locations = g_list_reverse (locations);
+	
+	for (node = locations; node != NULL; node = node->next) 
+	{
+		file = node->data;
+		pCajaFile = peony_file_get(file);
+		if(NULL != pCajaFile)
+		{
+			pUri = peony_file_get_activation_uri(pCajaFile);
+			if(NULL != pUri)
+			{
+				delete_recent_file(pUri);
+				g_free (pUri);
+			}
+		}
+	}
+	g_list_free_full (locations, g_object_unref);
+	peony_file_list_free (selection);
+}
+
+static void
+empty_recent_action (FMDirectoryView *view,gboolean bEmpty)
+{
+	char *pUri = NULL;
+	if(NULL == view)
+	{
+		return;
+	}
+
+	pUri = fm_directory_view_get_uri(view);
+	if(NULL != pUri)
+	{
+		if(0 == strncmp(pUri,"recent:///",strlen("recent:///")))
+		{
+			if(TRUE == bEmpty)
+			{
+				empty_recent_file();
+			}
+			else
+			{
+				delete_recent_files(view);
+			}
+		}
+	}
+	g_free (pUri);
+}
+
+static void
+action_empty_recent_callback (GtkAction *action,
+			gpointer callback_data)
+{
+	empty_recent_action (FM_DIRECTORY_VIEW (callback_data),TRUE);
+}
+
+static void
+action_delete_recent_callback (GtkAction *action,
+			gpointer callback_data)
+{
+	empty_recent_action (FM_DIRECTORY_VIEW (callback_data),FALSE);
+}
+
+static void
 files_added_callback (PeonyDirectory *directory,
 		      GList *files,
 		      gpointer callback_data)
@@ -7388,6 +7471,15 @@ static const GtkActionEntry directory_view_entries[] = {
   /* tooltip */     			 	 N_("Redo the last undone action"),
 								 G_CALLBACK (action_redo_callback) },
  
+  /* name, stock id */		   { "Empty Recent", NULL,
+  /* label, accelerator */	     N_("E_mpty Recent"), NULL,
+  /* tooltip */     			 	 N_("E_mpty Recent use"),
+								 G_CALLBACK (action_empty_recent_callback) },
+  /* name, stock id */		   { "Delete Recent", NULL,
+  /* label, accelerator */		 N_("D_elete Recent"), NULL,
+  /* tooltip */ 					 N_("D_elete Recent use"),
+								 G_CALLBACK (action_delete_recent_callback) },
+
   /*
    * multiview-TODO: decide whether "Reset to Defaults" should
    * be window-wide, and not just view-wide.
@@ -8716,7 +8808,9 @@ real_update_menus (FMDirectoryView *view)
 	GtkWidget *menuitem;
 	gboolean next_pane_is_writable;
 	gboolean show_properties;
-
+	char *pUri = NULL;
+	gboolean bEnable = FALSE;
+	
 	selection = fm_directory_view_get_selection (view);
 	selection_count = g_list_length (selection);
 
@@ -8943,6 +9037,7 @@ real_update_menus (FMDirectoryView *view)
 
 	action = gtk_action_group_get_action (view->details->dir_action_group,
 					      FM_ACTION_DELETE);
+	#if 0
 	gtk_action_set_visible (action, show_separate_delete_command);
 
 	if (show_separate_delete_command) {
@@ -8953,6 +9048,56 @@ real_update_menus (FMDirectoryView *view)
 	}
 	gtk_action_set_sensitive (action, can_delete_files);
 
+	#else
+	if (show_separate_delete_command) {
+		g_object_set (action,
+			      "label", _("_Delete Permanently"),
+			      "icon-name", PEONY_ICON_DELETE,
+			      NULL);
+		gtk_action_set_visible (action, can_delete_files);
+	}
+	#endif	
+	
+	pUri = fm_directory_view_get_uri(view);
+	if(NULL != pUri)
+	{
+		if(0 == strncmp(pUri,"recent:///",strlen("recent:///")))
+		{
+			bEnable = TRUE;
+		}
+		g_free (pUri);		
+	}
+
+	action = gtk_action_group_get_action (view->details->dir_action_group,
+					      "Empty Recent");
+	if (bEnable) 
+	{
+		g_object_set (action,
+			      "label", _("E_mpty Recent"),
+			      "icon-name", PEONY_ICON_DELETE,
+			      NULL);
+		gtk_action_set_visible (action, bEnable);
+	}
+	else
+	{
+		gtk_action_set_visible (action, bEnable);
+	}
+
+	
+	action = gtk_action_group_get_action (view->details->dir_action_group,
+					      "Delete Recent");
+	if (bEnable) 
+	{
+		g_object_set (action,
+			      "label", _("D_elete Recent"),
+			      "icon-name", PEONY_ICON_DELETE,
+			      NULL);
+		gtk_action_set_visible (action, bEnable);
+	}
+	else
+	{
+		gtk_action_set_visible (action, bEnable);
+	}
 
 	action = gtk_action_group_get_action (view->details->dir_action_group,
 					      FM_ACTION_RESTORE_FROM_TRASH);
