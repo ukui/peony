@@ -1,0 +1,10 @@
+usr/bin/caja-sendto
+usr/include/caja-sendto/
+usr/lib/*/caja-sendto/plugins/*.so
+usr/lib/*/caja/extensions-2.0/libcaja-sendto.so
+usr/lib/*/pkgconfig/caja-sendto.pc
+usr/share/caja-extensions/caja-sendto.ui
+usr/share/caja/extensions/libcaja-sendto.caja-extension
+usr/share/glib-2.0/schemas/org.mate.Caja.Sendto.gschema.xml
+usr/share/gtk-doc/html/caja-sendto/
+usr/share/man/man1/caja-sendto.*

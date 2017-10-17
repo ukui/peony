@@ -1,0 +1,575 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# 
+# Translators:
+# Arif Budiman <arifpedia@gmail.com>, 2015
+# hpiece 8 <hpiece8@gmail.com>, 2016
+# La Ode Muh. Fadlun Akbar <fadlun.net@gmail.com>, 2015
+# Willy Sudiarto Raharjo <willysr@slackware-id.org>, 2014-2015
+msgid ""
+msgstr ""
+"Project-Id-Version: MATE Desktop Environment\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-12-05 23:49+0300\n"
+"PO-Revision-Date: 2016-03-14 16:55+0000\n"
+"Last-Translator: hpiece 8 <hpiece8@gmail.com>\n"
+"Language-Team: Indonesian (http://www.transifex.com/mate/MATE/language/id/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: id\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: ../gksu/libcaja-gksu.c:135
+msgid "Open as administrator"
+msgstr "Buka sebagai administrator"
+
+#: ../gksu/libcaja-gksu.c:136
+msgid "Opens the file with administrator privileges"
+msgstr "Buka berkas dengan hak akses administrator"
+
+#: ../gksu/libcaja-gksu.c:223
+msgid ""
+"<big><b>Unable to determine the program to run.</b></big>\n"
+"\n"
+"The item you selected cannot be open with administrator powers because the correct application cannot be determined."
+msgstr "<big><b>Tidak dapat menentukan program untuk dijalankan.</b></big>\n\nEntri yang Anda pilih tidak dapat dibuka dengan hak akses administrator karena aplikasi yang benar tidak dapat ditentukan."
+
+#: ../gksu/libcaja-gksu.caja-extension.in.in.h:1
+msgid "Gksu"
+msgstr "Gksu"
+
+#: ../gksu/libcaja-gksu.caja-extension.in.in.h:2
+msgid "Privilege granting extension"
+msgstr "Ekstensi pemberian hak akses"
+
+#: ../image-converter/caja-image-converter.c:120
+msgid "_Resize Images..."
+msgstr "_Ubah Ukuran Citra..."
+
+#: ../image-converter/caja-image-converter.c:121
+msgid "Resize each selected image"
+msgstr "Mengubah ukuran tiap citra yang dipilih"
+
+#: ../image-converter/caja-image-converter.c:130
+msgid "Ro_tate Images..."
+msgstr "Memu_tar citra..."
+
+#: ../image-converter/caja-image-converter.c:131
+msgid "Rotate each selected image"
+msgstr "Memutar tiap citra yang dipilih"
+
+#: ../image-converter/caja-image-resize.ui.h:1
+msgid "Resize Images"
+msgstr "Ubah Ukuran Gambar"
+
+#: ../image-converter/caja-image-resize.ui.h:2
+msgid "<b>Image Size</b>"
+msgstr "<b>Ukuran Gambar</b>"
+
+#: ../image-converter/caja-image-resize.ui.h:3
+msgid "Select a size:"
+msgstr "Pilih Ukuran:"
+
+#: ../image-converter/caja-image-resize.ui.h:4
+msgid "96x96"
+msgstr "96x96"
+
+#: ../image-converter/caja-image-resize.ui.h:5
+msgid "128x128"
+msgstr "128x128"
+
+#: ../image-converter/caja-image-resize.ui.h:6
+msgid "640x480"
+msgstr "640x480"
+
+#: ../image-converter/caja-image-resize.ui.h:7
+msgid "800x600"
+msgstr "800x600"
+
+#: ../image-converter/caja-image-resize.ui.h:8
+msgid "1024x768"
+msgstr "1024x768"
+
+#: ../image-converter/caja-image-resize.ui.h:9
+msgid "1280x960"
+msgstr "1280x960"
+
+#: ../image-converter/caja-image-resize.ui.h:10
+msgid "pixels"
+msgstr "piksel"
+
+#: ../image-converter/caja-image-resize.ui.h:11
+msgid "Scale:"
+msgstr "Skala:"
+
+#: ../image-converter/caja-image-resize.ui.h:12
+msgid "percent"
+msgstr "persen"
+
+#: ../image-converter/caja-image-resize.ui.h:13
+msgid "Custom size:"
+msgstr "Ukuran kustom:"
+
+#: ../image-converter/caja-image-resize.ui.h:14
+msgid "Width:"
+msgstr "Lebar:"
+
+#: ../image-converter/caja-image-resize.ui.h:15
+msgid "Height:"
+msgstr "Tinggi:"
+
+#: ../image-converter/caja-image-resize.ui.h:16
+#: ../image-converter/caja-image-rotate.ui.h:6
+msgid "<b>Filename</b>"
+msgstr "<b>Nama berkas</b>"
+
+#: ../image-converter/caja-image-resize.ui.h:17
+#: ../image-converter/caja-image-rotate.ui.h:7
+msgid "Append"
+msgstr "Tambahkan"
+
+#: ../image-converter/caja-image-resize.ui.h:18
+msgid ".resized"
+msgstr ".ukuran telah diubah"
+
+#: ../image-converter/caja-image-resize.ui.h:19
+#: ../image-converter/caja-image-rotate.ui.h:9
+msgid "to file title"
+msgstr "ke judul berkas"
+
+#: ../image-converter/caja-image-resize.ui.h:20
+msgid "Resize in place"
+msgstr "Ubah ukuran ditempat"
+
+#: ../image-converter/caja-image-resize.ui.h:21
+msgid "_Resize"
+msgstr "Ganti Uku_ran"
+
+#: ../image-converter/caja-image-resizer.c:211
+#: ../image-converter/caja-image-rotator.c:208
+msgid "_Skip"
+msgstr "_Lewati"
+
+#: ../image-converter/caja-image-resizer.c:213
+#: ../image-converter/caja-image-rotator.c:210
+msgid "_Retry"
+msgstr "_Ulangi"
+
+#: ../image-converter/caja-image-resizer.c:291
+#, c-format
+msgid "Resizing image: %d of %d"
+msgstr "Mengubah ukuran citra: %d dari %d"
+
+#: ../image-converter/caja-image-resizer.c:296
+#, c-format
+msgid "<i>Resizing \"%s\"</i>"
+msgstr "<i>Mengubah ukuran \"%s\"</i>"
+
+#: ../image-converter/caja-image-resizer.c:314
+#: ../image-converter/caja-image-rotator.c:313
+msgid "Please enter a valid filename suffix!"
+msgstr "Harap masukkan akhiran nama berkas yang valid!"
+
+#: ../image-converter/caja-image-rotate.ui.h:1
+msgid "Rotate Images"
+msgstr "Memutar Citra"
+
+#: ../image-converter/caja-image-rotate.ui.h:2
+msgid "<b>Image Rotation</b>"
+msgstr "<b>Rotasi Citra</b>"
+
+#: ../image-converter/caja-image-rotate.ui.h:3
+msgid "Select an angle:"
+msgstr "Pilih sudut:"
+
+#: ../image-converter/caja-image-rotate.ui.h:4
+msgid "Custom angle:"
+msgstr "Sudut kustom:"
+
+#: ../image-converter/caja-image-rotate.ui.h:5
+msgid "degrees clockwise"
+msgstr "derajat searah jarum jam"
+
+#: ../image-converter/caja-image-rotate.ui.h:8
+msgid ".rotated"
+msgstr ".dirotasi"
+
+#: ../image-converter/caja-image-rotate.ui.h:10
+msgid "Rotate in place"
+msgstr "Memutar ditempat"
+
+#: ../image-converter/caja-image-rotate.ui.h:11
+msgid "_Rotate"
+msgstr "_Rotasi"
+
+#: ../image-converter/caja-image-rotator.c:290
+#, c-format
+msgid "Rotating image: %d of %d"
+msgstr "Memutar citra: %d dari %d"
+
+#: ../image-converter/caja-image-rotator.c:295
+#, c-format
+msgid "<i>Rotating \"%s\"</i>"
+msgstr "<i>Memutar \"%s\"<i>"
+
+#: ../image-converter/libcaja-image-converter.caja-extension.in.in.h:1
+msgid "Image Converter"
+msgstr "Konverter Citra"
+
+#: ../image-converter/libcaja-image-converter.caja-extension.in.in.h:2
+msgid "Rotate and resize images"
+msgstr "Rotasi dan ganti ukuran citra"
+
+#: ../open-terminal/caja-open-terminal.c:432
+#: ../open-terminal/caja-open-terminal.c:445
+msgid "Open in _Terminal"
+msgstr "Buka di _Terminal"
+
+#: ../open-terminal/caja-open-terminal.c:434
+msgid "Open the currently selected folder in a terminal"
+msgstr "Buka folder yang dipilih pada terminal"
+
+#: ../open-terminal/caja-open-terminal.c:436
+#: ../open-terminal/caja-open-terminal.c:446
+msgid "Open the currently open folder in a terminal"
+msgstr "Buka folder yang sedang dibuka pada terminal"
+
+#: ../open-terminal/caja-open-terminal.c:442
+msgid "Open _Terminal"
+msgstr "Buka _Terminal"
+
+#: ../open-terminal/caja-open-terminal.c:443
+msgid "Open a terminal"
+msgstr "Buka terminal"
+
+#: ../open-terminal/libcaja-open-terminal.caja-extension.in.in.h:1
+msgid "Open terminal"
+msgstr "Buka terminal"
+
+#: ../open-terminal/libcaja-open-terminal.caja-extension.in.in.h:2
+msgid "Open terminals from folders"
+msgstr "Buka terminal dari folder"
+
+#: ../open-terminal/org.mate.caja-open-terminal.gschema.xml.in.h:1
+msgid ""
+"Whether opening a terminal on the desktop opens a terminal in the home "
+"directory"
+msgstr "Apakah membuka terminal pada desktop akan membuka terminal pada direktori rumah"
+
+#: ../open-terminal/org.mate.caja-open-terminal.gschema.xml.in.h:2
+msgid ""
+"If set to true, then opening a terminal on the desktop will open a terminal "
+"in the home directory. Otherwise, it will be opened in the desktop "
+"directory. Note that this key is irrelevant if the desktop directory is "
+"identical to the home directory."
+msgstr "Jika diatur benar, maka membuka terminal pada desktop akan membuka terminal di direktori rumah. Jika tidak, terminal akan terbuka di direktori desktop. Perhatikan bahwa kunci ini tidak relevan jika direktori desktop identik dengan direktori rumah."
+
+#: ../sendto/caja-nste.c:78 ../sendto/caja-nste.c:83
+msgid "Send to..."
+msgstr "Kirim ke..."
+
+#: ../sendto/caja-nste.c:79
+msgid "Send file by mail, instant message..."
+msgstr "Kirim berkas melalui email, pesan instan..."
+
+#: ../sendto/caja-nste.c:84
+msgid "Send files by mail, instant message..."
+msgstr "Kirim berkas melalui email, pesan instan..."
+
+#: ../sendto/caja-sendto-command.c:578
+msgid "Files"
+msgstr "Berkas"
+
+#: ../sendto/caja-sendto-command.c:790
+#, c-format
+msgid "Expects URIs or filenames to be passed as options\n"
+msgstr "Mengharapkan URI atau nama berkas dikirimkan sebagai opsi\n"
+
+#: ../sendto/caja-sendto-command.c:810
+#, c-format
+msgid "Could not parse command-line options: %s\n"
+msgstr "Tidak dapat mengurai opsi perintah baris: %s\n"
+
+#: ../sendto/caja-sendto-command.c:825
+msgid "Could not load any plugins."
+msgstr "Tidak dapat memuat plugin manapun."
+
+#: ../sendto/caja-sendto-command.c:828
+msgid "Please verify your installation"
+msgstr "Harap verifikasi instalasi Anda"
+
+#: ../sendto/libcaja-sendto.caja-extension.in.in.h:1
+msgid "Send To"
+msgstr "Kirim Ke"
+
+#: ../sendto/libcaja-sendto.caja-extension.in.in.h:2
+msgid "Integrates email clients and Pidgin"
+msgstr "Integrasikan klien email dan Pidgin"
+
+#: ../sendto/caja-sendto.ui.h:1
+msgid "Send To..."
+msgstr "Kirim Ke..."
+
+#: ../sendto/caja-sendto.ui.h:2
+msgid "_Send"
+msgstr "_Kirim"
+
+#: ../sendto/caja-sendto.ui.h:3
+msgid "<b>Destination</b>"
+msgstr "<b>Tujuan</b>"
+
+#: ../sendto/caja-sendto.ui.h:4
+msgid "Send _as:"
+msgstr "Kirim _sebagai:"
+
+#: ../sendto/caja-sendto.ui.h:5
+msgid "Send t_o:"
+msgstr "Kirim k_e:"
+
+#: ../sendto/caja-sendto.ui.h:6
+msgid "<b>Compression</b>"
+msgstr "<b>Kompresi</b>"
+
+#: ../sendto/caja-sendto.ui.h:7
+msgid "Send _packed in:"
+msgstr "Kirim _paket dalam:"
+
+#: ../sendto/plugins/emailclient/emailclient.c:263
+msgid "Email"
+msgstr "Email"
+
+#: ../sendto/plugins/gajim/gajim.c:419
+msgid "Unable to send file"
+msgstr "Tidak dapat mengirim berkas"
+
+#: ../sendto/plugins/gajim/gajim.c:420
+msgid "There is no connection to gajim remote service."
+msgstr "Tidak ada koneksi ke layanan jarak jauh gaim."
+
+#: ../sendto/plugins/gajim/gajim.c:444 ../sendto/plugins/gajim/gajim.c:484
+msgid "Sending file failed"
+msgstr "Pengiriman berkas gagal"
+
+#: ../sendto/plugins/gajim/gajim.c:445
+msgid "Recipient is missing."
+msgstr "Penerima tidak ada."
+
+#: ../sendto/plugins/gajim/gajim.c:484
+msgid "Unknown recipient."
+msgstr "Penerima tidak diketahui."
+
+#: ../sendto/plugins/gajim/gajim.c:507
+msgid "Instant Message (Gajim)"
+msgstr "Pesan Instan (Gaim)"
+
+#: ../sendto/plugins/caja-burn/caja-burn.c:92
+msgid "New CD/DVD"
+msgstr "CD/DVD baru"
+
+#: ../sendto/plugins/caja-burn/caja-burn.c:99
+msgid "Existing CD/DVD"
+msgstr "CD/DVD yang sudah ada"
+
+#: ../sendto/plugins/caja-burn/caja-burn.c:178
+msgid "CD/DVD Creator"
+msgstr "Pembuat CD/DVD"
+
+#: ../sendto/plugins/pidgin/pidgin.c:462
+msgid "Instant Message (Pidgin)"
+msgstr "Pesan Instan (Pidgin)"
+
+#: ../sendto/plugins/removable-devices/removable-devices.c:248
+msgid "Removable disks and shares"
+msgstr "Removeable disk dan share"
+
+#: ../sendto/plugins/upnp/upnp.c:309
+msgid "UPnP Media Server"
+msgstr "Server Media UPnP"
+
+#: ../share/libcaja-share.caja-extension.in.in.h:1 ../share/caja-share.c:1063
+msgid "Share"
+msgstr "Berbagi"
+
+#: ../share/libcaja-share.caja-extension.in.in.h:2
+msgid "Allows to quickly share a folder"
+msgstr "Ijinkan untuk berbagi folder"
+
+#: ../share/caja-share.c:123
+#, c-format
+msgid ""
+"Caja needs to add some permissions to your folder \"%s\" in order to share "
+"it"
+msgstr "Caja perlu menambahkan beberapa hak akses pada folder \"%s\" untuk bisa berbagi"
+
+#: ../share/caja-share.c:131
+#, c-format
+msgid ""
+"The folder \"%s\" needs the following extra permissions for sharing to work:\n"
+"%s%s%sDo you want Caja to add these permissions to the folder automatically?"
+msgstr "Folder \"%s\" perlu hak akses tambahan berikut agar fitur berbagi bisa bekerja:\n%s%s%sApakah Anda ingin Caja untuk menambahkan hak akses ini pada folder secara otomatis?"
+
+#: ../share/caja-share.c:135
+msgid "  - read permission by others\n"
+msgstr "- hak akses baca oleh lainnya\n"
+
+#: ../share/caja-share.c:136
+msgid "  - write permission by others\n"
+msgstr "- hak akses tulis oleh lainnya\n"
+
+#: ../share/caja-share.c:137
+msgid "  - execute permission by others\n"
+msgstr "- hak akses eksekusi oleh lainnya\n"
+
+#: ../share/caja-share.c:141
+msgid "Add the permissions automatically"
+msgstr "Tambahkan hak akses secara otomatis"
+
+#: ../share/caja-share.c:167
+#, c-format
+msgid "Could not change the permissions of folder \"%s\""
+msgstr "Tidak dapat mengubah hak akses dari folder \"%s\""
+
+#: ../share/caja-share.c:451
+msgid "Share name is too long"
+msgstr "Nama terlalu panjang"
+
+#: ../share/caja-share.c:493
+msgid "The share name cannot be empty"
+msgstr "Nama share tidak boleh kosong"
+
+#: ../share/caja-share.c:506
+#, c-format
+msgid "Error while getting share information: %s"
+msgstr "Kesalahan ketika mendapatkan informasi share: %s"
+
+#: ../share/caja-share.c:516
+msgid "Another share has the same name"
+msgstr "Terdapat share lain dengan nama yang sama"
+
+#: ../share/caja-share.c:563 ../share/caja-share.c:799
+msgid "Modify _Share"
+msgstr "Modifikasi _Share"
+
+#: ../share/caja-share.c:563 ../share/caja-share.c:801
+msgid "Create _Share"
+msgstr "Buat _Share"
+
+#: ../share/caja-share.c:691
+msgid "There was an error while getting the sharing information"
+msgstr "Terdapat kesalahan ketika mendapatkan informasi share"
+
+#: ../share/caja-share.c:1123
+msgid "Folder Sharing"
+msgstr "Berbagi Folder"
+
+#: ../share/caja-share.c:1164
+msgid "Sharing Options"
+msgstr "Opsi Share"
+
+#: ../share/caja-share.c:1165
+msgid "Share this Folder"
+msgstr "Share Folder ini"
+
+#: ../share/share-dialog.ui.h:1
+msgid "<big><b>Folder Sharing</b></big>"
+msgstr "<big><b>Berbagi Folder</b></big>"
+
+#: ../share/share-dialog.ui.h:2
+msgid "Share _name:"
+msgstr "_Nama Share:"
+
+#: ../share/share-dialog.ui.h:3
+msgid "Share this _folder"
+msgstr "Share _folder ini"
+
+#: ../share/share-dialog.ui.h:4
+msgid "Co_mment:"
+msgstr "Ko_mentar:"
+
+#: ../share/share-dialog.ui.h:5
+msgid "_Allow others to create and delete files in this folder"
+msgstr "_Ijinkan lainnya untuk membuat dan menghapus berkas pada folder ini"
+
+#: ../share/share-dialog.ui.h:6
+msgid "_Guest access (for people without a user account)"
+msgstr "Akses _tamu (untuk orang tanpa akun)"
+
+#: ../share/shares.c:123
+#, c-format
+msgid "%s %s %s returned with signal %d"
+msgstr "%s %s %s kembali dengan sinyal %d"
+
+#: ../share/shares.c:132
+#, c-format
+msgid "%s %s %s failed for an unknown reason"
+msgstr "%s %s %s gagal dengan alasan yang tidak diketahui"
+
+#: ../share/shares.c:152
+#, c-format
+msgid "'net usershare' returned error %d: %s"
+msgstr "'net usershare' mengembalikan kesalahan %d: %s"
+
+#: ../share/shares.c:154
+#, c-format
+msgid "'net usershare' returned error %d"
+msgstr "'net usershare' mengembalikan kesalahan %d"
+
+#: ../share/shares.c:185
+#, c-format
+msgid "the output of 'net usershare' is not in valid UTF-8 encoding"
+msgstr "Keluaran dari 'net usershare' bukan enkoding UTF-8 yang valid"
+
+#: ../share/shares.c:439 ../share/shares.c:613
+#, c-format
+msgid "Failed"
+msgstr "Gagal"
+
+#: ../share/shares.c:547
+#, c-format
+msgid "Samba's testparm returned with signal %d"
+msgstr "testparm Samba mengembalikan sinyal %d"
+
+#: ../share/shares.c:553
+#, c-format
+msgid "Samba's testparm failed for an unknown reason"
+msgstr "testparm Samba gagal untuk alasan yang tidak diketahui"
+
+#: ../share/shares.c:568
+#, c-format
+msgid "Samba's testparm returned error %d: %s"
+msgstr "testparm Samba mengembalikan kesalahan %d: %s"
+
+#: ../share/shares.c:570
+#, c-format
+msgid "Samba's testparm returned error %d"
+msgstr "testparm Samba mengembalikan kesalahan %d"
+
+#: ../share/shares.c:681
+#, c-format
+msgid "Cannot remove the share for path %s: that path is not shared"
+msgstr "Tidak dapat menghapus share untuk path %s: path tersebut tidak dibagikan"
+
+#: ../share/shares.c:727
+#, c-format
+msgid ""
+"Cannot change the path of an existing share; please remove the old share "
+"first and add a new one"
+msgstr "Tidak dapat mengubah path dari share yang ada; harap menghapus share lama dahulu dan tambahkan yang baru"
+
+#: ../wallpaper/caja-wallpaper-extension.c:109
+msgid "Set as wallpaper"
+msgstr "Atur sebagai wallpaper"
+
+#: ../wallpaper/caja-wallpaper-extension.c:110
+msgid "Set image as the current wallpaper"
+msgstr "Atur gambar sebagai wallpaper yang terpasang"
+
+#: ../wallpaper/libcaja-wallpaper.caja-extension.in.in.h:1
+msgid "Wallpaper"
+msgstr "Wallpaper"
+
+#: ../wallpaper/libcaja-wallpaper.caja-extension.in.in.h:2
+msgid "Allows to quickly set wallpaper"
+msgstr "Izinkan untuk mengatur wallpaper dengan cepat"

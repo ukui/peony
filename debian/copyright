@@ -1,0 +1,154 @@
+Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: caja-extentions
+Upstream-Contact: Stafano Karapetsas <stefano@karapetsas.com>
+Source: http://pub.mate-desktop.org/releases/
+
+Files: image-converter/caja-image-converter.c
+       image-converter/caja-image-converter.h
+       image-converter/caja-image-resizer.c
+       image-converter/caja-image-resizer.h
+       image-converter/caja-image-rotator.c
+       image-converter/caja-image-rotator.h
+       image-converter/image-converter.c
+Copyright: 2004, 2005, 2006, 2008, Jürg Billeter
+License: GPL-2+
+
+Files: wallpaper/caja-wallpaper-command.c
+       wallpaper/caja-wallpaper-extension.c
+       wallpaper/caja-wallpaper-extension.h
+Copyright: 2005, Adam Israel
+           2014, Stefano Karapetsas
+License: GPL-2+
+
+Files: .tx/config
+       gksu/Makefile.am
+       gksu/libcaja-gksu.c
+       gksu/libcaja-gksu.caja-extension.in.in
+       image-converter/Makefile.am
+       image-converter/*.ui
+       image-converter/libcaja-image-converter.caja-extension.in.in
+       open-terminal/Makefile.am
+       open-terminal/*.in
+       po/LINGUAS
+       po/POTFILES.in
+       sendto/docs/*
+       sendto/plugins/caja-burn/Makefile.am
+       sendto/plugins/emailclient/Makefile.am
+       sendto/plugins/gajim/Makefile.am
+       sendto/plugins/pidgin/Makefile.am
+       sendto/plugins/removable-devices/Makefile.am
+       sendto/plugins/upnp/Makefile.am
+       sendto/plugins/Makefile.am
+       sendto/Makefile.am
+       sendto/*.ui
+       sendto/*.in
+       share/Makefile.am
+       share/shares.c
+       share/shares.h
+       share/*.ui
+       share/libcaja-share.caja-extension.in.in
+       wallpaper/Makefile.am
+       wallpaper/libcaja-wallpaper.caja-extension.in.in
+       xattr-tags/Makefile.am
+       xattr-tags/libcaja-xattr-tags.caja-extension.in.in
+       AUTHORS
+       COPYING
+       ChangeLog
+       Makefile.am
+       NEWS
+       README
+       autogen.sh
+       configure.ac
+Copyright: *No copyright*
+License: GPL-2+
+Comment:
+ Using license from COPYING file.
+
+Files: sendto/caja-sendto.1
+Copyright: 2006, Oystein Gisnas
+License: GPL-2+
+
+Files: open-terminal/caja-open-terminal.c
+       open-terminal/caja-open-terminal.h
+       open-terminal/open-terminal.c
+       sendto/caja-nste.c
+Copyright: 2004, 2005, Free Software Foundation, Inc
+License: GPL-2+
+
+Files: sendto/plugins/nst-common.c
+       sendto/plugins/nst-common.h
+       sendto/plugins/removable-devices/removable-devices.c
+Copyright: *No copyright*
+License: GPL-2+
+
+Files: sendto/caja-nste.h
+       sendto/caja-sendto-command.c
+       sendto/caja-sendto-module.c
+Copyright: 2004, 2005, Roberto Majadas
+License: GPL-2+
+
+Files: share/caja-share.c
+       share/caja-share.h
+Copyright: 2005, Ethium, Inc
+License: GPL-2+
+
+Files: sendto/caja-sendto-plugin.h
+Copyright: 2004, Roberto Majadas
+           2009, Bastien Nocera <hadess@hadess.net>
+License: GPL-2+
+
+Files: sendto/plugins/gajim/gajim.c
+Copyright: 2006, Dimitur Kirov
+License: GPL-2+
+
+Files: sendto/plugins/caja-burn/caja-burn.c
+Copyright: 2008, Jader Henrique da Silva
+License: GPL-2+
+
+Files: sendto/plugins/pidgin/pidgin.c
+Copyright: 2004, Roberto Majadas
+           2009, Pascal Terjan
+License: GPL-2+
+
+Files: sendto/plugins/upnp/upnp.c
+Copyright: 2006, Peter Enseleit
+           2008, Zeeshan Ali (Khattak)
+License: GPL-2+
+
+Files: sendto/plugins/emailclient/emailclient.c
+Copyright: 2004, Roberto Majadas <roberto.majadas@openshine.com>
+           2012, Stefano Karapetsas <stefano@karapetsas.com>
+License: GPL-2+
+
+Files: xattr-tags/caja-xattr-tags-extension.c
+       xattr-tags/caja-xattr-tags-extension.h
+Copyright: 2016 Felipe Barriga Richards
+License: GPL-2+
+
+Files: po/*.po
+Copyright: THE PACKAGE'S COPYRIGHT HOLDER
+License: GPL-2+
+Comment:
+ Using license from COPYING file.
+
+Files: debian/*
+Copyright: 2011-2014, Stefano Karapetsas <stefano@karapetsas.com>
+           2014, Mike Gabriel <sunweaver@debian.org>
+License: GPL-2+
+
+License: GPL-2+
+ This package is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
+ .
+ This package is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ GNU Genaral Public License for more details.
+ .
+ You should have received a copy og the GNU General Public License
+ along with this program. If not, see <http://www.gnu.org/licenses/>
+ .
+ On Debian systems, the complete text of the GNU General
+ Public License version 2 can be found in "/usr/share/common-licenses/GPL-2".

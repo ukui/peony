@@ -1,0 +1,4 @@
+usr/lib/*/caja/extensions-2.0/libcaja-image-converter.so
+usr/share/caja-extensions/caja-image-resize.ui
+usr/share/caja-extensions/caja-image-rotate.ui
+usr/share/caja/extensions/libcaja-image-converter.caja-extension

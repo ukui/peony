@@ -1,0 +1,573 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# 
+# Translators:
+# , 2014-2015
+# , 2014-2015, 2016
+msgid ""
+msgstr ""
+"Project-Id-Version: MATE Desktop Environment\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-12-05 23:49+0300\n"
+"PO-Revision-Date: 2016-02-12 10:24+0000\n"
+"Last-Translator: Mihail Varantsou <meequz@gmail.com>\n"
+"Language-Team: Belarusian (http://www.transifex.com/mate/MATE/language/be/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: be\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);\n"
+
+#: ../gksu/libcaja-gksu.c:135
+msgid "Open as administrator"
+msgstr "Адкрыць як адміністратар"
+
+#: ../gksu/libcaja-gksu.c:136
+msgid "Opens the file with administrator privileges"
+msgstr "Адкрыць файл з прывілеямі адміністратара"
+
+#: ../gksu/libcaja-gksu.c:223
+msgid ""
+"<big><b>Unable to determine the program to run.</b></big>\n"
+"\n"
+"The item you selected cannot be open with administrator powers because the correct application cannot be determined."
+msgstr "<big><b>Не выйшла вызначыць праграму для запуску.</b></big>\n\nЭлемент, які вы выбралі, не можа быць запушчаны з-пад адміністратара, бо не знойдзена патрэбная праграма."
+
+#: ../gksu/libcaja-gksu.caja-extension.in.in.h:1
+msgid "Gksu"
+msgstr "Gksu"
+
+#: ../gksu/libcaja-gksu.caja-extension.in.in.h:2
+msgid "Privilege granting extension"
+msgstr "Пашырэнне для павышэння прывілеяў"
+
+#: ../image-converter/caja-image-converter.c:120
+msgid "_Resize Images..."
+msgstr "_Змяніць памер выяў..."
+
+#: ../image-converter/caja-image-converter.c:121
+msgid "Resize each selected image"
+msgstr "Змяніць памер кожнай вылучанай выявы"
+
+#: ../image-converter/caja-image-converter.c:130
+msgid "Ro_tate Images..."
+msgstr "Па_вярнуць выявы..."
+
+#: ../image-converter/caja-image-converter.c:131
+msgid "Rotate each selected image"
+msgstr "Павярнуць кожную вылучаную выяву"
+
+#: ../image-converter/caja-image-resize.ui.h:1
+msgid "Resize Images"
+msgstr "Змяніць памер выяў"
+
+#: ../image-converter/caja-image-resize.ui.h:2
+msgid "<b>Image Size</b>"
+msgstr "<b>Памер выявы</b>"
+
+#: ../image-converter/caja-image-resize.ui.h:3
+msgid "Select a size:"
+msgstr "Задайце памер:"
+
+#: ../image-converter/caja-image-resize.ui.h:4
+msgid "96x96"
+msgstr "96x96"
+
+#: ../image-converter/caja-image-resize.ui.h:5
+msgid "128x128"
+msgstr "128x128"
+
+#: ../image-converter/caja-image-resize.ui.h:6
+msgid "640x480"
+msgstr "640x480"
+
+#: ../image-converter/caja-image-resize.ui.h:7
+msgid "800x600"
+msgstr "800x600"
+
+#: ../image-converter/caja-image-resize.ui.h:8
+msgid "1024x768"
+msgstr "1024x768"
+
+#: ../image-converter/caja-image-resize.ui.h:9
+msgid "1280x960"
+msgstr "1280x960"
+
+#: ../image-converter/caja-image-resize.ui.h:10
+msgid "pixels"
+msgstr "піксэляў"
+
+#: ../image-converter/caja-image-resize.ui.h:11
+msgid "Scale:"
+msgstr "Маштаб:"
+
+#: ../image-converter/caja-image-resize.ui.h:12
+msgid "percent"
+msgstr "адсоткаў"
+
+#: ../image-converter/caja-image-resize.ui.h:13
+msgid "Custom size:"
+msgstr "Іншы памер:"
+
+#: ../image-converter/caja-image-resize.ui.h:14
+msgid "Width:"
+msgstr "Шырыня:"
+
+#: ../image-converter/caja-image-resize.ui.h:15
+msgid "Height:"
+msgstr "Вышыня:"
+
+#: ../image-converter/caja-image-resize.ui.h:16
+#: ../image-converter/caja-image-rotate.ui.h:6
+msgid "<b>Filename</b>"
+msgstr "<b>Назва файла</b>"
+
+#: ../image-converter/caja-image-resize.ui.h:17
+#: ../image-converter/caja-image-rotate.ui.h:7
+msgid "Append"
+msgstr "Дадаць"
+
+#: ../image-converter/caja-image-resize.ui.h:18
+msgid ".resized"
+msgstr ".зменена"
+
+#: ../image-converter/caja-image-resize.ui.h:19
+#: ../image-converter/caja-image-rotate.ui.h:9
+msgid "to file title"
+msgstr "да загалоўка файла"
+
+#: ../image-converter/caja-image-resize.ui.h:20
+msgid "Resize in place"
+msgstr "Змяніць памер і перазапісаць"
+
+#: ../image-converter/caja-image-resize.ui.h:21
+msgid "_Resize"
+msgstr "_Змяніць памер"
+
+#: ../image-converter/caja-image-resizer.c:211
+#: ../image-converter/caja-image-rotator.c:208
+msgid "_Skip"
+msgstr "_Абмінуць"
+
+#: ../image-converter/caja-image-resizer.c:213
+#: ../image-converter/caja-image-rotator.c:210
+msgid "_Retry"
+msgstr "_Паўтарыць"
+
+#: ../image-converter/caja-image-resizer.c:291
+#, c-format
+msgid "Resizing image: %d of %d"
+msgstr "Маштабаванне выявы: %d з %d"
+
+#: ../image-converter/caja-image-resizer.c:296
+#, c-format
+msgid "<i>Resizing \"%s\"</i>"
+msgstr "<i>Змена памеру \"%s\"</i>"
+
+#: ../image-converter/caja-image-resizer.c:314
+#: ../image-converter/caja-image-rotator.c:313
+msgid "Please enter a valid filename suffix!"
+msgstr "Увядзіце нармальны фармат файла!"
+
+#: ../image-converter/caja-image-rotate.ui.h:1
+msgid "Rotate Images"
+msgstr "Павярнуць выявы"
+
+#: ../image-converter/caja-image-rotate.ui.h:2
+msgid "<b>Image Rotation</b>"
+msgstr "<b>Паварот выяў</b>"
+
+#: ../image-converter/caja-image-rotate.ui.h:3
+msgid "Select an angle:"
+msgstr "Вызначце вугал:"
+
+#: ../image-converter/caja-image-rotate.ui.h:4
+msgid "Custom angle:"
+msgstr "Іншы вугал:"
+
+#: ../image-converter/caja-image-rotate.ui.h:5
+msgid "degrees clockwise"
+msgstr "градусаў па сонцу"
+
+#: ../image-converter/caja-image-rotate.ui.h:8
+msgid ".rotated"
+msgstr ".павернута"
+
+#: ../image-converter/caja-image-rotate.ui.h:10
+msgid "Rotate in place"
+msgstr "Павярнуць і перазапісаць"
+
+#: ../image-converter/caja-image-rotate.ui.h:11
+msgid "_Rotate"
+msgstr "_Павярнуць"
+
+#: ../image-converter/caja-image-rotator.c:290
+#, c-format
+msgid "Rotating image: %d of %d"
+msgstr "Паварочванне выявы: %d of %d"
+
+#: ../image-converter/caja-image-rotator.c:295
+#, c-format
+msgid "<i>Rotating \"%s\"</i>"
+msgstr "<i>Паварочванне \"%s\"</i>"
+
+#: ../image-converter/libcaja-image-converter.caja-extension.in.in.h:1
+msgid "Image Converter"
+msgstr "Канвертар выяў"
+
+#: ../image-converter/libcaja-image-converter.caja-extension.in.in.h:2
+msgid "Rotate and resize images"
+msgstr "Змяненне павароту і памеру выяў"
+
+#: ../open-terminal/caja-open-terminal.c:432
+#: ../open-terminal/caja-open-terminal.c:445
+msgid "Open in _Terminal"
+msgstr "Адкрыць у _тэрмінале"
+
+#: ../open-terminal/caja-open-terminal.c:434
+msgid "Open the currently selected folder in a terminal"
+msgstr "Адкрыць вылучаны каталог у тэрмінале"
+
+#: ../open-terminal/caja-open-terminal.c:436
+#: ../open-terminal/caja-open-terminal.c:446
+msgid "Open the currently open folder in a terminal"
+msgstr "Адкрыць дзейны каталог у тэрмінале"
+
+#: ../open-terminal/caja-open-terminal.c:442
+msgid "Open _Terminal"
+msgstr "Адкрыць _тэрмінал"
+
+#: ../open-terminal/caja-open-terminal.c:443
+msgid "Open a terminal"
+msgstr "Адкрыць тэрмінал"
+
+#: ../open-terminal/libcaja-open-terminal.caja-extension.in.in.h:1
+msgid "Open terminal"
+msgstr "Адкрыць тэрмінал"
+
+#: ../open-terminal/libcaja-open-terminal.caja-extension.in.in.h:2
+msgid "Open terminals from folders"
+msgstr "Адкрыць тэрміналы з каталогаў"
+
+#: ../open-terminal/org.mate.caja-open-terminal.gschema.xml.in.h:1
+msgid ""
+"Whether opening a terminal on the desktop opens a terminal in the home "
+"directory"
+msgstr "Ці адкрыванне тэрмінала на стале адкрые яго ў хатнім каталогу"
+
+#: ../open-terminal/org.mate.caja-open-terminal.gschema.xml.in.h:2
+msgid ""
+"If set to true, then opening a terminal on the desktop will open a terminal "
+"in the home directory. Otherwise, it will be opened in the desktop "
+"directory. Note that this key is irrelevant if the desktop directory is "
+"identical to the home directory."
+msgstr "Калі ісціна, то пры адкрыванні тэрмінала на стале ён адкрыецца ў хатнім каталогу. Інакш ён адкрыецца ў каталогу стала. Заўважце, гэты ключ бессэнсоўны, калі каталог стала супадае з хатнім."
+
+#: ../sendto/caja-nste.c:78 ../sendto/caja-nste.c:83
+msgid "Send to..."
+msgstr "Даслаць..."
+
+#: ../sendto/caja-nste.c:79
+msgid "Send file by mail, instant message..."
+msgstr "Даслаць файл праз эл.пошту, чат..."
+
+#: ../sendto/caja-nste.c:84
+msgid "Send files by mail, instant message..."
+msgstr "Даслаць файлы праз эл.пошту, чат..."
+
+#: ../sendto/caja-sendto-command.c:578
+msgid "Files"
+msgstr "Файлы"
+
+#: ../sendto/caja-sendto-command.c:790
+#, c-format
+msgid "Expects URIs or filenames to be passed as options\n"
+msgstr "Чакаецца, што URI ці назвы файлаў будуць перададзены як параметры\n"
+
+#: ../sendto/caja-sendto-command.c:810
+#, c-format
+msgid "Could not parse command-line options: %s\n"
+msgstr "Немагчыма распазнаць параметры загаднага радка: %s\n"
+
+#: ../sendto/caja-sendto-command.c:825
+msgid "Could not load any plugins."
+msgstr "Немагчыма загрузіць ніводнага плагіна."
+
+#: ../sendto/caja-sendto-command.c:828
+msgid "Please verify your installation"
+msgstr "Праверце ваша ўсталяванне"
+
+#: ../sendto/libcaja-sendto.caja-extension.in.in.h:1
+msgid "Send To"
+msgstr "Даслаць да"
+
+#: ../sendto/libcaja-sendto.caja-extension.in.in.h:2
+msgid "Integrates email clients and Pidgin"
+msgstr "Інтэграваныя email-кліенты і Pidgin"
+
+#: ../sendto/caja-sendto.ui.h:1
+msgid "Send To..."
+msgstr "Даслаць да..."
+
+#: ../sendto/caja-sendto.ui.h:2
+msgid "_Send"
+msgstr "_Даслаць"
+
+#: ../sendto/caja-sendto.ui.h:3
+msgid "<b>Destination</b>"
+msgstr "<b>Прызначэнне</b>"
+
+#: ../sendto/caja-sendto.ui.h:4
+msgid "Send _as:"
+msgstr "Даслаць _як:"
+
+#: ../sendto/caja-sendto.ui.h:5
+msgid "Send t_o:"
+msgstr "Даслаць д_а:"
+
+#: ../sendto/caja-sendto.ui.h:6
+msgid "<b>Compression</b>"
+msgstr "<b>Сцісканне</b>"
+
+#: ../sendto/caja-sendto.ui.h:7
+msgid "Send _packed in:"
+msgstr "Даслаць _сціснутае да:"
+
+#: ../sendto/plugins/emailclient/emailclient.c:263
+msgid "Email"
+msgstr "Email"
+
+#: ../sendto/plugins/gajim/gajim.c:419
+msgid "Unable to send file"
+msgstr "Немагчыма даслаць файл"
+
+#: ../sendto/plugins/gajim/gajim.c:420
+msgid "There is no connection to gajim remote service."
+msgstr "Няма злучэння з адлеглым серверам gajim."
+
+#: ../sendto/plugins/gajim/gajim.c:444 ../sendto/plugins/gajim/gajim.c:484
+msgid "Sending file failed"
+msgstr "Не выйшла даслаць файл"
+
+#: ../sendto/plugins/gajim/gajim.c:445
+msgid "Recipient is missing."
+msgstr "Не стае атрымальніка"
+
+#: ../sendto/plugins/gajim/gajim.c:484
+msgid "Unknown recipient."
+msgstr "Невядомы атрымальнік"
+
+#: ../sendto/plugins/gajim/gajim.c:507
+msgid "Instant Message (Gajim)"
+msgstr "Імгненнае паведамленне (Gajim)"
+
+#: ../sendto/plugins/caja-burn/caja-burn.c:92
+msgid "New CD/DVD"
+msgstr "Новы CD/DVD"
+
+#: ../sendto/plugins/caja-burn/caja-burn.c:99
+msgid "Existing CD/DVD"
+msgstr "Існы CD/DVD"
+
+#: ../sendto/plugins/caja-burn/caja-burn.c:178
+msgid "CD/DVD Creator"
+msgstr "Стваральнік CD/DVD"
+
+#: ../sendto/plugins/pidgin/pidgin.c:462
+msgid "Instant Message (Pidgin)"
+msgstr "Імгненнае паведамленне (Pidgin)"
+
+#: ../sendto/plugins/removable-devices/removable-devices.c:248
+msgid "Removable disks and shares"
+msgstr "Рухомыя дыскі і рэсурсы"
+
+#: ../sendto/plugins/upnp/upnp.c:309
+msgid "UPnP Media Server"
+msgstr "Медыя-сервер UPnP"
+
+#: ../share/libcaja-share.caja-extension.in.in.h:1 ../share/caja-share.c:1063
+msgid "Share"
+msgstr "Зрабіць супольным"
+
+#: ../share/libcaja-share.caja-extension.in.in.h:2
+msgid "Allows to quickly share a folder"
+msgstr "Дазваляе хутка зрабіць каталог супольным"
+
+#: ../share/caja-share.c:123
+#, c-format
+msgid ""
+"Caja needs to add some permissions to your folder \"%s\" in order to share "
+"it"
+msgstr "Caja дадасць пэўныя дазволы на каталог \"%s\", каб ім можна было падзяліцца"
+
+#: ../share/caja-share.c:131
+#, c-format
+msgid ""
+"The folder \"%s\" needs the following extra permissions for sharing to work:\n"
+"%s%s%sDo you want Caja to add these permissions to the folder automatically?"
+msgstr "Каталогу \"%s\" трэба наступныя дазволы для супольнага доступу:\n%s%s%sДадаць гэтыя дазволы аўтаматычна?"
+
+#: ../share/caja-share.c:135
+msgid "  - read permission by others\n"
+msgstr "  - дазвол на чытанне іншымі\n"
+
+#: ../share/caja-share.c:136
+msgid "  - write permission by others\n"
+msgstr "  - дазвол на запісванне іншымі\n"
+
+#: ../share/caja-share.c:137
+msgid "  - execute permission by others\n"
+msgstr "  - дазвол на выкананне іншымі\n"
+
+#: ../share/caja-share.c:141
+msgid "Add the permissions automatically"
+msgstr "Надаць дазволы аўтаматычна"
+
+#: ../share/caja-share.c:167
+#, c-format
+msgid "Could not change the permissions of folder \"%s\""
+msgstr "Немагчыма змяніць дазволы на каталог \"%s\""
+
+#: ../share/caja-share.c:451
+msgid "Share name is too long"
+msgstr "Назва рэсурса занадта доўгая"
+
+#: ../share/caja-share.c:493
+msgid "The share name cannot be empty"
+msgstr "Назва рэсурса не можа быць пустой"
+
+#: ../share/caja-share.c:506
+#, c-format
+msgid "Error while getting share information: %s"
+msgstr "Узнікла памылка падчас атрымання звестак пра рэсурс: %s"
+
+#: ../share/caja-share.c:516
+msgid "Another share has the same name"
+msgstr "Іншы рэсурс мае такую самую назву"
+
+#: ../share/caja-share.c:563 ../share/caja-share.c:799
+msgid "Modify _Share"
+msgstr "Змяніць _супольны рэсурс"
+
+#: ../share/caja-share.c:563 ../share/caja-share.c:801
+msgid "Create _Share"
+msgstr "Стварыць _супольны рэсурс"
+
+#: ../share/caja-share.c:691
+msgid "There was an error while getting the sharing information"
+msgstr "Падчас атрымання звестак пра супольныя рэсурсы ўзнікла памылка"
+
+#: ../share/caja-share.c:1123
+msgid "Folder Sharing"
+msgstr "Дзяліцца каталогам"
+
+#: ../share/caja-share.c:1164
+msgid "Sharing Options"
+msgstr "Настáўленні супольнага выкарыстання"
+
+#: ../share/caja-share.c:1165
+msgid "Share this Folder"
+msgstr "Падзяліцца гэтым каталогам"
+
+#: ../share/share-dialog.ui.h:1
+msgid "<big><b>Folder Sharing</b></big>"
+msgstr "<big><b>Дзяліцца каталогам</b></big>"
+
+#: ../share/share-dialog.ui.h:2
+msgid "Share _name:"
+msgstr "Назва _рэсурса:"
+
+#: ../share/share-dialog.ui.h:3
+msgid "Share this _folder"
+msgstr "Падзяліцца гэтым _каталогам"
+
+#: ../share/share-dialog.ui.h:4
+msgid "Co_mment:"
+msgstr "Ка_ментар:"
+
+#: ../share/share-dialog.ui.h:5
+msgid "_Allow others to create and delete files in this folder"
+msgstr "_Дазволіць іншым ствараць і змяняць файлы ў гэтым каталогу"
+
+#: ../share/share-dialog.ui.h:6
+msgid "_Guest access (for people without a user account)"
+msgstr "_Гасцявы доступ (для людзей без конта)"
+
+#: ../share/shares.c:123
+#, c-format
+msgid "%s %s %s returned with signal %d"
+msgstr "%s %s %s вярнуўся з сігналам %d"
+
+#: ../share/shares.c:132
+#, c-format
+msgid "%s %s %s failed for an unknown reason"
+msgstr "%s %s %s зваліўся з невядомай прычыны"
+
+#: ../share/shares.c:152
+#, c-format
+msgid "'net usershare' returned error %d: %s"
+msgstr "'net usershare' вярнуў памылку %d: %s"
+
+#: ../share/shares.c:154
+#, c-format
+msgid "'net usershare' returned error %d"
+msgstr "'net usershare' вярнуў памылку %d"
+
+#: ../share/shares.c:185
+#, c-format
+msgid "the output of 'net usershare' is not in valid UTF-8 encoding"
+msgstr "вывад 'net usershare' не ёсць карэктным UTF-8-тэкстам"
+
+#: ../share/shares.c:439 ../share/shares.c:613
+#, c-format
+msgid "Failed"
+msgstr "Не выйшла"
+
+#: ../share/shares.c:547
+#, c-format
+msgid "Samba's testparm returned with signal %d"
+msgstr "testparm Samba вярнуўся з сігналам %d"
+
+#: ../share/shares.c:553
+#, c-format
+msgid "Samba's testparm failed for an unknown reason"
+msgstr "testparm Samba зваліўся з невядомай нагоды"
+
+#: ../share/shares.c:568
+#, c-format
+msgid "Samba's testparm returned error %d: %s"
+msgstr "testparm Samba вярнуў памылку %d: %s"
+
+#: ../share/shares.c:570
+#, c-format
+msgid "Samba's testparm returned error %d"
+msgstr "testparm Samba вярнуў памылку %d"
+
+#: ../share/shares.c:681
+#, c-format
+msgid "Cannot remove the share for path %s: that path is not shared"
+msgstr "Нельга выдаліць супольны рэсурс для адраса %s: гэты адрас не апублікаваны як супольны"
+
+#: ../share/shares.c:727
+#, c-format
+msgid ""
+"Cannot change the path of an existing share; please remove the old share "
+"first and add a new one"
+msgstr "Немагчыма змяніць шлях існага рэсурса; спачатку выдаліце стары рэсурс, а затым дадавайце новы"
+
+#: ../wallpaper/caja-wallpaper-extension.c:109
+msgid "Set as wallpaper"
+msgstr "Зрабіць абрусам стала"
+
+#: ../wallpaper/caja-wallpaper-extension.c:110
+msgid "Set image as the current wallpaper"
+msgstr "Выставіць выяву ў якасці фона працоўнага стала"
+
+#: ../wallpaper/libcaja-wallpaper.caja-extension.in.in.h:1
+msgid "Wallpaper"
+msgstr "Абрус"
+
+#: ../wallpaper/libcaja-wallpaper.caja-extension.in.in.h:2
+msgid "Allows to quickly set wallpaper"
+msgstr "Дазваляе хутка змяніць абрус"

@@ -1,0 +1,576 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# 
+# Translators:
+# alibacha19 <alibacha19@gmail.com>, 2015
+# مهدي السطيفي <chinoune.mehdi@gmail.com>, 2014
+# Mosaab Alzoubi <moceap@hotmail.com>, 2013
+# مهدي السطيفي <chinoune.mehdi@gmail.com>, 2014-2015
+# وجدي أبو سلطان, 2016
+msgid ""
+msgstr ""
+"Project-Id-Version: MATE Desktop Environment\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-12-05 23:49+0300\n"
+"PO-Revision-Date: 2016-06-06 06:03+0000\n"
+"Last-Translator: وجدي أبو سلطان\n"
+"Language-Team: Arabic (http://www.transifex.com/mate/MATE/language/ar/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ar\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
+
+#: ../gksu/libcaja-gksu.c:135
+msgid "Open as administrator"
+msgstr "افتح كمدير النظام"
+
+#: ../gksu/libcaja-gksu.c:136
+msgid "Opens the file with administrator privileges"
+msgstr "يفتح ملف بصلاحيات مدير النظام"
+
+#: ../gksu/libcaja-gksu.c:223
+msgid ""
+"<big><b>Unable to determine the program to run.</b></big>\n"
+"\n"
+"The item you selected cannot be open with administrator powers because the correct application cannot be determined."
+msgstr "<big><b>لم أستطع تحديد برنامج لتشغيله.</b></big>\n\nالعنصر الذي اخترته لا يمكن فتحه بصلاحيات المدير لعدم إمكانية تحديد البرنامج الصحيح"
+
+#: ../gksu/libcaja-gksu.caja-extension.in.in.h:1
+msgid "Gksu"
+msgstr "Gksu"
+
+#: ../gksu/libcaja-gksu.caja-extension.in.in.h:2
+msgid "Privilege granting extension"
+msgstr "امتداد منح الصلاحيات"
+
+#: ../image-converter/caja-image-converter.c:120
+msgid "_Resize Images..."
+msgstr "ح_جّم الصور..."
+
+#: ../image-converter/caja-image-converter.c:121
+msgid "Resize each selected image"
+msgstr "حجّم جميع الصور المحددة"
+
+#: ../image-converter/caja-image-converter.c:130
+msgid "Ro_tate Images..."
+msgstr "د_وّر الصور..."
+
+#: ../image-converter/caja-image-converter.c:131
+msgid "Rotate each selected image"
+msgstr "دوّر جميع الصور المحددة"
+
+#: ../image-converter/caja-image-resize.ui.h:1
+msgid "Resize Images"
+msgstr "تحجيم الصور"
+
+#: ../image-converter/caja-image-resize.ui.h:2
+msgid "<b>Image Size</b>"
+msgstr "<b>حجم الصّورة</b>"
+
+#: ../image-converter/caja-image-resize.ui.h:3
+msgid "Select a size:"
+msgstr "اختر حجماً:"
+
+#: ../image-converter/caja-image-resize.ui.h:4
+msgid "96x96"
+msgstr "96x96"
+
+#: ../image-converter/caja-image-resize.ui.h:5
+msgid "128x128"
+msgstr "128x128"
+
+#: ../image-converter/caja-image-resize.ui.h:6
+msgid "640x480"
+msgstr "640x480"
+
+#: ../image-converter/caja-image-resize.ui.h:7
+msgid "800x600"
+msgstr "800x600"
+
+#: ../image-converter/caja-image-resize.ui.h:8
+msgid "1024x768"
+msgstr "1024x768"
+
+#: ../image-converter/caja-image-resize.ui.h:9
+msgid "1280x960"
+msgstr "1280x960"
+
+#: ../image-converter/caja-image-resize.ui.h:10
+msgid "pixels"
+msgstr "بكسل"
+
+#: ../image-converter/caja-image-resize.ui.h:11
+msgid "Scale:"
+msgstr "المقياس:"
+
+#: ../image-converter/caja-image-resize.ui.h:12
+msgid "percent"
+msgstr "نسبة"
+
+#: ../image-converter/caja-image-resize.ui.h:13
+msgid "Custom size:"
+msgstr "حجم مخصص:"
+
+#: ../image-converter/caja-image-resize.ui.h:14
+msgid "Width:"
+msgstr "العرض:"
+
+#: ../image-converter/caja-image-resize.ui.h:15
+msgid "Height:"
+msgstr "الارتفاع:"
+
+#: ../image-converter/caja-image-resize.ui.h:16
+#: ../image-converter/caja-image-rotate.ui.h:6
+msgid "<b>Filename</b>"
+msgstr "<b>اسم الملف</b>"
+
+#: ../image-converter/caja-image-resize.ui.h:17
+#: ../image-converter/caja-image-rotate.ui.h:7
+msgid "Append"
+msgstr "إلحاق"
+
+#: ../image-converter/caja-image-resize.ui.h:18
+msgid ".resized"
+msgstr ".مُحجّمة"
+
+#: ../image-converter/caja-image-resize.ui.h:19
+#: ../image-converter/caja-image-rotate.ui.h:9
+msgid "to file title"
+msgstr "لعنوان الملف"
+
+#: ../image-converter/caja-image-resize.ui.h:20
+msgid "Resize in place"
+msgstr "حجّمها في مكانها"
+
+#: ../image-converter/caja-image-resize.ui.h:21
+msgid "_Resize"
+msgstr "_حجّم"
+
+#: ../image-converter/caja-image-resizer.c:211
+#: ../image-converter/caja-image-rotator.c:208
+msgid "_Skip"
+msgstr "_تخطَّ"
+
+#: ../image-converter/caja-image-resizer.c:213
+#: ../image-converter/caja-image-rotator.c:210
+msgid "_Retry"
+msgstr "أ_عِد المحاولة"
+
+#: ../image-converter/caja-image-resizer.c:291
+#, c-format
+msgid "Resizing image: %d of %d"
+msgstr "تحجيم الصور: %d من %d"
+
+#: ../image-converter/caja-image-resizer.c:296
+#, c-format
+msgid "<i>Resizing \"%s\"</i>"
+msgstr "<i>يجري التّحجيم \"%s\"</i>"
+
+#: ../image-converter/caja-image-resizer.c:314
+#: ../image-converter/caja-image-rotator.c:313
+msgid "Please enter a valid filename suffix!"
+msgstr "يرجى إدخال لاحقة مناسبة!"
+
+#: ../image-converter/caja-image-rotate.ui.h:1
+msgid "Rotate Images"
+msgstr "تدوير الصّور"
+
+#: ../image-converter/caja-image-rotate.ui.h:2
+msgid "<b>Image Rotation</b>"
+msgstr "<b>تدوير الصّور</b>"
+
+#: ../image-converter/caja-image-rotate.ui.h:3
+msgid "Select an angle:"
+msgstr "اختر زاوية:"
+
+#: ../image-converter/caja-image-rotate.ui.h:4
+msgid "Custom angle:"
+msgstr "زاوية مخصصة:"
+
+#: ../image-converter/caja-image-rotate.ui.h:5
+msgid "degrees clockwise"
+msgstr "درجة باتجاه عقارب الساعة"
+
+#: ../image-converter/caja-image-rotate.ui.h:8
+msgid ".rotated"
+msgstr ".مُدوّرة"
+
+#: ../image-converter/caja-image-rotate.ui.h:10
+msgid "Rotate in place"
+msgstr "دوّرها في مكانها"
+
+#: ../image-converter/caja-image-rotate.ui.h:11
+msgid "_Rotate"
+msgstr "_دوّر"
+
+#: ../image-converter/caja-image-rotator.c:290
+#, c-format
+msgid "Rotating image: %d of %d"
+msgstr "تدوير الصور: %d من %d"
+
+#: ../image-converter/caja-image-rotator.c:295
+#, c-format
+msgid "<i>Rotating \"%s\"</i>"
+msgstr "<i>يجري التّدوير \"%s\"</i>"
+
+#: ../image-converter/libcaja-image-converter.caja-extension.in.in.h:1
+msgid "Image Converter"
+msgstr "محوّل الصور"
+
+#: ../image-converter/libcaja-image-converter.caja-extension.in.in.h:2
+msgid "Rotate and resize images"
+msgstr "تدوير و تحجيم الصور"
+
+#: ../open-terminal/caja-open-terminal.c:432
+#: ../open-terminal/caja-open-terminal.c:445
+msgid "Open in _Terminal"
+msgstr "افتح في ال_طرفيّة"
+
+#: ../open-terminal/caja-open-terminal.c:434
+msgid "Open the currently selected folder in a terminal"
+msgstr "افتح المجلد المحدّد حاليًا في طرفيّة"
+
+#: ../open-terminal/caja-open-terminal.c:436
+#: ../open-terminal/caja-open-terminal.c:446
+msgid "Open the currently open folder in a terminal"
+msgstr "افتح المجلد المفتوح حاليًا في طرفية"
+
+#: ../open-terminal/caja-open-terminal.c:442
+msgid "Open _Terminal"
+msgstr "افتح _الطرفيّة"
+
+#: ../open-terminal/caja-open-terminal.c:443
+msgid "Open a terminal"
+msgstr "افتح _طرفيّة"
+
+#: ../open-terminal/libcaja-open-terminal.caja-extension.in.in.h:1
+msgid "Open terminal"
+msgstr "افتح الطرفية"
+
+#: ../open-terminal/libcaja-open-terminal.caja-extension.in.in.h:2
+msgid "Open terminals from folders"
+msgstr "فتح الطرفية من المجلدات"
+
+#: ../open-terminal/org.mate.caja-open-terminal.gschema.xml.in.h:1
+msgid ""
+"Whether opening a terminal on the desktop opens a terminal in the home "
+"directory"
+msgstr "في حالة فتح الطرفية في مجلد سطح المكتب فإنّها تفتح في المجلد المنزل"
+
+#: ../open-terminal/org.mate.caja-open-terminal.gschema.xml.in.h:2
+msgid ""
+"If set to true, then opening a terminal on the desktop will open a terminal "
+"in the home directory. Otherwise, it will be opened in the desktop "
+"directory. Note that this key is irrelevant if the desktop directory is "
+"identical to the home directory."
+msgstr "في حال ضبطه كصحيح، فإن فتح الطّرفية في مجلد سطح المكتب يؤدّي لفتحها في المجلد المنزل . و في حال ضبطه غير ذلك فإن الطّرفية ستفتح مجلد سطح المكتب . لاحظ أن هذا المفتاح لا يتأثر فلي حال تطابق مجلدي المنزل و سطح المكتب."
+
+#: ../sendto/caja-nste.c:78 ../sendto/caja-nste.c:83
+msgid "Send to..."
+msgstr "أرسل إلى..."
+
+#: ../sendto/caja-nste.c:79
+msgid "Send file by mail, instant message..."
+msgstr "أرسل الملف بالبريد، رسالة فورية..."
+
+#: ../sendto/caja-nste.c:84
+msgid "Send files by mail, instant message..."
+msgstr "أرسل الملفات بالبريد، رسالة فورية..."
+
+#: ../sendto/caja-sendto-command.c:578
+msgid "Files"
+msgstr "ملفات"
+
+#: ../sendto/caja-sendto-command.c:790
+#, c-format
+msgid "Expects URIs or filenames to be passed as options\n"
+msgstr "يتوقّع أن تمرر المسارات (URI) أو العناوين كخيارات\n"
+
+#: ../sendto/caja-sendto-command.c:810
+#, c-format
+msgid "Could not parse command-line options: %s\n"
+msgstr "تعذّر تحليل خيارات سطر الأوامر: %s\n"
+
+#: ../sendto/caja-sendto-command.c:825
+msgid "Could not load any plugins."
+msgstr "تعذّر تحميل أية ملحقات."
+
+#: ../sendto/caja-sendto-command.c:828
+msgid "Please verify your installation"
+msgstr "رجاءً راجع تثبيتك"
+
+#: ../sendto/libcaja-sendto.caja-extension.in.in.h:1
+msgid "Send To"
+msgstr "أرسل إلى"
+
+#: ../sendto/libcaja-sendto.caja-extension.in.in.h:2
+msgid "Integrates email clients and Pidgin"
+msgstr "دمج عملاء البريد الإلكتروني وPidgin"
+
+#: ../sendto/caja-sendto.ui.h:1
+msgid "Send To..."
+msgstr "أرسل إلى..."
+
+#: ../sendto/caja-sendto.ui.h:2
+msgid "_Send"
+msgstr "أر_سل"
+
+#: ../sendto/caja-sendto.ui.h:3
+msgid "<b>Destination</b>"
+msgstr "<b>الوِجهة</b>"
+
+#: ../sendto/caja-sendto.ui.h:4
+msgid "Send _as:"
+msgstr "أرسِل _ك‍:"
+
+#: ../sendto/caja-sendto.ui.h:5
+msgid "Send t_o:"
+msgstr "أرسِل إ_لى:"
+
+#: ../sendto/caja-sendto.ui.h:6
+msgid "<b>Compression</b>"
+msgstr "<b>الضّغط</b>"
+
+#: ../sendto/caja-sendto.ui.h:7
+msgid "Send _packed in:"
+msgstr "أرسِله _مضغوطًا في:"
+
+#: ../sendto/plugins/emailclient/emailclient.c:263
+msgid "Email"
+msgstr "البريد الإلكتروني"
+
+#: ../sendto/plugins/gajim/gajim.c:419
+msgid "Unable to send file"
+msgstr "تعذّر إرسال الملف"
+
+#: ../sendto/plugins/gajim/gajim.c:420
+msgid "There is no connection to gajim remote service."
+msgstr "لا يوجد اتصال مع خدمة gajim عن بعد."
+
+#: ../sendto/plugins/gajim/gajim.c:444 ../sendto/plugins/gajim/gajim.c:484
+msgid "Sending file failed"
+msgstr "فشل إرسال الملف"
+
+#: ../sendto/plugins/gajim/gajim.c:445
+msgid "Recipient is missing."
+msgstr "المتلقّي مفقود."
+
+#: ../sendto/plugins/gajim/gajim.c:484
+msgid "Unknown recipient."
+msgstr "متلقٍ مجهول."
+
+#: ../sendto/plugins/gajim/gajim.c:507
+msgid "Instant Message (Gajim)"
+msgstr "رسالة فورية (Gajim)"
+
+#: ../sendto/plugins/caja-burn/caja-burn.c:92
+msgid "New CD/DVD"
+msgstr "اسطوانة\\دي‌ڤي‌دي جديدة"
+
+#: ../sendto/plugins/caja-burn/caja-burn.c:99
+msgid "Existing CD/DVD"
+msgstr "اسطوانة\\دي‌ڤي‌دي موجودة"
+
+#: ../sendto/plugins/caja-burn/caja-burn.c:178
+msgid "CD/DVD Creator"
+msgstr "مُنشئ اسطوانات/دي‌في‌دي"
+
+#: ../sendto/plugins/pidgin/pidgin.c:462
+msgid "Instant Message (Pidgin)"
+msgstr "رسالة فورية (بِدْجِن)"
+
+#: ../sendto/plugins/removable-devices/removable-devices.c:248
+msgid "Removable disks and shares"
+msgstr "الأقراص القابلة للفصل والمشارَكات"
+
+#: ../sendto/plugins/upnp/upnp.c:309
+msgid "UPnP Media Server"
+msgstr "خادوم وسائط UPnP"
+
+#: ../share/libcaja-share.caja-extension.in.in.h:1 ../share/caja-share.c:1063
+msgid "Share"
+msgstr "شارك"
+
+#: ../share/libcaja-share.caja-extension.in.in.h:2
+msgid "Allows to quickly share a folder"
+msgstr "يسمح بمشاركة مجلد بسرعة "
+
+#: ../share/caja-share.c:123
+#, c-format
+msgid ""
+"Caja needs to add some permissions to your folder \"%s\" in order to share "
+"it"
+msgstr "  يحتاج Caja إلى إضافة بعض الأذونات إلى المجلد \"%s\" من أجل تقاسمها"
+
+#: ../share/caja-share.c:131
+#, c-format
+msgid ""
+"The folder \"%s\" needs the following extra permissions for sharing to work:\n"
+"%s%s%sDo you want Caja to add these permissions to the folder automatically?"
+msgstr "المجلد \"%s\" يحتاج للأذونات التالية كي تعمل المُشاركة:\n%s%s%s هل تريد من كاجا أن يضيف هذه الصلاحيات للمجلد تلقائيا؟"
+
+#: ../share/caja-share.c:135
+msgid "  - read permission by others\n"
+msgstr "إذن بالقراءة من قبل الآخرين\n"
+
+#: ../share/caja-share.c:136
+msgid "  - write permission by others\n"
+msgstr "إذن بالكتابة من قبل الآخرين\n"
+
+#: ../share/caja-share.c:137
+msgid "  - execute permission by others\n"
+msgstr " تنفيذ إذن من قبل الآخرين\n"
+
+#: ../share/caja-share.c:141
+msgid "Add the permissions automatically"
+msgstr "إضافة الأذونات تلقائيا"
+
+#: ../share/caja-share.c:167
+#, c-format
+msgid "Could not change the permissions of folder \"%s\""
+msgstr "لا يمكن تغيير أذونات المجلد  \"%s\""
+
+#: ../share/caja-share.c:451
+msgid "Share name is too long"
+msgstr "اسم المشاركة طويل جدا"
+
+#: ../share/caja-share.c:493
+msgid "The share name cannot be empty"
+msgstr "اسم المشاركة لا يمكن أن يكون فارغا"
+
+#: ../share/caja-share.c:506
+#, c-format
+msgid "Error while getting share information: %s"
+msgstr "خطأ أثناء الحصول على معلومات المشاركة:%s"
+
+#: ../share/caja-share.c:516
+msgid "Another share has the same name"
+msgstr "مشاركة أخرى لها نفس الاسم"
+
+#: ../share/caja-share.c:563 ../share/caja-share.c:799
+msgid "Modify _Share"
+msgstr "ع_دّل المشاركة"
+
+#: ../share/caja-share.c:563 ../share/caja-share.c:801
+msgid "Create _Share"
+msgstr "أنشئ الم_شاركة"
+
+#: ../share/caja-share.c:691
+msgid "There was an error while getting the sharing information"
+msgstr "حدث خطأ عند الحصول على معلومات المشاركة"
+
+#: ../share/caja-share.c:1123
+msgid "Folder Sharing"
+msgstr "مُشاركة المُحلدات"
+
+#: ../share/caja-share.c:1164
+msgid "Sharing Options"
+msgstr "خيارات المُشاركة"
+
+#: ../share/caja-share.c:1165
+msgid "Share this Folder"
+msgstr "شارك هذا المُجلد"
+
+#: ../share/share-dialog.ui.h:1
+msgid "<big><b>Folder Sharing</b></big>"
+msgstr "<big><b>مُشاركة المجلدات</b></big>"
+
+#: ../share/share-dialog.ui.h:2
+msgid "Share _name:"
+msgstr "اسم الم_شاركة:"
+
+#: ../share/share-dialog.ui.h:3
+msgid "Share this _folder"
+msgstr "_شارك هذا المُجلد"
+
+#: ../share/share-dialog.ui.h:4
+msgid "Co_mment:"
+msgstr "ال_تعليق:"
+
+#: ../share/share-dialog.ui.h:5
+msgid "_Allow others to create and delete files in this folder"
+msgstr "_السماح للآخرين بإنشاء و حذف الملفات في هذا المجلد"
+
+#: ../share/share-dialog.ui.h:6
+msgid "_Guest access (for people without a user account)"
+msgstr "_دخول الضيف (لمن لا يملكون حساب مستخدم)"
+
+#: ../share/shares.c:123
+#, c-format
+msgid "%s %s %s returned with signal %d"
+msgstr "%s %s %s عاد مع الإشارة %d"
+
+#: ../share/shares.c:132
+#, c-format
+msgid "%s %s %s failed for an unknown reason"
+msgstr "%s %s %s فشلت لسبب مجهول"
+
+#: ../share/shares.c:152
+#, c-format
+msgid "'net usershare' returned error %d: %s"
+msgstr ""
+
+#: ../share/shares.c:154
+#, c-format
+msgid "'net usershare' returned error %d"
+msgstr ""
+
+#: ../share/shares.c:185
+#, c-format
+msgid "the output of 'net usershare' is not in valid UTF-8 encoding"
+msgstr "مخرج 'net usershare' ليس بترميز UTF-8 صالح"
+
+#: ../share/shares.c:439 ../share/shares.c:613
+#, c-format
+msgid "Failed"
+msgstr "فشل"
+
+#: ../share/shares.c:547
+#, c-format
+msgid "Samba's testparm returned with signal %d"
+msgstr ""
+
+#: ../share/shares.c:553
+#, c-format
+msgid "Samba's testparm failed for an unknown reason"
+msgstr ""
+
+#: ../share/shares.c:568
+#, c-format
+msgid "Samba's testparm returned error %d: %s"
+msgstr ""
+
+#: ../share/shares.c:570
+#, c-format
+msgid "Samba's testparm returned error %d"
+msgstr ""
+
+#: ../share/shares.c:681
+#, c-format
+msgid "Cannot remove the share for path %s: that path is not shared"
+msgstr "لا يمكن إزالة المشاركة من المسار %s: هذا المسار غير مُشارَك"
+
+#: ../share/shares.c:727
+#, c-format
+msgid ""
+"Cannot change the path of an existing share; please remove the old share "
+"first and add a new one"
+msgstr "لا يمكن تغيير مسار مُشاركة موجودة؛ رجاء أزل المُشاركة القديمة و أضف أخرى جديدة"
+
+#: ../wallpaper/caja-wallpaper-extension.c:109
+msgid "Set as wallpaper"
+msgstr "اضبط كخلفية"
+
+#: ../wallpaper/caja-wallpaper-extension.c:110
+msgid "Set image as the current wallpaper"
+msgstr "اختر الصورة لتكون الخلفية الحالية"
+
+#: ../wallpaper/libcaja-wallpaper.caja-extension.in.in.h:1
+msgid "Wallpaper"
+msgstr "الخلفية"
+
+#: ../wallpaper/libcaja-wallpaper.caja-extension.in.in.h:2
+msgid "Allows to quickly set wallpaper"
+msgstr "يسمح بضبط سريع للخلفية"

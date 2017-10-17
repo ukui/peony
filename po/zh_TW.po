@@ -1,0 +1,573 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# 
+# Translators:
+# Jeff Huang <s8321414@gmail.com>, 2014-2015
+# Jeff Huang <s8321414@gmail.com>, 2014
+msgid ""
+msgstr ""
+"Project-Id-Version: MATE Desktop Environment\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-12-05 23:49+0300\n"
+"PO-Revision-Date: 2015-12-16 14:33+0000\n"
+"Last-Translator: Jeff Huang <s8321414@gmail.com>\n"
+"Language-Team: Chinese (Taiwan) (http://www.transifex.com/mate/MATE/language/zh_TW/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: zh_TW\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: ../gksu/libcaja-gksu.c:135
+msgid "Open as administrator"
+msgstr "以管理員身分開啟"
+
+#: ../gksu/libcaja-gksu.c:136
+msgid "Opens the file with administrator privileges"
+msgstr "以管理員權限開啟檔案"
+
+#: ../gksu/libcaja-gksu.c:223
+msgid ""
+"<big><b>Unable to determine the program to run.</b></big>\n"
+"\n"
+"The item you selected cannot be open with administrator powers because the correct application cannot be determined."
+msgstr "<big><b>無法決定讓程式運行。</b></big>\n\n您所選的項目無法以管理員的權限開啟，因為無法決定正確的應用程式。"
+
+#: ../gksu/libcaja-gksu.caja-extension.in.in.h:1
+msgid "Gksu"
+msgstr "Gksu"
+
+#: ../gksu/libcaja-gksu.caja-extension.in.in.h:2
+msgid "Privilege granting extension"
+msgstr "授予權限擴充套件"
+
+#: ../image-converter/caja-image-converter.c:120
+msgid "_Resize Images..."
+msgstr "調整圖片大小(_R)…"
+
+#: ../image-converter/caja-image-converter.c:121
+msgid "Resize each selected image"
+msgstr "調整每個已選圖片的大小"
+
+#: ../image-converter/caja-image-converter.c:130
+msgid "Ro_tate Images..."
+msgstr "旋轉圖片(_T)…"
+
+#: ../image-converter/caja-image-converter.c:131
+msgid "Rotate each selected image"
+msgstr "旋轉每個已選圖片"
+
+#: ../image-converter/caja-image-resize.ui.h:1
+msgid "Resize Images"
+msgstr "調整圖片大小"
+
+#: ../image-converter/caja-image-resize.ui.h:2
+msgid "<b>Image Size</b>"
+msgstr "<b>圖片大小</b>"
+
+#: ../image-converter/caja-image-resize.ui.h:3
+msgid "Select a size:"
+msgstr "選取大小："
+
+#: ../image-converter/caja-image-resize.ui.h:4
+msgid "96x96"
+msgstr "96x96"
+
+#: ../image-converter/caja-image-resize.ui.h:5
+msgid "128x128"
+msgstr "128x128"
+
+#: ../image-converter/caja-image-resize.ui.h:6
+msgid "640x480"
+msgstr "640x480"
+
+#: ../image-converter/caja-image-resize.ui.h:7
+msgid "800x600"
+msgstr "800x600"
+
+#: ../image-converter/caja-image-resize.ui.h:8
+msgid "1024x768"
+msgstr "1024x768"
+
+#: ../image-converter/caja-image-resize.ui.h:9
+msgid "1280x960"
+msgstr "1280x960"
+
+#: ../image-converter/caja-image-resize.ui.h:10
+msgid "pixels"
+msgstr "像素"
+
+#: ../image-converter/caja-image-resize.ui.h:11
+msgid "Scale:"
+msgstr "尺度："
+
+#: ../image-converter/caja-image-resize.ui.h:12
+msgid "percent"
+msgstr "百分比"
+
+#: ../image-converter/caja-image-resize.ui.h:13
+msgid "Custom size:"
+msgstr "自訂大小："
+
+#: ../image-converter/caja-image-resize.ui.h:14
+msgid "Width:"
+msgstr "寬度："
+
+#: ../image-converter/caja-image-resize.ui.h:15
+msgid "Height:"
+msgstr "高度："
+
+#: ../image-converter/caja-image-resize.ui.h:16
+#: ../image-converter/caja-image-rotate.ui.h:6
+msgid "<b>Filename</b>"
+msgstr "<b>檔名</b>"
+
+#: ../image-converter/caja-image-resize.ui.h:17
+#: ../image-converter/caja-image-rotate.ui.h:7
+msgid "Append"
+msgstr "附加"
+
+#: ../image-converter/caja-image-resize.ui.h:18
+msgid ".resized"
+msgstr ".resized"
+
+#: ../image-converter/caja-image-resize.ui.h:19
+#: ../image-converter/caja-image-rotate.ui.h:9
+msgid "to file title"
+msgstr "目標檔案名稱"
+
+#: ../image-converter/caja-image-resize.ui.h:20
+msgid "Resize in place"
+msgstr "適當地調整大小"
+
+#: ../image-converter/caja-image-resize.ui.h:21
+msgid "_Resize"
+msgstr "調整大小(_R)"
+
+#: ../image-converter/caja-image-resizer.c:211
+#: ../image-converter/caja-image-rotator.c:208
+msgid "_Skip"
+msgstr "跳過(_S)"
+
+#: ../image-converter/caja-image-resizer.c:213
+#: ../image-converter/caja-image-rotator.c:210
+msgid "_Retry"
+msgstr "重試(_R)"
+
+#: ../image-converter/caja-image-resizer.c:291
+#, c-format
+msgid "Resizing image: %d of %d"
+msgstr "調整圖像大小：%d 中的 %d"
+
+#: ../image-converter/caja-image-resizer.c:296
+#, c-format
+msgid "<i>Resizing \"%s\"</i>"
+msgstr "<i>正在調整大小「%s」</i>"
+
+#: ../image-converter/caja-image-resizer.c:314
+#: ../image-converter/caja-image-rotator.c:313
+msgid "Please enter a valid filename suffix!"
+msgstr "請輸入有效的副檔名！"
+
+#: ../image-converter/caja-image-rotate.ui.h:1
+msgid "Rotate Images"
+msgstr "旋轉圖片"
+
+#: ../image-converter/caja-image-rotate.ui.h:2
+msgid "<b>Image Rotation</b>"
+msgstr "<b>圖片旋轉</b>"
+
+#: ../image-converter/caja-image-rotate.ui.h:3
+msgid "Select an angle:"
+msgstr "選取角度："
+
+#: ../image-converter/caja-image-rotate.ui.h:4
+msgid "Custom angle:"
+msgstr "自訂角度："
+
+#: ../image-converter/caja-image-rotate.ui.h:5
+msgid "degrees clockwise"
+msgstr "順時針角度"
+
+#: ../image-converter/caja-image-rotate.ui.h:8
+msgid ".rotated"
+msgstr ".rotated"
+
+#: ../image-converter/caja-image-rotate.ui.h:10
+msgid "Rotate in place"
+msgstr "適當地旋轉"
+
+#: ../image-converter/caja-image-rotate.ui.h:11
+msgid "_Rotate"
+msgstr "旋轉(_R)"
+
+#: ../image-converter/caja-image-rotator.c:290
+#, c-format
+msgid "Rotating image: %d of %d"
+msgstr "旋轉圖像：%d 在 %d 中"
+
+#: ../image-converter/caja-image-rotator.c:295
+#, c-format
+msgid "<i>Rotating \"%s\"</i>"
+msgstr "<i>正在旋轉「%s」</i>"
+
+#: ../image-converter/libcaja-image-converter.caja-extension.in.in.h:1
+msgid "Image Converter"
+msgstr "圖片轉換器"
+
+#: ../image-converter/libcaja-image-converter.caja-extension.in.in.h:2
+msgid "Rotate and resize images"
+msgstr "旋轉及調整圖片大小"
+
+#: ../open-terminal/caja-open-terminal.c:432
+#: ../open-terminal/caja-open-terminal.c:445
+msgid "Open in _Terminal"
+msgstr "在終端機中開啟(_T)"
+
+#: ../open-terminal/caja-open-terminal.c:434
+msgid "Open the currently selected folder in a terminal"
+msgstr "在終端機中開啟目前已選資料夾"
+
+#: ../open-terminal/caja-open-terminal.c:436
+#: ../open-terminal/caja-open-terminal.c:446
+msgid "Open the currently open folder in a terminal"
+msgstr "開啟終端機並進入目前使用中的資料夾"
+
+#: ../open-terminal/caja-open-terminal.c:442
+msgid "Open _Terminal"
+msgstr "開啟終端機(_T)"
+
+#: ../open-terminal/caja-open-terminal.c:443
+msgid "Open a terminal"
+msgstr "開啟終端機"
+
+#: ../open-terminal/libcaja-open-terminal.caja-extension.in.in.h:1
+msgid "Open terminal"
+msgstr "開啟終端機"
+
+#: ../open-terminal/libcaja-open-terminal.caja-extension.in.in.h:2
+msgid "Open terminals from folders"
+msgstr "從資料夾中開啟終端機"
+
+#: ../open-terminal/org.mate.caja-open-terminal.gschema.xml.in.h:1
+msgid ""
+"Whether opening a terminal on the desktop opens a terminal in the home "
+"directory"
+msgstr "是否在桌面上開啟終端機於使用者家目錄"
+
+#: ../open-terminal/org.mate.caja-open-terminal.gschema.xml.in.h:2
+msgid ""
+"If set to true, then opening a terminal on the desktop will open a terminal "
+"in the home directory. Otherwise, it will be opened in the desktop "
+"directory. Note that this key is irrelevant if the desktop directory is "
+"identical to the home directory."
+msgstr "如果設定為真，就在桌面上開啟終端機於使用者家目錄。否則，它將被開啟於桌面目錄。要注意的是，如果桌面目錄與家目錄相同，這個鍵就不重要。"
+
+#: ../sendto/caja-nste.c:78 ../sendto/caja-nste.c:83
+msgid "Send to..."
+msgstr "傳送至..."
+
+#: ../sendto/caja-nste.c:79
+msgid "Send file by mail, instant message..."
+msgstr "經電子郵件、即時訊息等等途徑傳送檔案"
+
+#: ../sendto/caja-nste.c:84
+msgid "Send files by mail, instant message..."
+msgstr "經電子郵件、即時訊息等等途徑傳送檔案"
+
+#: ../sendto/caja-sendto-command.c:578
+msgid "Files"
+msgstr "檔案"
+
+#: ../sendto/caja-sendto-command.c:790
+#, c-format
+msgid "Expects URIs or filenames to be passed as options\n"
+msgstr "應使用 URI 或檔案名稱做為選項\n"
+
+#: ../sendto/caja-sendto-command.c:810
+#, c-format
+msgid "Could not parse command-line options: %s\n"
+msgstr "無法分析命令列選項：%s\n"
+
+#: ../sendto/caja-sendto-command.c:825
+msgid "Could not load any plugins."
+msgstr "無法載入任何外掛程式。"
+
+#: ../sendto/caja-sendto-command.c:828
+msgid "Please verify your installation"
+msgstr "請檢查安裝是否正確"
+
+#: ../sendto/libcaja-sendto.caja-extension.in.in.h:1
+msgid "Send To"
+msgstr "傳送到"
+
+#: ../sendto/libcaja-sendto.caja-extension.in.in.h:2
+msgid "Integrates email clients and Pidgin"
+msgstr "將電子郵件客戶端與 Pidgin 整合"
+
+#: ../sendto/caja-sendto.ui.h:1
+msgid "Send To..."
+msgstr "傳送到..."
+
+#: ../sendto/caja-sendto.ui.h:2
+msgid "_Send"
+msgstr "傳送(_S)"
+
+#: ../sendto/caja-sendto.ui.h:3
+msgid "<b>Destination</b>"
+msgstr "<b>目的端</b>"
+
+#: ../sendto/caja-sendto.ui.h:4
+msgid "Send _as:"
+msgstr "傳送為(_A):"
+
+#: ../sendto/caja-sendto.ui.h:5
+msgid "Send t_o:"
+msgstr "傳送到(_O):"
+
+#: ../sendto/caja-sendto.ui.h:6
+msgid "<b>Compression</b>"
+msgstr "<b>壓縮</b>"
+
+#: ../sendto/caja-sendto.ui.h:7
+msgid "Send _packed in:"
+msgstr "傳送時封裝於(_P):"
+
+#: ../sendto/plugins/emailclient/emailclient.c:263
+msgid "Email"
+msgstr "電子郵件"
+
+#: ../sendto/plugins/gajim/gajim.c:419
+msgid "Unable to send file"
+msgstr "無法傳送檔案"
+
+#: ../sendto/plugins/gajim/gajim.c:420
+msgid "There is no connection to gajim remote service."
+msgstr "並未連線至 gajim 遠端服務。"
+
+#: ../sendto/plugins/gajim/gajim.c:444 ../sendto/plugins/gajim/gajim.c:484
+msgid "Sending file failed"
+msgstr "傳送檔案失敗"
+
+#: ../sendto/plugins/gajim/gajim.c:445
+msgid "Recipient is missing."
+msgstr "缺少收件者。"
+
+#: ../sendto/plugins/gajim/gajim.c:484
+msgid "Unknown recipient."
+msgstr "不明的收件者。"
+
+#: ../sendto/plugins/gajim/gajim.c:507
+msgid "Instant Message (Gajim)"
+msgstr "即時訊息 (Gajim)"
+
+#: ../sendto/plugins/caja-burn/caja-burn.c:92
+msgid "New CD/DVD"
+msgstr "新的 CD/DVD"
+
+#: ../sendto/plugins/caja-burn/caja-burn.c:99
+msgid "Existing CD/DVD"
+msgstr "既存的 CD/DVD"
+
+#: ../sendto/plugins/caja-burn/caja-burn.c:178
+msgid "CD/DVD Creator"
+msgstr "CD/DVD 製作程式"
+
+#: ../sendto/plugins/pidgin/pidgin.c:462
+msgid "Instant Message (Pidgin)"
+msgstr "即時訊息 (Pidgin)"
+
+#: ../sendto/plugins/removable-devices/removable-devices.c:248
+msgid "Removable disks and shares"
+msgstr "卸除式磁碟與分享"
+
+#: ../sendto/plugins/upnp/upnp.c:309
+msgid "UPnP Media Server"
+msgstr "UPnP 媒體伺服器"
+
+#: ../share/libcaja-share.caja-extension.in.in.h:1 ../share/caja-share.c:1063
+msgid "Share"
+msgstr "共用"
+
+#: ../share/libcaja-share.caja-extension.in.in.h:2
+msgid "Allows to quickly share a folder"
+msgstr "允許快速分享資料夾"
+
+#: ../share/caja-share.c:123
+#, c-format
+msgid ""
+"Caja needs to add some permissions to your folder \"%s\" in order to share "
+"it"
+msgstr "為了共用，Caja 需要加入一些權限到您的資料夾「 %s 」中"
+
+#: ../share/caja-share.c:131
+#, c-format
+msgid ""
+"The folder \"%s\" needs the following extra permissions for sharing to work:\n"
+"%s%s%sDo you want Caja to add these permissions to the folder automatically?"
+msgstr "資料夾「 %s 」需要下列額外的權限以便共用：\n%s%s%s 您想要讓 Caja 自動新增這些權限到資料夾嗎？"
+
+#: ../share/caja-share.c:135
+msgid "  - read permission by others\n"
+msgstr "  ─ 讓其他人讀取的權限\n"
+
+#: ../share/caja-share.c:136
+msgid "  - write permission by others\n"
+msgstr "   ─ 讓其他人寫入的權限\n"
+
+#: ../share/caja-share.c:137
+msgid "  - execute permission by others\n"
+msgstr "   ─ 讓其他人執行的權限\n"
+
+#: ../share/caja-share.c:141
+msgid "Add the permissions automatically"
+msgstr "自動加入權限"
+
+#: ../share/caja-share.c:167
+#, c-format
+msgid "Could not change the permissions of folder \"%s\""
+msgstr "無法更改資料夾「%s」的權限"
+
+#: ../share/caja-share.c:451
+msgid "Share name is too long"
+msgstr "共用名稱太長"
+
+#: ../share/caja-share.c:493
+msgid "The share name cannot be empty"
+msgstr "共用名稱不能為空"
+
+#: ../share/caja-share.c:506
+#, c-format
+msgid "Error while getting share information: %s"
+msgstr "取得共用資訊時發生錯誤： %s"
+
+#: ../share/caja-share.c:516
+msgid "Another share has the same name"
+msgstr "其他共用有同樣的名稱"
+
+#: ../share/caja-share.c:563 ../share/caja-share.c:799
+msgid "Modify _Share"
+msgstr "修改共用(_S)"
+
+#: ../share/caja-share.c:563 ../share/caja-share.c:801
+msgid "Create _Share"
+msgstr "新增共用(_S)"
+
+#: ../share/caja-share.c:691
+msgid "There was an error while getting the sharing information"
+msgstr "取得共用資訊時發生一個錯誤"
+
+#: ../share/caja-share.c:1123
+msgid "Folder Sharing"
+msgstr "資料夾共用"
+
+#: ../share/caja-share.c:1164
+msgid "Sharing Options"
+msgstr "共用選項"
+
+#: ../share/caja-share.c:1165
+msgid "Share this Folder"
+msgstr "共用此資料夾"
+
+#: ../share/share-dialog.ui.h:1
+msgid "<big><b>Folder Sharing</b></big>"
+msgstr "<big><b> 資料夾共用 </b></big>"
+
+#: ../share/share-dialog.ui.h:2
+msgid "Share _name:"
+msgstr "共用名稱(_N):"
+
+#: ../share/share-dialog.ui.h:3
+msgid "Share this _folder"
+msgstr "共用此資料夾(_F):"
+
+#: ../share/share-dialog.ui.h:4
+msgid "Co_mment:"
+msgstr "備註(_M):"
+
+#: ../share/share-dialog.ui.h:5
+msgid "_Allow others to create and delete files in this folder"
+msgstr "允許其他人創建及刪除這個資料夾的檔案 (_A)"
+
+#: ../share/share-dialog.ui.h:6
+msgid "_Guest access (for people without a user account)"
+msgstr "訪客使用(供沒有使用者帳號的人使用) (_G)"
+
+#: ../share/shares.c:123
+#, c-format
+msgid "%s %s %s returned with signal %d"
+msgstr "%s %s %s 傳回訊號 %d"
+
+#: ../share/shares.c:132
+#, c-format
+msgid "%s %s %s failed for an unknown reason"
+msgstr "%s %s %s 因為未知的原因失敗"
+
+#: ../share/shares.c:152
+#, c-format
+msgid "'net usershare' returned error %d: %s"
+msgstr "'網路使用者共用' 傳回錯誤 %d ： %s"
+
+#: ../share/shares.c:154
+#, c-format
+msgid "'net usershare' returned error %d"
+msgstr "'網路使用者共用' 傳回錯誤 %d"
+
+#: ../share/shares.c:185
+#, c-format
+msgid "the output of 'net usershare' is not in valid UTF-8 encoding"
+msgstr "在 UTF-8 編碼中不被允許的'網路使用者共用'輸出"
+
+#: ../share/shares.c:439 ../share/shares.c:613
+#, c-format
+msgid "Failed"
+msgstr "失敗"
+
+#: ../share/shares.c:547
+#, c-format
+msgid "Samba's testparm returned with signal %d"
+msgstr "Samba 的 testparm 傳回訊號 %d"
+
+#: ../share/shares.c:553
+#, c-format
+msgid "Samba's testparm failed for an unknown reason"
+msgstr "Samba 的 testparm 因為未知的原因失敗"
+
+#: ../share/shares.c:568
+#, c-format
+msgid "Samba's testparm returned error %d: %s"
+msgstr "Samba 的 testparm 傳回錯誤 %d ： %s"
+
+#: ../share/shares.c:570
+#, c-format
+msgid "Samba's testparm returned error %d"
+msgstr "Samba 的 testparm 傳回錯誤 %d"
+
+#: ../share/shares.c:681
+#, c-format
+msgid "Cannot remove the share for path %s: that path is not shared"
+msgstr "無法移除路徑 %s 的共用：該路徑無法共用"
+
+#: ../share/shares.c:727
+#, c-format
+msgid ""
+"Cannot change the path of an existing share; please remove the old share "
+"first and add a new one"
+msgstr "無法改變已共用的路徑；請先移除舊的共用再新增一個新的"
+
+#: ../wallpaper/caja-wallpaper-extension.c:109
+msgid "Set as wallpaper"
+msgstr "設定為桌布"
+
+#: ../wallpaper/caja-wallpaper-extension.c:110
+msgid "Set image as the current wallpaper"
+msgstr "將圖片設定為目前的桌布"
+
+#: ../wallpaper/libcaja-wallpaper.caja-extension.in.in.h:1
+msgid "Wallpaper"
+msgstr "桌布"
+
+#: ../wallpaper/libcaja-wallpaper.caja-extension.in.in.h:2
+msgid "Allows to quickly set wallpaper"
+msgstr "允許快速設定桌布"

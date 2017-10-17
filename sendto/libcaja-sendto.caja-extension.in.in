@@ -1,0 +1,8 @@
+[Caja Extension]
+Icon=mail-send
+_Name=Send To
+_Description=Integrates email clients and Pidgin
+Author=Roberto Majadas <roberto.majadas@openshine.com>
+Copyright=Copyright (C) 2004 Roberto Majadas
+Version=@VERSION@
+Website=http://www.mate-desktop.org/

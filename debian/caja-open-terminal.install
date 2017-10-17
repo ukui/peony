@@ -1,0 +1,3 @@
+usr/lib/*/caja/extensions-2.0/libcaja-open-terminal.so
+usr/share/caja/extensions/libcaja-open-terminal.caja-extension
+usr/share/glib-2.0/schemas/org.mate.caja-open-terminal.gschema.xml

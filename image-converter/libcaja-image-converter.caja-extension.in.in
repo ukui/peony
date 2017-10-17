@@ -1,0 +1,8 @@
+[Caja Extension]
+Icon=image
+_Name=Image Converter
+_Description=Rotate and resize images
+Author=Jürg Billeter <j@bitron.ch>
+Copyright=Copyright (C) 2004-2005 Jürg Billeter
+Version=@VERSION@
+Website=http://www.mate-desktop.org/

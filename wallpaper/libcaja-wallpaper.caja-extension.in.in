@@ -1,0 +1,8 @@
+[Caja Extension]
+Icon=desktop
+_Name=Wallpaper
+_Description=Allows to quickly set wallpaper
+Author=Stefano Karapetsas;Adam Israel
+Copyright=Copyright (C) 2014 Stefano Karapetsas
+Version=@VERSION@
+Website=http://www.mate-desktop.org/

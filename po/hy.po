@@ -1,0 +1,572 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# 
+# Translators:
+# Siranush <ss.m.95@mail.ru>, 2015-2016
+msgid ""
+msgstr ""
+"Project-Id-Version: MATE Desktop Environment\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-12-05 23:49+0300\n"
+"PO-Revision-Date: 2016-01-18 12:54+0000\n"
+"Last-Translator: Siranush <ss.m.95@mail.ru>\n"
+"Language-Team: Armenian (http://www.transifex.com/mate/MATE/language/hy/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: hy\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: ../gksu/libcaja-gksu.c:135
+msgid "Open as administrator"
+msgstr "Բացել որպես կառավարիչ"
+
+#: ../gksu/libcaja-gksu.c:136
+msgid "Opens the file with administrator privileges"
+msgstr "Ֆայլը բացել ադմինիստրատորի արտոնություններով"
+
+#: ../gksu/libcaja-gksu.c:223
+msgid ""
+"<big><b>Unable to determine the program to run.</b></big>\n"
+"\n"
+"The item you selected cannot be open with administrator powers because the correct application cannot be determined."
+msgstr "<big><b>Անհնար է որոշել ծրագրի մեկնարկը: </b></big>\n\nՁեր ընտրած տարրը չի կարող բացվել ադմինիստրատորի հզորությամբ, որովհետև ճիշտ կիրառումը չի կարող որոշվել։"
+
+#: ../gksu/libcaja-gksu.caja-extension.in.in.h:1
+msgid "Gksu"
+msgstr "Gksu"
+
+#: ../gksu/libcaja-gksu.caja-extension.in.in.h:2
+msgid "Privilege granting extension"
+msgstr "Արտոնության տրամադրումը երկարացնել"
+
+#: ../image-converter/caja-image-converter.c:120
+msgid "_Resize Images..."
+msgstr "_Չափափոխել Նկարներ ..."
+
+#: ../image-converter/caja-image-converter.c:121
+msgid "Resize each selected image"
+msgstr "Չափափոխել ընտրված յուրաքանչյուր պատկերը"
+
+#: ../image-converter/caja-image-converter.c:130
+msgid "Ro_tate Images..."
+msgstr "Պտ_տել Պատկերներ..."
+
+#: ../image-converter/caja-image-converter.c:131
+msgid "Rotate each selected image"
+msgstr "Պտտեցնել  ընտրված յուրաքանչյուր պատկեր"
+
+#: ../image-converter/caja-image-resize.ui.h:1
+msgid "Resize Images"
+msgstr "Փոփոխել նկարների չափսերը"
+
+#: ../image-converter/caja-image-resize.ui.h:2
+msgid "<b>Image Size</b>"
+msgstr "<b>Նկարի Չափը</b>"
+
+#: ../image-converter/caja-image-resize.ui.h:3
+msgid "Select a size:"
+msgstr "Ընտրել չափը:"
+
+#: ../image-converter/caja-image-resize.ui.h:4
+msgid "96x96"
+msgstr "96x96"
+
+#: ../image-converter/caja-image-resize.ui.h:5
+msgid "128x128"
+msgstr "128x128"
+
+#: ../image-converter/caja-image-resize.ui.h:6
+msgid "640x480"
+msgstr "640x480"
+
+#: ../image-converter/caja-image-resize.ui.h:7
+msgid "800x600"
+msgstr "800x600"
+
+#: ../image-converter/caja-image-resize.ui.h:8
+msgid "1024x768"
+msgstr "1024x768"
+
+#: ../image-converter/caja-image-resize.ui.h:9
+msgid "1280x960"
+msgstr "1280x960"
+
+#: ../image-converter/caja-image-resize.ui.h:10
+msgid "pixels"
+msgstr "պիքսել"
+
+#: ../image-converter/caja-image-resize.ui.h:11
+msgid "Scale:"
+msgstr "Սանդղակ:"
+
+#: ../image-converter/caja-image-resize.ui.h:12
+msgid "percent"
+msgstr "Տոկոս"
+
+#: ../image-converter/caja-image-resize.ui.h:13
+msgid "Custom size:"
+msgstr "Պատվերով չափը:"
+
+#: ../image-converter/caja-image-resize.ui.h:14
+msgid "Width:"
+msgstr "Լայնություն"
+
+#: ../image-converter/caja-image-resize.ui.h:15
+msgid "Height:"
+msgstr "Բարձրություն։"
+
+#: ../image-converter/caja-image-resize.ui.h:16
+#: ../image-converter/caja-image-rotate.ui.h:6
+msgid "<b>Filename</b>"
+msgstr "<b>Ֆայլի անուն</b>"
+
+#: ../image-converter/caja-image-resize.ui.h:17
+#: ../image-converter/caja-image-rotate.ui.h:7
+msgid "Append"
+msgstr "Ավելացնել"
+
+#: ../image-converter/caja-image-resize.ui.h:18
+msgid ".resized"
+msgstr "․չափափոխված"
+
+#: ../image-converter/caja-image-resize.ui.h:19
+#: ../image-converter/caja-image-rotate.ui.h:9
+msgid "to file title"
+msgstr "ֆայլի տիտղոս"
+
+#: ../image-converter/caja-image-resize.ui.h:20
+msgid "Resize in place"
+msgstr "Չափափոխել տեղում"
+
+#: ../image-converter/caja-image-resize.ui.h:21
+msgid "_Resize"
+msgstr "_ Չափը փոխել"
+
+#: ../image-converter/caja-image-resizer.c:211
+#: ../image-converter/caja-image-rotator.c:208
+msgid "_Skip"
+msgstr "_Բաց թողնել"
+
+#: ../image-converter/caja-image-resizer.c:213
+#: ../image-converter/caja-image-rotator.c:210
+msgid "_Retry"
+msgstr "_Կրկին փորձել"
+
+#: ../image-converter/caja-image-resizer.c:291
+#, c-format
+msgid "Resizing image: %d of %d"
+msgstr "Պատկերի չափափոխում։%d %d"
+
+#: ../image-converter/caja-image-resizer.c:296
+#, c-format
+msgid "<i>Resizing \"%s\"</i>"
+msgstr "<i>Չափափոխում \"%s\"</i>"
+
+#: ../image-converter/caja-image-resizer.c:314
+#: ../image-converter/caja-image-rotator.c:313
+msgid "Please enter a valid filename suffix!"
+msgstr "Խնդրում ենք մուտքագրել վավերական ֆայլի վերջածանցը!"
+
+#: ../image-converter/caja-image-rotate.ui.h:1
+msgid "Rotate Images"
+msgstr "Պտտել Նկարներ"
+
+#: ../image-converter/caja-image-rotate.ui.h:2
+msgid "<b>Image Rotation</b>"
+msgstr "<b>Նկարի պտտում</b>"
+
+#: ../image-converter/caja-image-rotate.ui.h:3
+msgid "Select an angle:"
+msgstr "Ընտրել անկյունը"
+
+#: ../image-converter/caja-image-rotate.ui.h:4
+msgid "Custom angle:"
+msgstr "Պատվերով անկյունը:"
+
+#: ../image-converter/caja-image-rotate.ui.h:5
+msgid "degrees clockwise"
+msgstr "աստիճան ժամացույցի սլաքի ուղղությամբ"
+
+#: ../image-converter/caja-image-rotate.ui.h:8
+msgid ".rotated"
+msgstr "․պտտված"
+
+#: ../image-converter/caja-image-rotate.ui.h:10
+msgid "Rotate in place"
+msgstr "Պտտել տեղում"
+
+#: ../image-converter/caja-image-rotate.ui.h:11
+msgid "_Rotate"
+msgstr "_Պտտել"
+
+#: ../image-converter/caja-image-rotator.c:290
+#, c-format
+msgid "Rotating image: %d of %d"
+msgstr "Պտտվող նկար: %d of %d"
+
+#: ../image-converter/caja-image-rotator.c:295
+#, c-format
+msgid "<i>Rotating \"%s\"</i>"
+msgstr "<i>Պտտում \"%s\"</i>"
+
+#: ../image-converter/libcaja-image-converter.caja-extension.in.in.h:1
+msgid "Image Converter"
+msgstr "Նկարի Փոխակերպիչ"
+
+#: ../image-converter/libcaja-image-converter.caja-extension.in.in.h:2
+msgid "Rotate and resize images"
+msgstr "Պտտել և չափափոխել նկարներ"
+
+#: ../open-terminal/caja-open-terminal.c:432
+#: ../open-terminal/caja-open-terminal.c:445
+msgid "Open in _Terminal"
+msgstr "Բացել  _Տերմինալը"
+
+#: ../open-terminal/caja-open-terminal.c:434
+msgid "Open the currently selected folder in a terminal"
+msgstr "Բացել ներկայումս ընտրված թղթապանակը տերմինալում"
+
+#: ../open-terminal/caja-open-terminal.c:436
+#: ../open-terminal/caja-open-terminal.c:446
+msgid "Open the currently open folder in a terminal"
+msgstr "Բացել ներկայումս բաց թղթապանակը տերմինալում"
+
+#: ../open-terminal/caja-open-terminal.c:442
+msgid "Open _Terminal"
+msgstr "Բացել _Տերմինալը"
+
+#: ../open-terminal/caja-open-terminal.c:443
+msgid "Open a terminal"
+msgstr "Բացել տերմինալը"
+
+#: ../open-terminal/libcaja-open-terminal.caja-extension.in.in.h:1
+msgid "Open terminal"
+msgstr "Բացել տերմինալը"
+
+#: ../open-terminal/libcaja-open-terminal.caja-extension.in.in.h:2
+msgid "Open terminals from folders"
+msgstr "Բացել տերմինալներ թղթապանակներից"
+
+#: ../open-terminal/org.mate.caja-open-terminal.gschema.xml.in.h:1
+msgid ""
+"Whether opening a terminal on the desktop opens a terminal in the home "
+"directory"
+msgstr "Արդյոք բացվող տերմինալը աշխատասեղանի վրա բացում է տերմինալ տուն դիրեկտորիայի մեջ"
+
+#: ../open-terminal/org.mate.caja-open-terminal.gschema.xml.in.h:2
+msgid ""
+"If set to true, then opening a terminal on the desktop will open a terminal "
+"in the home directory. Otherwise, it will be opened in the desktop "
+"directory. Note that this key is irrelevant if the desktop directory is "
+"identical to the home directory."
+msgstr "Եթե ճշգրիտ է, ապա բացելով տերմինալ աշխատասեղանի վրա կբացի տերմինալը գլխավոր թղթապանակի մեջ։ Հակառակ դեպքում, այն կարող է բացել է աշխատասեղանի թղթապանակը։ Նշենք, որ այս ստեղնը անտեղի է, եթե աշխատասեղանի թղթապանակը նույնականանում է գլխավոր թղթապանակի հետ։"
+
+#: ../sendto/caja-nste.c:78 ../sendto/caja-nste.c:83
+msgid "Send to..."
+msgstr "Ուղարկել դեպի․․․"
+
+#: ../sendto/caja-nste.c:79
+msgid "Send file by mail, instant message..."
+msgstr "Ուղարկել ֆայլը փոստով, ակնթարթային հաղորդագրություն..."
+
+#: ../sendto/caja-nste.c:84
+msgid "Send files by mail, instant message..."
+msgstr "Ուղարկել ֆայլերը փոստով, ակնթարթային հաղորդագրություն..."
+
+#: ../sendto/caja-sendto-command.c:578
+msgid "Files"
+msgstr "Ֆայլեր"
+
+#: ../sendto/caja-sendto-command.c:790
+#, c-format
+msgid "Expects URIs or filenames to be passed as options\n"
+msgstr "Ակնկալում URI֊ներ կամ ֆայլի անուններ ընդունված, որպես տարբերակ\n"
+
+#: ../sendto/caja-sendto-command.c:810
+#, c-format
+msgid "Could not parse command-line options: %s\n"
+msgstr "Չհաջողվեց վերլուծել հրամանային տողի տարբերակները: %s\n"
+
+#: ../sendto/caja-sendto-command.c:825
+msgid "Could not load any plugins."
+msgstr "Չհաջողվեց բեռնել որևէ կոնտակտներ։"
+
+#: ../sendto/caja-sendto-command.c:828
+msgid "Please verify your installation"
+msgstr "Խնդրում ենք ստուգել Ձեր տեղադրումը"
+
+#: ../sendto/libcaja-sendto.caja-extension.in.in.h:1
+msgid "Send To"
+msgstr "Ուղարկել դեպի"
+
+#: ../sendto/libcaja-sendto.caja-extension.in.in.h:2
+msgid "Integrates email clients and Pidgin"
+msgstr "Ինտեգրվել է էլփոստի հաճախորդներին և Pidgin"
+
+#: ../sendto/caja-sendto.ui.h:1
+msgid "Send To..."
+msgstr "Ուղարկել դեպի․․․"
+
+#: ../sendto/caja-sendto.ui.h:2
+msgid "_Send"
+msgstr "_Ուղարկել"
+
+#: ../sendto/caja-sendto.ui.h:3
+msgid "<b>Destination</b>"
+msgstr "<b>Նպատակակետ</b>"
+
+#: ../sendto/caja-sendto.ui.h:4
+msgid "Send _as:"
+msgstr "Ուղարկել _որպես:"
+
+#: ../sendto/caja-sendto.ui.h:5
+msgid "Send t_o:"
+msgstr "Ուղարկել դ_եպի:"
+
+#: ../sendto/caja-sendto.ui.h:6
+msgid "<b>Compression</b>"
+msgstr "<b>Սեղմում</b>"
+
+#: ../sendto/caja-sendto.ui.h:7
+msgid "Send _packed in:"
+msgstr "Ուղարկել _փաթեթավորված:"
+
+#: ../sendto/plugins/emailclient/emailclient.c:263
+msgid "Email"
+msgstr "Էլփոստ"
+
+#: ../sendto/plugins/gajim/gajim.c:419
+msgid "Unable to send file"
+msgstr "Անհնար է ուղարկել ֆայլ"
+
+#: ../sendto/plugins/gajim/gajim.c:420
+msgid "There is no connection to gajim remote service."
+msgstr "gajim հեռավոր ծառայության կապ չկա։"
+
+#: ../sendto/plugins/gajim/gajim.c:444 ../sendto/plugins/gajim/gajim.c:484
+msgid "Sending file failed"
+msgstr "Ֆայլի ուղարկումը ձախողվեց"
+
+#: ../sendto/plugins/gajim/gajim.c:445
+msgid "Recipient is missing."
+msgstr "Ստացողը բացակայում է."
+
+#: ../sendto/plugins/gajim/gajim.c:484
+msgid "Unknown recipient."
+msgstr "Անհայտ հասցեատեր."
+
+#: ../sendto/plugins/gajim/gajim.c:507
+msgid "Instant Message (Gajim)"
+msgstr "Ակնթարթային Հաղորդագրություն (Gajim)"
+
+#: ../sendto/plugins/caja-burn/caja-burn.c:92
+msgid "New CD/DVD"
+msgstr "Նոր CD/DVD"
+
+#: ../sendto/plugins/caja-burn/caja-burn.c:99
+msgid "Existing CD/DVD"
+msgstr "Գոյություն ունեցող CD/DVD"
+
+#: ../sendto/plugins/caja-burn/caja-burn.c:178
+msgid "CD/DVD Creator"
+msgstr "CD/DVD Ստեղծող"
+
+#: ../sendto/plugins/pidgin/pidgin.c:462
+msgid "Instant Message (Pidgin)"
+msgstr "Ակնթարթային Հաղորդագրություն (Pidgin)"
+
+#: ../sendto/plugins/removable-devices/removable-devices.c:248
+msgid "Removable disks and shares"
+msgstr "Շարժական սկավառակներ և բաժնեմասեր"
+
+#: ../sendto/plugins/upnp/upnp.c:309
+msgid "UPnP Media Server"
+msgstr "UPnP Մեդիա Սերվեր"
+
+#: ../share/libcaja-share.caja-extension.in.in.h:1 ../share/caja-share.c:1063
+msgid "Share"
+msgstr "Մասնաբաժին"
+
+#: ../share/libcaja-share.caja-extension.in.in.h:2
+msgid "Allows to quickly share a folder"
+msgstr "Թույլ է տալիս արագ կիսել թղթապանակը"
+
+#: ../share/caja-share.c:123
+#, c-format
+msgid ""
+"Caja needs to add some permissions to your folder \"%s\" in order to share "
+"it"
+msgstr "Caja պետք է ավելացնել որոշ թույլտվություններ ձեր \"%s\" թղթապանակներին, որպեսզի կիսեք այն"
+
+#: ../share/caja-share.c:131
+#, c-format
+msgid ""
+"The folder \"%s\" needs the following extra permissions for sharing to work:\n"
+"%s%s%sDo you want Caja to add these permissions to the folder automatically?"
+msgstr "\"%s\" թղթապանակին անհրաժեշտ հետևյալ է լրացուցիչ թույլտվությունները կիսեվելու աշխատանքի համար․\n%s%s%sՑանկանո՞ւմ եք Caja֊ն թղթապանակում ավելացնի այդ թույլտվություններ ինքնաբերաբար։"
+
+#: ../share/caja-share.c:135
+msgid "  - read permission by others\n"
+msgstr " - կարդալ թույլտվություն ուրիշների կողմից\n"
+
+#: ../share/caja-share.c:136
+msgid "  - write permission by others\n"
+msgstr " - գրել թույլտվություն ուրիշների կողմից\n"
+
+#: ../share/caja-share.c:137
+msgid "  - execute permission by others\n"
+msgstr "- կատարել թույլտվություն մյուսների կողմից\n"
+
+#: ../share/caja-share.c:141
+msgid "Add the permissions automatically"
+msgstr "Ավելացնել թույլտվությունները ինքնաբերաբար"
+
+#: ../share/caja-share.c:167
+#, c-format
+msgid "Could not change the permissions of folder \"%s\""
+msgstr "Չի հաղոջվում փոխել թղէապանակի թույլտվությունները \"%s\""
+
+#: ../share/caja-share.c:451
+msgid "Share name is too long"
+msgstr "Կիսել անունը չափազանց երկար է"
+
+#: ../share/caja-share.c:493
+msgid "The share name cannot be empty"
+msgstr "Կիսված անունը չի կարող դատարկ լինել"
+
+#: ../share/caja-share.c:506
+#, c-format
+msgid "Error while getting share information: %s"
+msgstr "Սխալ, մինչ կիսված տեղեկատվության ստանալը: %s"
+
+#: ../share/caja-share.c:516
+msgid "Another share has the same name"
+msgstr "Մեկ այլ մասնաբաժինը ունի նույն անունը"
+
+#: ../share/caja-share.c:563 ../share/caja-share.c:799
+msgid "Modify _Share"
+msgstr "Փոփոխել _Բաժինը"
+
+#: ../share/caja-share.c:563 ../share/caja-share.c:801
+msgid "Create _Share"
+msgstr "Ստեղծել _Բաժին"
+
+#: ../share/caja-share.c:691
+msgid "There was an error while getting the sharing information"
+msgstr "Տեղի է ունեցել սխալ, մինչ բաժանվող ինֆորմացիայի ստացումը"
+
+#: ../share/caja-share.c:1123
+msgid "Folder Sharing"
+msgstr "Թղթապանակի Բաժանում"
+
+#: ../share/caja-share.c:1164
+msgid "Sharing Options"
+msgstr "Բաժանման Տարբերակներ"
+
+#: ../share/caja-share.c:1165
+msgid "Share this Folder"
+msgstr "Կիսել այս թղթապանակը"
+
+#: ../share/share-dialog.ui.h:1
+msgid "<big><b>Folder Sharing</b></big>"
+msgstr "<big><b>Թղթապանակի Թաժանում</b></big>"
+
+#: ../share/share-dialog.ui.h:2
+msgid "Share _name:"
+msgstr "Բաժանե _անուն․"
+
+#: ../share/share-dialog.ui.h:3
+msgid "Share this _folder"
+msgstr "Բաժանել այս _թղթապանակը"
+
+#: ../share/share-dialog.ui.h:4
+msgid "Co_mment:"
+msgstr "Մե_կնաբանություն։"
+
+#: ../share/share-dialog.ui.h:5
+msgid "_Allow others to create and delete files in this folder"
+msgstr "_Թույլ տալ, որ մյուսները ստեղծեն և ջնջեն ֆայլեր այս թղթապանակում"
+
+#: ../share/share-dialog.ui.h:6
+msgid "_Guest access (for people without a user account)"
+msgstr "_Հյուրի հնարավորությունները (առանց օգտատիրոջ հաշիվ ունեցող մարդկանց համար)"
+
+#: ../share/shares.c:123
+#, c-format
+msgid "%s %s %s returned with signal %d"
+msgstr "%s %s %s վերադարձավ ազդանշանով %d"
+
+#: ../share/shares.c:132
+#, c-format
+msgid "%s %s %s failed for an unknown reason"
+msgstr "%s %s %s ձախողվեց անհայտ պատճառներով"
+
+#: ../share/shares.c:152
+#, c-format
+msgid "'net usershare' returned error %d: %s"
+msgstr "'net usershare' վերադարձված սխալ %d: %s"
+
+#: ../share/shares.c:154
+#, c-format
+msgid "'net usershare' returned error %d"
+msgstr "'net usershare' վերադարձված սխալ %d"
+
+#: ../share/shares.c:185
+#, c-format
+msgid "the output of 'net usershare' is not in valid UTF-8 encoding"
+msgstr "ելքը 'net usershare' անվավեր է UTF-8 կոդավորմանը"
+
+#: ../share/shares.c:439 ../share/shares.c:613
+#, c-format
+msgid "Failed"
+msgstr "Ձախողվեց"
+
+#: ../share/shares.c:547
+#, c-format
+msgid "Samba's testparm returned with signal %d"
+msgstr "Samba's testparm վերադաձվել է ազդանշանով %d"
+
+#: ../share/shares.c:553
+#, c-format
+msgid "Samba's testparm failed for an unknown reason"
+msgstr "Samba's testparm ձախողվեց անհայտ պատճառներով"
+
+#: ../share/shares.c:568
+#, c-format
+msgid "Samba's testparm returned error %d: %s"
+msgstr "Samba's testparm  վերադարձված սխալ %d: %s"
+
+#: ../share/shares.c:570
+#, c-format
+msgid "Samba's testparm returned error %d"
+msgstr "Samba's testparm վերադարձված սխալ %d"
+
+#: ../share/shares.c:681
+#, c-format
+msgid "Cannot remove the share for path %s: that path is not shared"
+msgstr "Հնարավոր չէ հեռացնել մասնաբաժինը %s ուղղու համար,  որի ճանապարհը կիսաված չէ"
+
+#: ../share/shares.c:727
+#, c-format
+msgid ""
+"Cannot change the path of an existing share; please remove the old share "
+"first and add a new one"
+msgstr "Հնարավոր չէ փոխել ուղին գոյություն ունեցող մասնաբաժնի։ Խնդրում ենք հեռացնել հին առաջին մասնաբաժինը և ավելացնել նորը"
+
+#: ../wallpaper/caja-wallpaper-extension.c:109
+msgid "Set as wallpaper"
+msgstr "Սահմանել որպես պաստառ"
+
+#: ../wallpaper/caja-wallpaper-extension.c:110
+msgid "Set image as the current wallpaper"
+msgstr "Սահմանել պատկերը որպես ներկայիս պաստառ"
+
+#: ../wallpaper/libcaja-wallpaper.caja-extension.in.in.h:1
+msgid "Wallpaper"
+msgstr "Պաստառ"
+
+#: ../wallpaper/libcaja-wallpaper.caja-extension.in.in.h:2
+msgid "Allows to quickly set wallpaper"
+msgstr "Թույլ է տալիս արագ ստեղծել պաստառ"

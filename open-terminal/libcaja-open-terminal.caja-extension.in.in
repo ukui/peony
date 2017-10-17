@@ -1,0 +1,8 @@
+[Caja Extension]
+Icon=terminal
+_Name=Open terminal
+_Description=Open terminals from folders
+Author=Christian Neumair <chris@gnome-de.org>
+Copyright=Copyright (C) 2004, 2005 Free Software Foundation, Inc.
+Version=@VERSION@
+Website=http://www.mate-desktop.org/

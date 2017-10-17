@@ -1,0 +1,53 @@
+### caja-extensions 1.18.1
+
+  * Translations update
+  * xattr-tags improvements
+
+### caja-extensions 1.18.0
+
+  * NEWS: use consistent, project wide, markdown-like formatting to make
+    generating release announcements easier
+  * Build: require caja >= 1.17.1 and libmate-desktop >= 1.17.0
+  * Move to GTK+3 (require GTK+ >= 3.14), drop GTK+2 code and --with-gtk
+    build option
+  * Add xattr-tags extension to show xattr tags in a new column
+  * Translations update
+
+### caja-extensions 1.16.0
+
+  * open-terminal: fix opening terminal in remote folders with single
+    or double quote in their names
+  * open-terminal: some code cleanups
+  * Translations update
+
+### caja-extensions 1.14.1
+
+  * Translations update
+  * Make distcheck use currently selected GTK+ version
+
+### caja-extensions 1.14.0
+
+  * Drop MateConf migration scripts
+  * GTK+3: some deprecation fixes
+  * Some more fixes and cleanups
+  * Translations update
+  * Add Changelog generation
+
+### caja-extensions 1.12.0
+
+  * Some string fixes
+  * Translations update
+
+### caja-extensions 1.10.1
+
+  * open-terminal: fixed bugs with non-standard ssh ports
+
+### caja-extensions 1.10.0
+
+  * wallpaper: Added new 'Set as wallpaper' extension
+  * sendto: re-introduce the option to select plugins to build
+
+### caja-extensions 1.8.0
+
+  * New release merging all current official MATE caja extensions in a single
+    package.
