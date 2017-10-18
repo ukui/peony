@@ -1,4 +1,4 @@
-AC_INIT([peony-extensions], 1.18.1, [https://github.com/mate-desktop/peony-extensions])
+AC_INIT([peony-extensions], 0.1.0, [https://github.com/ukui/peony-extensions])
 
 AM_INIT_AUTOMAKE([1.9 no-dist-gzip dist-xz tar-ustar check-news])
 AC_CONFIG_HEADERS(config.h)
@@ -10,7 +10,7 @@ AM_PROG_LIBTOOL
 AC_PROG_INSTALL
 AC_PROG_MAKE_SET
 
-PEONY_REQUIRED=1.0.4
+PEONY_REQUIRED=1.0.0
 LIBMATE_DESKTOP_REQUIRED=1.17.0
 GLIB_REQUIRED=2.36.0
 GTK_REQUIRED=3.14.0

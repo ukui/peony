@@ -1,11 +1,8 @@
 Source: peony-extensions
 Section: x11
 Priority: optional
-Maintainer: MATE Packaging Team <pkg-mate-team@lists.alioth.debian.org>
-Uploaders: Mike Gabriel <sunweaver@debian.org>,
-           John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-           Stefano Karapetsas <stefano@karapetsas.com>,
-           Vangelis Mouhtsis <vangelis@gnugr.org>,
+Maintainer: liu peng <liupeng@kylinos.cn>
+Uploaders: handsome_feng <jianfengli@ubuntukylin.com>,
 Build-Depends: debhelper (>= 10.3~),
                dpkg-dev (>= 1.16.1.1),
                libpeony-extension-dev (>= 1.0.4),
@@ -18,10 +15,10 @@ Build-Depends: debhelper (>= 10.3~),
                libstartup-notification0-dev,
                mate-common (>= 1.18),
                pkg-config,
-Standards-Version: 3.9.8
-Homepage: http://www.mate-desktop.org/
-Vcs-Browser: https://anonscm.debian.org/git/pkg-mate/peony-extensions.git
-Vcs-Git: https://anonscm.debian.org/git/pkg-mate/peony-extensions.git
+Standards-Version: 4.0.0
+Homepage: http://www.ukui.org/
+Vcs-Browser: https://github.com/ukui/peony-extensions.git
+Vcs-Git: https://github.com/ukui/peony-extensions.git
 
 Package: peony-gksu
 Architecture: any
@@ -30,7 +27,7 @@ Depends: peony-extensions-common (= ${source:Version}),
          ${misc:Depends},
          ${shlibs:Depends},
 Description: privilege granting extension for Peony using gksu
- Peony is the official file manager for the MATE desktop. This
+ Peony is the official file manager for the UKUI desktop. This
  package adds extended functionality to the Peony file manager.
  .
  The gksu extension for Peony allows you to open files with
@@ -44,7 +41,7 @@ Depends: peony-extensions-common (= ${source:Version}),
          ${misc:Depends},
          ${shlibs:Depends},
 Description: Peony extension to mass resize or rotate images
- Peony is the official file manager for the MATE desktop. This
+ Peony is the official file manager for the UKUI desktop. This
  package adds extended functionality to the Peony file manager.
  .
  This package adds a "Resize Images..." menu item to the context menu of
@@ -58,7 +55,7 @@ Depends: peony-extensions-common (= ${source:Version}),
          ${misc:Depends},
          ${shlibs:Depends},
 Description: Peony plugin for opening terminals in arbitrary local paths
- Peony is the official file manager for the MATE desktop. This
+ Peony is the official file manager for the UKUI desktop. This
  package adds extended functionality to the Peony file manager.
  .
  peony-open-terminal is a proof-of-concept Peony extension
@@ -73,7 +70,7 @@ Suggests: pidgin (>= 2.0.0) | gajim,
           python-dbus,
           thunderbird | icedove | evolution (>= 2.28) | claws-mail,
 Description: integrates email clients and Pidgin into the Peony file manager
- Peony is the official file manager for the MATE desktop. This
+ Peony is the official file manager for the UKUI desktop. This
  package adds extended functionality to the Peony file manager.
  .
  The Peony Send To extension provides the Peony file manager with a context
@@ -91,7 +88,7 @@ Depends: peony-extensions-common (= ${source:Version}),
          ${misc:Depends},
          ${shlibs:Depends},
 Description: Allows one to quickly share a folder from the Peony file manager
- Peony is the official file manager for the MATE desktop. This
+ Peony is the official file manager for the UKUI desktop. This
  package adds extended functionality to the Peony file manager.
  .
  The Peony share extension allows you to quickly share a folder from the
@@ -104,7 +101,7 @@ Depends: peony-extensions-common (= ${source:Version}),
          ${misc:Depends},
          ${shlibs:Depends},
 Description: Allows one to quickly set a wallpaper from folders
- Peony is the official file manager for the MATE desktop. This
+ Peony is the official file manager for the UKUI desktop. This
  package adds extended functionality to the Peony file manager.
  .
  Peony Wallpaper allows you to quickly set a wallpaper directly from
@@ -116,7 +113,7 @@ Depends: peony-extensions-common (= ${source:Version}),
          ${misc:Depends},
          ${shlibs:Depends},
 Description: Allows one to view extended attributes
- Peony is the official file manager for the MATE desktop. This
+ Peony is the official file manager for the UKUI desktop. This
  package adds extended functionality to the Peony file manager.
  .
  Peony xattr tags extention allows you to view file and folder
@@ -126,7 +123,7 @@ Package: peony-extensions-common
 Architecture: all
 Depends: ${misc:Depends},
 Description: Peony extensions (common files)
- Peony is the official file manager for the MATE desktop. This
+ Peony is the official file manager for the UKUI desktop. This
  package adds extended functionality to the Peony file manager.
  .
  This package contains the architecture independent files for
