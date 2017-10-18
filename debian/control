@@ -1,4 +1,4 @@
-Source: caja-extensions
+Source: peony-extensions
 Section: x11
 Priority: optional
 Maintainer: MATE Packaging Team <pkg-mate-team@lists.alioth.debian.org>
@@ -8,7 +8,7 @@ Uploaders: Mike Gabriel <sunweaver@debian.org>,
            Vangelis Mouhtsis <vangelis@gnugr.org>,
 Build-Depends: debhelper (>= 10.3~),
                dpkg-dev (>= 1.16.1.1),
-               libcaja-extension-dev (>= 1.18),
+               libpeony-extension-dev (>= 1.0.4),
                libdbus-1-dev,
                libdbus-glib-1-dev,
                libdconf-dev,
@@ -20,115 +20,115 @@ Build-Depends: debhelper (>= 10.3~),
                pkg-config,
 Standards-Version: 3.9.8
 Homepage: http://www.mate-desktop.org/
-Vcs-Browser: https://anonscm.debian.org/git/pkg-mate/caja-extensions.git
-Vcs-Git: https://anonscm.debian.org/git/pkg-mate/caja-extensions.git
+Vcs-Browser: https://anonscm.debian.org/git/pkg-mate/peony-extensions.git
+Vcs-Git: https://anonscm.debian.org/git/pkg-mate/peony-extensions.git
 
-Package: caja-gksu
+Package: peony-gksu
 Architecture: any
-Depends: caja-extensions-common (= ${source:Version}),
+Depends: peony-extensions-common (= ${source:Version}),
          gksu,
          ${misc:Depends},
          ${shlibs:Depends},
-Description: privilege granting extension for Caja using gksu
- Caja is the official file manager for the MATE desktop. This
- package adds extended functionality to the Caja file manager.
+Description: privilege granting extension for Peony using gksu
+ Peony is the official file manager for the MATE desktop. This
+ package adds extended functionality to the Peony file manager.
  .
- The gksu extension for Caja allows you to open files with
+ The gksu extension for Peony allows you to open files with
  administration privileges using the context menu when browsing
- your files with Caja.
+ your files with Peony.
 
-Package: caja-image-converter
+Package: peony-image-converter
 Architecture: any
-Depends: caja-extensions-common (= ${source:Version}),
+Depends: peony-extensions-common (= ${source:Version}),
          imagemagick,
          ${misc:Depends},
          ${shlibs:Depends},
-Description: Caja extension to mass resize or rotate images
- Caja is the official file manager for the MATE desktop. This
- package adds extended functionality to the Caja file manager.
+Description: Peony extension to mass resize or rotate images
+ Peony is the official file manager for the MATE desktop. This
+ package adds extended functionality to the Peony file manager.
  .
  This package adds a "Resize Images..." menu item to the context menu of
  all images. This opens a dialog where you set the desired image size
  and file name. A click on "Resize" finally resizes the image(s) using
  ImageMagick's convert tool.
 
-Package: caja-open-terminal
+Package: peony-open-terminal
 Architecture: any
-Depends: caja-extensions-common (= ${source:Version}),
+Depends: peony-extensions-common (= ${source:Version}),
          ${misc:Depends},
          ${shlibs:Depends},
-Description: Caja plugin for opening terminals in arbitrary local paths
- Caja is the official file manager for the MATE desktop. This
- package adds extended functionality to the Caja file manager.
+Description: Peony plugin for opening terminals in arbitrary local paths
+ Peony is the official file manager for the MATE desktop. This
+ package adds extended functionality to the Peony file manager.
  .
- caja-open-terminal is a proof-of-concept Caja extension
+ peony-open-terminal is a proof-of-concept Peony extension
  which allows you to open a terminal in arbitrary local folders.
 
-Package: caja-sendto
+Package: peony-sendto
 Architecture: any
-Depends: caja-extensions-common (= ${source:Version}),
+Depends: peony-extensions-common (= ${source:Version}),
          ${misc:Depends},
          ${shlibs:Depends},
 Suggests: pidgin (>= 2.0.0) | gajim,
           python-dbus,
           thunderbird | icedove | evolution (>= 2.28) | claws-mail,
-Description: integrates email clients and Pidgin into the Caja file manager
- Caja is the official file manager for the MATE desktop. This
- package adds extended functionality to the Caja file manager.
+Description: integrates email clients and Pidgin into the Peony file manager
+ Peony is the official file manager for the MATE desktop. This
+ package adds extended functionality to the Peony file manager.
  .
- The Caja Send To extension provides the Caja file manager with a context
+ The Peony Send To extension provides the Peony file manager with a context
  menu component for quickly sending files to given email addresses, contacts
  on a Pidgin or Gajim instant messaging list, through Thunderbird/Icedove,
  or through Claws Mail.
  .
- Caja Send To also provides the option of compressing the files (tar.bz2,
+ Peony Send To also provides the option of compressing the files (tar.bz2,
  tar.gz, or zip) before sending.
 
-Package: caja-share
+Package: peony-share
 Architecture: any
-Depends: caja-extensions-common (= ${source:Version}),
+Depends: peony-extensions-common (= ${source:Version}),
          samba-common-bin,
          ${misc:Depends},
          ${shlibs:Depends},
-Description: Allows one to quickly share a folder from the Caja file manager
- Caja is the official file manager for the MATE desktop. This
- package adds extended functionality to the Caja file manager.
+Description: Allows one to quickly share a folder from the Peony file manager
+ Peony is the official file manager for the MATE desktop. This
+ package adds extended functionality to the Peony file manager.
  .
- The Caja share extension allows you to quickly share a folder from the
- Caja file manager without requiring root access. It uses Samba, so your
+ The Peony share extension allows you to quickly share a folder from the
+ Peony file manager without requiring root access. It uses Samba, so your
  folders can be accessed by any operating system.
 
-Package: caja-wallpaper
+Package: peony-wallpaper
 Architecture: any
-Depends: caja-extensions-common (= ${source:Version}),
+Depends: peony-extensions-common (= ${source:Version}),
          ${misc:Depends},
          ${shlibs:Depends},
 Description: Allows one to quickly set a wallpaper from folders
- Caja is the official file manager for the MATE desktop. This
- package adds extended functionality to the Caja file manager.
+ Peony is the official file manager for the MATE desktop. This
+ package adds extended functionality to the Peony file manager.
  .
- Caja Wallpaper allows you to quickly set a wallpaper directly from
+ Peony Wallpaper allows you to quickly set a wallpaper directly from
  file browser folders.
 
-Package: caja-xattr-tags
+Package: peony-xattr-tags
 Architecture: any
-Depends: caja-extensions-common (= ${source:Version}),
+Depends: peony-extensions-common (= ${source:Version}),
          ${misc:Depends},
          ${shlibs:Depends},
 Description: Allows one to view extended attributes
- Caja is the official file manager for the MATE desktop. This
- package adds extended functionality to the Caja file manager.
+ Peony is the official file manager for the MATE desktop. This
+ package adds extended functionality to the Peony file manager.
  .
- Caja xattr tags extention allows you to view file and folder
+ Peony xattr tags extention allows you to view file and folder
  extended attributes.
 
-Package: caja-extensions-common
+Package: peony-extensions-common
 Architecture: all
 Depends: ${misc:Depends},
-Description: Caja extensions (common files)
- Caja is the official file manager for the MATE desktop. This
- package adds extended functionality to the Caja file manager.
+Description: Peony extensions (common files)
+ Peony is the official file manager for the MATE desktop. This
+ package adds extended functionality to the Peony file manager.
  .
  This package contains the architecture independent files for
- various available Caja extensions.
+ various available Peony extensions.
 

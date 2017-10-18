@@ -18,244 +18,244 @@ msgstr ""
 "Language: hy\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../gksu/libcaja-gksu.c:135
+#: ../gksu/libpeony-gksu.c:135
 msgid "Open as administrator"
 msgstr "Բացել որպես կառավարիչ"
 
-#: ../gksu/libcaja-gksu.c:136
+#: ../gksu/libpeony-gksu.c:136
 msgid "Opens the file with administrator privileges"
 msgstr "Ֆայլը բացել ադմինիստրատորի արտոնություններով"
 
-#: ../gksu/libcaja-gksu.c:223
+#: ../gksu/libpeony-gksu.c:223
 msgid ""
 "<big><b>Unable to determine the program to run.</b></big>\n"
 "\n"
 "The item you selected cannot be open with administrator powers because the correct application cannot be determined."
 msgstr "<big><b>Անհնար է որոշել ծրագրի մեկնարկը: </b></big>\n\nՁեր ընտրած տարրը չի կարող բացվել ադմինիստրատորի հզորությամբ, որովհետև ճիշտ կիրառումը չի կարող որոշվել։"
 
-#: ../gksu/libcaja-gksu.caja-extension.in.in.h:1
+#: ../gksu/libpeony-gksu.peony-extension.in.in.h:1
 msgid "Gksu"
 msgstr "Gksu"
 
-#: ../gksu/libcaja-gksu.caja-extension.in.in.h:2
+#: ../gksu/libpeony-gksu.peony-extension.in.in.h:2
 msgid "Privilege granting extension"
 msgstr "Արտոնության տրամադրումը երկարացնել"
 
-#: ../image-converter/caja-image-converter.c:120
+#: ../image-converter/peony-image-converter.c:120
 msgid "_Resize Images..."
 msgstr "_Չափափոխել Նկարներ ..."
 
-#: ../image-converter/caja-image-converter.c:121
+#: ../image-converter/peony-image-converter.c:121
 msgid "Resize each selected image"
 msgstr "Չափափոխել ընտրված յուրաքանչյուր պատկերը"
 
-#: ../image-converter/caja-image-converter.c:130
+#: ../image-converter/peony-image-converter.c:130
 msgid "Ro_tate Images..."
 msgstr "Պտ_տել Պատկերներ..."
 
-#: ../image-converter/caja-image-converter.c:131
+#: ../image-converter/peony-image-converter.c:131
 msgid "Rotate each selected image"
 msgstr "Պտտեցնել  ընտրված յուրաքանչյուր պատկեր"
 
-#: ../image-converter/caja-image-resize.ui.h:1
+#: ../image-converter/peony-image-resize.ui.h:1
 msgid "Resize Images"
 msgstr "Փոփոխել նկարների չափսերը"
 
-#: ../image-converter/caja-image-resize.ui.h:2
+#: ../image-converter/peony-image-resize.ui.h:2
 msgid "<b>Image Size</b>"
 msgstr "<b>Նկարի Չափը</b>"
 
-#: ../image-converter/caja-image-resize.ui.h:3
+#: ../image-converter/peony-image-resize.ui.h:3
 msgid "Select a size:"
 msgstr "Ընտրել չափը:"
 
-#: ../image-converter/caja-image-resize.ui.h:4
+#: ../image-converter/peony-image-resize.ui.h:4
 msgid "96x96"
 msgstr "96x96"
 
-#: ../image-converter/caja-image-resize.ui.h:5
+#: ../image-converter/peony-image-resize.ui.h:5
 msgid "128x128"
 msgstr "128x128"
 
-#: ../image-converter/caja-image-resize.ui.h:6
+#: ../image-converter/peony-image-resize.ui.h:6
 msgid "640x480"
 msgstr "640x480"
 
-#: ../image-converter/caja-image-resize.ui.h:7
+#: ../image-converter/peony-image-resize.ui.h:7
 msgid "800x600"
 msgstr "800x600"
 
-#: ../image-converter/caja-image-resize.ui.h:8
+#: ../image-converter/peony-image-resize.ui.h:8
 msgid "1024x768"
 msgstr "1024x768"
 
-#: ../image-converter/caja-image-resize.ui.h:9
+#: ../image-converter/peony-image-resize.ui.h:9
 msgid "1280x960"
 msgstr "1280x960"
 
-#: ../image-converter/caja-image-resize.ui.h:10
+#: ../image-converter/peony-image-resize.ui.h:10
 msgid "pixels"
 msgstr "պիքսել"
 
-#: ../image-converter/caja-image-resize.ui.h:11
+#: ../image-converter/peony-image-resize.ui.h:11
 msgid "Scale:"
 msgstr "Սանդղակ:"
 
-#: ../image-converter/caja-image-resize.ui.h:12
+#: ../image-converter/peony-image-resize.ui.h:12
 msgid "percent"
 msgstr "Տոկոս"
 
-#: ../image-converter/caja-image-resize.ui.h:13
+#: ../image-converter/peony-image-resize.ui.h:13
 msgid "Custom size:"
 msgstr "Պատվերով չափը:"
 
-#: ../image-converter/caja-image-resize.ui.h:14
+#: ../image-converter/peony-image-resize.ui.h:14
 msgid "Width:"
 msgstr "Լայնություն"
 
-#: ../image-converter/caja-image-resize.ui.h:15
+#: ../image-converter/peony-image-resize.ui.h:15
 msgid "Height:"
 msgstr "Բարձրություն։"
 
-#: ../image-converter/caja-image-resize.ui.h:16
-#: ../image-converter/caja-image-rotate.ui.h:6
+#: ../image-converter/peony-image-resize.ui.h:16
+#: ../image-converter/peony-image-rotate.ui.h:6
 msgid "<b>Filename</b>"
 msgstr "<b>Ֆայլի անուն</b>"
 
-#: ../image-converter/caja-image-resize.ui.h:17
-#: ../image-converter/caja-image-rotate.ui.h:7
+#: ../image-converter/peony-image-resize.ui.h:17
+#: ../image-converter/peony-image-rotate.ui.h:7
 msgid "Append"
 msgstr "Ավելացնել"
 
-#: ../image-converter/caja-image-resize.ui.h:18
+#: ../image-converter/peony-image-resize.ui.h:18
 msgid ".resized"
 msgstr "․չափափոխված"
 
-#: ../image-converter/caja-image-resize.ui.h:19
-#: ../image-converter/caja-image-rotate.ui.h:9
+#: ../image-converter/peony-image-resize.ui.h:19
+#: ../image-converter/peony-image-rotate.ui.h:9
 msgid "to file title"
 msgstr "ֆայլի տիտղոս"
 
-#: ../image-converter/caja-image-resize.ui.h:20
+#: ../image-converter/peony-image-resize.ui.h:20
 msgid "Resize in place"
 msgstr "Չափափոխել տեղում"
 
-#: ../image-converter/caja-image-resize.ui.h:21
+#: ../image-converter/peony-image-resize.ui.h:21
 msgid "_Resize"
 msgstr "_ Չափը փոխել"
 
-#: ../image-converter/caja-image-resizer.c:211
-#: ../image-converter/caja-image-rotator.c:208
+#: ../image-converter/peony-image-resizer.c:211
+#: ../image-converter/peony-image-rotator.c:208
 msgid "_Skip"
 msgstr "_Բաց թողնել"
 
-#: ../image-converter/caja-image-resizer.c:213
-#: ../image-converter/caja-image-rotator.c:210
+#: ../image-converter/peony-image-resizer.c:213
+#: ../image-converter/peony-image-rotator.c:210
 msgid "_Retry"
 msgstr "_Կրկին փորձել"
 
-#: ../image-converter/caja-image-resizer.c:291
+#: ../image-converter/peony-image-resizer.c:291
 #, c-format
 msgid "Resizing image: %d of %d"
 msgstr "Պատկերի չափափոխում։%d %d"
 
-#: ../image-converter/caja-image-resizer.c:296
+#: ../image-converter/peony-image-resizer.c:296
 #, c-format
 msgid "<i>Resizing \"%s\"</i>"
 msgstr "<i>Չափափոխում \"%s\"</i>"
 
-#: ../image-converter/caja-image-resizer.c:314
-#: ../image-converter/caja-image-rotator.c:313
+#: ../image-converter/peony-image-resizer.c:314
+#: ../image-converter/peony-image-rotator.c:313
 msgid "Please enter a valid filename suffix!"
 msgstr "Խնդրում ենք մուտքագրել վավերական ֆայլի վերջածանցը!"
 
-#: ../image-converter/caja-image-rotate.ui.h:1
+#: ../image-converter/peony-image-rotate.ui.h:1
 msgid "Rotate Images"
 msgstr "Պտտել Նկարներ"
 
-#: ../image-converter/caja-image-rotate.ui.h:2
+#: ../image-converter/peony-image-rotate.ui.h:2
 msgid "<b>Image Rotation</b>"
 msgstr "<b>Նկարի պտտում</b>"
 
-#: ../image-converter/caja-image-rotate.ui.h:3
+#: ../image-converter/peony-image-rotate.ui.h:3
 msgid "Select an angle:"
 msgstr "Ընտրել անկյունը"
 
-#: ../image-converter/caja-image-rotate.ui.h:4
+#: ../image-converter/peony-image-rotate.ui.h:4
 msgid "Custom angle:"
 msgstr "Պատվերով անկյունը:"
 
-#: ../image-converter/caja-image-rotate.ui.h:5
+#: ../image-converter/peony-image-rotate.ui.h:5
 msgid "degrees clockwise"
 msgstr "աստիճան ժամացույցի սլաքի ուղղությամբ"
 
-#: ../image-converter/caja-image-rotate.ui.h:8
+#: ../image-converter/peony-image-rotate.ui.h:8
 msgid ".rotated"
 msgstr "․պտտված"
 
-#: ../image-converter/caja-image-rotate.ui.h:10
+#: ../image-converter/peony-image-rotate.ui.h:10
 msgid "Rotate in place"
 msgstr "Պտտել տեղում"
 
-#: ../image-converter/caja-image-rotate.ui.h:11
+#: ../image-converter/peony-image-rotate.ui.h:11
 msgid "_Rotate"
 msgstr "_Պտտել"
 
-#: ../image-converter/caja-image-rotator.c:290
+#: ../image-converter/peony-image-rotator.c:290
 #, c-format
 msgid "Rotating image: %d of %d"
 msgstr "Պտտվող նկար: %d of %d"
 
-#: ../image-converter/caja-image-rotator.c:295
+#: ../image-converter/peony-image-rotator.c:295
 #, c-format
 msgid "<i>Rotating \"%s\"</i>"
 msgstr "<i>Պտտում \"%s\"</i>"
 
-#: ../image-converter/libcaja-image-converter.caja-extension.in.in.h:1
+#: ../image-converter/libpeony-image-converter.peony-extension.in.in.h:1
 msgid "Image Converter"
 msgstr "Նկարի Փոխակերպիչ"
 
-#: ../image-converter/libcaja-image-converter.caja-extension.in.in.h:2
+#: ../image-converter/libpeony-image-converter.peony-extension.in.in.h:2
 msgid "Rotate and resize images"
 msgstr "Պտտել և չափափոխել նկարներ"
 
-#: ../open-terminal/caja-open-terminal.c:432
-#: ../open-terminal/caja-open-terminal.c:445
+#: ../open-terminal/peony-open-terminal.c:432
+#: ../open-terminal/peony-open-terminal.c:445
 msgid "Open in _Terminal"
 msgstr "Բացել  _Տերմինալը"
 
-#: ../open-terminal/caja-open-terminal.c:434
+#: ../open-terminal/peony-open-terminal.c:434
 msgid "Open the currently selected folder in a terminal"
 msgstr "Բացել ներկայումս ընտրված թղթապանակը տերմինալում"
 
-#: ../open-terminal/caja-open-terminal.c:436
-#: ../open-terminal/caja-open-terminal.c:446
+#: ../open-terminal/peony-open-terminal.c:436
+#: ../open-terminal/peony-open-terminal.c:446
 msgid "Open the currently open folder in a terminal"
 msgstr "Բացել ներկայումս բաց թղթապանակը տերմինալում"
 
-#: ../open-terminal/caja-open-terminal.c:442
+#: ../open-terminal/peony-open-terminal.c:442
 msgid "Open _Terminal"
 msgstr "Բացել _Տերմինալը"
 
-#: ../open-terminal/caja-open-terminal.c:443
+#: ../open-terminal/peony-open-terminal.c:443
 msgid "Open a terminal"
 msgstr "Բացել տերմինալը"
 
-#: ../open-terminal/libcaja-open-terminal.caja-extension.in.in.h:1
+#: ../open-terminal/libpeony-open-terminal.peony-extension.in.in.h:1
 msgid "Open terminal"
 msgstr "Բացել տերմինալը"
 
-#: ../open-terminal/libcaja-open-terminal.caja-extension.in.in.h:2
+#: ../open-terminal/libpeony-open-terminal.peony-extension.in.in.h:2
 msgid "Open terminals from folders"
 msgstr "Բացել տերմինալներ թղթապանակներից"
 
-#: ../open-terminal/org.mate.caja-open-terminal.gschema.xml.in.h:1
+#: ../open-terminal/org.mate.peony-open-terminal.gschema.xml.in.h:1
 msgid ""
 "Whether opening a terminal on the desktop opens a terminal in the home "
 "directory"
 msgstr "Արդյոք բացվող տերմինալը աշխատասեղանի վրա բացում է տերմինալ տուն դիրեկտորիայի մեջ"
 
-#: ../open-terminal/org.mate.caja-open-terminal.gschema.xml.in.h:2
+#: ../open-terminal/org.mate.peony-open-terminal.gschema.xml.in.h:2
 msgid ""
 "If set to true, then opening a terminal on the desktop will open a terminal "
 "in the home directory. Otherwise, it will be opened in the desktop "
@@ -263,73 +263,73 @@ msgid ""
 "identical to the home directory."
 msgstr "Եթե ճշգրիտ է, ապա բացելով տերմինալ աշխատասեղանի վրա կբացի տերմինալը գլխավոր թղթապանակի մեջ։ Հակառակ դեպքում, այն կարող է բացել է աշխատասեղանի թղթապանակը։ Նշենք, որ այս ստեղնը անտեղի է, եթե աշխատասեղանի թղթապանակը նույնականանում է գլխավոր թղթապանակի հետ։"
 
-#: ../sendto/caja-nste.c:78 ../sendto/caja-nste.c:83
+#: ../sendto/peony-nste.c:78 ../sendto/peony-nste.c:83
 msgid "Send to..."
 msgstr "Ուղարկել դեպի․․․"
 
-#: ../sendto/caja-nste.c:79
+#: ../sendto/peony-nste.c:79
 msgid "Send file by mail, instant message..."
 msgstr "Ուղարկել ֆայլը փոստով, ակնթարթային հաղորդագրություն..."
 
-#: ../sendto/caja-nste.c:84
+#: ../sendto/peony-nste.c:84
 msgid "Send files by mail, instant message..."
 msgstr "Ուղարկել ֆայլերը փոստով, ակնթարթային հաղորդագրություն..."
 
-#: ../sendto/caja-sendto-command.c:578
+#: ../sendto/peony-sendto-command.c:578
 msgid "Files"
 msgstr "Ֆայլեր"
 
-#: ../sendto/caja-sendto-command.c:790
+#: ../sendto/peony-sendto-command.c:790
 #, c-format
 msgid "Expects URIs or filenames to be passed as options\n"
 msgstr "Ակնկալում URI֊ներ կամ ֆայլի անուններ ընդունված, որպես տարբերակ\n"
 
-#: ../sendto/caja-sendto-command.c:810
+#: ../sendto/peony-sendto-command.c:810
 #, c-format
 msgid "Could not parse command-line options: %s\n"
 msgstr "Չհաջողվեց վերլուծել հրամանային տողի տարբերակները: %s\n"
 
-#: ../sendto/caja-sendto-command.c:825
+#: ../sendto/peony-sendto-command.c:825
 msgid "Could not load any plugins."
 msgstr "Չհաջողվեց բեռնել որևէ կոնտակտներ։"
 
-#: ../sendto/caja-sendto-command.c:828
+#: ../sendto/peony-sendto-command.c:828
 msgid "Please verify your installation"
 msgstr "Խնդրում ենք ստուգել Ձեր տեղադրումը"
 
-#: ../sendto/libcaja-sendto.caja-extension.in.in.h:1
+#: ../sendto/libpeony-sendto.peony-extension.in.in.h:1
 msgid "Send To"
 msgstr "Ուղարկել դեպի"
 
-#: ../sendto/libcaja-sendto.caja-extension.in.in.h:2
+#: ../sendto/libpeony-sendto.peony-extension.in.in.h:2
 msgid "Integrates email clients and Pidgin"
 msgstr "Ինտեգրվել է էլփոստի հաճախորդներին և Pidgin"
 
-#: ../sendto/caja-sendto.ui.h:1
+#: ../sendto/peony-sendto.ui.h:1
 msgid "Send To..."
 msgstr "Ուղարկել դեպի․․․"
 
-#: ../sendto/caja-sendto.ui.h:2
+#: ../sendto/peony-sendto.ui.h:2
 msgid "_Send"
 msgstr "_Ուղարկել"
 
-#: ../sendto/caja-sendto.ui.h:3
+#: ../sendto/peony-sendto.ui.h:3
 msgid "<b>Destination</b>"
 msgstr "<b>Նպատակակետ</b>"
 
-#: ../sendto/caja-sendto.ui.h:4
+#: ../sendto/peony-sendto.ui.h:4
 msgid "Send _as:"
 msgstr "Ուղարկել _որպես:"
 
-#: ../sendto/caja-sendto.ui.h:5
+#: ../sendto/peony-sendto.ui.h:5
 msgid "Send t_o:"
 msgstr "Ուղարկել դ_եպի:"
 
-#: ../sendto/caja-sendto.ui.h:6
+#: ../sendto/peony-sendto.ui.h:6
 msgid "<b>Compression</b>"
 msgstr "<b>Սեղմում</b>"
 
-#: ../sendto/caja-sendto.ui.h:7
+#: ../sendto/peony-sendto.ui.h:7
 msgid "Send _packed in:"
 msgstr "Ուղարկել _փաթեթավորված:"
 
@@ -361,15 +361,15 @@ msgstr "Անհայտ հասցեատեր."
 msgid "Instant Message (Gajim)"
 msgstr "Ակնթարթային Հաղորդագրություն (Gajim)"
 
-#: ../sendto/plugins/caja-burn/caja-burn.c:92
+#: ../sendto/plugins/peony-burn/peony-burn.c:92
 msgid "New CD/DVD"
 msgstr "Նոր CD/DVD"
 
-#: ../sendto/plugins/caja-burn/caja-burn.c:99
+#: ../sendto/plugins/peony-burn/peony-burn.c:99
 msgid "Existing CD/DVD"
 msgstr "Գոյություն ունեցող CD/DVD"
 
-#: ../sendto/plugins/caja-burn/caja-burn.c:178
+#: ../sendto/plugins/peony-burn/peony-burn.c:178
 msgid "CD/DVD Creator"
 msgstr "CD/DVD Ստեղծող"
 
@@ -385,87 +385,87 @@ msgstr "Շարժական սկավառակներ և բաժնեմասեր"
 msgid "UPnP Media Server"
 msgstr "UPnP Մեդիա Սերվեր"
 
-#: ../share/libcaja-share.caja-extension.in.in.h:1 ../share/caja-share.c:1063
+#: ../share/libpeony-share.peony-extension.in.in.h:1 ../share/peony-share.c:1063
 msgid "Share"
 msgstr "Մասնաբաժին"
 
-#: ../share/libcaja-share.caja-extension.in.in.h:2
+#: ../share/libpeony-share.peony-extension.in.in.h:2
 msgid "Allows to quickly share a folder"
 msgstr "Թույլ է տալիս արագ կիսել թղթապանակը"
 
-#: ../share/caja-share.c:123
+#: ../share/peony-share.c:123
 #, c-format
 msgid ""
-"Caja needs to add some permissions to your folder \"%s\" in order to share "
+"Peony needs to add some permissions to your folder \"%s\" in order to share "
 "it"
-msgstr "Caja պետք է ավելացնել որոշ թույլտվություններ ձեր \"%s\" թղթապանակներին, որպեսզի կիսեք այն"
+msgstr "Peony պետք է ավելացնել որոշ թույլտվություններ ձեր \"%s\" թղթապանակներին, որպեսզի կիսեք այն"
 
-#: ../share/caja-share.c:131
+#: ../share/peony-share.c:131
 #, c-format
 msgid ""
 "The folder \"%s\" needs the following extra permissions for sharing to work:\n"
-"%s%s%sDo you want Caja to add these permissions to the folder automatically?"
-msgstr "\"%s\" թղթապանակին անհրաժեշտ հետևյալ է լրացուցիչ թույլտվությունները կիսեվելու աշխատանքի համար․\n%s%s%sՑանկանո՞ւմ եք Caja֊ն թղթապանակում ավելացնի այդ թույլտվություններ ինքնաբերաբար։"
+"%s%s%sDo you want Peony to add these permissions to the folder automatically?"
+msgstr "\"%s\" թղթապանակին անհրաժեշտ հետևյալ է լրացուցիչ թույլտվությունները կիսեվելու աշխատանքի համար․\n%s%s%sՑանկանո՞ւմ եք Peony֊ն թղթապանակում ավելացնի այդ թույլտվություններ ինքնաբերաբար։"
 
-#: ../share/caja-share.c:135
+#: ../share/peony-share.c:135
 msgid "  - read permission by others\n"
 msgstr " - կարդալ թույլտվություն ուրիշների կողմից\n"
 
-#: ../share/caja-share.c:136
+#: ../share/peony-share.c:136
 msgid "  - write permission by others\n"
 msgstr " - գրել թույլտվություն ուրիշների կողմից\n"
 
-#: ../share/caja-share.c:137
+#: ../share/peony-share.c:137
 msgid "  - execute permission by others\n"
 msgstr "- կատարել թույլտվություն մյուսների կողմից\n"
 
-#: ../share/caja-share.c:141
+#: ../share/peony-share.c:141
 msgid "Add the permissions automatically"
 msgstr "Ավելացնել թույլտվությունները ինքնաբերաբար"
 
-#: ../share/caja-share.c:167
+#: ../share/peony-share.c:167
 #, c-format
 msgid "Could not change the permissions of folder \"%s\""
 msgstr "Չի հաղոջվում փոխել թղէապանակի թույլտվությունները \"%s\""
 
-#: ../share/caja-share.c:451
+#: ../share/peony-share.c:451
 msgid "Share name is too long"
 msgstr "Կիսել անունը չափազանց երկար է"
 
-#: ../share/caja-share.c:493
+#: ../share/peony-share.c:493
 msgid "The share name cannot be empty"
 msgstr "Կիսված անունը չի կարող դատարկ լինել"
 
-#: ../share/caja-share.c:506
+#: ../share/peony-share.c:506
 #, c-format
 msgid "Error while getting share information: %s"
 msgstr "Սխալ, մինչ կիսված տեղեկատվության ստանալը: %s"
 
-#: ../share/caja-share.c:516
+#: ../share/peony-share.c:516
 msgid "Another share has the same name"
 msgstr "Մեկ այլ մասնաբաժինը ունի նույն անունը"
 
-#: ../share/caja-share.c:563 ../share/caja-share.c:799
+#: ../share/peony-share.c:563 ../share/peony-share.c:799
 msgid "Modify _Share"
 msgstr "Փոփոխել _Բաժինը"
 
-#: ../share/caja-share.c:563 ../share/caja-share.c:801
+#: ../share/peony-share.c:563 ../share/peony-share.c:801
 msgid "Create _Share"
 msgstr "Ստեղծել _Բաժին"
 
-#: ../share/caja-share.c:691
+#: ../share/peony-share.c:691
 msgid "There was an error while getting the sharing information"
 msgstr "Տեղի է ունեցել սխալ, մինչ բաժանվող ինֆորմացիայի ստացումը"
 
-#: ../share/caja-share.c:1123
+#: ../share/peony-share.c:1123
 msgid "Folder Sharing"
 msgstr "Թղթապանակի Բաժանում"
 
-#: ../share/caja-share.c:1164
+#: ../share/peony-share.c:1164
 msgid "Sharing Options"
 msgstr "Բաժանման Տարբերակներ"
 
-#: ../share/caja-share.c:1165
+#: ../share/peony-share.c:1165
 msgid "Share this Folder"
 msgstr "Կիսել այս թղթապանակը"
 
@@ -555,18 +555,18 @@ msgid ""
 "first and add a new one"
 msgstr "Հնարավոր չէ փոխել ուղին գոյություն ունեցող մասնաբաժնի։ Խնդրում ենք հեռացնել հին առաջին մասնաբաժինը և ավելացնել նորը"
 
-#: ../wallpaper/caja-wallpaper-extension.c:109
+#: ../wallpaper/peony-wallpaper-extension.c:109
 msgid "Set as wallpaper"
 msgstr "Սահմանել որպես պաստառ"
 
-#: ../wallpaper/caja-wallpaper-extension.c:110
+#: ../wallpaper/peony-wallpaper-extension.c:110
 msgid "Set image as the current wallpaper"
 msgstr "Սահմանել պատկերը որպես ներկայիս պաստառ"
 
-#: ../wallpaper/libcaja-wallpaper.caja-extension.in.in.h:1
+#: ../wallpaper/libpeony-wallpaper.peony-extension.in.in.h:1
 msgid "Wallpaper"
 msgstr "Պաստառ"
 
-#: ../wallpaper/libcaja-wallpaper.caja-extension.in.in.h:2
+#: ../wallpaper/libpeony-wallpaper.peony-extension.in.in.h:2
 msgid "Allows to quickly set wallpaper"
 msgstr "Թույլ է տալիս արագ ստեղծել պաստառ"

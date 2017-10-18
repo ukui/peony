@@ -28,244 +28,244 @@ msgstr ""
 "Language: pt_BR\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: ../gksu/libcaja-gksu.c:135
+#: ../gksu/libpeony-gksu.c:135
 msgid "Open as administrator"
 msgstr "Abrir como administrador"
 
-#: ../gksu/libcaja-gksu.c:136
+#: ../gksu/libpeony-gksu.c:136
 msgid "Opens the file with administrator privileges"
 msgstr "Abre o arquivo com privilégios de administrador"
 
-#: ../gksu/libcaja-gksu.c:223
+#: ../gksu/libpeony-gksu.c:223
 msgid ""
 "<big><b>Unable to determine the program to run.</b></big>\n"
 "\n"
 "The item you selected cannot be open with administrator powers because the correct application cannot be determined."
 msgstr "<big><b>Impossível determinar o programa a executar.</b></big>\n\nNão se pode abrir o item que você selecionou com privilégios de administrador porque não se pôde determinar o aplicativo correto."
 
-#: ../gksu/libcaja-gksu.caja-extension.in.in.h:1
+#: ../gksu/libpeony-gksu.peony-extension.in.in.h:1
 msgid "Gksu"
 msgstr "Gksu"
 
-#: ../gksu/libcaja-gksu.caja-extension.in.in.h:2
+#: ../gksu/libpeony-gksu.peony-extension.in.in.h:2
 msgid "Privilege granting extension"
 msgstr "Concessão de privilégios para a extensão"
 
-#: ../image-converter/caja-image-converter.c:120
+#: ../image-converter/peony-image-converter.c:120
 msgid "_Resize Images..."
 msgstr "_Redimensionar imagens..."
 
-#: ../image-converter/caja-image-converter.c:121
+#: ../image-converter/peony-image-converter.c:121
 msgid "Resize each selected image"
 msgstr "Redimensionar cada imagem selecionada"
 
-#: ../image-converter/caja-image-converter.c:130
+#: ../image-converter/peony-image-converter.c:130
 msgid "Ro_tate Images..."
 msgstr "Ro_dar imagens..."
 
-#: ../image-converter/caja-image-converter.c:131
+#: ../image-converter/peony-image-converter.c:131
 msgid "Rotate each selected image"
 msgstr "Rodar cada imagem selecionada"
 
-#: ../image-converter/caja-image-resize.ui.h:1
+#: ../image-converter/peony-image-resize.ui.h:1
 msgid "Resize Images"
 msgstr "Redimensionar imagens"
 
-#: ../image-converter/caja-image-resize.ui.h:2
+#: ../image-converter/peony-image-resize.ui.h:2
 msgid "<b>Image Size</b>"
 msgstr "<b>Tamanho da imagem</b>"
 
-#: ../image-converter/caja-image-resize.ui.h:3
+#: ../image-converter/peony-image-resize.ui.h:3
 msgid "Select a size:"
 msgstr "Selecione um tamanho:"
 
-#: ../image-converter/caja-image-resize.ui.h:4
+#: ../image-converter/peony-image-resize.ui.h:4
 msgid "96x96"
 msgstr "96x96"
 
-#: ../image-converter/caja-image-resize.ui.h:5
+#: ../image-converter/peony-image-resize.ui.h:5
 msgid "128x128"
 msgstr "128x128"
 
-#: ../image-converter/caja-image-resize.ui.h:6
+#: ../image-converter/peony-image-resize.ui.h:6
 msgid "640x480"
 msgstr "640x480"
 
-#: ../image-converter/caja-image-resize.ui.h:7
+#: ../image-converter/peony-image-resize.ui.h:7
 msgid "800x600"
 msgstr "800x600"
 
-#: ../image-converter/caja-image-resize.ui.h:8
+#: ../image-converter/peony-image-resize.ui.h:8
 msgid "1024x768"
 msgstr "1024x768"
 
-#: ../image-converter/caja-image-resize.ui.h:9
+#: ../image-converter/peony-image-resize.ui.h:9
 msgid "1280x960"
 msgstr "1280x960"
 
-#: ../image-converter/caja-image-resize.ui.h:10
+#: ../image-converter/peony-image-resize.ui.h:10
 msgid "pixels"
 msgstr "pixels"
 
-#: ../image-converter/caja-image-resize.ui.h:11
+#: ../image-converter/peony-image-resize.ui.h:11
 msgid "Scale:"
 msgstr "Escala:"
 
-#: ../image-converter/caja-image-resize.ui.h:12
+#: ../image-converter/peony-image-resize.ui.h:12
 msgid "percent"
 msgstr "por cento"
 
-#: ../image-converter/caja-image-resize.ui.h:13
+#: ../image-converter/peony-image-resize.ui.h:13
 msgid "Custom size:"
 msgstr "Tamanho personalizado:"
 
-#: ../image-converter/caja-image-resize.ui.h:14
+#: ../image-converter/peony-image-resize.ui.h:14
 msgid "Width:"
 msgstr "Largura:"
 
-#: ../image-converter/caja-image-resize.ui.h:15
+#: ../image-converter/peony-image-resize.ui.h:15
 msgid "Height:"
 msgstr "Altura:"
 
-#: ../image-converter/caja-image-resize.ui.h:16
-#: ../image-converter/caja-image-rotate.ui.h:6
+#: ../image-converter/peony-image-resize.ui.h:16
+#: ../image-converter/peony-image-rotate.ui.h:6
 msgid "<b>Filename</b>"
 msgstr "<b>Nome de arquivo</b>"
 
-#: ../image-converter/caja-image-resize.ui.h:17
-#: ../image-converter/caja-image-rotate.ui.h:7
+#: ../image-converter/peony-image-resize.ui.h:17
+#: ../image-converter/peony-image-rotate.ui.h:7
 msgid "Append"
 msgstr "Acrescentar"
 
-#: ../image-converter/caja-image-resize.ui.h:18
+#: ../image-converter/peony-image-resize.ui.h:18
 msgid ".resized"
 msgstr ".redimensionado"
 
-#: ../image-converter/caja-image-resize.ui.h:19
-#: ../image-converter/caja-image-rotate.ui.h:9
+#: ../image-converter/peony-image-resize.ui.h:19
+#: ../image-converter/peony-image-rotate.ui.h:9
 msgid "to file title"
 msgstr "ao título do arquivo"
 
-#: ../image-converter/caja-image-resize.ui.h:20
+#: ../image-converter/peony-image-resize.ui.h:20
 msgid "Resize in place"
 msgstr "Redimensionar no local"
 
-#: ../image-converter/caja-image-resize.ui.h:21
+#: ../image-converter/peony-image-resize.ui.h:21
 msgid "_Resize"
 msgstr "_Redimensionar"
 
-#: ../image-converter/caja-image-resizer.c:211
-#: ../image-converter/caja-image-rotator.c:208
+#: ../image-converter/peony-image-resizer.c:211
+#: ../image-converter/peony-image-rotator.c:208
 msgid "_Skip"
 msgstr "I_gnorar"
 
-#: ../image-converter/caja-image-resizer.c:213
-#: ../image-converter/caja-image-rotator.c:210
+#: ../image-converter/peony-image-resizer.c:213
+#: ../image-converter/peony-image-rotator.c:210
 msgid "_Retry"
 msgstr "_Repetir"
 
-#: ../image-converter/caja-image-resizer.c:291
+#: ../image-converter/peony-image-resizer.c:291
 #, c-format
 msgid "Resizing image: %d of %d"
 msgstr "Redimensionando imagem: %d de %d"
 
-#: ../image-converter/caja-image-resizer.c:296
+#: ../image-converter/peony-image-resizer.c:296
 #, c-format
 msgid "<i>Resizing \"%s\"</i>"
 msgstr "<i>Redimensionando \"%s\"</i>"
 
-#: ../image-converter/caja-image-resizer.c:314
-#: ../image-converter/caja-image-rotator.c:313
+#: ../image-converter/peony-image-resizer.c:314
+#: ../image-converter/peony-image-rotator.c:313
 msgid "Please enter a valid filename suffix!"
 msgstr "Digite um sufixo de nome de arquivo válido!"
 
-#: ../image-converter/caja-image-rotate.ui.h:1
+#: ../image-converter/peony-image-rotate.ui.h:1
 msgid "Rotate Images"
 msgstr "Rotacionar imagens"
 
-#: ../image-converter/caja-image-rotate.ui.h:2
+#: ../image-converter/peony-image-rotate.ui.h:2
 msgid "<b>Image Rotation</b>"
 msgstr "<b>Rotação de imagem</b>"
 
-#: ../image-converter/caja-image-rotate.ui.h:3
+#: ../image-converter/peony-image-rotate.ui.h:3
 msgid "Select an angle:"
 msgstr "Selecione um ângulo:"
 
-#: ../image-converter/caja-image-rotate.ui.h:4
+#: ../image-converter/peony-image-rotate.ui.h:4
 msgid "Custom angle:"
 msgstr "Ângulo personalizado:"
 
-#: ../image-converter/caja-image-rotate.ui.h:5
+#: ../image-converter/peony-image-rotate.ui.h:5
 msgid "degrees clockwise"
 msgstr "graus em sentido horário"
 
-#: ../image-converter/caja-image-rotate.ui.h:8
+#: ../image-converter/peony-image-rotate.ui.h:8
 msgid ".rotated"
 msgstr ".rotacionado"
 
-#: ../image-converter/caja-image-rotate.ui.h:10
+#: ../image-converter/peony-image-rotate.ui.h:10
 msgid "Rotate in place"
 msgstr "Rotacionar no local"
 
-#: ../image-converter/caja-image-rotate.ui.h:11
+#: ../image-converter/peony-image-rotate.ui.h:11
 msgid "_Rotate"
 msgstr "_Rotacionar"
 
-#: ../image-converter/caja-image-rotator.c:290
+#: ../image-converter/peony-image-rotator.c:290
 #, c-format
 msgid "Rotating image: %d of %d"
 msgstr "Rotacionando imagem: %d de %d"
 
-#: ../image-converter/caja-image-rotator.c:295
+#: ../image-converter/peony-image-rotator.c:295
 #, c-format
 msgid "<i>Rotating \"%s\"</i>"
 msgstr "<i>Rotacionando \"%s\"</i>"
 
-#: ../image-converter/libcaja-image-converter.caja-extension.in.in.h:1
+#: ../image-converter/libpeony-image-converter.peony-extension.in.in.h:1
 msgid "Image Converter"
 msgstr "Conversor de imagem"
 
-#: ../image-converter/libcaja-image-converter.caja-extension.in.in.h:2
+#: ../image-converter/libpeony-image-converter.peony-extension.in.in.h:2
 msgid "Rotate and resize images"
 msgstr "Girar e redimensionar imagens"
 
-#: ../open-terminal/caja-open-terminal.c:432
-#: ../open-terminal/caja-open-terminal.c:445
+#: ../open-terminal/peony-open-terminal.c:432
+#: ../open-terminal/peony-open-terminal.c:445
 msgid "Open in _Terminal"
 msgstr "Abrir no _Terminal"
 
-#: ../open-terminal/caja-open-terminal.c:434
+#: ../open-terminal/peony-open-terminal.c:434
 msgid "Open the currently selected folder in a terminal"
 msgstr "Abre a pasta selecionada atualmente em um terminal"
 
-#: ../open-terminal/caja-open-terminal.c:436
-#: ../open-terminal/caja-open-terminal.c:446
+#: ../open-terminal/peony-open-terminal.c:436
+#: ../open-terminal/peony-open-terminal.c:446
 msgid "Open the currently open folder in a terminal"
 msgstr "Abre a pasta aberta atualmente em um terminal"
 
-#: ../open-terminal/caja-open-terminal.c:442
+#: ../open-terminal/peony-open-terminal.c:442
 msgid "Open _Terminal"
 msgstr "Abrir _Terminal"
 
-#: ../open-terminal/caja-open-terminal.c:443
+#: ../open-terminal/peony-open-terminal.c:443
 msgid "Open a terminal"
 msgstr "Abre um terminal"
 
-#: ../open-terminal/libcaja-open-terminal.caja-extension.in.in.h:1
+#: ../open-terminal/libpeony-open-terminal.peony-extension.in.in.h:1
 msgid "Open terminal"
 msgstr "Abrir terminal"
 
-#: ../open-terminal/libcaja-open-terminal.caja-extension.in.in.h:2
+#: ../open-terminal/libpeony-open-terminal.peony-extension.in.in.h:2
 msgid "Open terminals from folders"
 msgstr "Abrir terminais das pastas"
 
-#: ../open-terminal/org.mate.caja-open-terminal.gschema.xml.in.h:1
+#: ../open-terminal/org.mate.peony-open-terminal.gschema.xml.in.h:1
 msgid ""
 "Whether opening a terminal on the desktop opens a terminal in the home "
 "directory"
 msgstr "Se abrir um terminal na área de trabalho abre-o na pasta pessoal"
 
-#: ../open-terminal/org.mate.caja-open-terminal.gschema.xml.in.h:2
+#: ../open-terminal/org.mate.peony-open-terminal.gschema.xml.in.h:2
 msgid ""
 "If set to true, then opening a terminal on the desktop will open a terminal "
 "in the home directory. Otherwise, it will be opened in the desktop "
@@ -273,73 +273,73 @@ msgid ""
 "identical to the home directory."
 msgstr "Se definido para verdadeiro, então abrir um terminal na área de trabalho o abrirá na pasta pessoal. Caso contrário, será aberto no diretório da área de trabalho. Observe que esta chave é irrelevante se o diretório da área de trabalho for idêntico ao diretório da pasta pessoal."
 
-#: ../sendto/caja-nste.c:78 ../sendto/caja-nste.c:83
+#: ../sendto/peony-nste.c:78 ../sendto/peony-nste.c:83
 msgid "Send to..."
 msgstr "Enviar para..."
 
-#: ../sendto/caja-nste.c:79
+#: ../sendto/peony-nste.c:79
 msgid "Send file by mail, instant message..."
 msgstr "Enviar arquivo por email, mensagem instantânea..."
 
-#: ../sendto/caja-nste.c:84
+#: ../sendto/peony-nste.c:84
 msgid "Send files by mail, instant message..."
 msgstr "Enviar arquivos por email, mensagem instantânea..."
 
-#: ../sendto/caja-sendto-command.c:578
+#: ../sendto/peony-sendto-command.c:578
 msgid "Files"
 msgstr "Arquivos"
 
-#: ../sendto/caja-sendto-command.c:790
+#: ../sendto/peony-sendto-command.c:790
 #, c-format
 msgid "Expects URIs or filenames to be passed as options\n"
 msgstr "Esperar que os URIs ou nomes de arquivo sejam passados como opções\n"
 
-#: ../sendto/caja-sendto-command.c:810
+#: ../sendto/peony-sendto-command.c:810
 #, c-format
 msgid "Could not parse command-line options: %s\n"
 msgstr "Não foi possível interpretar as opções da linha de comando: %s\n"
 
-#: ../sendto/caja-sendto-command.c:825
+#: ../sendto/peony-sendto-command.c:825
 msgid "Could not load any plugins."
 msgstr "Não foi possível carregar nenhum plugin."
 
-#: ../sendto/caja-sendto-command.c:828
+#: ../sendto/peony-sendto-command.c:828
 msgid "Please verify your installation"
 msgstr "Verifique sua instalação"
 
-#: ../sendto/libcaja-sendto.caja-extension.in.in.h:1
+#: ../sendto/libpeony-sendto.peony-extension.in.in.h:1
 msgid "Send To"
 msgstr "Enviar para"
 
-#: ../sendto/libcaja-sendto.caja-extension.in.in.h:2
+#: ../sendto/libpeony-sendto.peony-extension.in.in.h:2
 msgid "Integrates email clients and Pidgin"
 msgstr "Integra clientes de email e Pidgin"
 
-#: ../sendto/caja-sendto.ui.h:1
+#: ../sendto/peony-sendto.ui.h:1
 msgid "Send To..."
 msgstr "Enviar para..."
 
-#: ../sendto/caja-sendto.ui.h:2
+#: ../sendto/peony-sendto.ui.h:2
 msgid "_Send"
 msgstr "_Enviar"
 
-#: ../sendto/caja-sendto.ui.h:3
+#: ../sendto/peony-sendto.ui.h:3
 msgid "<b>Destination</b>"
 msgstr "<b>Destino</b>"
 
-#: ../sendto/caja-sendto.ui.h:4
+#: ../sendto/peony-sendto.ui.h:4
 msgid "Send _as:"
 msgstr "Enviar _como:"
 
-#: ../sendto/caja-sendto.ui.h:5
+#: ../sendto/peony-sendto.ui.h:5
 msgid "Send t_o:"
 msgstr "Enviar _para:"
 
-#: ../sendto/caja-sendto.ui.h:6
+#: ../sendto/peony-sendto.ui.h:6
 msgid "<b>Compression</b>"
 msgstr "<b>Compressão</b>"
 
-#: ../sendto/caja-sendto.ui.h:7
+#: ../sendto/peony-sendto.ui.h:7
 msgid "Send _packed in:"
 msgstr "Enviar _empacotado em:"
 
@@ -371,15 +371,15 @@ msgstr "Destinatário desconhecido."
 msgid "Instant Message (Gajim)"
 msgstr "Mensagem instantânea (Gajim)"
 
-#: ../sendto/plugins/caja-burn/caja-burn.c:92
+#: ../sendto/plugins/peony-burn/peony-burn.c:92
 msgid "New CD/DVD"
 msgstr "Novo CD/DVD"
 
-#: ../sendto/plugins/caja-burn/caja-burn.c:99
+#: ../sendto/plugins/peony-burn/peony-burn.c:99
 msgid "Existing CD/DVD"
 msgstr "CD/DVD existente"
 
-#: ../sendto/plugins/caja-burn/caja-burn.c:178
+#: ../sendto/plugins/peony-burn/peony-burn.c:178
 msgid "CD/DVD Creator"
 msgstr "Criador de CD/DVD"
 
@@ -395,87 +395,87 @@ msgstr "Unidades e compartilhamentos removíveis"
 msgid "UPnP Media Server"
 msgstr "Servidor de mídia uPnP"
 
-#: ../share/libcaja-share.caja-extension.in.in.h:1 ../share/caja-share.c:1063
+#: ../share/libpeony-share.peony-extension.in.in.h:1 ../share/peony-share.c:1063
 msgid "Share"
 msgstr "Compartilhar"
 
-#: ../share/libcaja-share.caja-extension.in.in.h:2
+#: ../share/libpeony-share.peony-extension.in.in.h:2
 msgid "Allows to quickly share a folder"
 msgstr "Permite compartilhar rapidamente uma pasta"
 
-#: ../share/caja-share.c:123
+#: ../share/peony-share.c:123
 #, c-format
 msgid ""
-"Caja needs to add some permissions to your folder \"%s\" in order to share "
+"Peony needs to add some permissions to your folder \"%s\" in order to share "
 "it"
-msgstr "Caja precisa adicionar algumas permissões a sua pasta \"%s\" a fim de compartilhá-la"
+msgstr "Peony precisa adicionar algumas permissões a sua pasta \"%s\" a fim de compartilhá-la"
 
-#: ../share/caja-share.c:131
+#: ../share/peony-share.c:131
 #, c-format
 msgid ""
 "The folder \"%s\" needs the following extra permissions for sharing to work:\n"
-"%s%s%sDo you want Caja to add these permissions to the folder automatically?"
-msgstr "A pasta \"%s\" precisa das seguintes permissões adicionais para compartilhamento de trabalho:\n%s%s%s Deseja Caja para adicionar essas permissões para a pasta automaticamente?"
+"%s%s%sDo you want Peony to add these permissions to the folder automatically?"
+msgstr "A pasta \"%s\" precisa das seguintes permissões adicionais para compartilhamento de trabalho:\n%s%s%s Deseja Peony para adicionar essas permissões para a pasta automaticamente?"
 
-#: ../share/caja-share.c:135
+#: ../share/peony-share.c:135
 msgid "  - read permission by others\n"
 msgstr "- permissão de leitura por outros\n"
 
-#: ../share/caja-share.c:136
+#: ../share/peony-share.c:136
 msgid "  - write permission by others\n"
 msgstr "- permissão de escrita por outros\n"
 
-#: ../share/caja-share.c:137
+#: ../share/peony-share.c:137
 msgid "  - execute permission by others\n"
 msgstr "- permissão de execução por outros\n"
 
-#: ../share/caja-share.c:141
+#: ../share/peony-share.c:141
 msgid "Add the permissions automatically"
 msgstr "Adicionar as permissões automaticamente"
 
-#: ../share/caja-share.c:167
+#: ../share/peony-share.c:167
 #, c-format
 msgid "Could not change the permissions of folder \"%s\""
 msgstr "Não foi possível alterar as permissões da pasta \"%s\""
 
-#: ../share/caja-share.c:451
+#: ../share/peony-share.c:451
 msgid "Share name is too long"
 msgstr "O nome do compartilhamento é muito longo"
 
-#: ../share/caja-share.c:493
+#: ../share/peony-share.c:493
 msgid "The share name cannot be empty"
 msgstr "O nome do compartilhamento não pode ser vazio"
 
-#: ../share/caja-share.c:506
+#: ../share/peony-share.c:506
 #, c-format
 msgid "Error while getting share information: %s"
 msgstr "Erro ao obter informação de compartilhamento: %s"
 
-#: ../share/caja-share.c:516
+#: ../share/peony-share.c:516
 msgid "Another share has the same name"
 msgstr "Outro compartilhamento tem o mesmo nome"
 
-#: ../share/caja-share.c:563 ../share/caja-share.c:799
+#: ../share/peony-share.c:563 ../share/peony-share.c:799
 msgid "Modify _Share"
 msgstr "Modificar compartilhamento"
 
-#: ../share/caja-share.c:563 ../share/caja-share.c:801
+#: ../share/peony-share.c:563 ../share/peony-share.c:801
 msgid "Create _Share"
 msgstr "Criar compartilhamento"
 
-#: ../share/caja-share.c:691
+#: ../share/peony-share.c:691
 msgid "There was an error while getting the sharing information"
 msgstr "Ouve um erro ao obter a informação de compartilhamento"
 
-#: ../share/caja-share.c:1123
+#: ../share/peony-share.c:1123
 msgid "Folder Sharing"
 msgstr "Compartilhamento de pastas"
 
-#: ../share/caja-share.c:1164
+#: ../share/peony-share.c:1164
 msgid "Sharing Options"
 msgstr "Opções de compartilhamento"
 
-#: ../share/caja-share.c:1165
+#: ../share/peony-share.c:1165
 msgid "Share this Folder"
 msgstr "Compartilhar esta pasta"
 
@@ -565,18 +565,18 @@ msgid ""
 "first and add a new one"
 msgstr "Não é possível alterar o caminho de um compartilhamento existente; primeiro remova o compartilhamento antigo e depois adicione um novo"
 
-#: ../wallpaper/caja-wallpaper-extension.c:109
+#: ../wallpaper/peony-wallpaper-extension.c:109
 msgid "Set as wallpaper"
 msgstr "Definir como papel de parede"
 
-#: ../wallpaper/caja-wallpaper-extension.c:110
+#: ../wallpaper/peony-wallpaper-extension.c:110
 msgid "Set image as the current wallpaper"
 msgstr "Definir imagem como papel de parede atual"
 
-#: ../wallpaper/libcaja-wallpaper.caja-extension.in.in.h:1
+#: ../wallpaper/libpeony-wallpaper.peony-extension.in.in.h:1
 msgid "Wallpaper"
 msgstr "Papel de parede"
 
-#: ../wallpaper/libcaja-wallpaper.caja-extension.in.in.h:2
+#: ../wallpaper/libpeony-wallpaper.peony-extension.in.in.h:2
 msgid "Allows to quickly set wallpaper"
 msgstr "Permite definir rapidamente o papel de parede."

@@ -13,8 +13,8 @@ override_dh_missing:
 	dh_missing --fail-missing
 
 override_dh_install:
-	rm -rfv debian/tmp/usr/lib/*/caja-sendto/plugins/*.la
-	rm -rfv debian/tmp/usr/lib/*/caja/extensions-2.0/*.la
+	rm -rfv debian/tmp/usr/lib/*/peony-sendto/plugins/*.la
+	rm -rfv debian/tmp/usr/lib/*/peony/extensions-2.0/*.la
 	dh_install
 
 override_dh_installchangelogs:
@@ -28,7 +28,7 @@ override_dh_auto_configure:
 		--enable-gtk-doc
 
 override_dh_strip:
-	dh_strip --dbgsym-migration='caja-extensions-dbg (<< 1.14.0-2~)'
+	dh_strip --dbgsym-migration='peony-extensions-dbg (<< 1.14.0-2~)'
 
 get-orig-source:
 	uscan --noconf --force-download --rename --download-current-version --destdir=..

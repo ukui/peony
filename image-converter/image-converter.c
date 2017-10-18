@@ -25,32 +25,32 @@
  #include <config.h>
 #endif
 
-#include "caja-image-converter.h"
+#include "peony-image-converter.h"
 
 #include <libintl.h>
 
 static GType type_list[1];
 
 void
-caja_module_initialize (GTypeModule *module)
+peony_module_initialize (GTypeModule *module)
 {
-	g_print ("Initializing caja-image-converter extension\n");
+	g_print ("Initializing peony-image-converter extension\n");
 
-	caja_image_converter_register_type (module);
-	type_list[0] = CAJA_TYPE_IMAGE_CONVERTER;
+	peony_image_converter_register_type (module);
+	type_list[0] = PEONY_TYPE_IMAGE_CONVERTER;
 
 	bindtextdomain (GETTEXT_PACKAGE, MATELOCALEDIR);
 	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 }
 
 void
-caja_module_shutdown (void)
+peony_module_shutdown (void)
 {
-	g_print ("Shutting down caja-image-converter extension\n");
+	g_print ("Shutting down peony-image-converter extension\n");
 }
 
 void 
-caja_module_list_types (const GType **types,
+peony_module_list_types (const GType **types,
 			    int          *num_types)
 {
 	*types = type_list;

@@ -18,244 +18,244 @@ msgstr ""
 "Language: mr\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../gksu/libcaja-gksu.c:135
+#: ../gksu/libpeony-gksu.c:135
 msgid "Open as administrator"
 msgstr "प्रशासकाच्या अधिकारांनी उघडा "
 
-#: ../gksu/libcaja-gksu.c:136
+#: ../gksu/libpeony-gksu.c:136
 msgid "Opens the file with administrator privileges"
 msgstr "प्रशासकाच्या अधिकारांनी फाईल उघडा "
 
-#: ../gksu/libcaja-gksu.c:223
+#: ../gksu/libpeony-gksu.c:223
 msgid ""
 "<big><b>Unable to determine the program to run.</b></big>\n"
 "\n"
 "The item you selected cannot be open with administrator powers because the correct application cannot be determined."
 msgstr "<big><b>कुठला अनुप्रयोग चालवायचा ते ठरवू शकले नाही.</b></big>\n\nतुम्ही निवडलेला घटक प्रशासकाच्या अधिकारांनी उघडू शकत नाही कारण संबंधित अनुप्रयोग ठरवू शकले नाही."
 
-#: ../gksu/libcaja-gksu.caja-extension.in.in.h:1
+#: ../gksu/libpeony-gksu.peony-extension.in.in.h:1
 msgid "Gksu"
 msgstr ""
 
-#: ../gksu/libcaja-gksu.caja-extension.in.in.h:2
+#: ../gksu/libpeony-gksu.peony-extension.in.in.h:2
 msgid "Privilege granting extension"
 msgstr ""
 
-#: ../image-converter/caja-image-converter.c:120
+#: ../image-converter/peony-image-converter.c:120
 msgid "_Resize Images..."
 msgstr "चित्रांचा आकार बदला... (_R)"
 
-#: ../image-converter/caja-image-converter.c:121
+#: ../image-converter/peony-image-converter.c:121
 msgid "Resize each selected image"
 msgstr "प्रत्येक निवडलेल्या चित्राचा आकार बदला"
 
-#: ../image-converter/caja-image-converter.c:130
+#: ../image-converter/peony-image-converter.c:130
 msgid "Ro_tate Images..."
 msgstr "चित्रांना वाटोळे फिरवा...(_t)"
 
-#: ../image-converter/caja-image-converter.c:131
+#: ../image-converter/peony-image-converter.c:131
 msgid "Rotate each selected image"
 msgstr "प्रत्येक निवडलेल्या चित्राला वाटोळे फिरवा"
 
-#: ../image-converter/caja-image-resize.ui.h:1
+#: ../image-converter/peony-image-resize.ui.h:1
 msgid "Resize Images"
 msgstr "चित्रांचा आकार बदला"
 
-#: ../image-converter/caja-image-resize.ui.h:2
+#: ../image-converter/peony-image-resize.ui.h:2
 msgid "<b>Image Size</b>"
 msgstr "<b>चित्र आकार</b>"
 
-#: ../image-converter/caja-image-resize.ui.h:3
+#: ../image-converter/peony-image-resize.ui.h:3
 msgid "Select a size:"
 msgstr "एक आकार निवडा:"
 
-#: ../image-converter/caja-image-resize.ui.h:4
+#: ../image-converter/peony-image-resize.ui.h:4
 msgid "96x96"
 msgstr "96x96"
 
-#: ../image-converter/caja-image-resize.ui.h:5
+#: ../image-converter/peony-image-resize.ui.h:5
 msgid "128x128"
 msgstr "128x128"
 
-#: ../image-converter/caja-image-resize.ui.h:6
+#: ../image-converter/peony-image-resize.ui.h:6
 msgid "640x480"
 msgstr "640x480"
 
-#: ../image-converter/caja-image-resize.ui.h:7
+#: ../image-converter/peony-image-resize.ui.h:7
 msgid "800x600"
 msgstr "800x600"
 
-#: ../image-converter/caja-image-resize.ui.h:8
+#: ../image-converter/peony-image-resize.ui.h:8
 msgid "1024x768"
 msgstr "1024x768"
 
-#: ../image-converter/caja-image-resize.ui.h:9
+#: ../image-converter/peony-image-resize.ui.h:9
 msgid "1280x960"
 msgstr "1280x960"
 
-#: ../image-converter/caja-image-resize.ui.h:10
+#: ../image-converter/peony-image-resize.ui.h:10
 msgid "pixels"
 msgstr "बिंदू"
 
-#: ../image-converter/caja-image-resize.ui.h:11
+#: ../image-converter/peony-image-resize.ui.h:11
 msgid "Scale:"
 msgstr "लहान मोठे:"
 
-#: ../image-converter/caja-image-resize.ui.h:12
+#: ../image-converter/peony-image-resize.ui.h:12
 msgid "percent"
 msgstr "टक्के"
 
-#: ../image-converter/caja-image-resize.ui.h:13
+#: ../image-converter/peony-image-resize.ui.h:13
 msgid "Custom size:"
 msgstr "ऐच्छिक आकार:"
 
-#: ../image-converter/caja-image-resize.ui.h:14
+#: ../image-converter/peony-image-resize.ui.h:14
 msgid "Width:"
 msgstr "रुंदी:"
 
-#: ../image-converter/caja-image-resize.ui.h:15
+#: ../image-converter/peony-image-resize.ui.h:15
 msgid "Height:"
 msgstr "उंची:"
 
-#: ../image-converter/caja-image-resize.ui.h:16
-#: ../image-converter/caja-image-rotate.ui.h:6
+#: ../image-converter/peony-image-resize.ui.h:16
+#: ../image-converter/peony-image-rotate.ui.h:6
 msgid "<b>Filename</b>"
 msgstr "<b>फाईल नाव</b>"
 
-#: ../image-converter/caja-image-resize.ui.h:17
-#: ../image-converter/caja-image-rotate.ui.h:7
+#: ../image-converter/peony-image-resize.ui.h:17
+#: ../image-converter/peony-image-rotate.ui.h:7
 msgid "Append"
 msgstr "ला जोडा"
 
-#: ../image-converter/caja-image-resize.ui.h:18
+#: ../image-converter/peony-image-resize.ui.h:18
 msgid ".resized"
 msgstr ".resized"
 
-#: ../image-converter/caja-image-resize.ui.h:19
-#: ../image-converter/caja-image-rotate.ui.h:9
+#: ../image-converter/peony-image-resize.ui.h:19
+#: ../image-converter/peony-image-rotate.ui.h:9
 msgid "to file title"
 msgstr "फाईलच्या शीर्षकाला "
 
-#: ../image-converter/caja-image-resize.ui.h:20
+#: ../image-converter/peony-image-resize.ui.h:20
 msgid "Resize in place"
 msgstr "इथेच पुन्ह आकार द्या"
 
-#: ../image-converter/caja-image-resize.ui.h:21
+#: ../image-converter/peony-image-resize.ui.h:21
 msgid "_Resize"
 msgstr "पुनःआकारित करा(_R)"
 
-#: ../image-converter/caja-image-resizer.c:211
-#: ../image-converter/caja-image-rotator.c:208
+#: ../image-converter/peony-image-resizer.c:211
+#: ../image-converter/peony-image-rotator.c:208
 msgid "_Skip"
 msgstr "वगळा (_S)"
 
-#: ../image-converter/caja-image-resizer.c:213
-#: ../image-converter/caja-image-rotator.c:210
+#: ../image-converter/peony-image-resizer.c:213
+#: ../image-converter/peony-image-rotator.c:210
 msgid "_Retry"
 msgstr "पुन्हा प्रयत्न करा (_R)"
 
-#: ../image-converter/caja-image-resizer.c:291
+#: ../image-converter/peony-image-resizer.c:291
 #, c-format
 msgid "Resizing image: %d of %d"
 msgstr "प्रतिमा पुनःआकारीत करत आहे : %d, %d पैकी"
 
-#: ../image-converter/caja-image-resizer.c:296
+#: ../image-converter/peony-image-resizer.c:296
 #, c-format
 msgid "<i>Resizing \"%s\"</i>"
 msgstr "<i>\"%s\" पुनःआकारीत करत आहे</i>"
 
-#: ../image-converter/caja-image-resizer.c:314
-#: ../image-converter/caja-image-rotator.c:313
+#: ../image-converter/peony-image-resizer.c:314
+#: ../image-converter/peony-image-rotator.c:313
 msgid "Please enter a valid filename suffix!"
 msgstr "फाईलच्या शीर्षकाला पुढे लावायचा वैध प्रत्यय द्या"
 
-#: ../image-converter/caja-image-rotate.ui.h:1
+#: ../image-converter/peony-image-rotate.ui.h:1
 msgid "Rotate Images"
 msgstr "चित्र वाटोळे फिरवा"
 
-#: ../image-converter/caja-image-rotate.ui.h:2
+#: ../image-converter/peony-image-rotate.ui.h:2
 msgid "<b>Image Rotation</b>"
 msgstr "<b>चित्र परिभ्रमण</b>"
 
-#: ../image-converter/caja-image-rotate.ui.h:3
+#: ../image-converter/peony-image-rotate.ui.h:3
 msgid "Select an angle:"
 msgstr "कोन निवडा:"
 
-#: ../image-converter/caja-image-rotate.ui.h:4
+#: ../image-converter/peony-image-rotate.ui.h:4
 msgid "Custom angle:"
 msgstr "ऐच्छिक कोन:"
 
-#: ../image-converter/caja-image-rotate.ui.h:5
+#: ../image-converter/peony-image-rotate.ui.h:5
 msgid "degrees clockwise"
 msgstr "डिग्री घड्याळाच्या काट्यानुसार"
 
-#: ../image-converter/caja-image-rotate.ui.h:8
+#: ../image-converter/peony-image-rotate.ui.h:8
 msgid ".rotated"
 msgstr ".rotated"
 
-#: ../image-converter/caja-image-rotate.ui.h:10
+#: ../image-converter/peony-image-rotate.ui.h:10
 msgid "Rotate in place"
 msgstr "इथेच वाटोळे फिरवा"
 
-#: ../image-converter/caja-image-rotate.ui.h:11
+#: ../image-converter/peony-image-rotate.ui.h:11
 msgid "_Rotate"
 msgstr "वाटोळे फिरवा (_R)"
 
-#: ../image-converter/caja-image-rotator.c:290
+#: ../image-converter/peony-image-rotator.c:290
 #, c-format
 msgid "Rotating image: %d of %d"
 msgstr "प्रतिमेला वाटोळे फिरवत आहे: %d, %d पैकी"
 
-#: ../image-converter/caja-image-rotator.c:295
+#: ../image-converter/peony-image-rotator.c:295
 #, c-format
 msgid "<i>Rotating \"%s\"</i>"
 msgstr "<i>\"%s\" ला वाटोळे फिरवत आहे</i>"
 
-#: ../image-converter/libcaja-image-converter.caja-extension.in.in.h:1
+#: ../image-converter/libpeony-image-converter.peony-extension.in.in.h:1
 msgid "Image Converter"
 msgstr ""
 
-#: ../image-converter/libcaja-image-converter.caja-extension.in.in.h:2
+#: ../image-converter/libpeony-image-converter.peony-extension.in.in.h:2
 msgid "Rotate and resize images"
 msgstr ""
 
-#: ../open-terminal/caja-open-terminal.c:432
-#: ../open-terminal/caja-open-terminal.c:445
+#: ../open-terminal/peony-open-terminal.c:432
+#: ../open-terminal/peony-open-terminal.c:445
 msgid "Open in _Terminal"
 msgstr ""
 
-#: ../open-terminal/caja-open-terminal.c:434
+#: ../open-terminal/peony-open-terminal.c:434
 msgid "Open the currently selected folder in a terminal"
 msgstr "निवडलेली संचयीका टर्मिनलमध्ये उघडा"
 
-#: ../open-terminal/caja-open-terminal.c:436
-#: ../open-terminal/caja-open-terminal.c:446
+#: ../open-terminal/peony-open-terminal.c:436
+#: ../open-terminal/peony-open-terminal.c:446
 msgid "Open the currently open folder in a terminal"
 msgstr "या संचयीकेला टर्मिनलमध्ये उघडा"
 
-#: ../open-terminal/caja-open-terminal.c:442
+#: ../open-terminal/peony-open-terminal.c:442
 msgid "Open _Terminal"
 msgstr "टर्मिनल उघडा (_T)"
 
-#: ../open-terminal/caja-open-terminal.c:443
+#: ../open-terminal/peony-open-terminal.c:443
 msgid "Open a terminal"
 msgstr "टर्मिनल उघडा"
 
-#: ../open-terminal/libcaja-open-terminal.caja-extension.in.in.h:1
+#: ../open-terminal/libpeony-open-terminal.peony-extension.in.in.h:1
 msgid "Open terminal"
 msgstr ""
 
-#: ../open-terminal/libcaja-open-terminal.caja-extension.in.in.h:2
+#: ../open-terminal/libpeony-open-terminal.peony-extension.in.in.h:2
 msgid "Open terminals from folders"
 msgstr ""
 
-#: ../open-terminal/org.mate.caja-open-terminal.gschema.xml.in.h:1
+#: ../open-terminal/org.mate.peony-open-terminal.gschema.xml.in.h:1
 msgid ""
 "Whether opening a terminal on the desktop opens a terminal in the home "
 "directory"
 msgstr "डेस्कटॉपवरून टर्मिनल उघडल्यावर ते होम संचयीकेमध्ये उघडावे का"
 
-#: ../open-terminal/org.mate.caja-open-terminal.gschema.xml.in.h:2
+#: ../open-terminal/org.mate.peony-open-terminal.gschema.xml.in.h:2
 msgid ""
 "If set to true, then opening a terminal on the desktop will open a terminal "
 "in the home directory. Otherwise, it will be opened in the desktop "
@@ -263,73 +263,73 @@ msgid ""
 "identical to the home directory."
 msgstr "जर खरे बनविल्यास, डेस्कटॉपवरून टर्मिनल उघडल्यावर ते होम संचयीकेमध्ये उघडेल, अथवा ते डेस्कटॉपमध्येच उघडेल. जर डेस्कटॉप संचयीका हीच होम संचयीका असेल तर ही कळ निरर्थक आहे. "
 
-#: ../sendto/caja-nste.c:78 ../sendto/caja-nste.c:83
+#: ../sendto/peony-nste.c:78 ../sendto/peony-nste.c:83
 msgid "Send to..."
 msgstr ""
 
-#: ../sendto/caja-nste.c:79
+#: ../sendto/peony-nste.c:79
 msgid "Send file by mail, instant message..."
 msgstr "मेल, ताबडतोब संदेश द्वारे फाइल पाठवा..."
 
-#: ../sendto/caja-nste.c:84
+#: ../sendto/peony-nste.c:84
 msgid "Send files by mail, instant message..."
 msgstr "मेल, ताबडतोब संदेश द्वारे फाइल पाठवा..."
 
-#: ../sendto/caja-sendto-command.c:578
+#: ../sendto/peony-sendto-command.c:578
 msgid "Files"
 msgstr "फाइलस्"
 
-#: ../sendto/caja-sendto-command.c:790
+#: ../sendto/peony-sendto-command.c:790
 #, c-format
 msgid "Expects URIs or filenames to be passed as options\n"
 msgstr "URIs किंवा फाइलनाव यांस पर्याय नुरूप पुरविण्याची अपेक्षा ठेवतो\n\n"
 
-#: ../sendto/caja-sendto-command.c:810
+#: ../sendto/peony-sendto-command.c:810
 #, c-format
 msgid "Could not parse command-line options: %s\n"
 msgstr "आदेश-ओळ पर्याय वाचण्यास अशक्य: %s\n\n"
 
-#: ../sendto/caja-sendto-command.c:825
+#: ../sendto/peony-sendto-command.c:825
 msgid "Could not load any plugins."
 msgstr "कुठलेही प्लगइन दाखल करण्यास अशक्य."
 
-#: ../sendto/caja-sendto-command.c:828
+#: ../sendto/peony-sendto-command.c:828
 msgid "Please verify your installation"
 msgstr "कृपया तुमचे प्रतिष्ठापन तपासा"
 
-#: ../sendto/libcaja-sendto.caja-extension.in.in.h:1
+#: ../sendto/libpeony-sendto.peony-extension.in.in.h:1
 msgid "Send To"
 msgstr ""
 
-#: ../sendto/libcaja-sendto.caja-extension.in.in.h:2
+#: ../sendto/libpeony-sendto.peony-extension.in.in.h:2
 msgid "Integrates email clients and Pidgin"
 msgstr ""
 
-#: ../sendto/caja-sendto.ui.h:1
+#: ../sendto/peony-sendto.ui.h:1
 msgid "Send To..."
 msgstr "यांस पाठवा..."
 
-#: ../sendto/caja-sendto.ui.h:2
+#: ../sendto/peony-sendto.ui.h:2
 msgid "_Send"
 msgstr "पाठवा (_S)"
 
-#: ../sendto/caja-sendto.ui.h:3
+#: ../sendto/peony-sendto.ui.h:3
 msgid "<b>Destination</b>"
 msgstr "<b>लक्ष्य</b>"
 
-#: ../sendto/caja-sendto.ui.h:4
+#: ../sendto/peony-sendto.ui.h:4
 msgid "Send _as:"
 msgstr "यानुरूप पाठवा (_a):"
 
-#: ../sendto/caja-sendto.ui.h:5
+#: ../sendto/peony-sendto.ui.h:5
 msgid "Send t_o:"
 msgstr "यांस पाठवा (_o):"
 
-#: ../sendto/caja-sendto.ui.h:6
+#: ../sendto/peony-sendto.ui.h:6
 msgid "<b>Compression</b>"
 msgstr "<b>संकोचन</b>"
 
-#: ../sendto/caja-sendto.ui.h:7
+#: ../sendto/peony-sendto.ui.h:7
 msgid "Send _packed in:"
 msgstr "संकोचीl पाठवा (_p):"
 
@@ -361,15 +361,15 @@ msgstr "अपरिचीत भोक्ता."
 msgid "Instant Message (Gajim)"
 msgstr "ताबडतोब संदेश (Gajim)"
 
-#: ../sendto/plugins/caja-burn/caja-burn.c:92
+#: ../sendto/plugins/peony-burn/peony-burn.c:92
 msgid "New CD/DVD"
 msgstr "नवीन CD/DVD"
 
-#: ../sendto/plugins/caja-burn/caja-burn.c:99
+#: ../sendto/plugins/peony-burn/peony-burn.c:99
 msgid "Existing CD/DVD"
 msgstr "अस्तित्वातील CD/DVD"
 
-#: ../sendto/plugins/caja-burn/caja-burn.c:178
+#: ../sendto/plugins/peony-burn/peony-burn.c:178
 msgid "CD/DVD Creator"
 msgstr "CD/DVD निर्माणकर्ता"
 
@@ -385,87 +385,87 @@ msgstr "काढूणटाकण्याजोगी डिस्क व स
 msgid "UPnP Media Server"
 msgstr "UPnP मिडीया सर्वर"
 
-#: ../share/libcaja-share.caja-extension.in.in.h:1 ../share/caja-share.c:1063
+#: ../share/libpeony-share.peony-extension.in.in.h:1 ../share/peony-share.c:1063
 msgid "Share"
 msgstr "शेअर"
 
-#: ../share/libcaja-share.caja-extension.in.in.h:2
+#: ../share/libpeony-share.peony-extension.in.in.h:2
 msgid "Allows to quickly share a folder"
 msgstr ""
 
-#: ../share/caja-share.c:123
+#: ../share/peony-share.c:123
 #, c-format
 msgid ""
-"Caja needs to add some permissions to your folder \"%s\" in order to share "
+"Peony needs to add some permissions to your folder \"%s\" in order to share "
 "it"
-msgstr "फोल्डर \"%s\" शेअर करण्यासाठी Caja ला फोल्डरला परवानग्या द्याव्या लागत आहेत"
+msgstr "फोल्डर \"%s\" शेअर करण्यासाठी Peony ला फोल्डरला परवानग्या द्याव्या लागत आहेत"
 
-#: ../share/caja-share.c:131
+#: ../share/peony-share.c:131
 #, c-format
 msgid ""
 "The folder \"%s\" needs the following extra permissions for sharing to work:\n"
-"%s%s%sDo you want Caja to add these permissions to the folder automatically?"
-msgstr "फोल्डर \"%s\"ला शेअरिंग वापरण्यासाठी खालील ज्यादा परवानग्या पाहिजेत:\n%s%s%s Caja ने फोल्डरला या परवानग्या आपोआप द्यायच्या का?"
+"%s%s%sDo you want Peony to add these permissions to the folder automatically?"
+msgstr "फोल्डर \"%s\"ला शेअरिंग वापरण्यासाठी खालील ज्यादा परवानग्या पाहिजेत:\n%s%s%s Peony ने फोल्डरला या परवानग्या आपोआप द्यायच्या का?"
 
-#: ../share/caja-share.c:135
+#: ../share/peony-share.c:135
 msgid "  - read permission by others\n"
 msgstr "  - इतरांसाठी वाचन परवानगी\n"
 
-#: ../share/caja-share.c:136
+#: ../share/peony-share.c:136
 msgid "  - write permission by others\n"
 msgstr "  - इतरांसाठी लिखाण परवानगी\n"
 
-#: ../share/caja-share.c:137
+#: ../share/peony-share.c:137
 msgid "  - execute permission by others\n"
 msgstr "  - इतरांसाठी आज्ञा चालवण्यास परवानगी\n"
 
-#: ../share/caja-share.c:141
+#: ../share/peony-share.c:141
 msgid "Add the permissions automatically"
 msgstr "परवानग्या आपोआप जोडा"
 
-#: ../share/caja-share.c:167
+#: ../share/peony-share.c:167
 #, c-format
 msgid "Could not change the permissions of folder \"%s\""
 msgstr "\"%s\" च्या परवानगींमध्ये बदल करू शकत नाही"
 
-#: ../share/caja-share.c:451
+#: ../share/peony-share.c:451
 msgid "Share name is too long"
 msgstr "शेअर नाव खूपच लांब आहे"
 
-#: ../share/caja-share.c:493
+#: ../share/peony-share.c:493
 msgid "The share name cannot be empty"
 msgstr "शेअर नाव रिकामे असू शकत नाही"
 
-#: ../share/caja-share.c:506
+#: ../share/peony-share.c:506
 #, c-format
 msgid "Error while getting share information: %s"
 msgstr "शेअर माहिती घेताना चूक झाली: %s"
 
-#: ../share/caja-share.c:516
+#: ../share/peony-share.c:516
 msgid "Another share has the same name"
 msgstr "समान नावाचा शेअर आधीच अस्तित्वात आहे "
 
-#: ../share/caja-share.c:563 ../share/caja-share.c:799
+#: ../share/peony-share.c:563 ../share/peony-share.c:799
 msgid "Modify _Share"
 msgstr "सहभाग बदला (_S):"
 
-#: ../share/caja-share.c:563 ../share/caja-share.c:801
+#: ../share/peony-share.c:563 ../share/peony-share.c:801
 msgid "Create _Share"
 msgstr "शेअर बनवा (_S)"
 
-#: ../share/caja-share.c:691
+#: ../share/peony-share.c:691
 msgid "There was an error while getting the sharing information"
 msgstr "शेअर माहिती घेताना चूक झाली"
 
-#: ../share/caja-share.c:1123
+#: ../share/peony-share.c:1123
 msgid "Folder Sharing"
 msgstr "फोल्डर सहभाग"
 
-#: ../share/caja-share.c:1164
+#: ../share/peony-share.c:1164
 msgid "Sharing Options"
 msgstr " शेअरींग पर्याय"
 
-#: ../share/caja-share.c:1165
+#: ../share/peony-share.c:1165
 msgid "Share this Folder"
 msgstr "फोल्डर शेअर करा"
 
@@ -555,18 +555,18 @@ msgid ""
 "first and add a new one"
 msgstr ""
 
-#: ../wallpaper/caja-wallpaper-extension.c:109
+#: ../wallpaper/peony-wallpaper-extension.c:109
 msgid "Set as wallpaper"
 msgstr ""
 
-#: ../wallpaper/caja-wallpaper-extension.c:110
+#: ../wallpaper/peony-wallpaper-extension.c:110
 msgid "Set image as the current wallpaper"
 msgstr ""
 
-#: ../wallpaper/libcaja-wallpaper.caja-extension.in.in.h:1
+#: ../wallpaper/libpeony-wallpaper.peony-extension.in.in.h:1
 msgid "Wallpaper"
 msgstr ""
 
-#: ../wallpaper/libcaja-wallpaper.caja-extension.in.in.h:2
+#: ../wallpaper/libpeony-wallpaper.peony-extension.in.in.h:2
 msgid "Allows to quickly set wallpaper"
 msgstr ""

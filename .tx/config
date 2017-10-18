@@ -1,7 +1,7 @@
 [main]
 host = https://www.transifex.com
  
-[MATE.caja-extensions]
+[MATE.peony-extensions]
 file_filter = po/<lang>.po
-source_file = po/caja-extensions.pot
+source_file = po/peony-extensions.pot
 source_lang = en

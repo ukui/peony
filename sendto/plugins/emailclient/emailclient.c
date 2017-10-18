@@ -27,7 +27,7 @@
 
 #include <glib/gi18n-lib.h>
 #include <string.h>
-#include "caja-sendto-plugin.h"
+#include "peony-sendto-plugin.h"
 #include <gio/gio.h>
 
 typedef enum {
@@ -262,7 +262,7 @@ NstPluginInfo plugin_info = {
 	"emailclient",
 	N_("Email"),
 	NULL,
-	CAJA_CAPS_NONE,
+	PEONY_CAPS_NONE,
 	init,
 	get_contacts_widget,
 	NULL,

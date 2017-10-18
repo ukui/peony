@@ -18,244 +18,244 @@ msgstr ""
 "Language: sr\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: ../gksu/libcaja-gksu.c:135
+#: ../gksu/libpeony-gksu.c:135
 msgid "Open as administrator"
 msgstr "Отвори као администратор"
 
-#: ../gksu/libcaja-gksu.c:136
+#: ../gksu/libpeony-gksu.c:136
 msgid "Opens the file with administrator privileges"
 msgstr "Отворите датотеку са овлашћењима администратора"
 
-#: ../gksu/libcaja-gksu.c:223
+#: ../gksu/libpeony-gksu.c:223
 msgid ""
 "<big><b>Unable to determine the program to run.</b></big>\n"
 "\n"
 "The item you selected cannot be open with administrator powers because the correct application cannot be determined."
 msgstr "<big><b>Не могу да одредим програм за покретање</b></big>\n\nСтавка коју сте изабрали не може бити отворена са администраторским овлашћењима зато што одговарајући програм не може бити одређен."
 
-#: ../gksu/libcaja-gksu.caja-extension.in.in.h:1
+#: ../gksu/libpeony-gksu.peony-extension.in.in.h:1
 msgid "Gksu"
 msgstr "Гксу"
 
-#: ../gksu/libcaja-gksu.caja-extension.in.in.h:2
+#: ../gksu/libpeony-gksu.peony-extension.in.in.h:2
 msgid "Privilege granting extension"
 msgstr "Проширење које обезбеђује овлашћења"
 
-#: ../image-converter/caja-image-converter.c:120
+#: ../image-converter/peony-image-converter.c:120
 msgid "_Resize Images..."
 msgstr "_Промени величину слика..."
 
-#: ../image-converter/caja-image-converter.c:121
+#: ../image-converter/peony-image-converter.c:121
 msgid "Resize each selected image"
 msgstr "Промените величину сваке изабране слике"
 
-#: ../image-converter/caja-image-converter.c:130
+#: ../image-converter/peony-image-converter.c:130
 msgid "Ro_tate Images..."
 msgstr "_Окрени слике..."
 
-#: ../image-converter/caja-image-converter.c:131
+#: ../image-converter/peony-image-converter.c:131
 msgid "Rotate each selected image"
 msgstr "Окрените сваку изабрану слику"
 
-#: ../image-converter/caja-image-resize.ui.h:1
+#: ../image-converter/peony-image-resize.ui.h:1
 msgid "Resize Images"
 msgstr "Промените величину сликама"
 
-#: ../image-converter/caja-image-resize.ui.h:2
+#: ../image-converter/peony-image-resize.ui.h:2
 msgid "<b>Image Size</b>"
 msgstr "<b>Величина слике</b>"
 
-#: ../image-converter/caja-image-resize.ui.h:3
+#: ../image-converter/peony-image-resize.ui.h:3
 msgid "Select a size:"
 msgstr "Изаберите величину:"
 
-#: ../image-converter/caja-image-resize.ui.h:4
+#: ../image-converter/peony-image-resize.ui.h:4
 msgid "96x96"
 msgstr "96x96"
 
-#: ../image-converter/caja-image-resize.ui.h:5
+#: ../image-converter/peony-image-resize.ui.h:5
 msgid "128x128"
 msgstr "128x128"
 
-#: ../image-converter/caja-image-resize.ui.h:6
+#: ../image-converter/peony-image-resize.ui.h:6
 msgid "640x480"
 msgstr "640x480"
 
-#: ../image-converter/caja-image-resize.ui.h:7
+#: ../image-converter/peony-image-resize.ui.h:7
 msgid "800x600"
 msgstr "800x600"
 
-#: ../image-converter/caja-image-resize.ui.h:8
+#: ../image-converter/peony-image-resize.ui.h:8
 msgid "1024x768"
 msgstr "1024x768"
 
-#: ../image-converter/caja-image-resize.ui.h:9
+#: ../image-converter/peony-image-resize.ui.h:9
 msgid "1280x960"
 msgstr "1280x960"
 
-#: ../image-converter/caja-image-resize.ui.h:10
+#: ../image-converter/peony-image-resize.ui.h:10
 msgid "pixels"
 msgstr "тачкица"
 
-#: ../image-converter/caja-image-resize.ui.h:11
+#: ../image-converter/peony-image-resize.ui.h:11
 msgid "Scale:"
 msgstr "Размера:"
 
-#: ../image-converter/caja-image-resize.ui.h:12
+#: ../image-converter/peony-image-resize.ui.h:12
 msgid "percent"
 msgstr "процената"
 
-#: ../image-converter/caja-image-resize.ui.h:13
+#: ../image-converter/peony-image-resize.ui.h:13
 msgid "Custom size:"
 msgstr "Произвољна величина:"
 
-#: ../image-converter/caja-image-resize.ui.h:14
+#: ../image-converter/peony-image-resize.ui.h:14
 msgid "Width:"
 msgstr "Ширина:"
 
-#: ../image-converter/caja-image-resize.ui.h:15
+#: ../image-converter/peony-image-resize.ui.h:15
 msgid "Height:"
 msgstr "Висина:"
 
-#: ../image-converter/caja-image-resize.ui.h:16
-#: ../image-converter/caja-image-rotate.ui.h:6
+#: ../image-converter/peony-image-resize.ui.h:16
+#: ../image-converter/peony-image-rotate.ui.h:6
 msgid "<b>Filename</b>"
 msgstr "<b>Назив датотеке</b>"
 
-#: ../image-converter/caja-image-resize.ui.h:17
-#: ../image-converter/caja-image-rotate.ui.h:7
+#: ../image-converter/peony-image-resize.ui.h:17
+#: ../image-converter/peony-image-rotate.ui.h:7
 msgid "Append"
 msgstr "Додај"
 
-#: ../image-converter/caja-image-resize.ui.h:18
+#: ../image-converter/peony-image-resize.ui.h:18
 msgid ".resized"
 msgstr ".resized"
 
-#: ../image-converter/caja-image-resize.ui.h:19
-#: ../image-converter/caja-image-rotate.ui.h:9
+#: ../image-converter/peony-image-resize.ui.h:19
+#: ../image-converter/peony-image-rotate.ui.h:9
 msgid "to file title"
 msgstr "на назив датотеке"
 
-#: ../image-converter/caja-image-resize.ui.h:20
+#: ../image-converter/peony-image-resize.ui.h:20
 msgid "Resize in place"
 msgstr "Промените величину на месту"
 
-#: ../image-converter/caja-image-resize.ui.h:21
+#: ../image-converter/peony-image-resize.ui.h:21
 msgid "_Resize"
 msgstr "_Промени величину"
 
-#: ../image-converter/caja-image-resizer.c:211
-#: ../image-converter/caja-image-rotator.c:208
+#: ../image-converter/peony-image-resizer.c:211
+#: ../image-converter/peony-image-rotator.c:208
 msgid "_Skip"
 msgstr "_Прескочи"
 
-#: ../image-converter/caja-image-resizer.c:213
-#: ../image-converter/caja-image-rotator.c:210
+#: ../image-converter/peony-image-resizer.c:213
+#: ../image-converter/peony-image-rotator.c:210
 msgid "_Retry"
 msgstr "_Пробај поново"
 
-#: ../image-converter/caja-image-resizer.c:291
+#: ../image-converter/peony-image-resizer.c:291
 #, c-format
 msgid "Resizing image: %d of %d"
 msgstr "Мењам величину слике: %d од %d"
 
-#: ../image-converter/caja-image-resizer.c:296
+#: ../image-converter/peony-image-resizer.c:296
 #, c-format
 msgid "<i>Resizing \"%s\"</i>"
 msgstr "<i>Мењам величину „%s“</i>"
 
-#: ../image-converter/caja-image-resizer.c:314
-#: ../image-converter/caja-image-rotator.c:313
+#: ../image-converter/peony-image-resizer.c:314
+#: ../image-converter/peony-image-rotator.c:313
 msgid "Please enter a valid filename suffix!"
 msgstr "Унесите исправан суфикс назива датотеке!"
 
-#: ../image-converter/caja-image-rotate.ui.h:1
+#: ../image-converter/peony-image-rotate.ui.h:1
 msgid "Rotate Images"
 msgstr "Окрените слике"
 
-#: ../image-converter/caja-image-rotate.ui.h:2
+#: ../image-converter/peony-image-rotate.ui.h:2
 msgid "<b>Image Rotation</b>"
 msgstr "<b>Окретање слике</b>"
 
-#: ../image-converter/caja-image-rotate.ui.h:3
+#: ../image-converter/peony-image-rotate.ui.h:3
 msgid "Select an angle:"
 msgstr "Изаберите угао:"
 
-#: ../image-converter/caja-image-rotate.ui.h:4
+#: ../image-converter/peony-image-rotate.ui.h:4
 msgid "Custom angle:"
 msgstr "Произвољни угао:"
 
-#: ../image-converter/caja-image-rotate.ui.h:5
+#: ../image-converter/peony-image-rotate.ui.h:5
 msgid "degrees clockwise"
 msgstr "степена у смеру казаљке на сату"
 
-#: ../image-converter/caja-image-rotate.ui.h:8
+#: ../image-converter/peony-image-rotate.ui.h:8
 msgid ".rotated"
 msgstr ".rotated"
 
-#: ../image-converter/caja-image-rotate.ui.h:10
+#: ../image-converter/peony-image-rotate.ui.h:10
 msgid "Rotate in place"
 msgstr "Окрените на месту"
 
-#: ../image-converter/caja-image-rotate.ui.h:11
+#: ../image-converter/peony-image-rotate.ui.h:11
 msgid "_Rotate"
 msgstr "_Окрени"
 
-#: ../image-converter/caja-image-rotator.c:290
+#: ../image-converter/peony-image-rotator.c:290
 #, c-format
 msgid "Rotating image: %d of %d"
 msgstr "Окрећем слику: %d од %d"
 
-#: ../image-converter/caja-image-rotator.c:295
+#: ../image-converter/peony-image-rotator.c:295
 #, c-format
 msgid "<i>Rotating \"%s\"</i>"
 msgstr "<i>Окрећем „%s“</i>"
 
-#: ../image-converter/libcaja-image-converter.caja-extension.in.in.h:1
+#: ../image-converter/libpeony-image-converter.peony-extension.in.in.h:1
 msgid "Image Converter"
 msgstr "Претварач слика"
 
-#: ../image-converter/libcaja-image-converter.caja-extension.in.in.h:2
+#: ../image-converter/libpeony-image-converter.peony-extension.in.in.h:2
 msgid "Rotate and resize images"
 msgstr "Окрените и промените величину сликама"
 
-#: ../open-terminal/caja-open-terminal.c:432
-#: ../open-terminal/caja-open-terminal.c:445
+#: ../open-terminal/peony-open-terminal.c:432
+#: ../open-terminal/peony-open-terminal.c:445
 msgid "Open in _Terminal"
 msgstr "Отвори у _терминалу"
 
-#: ../open-terminal/caja-open-terminal.c:434
+#: ../open-terminal/peony-open-terminal.c:434
 msgid "Open the currently selected folder in a terminal"
 msgstr "Отворите тренутно изабрану фасциклу у терминалу"
 
-#: ../open-terminal/caja-open-terminal.c:436
-#: ../open-terminal/caja-open-terminal.c:446
+#: ../open-terminal/peony-open-terminal.c:436
+#: ../open-terminal/peony-open-terminal.c:446
 msgid "Open the currently open folder in a terminal"
 msgstr "Отворите тренутно отворену фасциклу у терминалу"
 
-#: ../open-terminal/caja-open-terminal.c:442
+#: ../open-terminal/peony-open-terminal.c:442
 msgid "Open _Terminal"
 msgstr "Отвори _терминал"
 
-#: ../open-terminal/caja-open-terminal.c:443
+#: ../open-terminal/peony-open-terminal.c:443
 msgid "Open a terminal"
 msgstr "Отворите терминал"
 
-#: ../open-terminal/libcaja-open-terminal.caja-extension.in.in.h:1
+#: ../open-terminal/libpeony-open-terminal.peony-extension.in.in.h:1
 msgid "Open terminal"
 msgstr "Отворите терминал"
 
-#: ../open-terminal/libcaja-open-terminal.caja-extension.in.in.h:2
+#: ../open-terminal/libpeony-open-terminal.peony-extension.in.in.h:2
 msgid "Open terminals from folders"
 msgstr "Отворите терминале из фасцикли"
 
-#: ../open-terminal/org.mate.caja-open-terminal.gschema.xml.in.h:1
+#: ../open-terminal/org.mate.peony-open-terminal.gschema.xml.in.h:1
 msgid ""
 "Whether opening a terminal on the desktop opens a terminal in the home "
 "directory"
 msgstr "Да ли отварање терминала на радној површи отвара терминал у личном директоријуму"
 
-#: ../open-terminal/org.mate.caja-open-terminal.gschema.xml.in.h:2
+#: ../open-terminal/org.mate.peony-open-terminal.gschema.xml.in.h:2
 msgid ""
 "If set to true, then opening a terminal on the desktop will open a terminal "
 "in the home directory. Otherwise, it will be opened in the desktop "
@@ -263,73 +263,73 @@ msgid ""
 "identical to the home directory."
 msgstr "Уколико је изабрано, отварање терминала са радне површи ће отворити терминал у личном директоријуму. У супротном, биће отворен у директоријуму радне површи. Знајте да је овај кључ небитан ако је директоријум радне површи исти као и лични директоријум."
 
-#: ../sendto/caja-nste.c:78 ../sendto/caja-nste.c:83
+#: ../sendto/peony-nste.c:78 ../sendto/peony-nste.c:83
 msgid "Send to..."
 msgstr "Пошаљи..."
 
-#: ../sendto/caja-nste.c:79
+#: ../sendto/peony-nste.c:79
 msgid "Send file by mail, instant message..."
 msgstr "Пошаљи датотеку ел. поштом, брзом поруком..."
 
-#: ../sendto/caja-nste.c:84
+#: ../sendto/peony-nste.c:84
 msgid "Send files by mail, instant message..."
 msgstr "Пошаљите датотеке ел. поштом, брзим порукама..."
 
-#: ../sendto/caja-sendto-command.c:578
+#: ../sendto/peony-sendto-command.c:578
 msgid "Files"
 msgstr "Датотеке"
 
-#: ../sendto/caja-sendto-command.c:790
+#: ../sendto/peony-sendto-command.c:790
 #, c-format
 msgid "Expects URIs or filenames to be passed as options\n"
 msgstr "Очекујем да путање или називи датотека буду прослеђени као опције\n"
 
-#: ../sendto/caja-sendto-command.c:810
+#: ../sendto/peony-sendto-command.c:810
 #, c-format
 msgid "Could not parse command-line options: %s\n"
 msgstr "Не могу да обрадим опције линије наредби: %s\n"
 
-#: ../sendto/caja-sendto-command.c:825
+#: ../sendto/peony-sendto-command.c:825
 msgid "Could not load any plugins."
 msgstr "Не могу да учитам ниједан прикључак."
 
-#: ../sendto/caja-sendto-command.c:828
+#: ../sendto/peony-sendto-command.c:828
 msgid "Please verify your installation"
 msgstr "Проверите вашу инсталацију"
 
-#: ../sendto/libcaja-sendto.caja-extension.in.in.h:1
+#: ../sendto/libpeony-sendto.peony-extension.in.in.h:1
 msgid "Send To"
 msgstr "Пошаљи"
 
-#: ../sendto/libcaja-sendto.caja-extension.in.in.h:2
+#: ../sendto/libpeony-sendto.peony-extension.in.in.h:2
 msgid "Integrates email clients and Pidgin"
 msgstr "Обједињује програме ел. поште и Голупка"
 
-#: ../sendto/caja-sendto.ui.h:1
+#: ../sendto/peony-sendto.ui.h:1
 msgid "Send To..."
 msgstr "Пошаљи..."
 
-#: ../sendto/caja-sendto.ui.h:2
+#: ../sendto/peony-sendto.ui.h:2
 msgid "_Send"
 msgstr "_Пошаљи"
 
-#: ../sendto/caja-sendto.ui.h:3
+#: ../sendto/peony-sendto.ui.h:3
 msgid "<b>Destination</b>"
 msgstr "<b>Одредиште</b>"
 
-#: ../sendto/caja-sendto.ui.h:4
+#: ../sendto/peony-sendto.ui.h:4
 msgid "Send _as:"
 msgstr "Пошаљи _као:"
 
-#: ../sendto/caja-sendto.ui.h:5
+#: ../sendto/peony-sendto.ui.h:5
 msgid "Send t_o:"
 msgstr "Пошаљи _на:"
 
-#: ../sendto/caja-sendto.ui.h:6
+#: ../sendto/peony-sendto.ui.h:6
 msgid "<b>Compression</b>"
 msgstr "<b>Сажимање</b>"
 
-#: ../sendto/caja-sendto.ui.h:7
+#: ../sendto/peony-sendto.ui.h:7
 msgid "Send _packed in:"
 msgstr "Пошаљи _запаковано у:"
 
@@ -361,15 +361,15 @@ msgstr "Непознат прималац."
 msgid "Instant Message (Gajim)"
 msgstr "Брза порука (Гајим)"
 
-#: ../sendto/plugins/caja-burn/caja-burn.c:92
+#: ../sendto/plugins/peony-burn/peony-burn.c:92
 msgid "New CD/DVD"
 msgstr "Нови ЦД/ДВД"
 
-#: ../sendto/plugins/caja-burn/caja-burn.c:99
+#: ../sendto/plugins/peony-burn/peony-burn.c:99
 msgid "Existing CD/DVD"
 msgstr "Постојећи ЦД/ДВД"
 
-#: ../sendto/plugins/caja-burn/caja-burn.c:178
+#: ../sendto/plugins/peony-burn/peony-burn.c:178
 msgid "CD/DVD Creator"
 msgstr "ЦД/ДВД Творац"
 
@@ -385,87 +385,87 @@ msgstr "Уклоњиви дискови и дељења"
 msgid "UPnP Media Server"
 msgstr "УПнП медијски сервер"
 
-#: ../share/libcaja-share.caja-extension.in.in.h:1 ../share/caja-share.c:1063
+#: ../share/libpeony-share.peony-extension.in.in.h:1 ../share/peony-share.c:1063
 msgid "Share"
 msgstr "Дели"
 
-#: ../share/libcaja-share.caja-extension.in.in.h:2
+#: ../share/libpeony-share.peony-extension.in.in.h:2
 msgid "Allows to quickly share a folder"
 msgstr "Допушта брзо дељење фасцикле"
 
-#: ../share/caja-share.c:123
+#: ../share/peony-share.c:123
 #, c-format
 msgid ""
-"Caja needs to add some permissions to your folder \"%s\" in order to share "
+"Peony needs to add some permissions to your folder \"%s\" in order to share "
 "it"
 msgstr "Цаја мора да дода нека овлашћења вашој фасцикли „%s“ да би могао да је дели"
 
-#: ../share/caja-share.c:131
+#: ../share/peony-share.c:131
 #, c-format
 msgid ""
 "The folder \"%s\" needs the following extra permissions for sharing to work:\n"
-"%s%s%sDo you want Caja to add these permissions to the folder automatically?"
+"%s%s%sDo you want Peony to add these permissions to the folder automatically?"
 msgstr "Фасцикли „%s“ су потребна следећа посебна овлашћења да би дељење радило:\n%s%s%sДа ли желите да Цаја самостално дода та овлашћења фасцикли?"
 
-#: ../share/caja-share.c:135
+#: ../share/peony-share.c:135
 msgid "  - read permission by others\n"
 msgstr "  — чита овлашћења другима\n"
 
-#: ../share/caja-share.c:136
+#: ../share/peony-share.c:136
 msgid "  - write permission by others\n"
 msgstr "  — пише овлашћења другима\n"
 
-#: ../share/caja-share.c:137
+#: ../share/peony-share.c:137
 msgid "  - execute permission by others\n"
 msgstr "  — извршава овлашћења другима\n"
 
-#: ../share/caja-share.c:141
+#: ../share/peony-share.c:141
 msgid "Add the permissions automatically"
 msgstr "Додајте овлашћења самостално"
 
-#: ../share/caja-share.c:167
+#: ../share/peony-share.c:167
 #, c-format
 msgid "Could not change the permissions of folder \"%s\""
 msgstr "Не могу да променим овлашћења за фасциклу „%s“"
 
-#: ../share/caja-share.c:451
+#: ../share/peony-share.c:451
 msgid "Share name is too long"
 msgstr "Назив дељења је предуг"
 
-#: ../share/caja-share.c:493
+#: ../share/peony-share.c:493
 msgid "The share name cannot be empty"
 msgstr "Назив дељења не може бити празан"
 
-#: ../share/caja-share.c:506
+#: ../share/peony-share.c:506
 #, c-format
 msgid "Error while getting share information: %s"
 msgstr "Грешка приликом добављања података дељења: %s"
 
-#: ../share/caja-share.c:516
+#: ../share/peony-share.c:516
 msgid "Another share has the same name"
 msgstr "Још једно дељење има исти назив"
 
-#: ../share/caja-share.c:563 ../share/caja-share.c:799
+#: ../share/peony-share.c:563 ../share/peony-share.c:799
 msgid "Modify _Share"
 msgstr "Измени _дељење"
 
-#: ../share/caja-share.c:563 ../share/caja-share.c:801
+#: ../share/peony-share.c:563 ../share/peony-share.c:801
 msgid "Create _Share"
 msgstr "Направи _дељење"
 
-#: ../share/caja-share.c:691
+#: ../share/peony-share.c:691
 msgid "There was an error while getting the sharing information"
 msgstr "Дошло је до грешке приликом добављања података о дељењу"
 
-#: ../share/caja-share.c:1123
+#: ../share/peony-share.c:1123
 msgid "Folder Sharing"
 msgstr "Дељење фасцикле"
 
-#: ../share/caja-share.c:1164
+#: ../share/peony-share.c:1164
 msgid "Sharing Options"
 msgstr "Опције дељења"
 
-#: ../share/caja-share.c:1165
+#: ../share/peony-share.c:1165
 msgid "Share this Folder"
 msgstr "Дели ову фасциклу"
 
@@ -555,18 +555,18 @@ msgid ""
 "first and add a new one"
 msgstr "Не могу да изменим путању постојећег дељења; прво уклоните старо дељење а затим додајте ново"
 
-#: ../wallpaper/caja-wallpaper-extension.c:109
+#: ../wallpaper/peony-wallpaper-extension.c:109
 msgid "Set as wallpaper"
 msgstr "Постави као позадину"
 
-#: ../wallpaper/caja-wallpaper-extension.c:110
+#: ../wallpaper/peony-wallpaper-extension.c:110
 msgid "Set image as the current wallpaper"
 msgstr "Поставите слику као текућу позадину"
 
-#: ../wallpaper/libcaja-wallpaper.caja-extension.in.in.h:1
+#: ../wallpaper/libpeony-wallpaper.peony-extension.in.in.h:1
 msgid "Wallpaper"
 msgstr "Позадина"
 
-#: ../wallpaper/libcaja-wallpaper.caja-extension.in.in.h:2
+#: ../wallpaper/libpeony-wallpaper.peony-extension.in.in.h:2
 msgid "Allows to quickly set wallpaper"
 msgstr "Омогућава брзо постављање позадине"

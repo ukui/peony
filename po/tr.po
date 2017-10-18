@@ -22,244 +22,244 @@ msgstr ""
 "Language: tr\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: ../gksu/libcaja-gksu.c:135
+#: ../gksu/libpeony-gksu.c:135
 msgid "Open as administrator"
 msgstr "Yönetici olarak aç"
 
-#: ../gksu/libcaja-gksu.c:136
+#: ../gksu/libpeony-gksu.c:136
 msgid "Opens the file with administrator privileges"
 msgstr "Dosyayı yönetici yetkileri ile açar"
 
-#: ../gksu/libcaja-gksu.c:223
+#: ../gksu/libpeony-gksu.c:223
 msgid ""
 "<big><b>Unable to determine the program to run.</b></big>\n"
 "\n"
 "The item you selected cannot be open with administrator powers because the correct application cannot be determined."
 msgstr "<big><b>Çalıştırılacak program tespit edilemedi</b></big>\n\nSeçtiğiniz unsur yönetici yetkileriyle açılamaz çünkü doğru uygulama tespit edilemedi."
 
-#: ../gksu/libcaja-gksu.caja-extension.in.in.h:1
+#: ../gksu/libpeony-gksu.peony-extension.in.in.h:1
 msgid "Gksu"
 msgstr "Gksu"
 
-#: ../gksu/libcaja-gksu.caja-extension.in.in.h:2
+#: ../gksu/libpeony-gksu.peony-extension.in.in.h:2
 msgid "Privilege granting extension"
 msgstr "Yetki verme eklentisi"
 
-#: ../image-converter/caja-image-converter.c:120
+#: ../image-converter/peony-image-converter.c:120
 msgid "_Resize Images..."
 msgstr "_Resimleri yeniden boyutlandır..."
 
-#: ../image-converter/caja-image-converter.c:121
+#: ../image-converter/peony-image-converter.c:121
 msgid "Resize each selected image"
 msgstr "Her seçili resmi yeniden boyutlandır"
 
-#: ../image-converter/caja-image-converter.c:130
+#: ../image-converter/peony-image-converter.c:130
 msgid "Ro_tate Images..."
 msgstr "Resimleri d_öndür..."
 
-#: ../image-converter/caja-image-converter.c:131
+#: ../image-converter/peony-image-converter.c:131
 msgid "Rotate each selected image"
 msgstr "Her seçili resmi döndür"
 
-#: ../image-converter/caja-image-resize.ui.h:1
+#: ../image-converter/peony-image-resize.ui.h:1
 msgid "Resize Images"
 msgstr "Resimleri yeniden boyutlandır"
 
-#: ../image-converter/caja-image-resize.ui.h:2
+#: ../image-converter/peony-image-resize.ui.h:2
 msgid "<b>Image Size</b>"
 msgstr "<b>Resim Boyutu</b>"
 
-#: ../image-converter/caja-image-resize.ui.h:3
+#: ../image-converter/peony-image-resize.ui.h:3
 msgid "Select a size:"
 msgstr "Boyut seç:"
 
-#: ../image-converter/caja-image-resize.ui.h:4
+#: ../image-converter/peony-image-resize.ui.h:4
 msgid "96x96"
 msgstr "96x96"
 
-#: ../image-converter/caja-image-resize.ui.h:5
+#: ../image-converter/peony-image-resize.ui.h:5
 msgid "128x128"
 msgstr "128x128"
 
-#: ../image-converter/caja-image-resize.ui.h:6
+#: ../image-converter/peony-image-resize.ui.h:6
 msgid "640x480"
 msgstr "640x480"
 
-#: ../image-converter/caja-image-resize.ui.h:7
+#: ../image-converter/peony-image-resize.ui.h:7
 msgid "800x600"
 msgstr "800x600"
 
-#: ../image-converter/caja-image-resize.ui.h:8
+#: ../image-converter/peony-image-resize.ui.h:8
 msgid "1024x768"
 msgstr "1024x768"
 
-#: ../image-converter/caja-image-resize.ui.h:9
+#: ../image-converter/peony-image-resize.ui.h:9
 msgid "1280x960"
 msgstr "1280x960"
 
-#: ../image-converter/caja-image-resize.ui.h:10
+#: ../image-converter/peony-image-resize.ui.h:10
 msgid "pixels"
 msgstr "piksel"
 
-#: ../image-converter/caja-image-resize.ui.h:11
+#: ../image-converter/peony-image-resize.ui.h:11
 msgid "Scale:"
 msgstr "Ölçek:"
 
-#: ../image-converter/caja-image-resize.ui.h:12
+#: ../image-converter/peony-image-resize.ui.h:12
 msgid "percent"
 msgstr "yüzde"
 
-#: ../image-converter/caja-image-resize.ui.h:13
+#: ../image-converter/peony-image-resize.ui.h:13
 msgid "Custom size:"
 msgstr "Özel boyut:"
 
-#: ../image-converter/caja-image-resize.ui.h:14
+#: ../image-converter/peony-image-resize.ui.h:14
 msgid "Width:"
 msgstr "Genişlik:"
 
-#: ../image-converter/caja-image-resize.ui.h:15
+#: ../image-converter/peony-image-resize.ui.h:15
 msgid "Height:"
 msgstr "Yükseklik:"
 
-#: ../image-converter/caja-image-resize.ui.h:16
-#: ../image-converter/caja-image-rotate.ui.h:6
+#: ../image-converter/peony-image-resize.ui.h:16
+#: ../image-converter/peony-image-rotate.ui.h:6
 msgid "<b>Filename</b>"
 msgstr "<b>Dosya ismi</b>"
 
-#: ../image-converter/caja-image-resize.ui.h:17
-#: ../image-converter/caja-image-rotate.ui.h:7
+#: ../image-converter/peony-image-resize.ui.h:17
+#: ../image-converter/peony-image-rotate.ui.h:7
 msgid "Append"
 msgstr "Ekle"
 
-#: ../image-converter/caja-image-resize.ui.h:18
+#: ../image-converter/peony-image-resize.ui.h:18
 msgid ".resized"
 msgstr ".yeniden boyutlandırıldı"
 
-#: ../image-converter/caja-image-resize.ui.h:19
-#: ../image-converter/caja-image-rotate.ui.h:9
+#: ../image-converter/peony-image-resize.ui.h:19
+#: ../image-converter/peony-image-rotate.ui.h:9
 msgid "to file title"
 msgstr "dosya başlığına"
 
-#: ../image-converter/caja-image-resize.ui.h:20
+#: ../image-converter/peony-image-resize.ui.h:20
 msgid "Resize in place"
 msgstr "Yerinde yeniden boyutlandır"
 
-#: ../image-converter/caja-image-resize.ui.h:21
+#: ../image-converter/peony-image-resize.ui.h:21
 msgid "_Resize"
 msgstr "Yeniden _boyutlandır"
 
-#: ../image-converter/caja-image-resizer.c:211
-#: ../image-converter/caja-image-rotator.c:208
+#: ../image-converter/peony-image-resizer.c:211
+#: ../image-converter/peony-image-rotator.c:208
 msgid "_Skip"
 msgstr "G_örmezden gel"
 
-#: ../image-converter/caja-image-resizer.c:213
-#: ../image-converter/caja-image-rotator.c:210
+#: ../image-converter/peony-image-resizer.c:213
+#: ../image-converter/peony-image-rotator.c:210
 msgid "_Retry"
 msgstr "_Yeniden dene"
 
-#: ../image-converter/caja-image-resizer.c:291
+#: ../image-converter/peony-image-resizer.c:291
 #, c-format
 msgid "Resizing image: %d of %d"
 msgstr "Resim yeniden boyutlandırılıyor: %d, toplam %d"
 
-#: ../image-converter/caja-image-resizer.c:296
+#: ../image-converter/peony-image-resizer.c:296
 #, c-format
 msgid "<i>Resizing \"%s\"</i>"
 msgstr "<i>\"%s\" yeniden boyutlandırılıyor</i>"
 
-#: ../image-converter/caja-image-resizer.c:314
-#: ../image-converter/caja-image-rotator.c:313
+#: ../image-converter/peony-image-resizer.c:314
+#: ../image-converter/peony-image-rotator.c:313
 msgid "Please enter a valid filename suffix!"
 msgstr "Lütfen geçerli bir dosya ismi eklentisi girin!"
 
-#: ../image-converter/caja-image-rotate.ui.h:1
+#: ../image-converter/peony-image-rotate.ui.h:1
 msgid "Rotate Images"
 msgstr "Resimleri döndür"
 
-#: ../image-converter/caja-image-rotate.ui.h:2
+#: ../image-converter/peony-image-rotate.ui.h:2
 msgid "<b>Image Rotation</b>"
 msgstr "<b>Resim döndürülmesi</b>"
 
-#: ../image-converter/caja-image-rotate.ui.h:3
+#: ../image-converter/peony-image-rotate.ui.h:3
 msgid "Select an angle:"
 msgstr "Açı seç:"
 
-#: ../image-converter/caja-image-rotate.ui.h:4
+#: ../image-converter/peony-image-rotate.ui.h:4
 msgid "Custom angle:"
 msgstr "Özel açı:"
 
-#: ../image-converter/caja-image-rotate.ui.h:5
+#: ../image-converter/peony-image-rotate.ui.h:5
 msgid "degrees clockwise"
 msgstr "derece saat yönünde"
 
-#: ../image-converter/caja-image-rotate.ui.h:8
+#: ../image-converter/peony-image-rotate.ui.h:8
 msgid ".rotated"
 msgstr ".döndürüldü"
 
-#: ../image-converter/caja-image-rotate.ui.h:10
+#: ../image-converter/peony-image-rotate.ui.h:10
 msgid "Rotate in place"
 msgstr "Yerinde döndür"
 
-#: ../image-converter/caja-image-rotate.ui.h:11
+#: ../image-converter/peony-image-rotate.ui.h:11
 msgid "_Rotate"
 msgstr "_Döndür"
 
-#: ../image-converter/caja-image-rotator.c:290
+#: ../image-converter/peony-image-rotator.c:290
 #, c-format
 msgid "Rotating image: %d of %d"
 msgstr "Resim döndürülüyor: %d, toplam %d"
 
-#: ../image-converter/caja-image-rotator.c:295
+#: ../image-converter/peony-image-rotator.c:295
 #, c-format
 msgid "<i>Rotating \"%s\"</i>"
 msgstr "<i>\"%s\" döndürülüyor</i>"
 
-#: ../image-converter/libcaja-image-converter.caja-extension.in.in.h:1
+#: ../image-converter/libpeony-image-converter.peony-extension.in.in.h:1
 msgid "Image Converter"
 msgstr "Resim Dönüştürücü"
 
-#: ../image-converter/libcaja-image-converter.caja-extension.in.in.h:2
+#: ../image-converter/libpeony-image-converter.peony-extension.in.in.h:2
 msgid "Rotate and resize images"
 msgstr "Resimleri döndür ve boyutlandır"
 
-#: ../open-terminal/caja-open-terminal.c:432
-#: ../open-terminal/caja-open-terminal.c:445
+#: ../open-terminal/peony-open-terminal.c:432
+#: ../open-terminal/peony-open-terminal.c:445
 msgid "Open in _Terminal"
 msgstr "_Uçbirimde Aç"
 
-#: ../open-terminal/caja-open-terminal.c:434
+#: ../open-terminal/peony-open-terminal.c:434
 msgid "Open the currently selected folder in a terminal"
 msgstr "Şu anda seçili olan dizini uçbirimde aç"
 
-#: ../open-terminal/caja-open-terminal.c:436
-#: ../open-terminal/caja-open-terminal.c:446
+#: ../open-terminal/peony-open-terminal.c:436
+#: ../open-terminal/peony-open-terminal.c:446
 msgid "Open the currently open folder in a terminal"
 msgstr "Şu anda açılmış olan dizini uçbirimde aç"
 
-#: ../open-terminal/caja-open-terminal.c:442
+#: ../open-terminal/peony-open-terminal.c:442
 msgid "Open _Terminal"
 msgstr "_Uçbirim aç"
 
-#: ../open-terminal/caja-open-terminal.c:443
+#: ../open-terminal/peony-open-terminal.c:443
 msgid "Open a terminal"
 msgstr "Uçbirim aç"
 
-#: ../open-terminal/libcaja-open-terminal.caja-extension.in.in.h:1
+#: ../open-terminal/libpeony-open-terminal.peony-extension.in.in.h:1
 msgid "Open terminal"
 msgstr "Uçbirim aç"
 
-#: ../open-terminal/libcaja-open-terminal.caja-extension.in.in.h:2
+#: ../open-terminal/libpeony-open-terminal.peony-extension.in.in.h:2
 msgid "Open terminals from folders"
 msgstr "Klasörlerden uçbirim aç"
 
-#: ../open-terminal/org.mate.caja-open-terminal.gschema.xml.in.h:1
+#: ../open-terminal/org.mate.peony-open-terminal.gschema.xml.in.h:1
 msgid ""
 "Whether opening a terminal on the desktop opens a terminal in the home "
 "directory"
 msgstr "Masaüstünde bir uçbirim açmanın ev dizininde bir terminal açıp açmadığı"
 
-#: ../open-terminal/org.mate.caja-open-terminal.gschema.xml.in.h:2
+#: ../open-terminal/org.mate.peony-open-terminal.gschema.xml.in.h:2
 msgid ""
 "If set to true, then opening a terminal on the desktop will open a terminal "
 "in the home directory. Otherwise, it will be opened in the desktop "
@@ -267,73 +267,73 @@ msgid ""
 "identical to the home directory."
 msgstr "Doğru olarak ayarlanırsa, masaüstünde bir uçbirim açılması ev dizininde bir terminal açacaktır. Aksi takdirde terminal masaüstü dizininde açılacaktır. Masaüstü dizini ile ev diziniyle aynı olması durumunda bu anahtarın gereksiz olacağını unutmayınız."
 
-#: ../sendto/caja-nste.c:78 ../sendto/caja-nste.c:83
+#: ../sendto/peony-nste.c:78 ../sendto/peony-nste.c:83
 msgid "Send to..."
 msgstr "Gönder..."
 
-#: ../sendto/caja-nste.c:79
+#: ../sendto/peony-nste.c:79
 msgid "Send file by mail, instant message..."
 msgstr "Dosyayı e-posta, anlık mesaj ile gönder..."
 
-#: ../sendto/caja-nste.c:84
+#: ../sendto/peony-nste.c:84
 msgid "Send files by mail, instant message..."
 msgstr "Dosyaları e-posta, anlık mesaj ile gönder..."
 
-#: ../sendto/caja-sendto-command.c:578
+#: ../sendto/peony-sendto-command.c:578
 msgid "Files"
 msgstr "Dosyalar"
 
-#: ../sendto/caja-sendto-command.c:790
+#: ../sendto/peony-sendto-command.c:790
 #, c-format
 msgid "Expects URIs or filenames to be passed as options\n"
 msgstr "URI ya da dosya isimlerinin seçenek olarak geçilmesini bekler\n"
 
-#: ../sendto/caja-sendto-command.c:810
+#: ../sendto/peony-sendto-command.c:810
 #, c-format
 msgid "Could not parse command-line options: %s\n"
 msgstr "Satır komutu seçenekleri ayrıştırılamadı: %s\n"
 
-#: ../sendto/caja-sendto-command.c:825
+#: ../sendto/peony-sendto-command.c:825
 msgid "Could not load any plugins."
 msgstr "Hiçbir eklenti yüklenemedi."
 
-#: ../sendto/caja-sendto-command.c:828
+#: ../sendto/peony-sendto-command.c:828
 msgid "Please verify your installation"
 msgstr "Kurulumunuzu kontrol ediniz"
 
-#: ../sendto/libcaja-sendto.caja-extension.in.in.h:1
+#: ../sendto/libpeony-sendto.peony-extension.in.in.h:1
 msgid "Send To"
 msgstr "Gönder"
 
-#: ../sendto/libcaja-sendto.caja-extension.in.in.h:2
+#: ../sendto/libpeony-sendto.peony-extension.in.in.h:2
 msgid "Integrates email clients and Pidgin"
 msgstr "E-posta istemcileri ve Pidgin'i bütünler"
 
-#: ../sendto/caja-sendto.ui.h:1
+#: ../sendto/peony-sendto.ui.h:1
 msgid "Send To..."
 msgstr "Şuna gönder..."
 
-#: ../sendto/caja-sendto.ui.h:2
+#: ../sendto/peony-sendto.ui.h:2
 msgid "_Send"
 msgstr "_Gönder"
 
-#: ../sendto/caja-sendto.ui.h:3
+#: ../sendto/peony-sendto.ui.h:3
 msgid "<b>Destination</b>"
 msgstr "<b>Hedef</b>"
 
-#: ../sendto/caja-sendto.ui.h:4
+#: ../sendto/peony-sendto.ui.h:4
 msgid "Send _as:"
 msgstr "Şu _olarak gönder:"
 
-#: ../sendto/caja-sendto.ui.h:5
+#: ../sendto/peony-sendto.ui.h:5
 msgid "Send t_o:"
 msgstr "_Şuna gönder:"
 
-#: ../sendto/caja-sendto.ui.h:6
+#: ../sendto/peony-sendto.ui.h:6
 msgid "<b>Compression</b>"
 msgstr "<b>Sıkıştırma</b>"
 
-#: ../sendto/caja-sendto.ui.h:7
+#: ../sendto/peony-sendto.ui.h:7
 msgid "Send _packed in:"
 msgstr "_Paketlenmiş gönder:"
 
@@ -365,15 +365,15 @@ msgstr "Bilinmeyen alıcı."
 msgid "Instant Message (Gajim)"
 msgstr "Anlık mesaj (Gajim)"
 
-#: ../sendto/plugins/caja-burn/caja-burn.c:92
+#: ../sendto/plugins/peony-burn/peony-burn.c:92
 msgid "New CD/DVD"
 msgstr "Yeni CD/DVD"
 
-#: ../sendto/plugins/caja-burn/caja-burn.c:99
+#: ../sendto/plugins/peony-burn/peony-burn.c:99
 msgid "Existing CD/DVD"
 msgstr "Mevcut CD/DVD"
 
-#: ../sendto/plugins/caja-burn/caja-burn.c:178
+#: ../sendto/plugins/peony-burn/peony-burn.c:178
 msgid "CD/DVD Creator"
 msgstr "CD/DVD oluşturucusu"
 
@@ -389,87 +389,87 @@ msgstr "Çıkarılabilir diskler ve paylaşmalar"
 msgid "UPnP Media Server"
 msgstr "UPnP ortam sunucusu"
 
-#: ../share/libcaja-share.caja-extension.in.in.h:1 ../share/caja-share.c:1063
+#: ../share/libpeony-share.peony-extension.in.in.h:1 ../share/peony-share.c:1063
 msgid "Share"
 msgstr "Paylaşım"
 
-#: ../share/libcaja-share.caja-extension.in.in.h:2
+#: ../share/libpeony-share.peony-extension.in.in.h:2
 msgid "Allows to quickly share a folder"
 msgstr "Bir klasörü hızlıca paylaşmaya imkân verir"
 
-#: ../share/caja-share.c:123
+#: ../share/peony-share.c:123
 #, c-format
 msgid ""
-"Caja needs to add some permissions to your folder \"%s\" in order to share "
+"Peony needs to add some permissions to your folder \"%s\" in order to share "
 "it"
-msgstr "Paylaşabilmek için Caja'nın \"%s\" dizininize bazı izinler eklemesi gerekiyor"
+msgstr "Paylaşabilmek için Peony'nın \"%s\" dizininize bazı izinler eklemesi gerekiyor"
 
-#: ../share/caja-share.c:131
+#: ../share/peony-share.c:131
 #, c-format
 msgid ""
 "The folder \"%s\" needs the following extra permissions for sharing to work:\n"
-"%s%s%sDo you want Caja to add these permissions to the folder automatically?"
-msgstr "Paylaşımın çalışabilmesi için \"%s\" dizininin aşağıdaki izinlere ihtiyacı vardır:\n%s%s%s Caja'nın bu izinleri dizine otomatik olarak eklemesini istiyor musunuz?"
+"%s%s%sDo you want Peony to add these permissions to the folder automatically?"
+msgstr "Paylaşımın çalışabilmesi için \"%s\" dizininin aşağıdaki izinlere ihtiyacı vardır:\n%s%s%s Peony'nın bu izinleri dizine otomatik olarak eklemesini istiyor musunuz?"
 
-#: ../share/caja-share.c:135
+#: ../share/peony-share.c:135
 msgid "  - read permission by others\n"
 msgstr "- başkaları tarafından okunma izni\n"
 
-#: ../share/caja-share.c:136
+#: ../share/peony-share.c:136
 msgid "  - write permission by others\n"
 msgstr "- başkaları tarafından yazma izni\n"
 
-#: ../share/caja-share.c:137
+#: ../share/peony-share.c:137
 msgid "  - execute permission by others\n"
 msgstr "- başkaları tarafından çalıştırma izni\n"
 
-#: ../share/caja-share.c:141
+#: ../share/peony-share.c:141
 msgid "Add the permissions automatically"
 msgstr "İzinleri otomatik olarak ekle"
 
-#: ../share/caja-share.c:167
+#: ../share/peony-share.c:167
 #, c-format
 msgid "Could not change the permissions of folder \"%s\""
 msgstr "\"%s\" dizininin izinleri değiştirilemedi"
 
-#: ../share/caja-share.c:451
+#: ../share/peony-share.c:451
 msgid "Share name is too long"
 msgstr "Paylaşım ismi çok uzun"
 
-#: ../share/caja-share.c:493
+#: ../share/peony-share.c:493
 msgid "The share name cannot be empty"
 msgstr "Paylaşım ismi boş olamaz"
 
-#: ../share/caja-share.c:506
+#: ../share/peony-share.c:506
 #, c-format
 msgid "Error while getting share information: %s"
 msgstr "Paylaşım bilgisi alınırken bir hata oluştu: %s"
 
-#: ../share/caja-share.c:516
+#: ../share/peony-share.c:516
 msgid "Another share has the same name"
 msgstr "Başka bir paylaşım aynı ismi taşıyor"
 
-#: ../share/caja-share.c:563 ../share/caja-share.c:799
+#: ../share/peony-share.c:563 ../share/peony-share.c:799
 msgid "Modify _Share"
 msgstr "_Paylaşımı değiştir"
 
-#: ../share/caja-share.c:563 ../share/caja-share.c:801
+#: ../share/peony-share.c:563 ../share/peony-share.c:801
 msgid "Create _Share"
 msgstr "_Paylaşım oluştur"
 
-#: ../share/caja-share.c:691
+#: ../share/peony-share.c:691
 msgid "There was an error while getting the sharing information"
 msgstr "Paylaşım bilgisi alınırken bir hata meydana geldi"
 
-#: ../share/caja-share.c:1123
+#: ../share/peony-share.c:1123
 msgid "Folder Sharing"
 msgstr "Dizin paylaşımı"
 
-#: ../share/caja-share.c:1164
+#: ../share/peony-share.c:1164
 msgid "Sharing Options"
 msgstr "Paylaşma seçenekleri"
 
-#: ../share/caja-share.c:1165
+#: ../share/peony-share.c:1165
 msgid "Share this Folder"
 msgstr "Bu dizini paylaş"
 
@@ -559,18 +559,18 @@ msgid ""
 "first and add a new one"
 msgstr "Mevcut bir paylaşımın yolu değiştirilemez; lütfen eski paylaşımı kaldırıp yenisini ekleyiniz"
 
-#: ../wallpaper/caja-wallpaper-extension.c:109
+#: ../wallpaper/peony-wallpaper-extension.c:109
 msgid "Set as wallpaper"
 msgstr "Duvar kağıdı olarak ayarla"
 
-#: ../wallpaper/caja-wallpaper-extension.c:110
+#: ../wallpaper/peony-wallpaper-extension.c:110
 msgid "Set image as the current wallpaper"
 msgstr "Resmi güncel duvar kağıdı olarak ayarla"
 
-#: ../wallpaper/libcaja-wallpaper.caja-extension.in.in.h:1
+#: ../wallpaper/libpeony-wallpaper.peony-extension.in.in.h:1
 msgid "Wallpaper"
 msgstr "Duvar kağıdı"
 
-#: ../wallpaper/libcaja-wallpaper.caja-extension.in.in.h:2
+#: ../wallpaper/libpeony-wallpaper.peony-extension.in.in.h:2
 msgid "Allows to quickly set wallpaper"
 msgstr "Duvar kağıdını hızlıca ayarlamaya imkân verir."

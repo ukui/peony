@@ -1,33 +1,33 @@
 # List of source files containing translatable strings.
 # Please keep this list in alphabetic order.
-gksu/libcaja-gksu.c
-[type: gettext/ini]gksu/libcaja-gksu.caja-extension.in.in
-image-converter/caja-image-converter.c
-[type: gettext/glade]image-converter/caja-image-resize.ui
-image-converter/caja-image-resizer.c
-[type: gettext/glade]image-converter/caja-image-rotate.ui
-image-converter/caja-image-rotator.c
-[type: gettext/ini]image-converter/libcaja-image-converter.caja-extension.in.in
-open-terminal/caja-open-terminal.c
-[type: gettext/ini]open-terminal/libcaja-open-terminal.caja-extension.in.in
-open-terminal/org.mate.caja-open-terminal.gschema.xml.in
-sendto/caja-nste.c
-sendto/caja-nste.h
-sendto/caja-sendto-command.c
-sendto/caja-sendto-module.c
-[type: gettext/ini]sendto/libcaja-sendto.caja-extension.in.in
-sendto/org.mate.Caja.Sendto.gschema.xml.in
-[type: gettext/glade]sendto/caja-sendto.ui
+gksu/libpeony-gksu.c
+[type: gettext/ini]gksu/libpeony-gksu.peony-extension.in.in
+image-converter/peony-image-converter.c
+[type: gettext/glade]image-converter/peony-image-resize.ui
+image-converter/peony-image-resizer.c
+[type: gettext/glade]image-converter/peony-image-rotate.ui
+image-converter/peony-image-rotator.c
+[type: gettext/ini]image-converter/libpeony-image-converter.peony-extension.in.in
+open-terminal/peony-open-terminal.c
+[type: gettext/ini]open-terminal/libpeony-open-terminal.peony-extension.in.in
+open-terminal/org.mate.peony-open-terminal.gschema.xml.in
+sendto/peony-nste.c
+sendto/peony-nste.h
+sendto/peony-sendto-command.c
+sendto/peony-sendto-module.c
+[type: gettext/ini]sendto/libpeony-sendto.peony-extension.in.in
+sendto/org.mate.Peony.Sendto.gschema.xml.in
+[type: gettext/glade]sendto/peony-sendto.ui
 sendto/plugins/emailclient/emailclient.c
 sendto/plugins/gajim/gajim.c
-sendto/plugins/caja-burn/caja-burn.c
+sendto/plugins/peony-burn/peony-burn.c
 sendto/plugins/pidgin/pidgin.c
 sendto/plugins/removable-devices/removable-devices.c
 sendto/plugins/upnp/upnp.c
-[type: gettext/ini]share/libcaja-share.caja-extension.in.in
-share/caja-share.c
+[type: gettext/ini]share/libpeony-share.peony-extension.in.in
+share/peony-share.c
 [type: gettext/glade]share/share-dialog.ui
 share/shares.c
-wallpaper/caja-wallpaper-extension.c
-[type: gettext/ini]wallpaper/libcaja-wallpaper.caja-extension.in.in
-xattr-tags/caja-xattr-tags-extension.c
+wallpaper/peony-wallpaper-extension.c
+[type: gettext/ini]wallpaper/libpeony-wallpaper.peony-extension.in.in
+xattr-tags/peony-xattr-tags-extension.c

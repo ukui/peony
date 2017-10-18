@@ -1,4 +1,4 @@
-plugindir = $(libdir)/caja-sendto/plugins
+plugindir = $(libdir)/peony-sendto/plugins
 
 AM_CPPFLAGS =                                      \
         -DDATADIR=\"$(datadir)\"                \

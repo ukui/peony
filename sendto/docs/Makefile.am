@@ -9,7 +9,7 @@ AUTOMAKE_OPTIONS = 1.6
 # of using the various options.
 
 # The name of the module, e.g. 'glib'.
-DOC_MODULE=caja-sendto
+DOC_MODULE=peony-sendto
 
 # Uncomment for versioned docs and specify the version of the module, e.g. '2'.
 #DOC_MODULE_VERSION=2
@@ -54,7 +54,7 @@ CFILE_GLOB=$(top_srcdir)/sendto/*.c
 
 # Header files to ignore when scanning.
 # e.g. IGNORE_HFILES=gtkdebug.h gtkintl.h
-IGNORE_HFILES=caja-nste.h bluetooth-marshal.h e-contact-entry.h econtactentry-marshal.h nst-common.h
+IGNORE_HFILES=peony-nste.h bluetooth-marshal.h e-contact-entry.h econtactentry-marshal.h nst-common.h
 
 # Images to copy into HTML directory.
 # e.g. HTML_IMAGES=$(top_srcdir)/gtk/stock-icons/stock_about_24.png

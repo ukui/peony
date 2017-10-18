@@ -1,9 +1,9 @@
-interfacesdir = $(datadir)/caja-extensions
+interfacesdir = $(datadir)/peony-extensions
 interfaces_DATA = share-dialog.ui
 
-libcaja_share_la_CFLAGS =				\
+libpeony_share_la_CFLAGS =				\
 	-Wall						\
-	-DG_LOG_DOMAIN=\"Caja-Share\"		\
+	-DG_LOG_DOMAIN=\"Peony-Share\"		\
 	-DINTERFACES_DIR=\"$(interfacesdir)\"		\
 	-DDATADIR=\"$(datadir)\"			\
 	-DMATELOCALEDIR=\""$(datadir)/locale"\" 	\
@@ -11,25 +11,25 @@ libcaja_share_la_CFLAGS =				\
 	-I$(top_builddir)				\
 	$(WARN_CFLAGS)                                  \
 	$(DISABLE_DEPRECATED_CFLAGS)			\
-	$(CAJA_CFLAGS)				\
+	$(PEONY_CFLAGS)				\
 	$(SHARE_CFLAGS)
 
-caja_extensiondir=$(CAJA_EXTENSION_DIR)
-caja_extension_LTLIBRARIES=libcaja-share.la
+peony_extensiondir=$(PEONY_EXTENSION_DIR)
+peony_extension_LTLIBRARIES=libpeony-share.la
 
-libcaja_share_la_SOURCES =  \
-	caja-share.c        \
-	caja-share.h	\
+libpeony_share_la_SOURCES =  \
+	peony-share.c        \
+	peony-share.h	\
 	shares.c		\
 	shares.h
 
-libcaja_share_la_LDFLAGS = -module -avoid-version
-libcaja_share_la_LIBADD  = $(SHARE_LIBS) $(CAJA_LIBS)
+libpeony_share_la_LDFLAGS = -module -avoid-version
+libpeony_share_la_LIBADD  = $(SHARE_LIBS) $(PEONY_LIBS)
 
-extensiondir = $(datadir)/caja/extensions
-extension_in_files = libcaja-share.caja-extension.in
-extension_DATA = $(extension_in_files:.caja-extension.in=.caja-extension)
-%.caja-extension: %.caja-extension.in $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; $(AM_V_GEN) LC_ALL=C $(INTLTOOL_MERGE) -d -u -c $(top_builddir)/po/.intltool-merge-cache $(top_srcdir)/po $< $@
+extensiondir = $(datadir)/peony/extensions
+extension_in_files = libpeony-share.peony-extension.in
+extension_DATA = $(extension_in_files:.peony-extension.in=.peony-extension)
+%.peony-extension: %.peony-extension.in $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; $(AM_V_GEN) LC_ALL=C $(INTLTOOL_MERGE) -d -u -c $(top_builddir)/po/.intltool-merge-cache $(top_srcdir)/po $< $@
 
 EXTRA_DIST = share-dialog.ui
 

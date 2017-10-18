@@ -1,3 +1,0 @@
-# caja extensions in /usr/lib/*/caja/extensions-2.0/ erroneously trigger
-# debhelper's makeshlibs script
-caja-gksu: postinst-has-useless-call-to-ldconfig
