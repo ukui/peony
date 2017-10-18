@@ -11,6 +11,7 @@ Files: image-converter/peony-image-converter.c
        image-converter/peony-image-rotator.h
        image-converter/image-converter.c
 Copyright: 2004, 2005, 2006, 2008, Jürg Billeter
+           2017, Tianjin KYLIN Information Technology Co., Ltd.
 License: GPL-2+
 
 Files: wallpaper/peony-wallpaper-command.c
@@ -18,6 +19,7 @@ Files: wallpaper/peony-wallpaper-command.c
        wallpaper/peony-wallpaper-extension.h
 Copyright: 2005, Adam Israel
            2014, Stefano Karapetsas
+		   2017, Tianjin KYLIN Information Technology Co., Ltd.
 License: GPL-2+
 
 Files: .tx/config
@@ -66,6 +68,7 @@ Comment:
 
 Files: sendto/peony-sendto.1
 Copyright: 2006, Oystein Gisnas
+           2017, Tianjin KYLIN Information Technology Co., Ltd.
 License: GPL-2+
 
 Files: open-terminal/peony-open-terminal.c
@@ -73,6 +76,7 @@ Files: open-terminal/peony-open-terminal.c
        open-terminal/open-terminal.c
        sendto/peony-nste.c
 Copyright: 2004, 2005, Free Software Foundation, Inc
+           2017, Tianjin KYLIN Information Technology Co., Ltd.
 License: GPL-2+
 
 Files: sendto/plugins/nst-common.c
@@ -85,48 +89,58 @@ Files: sendto/peony-nste.h
        sendto/peony-sendto-command.c
        sendto/peony-sendto-module.c
 Copyright: 2004, 2005, Roberto Majadas
+           2017, Tianjin KYLIN Information Technology Co., Ltd.
 License: GPL-2+
 
 Files: share/peony-share.c
        share/peony-share.h
 Copyright: 2005, Ethium, Inc
+           2017, Tianjin KYLIN Information Technology Co., Ltd.
 License: GPL-2+
 
 Files: sendto/peony-sendto-plugin.h
 Copyright: 2004, Roberto Majadas
            2009, Bastien Nocera <hadess@hadess.net>
+		   2017, Tianjin KYLIN Information Technology Co., Ltd.
 License: GPL-2+
 
 Files: sendto/plugins/gajim/gajim.c
 Copyright: 2006, Dimitur Kirov
+           2017, Tianjin KYLIN Information Technology Co., Ltd.
 License: GPL-2+
 
 Files: sendto/plugins/peony-burn/peony-burn.c
 Copyright: 2008, Jader Henrique da Silva
+           2017, Tianjin KYLIN Information Technology Co., Ltd.
 License: GPL-2+
 
 Files: sendto/plugins/pidgin/pidgin.c
 Copyright: 2004, Roberto Majadas
            2009, Pascal Terjan
+		   2017, Tianjin KYLIN Information Technology Co., Ltd.
 License: GPL-2+
 
 Files: sendto/plugins/upnp/upnp.c
 Copyright: 2006, Peter Enseleit
            2008, Zeeshan Ali (Khattak)
+		   2017, Tianjin KYLIN Information Technology Co., Ltd.
 License: GPL-2+
 
 Files: sendto/plugins/emailclient/emailclient.c
 Copyright: 2004, Roberto Majadas <roberto.majadas@openshine.com>
            2012, Stefano Karapetsas <stefano@karapetsas.com>
+		   2017, Tianjin KYLIN Information Technology Co., Ltd.
 License: GPL-2+
 
 Files: xattr-tags/peony-xattr-tags-extension.c
        xattr-tags/peony-xattr-tags-extension.h
 Copyright: 2016 Felipe Barriga Richards
+           2017, Tianjin KYLIN Information Technology Co., Ltd.
 License: GPL-2+
 
 Files: po/*.po
 Copyright: THE PACKAGE'S COPYRIGHT HOLDER
+           2017, Tianjin KYLIN Information Technology Co., Ltd.
 License: GPL-2+
 Comment:
  Using license from COPYING file.
@@ -134,6 +148,7 @@ Comment:
 Files: debian/*
 Copyright: 2011-2014, Stefano Karapetsas <stefano@karapetsas.com>
            2014, Mike Gabriel <sunweaver@debian.org>
+		   2017, Tianjin KYLIN Information Technology Co., Ltd.
 License: GPL-2+
 
 License: GPL-2+
