@@ -25,32 +25,32 @@
  #include <config.h>
 #endif
 
-#include "caja-open-terminal.h"
+#include "peony-open-terminal.h"
 
 #include <libintl.h>
 
 static GType type_list[1];
 
 void
-caja_module_initialize (GTypeModule *module)
+peony_module_initialize (GTypeModule *module)
 {
-	g_print ("Initializing caja-open-terminal extension\n");
+	g_print ("Initializing peony-open-terminal extension\n");
 
-	caja_open_terminal_register_type (module);
-	type_list[0] = CAJA_TYPE_OPEN_TERMINAL;
+	peony_open_terminal_register_type (module);
+	type_list[0] = PEONY_TYPE_OPEN_TERMINAL;
 
 	bindtextdomain (GETTEXT_PACKAGE, MATELOCALEDIR);
 	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 }
 
 void
-caja_module_shutdown (void)
+peony_module_shutdown (void)
 {
-	g_print ("Shutting down caja-open-terminal extension\n");
+	g_print ("Shutting down peony-open-terminal extension\n");
 }
 
 void 
-caja_module_list_types (const GType **types,
+peony_module_list_types (const GType **types,
 			    int          *num_types)
 {
 	*types = type_list;

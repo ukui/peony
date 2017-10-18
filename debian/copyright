@@ -1,38 +1,38 @@
 Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
-Upstream-Name: caja-extentions
+Upstream-Name: peony-extentions
 Upstream-Contact: Stafano Karapetsas <stefano@karapetsas.com>
 Source: http://pub.mate-desktop.org/releases/
 
-Files: image-converter/caja-image-converter.c
-       image-converter/caja-image-converter.h
-       image-converter/caja-image-resizer.c
-       image-converter/caja-image-resizer.h
-       image-converter/caja-image-rotator.c
-       image-converter/caja-image-rotator.h
+Files: image-converter/peony-image-converter.c
+       image-converter/peony-image-converter.h
+       image-converter/peony-image-resizer.c
+       image-converter/peony-image-resizer.h
+       image-converter/peony-image-rotator.c
+       image-converter/peony-image-rotator.h
        image-converter/image-converter.c
 Copyright: 2004, 2005, 2006, 2008, Jürg Billeter
 License: GPL-2+
 
-Files: wallpaper/caja-wallpaper-command.c
-       wallpaper/caja-wallpaper-extension.c
-       wallpaper/caja-wallpaper-extension.h
+Files: wallpaper/peony-wallpaper-command.c
+       wallpaper/peony-wallpaper-extension.c
+       wallpaper/peony-wallpaper-extension.h
 Copyright: 2005, Adam Israel
            2014, Stefano Karapetsas
 License: GPL-2+
 
 Files: .tx/config
        gksu/Makefile.am
-       gksu/libcaja-gksu.c
-       gksu/libcaja-gksu.caja-extension.in.in
+       gksu/libpeony-gksu.c
+       gksu/libpeony-gksu.peony-extension.in.in
        image-converter/Makefile.am
        image-converter/*.ui
-       image-converter/libcaja-image-converter.caja-extension.in.in
+       image-converter/libpeony-image-converter.peony-extension.in.in
        open-terminal/Makefile.am
        open-terminal/*.in
        po/LINGUAS
        po/POTFILES.in
        sendto/docs/*
-       sendto/plugins/caja-burn/Makefile.am
+       sendto/plugins/peony-burn/Makefile.am
        sendto/plugins/emailclient/Makefile.am
        sendto/plugins/gajim/Makefile.am
        sendto/plugins/pidgin/Makefile.am
@@ -46,11 +46,11 @@ Files: .tx/config
        share/shares.c
        share/shares.h
        share/*.ui
-       share/libcaja-share.caja-extension.in.in
+       share/libpeony-share.peony-extension.in.in
        wallpaper/Makefile.am
-       wallpaper/libcaja-wallpaper.caja-extension.in.in
+       wallpaper/libpeony-wallpaper.peony-extension.in.in
        xattr-tags/Makefile.am
-       xattr-tags/libcaja-xattr-tags.caja-extension.in.in
+       xattr-tags/libpeony-xattr-tags.peony-extension.in.in
        AUTHORS
        COPYING
        ChangeLog
@@ -64,14 +64,14 @@ License: GPL-2+
 Comment:
  Using license from COPYING file.
 
-Files: sendto/caja-sendto.1
+Files: sendto/peony-sendto.1
 Copyright: 2006, Oystein Gisnas
 License: GPL-2+
 
-Files: open-terminal/caja-open-terminal.c
-       open-terminal/caja-open-terminal.h
+Files: open-terminal/peony-open-terminal.c
+       open-terminal/peony-open-terminal.h
        open-terminal/open-terminal.c
-       sendto/caja-nste.c
+       sendto/peony-nste.c
 Copyright: 2004, 2005, Free Software Foundation, Inc
 License: GPL-2+
 
@@ -81,18 +81,18 @@ Files: sendto/plugins/nst-common.c
 Copyright: *No copyright*
 License: GPL-2+
 
-Files: sendto/caja-nste.h
-       sendto/caja-sendto-command.c
-       sendto/caja-sendto-module.c
+Files: sendto/peony-nste.h
+       sendto/peony-sendto-command.c
+       sendto/peony-sendto-module.c
 Copyright: 2004, 2005, Roberto Majadas
 License: GPL-2+
 
-Files: share/caja-share.c
-       share/caja-share.h
+Files: share/peony-share.c
+       share/peony-share.h
 Copyright: 2005, Ethium, Inc
 License: GPL-2+
 
-Files: sendto/caja-sendto-plugin.h
+Files: sendto/peony-sendto-plugin.h
 Copyright: 2004, Roberto Majadas
            2009, Bastien Nocera <hadess@hadess.net>
 License: GPL-2+
@@ -101,7 +101,7 @@ Files: sendto/plugins/gajim/gajim.c
 Copyright: 2006, Dimitur Kirov
 License: GPL-2+
 
-Files: sendto/plugins/caja-burn/caja-burn.c
+Files: sendto/plugins/peony-burn/peony-burn.c
 Copyright: 2008, Jader Henrique da Silva
 License: GPL-2+
 
@@ -120,8 +120,8 @@ Copyright: 2004, Roberto Majadas <roberto.majadas@openshine.com>
            2012, Stefano Karapetsas <stefano@karapetsas.com>
 License: GPL-2+
 
-Files: xattr-tags/caja-xattr-tags-extension.c
-       xattr-tags/caja-xattr-tags-extension.h
+Files: xattr-tags/peony-xattr-tags-extension.c
+       xattr-tags/peony-xattr-tags-extension.h
 Copyright: 2016 Felipe Barriga Richards
 License: GPL-2+
 

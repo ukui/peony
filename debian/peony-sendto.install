@@ -1,0 +1,10 @@
+usr/bin/peony-sendto
+usr/include/peony-sendto/
+usr/lib/*/peony-sendto/plugins/*.so
+usr/lib/*/peony/extensions-2.0/libpeony-sendto.so
+usr/lib/*/pkgconfig/peony-sendto.pc
+usr/share/peony-extensions/peony-sendto.ui
+usr/share/peony/extensions/libpeony-sendto.peony-extension
+usr/share/glib-2.0/schemas/org.mate.Peony.Sendto.gschema.xml
+usr/share/gtk-doc/html/peony-sendto/
+usr/share/man/man1/peony-sendto.*

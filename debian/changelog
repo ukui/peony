@@ -1,4 +1,4 @@
-caja-extensions (1.18.1-1) unstable; urgency=medium
+peony-extensions (1.18.1-1) unstable; urgency=medium
 
   [ Aron Xu ]
   * New upstream release.
@@ -8,8 +8,8 @@ caja-extensions (1.18.1-1) unstable; urgency=medium
   * debian/rules: Remove obsolete --with-gtk=3.0
   * debian/control: Dependencies updated for MATE 1.18.
   * debian/copyright: Update copyright attributions.
-  * debian/control: Add caja-xattr-tags.
-  * debian/caja-xattr-tags.install: Add caja-xattr-tags.
+  * debian/control: Add peony-xattr-tags.
+  * debian/peony-xattr-tags.install: Add peony-xattr-tags.
 
   [ Vangelis Mouhtsis ]
   * debian/compat:
@@ -23,7 +23,7 @@ caja-extensions (1.18.1-1) unstable; urgency=medium
 
  -- Mike Gabriel <sunweaver@debian.org>  Tue, 25 Jul 2017 19:15:00 +0200
 
-caja-extensions (1.16.0-1) unstable; urgency=medium
+peony-extensions (1.16.0-1) unstable; urgency=medium
 
   [ Martin Wimpress ]
   * New upstream release.
@@ -38,7 +38,7 @@ caja-extensions (1.16.0-1) unstable; urgency=medium
 
  -- Mike Gabriel <sunweaver@debian.org>  Tue, 04 Oct 2016 10:35:22 +0200
 
-caja-extensions (1.15.0-0ubuntu1) yakkety; urgency=medium
+peony-extensions (1.15.0-0ubuntu1) yakkety; urgency=medium
 
   * New upstream development release.
   * debian/control:
@@ -48,7 +48,7 @@ caja-extensions (1.15.0-0ubuntu1) yakkety; urgency=medium
 
  -- Martin Wimpress <code@flexion.org>  Fri, 09 Sep 2016 13:04:48 +0100
 
-caja-extensions (1.14.1-1) unstable; urgency=medium
+peony-extensions (1.14.1-1) unstable; urgency=medium
 
   [ Martin Wimpress ]
   * New upstream release.
@@ -60,12 +60,12 @@ caja-extensions (1.14.1-1) unstable; urgency=medium
 
  -- Mike Gabriel <sunweaver@debian.org>  Mon, 22 Aug 2016 13:11:40 +0200
 
-caja-extensions (1.14.0-1) unstable; urgency=medium
+peony-extensions (1.14.0-1) unstable; urgency=medium
 
   [ Martin Wimpress ]
   * New upstream release.
   * debian/control:
-    + Versioned B-D: libcaja-extension-dev (>= 1.14).
+    + Versioned B-D: libpeony-extension-dev (>= 1.14).
     + B-D: libgtk-3-dev.
     + Versioned B-D: libmate-desktop-dev (>= 1.14).
     + Versioned B-D: mate-common (>= 1.14).
@@ -87,7 +87,7 @@ caja-extensions (1.14.0-1) unstable; urgency=medium
 
  -- Mike Gabriel <sunweaver@debian.org>  Thu, 26 May 2016 05:28:30 +0200
 
-caja-extensions (1.12.0-1) unstable; urgency=medium
+peony-extensions (1.12.0-1) unstable; urgency=medium
 
   [ Martin Wimpress ]
   * New upstream release.
@@ -96,36 +96,36 @@ caja-extensions (1.12.0-1) unstable; urgency=medium
 
   [ Mike Gabriel ]
   * debian/patches:¬
-    + Add 2001_support-icedove-in-caja-sendto.patch. Support "icedove" as¬
-      MAILER_THUNDERBIRD variant in caja-sendto plugin. (Closes: #801364).¬
+    + Add 2001_support-icedove-in-peony-sendto.patch. Support "icedove" as¬
+      MAILER_THUNDERBIRD variant in peony-sendto plugin. (Closes: #801364).¬
   * lintian:
     + Drop not-used-anymore override postrm-has-useless-call-to-ldconfig for
       all plugin bin:packages.
 
  -- Mike Gabriel <sunweaver@debian.org>  Sat, 02 Jan 2016 12:20:56 +0100
 
-caja-extensions (1.10.1-1) unstable; urgency=medium
+peony-extensions (1.10.1-1) unstable; urgency=medium
 
   * New upstream release.
 
  -- Mike Gabriel <sunweaver@debian.org>  Wed, 02 Sep 2015 06:22:30 +0200
 
-caja-extensions (1.10.0-1) unstable; urgency=medium
+peony-extensions (1.10.0-1) unstable; urgency=medium
 
   [ Martin Wimpress ]
   * New ustream release.
-  * debian/caja-gksu.install:
+  * debian/peony-gksu.install:
     + Update for new upstream release.
-  * debian/caja-image-converter.install:
+  * debian/peony-image-converter.install:
     + Update for new upstream release.
-  * debian/caja-open-terminal.install:
+  * debian/peony-open-terminal.install:
     + Update for new upstream release.
-  * debian/caja-sendto.install:
+  * debian/peony-sendto.install:
     + Update for new upstream release.
-  * debian/caja-wallpaper.install:
-    + Add new package caja-wallpaper.
+  * debian/peony-wallpaper.install:
+    + Add new package peony-wallpaper.
   * debian/control:
-    + Add new package caja-wallpaper.
+    + Add new package peony-wallpaper.
     + Process with wrap-and-sort.
     + Update descriptions.
   * debian/rules:
@@ -137,26 +137,26 @@ caja-extensions (1.10.0-1) unstable; urgency=medium
   * debian/copyright:
     + Update for new upstream release.
   * lintian:
-    + Add caja-wallpaper.lintian-overrides. Suppress erroneously triggered
+    + Add peony-wallpaper.lintian-overrides. Suppress erroneously triggered
       pkg-has-shlibs-control-file-but-no-actual-shared-libs,
       postinst-has-useless-call-to-ldconfig,
       postrm-has-useless-call-to-ldconfig.
 
  -- Mike Gabriel <sunweaver@debian.org>  Mon, 24 Aug 2015 17:06:18 +0200
 
-caja-extensions (1.8.0-3) unstable; urgency=medium
+peony-extensions (1.8.0-3) unstable; urgency=medium
 
   * debian/control:
-    + Add to D (caja-gksu): gksu. (Closes: #781951).
+    + Add to D (peony-gksu): gksu. (Closes: #781951).
 
  -- Mike Gabriel <sunweaver@debian.org>  Mon, 06 Apr 2015 15:54:52 +0200
 
-caja-extensions (1.8.0-2) unstable; urgency=medium
+peony-extensions (1.8.0-2) unstable; urgency=medium
 
   [ Mike Gabriel ]
   * lintian: Grammar fix in override reasoning comment.
   * debian/control:
-    + Drop from S (caja-sendto): mate-bluetooth. (Not packaged in Debian).
+    + Drop from S (peony-sendto): mate-bluetooth. (Not packaged in Debian).
   * debian/rules:
     + Use upstream's NEWS file as upstream ChangeLog.
   * debian/copyright:
@@ -171,7 +171,7 @@ caja-extensions (1.8.0-2) unstable; urgency=medium
 
  -- Mike Gabriel <sunweaver@debian.org>  Sat, 25 Oct 2014 19:31:47 +0200
 
-caja-extensions (1.8.0-1) unstable; urgency=low
+peony-extensions (1.8.0-1) unstable; urgency=low
 
   * Initial release. (Closes: #739374).
 

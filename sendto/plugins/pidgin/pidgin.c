@@ -2,7 +2,7 @@
 
 /*
  * pidgin.c
- *       pidgin plugin for caja-sendto
+ *       pidgin plugin for peony-sendto
  *
  * Copyright (C) 2004 Roberto Majadas
  * Copyright (C) 2009 Pascal Terjan
@@ -29,7 +29,7 @@
 #include <glib/gi18n-lib.h>
 #include <dbus/dbus.h>
 #include <dbus/dbus-glib.h>
-#include "caja-sendto-plugin.h"
+#include "peony-sendto-plugin.h"
 
 #define OBJ_PATH "/im/pidgin/purple/PurpleObject"
 #define INTERFACE "im.pidgin.purple.PurpleInterface"
@@ -461,7 +461,7 @@ NstPluginInfo plugin_info = {
 	"pidgin",
 	N_("Instant Message (Pidgin)"),
 	NULL,
-	CAJA_CAPS_NONE,
+	PEONY_CAPS_NONE,
 	init,
 	get_contacts_widget,
 	NULL,

@@ -44,7 +44,7 @@ DISTCLEANFILES = \
 
 DISTCHECK_CONFIGURE_FLAGS =   \
 	--enable-gtk-doc \
-	--with-cajadir='$${libdir}/caja/extensions-2.0-distcheck'
+	--with-peonydir='$${libdir}/peony/extensions-2.0-distcheck'
 
 # Build ChangeLog from GIT  history
 ChangeLog:

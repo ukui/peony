@@ -1,4 +1,4 @@
-AC_INIT([caja-extensions], 1.18.1, [https://github.com/mate-desktop/caja-extensions])
+AC_INIT([peony-extensions], 1.18.1, [https://github.com/mate-desktop/peony-extensions])
 
 AM_INIT_AUTOMAKE([1.9 no-dist-gzip dist-xz tar-ustar check-news])
 AC_CONFIG_HEADERS(config.h)
@@ -10,7 +10,7 @@ AM_PROG_LIBTOOL
 AC_PROG_INSTALL
 AC_PROG_MAKE_SET
 
-CAJA_REQUIRED=1.17.1
+PEONY_REQUIRED=1.0.4
 LIBMATE_DESKTOP_REQUIRED=1.17.0
 GLIB_REQUIRED=2.36.0
 GTK_REQUIRED=3.14.0
@@ -34,10 +34,10 @@ GLIB_GENMARSHAL=`$PKG_CONFIG --variable=glib_genmarshal glib-2.0`
 AC_SUBST(GLIB_GENMARSHAL)
 
 # Common requirements
-PKG_CHECK_MODULES(CAJA,
-                  libcaja-extension >= $CAJA_REQUIRED)
-AC_SUBST(CAJA_CFLAGS)
-AC_SUBST(CAJA_LIBS)
+PKG_CHECK_MODULES(PEONY,
+                  libpeony-extension >= $PEONY_REQUIRED)
+AC_SUBST(PEONY_CFLAGS)
+AC_SUBST(PEONY_LIBS)
 
 # image-converter extension
 AC_ARG_ENABLE([image-converter],
@@ -93,7 +93,7 @@ if test "x$enable_sendto" = "xyes"; then
         AC_SUBST(SENDTO_LIBS)
 
     # The full list of plugins
-    allowed_sendto_plugins="emailclient gajim caja-burn pidgin removable-devices upnp"
+    allowed_sendto_plugins="emailclient gajim peony-burn pidgin removable-devices upnp"
 
     sendto_plugin_error_or_ignore()
     {
@@ -105,7 +105,7 @@ if test "x$enable_sendto" = "xyes"; then
     }
 
     AC_ARG_WITH([sendto-plugins],
-        [AS_HELP_STRING([--with-sendto-plugins],[Which caja-sendto plugins to compile (default: auto; "all", "autodetect" are valid)])],
+        [AS_HELP_STRING([--with-sendto-plugins],[Which peony-sendto plugins to compile (default: auto; "all", "autodetect" are valid)])],
         [], [with_sendto_plugins=autodetect])
 
     used_sendto_plugins=""
@@ -171,11 +171,11 @@ if test "x$enable_sendto" = "xyes"; then
                     add_sendto_plugin="0"
                 fi
             ;;
-            caja-burn)
+            peony-burn)
                 PKG_CHECK_MODULES(GIO, gio-2.0,
                     enable_burn=yes, enable_burn=no)
                 if test "${enable_burn}" != "yes" ; then
-                    sendto_plugin_error_or_ignore "you need gio installed to build the caja-burn plugin"
+                    sendto_plugin_error_or_ignore "you need gio installed to build the peony-burn plugin"
                     add_sendto_plugin="0"
                 fi
             ;;
@@ -216,7 +216,7 @@ if test "x$enable_sendto" = "xyes"; then
 
     dnl Error out if no plugins will be built
     if test -z "${SENDTO_PLUGINS}" ; then
-        AC_MSG_ERROR([No sendto plugins will be built, and caja-sendto requires at least one])
+        AC_MSG_ERROR([No sendto plugins will be built, and peony-sendto requires at least one])
     fi
 
     AC_MSG_CHECKING([which sendto plugins to compile])
@@ -249,7 +249,7 @@ if test "x$enable_sendto" = "xyes"; then
             AC_MSG_NOTICE([ ${allowed_sendto_plugin} sendto plugin disabled])
         done
     else
-        AC_MSG_NOTICE([ No caja-sendto plugins enabled])
+        AC_MSG_NOTICE([ No peony-sendto plugins enabled])
     fi
 fi
 AM_CONDITIONAL(ENABLE_SENDTO, test x"$enable_sendto" = "xyes")
@@ -293,58 +293,58 @@ AC_ARG_ENABLE([xattr-tags],
 
 AM_CONDITIONAL(ENABLE_XATTR_TAGS, test x"$enable_xattr_tags" = "xyes")
 
-# Get caja extensions directory
-AC_ARG_WITH(cajadir,
-    AS_HELP_STRING([--with-cajadir=DIR],[Installation path for Caja extension @<:@auto@:>@]),
-    [ac_with_cajadir=$withval],
-    [ac_with_cajadir=""])
-if test "${ac_with_cajadir}" = ""; then
-    ac_with_cajadir=`$PKG_CONFIG --variable=extensiondir libcaja-extension`
+# Get peony extensions directory
+AC_ARG_WITH(peonydir,
+    AS_HELP_STRING([--with-peonydir=DIR],[Installation path for Peony extension @<:@auto@:>@]),
+    [ac_with_peonydir=$withval],
+    [ac_with_peonydir=""])
+if test "${ac_with_peonydir}" = ""; then
+    ac_with_peonydir=`$PKG_CONFIG --variable=extensiondir libpeony-extension`
 fi
-AC_MSG_NOTICE([Installing caja plugins in ${ac_with_cajadir}])
-AC_SUBST([CAJA_EXTENSION_DIR],[${ac_with_cajadir}])
+AC_MSG_NOTICE([Installing peony plugins in ${ac_with_peonydir}])
+AC_SUBST([PEONY_EXTENSION_DIR],[${ac_with_peonydir}])
 
 # intltool stuff
 IT_PROG_INTLTOOL(0.18)
-GETTEXT_PACKAGE=caja-extensions
+GETTEXT_PACKAGE=peony-extensions
 AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE", [gettext package])
 AM_GLIB_GNU_GETTEXT
 
 AC_OUTPUT([
   Makefile 
-  gksu/libcaja-gksu.caja-extension.in
+  gksu/libpeony-gksu.peony-extension.in
   gksu/Makefile
-  image-converter/libcaja-image-converter.caja-extension.in
+  image-converter/libpeony-image-converter.peony-extension.in
   image-converter/Makefile
-  open-terminal/libcaja-open-terminal.caja-extension.in
+  open-terminal/libpeony-open-terminal.peony-extension.in
   open-terminal/Makefile
-  sendto/libcaja-sendto.caja-extension.in
+  sendto/libpeony-sendto.peony-extension.in
   sendto/Makefile
-  sendto/caja-sendto.pc
+  sendto/peony-sendto.pc
   sendto/docs/Makefile
   sendto/docs/version.xml
   sendto/plugins/Makefile
   sendto/plugins/emailclient/Makefile
   sendto/plugins/gajim/Makefile
-  sendto/plugins/caja-burn/Makefile
+  sendto/plugins/peony-burn/Makefile
   sendto/plugins/pidgin/Makefile
   sendto/plugins/removable-devices/Makefile
   sendto/plugins/upnp/Makefile
-  share/libcaja-share.caja-extension.in
+  share/libpeony-share.peony-extension.in
   share/Makefile
-  wallpaper/libcaja-wallpaper.caja-extension.in
+  wallpaper/libpeony-wallpaper.peony-extension.in
   wallpaper/Makefile
-  xattr-tags/libcaja-xattr-tags.caja-extension.in
+  xattr-tags/libpeony-xattr-tags.peony-extension.in
   xattr-tags/Makefile
   po/Makefile.in 
 ])
 
 echo "
-caja-extensions-$VERSION:
+peony-extensions-$VERSION:
         prefix:                 ${prefix}
         compiler:               ${CC}
-        caja-extension dir      ${ac_with_cajadir}
+        peony-extension dir      ${ac_with_peonydir}
 
 Plugins to be build:
         Image Converter:        $enable_image_converter

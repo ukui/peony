@@ -24,7 +24,7 @@
 #include <glib/gi18n-lib.h>
 #include <gio/gio.h>
 #include "nst-common.h"
-#include "caja-sendto-plugin.h"
+#include "peony-sendto-plugin.h"
 
 enum {
 	NAME_COL,
@@ -247,7 +247,7 @@ NstPluginInfo plugin_info = {
 	"folder-remote",
 	N_("Removable disks and shares"),
 	NULL,
-	CAJA_CAPS_SEND_DIRECTORIES,
+	PEONY_CAPS_SEND_DIRECTORIES,
 	init,
 	get_contacts_widget,
 	NULL,

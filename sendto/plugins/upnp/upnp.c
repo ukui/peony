@@ -29,7 +29,7 @@
 
 #include <glib/gi18n-lib.h>
 #include <libgupnp/gupnp.h>
-#include "caja-sendto-plugin.h"
+#include "peony-sendto-plugin.h"
 
 #define MEDIA_SERVER "urn:schemas-upnp-org:device:MediaServer:1"
 #define CDS "urn:schemas-upnp-org:service:ContentDirectory"
@@ -308,7 +308,7 @@ NstPluginInfo plugin_info = {
 	"upnp",
 	N_("UPnP Media Server"),
 	NULL,
-	CAJA_CAPS_NONE,
+	PEONY_CAPS_NONE,
 	init,
 	get_contacts_widget,
 	NULL,

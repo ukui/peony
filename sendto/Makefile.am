@@ -2,48 +2,48 @@ SUBDIRS = . docs plugins
 
 AM_CPPFLAGS =					\
 	-DDATADIR=\"$(datadir)\"		\
-	-DPLUGINDIR=\"$(libdir)/caja-sendto/plugins\"	\
+	-DPLUGINDIR=\"$(libdir)/peony-sendto/plugins\"	\
 	-I$(top_srcdir)				\
 	-I$(top_builddir)			\
 	-DUIDIR=\""$(uidir)"\"		\
 	-DLOCALEDIR="\"$(datadir)/locale\""	\
 	$(SENDTO_CFLAGS)		\
-	$(CAJA_CFLAGS)		\
+	$(PEONY_CFLAGS)		\
 	$(DISABLE_DEPRECATED)			\
 	$(WARN_CFLAGS)
 
-caja_sendto_includedir = $(includedir)/caja-sendto/
-caja_sendto_include_HEADERS = caja-sendto-plugin.h
+peony_sendto_includedir = $(includedir)/peony-sendto/
+peony_sendto_include_HEADERS = peony-sendto-plugin.h
 
 pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = caja-sendto.pc
+pkgconfig_DATA = peony-sendto.pc
 
-ui_DATA = caja-sendto.ui
-uidir = $(datadir)/caja-extensions
+ui_DATA = peony-sendto.ui
+uidir = $(datadir)/peony-extensions
 
 noinst_LTLIBRARIES = libnstplugin.la
 libnstplugin_la_SOURCES =			\
-	caja-sendto-plugin.h		\
+	peony-sendto-plugin.h		\
 	nst-enum-types.c			\
 	nst-enum-types.h
 libnstplugin_la_LIBADD = $(SENDTO_LIBS)
 
-bin_PROGRAMS = caja-sendto
+bin_PROGRAMS = peony-sendto
 
-caja_sendto_SOURCES = caja-sendto-command.c
-caja_sendto_LDADD = $(SENDTO_LIBS) libnstplugin.la
+peony_sendto_SOURCES = peony-sendto-command.c
+peony_sendto_LDADD = $(SENDTO_LIBS) libnstplugin.la
 
-caja_extensiondir = $(CAJA_EXTENSION_DIR)
-caja_extension_LTLIBRARIES = libcaja-sendto.la
-libcaja_sendto_la_SOURCES =		\
-	caja-nste.c			\
-	caja-nste.h			\
-	caja-sendto-module.c
+peony_extensiondir = $(PEONY_EXTENSION_DIR)
+peony_extension_LTLIBRARIES = libpeony-sendto.la
+libpeony_sendto_la_SOURCES =		\
+	peony-nste.c			\
+	peony-nste.h			\
+	peony-sendto-module.c
 
-libcaja_sendto_la_LDFLAGS = -module -avoid-version -no-undefined
-libcaja_sendto_la_LIBADD  = $(CAJA_LIBS)
+libpeony_sendto_la_LDFLAGS = -module -avoid-version -no-undefined
+libpeony_sendto_la_LIBADD  = $(PEONY_LIBS)
 
-nst_headers_to_scan_for_enums = caja-sendto-plugin.h
+nst_headers_to_scan_for_enums = peony-sendto-plugin.h
 # Generate the enums source code, with glib-mkenums:
 # This is based on the same Makefile.am stuff in pango:
 nst_built_headers = nst-enum-types.h
@@ -59,7 +59,7 @@ nst-enum-types.h: $(nst_headers_to_scan_for_enums) Makefile
 
 nst-enum-types.c: $(nst_headers_to_scan_for_enums) Makefile nst-enum-types.h
 	$(AM_V_GEN) (cd $(srcdir) && glib-mkenums \
-			--fhead "#include <caja-sendto-plugin.h>\n" \
+			--fhead "#include <peony-sendto-plugin.h>\n" \
 			--fhead "#include \"nst-enum-types.h\"\n" \
 			--fhead "#include <glib-object.h>" \
 			--fprod "\n/* enumerations from \"@filename@\" */" \
@@ -68,22 +68,22 @@ nst-enum-types.c: $(nst_headers_to_scan_for_enums) Makefile nst-enum-types.h
 			--vtail "      { 0, NULL, NULL }\n    };\n    etype = g_@type@_register_static (\"@EnumName@\", values);\n  }\n  return etype;\n}\n" \
 		$(nst_headers_to_scan_for_enums)) > $@
 
-gsettingsschema_in_files = org.mate.Caja.Sendto.gschema.xml.in
+gsettingsschema_in_files = org.mate.Peony.Sendto.gschema.xml.in
 gsettings_SCHEMAS = $(gsettingsschema_in_files:.xml.in=.xml)
 @INTLTOOL_XML_NOMERGE_RULE@
 @GSETTINGS_RULES@
 
-man_MANS = caja-sendto.1
+man_MANS = peony-sendto.1
 
-extensiondir = $(datadir)/caja/extensions
-extension_in_files = libcaja-sendto.caja-extension.in
-extension_DATA = $(extension_in_files:.caja-extension.in=.caja-extension)
-%.caja-extension: %.caja-extension.in $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; $(AM_V_GEN) LC_ALL=C $(INTLTOOL_MERGE) -d -u -c $(top_builddir)/po/.intltool-merge-cache $(top_srcdir)/po $< $@
+extensiondir = $(datadir)/peony/extensions
+extension_in_files = libpeony-sendto.peony-extension.in
+extension_DATA = $(extension_in_files:.peony-extension.in=.peony-extension)
+%.peony-extension: %.peony-extension.in $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; $(AM_V_GEN) LC_ALL=C $(INTLTOOL_MERGE) -d -u -c $(top_builddir)/po/.intltool-merge-cache $(top_srcdir)/po $< $@
 
 EXTRA_DIST = \
 	$(ui_DATA) \
 	$(man_MANS) \
-	caja-sendto.pc.in \
+	peony-sendto.pc.in \
 	$(gsettingsschema_in_files)
 
 CLEANFILES = \
