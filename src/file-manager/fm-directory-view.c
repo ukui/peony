@@ -82,6 +82,7 @@
 #include <libpeony-private/peony-autorun.h>
 #include <libpeony-private/peony-icon-names.h>
 #include <libpeony-private/peony-undostack-manager.h>
+#include "../peony-navigation-window.h"
 
 #define MATE_DESKTOP_USE_UNSTABLE_API
 #include <libmate-desktop/mate-desktop-utils.h>
@@ -1257,6 +1258,44 @@ action_select_pattern_callback (GtkAction *action,
 	g_assert (FM_IS_DIRECTORY_VIEW (callback_data));
 
 	select_pattern(callback_data);
+}
+
+static void
+find_duplicate (FMDirectoryView *view)
+{
+	GList *pListRes = NULL;
+	gboolean bFRead = FALSE;
+	char *pPath = NULL;
+    PeonyWindow *win = NULL;
+
+	do
+	{
+		if(NULL == view)
+		{
+			peony_debug_log(TRUE,"_find_","view is null.");
+			break;
+		}
+				
+		win = fm_directory_view_get_peony_window(view);
+		if (win == NULL)
+		{
+			peony_debug_log(TRUE,"_find_","fm_directory_view_get_peony_window is failed.");
+			break;
+		}
+		
+		peony_find_duplicate_files(PEONY_NAVIGATION_WINDOW(win),NULL);
+	}while(0);
+
+	return;
+}
+
+static void
+action_find_duplicate_callback (GtkAction *action,
+				gpointer callback_data)
+{
+	g_assert (FM_IS_DIRECTORY_VIEW (callback_data));
+
+	find_duplicate(callback_data);
 }
 
 static void
@@ -7430,6 +7469,10 @@ static const GtkActionEntry directory_view_entries[] = {
   /* label, accelerator */       N_("Select I_tems Matching..."), "<control>S",
   /* tooltip */                  N_("Select items in this window matching a given pattern"),
                                  G_CALLBACK (action_select_pattern_callback) },
+  /* name, stock id */		   { "Find duplicate", NULL,
+  /* label, accelerator */		 N_("Find duplicate file"), NULL,
+  /* tooltip */ 				 N_("Find duplicate file"),
+									 G_CALLBACK (action_find_duplicate_callback) },
   /* name, stock id */         { "Invert Selection", NULL,
   /* label, accelerator */       N_("_Invert Selection"), "<control><shift>I",
   /* tooltip */                  N_("Select all and only the items that are not currently selected"),

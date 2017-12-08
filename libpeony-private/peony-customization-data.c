@@ -79,6 +79,62 @@ static char*             format_name_for_display             (PeonyCustomization
 static void		 load_name_map_hash_table	     (PeonyCustomizationData *data);
 
 
+
+/*static */gboolean
+read_all_children_for_find (char *filename,
+                   const char *attributes,
+                   GList **list_out)
+{
+    GFileEnumerator *enumerator;
+    GList *list;
+    GFile *file = NULL;
+    GFileInfo *info = NULL;
+	GFile *child= NULL;
+	GError *error = NULL;
+	char *pUri = NULL;
+    file = g_file_new_for_uri (filename);
+
+    enumerator = g_file_enumerate_children (file, attributes, 0, NULL, &error);
+    if (enumerator == NULL)
+    {
+		peony_debug_log(TRUE,"_find_","g_file_enumerate_children [%s] failed[%s].",filename,error->message);
+        return FALSE;
+    }
+
+    list = NULL;
+    do
+    {
+    	if(info != NULL)
+    	{
+    		g_object_unref (info);
+    	}
+        info = g_file_enumerator_next_file (enumerator, NULL, NULL);
+        if (info)
+        {
+        	if(G_FILE_TYPE_DIRECTORY == g_file_info_get_file_type(info))
+        	{
+				child = g_file_get_child (file, g_file_info_get_name (info));
+				pUri = g_file_get_uri (child);
+				read_all_children_for_find(pUri,attributes,list_out);
+				g_free(pUri);
+				g_object_unref (child);
+				continue;
+			}
+			
+			child = g_file_get_child (file, g_file_info_get_name (info));
+            list = g_list_prepend (list, g_file_get_uri (child));			
+			g_object_unref (child);
+        }
+    }
+    while (info != NULL);
+
+    g_object_unref (enumerator);
+    g_object_unref (file);
+
+    *list_out = g_list_concat (*list_out,list);
+    return TRUE;
+}
+
 static gboolean
 read_all_children (char *filename,
                    const char *attributes,

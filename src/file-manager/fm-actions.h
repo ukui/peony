@@ -63,6 +63,7 @@
 #define FM_ACTION_SELECT_ALL "Select All"
 #define FM_ACTION_INVERT_SELECTION "Invert Selection"
 #define FM_ACTION_SELECT_PATTERN "Select Pattern"
+#define FM_ACTION_FIND_DUPLICATE "Find duplicate"
 #define FM_ACTION_TRASH "Trash"
 #define FM_ACTION_LOCATION_TRASH "LocationTrash"
 #define FM_ACTION_DELETE "Delete"

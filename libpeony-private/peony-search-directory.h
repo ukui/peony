@@ -69,5 +69,6 @@ void           peony_search_directory_save_to_file    (PeonySearchDirectory *sea
 PeonyQuery *peony_search_directory_get_query       (PeonySearchDirectory *search);
 void           peony_search_directory_set_query       (PeonySearchDirectory *search,
         PeonyQuery           *query);
-
+void set_search_duplicate (PeonySearchDirectory *search,gboolean bDuplicate);
+gboolean get_search_duplicate (PeonySearchDirectory *search);
 #endif /* PEONY_SEARCH_DIRECTORY_H */

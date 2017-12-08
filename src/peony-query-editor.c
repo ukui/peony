@@ -1079,6 +1079,11 @@ finish_first_line (PeonyQueryEditor *editor, GtkWidget *hbox, gboolean use_go)
 {
     GtkWidget *button, *image;
 
+	if(TRUE == get_search_bar_duplicate(editor->details->bar))
+	{
+		return;
+	}
+	
     button = gtk_button_new ();
     image = gtk_image_new_from_icon_name ("add",
                                       GTK_ICON_SIZE_SMALL_TOOLBAR);
@@ -1158,7 +1163,14 @@ setup_external_entry (PeonyQueryEditor *editor, GtkWidget *entry)
     gtk_widget_show (hbox);
     gtk_box_pack_start (GTK_BOX (editor->details->visible_vbox), hbox, FALSE, FALSE, 0);
 
-    label = gtk_label_new (_("Search results"));
+	if(TRUE == get_search_bar_duplicate(editor->details->bar))
+	{
+		label = gtk_label_new (_("Find results"));
+	}
+	else
+	{
+    	label = gtk_label_new (_("Search results"));
+	}
     gtk_widget_show (label);
     gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
 
@@ -1416,7 +1428,10 @@ peony_query_editor_set_query (PeonyQueryEditor *editor, PeonyQuery *query)
     {
         text = g_strdup ("");
     }
-
+	if(TRUE == get_query_duplicate(query))
+	{
+		return;
+	}
     editor->details->change_frozen = TRUE;
     gtk_entry_set_text (GTK_ENTRY (editor->details->entry), text);
 

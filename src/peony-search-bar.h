@@ -62,7 +62,10 @@ GtkWidget* peony_search_bar_new          	(void);
 GtkWidget *    peony_search_bar_borrow_entry  (PeonySearchBar *bar);
 void           peony_search_bar_return_entry  (PeonySearchBar *bar);
 void           peony_search_bar_grab_focus    (PeonySearchBar *bar);
-PeonyQuery *peony_search_bar_get_query     (PeonySearchBar *bar);
+PeonyQuery *peony_search_bar_get_query     (PeonySearchBar *bar,gboolean bDuplicate);
 void           peony_search_bar_clear         (PeonySearchBar *bar);
+void find_duplicate_signal (gpointer user_data);
+void set_search_bar_duplicate (PeonySearchBar *bar,gboolean bDuplicate);
+gboolean get_search_bar_duplicate (PeonySearchBar *bar);
 
 #endif /* PEONY_SEARCH_BAR_H */

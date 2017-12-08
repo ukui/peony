@@ -130,9 +130,9 @@ search_bar_activate_callback (PeonySearchBar *bar,
     g_assert (PEONY_IS_SEARCH_DIRECTORY (directory));
 
     search_directory = PEONY_SEARCH_DIRECTORY (directory);
-
-    query = peony_search_bar_get_query (PEONY_SEARCH_BAR (pane->search_bar));
-    if (query != NULL)
+	set_search_duplicate(search_directory,get_search_bar_duplicate(bar));
+    query = peony_search_bar_get_query (PEONY_SEARCH_BAR (pane->search_bar),get_search_bar_duplicate(bar));
+    if ((TRUE == get_search_bar_duplicate(bar)) || (FALSE == get_search_bar_duplicate(bar) && query != NULL))
     {
         PeonyWindowSlot *slot = PEONY_WINDOW_PANE (pane)->active_slot;
         if (!peony_search_directory_is_indexed (search_directory))

@@ -4017,6 +4017,11 @@ msgstr "选择该窗口中的所有项目"
 msgid "Select I_tems Matching..."
 msgstr "选择匹配的项目(_T)..."
 
+#. name, stock id
+#. label, accelerator
+#: ../src/file-manager/fm-directory-view.c:7343
+msgid "Find duplicate file"
+msgstr "文件查重"
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:7358
 msgid "Select items in this window matching a given pattern"
@@ -6984,6 +6989,10 @@ msgstr "执行或更新搜索"
 #: ../src/peony-query-editor.c:1124
 msgid "_Search for:"
 msgstr "搜索(_S)："
+
+#: ../src/peony-query-editor.c:1153
+msgid "Find results"
+msgstr "查找结果"
 
 #: ../src/peony-query-editor.c:1153
 msgid "Search results"

@@ -52,6 +52,7 @@ struct PeonySearchDirectoryDetails
     GList *monitor_list;
     GList *callback_list;
     GList *pending_callback_list;
+	gboolean bDuplicate;
 };
 
 typedef struct
@@ -90,7 +91,14 @@ ensure_search_engine (PeonySearchDirectory *search)
 {
     if (!search->details->engine)
     {
-        search->details->engine = peony_search_engine_new ();
+		if(TRUE == search->details->bDuplicate)
+		{
+        	search->details->engine = peony_search_duplicate_engine_new ();
+		}
+		else
+		{
+        	search->details->engine = peony_search_engine_new ();
+		}
         g_signal_connect (search->details->engine, "hits-added",
                           G_CALLBACK (search_engine_hits_added),
                           search);
@@ -929,3 +937,26 @@ peony_search_directory_save_search (PeonySearchDirectory *search)
                                         search->details->saved_search_uri);
     search->details->modified = FALSE;
 }
+
+void
+set_search_duplicate (PeonySearchDirectory *search,gboolean bDuplicate)
+{
+	if (search == NULL)
+    {
+        return;
+    }
+	
+    search->details->bDuplicate = bDuplicate;
+}
+
+gboolean
+get_search_duplicate (PeonySearchDirectory *search)
+{
+	if (search == NULL)
+    {
+        return FALSE;
+    }
+	
+    return search->details->bDuplicate;
+}
+

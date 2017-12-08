@@ -1397,3 +1397,24 @@ peony_navigation_window_split_view_showing (PeonyNavigationWindow *window)
 {
     return g_list_length (PEONY_WINDOW (window)->details->panes) > 1;
 }
+
+void
+peony_find_duplicate_files (PeonyNavigationWindow *window,GList *pListRes)
+{
+    PeonyWindow *win;
+    PeonyNavigationWindowPane *pane;
+    PeonyWindowSlot *old_active_slot;
+    GFile *location;
+    GtkAction *action;
+	PeonySearchBar *pSearchBar = NULL;
+	
+    win = PEONY_WINDOW (window);
+
+    old_active_slot = peony_window_get_active_slot (win);
+    pane = PEONY_NAVIGATION_WINDOW_PANE (old_active_slot->pane);
+	pSearchBar = PEONY_SEARCH_BAR(pane->search_bar);
+	find_duplicate_signal(pane->search_bar);
+	
+	return ;
+}
+

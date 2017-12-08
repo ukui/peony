@@ -35,6 +35,7 @@ struct PeonySearchBarDetails
 {
     GtkWidget *entry;
     gboolean entry_borrowed;
+	gboolean bDuplicate;
 };
 
 enum
@@ -123,12 +124,15 @@ entry_icon_release_cb (GtkEntry *entry,
                        GdkEvent *event,
                        PeonySearchBar *bar)
 {
+	set_search_bar_duplicate(bar,FALSE);
     g_signal_emit_by_name (entry, "activate", 0);
 }
 
 static void
 entry_changed_cb (GtkWidget *entry, PeonySearchBar *bar)
 {
+	//peony_debug_log(TRUE,"search_bar","changed");
+	set_search_bar_duplicate(bar,FALSE);
     g_signal_emit_by_name (entry, "activate", 0);
 }
 
@@ -137,6 +141,7 @@ entry_activate_cb (GtkWidget *entry, PeonySearchBar *bar)
 {
     if (entry_has_text (bar) && !bar->details->entry_borrowed)
     {
+    	set_search_bar_duplicate(bar,FALSE);
         g_signal_emit (bar, signals[ACTIVATE], 0);
     }
 }
@@ -232,7 +237,7 @@ peony_search_bar_new (void)
 }
 
 PeonyQuery *
-peony_search_bar_get_query (PeonySearchBar *bar)
+peony_search_bar_get_query (PeonySearchBar *bar,gboolean bDuplicate)
 {
     const char *query_text;
     PeonyQuery *query;
@@ -240,7 +245,7 @@ peony_search_bar_get_query (PeonySearchBar *bar)
     query_text = gtk_entry_get_text (GTK_ENTRY (bar->details->entry));
 
     /* Empty string is a NULL query */
-    if (query_text && query_text[0] == '\0')
+    if (FALSE == bDuplicate && query_text && query_text[0] == '\0')
     {
         return NULL;
     }
@@ -262,3 +267,41 @@ peony_search_bar_clear (PeonySearchBar *bar)
 {
     gtk_entry_set_text (GTK_ENTRY (bar->details->entry), "");
 }
+
+void find_duplicate_signal (gpointer user_data)
+{
+	PeonySearchBar *search_bar = NULL;
+	if(NULL == user_data)
+	{
+		peony_debug_log(TRUE,"_find_","find_duplicate_signal param null.");
+		return;
+	}
+
+	search_bar = PEONY_SEARCH_BAR(user_data);
+	set_search_bar_duplicate(search_bar,TRUE);
+	g_signal_emit_by_name (search_bar, "activate", 0);
+	return;
+}
+
+void
+set_search_bar_duplicate (PeonySearchBar *bar,gboolean bDuplicate)
+{
+	if (bar == NULL)
+    {
+        return;
+    }
+	
+    bar->details->bDuplicate = bDuplicate;
+}
+
+gboolean
+get_search_bar_duplicate (PeonySearchBar *bar)
+{
+	if (bar == NULL)
+    {
+        return FALSE;
+    }
+	
+    return bar->details->bDuplicate;
+}
+

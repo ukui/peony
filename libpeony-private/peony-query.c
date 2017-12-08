@@ -35,6 +35,7 @@ struct PeonyQueryDetails
     char *text;
     char *location_uri;
     GList *mime_types;
+	gboolean bDuplicate;	 
 };
 
 static void  peony_query_class_init       (PeonyQueryClass *class);
@@ -132,6 +133,11 @@ peony_query_add_mime_type (PeonyQuery *query, const char *mime_type)
 char *
 peony_query_to_readable_string (PeonyQuery *query)
 {
+	if((NULL != query) && (TRUE == query->details->bDuplicate))
+	{
+		return g_strdup_printf (_("Find duplicate file"));
+	}
+
     if (!query || !query->details->text)
     {
         return g_strdup (_("Search"));
@@ -407,4 +413,25 @@ query_is_go_to_location (PeonyQuery *query)
 		return FALSE;
 	}
 }
+
+void
+set_query_duplicate (PeonyQuery *query,gboolean bDuplicate)
+{
+    if(NULL == query)
+    {
+		return;
+	}
+	query->details->bDuplicate = bDuplicate;
+}
+
+gboolean get_query_duplicate (PeonyQuery *query)
+{
+    if(NULL == query)
+    {
+		return FALSE;
+	}
+	
+	return query->details->bDuplicate;
+}
+
 

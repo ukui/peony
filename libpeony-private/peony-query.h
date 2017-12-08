@@ -64,6 +64,7 @@ void           peony_query_add_mime_type      (PeonyQuery *query, const char *mi
 char *         peony_query_to_readable_string (PeonyQuery *query);
 PeonyQuery *peony_query_load               (char *file);
 gboolean       peony_query_save               (PeonyQuery *query, char *file);
-
+void			set_query_duplicate (PeonyQuery *query,gboolean bDuplicate);
+gboolean 		get_query_duplicate (PeonyQuery *query);
 #define GO_TO_LOCATION "GotoLocation"
 #endif /* PEONY_QUERY_H */

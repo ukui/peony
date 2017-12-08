@@ -64,5 +64,8 @@ GdkPixbuf*                 peony_customization_make_pattern_chit                
         GdkPixbuf *frame,
         gboolean dragging,
         gboolean is_reset);
+gboolean read_all_children_for_find (char *filename,
+                   const char *attributes,
+                   GList **list_out);
 
 #endif /* PEONY_CUSTOMIZATION_DATA_H */

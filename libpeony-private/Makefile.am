@@ -149,6 +149,8 @@ libpeony_private_la_SOURCES = \
 	peony-search-directory-file.h \
 	peony-search-engine.c \
 	peony-search-engine.h \
+	peony-search-engine-duplicate.c \
+        peony-search-engine-duplicate.h \
 	peony-search-engine-simple.c \
 	peony-search-engine-simple.h \
 	peony-search-engine-beagle.c \

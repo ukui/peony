@@ -25,6 +25,7 @@
 #include "peony-search-engine.h"
 #include "peony-search-engine-beagle.h"
 #include "peony-search-engine-simple.h"
+#include "peony-search-engine-duplicate.h"
 #include "peony-search-engine-tracker.h"
 
 #include <eel/eel-gtk-macros.h>
@@ -121,6 +122,15 @@ static void
 peony_search_engine_init (PeonySearchEngine *engine)
 {
     engine->details = g_new0 (PeonySearchEngineDetails, 1);
+}
+
+PeonySearchEngine *
+peony_search_duplicate_engine_new (void)
+{
+    PeonySearchEngine *engine;
+
+    engine = peony_search_engine_duplicate_new ();
+    return engine;
 }
 
 PeonySearchEngine *

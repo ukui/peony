@@ -94,6 +94,7 @@ real_update_query_editor (PeonyWindowSlot *slot)
         query = peony_search_directory_get_query (search_directory);
         if (query != NULL)
         {
+        	set_query_duplicate(query,get_search_duplicate(search_directory));
             peony_query_editor_set_query (PEONY_QUERY_EDITOR (query_editor),
                                          query);
             g_object_unref (query);

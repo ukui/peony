@@ -63,7 +63,7 @@ GType          peony_search_engine_get_type  (void);
 gboolean       peony_search_engine_enabled (void);
 
 PeonySearchEngine* peony_search_engine_new       (void);
-
+PeonySearchEngine *peony_search_duplicate_engine_new (void);
 void           peony_search_engine_set_query (PeonySearchEngine *engine, PeonyQuery *query);
 void	       peony_search_engine_start (PeonySearchEngine *engine);
 void	       peony_search_engine_stop (PeonySearchEngine *engine);
