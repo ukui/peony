@@ -55,7 +55,8 @@
 #define LABEL_OFFSET 1
 #define LABEL_LINE_SPACING 0
 
-#define MAX_TEXT_WIDTH_STANDARD 135
+//#define MAX_TEXT_WIDTH_STANDARD 135
+#define MAX_TEXT_WIDTH_STANDARD 78
 #define MAX_TEXT_WIDTH_TIGHTER 80
 #define MAX_TEXT_WIDTH_BESIDE 90
 #define MAX_TEXT_WIDTH_BESIDE_TOP_TO_BOTTOM 150
@@ -854,6 +855,10 @@ peony_icon_canvas_item_update_bounds (PeonyIconCanvasItem *item,
 
     canvas_item = EEL_CANVAS_ITEM (item);
 
+    /* Update canvas and text rect cache */
+    get_icon_canvas_rectangle (item, &item->details->canvas_rect);
+    item->details->text_rect = compute_text_rectangle (item, item->details->canvas_rect,
+                               TRUE, BOUNDS_USAGE_FOR_DISPLAY);
     /* Compute new bounds. */
     before = get_current_canvas_bounds (canvas_item);
     recompute_bounding_box (item, i2w_dx, i2w_dy);
@@ -867,10 +872,6 @@ peony_icon_canvas_item_update_bounds (PeonyIconCanvasItem *item,
 
     is_rtl = peony_icon_container_is_layout_rtl (PEONY_ICON_CONTAINER (canvas_item->canvas));
 
-    /* Update canvas and text rect cache */
-    get_icon_canvas_rectangle (item, &item->details->canvas_rect);
-    item->details->text_rect = compute_text_rectangle (item, item->details->canvas_rect,
-                               TRUE, BOUNDS_USAGE_FOR_DISPLAY);
 
     /* Update emblem rect cache */
     item->details->emblem_rect.x0 = 0;
@@ -1268,12 +1269,7 @@ draw_label_text (PeonyIconCanvasItem *item,
     /* if the icon is highlighted, do some set-up */
     if (needs_highlight &&
         !details->is_renaming) {
-            state |= GTK_STATE_FLAG_SELECTED;
-
-            frame_x = is_rtl_label_beside ? text_rect.x0 + item->details->text_dx : text_rect.x0;
-            frame_y = text_rect.y0;
-            frame_w = is_rtl_label_beside ? text_rect.x1 - text_rect.x0 - item->details->text_dx : text_rect.x1 - text_rect.x0;
-            frame_h = text_rect.y1 - text_rect.y0;
+			draw_frame = FALSE;
     } else if (!needs_highlight && have_editable &&
                details->text_width > 0 && details->text_height > 0 &&
                prelight_label && item->details->is_prelit) {
@@ -1737,23 +1733,6 @@ real_map_pixbuf (PeonyIconCanvasItem *icon_item)
         }
     }
 
-    if (icon_item->details->is_highlighted_for_selection
-            || icon_item->details->is_highlighted_for_drop)
-    {
-        style = gtk_widget_get_style_context (GTK_WIDGET (canvas));
-
-        if (gtk_widget_has_focus (GTK_WIDGET (canvas))) {
-                gtk_style_context_get_background_color (style, GTK_STATE_FLAG_SELECTED, &color);
-        } else {
-                gtk_style_context_get_background_color (style, GTK_STATE_FLAG_ACTIVE, &color);
-        }
-
-        old_pixbuf = temp_pixbuf;
-        temp_pixbuf = eel_create_colorized_pixbuf (temp_pixbuf, &color);
-
-        g_object_unref (old_pixbuf);
-    }
-
     return temp_pixbuf;
 }
 
@@ -1848,6 +1827,143 @@ draw_embedded_text (PeonyIconCanvasItem *item,
     cairo_restore (cr);
 }
 
+typedef enum
+{
+	SELECT_TARGET = 1,
+	HOVER_TARGET  = 2,  
+	NORMAL_TARGET = 3	
+}TARGET_ACTION;
+
+#define BACKGROUND_MAX(a,b) ((a)>(b)?(a):(b))
+#define BACKGROUND_MIN(a,b) ((a)<(b)?(a):(b))
+
+static void
+draw_target_background (cairo_t *cr,
+                        int x, int y, int width, int height,TARGET_ACTION eAction)
+{
+	GdkColor label_color;
+	GdkRectangle stRect = {0};
+
+	if(SELECT_TARGET == eAction)
+	{
+		label_color.red   = 50115;
+		label_color.green = 57331;
+		label_color.blue  = 65278;
+	}
+	else if(HOVER_TARGET == eAction)
+	{
+		label_color.red   = 56540;
+		label_color.green = 60395;
+		label_color.blue  = 64507;
+	}
+	else if(NORMAL_TARGET == eAction)
+	{
+		label_color.red   = 65535;
+		label_color.green = 65535;
+		label_color.blue  = 65535;
+	}
+
+	stRect.x 	  = x;
+	stRect.y 	  = y;
+	stRect.width  = width;
+	stRect.height = height;
+	/* By default, we use the style background. */
+    gdk_cairo_set_source_color (cr, &label_color);
+    //gdk_cairo_rectangle(cr, &stRect);
+    cairo_rectangle(cr, x,y,width,height);
+    cairo_fill (cr);
+
+}
+
+static int get_can_redraw_rect(EelCanvasItem *item,RECT_PARAM_T *pRect)
+{
+	EelIRect icon_rect				   = {0};
+	EelIRect *pTotalRect			   = {0};
+	gboolean bLabelBeside			   = FALSE;
+	EelIRect stTextRect				   = {0};
+	EelIRect stDisTextRect			   = {0};
+	double 	 iBackGroundx			   = 0.0;
+	double 	 iBackGroundy			   = 0.0;
+	double 	 iBackGroundwidth		   = 0.0;
+	double 	 iBackGroundheight	       = 0.0;
+	double 	 iBackGroundMidx	       = 0.0;
+	double 	 iBackGroundMidy	       = 0.0;
+	int 	 iIconZoomLevel			   = 0.0;
+	double 	 iTemp				       = 0.0;
+	PeonyIconContainer  *pstContainer   = NULL;
+	PeonyIconCanvasItem *icon_item	   = NULL;
+	PeonyIconCanvasItemDetails *details = NULL;
+	double 			   pixels_per_unit = 0.0;
+
+	if((NULL == item) || (NULL == pRect))
+	{
+		return -1;
+	}
+	pixels_per_unit = item->canvas->pixels_per_unit;
+	icon_item = PEONY_ICON_CANVAS_ITEM (item);
+	details = icon_item->details;
+
+	/* Draw the pixbuf. */
+	if (NULL == details->pixbuf || NULL == icon_item || NULL == details)
+	{
+		return -1;
+	}
+
+	icon_rect 			  = icon_item->details->canvas_rect;
+	pstContainer 		  = PEONY_ICON_CONTAINER (EEL_CANVAS_ITEM (icon_item)->canvas);
+	if(NULL == pstContainer)
+	{
+		return -1;
+	}
+	
+	iIconZoomLevel 		  = peony_get_icon_size_for_zoom_level(pstContainer->details->zoom_level);
+	bLabelBeside		  = pstContainer->details->label_position == PEONY_ICON_LABEL_POSITION_BESIDE;
+
+	stTextRect			  = compute_text_rectangle (icon_item, icon_rect, TRUE, BOUNDS_USAGE_FOR_LAYOUT);
+	iBackGroundwidth	  = (double)(bLabelBeside ? (MAX((MAX(stTextRect.x1,icon_rect.x1) - icon_rect.x0),(250*iIconZoomLevel/48))) : (MAX((icon_rect.x1 - icon_rect.x0),(105*iIconZoomLevel/64))));
+	iBackGroundheight	  = (double)(bLabelBeside ? (MAX((MAX(stTextRect.y1,icon_rect.y1) - icon_rect.y0),(60*iIconZoomLevel/48)))  : (MAX((icon_rect.y1 - icon_rect.y0),(118*iIconZoomLevel/64))));
+
+	if(FALSE == bLabelBeside)
+	{
+		/*Here need to consider the case of screenshots, x is relatively narrow but centered, y shorter but bottom*/
+		iBackGroundMidx	  = icon_rect.x0 + ((icon_rect.x1 - icon_rect.x0)/2);
+		iBackGroundMidy	  = (icon_rect.y1 > (iIconZoomLevel/2)) ? (icon_rect.y1 - (iIconZoomLevel/2)) : 0;
+	}
+	else
+	{
+		//pTotalRect 		  = &(icon_item->details->bounds_cache);
+		//iBackGroundMidx	  = pTotalRect->x0 + ((BACKGROUND_MAX(stTextRect.x1,pTotalRect->x1) - pTotalRect->x0)/2) + icon_item->details->x;
+		//iBackGroundMidy	  = pTotalRect->y0 + ((BACKGROUND_MAX(stTextRect.y1,pTotalRect->y1) - pTotalRect->y0)/2) + icon_item->details->y;
+		iBackGroundMidx	  = icon_rect.x0 + ((BACKGROUND_MAX(stTextRect.x1,icon_rect.x1) - icon_rect.x0)/2);
+		iBackGroundMidy	  = icon_rect.y0 + ((BACKGROUND_MAX(stTextRect.y1,icon_rect.y1) - icon_rect.y0)/2);
+	}
+	//peony_debug_log(TRUE,"_background_","iBackGroundMidx[%lf] iBackGroundMidy[%lf] icon_rect.x0[%d]icon_rect.y0[%d]icon_rect.x1[%d]icon_rect.y1[%d]stTextRect.x1[%d]stTextRect.y1[%d]bLabelBeside[%d]",iBackGroundMidx,iBackGroundMidy,
+	//	icon_rect.x0,icon_rect.y0,icon_rect.x1,icon_rect.y1,stTextRect.x1,stTextRect.y1,bLabelBeside);
+	//peony_debug_log(TRUE,"_background_","iBackGroundwidth[%lf] iBackGroundheight[%lf]",
+	//	iBackGroundwidth,iBackGroundheight);
+
+	iBackGroundx		  = (iBackGroundMidx > (iBackGroundwidth/2 + LAYOUT_PAD_LEFT)) ? (iBackGroundMidx - (iBackGroundwidth/2)) : LAYOUT_PAD_LEFT;
+	iBackGroundy		  = (iBackGroundMidy > (iBackGroundheight/2 + LAYOUT_PAD_TOP)) ? (iBackGroundMidy - (iBackGroundheight/2)) : LAYOUT_PAD_TOP;
+	iTemp			      = iBackGroundy + iBackGroundheight;
+	if((FALSE == bLabelBeside) && (stTextRect.y1 > iTemp))
+	{
+		iBackGroundheight += stTextRect.y1 - iTemp;
+	}
+
+	
+	stDisTextRect = compute_text_rectangle (icon_item, icon_rect, TRUE, BOUNDS_USAGE_FOR_DISPLAY);//!!!
+	
+	pRect->x      = iBackGroundx;///pixels_per_unit;
+	pRect->y      = iBackGroundy;///pixels_per_unit;
+	pRect->width  = iBackGroundwidth;///pixels_per_unit;
+	pRect->height = (iBackGroundheight + MAX(stDisTextRect.y1 - stTextRect.y1,0));///pixels_per_unit;
+	//peony_debug_log(TRUE,"_background_","iIconZoomLevel[%d] w[%d]h[%d] x0[%d]y0[%d]",iIconZoomLevel,icon_rect.x1-icon_rect.x0,
+	//	icon_rect.y1-icon_rect.y0,icon_rect.x0,icon_rect.y0);
+	//peony_debug_log(TRUE,"_background_","pRect->x[%d] pRect->y[%d]pRect->width[%d] pRect->height[%d]",
+	//	pRect->x,pRect->y,pRect->width,pRect->height);
+	return 0;
+}
+
 /* Draw the icon item for non-anti-aliased mode. */
 static void
 peony_icon_canvas_item_draw (EelCanvasItem *item,
@@ -1864,10 +1980,13 @@ peony_icon_canvas_item_draw (EelCanvasItem *item,
 
     container = PEONY_ICON_CONTAINER (item->canvas);
     gboolean is_rtl;
+	gboolean     		bNeedsHighlight;
+	int          		iRet   		 = 0;
+	PeonyIconContainer *	pstContainer = NULL;
 
-    icon_item = PEONY_ICON_CANVAS_ITEM (item);
-    details = icon_item->details;
-
+	icon_item 	 = PEONY_ICON_CANVAS_ITEM (item);
+	details 	 = icon_item->details;
+	pstContainer = PEONY_ICON_CONTAINER (EEL_CANVAS_ITEM (icon_item)->canvas);
     /* Draw the pixbuf. */
     if (details->pixbuf == NULL)
     {
@@ -1881,6 +2000,18 @@ peony_icon_canvas_item_draw (EelCanvasItem *item,
     icon_rect = icon_item->details->canvas_rect;
 
     temp_pixbuf = map_pixbuf (icon_item);
+
+	bNeedsHighlight = details->is_highlighted_for_selection || details->is_highlighted_for_drop;
+	if(bNeedsHighlight)
+	{		
+		draw_target_background(cr,item->x1,\
+				item->y1,(item->x2)-(item->x1),(item->y2)-(item->y1),SELECT_TARGET);
+	}
+	else if(details->is_prelit)
+	{
+		draw_target_background(cr,item->x1,\
+				item->y1,(item->x2)-(item->x1),(item->y2)-(item->y1),HOVER_TARGET);
+	}
 
     gtk_render_icon (context, cr,
                      temp_pixbuf,
@@ -2169,16 +2300,28 @@ hit_test (PeonyIconCanvasItem *icon_item, EelIRect canvas_rect)
     EmblemLayout emblem_layout;
     GdkPixbuf *emblem_pixbuf;
     gboolean is_rtl;
-
+	EelIRect stRectBounds = {0};
     details = icon_item->details;
+	stRectBounds.x0 = icon_item->item.x1;
+	stRectBounds.y0 = icon_item->item.y1;
+	stRectBounds.x1 = icon_item->item.x2;
+	stRectBounds.y1 = icon_item->item.y2;
+	/* Quick check to see if the rect hits the icon, text or emblems at all. */
+	if (!eel_irect_hits_irect (stRectBounds, canvas_rect)
+			&& !eel_irect_hits_irect (icon_item->details->canvas_rect, canvas_rect)
+			&& (!eel_irect_hits_irect (details->text_rect, canvas_rect))
+			&& (!eel_irect_hits_irect (details->emblem_rect, canvas_rect))
+			)
+	{
+		return FALSE;
+	}
 
-    /* Quick check to see if the rect hits the icon, text or emblems at all. */
-    if (!eel_irect_hits_irect (icon_item->details->canvas_rect, canvas_rect)
-            && (!eel_irect_hits_irect (details->text_rect, canvas_rect))
-            && (!eel_irect_hits_irect (details->emblem_rect, canvas_rect)))
-    {
-        return FALSE;
-    }
+	
+	if (eel_irect_hits_irect (stRectBounds, canvas_rect))
+	{
+		return TRUE;
+	}
+
 
     /* Check for hits in the stretch handles. */
     if (hit_test_stretch_handle (icon_item, canvas_rect, NULL))
@@ -2326,6 +2469,8 @@ peony_icon_canvas_item_bounds (EelCanvasItem *item,
     PeonyIconCanvasItem *icon_item;
     PeonyIconCanvasItemDetails *details;
     EelIRect *total_rect;
+	RECT_PARAM_T stRect = {0};
+	int          iRet   = 0;
 
     icon_item = PEONY_ICON_CANVAS_ITEM (item);
     details = icon_item->details;
@@ -2336,15 +2481,25 @@ peony_icon_canvas_item_bounds (EelCanvasItem *item,
     g_assert (y2 != NULL);
 
     peony_icon_canvas_item_ensure_bounds_up_to_date (icon_item);
-    g_assert (details->bounds_cached);
-
-    total_rect = &details->bounds_cache;
-
-    /* Return the result. */
-    *x1 = (int)details->x + total_rect->x0;
-    *y1 = (int)details->y + total_rect->y0;
-    *x2 = (int)details->x + total_rect->x1 + 1;
-    *y2 = (int)details->y + total_rect->y1 + 1;
+	g_assert (details->bounds_cached);
+	
+	total_rect = &details->bounds_cache;
+	
+	iRet = get_can_redraw_rect(item,&stRect);
+	if(0 == iRet)
+	{
+		*x1 = ((double)stRect.x - item->canvas->zoom_xofs)/item->canvas->pixels_per_unit + item->canvas->scroll_x1;
+		*y1 = ((double)stRect.y - item->canvas->zoom_yofs)/item->canvas->pixels_per_unit + item->canvas->scroll_y1;
+		*x2 = ((double)(stRect.x + stRect.width) - item->canvas->zoom_xofs)/item->canvas->pixels_per_unit + item->canvas->scroll_x1;
+		*y2 = ((double)(stRect.y + stRect.height) - item->canvas->zoom_yofs)/item->canvas->pixels_per_unit + item->canvas->scroll_y1;
+	}
+	else
+	{
+		*x1 = (int)details->x + total_rect->x0;
+		*y1 = (int)details->y + total_rect->y0;
+		*x2 = (int)details->x + total_rect->x1 + 1;
+		*y2 = (int)details->y + total_rect->y1 + 1;		
+	}
 }
 
 static void

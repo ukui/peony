@@ -142,14 +142,16 @@ read_all_children (char *filename,
 {
     GFileEnumerator *enumerator;
     GList *list;
-    GFile *file;
+    GFile *file = NULL;;
     GFileInfo *info;
+	GError *error = NULL;
 
     file = g_file_new_for_path (filename);
 
-    enumerator = g_file_enumerate_children (file, attributes, 0, NULL, NULL);
+    enumerator = g_file_enumerate_children (file, attributes, 0, NULL, &error);
     if (enumerator == NULL)
-    {
+    {   
+		peony_debug_log(TRUE,"_find_","g_file_enumerate_children is failed[%s].",error->message);
         return FALSE;
     }
 

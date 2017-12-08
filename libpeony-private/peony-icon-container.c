@@ -91,11 +91,13 @@
 #define ICON_BASE_WIDTH 96
 
 #define ICON_PAD_TOP 4
-#define ICON_PAD_BOTTOM 4
+#define ICON_PAD_BOTTOM(zoom_level) MAX((peony_get_icon_size_for_zoom_level(zoom_level)*0.18),26)
 
 #define CONTAINER_PAD_LEFT 4
 #define CONTAINER_PAD_RIGHT 4
-#define CONTAINER_PAD_TOP 4
+#define CONTAINER_PAD_TOP(container)	\
+	(TRUE == peony_icon_container_get_is_desktop(PEONY_ICON_CONTAINER(container)))?4:								\
+	MAX((peony_get_icon_size_for_zoom_level(PEONY_ICON_CONTAINER(container)->details->zoom_level)* 0.18),26)
 #define CONTAINER_PAD_BOTTOM 4
 
 #define STANDARD_ICON_GRID_WIDTH 155
@@ -663,7 +665,13 @@ item_get_canvas_bounds (EelCanvasItem *item,
                         gboolean safety_pad)
 {
     EelDRect world_rect;
+	PeonyIconContainer  *pstContainer   = NULL;
 
+	pstContainer 		  = PEONY_ICON_CONTAINER (item->canvas);
+	if(NULL == pstContainer)
+	{
+		return -1;
+	}
     eel_canvas_item_get_bounds (item,
                                 &world_rect.x0,
                                 &world_rect.y0,
@@ -680,8 +688,8 @@ item_get_canvas_bounds (EelCanvasItem *item,
         world_rect.x0 -= ICON_PAD_LEFT + ICON_PAD_RIGHT;
         world_rect.x1 += ICON_PAD_LEFT + ICON_PAD_RIGHT;
 
-        world_rect.y0 -= ICON_PAD_TOP + ICON_PAD_BOTTOM;
-        world_rect.y1 += ICON_PAD_TOP + ICON_PAD_BOTTOM;
+        world_rect.y0 -= ICON_PAD_TOP + ICON_PAD_BOTTOM(pstContainer->details->zoom_level);
+        world_rect.y1 += ICON_PAD_TOP + ICON_PAD_BOTTOM(pstContainer->details->zoom_level);
     }
 
     eel_canvas_w2c (item->canvas,
@@ -1086,8 +1094,11 @@ canvas_set_scroll_region_include_visible_area (EelCanvas *canvas,
 void
 peony_icon_container_update_scroll_region (PeonyIconContainer *container)
 {
-    double x1, y1, x2, y2;
-    double pixels_per_unit;
+    double x1 = 0.0;
+	double y1 = 0.0;
+	double x2 = 0.0;
+	double y2 = 0.0;
+    double pixels_per_unit = 0.0;
     GtkAdjustment *hadj, *vadj;
     float step_increment;
     gboolean reset_scroll_region;
@@ -1149,7 +1160,7 @@ peony_icon_container_update_scroll_region (PeonyIconContainer *container)
     }
     else
     {
-        y2 += ICON_PAD_BOTTOM + CONTAINER_PAD_BOTTOM;
+        y2 += ICON_PAD_BOTTOM(container->details->zoom_level) + CONTAINER_PAD_BOTTOM;
     }
 
     /* Auto-layout assumes a 0, 0 scroll origin and at least allocation->width.
@@ -1174,7 +1185,7 @@ peony_icon_container_update_scroll_region (PeonyIconContainer *container)
         {
             x1 -= ICON_PAD_LEFT + CONTAINER_PAD_LEFT;
         }
-        y1 -= ICON_PAD_TOP + CONTAINER_PAD_TOP;
+        y1 -= ICON_PAD_TOP + CONTAINER_PAD_TOP(container);
     }
 
     x2 -= 1;
@@ -1399,7 +1410,7 @@ lay_down_icons_horizontal (PeonyIconContainer *container,
 
     line_width = container->details->label_position == PEONY_ICON_LABEL_POSITION_BESIDE ? ICON_PAD_LEFT : 0;
     line_start = icons;
-    y = start_y + CONTAINER_PAD_TOP;
+    y = start_y + CONTAINER_PAD_TOP(container);
     i = 0;
 
     max_height_above = 0;
@@ -1448,12 +1459,12 @@ lay_down_icons_horizontal (PeonyIconContainer *container,
 
             if (container->details->label_position == PEONY_ICON_LABEL_POSITION_BESIDE)
             {
-                y += max_height_above + max_height_below + ICON_PAD_BOTTOM;
+                y += max_height_above + max_height_below + ICON_PAD_BOTTOM(container->details->zoom_level);
             }
             else
             {
                 /* Advance to next line. */
-                y += max_height_below + ICON_PAD_BOTTOM;
+                y += max_height_below + ICON_PAD_BOTTOM(container->details->zoom_level);
             }
 
             line_width = container->details->label_position == PEONY_ICON_LABEL_POSITION_BESIDE ? ICON_PAD_LEFT : 0;
@@ -1518,7 +1529,7 @@ lay_down_icons_horizontal (PeonyIconContainer *container,
         lay_down_one_line (container, line_start, NULL, y, max_height_above, positions, TRUE);
 
         /* Advance to next line. */
-        y += max_height_below + ICON_PAD_BOTTOM;
+        y += max_height_below + ICON_PAD_BOTTOM(container->details->zoom_level);
     }
 
     g_array_free (positions, TRUE);
@@ -1654,7 +1665,7 @@ lay_down_icons_vertical (PeonyIconContainer *container,
                 }
             }
 
-            lay_down_one_column (container, line_start, p, x, CONTAINER_PAD_TOP, max_height_with_borders, positions);
+            lay_down_one_column (container, line_start, p, x, CONTAINER_PAD_TOP(container), max_height_with_borders, positions);
 
             /* Advance to next column. */
             if (container->details->all_columns_same_width)
@@ -1703,7 +1714,7 @@ lay_down_icons_vertical (PeonyIconContainer *container,
     if (line_start != NULL)
     {
         x += ICON_PAD_LEFT;
-        lay_down_one_column (container, line_start, NULL, x, CONTAINER_PAD_TOP, max_height_with_borders, positions);
+        lay_down_one_column (container, line_start, NULL, x, CONTAINER_PAD_TOP(container), max_height_with_borders, positions);
     }
 
     g_array_free (positions, TRUE);
@@ -2451,7 +2462,7 @@ reload_icon_positions (PeonyIconContainer *container)
     no_position_icons = g_list_reverse (no_position_icons);
 
     /* Place all the other icons. */
-    lay_down_icons (container, no_position_icons, bottom + ICON_PAD_BOTTOM);
+    lay_down_icons (container, no_position_icons, bottom + ICON_PAD_BOTTOM(container->details->zoom_level));
     g_list_free (no_position_icons);
 }
 
@@ -7794,12 +7805,12 @@ finish_adding_new_icons (PeonyIconContainer *container)
         sort_icons (container, &no_position_icons);
         if (peony_icon_container_get_is_desktop (container))
         {
-            lay_down_icons (container, no_position_icons, CONTAINER_PAD_TOP);
+            lay_down_icons (container, no_position_icons, CONTAINER_PAD_TOP(container));
         }
         else
         {
             get_all_icon_bounds (container, NULL, NULL, NULL, &bottom, BOUNDS_USAGE_FOR_LAYOUT);
-            lay_down_icons (container, no_position_icons, bottom + ICON_PAD_BOTTOM);
+            lay_down_icons (container, no_position_icons, bottom + ICON_PAD_BOTTOM(container->details->zoom_level));
         }
         g_list_free (no_position_icons);
     }

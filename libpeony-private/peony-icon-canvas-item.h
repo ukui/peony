@@ -32,6 +32,17 @@
 extern "C" {
 #endif
 
+typedef struct
+{
+	int x;
+	int y;
+	int width;
+	int height;
+}RECT_PARAM_T;
+
+#define LAYOUT_PAD_LEFT 4
+#define LAYOUT_PAD_TOP 4
+
 #define PEONY_TYPE_ICON_CANVAS_ITEM peony_icon_canvas_item_get_type()
 #define PEONY_ICON_CANVAS_ITEM(obj) \
   (G_TYPE_CHECK_INSTANCE_CAST ((obj), PEONY_TYPE_ICON_CANVAS_ITEM, PeonyIconCanvasItem))
