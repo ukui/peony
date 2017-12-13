@@ -2022,6 +2022,16 @@ icon_container_activate_callback (PeonyIconContainer *container,
 }
 
 static void
+icon_container_rename_button_press_callback (PeonyIconContainer *container,
+                                  FMIconView *icon_view)
+{
+    g_assert (FM_IS_ICON_VIEW (icon_view));
+    g_assert (container == get_icon_container (icon_view));
+
+    real_action_rename(FM_DIRECTORY_VIEW (icon_view),FALSE);
+}
+
+static void
 icon_container_activate_alternate_callback (PeonyIconContainer *container,
         GList *file_list,
         FMIconView *icon_view)
@@ -2976,6 +2986,8 @@ create_icon_container (FMIconView *icon_view)
                              G_CALLBACK (focus_in_event_callback), icon_view, 0);
     g_signal_connect_object (icon_container, "activate",
                              G_CALLBACK (icon_container_activate_callback), icon_view, 0);
+    g_signal_connect_object (icon_container, "rename_button_press",
+                             G_CALLBACK (icon_container_rename_button_press_callback), icon_view, 0);
     g_signal_connect_object (icon_container, "activate_alternate",
                              G_CALLBACK (icon_container_activate_alternate_callback), icon_view, 0);
     g_signal_connect_object (icon_container, "band_select_started",

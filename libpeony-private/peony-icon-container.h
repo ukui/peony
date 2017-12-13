@@ -91,6 +91,7 @@ typedef struct
     /* Operations on the container. */
     int          (* button_press) 	          (PeonyIconContainer *container,
             GdkEventButton *event);
+    void          (* rename_button_press) 	          (PeonyIconContainer *container);
     void         (* context_click_background) (PeonyIconContainer *container,
             GdkEventButton *event);
     void         (* middle_click) 		  (PeonyIconContainer *container,

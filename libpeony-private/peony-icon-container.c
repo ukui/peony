@@ -172,6 +172,7 @@ struct _PeonyIconContainerAccessibleClass
 };
 
 static void          activate_selected_items                        (PeonyIconContainer *container);
+static void			 rename_button_press_selected_items (PeonyIconContainer *container);
 static void          activate_selected_items_alternate              (PeonyIconContainer *container,
         PeonyIcon          *icon);
 static void          compute_stretch                                (StretchState          *start,
@@ -257,6 +258,7 @@ enum
     BAND_SELECT_STARTED,
     BAND_SELECT_ENDED,
     BUTTON_PRESS,
+	RENAME_BUTTON_PRESS,
     CAN_ACCEPT_ITEM,
     CONTEXT_CLICK_BACKGROUND,
     CONTEXT_CLICK_SELECTION,
@@ -830,6 +832,19 @@ unschedule_keyboard_icon_reveal (PeonyIconContainer *container)
 
     if (details->keyboard_icon_reveal_timer_id != 0) {
         g_source_remove (details->keyboard_icon_reveal_timer_id);
+    }
+}
+
+static void
+unschedule_rename_callback_reveal (PeonyIconContainer *container)
+{
+    PeonyIconContainerDetails *details;
+
+    details = container->details;
+
+    if (details->rename_callback_timer_id != 0) {
+        g_source_remove (details->rename_callback_timer_id);
+		details->rename_callback_timer_id = 0;
     }
 }
 
@@ -4861,6 +4876,29 @@ clicked_within_double_click_interval (PeonyIconContainer *container)
     }
 }
 
+static gboolean
+clicked_rename_mode_click (PeonyIconContainer *container)
+{
+    static gint64 rename_click_time = 0;
+    gint64 current_time = 0;
+	gboolean bRenameMode = FALSE;
+    gint double_click_time;
+
+    /* Determine click count */
+    g_object_get (G_OBJECT (gtk_widget_get_settings (GTK_WIDGET (container))),
+                  "gtk-double-click-time", &double_click_time,
+                  NULL);
+    current_time = eel_get_system_time ();
+    if((current_time - rename_click_time >= double_click_time * 1000) && 
+	   (current_time - rename_click_time < (double_click_time * 1000 + 1100000)))
+	{
+		bRenameMode = TRUE;
+	}
+	rename_click_time = current_time;
+	
+    return bRenameMode;
+}
+
 static void
 clear_drag_state (PeonyIconContainer *container)
 {
@@ -6227,6 +6265,15 @@ peony_icon_container_class_init (PeonyIconContainerClass *class)
                         peony_marshal_BOOLEAN__POINTER,
                         G_TYPE_BOOLEAN, 1,
                         GDK_TYPE_EVENT);
+    signals[RENAME_BUTTON_PRESS]
+        = g_signal_new ("rename_button_press",
+                        G_TYPE_FROM_CLASS (class),
+                        G_SIGNAL_RUN_LAST,
+                        G_STRUCT_OFFSET (PeonyIconContainerClass,
+                                         rename_button_press),
+                        NULL, NULL,
+                        g_cclosure_marshal_VOID__VOID,
+                        G_TYPE_NONE, 0);
     signals[ACTIVATE]
         = g_signal_new ("activate",
                         G_TYPE_FROM_CLASS (class),
@@ -6830,6 +6877,18 @@ handle_icon_double_click (PeonyIconContainer *container,
     return FALSE;
 }
 
+static gboolean
+rename_button_press_timeout_callback (gpointer data)
+{
+    PeonyIconContainer *container;
+
+    container = PEONY_ICON_CONTAINER (data);
+    rename_button_press_selected_items(container);
+    container->details->rename_callback_timer_id = 0;
+
+    return FALSE;
+}
+
 /* PeonyIcon event handling.  */
 
 /* Conceptually, pressing button 1 together with CTRL or SHIFT toggles
@@ -6844,7 +6903,8 @@ handle_icon_double_click (PeonyIconContainer *container,
 static gboolean
 handle_icon_button_press (PeonyIconContainer *container,
                           PeonyIcon *icon,
-                          GdkEventButton *event)
+                          GdkEventButton *event,
+                          EelCanvasItem *item)
 {
     PeonyIconContainerDetails *details;
 
@@ -6876,6 +6936,7 @@ handle_icon_button_press (PeonyIconContainer *container,
     if (handle_icon_double_click (container, icon, event))
     {
         /* Double clicking does not trigger a D&D action. */
+		unschedule_rename_callback_reveal(container);
         details->drag_button = 0;
         details->drag_icon = NULL;
         return TRUE;
@@ -6955,7 +7016,32 @@ handle_icon_button_press (PeonyIconContainer *container,
                        event);
     }
 
+	if(TRUE == clicked_rename_mode_click(container) &&
+            details->double_click_icon[0] == details->double_click_icon[1] &&
+            details->double_click_button[0] == details->double_click_button[1])
+	{
+		EelIRect text_rect = {0};
+		double x = 0.0;
+		double y = 0.0;
 
+		x = event->x*get_pixels_per_unit(item);
+		y = event->y*get_pixels_per_unit(item);
+		text_rect = get_compute_text_rectangle (PEONY_ICON_CANVAS_ITEM(item),TRUE, BOUNDS_USAGE_FOR_DISPLAY);
+		if (!button_event_modifies_selection (event) && 
+			 (x >= text_rect.x0) && (x <= text_rect.x1) && 
+			 (y >= text_rect.y0) && (y <= text_rect.y1))
+        {
+            if (event->button == 1)
+            {
+				gint double_click_time = 0;
+				g_object_get (G_OBJECT (gtk_widget_get_settings (GTK_WIDGET (container))),
+                  						"gtk-double-click-time", &double_click_time,NULL);
+				unschedule_rename_callback_reveal(container);
+				container->details->rename_callback_timer_id
+        			= g_timeout_add (MAX(double_click_time+100,0),rename_button_press_timeout_callback,container);
+            }
+        }
+	}
     return TRUE;
 }
 
@@ -6975,7 +7061,7 @@ item_event_callback (EelCanvasItem *item,
     switch (event->type)
     {
     case GDK_BUTTON_PRESS:
-        if (handle_icon_button_press (container, icon, &event->button))
+        if (handle_icon_button_press (container, icon, &event->button,item))
         {
             /* Stop the event from being passed along further. Returning
              * TRUE ain't enough.
@@ -7018,6 +7104,7 @@ peony_icon_container_clear (PeonyIconContainer *container)
     clear_keyboard_focus (container);
     clear_keyboard_rubberband_start (container);
     unschedule_keyboard_icon_reveal (container);
+	unschedule_rename_callback_reveal(container);
     set_pending_icon_to_reveal (container, NULL);
     details->stretch_icon = NULL;
     details->drop_target = NULL;
@@ -7334,6 +7421,16 @@ activate_selected_items (PeonyIconContainer *container)
                        selection);
     }
     g_list_free (selection);
+}
+
+static void
+rename_button_press_selected_items (PeonyIconContainer *container)
+{
+	gboolean return_value;
+    g_return_if_fail (PEONY_IS_ICON_CONTAINER (container));
+
+    g_signal_emit (container,
+                   signals[RENAME_BUTTON_PRESS], 0);
 }
 
 static void

@@ -110,6 +110,8 @@ struct FMListViewDetails
     gulong clipboard_handler_id;
 
     GQuark last_sort_attr;
+    guint rename_callback_timer_id;
+    char *double_click_uri[2]; /* Both clicks in a double click need to be on the same row */
 };
 
 struct SelectionForeachData
@@ -274,6 +276,18 @@ activate_selected_items (FMListView *view)
                                       TRUE);
     peony_file_list_free (file_list);
 
+}
+
+static gboolean
+rename_button_press_timeout_callback (gpointer data)
+{
+    FMListView *view;
+
+    view = FM_LIST_VIEW (data);
+    real_action_rename(FM_DIRECTORY_VIEW (view),FALSE);
+    view->details->rename_callback_timer_id = 0;
+
+    return FALSE;
 }
 
 static void
@@ -652,6 +666,44 @@ do_popup_menu (GtkWidget *widget, FMListView *view, GdkEventButton *event)
         fm_directory_view_pop_up_background_context_menu (FM_DIRECTORY_VIEW (view), event);
     }
 }
+static void
+unschedule_rename_callback_reveal (FMListView *view)
+{
+    if (view->details->rename_callback_timer_id != 0) {
+        g_source_remove (view->details->rename_callback_timer_id);
+		view->details->rename_callback_timer_id = 0;
+    }
+}
+
+static char *
+fm_list_view_get_file_uri (FMListView *view,GtkTreePath *path)
+{
+    PeonyFile *file;
+    GtkTreeIter iter;
+	gboolean bRet = FALSE;
+	
+    bRet = gtk_tree_model_get_iter (GTK_TREE_MODEL (view->details->model),
+                             &iter, path);
+	if(TRUE == bRet)
+	{
+	    gtk_tree_model_get (GTK_TREE_MODEL (view->details->model),
+	                        &iter,
+	                        FM_LIST_MODEL_FILE_COLUMN, &file,
+	                        -1);
+	    if (file)
+	    {
+	        char *uri;
+
+	        uri = peony_file_get_uri (file);
+
+	        peony_file_unref (file);
+
+	        return uri;
+	    }
+	}
+
+    return NULL;
+}
 
 static gboolean
 button_press_callback (GtkWidget *widget, GdkEventButton *event, gpointer callback_data)
@@ -665,6 +717,7 @@ button_press_callback (GtkWidget *widget, GdkEventButton *event, gpointer callba
     gint64 current_time;
     static gint64 last_click_time = 0;
     static int click_count = 0;
+    gboolean bRenameMode = FALSE;
     int double_click_time;
     int expander_size, horizontal_separator;
     gboolean on_expander;
@@ -699,7 +752,13 @@ button_press_callback (GtkWidget *widget, GdkEventButton *event, gpointer callba
     if (current_time - last_click_time < double_click_time * 1000)
     {
         click_count++;
+		unschedule_rename_callback_reveal(view);
     }
+	else if((current_time - last_click_time >= double_click_time * 1000) && (current_time - last_click_time < (double_click_time * 1000 + 1100000)))
+	{
+		bRenameMode = TRUE;
+		click_count = 0;
+	}
     else
     {
         click_count = 0;
@@ -742,6 +801,12 @@ button_press_callback (GtkWidget *widget, GdkEventButton *event, gpointer callba
             }
             view->details->double_click_path[1] = view->details->double_click_path[0];
             view->details->double_click_path[0] = gtk_tree_path_copy (path);
+			if (view->details->double_click_uri[1])
+            {
+                g_free (view->details->double_click_uri[1]);
+            }
+            view->details->double_click_uri[1] = view->details->double_click_uri[0];
+            view->details->double_click_uri[0] = fm_list_view_get_file_uri(view,path);
         }
         if (event->type == GDK_2BUTTON_PRESS)
         {
@@ -871,6 +936,20 @@ button_press_callback (GtkWidget *widget, GdkEventButton *event, gpointer callba
             {
                 do_popup_menu (widget, view, event);
             }
+
+			if (TRUE == bRenameMode && NULL != view->details->double_click_uri[0] && NULL != view->details->double_click_uri[1] && 
+                    g_strcmp0 (view->details->double_click_uri[0], view->details->double_click_uri[1]) == 0)
+            {
+                if (!button_event_modifies_selection (event) && event->x <= gtk_tree_view_column_get_width(view->details->file_name_column))
+                {
+                    if (event->button == 1)
+                    {
+						unschedule_rename_callback_reveal(view);
+						view->details->rename_callback_timer_id
+							= g_timeout_add (MAX(double_click_time+100,0),rename_button_press_timeout_callback,view);
+                    }
+                }
+            }
         }
 
         gtk_tree_path_free (path);
@@ -886,8 +965,14 @@ button_press_callback (GtkWidget *widget, GdkEventButton *event, gpointer callba
             }
             view->details->double_click_path[1] = view->details->double_click_path[0];
             view->details->double_click_path[0] = NULL;
-        }
 
+			if (view->details->double_click_uri[1])
+			{
+				g_free (view->details->double_click_uri[1]);
+			}
+			view->details->double_click_uri[1] = view->details->double_click_uri[0];
+			view->details->double_click_uri[0] = NULL;
+        }
         /* Deselect if people click outside any row. It's OK to
            let default code run; it won't reselect anything. */
         gtk_tree_selection_unselect_all (gtk_tree_view_get_selection (tree_view));
@@ -3060,6 +3145,7 @@ fm_list_view_dispose (GObject *object)
                                      list_view->details->clipboard_handler_id);
         list_view->details->clipboard_handler_id = 0;
     }
+	unschedule_rename_callback_reveal(list_view);
 
     G_OBJECT_CLASS (parent_class)->dispose (object);
 }
@@ -3081,6 +3167,14 @@ fm_list_view_finalize (GObject *object)
     if (list_view->details->double_click_path[1])
     {
         gtk_tree_path_free (list_view->details->double_click_path[1]);
+    }
+    if (list_view->details->double_click_uri[0])
+    {
+        g_free (list_view->details->double_click_uri[0]);
+    }
+    if (list_view->details->double_click_uri[1])
+    {
+        g_free (list_view->details->double_click_uri[1]);
     }
     if (list_view->details->new_selection_path)
     {

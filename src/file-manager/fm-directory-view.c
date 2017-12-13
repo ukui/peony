@@ -6459,7 +6459,7 @@ real_action_redo (FMDirectoryView *view)
 	peony_undostack_manager_redo (manager, GTK_WIDGET (view), finish_undoredo_callback);
 }
 
-static void
+/*static */void
 real_action_rename (FMDirectoryView *view,
 		    gboolean select_all)
 {
@@ -6470,7 +6470,7 @@ real_action_rename (FMDirectoryView *view,
 
 	selection = fm_directory_view_get_selection (view);
 
-	if (selection_not_empty_in_menu_callback (view, selection)) {
+	if (fm_directory_view_can_rename_file(view, selection->data) && selection_not_empty_in_menu_callback (view, selection)) {
 		file = PEONY_FILE (selection->data);
 		if (!select_all) {
 			/* directories don't have a file extension, so

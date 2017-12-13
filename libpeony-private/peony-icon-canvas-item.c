@@ -828,6 +828,20 @@ compute_text_rectangle (const PeonyIconCanvasItem *item,
     return text_rectangle;
 }
 
+EelIRect
+get_compute_text_rectangle (const PeonyIconCanvasItem *item,
+						gboolean canvas_coords,
+						PeonyIconCanvasItemBoundsUsage usage)
+{
+	return compute_text_rectangle (item, item->details->canvas_rect, TRUE, BOUNDS_USAGE_FOR_DISPLAY);
+}
+
+double
+get_pixels_per_unit (const PeonyIconCanvasItem *item)
+{
+	return EEL_CANVAS_ITEM (item)->canvas->pixels_per_unit;;
+}
+
 static EelIRect
 get_current_canvas_bounds (EelCanvasItem *item)
 {

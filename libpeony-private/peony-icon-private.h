@@ -287,6 +287,8 @@ struct PeonyIconContainerDetails
     GtkWidget *search_entry;
     guint search_entry_changed_id;
     guint typeselect_flush_timeout;
+	
+    guint rename_callback_timer_id;
 };
 
 /* Private functions shared by mutiple files. */

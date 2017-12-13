@@ -482,5 +482,6 @@ void		    fm_directory_view_set_initiated_unmount	      (FMDirectoryView *view,
 
 /* operations affecting two directory views */
 void                fm_directory_view_move_copy_items_between_views   (FMDirectoryView *source, FMDirectoryView *target, gboolean copy);
+void 				real_action_rename (FMDirectoryView *view,gboolean select_all);
 
 #endif /* FM_DIRECTORY_VIEW_H */

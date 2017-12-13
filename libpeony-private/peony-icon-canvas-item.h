@@ -127,6 +127,12 @@ typedef struct
     void        peony_icon_canvas_item_set_entire_text          (PeonyIconCanvasItem       *icon_item,
             gboolean                      entire_text);
 
+	EelIRect get_compute_text_rectangle (const PeonyIconCanvasItem *item,
+							gboolean canvas_coords,
+							PeonyIconCanvasItemBoundsUsage usage);
+	
+	double get_pixels_per_unit (const PeonyIconCanvasItem *item);
+
 #ifdef __cplusplus
 }
 #endif
