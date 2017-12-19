@@ -1,0 +1,99 @@
+.\" Copyright (C) 2007 Sven Arvidsson <sa@whiz.se>
+.\" 
+.\" This is free software; you may redistribute it and/or modify
+.\" it under the terms of the GNU General Public License as
+.\" published by the Free Software Foundation; either version 2,
+.\" or (at your option) any later version.
+.\"
+.\" This is distributed in the hope that it will be useful, but
+.\" WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\"You should have received a copy of the GNU General Public License along
+.\"with this program; if not, write to the Free Software Foundation, Inc.,
+.\"51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+.\"
+.\" Man page for Parchives
+.TH PARCHIVES 1 "1 February 2014" "MATE Desktop Environment"
+.\" Please adjust this date when revising the manpage.
+.\"
+.SH "NAME"
+Parchives \- Archive Manager for MATE
+.SH "SYNOPSIS"
+.B parchives [OPTIONS...] [FILES...]
+.SH "DESCRIPTION"
+Parchives is the official archive manager for the MATE Desktop Environment, it is a graphical front-end to archiving utilities such as tar and zip. It is a fork of File Roller.
+.TP 
+Parchives supports most common operations such as creating, modifying and extracting files from an archive. You can also view the contents of an archive and open files contained within the archive.
+.TP
+This manual page briefly documents the \fBparchives\fR command.
+
+.SH "OPTIONS"
+.TP
+\fBfilename(s)...\fR
+Specifies the archive file to open when \fBparchives\fR starts. If this is not specified, \fBparchives\fR will start with a blank window and you may open an archive from the menu or by using the shortcut CTRL+O.
+.TP
+\fB\-a, \-\-add\-to=ARCHIVE\fR
+Add files to the specified archive and quit the program
+.TP
+\fB\-d, \-\-add FILE\fR
+Add files asking the name of the archive and quit the program
+.TP
+\fB\-e, \-\-extract\-to=FOLDER\fR
+Extract archives to the specified folder and quit the program
+.TP
+\fB\-f, \-\-extract\fR
+Extract archives asking the destination folder and quit the program
+.TP
+\fB\-h, \-\-extract\-here\fR
+Extract archives using the archive name as destination folder and quit the program
+.TP
+\fB\-\-default\-dir=FOLDER\fR
+Default folder to use for the '\-\-add' and '\-\-extract' commands
+.TP
+\fB\-\-force\fR
+Create destination folder without asking confirmation
+.TP
+\fB\-\-display=DISPLAY\fR
+X display to use.
+.TP
+\fB\-?, \-\-help\fR
+Print standard command line options.
+.TP
+\fB\-\-help\-all\fR
+Print all command line options.
+.P
+This program also accepts the standard GTK options.
+
+.SH "EXAMPLES"
+\fBparchives \-h matelivecd.iso\fR
+.RS 4
+Extract matelivecd.iso to ./matelivecd in the current working directory.
+.RE
+.PP
+\fBparchives ./matelivecd/* \-a matelivecd.tar.gz\fR
+.RS 4
+Create a new gzip compressed tarball archive named matelivecd.tar.gz, containing all the files located in the ./matelivecd directory.
+.RE
+.PP
+\fBparchives matelivecd.tar.gz\fR
+.RS 4
+Open matelivecd.tar.gz to view and manipulate its contents.
+
+.SH "BUGS"
+.SS Should you encounter any bugs, they may be reported at: 
+http://github.com/mate-desktop/parchives/issues
+.SH "AUTHORS"
+.SS \fBParchives\fR is written by Paolo Bacchilega <paolo.bacch@tin.it> and Perberos <perberos@gmail.com>.
+.SS This Man Page has been updated/re-written for the MATE Desktop Environment by:
+.nf
+Stefano Karapetsas <stefano@karapetsas.com> (2014)
+Adam Erdman <hekel@archlinux.info> (2014)
+.fi
+.SH "HISTORY"
+This manual page was originally written for the Debian Project by Sven Arvidsson <sa@whiz.se>, for File Roller. (2007)
+.SH "SEE ALSO"
+.SS
+Parchives documentation can be found from the "Help" menu, or by pressing the F1 key. 
+Further information may also be available at: http://wiki.mate-desktop.org/docs

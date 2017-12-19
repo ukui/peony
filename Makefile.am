@@ -30,6 +30,8 @@ if ENABLE_XATTR_TAGS
 SUBDIRS += xattr-tags
 endif
 
+SUBDIRS += parchives
+
 EXTRA_DIST = \
 	autogen.sh \
 	intltool-extract.in \

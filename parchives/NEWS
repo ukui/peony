@@ -1,0 +1,131 @@
+### parchives 1.18.2
+
+  * Translations update
+  * Fix: Browsing history not correct
+  * hide folders in "View All Files"
+  * Fix: Wrong behavior of Skip button in Replace file dialog
+
+### parchives 1.18.1
+
+  * add style class frame to scrolledwindows
+  * add style class parchives-window
+  * Merge news for 1.17 into 1.18.
+
+### parchives 1.18.0
+
+  * check the rar/unrar version to work the new date style with all versions
+  * Fix: rar file listing now shows correct date with recent binary
+  * Fix: open the 7z first split volume after compress
+  * Fix typo in NEWS: parchives instead engramp
+  * Fix: compress rar split into volumes
+  * Fix: compress 7z split into volumes
+  * build: remove option that disables deprecated stuff
+  * zip: added ear and war to the supported types list
+  * Update parchives NEWS to use consistent, project wide, markdown-like 
+    formatting.
+  * Build: require Peony >= 1.17.1 to build against GTK+3 version
+    of libpeony-extension
+  * tar: add support for pixz for .tar.xz files
+  * tar: add support for lbzip2 on .tar.bz2 files
+  * lha: add support for Amiga files
+  * Some corrections in GSettings schema
+  * Translations update
+
+### parchives 1.16.0
+
+  * Move to GTK+3 (require GTK+ >= 3.14), drop GTK+2 code and
+    --with-gtk build option
+  * Port to GtkApplication
+  * Use natural sort order when sorting by filename
+  * Use app chooser dialog from GTK+ for "Open With" command
+    instead of custom code
+  * Make "encrypt header" option insensitive if no password is
+    specified
+  * Give unrar priority over p7zip when processing RAR archives
+  * 7z: add support for p7zip-rar >= 15.14
+  * 7z: fix issues with files prefixed with '@'
+  * Fix some GTK+ deprecations
+  * Some more fixes and cleanups
+  * Translations update
+
+### parchives 1.14.1
+
+  * Translations update
+  * tar: Fixed problems with backslashes
+  * 'All files' is duplicated in available formats
+  * fix extracting files with single-character names.
+
+### parchives 1.14.0
+
+  * Drop MateConf migration script
+  * Fix random crash in "open with" dialog
+  * 7z: avoid problems with '?' char in filenames
+  * 7z: correct checking for p7zip 15.09+
+  * rar: avoid "No files to extract" message when disabling overwriting
+    existing files
+  * tar: allow changing contents of .txz files (like it's allowed for
+    .tar.xz files)
+  * unar: avoid problems with '?' char in filenames
+  * Translations update
+
+### parchives 1.12.0
+
+  * Retrieve strings directly from gschema (requires intltool 0.50.1)
+  * Fix ngettext usage in progress dialog
+  * Make extracting multiple archives to a separate dir actually work
+  * Fixed overwrite check when the files to be extracted are inside a folder
+
+### parchives 1.10.2
+
+  * don't crash when opening archives on network drive
+  * fix extracting archives with '[' in filename
+  * some more improvements
+
+### parchives 1.10.1
+
+  * Help fixes
+  * UI fixes
+
+### parchives 1.10.0
+
+  * Fix open rar file inside a rar file
+  * Drop support for Gtk+ < 2.24
+  * Unifiy code as to be used in Gtk+2 and Gtk+3
+  * Drop support for Glib < 2.32
+  * Do not set the selected app as the system default
+  * Fix possible errors with some password protected files
+  * Use Peony GSettings schema optionally
+  * Add ini file for peony extension
+  * Add parchives.appdata.xml
+  * Fix memory leaks
+  * Fixed crash when clicking Cancel in Add Files
+  * use g_get_user_config_dir instead of using .config/mate
+  * do not set the "last output" dialog as modal to allow the user to resize it
+  * Fixed loading of multi-volume rar archives with 7zip
+  * use GtkRecentAction objects to create the recent file choosers
+  * Several string improvements
+  * set a mnemonic for the label in the request dialog
+  * Change strings to use ellipsis
+  * allow to compress iso images and tar archives from the peony menu
+  * Ask overwrite confirmation when extracting files with drag&drop
+  * Small fixes for Gtk3 parchives
+  * Fix hyphen-as-minus-sign issues for parchives.1 man page
+  * Add keywords key to .desktop file
+
+### parchives 1.8.0
+
+  * Updates to man pages.
+  * Update translations.
+
+### parchives 1.7.2
+
+  * Fix zip file extraction with unzip
+
+### parchives 1.7.x
+
+  * Added GTK3 support (--with-gtk=3.0 configure flag)
+  * Added manpage
+  * Added support for RAR 5
+  * Added support for unarchiver
+  * Moved to yelp-tools to build documentation
+  * Show always the "extract to" action in peony extension

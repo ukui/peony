@@ -1,14 +1,18 @@
+AC_PREREQ(2.61)
 AC_INIT([peony-extensions], 0.1.0, [https://github.com/ukui/peony-extensions])
 
-AM_INIT_AUTOMAKE([1.9 no-dist-gzip dist-xz tar-ustar check-news])
+AM_INIT_AUTOMAKE([1.9 foreign no-dist-gzip dist-xz tar-ustar check-news])
 AC_CONFIG_HEADERS(config.h)
 AC_CONFIG_MACRO_DIR([m4])
 
+MATE_COMMON_INIT
 AM_DISABLE_STATIC
 AC_PROG_CC
 AM_PROG_LIBTOOL
 AC_PROG_INSTALL
 AC_PROG_MAKE_SET
+AC_PROG_LIBTOOL
+PKG_PROG_PKG_CONFIG
 
 PEONY_REQUIRED=1.0.0
 LIBMATE_DESKTOP_REQUIRED=1.17.0
@@ -305,11 +309,189 @@ AC_MSG_NOTICE([Installing peony plugins in ${ac_with_peonydir}])
 AC_SUBST([PEONY_EXTENSION_DIR],[${ac_with_peonydir}])
 
 # intltool stuff
-IT_PROG_INTLTOOL(0.18)
+#IT_PROG_INTLTOOL(0.18)
+IT_PROG_INTLTOOL([0.50.1])
 GETTEXT_PACKAGE=peony-extensions
 AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE", [gettext package])
 AM_GLIB_GNU_GETTEXT
+
+AC_PATH_PROG(GLIB_GENMARSHAL, glib-genmarshal)
+AC_PATH_PROG(GLIB_MKENUMS, glib-mkenums)
+AC_PATH_PROG(GLIB_COMPILE_RESOURCES, glib-compile-resources)
+
+dnl ==========================================================================
+dnl
+dnl If you add a version number here, you *must* add an AC_SUBST line for
+dnl it too, or it will never make it into the spec file!
+dnl
+dnl ==========================================================================
+
+GIO_REQUIRED=2.25.5
+JSON_GLIB_REQUIRED=0.14.0
+
+AC_SUBST(GLIB_REQUIRED)
+AC_SUBST(GIO_REQUIRED)
+AC_SUBST(GTK_REQUIRED)
+AC_SUBST(PEONY_REQUIRED)
+
+dnl ===========================================================================
+
+PKG_CHECK_MODULES(GTK, [gtk+-3.0 >= $GTK_REQUIRED])
+AC_SUBST([GTK_CFLAGS])
+AC_SUBST([GTK_LIBS])
+
+dnl ===========================================================================
+
+WARN_CFLAGS="-Wall -Wcast-align -Wtype-limits -Wclobbered -Wempty-body -Wignored-qualifiers"
+
+for option in $WARN_CFLAGS; do
+	SAVE_CFLAGS="$CFLAGS"
+	CFLAGS="$CFLAGS $option"
+	AC_MSG_CHECKING([whether gcc understands $option])
+	AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]], [[]])],[has_option=yes],[has_option=no])
+	if test x$has_option = xyes; then
+		WARNINGS="$WARNINGS $option"
+	fi
+	AC_MSG_RESULT($has_option)
+	CFLAGS="$SAVE_CFLAGS"
+	unset has_option
+	unset SAVE_CFLAGS
+done
+unset option
+CFLAGS="$CFLAGS $WARNINGS"
+
+dnl ===========================================================================
+
+AC_ARG_ENABLE(run_in_place,
+              AS_HELP_STRING([--enable-run-in-place],
+                             [load ui data and extensions from the source tree]),,
+              [enable_run_in_place=no])
+AM_CONDITIONAL(RUN_IN_PLACE, test "x$enable_run_in_place" != xno)
+
+dnl ===========================================================================
+
+PKG_CHECK_MODULES(FR,					\
+	glib-2.0 >= $GLIB_REQUIRED			\
+	gthread-2.0					\
+	gio-unix-2.0 >= $GIO_REQUIRED			\
+	gtk+-3.0 >= $GTK_REQUIRED)
+AC_SUBST(FR_CFLAGS)
+AC_SUBST(FR_LIBS)
+
+dnl ******************************
+
+AC_ARG_ENABLE([peony_actions],
+	[AS_HELP_STRING([--disable-peony-actions],
+			[do not build the peony context menu actions])],,
+	[enable_peony_actions=yes])
+
+if test x"$enable_peony_actions" != x"no" ; then
+	PKG_CHECK_MODULES(PEONY, \
+			  libpeony-extension >= $PEONY_REQUIRED \
+			  glib-2.0 \
+			  gio-2.0)
+	AC_SUBST(PEONY_CFLAGS)
+	AC_SUBST(PEONY_LIBS)
+
+fi
+AM_CONDITIONAL(ENABLE_PEONY_ACTIONS, test "x$enable_peony_actions" = xyes)
+
+AC_ARG_WITH(peonydir,
+        AS_HELP_STRING([--with-peonydir=DIR],[Installation path for Peony extension @<:@auto@:>@]),
+        [ac_with_peonydir=$withval],
+        [ac_with_peonydir=""])
+if test "${ac_with_peonydir}" = ""; then
+        ac_with_peonydir=`pkg-config --variable=extensiondir libpeony-extension`
+fi
+
+AC_MSG_NOTICE([installing peony plugin in ${ac_with_peonydir}])
+AC_SUBST([PEONY_EXTENSION_DIR],[${ac_with_peonydir}])
+
+dnl ******************************
+
+PKG_CHECK_MODULES(JSON_GLIB,
+		  [json-glib-1.0 >= $JSON_GLIB_REQUIRED
+		   glib-2.0],
+		  [enable_json_glib=yes],
+		  [enable_json_glib=no])
+
+if test x$enable_json_glib = xyes ; then
+	AC_DEFINE(HAVE_JSON_GLIB, 1, [Define to 1 if json-glib support is included])
+fi
+
+AC_SUBST(JSON_GLIB_CFLAGS)
+AC_SUBST(JSON_GLIB_LIBS)
+
+AM_CONDITIONAL(ENABLE_JSON_GLIB, test x"$enable_json_glib" != x"no")
+
+dnl ******************************
+
+dnl Checks for mkdtemp function
+
+mkdtemp_missing=false
+AC_CHECK_FUNC(mkdtemp,
+    [AC_DEFINE([HAVE_MKDTEMP], 1, [Have GlibC function to make temp dirs])],
+    mkdtemp_missing=true)
+AM_CONDITIONAL(MKDTEMP_MISSING, test x$mkdtemp_missing = xtrue)
+
+AC_CHECK_LIB(m, floor)
+
+dnl ==========================================================================
+
+AC_ARG_ENABLE(packagekit,
+	      [AC_HELP_STRING([--disable-packagekit],[build without PackageKit support])],,
+	      [enable_packagekit=yes])
+if test "x$enable_packagekit" != "xno"; then
+	AC_DEFINE(ENABLE_PACKAGEKIT, 1, [define to enable PackageKit installer])
+fi
+
+dnl ******************************
+
+#IT_PROG_INTLTOOL([0.50.1])
+if test "x${prefix}" = "xNONE"; then
+  AC_DEFINE_UNQUOTED(LOCALEDIR, "${ac_default_prefix}/${DATADIRNAME}/locale", [Locale dir])
+else
+  AC_DEFINE_UNQUOTED(LOCALEDIR, "${prefix}/${DATADIRNAME}/locale", [Locale dir])
+fi
+
+dnl ******************************
+
+dnl ******************************
+
+AC_ARG_ENABLE([magic],
+              AS_HELP_STRING([--enable-magic], [use libmagic to detect file type]),,
+              [enable_magic=no])
+
+if test x"$enable_magic" = x"yes" ; then
+	save_LIBS="$LIBS"
+	LIBS="$LIBS -lmagic"
+	AC_MSG_CHECKING([whether libmagic works])
+	AC_LINK_IFELSE([AC_LANG_SOURCE([
+#include <magic.h>
+int main () { magic_t m = magic_open(MAGIC_NONE); }
+])],
+		       [AC_MSG_RESULT([yes])],
+		       [AC_MSG_RESULT([no])
+		        AC_MSG_ERROR([libmagic is needed for magic])])
+	LIBS="$save_LIBS"
+
+	MAGIC_CFLAGS=
+	MAGIC_LIBS=-lmagic
+
+	AC_SUBST(MAGIC_CFLAGS)
+	AC_SUBST(MAGIC_LIBS)
+
+	AC_DEFINE(ENABLE_MAGIC, 1, [define to enable magic])
+fi
+
+AM_CONDITIONAL(ENABLE_MAGIC, test x"$enable_magic" != x"no")
+
+dnl ******************************
+
+YELP_HELP_INIT
+
+dnl ******************************
 
 AC_OUTPUT([
   Makefile 
@@ -337,10 +519,46 @@ AC_OUTPUT([
   wallpaper/Makefile
   xattr-tags/libpeony-xattr-tags.peony-extension.in
   xattr-tags/Makefile
+  parchives/Makefile
+		 parchives/data/Makefile
+		 parchives/data/parchives.desktop.in
+		 parchives/data/org.mate.parchives.gschema.xml
+		 parchives/data/icons/Makefile
+		 parchives/data/icons/16x16/Makefile
+		 parchives/data/icons/16x16/actions/Makefile
+		 parchives/data/icons/16x16/apps/Makefile
+		 parchives/data/icons/22x22/Makefile
+		 parchives/data/icons/22x22/apps/Makefile
+		 parchives/data/icons/24x24/Makefile
+		 parchives/data/icons/24x24/actions/Makefile
+		 parchives/data/icons/24x24/apps/Makefile
+		 parchives/data/icons/32x32/Makefile
+		 parchives/data/icons/32x32/apps/Makefile
+		 parchives/data/icons/scalable/Makefile
+		 parchives/data/icons/scalable/apps/Makefile
+		 parchives/copy-n-paste/Makefile
+		 parchives/src/Makefile
+		 parchives/src/commands/Makefile
+		 parchives/src/sh/Makefile
+		 parchives/src/ui/Makefile
+		 parchives/peony/Makefile
+		 parchives/peony/libpeony-parchives.peony-extension.in
+		 parchives/help/Makefile
   po/Makefile.in 
 ])
 
 echo "
+Configuration:
+
+	Source code location:   ${srcdir}
+	Compiler:               ${CC}
+	Internal mkdtemp:       ${mkdtemp_missing}
+	Peony support:           ${enable_peony_actions}
+	PackageKit support:     ${enable_packagekit}
+	Run in place            ${enable_run_in_place}
+	Use libmagic:           ${enable_magic}
+	JSON support:           ${enable_json_glib}
+
 peony-extensions-$VERSION:
         prefix:                 ${prefix}
         compiler:               ${CC}

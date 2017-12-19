@@ -31,3 +31,138 @@ share/shares.c
 wallpaper/peony-wallpaper-extension.c
 [type: gettext/ini]wallpaper/libpeony-wallpaper.peony-extension.in.in
 xattr-tags/peony-xattr-tags-extension.c
+[encoding: UTF-8]
+parchives/copy-n-paste/eggdesktopfile.c
+parchives/copy-n-paste/eggdesktopfile.h
+parchives/copy-n-paste/eggsmclient.c
+parchives/copy-n-paste/eggsmclient.h
+parchives/copy-n-paste/eggsmclient-private.h
+parchives/copy-n-paste/eggsmclient-xsmp.c
+parchives/data/parchives.appdata.xml.in
+parchives/data/parchives.desktop.in.in
+[type: gettext/gsettings]parchives/data/org.mate.parchives.gschema.xml.in
+parchives/peony/parchives-module.c
+parchives/peony/peony-parchives.c
+parchives/peony/peony-parchives.h
+[type: gettext/ini]parchives/peony/libpeony-parchives.peony-extension.in.in
+parchives/src/actions.c
+parchives/src/actions.h
+parchives/src/commands/rpm2cpio.c
+parchives/src/dlg-add-files.c
+parchives/src/dlg-add-files.h
+parchives/src/dlg-add-folder.c
+parchives/src/dlg-add-folder.h
+parchives/src/dlg-ask-password.c
+parchives/src/dlg-ask-password.h
+parchives/src/dlg-batch-add.c
+parchives/src/dlg-batch-add.h
+parchives/src/dlg-delete.c
+parchives/src/dlg-delete.h
+parchives/src/dlg-extract.c
+parchives/src/dlg-extract.h
+parchives/src/dlg-new.c
+parchives/src/dlg-new.h
+parchives/src/dlg-open-with.c
+parchives/src/dlg-open-with.h
+parchives/src/dlg-package-installer.c
+parchives/src/dlg-package-installer.h
+parchives/src/dlg-password.c
+parchives/src/dlg-password.h
+parchives/src/dlg-prop.c
+parchives/src/dlg-prop.h
+parchives/src/dlg-update.c
+parchives/src/dlg-update.h
+parchives/src/eggfileformatchooser.c
+parchives/src/eggfileformatchooser.h
+parchives/src/egg-macros.h
+parchives/src/eggtreemultidnd.c
+parchives/src/eggtreemultidnd.h
+parchives/src/file-data.c
+parchives/src/file-data.h
+parchives/src/file-utils.c
+parchives/src/file-utils.h
+parchives/src/fr-archive.c
+parchives/src/fr-archive.h
+parchives/src/fr-command-7z.c
+parchives/src/fr-command-7z.h
+parchives/src/fr-command-ace.c
+parchives/src/fr-command-ace.h
+parchives/src/fr-command-alz.c
+parchives/src/fr-command-alz.h
+parchives/src/fr-command-ar.c
+parchives/src/fr-command-ar.h
+parchives/src/fr-command-arj.c
+parchives/src/fr-command-arj.h
+parchives/src/fr-command.c
+parchives/src/fr-command-cfile.c
+parchives/src/fr-command-cfile.h
+parchives/src/fr-command-cpio.c
+parchives/src/fr-command-cpio.h
+parchives/src/fr-command-dpkg.c
+parchives/src/fr-command-dpkg.h
+parchives/src/fr-command.h
+parchives/src/fr-command-iso.c
+parchives/src/fr-command-iso.h
+parchives/src/fr-command-jar.c
+parchives/src/fr-command-jar.h
+parchives/src/fr-command-lha.c
+parchives/src/fr-command-lha.h
+parchives/src/fr-command-lrzip.c
+parchives/src/fr-command-lrzip.h
+parchives/src/fr-command-rar.c
+parchives/src/fr-command-rar.h
+parchives/src/fr-command-rpm.c
+parchives/src/fr-command-rpm.h
+parchives/src/fr-command-tar.c
+parchives/src/fr-command-tar.h
+parchives/src/fr-command-unstuff.c
+parchives/src/fr-command-unstuff.h
+parchives/src/fr-command-zip.c
+parchives/src/fr-command-zip.h
+parchives/src/fr-command-zoo.c
+parchives/src/fr-command-zoo.h
+parchives/src/fr-error.c
+parchives/src/fr-error.h
+parchives/src/fr-init.c
+parchives/src/fr-init.h
+parchives/src/fr-list-model.c
+parchives/src/fr-list-model.h
+parchives/src/fr-proc-error.c
+parchives/src/fr-proc-error.h
+parchives/src/fr-process.c
+parchives/src/fr-process.h
+parchives/src/fr-stock.c
+parchives/src/fr-stock.h
+parchives/src/fr-window.c
+parchives/src/fr-window.h
+parchives/src/gio-utils.c
+parchives/src/gio-utils.h
+parchives/src/glib-utils.c
+parchives/src/glib-utils.h
+parchives/src/gtk-utils.c
+parchives/src/gtk-utils.h
+parchives/src/java-utils.c
+parchives/src/java-utils.h
+parchives/src/main.c
+parchives/src/mkdtemp.c
+parchives/src/mkdtemp.h
+parchives/src/open-file.c
+parchives/src/open-file.h
+parchives/src/preferences.c
+parchives/src/preferences.h
+parchives/src/rar-utils.c
+parchives/src/rar-utils.h
+parchives/src/server.c
+parchives/src/test-server.c
+parchives/src/typedefs.h
+[type: gettext/glade]parchives/src/ui/add-options.ui
+[type: gettext/glade]parchives/src/ui/app-menu.ui
+[type: gettext/glade]parchives/src/ui/batch-add-files.ui
+[type: gettext/glade]parchives/src/ui/batch-password.ui
+[type: gettext/glade]parchives/src/ui/delete.ui
+parchives/src/ui.h
+[type: gettext/glade]parchives/src/ui/menus-toolbars.ui
+[type: gettext/glade]parchives/src/ui/new.ui
+[type: gettext/glade]parchives/src/ui/password.ui
+[type: gettext/glade]parchives/src/ui/properties.ui
+[type: gettext/glade]parchives/src/ui/update.ui
