@@ -139,7 +139,7 @@ Package: parchives
 Architecture: any
 Depends: bzip2 (>= 1.0.1),
          peony-common,
-         parchives-common (= ${source:Version}),
+         peony-extensions-common (= ${source:Version}),
          gzip (>= 1.3.2),
          p7zip-full,
          tar (>= 1.13.25),
@@ -188,16 +188,3 @@ Description: archive manager for UKUI
  .
  Parchives doesn't perform archive operations by itself, but relies on
  standard tools for this.
-
-Package: parchives-common
-Architecture: all
-Depends: ${misc:Depends},
-Description: archive manager for UKUI (common files)
- Parchives is an archive manager for the UKUI environment. It allows you to:
- .
-  * Create and modify archives.
-  * View the content of an archive.
-  * View a file contained in an archive.
-  * Extract files from the archive.
- .
- This package contains the architecture independent files.

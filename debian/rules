@@ -30,8 +30,5 @@ override_dh_auto_configure:
 		--enable-magic \
 		--libexecdir=/usr/lib/parchives
 
-override_dh_strip:
-	dh_strip --dbgsym-migration='peony-extensions-dbg (<< 1.14.0-2~)'
-
 get-orig-source:
 	uscan --noconf --force-download --rename --download-current-version --destdir=..
