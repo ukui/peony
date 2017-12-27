@@ -3,8 +3,10 @@
  *
  * Author:
  *   Darin Adler <darin@bentspoon.com>
+ * Modified by : liupeng <liupeng@kylinos.cn>
  *
  * Copyright 2001 Ben Tea Spoons, Inc.
+ * Copyright 2001 2017, Tianjin KYLIN Information Technology Co., Ltd.
  */
 #ifndef _EGG_MACROS_H_
 #define _EGG_MACROS_H_

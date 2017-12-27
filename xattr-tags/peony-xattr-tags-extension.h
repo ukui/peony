@@ -2,6 +2,7 @@
  *  Peony xattr tags extension
  *
  *  Copyright (C) 2016 Felipe Barriga Richards
+ *  Copyright (C) 2017, Tianjin KYLIN Information Technology Co., Ltd.
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -18,6 +19,7 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  *
  *  Authors: Felipe Barriga Richards <spam@felipebarriga.cl>
+ *  Modified by : liupeng <liupeng@kylinos.cn>
  */
  
 #ifndef PEONY_XATTR_TAGS_EXTENSION_H

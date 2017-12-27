@@ -17,6 +17,7 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
  *
  * (C) Copyright 2005 Ethium, Inc.
+ * (C) Copyright 2017, Tianjin KYLIN Information Technology Co., Ltd.
  */
 
 #ifdef HAVE_CONFIG_H

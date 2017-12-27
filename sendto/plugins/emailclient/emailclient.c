@@ -3,6 +3,7 @@
 /* 
  * Copyright (C) 2004 Roberto Majadas <roberto.majadas@openshine.com>
  * Copyright (C) 2012 Stefano Karapetsas <stefano@karapetsas.com>
+ * Copyright (C) 2017, Tianjin KYLIN Information Technology Co., Ltd.
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -21,6 +22,7 @@
  *
  * Authors:  Roberto Majadas <roberto.majadas@openshine.com>
  *           Stefano Karapetsas <stefano@karapetsas.com>
+ * Modified by : liupeng <liupeng@kylinos.cn>
  */
 
 #include "config.h"

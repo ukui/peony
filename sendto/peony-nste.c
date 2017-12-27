@@ -2,6 +2,7 @@
  *  Peony-sendto 
  * 
  *  Copyright (C) 2004 Free Software Foundation, Inc.
+ *  Copyright (C) 2017, Tianjin KYLIN Information Technology Co., Ltd.
  *
  *  This library is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU General Public
@@ -18,7 +19,7 @@
  *  Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
  *
  *  Author: Roberto Majadas <roberto.majadas@openshine.com> 
- * 
+ *  Modified by : liupeng <liupeng@kylinos.cn>
  */
 
 #include <config.h>

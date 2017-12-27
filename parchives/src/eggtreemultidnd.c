@@ -3,10 +3,12 @@
  *
  * Copyright (C) 2005 Free Software Foundation, Inc.
  * Author: Paolo Bacchilega
+ * Modified by : liupeng <liupeng@kylinos.cn>
  */
 
 /* eggtreemultidnd.c
  * Copyright (C) 2001  Red Hat, Inc.
+ * Copyright (C) 2017, Tianjin KYLIN Information Technology Co., Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public

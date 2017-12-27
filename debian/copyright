@@ -333,8 +333,6 @@ Files: parchives/.tx/config
        parchives/data/Makefile.am
        parchives/data/*.in
        parchives/data/packages.match
-       parchives/po/LINGUAS
-       parchives/po/POTFILES.*
        parchives/src/parchives.gresource.xml
        parchives/src/ui/Makefile.am
        parchives/src/ui/*.ui
@@ -402,28 +400,6 @@ License: GPL-2+
 Comment:
  Using license from COPYING file.
 
-Files: po/*.po
-       po/ChangeLog
-       po/gnome-copyrights.txt
-Copyright: 2001-2010, Free Software Foundation, Inc.
-           2003-2005, Sharif FarsiWeb Inc.
-           2003-2008, engrampa'S COPYRIGHT HOLDER.
-           2003, Chris Jackson
-           2003, Mətin Əmirov
-           2003, Rupak Sinha
-           2004-2005, Adam Weinberger
-           2004-2005 Miloslav Trmac <mitr@volny.cz>
-           2004, Kakilik Project <kakilik.sourceforge.net>
-           2004-2005, GNOME Foundation
-           2005-2008, Canonical Ltd.
-           2006-2008, Rosetta Contributors
-           2007, Ihar Hrachyshka
-           2010, Fran Diéguez.
-	   2017, Tianjin KYLIN Information Technology Co., Ltd.
-License: GPL-2+
-Comment:
- Using license from COPYING file.
-
 Files: parchives/help/*
 Copyright: Carles Ferrando Garcia <carles.ferrando@gmail.com>
            Claude Paroz <claude@2xlibre.net>
@@ -463,53 +439,3 @@ Copyright: Carles Ferrando Garcia <carles.ferrando@gmail.com>
 	   2017, Tianjin KYLIN Information Technology Co., Ltd.
 License: GFDL-1.1+
 
-Files: parchives/debian/*
-Copyright: 2011-2014, Stefano Karapetsas <stefano@karapetsas.com>
-           2014, Mike Gabriel <sunweaver@debian.org>
-	   2017, Tianjin KYLIN Information Technology Co., Ltd.
-License: GPL-2+ or LGPL-2+
-
-License: GPL-2+
- This package is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 2 of the License, or
- (at your option) any later version.
- .
- This package is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- GNU Genaral Public License for more details.
- .
- You should have received a copy og the GNU General Public License
- along with this program. If not, see <http://www.gnu.org/licenses/>
- .
- On Debian systems, the complete text of the GNU General
- Public License version 2 can be found in "/usr/share/common-licenses/GPL-2".
-
-License: LGPL-2+
- This library is free software; you can redistribute it and/or
- modify it under the terms of the GNU Library General Public
- License as published by the Free Software Foundation; either
- version 2 of the License, or (at your option) any later version.
- .
- This library is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- Library General Public License for more details.
- .
- You should have received a copy of the GNU Library General Public
- License along with this library; if not, write to the Free Software
- Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
- .
- On Debian systems, the complete text of the GNU General
- Public License version LGPL-2 can be found in "/usr/share/common-licenses/LGPL-2".
-
-License: GFDL-1.1+
- Permission is granted to copy, distribute and/or modify this
- document under the terms of the GNU Free Documentation
- License (GFDL), Version 1.1 or any later version published
- by the Free Software Foundation with no Invariant Sections,
- no Front-Cover Texts, and no Back-Cover Texts.
- .
- On Debian systems, the complete text of the GNU Free Documentation License
- version 1.2 can be found in "/usr/share/common-licenses/GFDL-1.2".

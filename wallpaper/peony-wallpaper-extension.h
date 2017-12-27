@@ -3,6 +3,7 @@
  *
  *  Copyright (C) 2005 Adam Israel
  *  Copyright (C) 2014 Stefano Karapetsas
+ *  Copyright (C) 2017, Tianjin KYLIN Information Technology Co., Ltd.
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -20,6 +21,7 @@
  *
  *  Authors: Adam Israel <adam@battleaxe.net>
  *           Stefano Karapetsas <stefano@karapetsas.com>
+ *  Modified by : liupeng <liupeng@kylinos.cn>
  */
  
 #ifndef PEONY_WALLPAPER_EXTENSION_H

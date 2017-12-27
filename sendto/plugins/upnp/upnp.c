@@ -3,6 +3,7 @@
 /*
  * Copyright (C) 2008 Zeeshan Ali (Khattak)
  * Copyright (C) 2006 Peter Enseleit
+ * Copyright (C) 2017, Tianjin KYLIN Information Technology Co., Ltd.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -22,7 +23,7 @@
  * Author:  Zeeshan Ali (Khattak) <zeeshanak@gnome.org>
  *          Peter Enseleit <penseleit@gmail.com>
  *          Roberto Majadas <telemaco@openshine.com>
- *
+ * Modified by : liupeng <liupeng@kylinos.cn>
  */
 
 #include "config.h"
