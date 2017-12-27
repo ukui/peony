@@ -1,7 +1,7 @@
 Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: peony-extentions
-Upstream-Contact: Stafano Karapetsas <stefano@karapetsas.com>
-Source: http://pub.mate-desktop.org/releases/
+Upstream-Contact: Liu Peng <liupeng@kylinos.cn>
+Source: http://github.com/ukui/peony-extensions/
 
 Files: image-converter/peony-image-converter.c
        image-converter/peony-image-converter.h
@@ -33,6 +33,7 @@ Files: .tx/config
        open-terminal/*.in
        po/LINGUAS
        po/POTFILES.in
+       po/POTFILES.skip
        sendto/docs/*
        sendto/plugins/peony-burn/Makefile.am
        sendto/plugins/emailclient/Makefile.am
@@ -149,29 +150,7 @@ Files: debian/*
 Copyright: 2011-2014, Stefano Karapetsas <stefano@karapetsas.com>
            2014, Mike Gabriel <sunweaver@debian.org>
 		   2017, Tianjin KYLIN Information Technology Co., Ltd.
-License: GPL-2+
-
-License: GPL-2+
- This package is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 2 of the License, or
- (at your option) any later version.
- .
- This package is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- GNU Genaral Public License for more details.
- .
- You should have received a copy og the GNU General Public License
- along with this program. If not, see <http://www.gnu.org/licenses/>
- .
- On Debian systems, the complete text of the GNU General
- Public License version 2 can be found in "/usr/share/common-licenses/GPL-2".
-
-Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
-Upstream-Name: parchives
-Upstream-Contact: Stefano Karapetsas <stefano@karapetsas.com>
-Source: http://git.mate-desktop.org/parchives/
+License: GPL-2+ or LGPL-2+
 
 Files: parchives/src/dlg-add-files.h
        parchives/src/dlg-add-folder.h
@@ -235,7 +214,7 @@ Files: parchives/src/commands/rpm2cpio.c
        parchives/src/fr-command-unarchiver.c
        parchives/src/fr-command-unarchiver.h
        parchives/src/fr-proc-error.c
-       parchives/src/fr-proc-error.h     
+       parchives/src/fr-proc-error.h
        parchives/src/rar-utils.c
        parchives/src/rar-utils.h
        parchives/src/server.c
@@ -294,7 +273,7 @@ Copyright: 2001-2008, Free Software Foundation, Inc.
            2017, Tianjin KYLIN Information Technology Co., Ltd.
 License: GPL-2+
 
-Files: src/mkdtemp.h      
+Files: parchives/src/mkdtemp.h
 Copyright: 2001-2008, Free Software Foundation, Inc.
 License: GPL-2+
 
@@ -380,7 +359,7 @@ License: LGPL-2+
 Files: parchives/src/eggtreemultidnd.c
 Copyright: 2001, Red Hat, Inc.
            2005, Free Software Foundation, Inc.
-	   2017, Tianjin KYLIN Information Technology Co., Ltd.
+           2017, Tianjin KYLIN Information Technology Co., Ltd.
 License: LGPL-2+
 
 Files: parchives/copy-n-paste/eggdesktopfile.c
@@ -439,3 +418,47 @@ Copyright: Carles Ferrando Garcia <carles.ferrando@gmail.com>
 	   2017, Tianjin KYLIN Information Technology Co., Ltd.
 License: GFDL-1.1+
 
+License: GPL-2+
+ This package is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
+ .
+ This package is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ GNU Genaral Public License for more details.
+ .
+ You should have received a copy og the GNU General Public License
+ along with this program. If not, see <http://www.gnu.org/licenses/>
+ .
+ On Debian systems, the complete text of the GNU General
+ Public License version 2 can be found in "/usr/share/common-licenses/GPL-2".
+
+License: LGPL-2+
+ This library is free software; you can redistribute it and/or
+ modify it under the terms of the GNU Library General Public
+ License as published by the Free Software Foundation; either
+ version 2 of the License, or (at your option) any later version.
+ .
+ This library is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ Library General Public License for more details.
+ .
+ You should have received a copy of the GNU Library General Public
+ License along with this library; if not, write to the Free Software
+ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ .
+ On Debian systems, the complete text of the GNU General
+ Public License version LGPL-2 can be found in "/usr/share/common-licenses/LGPL-2".
+
+License: GFDL-1.1+
+ Permission is granted to copy, distribute and/or modify this
+ document under the terms of the GNU Free Documentation
+ License (GFDL), Version 1.1 or any later version published
+ by the Free Software Foundation with no Invariant Sections,
+ no Front-Cover Texts, and no Back-Cover Texts.
+ .
+ On Debian systems, the complete text of the GNU Free Documentation License
+ version 1.2 can be found in "/usr/share/common-licenses/GFDL-1.2".

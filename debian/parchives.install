@@ -2,7 +2,7 @@ usr/bin/parchives
 usr/lib/parchives/
 usr/lib/*/peony/extensions-2.0/libpeony-parchives.so
 usr/share/applications/
-usr/share/appdata/
+usr/share/metainfo/
 usr/share/peony/extensions/libpeony-parchives.peony-extension
 usr/share/dbus-1/
 usr/share/parchives/
