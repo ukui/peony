@@ -1,7 +1,7 @@
 Source: peony-extensions
 Section: x11
 Priority: optional
-Maintainer: Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
+Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
 XSBC-Original-Maintainer: Kylin team <ukui@kylinos.cn>
 Uploaders: liu peng <liupeng@kylinos.cn>,
            handsome_feng <jianfengli@ubuntukylin.com>,
