@@ -51,6 +51,7 @@
 #include <libpeony-private/peony-monitor.h>
 #include <libpeony-private/peony-program-choosing.h>
 #include <libpeony-private/peony-trash-monitor.h>
+#include <libpeony-private/peony-icon-private.h>
 #include <limits.h>
 #include <stddef.h>
 #include <stdio.h>
@@ -85,6 +86,7 @@ static void     real_update_menus                                 (FMDirectoryVi
 static gboolean real_supports_zooming                             (FMDirectoryView        *view);
 static void     fm_desktop_icon_view_update_icon_container_fonts  (FMDesktopIconView      *view);
 static void     font_changed_callback                             (gpointer                callback_data);
+static PeonyZoomLevel get_default_zoom_level (void);
 
 G_DEFINE_TYPE (FMDesktopIconView, fm_desktop_icon_view, FM_TYPE_ICON_VIEW)
 
@@ -293,6 +295,96 @@ fm_desktop_icon_view_dispose (GObject *object)
     G_OBJECT_CLASS (fm_desktop_icon_view_parent_class)->dispose (object);
 }
 
+static PeonyZoomLevel
+fm_desktop_view_get_zoom_level (FMDirectoryView *view)
+{
+    g_return_val_if_fail (FM_IS_ICON_VIEW (view), PEONY_ZOOM_LEVEL_STANDARD);
+
+    return peony_icon_container_get_zoom_level (get_icon_container (FM_ICON_VIEW (view)));
+}
+
+static void
+fm_desktop_view_bump_zoom_level (FMDirectoryView *view, int zoom_increment)
+{
+    PeonyZoomLevel new_level;
+
+    g_return_if_fail (FM_IS_ICON_VIEW (view));
+
+    new_level = fm_desktop_view_get_zoom_level (view) + zoom_increment;
+
+    if (new_level >= PEONY_ZOOM_LEVEL_SMALLEST &&
+            new_level <= PEONY_ZOOM_LEVEL_LARGEST)
+    {
+        fm_directory_view_zoom_to_level (view, new_level);
+    }
+}
+static gboolean
+fm_desktop_view_can_zoom_in (FMDirectoryView *view)
+{
+    g_return_val_if_fail (FM_IS_ICON_VIEW (view), FALSE);
+
+    return fm_desktop_view_get_zoom_level (view)
+           < PEONY_ZOOM_LEVEL_LARGEST;
+}
+
+static gboolean
+fm_desktop_view_can_zoom_out (FMDirectoryView *view)
+{
+    g_return_val_if_fail (FM_IS_ICON_VIEW (view), FALSE);
+
+    return fm_desktop_view_get_zoom_level (view)
+           > PEONY_ZOOM_LEVEL_SMALLEST;
+}
+
+static void
+fm_desktop_view_set_zoom_level (FMIconView *view,
+                             PeonyZoomLevel new_level,
+                             gboolean always_emit)
+{
+    PeonyIconContainer *icon_container;
+
+    g_return_if_fail (FM_IS_ICON_VIEW (view));
+    g_return_if_fail (new_level >= PEONY_ZOOM_LEVEL_SMALLEST &&
+                      new_level <= PEONY_ZOOM_LEVEL_LARGEST);
+
+    icon_container = get_icon_container (view);
+    if (peony_icon_container_get_zoom_level (icon_container) == new_level)
+    {
+        if (always_emit)
+        {
+            g_signal_emit_by_name (view, "zoom_level_changed");
+        }
+        return;
+    }
+
+    peony_file_set_integer_metadata
+    (fm_directory_view_get_directory_as_file (FM_DIRECTORY_VIEW (view)),
+     PEONY_METADATA_KEY_ICON_VIEW_ZOOM_LEVEL,
+     get_default_zoom_level (),
+     new_level);
+
+    peony_icon_container_set_zoom_level (icon_container, new_level,TRUE);
+
+    g_signal_emit_by_name (view, "zoom_level_changed");
+
+    if (fm_directory_view_get_active (FM_DIRECTORY_VIEW (view)))
+    {
+        fm_directory_view_update_menus (FM_DIRECTORY_VIEW (view));
+    }
+}
+
+static void
+fm_desktop_view_zoom_to_level (FMDirectoryView *view,
+                            PeonyZoomLevel zoom_level)
+{
+    FMIconView *icon_view;
+
+    g_assert (FM_IS_ICON_VIEW (view));
+
+    icon_view = FM_ICON_VIEW (view);
+    fm_desktop_view_set_zoom_level (icon_view, zoom_level, FALSE);
+}
+
 static void
 fm_desktop_icon_view_class_init (FMDesktopIconViewClass *class)
 {
@@ -300,8 +392,11 @@ fm_desktop_icon_view_class_init (FMDesktopIconViewClass *class)
 
     FM_DIRECTORY_VIEW_CLASS (class)->merge_menus = real_merge_menus;
     FM_DIRECTORY_VIEW_CLASS (class)->update_menus = real_update_menus;
-    FM_DIRECTORY_VIEW_CLASS (class)->supports_zooming = real_supports_zooming;
-
+    FM_DIRECTORY_VIEW_CLASS (class)->bump_zoom_level = fm_desktop_view_bump_zoom_level;
+    FM_DIRECTORY_VIEW_CLASS (class)->can_zoom_in = fm_desktop_view_can_zoom_in;
+    FM_DIRECTORY_VIEW_CLASS (class)->can_zoom_out = fm_desktop_view_can_zoom_out;
+    FM_DIRECTORY_VIEW_CLASS (class)->zoom_to_level = fm_desktop_view_zoom_to_level;
+    FM_DIRECTORY_VIEW_CLASS (class)->get_zoom_level = fm_desktop_view_get_zoom_level;
     FM_ICON_VIEW_CLASS (class)->supports_auto_layout = real_supports_auto_layout;
     FM_ICON_VIEW_CLASS (class)->supports_scaling = real_supports_scaling;
     FM_ICON_VIEW_CLASS (class)->supports_keep_aligned = real_supports_keep_aligned;
@@ -489,7 +584,7 @@ default_zoom_level_changed (gpointer user_data)
     new_level = get_default_zoom_level ();
 
     peony_icon_container_set_zoom_level (get_icon_container (desktop_icon_view),
-                                        new_level);
+                                        new_level,FALSE);
 }
 
 static gboolean

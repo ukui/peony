@@ -105,10 +105,13 @@
 #define TEXT_BESIDE_ICON_GRID_WIDTH 205
 
 /* Desktop layout mode defines */
+#define ICON_BASE_HEIGHT 48  /*standard rise*/
+#define ICON_WIDTH  48
 #define DESKTOP_PAD_HORIZONTAL 	10
 #define DESKTOP_PAD_VERTICAL 	10
-#define SNAP_SIZE_X 		78
-#define SNAP_SIZE_Y 		20
+#define SNAP_SIZE_X 		48
+#define SNAP_SIZE_Y 		48
+#define Y_AXIS_RATIO          0.6
 
 #define DEFAULT_SELECTION_BOX_ALPHA 0x40
 #define DEFAULT_HIGHLIGHT_ALPHA 0xff
@@ -301,6 +304,9 @@ typedef struct
 
 static guint signals[LAST_SIGNAL] = { 0 };
 
+#define PEONY_ICON_MAX(a,b) ((a)>(b)?(a):(b))
+#define PEONY_ICON_MIN(a,b) ((a)<(b)?(a):(b))
+
 /* Functions dealing with PeonyIcons.  */
 
 static void
@@ -451,7 +457,7 @@ icon_set_size (PeonyIconContainer *container,
     peony_icon_container_move_icon (container, icon,
                                    icon->x, icon->y,
                                    scale, FALSE,
-                                   snap, update_position);
+                                   snap, update_position,FALSE,0,0);
 }
 
 static void
@@ -506,7 +512,7 @@ icon_toggle_selected (PeonyIconContainer *container,
                                            icon,
                                            icon->x, icon->y,
                                            icon->scale,
-                                           FALSE, TRUE, TRUE);
+                                           FALSE, TRUE, TRUE,FALSE,0,0);
         }
 
         emit_stretch_ended (container, icon);
@@ -1817,6 +1823,311 @@ compare_icons_by_position (gconstpointer a, gconstpointer b)
            center_a - center_b;
 }
 
+static DesktopGrid *
+ desktop_grid_new (PeonyIconContainer *container)
+{
+    DesktopGrid *grid;
+    int width, height;
+    int num_columns;
+    int num_rows;
+    int i;
+    GtkAllocation allocation;
+
+    gtk_widget_get_allocation (GTK_WIDGET (container), &allocation);
+    width  = CANVAS_WIDTH(container, allocation);
+    height = CANVAS_HEIGHT(container, allocation);
+
+    num_columns = (int)(((double) width) / GRID_WIDTH_EDGE(container) + 0.5);
+    num_rows = (int)(((double) height) / GRID_HEIGHT_EDGE(container) + 0.5);
+
+    if (num_columns == 0 || num_rows == 0)
+    {
+        return NULL;
+    }
+
+    grid = g_new0 (DesktopGrid, 1);
+    grid->num_columns = num_columns+1;
+    grid->num_rows = num_rows;
+    grid->iStartRows = 0;
+    grid->iStartColumns = 0;
+
+    grid->grid_memory = g_new0 (UnitGrid, (num_rows * num_columns));
+    grid->icon_grid = g_new0 (UnitGrid*, num_columns);
+
+    for (i = 0; i < num_columns; i++)
+    {
+        grid->icon_grid[i] = grid->grid_memory + (i * num_rows);
+    }
+
+    return grid;    
+}
+
+static void
+desktop_grid_free (DesktopGrid *grid)
+{
+    g_free (grid->icon_grid);
+    g_free (grid->grid_memory);
+    g_free (grid);
+}
+
+gboolean
+desktop_grid_position_is_free (DesktopGrid *grid,EelIPoint pos)
+{
+	if((pos.x >= 0) && (pos.x < (grid->num_columns - 1)) && 
+		(pos.y >= 0) && (pos.y < (grid->num_rows)))
+	{
+    	return grid->icon_grid[pos.x][pos.y].has_icon;
+	}
+	else
+	{
+		return FALSE;
+	}
+}
+
+static void
+desktop_grid_mark_icon (PeonyIconContainer *container,DesktopGrid *grid, PeonyIcon *icon)
+{
+    EelDRect icon_pos;
+    EelIPoint grid_point;
+    int x,y;
+
+    icon_pos = peony_icon_canvas_item_get_icon_rectangle(icon->item);
+
+    //grid_point.x = icon_pos.x1 - (icon_pos.x1 - icon_pos.x0) /2;
+    //grid_point.y = icon_pos.y1;
+    grid_point.x = icon_pos.x0;
+    grid_point.y = icon_pos.y0;
+
+    x = PEONY_ICON_MAX(grid_point.x /GRID_WIDTH_EDGE(container),0);
+    y = PEONY_ICON_MAX(grid_point.y / GRID_HEIGHT_EDGE(container),0);
+
+	if((x < (grid->num_columns - 1)) && (y < (grid->num_rows)))
+	{
+		grid->icon_grid[x][y].x = grid_point.x;
+		grid->icon_grid[x][y].y = grid_point.y;
+		grid->icon_grid[x][y].has_icon = TRUE;
+	}
+}
+
+static gboolean
+desktop_grid_mark_select_icon (DesktopGrid *grid, EelIPoint *grid_point)
+{
+	if(NULL == grid || NULL == grid_point)
+	{
+		return FALSE;
+	}
+	
+	//peony_debug_log(TRUE,"position","desktop_grid_mark_select_icon [%d][%d] num_columns[%d]num_rows[%d]",
+	//	grid_point->x, grid_point->y,(grid->num_columns - 1),(grid->num_rows));
+	if((grid_point->x >= 0) && (grid_point->x < (grid->num_columns - 1)) && 
+		(grid_point->y >= 0) && (grid_point->y < (grid->num_rows)))
+	{
+		grid->icon_grid[grid_point->x][grid_point->y].has_icon = TRUE;
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
+gboolean get_grid_icon_position(PeonyIconContainer *container,PeonyIcon *icon,int *iSelectx,int *iSelecty)
+{
+	EelDRect icon_pos;
+	EelIPoint grid_point;
+
+	if(NULL == icon || NULL == icon->item || NULL == iSelectx || NULL == iSelecty)
+	{
+		return FALSE;
+	}
+	
+    icon_pos = peony_icon_canvas_item_get_icon_rectangle(icon->item);
+
+    grid_point.x = icon_pos.x1 - (icon_pos.x1 - icon_pos.x0) /2;
+    grid_point.y = icon_pos.y1;
+
+    *iSelectx = PEONY_ICON_MAX(grid_point.x /GRID_WIDTH_EDGE(container),0);
+    *iSelecty = PEONY_ICON_MAX(grid_point.y / GRID_HEIGHT_EDGE(container),0);
+	return TRUE;
+}
+
+gboolean desktop_grid_icon_move_overlapping(PeonyIconContainer *container,
+                   double world_x, double world_y,int *iMovex,int *iMovey)
+{
+	
+	DesktopGrid *grid_fixed = NULL;	
+	DesktopGrid *grid_select = NULL;
+	DesktopGrid *grid_move = NULL;
+	PeonyIcon *grid_icon = NULL;
+	EelIPoint pos;
+	GList *p = NULL;
+	int x = 0;
+	int y = 0;
+	int i = 0;
+	int j = 0;
+	PeonyDragSelectionItem *item = NULL;
+	int gridwidth, gridheight;
+	GtkAllocation allocation;
+	int num_columns, num_rows;
+	gboolean bFixedMoveOverlap = FALSE;
+	gboolean bMoveSeleOverlap = FALSE;
+	gboolean bOverlap = FALSE;
+	gboolean bFirstIcon = TRUE;
+	PeonyIcon *icon = NULL;
+	gboolean bRet = FALSE;
+	
+    if (container->details->auto_layout)
+    {
+        return;
+    }
+
+    gtk_widget_get_allocation (GTK_WIDGET (container), &allocation);
+    gridwidth  = CANVAS_WIDTH(container, allocation);
+    gridheight = CANVAS_HEIGHT(container, allocation);
+	num_columns = (int)(((double) gridwidth) / GRID_WIDTH_EDGE(container) + 0.5);
+    num_rows = (int)(((double) gridheight) / GRID_HEIGHT_EDGE(container) + 0.5);
+
+	grid_fixed = desktop_grid_new (container);	
+	if(NULL == grid_fixed)
+	{
+		return TRUE;
+	}
+	grid_select = desktop_grid_new (container);
+	if(NULL == grid_select)
+	{
+		desktop_grid_free (grid_fixed);
+		return TRUE;
+	}
+	for (p = container->details->icons; p != NULL; p = p->next)
+	{
+		grid_icon = p->data;
+
+		if (icon_is_positioned (grid_icon) && !grid_icon->has_lazy_position && FALSE == grid_icon->is_selected)
+		{
+			desktop_grid_mark_icon (container,grid_fixed, grid_icon);
+		}
+		else if (icon_is_positioned (grid_icon) && !grid_icon->has_lazy_position && TRUE == grid_icon->is_selected)
+		{
+			desktop_grid_mark_icon (container,grid_select, grid_icon);			
+		}
+	}
+
+	grid_move = desktop_grid_new (container);
+	if(NULL == grid_move)
+	{
+		desktop_grid_free (grid_fixed);
+		desktop_grid_free (grid_select);
+		return TRUE;
+	}
+	for (p = container->details->dnd_info->drag_info.selection_list; p != NULL; p = p->next)
+	{
+		item = p->data;
+		//peony_debug_log(TRUE,"grid","x[%d]y[%d]-world_x[%f] world_y[%f]",
+		//	item->icon_x,item->icon_y,world_x,world_y);
+
+		x = world_x + item->icon_x;
+		y = world_y + item->icon_y;
+		
+		pos.x = (int)((double)(x / GRID_WIDTH_EDGE(container)) + 0.5);
+		pos.y = (int)((double)(y / GRID_HEIGHT_EDGE(container)) + 0.5);
+		if((x >= 0) && (x <= gridwidth) && (y >= 0) && (y <= gridheight) && 
+			(pos.x <= num_columns-1) && (pos.y <= num_rows-1))
+		{
+			bRet = desktop_grid_mark_select_icon(grid_move,&pos);
+			if(TRUE == bRet && TRUE == bFirstIcon)
+			{
+				icon = peony_icon_container_get_icon_by_uri(container, item->uri);
+        		if (icon != NULL)
+        		{
+        			int iSelectx = 0;
+					int iSelecty = 0;
+        			bRet = get_grid_icon_position(container,icon,&iSelectx,&iSelecty);
+					if(TRUE == bRet && NULL != iMovex && NULL != iMovey)
+					{
+						*iMovex = pos.x - iSelectx;
+						*iMovey = pos.y - iSelecty;
+					}
+					bFirstIcon = FALSE;
+				}
+			}
+		}
+	}
+
+	for(i = 0;i < num_columns;i++)
+	{
+		for(j = 0;j < num_rows;j++)
+		{
+			if(TRUE == grid_fixed->icon_grid[i][j].has_icon && TRUE == grid_move->icon_grid[i][j].has_icon)
+			{				
+				//peony_debug_log(TRUE,"grid","i[%d]j[%d]-[%d] bFixedMoveOverlap",i,j,grid_fixed->icon_grid[i][j].has_icon);
+				bFixedMoveOverlap = TRUE;
+				break;
+			}
+		}
+
+		if(TRUE == bFixedMoveOverlap)
+		{
+			break;
+		}
+	}
+
+	if(TRUE == bFixedMoveOverlap)
+	{
+		for(i = 0;i < num_columns;i++)
+		{
+			for(j = 0;j < num_rows;j++)
+			{
+				if(TRUE == grid_select->icon_grid[i][j].has_icon && TRUE == grid_move->icon_grid[i][j].has_icon)
+				{
+					//peony_debug_log(TRUE,"grid","i[%d]j[%d]-[%d] bMoveSeleOverlap",i,j,grid_fixed->icon_grid[i][j].has_icon);
+					bMoveSeleOverlap = TRUE;
+					break;
+				}
+			}
+
+			if(TRUE == bMoveSeleOverlap)
+			{
+				break;
+			}
+		}	
+		
+		if(TRUE == bMoveSeleOverlap)
+		{
+			bOverlap = TRUE;
+		}
+	}
+	#if 0
+	peony_debug_log(TRUE,"grid","grid_fixed");
+	for(i = 0;i < num_columns;i++)
+	{
+		for(j = 0;j < num_rows;j++)
+		{
+			peony_debug_log(TRUE,"grid","i[%d]j[%d]-[%d] ",i,j,grid_fixed->icon_grid[i][j].has_icon);
+		}
+	}	
+	
+	peony_debug_log(TRUE,"grid","grid_move");
+	for(i = 0;i < num_columns;i++)
+	{
+		for(j = 0;j < num_rows;j++)
+		{
+			peony_debug_log(TRUE,"grid","i[%d]j[%d]-[%d] ",i,j,grid_move->icon_grid[i][j].has_icon);
+		}
+	}	
+	
+	peony_debug_log(TRUE,"grid","grid_select");
+	for(i = 0;i < num_columns;i++)
+	{
+		for(j = 0;j < num_rows;j++)
+		{
+			peony_debug_log(TRUE,"grid","i[%d]j[%d]-[%d] ",i,j,grid_select->icon_grid[i][j].has_icon);
+		}
+	}	
+	#endif
+	desktop_grid_free (grid_fixed);
+	desktop_grid_free (grid_select);
+	desktop_grid_free (grid_move);
+	return bOverlap;
+}
+
 static PlacementGrid *
 placement_grid_new (PeonyIconContainer *container, gboolean tight)
 {
@@ -1951,6 +2262,85 @@ placement_grid_mark_icon (PlacementGrid *grid, PeonyIcon *icon)
                                       icon_pos,
                                       &grid_pos);
     placement_grid_mark (grid, grid_pos);
+}
+
+static void
+find_empty_location1(PeonyIconContainer * container,DesktopGrid * grid,PeonyIcon * icon,int start_x,int start_y,int * x,int * y)
+{
+    int canvas_width;
+    int canvas_height;
+    int i,j,num_columns,num_rows;
+    EelIPoint point;
+    EelDRect icon_rect;
+    GtkAllocation allocation;
+    gboolean find_location;
+
+    find_location = FALSE;
+    gtk_widget_get_allocation (GTK_WIDGET (container),&allocation);
+    canvas_width = CANVAS_WIDTH(container,allocation);
+    canvas_height = CANVAS_HEIGHT(container,allocation);
+
+    /*每个图标都从(0,0)开始找位置*/
+    /*
+    Can not start from (0,0), because when the desktop icon is not the same 
+    batch, starting from (0,0) will cause the subsequent batch of icons to 
+    overlap with the previous batch. For example, the icon A in the first 
+    batch has the has_lazy_position attribute, and although A has coordinates 
+    but still recalculates the position. If the display starts from (0,0), 
+    it finds a gap from (0,0). The position of the icon B in the second batch,
+    and B does not have the has_lazy_position attribute, so that the AB 
+    overlaps, and if the search from the A's own coordinates begins, at least 
+    the position of the A coordinate is found, and the position of the A 
+    itself should be empty.
+    不能从(0,0)开始，因为当桌面图标不是同一批次显示时，
+    从(0,0)开始会导致后面一批显示的图标与前一批重叠。
+    例如：第一批中的图标A有has_lazy_position属性，虽然
+    A有坐标但是仍然会重新计算位置，如果从(0,0)开始显示
+    会从(0,0)开始找到一个空位，这个空位正好时第二批中的
+    图标B的位置，而B没有has_lazy_position属性，这样AB就
+    重叠了，如果从A本身坐标开始寻找则至少会找到大于等于
+    A坐标的位置，A的位置本身应该就是空位。
+    */
+    //start_x = 0;
+    //start_y = 0;
+
+    point.x = start_x / GRID_WIDTH_EDGE(container) ;
+    point.y = start_y / GRID_HEIGHT_EDGE(container) ;
+
+    num_columns = (int)(((double) canvas_width) / GRID_WIDTH_EDGE(container) + 0.5);
+    num_rows = (int)(((double) canvas_height) / GRID_HEIGHT_EDGE(container) + 0.5);
+
+    icon_rect = peony_icon_canvas_item_get_icon_rectangle (icon->item);
+
+    for(i = point.x;i <num_columns;i++)
+    {
+        for(j = point.y;j < num_rows;j++ )
+        {
+            if(!grid->icon_grid[i][j].has_icon)
+            {
+				*x = (i *  GRID_WIDTH_EDGE(container) + GRID_WIDTH_EDGE(container) /2) - ((icon_rect.x1 - icon_rect.x0) /2);
+				*y = (j *  GRID_HEIGHT_EDGE(container) + GRID_HEIGHT_EDGE(container) * Y_AXIS_RATIO) - (icon_rect.y1 - icon_rect.y0);
+
+                grid->icon_grid[i][j].has_icon = TRUE;
+                grid->icon_grid[i][j].x = *x;
+                grid->icon_grid[i][j].y = *y;
+                find_location = TRUE;
+                break;
+            }
+        }
+        if(find_location)
+        {
+            break;
+        }
+		point.y = 0;
+    }
+
+	/*desktop is full,put the icon on the first location*/
+	if(FALSE == find_location)
+	{
+		*x = grid->icon_grid[0][0].x;
+		*y = grid->icon_grid[0][0].y;
+	}
 }
 
 static void
@@ -2122,6 +2512,69 @@ peony_icon_container_set_rtl_positions (PeonyIconContainer *container)
         x = get_mirror_x_position (container, icon, icon->saved_ltr_x);
         icon_set_position (icon, x, icon->y);
     }
+}
+
+static void
+lay_down_icons_vertical_desktop1 (PeonyIconContainer *container,GList *icons)
+{
+    GList *p, *placed_icons, *unplaced_icons;
+    int total, new_length, placed;
+    PeonyIcon *icon;
+    int width,height, max_width, column_width, icon_width, icon_height;
+    int x, y, x1, x2, y1, y2;
+    int num_rows,num_columns,i,j;
+    EelDRect icon_rect;
+    GtkAllocation allocation;
+	DesktopGrid *desktop_grid = NULL;
+	
+    /* Get container dimensions */
+    gtk_widget_get_allocation (GTK_WIDGET (container), &allocation);
+    width = CANVAS_WIDTH (container,allocation);
+    height = CANVAS_HEIGHT(container, allocation);
+
+    num_columns = (int)(((double) width) / GRID_WIDTH_EDGE(container) + 0.5);
+    num_rows = (int)(((double) height) / GRID_HEIGHT_EDGE(container) + 0.5);
+
+    /* Determine which icons have and have not been placed */
+    placed_icons = NULL;
+    unplaced_icons = NULL;
+
+    total = g_list_length (container->details->icons);
+    new_length = g_list_length (icons);
+
+	desktop_grid = desktop_grid_new (container);
+	if(NULL != desktop_grid)
+	{
+		 for (p = container->details->icons; p != NULL; p = p->next)
+		 {
+			 icon = p->data;
+			
+			 if (icon_is_positioned (icon) && !icon->has_lazy_position && (NULL == g_list_find(icons,icon)))
+			 {
+				 desktop_grid_mark_icon (container,desktop_grid, icon);
+			 }
+		 }
+
+	    p = icons;
+	    for(i=0;i<num_columns;i++)
+	    {
+		    for(j=0;j<num_rows;j++)
+		    {
+		        if(p!=NULL && (TRUE != desktop_grid->icon_grid[i][j].has_icon))
+		       {
+		           icon = p->data;
+		           icon_rect = peony_icon_canvas_item_get_icon_rectangle (icon->item);
+		           icon_width = icon_rect.x1 - icon_rect.x0;
+		           icon_height = icon_rect.y1 - icon_rect.y0;
+		           icon_set_position(icon,i*GRID_WIDTH_EDGE(container) + GRID_WIDTH_EDGE(container)/2-icon_width/2,j*GRID_HEIGHT_EDGE(container)+GRID_HEIGHT_EDGE(container)*Y_AXIS_RATIO-icon_height);
+		           icon->saved_ltr_x = icon->x;
+		           p = p->next;
+		        }
+		     }
+	    }
+	 	desktop_grid_free (desktop_grid);
+	}
+	peony_icon_container_freeze_icon_positions (container);
 }
 
 static void
@@ -2338,7 +2791,7 @@ lay_down_icons (PeonyIconContainer *container, GList *icons, double start_y)
     case PEONY_ICON_LAYOUT_T_B_R_L:
         if (peony_icon_container_get_is_desktop (container))
         {
-            lay_down_icons_vertical_desktop (container, icons);
+            lay_down_icons_vertical_desktop1 (container, icons);
         }
         else
         {
@@ -2613,15 +3066,27 @@ peony_icon_container_move_icon (PeonyIconContainer *container,
                                double scale,
                                gboolean raise,
                                gboolean snap,
-                               gboolean update_position)
+                               gboolean update_position,
+                               gboolean bDesktopMove,
+                               int iMovex, int iMovey)
 {
     PeonyIconContainerDetails *details;
     gboolean emit_signal;
     PeonyIconPosition position;
 
     details = container->details;
+    int gridwidth, gridheight;
+    int num_columns, num_rows;
+    GtkAllocation allocation;
 
     emit_signal = FALSE;
+
+    gtk_widget_get_allocation (GTK_WIDGET (container), &allocation);
+    gridwidth  = CANVAS_WIDTH(container, allocation);
+    gridheight = CANVAS_HEIGHT(container, allocation);
+
+    num_columns = (int)(((double) gridwidth) / GRID_WIDTH_EDGE(container) + 0.5);
+    num_rows = (int)(((double) gridheight) / GRID_HEIGHT_EDGE(container) + 0.5);
 
     if (icon == get_icon_being_renamed (container))
     {
@@ -2639,7 +3104,7 @@ peony_icon_container_move_icon (PeonyIconContainer *container,
         }
     }
 
-    if (!details->auto_layout)
+    if (!details->auto_layout && !peony_icon_container_get_is_desktop(container))
     {
         if (details->keep_aligned && snap)
         {
@@ -2653,6 +3118,71 @@ peony_icon_container_move_icon (PeonyIconContainer *container,
         }
 
         icon->saved_ltr_x = peony_icon_container_is_layout_rtl (container) ? get_mirror_x_position (container, icon, icon->x) : icon->x;
+    }
+
+    if(!details->auto_layout && peony_icon_container_get_is_desktop(container))
+    {
+        DesktopGrid *grid;
+        GList *p;
+        PeonyIcon *grid_icon;
+        EelIPoint pos;
+        EelDRect icon_rect;
+        int width,height;
+
+        grid = desktop_grid_new (container);
+		if(NULL != grid)
+		{
+			if(FALSE == bDesktopMove)
+			{
+		        pos.x = (int)((double)x / GRID_WIDTH_EDGE(container)+0.5);
+		        pos.y = (int)((double)y / GRID_HEIGHT_EDGE(container)+0.5);
+			}
+			else
+			{
+				pos.x = iMovex;
+		        pos.y = iMovey;
+			}
+
+	        icon_rect = peony_icon_canvas_item_get_icon_rectangle(icon->item);
+	        width = icon_rect.x1 - icon_rect.x0;
+	        height = icon_rect.y1 - icon_rect.y0;
+	        
+	        for (p = container->details->icons; p != NULL; p = p->next)
+	        {
+	            grid_icon = p->data;
+
+	            if (icon_is_positioned (grid_icon) && !grid_icon->has_lazy_position && FALSE == grid_icon->is_selected)
+	            {
+	                desktop_grid_mark_icon (container,grid, grid_icon);
+	            }
+	        }
+
+	        if(x !=icon->x || y !=icon->y)
+	        {
+	        	
+	            double distancex;
+	            double distancey;
+				double x_offset,y_offset;
+
+				x_offset = pow((double)(x-icon->x),2.0);
+				y_offset = pow((double)(y-icon->y),2.0);
+	            distancex = sqrt(x_offset);
+	            distancey = sqrt(y_offset);
+
+	            if((distancex < (GRID_WIDTH_EDGE(container))/2  && distancey < (GRID_HEIGHT_EDGE(container))/2) || pos.x<0 || pos.x>num_columns-1 || pos.y<0 || pos.y>num_rows-1 || desktop_grid_position_is_free(grid,pos))
+	            {
+	                icon_set_position (icon,icon->x,icon->y);
+	                emit_signal = FALSE;
+	            }
+	            else
+	            {
+	                icon_set_position(icon,pos.x*GRID_WIDTH_EDGE(container)+GRID_WIDTH_EDGE(container)/2-width/2,pos.y*GRID_HEIGHT_EDGE(container)+GRID_HEIGHT_EDGE(container)*Y_AXIS_RATIO-height);
+	                emit_signal = TRUE;
+	            }
+            icon->saved_ltr_x = icon->x;
+        }
+        desktop_grid_free (grid);
+		}
     }
 
     if (emit_signal)
@@ -5072,7 +5602,7 @@ keyboard_stretching (PeonyIconContainer *container,
         peony_icon_container_move_icon (container, icon,
                                        icon->x, icon->y,
                                        1.0,
-                                       FALSE, TRUE, TRUE);
+                                       FALSE, TRUE, TRUE,FALSE,0,0);
         break;
     }
 
@@ -5435,7 +5965,10 @@ peony_icon_container_search_dialog_hide (GtkWidget *search_dialog,
 static gboolean
 peony_icon_container_search_entry_flush_timeout (PeonyIconContainer *container)
 {
-    peony_icon_container_search_dialog_hide (container->details->search_window, container);
+	if((NULL != container) && (NULL != container->details) && (NULL != container->details->search_window))
+	{
+    	peony_icon_container_search_dialog_hide (container->details->search_window, container);
+	}
 
     return TRUE;
 }
@@ -7804,12 +8337,81 @@ finish_adding_icon (PeonyIconContainer *container,
     g_signal_emit (container, signals[ICON_ADDED], 0, icon->data);
 }
 
+static gboolean get_icon_position(PeonyIconContainer *container,DesktopGrid *desktop_grid,PeonyIcon *icon,double *x,double *y)
+{
+	int i = 0;
+	int j = 0;
+    EelIPoint point;
+    gboolean find_location = FALSE;
+	double      dHalfWidth    = 0.0;
+	double      dHeight		  = 0.0;
+
+	do
+	{
+		if(NULL == container || NULL == desktop_grid || NULL == icon || NULL == x || NULL == y)
+		{
+			break;
+		}
+
+		point.x = MAX(desktop_grid->iStartRows,0);
+		point.y = MAX(desktop_grid->iStartColumns,0);
+
+		//icon_rect = peony_icon_canvas_item_get_icon_rectangle (icon->item);
+		dHalfWidth = (double)peony_get_icon_size_for_zoom_level(peony_icon_container_get_zoom_level(container))/(EEL_CANVAS (container)->pixels_per_unit)/2;
+		dHeight    = (double)peony_get_icon_size_for_zoom_level(peony_icon_container_get_zoom_level(container))/(EEL_CANVAS (container)->pixels_per_unit);
+		for(i = point.x;i < (desktop_grid->num_columns - 1);i++)
+	    {
+	        for(j = point.y;j < (desktop_grid->num_rows);j++ )
+	        {
+	            if(FALSE == desktop_grid->icon_grid[i][j].has_icon)
+	            {
+	                *x = (i *  GRID_WIDTH_EDGE(container) + GRID_WIDTH_EDGE(container) /2) - dHalfWidth;
+	                *y = (j *  GRID_HEIGHT_EDGE(container) + GRID_HEIGHT_EDGE(container) * Y_AXIS_RATIO) - dHeight;
+
+	                desktop_grid->icon_grid[i][j].has_icon = TRUE;
+	                desktop_grid->icon_grid[i][j].x = *x;
+	                desktop_grid->icon_grid[i][j].y = *y;
+	                find_location = TRUE;
+	                break;
+	            }
+	        }
+	        if(TRUE == find_location)
+	        {
+	            break;
+	        }
+			point.y = 0;
+	    }
+	}while(0);
+
+	if(FALSE == find_location)
+    {
+    	if(NULL != container)
+    	{
+    		//icon_rect = peony_icon_canvas_item_get_icon_rectangle (icon->item);
+			*x = (GRID_WIDTH_EDGE(container) /2) - dHalfWidth;
+			*y = (GRID_HEIGHT_EDGE(container) * Y_AXIS_RATIO) - dHeight;
+    	}
+    }
+	else
+	{
+		desktop_grid->iStartRows    = i;
+		desktop_grid->iStartColumns = j;
+	}
+
+	return find_location;
+}
+
 static void
 finish_adding_new_icons (PeonyIconContainer *container)
 {
     GList *p, *new_icons, *no_position_icons, *semi_position_icons;
     PeonyIcon *icon;
     double bottom;
+    EelDRect icon_rect;
+    gboolean keep;
+    DesktopGrid *desktop_grid = NULL;
+    time_t now;
+    gboolean dummy;
 
     new_icons = container->details->new_icons;
     container->details->new_icons = NULL;
@@ -7833,84 +8435,103 @@ finish_adding_new_icons (PeonyIconContainer *container)
         finish_adding_icon (container, icon);
     }
     g_list_free (new_icons);
+	
+	/* Position the unpositioned manual layout icons. */
+	if (no_position_icons != NULL)
+	{
+		g_assert (!container->details->auto_layout);
+
+		sort_icons (container, &no_position_icons);
+		if (peony_icon_container_get_is_desktop (container))
+		{
+			lay_down_icons (container, no_position_icons, CONTAINER_PAD_TOP(container));
+		}
+		else
+		{
+			get_all_icon_bounds (container, NULL, NULL, NULL, &bottom, BOUNDS_USAGE_FOR_LAYOUT);
+			lay_down_icons (container, no_position_icons, bottom + ICON_PAD_BOTTOM(container->details->zoom_level));
+		}
+		g_list_free (no_position_icons);
+	}
 
     if (semi_position_icons != NULL)
     {
-        PlacementGrid *grid;
-        time_t now;
-        gboolean dummy;
 
-        g_assert (!container->details->auto_layout);
+         g_assert (!container->details->auto_layout);
 
-        semi_position_icons = g_list_reverse (semi_position_icons);
+         semi_position_icons = g_list_reverse (semi_position_icons);//don't do it
 
         /* This is currently only used on the desktop.
          * Thus, we pass FALSE for tight, like lay_down_icons_tblr */
-        grid = placement_grid_new (container, FALSE);
+         desktop_grid = desktop_grid_new (container);
+		 if(NULL != desktop_grid)
+		 {
+	         for (p = container->details->icons; p != NULL; p = p->next)
+	         {
+	             icon = p->data;
+	            
+	             if (icon_is_positioned (icon) && !icon->has_lazy_position)
+	             {
+	                 desktop_grid_mark_icon (container,desktop_grid, icon);
+	             }
+	         }
+	            
+	         now = time (NULL);
+	            
+	         for (p = semi_position_icons; p != NULL; p = p->next)
+	         {
+	             PeonyIcon *icon;
+	             PeonyIconPosition position;
+	             int x, y;
+	            
+	             icon = p->data;
+	             x = icon->x;
+	             y = icon->y;
 
-        for (p = container->details->icons; p != NULL; p = p->next)
-        {
-            icon = p->data;
+	             find_empty_location1 (container, desktop_grid,
+	                                  icon, x, y, &x, &y);
+	            
+	             icon_set_position (icon, x, y);
+            
+	             position.x = icon->x;
+	             position.y = icon->y;
+	             position.scale = icon->scale;
+	             
+	             g_signal_emit (container, signals[ICON_POSITION_CHANGED], 0,
+	                               icon->data, &position);
+	             g_signal_emit (container, signals[STORE_LAYOUT_TIMESTAMP], 0,
+	                               icon->data, &now, &dummy);
+	            
+	                /* ensure that next time we run this code, the formerly semi-positioned
+	                 * icons are treated as being positioned. */
+	             icon->has_lazy_position = FALSE;
 
-            if (icon_is_positioned (icon) && !icon->has_lazy_position)
-            {
-                placement_grid_mark_icon (grid, icon);
-            }
-        }
+	            }
 
-        now = time (NULL);
-
-        for (p = semi_position_icons; p != NULL; p = p->next)
-        {
-            PeonyIcon *icon;
-            PeonyIconPosition position;
-            int x, y;
-
-            icon = p->data;
-            x = icon->x;
-            y = icon->y;
-
-            find_empty_location (container, grid,
-                                 icon, x, y, &x, &y);
-
-            icon_set_position (icon, x, y);
-
-            position.x = icon->x;
-            position.y = icon->y;
-            position.scale = icon->scale;
-            placement_grid_mark_icon (grid, icon);
-            g_signal_emit (container, signals[ICON_POSITION_CHANGED], 0,
-                           icon->data, &position);
-            g_signal_emit (container, signals[STORE_LAYOUT_TIMESTAMP], 0,
-                           icon->data, &now, &dummy);
-
-            /* ensure that next time we run this code, the formerly semi-positioned
-             * icons are treated as being positioned. */
-            icon->has_lazy_position = FALSE;
-        }
-
-        placement_grid_free (grid);
-
-        g_list_free (semi_position_icons);
+	            desktop_grid_free (desktop_grid);
+			}
+            g_list_free (semi_position_icons);
     }
-
+	
+	#if 0
     /* Position the unpositioned manual layout icons. */
-    if (no_position_icons != NULL)
-    {
-        g_assert (!container->details->auto_layout);
+        if (no_position_icons != NULL)
+        {
+            g_assert (!container->details->auto_layout);
 
-        sort_icons (container, &no_position_icons);
-        if (peony_icon_container_get_is_desktop (container))
-        {
-            lay_down_icons (container, no_position_icons, CONTAINER_PAD_TOP(container));
+            sort_icons (container, &no_position_icons);
+            if (peony_icon_container_get_is_desktop (container))
+            {
+                lay_down_icons (container, no_position_icons, CONTAINER_PAD_TOP);
+            }
+            else
+            {
+                get_all_icon_bounds (container, NULL, NULL, NULL, &bottom, BOUNDS_USAGE_FOR_LAYOUT);
+                lay_down_icons (container, no_position_icons, bottom + ICON_PAD_BOTTOM);
+            }
+            g_list_free (no_position_icons);
         }
-        else
-        {
-            get_all_icon_bounds (container, NULL, NULL, NULL, &bottom, BOUNDS_USAGE_FOR_LAYOUT);
-            lay_down_icons (container, no_position_icons, bottom + ICON_PAD_BOTTOM(container->details->zoom_level));
-        }
-        g_list_free (no_position_icons);
-    }
+		#endif
 
     if (container->details->store_layout_timestamps_when_finishing_new_icons)
     {
@@ -8085,12 +8706,13 @@ peony_icon_container_get_zoom_level (PeonyIconContainer *container)
 }
 
 void
-peony_icon_container_set_zoom_level (PeonyIconContainer *container, int new_level)
+peony_icon_container_set_zoom_level (PeonyIconContainer *container, int new_level,gboolean bDesktopChange)
 {
     PeonyIconContainerDetails *details;
     int pinned_level;
     double pixels_per_unit;
-
+	gboolean bZoomIn = FALSE;
+	
     details = container->details;
 
     end_renaming_mode (container, TRUE);
@@ -8110,6 +8732,11 @@ peony_icon_container_set_zoom_level (PeonyIconContainer *container, int new_leve
         return;
     }
 
+	if (pinned_level > details->zoom_level)
+    {
+        bZoomIn = TRUE;
+    }
+	
     details->zoom_level = pinned_level;
 
     pixels_per_unit = (double) peony_get_icon_size_for_zoom_level (pinned_level)
@@ -8117,7 +8744,102 @@ peony_icon_container_set_zoom_level (PeonyIconContainer *container, int new_leve
     eel_canvas_set_pixels_per_unit (EEL_CANVAS (container), pixels_per_unit);
 
     invalidate_labels (container);
+
+	if(TRUE == bZoomIn && TRUE == bDesktopChange)
+	{
+		/*beforce peony_icon_container_request_update_all, void zoom in the desktop icon change twice*/
+		peony_icon_container_set_zoom_position(container);
+	}
+	
     peony_icon_container_request_update_all (container);
+	if(FALSE == bZoomIn && TRUE == bDesktopChange)
+	{
+		/*after peony_icon_container_request_update_all, void zoom out peony_icon_canvas_item_get_icon_rectangle wrong*/
+		peony_icon_container_set_zoom_position(container);
+	}
+}
+
+void
+peony_icon_container_set_zoom_position (PeonyIconContainer *container)
+{
+    time_t 		now				= 0;
+    gboolean    dummy			= FALSE;
+	GList 		*p 				= NULL;
+	GList 		*pOverFlow		= NULL;
+	PeonyIcon 	*icon 			= NULL;
+    DesktopGrid *desktop_grid 	= NULL;
+    gboolean 	bFind			= FALSE;
+
+	do
+	{
+		if(NULL == container)
+		{
+			break;
+		}
+		
+		if(TRUE == peony_icon_container_get_is_desktop(container))
+		{
+			sort_icons (container, &(container->details->icons));
+			now = time (NULL);
+			desktop_grid = desktop_grid_new (container);
+			if(NULL != desktop_grid)
+			{
+				for (p = container->details->icons; p != NULL; p = p->next)
+				{			
+					double x = 0;
+					double y = 0;
+					icon = p->data;
+					bFind = get_icon_position(container,desktop_grid,icon,&x,&y);
+					if ((TRUE == bFind) && (x != icon->x || y != icon->y))
+					{
+						PeonyIconPosition position;				
+						icon_set_position (icon, x, y);
+						position.x = icon->x;
+						position.y = icon->y;
+						position.scale = icon->scale;
+
+						g_signal_emit (container, signals[ICON_POSITION_CHANGED], 0,
+									   icon->data, &position);
+						g_signal_emit (container, signals[STORE_LAYOUT_TIMESTAMP], 0,
+									   icon->data, &now, &dummy);
+					}
+					if(FALSE == bFind)
+					{
+						pOverFlow = g_list_prepend (pOverFlow, icon);
+					}
+				}
+
+				if(NULL != pOverFlow)
+				{
+					pOverFlow = g_list_reverse (pOverFlow);
+					for (p = pOverFlow; p != NULL; p = p->next)
+					{			
+						double x = 0;
+						double y = 0;
+						icon = p->data;
+						get_icon_position(container,desktop_grid,icon,&x,&y);
+						if (x != icon->x || y != icon->y)
+						{
+							PeonyIconPosition position;				
+							icon_set_position (icon, x, y);
+							position.x = icon->x;
+							position.y = icon->y;
+							position.scale = icon->scale;
+							g_signal_emit (container, signals[ICON_POSITION_CHANGED], 0,
+										   icon->data, &position);
+							g_signal_emit (container, signals[STORE_LAYOUT_TIMESTAMP], 0,
+										   icon->data, &now, &dummy);
+						}
+					}
+					g_list_free (pOverFlow);
+				}
+			
+				desktop_grid_free (desktop_grid);
+			}
+		}
+	}while(0);
+	
+	return;
 }
 
 /**
@@ -8635,7 +9357,7 @@ peony_icon_container_unstretch (PeonyIconContainer *container)
             peony_icon_container_move_icon (container, icon,
                                            icon->x, icon->y,
                                            1.0,
-                                           FALSE, TRUE, TRUE);
+                                           FALSE, TRUE, TRUE,FALSE,0,0);
         }
     }
 }

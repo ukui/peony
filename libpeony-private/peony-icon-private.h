@@ -291,6 +291,8 @@ struct PeonyIconContainerDetails
     guint rename_callback_timer_id;
 };
 
+#define GRID_WIDTH_EDGE(container)  (float)MAX(((float)(peony_get_desktop_icon_width_size_for_zoom_level(peony_icon_container_get_zoom_level(container)))/MAX((EEL_CANVAS (container)->pixels_per_unit),1)),1) 
+#define GRID_HEIGHT_EDGE(container)  (float)MAX(((float)(peony_get_desktop_icon_height_size_for_zoom_level(peony_icon_container_get_zoom_level(container)))/MAX((EEL_CANVAS (container)->pixels_per_unit),1)),1) 
 /* Private functions shared by mutiple files. */
 PeonyIcon *peony_icon_container_get_icon_by_uri             (PeonyIconContainer *container,
         const char            *uri);
@@ -301,7 +303,9 @@ void          peony_icon_container_move_icon                   (PeonyIconContain
         double                 scale,
         gboolean               raise,
         gboolean               snap,
-        gboolean		  update_position);
+        gboolean		  update_position,
+        gboolean bDesktopMove,
+        int iMovex, int iMovey);
 void          peony_icon_container_select_list_unselect_others (PeonyIconContainer *container,
         GList                 *icons);
 char *        peony_icon_container_get_icon_uri                (PeonyIconContainer *container,

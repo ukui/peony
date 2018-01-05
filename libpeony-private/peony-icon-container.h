@@ -318,8 +318,7 @@ void              peony_icon_container_start_renaming_selected_item  (PeonyIconC
 
 /* options */
 PeonyZoomLevel peony_icon_container_get_zoom_level                (PeonyIconContainer  *view);
-void              peony_icon_container_set_zoom_level                (PeonyIconContainer  *view,
-        int                     new_zoom_level);
+void              peony_icon_container_set_zoom_level                (PeonyIconContainer *container, int new_level,gboolean bDesktopChange);
 void              peony_icon_container_set_single_click_mode         (PeonyIconContainer  *container,
         gboolean                single_click_mode);
 void              peony_icon_container_enable_linger_selection       (PeonyIconContainer  *view,
@@ -372,5 +371,23 @@ void              peony_icon_container_widget_to_file_operation_position (PeonyI
 			 - container->details->top_margin \
 			 - container->details->bottom_margin) \
 			 / EEL_CANVAS (container)->pixels_per_unit)
+typedef struct
+{
+	int x;
+	int y;
+	gboolean has_icon;
+}UnitGrid;
+
+typedef struct
+{
+	UnitGrid **icon_grid;
+	UnitGrid *grid_memory;
+	int num_rows;
+	int num_columns;
+	int iStartRows;
+	int iStartColumns;
+}DesktopGrid;
+
+void peony_icon_container_set_zoom_position (PeonyIconContainer *container);
 
 #endif /* PEONY_ICON_CONTAINER_H */

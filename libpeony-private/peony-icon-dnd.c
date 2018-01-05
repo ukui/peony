@@ -953,11 +953,41 @@ handle_local_move (PeonyIconContainer *container,
     char screen_string[32];
     GdkScreen *screen;
     time_t now;
+	int gridwidth, gridheight;
+	GtkAllocation allocation;
+	int x = 0;
+	int y = 0;
+	int num_columns, num_rows;
+	int iMovex = 0;
+	int iMovey = 0;
 
     if (container->details->auto_layout)
     {
         return;
     }
+
+    gtk_widget_get_allocation (GTK_WIDGET (container), &allocation);
+    gridwidth  = CANVAS_WIDTH(container, allocation);
+    gridheight = CANVAS_HEIGHT(container, allocation);
+	num_columns = (int)(((double) gridwidth) / GRID_WIDTH_EDGE(container) + 0.5);
+    num_rows = (int)(((double) gridheight) / GRID_HEIGHT_EDGE(container) + 0.5);
+	for (p = container->details->dnd_info->drag_info.selection_list; p != NULL; p = p->next)
+	{
+		item = p->data;
+
+		x = world_x + item->icon_x;
+		y = world_y + item->icon_y;
+		if((x < 0) || (x > gridwidth) || (y < 0) || (y > gridheight) || 
+			((int)((double)x / GRID_WIDTH_EDGE(container)+0.5) > num_columns-1) || ((int)((double)y / GRID_HEIGHT_EDGE(container)+0.5) > num_rows-1))
+		{
+			//peony_debug_log(TRUE,"position","peony_icon_container_move_icon[%d]-[%d]",x,y);
+			return;
+		}
+	}
+	if(TRUE == desktop_grid_icon_move_overlapping(container,world_x,world_y,&iMovex,&iMovey))
+	{
+		return;
+	}
 
     time (&now);
 
@@ -995,11 +1025,27 @@ handle_local_move (PeonyIconContainer *container,
 
         if (item->got_icon_position)
         {
-            peony_icon_container_move_icon
-            (container, icon,
-             world_x + item->icon_x, world_y + item->icon_y,
-             icon->scale,
-             TRUE, TRUE, TRUE);
+        	int iSelectx = 0;
+			int iSelecty = 0;
+			gboolean bRet = 0;
+        	bRet = get_grid_icon_position(container,icon,&iSelectx,&iSelecty);
+			if(TRUE == bRet && peony_icon_container_get_is_desktop(container))
+			{
+				peony_icon_container_move_icon
+	            (container, icon,
+	             world_x + item->icon_x, world_y + item->icon_y,
+	             icon->scale,
+	             TRUE, TRUE, TRUE,TRUE,
+	             iSelectx + iMovex,iSelecty + iMovey);
+			}
+			else
+			{
+	            peony_icon_container_move_icon
+	            (container, icon,
+	             world_x + item->icon_x, world_y + item->icon_y,
+	             icon->scale,
+	             TRUE, TRUE, TRUE,FALSE,0,0);
+			}
         }
         moved_icons = g_list_prepend (moved_icons, icon);
     }

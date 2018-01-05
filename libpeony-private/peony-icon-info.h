@@ -39,6 +39,18 @@ extern "C" {
 #define PEONY_ICON_SIZE_LARGER	96
 #define PEONY_ICON_SIZE_LARGEST     192
 
+#define PEONY_DESKTOP_ICON_GRID_WIDTH_SMALL		68
+#define PEONY_DESKTOP_ICON_GRID_WIDTH_STANDARD	105
+#define PEONY_DESKTOP_ICON_GRID_WIDTH_LARGE		151
+#define PEONY_DESKTOP_ICON_GRID_WIDTH_LARGER		195
+#define PEONY_DESKTOP_ICON_GRID_WIDTH_LARGEST    455
+
+#define PEONY_DESKTOP_ICON_GRID_HEIGHT_SMALL		76
+#define PEONY_DESKTOP_ICON_GRID_HEIGHT_STANDARD	105
+#define PEONY_DESKTOP_ICON_GRID_HEIGHT_LARGE		153
+#define PEONY_DESKTOP_ICON_GRID_HEIGHT_LARGER	256
+#define PEONY_DESKTOP_ICON_GRID_HEIGHT_LARGEST   384
+
     /* Maximum size of an icon that the icon factory will ever produce */
 #define PEONY_ICON_MAXIMUM_SIZE     320
 
@@ -92,8 +104,8 @@ extern "C" {
 
 gboolean peony_icon_theme_can_render              (GThemedIcon *icon);
 GIcon * peony_user_special_directory_get_gicon (GUserDirectory directory);
-
-
+float peony_get_desktop_icon_width_size_for_zoom_level (PeonyZoomLevel zoom_level);
+float peony_get_desktop_icon_height_size_for_zoom_level (PeonyZoomLevel zoom_level);
 
 #ifdef __cplusplus
 }

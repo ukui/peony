@@ -2335,9 +2335,9 @@ fm_computer_view_set_zoom_level (FMComputerView *view,
          PEONY_ZOOM_LEVEL_STANDARD,
          new_level);
 
-    peony_icon_container_set_zoom_level (icon_container, new_level);
-    peony_icon_container_set_zoom_level (icon_container1, new_level);
-    peony_icon_container_set_zoom_level (icon_container2, new_level);
+    peony_icon_container_set_zoom_level (icon_container, new_level,FALSE);
+    peony_icon_container_set_zoom_level (icon_container1, new_level,FALSE);
+    peony_icon_container_set_zoom_level (icon_container2, new_level,FALSE);
 
     g_signal_emit_by_name (view, "zoom_level_changed");
 
@@ -2424,6 +2424,16 @@ icon_container_activate_callback (PeonyIconContainer *container,
                                       file_list,
                                       PEONY_WINDOW_OPEN_ACCORDING_TO_MODE, 0,
                                       TRUE);
+}
+
+static void
+icon_container_rename_button_press_callback (PeonyIconContainer *container,
+                                  FMComputerView *computer_view)
+{
+    g_assert (FM_IS_COMPUTER_VIEW (computer_view));
+    g_assert (container == get_icon_container (computer_view,container->name));
+
+    real_action_rename(FM_DIRECTORY_VIEW (computer_view),FALSE);
 }
 
 static void
@@ -3884,6 +3894,8 @@ create_icon_container(FMComputerView *computer_view)
                              G_CALLBACK (focus_in_event_callback), computer_view, 0);
     g_signal_connect_object (icon_container, "activate",
                              G_CALLBACK (icon_container_activate_callback), computer_view, 0);
+    g_signal_connect_object (icon_container, "rename_button_press",
+                             G_CALLBACK (icon_container_rename_button_press_callback), computer_view, 0);
     g_signal_connect_object (icon_container, "activate_alternate",
                              G_CALLBACK (icon_container_activate_alternate_callback), computer_view, 0);
     g_signal_connect_object (icon_container, "band_select_started",

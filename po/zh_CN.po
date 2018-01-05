@@ -29,6 +29,9 @@ msgstr ""
 msgid "Personal"
 msgstr "个人"
 
+msgid "My Computer"
+msgstr "我的电脑"
+
 #: ../src/peony-places-sidebar.c:494
 #,c-format
 msgid "Favorite"

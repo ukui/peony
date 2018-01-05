@@ -4316,8 +4316,8 @@ peony_file_get_icon (PeonyFile *file,
 			}
 
 			scaled_pixbuf = gdk_pixbuf_scale_simple (raw_pixbuf,
-								 MAX (w * scale, 1),
-								 MAX (h * scale, 1),
+								 MAX (size - 6, 1),
+								 MAX (size - 6, 1),
 								 GDK_INTERP_BILINEAR);
 
 			/* Render frames only for thumbnails of non-image files 

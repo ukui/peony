@@ -1432,7 +1432,7 @@ fm_icon_view_set_zoom_level (FMIconView *view,
          new_level);
     }
 
-    peony_icon_container_set_zoom_level (icon_container, new_level);
+    peony_icon_container_set_zoom_level (icon_container, new_level,FALSE);
 
     g_signal_emit_by_name (view, "zoom_level_changed");
 
