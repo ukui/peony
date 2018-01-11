@@ -3309,6 +3309,7 @@ peony_places_sidebar_init (PeonyPlacesSidebar *sidebar)
                             NULL);
 
     gtk_tree_view_set_model (tree_view, sidebar->filter_model);
+	gtk_widget_set_name (tree_view, "peony-place-sidebar");
     gtk_container_add (GTK_CONTAINER (sidebar), GTK_WIDGET (tree_view));
     gtk_widget_show (GTK_WIDGET (tree_view));
 
