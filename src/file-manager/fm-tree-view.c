@@ -659,7 +659,7 @@ move_copy_items_callback (PeonyTreeViewDragDest *dest,
      target_uri,
      action,
      GTK_WIDGET (view->details->tree_widget),
-     NULL, NULL);
+     FALSE,NULL, NULL);
 }
 
 static void
@@ -1060,7 +1060,7 @@ paste_clipboard_data (FMTreeView *view,
         (item_uris, NULL, destination_uri,
          cut ? GDK_ACTION_MOVE : GDK_ACTION_COPY,
          GTK_WIDGET (view->details->tree_widget),
-         NULL, NULL);
+         FALSE,NULL, NULL);
 
         /* If items are cut then remove from clipboard */
         if (cut)

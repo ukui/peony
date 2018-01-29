@@ -493,7 +493,7 @@ peony_undostack_manager_redo (PeonyUndoStackManager * manager,
       case PEONY_UNDOSTACK_CREATELINK:
         uris = construct_gfile_list (action->sources, action->src_dir);
         peony_file_operations_link (uris, NULL,
-            action->dest_dir, NULL, undo_redo_done_transfer_callback, action);
+            action->dest_dir, NULL,FALSE, undo_redo_done_transfer_callback, action);
     	g_list_free_full (uris, g_object_unref);
         break;
       case PEONY_UNDOSTACK_SETPERMISSIONS:
@@ -575,8 +575,8 @@ peony_undostack_manager_undo (PeonyUndoStackManager * manager,
           uris = g_list_reverse (uris); // Deleting must be done in reverse
         }
         if (priv->confirm_delete) {
-          peony_file_operations_delete (uris, NULL,
-              undo_redo_done_delete_callback, action);
+          //peony_file_operations_delete (uris, NULL,
+          //    undo_redo_done_delete_callback, action);
     	  g_list_free_full (uris, g_object_unref);
         } else {
           /* We skip the confirmation message
@@ -586,8 +586,8 @@ peony_undostack_manager_undo (PeonyUndoStackManager * manager,
             char *name;
             name = g_file_get_uri (f->data);
             g_free (name);
-            g_file_delete (f->data, NULL, NULL);
-            g_object_unref (f->data);
+            //g_file_delete (f->data, NULL, NULL);
+            //g_object_unref (f->data);
           }
           g_list_free (uris);
           /* Here we must do what's necessary for the callback */

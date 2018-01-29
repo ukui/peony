@@ -59,6 +59,7 @@
 #define FM_ACTION_NEW_LAUNCHER_DESKTOP "New Launcher Desktop"
 #define FM_ACTION_RENAME "Rename"
 #define FM_ACTION_DUPLICATE "Duplicate"
+#define FM_ACTION_ATTACHED_TO_START_MENU "AttachedToStartMenu"
 #define FM_ACTION_CREATE_LINK "Create Link"
 #define FM_ACTION_SELECT_ALL "Select All"
 #define FM_ACTION_INVERT_SELECTION "Invert Selection"

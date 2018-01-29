@@ -49,6 +49,7 @@ void peony_file_operations_copy_move   (const GList               *item_uris,
                                        const char                *target_dir_uri,
                                        GdkDragAction              copy_action,
                                        GtkWidget                 *parent_view,
+                                       gboolean 				bSendToDesktop,
                                        PeonyCopyCallback       done_callback,
                                        gpointer                   done_callback_data);
 void peony_file_operations_empty_trash (GtkWidget                 *parent_view);
@@ -130,6 +131,7 @@ void peony_file_operations_link      (GList                *files,
                                      GArray               *relative_item_points,
                                      GFile                *target_dir,
                                      GtkWindow            *parent_window,
+                                     gboolean 			bSendToDesktop,
                                      PeonyCopyCallback  done_callback,
                                      gpointer              done_callback_data);
 void peony_file_mark_desktop_file_trusted (GFile           *file,

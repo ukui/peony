@@ -71,6 +71,8 @@
 		<placeholder name="File Items Placeholder">
 			<menuitem name="Duplicate" action="Duplicate"/>
 			<menuitem name="Create Link" action="Create Link"/>
+			<menuitem name="Send To Desktop" action="Send To Desktop"/>
+			<menuitem name="AttachedToStartMenu" action="AttachedToStartMenu"/>
 			<menuitem name="Rename" action="Rename"/>
 			<menu action="CopyToMenu">
 				<menuitem name="Copy to next pane" action="Copy to next pane"/>
@@ -168,6 +170,8 @@
 	<separator name="File actions separator"/>
 	<placeholder name="File Actions">
 		<menuitem name="Create Link" action="Create Link"/>
+		<menuitem name="Send To Desktop" action="Send To Desktop"/>
+		<menuitem name="AttachedToStartMenu" action="AttachedToStartMenu"/>
 		<menuitem name="Rename" action="Rename"/>
 		<menu action="CopyToMenu">
 			<menuitem name="Copy to next pane" action="Copy to next pane"/>

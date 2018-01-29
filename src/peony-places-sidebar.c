@@ -1627,7 +1627,7 @@ drag_data_received_callback (GtkWidget *widget,
                 selection_list = build_selection_list (gtk_selection_data_get_data (selection_data));
                 uris = uri_list_from_selection (selection_list);
                 peony_file_operations_copy_move (uris, NULL, drop_uri,
-                                                real_action, GTK_WIDGET (tree_view),
+                                                real_action, GTK_WIDGET (tree_view),FALSE,
                                                 NULL, NULL);
                 peony_drag_destroy_selection_list (selection_list);
                 g_list_free (uris);

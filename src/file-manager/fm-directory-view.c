@@ -281,7 +281,7 @@ static void     fm_directory_view_duplicate_selection          (FMDirectoryView 
 								GArray               *item_locations);
 static void     fm_directory_view_create_links_for_files       (FMDirectoryView      *view,
 								GList                *files,
-								GArray               *item_locations);
+								GArray               *item_locations,gboolean bSendToDesktop);
 static void     trash_or_delete_files                          (GtkWindow            *parent_window,
 								const GList          *files,
 								gboolean              delete_if_all_already_in_trash,
@@ -1112,7 +1112,28 @@ action_create_link_callback (GtkAction *action,
 	selection = fm_directory_view_get_selection (view);
 	if (selection_not_empty_in_menu_callback (view, selection)) {
 		selected_item_locations = fm_directory_view_get_selected_icon_locations (view);
-	        fm_directory_view_create_links_for_files (view, selection, selected_item_locations);
+	        fm_directory_view_create_links_for_files (view, selection, selected_item_locations,FALSE);
+	        g_array_free (selected_item_locations, TRUE);
+	}
+
+        peony_file_list_free (selection);
+}
+
+static void
+action_send_to_desktop_callback (GtkAction *action,
+			     gpointer callback_data)
+{
+        FMDirectoryView *view;
+        GList *selection;
+        GArray *selected_item_locations;
+
+        g_assert (FM_IS_DIRECTORY_VIEW (callback_data));
+
+        view = FM_DIRECTORY_VIEW (callback_data);
+	selection = fm_directory_view_get_selection (view);
+	if (selection_not_empty_in_menu_callback (view, selection)) {
+		selected_item_locations = fm_directory_view_get_selected_icon_locations (view);
+	        fm_directory_view_create_links_for_files (view, selection, selected_item_locations,TRUE);
 	        g_array_free (selected_item_locations, TRUE);
 	}
 
@@ -3888,7 +3909,7 @@ offset_drop_points (GArray *relative_item_points,
 
 static void
 fm_directory_view_create_links_for_files (FMDirectoryView *view, GList *files,
-					  GArray *relative_item_points)
+					  GArray *relative_item_points,gboolean bSendToDesktop)
 {
 	GList *uris;
 	char *dir_uri;
@@ -3914,9 +3935,16 @@ fm_directory_view_create_links_for_files (FMDirectoryView *view, GList *files,
 			    DUPLICATE_VERTICAL_ICON_OFFSET);
 
         copy_move_done_data = pre_copy_move (view);
-	dir_uri = fm_directory_view_get_backing_uri (view);
+	if(TRUE == bSendToDesktop)
+	{
+		dir_uri = peony_get_desktop_directory_uri ();
+	}
+	else
+	{
+		dir_uri = fm_directory_view_get_backing_uri (view);
+	}
 	peony_file_operations_copy_move (uris, relative_item_points, dir_uri, GDK_ACTION_LINK,
-					    GTK_WIDGET (view), copy_move_done_callback, copy_move_done_data);
+					    GTK_WIDGET (view),bSendToDesktop, copy_move_done_callback, copy_move_done_data);
 	g_free (dir_uri);
 	g_list_free_full (uris, g_free);
 }
@@ -3949,7 +3977,7 @@ fm_directory_view_duplicate_selection (FMDirectoryView *view, GList *files,
 
         copy_move_done_data = pre_copy_move (view);
 	peony_file_operations_copy_move (uris, relative_item_points, NULL, GDK_ACTION_COPY,
-		GTK_WIDGET (view), copy_move_done_callback, copy_move_done_data);
+		GTK_WIDGET (view),FALSE, copy_move_done_callback, copy_move_done_data);
 	g_list_free_full (uris, g_free);
 }
 
@@ -6273,6 +6301,121 @@ action_copy_to_desktop_callback (GtkAction *action, gpointer callback_data)
 	g_free (dest_location);
 }
 
+static gboolean is_desktop_file(char *pFileName)
+{
+	char *pTemp = NULL;
+	gboolean bDsktopFile = FALSE;
+	
+	pTemp = g_strrstr(pFileName,".desktop");
+	if(NULL != pTemp)
+	{
+		if(pTemp == pFileName + strlen(pFileName) - strlen(".desktop"))
+		{
+			bDsktopFile = TRUE;
+		}
+	}
+
+	return bDsktopFile;
+}
+
+static gboolean can_attach_to_start_menu(GList *selection)
+{
+	GList *l = NULL;
+	char *pName = NULL;
+	gboolean bAllDsktopFile = TRUE;
+	
+	for (l = selection; l != NULL; l = l->next) {
+		pName = peony_file_get_name ((PeonyFile *) l->data);
+		if(NULL == pName)
+		{
+			bAllDsktopFile = FALSE;
+			break;
+		}
+		
+		if(FALSE == is_desktop_file(pName))
+		{
+			bAllDsktopFile = FALSE;
+			g_free (pName);
+			break;
+		}
+		g_free (pName);
+	}
+
+	return bAllDsktopFile;
+}
+
+static void
+action_copy_to_start_menu_callback (GtkAction *action, gpointer callback_data)
+{
+	FMDirectoryView *view;
+	char *dest_path;
+	char *dest_location;
+	char *src_location;
+	GList *selection, *l;
+	char *pName = NULL;
+	char *pFileUri = NULL;
+	char *pDstUri = NULL;
+	GFile *dest = NULL; 
+	GFile *src_dir = NULL; 
+	GError *error = NULL;
+	view = FM_DIRECTORY_VIEW (callback_data);
+
+	selection = fm_directory_view_get_selection_for_file_transfer (view);
+	if (selection == NULL) {
+		return;
+	}
+
+	for (l = selection; l != NULL; l = l->next) {
+		pName = peony_file_get_name ((PeonyFile *) l->data);
+		if(NULL == pName)
+		{
+			break;
+		}
+		
+		if(TRUE == is_desktop_file(pName))
+		{
+			pFileUri = g_build_filename ("/usr/share/applications/",pName, NULL);
+			
+			if (!g_file_test (pFileUri, G_FILE_TEST_EXISTS))
+			{
+				g_free(pFileUri);
+				pFileUri = g_build_filename ("/usr/local/share/applications/",pName, NULL);
+				if (!g_file_test (pFileUri, G_FILE_TEST_EXISTS))
+				{
+					g_free(pFileUri);
+					pFileUri = g_build_filename (g_get_home_dir(),"/.local/share/applications/",pName, NULL);
+					if (!g_file_test (pFileUri, G_FILE_TEST_EXISTS))
+					{
+						pDstUri = peony_file_get_uri ((PeonyFile *) l->data);
+						dest_path = g_build_filename (g_get_home_dir(),"/.local/share/applications/",pName, NULL);
+						dest_location = g_filename_to_uri (dest_path, NULL, NULL);
+						
+						//src_location = g_filename_to_uri (pDstUri, NULL, NULL);
+					    dest = g_file_new_for_uri (dest_location);
+						src_dir = g_file_new_for_uri (pDstUri);
+					    g_file_copy (src_dir, dest,0,NULL, NULL, NULL, &error);
+
+						if (dest) {
+							g_object_unref (dest);
+						}
+						if (src_dir) {
+							g_object_unref (src_dir);
+						}
+						g_free(pDstUri);
+						g_free (dest_path);
+						g_free (dest_location);
+					}
+				}
+			}
+			g_free(pFileUri);
+		}
+		
+		g_free(pName);
+	}
+
+	peony_file_list_free (selection);	
+}
+
 static void
 action_move_to_desktop_callback (GtkAction *action, gpointer callback_data)
 {
@@ -7453,6 +7596,10 @@ static const GtkActionEntry directory_view_entries[] = {
   /* label, accelerator */       NULL, NULL,
   /* tooltip */                  N_("Move or copy files previously selected by a Cut or Copy command"),
                                  G_CALLBACK (action_paste_files_callback) },
+  /* name, stock id */		   { "AttachedToStartMenu", NULL,
+  /* label, accelerator */		 N_("_Attached to the start menu"), "",
+  /* tooltip */ 				 N_("_Attached to the start menu"),
+								 G_CALLBACK (action_copy_to_start_menu_callback) },
   /* We make accelerator "" instead of null here to not inherit the stock
      accelerator for paste */
   /* name, stock id */         { "Paste Files Into", GTK_STOCK_PASTE,
@@ -7485,6 +7632,10 @@ static const GtkActionEntry directory_view_entries[] = {
   /* label, accelerator */       N_("Ma_ke Link"), "<control>M",
   /* tooltip */                  N_("Create a symbolic link for each selected item"),
                                  G_CALLBACK (action_create_link_callback) },
+  /* name, stock id */		   { "Send To Desktop", NULL,
+  /* label, accelerator */		 N_("Send to desktop _Shortcut"), NULL,
+  /* tooltip */ 				 N_("Send to desktop shortcut for each selected item"),
+									 G_CALLBACK (action_send_to_desktop_callback) },
   /* name, stock id */         { "Rename", NULL,
   /* label, accelerator */       N_("_Rename..."), "F2",
   /* tooltip */                  N_("Rename selected item"),
@@ -9151,6 +9302,10 @@ real_update_menus (FMDirectoryView *view)
 	gtk_action_set_sensitive (action, can_duplicate_files);
 
 	action = gtk_action_group_get_action (view->details->dir_action_group,
+							  FM_ACTION_ATTACHED_TO_START_MENU);
+	gtk_action_set_visible (action, can_attach_to_start_menu(selection));
+
+	action = gtk_action_group_get_action (view->details->dir_action_group,
 					      FM_ACTION_CREATE_LINK);
 	gtk_action_set_sensitive (action, can_link_files);
 	g_object_set (action, "label",
@@ -10389,7 +10544,7 @@ fm_directory_view_move_copy_items (const GList *item_uris,
 
 	peony_file_operations_copy_move
 		(item_uris, relative_item_points,
-		 target_uri, copy_action, GTK_WIDGET (view),
+		 target_uri, copy_action, GTK_WIDGET (view),FALSE,
 		 copy_move_done_callback, pre_copy_move (view));
 }
 

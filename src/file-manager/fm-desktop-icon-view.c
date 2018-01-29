@@ -805,6 +805,19 @@ action_change_background_callback (GtkAction *action,
 }
 
 static void
+action_change_screen_resolution_callback (GtkAction *action,
+                                   gpointer data)
+{
+    g_assert (FM_DIRECTORY_VIEW (data));
+
+    peony_launch_application_from_command (gtk_widget_get_screen (GTK_WIDGET (data)),
+                                          _("Background"),
+                                          "ukui-control-center",
+                                          FALSE,
+                                          "-d", NULL);
+}
+
+static void
 action_empty_trash_conditional_callback (GtkAction *action,
         gpointer data)
 {
@@ -902,6 +915,15 @@ static const GtkActionEntry desktop_view_entries[] =
         /* tooltip */
         N_("Show a window that lets you set your desktop background's pattern or color"),
         G_CALLBACK (action_change_background_callback)
+    },
+    /* name, stock id */
+    {
+        "Set Resolution", NULL,
+        /* label, accelerator */
+        N_("Set Screen _Resolution"), NULL,
+        /* tooltip */
+        N_("Show a window that lets you set the screen resolution"),
+        G_CALLBACK (action_change_screen_resolution_callback)
     },
     /* name, stock id */
     {

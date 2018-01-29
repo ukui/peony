@@ -107,8 +107,8 @@
 /* Desktop layout mode defines */
 #define ICON_BASE_HEIGHT 48  /*standard rise*/
 #define ICON_WIDTH  48
-#define DESKTOP_PAD_HORIZONTAL 	10
-#define DESKTOP_PAD_VERTICAL 	10
+#define DESKTOP_PAD_HORIZONTAL 	0
+#define DESKTOP_PAD_VERTICAL 	0
 #define SNAP_SIZE_X 		48
 #define SNAP_SIZE_Y 		48
 #define Y_AXIS_RATIO          0.6

@@ -99,6 +99,7 @@ typedef struct {
 	GHashTable *debuting_files;
 	PeonyCopyCallback  done_callback;
 	gpointer done_callback_data;
+	gboolean bSendToDesktop;
 } CopyMoveJob;
 
 typedef struct {
@@ -423,19 +424,19 @@ get_link_name (const char *name, int count, int max_length)
 			 * if there's no way to do that nicely for a
 			 * particular language.
 			 */
-			format = _("%'dst link to %s");
+			format = _("%s %'dst link to");
 			break;
 		case 2:
 			/* appended to new link file */
-			format = _("%'dnd link to %s");
+			format = _("%s %'dnd link to");
 			break;
 		case 3:
 			/* appended to new link file */
-			format = _("%'drd link to %s");
+			format = _("%s %'drd link to");
 			break;
 		default:
 			/* appended to new link file */
-			format = _("%'dth link to %s");
+			format = _("%s %'dth link to");
 			break;
 		}
 
@@ -443,7 +444,7 @@ get_link_name (const char *name, int count, int max_length)
 	}
 
 	if (use_count)
-		result = g_strdup_printf (format, count, name);
+		result = g_strdup_printf (format, name,count);
 	else
 		result = g_strdup_printf (format, name);
 
@@ -455,7 +456,7 @@ get_link_name (const char *name, int count, int max_length)
 			g_free (result);
 
 			if (use_count)
-				result = g_strdup_printf (format, count, new_name);
+				result = g_strdup_printf (format, new_name,count);
 			else
 				result = g_strdup_printf (format, new_name);
 
@@ -4232,7 +4233,11 @@ copy_move_file (CopyMoveJob *copy_job,
 
 		if (debuting_files) {
 			if (position) {
-				peony_file_changes_queue_schedule_position_set (dest, *position, job->screen_num);
+					//if the dest localtion is desktop,we not set the drag and drop position.
+					if(!(copy_job->desktop_location != NULL && g_file_equal (copy_job->desktop_location, dest_dir)))
+					{
+						peony_file_changes_queue_schedule_position_set (dest, *position, job->screen_num);
+					}
 			} else {
 				peony_file_changes_queue_schedule_position_remove (dest);
 			}
@@ -5337,7 +5342,10 @@ link_file (CopyMoveJob *job,
 	g_object_unref (src_dir);
 
 	handled_invalid_filename = *dest_fs_type != NULL;
-
+	if(TRUE == job->bSendToDesktop)
+	{
+		count++;
+	}
 	dest = get_target_file_for_link (src, dest_dir, *dest_fs_type, count);
 
  retry:
@@ -5542,6 +5550,7 @@ peony_file_operations_link (GList *files,
 			       GArray *relative_item_points,
 			       GFile *target_dir,
 			       GtkWindow *parent_window,
+			       gboolean bSendToDesktop,
 			       PeonyCopyCallback  done_callback,
 			       gpointer done_callback_data)
 {
@@ -5552,6 +5561,7 @@ peony_file_operations_link (GList *files,
 	job->done_callback_data = done_callback_data;
 	job->files = eel_g_object_list_copy (files);
 	job->destination = g_object_ref (target_dir);
+	job->bSendToDesktop = bSendToDesktop;
 	if (relative_item_points != NULL &&
 	    relative_item_points->len > 0) {
 		job->icon_positions =
@@ -5822,6 +5832,7 @@ peony_file_operations_copy_move (const GList *item_uris,
 				    const char *target_dir,
 				    GdkDragAction copy_action,
 				    GtkWidget *parent_view,
+				    gboolean bSendToDesktop,
 				    PeonyCopyCallback  done_callback,
 				    gpointer done_callback_data)
 {
@@ -5905,7 +5916,7 @@ peony_file_operations_copy_move (const GList *item_uris,
 		peony_file_operations_link (locations,
 					       relative_item_points,
 					       dest,
-					       parent_window,
+					       parent_window,bSendToDesktop,
 					       done_callback, done_callback_data);
 	}
 
@@ -6088,7 +6099,23 @@ create_job (GIOSchedulerJob *io_job,
 		job->created_file = g_object_ref (dest);
 		peony_file_changes_queue_file_added (dest);
 		if (job->has_position) {
-			peony_file_changes_queue_schedule_position_set (dest, job->position, common->screen_num);
+			//if the dest localtion is desktop,we not set the drag and drop position.
+			{
+				char *basename;
+				basename = g_file_get_basename(job->dest_dir);
+				if(NULL != basename)
+				{
+					if(0 != strcmp(basename,"桌面"))
+					{
+						peony_file_changes_queue_schedule_position_set (dest, job->position, common->screen_num);
+					}
+					g_free(basename);
+				}
+				else
+				{
+					peony_file_changes_queue_schedule_position_set (dest, job->position, common->screen_num);
+				}
+			}
 		} else {
 			peony_file_changes_queue_schedule_position_remove (dest);
 		}
