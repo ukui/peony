@@ -72,5 +72,5 @@ PeonyEntry * peony_location_bar_get_entry (PeonyLocationBar *location_bar);
 void    peony_location_bar_activate         (PeonyLocationBar *bar);
 void    peony_location_bar_set_location     (PeonyLocationBar *bar,
                                             const char      *location);
-
+void peony_set_location_bar_emit_flag(GtkWidget *widget,gboolean bEmit);
 #endif /* PEONY_LOCATION_BAR_H */

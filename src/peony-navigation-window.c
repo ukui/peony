@@ -820,6 +820,7 @@ real_prompt_for_location (PeonyWindow *window, const char *initial)
 
     if (initial)
     {
+		peony_set_location_bar_emit_flag(PEONY_LOCATION_BAR (pane->navigation_bar),FALSE);
         peony_location_bar_set_location (PEONY_LOCATION_BAR (pane->navigation_bar),
                                         initial);
     }

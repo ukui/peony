@@ -635,6 +635,7 @@ real_sync_location_widgets (PeonyWindowPane *pane)
 
         /* this may be NULL if we just created the slot */
         uri = peony_window_slot_get_location_uri (slot);
+		peony_set_location_bar_emit_flag(PEONY_LOCATION_BAR (navigation_pane->navigation_bar),FALSE);
         peony_location_bar_set_location (PEONY_LOCATION_BAR (navigation_pane->navigation_bar), uri);
         g_free (uri);
         peony_path_bar_set_path (PEONY_PATH_BAR (navigation_pane->path_bar), slot->location);

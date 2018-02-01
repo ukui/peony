@@ -65,11 +65,30 @@ struct PeonyLocationBarDetails
 {
     GtkLabel *label;
     PeonyEntry *entry;
+	GtkWidget *hbox;
+	GtkWidget *framehbox;
 
     char *last_location;
 
     guint idle_id;
+	gboolean bActive;
+	gboolean bNeedDes;
+	gboolean bANeedemit;
+	GList     *pChildList;
+	GtkWidget *backbutton;
+	GtkWidget *backseparator;
+	GtkWidget *menu;
+	GtkWidget *aspectframesec;
+	GtkWidget *interbox;
+	int        iFrameWidthBack;
+	int        iSecFrameWidthBack;
 };
+
+typedef struct
+{
+	GtkWidget *widget;
+	int        iWidth;
+}WIDGET_PARAM;
 
 enum
 {
@@ -98,7 +117,7 @@ static const GtkTargetEntry drop_types [] =
     { PEONY_DND_URI_LIST_TYPE,   0, PEONY_DND_URI_LIST },
     { PEONY_DND_TEXT_PLAIN_TYPE, 0, PEONY_DND_TEXT_PLAIN },
 };
-
+#define SEC_FRAME_SIZE 64
 G_DEFINE_TYPE (PeonyLocationBar, peony_location_bar, GTK_TYPE_BOX);
 
 static PeonyNavigationWindow *
@@ -125,11 +144,18 @@ peony_location_bar_get_location (PeonyLocationBar *bar)
     char *user_location, *uri;
     GFile *location;
 
-    user_location = gtk_editable_get_chars (GTK_EDITABLE (bar->details->entry), 0, -1);
-    location = g_file_parse_name (user_location);
-    g_free (user_location);
-    uri = g_file_get_uri (location);
-    g_object_unref (location);
+	if(TRUE == bar->details->bActive)
+	{
+	    user_location = gtk_editable_get_chars (GTK_EDITABLE (bar->details->entry), 0, -1);
+	    location = g_file_parse_name (user_location);
+	    g_free (user_location);
+	    uri = g_file_get_uri (location);
+	    g_object_unref (location);
+	}
+	else
+	{
+		uri = g_strdup(bar->details->last_location);
+	}
     return uri;
 }
 
@@ -218,7 +244,7 @@ drag_data_received_callback (GtkWidget *widget,
             return;
         }
     }
-
+	PEONY_LOCATION_BAR (widget)->details->bANeedemit = FALSE;
     peony_location_bar_set_location (self, names[0]);
     emit_location_changed (self);
 
@@ -416,6 +442,7 @@ peony_location_bar_cancel (PeonyLocationBar *bar)
     char *last_location;
 
     last_location = bar->details->last_location;
+	bar->details->bANeedemit = FALSE;
     peony_location_bar_set_location (bar, last_location);
 }
 
@@ -474,6 +501,47 @@ peony_location_bar_class_init (PeonyLocationBarClass *klass)
     g_type_class_add_private (klass, sizeof (PeonyLocationBarDetails));
 }
 
+void peony_set_location_bar_emit_flag(GtkWidget *widget,gboolean bEmit)
+{
+	if(NULL == widget)
+	{
+		return;
+	}
+	
+	PEONY_LOCATION_BAR (widget)->details->bANeedemit = bEmit;
+}
+static gboolean
+peony_location_bar_focus_in (GtkWidget *widget, GdkEventButton *event, gpointer user_data)
+{
+	PeonyLocationBar *bar = NULL;
+
+	if(NULL == user_data)
+	{
+		return;
+	}
+	
+	bar = PEONY_LOCATION_BAR (user_data);
+	bar->details->bActive = TRUE;
+	bar->details->bANeedemit = TRUE;
+    peony_location_bar_set_location (PEONY_LOCATION_BAR (bar),bar->details->last_location);
+}
+
+static gboolean
+peony_location_bar_focus_out (GtkWidget *widget, GdkEventKey *event, gpointer user_data)
+{
+	PeonyLocationBar *bar = NULL;
+
+	if(NULL == user_data)
+	{
+		return;
+	}
+	
+	bar = PEONY_LOCATION_BAR (user_data);
+	bar->details->bActive = FALSE;
+	bar->details->bANeedemit = FALSE;
+    peony_location_bar_set_location (PEONY_LOCATION_BAR (bar),bar->details->last_location);
+}
+
 static void
 peony_location_bar_init (PeonyLocationBar *bar)
 {
@@ -486,7 +554,6 @@ peony_location_bar_init (PeonyLocationBar *bar)
 
     gtk_orientable_set_orientation (GTK_ORIENTABLE (bar),
                                     GTK_ORIENTATION_HORIZONTAL);
-
     event_box = gtk_event_box_new ();
     gtk_event_box_set_visible_window (GTK_EVENT_BOX (event_box), FALSE);
 
@@ -511,10 +578,13 @@ peony_location_bar_init (PeonyLocationBar *bar)
                              G_CALLBACK (editable_activate_callback), bar, G_CONNECT_AFTER);
     g_signal_connect_object (entry, "changed",
                              G_CALLBACK (editable_changed_callback), bar, 0);
+	g_signal_connect_object (GTK_WIDGET (entry), "focus-out-event",
+							 G_CALLBACK (peony_location_bar_focus_out), bar, G_CONNECT_AFTER);
 
     gtk_box_pack_start (GTK_BOX (bar), entry, TRUE, TRUE, 0);
 
     eel_accessibility_set_up_label_widget_relation (label, entry);
+
 
     /* Label context menu */
     g_signal_connect (event_box, "button-press-event",
@@ -536,10 +606,21 @@ peony_location_bar_init (PeonyLocationBar *bar)
     g_signal_connect (bar, "drag_data_received",
                       G_CALLBACK (drag_data_received_callback), NULL);
 
+	bar->details->hbox = entry;
     bar->details->label = GTK_LABEL (label);
     bar->details->entry = PEONY_ENTRY (entry);
+	bar->details->framehbox = NULL;
+	bar->details->backbutton = NULL;
+	bar->details->pChildList = NULL;
 
-    gtk_widget_show_all (GTK_WIDGET (bar));
+	bar->details->bActive = FALSE;
+	bar->details->bNeedDes = FALSE;
+	bar->details->iFrameWidthBack = 0;
+	bar->details->iSecFrameWidthBack = 0;
+	
+	bar->details->interbox = NULL;
+    //gtk_widget_show_all (GTK_WIDGET (bar));
+	//gtk_widget_hide(hbox);
     gtk_widget_hide (bar->details->label);
 }
 
@@ -561,42 +642,716 @@ peony_location_bar_new (PeonyNavigationWindowPane *pane)
     return bar;
 }
 
+static gboolean
+peony_location_button_pressed_callback (GtkWidget             *widget,
+                               GdkEventButton        *event)
+{
+    PeonyNavigationWindow *window = NULL;
+    PeonyWindowSlot       *slot = NULL;
+    PeonyView             *view = NULL;
+    GtkWidget                *label = NULL;
+	GFile *location = NULL;
+	char *local_uri = NULL;
+	char *pWinLocalUri = NULL;
+
+	if (NULL == widget || NULL == event)
+    {
+		return FALSE;
+	}	
+
+	local_uri = (char *)g_object_get_data (G_OBJECT (widget),"location-addr");
+	
+    window = peony_location_bar_get_window (gtk_widget_get_parent (widget));
+    slot = PEONY_WINDOW (window)->details->active_pane->active_slot;
+    if (NULL != slot)
+    {
+    	pWinLocalUri = peony_window_slot_get_location_uri(slot);
+    	if(NULL != pWinLocalUri)
+    	{
+			if(0 != strcmp(pWinLocalUri,local_uri))
+			{
+				location = g_file_new_for_uri (local_uri);
+				if(NULL != location)
+				{
+					peony_window_slot_go_to (slot, location, FALSE);
+					g_object_unref (location);
+				}
+			}
+			g_free(pWinLocalUri);
+		}
+    }
+
+    return FALSE;
+}
+
+static gboolean
+peony_location_menu_pressed_callback (GtkMenuItem *menu_item, PeonyNavigationWindow *window)
+{
+    PeonyWindowSlot       *slot = NULL;
+    PeonyView             *view = NULL;
+    GtkWidget                *label = NULL;
+	GFile *location = NULL;
+	char *local_uri = NULL;
+	char *pWinLocalUri = NULL;
+	
+	if (NULL == menu_item || NULL == window)
+    {
+		return FALSE;
+	}	
+
+	local_uri = (char *)g_object_get_data (G_OBJECT (menu_item),"location-addr");
+    slot = PEONY_WINDOW (window)->details->active_pane->active_slot;
+    if (NULL != slot)
+    {
+    	pWinLocalUri = peony_window_slot_get_location_uri(slot);
+    	if(NULL != pWinLocalUri)
+    	{
+			if(0 != strcmp(pWinLocalUri,local_uri))
+			{
+				location = g_file_new_for_uri (local_uri);
+				if(NULL != location)
+				{
+					peony_window_slot_go_to (slot, location, FALSE);
+					g_object_unref (location);
+				}
+			}
+			g_free(pWinLocalUri);
+		}
+    }
+
+    return FALSE;
+}
+
+static void
+menu_position_callback (GtkMenu *menu,
+                     int *x,
+                     int *y,
+                     gboolean *push_in,
+                     gpointer user_data)
+{
+    GtkWidget *widget;
+    GtkAllocation allocation;
+
+    g_return_if_fail (GTK_IS_BUTTON (user_data));
+    g_return_if_fail (!gtk_widget_get_has_window (GTK_WIDGET (user_data)));
+
+    widget = GTK_WIDGET (user_data);
+
+    gdk_window_get_origin (gtk_widget_get_window (widget), x, y);
+    gtk_widget_get_allocation (widget, &allocation);
+
+    *x += allocation.x;
+    *y += allocation.y + allocation.height;
+
+    *push_in = FALSE;
+}
+
+static gboolean
+peony_location_backbutton_pressed_callback (GtkWidget             *widget,
+                               						GdkEventButton        *event,
+                               						gpointer      user_data)
+{
+	PeonyNavigationWindow *window;
+	PeonyLocationBar *bar = NULL;
+	GList *node = NULL;
+	GList *next = NULL;
+	WIDGET_PARAM *pWidget = NULL;
+	GtkWidget *menu = NULL;
+	GList *children = NULL;
+	GList *li = NULL;
+		
+	if (NULL == widget || NULL == user_data)
+	{
+		return;
+	}	
+
+	bar = PEONY_LOCATION_BAR (user_data);
+	window = peony_location_bar_get_window (gtk_widget_get_parent (widget));
+	menu = bar->details->menu;
+    gtk_menu_set_screen (GTK_MENU (menu), gtk_widget_get_screen (widget));
+
+	children = gtk_container_get_children (GTK_CONTAINER (menu));
+	for (li = children; li; li = li->next)
+	{
+		gtk_container_remove (GTK_CONTAINER (menu), li->data);
+	}
+	g_list_free (children);
+
+	for (node = g_list_first(bar->details->pChildList); node != NULL;  node = next)
+	{
+		GtkWidget *widget = NULL;
+		GtkWidget *menu_item = NULL;
+		next = node->next;
+
+		pWidget = (WIDGET_PARAM *)node->data;
+		widget = pWidget->widget;
+		
+		if(FALSE == gtk_widget_get_visible(widget))
+		{
+			GFile *location = NULL;
+			char *local_uri = NULL;
+			char *pBaseName = NULL;
+			GIcon *icon = NULL;
+			PeonyBookmark *bookmark = NULL;
+
+			local_uri = (char *)g_object_get_data (G_OBJECT (widget),"location-addr");
+			if (NULL != local_uri)
+			{
+				location = g_file_new_for_uri (local_uri);
+				if(NULL != location)
+				{
+					pBaseName = g_file_get_basename(location);
+					icon = g_file_icon_new (location);
+					bookmark = peony_bookmark_new (location, pBaseName, TRUE, icon);//???
+					menu_item = peony_bookmark_menu_item_new (bookmark);
+					if(menu_item != NULL)
+					{							
+						g_object_set_data_full (G_OBJECT (menu_item),
+												"location-addr",
+												g_strdup(local_uri), g_free);
+						gtk_widget_show (GTK_WIDGET (menu_item));
+						g_signal_connect_object (menu_item, "activate",
+											 G_CALLBACK (peony_location_menu_pressed_callback),
+											 window, 0);
+					
+						gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
+					}
+					g_object_unref (location);
+					if(NULL != pBaseName)
+					{
+						g_free(pBaseName);
+					}
+					if (icon)
+					{
+						g_object_unref (icon);
+					}
+				}
+			}
+		}
+	}
+	
+	gtk_menu_popup (GTK_MENU (menu),
+					NULL, NULL, menu_position_callback, widget,
+					1, event->time);
+	gtk_widget_show_all(menu);
+	
+	return;
+}
+
+static void
+show_location_menu_callback (GtkMenuToolButton *button,
+                    				gpointer      user_data)
+{
+    PeonyNavigationWindow *window;
+ 	PeonyLocationBar *bar = NULL;
+    GList *node = NULL;
+	GList *next = NULL;
+	WIDGET_PARAM *pWidget = NULL;
+    GtkWidget *menu = NULL;
+    GList *children = NULL;
+    GList *li = NULL;
+
+	if (NULL == button || NULL == user_data)
+    {
+		return;
+	}	
+
+	bar = PEONY_LOCATION_BAR (user_data);
+    window = peony_location_bar_get_window (gtk_widget_get_parent (button));
+	menu = gtk_menu_tool_button_get_menu(button);
+
+    children = gtk_container_get_children (GTK_CONTAINER (menu));
+    for (li = children; li; li = li->next)
+    {
+        gtk_container_remove (GTK_CONTAINER (menu), li->data);
+    }
+    g_list_free (children);
+
+    for (node = g_list_first(bar->details->pChildList); node != NULL;  node = next)
+    {
+		GtkWidget *widget = NULL;
+		GtkWidget *menu_item = NULL;
+		next = node->next;
+
+		pWidget = (WIDGET_PARAM *)node->data;
+		widget = pWidget->widget;
+		
+		if(FALSE == gtk_widget_get_visible(widget))
+		{
+			GFile *location = NULL;
+			char *local_uri = NULL;
+			char *pBaseName = NULL;
+			GIcon *icon = NULL;
+			PeonyBookmark *bookmark = NULL;
+
+			local_uri = (char *)g_object_get_data (G_OBJECT (widget),"location-addr");
+		    if (NULL != local_uri)
+		    {
+				location = g_file_new_for_uri (local_uri);
+				if(NULL != location)
+				{
+					pBaseName = g_file_get_basename(location);
+					icon = g_file_icon_new (location);
+					bookmark = peony_bookmark_new (location, pBaseName, TRUE, icon);//???
+					menu_item = peony_bookmark_menu_item_new (bookmark);
+					if(menu_item != NULL)
+					{							
+						g_object_set_data_full (G_OBJECT (menu_item),
+												"location-addr",
+												g_strdup(local_uri), g_free);
+						gtk_widget_show (GTK_WIDGET (menu_item));
+						g_signal_connect_object (menu_item, "activate",
+											 G_CALLBACK (peony_location_menu_pressed_callback),
+											 window, 0);
+					
+						gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
+					}
+					g_object_unref (location);
+					if(NULL != pBaseName)
+					{
+						g_free(pBaseName);
+					}
+					if (icon)
+					{
+						g_object_unref (icon);
+					}
+				}
+		    }
+		}
+    }
+
+    return;
+}
+
+static void set_button_list (GtkWidget *hboxinter,PeonyLocationBar *bar)
+{
+	WIDGET_PARAM *pstrWidget = NULL;
+	GList *pList = NULL;
+    GList *node = NULL;
+	GList *next = NULL;
+
+	if(NULL == hboxinter || NULL == bar)
+	{
+		return;
+	}
+
+	pList = gtk_container_get_children(hboxinter);
+	for (node = g_list_nth(pList,2); node != NULL;  node = next)
+    {
+		next = node->next;
+
+		pstrWidget = g_new0 (WIDGET_PARAM, 1);		
+		pstrWidget->widget = (GtkWidget *)node->data;
+		pstrWidget->iWidth = 0;
+		bar->details->pChildList = g_list_append(bar->details->pChildList,(gpointer)pstrWidget);
+    }
+	
+	g_list_free(pList);
+	return;
+}
+
+static void
+peony_sec_location_frame_allocate_callback (GtkWidget    *framewidget,
+												GdkRectangle *allocation,
+               									gpointer      user_data)
+{
+	GList *pNode = NULL;
+ 	PeonyLocationBar *bar = NULL;
+	GdkRectangle strbarAllocation = {0};
+	GdkRectangle strWidgetAllocation = {0};
+    GList *node = NULL;
+	GList *next = NULL;
+	GList *prev = NULL;
+	WIDGET_PARAM *pWidget = NULL;
+	WIDGET_PARAM *pWidgetPre = NULL;
+
+    if (NULL == framewidget || NULL == allocation || NULL == user_data)
+    {
+		return;
+	}	
+
+    bar = PEONY_LOCATION_BAR (user_data);
+	gtk_widget_get_allocation (bar,&strbarAllocation);
+	
+	if(bar->details->iSecFrameWidthBack != allocation->width)
+	{
+		bar->details->iSecFrameWidthBack = allocation->width;
+	}
+	else if(allocation->width > SEC_FRAME_SIZE)
+	{
+		return;
+	}
+
+	if(allocation->width > SEC_FRAME_SIZE)
+	{
+		bar->details->iSecFrameWidthBack = allocation->width;
+		for (node = g_list_last(bar->details->pChildList); node != NULL;  node = prev)
+	    {
+			GtkWidget *widget = NULL;
+			prev = node->prev;
+
+			pWidget = (WIDGET_PARAM *)node->data;
+			widget = pWidget->widget;
+			if(FALSE == gtk_widget_get_visible(widget)/* && NULL != prev*/)
+			{
+				//pWidgetPre = (WIDGET_PARAM *)prev->data;
+				if(pWidget->iWidth/* + pWidgetPre->iWidth*/ <= allocation->width - SEC_FRAME_SIZE)
+				{
+					gtk_widget_show(widget);
+					//gtk_widget_show(pWidgetPre->widget);
+					allocation->width -= (pWidget->iWidth/* + pWidgetPre->iWidth*/);
+				}
+				else
+				{
+					break;
+				}
+			}
+	    }
+
+		if(NULL == node)
+		{
+			gtk_widget_hide(bar->details->backbutton);
+			gtk_widget_hide(bar->details->backseparator);
+		}
+	}
+	else if(allocation->width < SEC_FRAME_SIZE)
+	{
+	    for (node = g_list_first(bar->details->pChildList); node != NULL;  node = next)
+	    {
+			GtkWidget *widget = NULL;
+			next = node->next;
+
+			pWidget = (WIDGET_PARAM *)node->data;
+			widget = pWidget->widget;
+			
+			if(TRUE == gtk_widget_get_visible(widget))
+			{			
+				gtk_widget_get_allocation (widget,&strWidgetAllocation);
+				pWidget->iWidth = strWidgetAllocation.width;
+				allocation->width += strWidgetAllocation.width;
+				gtk_widget_hide(widget);
+				if(NULL != next)
+				{
+					pWidget = (WIDGET_PARAM *)next->data;
+					widget = pWidget->widget;
+					gtk_widget_get_allocation (widget,&strWidgetAllocation);
+					pWidget->iWidth = strWidgetAllocation.width;
+					allocation->width += strWidgetAllocation.width;
+					gtk_widget_hide(widget);
+				}
+
+				if(NULL != bar->details->backbutton && FALSE == gtk_widget_get_visible(bar->details->backbutton))
+				{
+					gtk_widget_show(bar->details->backbutton);
+					gtk_widget_show(bar->details->backseparator);
+				}
+				if(allocation->width >= SEC_FRAME_SIZE)
+				{
+					break;
+				}
+			}
+	    }
+	}
+
+    return;
+}   
+
+static void
+peony_location_frame_allocate_callback (GtkWidget    *widget,
+												GdkRectangle *allocation,
+               									gpointer      user_data)
+{
+	GList *pNode = NULL;
+ 	PeonyLocationBar *bar = NULL;
+	GdkRectangle strbarAllocation = {0};
+	GdkRectangle strWidgetAllocation = {0};
+    GList *node = NULL;
+	GList *next = NULL;
+	GList *prev = NULL;
+	WIDGET_PARAM *pWidget = NULL;
+	WIDGET_PARAM *pWidgetPre = NULL;
+
+    if (NULL == widget || NULL == allocation || NULL == user_data)
+    {
+		return;
+	}	
+
+    bar = PEONY_LOCATION_BAR (user_data);
+	gtk_widget_get_allocation (bar,&strbarAllocation);
+	if(strbarAllocation.width - allocation->width < SEC_FRAME_SIZE)
+	{
+		strWidgetAllocation.width = strbarAllocation.width - allocation->width;
+		peony_sec_location_frame_allocate_callback(bar->details->aspectframesec,&strWidgetAllocation,bar);;
+	}
+	
+    return;
+}
+
+static void destory_location_button (gpointer data,gpointer user_data)
+{
+	WIDGET_PARAM *pstrWidget = NULL;
+	if(NULL == data)
+	{
+		return;
+	}
+
+	pstrWidget = (WIDGET_PARAM *)data;
+	gtk_widget_destroy(pstrWidget->widget);
+	g_free(pstrWidget);
+	
+	return;
+}
+
+static void
+remove_widget (GtkWidget *widget, GtkContainer *container)
+{
+	if (NULL == widget || NULL == container)
+    {
+		return;
+	}
+	
+	gtk_widget_hide(widget);
+    gtk_container_remove (container, widget);
+	gtk_widget_destroy(widget);
+
+	return;
+}
+
+
+
 void
 peony_location_bar_set_location (PeonyLocationBar *bar,
                                 const char *location)
 {
-    char *formatted_location;
-    GFile *file;
+    char *formatted_location = NULL;
+    GFile *file = NULL;
+    char* real_location = NULL;
+	GtkWidget *LocationButton = NULL;
+	gboolean bReturn = FALSE;
+	char *pLocationTemp = NULL;
+	gint iWidth = 0;
+	gint iHeight = 0;
+	WIDGET_PARAM *pWidget = NULL;
 
-    g_assert (location != NULL);
-
-    /* Note: This is called in reaction to external changes, and
-     * thus should not emit the LOCATION_CHANGED signal. */
-
-    if (eel_uri_is_search (location))
+    if (NULL == location || NULL == bar)
     {
-        peony_location_entry_set_special_text (PEONY_LOCATION_ENTRY (bar->details->entry),
-                                              "");
-    }
-    else
-    {
-        file = g_file_new_for_uri (location);
-        formatted_location = g_file_get_parse_name (file);
-        g_object_unref (file);
-        peony_location_entry_update_current_location (PEONY_LOCATION_ENTRY (bar->details->entry),
-                formatted_location);
-        g_free (formatted_location);
-    }
+		return;
+	}
 
-    /* remember the original location for later comparison */
+	gtk_widget_hide(bar->details->hbox);
+	if(NULL != bar->details->framehbox)
+	{
+		gtk_widget_hide(bar->details->framehbox);
+		gtk_container_foreach (GTK_CONTAINER (bar->details->framehbox),
+							   (GtkCallback)remove_widget,GTK_CONTAINER (bar));
+		gtk_container_remove (GTK_CONTAINER (bar), bar->details->framehbox);
+		gtk_widget_destroy(bar->details->framehbox);
+		bar->details->framehbox = NULL;
+	}
 
-    if (bar->details->last_location != location)
-    {
-        g_free (bar->details->last_location);
-        bar->details->last_location = g_strdup (location);
-    }
+	if(NULL != bar->details->interbox)
+	{
+		gtk_container_foreach (GTK_CONTAINER (bar->details->interbox),
+						   (GtkCallback)remove_widget,bar);
+		gtk_widget_destroy(bar->details->interbox);
+		bar->details->interbox = NULL;
+	}
+	
+	if(FALSE == bar->details->bActive)
+	{
+		GtkWidget *hbox = NULL;
+		GtkWidget *aspectframe = NULL;
+		GtkWidget *aspectframesec = NULL;
+		GtkWidget *hboxinter = NULL;
+		GtkWidget *button = NULL;
+		GtkWidget *separator = NULL;
+		GtkWidget *event_box = NULL;
+		char* pStart = NULL;
+		char* pTemp = NULL;
+		char* pFind = NULL;
+		char* pStartBack = NULL;
+		char* pStartBackPtr = NULL;
+		gboolean bFirst = TRUE;
 
-    peony_location_bar_update_label (bar);
+		if(NULL != bar->details->pChildList)
+		{
+        	g_list_foreach (bar->details->pChildList, (GFunc)destory_location_button, NULL);
+        	g_list_free (bar->details->pChildList);
+			bar->details->pChildList = NULL;
+		}
+
+		aspectframe = gtk_frame_new(NULL);
+		aspectframesec = gtk_frame_new(NULL);
+		hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL,FALSE);
+		hboxinter = gtk_box_new(GTK_ORIENTATION_HORIZONTAL,FALSE);
+		event_box = gtk_event_box_new ();
+	    gtk_event_box_set_visible_window (GTK_EVENT_BOX (event_box), FALSE);
+
+		file = g_file_new_for_uri (location);
+		if(NULL != file)
+		{
+			formatted_location = g_file_get_parse_name (file);
+			if(NULL != formatted_location)
+			{
+				real_location = g_uri_unescape_string (formatted_location,"");
+				if(NULL != real_location)
+				{
+					pStart = real_location;
+				}
+				else
+				{
+					pStart = formatted_location;
+				}
+				{
+					GtkWidget *menu = NULL;
+					GtkWidget *backbutton = NULL;
+					GtkWidget *iconView_image = NULL;
+					GtkWidget *child = NULL;
+					GtkWidget *image = NULL;
+
+					backbutton = gtk_button_new();
+					gtk_button_set_relief(backbutton,GTK_RELIEF_NONE);
+					image = gtk_image_new_from_icon_name("go-down",GTK_ICON_SIZE_MENU);
+					//gtk_button_set_relief(image,GTK_RELIEF_NONE);
+					gtk_button_set_image (GTK_BUTTON (backbutton),image);
+					menu = gtk_menu_new ();
+					bar->details->menu = menu;
+					
+					//gtk_menu_set_screen (GTK_MENU (menu), gtk_widget_get_screen (backbutton));
+					g_signal_connect (backbutton, "button-press-event",
+									  G_CALLBACK (peony_location_backbutton_pressed_callback), bar);
+
+					gtk_box_pack_start (GTK_BOX (hboxinter), backbutton, FALSE, TRUE, 0);
+					separator = gtk_separator_new(GTK_ORIENTATION_VERTICAL);
+					gtk_box_pack_start (GTK_BOX (hboxinter), separator, FALSE, TRUE, 0);
+					bar->details->backbutton = backbutton;
+					bar->details->backseparator = separator;
+				}
+				
+				pStartBack = g_strdup(pStart);
+				pStartBackPtr = pStartBack;
+				while(NULL != (pFind = strtok_r(pStart,"/",&pTemp)))
+				{
+					char *pUrl = NULL;
+					char *uri = NULL;
+					GFile *locationFile = NULL;
+
+					if(FALSE == bFirst)
+					{
+						separator = gtk_separator_new(GTK_ORIENTATION_VERTICAL);
+						gtk_box_pack_start (GTK_BOX (hboxinter), separator, FALSE, TRUE, 0);
+					}
+					button = gtk_button_new_with_label(pFind);					
+					gtk_button_set_relief(button,GTK_RELIEF_NONE);
+
+					pLocationTemp = strstr(pStartBackPtr,pFind);
+					if(NULL == pLocationTemp)
+					{
+						pLocationTemp = pStartBackPtr;
+					}
+					pLocationTemp += strlen(pFind);
+					pUrl = g_strndup(pStartBack,pLocationTemp-pStartBack);
+					locationFile = g_file_parse_name (pUrl);
+				    uri = g_file_get_uri (locationFile);
+					g_object_unref (locationFile);
+					g_free(pUrl);
+					pStartBackPtr = pLocationTemp;
+					
+					g_object_set_data_full (G_OBJECT (button),
+											"location-addr",
+											uri, g_free);
+					g_signal_connect (button, "button-press-event",
+									  G_CALLBACK (peony_location_button_pressed_callback), NULL);
+					gtk_box_pack_start (GTK_BOX (hboxinter), button, FALSE, TRUE, 0);
+					
+					bFirst = FALSE;
+					pStart = NULL;
+				}
+				g_free (formatted_location);
+				g_free (real_location);
+				g_free (pStartBack);
+			}
+			g_object_unref (file);
+		}
+
+		g_signal_connect (aspectframe, "size-allocate",
+						  G_CALLBACK (peony_location_frame_allocate_callback), bar);
+		g_signal_connect (aspectframesec, "size-allocate",
+						  G_CALLBACK (peony_sec_location_frame_allocate_callback), bar);
+		gtk_container_add (GTK_CONTAINER (aspectframe), hboxinter);
+		gtk_container_add   (GTK_CONTAINER (event_box), aspectframesec);
+		gtk_box_pack_start (GTK_BOX (hbox), aspectframe, FALSE, TRUE, 0);
+		gtk_box_pack_start (GTK_BOX (hbox), event_box, TRUE, TRUE, 0);
+		gtk_box_pack_start (GTK_CONTAINER (bar), hbox, TRUE, TRUE, 0);
+		bar->details->framehbox = hbox;
+		bar->details->aspectframesec = aspectframesec;
+		g_signal_connect (event_box, "button_press_event",
+						  G_CALLBACK (peony_location_bar_focus_in),
+						  bar);
+
+		gtk_widget_show_all (bar->details->framehbox);
+		gtk_widget_hide(bar->details->backbutton);
+		gtk_widget_hide(bar->details->backseparator);
+		bar->details->bNeedDes = TRUE;
+		bar->details->interbox = hboxinter;
+
+		set_button_list(hboxinter,bar);
+		if (bar->details->last_location != location)
+		{
+			g_free (bar->details->last_location);
+			bar->details->last_location = g_strdup (location);
+		}
+	}
+	else
+	{
+		gtk_widget_show_all (bar->details->hbox);
+	    if (eel_uri_is_search (location))
+	    {
+	        peony_location_entry_set_special_text (PEONY_LOCATION_ENTRY (bar->details->entry),
+	                                              "");
+	    }
+	    else
+	    {
+	        file = g_file_new_for_uri (location);
+			if(NULL != file)
+			{
+		        formatted_location = g_file_get_parse_name (file);
+				if(NULL != formatted_location)
+				{
+			        real_location = g_uri_unescape_string (formatted_location,"");
+					if(NULL != real_location)
+					{
+			        	peony_location_entry_update_current_location (PEONY_LOCATION_ENTRY (bar->details->entry),
+			                real_location);
+					}
+					else
+					{
+						peony_location_entry_update_current_location (PEONY_LOCATION_ENTRY (bar->details->entry),
+			                formatted_location);
+					}
+			        g_free (formatted_location);
+			        g_free (real_location);
+				}
+				g_object_unref (file);
+			}
+	    }
+
+	    /* remember the original location for later comparison */
+	    if (bar->details->last_location != location)
+	    {
+	        g_free (bar->details->last_location);
+	        bar->details->last_location = g_strdup (location);
+	    }
+
+	    peony_location_bar_update_label (bar);
+		if(TRUE == bar->details->bANeedemit)
+		{
+			gtk_widget_grab_focus(bar->details->entry);			
+			bar->details->bANeedemit = FALSE;
+		}
+	}
+
+	return;
 }
 
 /* change background color based on activity state */
