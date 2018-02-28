@@ -144,6 +144,7 @@ peony_location_bar_get_location (PeonyLocationBar *bar)
     char *user_location, *uri;
     GFile *location;
 
+	#if 0 //_LOCATION_BAR_CHANGE_
 	if(TRUE == bar->details->bActive)
 	{
 	    user_location = gtk_editable_get_chars (GTK_EDITABLE (bar->details->entry), 0, -1);
@@ -156,6 +157,13 @@ peony_location_bar_get_location (PeonyLocationBar *bar)
 	{
 		uri = g_strdup(bar->details->last_location);
 	}
+	#else
+	user_location = gtk_editable_get_chars (GTK_EDITABLE (bar->details->entry), 0, -1);
+    location = g_file_parse_name (user_location);
+    g_free (user_location);
+    uri = g_file_get_uri (location);
+    g_object_unref (location);
+	#endif
     return uri;
 }
 
@@ -578,8 +586,10 @@ peony_location_bar_init (PeonyLocationBar *bar)
                              G_CALLBACK (editable_activate_callback), bar, G_CONNECT_AFTER);
     g_signal_connect_object (entry, "changed",
                              G_CALLBACK (editable_changed_callback), bar, 0);
+	#if 0 //_LOCATION_BAR_CHANGE_
 	g_signal_connect_object (GTK_WIDGET (entry), "focus-out-event",
 							 G_CALLBACK (peony_location_bar_focus_out), bar, G_CONNECT_AFTER);
+	#endif
 
     gtk_box_pack_start (GTK_BOX (bar), entry, TRUE, TRUE, 0);
 
@@ -1137,7 +1147,7 @@ peony_location_bar_set_location (PeonyLocationBar *bar,
     {
 		return;
 	}
-
+	#if 0 //_LOCATION_BAR_CHANGE_
 	gtk_widget_hide(bar->details->hbox);
 	if(NULL != bar->details->framehbox)
 	{
@@ -1352,6 +1362,32 @@ peony_location_bar_set_location (PeonyLocationBar *bar,
 	}
 
 	return;
+	#else
+	if (eel_uri_is_search (location))
+    {
+        peony_location_entry_set_special_text (PEONY_LOCATION_ENTRY (bar->details->entry),
+                                              "");
+    }
+    else
+    {
+        file = g_file_new_for_uri (location);
+        formatted_location = g_file_get_parse_name (file);
+        g_object_unref (file);
+        peony_location_entry_update_current_location (PEONY_LOCATION_ENTRY (bar->details->entry),
+                formatted_location);
+        g_free (formatted_location);
+    }
+
+    /* remember the original location for later comparison */
+
+    if (bar->details->last_location != location)
+    {
+        g_free (bar->details->last_location);
+        bar->details->last_location = g_strdup (location);
+    }
+
+    peony_location_bar_update_label (bar);
+	#endif
 }
 
 /* change background color based on activity state */
