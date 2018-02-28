@@ -78,7 +78,7 @@ static const char * const default_view_values[] =
 {
     "icon-view",
     "list-view",
-    "compact-view",
+    //"compact-view",
     NULL
 };
 

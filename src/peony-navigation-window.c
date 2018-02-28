@@ -104,6 +104,31 @@ static const struct
     { XF86XK_Forward,	PEONY_ACTION_FORWARD }
 #endif
 };
+static void
+choose_icon_view (GtkButton *widget,gpointer data)
+{
+    PeonyWindow *window;
+    PeonyWindowSlot *slot;
+    char    *uri;
+    
+    window = PEONY_WINDOW (data);
+    slot = peony_window_get_active_slot(window);
+    uri = peony_window_slot_get_location_uri(slot);
+    if (strcmp (uri, "computer:///") == 0)
+        peony_window_slot_set_content_view (slot, "OAFIID:Peony_File_Manager_Computer_View");
+    else
+        peony_window_slot_set_content_view (slot,"OAFIID:Peony_File_Manager_Icon_View");
+}
+
+static void
+choose_list_view (GtkButton *widget,gpointer data)
+{
+    PeonyWindow *window;
+    PeonyWindowSlot *slot;
+    window = PEONY_WINDOW (data);
+    slot = peony_window_get_active_slot(window);
+    peony_window_slot_set_content_view (slot,"OAFIID:Peony_File_Manager_List_View");
+}
 
 static void
 peony_navigation_window_init (PeonyNavigationWindow *window)
@@ -115,7 +140,11 @@ peony_navigation_window_init (PeonyNavigationWindow *window)
     GtkWidget *hpaned;
     GtkWidget *vbox;
     GtkWidget *add_toolbar_vbox;
-    
+    GtkImage  *iconView_image;
+    GtkImage *listView_image;
+    GtkWidget *iconView_button;
+    GtkWidget *listView_button;
+	
     win = PEONY_WINDOW (window);
 
     window->details = G_TYPE_INSTANCE_GET_PRIVATE (window, PEONY_TYPE_NAVIGATION_WINDOW, PeonyNavigationWindowDetails);
@@ -175,10 +204,26 @@ peony_navigation_window_init (PeonyNavigationWindow *window)
     gtk_toolbar_set_style(GTK_TOOLBAR(toolbar),GTK_TOOLBAR_ICONS);
     gtk_toolbar_set_show_arrow(GTK_TOOLBAR(toolbar),FALSE);
     gtk_style_context_add_class (gtk_widget_get_style_context (toolbar), GTK_STYLE_CLASS_PRIMARY_TOOLBAR);
+	#if 0
     window->toolbarViewAs = gtk_ui_manager_get_widget(ui_manager, "/ToolbarViewAs");
     gtk_toolbar_set_icon_size(GTK_TOOLBAR(window->toolbarViewAs),GTK_ICON_SIZE_SMALL_TOOLBAR);
     gtk_toolbar_set_style(GTK_TOOLBAR(window->toolbarViewAs), GTK_TOOLBAR_ICONS);
     gtk_widget_set_size_request(window->toolbarViewAs, 50, 32);
+    #else
+    iconView_button = gtk_button_new();
+	gtk_button_set_relief(iconView_button,GTK_RELIEF_NONE);
+    iconView_image = gtk_image_new_from_file ("/usr/share/pixmaps/peony/peony-view-as-normal.png");
+    gtk_button_set_image (iconView_button,iconView_image);
+
+    listView_button =gtk_button_new ();
+	gtk_button_set_relief(listView_button,GTK_RELIEF_NONE);
+    listView_image = gtk_image_new_from_file ("/usr/share/pixmaps/peony/peony-view-as-list.png");
+    gtk_button_set_image (listView_button,listView_image);
+
+    window->viewAsbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL,0);
+	gtk_box_pack_start (GTK_BOX (window->viewAsbox), iconView_button, FALSE, FALSE, 2);
+	gtk_box_pack_start (GTK_BOX (window->viewAsbox), listView_button, FALSE, FALSE, 2);
+	#endif
     window->details->toolbar = toolbar;
     gtk_widget_set_hexpand (toolbar, FALSE);
     add_toolbar_vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL,3);
@@ -192,7 +237,7 @@ peony_navigation_window_init (PeonyNavigationWindow *window)
                         add_toolbar_vbox,
 	                    0,1,1,1);
     gtk_grid_attach (window->toolbar_table,
-                    window->toolbarViewAs,
+                    window->viewAsbox,
                         2,1,1,1);
 
     gtk_grid_attach (GTK_GRID (PEONY_WINDOW (window)->details->grid),
@@ -201,7 +246,11 @@ peony_navigation_window_init (PeonyNavigationWindow *window)
                      0, 1, 1, 1);
     gtk_widget_show (toolbar);
     gtk_widget_show_all (window->toolbar_table);
-    gtk_widget_show (window->toolbarViewAs);
+    gtk_widget_show (window->viewAsbox);
+    g_signal_connect (iconView_button,"pressed",G_CALLBACK (choose_icon_view),window);
+
+    g_signal_connect (listView_button,"pressed",G_CALLBACK (choose_list_view),window);
+
 
     peony_navigation_window_initialize_toolbars (window);
 

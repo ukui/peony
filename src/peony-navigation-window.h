@@ -71,6 +71,7 @@ struct _PeonyNavigationWindow
     GList *sidebar_panels;
     GtkWidget *toolbar_table;
     GtkWidget *toolbarViewAs;
+	GtkWidget *viewAsbox;
 };
 
 

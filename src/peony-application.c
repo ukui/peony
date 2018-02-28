@@ -2348,7 +2348,7 @@ peony_application_startup (GApplication *app)
     /* register views */
     //fm_computer_view_register ();
     fm_icon_view_register ();
-    fm_compact_view_register ();
+    //fm_compact_view_register ();
     fm_list_view_register ();
     fm_desktop_icon_view_register ();
 
