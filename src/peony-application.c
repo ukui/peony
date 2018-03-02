@@ -81,6 +81,7 @@
 #include <libpeony-private/peony-autorun.h>
 #define MATE_DESKTOP_USE_UNSTABLE_API
 #include <libmate-desktop/mate-bg.h>
+#include <libpeony-private/peony-view-factory.h>
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -314,6 +315,65 @@ open_windows (PeonyApplication *application,
 }
 
 static void
+display_file_properties (PeonyWindow *window,const char *uri)
+{
+    FMDirectoryView *view = NULL;
+	GList *files = NULL;
+    PeonyWindowSlot *slot = NULL;
+	PeonyView *view0 = NULL;
+	PeonyFile *file = NULL;
+	
+	slot = peony_window_get_active_slot(window);
+	view0 = peony_view_factory_create ("OAFIID:Peony_File_Manager_Icon_View",
+									 PEONY_WINDOW_SLOT_INFO (slot));
+	if(NULL != view0)
+	{
+		view = FM_DIRECTORY_VIEW(view0);
+		file = peony_file_get_by_uri(uri);
+		if (file != NULL) 
+		{
+			files = g_list_append (NULL, peony_file_ref (file));
+			fm_properties_window_present (files, GTK_WIDGET (view));
+			peony_file_list_free (files);
+		}
+	}
+
+	return;
+}
+
+static void display_files_properties(GFile **files,gboolean browser_window,GdkScreen *screen,PeonyApplication *application)
+{
+	if (files != NULL || files[0] != NULL)
+	{
+		int i = 0;
+		/* Open windows at each requested location. */
+		for (i = 0; files[i] != NULL; i++)
+		{
+			PeonyWindow *window;
+			gchar *uri = NULL;
+			
+			uri = g_file_get_uri (files[i]);
+			if (browser_window ||g_settings_get_boolean (peony_preferences, PEONY_PREFERENCES_ALWAYS_USE_BROWSER)) {
+				window = peony_application_create_navigation_window (application,
+						 screen);
+			}
+			
+			else {
+				window = peony_application_get_spatial_window (application,
+						 NULL,
+						 NULL,
+						 files[i],
+						 screen,
+						 NULL);
+			}
+			display_file_properties(window,uri);
+			
+			g_free (uri);
+		}
+	}
+}
+
+static void
 peony_application_open (GApplication *app,
                GFile **files,
                gint n_files,
@@ -323,12 +383,19 @@ peony_application_open (GApplication *app,
     gboolean browser_window = FALSE;
     const gchar *geometry = NULL;
     const char splitter = '=';
+    gboolean bDisplayAttr = FALSE;
 
     g_debug ("Open called on the GApplication instance; %d files", n_files);
 
     /*Check if local command line passed --browser or --geometry */
     if (strcmp(options,"") != 0 ){
-        if (g_str_match_string ("browser",
+		if(g_str_match_string ("DisplayAttr",
+                    options,
+                    FALSE) == TRUE)
+		{
+			bDisplayAttr = TRUE;
+		}
+        else if (g_str_match_string ("browser",
                     options,
                     FALSE) == TRUE){
             browser_window = TRUE;
@@ -343,11 +410,18 @@ peony_application_open (GApplication *app,
         self->priv->geometry = NULL;
     }
 
-    open_windows (self, files,
+	if(TRUE == bDisplayAttr)
+	{
+		display_files_properties(files,browser_window,gdk_screen_get_default (),self);
+	}
+	else
+	{
+	    open_windows (self, files,
               gdk_screen_get_default (),
               geometry,
               n_files,
               browser_window);
+	}
 }
 
 void
@@ -2019,6 +2093,7 @@ peony_application_local_command_line (GApplication *application,
     gboolean version = FALSE;
     gboolean browser_window = FALSE;
     gboolean kill_shell = FALSE;
+    gboolean bDisplayAttr = FALSE;
     const gchar *autostart_id;
     gboolean no_default_window = FALSE;
     gchar **remaining = NULL;
@@ -2047,6 +2122,8 @@ peony_application_local_command_line (GApplication *application,
           N_("Open a browser window."), NULL },
         { "quit", 'q', 0, G_OPTION_ARG_NONE, &kill_shell, 
           N_("Quit Peony."), NULL },
+        { "attr", 'a', 0, G_OPTION_ARG_NONE, &bDisplayAttr, 
+          N_("Display Attr."), NULL },
         { G_OPTION_REMAINING, 0, 0, G_OPTION_ARG_STRING_ARRAY, &remaining, NULL,  N_("[URI...]") },
 
         { NULL }
@@ -2167,7 +2244,13 @@ peony_application_local_command_line (GApplication *application,
     /*Set up geometry and --browser options  */
     /*Invoke "Open" to create new windows */
 
-    if (browser_window == TRUE && self->priv->geometry == NULL){
+	if(TRUE == bDisplayAttr)
+	{
+		if (len > 0)  {
+        g_application_open (application, files, len, "DisplayAttr");
+        }
+	}
+    else if (browser_window == TRUE && self->priv->geometry == NULL){
 
         if (len > 0)  {
         g_application_open (application, files, len, "browser");
