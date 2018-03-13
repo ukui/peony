@@ -2034,7 +2034,7 @@ msgstr "无法使用此链接，因为其目标“%s”不存在。"
 #: ../src/file-manager/fm-directory-view.c:8939
 #: ../src/file-manager/fm-tree-view.c:1346
 msgid "Mo_ve to Trash"
-msgstr "移动到回收站(_V)"
+msgstr "删除到回收站(_V)"
 
 #: ../libpeony-private/peony-mime-actions.c:806
 #, c-format
@@ -4135,7 +4135,7 @@ msgstr "把每个选中项目都移到回收站"
 #: ../src/file-manager/fm-directory-view.c:8960
 #: ../src/file-manager/fm-tree-view.c:1360
 msgid "_Delete"
-msgstr "删除(_D)"
+msgstr "永久删除(_D)"
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:7386
