@@ -4980,6 +4980,9 @@ finalize (GObject *object)
     g_signal_handlers_disconnect_by_func (peony_desktop_preferences,
                                           text_ellipsis_limit_changed_container_callback,
                                           object);
+    g_signal_handlers_disconnect_by_func (peony_computer_view_preferences,
+                                          text_ellipsis_limit_changed_container_callback,
+                                          object);
 
     g_hash_table_destroy (details->icon_set);
     details->icon_set = NULL;

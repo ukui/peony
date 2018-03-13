@@ -187,6 +187,8 @@ libpeony_private_la_SOURCES = \
 	peony-window-slot-info.h \
 	peony-undostack-manager.c \
 	peony-undostack-manager.h \
+	lsdev.h	\
+	lsdev.c	\
 	$(NULL)
 
 nodist_libpeony_private_la_SOURCES =\

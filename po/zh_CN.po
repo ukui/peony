@@ -29,6 +29,15 @@ msgstr ""
 msgid "Personal"
 msgstr "个人"
 
+msgid "Disk"
+msgstr "硬盘"
+
+msgid "Movable-Disk"
+msgstr "可移动存储设备"
+
+msgid "Other"
+msgstr "其他"
+
 msgid "My Computer"
 msgstr "我的电脑"
 
@@ -41,6 +50,14 @@ msgstr "收藏夹"
 #,c-format
 msgid "Recent"
 msgstr "最近"
+msgid "available space,total"
+msgstr "可用，共"
+
+msgid "GB available space,total"
+msgstr "G可用，共"
+
+msgid "TB available space,total"
+msgstr "T可用，共"
 
 #: ../cut-n-paste-code/libegg/eggdesktopfile.c:166
 #, c-format

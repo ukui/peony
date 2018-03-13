@@ -28,6 +28,7 @@
 
 #include <glib/gi18n.h>
 
+#include <libpeony-private/peony-file.h>
 #include "peony-file-utilities.h"
 #include "peony-global-preferences.h"
 #include "peony-icon-private.h"
@@ -50,6 +51,7 @@
 #include <string.h>
 
 #define EMBLEM_SPACING 2
+#define MY_COMPUTER_EXTRA_RECT 12 
 
 /* gap between bottom of icon and start of text box */
 #define LABEL_OFFSET 1
@@ -58,8 +60,19 @@
 //#define MAX_TEXT_WIDTH_STANDARD 135
 #define MAX_TEXT_WIDTH_STANDARD 78
 #define MAX_TEXT_WIDTH_TIGHTER 80
-#define MAX_TEXT_WIDTH_BESIDE 90
+#define MAX_TEXT_WIDTH_BESIDE 225
 #define MAX_TEXT_WIDTH_BESIDE_TOP_TO_BOTTOM 150
+
+#define LAYOUT_HEIGHT 24
+
+#define BURN "burn:///"
+#define FTP "ftp://"
+#define AFP "afp://"
+#define SMB "smb://"
+#define SFTP "sftp://"
+#define HTTP "http://"
+#define HTTPS "https://"
+
 
 /* special text height handling
  * each item has three text height variables:
@@ -249,6 +262,161 @@ peony_icon_canvas_item_init (PeonyIconCanvasItem *icon_item)
     peony_icon_canvas_item_invalidate_label_size (icon_item);
 }
 
+gint
+get_disk_full (PeonyIconCanvasItem *item)
+{
+	GList list;
+	goffset block_num;
+	char *uri,*device;
+	GDrive *gdrive;
+	guint64 freedisk,totaldisk;
+	gint track_num ;
+	int size;
+    	gint df_percent;
+	float fraction;
+	BraseroDeviceHandle *handle;
+	BraseroScsiTrackInfo track_info;
+	BraseroScsiResult result;
+
+	PeonyIcon *icon = item->user_data;
+	list.data = icon->data;
+	PeonyFile *file = PEONY_FILE(list.data);
+	char *name = peony_file_get_name(file);
+	char *text_string = _("available space,total");
+	
+#define disk_additional_text_max_len 255
+#define disk_show_tb 1000
+	
+	char *sum = (char*)malloc(disk_additional_text_max_len * sizeof(char));
+
+	if(strcmp(name,"root.link")!=0)
+	{
+		GMount *mount =peony_file_get_mount(file);
+		if(!mount)
+		{
+			g_free (name);
+			return NULL;
+		}
+		GFile *root = g_mount_get_default_location (mount);
+	  
+		if(root )
+		{
+			uri = g_file_get_uri(root);
+			if(g_str_has_prefix(uri,SMB)||
+			g_str_has_prefix(uri,AFP)||
+			g_str_has_prefix(uri,HTTP)||
+			g_str_has_prefix(uri,HTTPS)||
+			g_str_has_prefix(uri,SFTP)||
+			g_str_has_prefix(uri,FTP))
+			{
+				g_free(uri);
+				g_object_unref(mount);
+				return NULL;
+			}
+	  		if(g_str_has_prefix(uri,BURN))
+	  		{
+				gdrive = g_mount_get_drive (mount);
+				if(gdrive)
+					device = g_drive_get_identifier (gdrive, G_VOLUME_IDENTIFIER_KIND_UNIX_DEVICE);
+				else
+				{
+					g_object_unref(mount); 
+					return  NULL;
+				}
+				if(device)
+				{
+					handle = brasero_device_handle_open(device,FALSE);
+					track_num =1;
+					size =36;
+					brasero_mmc1_read_track_info(handle,track_num,& track_info,& size);
+                                                        if(&track_info !=NULL)
+                                                            block_num = BRASERO_GET_32(track_info.free_blocks);
+                                                        else
+                                                            block_num = 0;
+					freedisk = block_num*2048;
+					totaldisk=block_num*2048;
+                                                        if(handle!=NULL)
+					brasero_device_handle_close( handle);
+				}
+				if(gdrive)	g_object_unref(gdrive);
+				if(!device) return NULL;
+				g_free(device);
+			}
+	 		char *path = g_file_get_path(root);	  
+	 		if(!g_file_test(path,G_FILE_TEST_EXISTS))
+	 		{
+	 			if(path)	g_free(path);
+				g_object_unref(mount);
+	 			return NULL;
+	 		}
+	 		else{
+				freedisk = interface_get_disk_free_full (g_file_new_for_uri (uri));
+				totaldisk = interface_get_disk_total_full(g_file_new_for_uri (uri));
+				if(!interface_get_disk_free_full (root)&&!interface_get_disk_total_full(root))
+				{					
+					gdrive = g_mount_get_drive (mount);
+					device = g_drive_get_identifier (gdrive,G_VOLUME_IDENTIFIER_KIND_UNIX_DEVICE);
+					goffset used_space;
+					used_space = process_one_device (device);
+					BraseroScsiDiscInfoStd *info = NULL;
+					handle = brasero_device_handle_open(device,FALSE);
+					result = brasero_mmc1_read_disc_information_std (handle,
+																&info,
+																&size);
+                                                        if (info!=NULL)
+					{
+					    track_num = BRASERO_FIRST_TRACK_IN_LAST_SESSION (info);
+					    brasero_mmc1_read_track_info(handle,track_num,& track_info,& size);
+                                                            block_num = BRASERO_GET_32(track_info.free_blocks);
+                                                        }
+                                                        else
+                                                            block_num =0;
+					freedisk = block_num*2048;
+					totaldisk = used_space+block_num*2048;
+                                                        if(handle!=NULL)
+					brasero_device_handle_close( handle);
+					g_object_unref(gdrive);
+					g_free(device);
+                                                        if(info!=NULL)
+					g_free(info);
+				}				
+			 }
+			g_free(path);
+		}	
+		 g_object_unref (mount);
+	}
+	else
+	{
+		uri = "file:///";
+		freedisk = interface_get_disk_free_full (g_file_new_for_uri (uri));
+		totaldisk = interface_get_disk_total_full(g_file_new_for_uri (uri));
+	}
+	g_free (name);
+            fraction = ((float) (totaldisk-freedisk) / (float) totaldisk) * 100.0;
+            df_percent = (gint)rintf(fraction);
+	return (df_percent > -1 && df_percent < 101) ? df_percent : 0;
+}
+guint64
+interface_get_disk_free_full(GFile * file)
+{
+	GFileInfo *info = g_file_query_filesystem_info (file,
+											"filesystem::*",
+											NULL,
+											NULL);
+	return g_file_info_get_attribute_uint64 (info, G_FILE_ATTRIBUTE_FILESYSTEM_FREE);
+}
+ 
+guint64
+interface_get_disk_total_full(GFile * file)
+{
+
+	GFileInfo *info = g_file_query_filesystem_info (file,
+											"filesystem::*",
+											NULL,
+											NULL);
+	return g_file_info_get_attribute_uint64 (info, G_FILE_ATTRIBUTE_FILESYSTEM_SIZE);
+ }
+
 static void
 peony_icon_canvas_item_finalize (GObject *object)
 {
@@ -303,6 +471,197 @@ peony_icon_canvas_item_finalize (GObject *object)
 
     G_OBJECT_CLASS (peony_icon_canvas_item_parent_class)->finalize (object);
 }
+static char*
+get_disk_additional_text(PeonyIconCanvasItem *item)
+{
+	GList list;
+	goffset block_num;
+	char *uri,*device;
+	GDrive *gdrive;
+	gchar* freedisk=NULL,*totaldisk=NULL;
+	gint track_num ;
+	int size;
+	BraseroDeviceHandle *handle;
+	BraseroScsiTrackInfo track_info;
+	BraseroScsiResult result;
+
+	PeonyIcon *icon = item->user_data;
+	list.data = icon->data;
+	PeonyFile *file = PEONY_FILE(list.data);
+	char *name = peony_file_get_name(file);
+	char *text_string = _("available space,total");
+	
+	#define disk_additional_text_max_len 255
+	#define disk_show_tb 1000
+	
+	char *sum = (char*)malloc(disk_additional_text_max_len * sizeof(char));
+
+	if(strcmp(name,"root.link")!=0)
+	{
+		GMount *mount =peony_file_get_mount(file);
+		if(!mount)
+		{
+			g_free (name);
+			return NULL;
+		}
+		GFile *root = g_mount_get_default_location (mount);
+	  
+		if(root )
+		{
+			uri = g_file_get_uri(root);
+			if(g_str_has_prefix(uri,SMB)||
+			g_str_has_prefix(uri,AFP)||
+			g_str_has_prefix(uri,HTTP)||
+			g_str_has_prefix(uri,HTTPS)||
+			g_str_has_prefix(uri,SFTP)||
+			g_str_has_prefix(uri,FTP))
+			{
+				g_free(uri);
+				g_object_unref(mount);
+				return NULL;
+			}
+	  		if(g_str_has_prefix(uri,BURN))
+	  		{
+				gdrive = g_mount_get_drive (mount);
+				if(gdrive)
+					device = g_drive_get_identifier (gdrive, G_VOLUME_IDENTIFIER_KIND_UNIX_DEVICE);
+				else
+				{
+					g_object_unref(mount); 
+					return  NULL;
+				}
+				if(device)
+				{
+					handle = brasero_device_handle_open(device,FALSE);
+					track_num =1;
+					size =36;
+					brasero_mmc1_read_track_info(handle,track_num,& track_info,& size);
+                                                        if(&track_info !=NULL)
+                                                            block_num = BRASERO_GET_32(track_info.free_blocks);
+                                                        else
+                                                            block_num = 0;
+					#if 0
+					freedisk = g_format_size(block_num*2048);
+					totaldisk=g_format_size(block_num*2048);
+					#else
+					if (g_settings_get_boolean (peony_preferences, PEONY_PREFERENCES_USE_IEC_UNITS))
+					{
+						freedisk = g_format_size_full(block_num*2048,G_FORMAT_SIZE_IEC_UNITS);
+						totaldisk=g_format_size_full(block_num*2048,G_FORMAT_SIZE_IEC_UNITS);
+					}
+					else
+					{
+						freedisk = g_format_size(block_num*2048);
+						totaldisk=g_format_size(block_num*2048);
+					}
+					#endif
+                                                        if(handle!=NULL)
+					brasero_device_handle_close( handle);
+				}
+				if(gdrive)	g_object_unref(gdrive);
+				if(!device) return NULL;
+				g_free(device);
+			}
+	 		char *path = g_file_get_path(root);	  
+	 		if(!g_file_test(path,G_FILE_TEST_EXISTS))
+	 		{
+	 			if(path)	g_free(path);
+				g_object_unref(mount);
+	 			return NULL;
+	 		}
+	 		else{
+				#if 0
+				freedisk = g_format_size(interface_get_disk_free_full (g_file_new_for_uri (uri)));
+				totaldisk = g_format_size(interface_get_disk_total_full(g_file_new_for_uri (uri)));
+				#else
+				if (g_settings_get_boolean (peony_preferences, PEONY_PREFERENCES_USE_IEC_UNITS))
+				{
+					freedisk = g_format_size_full(interface_get_disk_free_full (g_file_new_for_uri (uri)),G_FORMAT_SIZE_IEC_UNITS);
+					totaldisk=g_format_size_full(interface_get_disk_total_full (g_file_new_for_uri (uri)),G_FORMAT_SIZE_IEC_UNITS);
+				}
+				else
+				{
+					freedisk = g_format_size(interface_get_disk_free_full (g_file_new_for_uri (uri)));
+					totaldisk = g_format_size(interface_get_disk_total_full(g_file_new_for_uri (uri)));
+				}
+				#endif
+				if(!interface_get_disk_free_full (root)&&!interface_get_disk_total_full(root))
+				{					
+					gdrive = g_mount_get_drive (mount);
+					device = g_drive_get_identifier (gdrive,G_VOLUME_IDENTIFIER_KIND_UNIX_DEVICE);
+					goffset used_space;
+					used_space = process_one_device (device);
+					BraseroScsiDiscInfoStd *info = NULL;
+					handle = brasero_device_handle_open(device,FALSE);
+					result = brasero_mmc1_read_disc_information_std (handle,
+																&info,
+																&size);
+                                                        if (info!=NULL)
+					{
+					    track_num = BRASERO_FIRST_TRACK_IN_LAST_SESSION (info);
+					    brasero_mmc1_read_track_info(handle,track_num,& track_info,& size);
+                                                            block_num = BRASERO_GET_32(track_info.free_blocks);
+                                                        }
+                                                        else
+                                                            block_num =0;
+					#if 0
+					freedisk = g_format_size(block_num*2048);
+					totaldisk = g_format_size(used_space+block_num*2048);
+					#else
+					if (g_settings_get_boolean (peony_preferences, PEONY_PREFERENCES_USE_IEC_UNITS))
+					{
+						freedisk = g_format_size_full(block_num*2048,G_FORMAT_SIZE_IEC_UNITS);
+						totaldisk=g_format_size_full(used_space+block_num*2048,G_FORMAT_SIZE_IEC_UNITS);
+					}
+					else
+					{
+						freedisk = g_format_size(block_num*2048);
+						totaldisk = g_format_size(used_space+block_num*2048);
+					}
+					#endif
+                                                        if(handle!=NULL)
+					brasero_device_handle_close( handle);
+					g_object_unref(gdrive);
+					g_free(device);
+                                                        if(info!=NULL)
+					g_free(info);
+				}				
+			 }
+			g_free(path);
+			freedisk = (char*)realloc(freedisk,strlen(freedisk)+strlen(text_string)+strlen(totaldisk)+1);
+			strcat (freedisk,text_string);	
+			sum = g_strdup(strcat(freedisk,totaldisk));
+		}	
+		 g_object_unref (mount);
+	}
+	else
+	{
+		uri = "file:///";
+		#if 0
+		freedisk = g_format_size(interface_get_disk_free_full (g_file_new_for_uri (uri)));
+		totaldisk = g_format_size(interface_get_disk_total_full(g_file_new_for_uri (uri)));
+		#else
+		if (g_settings_get_boolean (peony_preferences, PEONY_PREFERENCES_USE_IEC_UNITS))
+		{
+			freedisk = g_format_size_full(interface_get_disk_free_full (g_file_new_for_uri (uri)),G_FORMAT_SIZE_IEC_UNITS);
+			totaldisk=g_format_size_full(interface_get_disk_total_full(g_file_new_for_uri (uri)),G_FORMAT_SIZE_IEC_UNITS);
+		}
+		else
+		{
+			freedisk = g_format_size(interface_get_disk_free_full (g_file_new_for_uri (uri)));
+			totaldisk = g_format_size(interface_get_disk_total_full(g_file_new_for_uri (uri)));
+		}
+		#endif
+		freedisk = (char*)realloc(freedisk,strlen(freedisk)+strlen(text_string)+strlen(totaldisk)+1);
+		strcat (freedisk,text_string);	
+		sum = g_strdup(strcat(freedisk,totaldisk));
+	}
+	g_free (name);
+	if(freedisk)	g_free (freedisk);
+	if(totaldisk)	g_free (totaldisk);
+	return sum;
+}
+
 
 /* Currently we require pixbufs in this format (for hit testing).
  * Perhaps gdk-pixbuf will be changed so it can do the hit testing
@@ -392,6 +751,18 @@ peony_icon_canvas_item_set_property (GObject        *object,
         break;
 
     case PROP_ADDITIONAL_TEXT:
+	if(PEONY_ICON_CONTAINER (EEL_CANVAS_ITEM (item)->canvas)->name)
+	{	 
+			details->additional_text = get_disk_additional_text(item); 
+			peony_icon_canvas_item_invalidate_label_size (item);
+			if (details->additional_text_layout)
+			{
+				g_object_unref (details->additional_text_layout);
+				details->additional_text_layout = NULL;
+			}
+			break;
+	}
+	else		
         if (g_strcmp0 (details->additional_text,
                         g_value_get_string (value)) == 0)
         {
@@ -1008,6 +1379,7 @@ layout_get_size_for_layout (PangoLayout *layout,
 
 #define TEXT_BACK_PADDING_X 4
 #define TEXT_BACK_PADDING_Y 1
+#define disk_full 165
 
 static void
 prepare_pango_layout_width (PeonyIconCanvasItem *item,
@@ -1040,7 +1412,7 @@ prepare_pango_layout_for_measure_entire_text (PeonyIconCanvasItem *item,
     }
     else
     {
-        pango_layout_set_height (layout, G_MININT);
+		pango_layout_set_height (layout, LAYOUT_HEIGHT);
     }
 }
 
@@ -1080,6 +1452,10 @@ prepare_pango_layout_for_draw (PeonyIconCanvasItem *item,
          */
         pango_layout_set_height (layout,
                                  peony_icon_container_get_max_layout_lines_for_pango (container));
+	}
+	if(container->details->label_position == PEONY_ICON_LABEL_POSITION_BESIDE)
+	{
+		pango_layout_set_height (layout, -1);
     }
 }
 
@@ -1177,20 +1553,34 @@ measure_label_text (PeonyIconCanvasItem *item)
 
     if (editable_width > additional_width)
     {
-        details->text_width = editable_width;
-        details->text_dx = editable_dx;
+		 if(container->details->label_position == PEONY_ICON_LABEL_POSITION_BESIDE)
+		 {
+			details->text_width = (editable_width<disk_full)?disk_full:editable_width;
+		 }
+		 else
+		 {
+			details->text_width = editable_width;
+		 }
+		details->text_dx = editable_dx+10;
     }
     else
     {
-        details->text_width = additional_width;
-        details->text_dx = additional_dx;
+		 if(container->details->label_position == PEONY_ICON_LABEL_POSITION_BESIDE)
+		 {
+			details->text_width = (additional_width<disk_full)?disk_full:additional_width;
+		 }
+		 else
+		 {
+			details->text_width = additional_width;
+		   }
+		details->text_dx = additional_dx+10;
     }
 
     if (have_additional)
     {
         details->text_height = editable_height + LABEL_LINE_SPACING + additional_height;
         details->text_height_for_layout = editable_height_for_layout + LABEL_LINE_SPACING + additional_height;
-        details->text_height_for_entire_text = editable_height_for_entire_text + LABEL_LINE_SPACING + additional_height;
+		details->text_height_for_entire_text = editable_height_for_entire_text + LABEL_LINE_SPACING + additional_height+MY_COMPUTER_EXTRA_RECT;
     }
     else
     {
@@ -1240,6 +1630,8 @@ draw_label_text (PeonyIconCanvasItem *item,
     int max_text_width;
     gdouble frame_w, frame_h, frame_x, frame_y;
     gboolean draw_frame = TRUE;
+	gboolean is_beside;
+	int cr_line_width = 0;
 
 #ifdef PERFORMANCE_TEST_DRAW_DISABLE
     return;
@@ -1262,6 +1654,10 @@ draw_label_text (PeonyIconCanvasItem *item,
     needs_highlight = details->is_highlighted_for_selection || details->is_highlighted_for_drop;
     is_rtl_label_beside = peony_icon_container_is_layout_rtl (container) &&
                           container->details->label_position == PEONY_ICON_LABEL_POSITION_BESIDE;
+	if(container->details->label_position == PEONY_ICON_LABEL_POSITION_BESIDE)
+		is_beside = TRUE;
+	else
+		is_beside = FALSE;
 
     editable_layout = NULL;
     additional_layout = NULL;
@@ -1313,7 +1709,7 @@ draw_label_text (PeonyIconCanvasItem *item,
 
     if (container->details->label_position == PEONY_ICON_LABEL_POSITION_BESIDE)
     {
-        x = text_rect.x0 + 2;
+		x = text_rect.x0 + 10;
     }
     else
     {
@@ -1345,7 +1741,70 @@ draw_label_text (PeonyIconCanvasItem *item,
 
         gtk_style_context_restore (context);
     }
+	if (container->name)
+	{
+		GList list;
+		char *uri;
+		PeonyIcon *icon = item->user_data;
+		list.data = icon->data;
+		PeonyFile *file = PEONY_FILE(list.data);
+		char *name = peony_file_get_name(file);
+		if(strcmp(name,"root.link")!=0)
+		{
+			GMount *mount= peony_file_get_mount(file);
+			if(mount)
+			{
+				GFile *root = g_mount_get_default_location (mount);	
+				uri = g_file_get_uri(root);
+				double full = get_disk_full (item);
+				double wid = full/100*disk_full;
+				if (full > 0)
+				{
+					cr_line_width = 12;
+					cairo_set_line_width(cr,12);
+					cairo_set_source_rgb(cr,0.19,0.58,0.95);
+					cairo_move_to(cr,x,text_rect.y0 + TEXT_BACK_PADDING_Y+details->editable_text_height+5);
+					cairo_line_to(cr,x+wid,text_rect.y0 + TEXT_BACK_PADDING_Y+details->editable_text_height+5);
+					cairo_stroke(cr);
+					cairo_set_source_rgb(cr,0.937,0.941,0.945);
+					cairo_move_to(cr,x+wid,text_rect.y0 + TEXT_BACK_PADDING_Y+details->editable_text_height+5);
+					cairo_line_to(cr,x+disk_full,text_rect.y0 + TEXT_BACK_PADDING_Y+details->editable_text_height+5);
+					cairo_stroke(cr);
+					cairo_set_line_width(cr,0.1);
+					cairo_set_source_rgb(cr,0.866,0.866,0.866);
+					cairo_rectangle(cr,x,text_rect.y0 + TEXT_BACK_PADDING_Y+details->editable_text_height-1,180,12);
+					cairo_stroke(cr);
+				}
+				g_object_unref(mount);
+			}
+	}	
+	else
+	{
+		uri = "file:///";
+		GFile *diskfile = g_file_new_for_uri (uri);
+		double full = get_disk_full (item);
+		double wid = full/100*disk_full;
+		if (full > 0)
+		{
+			cr_line_width = 12;
+			cairo_set_line_width(cr,12);
+			cairo_set_source_rgb(cr,0.19,0.58,0.95);
+			cairo_move_to(cr,x,text_rect.y0 + TEXT_BACK_PADDING_Y+details->editable_text_height+5);
+			cairo_line_to(cr,x+wid,text_rect.y0 + TEXT_BACK_PADDING_Y+details->editable_text_height+5);
 
+			cairo_stroke(cr);
+			cairo_set_source_rgb(cr,0.937,0.941,0.945);
+			cairo_move_to(cr,x+wid,text_rect.y0 + TEXT_BACK_PADDING_Y+details->editable_text_height+5);
+			cairo_line_to(cr,x+disk_full,text_rect.y0 + TEXT_BACK_PADDING_Y+details->editable_text_height+5);
+			cairo_stroke(cr);
+			cairo_set_line_width(cr,0.1);
+			cairo_set_source_rgb(cr,0.866,0.866,0.866);
+			cairo_rectangle(cr,x,text_rect.y0 + TEXT_BACK_PADDING_Y+details->editable_text_height-1,180,12);
+			cairo_stroke(cr);
+		}
+		g_object_unref(diskfile);
+	}
+}
     if (have_additional &&
         !details->is_renaming)
     {
@@ -1363,7 +1822,7 @@ draw_label_text (PeonyIconCanvasItem *item,
         gtk_style_context_add_class (context, "dim-label");
 
         gtk_render_layout (context, cr,
-                           x, text_rect.y0 + details->editable_text_height + LABEL_LINE_SPACING + TEXT_BACK_PADDING_Y,
+                           x, text_rect.y0 + details->editable_text_height + LABEL_LINE_SPACING + TEXT_BACK_PADDING_Y+cr_line_width,
                            additional_layout);
 
         gtk_style_context_restore (context);
@@ -2555,7 +3014,7 @@ peony_icon_canvas_item_ensure_bounds_up_to_date (PeonyIconCanvasItem *icon_item)
             icon_rect_raw.x1 = icon_rect_raw.x0 + gdk_pixbuf_get_width (details->pixbuf);
             icon_rect_raw.y1 = icon_rect_raw.y0 + gdk_pixbuf_get_height (details->pixbuf);
             icon_rect.x1 = icon_rect_raw.x1 / pixels_per_unit;
-            icon_rect.y1 = icon_rect_raw.y1 / pixels_per_unit;
+			icon_rect.y1 = icon_rect_raw.y1 / pixels_per_unit+MY_COMPUTER_EXTRA_RECT;
         }
 
         /* Compute text rectangle. */
@@ -3776,3 +4235,267 @@ peony_icon_canvas_item_accessible_factory_class_init (PeonyIconCanvasItemAccessi
 	klass->get_accessible_type = peony_icon_canvas_item_accessible_factory_get_accessible_type;
 }
 
+BRASERO_SCSI_COMMAND_DEFINE (BraseroRdTrackInfoCDB,
+				 READ_TRACK_INFORMATION,
+				 BRASERO_SCSI_READ);
+
+typedef enum {
+BRASERO_FIELD_LBA			= 0x00,
+BRASERO_FIELD_TRACK_NUM			= 0x01,
+BRASERO_FIELD_SESSION_NUM		= 0x02,
+	/* reserved */
+} BraseroFieldType;
+
+static void
+brasero_sg_command_setup (struct sg_io_hdr *transport,
+			  guchar *sense_data,
+			  BraseroScsiCmd *cmd,
+			  guchar *buffer,
+			  int size)
+{
+	memset (sense_data, 0, BRASERO_SENSE_DATA_SIZE);
+	memset (transport, 0, sizeof (struct sg_io_hdr));
+	
+	transport->interface_id = 'S';				/* mandatory */
+//	transport->flags = SG_FLAG_LUN_INHIBIT|SG_FLAG_DIRECT_IO;
+	transport->cmdp = cmd->cmd;
+	transport->cmd_len = cmd->info->size;
+	transport->dxferp = buffer;
+	transport->dxfer_len = size;
+
+	/* where to output the scsi sense buffer */
+	transport->sbp = sense_data;
+	transport->mx_sb_len = BRASERO_SENSE_DATA_SIZE;
+
+	if (cmd->info->direction & BRASERO_SCSI_READ)
+		transport->dxfer_direction = SG_DXFER_FROM_DEV;
+	else if (cmd->info->direction & BRASERO_SCSI_WRITE)
+		transport->dxfer_direction = SG_DXFER_TO_DEV;
+}
+
+BraseroScsiResult
+brasero_scsi_command_issue_sync (gpointer command,
+				 gpointer buffer,
+				 int size)
+{
+	guchar sense_buffer [BRASERO_SENSE_DATA_SIZE];
+	struct sg_io_hdr transport;
+	BraseroScsiResult res;
+	BraseroScsiCmd *cmd;
+
+	g_return_val_if_fail (command != NULL, BRASERO_SCSI_FAILURE);
+
+	cmd = command;
+	brasero_sg_command_setup (&transport,
+				  sense_buffer,
+				  cmd,
+				  buffer,
+				  size);
+
+	/* NOTE on SG_IO: only for TEST UNIT READY, REQUEST/MODE SENSE, INQUIRY,
+	 * READ CAPACITY, READ BUFFER, READ and LOG SENSE are allowed with it */
+	res = ioctl (cmd->handle->fd, SG_IO, &transport);
+	/*if (res) {
+		BRASERO_SCSI_SET_ERRCODE (error, BRASERO_SCSI_ERRNO);
+		return BRASERO_SCSI_FAILURE;
+	}*/
+
+	if ((transport.info & SG_INFO_OK_MASK) == SG_INFO_OK)
+		return BRASERO_SCSI_OK;
+
+	/*if ((transport.masked_status & CHECK_CONDITION) && transport.sb_len_wr)
+		return brasero_sense_data_process (sense_buffer, error);*/
+
+	return BRASERO_SCSI_FAILURE;
+}
+
+gpointer
+brasero_scsi_command_new (const BraseroScsiCmdInfo *info,
+			  BraseroDeviceHandle *handle) 
+{
+	BraseroScsiCmd *cmd;
+
+	g_return_val_if_fail (handle != NULL, NULL);
+
+	/* make sure we can set the flags of the descriptor */
+
+	/* allocate the command */
+	cmd = g_new0 (BraseroScsiCmd, 1);
+	cmd->info = info;
+	cmd->handle = handle;
+
+	BRASERO_SCSI_CMD_SET_OPCODE (cmd);
+	return cmd;
+}
+
+BraseroScsiResult
+brasero_scsi_command_free (gpointer cmd)
+{
+	g_free (cmd);
+	return BRASERO_SCSI_OK;
+}
+
+/**
+ * This is to open a device
+ */
+
+BraseroDeviceHandle *
+brasero_device_handle_open (const gchar *path,
+				gboolean exclusive)
+{
+	int fd;
+	int flags = OPEN_FLAGS;
+	BraseroDeviceHandle *handle;
+
+	if (exclusive)
+		flags |= O_EXCL;
+
+	fd = open (path, flags);
+	if (fd < 0) {
+		return NULL;
+	}
+
+	handle = g_new (BraseroDeviceHandle, 1);
+	handle->fd = fd;
+
+	return handle;
+}
+
+void
+brasero_device_handle_close (BraseroDeviceHandle *handle)
+{
+	close (handle->fd);
+	g_free (handle);
+}
+
+static BraseroScsiResult
+brasero_read_track_info (BraseroRdTrackInfoCDB *cdb,
+			 BraseroScsiTrackInfo *info,
+			 int *size)
+{
+	BraseroScsiTrackInfo hdr;
+	BraseroScsiResult res;
+	int datasize;
+
+	if (!info || !size) {
+		return BRASERO_SCSI_FAILURE;
+	}
+
+	/* first ask the drive how long should the data be and then ... */
+	datasize = 4;
+	memset (&hdr, 0, sizeof (info));
+	BRASERO_SET_16 (cdb->alloc_len, datasize);
+	res = brasero_scsi_command_issue_sync (cdb, &hdr, datasize);
+	if (res)
+		return res;
+
+	/* ... check the size in case of a buggy firmware ... */
+	if (BRASERO_GET_16 (hdr.len) + sizeof (hdr.len) >= datasize) {
+		datasize = BRASERO_GET_16 (hdr.len) + sizeof (hdr.len);
+
+		if (datasize > *size) {
+			/* it must not be over sizeof (BraseroScsiTrackInfo) */
+			if (datasize > sizeof (BraseroScsiTrackInfo)) {
+				datasize = *size;
+			}
+			else
+				*size = datasize;
+		}
+		else if (*size < datasize) {
+			*size = datasize;
+		}
+	}
+	else {
+		datasize = *size;
+	}
+
+	/* ... and re-issue the command */
+	memset (info, 0, sizeof (BraseroScsiTrackInfo));
+	BRASERO_SET_16 (cdb->alloc_len, datasize);
+	res = brasero_scsi_command_issue_sync (cdb, info, datasize);
+	if (res == BRASERO_SCSI_OK) {
+		if (datasize != BRASERO_GET_16 (info->len) + sizeof (info->len))
+
+		*size = MIN (datasize, BRASERO_GET_16 (info->len) + sizeof (info->len));
+	}
+
+	return res;
+}
+
+
+BraseroScsiResult
+brasero_mmc1_read_track_info (BraseroDeviceHandle *handle,
+				  int track_num,
+				  BraseroScsiTrackInfo *track_info,
+				  int *size)
+{
+	BraseroRdTrackInfoCDB *cdb;
+	BraseroScsiResult res;
+
+	g_return_val_if_fail (handle != NULL, BRASERO_SCSI_FAILURE);
+
+	cdb = brasero_scsi_command_new (&info, handle);
+	cdb->addr_num_type = BRASERO_FIELD_TRACK_NUM;
+	BRASERO_SET_32 (cdb->blk_addr_trk_ses_num, track_num);
+
+	res = brasero_read_track_info (cdb, track_info, size);
+	brasero_scsi_command_free (cdb);
+
+	return res;
+}
+
+BraseroScsiResult
+brasero_mmc1_read_disc_information_std (BraseroDeviceHandle *handle,
+					BraseroScsiDiscInfoStd **info_return,
+					int *size)
+{
+	BraseroScsiDiscInfoStd std_info;
+	BraseroScsiDiscInfoStd *buffer;
+	BraseroRdDiscInfoCDB *cdb;
+	BraseroScsiResult res;
+	int request_size;
+	int buffer_size;
+	   BRASERO_SCSI_COMMAND_DEFINE (BraseroRdDiscInfoCDB,
+					 READ_DISC_INFORMATION,
+					 BRASERO_SCSI_READ);
+
+	g_return_val_if_fail (handle != NULL, BRASERO_SCSI_FAILURE);
+
+	if (!info_return || !size) {
+		return BRASERO_SCSI_FAILURE;
+	}
+
+	cdb = brasero_scsi_command_new (&info, handle);
+	cdb->data_type = BRASERO_DISC_INFO_STD;
+	BRASERO_SET_16 (cdb->alloc_len, sizeof (BraseroScsiDiscInfoStd));
+
+	memset (&std_info, 0, sizeof (BraseroScsiDiscInfoStd));
+	res = brasero_scsi_command_issue_sync (cdb,
+						   &std_info,
+						   sizeof (BraseroScsiDiscInfoStd));
+	if (res)
+		goto end;
+
+	request_size = BRASERO_GET_16 (std_info.len) + 
+			   sizeof (std_info.len);
+	
+	buffer = (BraseroScsiDiscInfoStd *) g_new0 (guchar, request_size);
+
+	BRASERO_SET_16 (cdb->alloc_len, request_size);
+	res = brasero_scsi_command_issue_sync (cdb, buffer, request_size);
+	if (res) {
+		g_free (buffer);
+		goto end;
+	}
+
+	buffer_size = BRASERO_GET_16 (buffer->len) +
+			  sizeof (buffer->len);
+
+	*info_return = buffer;
+	*size = MIN (request_size, buffer_size);
+
+end:
+
+	brasero_scsi_command_free (cdb);
+	return res;
+}

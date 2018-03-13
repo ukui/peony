@@ -282,18 +282,52 @@ is_built_in_bookmark (PeonyFile *file)
 static GtkTreeIter
 add_heading (PeonyPlacesSidebar *sidebar,
          SectionType section_type,
-         const gchar *title)
+         const gchar *title,
+         const gchar *uri,
+         GIcon *icon)
 {
     GtkTreeIter iter, child_iter;
+    GdkPixbuf      *pixbuf = NULL;
+    PeonyIconInfo   *icon_info = NULL;
+    int             icon_size;
+
+    
+    // check_heading_for_section (sidebar, section_type);
+    
+     icon_size = peony_get_icon_size_for_stock_size (GTK_ICON_SIZE_MENU);
+     icon_info = peony_icon_info_lookup (icon, icon_size);
+    
+     pixbuf = peony_icon_info_get_pixbuf_at_size (icon_info, icon_size);
+     g_object_unref (icon_info);
 
     gtk_list_store_append (sidebar->store, &iter);
-    gtk_list_store_set (sidebar->store, &iter,
+	if(NULL == uri || NULL == icon)
+	{
+		gtk_list_store_set (sidebar->store, &iter,
                 PLACES_SIDEBAR_COLUMN_ROW_TYPE, PLACES_HEADING,
                 PLACES_SIDEBAR_COLUMN_SECTION_TYPE, section_type,    
                 PLACES_SIDEBAR_COLUMN_HEADING_TEXT, title,
                 PLACES_SIDEBAR_COLUMN_EJECT, FALSE,
                 PLACES_SIDEBAR_COLUMN_NO_EJECT, TRUE,
                 -1);
+	}
+	else
+	{
+	    gtk_list_store_set (sidebar->store, &iter,
+	                PLACES_SIDEBAR_COLUMN_ROW_TYPE, PLACES_HEADING,
+	                PLACES_SIDEBAR_COLUMN_SECTION_TYPE, section_type,    
+	                PLACES_SIDEBAR_COLUMN_URI,uri,
+	                PLACES_SIDEBAR_COLUMN_ICON,pixbuf,
+	                PLACES_SIDEBAR_COLUMN_HEADING_TEXT, title,
+	                PLACES_SIDEBAR_COLUMN_EJECT, FALSE,
+	                PLACES_SIDEBAR_COLUMN_NO_EJECT, TRUE,
+	                -1);
+	}
+    
+    if (pixbuf != NULL)
+    {
+        g_object_unref (pixbuf);
+    }
 
     gtk_tree_model_filter_refilter (GTK_TREE_MODEL_FILTER (sidebar->filter_model));
     gtk_tree_model_filter_convert_child_iter_to_iter (GTK_TREE_MODEL_FILTER (sidebar->filter_model),
@@ -309,19 +343,19 @@ check_heading_for_section (PeonyPlacesSidebar *sidebar,
 {
     switch (section_type) {
     case SECTION_DEVICES:
-        if (!sidebar->devices_header_added) {
+       /* if (!sidebar->devices_header_added) {
             add_heading (sidebar, SECTION_DEVICES,
-                     _("Computer"));
+                     _("Devices"),NULL);
             sidebar->devices_header_added = TRUE;
-        }
+        }*/
 
         break;
     case SECTION_BOOKMARKS:
-        if (!sidebar->bookmarks_header_added) {
+       /* if (!sidebar->bookmarks_header_added) {
             add_heading (sidebar, SECTION_BOOKMARKS,
-                     _("Bookmarks"));
+                     _("Bookmarks"),NULL);
             sidebar->bookmarks_header_added = TRUE;
-        }
+        }*/
 
         break;
     default:
@@ -490,8 +524,11 @@ update_places (PeonyPlacesSidebar *sidebar)
 
     volume_monitor = sidebar->volume_monitor;
 
-    /*new layout*/
-    last_iter = add_heading(sidebar,SECTION_FAVORITE,_("Favorite"));
+    /* FAVORITE */
+    //icon = g_themed_icon_new (PEONY_ICON_FAVORITE);
+    last_iter = add_heading (sidebar, SECTION_FAVORITE,
+                             _("Favorite"),NULL,NULL);//"favorite:///",icon);
+    //g_object_unref (icon);
 
     desktop_path = peony_get_desktop_directory ();
 
@@ -536,11 +573,15 @@ update_places (PeonyPlacesSidebar *sidebar)
                            &last_iter, &select_path);
     g_object_unref (icon);
 
-    /*pesonal*/
-    last_iter = add_heading(sidebar,SECTION_PERSONAL,_("Personal"));
+   /*personal*/
+    icon = g_themed_icon_new (PEONY_ICON_HOME);
+    mount_uri = peony_get_home_directory_uri ();
+    last_iter = add_heading(sidebar,SECTION_PERSONAL,_("Personal"),mount_uri,icon);
+    g_object_unref(icon);
+	g_free (mount_uri);
 
     /* home folder */
-    if (strcmp (g_get_home_dir(), desktop_path) != 0) {
+    /*if (strcmp (g_get_home_dir(), desktop_path) != 0) {
         char *display_name;
 
         mount_uri = peony_get_home_directory_uri ();
@@ -557,7 +598,7 @@ update_places (PeonyPlacesSidebar *sidebar)
                                location, mount_uri, last_uri,
                                &last_iter, &select_path);
         g_free (mount_uri);
-    }
+    }*/
 
     /* XDG directories */
     xdg_dirs = NULL;
@@ -606,7 +647,9 @@ update_places (PeonyPlacesSidebar *sidebar)
     g_list_free (xdg_dirs);
 
     /*Computer*/
-    last_iter = add_heading(sidebar,SECTION_COMPUTER,_("Computer"));
+    icon = g_themed_icon_new ("uk-computer");
+    last_iter = add_heading(sidebar,SECTION_COMPUTER,_("My Computer"),"computer:///",icon);
+    g_object_unref (icon);
 
     /* file system root */
     mount_uri = "file:///"; /* No need to strdup */
@@ -809,8 +852,8 @@ update_places (PeonyPlacesSidebar *sidebar)
     }
     g_list_free (mounts);
     /* network */
-    last_iter = add_heading (sidebar, SECTION_NETWORK,
-                             _("Network"));
+    //last_iter = add_heading (sidebar, SECTION_NETWORK,
+    //                         _("Network"));
 
     network_mounts = g_list_reverse (network_mounts);
     for (l = network_mounts; l != NULL; l = l->next) {
@@ -838,6 +881,7 @@ update_places (PeonyPlacesSidebar *sidebar)
     g_list_free_full (network_mounts, g_object_unref);
 
     /* network:// */
+	#if 0
     mount_uri = "network:///"; /* No need to strdup */
     icon = g_themed_icon_new (PEONY_ICON_NETWORK);
     last_iter = add_place (sidebar, PLACES_BUILT_IN,
@@ -849,6 +893,7 @@ update_places (PeonyPlacesSidebar *sidebar)
     compare_for_selection (sidebar,
                            location, mount_uri, last_uri,
                            &last_iter, &select_path);
+    #endif
     /*/new layout*/
 
     /* add bookmarks */

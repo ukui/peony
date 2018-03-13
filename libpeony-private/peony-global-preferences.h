@@ -126,6 +126,7 @@ typedef enum
         PEONY_DEFAULT_FOLDER_VIEWER_ICON_VIEW,
         PEONY_DEFAULT_FOLDER_VIEWER_COMPACT_VIEW,
         PEONY_DEFAULT_FOLDER_VIEWER_LIST_VIEW,
+        PEONY_DEFAULT_FOLDER_VIEWER_COMPUTER_VIEW,
         PEONY_DEFAULT_FOLDER_VIEWER_OTHER
     };
 
@@ -133,6 +134,7 @@ typedef enum
 #define PEONY_ICON_VIEW_IID		"OAFIID:Peony_File_Manager_Icon_View"
 #define PEONY_COMPACT_VIEW_IID	"OAFIID:Peony_File_Manager_Compact_View"
 #define PEONY_LIST_VIEW_IID		"OAFIID:Peony_File_Manager_List_View"
+#define PEONY_COMPUTER_VIEW_IID "OAFIID:Peony_File_Manager_Computer_View"
 
 
     /* Icon View */
@@ -219,6 +221,7 @@ GSettings *peony_tree_sidebar_preferences;
 GSettings *peony_compact_view_preferences;
 GSettings *peony_list_view_preferences;
 GSettings *peony_extension_preferences;
+GSettings *peony_computer_view_preferences;
 
 GSettings *ukui_background_preferences;
 GSettings *ukui_lockdown_preferences;

@@ -119,6 +119,7 @@
 		<separator name="View items separator"/>
 		<placeholder name="View Items"/>
 		<separator name="Clipboard separator"/>
+		<menuitem name="Reload" action="Reload"/>
 		<placeholder name="File Clipboard Actions">
 			<menuitem name="Paste" action="Paste"/>
 			<menuitem name="Empty Recent" action="Empty Recent"/>

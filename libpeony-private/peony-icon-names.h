@@ -3,6 +3,8 @@
 
 /* Icons for places */
 #define PEONY_ICON_COMPUTER		"computer"
+#define PEONY_ICON_FAVORITE          "favorite"
+#define PEONY_ICON_PERSONAL        "personal"
 #define PEONY_ICON_DESKTOP		"user-desktop"
 #define PEONY_ICON_FILESYSTEM	"drive-harddisk"
 #define PEONY_ICON_FOLDER		"folder"

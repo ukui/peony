@@ -141,6 +141,7 @@ struct FMComputerViewDetails
 
     gulong clipboard_handler_id;
     GVolumeMonitor *volume_monitor;
+	gboolean bRefresh;
 };
 /* Note that the first item in this list is the default sort,
  * and that the items show up in the menu in the order they
@@ -654,7 +655,7 @@ fm_computer_view_add_file (FMDirectoryView *view, PeonyFile *file, PeonyDirector
     if(drive!=NULL)
     {
         display_name = peony_file_get_display_name(file);
-        if(!g_drive_can_eject(drive)||strcmp(display_name,"数据盘")==0)
+        if(!g_drive_can_eject(drive)||strcmp(display_name,"数据盘")==0||strcmp(display_name,"DATA")==0)
         {
             if (fm_directory_view_get_loading (view) && peony_icon_container_is_empty (icon_container))
             {
@@ -979,7 +980,8 @@ update_layout_menus (FMComputerView *view)
     /* Clean Up is only relevant for manual layout */
     action = gtk_action_group_get_action (view->details->icon_action_group,
                                           FM_ACTION_CLEAN_UP);
-    gtk_action_set_sensitive (action, !is_auto_layout);
+    //gtk_action_set_sensitive (action, !is_auto_layout);
+    gtk_action_set_sensitive (action, FALSE);
 
     if (FM_IS_DESKTOP_ICON_VIEW (view))
     {
@@ -1293,7 +1295,8 @@ real_supports_auto_layout (FMComputerView *view)
 {
     g_return_val_if_fail (FM_IS_COMPUTER_VIEW (view), FALSE);
 
-    return TRUE;
+    //return TRUE;
+	return FALSE;
 }
 
 static gboolean
@@ -3304,6 +3307,8 @@ computer_view_notify_clipboard_info (PeonyClipboardMonitor *monitor,
         get_icon_container (computer_view,OTHER), icon_data);
 }
 
+static void
+fm_computer_view_refresh (GtkWidget *menu_item,FMComputerView *computer_view);
 
 static void
 fm_computer_view_end_loading (FMDirectoryView *view,
@@ -3361,6 +3366,11 @@ fm_computer_view_end_loading (FMDirectoryView *view,
 
     computer_view_notify_clipboard_info (monitor, info, computer_view);
 
+	if(FALSE == computer_view->details->bRefresh)
+	{
+		computer_view->details->bRefresh = TRUE;
+		fm_computer_view_refresh(NULL,computer_view);
+	}
 }
 
 static void
@@ -3962,6 +3972,7 @@ fm_computer_view_init (FMComputerView *computer_view)
     computer_view->details = g_new0 (FMComputerViewDetails, 1);
     
     computer_view->details->filter_by_screen = FALSE;
+	computer_view->details->bRefresh = FALSE;
     computer_view->details->sort = &sort_criteria[0];
     gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (computer_view),
                                     GTK_POLICY_AUTOMATIC,
@@ -3978,17 +3989,17 @@ fm_computer_view_init (FMComputerView *computer_view)
 
 /*create a box*/
     box = gtk_box_new(GTK_ORIENTATION_VERTICAL,0);
-    gtk_box_set_homogeneous (box,FALSE);
+    //gtk_box_set_homogeneous (box,FALSE);
 
     icon_container[0] = create_icon_container (computer_view);
     icon_container[0]->name = "disk";
-    gtk_widget_set_size_request(GTK_WIDGET(icon_container[0]),-1,90);
+    //gtk_widget_set_size_request(GTK_WIDGET(icon_container[0]),-1,90);
     icon_container[1] = create_icon_container (computer_view);
     icon_container[1]->name = "movable-disk";
-    gtk_widget_set_size_request(GTK_WIDGET(icon_container[1]),-1,90);
+    //gtk_widget_set_size_request(GTK_WIDGET(icon_container[1]),-1,90);
     icon_container[2] = create_icon_container (computer_view);
     icon_container[2]->name = "other";
-    gtk_widget_set_size_request(GTK_WIDGET(icon_container[2]),-1,90);
+    //gtk_widget_set_size_request(GTK_WIDGET(icon_container[2]),-1,90);
 
     /*disk-expander*/
     expander[0] = gtk_expander_new(_("Disk"));
@@ -4050,7 +4061,6 @@ fm_computer_view_init (FMComputerView *computer_view)
         g_signal_connect (G_OBJECT (computer_view),
                         "button_press_event", G_CALLBACK (button_press_callback),
                         computer_view);
-        g_signal_connect (computer_view,"button_press_event",G_CALLBACK (create_popup_menu_callback),computer_view);
         GVolumeMonitor *volume_monitor;
         volume_monitor = g_volume_monitor_get ();
         computer_view->details->volume_monitor = volume_monitor;
