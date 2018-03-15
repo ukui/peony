@@ -3,6 +3,7 @@
 /* fm-icon-container.h - the container widget for file manager icons
 
    Copyright (C) 2002 Sun Microsystems, Inc.
+   Copyright (C) 2018, Tianjin KYLIN Information Technology Co., Ltd.
 
    The Ukui Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public License as
@@ -20,6 +21,7 @@
    Boston, MA 02110-1301, USA.
 
    Author: Michael Meeks <michael@ximian.com>
+   Modified by: liupeng <liupeng@kylinos.cn>
 */
 #include <config.h>
 

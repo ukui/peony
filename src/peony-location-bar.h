@@ -4,7 +4,8 @@
  * Peony
  *
  * Copyright (C) 2000 Eazel, Inc.
- *
+ * Copyright (C) 2018, Tianjin KYLIN Information Technology Co., Ltd.
+ * 
  * Peony is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
  * published by the Free Software Foundation; either version 2 of the
@@ -22,6 +23,7 @@
  *
  * Author: Maciej Stachowiak <mjs@eazel.com>
  *         Ettore Perazzoli <ettore@gnu.org>
+ * Modified by: liupeng <liupeng@kylinos.cn>
  */
 
 /* peony-location-bar.h - Location bar for Peony

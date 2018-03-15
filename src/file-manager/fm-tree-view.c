@@ -4,6 +4,7 @@
  * Copyright (C) 2000, 2001 Eazel, Inc
  * Copyright (C) 2002 Anders Carlsson
  * Copyright (C) 2002 Darin Adler
+ * Copyright (C) 2018, Tianjin KYLIN Information Technology Co., Ltd.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -24,6 +25,7 @@
  *       Maciej Stachowiak <mjs@eazel.com>
  *       Anders Carlsson <andersca@gnu.org>
  *       Darin Adler <darin@bentspoon.com>
+ * Modified by: liupeng <liupeng@kylinos.cn>
  */
 
 /* fm-tree-view.c - tree sidebar panel

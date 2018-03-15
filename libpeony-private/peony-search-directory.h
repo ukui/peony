@@ -5,6 +5,7 @@
    icons
 
    Copyright (C) 2005 Novell, Inc
+   Copyright (C) 2018, Tianjin KYLIN Information Technology Co., Ltd.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
@@ -20,6 +21,7 @@
    License along with this program; if not, write to the
    Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
    Boston, MA 02110-1301, USA.
+   Modified by: liupeng <liupeng@kylinos.cn>
 */
 
 #ifndef PEONY_SEARCH_DIRECTORY_H

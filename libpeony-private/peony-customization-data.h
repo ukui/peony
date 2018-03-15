@@ -4,6 +4,7 @@
  * Peony
  *
  * Copyright (C) 2000 Eazel, Inc.
+ * Copyright (C) 2018, Tianjin KYLIN Information Technology Co., Ltd.
  *
  * Peony is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,6 +21,7 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
  * Author: Rebecca Schulman <rebecka@eazel.com>
+ * Modified by: liupeng <liupeng@kylinos.cn>
  */
 
 /* peony-customization-data.h - functions to collect and load property

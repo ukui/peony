@@ -1,6 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /*
    Copyright (C) 2005 Novell, Inc
+   Copyright (C) 2018, Tianjin KYLIN Information Technology Co., Ltd.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
@@ -18,6 +19,7 @@
    Boston, MA 02110-1301, USA.
 
    Author: Anders Carlsson <andersca@imendio.com>
+   Modified by: liupeng <liupeng@kylinos.cn>
 */
 
 #include <config.h>

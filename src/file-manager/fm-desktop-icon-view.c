@@ -3,7 +3,8 @@
 /* fm-desktop-icon-view.c - implementation of icon view for managing the desktop.
 
    Copyright (C) 2000, 2001 Eazel, Inc.mou
-
+   Copyright (C) 2018, Tianjin KYLIN Information Technology Co., Ltd.
+   
    The Ukui Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public License as
    published by the Free Software Foundation; either version 2 of the
@@ -22,6 +23,7 @@
    Authors: Mike Engber <engber@eazel.com>
    	    Gene Z. Ragan <gzr@eazel.com>
 	    Miguel de Icaza <miguel@ximian.com>
+   Modified by: liupeng <liupeng@kylinos.cn>
 */
 
 #include <config.h>

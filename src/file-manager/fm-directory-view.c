@@ -4,7 +4,8 @@
  *
  * Copyright (C) 1999, 2000  Free Software Foundation
  * Copyright (C) 2000, 2001  Eazel, Inc.
- *
+ * Copyright (C) 2018, Tianjin KYLIN Information Technology Co., Ltd.
+ * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
  * published by the Free Software Foundation; either version 2 of the
@@ -25,6 +26,7 @@
  *          Darin Adler <darin@bentspoon.com>,
  *          Pavel Cisler <pavel@eazel.com>,
  *          David Emory Watson <dwatson@cs.ucr.edu>
+ * Modified by: liupeng <liupeng@kylinos.cn>
  */
 
 #include <config.h>

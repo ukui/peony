@@ -24,6 +24,7 @@
 
    Authors: Ettore Perazzoli <ettore@gnu.org>,
    Darin Adler <darin@bentspoon.com>
+   Modified by: liupeng <liupeng@kylinos.cn>
 */
 
 #include <config.h>

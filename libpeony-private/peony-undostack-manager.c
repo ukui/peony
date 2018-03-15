@@ -4,9 +4,11 @@
  *
  * Copyright (C) 2007-2010 Amos Brocco
  * Copyright (C) 2011 Stefano Karapetsas
+ * Copyright (C) 2018, Tianjin KYLIN Information Technology Co., Ltd.
  *
  * Authors: Amos Brocco <amos.brocco@unifr.ch>,
  *          Stefano Karapetsas <stefano@karapetsas.com>
+ * Modified by: liupeng <liupeng@kylinos.cn>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public

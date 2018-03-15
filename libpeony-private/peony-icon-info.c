@@ -1,7 +1,8 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /* peony-icon-info.c
  * Copyright (C) 2007  Red Hat, Inc.,  Alexander Larsson <alexl@redhat.com>
- *
+ * Copyright (C) 2018, Tianjin KYLIN Information Technology Co., Ltd.
+ * 
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
  * License as published by the Free Software Foundation; either
