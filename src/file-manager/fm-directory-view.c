@@ -9252,6 +9252,10 @@ real_update_menus (FMDirectoryView *view)
 			      NULL);
 		gtk_action_set_visible (action, can_delete_files);
 	}
+	else
+	{
+		gtk_action_set_visible (action, show_separate_delete_command);
+	}
 	#endif	
 	
 	pUri = fm_directory_view_get_uri(view);

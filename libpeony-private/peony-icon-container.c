@@ -112,7 +112,7 @@
 #define DESKTOP_PAD_VERTICAL 	0
 #define SNAP_SIZE_X 		48
 #define SNAP_SIZE_Y 		48
-#define Y_AXIS_RATIO          0.6
+#define Y_AXIS_RATIO          0.7
 
 #define DEFAULT_SELECTION_BOX_ALPHA 0x40
 #define DEFAULT_HIGHLIGHT_ALPHA 0xff
@@ -8185,6 +8185,67 @@ handle_hadjustment_changed (GtkAdjustment *adjustment,
     }
 }
 
+static void
+get_peony_new_icon_size (PeonyIconContainer *container,
+                                 PeonyIcon *icon,int *width,int *height)
+{
+    PeonyIconContainerDetails *details;
+    guint icon_size;
+    guint min_image_size, max_image_size;
+    PeonyIconInfo *icon_info;
+    GdkPixbuf *pixbuf;
+    GList *emblem_pixbufs;
+    char *embedded_text;
+    gboolean large_embedded_text;
+    gboolean embedded_text_needs_loading;
+    gboolean has_open_window;
+
+    if ((NULL == container) || (NULL == icon) || (NULL == width) || (NULL == height))
+    {
+        return;
+    }
+
+    details = container->details;
+
+    /* compute the maximum size based on the scale factor */
+    min_image_size = MINIMUM_IMAGE_SIZE * EEL_CANVAS (container)->pixels_per_unit;
+    max_image_size = MAX (MAXIMUM_IMAGE_SIZE * EEL_CANVAS (container)->pixels_per_unit, PEONY_ICON_MAXIMUM_SIZE);
+
+    /* Get the appropriate images for the file. */
+    if (container->details->forced_icon_size > 0)
+    {
+        icon_size = container->details->forced_icon_size;
+    }
+    else
+    {
+        icon_get_size (container, icon, &icon_size);
+    }
+
+
+    icon_size = MAX (icon_size, min_image_size);
+    icon_size = MIN (icon_size, max_image_size);
+
+    /* Get the icons. */
+    emblem_pixbufs = NULL;
+    embedded_text = NULL;
+    large_embedded_text = icon_size > ICON_SIZE_FOR_LARGE_EMBEDDED_TEXT;
+    icon_info = peony_icon_container_get_icon_images (container, icon->data, icon_size,
+                &emblem_pixbufs,
+                &embedded_text,
+                icon == details->drop_target,
+                large_embedded_text, &embedded_text_needs_loading,
+                &has_open_window);
+
+
+    if (container->details->forced_icon_size > 0)
+        pixbuf = peony_icon_info_get_pixbuf_at_size (icon_info, icon_size);
+    else
+        pixbuf = peony_icon_info_get_pixbuf (icon_info);
+
+	
+    *width = gdk_pixbuf_get_width (pixbuf);
+    *height = gdk_pixbuf_get_height (pixbuf);
+}
 
 void
 peony_icon_container_update_icon (PeonyIconContainer *container,
@@ -8349,6 +8410,8 @@ static gboolean get_icon_position(PeonyIconContainer *container,DesktopGrid *des
     gboolean find_location = FALSE;
 	double      dHalfWidth    = 0.0;
 	double      dHeight		  = 0.0;
+	int 		width = 0;
+	int 		height = 0;
 
 	do
 	{
@@ -8359,8 +8422,10 @@ static gboolean get_icon_position(PeonyIconContainer *container,DesktopGrid *des
 
 		point.x = MAX(desktop_grid->iStartRows,0);
 		point.y = MAX(desktop_grid->iStartColumns,0);
-
-		//icon_rect = peony_icon_canvas_item_get_icon_rectangle (icon->item);
+		
+		get_peony_new_icon_size(container,icon,&width,&height);
+		dHalfWidth = (double)width/(EEL_CANVAS (container)->pixels_per_unit)/2;
+		dHeight = (double)height/(EEL_CANVAS (container)->pixels_per_unit);
 		dHalfWidth = (double)peony_get_icon_size_for_zoom_level(peony_icon_container_get_zoom_level(container))/(EEL_CANVAS (container)->pixels_per_unit)/2;
 		dHeight    = (double)peony_get_icon_size_for_zoom_level(peony_icon_container_get_zoom_level(container))/(EEL_CANVAS (container)->pixels_per_unit);
 		for(i = point.x;i < (desktop_grid->num_columns - 1);i++)

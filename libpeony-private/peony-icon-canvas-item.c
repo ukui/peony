@@ -1453,7 +1453,7 @@ prepare_pango_layout_for_draw (PeonyIconCanvasItem *item,
          * out itself (which it doesn't ATM).
          */
         pango_layout_set_height (layout,
-                                 peony_icon_container_get_max_layout_lines_for_pango (container));
+                                 -2/*peony_icon_container_get_max_layout_lines_for_pango (container)*/);
 	}
 	if(container->details->label_position == PEONY_ICON_LABEL_POSITION_BESIDE)
 	{
