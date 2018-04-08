@@ -1536,8 +1536,8 @@ action_new_launcher_callback (GtkAction *action,
 	peony_debug_log (FALSE, PEONY_DEBUG_LOG_DOMAIN_USER,
 			    "directory view create new launcher in window=%p: %s", window, parent_uri);
 	peony_launch_application_from_command (gtk_widget_get_screen (GTK_WIDGET (view)),
-						  "mate-desktop-item-edit",
-						  "mate-desktop-item-edit",
+						  "ukui-desktop-item-edit",
+						  "ukui-desktop-item-edit",
 						  FALSE,
 						  "--create-new", parent_uri, NULL);
 
