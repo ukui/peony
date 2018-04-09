@@ -389,5 +389,7 @@ typedef struct
 }DesktopGrid;
 
 void peony_icon_container_set_zoom_position (PeonyIconContainer *container);
+float peony_get_desktop_icon_width_size_for_zoom_level (PeonyZoomLevel zoom_level,PeonyIconContainer *container);
+float peony_get_desktop_icon_height_size_for_zoom_level (PeonyZoomLevel zoom_level,PeonyIconContainer *container);
 
 #endif /* PEONY_ICON_CONTAINER_H */

@@ -8866,14 +8866,16 @@ peony_icon_container_set_zoom_level (PeonyIconContainer *container, int new_leve
 
     invalidate_labels (container);
 
-	if(TRUE == bZoomIn && TRUE == bDesktopChange)
+#if 0
+	if(/*TRUE == bZoomIn && */TRUE == bDesktopChange)
 	{
 		/*beforce peony_icon_container_request_update_all, void zoom in the desktop icon change twice*/
 		peony_icon_container_set_zoom_position(container);
 	}
-	
+#endif
     peony_icon_container_request_update_all (container);
-	if(FALSE == bZoomIn && TRUE == bDesktopChange)
+
+	if(/*FALSE == bZoomIn && */TRUE == bDesktopChange)
 	{
 		/*after peony_icon_container_request_update_all, void zoom out peony_icon_canvas_item_get_icon_rectangle wrong*/
 		peony_icon_container_set_zoom_position(container);
@@ -11114,5 +11116,91 @@ peony_icon_container_set_store_layout_timestamps (PeonyIconContainer *container,
     container->details->store_layout_timestamps = store_layout_timestamps;
 }
 
+float peony_get_desktop_icon_width_size_for_zoom_level (PeonyZoomLevel zoom_level,PeonyIconContainer *container)
+{
+	/*
+	width[1366]height[768]
+	
+	32-   68-76
+	48-   105-109
+	72-   151-153
+	96-   195-256
+	192- 455-384
+	*/	
+	float fWidth = 0.0;
+	int width = 0;
+	GtkAllocation allocation;
+	
+	gtk_widget_get_allocation (GTK_WIDGET (container), &allocation);
+	width  = allocation.width - container->details->left_margin - container->details->right_margin;
 
+    switch (zoom_level)
+    {
+    case PEONY_ZOOM_LEVEL_SMALLEST:
+    case PEONY_ZOOM_LEVEL_SMALLER:
+    case PEONY_ZOOM_LEVEL_SMALL:
+        fWidth = (float)PEONY_DESKTOP_ICON_GRID_WIDTH_SMALL*width/1366;
+		break;
+    case PEONY_ZOOM_LEVEL_STANDARD:
+        fWidth = (float)PEONY_DESKTOP_ICON_GRID_WIDTH_STANDARD*width/1366;
+		break;
+    case PEONY_ZOOM_LEVEL_LARGE:
+        fWidth = (float)PEONY_DESKTOP_ICON_GRID_WIDTH_LARGE*width/1366;
+		break;
+    case PEONY_ZOOM_LEVEL_LARGER:
+        fWidth = (float)PEONY_DESKTOP_ICON_GRID_WIDTH_LARGER*width/1366;
+		break;
+    case PEONY_ZOOM_LEVEL_LARGEST:
+        fWidth = (float)PEONY_DESKTOP_ICON_GRID_WIDTH_LARGEST*width/1366;
+		break;
+	default:
+		fWidth = (float)PEONY_DESKTOP_ICON_GRID_WIDTH_STANDARD*width/1366;
+		break;
+    }
+	return fWidth;
+}
+
+float peony_get_desktop_icon_height_size_for_zoom_level (PeonyZoomLevel zoom_level,PeonyIconContainer *container)
+{
+	/*
+	width[1366]height[768]
+	
+	32-   68-76      72
+	48-   105-109  109
+	72-   151-153  145
+	96-   195-256  192
+	192- 455-384  364
+	*/	
+	float fHeight = 0.0;
+	int height = 0;
+	GtkAllocation allocation;
+	
+	gtk_widget_get_allocation (GTK_WIDGET (container), &allocation);
+	height = allocation.height - container->details->top_margin - container->details->bottom_margin;
+
+    switch (zoom_level)
+    {
+    case PEONY_ZOOM_LEVEL_SMALLEST:
+    case PEONY_ZOOM_LEVEL_SMALLER:
+    case PEONY_ZOOM_LEVEL_SMALL:
+        fHeight = (float)PEONY_DESKTOP_ICON_GRID_HEIGHT_SMALL*height/768;
+		break;
+    case PEONY_ZOOM_LEVEL_STANDARD:
+        fHeight = (float)PEONY_DESKTOP_ICON_GRID_HEIGHT_STANDARD*height/768;
+		break;
+    case PEONY_ZOOM_LEVEL_LARGE:
+        fHeight = (float)PEONY_DESKTOP_ICON_GRID_HEIGHT_LARGE*height/768;
+		break;
+    case PEONY_ZOOM_LEVEL_LARGER:
+        fHeight = (float)PEONY_DESKTOP_ICON_GRID_HEIGHT_LARGER*height/768;
+		break;
+    case PEONY_ZOOM_LEVEL_LARGEST:
+        fHeight = (float)PEONY_DESKTOP_ICON_GRID_HEIGHT_LARGEST*height/768;
+		break;
+	default:
+		fHeight = (float)PEONY_DESKTOP_ICON_GRID_HEIGHT_STANDARD*height/768;
+		break;
+    }
+    return fHeight;
+}
 #endif /* ! PEONY_OMIT_SELF_CHECK */
