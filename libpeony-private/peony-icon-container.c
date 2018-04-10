@@ -11121,42 +11121,48 @@ float peony_get_desktop_icon_width_size_for_zoom_level (PeonyZoomLevel zoom_leve
 	/*
 	width[1366]height[768]
 	
-	32-   68-76
-	48-   105-109
-	72-   151-153
-	96-   195-256
-	192- 455-384
+	32-   68-76        20
+	48-   105-109     13
+	72-   151-153     9
+	96-   195-256     7
+	192- 455-384     3
 	*/	
 	float fWidth = 0.0;
+	int   iNum = 0;
 	int width = 0;
+	int iWidthBase = 0;
 	GtkAllocation allocation;
 	
 	gtk_widget_get_allocation (GTK_WIDGET (container), &allocation);
 	width  = allocation.width - container->details->left_margin - container->details->right_margin;
+	iWidthBase = 1366 - container->details->left_margin - container->details->right_margin;
 
     switch (zoom_level)
     {
     case PEONY_ZOOM_LEVEL_SMALLEST:
     case PEONY_ZOOM_LEVEL_SMALLER:
     case PEONY_ZOOM_LEVEL_SMALL:
-        fWidth = (float)PEONY_DESKTOP_ICON_GRID_WIDTH_SMALL*width/1366;
+        iNum = PEONY_DESKTOP_ICON_NUM_WIDTH_SMALL*width/iWidthBase;
 		break;
     case PEONY_ZOOM_LEVEL_STANDARD:
-        fWidth = (float)PEONY_DESKTOP_ICON_GRID_WIDTH_STANDARD*width/1366;
+        iNum = PEONY_DESKTOP_ICON_NUM_WIDTH_STANDARD*width/iWidthBase;
 		break;
     case PEONY_ZOOM_LEVEL_LARGE:
-        fWidth = (float)PEONY_DESKTOP_ICON_GRID_WIDTH_LARGE*width/1366;
+        iNum = PEONY_DESKTOP_ICON_NUM_WIDTH_LARGE*width/iWidthBase;
 		break;
     case PEONY_ZOOM_LEVEL_LARGER:
-        fWidth = (float)PEONY_DESKTOP_ICON_GRID_WIDTH_LARGER*width/1366;
+        iNum = PEONY_DESKTOP_ICON_NUM_WIDTH_LARGER*width/iWidthBase;
 		break;
     case PEONY_ZOOM_LEVEL_LARGEST:
-        fWidth = (float)PEONY_DESKTOP_ICON_GRID_WIDTH_LARGEST*width/1366;
+        iNum = PEONY_DESKTOP_ICON_NUM_WIDTH_LARGEST*width/iWidthBase;
 		break;
 	default:
-		fWidth = (float)PEONY_DESKTOP_ICON_GRID_WIDTH_STANDARD*width/1366;
+		iNum = PEONY_DESKTOP_ICON_NUM_WIDTH_STANDARD*width/iWidthBase;
 		break;
     }
+
+	iNum = MAX(iNum,1);
+	fWidth = (float)width/iNum;
 	return fWidth;
 }
 
@@ -11165,42 +11171,48 @@ float peony_get_desktop_icon_height_size_for_zoom_level (PeonyZoomLevel zoom_lev
 	/*
 	width[1366]height[768]
 	
-	32-   68-76      72
-	48-   105-109  109
-	72-   151-153  145
-	96-   195-256  192
-	192- 455-384  364
+	32-   68-72          10
+	48-   105-104       7
+	72-   151-145       5
+	96-   195-242       3
+	192- 455-364       2
 	*/	
 	float fHeight = 0.0;
+	int   iNum = 0;
 	int height = 0;
+	int iHeightBase = 0;
 	GtkAllocation allocation;
 	
 	gtk_widget_get_allocation (GTK_WIDGET (container), &allocation);
 	height = allocation.height - container->details->top_margin - container->details->bottom_margin;
+	iHeightBase = 768 - container->details->top_margin - container->details->bottom_margin;
 
     switch (zoom_level)
     {
     case PEONY_ZOOM_LEVEL_SMALLEST:
     case PEONY_ZOOM_LEVEL_SMALLER:
     case PEONY_ZOOM_LEVEL_SMALL:
-        fHeight = (float)PEONY_DESKTOP_ICON_GRID_HEIGHT_SMALL*height/768;
+        iNum = PEONY_DESKTOP_ICON_NUM_HEIGHT_SMALL*height/iHeightBase;
 		break;
     case PEONY_ZOOM_LEVEL_STANDARD:
-        fHeight = (float)PEONY_DESKTOP_ICON_GRID_HEIGHT_STANDARD*height/768;
+        iNum = PEONY_DESKTOP_ICON_NUM_HEIGHT_STANDARD*height/iHeightBase;
 		break;
     case PEONY_ZOOM_LEVEL_LARGE:
-        fHeight = (float)PEONY_DESKTOP_ICON_GRID_HEIGHT_LARGE*height/768;
+        iNum = PEONY_DESKTOP_ICON_NUM_HEIGHT_LARGE*height/iHeightBase;
 		break;
     case PEONY_ZOOM_LEVEL_LARGER:
-        fHeight = (float)PEONY_DESKTOP_ICON_GRID_HEIGHT_LARGER*height/768;
+        iNum = PEONY_DESKTOP_ICON_NUM_HEIGHT_LARGER*height/iHeightBase;
 		break;
     case PEONY_ZOOM_LEVEL_LARGEST:
-        fHeight = (float)PEONY_DESKTOP_ICON_GRID_HEIGHT_LARGEST*height/768;
+        iNum = PEONY_DESKTOP_ICON_NUM_HEIGHT_LARGEST*height/iHeightBase;
 		break;
 	default:
-		fHeight = (float)PEONY_DESKTOP_ICON_GRID_HEIGHT_STANDARD*height/768;
+		iNum = PEONY_DESKTOP_ICON_NUM_HEIGHT_STANDARD*height/iHeightBase;
 		break;
     }
+
+	iNum = MAX(iNum,1);
+	fHeight = (float)height/iNum;
     return fHeight;
 }
 #endif /* ! PEONY_OMIT_SELF_CHECK */
