@@ -1,7 +1,5 @@
 # List of source files containing translatable strings.
 # Please keep this list in alphabetic order.
-gksu/libpeony-gksu.c
-[type: gettext/ini]gksu/libpeony-gksu.peony-extension.in.in
 image-converter/peony-image-converter.c
 [type: gettext/glade]image-converter/peony-image-resize.ui
 image-converter/peony-image-resizer.c

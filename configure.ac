@@ -273,14 +273,6 @@ fi
 
 AM_CONDITIONAL(ENABLE_SHARE, test x"$enable_share" = "xyes")
 
-# gksu extenstion
-AC_ARG_ENABLE([gksu],
-        AS_HELP_STRING([--enable-gksu], [Enable gksu plugin]),
-        [enable_gksu=$enableval],
-        [enable_gksu=yes])
-
-AM_CONDITIONAL(ENABLE_GKSU, test x"$enable_gksu" = "xyes")
-
 # wallpaper extenstion
 AC_ARG_ENABLE([wallpaper],
         AS_HELP_STRING([--enable-wallpaper], [Enable set as wallpaper plugin]),
@@ -495,8 +487,6 @@ dnl ******************************
 
 AC_OUTPUT([
   Makefile 
-  gksu/libpeony-gksu.peony-extension.in
-  gksu/Makefile
   image-converter/libpeony-image-converter.peony-extension.in
   image-converter/Makefile
   open-terminal/libpeony-open-terminal.peony-extension.in
@@ -569,7 +559,6 @@ Plugins to be build:
         Open Terminal:          $enable_open_terminal
         Sendto:                 $enable_sendto
         Share:                  $enable_share
-        Gksu:                   $enable_gksu
         Wallpaper:              $enable_wallpaper
         xattr Tags:             $enable_xattr_tags
 "
