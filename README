@@ -16,3 +16,7 @@ peony-extension dir. e.g.:
 
 $ ./configure --with-peonydir=/usr/local/lib/peony/extensions-2.0/ \
     --prefix=/usr/local
+
+
+debuild:
+	Before run the command debuild, enter peony-admin, and run command 'sh cmake.sh'.

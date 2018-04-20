@@ -18,6 +18,10 @@ if ENABLE_GKSU
 SUBDIRS += gksu
 endif
 
+if ENABLE_GKSU
+SUBDIRS += peony-admin
+endif
+
 if ENABLE_SHARE
 SUBDIRS += share
 endif

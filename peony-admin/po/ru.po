@@ -1,0 +1,64 @@
+# Russian translations for peony-admin package.
+# Copyright (C) 2015 Bruno Nova <brunomb.nova@gmail.com>
+# This file is distributed under the same license as the peony-admin package.
+# Maksim Krapiuka <metalomaniax@gmail.com>, 2016.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: peony-admin 0.2.0\n"
+"Report-Msgid-Bugs-To: https://github.com/infirit/peony-admin/issues\n"
+"POT-Creation-Date: 2016-06-23 13:59+0300\n"
+"PO-Revision-Date: 2016-06-24 02:54+0300\n"
+"Language-Team: \n"
+"Language: ru\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: extension/peony-admin.py:122
+msgid "CAUTION!"
+msgstr "ОСТОРОЖНО!"
+
+#: extension/peony-admin.py:104
+msgid "Edit as A_dministrator"
+msgstr "Редактировать как А_дминистратор"
+
+#: extension/peony-admin.py:88
+msgid "Open as A_dministrator"
+msgstr "Открыть как А_дминистратор"
+
+#: extension/peony-admin.py:105
+msgid "Open this file in the text editor with root privileges"
+msgstr "Открыть файл в текстовом редакторе с root привелегиями"
+
+#: extension/peony-admin.py:89
+msgid "Open this folder with root privileges"
+msgstr "Открыть папку с root привелегиями"
+
+#: extension/peony-admin.py:96
+msgid "Run as A_dministrator"
+msgstr "Запустить как А_дминистратор"
+
+#: extension/peony-admin.py:97
+msgid "Run this file with root privileges"
+msgstr "Запустить этот файл с root привелегиями"
+
+#: extension/peony-admin.py:123
+msgid ""
+"Running the File Manager, the Text Editor or an executable with "
+"Administrator privileges <b>is dangerous</b>! <b>You can easily destroy your "
+"system if you are not careful!</b>\n"
+"<b>Think twice</b> before doing so, especially before running untrusted "
+"executables downloaded from the Internet. <b>They can contain malware</b>, "
+"which can do <b>irreversible damage to your system</b> when given "
+"Administrator privileges!\n"
+"Proceed only if you know what you are doing and understand the risks."
+msgstr ""
+"Использование Файлового Менеджера, Текстового Редактора или запуск исполняемых файлов с правами "
+"Администратора  <b>опасны</b>! <b>Вы можете легко вывести из строя вашу "
+"систему по неосторожности!</b>\n"
+"<b>Подумайте дважды</b> перед тем как это делать, а так же особенно перед запуском исполняемых файлов, "
+"загруженных из недоверительных источников в Интернете. <b>Они могут содержать вредоносное ПО</b>, "
+"которое может нанести <b>непоправимый ущерб вашей системе</b>, когда получит права Администратора!\n"
+"Продолжайте только если вы знаете что делаете и понимаете весь риск."

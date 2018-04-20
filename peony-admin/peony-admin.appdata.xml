@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright (C) 2016 Bruno Nova <brunomb.nova@gmail.com> -->
+<component type="addon">
+    <id>peony-admin</id>
+    <extends>org.mate.Peony.desktop</extends>
+    <metadata_license>GPL-3.0+</metadata_license>
+    <project_license>GPL-3.0+</project_license>
+    <name>Peony Admin</name>
+    <summary>Extension for Peony to do administrative operations</summary>
+    <summary xml:lang="pt">Extensão para o Peony para realizar operações administrativas</summary>
+    <description>
+        <p>
+            Peony Admin is a simple Python extension for the Peony file
+            manager that adds some administrative actions to the right-click
+            menu:
+        </p>
+        <p xml:lang="pt">
+            O Peony Admin é uma extensão em Python simples para o gestor de
+            ficheiros Peony que adiciona algumas acções administrativas ao
+            menu de contexto:
+        </p>
+        <ul>
+            <li>
+                Open as Administrator: opens a folder in a new Peony window
+                running with administrator (root) privileges.
+            </li>
+            <li>
+                Edit as Administrator: opens a file in a Gedit window running
+                with administrator (root) privileges.
+            </li>
+            <li>
+                Run as Administrator: runs an executable file with administrator
+                (root) privileges inside a GNOME Terminal.
+            </li>
+        </ul>
+        <ul xml:lang="pt">
+            <li>
+                Abrir como Administrador: abre uma pasta numa nova janela do
+                Peony a correr com privilégios de administrador (root).
+            </li>
+            <li>
+                Editar como Administrador: abre um ficheiro numa janela do Gedit
+                a correr com privilégios de administrador (root).
+            </li>
+            <li>
+                Executar como Administrador: corre um ficheiro executável com
+                privilégios de administrador (root) dentro de um Terminal do
+                GNOME.
+            </li>
+        </ul>
+    </description>
+    <url type="homepage">http://infirit.github.io/peony-admin/</url>
+    <url type="bugtracker">http://infirit.github.io/peony-admin/issues/</url>
+    <developer_name>Bruno Nova</developer_name>
+    <update_contact>brunomb.nova@gmail.com</update_contact>
+    <releases>
+        <release version="0.2.4" date="2016-10-31" urgency="low">
+            <description>
+                <ul>
+                    <li>
+                        Added Simplified Chinese translation (thanks
+                        Boyuan Yang).
+                    </li>
+                </ul>
+            </description>
+        </release>
+    </releases>
+</component>

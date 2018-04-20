@@ -1,0 +1,82 @@
+v0.2.4
+------
+
+* Added Simplified Chinese translation (thanks Boyuan Yang)
+
+
+v0.2.3
+------
+
+* Removed unused gconf dependency (thanks Jeremy Bicha)
+* Added German translation (thanks Rainer Peichl)
+* Updated Arabic translation (thanks Abdelkarim Guettaf)
+
+
+v0.2.2
+------
+
+* Added Slovakian translation (thanks Dušan Kazik)
+* Updated Polish translation (thanks Nolt)
+* Updated French translation (thanks Loïc Escales)
+
+
+v0.2.1
+------
+
+* Added Polish translation (thanks Nolt)
+
+
+v0.2.0
+------
+
+* Added "Run as Administrator" action for executable files (thanks frmdstryr)
+* Added Lithualian translation (thanks Mantas Kriaučiūnas)
+
+
+v0.1.7
+------
+
+* Added Italian translation (thanks Stefano Capitani)
+
+
+v0.1.6
+------
+
+* Added Spanish translation (thanks David López)
+
+
+v0.1.5
+------
+
+* Added Arabic translation (thanks Abdelkarim Guettaf)
+* Added Russian translation (thanks Maksim Krapiuka)
+
+
+v0.1.4
+------
+
+* Added French translation (thanks Loïc Escales)
+
+
+v0.1.3
+------
+
+* Moved the project to GitHub
+
+
+v0.1.2
+------
+
+* Show warning dialog when extension is first used
+
+
+v0.1.1
+------
+
+* Added mnemonics to the menu items
+
+
+v0.1.0
+------
+
+First release
