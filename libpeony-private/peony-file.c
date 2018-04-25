@@ -4143,7 +4143,7 @@ peony_file_get_gicon (PeonyFile *file,
 			mount = peony_file_get_mount (file);
 
 			if (mount != NULL) {
-				mount_icon = g_mount_get_icon (mount);
+//				mount_icon = g_mount_get_icon (mount);
 				g_object_unref (mount);
 			}
 		}

@@ -7492,3 +7492,7 @@ msgstr "缩放"
 #: ../src/peony-zoom-control.c:931
 msgid "Set the zoom level of the current view"
 msgstr "设置当前视图的缩放级别"
+
+#: ../libpeony-private/peony-desktop-link.c:89
+msgid "Disc"
+msgstr "光盘"
