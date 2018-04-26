@@ -409,7 +409,7 @@
 
   <schema id="org.ukui.peony.desktop" path="/org/ukui/peony/desktop/" gettext-domain="peony">
     <key name="font" type="s">
-      <default>'Sans 10'</default>
+      <default>'Ubuntu 10'</default>
       <summary>Desktop font</summary>
       <description>The font description used for the icons on the desktop.</description>
     </key>
