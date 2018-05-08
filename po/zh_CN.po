@@ -7496,3 +7496,7 @@ msgstr "设置当前视图的缩放级别"
 #: ../libpeony-private/peony-desktop-link.c:89
 msgid "Disc"
 msgstr "光盘"
+
+#: ../libpeony-private/peony-desktop-link.c:89
+msgid "disc"
+msgstr "光盘"

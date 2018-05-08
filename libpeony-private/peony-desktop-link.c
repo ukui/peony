@@ -86,7 +86,7 @@ mount_changed_callback (GMount *mount, PeonyDesktopLink *link)
     link->details->display_name = g_mount_get_name (mount);
     link->details->activation_location = g_mount_get_default_location (mount);
 
-    if (strstr(link->details->filename,_("Disc"))){
+    if (strstr(link->details->filename,_("Disc")) || strstr(link->details->filename,("disc")) || strstr(link->details->filename,_("光盘"))){
 
         link->details->icon = g_themed_icon_new ("media-dvd");
 
@@ -327,7 +327,16 @@ peony_desktop_link_new_from_mount (GMount *mount)
     link->details->display_name = g_mount_get_name (mount);
 
     link->details->activation_location = g_mount_get_default_location (mount);
-    link->details->icon = g_mount_get_icon (mount);
+//    link->details->icon = g_mount_get_icon (mount);
+//
+    if (strstr(link->details->filename,_("Disc")) || strstr(link->details->filename,("disc")) || strstr(link->details->filename,_("光盘"))){
+
+        link->details->icon = g_themed_icon_new ("media-dvd");
+
+    } else{
+
+	link->details->icon = g_mount_get_icon (mount);
+    }
 
     link->details->signal_handler_obj = G_OBJECT (mount);
     link->details->signal_handler =
