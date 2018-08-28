@@ -9311,6 +9311,47 @@ real_update_menus (FMDirectoryView *view)
 							  FM_ACTION_ATTACHED_TO_START_MENU);
 	gtk_action_set_visible (action, can_attach_to_start_menu(selection));
 
+        action = gtk_action_group_get_action (view->details->dir_action_group,
+                                                          "Send To Desktop");
+        gtk_action_set_visible (action, TRUE);
+
+        for (l = selection; l != NULL; l = l->next) {
+                PeonyFile *file;
+                file = PEONY_FILE (selection->data);
+
+                char          *filename, *activation_uri;
+
+                activation_uri = peony_file_get_activation_uri (file);
+                if (activation_uri == NULL)
+                {
+                        activation_uri = peony_file_get_uri (file);
+                }
+
+                GString *personal = g_string_new(NULL);
+                g_string_append(personal, "file://");
+                g_string_append(personal, g_get_home_dir());
+
+                if (strcmp(personal->str,activation_uri) == 0){
+                        action = gtk_action_group_get_action (view->details->dir_action_group,
+                                                                          "Send To Desktop");
+                        gtk_action_set_visible (action, FALSE);
+                }
+
+                if (strcmp(activation_uri,"computer:///")==0){
+                        action = gtk_action_group_get_action (view->details->dir_action_group,
+                                                                          "Send To Desktop");
+                        gtk_action_set_visible (action, FALSE);
+
+                }
+
+                if (strcmp(activation_uri,"trash:///")==0){
+                        action = gtk_action_group_get_action (view->details->dir_action_group,
+                                                                          "Send To Desktop");
+                        gtk_action_set_visible (action, FALSE);
+
+                }
+        }
+
 	action = gtk_action_group_get_action (view->details->dir_action_group,
 					      FM_ACTION_CREATE_LINK);
 	gtk_action_set_sensitive (action, can_link_files);
