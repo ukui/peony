@@ -236,6 +236,9 @@ main (int argc, char *argv[])
 	gint retval;
     PeonyApplication *application;
 
+    GSettings *settings = g_settings_new("org.ukui.peony.preferences");
+    g_settings_set_int (settings, "peony-search",0);
+
 #if defined (HAVE_MALLOPT) && defined(M_MMAP_THRESHOLD)
 	/* Peony uses lots and lots of small and medium size allocations,
 	 * and then a few large ones for the desktop background. By default

@@ -142,6 +142,11 @@
       <summary>Mouse button to activate the "Forward" command in browser window</summary>
       <description>For users with mice that have buttons for "Forward" and "Back", this key will set which button activates the "Forward" command in a browser window. Possible values range between 6 and 14.</description>
     </key>
+    <key name="peony-search" type="i">
+	    <default>0</default>
+	    <summary>Gsettings signal to peony search</summary>
+	    <description>After peony-search changerd, peony search page refresh.</description>
+    </key>
     <key name="mouse-back-button" type="i">
       <default>8</default>
       <summary>Mouse button to activate the "Back" command in browser window</summary>

@@ -2506,12 +2506,18 @@ peony_file_invalidate_count_and_mime_list (PeonyFile *file)
 void
 peony_directory_invalidate_count_and_mime_list (PeonyDirectory *directory)
 {
+    int num;
     PeonyFile *file;
+    GSettings *settings;
 
     file = peony_directory_get_existing_corresponding_file (directory);
     if (file != NULL)
     {
         peony_file_invalidate_count_and_mime_list (file);
+	GSettings *settings = g_settings_new("org.ukui.peony.preferences");
+	int num = g_settings_get_int (settings, "peony-search");
+	num = num+1;
+	g_settings_set_int (settings, "peony-search",num);
     }
 
     peony_file_unref (file);

@@ -128,9 +128,28 @@ entry_icon_release_cb (GtkEntry *entry,
     g_signal_emit_by_name (entry, "activate", 0);
 }
 
+ static void
+window_list_applet_size_change_notify (GSettings             *settings,
+                                       gchar                 *key,
+                                      GtkWidget             *entry)
+{
+
+        if (strcmp(key,"peony-search")==0){
+               g_signal_emit_by_name (entry, "activate", 0);
+        }
+ 
+}
+
 static void
 entry_changed_cb (GtkWidget *entry, PeonySearchBar *bar)
 {
+        GSettings *settings = g_settings_new("org.ukui.peony.preferences");
+//      g_settings_set_int (settings, "peony-search",0);
+        g_signal_connect (settings,
+                          "changed",
+                          G_CALLBACK (window_list_applet_size_change_notify),
+                          entry);
+
 	//peony_debug_log(TRUE,"search_bar","changed");
 	set_search_bar_duplicate(bar,FALSE);
     g_signal_emit_by_name (entry, "activate", 0);
