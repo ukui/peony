@@ -369,6 +369,18 @@ peony_fr_get_file_items (PeonyMenuProvider *provider,
 	}
 
 	if (! one_compressed_archive || one_derived_archive) {
+	        PeonyFileInfo *file;
+		char *name;
+
+	        file = files->data;
+		name=peony_file_info_get_activation_uri (file);
+
+	        if (name != NULL){
+			if (!strcmp (name, "computer:///") || !strcmp (name, "trash:///") || !strcmp (name, "file:///home/kylin")){
+				return items;
+			}
+		}
+
 		PeonyMenuItem *item;
 
 		item = peony_menu_item_new ("PeonyFr::add",

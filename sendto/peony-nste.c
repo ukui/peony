@@ -96,6 +96,18 @@ peony_nste_get_file_items (PeonyMenuProvider *provider,
 
   items = g_list_append (items, item);
 
+	PeonyFileInfo *file;
+	char *name;
+
+	file = files->data;
+	name=peony_file_info_get_activation_uri (file);
+
+	if (name != NULL){
+		if (!strcmp (name, "computer:///") || !strcmp (name, "trash:///") || !strcmp (name, "file:///home/kylin")){
+			return NULL;
+		}
+	}
+
 	return items;
 }
 
