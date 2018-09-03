@@ -1747,6 +1747,10 @@ draw_label_text (PeonyIconCanvasItem *item,
 	{
 		GList list;
 		char *uri;
+		GdkColor color;
+
+		GtkStyle *style = gtk_rc_get_style(GTK_WIDGET (container));
+		gtk_style_lookup_color (style,"trough_filled_space_normal_color",&color);
 		PeonyIcon *icon = item->user_data;
 		list.data = icon->data;
 		PeonyFile *file = PEONY_FILE(list.data);
@@ -1764,7 +1768,8 @@ draw_label_text (PeonyIconCanvasItem *item,
 				{
 					cr_line_width = 12;
 					cairo_set_line_width(cr,12);
-					cairo_set_source_rgb(cr,0.19,0.58,0.95);
+//					cairo_set_source_rgb(cr,0.19,0.58,0.95);
+					cairo_set_source_rgb(cr,color.red/(257.0*255.0),color.green/(257.0*255.0),color.blue/(257.0*255.0));
 					cairo_move_to(cr,x,text_rect.y0 + TEXT_BACK_PADDING_Y+details->editable_text_height+5);
 					cairo_line_to(cr,x+wid,text_rect.y0 + TEXT_BACK_PADDING_Y+details->editable_text_height+5);
 					cairo_stroke(cr);
@@ -1790,7 +1795,8 @@ draw_label_text (PeonyIconCanvasItem *item,
 		{
 			cr_line_width = 12;
 			cairo_set_line_width(cr,12);
-			cairo_set_source_rgb(cr,0.19,0.58,0.95);
+//			cairo_set_source_rgb(cr,0.19,0.58,0.95);
+			cairo_set_source_rgb(cr,color.red/(257.0*255.0),color.green/(257.0*255.0),color.blue/(257.0*255.0));
 			cairo_move_to(cr,x,text_rect.y0 + TEXT_BACK_PADDING_Y+details->editable_text_height+5);
 			cairo_line_to(cr,x+wid,text_rect.y0 + TEXT_BACK_PADDING_Y+details->editable_text_height+5);
 
