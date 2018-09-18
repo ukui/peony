@@ -1,7 +1,9 @@
 # Arabic translations for peony-admin package.
 # Copyright (C) 2015 Bruno Nova <brunomb.nova@gmail.com>
+# Copyright (C) 2018, Tianjin KYLIN Information Technology Co., Ltd.
 # This file is distributed under the same license as the peony-admin package.
 # Abdelkarim Guettaf <gkraim@gmail.com>, 2015.
+# Modified by : quankang <quankang@kylinos.cn>
 #
 msgid ""
 msgstr ""

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Copyright (C) 2016 Bruno Nova <brunomb.nova@gmail.com> -->
+<!-- Copyright (C) 2018, Tianjin KYLIN Information Technology Co., Ltd. -->
 <component type="addon">
     <id>peony-admin</id>
     <extends>org.mate.Peony.desktop</extends>

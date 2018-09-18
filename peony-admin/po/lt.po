@@ -1,7 +1,9 @@
 # Lithuanian translation of peony-admin.
 # Copyright (C) 2015-2016 Bruno Nova <brunomb.nova@gmail.com>
+# Copyright (C) 2018, Tianjin KYLIN Information Technology Co., Ltd.
 # This file is distributed under the same license as the peony-admin package.
 # Copyright (C) Mantas Kriaučiūnas <mantas@akl.lt>, 2016.
+# Modified by : quankang <quankang@kylinos.cn>
 #
 msgid ""
 msgstr ""
