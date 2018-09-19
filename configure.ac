@@ -25,14 +25,11 @@ GTK_DOC_CHECK(1.9)
 
 MATE_COMMON_INIT
 
-# Check for pkgconfig first
-AC_CHECK_PROG(HAVE_PKGCONFIG, pkg-config, yes, no)
-AC_PATH_PROG(PKG_CONFIG, pkg-config, no)
-
+PKG_PROG_PKG_CONFIG
 # Give error and exit if we dont have pkgconfig
-if test "x$HAVE_PKGCONFIG" = "xno"; then
+AS_IF([test "x$PKG_CONFIG" = "x"],[
   AC_MSG_ERROR([you need to have pkgconfig installed !])
-fi
+])
 
 GLIB_GENMARSHAL=`$PKG_CONFIG --variable=glib_genmarshal glib-2.0`
 AC_SUBST(GLIB_GENMARSHAL)
@@ -394,7 +391,7 @@ AC_ARG_WITH(peonydir,
         [ac_with_peonydir=$withval],
         [ac_with_peonydir=""])
 if test "${ac_with_peonydir}" = ""; then
-        ac_with_peonydir=`pkg-config --variable=extensiondir libpeony-extension`
+        ac_with_peonydir=`$PKG_CONFIG --variable=extensiondir libpeony-extension`
 fi
 
 AC_MSG_NOTICE([installing peony plugin in ${ac_with_peonydir}])
