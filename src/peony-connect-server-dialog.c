@@ -711,7 +711,7 @@ connect_dialog_response_cb (PeonyConnectServerDialog *dialog,
     case GTK_RESPONSE_HELP :
         error = NULL;
         gtk_show_uri (gtk_window_get_screen (GTK_WINDOW (dialog)),
-                      "help:ukui-user-guide/peony-server-connect",
+                      "help:ubuntu-kylin-help/files",
                       gtk_get_current_event_time (), &error);
         if (error)
         {

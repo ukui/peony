@@ -579,8 +579,8 @@ action_peony_manual_callback (GtkAction *action,
 
     gtk_show_uri (gtk_window_get_screen (GTK_WINDOW (window)),
                    PEONY_IS_DESKTOP_WINDOW (window)
-                      ? "help:ukui-user-guide"
-                      : "help:ukui-user-guide/gospeony-1",
+                      ? "help:ubuntu-kylin-help"
+                      : "help:ubuntu-kylin-help/files",
                   gtk_get_current_event_time (), &error);
 
     if (error)

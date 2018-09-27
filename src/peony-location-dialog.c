@@ -95,7 +95,7 @@ response_callback (PeonyLocationDialog *dialog,
     case GTK_RESPONSE_HELP :
         error = NULL;
         gtk_show_uri (gtk_window_get_screen (GTK_WINDOW (dialog)),
-                      "help:ukui-user-guide/peony-open-location",
+                      "help:ubuntu-kylin-help/unity-menubar-intro",
                       gtk_get_current_event_time (), &error);
         if (error)
         {

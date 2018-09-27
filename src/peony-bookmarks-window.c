@@ -145,7 +145,7 @@ peony_bookmarks_window_response_callback (GtkDialog *dialog,
         GError *error = NULL;
 
         gtk_show_uri (gtk_window_get_screen (GTK_WINDOW (dialog)),
-                      "help:ukui-user-guide/gospeony-36",
+                      "help:ubuntu-kylin-help/files",
                       gtk_get_current_event_time (), &error);
 
         if (error)
