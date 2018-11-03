@@ -4299,7 +4299,6 @@ msgstr[3] "Создать сс_ылки"
 msgid "Send to desktop _Shortcut"
 msgid_plural "Send to desktop _Shortcuts"
 msgstr[0] "Отправить на ярлыки на рабочем _столе"
-msgstr[0] "Отправить на ярлыки на рабочем _столе"
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:7370

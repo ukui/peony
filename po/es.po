@@ -4172,8 +4172,7 @@ msgstr[1] "Crear _enlaces"
 #: ../src/file-manager/fm-directory-view.c:8964
 msgid "Send to desktop _Shortcut"
 msgid_plural "Send to desktop _Shortcuts"
-msgstr[0] "Enviar a acceso directo de escritorio" 
-msgstr[1] "Enviar a los accesos directos de escritorio"
+msgstr[0] "Enviar a acceso directo de escritorio"
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:7370
