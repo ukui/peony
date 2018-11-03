@@ -23,6 +23,41 @@ msgstr ""
 "Language: fr\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
+#: ../src/peony-places-sidebar.c:540
+#,c-format
+msgid "Personal"
+msgstr "Personnel"
+
+msgid "Disk"
+msgstr "Disque"
+
+msgid "Movable-Disk"
+msgstr "Disque mobile"
+
+msgid "Other"
+msgstr "Autre"
+
+msgid "My Computer"
+msgstr "Mon ordinateur"
+
+#: ../src/peony-places-sidebar.c:494
+#,c-format
+msgid "Favorite"
+msgstr "Préféré"
+
+#: ../src/peony-places-sidebar.c:531
+#,c-format
+msgid "Recent"
+msgstr "Récent"
+msgid "available space,total"
+msgstr "espace disponible, total"
+
+msgid "GB available space,total"
+msgstr "Go d'espace disponible, total"
+
+msgid "TB available space,total"
+msgstr "TB espace disponible, total"
+
 #: ../cut-n-paste-code/libegg/eggdesktopfile.c:166
 #, c-format
 msgid "File is not a valid .desktop file"
@@ -1076,13 +1111,13 @@ msgstr "Un autre lien vers %s"
 #. * particular language.
 #: ../libpeony-private/peony-file-operations.c:426
 #, c-format
-msgid "%'dst link to %s"
+msgid "%s %'dst link to"
 msgstr "%'der lien vers %s"
 
 #. appended to new link file
 #: ../libpeony-private/peony-file-operations.c:430
 #, c-format
-msgid "%'dnd link to %s"
+msgid "%s %'dnd link to"
 msgstr "%'de lien vers %s"
 
 #. appended to new link file
@@ -1094,7 +1129,7 @@ msgstr "%'de lien vers %s"
 #. appended to new link file
 #: ../libpeony-private/peony-file-operations.c:438
 #, c-format
-msgid "%'dth link to %s"
+msgid "%s %'dth link to"
 msgstr "%'de lien vers %s"
 
 #. Localizers:
@@ -3550,6 +3585,12 @@ msgstr "Arrière-plan"
 msgid "E_mpty Trash"
 msgstr "_Vider la corbeille"
 
+msgid "E_mpty Recent"
+msgstr "_Vide Récent"
+
+msgid "D_elete Recent"
+msgstr "_Supprimer les récents"
+
 #. label, accelerator
 #. name, stock id
 #. label, accelerator
@@ -3568,6 +3609,11 @@ msgstr "Crée un nouveau lanceur"
 #: ../src/file-manager/fm-desktop-icon-view.c:808
 msgid "Change Desktop _Background"
 msgstr "Changer l'_arrière-plan du bureau"
+
+#. label, accelerator
+#: ../src/file-manager/fm-desktop-icon-view.c:749
+msgid "Set Screen _Resolution"
+msgstr "Définir la résolution de l'écran"
 
 #. tooltip
 #: ../src/file-manager/fm-desktop-icon-view.c:810
@@ -4045,6 +4091,11 @@ msgid "Cop_y to"
 msgstr "Copier _vers"
 
 #. name, stock id, label
+#: ../src/file-manager/fm-directory-view.c:7336
+msgid "_Attached to the start menu"
+msgstr "_Attaché au menu de démarrage"
+
+#. name, stock id, label
 #: ../src/file-manager/fm-directory-view.c:7351
 msgid "M_ove to"
 msgstr "_Déplacer vers"
@@ -4059,6 +4110,12 @@ msgstr "Sélectionne tous les éléments de cette fenêtre"
 #: ../src/file-manager/fm-directory-view.c:7357
 msgid "Select I_tems Matching..."
 msgstr "Sélectionner les _éléments correspondants à..."
+
+#. name, stock id
+#. label, accelerator
+#: ../src/file-manager/fm-directory-view.c:7343
+msgid "Find duplicate file"
+msgstr "Trouver un fichier en double"
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:7358
@@ -4096,10 +4153,24 @@ msgid_plural "Ma_ke Links"
 msgstr[0] "Créer un _lien"
 msgstr[1] "Créer des _liens"
 
+#. name, stock id
+#. label, accelerator
+#: ../src/file-manager/fm-directory-view.c:7355
+#: ../src/file-manager/fm-directory-view.c:8964
+msgid "Send to desktop _Shortcut"
+msgid_plural "Send to desktop _Shortcuts"
+msgstr[0] "Envoyer au bureau _Raccourc"
+msgstr[1] "Envoyer au bureau _Raccourcis"
+
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:7370
 msgid "Create a symbolic link for each selected item"
 msgstr "Crée un lien symbolique pour chaque élément sélectionné"
+
+#. tooltip
+#: ../src/file-manager/fm-directory-view.c:7356
+msgid "Send to desktop shortcut for each selected item"
+msgstr "Envoyer au bureau un raccourci pour chaque élément sélectionné"
 
 #. name, stock id
 #. label, accelerator
@@ -6718,6 +6789,10 @@ msgstr "Ouvre le contenu du système de fichiers"
 msgid "Open the trash"
 msgstr "Ouvre la corbeille"
 
+#: ../src/caja-places-sidebar.c:552
+msgid "Open the recent"
+msgstr "Ouvrir le récent"
+
 #: ../src/peony-places-sidebar.c:654 ../src/peony-places-sidebar.c:682
 #, c-format
 msgid "Mount and open %s"
@@ -7040,6 +7115,10 @@ msgstr "Effectue ou met à jour la recherche"
 #: ../src/peony-query-editor.c:1124
 msgid "_Search for:"
 msgstr "Rec_hercher :"
+
+#: ../src/peony-query-editor.c:1153
+msgid "Find results"
+msgstr "Trouver des résultats"
 
 #: ../src/peony-query-editor.c:1153
 msgid "Search results"
@@ -7489,3 +7568,11 @@ msgstr "Zoom"
 #: ../src/peony-zoom-control.c:931
 msgid "Set the zoom level of the current view"
 msgstr "Définit le niveau de zoom de la vue actuelle"
+
+#: ../libpeony-private/peony-desktop-link.c:89
+msgid "Disc"
+msgstr "Disque"
+
+#: ../libpeony-private/peony-desktop-link.c:89
+msgid "disc"
+msgstr "disque"

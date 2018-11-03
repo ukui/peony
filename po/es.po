@@ -29,6 +29,42 @@ msgstr ""
 "Language: es\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+#: ../src/peony-places-sidebar.c:540
+#,c-format
+msgid "Personal"
+msgstr "Personal"
+
+msgid "Disk"
+msgstr "Disco"
+
+msgid "Movable-Disk"
+msgstr "Disco movible"
+
+msgid "Other"
+msgstr "Otro"
+
+msgid "My Computer"
+msgstr "Mi computadora"
+
+#: ../src/peony-places-sidebar.c:494
+#,c-format
+msgid "Favorite"
+msgstr "Favorito"
+
+#: ../src/peony-places-sidebar.c:531
+#,c-format
+msgid "Recent"
+msgstr "Reciente"
+msgid "available space,total"
+msgstr "espacio disponible, total"
+
+msgid "GB available space,total"
+msgstr "GB de espacio disponible, total"
+
+msgid "TB available space,total"
+msgstr "TB espacio disponible, total"
+
+
 #: ../cut-n-paste-code/libegg/eggdesktopfile.c:166
 #, c-format
 msgid "File is not a valid .desktop file"
@@ -947,7 +983,7 @@ msgstr "Última modificación:"
 
 #: ../libpeony-private/peony-file-conflict-dialog.c:318
 msgid "Merge with"
-msgstr ""
+msgstr "Fusionarse con"
 
 #: ../libpeony-private/peony-file-conflict-dialog.c:318
 #: ../libpeony-private/peony-file-conflict-dialog.c:322
@@ -988,12 +1024,12 @@ msgstr "Reemplazar"
 
 #: ../libpeony-private/peony-file-conflict-dialog.c:759
 msgid "Merge Folder"
-msgstr ""
+msgstr "Carpeta de fusión"
 
 #: ../libpeony-private/peony-file-conflict-dialog.c:759
 #: ../libpeony-private/peony-file-conflict-dialog.c:764
 msgid "File and Folder conflict"
-msgstr ""
+msgstr "File and Folder conflict"
 
 #: ../libpeony-private/peony-file-conflict-dialog.c:764
 msgid "File conflict"
@@ -1082,25 +1118,25 @@ msgstr "Otro enlace hacia %s"
 #. * particular language.
 #: ../libpeony-private/peony-file-operations.c:426
 #, c-format
-msgid "%'dst link to %s"
+msgid "%s %'dst link to"
 msgstr "%'der enlace hacia %s"
 
 #. appended to new link file
 #: ../libpeony-private/peony-file-operations.c:430
 #, c-format
-msgid "%'dnd link to %s"
+msgid "%s %'dnd link to"
 msgstr "%'d.º enlace hacia %s"
 
 #. appended to new link file
 #: ../libpeony-private/peony-file-operations.c:434
 #, c-format
-msgid "%'drd link to %s"
+msgid "%s %'drd link to"
 msgstr "%'der enlace hacia %s"
 
 #. appended to new link file
 #: ../libpeony-private/peony-file-operations.c:438
 #, c-format
-msgid "%'dth link to %s"
+msgid "%s %'dth link to"
 msgstr "%'d.º enlace hacia %s"
 
 #. Localizers:
@@ -2379,19 +2415,19 @@ msgstr "Operaciones sobre archivos"
 
 #: ../libpeony-private/peony-progress-info.c:313
 msgid "paused"
-msgstr ""
+msgstr "en pausa"
 
 #: ../libpeony-private/peony-progress-info.c:316
 msgid "pausing"
-msgstr ""
+msgstr "haciendo una pausa"
 
 #: ../libpeony-private/peony-progress-info.c:319
 msgid "queued"
-msgstr ""
+msgstr "en cola"
 
 #: ../libpeony-private/peony-progress-info.c:322
 msgid "queuing"
-msgstr ""
+msgstr "hacer cola"
 
 #: ../libpeony-private/peony-progress-info.c:599
 #, c-format
@@ -3133,11 +3169,11 @@ msgstr "Si se establece en \"verdadero\", los tamaños de archivos se mostrarán
 
 #: ../libpeony-private/org.ukui.peony.gschema.xml.h:65
 msgid "Whether to show desktop notifications"
-msgstr ""
+msgstr "Si mostrar notificaciones de escritorio"
 
 #: ../libpeony-private/org.ukui.peony.gschema.xml.h:66
 msgid "If set to true, Peony will show desktop notifications for eject events"
-msgstr ""
+msgstr "Si se establece en verdadero, Peony mostrará notificaciones de escritorio para eventos de expulsión"
 
 #: ../libpeony-private/org.ukui.peony.gschema.xml.h:67
 msgid "List of possible captions on icons"
@@ -3556,6 +3592,12 @@ msgstr "Fondo"
 msgid "E_mpty Trash"
 msgstr "_Vaciar la papelera"
 
+msgid "E_mpty Recent"
+msgstr "_Vacío Reciente"
+
+msgid "D_elete Recent"
+msgstr "E_liminar reciente"
+
 #. label, accelerator
 #. name, stock id
 #. label, accelerator
@@ -3575,11 +3617,22 @@ msgstr "Crea un lanzador nuevo"
 msgid "Change Desktop _Background"
 msgstr "Cambiar el _fondo del escritorio"
 
+#. label, accelerator
+#: ../src/file-manager/fm-desktop-icon-view.c:749
+msgid "Set Screen _Resolution"
+msgstr "Establecer _resolución de pantalla"
+
 #. tooltip
 #: ../src/file-manager/fm-desktop-icon-view.c:810
 msgid ""
 "Show a window that lets you set your desktop background's pattern or color"
 msgstr "Muestra una ventana que le deja configurar el patrón del fondo o el color de su escritorio"
+
+#. tooltip
+#: ../src/file-manager/fm-desktop-icon-view.c:751
+msgid ""
+"Show a window that lets you set the screen resolution"
+msgstr "Muestra una ventana que te permite configurar la resolución de la pantalla."
 
 #. label, accelerator
 #: ../src/file-manager/fm-desktop-icon-view.c:817
@@ -4051,6 +4104,11 @@ msgid "Cop_y to"
 msgstr "Cop_iar a"
 
 #. name, stock id, label
+#: ../src/file-manager/fm-directory-view.c:7336
+msgid "_Attached to the start menu"
+msgstr "_Se adjunta al menú de inicio"
+
+#. name, stock id, label
 #: ../src/file-manager/fm-directory-view.c:7351
 msgid "M_ove to"
 msgstr "M_over a"
@@ -4065,6 +4123,12 @@ msgstr "Selecciona todos los elementos que hay en esta ventana"
 #: ../src/file-manager/fm-directory-view.c:7357
 msgid "Select I_tems Matching..."
 msgstr "Seleccionar e_lementos que coincidan con…"
+
+#. name, stock id
+#. label, accelerator
+#: ../src/file-manager/fm-directory-view.c:7343
+msgid "Find duplicate file"
+msgstr "Encontrar archivo duplicado"
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:7358
@@ -4102,10 +4166,24 @@ msgid_plural "Ma_ke Links"
 msgstr[0] "Crear un _enlace"
 msgstr[1] "Crear _enlaces"
 
+#. name, stock id
+#. label, accelerator
+#: ../src/file-manager/fm-directory-view.c:7355
+#: ../src/file-manager/fm-directory-view.c:8964
+msgid "Send to desktop _Shortcut"
+msgid_plural "Send to desktop _Shortcuts"
+msgstr[0] "Enviar a acceso directo de escritorio" 
+msgstr[1] "Enviar a los accesos directos de escritorio"
+
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:7370
 msgid "Create a symbolic link for each selected item"
 msgstr "Crea un enlace simbólico para cada elemento seleccionado"
+
+#. tooltip
+#: ../src/file-manager/fm-directory-view.c:7356
+msgid "Send to desktop shortcut for each selected item"
+msgstr "Enviar al acceso directo del escritorio para cada elemento seleccionado"
 
 #. name, stock id
 #. label, accelerator
@@ -5532,15 +5610,15 @@ msgstr "No se pudo expulsar %s"
 
 #: ../src/peony-application.c:1956
 msgid "--check cannot be used with other options."
-msgstr ""
+msgstr "--check no se puede utilizar con otras opciones."
 
 #: ../src/peony-application.c:1962
 msgid "--quit cannot be used with URIs."
-msgstr ""
+msgstr "--quit no puede usarse con URIs"
 
 #: ../src/peony-application.c:1969
 msgid "--geometry cannot be used with more than one URI."
-msgstr ""
+msgstr "--geometry no se puede utilizar con más de un URI."
 
 #: ../src/peony-application.c:2032
 msgid "Perform a quick set of self-check tests."
@@ -5572,11 +5650,11 @@ msgstr "No gestionar el escritorio (ignorar las preferencias establecidas en el 
 msgid ""
 "Manage the desktop regardless of set preferences or environment (on new "
 "startup only)"
-msgstr ""
+msgstr "Administre el escritorio independientemente de las preferencias o el entorno establecidos (solo en el nuevo inicio)"
 
 #: ../src/peony-application.c:2045
 msgid "Open a browser window."
-msgstr ""
+msgstr "Abra una ventana del navegador."
 
 #: ../src/peony-application.c:2047
 msgid "Quit Peony."
@@ -6724,6 +6802,10 @@ msgstr "Abrir el contenido del sistema de archivos"
 msgid "Open the trash"
 msgstr "Abrir la papelera"
 
+#: ../src/caja-places-sidebar.c:552
+msgid "Open the recent"
+msgstr "Abrir el reciente"
+
 #: ../src/peony-places-sidebar.c:654 ../src/peony-places-sidebar.c:682
 #, c-format
 msgid "Mount and open %s"
@@ -7046,6 +7128,10 @@ msgstr "Realizar o actualizar la búsqueda"
 #: ../src/peony-query-editor.c:1124
 msgid "_Search for:"
 msgstr "_Buscar:"
+
+#: ../src/peony-query-editor.c:1153
+msgid "Find results"
+msgstr "Encontrar resultados"
 
 #: ../src/peony-query-editor.c:1153
 msgid "Search results"
@@ -7495,3 +7581,11 @@ msgstr "Ampliación"
 #: ../src/peony-zoom-control.c:931
 msgid "Set the zoom level of the current view"
 msgstr "Establece el nivel de ampliación de la vista actual"
+
+#: ../libpeony-private/peony-desktop-link.c:89
+msgid "Disc"
+msgstr "Dto"
+
+#: ../libpeony-private/peony-desktop-link.c:89
+msgid "disc"
+msgstr "disc"

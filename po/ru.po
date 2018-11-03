@@ -24,6 +24,41 @@ msgstr ""
 "Language: ru\n"
 "Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);\n"
 
+#: ../src/peony-places-sidebar.c:540
+#,c-format
+msgid "Personal"
+msgstr "личный"
+
+msgid "Disk"
+msgstr "диск"
+
+msgid "Movable-Disk"
+msgstr "Подвижный-диск"
+
+msgid "Other"
+msgstr "Другой"
+
+msgid "My Computer"
+msgstr "Мой компьютер"
+
+#: ../src/peony-places-sidebar.c:494
+#,c-format
+msgid "Favorite"
+msgstr "любимец"
+
+#: ../src/peony-places-sidebar.c:531
+#,c-format
+msgid "Recent"
+msgstr "последний"
+msgid "available space,total"
+msgstr "доступное пространство, всего"
+
+msgid "GB available space,total"
+msgstr "Свободное место на диске, общая"
+
+msgid "TB available space,total"
+msgstr "TB доступное пространство, всего"
+
 #: ../cut-n-paste-code/libegg/eggdesktopfile.c:166
 #, c-format
 msgid "File is not a valid .desktop file"
@@ -1091,7 +1126,7 @@ msgstr "%'d-я ссылка на %s"
 #. appended to new link file
 #: ../libpeony-private/peony-file-operations.c:430
 #, c-format
-msgid "%'dnd link to %s"
+msgid "%s %'dnd link to"
 msgstr "%'d-я ссылка на %s"
 
 #. appended to new link file
@@ -3661,6 +3696,12 @@ msgstr "Фон"
 msgid "E_mpty Trash"
 msgstr "О_чистить корзину"
 
+msgid "E_mpty Recent"
+msgstr "П_усто Последние"
+
+msgid "D_elete Recent"
+msgstr "_Удалить последнее"
+
 #. label, accelerator
 #. name, stock id
 #. label, accelerator
@@ -3680,11 +3721,22 @@ msgstr "Создать новую кнопку запуска"
 msgid "Change Desktop _Background"
 msgstr "Параметры внешнего вида"
 
+#. label, accelerator
+#: ../src/file-manager/fm-desktop-icon-view.c:749
+msgid "Set Screen _Resolution"
+msgstr "_Установить разрешение экрана"
+
 #. tooltip
 #: ../src/file-manager/fm-desktop-icon-view.c:810
 msgid ""
 "Show a window that lets you set your desktop background's pattern or color"
 msgstr "Показать окно, которое позволит вам установить орнамент или цвет фона вашего рабочего стола"
+
+#. tooltip
+#: ../src/file-manager/fm-desktop-icon-view.c:751
+msgid ""
+"Show a window that lets you set the screen resolution"
+msgstr "Показать окно, позволяющее установить разрешение экрана"
 
 #. label, accelerator
 #: ../src/file-manager/fm-desktop-icon-view.c:817
@@ -4176,6 +4228,11 @@ msgid "Cop_y to"
 msgstr "_Копировать в"
 
 #. name, stock id, label
+#: ../src/file-manager/fm-directory-view.c:7336
+msgid "_Attached to the start menu"
+msgstr "_Отключено в меню «Пуск»"
+
+#. name, stock id, label
 #: ../src/file-manager/fm-directory-view.c:7351
 msgid "M_ove to"
 msgstr "_Переместить в"
@@ -4190,6 +4247,12 @@ msgstr "Выделить все объекты в этом окне"
 #: ../src/file-manager/fm-directory-view.c:7357
 msgid "Select I_tems Matching..."
 msgstr "Выделить о_бъекты по шаблону..."
+
+#. name, stock id
+#. label, accelerator
+#: ../src/file-manager/fm-directory-view.c:7343
+msgid "Find duplicate file"
+msgstr "Найти дубликат файла"
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:7358
@@ -4229,10 +4292,24 @@ msgstr[1] "Создать сс_ылки"
 msgstr[2] "Создать сс_ылки"
 msgstr[3] "Создать сс_ылки"
 
+#. name, stock id
+#. label, accelerator
+#: ../src/file-manager/fm-directory-view.c:7355
+#: ../src/file-manager/fm-directory-view.c:8964
+msgid "Send to desktop _Shortcut"
+msgid_plural "Send to desktop _Shortcuts"
+msgstr[0] "Отправить на ярлыки на рабочем _столе"
+msgstr[0] "Отправить на ярлыки на рабочем _столе"
+
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:7370
 msgid "Create a symbolic link for each selected item"
 msgstr "Создать символьную ссылку для каждого выделенного объекта"
+
+#. tooltip
+#: ../src/file-manager/fm-directory-view.c:7356
+msgid "Send to desktop shortcut for each selected item"
+msgstr "Отправить на ярлык на рабочем столе для каждого выбранного элемента"
 
 #. name, stock id
 #. label, accelerator
@@ -7207,6 +7284,10 @@ msgid "_Search for:"
 msgstr "_Искать:"
 
 #: ../src/peony-query-editor.c:1153
+msgid "Find results"
+msgstr "_Поиск результатов"
+
+#: ../src/peony-query-editor.c:1153
 msgid "Search results"
 msgstr "Результаты поиска"
 
@@ -7654,3 +7735,11 @@ msgstr "Масштабировать"
 #: ../src/peony-zoom-control.c:931
 msgid "Set the zoom level of the current view"
 msgstr "Установить уровень масштабирования текущего вида"
+
+#: ../libpeony-private/peony-desktop-link.c:89
+msgid "Disc"
+msgstr "диск"
+
+#: ../libpeony-private/peony-desktop-link.c:89
+msgid "disc"
+msgstr "диск"
