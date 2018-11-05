@@ -2070,7 +2070,7 @@ msgstr "Cole a área de transferência"
 
 #: ../parchives/src/ui.h:80 ../parchives/src/ui.h:101
 msgid "_Rename…"
-msgstr "_Renomeie..."
+msgstr "_Renomeie…"
 
 #: ../parchives/src/ui.h:81 ../parchives/src/ui.h:102
 msgid "Rename the selection"
@@ -2091,7 +2091,7 @@ msgstr "Escolha o tamanho:"
 
 #: ../parchives/src/ui.h:114 ../parchives/src/ui.h:118
 msgid "_Extract…"
-msgstr "_Extrair..."
+msgstr "_Extrair…"
 
 #: ../parchives/src/ui.h:115 ../parchives/src/ui.h:119
 #: ../parchives/src/ui.h:123
@@ -2100,7 +2100,7 @@ msgstr "Extrair arquivos do arquivo"
 
 #: ../parchives/src/ui.h:126
 msgid "Find…"
-msgstr "Encontrar..."
+msgstr "Encontrar…"
 
 #: ../parchives/src/ui.h:131
 msgid "_Last Output"
@@ -2112,7 +2112,7 @@ msgstr "Veja a saída produzida pelo último comando executado"
 
 #: ../parchives/src/ui.h:135
 msgid "New…"
-msgstr "Novo..."
+msgstr "Novo…"
 
 #: ../parchives/src/ui.h:136
 #, fuzzy
@@ -2121,7 +2121,7 @@ msgstr "Crar _Partilha"
 
 #: ../parchives/src/ui.h:139
 msgid "Open…"
-msgstr "Abrir"
+msgstr "Abrir…"
 
 #: ../parchives/src/ui.h:140 ../parchives/src/ui.h:144
 msgid "Open archive"
@@ -2129,7 +2129,7 @@ msgstr "Arquivo aberto"
 
 #: ../parchives/src/ui.h:147
 msgid "_Open With…"
-msgstr "_Abrir com..."
+msgstr "_Abrir com…"
 
 #: ../parchives/src/ui.h:148
 msgid "Open selected files with an application"
@@ -2137,7 +2137,7 @@ msgstr "Abrir arquivos selecionados com um aplicativo"
 
 #: ../parchives/src/ui.h:151
 msgid "Pass_word…"
-msgstr "Senha..."
+msgstr "Senha…"
 
 #: ../parchives/src/ui.h:152
 msgid "Specify a password for this archive"
@@ -2153,7 +2153,7 @@ msgstr "Recarregar o arquivo atual"
 
 #: ../parchives/src/ui.h:163
 msgid "Save As…"
-msgstr "Salvar como..."
+msgstr "Salvar como…"
 
 #: ../parchives/src/ui.h:164
 msgid "Save the current archive with a different name"
