@@ -284,7 +284,7 @@ get_disk_full (PeonyIconCanvasItem *item)
 	list.data = icon->data;
 	PeonyFile *file = PEONY_FILE(list.data);
 	char *name = peony_file_get_name(file);
-	char *text_string = _("available space,total");
+	char *text_string = _("/");
 	
 #define disk_additional_text_max_len 255
 #define disk_show_tb 1000
@@ -491,7 +491,7 @@ get_disk_additional_text(PeonyIconCanvasItem *item)
 	list.data = icon->data;
 	PeonyFile *file = PEONY_FILE(list.data);
 	char *name = peony_file_get_name(file);
-	char *text_string = _("available space,total");
+	char *text_string = _("/");
 	
 	#define disk_additional_text_max_len 255
 	#define disk_show_tb 1000
@@ -578,12 +578,12 @@ get_disk_additional_text(PeonyIconCanvasItem *item)
 				#else
 				if (g_settings_get_boolean (peony_preferences, PEONY_PREFERENCES_USE_IEC_UNITS))
 				{
-					freedisk = g_format_size_full(interface_get_disk_free_full (g_file_new_for_uri (uri)),G_FORMAT_SIZE_IEC_UNITS);
+					freedisk = g_format_size_full(interface_get_disk_total_full (g_file_new_for_uri (uri)) - interface_get_disk_free_full (g_file_new_for_uri (uri)),G_FORMAT_SIZE_IEC_UNITS);
 					totaldisk=g_format_size_full(interface_get_disk_total_full (g_file_new_for_uri (uri)),G_FORMAT_SIZE_IEC_UNITS);
 				}
 				else
 				{
-					freedisk = g_format_size(interface_get_disk_free_full (g_file_new_for_uri (uri)));
+					freedisk = g_format_size(interface_get_disk_total_full(g_file_new_for_uri (uri)) - interface_get_disk_free_full (g_file_new_for_uri (uri)));
 					totaldisk = g_format_size(interface_get_disk_total_full(g_file_new_for_uri (uri)));
 				}
 				#endif
@@ -612,12 +612,12 @@ get_disk_additional_text(PeonyIconCanvasItem *item)
 					#else
 					if (g_settings_get_boolean (peony_preferences, PEONY_PREFERENCES_USE_IEC_UNITS))
 					{
-						freedisk = g_format_size_full(block_num*2048,G_FORMAT_SIZE_IEC_UNITS);
+						freedisk = g_format_size_full(used_space+block_num*2048 - block_num*2048,G_FORMAT_SIZE_IEC_UNITS);
 						totaldisk=g_format_size_full(used_space+block_num*2048,G_FORMAT_SIZE_IEC_UNITS);
 					}
 					else
 					{
-						freedisk = g_format_size(block_num*2048);
+						freedisk = g_format_size(used_space+block_num*2048 - block_num*2048);
 						totaldisk = g_format_size(used_space+block_num*2048);
 					}
 					#endif
@@ -645,12 +645,12 @@ get_disk_additional_text(PeonyIconCanvasItem *item)
 		#else
 		if (g_settings_get_boolean (peony_preferences, PEONY_PREFERENCES_USE_IEC_UNITS))
 		{
-			freedisk = g_format_size_full(interface_get_disk_free_full (g_file_new_for_uri (uri)),G_FORMAT_SIZE_IEC_UNITS);
+			freedisk = g_format_size_full(interface_get_disk_total_full(g_file_new_for_uri (uri)) - interface_get_disk_free_full (g_file_new_for_uri (uri)),G_FORMAT_SIZE_IEC_UNITS);
 			totaldisk=g_format_size_full(interface_get_disk_total_full(g_file_new_for_uri (uri)),G_FORMAT_SIZE_IEC_UNITS);
 		}
 		else
 		{
-			freedisk = g_format_size(interface_get_disk_free_full (g_file_new_for_uri (uri)));
+			freedisk = g_format_size(interface_get_disk_total_full(g_file_new_for_uri (uri)) - interface_get_disk_free_full (g_file_new_for_uri (uri)));
 			totaldisk = g_format_size(interface_get_disk_total_full(g_file_new_for_uri (uri)));
 		}
 		#endif
