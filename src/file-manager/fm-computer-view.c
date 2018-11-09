@@ -747,13 +747,9 @@ fm_computer_view_begin_loading (FMDirectoryView *view)
     peony_icon_container_begin_loading ( icon_container);
     peony_icon_container_begin_loading ( icon_container1);
     peony_icon_container_begin_loading ( icon_container2);
-    peony_icon_container_set_allow_moves (icon_container,
-                                         fm_directory_view_get_allow_moves (view));
-    peony_icon_container_set_allow_moves (icon_container1,
-                                       fm_directory_view_get_allow_moves (view));
-    
-    peony_icon_container_set_allow_moves (icon_container2,
-                                       fm_directory_view_get_allow_moves (view));
+    peony_icon_container_set_allow_moves (icon_container, False);
+    peony_icon_container_set_allow_moves (icon_container1, False);
+    peony_icon_container_set_allow_moves (icon_container2, False);
 
     /* kill any sound preview process that is ongoing */
     preview_audio (computer_view, NULL, FALSE);

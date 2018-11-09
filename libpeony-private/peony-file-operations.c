@@ -4091,6 +4091,10 @@ copy_move_file (CopyMoveJob *copy_job,
 		gboolean readonly_source_fs,
 		gboolean last_item)
 {
+        //sikp the errors dialog (when doing drag and drop on MyComputer).
+        if(!g_file_get_path(src)){
+                return;
+        }
 	GFile *dest, *new_dest;
 	GError *error;
 	GFileCopyFlags flags;
