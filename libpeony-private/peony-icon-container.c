@@ -3008,6 +3008,30 @@ lay_down_icons (PeonyIconContainer *container, GList *icons, double start_y)
 static void
 redo_layout_internal (PeonyIconContainer *container)
 {
+
+    if(container->name){
+        GtkAllocation allocation;
+        gtk_widget_get_allocation (GTK_WIDGET(container), &allocation);
+	//allocation.width = 300.(the disks are displayed as a column per container) 
+	//we have set allocation.width when method size_allocate() called.
+	//To make a more complete layout in the future.
+        GList *l;
+        PeonyIcon *icon;
+        EelDRect rect;
+        int temp = 0;
+        int count = 0;
+        for (l = container->details->icons;l != NULL;l = l->next)
+        {
+            count++;
+            icon = l->data;
+            rect = peony_icon_canvas_item_get_icon_rectangle (icon->item);
+            if (rect.y1 > temp)
+                temp = rect.y1;
+        }
+
+        gtk_widget_set_size_request(GTK_WIDGET(container),-1,count*91);//91px per row, temp is a little unstable.
+    }
+
     finish_adding_new_icons (container);
 
     /* Don't do any re-laying-out during stretching. Later we
@@ -5235,20 +5259,13 @@ size_allocate (GtkWidget *widget,
 
     if (container->name)
     {
-        GList *l;
-        PeonyIcon *icon;
-        EelDRect rect;
-        int temp = 0;
-        for (l = container->details->icons;l != NULL;l = l->next)
-        {
-            icon = l->data;
-            rect = peony_icon_canvas_item_get_icon_rectangle (icon->item);
-            if (rect.y1 > temp)
-                temp = rect.y1;
-        }
-
-        allocation->height +=temp;
-        gtk_widget_set_size_request(GTK_WIDGET(container),allocation->width/2,allocation->height/2+temp/2);
+	allocation->width = 300;
+	//let disks show as one column in per container
+	
+	//the computer icon container is the subwidget of expander,
+	//so, it's deafult allocation height is 1.(invisible)
+	//we have to manual allocating width and height, 
+	//and make it more suitable for current layout.
     }
 
     need_layout_redone = !container->details->has_been_allocated;
