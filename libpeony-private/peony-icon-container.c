@@ -3009,30 +3009,28 @@ static void
 redo_layout_internal (PeonyIconContainer *container)
 {
 
+    finish_adding_new_icons (container);
+
     if(container->name){
-        GtkAllocation allocation;
-        gtk_widget_get_allocation (GTK_WIDGET(container), &allocation);
-	//allocation.width = 300.(the disks are displayed as a column per container) 
-	//we have set allocation.width when method size_allocate() called.
-	//To make a more complete layout in the future.
+        resort (container);
+        lay_down_icons (container, container->details->icons, 0);
         GList *l;
         PeonyIcon *icon;
         EelDRect rect;
         int temp = 0;
-        int count = 0;
         for (l = container->details->icons;l != NULL;l = l->next)
         {
-            count++;
             icon = l->data;
             rect = peony_icon_canvas_item_get_icon_rectangle (icon->item);
             if (rect.y1 > temp)
                 temp = rect.y1;
         }
 
-        gtk_widget_set_size_request(GTK_WIDGET(container),-1,count*91);//91px per row, temp is a little unstable.
+        gtk_widget_set_size_request(GTK_WIDGET(container),-1,temp + 35);
+	//there is a trouble: gtk_widget_set_size_request is not synchronized.
+	//the request is always delayed, that means icon layout in an 'old' container.
+	//in some extreme cases, it may lead to incomplete or blank display.
     }
-
-    finish_adding_new_icons (container);
 
     /* Don't do any re-laying-out during stretching. Later we
      * might add smart logic that does this and leaves room for
@@ -5256,17 +5254,6 @@ size_allocate (GtkWidget *widget,
     GtkAllocation wid_allocation;
 
     container = PEONY_ICON_CONTAINER (widget);
-
-    if (container->name)
-    {
-	allocation->width = 300;
-	//let disks show as one column in per container
-	
-	//the computer icon container is the subwidget of expander,
-	//so, it's deafult allocation height is 1.(invisible)
-	//we have to manual allocating width and height, 
-	//and make it more suitable for current layout.
-    }
 
     need_layout_redone = !container->details->has_been_allocated;
     gtk_widget_get_allocation (widget, &wid_allocation);
