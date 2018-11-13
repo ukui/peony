@@ -12,6 +12,8 @@ m4_define(exif_minver,                 0.6.14)
 m4_define(exempi_minver,               1.99.5)
 m4_define(gail_minver,                 3.0.0)
 m4_define(notify_minver,               0.7.0)
+m4_define(sm_minver,                   1.2.0)
+m4_define(ice_minver,                  1.0.0)
 
 
 dnl 1. If the library code has changed at all since last release, then increment revision.
@@ -71,6 +73,8 @@ PKG_CHECK_MODULES(ALL, [
     pango >= pango_minver
     gtk+-3.0 >= gtk_minver
     libnotify
+    sm
+    ice
     libxml-2.0 >= xml_minver
     gail-3.0 >= gail_minver
 ])
