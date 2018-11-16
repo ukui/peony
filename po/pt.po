@@ -855,8 +855,8 @@ msgstr "Editores"
 msgid ""
 "List of applications entered in the Open file dialog and not associated with "
 "the file type."
-msgstr "Lista de aplicativos inseridos na caixa de diálogo Abrir arquivo e não associada a
-o tipo de arquivo."
+msgstr "Lista de aplicativos inseridos na caixa de diálogo Abrir arquivo e não associada ao "
+"tipo de arquivo."
 
 #: ../parchives/data/org.mate.parchives.gschema.xml.in.h:29
 #, fuzzy
@@ -1822,7 +1822,7 @@ msgid ""
 "A folder named \"%s\" already exists.\n"
 "\n"
 "%s"
-msgstr "Uma pasta chamada \"%s\" já existe. \ N "
+msgstr "Uma pasta chamada \"%s\" já existe. \n"
 "\n"
 "%s"
 
@@ -1832,7 +1832,7 @@ msgid ""
 "A file named \"%s\" already exists.\n"
 "\n"
 "%s"
-msgstr "Um arquivo chamado \"%s\" já existe. \ N "
+msgstr "Um arquivo chamado \"%s\" já existe. \n "
 "\n"
 "%s"
 

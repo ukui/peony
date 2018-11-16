@@ -2324,9 +2324,9 @@ msgstr ""
 #: ../parchives/src/ui/update.ui.h:1
 msgid "_Update"
 msgstr ""
-"<i> <b> Nota: </b> la contraseña se utilizará para cifrar los archivos que agregues a "
-"archivo actual, y para descifrar los archivos que se extraen del archivo actual".
-"Cuando se cierre el archivo, la contraseña se eliminará. </i>"
+"<i><b> Nota:</b> la contraseña se utilizará para cifrar los archivos que agregues a "
+"archivo actual, y para descifrar los archivos que se extraen del archivo actual."
+"Cuando se cierre el archivo, la contraseña se eliminará.</i>"
 
 #: ../parchives/src/ui/update.ui.h:3
 msgid "S_elect the files you want to update:"
