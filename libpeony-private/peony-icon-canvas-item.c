@@ -1731,7 +1731,21 @@ draw_label_text (PeonyIconCanvasItem *item,
                 state |= GTK_STATE_FLAG_SELECTED;
         }
 
-        editable_layout = get_label_layout (&item->details->editable_text_layout, item, item->details->editable_text);
+        if(!container->name){
+            editable_layout = get_label_layout (&item->details->editable_text_layout, item, item->details->editable_text);
+        } 
+	//if a display name is '<disk name> : <label name>', just show label name in cavans.
+	else {
+            char *suffix;
+            suffix = strchr(item->details->editable_text,':');
+            if (suffix == NULL || (suffix)[1] == '\0') {
+                suffix = item->details->editable_text;
+            } else {
+                suffix = (char*)(suffix + 2);
+            }
+            editable_layout = get_label_layout (&item->details->editable_text_layout, item, suffix);
+        }
+
         prepare_pango_layout_for_draw (item, editable_layout);
 
         gtk_style_context_save (context);
