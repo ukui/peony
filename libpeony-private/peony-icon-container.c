@@ -3017,19 +3017,26 @@ redo_layout_internal (PeonyIconContainer *container)
         GList *l;
         PeonyIcon *icon;
         EelDRect rect;
-        int temp = 0;
+        int temp_width = 0;
+	int temp_height = 0;
         for (l = container->details->icons;l != NULL;l = l->next)
         {
             icon = l->data;
             rect = peony_icon_canvas_item_get_icon_rectangle (icon->item);
-            if (rect.y1 > temp)
-                temp = rect.y1;
+            if (rect.x1 > temp_width){
+                temp_width = rect.x1;
+	    }
+	    if (rect.y1 > temp_height){
+		temp_height = rect.y1;
+	    }
         }
 
-        gtk_widget_set_size_request(GTK_WIDGET(container),-1,temp + 35);
+        gtk_widget_set_size_request(GTK_WIDGET(container), temp_width + 200, temp_height + 35);
 	//there is a trouble: gtk_widget_set_size_request is not synchronized.
 	//the request is always delayed, that means icon layout in an 'old' container.
 	//in some extreme cases, it may lead to incomplete or blank display.
+	//
+	//so, not support auto layout here is more stable.
     }
 
     /* Don't do any re-laying-out during stretching. Later we

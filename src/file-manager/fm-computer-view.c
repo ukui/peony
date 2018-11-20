@@ -828,6 +828,8 @@ fm_computer_view_begin_loading (FMDirectoryView *view)
      * callback, which works incorrectly if the other layout criteria are
      * not already set up properly (see bug 6500, e.g.)
      */
+
+/*
    peony_icon_container_set_auto_layout
     (get_icon_container (computer_view,DISK),
      fm_computer_view_get_directory_auto_layout (computer_view, file));
@@ -837,6 +839,13 @@ fm_computer_view_begin_loading (FMDirectoryView *view)
     peony_icon_container_set_auto_layout
      (get_icon_container (computer_view,OTHER),
       fm_computer_view_get_directory_auto_layout (computer_view, file));
+*/
+   peony_icon_container_set_auto_layout
+    (get_icon_container (computer_view,DISK), False);
+    peony_icon_container_set_auto_layout
+     (get_icon_container (computer_view,MOVABLEDISK), False);
+    peony_icon_container_set_auto_layout
+     (get_icon_container (computer_view,OTHER), False);
 
     /* e.g. keep aligned may have changed */
     update_layout_menus (computer_view);
