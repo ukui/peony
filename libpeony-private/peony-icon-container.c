@@ -5303,7 +5303,7 @@ size_allocate (GtkWidget *widget,
 
     container->details->has_been_allocated = TRUE;
 
-    if (need_layout_redone)
+    if (need_layout_redone && !container->name)
     {
         redo_layout (container);
     }
