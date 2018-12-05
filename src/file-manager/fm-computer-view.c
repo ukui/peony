@@ -2504,12 +2504,16 @@ icon_container_activate_alternate_callback (PeonyIconContainer *container,
                                       TRUE);
 }
 
+//there still are some small trouble here,
+//and i don't know why a defaut container can't be a right one here.
+//we have to pass it, otherwhise peony will break when click the remaining area.
 static void
 band_select_started_callback (PeonyIconContainer *container,
                               FMComputerView *computer_view)
 {
     g_assert (FM_IS_COMPUTER_VIEW (computer_view));
-    g_assert (container == get_icon_container (computer_view,container->name));
+    if(container->name != "non-disk")
+    	g_assert (container == get_icon_container (computer_view, container->name));
 
     fm_directory_view_start_batching_selection_changes (FM_DIRECTORY_VIEW (computer_view));
 }
@@ -2519,12 +2523,14 @@ band_select_ended_callback (PeonyIconContainer *container,
                             FMComputerView *computer_view)
 {
     g_assert (FM_IS_COMPUTER_VIEW (computer_view));
-    g_assert (container == get_icon_container (computer_view,container->name));
+    if(container->name != "non-disk")
+    	g_assert (container == get_icon_container (computer_view, container->name));
 
     fm_directory_view_stop_batching_selection_changes (FM_DIRECTORY_VIEW (computer_view));
     peony_icon_container_unselect_all(get_icon_container(computer_view,DISK));
     peony_icon_container_unselect_all(get_icon_container(computer_view,MOVABLEDISK));
     peony_icon_container_unselect_all(get_icon_container(computer_view,OTHER));
+    peony_icon_container_unselect_all(get_icon_container(computer_view,"non-disk"));
 }
 
 /* handle the preview signal by inspecting the mime type.  For now, we only preview local sound files. */
@@ -3971,6 +3977,7 @@ fm_computer_view_init (FMComputerView *computer_view)
 {
     GtkWidget *expander[3],*box,*viewport,*viewport1[3];
     PeonyIconContainer *icon_container[3];
+    PeonyIconContainer *default_container;
     gint i=0;
     static gboolean setup_sound_preview = FALSE;
 
@@ -4005,6 +4012,13 @@ fm_computer_view_init (FMComputerView *computer_view)
     icon_container[2] = create_icon_container (computer_view);
     icon_container[2]->name = "other";
     //gtk_widget_set_size_request(GTK_WIDGET(icon_container[2]),-1,90);
+    
+    //this is a empty container, it will fill the remaining area of the window.
+    //if we don't add an empty container, we won't use right button menu in whole space in this window.
+    default_container = create_icon_container (computer_view);
+    default_container->name = "non-disk";
+    GtkWidget *default_view;
+    default_view = gtk_viewport_new (hadjustment, vadjustment);
 
     /*disk-expander*/
     expander[0] = gtk_expander_new(_("Disk"));
@@ -4022,6 +4036,9 @@ fm_computer_view_init (FMComputerView *computer_view)
         gtk_expander_set_expanded(GTK_EXPANDER(expander[i]),TRUE);
         gtk_box_pack_start(GTK_BOX(box),expander[i],FALSE,TRUE,0);
     }
+
+    gtk_container_add(GTK_CONTAINER(default_view),GTK_WIDGET (default_container));
+    gtk_box_pack_start(GTK_BOX(box),GTK_WIDGET(default_view),TRUE,TRUE,0);
     
     gtk_container_add(GTK_CONTAINER(viewport),box);
     gtk_container_add(GTK_CONTAINER(computer_view),viewport);
@@ -4029,11 +4046,13 @@ fm_computer_view_init (FMComputerView *computer_view)
     gtk_widget_show(GTK_WIDGET(viewport1[0]));
     gtk_widget_show(GTK_WIDGET(viewport1[1]));
     gtk_widget_show(GTK_WIDGET(viewport1[2]));
+    gtk_widget_show(default_view);
     gtk_widget_show(box);
     gtk_widget_show(viewport);
     gtk_widget_show(GTK_WIDGET (icon_container[0]));
     gtk_widget_show(GTK_WIDGET (icon_container[1]));
     gtk_widget_show(GTK_WIDGET (icon_container[2]));
+    gtk_widget_show(GTK_WIDGET (default_container));
     
     for(i=0;i<3;i++)
     {
