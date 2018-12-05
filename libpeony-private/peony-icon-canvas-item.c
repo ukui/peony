@@ -1731,20 +1731,7 @@ draw_label_text (PeonyIconCanvasItem *item,
                 state |= GTK_STATE_FLAG_SELECTED;
         }
 
-        if(!container->name){
-            editable_layout = get_label_layout (&item->details->editable_text_layout, item, item->details->editable_text);
-        } 
-	//if a display name is '<disk name> : <label name>', just show label name in cavans.
-	else {
-            char *suffix;
-            suffix = strchr(item->details->editable_text,':');
-            if (suffix == NULL || (suffix)[1] == '\0') {
-                suffix = item->details->editable_text;
-            } else {
-                suffix = (char*)(suffix + 2);
-            }
-            editable_layout = get_label_layout (&item->details->editable_text_layout, item, suffix);
-        }
+	editable_layout = get_label_layout (&item->details->editable_text_layout, item, item->details->editable_text);
 
         prepare_pango_layout_for_draw (item, editable_layout);
 
@@ -2624,19 +2611,37 @@ create_label_layout (PeonyIconCanvasItem *item,
     return layout;
 }
 
+
+//when get_label_layout, deal with the disk label all together.
 static PangoLayout *
 get_label_layout (PangoLayout **layout_cache,
                   PeonyIconCanvasItem *item,
                   const char *text)
 {
     PangoLayout *layout;
+    
+    char *label_layout_text;
+    label_layout_text = text;
 
+
+    //we want to simplify the label text, only show disk label, rather than disk fullname and label if possible.
+    PeonyIconContainer *container;
+    container = PEONY_ICON_CONTAINER (EEL_CANVAS_ITEM (item)->canvas);
+    if(container->name){
+	    char* suffix;
+	    suffix = strchr(item->details->editable_text,':');
+	    if(suffix != NULL)
+		    label_layout_text = (char*)(suffix + 2);
+    }
     if (*layout_cache != NULL)
     {
         return g_object_ref (*layout_cache);
     }
 
-    layout = create_label_layout (item, text);
+    layout = create_label_layout (item, label_layout_text);
+    
+
+    //layout = create_label_layout (item, text);
 
     if (item->details->is_visible)
     {
@@ -3853,6 +3858,7 @@ peony_icon_canvas_item_accessible_image_interface_init (AtkImageIface *iface)
     iface->get_image_size        = peony_icon_canvas_item_accessible_get_image_size;
     iface->get_image_position    = peony_icon_canvas_item_accessible_get_image_position;
 }
+
 
 static gint
 peony_icon_canvas_item_accessible_get_offset_at_point (AtkText	 *text,
