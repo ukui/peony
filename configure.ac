@@ -15,7 +15,6 @@ m4_define(notify_minver,               0.7.0)
 m4_define(sm_minver,                   1.2.0)
 m4_define(ice_minver,                  1.0.0)
 m4_define(gtksourceview_minver,        3.24.7)
-m4_define(atrilview_minver,            1.9.0)
 
 
 dnl 1. If the library code has changed at all since last release, then increment revision.
@@ -80,8 +79,6 @@ PKG_CHECK_MODULES(ALL, [
     libxml-2.0 >= xml_minver
     gail-3.0 >= gail_minver
     gtksourceview-3.0 >= gtksourceview_minver
-    atril-document-1.5.0
-    atril-view-1.5.0
 ])
 dnl ==========================================================================
 
@@ -294,7 +291,7 @@ AC_SUBST(LIBPEONY_EXTENSION_LIBS)
 
 dnl core peony
 PKG_CHECK_MODULES(GMODULE, gmodule-2.0, [GMODULE_ADD="gmodule-2.0"],[GMODULE_ADD=""])
-CORE_MODULES="glib-2.0 $GMODULE_ADD mate-desktop-2.0 gthread-2.0 gio-2.0 gio-unix-2.0 gail-3.0 libxml-2.0 $EXTRA_CORE_MODULES gtk+-3.0 x11 gtksourceview-3.0 atril-document-1.5.0 atril-view-1.5.0"
+CORE_MODULES="glib-2.0 $GMODULE_ADD mate-desktop-2.0 gthread-2.0 gio-2.0 gio-unix-2.0 gail-3.0 libxml-2.0 $EXTRA_CORE_MODULES gtk+-3.0 x11 gtksourceview-3.0"
 CORE_CFLAGS="`$PKG_CONFIG --cflags $CORE_MODULES`"
 AC_SUBST(CORE_CFLAGS)
 CORE_LIBS="`$PKG_CONFIG --libs $CORE_MODULES`"

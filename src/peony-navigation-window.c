@@ -1399,6 +1399,9 @@ static void preview_file_changed_callback(GObject *singaller, gpointer data){
     //global_test_widget = test_widget;
     if(is_text_type((char*)data)){
 	    open_file_cb(global_window->details->gtk_source_widget,(char*)data);
+        gtk_widget_show(global_window->details->gtk_source_widget);
+    } else {
+        gtk_widget_hide(global_window->details->gtk_source_widget);
     }
 }
 

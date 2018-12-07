@@ -12,7 +12,6 @@ char* get_mime_type_string_by_filename(char* filename){
 }
 
 gboolean is_text_type(char* filename){
-	return strstr(get_mime_type_string_by_filename(filename),
-			"text") != NULL ? TRUE : FALSE;
-
+	char* mime_type = get_mime_type_string_by_filename(filename);
+	return strstr(mime_type,"text") ? TRUE : strstr(mime_type,"script") ? TRUE : FALSE;
 }

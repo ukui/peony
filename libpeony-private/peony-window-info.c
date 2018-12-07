@@ -25,6 +25,9 @@
 #include <config.h>
 #include "peony-window-info.h"
 
+//#include "peony-file.h"
+//#include <libpeony-private/peony-file-info.h>
+
 enum
 {
     LOADING_URI,
@@ -151,6 +154,17 @@ void
 peony_window_info_report_selection_changed (PeonyWindowInfo      *window)
 {
     g_return_if_fail (PEONY_IS_WINDOW_INFO (window));
+
+/*
+    GList *selection = peony_window_info_get_selection(window);
+    if(selection){
+        PeonyFile *file = selection->data;
+        char* uri = peony_file_info_get_uri(file);
+        printf("window info: preview file changed!: %s\n",uri);
+    }
+
+    g_list_free(selection);
+*/
 
     (* PEONY_WINDOW_INFO_GET_IFACE (window)->report_selection_changed) (window);
 }

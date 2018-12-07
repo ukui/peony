@@ -30,6 +30,8 @@
 #include <config.h>
 #include "fm-list-view.h"
 
+#include "libpeony-private/peony-signaller.h"
+
 #include <string.h>
 #include "fm-error-reporting.h"
 #include "fm-list-model.h"
@@ -212,6 +214,20 @@ list_selection_changed_callback (GtkTreeSelection *selection, gpointer user_data
     FMDirectoryView *view;
 
     view = FM_DIRECTORY_VIEW (user_data);
+    GList* l = fm_directory_view_get_selection(view);
+    if(l){
+        printf("FMDirectory view: selection changed\n");
+        PeonyFile *file;
+        file = l->data;
+        //char* uri = peony_file_get_uri(file);
+        char* name = g_filename_from_uri(peony_file_get_uri(file),NULL,NULL);
+
+        printf("%s\n",name);
+        g_signal_emit_by_name (peony_signaller_get_current (),
+                               "preview_file_changed",(gpointer)name);
+    } 
+
+    g_list_free(l);
 
     fm_directory_view_notify_selection_changed (view);
 }
