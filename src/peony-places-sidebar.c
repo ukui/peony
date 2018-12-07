@@ -53,6 +53,7 @@
 #include "peony-bookmark-list.h"
 #include "peony-places-sidebar.h"
 #include "peony-window.h"
+#include "peony-kdisk-format.h"
 #define EJECT_BUTTON_XPAD 6
 #define ICON_CELL_XPAD 6
 
@@ -1853,6 +1854,9 @@ bookmarks_check_popup_sensitivity (PeonyPlacesSidebar *sidebar)
      * TODO: hide unmount if the drive only has a single mountable volume
      */
 
+    if (show_unmount == TRUE || show_eject ==TRUE)
+            show_format = TRUE;
+
     show_empty_trash = (uri != NULL) &&
                        (!strcmp (uri, "trash:///"));
 
@@ -2545,7 +2549,23 @@ static void
 format_shortcut_cb (GtkMenuItem           *item,
                     PeonyPlacesSidebar *sidebar)
 {
-    g_spawn_command_line_async ("gfloppy", NULL);
+    char *res, *volume_path;
+    GtkTreeIter iter;
+    GVolume *volume;
+
+    if (!get_selected_iter (sidebar, &iter))
+    {
+        return;
+    }
+
+    gtk_tree_model_get (GTK_TREE_MODEL (sidebar->filter_model), &iter,
+                        PLACES_SIDEBAR_COLUMN_VOLUME, &volume,
+                        -1);
+
+    volume_path = g_volume_get_identifier(volume,G_VOLUME_IDENTIFIER_KIND_UNIX_DEVICE);
+	
+      kdiskformat(volume_path);
+
 }
 
 static void

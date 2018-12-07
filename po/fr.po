@@ -7576,3 +7576,89 @@ msgstr "Disque"
 #: ../libpeony-private/peony-desktop-link.c:89
 msgid "disc"
 msgstr "disque"
+
+#: ../src/peony-kdisk-format.c:48
+msgid "Formatting is in progress, do you want to continue?"
+msgstr "Le formatage est en cours, voulez-vous continuer?"
+
+#: ../src/peony-kdisk-format.c:68
+msgid "Warning"
+msgstr "Attention"
+
+#: ../src/peony-kdisk-format.c:167
+msgid "Capatity:"
+msgstr "Capacité:"
+
+#: ../src/peony-kdisk-format.c:168
+msgid "File System:"
+msgstr "Système de fichiers:"
+
+#: ../src/peony-kdisk-format.c:169
+msgid "Volume Label:"
+msgstr "Étiquette de volume:"
+
+#: ../src/peony-kdisk-format.c:170
+msgid "Formatting Options:"
+msgstr "Options de formatage:"
+
+#: ../src/peony-kdisk-format.c:186
+msgid "Erase(Need more time)"
+msgstr "Effacer (besoin de plus de temps)"
+
+#: ../src/peony-kdisk-format.c:195
+msgid "Format"
+msgstr "Format"
+
+#: ../src/peony-kdisk-format.c:198
+msgid "Close"
+msgstr "Fermer"
+
+#: ../src/peony-kdisk-format.c:220
+msgid "The path is empty"
+msgstr "Le chemin est vide"
+
+#: ../src/peony-kdisk-format.c:227
+msgid "can't find %s"
+msgstr "impossible de trouver %s"
+
+#: ../src/peony-kdisk-format.c:248
+msgid "format %s volume"
+msgstr "format %s volume"
+
+#: ../src/peony-kdisk-format.c:252
+msgid "format %s"
+msgstr "format %s"
+
+#: ../src/peony-kdisk-format.c:293
+msgid "format succeed!"
+msgstr "format réussi!"
+
+#: ../src/peony-kdisk-format.c:302
+msgid "format failed!"
+msgstr "le format a échoué!"
+
+#: ../src/peony-kdisk-format.c:393
+msgid "Current progress is %s%s"
+msgstr "La progression actuelle est de%s%s"
+
+#: ../src/peony-kdisk-format.c:423
+msgid "Erase the device will takes a long time,do you want to continue?"
+msgstr "Effacer l'appareil va prendre beaucoup de temps, voulez-vous continuer?"
+
+#: ../src/peony-kdisk-format.c:432
+msgid "Formatting will delete all data,are you sure you want to format the device?"
+msgstr "Le formatage supprime toutes les données. Voulez-vous vraiment formater le périphérique?"
+
+#: ../src/peony-kdisk-format.c:518
+msgid "Formatting is in progress, is it canceled?"
+msgstr "Le formatage est en cours, est-il annulé?"
+
+#: ../src/peony-kdisk-format.c:577
+msgid "Format Volume"
+msgstr "Format Volume"
+
+#: ../src/peony-kdisk-format.c:233
+msgid "Begin"
+msgstr "Commencer"
+
+
