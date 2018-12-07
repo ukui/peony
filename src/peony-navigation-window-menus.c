@@ -211,10 +211,12 @@ action_show_hide_sidebar_callback (GtkAction *action,
     if (gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (action)))
     {
         peony_navigation_window_show_sidebar (window);
+	//peony_navigation_window_split_view_on (window);
     }
     else
     {
         peony_navigation_window_hide_sidebar (window);
+	//peony_navigation_window_split_view_off (window);
     }
 }
 
@@ -284,7 +286,7 @@ action_split_view_callback (GtkAction *action,
     window = PEONY_NAVIGATION_WINDOW (user_data);
 
     is_active = gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (action));
-    if (is_active != peony_navigation_window_split_view_showing (window))
+    if (1)//is_active != peony_navigation_window_split_view_showing (window))
     {
         PeonyWindow *peony_window;
 

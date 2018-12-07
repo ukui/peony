@@ -37,6 +37,8 @@
 
 #include <libpeony-private/peony-directory.h>
 
+#include "file-manager/test-widget.h"
+
 struct _PeonyNavigationWindowPane;
 
 /* FIXME bugzilla.gnome.org 42575: Migrate more fields into here. */
@@ -122,6 +124,9 @@ struct _PeonyNavigationWindowDetails
 
     /* split view */
     GtkWidget *split_view_hpane;
+
+    GtkWidget *test_widget;
+    TestWidget *gtk_source_widget;
 };
 
 #define PEONY_MENU_PATH_BACK_ITEM			"/menu/Go/Back"

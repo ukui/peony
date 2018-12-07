@@ -48,10 +48,16 @@ libpeony_file_manager_la_SOURCES = \
 	fm-computer-view.c \
 	fm-computer-container.h \
 	fm-computer-container.c \
+	test-widget-resources.c \
+	test-widget.h \
+	test-widget.c \
+	mime-utils.h \
+	mime-utils.c \
 	$(NULL)
 
 nodist_libpeony_file_manager_la_SOURCES=\
 	$(BUILT_SOURCES) \
+	test-widget-resources.c \
 	$(NULL)
 
 fm-marshal.list: $(libpeony_file_manager_la_SOURCES) Makefile.am
@@ -80,6 +86,12 @@ if ENABLE_EMPTY_VIEW
 libpeony_file_manager_la_SOURCES += $(EMPTY_VIEW_SOURCES)
 endif
 
+GLIB_COMPILE_RESOURCES = /usr/bin/glib-compile-resources
+
+test-widget-resources.c: test-widget.gresource.xml $(shell $(GLIB_COMPILE_RESOURCES) --sourcedir=$(srcdir) --generate-dependencies $(srcdir)/test-widget.gresource.xml)
+	$(AM_V_GEN) $(GLIB_COMPILE_RESOURCES) --target=$@ --sourcedir=$(srcdir) --generate-source $(srcdir)/test-widget.gresource.xml
+
+
 uidir = $(datadir)/peony/ui
 ui_DATA = \
 	peony-desktop-icon-view-ui.xml \
@@ -96,5 +108,6 @@ EXTRA_DIST = \
 CLEANFILES = \
 	$(BUILT_SOURCES) \
 	fm-marshal.list \
+	test-widget-resources.c \
 	$(NULL)
 

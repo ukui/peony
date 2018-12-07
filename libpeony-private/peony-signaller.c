@@ -41,6 +41,7 @@ enum
     POPUP_MENU_CHANGED,
     USER_DIRS_CHANGED,
     MIME_DATA_CHANGED,
+    PREVIEW_FILE_CHANGED,
     LAST_SIGNAL
 };
 
@@ -112,4 +113,14 @@ peony_signaller_class_init (PeonySignallerClass *class)
                       NULL, NULL,
                       g_cclosure_marshal_VOID__VOID,
                       G_TYPE_NONE, 0);
+    signals[PREVIEW_FILE_CHANGED] = 
+	g_signal_new ("preview_file_changed",
+                      G_TYPE_FROM_CLASS (class),
+                      G_SIGNAL_RUN_LAST,
+                      0,
+                      NULL, NULL,
+                      g_cclosure_marshal_VOID__POINTER,
+                      G_TYPE_NONE, 1, G_TYPE_POINTER);//how to pass a string?
+    //param: 1, GType: a char*
+
 }

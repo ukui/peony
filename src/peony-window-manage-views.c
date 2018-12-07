@@ -1249,13 +1249,14 @@ got_file_info_for_view_selection_callback (PeonyFile *file,
                 view_id = NULL;
             }
         }
-
+//lanyue
 #if 1
 	if(view_id == NULL)
 	{
 	    char*uri = peony_file_get_uri(file);
 	    if(g_str_has_prefix(uri,"computer:"))
 	    {
+		//view_id = g_strdup(PEONY_LIST_VIEW_IID);
 		view_id = g_strdup(PEONY_COMPUTER_VIEW_IID);
 	    }
 	    g_free(uri);

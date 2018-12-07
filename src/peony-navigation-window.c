@@ -33,6 +33,9 @@
 #include <config.h>
 #include "peony-window-private.h"
 
+#include "file-manager/test-widget.h"
+#include "file-manager/mime-utils.h"
+
 #include "peony-actions.h"
 #include "peony-application.h"
 #include "peony-bookmarks-window.h"
@@ -130,6 +133,13 @@ choose_list_view (GtkButton *widget,gpointer data)
     peony_window_slot_set_content_view (slot,"OAFIID:Peony_File_Manager_List_View");
 }
 
+//as we use global signaller recieving the data of filename, 
+//we couldn't get the handle of window in callback method.
+//so, it seems that we have to use static val to get window globally.
+static PeonyNavigationWindow *global_window;
+static char* global_preview_filename;
+static TestWidget *global_test_widget;
+
 static void
 peony_navigation_window_init (PeonyNavigationWindow *window)
 {
@@ -188,6 +198,14 @@ peony_navigation_window_init (PeonyNavigationWindow *window)
 
     gtk_paned_pack1 (GTK_PANED(hpaned), pane->widget, TRUE, FALSE);
     gtk_widget_show (pane->widget);
+
+    //GtkWidget *test = test_widget_new();
+    //open_file_cb(test,"/home/lanyue/ui");
+    //window->details->test_widget = test_widget_new();
+    //open_file_cb(window->details->test_widget, "/home/lanyue/ui");
+    //window->details->test_widget = gtk_scrolled_window_new(NULL,NULL);
+    //gtk_paned_pack2 (GTK_PANED(hpaned), window->details->test_widget, TRUE, FALSE);
+    //gtk_widget_show (window->details->test_widget);
 
     /* this has to be done after the location bar has been set up,
      * but before menu stuff is being called */
@@ -664,6 +682,13 @@ peony_navigation_window_destroy (GtkWidget *object)
 
     window->details->content_paned = NULL;
     window->details->split_view_hpane = NULL;
+
+    gtk_widget_destroy(window->details->test_widget);
+    window->details->test_widget = NULL;
+
+    global_window = NULL;
+    global_preview_filename = NULL;
+    global_test_widget = NULL;
 
     GTK_WIDGET_CLASS (parent_class)->destroy (object);
 }
@@ -1366,9 +1391,56 @@ create_extra_pane (PeonyNavigationWindow *window)
     return slot;
 }
 
+static void preview_file_changed_callback(GObject *singaller, gpointer data){
+    printf("recieved filename:%s\n",(char*)data);
+    printf("mime type: %s\n",get_mime_type_string_by_filename((char*)data));
+    //TestWidget *test_widget;
+    //test_widget = test_widget_new();
+    //global_test_widget = test_widget;
+    if(is_text_type((char*)data)){
+	    open_file_cb(global_window->details->gtk_source_widget,(char*)data);
+    }
+}
+
 void
 peony_navigation_window_split_view_on (PeonyNavigationWindow *window)
 {
+    //this may happend when first open the extra view only.
+    if(global_window != window){
+        //printf("global window is old!!!\n");
+        global_window = window;
+        window->details->test_widget = gtk_scrolled_window_new(NULL,NULL);
+        global_test_widget = test_widget_new();
+        window->details->gtk_source_widget = global_test_widget;
+        gtk_container_add (GTK_CONTAINER (window->details->test_widget), GTK_WIDGET (window->details->gtk_source_widget));
+        gtk_paned_pack2 (GTK_PANED(window->details->split_view_hpane), GTK_WIDGET(window->details->test_widget), TRUE, FALSE);
+
+    }
+    //TestWidget *test_widget;
+    //test_widget = test_widget_new();
+    //global_test_widget = test_widget;
+    //open_file_cb(test_widget,"/home/lanyue/ui");
+    /*
+    if(1){//!window->details->test_widget){
+        window->details->test_widget = gtk_scrolled_window_new(NULL,NULL);
+        window->details->gtk_source_widget = test_widget_new();
+        gtk_container_add (GTK_CONTAINER (window->details->test_widget), GTK_WIDGET (window->details->gtk_source_widget));
+        gtk_paned_pack2 (GTK_PANED(window->details->split_view_hpane), GTK_WIDGET(window->details->test_widget), TRUE, FALSE);
+    }
+    */
+    
+    //gtk_container_add (GTK_CONTAINER (window->details->test_widget), GTK_WIDGET (test_widget));
+    //gtk_paned_pack2 (GTK_PANED(window->details->split_view_hpane), window->details->test_widget, TRUE, FALSE);
+    gtk_widget_show (window->details->test_widget);
+    
+    char *signal_filename;
+
+    g_signal_connect (peony_signaller_get_current (),
+                          "preview_file_changed",
+                          G_CALLBACK (preview_file_changed_callback), global_preview_filename
+                          );
+
+    /*
     PeonyWindow *win;
     PeonyNavigationWindowPane *pane;
     PeonyWindowSlot *slot, *old_active_slot;
@@ -1412,11 +1484,17 @@ peony_navigation_window_split_view_on (PeonyNavigationWindow *window)
     {
         peony_navigation_window_pane_hide_location_bar (pane, TRUE);
     }
+    */
 }
 
 void
 peony_navigation_window_split_view_off (PeonyNavigationWindow *window)
 {
+    gtk_widget_hide(window->details->test_widget);
+    //gtk_widget_destroy(window->details->test_widget);
+    g_signal_handlers_disconnect_by_func(peony_signaller_get_current (), G_CALLBACK (preview_file_changed_callback), global_preview_filename);
+    //gtk_widget_hide (window->details->test_widget);
+    /*
     PeonyWindow *win;
     PeonyWindowPane *pane, *active_pane;
     GList *l, *next;
@@ -1427,7 +1505,6 @@ peony_navigation_window_split_view_off (PeonyNavigationWindow *window)
 
     active_pane = win->details->active_pane;
 
-    /* delete all panes except the first (main) pane */
     for (l = win->details->panes; l != NULL; l = next)
     {
         next = l->next;
@@ -1439,7 +1516,9 @@ peony_navigation_window_split_view_off (PeonyNavigationWindow *window)
     }
 
     peony_navigation_window_update_show_hide_menu_items (window);
+    */
     peony_navigation_window_update_split_view_actions_sensitivity (window);
+    
 }
 
 gboolean
