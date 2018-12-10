@@ -9,6 +9,9 @@ bin_PROGRAMS = \
 	peony-connect-server \
 	$(NULL)
 
+AM_LDFLAGS = \
+	`pkg-config --libs udisks2`
+
 AM_CPPFLAGS = \
 	-I$(top_srcdir) \
 	-I$(top_srcdir)/cut-n-paste-code \
@@ -26,6 +29,7 @@ AM_CPPFLAGS = \
 	-DSYSCONFDIR=\""$(sysconfdir)"\" \
 	-DVERSION="\"$(VERSION)\"" \
 	$(DISABLE_DEPRECATED_CFLAGS) \
+	`pkg-config --cflags udisks2` \
 	$(NULL)
 
 LDADD = \
@@ -92,6 +96,10 @@ peony_SOURCES = \
 	peony-image-properties-page.h \
 	peony-information-panel.c \
 	peony-information-panel.h \
+	peony-kdisk-format.h \
+	peony-kdisk-format.c \
+	peony-kdisk-createformat.h \
+	peony-kdisk-createformat.c \
 	peony-location-bar.c \
 	peony-location-bar.h \
 	peony-location-dialog.c \

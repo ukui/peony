@@ -7497,6 +7497,97 @@ msgstr "设置当前视图的缩放级别"
 msgid "Disc"
 msgstr "光盘"
 
-#: ../libpeony-private/peony-desktop-link.c:89
-msgid "disc"
-msgstr "光盘"
+#: ../src/peony-kdisk-format.c:48
+msgid "Formatting is in progress, do you want to continue?"
+msgstr "正在进行格式化，是否继续？"
+
+#: ../src/peony-kdisk-format.c:68
+msgid "Warning"
+msgstr "警告"
+
+#: ../src/peony-kdisk-format.c:167
+msgid "Capatity:"
+msgstr "容量："
+
+#: ../src/peony-kdisk-format.c:168
+msgid "File System:"
+msgstr "文件系统："
+
+#: ../src/peony-kdisk-format.c:169
+msgid "Volume Label:"
+msgstr "卷标："
+
+#: ../src/peony-kdisk-format.c:170
+msgid "Formatting Options:"
+msgstr "格式化选项："
+
+#: ../src/peony-kdisk-format.c:186
+msgid "Erase(Need more time)"
+msgstr "擦除(需要更多时间)"
+
+#: ../src/peony-kdisk-format.c:195
+msgid "Format"
+msgstr "格式化"
+
+#: ../src/peony-kdisk-format.c:198
+msgid "Close"
+msgstr "关闭"
+
+#: ../src/peony-kdisk-format.c:220
+msgid "The path is empty"
+msgstr "路径为空"
+
+#: ../src/peony-kdisk-format.c:227
+msgid "can't find %s"
+msgstr "无法找到 %s"
+
+#: ../src/peony-kdisk-format.c:248
+msgid "format %s volume"
+msgstr "格式化%s卷"
+
+#: ../src/peony-kdisk-format.c:252
+msgid "format %s"
+msgstr "格式化%s"
+
+#: ../src/peony-kdisk-format.c:293
+msgid "format succeed!"
+msgstr "格式化完毕！"
+
+#: ../src/peony-kdisk-format.c:302
+msgid "format failed!"
+msgstr "格式化失败！"
+
+#: ../src/peony-kdisk-format.c:393
+msgid "Current progress is %s%s"
+msgstr "当前进度为 %s%s"
+
+#: ../src/peony-kdisk-format.c:423
+msgid "Erase the device will takes a long time,do you want to continue?"
+msgstr "擦除设备将会花费较长时间，是否继续？"
+
+#: ../src/peony-kdisk-format.c:432
+msgid "Formatting will delete all data,are you sure you want to format the device?"
+msgstr "格式化将会删除所有数据，是否继续？"
+
+#: ../src/peony-kdisk-format.c:518
+msgid "Formatting is in progress, is it canceled?"
+msgstr "正在进行格式化，是否取消？"
+
+#: ../src/peony-kdisk-format.c:577
+msgid "Format Volume"
+msgstr "格式化卷"
+
+#: ../src/peony-kdisk-format.c:233
+msgid "Begin"
+msgstr "开始"
+
+
+
+
+
+
+
+
+
+
+
