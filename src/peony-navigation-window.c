@@ -35,6 +35,7 @@
 
 #include "file-manager/test-widget.h"
 #include "file-manager/mime-utils.h"
+#include "file-manager/pdfviewer.h"
 
 #include "peony-actions.h"
 #include "peony-application.h"
@@ -138,7 +139,9 @@ choose_list_view (GtkButton *widget,gpointer data)
 //so, it seems that we have to use static val to get window globally.
 static PeonyNavigationWindow *global_window;
 static char* global_preview_filename;
-static TestWidget *global_test_widget;
+//static TestWidget *global_test_widget;
+//static GtkWidget *global_pdf_view;
+//static GtkWidget *empty_widget;
 
 static void
 peony_navigation_window_init (PeonyNavigationWindow *window)
@@ -154,6 +157,8 @@ peony_navigation_window_init (PeonyNavigationWindow *window)
     GtkImage *listView_image;
     GtkWidget *iconView_button;
     GtkWidget *listView_button;
+
+    pdf_viewer_init();
 	
     win = PEONY_WINDOW (window);
 
@@ -287,6 +292,8 @@ peony_navigation_window_init (PeonyNavigationWindow *window)
                               "changed::" PEONY_PREFERENCES_ALWAYS_USE_BROWSER,
                               G_CALLBACK(always_use_browser_changed),
                               window);
+
+    //pdf_viewer_init();
 }
 
 static void
@@ -683,12 +690,14 @@ peony_navigation_window_destroy (GtkWidget *object)
     window->details->content_paned = NULL;
     window->details->split_view_hpane = NULL;
 
-    gtk_widget_destroy(window->details->test_widget);
+    //gtk_widget_destroy(window->details->test_widget);
     window->details->test_widget = NULL;
 
     global_window = NULL;
     global_preview_filename = NULL;
-    global_test_widget = NULL;
+    //global_test_widget = NULL;
+
+    //pdf_viewer_shutdown();    
 
     GTK_WIDGET_CLASS (parent_class)->destroy (object);
 }
@@ -1328,6 +1337,7 @@ peony_navigation_window_class_init (PeonyNavigationWindowClass *class)
     GTK_WIDGET_CLASS (class)->window_state_event = peony_navigation_window_state_event;
     GTK_WIDGET_CLASS (class)->key_press_event = peony_navigation_window_key_press_event;
     GTK_WIDGET_CLASS (class)->button_press_event = peony_navigation_window_button_press_event;
+    //GTK_WIDGET_CLASS (class)->begin_loading = peony_navigation_window_class_begin_loading;
     PEONY_WINDOW_CLASS (class)->sync_allow_stop = real_sync_allow_stop;
     PEONY_WINDOW_CLASS (class)->prompt_for_location = real_prompt_for_location;
     PEONY_WINDOW_CLASS (class)->sync_title = real_sync_title;
@@ -1338,6 +1348,8 @@ peony_navigation_window_class_init (PeonyNavigationWindowClass *class)
 
     PEONY_WINDOW_CLASS (class)->open_slot = real_open_slot;
     PEONY_WINDOW_CLASS (class)->close_slot = real_close_slot;
+
+    //PEONY_WINDOW_CLASS (class)->begin_loading = peony_navigation_window_class_begin_loading;
 
     g_type_class_add_private (G_OBJECT_CLASS (class), sizeof (PeonyNavigationWindowDetails));
 
@@ -1394,134 +1406,72 @@ create_extra_pane (PeonyNavigationWindow *window)
 static void preview_file_changed_callback(GObject *singaller, gpointer data){
     printf("recieved filename:%s\n",(char*)data);
     printf("mime type: %s\n",get_mime_type_string_by_filename((char*)data));
-    //TestWidget *test_widget;
-    //test_widget = test_widget_new();
-    //global_test_widget = test_widget;
     if(is_text_type((char*)data)){
 	    open_file_cb(global_window->details->gtk_source_widget,(char*)data);
-        gtk_widget_show(global_window->details->gtk_source_widget);
+        gtk_widget_hide(global_window->details->empty_window);
+        gtk_widget_hide(global_window->details->pdf_swindow);
+        gtk_widget_show_all(global_window->details->test_widget);
     } else {
-        gtk_widget_hide(global_window->details->gtk_source_widget);
+        set_pdf_preview_widget_file_by_filename(global_window->details->pdf_view,(char*)data);
+        gtk_widget_hide(global_window->details->empty_window);
+        gtk_widget_show_all(global_window->details->pdf_swindow);
+        gtk_widget_hide(global_window->details->test_widget);
     }
 }
 
 void
 peony_navigation_window_split_view_on (PeonyNavigationWindow *window)
 {
+
     //this may happend when first open the extra view only.
     if(global_window != window){
-        //printf("global window is old!!!\n");
         global_window = window;
-        window->details->test_widget = gtk_scrolled_window_new(NULL,NULL);
-        global_test_widget = test_widget_new();
-        window->details->gtk_source_widget = global_test_widget;
-        gtk_container_add (GTK_CONTAINER (window->details->test_widget), GTK_WIDGET (window->details->gtk_source_widget));
-        gtk_paned_pack2 (GTK_PANED(window->details->split_view_hpane), GTK_WIDGET(window->details->test_widget), TRUE, FALSE);
 
-    }
-    //TestWidget *test_widget;
-    //test_widget = test_widget_new();
-    //global_test_widget = test_widget;
-    //open_file_cb(test_widget,"/home/lanyue/ui");
-    /*
-    if(1){//!window->details->test_widget){
+        //create a hbox for preview views
+        window->details->preview_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL,0);
+
+        //add text widget to preview_hbox
         window->details->test_widget = gtk_scrolled_window_new(NULL,NULL);
-        window->details->gtk_source_widget = test_widget_new();
+        //global_test_widget = test_widget_new();
+        window->details->gtk_source_widget = test_widget_new();//global_test_widget;
         gtk_container_add (GTK_CONTAINER (window->details->test_widget), GTK_WIDGET (window->details->gtk_source_widget));
-        gtk_paned_pack2 (GTK_PANED(window->details->split_view_hpane), GTK_WIDGET(window->details->test_widget), TRUE, FALSE);
+        gtk_box_pack_start (GTK_BOX(window->details->preview_hbox), GTK_WIDGET(window->details->test_widget), TRUE, TRUE, 0);
+        
+        //add pdf widget ro preview_hbox
+        window->details->pdf_swindow = gtk_scrolled_window_new(NULL,NULL);
+        window->details->pdf_view = pdf_preview_widget_new();        
+        gtk_container_add (GTK_CONTAINER (window->details->pdf_swindow), window->details->pdf_view);        
+        gtk_box_pack_start (GTK_BOX(window->details->preview_hbox), GTK_WIDGET(window->details->pdf_swindow), TRUE, TRUE, 0);
+
+        //add empty widget to split_view_hpane
+        window->details->empty_window = gtk_scrolled_window_new(NULL,NULL);
+        gtk_box_pack_start (GTK_BOX(window->details->preview_hbox), GTK_WIDGET(window->details->empty_window), TRUE, TRUE, 0);
+
+        //pack the preview_hbox to the split_view_hpane
+        gtk_paned_pack2 (GTK_PANED(window->details->split_view_hpane), window->details->preview_hbox, TRUE, FALSE);
     }
-    */
+    gtk_widget_show_all (window->details->preview_hbox);
+    gtk_widget_hide (window->details->pdf_swindow);
+    gtk_widget_hide (window->details->test_widget);
     
-    //gtk_container_add (GTK_CONTAINER (window->details->test_widget), GTK_WIDGET (test_widget));
-    //gtk_paned_pack2 (GTK_PANED(window->details->split_view_hpane), window->details->test_widget, TRUE, FALSE);
-    gtk_widget_show (window->details->test_widget);
     
-    char *signal_filename;
+    //char *signal_filename;
 
     g_signal_connect (peony_signaller_get_current (),
                           "preview_file_changed",
                           G_CALLBACK (preview_file_changed_callback), global_preview_filename
                           );
-
-    /*
-    PeonyWindow *win;
-    PeonyNavigationWindowPane *pane;
-    PeonyWindowSlot *slot, *old_active_slot;
-    GFile *location;
-    GtkAction *action;
-
-    win = PEONY_WINDOW (window);
-
-    old_active_slot = peony_window_get_active_slot (win);
-    slot = create_extra_pane (window);
-    pane = PEONY_NAVIGATION_WINDOW_PANE (slot->pane);
-
-    location = NULL;
-    if (old_active_slot != NULL)
-    {
-        location = peony_window_slot_get_location (old_active_slot);
-        if (location != NULL)
-        {
-            if (g_file_has_uri_scheme (location, "x-peony-search"))
-            {
-                g_object_unref (location);
-                location = NULL;
-            }
-        }
-    }
-    if (location == NULL)
-    {
-        location = g_file_new_for_path (g_get_home_dir ());
-    }
-
-    peony_window_slot_go_to (slot, location, FALSE);
-    g_object_unref (location);
-
-    action = gtk_action_group_get_action (PEONY_NAVIGATION_WINDOW (PEONY_WINDOW_PANE (pane)->window)->details->navigation_action_group,
-                                          PEONY_ACTION_SHOW_HIDE_LOCATION_BAR);
-    if (gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (action)))
-    {
-        peony_navigation_window_pane_show_location_bar (pane, TRUE);
-    }
-    else
-    {
-        peony_navigation_window_pane_hide_location_bar (pane, TRUE);
-    }
-    */
 }
 
 void
 peony_navigation_window_split_view_off (PeonyNavigationWindow *window)
 {
     gtk_widget_hide(window->details->test_widget);
-    //gtk_widget_destroy(window->details->test_widget);
+    gtk_widget_hide(window->details->pdf_swindow);
+    gtk_widget_hide(window->details->empty_window);
     g_signal_handlers_disconnect_by_func(peony_signaller_get_current (), G_CALLBACK (preview_file_changed_callback), global_preview_filename);
-    //gtk_widget_hide (window->details->test_widget);
-    /*
-    PeonyWindow *win;
-    PeonyWindowPane *pane, *active_pane;
-    GList *l, *next;
 
-    win = PEONY_WINDOW (window);
-
-    g_return_if_fail (win);
-
-    active_pane = win->details->active_pane;
-
-    for (l = win->details->panes; l != NULL; l = next)
-    {
-        next = l->next;
-        pane = l->data;
-        if (pane != active_pane)
-        {
-            peony_window_close_pane (pane);
-        }
-    }
-
-    peony_navigation_window_update_show_hide_menu_items (window);
-    */
     peony_navigation_window_update_split_view_actions_sensitivity (window);
-    
 }
 
 gboolean

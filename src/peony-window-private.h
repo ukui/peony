@@ -125,8 +125,19 @@ struct _PeonyNavigationWindowDetails
     /* split view */
     GtkWidget *split_view_hpane;
 
+    /* hbox for kinds of preview views */
+    GtkBox *preview_hbox;
+
+    /* gtk_source_view */
     GtkWidget *test_widget;
     TestWidget *gtk_source_widget;
+
+    /* pdf view */
+    GtkWidget *pdf_swindow;
+    GtkWidget *pdf_view;
+
+    /* empty view */
+    GtkWidget *empty_window;
 };
 
 #define PEONY_MENU_PATH_BACK_ITEM			"/menu/Go/Back"
