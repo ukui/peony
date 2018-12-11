@@ -15,3 +15,8 @@ gboolean is_text_type(char* filename){
 	char* mime_type = get_mime_type_string_by_filename(filename);
 	return strstr(mime_type,"text") ? TRUE : strstr(mime_type,"script") ? TRUE : FALSE;
 }
+
+gboolean is_pdf_type(char* filename){
+	char* mime_type = get_mime_type_string_by_filename(filename);
+	return strstr(mime_type,"pdf") ?  TRUE : FALSE;
+}

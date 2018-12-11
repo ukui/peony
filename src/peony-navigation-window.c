@@ -93,6 +93,7 @@ static void mouse_forward_button_changed	     (gpointer                  callbac
 static void use_extra_mouse_buttons_changed          (gpointer                  callback_data);
 static PeonyWindowSlot *create_extra_pane         (PeonyNavigationWindow *window);
 
+static void preview_file_changed_callback(GObject *singaller, gpointer data);
 
 G_DEFINE_TYPE (PeonyNavigationWindow, peony_navigation_window, PEONY_TYPE_WINDOW)
 #define parent_class peony_navigation_window_parent_class
@@ -158,7 +159,7 @@ peony_navigation_window_init (PeonyNavigationWindow *window)
     GtkWidget *iconView_button;
     GtkWidget *listView_button;
 
-    pdf_viewer_init();
+    //pdf_viewer_init();
 	
     win = PEONY_WINDOW (window);
 
@@ -676,6 +677,8 @@ peony_navigation_window_button_press_event (GtkWidget *widget,
 static void
 peony_navigation_window_destroy (GtkWidget *object)
 {
+    g_signal_handlers_disconnect_by_func(peony_signaller_get_current (), G_CALLBACK (preview_file_changed_callback), global_preview_filename);
+
     PeonyNavigationWindow *window;
 
     window = PEONY_NAVIGATION_WINDOW (object);
@@ -1404,6 +1407,12 @@ create_extra_pane (PeonyNavigationWindow *window)
 }
 
 static void preview_file_changed_callback(GObject *singaller, gpointer data){
+    if((char*)data == "null"){
+	    gtk_widget_show(global_window->details->empty_window);
+	    gtk_widget_hide(global_window->details->pdf_swindow);
+	    gtk_widget_hide(global_window->details->test_widget);
+        return;
+    }
     printf("recieved filename:%s\n",(char*)data);
     printf("mime type: %s\n",get_mime_type_string_by_filename((char*)data));
     if(is_text_type((char*)data)){
@@ -1411,18 +1420,22 @@ static void preview_file_changed_callback(GObject *singaller, gpointer data){
         gtk_widget_hide(global_window->details->empty_window);
         gtk_widget_hide(global_window->details->pdf_swindow);
         gtk_widget_show_all(global_window->details->test_widget);
-    } else {
+    } else if (is_pdf_type((char*)data)) {
         set_pdf_preview_widget_file_by_filename(global_window->details->pdf_view,(char*)data);
         gtk_widget_hide(global_window->details->empty_window);
         gtk_widget_show_all(global_window->details->pdf_swindow);
         gtk_widget_hide(global_window->details->test_widget);
+    } else {
+	    gtk_widget_show(global_window->details->empty_window);
+	    gtk_widget_hide(global_window->details->pdf_swindow);
+	    gtk_widget_hide(global_window->details->test_widget);
     }
 }
 
 void
 peony_navigation_window_split_view_on (PeonyNavigationWindow *window)
 {
-
+    pdf_viewer_init();
     //this may happend when first open the extra view only.
     if(global_window != window){
         global_window = window;

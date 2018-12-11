@@ -220,12 +220,24 @@ list_selection_changed_callback (GtkTreeSelection *selection, gpointer user_data
         PeonyFile *file;
         file = l->data;
         //char* uri = peony_file_get_uri(file);
-        char* name = g_filename_from_uri(peony_file_get_uri(file),NULL,NULL);
+        char* filename = g_filename_from_uri(peony_file_get_uri(file),NULL,NULL);
 
-        printf("%s\n",name);
+        //printf("%s\n",filename);
+        if(filename){
+            g_signal_emit_by_name (peony_signaller_get_current (),
+                         "preview_file_changed",(gpointer)filename);
+            //free(filename);
+        } else {
+            filename = "null";
+            g_signal_emit_by_name (peony_signaller_get_current (),
+                         "preview_file_changed",(gpointer)filename);
+        }
+
+    }   else  {
+        char* filename = "null";
         g_signal_emit_by_name (peony_signaller_get_current (),
-                               "preview_file_changed",(gpointer)name);
-    } 
+                     "preview_file_changed",(gpointer)filename);
+    }
 
     g_list_free(l);
 

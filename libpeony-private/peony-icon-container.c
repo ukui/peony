@@ -10575,14 +10575,24 @@ peony_icon_container_accessible_selection_changed_cb (PeonyIconContainer *contai
 	char *filename = g_filename_from_uri(peony_icon_container_get_icon_uri(container, icon),NULL,NULL);
 	//printf("%s\n", filename);
 
-	signal_filename = filename;
+	//signal_filename = filename;
         //get first selection's filepath.
-        g_signal_emit_by_name (peony_signaller_get_current (),
-                               "preview_file_changed",(gpointer)signal_filename);
+        if(filename){
+            g_signal_emit_by_name (peony_signaller_get_current (),
+                     "preview_file_changed",(gpointer)filename);
+            //free(filename);
+        } else {
+            filename = "null";
+            g_signal_emit_by_name (peony_signaller_get_current (),
+                         "preview_file_changed",(gpointer)filename);
+        }
     } 
     else
     {
 	//clean the preview view
+            char*    filename = "null";
+            g_signal_emit_by_name (peony_signaller_get_current (),
+                         "preview_file_changed",(gpointer)filename);
     }
     g_list_free (selection);
 
