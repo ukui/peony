@@ -85,6 +85,11 @@
       <summary>Enables the classic Peony behavior, where all windows are browsers</summary>
       <description>If set to true, then all Peony windows will be browser windows. This is how Nautilus used to behave before version 2.6, and some people prefer this behavior.</description>
     </key>
+    <key name="dbus-show-peony-window" type="b">
+      <default>false</default>
+      <summary>Whether to active peony window</summary>
+      <description>If set to true, active peony window again. If set to false, not to active peony window again</description>
+    </key>
     <key name="always-use-location-entry" type="b">
       <default>false</default>
       <summary>Always use the location entry, instead of the pathbar</summary>
