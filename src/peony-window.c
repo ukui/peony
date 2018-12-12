@@ -670,6 +670,26 @@ peony_window_constructor (GType type,
     return object;
 }
 
+void set_active_window(Window xid)
+{
+    Display *d = XOpenDisplay(NULL);
+    Window root = DefaultRootWindow(d);
+
+    Atom _NET_ACTIVE_WINDOW = XInternAtom(d, "_NET_ACTIVE_WINDOW", False);
+    XEvent xev;
+    xev.xclient.type = ClientMessage;
+    xev.xclient.send_event = True;
+    xev.xclient.window = xid;
+    xev.xclient.message_type = _NET_ACTIVE_WINDOW;
+    xev.xclient.format = 32;
+    xev.xclient.data.l[0] = 2;
+    XSendEvent(d, root, False, StructureNotifyMask | SubstructureNotifyMask, &xev);
+
+    XCloseDisplay(d);
+}
+
+void * active_window_thead(void *);
+
 void
 peony_window_show_window (PeonyWindow    *window)
 {
@@ -700,7 +720,27 @@ peony_window_show_window (PeonyWindow    *window)
             peony_file_set_has_open_window (slot->viewed_file, TRUE);
         }
     }
+    if (g_settings_get_boolean(peony_preferences,"dbus-show-peony-window")){
+	GdkWindow *gdk_window = gtk_widget_get_window(GTK_WINDOW (window));
+	Window win=gdk_x11_window_get_xid (gdk_window);
+	pthread_t t0;
+	if(pthread_create(&t0, NULL, active_window_thead, (void *)win) == -1){
+	    puts("fail to create pthread t0");
+	}
+	g_settings_set_boolean(peony_preferences,"dbus-show-peony-window",FALSE);
+    }
 }
+
+void * active_window_thead(void *a){
+    char buff[30]={};
+    sleep(0.5);
+    Window win = (long)a;
+    sprintf(buff,"wmctrl -i -a %ld",(long)a);
+    system(buff);
+//    set_active_window (win);
+    return NULL;
+}
+
 
 static void
 peony_window_view_visible (PeonyWindow *window,

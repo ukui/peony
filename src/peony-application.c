@@ -430,6 +430,7 @@ peony_application_open_location (PeonyApplication *application,
                                 GFile *selection,
                                 const char *startup_id)
 {
+    g_settings_set_boolean(peony_preferences,"dbus-show-peony-window",TRUE);
     PeonyWindow *window;
     GList *sel_list = NULL;
 
