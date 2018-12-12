@@ -328,7 +328,10 @@ update_quick_format_processbar(gpointer user_data)
 		
 		g_free(volume_label);
         	gtk_window_set_title((GtkWindow *)data->window,window_title);
-                
+		gtk_combo_box_text_remove((GtkComboBoxText *)data->sizecombox,0);
+       		gtk_combo_box_text_insert_text((GtkComboBoxText *)data->sizecombox,0,ch);
+       		gtk_combo_box_set_active ((GtkComboBox *)data->sizecombox,0);
+
 		return FALSE;
         }
 
@@ -381,6 +384,10 @@ update_format_processbar(gpointer user_data)
         		sprintf(window_title,_("format %s"),volume_label);
 		}
 		gtk_window_set_title((GtkWindow *)data->window,window_title);
+		gtk_combo_box_text_remove((GtkComboBoxText *)data->sizecombox,0);
+        	gtk_combo_box_text_insert_text((GtkComboBoxText *)data->sizecombox,0,ch);
+        	gtk_combo_box_set_active ((GtkComboBox *)data->sizecombox,0);
+
 		g_free(volume_label);
 		volume_label = NULL;
 		return FALSE;
@@ -496,6 +503,36 @@ start_button_clicked(GtkWidget *button,gpointer user_data)
 	gtk_progress_bar_set_fraction ((GtkProgressBar *)data->processbar,0);
 	gtk_progress_bar_set_text ((GtkProgressBar *)data->processbar,"");	
 	data->filesystem_name = gtk_entry_get_text ((GtkEntry *)(data->entry_name));
+	
+	/*卸载*/
+	 GVolumeMonitor *monitor = g_volume_monitor_get (); 	
+	 GList *volumes,*l;
+	 GVolume *volume;
+	 GVolume *mount;
+	 volumes = g_volume_monitor_get_volumes(monitor);
+	 for (l = volumes; l != NULL; l = l->next)
+    	 {
+         	volume = l->data;
+		if(g_strcmp0(g_volume_get_identifier(volume,G_VOLUME_IDENTIFIER_KIND_UNIX_DEVICE),data->block_device)==0)
+		{
+			break;
+		}
+	 }
+	 mount = g_volume_get_mount(volume);
+	 if((mount!=NULL)&&(g_mount_can_unmount(mount)==FALSE))
+	 {
+	 	gtk_progress_bar_set_text ((GtkProgressBar *)data->processbar,_("cant't unmount device"));
+                g_object_unref(mount);
+        	g_list_foreach (volumes, (GFunc) g_object_unref, NULL);
+        	g_list_free (volumes);
+		return ;
+	 }
+	if(mount!=NULL){
+	 g_object_unref(mount);
+	}
+	 g_list_foreach (volumes, (GFunc) g_object_unref, NULL);
+        g_list_free (volumes);
+	/**/
 	kdisk_format(data->block_device,data->format_type,data->is_erase,data->filesystem_name,&(data->format_finish));
 	data->is_format = true;
 	set_sensitive_false(data);

@@ -1,30 +1,66 @@
 #include "peony-kdisk-createformat.h"
-
 typedef struct
 {
-	UDisksObject *object;
-        UDisksBlock *block;
+        UDisksObject *object,*drive_object;
+        UDisksBlock *block,*drive_block;
         UDisksClient *client;
-	UDisksFilesystem *filesystem;
+        UDisksFilesystem *filesystem;
 
-	const gchar *format_type;
-	const gchar *device_name;
-	const gchar *erase_type;
-	const gchar *filesystem_name;
-	
-	int *format_finish;
+        const gchar *format_type;
+        const gchar *device_name;
+        const gchar *erase_type;
+        const gchar *filesystem_name;
+
+        int *format_finish;
 }CreateformatData;
+
+static UDisksObject *
+get_object_from_block_device 	(UDisksClient *client,
+                              		const gchar *block_device);
+static void
+ensure_format_disk	(CreateformatData *data);
 
 static void
 createformatfree(CreateformatData *data)
 {
 	g_object_unref(data->object);
         g_object_unref(data->block);
-        g_object_unref(data->client);
+	if(data->drive_object!=NULL)
+	{
+		g_object_unref(data->drive_object);
+	}
+	if(data->drive_block!=NULL)
+        {
+                g_object_unref(data->drive_block);
+        }
+	g_clear_object(&(data->client));
         g_object_unref(data->filesystem);
 
         g_free(data);
 
+}
+
+gboolean is_iso(const gchar *device_path)
+{
+	UDisksObject *object;
+	UDisksClient *client;
+	UDisksBlock *block;
+	client = udisks_client_new_sync(NULL,NULL);
+	object = get_object_from_block_device(client,device_path);
+	block = udisks_object_get_block(object);
+	
+	if(g_strcmp0(udisks_block_get_id_type(block),"iso9660")==0)
+	{	
+		g_object_unref(object);
+		g_object_unref(block);
+		g_clear_object(&client);
+		return TRUE;
+	}
+	g_object_unref(object);
+        g_object_unref(block);
+        g_clear_object(&client);
+
+	return FALSE;
 }
 
 static UDisksObject *
@@ -120,10 +156,84 @@ ensure_format_cb (CreateformatData *data)
 }
 
 static void
+create_partition_table (GObject *source_object, GAsyncResult *res ,gpointer user_data)
+{
+        CreateformatData *data = user_data;
+        if (udisks_partition_table_call_create_partition_finish (UDISKS_PARTITION_TABLE (source_object), NULL,res,NULL))
+	{
+	// 	*(data->format_finish) =  -1; //创建分区失败
+	//	createformatfree(data);
+		 ensure_format_cb(data);
+		return;
+	}
+        else
+		ensure_format_cb(data);	
+}
+
+static void 
+ensure_create_partition_table(CreateformatData *data)
+{
+	UDisksPartitionTable *table;
+	GVariantBuilder options_builder;
+        g_variant_builder_init(&options_builder,G_VARIANT_TYPE_VARDICT);
+	table=udisks_object_get_partition_table(data->drive_object);
+	g_variant_builder_add(&options_builder,"{sv}","partition-type",g_variant_new_string("primary"));
+	udisks_partition_table_call_create_partition(table,
+							0,
+							udisks_block_get_size(data->drive_block),
+							"",
+							"",
+							g_variant_builder_end(&options_builder),
+							NULL,
+							create_partition_table,
+							data);
+		
+}
+
+static void
+format_disk (GObject *source_object, GAsyncResult *res ,gpointer user_data)
+{
+        CreateformatData *data = user_data;
+        if (!udisks_block_call_format_finish (UDISKS_BLOCK (source_object), res,NULL))
+	{
+		*(data->format_finish) =  -1; //格式化失败
+		createformatfree(data);	
+		return ;
+	}
+	else{
+		//格式化磁盘，接下来创建分区表
+		ensure_create_partition_table(data);
+	}
+}
+
+static void
+ensure_format_disk(CreateformatData *data)
+{
+	UDisksClient	*client;
+	char ch[10]={0};
+	for(int i=0;i<=7;i++)	
+		ch[i]=(data->device_name)[i];
+	data->drive_object = get_object_from_block_device(data->client,ch); 
+	data->drive_block = udisks_object_get_block(data->drive_object);
+	GVariantBuilder options_builder;
+	g_variant_builder_init(&options_builder,G_VARIANT_TYPE_VARDICT);
+	udisks_block_call_format(data->drive_block,
+					"dos",
+					g_variant_builder_end(&options_builder),
+					NULL,
+					format_disk,
+					data);	
+}
+
+static void
 ensure_unmount_cb_finish(GObject *source_object, GAsyncResult *res ,gpointer user_data)
 {
-	CreateformatData *data = user_data;
-	ensure_format_cb (data);
+        CreateformatData *data = user_data;
+
+        if(is_iso(data->device_name)==FALSE)
+                ensure_format_cb (data);
+        else
+                ensure_format_disk(data);
 }
 
 static void
@@ -228,7 +338,9 @@ kdisk_format(const gchar * device_name,const gchar *format_type,const gchar * er
 	data->erase_type = erase_type;
 	data->filesystem_name = filesystem_name;
 	data->format_finish = format_finish;
-	
+	data->drive_object = NULL;
+	data->drive_block = NULL;
+		
 	data->client =udisks_client_new_sync (NULL,NULL);
         data->object = get_object_from_block_device(data->client,data->device_name);
         data->block = udisks_object_get_block (data->object);
