@@ -2629,7 +2629,7 @@ get_label_layout (PangoLayout **layout_cache,
     container = PEONY_ICON_CONTAINER (EEL_CANVAS_ITEM (item)->canvas);
     if(container->name){
 	    char* suffix;
-	    suffix = strchr(item->details->editable_text,':');
+	    suffix = strchr(text,':');
 	    if(suffix != NULL)
 		    label_layout_text = (char*)(suffix + 2);
     }
