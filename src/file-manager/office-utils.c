@@ -17,7 +17,17 @@ unoconv_child_watch_cb (GPid pid,
 	//exit (1);
 }
 
+static GPid old_pid = -1;
+static char* old_preview_file_pdf_path;
+
 char* office2pdf(char* filename){
+
+	if(old_pid != -1){
+		printf("kill old progress and remove old preview file\n");
+		kill (old_pid, SIGKILL);
+		g_remove (old_preview_file_pdf_path);
+		old_pid = -1;
+	}
 
 	gchar *doc_path, *pdf_path, *tmp_name, *tmp_path, *quoted_path;
 	//GFile *file;
@@ -32,6 +42,7 @@ char* office2pdf(char* filename){
 
 	unoconv_path = g_find_program_in_path ("unoconv");
 	if (unoconv_path == NULL) {
+		printf("unoconv is not found\n");
 		//openoffice_missing_unoconv (self);
 		return NULL;
 	}
@@ -96,6 +107,8 @@ char* office2pdf(char* filename){
 	g_child_watch_add (pid, unoconv_child_watch_cb, pdf_path);
 
 	//g_spawn_close_pid(pid);
+	old_pid = pid;
+	old_preview_file_pdf_path = pdf_path;
 
 	return pdf_path; //it will be saved in global preview filename, and wait for office ready cb if selection not changed.
 

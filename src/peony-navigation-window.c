@@ -1453,7 +1453,8 @@ static void preview_file_changed_callback(GObject *singaller, gpointer data){
         
         //we will wait for child progress finished.
         global_preview_office2pdf_filename = office2pdf((char*)data);
-        global_preview_filename = global_preview_office2pdf_filename;
+        if(global_preview_office2pdf_filename)
+            global_preview_filename = global_preview_office2pdf_filename;
 
 	    gtk_widget_show(global_window->details->empty_window);
 	    gtk_widget_hide(global_window->details->pdf_swindow);
