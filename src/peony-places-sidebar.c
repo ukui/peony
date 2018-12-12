@@ -525,6 +525,9 @@ update_places (PeonyPlacesSidebar *sidebar)
 
     volume_monitor = sidebar->volume_monitor;
 
+    last_iter = add_heading (sidebar, SECTION_FAVORITE,
+                             NULL,NULL,NULL);
+
     /* FAVORITE */
     //icon = g_themed_icon_new (PEONY_ICON_FAVORITE);
     last_iter = add_heading (sidebar, SECTION_FAVORITE,
@@ -573,6 +576,9 @@ update_places (PeonyPlacesSidebar *sidebar)
                            location, mount_uri, last_uri,
                            &last_iter, &select_path);
     g_object_unref (icon);
+
+    last_iter = add_heading (sidebar, SECTION_FAVORITE,
+                             NULL,NULL,NULL);
 
    /*personal*/
     icon = g_themed_icon_new (PEONY_ICON_HOME);
@@ -646,6 +652,9 @@ update_places (PeonyPlacesSidebar *sidebar)
         xdg_dirs = g_list_prepend (xdg_dirs, (char *)path);
     }
     g_list_free (xdg_dirs);
+
+    last_iter = add_heading (sidebar, SECTION_FAVORITE,
+                             NULL,NULL,NULL);
 
     /*Computer*/
     icon = g_themed_icon_new ("uk-computer");
