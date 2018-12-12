@@ -298,11 +298,13 @@ action_split_view_callback (GtkAction *action,
         {
             peony_navigation_window_split_view_off (window);
         }
+	/*
         peony_window = PEONY_WINDOW (window);
         if (peony_window->details->active_pane && peony_window->details->active_pane->active_slot)
         {
             peony_view_update_menus (peony_window->details->active_pane->active_slot->content_view);
         }
+	*/
     }
 }
 

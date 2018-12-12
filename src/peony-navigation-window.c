@@ -1440,6 +1440,10 @@ peony_navigation_window_split_view_on (PeonyNavigationWindow *window)
     if(global_window != window){
         global_window = window;
 
+	//cause we may switch to the old window, we should sure that if the hbox is existed.
+	if(window->details->preview_hbox)
+		goto last;
+
         //create a hbox for preview views
         window->details->preview_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL,0);
 
@@ -1463,6 +1467,8 @@ peony_navigation_window_split_view_on (PeonyNavigationWindow *window)
         //pack the preview_hbox to the split_view_hpane
         gtk_paned_pack2 (GTK_PANED(window->details->split_view_hpane), window->details->preview_hbox, TRUE, FALSE);
     }
+
+last:
     gtk_widget_show_all (window->details->preview_hbox);
     gtk_widget_hide (window->details->pdf_swindow);
     gtk_widget_hide (window->details->test_widget);
