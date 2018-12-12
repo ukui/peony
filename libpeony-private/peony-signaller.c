@@ -42,6 +42,7 @@ enum
     USER_DIRS_CHANGED,
     MIME_DATA_CHANGED,
     PREVIEW_FILE_CHANGED,
+    OFFICE2PDF_READY,
     LAST_SIGNAL
 };
 
@@ -122,5 +123,13 @@ peony_signaller_class_init (PeonySignallerClass *class)
                       g_cclosure_marshal_VOID__POINTER,
                       G_TYPE_NONE, 1, G_TYPE_POINTER);//how to pass a string?
     //param: 1, GType: a char*
+    signals[OFFICE2PDF_READY] = 
+	g_signal_new ("office2pdf_ready",
+                      G_TYPE_FROM_CLASS (class),
+                      G_SIGNAL_RUN_LAST,
+                      0,
+                      NULL, NULL,
+                      g_cclosure_marshal_VOID__POINTER,
+                      G_TYPE_NONE, 1, G_TYPE_POINTER);
 
 }

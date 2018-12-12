@@ -12,3 +12,4 @@ gboolean is_image_type(char *filename);
 gboolean is_office_file(char *filename);
 
 gboolean is_excel_doc(char* filename);
+

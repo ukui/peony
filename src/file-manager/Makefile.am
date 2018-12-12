@@ -53,6 +53,8 @@ libpeony_file_manager_la_SOURCES = \
 	test-widget.c \
 	mime-utils.h \
 	mime-utils.c \
+	office-utils.h \
+	office-utils.c \
 	pdfviewer.h \
 	pdfviewer.c \
 	$(NULL)

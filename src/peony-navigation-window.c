@@ -35,6 +35,7 @@
 
 #include "file-manager/test-widget.h"
 #include "file-manager/mime-utils.h"
+#include "file-manager/office-utils.h"
 #include "file-manager/pdfviewer.h"
 
 #include "peony-actions.h"
@@ -94,6 +95,7 @@ static void use_extra_mouse_buttons_changed          (gpointer                  
 static PeonyWindowSlot *create_extra_pane         (PeonyNavigationWindow *window);
 
 static void preview_file_changed_callback(GObject *singaller, gpointer data);
+static void office2pdf_ready_callback(GObject *singaller, gpointer data);
 
 G_DEFINE_TYPE (PeonyNavigationWindow, peony_navigation_window, PEONY_TYPE_WINDOW)
 #define parent_class peony_navigation_window_parent_class
@@ -140,6 +142,7 @@ choose_list_view (GtkButton *widget,gpointer data)
 //so, it seems that we have to use static val to get window globally.
 static PeonyNavigationWindow *global_window;
 static char* global_preview_filename;
+static char* global_preview_office2pdf_filename;
 //static TestWidget *global_test_widget;
 //static GtkWidget *global_pdf_view;
 //static GtkWidget *empty_widget;
@@ -678,6 +681,7 @@ static void
 peony_navigation_window_destroy (GtkWidget *object)
 {
     g_signal_handlers_disconnect_by_func(peony_signaller_get_current (), G_CALLBACK (preview_file_changed_callback), global_preview_filename);
+    g_signal_handlers_disconnect_by_func(peony_signaller_get_current (), G_CALLBACK (office2pdf_ready_callback), global_preview_office2pdf_filename);
 
     PeonyNavigationWindow *window;
 
@@ -698,6 +702,7 @@ peony_navigation_window_destroy (GtkWidget *object)
 
     global_window = NULL;
     global_preview_filename = NULL;
+    global_preview_office2pdf_filename = NULL;
     //global_test_widget = NULL;
 
     //pdf_viewer_shutdown();    
@@ -1406,6 +1411,20 @@ create_extra_pane (PeonyNavigationWindow *window)
     return slot;
 }
 
+static void office2pdf_ready_callback(GObject *singaller, gpointer data){
+    printf("office2pdf done\n");
+    global_preview_office2pdf_filename = (char*) data;
+    printf("cmp: %s, %s\n",global_preview_office2pdf_filename,global_preview_filename);
+    if (strcmp(global_preview_filename,global_preview_office2pdf_filename) == 0){
+        printf("should show office pdf file\n");
+        set_pdf_preview_widget_file_by_filename(global_window->details->pdf_view,(char*)data);
+        gtk_widget_hide(global_window->details->empty_window);
+        gtk_widget_show_all(global_window->details->pdf_swindow);
+        gtk_widget_hide(global_window->details->test_widget);
+    }
+    //g_remove((char*)data);
+}
+
 static void preview_file_changed_callback(GObject *singaller, gpointer data){
     if((char*)data == "null"){
 	    gtk_widget_show(global_window->details->empty_window);
@@ -1413,6 +1432,9 @@ static void preview_file_changed_callback(GObject *singaller, gpointer data){
 	    gtk_widget_hide(global_window->details->test_widget);
         return;
     }
+
+    global_preview_filename = (char*) data;
+
     printf("recieved filename:%s\n",(char*)data);
     printf("mime type: %s\n",get_mime_type_string_by_filename((char*)data));
     if(is_text_type((char*)data)){
@@ -1421,10 +1443,21 @@ static void preview_file_changed_callback(GObject *singaller, gpointer data){
         gtk_widget_hide(global_window->details->pdf_swindow);
         gtk_widget_show_all(global_window->details->test_widget);
     } else if (is_pdf_type((char*)data)) {
+        printf("is pdf type\n");
         set_pdf_preview_widget_file_by_filename(global_window->details->pdf_view,(char*)data);
         gtk_widget_hide(global_window->details->empty_window);
         gtk_widget_show_all(global_window->details->pdf_swindow);
         gtk_widget_hide(global_window->details->test_widget);
+    } else if (is_office_file((char*) data)) {
+        printf("is office file\n");
+        
+        //we will wait for child progress finished.
+        global_preview_office2pdf_filename = office2pdf((char*)data);
+        global_preview_filename = global_preview_office2pdf_filename;
+
+	    gtk_widget_show(global_window->details->empty_window);
+	    gtk_widget_hide(global_window->details->pdf_swindow);
+	    gtk_widget_hide(global_window->details->test_widget);
     } else {
 	    gtk_widget_show(global_window->details->empty_window);
 	    gtk_widget_hide(global_window->details->pdf_swindow);
@@ -1480,6 +1513,11 @@ last:
                           "preview_file_changed",
                           G_CALLBACK (preview_file_changed_callback), global_preview_filename
                           );
+
+    g_signal_connect (peony_signaller_get_current (),
+                          "office2pdf_ready",
+                          G_CALLBACK (office2pdf_ready_callback), global_preview_office2pdf_filename
+                          );
 }
 
 void
@@ -1489,8 +1527,11 @@ peony_navigation_window_split_view_off (PeonyNavigationWindow *window)
     gtk_widget_hide(window->details->pdf_swindow);
     gtk_widget_hide(window->details->empty_window);
     g_signal_handlers_disconnect_by_func(peony_signaller_get_current (), G_CALLBACK (preview_file_changed_callback), global_preview_filename);
+    g_signal_handlers_disconnect_by_func(peony_signaller_get_current (), G_CALLBACK (office2pdf_ready_callback), global_preview_filename);
 
     peony_navigation_window_update_split_view_actions_sensitivity (window);
+
+    g_remove("/home/lanyue/.cache/peony");
 }
 
 gboolean
