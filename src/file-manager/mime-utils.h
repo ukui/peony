@@ -13,3 +13,5 @@ gboolean is_office_file(char *filename);
 
 gboolean is_excel_doc(char* filename);
 
+gboolean is_html_file(char* filename);
+

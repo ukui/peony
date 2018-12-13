@@ -37,6 +37,7 @@
 #include "file-manager/mime-utils.h"
 #include "file-manager/office-utils.h"
 #include "file-manager/pdfviewer.h"
+#include <webkit/webkit.h>
 
 #include "peony-actions.h"
 #include "peony-application.h"
@@ -95,7 +96,7 @@ static void use_extra_mouse_buttons_changed          (gpointer                  
 static PeonyWindowSlot *create_extra_pane         (PeonyNavigationWindow *window);
 
 static void preview_file_changed_callback(GObject *singaller, gpointer data);
-static void office2pdf_ready_callback(GObject *singaller, gpointer data);
+static void office_format_trans_ready_callback(GObject *singaller, gpointer data);
 
 G_DEFINE_TYPE (PeonyNavigationWindow, peony_navigation_window, PEONY_TYPE_WINDOW)
 #define parent_class peony_navigation_window_parent_class
@@ -143,6 +144,7 @@ choose_list_view (GtkButton *widget,gpointer data)
 static PeonyNavigationWindow *global_window;
 static char* global_preview_filename;
 static char* global_preview_office2pdf_filename;
+static char* global_preview_excel2html_filename;
 //static TestWidget *global_test_widget;
 //static GtkWidget *global_pdf_view;
 //static GtkWidget *empty_widget;
@@ -681,7 +683,7 @@ static void
 peony_navigation_window_destroy (GtkWidget *object)
 {
     g_signal_handlers_disconnect_by_func(peony_signaller_get_current (), G_CALLBACK (preview_file_changed_callback), global_preview_filename);
-    g_signal_handlers_disconnect_by_func(peony_signaller_get_current (), G_CALLBACK (office2pdf_ready_callback), global_preview_office2pdf_filename);
+    g_signal_handlers_disconnect_by_func(peony_signaller_get_current (), G_CALLBACK (office_format_trans_ready_callback), global_preview_office2pdf_filename);
 
     PeonyNavigationWindow *window;
 
@@ -703,6 +705,7 @@ peony_navigation_window_destroy (GtkWidget *object)
     global_window = NULL;
     global_preview_filename = NULL;
     global_preview_office2pdf_filename = NULL;
+    global_preview_excel2html_filename = NULL;
     //global_test_widget = NULL;
 
     //pdf_viewer_shutdown();    
@@ -1411,16 +1414,37 @@ create_extra_pane (PeonyNavigationWindow *window)
     return slot;
 }
 
-static void office2pdf_ready_callback(GObject *singaller, gpointer data){
-    printf("office2pdf done\n");
-    global_preview_office2pdf_filename = (char*) data;
-    printf("cmp: %s, %s\n",global_preview_office2pdf_filename,global_preview_filename);
-    if (strcmp(global_preview_filename,global_preview_office2pdf_filename) == 0){
-        printf("should show office pdf file\n");
-        set_pdf_preview_widget_file_by_filename(global_window->details->pdf_view,(char*)data);
-        gtk_widget_hide(global_window->details->empty_window);
-        gtk_widget_show_all(global_window->details->pdf_swindow);
-        gtk_widget_hide(global_window->details->test_widget);
+static void office_format_trans_ready_callback(GObject *singaller, gpointer data){
+    printf("office2pdf/html done\n");
+    //global_preview_office2pdf_filename = (char*) data;
+    printf("cb: %s, global: %s\n", data, global_preview_filename);
+
+    if(is_pdf_type(data)){
+        printf("cmp: %s, %s\n",data,global_preview_filename);
+        if (strcmp(data,global_preview_filename) == 0) {
+            printf("should show office pdf file\n");
+            set_pdf_preview_widget_file_by_filename(global_window->details->pdf_view,(char*)data);
+            gtk_widget_hide(global_window->details->empty_window);
+            gtk_widget_show_all(global_window->details->pdf_swindow);
+            gtk_widget_hide(global_window->details->test_widget);
+            gtk_widget_hide(global_window->details->web_swindow);
+        } else {
+            g_remove (data);
+        }
+    } 
+    else if (is_html_file(data)) {
+        printf("should show html file\n");
+        if (strcmp(data,global_preview_filename) == 0) {
+            gchar *uri;
+            uri = g_strdup_printf("file://%s", global_preview_excel2html_filename);
+            printf("load uri: %s",uri);
+            webkit_web_view_load_uri (WEBKIT_WEB_VIEW(global_window->details->web_view), uri);
+            g_free(uri);
+            gtk_widget_hide(global_window->details->empty_window);
+            gtk_widget_hide(global_window->details->pdf_swindow);
+            gtk_widget_hide(global_window->details->test_widget);
+            gtk_widget_show_all(global_window->details->web_swindow);
+        }
     }
     //g_remove((char*)data);
 }
@@ -1430,6 +1454,7 @@ static void preview_file_changed_callback(GObject *singaller, gpointer data){
 	    gtk_widget_show(global_window->details->empty_window);
 	    gtk_widget_hide(global_window->details->pdf_swindow);
 	    gtk_widget_hide(global_window->details->test_widget);
+        gtk_widget_hide(global_window->details->web_swindow);
         return;
     }
 
@@ -1441,6 +1466,7 @@ static void preview_file_changed_callback(GObject *singaller, gpointer data){
 	    open_file_cb(global_window->details->gtk_source_widget,(char*)data);
         gtk_widget_hide(global_window->details->empty_window);
         gtk_widget_hide(global_window->details->pdf_swindow);
+        gtk_widget_hide (global_window->details->web_swindow);
         gtk_widget_show_all(global_window->details->test_widget);
     } else if (is_pdf_type((char*)data)) {
         printf("is pdf type\n");
@@ -1448,21 +1474,35 @@ static void preview_file_changed_callback(GObject *singaller, gpointer data){
         gtk_widget_hide(global_window->details->empty_window);
         gtk_widget_show_all(global_window->details->pdf_swindow);
         gtk_widget_hide(global_window->details->test_widget);
+        gtk_widget_hide (global_window->details->web_swindow);
     } else if (is_office_file((char*) data)) {
         printf("is office file\n");
+        if (!is_excel_doc((char*)data)){
+            printf("doc & ppt\n");
+            global_preview_office2pdf_filename = office2pdf((char*)data);
+            if(global_preview_office2pdf_filename)
+                global_preview_filename = global_preview_office2pdf_filename;
+                global_preview_excel2html_filename = NULL;
+        } else {
+            printf("excel\n");
+            global_preview_excel2html_filename = excel2html((char*)data);
+            if(global_preview_excel2html_filename)
+                global_preview_filename = global_preview_excel2html_filename;
+                global_preview_office2pdf_filename = NULL;
+        }
         
         //we will wait for child progress finished.
-        global_preview_office2pdf_filename = office2pdf((char*)data);
-        if(global_preview_office2pdf_filename)
-            global_preview_filename = global_preview_office2pdf_filename;
+
 
 	    gtk_widget_show(global_window->details->empty_window);
 	    gtk_widget_hide(global_window->details->pdf_swindow);
 	    gtk_widget_hide(global_window->details->test_widget);
+        gtk_widget_hide (global_window->details->web_swindow);
     } else {
 	    gtk_widget_show(global_window->details->empty_window);
 	    gtk_widget_hide(global_window->details->pdf_swindow);
 	    gtk_widget_hide(global_window->details->test_widget);
+        gtk_widget_hide (global_window->details->web_swindow);
     }
 }
 
@@ -1488,11 +1528,17 @@ peony_navigation_window_split_view_on (PeonyNavigationWindow *window)
         gtk_container_add (GTK_CONTAINER (window->details->test_widget), GTK_WIDGET (window->details->gtk_source_widget));
         gtk_box_pack_start (GTK_BOX(window->details->preview_hbox), GTK_WIDGET(window->details->test_widget), TRUE, TRUE, 0);
         
-        //add pdf widget ro preview_hbox
+        //add pdf widget to preview_hbox
         window->details->pdf_swindow = gtk_scrolled_window_new(NULL,NULL);
         window->details->pdf_view = pdf_preview_widget_new();        
         gtk_container_add (GTK_CONTAINER (window->details->pdf_swindow), window->details->pdf_view);        
         gtk_box_pack_start (GTK_BOX(window->details->preview_hbox), GTK_WIDGET(window->details->pdf_swindow), TRUE, TRUE, 0);
+
+        //add web widget to preview_hbox
+        window->details->web_swindow = gtk_scrolled_window_new(NULL,NULL);
+        window->details->web_view = webkit_web_view_new();
+        gtk_container_add (GTK_CONTAINER(window->details->web_swindow), GTK_WIDGET(window->details->web_view));
+        gtk_box_pack_start (GTK_BOX(window->details->preview_hbox), GTK_WIDGET(window->details->web_swindow), TRUE, TRUE, 0);
 
         //add empty widget to split_view_hpane
         window->details->empty_window = gtk_scrolled_window_new(NULL,NULL);
@@ -1504,32 +1550,37 @@ peony_navigation_window_split_view_on (PeonyNavigationWindow *window)
 
 last:
     gtk_widget_show_all (window->details->preview_hbox);
-    gtk_widget_hide (window->details->pdf_swindow);
     gtk_widget_hide (window->details->test_widget);
+    gtk_widget_hide (window->details->pdf_swindow);
+    gtk_widget_hide (window->details->web_swindow);
     
     
     //char *signal_filename;
+    char* preview_filename; 
+    char* child_cb_filename;
 
     g_signal_connect (peony_signaller_get_current (),
                           "preview_file_changed",
-                          G_CALLBACK (preview_file_changed_callback), global_preview_filename
+                          G_CALLBACK (preview_file_changed_callback), preview_filename
                           );
 
     g_signal_connect (peony_signaller_get_current (),
                           "office2pdf_ready",
-                          G_CALLBACK (office2pdf_ready_callback), global_preview_office2pdf_filename
+                          G_CALLBACK (office_format_trans_ready_callback), child_cb_filename
                           );
+
+    window->details->is_split_view_showing = TRUE;
 }
 
 void
 peony_navigation_window_split_view_off (PeonyNavigationWindow *window)
 {
-    gtk_widget_hide(window->details->test_widget);
-    gtk_widget_hide(window->details->pdf_swindow);
-    gtk_widget_hide(window->details->empty_window);
+    printf("split_view_off\n");
+    gtk_widget_hide (window->details->preview_hbox);
     g_signal_handlers_disconnect_by_func(peony_signaller_get_current (), G_CALLBACK (preview_file_changed_callback), global_preview_filename);
-    g_signal_handlers_disconnect_by_func(peony_signaller_get_current (), G_CALLBACK (office2pdf_ready_callback), global_preview_filename);
+    g_signal_handlers_disconnect_by_func(peony_signaller_get_current (), G_CALLBACK (office_format_trans_ready_callback), global_preview_filename);
 
+    window->details->is_split_view_showing = FALSE;
     peony_navigation_window_update_split_view_actions_sensitivity (window);
 
     g_remove("/home/lanyue/.cache/peony");
@@ -1538,7 +1589,7 @@ peony_navigation_window_split_view_off (PeonyNavigationWindow *window)
 gboolean
 peony_navigation_window_split_view_showing (PeonyNavigationWindow *window)
 {
-    return g_list_length (PEONY_WINDOW (window)->details->panes) > 1;
+    return window->details->is_split_view_showing ;
 }
 
 void

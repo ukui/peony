@@ -3,6 +3,7 @@
 
 //get the office file's of pdf one's name.
 char* office2pdf(char* filename);
+char* excel2html(char* filename);
 
 //void init_office_mime_types();
 
@@ -39,6 +40,23 @@ static char* office_mime_types[43] = {
     "application/wps-office.dps",
     "application/wps-office.dpt",
     
+    "application/wps-office.xlsx",
+    "application/wps-office.xls",
+    "application/vnd.ms-excel",
+    "application/msexcel",
+    "application/x-msexcel",
+    "application/vnd.ms-excel.sheet.macroenabled.12",
+    "application/vnd.ms-excel.template.macroenabled.12",
+    "application/wps-office.xlt",
+    "application/wps-office.xltx",
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.template",
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "application/wps-office.et",
+    "application/wps-office.ett"
+};
+
+static char* excel_mime_types[] = {
+    "application/wps-office.xlsx",
     "application/wps-office.xls",
     "application/vnd.ms-excel",
     "application/msexcel",

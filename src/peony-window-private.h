@@ -124,6 +124,7 @@ struct _PeonyNavigationWindowDetails
 
     /* split view */
     GtkWidget *split_view_hpane;
+    gboolean is_split_view_showing;
 
     /* hbox for kinds of preview views */
     GtkBox *preview_hbox;
@@ -135,6 +136,10 @@ struct _PeonyNavigationWindowDetails
     /* pdf view */
     GtkWidget *pdf_swindow;
     GtkWidget *pdf_view;
+
+    /* web view  for exel*/
+    GtkWidget *web_swindow;
+    GtkWidget *web_view;
 
     /* empty view */
     GtkWidget *empty_window;

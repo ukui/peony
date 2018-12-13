@@ -238,6 +238,7 @@ peony_window_sync_status (PeonyWindow *window)
 void
 peony_window_go_to (PeonyWindow *window, GFile *location)
 {
+    printf("peony_window_go_to : %s\n",g_file_get_path(location));
     g_return_if_fail (PEONY_IS_WINDOW (window));
 
     peony_window_slot_go_to (window->details->active_pane->active_slot, location, FALSE);
@@ -1589,6 +1590,7 @@ void
 peony_window_connect_content_view (PeonyWindow *window,
                                   PeonyView *view)
 {
+	printf("slot-changed");
     PeonyWindowSlot *slot;
 
     g_assert (PEONY_IS_WINDOW (window));
