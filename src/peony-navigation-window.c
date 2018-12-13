@@ -262,6 +262,11 @@ peony_navigation_window_init (PeonyNavigationWindow *window)
     gtk_widget_show (add_toolbar_vbox);
     gtk_widget_set_size_request (add_toolbar_vbox,36,36);
 
+    GtkWidget *separator= gtk_hseparator_new();
+    gtk_grid_attach (window->toolbar_table,
+                        separator,
+	                    0,0,3,1);
+
     gtk_grid_attach (window->toolbar_table,
                         add_toolbar_vbox,
 	                    0,1,1,1);
