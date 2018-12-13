@@ -10552,50 +10552,7 @@ static void
 peony_icon_container_accessible_selection_changed_cb (PeonyIconContainer *container,
         gpointer data)
 {
-	printf("peony_icon_container_accessible_selection_changed_cb\n");
     g_signal_emit_by_name (data, "selection_changed");
-
-        //data is what? GObject, that icon container? atk parent?
-        //use container get the first selection, and get this selection's filepath,
-        //then, emit with signal.
-    GList *selection; //a list of PeonyIcon which has been selected.
-    gchar *filepath;
-
-    g_return_if_fail (PEONY_IS_ICON_CONTAINER (container));
-
-    selection = peony_icon_container_get_selection (container);
-    if (selection != NULL)
-    {
-	PeonyIconData *icon_data;
-	icon_data = selection->data;//is this the newest selection icon?
-	//printf("%s\n", peony_icon_container_get_icon_uri(container, data));
-	//printf("%s\n", peony_icon_container_get_icon_description(container,selection->data));
-
-	PeonyIcon *icon = icon = g_hash_table_lookup (container->details->icon_set, icon_data);
-	char *filename = g_filename_from_uri(peony_icon_container_get_icon_uri(container, icon),NULL,NULL);
-	//printf("%s\n", filename);
-
-	//signal_filename = filename;
-        //get first selection's filepath.
-        if(filename){
-            g_signal_emit_by_name (peony_signaller_get_current (),
-                     "preview_file_changed",(gpointer)filename);
-            //free(filename);
-        } else {
-            filename = "null";
-            g_signal_emit_by_name (peony_signaller_get_current (),
-                         "preview_file_changed",(gpointer)filename);
-        }
-    } 
-    else
-    {
-	//clean the preview view
-            char*    filename = "null";
-            g_signal_emit_by_name (peony_signaller_get_current (),
-                         "preview_file_changed",(gpointer)filename);
-    }
-    g_list_free (selection);
-
 }
 
 static void

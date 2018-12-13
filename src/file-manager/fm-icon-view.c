@@ -27,6 +27,8 @@
 #include <config.h>
 #include "fm-icon-view.h"
 
+#include "libpeony-private/peony-signaller.h"
+
 #include "fm-actions.h"
 #include "fm-icon-container.h"
 #include "fm-desktop-icon-view.h"
@@ -2540,6 +2542,40 @@ selection_changed_callback (PeonyIconContainer *container,
 {
     g_assert (FM_IS_ICON_VIEW (icon_view));
     g_assert (container == get_icon_container (icon_view));
+
+    FMDirectoryView *view;
+
+    view = FM_DIRECTORY_VIEW (icon_view);
+
+    PeonyWindowInfo *window = fm_directory_view_get_peony_window(view);
+
+    g_signal_emit_by_name (window, "test", NULL);
+
+    GList* l = fm_directory_view_get_selection(view);
+    
+    if(l){
+        printf("FMDirectory view: selection changed\n");
+        PeonyFile *file;
+        file = l->data;
+        //char* uri = peony_file_get_uri(file);
+        char* filename = g_filename_from_uri(peony_file_get_uri(file),NULL,NULL);
+
+        printf("%s\n",filename);
+        if(filename){
+            g_signal_emit_by_name (peony_signaller_get_current (),
+                         "preview_file_changed",(gpointer)filename);
+            //free(filename);
+        } else {
+            filename = "null";
+            g_signal_emit_by_name (peony_signaller_get_current (),
+                         "preview_file_changed",(gpointer)filename);
+        }
+        g_list_free(l);
+    }   else  {
+        char* filename = "null";
+        g_signal_emit_by_name (peony_signaller_get_current (),
+                     "preview_file_changed",(gpointer)filename);
+    }
 
     fm_directory_view_notify_selection_changed (FM_DIRECTORY_VIEW (icon_view));
 }

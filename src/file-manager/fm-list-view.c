@@ -28,6 +28,7 @@
 */
 
 #include <config.h>
+//#include "../peony-window-private.h"
 #include "fm-list-view.h"
 
 #include "libpeony-private/peony-signaller.h"
@@ -215,6 +216,12 @@ list_selection_changed_callback (GtkTreeSelection *selection, gpointer user_data
 
     view = FM_DIRECTORY_VIEW (user_data);
     GList* l = fm_directory_view_get_selection(view);
+
+    PeonyWindowInfo *window = fm_directory_view_get_peony_window(view);
+
+    //if(window->details->is_split_view_showing)
+    //   printf("magic!!!!\n\n\n");
+    
     if(l){
         printf("FMDirectory view: selection changed\n");
         PeonyFile *file;
@@ -232,15 +239,12 @@ list_selection_changed_callback (GtkTreeSelection *selection, gpointer user_data
             g_signal_emit_by_name (peony_signaller_get_current (),
                          "preview_file_changed",(gpointer)filename);
         }
-
+        g_list_free(l);
     }   else  {
         char* filename = "null";
         g_signal_emit_by_name (peony_signaller_get_current (),
                      "preview_file_changed",(gpointer)filename);
     }
-
-    g_list_free(l);
-
     fm_directory_view_notify_selection_changed (view);
 }
 
