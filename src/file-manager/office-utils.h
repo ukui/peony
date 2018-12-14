@@ -5,6 +5,8 @@
 char* office2pdf(char* filename);
 char* excel2html(char* filename);
 
+static GPid old_pid = -1;
+
 //void init_office_mime_types();
 
 static char* office_mime_types[43] = {

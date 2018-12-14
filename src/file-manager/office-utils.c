@@ -17,19 +17,20 @@ unoconv_child_watch_cb (GPid pid,
 	//exit (1);
 }
 
-static GPid old_pid = -1;
+
 static char* old_preview_file_pdf_path;
 static char* old_preview_file_html_path;
 
 char* office2pdf(char* filename){
 
-
+/*
 	if(old_pid != -1){
 		printf("kill old progress and remove old preview file\n");
 		kill (old_pid, SIGKILL);
 		//g_remove (old_preview_file_pdf_path);
 		//old_pid = -1;
 	}
+*/
 
 
 	gchar *doc_path, *pdf_path, *tmp_name, *tmp_path, *quoted_path;
@@ -121,14 +122,14 @@ char* office2pdf(char* filename){
 
 char *excel2html (char *filename){
 
-
+/*
 	if(old_pid != -1){
 		printf("kill old progress and remove old preview file\n");
 		kill (old_pid, SIGKILL);
 		//g_remove (old_preview_file_html_path);
 		//old_pid = -1;
 	}
-
+*/
 
 	gchar *doc_path, *html_path, *tmp_name, *tmp_path, *quoted_path;
 	GFile *file;

@@ -1460,6 +1460,8 @@ static void office_format_trans_ready_callback(GObject *singaller, gpointer data
 }
 
 static void preview_file_changed_callback(GObject *singaller, gpointer data){
+    if (old_pid != -1)
+        kill (old_pid, SIGKILL); //kill old pid for office transform anyway
     if((char*)data == "null"){
 	    gtk_widget_show(global_window->details->empty_window);
 	    gtk_widget_hide(global_window->details->pdf_swindow);
