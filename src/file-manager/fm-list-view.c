@@ -216,13 +216,14 @@ list_selection_changed_callback (GtkTreeSelection *selection, gpointer user_data
 
     view = FM_DIRECTORY_VIEW (user_data);
     GList* l = fm_directory_view_get_selection(view);
+    //int count = fm_directory_view_get_item_count(view);
 
-    PeonyWindowInfo *window = fm_directory_view_get_peony_window(view);
+    //PeonyWindowInfo *window = fm_directory_view_get_peony_window(view);
 
     //if(window->details->is_split_view_showing)
     //   printf("magic!!!!\n\n\n");
     
-    if(l){
+    if(l ){
         printf("FMDirectory view: selection changed\n");
         PeonyFile *file;
         file = l->data;

@@ -1424,22 +1424,20 @@ static void office_format_trans_ready_callback(GObject *singaller, gpointer data
     //global_preview_office2pdf_filename = (char*) data;
     printf("cb: %s, global: %s\n", data, global_preview_filename);
 
-    if(is_pdf_type(data)){
+    if(filename_has_suffix(data, ".pdf")){
         printf("cmp: %s, %s\n",data,global_preview_filename);
-        if (strcmp(data,global_preview_filename) == 0) {
+        if (g_str_equal(data,global_preview_filename) == TRUE) {
             printf("should show office pdf file\n");
             set_pdf_preview_widget_file_by_filename(global_window->details->pdf_view,(char*)data);
             gtk_widget_hide(global_window->details->empty_window);
             gtk_widget_show_all(global_window->details->pdf_swindow);
             gtk_widget_hide(global_window->details->test_widget);
             gtk_widget_hide(global_window->details->web_swindow);
-        } else {
-            g_remove (data);
-        }
+        } 
     } 
-    else if (is_html_file(data)) {
+    else if (filename_has_suffix(data,".html")) {
         printf("should show html file\n");
-        if (strcmp(data,global_preview_filename) == 0) {
+        if (g_str_equal(data,global_preview_filename) == TRUE) {
             gchar *uri;
             uri = g_strdup_printf("file://%s", global_preview_excel2html_filename);
             printf("load uri: %s",uri);
@@ -1451,7 +1449,7 @@ static void office_format_trans_ready_callback(GObject *singaller, gpointer data
             gtk_widget_show_all(global_window->details->web_swindow);
         }
     }
-    //g_remove((char*)data);
+    //g_remove(data);
 }
 
 static void preview_file_changed_callback(GObject *singaller, gpointer data){
@@ -1473,7 +1471,18 @@ static void preview_file_changed_callback(GObject *singaller, gpointer data){
         gtk_widget_hide(global_window->details->pdf_swindow);
         gtk_widget_hide (global_window->details->web_swindow);
         gtk_widget_show_all(global_window->details->test_widget);
-    } else if (is_pdf_type((char*)data)) {
+    } else if (is_image_type((char*)data)) {
+        printf("is image type\n");
+        gchar *uri;
+        uri = g_strdup_printf("file://%s", data);
+        printf("load uri: %s",uri);
+        webkit_web_view_load_uri (WEBKIT_WEB_VIEW(global_window->details->web_view), uri);
+        g_free(uri);
+        gtk_widget_hide(global_window->details->empty_window);
+        gtk_widget_hide(global_window->details->pdf_swindow);
+        gtk_widget_hide(global_window->details->test_widget);
+        gtk_widget_show_all (global_window->details->web_swindow);
+    }  else if (is_pdf_type((char*)data)) {
         printf("is pdf type\n");
         set_pdf_preview_widget_file_by_filename(global_window->details->pdf_view,(char*)data);
         gtk_widget_hide(global_window->details->empty_window);
@@ -1498,12 +1507,12 @@ static void preview_file_changed_callback(GObject *singaller, gpointer data){
         
         //we will wait for child progress finished.
 
-
 	    gtk_widget_show(global_window->details->empty_window);
 	    gtk_widget_hide(global_window->details->pdf_swindow);
 	    gtk_widget_hide(global_window->details->test_widget);
         gtk_widget_hide (global_window->details->web_swindow);
     } else {
+        printf("can't preview this file\n");
 	    gtk_widget_show(global_window->details->empty_window);
 	    gtk_widget_hide(global_window->details->pdf_swindow);
 	    gtk_widget_hide(global_window->details->test_widget);
@@ -1542,6 +1551,7 @@ peony_navigation_window_split_view_on (PeonyNavigationWindow *window)
         //add web widget to preview_hbox
         window->details->web_swindow = gtk_scrolled_window_new(NULL,NULL);
         window->details->web_view = webkit_web_view_new();
+        webkit_web_view_set_zoom_level (window->details->web_view, 1.50);
         gtk_container_add (GTK_CONTAINER(window->details->web_swindow), GTK_WIDGET(window->details->web_view));
         gtk_box_pack_start (GTK_BOX(window->details->preview_hbox), GTK_WIDGET(window->details->web_swindow), TRUE, TRUE, 0);
 

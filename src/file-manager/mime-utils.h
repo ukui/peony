@@ -15,3 +15,7 @@ gboolean is_excel_doc(char* filename);
 
 gboolean is_html_file(char* filename);
 
+//this function is used when officetransform ready cb. the tmp file sometimes can't get mimetype soon.
+gboolean filename_has_suffix (char* filename, const char* suffix);
+
+

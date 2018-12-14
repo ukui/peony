@@ -2547,11 +2547,13 @@ selection_changed_callback (PeonyIconContainer *container,
 
     view = FM_DIRECTORY_VIEW (icon_view);
 
-    PeonyWindowInfo *window = fm_directory_view_get_peony_window(view);
+    //PeonyWindowInfo *window = fm_directory_view_get_peony_window(view);
 
-    g_signal_emit_by_name (window, "test", NULL);
+    //g_signal_emit_by_name (window, "test", NULL);
 
     GList* l = fm_directory_view_get_selection(view);
+
+   //int count = fm_directory_view_get_item_count(view);
     
     if(l){
         printf("FMDirectory view: selection changed\n");

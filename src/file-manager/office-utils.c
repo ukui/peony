@@ -23,12 +23,14 @@ static char* old_preview_file_html_path;
 
 char* office2pdf(char* filename){
 
+
 	if(old_pid != -1){
 		printf("kill old progress and remove old preview file\n");
 		kill (old_pid, SIGKILL);
-		g_remove (old_preview_file_pdf_path);
-		old_pid = -1;
+		//g_remove (old_preview_file_pdf_path);
+		//old_pid = -1;
 	}
+
 
 	gchar *doc_path, *pdf_path, *tmp_name, *tmp_path, *quoted_path;
 	//GFile *file;
@@ -50,7 +52,7 @@ char* office2pdf(char* filename){
 
 	printf("pid: %d\n",getpid());
 
-	tmp_name = g_strdup_printf ("test.pdf");//,g_strcanon(filename,"/",'_'));//, getpid ());
+	tmp_name = g_strdup_printf ("test-%d.pdf",old_pid+1);//,g_strcanon(filename,"/",'_'));//, getpid ());
 	
 	printf("tmp_name: %s\n",tmp_name);
 	tmp_path = g_build_filename (g_get_user_cache_dir (), "peony", NULL);
@@ -117,12 +119,14 @@ char* office2pdf(char* filename){
 
 char *excel2html (char *filename){
 
+
 	if(old_pid != -1){
 		printf("kill old progress and remove old preview file\n");
 		kill (old_pid, SIGKILL);
-		g_remove (old_preview_file_html_path);
-		old_pid = -1;
+		//g_remove (old_preview_file_html_path);
+		//old_pid = -1;
 	}
+
 
 	gchar *doc_path, *html_path, *tmp_name, *tmp_path, *quoted_path;
 	//GFile *file;
@@ -144,7 +148,7 @@ char *excel2html (char *filename){
 
 	printf("pid: %d\n",getpid());
 
-	tmp_name = g_strdup_printf ("test.html");//,g_strcanon(filename,"/",'_'));//, getpid ());
+	tmp_name = g_strdup_printf ("test-%d.html",old_pid+1);//,g_strcanon(filename,"/",'_'));//, getpid ());
 	
 	printf("tmp_name: %s\n",tmp_name);
 	tmp_path = g_build_filename (g_get_user_cache_dir (), "peony", NULL);

@@ -1,6 +1,10 @@
 #include "mime-utils.h"
 #include "office-utils.h"
 
+gboolean filename_has_suffix (char* filename, const char* suffix){
+	return strstr(filename,suffix) ? TRUE : FALSE;
+}
+
 char* get_mime_type_string_by_filename(char* filename){
 	return g_file_info_get_content_type(
 			g_file_query_info(
@@ -37,6 +41,18 @@ gboolean is_text_type(char* filename){
 	g_free(mime_type);
 	return is_text;
 	//return strstr(mime_type,"text") ? TRUE : strstr(mime_type,"script") ? TRUE : FALSE;
+}
+
+gboolean is_image_type(char *filename){
+	char* mime_type = get_mime_type_string_by_filename(filename);
+	gboolean is_image = FALSE;
+
+	if(strstr(mime_type,"image/")){
+		is_image = TRUE;
+	} 
+	
+	g_free(mime_type);
+	return is_image;
 }
 
 gboolean is_pdf_type(char* filename){
