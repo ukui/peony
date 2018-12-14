@@ -33,7 +33,7 @@ char* office2pdf(char* filename){
 
 
 	gchar *doc_path, *pdf_path, *tmp_name, *tmp_path, *quoted_path;
-	//GFile *file;
+	GFile *file;
 	gboolean res;
 	gchar *cmd;
 
@@ -52,7 +52,8 @@ char* office2pdf(char* filename){
 
 	printf("pid: %d\n",getpid());
 
-	tmp_name = g_strdup_printf ("test-%d.pdf",old_pid+1);//,g_strcanon(filename,"/",'_'));//, getpid ());
+	file = g_file_new_for_path(filename);
+	tmp_name = g_strdup_printf("%s.pdf",g_file_get_basename (file));
 	
 	printf("tmp_name: %s\n",tmp_name);
 	tmp_path = g_build_filename (g_get_user_cache_dir (), "peony", NULL);
@@ -61,8 +62,7 @@ char* office2pdf(char* filename){
 
 	cmd = g_strdup_printf ("unoconv -f pdf -o %s '%s'", pdf_path, filename);
 	printf("cmd: %s\n",cmd);
-	g_free (tmp_name);
-	g_free (tmp_path);
+	
 
 /*
 	gchar **standard_output;
@@ -82,6 +82,8 @@ char* office2pdf(char* filename){
 	
 	res = g_shell_parse_argv (cmd, &argc, &argv, &error);
 	g_free (cmd);
+	//g_free (file);
+	
 
 	if (!res) {
 		g_warning ("Error while parsing the unoconv command line: %s",
@@ -129,7 +131,7 @@ char *excel2html (char *filename){
 
 
 	gchar *doc_path, *html_path, *tmp_name, *tmp_path, *quoted_path;
-	//GFile *file;
+	GFile *file;
 	gboolean res;
 	gchar *cmd;
 
@@ -148,18 +150,18 @@ char *excel2html (char *filename){
 
 	printf("pid: %d\n",getpid());
 
-	tmp_name = g_strdup_printf ("test-%d.html",old_pid+1);//,g_strcanon(filename,"/",'_'));//, getpid ());
-	
+	//tmp_name = g_strdup_printf ("test-%d.html",old_pid+1);//,g_strcanon(filename,"/",'_'));//, getpid ());
+	file = g_file_new_for_path(filename);
+	tmp_name = g_strdup_printf("%s.html",g_file_get_basename (file));
+
 	printf("tmp_name: %s\n",tmp_name);
 	tmp_path = g_build_filename (g_get_user_cache_dir (), "peony", NULL);
 	html_path = g_build_filename (tmp_path, tmp_name, NULL);
 	g_mkdir_with_parents (tmp_path, 0700);
 
 	cmd = g_strdup_printf ("unoconv -f html -o %s '%s'", html_path, filename);
-	printf("cmd: %s\n",cmd);
-	g_free (tmp_name);
-	g_free (tmp_path);
-
+	printf("cmd: %s\n",cmd);	
+	
 /*
 	gchar **standard_output;
 	gchar **standard_error;
@@ -174,10 +176,9 @@ char *excel2html (char *filename){
   }
 */
  	
-
-	
 	res = g_shell_parse_argv (cmd, &argc, &argv, &error);
 	g_free (cmd);
+	//g_free (file);
 
 	if (!res) {
 		g_warning ("Error while parsing the unoconv command line: %s",
@@ -213,57 +214,3 @@ char *excel2html (char *filename){
 
 }
 
-/*
-void init_office_mime_types(){
-	
-	if (office_mime_types[0] == NULL){
-		printf("set init_office_mime_types\n");
-		//word
-		office_mime_types[0] = "application/wps-office.doc";
-		office_mime_types[1] = "application/msword";
-		office_mime_types[2] = "application/vnd.ms-word";
-		office_mime_types[3] = "application/x-msword";
-		office_mime_types[4] = "application/vnd.ms-word.document.macroenabled.12";
-		office_mime_types[5] = "application/wps-office.dot";
-		office_mime_types[6] = "application/msword-template";
-		office_mime_types[7] = "application/vnd.ms-word.template.macroenabled.12";
-		office_mime_types[8] = "application/wps-office.dotx";
-		office_mime_types[9] = "application/vnd.openxmlformats-officedocument.wordprocessingml.template";
-		office_mime_types[10] = "application/wps-office.docx";
-		office_mime_types[11] = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
-		office_mime_types[12] = "application/wps-office.wps";
-		office_mime_types[13] = "application/vnd.ms-works";
-		//ppt
-		office_mime_types[14] = "application/wps-office.wpt";
-		office_mime_types[15] = "application/wps-office.ppt";
-		office_mime_types[16] = "application/vnd.ms-powerpoint";
-		office_mime_types[17] = "application/powerpoint";
-		office_mime_types[18] = "application/mspowerpoint";
-		office_mime_types[19] = "application/x-mspowerpoint";
-		office_mime_types[20] = "application/vnd.ms-powerpoint.presentation.macroenabled.12";
-		office_mime_types[21] = "application/wps-office.pot";
-		office_mime_types[22] = "application/vnd.ms-powerpoint.template.macroenabled.12";
-		office_mime_types[23] = "application/wps-office.potx";
-		office_mime_types[25] = "application/vnd.openxmlformats-officedocument.presentationml.template";
-		office_mime_types[26] = "application/wps-office.pptx";
-		office_mime_types[27] = "application/vnd.openxmlformats-officedocument.presentationml.presentation";
-		office_mime_types[28] = "application/vnd.openxmlformats-officedocument.presentationml.slideshow";
-		office_mime_types[29] = "application/wps-office.dps";
-		office_mime_types[30] = "application/wps-office.dpt";
-		//excel
-		office_mime_types[31] = "application/wps-office.xls";
-		office_mime_types[32] = "application/vnd.ms-excel";
-		office_mime_types[33] = "application/msexcel";
-		office_mime_types[34] = "application/x-msexcel";
-		office_mime_types[35] = "application/vnd.ms-excel.sheet.macroenabled.12";
-		office_mime_types[36] = "application/vnd.ms-excel.template.macroenabled.12";
-		office_mime_types[37] = "application/wps-office.xlt";
-		office_mime_types[38] = "application/wps-office.xltx";
-		office_mime_types[39] = "application/vnd.openxmlformats-officedocument.spreadsheetml.template";
-		office_mime_types[40] = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-		office_mime_types[41] = "application/wps-office.et";
-		office_mime_types[42] = "application/wps-office.ett";
-	}
-	
-}
-*/

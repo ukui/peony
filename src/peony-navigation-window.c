@@ -1419,6 +1419,8 @@ create_extra_pane (PeonyNavigationWindow *window)
     return slot;
 }
 
+static char* old_tmp_filename;
+
 static void office_format_trans_ready_callback(GObject *singaller, gpointer data){
     printf("office2pdf/html done\n");
     //global_preview_office2pdf_filename = (char*) data;
@@ -1449,7 +1451,12 @@ static void office_format_trans_ready_callback(GObject *singaller, gpointer data
             gtk_widget_show_all(global_window->details->web_swindow);
         }
     }
-    //g_remove(data);
+    if (old_tmp_filename){
+        if(!g_str_equal(data,old_tmp_filename)){
+            g_unlink(old_tmp_filename);
+        }
+    }
+    old_tmp_filename = data;      
 }
 
 static void preview_file_changed_callback(GObject *singaller, gpointer data){
@@ -1585,20 +1592,24 @@ last:
                           );
 
     window->details->is_split_view_showing = TRUE;
+    old_tmp_filename = NULL;
 }
 
 void
 peony_navigation_window_split_view_off (PeonyNavigationWindow *window)
 {
     printf("split_view_off\n");
+    char* preview_filename; 
+    char* child_cb_filename;
     gtk_widget_hide (window->details->preview_hbox);
-    g_signal_handlers_disconnect_by_func(peony_signaller_get_current (), G_CALLBACK (preview_file_changed_callback), global_preview_filename);
-    g_signal_handlers_disconnect_by_func(peony_signaller_get_current (), G_CALLBACK (office_format_trans_ready_callback), global_preview_filename);
+    g_signal_handlers_disconnect_by_func(peony_signaller_get_current (), G_CALLBACK (preview_file_changed_callback), preview_filename);
+    g_signal_handlers_disconnect_by_func(peony_signaller_get_current (), G_CALLBACK (office_format_trans_ready_callback), child_cb_filename);
 
     window->details->is_split_view_showing = FALSE;
     peony_navigation_window_update_split_view_actions_sensitivity (window);
 
     g_remove("/home/lanyue/.cache/peony");
+    old_tmp_filename = NULL;
 }
 
 gboolean
