@@ -145,6 +145,7 @@ static PeonyNavigationWindow *global_window;
 static char* global_preview_filename;
 static char* global_preview_office2pdf_filename;
 static char* global_preview_excel2html_filename;
+static char* old_tmp_filename;
 //static TestWidget *global_test_widget;
 //static GtkWidget *global_pdf_view;
 //static GtkWidget *empty_widget;
@@ -714,6 +715,11 @@ peony_navigation_window_destroy (GtkWidget *object)
     //global_test_widget = NULL;
 
     //pdf_viewer_shutdown();    
+    char* tmp_path;
+    tmp_path = g_build_filename (g_get_user_cache_dir (), "peony", NULL);
+    g_remove(tmp_path);
+    g_free (tmp_path);
+    old_tmp_filename = NULL;
 
     GTK_WIDGET_CLASS (parent_class)->destroy (object);
 }
@@ -1419,8 +1425,6 @@ create_extra_pane (PeonyNavigationWindow *window)
     return slot;
 }
 
-static char* old_tmp_filename;
-
 static void office_format_trans_ready_callback(GObject *singaller, gpointer data){
     printf("office2pdf/html done\n");
     //global_preview_office2pdf_filename = (char*) data;
@@ -1610,7 +1614,10 @@ peony_navigation_window_split_view_off (PeonyNavigationWindow *window)
     window->details->is_split_view_showing = FALSE;
     peony_navigation_window_update_split_view_actions_sensitivity (window);
 
-    g_remove("/home/lanyue/.cache/peony");
+    char* tmp_path;
+    tmp_path = g_build_filename (g_get_user_cache_dir (), "peony", NULL);
+    g_remove(tmp_path);
+    g_free (tmp_path);
     old_tmp_filename = NULL;
 }
 
