@@ -233,7 +233,7 @@ list_selection_changed_callback (GtkTreeSelection *selection, gpointer user_data
         if(filename){
             g_signal_emit_by_name (peony_signaller_get_current (),
                          "preview_file_changed",(gpointer)filename);
-            //free(filename);
+            free(filename);
         } else {
             filename = "null";
             g_signal_emit_by_name (peony_signaller_get_current (),
@@ -245,6 +245,7 @@ list_selection_changed_callback (GtkTreeSelection *selection, gpointer user_data
         g_signal_emit_by_name (peony_signaller_get_current (),
                      "preview_file_changed",(gpointer)filename);
     }
+
     fm_directory_view_notify_selection_changed (view);
 }
 

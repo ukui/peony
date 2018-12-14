@@ -1590,7 +1590,6 @@ void
 peony_window_connect_content_view (PeonyWindow *window,
                                   PeonyView *view)
 {
-	printf("slot-changed");
     PeonyWindowSlot *slot;
 
     g_assert (PEONY_IS_WINDOW (window));

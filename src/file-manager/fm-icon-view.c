@@ -2560,11 +2560,10 @@ selection_changed_callback (PeonyIconContainer *container,
         //char* uri = peony_file_get_uri(file);
         char* filename = g_filename_from_uri(peony_file_get_uri(file),NULL,NULL);
 
-        printf("%s\n",filename);
         if(filename){
             g_signal_emit_by_name (peony_signaller_get_current (),
                          "preview_file_changed",(gpointer)filename);
-            //free(filename);
+            free(filename);
         } else {
             filename = "null";
             g_signal_emit_by_name (peony_signaller_get_current (),
