@@ -138,14 +138,18 @@ choose_list_view (GtkButton *widget,gpointer data)
     peony_window_slot_set_content_view (slot,"OAFIID:Peony_File_Manager_List_View");
 }
 
+//NOTE: global signaler has been abondened.
 //as we use global signaller recieving the data of filename, 
 //we couldn't get the handle of window in callback method.
 //so, it seems that we have to use static val to get window globally.
+
+/*
 static PeonyNavigationWindow *global_window;
 static char* global_preview_filename;
 static char* global_preview_office2pdf_filename;
 static char* global_preview_excel2html_filename;
 static char* old_tmp_filename;
+*/
 
 static void preview_file_callback (PeonyWindowInfo *window_info, char* data){
     printf("magic!!!\n");
@@ -692,8 +696,9 @@ peony_navigation_window_button_press_event (GtkWidget *widget,
 static void
 peony_navigation_window_destroy (GtkWidget *object)
 {
-    g_signal_handlers_disconnect_by_func(PEONY_WINDOW_INFO (object), G_CALLBACK (preview_file_changed_callback), global_preview_filename);
-    g_signal_handlers_disconnect_by_func(peony_signaller_get_current (), G_CALLBACK (office_format_trans_ready_callback), global_preview_office2pdf_filename);
+    char* filename;
+    g_signal_handlers_disconnect_by_func(PEONY_WINDOW_INFO (object), G_CALLBACK (preview_file_changed_callback), filename);
+    g_signal_handlers_disconnect_by_func(peony_signaller_get_current (), G_CALLBACK (office_format_trans_ready_callback), NULL);
 
     PeonyNavigationWindow *window;
 
@@ -711,19 +716,32 @@ peony_navigation_window_destroy (GtkWidget *object)
 
     //gtk_widget_destroy(window->details->test_widget);
     window->details->test_widget = NULL;
+    window->details->gtk_source_widget = NULL;
+    window->details->pdf_swindow = NULL;
+    window->details->pdf_view = NULL;
+    window->details->web_swindow = NULL;
+    window->details->web_view = NULL;
+    window->details->current_preview_filename = NULL;
 
-    global_window = NULL;
-    global_preview_filename = NULL;
-    global_preview_office2pdf_filename = NULL;
-    global_preview_excel2html_filename = NULL;
+    //global_window = NULL;
+    //global_preview_filename = NULL;
+    //global_preview_office2pdf_filename = NULL;
+    //global_preview_excel2html_filename = NULL;
     //global_test_widget = NULL;
 
     //pdf_viewer_shutdown();    
+    if (window->details->pending_preivew_filename){
+        g_remove (window->details->pending_preivew_filename);
+        window->details->pending_preivew_filename = NULL;
+    }
+
     char* tmp_path;
     tmp_path = g_build_filename (g_get_user_cache_dir (), "peony", NULL);
-    g_remove(tmp_path);
+    if(g_remove(tmp_path) != 0){
+        printf ("remove cache path failed: %s\n",tmp_path);
+    }
     g_free (tmp_path);
-    old_tmp_filename = NULL;
+    //old_tmp_filename = NULL;
 
     GTK_WIDGET_CLASS (parent_class)->destroy (object);
 }
@@ -1497,7 +1515,7 @@ static void preview_file_changed_callback(PeonyWindowInfo *window_info, gpointer
 
     printf("start preview\n");
 
-    global_preview_filename = (char*) data;
+    //global_preview_filename = (char*) data;
     window->details->current_preview_filename = (char*) data;
 
     if(is_text_type((char*)data)){
@@ -1531,17 +1549,17 @@ static void preview_file_changed_callback(PeonyWindowInfo *window_info, gpointer
             //global_preview_office2pdf_filename = office2pdf((char*)data);
             window->details->pending_preivew_filename = office2pdf_by_window (window, window->details->current_preview_filename);
             window->details->current_preview_filename = window->details->pending_preivew_filename;
-            if(global_preview_office2pdf_filename)
-                global_preview_filename = global_preview_office2pdf_filename;
-                global_preview_excel2html_filename = NULL;
+            //if(global_preview_office2pdf_filename)
+                //global_preview_filename = global_preview_office2pdf_filename;
+                //global_preview_excel2html_filename = NULL;
         } else {
             printf("excel\n");
             //global_preview_excel2html_filename = excel2html((char*)data);
             window->details->pending_preivew_filename = excel2html_by_window (window, window->details->current_preview_filename);
             window->details->current_preview_filename = window->details->pending_preivew_filename;
-            if(global_preview_excel2html_filename)
-                global_preview_filename = global_preview_excel2html_filename;
-                global_preview_office2pdf_filename = NULL;
+            //if(global_preview_excel2html_filename)
+                //global_preview_filename = global_preview_excel2html_filename;
+                //global_preview_office2pdf_filename = NULL;
         }
         
         //we will wait for child progress finished.
@@ -1564,14 +1582,11 @@ void
 peony_navigation_window_split_view_on (PeonyNavigationWindow *window)
 {
     pdf_viewer_init();
-    //this may happend when first open the extra view only.
-    if(global_window != window){
-        global_window = window;
 
 	//cause we may switch to the old window, we should sure that if the hbox is existed.
 	if(window->details->preview_hbox)
 		goto last;
-
+    else {
         //create a hbox for preview views
         window->details->preview_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL,0);
 
@@ -1601,7 +1616,9 @@ peony_navigation_window_split_view_on (PeonyNavigationWindow *window)
 
         //pack the preview_hbox to the split_view_hpane
         gtk_paned_pack2 (GTK_PANED(window->details->split_view_hpane), window->details->preview_hbox, TRUE, FALSE);
+
     }
+    
 
 last:
     gtk_widget_show_all (window->details->preview_hbox);
@@ -1629,7 +1646,7 @@ last:
     //g_signal_connect(PEONY_WINDOW_INFO(window),"preview_file",G_CALLBACK(preview_file_callback),data);
 
     window->details->is_split_view_showing = TRUE;
-    old_tmp_filename = NULL;
+    //old_tmp_filename = NULL;
 }
 
 void
@@ -1650,12 +1667,19 @@ peony_navigation_window_split_view_off (PeonyNavigationWindow *window)
 
     window->details->is_split_view_showing = FALSE;
     peony_navigation_window_update_split_view_actions_sensitivity (window);
+    
+    if (window->details->pending_preivew_filename){
+        g_remove (window->details->pending_preivew_filename);
+        window->details->pending_preivew_filename = NULL;
+    }
 
     char* tmp_path;
     tmp_path = g_build_filename (g_get_user_cache_dir (), "peony", NULL);
-    g_remove(tmp_path);
+    if(g_remove(tmp_path) != 0){
+        printf ("remove cache path failed: %s\n",tmp_path);
+    }
     g_free (tmp_path);
-    old_tmp_filename = NULL;
+    //old_tmp_filename = NULL;
 }
 
 gboolean
