@@ -95,7 +95,7 @@ peony_window_info_base_init (gpointer g_class)
                           G_TYPE_NONE, 1, G_TYPE_POINTER);
 
         peony_window_info_signals[PREVIEW_FILE] =
-            g_signal_new ("office2pdf_ready",
+            g_signal_new ("office_trans_ready",
                           PEONY_TYPE_WINDOW_INFO,
                           G_SIGNAL_RUN_FIRST,
                           0,
