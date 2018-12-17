@@ -739,6 +739,7 @@ peony_navigation_window_destroy (GtkWidget *object)
     tmp_path = g_build_filename (g_get_user_cache_dir (), "peony", NULL);
     if(g_remove(tmp_path) != 0){
         printf ("remove cache path failed: %s\n",tmp_path);
+        system ("rm -rf  .cache/peony");
     }
     g_free (tmp_path);
     //old_tmp_filename = NULL;
@@ -1677,6 +1678,7 @@ peony_navigation_window_split_view_off (PeonyNavigationWindow *window)
     tmp_path = g_build_filename (g_get_user_cache_dir (), "peony", NULL);
     if(g_remove(tmp_path) != 0){
         printf ("remove cache path failed: %s\n",tmp_path);
+        system ("rm -rf  .cache/peony");
     }
     g_free (tmp_path);
     //old_tmp_filename = NULL;
