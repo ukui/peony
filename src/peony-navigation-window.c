@@ -1644,7 +1644,7 @@ peony_navigation_window_split_view_off (PeonyNavigationWindow *window)
     g_signal_handlers_disconnect_by_func(peony_signaller_get_current (), G_CALLBACK (office_format_trans_ready_callback), child_cb_filename);
     */
    char *data;
-    g_signal_handlers_disconnect_by_func(PEONY_WINDOW_INFO(window),G_CALLBACK(preview_file_callback),data);
+    g_signal_handlers_disconnect_by_func(PEONY_WINDOW_INFO(window),G_CALLBACK(preview_file_changed_callback),data);
     g_signal_handlers_disconnect_by_func(PEONY_WINDOW_INFO(window),G_CALLBACK(office_format_trans_ready_callback),NULL);
 
 
