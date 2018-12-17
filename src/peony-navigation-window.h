@@ -61,7 +61,8 @@ typedef struct _PeonyNavigationWindowDetails PeonyNavigationWindowDetails;
 struct _PeonyNavigationWindow
 {
     PeonyWindow parent_object;
-
+    //PeonyWindow is aslo PeonyWindowInfo
+    
     PeonyNavigationWindowDetails *details;
 
     /** UI stuff **/

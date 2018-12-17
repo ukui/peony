@@ -606,7 +606,7 @@ create_templates_parameters_free (CreateTemplateParameters *parameters)
 PeonyWindowInfo *
 fm_directory_view_get_peony_window (FMDirectoryView  *view)
 {
-	g_assert (view->details->window != NULL);
+	g_assert (view->details->window != NULL); //list view has not window, but tree view, that is a shame we can't emit signal by connecting window_info.
 
 	return view->details->window;
 }

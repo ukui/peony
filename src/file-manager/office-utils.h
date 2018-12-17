@@ -1,9 +1,14 @@
 #include <glib-2.0/glib.h>
 #include <glib/gstdio.h>
 
+#include "libpeony-private/peony-window-info.h"
+
 //get the office file's of pdf one's name.
-char* office2pdf(char* filename);
-char* excel2html(char* filename);
+//char* office2pdf(char* filename);
+//char* excel2html(char* filename);
+
+char* office2pdf_by_window (PeonyWindowInfo *window, char *filename);
+char* excel2html_by_window (PeonyWindowInfo *window, char *filename);
 
 static GPid old_pid = -1;
 

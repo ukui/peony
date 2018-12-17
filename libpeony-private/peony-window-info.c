@@ -34,6 +34,7 @@ enum
     SELECTION_CHANGED,
     TITLE_CHANGED,
     HIDDEN_FILES_MODE_CHANGED,
+    PREVIEW_FILE,
     LAST_SIGNAL
 };
 
@@ -83,6 +84,24 @@ peony_window_info_base_init (gpointer g_class)
                           NULL, NULL,
                           g_cclosure_marshal_VOID__VOID,
                           G_TYPE_NONE, 0);
+
+        peony_window_info_signals[PREVIEW_FILE] =
+            g_signal_new ("preview_file",
+                          PEONY_TYPE_WINDOW_INFO,
+                          G_SIGNAL_RUN_FIRST,
+                          0,
+                          NULL, NULL,
+                          g_cclosure_marshal_VOID__POINTER,
+                          G_TYPE_NONE, 1, G_TYPE_POINTER);
+
+        peony_window_info_signals[PREVIEW_FILE] =
+            g_signal_new ("office2pdf_ready",
+                          PEONY_TYPE_WINDOW_INFO,
+                          G_SIGNAL_RUN_FIRST,
+                          0,
+                          NULL, NULL,
+                          g_cclosure_marshal_VOID__VOID,
+                          G_TYPE_NONE,  0);
 
         initialized = TRUE;
     }

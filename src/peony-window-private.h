@@ -143,6 +143,10 @@ struct _PeonyNavigationWindowDetails
 
     /* empty view */
     GtkWidget *empty_window;
+
+    /* preview file name */
+    char *current_preview_filename;
+    char *pending_preivew_filename;
 };
 
 #define PEONY_MENU_PATH_BACK_ITEM			"/menu/Go/Back"

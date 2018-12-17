@@ -95,8 +95,8 @@ static void mouse_forward_button_changed	     (gpointer                  callbac
 static void use_extra_mouse_buttons_changed          (gpointer                  callback_data);
 static PeonyWindowSlot *create_extra_pane         (PeonyNavigationWindow *window);
 
-static void preview_file_changed_callback(GObject *singaller, gpointer data);
-static void office_format_trans_ready_callback(GObject *singaller, gpointer data);
+static void preview_file_changed_callback(PeonyWindowInfo *window_info, gpointer data);
+static void office_format_trans_ready_callback(PeonyWindowInfo *window_info, gpointer data);
 
 G_DEFINE_TYPE (PeonyNavigationWindow, peony_navigation_window, PEONY_TYPE_WINDOW)
 #define parent_class peony_navigation_window_parent_class
@@ -146,6 +146,10 @@ static char* global_preview_filename;
 static char* global_preview_office2pdf_filename;
 static char* global_preview_excel2html_filename;
 static char* old_tmp_filename;
+
+static void preview_file_callback (PeonyWindowInfo *window_info, char* data){
+    printf("magic!!!\n");
+}
 //static TestWidget *global_test_widget;
 //static GtkWidget *global_pdf_view;
 //static GtkWidget *empty_widget;
@@ -688,7 +692,7 @@ peony_navigation_window_button_press_event (GtkWidget *widget,
 static void
 peony_navigation_window_destroy (GtkWidget *object)
 {
-    g_signal_handlers_disconnect_by_func(peony_signaller_get_current (), G_CALLBACK (preview_file_changed_callback), global_preview_filename);
+    g_signal_handlers_disconnect_by_func(PEONY_WINDOW_INFO (object), G_CALLBACK (preview_file_changed_callback), global_preview_filename);
     g_signal_handlers_disconnect_by_func(peony_signaller_get_current (), G_CALLBACK (office_format_trans_ready_callback), global_preview_office2pdf_filename);
 
     PeonyNavigationWindow *window;
@@ -1425,94 +1429,116 @@ create_extra_pane (PeonyNavigationWindow *window)
     return slot;
 }
 
-static void office_format_trans_ready_callback(GObject *singaller, gpointer data){
+static void office_format_trans_ready_callback(PeonyWindowInfo *window_info, gpointer data){
     printf("office2pdf/html done\n");
     //global_preview_office2pdf_filename = (char*) data;
-    printf("cb: %s, global: %s\n", data, global_preview_filename);
+    //printf("cb: %s, global: %s\n", data, global_preview_filename);
+    PeonyNavigationWindow *window = PEONY_NAVIGATION_WINDOW (window_info);
+    char* current_preview_filename = window->details->current_preview_filename;
+    char* pending_preivew_filename = window->details->pending_preivew_filename;
 
-    if(filename_has_suffix(data, ".pdf")){
-        printf("cmp: %s, %s\n",data,global_preview_filename);
-        if (g_str_equal(data,global_preview_filename) == TRUE) {
-            printf("should show office pdf file\n");
-            set_pdf_preview_widget_file_by_filename(global_window->details->pdf_view,(char*)data);
-            gtk_widget_hide(global_window->details->empty_window);
-            gtk_widget_show_all(global_window->details->pdf_swindow);
-            gtk_widget_hide(global_window->details->test_widget);
-            gtk_widget_hide(global_window->details->web_swindow);
-        } 
-    } 
-    else if (filename_has_suffix(data,".html")) {
-        printf("should show html file\n");
-        if (g_str_equal(data,global_preview_filename) == TRUE) {
-            gchar *uri;
-            uri = g_strdup_printf("file://%s", global_preview_excel2html_filename);
-            printf("load uri: %s",uri);
-            webkit_web_view_load_uri (WEBKIT_WEB_VIEW(global_window->details->web_view), uri);
-            g_free(uri);
-            gtk_widget_hide(global_window->details->empty_window);
-            gtk_widget_hide(global_window->details->pdf_swindow);
-            gtk_widget_hide(global_window->details->test_widget);
-            gtk_widget_show_all(global_window->details->web_swindow);
-        }
-    }
-    if (old_tmp_filename){
-        if(!g_str_equal(data,old_tmp_filename)){
-            g_unlink(old_tmp_filename);
-        }
-    }
-    old_tmp_filename = data;      
-}
+    printf("current: %s, pending: %s\n",current_preview_filename , pending_preivew_filename);
 
-static void preview_file_changed_callback(GObject *singaller, gpointer data){
-    if (old_pid != -1)
-        kill (old_pid, SIGKILL); //kill old pid for office transform anyway
-    if((char*)data == "null"){
-	    gtk_widget_show(global_window->details->empty_window);
-	    gtk_widget_hide(global_window->details->pdf_swindow);
-	    gtk_widget_hide(global_window->details->test_widget);
-        gtk_widget_hide(global_window->details->web_swindow);
+    if(!g_str_equal(current_preview_filename, pending_preivew_filename)){
         return;
     }
 
-    global_preview_filename = (char*) data;
+    if (filename_has_suffix(pending_preivew_filename,".pdf")) {
+        set_pdf_preview_widget_file_by_filename (window->details->pdf_view, pending_preivew_filename);
+        gtk_widget_hide (window->details->empty_window);
+        gtk_widget_show_all (window->details->pdf_swindow);
+        gtk_widget_hide (window->details->test_widget);
+        gtk_widget_hide (window->details->web_swindow);
+    } else if (filename_has_suffix(pending_preivew_filename,".html")) {
+        gchar *uri;
+        uri = g_strdup_printf("file://%s", pending_preivew_filename);
+        printf("load uri: %s",uri);
+        webkit_web_view_load_uri (WEBKIT_WEB_VIEW (window->details->web_view), uri);
+        g_free(uri);
+        gtk_widget_hide (window->details->empty_window);
+        gtk_widget_hide (window->details->pdf_swindow);
+        gtk_widget_hide (window->details->test_widget);
+        gtk_widget_show_all (window->details->web_swindow);
+    }
 
-    printf("recieved filename:%s\n",(char*)data);
-    printf("mime type: %s\n",get_mime_type_string_by_filename((char*)data));
+}
+
+static void preview_file_changed_callback(PeonyWindowInfo *window_info, gpointer data){
+    if (peony_window_info_get_window_type (window_info) != PEONY_WINDOW_NAVIGATION){
+        printf ("is not navigation\n");
+        return;
+    }
+
+    PeonyNavigationWindow *window = PEONY_NAVIGATION_WINDOW (window_info);
+    if (!window->details->preview_hbox) {
+        printf("split view is not init!\n");
+        return;
+    }
+
+    if (window->details->pending_preivew_filename){
+        printf("has tmp file before: %s\n", window->details->pending_preivew_filename);
+        g_remove (window->details->pending_preivew_filename);
+        free (window->details->pending_preivew_filename);
+        window->details->pending_preivew_filename = NULL;
+    }
+
+    printf("file name should be previewed: %s\n",data);
+
+    if (old_pid != -1)
+        kill (old_pid, SIGKILL); //kill old pid for office transform anyway
+
+      if((char*)data == "null"){
+	    gtk_widget_show(window->details->empty_window);
+	    gtk_widget_hide(window->details->pdf_swindow);
+	    gtk_widget_hide(window->details->test_widget);
+        gtk_widget_hide(window->details->web_swindow);
+        return;
+    } 
+
+    printf("start preview\n");
+
+    global_preview_filename = (char*) data;
+    window->details->current_preview_filename = (char*) data;
+
     if(is_text_type((char*)data)){
-	    open_file_cb(global_window->details->gtk_source_widget,(char*)data);
-        gtk_widget_hide(global_window->details->empty_window);
-        gtk_widget_hide(global_window->details->pdf_swindow);
-        gtk_widget_hide (global_window->details->web_swindow);
-        gtk_widget_show_all(global_window->details->test_widget);
+	    open_file_cb(window->details->gtk_source_widget,(char*)data);
+        gtk_widget_hide (window->details->empty_window);
+        gtk_widget_hide (window->details->pdf_swindow);
+        gtk_widget_hide (window->details->web_swindow);
+        gtk_widget_show_all (window->details->test_widget);
     } else if (is_image_type((char*)data)) {
         printf("is image type\n");
         gchar *uri;
         uri = g_strdup_printf("file://%s", data);
         printf("load uri: %s",uri);
-        webkit_web_view_load_uri (WEBKIT_WEB_VIEW(global_window->details->web_view), uri);
+        webkit_web_view_load_uri (WEBKIT_WEB_VIEW (window->details->web_view), uri);
         g_free(uri);
-        gtk_widget_hide(global_window->details->empty_window);
-        gtk_widget_hide(global_window->details->pdf_swindow);
-        gtk_widget_hide(global_window->details->test_widget);
-        gtk_widget_show_all (global_window->details->web_swindow);
+        gtk_widget_hide (window->details->empty_window);
+        gtk_widget_hide (window->details->pdf_swindow);
+        gtk_widget_hide (window->details->test_widget);
+        gtk_widget_show_all (window->details->web_swindow);
     }  else if (is_pdf_type((char*)data)) {
         printf("is pdf type\n");
-        set_pdf_preview_widget_file_by_filename(global_window->details->pdf_view,(char*)data);
-        gtk_widget_hide(global_window->details->empty_window);
-        gtk_widget_show_all(global_window->details->pdf_swindow);
-        gtk_widget_hide(global_window->details->test_widget);
-        gtk_widget_hide (global_window->details->web_swindow);
+        set_pdf_preview_widget_file_by_filename(window->details->pdf_view,(char*)data);
+        gtk_widget_hide (window->details->empty_window);
+        gtk_widget_show_all (window->details->pdf_swindow);
+        gtk_widget_hide (window->details->test_widget);
+        gtk_widget_hide (window->details->web_swindow);
     } else if (is_office_file((char*) data)) {
         printf("is office file\n");
         if (!is_excel_doc((char*)data)){
             printf("doc & ppt\n");
-            global_preview_office2pdf_filename = office2pdf((char*)data);
+            //global_preview_office2pdf_filename = office2pdf((char*)data);
+            window->details->pending_preivew_filename = office2pdf_by_window (window, window->details->current_preview_filename);
+            window->details->current_preview_filename = window->details->pending_preivew_filename;
             if(global_preview_office2pdf_filename)
                 global_preview_filename = global_preview_office2pdf_filename;
                 global_preview_excel2html_filename = NULL;
         } else {
             printf("excel\n");
-            global_preview_excel2html_filename = excel2html((char*)data);
+            //global_preview_excel2html_filename = excel2html((char*)data);
+            window->details->pending_preivew_filename = excel2html_by_window (window, window->details->current_preview_filename);
+            window->details->current_preview_filename = window->details->pending_preivew_filename;
             if(global_preview_excel2html_filename)
                 global_preview_filename = global_preview_excel2html_filename;
                 global_preview_office2pdf_filename = NULL;
@@ -1520,17 +1546,18 @@ static void preview_file_changed_callback(GObject *singaller, gpointer data){
         
         //we will wait for child progress finished.
 
-	    gtk_widget_show(global_window->details->empty_window);
-	    gtk_widget_hide(global_window->details->pdf_swindow);
-	    gtk_widget_hide(global_window->details->test_widget);
-        gtk_widget_hide (global_window->details->web_swindow);
+	    gtk_widget_show (window->details->empty_window);
+	    gtk_widget_hide (window->details->pdf_swindow);
+	    gtk_widget_hide (window->details->test_widget);
+        gtk_widget_hide (window->details->web_swindow);
     } else {
         printf("can't preview this file\n");
-	    gtk_widget_show(global_window->details->empty_window);
-	    gtk_widget_hide(global_window->details->pdf_swindow);
-	    gtk_widget_hide(global_window->details->test_widget);
-        gtk_widget_hide (global_window->details->web_swindow);
+	    gtk_widget_show (window->details->empty_window);
+	    gtk_widget_hide (window->details->pdf_swindow);
+	    gtk_widget_hide (window->details->test_widget);
+        gtk_widget_hide (window->details->web_swindow);
     }
+
 }
 
 void
@@ -1587,15 +1614,19 @@ last:
     char* preview_filename; 
     char* child_cb_filename;
 
-    g_signal_connect (peony_signaller_get_current (),
-                          "preview_file_changed",
+    g_signal_connect (PEONY_WINDOW_INFO(window),
+                          "preview_file",
                           G_CALLBACK (preview_file_changed_callback), preview_filename
                           );
 
-    g_signal_connect (peony_signaller_get_current (),
-                          "office2pdf_ready",
-                          G_CALLBACK (office_format_trans_ready_callback), child_cb_filename
+    g_signal_connect (PEONY_WINDOW_INFO(window),
+                          "office_trans_ready",
+                          G_CALLBACK (office_format_trans_ready_callback), NULL
                           );
+
+
+    //char* data;
+    //g_signal_connect(PEONY_WINDOW_INFO(window),"preview_file",G_CALLBACK(preview_file_callback),data);
 
     window->details->is_split_view_showing = TRUE;
     old_tmp_filename = NULL;
@@ -1608,8 +1639,14 @@ peony_navigation_window_split_view_off (PeonyNavigationWindow *window)
     char* preview_filename; 
     char* child_cb_filename;
     gtk_widget_hide (window->details->preview_hbox);
+    /*
     g_signal_handlers_disconnect_by_func(peony_signaller_get_current (), G_CALLBACK (preview_file_changed_callback), preview_filename);
     g_signal_handlers_disconnect_by_func(peony_signaller_get_current (), G_CALLBACK (office_format_trans_ready_callback), child_cb_filename);
+    */
+   char *data;
+    g_signal_handlers_disconnect_by_func(PEONY_WINDOW_INFO(window),G_CALLBACK(preview_file_callback),data);
+    g_signal_handlers_disconnect_by_func(PEONY_WINDOW_INFO(window),G_CALLBACK(office_format_trans_ready_callback),NULL);
+
 
     window->details->is_split_view_showing = FALSE;
     peony_navigation_window_update_split_view_actions_sensitivity (window);
