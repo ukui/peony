@@ -143,6 +143,7 @@ struct _PeonyNavigationWindowDetails
 
     /* empty view */
     GtkWidget *empty_window;
+    GtkWidget *hint_view;
 
     /* preview file name */
     char *current_preview_filename;

@@ -721,6 +721,8 @@ peony_navigation_window_destroy (GtkWidget *object)
     window->details->pdf_view = NULL;
     window->details->web_swindow = NULL;
     window->details->web_view = NULL;
+    window->details->empty_window = NULL;
+    window->details->hint_view = NULL;
     window->details->current_preview_filename = NULL;
 
     //global_window = NULL;
@@ -1458,6 +1460,10 @@ static void office_format_trans_ready_callback(PeonyWindowInfo *window_info, gpo
 
     printf("current: %s, pending: %s\n",current_preview_filename , pending_preivew_filename);
 
+    if (!pending_preivew_filename){
+        return;
+    }
+
     if(!g_str_equal(current_preview_filename, pending_preivew_filename)){
         return;
     }
@@ -1506,8 +1512,9 @@ static void preview_file_changed_callback(PeonyWindowInfo *window_info, gpointer
     if (old_pid != -1)
         kill (old_pid, SIGKILL); //kill old pid for office transform anyway
 
-      if((char*)data == "null"){
-	    gtk_widget_show(window->details->empty_window);
+    if((char*)data == "null"){
+        gtk_label_set_label(window->details->hint_view, "Select the file you want to preview");
+	    gtk_widget_show_all(window->details->empty_window);
 	    gtk_widget_hide(window->details->pdf_swindow);
 	    gtk_widget_hide(window->details->test_widget);
         gtk_widget_hide(window->details->web_swindow);
@@ -1565,13 +1572,15 @@ static void preview_file_changed_callback(PeonyWindowInfo *window_info, gpointer
         
         //we will wait for child progress finished.
 
-	    gtk_widget_show (window->details->empty_window);
+        gtk_label_set_label (window->details->hint_view, "Loading...");
+	    gtk_widget_show_all (window->details->empty_window);
 	    gtk_widget_hide (window->details->pdf_swindow);
 	    gtk_widget_hide (window->details->test_widget);
         gtk_widget_hide (window->details->web_swindow);
     } else {
         printf("can't preview this file\n");
-	    gtk_widget_show (window->details->empty_window);
+        gtk_label_set_label (window->details->hint_view, "Can't preview this file");
+	    gtk_widget_show_all (window->details->empty_window);
 	    gtk_widget_hide (window->details->pdf_swindow);
 	    gtk_widget_hide (window->details->test_widget);
         gtk_widget_hide (window->details->web_swindow);
@@ -1613,7 +1622,9 @@ peony_navigation_window_split_view_on (PeonyNavigationWindow *window)
 
         //add empty widget to split_view_hpane
         window->details->empty_window = gtk_scrolled_window_new(NULL,NULL);
+        window->details->hint_view = gtk_label_new ("Select the file you want to preview");    
         gtk_box_pack_start (GTK_BOX(window->details->preview_hbox), GTK_WIDGET(window->details->empty_window), TRUE, TRUE, 0);
+        gtk_container_add (GTK_CONTAINER(window->details->empty_window), GTK_WIDGET(window->details->hint_view));
 
         //pack the preview_hbox to the split_view_hpane
         gtk_paned_pack2 (GTK_PANED(window->details->split_view_hpane), window->details->preview_hbox, TRUE, FALSE);
@@ -1622,6 +1633,7 @@ peony_navigation_window_split_view_on (PeonyNavigationWindow *window)
     
 
 last:
+    gtk_label_set_label (window->details->hint_view, "Select the file you want to preview");
     gtk_widget_show_all (window->details->preview_hbox);
     gtk_widget_hide (window->details->test_widget);
     gtk_widget_hide (window->details->pdf_swindow);
