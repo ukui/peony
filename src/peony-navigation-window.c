@@ -1451,9 +1451,7 @@ create_extra_pane (PeonyNavigationWindow *window)
 }
 
 static void office_format_trans_ready_callback(PeonyWindowInfo *window_info, gpointer data){
-    printf("office2pdf/html done\n");
-    //global_preview_office2pdf_filename = (char*) data;
-    //printf("cb: %s, global: %s\n", data, global_preview_filename);
+    //printf("office2pdf/html done\n");
     PeonyNavigationWindow *window = PEONY_NAVIGATION_WINDOW (window_info);
     char* current_preview_filename = window->details->current_preview_filename;
     char* pending_preivew_filename = window->details->pending_preivew_filename;
@@ -1507,10 +1505,17 @@ static void preview_file_changed_callback(PeonyWindowInfo *window_info, gpointer
         window->details->pending_preivew_filename = NULL;
     }
 
-    printf("file name should be previewed: %s\n",data);
-
-    if (old_pid != -1)
-        kill (old_pid, SIGKILL); //kill old pid for office transform anyway
+    //printf("file name should be previewed: %s\n",data);
+/*
+    if (old_pid != -1){
+        gchar *cmd = g_strdup_printf ("kill %d\n", old_pid);
+        printf("cmd :%s", cmd);
+        system (cmd);
+        //kill (old_pid, SIGKILL); //kill old pid for office transform anyway
+        old_pid = -1;
+        g_free (cmd);
+    }
+*/
 
     if((char*)data == "null"){
         gtk_label_set_label(window->details->hint_view, _("Select the file you want to preview"));
@@ -1521,9 +1526,8 @@ static void preview_file_changed_callback(PeonyWindowInfo *window_info, gpointer
         return;
     } 
 
-    printf("start preview\n");
+    //printf("start preview\n");
 
-    //global_preview_filename = (char*) data;
     window->details->current_preview_filename = (char*) data;
 
     if(is_text_type((char*)data)){
@@ -1554,20 +1558,12 @@ static void preview_file_changed_callback(PeonyWindowInfo *window_info, gpointer
         printf("is office file\n");
         if (!is_excel_doc((char*)data)){
             printf("doc & ppt\n");
-            //global_preview_office2pdf_filename = office2pdf((char*)data);
             window->details->pending_preivew_filename = office2pdf_by_window (window, window->details->current_preview_filename);
             window->details->current_preview_filename = window->details->pending_preivew_filename;
-            //if(global_preview_office2pdf_filename)
-                //global_preview_filename = global_preview_office2pdf_filename;
-                //global_preview_excel2html_filename = NULL;
         } else {
             printf("excel\n");
-            //global_preview_excel2html_filename = excel2html((char*)data);
             window->details->pending_preivew_filename = excel2html_by_window (window, window->details->current_preview_filename);
             window->details->current_preview_filename = window->details->pending_preivew_filename;
-            //if(global_preview_excel2html_filename)
-                //global_preview_filename = global_preview_excel2html_filename;
-                //global_preview_office2pdf_filename = NULL;
         }
         
         //we will wait for child progress finished.
@@ -1578,7 +1574,7 @@ static void preview_file_changed_callback(PeonyWindowInfo *window_info, gpointer
 	    gtk_widget_hide (window->details->test_widget);
         gtk_widget_hide (window->details->web_swindow);
     } else {
-        printf("can't preview this file\n");
+        //printf("can't preview this file\n");
         gtk_label_set_label (window->details->hint_view, _("Can't preview this file"));
 	    gtk_widget_show_all (window->details->empty_window);
 	    gtk_widget_hide (window->details->pdf_swindow);

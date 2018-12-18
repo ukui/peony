@@ -9,13 +9,21 @@ unoconv_child_watch_cb2 (GPid pid,
                         gint status,
                         gpointer user_data)
 {
-	printf("unoconv_child_watch_cb pid: %d\n",pid);
+	//printf("unoconv_child_watch_cb pid: %d\n",pid);
 	g_spawn_close_pid (pid);
 	g_signal_emit_by_name (PEONY_WINDOW_INFO (user_data), "office_trans_ready", NULL);    //office ready cb , if pdf name = global preview file name, show it. else g_remove file.
 }
 
 char* office2pdf_by_window (PeonyWindowInfo *window, char *filename){
 
+    if (old_pid != -1){
+        gchar *cmd = g_strdup_printf ("kill %d\n", old_pid);
+        printf("cmd :%s", cmd);
+        //system (cmd);
+        kill (old_pid, SIGKILL); //kill old pid for office transform anyway
+        old_pid = -1;
+        g_free (cmd);
+	}
 
 	gchar *doc_path, *pdf_path, *tmp_name, *tmp_path, *quoted_path;
 	GFile *file;
@@ -35,18 +43,18 @@ char* office2pdf_by_window (PeonyWindowInfo *window, char *filename){
 		return NULL;
 	}
 
-	printf("pid: %d\n",getpid());
+	//printf("pid: %d\n",getpid());
 
 	file = g_file_new_for_path(filename);
 	tmp_name = g_strdup_printf("%s.pdf",g_file_get_basename (file));
 	
-	printf("tmp_name: %s\n",tmp_name);
+	//printf("tmp_name: %s\n",tmp_name);
 	tmp_path = g_build_filename (g_get_user_cache_dir (), "peony", NULL);
 	pdf_path = g_build_filename (tmp_path, tmp_name, NULL);
 	g_mkdir_with_parents (tmp_path, 0700);
 
 	cmd = g_strdup_printf ("unoconv -f pdf -o %s '%s'", pdf_path, filename);
-	printf("cmd: %s\n",cmd);
+	//printf("cmd: %s\n",cmd);
 	
 	res = g_shell_parse_argv (cmd, &argc, &argv, &error);
 	g_free (cmd);
@@ -86,6 +94,15 @@ char* office2pdf_by_window (PeonyWindowInfo *window, char *filename){
 
 char* excel2html_by_window (PeonyWindowInfo *window, char *filename){
 
+    if (old_pid != -1){
+        gchar *cmd = g_strdup_printf ("kill %d", old_pid);
+        printf("cmd :%s\n", cmd);
+        //system (cmd);
+        kill (old_pid, SIGKILL); //kill old pid for office transform anyway
+        old_pid = -1;
+        g_free (cmd);
+	}
+
 	gchar *doc_path, *html_path, *tmp_name, *tmp_path, *quoted_path;
 	GFile *file;
 	gboolean res;
@@ -104,18 +121,18 @@ char* excel2html_by_window (PeonyWindowInfo *window, char *filename){
 		return NULL;
 	}
 
-	printf("pid: %d\n",getpid());
+	//printf("pid: %d\n",getpid());
 
 	file = g_file_new_for_path(filename);
 	tmp_name = g_strdup_printf("%s.html",g_file_get_basename (file));
 
-	printf("tmp_name: %s\n",tmp_name);
+	//printf("tmp_name: %s\n",tmp_name);
 	tmp_path = g_build_filename (g_get_user_cache_dir (), "peony", NULL);
 	html_path = g_build_filename (tmp_path, tmp_name, NULL);
 	g_mkdir_with_parents (tmp_path, 0700);
 
 	cmd = g_strdup_printf ("unoconv -f html -o %s '%s'", html_path, filename);
-	printf("cmd: %s\n",cmd);	
+	//printf("cmd: %s\n",cmd);	
 	
 	res = g_shell_parse_argv (cmd, &argc, &argv, &error);
 	g_free (cmd);
