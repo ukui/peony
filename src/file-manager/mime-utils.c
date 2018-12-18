@@ -32,7 +32,7 @@ gboolean is_text_type(char* filename){
 	char* mime_type = get_mime_type_string_by_filename(filename);
 	gboolean is_text = FALSE;
 
-	if(strstr(mime_type,"text")){
+	if(strstr(mime_type,"text/")){
 		is_text = TRUE;
 	} else if (strstr(mime_type,"script")) {
 		is_text = TRUE;

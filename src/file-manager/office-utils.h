@@ -14,7 +14,7 @@ static GPid old_pid = -1;
 
 //void init_office_mime_types();
 
-static char* office_mime_types[43] = {
+static char* office_mime_types[] = {
     "application/wps-office.doc",
     "application/msword",
     "application/vnd.ms-word",
@@ -29,6 +29,8 @@ static char* office_mime_types[43] = {
     "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
     "application/wps-office.wps",
     "application/vnd.ms-works",
+    "application/vnd.oasis.opendocument.text",
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
 
     "application/wps-office.wpt",
     "application/wps-office.ppt",
@@ -46,6 +48,8 @@ static char* office_mime_types[43] = {
     "application/vnd.openxmlformats-officedocument.presentationml.slideshow",
     "application/wps-office.dps",
     "application/wps-office.dpt",
+    "application/vnd.oasis.opendocument.presentation",
+    "application/vnd.openxmlformats-officedocument.presentationml.presentation",
     
     "application/wps-office.xlsx",
     "application/wps-office.xls",
@@ -75,7 +79,9 @@ static char* excel_mime_types[] = {
     "application/vnd.openxmlformats-officedocument.spreadsheetml.template",
     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     "application/wps-office.et",
-    "application/wps-office.ett"
+    "application/wps-office.ett",
+    "application/vnd.oasis.opendocument.spreadsheet",
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
 };
 /*
 		office_mime_types[0] = "application/wps-office.doc";
