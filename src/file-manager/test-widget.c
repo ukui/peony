@@ -241,7 +241,7 @@ load_cb (GtkSourceFileLoader *loader,
 	/* move cursor to the beginning */
 	gtk_text_buffer_get_start_iter (GTK_TEXT_BUFFER (self->priv->buffer), &iter);
 	gtk_text_buffer_place_cursor (GTK_TEXT_BUFFER (self->priv->buffer), &iter);
-	gtk_widget_grab_focus (GTK_WIDGET (self->priv->view));
+	//gtk_widget_grab_focus (GTK_WIDGET (self->priv->view));
 
 	location = gtk_source_file_loader_get_location (loader);
 

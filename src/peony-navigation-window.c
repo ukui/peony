@@ -1567,8 +1567,13 @@ static void preview_file_changed_callback(PeonyWindowInfo *window_info, gpointer
         }
         
         //we will wait for child progress finished.
+        //and if file trans failed, the hint should be "can't preview".
 
-        gtk_label_set_label (window->details->hint_view, _("Loading..."));
+        if (window->details->current_preview_filename)
+            gtk_label_set_label (window->details->hint_view, _("Loading..."));
+        else
+            gtk_label_set_label (window->details->hint_view, _("Can't preview this file"));
+
 	    gtk_widget_show_all (window->details->empty_window);
 	    gtk_widget_hide (window->details->pdf_swindow);
 	    gtk_widget_hide (window->details->test_widget);
