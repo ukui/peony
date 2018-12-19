@@ -319,6 +319,8 @@ void mode_init(TestWidget *self){
 	gtk_source_view_set_smart_home_end (self->priv->view, GTK_SOURCE_SMART_HOME_END_DISABLED);
         gtk_source_view_set_background_pattern (self->priv->view,
                                                         GTK_SOURCE_BACKGROUND_PATTERN_TYPE_NONE);
+	gtk_text_view_set_editable (GTK_TEXT_VIEW(self->priv->view), !enabled);
+	gtk_text_buffer_set_modified (GTK_TEXT_BUFFER(self->priv->buffer), !enabled);
 
 
 }
