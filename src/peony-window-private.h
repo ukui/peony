@@ -147,7 +147,7 @@ struct _PeonyNavigationWindowDetails
 
     /* preview file name */
     char *current_preview_filename;
-    char *pending_preivew_filename;
+    char *pending_preview_filename;
 };
 
 #define PEONY_MENU_PATH_BACK_ITEM			"/menu/Go/Back"

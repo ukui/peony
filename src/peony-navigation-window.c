@@ -732,9 +732,9 @@ peony_navigation_window_destroy (GtkWidget *object)
     //global_test_widget = NULL;
 
     //pdf_viewer_shutdown();    
-    if (window->details->pending_preivew_filename){
-        g_remove (window->details->pending_preivew_filename);
-        window->details->pending_preivew_filename = NULL;
+    if (window->details->pending_preview_filename){
+        g_remove (window->details->pending_preview_filename);
+        window->details->pending_preview_filename = NULL;
     }
 
     char* tmp_path;
@@ -1454,27 +1454,27 @@ static void office_format_trans_ready_callback(PeonyWindowInfo *window_info, gpo
     //printf("office2pdf/html done\n");
     PeonyNavigationWindow *window = PEONY_NAVIGATION_WINDOW (window_info);
     char* current_preview_filename = window->details->current_preview_filename;
-    char* pending_preivew_filename = window->details->pending_preivew_filename;
+    char* pending_preview_filename = window->details->pending_preview_filename;
 
-    //printf("current: %s, pending: %s\n",current_preview_filename , pending_preivew_filename);
+    //printf("current: %s, pending: %s\n",current_preview_filename , pending_preview_filename);
 
-    if (!pending_preivew_filename){
+    if (!pending_preview_filename){
         return;
     }
 /*
-    if(!g_str_equal(current_preview_filename, pending_preivew_filename)){
+    if(!g_str_equal(current_preview_filename, pending_preview_filename)){
         return;
     }
 */
-    if (filename_has_suffix(pending_preivew_filename,".pdf")) {
-        set_pdf_preview_widget_file_by_filename (window->details->pdf_view, pending_preivew_filename);
+    if (filename_has_suffix(pending_preview_filename,".pdf")) {
+        set_pdf_preview_widget_file_by_filename (window->details->pdf_view, pending_preview_filename);
         gtk_widget_hide (window->details->empty_window);
         gtk_widget_show_all (window->details->pdf_swindow);
         gtk_widget_hide (window->details->test_widget);
         gtk_widget_hide (window->details->web_swindow);
-    } else if (filename_has_suffix(pending_preivew_filename,".html")) {
+    } else if (filename_has_suffix(pending_preview_filename,".html")) {
         gchar *uri;
-        uri = g_strdup_printf("file://%s", pending_preivew_filename);
+        uri = g_strdup_printf("file://%s", pending_preview_filename);
         printf("load uri: %s",uri);
         webkit_web_view_load_uri (WEBKIT_WEB_VIEW (window->details->web_view), uri);
         g_free(uri);
@@ -1499,11 +1499,11 @@ static void preview_file_changed_callback(PeonyWindowInfo *window_info, gpointer
         return;
     }
 
-    if (window->details->pending_preivew_filename){
-        printf("has tmp file before: %s\n", window->details->pending_preivew_filename);
-        g_remove (window->details->pending_preivew_filename);
-        free (window->details->pending_preivew_filename);
-        window->details->pending_preivew_filename = NULL;
+    if (window->details->pending_preview_filename){
+        printf("has tmp file before: %s\n", window->details->pending_preview_filename);
+        g_remove (window->details->pending_preview_filename);
+        free (window->details->pending_preview_filename);
+        window->details->pending_preview_filename = NULL;
     }
 
     if (get_current_sleep_child_pid() != -1){
@@ -1547,10 +1547,10 @@ static void preview_file_changed_callback(PeonyWindowInfo *window_info, gpointer
         gtk_widget_hide (window->details->test_widget);
         gtk_widget_hide (window->details->web_swindow);
     } else if (is_office_file((char*) data)) {
-        window->details->pending_preivew_filename = get_pending_preview_filename(window->details->current_preview_filename);
+        window->details->pending_preview_filename = get_pending_preview_filename(window->details->current_preview_filename);
         window->details->current_preview_filename = data;
 
-        if (!window->details->pending_preivew_filename) {
+        if (!window->details->pending_preview_filename) {
             //printf("can't preview this file\n");
             gtk_label_set_label (window->details->hint_view, _("Can't preview this file"));
 	        gtk_widget_show_all (window->details->empty_window);
@@ -1559,17 +1559,17 @@ static void preview_file_changed_callback(PeonyWindowInfo *window_info, gpointer
             gtk_widget_hide (window->details->web_swindow);
             return;
         }
-        //printf("pending preview filename: %s\n", window->details->pending_preivew_filename);
+        //printf("pending preview filename: %s\n", window->details->pending_preview_filename);
         //printf("current: %s\n",window->details->current_preview_filename);
 
         //before we preview an office file, we first sleep a few times to ensure that if the selection has changed.
         //so we do not need to sheduel and kill the child trans progress frequently in some extreme cases.
-        child_prog_sleep_and_preview_office ("0.5", window, window->details->current_preview_filename, window->details->pending_preivew_filename);
+        child_prog_sleep_and_preview_office ("0.5", window, window->details->current_preview_filename, window->details->pending_preview_filename);
         
         //we will wait for child progress finished.
         //and if file trans failed, the hint should be "can't preview".
 
-        if (window->details->pending_preivew_filename)
+        if (window->details->pending_preview_filename)
             gtk_label_set_label (window->details->hint_view, _("Loading..."));
         else
             gtk_label_set_label (window->details->hint_view, _("Can't preview this file"));
@@ -1682,9 +1682,9 @@ peony_navigation_window_split_view_off (PeonyNavigationWindow *window)
     window->details->is_split_view_showing = FALSE;
     peony_navigation_window_update_split_view_actions_sensitivity (window);
     
-    if (window->details->pending_preivew_filename){
-        g_remove (window->details->pending_preivew_filename);
-        window->details->pending_preivew_filename = NULL;
+    if (window->details->pending_preview_filename){
+        g_remove (window->details->pending_preview_filename);
+        window->details->pending_preview_filename = NULL;
     }
 
     char* tmp_path;
