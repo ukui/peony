@@ -1460,7 +1460,7 @@ static void office_format_trans_ready_callback(PeonyWindowInfo *window_info, gpo
 
     printf("current: %s, pending: %s\n",current_preview_filename , pending_preview_filename);
 
-    if (!pending_preview_filename){
+    if (!pending_preview_filename || !current_preview_filename){
         return;
     }
 
@@ -1509,11 +1509,13 @@ static void preview_file_changed_callback(PeonyWindowInfo *window_info, gpointer
     }
 
     if((char*)data == "null"){
+        printf ("null\n\n\n");
         gtk_label_set_label(window->details->hint_view, _("Select the file you want to preview"));
 	    gtk_widget_show_all(window->details->empty_window);
 	    gtk_widget_hide(window->details->pdf_swindow);
 	    gtk_widget_hide(window->details->test_widget);
         gtk_widget_hide(window->details->web_swindow);
+        window->details->current_preview_filename = NULL;
         return;
     } 
 
