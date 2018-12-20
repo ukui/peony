@@ -168,7 +168,14 @@ unoconv_child_watch_cb2 (GPid pid,
 {
 	//printf("unoconv_child_watch_cb pid: %d\n",pid);
 	g_spawn_close_pid (pid);
+    GFile *file;
+    file = g_file_new_for_path (pending_filename);
+    if (!g_file_query_exists (file, NULL)){
+        printf ("file %s doesn't exist\n", pending_filename);
+        return;
+    }
 	g_signal_emit_by_name (PEONY_WINDOW_INFO (user_data), "office_trans_ready", NULL);    //office ready cb , if pdf name = global preview file name, show it. else g_remove file.
+	old_sleep_pid = -1;
 }
 
 void office2pdf_by_window_internal (PeonyWindowInfo *window, char *pdf_filename, char* office_filename){

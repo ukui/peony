@@ -746,6 +746,8 @@ peony_navigation_window_destroy (GtkWidget *object)
     g_free (tmp_path);
     //old_tmp_filename = NULL;
 
+    set_current_sleep_child_pid(-1);
+
     GTK_WIDGET_CLASS (parent_class)->destroy (object);
 }
 
@@ -1468,7 +1470,6 @@ static void office_format_trans_ready_callback(PeonyWindowInfo *window_info, gpo
         printf ("file %s doesn't exist\n", pending_preview_filename);
         return;
     }
-
 
     if(!g_str_equal(current_preview_filename, pending_preview_filename)){
         return;

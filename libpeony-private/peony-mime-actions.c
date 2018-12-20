@@ -46,6 +46,8 @@
 #include "peony-debug-log.h"
 #include "peony-open-with-dialog.h"
 
+#include "../src/file-manager/office-utils.h"
+
 typedef enum
 {
     ACTIVATION_ACTION_LAUNCH_DESKTOP_FILE,
@@ -2471,6 +2473,9 @@ peony_mime_activate_files (GtkWindow *parent_window,
                           PeonyWindowOpenFlags flags,
                           gboolean user_confirmation)
 {
+    if (get_current_sleep_child_pid() != -1) {
+        return;
+    }
     ActivateParameters *parameters;
     char *file_name;
     int file_count;
