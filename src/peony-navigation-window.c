@@ -1456,16 +1456,16 @@ static void office_format_trans_ready_callback(PeonyWindowInfo *window_info, gpo
     char* current_preview_filename = window->details->current_preview_filename;
     char* pending_preivew_filename = window->details->pending_preivew_filename;
 
-    printf("current: %s, pending: %s\n",current_preview_filename , pending_preivew_filename);
+    //printf("current: %s, pending: %s\n",current_preview_filename , pending_preivew_filename);
 
     if (!pending_preivew_filename){
         return;
     }
-
+/*
     if(!g_str_equal(current_preview_filename, pending_preivew_filename)){
         return;
     }
-
+*/
     if (filename_has_suffix(pending_preivew_filename,".pdf")) {
         set_pdf_preview_widget_file_by_filename (window->details->pdf_view, pending_preivew_filename);
         gtk_widget_hide (window->details->empty_window);
@@ -1487,6 +1487,7 @@ static void office_format_trans_ready_callback(PeonyWindowInfo *window_info, gpo
 }
 
 static void preview_file_changed_callback(PeonyWindowInfo *window_info, gpointer data){
+
     if (peony_window_info_get_window_type (window_info) != PEONY_WINDOW_NAVIGATION){
         printf ("is not navigation\n");
         return;
@@ -1505,17 +1506,10 @@ static void preview_file_changed_callback(PeonyWindowInfo *window_info, gpointer
         window->details->pending_preivew_filename = NULL;
     }
 
-    //printf("file name should be previewed: %s\n",data);
-/*
-    if (old_pid != -1){
-        gchar *cmd = g_strdup_printf ("kill %d\n", old_pid);
-        printf("cmd :%s", cmd);
-        system (cmd);
-        //kill (old_pid, SIGKILL); //kill old pid for office transform anyway
-        old_pid = -1;
-        g_free (cmd);
+    if (get_current_sleep_child_pid() != -1){
+        printf ("has sleep child\n");
+        set_current_sleep_child_pid(-1);
     }
-*/
 
     if((char*)data == "null"){
         gtk_label_set_label(window->details->hint_view, _("Select the file you want to preview"));
@@ -1525,8 +1519,6 @@ static void preview_file_changed_callback(PeonyWindowInfo *window_info, gpointer
         gtk_widget_hide(window->details->web_swindow);
         return;
     } 
-
-    //printf("start preview\n");
 
     window->details->current_preview_filename = (char*) data;
 
@@ -1555,21 +1547,29 @@ static void preview_file_changed_callback(PeonyWindowInfo *window_info, gpointer
         gtk_widget_hide (window->details->test_widget);
         gtk_widget_hide (window->details->web_swindow);
     } else if (is_office_file((char*) data)) {
-        printf("is office file\n");
-        if (!is_excel_doc((char*)data)){
-            printf("doc & ppt\n");
-            window->details->pending_preivew_filename = office2pdf_by_window (window, window->details->current_preview_filename);
-            window->details->current_preview_filename = window->details->pending_preivew_filename;
-        } else {
-            printf("excel\n");
-            window->details->pending_preivew_filename = excel2html_by_window (window, window->details->current_preview_filename);
-            window->details->current_preview_filename = window->details->pending_preivew_filename;
+        window->details->pending_preivew_filename = get_pending_preview_filename(window->details->current_preview_filename);
+        window->details->current_preview_filename = data;
+
+        if (!window->details->pending_preivew_filename) {
+            //printf("can't preview this file\n");
+            gtk_label_set_label (window->details->hint_view, _("Can't preview this file"));
+	        gtk_widget_show_all (window->details->empty_window);
+	        gtk_widget_hide (window->details->pdf_swindow);
+	        gtk_widget_hide (window->details->test_widget);
+            gtk_widget_hide (window->details->web_swindow);
+            return;
         }
+        //printf("pending preview filename: %s\n", window->details->pending_preivew_filename);
+        //printf("current: %s\n",window->details->current_preview_filename);
+
+        //before we preview an office file, we first sleep a few times to ensure that if the selection has changed.
+        //so we do not need to sheduel and kill the child trans progress frequently in some extreme cases.
+        child_prog_sleep_and_preview_office ("0.5", window, window->details->current_preview_filename, window->details->pending_preivew_filename);
         
         //we will wait for child progress finished.
         //and if file trans failed, the hint should be "can't preview".
 
-        if (window->details->current_preview_filename)
+        if (window->details->pending_preivew_filename)
             gtk_label_set_label (window->details->hint_view, _("Loading..."));
         else
             gtk_label_set_label (window->details->hint_view, _("Can't preview this file"));

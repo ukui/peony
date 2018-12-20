@@ -7,10 +7,14 @@
 //char* office2pdf(char* filename);
 //char* excel2html(char* filename);
 
-char* office2pdf_by_window (PeonyWindowInfo *window, char *filename);
-char* excel2html_by_window (PeonyWindowInfo *window, char *filename);
+//when previewing an office type, we must do a delay op to ensure that the office trans op is not busy when changing the selection quickly.
+GPid child_prog_sleep_and_preview_office (char* second, PeonyWindowInfo *window, char* filename, char* filename2);
+char* get_pending_preview_filename (char* filename);
 
-static GPid old_pid = -1;
+GPid get_current_sleep_child_pid();
+void set_current_sleep_child_pid(int pid);
+
+void delay_preview (int msecond, PeonyWindowInfo *window, char* filename, char* filename2);
 
 //void init_office_mime_types();
 
