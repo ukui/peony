@@ -195,7 +195,7 @@ void office2pdf_by_window_internal (PeonyWindowInfo *window, char *pdf_filename,
 	printf("cmd: %s\n",cmd);
 	
 	res = g_shell_parse_argv (cmd, &argc, &argv, &error);
-	g_free (cmd);
+	//g_free (cmd);
 
 	if (!res) {
 		g_warning ("Error while parsing the unoconv command line: %s",
@@ -251,7 +251,7 @@ void excel2html_by_window_internal (PeonyWindowInfo *window, char *html_filename
 	printf("cmd: %s\n",cmd);	
 	
 	res = g_shell_parse_argv (cmd, &argc, &argv, &error);
-	g_free (cmd);
+	//g_free (cmd);
 
 	if (!res) {
 		g_warning ("Error while parsing the unoconv command line: %s",

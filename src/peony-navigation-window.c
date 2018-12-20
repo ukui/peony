@@ -1456,16 +1456,24 @@ static void office_format_trans_ready_callback(PeonyWindowInfo *window_info, gpo
     char* current_preview_filename = window->details->current_preview_filename;
     char* pending_preview_filename = window->details->pending_preview_filename;
 
-    //printf("current: %s, pending: %s\n",current_preview_filename , pending_preview_filename);
+    printf("current: %s, pending: %s\n",current_preview_filename , pending_preview_filename);
 
     if (!pending_preview_filename){
         return;
     }
-/*
+
+    GFile *file;
+    file = g_file_new_for_path (pending_preview_filename);
+    if (!g_file_query_exists (file, NULL)){
+        printf ("file %s doesn't exist\n", pending_preview_filename);
+        return;
+    }
+
+
     if(!g_str_equal(current_preview_filename, pending_preview_filename)){
         return;
     }
-*/
+
     if (filename_has_suffix(pending_preview_filename,".pdf")) {
         set_pdf_preview_widget_file_by_filename (window->details->pdf_view, pending_preview_filename);
         gtk_widget_hide (window->details->empty_window);
@@ -1499,6 +1507,15 @@ static void preview_file_changed_callback(PeonyWindowInfo *window_info, gpointer
         return;
     }
 
+    if((char*)data == "null"){
+        gtk_label_set_label(window->details->hint_view, _("Select the file you want to preview"));
+	    gtk_widget_show_all(window->details->empty_window);
+	    gtk_widget_hide(window->details->pdf_swindow);
+	    gtk_widget_hide(window->details->test_widget);
+        gtk_widget_hide(window->details->web_swindow);
+        return;
+    } 
+
     if (window->details->pending_preview_filename){
         printf("has tmp file before: %s\n", window->details->pending_preview_filename);
         g_remove (window->details->pending_preview_filename);
@@ -1511,14 +1528,6 @@ static void preview_file_changed_callback(PeonyWindowInfo *window_info, gpointer
         set_current_sleep_child_pid(-1);
     }
 
-    if((char*)data == "null"){
-        gtk_label_set_label(window->details->hint_view, _("Select the file you want to preview"));
-	    gtk_widget_show_all(window->details->empty_window);
-	    gtk_widget_hide(window->details->pdf_swindow);
-	    gtk_widget_hide(window->details->test_widget);
-        gtk_widget_hide(window->details->web_swindow);
-        return;
-    } 
 
     window->details->current_preview_filename = (char*) data;
 
@@ -1548,7 +1557,7 @@ static void preview_file_changed_callback(PeonyWindowInfo *window_info, gpointer
         gtk_widget_hide (window->details->web_swindow);
     } else if (is_office_file((char*) data)) {
         window->details->pending_preview_filename = get_pending_preview_filename(window->details->current_preview_filename);
-        window->details->current_preview_filename = data;
+        window->details->current_preview_filename = window->details->pending_preview_filename;
 
         if (!window->details->pending_preview_filename) {
             //printf("can't preview this file\n");
@@ -1564,7 +1573,7 @@ static void preview_file_changed_callback(PeonyWindowInfo *window_info, gpointer
 
         //before we preview an office file, we first sleep a few times to ensure that if the selection has changed.
         //so we do not need to sheduel and kill the child trans progress frequently in some extreme cases.
-        child_prog_sleep_and_preview_office ("0.5", window, window->details->current_preview_filename, window->details->pending_preview_filename);
+        child_prog_sleep_and_preview_office ("0.5", window, data, window->details->pending_preview_filename);
         
         //we will wait for child progress finished.
         //and if file trans failed, the hint should be "can't preview".
