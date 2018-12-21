@@ -33,10 +33,6 @@
 #include <config.h>
 #include "peony-window-private.h"
 
-#include "file-manager/test-widget.h"
-#include "file-manager/mime-utils.h"
-#include "file-manager/office-utils.h"
-#include "file-manager/pdfviewer.h"
 #include <webkit/webkit.h>
 
 #include "peony-actions.h"
@@ -314,6 +310,7 @@ peony_navigation_window_init (PeonyNavigationWindow *window)
                               window);
 
     //pdf_viewer_init();
+    office_utils_conncet_window_info (PEONY_WINDOW_INFO (window));
 }
 
 static void
@@ -732,21 +729,7 @@ peony_navigation_window_destroy (GtkWidget *object)
     //global_test_widget = NULL;
 
     //pdf_viewer_shutdown();    
-    if (window->details->pending_preview_filename){
-        g_remove (window->details->pending_preview_filename);
-        window->details->pending_preview_filename = NULL;
-    }
-
-    char* tmp_path;
-    tmp_path = g_build_filename (g_get_user_cache_dir (), "peony", NULL);
-    if(g_remove(tmp_path) != 0){
-        printf ("remove cache path failed: %s\n",tmp_path);
-        system ("rm -rf  .cache/peony");
-    }
-    g_free (tmp_path);
-    //old_tmp_filename = NULL;
-
-    set_current_sleep_child_pid(-1);
+    clean_cache_files_anyway ();
 
     GTK_WIDGET_CLASS (parent_class)->destroy (object);
 }
@@ -1386,7 +1369,6 @@ peony_navigation_window_class_init (PeonyNavigationWindowClass *class)
     GTK_WIDGET_CLASS (class)->window_state_event = peony_navigation_window_state_event;
     GTK_WIDGET_CLASS (class)->key_press_event = peony_navigation_window_key_press_event;
     GTK_WIDGET_CLASS (class)->button_press_event = peony_navigation_window_button_press_event;
-    //GTK_WIDGET_CLASS (class)->begin_loading = peony_navigation_window_class_begin_loading;
     PEONY_WINDOW_CLASS (class)->sync_allow_stop = real_sync_allow_stop;
     PEONY_WINDOW_CLASS (class)->prompt_for_location = real_prompt_for_location;
     PEONY_WINDOW_CLASS (class)->sync_title = real_sync_title;
@@ -1397,8 +1379,6 @@ peony_navigation_window_class_init (PeonyNavigationWindowClass *class)
 
     PEONY_WINDOW_CLASS (class)->open_slot = real_open_slot;
     PEONY_WINDOW_CLASS (class)->close_slot = real_close_slot;
-
-    //PEONY_WINDOW_CLASS (class)->begin_loading = peony_navigation_window_class_begin_loading;
 
     g_type_class_add_private (G_OBJECT_CLASS (class), sizeof (PeonyNavigationWindowDetails));
 
@@ -1457,10 +1437,11 @@ static void office_format_trans_ready_callback(PeonyWindowInfo *window_info, gpo
     PeonyNavigationWindow *window = PEONY_NAVIGATION_WINDOW (window_info);
     char* current_preview_filename = window->details->current_preview_filename;
     char* pending_preview_filename = window->details->pending_preview_filename;
+    char* current_previewing_office_filename = window->details->current_previewing_office_filename;
 
-    printf("current: %s, pending: %s\n",current_preview_filename , pending_preview_filename);
+    printf("current: %s, pending: %s current office:%s\n",current_preview_filename , pending_preview_filename, current_previewing_office_filename);
 
-    if (!pending_preview_filename || !current_preview_filename){
+    if (!current_preview_filename){
         return;
     }
 
@@ -1471,7 +1452,7 @@ static void office_format_trans_ready_callback(PeonyWindowInfo *window_info, gpo
         return;
     }
 
-    if(!g_str_equal(current_preview_filename, pending_preview_filename)){
+    if(!g_str_equal(current_preview_filename, current_previewing_office_filename)){
         return;
     }
 
@@ -1521,18 +1502,18 @@ static void preview_file_changed_callback(PeonyWindowInfo *window_info, gpointer
 
     if (window->details->pending_preview_filename){
         printf("has tmp file before: %s\n", window->details->pending_preview_filename);
-        g_remove (window->details->pending_preview_filename);
+        //g_remove (window->details->pending_preview_filename);
+        clean_cache_files_anyway();
         free (window->details->pending_preview_filename);
         window->details->pending_preview_filename = NULL;
     }
 
-    if (get_current_sleep_child_pid() != -1){
-        printf ("has sleep child\n");
-        set_current_sleep_child_pid(-1);
+    if (window->details->current_preview_filename) {
+        g_free (window->details->current_preview_filename);
     }
 
-
-    window->details->current_preview_filename = (char*) data;
+    printf ("preview start:\n");
+    window->details->current_preview_filename = g_strdup (data);
 
     if(is_text_type((char*)data)){
 	    open_file_cb(window->details->gtk_source_widget,(char*)data);
@@ -1559,32 +1540,30 @@ static void preview_file_changed_callback(PeonyWindowInfo *window_info, gpointer
         gtk_widget_hide (window->details->test_widget);
         gtk_widget_hide (window->details->web_swindow);
     } else if (is_office_file((char*) data)) {
-        window->details->pending_preview_filename = get_pending_preview_filename(window->details->current_preview_filename);
-        window->details->current_preview_filename = window->details->pending_preview_filename;
 
-        if (!window->details->pending_preview_filename) {
-            //printf("can't preview this file\n");
-            gtk_label_set_label (window->details->hint_view, _("Can't preview this file"));
-	        gtk_widget_show_all (window->details->empty_window);
-	        gtk_widget_hide (window->details->pdf_swindow);
-	        gtk_widget_hide (window->details->test_widget);
-            gtk_widget_hide (window->details->web_swindow);
-            return;
-        }
-        //printf("pending preview filename: %s\n", window->details->pending_preview_filename);
-        //printf("current: %s\n",window->details->current_preview_filename);
+        //window->details->pending_preview_filename = get_pending_preview_filename(window->details->current_preview_filename);
+        //window->details->current_preview_filename = g_strdup (data);
+        char* fakename = get_pending_preview_filename (window->details->current_preview_filename);
+        window->details->current_previewing_office_filename = g_strdup (data);
+        printf ("current_previewing_office_filename: %s ", peony_navigation_window_get_current_previewing_office_file_by_window_info (PEONY_WINDOW_INFO (window)));
 
-        //before we preview an office file, we first sleep a few times to ensure that if the selection has changed.
-        //so we do not need to sheduel and kill the child trans progress frequently in some extreme cases.
-        child_prog_sleep_and_preview_office ("0.5", window, data, window->details->pending_preview_filename);
-        
-        //we will wait for child progress finished.
-        //and if file trans failed, the hint should be "can't preview".
+        //we'll sheduel a unoconv child progress to tran office file to pdf/html first, this will be delayed for a few times.
+        //the current preview filename is the file which we selecting now.
+        //the pending preview filename is a tmp pdf/thml file that trans by the child prog.
+        //the current_previewing_office_filename is simillar to current preview filename, but it just recored the newest office file which we select.
+        //when office trans ready, we'll compare the current_previewing_filename and current_previewing_office_filename,
+        //if they are not same, we won't show the office preview widget.
 
-        if (window->details->pending_preview_filename)
+        printf ("prepare_to_trans_file_by_window\n");
+
+        prepare_to_trans_file_by_window (PEONY_WINDOW_INFO (window), window->details->current_previewing_office_filename);
+
+        if (fakename)
             gtk_label_set_label (window->details->hint_view, _("Loading..."));
         else
             gtk_label_set_label (window->details->hint_view, _("Can't preview this file"));
+
+        g_free (fakename);
 
 	    gtk_widget_show_all (window->details->empty_window);
 	    gtk_widget_hide (window->details->pdf_swindow);
@@ -1604,6 +1583,7 @@ static void preview_file_changed_callback(PeonyWindowInfo *window_info, gpointer
 void
 peony_navigation_window_split_view_on (PeonyNavigationWindow *window)
 {
+    //return;
     pdf_viewer_init();
 
 	//cause we may switch to the old window, we should sure that if the hbox is existed.
@@ -1667,7 +1647,7 @@ last:
                           G_CALLBACK (office_format_trans_ready_callback), NULL
                           );
 
-
+    //office_utils_conncet_window_info (PEONY_WINDOW_INFO (window));
     //char* data;
     //g_signal_connect(PEONY_WINDOW_INFO(window),"preview_file",G_CALLBACK(preview_file_callback),data);
 
@@ -1678,6 +1658,7 @@ last:
 void
 peony_navigation_window_split_view_off (PeonyNavigationWindow *window)
 {
+    //return;
     printf("split_view_off\n");
     char* preview_filename; 
     char* child_cb_filename;
@@ -1689,23 +1670,13 @@ peony_navigation_window_split_view_off (PeonyNavigationWindow *window)
    char *data;
     g_signal_handlers_disconnect_by_func(PEONY_WINDOW_INFO(window),G_CALLBACK(preview_file_changed_callback),data);
     g_signal_handlers_disconnect_by_func(PEONY_WINDOW_INFO(window),G_CALLBACK(office_format_trans_ready_callback),NULL);
+    //office_utils_disconnect_window_info (PEONY_WINDOW_INFO(window));
 
 
     window->details->is_split_view_showing = FALSE;
     peony_navigation_window_update_split_view_actions_sensitivity (window);
     
-    if (window->details->pending_preview_filename){
-        g_remove (window->details->pending_preview_filename);
-        window->details->pending_preview_filename = NULL;
-    }
-
-    char* tmp_path;
-    tmp_path = g_build_filename (g_get_user_cache_dir (), "peony", NULL);
-    if(g_remove(tmp_path) != 0){
-        printf ("remove cache path failed: %s\n",tmp_path);
-        system ("rm -rf  .cache/peony");
-    }
-    g_free (tmp_path);
+    clean_cache_files_anyway ();
     //old_tmp_filename = NULL;
 }
 
@@ -1733,5 +1704,85 @@ peony_find_duplicate_files (PeonyNavigationWindow *window,GList *pListRes)
 	find_duplicate_signal(pane->search_bar);
 	
 	return ;
+}
+
+void     peony_navigation_window_set_current_preview_file_by_window_info (PeonyWindowInfo *window_info, char* filename) {
+
+    PeonyNavigationWindow *window = PEONY_NAVIGATION_WINDOW (window_info);
+    
+    if (window->details->current_preview_filename) {
+        g_free (window->details->current_preview_filename);
+    }
+    if (filename) {
+        window->details->current_preview_filename = g_strdup (filename);    
+    } else {
+        window->details->current_preview_filename = NULL;
+    }
+}
+
+char*    peony_navigation_window_get_current_preview_file_by_window_info (PeonyWindowInfo *window_info){
+
+    PeonyNavigationWindow *window = PEONY_NAVIGATION_WINDOW (window_info);
+    return window->details->current_preview_filename;
+}
+
+void     peony_navigation_window_set_current_previewing_office_file_by_window_info (PeonyWindowInfo *window_info, char* filename){
+
+    PeonyNavigationWindow *window = PEONY_NAVIGATION_WINDOW (window_info);
+
+    if (window->details->current_previewing_office_filename) {
+        g_free (window->details->current_previewing_office_filename);
+    }
+    if (filename) {
+        window->details->current_previewing_office_filename = g_strdup (filename);    
+    } else {
+        window->details->current_previewing_office_filename = NULL;
+    }
+}
+
+char*    peony_navigation_window_get_current_previewing_office_file_by_window_info (PeonyWindowInfo *window_info){
+
+    PeonyNavigationWindow *window = PEONY_NAVIGATION_WINDOW (window_info);
+    return window->details->current_previewing_office_filename;
+}
+
+void     peony_navigation_window_set_pending_preview_file_by_window_info (PeonyWindowInfo *window_info, char* filename){
+
+    PeonyNavigationWindow *window = PEONY_NAVIGATION_WINDOW (window_info);
+
+    if (window->details->pending_preview_filename) {
+        g_free (window->details->pending_preview_filename);
+    }
+    if (filename) {
+        window->details->pending_preview_filename = g_strdup (filename);    
+    } else {
+        window->details->pending_preview_filename = NULL;
+    }
+}
+
+char*    peony_navigation_window_get_pending_preview_file_by_window_info (PeonyWindowInfo *window_info){
+
+    PeonyNavigationWindow *window = PEONY_NAVIGATION_WINDOW (window_info);
+    return window->details->pending_preview_filename;
+}
+
+void     peony_navigation_window_set_loading_office_file_by_window_info (PeonyWindowInfo *window_info, char* filename){
+
+    PeonyNavigationWindow *window = PEONY_NAVIGATION_WINDOW (window_info);
+
+    if (window->details->loading_office_filename) {
+        g_free (window->details->loading_office_filename);
+    }
+    if (filename) {
+        window->details->loading_office_filename = g_strdup (filename);    
+    } else {
+        window->details->loading_office_filename = NULL;
+    }
+}
+
+char*    peony_navigation_window_get_loading_office_file_by_window_info (PeonyWindowInfo *window_info){
+
+    PeonyNavigationWindow *window = PEONY_NAVIGATION_WINDOW (window_info);
+    return window->details->loading_office_filename;
 }
 

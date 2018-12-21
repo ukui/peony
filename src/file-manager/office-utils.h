@@ -10,13 +10,21 @@
 //when previewing an office type, we must do a delay op to ensure that the office trans op is not busy when changing the selection quickly.
 GPid child_prog_sleep_and_preview_office (char* second, PeonyWindowInfo *window, char* filename, char* filename2);
 char* get_pending_preview_filename (char* filename);
+gboolean is_office_busy();
 
-GPid get_current_sleep_child_pid();
-void set_current_sleep_child_pid(int pid);
+void office_utils_conncet_window_info (PeonyWindowInfo *window_info);
+void office_utils_disconnect_window_info (PeonyWindowInfo *window_info);
 
-void delay_preview (int msecond, PeonyWindowInfo *window, char* filename, char* filename2);
+void clean_cache_files_anyway (); 
 
-//void init_office_mime_types();
+void     peony_navigation_window_set_current_preview_file_by_window_info (PeonyWindowInfo *window_info, char* filename);
+char*    peony_navigation_window_get_current_preview_file_by_window_info (PeonyWindowInfo *window_info);
+void     peony_navigation_window_set_current_previewing_office_file_by_window_info (PeonyWindowInfo *window_info, char* filename);
+char*    peony_navigation_window_get_current_previewing_office_file_by_window_info (PeonyWindowInfo *window_info);
+void     peony_navigation_window_set_pending_preview_file_by_window_info (PeonyWindowInfo *window_info, char* filename);
+char*    peony_navigation_window_get_pending_preview_file_by_window_info (PeonyWindowInfo *window_info);
+void     peony_navigation_window_set_loading_office_file_by_window_info (PeonyWindowInfo *window_info, char* filename);
+char*    peony_navigation_window_get_loading_office_file_by_window_info (PeonyWindowInfo *window_info);
 
 static char* office_mime_types[] = {
     "application/wps-office.doc",

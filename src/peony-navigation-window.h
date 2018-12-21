@@ -41,6 +41,11 @@
 #include "peony-side-pane.h"
 #include "peony-window.h"
 
+#include "file-manager/test-widget.h"
+#include "file-manager/mime-utils.h"
+#include "file-manager/pdfviewer.h"
+#include "file-manager/office-utils.h"
+
 #define PEONY_TYPE_NAVIGATION_WINDOW peony_navigation_window_get_type()
 #define PEONY_NAVIGATION_WINDOW(obj) \
   (G_TYPE_CHECK_INSTANCE_CAST ((obj), PEONY_TYPE_NAVIGATION_WINDOW, PeonyNavigationWindow))

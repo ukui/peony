@@ -146,7 +146,12 @@ struct _PeonyNavigationWindowDetails
     GtkWidget *hint_view;
 
     /* preview file name */
+    //as usual, we won't need use it. but it used in previewing an office file.
     char *current_preview_filename;
+
+    /* filename for office */
+    char *current_previewing_office_filename;
+    char *loading_office_filename;
     char *pending_preview_filename;
 };
 
