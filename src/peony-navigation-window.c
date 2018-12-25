@@ -1635,7 +1635,7 @@ peony_navigation_window_split_view_on (PeonyNavigationWindow *window)
         gtk_container_add (GTK_CONTAINER(window->details->web_swindow), GTK_WIDGET(window->details->web_view));
         gtk_box_pack_start (GTK_BOX(window->details->preview_hbox), GTK_WIDGET(window->details->web_swindow), TRUE, TRUE, 0);
 
-        //add empty widget to split_view_hpane
+        //add empty widget to preview_hbox
         window->details->empty_window = gtk_scrolled_window_new(NULL,NULL);
         window->details->hint_view = gtk_label_new (_("Select the file you want to preview"));    
         gtk_box_pack_start (GTK_BOX(window->details->preview_hbox), GTK_WIDGET(window->details->empty_window), TRUE, TRUE, 0);

@@ -184,12 +184,16 @@ void office2pdf_by_window_internal (PeonyWindowInfo *window, char *pdf_filename,
 	gchar **argv = NULL;
 	GError *error = NULL;
 	const gchar *unoconv_path;
+	char* pdf_file_quoted_path = g_shell_quote (pdf_filename);
+	char* office_file_quoted_path = g_shell_quote (office_filename);
 
-	cmd = g_strdup_printf ("unoconv -f pdf -o %s '%s'", pdf_filename, office_filename);
+	cmd = g_strdup_printf ("unoconv -f pdf -o %s %s", pdf_file_quoted_path, office_file_quoted_path);
 	printf("cmd: %s\n",cmd);
 	
 	res = g_shell_parse_argv (cmd, &argc, &argv, &error);
 	//g_free (cmd);
+	g_free (pdf_file_quoted_path);
+	g_free (office_file_quoted_path);
 
 	if (!res) {
 		g_warning ("Error while parsing the unoconv command line: %s",
@@ -230,12 +234,16 @@ void excel2html_by_window_internal (PeonyWindowInfo *window, char *html_filename
 	gchar **argv = NULL;
 	GError *error = NULL;
 	const gchar *unoconv_path;
+	char* html_file_quoted_path = g_shell_quote (html_filename);
+	char* excel_file_quoted_path = g_shell_quote (excel_filename);
 
-	cmd = g_strdup_printf ("unoconv -f html -o %s '%s'", html_filename, excel_filename);
+	cmd = g_strdup_printf ("unoconv -f html -o %s %s", html_file_quoted_path, excel_file_quoted_path);
 	printf("cmd: %s\n",cmd);	
 	
 	res = g_shell_parse_argv (cmd, &argc, &argv, &error);
 	//g_free (cmd);
+	g_free (html_file_quoted_path);
+	g_free (excel_file_quoted_path);
 
 	if (!res) {
 		g_warning ("Error while parsing the unoconv command line: %s",
