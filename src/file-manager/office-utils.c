@@ -117,9 +117,9 @@ char* get_html_tmp_name (char* filename){
 	tmp_path = g_build_filename (g_get_user_cache_dir (), "peony", NULL);
 	html_path = g_build_filename (tmp_path, tmp_name, NULL);
 
-	char* dup_html_path = g_strdup_printf (html_path);
+	//char *dup_html_path = g_strdup_printf (html_path);
 
-	return dup_html_path;
+	return g_strdup (html_path);
 }
 
 char* get_pdf_tmp_name(char* filename){
@@ -150,9 +150,9 @@ char* get_pdf_tmp_name(char* filename){
 	tmp_path = g_build_filename (g_get_user_cache_dir (), "peony", NULL);
 	pdf_path = g_build_filename (tmp_path, tmp_name, NULL);
 
-	char* dup_pdf_path = g_strdup_printf (pdf_path);
+	//char *dup_pdf_path = g_strdup_printf (pdf_path);
 
-	return dup_pdf_path;
+	return g_strdup (pdf_path);
 }
 
 char* get_pending_preview_filename (char* filename){

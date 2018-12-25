@@ -33,7 +33,7 @@
 #include <config.h>
 #include "peony-window-private.h"
 
-#include <webkit/webkit.h>
+#include <webkit2/webkit2.h>
 
 #include "peony-actions.h"
 #include "peony-application.h"
@@ -1631,7 +1631,7 @@ peony_navigation_window_split_view_on (PeonyNavigationWindow *window)
         //add web widget to preview_hbox
         window->details->web_swindow = gtk_scrolled_window_new(NULL,NULL);
         window->details->web_view = webkit_web_view_new();
-        WebKitWebSettings *settings = webkit_web_settings_new ();
+        WebKitSettings *settings = webkit_settings_new ();
         g_object_set (G_OBJECT(settings), "enable-default-context-menu", FALSE, NULL);
         g_object_set (G_OBJECT(settings), "enable-page-cache", FALSE, NULL);
         g_object_set (G_OBJECT(settings), "javascript-can-access-clipboard", TRUE, NULL);
