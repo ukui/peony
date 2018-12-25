@@ -1631,6 +1631,12 @@ peony_navigation_window_split_view_on (PeonyNavigationWindow *window)
         //add web widget to preview_hbox
         window->details->web_swindow = gtk_scrolled_window_new(NULL,NULL);
         window->details->web_view = webkit_web_view_new();
+        WebKitWebSettings *settings = webkit_web_settings_new ();
+        g_object_set (G_OBJECT(settings), "enable-default-context-menu", FALSE, NULL);
+        g_object_set (G_OBJECT(settings), "enable-page-cache", FALSE, NULL);
+        g_object_set (G_OBJECT(settings), "javascript-can-access-clipboard", TRUE, NULL);
+        webkit_web_view_set_settings (window->details->web_view, settings);
+        g_object_unref (settings);
         webkit_web_view_set_zoom_level (window->details->web_view, 1.50);
         gtk_container_add (GTK_CONTAINER(window->details->web_swindow), GTK_WIDGET(window->details->web_view));
         gtk_box_pack_start (GTK_BOX(window->details->preview_hbox), GTK_WIDGET(window->details->web_swindow), TRUE, TRUE, 0);
