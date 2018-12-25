@@ -1,7 +1,8 @@
 #include <glib-2.0/glib.h>
 #include <glib/gstdio.h>
+#include "navigation-window-interface.h"
 
-#include "libpeony-private/peony-window-info.h"
+//#include "libpeony-private/peony-window-info.h"
 
 //get the office file's of pdf one's name.
 //char* office2pdf(char* filename);
@@ -17,6 +18,7 @@ void office_utils_disconnect_window_info (PeonyWindowInfo *window_info);
 
 void clean_cache_files_anyway (); 
 
+/*
 void     peony_navigation_window_set_current_preview_file_by_window_info (PeonyWindowInfo *window_info, char* filename);
 char*    peony_navigation_window_get_current_preview_file_by_window_info (PeonyWindowInfo *window_info);
 void     peony_navigation_window_set_current_previewing_office_file_by_window_info (PeonyWindowInfo *window_info, char* filename);
@@ -25,6 +27,7 @@ void     peony_navigation_window_set_pending_preview_file_by_window_info (PeonyW
 char*    peony_navigation_window_get_pending_preview_file_by_window_info (PeonyWindowInfo *window_info);
 void     peony_navigation_window_set_loading_office_file_by_window_info (PeonyWindowInfo *window_info, char* filename);
 char*    peony_navigation_window_get_loading_office_file_by_window_info (PeonyWindowInfo *window_info);
+*/
 
 static char* office_mime_types[] = {
     "application/wps-office.doc",

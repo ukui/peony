@@ -45,6 +45,7 @@
 #include "file-manager/mime-utils.h"
 #include "file-manager/pdfviewer.h"
 #include "file-manager/office-utils.h"
+#include "file-manager/navigation-window-interface.h"
 
 #define PEONY_TYPE_NAVIGATION_WINDOW peony_navigation_window_get_type()
 #define PEONY_NAVIGATION_WINDOW(obj) \

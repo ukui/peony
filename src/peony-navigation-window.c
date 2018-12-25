@@ -93,6 +93,7 @@ static PeonyWindowSlot *create_extra_pane         (PeonyNavigationWindow *window
 
 static void preview_file_changed_callback(PeonyWindowInfo *window_info, gpointer data);
 static void office_format_trans_ready_callback(PeonyWindowInfo *window_info, gpointer data);
+static void show_pdf_file_callback(PeonyWindowInfo *window_info, gpointer data);
 
 G_DEFINE_TYPE (PeonyNavigationWindow, peony_navigation_window, PEONY_TYPE_WINDOW)
 #define parent_class peony_navigation_window_parent_class
@@ -695,7 +696,8 @@ peony_navigation_window_destroy (GtkWidget *object)
 {
     char* filename;
     g_signal_handlers_disconnect_by_func(PEONY_WINDOW_INFO (object), G_CALLBACK (preview_file_changed_callback), filename);
-    g_signal_handlers_disconnect_by_func(peony_signaller_get_current (), G_CALLBACK (office_format_trans_ready_callback), NULL);
+    g_signal_handlers_disconnect_by_func(PEONY_WINDOW_INFO (object), G_CALLBACK (office_format_trans_ready_callback), NULL);
+    g_signal_handlers_disconnect_by_func(PEONY_WINDOW_INFO (object), G_CALLBACK (show_pdf_file_callback), NULL);
 
     PeonyNavigationWindow *window;
 
@@ -1432,6 +1434,17 @@ create_extra_pane (PeonyNavigationWindow *window)
     return slot;
 }
 
+static void show_pdf_file_callback (PeonyWindowInfo *window_info, gpointer data) {
+    PeonyNavigationWindow *window = PEONY_NAVIGATION_WINDOW (window_info);
+    if (is_pdf_file (window->details->current_preview_filename)) {
+        set_pdf_preview_widget_file_by_filename(window->details->pdf_view, window->details->current_preview_filename);
+        gtk_widget_hide (window->details->empty_window);
+        gtk_widget_show_all (window->details->pdf_swindow);
+        gtk_widget_hide (window->details->test_widget);
+        gtk_widget_hide (window->details->web_swindow);
+    }
+}
+
 static void office_format_trans_ready_callback(PeonyWindowInfo *window_info, gpointer data){
     //printf("office2pdf/html done\n");
     PeonyNavigationWindow *window = PEONY_NAVIGATION_WINDOW (window_info);
@@ -1534,10 +1547,19 @@ static void preview_file_changed_callback(PeonyWindowInfo *window_info, gpointer
         gtk_widget_show_all (window->details->web_swindow);
     }  else if (is_pdf_type((char*)data)) {
         printf("is pdf type\n");
+        window_delay_set_pdf_preview_widget_file_by_filename (PEONY_WINDOW_INFO (window), (char*)data);
+        /*
         set_pdf_preview_widget_file_by_filename(window->details->pdf_view,(char*)data);
         gtk_widget_hide (window->details->empty_window);
         gtk_widget_show_all (window->details->pdf_swindow);
         gtk_widget_hide (window->details->test_widget);
+        gtk_widget_hide (window->details->web_swindow);
+        */
+
+        gtk_label_set_label (window->details->hint_view, _("Loading..."));
+        gtk_widget_show_all (window->details->empty_window);
+	    gtk_widget_hide (window->details->pdf_swindow);
+	    gtk_widget_hide (window->details->test_widget);
         gtk_widget_hide (window->details->web_swindow);
     } else if (is_office_file((char*) data)) {
 
@@ -1647,6 +1669,11 @@ last:
                           G_CALLBACK (office_format_trans_ready_callback), NULL
                           );
 
+    g_signal_connect (PEONY_WINDOW_INFO(window),
+                          "show_pdf_file",
+                          G_CALLBACK (show_pdf_file_callback), NULL
+                          );
+
     //office_utils_conncet_window_info (PEONY_WINDOW_INFO (window));
     //char* data;
     //g_signal_connect(PEONY_WINDOW_INFO(window),"preview_file",G_CALLBACK(preview_file_callback),data);
@@ -1670,6 +1697,7 @@ peony_navigation_window_split_view_off (PeonyNavigationWindow *window)
    char *data;
     g_signal_handlers_disconnect_by_func(PEONY_WINDOW_INFO(window),G_CALLBACK(preview_file_changed_callback),data);
     g_signal_handlers_disconnect_by_func(PEONY_WINDOW_INFO(window),G_CALLBACK(office_format_trans_ready_callback),NULL);
+    g_signal_handlers_disconnect_by_func(PEONY_WINDOW_INFO(window),G_CALLBACK(show_pdf_file_callback),NULL);
     //office_utils_disconnect_window_info (PEONY_WINDOW_INFO(window));
 
 
@@ -1784,5 +1812,25 @@ char*    peony_navigation_window_get_loading_office_file_by_window_info (PeonyWi
 
     PeonyNavigationWindow *window = PEONY_NAVIGATION_WINDOW (window_info);
     return window->details->loading_office_filename;
+}
+
+void     peony_navigation_window_set_latest_pdf_preview_file_by_window_info (PeonyWindowInfo *window_info, char* filename) {
+
+    PeonyNavigationWindow *window = PEONY_NAVIGATION_WINDOW (window_info);
+
+    if (window->details->latest_pdf_flename) {
+        g_free (window->details->latest_pdf_flename);
+    }
+    if (filename) {
+        window->details->latest_pdf_flename = g_strdup (filename);    
+    } else {
+        window->details->latest_pdf_flename = NULL;
+    }
+}
+
+char*    peony_navigation_window_get_latest_preview_file_by_window_info (PeonyWindowInfo *window_info) {
+
+    PeonyNavigationWindow *window = PEONY_NAVIGATION_WINDOW (window_info);
+    return window->details->latest_pdf_flename;
 }
 

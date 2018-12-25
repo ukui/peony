@@ -146,13 +146,16 @@ struct _PeonyNavigationWindowDetails
     GtkWidget *hint_view;
 
     /* preview file name */
-    //as usual, we won't need use it. but it used in previewing an office file.
+    //as usual, we won't need use it. but it used in previewing an office or pdf file.
     char *current_preview_filename;
 
     /* filename for office */
     char *current_previewing_office_filename;
     char *loading_office_filename;
     char *pending_preview_filename;
+
+    /* filename for pdf */
+    char *latest_pdf_flename;
 };
 
 #define PEONY_MENU_PATH_BACK_ITEM			"/menu/Go/Back"
