@@ -2547,43 +2547,6 @@ selection_changed_callback (PeonyIconContainer *container,
 
     view = FM_DIRECTORY_VIEW (icon_view);
 
-    PeonyWindowInfo *window_info = fm_directory_view_get_peony_window(view);
-    /*
-    if (peony_window_info_get_window_type (window_info) == PEONY_WINDOW_NAVIGATION){
-        printf("g_signal_emit_by_name: preview\n ");
-        char* test = "test";
-        g_signal_emit_by_name(window_info, "preview_file", test);
-    */
-
-    //g_signal_emit_by_name (window, "test", NULL);
-
-    GList* l = fm_directory_view_get_selection(view);
-
-   //int count = fm_directory_view_get_item_count(view);
-    
-    if(l){
-        printf("FMDirectory view: selection changed\n");
-        PeonyFile *file;
-        file = l->data;
-        //char* uri = peony_file_get_uri(file);
-        char* filename = g_filename_from_uri(peony_file_get_uri(file),NULL,NULL);
-
-        if(filename){
-            g_signal_emit_by_name (window_info,
-                         "preview_file",(gpointer)filename);
-            free(filename);
-        } else {
-            filename = "null";
-            g_signal_emit_by_name (window_info,
-                         "preview_file",(gpointer)filename);
-        }
-        g_list_free(l);
-    }   else  {
-        char* filename = "null";
-        g_signal_emit_by_name (window_info,
-                     "preview_file",(gpointer)filename);
-    }
-
     fm_directory_view_notify_selection_changed (FM_DIRECTORY_VIEW (icon_view));
 }
 

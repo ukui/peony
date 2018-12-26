@@ -215,48 +215,6 @@ list_selection_changed_callback (GtkTreeSelection *selection, gpointer user_data
     FMDirectoryView *view;
 
     view = FM_DIRECTORY_VIEW (user_data);
-    GList* l = fm_directory_view_get_selection(view);
-
-    //int count = fm_directory_view_get_item_count(view);
-    FMListView *list_view = FM_LIST_VIEW (user_data);
-
-    /* 
-    NOTE: 
-    the list view can't get window info by fm_directory_view_get_peony_window method, 
-    cause it use tree view rather than a peony window to show, 
-    so that the view->detials->window is null.
-    we can get the window info from its containing window
-     */
-    //PeonyWindowInfo *window_info = fm_directory_view_get_peony_window (FM_DIRECTORY_VIEW(list_view));
-    PeonyWindowInfo *window_info = PEONY_WINDOW_INFO(fm_directory_view_get_containing_window (view));
-    printf("list view: get window info successed!\n");
-
-    //if(window->details->is_split_view_showing)
-    //   printf("magic!!!!\n\n\n");
-    
-    if(l ){
-        printf("FMDirectory view: selection changed\n");
-        PeonyFile *file;
-        file = l->data;
-        //char* uri = peony_file_get_uri(file);
-        char* filename = g_filename_from_uri(peony_file_get_uri(file),NULL,NULL);
-
-        //printf("%s\n",filename);
-        if(filename){
-            g_signal_emit_by_name (window_info,
-                         "preview_file",(gpointer)filename);
-            free(filename);
-        } else {
-            filename = "null";
-            g_signal_emit_by_name (window_info,
-                         "preview_file",(gpointer)filename);
-        }
-        g_list_free(l);
-    }   else  {
-        char* filename = "null";
-        g_signal_emit_by_name (window_info,
-                     "preview_file",(gpointer)filename);
-    }
 
     fm_directory_view_notify_selection_changed (view);
 }
