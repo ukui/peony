@@ -83,6 +83,8 @@ src/peony-file-management-properties.c
 src/peony-history-sidebar.c
 src/peony-image-properties-page.c
 src/peony-information-panel.c
+src/peony-kdisk-createformat.c
+src/peony-kdisk-format.c
 src/peony-location-bar.c
 src/peony-location-dialog.c
 src/peony-location-entry.c

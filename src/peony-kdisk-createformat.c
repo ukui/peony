@@ -4,9 +4,8 @@ typedef struct
         UDisksObject *object,*drive_object;
         UDisksBlock *block,*drive_block;
         UDisksClient *client;
-        UDisksFilesystem *filesystem;
-
-        const gchar *format_type;
+        
+	const gchar *format_type;
         const gchar *device_name;
         const gchar *erase_type;
         const gchar *filesystem_name;
@@ -34,7 +33,6 @@ createformatfree(CreateformatData *data)
                 g_object_unref(data->drive_block);
         }
 	g_clear_object(&(data->client));
-        g_object_unref(data->filesystem);
 
         g_free(data);
 
@@ -226,26 +224,13 @@ ensure_format_disk(CreateformatData *data)
 }
 
 static void
-ensure_unmount_cb_finish(GObject *source_object, GAsyncResult *res ,gpointer user_data)
+ensure_unused_cb(CreateformatData *data)
 {
-        CreateformatData *data = user_data;
 
         if(is_iso(data->device_name)==FALSE)
                 ensure_format_cb (data);
         else
                 ensure_format_disk(data);
-}
-
-static void
-ensure_unused_cb(CreateformatData *data)
-{
-    	data->filesystem = udisks_object_get_filesystem (data->object);
-  	if(data->filesystem == NULL) 
-	{
-		ensure_format_cb (data);
-		return ;
-	}
-	udisks_filesystem_call_unmount (data->filesystem, g_variant_new ("a{sv}", NULL),NULL , ensure_unmount_cb_finish , data);
 }
 double
 get_device_size(const gchar * device_name)

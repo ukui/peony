@@ -246,7 +246,7 @@ static void create_format_init(format_window *data)
 	get_volume_string_size(volume_size,&ch[0]);
 	gchar * volume_label = get_device_label(data->block_device);		
 	char window_title[100];	
-	if(get_device_label(data->block_device) == NULL)
+	if(volume_label == NULL)
 	{
 		sprintf(window_title,_("format %s volume"),ch);
 	}
@@ -317,7 +317,7 @@ update_quick_format_processbar(gpointer user_data)
         	gchar * volume_label = get_device_label(data->block_device);
 
         	gchar window_title[100];
-        	if(get_device_label(data->block_device) == NULL)
+        	if(volume_label == NULL)
         	{
 			sprintf(window_title,_("format %s volume"),ch);
         	}
@@ -375,7 +375,7 @@ update_format_processbar(gpointer user_data)
         	gchar * volume_label = get_device_label(data->block_device);
 		
 		char window_title[100];
-        	if(get_device_label(data->block_device) == NULL)
+        	if(volume_label == NULL)
         	{
 			sprintf(window_title,_("format %s volume"),ch);
 		}
@@ -407,6 +407,57 @@ update_format_processbar(gpointer user_data)
 	return TRUE;
 }
 
+static void do_format(format_window *data)
+{
+        kdisk_format(data->block_device,data->format_type,data->is_erase,data->filesystem_name,&(data->format_finish));
+        data->is_format = true;
+        set_sensitive_false(data);
+        if(data->is_erase != NULL){
+                data->timeout_id = g_timeout_add(1000,update_format_processbar,data);
+        }
+        else {
+                data->timeout_id = g_timeout_add(500,update_quick_format_processbar,data);
+        }
+        gtk_button_set_label ((GtkButton *)(data->cancel_button),_("Cancel"));
+	
+}
+
+void unmount_finish(GObject *source_object,
+                    GAsyncResult *res,
+                    gpointer user_data)
+{
+        format_window *data = user_data; 
+	GError *error = NULL;
+        if(g_mount_unmount_with_operation_finish(G_MOUNT(source_object),res,&error)==TRUE)
+        {
+		do_format(data);
+        }
+        else
+        {
+		char ch[10];
+        	double volume_size = get_device_size(data->block_device);
+		get_volume_string_size(volume_size,&ch[0]);
+		gchar * volume_label = get_device_label(data->block_device);
+                char message[100]={0};
+		if(volume_label == NULL)
+                {
+                        sprintf(message,_("Unable to unmount %s volume"),ch);	
+		}
+                else
+                {
+                        sprintf(message,_("Unable to unmount %s"),volume_label);
+                }
+
+                g_free(volume_label);
+
+		gtk_progress_bar_set_text ((GtkProgressBar *)data->processbar,message);
+	}
+        if(error!=NULL)
+        {
+                g_error_free(error);
+        }
+        g_object_unref(source_object);
+}
 
 static void 
 start_button_clicked(GtkWidget *button,gpointer user_data)
@@ -505,51 +556,69 @@ start_button_clicked(GtkWidget *button,gpointer user_data)
 	data->filesystem_name = gtk_entry_get_text ((GtkEntry *)(data->entry_name));
 	
 	/*卸载*/
-	 GVolumeMonitor *monitor = g_volume_monitor_get (); 	
-	 GList *volumes,*l;
-	 GVolume *volume;
-	 GVolume *mount;
-	 volumes = g_volume_monitor_get_volumes(monitor);
-	 for (l = volumes; l != NULL; l = l->next)
-    	 {
-         	volume = l->data;
-		if(g_strcmp0(g_volume_get_identifier(volume,G_VOLUME_IDENTIFIER_KIND_UNIX_DEVICE),data->block_device)==0)
-		{
-			break;
-		}
-	 }
-	 mount = g_volume_get_mount(volume);
-	 if((mount!=NULL)&&(g_mount_can_unmount(mount)==FALSE))
-	 {
-	 	gtk_progress_bar_set_text ((GtkProgressBar *)data->processbar,_("cant't unmount device"));
-                g_object_unref(mount);
-        	g_list_foreach (volumes, (GFunc) g_object_unref, NULL);
-        	g_list_free (volumes);
-		return ;
-	 }
-	if(mount!=NULL){
-	 g_object_unref(mount);
-	}
-	 g_list_foreach (volumes, (GFunc) g_object_unref, NULL);
-        g_list_free (volumes);
-	/**/
-	kdisk_format(data->block_device,data->format_type,data->is_erase,data->filesystem_name,&(data->format_finish));
-	data->is_format = true;
-	set_sensitive_false(data);
-	if(data->is_erase != NULL){	
-		data->timeout_id = g_timeout_add(1000,update_format_processbar,data);	
-	}
-	else {
-		data->timeout_id = g_timeout_add(500,update_quick_format_processbar,data);
-	}
-	gtk_button_set_label ((GtkButton *)(data->cancel_button),_("Cancel"));
+	 GVolumeMonitor *monitor = g_volume_monitor_get ();
+         GList *volumes,*l;
+         GVolume *volume;
+         GMount *mount = NULL;
+         int find_volume = 0;
+         volumes = g_volume_monitor_get_volumes(monitor);
+         g_object_unref(monitor);
+         for (l = volumes; l != NULL; l = l->next)
+         {
+                volume = l->data;
+                char *ch=g_volume_get_identifier(volume,G_VOLUME_IDENTIFIER_KIND_UNIX_DEVICE);
+                if(g_strcmp0(ch,data->block_device)==0)
+                {
+                        find_volume = 1;
+                        g_free(ch);
+                        break;
+                }
+                g_free(ch);
+         }
+         if(find_volume == 1)
+         {
+                mount = g_volume_get_mount(volume);
+         }
+         g_list_foreach (volumes, (GFunc) g_object_unref, NULL);
+         g_list_free (volumes);
+
+         if(mount == NULL)
+         {
+		do_format(data);                
+                return ;
+         }
+         if(g_mount_can_unmount(mount)==FALSE)
+         {
+		char ch[10];
+                double volume_size = get_device_size(data->block_device);
+                get_volume_string_size(volume_size,&ch[0]);
+                gchar * volume_label = get_device_label(data->block_device);
+                char message[100]={0};
+                if(volume_label == NULL)
+                {
+                        sprintf(message,_("Unable to unmount %s volume"),ch);
+                }
+                else
+                {
+                        sprintf(message,_("Unable to unmount %s"),volume_label);
+                }
+
+                g_free(volume_label);
+
+                gtk_progress_bar_set_text ((GtkProgressBar *)data->processbar,message);
+
+		g_object_unref(mount);
+                return ;
+         }
+
+         g_mount_unmount_with_operation(mount,G_MOUNT_UNMOUNT_NONE,NULL,NULL,unmount_finish,data);
+
 }
 
 
 static void
 cancel_button_clicked(GtkWidget *button,gpointer user_data)
 {
-	int count=1;
 	format_window *data = user_data;
 	if(data->is_format == true)
 	{
@@ -603,13 +672,6 @@ cancel_button_clicked(GtkWidget *button,gpointer user_data)
 
 }
 
-static void 
-volume_name_changed(GtkWidget *entry_name,gpointer user_data)
-{
-	format_window *data = user_data;
-	data->filesystem_name = gtk_entry_get_text ((GtkEntry *)(data->entry_name));		
-}
-
 int kdiskformat(const gchar * path)
 {
 	if(FORMAT_WINDOW != 0)return 0;	
@@ -629,11 +691,10 @@ int kdiskformat(const gchar * path)
 	create_format_window(data);
 	create_format_init(data);
 
-	g_signal_connect(GTK_WIDGET(data->window),"delete_event",ensure_delete_format_window,data);
-	g_signal_connect(GTK_WIDGET(data->window),"destroy",delete_format_window,data);
- 	g_signal_connect(GTK_BUTTON(data->ensure_button),"clicked",start_button_clicked,data);
-	g_signal_connect(GTK_ENTRY(data->entry_name),"preedit-changed",volume_name_changed,data);
-	g_signal_connect(GTK_BUTTON(data->cancel_button),"clicked",cancel_button_clicked,data); 	
+	g_signal_connect(GTK_WIDGET(data->window),"delete_event",G_CALLBACK(ensure_delete_format_window),data);
+	g_signal_connect(GTK_WIDGET(data->window),"destroy",G_CALLBACK(delete_format_window),data);
+ 	g_signal_connect(GTK_BUTTON(data->ensure_button),"clicked",G_CALLBACK(start_button_clicked),data);
+	g_signal_connect(GTK_BUTTON(data->cancel_button),"clicked",G_CALLBACK(cancel_button_clicked),data); 	
 	
 	gtk_container_add(GTK_CONTAINER(data->window),data->fixed);	
 	

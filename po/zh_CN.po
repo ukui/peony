@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: UKUI Desktop Environment\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-12-18 10:18+0800\n"
+"POT-Creation-Date: 2018-12-25 23:28+0800\n"
 "PO-Revision-Date: 2016-12-05 21:52+0000\n"
 "Last-Translator: liushuyu011 <liushuyu011@gmail.com>\n"
 "Language-Team: Chinese (China) (http://www.transifex.com/ukui/UKUI/language/"
@@ -810,6 +810,7 @@ msgid "Set as _Background"
 msgstr "设置为背景(_B)"
 
 #: ../libpeony-private/peony-dnd.c:817 ../libpeony-private/peony-dnd.c:871
+#: ../src/peony-kdisk-format.c:421
 msgid "Cancel"
 msgstr "取消"
 
@@ -1762,7 +1763,7 @@ msgid "Slashes are not allowed in filenames"
 msgstr "文件名中不能出现斜线"
 
 #: ../libpeony-private/peony-file.c:1836
-#: ../libpeony-private/peony-mime-actions.c:1347
+#: ../libpeony-private/peony-mime-actions.c:1349
 #, c-format
 msgid "File not found"
 msgstr "文件未找到"
@@ -2019,28 +2020,28 @@ msgstr ""
 msgid "The selection rectangle"
 msgstr "矩形选区"
 
-#: ../libpeony-private/peony-mime-actions.c:720
+#: ../libpeony-private/peony-mime-actions.c:722
 #, c-format
 msgid "The Link \"%s\" is Broken."
 msgstr "链接“%s”已经损坏。"
 
-#: ../libpeony-private/peony-mime-actions.c:724
+#: ../libpeony-private/peony-mime-actions.c:726
 #, c-format
 msgid "The Link \"%s\" is Broken. Move it to Trash?"
 msgstr "链接“%s”已经损坏。您要将该其移动到回收站中吗？"
 
-#: ../libpeony-private/peony-mime-actions.c:731
+#: ../libpeony-private/peony-mime-actions.c:733
 msgid "This link cannot be used, because it has no target."
 msgstr "无法使用此链接，因为它没有目标。"
 
-#: ../libpeony-private/peony-mime-actions.c:735
+#: ../libpeony-private/peony-mime-actions.c:737
 #, c-format
 msgid "This link cannot be used, because its target \"%s\" doesn't exist."
 msgstr "无法使用此链接，因为其目标“%s”不存在。"
 
 #. name, stock id
 #. label, accelerator
-#: ../libpeony-private/peony-mime-actions.c:746
+#: ../libpeony-private/peony-mime-actions.c:748
 #: ../src/file-manager/fm-directory-view.c:7650
 #: ../src/file-manager/fm-directory-view.c:7791
 #: ../src/file-manager/fm-directory-view.c:8890
@@ -2049,48 +2050,48 @@ msgstr "无法使用此链接，因为其目标“%s”不存在。"
 msgid "Mo_ve to Trash"
 msgstr "删除到回收站(_V)"
 
-#: ../libpeony-private/peony-mime-actions.c:808
+#: ../libpeony-private/peony-mime-actions.c:810
 #, c-format
 msgid "Do you want to run \"%s\", or display its contents?"
 msgstr "您是要运行“%s”，还是显示它的内容？"
 
-#: ../libpeony-private/peony-mime-actions.c:810
+#: ../libpeony-private/peony-mime-actions.c:812
 #, c-format
 msgid "\"%s\" is an executable text file."
 msgstr "“%s”是可执行的文本文件。"
 
-#: ../libpeony-private/peony-mime-actions.c:816
+#: ../libpeony-private/peony-mime-actions.c:818
 msgid "Run in _Terminal"
 msgstr "在终端中运行(_T)"
 
-#: ../libpeony-private/peony-mime-actions.c:817
+#: ../libpeony-private/peony-mime-actions.c:819
 msgid "_Display"
 msgstr "显示(_D)"
 
-#: ../libpeony-private/peony-mime-actions.c:820
+#: ../libpeony-private/peony-mime-actions.c:822
 #: ../src/peony-autorun-software.c:253
 msgid "_Run"
 msgstr "运行(_R)"
 
-#: ../libpeony-private/peony-mime-actions.c:1172
+#: ../libpeony-private/peony-mime-actions.c:1174
 #: ../src/file-manager/fm-directory-view.c:655
 msgid "Are you sure you want to open all files?"
 msgstr "您确定要打开全部文件吗？"
 
-#: ../libpeony-private/peony-mime-actions.c:1175
+#: ../libpeony-private/peony-mime-actions.c:1177
 #, c-format
 msgid "This will open %d separate tab."
 msgid_plural "This will open %d separate tabs."
 msgstr[0] "这将打开 %d 个独立的标签。"
 
-#: ../libpeony-private/peony-mime-actions.c:1180
+#: ../libpeony-private/peony-mime-actions.c:1182
 #: ../src/peony-location-bar.c:230
 #, c-format
 msgid "This will open %d separate window."
 msgid_plural "This will open %d separate windows."
 msgstr[0] "这将打开 %d 个独立的窗口。"
 
-#: ../libpeony-private/peony-mime-actions.c:1258
+#: ../libpeony-private/peony-mime-actions.c:1260
 #: ../src/peony-window-manage-views.c:2115
 #: ../src/peony-window-manage-views.c:2123
 #: ../src/peony-window-manage-views.c:2143
@@ -2101,28 +2102,28 @@ msgstr[0] "这将打开 %d 个独立的窗口。"
 msgid "Could not display \"%s\"."
 msgstr "无法显示“%s”。"
 
-#: ../libpeony-private/peony-mime-actions.c:1354
+#: ../libpeony-private/peony-mime-actions.c:1356
 msgid "The file is of an unknown type"
 msgstr "文件是未知类型"
 
-#: ../libpeony-private/peony-mime-actions.c:1359
+#: ../libpeony-private/peony-mime-actions.c:1361
 #, c-format
 msgid "There is no application installed for %s files"
 msgstr "没有为 %s 文件类型安装应用程序"
 
-#: ../libpeony-private/peony-mime-actions.c:1374
+#: ../libpeony-private/peony-mime-actions.c:1376
 msgid "_Select Application"
 msgstr "选择程序(_S)"
 
-#: ../libpeony-private/peony-mime-actions.c:1412
+#: ../libpeony-private/peony-mime-actions.c:1414
 msgid "There was an internal error trying to search for applications:"
 msgstr "试图搜索应用程序时发生了内部错误："
 
-#: ../libpeony-private/peony-mime-actions.c:1414
+#: ../libpeony-private/peony-mime-actions.c:1416
 msgid "Unable to search for application"
 msgstr "无法搜索应用程序"
 
-#: ../libpeony-private/peony-mime-actions.c:1540
+#: ../libpeony-private/peony-mime-actions.c:1542
 #, c-format
 msgid ""
 "There is no application installed for %s files.\n"
@@ -2131,11 +2132,11 @@ msgstr ""
 "没有为 %s 文件类型安装应用程序。\n"
 "您是否想要搜索可打开此文件的应用程序?"
 
-#: ../libpeony-private/peony-mime-actions.c:1704
+#: ../libpeony-private/peony-mime-actions.c:1706
 msgid "Untrusted application launcher"
 msgstr "未信任的应用程序启动器"
 
-#: ../libpeony-private/peony-mime-actions.c:1707
+#: ../libpeony-private/peony-mime-actions.c:1709
 #, c-format
 msgid ""
 "The application launcher \"%s\" has not been marked as trusted. If you do "
@@ -2144,31 +2145,31 @@ msgstr ""
 "应用程序启动器 “%s“ 还没有被标记为可信任的。如果您不知道这个文件的来源，那么"
 "启动它可能会不安全。"
 
-#: ../libpeony-private/peony-mime-actions.c:1722
+#: ../libpeony-private/peony-mime-actions.c:1724
 msgid "_Launch Anyway"
 msgstr "仍然启动(_L)"
 
-#: ../libpeony-private/peony-mime-actions.c:1726
+#: ../libpeony-private/peony-mime-actions.c:1728
 msgid "Mark as _Trusted"
 msgstr "标记为信任(_T)"
 
-#: ../libpeony-private/peony-mime-actions.c:2022
-#: ../libpeony-private/peony-mime-actions.c:2328
+#: ../libpeony-private/peony-mime-actions.c:2024
+#: ../libpeony-private/peony-mime-actions.c:2330
 #: ../src/file-manager/fm-directory-view.c:6656
 msgid "Unable to mount location"
 msgstr "无法挂载位置"
 
-#: ../libpeony-private/peony-mime-actions.c:2416
+#: ../libpeony-private/peony-mime-actions.c:2418
 #: ../src/file-manager/fm-directory-view.c:6830
 msgid "Unable to start location"
 msgstr "无法启动位置"
 
-#: ../libpeony-private/peony-mime-actions.c:2509
+#: ../libpeony-private/peony-mime-actions.c:2516
 #, c-format
 msgid "Opening \"%s\"."
 msgstr "正在打开“%s”。"
 
-#: ../libpeony-private/peony-mime-actions.c:2514
+#: ../libpeony-private/peony-mime-actions.c:2521
 #, c-format
 msgid "Opening %d item."
 msgid_plural "Opening %d items."
@@ -5327,10 +5328,17 @@ msgstr "用紧凑视图显示该位置。"
 msgid "(Empty)"
 msgstr "(空)"
 
-#. we will wait for child progress finished.
+#.
+#. set_pdf_preview_widget_file_by_filename(window->details->pdf_view,(char*)data);
+#. gtk_widget_hide (window->details->empty_window);
+#. gtk_widget_show_all (window->details->pdf_swindow);
+#. gtk_widget_hide (window->details->test_widget);
+#. gtk_widget_hide (window->details->web_swindow);
+#.
 #: ../src/file-manager/fm-list-model.c:432
 #: ../src/file-manager/fm-tree-model.c:1358
-#: ../src/peony-navigation-window.c:1575 ../src/peony-window-slot.c:208
+#: ../src/peony-navigation-window.c:1559 ../src/peony-navigation-window.c:1584
+#: ../src/peony-window-slot.c:208
 msgid "Loading..."
 msgstr "正在载入..."
 
@@ -6622,6 +6630,103 @@ msgstr "您不能一次指定多个自定义图标。"
 msgid "You can only use images as custom icons."
 msgstr "您只能使用图像文件作为自定义图标。"
 
+#: ../src/peony-kdisk-format.c:49
+msgid "Formatting is in progress, do you want to continue?"
+msgstr "正在进行格式化，是否继续？"
+
+#: ../src/peony-kdisk-format.c:70 ../src/peony-kdisk-format.c:514
+#: ../src/peony-kdisk-format.c:652
+msgid "Warning"
+msgstr "警告"
+
+#: ../src/peony-kdisk-format.c:169
+msgid "Capatity:"
+msgstr "容量："
+
+#: ../src/peony-kdisk-format.c:170
+msgid "File System:"
+msgstr "文件系统："
+
+#: ../src/peony-kdisk-format.c:171
+msgid "Volume Label:"
+msgstr "卷标："
+
+#: ../src/peony-kdisk-format.c:172
+msgid "Formatting Options:"
+msgstr "格式化选项："
+
+#: ../src/peony-kdisk-format.c:188
+msgid "Erase(Need more time)"
+msgstr "擦除(需要更多时间)"
+
+#: ../src/peony-kdisk-format.c:198
+msgid "Begin"
+msgstr "开始"
+
+#: ../src/peony-kdisk-format.c:201 ../src/peony-kdisk-format.c:312
+#: ../src/peony-kdisk-format.c:371
+msgid "Close"
+msgstr "关闭"
+
+#: ../src/peony-kdisk-format.c:223 ../src/peony-kdisk-format.c:530
+msgid "The path is empty"
+msgstr "路径为空"
+
+#: ../src/peony-kdisk-format.c:230
+#, c-format
+msgid "can't find %s"
+msgstr "无法找到 %s"
+
+#: ../src/peony-kdisk-format.c:251 ../src/peony-kdisk-format.c:322
+#: ../src/peony-kdisk-format.c:380
+#, c-format
+msgid "format %s volume"
+msgstr "格式化%s卷"
+
+#: ../src/peony-kdisk-format.c:255 ../src/peony-kdisk-format.c:326
+#: ../src/peony-kdisk-format.c:384
+#, c-format
+msgid "format %s"
+msgstr "格式化%s"
+
+#: ../src/peony-kdisk-format.c:296 ../src/peony-kdisk-format.c:355
+msgid "format succeed!"
+msgstr "格式化完毕！"
+
+#: ../src/peony-kdisk-format.c:305 ../src/peony-kdisk-format.c:364
+msgid "format failed!"
+msgstr "格式化失败！"
+
+#: ../src/peony-kdisk-format.c:403
+#, c-format
+msgid "Current progress is %s%s"
+msgstr "当前进度为 %s%s"
+
+#: ../src/peony-kdisk-format.c:444 ../src/peony-kdisk-format.c:599
+msgid "Unable to unmount %s volume"
+msgstr "无法卸载%s卷"
+
+#: ../src/peony-kdisk-format.c:448 ../src/peony-kdisk-format.c:603
+msgid "Unable to unmount %s"
+msgstr "无法卸载%s"
+
+#: ../src/peony-kdisk-format.c:484
+msgid "Erase the device will takes a long time,do you want to continue?"
+msgstr "擦除设备将会花费较长时间，是否继续？"
+
+#: ../src/peony-kdisk-format.c:493
+msgid ""
+"Formatting will delete all data,are you sure you want to format the device?"
+msgstr "格式化将会删除所有数据，是否继续？"
+
+#: ../src/peony-kdisk-format.c:632
+msgid "Formatting is in progress, is it canceled?"
+msgstr "正在进行格式化，是否取消？"
+
+#: ../src/peony-kdisk-format.c:686
+msgid "Format Volume"
+msgstr "格式化卷"
+
 #: ../src/peony-location-bar.c:60
 msgid "Go To:"
 msgstr "转到："
@@ -6916,17 +7021,18 @@ msgstr "新建标签页(_N)"
 msgid "_Close Tab"
 msgstr "关闭标签(_C)"
 
-#: ../src/peony-navigation-window.c:898
+#: ../src/peony-navigation-window.c:885
 #, c-format
 msgid "%s - File Browser"
 msgstr "%s - 文件浏览器"
 
-#: ../src/peony-navigation-window.c:1516 ../src/peony-navigation-window.c:1625
-#: ../src/peony-navigation-window.c:1636
+#: ../src/peony-navigation-window.c:1507 ../src/peony-navigation-window.c:1646
+#: ../src/peony-navigation-window.c:1657
 msgid "Select the file you want to preview"
 msgstr "选择想要预览的文件"
 
-#: ../src/peony-navigation-window.c:1582
+#. printf("can't preview this file\n");
+#: ../src/peony-navigation-window.c:1586 ../src/peony-navigation-window.c:1596
 msgid "Can't preview this file"
 msgstr "不能预览"
 
@@ -7796,67 +7902,5 @@ msgstr "网络"
 #~ msgid "Bookmarks"
 #~ msgstr "书签"
 
-#~ msgid "Formatting is in progress, do you want to continue?"
-#~ msgstr "正在进行格式化，是否继续？"
-
-#~ msgid "Warning"
-#~ msgstr "警告"
-
-#~ msgid "Capatity:"
-#~ msgstr "容量："
-
-#~ msgid "File System:"
-#~ msgstr "文件系统："
-
-#~ msgid "Volume Label:"
-#~ msgstr "卷标："
-
-#~ msgid "Formatting Options:"
-#~ msgstr "格式化选项："
-
-#~ msgid "Erase(Need more time)"
-#~ msgstr "擦除(需要更多时间)"
-
 #~ msgid "Format"
 #~ msgstr "格式化"
-
-#~ msgid "Close"
-#~ msgstr "关闭"
-
-#~ msgid "The path is empty"
-#~ msgstr "路径为空"
-
-#~ msgid "can't find %s"
-#~ msgstr "无法找到 %s"
-
-#~ msgid "format %s volume"
-#~ msgstr "格式化%s卷"
-
-#~ msgid "format %s"
-#~ msgstr "格式化%s"
-
-#~ msgid "format succeed!"
-#~ msgstr "格式化完毕！"
-
-#~ msgid "format failed!"
-#~ msgstr "格式化失败！"
-
-#~ msgid "Current progress is %s%s"
-#~ msgstr "当前进度为 %s%s"
-
-#~ msgid "Erase the device will takes a long time,do you want to continue?"
-#~ msgstr "擦除设备将会花费较长时间，是否继续？"
-
-#~ msgid ""
-#~ "Formatting will delete all data,are you sure you want to format the "
-#~ "device?"
-#~ msgstr "格式化将会删除所有数据，是否继续？"
-
-#~ msgid "Formatting is in progress, is it canceled?"
-#~ msgstr "正在进行格式化，是否取消？"
-
-#~ msgid "Format Volume"
-#~ msgstr "格式化卷"
-
-#~ msgid "Begin"
-#~ msgstr "开始"
