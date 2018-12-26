@@ -60,6 +60,7 @@ void office_utils_disconnect_window_info (PeonyWindowInfo *window_info) {
 }
 
 void prepare_to_trans_file_by_window (PeonyWindowInfo* window, char* filename) {
+	printf ("prepare_to_trans_file_by_window\n");
 	if (!is_busy) {
 		is_busy = TRUE;
 
@@ -90,7 +91,7 @@ void prepare_to_trans_file_by_window (PeonyWindowInfo* window, char* filename) {
 }
 
 char* get_html_tmp_name (char* filename){
-	gchar *html_path, *tmp_name, *tmp_path, *quoted_path;
+	gchar *doc_path, *doc_name, *tmp_name, *html_dir, *html_path;
 	GFile *file;
 	gboolean res;
 	gchar *cmd;
@@ -99,31 +100,36 @@ char* get_html_tmp_name (char* filename){
 	GPid pid;
 	gchar **argv = NULL;
 	GError *error = NULL;
-	const gchar *unoconv_path;
+	const gchar *libreoffice_path;
 
-	unoconv_path = g_find_program_in_path ("unoconv");
-	if (unoconv_path == NULL) {
-		printf("unoconv is not found\n");
-		//openoffice_missing_unoconv (self);
+	libreoffice_path = g_find_program_in_path ("libreoffice");
+	if (libreoffice_path == NULL) {
+		printf("libreoffice is not found\n");
+		//openoffice_missing_libreoffice (self);
 		return NULL;
 	}
 
 	//printf("pid: %d\n",getpid());
 
 	file = g_file_new_for_path(filename);
-	tmp_name = g_strdup_printf("%s.html",g_file_get_basename (file));
+	doc_path = g_file_get_path (file);
+	doc_name = g_file_get_basename (file);
+	g_object_unref (file);
+	tmp_name = g_strrstr (doc_name, ".");
+	if (tmp_name){
+		*tmp_name = '\0';
+	}
+	tmp_name = g_strdup_printf ("%s.html", doc_name);
+	g_free (doc_name);
 
-	//printf("tmp_name: %s\n",tmp_name);
-	tmp_path = g_build_filename (g_get_user_cache_dir (), "peony", NULL);
-	html_path = g_build_filename (tmp_path, tmp_name, NULL);
+	html_dir = g_build_filename (g_get_user_cache_dir (), "peony", NULL);
+	html_path = g_build_filename (html_dir, tmp_name, NULL);
 
-	//char *dup_html_path = g_strdup_printf (html_path);
-
-	return g_strdup (html_path);
+	return html_path;
 }
 
 char* get_pdf_tmp_name(char* filename){
-	gchar *pdf_path, *tmp_name, *tmp_path, *quoted_path;
+	gchar *doc_path, *doc_name, *tmp_name, *pdf_dir, *pdf_path;
 	GFile *file;
 	gboolean res;
 	gchar *cmd;
@@ -132,27 +138,32 @@ char* get_pdf_tmp_name(char* filename){
 	GPid pid;
 	gchar **argv = NULL;
 	GError *error = NULL;
-	const gchar *unoconv_path;
+	const gchar *libreoffice_path;
 
-	unoconv_path = g_find_program_in_path ("unoconv");
-	if (unoconv_path == NULL) {
-		printf("unoconv is not found\n");
-		//openoffice_missing_unoconv (self);
+	libreoffice_path = g_find_program_in_path ("libreoffice");
+	if (libreoffice_path == NULL) {
+		printf("libreoffice is not found\n");
+		//openoffice_missing_libreoffice (self);
 		return NULL;
 	}
 
 	//printf("pid: %d\n",getpid());
 
 	file = g_file_new_for_path(filename);
-	tmp_name = g_strdup_printf("%s.pdf",g_file_get_basename (file));
+	doc_path = g_file_get_path (file);
+	doc_name = g_file_get_basename (file);
+	g_object_unref (file);
+	tmp_name = g_strrstr (doc_name, ".");
+	if (tmp_name){
+		*tmp_name = '\0';
+	}
+	tmp_name = g_strdup_printf ("%s.pdf", doc_name);
+	g_free (doc_name);
 
-	//printf("tmp_name: %s\n",tmp_name);
-	tmp_path = g_build_filename (g_get_user_cache_dir (), "peony", NULL);
-	pdf_path = g_build_filename (tmp_path, tmp_name, NULL);
+	pdf_dir = g_build_filename (g_get_user_cache_dir (), "peony", NULL);
+	pdf_path = g_build_filename (pdf_dir, tmp_name, NULL);
 
-	//char *dup_pdf_path = g_strdup_printf (pdf_path);
-
-	return g_strdup (pdf_path);
+	return pdf_path;
 }
 
 char* get_pending_preview_filename (char* filename){
@@ -165,7 +176,7 @@ char* get_pending_preview_filename (char* filename){
 	}
 }
 
-unoconv_child_watch_cb2 (GPid pid,
+libreoffice_child_watch_cb2 (GPid pid,
                         gint status,
                         gpointer user_data)
 {
@@ -176,6 +187,8 @@ unoconv_child_watch_cb2 (GPid pid,
 
 void office2pdf_by_window_internal (PeonyWindowInfo *window, char *pdf_filename, char* office_filename){
 
+	gchar *doc_path, *doc_name, *tmp_name, *pdf_dir, *pdf_path;
+	GFile *file;
 	gboolean res;
 	gchar *cmd;
 
@@ -183,49 +196,75 @@ void office2pdf_by_window_internal (PeonyWindowInfo *window, char *pdf_filename,
 	GPid pid;
 	gchar **argv = NULL;
 	GError *error = NULL;
-	const gchar *unoconv_path;
-	char* pdf_file_quoted_path = g_shell_quote (pdf_filename);
-	char* office_file_quoted_path = g_shell_quote (office_filename);
-
-	cmd = g_strdup_printf ("unoconv -f pdf -o %s %s", pdf_file_quoted_path, office_file_quoted_path);
-	printf("cmd: %s\n",cmd);
+	const gchar *libreoffice_path;
 	
-	res = g_shell_parse_argv (cmd, &argc, &argv, &error);
-	//g_free (cmd);
-	g_free (pdf_file_quoted_path);
-	g_free (office_file_quoted_path);
-
-	if (!res) {
-		g_warning ("Error while parsing the unoconv command line: %s",
-				error->message);
-		g_error_free (error);
-
-		return NULL;
+		libreoffice_path = g_find_program_in_path ("libreoffice");
+	if (libreoffice_path == NULL) {
+		printf("libreoffice is not found\n");
+		return ;
 	}
 
-	res = g_spawn_async (NULL, argv, NULL,
+	//printf("pid: %d\n",getpid());
+
+	file = g_file_new_for_path(office_filename);
+	doc_path = g_file_get_path (file);
+	doc_name = g_file_get_basename (file);
+	g_object_unref (file);
+	tmp_name = g_strrstr (doc_name, ".");
+	if (tmp_name){
+		*tmp_name = '\0';
+	}
+	tmp_name = g_strdup_printf ("%s.pdf", doc_name);
+	g_free (doc_name);
+
+	//printf("tmp_name: %s\n",tmp_name);
+	pdf_dir = g_build_filename (g_get_user_cache_dir (), "peony", NULL);
+	pdf_path = g_build_filename (pdf_dir, tmp_name, NULL);
+	g_mkdir_with_parents (pdf_dir, 0700);
+
+	g_free (tmp_name);
+
+	const gchar *libreoffice_argv[] = {
+		NULL,
+		"--convert-to", "pdf",
+		"--outdir", NULL,
+		NULL,
+		NULL
+	};
+
+	libreoffice_argv[0] = libreoffice_path;
+	libreoffice_argv[4] = pdf_dir;
+	libreoffice_argv[5] = doc_path;
+
+	argv = g_strdupv ((gchar **) libreoffice_argv);
+
+	res = g_spawn_async (NULL, (gchar **) argv, NULL,
 			G_SPAWN_DO_NOT_REAP_CHILD |
 			G_SPAWN_SEARCH_PATH,
 			NULL, NULL,
 			&pid, &error);
 
+	g_free(pdf_dir);
+	g_free(doc_path);
+	g_free (libreoffice_path);
 	g_strfreev (argv);
 
 	if (!res) {
-		g_warning ("Error while spawning unoconv: %s",
+		g_warning ("Error while spawning libreoffice: %s",
 				error->message);
 		g_error_free (error);
 
-		return NULL;
+		return ;
 	}
 
-	g_child_watch_add (pid, unoconv_child_watch_cb2, window);
+	g_child_watch_add (pid, libreoffice_child_watch_cb2, window);
 
-	//g_spawn_close_pid(pid);
 }
 
 void excel2html_by_window_internal (PeonyWindowInfo *window, char *html_filename, char *excel_filename){
 
+	gchar *doc_path, *doc_name, *tmp_name, *html_dir, *html_path;
+	GFile *file;
 	gboolean res;
 	gchar *cmd;
 
@@ -233,43 +272,67 @@ void excel2html_by_window_internal (PeonyWindowInfo *window, char *html_filename
 	GPid pid;
 	gchar **argv = NULL;
 	GError *error = NULL;
-	const gchar *unoconv_path;
-	char* html_file_quoted_path = g_shell_quote (html_filename);
-	char* excel_file_quoted_path = g_shell_quote (excel_filename);
-
-	cmd = g_strdup_printf ("unoconv -f html -o %s %s", html_file_quoted_path, excel_file_quoted_path);
-	printf("cmd: %s\n",cmd);	
+	const gchar *libreoffice_path;
 	
-	res = g_shell_parse_argv (cmd, &argc, &argv, &error);
-	//g_free (cmd);
-	g_free (html_file_quoted_path);
-	g_free (excel_file_quoted_path);
-
-	if (!res) {
-		g_warning ("Error while parsing the unoconv command line: %s",
-				error->message);
-		g_error_free (error);
-
-		return NULL;
+		libreoffice_path = g_find_program_in_path ("libreoffice");
+	if (libreoffice_path == NULL) {
+		printf("libreoffice is not found\n");
+		return ;
 	}
 
-	res = g_spawn_async (NULL, argv, NULL,
+	//printf("pid: %d\n",getpid());
+
+	file = g_file_new_for_path(excel_filename);
+	doc_path = g_file_get_path (file);
+	doc_name = g_file_get_basename (file);
+	g_object_unref (file);
+	tmp_name = g_strrstr (doc_name, ".");
+	if (tmp_name){
+		*tmp_name = '\0';
+	}
+	tmp_name = g_strdup_printf ("%s.html", doc_name);
+	g_free (doc_name);
+
+	//printf("tmp_name: %s\n",tmp_name);
+	html_dir = g_build_filename (g_get_user_cache_dir (), "peony", NULL);
+	html_path = g_build_filename (html_dir, tmp_name, NULL);
+	g_mkdir_with_parents (html_dir, 0700);
+
+	g_free (tmp_name);
+
+	const gchar *libreoffice_argv[] = {
+		NULL,
+		"--convert-to", "html",
+		"--outdir", NULL,
+		NULL,
+		NULL
+	};
+
+	libreoffice_argv[0] = libreoffice_path;
+	libreoffice_argv[4] = html_dir;
+	libreoffice_argv[5] = doc_path;
+
+	argv = g_strdupv ((gchar **) libreoffice_argv);
+
+	res = g_spawn_async (NULL, (gchar **) argv, NULL,
 			G_SPAWN_DO_NOT_REAP_CHILD |
 			G_SPAWN_SEARCH_PATH,
 			NULL, NULL,
 			&pid, &error);
 
+	g_free(html_dir);
+	g_free(doc_path);
+	g_free (libreoffice_path);
 	g_strfreev (argv);
 
 	if (!res) {
-		g_warning ("Error while spawning unoconv: %s",
+		g_warning ("Error while spawning libreoffice: %s",
 				error->message);
 		g_error_free (error);
 
-		return NULL;
+		return ;
 	}
 
-	g_child_watch_add (pid, unoconv_child_watch_cb2, window);
+	g_child_watch_add (pid, libreoffice_child_watch_cb2, window);
 
-	old_pid = pid;
 }
