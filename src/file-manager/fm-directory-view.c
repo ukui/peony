@@ -2527,9 +2527,9 @@ fm_directory_view_send_selection_change (FMDirectoryView *view)
         file = l->data;
         //char* uri = peony_file_get_uri(file);
         char* filename = g_filename_from_uri(peony_file_get_uri(file),NULL,NULL);
-
-        printf("%s\n",filename);
+        
         if(filename){
+			printf("%s\n",filename);
             g_signal_emit_by_name (window_info,
                          "preview_file",(gpointer)filename);
             free(filename);

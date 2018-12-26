@@ -1479,6 +1479,7 @@ static void office_format_trans_ready_callback(PeonyWindowInfo *window_info, gpo
         gchar *uri;
         uri = g_strdup_printf("file://%s", pending_preview_filename);
         printf("load uri: %s",uri);
+        webkit_web_view_set_zoom_level (window->details->web_view, 1.50);
         webkit_web_view_load_uri (WEBKIT_WEB_VIEW (window->details->web_view), uri);
         g_free(uri);
         gtk_widget_hide (window->details->empty_window);
@@ -1539,6 +1540,7 @@ static void preview_file_changed_callback(PeonyWindowInfo *window_info, gpointer
         gchar *uri;
         uri = g_strdup_printf("file://%s", data);
         printf("load uri: %s",uri);
+        webkit_web_view_set_zoom_level (window->details->web_view, 1.00);
         webkit_web_view_load_uri (WEBKIT_WEB_VIEW (window->details->web_view), uri);
         g_free(uri);
         gtk_widget_hide (window->details->empty_window);
@@ -1632,12 +1634,14 @@ peony_navigation_window_split_view_on (PeonyNavigationWindow *window)
         window->details->web_swindow = gtk_scrolled_window_new(NULL,NULL);
         window->details->web_view = webkit_web_view_new();
         WebKitSettings *settings = webkit_settings_new ();
-        g_object_set (G_OBJECT(settings), "enable-default-context-menu", FALSE, NULL);
-        g_object_set (G_OBJECT(settings), "enable-page-cache", FALSE, NULL);
-        g_object_set (G_OBJECT(settings), "javascript-can-access-clipboard", TRUE, NULL);
+        webkit_settings_set_enable_page_cache (settings, FALSE);
+        webkit_settings_set_zoom_text_only (settings, TRUE);
+        webkit_settings_set_enable_javascript (settings, TRUE);
+        webkit_settings_set_javascript_can_access_clipboard (settings, TRUE);
+        g_object_set (G_OBJECT(settings), "context-menu", FALSE, NULL);
         webkit_web_view_set_settings (window->details->web_view, settings);
         g_object_unref (settings);
-        webkit_web_view_set_zoom_level (window->details->web_view, 1.50);
+        //webkit_web_view_set_zoom_level (window->details->web_view, 1.50);
         gtk_container_add (GTK_CONTAINER(window->details->web_swindow), GTK_WIDGET(window->details->web_view));
         gtk_box_pack_start (GTK_BOX(window->details->preview_hbox), GTK_WIDGET(window->details->web_swindow), TRUE, TRUE, 0);
 
