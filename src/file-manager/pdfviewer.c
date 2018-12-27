@@ -79,7 +79,7 @@ GtkWidget* get_pdf_previewer_by_filename(char* filename){
 	GtkWidget *widget;
 	model = ev_document_model_new ();
 
-	ev_document_model_set_page_layout(model, EV_PAGE_LAYOUT_AUTOMATIC);
+	//ev_document_model_set_page_layout(model, EV_PAGE_LAYOUT_AUTOMATIC);
 	ev_document_model_set_continuous(model, TRUE);
 	ev_previewer_load_document (filename, model);
 
@@ -98,7 +98,7 @@ void set_pdf_preview_widget_file_by_filename(GtkWidget *widget, char* filename){
 	//printf("set_pdf_preview_widget_file_by_filename\n");
 	EvDocumentModel *model;
 	model = ev_document_model_new ();
-	ev_document_model_set_page_layout(model, EV_PAGE_LAYOUT_AUTOMATIC);
+	//ev_document_model_set_page_layout(model, EV_PAGE_LAYOUT_AUTOMATIC);
 	ev_document_model_set_continuous(model, TRUE);
 	//printf("ev_previewer_load_document: %s\n",filename);
 	//char* current_filename = strdup (filename);

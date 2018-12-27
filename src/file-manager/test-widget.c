@@ -1046,7 +1046,7 @@ void widget_init(TestWidget *self){
 static void
 test_widget_init (TestWidget *self)
 {
-	GtkSourceSpaceDrawer *space_drawer;
+	//GtkSourceSpaceDrawer *space_drawer;
 
 	self->priv = test_widget_get_instance_private (self);
 
@@ -1117,10 +1117,10 @@ test_widget_init (TestWidget *self)
 	                  G_CALLBACK (on_background_pattern_changed),
 	                  self);
 
-	space_drawer = gtk_source_view_get_space_drawer (self->priv->view);
-	g_object_bind_property (self->priv->draw_spaces_checkbutton, "active",
-				space_drawer, "enable-matrix",
-				G_BINDING_BIDIRECTIONAL | G_BINDING_SYNC_CREATE);
+	//space_drawer = gtk_source_view_get_space_drawer (self->priv->view);
+	//g_object_bind_property (self->priv->draw_spaces_checkbutton, "active",
+	//			space_drawer, "enable-matrix",
+	//			G_BINDING_BIDIRECTIONAL | G_BINDING_SYNC_CREATE);
 
 	mode_init(self);
 	//printf("%s", TOP_SRCDIR);
