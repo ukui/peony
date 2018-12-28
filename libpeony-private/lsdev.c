@@ -452,9 +452,12 @@ static int get_dm_wholedisk(struct sysfs_cxt *cxt, char *diskname,
     if (!name)
         return -1;
 
+    printf ("=====\n");
+    printf ("name: %s\n", name);
     if (diskname && len) {
         strncpy(diskname, name, len);
         diskname[len - 1] = '\0';
+        printf ("diskname: %s\n");
     }
 
     if (diskdevno) {
@@ -717,6 +720,10 @@ goffset process_one_device(char *devname)
                         goto leave;
                
         } 
+
+        printf ("===============\n");
+        printf ("buf: %s, name: %s, diskname: %s\n", buf, name, diskname);
+        printf ("===============\n");
 
 leave:
 	lsblk_space = cxt.size;
