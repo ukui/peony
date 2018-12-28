@@ -8,7 +8,7 @@
 static PeonyWindowInfo *current_window;
 static char* todo_filename;
 
-static GPid old_pid = -1;
+//static GPid old_pid = -1;
 
 static gboolean is_busy = FALSE;
 
@@ -20,6 +20,8 @@ char* get_pdf_tmp_name(char* filename);
 void prepare_to_trans_file_by_window (PeonyWindowInfo* window, char* filename);
 void excel2html_by_window_internal (PeonyWindowInfo *window, char *html_filename, char *excel_filename);
 void office2pdf_by_window_internal (PeonyWindowInfo *window, char *pdf_filename, char* office_filename);
+void excel2html_by_window_internal_unoconv (PeonyWindowInfo *window, char *html_filename, char *excel_filename);
+void office2pdf_by_window_internal_unoconv (PeonyWindowInfo *window, char *pdf_filename, char* office_filename);
 
 void clean_cache_files_anyway (){
     char* tmp_path;
@@ -74,14 +76,24 @@ void prepare_to_trans_file_by_window (PeonyWindowInfo* window, char* filename) {
 		pending_preview_filename = peony_navigation_window_get_pending_preview_file_by_window_info (window);
 		//printf ("pending: %s\n", pending_preview_filename);
 
+		gboolean use_unoconv = FALSE;
+		if (g_find_program_in_path ("unoconv"))
+			use_unoconv = TRUE;
+
 		if (is_excel_doc(filename)) {
 			//printf ("is excel\n");
 			pending_preview_filename = get_html_tmp_name(filename);
-			excel2html_by_window_internal (window, pending_preview_filename, doing_filename);
+			if (!use_unoconv)
+				excel2html_by_window_internal (window, pending_preview_filename, doing_filename);
+			else
+				excel2html_by_window_internal_unoconv (window, pending_preview_filename, doing_filename);
 		} else {
 			//printf ("is doc or ppt\n");
 			pending_preview_filename = get_pdf_tmp_name(filename);
-			office2pdf_by_window_internal (window, pending_preview_filename, doing_filename);
+			if (!use_unoconv)
+				office2pdf_by_window_internal (window, pending_preview_filename, doing_filename);
+			else
+				office2pdf_by_window_internal_unoconv (window, pending_preview_filename, doing_filename);
 		}		
 	} else {
 		todo_filename = peony_navigation_window_get_current_previewing_office_file_by_window_info (window);
@@ -334,5 +346,114 @@ void excel2html_by_window_internal (PeonyWindowInfo *window, char *html_filename
 	}
 
 	g_child_watch_add (pid, libreoffice_child_watch_cb2, window);
+
+}
+
+static void
+unoconv_child_watch_cb2 (GPid pid,
+                        gint status,
+                        gpointer user_data)
+{
+	g_spawn_close_pid (pid);
+	is_busy = FALSE;
+	g_signal_emit_by_name (PEONY_WINDOW_INFO (user_data), "office_trans_ready", NULL);    //office ready cb , if pdf name = global preview file name, show it. else g_remove file.
+}
+
+void office2pdf_by_window_internal_unoconv (PeonyWindowInfo *window, char *pdf_filename, char* office_filename){
+
+	gboolean res;
+	gchar *cmd;
+
+	gint argc;
+	GPid pid;
+	gchar **argv = NULL;
+	GError *error = NULL;
+	const gchar *unoconv_path;
+	char* pdf_file_quoted_path = g_shell_quote (pdf_filename);
+	char* office_file_quoted_path = g_shell_quote (office_filename);
+
+	cmd = g_strdup_printf ("unoconv -f pdf -o %s %s", pdf_file_quoted_path, office_file_quoted_path);
+	printf("cmd: %s\n",cmd);
+	
+	res = g_shell_parse_argv (cmd, &argc, &argv, &error);
+	//g_free (cmd);
+	g_free (pdf_file_quoted_path);
+	g_free (office_file_quoted_path);
+
+	if (!res) {
+		g_warning ("Error while parsing the unoconv command line: %s",
+				error->message);
+		g_error_free (error);
+
+		return NULL;
+	}
+
+	res = g_spawn_async (NULL, argv, NULL,
+			G_SPAWN_DO_NOT_REAP_CHILD |
+			G_SPAWN_SEARCH_PATH,
+			NULL, NULL,
+			&pid, &error);
+
+	g_strfreev (argv);
+
+	if (!res) {
+		g_warning ("Error while spawning unoconv: %s",
+				error->message);
+		g_error_free (error);
+
+		return NULL;
+	}
+
+	g_child_watch_add (pid, unoconv_child_watch_cb2, window);
+
+	//g_spawn_close_pid(pid);
+}
+
+void excel2html_by_window_internal_unoconv (PeonyWindowInfo *window, char *html_filename, char *excel_filename){
+
+	gboolean res;
+	gchar *cmd;
+
+	gint argc;
+	GPid pid;
+	gchar **argv = NULL;
+	GError *error = NULL;
+	const gchar *unoconv_path;
+	char* html_file_quoted_path = g_shell_quote (html_filename);
+	char* excel_file_quoted_path = g_shell_quote (excel_filename);
+
+	cmd = g_strdup_printf ("unoconv -f html -o %s %s", html_file_quoted_path, excel_file_quoted_path);
+	printf("cmd: %s\n",cmd);	
+	
+	res = g_shell_parse_argv (cmd, &argc, &argv, &error);
+	//g_free (cmd);
+	g_free (html_file_quoted_path);
+	g_free (excel_file_quoted_path);
+
+	if (!res) {
+		g_warning ("Error while parsing the unoconv command line: %s",
+				error->message);
+		g_error_free (error);
+
+		return NULL;
+	}
+
+	res = g_spawn_async (NULL, argv, NULL,
+			G_SPAWN_DO_NOT_REAP_CHILD |
+			G_SPAWN_SEARCH_PATH,
+			NULL, NULL,
+			&pid, &error);
+
+	g_strfreev (argv);
+
+	if (!res) {
+		g_warning ("Error while spawning unoconv: %s",
+				error->message);
+		g_error_free (error);
+
+		return NULL;
+	}
+
+	g_child_watch_add (pid, unoconv_child_watch_cb2, window);
 
 }
