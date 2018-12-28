@@ -17,10 +17,10 @@ ev_previewer_load_job_finished (EvJob           *job,
 		return;
 	}
 
-	printf ("ev_document_model_set_document\n");
+	//printf ("ev_document_model_set_document\n");
 	if (EV_IS_DOCUMENT_MODEL(model) && EV_IS_DOCUMENT (job->document)){
 		ev_document_model_set_document (model, job->document);
-		g_message ("ev_previewer_load_job_finished");
+		//g_message ("ev_previewer_load_job_finished");
 	}
 
 	g_object_unref (job);
@@ -30,7 +30,7 @@ static void
 ev_previewer_load_document (char     *filename,
 			    EvDocumentModel *model)
 {
-	g_message ("ev_previewer_load_document: %s", filename);
+	//g_message ("ev_previewer_load_document: %s", filename);
 	EvJob *job;
 	gchar *uri;
 	GFile  *file;
@@ -39,7 +39,7 @@ ev_previewer_load_document (char     *filename,
 	uri = g_file_get_uri (file);
 	g_object_unref (file);
 
-	printf ("ev_job_load_new\n");
+	//printf ("ev_job_load_new\n");
 	job = ev_job_load_new (uri);
 	g_signal_connect (job, "finished",
 			  G_CALLBACK (ev_previewer_load_job_finished),
@@ -50,9 +50,7 @@ ev_previewer_load_document (char     *filename,
 
 void pdf_viewer_init(){
     if(!ev_init ())
-		printf("pdf_viewer_init failed!\n");
-	else
-		printf("pdf_viewer_init done!\n");
+		return;
 }
 
 void pdf_viewer_shutdown(){

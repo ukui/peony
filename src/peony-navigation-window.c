@@ -135,26 +135,6 @@ choose_list_view (GtkButton *widget,gpointer data)
     peony_window_slot_set_content_view (slot,"OAFIID:Peony_File_Manager_List_View");
 }
 
-//NOTE: global signaler has been abondened.
-//as we use global signaller recieving the data of filename, 
-//we couldn't get the handle of window in callback method.
-//so, it seems that we have to use static val to get window globally.
-
-/*
-static PeonyNavigationWindow *global_window;
-static char* global_preview_filename;
-static char* global_preview_office2pdf_filename;
-static char* global_preview_excel2html_filename;
-static char* old_tmp_filename;
-*/
-
-static void preview_file_callback (PeonyWindowInfo *window_info, char* data){
-    printf("magic!!!\n");
-}
-//static TestWidget *global_test_widget;
-//static GtkWidget *global_pdf_view;
-//static GtkWidget *empty_widget;
-
 static void
 peony_navigation_window_init (PeonyNavigationWindow *window)
 {
@@ -1452,7 +1432,7 @@ static void office_format_trans_ready_callback(PeonyWindowInfo *window_info, gpo
     char* pending_preview_filename = window->details->pending_preview_filename;
     char* current_previewing_office_filename = window->details->current_previewing_office_filename;
 
-    printf("current: %s, pending: %s current office:%s\n",current_preview_filename , pending_preview_filename, current_previewing_office_filename);
+    //printf("current: %s, pending: %s current office:%s\n",current_preview_filename , pending_preview_filename, current_previewing_office_filename);
 
     if (!current_preview_filename){
         return;
@@ -1461,7 +1441,7 @@ static void office_format_trans_ready_callback(PeonyWindowInfo *window_info, gpo
     GFile *file;
     file = g_file_new_for_path (pending_preview_filename);
     if (!g_file_query_exists (file, NULL)){
-        printf ("file %s doesn't exist\n", pending_preview_filename);
+        //printf ("file %s doesn't exist\n", pending_preview_filename);
         return;
     }
 
@@ -1478,7 +1458,7 @@ static void office_format_trans_ready_callback(PeonyWindowInfo *window_info, gpo
     } else if (filename_has_suffix(pending_preview_filename,".html")) {
         gchar *uri;
         uri = g_strdup_printf("file://%s", pending_preview_filename);
-        printf("load uri: %s",uri);
+        //printf("load uri: %s",uri);
         webkit_web_view_set_zoom_level (window->details->web_view, 1.50);
         webkit_web_view_load_uri (WEBKIT_WEB_VIEW (window->details->web_view), uri);
         g_free(uri);
@@ -1493,18 +1473,18 @@ static void office_format_trans_ready_callback(PeonyWindowInfo *window_info, gpo
 static void preview_file_changed_callback(PeonyWindowInfo *window_info, gpointer data){
 
     if (peony_window_info_get_window_type (window_info) != PEONY_WINDOW_NAVIGATION){
-        printf ("is not navigation\n");
+        //printf ("is not navigation\n");
         return;
     }
 
     PeonyNavigationWindow *window = PEONY_NAVIGATION_WINDOW (window_info);
     if (!window->details->preview_hbox) {
-        printf("split view is not init!\n");
+        //printf("split view is not init!\n");
         return;
     }
 
     if((char*)data == "null"){
-        printf ("null\n\n\n");
+        //printf ("null\n\n\n");
         gtk_label_set_label(window->details->hint_view, _("Select the file you want to preview"));
 	    gtk_widget_show_all(window->details->empty_window);
 	    gtk_widget_hide(window->details->pdf_swindow);
@@ -1515,7 +1495,7 @@ static void preview_file_changed_callback(PeonyWindowInfo *window_info, gpointer
     } 
 
     if (window->details->pending_preview_filename){
-        printf("has tmp file before: %s\n", window->details->pending_preview_filename);
+        //printf("has tmp file before: %s\n", window->details->pending_preview_filename);
         //g_remove (window->details->pending_preview_filename);
         clean_cache_files_anyway();
         free (window->details->pending_preview_filename);
@@ -1526,7 +1506,7 @@ static void preview_file_changed_callback(PeonyWindowInfo *window_info, gpointer
         g_free (window->details->current_preview_filename);
     }
 
-    printf ("preview start:\n");
+    //printf ("preview start:\n");
     window->details->current_preview_filename = g_strdup (data);
 
     if(is_text_type((char*)data)){
@@ -1536,10 +1516,10 @@ static void preview_file_changed_callback(PeonyWindowInfo *window_info, gpointer
         gtk_widget_hide (window->details->web_swindow);
         gtk_widget_show_all (window->details->test_widget);
     } else if (is_image_type((char*)data)) {
-        printf("is image type\n");
+        //printf("is image type\n");
         gchar *uri;
         uri = g_strdup_printf("file://%s", data);
-        printf("load uri: %s",uri);
+        //printf("load uri: %s",uri);
         webkit_web_view_set_zoom_level (window->details->web_view, 1.00);
         webkit_web_view_load_uri (WEBKIT_WEB_VIEW (window->details->web_view), uri);
         g_free(uri);
@@ -1548,7 +1528,7 @@ static void preview_file_changed_callback(PeonyWindowInfo *window_info, gpointer
         gtk_widget_hide (window->details->test_widget);
         gtk_widget_show_all (window->details->web_swindow);
     }  else if (is_pdf_type((char*)data)) {
-        printf("is pdf type\n");
+        //printf("is pdf type\n");
         window_delay_set_pdf_preview_widget_file_by_filename (PEONY_WINDOW_INFO (window), (char*)data);
         /*
         set_pdf_preview_widget_file_by_filename(window->details->pdf_view,(char*)data);
@@ -1569,7 +1549,7 @@ static void preview_file_changed_callback(PeonyWindowInfo *window_info, gpointer
         //window->details->current_preview_filename = g_strdup (data);
         char* fakename = get_pending_preview_filename (window->details->current_preview_filename);
         window->details->current_previewing_office_filename = g_strdup (data);
-        printf ("current_previewing_office_filename: %s ", peony_navigation_window_get_current_previewing_office_file_by_window_info (PEONY_WINDOW_INFO (window)));
+        //printf ("current_previewing_office_filename: %s ", peony_navigation_window_get_current_previewing_office_file_by_window_info (PEONY_WINDOW_INFO (window)));
 
         //we'll sheduel a unoconv child progress to tran office file to pdf/html first, this will be delayed for a few times.
         //the current preview filename is the file which we selecting now.
@@ -1578,7 +1558,7 @@ static void preview_file_changed_callback(PeonyWindowInfo *window_info, gpointer
         //when office trans ready, we'll compare the current_previewing_filename and current_previewing_office_filename,
         //if they are not same, we won't show the office preview widget.
 
-        printf ("prepare_to_trans_file_by_window\n");
+        //printf ("prepare_to_trans_file_by_window\n");
 
         prepare_to_trans_file_by_window (PEONY_WINDOW_INFO (window), window->details->current_previewing_office_filename);
 
@@ -1602,6 +1582,10 @@ static void preview_file_changed_callback(PeonyWindowInfo *window_info, gpointer
         gtk_widget_hide (window->details->web_swindow);
     }
 
+}
+
+static gboolean do_not_show_right_click_menu_callback (WebKitWebView *web_view) {
+    return TRUE;
 }
 
 void
@@ -1638,7 +1622,8 @@ peony_navigation_window_split_view_on (PeonyNavigationWindow *window)
         webkit_settings_set_zoom_text_only (settings, TRUE);
         webkit_settings_set_enable_javascript (settings, TRUE);
         webkit_settings_set_javascript_can_access_clipboard (settings, TRUE);
-        g_object_set (G_OBJECT(settings), "context-menu", FALSE, NULL);
+        //g_object_set (G_OBJECT(settings), "context-menu", FALSE, NULL);
+        g_signal_connect (window->details->web_view, "context-menu", G_CALLBACK (do_not_show_right_click_menu_callback), NULL);
         webkit_web_view_set_settings (window->details->web_view, settings);
         g_object_unref (settings);
         //webkit_web_view_set_zoom_level (window->details->web_view, 1.50);
@@ -1664,10 +1649,7 @@ last:
     gtk_widget_hide (window->details->pdf_swindow);
     gtk_widget_hide (window->details->web_swindow);
     
-    
-    //char *signal_filename;
     char* preview_filename; 
-    char* child_cb_filename;
 
     g_signal_connect (PEONY_WINDOW_INFO(window),
                           "preview_file",
@@ -1684,38 +1666,22 @@ last:
                           G_CALLBACK (show_pdf_file_callback), NULL
                           );
 
-    //office_utils_conncet_window_info (PEONY_WINDOW_INFO (window));
-    //char* data;
-    //g_signal_connect(PEONY_WINDOW_INFO(window),"preview_file",G_CALLBACK(preview_file_callback),data);
-
     window->details->is_split_view_showing = TRUE;
-    //old_tmp_filename = NULL;
 }
 
 void
 peony_navigation_window_split_view_off (PeonyNavigationWindow *window)
 {
-    //return;
-    printf("split_view_off\n");
-    char* preview_filename; 
-    char* child_cb_filename;
     gtk_widget_hide (window->details->preview_hbox);
-    /*
-    g_signal_handlers_disconnect_by_func(peony_signaller_get_current (), G_CALLBACK (preview_file_changed_callback), preview_filename);
-    g_signal_handlers_disconnect_by_func(peony_signaller_get_current (), G_CALLBACK (office_format_trans_ready_callback), child_cb_filename);
-    */
-   char *data;
+    char *data;
     g_signal_handlers_disconnect_by_func(PEONY_WINDOW_INFO(window),G_CALLBACK(preview_file_changed_callback),data);
     g_signal_handlers_disconnect_by_func(PEONY_WINDOW_INFO(window),G_CALLBACK(office_format_trans_ready_callback),NULL);
     g_signal_handlers_disconnect_by_func(PEONY_WINDOW_INFO(window),G_CALLBACK(show_pdf_file_callback),NULL);
-    //office_utils_disconnect_window_info (PEONY_WINDOW_INFO(window));
-
 
     window->details->is_split_view_showing = FALSE;
     peony_navigation_window_update_split_view_actions_sensitivity (window);
     
     clean_cache_files_anyway ();
-    //old_tmp_filename = NULL;
 }
 
 gboolean

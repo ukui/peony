@@ -25,9 +25,9 @@ void clean_cache_files_anyway (){
     char* tmp_path;
     tmp_path = g_build_filename (g_get_user_cache_dir (), "peony", NULL);
     if(g_remove(tmp_path) != 0){
-        printf ("remove cache path failed: %s\n",tmp_path);
+        //printf ("remove cache path failed: %s\n",tmp_path);
 		char* cmd = g_strdup_printf ("rm -rf %s",tmp_path);
-		printf ("cmd: %s", cmd);
+		//printf ("cmd: %s", cmd);
         system (cmd);
     }
     g_free (tmp_path);
@@ -40,11 +40,11 @@ gboolean is_office_busy(){
 static void trans_next_file (PeonyWindowInfo* window) {
 
 	if (!todo_filename){
-		printf ("no next file\n");
+		//printf ("no next file\n");
 		return;
 	}
 
-	printf ("next file\n\n\n\n\n");
+	//printf ("next file\n\n\n\n\n");
 
 	prepare_to_trans_file_by_window (window, todo_filename);
 
@@ -60,26 +60,26 @@ void office_utils_disconnect_window_info (PeonyWindowInfo *window_info) {
 }
 
 void prepare_to_trans_file_by_window (PeonyWindowInfo* window, char* filename) {
-	printf ("prepare_to_trans_file_by_window\n");
+	//printf ("prepare_to_trans_file_by_window\n");
 	if (!is_busy) {
 		is_busy = TRUE;
 
-		printf ("...................\n");
+		//printf ("...................\n");
 		char *doing_filename = peony_navigation_window_get_current_previewing_office_file_by_window_info (window);
-		printf ("doing %s\n",doing_filename);
+		//printf ("doing %s\n",doing_filename);
 		char *pending_preview_filename = get_pending_preview_filename(doing_filename);
-		printf ("pending: %s\n", pending_preview_filename);
+		//printf ("pending: %s\n", pending_preview_filename);
 		peony_navigation_window_set_pending_preview_file_by_window_info (window, pending_preview_filename);
 		g_free (pending_preview_filename);
 		pending_preview_filename = peony_navigation_window_get_pending_preview_file_by_window_info (window);
-		printf ("pending: %s\n", pending_preview_filename);
+		//printf ("pending: %s\n", pending_preview_filename);
 
 		if (is_excel_doc(filename)) {
-			printf ("is excel\n");
+			//printf ("is excel\n");
 			pending_preview_filename = get_html_tmp_name(filename);
 			excel2html_by_window_internal (window, pending_preview_filename, doing_filename);
 		} else {
-			printf ("is doc or ppt\n");
+			//printf ("is doc or ppt\n");
 			pending_preview_filename = get_pdf_tmp_name(filename);
 			office2pdf_by_window_internal (window, pending_preview_filename, doing_filename);
 		}		
@@ -104,7 +104,7 @@ char* get_html_tmp_name (char* filename){
 
 	libreoffice_path = g_find_program_in_path ("libreoffice");
 	if (libreoffice_path == NULL) {
-		printf("libreoffice is not found\n");
+		//printf("libreoffice is not found\n");
 		//openoffice_missing_libreoffice (self);
 		return NULL;
 	}
@@ -142,7 +142,7 @@ char* get_pdf_tmp_name(char* filename){
 
 	libreoffice_path = g_find_program_in_path ("libreoffice");
 	if (libreoffice_path == NULL) {
-		printf("libreoffice is not found\n");
+		//printf("libreoffice is not found\n");
 		//openoffice_missing_libreoffice (self);
 		return NULL;
 	}
@@ -168,10 +168,10 @@ char* get_pdf_tmp_name(char* filename){
 
 char* get_pending_preview_filename (char* filename){
 	if (is_excel_doc(filename)) {
-		printf ("is excel\n");
+		//printf ("is excel\n");
 		return get_html_tmp_name(filename);
 	} else {
-		printf ("is doc or ppt\n");
+		//printf ("is doc or ppt\n");
 		return get_pdf_tmp_name(filename);
 	}
 }
@@ -200,7 +200,7 @@ void office2pdf_by_window_internal (PeonyWindowInfo *window, char *pdf_filename,
 	
 		libreoffice_path = g_find_program_in_path ("libreoffice");
 	if (libreoffice_path == NULL) {
-		printf("libreoffice is not found\n");
+		//printf("libreoffice is not found\n");
 		return ;
 	}
 
@@ -276,7 +276,7 @@ void excel2html_by_window_internal (PeonyWindowInfo *window, char *html_filename
 	
 		libreoffice_path = g_find_program_in_path ("libreoffice");
 	if (libreoffice_path == NULL) {
-		printf("libreoffice is not found\n");
+		//printf("libreoffice is not found\n");
 		return ;
 	}
 

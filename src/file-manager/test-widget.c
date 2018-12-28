@@ -119,11 +119,12 @@ get_language_for_file (GtkTextBuffer *buffer,
 	language = gtk_source_language_manager_guess_language (manager,
 							       filename,
 							       content_type);
-
+/*
 	g_message ("Detected '%s' mime type for file %s, chose language %s",
 		   content_type != NULL ? content_type : "(null)",
 		   filename,
 		   language != NULL ? gtk_source_language_get_id (language) : "(none)");
+*/
 
 	g_free (content_type);
 	g_free (text);
@@ -194,6 +195,7 @@ print_language_style_ids (GtkSourceLanguage *language)
 
 	styles = gtk_source_language_get_style_ids (language);
 
+/*
 	if (styles == NULL)
 	{
 		g_print ("No styles in language '%s'\n",
@@ -216,6 +218,7 @@ print_language_style_ids (GtkSourceLanguage *language)
 	}
 
 	g_print ("\n");
+*/
 }
 
 static void
@@ -255,7 +258,7 @@ load_cb (GtkSourceFileLoader *loader,
 	else
 	{
 		gchar *path = g_file_get_path (location);
-		g_print ("No language found for file '%s'\n", path);
+		//g_print ("No language found for file '%s'\n", path);
 		g_free (path);
 	}
 
@@ -267,35 +270,35 @@ static void
 open_file (TestWidget  *self,
 	   const gchar *filename)
 {
-	g_message("test filename: %s\n", filename);
+	//g_message("test filename: %s\n", filename);
 	GFile *location;
 	GtkSourceFileLoader *loader;
 
 
-	printf("g_clear_object\n");
+	//printf("g_clear_object\n");
 	g_clear_object (&self->priv->file);
 	self->priv->file = gtk_source_file_new ();
 
-	printf("g_file_new_for_path\n");
+	//printf("g_file_new_for_path\n");
 	location = g_file_new_for_path (filename);
 	gtk_source_file_set_location (self->priv->file, location);
 	g_object_unref (location);
 
-	printf("gtk_source_file_loader_new\n");
+	//printf("gtk_source_file_loader_new\n");
 
 	loader = gtk_source_file_loader_new (self->priv->buffer,
 					     self->priv->file);
 
 	remove_all_marks (self->priv->buffer);
 
-	printf("gtk_source_file_loader_load_async\n");
+	//printf("gtk_source_file_loader_load_async\n");
 	gtk_source_file_loader_load_async (loader,
 					   G_PRIORITY_DEFAULT,
 					   NULL,
 					   NULL, NULL, NULL,
 					   (GAsyncReadyCallback) load_cb,
 					   self);
-	printf("open file done\n");
+	//printf("open file done\n");
 }
 
 void open_file_cb(TestWidget *widget, char *filename){
@@ -307,18 +310,18 @@ void mode_init(TestWidget *self){
 	gtk_source_view_set_show_line_numbers (self->priv->view, enabled);
 	gtk_source_view_set_show_line_marks (self->priv->view, enabled);
 	gtk_source_view_set_show_right_margin (self->priv->view, enabled);
-	gtk_source_view_set_right_margin_position (self->priv->view, -1);
+	gtk_source_view_set_right_margin_position (self->priv->view, 1000);
 	gtk_source_buffer_set_highlight_syntax (self->priv->buffer, enabled);
 	gtk_source_buffer_set_highlight_matching_brackets (self->priv->buffer, enabled);
 	gtk_source_view_set_highlight_current_line (self->priv->view, enabled);
-	gtk_text_view_set_wrap_mode(self, GTK_WRAP_WORD);
+	//gtk_text_view_set_wrap_mode(self, GTK_WRAP_WORD);
 	gtk_source_view_set_auto_indent (self->priv->view, enabled);
 	gtk_source_view_set_insert_spaces_instead_of_tabs (self->priv->view, enabled);
 	gtk_source_view_set_tab_width (self->priv->view, 4);
 	gtk_source_view_set_indent_width (self->priv->view, -1);
 	gtk_source_view_set_smart_home_end (self->priv->view, GTK_SOURCE_SMART_HOME_END_DISABLED);
-        gtk_source_view_set_background_pattern (self->priv->view,
-                                                        GTK_SOURCE_BACKGROUND_PATTERN_TYPE_NONE);
+    gtk_source_view_set_background_pattern (self->priv->view,
+                                            GTK_SOURCE_BACKGROUND_PATTERN_TYPE_NONE);
 	gtk_text_view_set_editable (GTK_TEXT_VIEW(self->priv->view), !enabled);
 	gtk_text_buffer_set_modified (GTK_TEXT_BUFFER(self->priv->buffer), !enabled);
 
@@ -580,14 +583,14 @@ paginate (GtkPrintOperation        *operation,
 	  GtkPrintContext          *context,
 	  GtkSourcePrintCompositor *compositor)
 {
-	g_print ("Pagination progress: %.2f %%\n", gtk_source_print_compositor_get_pagination_progress (compositor) * 100.0);
+	//g_print ("Pagination progress: %.2f %%\n", gtk_source_print_compositor_get_pagination_progress (compositor) * 100.0);
 
 	if (gtk_source_print_compositor_paginate (compositor, context))
 	{
 		gint n_pages;
 
 		g_assert (gtk_source_print_compositor_get_pagination_progress (compositor) == 1.0);
-		g_print ("Pagination progress: %.2f %%\n", gtk_source_print_compositor_get_pagination_progress (compositor) * 100.0);
+		//g_print ("Pagination progress: %.2f %%\n", gtk_source_print_compositor_get_pagination_progress (compositor) * 100.0);
 
 		n_pages = gtk_source_print_compositor_get_n_pages (compositor);
 		gtk_print_operation_set_n_pages (operation, n_pages);
@@ -867,18 +870,19 @@ bracket_matched_cb (GtkSourceBuffer           *buffer,
 	eclass = G_ENUM_CLASS (g_type_class_ref (GTK_SOURCE_TYPE_BRACKET_MATCH_TYPE));
 	evalue = g_enum_get_value (eclass, state);
 
-	g_print ("Bracket match state: '%s'\n", evalue->value_nick);
+	//g_print ("Bracket match state: '%s'\n", evalue->value_nick);
 
 	g_type_class_unref (eclass);
 
 	if (state == GTK_SOURCE_BRACKET_MATCH_FOUND)
 	{
 		g_return_if_fail (iter != NULL);
-
+/*
 		g_print ("Matched bracket: '%c' at row: %"G_GINT32_FORMAT", col: %"G_GINT32_FORMAT"\n",
 		         gtk_text_iter_get_char (iter),
 		         gtk_text_iter_get_line (iter) + 1,
 		         gtk_text_iter_get_line_offset (iter) + 1);
+*/
 	}
 }
 
@@ -1056,7 +1060,7 @@ test_widget_init (TestWidget *self)
 		gtk_text_view_get_buffer (GTK_TEXT_VIEW (self->priv->view)));
 
 	g_object_ref (self->priv->buffer);
-
+/*
 	g_signal_connect (self->priv->show_top_border_window_checkbutton,
 			  "toggled",
 			  G_CALLBACK (show_top_border_window_toggled_cb),
@@ -1116,6 +1120,8 @@ test_widget_init (TestWidget *self)
 	                  "changed",
 	                  G_CALLBACK (on_background_pattern_changed),
 	                  self);
+
+	*/
 
 	//space_drawer = gtk_source_view_get_space_drawer (self->priv->view);
 	//g_object_bind_property (self->priv->draw_spaces_checkbutton, "active",
