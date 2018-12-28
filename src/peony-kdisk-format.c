@@ -75,7 +75,6 @@ ensure_delete_format_window(GtkWidget *window,GdkEvent *event,gpointer user_data
 			if(data->is_erase != NULL)
 			{
 				cancel_format(data -> block_device);	
-				data->is_format = 0;
 			}
 			gtk_widget_destroy(dialog);
 			return FALSE;
@@ -201,6 +200,12 @@ create_format_window(format_window *data)
         data->cancel_button = gtk_button_new_with_label(_("Close"));
         gtk_widget_set_size_request(data->cancel_button,60,35);
 
+	GtkWidget *box;
+	box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL,0);
+	gtk_box_pack_end(box,data->cancel_button,0,FALSE,10);
+	gtk_box_pack_end(box,data->ensure_button,0,FALSE,0);
+	gtk_widget_set_size_request(box,296,35);
+
         gtk_fixed_put(GTK_FIXED(data->fixed),data->label1,10,15);
         gtk_fixed_put(GTK_FIXED(data->fixed),data->sizecombox,10,40);
         gtk_fixed_put(GTK_FIXED(data->fixed),data->label2,10,85);
@@ -210,9 +215,9 @@ create_format_window(format_window *data)
         gtk_fixed_put(GTK_FIXED(data->fixed),data->label4,10,225);
         gtk_fixed_put(GTK_FIXED(data->fixed),data->check_button,10,250);
 	gtk_fixed_put(GTK_FIXED(data->fixed),data->processbar,10,300);
-	gtk_fixed_put(GTK_FIXED(data->fixed),data->ensure_button,150,350);
-        gtk_fixed_put(GTK_FIXED(data->fixed),data->cancel_button,220,350);
-
+//	gtk_fixed_put(GTK_FIXED(data->fixed),data->ensure_button,150,350);
+  //      gtk_fixed_put(GTK_FIXED(data->fixed),data->cancel_button,220,350);
+	gtk_fixed_put(GTK_FIXED(data->fixed),box,0,350);
 }
 
 static void create_format_init(format_window *data)
