@@ -1288,8 +1288,8 @@ peony_location_bar_set_location (PeonyLocationBar *bar,
 
 		g_signal_connect (aspectframe, "size-allocate",
 						  G_CALLBACK (peony_location_frame_allocate_callback), bar);
-		g_signal_connect (aspectframesec, "size-allocate",
-						  G_CALLBACK (peony_sec_location_frame_allocate_callback), bar);
+//		g_signal_connect (aspectframesec, "size-allocate",
+//						  G_CALLBACK (peony_sec_location_frame_allocate_callback), bar);
 		gtk_container_add (GTK_CONTAINER (aspectframe), hboxinter);
 		gtk_container_add   (GTK_CONTAINER (event_box), aspectframesec);
 		gtk_box_pack_start (GTK_BOX (hbox), aspectframe, FALSE, TRUE, 0);
