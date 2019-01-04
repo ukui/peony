@@ -5,6 +5,7 @@
  * Copyright (C) 2001 - Mikael Hermansson <tyan@linux.se>
  * Copyright (C) 2003 - Gustavo Giráldez <gustavo.giraldez@gmx.net>
  * Copyright (C) 2014 - Sébastien Wilmet <swilmet@gnome.org>
+ * Copyright (C) 2019, Tianjin KYLIN Information Technology Co., Ltd.
  *
  * GtkSourceView is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -19,6 +20,8 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ * Modified by: quankang <quankang@kylinos.cn>
  */
 
 /*
