@@ -263,6 +263,11 @@
       <summary>Whether to show desktop notifications</summary>
       <description>If set to true, Peony will show desktop notifications for eject events</description>
     </key>
+    <key name="favorite-iter-position" type="i">
+      <default>5</default>
+      <summary>Default favorite iter position</summary>
+      <description>Record favorite iter position</description>
+    </key>
   </schema>
 
   <schema id="org.ukui.peony.icon-view" path="/org/ukui/peony/icon-view/" gettext-domain="peony">

@@ -57,6 +57,8 @@
 #define EJECT_BUTTON_XPAD 6
 #define ICON_CELL_XPAD 6
 
+gboolean can_receive=FALSE;
+
 typedef struct
 {
     GtkScrolledWindow  parent;
@@ -365,6 +367,196 @@ check_heading_for_section (PeonyPlacesSidebar *sidebar,
 }
 
 static GtkTreeIter
+insert_place_no_write_file (PeonyPlacesSidebar *sidebar,
+           PlaceType place_type,
+           SectionType section_type,
+           const char *name,
+           GIcon *icon,
+           const char *uri,
+           GDrive *drive,
+           GVolume *volume,
+           GMount *mount,
+           const int index,
+           const char *tooltip)
+{
+    GdkPixbuf      *pixbuf;
+    GtkTreeIter     iter, child_iter;
+    GdkPixbuf      *eject;
+    PeonyIconInfo   *icon_info;
+    int             icon_size;
+    gboolean        show_eject;
+    gboolean        show_unmount;
+    gboolean        show_eject_button;
+
+    check_heading_for_section (sidebar, section_type);
+
+    icon_size = peony_get_icon_size_for_stock_size (GTK_ICON_SIZE_MENU);
+    icon_info = peony_icon_info_lookup (icon, icon_size);
+
+    pixbuf = peony_icon_info_get_pixbuf_at_size (icon_info, icon_size);
+    g_object_unref (icon_info);
+
+    check_unmount_and_eject (mount, volume, drive,
+                             &show_unmount, &show_eject);
+
+    if (show_unmount || show_eject)
+    {
+        g_assert (place_type != PLACES_BOOKMARK);
+    }
+
+    if (mount == NULL)
+    {
+        show_eject_button = FALSE;
+    }
+    else
+    {
+        show_eject_button = (show_unmount || show_eject);
+    }
+
+    if (show_eject_button) {
+        eject = get_eject_icon (FALSE);
+    } else {
+        eject = NULL;
+    }
+
+//    gtk_list_store_append (sidebar->store, &iter);
+//    gtk_list_store_insert (sidebar->store, &iter, 5);
+
+
+    char            *path1;
+    GSettings       *settings1;
+    settings1                       = g_settings_new("org.ukui.peony.preferences");
+    int position=g_settings_get_int(settings1,"favorite-iter-position");
+    gtk_list_store_insert (sidebar->store, &iter, position);
+
+    gtk_list_store_set (sidebar->store, &iter,
+                        PLACES_SIDEBAR_COLUMN_ICON, pixbuf,
+                        PLACES_SIDEBAR_COLUMN_NAME, name,
+                        PLACES_SIDEBAR_COLUMN_URI, uri,
+                        PLACES_SIDEBAR_COLUMN_DRIVE, drive,
+                        PLACES_SIDEBAR_COLUMN_VOLUME, volume,
+                        PLACES_SIDEBAR_COLUMN_MOUNT, mount,
+                        PLACES_SIDEBAR_COLUMN_ROW_TYPE, place_type,
+                        PLACES_SIDEBAR_COLUMN_INDEX, index,
+                        PLACES_SIDEBAR_COLUMN_EJECT, show_eject_button,
+                        PLACES_SIDEBAR_COLUMN_NO_EJECT, !show_eject_button,
+                        PLACES_SIDEBAR_COLUMN_BOOKMARK, place_type != PLACES_BOOKMARK,
+                        PLACES_SIDEBAR_COLUMN_TOOLTIP, tooltip,
+                        PLACES_SIDEBAR_COLUMN_EJECT_ICON, eject,
+                        PLACES_SIDEBAR_COLUMN_SECTION_TYPE, section_type,
+                        -1);
+
+    if (pixbuf != NULL)
+    {
+        g_object_unref (pixbuf);
+    }
+    gtk_tree_model_filter_refilter (GTK_TREE_MODEL_FILTER (sidebar->filter_model));
+    gtk_tree_model_filter_convert_child_iter_to_iter (GTK_TREE_MODEL_FILTER (sidebar->filter_model),
+            &child_iter,
+            &iter);
+    position = position +1;
+    g_settings_set_int(settings1,"favorite-iter-position",position);
+
+    return child_iter;
+}
+static GtkTreeIter
+insert_place (PeonyPlacesSidebar *sidebar,
+           PlaceType place_type,
+           SectionType section_type,
+           const char *name,
+           GIcon *icon,
+           const char *uri,
+           GDrive *drive,
+           GVolume *volume,
+           GMount *mount,
+           const int index,
+           const char *tooltip)
+{
+    GdkPixbuf      *pixbuf;
+    GtkTreeIter     iter, child_iter;
+    GdkPixbuf      *eject;
+    PeonyIconInfo   *icon_info;
+    int             icon_size;
+    gboolean        show_eject;
+    gboolean        show_unmount;
+    gboolean        show_eject_button;
+
+    check_heading_for_section (sidebar, section_type);
+
+    icon_size = peony_get_icon_size_for_stock_size (GTK_ICON_SIZE_MENU);
+    icon_info = peony_icon_info_lookup (icon, icon_size);
+
+    pixbuf = peony_icon_info_get_pixbuf_at_size (icon_info, icon_size);
+    g_object_unref (icon_info);
+
+    check_unmount_and_eject (mount, volume, drive,
+                             &show_unmount, &show_eject);
+
+    if (show_unmount || show_eject)
+    {
+        g_assert (place_type != PLACES_BOOKMARK);
+    }
+
+    if (mount == NULL)
+    {
+        show_eject_button = FALSE;
+    }
+    else
+    {
+        show_eject_button = (show_unmount || show_eject);
+    }
+
+    if (show_eject_button) {
+        eject = get_eject_icon (FALSE);
+    } else {
+        eject = NULL;
+    }
+
+//    gtk_list_store_append (sidebar->store, &iter);
+//    gtk_list_store_insert (sidebar->store, &iter, 5);
+
+    char            *path1;
+    GSettings       *settings1;
+    settings1                       = g_settings_new("org.ukui.peony.preferences");
+    int position=g_settings_get_int(settings1,"favorite-iter-position");
+    gtk_list_store_insert (sidebar->store, &iter, position);
+
+    gtk_list_store_set (sidebar->store, &iter,
+                        PLACES_SIDEBAR_COLUMN_ICON, pixbuf,
+                        PLACES_SIDEBAR_COLUMN_NAME, name,
+                        PLACES_SIDEBAR_COLUMN_URI, uri,
+                        PLACES_SIDEBAR_COLUMN_DRIVE, drive,
+                        PLACES_SIDEBAR_COLUMN_VOLUME, volume,
+                        PLACES_SIDEBAR_COLUMN_MOUNT, mount,
+                        PLACES_SIDEBAR_COLUMN_ROW_TYPE, place_type,
+                        PLACES_SIDEBAR_COLUMN_INDEX, index,
+                        PLACES_SIDEBAR_COLUMN_EJECT, show_eject_button,
+                        PLACES_SIDEBAR_COLUMN_NO_EJECT, !show_eject_button,
+                        PLACES_SIDEBAR_COLUMN_BOOKMARK, place_type != PLACES_BOOKMARK,
+                        PLACES_SIDEBAR_COLUMN_TOOLTIP, tooltip,
+                        PLACES_SIDEBAR_COLUMN_EJECT_ICON, eject,
+                        PLACES_SIDEBAR_COLUMN_SECTION_TYPE, section_type,
+                        -1);
+
+    if (pixbuf != NULL)
+    {
+        g_object_unref (pixbuf);
+    }
+    gtk_tree_model_filter_refilter (GTK_TREE_MODEL_FILTER (sidebar->filter_model));
+    gtk_tree_model_filter_convert_child_iter_to_iter (GTK_TREE_MODEL_FILTER (sidebar->filter_model),
+            &child_iter,
+            &iter);
+    position = position +1;
+    g_settings_set_int(settings1,"favorite-iter-position",position);
+
+    FILE *fp1;
+    fp1= fopen ("/home/kk/.config/peony/favorite-files", "a");
+    fprintf(fp1,"%s\n", uri);
+    fclose(fp1);
+
+    return child_iter;
+}
+static GtkTreeIter
 add_place (PeonyPlacesSidebar *sidebar,
            PlaceType place_type,
            SectionType section_type,
@@ -577,8 +769,49 @@ update_places (PeonyPlacesSidebar *sidebar)
                            &last_iter, &select_path);
     g_object_unref (icon);
 
-    last_iter = add_heading (sidebar, SECTION_FAVORITE,
-                             NULL,NULL,NULL);
+
+    char            *path1;
+    GSettings       *settings1;
+    settings1                       = g_settings_new("org.ukui.peony.preferences");    
+
+    char *load_file;
+    char line[1000];
+    load_file= "/home/kk/.config/peony/favorite-files";
+    FILE *fp;
+    fp=fopen(load_file,"r");
+    if(fp==NULL)
+    {
+	g_settings_set_int(settings1,"favorite-iter-position",5);
+    }else {
+	g_settings_set_int(settings1,"favorite-iter-position",5);
+	char buf[1000];
+        char c;
+        c = fgetc(fp);
+        while(!feof(fp))
+        {
+            fgets(line,1000,fp);
+	    sprintf(buf,"%c%s",c,line);
+	    buf[strlen(buf)-1]=0;
+    	    mount_uri = buf;
+    	    icon = g_themed_icon_new (PEONY_ICON_FOLDER);
+	    GFile *file1;
+	    char *filename;
+	    file1=g_file_new_for_uri (mount_uri);
+	    filename=g_file_get_basename (file1);
+//	    last_iter = insert_place (sidebar, PLACES_BUILT_IN,
+	    last_iter = insert_place_no_write_file (sidebar, PLACES_BUILT_IN,
+                           			SECTION_FAVORITE,
+                           			filename, icon, buf,
+                           			NULL, NULL, NULL, 0,
+                           			_("Open the folder"));
+    	    compare_for_selection (sidebar,
+                          	   location, mount_uri, last_uri,
+                           	   &last_iter, &select_path);
+    	    g_object_unref (icon);
+            c = fgetc(fp);
+        }
+        fclose(fp);
+    }
 
    /*personal*/
     icon = g_themed_icon_new (PEONY_ICON_HOME);
@@ -1324,6 +1557,8 @@ drag_motion_callback (GtkTreeView *tree_view,
                       unsigned int time,
                       PeonyPlacesSidebar *sidebar)
 {
+/*	
+    gtk_tree_view_scroll_to_point(tree_view,x,y);
     GtkTreePath *path;
     GtkTreeViewDropPosition pos;
     int action = 0;
@@ -1405,6 +1640,7 @@ drag_motion_callback (GtkTreeView *tree_view,
     }
 
     return TRUE;
+*/    
 }
 
 static void
@@ -1564,6 +1800,96 @@ drag_data_received_callback (GtkWidget *widget,
                              unsigned int time,
                              PeonyPlacesSidebar *sidebar)
 {
+    GList *selection_list, *uris,*l;
+    char *path;
+    selection_list = build_selection_list (gtk_selection_data_get_data (selection_data));
+    uris = uri_list_from_selection (selection_list);
+
+//#if 0
+    GIcon *icon;
+    GtkTreeIter last_iter;
+    char *location;
+    char *last_uri;
+    GtkTreePath *select_path;   	
+  
+    char *mount_uri;
+    GFile *file1;
+    char *filename;
+    for (l = uris; l != NULL; l = l->next)
+    {
+        mount_uri = uris->data;
+        file1=g_file_new_for_uri (mount_uri);
+        filename=g_file_get_basename (file1);
+        icon = g_themed_icon_new (PEONY_ICON_FOLDER);
+        last_iter = insert_place (sidebar, PLACES_BUILT_IN,
+                                  SECTION_FAVORITE,
+                                  filename, icon, mount_uri,
+                                  NULL, NULL, NULL, 0,
+                                  _("Open the folder"));
+        compare_for_selection (sidebar,
+                               location, mount_uri, last_uri,
+                               &last_iter, &select_path);
+/*    
+    PlaceType place_type=PLACES_BUILT_IN;
+    SectionType section_type=SECTION_FAVORITE;
+
+    GdkPixbuf      *pixbuf;
+    GtkTreeIter     iter, child_iter;
+    GdkPixbuf      *eject;
+    PeonyIconInfo   *icon_info;
+    int             icon_size;
+    gboolean        show_eject;
+    gboolean        show_unmount;
+    gboolean        show_eject_button;
+
+    
+    check_heading_for_section (sidebar, SECTION_FAVORITE);
+
+    icon_size = peony_get_icon_size_for_stock_size (GTK_ICON_SIZE_MENU);
+    icon_info = peony_icon_info_lookup (icon, icon_size);
+
+    pixbuf = peony_icon_info_get_pixbuf_at_size (icon_info, icon_size);
+    g_object_unref (icon_info);
+
+
+//    gtk_list_store_append (sidebar->store, &iter);
+    gtk_list_store_insert (sidebar->store, &iter, 5);
+    gtk_list_store_set (sidebar->store, &iter,
+                        PLACES_SIDEBAR_COLUMN_ICON, pixbuf,
+                        PLACES_SIDEBAR_COLUMN_NAME, filename,
+                        PLACES_SIDEBAR_COLUMN_URI, mount_uri,
+                        PLACES_SIDEBAR_COLUMN_DRIVE, NULL,
+                        PLACES_SIDEBAR_COLUMN_VOLUME, NULL,
+                        PLACES_SIDEBAR_COLUMN_MOUNT, NULL,
+                        PLACES_SIDEBAR_COLUMN_ROW_TYPE, SECTION_FAVORITE,
+                        PLACES_SIDEBAR_COLUMN_INDEX, index,
+                        PLACES_SIDEBAR_COLUMN_EJECT, show_eject_button,
+                        PLACES_SIDEBAR_COLUMN_NO_EJECT, !show_eject_button,
+                        PLACES_SIDEBAR_COLUMN_BOOKMARK, place_type != PLACES_BOOKMARK,
+                        PLACES_SIDEBAR_COLUMN_TOOLTIP, _("Open the folder"),
+                        PLACES_SIDEBAR_COLUMN_EJECT_ICON, eject,
+                        PLACES_SIDEBAR_COLUMN_SECTION_TYPE, section_type,
+                        -1);
+
+*/			   
+    g_object_unref (icon);
+  }
+
+//#endif
+/*
+
+  GtkTreeModel *model;
+  GtkTreeIter   iter;
+
+  model = GTK_TREE_MODEL(sidebar);
+
+  gtk_list_store_append(GTK_LIST_STORE(model), &iter);
+
+//  gtk_list_store_set(GTK_LIST_STORE(model), &iter, COL_URI, (gchar*)seldata->data, -1);
+  gtk_list_store_set(GTK_LIST_STORE(model), &iter, COL_URI, gtk_selection_data_get_text (selection_data), -1);
+*/
+
+/*
     GtkTreeView *tree_view;
     GtkTreePath *tree_path;
     GtkTreeViewDropPosition tree_pos;
@@ -1600,7 +1926,6 @@ drag_data_received_callback (GtkWidget *widget,
         return;
     }
 
-    /* Compute position */
     success = compute_drop_position (tree_view, x, y, &tree_path, &tree_pos, sidebar);
     if (!success)
         goto out;
@@ -1634,7 +1959,6 @@ drag_data_received_callback (GtkWidget *widget,
         }
 
         if (tree_pos == GTK_TREE_VIEW_DROP_AFTER && place_type != PLACES_HEADING) {
-            /* heading already has position 0 */
             position++;
         }
 
@@ -1657,7 +1981,6 @@ drag_data_received_callback (GtkWidget *widget,
     {
         GdkDragAction real_action;
 
-        /* file transfer requested */
         real_action = gdk_drag_context_get_selected_action (context);
 
         if (real_action == GDK_ACTION_ASK)
@@ -1706,6 +2029,7 @@ out:
     gtk_drag_finish (context, success, FALSE, time);
 
     gtk_tree_path_free (tree_path);
+    */
 }
 
 static gboolean
@@ -1817,6 +2141,27 @@ check_visibility (GMount           *mount,
 static void
 bookmarks_check_popup_sensitivity (PeonyPlacesSidebar *sidebar)
 {
+    GtkTreeIter iter1;
+    GtkTreeView *treeview1 = sidebar->tree_view;
+    GtkTreeModel *model1 = gtk_tree_view_get_model (treeview1);
+    GtkTreeSelection *selection1 = gtk_tree_view_get_selection (treeview1);
+    int selected_iter_number=0;
+    if (gtk_tree_selection_get_selected (selection1, NULL, &iter1))
+    {
+        gint i;
+        GtkTreePath *path;
+
+        path = gtk_tree_model_get_path (model1, &iter1);
+        i = gtk_tree_path_get_indices (path)[0];
+        selected_iter_number = i;
+        gtk_tree_path_free (path);
+    }
+
+    char            *path1;
+    GSettings       *settings1;
+    settings1                       = g_settings_new("org.ukui.peony.preferences");
+    int position=g_settings_get_int(settings1,"favorite-iter-position");
+
     GtkTreeIter iter;
     PlaceType type;
     GDrive *drive = NULL;
@@ -1852,7 +2197,12 @@ bookmarks_check_popup_sensitivity (PeonyPlacesSidebar *sidebar)
 
     gtk_widget_show (sidebar->popup_menu_open_in_new_tab_item);
 
-    gtk_widget_set_sensitive (sidebar->popup_menu_remove_item, (type == PLACES_BOOKMARK));
+//    gtk_widget_set_sensitive (sidebar->popup_menu_remove_item, (type == PLACES_BOOKMARK));
+    if (selected_iter_number<position && selected_iter_number > 4){
+    	gtk_widget_set_sensitive (sidebar->popup_menu_remove_item, TRUE);
+    } else {
+    	gtk_widget_set_sensitive (sidebar->popup_menu_remove_item, FALSE);
+    }
     gtk_widget_set_sensitive (sidebar->popup_menu_rename_item, (type == PLACES_BOOKMARK));
     gtk_widget_set_sensitive (sidebar->popup_menu_empty_trash_item, !peony_trash_monitor_is_empty ());
 
@@ -2189,7 +2539,36 @@ static void
 remove_shortcut_cb (GtkMenuItem           *item,
                     PeonyPlacesSidebar *sidebar)
 {
-    remove_selected_bookmarks (sidebar);
+//  remove_selected_bookmarks (sidebar);
+    GtkTreeIter iter;
+    GtkTreeView *treeview = sidebar->tree_view;
+    GtkTreeModel *model = gtk_tree_view_get_model (treeview);
+    GtkTreeSelection *selection = gtk_tree_view_get_selection (treeview);
+
+    if (gtk_tree_selection_get_selected (selection, NULL, &iter))
+    {
+        gint i;
+        GtkTreePath *path;
+
+        path = gtk_tree_model_get_path (model, &iter);
+        i = gtk_tree_path_get_indices (path)[0];
+
+        i = i-4;
+        char buf[100];
+        sprintf(buf,"sed -i '%d d' %s",i,"/home/kk/.config/peony/favorite-files");
+        system(buf);
+
+        gtk_tree_path_free (path);
+    }      
+
+    char            *path1;
+    GSettings       *settings1;
+    settings1                       = g_settings_new("org.ukui.peony.preferences");
+    int position=g_settings_get_int(settings1,"favorite-iter-position");
+    position = position -1;
+    g_settings_set_int(settings1,"favorite-iter-position",position);
+
+    update_places (sidebar);
 }
 
 static void
@@ -2907,6 +3286,7 @@ bookmarks_button_release_event_cb (GtkWidget *widget,
                                    GdkEventButton *event,
                                    PeonyPlacesSidebar *sidebar)
 {
+printf("bookmarks_button_release_event_cb===\n");
     GtkTreePath *path;
     GtkTreeModel *model;
     GtkTreeView *tree_view;
@@ -3415,7 +3795,7 @@ peony_places_sidebar_init (PeonyPlacesSidebar *sidebar)
                       G_CALLBACK (drag_motion_callback), sidebar);
     g_signal_connect (tree_view, "drag-leave",
                       G_CALLBACK (drag_leave_callback), sidebar);
-    g_signal_connect (tree_view, "drag-data-received",
+    g_signal_connect (tree_view, "drag_data_received",
                       G_CALLBACK (drag_data_received_callback), sidebar);
     g_signal_connect (tree_view, "drag-drop",
                       G_CALLBACK (drag_drop_callback), sidebar);
