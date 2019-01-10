@@ -550,7 +550,9 @@ insert_place (PeonyPlacesSidebar *sidebar,
     g_settings_set_int(settings1,"favorite-iter-position",position);
 
     FILE *fp1;
-    fp1= fopen ("/home/kk/.config/peony/favorite-files", "a");
+    char favorite_files_path[100];
+    sprintf(favorite_files_path,"%s/.config/peony/favorite-files",g_get_home_dir ());
+    fp1= fopen (favorite_files_path, "a");
     fprintf(fp1,"%s\n", uri);
     fclose(fp1);
 
@@ -774,11 +776,11 @@ update_places (PeonyPlacesSidebar *sidebar)
     GSettings       *settings1;
     settings1                       = g_settings_new("org.ukui.peony.preferences");    
 
-    char *load_file;
     char line[1000];
-    load_file= "/home/kk/.config/peony/favorite-files";
+    char favorite_files_path[100];
+    sprintf(favorite_files_path,"%s/.config/peony/favorite-files",g_get_home_dir ());
     FILE *fp;
-    fp=fopen(load_file,"r");
+    fp=fopen(favorite_files_path,"r");
     if(fp==NULL)
     {
 	g_settings_set_int(settings1,"favorite-iter-position",5);
@@ -2555,7 +2557,9 @@ remove_shortcut_cb (GtkMenuItem           *item,
 
         i = i-4;
         char buf[100];
-        sprintf(buf,"sed -i '%d d' %s",i,"/home/kk/.config/peony/favorite-files");
+        char favorite_files_path[100];
+        sprintf(favorite_files_path,"%s/.config/peony/favorite-files",g_get_home_dir ());
+        sprintf(buf,"sed -i '%d d' %s",i,favorite_files_path);
         system(buf);
 
         gtk_tree_path_free (path);
