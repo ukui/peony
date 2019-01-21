@@ -84,6 +84,7 @@ PKG_CHECK_MODULES(ALL, [
     atril-document-1.5.0
     atril-view-1.5.0
     webkit2gtk-4.0
+    udisks2
 ])
 dnl ==========================================================================
 
