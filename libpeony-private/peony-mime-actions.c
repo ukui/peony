@@ -1568,7 +1568,7 @@ application_unhandled_uri (ActivateParameters *parameters, char *uri)
 
     mime_type = peony_file_get_mime_type (file);
 
-    /* copy the parts of parameters we are interested in as the orignal will be unref'd */
+    /* copy the parts of parameters we are interested in as the original will be unref'd */
     parameters_install = g_new0 (ActivateParametersInstall, 1);
     parameters_install->slot_info = parameters->slot_info;
     g_object_add_weak_pointer (G_OBJECT (parameters_install->slot_info), (gpointer *)&parameters_install->slot_info);
@@ -1694,7 +1694,7 @@ activate_desktop_file (ActivateParameters *parameters,
 
     if (!peony_file_is_trusted_link (file))
     {
-        /* copy the parts of parameters we are interested in as the orignal will be freed */
+        /* copy the parts of parameters we are interested in as the original will be freed */
         parameters_desktop = g_new0 (ActivateParametersDesktop, 1);
         if (parameters->parent_window)
         {
