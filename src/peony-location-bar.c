@@ -60,6 +60,10 @@ static const char untranslated_location_label[] = N_("Location:");
 static const char untranslated_go_to_label[] = N_("Go To:");
 #define LOCATION_LABEL _(untranslated_location_label)
 #define GO_TO_LABEL _(untranslated_go_to_label)
+static void
+peony_location_frame_allocate_callback (GtkWidget    *widget,
+                                                                                                GdkRectangle *allocation,
+                                                                                gpointer      user_data);
 
 struct PeonyLocationBarDetails
 {
@@ -79,6 +83,7 @@ struct PeonyLocationBarDetails
 	GtkWidget *backseparator;
 	GtkWidget *menu;
 	GtkWidget *aspectframesec;
+	GtkWidget *aspectframe;
 	GtkWidget *interbox;
 	int        iFrameWidthBack;
 	int        iSecFrameWidthBack;
@@ -529,27 +534,28 @@ peony_location_bar_focus_in (GtkWidget *widget, GdkEventButton *event, gpointer 
 	{
 		return;
 	}
-	
 	bar = PEONY_LOCATION_BAR (user_data);
 	bar->details->bActive = TRUE;
 	bar->details->bANeedemit = TRUE;
-    peony_location_bar_set_location (PEONY_LOCATION_BAR (bar),bar->details->last_location);
+	peony_location_bar_set_location (PEONY_LOCATION_BAR (bar),bar->details->last_location);
 }
 
 static gboolean
 peony_location_bar_focus_out (GtkWidget *widget, GdkEventKey *event, gpointer user_data)
 {
 	PeonyLocationBar *bar = NULL;
+	GList *node = NULL;
+	WIDGET_PARAM *pWidget = NULL;
 
 	if(NULL == user_data)
 	{
 		return;
 	}
-	
 	bar = PEONY_LOCATION_BAR (user_data);
 	bar->details->bActive = FALSE;
 	bar->details->bANeedemit = FALSE;
-    peony_location_bar_set_location (PEONY_LOCATION_BAR (bar),bar->details->last_location);
+
+	peony_location_bar_set_location (PEONY_LOCATION_BAR (bar),bar->details->last_location);
 }
 
 static void
@@ -961,7 +967,7 @@ static void set_button_list (GtkWidget *hboxinter,PeonyLocationBar *bar)
 	g_list_free(pList);
 	return;
 }
-
+/*
 static void
 peony_sec_location_frame_allocate_callback (GtkWidget    *framewidget,
 												GdkRectangle *allocation,
@@ -1004,14 +1010,14 @@ peony_sec_location_frame_allocate_callback (GtkWidget    *framewidget,
 
 			pWidget = (WIDGET_PARAM *)node->data;
 			widget = pWidget->widget;
-			if(FALSE == gtk_widget_get_visible(widget)/* && NULL != prev*/)
+			if(FALSE == gtk_widget_get_visible(widget)
 			{
 				//pWidgetPre = (WIDGET_PARAM *)prev->data;
-				if(pWidget->iWidth/* + pWidgetPre->iWidth*/ <= allocation->width - SEC_FRAME_SIZE)
+//				if(pWidget->iWidth <= allocation->width - SEC_FRAME_SIZE)
 				{
 					gtk_widget_show(widget);
 					//gtk_widget_show(pWidgetPre->widget);
-					allocation->width -= (pWidget->iWidth/* + pWidgetPre->iWidth*/);
+					allocation->width -= (pWidget->iWidth);
 				}
 				else
 				{
@@ -1066,8 +1072,135 @@ peony_sec_location_frame_allocate_callback (GtkWidget    *framewidget,
 	}
 
     return;
-}   
+} 
+*/
+int zz=0;
+static void
+peony_location_frame_allocate_callback (GtkWidget    *widget,
+                                                                                                GdkRectangle *allocation,
+                                                                                gpointer      user_data)
+{
+	GtkAllocation strframehboxsize;
+	PeonyNavigationWindow *local_window;
+        GtkAllocation strbarsize;
+        GtkUIManager *ui_manager;
+	GdkWindow *window;
+	GtkWidget *reload;
+	GList *node = NULL;
+        WIDGET_PARAM *pWidget = NULL;
+        PeonyLocationBar *bar = NULL;
 
+        if (NULL == widget || NULL == allocation || NULL == user_data)
+        {
+                return;
+        }
+	
+	bar = PEONY_LOCATION_BAR (user_data);	
+	if(bar == NULL)return ;
+	if(g_list_first(bar->details->pChildList)==NULL)return;
+        gtk_widget_get_allocation(bar->details->interbox,&strbarsize);
+	gtk_widget_get_allocation(bar,&strbarsize);
+	if(strbarsize.width<SEC_FRAME_SIZE)return;
+	
+	int size = 0;	
+	local_window = peony_location_bar_get_window(bar);
+	if((local_window->details->spinner!=NULL) && gtk_widget_get_visible(local_window->details->spinner)==TRUE){
+		GtkAllocation spinnersize;
+		gtk_widget_get_allocation(bar->details->interbox,&spinnersize);
+		strbarsize.width+=(spinnersize.width+2);
+	}
+
+        for (node = g_list_last(bar->details->pChildList); node != NULL;node=node->prev )
+        {
+                if(strbarsize.width-size<SEC_FRAME_SIZE)
+                {
+                        node = node->next;
+                        GtkWidget *widget = NULL;
+                        pWidget = (WIDGET_PARAM *)node->data;
+                        widget = pWidget->widget;
+                        gtk_widget_hide(widget);
+			if(node->next  !=NULL)
+                        {
+                                node = node->next;
+                                GtkWidget *widget = NULL;
+                                pWidget = (WIDGET_PARAM *)node->data;
+                                widget = pWidget->widget;
+                                gtk_widget_hide(widget);
+			}
+                        break;
+                }
+                if(node == g_list_last(bar->details->pChildList))
+                {
+                        GtkWidget *widget = NULL;
+                        GtkRequisition min_size;
+                        pWidget = (WIDGET_PARAM *)node->data;
+                        widget = pWidget->widget;
+                        gtk_widget_show(widget);
+                        gtk_widget_get_preferred_size(widget,&min_size,NULL);
+                        size+=min_size.width;
+                        continue;
+                }
+		GtkWidget *widget = NULL;
+                GtkRequisition min_size;
+                pWidget = (WIDGET_PARAM *)node->data;
+                widget = pWidget->widget;
+                gtk_widget_show(widget);
+                gtk_widget_get_preferred_size(widget,&min_size,NULL);
+                size+=min_size.width;
+                if(node ->prev !=NULL)
+                {
+                        node = node->prev;
+                        pWidget = (WIDGET_PARAM *)node->data;
+                        widget = pWidget->widget;
+                        gtk_widget_show(widget);
+                        gtk_widget_get_preferred_size(widget,&min_size,NULL);
+                        size+=min_size.width;
+		}
+		if(node == g_list_first(bar->details->pChildList) )
+        	{
+			if(strbarsize.width-size<SEC_FRAME_SIZE)
+			{		
+                		GtkWidget *widget = NULL;
+                		pWidget = (WIDGET_PARAM *)node->data;
+                		widget = pWidget->widget;
+                		gtk_widget_hide(widget);
+                		if(node->next  !=NULL)
+                		{
+                        		node = node->next;
+                        		GtkWidget *widget = NULL;
+                        		pWidget = (WIDGET_PARAM *)node->data;
+                        		widget = pWidget->widget;
+                        		gtk_widget_hide(widget);
+                		}	
+				break;	
+			}
+			else
+			{
+//				gtk_widget_hide(bar->details->backbutton);
+  //              		gtk_widget_hide(bar->details->backseparator);
+			}
+        	}
+
+        }
+
+    	node = g_list_first(bar->details->pChildList);
+    	pWidget = (WIDGET_PARAM *)node->data;
+        GtkWidget *widget1;
+	widget1 = pWidget->widget;
+	if(gtk_widget_get_visible(widget1)==TRUE)
+	{
+		gtk_widget_hide(bar->details->backbutton);
+                gtk_widget_hide(bar->details->backseparator);
+	}
+	else
+	{
+                gtk_widget_show(bar->details->backbutton);
+                gtk_widget_show(bar->details->backseparator);
+
+	}
+	gtk_widget_queue_draw(bar);
+}
+/*
 static void
 peony_location_frame_allocate_callback (GtkWidget    *widget,
 												GdkRectangle *allocation,
@@ -1077,7 +1210,8 @@ peony_location_frame_allocate_callback (GtkWidget    *widget,
  	PeonyLocationBar *bar = NULL;
 	GdkRectangle strbarAllocation = {0};
 	GdkRectangle strWidgetAllocation = {0};
-    GList *node = NULL;
+	GdkRectangle barwidth = {0};
+    	GList *node = NULL;
 	GList *next = NULL;
 	GList *prev = NULL;
 	WIDGET_PARAM *pWidget = NULL;
@@ -1087,9 +1221,10 @@ peony_location_frame_allocate_callback (GtkWidget    *widget,
     {
 		return;
 	}	
-
+	
     bar = PEONY_LOCATION_BAR (user_data);
 	gtk_widget_get_allocation (bar,&strbarAllocation);
+	
 	if(strbarAllocation.width - allocation->width < SEC_FRAME_SIZE)
 	{
 		strWidgetAllocation.width = strbarAllocation.width - allocation->width;
@@ -1098,7 +1233,7 @@ peony_location_frame_allocate_callback (GtkWidget    *widget,
 	
     return;
 }
-
+*/
 static void destory_location_button (gpointer data,gpointer user_data)
 {
 	WIDGET_PARAM *pstrWidget = NULL;
@@ -1288,8 +1423,9 @@ peony_location_bar_set_location (PeonyLocationBar *bar,
 
 		g_signal_connect (aspectframe, "size-allocate",
 						  G_CALLBACK (peony_location_frame_allocate_callback), bar);
-//		g_signal_connect (aspectframesec, "size-allocate",
-//						  G_CALLBACK (peony_sec_location_frame_allocate_callback), bar);
+		g_signal_connect (aspectframesec, "size-allocate",
+						  G_CALLBACK (peony_location_frame_allocate_callback), bar);
+
 		gtk_container_add (GTK_CONTAINER (aspectframe), hboxinter);
 		gtk_container_add   (GTK_CONTAINER (event_box), aspectframesec);
 		gtk_box_pack_start (GTK_BOX (hbox), aspectframe, FALSE, TRUE, 0);
@@ -1297,16 +1433,21 @@ peony_location_bar_set_location (PeonyLocationBar *bar,
 		gtk_box_pack_start (GTK_CONTAINER (bar), hbox, TRUE, TRUE, 0);
 		bar->details->framehbox = hbox;
 		bar->details->aspectframesec = aspectframesec;
+		bar->details->aspectframe = aspectframe;
 		g_signal_connect (event_box, "button_press_event",
 						  G_CALLBACK (peony_location_bar_focus_in),
 						  bar);
-
-		gtk_widget_show_all (bar->details->framehbox);
+		
+		gtk_widget_show (bar->details->framehbox);
 		gtk_widget_hide(bar->details->backbutton);
 		gtk_widget_hide(bar->details->backseparator);
 		bar->details->bNeedDes = TRUE;
 		bar->details->interbox = hboxinter;
+		
 
+		gtk_widget_show(aspectframe);
+		gtk_widget_show(hboxinter);
+		gtk_widget_show_all(event_box);
 		set_button_list(hboxinter,bar);
 		if (bar->details->last_location != location)
 		{
@@ -1316,7 +1457,7 @@ peony_location_bar_set_location (PeonyLocationBar *bar,
 	}
 	else
 	{
-		gtk_widget_show_all (bar->details->hbox);
+	gtk_widget_show_all (bar->details->hbox);
 	    if (eel_uri_is_search (location))
 	    {
 	        peony_location_entry_set_special_text (PEONY_LOCATION_ENTRY (bar->details->entry),
