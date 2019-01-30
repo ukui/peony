@@ -544,6 +544,7 @@ static gboolean
 peony_location_bar_focus_out (GtkWidget *widget, GdkEventKey *event, gpointer user_data)
 {
 	PeonyLocationBar *bar = NULL;
+	GtkAllocation allocation;
 	GList *node = NULL;
 	WIDGET_PARAM *pWidget = NULL;
 
@@ -554,8 +555,10 @@ peony_location_bar_focus_out (GtkWidget *widget, GdkEventKey *event, gpointer us
 	bar = PEONY_LOCATION_BAR (user_data);
 	bar->details->bActive = FALSE;
 	bar->details->bANeedemit = FALSE;
-
+	
+	gtk_widget_get_allocation(bar,&allocation);
 	peony_location_bar_set_location (PEONY_LOCATION_BAR (bar),bar->details->last_location);
+	peony_location_frame_allocate_callback (bar,&allocation,bar);
 }
 
 static void
