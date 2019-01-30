@@ -156,7 +156,12 @@ peony_navigation_window_slot_update_query_editor (PeonyWindowSlot *slot)
     query_editor = NULL;
 
     directory = peony_directory_get (slot->location);
-    if (PEONY_IS_SEARCH_DIRECTORY (directory))
+
+    gchar *uri = peony_directory_get_uri (directory);
+    gboolean is_image_search = g_str_equal (uri, "x-peony-search://image/");
+    g_free (uri);
+
+    if (PEONY_IS_SEARCH_DIRECTORY (directory) && !is_image_search)
     {
         search_directory = PEONY_SEARCH_DIRECTORY (directory);
 

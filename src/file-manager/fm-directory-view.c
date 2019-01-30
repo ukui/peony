@@ -113,6 +113,7 @@
 #define FM_DIRECTORY_VIEW_MENU_PATH_EXTENSION_ACTIONS_PLACEHOLDER       "/MenuBar/Edit/Extension Actions"
 #define FM_DIRECTORY_VIEW_MENU_PATH_NEW_DOCUMENTS_PLACEHOLDER  		"/MenuBar/File/New Items Placeholder/New Documents/New Documents Placeholder"
 #define FM_DIRECTORY_VIEW_MENU_PATH_OPEN				"/MenuBar/File/Open Placeholder/Open"
+#define FM_DIRECTORY_VIEW_MENU_IMAGE_SEARCH    "/MenuBar/File/Image Search Placeholder/Image Search"
 
 #define FM_DIRECTORY_VIEW_POPUP_PATH_SELECTION				"/selection"
 #define FM_DIRECTORY_VIEW_POPUP_PATH_APPLICATIONS_SUBMENU_PLACEHOLDER  	"/selection/Open Placeholder/Open With/Applications Placeholder"
@@ -120,6 +121,7 @@
 #define FM_DIRECTORY_VIEW_POPUP_PATH_SCRIPTS_PLACEHOLDER    		"/selection/Open Placeholder/Scripts/Scripts Placeholder"
 #define FM_DIRECTORY_VIEW_POPUP_PATH_EXTENSION_ACTIONS			"/selection/Extension Actions"
 #define FM_DIRECTORY_VIEW_POPUP_PATH_OPEN				"/selection/Open Placeholder/Open"
+#define FM_DIRECTORY_VIEW_POPUP_PATH_IMAGE_SEARCH    "/selection/Image Search Holder/Image Search"
 
 #define FM_DIRECTORY_VIEW_POPUP_PATH_BACKGROUND				"/background"
 #define FM_DIRECTORY_VIEW_POPUP_PATH_BACKGROUND_SCRIPTS_PLACEHOLDER	"/background/Before Zoom Items/New Object Items/Scripts/Scripts Placeholder"
@@ -4511,6 +4513,23 @@ open_parent_folder_callback (GtkAction *action,
 	g_app_info_launch_default_for_uri (uri, NULL, NULL);
 }
 
+static void
+image_search_callback (GtkAction *action,
+			     gpointer callback_data)
+{
+	FMDirectoryView *view = FM_DIRECTORY_VIEW (callback_data);
+	GList *selection = fm_directory_view_get_selection (view);
+	PeonyFile *file = selection->data;
+	char *uri = peony_file_get_uri (file);
+
+	//in directory view we can not use slot to load a location, so we need create  a extra signal and emit the signal to one which can use slot.
+	//create a signal in window info, and connect the signal in navigation window, then we can emit a signal to schedule image search.
+
+	PeonyWindowInfo *window_info = fm_directory_view_get_peony_window  (view);
+	g_signal_emit_by_name (window_info, "image_search", uri);
+}
+
+
 static char *
 escape_action_name (const char *action_name,
 		    const char *prefix)
@@ -4807,6 +4826,82 @@ add_parent_folder_to_open_menu (FMDirectoryView *view,
 }
 
 static void
+add_image_search_to_open_menu (FMDirectoryView *view,
+				GList *files,
+				const char *menu_placeholder,
+				const char *popup_placeholder)
+{
+	PeonyFile *file;
+	gchar *uri;
+	char *tip;
+	char *label;
+	char *action_name;
+	char *path;
+	GtkAction *action;
+	GtkWidget *menuitem;
+
+	file = g_list_first(files)->data;
+
+	if (peony_file_is_directory (file))
+		return;
+
+	label = g_strdup (_("Image Search"));
+	tip = g_strdup (_("Find simillar images for the selected item"));
+	action_name = g_strdup ("image_search");
+
+	action = gtk_action_new (action_name,
+				 label,
+				 tip,
+				 NULL);
+
+	gtk_action_set_icon_name (action, "find");
+
+	g_signal_connect_data (action, "activate",
+			       G_CALLBACK (image_search_callback),
+			       view, (GClosureNotify)g_object_weak_unref, 0);
+
+	gtk_action_group_add_action (view->details->open_with_action_group,
+				     action);
+	g_object_unref (action);
+
+	gtk_ui_manager_add_ui (peony_window_info_get_ui_manager (view->details->window),
+			       view->details->open_with_merge_id,
+			       menu_placeholder,
+			       action_name,
+			       NULL,
+			       GTK_UI_MANAGER_MENUITEM,
+			       FALSE);
+
+	path = g_strdup_printf ("%s/%s", menu_placeholder, action_name);
+	menuitem = gtk_ui_manager_get_widget (
+			peony_window_info_get_ui_manager (view->details->window),
+			path);
+    if(menuitem!=NULL)
+        gtk_image_menu_item_set_always_show_image (GTK_IMAGE_MENU_ITEM (menuitem), TRUE);
+	g_free (path);
+
+	gtk_ui_manager_add_ui (peony_window_info_get_ui_manager (view->details->window),
+			       view->details->open_with_merge_id,
+			       popup_placeholder,
+			       action_name,
+			       action_name,
+			       GTK_UI_MANAGER_MENUITEM,
+			       FALSE);
+
+	path = g_strdup_printf ("%s/%s", popup_placeholder, action_name);
+	menuitem = gtk_ui_manager_get_widget (
+			peony_window_info_get_ui_manager (view->details->window),
+			path);
+    if(menuitem!=NULL)
+        gtk_image_menu_item_set_always_show_image (GTK_IMAGE_MENU_ITEM (menuitem), TRUE);
+
+	g_free (path);
+	g_free (action_name);
+	g_free (label);
+	g_free (tip);
+}
+
+static void
 get_x_content_async_callback (char **content,
 			      gpointer user_data)
 {
@@ -4955,6 +5050,19 @@ reset_open_with_menu (FMDirectoryView *view, GList *selection)
 					       selection,
 					       FM_DIRECTORY_VIEW_MENU_PATH_OPEN,
 					       FM_DIRECTORY_VIEW_POPUP_PATH_OPEN);
+
+	/* Show image search action if a singal image type file selected */
+	//TODO: if  g_list_length (selection) == 1 && selection->data is imgfile ,add image search to open menu
+	if (g_list_length (selection) == 1) {
+		PeonyFile *file = selection->data;
+		char* mime_type = peony_file_get_mime_type (file);
+		if (g_str_has_prefix (mime_type, "image")){
+			add_image_search_to_open_menu (view,
+						       selection,
+						       FM_DIRECTORY_VIEW_MENU_PATH_OPEN,
+						       FM_DIRECTORY_VIEW_POPUP_PATH_OPEN);
+		}
+	}
 
 	open_with_chooser_visible = other_applications_visible &&
 				    g_list_length (selection) == 1;

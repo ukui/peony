@@ -94,6 +94,7 @@ static PeonyWindowSlot *create_extra_pane         (PeonyNavigationWindow *window
 static void preview_file_changed_callback(PeonyWindowInfo *window_info, gpointer data);
 static void office_format_trans_ready_callback(PeonyWindowInfo *window_info, gpointer data);
 static void show_pdf_file_callback(PeonyWindowInfo *window_info, gpointer data);
+static void real_image_search_callback (PeonyWindowInfo *window, gpointer data);
 
 G_DEFINE_TYPE (PeonyNavigationWindow, peony_navigation_window, PEONY_TYPE_WINDOW)
 #define parent_class peony_navigation_window_parent_class
@@ -292,6 +293,37 @@ peony_navigation_window_init (PeonyNavigationWindow *window)
 
     //pdf_viewer_init();
     office_utils_conncet_window_info (PEONY_WINDOW_INFO (window));
+    g_signal_connect (PEONY_WINDOW_INFO (window), "image_search", G_CALLBACK (real_image_search_callback), 0);
+}
+
+static void real_image_search_callback (PeonyWindowInfo *window, gpointer data) {
+    char *uri = data;
+    printf ("real callback %s\n", uri);
+
+    GFile *location;
+    PeonyDirectory *directory;
+    PeonySearchDirectory *search_directory;
+    PeonyQuery *query;
+
+    location = g_file_new_for_uri ("x-peony-search://image/");
+    directory = peony_directory_get (location);
+    search_directory = PEONY_SEARCH_DIRECTORY (directory);
+
+	set_search_is_image_search (search_directory, TRUE);
+
+    query = peony_query_new ();
+    peony_query_set_text (query, uri);
+    peony_search_directory_set_query (search_directory, query);
+    g_object_unref (query);
+
+    //peony_window_slot_go_to (PEONY_WINDOW_SLOT (PEONY_WINDOW (window)->details->active_pane->active_slot), location, FALSE);
+    peony_window_slot_open_location_full (PEONY_WINDOW_SLOT (PEONY_WINDOW (window)->details->active_pane->active_slot), 
+                                                                                            location, PEONY_WINDOW_OPEN_IN_NAVIGATION, 
+                                                                                            PEONY_WINDOW_OPEN_FLAG_NEW_WINDOW, NULL, NULL, NULL);
+
+    peony_directory_unref (directory);
+    g_object_unref (location);
+    g_free (uri);
 }
 
 static void

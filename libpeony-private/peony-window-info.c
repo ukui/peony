@@ -35,6 +35,7 @@ enum
     TITLE_CHANGED,
     HIDDEN_FILES_MODE_CHANGED,
     PREVIEW_FILE,
+    IMAGE_SEARCH,
     LAST_SIGNAL
 };
 
@@ -111,6 +112,15 @@ peony_window_info_base_init (gpointer g_class)
                           NULL, NULL,
                           g_cclosure_marshal_VOID__VOID,
                           G_TYPE_NONE,  0);
+
+        peony_window_info_signals[IMAGE_SEARCH] =
+            g_signal_new ("image_search",
+                          PEONY_TYPE_WINDOW_INFO,
+                          G_SIGNAL_RUN_FIRST,
+                          0,
+                          NULL, NULL,
+                          g_cclosure_marshal_VOID__POINTER,
+                          G_TYPE_NONE, 1, G_TYPE_POINTER);
 
         initialized = TRUE;
     }

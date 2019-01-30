@@ -29,6 +29,7 @@
 #include "peony-search-engine-simple.h"
 #include "peony-search-engine-duplicate.h"
 #include "peony-search-engine-tracker.h"
+#include "peony-search-engine-image-search-simple.h"
 
 #include <eel/eel-gtk-macros.h>
 

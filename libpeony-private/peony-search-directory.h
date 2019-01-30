@@ -73,4 +73,8 @@ void           peony_search_directory_set_query       (PeonySearchDirectory *sea
         PeonyQuery           *query);
 void set_search_duplicate (PeonySearchDirectory *search,gboolean bDuplicate);
 gboolean get_search_duplicate (PeonySearchDirectory *search);
+
+void set_search_is_image_search (PeonySearchDirectory *search,gboolean is_image_search);
+gboolean get_search_is_image_search (PeonySearchDirectory *search);
+
 #endif /* PEONY_SEARCH_DIRECTORY_H */

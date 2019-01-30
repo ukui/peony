@@ -37,6 +37,8 @@
 #include <string.h>
 #include <sys/time.h>
 
+#include "peony-search-engine-image-search-simple.h"
+
 struct PeonySearchDirectoryDetails
 {
     PeonyQuery *query;
@@ -55,6 +57,8 @@ struct PeonySearchDirectoryDetails
     GList *callback_list;
     GList *pending_callback_list;
 	gboolean bDuplicate;
+
+    gboolean is_image_search;
 };
 
 typedef struct
@@ -97,6 +101,10 @@ ensure_search_engine (PeonySearchDirectory *search)
 		{
         	search->details->engine = peony_search_duplicate_engine_new ();
 		}
+        else if (search->details->is_image_search)
+        {
+            search->details->engine = peony_search_engine_image_search_simple_new ();
+        }
 		else
 		{
         	search->details->engine = peony_search_engine_new ();
@@ -962,3 +970,18 @@ get_search_duplicate (PeonySearchDirectory *search)
     return search->details->bDuplicate;
 }
 
+void set_search_is_image_search (PeonySearchDirectory *search,gboolean is_image_search) {
+	if (search == NULL)
+    {
+        return;
+    }
+    search->details->is_image_search = is_image_search;
+}
+
+gboolean get_search_is_image_search (PeonySearchDirectory *search) {
+	if (search == NULL)
+    {
+        return FALSE;
+    }
+    return search->details->is_image_search;
+}
