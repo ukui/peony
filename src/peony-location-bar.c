@@ -1106,8 +1106,8 @@ peony_location_frame_allocate_callback (GtkWidget    *widget,
 	local_window = peony_location_bar_get_window(bar);
 	if((local_window->details->spinner!=NULL) && gtk_widget_get_visible(local_window->details->spinner)==TRUE){
 		GtkAllocation spinnersize;
-		gtk_widget_get_allocation(bar->details->interbox,&spinnersize);
-		strbarsize.width+=(spinnersize.width+2);
+		gtk_widget_get_allocation(local_window->details->spinner,&spinnersize);
+		strbarsize.width+=spinnersize.width;
 	}
 
         for (node = g_list_last(bar->details->pChildList); node != NULL;node=node->prev )
