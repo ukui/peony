@@ -147,6 +147,11 @@
       <summary>Mouse button to activate the "Forward" command in browser window</summary>
       <description>For users with mice that have buttons for "Forward" and "Back", this key will set which button activates the "Forward" command in a browser window. Possible values range between 6 and 14.</description>
     </key>
+    <key name="undo" type="b">
+      <default>false</default>
+      <summary>Set right menuitem 'Undo' status</summary>
+      <description>If it is true, right menuitem 'Undo' show, else sensitive is false</description>
+    </key>
     <key name="peony-search" type="i">
 	    <default>0</default>
 	    <summary>Gsettings signal to peony search</summary>

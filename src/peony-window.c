@@ -1515,6 +1515,19 @@ peony_window_sync_title (PeonyWindow *window,
                      sync_title, (window, slot));
 }
 
+static void
+undo_change_notify (GSettings             *settings,
+                                        gchar                 *key,
+                                        GtkAction *action)
+{
+    if (g_settings_get_boolean (peony_preferences,"undo")){
+        gtk_action_set_sensitive (action, TRUE);
+    } else {
+        gtk_action_set_sensitive (action, FALSE);
+    }
+
+}
+
 void
 peony_window_sync_zoom_widgets (PeonyWindow *window)
 {
@@ -1551,6 +1564,7 @@ peony_window_sync_zoom_widgets (PeonyWindow *window)
                                           PEONY_ACTION_ZOOM_IN);
     gtk_action_set_visible (action, supports_zooming);
     gtk_action_set_sensitive (action, can_zoom_in);
+
 
     action = gtk_action_group_get_action (window->details->main_action_group,
                                           PEONY_ACTION_ZOOM_OUT);
@@ -1590,6 +1604,21 @@ void
 peony_window_connect_content_view (PeonyWindow *window,
                                   PeonyView *view)
 {
+    GtkAction *action;
+    action = gtk_action_group_get_action (window->details->main_action_group,
+                                          "UndoFile");
+
+    if (g_settings_get_boolean (peony_preferences,"undo")){
+        gtk_action_set_sensitive (action, TRUE);
+    } else {
+        gtk_action_set_sensitive (action, FALSE);
+    }
+
+  g_signal_connect (peony_preferences,
+                  "changed",
+                  G_CALLBACK (undo_change_notify),
+                  action);
+
     PeonyWindowSlot *slot;
 
     g_assert (PEONY_IS_WINDOW (window));

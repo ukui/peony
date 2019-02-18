@@ -79,6 +79,7 @@
 	</placeholder>
         <separator/>
 	<placeholder name="Zoom Items">
+		<menuitem name="Undo" action="UndoFile"/>
 		<menuitem name="Zoom In" action="Zoom In"/>
 		<menuitem name="Zoom Out" action="Zoom Out"/>
 		<menuitem name="Zoom Normal" action="Zoom Normal"/>

@@ -11663,6 +11663,11 @@ undo_update_menu (FMDirectoryView *view)
 		      "tooltip", tooltip,
 		      NULL);
 	gtk_action_set_sensitive (action, available);
+	if(available == TRUE){
+		g_settings_set_boolean (peony_preferences,"undo",TRUE);
+	} else{
+		g_settings_set_boolean (peony_preferences,"undo",FALSE);
+	}
 
     /* Update redo entry */
     action = gtk_action_group_get_action (view->details->dir_action_group,

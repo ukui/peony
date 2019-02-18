@@ -55,12 +55,127 @@
 #include <libpeony-private/peony-signaller.h>
 #include <libpeony-private/peony-trash-monitor.h>
 #include <string.h>
+#include "file-manager/fm-directory-view.h"
+#include <libpeony-private/peony-undostack-manager.h>
 
 #define MENU_PATH_EXTENSION_ACTIONS                     "/MenuBar/File/Extension Actions"
 #define POPUP_PATH_EXTENSION_ACTIONS                     "/background/Before Zoom Items/Extension Actions"
 
 #define NETWORK_URI          "network:"
 #define COMPUTER_URI         "computer:"
+
+
+struct FMDirectoryViewDetails
+{
+	PeonyWindowInfo *window;
+	PeonyWindowSlotInfo *slot;
+	PeonyDirectory *model;
+	PeonyFile *directory_as_file;
+	PeonyFile *location_popup_directory_as_file;
+	GdkEventButton *location_popup_event;
+	GtkActionGroup *dir_action_group;
+	guint dir_merge_id;
+
+	GList *scripts_directory_list;
+	GtkActionGroup *scripts_action_group;
+	guint scripts_merge_id;
+
+	GList *templates_directory_list;
+	GtkActionGroup *templates_action_group;
+	guint templates_merge_id;
+
+	GtkActionGroup *extensions_menu_action_group;
+	guint extensions_menu_merge_id;
+
+	guint display_selection_idle_id;
+	guint update_menus_timeout_id;
+	guint update_status_idle_id;
+	guint reveal_selection_idle_id;
+
+	guint display_pending_source_id;
+	guint changes_timeout_id;
+
+	guint update_interval;
+ 	guint64 last_queued;
+
+	guint files_added_handler_id;
+	guint files_changed_handler_id;
+	guint load_error_handler_id;
+	guint done_loading_handler_id;
+	guint file_changed_handler_id;
+
+	guint delayed_rename_file_id;
+
+	GList *new_added_files;
+	GList *new_changed_files;
+
+	GHashTable *non_ready_files;
+
+	GList *old_added_files;
+	GList *old_changed_files;
+
+	GList *pending_locations_selected;
+
+	/* whether we are in the active slot */
+	gboolean active;
+
+	/* loading indicates whether this view has begun loading a directory.
+	 * This flag should need not be set inside subclasses. FMDirectoryView automatically
+	 * sets 'loading' to TRUE before it begins loading a directory's contents and to FALSE
+	 * after it finishes loading the directory and its view.
+	 */
+	gboolean loading;
+	gboolean menu_states_untrustworthy;
+	gboolean scripts_invalid;
+	gboolean templates_invalid;
+	gboolean reported_load_error;
+
+	/* flag to indicate that no file updates should be dispatched to subclasses.
+	 * This is a workaround for bug #87701 that prevents the list view from
+	 * losing focus when the underlying GtkTreeView is updated.
+	 */
+	gboolean updates_frozen;
+	guint	 updates_queued;
+	gboolean needs_reload;
+
+	gboolean sort_directories_first;
+
+	gboolean show_foreign_files;
+	gboolean show_hidden_files;
+	gboolean ignore_hidden_file_preferences;
+
+	gboolean batching_selection_level;
+	gboolean selection_changed_while_batched;
+
+	gboolean selection_was_removed;
+
+	gboolean metadata_for_directory_as_file_pending;
+	gboolean metadata_for_files_in_directory_pending;
+
+	gboolean selection_change_is_due_to_shell;
+	gboolean send_selection_change_to_shell;
+
+	GtkActionGroup *open_with_action_group;
+	guint open_with_merge_id;
+
+	GList *subdirectory_list;
+
+	gboolean allow_moves;
+
+	GdkPoint context_menu_position;
+
+	gboolean undo_active;
+	gboolean redo_active;
+	gchar* undo_action_description;
+	gchar* undo_action_label;
+	gchar* redo_action_description;
+	gchar* redo_action_label;
+};
+
+typedef struct {
+	PeonyFile *file;
+	PeonyDirectory *directory;
+} FileAndDirectory;
 
 /* Struct that stores all the info necessary to activate a bookmark. */
 typedef struct
@@ -70,6 +185,12 @@ typedef struct
     guint changed_handler_id;
     PeonyBookmarkFailedCallback failed_callback;
 } BookmarkHolder;
+
+static void
+finish_undoredo_callback (gpointer data)
+{
+}
+
 
 static BookmarkHolder *
 bookmark_holder_new (PeonyBookmark *bookmark,
@@ -369,6 +490,28 @@ action_zoom_in_callback (GtkAction *action,
 {
     peony_window_zoom_in (PEONY_WINDOW (user_data));
 }
+
+static void
+real_action_undo (FMDirectoryView *view)
+{
+        PeonyUndoStackManager *manager = peony_undostack_manager_instance ();
+
+        /* Disable menus because they are in an untrustworthy status */
+        view->details->undo_active = FALSE;
+        view->details->redo_active = FALSE;
+        fm_directory_view_update_menus (view);
+
+        peony_undostack_manager_undo (manager, GTK_WIDGET (view), finish_undoredo_callback);
+}
+
+
+static void
+action_undo_callback (GtkAction *action,
+                        gpointer callback_data)
+{
+        real_action_undo (FM_DIRECTORY_VIEW (callback_data));
+}
+
 
 static void
 action_zoom_out_callback (GtkAction *action,
@@ -858,6 +1001,11 @@ static const GtkActionEntry main_entries[] =
         /* label, accelerator */       N_("Zoom _In"), "<control>plus",
         /* tooltip */                  N_("Increase the view size"),
         G_CALLBACK (action_zoom_in_callback)
+    },
+    /* name, stock id */         { "UndoFile", GTK_STOCK_UNDO,
+        /* label, accelerator */       N_("_Undo"), "<control>Z",
+        /* tooltip */                  N_("Undo the last action"),
+        G_CALLBACK (action_undo_callback)
     },
     /* name, stock id */         { "ZoomInAccel", NULL,
         /* label, accelerator */       "ZoomInAccel", "<control>equal",
