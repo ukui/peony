@@ -5053,6 +5053,7 @@ reset_open_with_menu (FMDirectoryView *view, GList *selection)
 
 	/* Show image search action if a singal image type file selected */
 	//TODO: if  g_list_length (selection) == 1 && selection->data is imgfile ,add image search to open menu
+	/*
 	if (g_list_length (selection) == 1) {
 		PeonyFile *file = selection->data;
 		char* mime_type = peony_file_get_mime_type (file);
@@ -5063,6 +5064,7 @@ reset_open_with_menu (FMDirectoryView *view, GList *selection)
 						       FM_DIRECTORY_VIEW_POPUP_PATH_OPEN);
 		}
 	}
+	*/
 
 	open_with_chooser_visible = other_applications_visible &&
 				    g_list_length (selection) == 1;
