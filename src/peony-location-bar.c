@@ -1333,6 +1333,11 @@ peony_location_bar_set_location (PeonyLocationBar *bar,
 		aspectframe = gtk_frame_new(NULL);
 		aspectframesec = gtk_frame_new(NULL);
 		hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL,FALSE);
+
+		GdkColor color;
+		gdk_color_parse ("white", &color);
+		gtk_widget_modify_bg ( GTK_WIDGET(hbox), GTK_STATE_NORMAL, &color);
+
 		hboxinter = gtk_box_new(GTK_ORIENTATION_HORIZONTAL,FALSE);
 		event_box = gtk_event_box_new ();
 	    gtk_event_box_set_visible_window (GTK_EVENT_BOX (event_box), FALSE);

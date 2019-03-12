@@ -137,6 +137,29 @@ choose_list_view (GtkButton *widget,gpointer data)
 }
 
 static void
+toolbar_theme_change_notify (GSettings *settings,
+                             gchar *key,
+                             PeonyNavigationWindow *window)
+{
+    GdkColor     color;
+    char        *theme;
+
+    theme = g_settings_get_string (settings, "gtk-theme");
+
+    if(!strcmp(theme,"ukui-black")){
+	    gdk_color_parse ("#f0f1f2", &color);
+            gtk_widget_modify_bg ( GTK_WIDGET(window->details->toolbar), GTK_STATE_NORMAL, &color);
+            gtk_widget_modify_bg ( GTK_WIDGET(window->toolbar_table), GTK_STATE_NORMAL, &color);
+    }
+    if(!strcmp(theme,"ukui-blue")){
+	    gdk_color_parse ("white", &color);
+            gtk_widget_modify_bg ( GTK_WIDGET(window->details->toolbar), GTK_STATE_NORMAL, &color);
+            gtk_widget_modify_bg ( GTK_WIDGET(window->toolbar_table), GTK_STATE_NORMAL, &color);
+    }
+
+}
+
+static void
 peony_navigation_window_init (PeonyNavigationWindow *window)
 {
     GtkUIManager *ui_manager;
@@ -267,6 +290,24 @@ peony_navigation_window_init (PeonyNavigationWindow *window)
                      0, 1, 1, 1);
     gtk_widget_show (toolbar);
     gtk_widget_show_all (window->toolbar_table);
+
+    GdkColor 	 color;
+    GSettings   *settings;
+    char 	*theme, *path;
+    path = g_strdup_printf ("/org/mate/desktop/interface/");
+    settings = g_settings_new_with_path ("org.mate.interface", path);
+    theme = g_settings_get_string (settings, "gtk-theme");
+    gdk_color_parse ("#f0f1f2", &color);
+
+    if(!strcmp(theme,"ukui-black")){
+	    gtk_widget_modify_bg ( GTK_WIDGET(window->details->toolbar), GTK_STATE_NORMAL, &color);
+	    gtk_widget_modify_bg ( GTK_WIDGET(window->toolbar_table), GTK_STATE_NORMAL, &color);
+    }
+        g_signal_connect (settings,
+                          "changed::gtk-theme",
+                          G_CALLBACK (toolbar_theme_change_notify),
+                          window);
+
     gtk_widget_show (window->viewAsbox);
     g_signal_connect (iconView_button,"pressed",G_CALLBACK (choose_icon_view),window);
 
