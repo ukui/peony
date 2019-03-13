@@ -58,6 +58,18 @@
 
 static const char untranslated_location_label[] = N_("Location:");
 static const char untranslated_go_to_label[] = N_("Go To:");
+
+
+ 	static const gchar css[] =
+	".folder_image { "
+	"margin-left: 5px;"
+	"margin-right: 5px;"
+	"}"
+	".location_button_list { "
+	"padding: 0px 10px 0px 10px;"
+	"}"
+	;
+
 #define LOCATION_LABEL _(untranslated_location_label)
 #define GO_TO_LABEL _(untranslated_go_to_label)
 static void
@@ -81,6 +93,7 @@ struct PeonyLocationBarDetails
 	GList     *pChildList;
 	GtkWidget *backbutton;
 	GtkWidget *backseparator;
+	GtkWidget *folder_image;
 	GtkWidget *menu;
 	GtkWidget *aspectframesec;
 	GtkWidget *aspectframe;
@@ -1194,11 +1207,13 @@ peony_location_frame_allocate_callback (GtkWidget    *widget,
 	{
 		gtk_widget_hide(bar->details->backbutton);
                 gtk_widget_hide(bar->details->backseparator);
+                gtk_widget_show(bar->details->folder_image);
 	}
 	else
 	{
                 gtk_widget_show(bar->details->backbutton);
-                gtk_widget_show(bar->details->backseparator);
+                gtk_widget_show(bar->details->folder_image);
+//                gtk_widget_show(bar->details->backseparator);
 
 	}
 	gtk_widget_queue_draw(bar);
@@ -1339,6 +1354,13 @@ peony_location_bar_set_location (PeonyLocationBar *bar,
 		gtk_widget_modify_bg ( GTK_WIDGET(hbox), GTK_STATE_NORMAL, &color);
 
 		hboxinter = gtk_box_new(GTK_ORIENTATION_HORIZONTAL,FALSE);
+
+		GtkCssProvider *provider;
+		GtkStyleContext *context;
+ 		provider = gtk_css_provider_new ();
+		gtk_css_provider_load_from_data (provider, css, -1, NULL);
+		gtk_style_context_add_provider_for_screen (gtk_widget_get_screen (hboxinter),GTK_STYLE_PROVIDER (provider),GTK_STYLE_PROVIDER_PRIORITY_USER);
+
 		event_box = gtk_event_box_new ();
 	    gtk_event_box_set_visible_window (GTK_EVENT_BOX (event_box), FALSE);
 
@@ -1364,11 +1386,16 @@ peony_location_bar_set_location (PeonyLocationBar *bar,
 					GtkWidget *child = NULL;
 					GtkWidget *image = NULL;
 
+					GtkWidget *folder_image = NULL;
 					backbutton = gtk_button_new();
 					gtk_button_set_relief(backbutton,GTK_RELIEF_NONE);
 					image = gtk_image_new_from_icon_name("go-down",GTK_ICON_SIZE_MENU);
 					//gtk_button_set_relief(image,GTK_RELIEF_NONE);
 					gtk_button_set_image (GTK_BUTTON (backbutton),image);
+					folder_image = gtk_image_new_from_icon_name("folder",GTK_ICON_SIZE_MENU);
+					context = gtk_widget_get_style_context(folder_image);
+					gtk_style_context_add_class(context,"folder_image");
+
 					menu = gtk_menu_new ();
 					bar->details->menu = menu;
 					
@@ -1378,9 +1405,12 @@ peony_location_bar_set_location (PeonyLocationBar *bar,
 
 					gtk_box_pack_start (GTK_BOX (hboxinter), backbutton, FALSE, TRUE, 0);
 					separator = gtk_separator_new(GTK_ORIENTATION_VERTICAL);
+					gtk_box_pack_start (GTK_BOX (hboxinter), folder_image, FALSE, TRUE, 0);
 					gtk_box_pack_start (GTK_BOX (hboxinter), separator, FALSE, TRUE, 0);
+
 					bar->details->backbutton = backbutton;
 					bar->details->backseparator = separator;
+					bar->details->folder_image = folder_image;
 				}
 				
 				pStartBack = g_strdup(pStart);
@@ -1397,6 +1427,8 @@ peony_location_bar_set_location (PeonyLocationBar *bar,
 						gtk_box_pack_start (GTK_BOX (hboxinter), separator, FALSE, TRUE, 0);
 					}
 					button = gtk_button_new_with_label(pFind);					
+					context = gtk_widget_get_style_context(button);
+					gtk_style_context_add_class(context,"location_button_list");
 					gtk_button_set_relief(button,GTK_RELIEF_NONE);
 
 					pLocationTemp = strstr(pStartBackPtr,pFind);
