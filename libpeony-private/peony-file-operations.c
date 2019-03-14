@@ -4092,9 +4092,13 @@ copy_move_file (CopyMoveJob *copy_job,
 		gboolean last_item)
 {
         //sikp the errors dialog (when doing drag and drop on MyComputer).
-        if(!g_file_get_path(src)){
+	char *uri = g_file_get_uri (src);
+        if(g_str_has_prefix (uri, "computer:///")){
                 return;
         }
+	if (uri) {
+		g_free (uri);
+	}
 	GFile *dest, *new_dest;
 	GError *error;
 	GFileCopyFlags flags;
