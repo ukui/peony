@@ -6737,6 +6737,18 @@ msgid "Do you want to view %d location?"
 msgid_plural "Do you want to view %d locations?"
 msgstr[0] "您想要查看这 %d 个位置吗？"
 
+#: ../src/peony-location-bar.c:1467
+msgid "recent"
+msgstr "最近"
+
+#: ../src/peony-location-bar.c:1470
+msgid "trash"
+msgstr "回收站"
+
+#: ../src/peony-location-bar.c:1473
+msgid "computer"
+msgstr "我的电脑"
+
 #: ../src/peony-location-dialog.c:157
 msgid "Open Location"
 msgstr "打开位置"

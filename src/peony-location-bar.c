@@ -1463,6 +1463,15 @@ peony_location_bar_set_location (PeonyLocationBar *bar,
 						separator = gtk_separator_new(GTK_ORIENTATION_VERTICAL);
 //						gtk_box_pack_start (GTK_BOX (hboxinter), separator, FALSE, TRUE, 0);
 					}
+					if(!strcmp(pFind,"recent:")){
+						pFind=_("recent");
+					}
+					if(!strcmp(pFind,"trash:")){
+						pFind=_("trash");
+					}
+					if(!strcmp(pFind,"computer:")){
+						pFind="computer";
+					}
 					button = gtk_button_new_with_label(pFind);					
 					context = gtk_widget_get_style_context(button);
 					gtk_style_context_add_class(context,"location_button_list");
