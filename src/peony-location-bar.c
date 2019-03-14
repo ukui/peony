@@ -68,6 +68,10 @@ static const char untranslated_go_to_label[] = N_("Go To:");
 	".location_button_list { "
 	"padding: 0px 10px 0px 10px;"
 	"}"
+	".event_box3 { "
+        "border: 1px solid #b6b6b3;"
+	"border-left: 0px"
+	"}"
 	;
 
 #define LOCATION_LABEL _(untranslated_location_label)
@@ -1346,7 +1350,8 @@ peony_location_bar_set_location (PeonyLocationBar *bar,
 		}
 
 		aspectframe = gtk_frame_new(NULL);
-		aspectframesec = gtk_frame_new(NULL);
+//		aspectframesec = gtk_frame_new(NULL);
+		aspectframesec = gtk_grid_new();
 		hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL,FALSE);
 
 		GdkColor color;
@@ -1450,7 +1455,7 @@ peony_location_bar_set_location (PeonyLocationBar *bar,
 					g_signal_connect (button, "button-press-event",
 									  G_CALLBACK (peony_location_button_pressed_callback), NULL);
 					gtk_box_pack_start (GTK_BOX (hboxinter), button, FALSE, TRUE, 0);
-					
+
 					bFirst = FALSE;
 					pStart = NULL;
 				}
@@ -1474,6 +1479,10 @@ peony_location_bar_set_location (PeonyLocationBar *bar,
 		bar->details->framehbox = hbox;
 		bar->details->aspectframesec = aspectframesec;
 		bar->details->aspectframe = aspectframe;
+
+		context = gtk_widget_get_style_context(aspectframesec);
+		gtk_style_context_add_class(context,"event_box3");
+
 		g_signal_connect (event_box, "button_press_event",
 						  G_CALLBACK (peony_location_bar_focus_in),
 						  bar);
