@@ -61,12 +61,28 @@ static const char untranslated_go_to_label[] = N_("Go To:");
 
 
  	static const gchar css[] =
+	".go_down_image { "
+	"padding-right: 1px;"
+	"padding-left: 5px;"
+        "border: 1px solid #b6b6b3;"
+	"border-right: 0px;"
+	"}"
+	".folder_image_new { "
+	"padding-right: 1px;"
+	"padding-left: 5px;"
+        "border: 1px solid #b6b6b3;"
+	"border-right: 0px;"
+	"border-left: 0px;"
+	"}"
 	".folder_image { "
-	"margin-left: 5px;"
-	"margin-right: 5px;"
+	"padding-right: 1px;"
+	"padding-left: 5px;"
+        "border: 1px solid #b6b6b3;"
+	"border-right: 0px;"
 	"}"
 	".location_button_list { "
-	"padding: 0px 10px 0px 10px;"
+        "border: 1px solid #b6b6b3;"
+	"border-left: 0px"
 	"}"
 	".event_box3 { "
         "border: 1px solid #b6b6b3;"
@@ -1100,6 +1116,8 @@ peony_location_frame_allocate_callback (GtkWidget    *widget,
                                                                                                 GdkRectangle *allocation,
                                                                                 gpointer      user_data)
 {
+        GtkCssProvider *provider;
+        GtkStyleContext *context;
 	GtkAllocation strframehboxsize;
 	PeonyNavigationWindow *local_window;
         GtkAllocation strbarsize;
@@ -1109,6 +1127,10 @@ peony_location_frame_allocate_callback (GtkWidget    *widget,
 	GList *node = NULL;
         WIDGET_PARAM *pWidget = NULL;
         PeonyLocationBar *bar = NULL;
+
+        provider = gtk_css_provider_new ();
+        gtk_css_provider_load_from_data (provider, css, -1, NULL);
+        gtk_style_context_add_provider_for_screen (gtk_widget_get_screen (widget),GTK_STYLE_PROVIDER (provider),GTK_STYLE_PROVIDER_PRIORITY_USER);
 
         if (NULL == widget || NULL == allocation || NULL == user_data)
         {
@@ -1211,11 +1233,17 @@ peony_location_frame_allocate_callback (GtkWidget    *widget,
 	{
 		gtk_widget_hide(bar->details->backbutton);
                 gtk_widget_hide(bar->details->backseparator);
+                context = gtk_widget_get_style_context(bar->details->folder_image);
+                gtk_style_context_remove_class (context,"folder_image_new");
+                gtk_style_context_add_class(context,"folder_image");
                 gtk_widget_show(bar->details->folder_image);
 	}
 	else
 	{
                 gtk_widget_show(bar->details->backbutton);
+                context = gtk_widget_get_style_context(bar->details->folder_image);
+                gtk_style_context_remove_class (context,"folder_image");
+                gtk_style_context_add_class(context,"folder_image_new");
                 gtk_widget_show(bar->details->folder_image);
 //                gtk_widget_show(bar->details->backseparator);
 
@@ -1349,7 +1377,8 @@ peony_location_bar_set_location (PeonyLocationBar *bar,
 			bar->details->pChildList = NULL;
 		}
 
-		aspectframe = gtk_frame_new(NULL);
+//		aspectframe = gtk_frame_new(NULL);
+		aspectframe = gtk_grid_new();
 //		aspectframesec = gtk_frame_new(NULL);
 		aspectframesec = gtk_grid_new();
 		hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL,FALSE);
@@ -1397,8 +1426,11 @@ peony_location_bar_set_location (PeonyLocationBar *bar,
 					image = gtk_image_new_from_icon_name("go-down",GTK_ICON_SIZE_MENU);
 					//gtk_button_set_relief(image,GTK_RELIEF_NONE);
 					gtk_button_set_image (GTK_BUTTON (backbutton),image);
+					context = gtk_widget_get_style_context(backbutton);
+					gtk_style_context_add_class(context,"go_down_image");
 					folder_image = gtk_image_new_from_icon_name("folder",GTK_ICON_SIZE_MENU);
 					context = gtk_widget_get_style_context(folder_image);
+					gtk_style_context_remove_class (context,"folder_image_new");
 					gtk_style_context_add_class(context,"folder_image");
 
 					menu = gtk_menu_new ();
@@ -1429,7 +1461,7 @@ peony_location_bar_set_location (PeonyLocationBar *bar,
 					if(FALSE == bFirst)
 					{
 						separator = gtk_separator_new(GTK_ORIENTATION_VERTICAL);
-						gtk_box_pack_start (GTK_BOX (hboxinter), separator, FALSE, TRUE, 0);
+//						gtk_box_pack_start (GTK_BOX (hboxinter), separator, FALSE, TRUE, 0);
 					}
 					button = gtk_button_new_with_label(pFind);					
 					context = gtk_widget_get_style_context(button);
