@@ -815,6 +815,10 @@ update_places (PeonyPlacesSidebar *sidebar)
         fclose(fp);
     }
 
+
+    last_iter = add_heading (sidebar, SECTION_PERSONAL,
+                             NULL,NULL,NULL);
+
    /*personal*/
     icon = g_themed_icon_new (PEONY_ICON_HOME);
     mount_uri = peony_get_home_directory_uri ();
