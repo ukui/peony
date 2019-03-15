@@ -34,6 +34,7 @@
 struct PeonySearchBarDetails
 {
     GtkWidget *entry;
+    GtkWidget *button;
     gboolean entry_borrowed;
 	gboolean bDuplicate;
 };
@@ -45,6 +46,17 @@ enum
     FOCUS_IN,
     LAST_SIGNAL
 };
+
+static const gchar css[] =
+    ".entry { "
+    "border-right: 0px;"
+    "}"
+    ".entry_button { "
+    "border: 1px solid #b6b6b3;"
+    "border-left: 0px;"
+    "}"
+;
+
 
 static guint signals[LAST_SIGNAL] = { 0 };
 
@@ -143,6 +155,16 @@ window_list_applet_size_change_notify (GSettings             *settings,
 static void
 entry_changed_cb (GtkWidget *entry, PeonySearchBar *bar)
 {
+        GtkWidget *image = NULL;
+        if (entry_has_text (bar))
+        {
+	    image = gtk_image_new_from_icon_name("gtk-close",GTK_ICON_SIZE_MENU);
+	    gtk_button_set_image (GTK_BUTTON (bar->details->button),image);
+        } else{
+	    image = gtk_image_new_from_icon_name("find",GTK_ICON_SIZE_MENU);
+	    gtk_button_set_image (GTK_BUTTON (bar->details->button),image);
+        }
+
         GSettings *settings = g_settings_new("org.ukui.peony.preferences");
 //      g_settings_set_int (settings, "peony-search",0);
         g_signal_connect (settings,
@@ -153,6 +175,22 @@ entry_changed_cb (GtkWidget *entry, PeonySearchBar *bar)
 	//peony_debug_log(TRUE,"search_bar","changed");
 	set_search_bar_duplicate(bar,FALSE);
     g_signal_emit_by_name (entry, "activate", 0);
+}
+
+static void
+button_activate_cb (GtkWidget *button, PeonySearchBar *bar)
+{
+	GtkWidget *image = NULL;
+
+	if (entry_has_text (bar))
+	{
+		image = gtk_image_new_from_icon_name("gtk-close",GTK_ICON_SIZE_MENU);
+		gtk_button_set_image (GTK_BUTTON (button),image);
+		gtk_entry_set_text(bar->details->entry,"");
+	} else{
+		image = gtk_image_new_from_icon_name("find",GTK_ICON_SIZE_MENU);
+		gtk_button_set_image (GTK_BUTTON (button),image);
+	}
 }
 
 static void
@@ -182,8 +220,16 @@ focus_in_event_callback (GtkWidget *widget,
 static void
 peony_search_bar_init (PeonySearchBar *bar)
 {
+
+    GtkCssProvider *provider;
+    GtkStyleContext *context1;
+    provider = gtk_css_provider_new ();
+    gtk_css_provider_load_from_data (provider, css, -1, NULL);
+    gtk_style_context_add_provider_for_screen (gtk_widget_get_screen (bar),GTK_STYLE_PROVIDER (provider),GTK_STYLE_PROVIDER_PRIORITY_USER);
+
     GtkWidget *hbox;
     GtkWidget *label;
+    GtkWidget *image = NULL;
     GtkStyleContext *context;
 
     context = gtk_widget_get_style_context (GTK_WIDGET (bar));
@@ -193,7 +239,7 @@ peony_search_bar_init (PeonySearchBar *bar)
 
     gtk_event_box_set_visible_window (GTK_EVENT_BOX (bar), FALSE);
 
-    hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
+    hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
     gtk_widget_set_margin_start (hbox, 6);
     gtk_widget_set_margin_end (hbox, 6);
     gtk_widget_show (hbox);
@@ -205,10 +251,16 @@ peony_search_bar_init (PeonySearchBar *bar)
    // gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
 
     bar->details->entry = gtk_entry_new ();
-    gtk_entry_set_icon_from_icon_name (GTK_ENTRY (bar->details->entry),
+/*    gtk_entry_set_icon_from_icon_name (GTK_ENTRY (bar->details->entry),
                                    GTK_ENTRY_ICON_SECONDARY,
                                    "find");
+*/
     gtk_box_pack_start (GTK_BOX (hbox), bar->details->entry, TRUE, TRUE, 0);
+//    GtkWidget *button=gtk_button_new_from_stock(GTK_STOCK_FIND);
+    bar->details->button=gtk_button_new();
+    image = gtk_image_new_from_icon_name("find",GTK_ICON_SIZE_MENU);
+    gtk_button_set_image (GTK_BUTTON (bar->details->button),image);
+    gtk_box_pack_start (GTK_BOX (hbox), bar->details->button, TRUE, TRUE, 0);
 
     g_signal_connect (bar->details->entry, "activate",
                       G_CALLBACK (entry_activate_cb), bar);
@@ -219,7 +271,16 @@ peony_search_bar_init (PeonySearchBar *bar)
     g_signal_connect (bar->details->entry, "changed",
                       G_CALLBACK (entry_changed_cb), bar);
 
+    g_signal_connect (bar->details->button, "clicked",
+                      G_CALLBACK (button_activate_cb), bar);
+
+    context = gtk_widget_get_style_context(bar->details->entry);
+    gtk_style_context_add_class(context,"entry");
+    context = gtk_widget_get_style_context(bar->details->button);
+    gtk_style_context_add_class(context,"entry_button");
+
     gtk_widget_show (bar->details->entry);
+    gtk_widget_show (bar->details->button);
 }
 
 GtkWidget *
