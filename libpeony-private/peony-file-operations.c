@@ -4091,14 +4091,6 @@ copy_move_file (CopyMoveJob *copy_job,
 		gboolean readonly_source_fs,
 		gboolean last_item)
 {
-        //sikp the errors dialog (when doing drag and drop on MyComputer).
-	char *uri = g_file_get_uri (src);
-	if (uri) {
-        	if(g_str_has_prefix (uri, "computer:///")){
-                	return;
-        	}
-		g_free (uri);
-	}
 	GFile *dest, *new_dest;
 	GError *error;
 	GFileCopyFlags flags;

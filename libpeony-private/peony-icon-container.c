@@ -5977,7 +5977,7 @@ motion_notify_event (GtkWidget *widget,
         switch (details->drag_state)
         {
         case DRAG_STATE_MOVE_OR_COPY:
-            if (details->drag_started)
+            if (details->drag_started || container->name)
             {
                 break;
             }
