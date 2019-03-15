@@ -6749,6 +6749,10 @@ msgstr "回收站"
 msgid "computer"
 msgstr "我的电脑"
 
+#: ../src/peony-location-bar.c:1478
+msgid "search:"
+msgstr "搜索"
+
 #: ../src/peony-location-dialog.c:157
 msgid "Open Location"
 msgstr "打开位置"

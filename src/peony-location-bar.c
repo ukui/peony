@@ -1456,6 +1456,7 @@ peony_location_bar_set_location (PeonyLocationBar *bar,
 				{
 					char *pUrl = NULL;
 					char *uri = NULL;
+					char *pFind_new = NULL;
 					GFile *locationFile = NULL;
 
 					if(FALSE == bFirst)
@@ -1464,15 +1465,22 @@ peony_location_bar_set_location (PeonyLocationBar *bar,
 //						gtk_box_pack_start (GTK_BOX (hboxinter), separator, FALSE, TRUE, 0);
 					}
 					if(!strcmp(pFind,"recent:")){
-						pFind=_("recent");
+						pFind_new=_("recent");
 					}
 					if(!strcmp(pFind,"trash:")){
-						pFind=_("trash");
+						pFind_new=_("trash");
 					}
 					if(!strcmp(pFind,"computer:")){
-						pFind="computer";
+						pFind_new=_("computer");
 					}
-					button = gtk_button_new_with_label(pFind);					
+					if(!strcmp(pFind,"x-peony-search:")){
+						pFind_new=_("search:");
+					}
+					if (pFind_new != NULL){
+						button = gtk_button_new_with_label(pFind_new);
+					} else{
+						button = gtk_button_new_with_label(pFind);
+					}
 					context = gtk_widget_get_style_context(button);
 					gtk_style_context_add_class(context,"location_button_list");
 					gtk_button_set_relief(button,GTK_RELIEF_NONE);
@@ -1490,6 +1498,9 @@ peony_location_bar_set_location (PeonyLocationBar *bar,
 					g_free(pUrl);
 					pStartBackPtr = pLocationTemp;
 					
+					if (!strcmp(uri,"x-peony-search:///")){
+						gtk_widget_set_sensitive (button,FALSE);
+					}
 					g_object_set_data_full (G_OBJECT (button),
 											"location-addr",
 											uri, g_free);
