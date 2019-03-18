@@ -110,6 +110,13 @@ static const struct
     { XF86XK_Forward,	PEONY_ACTION_FORWARD }
 #endif
 };
+
+static const gchar css[] =
+    ".sidebar_panel{ "
+    "border-right: 0px;"
+    "border-left: 0px;"
+    "}";
+
 static void
 choose_icon_view (GtkButton *widget,gpointer data)
 {
@@ -821,6 +828,8 @@ peony_navigation_window_add_sidebar_panel (PeonyNavigationWindow *window,
     char *tooltip;
     char *default_id;
     GdkPixbuf *icon;
+    GtkCssProvider *provider;
+    GtkStyleContext *context;
 
     g_return_if_fail (PEONY_IS_NAVIGATION_WINDOW (window));
     g_return_if_fail (PEONY_IS_SIDEBAR (sidebar_panel));
@@ -829,6 +838,13 @@ peony_navigation_window_add_sidebar_panel (PeonyNavigationWindow *window,
 
     label = peony_sidebar_get_tab_label (sidebar_panel);
     tooltip = peony_sidebar_get_tab_tooltip (sidebar_panel);
+
+    provider = gtk_css_provider_new ();
+    gtk_css_provider_load_from_data (provider, css, -1, NULL);
+    gtk_style_context_add_provider_for_screen (gtk_widget_get_screen (window->sidebar),GTK_STYLE_PROVIDER (provider),GTK_STYLE_PROVIDER_PRIORITY_USER);
+
+    context = gtk_widget_get_style_context(GTK_WIDGET (sidebar_panel));
+    gtk_style_context_add_class(context,"sidebar_panel");
     peony_side_pane_add_panel (window->sidebar,
                               GTK_WIDGET (sidebar_panel),
                               label,

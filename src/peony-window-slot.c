@@ -33,6 +33,12 @@
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-string.h>
 
+static const gchar css[] =
+    ".panel_view{ "
+    "border-left: 0px;"
+    "border-right: 0px;"
+    "}";
+
 static void peony_window_slot_init       (PeonyWindowSlot *slot);
 static void peony_window_slot_class_init (PeonyWindowSlotClass *class);
 static void peony_window_slot_dispose    (GObject *object);
@@ -203,6 +209,7 @@ peony_window_slot_init (PeonyWindowSlot *slot)
 
     slot->view_box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
     gtk_box_pack_start (GTK_BOX (content_box), slot->view_box, TRUE, TRUE, 0);
+
     gtk_widget_show (slot->view_box);
 
     slot->title = g_strdup (_("Loading..."));
@@ -460,8 +467,14 @@ void
 peony_window_slot_set_content_view_widget (PeonyWindowSlot *slot,
         PeonyView *new_view)
 {
+    GtkCssProvider *provider;
+    GtkStyleContext *context;
     PeonyWindow *window;
     GtkWidget *widget;
+
+    provider = gtk_css_provider_new ();
+    gtk_css_provider_load_from_data (provider, css, -1, NULL);
+    gtk_style_context_add_provider_for_screen (gtk_widget_get_screen (slot->pane->window),GTK_STYLE_PROVIDER (provider),GTK_STYLE_PROVIDER_PRIORITY_USER);
 
     window = slot->pane->window;
     g_assert (PEONY_IS_WINDOW (window));
@@ -482,6 +495,9 @@ peony_window_slot_set_content_view_widget (PeonyWindowSlot *slot,
         widget = peony_view_get_widget (new_view);
         gtk_box_pack_start (GTK_BOX (slot->view_box), widget,
                             TRUE, TRUE, 0);
+
+	context = gtk_widget_get_style_context(widget);
+	gtk_style_context_add_class(context,"panel_view");
 
         gtk_widget_show (widget);
 
