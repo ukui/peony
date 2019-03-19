@@ -175,6 +175,7 @@ peony_navigation_window_init (PeonyNavigationWindow *window)
     PeonyNavigationWindowPane *pane;
     GtkWidget *hpaned;
     GtkWidget *vbox;
+    GtkWidget *hbox;
     GtkWidget *add_toolbar_vbox;
     GtkImage  *iconView_image;
     GtkImage *listView_image;
@@ -219,8 +220,13 @@ peony_navigation_window_init (PeonyNavigationWindow *window)
     window->toolbar_table= gtk_grid_new();
     window->details->split_view_hpane = hpaned;
 
-    gtk_box_pack_start (GTK_BOX (vbox), win->details->statusbar, FALSE, FALSE, 0);
+    hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
+    gtk_box_set_center_widget(hbox,win->details->statusbar);
+    gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE, 0);
+
+//  gtk_box_pack_start (GTK_BOX (vbox), win->details->statusbar, FALSE, FALSE, 0);
     gtk_widget_show (win->details->statusbar);
+    gtk_widget_show (hbox);
 
     peony_navigation_window_pane_setup (pane);
 
