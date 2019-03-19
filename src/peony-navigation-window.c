@@ -115,6 +115,7 @@ static const gchar css[] =
     ".sidebar_panel{ "
     "border-right: 0px;"
     "border-left: 0px;"
+    "border-bottom: 0px;"
     "}";
 
 static void
@@ -181,6 +182,7 @@ peony_navigation_window_init (PeonyNavigationWindow *window)
     GtkImage *listView_image;
     GtkWidget *iconView_button;
     GtkWidget *listView_button;
+    GtkWidget *content_vpaned;
 
     //pdf_viewer_init();
 	
@@ -202,10 +204,16 @@ peony_navigation_window_init (PeonyNavigationWindow *window)
     window->details->content_paned = gtk_paned_new (GTK_ORIENTATION_HORIZONTAL);
     gtk_widget_set_hexpand (window->details->content_paned, TRUE);
     gtk_widget_set_vexpand (window->details->content_paned, TRUE);
+
+    content_vpaned=gtk_paned_new (GTK_ORIENTATION_VERTICAL);
+    gtk_paned_pack1 (GTK_PANED (content_vpaned),GTK_PANED (window->details->content_paned),
+		    TRUE, FALSE);
+
     gtk_grid_attach (GTK_GRID (PEONY_WINDOW (window)->details->grid),
-                     window->details->content_paned,
+                     content_vpaned,
                      0, 3, 1, 1);
     gtk_widget_show (window->details->content_paned);
+    gtk_widget_show (content_vpaned);
 
     vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
     gtk_box_set_homogeneous (vbox,FALSE);
@@ -222,7 +230,9 @@ peony_navigation_window_init (PeonyNavigationWindow *window)
 
     hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
     gtk_box_set_center_widget(hbox,win->details->statusbar);
-    gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE, 0);
+//  gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE, 0);
+    gtk_paned_pack2 (GTK_PANED (content_vpaned),hbox,
+		    FALSE, FALSE);
 
 //  gtk_box_pack_start (GTK_BOX (vbox), win->details->statusbar, FALSE, FALSE, 0);
     gtk_widget_show (win->details->statusbar);

@@ -37,6 +37,7 @@ static const gchar css[] =
     ".panel_view{ "
     "border-left: 0px;"
     "border-right: 0px;"
+    "border-bottom: 0px;"
     "}";
 
 static void peony_window_slot_init       (PeonyWindowSlot *slot);
