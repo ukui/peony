@@ -1563,8 +1563,7 @@ drag_motion_callback (GtkTreeView *tree_view,
                       unsigned int time,
                       PeonyPlacesSidebar *sidebar)
 {
-/*	
-    gtk_tree_view_scroll_to_point(tree_view,x,y);
+    //printf ("drag_motion_callback\n");
     GtkTreePath *path;
     GtkTreeViewDropPosition pos;
     int action = 0;
@@ -1584,6 +1583,7 @@ drag_motion_callback (GtkTreeView *tree_view,
     res = compute_drop_position (tree_view, x, y, &path, &pos, sidebar);
 
     if (!res) {
+        action = GDK_ACTION_COPY;
         goto out;
     }
 
@@ -1646,7 +1646,6 @@ drag_motion_callback (GtkTreeView *tree_view,
     }
 
     return TRUE;
-*/    
 }
 
 static void
@@ -1655,7 +1654,8 @@ drag_leave_callback (GtkTreeView *tree_view,
                      unsigned int time,
                      PeonyPlacesSidebar *sidebar)
 {
-    free_drag_data (sidebar);
+    printf ("drag leave callback\n");
+    sidebar->drag_data_received = FALSE;
     gtk_tree_view_set_drag_dest_row (tree_view, NULL, GTK_TREE_VIEW_DROP_BEFORE);
     g_signal_stop_emission_by_name (tree_view, "drag-leave");
 }
@@ -1796,8 +1796,172 @@ reorder_bookmarks (PeonyPlacesSidebar *sidebar,
                                   new_position);
 }
 
+
 static void
 drag_data_received_callback (GtkWidget *widget,
+                             GdkDragContext *context,
+                             int x,
+                             int y,
+                             GtkSelectionData *selection_data,
+                             unsigned int info,
+                             unsigned int time,
+                             PeonyPlacesSidebar *sidebar)
+{
+    printf ("drag_data_received_callback\n");
+    GtkTreeView *tree_view;
+    GtkTreePath *tree_path;
+    GtkTreeViewDropPosition tree_pos;
+    GtkTreeIter iter;
+    int position;
+    GtkTreeModel *model;
+    char *drop_uri;
+    GList *selection_list, *uris;
+    PlaceType place_type;
+    SectionType section_type;
+    gboolean success;
+
+    tree_view = GTK_TREE_VIEW (widget);
+
+    if (!sidebar->drag_data_received)
+    {
+        if (gtk_selection_data_get_target (selection_data) != GDK_NONE &&
+                info == TEXT_URI_LIST)
+        {
+            sidebar->drag_list = build_selection_list (gtk_selection_data_get_data (selection_data));
+        }
+        else
+        {
+            sidebar->drag_list = NULL;
+        }
+        sidebar->drag_data_received = TRUE;
+        sidebar->drag_data_info = info;
+    }
+
+    g_signal_stop_emission_by_name (widget, "drag-data-received");
+
+    if (!sidebar->drop_occured)
+    {
+        return;
+    }
+
+    GList *uris1 = uri_list_from_selection (sidebar->drag_list);
+    if (uris1) {
+        printf ("%s\n", uris1->data);
+    }
+
+    /* Compute position */
+    success = compute_drop_position (tree_view, x, y, &tree_path, &tree_pos, sidebar);
+    if (!success) {
+        printf ("!success\n");
+        goto out;
+    }
+        
+
+    success = FALSE;
+
+    if (tree_pos == GTK_TREE_VIEW_DROP_BEFORE ||
+        tree_pos == GTK_TREE_VIEW_DROP_AFTER)
+    {
+        model = gtk_tree_view_get_model (tree_view);
+
+        if (!gtk_tree_model_get_iter (model, &iter, tree_path))
+        {
+            goto out;
+        }
+
+        gtk_tree_model_get (model, &iter,
+                            PLACES_SIDEBAR_COLUMN_SECTION_TYPE, &section_type,
+                            PLACES_SIDEBAR_COLUMN_ROW_TYPE, &place_type,
+                            PLACES_SIDEBAR_COLUMN_INDEX, &position,
+                            -1);
+
+        if (section_type != SECTION_BOOKMARKS &&
+            !(section_type == SECTION_NETWORK && place_type == PLACES_HEADING)) {
+            goto out;
+        }
+
+        if (section_type == SECTION_NETWORK && place_type == PLACES_HEADING &&
+            tree_pos == GTK_TREE_VIEW_DROP_BEFORE) {
+            position = peony_bookmark_list_length (sidebar->bookmarks);
+        }
+
+        if (tree_pos == GTK_TREE_VIEW_DROP_AFTER && place_type != PLACES_HEADING) {
+            /* heading already has position 0 */
+            position++;
+        }
+
+        switch (info)
+        {
+        case TEXT_URI_LIST:
+            bookmarks_drop_uris (sidebar, selection_data, position);
+            success = TRUE;
+            break;
+        case GTK_TREE_MODEL_ROW:
+            reorder_bookmarks (sidebar, position);
+            success = TRUE;
+            break;
+        default:
+            g_assert_not_reached ();
+            break;
+        }
+    }
+    else
+    {
+        GdkDragAction real_action;
+
+        /* file transfer requested */
+        real_action = gdk_drag_context_get_selected_action (context);
+
+        if (real_action == GDK_ACTION_ASK)
+        {
+            real_action =
+                peony_drag_drop_action_ask (GTK_WIDGET (tree_view),
+                                           gdk_drag_context_get_actions (context));
+        }
+
+        if (real_action > 0)
+        {
+            model = gtk_tree_view_get_model (tree_view);
+
+            gtk_tree_model_get_iter (model, &iter, tree_path);
+            gtk_tree_model_get (model, &iter,
+                                PLACES_SIDEBAR_COLUMN_URI, &drop_uri,
+                                -1);
+
+            switch (info)
+            {
+            case TEXT_URI_LIST:
+                selection_list = build_selection_list (gtk_selection_data_get_data (selection_data));
+                uris = uri_list_from_selection (selection_list);
+                peony_file_operations_copy_move (uris, NULL, drop_uri,
+                                                real_action, GTK_WIDGET (tree_view),FALSE,
+                                                NULL, NULL);
+                peony_drag_destroy_selection_list (selection_list);
+                g_list_free (uris);
+                success = TRUE;
+                break;
+            case GTK_TREE_MODEL_ROW:
+                success = FALSE;
+                break;
+            default:
+                g_assert_not_reached ();
+                break;
+            }
+
+            g_free (drop_uri);
+        }
+    }
+
+out:
+    sidebar->drop_occured = FALSE;
+    free_drag_data (sidebar);
+    gtk_drag_finish (context, success, FALSE, time);
+
+    gtk_tree_path_free (tree_path);
+}
+
+static void
+drag_data_received_callback0 (GtkWidget *widget,
                              GdkDragContext *context,
                              int x,
                              int y,
@@ -2040,6 +2204,76 @@ out:
 
 static gboolean
 drag_drop_callback (GtkTreeView *tree_view,
+                    GdkDragContext *context,
+                    int x,
+                    int y,
+                    unsigned int time,
+                    PeonyPlacesSidebar *sidebar)
+{
+    GtkTreePath *tree_path;
+    GtkTreeViewDropPosition tree_pos;
+    GtkTreeIter iter;
+    int position;
+    GtkTreeModel *model;
+    char *drop_uri;
+    GList *selection_list, *uris;
+    PlaceType place_type;
+    SectionType section_type;
+    gboolean success;
+
+    //printf ("drag_drop_callback\n");
+
+    success = compute_drop_position (tree_view, x, y, &tree_path, &tree_pos, sidebar);
+    if (!success) {
+        uris = uri_list_from_selection (sidebar->drag_list); 
+        GIcon *icon = g_themed_icon_new (PEONY_ICON_FOLDER);
+        GtkTreeIter last_iter;
+        char *location;
+        char *last_uri;
+        GtkTreePath *select_path;   	
+  
+        char *mount_uri;
+        GFile *file1;
+        char *filename;
+        GList *l;
+        for (l = uris; l != NULL; l = l->next)
+        {
+            mount_uri = l->data;
+            file1=g_file_new_for_uri (mount_uri);
+            filename=g_file_get_basename (file1);
+            PeonyFile *file = peony_file_get_existing_by_uri (l->data);
+            if (!peony_file_is_directory (file)) {
+                printf ("not a dir!\n");
+                g_object_unref (file1);
+                g_free (filename);
+                peony_file_unref (file);
+                continue;
+            }
+            last_iter = insert_place (sidebar, PLACES_BUILT_IN,
+                                      SECTION_FAVORITE,
+                                      filename, icon, mount_uri,
+                                      NULL, NULL, NULL, 0,
+                                      _("Open the folder"));
+            compare_for_selection (sidebar,
+                                   location, mount_uri, last_uri,
+                                   &last_iter, &select_path);
+        
+            g_object_unref (file1);
+            g_free (filename);
+        }
+        g_object_unref (icon);
+        g_list_free (uris);
+        //printf ("drop the file to favorite\n");
+    }
+    gboolean retval = FALSE;
+    sidebar->drop_occured = TRUE;
+    retval = get_drag_data (tree_view, context, time);
+    g_signal_stop_emission_by_name (tree_view, "drag-drop");
+    return retval;
+}
+
+static gboolean
+drag_drop_callback0 (GtkTreeView *tree_view,
                     GdkDragContext *context,
                     int x,
                     int y,
