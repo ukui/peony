@@ -53,6 +53,9 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "peony-icon-info.h"
+#include <libpeony-private/peony-file.h>
+
 #define PEONY_DND_URI_LIST_TYPE 	  "text/uri-list"
 #define PEONY_DND_TEXT_PLAIN_TYPE 	  "text/plain"
 
@@ -1428,7 +1431,15 @@ peony_location_bar_set_location (PeonyLocationBar *bar,
 					gtk_button_set_image (GTK_BUTTON (backbutton),image);
 					context = gtk_widget_get_style_context(backbutton);
 					gtk_style_context_add_class(context,"go_down_image");
-					folder_image = gtk_image_new_from_icon_name("folder",GTK_ICON_SIZE_MENU);
+					
+					PeonyFile *peony_file = peony_file_get_existing (file);
+					PeonyIconInfo *icon_info = peony_file_get_icon (peony_file, PEONY_ICON_SIZE_SMALLEST, PEONY_FILE_ICON_FLAGS_NONE);
+					const char* icon_name = peony_icon_info_get_used_name (icon_info);
+					peony_file_unref (peony_file);
+					g_object_unref (icon_info);
+					folder_image = gtk_image_new_from_icon_name(icon_name, GTK_ICON_SIZE_MENU);
+					
+					//folder_image = gtk_image_new_from_icon_name("folder",GTK_ICON_SIZE_MENU);
 					context = gtk_widget_get_style_context(folder_image);
 					gtk_style_context_remove_class (context,"folder_image_new");
 					gtk_style_context_add_class(context,"folder_image");
