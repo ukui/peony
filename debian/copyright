@@ -1,0 +1,849 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: Peony
+Upstream-Contact: Xiaodong Liu <liuxiaodong@kylinos.cn>
+                  Zuxun Yang <yangzuxun@kylinos.cn>
+Source: https://github.com/ukui/peony
+
+Files: src/file-manager/fm-computer-view.c
+       src/file-manager/fm-computer-view.h
+       src/file-manager/fm-computer-container.h
+       src/file-manager/fm-computer-container.c
+Copyright: 2017, Tianjin KYLIN Information Technology Co., Ltd.
+License: GPL-2+
+
+Files: src/peony-navigation-window-pane.c
+Copyright: 2008, Free Software Foundation, Inc.
+           2017, Tianjin KYLIN Information Technology Co., Ltd.
+License: GPL-2+
+
+Files: src/peony-places-sidebar.c
+       src/peony-places-sidebar.h
+Copyright: 2017, Tianjin KYLIN Information Technology Co., Ltd.
+License: GPL-2+
+
+Files: src/peony-application.c
+Copyright: 1999-2005, Red Hat, Inc.
+           1999-2001, Eazel, Inc.
+           2017, Tianjin KYLIN Information Technology Co., Ltd.
+License: GPL-2+
+
+Files: src/peony-navigation-window.c
+       src/peony-navigation-window.h
+Copyright: 1999-2000, Red Hat, Inc.
+           1999-2001, Eazel, Inc.
+           2003, Ximian, Inc.
+           2017, Tianjin KYLIN Information Technology Co., Ltd.
+License: GPL-2+
+
+Files: src/peony-search-bar.c
+Copyright: 2005-2006, Novell, Inc.
+           2017, Tianjin KYLIN Information Technology Co., Ltd.
+License: GPL-2+
+
+Files: src/peony-view-as-action.c
+Copyright: 2000-2011, Red Hat, Inc
+           2017, Tianjin KYLIN Information Technology Co., Ltd.
+License: GPL-2+
+
+Files: eel/check-program.c
+       eel/eel-art-extensions.c
+       eel/eel-art-extensions.h
+       eel/eel-art-gtk-extensions.c
+       eel/eel-art-gtk-extensions.h
+       eel/eel-debug.c
+       eel/eel-debug.h
+       eel/eel-gdk-extensions.c
+       eel/eel-gdk-extensions.h
+       eel/eel-gdk-pixbuf-extensions.c
+       eel/eel-gdk-pixbuf-extensions.h
+       eel/eel-glib-extensions.c
+       eel/eel-glib-extensions.h
+       eel/eel-graphic-effects.c
+       eel/eel-graphic-effects.h
+       eel/eel-gtk-extensions.c
+       eel/eel-gtk-extensions.h
+       eel/eel-gtk-macros.h
+       eel/eel-image-table.c
+       eel/eel-image-table.h
+       eel/eel-labeled-image.c
+       eel/eel-labeled-image.h
+       eel/eel-lib-self-check-functions.c
+       eel/eel-lib-self-check-functions.h
+       eel/eel-ukui-extensions.c
+       eel/eel-ukui-extensions.h
+       eel/eel-self-checks.c
+       eel/eel-self-checks.h
+       eel/eel-stock-dialogs.c
+       eel/eel-stock-dialogs.h
+       eel/eel-string.c
+       eel/eel-string.h
+       eel/eel-vfs-extensions.c
+       eel/eel-vfs-extensions.h
+       eel/eel-wrap-table.c
+       eel/eel-wrap-table.h
+       eel/eel-xml-extensions.c
+       eel/eel-xml-extensions.h
+       eel/eel.h
+Copyright: 1999-2001, Eazel, Inc.
+License: LGPL-2+
+
+Files: libpeony-private/peony-bookmark.c
+       libpeony-private/peony-bookmark.h
+       libpeony-private/peony-default-file-icon.c
+       libpeony-private/peony-default-file-icon.h
+       libpeony-private/peony-directory-async.c
+       libpeony-private/peony-directory-notify.h
+       libpeony-private/peony-directory-private.h
+       libpeony-private/peony-directory.c
+       libpeony-private/peony-directory.h
+       libpeony-private/peony-dnd.c
+       libpeony-private/peony-dnd.h
+       libpeony-private/peony-entry.c
+       libpeony-private/peony-entry.h
+       libpeony-private/peony-file-attributes.h
+       libpeony-private/peony-file-changes-queue.c
+       libpeony-private/peony-file-changes-queue.h
+       libpeony-private/peony-file-dnd.c
+       libpeony-private/peony-file-dnd.h
+       libpeony-private/peony-file-private.h
+       libpeony-private/peony-file.h
+       libpeony-private/peony-file-utilities.c
+       libpeony-private/peony-file-utilities.h
+       libpeony-private/peony-keep-last-vertical-box.c
+       libpeony-private/peony-keep-last-vertical-box.h
+       libpeony-private/peony-lib-self-check-functions.c
+       libpeony-private/peony-lib-self-check-functions.h
+       libpeony-private/peony-metadata.h
+       libpeony-private/peony-mime-actions.h
+       libpeony-private/peony-monitor.c
+       libpeony-private/peony-monitor.h
+       libpeony-private/peony-program-choosing.c
+       libpeony-private/peony-program-choosing.h
+       libpeony-private/peony-signaller.c
+       libpeony-private/peony-signaller.h
+       libpeony-private/peony-thumbnails.h
+       libpeony-private/peony-trash-monitor.c
+       libpeony-private/peony-trash-monitor.h
+       libpeony-private/peony-vfs-directory.c
+       libpeony-private/peony-vfs-directory.h
+       libpeony-private/peony-vfs-file.c
+       libpeony-private/peony-vfs-file.h
+       src/peony-bookmark-list.c
+       src/peony-bookmark-list.h
+       src/peony-bookmarks-window.c
+       src/peony-bookmarks-window.h
+       src/peony-desktop-window.c
+       src/peony-desktop-window.h
+       src/peony-emblem-sidebar.h
+       src/peony-information-panel.c
+       src/peony-information-panel.h
+       src/peony-location-entry.c
+       src/peony-location-entry.h
+       src/peony-navigation-window-menus.c
+       src/peony-notes-viewer.c
+       src/peony-property-browser.c
+       src/peony-property-browser.h
+       src/peony-self-check-functions.c
+       src/peony-self-check-functions.h
+       src/peony-sidebar-title.c
+       src/peony-sidebar-title.h
+       src/peony-window-menus.c
+       src/peony-window-toolbars.c
+       src/peony-zoom-control.h
+Copyright: 1999-2001, Eazel, Inc.
+License: GPL-2+
+
+Files: libpeony-private/peony-customization-data.c
+       libpeony-private/peony-customization-data.h
+	   libpeony-private/peony-mime-actions.c
+Copyright: 1999-2001, Eazel, Inc.
+           2018, Tianjin KYLIN Information Technology Co., Ltd.
+License: GPL-2+
+
+Files: libpeony-private/peony-global-preferences.c
+       libpeony-private/peony-global-preferences.h  
+       libpeony-private/peony-icon-canvas-item.c
+       libpeony-private/peony-icon-canvas-item.h
+	   src/peony-location-bar.c
+       src/peony-location-bar.h
+	   libpeony-private/peony-file.c
+	   libpeony-private/peony-search-engine-duplicate.c
+       libpeony-private/peony-search-engine-duplicate.h
+Copyright: 1999-2001, Eazel, Inc.
+           2018, Tianjin KYLIN Information Technology Co., Ltd.
+License: GPL-2+
+
+Files: src/file-manager/fm-desktop-icon-view.h
+       src/file-manager/fm-error-reporting.c
+       src/file-manager/fm-error-reporting.h
+       src/file-manager/fm-list-view-private.h
+       src/file-manager/fm-icon-view.h
+       src/file-manager/fm-properties-window.c
+       src/file-manager/fm-properties-window.h
+Copyright: 1999-2001, Eazel, Inc.
+License: LGPL-2+
+
+Files: src/file-manager/fm-icon-view.c
+Copyright: 1999-2001, Eazel, Inc.
+           2018, Tianjin KYLIN Information Technology Co., Ltd.
+License: LGPL-2+
+
+Files: libpeony-private/peony-autorun.c
+       libpeony-private/peony-autorun.h
+       libpeony-private/peony-clipboard-monitor.c
+       libpeony-private/peony-clipboard-monitor.h
+       libpeony-private/peony-desktop-directory-file.c
+       libpeony-private/peony-desktop-directory-file.h
+       libpeony-private/peony-desktop-directory.c
+       libpeony-private/peony-desktop-directory.h
+       libpeony-private/peony-desktop-icon-file.c
+       libpeony-private/peony-desktop-icon-file.h
+       libpeony-private/peony-desktop-link-monitor.c
+       libpeony-private/peony-desktop-link-monitor.h
+       libpeony-private/peony-desktop-link.c
+       libpeony-private/peony-desktop-link.h
+       libpeony-extension/peony-column-provider.c
+       libpeony-extension/peony-column-provider.h
+       libpeony-extension/peony-column.c
+       libpeony-extension/peony-column.h
+       libpeony-extension/peony-extension-types.c
+       libpeony-extension/peony-extension-types.h
+       libpeony-extension/peony-file-info.c
+       libpeony-extension/peony-file-info.h
+       libpeony-extension/peony-info-provider.c
+       libpeony-extension/peony-info-provider.h
+       libpeony-extension/peony-menu-item.c
+       libpeony-extension/peony-menu-item.h
+       libpeony-extension/peony-menu-provider.c
+       libpeony-extension/peony-menu-provider.h
+       libpeony-extension/peony-property-page-provider.c
+       libpeony-extension/peony-property-page-provider.h
+       libpeony-extension/peony-property-page.c
+       libpeony-extension/peony-property-page.h
+       libpeony-private/peony-column-chooser.c
+       libpeony-private/peony-column-chooser.h
+       libpeony-private/peony-column-utilities.c
+       libpeony-private/peony-column-utilities.h
+       libpeony-private/peony-mime-application-chooser.h
+       libpeony-private/peony-module.c
+       libpeony-private/peony-module.h
+       libpeony-private/peony-open-with-dialog.h
+       libpeony-private/peony-desktop-metadata.c
+       libpeony-private/peony-desktop-metadata.h
+       libpeony-private/peony-emblem-utils.c
+       libpeony-private/peony-emblem-utils.h
+       libpeony-private/peony-link.c
+       libpeony-private/peony-link.h
+       libpeony-private/peony-progress-info.c
+       libpeony-private/peony-progress-info.h
+       libpeony-private/peony-saved-search-file.c
+       libpeony-private/peony-saved-search-file.h
+       libpeony-private/peony-search-directory-file.h
+       libpeony-private/peony-search-engine-simple.c
+       libpeony-private/peony-search-engine-simple.h
+       src/peony-actions.h
+       src/peony-application.h
+       src/peony-connect-server-dialog-nonmain.c
+       src/peony-image-properties-page.h
+       src/peony-view-as-action.h
+       src/peony-window-bookmarks.h
+       src/peony-zoom-action.c
+       src/peony-zoom-action.h
+Copyright: 2000-2011, Red Hat, Inc
+License: GPL-2+
+
+Files: src/file-manager/fm-actions.h
+       src/peony-query-editor.c
+	   src/peony-query-editor.h
+Copyright: 2000-2011, Red Hat, Inc
+           2018, Tianjin KYLIN Information Technology Co., Ltd.
+License: GPL-2+
+
+Files: cut-n-paste-code/libegg/eggdesktopfile.h
+       cut-n-paste-code/libegg/eggsmclient-private.h
+       cut-n-paste-code/libegg/eggsmclient.c
+       cut-n-paste-code/libegg/eggsmclient.h
+       libpeony-extension/peony-column-provider.c
+       libpeony-extension/peony-column-provider.h
+       libpeony-extension/peony-column.c
+       libpeony-extension/peony-column.h
+       libpeony-extension/peony-extension-types.c
+       libpeony-extension/peony-extension-types.h
+       libpeony-extension/peony-file-info.c
+       libpeony-extension/peony-file-info.h
+       libpeony-extension/peony-info-provider.c
+       libpeony-extension/peony-info-provider.h
+       libpeony-extension/peony-menu-item.c
+       libpeony-extension/peony-menu-item.h
+       libpeony-extension/peony-menu-provider.c
+       libpeony-extension/peony-menu-provider.h
+       libpeony-extension/peony-property-page-provider.c
+       libpeony-extension/peony-property-page-provider.h
+       libpeony-extension/peony-property-page.c
+       libpeony-extension/peony-property-page.h
+       libpeony-private/peony-column-chooser.c
+       libpeony-private/peony-column-chooser.h
+       libpeony-private/peony-column-utilities.c
+       libpeony-private/peony-column-utilities.h
+       libpeony-private/peony-mime-application-chooser.h
+       libpeony-private/peony-module.c
+       libpeony-private/peony-module.h
+       libpeony-private/peony-open-with-dialog.h
+Copyright: 2003-2007, Novell, Inc.
+License: LGPL-2+
+
+Files: libpeony-private/peony-thumbnails.c
+       src/peony-emblem-sidebar.c
+       src/peony-history-sidebar.c
+       src/peony-history-sidebar.h
+       src/peony-main.c
+       src/peony-notes-viewer.h
+       src/peony-spatial-window.c
+       src/peony-window-bookmarks.c
+       src/peony-window-manage-views.h
+       src/peony-window-private.h
+       src/peony-window.c
+       src/peony-window.h
+       src/peony-zoom-control.c
+Copyright: 1999-2005, Red Hat, Inc.
+           1999-2001, Eazel, Inc.
+License: GPL-2+
+
+Files: src/peony-window-manage-views.c
+Copyright: 1999-2005, Red Hat, Inc.
+           1999-2001, Eazel, Inc.
+		   2018, Tianjin KYLIN Information Technology Co., Ltd.
+License: GPL-2+
+
+Files: libpeony-private/peony-debug-log.c
+       libpeony-private/peony-debug-log.h
+       libpeony-private/peony-search-directory-file.c
+       libpeony-private/peony-search-engine-beagle.c
+       libpeony-private/peony-search-engine-beagle.h
+Copyright: 2005-2006, Novell, Inc.
+License: GPL-2+
+
+Files: libpeony-private/peony-query.c
+       libpeony-private/peony-query.h
+	   libpeony-private/peony-search-directory.c
+       libpeony-private/peony-search-directory.h
+       libpeony-private/peony-search-engine.c
+       libpeony-private/peony-search-engine.h	   
+	   src/peony-search-bar.h
+Copyright: 2005-2006, Novell, Inc.
+           2018, Tianjin KYLIN Information Technology Co., Ltd.
+License: GPL-2+
+
+Files: libpeony-private/peony-window-slot-info.c
+       libpeony-private/peony-window-slot-info.h
+       src/peony-navigation-window-pane.h
+       src/peony-navigation-window-slot.h
+       src/peony-window-pane.c
+       src/peony-window-pane.h
+       src/peony-window-slot.h
+Copyright: 2008, Free Software Foundation, Inc.
+License: GPL-2+
+
+Files: src/peony-navigation-window-slot.c
+       src/peony-window-slot.c
+Copyright: 2008, Free Software Foundation, Inc.
+           2018, Tianjin KYLIN Information Technology Co., Ltd.
+License: GPL-2+
+
+Files: libpeony-private/peony-sidebar-provider.c
+       libpeony-private/peony-sidebar-provider.h
+       libpeony-private/peony-sidebar.c
+       libpeony-private/peony-sidebar.h
+       libpeony-private/peony-view-factory.c
+       libpeony-private/peony-view-factory.h
+       libpeony-private/peony-view.c
+       libpeony-private/peony-view.h
+       libpeony-private/peony-window-info.c
+       libpeony-private/peony-window-info.h
+Copyright: 2004, Red Hat, Inc.
+License: GPL-2+
+
+Files: cut-n-paste-code/libegg/eggtreemultidnd.c
+       cut-n-paste-code/libegg/eggtreemultidnd.h
+       libpeony-extension/peony-extension-private.h
+       libpeony-extension/peony-location-widget-provider.c
+       libpeony-private/peony-ui-utilities.c
+       libpeony-private/peony-ui-utilities.h
+       src/peony-autorun-software.c
+Copyright: 2001-2009, Red Hat, Inc.
+License: LGPL-2+
+
+Files: eel/eel-canvas-rect-ellipse.c
+       eel/eel-canvas-rect-ellipse.h
+       eel/eel-canvas.c
+       eel/eel-canvas.h
+Copyright: 1997-2000, Free Software Foundation, Inc.
+License: LGPL-2+
+
+Files: libpeony-private/peony-icon-dnd.h
+Copyright: 1999-2000, Free Software Foundation, Inc.
+           2000, Eazel, Inc.
+License: LGPL-2+
+
+Files: libpeony-private/peony-icon-dnd.c
+Copyright: 1999-2000, Free Software Foundation, Inc.
+           2000, Eazel, Inc.
+		   2018, Tianjin KYLIN Information Technology Co., Ltd.
+License: LGPL-2+
+
+Files: eel/eel-background-box.c
+       eel/eel-background-box.h
+       src/file-manager/fm-icon-container.h
+Copyright: 2002, Sun Microsystems, Inc.
+License: LGPL-2+
+
+Files: src/file-manager/fm-icon-container.c
+Copyright: 2002, Sun Microsystems, Inc.
+           2018, Tianjin KYLIN Information Technology Co., Ltd.
+License: LGPL-2+
+
+Files: src/peony-spatial-window.h
+Copyright: 1999-2000, Red Hat, Inc.
+          1999-2001, Eazel, Inc.
+          2003, Ximian, Inc.
+License: GPL-2+
+
+Files: src/file-manager/fm-ditem-page.c
+       src/file-manager/fm-ditem-page.h
+Copyright: 2002-2004, James Willcox
+License: GPL-2+
+
+Files: libpeony-private/peony-recent.c 
+Copyright: 2002-2004, James Willcox
+           2018, Tianjin KYLIN Information Technology Co., Ltd.
+License: GPL-2+
+
+Files: src/peony-location-dialog.c
+       src/peony-location-dialog.h
+       src/peony-side-pane.h
+Copyright: 2002-2003, Ximian, Inc.
+License: GPL-2+
+
+Files: src/peony-file-management-properties-main.c
+       src/peony-file-management-properties.h
+Copyright: 2002, Jan Arne Petersen
+License: LGPL-2+
+
+Files: src/peony-file-management-properties.c
+Copyright: 2002, Jan Arne Petersen
+           2018, Tianjin KYLIN Information Technology Co., Ltd.
+License: LGPL-2+
+
+Files: libpeony-extension/peony-location-widget-provider.h
+       libpeony-private/peony-mime-application-chooser.c
+       libpeony-private/peony-open-with-dialog.c
+Copyright: 2003-2004, Novell, Inc.
+           2005-2007, Red Hat, Inc.
+License: LGPL-2+
+
+Files: libpeony-private/peony-undostack-manager.h
+Copyright: 2007-2010, Amos Brocco
+           2011, Stefano Karapetsas
+License: GPL-2+
+
+Files: libpeony-private/peony-undostack-manager.c
+Copyright: 2007-2010, Amos Brocco
+           2011, Stefano Karapetsas
+		   2018, Tianjin KYLIN Information Technology Co., Ltd.
+License: GPL-2+
+
+Files: libpeony-private/peony-extensions.c
+       libpeony-private/peony-extensions.h
+Copyright: 2014, Alexander van der Meij <alexandervdm@gliese.me>
+License: GPL-2+
+
+Files: src/peony-notebook.c
+       src/peony-notebook.h
+Copyright: 2002, Christophe Fergeau
+           2003-2004, Marco Pesenti Gritti
+           2003-2005, Christian Persch
+           2008, Free Software Foundation, Inc.
+License: GPL-2+
+
+Files: libpeony-private/peony-file-conflict-dialog.c
+       libpeony-private/peony-file-conflict-dialog.h
+       src/peony-connect-server-operation.c
+       src/peony-connect-server-operation.h
+Copyright: 2008-2010, Cosimo Cecchi <cosimoc@gnome.org>
+License: GPL-2+
+
+Files: src/peony-connect-server-dialog.c
+       src/peony-connect-server-dialog.h
+Copyright: 2003, Red Hat, Inc
+           2010, Cosimo Cecchi <cosimoc@gnome.org>
+License: GPL-2+
+
+Files: src/file-manager/fm-directory-view.c
+Copyright: 1999-2000, Free Software Foundation, Inc.
+           2000-2001, Eazel, Inc.
+		   2018, Tianjin KYLIN Information Technology Co., Ltd.
+License: GPL-2+
+
+Files: libpeony-private/peony-file-operations.h
+Copyright: 1999-2000, Free Software Foundation, Inc.
+           2000-2001, Eazel, Inc.
+		   2018, Tianjin KYLIN Information Technology Co., Ltd.
+License: GPL-2+
+
+Files: libpeony-private/peony-directory-background.c
+       libpeony-private/peony-directory-background.h
+Copyright: 2000, Eazel, Inc
+           2012, Jasmine Hassan <jasmine.aura@gmail.com>
+License: GPL-2+
+
+Files: libpeony-private/peony-file-queue.c
+       libpeony-private/peony-file-queue.h
+Copyright: 2001, Maciej Stachowiak
+License: GPL-2+
+
+Files: src/peony-navigation-action.c
+       src/peony-navigation-action.h
+Copyright: 2003, Marco Pesenti Gritti
+           2004, Red Hat, Inc.
+License: GPL-2+
+
+Files: libpeony-private/peony-cell-renderer-text-ellipsized.c
+       libpeony-private/peony-cell-renderer-text-ellipsized.h
+Copyright: 2007, Martin Wehner
+License: GPL-2+
+
+Files: libpeony-private/peony-search-engine-tracker.c
+       libpeony-private/peony-search-engine-tracker.h
+Copyright: 2005, Mr Jamie McCracken
+License: GPL-2+
+
+Files: src/peony-trash-bar.c
+       src/peony-trash-bar.h
+Copyright: 2006, Paolo Borelli <pborelli@katamail.com>
+License: GPL-2+
+
+Files: src/peony-x-content-bar.c
+       src/peony-x-content-bar.h
+Copyright: 2006, Paolo Borelli <pborelli@katamail.com>
+           2008, Red Hat, Inc.
+License: GPL-2+
+
+Files: libpeony-private/peony-tree-view-drag-dest.c
+       libpeony-private/peony-tree-view-drag-dest.h
+Copyright: 2002, Sun Microsystems, Inc.
+License: GPL-2+
+
+Files: eel/eel-accessibility.h
+       src/file-manager/fm-list-model.h
+Copyright: 2001-2002, Anders Carlsson
+License: LGPL-2+
+
+Files: src/file-manager/fm-list-view.h
+Copyright: 2000, Eazel, Inc.
+           2001-2002, Anders Carlsson <andersca@gnu.org>
+License: LGPL-2+
+
+Files: src/file-manager/fm-list-view.c
+Copyright: 2000, Eazel, Inc.
+           2001-2002, Anders Carlsson <andersca@gnu.org>
+		   2018, Tianjin KYLIN Information Technology Co., Ltd.
+License: LGPL-2+
+
+Files: libpeony-private/peony-clipboard.c
+       libpeony-private/peony-clipboard.h
+Copyright: 1999-2000, Free Software Foundaton, Inc.
+           2000-2001, Eazel, Inc
+License: GPL-2+
+
+Files: eel/eel-background.c
+       eel/eel-background.h
+Copyright: 2000, Eazel, Inc.
+           2012, Jasmine Hassan <jasmine.aura@gmail.com>
+License: GPL-2+
+
+Files: src/file-manager/fm-empty-view.c
+       src/file-manager/fm-empty-view.h
+Copyright: 2006, Free Software Foundation, Inc.
+License: LGPL-2+
+
+Files: eel/eel-editable-label.c
+       eel/eel-editable-label.h
+Copyright: 1995-1997, Peter Mattis, Spencer Kimball and Josh MacDonald
+License: LGPL-2+
+
+Files: eel/eel-gtk-container.c
+       eel/eel-gtk-container.h
+Copyright: 2001, Ramiro Estrugo
+License: LGPL-2+
+
+Files: src/file-manager/fm-tree-model.h
+Copyright: 2002, Anders Carlsson
+           2002, Bent Spoon Software
+License: GPL-2+
+
+Files: src/file-manager/fm-tree-model.c
+Copyright: 2002, Anders Carlsson
+           2002, Bent Spoon Software
+           2000-2001, Eazel, Inc.
+License: GPL-2+
+
+Files: src/file-manager/fm-tree-view.c
+Copyright: 2000-2001, Eazel, Inc.
+           2002, Anders Carlsson
+           2002, Darin Adler
+		   2018, Tianjin KYLIN Information Technology Co., Ltd.
+License: GPL-2+
+
+Files: src/file-manager/fm-tree-view.h
+Copyright: 2000-2001, Eazel, Inc.
+           2002, Anders Carlsson
+License: GPL-2+
+
+Files: libpeony-private/peony-file-operations.c
+Copyright: 1999-2000, Free Software Foundation
+           2000-2001, Eazel, Inc.
+           2007, Red Hat, Inc.
+		   2018, Tianjin KYLIN Information Technology Co., Ltd.
+License: GPL-2+
+
+Files: src/file-manager/fm-directory-view.h
+Copyright: 1999-2000, Free Software Foundaton
+  2000-2001, Eazel, Inc
+  2018, Tianjin KYLIN Information Technology Co., Ltd.
+License: GPL-2+
+
+Files: src/peony-image-properties-page.c
+Copyright: 2004, Red Hat, Inc.
+           2007, Novell, Inc.
+License: GPL-2+
+
+Files: src/peony-connect-server-dialog-main.c
+Copyright: 2005, Vincent Untz
+License: GPL-2+
+
+Files: src/peony-side-pane.c
+Copyright: 2002, Ximian Inc
+           2017, Tianjin KYLIN Information Technology Co., Ltd.
+License: GPL-2+
+
+Files: src/file-manager/fm-list-model.c
+Copyright: 2001-2002, Anders Carlsson
+           2003, Soeren Sandmann
+           2004, Novell, Inc
+License: LGPL-2+
+
+Files: eel/eel-accessibility.c
+Copyright: 2002, Anders Carlsson, Sun Microsystems, Inc.
+License: LGPL-2+
+
+Files: cut-n-paste-code/libegg/eggsmclient-xsmp.c
+Copyright: 1998, Carsten Schaar
+           1998, The Open Group
+           2007, Novell, Inc.
+License: LGPL-2+
+
+Files: libpeony-private/peony-icon-container.c
+Copyright: 1999-2000, Free Software Foundation, Inc.
+           2000-2001, Eazel, Inc.
+           2002-2003, Red Hat, Inc.
+           2017, Tianjin KYLIN Information Technology Co., Ltd. 
+License: GPL-2+
+
+Files: libpeony-private/peony-icon-container.h
+       libpeony-private/peony-icon-private.h
+Copyright: 1999-2000, Free Software Foundation, Inc.
+           2000, Eazel, Inc.
+           2017, Tianjin KYLIN Information Technology Co., Ltd.
+License: GPL-2+
+
+Files: src/file-manager/fm-desktop-icon-view.c
+Copyright: 2000-2001, Eazel, Inc.
+           2018, Tianjin KYLIN Information Technology Co., Ltd.
+License: LGPL-2+
+
+Files: cut-n-paste-code/libegg/eggdesktopfile.c
+Copyright: 1999-2000, Red Hat, Inc.
+           2001, George Lebl
+           2007, Novell, Inc.
+License: LGPL-2+
+
+Files: libpeony-extension/peony-menu.h
+Copyright: 2003, Novell, Inc.
+           2005, Raffaele Sandrini
+License: LGPL-2+
+
+Files: libpeony-extension/peony-menu.c
+Copyright: 2005, Raffaele Sandrini
+License: LGPL-2+
+
+Files: libpeony-private/peony-icon-info.c
+Copyright: 2007, Red Hat, Inc., Alexander Larsson <alexl@redhat.com>
+           2018, Tianjin KYLIN Information Technology Co., Ltd.
+License: LGPL-2+
+
+Files: src/peony-pathbar.c
+Copyright: 2004, Red Hat, Inc., Jonathan Blandford <jrb@gnome.org>
+           2017, Tianjin KYLIN Information Technology Co., Ltd.
+License: LGPL-2+
+
+Files: src/peony-pathbar.h
+Copyright: *No copyright*
+License: LGPL-2+
+
+Files: src/peony-freedesktop-dbus.c
+       src/peony-freedesktop-dbus.h
+Copyright: *No copyright*
+License: GPL-2+
+
+Files: libpeony-private/peony-metadata.c
+Copyright: 2009, Red Hat, Inc.
+License: LGPL-2+
+
+Files:  .tx/config
+       cut-n-paste-code/README
+       cut-n-paste-code/libegg/update-from-egg.sh
+       data/icons/*.png
+       data/icons/*.svg
+       data/patterns/*.png
+       data/patterns/*.jpg
+       data/peony.xml.in
+       data/*.css
+       data/*.desktop*
+       data/*.service*
+       data/*.placeholder
+       data/*.xml
+       data/*.xml.in
+       docs/*
+       eel/README
+       eel/check-eel
+       icons/*.svg
+       icons/*.png
+       libpeony-extension/peony-extension-i18n.h
+       libpeony-extension/*.pc.in
+       libpeony-private/README
+       libpeony-private/peony-icon-info.h
+       libpeony-private/peony-icon-names.h
+       libpeony-private/peony-recent.h
+       libpeony-private/*.xml
+       po/LINGUAS
+       po/POTFILES.*
+       src/file-manager/peony-audio-mime-types.h
+       src/file-manager/*.xml
+       src/check-peony
+       src/*.ui
+       src/*.xml
+       src/*.desktop.in
+       test/test-peony-directory-async.c
+       test/test-peony-search-engine.c
+       test/test-peony-wrap-table.c
+       test/test-copy.c
+       test/test-eel-background.c
+       test/test-eel-editable-label.c
+       test/test-eel-image-table.c
+       test/test-eel-labeled-image.c
+       test/test-eel-pixbuf-scale.c
+       test/test.c
+       test/test.h
+       cut-n-paste-code/libegg/Makefile.am
+       cut-n-paste-code/Makefile.am
+       data/icons/Makefile.am
+       data/Makefile.am
+       data/patterns/Makefile.am
+       docs/Makefile.am
+       eel/Makefile.am
+       icons/Makefile.am
+       libpeony-extension/Makefile.am
+       libpeony-private/Makefile.am
+       src/file-manager/Makefile.am
+       src/Makefile.am
+       test/Makefile.am
+       AUTHORS
+       COPYING
+       COPYING.EXTENSIONS
+       COPYING.LIB
+       ChangeLog
+       HACKING
+       Makefile.am
+       Makefile.shared
+       NEWS
+       README
+       autogen.sh
+       configure.ac
+	   libpeony-private/lsdev.c
+	   libpeony-private/lsdev.h
+Copyright: *No copyright*
+License: GPL-2+ or LGPL-2+
+Comment:
+ Appropriately apply licenses as found in COPYING or COPYING.LIBS.
+
+Files: po/*.po
+       po/gnome-copyrights.txt
+Copyright: 1999-2001, Eazel, Inc.
+           1999-2008, Aŭtary Peonya
+           1999-2009, The Nautilus authors
+           2002-2005, Red Hat, Inc.
+           2002-2004, Novell, Inc.
+           2009, Free Software Foundation, Inc.
+           2010, Rosetta Contributors and Canonical Ltd.
+           2011-2013, The Peony authors
+           2017, Tianjin KYLIN Information Technology Co., Ltd.
+License: GPL-2+ or LGPL-2+
+Comment:
+ Assuming either license from COPYING or COPYING.LIB file.
+
+
+Files: debian/*
+Copyright: 2011-2014, Stefano Karapetsas <stefano@karapetsas.com>
+           2014, Mike Gabriel <sunweaver@debian.org>
+           2017, Tianjin KYLIN Information Technology Co., Ltd.
+License: GPL-2+ or LGPL-2+
+
+Files: src/file-manager/mime-utils.c
+       src/file-manager/mime-utils.h
+       src/file-manager/navigation-window-interface.h
+       src/file-manager/office-utils.c
+       src/file-manager/office-utils.h
+       src/file-manager/pdfviewer.c
+       src/file-manager/pdfviewer.h
+       src/file-manager/test-widget.c
+       src/file-manager/test-widget.h
+       src/peony-kdisk-createformat.c
+       src/peony-kdisk-createformat.h
+       src/peony-kdisk-format.c
+       src/peony-kdisk-format.h
+Copyright: 2019, Tianjin KYLIN Information Technology Co., Ltd.
+License: GPL-2+
+
+License: GPL-2+
+ This package is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
+ .
+ This package is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ GNU Genaral Public License for more details.
+ .
+ You should have received a copy og the GNU General Public License
+ along with this program. If not, see <http://www.gnu.org/licenses/>
+ .
+ On Debian systems, the complete text of the GNU General
+ Public License version 2 can be found in "/usr/share/common-licenses/GPL-2".
+
+License: LGPL-2+
+ This library is free software; you can redistribute it and/or
+ modify it under the terms of the GNU Library General Public
+ License as published by the Free Software Foundation; either
+ version 2 of the License, or (at your option) any later version.
+ .
+ This library is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ Library General Public License for more details.
+ .
+ You should have received a copy of the GNU Library General Public
+ License along with this library. If not, see <http://www.gnu.org/licenses/>
+ .
+ On Debian systems, the complete text of the GNU Library General
+ Public License version 2 can be found in "/usr/share/common-licenses/LGPL-2".
