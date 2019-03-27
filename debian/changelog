@@ -1,3 +1,15 @@
+peony (1.1.6-1) unstable; urgency=medium
+
+  * Add file path to the address bar that can click.
+  * Add drag directories to favorites and delete favorites directories function.
+  * Add folder image and set location button size.
+  * Resolve computer,recent,trash is English in addressbar.
+  * Add search entry delete function.
+  * Modify sidebar, statusbar, locationbar style.
+  * Resolve trash restore files error.
+
+ -- handsome_feng <jianfengli@ubuntukylin.com>  Wed, 27 Mar 2019 08:53:59 +0800
+
 peony (1.1.5-1) unstable; urgency=medium
 
   * Add the function of preview files.
