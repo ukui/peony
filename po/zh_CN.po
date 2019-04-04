@@ -5703,7 +5703,7 @@ msgstr "创建属性窗口。"
 msgid "Select Custom Icon"
 msgstr "选择自定义图标"
 
-#: ../src/file-manager/fm-tree-view.c:1440 ../src/peony-places-sidebar.c:669
+#: ../src/file-manager/fm-tree-view.c:1440 ../src/peony-places-sidebar.c:669 ../src/peony-location-bar.c:1465
 msgid "File System"
 msgstr "文件系统"
 

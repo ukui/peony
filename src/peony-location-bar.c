@@ -1460,71 +1460,81 @@ peony_location_bar_set_location (PeonyLocationBar *bar,
 					bar->details->backseparator = separator;
 					bar->details->folder_image = folder_image;
 				}
-				
-				pStartBack = g_strdup(pStart);
-				pStartBackPtr = pStartBack;
-				while(NULL != (pFind = strtok_r(pStart,"/",&pTemp)))
-				{
-					char *pUrl = NULL;
-					char *uri = NULL;
+				if (!strcmp(pStart,"/")){
 					char *pFind_new = NULL;
-					GFile *locationFile = NULL;
-
-					if(FALSE == bFirst)
-					{
-						separator = gtk_separator_new(GTK_ORIENTATION_VERTICAL);
-//						gtk_box_pack_start (GTK_BOX (hboxinter), separator, FALSE, TRUE, 0);
-					}
-					if(!strcmp(pFind,"recent:")){
-						pFind_new=_("recent");
-					}
-					if(!strcmp(pFind,"trash:")){
-						pFind_new=_("trash");
-					}
-					if(!strcmp(pFind,"computer:")){
-						pFind_new=_("computer");
-					}
-					if(!strcmp(pFind,"x-peony-search:")){
-						pFind_new=_("search:");
-					}
-					if (pFind_new != NULL){
-						button = gtk_button_new_with_label(pFind_new);
-					} else{
-						button = gtk_button_new_with_label(pFind);
-					}
+					pFind_new=_("File System");
+					button = gtk_button_new_with_label(pFind_new);
 					context = gtk_widget_get_style_context(button);
 					gtk_style_context_add_class(context,"location_button_list");
 					gtk_button_set_relief(button,GTK_RELIEF_NONE);
-
-					pLocationTemp = strstr(pStartBackPtr,pFind);
-					if(NULL == pLocationTemp)
-					{
-						pLocationTemp = pStartBackPtr;
-					}
-					pLocationTemp += strlen(pFind);
-					pUrl = g_strndup(pStartBack,pLocationTemp-pStartBack);
-					locationFile = g_file_parse_name (pUrl);
-				    uri = g_file_get_uri (locationFile);
-					g_object_unref (locationFile);
-					g_free(pUrl);
-					pStartBackPtr = pLocationTemp;
-					
-					if (!strcmp(uri,"x-peony-search:///")){
-						gtk_widget_set_sensitive (button,FALSE);
-					}
-					g_object_set_data_full (G_OBJECT (button),
-											"location-addr",
-											uri, g_free);
-					g_signal_connect (button, "button-press-event",
-									  G_CALLBACK (peony_location_button_pressed_callback), NULL);
 					gtk_box_pack_start (GTK_BOX (hboxinter), button, FALSE, TRUE, 0);
-
-					bFirst = FALSE;
-					pStart = NULL;
 				}
-				g_free (formatted_location);
-				g_free (real_location);
-				g_free (pStartBack);
+				else {
+					pStartBack = g_strdup(pStart);
+					pStartBackPtr = pStartBack;
+					while(NULL != (pFind = strtok_r(pStart,"/",&pTemp)))
+					{
+						char *pUrl = NULL;
+						char *uri = NULL;
+						char *pFind_new = NULL;
+						GFile *locationFile = NULL;
+
+						if(FALSE == bFirst)
+						{
+							separator = gtk_separator_new(GTK_ORIENTATION_VERTICAL);
+//							gtk_box_pack_start (GTK_BOX (hboxinter), separator, FALSE, TRUE, 0);
+						}
+						if(!strcmp(pFind,"recent:")){
+							pFind_new=_("recent");
+						}
+						if(!strcmp(pFind,"trash:")){
+							pFind_new=_("trash");
+						}
+						if(!strcmp(pFind,"computer:")){
+							pFind_new=_("computer");
+						}
+						if(!strcmp(pFind,"x-peony-search:")){
+							pFind_new=_("search:");
+						}
+						if (pFind_new != NULL){
+							button = gtk_button_new_with_label(pFind_new);
+						} else{
+							button = gtk_button_new_with_label(pFind);
+						}
+						context = gtk_widget_get_style_context(button);
+						gtk_style_context_add_class(context,"location_button_list");
+						gtk_button_set_relief(button,GTK_RELIEF_NONE);
+
+						pLocationTemp = strstr(pStartBackPtr,pFind);
+						if(NULL == pLocationTemp)
+						{
+							pLocationTemp = pStartBackPtr;
+						}
+						pLocationTemp += strlen(pFind);
+						pUrl = g_strndup(pStartBack,pLocationTemp-pStartBack);
+						locationFile = g_file_parse_name (pUrl);
+						uri = g_file_get_uri (locationFile);
+						g_object_unref (locationFile);
+						g_free(pUrl);
+						pStartBackPtr = pLocationTemp;
+					
+						if (!strcmp(uri,"x-peony-search:///")){
+							gtk_widget_set_sensitive (button,FALSE);
+						}
+						g_object_set_data_full (G_OBJECT (button),
+									"location-addr",
+									uri, g_free);
+						g_signal_connect (button, "button-press-event",
+								  G_CALLBACK (peony_location_button_pressed_callback), NULL);
+						gtk_box_pack_start (GTK_BOX (hboxinter), button, FALSE, TRUE, 0);
+
+						bFirst = FALSE;
+						pStart = NULL;
+					}
+					g_free (formatted_location);
+					g_free (real_location);
+					g_free (pStartBack);
+				}
 			}
 			g_object_unref (file);
 		}
