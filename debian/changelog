@@ -1,4 +1,4 @@
-peony (1.1.5.1-1) experimental; urgency=medium
+peony (1.1.5.1-0ubuntu1) disco; urgency=medium
 
   * Bugfix-only:
     - Fix the bug that failed to restore a file from trash.
