@@ -1,0 +1,198 @@
+Source: peony-extensions
+Section: x11
+Priority: optional
+Maintainer: Kylin Team <pkg-kylin-devel@lists.alioth.debian.org>
+Uploaders: handsome_feng <jianfengli@ubuntukylin.com>,
+Build-Depends: debhelper (>= 11),
+               dpkg-dev (>= 1.16.1.1),
+               cmake,
+               gettext,
+               intltool,
+               libpeony-extension-dev (>= 1.0.4),
+               libdbus-1-dev,
+               libdbus-glib-1-dev,
+               libdconf-dev,
+               libglib2.0-dev,
+               libgtk-3-dev,
+               libjson-glib-dev,
+               libmagic-dev,
+               libgupnp-1.0-dev,
+               libmate-desktop-dev (>= 1.18),
+               libstartup-notification0-dev,
+               mate-common (>= 1.18),
+               pkg-config,
+               yelp-tools,
+Standards-Version: 4.2.1
+Homepage: http://www.ukui.org/
+Vcs-Git: https://github.com/ukui/peony-extensions.git
+Vcs-Browser: https://github.com/ukui/peony-extensions
+
+Package: peony-admin
+Architecture: all
+Depends: ${misc:Depends},
+         python-gi,
+         gir1.2-gtk-3.0,
+         peony,
+         policykit-1,
+         python-caja,
+Recommends: pluma,
+            mate-terminal,
+Description: Add administrative actions to Peony's right-click menu
+ Peony Admin is a simple Python extension for the Peony file manager that
+ adds some administrative actions to the right-click menu:
+ .
+   - Open as Administrator: opens a folder in a new Peony window running
+     with administrator (root) privileges.
+   - Edit as Administrator: opens a file in a Pluma window running with
+     administrator (root) privileges.
+   - Run as Administrator: runs an executable file with administrator
+     (root) privileges inside a MATE Terminal.
+
+Package: peony-image-converter
+Architecture: any
+Depends: peony-extensions-common (= ${source:Version}),
+         imagemagick,
+         ${misc:Depends},
+         ${shlibs:Depends},
+Description: Peony extension to mass resize or rotate images
+ Peony is the official file manager for the UKUI desktop. This
+ package adds extended functionality to the Peony file manager.
+ .
+ This package adds a "Resize Images..." menu item to the context menu of
+ all images. This opens a dialog where you set the desired image size
+ and file name. A click on "Resize" finally resizes the image(s) using
+ ImageMagick's convert tool.
+
+Package: peony-open-terminal
+Architecture: any
+Depends: peony-extensions-common (= ${source:Version}),
+         ${misc:Depends},
+         ${shlibs:Depends},
+Description: Peony plugin for opening terminals in arbitrary local paths
+ Peony is the official file manager for the UKUI desktop. This
+ package adds extended functionality to the Peony file manager.
+ .
+ peony-open-terminal is a proof-of-concept Peony extension
+ which allows you to open a terminal in arbitrary local folders.
+
+Package: peony-sendto
+Architecture: any
+Depends: peony-extensions-common (= ${source:Version}),
+         ${misc:Depends},
+         ${shlibs:Depends},
+Suggests: pidgin (>= 2.0.0) | gajim,
+          python-dbus,
+          thunderbird | icedove | evolution (>= 2.28) | claws-mail,
+Description: integrates email clients and Pidgin into the Peony file manager
+ Peony is the official file manager for the UKUI desktop. This
+ package adds extended functionality to the Peony file manager.
+ .
+ The Peony Send To extension provides the Peony file manager with a context
+ menu component for quickly sending files to given email addresses, contacts
+ on a Pidgin or Gajim instant messaging list, through Thunderbird/Icedove,
+ or through Claws Mail.
+ .
+ Peony Send To also provides the option of compressing the files (tar.bz2,
+ tar.gz, or zip) before sending.
+
+Package: peony-share
+Architecture: any
+Depends: peony-extensions-common (= ${source:Version}),
+         samba-common-bin,
+         ${misc:Depends},
+         ${shlibs:Depends},
+Description: Allows one to quickly share a folder from the Peony file manager
+ Peony is the official file manager for the UKUI desktop. This
+ package adds extended functionality to the Peony file manager.
+ .
+ The Peony share extension allows you to quickly share a folder from the
+ Peony file manager without requiring root access. It uses Samba, so your
+ folders can be accessed by any operating system.
+
+Package: peony-wallpaper
+Architecture: any
+Depends: peony-extensions-common (= ${source:Version}),
+         ${misc:Depends},
+         ${shlibs:Depends},
+Description: Allows one to quickly set a wallpaper from folders
+ Peony is the official file manager for the UKUI desktop. This
+ package adds extended functionality to the Peony file manager.
+ .
+ Peony Wallpaper allows you to quickly set a wallpaper directly from
+ file browser folders.
+
+Package: peony-xattr-tags
+Architecture: any
+Depends: peony-extensions-common (= ${source:Version}),
+         ${misc:Depends},
+         ${shlibs:Depends},
+Description: Allows one to view extended attributes
+ Peony is the official file manager for the UKUI desktop. This
+ package adds extended functionality to the Peony file manager.
+ .
+ Peony xattr tags extension allows you to view file and folder
+ extended attributes.
+
+Package: peony-extensions-common
+Architecture: all
+Depends: ${misc:Depends},
+Description: Peony extensions (common files)
+ Peony is the official file manager for the UKUI desktop. This
+ package adds extended functionality to the Peony file manager.
+ .
+ This package contains the architecture independent files for
+ various available Peony extensions.
+
+Package: parchives
+Architecture: any
+Depends: bzip2 (>= 1.0.1),
+         peony-common,
+         peony-extensions-common (= ${source:Version}),
+         gzip (>= 1.3.2),
+         p7zip-full,
+         tar (>= 1.13.25),
+         ${misc:Depends},
+         ${shlibs:Depends},
+Recommends: gvfs,
+            unzip,
+            xz-utils,
+            zip,
+Suggests: arj,
+          binutils,
+          cpio,
+          lha,
+          lzip,
+          lzma,
+          lzop,
+          ncompress,
+          rar,
+          rpm2cpio,
+          rzip,
+          sharutils,
+          unace,
+          unalz,
+          unrar-free | unar | unrar | p7zip-rar,
+          zoo,
+Description: archive manager for UKUI
+ Parchives is an archive manager for the UKUI environment. It allows you to:
+ .
+  * Create and modify archives.
+  * View the content of an archive.
+  * View a file contained in an archive.
+  * Extract files from the archive.
+ .
+ Parchives supports the following formats:
+  * Tar (.tar) archives, including those compressed with
+    gzip (.tar.gz, .tgz), bzip (.tar.bz, .tbz), bzip2 (.tar.bz2, .tbz2),
+    compress (.tar.Z, .taz), lzip (.tar.lz, .tlz), lzop (.tar.lzo, .tzo),
+    lzma (.tar.lzma) and xz (.tar.xz)
+  * Zip archives (.zip)
+  * Jar archives (.jar, .ear, .war)
+  * 7z archives (.7z)
+  * iso9660 CD images (.iso)
+  * Lha archives (.lzh)
+  * Single files compressed with gzip (.gz), bzip (.bz), bzip2 (.bz2),
+    compress (.Z), lzip (.lz), lzop (.lzo), lzma (.lzma) and xz (.xz)
+ .
+ Parchives doesn't perform archive operations by itself, but relies on
+ standard tools for this.

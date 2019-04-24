@@ -1,0 +1,13 @@
+usr/share/peony-python/extensions/peony-admin.py
+usr/share/polkit-1/actions/org.freedesktop.peony-admin.policy
+debian/tmp/usr/local/share/locale/lt/LC_MESSAGES/peony-admin.mo usr/share/locale/lt/LC_MESSAGES/
+debian/tmp/usr/local/share/locale/fr/LC_MESSAGES/peony-admin.mo usr/share/locale/fr/LC_MESSAGES/
+debian/tmp/usr/local/share/locale/sk/LC_MESSAGES/peony-admin.mo usr/share/locale/sk/LC_MESSAGES/
+debian/tmp/usr/local/share/locale/ru/LC_MESSAGES/peony-admin.mo usr/share/locale/ru/LC_MESSAGES/
+debian/tmp/usr/local/share/locale/zh_CN/LC_MESSAGES/peony-admin.mo usr/share/locale/zh_CN/LC_MESSAGES/
+debian/tmp/usr/local/share/locale/pl/LC_MESSAGES/peony-admin.mo usr/share/locale/pl/LC_MESSAGES/
+debian/tmp/usr/local/share/locale/ar/LC_MESSAGES/peony-admin.mo usr/share/locale/ar/LC_MESSAGES/
+debian/tmp/usr/local/share/locale/pt/LC_MESSAGES/peony-admin.mo usr/share/locale/pt/LC_MESSAGES/
+debian/tmp/usr/local/share/locale/de/LC_MESSAGES/peony-admin.mo usr/share/locale/de/LC_MESSAGES/
+debian/tmp/usr/local/share/locale/es/LC_MESSAGES/peony-admin.mo usr/share/locale/es/LC_MESSAGES/
+debian/tmp/usr/local/share/locale/it/LC_MESSAGES/peony-admin.mo usr/share/locale/it/LC_MESSAGES/

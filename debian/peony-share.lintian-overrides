@@ -1,0 +1,3 @@
+# peony extensions in /usr/lib/*/peony/extensions-2.0/ erroneously trigger
+# debhelper's makeshlibs script
+peony-share: postinst-has-useless-call-to-ldconfig

@@ -1,0 +1,12 @@
+usr/bin/parchives
+usr/lib/parchives/
+usr/lib/*/peony/extensions-2.0/libpeony-parchives.so
+usr/share/applications/
+usr/share/metainfo/
+usr/share/peony/extensions/libpeony-parchives.peony-extension
+usr/share/dbus-1/
+usr/share/parchives/
+usr/share/glib-2.0/schemas/org.mate.parchives.gschema.xml
+usr/share/help/
+usr/share/icons/
+usr/share/man/man1/parchives.*
