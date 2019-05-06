@@ -2518,35 +2518,6 @@ fm_directory_view_display_selection_info (FMDirectoryView *view)
 void
 fm_directory_view_send_selection_change (FMDirectoryView *view)
 {
-	//printf ("report_selection_changed\n");
-	PeonyWindowInfo *window_info = PEONY_WINDOW_INFO(fm_directory_view_get_containing_window (view));
-	GList *selection;
-    GList* l = fm_directory_view_get_selection(view);
-    
-    if(l){
-        //printf("FMDirectory view: selection changed\n");
-        PeonyFile *file;
-        file = l->data;
-        //char* uri = peony_file_get_uri(file);
-        char* filename = g_filename_from_uri(peony_file_get_uri(file),NULL,NULL);
-        
-        if(filename){
-			//printf("%s\n",filename);
-            g_signal_emit_by_name (window_info,
-                         "preview_file",(gpointer)filename);
-            free(filename);
-        } else {
-            filename = "null";
-            g_signal_emit_by_name (window_info,
-                         "preview_file",(gpointer)filename);
-        }
-        g_list_free(l);
-    }   else  {
-        char* filename = "null";
-        g_signal_emit_by_name (window_info,
-                     "preview_file",(gpointer)filename);
-    }
-    
 	peony_window_info_report_selection_changed (view->details->window);
 
 	view->details->send_selection_change_to_shell = FALSE;

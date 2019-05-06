@@ -91,7 +91,7 @@ static void mouse_forward_button_changed	     (gpointer                  callbac
 static void use_extra_mouse_buttons_changed          (gpointer                  callback_data);
 static PeonyWindowSlot *create_extra_pane         (PeonyNavigationWindow *window);
 
-static void preview_file_changed_callback(PeonyWindowInfo *window_info, gpointer data);
+static void preview_file_changed_callback(PeonyWindowInfo *window_info);
 static void office_format_trans_ready_callback(PeonyWindowInfo *window_info, gpointer data);
 static void show_pdf_file_callback(PeonyWindowInfo *window_info, gpointer data);
 static void real_image_search_callback (PeonyWindowInfo *window, gpointer data);
@@ -770,8 +770,7 @@ peony_navigation_window_button_press_event (GtkWidget *widget,
 static void
 peony_navigation_window_destroy (GtkWidget *object)
 {
-    char* filename;
-    g_signal_handlers_disconnect_by_func(PEONY_WINDOW_INFO (object), G_CALLBACK (preview_file_changed_callback), filename);
+    g_signal_handlers_disconnect_by_func(PEONY_WINDOW_INFO (object), G_CALLBACK (preview_file_changed_callback), NULL);
     g_signal_handlers_disconnect_by_func(PEONY_WINDOW_INFO (object), G_CALLBACK (office_format_trans_ready_callback), NULL);
     g_signal_handlers_disconnect_by_func(PEONY_WINDOW_INFO (object), G_CALLBACK (show_pdf_file_callback), NULL);
 
@@ -1575,7 +1574,7 @@ static void office_format_trans_ready_callback(PeonyWindowInfo *window_info, gpo
 
 }
 
-static void preview_file_changed_callback(PeonyWindowInfo *window_info, gpointer data){
+static void preview_file_changed_callback(PeonyWindowInfo *window_info){
 
     if (peony_window_info_get_window_type (window_info) != PEONY_WINDOW_NAVIGATION){
         //printf ("is not navigation\n");
@@ -1588,7 +1587,21 @@ static void preview_file_changed_callback(PeonyWindowInfo *window_info, gpointer
         return;
     }
 
-    if((char*)data == "null"){
+    char *data = NULL;
+
+	printf ("preview file changed callback\n");
+	GList *files = peony_window_info_get_selection (window_info);
+	if (files) {
+		GFile *file = files->data;
+		char* name = g_file_get_path (file);
+		if (name) {
+			printf ("selection: %s\n", name);
+			data = name;
+		}
+        g_list_free_full (files, g_object_unref);
+	}
+
+    if(data == NULL){
         //printf ("null\n\n\n");
         gtk_label_set_label(window->details->hint_view, _("Select the file you want to preview"));
 	    gtk_widget_show_all(window->details->empty_window);
@@ -1686,7 +1699,7 @@ static void preview_file_changed_callback(PeonyWindowInfo *window_info, gpointer
 	    gtk_widget_hide (window->details->test_widget);
         gtk_widget_hide (window->details->web_swindow);
     }
-
+    g_free (data);
 }
 
 static gboolean do_not_show_right_click_menu_callback (WebKitWebView *web_view) {
@@ -1753,12 +1766,10 @@ last:
     gtk_widget_hide (window->details->test_widget);
     gtk_widget_hide (window->details->pdf_swindow);
     gtk_widget_hide (window->details->web_swindow);
-    
-    char* preview_filename; 
 
     g_signal_connect (PEONY_WINDOW_INFO(window),
-                          "preview_file",
-                          G_CALLBACK (preview_file_changed_callback), preview_filename
+                          "selection_changed",
+                          G_CALLBACK (preview_file_changed_callback), NULL
                           );
 
     g_signal_connect (PEONY_WINDOW_INFO(window),
@@ -1778,8 +1789,7 @@ void
 peony_navigation_window_split_view_off (PeonyNavigationWindow *window)
 {
     gtk_widget_hide (window->details->preview_hbox);
-    char *data;
-    g_signal_handlers_disconnect_by_func(PEONY_WINDOW_INFO(window),G_CALLBACK(preview_file_changed_callback),data);
+    g_signal_handlers_disconnect_by_func(PEONY_WINDOW_INFO(window),G_CALLBACK(preview_file_changed_callback), NULL);
     g_signal_handlers_disconnect_by_func(PEONY_WINDOW_INFO(window),G_CALLBACK(office_format_trans_ready_callback),NULL);
     g_signal_handlers_disconnect_by_func(PEONY_WINDOW_INFO(window),G_CALLBACK(show_pdf_file_callback),NULL);
 
