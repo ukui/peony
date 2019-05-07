@@ -1783,6 +1783,8 @@ last:
                           );
 
     window->details->is_split_view_showing = TRUE;
+
+    g_signal_emit_by_name (PEONY_WINDOW_INFO (window), "selection_changed");
 }
 
 void
