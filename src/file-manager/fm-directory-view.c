@@ -6718,20 +6718,20 @@ real_action_redo (FMDirectoryView *view)
 real_action_rename (FMDirectoryView *view,
 		    gboolean select_all)
 {
-	/* FIXME: renaming in list view has risk that lead program crash (#1827994).
-	 * it seems that if we expand and close expand a directory, rename fuction
-	 * will also be triggered. but for some reason the file uri get failed. maybe 
-	 * we should not trigger the rename when a directory expanding.
-	 */
-	if (FM_IS_LIST_VIEW (view)) {
-		return;
-	}
 	PeonyFile *file;
 	GList *selection;
 
 	g_assert (FM_IS_DIRECTORY_VIEW (view));
 
 	selection = fm_directory_view_get_selection (view);
+	if (!selection) {
+		/*
+		 * this judgement is intend to avoid Bug#1827994, which lead
+		 * program crash. expand/close expand will not real start 
+		 * renaming a file. no selection and no file, so just return.
+		 */
+		return;
+	}
 
 	if (fm_directory_view_can_rename_file(view, selection->data) && selection_not_empty_in_menu_callback (view, selection)) {
 		file = PEONY_FILE (selection->data);
