@@ -4279,9 +4279,8 @@ msgstr "为每个选中的项目创建快捷方式"
 #. name, stock id
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:7638
-#, fuzzy
 msgid "Send to desktop _Shortcut"
-msgstr "发送到桌面快捷方式(_K)"
+msgstr "发送到桌面快捷方式(_S)"
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:7639
