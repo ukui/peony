@@ -1089,25 +1089,21 @@ msgstr "另一個鏈結至 %s"
 #. * particular language.
 #.
 #: ../libpeony-private/peony-file-operations.c:429
-#, fuzzy, c-format
 msgid "%s %'dst link to"
 msgstr "第 %'d 個連至 %s 的鏈結"
 
 #. appended to new link file
 #: ../libpeony-private/peony-file-operations.c:433
-#, fuzzy, c-format
 msgid "%s %'dnd link to"
 msgstr "第 %'d 個連至 %s 的鏈結"
 
 #. appended to new link file
 #: ../libpeony-private/peony-file-operations.c:437
-#, fuzzy, c-format
 msgid "%s %'drd link to"
 msgstr "第 %'d 個連至 %s 的鏈結"
 
 #. appended to new link file
 #: ../libpeony-private/peony-file-operations.c:441
-#, fuzzy, c-format
 msgid "%s %'dth link to"
 msgstr "第 %'d 個連至 %s 的鏈結"
 
@@ -1254,12 +1250,10 @@ msgid_plural ""
 msgstr[0] "確定要永久刪除 %'d 個已選項目？"
 
 #: ../libpeony-private/peony-file-operations.c:1465
-#, fuzzy
 msgid "Are you sure you want to trash \"%B\"?"
 msgstr "確定要將「%B」永久地刪除嗎？"
 
 #: ../libpeony-private/peony-file-operations.c:1468
-#, fuzzy, c-format
 msgid "Are you sure you want to trash the %'d selected item?"
 msgid_plural "Are you sure you want to trash the %'d selected items?"
 msgstr[0] "確定要永久刪除 %'d 個已選項目？"
@@ -1269,7 +1263,6 @@ msgid "Items moved to the trash may be recovered until the trash is emptied."
 msgstr ""
 
 #: ../libpeony-private/peony-file-operations.c:1480
-#, fuzzy
 msgid "Move to _Trash"
 msgstr "丟進回收筒(_V)"
 
@@ -2436,7 +2429,6 @@ msgstr "正在準備"
 #: ../libpeony-private/peony-query.c:140
 #: ../src/file-manager/fm-directory-view.c:7622
 #: ../src/file-manager/fm-directory-view.c:7623
-#, fuzzy, c-format
 msgid "Find duplicate file"
 msgstr "復原 %d 個項目的重製(_U)"
 
@@ -2874,12 +2866,10 @@ msgid ""
 msgstr "如設定為‘true’，Peony 會在您嘗試刪除檔案或清空回收筒時先進行確認。"
 
 #: ../libpeony-private/org.ukui.peony.gschema.xml.h:13
-#, fuzzy
 msgid "Whether to ask for confirmation when moving files to the Trash"
 msgstr "刪除檔案或清空回收筒時是否需要確認"
 
 #: ../libpeony-private/org.ukui.peony.gschema.xml.h:14
-#, fuzzy
 msgid ""
 "If set to true, then Peony will ask for confirmation when you attempt to "
 "move files to the Trash."
@@ -3735,7 +3725,6 @@ msgstr ""
 
 #. tooltip
 #: ../src/file-manager/fm-desktop-icon-view.c:927
-#, fuzzy
 msgid "Show a window that lets you set the screen resolution"
 msgstr "顯示一個可設定桌面背景胚騰或顏色的視窗"
 
@@ -4303,11 +4292,10 @@ msgstr "為所有選定的項目建立鏈結"
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:7638
 msgid "Send to desktop _Shortcut"
-msgstr ""
+msgstr "建立桌面鏈結"
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:7639
-#, fuzzy
 msgid "Send to desktop shortcut for each selected item"
 msgstr "為所有選定的項目建立鏈結"
 
@@ -4382,7 +4370,6 @@ msgstr "清空最近使用記錄"
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:7672
-#, fuzzy
 msgid "E_mpty Recent use"
 msgstr "清空最近使用記錄"
 
@@ -4395,7 +4382,6 @@ msgstr "刪除使用記錄"
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:7676
-#, fuzzy
 msgid "D_elete Recent use"
 msgstr "刪除使用記錄"
 
@@ -5816,7 +5802,6 @@ msgid "Quit Peony."
 msgstr "離開 Peony。"
 
 #: ../src/peony-application.c:2127
-#, fuzzy
 msgid "Display Attr."
 msgstr "顯示"
 
@@ -6351,7 +6336,6 @@ msgid "Ask before _emptying the Trash or deleting files"
 msgstr "清理回收筒或刪除檔案前會先詢問(_E)"
 
 #: ../src/peony-file-management-properties.ui.h:67
-#, fuzzy
 msgid "Ask before moving files to the _Trash"
 msgstr "移動檔案至回收筒時發生錯誤。"
 
@@ -6971,7 +6955,6 @@ msgid "Show Notes"
 msgstr "顯示備忘"
 
 #: ../src/peony-places-sidebar.c:534
-#, fuzzy
 msgid "Favorite"
 msgstr "寫入"
 
@@ -6984,7 +6967,6 @@ msgid "Open the trash"
 msgstr "開啟回收筒"
 
 #: ../src/peony-places-sidebar.c:572
-#, fuzzy
 msgid "Recent"
 msgstr "清空最近使用記錄"
 
@@ -6997,7 +6979,6 @@ msgid "Personal"
 msgstr ""
 
 #: ../src/peony-places-sidebar.c:661
-#, fuzzy
 msgid "My Computer"
 msgstr "電腦"
 
@@ -7325,7 +7306,6 @@ msgid "_Search for:"
 msgstr "搜尋字串(_S):"
 
 #: ../src/peony-query-editor.c:1170
-#, fuzzy
 msgid "Find results"
 msgstr "搜尋結果"
 
@@ -7506,7 +7486,6 @@ msgid ""
 msgstr "Peony 讓您組織檔案和資料夾，不管是在您的電腦或是在網路上。"
 
 #: ../src/peony-window-menus.c:541
-#, fuzzy
 msgid ""
 "Copyright © 1999-2009 The Nautilus authors\n"
 "Copyright © 2011-2016 The Caja authors\n"
