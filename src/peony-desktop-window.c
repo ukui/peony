@@ -37,6 +37,8 @@
 #include <gio/gio.h>
 #include <glib/gi18n.h>    
 
+#include <libpeony-private/peony-global-preferences.h>
+
 struct PeonyDesktopWindowDetails
 {
     gulong size_changed_id;
@@ -47,6 +49,14 @@ struct PeonyDesktopWindowDetails
 G_DEFINE_TYPE (PeonyDesktopWindow, peony_desktop_window,
                PEONY_TYPE_SPATIAL_WINDOW);
 
+
+static void peony_preferences_desktop_is_home_changed_cb
+(PeonyWindow *window)
+{
+    g_return_if_fail (PEONY_IS_WINDOW (window));
+
+    peony_window_reload (window);
+}
 
 static void
 peony_desktop_window_init (PeonyDesktopWindow *window)
@@ -86,6 +96,9 @@ peony_desktop_window_init (PeonyDesktopWindow *window)
 								    if (accessible) {
 									            atk_object_set_name (accessible, _("Desktop"));
 										        }
+
+    peony_global_preferences_init ();
+    g_signal_connect_swapped (peony_preferences, "changed::desktop-is-home-dir", G_CALLBACK (peony_preferences_desktop_is_home_changed_cb), window);
 }
 
 static gint
