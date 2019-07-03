@@ -1438,6 +1438,7 @@ peony_location_bar_set_location (PeonyLocationBar *bar,
 					peony_file_unref (peony_file);
 					g_object_unref (icon_info);
 					folder_image = gtk_image_new_from_icon_name(icon_name, GTK_ICON_SIZE_MENU);
+					gtk_widget_set_size_request (GTK_WIDGET (folder_image), -1, 42);
 					
 					//folder_image = gtk_image_new_from_icon_name("folder",GTK_ICON_SIZE_MENU);
 					context = gtk_widget_get_style_context(folder_image);
