@@ -7,7 +7,8 @@ HEADERS += $$PWD/peony-core_global.h \
            $$PWD/file-enumerator.h \
            $$PWD/mount-operation.h \
            $$PWD/file-watcher.h \
-           $$PWD/connect-server-dialog.h
+           $$PWD/connect-server-dialog.h \
+    $$PWD/volume-manager.h
 
 SOURCES += $$PWD/file-info.cpp \
            $$PWD/file-info-job.cpp \
@@ -15,6 +16,7 @@ SOURCES += $$PWD/file-info.cpp \
            $$PWD/file-enumerator.cpp \
            $$PWD/mount-operation.cpp \
            $$PWD/file-watcher.cpp \
-           $$PWD/connect-server-dialog.cpp
+           $$PWD/connect-server-dialog.cpp \
+    $$PWD/volume-manager.cpp
 
 FORMS += $$PWD/connect-server-dialog.ui

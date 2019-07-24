@@ -11,6 +11,8 @@
 
 #include "file-watcher.h"
 
+#include "volume-manager.h"
+
 #include <QDebug>
 
 TestWidget::TestWidget(QWidget *parent) : QWidget(parent)
@@ -113,4 +115,13 @@ TestWidget::TestWidget(QWidget *parent) : QWidget(parent)
         qDebug()<<uri<<"was deleted";
     });
     watcher->startMonitor();
+
+    Peony::VolumeManager *volumeManager = Peony::VolumeManager::getInstance();
+    /*
+    connect(volumeManager, &Peony::VolumeManager::driveConnected, [=](GDrive *drive){
+        char *name = g_drive_get_name(drive);
+        qDebug()<<"drive conneceted"<<name;
+        g_free(name);
+    });
+    */
 }
