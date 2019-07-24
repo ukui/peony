@@ -1,20 +1,20 @@
 #-------------------------------------------------
 #
-# Project created by QtCreator 2019-07-20T10:23:11
+# Project created by QtCreator 2019-07-24T10:27:31
 #
 #-------------------------------------------------
 
+TARGET = test
+TEMPLATE = app
+
 QT       += core widgets gui
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += printsupport
-
-TARGET = peony-qt-core
-TEMPLATE = lib
+TARGET = peony-qt-core-test
+TEMPLATE = app
 
 CONFIG += link_pkgconfig no_keywords c++11
 PKGCONFIG += glib-2.0 gio-2.0
-
-DEFINES += PEONYCORE_LIBRARY
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which has been marked as deprecated (the exact warnings
@@ -27,12 +27,8 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
-include(peony-core.pri)
+include(../peony-core.pri)
 
-unix {
-    target.path = $$QT_INSTALL_LIBS
-    INSTALLS += target
-}
+SOURCES += testwidget.cpp main.cpp
 
-FORMS += \
-    connect-server-dialog.ui
+HEADERS += testwidget.h
