@@ -164,7 +164,14 @@ void FileInfoJob::refreshInfoContents()
     const gchar* const* icon_names = g_themed_icon_get_names(G_THEMED_ICON (g_icon));
     if (icon_names)
         info->m_icon_name = QString (*icon_names);
+    g_object_unref(g_icon);
     //qDebug()<<m_display_name<<m_icon_name;
+    GIcon *g_symbolic_icon = g_file_info_get_symbolic_icon (info->m_file_info);
+    const gchar* const* symbolic_icon_names = g_themed_icon_get_names(G_THEMED_ICON (g_symbolic_icon));
+    if (symbolic_icon_names)
+        info->m_symbolic_icon_name = QString (*symbolic_icon_names);
+    g_object_unref(g_symbolic_icon);
+
     info->m_file_id = g_file_info_get_attribute_string(info->m_file_info, G_FILE_ATTRIBUTE_ID_FILE);
 
     info->m_content_type = g_file_info_get_content_type (info->m_file_info);

@@ -40,7 +40,9 @@ public:
 
     QString displayName() {return m_display_name;}
     QString iconName() {return m_icon_name;}
+    QString symbolicIconName() {return m_symbolic_icon_name;}
     QString fileID() {return m_file_id;}
+    QString fileType() {return m_file_type;}
 
     QString fileSize() {return m_file_size;}
     QString modifiedDate() {return m_modified_date;}
@@ -61,6 +63,7 @@ private:
 
     QString m_display_name = nullptr;
     QString m_icon_name = nullptr;
+    QString m_symbolic_icon_name = nullptr;
     QString m_file_id = nullptr;
 
     QString m_content_type = nullptr;

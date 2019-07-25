@@ -17,6 +17,7 @@ MountOperation::MountOperation(QString uri, QObject *parent) : QObject(parent)
 
 MountOperation::~MountOperation()
 {
+    disconnect();
     //g_object_disconnect (G_OBJECT (m_op), "any_signal::signal_name", nullptr);
     g_signal_handlers_disconnect_by_func(m_op, (void *)G_CALLBACK(ask_password_cb), nullptr);
     g_signal_handlers_disconnect_by_func(m_op, (void *)G_CALLBACK(ask_question_cb), nullptr);

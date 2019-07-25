@@ -31,6 +31,7 @@ FileWatcher::FileWatcher(QString uri, QObject *parent) : QObject(parent)
 
 FileWatcher::~FileWatcher()
 {
+    disconnect();
     //qDebug()<<"~FileWatcher";
     stopMonitor();
     cancel();

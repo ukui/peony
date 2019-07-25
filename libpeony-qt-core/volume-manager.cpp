@@ -43,6 +43,8 @@ VolumeManager::VolumeManager(QObject *parent) : QObject(parent)
 
 VolumeManager::~VolumeManager()
 {
+    disconnect();
+
     g_signal_handler_disconnect(m_volume_monitor, m_drive_connected_handle);
     g_signal_handler_disconnect(m_volume_monitor, m_drive_disconnected_handle);
     g_signal_handler_disconnect(m_volume_monitor, m_volume_added_handle);

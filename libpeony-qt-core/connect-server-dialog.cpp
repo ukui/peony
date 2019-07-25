@@ -35,6 +35,7 @@ ConnectServerDialog::ConnectServerDialog(QWidget *parent) :
 
 ConnectServerDialog::~ConnectServerDialog()
 {
+    disconnect();
     delete ui;
 }
 
