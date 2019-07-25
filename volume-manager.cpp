@@ -1,5 +1,7 @@
 #include "volume-manager.h"
 
+#include <QDebug>
+
 using namespace Peony;
 
 static VolumeManager *m_global_manager = nullptr;
@@ -64,7 +66,8 @@ void VolumeManager::drive_connected_callback(GVolumeMonitor *monitor,
                                              VolumeManager *p_this)
 {
     Q_UNUSED(monitor);
-    //Q_EMIT p_this->driveConnected(drive);
+    auto data = std::make_shared<Drive>(drive);
+    Q_EMIT p_this->driveConnected(data);
 }
 
 void VolumeManager::drive_disconnected_callback(GVolumeMonitor *monitor,
@@ -72,7 +75,7 @@ void VolumeManager::drive_disconnected_callback(GVolumeMonitor *monitor,
                                                 VolumeManager *p_this)
 {
     Q_UNUSED(monitor);
-    //Q_EMIT p_this->driveDisconnected(drive);
+    Q_EMIT p_this->driveDisconnected(std::make_shared<Drive>(drive));
 }
 
 void VolumeManager::volume_added_callback(GVolumeMonitor *monitor,
@@ -80,7 +83,7 @@ void VolumeManager::volume_added_callback(GVolumeMonitor *monitor,
                                           VolumeManager *p_this)
 {
     Q_UNUSED(monitor);
-    Q_EMIT p_this->volumeAdded(volume);
+    Q_EMIT p_this->volumeAdded(std::make_shared<Volume>(volume));
 }
 
 void VolumeManager::volume_removed_callback(GVolumeMonitor *monitor,
@@ -88,7 +91,7 @@ void VolumeManager::volume_removed_callback(GVolumeMonitor *monitor,
                                             VolumeManager *p_this)
 {
     Q_UNUSED(monitor);
-    Q_EMIT p_this->volumeRemoved(volume);
+    Q_EMIT p_this->volumeRemoved(std::make_shared<Volume>(volume));
 }
 
 void VolumeManager::mount_added_callback(GVolumeMonitor *monitor,
@@ -96,7 +99,7 @@ void VolumeManager::mount_added_callback(GVolumeMonitor *monitor,
                                          VolumeManager *p_this)
 {
     Q_UNUSED(monitor);
-    Q_EMIT p_this->mountAdded(mount);
+    Q_EMIT p_this->mountAdded(std::make_shared<Mount>(mount));
 }
 
 void VolumeManager::mount_removed_callback(GVolumeMonitor *monitor,
@@ -104,5 +107,5 @@ void VolumeManager::mount_removed_callback(GVolumeMonitor *monitor,
                                            VolumeManager *p_this)
 {
     Q_UNUSED(monitor);
-    Q_EMIT p_this->mountRemoved(mount);
+    Q_EMIT p_this->mountRemoved(std::make_shared<Mount>(mount));
 }

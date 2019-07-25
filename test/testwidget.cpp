@@ -117,11 +117,30 @@ TestWidget::TestWidget(QWidget *parent) : QWidget(parent)
     watcher->startMonitor();
 
     Peony::VolumeManager *volumeManager = Peony::VolumeManager::getInstance();
-    /*
-    connect(volumeManager, &Peony::VolumeManager::driveConnected, [=](GDrive *drive){
-        char *name = g_drive_get_name(drive);
+
+    connect(volumeManager, &Peony::VolumeManager::driveConnected, [=](std::shared_ptr<Peony::Drive> drive){
+        auto name = drive->name();
         qDebug()<<"drive conneceted"<<name;
-        g_free(name);
     });
-    */
+    connect(volumeManager, &Peony::VolumeManager::driveDisconnected, [=](std::shared_ptr<Peony::Drive> drive){
+        auto name = drive->name();
+        qDebug()<<"drive disconneceted"<<name;
+    });
+    connect(volumeManager, &Peony::VolumeManager::volumeAdded, [=](std::shared_ptr<Peony::Volume> volume){
+        auto name = volume->name();
+        qDebug()<<"volume added"<<name;
+    });
+    connect(volumeManager, &Peony::VolumeManager::volumeRemoved, [=](std::shared_ptr<Peony::Volume> volume){
+        auto name = volume->name();
+        qDebug()<<"volume removed"<<name;
+    });
+    connect(volumeManager, &Peony::VolumeManager::mountAdded, [=](std::shared_ptr<Peony::Mount> mount){
+        auto name = mount->name();
+        qDebug()<<"mount added"<<name;
+    });
+    connect(volumeManager, &Peony::VolumeManager::mountRemoved, [=](std::shared_ptr<Peony::Mount> mount){
+        auto name = mount->name();
+        qDebug()<<"mount removed"<<name;
+    });
+
 }
