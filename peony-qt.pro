@@ -1,2 +1,2 @@
 TEMPLATE = subdirs
-SUBDIRS = src plugin libpeony-qt-core #plugin-iface
+SUBDIRS = src plugin libpeony-qt-core libpeony-qt-core/test #plugin-iface
