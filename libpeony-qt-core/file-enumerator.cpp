@@ -21,6 +21,7 @@ FileEnumerator::FileEnumerator(QObject *parent) : QObject(parent)
     m_cancellable = g_cancellable_new();
 
     m_children = g_list_alloc();
+    m_errs = g_list_alloc();
 }
 
 /*!
@@ -265,7 +266,6 @@ GAsyncReadyCallback FileEnumerator::mount_mountable_callback(GFile *file,
     GFile *target = g_file_mount_mountable_finish(file, res, &err);
     if (err && err->code != 0) {
         qDebug()<<err->code<<err->message;
-        p_this->handleError(err);
         //I might use smart pointer for handling these err,
         //now they are managed by enumerator.
         p_this->m_errs = g_list_prepend(p_this->m_errs, err);

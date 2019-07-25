@@ -24,9 +24,7 @@ public:
                       QObject *parent = nullptr);
     ~FileItem();
 
-    bool operator == (const FileItem &item){
-        return this->m_info == item.m_info;
-    }
+    bool operator == (const FileItem &item);
 
     QVector<FileItem*> *findChildrenSync();
     void findChildrenAsync();

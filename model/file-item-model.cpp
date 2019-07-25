@@ -56,8 +56,11 @@ QModelIndex FileItemModel::firstColumnIndex(FileItem *item)
     //root children
     if (!item->m_parent) {
         for (int i = 0; i < m_root_item->m_children->count(); i++) {
-            if (item == m_root_item->m_children->at(i))
+            //qDebug()<<i<<item->m_info->uri()<<m_root_item->m_children->at(i)->m_info->uri();
+            if (item == m_root_item->m_children->at(i)) {
+                //qDebug()<<i<<item->m_info->uri();
                 return createIndex(i, 0, item);
+            }
         }
         return QModelIndex();
     } else {
