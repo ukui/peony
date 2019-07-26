@@ -13,6 +13,8 @@
 
 #include "volume-manager.h"
 
+#include "gerror-wrapper.h"
+
 #include <QDebug>
 
 TestWidget::TestWidget(QWidget *parent) : QWidget(parent)
@@ -59,10 +61,10 @@ TestWidget::TestWidget(QWidget *parent) : QWidget(parent)
     //enumerator->setEnumerateDirectory("file:///root");
     enumerator->setEnumerateDirectory("file:///");
     enumerator->prepare();
-    connect(enumerator/*.get()*/, &Peony::FileEnumerator::prepared, [=](GError *prepared_err){
+    connect(enumerator/*.get()*/, &Peony::FileEnumerator::prepared, [=](std::shared_ptr<Peony::GErrorWrapper> prepared_err){
         qDebug()<<"prepared";
         if (prepared_err) {
-            qDebug()<<prepared_err->code<<prepared_err->message;
+            qDebug()<<prepared_err->code()<<prepared_err->message();
         }
 
         //sync enumerate

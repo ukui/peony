@@ -13,6 +13,17 @@ class FileInfo;
 class FileInfoManager;
 class FileItemModel;
 
+/*!
+ * \brief The FileItem class
+ * <br>
+ * FileItem is the absctract item class contract with FileItemModel.
+ * The different from FileInfo to FileItem is that FileItem has concept of children and parent.
+ * This makes FileItem instance can represent an item in model.
+ * </br>
+ * \note
+ * Actually, every FileItem instance should bind with an model instance,
+ * otherwise it will be useless.
+ */
 class FileItem : public QObject
 {
     friend class FileItemModel;

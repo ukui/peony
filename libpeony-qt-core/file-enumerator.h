@@ -10,6 +10,7 @@
 namespace Peony {
 
 class FileInfo;
+class GErrorWrapper;
 
 /*!
  * \brief The FileEnumerator class
@@ -68,7 +69,7 @@ Q_SIGNALS:
      * </br>
      * \see prepare().
      */
-    void prepared(GError *err = nullptr);
+    void prepared(const std::shared_ptr<Peony::GErrorWrapper> &err = nullptr);
     /*!
      * \brief childrenUpdated
      * \param uriList, uri list of newly enumerated files.
@@ -187,6 +188,7 @@ private:
     GList *m_children = nullptr;
     /*!
      * \brief m_errs, a cached list of GError handle when some error happend when enumerating.
+     * \deprecated
      */
     GList *m_errs = nullptr;
 };

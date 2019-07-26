@@ -100,7 +100,7 @@ int FileItemModel::rowCount(const QModelIndex &parent) const
 QVariant FileItemModel::data(const QModelIndex &index, int role) const
 {
     FileItem *item = static_cast<FileItem*>(index.internalPointer());
-    qDebug()<<item->m_info->uri();
+    //qDebug()<<item->m_info->uri();
     switch (index.column()) {
     case FileName:{
         switch (role) {
@@ -117,6 +117,12 @@ QVariant FileItemModel::data(const QModelIndex &index, int role) const
     case FileSize:{
         switch (role) {
         case Qt::DisplayRole:{
+            if (item->hasChildren()) {
+                if (item->m_expanded) {
+                    return QVariant(QString::number(item->m_children->count()) + tr("child(ren)"));
+                }
+                return QVariant();
+            }
             return QVariant(item->m_info->fileSize());
         }
         default:

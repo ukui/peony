@@ -5,6 +5,8 @@
 
 #include "file-item-model.h"
 
+#include "gerror-wrapper.h"
+
 #include <QDebug>
 
 using namespace Peony;
@@ -29,7 +31,7 @@ FileItem::~FileItem()
 
 bool FileItem::operator==(const FileItem &item)
 {
-    qDebug()<<m_info->uri()<<item.m_info->uri();
+    //qDebug()<<m_info->uri()<<item.m_info->uri();
     return this->m_info->uri() == item.m_info->uri();
 }
 
@@ -53,9 +55,9 @@ void FileItem::findChildrenAsync()
 {
     Peony::FileEnumerator *enumerator = new Peony::FileEnumerator;
     enumerator->setEnumerateDirectory(m_info->uri());
-    enumerator->connect(enumerator, &FileEnumerator::prepared, [=](GError *err){
+    enumerator->connect(enumerator, &FileEnumerator::prepared, [=](std::shared_ptr<GErrorWrapper> err){
         if (err) {
-            qDebug()<<err->message;
+            qDebug()<<err->message();
         }
         enumerator->enumerateAsync();
     });

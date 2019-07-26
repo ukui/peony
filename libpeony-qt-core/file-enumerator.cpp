@@ -4,6 +4,8 @@
 
 #include "mount-operation.h"
 
+#include "gerror-wrapper.h"
+
 #include <QList>
 
 #include <QDebug>
@@ -21,7 +23,7 @@ FileEnumerator::FileEnumerator(QObject *parent) : QObject(parent)
     m_cancellable = g_cancellable_new();
 
     m_children = g_list_alloc();
-    m_errs = g_list_alloc();
+    //m_errs = g_list_alloc();
 }
 
 /*!
@@ -53,7 +55,7 @@ FileEnumerator::~FileEnumerator()
     }
 
     g_list_free_full(m_children, g_object_unref);
-    g_list_free_full(m_errs, GDestroyNotify(g_error_free));
+    //g_list_free_full(m_errs, GDestroyNotify(g_error_free));
 }
 
 void FileEnumerator::setEnumerateDirectory(QString uri)
@@ -266,14 +268,15 @@ GAsyncReadyCallback FileEnumerator::mount_mountable_callback(GFile *file,
     GFile *target = g_file_mount_mountable_finish(file, res, &err);
     if (err && err->code != 0) {
         qDebug()<<err->code<<err->message;
-        //I might use smart pointer for handling these err,
-        //now they are managed by enumerator.
-        p_this->m_errs = g_list_prepend(p_this->m_errs, err);
+        auto err_data = GErrorWrapper::wrapFrom(err);
+        Q_EMIT p_this->prepared(err_data);
+    } else {
+        Q_EMIT p_this->prepared(nullptr);
     }
     if (target) {
         g_object_unref(target);
     }
-    Q_EMIT p_this->prepared(err);
+
 
     return nullptr;
 }
@@ -287,15 +290,13 @@ GAsyncReadyCallback FileEnumerator::mount_enclosing_volume_callback(GFile *file,
     if (g_file_mount_enclosing_volume_finish (file, res, &err)) {
         if (err) {
             qDebug()<<"mount successed, err:"<<err->code<<err->message;
-            Q_EMIT p_this->prepared(err);
-            p_this->m_errs = g_list_prepend(p_this->m_errs, err);
+            Q_EMIT p_this->prepared(GErrorWrapper::wrapFrom(err));
         } else {
             Q_EMIT p_this->prepared();
         }
     } else {
         if (err) {
             qDebug()<<"mount failed, err:"<<err->code<<err->message;
-            p_this->m_errs = g_list_prepend(p_this->m_errs, err);
             //show the connect dialog
             char *uri = g_file_get_uri(file);
             MountOperation *op = new MountOperation(uri);
@@ -305,7 +306,7 @@ GAsyncReadyCallback FileEnumerator::mount_enclosing_volume_callback(GFile *file,
                 if (finished_err) {
                     qDebug()<<"finished err:"<<finished_err->code<<finished_err->message;
                 }
-                Q_EMIT p_this->prepared(finished_err);
+                Q_EMIT p_this->prepared(GErrorWrapper::wrapFrom(finished_err));
             });
             op->start();
         }

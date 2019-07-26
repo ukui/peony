@@ -178,12 +178,13 @@ void FileInfoJob::refreshInfoContents()
     info->m_size = g_file_info_get_attribute_uint64(info->m_file_info, G_FILE_ATTRIBUTE_STANDARD_SIZE);
     info->m_modified_time = g_file_info_get_attribute_uint64(info->m_file_info, G_FILE_ATTRIBUTE_TIME_MODIFIED);
 
-    char *content_type = g_content_type_get_description (g_file_info_get_content_type (info->m_file_info));
+    const char *content_type_str = g_file_info_get_content_type (info->m_file_info);
+    char *content_type = g_content_type_get_description (content_type_str);
     info->m_file_type = content_type;
     g_free (content_type);
     content_type = nullptr;
 
-    info->m_file_size = g_format_size_full(info->m_size, G_FORMAT_SIZE_LONG_FORMAT);
+    info->m_file_size = g_format_size_full(info->m_size, G_FORMAT_SIZE_DEFAULT);
 
     QDateTime date = QDateTime::fromMSecsSinceEpoch(info->m_modified_time*1000);
     info->m_modified_date = date.toString(Qt::SystemLocaleShortDate);
