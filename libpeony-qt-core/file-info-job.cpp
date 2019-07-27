@@ -91,16 +91,17 @@ GAsyncReadyCallback FileInfoJob::query_info_async_callback(GFile *file, GAsyncRe
 
     GError *err = nullptr;
 
-    auto _info = g_file_query_info_finish(file,
-                                          res,
-                                          &err);
+    GFileInfo *_info = g_file_query_info_finish(file,
+                                                res,
+                                                &err);
 
-    if (_info && !err) {
+    if (_info) {
         thisJob->refreshInfoContents(_info);
         Q_EMIT thisJob->queryAsyncFinished(true);
+        //FIXME: how to avoid gobject critical warning?
         g_object_unref(_info);
     }
-    else if (err) {
+    else {
         qDebug()<<err->code<<err->message;
         g_error_free(err);
         Q_EMIT thisJob->queryAsyncFinished(false);
