@@ -73,6 +73,27 @@ QModelIndex FileItemModel::firstColumnIndex(FileItem *item)
     }
 }
 
+QModelIndex FileItemModel::lastColumnIndex(FileItem *item)
+{
+    if (!item->m_parent) {
+        for (int i = 0; i < m_root_item->m_children->count(); i++) {
+            //qDebug()<<i<<item->m_info->uri()<<m_root_item->m_children->at(i)->m_info->uri();
+            if (item == m_root_item->m_children->at(i)) {
+                //qDebug()<<i<<item->m_info->uri();
+                return createIndex(i, Other, item);
+            }
+        }
+        return QModelIndex();
+    } else {
+        //has parent item
+        for (int i = 0; i < item->m_parent->m_children->count(); i++) {
+            if (item == item->m_parent->m_children->at(i))
+                return createIndex(i, Other, item);
+        }
+        return QModelIndex();
+    }
+}
+
 QModelIndex FileItemModel::parent(const QModelIndex &child) const
 {
     FileItem *childItem = static_cast<FileItem*>(child.internalPointer());
@@ -187,10 +208,12 @@ Qt::ItemFlags FileItemModel::flags(const QModelIndex &index) const
 
 bool FileItemModel::canFetchMore(const QModelIndex &parent) const
 {
+    //qDebug()<<"canFetchMore";
     if (!parent.isValid())
         return true;
     FileItem *parent_item = static_cast<FileItem*>(parent.internalPointer());
     if (parent_item->hasChildren() && (parent_item->m_children->count() == 0) && !parent_item->m_expanded) {
+        //qDebug()<<"findChildrenAsync";
         parent_item->findChildrenAsync();
         parent_item->m_expanded = true;
         return true;

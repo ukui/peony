@@ -37,6 +37,7 @@ FileItem::~FileItem()
     for (auto child : *m_children) {
         delete child;
     }
+
     delete m_children;
 }
 
@@ -96,37 +97,37 @@ void FileItem::findChildrenAsync()
                     m_model->endInsertRows();
                 });
                 job->queryAsync();
-
-                //TODO:add monitor after enumerating.
-                m_watcher = new FileWatcher(this->m_info->uri());
-                connect(m_watcher, &FileWatcher::fileCreated, [=](QString uri){
-                    //add new item to m_children
-                    //tell the model update
-                    this->onChildAdded(uri);
-                    Q_EMIT this->childAdded(uri);
-                });
-                connect(m_watcher, &FileWatcher::fileDeleted, [=](QString uri){
-                    //remove the crosponding child
-                    //tell the model update
-                    this->onChildRemoved(uri);
-                    Q_EMIT this->childRemoved(uri);
-                });
-                connect(m_watcher, &FileWatcher::directoryDeleted, [=](QString uri){
-                    //clean all the children, if item index is root index, cd up.
-                    //this might use FileItemModel::setRootItem()
-                    this->onDeleted(uri);
-                    Q_EMIT this->deleted(uri);
-                });
-                connect(m_watcher, &FileWatcher::locationChanged, [=](QString oldUri, QString newUri){
-                    //this might use FileItemModel::setRootItem()
-                    this->onRenamed(oldUri, newUri);
-                    Q_EMIT this->renamed(oldUri, newUri);
-                });
-                m_watcher->startMonitor();
             }
         }
         enumerator->disconnect();
         enumerator->deleteLater();
+
+        m_watcher = new FileWatcher(this->m_info->uri());
+        connect(m_watcher, &FileWatcher::fileCreated, [=](QString uri){
+            //add new item to m_children
+            //tell the model update
+            this->onChildAdded(uri);
+            Q_EMIT this->childAdded(uri);
+        });
+        connect(m_watcher, &FileWatcher::fileDeleted, [=](QString uri){
+            //remove the crosponding child
+            //tell the model update
+            this->onChildRemoved(uri);
+            Q_EMIT this->childRemoved(uri);
+        });
+        connect(m_watcher, &FileWatcher::directoryDeleted, [=](QString uri){
+            //clean all the children, if item index is root index, cd up.
+            //this might use FileItemModel::setRootItem()
+            this->onDeleted(uri);
+            Q_EMIT this->deleted(uri);
+        });
+        connect(m_watcher, &FileWatcher::locationChanged, [=](QString oldUri, QString newUri){
+            //this might use FileItemModel::setRootItem()
+            this->onRenamed(oldUri, newUri);
+            Q_EMIT this->renamed(oldUri, newUri);
+        });
+        //qDebug()<<"startMonitor";
+        m_watcher->startMonitor();
     });
 
     enumerator->prepare();
@@ -135,6 +136,11 @@ void FileItem::findChildrenAsync()
 QModelIndex FileItem::firstColumnIndex()
 {
     return m_model->firstColumnIndex(this);
+}
+
+QModelIndex FileItem::lastColumnIndex()
+{
+    return m_model->lastColumnIndex(this);
 }
 
 bool FileItem::hasChildren()
@@ -163,6 +169,7 @@ void FileItem::onChildAdded(const QString &uri)
     m_model->beginInsertRows(this->firstColumnIndex(), 0, 0);
     m_children->append(newChild);
     m_model->endInsertRows();
+    newChild->updateInfoAsync();
 }
 
 void FileItem::onChildRemoved(const QString &uri)
@@ -173,6 +180,8 @@ void FileItem::onChildRemoved(const QString &uri)
         m_children->removeOne(child);
         m_model->endRemoveRows();
     }
+    child->disconnect();
+    child->deleteLater();
 }
 
 void FileItem::onDeleted(const QString &thisUri)
@@ -195,4 +204,28 @@ void FileItem::onRenamed(const QString &oldUri, const QString &newUri)
         FileItem *newRootItem = new FileItem(FileInfo::fromUri(newUri), nullptr, m_model);
         m_model->setRootItem(newRootItem);
     }
+}
+
+void FileItem::updateInfoSync()
+{
+    qDebug()<<m_info->uri();
+    FileInfoJob *job = new FileInfoJob(m_info);
+    if (job->querySync()) {
+        m_model->beginInsertRows(this->firstColumnIndex(), 0, 0);
+        m_model->endInsertRows();
+    }
+    job->deleteLater();
+}
+
+void FileItem::updateInfoAsync()
+{
+    FileInfoJob *job = new FileInfoJob(m_info);
+    job->setAutoDelete();
+    job->connect(job, &FileInfoJob::queryAsyncFinished, [=](bool successed){
+        if (successed) {
+            //qDebug()<<"update";
+            m_model->dataChanged(this->firstColumnIndex(), this->lastColumnIndex());
+        }
+    });
+    job->queryAsync();
 }

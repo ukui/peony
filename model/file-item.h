@@ -40,12 +40,16 @@ public:
                       QObject *parent = nullptr);
     ~FileItem();
 
+    void updateInfoSync();
+    void updateInfoAsync();
+
     bool operator == (const FileItem &item);
 
     QVector<FileItem*> *findChildrenSync();
     void findChildrenAsync();
 
     QModelIndex firstColumnIndex();
+    QModelIndex lastColumnIndex();
 
     bool hasChildren();
 

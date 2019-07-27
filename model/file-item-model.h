@@ -27,6 +27,7 @@ public:
     void setRootItem(FileItem *item);
     FileItem *itemFromIndex(const QModelIndex &index);
     QModelIndex firstColumnIndex(FileItem *item);
+    QModelIndex lastColumnIndex(FileItem *item);
 
 Q_SIGNALS:
     void foundChildren(const QModelIndex &parent);
