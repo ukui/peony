@@ -9,6 +9,8 @@
 #include "file-item-model.h"
 #include <QTreeView>
 
+#include <QTimer>
+
 #include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent)
@@ -26,11 +28,17 @@ MainWindow::MainWindow(QWidget *parent)
         v->setModel(model);
         model->setParent(v);
 
-        model->setParent(this);
+        //model->setParent(this);
         v->show();
         //this->layout()->removeWidget(line);
         //line->deleteLater();
         //this->layout()->addWidget(v);
+        /*
+        QTimer::singleShot(3000, [=](){
+            v->hide();
+            v->deleteLater();
+        });
+        */
 
         connect(v, &QTreeView::destroyed, [=](){
             qDebug()<<"view destroyed";

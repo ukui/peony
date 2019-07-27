@@ -43,7 +43,7 @@ FileEnumerator::FileEnumerator(QObject *parent) : QObject(parent)
 FileEnumerator::~FileEnumerator()
 {
     disconnect();
-    qDebug()<<"~FileEnumerator";
+    //qDebug()<<"~FileEnumerator";
     g_object_unref(m_root_file);
     g_object_unref(m_cancellable);
 

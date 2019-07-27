@@ -24,6 +24,7 @@ FileItem::FileItem(std::shared_ptr<Peony::FileInfo> info, FileItem *parentItem, 
 
 FileItem::~FileItem()
 {
+    //qDebug()<<"~FileItem"<<m_info->uri();
     disconnect();
     if (m_info.use_count() <= 2) {
         Peony::FileInfoManager::getInstance()->remove(m_info);
@@ -32,6 +33,9 @@ FileItem::~FileItem()
         m_watcher->stopMonitor();
         m_watcher->disconnect();
         delete m_watcher;
+    }
+    for (auto child : *m_children) {
+        delete child;
     }
     delete m_children;
 }
