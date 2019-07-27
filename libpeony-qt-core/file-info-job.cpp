@@ -98,6 +98,11 @@ GAsyncReadyCallback FileInfoJob::query_info_async_callback(GFile *file, GAsyncRe
         return nullptr;
     }
 
+    //FIXME: when open a same directory, it will lead program crashed.
+    //It seems that g_object_unref cause a segmentation false.
+    //may be do not use shared info data from different items
+    //will avoid this problem, but I don't want to change my desgin.
+    //may be add a mutex will solve this problem.
     GError *err = nullptr;
     if (info->m_file_info)
         g_object_unref(info->m_file_info);
