@@ -7,6 +7,16 @@ namespace Peony {
 
 class FileItem;
 
+/*!
+ * \brief The FileItemModel class
+ * <br>
+ * FileItemModel is the model of FileItem. For now, this class doesn't hold and
+ * manage the data. This class is just supply the common interface to
+ * QAbstractItemView based classes. FileItem must bind to a model instance, so
+ * that it could tell the view how to show its or its children's data through
+ * the model.
+ * </br>
+ */
 class FileItemModel : public QAbstractItemModel
 {
     enum ColumnType {
@@ -24,9 +34,37 @@ public:
     explicit FileItemModel(QObject *parent = nullptr);
     ~FileItemModel() override;
 
+    /*!
+     * \brief setRootItem
+     * \param item, the directory should be shown in view.
+     * <br>
+     * once setRootItem() is called, the current root and it children will be delete,
+     * it will start a new enumerating and monitoring for new item.
+     * </br>
+     */
     void setRootItem(FileItem *item);
+    /*!
+     * \brief itemFromIndex
+     * \param index
+     * \return
+     * \retval the item instance of index at model.
+     */
     FileItem *itemFromIndex(const QModelIndex &index);
+    /*!
+     * \brief firstColumnIndex
+     * \param item
+     * \return
+     * \retval the first column index(FileName) which crosponding this item.
+     * \note Every index's internal data at same row is the same item.
+     */
     QModelIndex firstColumnIndex(FileItem *item);
+    /*!
+     * \brief lastColumnIndex
+     * \param item
+     * \return
+     * \retval the last column index which crosponding this item.
+     * \note Every index's internal data at same row is the same item.
+     */
     QModelIndex lastColumnIndex(FileItem *item);
 
 Q_SIGNALS:
@@ -60,8 +98,8 @@ protected:
      * \retval false
      * <br>
      * QAbstractItemModel provide a lazy populate interface.
-     * canFetchMore() is happening in tree view. If a parent index has children,
-     * hasChildren() should return true. then tree view will set this parent index expandable.
+     * canFetchMore() is most happening in tree view. If a parent index has children,
+     * hasChildren() should return true. Then tree view will set this parent index expandable.
      * if we expand the item, canFetchMore() will be called. we can dynamicly load our data after
      * set this method return true. After loading finished, we must set this method return fasle,
      * for telling the view data loading is done.
