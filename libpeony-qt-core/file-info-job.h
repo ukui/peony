@@ -70,7 +70,7 @@ protected:
 
 private:
     ~FileInfoJob();
-    void refreshInfoContents();
+    void refreshInfoContents(GFileInfo *new_info);
     std::shared_ptr<FileInfo> m_info;
     GCancellable *m_cancellble = nullptr;
     bool m_auto_delete = false;

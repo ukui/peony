@@ -63,14 +63,12 @@ bool FileInfoJob::querySync()
         return false;
     }
     GError *err = nullptr;
-    if (info->m_file_info) {
-        g_object_unref(info->m_file_info);
-    }
-    info->m_file_info = g_file_query_info(info->m_file,
-                                          "standard::*," G_FILE_ATTRIBUTE_TIME_MODIFIED G_FILE_ATTRIBUTE_ID_FILE,
-                                          G_FILE_QUERY_INFO_NONE,
-                                          nullptr,
-                                          &err);
+
+    auto _info = g_file_query_info(info->m_file,
+                                   "standard::*," G_FILE_ATTRIBUTE_TIME_MODIFIED G_FILE_ATTRIBUTE_ID_FILE,
+                                   G_FILE_QUERY_INFO_NONE,
+                                   nullptr,
+                                   &err);
 
     if (err) {
         qDebug()<<err->code<<err->message;
@@ -80,7 +78,8 @@ bool FileInfoJob::querySync()
         return false;
     }
 
-    refreshInfoContents();
+    refreshInfoContents(_info);
+    g_object_unref(_info);
     if (m_auto_delete)
         deleteLater();
     return true;
@@ -88,36 +87,26 @@ bool FileInfoJob::querySync()
 
 GAsyncReadyCallback FileInfoJob::query_info_async_callback(GFile *file, GAsyncResult *res, FileInfoJob *thisJob)
 {
-    FileInfo *info = nullptr;
-    std::weak_ptr<FileInfo> wk = thisJob->m_info;
+    //qDebug()<<"query_info_async_callback"<<thisJob->m_info->uri();
 
-    if (wk.lock()) {
-        info = wk.lock().get();
-    } else {
-        Q_EMIT thisJob->queryAsyncFinished(false);
-        return nullptr;
-    }
-
-    //FIXME: when open a same directory, it will lead program crashed.
-    //It seems that g_object_unref cause a segmentation false.
-    //may be do not use shared info data from different items
-    //will avoid this problem, but I don't want to change my desgin.
-    //may be add a mutex will solve this problem.
     GError *err = nullptr;
-    if (info->m_file_info)
-        g_object_unref(info->m_file_info);
-    info->m_file_info = g_file_query_info_finish(file,
-                                                 res,
-                                                 &err);
-    if (err) {
+
+    auto _info = g_file_query_info_finish(file,
+                                          res,
+                                          &err);
+
+    if (_info && !err) {
+        thisJob->refreshInfoContents(_info);
+        Q_EMIT thisJob->queryAsyncFinished(true);
+        g_object_unref(_info);
+    }
+    else if (err) {
         qDebug()<<err->code<<err->message;
         g_error_free(err);
         Q_EMIT thisJob->queryAsyncFinished(false);
         return nullptr;
     }
 
-    thisJob->refreshInfoContents();
-    Q_EMIT thisJob->queryAsyncFinished(true);
     return nullptr;
 }
 
@@ -143,15 +132,16 @@ void FileInfoJob::queryAsync()
         connect(this, &FileInfoJob::queryAsyncFinished, this, &FileInfoJob::deleteLater, Qt::QueuedConnection);
 }
 
-void FileInfoJob::refreshInfoContents()
+void FileInfoJob::refreshInfoContents(GFileInfo *new_info)
 {
+    m_info->m_mutex.lock();
     FileInfo *info = nullptr;
     if (auto data = m_info) {
         info = data.get();
     } else {
         return;
     }
-    GFileType type = g_file_info_get_file_type (info->m_file_info);
+    GFileType type = g_file_info_get_file_type (new_info);
     switch (type) {
     case G_FILE_TYPE_DIRECTORY:
         //qDebug()<<"dir";
@@ -164,26 +154,26 @@ void FileInfoJob::refreshInfoContents()
     default:
         break;
     }
-    info->m_display_name = QString (g_file_info_get_display_name(info->m_file_info));
-    GIcon *g_icon = g_file_info_get_icon (info->m_file_info);
+    info->m_display_name = QString (g_file_info_get_display_name(new_info));
+    GIcon *g_icon = g_file_info_get_icon (new_info);
     const gchar* const* icon_names = g_themed_icon_get_names(G_THEMED_ICON (g_icon));
     if (icon_names)
         info->m_icon_name = QString (*icon_names);
     g_object_unref(g_icon);
     //qDebug()<<m_display_name<<m_icon_name;
-    GIcon *g_symbolic_icon = g_file_info_get_symbolic_icon (info->m_file_info);
+    GIcon *g_symbolic_icon = g_file_info_get_symbolic_icon (new_info);
     const gchar* const* symbolic_icon_names = g_themed_icon_get_names(G_THEMED_ICON (g_symbolic_icon));
     if (symbolic_icon_names)
         info->m_symbolic_icon_name = QString (*symbolic_icon_names);
     g_object_unref(g_symbolic_icon);
 
-    info->m_file_id = g_file_info_get_attribute_string(info->m_file_info, G_FILE_ATTRIBUTE_ID_FILE);
+    info->m_file_id = g_file_info_get_attribute_string(new_info, G_FILE_ATTRIBUTE_ID_FILE);
 
-    info->m_content_type = g_file_info_get_content_type (info->m_file_info);
-    info->m_size = g_file_info_get_attribute_uint64(info->m_file_info, G_FILE_ATTRIBUTE_STANDARD_SIZE);
-    info->m_modified_time = g_file_info_get_attribute_uint64(info->m_file_info, G_FILE_ATTRIBUTE_TIME_MODIFIED);
+    info->m_content_type = g_file_info_get_content_type (new_info);
+    info->m_size = g_file_info_get_attribute_uint64(new_info, G_FILE_ATTRIBUTE_STANDARD_SIZE);
+    info->m_modified_time = g_file_info_get_attribute_uint64(new_info, G_FILE_ATTRIBUTE_TIME_MODIFIED);
 
-    const char *content_type_str = g_file_info_get_content_type (info->m_file_info);
+    const char *content_type_str = g_file_info_get_content_type (new_info);
     char *content_type = g_content_type_get_description (content_type_str);
     info->m_file_type = content_type;
     g_free (content_type);
@@ -195,4 +185,5 @@ void FileInfoJob::refreshInfoContents()
     info->m_modified_date = date.toString(Qt::SystemLocaleShortDate);
 
     Q_EMIT info->updated();
+    m_info->m_mutex.unlock();
 }
