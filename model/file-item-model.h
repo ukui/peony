@@ -6,6 +6,7 @@
 namespace Peony {
 
 class FileItem;
+class FileItemProxyFilterSortModel;
 
 /*!
  * \brief The FileItemModel class
@@ -29,6 +30,7 @@ class FileItemModel : public QAbstractItemModel
     };
 
     friend class FileItem;
+    friend class FileItemProxyFilterSortModel;
     Q_OBJECT
 public:
     explicit FileItemModel(QObject *parent = nullptr);

@@ -13,6 +13,7 @@ class FileInfo;
 class FileInfoManager;
 class FileItemModel;
 class FileWatcher;
+class FileItemProxyFilterSortModel;
 
 /*!
  * \brief The FileItem class
@@ -33,6 +34,7 @@ class FileWatcher;
  */
 class FileItem : public QObject
 {
+    friend class FileItemProxyFilterSortModel;
     friend class FileItemModel;
     Q_OBJECT
 public:

@@ -51,6 +51,11 @@ QModelIndex FileItemModel::index(int row, int column, const QModelIndex &parent)
     return createIndex(row, column, item->m_children->at(row));
 }
 
+FileItem *FileItemModel::itemFromIndex(const QModelIndex &index)
+{
+    return static_cast<FileItem*>(index.internalPointer());
+}
+
 QModelIndex FileItemModel::firstColumnIndex(FileItem *item)
 {
     //root children

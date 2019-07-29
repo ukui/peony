@@ -68,10 +68,15 @@ void FileEnumerator::setEnumerateDirectory(QString uri)
             FileInfoManager::getInstance()->remove(child);
     }
 
-    g_cancellable_cancel(m_cancellable);
-    g_object_unref(m_cancellable);
+    if (m_cancellable) {
+        g_cancellable_cancel(m_cancellable);
+        g_object_unref(m_cancellable);
+    }
     m_cancellable = g_cancellable_new();
-    g_object_unref(m_root_file);
+
+    if (m_root_file) {
+        g_object_unref(m_root_file);
+    }
     m_root_file = g_file_new_for_uri(uri.toUtf8());
 }
 
@@ -85,10 +90,15 @@ void FileEnumerator::setEnumerateDirectory(GFile *file)
             FileInfoManager::getInstance()->remove(child);
     }
 
-    g_cancellable_cancel(m_cancellable);
-    g_object_unref(m_cancellable);
+    if (m_cancellable) {
+        g_cancellable_cancel(m_cancellable);
+        g_object_unref(m_cancellable);
+    }
     m_cancellable = g_cancellable_new();
-    g_object_unref(m_root_file);
+
+    if (m_root_file) {
+        g_object_unref(m_root_file);
+    }
     m_root_file = g_file_dup(file);
 }
 
