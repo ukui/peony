@@ -241,4 +241,6 @@ void FileItem::clearChildren()
     }
     m_children->clear();
     m_expanded = false;
+    g_object_unref(m_watcher);
+    m_watcher = nullptr;
 }
