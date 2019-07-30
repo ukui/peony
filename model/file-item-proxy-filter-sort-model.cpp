@@ -10,6 +10,18 @@ FileItemProxyFilterSortModel::FileItemProxyFilterSortModel(QSortFilterProxyModel
 
 }
 
+FileItem *FileItemProxyFilterSortModel::itemFromIndex(const QModelIndex &proxyIndex)
+{
+    FileItemModel *model = static_cast<FileItemModel*>(sourceModel());
+    QModelIndex index = mapToSource(proxyIndex);
+    return model->itemFromIndex(index);
+}
+
+QModelIndex FileItemProxyFilterSortModel::getSourceIndex(const QModelIndex &proxyIndex)
+{
+    return mapToSource(proxyIndex);
+}
+
 bool FileItemProxyFilterSortModel::lessThan(const QModelIndex &left, const QModelIndex &right) const
 {
     //qDebug()<<left<<right;

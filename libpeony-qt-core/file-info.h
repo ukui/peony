@@ -82,18 +82,6 @@ private:
     GFile *m_target_file = nullptr;
 
     /*!
-     * \brief m_file_info
-     * \deprecated
-     * Caching a GFileInfo handle in shared data is very dangerous.
-     * Some unknown reasons may cause an exception to the cached info,
-     * which can cause the segment false when
-     * the operation again is performed on this info handle.
-     * \note Since we have deprecated this private member, it should never be
-     * used in newly written code. Keep it still null.
-     */
-    GFileInfo *m_file_info = nullptr;
-
-    /*!
      * \brief m_cancellable
      * This cancellable is used in async query file info in FileInfoJob instance.
      */

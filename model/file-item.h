@@ -78,6 +78,8 @@ public Q_SLOTS:
     void onDeleted(const QString &thisUri);
     void onRenamed(const QString &oldUri, const QString &newUri);
 
+    void clearChildren();
+
 protected:
     /*!
      * \brief getChildFromUri

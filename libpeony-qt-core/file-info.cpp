@@ -19,11 +19,12 @@ FileInfo::~FileInfo()
     info_manager->removeFileInfobyUri(m_uri);
 
     g_object_unref(m_cancellable);
+    g_object_unref(m_file);
 
-    if (m_file_info)
-        g_object_unref(m_file_info);
     if (m_target_file)
         g_object_unref(m_target_file);
+    if (m_parent)
+        g_object_unref(m_parent);
 }
 
 std::shared_ptr<FileInfo> FileInfo::fromUri(QString uri)

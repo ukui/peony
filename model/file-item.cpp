@@ -65,6 +65,10 @@ QVector<FileItem*> *FileItem::findChildrenSync()
 
 void FileItem::findChildrenAsync()
 {
+    if (m_expanded)
+        return;
+
+    m_expanded = true;
     Peony::FileEnumerator *enumerator = new Peony::FileEnumerator;
     enumerator->setEnumerateDirectory(m_info->uri());
     enumerator->connect(enumerator, &FileEnumerator::prepared, [=](std::shared_ptr<GErrorWrapper> err){
@@ -91,10 +95,12 @@ void FileItem::findChildrenAsync()
                     //After endInsertRows, FileItemModel::rowCount will be called
                     //and data will be refershed soon.
                     //So insert a row is a 'fake', it might be a refresh.
-                    m_model->beginInsertRows(this->firstColumnIndex(), 0, 0);
+                    //m_model->beginInsertRows(this->firstColumnIndex(), 0, 0);
                     //m_model->beginInsertRows(this->firstColumnIndex(), 0, m_children->count() - 1);
                     //qDebug()<<m_model->insertRow(row, this->firstColumnIndex());
-                    m_model->endInsertRows();
+                    //m_model->endInsertRows();
+                    bool inserted = m_model->insertRow(row, this->firstColumnIndex());
+                    qDebug()<<inserted;
                 });
                 job->queryAsync();
             }
@@ -228,4 +234,13 @@ void FileItem::updateInfoAsync()
         }
     });
     job->queryAsync();
+}
+
+void FileItem::clearChildren()
+{
+    for (auto child : *m_children) {
+        delete child;
+    }
+    m_children->clear();
+    m_expanded = false;
 }

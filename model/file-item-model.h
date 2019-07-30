@@ -69,17 +69,6 @@ public:
      */
     QModelIndex lastColumnIndex(FileItem *item);
 
-Q_SIGNALS:
-    void foundChildren(const QModelIndex &parent);
-    void itemAdded(FileItem *item);
-    void itemRemoved(FileItem *item);
-
-public Q_SLOTS:
-    void onFoundChildren(const QModelIndex &parent);
-    void onItemAdded(FileItem *item);
-    void onItemRemoved(FileItem *item);
-
-protected:
     QModelIndex index(int row, int column, const QModelIndex &parent) const override;
     QModelIndex parent(const QModelIndex &child) const override;
 
@@ -129,6 +118,24 @@ protected:
      * </br>
      */
     void fetchMore(const QModelIndex &parent) override;
+
+    // Add data:
+    bool insertRows(int row, int count, const QModelIndex &parent = QModelIndex()) override;
+    bool insertColumns(int column, int count, const QModelIndex &parent = QModelIndex()) override;
+
+    // Remove data:
+    bool removeRows(int row, int count, const QModelIndex &parent = QModelIndex()) override;
+    bool removeColumns(int column, int count, const QModelIndex &parent = QModelIndex()) override;
+
+Q_SIGNALS:
+    void foundChildren(const QModelIndex &parent);
+    void itemAdded(FileItem *item);
+    void itemRemoved(FileItem *item);
+
+public Q_SLOTS:
+    void onFoundChildren(const QModelIndex &parent);
+    void onItemAdded(FileItem *item);
+    void onItemRemoved(FileItem *item);
 
 private:
     FileItem *m_root_item = nullptr;

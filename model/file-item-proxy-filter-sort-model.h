@@ -15,6 +15,9 @@ public:
     explicit FileItemProxyFilterSortModel(QSortFilterProxyModel *parent = nullptr);
     void update() { invalidateFilter(); }
 
+    FileItem *itemFromIndex(const QModelIndex &proxyIndex);
+    QModelIndex getSourceIndex(const QModelIndex &proxyIndex);
+
 protected:
     bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const override;
     bool lessThan(const QModelIndex &left, const QModelIndex &right) const override;

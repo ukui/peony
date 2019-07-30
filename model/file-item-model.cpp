@@ -27,10 +27,6 @@ void FileItemModel::setRootItem(FileItem *item)
     delete m_root_item;
 
     m_root_item = item;
-    m_root_item->connect(m_root_item, &Peony::FileItem::findChildrenAsyncFinished, [=](){
-        this->beginResetModel();
-        this->endResetModel();
-    });
     m_root_item->findChildrenAsync();
 
     endResetModel();
@@ -59,7 +55,7 @@ FileItem *FileItemModel::itemFromIndex(const QModelIndex &index)
 QModelIndex FileItemModel::firstColumnIndex(FileItem *item)
 {
     //root children
-    if (!item->m_parent) {
+    if (item->m_parent == nullptr) {
         for (int i = 0; i < m_root_item->m_children->count(); i++) {
             //qDebug()<<i<<item->m_info->uri()<<m_root_item->m_children->at(i)->m_info->uri();
             if (item == m_root_item->m_children->at(i)) {
@@ -220,7 +216,6 @@ bool FileItemModel::canFetchMore(const QModelIndex &parent) const
     if (parent_item->hasChildren() && (parent_item->m_children->count() == 0) && !parent_item->m_expanded) {
         //qDebug()<<"findChildrenAsync";
         parent_item->findChildrenAsync();
-        parent_item->m_expanded = true;
         return true;
     }
     return false;
@@ -230,6 +225,38 @@ void FileItemModel::fetchMore(const QModelIndex &parent)
 {
     Q_UNUSED(parent);
     //do not fetch more here
+}
+
+bool FileItemModel::insertRows(int row, int count, const QModelIndex &parent)
+{
+    beginInsertRows(parent, row, row + count - 1);
+    // FIXME: Implement me!
+    endInsertRows();
+    return true;
+}
+
+bool FileItemModel::insertColumns(int column, int count, const QModelIndex &parent)
+{
+    beginInsertColumns(parent, column, column + count - 1);
+    // FIXME: Implement me!
+    endInsertColumns();
+    return true;
+}
+
+bool FileItemModel::removeRows(int row, int count, const QModelIndex &parent)
+{
+    beginRemoveRows(parent, row, row + count - 1);
+    // FIXME: Implement me!
+    endRemoveRows();
+    return true;
+}
+
+bool FileItemModel::removeColumns(int column, int count, const QModelIndex &parent)
+{
+    beginRemoveColumns(parent, column, column + count - 1);
+    // FIXME: Implement me!
+    endRemoveColumns();
+    return true;
 }
 
 void FileItemModel::onFoundChildren(const QModelIndex &parent)
