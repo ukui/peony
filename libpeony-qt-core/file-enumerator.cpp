@@ -23,7 +23,6 @@ FileEnumerator::FileEnumerator(QObject *parent) : QObject(parent)
     m_cancellable = g_cancellable_new();
 
     m_children = g_list_alloc();
-    //m_errs = g_list_alloc();
 }
 
 /*!
@@ -55,7 +54,6 @@ FileEnumerator::~FileEnumerator()
     }
 
     g_list_free_full(m_children, g_object_unref);
-    //g_list_free_full(m_errs, GDestroyNotify(g_error_free));
 }
 
 void FileEnumerator::setEnumerateDirectory(QString uri)
@@ -312,11 +310,11 @@ GAsyncReadyCallback FileEnumerator::mount_enclosing_volume_callback(GFile *file,
             MountOperation *op = new MountOperation(uri);
             g_free(uri);
             //op->setAutoDelete();
-            connect(op, &MountOperation::finished, [=](GError *finished_err){
+            connect(op, &MountOperation::finished, [=](const std::shared_ptr<GErrorWrapper> &finished_err){
                 if (finished_err) {
-                    qDebug()<<"finished err:"<<finished_err->code<<finished_err->message;
+                    qDebug()<<"finished err:"<<finished_err->code()<<finished_err->message();
                 }
-                Q_EMIT p_this->prepared(GErrorWrapper::wrapFrom(finished_err));
+                Q_EMIT p_this->prepared(finished_err);
             });
             op->start();
         }

@@ -48,8 +48,20 @@ Q_SIGNALS:
      * Peony::FileInfo::updated signal, every query job of a info will send this signal
      * if query successfully.
      * \see Peony::FileInfo::updated(), Peony::FileInfoJob::refreshInfoContents().
+     * \deprecated use FileInfoJob::infoUpdated()
      */
     void queryAsyncFinished(bool successed);
+
+    /*!
+     * \brief infoUpdated
+     * <br>
+     * As we used shared data of FileInfo, a job might be cancelled frequently by other job
+     * which has same FileInfo handle. So async callback might return an cancelled error.
+     * This signal is triggered when a FileInfo::updated() send.
+     * \see query_info_async_callback(), Peony::FileInfoJob::refreshInfoContents().
+     * </br>
+     */
+    void infoUpdated();
 
 public Q_SLOTS:
     void queryAsync();
@@ -72,6 +84,12 @@ private:
     ~FileInfoJob();
     void refreshInfoContents(GFileInfo *new_info);
     std::shared_ptr<FileInfo> m_info;
+    /*!
+     * \brief m_cancellble
+     * \note this cancellble is hold by FileInfo instance.
+     * when a job is cancelled, every job about this file will be cancelled.
+     * \deprecated use m_info->m_cancellable;
+     */
     GCancellable *m_cancellble = nullptr;
     bool m_auto_delete = false;
 };

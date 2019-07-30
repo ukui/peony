@@ -24,7 +24,7 @@ FileItem::FileItem(std::shared_ptr<Peony::FileInfo> info, FileItem *parentItem, 
 
 FileItem::~FileItem()
 {
-    //qDebug()<<"~FileItem"<<m_info->uri();
+    qDebug()<<"~FileItem"<<m_info->uri();
     disconnect();
     if (m_info.use_count() <= 2) {
         Peony::FileInfoManager::getInstance()->remove(m_info);
@@ -37,6 +37,7 @@ FileItem::~FileItem()
     for (auto child : *m_children) {
         delete child;
     }
+    m_children->clear();
 
     delete m_children;
 }
@@ -88,7 +89,7 @@ void FileItem::findChildrenAsync()
                 FileInfo *shared_info = info.get();
                 int row = infos.indexOf(info);
                 //qDebug()<<info->uri()<<row;
-                job->connect(job, &FileInfoJob::queryAsyncFinished, [=](){
+                job->connect(job, &FileInfoJob::infoUpdated, [=](){
                     qDebug()<<shared_info->iconName()<<row;
                     //NOTE:
                     //Actually, beginInsertRows does not really add an row.
@@ -227,11 +228,8 @@ void FileItem::updateInfoAsync()
 {
     FileInfoJob *job = new FileInfoJob(m_info);
     job->setAutoDelete();
-    job->connect(job, &FileInfoJob::queryAsyncFinished, [=](bool successed){
-        if (successed) {
-            //qDebug()<<"update";
-            m_model->dataChanged(this->firstColumnIndex(), this->lastColumnIndex());
-        }
+    job->connect(job, &FileInfoJob::infoUpdated, [=](){
+        m_model->dataChanged(this->firstColumnIndex(), this->lastColumnIndex());
     });
     job->queryAsync();
 }

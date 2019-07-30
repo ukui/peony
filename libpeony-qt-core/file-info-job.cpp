@@ -12,7 +12,7 @@ using namespace Peony;
 FileInfoJob::FileInfoJob(std::shared_ptr<FileInfo> info, QObject *parent) : QObject(parent)
 {
     m_info = info;
-    m_cancellble = info->m_cancellable;
+    connect(m_info.get(), &FileInfo::updated, this, &FileInfoJob::infoUpdated);
 }
 
 /*!
@@ -46,10 +46,9 @@ FileInfoJob::~FileInfoJob()
 void FileInfoJob::cancel()
 {
     //NOTE: do not use same cancellble for cancelling, otherwise all job might be cancelled.
-    g_cancellable_cancel(m_cancellble);
+    g_cancellable_cancel(m_info->m_cancellable);
     g_object_unref(m_info->m_cancellable);
     m_info->m_cancellable = g_cancellable_new();
-    m_cancellble = m_info->m_cancellable;
 }
 
 bool FileInfoJob::querySync()
@@ -98,7 +97,8 @@ GAsyncReadyCallback FileInfoJob::query_info_async_callback(GFile *file, GAsyncRe
     if (_info != nullptr) {
         thisJob->refreshInfoContents(_info);
         //FIXME: how to avoid gobject critical warning?
-        g_object_unref(_info);
+        if (G_IS_FILE_INFO(_info))
+            g_object_unref(_info);
         Q_EMIT thisJob->queryAsyncFinished(true);
     }
     else {
@@ -125,7 +125,7 @@ void FileInfoJob::queryAsync()
                             "standard::*," G_FILE_ATTRIBUTE_TIME_MODIFIED G_FILE_ATTRIBUTE_ID_FILE,
                             G_FILE_QUERY_INFO_NONE,
                             G_PRIORITY_DEFAULT,
-                            m_cancellble,
+                            info->m_cancellable,
                             GAsyncReadyCallback(query_info_async_callback),
                             this);
 

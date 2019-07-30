@@ -1,6 +1,8 @@
 #include "gerror-wrapper.h"
 #include <QString>
 
+#include <QDebug>
+
 using namespace Peony;
 
 GErrorWrapper::GErrorWrapper(GError *err)
@@ -10,6 +12,7 @@ GErrorWrapper::GErrorWrapper(GError *err)
 
 GErrorWrapper::~GErrorWrapper()
 {
+    qDebug()<<"~Error";
     if (m_err)
         g_error_free(m_err);
 }

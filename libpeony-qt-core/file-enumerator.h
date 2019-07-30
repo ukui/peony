@@ -186,11 +186,6 @@ private:
      * \brief m_children, a cached list of GFile handle owned by subfiles.
      */
     GList *m_children = nullptr;
-    /*!
-     * \brief m_errs, a cached list of GError handle when some error happend when enumerating.
-     * \deprecated
-     */
-    GList *m_errs = nullptr;
 };
 
 }

@@ -1,4 +1,5 @@
 #include "file-watcher.h"
+#include "gerror-wrapper.h"
 
 #include <QDebug>
 
@@ -12,20 +13,23 @@ FileWatcher::FileWatcher(QString uri, QObject *parent) : QObject(parent)
     //monitor target file if existed.
     prepare();
 
+    GError *err1 = nullptr;
     m_monitor = g_file_monitor_file(m_file,
                                     G_FILE_MONITOR_WATCH_MOVES,
                                     m_cancellable,
-                                    &m_monitor_err);
-    if (m_monitor_err) {
-        qDebug()<<m_monitor_err->code<<m_monitor_err->message;
+                                    &err1);
+    if (err1) {
+        qDebug()<<err1->code<<err1->message;
+        g_error_free(err1);
     }
 
+    GError *err2 = nullptr;
     m_dir_monitor = g_file_monitor_directory(m_file,
                                              G_FILE_MONITOR_NONE,
                                              m_cancellable,
-                                             &m_dir_monitor_err);
-    if (m_dir_monitor_err) {
-        qDebug()<<m_dir_monitor_err->code<<m_dir_monitor_err->message;
+                                             &err2);
+    if (err2) {
+        qDebug()<<err2->code<<err2->message;
     }
 }
 
@@ -40,11 +44,6 @@ FileWatcher::~FileWatcher()
     g_object_unref(m_dir_monitor);
     g_object_unref(m_monitor);
     g_object_unref(m_file);
-
-    if (m_monitor_err)
-        g_error_free(m_monitor_err);
-    if (m_dir_monitor_err)
-        g_error_free(m_dir_monitor_err);
 }
 
 /*!
@@ -115,33 +114,28 @@ void FileWatcher::changeMonitorUri(QString uri)
     g_object_unref(m_monitor);
     g_object_unref(m_dir_monitor);
 
-    if (m_monitor_err) {
-        g_error_free(m_monitor_err);
-        m_monitor_err = nullptr;
-    }
-    if (m_dir_monitor_err) {
-        g_error_free(m_dir_monitor_err);
-        m_dir_monitor_err = nullptr;
-    }
-
     m_file = g_file_new_for_uri(uri.toUtf8());
 
     prepare();
 
+    GError *err1 = nullptr;
     m_monitor = g_file_monitor_file(m_file,
                                     G_FILE_MONITOR_WATCH_MOVES,
                                     m_cancellable,
-                                    &m_monitor_err);
-    if (m_monitor_err) {
-        qDebug()<<m_monitor_err->code<<m_monitor_err->message;
+                                    &err1);
+    if (err1) {
+        qDebug()<<err1->code<<err1->message;
+        g_error_free(err1);
     }
 
+    GError *err2 = nullptr;
     m_dir_monitor = g_file_monitor_directory(m_file,
                                              G_FILE_MONITOR_NONE,
                                              m_cancellable,
-                                             &m_dir_monitor_err);
-    if (m_dir_monitor_err) {
-        qDebug()<<m_dir_monitor_err->code<<m_dir_monitor_err->message;
+                                             &err2);
+    if (err2) {
+        qDebug()<<err2->code<<err2->message;
+        g_error_free(err2);
     }
 
     startMonitor();

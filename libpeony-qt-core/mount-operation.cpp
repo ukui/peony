@@ -1,5 +1,6 @@
 #include "mount-operation.h"
 #include "connect-server-dialog.h"
+#include "gerror-wrapper.h"
 
 #include <QMessageBox>
 #include <QPushButton>
@@ -26,7 +27,7 @@ MountOperation::~MountOperation()
     g_object_unref(m_op);
     g_object_unref(m_cancellable);
 
-    g_list_free_full(m_errs, GDestroyNotify(g_error_free));
+    //g_list_free_full(m_errs, GDestroyNotify(g_error_free));
 }
 
 void MountOperation::cancel()
@@ -72,9 +73,10 @@ GAsyncReadyCallback MountOperation::mount_enclosing_volume_callback(GFile *volum
 
     if (err) {
         qDebug()<<err->code<<err->message<<err->domain;
-        p_this->m_errs = g_list_prepend(p_this->m_errs, err);
+        auto errWarpper = GErrorWrapper::wrapFrom(err);
+        p_this->finished(errWarpper);
     }
-    p_this->finished(err);
+    p_this->finished(nullptr);
     if (p_this->m_auto_delete) {
         p_this->disconnect();
         p_this->deleteLater();

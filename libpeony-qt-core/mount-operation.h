@@ -6,8 +6,11 @@
 #include <QObject>
 
 #include <gio/gio.h>
+#include <memory>
 
 namespace Peony {
+
+class GErrorWrapper;
 
 /*!
  * \brief The MountOperation class
@@ -29,7 +32,7 @@ public:
     void setAutoDelete(bool isAuto = true) {m_auto_delete = isAuto;}
 
 Q_SIGNALS:
-    void finished(GError *err = nullptr);
+    void finished(const std::shared_ptr<GErrorWrapper> &err = nullptr);
 
 public Q_SLOTS:
     void start();
@@ -63,6 +66,10 @@ private:
     GFile *m_volume = nullptr;
     GMountOperation *m_op = nullptr;
     GCancellable *m_cancellable = nullptr;
+    /*!
+     * \brief m_errs
+     * \deprecated use GErrorWrapper.
+     */
     GList *m_errs = nullptr;
 };
 

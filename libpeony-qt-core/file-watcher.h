@@ -63,7 +63,15 @@ private:
 
     GCancellable *m_cancellable = nullptr;
 
+    /*!
+     * \brief m_monitor_err
+     * \deprecated use GErrorWrapper
+     */
     GError *m_monitor_err = nullptr;
+    /*!
+     * \brief m_dir_monitor_err
+     * \deprecated use GErrorWrapper
+     */
     GError *m_dir_monitor_err = nullptr;
 
     gulong m_file_handle = 0;
