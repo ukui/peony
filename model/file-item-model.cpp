@@ -213,9 +213,7 @@ bool FileItemModel::canFetchMore(const QModelIndex &parent) const
     if (!parent.isValid())
         return true;
     FileItem *parent_item = static_cast<FileItem*>(parent.internalPointer());
-    if (parent_item->hasChildren() && (parent_item->m_children->count() == 0) && !parent_item->m_expanded) {
-        //qDebug()<<"findChildrenAsync";
-        parent_item->findChildrenAsync();
+    if (!parent_item->m_expanded) {
         return true;
     }
     return false;
