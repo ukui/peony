@@ -121,6 +121,16 @@ private:
     bool m_expanded = false;
 
     FileWatcher *m_watcher = nullptr;
+
+    /*!
+     * \brief m_async_count
+     * <br>
+     * when enumerate children finished, we start a async job for update children info.
+     * this count is record the current last un-updated children count.
+     * while all job finished, the count will clear, and we can insert the rows to model.
+     * </br>
+     */
+    int m_async_count = 0;
 };
 
 }

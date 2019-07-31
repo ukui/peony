@@ -83,6 +83,7 @@ void FileItem::findChildrenAsync()
     enumerator->connect(enumerator, &Peony::FileEnumerator::enumerateFinished, [=](bool successed){
         if (successed) {
             auto infos = enumerator->getChildren();
+            m_async_count = infos.count();
             for (auto info : infos) {
                 FileItem *child = new FileItem(info, this, m_model);
                 m_children->prepend(child);
@@ -93,19 +94,18 @@ void FileItem::findChildrenAsync()
                 //qDebug()<<info->uri()<<row;
                 job->connect(job, &FileInfoJob::infoUpdated, [=](){
                     qDebug()<<shared_info->iconName()<<row;
-                    m_model->dataChanged(child->firstColumnIndex(), child->lastColumnIndex());
+                });
+                connect(job, &FileInfoJob::destroyed, [=](){
+                    //the query job is finished and will be deleted soon,
+                    //whatever info was updated, we need decrease the async count.
+                    m_async_count--;
+                    if (m_async_count == 0) {
+                        m_model->insertRows(0, m_children->count(), this->firstColumnIndex());
+                    }
                 });
                 job->queryAsync();
             }
         }
-        //NOTE: I have to insertRows at one time before item info updated. So that I can
-        //make FileItemProxyFilterSortModel::filterAcceptsRow() works well.
-        //Actually, it is not good at all. Because that means we need sort and filter twice.
-        //the first time is here, and second time will happend after item info updated.
-        //That makes the model much less efficient.
-        bool inserted = m_model->insertRows(0, m_children->count(), this->firstColumnIndex());
-        if (!inserted)
-            qDebug()<<"failed to inserted";
         enumerator->disconnect();
         enumerator->deleteLater();
 
