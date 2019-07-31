@@ -164,7 +164,6 @@ void FileWatcher::file_changed_callback(GFileMonitor *monitor,
         p_this->stopMonitor();
         p_this->cancel();
         Q_EMIT p_this->directoryDeleted(p_this->m_uri);
-        p_this->deleteLater();
         break;
     }
     default:

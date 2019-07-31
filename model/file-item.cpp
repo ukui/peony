@@ -125,13 +125,13 @@ void FileItem::findChildrenAsync()
         connect(m_watcher, &FileWatcher::directoryDeleted, [=](QString uri){
             //clean all the children, if item index is root index, cd up.
             //this might use FileItemModel::setRootItem()
-            this->onDeleted(uri);
             Q_EMIT this->deleted(uri);
+            this->onDeleted(uri);
         });
         connect(m_watcher, &FileWatcher::locationChanged, [=](QString oldUri, QString newUri){
             //this might use FileItemModel::setRootItem()
-            this->onRenamed(oldUri, newUri);
             Q_EMIT this->renamed(oldUri, newUri);
+            this->onRenamed(oldUri, newUri);
         });
         //qDebug()<<"startMonitor";
         m_watcher->startMonitor();
@@ -184,7 +184,7 @@ void FileItem::onChildRemoved(const QString &uri)
 {
     FileItem *child = getChildFromUri(uri);
     if (child) {
-        m_model->removeRow(m_children->indexOf(child));
+        m_model->removeRow(m_children->indexOf(child), this->firstColumnIndex());
         m_children->removeOne(child);
     }
     child->disconnect();
@@ -198,8 +198,15 @@ void FileItem::onDeleted(const QString &thisUri)
     //TODO: find parent file and go to parent directory
     Q_UNUSED(thisUri);
     if (m_parent) {
-        QString homePath = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
-        FileItem *newRootItem = new FileItem(FileInfo::fromPath(homePath), nullptr, m_model);
+        m_model->removeRow(m_parent->m_children->indexOf(this), m_parent->firstColumnIndex());
+        m_parent->m_children->removeOne(this);
+    } else {
+        //cd up
+        GFile *file = m_info->gFileHandle();
+        GFile *parent_file = g_file_get_parent(file);
+        auto parentInfo = FileInfo::fromGFile(parent_file);
+        g_object_unref(parent_file);
+        FileItem *newRootItem = new FileItem(parentInfo, nullptr, m_model);
         m_model->setRootItem(newRootItem);
     }
 }
