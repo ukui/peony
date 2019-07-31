@@ -30,6 +30,7 @@ FileWatcher::FileWatcher(QString uri, QObject *parent) : QObject(parent)
                                              &err2);
     if (err2) {
         qDebug()<<err2->code<<err2->message;
+        g_error_free(err2);
     }
 }
 
