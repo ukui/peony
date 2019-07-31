@@ -128,13 +128,52 @@ public:
     bool removeColumns(int column, int count, const QModelIndex &parent = QModelIndex()) override;
 
 Q_SIGNALS:
+    /*!
+     * \brief foundChildren
+     * \param parent
+     * \deprecated
+     */
     void foundChildren(const QModelIndex &parent);
+    /*!
+     * \brief itemAdded
+     * \param item
+     * \deprecated
+     */
     void itemAdded(FileItem *item);
+    /*!
+     * \brief itemRemoved
+     * \param item
+     * \deprecated
+     */
     void itemRemoved(FileItem *item);
 
+    /*!
+     * \brief updated
+     * <br>
+     * when a 'folder' item children changed, this signal should be emit.
+     * </br>
+     * \note proxy model should connect this signal and start sort and filter again.
+     */
+    void updated();
+
 public Q_SLOTS:
+    /*!
+     * \brief onFoundChildren
+     * \param parent
+     * \deprecated
+     */
     void onFoundChildren(const QModelIndex &parent);
+    /*!
+     * \brief onItemAdded
+     * \param item
+     * \deprecated
+     */
     void onItemAdded(FileItem *item);
+    /*!
+     * \brief onItemRemoved
+     * \param item
+     * \deprecated
+     */
     void onItemRemoved(FileItem *item);
 
 private:

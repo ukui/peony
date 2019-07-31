@@ -49,6 +49,9 @@ public:
     QString fileSize() {return m_file_size;}
     QString modifiedDate() {return m_modified_date;}
 
+    quint64 size() {return m_size;}
+    quint64 modifiedTime() {return m_modified_time;}
+
     GFile *gFileHandle() {return m_file;}
 
 Q_SIGNALS:

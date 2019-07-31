@@ -13,15 +13,21 @@ class FileItemProxyFilterSortModel : public QSortFilterProxyModel
     Q_OBJECT
 public:
     explicit FileItemProxyFilterSortModel(QSortFilterProxyModel *parent = nullptr);
-    void update() { invalidateFilter(); }
+    void setSourceModel(QAbstractItemModel *model) override;
+    void setShowHidden(bool showHidden);
 
     FileItem *itemFromIndex(const QModelIndex &proxyIndex);
     QModelIndex getSourceIndex(const QModelIndex &proxyIndex);
+
+public Q_SLOTS:
+    void update();
 
 protected:
     bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const override;
     bool lessThan(const QModelIndex &left, const QModelIndex &right) const override;
 
+private:
+    bool m_show_hidden = false;
 };
 
 }

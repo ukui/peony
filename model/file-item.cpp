@@ -11,6 +11,8 @@
 #include <QDebug>
 #include <QStandardPaths>
 
+#include <QMessageBox>
+
 using namespace Peony;
 
 FileItem::FileItem(std::shared_ptr<Peony::FileInfo> info, FileItem *parentItem, FileItemModel *model, QObject *parent) : QObject(parent)
@@ -24,7 +26,7 @@ FileItem::FileItem(std::shared_ptr<Peony::FileInfo> info, FileItem *parentItem, 
 
 FileItem::~FileItem()
 {
-    qDebug()<<"~FileItem"<<m_info->uri();
+    //qDebug()<<"~FileItem"<<m_info->uri();
     disconnect();
     if (m_info.use_count() <= 2) {
         Peony::FileInfoManager::getInstance()->remove(m_info);
@@ -83,7 +85,7 @@ void FileItem::findChildrenAsync()
             auto infos = enumerator->getChildren();
             for (auto info : infos) {
                 FileItem *child = new FileItem(info, this, m_model);
-                m_children->append(child);
+                m_children->prepend(child);
                 FileInfoJob *job = new FileInfoJob(info);
                 job->setAutoDelete();
                 FileInfo *shared_info = info.get();
@@ -91,21 +93,19 @@ void FileItem::findChildrenAsync()
                 //qDebug()<<info->uri()<<row;
                 job->connect(job, &FileInfoJob::infoUpdated, [=](){
                     qDebug()<<shared_info->iconName()<<row;
-                    //NOTE:
-                    //Actually, beginInsertRows does not really add an row.
-                    //After endInsertRows, FileItemModel::rowCount will be called
-                    //and data will be refershed soon.
-                    //So insert a row is a 'fake', it might be a refresh.
-                    //m_model->beginInsertRows(this->firstColumnIndex(), 0, 0);
-                    //m_model->beginInsertRows(this->firstColumnIndex(), 0, m_children->count() - 1);
-                    //qDebug()<<m_model->insertRow(row, this->firstColumnIndex());
-                    //m_model->endInsertRows();
-                    bool inserted = m_model->insertRow(row, this->firstColumnIndex());
-                    qDebug()<<inserted;
+                    m_model->dataChanged(child->firstColumnIndex(), child->lastColumnIndex());
                 });
                 job->queryAsync();
             }
         }
+        //NOTE: I have to insertRows at one time before item info updated. So that I can
+        //make FileItemProxyFilterSortModel::filterAcceptsRow() works well.
+        //Actually, it is not good at all. Because that means we need sort and filter twice.
+        //the first time is here, and second time will happend after item info updated.
+        //That makes the model much less efficient.
+        bool inserted = m_model->insertRows(0, m_children->count(), this->firstColumnIndex());
+        if (!inserted)
+            qDebug()<<"failed to inserted";
         enumerator->disconnect();
         enumerator->deleteLater();
 
@@ -173,22 +173,23 @@ void FileItem::onChildAdded(const QString &uri)
         return;
     }
     FileItem *newChild = new FileItem(FileInfo::fromUri(uri), this, m_model);
-    m_model->beginInsertRows(this->firstColumnIndex(), 0, 0);
     m_children->append(newChild);
-    m_model->endInsertRows();
-    newChild->updateInfoAsync();
+    m_model->insertRow(m_children->count() - 1, this->firstColumnIndex());
+    //use sync update here.
+    newChild->updateInfoSync();
+    m_model->updated();
 }
 
 void FileItem::onChildRemoved(const QString &uri)
 {
     FileItem *child = getChildFromUri(uri);
     if (child) {
-        m_model->beginRemoveRows(this->firstColumnIndex(), 0, 0);
+        m_model->removeRow(m_children->indexOf(child));
         m_children->removeOne(child);
-        m_model->endRemoveRows();
     }
     child->disconnect();
     child->deleteLater();
+    m_model->updated();
 }
 
 void FileItem::onDeleted(const QString &thisUri)
@@ -215,11 +216,9 @@ void FileItem::onRenamed(const QString &oldUri, const QString &newUri)
 
 void FileItem::updateInfoSync()
 {
-    qDebug()<<m_info->uri();
     FileInfoJob *job = new FileInfoJob(m_info);
     if (job->querySync()) {
-        m_model->beginInsertRows(this->firstColumnIndex(), 0, 0);
-        m_model->endInsertRows();
+        m_model->dataChanged(this->firstColumnIndex(), this->lastColumnIndex());
     }
     job->deleteLater();
 }
@@ -239,6 +238,8 @@ void FileItem::clearChildren()
     for (auto child : *m_children) {
         delete child;
     }
+    auto parent = firstColumnIndex();
+    m_model->removeRows(0, m_model->rowCount(parent), parent);
     m_children->clear();
     m_expanded = false;
     g_object_unref(m_watcher);

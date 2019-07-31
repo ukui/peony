@@ -112,6 +112,7 @@ int FileItemModel::columnCount(const QModelIndex &parent) const
 
 int FileItemModel::rowCount(const QModelIndex &parent) const
 {
+    //return 0;
     if (!parent.isValid()) {
         return m_root_item->m_children->count();
     }

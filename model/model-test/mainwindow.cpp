@@ -23,7 +23,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(line, &QLineEdit::returnPressed, [=](){
         Peony::FileItemModel *model = new Peony::FileItemModel(this);
-        Peony::FileItem *item = new Peony::FileItem(Peony::FileInfo::fromUri(line->text()), nullptr, model);
+        Peony::FileItem *item = new Peony::FileItem(Peony::FileInfo::fromUri(line->text()), nullptr, model, this);
         model->setRootItem(item);
 
         QTreeView *v = new QTreeView();
@@ -40,7 +40,7 @@ MainWindow::MainWindow(QWidget *parent)
             item->clearChildren();
         });
 
-        /*
+
         Peony::FileItemProxyFilterSortModel *proxy_model = new Peony::FileItemProxyFilterSortModel;
         proxy_model->setSourceModel(model);
         QTreeView *pv = new QTreeView;
@@ -54,11 +54,10 @@ MainWindow::MainWindow(QWidget *parent)
         connect(pv, &QTreeView::collapsed, [=](const QModelIndex &proxyIndex){
             auto index = proxy_model->getSourceIndex(proxyIndex);
             auto item = model->itemFromIndex(index);
-            model->removeRows(0, model->rowCount(index) - 1, index);
             item->clearChildren();
         });
         pv->show();
-        */
+
     });
 }
 
