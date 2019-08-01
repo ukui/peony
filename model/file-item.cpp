@@ -239,11 +239,11 @@ void FileItem::updateInfoAsync()
 
 void FileItem::clearChildren()
 {
+    auto parent = firstColumnIndex();
+    m_model->removeRows(0, m_model->rowCount(parent), parent);
     for (auto child : *m_children) {
         delete child;
     }
-    auto parent = firstColumnIndex();
-    m_model->removeRows(0, m_model->rowCount(parent), parent);
     m_children->clear();
     m_expanded = false;
     delete m_watcher;
