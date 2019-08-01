@@ -88,6 +88,8 @@ void FileWatcher::cancel()
 
 void FileWatcher::startMonitor()
 {
+    //make sure only connect once in a watcher.
+    stopMonitor();
     m_file_handle = g_signal_connect(m_monitor, "changed", G_CALLBACK(file_changed_callback), this);
     m_dir_handle = g_signal_connect(m_dir_monitor, "changed", G_CALLBACK(dir_changed_callback), this);
 }

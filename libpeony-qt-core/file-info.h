@@ -79,6 +79,7 @@ private:
     QString m_file_size = nullptr;
     QString m_modified_date = nullptr;
 
+    //FIXME: should i use smart pointer wrap these data?
     GFile *m_file = nullptr;
     GFile *m_parent = nullptr;
 
