@@ -31,7 +31,6 @@ std::shared_ptr<FileInfo> FileInfoManager::findFileInfoByUri(QString uri)
 void FileInfoManager::insertFileInfo(std::shared_ptr<FileInfo> info)
 {
     Q_ASSERT(global_info_list);
-    std::weak_ptr<FileInfo> weak_info = info;
     global_info_list->insert(info->uri(), info);
 }
 
