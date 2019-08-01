@@ -94,10 +94,8 @@ GAsyncReadyCallback FileInfoJob::query_info_async_callback(GFile *file, GAsyncRe
                                                 res,
                                                 &err);
 
-    if (_info != nullptr) {
+    if (G_IS_FILE_INFO(_info)) {
         thisJob->refreshInfoContents(_info);
-        //FIXME: how to avoid gobject critical warning?
-        if (G_IS_FILE_INFO(_info))
             g_object_unref(_info);
         Q_EMIT thisJob->queryAsyncFinished(true);
     }

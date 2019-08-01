@@ -84,13 +84,7 @@ private:
     ~FileInfoJob();
     void refreshInfoContents(GFileInfo *new_info);
     std::shared_ptr<FileInfo> m_info;
-    /*!
-     * \brief m_cancellble
-     * \note this cancellble is hold by FileInfo instance.
-     * when a job is cancelled, every job about this file will be cancelled.
-     * \deprecated use m_info->m_cancellable;
-     */
-    GCancellable *m_cancellble = nullptr;
+
     bool m_auto_delete = false;
 };
 
