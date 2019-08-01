@@ -9,6 +9,7 @@
 #include "file-item-model.h"
 #include "file-item-proxy-filter-sort-model.h"
 #include "file-enumerator.h"
+#include "file-info-job.h"
 #include "gerror-wrapper.h"
 #include <QTreeView>
 #include <QToolBar>
@@ -28,6 +29,23 @@ MainWindow::MainWindow(QWidget *parent)
     toolbar->addWidget(line);
     addToolBar(Qt::TopToolBarArea, toolbar);
 
+    //job
+    /*
+    connect(line, &QLineEdit::returnPressed, [=](){
+        auto info = Peony::FileInfo::fromUri(line->text());
+        Peony::FileInfoJob *job = new Peony::FileInfoJob(info);
+        job->setAutoDelete();
+        job->connect(job, &Peony::FileInfoJob::queryAsyncFinished, [=](bool successed){
+            if (successed) {
+                qDebug()<<info->displayName();
+            }
+        });
+        job->queryAsync();
+    });
+    */
+
+    //enumerator
+    /*
     connect(line, &QLineEdit::returnPressed, [=](){
         Peony::FileEnumerator *enumerator = new Peony::FileEnumerator;
         enumerator->setEnumerateDirectory(line->text());
@@ -49,8 +67,10 @@ MainWindow::MainWindow(QWidget *parent)
         });
         enumerator->prepare();
     });
+    */
 
-    /*
+    //model/view
+
     connect(line, &QLineEdit::returnPressed, [=](){
         Peony::FileItemModel *model = new Peony::FileItemModel(this);
 
@@ -89,7 +109,8 @@ MainWindow::MainWindow(QWidget *parent)
         });
         pv->show();
     });
-    */
+
+
 }
 
 MainWindow::~MainWindow()

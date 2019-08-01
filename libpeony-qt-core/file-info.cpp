@@ -14,7 +14,7 @@ FileInfo::FileInfo(QObject *parent) : QObject (parent)
 
 FileInfo::~FileInfo()
 {
-    //qDebug()<<"~FileInfo"<<m_uri;
+    qDebug()<<"~FileInfo"<<m_uri;
     disconnect();
     FileInfoManager *info_manager = FileInfoManager::getInstance();
     info_manager->removeFileInfobyUri(m_uri);

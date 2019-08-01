@@ -9,6 +9,7 @@ FileWatcher::FileWatcher(QString uri, QObject *parent) : QObject(parent)
 {
     m_uri = uri;
     m_file = g_file_new_for_uri(uri.toUtf8());
+    m_cancellable = g_cancellable_new();
 
     //monitor target file if existed.
     prepare();
