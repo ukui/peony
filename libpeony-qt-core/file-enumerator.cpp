@@ -134,6 +134,8 @@ void FileEnumerator::prepare()
                                                             m_cancellable,
                                                             &err);
 
+    g_object_unref(enumerator);
+
     if (err) {
         //do not send prepared(err) here, wait handle err finished.
         handleError(err);
@@ -147,8 +149,6 @@ void FileEnumerator::prepare()
             Q_EMIT prepared(nullptr);
         });
     }
-
-    g_object_unref(enumerator);
 }
 
 GFile *FileEnumerator::enumerateTargetFile()
@@ -249,6 +249,8 @@ void FileEnumerator::enumerateAsync()
                                     m_cancellable,
                                     GAsyncReadyCallback(find_children_async_ready_callback),
                                     this);
+
+    g_object_unref(target);
 }
 
 void FileEnumerator::enumerateChildren(GFileEnumerator *enumerator)
@@ -339,6 +341,8 @@ GAsyncReadyCallback FileEnumerator::find_children_async_ready_callback(GFile *fi
                                        p_this->m_cancellable,
                                        GAsyncReadyCallback(enumerator_next_files_async_ready_callback),
                                        p_this);
+
+    g_object_unref(enumerator);
     return nullptr;
 }
 

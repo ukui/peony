@@ -7,12 +7,13 @@ using namespace Peony;
 
 GErrorWrapper::GErrorWrapper(GError *err)
 {
+    //qDebug()<<"Error";
     m_err = err;
 }
 
 GErrorWrapper::~GErrorWrapper()
 {
-    qDebug()<<"~Error";
+    //qDebug()<<"~Error";
     if (m_err)
         g_error_free(m_err);
 }

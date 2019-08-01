@@ -15,6 +15,7 @@ FileInfo::FileInfo(QObject *parent) : QObject (parent)
 FileInfo::~FileInfo()
 {
     //qDebug()<<"~FileInfo"<<m_uri;
+    disconnect();
     FileInfoManager *info_manager = FileInfoManager::getInstance();
     info_manager->removeFileInfobyUri(m_uri);
 
@@ -25,6 +26,8 @@ FileInfo::~FileInfo()
         g_object_unref(m_target_file);
     if (m_parent)
         g_object_unref(m_parent);
+
+    m_uri = nullptr;
 }
 
 std::shared_ptr<FileInfo> FileInfo::fromUri(QString uri)
@@ -36,7 +39,7 @@ std::shared_ptr<FileInfo> FileInfo::fromUri(QString uri)
     } else {
         std::shared_ptr<FileInfo> newly_info = std::make_shared<FileInfo>();
         newly_info->m_uri = uri;
-        newly_info->m_file = g_file_new_for_uri(uri.toUtf8());
+        newly_info->m_file = g_file_new_for_uri(newly_info->m_uri.toUtf8());
         newly_info->m_parent = g_file_get_parent(newly_info->m_file);
         newly_info->m_is_remote = !g_file_is_native(newly_info->m_file);
         GFileType type = g_file_query_file_type(newly_info->m_file,

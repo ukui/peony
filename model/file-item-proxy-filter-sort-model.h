@@ -12,7 +12,7 @@ class FileItemProxyFilterSortModel : public QSortFilterProxyModel
 {
     Q_OBJECT
 public:
-    explicit FileItemProxyFilterSortModel(QSortFilterProxyModel *parent = nullptr);
+    explicit FileItemProxyFilterSortModel(QObject *parent = nullptr);
     void setSourceModel(QAbstractItemModel *model) override;
     void setShowHidden(bool showHidden);
 

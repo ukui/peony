@@ -6,7 +6,7 @@
 
 using namespace Peony;
 
-FileItemProxyFilterSortModel::FileItemProxyFilterSortModel(QSortFilterProxyModel *parent) : QSortFilterProxyModel(parent)
+FileItemProxyFilterSortModel::FileItemProxyFilterSortModel(QObject *parent) : QSortFilterProxyModel(parent)
 {
 
 }

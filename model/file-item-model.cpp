@@ -15,6 +15,7 @@ FileItemModel::FileItemModel(QObject *parent) : QAbstractItemModel (parent)
 
 FileItemModel::~FileItemModel()
 {
+    qDebug()<<"~FileItemModel";
     disconnect();
     if (m_root_item)
         delete m_root_item;
@@ -99,7 +100,7 @@ QModelIndex FileItemModel::parent(const QModelIndex &child) const
 {
     FileItem *childItem = static_cast<FileItem*>(child.internalPointer());
     //root children
-    if (!childItem->m_parent)
+    if (childItem->m_parent == nullptr)
         return QModelIndex();
     return childItem->m_parent->firstColumnIndex();
 }

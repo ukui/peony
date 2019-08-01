@@ -94,9 +94,9 @@ GAsyncReadyCallback FileInfoJob::query_info_async_callback(GFile *file, GAsyncRe
                                                 res,
                                                 &err);
 
-    if (G_IS_FILE_INFO(_info)) {
+    if (_info != nullptr) {
         thisJob->refreshInfoContents(_info);
-            g_object_unref(_info);
+        g_object_unref(_info);
         Q_EMIT thisJob->queryAsyncFinished(true);
     }
     else {
@@ -180,7 +180,9 @@ void FileInfoJob::refreshInfoContents(GFileInfo *new_info)
         content_type = nullptr;
     }
 
-    info->m_file_size = g_format_size_full(info->m_size, G_FORMAT_SIZE_DEFAULT);
+    char *size_full = g_format_size_full(info->m_size, G_FORMAT_SIZE_DEFAULT);
+    info->m_file_size = size_full;
+    g_free(size_full);
 
     QDateTime date = QDateTime::fromMSecsSinceEpoch(info->m_modified_time*1000);
     info->m_modified_date = date.toString(Qt::SystemLocaleShortDate);
