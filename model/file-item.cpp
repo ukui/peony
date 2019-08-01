@@ -246,6 +246,6 @@ void FileItem::clearChildren()
     m_model->removeRows(0, m_model->rowCount(parent), parent);
     m_children->clear();
     m_expanded = false;
-    g_object_unref(m_watcher);
+    delete m_watcher;
     m_watcher = nullptr;
 }
