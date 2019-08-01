@@ -21,8 +21,6 @@ FileEnumerator::FileEnumerator(QObject *parent) : QObject(parent)
 {
     m_root_file = g_file_new_for_uri("file:///");
     m_cancellable = g_cancellable_new();
-
-    m_children = g_list_alloc();
 }
 
 /*!
@@ -105,7 +103,7 @@ QList<std::shared_ptr<FileInfo>> FileEnumerator::getChildren()
     //qDebug()<<"FileEnumerator::getChildren():";
     QList<std::shared_ptr<FileInfo>> children;
     GList *i = m_children;
-    while (i->data) {
+    while (i) {
         GFile *file = static_cast<GFile*>(i->data);
         char *uri = g_file_get_uri(file);
         //qDebug()<<uri;

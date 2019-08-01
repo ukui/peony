@@ -32,8 +32,6 @@ FileItem::~FileItem()
         Peony::FileInfoManager::getInstance()->remove(m_info);
     }
     if (m_watcher) {
-        m_watcher->stopMonitor();
-        m_watcher->disconnect();
         delete m_watcher;
     }
     for (auto child : *m_children) {
@@ -106,8 +104,8 @@ void FileItem::findChildrenAsync()
                 job->queryAsync();
             }
         }
-        enumerator->disconnect();
-        enumerator->deleteLater();
+
+        delete enumerator;
 
         m_watcher = new FileWatcher(this->m_info->uri());
         connect(m_watcher, &FileWatcher::fileCreated, [=](QString uri){
@@ -187,8 +185,7 @@ void FileItem::onChildRemoved(const QString &uri)
         m_model->removeRow(m_children->indexOf(child), this->firstColumnIndex());
         m_children->removeOne(child);
     }
-    child->disconnect();
-    child->deleteLater();
+    delete child;
     m_model->updated();
 }
 

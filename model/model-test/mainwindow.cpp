@@ -8,6 +8,8 @@
 #include "file-item.h"
 #include "file-item-model.h"
 #include "file-item-proxy-filter-sort-model.h"
+#include "file-enumerator.h"
+#include "gerror-wrapper.h"
 #include <QTreeView>
 #include <QToolBar>
 
@@ -27,6 +29,29 @@ MainWindow::MainWindow(QWidget *parent)
     addToolBar(Qt::TopToolBarArea, toolbar);
 
     connect(line, &QLineEdit::returnPressed, [=](){
+        Peony::FileEnumerator *enumerator = new Peony::FileEnumerator;
+        enumerator->setEnumerateDirectory(line->text());
+        connect(enumerator, &Peony::FileEnumerator::prepared, [=](std::shared_ptr<Peony::GErrorWrapper> err){
+            if (err) {
+                qDebug()<<err->message();
+                return ;
+            }
+            connect(enumerator, &Peony::FileEnumerator::enumerateFinished, [=](bool successed){
+                if (successed) {
+                    auto files = enumerator->getChildren();
+                    for (auto file : files) {
+                        qDebug()<<file->uri();
+                    }
+                    delete enumerator;
+                }
+            });
+            enumerator->enumerateAsync();
+        });
+        enumerator->prepare();
+    });
+
+    /*
+    connect(line, &QLineEdit::returnPressed, [=](){
         Peony::FileItemModel *model = new Peony::FileItemModel(this);
 
         Peony::FileItem *item = new Peony::FileItem(Peony::FileInfo::fromUri(line->text().toUtf8()), nullptr, model, this);
@@ -37,10 +62,6 @@ MainWindow::MainWindow(QWidget *parent)
         v->setModel(model);
         model->setParent(v);
         v->show();
-        connect(v, &QTreeView::destroyed, [=](){
-            qDebug()<<"model destroyed";
-            Peony::FileInfoManager::getInstance()->clear();
-        });
         connect(v, &QTreeView::expanded, [=](const QModelIndex &index){
             auto item = model->itemFromIndex(index);
             item->findChildrenAsync();
@@ -68,6 +89,7 @@ MainWindow::MainWindow(QWidget *parent)
         });
         pv->show();
     });
+    */
 }
 
 MainWindow::~MainWindow()
