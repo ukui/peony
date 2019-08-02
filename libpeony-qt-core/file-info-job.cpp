@@ -78,7 +78,6 @@ bool FileInfoJob::querySync()
     }
 
     refreshInfoContents(_info);
-    //FIXME: how to avoid critical?
     g_object_unref(_info);
     if (m_auto_delete)
         deleteLater();
@@ -97,7 +96,6 @@ GAsyncReadyCallback FileInfoJob::query_info_async_callback(GFile *file, GAsyncRe
 
     if (_info != nullptr) {
         thisJob->refreshInfoContents(_info);
-        //FIXME: how to avoid critical?
         g_object_unref(_info);
         Q_EMIT thisJob->queryAsyncFinished(true);
     }
@@ -161,7 +159,7 @@ void FileInfoJob::refreshInfoContents(GFileInfo *new_info)
         const gchar* const* icon_names = g_themed_icon_get_names(G_THEMED_ICON (g_icon));
         if (icon_names)
             info->m_icon_name = QString (*icon_names);
-        g_object_unref(g_icon);
+        //g_object_unref(g_icon);
     }
 
     //qDebug()<<m_display_name<<m_icon_name;
@@ -170,7 +168,7 @@ void FileInfoJob::refreshInfoContents(GFileInfo *new_info)
         const gchar* const* symbolic_icon_names = g_themed_icon_get_names(G_THEMED_ICON (g_symbolic_icon));
         if (symbolic_icon_names)
             info->m_symbolic_icon_name = QString (*symbolic_icon_names);
-        g_object_unref(g_symbolic_icon);
+        //g_object_unref(g_symbolic_icon);
     }
 
     info->m_file_id = g_file_info_get_attribute_string(new_info, G_FILE_ATTRIBUTE_ID_FILE);
