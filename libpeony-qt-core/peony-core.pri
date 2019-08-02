@@ -20,6 +20,7 @@ SOURCES += $$PWD/file-info.cpp \
            $$PWD/file-watcher.cpp \
            $$PWD/connect-server-dialog.cpp \
     $$PWD/volume-manager.cpp \
-    $$PWD/gerror-wrapper.cpp
+    $$PWD/gerror-wrapper.cpp \
+    $$PWD/gobject-template.cpp
 
 FORMS += $$PWD/connect-server-dialog.ui
