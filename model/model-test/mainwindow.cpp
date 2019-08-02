@@ -74,7 +74,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(line, &QLineEdit::returnPressed, [=](){
         Peony::FileItemModel *model = new Peony::FileItemModel(this);
 
-        Peony::FileItem *item = new Peony::FileItem(Peony::FileInfo::fromUri(line->text().toUtf8()), nullptr, model, this);
+        Peony::FileItem *item = new Peony::FileItem(Peony::FileInfo::fromUri(line->text().toUtf8().constData()), nullptr, model, this);
         model->setRootItem(item);
 
         QTreeView *v = new QTreeView();

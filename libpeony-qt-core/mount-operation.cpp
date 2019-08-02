@@ -11,7 +11,7 @@ using namespace Peony;
 
 MountOperation::MountOperation(QString uri, QObject *parent) : QObject(parent)
 {
-    m_volume = g_file_new_for_uri(uri.toUtf8());
+    m_volume = g_file_new_for_uri(uri.toUtf8().constData());
     m_op = g_mount_operation_new();
     m_cancellable = g_cancellable_new();
 }
@@ -41,9 +41,9 @@ void MountOperation::start()
 {
     ConnectServerDialog *dlg = new ConnectServerDialog;
     connect(dlg, &QDialog::accepted, [=](){
-        g_mount_operation_set_username(m_op, dlg->user().toUtf8());
-        g_mount_operation_set_password(m_op, dlg->password().toUtf8());
-        g_mount_operation_set_domain(m_op, dlg->domain().toUtf8());
+        g_mount_operation_set_username(m_op, dlg->user().toUtf8().constData());
+        g_mount_operation_set_password(m_op, dlg->password().toUtf8().constData());
+        g_mount_operation_set_domain(m_op, dlg->domain().toUtf8().constData());
         g_mount_operation_set_anonymous(m_op, dlg->anonymous());
         //TODO: when FileEnumerator::prepare(), trying mount volume without password dialog first.
         g_mount_operation_set_password_save(m_op,

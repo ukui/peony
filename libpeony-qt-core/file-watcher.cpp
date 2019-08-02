@@ -8,7 +8,7 @@ using namespace Peony;
 FileWatcher::FileWatcher(QString uri, QObject *parent) : QObject(parent)
 {
     m_uri = uri;
-    m_file = g_file_new_for_uri(uri.toUtf8());
+    m_file = g_file_new_for_uri(uri.toUtf8().constData());
     m_cancellable = g_cancellable_new();
 
     //monitor target file if existed.
@@ -118,7 +118,7 @@ void FileWatcher::changeMonitorUri(QString uri)
     g_object_unref(m_monitor);
     g_object_unref(m_dir_monitor);
 
-    m_file = g_file_new_for_uri(uri.toUtf8());
+    m_file = g_file_new_for_uri(uri.toUtf8().constData());
 
     prepare();
 
