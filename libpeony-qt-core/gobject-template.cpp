@@ -1,6 +1,6 @@
 #include "gobject-template.h"
 
-using namespace Peony;
+namespace Peony {
 
 std::shared_ptr<GObjectTemplate<GFile>> wrapGFile(GFile *file) {
     return std::make_shared<GObjectTemplate<GFile>>(file);
@@ -51,3 +51,5 @@ std::shared_ptr<GObjectTemplate<>> wrap() {
     return std::make_shared<GObjectTemplate<>>();
 }
 */
+
+}
