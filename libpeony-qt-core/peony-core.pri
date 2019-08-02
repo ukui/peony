@@ -9,7 +9,8 @@ HEADERS += $$PWD/peony-core_global.h \
            $$PWD/file-watcher.h \
            $$PWD/connect-server-dialog.h \
     $$PWD/volume-manager.h \
-    $$PWD/gerror-wrapper.h
+    $$PWD/gerror-wrapper.h \
+    $$PWD/gobject-template.h
 
 SOURCES += $$PWD/file-info.cpp \
            $$PWD/file-info-job.cpp \
