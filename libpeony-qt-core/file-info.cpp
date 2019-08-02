@@ -16,8 +16,6 @@ FileInfo::~FileInfo()
 {
     qDebug()<<"~FileInfo"<<m_uri;
     disconnect();
-    FileInfoManager *info_manager = FileInfoManager::getInstance();
-    info_manager->removeFileInfobyUri(m_uri);
 
     g_object_unref(m_cancellable);
     g_object_unref(m_file);

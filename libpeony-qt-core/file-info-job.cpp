@@ -36,7 +36,7 @@ FileInfoJob::FileInfoJob(std::shared_ptr<FileInfo> info, QObject *parent) : QObj
  */
 FileInfoJob::~FileInfoJob()
 {
-    //qDebug()<<"~Job"<<m_info.use_count();
+    qDebug()<<"~Job"<<m_info.use_count();
     if (m_info.use_count() <= 2) {
         Peony::FileInfoManager *mgr = Peony::FileInfoManager::getInstance();
         mgr->remove(m_info);
