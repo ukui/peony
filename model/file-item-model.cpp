@@ -10,7 +10,7 @@ using namespace Peony;
 
 FileItemModel::FileItemModel(QObject *parent) : QAbstractItemModel (parent)
 {
-    connect(this, &FileItemModel::foundChildren, this, &FileItemModel::onFoundChildren);
+
 }
 
 FileItemModel::~FileItemModel()

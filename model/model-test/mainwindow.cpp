@@ -75,6 +75,7 @@ MainWindow::MainWindow(QWidget *parent)
         Peony::FileItemModel *model = new Peony::FileItemModel(this);
 
         Peony::FileItem *item = new Peony::FileItem(Peony::FileInfo::fromUri(line->text().toUtf8().constData()), nullptr, model, this);
+
         model->setRootItem(item);
 
         QTreeView *v = new QTreeView();
@@ -108,6 +109,17 @@ MainWindow::MainWindow(QWidget *parent)
             item->clearChildren();
         });
         pv->show();
+
+        connect(model, &Peony::FileItemModel::findChildrenStarted, [pv](){
+            QCursor c;
+            c.setShape(Qt::WaitCursor);
+            pv->setCursor(c);
+        });
+        connect(model, &Peony::FileItemModel::findChildrenFinished, [pv](){
+            QCursor c;
+            c.setShape(Qt::ArrowCursor);
+            pv->setCursor(c);
+        });
     });
 
 

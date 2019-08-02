@@ -50,6 +50,7 @@ bool FileItem::operator==(const FileItem &item)
 
 QVector<FileItem*> *FileItem::findChildrenSync()
 {
+    Q_EMIT m_model->findChildrenStarted();
     std::shared_ptr<Peony::FileEnumerator> enumerator = std::make_shared<Peony::FileEnumerator>();
     enumerator->setEnumerateDirectory(m_info->uri());
     enumerator->enumerateSync();
@@ -61,6 +62,7 @@ QVector<FileItem*> *FileItem::findChildrenSync()
         job->setAutoDelete();
         job->querySync();
     }
+    Q_EMIT m_model->findChildrenFinished();
     return m_children;
 }
 
@@ -69,6 +71,7 @@ void FileItem::findChildrenAsync()
     if (m_expanded)
         return;
 
+    Q_EMIT m_model->findChildrenStarted();
     m_expanded = true;
     Peony::FileEnumerator *enumerator = new Peony::FileEnumerator;
     enumerator->setEnumerateDirectory(m_info->uri());
@@ -101,6 +104,7 @@ void FileItem::findChildrenAsync()
                     m_async_count--;
                     if (m_async_count == 0) {
                         m_model->insertRows(0, m_children->count(), this->firstColumnIndex());
+                        Q_EMIT this->m_model->findChildrenFinished();
                     }
                 });
                 job->queryAsync();

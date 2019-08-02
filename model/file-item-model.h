@@ -129,23 +129,23 @@ public:
 
 Q_SIGNALS:
     /*!
-     * \brief foundChildren
-     * \param parent
-     * \deprecated
+     * \brief findChildrenStarted
+     * <br>
+     * This signal is use for telling other object that the item has started enumerating.
+     * An icon view(or list view) can connect this signal for setting cursor as style-loading.
+     * </br>
+     * \see findChildrenFinished()
      */
-    void foundChildren(const QModelIndex &parent);
+    void findChildrenStarted();
     /*!
-     * \brief itemAdded
-     * \param item
-     * \deprecated
+     * \brief findChildrenFinished
+     * <br>
+     * This signal is use for telling other object that the item has finished loading.
+     * An icon view(or list view) can connect this signal for setting cursor as normal.
+     * </br>
+     * \see findChildrenStarted().
      */
-    void itemAdded(FileItem *item);
-    /*!
-     * \brief itemRemoved
-     * \param item
-     * \deprecated
-     */
-    void itemRemoved(FileItem *item);
+    void findChildrenFinished();
 
     /*!
      * \brief updated

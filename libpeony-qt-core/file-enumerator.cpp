@@ -7,6 +7,7 @@
 #include "gerror-wrapper.h"
 
 #include <QList>
+#include <QMessageBox>
 
 #include <QDebug>
 #include <QTimer>
@@ -219,16 +220,11 @@ void FileEnumerator::handleError(GError *err)
                                       this);
         break;
     case G_IO_ERROR_NOT_SUPPORTED:
-        g_file_mount_enclosing_volume(m_root_file,
-                                      G_MOUNT_MOUNT_NONE,
-                                      nullptr,
-                                      m_cancellable,
-                                      GAsyncReadyCallback(mount_enclosing_volume_callback),
-                                      this);
+        QMessageBox::critical(nullptr, tr("Error"), err->message);
         break;
     case G_IO_ERROR_PERMISSION_DENIED:
         //FIXME: do i need add an auth function for this kind of errors?
-        qDebug()<<"need permisson";
+        QMessageBox::critical(nullptr, tr("Error"), err->message);
         break;
     default:
         break;

@@ -65,7 +65,6 @@ public:
     bool hasChildren();
 
 Q_SIGNALS:
-    void findChildrenAsyncFinished(FileItem *parentItem);
 
     void childAdded(const QString &uri);
     void childRemoved(const QString &uri);
