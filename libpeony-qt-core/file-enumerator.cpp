@@ -132,8 +132,6 @@ void FileEnumerator::prepare()
                                                             m_cancellable,
                                                             &err);
 
-    g_object_unref(enumerator);
-
     if (err) {
         //do not send prepared(err) here, wait handle err finished.
         handleError(err);
@@ -143,6 +141,7 @@ void FileEnumerator::prepare()
         //for confirming other object will recieve this signal, you can aslo
         //connect prepared signal before prepared() method to confirm that.
         //Q_EMIT prepared(nullptr);
+        g_object_unref(enumerator);
         QTimer::singleShot(100, this, [=](){
             Q_EMIT prepared(nullptr);
         });
@@ -190,7 +189,7 @@ void FileEnumerator::enumerateSync()
 
 void FileEnumerator::handleError(GError *err)
 {
-    qDebug()<<err->code<<err->message;
+    qDebug()<<"handleError"<<err->code<<err->message;
     switch (err->code) {
     case G_IO_ERROR_NOT_DIRECTORY:
         if (g_file_has_uri_scheme(m_root_file, "computer")) {

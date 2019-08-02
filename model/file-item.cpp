@@ -87,12 +87,14 @@ void FileItem::findChildrenAsync()
                 m_children->prepend(child);
                 FileInfoJob *job = new FileInfoJob(info);
                 job->setAutoDelete();
+                /*
                 FileInfo *shared_info = info.get();
                 int row = infos.indexOf(info);
                 //qDebug()<<info->uri()<<row;
                 job->connect(job, &FileInfoJob::infoUpdated, [=](){
                     qDebug()<<shared_info->iconName()<<row;
                 });
+                */
                 connect(job, &FileInfoJob::destroyed, [=](){
                     //the query job is finished and will be deleted soon,
                     //whatever info was updated, we need decrease the async count.

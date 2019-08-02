@@ -24,7 +24,6 @@ FileItemModel::~FileItemModel()
 void FileItemModel::setRootItem(FileItem *item)
 {
     beginResetModel();
-    m_root_item->disconnect();
     delete m_root_item;
 
     m_root_item = item;
