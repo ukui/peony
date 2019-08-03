@@ -8,7 +8,7 @@ QT       += core widgets gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += printsupport
 
-TARGET = peony-qt-core
+TARGET = peony-qt
 TEMPLATE = lib
 
 CONFIG += link_pkgconfig no_keywords c++11
@@ -27,11 +27,16 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
+include(../model/model.pri)
 include(peony-core.pri)
 
 unix {
-    target.path = $$QT_INSTALL_LIBS
+    target.path = $$[QT_INSTALL_LIBS]/peony-qt
     INSTALLS += target
+
+    header.path = /usr/include/peony-qt
+    header.files = *.h ../model/*.h
+    INSTALLS += header
 }
 
 FORMS += \

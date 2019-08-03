@@ -3,12 +3,15 @@
 
 #include <QObject>
 #include <QSortFilterProxyModel>
-#include "file-item-model.h"
-#include "file-item.h"
+
+#include "peony-core_global.h"
 
 namespace Peony {
 
-class FileItemProxyFilterSortModel : public QSortFilterProxyModel
+class FileItem;
+class FileItemModel;
+
+class PEONYCORESHARED_EXPORT FileItemProxyFilterSortModel : public QSortFilterProxyModel
 {
     Q_OBJECT
 public:

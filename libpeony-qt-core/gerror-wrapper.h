@@ -9,7 +9,7 @@
 
 namespace Peony {
 
-class GErrorWrapper
+class PEONYCORESHARED_EXPORT GErrorWrapper
 {
 public:
     GErrorWrapper();//do not use this constructor.

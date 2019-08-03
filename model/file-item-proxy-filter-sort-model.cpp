@@ -1,3 +1,5 @@
+#include "file-item-model.h"
+#include "file-item.h"
 #include "file-item-proxy-filter-sort-model.h"
 #include "file-info.h"
 

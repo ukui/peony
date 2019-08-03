@@ -2,6 +2,7 @@
 #define FILEITEMMODEL_H
 
 #include <QAbstractItemModel>
+#include "peony-core_global.h"
 
 namespace Peony {
 
@@ -18,7 +19,7 @@ class FileItemProxyFilterSortModel;
  * the model.
  * </br>
  */
-class FileItemModel : public QAbstractItemModel
+class PEONYCORESHARED_EXPORT FileItemModel : public QAbstractItemModel
 {
     enum ColumnType {
         FileName,

@@ -11,8 +11,8 @@
   EXAMPLE_FILES = menuplugintest1.json
 
   # install
-  target.path = ../testdir
-  INSTALLS += target
+  #target.path = ../testdir
+  #INSTALLS += target
 
   CONFIG += install_ok  # Do not cargo-cult this!
 

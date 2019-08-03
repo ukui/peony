@@ -3,6 +3,10 @@
 
 #include <QtCore/qglobal.h>
 
+#undef signals
+#undef slots
+#undef emit
+
 #if defined(PEONYCORE_LIBRARY)
 #  define PEONYCORESHARED_EXPORT Q_DECL_EXPORT
 #else

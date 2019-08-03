@@ -32,7 +32,7 @@ class FileItemProxyFilterSortModel;
  * Actually, every FileItem instance should bind with an model instance,
  * otherwise it will be useless.
  */
-class FileItem : public QObject
+class PEONYCORESHARED_EXPORT FileItem : public QObject
 {
     friend class FileItemProxyFilterSortModel;
     friend class FileItemModel;
