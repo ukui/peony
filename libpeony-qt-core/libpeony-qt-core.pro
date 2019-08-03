@@ -31,7 +31,7 @@ include(../model/model.pri)
 include(peony-core.pri)
 
 unix {
-    target.path = $$[QT_INSTALL_LIBS]/peony-qt
+    target.path = $$[QT_INSTALL_LIBS]
     INSTALLS += target
 
     header.path = /usr/include/peony-qt
