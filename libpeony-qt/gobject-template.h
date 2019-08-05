@@ -47,17 +47,17 @@ private:
 };
 
 //typedef
-typedef std::shared_ptr<GObjectTemplate<GFile>> GFileWrapper;
-typedef std::shared_ptr<GObjectTemplate<GFileInfo>> GFileInfoWrapper;
-typedef std::shared_ptr<GObjectTemplate<GFileEnumerator>> GFileEnumeratorWrapper;
-typedef std::shared_ptr<GObjectTemplate<GFileMonitor>> GFileMonitorWrapper;
-typedef std::shared_ptr<GObjectTemplate<GVolumeMonitor>> GVolumeMonitorWrapper;
-typedef std::shared_ptr<GObjectTemplate<GDrive>> GDriveWrapper;
-typedef std::shared_ptr<GObjectTemplate<GVolume>> GVolumeWrapper;
-typedef std::shared_ptr<GObjectTemplate<GMount>> GMountWrapper;
-typedef std::shared_ptr<GObjectTemplate<GIcon>> GIconWrapper;
-typedef std::shared_ptr<GObjectTemplate<GThemedIcon>> GThemedIconWrapper;
-typedef std::shared_ptr<GObjectTemplate<GCancellable>> GCancellableWrapper;
+typedef std::shared_ptr<GObjectTemplate<GFile>> GFileWrapperPtr;
+typedef std::shared_ptr<GObjectTemplate<GFileInfo>> GFileInfoWrapperPtr;
+typedef std::shared_ptr<GObjectTemplate<GFileEnumerator>> GFileEnumeratorWrapperPtr;
+typedef std::shared_ptr<GObjectTemplate<GFileMonitor>> GFileMonitorWrapperPtr;
+typedef std::shared_ptr<GObjectTemplate<GVolumeMonitor>> GVolumeMonitorWrapperPtr;
+typedef std::shared_ptr<GObjectTemplate<GDrive>> GDriveWrapperPtr;
+typedef std::shared_ptr<GObjectTemplate<GVolume>> GVolumeWrapperPtr;
+typedef std::shared_ptr<GObjectTemplate<GMount>> GMountWrapperPtr;
+typedef std::shared_ptr<GObjectTemplate<GIcon>> GIconWrapperPtr;
+typedef std::shared_ptr<GObjectTemplate<GThemedIcon>> GThemedIconWrapperPtr;
+typedef std::shared_ptr<GObjectTemplate<GCancellable>> GCancellableWrapperPtr;
 
 std::shared_ptr<GObjectTemplate<GFile>> wrapGFile(GFile *file);
 std::shared_ptr<GObjectTemplate<GFileInfo>> wrapGFileInfo(GFileInfo *info);
