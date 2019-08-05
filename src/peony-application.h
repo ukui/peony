@@ -19,7 +19,7 @@ class PeonyApplication : public QApplication
 {
     Q_OBJECT
 public:
-    PeonyApplication(int argc, char *argv[]);
+    PeonyApplication(int &argc, char *argv[]);
 };
 
 #endif // PEONYAPPLICATION_H

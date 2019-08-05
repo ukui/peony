@@ -6,7 +6,7 @@
 #include <QPluginLoader>
 #include <QString>
 
-PeonyApplication::PeonyApplication(int argc, char *argv[]) : QApplication (argc, argv)
+PeonyApplication::PeonyApplication(int &argc, char *argv[]) : QApplication (argc, argv)
 {
     //check if first run
     //if not send message to server
