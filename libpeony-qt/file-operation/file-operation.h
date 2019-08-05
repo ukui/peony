@@ -22,6 +22,7 @@ class FileOperation : public QObject, public QRunnable
 {
     Q_OBJECT
 
+public:
     enum ResponseType {
         IgnoreOne,
         IgnoreAll,
@@ -33,7 +34,6 @@ class FileOperation : public QObject, public QRunnable
         Cancel
     };
 
-public:
     explicit FileOperation(QObject *parent = nullptr);
     ~FileOperation();
     virtual void run() = 0;
@@ -58,6 +58,9 @@ Q_SIGNALS:
 
 public Q_SLOTS:
     void cancel();
+
+protected:
+    GCancellableWrapperPtr getCancellable(){return m_cancellable_wrapper;}
 
 private:
     GCancellableWrapperPtr m_cancellable_wrapper = nullptr;
