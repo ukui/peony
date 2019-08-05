@@ -1,15 +1,20 @@
 #-------------------------------------------------
 #
-# Project created by QtCreator 2019-07-25T11:27:48
+# Project created by QtCreator 2019-07-20T10:23:11
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core widgets gui
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+greaterThan(QT_MAJOR_VERSION, 4): QT += printsupport
 
-TARGET = model-test
-TEMPLATE = app
+TARGET = peony-qt
+TEMPLATE = lib
+
+CONFIG += link_pkgconfig no_keywords c++11
+PKGCONFIG += glib-2.0 gio-2.0
+
+DEFINES += PEONYCORE_LIBRARY
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which has been marked as deprecated (the exact warnings
@@ -22,20 +27,17 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
-CONFIG += link_pkgconfig no_keywords c++11
-PKGCONFIG += glib-2.0 gio-2.0
+include(model/model.pri)
+include(peony-core.pri)
 
-include(../../libpeony-qt-core/peony-core.pri)
-include(../model.pri)
+unix {
+    target.path = $$[QT_INSTALL_LIBS]
+    INSTALLS += target
 
-SOURCES += \
-        main.cpp \
-        mainwindow.cpp
+    header.path = /usr/include/peony-qt
+    header.files = *.h ../model/*.h
+    INSTALLS += header
+}
 
-HEADERS += \
-        mainwindow.h
-
-# Default rules for deployment.
-#qnx: target.path = /tmp/$${TARGET}/bin
-#else: unix:!android: target.path = /opt/$${TARGET}/bin
-#!isEmpty(target.path): INSTALLS += target
+FORMS += \
+    connect-server-dialog.ui
