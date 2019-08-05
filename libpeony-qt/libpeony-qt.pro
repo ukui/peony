@@ -38,6 +38,3 @@ unix {
     header.files = *.h ../model/*.h
     INSTALLS += header
 }
-
-FORMS += \
-    connect-server-dialog.ui
