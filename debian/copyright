@@ -677,8 +677,10 @@ Copyright: 2005, Raffaele Sandrini
 License: LGPL-2+
 
 Files: libpeony-private/peony-icon-info.c
+       libpeony-private/peony-search-engine-image-search-simple.c
+       libpeony-private/peony-search-engine-image-search-simple.h
 Copyright: 2007, Red Hat, Inc., Alexander Larsson <alexl@redhat.com>
-           2018, Tianjin KYLIN Information Technology Co., Ltd.
+           2019, Tianjin KYLIN Information Technology Co., Ltd.
 License: LGPL-2+
 
 Files: src/peony-pathbar.c

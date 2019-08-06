@@ -1,7 +1,8 @@
 peony (1.1.6-1) unstable; urgency=medium
 
   * Add file path to the address bar that can click.
-  * Add drag directories to favorites and delete favorites directories function.
+  * Add drag directories to favorites and delete favorites directories
+    function.
   * Add folder image and set location button size.
   * Add search entry delete function.
   * Modify sidebar, statusbar, locationbar style.
@@ -12,8 +13,10 @@ peony (1.1.6-1) unstable; urgency=medium
   * Fix the location bar error.
   * Reload window after desktop-is-home-dir changed. (LP: #1831857)
   * Fix the crash when using listview mode. (LP: #1827994)
+  * debian/control:
+    - Drop engrampa from suggests.
 
- -- handsome_feng <jianfengli@ubuntukylin.com>  Thu, 04 Jul 2019 17:22:16 +0800
+ -- handsome_feng <jianfengli@ubuntukylin.com>  Tue, 06 Aug 2019 14:51:41 +0800
 
 peony (1.1.5-1) unstable; urgency=medium
 
