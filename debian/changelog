@@ -15,6 +15,7 @@ peony (1.1.6-1) unstable; urgency=medium
   * Fix the crash when using listview mode. (LP: #1827994)
   * debian/control:
     - Drop engrampa from suggests.
+    - Fix symbols-file-missing-build-depends-package-field.
 
  -- handsome_feng <jianfengli@ubuntukylin.com>  Tue, 06 Aug 2019 14:51:41 +0800
 

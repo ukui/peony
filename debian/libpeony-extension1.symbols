@@ -1,4 +1,5 @@
 libpeony-extension.so.1 libpeony-extension1 #MINVER#
+* Build-Depends-Package: libpeony-extension-dev
  peony_column_get_type@Base 1.1.1
  peony_column_new@Base 1.1.1
  peony_column_provider_get_columns@Base 1.1.1
