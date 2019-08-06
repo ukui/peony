@@ -6,6 +6,9 @@
 
 namespace Peony {
 
+class FileNodeReporter;
+class FileNode;
+
 class FileMoveOperation : public FileOperation
 {
 public:
@@ -21,6 +24,9 @@ protected:
     static void progress_callback(goffset current_num_bytes,
                                   goffset total_num_bytes,
                                   FileMoveOperation *p_this);
+
+    void copyRecursively(FileNode *node);
+    void deleteRecursively(FileNode *node);
 
     void move();
     void moveForceUseFallback();
@@ -47,6 +53,11 @@ private:
     bool m_ignore_all_errors = false;
     bool m_overwrite_all_duplicated = false;
     bool m_backup_all_duplicated = false;
+
+    GFileCopyFlags m_default_copy_flag = GFileCopyFlags(G_FILE_COPY_NOFOLLOW_SYMLINKS|
+                                                        G_FILE_COPY_ALL_METADATA);
+
+    FileNodeReporter *m_reporter = nullptr;
 };
 
 }

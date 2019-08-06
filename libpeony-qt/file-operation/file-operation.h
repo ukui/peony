@@ -7,6 +7,11 @@
 #include "gerror-wrapper.h"
 #include "gobject-template.h"
 
+#include "file-enumerator.h"
+#include "file-info.h"
+
+#include <QMetaType>
+
 namespace Peony {
 
 /*!
@@ -54,7 +59,7 @@ Q_SIGNALS:
      * Qt::BlockingQueuedConnection flag set. That also limit you use fileoperation and its
      * derived class in main thread.
      */
-    ResponseType errored(const GErrorWrapperPtr &err);
+    QVariant errored(const GErrorWrapperPtr &err);
 
 public Q_SLOTS:
     void cancel();
@@ -68,5 +73,7 @@ private:
 };
 
 }
+
+Q_DECLARE_METATYPE(Peony::FileOperation::ResponseType)
 
 #endif // FILEOPERATION_H

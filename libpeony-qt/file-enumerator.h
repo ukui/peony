@@ -57,6 +57,10 @@ public:
      */
     void enumerateSync();
 
+    /*!
+     * \brief getChildren
+     * \return
+     */
     QList<std::shared_ptr<FileInfo>> getChildren();
 
 Q_SIGNALS:
@@ -182,10 +186,7 @@ private:
     GFile *m_root_file = nullptr;
     GCancellable *m_cancellable = nullptr;
 
-    /*!
-     * \brief m_children, a cached list of GFile handle owned by subfiles.
-     */
-    GList *m_children = nullptr;
+    QList<QString> *m_children_uris = nullptr;
 };
 
 }

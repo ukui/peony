@@ -98,7 +98,7 @@ void FileItem::findChildrenAsync()
                     qDebug()<<shared_info->iconName()<<row;
                 });
                 */
-                connect(job, &FileInfoJob::destroyed, [=](){
+                connect(job, &FileInfoJob::infoUpdated, [=](){
                     //the query job is finished and will be deleted soon,
                     //whatever info was updated, we need decrease the async count.
                     m_async_count--;
