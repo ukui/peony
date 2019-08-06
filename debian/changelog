@@ -16,6 +16,7 @@ peony (1.1.6-1) unstable; urgency=medium
   * debian/control:
     - Drop engrampa from suggests.
     - Fix symbols-file-missing-build-depends-package-field.
+    - Bump Standards-Version to 4.4.0.
 
  -- handsome_feng <jianfengli@ubuntukylin.com>  Tue, 06 Aug 2019 14:51:41 +0800
 

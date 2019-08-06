@@ -30,7 +30,7 @@ Build-Depends: debhelper (>= 12),
                libwebkit2gtk-4.0-dev,
                mate-common (>= 1.17),
                shared-mime-info,
-Standards-Version: 4.3.0
+Standards-Version: 4.4.0
 Homepage: http://www.ukui.org/
 Vcs-Git: https://github.com/ukui/peony.git
 Vcs-Browser: https://github.com/ukui/peony
