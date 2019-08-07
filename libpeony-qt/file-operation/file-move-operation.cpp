@@ -4,27 +4,56 @@
 
 using namespace Peony;
 
-FileMoveOperation::FileMoveOperation(QStringList sourceUris, QString destUri, QObject *parent) : FileOperation (parent)
+FileMoveOperation::FileMoveOperation(QStringList sourceUris, QString destDirUri, QObject *parent) : FileOperation (parent)
 {
     m_source_uris = sourceUris;
-    m_dest_uri = destUri;
+    m_dest_dir_uri = destDirUri;
+}
+
+FileMoveOperation::~FileMoveOperation()
+{
+    if (m_reporter)
+        delete m_reporter;
 }
 
 void FileMoveOperation::progress_callback(goffset current_num_bytes,
                                           goffset total_num_bytes,
                                           FileMoveOperation *p_this)
 {
-    //FIXME: do i need compute total size at first anyway?
-    Q_UNUSED(total_num_bytes);
-    p_this->m_current_offset = p_this->m_total_szie + current_num_bytes;
+    if (p_this->m_force_use_fallback) {
+        Q_EMIT p_this->fallbackMoveProgressCallbacked(p_this->m_current_src_uri,
+                                                      p_this->m_current_dest_dir_uri,
+                                                      current_num_bytes,
+                                                      total_num_bytes);
+    } else {
+        Q_EMIT p_this->nativeMoveProgressCallbacked(p_this->m_current_src_uri,
+                                                    p_this->m_current_dest_dir_uri,
+                                                    p_this->m_current_count,
+                                                    p_this->m_total_count);
+    }
+    //format: move srcUri to destDirUri: curent_bytes(count) of total_bytes(count).
+}
+
+FileOperation::ResponseType FileMoveOperation::prehandle(GError *err)
+{
+    if (m_prehandle_hash.contains(err->code))
+        return m_prehandle_hash.value(err->code);
+
+    return Other;
 }
 
 void FileMoveOperation::move()
 {
-    auto destDir = wrapGFile(g_file_new_for_uri(m_dest_uri.toUtf8().constData()));
+    auto destDir = wrapGFile(g_file_new_for_uri(m_dest_dir_uri.toUtf8().constData()));
+    m_total_count = m_source_uris.count();
     for (auto srcUri : m_source_uris) {
         if (isCancelled())
             return;
+
+        m_current_count = m_source_uris.indexOf(srcUri) + 1;
+        m_current_src_uri = srcUri;
+        m_current_dest_dir_uri = m_dest_dir_uri;
+
         auto srcFile = wrapGFile(g_file_new_for_uri(srcUri.toUtf8().constData()));
         char *base_name = g_file_get_basename(srcFile.get()->get());
         auto destFile = wrapGFile(g_file_resolve_relative_path(destDir.get()->get(),
@@ -41,74 +70,26 @@ retry:
                     this,
                     &err);
 
-        if (!m_ignore_all_errors && !m_overwrite_all_duplicated && !m_backup_all_duplicated) {
-            if (err) {
-                auto responseTypeWrapper = Q_EMIT errored(GErrorWrapper::wrapFrom(err));
+        if (err) {
+            auto errWrapper = GErrorWrapper::wrapFrom(err);
+            ResponseType handle_type = prehandle(err);
+            if (handle_type == Other) {
+                qDebug()<<"send error";
+                auto responseTypeWrapper = Q_EMIT errored(srcUri, m_dest_dir_uri, errWrapper);
+                qDebug()<<"get return";
+                handle_type = responseTypeWrapper.value<ResponseType>();
                 //block until error has been handled.
-                switch (responseTypeWrapper.value<ResponseType>()) {
-                case IgnoreOne: {
-                    //skip to next loop.
-                    continue;
-                }
-                case IgnoreAll: {
-                    m_ignore_all_errors = true;
-                    continue;
-                }
-                case OverWriteOne: {
-                    g_file_move(srcFile.get()->get(),
-                                destFile.get()->get(),
-                                GFileCopyFlags(m_default_copy_flag|G_FILE_COPY_OVERWRITE),
-                                getCancellable().get()->get(),
-                                GFileProgressCallback(progress_callback),
-                                this,
-                                nullptr);
-                    break;
-                }
-                case OverWriteAll: {
-                    g_file_move(srcFile.get()->get(),
-                                destFile.get()->get(),
-                                GFileCopyFlags(m_default_copy_flag|G_FILE_COPY_OVERWRITE),
-                                getCancellable().get()->get(),
-                                GFileProgressCallback(progress_callback),
-                                this,
-                                nullptr);
-                    m_overwrite_all_duplicated = true;
-                    break;
-                }
-                case BackupOne: {
-                    g_file_move(srcFile.get()->get(),
-                                destFile.get()->get(),
-                                GFileCopyFlags(m_default_copy_flag|G_FILE_COPY_BACKUP),
-                                getCancellable().get()->get(),
-                                GFileProgressCallback(progress_callback),
-                                this,
-                                nullptr);
-                    break;
-                }
-                case BackupAll: {
-                    g_file_move(srcFile.get()->get(),
-                                destFile.get()->get(),
-                                GFileCopyFlags(m_default_copy_flag|G_FILE_COPY_BACKUP),
-                                getCancellable().get()->get(),
-                                GFileProgressCallback(progress_callback),
-                                this,
-                                nullptr);
-                    m_backup_all_duplicated = true;
-                    break;
-                }
-                case Retry: {
-                    goto retry;
-                }
-                case Cancel: {
-                    cancel();
-                    break;
-                }
-                }
             }
-        } else {
-            if (m_ignore_all_errors) {
+            switch (handle_type) {
+            case IgnoreOne: {
+                //skip to next loop.
                 continue;
-            } else if (m_overwrite_all_duplicated) {
+            }
+            case IgnoreAll: {
+                m_prehandle_hash.insert(err->code, IgnoreOne);
+                continue;
+            }
+            case OverWriteOne: {
                 g_file_move(srcFile.get()->get(),
                             destFile.get()->get(),
                             GFileCopyFlags(m_default_copy_flag|G_FILE_COPY_OVERWRITE),
@@ -116,7 +97,9 @@ retry:
                             GFileProgressCallback(progress_callback),
                             this,
                             nullptr);
-            } else {
+                break;
+            }
+            case OverWriteAll: {
                 g_file_move(srcFile.get()->get(),
                             destFile.get()->get(),
                             GFileCopyFlags(m_default_copy_flag|G_FILE_COPY_OVERWRITE),
@@ -124,6 +107,39 @@ retry:
                             GFileProgressCallback(progress_callback),
                             this,
                             nullptr);
+                m_prehandle_hash.insert(err->code, OverWriteOne);
+                break;
+            }
+            case BackupOne: {
+                g_file_move(srcFile.get()->get(),
+                            destFile.get()->get(),
+                            GFileCopyFlags(m_default_copy_flag|G_FILE_COPY_BACKUP),
+                            getCancellable().get()->get(),
+                            GFileProgressCallback(progress_callback),
+                            this,
+                            nullptr);
+                break;
+            }
+            case BackupAll: {
+                g_file_move(srcFile.get()->get(),
+                            destFile.get()->get(),
+                            GFileCopyFlags(m_default_copy_flag|G_FILE_COPY_BACKUP),
+                            getCancellable().get()->get(),
+                            GFileProgressCallback(progress_callback),
+                            this,
+                            nullptr);
+                m_prehandle_hash.insert(err->code, BackupOne);
+                break;
+            }
+            case Retry: {
+                goto retry;
+            }
+            case Cancel: {
+                cancel();
+                break;
+            }
+            default:
+                break;
             }
         }
     }
@@ -135,19 +151,81 @@ void FileMoveOperation::copyRecursively(FileNode *node)
         return;
 
     QString relativePath = node->getRelativePath();
-    GFileWrapperPtr destRoot = wrapGFile(g_file_new_for_uri(m_dest_uri.toUtf8().constData()));
+    GFileWrapperPtr destRoot = wrapGFile(g_file_new_for_uri(m_dest_dir_uri.toUtf8().constData()));
     GFileWrapperPtr destFile = wrapGFile(g_file_resolve_relative_path(destRoot.get()->get(),
                                                                       relativePath.toUtf8().constData()));
+
+    m_current_src_uri = node->uri();
+    GFile *dest_parent = g_file_get_parent(destFile.get()->get());
+    char *dest_dir_uri = g_file_get_uri(dest_parent);
+    m_current_dest_dir_uri = dest_dir_uri;
+    g_free(dest_dir_uri);
+    g_object_unref(dest_parent);
+
+fallback_retry:
     if (node->isFolder()) {
         GError *err = nullptr;
+
+        //NOTE: mkdir doesn't have a progress callback.
+        Q_EMIT fallbackMoveProgressCallbacked(m_current_src_uri,
+                                              m_current_dest_dir_uri,
+                                              0,
+                                              node->size());
         g_file_make_directory(destFile.get()->get(),
                               getCancellable().get()->get(),
                               &err);
         if (err) {
-            auto typeData = errored(GErrorWrapper::wrapFrom(err));
-            ResponseType type = typeData.value<ResponseType>();
+            auto errWrapperPtr = GErrorWrapper::wrapFrom(err);
+            ResponseType handle_type = prehandle(err);
+            if (handle_type == Other) {
+                qDebug()<<"send error";
+                auto typeData = errored(m_current_src_uri, m_current_dest_dir_uri, errWrapperPtr);
+                qDebug()<<"get return";
+                handle_type = typeData.value<ResponseType>();
+            }
             //handle.
+            switch (handle_type) {
+            case IgnoreOne: {
+                break;
+            }
+            case IgnoreAll: {
+                m_prehandle_hash.insert(err->code, IgnoreOne);
+                break;
+            }
+            case OverWriteOne: {
+                //make dir has no overwrite
+                break;
+            }
+            case OverWriteAll: {
+                m_prehandle_hash.insert(err->code, OverWriteOne);
+                break;
+            }
+            case BackupOne: {
+                //make dir has no backup
+                break;
+            }
+            case BackupAll: {
+                //make dir has no backup
+                m_prehandle_hash.insert(err->code, BackupOne);
+                break;
+            }
+            case Retry: {
+                goto fallback_retry;
+            }
+            case Cancel: {
+                cancel();
+                break;
+            }
+            default:
+                break;
+            }
         }
+        //assume that make dir finished anyway
+        Q_EMIT fallbackMoveProgressCallbacked(m_current_src_uri,
+                                              m_current_dest_dir_uri,
+                                              node->size(),
+                                              node->size());
+        Q_EMIT m_reporter->nodeOperationDone(node->uri(), node->size());
         for (auto child : *(node->children())) {
             copyRecursively(child);
         }
@@ -163,10 +241,77 @@ void FileMoveOperation::copyRecursively(FileNode *node)
                     &err);
 
         if (err) {
-            auto typeData = errored(GErrorWrapper::wrapFrom(err));
-            ResponseType type = typeData.value<ResponseType>();
+            auto errWrapperPtr = GErrorWrapper::wrapFrom(err);
+            ResponseType handle_type = prehandle(err);
+            if (handle_type == Other) {
+                qDebug()<<"send error";
+                auto typeData = errored(m_current_src_uri, m_current_dest_dir_uri, errWrapperPtr);
+                qDebug()<<"get return";
+                handle_type = typeData.value<ResponseType>();
+            }
             //handle.
+            switch (handle_type) {
+            case IgnoreOne: {
+                break;
+            }
+            case IgnoreAll: {
+                m_prehandle_hash.insert(err->code, IgnoreOne);
+                break;
+            }
+            case OverWriteOne: {
+                g_file_copy(sourceFile.get()->get(),
+                            destFile.get()->get(),
+                            GFileCopyFlags(m_default_copy_flag | G_FILE_COPY_OVERWRITE),
+                            getCancellable().get()->get(),
+                            GFileProgressCallback(progress_callback),
+                            this,
+                            nullptr);
+                break;
+            }
+            case OverWriteAll: {
+                g_file_copy(sourceFile.get()->get(),
+                            destFile.get()->get(),
+                            GFileCopyFlags(m_default_copy_flag | G_FILE_COPY_OVERWRITE),
+                            getCancellable().get()->get(),
+                            GFileProgressCallback(progress_callback),
+                            this,
+                            nullptr);
+                m_prehandle_hash.insert(err->code, OverWriteOne);
+                break;
+            }
+            case BackupOne: {
+                g_file_copy(sourceFile.get()->get(),
+                            destFile.get()->get(),
+                            GFileCopyFlags(m_default_copy_flag | G_FILE_COPY_BACKUP),
+                            getCancellable().get()->get(),
+                            GFileProgressCallback(progress_callback),
+                            this,
+                            nullptr);
+                break;
+            }
+            case BackupAll: {
+                g_file_copy(sourceFile.get()->get(),
+                            destFile.get()->get(),
+                            GFileCopyFlags(m_default_copy_flag | G_FILE_COPY_BACKUP),
+                            getCancellable().get()->get(),
+                            GFileProgressCallback(progress_callback),
+                            this,
+                            nullptr);
+                m_prehandle_hash.insert(err->code, BackupOne);
+                break;
+            }
+            case Retry: {
+                goto fallback_retry;
+            }
+            case Cancel: {
+                cancel();
+                break;
+            }
+            default:
+                break;
+            }
         }
+        Q_EMIT m_reporter->nodeOperationDone(node->uri(), node->size());
     }
 }
 
@@ -195,12 +340,23 @@ void FileMoveOperation::moveForceUseFallback()
     if (isCancelled())
         return;
 
+    m_reporter = new FileNodeReporter;
+    connect(m_reporter, &FileNodeReporter::nodeFound, this, &FileMoveOperation::addOne);
+    connect(m_reporter, &FileNodeReporter::nodeOperationDone, this, &FileMoveOperation::fileMoved);
+
+    //FIXME: total size should not compute twice. I should get it from ui-thread.
+    goffset *total_size = new goffset(0);
+
     QList<FileNode*> nodes;
     for (auto uri : m_source_uris) {
         FileNode *node = new FileNode(uri, nullptr, m_reporter);
         node->findChildrenRecursively();
+        node->computeTotalSize(total_size);
         nodes<<node;
     }
+
+    m_total_szie = *total_size;
+    delete total_size;
 
     if (m_reporter)
         m_reporter->enumerateNodeFinished();
@@ -221,4 +377,5 @@ void FileMoveOperation::run()
         moveForceUseFallback();
     }
     qDebug()<<"finished";
+    Q_EMIT operationFinished();
 }

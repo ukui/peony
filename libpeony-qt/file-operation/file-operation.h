@@ -11,6 +11,7 @@
 #include "file-info.h"
 
 #include <QMetaType>
+#include <QHash>
 
 namespace Peony {
 
@@ -36,7 +37,8 @@ public:
         BackupOne,
         BackupAll,
         Retry,
-        Cancel
+        Cancel,
+        Other
     };
 
     explicit FileOperation(QObject *parent = nullptr);
@@ -59,7 +61,16 @@ Q_SIGNALS:
      * Qt::BlockingQueuedConnection flag set. That also limit you use fileoperation and its
      * derived class in main thread.
      */
-    QVariant errored(const GErrorWrapperPtr &err);
+    QVariant errored(const QString &srcUri, const QString &destUri, const Peony::GErrorWrapperPtr &err);
+
+    /*!
+     * \brief operationFinished
+     * <br>
+     * This signal is used to tell other object that the file operation has finished.
+     * A progress dialog can connect this signal and close itself when the signal triggered.
+     * </br>
+     */
+    void operationFinished();
 
 public Q_SLOTS:
     void cancel();

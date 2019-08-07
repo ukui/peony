@@ -2,6 +2,7 @@
 #include "file-operation/file-move-operation.h"
 #include "file-operation/file-node.h"
 #include "file-operation/file-node-reporter.h"
+#include "connect-server-dialog.h"
 #include "gerror-wrapper.h"
 
 #include <QDebug>
@@ -11,6 +12,11 @@
 #include <QLabel>
 #include <QThread>
 #include <QThreadPool>
+
+#include <QProgressBar>
+#include <QProgressDialog>
+
+#include <QDialog>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -24,6 +30,8 @@ MainWindow::MainWindow(QWidget *parent)
     t->setOrientation(Qt::Vertical);
     t->addWidget(current_uri_label);
     t->addWidget(offset_label);
+    QAction *startAction = new QAction("start", t);
+    t->addAction(startAction);
 
     QStringList srcUris;
     srcUris<<"file:///home/lanyue/test";
@@ -31,15 +39,29 @@ MainWindow::MainWindow(QWidget *parent)
     //Peony::FileNodeReporter *reporter = new Peony::FileNodeReporter;
     Peony::FileMoveOperation *moveOp = new Peony::FileMoveOperation(srcUris, destUri);
     //moveOp->setForceUseFallback();
-    connect(moveOp, &Peony::FileMoveOperation::errored, [](const Peony::GErrorWrapperPtr &err){
-        qDebug()<<"err"<<err.get()->message();
-        return QVariant(Peony::FileOperation::IgnoreAll);
+
+    moveOp->connect(moveOp, &Peony::FileMoveOperation::errored, this, &MainWindow::handleError, Qt::BlockingQueuedConnection);
+    connect(startAction, &QAction::triggered, [=]{
+        QThreadPool::globalInstance()->start(moveOp);
     });
-    QThreadPool pool;
-    pool.start(moveOp);
 }
 
 MainWindow::~MainWindow()
 {
 
+}
+
+QVariant MainWindow::handleError(const QString &srcUri,
+                                 const QString &destDirUri,
+                                 const Peony::GErrorWrapperPtr &err)
+{
+    qDebug()<<"mainwindow handle err"<<err.get()->message();
+    QDialog dlg;
+
+    QLabel l(srcUri + " to " + destDirUri + " " + err.get()->message());
+    dlg.setExtension(&l);
+    dlg.showExtension(true);
+    dlg.exec();
+    //blocked
+    return QVariant(Peony::FileOperation::IgnoreOne);
 }

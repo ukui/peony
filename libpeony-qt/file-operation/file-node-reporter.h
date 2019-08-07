@@ -12,7 +12,7 @@ class FileNode;
  * \brief The FileNodeReporter class
  * <br>
  * This class is a signal proxy of FileNode instances.
- * Other object can connect the signals getting the current state of filenode.
+ * Other objects can connect the signals getting the current state of filenode.
  * </br>
  */
 class FileNodeReporter : public QObject
@@ -22,13 +22,15 @@ public:
     explicit FileNodeReporter(QObject *parent = nullptr);
     ~FileNodeReporter();
 
-    void sendNodeFound(const QString &uri, const quint64 &offset) {
+    void sendNodeFound(const QString &uri, const qint64 &offset) {
         Q_EMIT nodeFound(uri, offset);
     }
 
 Q_SIGNALS:
-    void nodeFound(const QString &uri, const quint64 &offset);
+    void nodeFound(const QString &uri, const qint64 &offset);
     void enumerateNodeFinished();
+
+    void nodeOperationDone(const QString &uri, const qint64 &offset);
 };
 
 }

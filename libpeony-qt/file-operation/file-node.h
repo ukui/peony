@@ -39,6 +39,7 @@ public:
     FileNode(QString uri, FileNode* parent, FileNodeReporter *reporter = nullptr);
     ~FileNode();
 
+    //FIXME: do i need add cancel function?
     void findChildrenRecursively();
     void computeTotalSize(goffset *offset);
 
