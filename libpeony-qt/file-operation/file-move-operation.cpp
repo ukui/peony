@@ -47,19 +47,23 @@ void FileMoveOperation::move()
     if (isCancelled())
         return;
 
+    QList<FileNode*> nodes;
     for (auto srcUri : m_source_uris) {
         //FIXME: ignore the total size when using native move.
         addOne(srcUri, 0);
+        auto node = new FileNode(srcUri, nullptr, nullptr);
+        nodes<<node;
     }
     operationPrepared();
 
     auto destDir = wrapGFile(g_file_new_for_uri(m_dest_dir_uri.toUtf8().constData()));
     m_total_count = m_source_uris.count();
-    for (auto srcUri : m_source_uris) {
+    for (auto file : nodes) {
         if (isCancelled())
             return;
 
-        m_current_count = m_source_uris.indexOf(srcUri) + 1;
+        QString srcUri = file->uri();
+        m_current_count = nodes.indexOf(file) + 1;
         m_current_src_uri = srcUri;
         m_current_dest_dir_uri = m_dest_dir_uri;
 
@@ -67,6 +71,11 @@ void FileMoveOperation::move()
         char *base_name = g_file_get_basename(srcFile.get()->get());
         auto destFile = wrapGFile(g_file_resolve_relative_path(destDir.get()->get(),
                                                                base_name));
+
+        char *dest_uri = g_file_get_uri(destFile.get()->get());
+        file->setDestUri(dest_uri);
+
+        g_free(dest_uri);
         g_free(base_name);
         GError *err = nullptr;
 
@@ -91,14 +100,17 @@ retry:
             }
             switch (handle_type) {
             case IgnoreOne: {
+                file->setState(FileNode::HandledButDoNotDeleteDestFile);
                 //skip to next loop.
-                continue;
+                break;
             }
             case IgnoreAll: {
+                file->setState(FileNode::HandledButDoNotDeleteDestFile);
                 m_prehandle_hash.insert(err->code, IgnoreOne);
-                continue;
+                break;
             }
             case OverWriteOne: {
+                file->setState(FileNode::Handled);
                 g_file_move(srcFile.get()->get(),
                             destFile.get()->get(),
                             GFileCopyFlags(m_default_copy_flag|G_FILE_COPY_OVERWRITE),
@@ -109,6 +121,7 @@ retry:
                 break;
             }
             case OverWriteAll: {
+                file->setState(FileNode::Handled);
                 g_file_move(srcFile.get()->get(),
                             destFile.get()->get(),
                             GFileCopyFlags(m_default_copy_flag|G_FILE_COPY_OVERWRITE),
@@ -120,6 +133,7 @@ retry:
                 break;
             }
             case BackupOne: {
+                file->setState(FileNode::HandledButDoNotDeleteDestFile);
                 g_file_move(srcFile.get()->get(),
                             destFile.get()->get(),
                             GFileCopyFlags(m_default_copy_flag|G_FILE_COPY_BACKUP),
@@ -130,6 +144,7 @@ retry:
                 break;
             }
             case BackupAll: {
+                file->setState(FileNode::HandledButDoNotDeleteDestFile);
                 g_file_move(srcFile.get()->get(),
                             destFile.get()->get(),
                             GFileCopyFlags(m_default_copy_flag|G_FILE_COPY_BACKUP),
@@ -150,11 +165,92 @@ retry:
             default:
                 break;
             }
-            //FIXME: ignore the total size when using native move.
-            fileMoved(srcUri, 0);
+        } else {
+            file->setState(FileNode::Handled);
         }
-        //native move has not clear operation.
-        operationProgressed();
+        //FIXME: ignore the total size when using native move.
+        fileMoved(srcUri, 0);
+    }
+    //native move has not clear operation.
+    operationProgressed();
+
+    //rollback if cancelled
+    if (isCancelled()) {
+        for (auto file : nodes) {
+            rollbackNodeRecursively(file);
+        }
+    }
+
+    //release node
+    for (auto file : nodes) {
+        delete file;
+    }
+    nodes.clear();
+}
+
+void FileMoveOperation::rollbackNodeRecursively(FileNode *node)
+{
+    switch (node->state()) {
+    case FileNode::Handled: {
+        if (node->isFolder()) {
+            auto children = node->children();
+            for (auto child : *children) {
+                rollbackNodeRecursively(child);
+            }
+            GFile *dest_file = g_file_new_for_uri(node->destUri().toUtf8().constData());
+            g_file_delete(dest_file, nullptr, nullptr);
+            g_object_unref(dest_file);
+        } else {
+            GFile *dest_file = g_file_new_for_uri(node->destUri().toUtf8().constData());
+            g_file_delete(dest_file, nullptr, nullptr);
+            g_object_unref(dest_file);
+        }
+        rollbacked(node->destUri(), node->uri());
+        break;
+    }
+    case FileNode::Cleared: {
+        if (node->isFolder()) {
+            GFile *src_file = g_file_new_for_uri(node->uri().toUtf8().constData());
+            g_file_make_directory(src_file, nullptr, nullptr);
+            g_object_unref(src_file);
+            auto children = node->children();
+            for (auto child : *children) {
+                rollbackNodeRecursively(child);
+            }
+        } else {
+            GFile *dest_file = g_file_new_for_uri(node->destUri().toUtf8().constData());
+            GFile *src_file = g_file_new_for_uri(node->uri().toUtf8().constData());
+            //"rollback"
+            GError *err = nullptr;
+            g_file_move(dest_file,
+                        src_file,
+                        m_default_copy_flag,
+                        nullptr,
+                        nullptr,
+                        nullptr,
+                        &err);
+            if (err) {
+                qDebug()<<node->destUri();
+                qDebug()<<node->uri();
+                qDebug()<<err->message;
+                g_error_free(err);
+            }
+            g_object_unref(dest_file);
+            g_object_unref(src_file);
+        }
+        rollbacked(node->destUri(), node->uri());
+        break;
+    }
+    default: {
+        //make sure all nodes were rollback.
+        if (node->isFolder()) {
+            auto children = node->children();
+            for (auto child : *children) {
+                rollbackNodeRecursively(child);
+            }
+        }
+        break;
+    }
     }
 }
 
@@ -169,6 +265,9 @@ void FileMoveOperation::copyRecursively(FileNode *node)
     GFileWrapperPtr destFile = wrapGFile(g_file_resolve_relative_path(destRoot.get()->get(),
                                                                       relativePath.toUtf8().constData()));
 
+    char *dest_file_uri = g_file_get_uri(destFile.get()->get());
+    node->setDestUri(dest_file_uri);
+    g_free(dest_file_uri);
     m_current_src_uri = node->uri();
     GFile *dest_parent = g_file_get_parent(destFile.get()->get());
     char *dest_dir_uri = g_file_get_uri(dest_parent);
@@ -200,25 +299,31 @@ fallback_retry:
             //handle.
             switch (handle_type) {
             case IgnoreOne: {
+                node->setState(FileNode::HandledButDoNotDeleteDestFile);
                 break;
             }
             case IgnoreAll: {
+                node->setState(FileNode::HandledButDoNotDeleteDestFile);
                 m_prehandle_hash.insert(err->code, IgnoreOne);
                 break;
             }
             case OverWriteOne: {
+                node->setState(FileNode::Handled);
                 //make dir has no overwrite
                 break;
             }
             case OverWriteAll: {
+                node->setState(FileNode::Handled);
                 m_prehandle_hash.insert(err->code, OverWriteOne);
                 break;
             }
             case BackupOne: {
+                node->setState(FileNode::HandledButDoNotDeleteDestFile);
                 //make dir has no backup
                 break;
             }
             case BackupAll: {
+                node->setState(FileNode::HandledButDoNotDeleteDestFile);
                 //make dir has no backup
                 m_prehandle_hash.insert(err->code, BackupOne);
                 break;
@@ -233,6 +338,8 @@ fallback_retry:
             default:
                 break;
             }
+        } else {
+            node->setState(FileNode::Handled);
         }
         //assume that make dir finished anyway
         Q_EMIT fallbackMoveProgressCallbacked(m_current_src_uri,
@@ -266,9 +373,11 @@ fallback_retry:
             //handle.
             switch (handle_type) {
             case IgnoreOne: {
+                node->setState(FileNode::HandledButDoNotDeleteDestFile);
                 break;
             }
             case IgnoreAll: {
+                node->setState(FileNode::HandledButDoNotDeleteDestFile);
                 m_prehandle_hash.insert(err->code, IgnoreOne);
                 break;
             }
@@ -280,6 +389,7 @@ fallback_retry:
                             GFileProgressCallback(progress_callback),
                             this,
                             nullptr);
+                node->setState(FileNode::Handled);
                 break;
             }
             case OverWriteAll: {
@@ -290,6 +400,7 @@ fallback_retry:
                             GFileProgressCallback(progress_callback),
                             this,
                             nullptr);
+                node->setState(FileNode::Handled);
                 m_prehandle_hash.insert(err->code, OverWriteOne);
                 break;
             }
@@ -301,6 +412,7 @@ fallback_retry:
                             GFileProgressCallback(progress_callback),
                             this,
                             nullptr);
+                node->setState(FileNode::HandledButDoNotDeleteDestFile);
                 break;
             }
             case BackupAll: {
@@ -311,6 +423,7 @@ fallback_retry:
                             GFileProgressCallback(progress_callback),
                             this,
                             nullptr);
+                node->setState(FileNode::HandledButDoNotDeleteDestFile);
                 m_prehandle_hash.insert(err->code, BackupOne);
                 break;
             }
@@ -324,6 +437,8 @@ fallback_retry:
             default:
                 break;
             }
+        } else {
+            node->setState(FileNode::Handled);
         }
         Q_EMIT fileMoved(node->uri(), node->size());
     }
@@ -343,11 +458,13 @@ void FileMoveOperation::deleteRecursively(FileNode *node)
             g_file_delete(file,
                           getCancellable().get()->get(),
                           nullptr);
+            node->setState(FileNode::Cleared);
         }
     } else {
         g_file_delete(file,
                       getCancellable().get()->get(),
                       nullptr);
+        node->setState(FileNode::Cleared);
     }
     g_object_unref(file);
     qDebug()<<"deleted";
@@ -384,6 +501,20 @@ void FileMoveOperation::moveForceUseFallback()
 
     for (auto node : nodes) {
         deleteRecursively(node);
+    }
+
+    for (auto node : nodes) {
+        qDebug()<<node->uri();
+    }
+
+    for (auto file : nodes) {
+        qDebug()<<file->uri();
+        if (isCancelled()) {
+            rollbackNodeRecursively(file);
+        }
+    }
+
+    for (auto node : nodes) {
         delete node;
     }
 

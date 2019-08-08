@@ -51,6 +51,8 @@ public:
     void computeTotalSize(goffset *offset);
 
     QString uri() {return m_uri;}
+    QString destUri() {return m_dest_uri;}
+    State state() {return m_state;}
     QString baseName() {return m_basename;}
     FileNode *parent() {return m_parent;}
     QList<FileNode*> *children() {return m_children;}
@@ -90,7 +92,7 @@ public:
      * take the exsited file to orignal position. You can hide the cancel entry in clean progress
      * to avoid this problem.
      * \note HandledButDoNotDeleteDestFile is set when error handle set the Flags to Ignore or Backup.
-     * \note Rollback function in operation, I call it internal rollback. It means a canceling,
+     * \note Rollback function in operation, I call it internal rollback. It means a cancelling,
      * not a rolling back. Peony-qt should provied a operation manager class to make the operation
      * really rollbackable.
      */

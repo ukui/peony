@@ -44,12 +44,29 @@ public:
      */
     void setForceUseFallback(bool useFallback = true) {m_force_use_fallback = useFallback;}
 
+    /*!
+     * \brief rollbackNodeRecursively
+     * \param node, the parent node need rollback
+     * <br>
+     * This is a recursive method for internal operation rollback.
+     * recursive rollback function is more complex than recursive copy and delete function,
+     * because we need decied the order of rollback and recursion by the node's states.
+     * If the node need rollback state is Handled (cancelled in progressing, such as copy),
+     * we need do recursion first, so that we can delete sub nodes successfully.
+     * If the node state is Cleared, this will be the opposite of the previous one.
+     * The rollback file will be created first.
+     * <\br>
+     * \note A native move operation does not support recursive rollback.
+     */
+    void rollbackNodeRecursively(FileNode *node);
+
     void run() override;
 
 Q_SIGNALS:
     void addOne(const QString &srcUri, const qint64 &size);
     void fileMoved(const QString &srcUri, const qint64 &size);
     void srcFileDeleted(const QString &uri);
+    void rollbacked(const QString &destUri, const QString &srcUri);
     void nativeMoveProgressCallbacked(const QString &srcUri, const QString &destDirUri,
                                       const int &current, const int &total);
     void fallbackMoveProgressCallbacked(const QString &srcUri, const QString &destDirUri,
