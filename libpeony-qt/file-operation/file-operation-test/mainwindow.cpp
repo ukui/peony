@@ -39,26 +39,35 @@ MainWindow::MainWindow(QWidget *parent)
     srcUris<<"file:///home/lanyue/test";
     QString destUri = "file:///home/lanyue/test2";
     //Peony::FileNodeReporter *reporter = new Peony::FileNodeReporter;
-    Peony::FileMoveOperation *moveOp = new Peony::FileMoveOperation(srcUris, destUri);
-    moveOp->setForceUseFallback();
 
-    moveOp->connect(moveOp, &Peony::FileMoveOperation::errored, this, &MainWindow::handleError, Qt::BlockingQueuedConnection);
     connect(startAction, &QAction::triggered, [=]{
+        Peony::FileMoveOperation *moveOp = new Peony::FileMoveOperation(srcUris, destUri);
+        moveOp->setForceUseFallback();
+        moveOp->connect(moveOp, &Peony::FileMoveOperation::errored, this,
+                        &MainWindow::handleError, Qt::BlockingQueuedConnection);
+
+        Peony::FileOperationProgressWizard *wizard = new Peony::FileOperationProgressWizard;
+        wizard->connect(moveOp, &Peony::FileMoveOperation::operationStarted,
+                        wizard, &Peony::FileOperationProgressWizard::show, Qt::BlockingQueuedConnection);
+        wizard->connect(moveOp, &Peony::FileMoveOperation::addOne,
+                        wizard, &Peony::FileOperationProgressWizard::onElementFoundOne);
+        wizard->connect(moveOp, &Peony::FileMoveOperation::operationPrepared,
+                        wizard, &Peony::FileOperationProgressWizard::switchToProgressPage);
+        wizard->connect(moveOp, &Peony::FileMoveOperation::fileMoved,
+                        wizard, &Peony::FileOperationProgressWizard::onFileOperationProgressedOne);
+        //operationFinished has a few time delay because there are many resources need be released and deconstructor.
+        wizard->connect(moveOp, &Peony::FileMoveOperation::operationProgressed,
+                        wizard, &Peony::FileOperationProgressWizard::onFileOperationProgressedAll);
+        wizard->connect(moveOp, &Peony::FileMoveOperation::srcFileDeleted,
+                        wizard, &Peony::FileOperationProgressWizard::onElementClearOne);
+
+        wizard->connect(moveOp, &Peony::FileMoveOperation::operationFinished,
+                        wizard, &QDialog::accepted);
+        connect(wizard, &QDialog::accepted, wizard, &Peony::FileOperationProgressWizard::deleteLater);
+
+        connect(wizard, &QDialog::rejected, moveOp, &Peony::FileMoveOperation::cancel);
         QThreadPool::globalInstance()->start(moveOp);
     });
-
-    Peony::FileOperationProgressWizard *wizard = new Peony::FileOperationProgressWizard;
-    wizard->connect(moveOp, &Peony::FileMoveOperation::operationStarted,
-                    wizard, &Peony::FileOperationProgressWizard::show, Qt::BlockingQueuedConnection);
-    wizard->connect(moveOp, &Peony::FileMoveOperation::addOne,
-                    wizard, &Peony::FileOperationProgressWizard::onElementFound);
-    wizard->connect(moveOp, &Peony::FileMoveOperation::allAdded,
-                    wizard, &Peony::FileOperationProgressWizard::switchToProgressPage);
-    wizard->connect(moveOp, &Peony::FileMoveOperation::fileMoved,
-                    wizard, &Peony::FileOperationProgressWizard::onFileOperationFinishedOne);
-    //operationFinished has a few time delay because there are many resources need be released and deconstructor.
-    //wizard->connect(moveOp, &Peony::FileMoveOperation::operationFinished,
-    //                wizard, &Peony::FileOperationProgressWizard::onFileOperationFinished);
 }
 
 MainWindow::~MainWindow()

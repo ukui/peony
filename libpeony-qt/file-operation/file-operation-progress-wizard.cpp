@@ -22,11 +22,14 @@ FileOperationProgressWizard::FileOperationProgressWizard(QWidget *parent) : QWiz
     //connect(this, &QDialog::rejected, this, &FileOperationProgressWizard::cancelled);
 
     m_first_page = new FileOperationPreparePage(this);
-    m_first_page->setTitle(tr("Preparing to move..."));
+    m_first_page->setTitle(tr("Preparing..."));
     addPage(m_first_page);
     m_second_page = new FileOperationProgressPage(this);
-    m_second_page->setTitle(tr("Moving..."));
+    m_second_page->setTitle(tr("Handling..."));
     addPage(m_second_page);
+    m_third_page = new FileOperationAfterProgressPage(this);
+    m_third_page->setTitle(tr("Clearing..."));
+    addPage(m_third_page);
 }
 
 FileOperationProgressWizard::~FileOperationProgressWizard()
@@ -34,7 +37,12 @@ FileOperationProgressWizard::~FileOperationProgressWizard()
 
 }
 
-void FileOperationProgressWizard::onElementFound(const QString &uri, const qint64 &size)
+void FileOperationProgressWizard::switchToPreparedPage()
+{
+    restart();
+}
+
+void FileOperationProgressWizard::onElementFoundOne(const QString &uri, const qint64 &size)
 {
     qDebug()<<"onElementFound"<<uri<<size;
     m_total_count++;
@@ -44,22 +52,18 @@ void FileOperationProgressWizard::onElementFound(const QString &uri, const qint6
     m_first_page->m_state_line->setText(tr("%1 files, %2 bytes").arg(m_total_count).arg(m_total_size));
 }
 
-void FileOperationProgressWizard::onElementOperationFinished()
+void FileOperationProgressWizard::onElementFoundAll()
 {
     switchToProgressPage();
 }
 
-void FileOperationProgressWizard::switchToPreparedPage()
-{
-    restart();
-}
-
 void FileOperationProgressWizard::switchToProgressPage()
 {
+    restart();
     next();
 }
 
-void FileOperationProgressWizard::onFileOperationFinishedOne(const QString &uri, const qint64 &size)
+void FileOperationProgressWizard::onFileOperationProgressedOne(const QString &uri, const qint64 &size)
 {
     qDebug()<<"onFileOperationFinishedOne"<<uri<<size;
     m_current_count++;
@@ -72,14 +76,29 @@ void FileOperationProgressWizard::onFileOperationFinishedOne(const QString &uri,
     m_second_page->m_dest_line->setText("FIXME: add the current dest uri to this signal/slot");
     double test = (m_current_size*1.0/m_total_size)*100;
     m_second_page->m_progress_bar->setValue(int(test));
-
-    if (m_current_count == m_total_count)
-        onFileOperationFinished();
 }
 
-void FileOperationProgressWizard::onFileOperationFinished()
+void FileOperationProgressWizard::onFileOperationProgressedAll()
 {
-    accept();
+    switchToAfterProgressPage();
+}
+
+void FileOperationProgressWizard::switchToAfterProgressPage()
+{
+    restart();
+    next();
+    next();
+}
+
+void FileOperationProgressWizard::onElementClearOne(const QString &uri)
+{
+    m_third_page->m_file_deleted_count++;
+    m_third_page->m_src_line->setText(tr("clearing: %1, %2 of %3").arg(uri).
+                                      arg(m_third_page->m_file_deleted_count).
+                                      arg(m_total_count));
+
+    m_third_page->m_progress_bar->setValue(int(m_third_page->m_file_deleted_count*100.0)/m_total_count);
+
 }
 
 //FileOperationPreparePage
@@ -140,6 +159,24 @@ FileOperationProgressPage::FileOperationProgressPage(QWidget *parent) : QWizardP
 }
 
 FileOperationProgressPage::~FileOperationProgressPage()
+{
+
+}
+
+//FileOperationAfterProgressPage
+FileOperationAfterProgressPage::FileOperationAfterProgressPage(QWidget *parent) : QWizardPage (parent)
+{
+    m_src_line = new QLabel("clearing: null", this);
+    m_progress_bar = new QProgressBar(this);
+
+    m_layout = new QGridLayout(this);
+    m_layout->addWidget(m_src_line, 0, 0);
+    m_layout->addWidget(m_progress_bar, 1, 0);
+
+    setLayout(m_layout);
+}
+
+FileOperationAfterProgressPage::~FileOperationAfterProgressPage()
 {
 
 }

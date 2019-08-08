@@ -74,10 +74,33 @@ Q_SIGNALS:
     QVariant errored(const QString &srcUri, const QString &destUri, const Peony::GErrorWrapperPtr &err);
 
     /*!
+     * \brief operationPrepared
+     * <br>
+     * This signal is sent when the operation ready to handle the files.
+     * Before we really handle the files, we might need to do something preparing.
+     * For example, a recursively enumerating. We should send this signal when these
+     * works have been done.
+     * </br>
+     */
+    void operationPrepared();
+    /*!
+     * \brief operationProgressed
+     * <br>
+     * This signal is sent when the operation is half-finished.
+     * Some operation, such as move, might be splitted into 2 parts.
+     * Copy and delete both spend a while.
+     * If the other object doesn't care the next process of unfinished
+     * operation, they can connect this signal instead of operationFinished()
+     * signal to ignore the next progress, even thought the operation will
+     * continue until it really completed.
+     * </br>
+     */
+    void operationProgressed();
+    /*!
      * \brief operationFinished
      * <br>
      * This signal is used to tell other object that the file operation has finished.
-     * A progress dialog can connect this signal and close itself when the signal triggered.
+     * Usually, a progress dialog can connect this signal and close itself when the signal triggered.
      * </br>
      */
     void operationFinished();

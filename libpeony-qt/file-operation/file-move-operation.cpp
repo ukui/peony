@@ -44,6 +44,15 @@ FileOperation::ResponseType FileMoveOperation::prehandle(GError *err)
 
 void FileMoveOperation::move()
 {
+    if (isCancelled())
+        return;
+
+    for (auto srcUri : m_source_uris) {
+        //FIXME: ignore the total size when using native move.
+        addOne(srcUri, 0);
+    }
+    operationPrepared();
+
     auto destDir = wrapGFile(g_file_new_for_uri(m_dest_dir_uri.toUtf8().constData()));
     m_total_count = m_source_uris.count();
     for (auto srcUri : m_source_uris) {
@@ -141,7 +150,11 @@ retry:
             default:
                 break;
             }
+            //FIXME: ignore the total size when using native move.
+            fileMoved(srcUri, 0);
         }
+        //native move has not clear operation.
+        operationProgressed();
     }
 }
 
@@ -226,7 +239,7 @@ fallback_retry:
                                               m_current_dest_dir_uri,
                                               node->size(),
                                               node->size());
-        Q_EMIT m_reporter->nodeOperationDone(node->uri(), node->size());
+        Q_EMIT fileMoved(node->uri(), node->size());
         for (auto child : *(node->children())) {
             copyRecursively(child);
         }
@@ -312,8 +325,10 @@ fallback_retry:
                 break;
             }
         }
-        Q_EMIT m_reporter->nodeOperationDone(node->uri(), node->size());
+        Q_EMIT fileMoved(node->uri(), node->size());
     }
+    destFile.reset();
+    destRoot.reset();
 }
 
 void FileMoveOperation::deleteRecursively(FileNode *node)
@@ -321,19 +336,22 @@ void FileMoveOperation::deleteRecursively(FileNode *node)
     if (isCancelled())
         return;
 
-    GFileWrapperPtr file = wrapGFile(g_file_new_for_uri(node->uri().toUtf8().constData()));
+    GFile *file = g_file_new_for_uri(node->uri().toUtf8().constData());
     if (node->isFolder()) {
         for (auto child : *(node->children())) {
             deleteRecursively(child);
-            g_file_delete(file.get()->get(),
+            g_file_delete(file,
                           getCancellable().get()->get(),
                           nullptr);
         }
     } else {
-        g_file_delete(file.get()->get(),
+        g_file_delete(file,
                       getCancellable().get()->get(),
                       nullptr);
     }
+    g_object_unref(file);
+    qDebug()<<"deleted";
+    srcFileDeleted(node->uri());
 }
 
 void FileMoveOperation::moveForceUseFallback()
@@ -343,8 +361,6 @@ void FileMoveOperation::moveForceUseFallback()
 
     m_reporter = new FileNodeReporter;
     connect(m_reporter, &FileNodeReporter::nodeFound, this, &FileMoveOperation::addOne);
-    connect(m_reporter, &FileNodeReporter::enumerateNodeFinished, this, &FileMoveOperation::allAdded);
-    connect(m_reporter, &FileNodeReporter::nodeOperationDone, this, &FileMoveOperation::fileMoved);
 
     //FIXME: total size should not compute twice. I should get it from ui-thread.
     goffset *total_size = new goffset(0);
@@ -356,18 +372,21 @@ void FileMoveOperation::moveForceUseFallback()
         node->computeTotalSize(total_size);
         nodes<<node;
     }
+    operationPrepared();
 
     m_total_szie = *total_size;
     delete total_size;
 
-    if (m_reporter)
-        m_reporter->enumerateNodeFinished();
-
     for (auto node : nodes) {
         copyRecursively(node);
+    }
+    operationProgressed();
+
+    for (auto node : nodes) {
         deleteRecursively(node);
         delete node;
     }
+
     nodes.clear();
 }
 
@@ -378,6 +397,8 @@ void FileMoveOperation::run()
     if (!m_force_use_fallback) {
         move();
     } else {
+        //FIXME: delete files aslo need time.
+        //but the copy is done, that makes operation seems slow.
         moveForceUseFallback();
     }
     qDebug()<<"finished";

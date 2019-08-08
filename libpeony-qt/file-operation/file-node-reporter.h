@@ -28,8 +28,18 @@ public:
 
 Q_SIGNALS:
     void nodeFound(const QString &uri, const qint64 &offset);
+    /*!
+     * \brief enumerateNodeFinished
+     * \deprecated
+     */
     void enumerateNodeFinished();
 
+    /*!
+     * \brief nodeOperationDone
+     * \param uri
+     * \param offset
+     * \deprecated
+     */
     void nodeOperationDone(const QString &uri, const qint64 &offset);
 };
 

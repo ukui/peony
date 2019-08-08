@@ -13,11 +13,26 @@ namespace Peony {
 
 class FileOperationPreparePage;
 class FileOperationProgressPage;
+class FileOperationAfterProgressPage;
 
+/*!
+ * \brief The FileOperationProgressWizard class
+ * <br>
+ * This class is an graphic user interface of serveral file operations.
+ * There are two page, the preparing page and the progress page.
+ * The preparing page is used to count the source files need to be handled.
+ * And the progress page is used to show the current progress of the operation.
+ * </br>
+ * \note
+ * This is the common interface of all kinds of file operation. If you want to
+ * implement a special interface for one kind operation. you can dervied the class
+ * or re-write a new interface and re-implement the process connect to the operation.
+ */
 class FileOperationProgressWizard : public QWizard
 {
     friend class FileOperationPreparePage;
     friend class FileOperationProgressPage;
+    friend class FileOperationAfterProgressPage;
     Q_OBJECT
 public:
     enum PageId {
@@ -32,15 +47,18 @@ Q_SIGNALS:
     void cancelled();
 
 public Q_SLOTS:
-    void switchToPreparedPage();
-    void onElementFound(const QString &uri, const qint64 &size);
-    void onElementOperationFinished();
+    virtual void switchToPreparedPage();
+    virtual void onElementFoundOne(const QString &uri, const qint64 &size);
+    virtual void onElementFoundAll();
 
-    void switchToProgressPage();
-    void onFileOperationFinishedOne(const QString &uri, const qint64 &size);
-    void onFileOperationFinished();
+    virtual void switchToProgressPage();
+    virtual void onFileOperationProgressedOne(const QString &uri, const qint64 &size);
+    virtual void onFileOperationProgressedAll();
 
-private:
+    virtual void switchToAfterProgressPage();
+    virtual void onElementClearOne(const QString &uri);
+
+protected:
     qint64 m_total_size = 0;
     int m_current_size = 0;
     int m_total_count = 0;
@@ -48,6 +66,8 @@ private:
 
     FileOperationPreparePage *m_first_page = nullptr;
     FileOperationProgressPage *m_second_page = nullptr;
+    FileOperationAfterProgressPage *m_third_page = nullptr;
+
 };
 
 class FileOperationPreparePage : public QWizardPage
@@ -84,6 +104,23 @@ private:
     QLabel *m_dest_line = nullptr;
     QLabel *m_state_line = nullptr;
     QProgressBar *m_progress_bar = nullptr;
+};
+
+class FileOperationAfterProgressPage : public QWizardPage
+{
+    friend class FileOperationProgressWizard;
+    Q_OBJECT
+public:
+    explicit FileOperationAfterProgressPage(QWidget *parent = nullptr);
+    ~FileOperationAfterProgressPage();
+
+private:
+    QGridLayout *m_layout = nullptr;
+
+    QLabel *m_src_line = nullptr;
+    QProgressBar *m_progress_bar = nullptr;
+
+    int m_file_deleted_count = 0;
 };
 
 }
