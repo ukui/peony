@@ -49,6 +49,16 @@ public:
 
 Q_SIGNALS:
     /*!
+     * \brief operationStarted
+     * <br>
+     * This signal should send when operation started.
+     * when a derived class implement the run() method, it aslo need send this signal
+     * to tell other object that the operation has started. it might use block-queue connect
+     * for other object prepared.
+     * </br>
+     */
+    void operationStarted();
+    /*!
      * \brief errored
      * <br>
      * This signal should be sent when a derived class instance went to an gio error.

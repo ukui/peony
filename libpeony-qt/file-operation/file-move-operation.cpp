@@ -151,6 +151,7 @@ void FileMoveOperation::copyRecursively(FileNode *node)
         return;
 
     QString relativePath = node->getRelativePath();
+    //FIXME: the smart pointers' deconstruction spends too much time.
     GFileWrapperPtr destRoot = wrapGFile(g_file_new_for_uri(m_dest_dir_uri.toUtf8().constData()));
     GFileWrapperPtr destFile = wrapGFile(g_file_resolve_relative_path(destRoot.get()->get(),
                                                                       relativePath.toUtf8().constData()));
@@ -342,6 +343,7 @@ void FileMoveOperation::moveForceUseFallback()
 
     m_reporter = new FileNodeReporter;
     connect(m_reporter, &FileNodeReporter::nodeFound, this, &FileMoveOperation::addOne);
+    connect(m_reporter, &FileNodeReporter::enumerateNodeFinished, this, &FileMoveOperation::allAdded);
     connect(m_reporter, &FileNodeReporter::nodeOperationDone, this, &FileMoveOperation::fileMoved);
 
     //FIXME: total size should not compute twice. I should get it from ui-thread.
@@ -371,6 +373,8 @@ void FileMoveOperation::moveForceUseFallback()
 
 void FileMoveOperation::run()
 {
+    Q_EMIT operationStarted();
+    //should block and wait for other object prepared.
     if (!m_force_use_fallback) {
         move();
     } else {

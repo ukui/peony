@@ -48,6 +48,7 @@ public:
 
 Q_SIGNALS:
     void addOne(const QString &srcUri, const qint64 &size);
+    void allAdded();
     void fileMoved(const QString &srcUri, const qint64 &size);
     void nativeMoveProgressCallbacked(const QString &srcUri, const QString &destDirUri,
                                       const int &current, const int &total);

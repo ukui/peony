@@ -6,6 +6,9 @@
 class QLabel;
 class QProgressBar;
 
+class QFormLayout;
+class QGridLayout;
+
 namespace Peony {
 
 class FileOperationPreparePage;
@@ -31,13 +34,20 @@ Q_SIGNALS:
 public Q_SLOTS:
     void switchToPreparedPage();
     void onElementFound(const QString &uri, const qint64 &size);
+    void onElementOperationFinished();
+
     void switchToProgressPage();
-    void onElementOperationFinished(const QString &uri, const qint64 &size);
+    void onFileOperationFinishedOne(const QString &uri, const qint64 &size);
+    void onFileOperationFinished();
 
 private:
     qint64 m_total_size = 0;
     int m_current_size = 0;
     int m_total_count = 0;
+    int m_current_count = 0;
+
+    FileOperationPreparePage *m_first_page = nullptr;
+    FileOperationProgressPage *m_second_page = nullptr;
 };
 
 class FileOperationPreparePage : public QWizardPage
@@ -52,13 +62,14 @@ Q_SIGNALS:
     void cancelled();
 
 private:
+    QFormLayout *m_layout = nullptr;
     QLabel *m_src_line = nullptr;
-    QLabel *m_count_line = nullptr;
-    QLabel *m_size_line = nullptr;
+    QLabel *m_state_line = nullptr;
 };
 
 class FileOperationProgressPage : public QWizardPage
 {
+    friend class FileOperationProgressWizard;
     Q_OBJECT
 public:
     explicit FileOperationProgressPage(QWidget *parent = nullptr);
@@ -68,6 +79,7 @@ Q_SIGNALS:
     void cancelled();
 
 private:
+    QGridLayout *m_layout = nullptr;
     QLabel *m_src_line = nullptr;
     QLabel *m_dest_line = nullptr;
     QLabel *m_state_line = nullptr;

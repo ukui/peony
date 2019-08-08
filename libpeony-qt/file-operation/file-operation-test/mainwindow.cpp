@@ -5,6 +5,8 @@
 #include "connect-server-dialog.h"
 #include "gerror-wrapper.h"
 
+#include "file-operation/file-operation-progress-wizard.h"
+
 #include <QDebug>
 #include <QMessageBox>
 
@@ -38,12 +40,25 @@ MainWindow::MainWindow(QWidget *parent)
     QString destUri = "file:///home/lanyue/test2";
     //Peony::FileNodeReporter *reporter = new Peony::FileNodeReporter;
     Peony::FileMoveOperation *moveOp = new Peony::FileMoveOperation(srcUris, destUri);
-    //moveOp->setForceUseFallback();
+    moveOp->setForceUseFallback();
 
     moveOp->connect(moveOp, &Peony::FileMoveOperation::errored, this, &MainWindow::handleError, Qt::BlockingQueuedConnection);
     connect(startAction, &QAction::triggered, [=]{
         QThreadPool::globalInstance()->start(moveOp);
     });
+
+    Peony::FileOperationProgressWizard *wizard = new Peony::FileOperationProgressWizard;
+    wizard->connect(moveOp, &Peony::FileMoveOperation::operationStarted,
+                    wizard, &Peony::FileOperationProgressWizard::show, Qt::BlockingQueuedConnection);
+    wizard->connect(moveOp, &Peony::FileMoveOperation::addOne,
+                    wizard, &Peony::FileOperationProgressWizard::onElementFound);
+    wizard->connect(moveOp, &Peony::FileMoveOperation::allAdded,
+                    wizard, &Peony::FileOperationProgressWizard::switchToProgressPage);
+    wizard->connect(moveOp, &Peony::FileMoveOperation::fileMoved,
+                    wizard, &Peony::FileOperationProgressWizard::onFileOperationFinishedOne);
+    //operationFinished has a few time delay because there are many resources need be released and deconstructor.
+    //wizard->connect(moveOp, &Peony::FileMoveOperation::operationFinished,
+    //                wizard, &Peony::FileOperationProgressWizard::onFileOperationFinished);
 }
 
 MainWindow::~MainWindow()
