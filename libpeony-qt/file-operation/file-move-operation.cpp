@@ -404,3 +404,9 @@ void FileMoveOperation::run()
     qDebug()<<"finished";
     Q_EMIT operationFinished();
 }
+
+void FileMoveOperation::cancel()
+{
+    FileOperation::cancel();
+    m_reporter->cancel();
+}

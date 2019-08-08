@@ -55,6 +55,9 @@ Q_SIGNALS:
     void fallbackMoveProgressCallbacked(const QString &srcUri, const QString &destDirUri,
                                         const qint64 &current_bytes, const qint64 &total_bytes);
 
+public Q_SLOTS:
+    void cancel() override;
+
 protected:
     static void progress_callback(goffset current_num_bytes,
                                   goffset total_num_bytes,

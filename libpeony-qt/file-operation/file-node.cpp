@@ -43,6 +43,11 @@ FileNode::~FileNode() {
 
 void FileNode::findChildrenRecursively()
 {
+    if (m_reporter) {
+        if (m_reporter->isOperationCancelled())
+            return;
+    }
+
     if (!m_is_folder)
         return;
     else {

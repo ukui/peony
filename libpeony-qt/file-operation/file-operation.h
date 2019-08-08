@@ -106,7 +106,7 @@ Q_SIGNALS:
     void operationFinished();
 
 public Q_SLOTS:
-    void cancel();
+    virtual void cancel();
 
 protected:
     GCancellableWrapperPtr getCancellable(){return m_cancellable_wrapper;}
