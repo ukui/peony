@@ -61,11 +61,17 @@ MainWindow::MainWindow(QWidget *parent)
         wizard->connect(moveOp, &Peony::FileMoveOperation::srcFileDeleted,
                         wizard, &Peony::FileOperationProgressWizard::onElementClearOne);
 
+        connect(wizard, &Peony::FileOperationProgressWizard::cancelled,
+                moveOp, &Peony::FileMoveOperation::cancel);
+        connect(moveOp, &Peony::FileOperation::operationStartRollbacked,
+                wizard, &Peony::FileOperationProgressWizard::switchToRollbackPage);
+        connect(moveOp, &Peony::FileMoveOperation::rollbacked,
+                wizard, &Peony::FileOperationProgressWizard::onFileRollbacked);
+
         wizard->connect(moveOp, &Peony::FileMoveOperation::operationFinished,
                         wizard, &QDialog::accepted);
         connect(wizard, &QDialog::accepted, wizard, &Peony::FileOperationProgressWizard::deleteLater);
 
-        connect(wizard, &QDialog::rejected, moveOp, &Peony::FileMoveOperation::cancel);
         QThreadPool::globalInstance()->start(moveOp);
     });
 }

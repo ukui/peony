@@ -16,7 +16,11 @@ FileOperationProgressWizard::FileOperationProgressWizard(QWidget *parent) : QWiz
 {
     //only show cancel button at bottom-right of wizard
     QList<WizardButton> layout;
-    layout<<Stretch<<CancelButton;
+    layout<<Stretch<<CustomButton1;
+    setButtonText(CustomButton1, tr("&Cancel"));
+    connect(this, &QWizard::customButtonClicked, [=](){
+        this->cancelled();
+    });
     setButtonLayout(layout);
 
     //connect(this, &QDialog::rejected, this, &FileOperationProgressWizard::cancelled);
@@ -30,6 +34,9 @@ FileOperationProgressWizard::FileOperationProgressWizard(QWidget *parent) : QWiz
     m_third_page = new FileOperationAfterProgressPage(this);
     m_third_page->setTitle(tr("Clearing..."));
     addPage(m_third_page);
+    m_last_page = new FileOperationRollbackPage(this);
+    m_last_page->setTitle(tr("Rollbacking..."));
+    addPage(m_last_page);
 }
 
 FileOperationProgressWizard::~FileOperationProgressWizard()
@@ -101,6 +108,23 @@ void FileOperationProgressWizard::onElementClearOne(const QString &uri)
 
 }
 
+void FileOperationProgressWizard::switchToRollbackPage()
+{
+    restart();
+    next();
+    next();
+    next();
+}
+
+void FileOperationProgressWizard::onFileRollbacked(const QString &destUri, const QString &srcUri)
+{
+    Q_UNUSED(destUri);
+    Q_UNUSED(srcUri);
+    m_last_page->m_current_count++;
+    //use wizard's m_current_count as total count of files need rollback.
+    m_last_page->m_progress_bar->setValue(int(m_last_page->m_current_count*100.0/m_current_count));
+}
+
 //FileOperationPreparePage
 FileOperationPreparePage::FileOperationPreparePage(QWidget *parent) : QWizardPage (parent)
 {
@@ -166,17 +190,35 @@ FileOperationProgressPage::~FileOperationProgressPage()
 //FileOperationAfterProgressPage
 FileOperationAfterProgressPage::FileOperationAfterProgressPage(QWidget *parent) : QWizardPage (parent)
 {
+    m_layout = new QGridLayout(this);
+
     m_src_line = new QLabel("clearing: null", this);
+    //avoid wizard size hint changed.
+    m_src_line->setWordWrap(true);
     m_progress_bar = new QProgressBar(this);
 
-    m_layout = new QGridLayout(this);
-    m_layout->addWidget(m_src_line, 0, 0);
-    m_layout->addWidget(m_progress_bar, 1, 0);
+    m_layout->addWidget(m_progress_bar, 0, 0);
+    m_layout->addWidget(m_src_line, 1, 0);
 
     setLayout(m_layout);
 }
 
 FileOperationAfterProgressPage::~FileOperationAfterProgressPage()
+{
+
+}
+
+//FileOperationRollbackPage
+FileOperationRollbackPage::FileOperationRollbackPage(QWidget *parent) : QWizardPage (parent)
+{
+    m_layout = new QGridLayout(this);
+    m_progress_bar = new QProgressBar(this);
+    m_layout->addWidget(m_progress_bar, 0, 0);
+
+    setLayout(m_layout);
+}
+
+FileOperationRollbackPage::~FileOperationRollbackPage()
 {
 
 }

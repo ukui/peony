@@ -89,6 +89,9 @@ retry:
                     &err);
 
         if (err) {
+            if (err->code == G_IO_ERROR_CANCELLED) {
+                return;
+            }
             auto errWrapper = GErrorWrapper::wrapFrom(err);
             ResponseType handle_type = prehandle(err);
             if (handle_type == Other) {
@@ -175,9 +178,23 @@ retry:
     operationProgressed();
 
     //rollback if cancelled
+    //FIXME: if native move function get into error,
+    //such as the target is existed, the rollback might
+    //get into error too.
     if (isCancelled()) {
         for (auto file : nodes) {
-            rollbackNodeRecursively(file);
+            if (!file->destUri().isEmpty()) {
+                GFileWrapperPtr destFile = wrapGFile(g_file_new_for_uri(file->destUri().toUtf8().constData()));
+                GFileWrapperPtr srcFile = wrapGFile(g_file_new_for_uri(file->uri().toUtf8().constData()));
+                //try rollbacking
+                g_file_move(destFile.get()->get(),
+                            srcFile.get()->get(),
+                            m_default_copy_flag,
+                            nullptr,
+                            nullptr,
+                            nullptr,
+                            nullptr);
+            }
         }
     }
 
@@ -198,7 +215,23 @@ void FileMoveOperation::rollbackNodeRecursively(FileNode *node)
                 rollbackNodeRecursively(child);
             }
             GFile *dest_file = g_file_new_for_uri(node->destUri().toUtf8().constData());
-            g_file_delete(dest_file, nullptr, nullptr);
+            //FIXME: there's a certain probability of failure to delete the folder without
+            //any problem happended. because somehow an empty file will created in the folder.
+            //i don't know why, but it is obvious that i have to delete them at first.
+            bool is_folder_deleted = g_file_delete(dest_file, nullptr, nullptr);
+            if (!is_folder_deleted) {
+                FileEnumerator e;
+                e.setEnumerateDirectory(node->destUri());
+                e.enumerateSync();
+                for (auto folder_child : *node->children()) {
+                    if (!folder_child->destUri().isEmpty()) {
+                        GFile *tmp_file = g_file_new_for_uri(folder_child->destUri().toUtf8().constData());
+                        g_file_delete(tmp_file, nullptr, nullptr);
+                        g_object_unref(tmp_file);
+                    }
+                    g_file_delete(dest_file, nullptr, nullptr);
+                }
+            }
             g_object_unref(dest_file);
         } else {
             GFile *dest_file = g_file_new_for_uri(node->destUri().toUtf8().constData());
@@ -217,6 +250,10 @@ void FileMoveOperation::rollbackNodeRecursively(FileNode *node)
             for (auto child : *children) {
                 rollbackNodeRecursively(child);
             }
+            //try deleting the dest directory
+            GFile *dest_file = g_file_new_for_uri(node->destUri().toUtf8().constData());
+            g_file_delete(dest_file, nullptr, nullptr);
+            g_object_unref(dest_file);
         } else {
             GFile *dest_file = g_file_new_for_uri(node->destUri().toUtf8().constData());
             GFile *src_file = g_file_new_for_uri(node->uri().toUtf8().constData());
@@ -242,7 +279,7 @@ void FileMoveOperation::rollbackNodeRecursively(FileNode *node)
         break;
     }
     default: {
-        //make sure all nodes were rollback.
+        //make sure all nodes were rollbacked.
         if (node->isFolder()) {
             auto children = node->children();
             for (auto child : *children) {
@@ -288,6 +325,9 @@ fallback_retry:
                               getCancellable().get()->get(),
                               &err);
         if (err) {
+            if (err->code == G_IO_ERROR_CANCELLED) {
+                return;
+            }
             auto errWrapperPtr = GErrorWrapper::wrapFrom(err);
             ResponseType handle_type = prehandle(err);
             if (handle_type == Other) {
@@ -362,6 +402,9 @@ fallback_retry:
                     &err);
 
         if (err) {
+            if (err->code == G_IO_ERROR_CANCELLED) {
+                return;
+            }
             auto errWrapperPtr = GErrorWrapper::wrapFrom(err);
             ResponseType handle_type = prehandle(err);
             if (handle_type == Other) {
@@ -507,6 +550,9 @@ void FileMoveOperation::moveForceUseFallback()
         qDebug()<<node->uri();
     }
 
+    if (isCancelled())
+        Q_EMIT operationStartRollbacked();
+
     for (auto file : nodes) {
         qDebug()<<file->uri();
         if (isCancelled()) {
@@ -528,8 +574,6 @@ void FileMoveOperation::run()
     if (!m_force_use_fallback) {
         move();
     } else {
-        //FIXME: delete files aslo need time.
-        //but the copy is done, that makes operation seems slow.
         moveForceUseFallback();
     }
     qDebug()<<"finished";

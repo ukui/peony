@@ -14,6 +14,7 @@ namespace Peony {
 class FileOperationPreparePage;
 class FileOperationProgressPage;
 class FileOperationAfterProgressPage;
+class FileOperationRollbackPage;
 
 /*!
  * \brief The FileOperationProgressWizard class
@@ -33,6 +34,7 @@ class FileOperationProgressWizard : public QWizard
     friend class FileOperationPreparePage;
     friend class FileOperationProgressPage;
     friend class FileOperationAfterProgressPage;
+    friend class FileOperationRollbackPage;
     Q_OBJECT
 public:
     enum PageId {
@@ -58,6 +60,9 @@ public Q_SLOTS:
     virtual void switchToAfterProgressPage();
     virtual void onElementClearOne(const QString &uri);
 
+    virtual void switchToRollbackPage();
+    virtual void onFileRollbacked(const QString &destUri, const QString &srcUri);
+
 protected:
     qint64 m_total_size = 0;
     int m_current_size = 0;
@@ -67,7 +72,7 @@ protected:
     FileOperationPreparePage *m_first_page = nullptr;
     FileOperationProgressPage *m_second_page = nullptr;
     FileOperationAfterProgressPage *m_third_page = nullptr;
-
+    FileOperationRollbackPage *m_last_page = nullptr;
 };
 
 class FileOperationPreparePage : public QWizardPage
@@ -121,6 +126,21 @@ private:
     QProgressBar *m_progress_bar = nullptr;
 
     int m_file_deleted_count = 0;
+};
+
+class FileOperationRollbackPage : public QWizardPage
+{
+    Q_OBJECT
+    friend class FileOperationProgressWizard;
+public:
+    explicit FileOperationRollbackPage(QWidget *parent = nullptr);
+    ~FileOperationRollbackPage();
+
+private:
+    QGridLayout *m_layout = nullptr;
+    QProgressBar *m_progress_bar = nullptr;
+
+    int m_current_count = 0;
 };
 
 }

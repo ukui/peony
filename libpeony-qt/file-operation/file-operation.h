@@ -96,6 +96,7 @@ Q_SIGNALS:
      * </br>
      */
     void operationProgressed();
+    void operationStartRollbacked();
     /*!
      * \brief operationFinished
      * <br>
