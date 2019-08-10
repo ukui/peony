@@ -20,11 +20,12 @@
 #include <QProgressDialog>
 
 #include <QDialog>
+#include <QFileDialog>
+#include <QUrl>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
-    setFixedSize(600, 480);
     QToolBar *t = new QToolBar(this);
     addToolBar(t);
     //quint64 *offset_value = new quint64(0);
@@ -36,12 +37,30 @@ MainWindow::MainWindow(QWidget *parent)
     QAction *startAction = new QAction("start", t);
     t->addAction(startAction);
 
-    QStringList srcUris;
-    srcUris<<"file:///home/lanyue/test";
-    QString destUri = "file:///home/lanyue/test2";
-    //Peony::FileNodeReporter *reporter = new Peony::FileNodeReporter;
-
     connect(startAction, &QAction::triggered, [=]{
+        QMessageBox::question(nullptr, tr("source files"), tr("choose source files，"
+                                                              "use cancel to finish the choices."));
+        QFileDialog srcdlg;
+        srcdlg.setFileMode(QFileDialog::ExistingFiles);
+        srcdlg.setAcceptMode(QFileDialog::AcceptSave);
+        srcdlg.setViewMode(QFileDialog::List);
+
+        QStringList srcUris;
+        srcdlg.exec();
+        for (auto uri : srcdlg.selectedUrls()) {
+            srcUris<<uri.toString();
+        }
+
+        QMessageBox::question(nullptr, tr("dest dir"), tr("choose dest dir,"
+                                                          "use cancel to finish the choices."));
+        QFileDialog destdlg;
+        destdlg.setAcceptMode(QFileDialog::AcceptSave);
+        destdlg.setFileMode(QFileDialog::Directory);
+
+        QString destUri;
+        destdlg.exec();
+        destUri = destdlg.selectedUrls().at(0).url();
+
         Peony::FileMoveOperation *moveOp = new Peony::FileMoveOperation(srcUris, destUri);
         moveOp->setForceUseFallback();
 
