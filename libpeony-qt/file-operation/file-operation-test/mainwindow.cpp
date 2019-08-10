@@ -6,6 +6,7 @@
 #include "gerror-wrapper.h"
 
 #include "file-operation/file-operation-progress-wizard.h"
+#include "file-operation-error-dialog.h"
 
 #include <QDebug>
 #include <QMessageBox>
@@ -43,8 +44,11 @@ MainWindow::MainWindow(QWidget *parent)
     connect(startAction, &QAction::triggered, [=]{
         Peony::FileMoveOperation *moveOp = new Peony::FileMoveOperation(srcUris, destUri);
         moveOp->setForceUseFallback();
-        moveOp->connect(moveOp, &Peony::FileMoveOperation::errored, this,
-                        &MainWindow::handleError, Qt::BlockingQueuedConnection);
+
+        Peony::FileOperationErrorDialog *dlg = new Peony::FileOperationErrorDialog;
+        moveOp->connect(moveOp, &Peony::FileMoveOperation::errored,
+                        dlg, &Peony::FileOperationErrorDialog::handleError,
+                        Qt::BlockingQueuedConnection);
 
         Peony::FileOperationProgressWizard *wizard = new Peony::FileOperationProgressWizard;
         wizard->connect(moveOp, &Peony::FileMoveOperation::operationStarted,

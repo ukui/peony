@@ -8,6 +8,7 @@ class QProgressBar;
 
 class QFormLayout;
 class QGridLayout;
+class QSystemTrayIcon;
 
 namespace Peony {
 
@@ -64,6 +65,8 @@ public Q_SLOTS:
     virtual void onFileRollbacked(const QString &destUri, const QString &srcUri);
 
 protected:
+    void closeEvent(QCloseEvent *e) override;
+
     qint64 m_total_size = 0;
     int m_current_size = 0;
     int m_total_count = 0;
@@ -73,6 +76,9 @@ protected:
     FileOperationProgressPage *m_second_page = nullptr;
     FileOperationAfterProgressPage *m_third_page = nullptr;
     FileOperationRollbackPage *m_last_page = nullptr;
+
+private:
+    QSystemTrayIcon *m_tray_icon = nullptr;
 };
 
 class FileOperationPreparePage : public QWizardPage

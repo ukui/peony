@@ -8,12 +8,18 @@
 
 #include <QPushButton>
 
+#include <QCloseEvent>
+#include <QMessageBox>
+
+#include <QSystemTrayIcon>
+
 #include <QDebug>
 
 using namespace Peony;
 
 FileOperationProgressWizard::FileOperationProgressWizard(QWidget *parent) : QWizard(parent)
 {
+    setWindowFlags(windowFlags());
     //only show cancel button at bottom-right of wizard
     QList<WizardButton> layout;
     layout<<Stretch<<CustomButton1;
@@ -37,6 +43,14 @@ FileOperationProgressWizard::FileOperationProgressWizard(QWidget *parent) : QWiz
     m_last_page = new FileOperationRollbackPage(this);
     m_last_page->setTitle(tr("Rollbacking..."));
     addPage(m_last_page);
+
+    m_tray_icon = new QSystemTrayIcon(QIcon::fromTheme("system-file-manager"), this);
+    m_tray_icon->setToolTip(tr("File Operation"));
+
+    connect(m_tray_icon, &QSystemTrayIcon::activated, [=](){
+        this->show();
+        m_tray_icon->hide();
+    });
 }
 
 FileOperationProgressWizard::~FileOperationProgressWizard()
@@ -44,9 +58,29 @@ FileOperationProgressWizard::~FileOperationProgressWizard()
 
 }
 
+void FileOperationProgressWizard::closeEvent(QCloseEvent *e)
+{
+    //NOTE: the wizard will destroy when file operation finished.
+    //ignore the close event and just hide itself.
+    //FIXME: the close button bolder-style will changed if closeEvent
+    //was overwrite. is that a bug?
+    e->ignore();
+    m_tray_icon->show();
+    m_tray_icon->showMessage(tr("File Operation"),
+                             tr("A file operation is running backend..."),
+                             QIcon::fromTheme("system-file-manager"),
+                             5000);
+    hide();
+
+    QWizard::closeEvent(e);
+}
+
 void FileOperationProgressWizard::switchToPreparedPage()
 {
     restart();
+
+    auto cancelButton = button(QWizard::CustomButton1);
+    cancelButton->setEnabled(true);
 }
 
 void FileOperationProgressWizard::onElementFoundOne(const QString &uri, const qint64 &size)
@@ -68,6 +102,9 @@ void FileOperationProgressWizard::switchToProgressPage()
 {
     restart();
     next();
+
+    auto cancelButton = button(QWizard::CustomButton1);
+    cancelButton->setEnabled(true);
 }
 
 void FileOperationProgressWizard::onFileOperationProgressedOne(const QString &uri, const qint64 &size)
@@ -95,6 +132,9 @@ void FileOperationProgressWizard::switchToAfterProgressPage()
     restart();
     next();
     next();
+
+    auto cancelButton = button(QWizard::CustomButton1);
+    cancelButton->setEnabled(true);
 }
 
 void FileOperationProgressWizard::onElementClearOne(const QString &uri)
@@ -114,6 +154,10 @@ void FileOperationProgressWizard::switchToRollbackPage()
     next();
     next();
     next();
+
+    //rollback is not cancellable, so disable cancel button.
+    auto cancelButton = button(QWizard::CustomButton1);
+    cancelButton->setEnabled(false);
 }
 
 void FileOperationProgressWizard::onFileRollbacked(const QString &destUri, const QString &srcUri)
