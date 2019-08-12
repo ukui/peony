@@ -63,10 +63,6 @@ public:
     void run() override;
 
 Q_SIGNALS:
-    void addOne(const QString &srcUri, const qint64 &size);
-    void fileMoved(const QString &srcUri, const qint64 &size);
-    void srcFileDeleted(const QString &uri);
-    void rollbacked(const QString &destUri, const QString &srcUri);
     void nativeMoveProgressCallbacked(const QString &srcUri, const QString &destDirUri,
                                       const int &current, const int &total);
     void fallbackMoveProgressCallbacked(const QString &srcUri, const QString &destDirUri,
@@ -134,22 +130,6 @@ private:
      * (for instance on moves inside the same filesystem).
      */
     bool m_force_use_fallback = false;
-
-    /*!
-     * \brief m_ignore_all_errors
-     * \deprecated
-     */
-    bool m_ignore_all_errors = false;
-    /*!
-     * \brief m_overwrite_all_duplicated
-     * \deprecated
-     */
-    bool m_overwrite_all_duplicated = false;
-    /*!
-     * \brief m_backup_all_duplicated
-     * \deprecated
-     */
-    bool m_backup_all_duplicated = false;
 
     GFileCopyFlags m_default_copy_flag = GFileCopyFlags(G_FILE_COPY_NOFOLLOW_SYMLINKS|
                                                         G_FILE_COPY_ALL_METADATA);

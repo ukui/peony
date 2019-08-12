@@ -50,7 +50,7 @@ void FileMoveOperation::move()
     QList<FileNode*> nodes;
     for (auto srcUri : m_source_uris) {
         //FIXME: ignore the total size when using native move.
-        addOne(srcUri, 0);
+        operationPreparedOne(srcUri, 0);
         auto node = new FileNode(srcUri, nullptr, nullptr);
         nodes<<node;
     }
@@ -172,7 +172,7 @@ retry:
             file->setState(FileNode::Handled);
         }
         //FIXME: ignore the total size when using native move.
-        fileMoved(srcUri, 0);
+        operationProgressedOne(file->uri(), file->destUri(), 0);
     }
     //native move has not clear operation.
     operationProgressed();
@@ -238,7 +238,7 @@ void FileMoveOperation::rollbackNodeRecursively(FileNode *node)
             g_file_delete(dest_file, nullptr, nullptr);
             g_object_unref(dest_file);
         }
-        rollbacked(node->destUri(), node->uri());
+        operationRollbackedOne(node->destUri(), node->uri());
         break;
     }
     case FileNode::Cleared: {
@@ -275,7 +275,7 @@ void FileMoveOperation::rollbackNodeRecursively(FileNode *node)
             g_object_unref(dest_file);
             g_object_unref(src_file);
         }
-        rollbacked(node->destUri(), node->uri());
+        operationRollbackedOne(node->destUri(), node->uri());
         break;
     }
     default: {
@@ -386,7 +386,7 @@ fallback_retry:
                                               m_current_dest_dir_uri,
                                               node->size(),
                                               node->size());
-        Q_EMIT fileMoved(node->uri(), node->size());
+        Q_EMIT operationProgressedOne(node->uri(), node->destUri(), node->size());
         for (auto child : *(node->children())) {
             copyRecursively(child);
         }
@@ -483,7 +483,7 @@ fallback_retry:
         } else {
             node->setState(FileNode::Handled);
         }
-        Q_EMIT fileMoved(node->uri(), node->size());
+        Q_EMIT operationProgressedOne(node->uri(), node->destUri(), node->size());
     }
     destFile.reset();
     destRoot.reset();
@@ -511,7 +511,7 @@ void FileMoveOperation::deleteRecursively(FileNode *node)
     }
     g_object_unref(file);
     qDebug()<<"deleted";
-    srcFileDeleted(node->uri());
+    operationAfterProgressedOne(node->uri());
 }
 
 void FileMoveOperation::moveForceUseFallback()
@@ -520,7 +520,7 @@ void FileMoveOperation::moveForceUseFallback()
         return;
 
     m_reporter = new FileNodeReporter;
-    connect(m_reporter, &FileNodeReporter::nodeFound, this, &FileMoveOperation::addOne);
+    connect(m_reporter, &FileNodeReporter::nodeFound, this, &FileMoveOperation::operationPreparedOne);
 
     //FIXME: total size should not compute twice. I should get it from ui-thread.
     goffset *total_size = new goffset(0);

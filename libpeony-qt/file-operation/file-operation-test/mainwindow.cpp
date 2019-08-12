@@ -72,23 +72,23 @@ MainWindow::MainWindow(QWidget *parent)
         Peony::FileOperationProgressWizard *wizard = new Peony::FileOperationProgressWizard;
         wizard->connect(moveOp, &Peony::FileMoveOperation::operationStarted,
                         wizard, &Peony::FileOperationProgressWizard::show, Qt::BlockingQueuedConnection);
-        wizard->connect(moveOp, &Peony::FileMoveOperation::addOne,
+        wizard->connect(moveOp, &Peony::FileMoveOperation::operationPreparedOne,
                         wizard, &Peony::FileOperationProgressWizard::onElementFoundOne);
         wizard->connect(moveOp, &Peony::FileMoveOperation::operationPrepared,
                         wizard, &Peony::FileOperationProgressWizard::switchToProgressPage);
-        wizard->connect(moveOp, &Peony::FileMoveOperation::fileMoved,
+        wizard->connect(moveOp, &Peony::FileMoveOperation::operationProgressedOne,
                         wizard, &Peony::FileOperationProgressWizard::onFileOperationProgressedOne);
         //operationFinished has a few time delay because there are many resources need be released and deconstructor.
         wizard->connect(moveOp, &Peony::FileMoveOperation::operationProgressed,
                         wizard, &Peony::FileOperationProgressWizard::onFileOperationProgressedAll);
-        wizard->connect(moveOp, &Peony::FileMoveOperation::srcFileDeleted,
+        wizard->connect(moveOp, &Peony::FileMoveOperation::operationAfterProgressedOne,
                         wizard, &Peony::FileOperationProgressWizard::onElementClearOne);
 
         connect(wizard, &Peony::FileOperationProgressWizard::cancelled,
                 moveOp, &Peony::FileMoveOperation::cancel);
         connect(moveOp, &Peony::FileOperation::operationStartRollbacked,
                 wizard, &Peony::FileOperationProgressWizard::switchToRollbackPage);
-        connect(moveOp, &Peony::FileMoveOperation::rollbacked,
+        connect(moveOp, &Peony::FileMoveOperation::operationRollbackedOne,
                 wizard, &Peony::FileOperationProgressWizard::onFileRollbacked);
 
         wizard->connect(moveOp, &Peony::FileMoveOperation::operationFinished,

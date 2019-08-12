@@ -55,7 +55,7 @@ public Q_SLOTS:
     virtual void onElementFoundAll();
 
     virtual void switchToProgressPage();
-    virtual void onFileOperationProgressedOne(const QString &uri, const qint64 &size);
+    virtual void onFileOperationProgressedOne(const QString &uri, const QString &destUri, const qint64 &size);
     virtual void onFileOperationProgressedAll();
 
     virtual void switchToAfterProgressPage();

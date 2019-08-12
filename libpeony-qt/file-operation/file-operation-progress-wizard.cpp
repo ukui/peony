@@ -107,7 +107,7 @@ void FileOperationProgressWizard::switchToProgressPage()
     cancelButton->setEnabled(true);
 }
 
-void FileOperationProgressWizard::onFileOperationProgressedOne(const QString &uri, const qint64 &size)
+void FileOperationProgressWizard::onFileOperationProgressedOne(const QString &uri, const QString &destUri, const qint64 &size)
 {
     qDebug()<<"onFileOperationFinishedOne"<<uri<<size;
     m_current_count++;
@@ -117,7 +117,7 @@ void FileOperationProgressWizard::onFileOperationProgressedOne(const QString &ur
                                          .arg(m_current_count).arg(m_total_count));
 
     m_second_page->m_src_line->setText(uri);
-    m_second_page->m_dest_line->setText("FIXME: add the current dest uri to this signal/slot");
+    m_second_page->m_dest_line->setText(destUri);
     double test = (m_current_size*1.0/m_total_size)*100;
     m_second_page->m_progress_bar->setValue(int(test));
 }

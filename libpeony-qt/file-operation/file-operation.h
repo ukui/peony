@@ -30,6 +30,7 @@ class FileOperation : public QObject, public QRunnable
 
 public:
     enum ResponseType {
+        Invalid,
         IgnoreOne,
         IgnoreAll,
         OverWriteOne,
@@ -51,7 +52,7 @@ Q_SIGNALS:
     /*!
      * \brief operationStarted
      * <br>
-     * This signal should send when operation started.
+     * This signal should be sent when operation started.
      * when a derived class implement the run() method, it aslo need send this signal
      * to tell other object that the operation has started. it might use block-queue connect
      * for other object prepared.
@@ -74,9 +75,20 @@ Q_SIGNALS:
     QVariant errored(const QString &srcUri, const QString &destUri, const Peony::GErrorWrapperPtr &err);
 
     /*!
+     * \brief operationPreparedOne
+     * \param srcUri
+     * \param destUri
+     * \param size
+     * \details
+     * This signal should be sent when the operation found a file node.
+     * The signal reciver will count the received signals count as the total source files count.
+     * The total size should also be accumulated.
+     */
+    void operationPreparedOne(const QString &srcUri, const qint64 &size);
+    /*!
      * \brief operationPrepared
      * <br>
-     * This signal is sent when the operation ready to handle the files.
+     * This signal should be sent when the operation ready to handle the files.
      * Before we really handle the files, we might need to do something preparing.
      * For example, a recursively enumerating. We should send this signal when these
      * works have been done.
@@ -84,9 +96,20 @@ Q_SIGNALS:
      */
     void operationPrepared();
     /*!
+     * \brief operationProgressedOne
+     * \param srcUri
+     * \param destUri
+     * \param size
+     * \details
+     * This signal should be sent when the operation progressed one files.
+     * The receiver could use operationPreparedOne() and operationProgressedOne()
+     * to compute the current progress for most of operations.
+     */
+    void operationProgressedOne(const QString& srcUri, const QString &destUri, const qint64 &size);
+    /*!
      * \brief operationProgressed
      * <br>
-     * This signal is sent when the operation is half-finished.
+     * This signal should be sent when the operation is half-finished.
      * Some operation, such as move, might be splitted into 2 parts.
      * Copy and delete both spend a while.
      * If the other object doesn't care the next process of unfinished
@@ -96,6 +119,54 @@ Q_SIGNALS:
      * </br>
      */
     void operationProgressed();
+    /*!
+     * \brief operationRollbackedOne
+     * \param destUri
+     * \param srcUri
+     * \details
+     * This signal should be sent when the operation had been cancelled,
+     * and one file was rollbacked to the state before operation executed.
+     * \note
+     * The rollback progress is difficult to count.
+     * This would mean the progress inaccuracy
+     */
+    /*!
+     * \brief operationAfterProgressedOne
+     * \param srcUri
+     * \details
+     * This signal is not necerssary by all operations. It is used by some
+     * operations that cannot be implemented in one step.
+     * For example, a non-native move operation will use recursive copy and delete method.
+     * In this case the operationProgressedOne() and operationProgressed() signal would
+     * only show the copy states. Use operationAfterProgressedOne() and operationAfterProgressed()
+     * for tell others the progress of the move operation's clearing progress.
+     */
+    void operationAfterProgressedOne(const QString &srcUri);
+    /*!
+     * \brief operationAfterProgressed
+     * \details
+     * This signal is not necerssary by all operations.
+     * If a multi-step operation finished the last operation, it should be sent.
+     */
+    void operationAfterProgressed();
+    /*!
+     * \brief operationRollbackedOne
+     * \param destUri
+     * \param srcUri
+     * \details
+     * In peony-qt, if a file operation was cancelled, it not just simply cancel the operation.
+     * In order to maintain the atomicity of the operation, the cancelled operation will try rolling
+     * back to previous state. This signal should be sent when a file which had been handled rollbacked.
+     */
+    void operationRollbackedOne(const QString &destUri, const QString &srcUri);
+    /*!
+     * \brief operationStartRollbacked
+     * <br>
+     * This signal is used to tell other object that
+     * the operation has cancelled and rollbacked, not all operations
+     * send should this signal.
+     * </br>
+     */
     void operationStartRollbacked();
     /*!
      * \brief operationFinished
