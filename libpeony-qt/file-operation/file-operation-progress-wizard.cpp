@@ -13,6 +13,8 @@
 
 #include <QSystemTrayIcon>
 
+#include <gio/gio.h>
+
 #include <QDebug>
 
 using namespace Peony;
@@ -89,8 +91,12 @@ void FileOperationProgressWizard::onElementFoundOne(const QString &uri, const qi
     m_total_count++;
     m_total_size += size;
 
+    char *format_size = g_format_size (quint64(m_total_size));
+
     m_first_page->m_src_line->setText(uri);
-    m_first_page->m_state_line->setText(tr("%1 files, %2 bytes").arg(m_total_count).arg(m_total_size));
+    m_first_page->m_state_line->setText(tr("%1 files, %2").arg(m_total_count).arg(format_size));
+
+    g_free(format_size);
 }
 
 void FileOperationProgressWizard::onElementFoundAll()
@@ -112,10 +118,15 @@ void FileOperationProgressWizard::onFileOperationProgressedOne(const QString &ur
     qDebug()<<"onFileOperationFinishedOne"<<uri<<size;
     m_current_count++;
     m_current_size += size;
+
+    char *current_format_size = g_format_size (quint64(m_current_size));
+    char *total_format_size = g_format_size(quint64(m_total_size));
     m_second_page->m_state_line->setText(tr("%1 done, %2 total, %3 of %4.").
-                                         arg(m_current_size).arg(m_total_size)
+                                         arg(current_format_size).arg(total_format_size)
                                          .arg(m_current_count).arg(m_total_count));
 
+    g_free(current_format_size);
+    g_free(total_format_size);
     m_second_page->m_src_line->setText(uri);
     m_second_page->m_dest_line->setText(destUri);
     double test = (m_current_size*1.0/m_total_size)*100;
@@ -242,7 +253,12 @@ FileOperationAfterProgressPage::FileOperationAfterProgressPage(QWidget *parent) 
     m_progress_bar = new QProgressBar(this);
 
     m_layout->addWidget(m_progress_bar, 0, 0);
-    m_layout->addWidget(m_src_line, 1, 0);
+    QPushButton *details_button = new QPushButton(tr("&More Details"), this);
+    details_button->setCheckable(true);
+    m_layout->addWidget(details_button, 1, 0, Qt::AlignRight);
+    m_layout->addWidget(m_src_line, 2, 0);
+    m_src_line->hide();
+    connect(details_button, &QAbstractButton::toggled, m_src_line, &QLabel::setVisible);
 
     setLayout(m_layout);
 }

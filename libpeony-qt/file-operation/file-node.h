@@ -6,6 +6,8 @@
 #include <gio/gio.h>
 #include <memory>
 
+#include "file-operation.h"
+
 namespace Peony {
 
 class FileNodeReporter;
@@ -39,10 +41,10 @@ public:
     enum State {
         Unhandled,
         Handled,
-        HandledButDoNotDeleteDestFile,
         Cleared,
         Invalid
     };
+
     FileNode(QString uri, FileNode* parent, FileNodeReporter *reporter = nullptr);
     ~FileNode();
 
@@ -53,6 +55,7 @@ public:
     QString uri() {return m_uri;}
     QString destUri() {return m_dest_uri;}
     State state() {return m_state;}
+    FileOperation::ResponseType responseType() {return m_err_response;}
     QString baseName() {return m_basename;}
     FileNode *parent() {return m_parent;}
     QList<FileNode*> *children() {return m_children;}
@@ -81,22 +84,26 @@ public:
      * \param state
      * <br>
      * State represent the current state of file.
-     * If a node state is Unhandled, rollback function will ignore this node.
-     * If a node state is Handled, rollback function will try deleteing dest uri's file.
-     * If a node state is HandledButDoNotDeleteDestFile, rollback function will ignore this node.
-     * If a node state is Cleared, rollback function will try moving the dest uri's file
-     * to raw position.
      * </br>
-     * \note Cancel and rollback is flawed. For example, if you move a file to a exsited
-     * file, and you didn't overwrite the old exsited file. The rollback of operation might
-     * take the exsited file to orignal position. You can hide the cancel entry in clean progress
-     * to avoid this problem.
-     * \note HandledButDoNotDeleteDestFile is set when error handle set the Flags to Ignore or Backup.
-     * \note Rollback function in operation, I call it internal rollback. It means a cancelling,
-     * not a rolling back. Peony-qt should provied a operation manager class to make the operation
-     * really rollbackable.
+     * \details
+     * States of file has 3 types, there are: Unhandled, Handled, and Cleared.
+     * Usually a file operaion of a file just have 2 states, Unhandled and Handled.
+     * But some multi-step operation, such as fallback move operation, could have
+     * 3 states. The file state will be changed when the file has been moved, copied
+     * or deleted. That will guide the application how to roll back if the operation
+     * was cancelled.
      */
     void setState(State state) {m_state = state;}
+    /*!
+     * \brief setErrorResponse
+     * \param type
+     * \details
+     * When a file get into error in executing g_file operation, it will get the error handle response form
+     * FileOperationErrorHandler. the when the file operation start clearing and rollbacking, the response type
+     * will guide them how to do that.
+     * For example, if a g_file move operation is ignored, it will not be cleared when clearing.
+     */
+    void setErrorResponse(FileOperation::ResponseType type) {m_err_response = type;}
 private:
     QString m_uri = nullptr;
     QString m_basename = nullptr;
@@ -107,6 +114,7 @@ private:
 
     QString m_dest_uri = nullptr;
     State m_state = Unhandled;
+    FileOperation::ResponseType m_err_response = FileOperation::Other;
 
     FileNodeReporter *m_reporter = nullptr;
 };
