@@ -29,6 +29,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 include(model/model.pri)
 include(peony-core.pri)
+include(file-operation/file-operation.pri)
 
 unix {
     target.path = $$[QT_INSTALL_LIBS]

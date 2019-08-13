@@ -23,6 +23,8 @@
 #include <QFileDialog>
 #include <QUrl>
 
+#include <gerror-wrapper.h>
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
@@ -64,10 +66,13 @@ MainWindow::MainWindow(QWidget *parent)
         Peony::FileMoveOperation *moveOp = new Peony::FileMoveOperation(srcUris, destUri);
         moveOp->setForceUseFallback();
 
-        Peony::FileOperationErrorDialog *dlg = new Peony::FileOperationErrorDialog;
         moveOp->connect(moveOp, &Peony::FileMoveOperation::errored,
-                        dlg, &Peony::FileOperationErrorDialog::handleError,
+                        this, &MainWindow::handleError,
                         Qt::BlockingQueuedConnection);
+
+        moveOp->connect(moveOp, &Peony::FileMoveOperation::invalidExited, [=](const QString &message){
+            QMessageBox::critical(nullptr, "Error", message);
+        });
 
         Peony::FileOperationProgressWizard *wizard = new Peony::FileOperationProgressWizard;
         wizard->connect(moveOp, &Peony::FileMoveOperation::operationStarted,
@@ -108,13 +113,7 @@ QVariant MainWindow::handleError(const QString &srcUri,
                                  const QString &destDirUri,
                                  const Peony::GErrorWrapperPtr &err)
 {
-    qDebug()<<"mainwindow handle err"<<err.get()->message();
-    QDialog dlg;
+    Peony::FileOperationErrorDialog dlg;
 
-    QLabel l(srcUri + " to " + destDirUri + " " + err.get()->message());
-    dlg.setExtension(&l);
-    dlg.showExtension(true);
-    dlg.exec();
-    //blocked
-    return QVariant(Peony::FileOperation::IgnoreOne);
+    return dlg.handleError(srcUri, destDirUri, err);
 }

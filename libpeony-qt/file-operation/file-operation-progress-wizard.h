@@ -3,6 +3,8 @@
 
 #include <QWizard>
 
+#include "peony-core_global.h"
+
 class QLabel;
 class QProgressBar;
 
@@ -30,7 +32,7 @@ class FileOperationRollbackPage;
  * implement a special interface for one kind operation. you can dervied the class
  * or re-write a new interface and re-implement the process connect to the operation.
  */
-class FileOperationProgressWizard : public QWizard
+class PEONYCORESHARED_EXPORT FileOperationProgressWizard : public QWizard
 {
     friend class FileOperationPreparePage;
     friend class FileOperationProgressPage;
@@ -44,7 +46,7 @@ public:
     };
 
     explicit FileOperationProgressWizard(QWidget *parent = nullptr);
-    ~FileOperationProgressWizard();
+    ~FileOperationProgressWizard() override;
 
 Q_SIGNALS:
     void cancelled();
@@ -81,7 +83,7 @@ private:
     QSystemTrayIcon *m_tray_icon = nullptr;
 };
 
-class FileOperationPreparePage : public QWizardPage
+class PEONYCORESHARED_EXPORT FileOperationPreparePage : public QWizardPage
 {
     friend class FileOperationProgressWizard;
     Q_OBJECT
@@ -98,7 +100,7 @@ private:
     QLabel *m_state_line = nullptr;
 };
 
-class FileOperationProgressPage : public QWizardPage
+class PEONYCORESHARED_EXPORT FileOperationProgressPage : public QWizardPage
 {
     friend class FileOperationProgressWizard;
     Q_OBJECT
@@ -117,7 +119,7 @@ private:
     QProgressBar *m_progress_bar = nullptr;
 };
 
-class FileOperationAfterProgressPage : public QWizardPage
+class PEONYCORESHARED_EXPORT FileOperationAfterProgressPage : public QWizardPage
 {
     friend class FileOperationProgressWizard;
     Q_OBJECT
@@ -134,7 +136,7 @@ private:
     int m_file_deleted_count = 0;
 };
 
-class FileOperationRollbackPage : public QWizardPage
+class PEONYCORESHARED_EXPORT FileOperationRollbackPage : public QWizardPage
 {
     Q_OBJECT
     friend class FileOperationProgressWizard;

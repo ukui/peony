@@ -13,6 +13,8 @@
 #include <QMetaType>
 #include <QHash>
 
+#include "peony-core_global.h"
+
 namespace Peony {
 
 /*!
@@ -49,6 +51,18 @@ public:
     bool isCancelled() {return m_is_cancelled;}
 
 Q_SIGNALS:
+    /*!
+     * \brief invalidOperation
+     * \param message
+     * \details
+     * Before a file operation start, peony-qt will do some simple checks.
+     * If there is an obvious error, the operation will not be performed.
+     * For example, copying/moving a file to the same folder, renaming a file
+     * with existed name, etc.
+     * The operation will send the invalidOperation() signal and skip the fileoperation.
+     */
+    void invalidOperation(const QString &message);
+    void invalidExited(const QString &message);
     /*!
      * \brief operationStarted
      * <br>

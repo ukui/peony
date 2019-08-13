@@ -9,7 +9,7 @@ namespace Peony {
 class FileNodeReporter;
 class FileNode;
 
-class FileMoveOperation : public FileOperation
+class PEONYCORESHARED_EXPORT FileMoveOperation : public FileOperation
 {
     Q_OBJECT
 public:
@@ -79,6 +79,7 @@ protected:
     void copyRecursively(FileNode *node);
     void deleteRecursively(FileNode *node);
 
+    bool isInvalid();
     void move();
     void moveForceUseFallback();
 

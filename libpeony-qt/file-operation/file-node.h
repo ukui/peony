@@ -34,7 +34,7 @@ class FileNodeReporter;
  * </br>
  * \see FileNodeReporter.
  */
-class FileNode
+class PEONYCORESHARED_EXPORT FileNode
 {
     friend class FileNodeReporter;
 public:

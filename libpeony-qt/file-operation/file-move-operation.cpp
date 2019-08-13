@@ -661,8 +661,32 @@ void FileMoveOperation::moveForceUseFallback()
     nodes.clear();
 }
 
+bool FileMoveOperation::isInvalid()
+{
+    bool isInvalid = false;
+    for (auto srcUri : m_source_uris) {
+        auto srcFile = wrapGFile(g_file_new_for_uri(srcUri.toUtf8().constData()));
+        auto destFile = wrapGFile(g_file_new_for_uri(m_dest_dir_uri.toUtf8().constData()));
+        auto parentFile = wrapGFile(g_file_get_parent(srcFile.get()->get()));
+        if (g_file_equal(destFile.get()->get(), parentFile.get()->get())) {
+            isInvalid = true;
+            invalidOperation(tr("Invalid move operation, cannot move a file itself."));
+        }
+        if (m_dest_dir_uri.contains(srcUri)) {
+            isInvalid = true;
+            invalidOperation(tr("Invalid move operation, cannot move a file into its sub directories."));
+        }
+    }
+    if (isInvalid)
+        invalidExited(tr("Invalid Operation."));
+    return isInvalid;
+}
+
 void FileMoveOperation::run()
 {
+    if (isInvalid())
+        return;
+
     Q_EMIT operationStarted();
     //should block and wait for other object prepared.
     if (!m_force_use_fallback) {

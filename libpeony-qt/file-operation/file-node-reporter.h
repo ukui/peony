@@ -4,6 +4,8 @@
 #include <QObject>
 #include <memory>
 
+#include "peony-core_global.h"
+
 namespace Peony {
 
 class FileNode;
@@ -15,7 +17,7 @@ class FileNode;
  * Other objects can connect the signals getting the current state of filenode.
  * </br>
  */
-class FileNodeReporter : public QObject
+class PEONYCORESHARED_EXPORT FileNodeReporter : public QObject
 {
     Q_OBJECT
 public:

@@ -11,7 +11,7 @@ class QButtonGroup;
 
 namespace Peony {
 
-class FileOperationErrorDialog : public QDialog, public FileOperationErrorHandler
+class PEONYCORESHARED_EXPORT FileOperationErrorDialog : public QDialog, public FileOperationErrorHandler
 {
     Q_OBJECT
     Q_INTERFACES(Peony::FileOperationErrorHandler)
