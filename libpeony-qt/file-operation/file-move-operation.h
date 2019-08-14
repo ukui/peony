@@ -9,6 +9,8 @@ namespace Peony {
 class FileNodeReporter;
 class FileNode;
 
+class FileOperationInfo;
+
 class PEONYCORESHARED_EXPORT FileMoveOperation : public FileOperation
 {
     Q_OBJECT
@@ -28,7 +30,7 @@ public:
      */
     explicit FileMoveOperation(QStringList sourceUris, QString destDirUri, QObject *parent = nullptr);
 
-    ~FileMoveOperation();
+    ~FileMoveOperation() override;
 
     /*!
      * \brief setForceUseFallback
@@ -62,11 +64,7 @@ public:
 
     void run() override;
 
-Q_SIGNALS:
-    void nativeMoveProgressCallbacked(const QString &srcUri, const QString &destDirUri,
-                                      const int &current, const int &total);
-    void fallbackMoveProgressCallbacked(const QString &srcUri, const QString &destDirUri,
-                                        const qint64 &current_bytes, const qint64 &total_bytes);
+    std::shared_ptr<FileOperationInfo> getOperationInfo() override {return m_info;}
 
 public Q_SLOTS:
     void cancel() override;
@@ -144,6 +142,8 @@ private:
      * for next prehandleing.
      */
     QHash<int, ResponseType> m_prehandle_hash;
+
+    std::shared_ptr<FileOperationInfo> m_info = nullptr;
 };
 
 }

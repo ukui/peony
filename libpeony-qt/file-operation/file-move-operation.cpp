@@ -2,12 +2,15 @@
 #include "file-node-reporter.h"
 #include "file-node.h"
 
+#include "file-operation-manager.h"
+
 using namespace Peony;
 
 FileMoveOperation::FileMoveOperation(QStringList sourceUris, QString destDirUri, QObject *parent) : FileOperation (parent)
 {
     m_source_uris = sourceUris;
     m_dest_dir_uri = destDirUri;
+    m_info = std::make_shared<FileOperationInfo>(sourceUris, destDirUri, FileOperationInfo::Move);
 }
 
 FileMoveOperation::~FileMoveOperation()
@@ -20,17 +23,10 @@ void FileMoveOperation::progress_callback(goffset current_num_bytes,
                                           goffset total_num_bytes,
                                           FileMoveOperation *p_this)
 {
-    if (p_this->m_force_use_fallback) {
-        Q_EMIT p_this->fallbackMoveProgressCallbacked(p_this->m_current_src_uri,
-                                                      p_this->m_current_dest_dir_uri,
-                                                      current_num_bytes,
-                                                      total_num_bytes);
-    } else {
-        Q_EMIT p_this->nativeMoveProgressCallbacked(p_this->m_current_src_uri,
-                                                    p_this->m_current_dest_dir_uri,
-                                                    p_this->m_current_count,
-                                                    p_this->m_total_count);
-    }
+    Q_EMIT p_this->FileProgressCallback(p_this->m_current_src_uri,
+                                        p_this->m_current_dest_dir_uri,
+                                        current_num_bytes,
+                                        total_num_bytes);
     //format: move srcUri to destDirUri: curent_bytes(count) of total_bytes(count).
 }
 
@@ -399,10 +395,10 @@ fallback_retry:
         GError *err = nullptr;
 
         //NOTE: mkdir doesn't have a progress callback.
-        Q_EMIT fallbackMoveProgressCallbacked(m_current_src_uri,
-                                              m_current_dest_dir_uri,
-                                              0,
-                                              node->size());
+        Q_EMIT FileProgressCallback(m_current_src_uri,
+                                    m_current_dest_dir_uri,
+                                    node->size(),
+                                    node->size());
         g_file_make_directory(destFile.get()->get(),
                               getCancellable().get()->get(),
                               &err);
@@ -470,10 +466,10 @@ fallback_retry:
             node->setState(FileNode::Handled);
         }
         //assume that make dir finished anyway
-        Q_EMIT fallbackMoveProgressCallbacked(m_current_src_uri,
-                                              m_current_dest_dir_uri,
-                                              node->size(),
-                                              node->size());
+        Q_EMIT FileProgressCallback(m_current_src_uri,
+                                    m_current_dest_dir_uri,
+                                    node->size(),
+                                    node->size());
         Q_EMIT operationProgressedOne(node->uri(), node->destUri(), node->size());
         for (auto child : *(node->children())) {
             copyRecursively(child);
@@ -640,10 +636,6 @@ void FileMoveOperation::moveForceUseFallback()
         deleteRecursively(node);
     }
 
-    for (auto node : nodes) {
-        qDebug()<<node->uri();
-    }
-
     if (isCancelled())
         Q_EMIT operationStartRollbacked();
 
@@ -672,10 +664,15 @@ bool FileMoveOperation::isInvalid()
             isInvalid = true;
             invalidOperation(tr("Invalid move operation, cannot move a file itself."));
         }
+        //BUG: some special basename like test and test2, will lead the operation invalid.
+        /*
         if (m_dest_dir_uri.contains(srcUri)) {
             isInvalid = true;
             invalidOperation(tr("Invalid move operation, cannot move a file into its sub directories."));
         }
+        */
+        //FIXME: find if destUriDirFile is srcFile's child.
+        //it will call G_IO_ERROR_INVALID_FILENAME
     }
     if (isInvalid)
         invalidExited(tr("Invalid Operation."));
@@ -684,7 +681,11 @@ bool FileMoveOperation::isInvalid()
 
 void FileMoveOperation::run()
 {
+
     if (isInvalid())
+        return;
+
+    if (isCancelled())
         return;
 
     Q_EMIT operationStarted();

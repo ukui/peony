@@ -7,7 +7,9 @@ HEADERS += \
     $$PWD/file-node-reporter.h \
     $$PWD/file-operation-progress-wizard.h \
     $$PWD/file-operation-error-handler.h \
-    $$PWD/file-operation-error-dialog.h
+    $$PWD/file-operation-error-dialog.h \
+    $$PWD/file-copy-operation.h \
+    $$PWD/file-operation-manager.h
 
 SOURCES += \
     $$PWD/file-operation.cpp \
@@ -15,4 +17,6 @@ SOURCES += \
     $$PWD/file-node.cpp \
     $$PWD/file-node-reporter.cpp \
     $$PWD/file-operation-progress-wizard.cpp \
-    $$PWD/file-operation-error-dialog.cpp
+    $$PWD/file-operation-error-dialog.cpp \
+    $$PWD/file-copy-operation.cpp \
+    $$PWD/file-operation-manager.cpp

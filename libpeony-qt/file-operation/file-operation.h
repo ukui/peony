@@ -17,6 +17,7 @@
 
 namespace Peony {
 
+class FileOperationInfo;
 /*!
  * \brief The FileOperation class
  * <br>
@@ -26,7 +27,7 @@ namespace Peony {
  * \note You should not use this class and derived classes in main thread.
  * Insteadly, using QThreadPool::start() is the best choice.
  */
-class FileOperation : public QObject, public QRunnable
+class PEONYCORESHARED_EXPORT FileOperation : public QObject, public QRunnable
 {
     Q_OBJECT
 
@@ -47,6 +48,32 @@ public:
     explicit FileOperation(QObject *parent = nullptr);
     ~FileOperation();
     virtual void run() = 0;
+
+    /*!
+     * \brief getOperationInfo
+     * \return
+     * \details
+     * This is a virtual function, some derived operation class should override
+     * this function.
+     * The FileOperation instance will destroy itself when it finished, but its info might not.
+     * The FileOperationInfo is a part of peony-qt's undo/redo stack(s). FileOperationManager
+     * will manage the stack(s) made up of these info.
+     */
+    virtual std::shared_ptr<FileOperationInfo> getOperationInfo() {return nullptr;}
+
+    /*!
+     * \brief setShouldReversible
+     * \param reversible
+     * \details
+     * If operation is reversible, it should support to be undo and redo.
+     * \note
+     * Even though a operation has been set should reversible, it doesn't mean
+     * that it really reversible. For example, if a file was deleted, it can not
+     * be undo, so it should not add into operation's history of undo/redo.
+     * If you don't hope your operation keep records, just do not set it.
+     */
+    void setShouldReversible(bool reversible = true) {m_reversible = reversible;}
+    virtual bool reversible() {return m_reversible;}
 
     bool isCancelled() {return m_is_cancelled;}
 
@@ -87,6 +114,9 @@ Q_SIGNALS:
      * derived class in main thread.
      */
     QVariant errored(const QString &srcUri, const QString &destUri, const Peony::GErrorWrapperPtr &err);
+
+    void FileProgressCallback(const QString &srcUri, const QString &destUri,
+                              const qint64 &current_file_offset, const qint64 &current_file_size);
 
     /*!
      * \brief operationPreparedOne
@@ -200,6 +230,7 @@ protected:
 private:
     GCancellableWrapperPtr m_cancellable_wrapper = nullptr;
     bool m_is_cancelled = false;
+    bool m_reversible = false;
 };
 
 }
