@@ -22,7 +22,8 @@ public:
 public Q_SLOTS:
     QVariant handleError(const QString &srcUri,
                          const QString &destDirUri,
-                         const GErrorWrapperPtr &err) override;
+                         const GErrorWrapperPtr &err,
+                         bool isCritical = false) override;
 
 private:
     QFormLayout *m_layout = nullptr;

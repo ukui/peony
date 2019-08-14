@@ -252,23 +252,7 @@ void FileMoveOperation::rollbackNodeRecursively(FileNode *node)
                 rollbackNodeRecursively(child);
             }
             GFile *dest_file = g_file_new_for_uri(node->destUri().toUtf8().constData());
-            //FIXME: there's a certain probability of failure to delete the folder without
-            //any problem happended. because somehow an empty file will created in the folder.
-            //i don't know why, but it is obvious that i have to delete them at first.
-            bool is_folder_deleted = g_file_delete(dest_file, nullptr, nullptr);
-            if (!is_folder_deleted) {
-                FileEnumerator e;
-                e.setEnumerateDirectory(node->destUri());
-                e.enumerateSync();
-                for (auto folder_child : *node->children()) {
-                    if (!folder_child->destUri().isEmpty()) {
-                        GFile *tmp_file = g_file_new_for_uri(folder_child->destUri().toUtf8().constData());
-                        g_file_delete(tmp_file, nullptr, nullptr);
-                        g_object_unref(tmp_file);
-                    }
-                    g_file_delete(dest_file, nullptr, nullptr);
-                }
-            }
+            g_file_delete(dest_file, nullptr, nullptr);
             g_object_unref(dest_file);
         } else {
             GFile *dest_file = g_file_new_for_uri(node->destUri().toUtf8().constData());
@@ -588,11 +572,11 @@ void FileMoveOperation::deleteRecursively(FileNode *node)
     if (node->isFolder()) {
         for (auto child : *(node->children())) {
             deleteRecursively(child);
-            g_file_delete(file,
-                          getCancellable().get()->get(),
-                          nullptr);
-            node->setState(FileNode::Cleared);
         }
+        g_file_delete(file,
+                      getCancellable().get()->get(),
+                      nullptr);
+        node->setState(FileNode::Cleared);
     } else {
         g_file_delete(file,
                       getCancellable().get()->get(),

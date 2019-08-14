@@ -76,8 +76,13 @@ FileOperationErrorHandler::~FileOperationErrorHandler()
 
 QVariant FileOperationErrorDialog::handleError(const QString &srcUri,
                                                const QString &destDirUri,
-                                               const GErrorWrapperPtr &err)
+                                               const GErrorWrapperPtr &err,
+                                               bool isCritical)
 {
+    for (int i = 1; i < 7; i++) {
+        btGroup->button(i)->setVisible(isCritical);
+    }
+
     m_src_line->setText(srcUri);
     m_dest_line->setText(destDirUri);
     m_err_line->setText(err.get()->message());

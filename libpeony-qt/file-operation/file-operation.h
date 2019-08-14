@@ -107,13 +107,14 @@ Q_SIGNALS:
      * The return value is needed by the instance for the error handling.
      * </br>
      * \param err, the shared_ptr wrapper of GError.
+     * \param isCritical, the error is critical and operation should be interupted now.
      * \return \retval response type for error handling.
      * \note Qt's signal/slot provide a blocking flag to ensure get return value of signal.
      * If you want to get response value rightly, you must connect this signal with
      * Qt::BlockingQueuedConnection flag set. That also limit you use fileoperation and its
      * derived class in main thread.
      */
-    QVariant errored(const QString &srcUri, const QString &destUri, const Peony::GErrorWrapperPtr &err);
+    QVariant errored(const QString &srcUri, const QString &destUri, const Peony::GErrorWrapperPtr &err, bool isCritical = false);
 
     void FileProgressCallback(const QString &srcUri, const QString &destUri,
                               const qint64 &current_file_offset, const qint64 &current_file_size);

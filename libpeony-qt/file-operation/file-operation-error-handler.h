@@ -16,7 +16,8 @@ public:
     virtual ~FileOperationErrorHandler();
     virtual QVariant handleError(const QString &srcUri,
                                  const QString &destDirUri,
-                                 const GErrorWrapperPtr &err) = 0;
+                                 const GErrorWrapperPtr &err,
+                                 bool isCritical = false) = 0;
 };
 
 }
