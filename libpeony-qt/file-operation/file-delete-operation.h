@@ -3,12 +3,14 @@
 
 #include "file-operation.h"
 
+#include "peony-core_global.h"
+
 namespace Peony {
 
 class FileNode;
 class FileNodeReporter;
 
-class FileDeleteOperation : public FileOperation
+class PEONYCORESHARED_EXPORT FileDeleteOperation : public FileOperation
 {
     Q_OBJECT
 public:

@@ -2,7 +2,7 @@
 #include "file-operation/file-move-operation.h"
 #include "file-operation/file-node.h"
 #include "file-operation/file-node-reporter.h"
-#include "file-delete-operation.h"
+
 #include "connect-server-dialog.h"
 #include "gerror-wrapper.h"
 
@@ -27,6 +27,8 @@
 #include <gerror-wrapper.h>
 
 #include "file-copy-operation.h"
+#include "file-delete-operation.h"
+#include "file-link-operation.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -67,14 +69,18 @@ MainWindow::MainWindow(QWidget *parent)
         destUri = destdlg.selectedUrls().at(0).url();
 
         //move
-        Peony::FileMoveOperation *moveOp = new Peony::FileMoveOperation(srcUris, destUri);
-        moveOp->setForceUseFallback();
+        //Peony::FileMoveOperation *moveOp = new Peony::FileMoveOperation(srcUris, destUri);
+        //moveOp->setForceUseFallback();
 
         //copy
         //Peony::FileCopyOperation *moveOp = new Peony::FileCopyOperation(srcUris, destUri);
 
         //delete
         //Peony::FileDeleteOperation *moveOp = new Peony::FileDeleteOperation(srcUris);
+
+        //link
+        Peony::FileLinkOperation *moveOp = new Peony::FileLinkOperation(srcUris.at(0), destUri);
+
         moveOp->connect(moveOp, &Peony::FileOperation::errored,
                         this, &MainWindow::handleError,
                         Qt::BlockingQueuedConnection);

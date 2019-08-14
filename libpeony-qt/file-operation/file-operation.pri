@@ -10,7 +10,8 @@ HEADERS += \
     $$PWD/file-operation-error-dialog.h \
     $$PWD/file-copy-operation.h \
     $$PWD/file-operation-manager.h \
-    $$PWD/file-delete-operation.h
+    $$PWD/file-delete-operation.h \
+    $$PWD/file-link-operation.h
 
 SOURCES += \
     $$PWD/file-operation.cpp \
@@ -21,4 +22,5 @@ SOURCES += \
     $$PWD/file-operation-error-dialog.cpp \
     $$PWD/file-copy-operation.cpp \
     $$PWD/file-operation-manager.cpp \
-    $$PWD/file-delete-operation.cpp
+    $$PWD/file-delete-operation.cpp \
+    $$PWD/file-link-operation.cpp

@@ -10,8 +10,6 @@ namespace Peony {
 class FileNodeReporter;
 class FileNode;
 
-class FileOperationInfo;
-
 class PEONYCORESHARED_EXPORT FileCopyOperation : public FileOperation
 {
     Q_OBJECT
