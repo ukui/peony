@@ -7,6 +7,8 @@
 #include "gobject-template.h"
 #include "file-utils.h"
 #include <QMutex>
+#include <QStack>
+#include <QThreadPool>
 
 namespace Peony {
 
@@ -33,23 +35,33 @@ Q_SIGNALS:
     void closed();
 
 public Q_SLOTS:
-    /*
-    void startOperation(FileOperation *operation);
+    void startOperation(FileOperation *operation, bool addToHistory = true);
+    void startUndoOrRedo(std::shared_ptr<FileOperationInfo> info);
+    bool canUndo();
+    std::shared_ptr<FileOperationInfo> getUndoInfo();
     void undo();
+    bool canRedo();
+    std::shared_ptr<FileOperationInfo> getRedoInfo();
     void redo();
-    void goToState(FileOperationInfo *operationInfo);
+
     void clearHistory();
     void onFilesDeleted(const QStringList &uris);
-    */
 
 private:
     explicit FileOperationManager(QObject *parent = nullptr);
     ~FileOperationManager();
+
+    QStack<std::shared_ptr<FileOperationInfo>> m_undo_stack;
+    QStack<std::shared_ptr<FileOperationInfo>> m_redo_stack;
+
+    QThreadPool *m_thread_pool;
+    bool m_is_current_operation_errored = false;
 };
 
 class FileOperationInfo : public QObject
 {
     Q_OBJECT
+    friend class FileOperationManager;
 public:
     enum Type {
         Invalid,
@@ -66,6 +78,7 @@ public:
         Other//nothing to do
     };
 
+    //FIXME: get opposite info correcty.
     explicit FileOperationInfo(QStringList srcUris, QString destDirUri, Type type, QObject *parent = nullptr): QObject(parent) {
         m_src_uris = srcUris;
         m_dest_dir_uri = destDirUri;
@@ -136,18 +149,16 @@ public:
         }
     }
 
-    FileOperationInfo *getOppositeInfo(FileOperationInfo *info) {
-        return new FileOperationInfo(info->m_dest_uris, info->m_src_dir_uri, m_opposite_type);
+    std::shared_ptr<FileOperationInfo> getOppositeInfo(FileOperationInfo *info) {
+        auto oppositeInfo = std::make_shared<FileOperationInfo>(info->m_dest_uris, info->m_src_dir_uri, m_opposite_type);
+        oppositeInfo->m_newname = this->m_oldname;
+        oppositeInfo->m_oldname = this->m_newname;
+        return oppositeInfo;
     }
 
-    /*!
-     * \brief disable
-     * \details
-     * If a file was deleted, the history about this file should be disabled.
-     * The disabled operation info will be removed when the new file operation comming.
-     */
-    void disable() {m_enable = false;}
-    bool getEnable() {return m_enable;}
+    Type operationType() {return m_type;}
+    QStringList sources() {return m_src_uris;}
+    QString target() {return m_dest_dir_uri;}
 
 private:
     QStringList m_src_uris;
@@ -162,6 +173,10 @@ private:
     Type m_opposite_type;
 
     bool m_enable = true;
+
+    //Rename
+    QString m_oldname = nullptr;
+    QString m_newname = nullptr;
 };
 
 }

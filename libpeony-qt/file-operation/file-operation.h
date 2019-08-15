@@ -44,7 +44,7 @@ public:
 
     explicit FileOperation(QObject *parent = nullptr);
     ~FileOperation();
-    virtual void run() = 0;
+    virtual void run();
 
     /*!
      * \brief getOperationInfo

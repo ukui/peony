@@ -1,4 +1,13 @@
 #include "file-operation-manager.h"
+#include "file-operation.h"
+#include <QMessageBox>
+
+#include "file-copy-operation.h"
+#include "file-delete-operation.h"
+#include "file-link-operation.h"
+#include "file-move-operation.h"
+#include "file-trash-operation.h"
+#include "file-untrash-operation.h"
 
 using namespace Peony;
 
@@ -6,7 +15,9 @@ static FileOperationManager *global_instance = nullptr;
 
 FileOperationManager::FileOperationManager(QObject *parent) : QObject(parent)
 {
-
+    m_thread_pool = new QThreadPool(this);
+    //Imitating queue execution.
+    m_thread_pool->setMaxThreadCount(1);
 }
 
 FileOperationManager::~FileOperationManager()
@@ -28,4 +39,131 @@ void FileOperationManager::close()
     deleteLater();
     global_instance = nullptr;
     Q_EMIT closed();
+}
+
+void FileOperationManager::startOperation(FileOperation *operation, bool addToHistory)
+{
+    if (m_thread_pool->activeThreadCount() > 0) {
+        QMessageBox::warning(nullptr,
+                             tr("File Operation is Busy"),
+                             tr("There have been one or more file"
+                                "operation(s) executing before. Your"
+                                "operation will wait for executing"
+                                "until it/them done."));
+    }
+
+    if (addToHistory) {
+        connect(operation, &FileOperation::errored, [=](){
+            m_is_current_operation_errored = true;
+            operation->disconnect(operation, &FileOperation::errored, nullptr, nullptr);
+        });
+        connect(operation, &FileOperation::operationFinished, [=](){
+            if (m_is_current_operation_errored) {
+                //FIXME: is that really reliable?
+                m_is_current_operation_errored = false;
+                return ;
+            }
+
+            auto info = operation->getOperationInfo();
+            if (info->operationType() != FileOperationInfo::Delete) {
+                m_undo_stack.push(info);
+                m_redo_stack.clear();
+            } else {
+                this->clearHistory();
+            }
+        });
+    }
+
+    m_thread_pool->start(operation);
+}
+
+void FileOperationManager::startUndoOrRedo(std::shared_ptr<FileOperationInfo> info)
+{
+    FileOperation *op = nullptr;
+    switch (info->m_type) {
+    case FileOperationInfo::Copy: {
+        op = new FileCopyOperation(info->m_src_uris, info->m_dest_dir_uri);
+        break;
+    }
+    case FileOperationInfo::Delete: {
+        op = new FileDeleteOperation(info->m_src_uris);
+        break;
+    }
+    case FileOperationInfo::Link: {
+        op = new FileDeleteOperation(info->m_src_uris);
+        break;
+    }
+    case FileOperationInfo::Move: {
+        op = new FileMoveOperation(info->m_src_uris, info->m_dest_dir_uri);
+        break;
+    }
+    case FileOperationInfo::Rename: {
+        //rename
+        break;
+    }
+    case FileOperationInfo::Trash: {
+        op = new FileTrashOperation(info->m_src_uris);
+        break;
+    }
+    case FileOperationInfo::Untrash: {
+        op = new FileUntrashOperation(info->m_src_uris);
+        break;
+    }
+    default:
+        break;
+    }
+    if (op) {
+        startOperation(op, false);
+    }
+}
+
+bool FileOperationManager::canUndo()
+{
+    return !m_undo_stack.isEmpty();
+}
+
+bool FileOperationManager::canRedo()
+{
+    return !m_redo_stack.isEmpty();
+}
+
+std::shared_ptr<FileOperationInfo> FileOperationManager::getUndoInfo()
+{
+    return m_undo_stack.top();
+}
+
+std::shared_ptr<FileOperationInfo> FileOperationManager::getRedoInfo()
+{
+    return m_redo_stack.top();
+}
+
+void FileOperationManager::undo()
+{
+    Q_ASSERT(canUndo());
+    auto undoInfo = m_undo_stack.pop();
+    m_redo_stack.push(undoInfo);
+
+    auto oppositeInfo = undoInfo->getOppositeInfo(undoInfo.get());
+    startUndoOrRedo(oppositeInfo);
+}
+
+void FileOperationManager::redo()
+{
+    Q_ASSERT(canRedo());
+    auto redoInfo = m_redo_stack.pop();
+
+    startUndoOrRedo(redoInfo);
+}
+
+void FileOperationManager::clearHistory()
+{
+    m_undo_stack.clear();
+    m_redo_stack.clear();
+}
+
+void FileOperationManager::onFilesDeleted(const QStringList &uris)
+{
+    qDebug()<<uris;
+    //FIXME: improve the handling here of file deleted event.
+    clearHistory();
 }
