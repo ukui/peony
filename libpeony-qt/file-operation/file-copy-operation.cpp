@@ -2,6 +2,8 @@
 
 #include "file-node-reporter.h"
 #include "file-node.h"
+#include "file-enumerator.h"
+#include "file-info.h"
 
 #include "file-operation-manager.h"
 

@@ -11,7 +11,9 @@ HEADERS += \
     $$PWD/file-copy-operation.h \
     $$PWD/file-operation-manager.h \
     $$PWD/file-delete-operation.h \
-    $$PWD/file-link-operation.h
+    $$PWD/file-link-operation.h \
+    $$PWD/file-trash-operation.h \
+    $$PWD/file-untrash-operation.h
 
 SOURCES += \
     $$PWD/file-operation.cpp \
@@ -23,4 +25,6 @@ SOURCES += \
     $$PWD/file-copy-operation.cpp \
     $$PWD/file-operation-manager.cpp \
     $$PWD/file-delete-operation.cpp \
-    $$PWD/file-link-operation.cpp
+    $$PWD/file-link-operation.cpp \
+    $$PWD/file-trash-operation.cpp \
+    $$PWD/file-untrash-operation.cpp

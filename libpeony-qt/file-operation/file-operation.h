@@ -7,9 +7,6 @@
 #include "gerror-wrapper.h"
 #include "gobject-template.h"
 
-#include "file-enumerator.h"
-#include "file-info.h"
-
 #include <QMetaType>
 #include <QHash>
 

@@ -110,12 +110,28 @@ public:
             m_opposite_type = Delete;
             break;
         }
+        case Rename: {
+            m_opposite_type = Rename;
+            break;
+        }
         case Link: {
             m_opposite_type = Delete;
             break;
         }
+        case CreateTxt: {
+            m_opposite_type = Delete;
+            break;
+        }
+        case CreateFolder: {
+            m_opposite_type = Delete;
+            break;
+        }
+        case CreateTemplate: {
+            m_opposite_type = Delete;
+            break;
+        }
         default: {
-            m_opposite_type = type;
+            m_opposite_type = Other;
         }
         }
     }

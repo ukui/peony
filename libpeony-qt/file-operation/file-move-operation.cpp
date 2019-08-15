@@ -1,6 +1,8 @@
 #include "file-move-operation.h"
 #include "file-node-reporter.h"
 #include "file-node.h"
+#include "file-enumerator.h"
+#include "file-info.h"
 
 #include "file-operation-manager.h"
 
@@ -73,9 +75,9 @@ void FileMoveOperation::move()
 
         g_free(dest_uri);
         g_free(base_name);
-        GError *err = nullptr;
 
 retry:
+        GError *err = nullptr;
         g_file_move(srcFile.get()->get(),
                     destFile.get()->get(),
                     m_default_copy_flag,
@@ -665,9 +667,25 @@ bool FileMoveOperation::isInvalid()
 
 void FileMoveOperation::run()
 {
-
-    if (isInvalid())
+start:
+    if (isInvalid()) {
+        auto response = errored(nullptr,
+                                nullptr,
+                                GErrorWrapper::wrapFrom(g_error_new(G_IO_ERROR,
+                                                                    G_IO_ERROR_INVAL,
+                                                                    tr("Invalid Operation").toUtf8().constData())),
+                                true);
+        switch (response.value<ResponseType>()) {
+        case Retry:
+            goto start;
+        case Cancel:
+            cancel();
+            break;
+        default:
+            break;
+        }
         return;
+    }
 
     if (isCancelled())
         return;
@@ -686,5 +704,6 @@ void FileMoveOperation::run()
 void FileMoveOperation::cancel()
 {
     FileOperation::cancel();
-    m_reporter->cancel();
+    if (m_reporter)
+        m_reporter->cancel();
 }

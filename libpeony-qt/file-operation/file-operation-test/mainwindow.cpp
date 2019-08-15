@@ -29,10 +29,18 @@
 #include "file-copy-operation.h"
 #include "file-delete-operation.h"
 #include "file-link-operation.h"
+#include "file-trash-operation.h"
+#include "file-untrash-operation.h"
+
+#include "file-enumerator.h"
+
+#include <QStandardPaths>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
+    qDebug()<<QStandardPaths::writableLocation(QStandardPaths::TempLocation);
+    qDebug()<<g_get_user_special_dir(G_USER_DIRECTORY_TEMPLATES);
     QToolBar *t = new QToolBar(this);
     addToolBar(t);
     //quint64 *offset_value = new quint64(0);
@@ -69,8 +77,8 @@ MainWindow::MainWindow(QWidget *parent)
         destUri = destdlg.selectedUrls().at(0).url();
 
         //move
-        //Peony::FileMoveOperation *moveOp = new Peony::FileMoveOperation(srcUris, destUri);
-        //moveOp->setForceUseFallback();
+        Peony::FileMoveOperation *moveOp = new Peony::FileMoveOperation(srcUris, destUri);
+        moveOp->setForceUseFallback();
 
         //copy
         //Peony::FileCopyOperation *moveOp = new Peony::FileCopyOperation(srcUris, destUri);
@@ -79,15 +87,33 @@ MainWindow::MainWindow(QWidget *parent)
         //Peony::FileDeleteOperation *moveOp = new Peony::FileDeleteOperation(srcUris);
 
         //link
-        Peony::FileLinkOperation *moveOp = new Peony::FileLinkOperation(srcUris.at(0), destUri);
+        //Peony::FileLinkOperation *moveOp = new Peony::FileLinkOperation(srcUris.isEmpty()? nullptr: srcUris.at(0), destUri);
+
+        //trash
+        //Peony::FileTrashOperation *moveOp = new Peony::FileTrashOperation(srcUris);
+
+        //untrash
+        /*
+        Peony::FileEnumerator e;
+        e.setEnumerateDirectory("trash:///");
+        e.enumerateSync();
+        auto infos = e.getChildren();
+        QStringList uris;
+        for (auto info : infos) {
+            uris<<info->uri();
+        }
+        Peony::FileUntrashOperation *moveOp = new Peony::FileUntrashOperation(uris);
+*/
 
         moveOp->connect(moveOp, &Peony::FileOperation::errored,
                         this, &MainWindow::handleError,
                         Qt::BlockingQueuedConnection);
 
+        /*
         moveOp->connect(moveOp, &Peony::FileOperation::invalidOperation, [=](const QString &message){
             QMessageBox::critical(nullptr, "Error", message);
         });
+*/
 
         Peony::FileOperationProgressWizard *wizard = new Peony::FileOperationProgressWizard;
         wizard->connect(moveOp, &Peony::FileOperation::operationStarted,
