@@ -31,6 +31,7 @@
 #include "file-link-operation.h"
 #include "file-trash-operation.h"
 #include "file-untrash-operation.h"
+#include "file-rename-operation.h"
 
 #include "file-enumerator.h"
 
@@ -104,6 +105,9 @@ MainWindow::MainWindow(QWidget *parent)
         }
         Peony::FileUntrashOperation *moveOp = new Peony::FileUntrashOperation(uris);
 */
+
+        //rename
+        //Peony::FileRenameOperation *moveOp = new Peony::FileRenameOperation(srcUris.isEmpty()? nullptr: srcUris.at(0), "RenameSample");
 
         moveOp->connect(moveOp, &Peony::FileOperation::errored,
                         this, &MainWindow::handleError,

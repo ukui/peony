@@ -6,8 +6,9 @@
 
 namespace Peony {
 
-class FileUntrashOperation : public FileOperation
+class PEONYCORESHARED_EXPORT FileUntrashOperation : public FileOperation
 {
+    Q_OBJECT
 public:
     explicit FileUntrashOperation(QStringList uris, QObject *parent = nullptr);
 

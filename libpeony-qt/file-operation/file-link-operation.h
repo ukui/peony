@@ -8,6 +8,7 @@ namespace Peony {
 
 class PEONYCORESHARED_EXPORT FileLinkOperation : public FileOperation
 {
+    Q_OBJECT
 public:
     FileLinkOperation(QString srcUri, QString destUri, QObject *parent = nullptr);
     ~FileLinkOperation() override;

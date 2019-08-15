@@ -8,6 +8,7 @@ namespace Peony {
 
 class PEONYCORESHARED_EXPORT FileTrashOperation : public FileOperation
 {
+    Q_OBJECT
 public:
     explicit FileTrashOperation(QStringList srcUris, QObject *parent = nullptr);
 

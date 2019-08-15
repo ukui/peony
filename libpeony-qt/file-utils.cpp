@@ -1,4 +1,6 @@
 #include "file-utils.h"
+#include <QUrl>
+#include <QFileInfo>
 
 using namespace Peony;
 
@@ -25,6 +27,12 @@ QString FileUtils::getFileBaseName(const GFileWrapperPtr &file)
 {
     char *basename = g_file_get_basename(file.get()->get());
     return getQStringFromCString(basename);
+}
+
+QString FileUtils::getUriBaseName(const QString &uri)
+{
+    QUrl url = uri;
+    return url.fileName();
 }
 
 GFileWrapperPtr FileUtils::getFileParent(const GFileWrapperPtr &file)
@@ -58,4 +66,26 @@ bool FileUtils::getFileIsFolder(const GFileWrapperPtr &file)
                                             G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
                                             nullptr);
     return type == G_FILE_TYPE_DIRECTORY;
+}
+
+QString FileUtils::getNonSuffixedBaseNameFromUri(const QString &uri)
+{
+    QUrl url = uri;
+    if (url.isLocalFile()) {
+        QFileInfo info(url.path());
+        return info.baseName();
+    } else {
+        QString suffixedBaseName = url.fileName();
+        int index = suffixedBaseName.lastIndexOf(".");
+        if (index != -1) {
+            QString suffix = suffixedBaseName.chopped(suffixedBaseName.size() - index);
+            if (suffix == ".gz" || suffix == ".xz" || suffix == ".bz"
+                    || suffix == ".bz2" || suffix == ".Z" ||
+                    suffix == ".sit") {
+                int secondIndex = suffixedBaseName.lastIndexOf('.');
+                suffixedBaseName.chop(suffixedBaseName.size() - secondIndex);
+            }
+        }
+        return suffixedBaseName;
+    }
 }

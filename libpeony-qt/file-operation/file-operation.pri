@@ -1,5 +1,7 @@
 INCLUDEPATH += $$PWD
 
+PKGCONFIG += gio-unix-2.0
+
 HEADERS += \
     $$PWD/file-operation.h \
     $$PWD/file-move-operation.h \
@@ -13,7 +15,8 @@ HEADERS += \
     $$PWD/file-delete-operation.h \
     $$PWD/file-link-operation.h \
     $$PWD/file-trash-operation.h \
-    $$PWD/file-untrash-operation.h
+    $$PWD/file-untrash-operation.h \
+    $$PWD/file-rename-operation.h
 
 SOURCES += \
     $$PWD/file-operation.cpp \
@@ -27,4 +30,5 @@ SOURCES += \
     $$PWD/file-delete-operation.cpp \
     $$PWD/file-link-operation.cpp \
     $$PWD/file-trash-operation.cpp \
-    $$PWD/file-untrash-operation.cpp
+    $$PWD/file-untrash-operation.cpp \
+    $$PWD/file-rename-operation.cpp

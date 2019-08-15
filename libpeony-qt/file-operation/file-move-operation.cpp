@@ -667,13 +667,15 @@ bool FileMoveOperation::isInvalid()
 
 void FileMoveOperation::run()
 {
+    Q_EMIT operationStarted();
 start:
     if (isInvalid()) {
         auto response = errored(nullptr,
                                 nullptr,
                                 GErrorWrapper::wrapFrom(g_error_new(G_IO_ERROR,
                                                                     G_IO_ERROR_INVAL,
-                                                                    tr("Invalid Operation").toUtf8().constData())),
+                                                                    tr("Invalid Operation").toUtf8().constData(),
+                                                                    nullptr)),
                                 true);
         switch (response.value<ResponseType>()) {
         case Retry:
@@ -684,13 +686,11 @@ start:
         default:
             break;
         }
-        return;
     }
 
     if (isCancelled())
         return;
 
-    Q_EMIT operationStarted();
     //should block and wait for other object prepared.
     if (!m_force_use_fallback) {
         move();
