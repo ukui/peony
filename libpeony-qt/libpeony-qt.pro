@@ -36,6 +36,6 @@ unix {
     INSTALLS += target
 
     header.path = /usr/include/peony-qt
-    header.files = *.h ../model/*.h
+    header.files = *.h model/*.h file-operation/*.h
     INSTALLS += header
 }
