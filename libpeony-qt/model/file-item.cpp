@@ -85,6 +85,9 @@ void FileItem::findChildrenAsync()
         if (successed) {
             auto infos = enumerator->getChildren();
             m_async_count = infos.count();
+            if (infos.count() == 0) {
+                Q_EMIT m_model->findChildrenFinished();
+            }
             for (auto info : infos) {
                 FileItem *child = new FileItem(info, this, m_model);
                 m_children->prepend(child);
