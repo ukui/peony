@@ -85,6 +85,9 @@ void FileItem::findChildrenAsync()
         if (successed) {
             auto infos = enumerator->getChildren();
             m_async_count = infos.count();
+            if (infos.count() == 0) {
+                Q_EMIT m_model->findChildrenFinished();
+            }
             for (auto info : infos) {
                 FileItem *child = new FileItem(info, this, m_model);
                 m_children->prepend(child);
@@ -98,7 +101,7 @@ void FileItem::findChildrenAsync()
                     qDebug()<<shared_info->iconName()<<row;
                 });
                 */
-                connect(job, &FileInfoJob::destroyed, [=](){
+                connect(job, &FileInfoJob::infoUpdated, [=](){
                     //the query job is finished and will be deleted soon,
                     //whatever info was updated, we need decrease the async count.
                     m_async_count--;

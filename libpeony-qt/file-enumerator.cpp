@@ -22,6 +22,8 @@ FileEnumerator::FileEnumerator(QObject *parent) : QObject(parent)
 {
     m_root_file = g_file_new_for_uri("file:///");
     m_cancellable = g_cancellable_new();
+
+    m_children_uris = new QList<QString>();
 }
 
 /*!
@@ -52,7 +54,7 @@ FileEnumerator::~FileEnumerator()
             FileInfoManager::getInstance()->remove(child);
     }
 
-    g_list_free_full(m_children, g_object_unref);
+    delete m_children_uris;
 }
 
 void FileEnumerator::setEnumerateDirectory(QString uri)
@@ -103,16 +105,9 @@ QList<std::shared_ptr<FileInfo>> FileEnumerator::getChildren()
 {
     //qDebug()<<"FileEnumerator::getChildren():";
     QList<std::shared_ptr<FileInfo>> children;
-    GList *i = m_children;
-    while (i) {
-        GFile *file = static_cast<GFile*>(i->data);
-        char *uri = g_file_get_uri(file);
-        //qDebug()<<uri;
+    for (auto uri : *m_children_uris) {
         auto file_info = FileInfo::fromUri(uri);
-        //qDebug()<<file_info.use_count();
-        g_free(uri);
         children<<file_info;
-        i = i->next;
     }
     return children;
 }
@@ -257,7 +252,11 @@ void FileEnumerator::enumerateChildren(GFileEnumerator *enumerator)
     }
     while (info) {
         child = g_file_enumerator_get_child(enumerator, info);
-        m_children = g_list_prepend(m_children, child);
+        char *uri = g_file_get_uri(child);
+        g_object_unref(child);
+        *m_children_uris<<uri;
+        g_free(uri);
+        g_object_unref(info);
         info = g_file_enumerator_next_file(enumerator, m_cancellable, nullptr);
     }
     Q_EMIT enumerateFinished(true);
@@ -369,10 +368,10 @@ GAsyncReadyCallback FileEnumerator::enumerator_next_files_async_ready_callback(G
     while (l) {
         GFileInfo *info = static_cast<GFileInfo*>(l->data);
         GFile *file = g_file_enumerator_get_child(enumerator, info);
-        p_this->m_children = g_list_prepend(p_this->m_children, file);
         char *uri = g_file_get_uri(file);
         //qDebug()<<uri;
         uriList<<uri;
+        *(p_this->m_children_uris)<<uri;
         g_free(uri);
         files_count++;
         l = l->next;
