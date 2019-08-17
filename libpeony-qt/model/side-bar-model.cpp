@@ -31,7 +31,7 @@ SideBarModel::SideBarModel(QObject *parent)
 QModelIndex SideBarModel::firstCloumnIndex(SideBarAbstractItem *item)
 {
     if (item->parent() != nullptr) {
-        createIndex(item->parent()->m_children->indexOf(item), 0, item);
+        return createIndex(item->parent()->m_children->indexOf(item), 0, item);
     } else {
         for (auto child : *m_root_children) {
             if (item->type() == child->type()) {
