@@ -17,6 +17,7 @@
 #include <QTimer>
 
 #include <QDebug>
+#include <QHeaderView>
 
 #include "file-info-manager.h"
 
@@ -109,6 +110,7 @@ MainWindow::MainWindow(QWidget *parent)
             item->clearChildren();
         });
         pv->show();
+        pv->header()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
 
         connect(model, &Peony::FileItemModel::findChildrenStarted, [pv](){
             QCursor c;

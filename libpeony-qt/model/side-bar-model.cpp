@@ -1,67 +1,124 @@
 #include "side-bar-model.h"
+#include "side-bar-favorite-item.h"
+#include "side-bar-personal-item.h"
+#include "side-bar-file-system-item.h"
+#include <QIcon>
+
+#include <QDebug>
 
 using namespace Peony;
 
 SideBarModel::SideBarModel(QObject *parent)
     : QAbstractItemModel(parent)
 {
+    m_root_children = new QVector<SideBarAbstractItem*>();
+
+    SideBarFavoriteItem *favorite_root_item = new SideBarFavoriteItem(nullptr, nullptr, this);
+    m_root_children->append(favorite_root_item);
+    //favorite_root_item->findChildren();
+
+    SideBarPersonalItem *personal_root_item = new SideBarPersonalItem(nullptr, nullptr, this);
+    m_root_children->append(personal_root_item);
+    //personal_root_item->findChildren();
+
+    SideBarFileSystemItem *computerItem = new SideBarFileSystemItem(nullptr,
+                                                                    nullptr,
+                                                                    this);
+    m_root_children->append(computerItem);
+    //computerItem->findChildren();
+}
+
+QModelIndex SideBarModel::firstCloumnIndex(SideBarAbstractItem *item)
+{
+    if (item->parent() != nullptr) {
+        createIndex(item->parent()->m_children->indexOf(item), 0, item);
+    } else {
+        for (auto child : *m_root_children) {
+            if (item->type() == child->type()) {
+                return createIndex(m_root_children->indexOf(child), 0, item);
+            }
+        }
+    }
+}
+
+QModelIndex SideBarModel::lastCloumnIndex(SideBarAbstractItem *item)
+{
+    if (item->parent() != nullptr) {
+        createIndex(item->parent()->m_children->indexOf(item), 1, item);
+    } else {
+        for (auto child : *m_root_children) {
+            if (item->type() == child->type()) {
+                return createIndex(m_root_children->indexOf(child), 1, item);
+            }
+        }
+    }
 }
 
 QVariant SideBarModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
     // FIXME: Implement me!
+    return QVariant();
 }
 
 bool SideBarModel::setHeaderData(int section, Qt::Orientation orientation, const QVariant &value, int role)
 {
-    if (value != headerData(section, orientation, role)) {
-        // FIXME: Implement me!
-        Q_EMIT headerDataChanged(orientation, section, section);
-        return true;
-    }
     return false;
 }
 
 QModelIndex SideBarModel::index(int row, int column, const QModelIndex &parent) const
 {
-    // FIXME: Implement me!
+    if (!parent.isValid()) {
+        return createIndex(row, column, m_root_children->at(row));
+    }
+    SideBarAbstractItem *parentItem = static_cast<SideBarAbstractItem*>(parent.internalPointer());
+    return createIndex(row, column, parentItem->m_children->at(row));
 }
 
 QModelIndex SideBarModel::parent(const QModelIndex &index) const
 {
-    // FIXME: Implement me!
+    SideBarAbstractItem *item = static_cast<SideBarAbstractItem*>(index.internalPointer());
+    //qDebug()<<item->uri();
+    if (!item)
+        return QModelIndex();
+    if (item->parent())
+        return item->parent()->firstColumnIndex();
+
+    return QModelIndex();
 }
 
 int SideBarModel::rowCount(const QModelIndex &parent) const
 {
     if (!parent.isValid())
-        return 0;
+        return m_root_children->count();
 
-    // FIXME: Implement me!
+    SideBarAbstractItem *parentItem = static_cast<SideBarAbstractItem*>(parent.internalPointer());
+    qDebug()<<parentItem->uri();
+    return parentItem->m_children->count();
 }
 
 int SideBarModel::columnCount(const QModelIndex &parent) const
 {
-    if (!parent.isValid())
-        return 0;
-
-    // FIXME: Implement me!
+    Q_UNUSED(parent);
+    return 2;
 }
 
 bool SideBarModel::hasChildren(const QModelIndex &parent) const
 {
-    // FIXME: Implement me!
+    if (!parent.isValid())
+        return true;
+
+    SideBarAbstractItem *parentItem = static_cast<SideBarAbstractItem*>(parent.internalPointer());
+    return parentItem->hasChildren();
 }
 
 bool SideBarModel::canFetchMore(const QModelIndex &parent) const
 {
-    // FIXME: Implement me!
     return false;
 }
 
 void SideBarModel::fetchMore(const QModelIndex &parent)
 {
-    // FIXME: Implement me!
+
 }
 
 QVariant SideBarModel::data(const QModelIndex &index, int role) const
@@ -69,7 +126,22 @@ QVariant SideBarModel::data(const QModelIndex &index, int role) const
     if (!index.isValid())
         return QVariant();
 
-    // FIXME: Implement me!
+    SideBarAbstractItem *item = static_cast<SideBarAbstractItem*>(index.internalPointer());
+    if (index.column() == 1) {
+        if (role == Qt::DecorationRole && item->isMounted())
+            return QVariant(QIcon::fromTheme("media-eject"));
+        else {
+            return QVariant();
+        }
+    }
+    switch (role) {
+    case Qt::DecorationRole:
+        return QIcon::fromTheme(item->iconName());
+    case Qt::DisplayRole:
+        return item->displayName();
+    default:
+        break;
+    }
     return QVariant();
 }
 
@@ -88,7 +160,7 @@ Qt::ItemFlags SideBarModel::flags(const QModelIndex &index) const
     if (!index.isValid())
         return Qt::NoItemFlags;
 
-    return Qt::ItemIsEditable; // FIXME: Implement me!
+    return QAbstractItemModel::flags(index); // FIXME: Implement me!
 }
 
 bool SideBarModel::insertRows(int row, int count, const QModelIndex &parent)
@@ -96,6 +168,7 @@ bool SideBarModel::insertRows(int row, int count, const QModelIndex &parent)
     beginInsertRows(parent, row, row + count - 1);
     // FIXME: Implement me!
     endInsertRows();
+    return true;
 }
 
 bool SideBarModel::insertColumns(int column, int count, const QModelIndex &parent)
@@ -103,6 +176,7 @@ bool SideBarModel::insertColumns(int column, int count, const QModelIndex &paren
     beginInsertColumns(parent, column, column + count - 1);
     // FIXME: Implement me!
     endInsertColumns();
+    return true;
 }
 
 bool SideBarModel::removeRows(int row, int count, const QModelIndex &parent)
@@ -110,6 +184,7 @@ bool SideBarModel::removeRows(int row, int count, const QModelIndex &parent)
     beginRemoveRows(parent, row, row + count - 1);
     // FIXME: Implement me!
     endRemoveRows();
+    return true;
 }
 
 bool SideBarModel::removeColumns(int column, int count, const QModelIndex &parent)
@@ -117,4 +192,5 @@ bool SideBarModel::removeColumns(int column, int count, const QModelIndex &paren
     beginRemoveColumns(parent, column, column + count - 1);
     // FIXME: Implement me!
     endRemoveColumns();
+    return true;
 }

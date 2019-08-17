@@ -3,6 +3,7 @@
 
 #include "peony-core_global.h"
 #include "gobject-template.h"
+#include "gerror-wrapper.h"
 
 #include <QString>
 
@@ -22,6 +23,11 @@ public:
     static bool getFileIsFolder(const GFileWrapperPtr &file);
 
     static QString getNonSuffixedBaseNameFromUri(const QString &uri);
+    static QString getFileDisplayName(const QString &uri);
+    static QString getFileIconName(const QString &uri);
+
+    static GErrorWrapperPtr getEnumerateError(const QString &uri);
+    static QString getTargetUri(const QString &uri);
 
 private:
     FileUtils();

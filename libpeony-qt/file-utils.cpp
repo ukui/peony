@@ -89,3 +89,60 @@ QString FileUtils::getNonSuffixedBaseNameFromUri(const QString &uri)
         return suffixedBaseName;
     }
 }
+
+QString FileUtils::getFileDisplayName(const QString &uri)
+{
+    auto file = wrapGFile(g_file_new_for_uri(uri.toUtf8().constData()));
+    auto info = wrapGFileInfo(g_file_query_info(file.get()->get(),
+                                                G_FILE_ATTRIBUTE_STANDARD_DISPLAY_NAME,
+                                                G_FILE_QUERY_INFO_NONE,
+                                                nullptr,
+                                                nullptr));
+    return g_file_info_get_display_name(info.get()->get());
+}
+
+QString FileUtils::getFileIconName(const QString &uri)
+{
+    auto file = wrapGFile(g_file_new_for_uri(uri.toUtf8().constData()));
+    auto info = wrapGFileInfo(g_file_query_info(file.get()->get(),
+                                                G_FILE_ATTRIBUTE_STANDARD_ICON,
+                                                G_FILE_QUERY_INFO_NONE,
+                                                nullptr,
+                                                nullptr));
+    GIcon *g_icon = g_file_info_get_icon (info.get()->get());
+    QString icon_name;
+    //do not unref the GIcon from info.
+    if (G_IS_ICON(g_icon)) {
+        const gchar* const* icon_names = g_themed_icon_get_names(G_THEMED_ICON (g_icon));
+        if (icon_names)
+            icon_name = QString (*icon_names);
+    }
+    return icon_name;
+}
+
+GErrorWrapperPtr FileUtils::getEnumerateError(const QString &uri)
+{
+    auto file = wrapGFile(g_file_new_for_uri(uri.toUtf8().constData()));
+    GError *err = nullptr;
+    auto enumerator = wrapGFileEnumerator(g_file_enumerate_children(file.get()->get(),
+                                                                    G_FILE_ATTRIBUTE_STANDARD_NAME,
+                                                                    G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
+                                                                    nullptr,
+                                                                    &err));
+    if (err) {
+        return GErrorWrapper::wrapFrom(err);
+    }
+    return nullptr;
+}
+
+QString FileUtils::getTargetUri(const QString &uri)
+{
+    auto file = wrapGFile(g_file_new_for_uri(uri.toUtf8().constData()));
+    auto info = wrapGFileInfo(g_file_query_info(file.get()->get(),
+                                                G_FILE_ATTRIBUTE_STANDARD_TARGET_URI,
+                                                G_FILE_QUERY_INFO_NONE,
+                                                nullptr,
+                                                nullptr));
+    return g_file_info_get_attribute_string(info.get()->get(),
+                                            G_FILE_ATTRIBUTE_STANDARD_TARGET_URI);
+}

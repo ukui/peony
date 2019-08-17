@@ -42,7 +42,6 @@ void FileRenameOperation::run()
                                           url.path().toUtf8().constData(),
                                           G_KEY_FILE_KEEP_COMMENTS,
                                           nullptr);
-                bool has_locale_generic_name = false;
                 QString locale_name = QLocale::system().name();
                 QString local_generic_name_key = QString("Name[%1]").arg(locale_name);
                 if (g_key_file_has_key(key_file,

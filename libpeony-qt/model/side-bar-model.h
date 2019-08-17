@@ -4,17 +4,22 @@
 #include <QAbstractItemModel>
 #include <QVector>
 
+#include "peony-core_global.h"
+
 namespace Peony {
 
 class SideBarAbstractItem;
 
-class SideBarModel : public QAbstractItemModel
+class PEONYCORESHARED_EXPORT SideBarModel : public QAbstractItemModel
 {
     friend class SideBarAbstractItem;
     Q_OBJECT
 
 public:
     explicit SideBarModel(QObject *parent = nullptr);
+
+    QModelIndex firstCloumnIndex(SideBarAbstractItem *item);
+    QModelIndex lastCloumnIndex(SideBarAbstractItem *item);
 
     // Header:
     QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const override;
