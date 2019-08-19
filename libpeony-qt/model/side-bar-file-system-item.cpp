@@ -26,7 +26,6 @@ SideBarFileSystemItem::SideBarFileSystemItem(QString uri,
 
         //m_watcher->setMonitorChildrenChange();
         //connect(m_watcher.get(), &FileWatcher::fileChanged, [=]())
-
     } else {
         m_uri = uri;
         m_display_name = FileUtils::getFileDisplayName(uri);
@@ -59,12 +58,16 @@ void SideBarFileSystemItem::findChildren()
     connect(e, &FileEnumerator::prepared, [=](const GErrorWrapperPtr &err){
         e->enumerateSync();
         auto infos = e->getChildren();
+        int real_children_count = infos.count();
         if (infos.isEmpty())
             goto end;
+
         for (auto info: infos) {
             //skip the independent files
-            if (!(info->isDir() || info->isVolume()))
+            if (!(info->isDir() || info->isVolume())) {
+                real_children_count--;
                 continue;
+            }
 
             SideBarFileSystemItem *item = new SideBarFileSystemItem(info->uri(),
                                                                     this,
@@ -75,7 +78,7 @@ void SideBarFileSystemItem::findChildren()
             m_children->append(item);
             qDebug()<<info->uri();
         }
-        m_model->insertRows(0, infos.count(), firstColumnIndex());
+        m_model->insertRows(0, real_children_count, firstColumnIndex());
 end:
         Q_EMIT this->findChildrenFinished();
         if (err != nullptr) {

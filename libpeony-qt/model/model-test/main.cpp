@@ -32,14 +32,15 @@ int main(int argc, char *argv[])
     QObject::connect(v, &QTreeView::clicked, [=](const QModelIndex &index){
         if (index.column() == 1) {
             //unmount?
-            Peony::SideBarAbstractItem *item = static_cast<Peony::SideBarAbstractItem*>(index.internalPointer());
+            Peony::SideBarAbstractItem *item = proxy_model->itemFromIndex(index);
             if (item->isMounted()) {
                 Peony::VolumeManager::unmount(item->uri());
             }
         }
     });
     v->setModel(proxy_model);
-    //v->setExpandsOnDoubleClick(false);
+    v->setExpandsOnDoubleClick(false);
+    v->setSortingEnabled(true);
     //v->setAnimated(true);
     v->show();
     v->expand(proxy_model->index(0, 0));

@@ -72,7 +72,6 @@ QModelIndex SideBarModel::index(int row, int column, const QModelIndex &parent) 
     }
     SideBarAbstractItem *parentItem = static_cast<SideBarAbstractItem*>(parent.internalPointer());
     if (parentItem->m_children->count() > row) {
-        qDebug()<<parentItem->m_children->at(row);
         return createIndex(row, column, parentItem->m_children->at(row));
     }
     return QModelIndex();
