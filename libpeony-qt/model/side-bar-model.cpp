@@ -71,7 +71,11 @@ QModelIndex SideBarModel::index(int row, int column, const QModelIndex &parent) 
         return createIndex(row, column, m_root_children->at(row));
     }
     SideBarAbstractItem *parentItem = static_cast<SideBarAbstractItem*>(parent.internalPointer());
-    return createIndex(row, column, parentItem->m_children->at(row));
+    if (parentItem->m_children->count() > row) {
+        qDebug()<<parentItem->m_children->at(row);
+        return createIndex(row, column, parentItem->m_children->at(row));
+    }
+    return QModelIndex();
 }
 
 QModelIndex SideBarModel::parent(const QModelIndex &index) const
@@ -114,7 +118,7 @@ bool SideBarModel::hasChildren(const QModelIndex &parent) const
 bool SideBarModel::canFetchMore(const QModelIndex &parent) const
 {
     Q_UNUSED(parent);
-    return false;
+    return true;
 }
 
 void SideBarModel::fetchMore(const QModelIndex &parent)

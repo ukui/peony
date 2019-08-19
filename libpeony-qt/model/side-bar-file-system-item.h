@@ -9,7 +9,7 @@ namespace Peony {
 
 class FileWatcher;
 
-class SideBarFileSystemItem : public SideBarAbstractItem
+class PEONYCORESHARED_EXPORT SideBarFileSystemItem : public SideBarAbstractItem
 {
     Q_OBJECT
 public:

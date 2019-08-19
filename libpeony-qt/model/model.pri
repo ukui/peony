@@ -8,7 +8,8 @@ HEADERS += \
     $$PWD/side-bar-model.h \
     $$PWD/side-bar-favorite-item.h \
     $$PWD/side-bar-personal-item.h \
-    $$PWD/side-bar-file-system-item.h
+    $$PWD/side-bar-file-system-item.h \
+    $$PWD/side-bar-proxy-filter-sort-model.h
 
 SOURCES += \
     $$PWD/file-item.cpp \
@@ -18,4 +19,5 @@ SOURCES += \
     $$PWD/side-bar-model.cpp \
     $$PWD/side-bar-favorite-item.cpp \
     $$PWD/side-bar-personal-item.cpp \
-    $$PWD/side-bar-file-system-item.cpp
+    $$PWD/side-bar-file-system-item.cpp \
+    $$PWD/side-bar-proxy-filter-sort-model.cpp
