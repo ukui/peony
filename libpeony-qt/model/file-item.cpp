@@ -159,6 +159,7 @@ QModelIndex FileItem::lastColumnIndex()
 
 bool FileItem::hasChildren()
 {
+    qDebug()<<"has children"<<m_info->uri()<<(m_info->isDir() || m_info->isVolume() || m_children->count() > 0);
     return m_info->isDir() || m_info->isVolume() || m_children->count() > 0;
 }
 
@@ -201,11 +202,25 @@ void FileItem::onChildRemoved(const QString &uri)
 void FileItem::onDeleted(const QString &thisUri)
 {
     qDebug()<<"deleted";
-    //TODO: find parent file and go to parent directory
-    Q_UNUSED(thisUri);
+    //FIXME: when a mount point unmounted, it was aslo assumed as "deleted",
+    //in this case we should not delete this item here.
+    //actually i don't think this desgin is good enough. maybe there is a
+    //better choice.
+    //another problem is that if we just clear the children of this item,
+    //it will be "unexpandable". but the item index hasChildren() is true.
+    //doublue clicked twice it will be expanded. a qt's bug?
     if (m_parent) {
-        m_model->removeRow(m_parent->m_children->indexOf(this), m_parent->firstColumnIndex());
-        m_parent->m_children->removeOne(this);
+        if (m_parent->m_info->uri() == thisUri) {
+            m_model->removeRow(m_parent->m_children->indexOf(this), m_parent->firstColumnIndex());
+            m_parent->m_children->removeOne(this);
+        } else {
+            //if just clear children, there will be a small problem.
+            clearChildren();
+            m_model->removeRow(m_parent->m_children->indexOf(this), m_parent->firstColumnIndex());
+            m_parent->m_children->removeOne(this);
+            m_parent->onChildAdded(m_info->uri());
+        }
+        this->deleteLater();
     } else {
         //cd up
         GFile *file = m_info->gFileHandle();
@@ -215,6 +230,7 @@ void FileItem::onDeleted(const QString &thisUri)
         FileItem *newRootItem = new FileItem(parentInfo, nullptr, m_model);
         m_model->setRootItem(newRootItem);
     }
+    m_model->updated();
 }
 
 void FileItem::onRenamed(const QString &oldUri, const QString &newUri)

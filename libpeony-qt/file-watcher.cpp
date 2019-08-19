@@ -8,6 +8,7 @@ using namespace Peony;
 FileWatcher::FileWatcher(QString uri, QObject *parent) : QObject(parent)
 {
     m_uri = uri;
+    m_target_uri = uri;
     m_file = g_file_new_for_uri(uri.toUtf8().constData());
     m_cancellable = g_cancellable_new();
 
@@ -73,6 +74,7 @@ void FileWatcher::prepare()
     if (uri) {
         g_object_unref(m_file);
         m_file = g_file_new_for_uri(uri);
+        m_target_uri = uri;
         g_free(uri);
     }
 
@@ -154,6 +156,9 @@ void FileWatcher::file_changed_callback(GFileMonitor *monitor,
                                         FileWatcher *p_this)
 {
     //qDebug()<<"file_changed_callback";
+    //FIXME: when a volume unmounted, the delete signal
+    //will be sent, but the volume may not be deleted (in computer:///).
+    //I need deal with this case.
     Q_UNUSED(monitor);
     Q_UNUSED(file);
     switch (event_type) {
@@ -167,7 +172,8 @@ void FileWatcher::file_changed_callback(GFileMonitor *monitor,
     case G_FILE_MONITOR_EVENT_DELETED: {
         p_this->stopMonitor();
         p_this->cancel();
-        Q_EMIT p_this->directoryDeleted(p_this->m_uri);
+        qDebug()<<p_this->m_target_uri;
+        Q_EMIT p_this->directoryDeleted(p_this->m_target_uri);
         break;
     }
     default:

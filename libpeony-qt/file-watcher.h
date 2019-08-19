@@ -57,6 +57,7 @@ protected:
 
 private:
     QString m_uri = nullptr;
+    QString m_target_uri = nullptr;
     GFile *m_file = nullptr;
     GFileMonitor *m_monitor = nullptr;
     GFileMonitor *m_dir_monitor = nullptr;
