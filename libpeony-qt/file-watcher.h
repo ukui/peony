@@ -26,6 +26,17 @@ class PEONYCORESHARED_EXPORT FileWatcher : public QObject
 public:
     explicit FileWatcher(QString uri = nullptr, QObject *parent = nullptr);
     ~FileWatcher();
+    /*!
+     * \brief setMonitorChildrenChange
+     * \param monitor_children_change
+     * \details
+     * For most case, we do not care wether a file internal changed event
+     * in file manager (for example, the file's content changed).
+     * Some special files, like files in computer:///, could use this signal
+     * to monitor the changed event that not created or deleted
+     * (for volume file handle in computer:///, it might be mount/unmount).
+     */
+    void setMonitorChildrenChange(bool monitor_children_change = true) {m_montor_children_change = monitor_children_change;}
     void startMonitor();
     void stopMonitor();
 
@@ -34,6 +45,7 @@ Q_SIGNALS:
     void directoryDeleted(const QString &uri);
     void fileCreated(const QString &uri);
     void fileDeleted(const QString &uri);
+    void fileChanged(const QString &uri);
 
 public Q_SLOTS:
     void cancel();
@@ -61,6 +73,8 @@ private:
     GFile *m_file = nullptr;
     GFileMonitor *m_monitor = nullptr;
     GFileMonitor *m_dir_monitor = nullptr;
+
+    bool m_montor_children_change = false;
 
     GCancellable *m_cancellable = nullptr;
 

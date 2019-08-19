@@ -6,6 +6,7 @@
 #include "side-bar-abstract-item.h"
 #include <QTreeView>
 #include <QHeaderView>
+#include "volume-manager.h"
 
 int main(int argc, char *argv[])
 {
@@ -22,6 +23,16 @@ int main(int argc, char *argv[])
     QObject::connect(v, &QTreeView::collapsed, [=](const QModelIndex &parent){
         auto item = static_cast<Peony::SideBarAbstractItem*>(parent.internalPointer());
         item->clearChildren();
+    });
+
+    QObject::connect(v, &QTreeView::clicked, [=](const QModelIndex &index){
+        if (index.column() == 1) {
+            //unmount?
+            Peony::SideBarAbstractItem *item = static_cast<Peony::SideBarAbstractItem*>(index.internalPointer());
+            if (item->isMounted()) {
+                Peony::VolumeManager::unmount(item->uri());
+            }
+        }
     });
     v->setModel(model);
     v->setExpandsOnDoubleClick(false);

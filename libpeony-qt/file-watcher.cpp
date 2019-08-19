@@ -116,6 +116,7 @@ void FileWatcher::changeMonitorUri(QString uri)
     cancel();
 
     m_uri = uri;
+    m_target_uri = uri;
     g_object_unref(m_file);
     g_object_unref(m_monitor);
     g_object_unref(m_dir_monitor);
@@ -191,6 +192,15 @@ void FileWatcher::dir_changed_callback(GFileMonitor *monitor,
     Q_UNUSED(monitor);
     Q_UNUSED(other_file);
     switch (event_type) {
+    case G_FILE_MONITOR_EVENT_CHANGED: {
+        if (p_this->m_montor_children_change) {
+            char *uri = g_file_get_uri(file);
+            QString changedFileUri = uri;
+            g_free(uri);
+            Q_EMIT p_this->fileChanged(changedFileUri);
+        }
+        break;
+    }
     case G_FILE_MONITOR_EVENT_CREATED: {
         char *uri = g_file_get_uri(file);
         QString createdFileUri = uri;

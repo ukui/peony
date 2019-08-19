@@ -268,6 +268,14 @@ protected:
                                        GMount *mount,
                                        VolumeManager *p_this);
 
+public Q_SLOTS:
+    static void unmount(const QString &uri);
+
+protected:
+    static void unmount_cb(GFile *file,
+                           GAsyncResult *result,
+                           GError **error);
+
 private:
     explicit VolumeManager(QObject *parent = nullptr);
     ~VolumeManager();

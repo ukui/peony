@@ -48,6 +48,11 @@ public Q_SLOTS:
     void findChildrenAsync() override;
     void clearChildren() override;
 
+protected:
+    void initWatcher();
+    void startWatcher();
+    void stopWatcher();
+
 private:
     SideBarFileSystemItem *m_parent = nullptr;
 

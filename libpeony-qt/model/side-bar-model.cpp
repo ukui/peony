@@ -113,12 +113,13 @@ bool SideBarModel::hasChildren(const QModelIndex &parent) const
 
 bool SideBarModel::canFetchMore(const QModelIndex &parent) const
 {
+    Q_UNUSED(parent);
     return false;
 }
 
 void SideBarModel::fetchMore(const QModelIndex &parent)
 {
-
+    Q_UNUSED(parent);
 }
 
 QVariant SideBarModel::data(const QModelIndex &index, int role) const
