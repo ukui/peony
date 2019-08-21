@@ -50,8 +50,12 @@ void PathBarModel::setRootUri(const QString &uri, bool force)
         if (!(info->isDir() || info->isVolume()))
             continue;
 
-        l<<info->uri();
+        //skip the hidden file.
         QString display_name = FileUtils::getFileDisplayName(info->uri());
+        if (display_name.startsWith("."))
+            continue;
+
+        l<<info->uri();
         m_uri_display_name_hash.insert(info->uri(), display_name);
     }
     setStringList(l);
