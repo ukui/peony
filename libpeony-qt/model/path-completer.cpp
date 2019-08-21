@@ -36,6 +36,6 @@ QStringList PathCompleter::splitPath(const QString &path) const
 
 QString PathCompleter::pathFromIndex(const QModelIndex &index) const
 {
-    qDebug()<<index.data();
+    //qDebug()<<index.data();
     return QCompleter::pathFromIndex(index);
 }

@@ -10,32 +10,36 @@ PathBarModel::PathBarModel(QObject *parent) : QStringListModel (parent)
 
 }
 
-void PathBarModel::setRootPath(const QString &path)
+void PathBarModel::setRootPath(const QString &path, bool force)
 {
-    setRootUri("file://" + path);
+    setRootUri("file://" + path, force);
 }
 
-void PathBarModel::setRootUri(const QString &uri)
+void PathBarModel::setRootUri(const QString &uri, bool force)
 {
-    if (m_current_uri == uri)
-        return;
+    if (!force) {
+        if (m_current_uri == uri)
+            return;
 
-    auto file = wrapGFile(g_file_new_for_uri(uri.toUtf8().constData()));
-    if (!g_file_query_exists(file.get()->get(), nullptr)) {
-        return;
+        auto file = wrapGFile(g_file_new_for_uri(uri.toUtf8().constData()));
+        if (!g_file_query_exists(file.get()->get(), nullptr)) {
+            return;
+        }
     }
 
-    qDebug()<<"setUri"<<uri<<"raw"<<m_current_uri;
+    //qDebug()<<"setUri"<<uri<<"raw"<<m_current_uri;
 
     beginResetModel();
 
     m_current_uri = uri;
+
     FileEnumerator e;
     e.setEnumerateDirectory(uri);
     e.enumerateSync();
     auto infos = e.getChildren();
     if (infos.isEmpty()) {
         endResetModel();
+        Q_EMIT updated();
         return;
     }
 
@@ -52,6 +56,7 @@ void PathBarModel::setRootUri(const QString &uri)
     }
     setStringList(l);
     endResetModel();
+    Q_EMIT updated();
 }
 
 QString PathBarModel::findDisplayName(const QString &uri)
