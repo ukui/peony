@@ -1,7 +1,7 @@
 #include "mainwindow.h"
-#include "file-operation/file-move-operation.h"
-#include "file-operation/file-node.h"
-#include "file-operation/file-node-reporter.h"
+#include "file-move-operation.h"
+#include "file-node.h"
+#include "file-node-reporter.h"
 
 #include "connect-server-dialog.h"
 #include "gerror-wrapper.h"

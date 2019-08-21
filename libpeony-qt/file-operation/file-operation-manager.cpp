@@ -9,12 +9,16 @@
 #include "file-trash-operation.h"
 #include "file-untrash-operation.h"
 
+#include "file-operation-error-dialog.h"
+
 using namespace Peony;
 
 static FileOperationManager *global_instance = nullptr;
 
 FileOperationManager::FileOperationManager(QObject *parent) : QObject(parent)
 {
+    qRegisterMetaType<Peony::GErrorWrapperPtr>("Peony::GErrorWrapperPtr");
+    qRegisterMetaType<Peony::GErrorWrapperPtr>("Peony::GErrorWrapperPtr&");
     m_thread_pool = new QThreadPool(this);
     //Imitating queue execution.
     m_thread_pool->setMaxThreadCount(1);
@@ -52,18 +56,18 @@ void FileOperationManager::startOperation(FileOperation *operation, bool addToHi
                                 "until it/them done."));
     }
 
-    if (addToHistory) {
-        connect(operation, &FileOperation::errored, [=](){
-            m_is_current_operation_errored = true;
-            operation->disconnect(operation, &FileOperation::errored, nullptr, nullptr);
-        });
-        connect(operation, &FileOperation::operationFinished, [=](){
-            if (m_is_current_operation_errored) {
-                //FIXME: is that really reliable?
-                m_is_current_operation_errored = false;
-                return ;
-            }
+    operation->connect(operation, &FileOperation::errored, [=](){
+        operation->setHasError(true);
+    });
 
+    operation->connect(operation, &FileOperation::errored, this, &FileOperationManager::handleError);
+
+    operation->connect(operation, &FileOperation::operationFinished, [=](){
+        if (operation->hasError()) {
+            return ;
+        }
+
+        if (addToHistory) {
             auto info = operation->getOperationInfo();
             if (info->operationType() != FileOperationInfo::Delete) {
                 m_undo_stack.push(info);
@@ -71,8 +75,8 @@ void FileOperationManager::startOperation(FileOperation *operation, bool addToHi
             } else {
                 this->clearHistory();
             }
-        });
-    }
+        }
+    });
 
     m_thread_pool->start(operation);
 }
@@ -166,4 +170,13 @@ void FileOperationManager::onFilesDeleted(const QStringList &uris)
     qDebug()<<uris;
     //FIXME: improve the handling here of file deleted event.
     clearHistory();
+}
+
+QVariant FileOperationManager::handleError(const QString &srcUri,
+                                                              const QString &destUri,
+                                                              const GErrorWrapperPtr &err,
+                                                              bool critical)
+{
+    FileOperationErrorDialog dlg;
+    return dlg.handleError(srcUri, destUri, err, critical);
 }

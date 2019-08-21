@@ -686,6 +686,7 @@ start:
         default:
             break;
         }
+        goto end;
     }
 
     if (isCancelled())
@@ -698,6 +699,7 @@ start:
         moveForceUseFallback();
     }
     qDebug()<<"finished";
+end:
     Q_EMIT operationFinished();
 }
 

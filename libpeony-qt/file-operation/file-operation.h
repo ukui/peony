@@ -46,6 +46,9 @@ public:
     ~FileOperation();
     virtual void run();
 
+    void setHasError(bool hasError = true) {m_has_error = hasError;}
+    bool hasError() {return m_has_error;}
+
     /*!
      * \brief getOperationInfo
      * \return
@@ -229,6 +232,7 @@ private:
     GCancellableWrapperPtr m_cancellable_wrapper = nullptr;
     bool m_is_cancelled = false;
     bool m_reversible = false;
+    bool m_has_error = false;
 };
 
 }

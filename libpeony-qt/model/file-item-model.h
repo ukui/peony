@@ -30,6 +30,10 @@ class PEONYCORESHARED_EXPORT FileItemModel : public QAbstractItemModel
         Other
     };
 
+    enum ItemRole {
+        UriRole = Qt::UserRole
+    };
+
     friend class FileItem;
     friend class FileItemProxyFilterSortModel;
     Q_OBJECT
@@ -52,7 +56,7 @@ public:
      * \return
      * \retval the item instance of index at model.
      */
-    FileItem *itemFromIndex(const QModelIndex &index);
+    FileItem *itemFromIndex(const QModelIndex &index) const;
     /*!
      * \brief firstColumnIndex
      * \param item
@@ -128,6 +132,13 @@ public:
     bool removeRows(int row, int count, const QModelIndex &parent = QModelIndex()) override;
     bool removeColumns(int column, int count, const QModelIndex &parent = QModelIndex()) override;
 
+    QMimeData *mimeData(const QModelIndexList& indexes) const override;
+
+    bool dropMimeData(const QMimeData *data, Qt::DropAction action,
+                      int row, int column, const QModelIndex &parent) override;
+
+    Qt::DropActions supportedDropActions() const override;
+
 Q_SIGNALS:
     /*!
      * \brief findChildrenStarted
@@ -176,6 +187,8 @@ public Q_SLOTS:
      * \deprecated
      */
     void onItemRemoved(FileItem *item);
+
+    void setRootIndex(const QModelIndex &index);
 
 private:
     FileItem *m_root_item = nullptr;

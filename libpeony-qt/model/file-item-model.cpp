@@ -2,7 +2,13 @@
 #include "file-item.h"
 #include "file-info.h"
 
+#include "file-operation-manager.h"
+#include "file-move-operation.h"
+#include "file-copy-operation.h"
+
 #include <QIcon>
+#include <QMimeData>
+#include <QUrl>
 
 #include <QDebug>
 
@@ -47,7 +53,7 @@ QModelIndex FileItemModel::index(int row, int column, const QModelIndex &parent)
     return createIndex(row, column, item->m_children->at(row));
 }
 
-FileItem *FileItemModel::itemFromIndex(const QModelIndex &index)
+FileItem *FileItemModel::itemFromIndex(const QModelIndex &index) const
 {
     return static_cast<FileItem*>(index.internalPointer());
 }
@@ -123,6 +129,9 @@ int FileItemModel::rowCount(const QModelIndex &parent) const
 QVariant FileItemModel::data(const QModelIndex &index, int role) const
 {
     FileItem *item = static_cast<FileItem*>(index.internalPointer());
+    if (role == UriRole) {
+        return QVariant(item->m_info->uri());
+    }
     //qDebug()<<item->m_info->uri();
     switch (index.column()) {
     case FileName:{
@@ -205,7 +214,16 @@ bool FileItemModel::hasChildren(const QModelIndex &parent) const
 
 Qt::ItemFlags FileItemModel::flags(const QModelIndex &index) const
 {
-    return QAbstractItemModel::flags(index) | Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled;
+    if (index.isValid()) {
+        Qt::ItemFlags flags = QAbstractItemModel::flags(index);
+        flags |= Qt::ItemIsDragEnabled;
+        if (index.column() == FileName) {
+            flags |= Qt::ItemIsEditable;
+        }
+        return flags;
+    } else {
+        return Qt::ItemIsDropEnabled;
+    }
 }
 
 bool FileItemModel::canFetchMore(const QModelIndex &parent) const
@@ -280,4 +298,91 @@ void FileItemModel::onItemRemoved(FileItem *item)
     if (!item->m_parent)
         removeRow(item->firstColumnIndex().row());
     removeRow(item->firstColumnIndex().row(), item->m_parent->firstColumnIndex());
+}
+
+void FileItemModel::setRootIndex(const QModelIndex &index)
+{
+    //NOTE: if we use proxy model, we might get the wrong item from index.
+    //add the new data role save the file's uri to resolve this problem.
+    if (index.isValid()) {
+        auto new_root_info = FileInfo::fromUri(index.data(UriRole).toString());
+        auto new_root_item = new FileItem(new_root_info,
+                                          nullptr,
+                                          this);
+        if (new_root_item->hasChildren()) {
+            setRootItem(new_root_item);
+        }
+    }
+}
+
+QMimeData *FileItemModel::mimeData(const QModelIndexList &indexes) const
+{
+    QMimeData* data = QAbstractItemModel::mimeData(indexes);
+    //set urls data URLs correspond to the MIME type text/uri-list.
+    QList<QUrl> urls;
+    for (auto index : indexes) {
+        auto item = itemFromIndex(index);
+        QUrl url = item->m_info->uri();
+        urls<<url;
+    }
+    data->setUrls(urls);
+    return data;
+}
+
+Qt::DropActions FileItemModel::supportedDropActions() const
+{
+    //qDebug()<<"supportedDropActions";
+    return Qt::MoveAction|Qt::CopyAction;
+}
+
+bool FileItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent)
+{
+    qDebug()<<"drop mime data";
+    //judge the drop dest uri.
+    QString destDirUri = nullptr;
+    if (parent.isValid()) {
+        QModelIndex child = index(row, column, parent);
+        if (child.isValid()) {
+            auto item = static_cast<FileItem*>(child.internalPointer());
+            if (item->m_info->isDir()) {
+                destDirUri = item->m_info->uri();
+            }
+        }
+    } else {
+        destDirUri = m_root_item->m_info->uri();
+    }
+
+    //if destDirUri was not set, do not execute a drop.
+    if (destDirUri.isNull()) {
+        return false;
+    }
+
+    auto urls = data->urls();
+    if (urls.isEmpty()) {
+        return false;
+    }
+
+    QStringList srcUris;
+    for (auto url : urls) {
+        srcUris<<url.url();
+    }
+
+    auto fileOpMgr = FileOperationManager::getInstance();
+    bool addHistory = true;
+    switch (action) {
+    case Qt::MoveAction: {
+        FileMoveOperation *moveOp = new FileMoveOperation(srcUris, destDirUri);
+        fileOpMgr->startOperation(moveOp, addHistory);
+        break;
+    }
+    case Qt::CopyAction: {
+        FileCopyOperation *copyOp = new FileCopyOperation(srcUris, destDirUri);
+        fileOpMgr->startOperation(copyOp);
+        break;
+    }
+    default:
+        break;
+    }
+
+    return QAbstractItemModel::dropMimeData(data, action, row, column, parent);
 }

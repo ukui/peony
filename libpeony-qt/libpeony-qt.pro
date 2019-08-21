@@ -28,8 +28,6 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 include(model/model.pri)
-include(peony-core.pri)
-include(file-operation/file-operation.pri)
 
 unix {
     target.path = $$[QT_INSTALL_LIBS]

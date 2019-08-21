@@ -12,6 +12,7 @@
 #include "file-info-job.h"
 #include "gerror-wrapper.h"
 #include <QTreeView>
+#include <QListView>
 #include <QToolBar>
 
 #include <QTimer>
@@ -25,7 +26,7 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
     QIcon::setThemeName("ukui-icon-theme");
-    QLineEdit *line = new QLineEdit("computer:///", this);
+    QLineEdit *line = new QLineEdit("file:///home/lanyue", this);
     QToolBar *toolbar = new QToolBar(this);
     toolbar->addWidget(line);
     addToolBar(Qt::TopToolBarArea, toolbar);
@@ -79,6 +80,37 @@ MainWindow::MainWindow(QWidget *parent)
 
         model->setRootItem(item);
 
+        Peony::FileItemProxyFilterSortModel *pm = new Peony::FileItemProxyFilterSortModel;
+        pm->setSourceModel(model);
+
+        QListView *lv = new QListView;
+        lv->setModel(pm);
+        lv->setViewMode(QListView::IconMode);
+        lv->setDragDropMode(QListView::DragDrop);
+        lv->setDragEnabled(true);
+        lv->setDefaultDropAction(Qt::MoveAction);
+        lv->setAcceptDrops(true);
+        lv->setSelectionMode(QAbstractItemView::ExtendedSelection);
+
+        //layout
+        /*
+        lv->setGridSize(QSize(96, 96));
+        lv->setIconSize(QSize(48, 48));
+        lv->setResizeMode(QListView::Adjust);
+        lv->setUniformItemSizes(true);
+        */
+
+        connect(lv, &QListView::doubleClicked, [=](const QModelIndex &index){
+            lv->setWindowTitle(index.data().toString());
+            model->setRootIndex(index);
+            //pm->update();
+        });
+
+        connect(model, &Peony::FileItemModel::findChildrenFinished, [=](){
+            pm->sort(0);
+        });
+        lv->show();
+        /*
         QTreeView *v = new QTreeView();
         v->setAttribute(Qt::WA_DeleteOnClose);
         v->setModel(model);
@@ -109,6 +141,7 @@ MainWindow::MainWindow(QWidget *parent)
             auto item = model->itemFromIndex(index);
             item->clearChildren();
         });
+
         pv->show();
         pv->header()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
 
@@ -122,6 +155,7 @@ MainWindow::MainWindow(QWidget *parent)
             c.setShape(Qt::ArrowCursor);
             pv->setCursor(c);
         });
+        */
     });
 
 

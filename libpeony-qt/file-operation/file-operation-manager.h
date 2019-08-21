@@ -5,14 +5,14 @@
 
 #include "peony-core_global.h"
 #include "gobject-template.h"
+#include "gerror-wrapper.h"
 #include "file-utils.h"
+#include "file-operation.h"
 #include <QMutex>
 #include <QStack>
 #include <QThreadPool>
 
 namespace Peony {
-
-class FileOperation;
 
 class FileOperationInfo;
 
@@ -28,7 +28,7 @@ class PEONYCORESHARED_EXPORT FileOperationManager : public QObject
 {
     Q_OBJECT
 public:
-    FileOperationManager *getInstance();
+    static FileOperationManager *getInstance();
     void close();
 
 Q_SIGNALS:
@@ -46,6 +46,8 @@ public Q_SLOTS:
 
     void clearHistory();
     void onFilesDeleted(const QStringList &uris);
+
+    QVariant handleError(const QString &srcUri, const QString &destUri, const GErrorWrapperPtr &err, bool critical);
 
 private:
     explicit FileOperationManager(QObject *parent = nullptr);

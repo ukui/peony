@@ -20,6 +20,7 @@ int main(int argc, char *argv[])
     MainWindow w;
     w.show();
 
+    /*
     Peony::PathBarModel *path_model = new Peony::PathBarModel;
     path_model->setRootUri("computer:///");
     Peony::PathCompleter *path_completer = new Peony::PathCompleter;
@@ -63,6 +64,7 @@ int main(int argc, char *argv[])
     //v->expandAll();
     v->header()->setSectionResizeMode(QHeaderView::ResizeToContents);
     v->header()->setVisible(false);
+    */
 
     return a.exec();
 }
