@@ -55,10 +55,16 @@ void PathBarModel::setRootUri(const QString &uri, bool force)
         if (display_name.startsWith("."))
             continue;
 
-        l<<info->uri();
+        //NOTE: uri encode can not support chinese correctly.
+        //I need get display name and stitch it with current uri.
+        QString utf8Uri = info->uri();
+        utf8Uri.chop(utf8Uri.size() - utf8Uri.lastIndexOf("/") - 1);
+        utf8Uri.append(display_name);
+        l<<utf8Uri;
         m_uri_display_name_hash.insert(info->uri(), display_name);
     }
     setStringList(l);
+    sort(0);
     endResetModel();
     Q_EMIT updated();
 }
