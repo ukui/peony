@@ -20,13 +20,26 @@ void PathBarModel::setRootUri(const QString &uri)
     if (m_current_uri == uri)
         return;
 
+    auto file = wrapGFile(g_file_new_for_uri(uri.toUtf8().constData()));
+    if (!g_file_query_exists(file.get()->get(), nullptr)) {
+        return;
+    }
+
+    qDebug()<<"setUri"<<uri<<"raw"<<m_current_uri;
+
     beginResetModel();
-    m_uri_display_name_hash.clear();
+
     m_current_uri = uri;
     FileEnumerator e;
     e.setEnumerateDirectory(uri);
     e.enumerateSync();
     auto infos = e.getChildren();
+    if (infos.isEmpty()) {
+        endResetModel();
+        return;
+    }
+
+    m_uri_display_name_hash.clear();
     QStringList l;
     for (auto info : infos) {
         //skip the independent file.

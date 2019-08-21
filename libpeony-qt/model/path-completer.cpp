@@ -1,8 +1,6 @@
 #include "path-completer.h"
 #include "path-bar-model.h"
 
-#include <QUrl>
-
 #include <QDebug>
 
 using namespace Peony;
@@ -21,16 +19,16 @@ QStringList PathCompleter::splitPath(const QString &path) const
 {
     QAbstractItemModel *m = model();
     PathBarModel* model = static_cast<PathBarModel*>(m);
-    QUrl url = path;
     if (path.endsWith("/")) {
         model->setRootUri(path);
     } else {
-        if (url.isValid()) {
-            QString dirUri = url.toString();
-            QString fileName = url.fileName();
-            dirUri.remove(fileName);
-            model->setRootUri(dirUri);
+        QString tmp0 = path;
+        QString tmp = path;
+        tmp.chop(path.size() - path.lastIndexOf("/"));
+        if (tmp.endsWith("/")) {
+            tmp.append("/");
         }
+        model->setRootUri(tmp);
     }
 
     return QCompleter::splitPath(path);
