@@ -149,6 +149,9 @@ QString FileUtils::getTargetUri(const QString &uri)
 
 bool FileUtils::stringStartWithChinese(const QString &string)
 {
+    if (string.isEmpty())
+        return false;
+
     auto firstStrUnicode = string.at(0).unicode();
     return (firstStrUnicode <=0x9FA5 && firstStrUnicode >= 0x4E00);
 }
