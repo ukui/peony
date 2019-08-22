@@ -6,6 +6,8 @@
 #include "file-move-operation.h"
 #include "file-copy-operation.h"
 
+#include "file-utils.h"
+
 #include <QIcon>
 #include <QMimeData>
 #include <QUrl>
@@ -140,7 +142,7 @@ QVariant FileItemModel::data(const QModelIndex &index, int role) const
             return QVariant(item->m_info->displayName());
         }
         case Qt::DecorationRole:{
-            qDebug()<<item->m_info->iconName();
+            //qDebug()<<item->m_info->iconName();
             QIcon icon = QIcon::fromTheme(item->m_info->iconName());
             if (icon.isNull()) {
                 return QIcon::fromTheme("application-x-desktop");
@@ -222,6 +224,10 @@ Qt::ItemFlags FileItemModel::flags(const QModelIndex &index) const
     if (index.isValid()) {
         Qt::ItemFlags flags = QAbstractItemModel::flags(index);
         flags |= Qt::ItemIsDragEnabled;
+        auto item = itemFromIndex(index);
+        if (item->m_info->isDir()) {
+            flags |= Qt::ItemIsDropEnabled;
+        }
         if (index.column() == FileName) {
             flags |= Qt::ItemIsEditable;
         }
@@ -348,13 +354,28 @@ bool FileItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action, i
     if (parent.isValid()) {
         QModelIndex child = index(row, column, parent);
         if (child.isValid()) {
+            //unexpected drop.
+            /*
             auto item = static_cast<FileItem*>(child.internalPointer());
+            qDebug()<<item->m_info->uri();
             if (item->m_info->isDir()) {
                 destDirUri = item->m_info->uri();
             }
+            */
+        } else {
+            //drop on a folder item.
+            auto parentItem = itemFromIndex(parent);
+            destDirUri = parentItem->m_info->uri();
         }
     } else {
+        //FIXME: for a mounted volume (for example, computer:///),
+        //we have to set the dest dir uri as its mount point.
+        //maybe i should do this when set model root item.
         destDirUri = m_root_item->m_info->uri();
+        auto targetUri = FileUtils::getTargetUri(destDirUri);
+        if (!targetUri.isEmpty()) {
+            destDirUri = targetUri;
+        }
     }
 
     //if destDirUri was not set, do not execute a drop.

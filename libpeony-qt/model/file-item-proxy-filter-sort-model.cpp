@@ -118,6 +118,10 @@ void FileItemProxyFilterSortModel::setShowHidden(bool showHidden)
 
 bool FileItemProxyFilterSortModel::startWithChinese(const QString &displayName) const
 {
+    //NOTE: a newly created file might could not get display name soon.
+    if (displayName.isEmpty()) {
+        return false;
+    }
     auto firstStrUnicode = displayName.at(0).unicode();
     return (firstStrUnicode <=0x9FA5 && firstStrUnicode >= 0x4E00);
 }

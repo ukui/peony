@@ -87,10 +87,22 @@ retry:
                     &err);
 
         if (err) {
-            if (err->code == G_IO_ERROR_CANCELLED) {
+            auto errWrapper = GErrorWrapper::wrapFrom(err);
+            switch (errWrapper.get()->code()) {
+            case G_IO_ERROR_CANCELLED:
+                return;
+            case G_IO_ERROR_NOT_SUPPORTED:
+            case G_IO_ERROR_WOULD_RECURSE: {
+                m_force_use_fallback = true;
+                for (auto node : nodes) {
+                    delete node;
+                }
+                nodes.clear();
                 return;
             }
-            auto errWrapper = GErrorWrapper::wrapFrom(err);
+            default:
+                break;
+            }
             ResponseType handle_type = prehandle(err);
             if (handle_type == Other) {
                 qDebug()<<"send error";
@@ -595,6 +607,7 @@ void FileMoveOperation::moveForceUseFallback()
     if (isCancelled())
         return;
 
+    Q_EMIT operationRequestShowWizard();
     m_reporter = new FileNodeReporter;
     connect(m_reporter, &FileNodeReporter::nodeFound, this, &FileMoveOperation::operationPreparedOne);
 
@@ -695,7 +708,10 @@ start:
     //should block and wait for other object prepared.
     if (!m_force_use_fallback) {
         move();
-    } else {
+    }
+
+    //ensure again
+    if (m_force_use_fallback) {
         moveForceUseFallback();
     }
     qDebug()<<"finished";

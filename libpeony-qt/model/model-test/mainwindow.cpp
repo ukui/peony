@@ -85,7 +85,7 @@ MainWindow::MainWindow(QWidget *parent)
         pm->setSourceModel(model);
 
         //icon view, dnd.
-        /*
+
         QListView *lv = new QListView;
         lv->setModel(pm);
         lv->setViewMode(QListView::IconMode);
@@ -113,10 +113,10 @@ MainWindow::MainWindow(QWidget *parent)
             pm->sort(0);
         });
         lv->show();
-        */
+
 
         //tree view, expandable
-
+/*
         QTreeView *v = new QTreeView();
         v->setAttribute(Qt::WA_DeleteOnClose);
         v->setModel(model);
@@ -136,7 +136,6 @@ MainWindow::MainWindow(QWidget *parent)
         proxy_model->setSourceModel(model);
         pv->setAttribute(Qt::WA_DeleteOnClose);
         pv->setSortingEnabled(true);
-        proxy_model->sort(0);
         pv->setModel(proxy_model);
         connect(pv, &QTreeView::expanded, [=](const QModelIndex &proxyIndex){
             auto item = proxy_model->itemFromIndex(proxyIndex);
@@ -156,14 +155,15 @@ MainWindow::MainWindow(QWidget *parent)
             c.setShape(Qt::WaitCursor);
             pv->setCursor(c);
         });
-        connect(model, &Peony::FileItemModel::findChildrenFinished, [pv](){
+        connect(model, &Peony::FileItemModel::findChildrenFinished, [=](){
             QCursor c;
             c.setShape(Qt::ArrowCursor);
             pv->setCursor(c);
+            pv->sortByColumn(0, Qt::AscendingOrder);
         });
+*/
 
     });
-
 
 }
 

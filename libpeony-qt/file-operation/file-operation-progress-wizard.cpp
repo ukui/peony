@@ -81,6 +81,8 @@ void FileOperationProgressWizard::switchToPreparedPage()
 {
     restart();
 
+    m_total_count = 0;
+    m_total_size = 0;
     auto cancelButton = button(QWizard::CustomButton1);
     cancelButton->setEnabled(true);
 }

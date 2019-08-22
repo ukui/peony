@@ -120,6 +120,24 @@ Q_SIGNALS:
                               const qint64 &current_file_offset, const qint64 &current_file_size);
 
     /*!
+     * \brief operationRequestShowWizard
+     * \details
+     * Instead of connect with operationStarted() signal, using operationRequestShowWizard() for showing
+     * a wizard is better. Because you might not want to see a wizard in some operation.
+     * \note
+     * only fallback-move, copy and delete send this signal.
+     */
+    void operationRequestShowWizard();
+    /*!
+     * \brief operationFallbackRetried
+     * \details
+     * In peony-qt, we perfer user using native move function for fast moving.
+     * Unfortunatly there are many limitration for native move.
+     * If a native move is failed for those reasons, the move operation will
+     * retry with copy/delete function as fallback, it might cost much more time.
+     */
+    void operationFallbackRetried();
+    /*!
      * \brief operationPreparedOne
      * \param srcUri
      * \param destUri

@@ -10,6 +10,7 @@
 #include "file-untrash-operation.h"
 
 #include "file-operation-error-dialog.h"
+#include "file-operation-progress-wizard.h"
 
 using namespace Peony;
 
@@ -56,11 +57,25 @@ void FileOperationManager::startOperation(FileOperation *operation, bool addToHi
                                 "until it/them done."));
     }
 
+    FileOperationProgressWizard *wizard = new FileOperationProgressWizard;
+    wizard->connect(operation, &FileOperation::operationRequestShowWizard, wizard, &FileOperationProgressWizard::show);
+    wizard->connect(operation, &FileOperation::operationRequestShowWizard, wizard, &FileOperationProgressWizard::switchToPreparedPage);
+    wizard->connect(operation, &FileOperation::operationPreparedOne, wizard, &FileOperationProgressWizard::onElementFoundOne);
+    wizard->connect(operation, &FileOperation::operationPrepared, wizard, &FileOperationProgressWizard::onElementFoundAll);
+    wizard->connect(operation, &FileOperation::operationProgressedOne, wizard, &FileOperationProgressWizard::onFileOperationProgressedOne);
+    wizard->connect(operation, &FileOperation::operationProgressed, wizard, &FileOperationProgressWizard::onFileOperationProgressedAll);
+    wizard->connect(operation, &FileOperation::operationAfterProgressedOne, wizard, &FileOperationProgressWizard::onElementClearOne);
+    wizard->connect(operation, &FileOperation::operationAfterProgressed, wizard, &FileOperationProgressWizard::switchToRollbackPage);
+    wizard->connect(operation, &FileOperation::operationRollbackedOne, wizard, &FileOperationProgressWizard::onFileRollbacked);
+    wizard->connect(operation, &FileOperation::operationFinished, wizard, &FileOperationProgressWizard::deleteLater);
+
     operation->connect(operation, &FileOperation::errored, [=](){
         operation->setHasError(true);
     });
 
-    operation->connect(operation, &FileOperation::errored, this, &FileOperationManager::handleError);
+    operation->connect(operation, &FileOperation::errored,
+                       this, &FileOperationManager::handleError,
+                       Qt::BlockingQueuedConnection);
 
     operation->connect(operation, &FileOperation::operationFinished, [=](){
         if (operation->hasError()) {

@@ -59,6 +59,8 @@ void FileDeleteOperation::run()
 
     Q_EMIT operationStarted();
 
+    Q_EMIT operationRequestShowWizard();
+
     goffset *total_size = new goffset(0);
 
     QList<FileNode*> nodes;

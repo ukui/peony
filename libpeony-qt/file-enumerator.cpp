@@ -369,6 +369,7 @@ GAsyncReadyCallback FileEnumerator::enumerator_next_files_async_ready_callback(G
         GFileInfo *info = static_cast<GFileInfo*>(l->data);
         GFile *file = g_file_enumerator_get_child(enumerator, info);
         char *uri = g_file_get_uri(file);
+        g_object_unref(file);
         //qDebug()<<uri;
         uriList<<uri;
         *(p_this->m_children_uris)<<uri;
