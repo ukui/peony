@@ -34,6 +34,11 @@ unix {
     INSTALLS += target
 
     header.path = /usr/include/peony-qt
-    header.files = *.h model/*.h file-operation/*.h
+    header.files += *.h model/*.h file-operation/*.h
+    header.files += development-files/header-files/*
     INSTALLS += header
+
+    pcfile.path = $$[QT_INSTALL_LIBS]/pkgconfig
+    pcfile.files = development-files/peony-qt.pc
+    INSTALLS += pcfile
 }
