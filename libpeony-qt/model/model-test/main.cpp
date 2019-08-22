@@ -20,6 +20,7 @@ int main(int argc, char *argv[])
     MainWindow w;
     w.show();
 
+    QIcon::setThemeName("ukui-icon-theme");
     /*
     Peony::PathBarModel *path_model = new Peony::PathBarModel;
     path_model->setRootUri("computer:///");

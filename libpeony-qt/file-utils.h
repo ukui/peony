@@ -29,6 +29,9 @@ public:
     static GErrorWrapperPtr getEnumerateError(const QString &uri);
     static QString getTargetUri(const QString &uri);
 
+    static bool stringStartWithChinese(const QString &string);
+    static bool stringLesserThan(const QString &left, const QString &right);
+
 private:
     FileUtils();
 };

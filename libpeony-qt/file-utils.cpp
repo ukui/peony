@@ -146,3 +146,19 @@ QString FileUtils::getTargetUri(const QString &uri)
     return g_file_info_get_attribute_string(info.get()->get(),
                                             G_FILE_ATTRIBUTE_STANDARD_TARGET_URI);
 }
+
+bool FileUtils::stringStartWithChinese(const QString &string)
+{
+    auto firstStrUnicode = string.at(0).unicode();
+    return (firstStrUnicode <=0x9FA5 && firstStrUnicode >= 0x4E00);
+}
+
+bool FileUtils::stringLesserThan(const QString &left, const QString &right)
+{
+    bool leftStartWithChinese = stringStartWithChinese(left);
+    bool rightStartWithChinese = stringStartWithChinese(right);
+    if (!(!leftStartWithChinese && !rightStartWithChinese)) {
+        return leftStartWithChinese;
+    }
+    return left.toLower() < right.toLower();
+}

@@ -30,6 +30,9 @@ protected:
     bool lessThan(const QModelIndex &left, const QModelIndex &right) const override;
 
 private:
+    bool startWithChinese(const QString &displayName) const;
+
+private:
     bool m_show_hidden = false;
 };
 

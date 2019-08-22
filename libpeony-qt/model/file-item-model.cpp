@@ -140,6 +140,11 @@ QVariant FileItemModel::data(const QModelIndex &index, int role) const
             return QVariant(item->m_info->displayName());
         }
         case Qt::DecorationRole:{
+            qDebug()<<item->m_info->iconName();
+            QIcon icon = QIcon::fromTheme(item->m_info->iconName());
+            if (icon.isNull()) {
+                return QIcon::fromTheme("application-x-desktop");
+            }
             return QVariant(QIcon::fromTheme(item->m_info->iconName()));
         }
         default:

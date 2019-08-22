@@ -25,7 +25,6 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
-    QIcon::setThemeName("ukui-icon-theme");
     QLineEdit *line = new QLineEdit("file:///home/lanyue", this);
     QToolBar *toolbar = new QToolBar(this);
     toolbar->addWidget(line);
@@ -74,6 +73,8 @@ MainWindow::MainWindow(QWidget *parent)
     //model/view
 
     connect(line, &QLineEdit::returnPressed, [=](){
+
+
         Peony::FileItemModel *model = new Peony::FileItemModel(this);
 
         Peony::FileItem *item = new Peony::FileItem(Peony::FileInfo::fromUri(line->text().toUtf8().constData()), nullptr, model, this);
@@ -83,6 +84,8 @@ MainWindow::MainWindow(QWidget *parent)
         Peony::FileItemProxyFilterSortModel *pm = new Peony::FileItemProxyFilterSortModel;
         pm->setSourceModel(model);
 
+        //icon view, dnd.
+        /*
         QListView *lv = new QListView;
         lv->setModel(pm);
         lv->setViewMode(QListView::IconMode);
@@ -93,12 +96,12 @@ MainWindow::MainWindow(QWidget *parent)
         lv->setSelectionMode(QAbstractItemView::ExtendedSelection);
 
         //layout
-        /*
+
         lv->setGridSize(QSize(96, 96));
         lv->setIconSize(QSize(48, 48));
         lv->setResizeMode(QListView::Adjust);
-        lv->setUniformItemSizes(true);
-        */
+        //lv->setUniformItemSizes(true);
+        lv->setWordWrap(true);
 
         connect(lv, &QListView::doubleClicked, [=](const QModelIndex &index){
             lv->setWindowTitle(index.data().toString());
@@ -110,7 +113,10 @@ MainWindow::MainWindow(QWidget *parent)
             pm->sort(0);
         });
         lv->show();
-        /*
+        */
+
+        //tree view, expandable
+
         QTreeView *v = new QTreeView();
         v->setAttribute(Qt::WA_DeleteOnClose);
         v->setModel(model);
@@ -155,7 +161,7 @@ MainWindow::MainWindow(QWidget *parent)
             c.setShape(Qt::ArrowCursor);
             pv->setCursor(c);
         });
-        */
+
     });
 
 

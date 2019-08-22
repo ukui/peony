@@ -43,29 +43,44 @@ bool FileItemProxyFilterSortModel::lessThan(const QModelIndex &left, const QMode
         auto rightItem = model->itemFromIndex(right);
         if (!(leftItem->hasChildren() && rightItem->hasChildren())) {
             //make folder always has a higher order.
-            bool lesser = leftItem->hasChildren()? false: true;
-            if (sortOrder() == Qt::DescendingOrder)
+            if (!leftItem->hasChildren() && !rightItem->hasChildren()) {
+                goto default_sort;
+            }
+            bool lesser = leftItem->hasChildren();
+            if (sortOrder() == Qt::AscendingOrder)
                 return lesser;
             return !lesser;
         }
+
+default_sort:
         switch (sortColumn()) {
         case FileItemModel::FileName: {
-            return leftItem->m_info->displayName() > rightItem->m_info->displayName();
+            QString leftDisplayName = leftItem->m_info->displayName();
+            QString rightDisplayName = rightItem->m_info->displayName();
+            bool leftStartWithChinese = startWithChinese(leftDisplayName);
+            bool rightStartWithChinese = startWithChinese(rightDisplayName);
+            if (!(!leftStartWithChinese && !rightStartWithChinese)) {
+                if (sortOrder() == Qt::AscendingOrder) {
+                    return leftStartWithChinese;
+                }
+                return rightStartWithChinese;
+            }
+            return leftItem->m_info->displayName().toLower() < rightItem->m_info->displayName().toLower();
         }
         case FileItemModel::FileSize: {
             return leftItem->m_info->size() < rightItem->m_info->size();
         }
         case FileItemModel::FileType: {
-            return leftItem->m_info->fileType() > rightItem->m_info->fileType();
+            return leftItem->m_info->fileType() < rightItem->m_info->fileType();
         }
         case FileItemModel::ModifiedDate: {
             return leftItem->m_info->modifiedTime() < rightItem->m_info->modifiedTime();
         }
+        default:
+            break;
         }
-        //sort by column type.
-        //name
-        //return (leftItem->m_info->displayName() < leftItem->m_info->displayName())? true: false;
     }
+
     return QSortFilterProxyModel::lessThan(left, right);
 }
 
@@ -99,4 +114,10 @@ void FileItemProxyFilterSortModel::update()
 void FileItemProxyFilterSortModel::setShowHidden(bool showHidden)
 {
     m_show_hidden = showHidden;
+}
+
+bool FileItemProxyFilterSortModel::startWithChinese(const QString &displayName) const
+{
+    auto firstStrUnicode = displayName.at(0).unicode();
+    return (firstStrUnicode <=0x9FA5 && firstStrUnicode >= 0x4E00);
 }
