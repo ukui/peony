@@ -23,6 +23,18 @@ class FileOperationInfo;
  * And in peony-qt, it is similar to peony. But there are higher level
  * api to manage these 'managers' in peony-qt.
  * Not only the undo/redo stacks' management. FileOperationManager
+ * only allows up to one file operation instace to run at same times,
+ * this means the operations will be queue executed.
+ * FileOperationManager will provide the operation-ui and error-handler-ui
+ * which are implement as defaut in peony-qt's operation frameworks.
+ * \note
+ * FileOperationManager is not a strong binding in peony-qt's file operation
+ * framework. If not considerring the operation-safety, you can just use a
+ * QThreadPool instance to start over one operations at same time.
+ * In this case you also should re-implement the operation wizard interface and
+ * error handler interface. For example, do nothing at wizard (just not create
+ * a wizard and not connect the related signal) and let the error handler
+ * always response error type as ignore.
  */
 class PEONYCORESHARED_EXPORT FileOperationManager : public QObject
 {
@@ -109,6 +121,10 @@ public:
         }
 
         switch (type) {
+        case Move: {
+            m_opposite_type = Move;
+            break;
+        }
         case Trash: {
             m_opposite_type = Untrash;
             break;

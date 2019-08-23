@@ -21,8 +21,16 @@ class FileOperationInfo;
  * This class is an interface for several kinds of file operatrion,
  * like move, copy or delete, etc.
  * </br>
- * \note You should not use this class and derived classes in main thread.
+ * \details
+ * FileOperation specifies a set of signals as an interactive interface.
+ * There a mainly two kinds of interface, operation wizard and error handler.
+ * Operation Wizard is used to show the operation progess and cancel the operation
+ * in ui. Error Handler is used to handle the error when the operation went error.
+ * \note
+ * You should not use this class and derived classes in main thread.
  * Insteadly, using QThreadPool::start() is the best choice.
+ * \see
+ * FileOperationProgressWizard, FileOperationErrorHandler, FileOperationErrorDialog.
  */
 class PEONYCORESHARED_EXPORT FileOperation : public QObject, public QRunnable
 {

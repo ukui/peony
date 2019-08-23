@@ -70,6 +70,9 @@ void FileOperationManager::startOperation(FileOperation *operation, bool addToHi
     wizard->connect(operation, &FileOperation::operationRollbackedOne, wizard, &FileOperationProgressWizard::onFileRollbacked);
     wizard->connect(operation, &FileOperation::operationFinished, wizard, &FileOperationProgressWizard::deleteLater);
 
+    connect(wizard, &Peony::FileOperationProgressWizard::cancelled,
+            operation, &Peony::FileOperation::cancel);
+
     operation->connect(operation, &FileOperation::errored, [=](){
         operation->setHasError(true);
     });
