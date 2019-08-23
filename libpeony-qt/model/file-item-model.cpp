@@ -29,6 +29,13 @@ FileItemModel::~FileItemModel()
         delete m_root_item;
 }
 
+void FileItemModel::setRootUri(const QString &uri)
+{
+    auto info = FileInfo::fromUri(uri);
+    auto item = new FileItem(info, nullptr, this);
+    setRootItem(item);
+}
+
 void FileItemModel::setRootItem(FileItem *item)
 {
     beginResetModel();
@@ -120,8 +127,10 @@ int FileItemModel::columnCount(const QModelIndex &parent) const
 
 int FileItemModel::rowCount(const QModelIndex &parent) const
 {
-    //return 0;
     if (!parent.isValid()) {
+        if (!m_root_item) {
+            return 0;
+        }
         return m_root_item->m_children->count();
     }
     FileItem *parent_item = static_cast<FileItem*>(parent.internalPointer());

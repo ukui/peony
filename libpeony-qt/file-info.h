@@ -31,6 +31,7 @@ class PEONYCORESHARED_EXPORT FileInfo : public QObject
     Q_OBJECT
 public:
     explicit FileInfo(QObject *parent = nullptr);
+    explicit FileInfo(const QString &uri, QObject *parent = nullptr);
     ~FileInfo();
     static std::shared_ptr<FileInfo> fromUri(QString uri);
     static std::shared_ptr<FileInfo> fromPath(QString path);

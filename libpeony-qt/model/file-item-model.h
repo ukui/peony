@@ -41,6 +41,7 @@ public:
     explicit FileItemModel(QObject *parent = nullptr);
     ~FileItemModel() override;
 
+    void setRootUri(const QString &uri);
     /*!
      * \brief setRootItem
      * \param item, the directory should be shown in view.

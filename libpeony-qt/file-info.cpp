@@ -12,6 +12,30 @@ FileInfo::FileInfo(QObject *parent) : QObject (parent)
     m_cancellable = g_cancellable_new();
 }
 
+FileInfo::FileInfo(const QString &uri, QObject *parent) : QObject (parent)
+{
+    m_cancellable = g_cancellable_new();
+    m_uri = uri;
+    m_file = g_file_new_for_uri(m_uri.toUtf8().constData());
+    m_parent = g_file_get_parent(m_file);
+    m_is_remote = !g_file_is_native(m_file);
+    GFileType type = g_file_query_file_type(m_file,
+                                            G_FILE_QUERY_INFO_NONE,
+                                            nullptr);
+    switch (type) {
+    case G_FILE_TYPE_DIRECTORY:
+        //qDebug()<<"dir";
+        m_is_dir = true;
+        break;
+    case G_FILE_TYPE_MOUNTABLE:
+        //qDebug()<<"mountable";
+        m_is_volume = true;
+        break;
+    default:
+        break;
+    }
+}
+
 FileInfo::~FileInfo()
 {
     qDebug()<<"~FileInfo"<<m_uri;
