@@ -6,6 +6,7 @@
 #include "file-delete-operation.h"
 #include "file-link-operation.h"
 #include "file-move-operation.h"
+#include "file-rename-operation.h"
 #include "file-trash-operation.h"
 #include "file-untrash-operation.h"
 
@@ -117,7 +118,8 @@ void FileOperationManager::startUndoOrRedo(std::shared_ptr<FileOperationInfo> in
         break;
     }
     case FileOperationInfo::Rename: {
-        //rename
+        op = new FileRenameOperation(info->m_src_uris.isEmpty()? nullptr: info->m_src_uris.at(0),
+                                     info->m_dest_dir_uri);
         break;
     }
     case FileOperationInfo::Trash: {
@@ -131,6 +133,10 @@ void FileOperationManager::startUndoOrRedo(std::shared_ptr<FileOperationInfo> in
     default:
         break;
     }
+    //do not record the undo/redo operation to history again.
+    //this had been handled at undo() and redo() yet.
+    //FIXME: if an undo/redo work went error (usually won't),
+    //should i remove the operation info from stack?
     if (op) {
         startOperation(op, false);
     }
