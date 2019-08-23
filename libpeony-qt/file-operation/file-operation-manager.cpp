@@ -167,7 +167,9 @@ std::shared_ptr<FileOperationInfo> FileOperationManager::getRedoInfo()
 
 void FileOperationManager::undo()
 {
-    Q_ASSERT(canUndo());
+    if(!canUndo())
+        return;
+
     auto undoInfo = m_undo_stack.pop();
     m_redo_stack.push(undoInfo);
 
@@ -177,8 +179,11 @@ void FileOperationManager::undo()
 
 void FileOperationManager::redo()
 {
-    Q_ASSERT(canRedo());
+    if (!canRedo())
+        return;
+
     auto redoInfo = m_redo_stack.pop();
+    m_undo_stack.push(redoInfo);
 
     startUndoOrRedo(redoInfo);
 }

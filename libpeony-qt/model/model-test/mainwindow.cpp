@@ -20,7 +20,10 @@
 #include <QDebug>
 #include <QHeaderView>
 
+#include <QAction>
+
 #include "file-info-manager.h"
+#include "file-operation-manager.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -102,6 +105,23 @@ MainWindow::MainWindow(QWidget *parent)
         lv->setResizeMode(QListView::Adjust);
         //lv->setUniformItemSizes(true);
         lv->setWordWrap(true);
+
+        //undo redo action
+        QAction *undoAction = new QAction(QIcon::fromTheme("undo"), tr("undo"), lv);
+        undoAction->setShortcut(QKeySequence::Undo);
+        QAction *redoAction = new QAction(QIcon::fromTheme("redo"), tr("redo"), lv);
+        redoAction->setShortcut(QKeySequence::Redo);
+        connect(undoAction, &QAction::triggered, [=](){
+            auto fileOpMgr = Peony::FileOperationManager::getInstance();
+            fileOpMgr->undo();
+        });
+        connect(redoAction, &QAction::triggered, [=](){
+            auto fileOpMgr = Peony::FileOperationManager::getInstance();
+            fileOpMgr->redo();
+        });
+
+        lv->addAction(undoAction);
+        lv->addAction(redoAction);
 
         connect(lv, &QListView::doubleClicked, [=](const QModelIndex &index){
             lv->setWindowTitle(index.data().toString());
