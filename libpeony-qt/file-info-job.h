@@ -34,6 +34,7 @@ class PEONYCORESHARED_EXPORT FileInfoJob : public QObject
     Q_OBJECT
 public:
     explicit FileInfoJob(std::shared_ptr<FileInfo> info, QObject *parent = nullptr);
+    ~FileInfoJob();
     bool querySync();
 
     void setAutoDelete(bool deleteWhenJobFinished = true) {m_auto_delete = deleteWhenJobFinished;}
@@ -81,7 +82,6 @@ protected:
                                                          FileInfoJob *thisJob);
 
 private:
-    ~FileInfoJob();
     void refreshInfoContents(GFileInfo *new_info);
     std::shared_ptr<FileInfo> m_info;
 
