@@ -1,5 +1,6 @@
 #include "side-bar-proxy-filter-sort-model.h"
 #include "side-bar-abstract-item.h"
+#include "side-bar-model.h"
 
 #include <QDebug>
 
@@ -27,6 +28,9 @@ bool SideBarProxyFilterSortModel::filterAcceptsRow(int sourceRow, const QModelIn
 bool SideBarProxyFilterSortModel::lessThan(const QModelIndex &left, const QModelIndex &right) const
 {
     qDebug()<<"less than";
+    if (!(left.isValid() && right.isValid())) {
+        return QSortFilterProxyModel::lessThan(left, right);
+    }
     auto leftItem = static_cast<SideBarAbstractItem*>(left.internalPointer());
     auto rightItem = static_cast<SideBarAbstractItem*>(right.internalPointer());
     if (leftItem->type() != SideBarAbstractItem::FileSystemItem || rightItem->type() != SideBarAbstractItem::FileSystemItem) {
@@ -38,6 +42,7 @@ bool SideBarProxyFilterSortModel::lessThan(const QModelIndex &left, const QModel
 
 SideBarAbstractItem *SideBarProxyFilterSortModel::itemFromIndex(const QModelIndex &proxy_index)
 {
+    SideBarModel *model = static_cast<SideBarModel*>(sourceModel());
     auto index = mapToSource(proxy_index);
-    return static_cast<SideBarAbstractItem*>(index.internalPointer());
+    return model->itemFromIndex(index);
 }

@@ -11,6 +11,8 @@ using namespace Peony;
 SideBarModel::SideBarModel(QObject *parent)
     : QAbstractItemModel(parent)
 {
+    beginResetModel();
+
     m_root_children = new QVector<SideBarAbstractItem*>();
 
     SideBarFavoriteItem *favorite_root_item = new SideBarFavoriteItem(nullptr, nullptr, this);
@@ -26,6 +28,8 @@ SideBarModel::SideBarModel(QObject *parent)
                                                                     this);
     m_root_children->append(computerItem);
     //computerItem->findChildren();
+
+    endResetModel();
 }
 
 QModelIndex SideBarModel::firstCloumnIndex(SideBarAbstractItem *item)
@@ -39,6 +43,7 @@ QModelIndex SideBarModel::firstCloumnIndex(SideBarAbstractItem *item)
             }
         }
     }
+    return QModelIndex();
 }
 
 QModelIndex SideBarModel::lastCloumnIndex(SideBarAbstractItem *item)
@@ -52,11 +57,19 @@ QModelIndex SideBarModel::lastCloumnIndex(SideBarAbstractItem *item)
             }
         }
     }
+    return QModelIndex();
+}
+
+SideBarAbstractItem *SideBarModel::itemFromIndex(const QModelIndex &index)
+{
+    return static_cast<SideBarAbstractItem*>(index.internalPointer());
 }
 
 QVariant SideBarModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
-    // FIXME: Implement me!
+    Q_UNUSED(section);
+    Q_UNUSED(orientation);
+    Q_UNUSED(role);
     return QVariant();
 }
 

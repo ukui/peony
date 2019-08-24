@@ -39,7 +39,7 @@ public:
 
 public Q_SLOTS:
     void eject() override {}
-    void unmount() override {}
+    void unmount() override;
     void format() override {}
 
     void onUpdated() override {}

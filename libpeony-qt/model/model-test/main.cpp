@@ -18,6 +18,40 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
     MainWindow w;
+
+
+    Peony::SideBarModel model;
+
+    Peony::SideBarProxyFilterSortModel proxy_model;
+    proxy_model.setSourceModel(&model);
+
+    QTreeView v;
+    v.setSortingEnabled(true);
+    v.setExpandsOnDoubleClick(false);
+    v.header()->setSectionResizeMode(QHeaderView::ResizeToContents);
+
+    v.setModel(&proxy_model);
+
+    v.connect(&v, &QTreeView::expanded, [&](const QModelIndex &index){
+        auto item = proxy_model.itemFromIndex(index);
+        item->findChildrenAsync();
+    });
+    v.connect(&v, &QTreeView::collapsed, [&](const QModelIndex &index){
+        auto item = proxy_model.itemFromIndex(index);
+        item->clearChildren();
+    });
+    v.connect(&v, &QTreeView::clicked, [&](const QModelIndex &index){
+        if (index.column() == 1) {
+            auto item = proxy_model.itemFromIndex(index);
+            if (item->isMounted()) {
+                item->unmount();
+            }
+        }
+    });
+
+    v.expandAll();
+
+    w.setCentralWidget(&v);
     w.show();
 
     QIcon::setThemeName("ukui-icon-theme");
@@ -31,7 +65,9 @@ int main(int argc, char *argv[])
     line->setCompleter(path_completer);
     line->setText(path_model->currentDirUri());
     line->show();
+    */
 
+    /*
     Peony::SideBarModel *model = new Peony::SideBarModel;
     Peony::SideBarProxyFilterSortModel *proxy_model = new Peony::SideBarProxyFilterSortModel;
     proxy_model->setSourceModel(model);

@@ -21,12 +21,11 @@ SideBarAbstractItem::~SideBarAbstractItem()
 
 void SideBarAbstractItem::clearChildren()
 {
-    m_model->beginRemoveRows(firstColumnIndex(), 0, m_children->count());
+    m_model->removeRows(0, m_children->count(), firstColumnIndex());
     for (auto child : *m_children) {
         m_children->removeOne(child);
         child->deleteLater();
     }
     m_children->clear();
-    m_model->endRemoveRows();
     qDebug()<<"clear children has children"<<m_model->hasChildren(firstColumnIndex());
 }

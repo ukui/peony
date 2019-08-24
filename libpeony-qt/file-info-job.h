@@ -33,7 +33,19 @@ class PEONYCORESHARED_EXPORT FileInfoJob : public QObject
 
     Q_OBJECT
 public:
+    /*!
+     * \brief FileInfoJob
+     * \param info
+     * \param parent
+     * \deprecated
+     * This constructor would be deprecated, use
+     * FileInfoJob(const QString &uri, QObject *parent) instead in your
+     * newly writen code.
+     */
     explicit FileInfoJob(std::shared_ptr<FileInfo> info, QObject *parent = nullptr);
+    explicit FileInfoJob(const QString &uri, QObject *parent = nullptr);
+
+    std::shared_ptr<FileInfo> getInfo() {return m_info;}
     ~FileInfoJob();
     bool querySync();
 

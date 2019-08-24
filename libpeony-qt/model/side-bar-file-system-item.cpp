@@ -180,6 +180,17 @@ bool SideBarFileSystemItem::isMounted()
     return m_is_mounted;
 }
 
+void SideBarFileSystemItem::unmount()
+{
+    auto file = wrapGFile(g_file_new_for_uri(this->uri().toUtf8().constData()));
+    g_file_unmount_mountable_with_operation(file.get()->get(),
+                                            G_MOUNT_UNMOUNT_NONE,
+                                            nullptr,
+                                            nullptr,
+                                            nullptr,
+                                            nullptr);
+}
+
 void SideBarFileSystemItem::initWatcher()
 {
     if (!m_watcher) {

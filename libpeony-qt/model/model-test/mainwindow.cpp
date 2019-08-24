@@ -25,9 +25,13 @@
 #include "file-info-manager.h"
 #include "file-operation-manager.h"
 
+#define TEST
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
+#ifndef TEST
+#define TEST
     QLineEdit *line = new QLineEdit("file:///home/lanyue", this);
     QToolBar *toolbar = new QToolBar(this);
     toolbar->addWidget(line);
@@ -184,7 +188,7 @@ MainWindow::MainWindow(QWidget *parent)
 */
 
     });
-
+#endif
 }
 
 MainWindow::~MainWindow()

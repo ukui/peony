@@ -15,6 +15,13 @@ FileInfoJob::FileInfoJob(std::shared_ptr<FileInfo> info, QObject *parent) : QObj
     connect(m_info.get(), &FileInfo::updated, this, &FileInfoJob::infoUpdated);
 }
 
+FileInfoJob::FileInfoJob(const QString &uri, QObject *parent) : QObject (parent)
+{
+    auto info = FileInfo::fromUri(uri);
+    m_info = info;
+    connect(m_info.get(), &FileInfo::updated, this, &FileInfoJob::infoUpdated);
+}
+
 /*!
  * \brief FileInfoJob::~FileInfoJob
  * <br>

@@ -17,27 +17,7 @@ SideBarPersonalItem::SideBarPersonalItem(QString uri,
         m_uri = homeUri;
         m_display_name = tr("Personal");
         m_icon_name = "personal";
-        return;
-    }
-    m_uri = uri;
-    m_display_name = FileUtils::getFileDisplayName(uri);
-    m_icon_name = FileUtils::getFileIconName(uri);
-}
 
-QModelIndex SideBarPersonalItem::firstColumnIndex()
-{
-    return m_model->firstCloumnIndex(this);
-}
-
-QModelIndex SideBarPersonalItem::lastColumnIndex()
-{
-    return m_model->lastCloumnIndex(this);
-}
-
-void SideBarPersonalItem::findChildren()
-{
-    if (m_is_root_child) {
-        clearChildren();
         QString documentUri = "file://" + QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
         SideBarPersonalItem *documentItem = new SideBarPersonalItem(documentUri,
                                                                     this,
@@ -69,11 +49,19 @@ void SideBarPersonalItem::findChildren()
         m_children->append(musicItem);
 
         m_model->insertRows(0, 5, firstColumnIndex());
+        return;
     }
-    Q_EMIT findChildrenFinished();
+    m_uri = uri;
+    m_display_name = FileUtils::getFileDisplayName(uri);
+    m_icon_name = FileUtils::getFileIconName(uri);
 }
 
-void SideBarPersonalItem::findChildrenAsync()
+QModelIndex SideBarPersonalItem::firstColumnIndex()
 {
-    findChildren();
+    return m_model->firstCloumnIndex(this);
+}
+
+QModelIndex SideBarPersonalItem::lastColumnIndex()
+{
+    return m_model->lastCloumnIndex(this);
 }

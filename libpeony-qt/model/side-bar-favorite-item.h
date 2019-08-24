@@ -38,8 +38,9 @@ public Q_SLOTS:
 
     void onUpdated() override {}
 
-    void findChildren() override;
-    void findChildrenAsync() override;
+    void findChildren() override {}
+    void findChildrenAsync() override {}
+    void clearChildren() override {}
 
 private:
     SideBarFavoriteItem *m_parent = nullptr;

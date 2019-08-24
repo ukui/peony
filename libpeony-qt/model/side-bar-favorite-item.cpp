@@ -17,6 +17,16 @@ SideBarFavoriteItem::SideBarFavoriteItem(QString uri,
     if (m_is_root_child) {
         m_display_name = tr("Favorite");
         m_icon_name = "favorite";
+
+        SideBarFavoriteItem *recentItem = new SideBarFavoriteItem("recent:///", this, m_model);
+        QString desktopUri = "file://" + QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
+        SideBarFavoriteItem *desktopItem = new SideBarFavoriteItem(desktopUri, this, m_model);
+        SideBarFavoriteItem *trashItem = new SideBarFavoriteItem("trash:///", this, m_model);
+        m_children->append(recentItem);
+        m_children->append(desktopItem);
+        m_children->append(trashItem);
+        m_model->insertRows(0, m_children->count(), firstColumnIndex());
+        //TODO: support custom bookmarks.
         return;
     }
     m_uri = uri;
@@ -58,28 +68,4 @@ QModelIndex SideBarFavoriteItem::lastColumnIndex()
 {
     //TODO: bind with model
     return m_model->firstCloumnIndex(this);
-}
-
-void SideBarFavoriteItem::findChildren()
-{
-    if (m_is_root_child) {
-        clearChildren();
-
-        SideBarFavoriteItem *recentItem = new SideBarFavoriteItem("recent:///", this, m_model);
-        QString desktopUri = "file://" + QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
-        SideBarFavoriteItem *desktopItem = new SideBarFavoriteItem(desktopUri, this, m_model);
-        SideBarFavoriteItem *trashItem = new SideBarFavoriteItem("trash:///", this, m_model);
-        m_children->append(recentItem);
-        m_children->append(desktopItem);
-        m_children->append(trashItem);
-        m_model->insertRows(0, 3, firstColumnIndex());
-        //TODO: support custom bookmarks.
-    }
-    Q_EMIT findChildrenFinished();
-}
-
-void SideBarFavoriteItem::findChildrenAsync()
-{
-    //Do i use async method to enumerate the favorite item's children?
-    findChildren();
 }

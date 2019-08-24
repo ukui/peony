@@ -21,6 +21,8 @@ public:
     QModelIndex firstCloumnIndex(SideBarAbstractItem *item);
     QModelIndex lastCloumnIndex(SideBarAbstractItem *item);
 
+    SideBarAbstractItem *itemFromIndex(const QModelIndex &index);
+
     // Header:
     QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const override;
 
