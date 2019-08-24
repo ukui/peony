@@ -17,6 +17,7 @@ class PEONYCORESHARED_EXPORT SideBarModel : public QAbstractItemModel
 
 public:
     explicit SideBarModel(QObject *parent = nullptr);
+    ~SideBarModel() override;
 
     QModelIndex firstCloumnIndex(SideBarAbstractItem *item);
     QModelIndex lastCloumnIndex(SideBarAbstractItem *item);

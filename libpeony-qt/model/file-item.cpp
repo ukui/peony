@@ -48,6 +48,11 @@ bool FileItem::operator==(const FileItem &item)
     return this->m_info->uri() == item.m_info->uri();
 }
 
+const QString FileItem::uri()
+{
+    return m_info->uri();
+}
+
 QVector<FileItem*> *FileItem::findChildrenSync()
 {
     Q_EMIT m_model->findChildrenStarted();

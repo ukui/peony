@@ -44,6 +44,8 @@ public:
                       QObject *parent = nullptr);
     ~FileItem();
 
+    const QString uri();
+
     bool operator == (const FileItem &item);
 
     QVector<FileItem*> *findChildrenSync();

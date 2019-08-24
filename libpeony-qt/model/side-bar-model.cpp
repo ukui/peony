@@ -32,6 +32,15 @@ SideBarModel::SideBarModel(QObject *parent)
     endResetModel();
 }
 
+SideBarModel::~SideBarModel()
+{
+    for (auto child : *m_root_children) {
+        delete child;
+    }
+    m_root_children->clear();
+    delete m_root_children;
+}
+
 QModelIndex SideBarModel::firstCloumnIndex(SideBarAbstractItem *item)
 {
     if (item->parent() != nullptr) {

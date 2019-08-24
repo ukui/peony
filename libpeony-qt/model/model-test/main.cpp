@@ -20,7 +20,7 @@ int main(int argc, char *argv[])
     MainWindow w;
 
 
-    Peony::SideBarModel model;
+    Peony::SideBarModel model(&w);
 
     Peony::SideBarProxyFilterSortModel proxy_model;
     proxy_model.setSourceModel(&model);
