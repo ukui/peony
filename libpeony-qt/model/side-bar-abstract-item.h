@@ -22,7 +22,7 @@ public:
     };
 
     explicit SideBarAbstractItem(SideBarModel* model, QObject *parent = nullptr);
-    virtual ~SideBarAbstractItem() = 0;
+    virtual ~SideBarAbstractItem();
 
     virtual Type type() = 0;
 
