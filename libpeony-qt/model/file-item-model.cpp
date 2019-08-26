@@ -139,10 +139,12 @@ int FileItemModel::rowCount(const QModelIndex &parent) const
 
 QVariant FileItemModel::data(const QModelIndex &index, int role) const
 {
-    FileItem *item = static_cast<FileItem*>(index.internalPointer());
-    if (role == UriRole) {
-        return QVariant(item->m_info->uri());
+    if (!index.isValid()) {
+        return QVariant();
     }
+
+    FileItem *item = static_cast<FileItem*>(index.internalPointer());
+
     //qDebug()<<item->m_info->uri();
     switch (index.column()) {
     case FileName:{
@@ -151,12 +153,21 @@ QVariant FileItemModel::data(const QModelIndex &index, int role) const
             return QVariant(item->m_info->displayName());
         }
         case Qt::DecorationRole:{
+            /**
+              \todo handle the desktop file icon
+              */
             //qDebug()<<item->m_info->iconName();
             QIcon icon = QIcon::fromTheme(item->m_info->iconName());
             if (icon.isNull()) {
                 return QIcon::fromTheme("application-x-desktop");
             }
             return QVariant(QIcon::fromTheme(item->m_info->iconName()));
+        }
+        case Qt::ToolTipRole: {
+            return QVariant(item->m_info->displayName());
+        }
+        case UriRole: {
+            return QVariant(item->uri());
         }
         default:
             return QVariant();
