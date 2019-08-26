@@ -71,7 +71,7 @@ bool FileInfoJob::querySync()
     GError *err = nullptr;
 
     auto _info = g_file_query_info(info->m_file,
-                                   "standard::*," G_FILE_ATTRIBUTE_TIME_MODIFIED G_FILE_ATTRIBUTE_ID_FILE,
+                                   "standard::*," "time::*," G_FILE_ATTRIBUTE_ID_FILE,
                                    G_FILE_QUERY_INFO_NONE,
                                    nullptr,
                                    &err);
@@ -127,7 +127,7 @@ void FileInfoJob::queryAsync()
         return;
     }
     g_file_query_info_async(info->m_file,
-                            "standard::*," G_FILE_ATTRIBUTE_TIME_MODIFIED G_FILE_ATTRIBUTE_ID_FILE,
+                            "standard::*," "time::*," G_FILE_ATTRIBUTE_ID_FILE,
                             G_FILE_QUERY_INFO_NONE,
                             G_PRIORITY_DEFAULT,
                             info->m_cancellable,
