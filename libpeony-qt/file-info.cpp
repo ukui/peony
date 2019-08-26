@@ -2,6 +2,7 @@
 
 #include "file-info-manager.h"
 #include "file-info-job.h"
+#include <QUrl>
 
 #include <QDebug>
 
@@ -15,7 +16,16 @@ FileInfo::FileInfo(QObject *parent) : QObject (parent)
 FileInfo::FileInfo(const QString &uri, QObject *parent) : QObject (parent)
 {
     m_cancellable = g_cancellable_new();
-    m_uri = uri;
+    /*!
+     * \note
+     * In qt program we alwas handle file's uri format as unicode,
+     * but in glib/gio it might be not.
+     * I want to keep the uri strings format in peony-qt,
+     * this would help me avoid some problem, such as the uri path completion
+     * bug in PathBarModel enumeration.
+     */
+    QUrl url(uri);
+    m_uri = url.toDisplayString();
     m_file = g_file_new_for_uri(m_uri.toUtf8().constData());
     m_parent = g_file_get_parent(m_file);
     m_is_remote = !g_file_is_native(m_file);
@@ -60,7 +70,8 @@ std::shared_ptr<FileInfo> FileInfo::fromUri(QString uri)
         return info;
     } else {
         std::shared_ptr<FileInfo> newly_info = std::make_shared<FileInfo>();
-        newly_info->m_uri = uri;
+        QUrl url(uri);
+        newly_info->m_uri = url.toDisplayString();
         newly_info->m_file = g_file_new_for_uri(newly_info->m_uri.toUtf8().constData());
         newly_info->m_parent = g_file_get_parent(newly_info->m_file);
         newly_info->m_is_remote = !g_file_is_native(newly_info->m_file);
