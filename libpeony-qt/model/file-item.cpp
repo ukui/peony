@@ -12,6 +12,7 @@
 #include <QStandardPaths>
 
 #include <QMessageBox>
+#include <QUrl>
 
 using namespace Peony;
 
@@ -244,7 +245,9 @@ bool FileItem::hasChildren()
 FileItem *FileItem::getChildFromUri(QString uri)
 {
     for (auto item : *m_children) {
-        if (item->m_info->uri() == uri)
+        QUrl url = uri;
+        QString decodedUri = url.toDisplayString();
+        if (decodedUri == item->uri())
             return item;
     }
     return nullptr;
