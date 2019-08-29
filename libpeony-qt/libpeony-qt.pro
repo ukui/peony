@@ -28,13 +28,15 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 include(model/model.pri)
+#search vfs extension based on peony-qt core.
+include(vfs/vfs.pri)
 
 unix {
     target.path = $$[QT_INSTALL_LIBS]
     INSTALLS += target
 
     header.path = /usr/include/peony-qt
-    header.files += *.h model/*.h file-operation/*.h
+    header.files += *.h model/*.h file-operation/*.h vfs/*.h
     header.files += development-files/header-files/*
     INSTALLS += header
 

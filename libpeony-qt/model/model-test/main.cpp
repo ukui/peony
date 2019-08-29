@@ -19,7 +19,6 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
     MainWindow w;
 
-
     Peony::SideBarModel model(&w);
 
     Peony::SideBarProxyFilterSortModel proxy_model;
