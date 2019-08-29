@@ -39,7 +39,7 @@ void FileItemModel::setRootUri(const QString &uri)
 void FileItemModel::setRootItem(FileItem *item)
 {
     beginResetModel();
-    delete m_root_item;
+    m_root_item->deleteLater();
 
     m_root_item = item;
     m_root_item->findChildrenAsync();

@@ -27,6 +27,7 @@ FileItem::FileItem(std::shared_ptr<Peony::FileInfo> info, FileItem *parentItem, 
 FileItem::~FileItem()
 {
     //qDebug()<<"~FileItem"<<m_info->uri();
+    Q_EMIT cancelFindChildren();
     disconnect();
     if (m_info.use_count() <= 2) {
         Peony::FileInfoManager::getInstance()->remove(m_info);
@@ -80,74 +81,146 @@ void FileItem::findChildrenAsync()
     m_expanded = true;
     Peony::FileEnumerator *enumerator = new Peony::FileEnumerator;
     enumerator->setEnumerateDirectory(m_info->uri());
+    //NOTE: entry a new root might destroyed the current enumeration work.
+    //the root item will be delete, so we should cancel the previous enumeration.
+    enumerator->connect(this, &FileItem::cancelFindChildren, enumerator, &FileEnumerator::cancel);
     enumerator->connect(enumerator, &FileEnumerator::prepared, [=](std::shared_ptr<GErrorWrapper> err){
         if (err) {
             qDebug()<<err->message();
         }
         enumerator->enumerateAsync();
     });
-    enumerator->connect(enumerator, &Peony::FileEnumerator::enumerateFinished, [=](bool successed){
-        if (successed) {
-            auto infos = enumerator->getChildren();
-            m_async_count = infos.count();
-            if (infos.count() == 0) {
+
+    if (!m_model->isPositiveResponse()) {
+        enumerator->connect(enumerator, &Peony::FileEnumerator::enumerateFinished, [=](bool successed){
+            if (successed) {
+                auto infos = enumerator->getChildren();
+                m_async_count = infos.count();
+                if (infos.count() == 0) {
+                    Q_EMIT m_model->findChildrenFinished();
+                }
+                for (auto info : infos) {
+                    FileItem *child = new FileItem(info, this, m_model);
+                    m_children->prepend(child);
+                    FileInfoJob *job = new FileInfoJob(info);
+                    job->setAutoDelete();
+                    /*
+                    FileInfo *shared_info = info.get();
+                    int row = infos.indexOf(info);
+                    //qDebug()<<info->uri()<<row;
+                    job->connect(job, &FileInfoJob::infoUpdated, [=](){
+                        qDebug()<<shared_info->iconName()<<row;
+                    });
+                    */
+                    connect(job, &FileInfoJob::infoUpdated, [=](){
+                        //the query job is finished and will be deleted soon,
+                        //whatever info was updated, we need decrease the async count.
+                        m_async_count--;
+                        if (m_async_count == 0) {
+                            m_model->insertRows(0, m_children->count(), this->firstColumnIndex());
+                            Q_EMIT this->m_model->findChildrenFinished();
+                            Q_EMIT m_model->updated();
+                        }
+                    });
+                    job->queryAsync();
+                }
+            }
+
+            delete enumerator;
+
+            m_watcher = new FileWatcher(this->m_info->uri());
+            connect(m_watcher, &FileWatcher::fileCreated, [=](QString uri){
+                //add new item to m_children
+                //tell the model update
+                this->onChildAdded(uri);
+                Q_EMIT this->childAdded(uri);
+            });
+            connect(m_watcher, &FileWatcher::fileDeleted, [=](QString uri){
+                //remove the crosponding child
+                //tell the model update
+                this->onChildRemoved(uri);
+                Q_EMIT this->childRemoved(uri);
+            });
+            connect(m_watcher, &FileWatcher::directoryDeleted, [=](QString uri){
+                //clean all the children, if item index is root index, cd up.
+                //this might use FileItemModel::setRootItem()
+                Q_EMIT this->deleted(uri);
+                this->onDeleted(uri);
+            });
+            connect(m_watcher, &FileWatcher::locationChanged, [=](QString oldUri, QString newUri){
+                //this might use FileItemModel::setRootItem()
+                Q_EMIT this->renamed(oldUri, newUri);
+                this->onRenamed(oldUri, newUri);
+            });
+            //qDebug()<<"startMonitor";
+            m_watcher->startMonitor();
+        });
+    } else {
+        enumerator->connect(enumerator, &Peony::FileEnumerator::childrenUpdated, [=](const QStringList &uris){
+            if (uris.isEmpty()) {
                 Q_EMIT m_model->findChildrenFinished();
             }
-            for (auto info : infos) {
-                FileItem *child = new FileItem(info, this, m_model);
-                m_children->prepend(child);
-                FileInfoJob *job = new FileInfoJob(info);
-                job->setAutoDelete();
-                /*
-                FileInfo *shared_info = info.get();
-                int row = infos.indexOf(info);
-                //qDebug()<<info->uri()<<row;
-                job->connect(job, &FileInfoJob::infoUpdated, [=](){
-                    qDebug()<<shared_info->iconName()<<row;
-                });
-                */
-                connect(job, &FileInfoJob::infoUpdated, [=](){
-                    //the query job is finished and will be deleted soon,
-                    //whatever info was updated, we need decrease the async count.
-                    m_async_count--;
-                    if (m_async_count == 0) {
-                        m_model->insertRows(0, m_children->count(), this->firstColumnIndex());
-                        Q_EMIT this->m_model->findChildrenFinished();
-                    }
-                });
-                job->queryAsync();
+
+            if (!m_children) {
+                enumerator->disconnect();
+                delete enumerator;
+                return ;
             }
-        }
 
-        delete enumerator;
+            for (auto uri : uris) {
+                auto info = FileInfo::fromUri(uri);
+                auto item = new FileItem(info, this, m_model);
+                m_children->append(item);
+                m_model->insertRows(m_children->count() - 2, 1, firstColumnIndex());
 
-        m_watcher = new FileWatcher(this->m_info->uri());
-        connect(m_watcher, &FileWatcher::fileCreated, [=](QString uri){
-            //add new item to m_children
-            //tell the model update
-            this->onChildAdded(uri);
-            Q_EMIT this->childAdded(uri);
+                auto infoJob = new FileInfoJob(info);
+                infoJob->setAutoDelete();
+                infoJob->connect(infoJob, &FileInfoJob::infoUpdated, [=](){
+                    Q_EMIT m_model->dataChanged(item->firstColumnIndex(), item->lastColumnIndex());
+                    //Q_EMIT m_model->updated();
+                });
+                infoJob->queryAsync();
+            }
         });
-        connect(m_watcher, &FileWatcher::fileDeleted, [=](QString uri){
-            //remove the crosponding child
-            //tell the model update
-            this->onChildRemoved(uri);
-            Q_EMIT this->childRemoved(uri);
+
+        enumerator->connect(enumerator, &Peony::FileEnumerator::enumerateFinished, [=](){
+            delete enumerator;
+            //FIXME:
+            //i have to force reset model for a sorting
+            //of icon view. but,
+            //how to deal with tree view expand?
+            m_model->beginResetModel();
+            Q_EMIT m_model->updated();
+            m_model->endResetModel();
+
+            m_watcher = new FileWatcher(this->m_info->uri());
+            connect(m_watcher, &FileWatcher::fileCreated, [=](QString uri){
+                //add new item to m_children
+                //tell the model update
+                this->onChildAdded(uri);
+                Q_EMIT this->childAdded(uri);
+            });
+            connect(m_watcher, &FileWatcher::fileDeleted, [=](QString uri){
+                //remove the crosponding child
+                //tell the model update
+                this->onChildRemoved(uri);
+                Q_EMIT this->childRemoved(uri);
+            });
+            connect(m_watcher, &FileWatcher::directoryDeleted, [=](QString uri){
+                //clean all the children, if item index is root index, cd up.
+                //this might use FileItemModel::setRootItem()
+                Q_EMIT this->deleted(uri);
+                this->onDeleted(uri);
+            });
+            connect(m_watcher, &FileWatcher::locationChanged, [=](QString oldUri, QString newUri){
+                //this might use FileItemModel::setRootItem()
+                Q_EMIT this->renamed(oldUri, newUri);
+                this->onRenamed(oldUri, newUri);
+            });
+            //qDebug()<<"startMonitor";
+            m_watcher->startMonitor();
         });
-        connect(m_watcher, &FileWatcher::directoryDeleted, [=](QString uri){
-            //clean all the children, if item index is root index, cd up.
-            //this might use FileItemModel::setRootItem()
-            Q_EMIT this->deleted(uri);
-            this->onDeleted(uri);
-        });
-        connect(m_watcher, &FileWatcher::locationChanged, [=](QString oldUri, QString newUri){
-            //this might use FileItemModel::setRootItem()
-            Q_EMIT this->renamed(oldUri, newUri);
-            this->onRenamed(oldUri, newUri);
-        });
-        //qDebug()<<"startMonitor";
-        m_watcher->startMonitor();
-    });
+    }
 
     enumerator->prepare();
 }

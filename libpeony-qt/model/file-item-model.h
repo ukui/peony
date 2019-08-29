@@ -41,6 +41,9 @@ public:
     explicit FileItemModel(QObject *parent = nullptr);
     ~FileItemModel() override;
 
+    void setPositiveResponse(bool positive = true) {m_is_positive = positive;}
+    bool isPositiveResponse() {return m_is_positive;}
+
     void setRootUri(const QString &uri);
     /*!
      * \brief setRootItem
@@ -193,6 +196,7 @@ public Q_SLOTS:
 
 private:
     FileItem *m_root_item = nullptr;
+    bool m_is_positive = false;
 };
 
 }

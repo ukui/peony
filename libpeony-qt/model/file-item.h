@@ -67,7 +67,7 @@ public:
     bool hasChildren();
 
 Q_SIGNALS:
-
+    void cancelFindChildren();
     void childAdded(const QString &uri);
     void childRemoved(const QString &uri);
     void deleted(const QString &thisUri);
