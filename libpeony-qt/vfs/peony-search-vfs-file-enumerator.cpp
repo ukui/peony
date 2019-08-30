@@ -1,7 +1,11 @@
 #include "peony-search-vfs-file-enumerator.h"
 #include "peony-search-vfs-file.h"
 #include "file-enumerator.h"
+#include "search-vfs-manager.h"
 #include <QDebug>
+#include <QFile>
+#include <QUrl>
+#include <QTextStream>
 
 //G_DEFINE_TYPE(PeonySearchVFSFileEnumerator, peony_search_vfs_file_enumerator, G_TYPE_FILE_ENUMERATOR)
 
@@ -25,6 +29,8 @@ static void peony_search_vfs_file_enumerator_init(PeonySearchVFSFileEnumerator *
     self->priv->enumerate_queue = new QQueue<std::shared_ptr<Peony::FileInfo>>;
     self->priv->recursive = false;
     self->priv->save_result = false;
+    self->priv->search_hidden = false;
+    self->priv->use_regexp = true;
     self->priv->case_sensitive = true;
     self->priv->match_name_or_content = true;
 }
@@ -74,8 +80,10 @@ void enumerator_dispose(GObject *object)
 {
     PeonySearchVFSFileEnumerator *self = PEONY_SEARCH_VFS_FILE_ENUMERATOR(object);
 
-    delete self->priv->name_regexp;
-    delete self->priv->content_regexp;
+    if (self->priv->name_regexp)
+        delete self->priv->name_regexp;
+    if (self->priv->content_regexp)
+        delete self->priv->content_regexp;
     delete self->priv->search_vfs_directory_uri;
     self->priv->enumerate_queue->clear();
     delete self->priv->enumerate_queue;
@@ -85,6 +93,8 @@ static GFileInfo *enumerate_next_file(GFileEnumerator *enumerator,
                                       GCancellable *cancellable,
                                       GError **error)
 {
+    auto manager = Peony::SearchVFSManager::getInstance();
+
     qDebug()<<"next file";
     if (cancellable) {
         if (g_cancellable_is_cancelled(cancellable)) {
@@ -95,26 +105,61 @@ static GFileInfo *enumerate_next_file(GFileEnumerator *enumerator,
     }
     auto search_enumerator = PEONY_SEARCH_VFS_FILE_ENUMERATOR(enumerator);
     auto enumerate_queue = search_enumerator->priv->enumerate_queue;
+
+    if (manager->hasHistory(*search_enumerator->priv->search_vfs_directory_uri)) {
+        while (!enumerate_queue->isEmpty()) {
+            auto info = enumerate_queue->dequeue();
+            auto search_vfs_info = g_file_info_new();
+            QString realUriSuffix = "real-uri:" + info->uri();
+            g_file_info_set_name(search_vfs_info, realUriSuffix.toUtf8().constData());
+            return search_vfs_info;
+        }
+        return nullptr;
+    }
+
     while (!enumerate_queue->isEmpty()) {
         //BFS enumeration
         auto info = enumerate_queue->dequeue();
         if (info->isDir() && search_enumerator->priv->recursive) {
-            Peony::FileEnumerator e;
-            e.setEnumerateDirectory(info->uri());
-            e.enumerateSync();
-            enumerate_queue->append(e.getChildren());
+            if (!search_enumerator->priv->search_hidden) {
+                if (!info->uri().contains("/.")) {
+                    Peony::FileEnumerator e;
+                    e.setEnumerateDirectory(info->uri());
+                    e.enumerateSync();
+                    enumerate_queue->append(e.getChildren());
+                }
+            } else {
+                Peony::FileEnumerator e;
+                e.setEnumerateDirectory(info->uri());
+                e.enumerateSync();
+                enumerate_queue->append(e.getChildren());
+            }
         }
         //match
         if (peony_search_vfs_file_enumerator_is_file_match(search_enumerator, info)) {
             //return this info, and the enumerate get child will return the
             //file crosponding the real uri, due to it would be handled in
             //vfs looking up method callback in registed vfs.
-            auto search_vfs_info = g_file_info_new();
-            QString realUriSuffix = "real-uri:" + info->uri();
-            g_file_info_set_name(search_vfs_info, realUriSuffix.toUtf8().constData());
-            return search_vfs_info;
+            if (!search_enumerator->priv->search_hidden) {
+                if (!info->uri().contains("/.")) {
+                    goto return_info;
+                }
+            } else {
+return_info:
+                auto search_vfs_info = g_file_info_new();
+                QString realUriSuffix = "real-uri:" + info->uri();
+                g_file_info_set_name(search_vfs_info, realUriSuffix.toUtf8().constData());
+
+                if (search_enumerator->priv->save_result) {
+                    auto historyResults = manager->getHistroyResults(*search_enumerator->priv->search_vfs_directory_uri);
+                    //FIXME: add lock?
+                    historyResults<<realUriSuffix;
+                }
+                return search_vfs_info;
+            }
         }
     }
+
     return nullptr;
 }
 
@@ -123,7 +168,6 @@ next_async_op_free (GList *files)
 {
     g_list_free_full (files, g_object_unref);
 }
-
 
 static void
 next_files_thread (GTask        *task,
@@ -141,24 +185,24 @@ next_files_thread (GTask        *task,
 
     c = G_FILE_ENUMERATOR_GET_CLASS (enumerator);
     for (i = 0; i < num_files; i++)
-      {
+    {
         if (g_cancellable_set_error_if_cancelled (cancellable, &error))
-      info = NULL;
+            info = NULL;
         else
-      info = c->next_file (enumerator, cancellable, &error);
+            info = c->next_file (enumerator, cancellable, &error);
 
         if (info == NULL)
-      {
-        break;
-      }
+        {
+            break;
+        }
         else
-      files = g_list_prepend (files, info);
-      }
+            files = g_list_prepend (files, info);
+    }
 
     if (error)
-      g_task_return_error (task, error);
+        g_task_return_error (task, error);
     else
-      g_task_return_pointer (task, files, (GDestroyNotify)next_async_op_free);
+        g_task_return_pointer (task, files, (GDestroyNotify)next_async_op_free);
 }
 
 static void
@@ -201,8 +245,8 @@ static gboolean enumerator_close(GFileEnumerator *enumerator,
 gboolean peony_search_vfs_file_enumerator_is_file_match(PeonySearchVFSFileEnumerator *enumerator, std::shared_ptr<Peony::FileInfo> file_info)
 {
     PeonySearchVFSFileEnumeratorPrivate *details = enumerator->priv;
-    if (details->name_regexp->isEmpty() && details->content_regexp->isEmpty())
-        return true;
+    if (!details->name_regexp && !details->content_regexp)
+        return false;
 
     GFile *file = g_file_new_for_uri(file_info->uri().toUtf8().constData());
     GFileInfo *info = g_file_query_info(file,
@@ -212,29 +256,48 @@ gboolean peony_search_vfs_file_enumerator_is_file_match(PeonySearchVFSFileEnumer
                                         nullptr);
     g_object_unref(file);
 
-    if (details->name_regexp->isValid()) {
+    if (details->name_regexp) {
         char *file_display_name = g_file_info_get_attribute_as_string(info, G_FILE_ATTRIBUTE_STANDARD_DISPLAY_NAME);
         g_object_unref(info);
         QString displayName = file_display_name;
         g_free(file_display_name);
-        if (displayName.contains(*enumerator->priv->name_regexp)) {
-            if (details->match_name_or_content) {
+        if (details->use_regexp) {
+            if (displayName.contains(*enumerator->priv->name_regexp)) {
+                if (details->match_name_or_content) {
+                    return true;
+                }
+            }
+        } else {
+            //this is most used for querying files which might be duplicate.
+            if (displayName == details->name_regexp->pattern()) {
                 return true;
             }
         }
     }
 
-    if (details->content_regexp->isValid()) {
+    if (details->content_regexp) {
         //read file stream
+        QUrl url = file_info->uri();
+        QFile file(url.path());
+        file.open(QIODevice::Text | QIODevice::ReadOnly);
+        QTextStream stream(&file);
         bool content_matched = false;
-        while (!content_matched) {
-            /// TODO: add content matching function
-            content_matched = true;
-            //read next line
-            //if matched
-                //content_matched = true;
+        QString line;
+        line = stream.readLine();
+        while (!line.isNull()) {
+            if (line.contains(*enumerator->priv->content_regexp)) {
+                content_matched = true;
+                break;
+            }
+            line = stream.readLine();
         }
-        //return content_matched;
+        file.close();
+
+        if (content_matched) {
+            if (enumerator->priv->match_name_or_content) {
+                return true;
+            }
+        }
     }
 
     //this may never happend.

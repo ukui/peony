@@ -1,9 +1,12 @@
 #include "search-vfs-register.h"
 #include "peony-search-vfs-file.h"
 #include "peony-search-vfs-file-enumerator.h"
+#include "search-vfs-manager.h"
 
 #include <gio/gio.h>
 #include <QDebug>
+
+using namespace Peony;
 
 bool is_registed = false;
 
@@ -32,6 +35,9 @@ void SearchVFSRegister::registSearchVFS()
 {
     if (is_registed)
         return;
+
+    //init manager
+    Peony::SearchVFSManager::getInstance();
 
     GVfs *vfs;
     const gchar * const *schemes;

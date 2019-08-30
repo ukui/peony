@@ -186,13 +186,8 @@ void FileItem::findChildrenAsync()
 
         enumerator->connect(enumerator, &Peony::FileEnumerator::enumerateFinished, [=](){
             delete enumerator;
-            //FIXME:
-            //i have to force reset model for a sorting
-            //of icon view. but,
-            //how to deal with tree view expand?
-            m_model->beginResetModel();
+            Q_EMIT m_model->findChildrenFinished();
             Q_EMIT m_model->updated();
-            m_model->endResetModel();
 
             m_watcher = new FileWatcher(this->m_info->uri());
             connect(m_watcher, &FileWatcher::fileCreated, [=](QString uri){

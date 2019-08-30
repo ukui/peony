@@ -12,13 +12,17 @@
 #include <QLabel>
 
 #include <QStandardPaths>
+#include <QRegExp>
+#include <QDebug>
+
+#include <QThread>
 
 #include <search-vfs-register.h>
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    SearchVFSRegister::registSearchVFS();
+    Peony::SearchVFSRegister::registSearchVFS();
     MainWindow w;
     QToolBar t;
     QLineEdit e;
@@ -47,7 +51,11 @@ int main(int argc, char *argv[])
               "\n"
               "name_regexp={string}"
               "\n"
-              "content_regexp={string}");
+              "content_regexp={string}"
+              "\n"
+              "use_regexp=<0>/<1>"
+              "\n"
+              "search_hidden=<0>/<1>");
 
     w.setCentralWidget(&l);
 
@@ -74,15 +82,32 @@ int main(int argc, char *argv[])
         model->setRootUri(e.text());
         Peony::FileItemProxyFilterSortModel *proxy_model = new Peony::FileItemProxyFilterSortModel(model);
         proxy_model->setSourceModel(model);
+        proxy_model->setDynamicSortFilter(true);
 
         /// resort when load directory finished
-        model->connect(model, &Peony::FileItemModel::findChildrenFinished, [=](){
+        proxy_model->connect(model, &Peony::FileItemModel::findChildrenFinished, [=](){
+            //FIXME: how should i sort without blocking ui?
             proxy_model->sort(0);
+            /*
+            proxy_model->blockSignals(true);
+            //proxy_model->sort(0);
+            QThread *t = new QThread;
+            proxy_model->moveToThread(t);
+            t->connect(t, &QThread::started, [=](){
+                proxy_model->sort(0);
+            });
+            t->connect(t, &QThread::finished, [=](){
+                qDebug()<<"finished";
+                proxy_model->blockSignals(false);
+            });
+            t->connect(t, &QThread::finished, t, &QThread::deleteLater);
+            t->start();
+            */
         });
 
         /// re-sort when file(s) moved in/out.
         model->connect(model, &Peony::FileItemModel::updated, [=](){
-            proxy_model->sort(0);
+
         });
 
         /// double clicked for location change.
@@ -99,6 +124,9 @@ int main(int argc, char *argv[])
     });
 
     w.show();
+
+    QRegExp exp("a*");
+    qDebug()<<exp.pattern();
 
     return a.exec();
 }

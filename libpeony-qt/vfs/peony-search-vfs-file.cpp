@@ -1,6 +1,7 @@
 #include "peony-search-vfs-file.h"
 #include "peony-search-vfs-file-enumerator.h"
 #include "file-enumerator.h"
+#include "search-vfs-manager.h"
 #include <QString>
 #include <QDebug>
 
@@ -159,12 +160,36 @@ void peony_search_vfs_file_enumerator_parse_uri(PeonySearchVFSFileEnumerator *en
     PeonySearchVFSFileEnumeratorPrivate *details = enumerator->priv;
 
     *details->search_vfs_directory_uri = uri;
+
+    auto manager = Peony::SearchVFSManager::getInstance();
+    if (manager->hasHistory(uri)) {
+        auto uris = manager->getHistroyResults(uri);
+        for (auto uri: uris) {
+            details->enumerate_queue->enqueue(Peony::FileInfo::fromUri(uri));
+        }
+        //do not parse uri, not neccersary
+        return;
+    }
+
     QStringList args = details->search_vfs_directory_uri->split("&", QString::SkipEmptyParts);
 
     //we should judge case sensitive, then we confirm the regexp when
     //we match file in file enumeration.
     for (auto arg: args) {
-        qDebug()<<arg;
+        //qDebug()<<arg;
+        if (arg.contains("search_hidden=")) {
+            if (arg.endsWith("1")) {
+                details->search_hidden = true;
+            }
+            continue;
+        }
+        if (arg.contains("use_regexp=")) {
+            if (arg.endsWith("0")) {
+                details->use_regexp = false;
+            }
+            continue;
+        }
+
         if (arg.contains("case_sensitive=")) {
             if (arg.endsWith("1")) {
                 details->case_sensitive = false;
@@ -188,7 +213,7 @@ void peony_search_vfs_file_enumerator_parse_uri(PeonySearchVFSFileEnumerator *en
             }
             QString tmp = arg;
             tmp = tmp.remove("content_regexp=");
-            details->name_regexp = new QRegExp(tmp);
+            details->content_regexp = new QRegExp(tmp);
             continue;
         }
 
@@ -226,17 +251,18 @@ void peony_search_vfs_file_enumerator_parse_uri(PeonySearchVFSFileEnumerator *en
         }
     }
 
+    Qt::CaseSensitivity sensitivity = details->case_sensitive? Qt::CaseSensitive: Qt::CaseInsensitive;
+
     if (!details->name_regexp) {
-        details->name_regexp = new QRegExp;
+        //details->name_regexp = new QRegExp;
+    } else {
+        details->name_regexp->setCaseSensitivity(sensitivity);
     }
 
     if (!details->content_regexp) {
-        details->content_regexp = new QRegExp;
-    }
-
-    if (!details->case_sensitive) {
-        details->name_regexp->setCaseSensitivity(Qt::CaseInsensitive);
-        details->content_regexp->setCaseSensitivity(Qt::CaseInsensitive);
+        //details->content_regexp = new QRegExp;
+    } else {
+        details->content_regexp->setCaseSensitivity(sensitivity);
     }
 }
 

@@ -3,7 +3,8 @@
 
 #include "peony-core_global.h"
 
-//i will add it into namespace peony later.
+namespace Peony {
+
 class PEONYCORESHARED_EXPORT SearchVFSRegister
 {
 public:
@@ -12,5 +13,7 @@ public:
 private:
     SearchVFSRegister();
 };
+
+}
 
 #endif // SEARCHVFSREGISTER_H

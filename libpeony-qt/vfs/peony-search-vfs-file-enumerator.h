@@ -18,6 +18,8 @@ PeonySearchVFSFileEnumerator *peony_search_vfs_file_enumerator_new(void);
 
 typedef struct {
     QString *search_vfs_directory_uri;
+    gboolean search_hidden;
+    gboolean use_regexp;
     gboolean save_result;
     gboolean recursive;
     gboolean case_sensitive;
