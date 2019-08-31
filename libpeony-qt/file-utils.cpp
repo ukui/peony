@@ -165,3 +165,11 @@ bool FileUtils::stringLesserThan(const QString &left, const QString &right)
     }
     return left.toLower() < right.toLower();
 }
+
+const QString FileUtils::getParentUri(const QString &uri)
+{
+    auto file = wrapGFile(g_file_new_for_uri(uri.toUtf8().constData()));
+    auto parent = getFileParent(file);
+    auto parentUri = getFileUri(parent);
+    return parentUri == uri? nullptr: parentUri;
+}

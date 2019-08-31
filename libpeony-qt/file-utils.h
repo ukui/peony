@@ -32,6 +32,8 @@ public:
     static bool stringStartWithChinese(const QString &string);
     static bool stringLesserThan(const QString &left, const QString &right);
 
+    static const QString getParentUri(const QString &uri);
+
 private:
     FileUtils();
 };
