@@ -1,6 +1,6 @@
 INCLUDEPATH += $$PWD
 
-include(../file-operation/file-operation.pri)
+#include(../file-operation/file-operation.pri)
 
 HEADERS += \
     $$PWD/file-item.h \

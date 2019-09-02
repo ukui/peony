@@ -27,9 +27,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
-include(model/model.pri)
-#search vfs extension based on peony-qt core.
-include(vfs/vfs.pri)
+include(libpeony-qt.pri)
 
 unix {
     target.path = $$[QT_INSTALL_LIBS]

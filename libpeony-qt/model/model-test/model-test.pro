@@ -25,8 +25,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += link_pkgconfig no_keywords c++11
 PKGCONFIG += glib-2.0 gio-2.0
 
-include(../model.pri)
-include(../../vfs/vfs.pri)
+include(../../libpeony-qt.pri)
 
 SOURCES += \
         main.cpp \

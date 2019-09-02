@@ -26,6 +26,7 @@ CONFIG += link_pkgconfig no_keywords c++11
 PKGCONFIG += glib-2.0 gio-2.0
 
 include(../file-operation.pri)
+include(../../peony-core.pri)
 
 SOURCES += \
         main.cpp \

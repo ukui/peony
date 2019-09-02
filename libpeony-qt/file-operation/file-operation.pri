@@ -1,6 +1,6 @@
 INCLUDEPATH += $$PWD
 
-include(../peony-core.pri)
+#include(../peony-core.pri)
 
 PKGCONFIG += gio-unix-2.0
 
