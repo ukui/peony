@@ -133,6 +133,7 @@ void FileWatcher::changeMonitorUri(QString uri)
                                     m_cancellable,
                                     &err1);
     if (err1) {
+        m_supprot_monitor = true;
         qDebug()<<err1->code<<err1->message;
         g_error_free(err1);
     }
@@ -143,6 +144,7 @@ void FileWatcher::changeMonitorUri(QString uri)
                                              m_cancellable,
                                              &err2);
     if (err2) {
+        m_supprot_monitor = true;
         qDebug()<<err2->code<<err2->message;
         g_error_free(err2);
     }

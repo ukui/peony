@@ -3,6 +3,7 @@
 #include "file-info-job.h"
 #include "file-info-manager.h"
 #include "file-watcher.h"
+#include "file-utils.h"
 
 #include "file-item-model.h"
 
@@ -88,6 +89,11 @@ void FileItem::findChildrenAsync()
     enumerator->connect(enumerator, &FileEnumerator::prepared, [=](std::shared_ptr<GErrorWrapper> err){
         if (err) {
             qDebug()<<err->message();
+            if (err.get()->code() == G_IO_ERROR_NOT_FOUND) {
+                enumerator->deleteLater();
+                m_model->setRootUri(FileUtils::getParentUri(this->uri()));
+                return;
+            }
         }
         enumerator->enumerateAsync();
     });
@@ -298,13 +304,18 @@ void FileItem::onDeleted(const QString &thisUri)
         }
         this->deleteLater();
     } else {
-        //cd up
-        GFile *file = m_info->gFileHandle();
-        GFile *parent_file = g_file_get_parent(file);
-        auto parentInfo = FileInfo::fromGFile(parent_file);
-        g_object_unref(parent_file);
-        FileItem *newRootItem = new FileItem(parentInfo, nullptr, m_model);
-        m_model->setRootItem(newRootItem);
+        //cd up.
+        auto tmpItem = this;
+        auto tmpUri = FileUtils::getParentUri(tmpItem->uri());
+        while(tmpItem && tmpUri.isNull()) {
+            tmpUri = FileUtils::getParentUri(tmpUri);
+            tmpItem = tmpItem->m_parent;
+        }
+        if (!tmpUri.isNull()) {
+            m_model->setRootUri(tmpUri);
+        } else {
+            m_model->setRootUri("file:///");
+        }
     }
     m_model->updated();
 }

@@ -40,6 +40,17 @@ public:
     void startMonitor();
     void stopMonitor();
 
+    /*!
+     * \brief supportMonitor
+     * \return
+     * \details
+     * Some file or directory doesn't support g_file_monitor* methods.
+     * We can use this to ensure that if it was truely in monitoring.
+     * If not, we might take over the handle of file change in our own
+     * code.
+     */
+    bool supportMonitor() {return m_supprot_monitor;}
+
 Q_SIGNALS:
     void locationChanged(const QString &oldUri, const QString &newUri);
     void directoryDeleted(const QString &uri);
@@ -91,6 +102,8 @@ private:
 
     gulong m_file_handle = 0;
     gulong m_dir_handle = 0;
+
+    bool m_supprot_monitor = true;
 };
 
 }

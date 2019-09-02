@@ -31,6 +31,10 @@ FileItemModel::~FileItemModel()
 
 void FileItemModel::setRootUri(const QString &uri)
 {
+    if (uri.isNull()) {
+        setRootUri("file:///");
+        return;
+    }
     auto info = FileInfo::fromUri(uri);
     auto item = new FileItem(info, nullptr, this);
     setRootItem(item);

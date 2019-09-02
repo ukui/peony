@@ -221,6 +221,9 @@ void FileEnumerator::handleError(GError *err)
         //FIXME: do i need add an auth function for this kind of errors?
         QMessageBox::critical(nullptr, tr("Error"), err->message);
         break;
+    case G_IO_ERROR_NOT_FOUND:
+        Q_EMIT prepared(GErrorWrapper::wrapFrom(g_error_new(G_IO_ERROR, G_IO_ERROR_NOT_FOUND, "file not found")));
+        break;
     default:
         break;
     }
