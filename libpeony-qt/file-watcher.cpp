@@ -227,6 +227,15 @@ void FileWatcher::dir_changed_callback(GFileMonitor *monitor,
         Q_EMIT p_this->fileDeleted(deletedFileUri);
         break;
     }
+    case G_FILE_MONITOR_EVENT_UNMOUNTED: {
+        char *uri = g_file_get_uri(file);
+        QString deletedFileUri = uri;
+        QUrl url = deletedFileUri;
+        deletedFileUri = url.toDisplayString();
+        g_free(uri);
+        Q_EMIT p_this->directoryUnmounted(deletedFileUri);
+        break;
+    }
     default:
         break;
     }

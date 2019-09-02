@@ -154,10 +154,15 @@ void FileItem::findChildrenAsync()
                 Q_EMIT this->deleted(uri);
                 this->onDeleted(uri);
             });
+
             connect(m_watcher, &FileWatcher::locationChanged, [=](QString oldUri, QString newUri){
                 //this might use FileItemModel::setRootItem()
                 Q_EMIT this->renamed(oldUri, newUri);
                 this->onRenamed(oldUri, newUri);
+            });
+
+            connect(m_watcher, &FileWatcher::directoryUnmounted, [=](){
+                m_model->setRootUri("computer:///");
             });
             //qDebug()<<"startMonitor";
             m_watcher->startMonitor();
@@ -218,6 +223,10 @@ void FileItem::findChildrenAsync()
                 //this might use FileItemModel::setRootItem()
                 Q_EMIT this->renamed(oldUri, newUri);
                 this->onRenamed(oldUri, newUri);
+            });
+
+            connect(m_watcher, &FileWatcher::directoryUnmounted, [=](){
+                m_model->setRootUri("computer:///");
             });
             //qDebug()<<"startMonitor";
             m_watcher->startMonitor();

@@ -54,6 +54,7 @@ public:
 Q_SIGNALS:
     void locationChanged(const QString &oldUri, const QString &newUri);
     void directoryDeleted(const QString &uri);
+    void directoryUnmounted(const QString &uri);
     void fileCreated(const QString &uri);
     void fileDeleted(const QString &uri);
     void fileChanged(const QString &uri);
