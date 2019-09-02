@@ -5,6 +5,7 @@
 #include <QDir>
 #include <QPluginLoader>
 #include <QString>
+#include <QMenu>
 
 PeonyApplication::PeonyApplication(int &argc, char *argv[]) : QApplication (argc, argv)
 {
@@ -30,9 +31,33 @@ PeonyApplication::PeonyApplication(int &argc, char *argv[]) : QApplication (argc
         QObject *plugin = pluginLoader.instance();
         qDebug()<<"test start";
         if (plugin) {
-            MenuInterface *iface = qobject_cast<MenuInterface *>(plugin);
-            if (iface)
+            Peony::MenuInterface *iface = qobject_cast<Peony::MenuInterface *>(plugin);
+            if (iface) {
                 qDebug()<<iface->testPlugin();
+
+                QWidget *widget = new QWidget;
+                widget->setAttribute(Qt::WA_DeleteOnClose);
+                QMenu *menu = new QMenu(widget);
+                QStringList l;
+                auto fileActions = iface->menuActions(Peony::MenuInterface::File, l);
+                for (auto action : fileActions) {
+                    action->setParent(menu);
+                }
+                menu->addActions(fileActions);
+
+                auto volumeActions = iface->menuActions(Peony::MenuInterface::Volume, l);
+                for (auto action: volumeActions) {
+                    action->setParent(menu);
+                }
+                menu->addActions(volumeActions);
+
+                widget->setContextMenuPolicy(Qt::CustomContextMenu);
+                widget->connect(widget, &QWidget::customContextMenuRequested, [menu](const QPoint &pos){
+                    //menu->exec(pos);
+                    menu->exec(QCursor::pos());
+                });
+                widget->show();
+            }
         }
         qDebug()<<"testEnd";
     }
