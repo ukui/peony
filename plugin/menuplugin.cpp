@@ -9,23 +9,19 @@ QString MenuPluginTest1::testPlugin()
     return QString("MenuPluginTest1");
 }
 
-QList<QAction *> MenuPluginTest1::menuActions(Type type, const QStringList &uris)
+QList<QAction *> MenuPluginTest1::menuActions(Types types, const QString &uri, const QStringList &selectionUris)
 {
-    Q_UNUSED(type);
-    Q_UNUSED(uris);
+    Q_UNUSED(types);
+    Q_UNUSED(uri);
+    Q_UNUSED(selectionUris);
     QList<QAction *> actions;
-    switch (type) {
-    case MenuInterface::File: {
+    if ((types |= Peony::MenuPluginInterface::File)) {
         QAction *action = new QAction(QIcon::fromTheme("search"), tr("test"));
         actions<<action;
-        return actions;
     }
-    case MenuInterface::Volume: {
+    if ((types |= Peony::MenuPluginInterface::Volume)) {
         QAction *action = new QAction(QIcon::fromTheme("media-eject"), tr("test-volume"));
         actions<<action;
-        return actions;
     }
-    default:
-        return actions;
-    }
+    return actions;
 }

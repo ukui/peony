@@ -1,3 +1,4 @@
 INCLUDEPATH += $$PWD
 
-HEADERS += $$PWD/menu-iface.h
+HEADERS += \
+    $$PWD/menu-plugin-iface.h

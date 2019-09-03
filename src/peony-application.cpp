@@ -1,5 +1,5 @@
 #include "peony-application.h"
-#include "menu-iface.h"
+#include "menu-plugin-iface.h"
 
 #include <QDebug>
 #include <QDir>
@@ -31,7 +31,7 @@ PeonyApplication::PeonyApplication(int &argc, char *argv[]) : QApplication (argc
         QObject *plugin = pluginLoader.instance();
         qDebug()<<"test start";
         if (plugin) {
-            Peony::MenuInterface *iface = qobject_cast<Peony::MenuInterface *>(plugin);
+            Peony::MenuPluginInterface *iface = qobject_cast<Peony::MenuPluginInterface *>(plugin);
             if (iface) {
                 qDebug()<<iface->testPlugin();
 
@@ -39,20 +39,19 @@ PeonyApplication::PeonyApplication(int &argc, char *argv[]) : QApplication (argc
                 widget->setAttribute(Qt::WA_DeleteOnClose);
                 QMenu *menu = new QMenu(widget);
                 QStringList l;
-                auto fileActions = iface->menuActions(Peony::MenuInterface::File, l);
+                Peony::MenuPluginInterface::Types types = Peony::MenuPluginInterface::Types(Peony::MenuPluginInterface::File|
+                                                                                            Peony::MenuPluginInterface::Volume|
+                                                                                            Peony::MenuPluginInterface::DirectoryBackground|
+                                                                                            Peony::MenuPluginInterface::DesktopBackground|
+                                                                                            Peony::MenuPluginInterface::Other);
+                auto fileActions = iface->menuActions(types, nullptr, l);
                 for (auto action : fileActions) {
                     action->setParent(menu);
                 }
                 menu->addActions(fileActions);
 
-                auto volumeActions = iface->menuActions(Peony::MenuInterface::Volume, l);
-                for (auto action: volumeActions) {
-                    action->setParent(menu);
-                }
-                menu->addActions(volumeActions);
-
                 widget->setContextMenuPolicy(Qt::CustomContextMenu);
-                widget->connect(widget, &QWidget::customContextMenuRequested, [menu](const QPoint &pos){
+                widget->connect(widget, &QWidget::customContextMenuRequested, [menu](const QPoint /*&pos*/){
                     //menu->exec(pos);
                     menu->exec(QCursor::pos());
                 });

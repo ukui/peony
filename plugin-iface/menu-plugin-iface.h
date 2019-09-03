@@ -1,16 +1,19 @@
-#ifndef MENUIFACE_H
-#define MENUIFACE_H
+#ifndef MENUPLUGINIFACE_H
+#define MENUPLUGINIFACE_H
 
 #include <QPluginLoader>
 #include <QtPlugin>
 #include <QString>
 #include <QAction>
 
-#define MenuInterface_iid "org.ukui.plugin-iface.MenuInterface"
+#define MenuPluginInterface_iid "org.ukui.plugin-iface.MenuPluginInterface"
+
+namespace Peony {
 
 /**
- * @brief The MenuInterface class
- * @details MenuInterface is a Qt Plugin Interface, the methods of this class must all be VIRTUAL and has a initial return value.
+ * @brief The MenuPluginInterface class
+ * @details MenuPluginInterface is a Qt Plugin Interface, the methods of this class must all be
+ * pure VIRTUAL and has ZERO as return value.
  * Otherwise, the plugin will not be loaded correctly.
  * For example, if we define a virtual QString method, we must do as this:
  * <pre>
@@ -18,10 +21,7 @@
  * </pre>
  * DO NOT FORGET to initial virtual method in class definition.
  */
-
-namespace Peony {
-
-class MenuInterface
+class MenuPluginInterface
 {
 public:
     /*!
@@ -35,23 +35,24 @@ public:
      */
     enum Type {
         Invalid,
-        Common,
         File,//selected files in a view
-        Volume,//maybe an item computer view, or an item in sidebar
-        DirectoryBackground,//a view background menu
-        DesktopBackground,//a desktop view background menu
-        Other
+        Volume = File << 1,//maybe an item computer view, or an item in sidebar
+        DirectoryBackground = File << 2,//a view background menu
+        DesktopBackground = File << 3,//a desktop view background menu
+        Other = File << 4
     };
+    Q_DECLARE_FLAGS(Types, Type)
 
-    virtual ~MenuInterface() {}
+    virtual ~MenuPluginInterface() {}
 
     virtual QString testPlugin() = 0;
+
     /*!
      * \brief menuActions
-     * \param type the menu type
-     * \param uris
-     * \return the list of actions which plugin provided.
-     * \details
+     * \param types
+     * \param uri
+     * \param selectionUris
+     * \return
      * In peony-qt, user can install the menu extensions. This is because
      * peony-qt's view/menu frameworks is desgined to be extensible.
      * When a peony view context menu was request it will call the plugin's
@@ -64,11 +65,12 @@ public:
      * return the actions without a type check, this might cause actions in menu
      * duplicated.
      */
-    virtual QList<QAction *> menuActions(Type type, const QStringList &uris) = 0;
+    virtual QList<QAction *> menuActions(Types types, const QString &uri, const QStringList &selectionUris) = 0;
 };
 
 }
 
-Q_DECLARE_INTERFACE (Peony::MenuInterface, MenuInterface_iid)
+Q_DECLARE_OPERATORS_FOR_FLAGS(Peony::MenuPluginInterface::Types)
+Q_DECLARE_INTERFACE (Peony::MenuPluginInterface, MenuPluginInterface_iid)
 
 #endif
