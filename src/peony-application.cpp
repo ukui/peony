@@ -7,6 +7,9 @@
 #include <QString>
 #include <QMenu>
 
+#include "preview-page-factory-manager.h"
+#include "preview-page-plugin-iface.h"
+
 PeonyApplication::PeonyApplication(int &argc, char *argv[]) : QApplication (argc, argv)
 {
     //check if first run
@@ -59,5 +62,15 @@ PeonyApplication::PeonyApplication(int &argc, char *argv[]) : QApplication (argc
             }
         }
         qDebug()<<"testEnd";
+
+        qDebug()<<"preview test";
+        auto previewManager = Peony::PreviewPageFactoryManager::getInstance();
+        qDebug()<<previewManager->getPluginNames();
+        for (auto name : previewManager->getPluginNames()) {
+            auto plugin = previewManager->getPlugin(name);
+            auto w = plugin->createPreviewPage("file:///", Peony::PreviewPagePluginIface::Attribute);
+            w->setAttribute(Qt::WA_DeleteOnClose);
+            w->show();
+        }
     }
 }

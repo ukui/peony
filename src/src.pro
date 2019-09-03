@@ -12,6 +12,8 @@ TARGET = peony-qt
 
 TEMPLATE = app
 
+include(../libpeony-qt/libpeony-qt.pri)
+
 PKGCONFIG +=gio-2.0 glib-2.0 gio-unix-2.0
 LIBS +=-lgio-2.0 -lglib-2.0 -lX11
 CONFIG += c++11 link_pkgconfig no_keywords
