@@ -33,7 +33,7 @@ PeonyApplication::PeonyApplication(int &argc, char *argv[]) : QApplication (argc
         if (plugin) {
             Peony::MenuPluginInterface *iface = qobject_cast<Peony::MenuPluginInterface *>(plugin);
             if (iface) {
-                qDebug()<<iface->testPlugin();
+                qDebug()<<iface->testPlugin()<<iface->name()<<iface->description();
 
                 QWidget *widget = new QWidget;
                 widget->setAttribute(Qt::WA_DeleteOnClose);

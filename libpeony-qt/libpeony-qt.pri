@@ -5,3 +5,6 @@ include(model/model.pri)
 include(vfs/vfs.pri)
 #plugin interface
 include(../plugin-iface/plugin-iface.pri)
+
+#ui-controls
+include(controls/controls.pri)

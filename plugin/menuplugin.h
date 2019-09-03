@@ -15,8 +15,18 @@ class MenuPluginTest1 : public QObject, public MenuPluginInterface
     Q_INTERFACES(Peony::MenuPluginInterface)
 
 public:
+    PluginInterface::PluginType pluginType() override {return PluginInterface::MenuPlugin;}
+    QString name() override {return "testMenuPlugin1";}
+    QString description() override {return "This is a menu type test plugin";}
+    QIcon icon() override {return QIcon::fromTheme("search");}
+    void setEnable(bool enable) override {m_enable = enable;}
+    bool isEnable() override {return m_enable;}
+
     QString testPlugin() override;
     QList<QAction *> menuActions(Types types, const QString &uri, const QStringList &selectionUris) override;
+
+private:
+    bool m_enable;
 };
 
 }

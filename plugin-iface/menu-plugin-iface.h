@@ -5,8 +5,9 @@
 #include <QtPlugin>
 #include <QString>
 #include <QAction>
+#include "plugin-iface.h"
 
-#define MenuPluginInterface_iid "org.ukui.plugin-iface.MenuPluginInterface"
+#define MenuPluginInterface_iid "org.ukui.peony-qt.plugin-iface.MenuPluginInterface"
 
 namespace Peony {
 
@@ -21,7 +22,7 @@ namespace Peony {
  * </pre>
  * DO NOT FORGET to initial virtual method in class definition.
  */
-class MenuPluginInterface
+class MenuPluginInterface : public PluginInterface
 {
 public:
     /*!
