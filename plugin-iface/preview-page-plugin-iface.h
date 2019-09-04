@@ -6,7 +6,7 @@
 #include <QString>
 #include "plugin-iface.h"
 
-#define PreviewPagePluginIface_iid "org.ukui.peony-qt.plugin-iface.PreviewPagePluginIface"
+#define PreviewPagePluginIface_iid "org.ukui.peony-qt.plugin-iface.PreviewPagePluginInterface"
 
 namespace Peony {
 

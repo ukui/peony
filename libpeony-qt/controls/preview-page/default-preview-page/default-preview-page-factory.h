@@ -35,7 +35,7 @@ public:
 
 private:
     explicit DefaultPreviewPageFactory(QObject *parent = nullptr);
-    ~DefaultPreviewPageFactory();
+    ~DefaultPreviewPageFactory() override;
 
     bool m_enable = true;
 };
