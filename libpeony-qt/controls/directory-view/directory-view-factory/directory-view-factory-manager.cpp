@@ -3,6 +3,11 @@
 
 #include "icon-view-factory.h"
 
+#include <QDir>
+#include <QDebug>
+#include <QApplication>
+#include <QPluginLoader>
+
 using namespace Peony;
 
 static DirectoryViewFactoryManager *globalInstance = nullptr;
@@ -23,7 +28,27 @@ DirectoryViewFactoryManager::DirectoryViewFactoryManager(QObject *parent) : QObj
     registerFactory(iconViewFactory->viewIdentity(), iconViewFactory);
 
     //load plugins
-
+    QDir pluginsDir(qApp->applicationDirPath());
+    qDebug()<<pluginsDir;
+    pluginsDir.cdUp();
+    pluginsDir.cd("testdir2");
+    pluginsDir.setFilter(QDir::Files);
+    for (auto fileName : pluginsDir.entryList(QDir::Files)) {
+        qDebug()<<fileName;
+        QPluginLoader pluginLoader(pluginsDir.absoluteFilePath(fileName));
+        qDebug()<<pluginLoader.metaData();
+        qDebug()<<pluginLoader.load();
+        QObject *plugin = pluginLoader.instance();
+        if (plugin) {
+            DirectoryViewPluginIface *iface = qobject_cast<DirectoryViewPluginIface*>(plugin);
+            qDebug()<<iface->name();
+            qDebug()<<iface->description();
+            qDebug()<<iface->viewIcon();
+            qDebug()<<iface->viewIdentity();
+            registerFactory(iface->viewIdentity(), iface);
+        }
+    }
+    qDebug()<<getFactoryNames();
 }
 
 DirectoryViewFactoryManager::~DirectoryViewFactoryManager()
@@ -33,7 +58,7 @@ DirectoryViewFactoryManager::~DirectoryViewFactoryManager()
 
 void DirectoryViewFactoryManager::registerFactory(const QString &name, DirectoryViewPluginIface *factory)
 {
-    if (!m_hash->values().isEmpty()) {
+    if (m_hash->value(name)) {
         return;
     }
     m_hash->insert(name, factory);

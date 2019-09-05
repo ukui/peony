@@ -34,6 +34,13 @@ QModelIndex FileItemProxyFilterSortModel::getSourceIndex(const QModelIndex &prox
     return mapToSource(proxyIndex);
 }
 
+const QModelIndex FileItemProxyFilterSortModel::indexFromUri(const QString &uri)
+{
+    FileItemModel *model = static_cast<FileItemModel*>(sourceModel());
+    const QModelIndex sourceIndex = model->indexFromUri(uri);
+    return mapFromSource(sourceIndex);
+}
+
 bool FileItemProxyFilterSortModel::lessThan(const QModelIndex &left, const QModelIndex &right) const
 {
     //qDebug()<<left<<right;

@@ -3,6 +3,8 @@
 
 #include "peony-core_global.h"
 #include "directory-view-plugin-iface.h"
+#include "file-item-model.h"
+#include "file-item-proxy-filter-sort-model.h"
 #include <QListView>
 
 namespace Peony {
@@ -51,6 +53,9 @@ protected:
 
 private:
     DirectoryViewProxyIface *m_proxy = nullptr;
+
+    FileItemModel *m_model = nullptr;
+    FileItemProxyFilterSortModel *m_sort_filter_proxy_model = nullptr;
 
     ZoomLevel m_zoom_level = Normal;
     QString m_current_uri = nullptr;

@@ -20,6 +20,8 @@ public:
         Other
     };
 
+    virtual ~PluginInterface() {}
+
     virtual PluginType pluginType() = 0;
 
     virtual QString name() = 0;

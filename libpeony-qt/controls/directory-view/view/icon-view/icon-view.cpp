@@ -1,17 +1,28 @@
 #include "icon-view.h"
 #include "standard-view-proxy.h"
+#include "file-item.h"
+
+#include <QDebug>
 
 using namespace Peony;
 using namespace Peony::DirectoryView;
 
 IconView::IconView(QWidget *parent) : QListView(parent)
 {
+    setSelectionMode(QListView::ExtendedSelection);
+    setEditTriggers(QListView::NoEditTriggers);
     setViewMode(QListView::IconMode);
     setResizeMode(QListView::Adjust);
     setMovement(QListView::Snap);
     setWordWrap(true);
 
-    m_proxy = new StandardViewProxy(this, parent);
+    m_model = new FileItemModel(this);
+    m_sort_filter_proxy_model = new FileItemProxyFilterSortModel(m_model);
+    m_sort_filter_proxy_model->setSourceModel(m_model);
+
+    setModel(m_sort_filter_proxy_model);
+
+    m_proxy = new StandardViewProxy(this, this);
 
     switch (m_zoom_level) {
     case Normal: {
@@ -22,6 +33,16 @@ IconView::IconView(QWidget *parent) : QListView(parent)
     default:
         break;
     }
+
+    connect(m_model, &FileItemModel::findChildrenFinished,
+            m_proxy, &DirectoryViewProxyIface::viewDirectoryChanged);
+    connect(this, &IconView::selectionChanged, [=](){
+        Q_EMIT m_proxy->viewSelectionChanged();
+    });
+    connect(this, &IconView::doubleClicked, [=](const QModelIndex &index){
+        qDebug()<<"double click"<<index.data(FileItemModel::UriRole);
+        Q_EMIT m_proxy->viewDoubleClicked(index.data(FileItemModel::UriRole).toString());
+    });
 }
 
 IconView::~IconView()
@@ -96,44 +117,60 @@ void IconView::changeZoomLevel()
 //FIXME: implement the selection functions.
 void IconView::setSelections(const QStringList &uris)
 {
-
+    clearSelection();
+    for (auto uri: uris) {
+        const QModelIndex index = m_sort_filter_proxy_model->indexFromUri(uri);
+        if (index.isValid()) {
+            selectionModel()->select(index, QItemSelectionModel::Select);
+        }
+    }
 }
 
 QStringList IconView::getSelections()
 {
-    return QStringList();
+    QStringList uris;
+    QModelIndexList selections = selectedIndexes();
+    for (auto index : selections) {
+        auto item = m_sort_filter_proxy_model->itemFromIndex(index);
+        uris<<item->uri();
+    }
+    return uris;
 }
 
 void IconView::invertSelections()
 {
-
+    QItemSelectionModel *selectionModel = this->selectionModel();
+    const QItemSelection currentSelection = selectionModel->selection();
+    this->selectAll();
+    selectionModel->select(currentSelection, QItemSelectionModel::Deselect);
 }
 
 void IconView::scrollToSelection(const QString &uri)
 {
-
+    auto index = m_sort_filter_proxy_model->indexFromUri(uri);
+    scrollTo(index);
 }
 
 //location
 //FIXME: implement location functions.
 void IconView::setDirectoryUri(const QString &uri)
 {
-
+    m_current_uri = uri;
 }
 
 const QString IconView::getDirectoryUri()
 {
-    return nullptr;
+    return m_current_uri;
 }
 
 void IconView::beginLocationChange()
 {
-
+    m_model->setRootUri(m_current_uri);
 }
 
 void IconView::stopLocationChange()
 {
-
+    m_model->cancelFindChildren();
 }
 
 //other

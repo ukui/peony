@@ -28,10 +28,7 @@ public:
     void setEnable(bool enable) override {m_enable = enable;}
     bool isEnable() override {return m_enable;}
 
-    QWidget *createPreviewPage(const QString &uri, PreviewType type) override;
-    void startPreview() override {}
-    void cancel() override {}
-    void closePreviewPage() override {}
+    PreviewPageIface *createPreviewPage() override;
 
 private:
     explicit DefaultPreviewPageFactory(QObject *parent = nullptr);

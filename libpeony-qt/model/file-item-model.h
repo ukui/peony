@@ -21,6 +21,10 @@ class FileItemProxyFilterSortModel;
  */
 class PEONYCORESHARED_EXPORT FileItemModel : public QAbstractItemModel
 {
+    friend class FileItem;
+    friend class FileItemProxyFilterSortModel;
+    Q_OBJECT
+public:
     enum ColumnType {
         FileName,
         FileSize,
@@ -34,10 +38,6 @@ class PEONYCORESHARED_EXPORT FileItemModel : public QAbstractItemModel
         UriRole = Qt::UserRole
     };
 
-    friend class FileItem;
-    friend class FileItemProxyFilterSortModel;
-    Q_OBJECT
-public:
     explicit FileItemModel(QObject *parent = nullptr);
     ~FileItemModel() override;
 
@@ -77,6 +77,8 @@ public:
      * \note Every index's internal data at same row is the same item.
      */
     QModelIndex lastColumnIndex(FileItem *item);
+
+    const QModelIndex indexFromUri(const QString &uri);
 
     QModelIndex index(int row, int column, const QModelIndex &parent) const override;
     QModelIndex parent(const QModelIndex &child) const override;
@@ -191,6 +193,8 @@ public Q_SLOTS:
      * \deprecated
      */
     void onItemRemoved(FileItem *item);
+
+    void cancelFindChildren();
 
     void setRootIndex(const QModelIndex &index);
 

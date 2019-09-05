@@ -6,9 +6,12 @@
 #include <QPluginLoader>
 #include <QString>
 #include <QMenu>
+#include <QTimer>
 
 #include "preview-page-factory-manager.h"
 #include "preview-page-plugin-iface.h"
+#include "directory-view-factory-manager.h"
+#include "directory-view-plugin-iface.h"
 
 PeonyApplication::PeonyApplication(int &argc, char *argv[]) : QApplication (argc, argv)
 {
@@ -18,6 +21,7 @@ PeonyApplication::PeonyApplication(int &argc, char *argv[]) : QApplication (argc
     //  load plgin
     //  read from command line
     //  do with args
+#ifdef MENU
     QDir pluginsDir(qApp->applicationDirPath());
     qDebug()<<pluginsDir;
     pluginsDir.cdUp();
@@ -62,15 +66,68 @@ PeonyApplication::PeonyApplication(int &argc, char *argv[]) : QApplication (argc
             }
         }
         qDebug()<<"testEnd";
-
-        qDebug()<<"preview test";
-        auto previewManager = Peony::PreviewPageFactoryManager::getInstance();
-        qDebug()<<previewManager->getPluginNames();
-        for (auto name : previewManager->getPluginNames()) {
-            auto plugin = previewManager->getPlugin(name);
-            auto w = plugin->createPreviewPage("file:///", Peony::PreviewPagePluginIface::Attribute);
-            w->setAttribute(Qt::WA_DeleteOnClose);
-            w->show();
-        }
     }
+#endif
+
+#define PREVIEW
+#ifdef PREVIEW
+    qDebug()<<"preview test";
+    auto previewManager = Peony::PreviewPageFactoryManager::getInstance();
+    qDebug()<<previewManager->getPluginNames();
+    for (auto name : previewManager->getPluginNames()) {
+        auto plugin = previewManager->getPlugin(name);
+        auto w = plugin->createPreviewPage();
+        w->startPreview();
+        QTimer::singleShot(1000, [=](){
+            w->cancel();
+        });
+        auto w1 = dynamic_cast<QWidget*>(w);
+        w1->setAttribute(Qt::WA_DeleteOnClose);
+        w1->show();
+    }
+
+#endif
+
+#ifdef DIRECTORY_VIEW
+    QDir pluginsDir(qApp->applicationDirPath());
+    qDebug()<<pluginsDir;
+    pluginsDir.cdUp();
+    pluginsDir.cd("testdir2");
+    pluginsDir.setFilter(QDir::Files);
+
+    qDebug()<<"directory view test";
+    auto directoryViewManager = Peony::DirectoryViewFactoryManager::getInstance();
+    qDebug()<<directoryViewManager->getFactoryNames();
+    auto names = directoryViewManager->getFactoryNames();
+    for (auto name : names) {
+        qDebug()<<name;
+        auto factory = directoryViewManager->getFactory(name);
+        auto view = factory->create();
+        //BUG: it is not safe loading a new uri when
+        //a directory is loading. enve thoug the file enumemeration
+        //is cancelled and, the async method from GFileEnumerator
+        //might still run in thread and return.
+        //This cause program went crash.
+
+        //view->setDirectoryUri("file:///");
+        //view->beginLocationChange();
+        //view->stopLocationChange();
+        auto proxy = view->getProxy();
+        qDebug()<<"2";
+        proxy->setDirectoryUri("file:///", false);
+        proxy->beginLocationChange();
+        QTimer::singleShot(1000, [=](){
+            proxy->invertSelections();
+        });
+        connect(proxy, &Peony::DirectoryViewProxyIface::viewDoubleClicked, [=](const QString &uri){
+            qDebug()<<"double clicked"<<uri;
+            proxy->setDirectoryUri(uri, false);
+            proxy->beginLocationChange();
+        });
+
+        auto widget = dynamic_cast<QWidget*>(view);
+        widget->setAttribute(Qt::WA_DeleteOnClose);
+        widget->show();
+    }
+#endif
 }

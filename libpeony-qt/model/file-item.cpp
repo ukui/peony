@@ -30,7 +30,7 @@ FileItem::~FileItem()
 {
     //qDebug()<<"~FileItem"<<m_info->uri();
     Q_EMIT cancelFindChildren();
-    disconnect();
+    //disconnect();
     if (m_info.use_count() <= 2) {
         Peony::FileInfoManager::getInstance()->remove(m_info);
     }
@@ -106,6 +106,7 @@ void FileItem::findChildrenAsync()
                 if (infos.count() == 0) {
                     Q_EMIT m_model->findChildrenFinished();
                 }
+
                 for (auto info : infos) {
                     FileItem *child = new FileItem(info, this, m_model);
                     m_children->prepend(child);

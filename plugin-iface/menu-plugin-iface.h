@@ -44,7 +44,7 @@ public:
     };
     Q_DECLARE_FLAGS(Types, Type)
 
-    //virtual ~MenuPluginInterface() {}
+    virtual ~MenuPluginInterface() {}
 
     virtual QString testPlugin() = 0;
 

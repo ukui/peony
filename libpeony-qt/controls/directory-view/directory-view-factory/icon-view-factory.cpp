@@ -25,5 +25,5 @@ IconViewFactory::~IconViewFactory()
 
 DirectoryViewIface *IconViewFactory::create()
 {
-    return nullptr;
+    return new Peony::DirectoryView::IconView;
 }

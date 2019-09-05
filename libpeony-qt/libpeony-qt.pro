@@ -34,7 +34,7 @@ unix {
     INSTALLS += target
 
     header.path = /usr/include/peony-qt
-    header.files += *.h model/*.h file-operation/*.h vfs/*.h
+    header.files += *.h model/*.h file-operation/*.h vfs/*.h controls/ ../plugin-iface/*.h
     header.files += development-files/header-files/*
     INSTALLS += header
 

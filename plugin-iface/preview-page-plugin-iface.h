@@ -10,7 +10,17 @@
 
 namespace Peony {
 
+class PreviewPageIface;
+
 class PreviewPagePluginIface : public PluginInterface
+{
+public:
+    virtual ~PreviewPagePluginIface() {}
+
+    virtual PreviewPageIface *createPreviewPage() = 0;
+};
+
+class PreviewPageIface
 {
 public:
     enum PreviewType {
@@ -22,7 +32,9 @@ public:
         Other
     };
 
-    virtual QWidget *createPreviewPage(const QString &uri, PreviewType type) = 0;
+    virtual ~PreviewPageIface() {}
+
+    virtual void prepare(const QString &uri, PreviewType type) = 0;
     virtual void startPreview() = 0;
     virtual void cancel() = 0;
     virtual void closePreviewPage() = 0;

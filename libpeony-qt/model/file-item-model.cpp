@@ -114,6 +114,17 @@ QModelIndex FileItemModel::lastColumnIndex(FileItem *item)
     }
 }
 
+const QModelIndex FileItemModel::indexFromUri(const QString &uri)
+{
+    //FIXME: support recursively finding?
+    for (auto child : *m_root_item->m_children) {
+        if (child->uri() == uri) {
+            return child->firstColumnIndex();
+        }
+    }
+    return QModelIndex();
+}
+
 QModelIndex FileItemModel::parent(const QModelIndex &child) const
 {
     FileItem *childItem = static_cast<FileItem*>(child.internalPointer());
@@ -329,6 +340,12 @@ void FileItemModel::onItemRemoved(FileItem *item)
     if (!item->m_parent)
         removeRow(item->firstColumnIndex().row());
     removeRow(item->firstColumnIndex().row(), item->m_parent->firstColumnIndex());
+}
+
+void FileItemModel::cancelFindChildren()
+{
+    qDebug()<<"cancel";
+    m_root_item->cancelFindChildren();
 }
 
 void FileItemModel::setRootIndex(const QModelIndex &index)

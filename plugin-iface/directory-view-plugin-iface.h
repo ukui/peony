@@ -37,6 +37,7 @@ class DirectoryViewProxyIface;
  */
 class DirectoryViewPluginIface : public PluginInterface
 {
+public:
     virtual QString viewIdentity() = 0;
     virtual QIcon viewIcon() = 0;
     virtual bool supportUri(const QString &uri) = 0;
@@ -68,6 +69,8 @@ public:
         Big, //175%
         Huge //250%
     };
+
+    virtual ~DirectoryViewIface() {}
 
     //location
     const virtual QString getDirectoryUri() = 0;
@@ -135,6 +138,7 @@ public:
  */
 class DirectoryViewProxyIface: public QObject
 {
+    Q_OBJECT
 public:
     explicit DirectoryViewProxyIface(QObject *parent = nullptr) : QObject(parent) {}
     ~DirectoryViewProxyIface() {}
@@ -161,6 +165,7 @@ Q_SIGNALS:
     //loaction
     //FIXME: support open in new TAB?
     void openRequest(const QStringList &uri, bool newWindow);
+    void viewDoubleClicked(const QString &uri);
     void viewDirectoryChanged();
     void viewSelectionChanged();
 

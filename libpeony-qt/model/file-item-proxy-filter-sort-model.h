@@ -21,6 +21,7 @@ public:
 
     FileItem *itemFromIndex(const QModelIndex &proxyIndex);
     QModelIndex getSourceIndex(const QModelIndex &proxyIndex);
+    const QModelIndex indexFromUri(const QString &uri);
 
 public Q_SLOTS:
     void update();

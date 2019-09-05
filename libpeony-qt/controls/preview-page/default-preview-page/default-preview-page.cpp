@@ -14,34 +14,39 @@
 
 using namespace Peony;
 
-DefaultPreviewPage::DefaultPreviewPage(const QString &uri, QWidget *parent) : QWidget(parent)
+DefaultPreviewPage::DefaultPreviewPage(QWidget *parent) : QWidget(parent)
 {
-    QGridLayout *layout = new QGridLayout(this);
-    setLayout(layout);
-    QUrl url = uri;
-    if (!url.isLocalFile()) {
-        QLabel *label = new QLabel(tr("Can not preivew this file."));
-        layout->addWidget(label);
-        return;
-    }
+    m_layout = new QGridLayout(this);
+    setLayout(m_layout);
+}
 
-    QFile file(url.path());
-    QFileInfo info(file);
-    QIcon icon;
-    QPixmap pixmap(url.path());
-    if (pixmap.isNull()) {
-        QMimeDatabase db;
-        icon = QIcon::fromTheme(db.mimeTypeForUrl(url).iconName());
-    } else {
-        icon = pixmap;
-    }
+DefaultPreviewPage::~DefaultPreviewPage()
+{
 
-    QPushButton *button = new QPushButton(icon, url.fileName(), this);
-    layout->addWidget(button);
+}
 
-    QMimeDatabase db;
-    QLabel *typeLabel = new QLabel(db.mimeTypeForUrl(url).name(), this);
-    layout->addWidget(typeLabel);
-    QLabel *sizeLabel = new QLabel(QString::number(info.size()), this);
-    layout->addWidget(sizeLabel);
+void DefaultPreviewPage::prepare(const QString &uri, PreviewType type)
+{
+    m_current_uri = uri;
+    m_current_type = type;
+}
+
+void DefaultPreviewPage::startPreview()
+{
+    QLabel *l = new QLabel(tr("start preview..."), this);
+    m_layout->addWidget(l);
+    //TODO:
+    //cancellable async preview
+}
+
+void DefaultPreviewPage::cancel()
+{
+    QLabel *l = new QLabel(tr("cancel..."), this);
+    m_layout->addWidget(l);
+}
+
+void DefaultPreviewPage::closePreviewPage()
+{
+    cancel();
+    deleteLater();
 }

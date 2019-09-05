@@ -3,7 +3,7 @@
 
 using namespace Peony;
 
-DefaultPreviewPageFactory *globalInstance = nullptr;
+static DefaultPreviewPageFactory *globalInstance = nullptr;
 
 DefaultPreviewPageFactory *DefaultPreviewPageFactory::getInstance()
 {
@@ -23,8 +23,7 @@ DefaultPreviewPageFactory::~DefaultPreviewPageFactory()
 
 }
 
-QWidget *DefaultPreviewPageFactory::createPreviewPage(const QString &uri, PreviewType type)
+PreviewPageIface *DefaultPreviewPageFactory::createPreviewPage()
 {
-    Q_UNUSED(type)
-    return new DefaultPreviewPage(uri);
+    return new DefaultPreviewPage;
 }
