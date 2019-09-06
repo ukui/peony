@@ -151,6 +151,12 @@ void IconView::scrollToSelection(const QString &uri)
     scrollTo(index);
 }
 
+//clipboard
+void IconView::setCutFiles(const QStringList &uris)
+{
+    //let delegate and model know how to deal with cut files.
+}
+
 //location
 //FIXME: implement location functions.
 void IconView::setDirectoryUri(const QString &uri)

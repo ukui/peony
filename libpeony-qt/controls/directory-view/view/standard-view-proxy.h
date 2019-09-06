@@ -31,25 +31,9 @@ public:
 
     //location
     const QString getDirectoryUri() override;
-    /*!
-     * \brief canBack
-     * \return
-     * \deprecated
-     */
-    bool canBack() override;
-    /*!
-     * \brief canForward
-     * \return
-     * \deprecated
-     */
-    bool canForward() override;
 
     //selections
     QStringList getSelections() override;
-
-    //clipboard
-    QStringList getClipboardSelections() override;
-    bool getClipboardSelectionsIsCut() override;
 
     //zoom
     bool canZoomIn() override;
@@ -58,19 +42,10 @@ public:
 public Q_SLOTS:
     //location
     void open(const QStringList &uris, bool newWindow) override;
-    void setDirectoryUri(const QString &uri, bool addHistory) override;
+    void setDirectoryUri(const QString &uri) override;
     void beginLocationChange() override;
     void stopLocationChange() override;
-    /*!
-     * \brief goBack
-     * \deprecated
-     */
-    void goBack() override;
-    /*!
-     * \brief goForward
-     * \deprecated
-     */
-    void goForward() override;
+
     void close() override;
 
     //selections
@@ -79,9 +54,7 @@ public Q_SLOTS:
     void scrollToSelection(const QString &uri) override;
 
     //clipboard
-    void cutSelections() override;
-    void copySelections() override;
-    void pasteSelections() override;
+    void setCutFiles(const QStringList &uris) override;
 
     //zoom
     void zoomIn() override;
@@ -89,20 +62,6 @@ public Q_SLOTS:
 
 private:
     DirectoryViewIface *m_view = nullptr;
-
-    //should i provide public method operate these stacks?
-    //TODO: i'll put them in to a higher level wrapper class.
-    //maybe use the window-slot concept in peony.
-    /*!
-     * \brief m_back_stack
-     * \deprecated
-     */
-    QStack<QString> m_back_stack;
-    /*!
-     * \brief m_forward_statck
-     * \deprecated
-     */
-    QStack<QString> m_forward_statck;
 };
 
 }

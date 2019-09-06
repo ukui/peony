@@ -44,6 +44,9 @@ public Q_SLOTS:
     void invertSelections() override;
     void scrollToSelection(const QString &uri) override;
 
+    //clipboard
+    void setCutFiles(const QStringList &uris) override;
+
     //zoom
     void zoomIn() override;
     void zoomOut() override;

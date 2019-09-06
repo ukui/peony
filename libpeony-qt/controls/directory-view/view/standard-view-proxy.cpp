@@ -10,75 +10,18 @@ StandardViewProxy::StandardViewProxy(DirectoryViewIface *view, QObject *parent) 
 
 StandardViewProxy::~StandardViewProxy()
 {
-    m_back_stack.clear();
-    m_forward_statck.clear();
+
 }
 
 //history
-void StandardViewProxy::setDirectoryUri(const QString &uri, bool addHistory)
+void StandardViewProxy::setDirectoryUri(const QString &uri)
 {
-    if (addHistory) {
-        m_forward_statck.clear();
-        m_back_stack.push(uri);
-    }
     m_view->setDirectoryUri(uri);
 }
 
-bool StandardViewProxy::canBack()
+void StandardViewProxy::setCutFiles(const QStringList &uri)
 {
-    return !m_back_stack.isEmpty();
-}
-
-void StandardViewProxy::goBack()
-{
-    if (canBack()) {
-        auto uri = m_back_stack.pop();
-        m_forward_statck.push(uri);
-        m_view->setDirectoryUri(uri);
-        m_view->beginLocationChange();
-    }
-}
-
-bool StandardViewProxy::canForward()
-{
-    return !m_forward_statck.isEmpty();
-}
-
-void StandardViewProxy::goForward()
-{
-    if (canForward()) {
-        auto uri = m_forward_statck.pop();
-        m_back_stack.push(uri);
-        m_view->setDirectoryUri(uri);
-        m_view->beginLocationChange();
-    }
-}
-
-//clipboard
-//FIXME: implement clipboard
-void StandardViewProxy::cutSelections()
-{
-
-}
-
-void StandardViewProxy::copySelections()
-{
-
-}
-
-void StandardViewProxy::pasteSelections()
-{
-    //selections might not be this view's selection
-}
-
-QStringList StandardViewProxy::getClipboardSelections()
-{
-    return QStringList();
-}
-
-bool StandardViewProxy::getClipboardSelectionsIsCut()
-{
-    return false;
+    m_view->setCutFiles(uri);
 }
 
 //selection

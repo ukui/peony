@@ -116,14 +116,14 @@ PeonyApplication::PeonyApplication(int &argc, char *argv[]) : QApplication (argc
         //view->stopLocationChange();
         auto proxy = view->getProxy();
         qDebug()<<"2";
-        proxy->setDirectoryUri("file:///", false);
+        proxy->setDirectoryUri("file:///");
         proxy->beginLocationChange();
         QTimer::singleShot(1000, [=](){
             proxy->invertSelections();
         });
         connect(proxy, &Peony::DirectoryViewProxyIface::viewDoubleClicked, [=](const QString &uri){
             qDebug()<<"double clicked"<<uri;
-            proxy->setDirectoryUri(uri, false);
+            proxy->setDirectoryUri(uri);
             proxy->beginLocationChange();
         });
 

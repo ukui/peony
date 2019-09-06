@@ -113,6 +113,9 @@ public:
     virtual void invertSelections() = 0;
     virtual void scrollToSelection(const QString &uri) = 0;
 
+    //clipboard
+    virtual void setCutFiles(const QStringList &uris) = 0;
+
     //zoom
     virtual void zoomIn() = 0;
     virtual void zoomOut() = 0;
@@ -146,26 +149,10 @@ public:
     virtual DirectoryViewIface *getView() = 0;
 
     //location
-    const virtual QString getDirectoryUri() = 0;
-    /*!
-     * \brief canBack
-     * \return
-     * \deprecated
-     */
-    virtual bool canBack() = 0;
-    /*!
-     * \brief canForward
-     * \return
-     * \deprecated
-     */
-    virtual bool canForward() = 0;
+    const virtual QString getDirectoryUri() = 0; 
 
     //selections
     virtual QStringList getSelections() = 0;
-
-    //clipboard
-    virtual QStringList getClipboardSelections() = 0;
-    virtual bool getClipboardSelectionsIsCut() = 0;
 
     //zoom
     virtual bool canZoomIn() = 0;
@@ -182,11 +169,6 @@ Q_SIGNALS:
     //menu
     void menuRequest(const QPoint &pos);
 
-    //clipboard
-    void cutSelectionsRequest();
-    void copySelectionsRequest();
-    void pasteSelectionsRequest();
-
     //zoom
     void zoomedIn();
     void zoomedOut();
@@ -194,19 +176,10 @@ Q_SIGNALS:
 public Q_SLOTS:
     //location
     virtual void open(const QStringList &uris, bool newWindow) = 0;
-    virtual void setDirectoryUri(const QString &uri, bool addHistory) = 0;
+    virtual void setDirectoryUri(const QString &uri) = 0;
     virtual void beginLocationChange() = 0;
     virtual void stopLocationChange() = 0;
-    /*!
-     * \brief goBack
-     * \deprecated
-     */
-    virtual void goBack() = 0;
-    /*!
-     * \brief goForward
-     * \deprecated
-     */
-    virtual void goForward() = 0;
+
     virtual void close() = 0;
 
     //selections
@@ -215,9 +188,8 @@ public Q_SLOTS:
     virtual void scrollToSelection(const QString &uri) = 0;
 
     //clipboard
-    virtual void cutSelections() = 0;
-    virtual void copySelections() = 0;
-    virtual void pasteSelections() = 0;
+    //cut items should be drawn differently.
+    virtual void setCutFiles(const QStringList &uris) = 0;
 
     //zoom
     virtual void zoomIn() = 0;
