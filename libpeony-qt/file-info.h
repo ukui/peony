@@ -40,6 +40,7 @@ public:
     QString uri() {return m_uri;}
     bool isDir() {return m_is_dir;}
     bool isVolume() {return m_is_volume;}
+    bool isSymbolLink() {return m_is_symbol_link;}
 
     QString displayName() {return m_display_name;}
     QString iconName() {return m_icon_name;}
@@ -53,6 +54,13 @@ public:
     quint64 size() {return m_size;}
     quint64 modifiedTime() {return m_modified_time;}
 
+    bool canRead() {return m_can_read;}
+    bool canWrite() {return m_can_write;}
+    bool canExecute() {return m_can_excute;}
+    bool canDelete() {return m_can_delete;}
+    bool canTrash() {return m_can_trash;}
+    bool canRename() {return m_can_rename;}
+
     GFile *gFileHandle() {return m_file;}
 
 Q_SIGNALS:
@@ -64,6 +72,7 @@ private:
     bool m_is_dir = false;
     bool m_is_volume = false;
     bool m_is_remote = false;
+    bool m_is_symbol_link = false;
 
     bool m_is_loaded = false;
 
@@ -79,6 +88,14 @@ private:
     QString m_file_type = nullptr;
     QString m_file_size = nullptr;
     QString m_modified_date = nullptr;
+
+    //access
+    bool m_can_read = true;
+    bool m_can_write = false;
+    bool m_can_excute = false;
+    bool m_can_delete = false;
+    bool m_can_trash = false;
+    bool m_can_rename = false;
 
     //FIXME: should i use smart pointer wrap these data?
     GFile *m_file = nullptr;

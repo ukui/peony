@@ -71,7 +71,7 @@ bool FileInfoJob::querySync()
     GError *err = nullptr;
 
     auto _info = g_file_query_info(info->m_file,
-                                   "standard::*," "time::*," G_FILE_ATTRIBUTE_ID_FILE,
+                                   "standard::*," "time::*," "access::*," G_FILE_ATTRIBUTE_ID_FILE,
                                    G_FILE_QUERY_INFO_NONE,
                                    nullptr,
                                    &err);
@@ -127,7 +127,7 @@ void FileInfoJob::queryAsync()
         return;
     }
     g_file_query_info_async(info->m_file,
-                            "standard::*," "time::*," G_FILE_ATTRIBUTE_ID_FILE,
+                            "standard::*," "time::*," "access::*," G_FILE_ATTRIBUTE_ID_FILE,
                             G_FILE_QUERY_INFO_NONE,
                             G_PRIORITY_DEFAULT,
                             info->m_cancellable,
@@ -160,6 +160,15 @@ void FileInfoJob::refreshInfoContents(GFileInfo *new_info)
     default:
         break;
     }
+
+    info->m_is_symbol_link = g_file_info_get_attribute_boolean(new_info, G_FILE_ATTRIBUTE_STANDARD_IS_SYMLINK);
+    info->m_can_read = g_file_info_get_attribute_boolean(new_info, G_FILE_ATTRIBUTE_ACCESS_CAN_READ);
+    info->m_can_write = g_file_info_get_attribute_boolean(new_info, G_FILE_ATTRIBUTE_ACCESS_CAN_WRITE);
+    info->m_can_excute = g_file_info_get_attribute_boolean(new_info, G_FILE_ATTRIBUTE_ACCESS_CAN_EXECUTE);
+    info->m_can_delete = g_file_info_get_attribute_boolean(new_info, G_FILE_ATTRIBUTE_ACCESS_CAN_DELETE);
+    info->m_can_trash = g_file_info_get_attribute_boolean(new_info, G_FILE_ATTRIBUTE_ACCESS_CAN_TRASH);
+    info->m_can_rename = g_file_info_get_attribute_boolean(new_info, G_FILE_ATTRIBUTE_ACCESS_CAN_RENAME);
+
     info->m_display_name = QString (g_file_info_get_display_name(new_info));
     GIcon *g_icon = g_file_info_get_icon (new_info);
     if (G_IS_ICON(g_icon)) {

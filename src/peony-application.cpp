@@ -119,7 +119,7 @@ PeonyApplication::PeonyApplication(int &argc, char *argv[]) : QApplication (argc
         proxy->setDirectoryUri("file:///");
         proxy->beginLocationChange();
         QTimer::singleShot(1000, [=](){
-            proxy->invertSelections();
+            //proxy->invertSelections();
         });
         connect(proxy, &Peony::DirectoryViewProxyIface::viewDoubleClicked, [=](const QString &uri){
             qDebug()<<"double clicked"<<uri;
@@ -129,8 +129,9 @@ PeonyApplication::PeonyApplication(int &argc, char *argv[]) : QApplication (argc
 
         auto widget = dynamic_cast<QWidget*>(view);
         widget->setStyleSheet("margin: 0;"
-                              "padding: 0;"
-                              "boarder: 0");
+                              //"padding-left: 14;"
+                              //"padding-top: 5;"
+                              "border: 0");
         //widget->setAttribute(Qt::WA_DeleteOnClose);
         QWidget *container = new QWidget;
         container->setAttribute(Qt::WA_DeleteOnClose);

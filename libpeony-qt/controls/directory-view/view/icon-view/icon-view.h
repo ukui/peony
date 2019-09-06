@@ -11,8 +11,11 @@ namespace Peony {
 
 namespace DirectoryView {
 
+class IconViewDelegate;
+
 class PEONYCORESHARED_EXPORT IconView : public QListView, public DirectoryViewIface
 {
+    friend class IconViewDelegate;
     Q_OBJECT
 public:
 

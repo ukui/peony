@@ -420,6 +420,8 @@ bool FileItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action, i
         return false;
     }
 
+    //NOTE:
+    //do not allow drop on it self.
     auto urls = data->urls();
     if (urls.isEmpty()) {
         return false;
@@ -428,6 +430,10 @@ bool FileItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action, i
     QStringList srcUris;
     for (auto url : urls) {
         srcUris<<url.url();
+    }
+
+    if (srcUris.contains(destDirUri)) {
+        return false;
     }
 
     auto fileOpMgr = FileOperationManager::getInstance();

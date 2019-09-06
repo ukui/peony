@@ -2,6 +2,8 @@
 #include "standard-view-proxy.h"
 #include "file-item.h"
 
+#include "icon-view-delegate.h"
+
 #include <QDebug>
 
 using namespace Peony;
@@ -9,6 +11,9 @@ using namespace Peony::DirectoryView;
 
 IconView::IconView(QWidget *parent) : QListView(parent)
 {
+    IconViewDelegate *delegate = new IconViewDelegate(this);
+    setItemDelegate(delegate);
+
     setSelectionMode(QListView::ExtendedSelection);
     setEditTriggers(QListView::NoEditTriggers);
     setViewMode(QListView::IconMode);
@@ -26,8 +31,8 @@ IconView::IconView(QWidget *parent) : QListView(parent)
 
     switch (m_zoom_level) {
     case Normal: {
-        setGridSize(QSize(64, 72));
-        setIconSize(QSize(48, 48));
+        setGridSize(QSize(120, 135));
+        setIconSize(QSize(64, 64));
         break;
     }
     default:
