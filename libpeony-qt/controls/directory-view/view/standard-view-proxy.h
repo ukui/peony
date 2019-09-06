@@ -31,7 +31,17 @@ public:
 
     //location
     const QString getDirectoryUri() override;
+    /*!
+     * \brief canBack
+     * \return
+     * \deprecated
+     */
     bool canBack() override;
+    /*!
+     * \brief canForward
+     * \return
+     * \deprecated
+     */
     bool canForward() override;
 
     //selections
@@ -51,7 +61,15 @@ public Q_SLOTS:
     void setDirectoryUri(const QString &uri, bool addHistory) override;
     void beginLocationChange() override;
     void stopLocationChange() override;
+    /*!
+     * \brief goBack
+     * \deprecated
+     */
     void goBack() override;
+    /*!
+     * \brief goForward
+     * \deprecated
+     */
     void goForward() override;
     void close() override;
 
@@ -73,7 +91,17 @@ private:
     DirectoryViewIface *m_view = nullptr;
 
     //should i provide public method operate these stacks?
+    //TODO: i'll put them in to a higher level wrapper class.
+    //maybe use the window-slot concept in peony.
+    /*!
+     * \brief m_back_stack
+     * \deprecated
+     */
     QStack<QString> m_back_stack;
+    /*!
+     * \brief m_forward_statck
+     * \deprecated
+     */
     QStack<QString> m_forward_statck;
 };
 

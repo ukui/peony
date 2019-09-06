@@ -147,7 +147,17 @@ public:
 
     //location
     const virtual QString getDirectoryUri() = 0;
+    /*!
+     * \brief canBack
+     * \return
+     * \deprecated
+     */
     virtual bool canBack() = 0;
+    /*!
+     * \brief canForward
+     * \return
+     * \deprecated
+     */
     virtual bool canForward() = 0;
 
     //selections
@@ -187,7 +197,15 @@ public Q_SLOTS:
     virtual void setDirectoryUri(const QString &uri, bool addHistory) = 0;
     virtual void beginLocationChange() = 0;
     virtual void stopLocationChange() = 0;
+    /*!
+     * \brief goBack
+     * \deprecated
+     */
     virtual void goBack() = 0;
+    /*!
+     * \brief goForward
+     * \deprecated
+     */
     virtual void goForward() = 0;
     virtual void close() = 0;
 

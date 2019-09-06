@@ -7,6 +7,7 @@
 #include <QString>
 #include <QMenu>
 #include <QTimer>
+#include <QVBoxLayout>
 
 #include "preview-page-factory-manager.h"
 #include "preview-page-plugin-iface.h"
@@ -69,7 +70,7 @@ PeonyApplication::PeonyApplication(int &argc, char *argv[]) : QApplication (argc
     }
 #endif
 
-#define PREVIEW
+//#define PREVIEW
 #ifdef PREVIEW
     qDebug()<<"preview test";
     auto previewManager = Peony::PreviewPageFactoryManager::getInstance();
@@ -88,6 +89,7 @@ PeonyApplication::PeonyApplication(int &argc, char *argv[]) : QApplication (argc
 
 #endif
 
+#define DIRECTORY_VIEW
 #ifdef DIRECTORY_VIEW
     QDir pluginsDir(qApp->applicationDirPath());
     qDebug()<<pluginsDir;
@@ -126,8 +128,22 @@ PeonyApplication::PeonyApplication(int &argc, char *argv[]) : QApplication (argc
         });
 
         auto widget = dynamic_cast<QWidget*>(view);
-        widget->setAttribute(Qt::WA_DeleteOnClose);
-        widget->show();
+        widget->setStyleSheet("margin: 0;"
+                              "padding: 0;"
+                              "boarder: 0");
+        //widget->setAttribute(Qt::WA_DeleteOnClose);
+        QWidget *container = new QWidget;
+        container->setAttribute(Qt::WA_DeleteOnClose);
+        widget->setParent(container);
+        QVBoxLayout *layout = new QVBoxLayout(container);
+
+        layout->setContentsMargins(0,0,0,0);
+        layout->setSpacing(0);
+
+        container->setLayout(layout);
+        container->layout()->addWidget(widget);
+
+        container->show();
     }
 #endif
 }
