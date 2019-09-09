@@ -15,7 +15,7 @@ IconView::IconView(QWidget *parent) : QListView(parent)
     setItemDelegate(delegate);
 
     setSelectionMode(QListView::ExtendedSelection);
-    setEditTriggers(QListView::NoEditTriggers);
+    //setEditTriggers(QListView::NoEditTriggers);
     setViewMode(QListView::IconMode);
     setResizeMode(QListView::Adjust);
     setMovement(QListView::Snap);

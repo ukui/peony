@@ -1,5 +1,6 @@
 #include "peony-application.h"
 #include "menu-plugin-iface.h"
+#include "file-info.h"
 
 #include <QDebug>
 #include <QDir>
@@ -123,8 +124,11 @@ PeonyApplication::PeonyApplication(int &argc, char *argv[]) : QApplication (argc
         });
         connect(proxy, &Peony::DirectoryViewProxyIface::viewDoubleClicked, [=](const QString &uri){
             qDebug()<<"double clicked"<<uri;
-            proxy->setDirectoryUri(uri);
-            proxy->beginLocationChange();
+            auto info = Peony::FileInfo::fromUri(uri);
+            if (info->isDir() || info->isVolume()) {
+                proxy->setDirectoryUri(uri);
+                proxy->beginLocationChange();
+            }
         });
 
         auto widget = dynamic_cast<QWidget*>(view);

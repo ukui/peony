@@ -3,11 +3,17 @@
 #include "file-item-proxy-filter-sort-model.h"
 #include "file-item.h"
 #include "file-info.h"
+
+#include "file-operation-manager.h"
+#include "file-rename-operation.h"
+
 #include <QDebug>
 #include <QLabel>
 
 #include <QPainter>
 #include <QPalette>
+
+#include <QTextEdit>
 
 using namespace Peony;
 using namespace Peony::DirectoryView;
@@ -78,4 +84,35 @@ void IconViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
 void IconViewDelegate::setCutFiles(const QModelIndexList &indexes)
 {
     m_cut_indexes = indexes;
+}
+
+QWidget *IconViewDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const
+{
+    Q_UNUSED(option);
+    Q_UNUSED(index);
+    return new QTextEdit(parent);
+}
+
+void IconViewDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const
+{
+    QTextEdit *edit = qobject_cast<QTextEdit*>(editor);
+    edit->setText(index.data(Qt::DisplayRole).toString());
+}
+
+void IconViewDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const
+{
+    QStyledItemDelegate::updateEditorGeometry(editor, option, index);
+}
+
+void IconViewDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const
+{
+    QTextEdit *edit = qobject_cast<QTextEdit*>(editor);
+    auto newName = edit->toPlainText();
+    if (!newName.isNull()) {
+        if (newName != index.data(Qt::DisplayRole).toString()) {
+            auto fileOpMgr = FileOperationManager::getInstance();
+            auto renameOp = new FileRenameOperation(index.data(FileItemModel::UriRole).toString(), newName);
+            fileOpMgr->startOperation(renameOp, true);
+        }
+    }
 }

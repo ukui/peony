@@ -1,14 +1,22 @@
 #include "file-untrash-operation.h"
 #include "file-utils.h"
+#include "file-operation-manager.h"
 
 using namespace Peony;
 
 FileUntrashOperation::FileUntrashOperation(QStringList uris, QObject *parent) : FileOperation (parent)
 {
     m_uris = uris;
+    //FIXME: should i put this into prepare process?
+    cacheOriginalUri();
+    QStringList oppositeSrcUris;
+    for (auto value : m_restore_hash) {
+        oppositeSrcUris<<value;
+    }
+    m_info = std::make_shared<FileOperationInfo>(oppositeSrcUris, "trash:///", FileOperationInfo::Trash);
 }
 
-void FileUntrashOperation::run()
+void FileUntrashOperation::cacheOriginalUri()
 {
     for (auto uri : m_uris) {
         if (isCancelled())
@@ -26,6 +34,21 @@ void FileUntrashOperation::run()
         auto destFile = wrapGFile(g_file_new_for_path(originPath.toUtf8().constData()));
         auto originUri = FileUtils::getQStringFromCString(g_file_get_uri(destFile.get()->get()));
         m_restore_hash.insert(uri, originUri);
+    }
+}
+
+void FileUntrashOperation::run()
+{
+    for (auto uri : m_uris) {
+        if (isCancelled())
+            break;
+
+        //cacheOriginalUri();
+        auto originUri = m_restore_hash.value(uri);
+
+        auto file = wrapGFile(g_file_new_for_uri(uri.toUtf8().constData()));        
+        auto destFile = wrapGFile(g_file_new_for_uri(originUri.toUtf8().constData()));
+
 
 retry:
         GError *err = nullptr;

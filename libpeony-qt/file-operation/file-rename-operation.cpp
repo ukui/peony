@@ -1,4 +1,5 @@
 #include "file-rename-operation.h"
+#include "file-operation-manager.h"
 #include "file-utils.h"
 #include <gio/gdesktopappinfo.h>
 #include <glib/gprintf.h>
@@ -10,6 +11,14 @@ FileRenameOperation::FileRenameOperation(QString uri, QString newName)
 {
     m_uri = uri;
     m_new_name = newName;
+    QStringList srcUris;
+    srcUris<<uri;
+    QString destUri = FileUtils::getParentUri(uri);
+    if (destUri != nullptr) {
+        destUri = destUri + "/" + newName;
+    }
+
+    m_info = std::make_shared<FileOperationInfo>(srcUris, destUri, FileOperationInfo::Rename);
 }
 
 /*!
