@@ -39,6 +39,10 @@ IconView::IconView(QWidget *parent) : QListView(parent)
         break;
     }
 
+    connect(m_model, &FileItemModel::updated, [=](){
+        m_sort_filter_proxy_model->sort(FileItemModel::FileName);
+    });
+
     connect(m_model, &FileItemModel::findChildrenFinished,
             m_proxy, &DirectoryViewProxyIface::viewDirectoryChanged);
     connect(this, &IconView::selectionChanged, [=](){

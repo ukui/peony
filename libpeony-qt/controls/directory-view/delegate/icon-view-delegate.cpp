@@ -13,7 +13,11 @@
 #include <QPainter>
 #include <QPalette>
 
-#include <QTextEdit>
+#include <QTextCursor>
+#include <QGraphicsTextItem>
+#include <QFont>
+
+#include "icon-view-editor.h"
 
 using namespace Peony;
 using namespace Peony::DirectoryView;
@@ -90,23 +94,62 @@ QWidget *IconViewDelegate::createEditor(QWidget *parent, const QStyleOptionViewI
 {
     Q_UNUSED(option);
     Q_UNUSED(index);
-    return new QTextEdit(parent);
+    auto edit = new IconViewEditor(parent);
+    edit->setContentsMargins(0, 0, 0, 0);
+    edit->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    edit->setAlignment(Qt::AlignCenter);
+    edit->setMinimumHeight(54);
+
+    edit->setStyleSheet(//"background-color: rgba(50, 50, 0, 1);"
+                        "border-width: 2;"
+                        "border-color: green;"
+                        "padding-width: 2;"
+                        "padding-color: blue");
+
+    edit->connect(edit, &IconViewEditor::textChanged, [=](){
+        //edit->adjustSize();
+        updateEditorGeometry(edit, option, index);
+    });
+    return edit;
 }
 
 void IconViewDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const
 {
-    QTextEdit *edit = qobject_cast<QTextEdit*>(editor);
+    IconViewEditor *edit = qobject_cast<IconViewEditor*>(editor);
+    edit->setAlignment(Qt::AlignCenter);
     edit->setText(index.data(Qt::DisplayRole).toString());
+    auto cursor = edit->textCursor();
+    cursor.setPosition(0, QTextCursor::MoveAnchor);
+    cursor.movePosition(QTextCursor::End, QTextCursor::KeepAnchor);
+    qDebug()<<cursor.position();
+    if (edit->toPlainText().contains(".") && !edit->toPlainText().startsWith(".")) {
+        cursor.movePosition(QTextCursor::WordLeft, QTextCursor::KeepAnchor, 2);
+        qDebug()<<cursor.position();
+    }
+    qDebug()<<cursor.anchor();
+    edit->setTextCursor(cursor);
 }
 
 void IconViewDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
     QStyledItemDelegate::updateEditorGeometry(editor, option, index);
+    auto edit = qobject_cast<IconViewEditor*>(editor);
+    QGraphicsTextItem item;
+    item.setFont(option.font);
+    item.setTextWidth(qreal(edit->width()));
+    item.setPlainText(edit->toPlainText());
+    qDebug()<<item.boundingRect();
+    qDebug()<<item.textWidth();
+    item.adjustSize();
+    qDebug()<<item.textWidth();
+    qDebug()<<item.boundingRect();
+    edit->resize(edit->width(), static_cast<int>(item.boundingRect().height()));
+    //edit->setFixedHeight(item.boundingRect().height() + 54);
 }
 
 void IconViewDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const
 {
-    QTextEdit *edit = qobject_cast<QTextEdit*>(editor);
+    IconViewEditor *edit = qobject_cast<IconViewEditor*>(editor);
     auto newName = edit->toPlainText();
     if (!newName.isNull()) {
         if (newName != index.data(Qt::DisplayRole).toString()) {
