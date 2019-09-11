@@ -6,6 +6,7 @@
 #include "file-item-model.h"
 #include "file-item-proxy-filter-sort-model.h"
 #include <QListView>
+#include <QTimer>
 
 namespace Peony {
 
@@ -56,12 +57,19 @@ public Q_SLOTS:
 
 protected:
     void changeZoomLevel();
+    void resetEditTriggerTimer();
 
     void dragEnterEvent(QDragEnterEvent *e) override;
     void dragMoveEvent(QDragMoveEvent *e) override;
     void dropEvent(QDropEvent *e) override;
 
+    void mousePressEvent(QMouseEvent *e) override;
+    void mouseReleaseEvent(QMouseEvent *e) override;
+
 private:
+    QTimer m_edit_trigger_timer;
+    QModelIndex m_last_index;
+
     DirectoryViewProxyIface *m_proxy = nullptr;
 
     FileItemModel *m_model = nullptr;

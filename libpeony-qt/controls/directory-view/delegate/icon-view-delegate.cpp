@@ -29,6 +29,7 @@ IconViewDelegate::IconViewDelegate(QObject *parent) : QStyledItemDelegate (paren
 
 QSize IconViewDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
+    /*
     qDebug()<<option;
     qDebug()<<option.font;
     qDebug()<<option.icon;
@@ -36,6 +37,7 @@ QSize IconViewDelegate::sizeHint(const QStyleOptionViewItem &option, const QMode
     qDebug()<<option.widget;
     qDebug()<<option.decorationSize;
     qDebug()<<QStyledItemDelegate::sizeHint(option, index);
+    */
     return QSize(105, 118);
 
     return QStyledItemDelegate::sizeHint(option, index);
@@ -58,14 +60,16 @@ void IconViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
     }
     auto info = item->info();
     auto rect = view->visualRect(index);
+    /*
     qDebug()<<option.decorationPosition;
     qDebug()<<option.decorationAlignment;
     qDebug()<<option.displayAlignment;
+    */
 
     //paint symbolic link emblems
     if (info->isSymbolLink()) {
         QIcon icon = QIcon::fromTheme("emblem-symbolic-link");
-        qDebug()<<info->symbolicIconName();
+        //qDebug()<<info->symbolicIconName();
         icon.paint(painter, rect.x() + rect.width() - 20, rect.y(), 20, 20, Qt::AlignCenter);
     }
 
@@ -99,12 +103,6 @@ QWidget *IconViewDelegate::createEditor(QWidget *parent, const QStyleOptionViewI
     edit->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     edit->setAlignment(Qt::AlignCenter);
     edit->setMinimumHeight(54);
-
-    edit->setStyleSheet(//"background-color: rgba(50, 50, 0, 1);"
-                        "border-width: 2;"
-                        "border-color: green;"
-                        "padding-width: 2;"
-                        "padding-color: blue");
 
     edit->connect(edit, &IconViewEditor::textChanged, [=](){
         //edit->adjustSize();

@@ -4,6 +4,8 @@
 
 #include "icon-view-delegate.h"
 
+#include <QMouseEvent>
+
 #include <QDragEnterEvent>
 #include <QMimeData>
 #include <QDragMoveEvent>
@@ -20,7 +22,7 @@ IconView::IconView(QWidget *parent) : QListView(parent)
     setItemDelegate(delegate);
 
     setSelectionMode(QListView::ExtendedSelection);
-    //setEditTriggers(QListView::NoEditTriggers);
+    setEditTriggers(QListView::NoEditTriggers);
     setViewMode(QListView::IconMode);
     setResizeMode(QListView::Adjust);
     setMovement(QListView::Snap);
@@ -50,12 +52,23 @@ IconView::IconView(QWidget *parent) : QListView(parent)
 
     connect(m_model, &FileItemModel::findChildrenFinished,
             m_proxy, &DirectoryViewProxyIface::viewDirectoryChanged);
-    connect(this, &IconView::selectionChanged, [=](){
-        Q_EMIT m_proxy->viewSelectionChanged();
-    });
+
     connect(this, &IconView::doubleClicked, [=](const QModelIndex &index){
         qDebug()<<"double click"<<index.data(FileItemModel::UriRole);
         Q_EMIT m_proxy->viewDoubleClicked(index.data(FileItemModel::UriRole).toString());
+    });
+
+    //edit trigger
+    connect(this->selectionModel(), &QItemSelectionModel::selectionChanged, [=](){
+        qDebug()<<"selection changed";
+        auto currentSelections = this->selectedIndexes();
+        Q_EMIT m_proxy->viewSelectionChanged();
+        if (currentSelections.count() == 1) {
+            m_last_index = currentSelections.first();
+            this->resetEditTriggerTimer();
+        } else {
+            m_last_index = QModelIndex();
+        }
     });
 }
 
@@ -231,4 +244,33 @@ void IconView::dropEvent(QDropEvent *e)
     auto proxy_index = indexAt(e->pos());
     auto index = m_sort_filter_proxy_model->mapToSource(proxy_index);
     m_model->dropMimeData(e->mimeData(), Qt::MoveAction, 0, 0, index);
+}
+
+void IconView::mousePressEvent(QMouseEvent *e)
+{
+    return QListView::mousePressEvent(e);
+}
+
+void IconView::mouseReleaseEvent(QMouseEvent *e)
+{
+    QListView::mouseReleaseEvent(e);
+    qDebug()<<m_edit_trigger_timer.isActive()<<m_edit_trigger_timer.interval();
+    if (indexAt(e->pos()) == m_last_index && m_last_index.isValid()) {
+        if (m_edit_trigger_timer.isActive()) {
+            edit(m_last_index);
+        } else {
+            resetEditTriggerTimer();
+        }
+    }
+}
+
+void IconView::resetEditTriggerTimer()
+{
+    m_edit_trigger_timer.disconnect();
+    m_edit_trigger_timer.stop();
+    QTimer::singleShot(750, [&](){
+        qDebug()<<"start";
+        m_edit_trigger_timer.setSingleShot(true);
+        m_edit_trigger_timer.start(1000);
+    });
 }
