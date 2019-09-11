@@ -301,6 +301,10 @@ GAsyncReadyCallback FileEnumerator::mount_enclosing_volume_callback(GFile *file,
         }
     } else {
         if (err) {
+            if (err->code == G_IO_ERROR_ALREADY_MOUNTED) {
+                Q_EMIT p_this->prepared(GErrorWrapper::wrapFrom(err));
+                return nullptr;
+            }
             qDebug()<<"mount failed, err:"<<err->code<<err->message;
             //show the connect dialog
             char *uri = g_file_get_uri(file);
@@ -327,6 +331,15 @@ GAsyncReadyCallback FileEnumerator::find_children_async_ready_callback(GFile *fi
     GFileEnumerator *enumerator = g_file_enumerate_children_finish(file, res, &err);
     if (err) {
         qDebug()<<"find children async err:"<<err->code<<err->message;
+        //NOTE: if the enumerator file has target uri, but target uri is not mounted,
+        //it should be handled.
+        //This nearly won't happend in local, but in a network server it might.
+        if (err->code == G_IO_ERROR_NOT_MOUNTED) {
+            g_object_unref(p_this->m_root_file);
+            p_this->m_root_file = g_file_dup(file);
+            p_this->prepare();
+            return nullptr;
+        }
         g_error_free(err);
     }
     //

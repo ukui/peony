@@ -55,7 +55,8 @@ int main(int argc, char *argv[])
 
     w.setCentralWidget(&l);
 
-    e.setText("file://" + QStandardPaths::writableLocation(QStandardPaths::HomeLocation));
+    e.setText("network:///");
+    //e.setText("file://" + QStandardPaths::writableLocation(QStandardPaths::HomeLocation));
     e.connect(&e, &QLineEdit::returnPressed, [&](){
         QListView *v = new QListView;
 
@@ -92,7 +93,7 @@ int main(int argc, char *argv[])
         v->setEditTriggers(QListView::EditKeyPressed);
         v->connect(v, &QListView::doubleClicked, [=](const QModelIndex &index){
             auto item = proxy_model->itemFromIndex(index);
-            if (item->hasChildren()) {
+            if (item->hasChildren() || item->uri().startsWith("network:")) {
                 model->setRootUri(item->uri());
             }
         });

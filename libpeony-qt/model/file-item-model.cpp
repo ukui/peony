@@ -380,7 +380,7 @@ QMimeData *FileItemModel::mimeData(const QModelIndexList &indexes) const
 Qt::DropActions FileItemModel::supportedDropActions() const
 {
     //qDebug()<<"supportedDropActions";
-    return Qt::MoveAction|Qt::CopyAction;
+    return Qt::MoveAction;//|Qt::CopyAction;
 }
 
 bool FileItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent)
@@ -453,5 +453,8 @@ bool FileItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action, i
         break;
     }
 
-    return QAbstractItemModel::dropMimeData(data, action, row, column, parent);
+    //NOTE:
+    //we have to handle the dnd with file operation, so do not
+    //use QAbstractModel::dropMimeData() here;
+    return true;
 }

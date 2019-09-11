@@ -4,6 +4,11 @@
 
 #include "icon-view-delegate.h"
 
+#include <QDragEnterEvent>
+#include <QMimeData>
+#include <QDragMoveEvent>
+#include <QDropEvent>
+
 #include <QDebug>
 
 using namespace Peony;
@@ -197,4 +202,33 @@ void IconView::open(const QStringList &uris, bool newWindow)
 void IconView::close()
 {
 
+}
+
+void IconView::dragEnterEvent(QDragEnterEvent *e)
+{
+    if (e->mimeData()->hasUrls()) {
+        e->setDropAction(Qt::MoveAction);
+        e->accept();
+    }
+}
+
+void IconView::dragMoveEvent(QDragMoveEvent *e)
+{
+    if (this == e->source()) {
+        return QListView::dragMoveEvent(e);
+    }
+    e->setDropAction(Qt::MoveAction);
+    e->accept();
+}
+
+void IconView::dropEvent(QDropEvent *e)
+{
+    qDebug()<<"dropEvent";
+    if (e->source() == this) {
+        return QListView::dropEvent(e);
+    }
+    e->setDropAction(Qt::MoveAction);
+    auto proxy_index = indexAt(e->pos());
+    auto index = m_sort_filter_proxy_model->mapToSource(proxy_index);
+    m_model->dropMimeData(e->mimeData(), Qt::MoveAction, 0, 0, index);
 }

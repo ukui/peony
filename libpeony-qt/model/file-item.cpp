@@ -90,6 +90,7 @@ void FileItem::findChildrenAsync()
         if (err) {
             qDebug()<<err->message();
             if (err.get()->code() == G_IO_ERROR_NOT_FOUND) {
+                enumerator->cancel();
                 enumerator->deleteLater();
                 m_model->setRootUri(FileUtils::getParentUri(this->uri()));
                 return;
@@ -134,6 +135,7 @@ void FileItem::findChildrenAsync()
                 }
             }
 
+            enumerator->cancel();
             delete enumerator;
 
             m_watcher = new FileWatcher(this->m_info->uri());
