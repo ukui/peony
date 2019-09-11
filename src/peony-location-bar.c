@@ -1239,7 +1239,6 @@ peony_location_frame_allocate_callback (GtkWidget    *widget,
                 context = gtk_widget_get_style_context(bar->details->folder_image);
                 gtk_style_context_remove_class (context,"folder_image_new");
                 gtk_style_context_add_class(context,"folder_image");
-                gtk_widget_show(bar->details->folder_image);
 	}
 	else
 	{
@@ -1247,10 +1246,11 @@ peony_location_frame_allocate_callback (GtkWidget    *widget,
                 context = gtk_widget_get_style_context(bar->details->folder_image);
                 gtk_style_context_remove_class (context,"folder_image");
                 gtk_style_context_add_class(context,"folder_image_new");
-                gtk_widget_show(bar->details->folder_image);
 //                gtk_widget_show(bar->details->backseparator);
 
 	}
+	gtk_widget_set_size_request (GTK_WIDGET (bar->details->folder_image), -1, strbarsize.height);
+	gtk_widget_show(bar->details->folder_image);
 	gtk_widget_queue_draw(bar);
 }
 /*
@@ -1438,9 +1438,7 @@ peony_location_bar_set_location (PeonyLocationBar *bar,
 					peony_file_unref (peony_file);
 					g_object_unref (icon_info);
 					folder_image = gtk_image_new_from_icon_name(icon_name, GTK_ICON_SIZE_MENU);
-					gtk_widget_set_size_request (GTK_WIDGET (folder_image), -1, 42);
-					
-					//folder_image = gtk_image_new_from_icon_name("folder",GTK_ICON_SIZE_MENU);
+
 					context = gtk_widget_get_style_context(folder_image);
 					gtk_style_context_remove_class (context,"folder_image_new");
 					gtk_style_context_add_class(context,"folder_image");
