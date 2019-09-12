@@ -17,6 +17,9 @@
 #include <QGraphicsTextItem>
 #include <QFont>
 
+#include <QStyle>
+#include <QApplication>
+
 #include "icon-view-editor.h"
 
 using namespace Peony;
@@ -46,7 +49,20 @@ QSize IconViewDelegate::sizeHint(const QStyleOptionViewItem &option, const QMode
 void IconViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
     //default painter
-    QStyledItemDelegate::paint(painter, option, index);
+    //QStyledItemDelegate::paint(painter, option, index);
+    QIcon icon = qvariant_cast<QIcon>(index.data(Qt::DecorationRole));
+    //qDebug()<<option.widget->style();
+    qDebug()<<option.widget;
+    QStyleOptionViewItem opt = option;
+    initStyleOption(&opt, index);
+
+    auto style = option.widget->style();
+
+    style->drawControl(QStyle::CE_ItemViewItem, &opt, painter, opt.widget);
+
+    //QIcon icon = static_cast<QIcon>(index.data(Qt::DecorationRole).toByteArray());
+    //painter->fillRect(option.rect, option.palette.highlight());
+    //icon.paint(painter, option.rect.x(), option.rect.y(), option.rect.width(), option.rect.width());
 
     //get file info from index
     auto view = qobject_cast<IconView*>(this->parent());
@@ -66,6 +82,7 @@ void IconViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
     qDebug()<<option.displayAlignment;
     */
 
+    painter->save();
     //paint symbolic link emblems
     if (info->isSymbolLink()) {
         QIcon icon = QIcon::fromTheme("emblem-symbolic-link");
@@ -81,6 +98,7 @@ void IconViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
         QIcon icon = QIcon::fromTheme("emblem-readonly");
         icon.paint(painter, rect.x(), rect.y(), 20, 20);
     }
+    painter->restore();
 
     /*
     qDebug()<<view->palette().currentColorGroup();
@@ -101,7 +119,6 @@ QWidget *IconViewDelegate::createEditor(QWidget *parent, const QStyleOptionViewI
     auto edit = new IconViewEditor(parent);
     edit->setContentsMargins(0, 0, 0, 0);
     edit->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    edit->setAlignment(Qt::AlignCenter);
     edit->setMinimumHeight(54);
 
     edit->connect(edit, &IconViewEditor::textChanged, [=](){
@@ -114,17 +131,18 @@ QWidget *IconViewDelegate::createEditor(QWidget *parent, const QStyleOptionViewI
 void IconViewDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const
 {
     IconViewEditor *edit = qobject_cast<IconViewEditor*>(editor);
-    edit->setAlignment(Qt::AlignCenter);
+
     edit->setText(index.data(Qt::DisplayRole).toString());
+    edit->setAlignment(Qt::AlignCenter);
     auto cursor = edit->textCursor();
     cursor.setPosition(0, QTextCursor::MoveAnchor);
     cursor.movePosition(QTextCursor::End, QTextCursor::KeepAnchor);
-    qDebug()<<cursor.position();
+    //qDebug()<<cursor.position();
     if (edit->toPlainText().contains(".") && !edit->toPlainText().startsWith(".")) {
         cursor.movePosition(QTextCursor::WordLeft, QTextCursor::KeepAnchor, 2);
-        qDebug()<<cursor.position();
+        //qDebug()<<cursor.position();
     }
-    qDebug()<<cursor.anchor();
+    //qDebug()<<cursor.anchor();
     edit->setTextCursor(cursor);
 }
 
@@ -132,17 +150,17 @@ void IconViewDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptionV
 {
     QStyledItemDelegate::updateEditorGeometry(editor, option, index);
     auto edit = qobject_cast<IconViewEditor*>(editor);
+
     QGraphicsTextItem item;
-    item.setFont(option.font);
-    item.setTextWidth(qreal(edit->width()));
+    item.setFont(edit->currentFont());
+    item.setTextWidth(50);
     item.setPlainText(edit->toPlainText());
-    qDebug()<<item.boundingRect();
-    qDebug()<<item.textWidth();
+    //qDebug()<<item.boundingRect();
+    //qDebug()<<item.textWidth();
     item.adjustSize();
-    qDebug()<<item.textWidth();
-    qDebug()<<item.boundingRect();
+    //qDebug()<<item.textWidth();
+    //qDebug()<<item.boundingRect();
     edit->resize(edit->width(), static_cast<int>(item.boundingRect().height()));
-    //edit->setFixedHeight(item.boundingRect().height() + 54);
 }
 
 void IconViewDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const

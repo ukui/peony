@@ -132,10 +132,7 @@ PeonyApplication::PeonyApplication(int &argc, char *argv[]) : QApplication (argc
         });
 
         auto widget = dynamic_cast<QWidget*>(view);
-        widget->setStyleSheet("margin: 0;"
-                              //"padding-left: 14;"
-                              //"padding-top: 5;"
-                              "border: 0");
+
         //widget->setAttribute(Qt::WA_DeleteOnClose);
         QWidget *container = new QWidget;
         container->setAttribute(Qt::WA_DeleteOnClose);

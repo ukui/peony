@@ -66,6 +66,8 @@ protected:
     void mousePressEvent(QMouseEvent *e) override;
     void mouseReleaseEvent(QMouseEvent *e) override;
 
+    void paintEvent(QPaintEvent *e) override;
+
 private:
     QTimer m_edit_trigger_timer;
     QModelIndex m_last_index;

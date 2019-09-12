@@ -164,6 +164,9 @@ QVariant FileItemModel::data(const QModelIndex &index, int role) const
     switch (index.column()) {
     case FileName:{
         switch (role) {
+        case Qt::TextAlignmentRole: {
+            return QVariant(Qt::AlignHCenter | Qt::AlignBaseline);
+        }
         case Qt::DisplayRole:{
             return QVariant(item->m_info->displayName());
         }

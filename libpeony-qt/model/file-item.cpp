@@ -251,7 +251,7 @@ QModelIndex FileItem::lastColumnIndex()
 
 bool FileItem::hasChildren()
 {
-    qDebug()<<"has children"<<m_info->uri()<<(m_info->isDir() || m_info->isVolume() || m_children->count() > 0);
+    //qDebug()<<"has children"<<m_info->uri()<<(m_info->isDir() || m_info->isVolume() || m_children->count() > 0);
     return m_info->isDir() || m_info->isVolume() || m_children->count() > 0;
 }
 

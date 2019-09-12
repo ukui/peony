@@ -48,7 +48,7 @@ FileInfo::FileInfo(const QString &uri, QObject *parent) : QObject (parent)
 
 FileInfo::~FileInfo()
 {
-    qDebug()<<"~FileInfo"<<m_uri;
+    //qDebug()<<"~FileInfo"<<m_uri;
     disconnect();
 
     g_object_unref(m_cancellable);

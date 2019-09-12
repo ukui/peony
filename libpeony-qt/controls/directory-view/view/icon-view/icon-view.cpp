@@ -3,6 +3,7 @@
 #include "file-item.h"
 
 #include "icon-view-delegate.h"
+#include "icon-view-style.h"
 
 #include <QMouseEvent>
 
@@ -11,6 +12,9 @@
 #include <QDragMoveEvent>
 #include <QDropEvent>
 
+#include <QPainter>
+#include <QPaintEvent>
+
 #include <QDebug>
 
 using namespace Peony;
@@ -18,6 +22,9 @@ using namespace Peony::DirectoryView;
 
 IconView::IconView(QWidget *parent) : QListView(parent)
 {
+    IconViewStyle *style = new IconViewStyle();
+    setStyle(style);
+
     IconViewDelegate *delegate = new IconViewDelegate(this);
     setItemDelegate(delegate);
 
@@ -70,6 +77,25 @@ IconView::IconView(QWidget *parent) : QListView(parent)
             m_last_index = QModelIndex();
         }
     });
+
+    setStyleSheet("Peony--DirectoryView--IconView{"
+                  "margin: 0;"
+                  "border: 0;"
+                  "padding-top: 10px;"
+                  "padding-left: 5px;"
+                  "background-color: white;"
+                  "}"
+                  "Peony--DirectoryView--IconView::Item{"
+                  "padding-top: 11px;"
+                  "image-position: bottom;"
+                  "}"
+                  "Peony--DirectoryView--IconView::Item::hover{"
+                  "background: #cfe6fd;"
+                  "}"
+                  "Peony--DirectoryView--IconView::Item::selected{"
+                  "background: #b5d6f7;"
+                  "color:black;" //font
+                  "}");
 }
 
 IconView::~IconView()
@@ -248,19 +274,21 @@ void IconView::dropEvent(QDropEvent *e)
 
 void IconView::mousePressEvent(QMouseEvent *e)
 {
-    return QListView::mousePressEvent(e);
+    QListView::mousePressEvent(e);
+
+    qDebug()<<m_edit_trigger_timer.isActive()<<m_edit_trigger_timer.interval();
+    if (indexAt(e->pos()) == m_last_index && m_last_index.isValid()) {
+        if (m_edit_trigger_timer.isActive()) {
+            edit(m_last_index);
+        }
+    }
 }
 
 void IconView::mouseReleaseEvent(QMouseEvent *e)
 {
     QListView::mouseReleaseEvent(e);
-    qDebug()<<m_edit_trigger_timer.isActive()<<m_edit_trigger_timer.interval();
-    if (indexAt(e->pos()) == m_last_index && m_last_index.isValid()) {
-        if (m_edit_trigger_timer.isActive()) {
-            edit(m_last_index);
-        } else {
-            resetEditTriggerTimer();
-        }
+    if (!m_edit_trigger_timer.isActive() && indexAt(e->pos()).isValid() && this->selectedIndexes().count() == 1) {
+        resetEditTriggerTimer();
     }
 }
 
@@ -273,4 +301,15 @@ void IconView::resetEditTriggerTimer()
         m_edit_trigger_timer.setSingleShot(true);
         m_edit_trigger_timer.start(1000);
     });
+}
+
+void IconView::paintEvent(QPaintEvent *e)
+{
+    //This will avoid a "Black Edge" when drag and drop resize.
+    //FIXME: how to deal with the maximize?
+    QPainter p(this->viewport());
+    //maybe i should use palette().base(). infact their colors are different.
+    p.fillRect(this->geometry(), this->palette().background());
+
+    QListView::paintEvent(e);
 }
