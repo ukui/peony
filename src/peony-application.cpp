@@ -15,8 +15,15 @@
 #include "directory-view-factory-manager.h"
 #include "directory-view-plugin-iface.h"
 
+#include <QFile>
+
 PeonyApplication::PeonyApplication(int &argc, char *argv[]) : QApplication (argc, argv)
 {
+    QFile file(":/data/libpeony-qt-light.qss");
+    file.open(QFile::ReadOnly);
+    setStyleSheet(QString::fromLatin1(file.readAll()));
+    file.close();
+
     //check if first run
     //if not send message to server
     //else

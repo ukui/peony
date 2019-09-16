@@ -87,16 +87,16 @@ void IconViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
     if (info->isSymbolLink()) {
         QIcon icon = QIcon::fromTheme("emblem-symbolic-link");
         //qDebug()<<info->symbolicIconName();
-        icon.paint(painter, rect.x() + rect.width() - 20, rect.y(), 20, 20, Qt::AlignCenter);
+        icon.paint(painter, rect.x() + rect.width() - 30, rect.y() + 10, 20, 20, Qt::AlignCenter);
     }
 
     //paint access emblems
     if (!info->canRead()) {
         QIcon icon = QIcon::fromTheme("emblem-unreadable");
-        icon.paint(painter, rect.x(), rect.y(), 20, 20);
+        icon.paint(painter, rect.x() + 10, rect.y() + 10, 20, 20);
     } else if (!info->canWrite() && !info->canExecute()){
         QIcon icon = QIcon::fromTheme("emblem-readonly");
-        icon.paint(painter, rect.x(), rect.y(), 20, 20);
+        icon.paint(painter, rect.x() + 10, rect.y() + 10, 20, 20);
     }
     painter->restore();
 

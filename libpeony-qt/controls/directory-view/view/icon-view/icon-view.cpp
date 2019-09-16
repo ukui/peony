@@ -77,25 +77,6 @@ IconView::IconView(QWidget *parent) : QListView(parent)
             m_last_index = QModelIndex();
         }
     });
-
-    setStyleSheet("Peony--DirectoryView--IconView{"
-                  "margin: 0;"
-                  "border: 0;"
-                  "padding-top: 10px;"
-                  "padding-left: 5px;"
-                  "background-color: white;"
-                  "}"
-                  "Peony--DirectoryView--IconView::Item{"
-                  "padding-top: 11px;"
-                  "image-position: bottom;"
-                  "}"
-                  "Peony--DirectoryView--IconView::Item::hover{"
-                  "background: #cfe6fd;"
-                  "}"
-                  "Peony--DirectoryView--IconView::Item::selected{"
-                  "background: #b5d6f7;"
-                  "color:black;" //font
-                  "}");
 }
 
 IconView::~IconView()
@@ -262,9 +243,16 @@ void IconView::dragMoveEvent(QDragMoveEvent *e)
 
 void IconView::dropEvent(QDropEvent *e)
 {
+    m_last_index = QModelIndex();
+    m_edit_trigger_timer.stop();
     qDebug()<<"dropEvent";
     if (e->source() == this) {
-        return QListView::dropEvent(e);
+        if (indexAt(e->pos()).isValid()) {
+            return QListView::dropEvent(e);
+        }
+        else {
+            return;
+        }
     }
     e->setDropAction(Qt::MoveAction);
     auto proxy_index = indexAt(e->pos());
@@ -309,7 +297,7 @@ void IconView::paintEvent(QPaintEvent *e)
     //FIXME: how to deal with the maximize?
     QPainter p(this->viewport());
     //maybe i should use palette().base(). infact their colors are different.
-    p.fillRect(this->geometry(), this->palette().background());
+    p.fillRect(this->geometry(), this->palette().base());
 
     QListView::paintEvent(e);
 }

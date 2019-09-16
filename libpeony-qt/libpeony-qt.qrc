@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>data/libpeony-qt-light.qss</file>
+        <file>data/libpeony-qt-dark.qss</file>
+    </qresource>
+</RCC>
