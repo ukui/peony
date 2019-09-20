@@ -15,6 +15,11 @@
 #include "directory-view-factory-manager.h"
 #include "directory-view-plugin-iface.h"
 
+#include "path-edit.h"
+#include "location-bar.h"
+#include <QStandardPaths>
+#include <QStackedLayout>
+
 #include <QFile>
 
 PeonyApplication::PeonyApplication(int &argc, char *argv[]) : QApplication (argc, argv)
@@ -97,7 +102,7 @@ PeonyApplication::PeonyApplication(int &argc, char *argv[]) : QApplication (argc
 
 #endif
 
-#define DIRECTORY_VIEW
+//#define DIRECTORY_VIEW
 #ifdef DIRECTORY_VIEW
     QDir pluginsDir(qApp->applicationDirPath());
     qDebug()<<pluginsDir;
@@ -154,5 +159,43 @@ PeonyApplication::PeonyApplication(int &argc, char *argv[]) : QApplication (argc
 
         container->show();
     }
+#endif
+
+#define PATH_EDIT
+#ifdef PATH_EDIT
+
+    //Peony::PathEdit *edit = new Peony::PathEdit;
+    //edit->setUri("file:///home/lanyue");
+    //edit->show();
+
+    QWidget *widget = new QWidget;
+    widget->setAttribute(Qt::WA_DeleteOnClose);
+
+    QStackedLayout *layout = new QStackedLayout(widget);
+    layout->setContentsMargins(0, 0, 0, 0);
+    layout->setSpacing(0);
+    layout->setSizeConstraint(QLayout::SetDefaultConstraint);
+    Peony::LocationBar *bar = new Peony::LocationBar;
+    Peony::PathEdit *edit = new Peony::PathEdit(widget);
+    bar->setRootUri("file://" + QStandardPaths::writableLocation(QStandardPaths::HomeLocation));
+    bar->connect(bar, &Peony::LocationBar::groupChangedRequest, bar, &Peony::LocationBar::setRootUri);
+    bar->connect(bar, &Peony::LocationBar::blankClicked, [=](){
+        layout->setCurrentWidget(edit);
+        edit->setUri(bar->getCurentUri());
+    });
+    edit->setUri(bar->getCurentUri());
+    edit->connect(edit, &Peony::PathEdit::returnPressed, [=](){
+        bar->setRootUri(edit->text());
+        layout->setCurrentWidget(bar);
+    });
+    edit->connect(edit, &Peony::PathEdit::editCancelled, [=](){
+        layout->setCurrentWidget(bar);
+    });
+    layout->addWidget(bar);
+    layout->addWidget(edit);
+
+    widget->setLayout(layout);
+    widget->setFixedHeight(edit->height());
+    widget->show();
 #endif
 }
