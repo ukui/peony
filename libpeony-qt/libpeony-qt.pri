@@ -6,6 +6,8 @@ include(vfs/vfs.pri)
 #plugin interface
 include(../plugin-iface/plugin-iface.pri)
 
+include(convenient-utils/convenient-utils.pri)
+
 RESOURCES += $$PWD/libpeony-qt.qrc
 
 #ui-controls
