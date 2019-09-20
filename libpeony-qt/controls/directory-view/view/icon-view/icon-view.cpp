@@ -66,9 +66,14 @@ IconView::IconView(QWidget *parent) : QListView(parent)
     });
 
     //edit trigger
-    connect(this->selectionModel(), &QItemSelectionModel::selectionChanged, [=](){
+    connect(this->selectionModel(), &QItemSelectionModel::selectionChanged, [=](const QItemSelection &selection, const QItemSelection &deselection){
         qDebug()<<"selection changed";
-        auto currentSelections = this->selectedIndexes();
+        auto currentSelections = selection.indexes();
+
+        for (auto index : deselection.indexes()) {
+            this->setIndexWidget(index, nullptr);
+        }
+
         Q_EMIT m_proxy->viewSelectionChanged();
         if (currentSelections.count() == 1) {
             m_last_index = currentSelections.first();
@@ -76,6 +81,7 @@ IconView::IconView(QWidget *parent) : QListView(parent)
         } else {
             m_last_index = QModelIndex();
         }
+
     });
 }
 
@@ -267,6 +273,7 @@ void IconView::mousePressEvent(QMouseEvent *e)
     qDebug()<<m_edit_trigger_timer.isActive()<<m_edit_trigger_timer.interval();
     if (indexAt(e->pos()) == m_last_index && m_last_index.isValid()) {
         if (m_edit_trigger_timer.isActive()) {
+            setIndexWidget(m_last_index, nullptr);
             edit(m_last_index);
         }
     }

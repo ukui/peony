@@ -7,8 +7,12 @@ namespace Peony {
 
 namespace DirectoryView {
 
+class IconViewIndexWidget;
+
 class IconViewDelegate : public QStyledItemDelegate
 {
+    friend class IconViewIndexWidget;
+
     Q_OBJECT
 public:
     explicit IconViewDelegate(QObject *parent = nullptr);
@@ -26,8 +30,13 @@ protected:
     void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const override;
     void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const override;
 
+    void setIndexWidget(const QModelIndex &index, QWidget *widget) const;
+
 private:
     QModelIndexList m_cut_indexes;
+
+    QModelIndex m_index_widget_index;
+    QWidget *m_index_widget;
 };
 
 }

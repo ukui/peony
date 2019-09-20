@@ -21,6 +21,7 @@
 #include <QApplication>
 
 #include "icon-view-editor.h"
+#include "icon-view-index-widget.h"
 
 using namespace Peony;
 using namespace Peony::DirectoryView;
@@ -48,6 +49,20 @@ QSize IconViewDelegate::sizeHint(const QStyleOptionViewItem &option, const QMode
 
 void IconViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
+    auto view = qobject_cast<IconView*>(this->parent());
+
+    bool useIndexWidget = false;
+    if (view->selectedIndexes().count() == 1 && view->selectedIndexes().first() == index) {
+        useIndexWidget = true;
+        if (view->indexWidget(index)) {
+            return;
+        } else {
+            IconViewIndexWidget *indexWidget = new IconViewIndexWidget(this, option, index);
+            view->setIndexWidget(index, indexWidget);
+            return;
+        }
+    }
+
     //default painter
     //QStyledItemDelegate::paint(painter, option, index);
     QIcon icon = qvariant_cast<QIcon>(index.data(Qt::DecorationRole));
@@ -65,8 +80,6 @@ void IconViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
     //icon.paint(painter, option.rect.x(), option.rect.y(), option.rect.width(), option.rect.width());
 
     //get file info from index
-    auto view = qobject_cast<IconView*>(this->parent());
-
     auto model = static_cast<FileItemProxyFilterSortModel*>(view->model());
     auto item = model->itemFromIndex(index);
     //NOTE: item might be deleted when painting, because we might start a
@@ -91,6 +104,13 @@ void IconViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
     }
 
     //paint access emblems
+
+    //NOTE: we can not query the file attribute in smb:///(samba) and network:///.
+    if (info->uri().startsWith("smb:") || info->uri().startsWith("network:")) {
+        painter->restore();
+        return;
+    }
+
     if (!info->canRead()) {
         QIcon icon = QIcon::fromTheme("emblem-unreadable");
         icon.paint(painter, rect.x() + 10, rect.y() + 10, 20, 20);
@@ -131,6 +151,8 @@ QWidget *IconViewDelegate::createEditor(QWidget *parent, const QStyleOptionViewI
 void IconViewDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const
 {
     IconViewEditor *edit = qobject_cast<IconViewEditor*>(editor);
+    if (!edit)
+        return;
 
     edit->setText(index.data(Qt::DisplayRole).toString());
     edit->setAlignment(Qt::AlignCenter);
@@ -150,6 +172,8 @@ void IconViewDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptionV
 {
     QStyledItemDelegate::updateEditorGeometry(editor, option, index);
     auto edit = qobject_cast<IconViewEditor*>(editor);
+    if (!edit)
+        return;
 
     QGraphicsTextItem item;
     item.setFont(edit->currentFont());
@@ -166,6 +190,8 @@ void IconViewDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptionV
 void IconViewDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const
 {
     IconViewEditor *edit = qobject_cast<IconViewEditor*>(editor);
+    if (!edit)
+        return;
     auto newName = edit->toPlainText();
     if (!newName.isNull()) {
         if (newName != index.data(Qt::DisplayRole).toString()) {
@@ -174,4 +200,10 @@ void IconViewDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, 
             fileOpMgr->startOperation(renameOp, true);
         }
     }
+}
+
+void IconViewDelegate::setIndexWidget(const QModelIndex &index, QWidget *widget) const
+{
+    auto view = qobject_cast<IconView*>(this->parent());
+    view->setIndexWidget(index, widget);
 }

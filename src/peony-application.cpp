@@ -22,12 +22,18 @@
 
 #include <QFile>
 
+#include <QStyleFactory>
+
 PeonyApplication::PeonyApplication(int &argc, char *argv[]) : QApplication (argc, argv)
 {
+
     QFile file(":/data/libpeony-qt-light.qss");
     file.open(QFile::ReadOnly);
     setStyleSheet(QString::fromLatin1(file.readAll()));
     file.close();
+
+
+    //setStyle(QStyleFactory::create("windows"));
 
     //check if first run
     //if not send message to server
@@ -102,7 +108,7 @@ PeonyApplication::PeonyApplication(int &argc, char *argv[]) : QApplication (argc
 
 #endif
 
-//#define DIRECTORY_VIEW
+#define DIRECTORY_VIEW
 #ifdef DIRECTORY_VIEW
     QDir pluginsDir(qApp->applicationDirPath());
     qDebug()<<pluginsDir;
@@ -129,7 +135,7 @@ PeonyApplication::PeonyApplication(int &argc, char *argv[]) : QApplication (argc
         //view->stopLocationChange();
         auto proxy = view->getProxy();
         qDebug()<<"2";
-        proxy->setDirectoryUri("file:///");
+        proxy->setDirectoryUri("network:///");
         proxy->beginLocationChange();
         QTimer::singleShot(1000, [=](){
             //proxy->invertSelections();
@@ -137,7 +143,7 @@ PeonyApplication::PeonyApplication(int &argc, char *argv[]) : QApplication (argc
         connect(proxy, &Peony::DirectoryViewProxyIface::viewDoubleClicked, [=](const QString &uri){
             qDebug()<<"double clicked"<<uri;
             auto info = Peony::FileInfo::fromUri(uri);
-            if (info->isDir() || info->isVolume()) {
+            if (info->isDir() || info->isVolume() || uri.startsWith("network:")) {
                 proxy->setDirectoryUri(uri);
                 proxy->beginLocationChange();
             }
@@ -161,7 +167,7 @@ PeonyApplication::PeonyApplication(int &argc, char *argv[]) : QApplication (argc
     }
 #endif
 
-#define PATH_EDIT
+//#define PATH_EDIT
 #ifdef PATH_EDIT
 
     //Peony::PathEdit *edit = new Peony::PathEdit;
