@@ -63,6 +63,10 @@ class DirectoryViewIface
 {
 
 public:
+    /*!
+     * \brief The ZoomLevel enum
+     * \deprecated
+     */
     enum ZoomLevel {
         Small, //50%
         Normal, //100%
@@ -79,6 +83,11 @@ public:
     virtual QStringList getSelections() = 0;
 
     //zoom
+    /*!
+     * \brief canZoomIn
+     * \return
+     * \deprecated
+     */
     virtual bool canZoomIn() = 0;
     virtual bool canZoomOut() = 0;
 
@@ -117,7 +126,15 @@ public:
     virtual void setCutFiles(const QStringList &uris) = 0;
 
     //zoom
+    /*!
+     * \brief zoomIn
+     * \deprecated
+     */
     virtual void zoomIn() = 0;
+    /*!
+     * \brief zoomOut
+     * \deprecated
+     */
     virtual void zoomOut() = 0;
 
     virtual DirectoryViewProxyIface *getProxy() = 0;
@@ -155,7 +172,17 @@ public:
     virtual QStringList getSelections() = 0;
 
     //zoom
+    /*!
+     * \brief canZoomIn
+     * \return
+     * \deprecated
+     */
     virtual bool canZoomIn() = 0;
+    /*!
+     * \brief canZoomOut
+     * \return
+     * \deprecated
+     */
     virtual bool canZoomOut() = 0;
 
 Q_SIGNALS:
@@ -170,7 +197,15 @@ Q_SIGNALS:
     void menuRequest(const QPoint &pos);
 
     //zoom
+    /*!
+     * \brief zoomedIn
+     * \deprecated
+     */
     void zoomedIn();
+    /*!
+     * \brief zoomedOut
+     * \deprecated
+     */
     void zoomedOut();
 
 public Q_SLOTS:
@@ -192,7 +227,15 @@ public Q_SLOTS:
     virtual void setCutFiles(const QStringList &uris) = 0;
 
     //zoom
+    /*!
+     * \brief zoomIn
+     * \deprecated
+     */
     virtual void zoomIn() = 0;
+    /*!
+     * \brief zoomOut
+     * \deprecated
+     */
     virtual void zoomOut() = 0;
 };
 
