@@ -63,17 +63,6 @@ class DirectoryViewIface
 {
 
 public:
-    /*!
-     * \brief The ZoomLevel enum
-     * \deprecated
-     */
-    enum ZoomLevel {
-        Small, //50%
-        Normal, //100%
-        Big, //175%
-        Huge //250%
-    };
-
     virtual ~DirectoryViewIface() {}
 
     //location
@@ -81,15 +70,6 @@ public:
 
     //selections
     virtual QStringList getSelections() = 0;
-
-    //zoom
-    /*!
-     * \brief canZoomIn
-     * \return
-     * \deprecated
-     */
-    virtual bool canZoomIn() = 0;
-    virtual bool canZoomOut() = 0;
 
     /*
     //loaction
@@ -125,18 +105,6 @@ public:
     //clipboard
     virtual void setCutFiles(const QStringList &uris) = 0;
 
-    //zoom
-    /*!
-     * \brief zoomIn
-     * \deprecated
-     */
-    virtual void zoomIn() = 0;
-    /*!
-     * \brief zoomOut
-     * \deprecated
-     */
-    virtual void zoomOut() = 0;
-
     virtual DirectoryViewProxyIface *getProxy() = 0;
 };
 
@@ -171,20 +139,6 @@ public:
     //selections
     virtual QStringList getSelections() = 0;
 
-    //zoom
-    /*!
-     * \brief canZoomIn
-     * \return
-     * \deprecated
-     */
-    virtual bool canZoomIn() = 0;
-    /*!
-     * \brief canZoomOut
-     * \return
-     * \deprecated
-     */
-    virtual bool canZoomOut() = 0;
-
 Q_SIGNALS:
     //loaction
     //FIXME: support open in new TAB?
@@ -195,18 +149,6 @@ Q_SIGNALS:
 
     //menu
     void menuRequest(const QPoint &pos);
-
-    //zoom
-    /*!
-     * \brief zoomedIn
-     * \deprecated
-     */
-    void zoomedIn();
-    /*!
-     * \brief zoomedOut
-     * \deprecated
-     */
-    void zoomedOut();
 
 public Q_SLOTS:
     //location
@@ -225,18 +167,6 @@ public Q_SLOTS:
     //clipboard
     //cut items should be drawn differently.
     virtual void setCutFiles(const QStringList &uris) = 0;
-
-    //zoom
-    /*!
-     * \brief zoomIn
-     * \deprecated
-     */
-    virtual void zoomIn() = 0;
-    /*!
-     * \brief zoomOut
-     * \deprecated
-     */
-    virtual void zoomOut() = 0;
 };
 
 }

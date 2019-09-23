@@ -43,15 +43,8 @@ IconView::IconView(QWidget *parent) : QListView(parent)
 
     m_proxy = new StandardViewProxy(this, this);
 
-    switch (m_zoom_level) {
-    case Normal: {
-        setGridSize(QSize(120, 135));
-        setIconSize(QSize(64, 64));
-        break;
-    }
-    default:
-        break;
-    }
+    setGridSize(QSize(120, 135));
+    setIconSize(QSize(64, 64));
 
     connect(m_model, &FileItemModel::updated, [=](){
         m_sort_filter_proxy_model->sort(FileItemModel::FileName);
@@ -93,64 +86,6 @@ IconView::~IconView()
 DirectoryViewProxyIface *IconView::getProxy()
 {
     return m_proxy;
-}
-
-//zoom
-bool IconView::canZoomIn()
-{
-    return m_zoom_level != Small;
-}
-
-void IconView::zoomIn()
-{
-    if (!canZoomIn())
-        return;
-
-    m_zoom_level = ZoomLevel(m_zoom_level - 1);
-}
-
-bool IconView::canZoomOut()
-{
-    return m_zoom_level != Huge;
-}
-
-void IconView::zoomOut()
-{
-    if (!canZoomOut())
-        return;
-
-    m_zoom_level = ZoomLevel(m_zoom_level + 1);
-    changeZoomLevel();
-}
-
-void IconView::changeZoomLevel()
-{
-    switch (m_zoom_level) {
-    case Small: {
-        setIconSize(QSize(36, 36));
-        setGridSize(QSize(48, 64));
-        break;
-    }
-    case Normal: {
-        setIconSize(QSize(48, 48));
-        setGridSize(QSize(64, 80));
-        break;
-    }
-    case Big: {
-        setIconSize(QSize(64, 64));
-        setGridSize(QSize(80, 102));
-        break;
-    }
-    case Huge: {
-        setIconSize(QSize(96, 96));
-        setGridSize(QSize(102, 144));
-        break;
-    }
-    default:
-        m_zoom_level = Normal;
-        changeZoomLevel();
-        break;
-    }
 }
 
 //selection

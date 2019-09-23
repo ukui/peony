@@ -31,10 +31,6 @@ public:
     //selections
     QStringList getSelections() override;
 
-    //zoom
-    bool canZoomIn() override;
-    bool canZoomOut() override;
-
 public Q_SLOTS:
     //location
     void open(const QStringList &uris, bool newWindow) override;
@@ -50,10 +46,6 @@ public Q_SLOTS:
 
     //clipboard
     void setCutFiles(const QStringList &uris) override;
-
-    //zoom
-    void zoomIn() override;
-    void zoomOut() override;
 
 protected:
     void changeZoomLevel();
@@ -78,7 +70,6 @@ private:
     FileItemModel *m_model = nullptr;
     FileItemProxyFilterSortModel *m_sort_filter_proxy_model = nullptr;
 
-    ZoomLevel m_zoom_level = Normal;
     QString m_current_uri = nullptr;
 };
 

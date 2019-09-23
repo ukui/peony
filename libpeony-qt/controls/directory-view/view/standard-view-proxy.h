@@ -35,10 +35,6 @@ public:
     //selections
     QStringList getSelections() override;
 
-    //zoom
-    bool canZoomIn() override;
-    bool canZoomOut() override;
-
 public Q_SLOTS:
     //location
     void open(const QStringList &uris, bool newWindow) override;
@@ -55,10 +51,6 @@ public Q_SLOTS:
 
     //clipboard
     void setCutFiles(const QStringList &uris) override;
-
-    //zoom
-    void zoomIn() override;
-    void zoomOut() override;
 
 private:
     DirectoryViewIface *m_view = nullptr;

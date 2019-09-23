@@ -45,27 +45,6 @@ void StandardViewProxy::scrollToSelection(const QString &uri)
     m_view->scrollToSelection(uri);
 }
 
-//zoom
-bool StandardViewProxy::canZoomIn()
-{
-    return m_view->canZoomIn();
-}
-
-bool StandardViewProxy::canZoomOut()
-{
-    return m_view->canZoomOut();
-}
-
-void StandardViewProxy::zoomIn()
-{
-    m_view->zoomIn();
-}
-
-void StandardViewProxy::zoomOut()
-{
-    m_view->zoomOut();
-}
-
 //location
 const QString StandardViewProxy::getDirectoryUri()
 {
