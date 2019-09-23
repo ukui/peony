@@ -6,7 +6,11 @@
 #include <QModelIndex>
 #include <QStyleOptionViewItem>
 
+#include <memory>
+
 namespace Peony {
+
+class FileInfo;
 
 namespace DirectoryView {
 
@@ -28,6 +32,8 @@ private:
     QStyleOptionViewItem m_option;
     QModelIndex m_index;
     const IconViewDelegate *m_delegate;
+
+    std::shared_ptr<FileInfo> m_info;
 };
 
 }

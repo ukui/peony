@@ -67,6 +67,7 @@ protected:
     void mouseReleaseEvent(QMouseEvent *e) override;
 
     void paintEvent(QPaintEvent *e) override;
+    void resizeEvent(QResizeEvent *e) override;
 
 private:
     QTimer m_edit_trigger_timer;

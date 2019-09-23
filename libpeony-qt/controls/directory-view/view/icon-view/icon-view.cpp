@@ -308,3 +308,11 @@ void IconView::paintEvent(QPaintEvent *e)
 
     QListView::paintEvent(e);
 }
+
+void IconView::resizeEvent(QResizeEvent *e)
+{
+    //FIXME: first resize is disfluency.
+    //but I have to reset the index widget in view's resize.
+    setIndexWidget(m_last_index, nullptr);
+    QListView::resizeEvent(e);
+}

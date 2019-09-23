@@ -135,7 +135,9 @@ PeonyApplication::PeonyApplication(int &argc, char *argv[]) : QApplication (argc
         //view->stopLocationChange();
         auto proxy = view->getProxy();
         qDebug()<<"2";
-        proxy->setDirectoryUri("network:///");
+        //proxy->setDirectoryUri("network:///");
+        //proxy->setDirectoryUri("file:///home/lanyue");
+        proxy->setDirectoryUri("file:///");
         proxy->beginLocationChange();
         QTimer::singleShot(1000, [=](){
             //proxy->invertSelections();

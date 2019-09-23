@@ -7,6 +7,7 @@ namespace Peony {
 
 namespace DirectoryView {
 
+class IconView;
 class IconViewIndexWidget;
 
 class IconViewDelegate : public QStyledItemDelegate
@@ -16,6 +17,7 @@ class IconViewDelegate : public QStyledItemDelegate
     Q_OBJECT
 public:
     explicit IconViewDelegate(QObject *parent = nullptr);
+    IconView *getView() const;
 
 public Q_SLOTS:
     void setCutFiles(const QModelIndexList &indexes);

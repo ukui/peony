@@ -19,6 +19,7 @@
 
 #include <QStyle>
 #include <QApplication>
+#include <QPainter>
 
 #include "icon-view-editor.h"
 #include "icon-view-index-widget.h"
@@ -50,19 +51,6 @@ QSize IconViewDelegate::sizeHint(const QStyleOptionViewItem &option, const QMode
 void IconViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
     auto view = qobject_cast<IconView*>(this->parent());
-
-    bool useIndexWidget = false;
-    if (view->selectedIndexes().count() == 1 && view->selectedIndexes().first() == index) {
-        useIndexWidget = true;
-        if (view->indexWidget(index)) {
-            return;
-        } else {
-            IconViewIndexWidget *indexWidget = new IconViewIndexWidget(this, option, index);
-            view->setIndexWidget(index, indexWidget);
-            return;
-        }
-    }
-
     //default painter
     //QStyledItemDelegate::paint(painter, option, index);
     QIcon icon = qvariant_cast<QIcon>(index.data(Qt::DecorationRole));
@@ -75,10 +63,6 @@ void IconViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
 
     style->drawControl(QStyle::CE_ItemViewItem, &opt, painter, opt.widget);
 
-    //QIcon icon = static_cast<QIcon>(index.data(Qt::DecorationRole).toByteArray());
-    //painter->fillRect(option.rect, option.palette.highlight());
-    //icon.paint(painter, option.rect.x(), option.rect.y(), option.rect.width(), option.rect.width());
-
     //get file info from index
     auto model = static_cast<FileItemProxyFilterSortModel*>(view->model());
     auto item = model->itemFromIndex(index);
@@ -89,11 +73,6 @@ void IconViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
     }
     auto info = item->info();
     auto rect = view->visualRect(index);
-    /*
-    qDebug()<<option.decorationPosition;
-    qDebug()<<option.decorationAlignment;
-    qDebug()<<option.displayAlignment;
-    */
 
     painter->save();
     //paint symbolic link emblems
@@ -120,11 +99,18 @@ void IconViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
     }
     painter->restore();
 
-    /*
-    qDebug()<<view->palette().currentColorGroup();
-    auto color = view->palette().color(view->palette().currentColorGroup(), QPalette::Highlight);
-    painter->fillRect(0, 0, 20, 20, color);
-    */
+    //single selection, we have to repaint the emblems.
+    bool useIndexWidget = false;
+    if (view->selectedIndexes().count() == 1 && view->selectedIndexes().first() == index) {
+        useIndexWidget = true;
+        if (view->indexWidget(index)) {
+            return;
+        } else {
+            IconViewIndexWidget *indexWidget = new IconViewIndexWidget(this, option, index, getView());
+            view->setIndexWidget(index, indexWidget);
+            return;
+        }
+    }
 }
 
 void IconViewDelegate::setCutFiles(const QModelIndexList &indexes)
@@ -139,12 +125,17 @@ QWidget *IconViewDelegate::createEditor(QWidget *parent, const QStyleOptionViewI
     auto edit = new IconViewEditor(parent);
     edit->setContentsMargins(0, 0, 0, 0);
     edit->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    edit->setMinimumHeight(54);
+    edit->setMinimumSize(sizeHint(option, index).width(), 54);
 
-    edit->connect(edit, &IconViewEditor::textChanged, [=](){
-        //edit->adjustSize();
-        updateEditorGeometry(edit, option, index);
+    edit->setText(index.data(Qt::DisplayRole).toString());
+    edit->setAlignment(Qt::AlignCenter);
+    //NOTE: if we directly call this method, there will be
+    //nothing happen. add a very short delay will ensure that
+    //the edit be resized.
+    QTimer::singleShot(1, [=](){
+        edit->minimalAdjust();
     });
+
     return edit;
 }
 
@@ -154,8 +145,6 @@ void IconViewDelegate::setEditorData(QWidget *editor, const QModelIndex &index) 
     if (!edit)
         return;
 
-    edit->setText(index.data(Qt::DisplayRole).toString());
-    edit->setAlignment(Qt::AlignCenter);
     auto cursor = edit->textCursor();
     cursor.setPosition(0, QTextCursor::MoveAnchor);
     cursor.movePosition(QTextCursor::End, QTextCursor::KeepAnchor);
@@ -175,16 +164,7 @@ void IconViewDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptionV
     if (!edit)
         return;
 
-    QGraphicsTextItem item;
-    item.setFont(edit->currentFont());
-    item.setTextWidth(50);
-    item.setPlainText(edit->toPlainText());
-    //qDebug()<<item.boundingRect();
-    //qDebug()<<item.textWidth();
-    item.adjustSize();
-    //qDebug()<<item.textWidth();
-    //qDebug()<<item.boundingRect();
-    edit->resize(edit->width(), static_cast<int>(item.boundingRect().height()));
+    edit->resize(edit->document()->size().width(), edit->document()->size().height() + 10);
 }
 
 void IconViewDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const
@@ -206,4 +186,9 @@ void IconViewDelegate::setIndexWidget(const QModelIndex &index, QWidget *widget)
 {
     auto view = qobject_cast<IconView*>(this->parent());
     view->setIndexWidget(index, widget);
+}
+
+IconView *IconViewDelegate::getView() const
+{
+    return qobject_cast<IconView*>(parent());
 }
