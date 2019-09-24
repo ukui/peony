@@ -1,7 +1,9 @@
 INCLUDEPATH += $$PWD
 
 HEADERS += \
-    $$PWD/tool-bar.h
+    $$PWD/fm-window.h
 
 SOURCES += \
-    $$PWD/tool-bar.cpp
+    $$PWD/fm-window.cpp
+
+

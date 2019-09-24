@@ -162,7 +162,7 @@ void IconView::open(const QStringList &uris, bool newWindow)
 
 void IconView::close()
 {
-
+    this->deleteLater();
 }
 
 void IconView::dragEnterEvent(QDragEnterEvent *e)

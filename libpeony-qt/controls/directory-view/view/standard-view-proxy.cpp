@@ -71,4 +71,12 @@ void StandardViewProxy::open(const QStringList &uris, bool newWindow)
 void StandardViewProxy::close()
 {
     m_view->close();
+    this->deleteLater();
+}
+
+void StandardViewProxy::switchView(DirectoryViewIface *view)
+{
+    auto old_view = m_view;
+    m_view = view;
+    old_view->close();
 }

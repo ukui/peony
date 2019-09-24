@@ -12,3 +12,6 @@ RESOURCES += $$PWD/libpeony-qt.qrc
 
 #ui-controls
 include(controls/controls.pri)
+
+#windows
+include(windows/windows.pri)

@@ -131,6 +131,8 @@ public:
     explicit DirectoryViewProxyIface(QObject *parent = nullptr) : QObject(parent) {}
     ~DirectoryViewProxyIface() {}
 
+    virtual void switchView(DirectoryViewIface *view) = 0;
+
     virtual DirectoryViewIface *getView() = 0;
 
     //location

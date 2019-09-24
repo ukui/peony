@@ -27,6 +27,8 @@ public:
     explicit StandardViewProxy(DirectoryViewIface *view, QObject *parent = nullptr);
     ~StandardViewProxy() override;
 
+    void switchView(DirectoryViewIface *view) override;
+
     DirectoryViewIface *getView() override {return m_view;}
 
     //location

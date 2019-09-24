@@ -20,6 +20,9 @@
 #include <QStandardPaths>
 #include <QStackedLayout>
 
+#include "tool-bar.h"
+#include <QMainWindow>
+
 #include <QFile>
 
 #include <QStyleFactory>
@@ -108,7 +111,7 @@ PeonyApplication::PeonyApplication(int &argc, char *argv[]) : QApplication (argc
 
 #endif
 
-#define DIRECTORY_VIEW
+//#define DIRECTORY_VIEW
 #ifdef DIRECTORY_VIEW
     QDir pluginsDir(qApp->applicationDirPath());
     qDebug()<<pluginsDir;
@@ -205,5 +208,16 @@ PeonyApplication::PeonyApplication(int &argc, char *argv[]) : QApplication (argc
     widget->setLayout(layout);
     widget->setFixedHeight(edit->height());
     widget->show();
+#endif
+
+#define TOOLBAR
+#ifdef TOOLBAR
+
+    Peony::ToolBar *toolbar = new Peony::ToolBar;
+    QMainWindow *w = new QMainWindow;
+    w->addToolBar(toolbar);
+
+    w->show();
+
 #endif
 }
