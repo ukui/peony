@@ -22,6 +22,24 @@ using namespace Peony::DirectoryView;
 
 IconView::IconView(QWidget *parent) : QListView(parent)
 {
+    //FIXME: do not create proxy in view itself.
+    m_proxy = new StandardViewProxy(this, this);
+    init();
+}
+
+IconView::IconView(DirectoryViewProxyIface *proxy, QWidget *parent) : QListView (parent)
+{
+    m_proxy = proxy;
+    init();
+}
+
+IconView::~IconView()
+{
+
+}
+
+void IconView::init()
+{
     IconViewStyle *style = new IconViewStyle();
     setStyle(style);
 
@@ -40,8 +58,6 @@ IconView::IconView(QWidget *parent) : QListView(parent)
     m_sort_filter_proxy_model->setSourceModel(m_model);
 
     setModel(m_sort_filter_proxy_model);
-
-    m_proxy = new StandardViewProxy(this, this);
 
     setGridSize(QSize(120, 135));
     setIconSize(QSize(64, 64));
@@ -74,13 +90,7 @@ IconView::IconView(QWidget *parent) : QListView(parent)
         } else {
             m_last_index = QModelIndex();
         }
-
     });
-}
-
-IconView::~IconView()
-{
-
 }
 
 DirectoryViewProxyIface *IconView::getProxy()

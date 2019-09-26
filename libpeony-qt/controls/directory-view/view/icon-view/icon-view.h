@@ -20,7 +20,15 @@ class PEONYCORESHARED_EXPORT IconView : public QListView, public DirectoryViewIf
     Q_OBJECT
 public:
 
+    /*!
+     * \brief IconView
+     * \param parent
+     * \deprecated
+     * We should not create a proxy in a view itself. Proxy should be created by tabpage
+     * or FMWindow.
+     */
     explicit IconView(QWidget *parent = nullptr);
+    explicit IconView(DirectoryViewProxyIface *proxy, QWidget *parent = nullptr);
     ~IconView() override;
 
     DirectoryViewProxyIface *getProxy() override;
@@ -60,6 +68,9 @@ protected:
 
     void paintEvent(QPaintEvent *e) override;
     void resizeEvent(QResizeEvent *e) override;
+
+protected:
+    void init();
 
 private:
     QTimer m_edit_trigger_timer;
