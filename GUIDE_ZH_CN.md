@@ -2,6 +2,9 @@
 
 ## 项目之外的相关资源（重要）
 
+- [贡献准则](https://github.com/Yue-Lan/peony-qt_development_document/blob/master/contribution-criteria.md)
+> 如果你想要参与peony-qt的开发，你需要牢记贡献准则中的要求，我希望peony-qt保持它的健壮性以及可维护性，并且足够“简单”，永远不要为了仅解决一个或几个问题而忽视了重要的原则问题。
+
 - [gitbook文档](https://github.com/Yue-Lan/peony-qt_development_document)
 
 > 这个文档是我之前站在开发者的角度写的一些随笔性质的记录
