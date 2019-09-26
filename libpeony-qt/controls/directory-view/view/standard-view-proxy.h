@@ -24,6 +24,7 @@ class StandardViewProxy : public DirectoryViewProxyIface
 {
     Q_OBJECT
 public:
+    explicit StandardViewProxy(QObject *parent = nullptr);
     explicit StandardViewProxy(DirectoryViewIface *view, QObject *parent = nullptr);
     ~StandardViewProxy() override;
 
@@ -44,7 +45,7 @@ public Q_SLOTS:
     void beginLocationChange() override;
     void stopLocationChange() override;
 
-    void close() override;
+    void closeProxy() override;
 
     //selections
     void setSelections(const QStringList &uris) override;
@@ -56,6 +57,7 @@ public Q_SLOTS:
 
 private:
     DirectoryViewIface *m_view = nullptr;
+    QString m_viewId;
 };
 
 }

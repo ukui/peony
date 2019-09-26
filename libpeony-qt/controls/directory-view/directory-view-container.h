@@ -5,6 +5,8 @@
 #include <QWidget>
 #include <QStack>
 
+class QVBoxLayout;
+
 namespace Peony {
 
 class DirectoryViewProxyIface;
@@ -34,12 +36,14 @@ public:
     bool canGoForward();
     bool canCdUp();
 
+    DirectoryViewProxyIface *getProxy() {return m_proxy;}
+
 Q_SIGNALS:
     void viewTypeChanged();
     void directoryChanged();
 
 public Q_SLOTS:
-    void setDirectoryUri(const QString &uri, bool addHistory);
+    void goToUri(const QString &uri, bool addHistory);
     void switchViewType(const QString &viewId);
 
     void goBack();
@@ -49,14 +53,20 @@ public Q_SLOTS:
     void refresh();
 
 protected:
+    /*!
+     * \brief bindNewProxy
+     * \param proxy
+     * \deprecated
+     */
     void bindNewProxy(DirectoryViewProxyIface *proxy);
 
 private:
-    DirectoryViewProxyIface *m_active_view_prxoy = nullptr;
-    QList<DirectoryViewProxyIface *> m_proxys;
+    DirectoryViewProxyIface *m_proxy = nullptr;
 
     QStack<QString> m_back_stack;
     QStack<QString> m_forward_stack;
+
+    QVBoxLayout *m_layout;
 };
 
 }

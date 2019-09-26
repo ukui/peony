@@ -14,6 +14,8 @@
 #include "preview-page-plugin-iface.h"
 #include "directory-view-factory-manager.h"
 #include "directory-view-plugin-iface.h"
+#include "standard-view-proxy.h"
+#include "directory-view-container.h"
 
 #include "path-edit.h"
 #include "location-bar.h"
@@ -23,13 +25,14 @@
 #include "tool-bar.h"
 #include <QMainWindow>
 
+#include "tab-page.h"
+
 #include <QFile>
 
 #include <QStyleFactory>
 
 PeonyApplication::PeonyApplication(int &argc, char *argv[]) : QApplication (argc, argv)
 {
-
     QFile file(":/data/libpeony-qt-light.qss");
     file.open(QFile::ReadOnly);
     setStyleSheet(QString::fromLatin1(file.readAll()));
@@ -127,6 +130,8 @@ PeonyApplication::PeonyApplication(int &argc, char *argv[]) : QApplication (argc
         qDebug()<<name;
         auto factory = directoryViewManager->getFactory(name);
         auto view = factory->create();
+        auto proxy = new Peony::DirectoryView::StandardViewProxy(view);
+        view->setProxy(proxy);
         //BUG: it is not safe loading a new uri when
         //a directory is loading. enve thoug the file enumemeration
         //is cancelled and, the async method from GFileEnumerator
@@ -136,7 +141,6 @@ PeonyApplication::PeonyApplication(int &argc, char *argv[]) : QApplication (argc
         //view->setDirectoryUri("file:///");
         //view->beginLocationChange();
         //view->stopLocationChange();
-        auto proxy = view->getProxy();
         qDebug()<<"2";
         //proxy->setDirectoryUri("network:///");
         //proxy->setDirectoryUri("file:///home/lanyue");
@@ -170,6 +174,26 @@ PeonyApplication::PeonyApplication(int &argc, char *argv[]) : QApplication (argc
 
         container->show();
     }
+#endif
+
+#define DIRECTORY_VIEW2
+#ifdef DIRECTORY_VIEW2
+    QMainWindow *w = new QMainWindow;
+    QToolBar *t = new QToolBar(w);
+    Peony::PathEdit *e = new Peony::PathEdit;
+    e->setUri("file:///");
+    t->addWidget(e);
+    w->addToolBar(Qt::TopToolBarArea, t);
+
+    auto tabPage = new Peony::TabPage(w);
+    w->setCentralWidget(tabPage);
+
+    w->connect(e, &QLineEdit::returnPressed, [=](){
+        tabPage->addPage(e->text());
+    });
+
+    w->show();
+
 #endif
 
 //#define PATH_EDIT
@@ -210,7 +234,7 @@ PeonyApplication::PeonyApplication(int &argc, char *argv[]) : QApplication (argc
     widget->show();
 #endif
 
-#define TOOLBAR
+//#define TOOLBAR
 #ifdef TOOLBAR
 
     Peony::ToolBar *toolbar = new Peony::ToolBar;

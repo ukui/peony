@@ -31,6 +31,10 @@ public:
     explicit IconView(DirectoryViewProxyIface *proxy, QWidget *parent = nullptr);
     ~IconView() override;
 
+    const QString viewId() override {return tr("Icon View");}
+
+    void setProxy(DirectoryViewProxyIface *proxy) override;
+
     DirectoryViewProxyIface *getProxy() override;
 
     //location
@@ -45,7 +49,7 @@ public Q_SLOTS:
     void setDirectoryUri(const QString &uri) override;
     void beginLocationChange() override;
     void stopLocationChange() override;
-    void close() override;
+    void closeView() override;
 
     //selections
     void setSelections(const QStringList &uris) override;
@@ -71,6 +75,7 @@ protected:
 
 protected:
     void init();
+    void rebindProxy();
 
 private:
     QTimer m_edit_trigger_timer;

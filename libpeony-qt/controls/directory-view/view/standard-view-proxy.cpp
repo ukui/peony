@@ -1,7 +1,13 @@
 #include "standard-view-proxy.h"
+#include "directory-view-factory-manager.h"
 
 using namespace Peony;
 using namespace Peony::DirectoryView;
+
+StandardViewProxy::StandardViewProxy(QObject *parent) : DirectoryViewProxyIface(parent)
+{
+
+}
 
 StandardViewProxy::StandardViewProxy(DirectoryViewIface *view, QObject *parent) : DirectoryViewProxyIface(parent)
 {
@@ -68,15 +74,19 @@ void StandardViewProxy::open(const QStringList &uris, bool newWindow)
     m_view->open(uris, newWindow);
 }
 
-void StandardViewProxy::close()
+void StandardViewProxy::closeProxy()
 {
-    m_view->close();
     this->deleteLater();
 }
 
 void StandardViewProxy::switchView(DirectoryViewIface *view)
 {
+    if (m_view == view)
+        return;
+
     auto old_view = m_view;
+    if (old_view)
+        old_view->closeView();
+
     m_view = view;
-    old_view->close();
 }

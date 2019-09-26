@@ -23,7 +23,6 @@ using namespace Peony::DirectoryView;
 IconView::IconView(QWidget *parent) : QListView(parent)
 {
     //FIXME: do not create proxy in view itself.
-    m_proxy = new StandardViewProxy(this, this);
     init();
 }
 
@@ -61,6 +60,15 @@ void IconView::init()
 
     setGridSize(QSize(120, 135));
     setIconSize(QSize(64, 64));
+}
+
+void IconView::rebindProxy()
+{
+    if (!m_proxy) {
+        return;
+    }
+
+    disconnect();
 
     connect(m_model, &FileItemModel::updated, [=](){
         m_sort_filter_proxy_model->sort(FileItemModel::FileName);
@@ -170,7 +178,7 @@ void IconView::open(const QStringList &uris, bool newWindow)
 
 }
 
-void IconView::close()
+void IconView::closeView()
 {
     this->deleteLater();
 }
@@ -258,6 +266,15 @@ void IconView::resizeEvent(QResizeEvent *e)
 {
     //FIXME: first resize is disfluency.
     //but I have to reset the index widget in view's resize.
-    setIndexWidget(m_last_index, nullptr);
     QListView::resizeEvent(e);
+    setIndexWidget(m_last_index, nullptr);
+}
+
+void IconView::setProxy(DirectoryViewProxyIface *proxy)
+{
+    if (!proxy)
+        return;
+
+    m_proxy = proxy;
+    rebindProxy();
 }

@@ -65,6 +65,10 @@ class DirectoryViewIface
 public:
     virtual ~DirectoryViewIface() {}
 
+    virtual void setProxy(DirectoryViewProxyIface *proxy) = 0;
+
+    const virtual QString viewId() = 0;
+
     //location
     const virtual QString getDirectoryUri() = 0;
 
@@ -95,7 +99,7 @@ public:
     virtual void setDirectoryUri(const QString &uri) = 0;
     virtual void beginLocationChange() = 0;
     virtual void stopLocationChange() = 0;
-    virtual void close() = 0;
+    virtual void closeView() = 0;
 
     //selections
     virtual void setSelections(const QStringList &uris) = 0;
@@ -159,7 +163,7 @@ public Q_SLOTS:
     virtual void beginLocationChange() = 0;
     virtual void stopLocationChange() = 0;
 
-    virtual void close() = 0;
+    virtual void closeProxy() = 0;
 
     //selections
     virtual void setSelections(const QStringList &uris) = 0;

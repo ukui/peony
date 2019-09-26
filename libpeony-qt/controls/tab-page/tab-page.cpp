@@ -1,0 +1,61 @@
+#include "tab-page.h"
+#include "directory-view-container.h"
+#include "directory-view-factory-manager.h"
+#include "directory-view-plugin-iface.h"
+#include "file-info.h"
+#include "file-utils.h"
+
+#include <QTabBar>
+
+#include <QDebug>
+
+using namespace Peony;
+
+TabPage::TabPage(QWidget *parent) : QTabWidget(parent)
+{
+    setMovable(true);
+    setDocumentMode(true);
+    setElideMode(Qt::ElideRight);
+    setTabsClosable(true);
+    setUsesScrollButtons(true);
+    tabBar()->setExpanding(false);
+    tabBar()->setAutoHide(true);
+
+    connect(this, &QTabWidget::tabCloseRequested, [=](int index){
+        auto container = dynamic_cast<DirectoryViewContainer*>(widget(index));
+        container->deleteLater();
+    });
+
+    connect(this, &QTabWidget::currentChanged, [=](int index){
+        Q_UNUSED(index)
+        Q_EMIT this->currentActiveViewChanged();
+    });
+}
+
+DirectoryViewContainer *TabPage::getActivePage()
+{
+    return qobject_cast<DirectoryViewContainer*>(currentWidget());
+}
+
+void TabPage::addPage(const QString &uri)
+{
+    auto container = new DirectoryViewContainer(this);
+    container->switchViewType(DirectoryViewFactoryManager::getInstance()->getDefaultViewId());
+    container->getProxy()->setDirectoryUri(uri);
+    container->getProxy()->beginLocationChange();
+
+    connect(container->getProxy(), &Peony::DirectoryViewProxyIface::viewDoubleClicked, [=](const QString &uri){
+        qDebug()<<"double clicked"<<uri;
+        auto info = Peony::FileInfo::fromUri(uri);
+        if (info->isDir() || info->isVolume() || uri.startsWith("network:")) {
+            container->getProxy()->setDirectoryUri(uri);
+            container->getProxy()->beginLocationChange();
+            this->setTabIcon(currentIndex(), QIcon::fromTheme(FileUtils::getFileIconName(uri), QIcon::fromTheme("folder")));
+            this->setTabText(currentIndex(), FileUtils::getFileDisplayName(uri));
+        }
+    });
+
+    addTab(container,
+           QIcon::fromTheme(FileUtils::getFileIconName(uri), QIcon::fromTheme("folder")),
+           FileUtils::getFileDisplayName(uri));
+}
