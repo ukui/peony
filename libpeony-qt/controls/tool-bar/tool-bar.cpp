@@ -5,6 +5,8 @@
 #include "clipboard-utils.h"
 #include "file-operation-utils.h"
 
+#include "view-factory-model.h"
+
 #include <QAction>
 #include <QComboBox>
 
@@ -35,19 +37,9 @@ void ToolBar::init(bool hasTopWindow)
     auto defaultViewId = viewManager->getDefaultViewId();
 
     QComboBox *viewCombox = new QComboBox(this);
-
-    int index = 0;
-    int count = 0;
-    auto viewIds = viewManager->getFactoryNames();
-    for (auto viewId : viewIds) {
-        auto factory = viewManager->getFactory(viewId);
-        viewCombox->addItem(factory->viewIcon(), factory->viewIdentity());
-        if (viewId == defaultViewId) {
-            index = count;
-        }
-        count++;
-    }
-    viewCombox->setCurrentIndex(index);
+    auto model = new ViewFactoryModel(this);
+    model->setDirectoryUri("file:///");
+    viewCombox->setModel(model);
 
     addWidget(viewCombox);
 
