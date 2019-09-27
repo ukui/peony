@@ -105,7 +105,7 @@ void IconViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
         useIndexWidget = true;
         if (view->indexWidget(index)) {
             return;
-        } else {
+        } else if (view->state() != IconView::DragSelectingState) {
             IconViewIndexWidget *indexWidget = new IconViewIndexWidget(this, option, index, getView());
             view->setIndexWidget(index, indexWidget);
             return;
