@@ -31,6 +31,15 @@ void IconViewEditor::paintEvent(QPaintEvent *e)
     QTextEdit::paintEvent(e);
 }
 
+void IconViewEditor::keyPressEvent(QKeyEvent *e)
+{
+    if (e->key() == Qt::Key_Return) {
+        Q_EMIT returnPressed();
+        return;
+    }
+    QTextEdit::keyPressEvent(e);
+}
+
 void IconViewEditor::minimalAdjust()
 {
     this->resize(QSize(document()->size().width(), document()->size().height() + 10));

@@ -136,6 +136,10 @@ QWidget *IconViewDelegate::createEditor(QWidget *parent, const QStyleOptionViewI
         edit->minimalAdjust();
     });
 
+    connect(edit, &IconViewEditor::returnPressed, [=](){
+        this->setModelData(edit, nullptr, index);
+    });
+
     return edit;
 }
 

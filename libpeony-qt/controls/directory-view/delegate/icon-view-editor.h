@@ -17,11 +17,15 @@ class PEONYCORESHARED_EXPORT IconViewEditor : public QTextEdit
 public:
     explicit IconViewEditor(QWidget *parent = nullptr);
 
+Q_SIGNALS:
+    void returnPressed();
+
 public Q_SLOTS:
     void minimalAdjust();
 
 protected:
     void paintEvent(QPaintEvent *e) override;
+    void keyPressEvent(QKeyEvent *e) override;
 };
 
 }
