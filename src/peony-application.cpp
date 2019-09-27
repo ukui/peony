@@ -27,6 +27,8 @@
 
 #include "tab-page.h"
 
+#include "side-bar.h"
+
 #include <QFile>
 
 #include <QStyleFactory>
@@ -176,7 +178,7 @@ PeonyApplication::PeonyApplication(int &argc, char *argv[]) : QApplication (argc
     }
 #endif
 
-#define DIRECTORY_VIEW2
+//#define DIRECTORY_VIEW2
 #ifdef DIRECTORY_VIEW2
     QMainWindow *w = new QMainWindow;
     QToolBar *t = new QToolBar(w);
@@ -243,5 +245,11 @@ PeonyApplication::PeonyApplication(int &argc, char *argv[]) : QApplication (argc
 
     w->show();
 
+#endif
+
+#define SIDEBAR
+#ifdef SIDEBAR
+    auto sidebar = new Peony::SideBar;
+    sidebar->show();
 #endif
 }
