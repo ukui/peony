@@ -12,6 +12,8 @@ using namespace Peony;
 
 SideBar::SideBar(QWidget *parent) : QTreeView(parent)
 {
+    setContentsMargins(0, 0, 0, 0);
+
     auto model = new SideBarModel(this);
     auto proxy_model = new SideBarProxyFilterSortModel(model);
 

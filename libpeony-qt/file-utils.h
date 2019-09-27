@@ -21,6 +21,7 @@ public:
     static GFileWrapperPtr resolveRelativePath(const GFileWrapperPtr &dir, const QString &relativePath);
     static bool getFileHasChildren(const GFileWrapperPtr &file);
     static bool getFileIsFolder(const GFileWrapperPtr &file);
+    static bool getFileIsFolder(const QString &uri);
 
     static QString getNonSuffixedBaseNameFromUri(const QString &uri);
     static QString getFileDisplayName(const QString &uri);

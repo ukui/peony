@@ -68,6 +68,15 @@ bool FileUtils::getFileIsFolder(const GFileWrapperPtr &file)
     return type == G_FILE_TYPE_DIRECTORY;
 }
 
+bool FileUtils::getFileIsFolder(const QString &uri)
+{
+    auto file = wrapGFile(g_file_new_for_uri(uri.toUtf8().constData()));
+    GFileType type = g_file_query_file_type(file.get()->get(),
+                                            G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
+                                            nullptr);
+    return type == G_FILE_TYPE_DIRECTORY;
+}
+
 QString FileUtils::getNonSuffixedBaseNameFromUri(const QString &uri)
 {
     QUrl url = uri;

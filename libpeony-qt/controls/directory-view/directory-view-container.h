@@ -32,6 +32,12 @@ public:
     explicit DirectoryViewContainer(QWidget *parent = nullptr);
     ~DirectoryViewContainer();
 
+    const QString getCurrentUri() {return m_current_uri;}
+    const QStringList getCurrentSelections();
+
+    const QStringList getBackList();
+    const QStringList getForwardList();
+
     bool canGoBack();
     bool canGoForward();
     bool canCdUp();
@@ -62,6 +68,8 @@ protected:
     void bindNewProxy(DirectoryViewProxyIface *proxy);
 
 private:
+    QString m_current_uri;
+
     DirectoryViewProxyIface *m_proxy = nullptr;
 
     QStack<QString> m_back_stack;

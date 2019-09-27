@@ -8,22 +8,25 @@
 
 namespace Peony {
 
+class DirectoryViewContainer;
+
 class PEONYCORESHARED_EXPORT NavigationToolBar : public QToolBar
 {
     Q_OBJECT
 public:
     explicit NavigationToolBar(QWidget *parent = nullptr);
-    bool canGoBack() {return !m_back_stack.isEmpty();}
-    bool canGoForward() {return !m_forward_stack.isEmpty();}
+    bool canGoBack();
+    bool canGoForward();
     bool canCdUp();
 
 Q_SIGNALS:
-    void goBackRequest();
-    void goForwardRequest();
-    void goToUriRequest(const QString &uri, bool addHistory = false);
-    void cdUpRequest();
+    void updateWindowLocationRequest(const QString &uri);
 
 public Q_SLOTS:
+    void setCurrentContainer(DirectoryViewContainer *container);
+
+    void updateActions();
+
     void onGoBack();
     void onGoForward();
     void onGoToUri(const QString &uri, bool addHistory);
@@ -31,9 +34,13 @@ public Q_SLOTS:
     void clearHistory();
 
 private:
-    QString m_current_uri;
-    QStack<QString> m_back_stack;
-    QStack<QString> m_forward_stack;
+    DirectoryViewContainer *m_current_container = nullptr;
+
+    QAction *m_back_action;
+    QAction *m_forward_action;
+    QAction *m_history_action;
+    QAction *m_cd_up_action;
+    QAction *m_refresh_action;
 };
 
 }

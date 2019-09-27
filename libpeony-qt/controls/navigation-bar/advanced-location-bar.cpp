@@ -1,0 +1,49 @@
+#include "advanced-location-bar.h"
+#include "path-edit.h"
+#include "location-bar.h"
+
+#include <QStackedLayout>
+
+using namespace Peony;
+
+AdvancedLocationBar::AdvancedLocationBar(QWidget *parent) : QWidget(parent)
+{
+    QStackedLayout *layout = new QStackedLayout(this);
+    m_layout = layout;
+
+    layout->setContentsMargins(0, 0, 0, 0);
+    layout->setSpacing(0);
+    layout->setSizeConstraint(QLayout::SetDefaultConstraint);
+    m_bar = new Peony::LocationBar(this);
+    m_edit = new Peony::PathEdit(this);
+    //bar->connect(bar, &Peony::LocationBar::groupChangedRequest, bar, &Peony::LocationBar::setRootUri);
+    m_bar->connect(m_bar, &Peony::LocationBar::blankClicked, [=](){
+        layout->setCurrentWidget(m_edit);
+        m_edit->setUri(m_bar->getCurentUri());
+    });
+
+    m_edit->connect(m_edit, &Peony::PathEdit::returnPressed, [=](){
+        m_bar->setRootUri(m_edit->text());
+        layout->setCurrentWidget(m_bar);
+        Q_EMIT this->updateWindowLocationRequest(m_edit->text());
+    });
+
+    m_bar->connect(m_bar, &LocationBar::groupChangedRequest,
+                   this, &AdvancedLocationBar::updateWindowLocationRequest);
+
+    m_edit->connect(m_edit, &Peony::PathEdit::editCancelled, [=](){
+        layout->setCurrentWidget(m_bar);
+    });
+
+    layout->addWidget(m_bar);
+    layout->addWidget(m_edit);
+
+    setLayout(layout);
+    setFixedHeight(m_edit->height());
+}
+
+void AdvancedLocationBar::updateLocation(const QString &uri)
+{
+    m_bar->setRootUri(uri);
+    m_edit->setUri(uri);
+}

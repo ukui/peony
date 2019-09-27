@@ -1,84 +1,97 @@
 #include "fm-window.h"
+
+#include "tab-page.h"
+#include "side-bar.h"
+#include "navigation-bar.h"
+#include "tool-bar.h"
+
+#include "directory-view-container.h"
 #include "directory-view-plugin-iface.h"
-#include "directory-view-factory-manager.h"
+
+#include "file-utils.h"
+
+#include <QDockWidget>
+#include <QStandardPaths>
+#include <QDebug>
+
+#include <QSplitter>
+#include <QVBoxLayout>
 
 using namespace Peony;
 
-FMWindow::FMWindow(const QString &uri, QWidget *parent) : QWidget(parent)
+FMWindow::FMWindow(const QString &uri, QWidget *parent) : QMainWindow (parent)
 {
-    auto manager = DirectoryViewFactoryManager::getInstance();
-    auto viewIds = manager->getFactoryNames();
-    if (!viewIds.isEmpty()) {
-        //FIXME: add option for choosing default view
-        auto factory = manager->getFactory(viewIds.first());
-        auto view = factory->create();
-        view->setDirectoryUri(uri);
-        this->m_active_view_proxy = view->getProxy();
-        //connect this in controls?
-        m_view_list.prepend(view->getProxy());
+    setAnimated(false);
+
+    auto location = uri;
+    if (uri.isEmpty()) {
+        location = "file://" + QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
     }
+
+    m_splitter = new QSplitter(Qt::Horizontal, this);
+    m_splitter->setChildrenCollapsible(false);
+    m_splitter->setLayoutDirection(Qt::LeftToRight);
+
+    setCentralWidget(m_splitter);
+
+    m_tab = new TabPage(this);
+    m_tab->addPage(uri);
+
+    m_side_bar = new SideBar(this);
+    m_side_bar->resize(150, 0);
+
+    m_splitter->addWidget(m_side_bar);
+    m_splitter->addWidget(m_tab);
+    m_splitter->setStretchFactor(1, 1);
+
+    m_tool_bar = new ToolBar(nullptr, this);
+    m_tool_bar->setContentsMargins(0, 0, 0, 0);
+    m_tool_bar->setMovable(false);
+
+    addToolBar(Qt::TopToolBarArea, m_tool_bar);
+    addToolBarBreak();
+
+    m_navigation_bar = new NavigationBar(this);
+    m_navigation_bar->setMovable(false);
+    m_navigation_bar->bindContainer(m_tab->getActivePage());
+    m_navigation_bar->updateLocation(uri);
+
+    QToolBar *t = new QToolBar(this);
+    t->setMovable(false);
+    t->addWidget(m_navigation_bar);
+    t->setContentsMargins(0, 0, 0, 0);
+    addToolBar(t);
 }
 
 const QString FMWindow::getCurrentUri()
 {
-    if (m_active_view_proxy) {
-        return m_active_view_proxy->getDirectoryUri();
+    if (m_tab->getActivePage()) {
+        return m_tab->getActivePage()->getCurrentUri();
     }
     return nullptr;
 }
 
 const QStringList FMWindow::getCurrentSelections()
 {
-    if (m_active_view_proxy) {
-        return m_active_view_proxy->getSelections();
+    if (m_tab->getActivePage()) {
+        return m_tab->getActivePage()->getCurrentSelections();
     }
     return QStringList();
 }
 
-void FMWindow::setActiveView(DirectoryViewProxyIface *view)
-{
-    if (view == m_active_view_proxy)
-        return;
-
-    if (!m_view_list.contains(view)) {
-        m_view_list.prepend(view);
-    }
-
-    //disconnect the previous view.
-    m_active_view_proxy->disconnect();
-
-    //connect this in controls?
-    m_active_view_proxy = view;
-    Q_EMIT activeViewChanged(view);
-    view->beginLocationChange();
-}
-
 void FMWindow::addNewTabs(const QStringList &uris)
 {
-    auto manager = DirectoryViewFactoryManager::getInstance();
-    auto viewIds = manager->getFactoryNames();
-    if (!viewIds.isEmpty()) {
-        for (auto uri : uris) {
-            //FIXME: add option for choosing default view
-            auto factory = manager->getFactory(viewIds.first());
-            auto view = factory->create();
-            view->setDirectoryUri(uri);
-            //connect this in controls?
-            m_view_list.prepend(view->getProxy());
-        }
+    for (auto uri : uris) {
+        m_tab->addPage(uri);
     }
 }
 
-void FMWindow::beginLocationChange()
+void FMWindow::goToUri(const QString &uri, bool addHistory)
 {
-    if (m_active_view_proxy) {
-        if (!m_active_view_proxy->getDirectoryUri().isEmpty()) {
-            m_active_view_proxy->beginLocationChange();
-        }
-    }
+    m_tab->getActivePage()->goToUri(uri, addHistory);
 }
 
 void FMWindow::beginSwitchView(const QString &viewId)
 {
-
+    m_tab->getActivePage()->switchViewType(viewId);
 }

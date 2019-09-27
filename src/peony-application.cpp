@@ -29,6 +29,12 @@
 
 #include "side-bar.h"
 
+#include "navigation-tool-bar.h"
+
+#include "navigation-bar.h"
+
+#include "fm-window.h"
+
 #include <QFile>
 
 #include <QStyleFactory>
@@ -247,9 +253,23 @@ PeonyApplication::PeonyApplication(int &argc, char *argv[]) : QApplication (argc
 
 #endif
 
-#define SIDEBAR
+//#define SIDEBAR
 #ifdef SIDEBAR
     auto sidebar = new Peony::SideBar;
     sidebar->show();
+#endif
+
+//#define NAVIGATION_BAR
+#ifdef NAVIGATION_BAR
+    QMainWindow *w = new QMainWindow;
+    auto nbar = new Peony::NavigationBar;
+    w->addToolBar(Qt::TopToolBarArea, nbar);
+    w->show();
+#endif
+
+#define FM_WINDOW
+#ifdef FM_WINDOW
+    auto window = new Peony::FMWindow("file:///");
+    window->show();
 #endif
 }

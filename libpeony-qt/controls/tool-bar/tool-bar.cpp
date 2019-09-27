@@ -14,6 +14,9 @@ using namespace Peony;
 
 ToolBar::ToolBar(FMWindow *window, QWidget *parent) : QToolBar(parent)
 {
+    setContentsMargins(0, 0, 0, 0);
+    setFixedHeight(50);
+
     m_top_window = window;
     init(window? true: false);
 }
@@ -54,7 +57,7 @@ void ToolBar::init(bool hasTopWindow)
     QAction *cutAction = addAction(QIcon::fromTheme("gtk-cut"), tr("Cut"));
     cutAction->setShortcut(QKeySequence::Cut);
 
-    QAction *trashAction = addAction(QIcon::fromTheme("gtk-trash"), tr("Trash"));
+    QAction *trashAction = addAction(QIcon::fromTheme("user-trash"), tr("Trash"));
     trashAction->setShortcut(QKeySequence::Delete);
 
     addSeparator();
@@ -95,13 +98,11 @@ void ToolBar::init(bool hasTopWindow)
         connect(newWindowAction, &QAction::triggered, [=](){
             if (m_top_window->getCurrentSelections().isEmpty()) {
                 FMWindow *newWindow = new FMWindow(m_top_window->getCurrentUri());
-                newWindow->beginLocationChange();
                 newWindow->show();
                 //FIXME: show when prepared
             } else {
                 for (auto uri : m_top_window->getCurrentSelections()) {
                     FMWindow *newWindow = new FMWindow(m_top_window->getCurrentUri());
-                    newWindow->beginLocationChange();
                     newWindow->show();
                     //FIXME: show when prepared
                 }

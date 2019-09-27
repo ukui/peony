@@ -27,6 +27,24 @@ DirectoryViewContainer::~DirectoryViewContainer()
         m_proxy->getView()->closeView();
 }
 
+const QStringList DirectoryViewContainer::getBackList()
+{
+    QStringList l;
+    for (auto uri : m_back_stack) {
+        l<<uri;
+    }
+    return l;
+}
+
+const QStringList DirectoryViewContainer::getForwardList()
+{
+    QStringList l;
+    for (auto uri : l) {
+        l<<uri;
+    }
+    return l;
+}
+
 bool DirectoryViewContainer::canGoBack()
 {
     return !m_back_stack.isEmpty();
@@ -64,6 +82,9 @@ bool DirectoryViewContainer::canCdUp()
 
 void DirectoryViewContainer::cdUp()
 {
+    if (!canCdUp())
+        return;
+
     auto uri = FileUtils::getParentUri(m_proxy->getDirectoryUri());
     if (uri.isNull())
         return;
@@ -80,6 +101,8 @@ void DirectoryViewContainer::goToUri(const QString &uri, bool addHistory)
     m_proxy->setDirectoryUri(uri);
     m_proxy->beginLocationChange();
     //m_active_view_prxoy->setDirectoryUri(uri);
+
+    m_current_uri = uri;
 }
 
 void DirectoryViewContainer::switchViewType(const QString &viewId)
@@ -117,4 +140,12 @@ void DirectoryViewContainer::bindNewProxy(DirectoryViewProxyIface *proxy)
 {
     //disconnect old proxy
     //connect new proxy
+}
+
+const QStringList DirectoryViewContainer::getCurrentSelections()
+{
+    if (getProxy()) {
+        return getProxy()->getSelections();
+    }
+    return QStringList();
 }

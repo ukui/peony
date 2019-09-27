@@ -1,10 +1,17 @@
 #ifndef FMWINDOW_H
 #define FMWINDOW_H
 
-#include <QWidget>
+#include <QMainWindow>
 #include "peony-core_global.h"
 
+class QSplitter;
+
 namespace Peony {
+
+class TabPage;
+class SideBar;
+class NavigationBar;
+class ToolBar;
 
 class DirectoryViewProxyIface;
 
@@ -26,7 +33,7 @@ class DirectoryViewProxyIface;
  * the design difficulty. If you plan to develop a file manager application.
  * You should consider wether it is needed.
  */
-class PEONYCORESHARED_EXPORT FMWindow : public QWidget
+class PEONYCORESHARED_EXPORT FMWindow : public QMainWindow
 {
     Q_OBJECT
 public:
@@ -40,16 +47,18 @@ Q_SIGNALS:
     void tabPageChanged();
 
 public Q_SLOTS:
-    void setActiveView(DirectoryViewProxyIface *view);
+    void goToUri(const QString &uri, bool addHistory);
     void addNewTabs(const QStringList &uris);
 
     void beginSwitchView(const QString &viewId);
-    void beginLocationChange();
 
 private:
-    DirectoryViewProxyIface *m_active_view_proxy;
+    QSplitter *m_splitter;
 
-    QList<DirectoryViewProxyIface*> m_view_list;
+    TabPage *m_tab;
+    SideBar *m_side_bar;
+    NavigationBar *m_navigation_bar;
+    ToolBar *m_tool_bar;
 };
 
 }
