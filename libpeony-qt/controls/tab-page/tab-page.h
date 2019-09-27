@@ -19,6 +19,8 @@ public:
 Q_SIGNALS:
     void currentActiveViewChanged();
 
+    void updateWindowLocationRequest(const QString &uri);
+
 public Q_SLOTS:
     void addPage(const QString &uri);
 };

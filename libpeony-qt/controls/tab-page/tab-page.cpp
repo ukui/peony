@@ -52,6 +52,8 @@ void TabPage::addPage(const QString &uri)
             container->getProxy()->beginLocationChange();
             this->setTabIcon(currentIndex(), QIcon::fromTheme(FileUtils::getFileIconName(uri), QIcon::fromTheme("folder")));
             this->setTabText(currentIndex(), FileUtils::getFileDisplayName(uri));
+
+            Q_EMIT this->updateWindowLocationRequest(uri);
         }
     });
 

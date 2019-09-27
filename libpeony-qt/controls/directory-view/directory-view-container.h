@@ -41,6 +41,7 @@ public:
 Q_SIGNALS:
     void viewTypeChanged();
     void directoryChanged();
+    void updateWindowLocationRequest(const QString &uri);
 
 public Q_SLOTS:
     void goToUri(const QString &uri, bool addHistory);

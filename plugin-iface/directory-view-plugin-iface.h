@@ -156,6 +156,9 @@ Q_SIGNALS:
     //menu
     void menuRequest(const QPoint &pos);
 
+    //window
+    void updateWindowLocationRequest(const QString &uri);
+
 public Q_SLOTS:
     //location
     virtual void open(const QStringList &uris, bool newWindow) = 0;
