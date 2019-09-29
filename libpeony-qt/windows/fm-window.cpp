@@ -17,6 +17,8 @@
 #include <QSplitter>
 #include <QVBoxLayout>
 
+#include <QPainter>
+
 using namespace Peony;
 
 FMWindow::FMWindow(const QString &uri, QWidget *parent) : QMainWindow (parent)
@@ -31,6 +33,13 @@ FMWindow::FMWindow(const QString &uri, QWidget *parent) : QMainWindow (parent)
     m_splitter = new QSplitter(Qt::Horizontal, this);
     m_splitter->setChildrenCollapsible(false);
     m_splitter->setLayoutDirection(Qt::LeftToRight);
+    m_splitter->setHandleWidth(2);
+    m_splitter->setStyleSheet("QSplitter"
+                              "{"
+                              "border: 0;"
+                              "padding: 0;"
+                              "margin: 0;"
+                              "}");
 
     setCentralWidget(m_splitter);
 
@@ -38,7 +47,6 @@ FMWindow::FMWindow(const QString &uri, QWidget *parent) : QMainWindow (parent)
     m_tab->addPage(uri);
 
     m_side_bar = new SideBar(this);
-    m_side_bar->resize(150, 0);
 
     m_splitter->addWidget(m_side_bar);
     m_splitter->addWidget(m_tab);
@@ -94,4 +102,9 @@ void FMWindow::goToUri(const QString &uri, bool addHistory)
 void FMWindow::beginSwitchView(const QString &viewId)
 {
     m_tab->getActivePage()->switchViewType(viewId);
+}
+
+void FMWindow::resizeEvent(QResizeEvent *e)
+{
+    QMainWindow::resizeEvent(e);
 }

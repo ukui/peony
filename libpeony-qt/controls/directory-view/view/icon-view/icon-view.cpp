@@ -58,7 +58,7 @@ void IconView::init()
 
     setModel(m_sort_filter_proxy_model);
 
-    setGridSize(QSize(120, 135));
+    setGridSize(QSize(115, 135));
     setIconSize(QSize(64, 64));
 }
 
@@ -253,12 +253,8 @@ void IconView::resetEditTriggerTimer()
 
 void IconView::paintEvent(QPaintEvent *e)
 {
-    //This will avoid a "Black Edge" when drag and drop resize.
-    //FIXME: how to deal with the maximize?
     QPainter p(this->viewport());
-    //maybe i should use palette().base(). infact their colors are different.
     p.fillRect(this->geometry(), this->palette().base());
-
     QListView::paintEvent(e);
 }
 
@@ -277,4 +273,14 @@ void IconView::setProxy(DirectoryViewProxyIface *proxy)
 
     m_proxy = proxy;
     rebindProxy();
+}
+
+QRect IconView::visualRect(const QModelIndex &index) const
+{
+    auto rect = QListView::visualRect(index);
+    rect.setX(rect.x() + 10);
+    rect.setY(rect.y() + 15);
+    auto size = itemDelegate()->sizeHint(QStyleOptionViewItem(), index);
+    rect.setSize(size);
+    return rect;
 }

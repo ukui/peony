@@ -2,9 +2,11 @@
 #include "side-bar-model.h"
 #include "side-bar-proxy-filter-sort-model.h"
 #include "side-bar-abstract-item.h"
+#include "side-bar-delegate.h"
 
 #include <QHeaderView>
 #include <QTimer>
+#include <QPainter>
 
 #include <QDebug>
 
@@ -12,7 +14,11 @@ using namespace Peony;
 
 SideBar::SideBar(QWidget *parent) : QTreeView(parent)
 {
+    setIndentation(15);
+    setSelectionBehavior(QTreeView::SelectRows);
     setContentsMargins(0, 0, 0, 0);
+
+    setItemDelegate(new SideBarDelegate(this));
 
     auto model = new SideBarModel(this);
     auto proxy_model = new SideBarProxyFilterSortModel(model);
@@ -58,4 +64,14 @@ SideBar::SideBar(QWidget *parent) : QTreeView(parent)
     });
 
     expandAll();
+}
+
+void SideBar::paintEvent(QPaintEvent *e)
+{
+    QTreeView::paintEvent(e);
+}
+
+QRect SideBar::visualRect(const QModelIndex &index) const
+{
+    return QTreeView::visualRect(index);
 }

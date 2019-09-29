@@ -52,6 +52,9 @@ public Q_SLOTS:
 
     void beginSwitchView(const QString &viewId);
 
+protected:
+    void resizeEvent(QResizeEvent *e) override;
+
 private:
     QSplitter *m_splitter;
 

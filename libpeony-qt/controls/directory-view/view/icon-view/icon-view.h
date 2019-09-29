@@ -43,6 +43,8 @@ public:
     //selections
     QStringList getSelections() override;
 
+    QRect visualRect(const QModelIndex &index) const override;
+
 public Q_SLOTS:
     //location
     void open(const QStringList &uris, bool newWindow) override;

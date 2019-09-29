@@ -6,8 +6,11 @@
 
 namespace Peony {
 
+class SideBarDelegate;
+
 class PEONYCORESHARED_EXPORT SideBar : public QTreeView
 {
+    friend class SideBarDelegate;
     Q_OBJECT
 public:
     explicit SideBar(QWidget *parent = nullptr);
@@ -15,6 +18,10 @@ public:
 Q_SIGNALS:
     void updateWindowLocationRequest(const QString &uri);
 
+protected:
+    void paintEvent(QPaintEvent *e) override;
+    QRect visualRect(const QModelIndex &index) const override;
+    //int horizontalOffset() const override {return 100;}
 };
 
 }
