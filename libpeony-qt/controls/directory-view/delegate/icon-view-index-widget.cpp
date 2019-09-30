@@ -23,6 +23,7 @@ IconViewIndexWidget::IconViewIndexWidget(const IconViewDelegate *delegate, const
     setMouseTracking(true);
 
     m_option = option;
+    m_option.features.setFlag(QStyleOptionViewItem::WrapText);
     m_option.textElideMode = Qt::ElideNone;
     m_option.widget = nullptr;
 

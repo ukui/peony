@@ -50,6 +50,8 @@ QSize IconViewDelegate::sizeHint(const QStyleOptionViewItem &option, const QMode
 
 void IconViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
+    //FIXME: how to deal with word wrap correctly?
+
     auto view = qobject_cast<IconView*>(this->parent());
     //default painter
     //QStyledItemDelegate::paint(painter, option, index);

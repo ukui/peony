@@ -50,7 +50,7 @@ void IconView::init()
     setViewMode(QListView::IconMode);
     setResizeMode(QListView::Adjust);
     setMovement(QListView::Snap);
-    setWordWrap(true);
+    //setWordWrap(true);
 
     m_model = new FileItemModel(this);
     m_sort_filter_proxy_model = new FileItemProxyFilterSortModel(m_model);
