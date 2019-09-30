@@ -18,6 +18,12 @@ DirectoryViewContainer::DirectoryViewContainer(QWidget *parent) : QWidget(parent
     m_layout->setContentsMargins(0, 0, 0, 0);
     m_layout->setSpacing(0);
     setLayout(m_layout);
+
+    connect(m_proxy, &DirectoryViewProxyIface::viewDirectoryChanged,
+            this, &DirectoryViewContainer::directoryChanged);
+
+    connect(m_proxy, &DirectoryViewProxyIface::viewSelectionChanged,
+            this, &DirectoryViewContainer::selectionChanged);
 }
 
 DirectoryViewContainer::~DirectoryViewContainer()
@@ -128,6 +134,7 @@ void DirectoryViewContainer::switchViewType(const QString &viewId)
         return;
 
     auto view = factory->create();
+    //connect the signal.
     view->setProxy(m_proxy);
 
     auto oldView = m_proxy->getView();
@@ -136,11 +143,13 @@ void DirectoryViewContainer::switchViewType(const QString &viewId)
     }
     m_proxy->switchView(view);
     m_layout->addWidget(dynamic_cast<QWidget*>(view), Qt::AlignBottom);
+
+    Q_EMIT viewTypeChanged();
 }
 
 void DirectoryViewContainer::refresh()
 {
-    //m_active_view_prxoy->setDirectoryUri(currentUri)
+    m_proxy->beginLocationChange();
 }
 
 void DirectoryViewContainer::bindNewProxy(DirectoryViewProxyIface *proxy)

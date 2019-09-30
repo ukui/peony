@@ -18,11 +18,14 @@ public:
 
 Q_SIGNALS:
     void currentActiveViewChanged();
+    void currentLocationChanged();
+    void currentSelectionChanged();
 
     void updateWindowLocationRequest(const QString &uri, bool addHistory = true);
 
 public Q_SLOTS:
     void addPage(const QString &uri);
+    void refreshCurrentTabText();
 
 protected:
     void rebindContainer();

@@ -11,13 +11,15 @@ using namespace Peony;
 
 PathEdit::PathEdit(QWidget *parent) : QLineEdit(parent)
 {
+    setFocusPolicy(Qt::ClickFocus);
+
     m_model = new PathBarModel(this);
     m_completer = new PathCompleter(this);
     m_completer->setModel(m_model);
 
     setLayoutDirection(Qt::LeftToRight);
 
-    QAction *goToAction = new QAction(QIcon::fromTheme("forward"), tr("Go To"));
+    QAction *goToAction = new QAction(QIcon::fromTheme("forward"), tr("Go To"), this);
     addAction(goToAction, QLineEdit::TrailingPosition);
 
     connect(goToAction, &QAction::triggered, this, &QLineEdit::returnPressed);

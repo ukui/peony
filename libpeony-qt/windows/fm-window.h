@@ -14,6 +14,7 @@ class NavigationBar;
 class ToolBar;
 
 class DirectoryViewProxyIface;
+class DirectoryViewContainer;
 
 /*!
  * \brief The FMWindow class, the normal window of peony-qt's file manager.
@@ -41,16 +42,37 @@ public:
 
     const QString getCurrentUri();
     const QStringList getCurrentSelections();
+    DirectoryViewContainer *getCurrentPage();
+
+    QSize sizeHint() const override {return QSize(800, 600);}
 
 Q_SIGNALS:
     void activeViewChanged(const DirectoryViewProxyIface *view);
     void tabPageChanged();
+
+    /*!
+     * \brief locationChangeStart
+     * \details
+     * This signal is used to tell the window doing a location change.
+     * When a window is excuting a location change, it should not excute another
+     * one util the location change finished.
+     */
+    void locationChangeStart();
+    /*!
+     * \brief endLocationChange
+     * \details
+     * This signal is used to tell the window that a location change finished.
+     * Once a location change finished, we can start a new location change.
+     */
+    void locationChangeEnd();
 
 public Q_SLOTS:
     void goToUri(const QString &uri, bool addHistory);
     void addNewTabs(const QStringList &uris);
 
     void beginSwitchView(const QString &viewId);
+
+    void refresh();
 
 protected:
     void resizeEvent(QResizeEvent *e) override;

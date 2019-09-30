@@ -19,6 +19,7 @@ AdvancedLocationBar::AdvancedLocationBar(QWidget *parent) : QWidget(parent)
     //bar->connect(bar, &Peony::LocationBar::groupChangedRequest, bar, &Peony::LocationBar::setRootUri);
     m_bar->connect(m_bar, &Peony::LocationBar::blankClicked, [=](){
         layout->setCurrentWidget(m_edit);
+        m_edit->setFocus();
         m_edit->setUri(m_bar->getCurentUri());
     });
 

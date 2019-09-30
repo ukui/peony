@@ -19,10 +19,13 @@ public:
 
 Q_SIGNALS:
     void updateWindowLocationRequest(const QString &uri, bool addHistory);
+    void refreshRequest();
 
 public Q_SLOTS:
     void bindContainer(DirectoryViewContainer *container);
     void updateLocation(const QString &uri);
+
+    void setBlock(bool block = true);
 
 protected:
     const QString getCurrentUri();

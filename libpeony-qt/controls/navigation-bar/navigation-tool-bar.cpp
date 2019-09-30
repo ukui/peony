@@ -26,7 +26,7 @@ NavigationToolBar::NavigationToolBar(QWidget *parent) : QToolBar(parent)
     });
 
     m_refresh_action = addAction(QIcon::fromTheme("gtk-refresh"), tr("Refresh"), [=](){
-        //FIXME:
+        Q_EMIT refreshRequest();
     });
 
     updateActions();

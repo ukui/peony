@@ -47,6 +47,7 @@ public:
 Q_SIGNALS:
     void viewTypeChanged();
     void directoryChanged();
+    void selectionChanged();
     void updateWindowLocationRequest(const QString &uri, bool addHistory);
 
 public Q_SLOTS:

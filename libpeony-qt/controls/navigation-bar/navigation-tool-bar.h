@@ -21,6 +21,7 @@ public:
 
 Q_SIGNALS:
     void updateWindowLocationRequest(const QString &uri, bool addHistory);
+    void refreshRequest();
 
 public Q_SLOTS:
     void setCurrentContainer(DirectoryViewContainer *container);

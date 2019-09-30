@@ -71,7 +71,8 @@ void SideBarFileSystemItem::findChildren()
 
             SideBarFileSystemItem *item = new SideBarFileSystemItem(info->uri(),
                                                                     this,
-                                                                    m_model);
+                                                                    m_model,
+                                                                    this);
             //check is mounted.
             auto targetUri = FileUtils::getTargetUri(info->uri());
             item->m_is_mounted = !targetUri.isEmpty() && (targetUri != "file:///");

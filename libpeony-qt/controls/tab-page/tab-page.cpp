@@ -23,15 +23,14 @@ TabPage::TabPage(QWidget *parent) : QTabWidget(parent)
 
     connect(this, &QTabWidget::tabCloseRequested, [=](int index){
         auto container = dynamic_cast<DirectoryViewContainer*>(widget(index));
+        container->disconnect();
         container->deleteLater();
     });
 
     connect(this, &QTabWidget::currentChanged, [=](int index){
         Q_UNUSED(index)
         Q_EMIT this->currentActiveViewChanged();
-        for (int i = 0; i < this->count(); i++) {
-            this->widget(i)->disconnect();
-        }
+
         this->rebindContainer();
     });
 }
@@ -63,6 +62,10 @@ void TabPage::addPage(const QString &uri)
 
 void TabPage::rebindContainer()
 {
+    for (int i = 0; i < this->count(); i++) {
+        this->widget(i)->disconnect();
+    }
+
     auto container = getActivePage();
     container->connect(container->getProxy(), &Peony::DirectoryViewProxyIface::viewDoubleClicked, [=](const QString &uri){
         qDebug()<<"double clicked"<<uri;
@@ -71,6 +74,20 @@ void TabPage::rebindContainer()
             Q_EMIT this->updateWindowLocationRequest(uri);
         }
     });
+
     container->connect(container, &DirectoryViewContainer::updateWindowLocationRequest,
                        this, &TabPage::updateWindowLocationRequest);
+    container->connect(container, &DirectoryViewContainer::directoryChanged,
+                       this, &TabPage::currentLocationChanged);
+    container->connect(container, &DirectoryViewContainer::selectionChanged,
+                       this, &TabPage::currentSelectionChanged);
+}
+
+void TabPage::refreshCurrentTabText()
+{
+    auto uri = getActivePage()->getCurrentUri();
+    setTabText(currentIndex(), FileUtils::getFileDisplayName(uri));
+    setTabIcon(currentIndex(),
+               QIcon::fromTheme(FileUtils::getFileIconName(uri),
+                                QIcon::fromTheme("folder")));
 }

@@ -15,6 +15,8 @@
 #include <QPainter>
 #include <QPaintEvent>
 
+#include <QApplication>
+
 #include <QDebug>
 
 using namespace Peony;
@@ -39,7 +41,8 @@ IconView::~IconView()
 
 void IconView::init()
 {
-    IconViewStyle *style = new IconViewStyle();
+    //FIXME: show i new a style for each icon view?
+    IconViewStyle *style = new IconViewStyle(QApplication::style());
     setStyle(style);
 
     IconViewDelegate *delegate = new IconViewDelegate(this);
