@@ -44,4 +44,5 @@ void NavigationBar::bindContainer(DirectoryViewContainer *container)
 void NavigationBar::updateLocation(const QString &uri)
 {
     m_center_control->updateLocation(uri);
+    m_left_control->updateActions();
 }

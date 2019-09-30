@@ -18,7 +18,7 @@ public:
     explicit AdvancedLocationBar(QWidget *parent = nullptr);
 
 Q_SIGNALS:
-    void updateWindowLocationRequest(const QString &uri);
+    void updateWindowLocationRequest(const QString &uri, bool addHistory = true);
 
 public Q_SLOTS:
     void updateLocation(const QString &uri);

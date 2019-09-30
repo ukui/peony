@@ -16,7 +16,7 @@ public:
     explicit SideBar(QWidget *parent = nullptr);
 
 Q_SIGNALS:
-    void updateWindowLocationRequest(const QString &uri);
+    void updateWindowLocationRequest(const QString &uri, bool addHistory = true);
 
 protected:
     void paintEvent(QPaintEvent *e) override;

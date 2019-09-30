@@ -4,9 +4,12 @@
 #include <QToolBar>
 #include "peony-core_global.h"
 
+class QComboBox;
+
 namespace Peony {
 
 class FMWindow;
+class ViewFactoryModel;
 
 /*!
  * \brief The ToolBar class, providing a set of actions for file management.
@@ -44,11 +47,17 @@ public:
 Q_SIGNALS:
     void optionRequest(const RequestType &type);
 
+public Q_SLOTS:
+    void updateLocation(const QString &uri);
+
 protected:
     void init(bool hasTopWindow);
 
 private:
     FMWindow *m_top_window;
+
+    ViewFactoryModel *m_view_factory_model;
+    QComboBox *m_view_option_box;
 };
 
 }

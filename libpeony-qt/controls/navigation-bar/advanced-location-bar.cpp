@@ -28,8 +28,9 @@ AdvancedLocationBar::AdvancedLocationBar(QWidget *parent) : QWidget(parent)
         Q_EMIT this->updateWindowLocationRequest(m_edit->text());
     });
 
-    m_bar->connect(m_bar, &LocationBar::groupChangedRequest,
-                   this, &AdvancedLocationBar::updateWindowLocationRequest);
+    m_bar->connect(m_bar, &LocationBar::groupChangedRequest, [=](const QString &uri){
+        Q_EMIT this->updateWindowLocationRequest(uri);
+    });
 
     m_edit->connect(m_edit, &Peony::PathEdit::editCancelled, [=](){
         layout->setCurrentWidget(m_bar);

@@ -32,7 +32,7 @@ public:
     explicit DirectoryViewContainer(QWidget *parent = nullptr);
     ~DirectoryViewContainer();
 
-    const QString getCurrentUri() {return m_current_uri;}
+    const QString getCurrentUri();
     const QStringList getCurrentSelections();
 
     const QStringList getBackList();
@@ -47,7 +47,7 @@ public:
 Q_SIGNALS:
     void viewTypeChanged();
     void directoryChanged();
-    void updateWindowLocationRequest(const QString &uri);
+    void updateWindowLocationRequest(const QString &uri, bool addHistory);
 
 public Q_SLOTS:
     void goToUri(const QString &uri, bool addHistory);

@@ -20,7 +20,7 @@ public:
     bool canCdUp();
 
 Q_SIGNALS:
-    void updateWindowLocationRequest(const QString &uri);
+    void updateWindowLocationRequest(const QString &uri, bool addHistory);
 
 public Q_SLOTS:
     void setCurrentContainer(DirectoryViewContainer *container);

@@ -18,7 +18,7 @@ public:
     explicit NavigationBar(QWidget *parent = nullptr);
 
 Q_SIGNALS:
-    void updateWindowLocationRequest(const QString &uri);
+    void updateWindowLocationRequest(const QString &uri, bool addHistory);
 
 public Q_SLOTS:
     void bindContainer(DirectoryViewContainer *container);

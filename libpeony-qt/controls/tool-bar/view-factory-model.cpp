@@ -13,6 +13,7 @@ ViewFactoryModel::ViewFactoryModel(QObject *parent)
 void ViewFactoryModel::setDirectoryUri(const QString &uri)
 {
     beginResetModel();
+    m_support_views_id.clear();
     m_current_uri = uri;
     auto viewManager = DirectoryViewFactoryManager::getInstance();
     auto defaultList = viewManager->getFactoryNames();
@@ -56,4 +57,11 @@ QVariant ViewFactoryModel::data(const QModelIndex &index, int role) const
         return factory->viewIcon();
     }
     return QVariant();
+}
+
+const QModelIndex ViewFactoryModel::getIndexFromViewId(const QString &viewId)
+{
+    if (!m_support_views_id.contains(viewId))
+        return QModelIndex();
+    return index(m_support_views_id.indexOf(viewId));
 }

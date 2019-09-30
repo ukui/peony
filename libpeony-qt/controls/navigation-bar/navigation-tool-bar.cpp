@@ -76,8 +76,10 @@ void NavigationToolBar::onGoForward()
 
 void NavigationToolBar::onGoToUri(const QString &uri, bool addHistory)
 {
-    if (m_current_container)
+    if (m_current_container) {
         m_current_container->goToUri(uri, addHistory);
+        updateWindowLocationRequest(m_current_container->getCurrentUri(), false);
+    }
 }
 
 void NavigationToolBar::clearHistory()
@@ -90,5 +92,5 @@ void NavigationToolBar::setCurrentContainer(DirectoryViewContainer *container)
     if (m_current_container == container)
         return;
     m_current_container = container;
-    Q_EMIT updateWindowLocationRequest(container->getCurrentUri());
+    Q_EMIT updateWindowLocationRequest(container->getCurrentUri(), false);
 }

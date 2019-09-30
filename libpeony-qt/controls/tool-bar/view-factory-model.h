@@ -26,6 +26,8 @@ public:
     explicit ViewFactoryModel(QObject *parent = nullptr);
     void setDirectoryUri(const QString &uri);
 
+    const QModelIndex getIndexFromViewId(const QString &viewId);
+
     const QString getViewId(int index);
 
     // Basic functionality:

@@ -29,6 +29,10 @@ TabPage::TabPage(QWidget *parent) : QTabWidget(parent)
     connect(this, &QTabWidget::currentChanged, [=](int index){
         Q_UNUSED(index)
         Q_EMIT this->currentActiveViewChanged();
+        for (int i = 0; i < this->count(); i++) {
+            this->widget(i)->disconnect();
+        }
+        this->rebindContainer();
     });
 }
 
@@ -44,15 +48,10 @@ void TabPage::addPage(const QString &uri)
     container->getProxy()->setDirectoryUri(uri);
     container->getProxy()->beginLocationChange();
 
-    connect(container->getProxy(), &Peony::DirectoryViewProxyIface::viewDoubleClicked, [=](const QString &uri){
+    container->connect(container->getProxy(), &Peony::DirectoryViewProxyIface::viewDoubleClicked, [=](const QString &uri){
         qDebug()<<"double clicked"<<uri;
         auto info = Peony::FileInfo::fromUri(uri);
         if (info->isDir() || info->isVolume() || uri.startsWith("network:")) {
-            container->getProxy()->setDirectoryUri(uri);
-            container->getProxy()->beginLocationChange();
-            this->setTabIcon(currentIndex(), QIcon::fromTheme(FileUtils::getFileIconName(uri), QIcon::fromTheme("folder")));
-            this->setTabText(currentIndex(), FileUtils::getFileDisplayName(uri));
-
             Q_EMIT this->updateWindowLocationRequest(uri);
         }
     });
@@ -60,4 +59,18 @@ void TabPage::addPage(const QString &uri)
     addTab(container,
            QIcon::fromTheme(FileUtils::getFileIconName(uri), QIcon::fromTheme("folder")),
            FileUtils::getFileDisplayName(uri));
+}
+
+void TabPage::rebindContainer()
+{
+    auto container = getActivePage();
+    container->connect(container->getProxy(), &Peony::DirectoryViewProxyIface::viewDoubleClicked, [=](const QString &uri){
+        qDebug()<<"double clicked"<<uri;
+        auto info = Peony::FileInfo::fromUri(uri);
+        if (info->isDir() || info->isVolume() || uri.startsWith("network:")) {
+            Q_EMIT this->updateWindowLocationRequest(uri);
+        }
+    });
+    container->connect(container, &DirectoryViewContainer::updateWindowLocationRequest,
+                       this, &TabPage::updateWindowLocationRequest);
 }

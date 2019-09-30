@@ -56,8 +56,8 @@ void DirectoryViewContainer::goBack()
         return;
 
     auto uri = m_back_stack.pop();
-    m_forward_stack.push(uri);
-    goToUri(uri, false);
+    m_forward_stack.push(getCurrentUri());
+    Q_EMIT updateWindowLocationRequest(uri, false);
 }
 
 bool DirectoryViewContainer::canGoForward()
@@ -71,8 +71,9 @@ void DirectoryViewContainer::goForward()
         return;
 
     auto uri = m_forward_stack.pop();
-    m_back_stack.push(uri);
-    goToUri(uri, false);
+    m_back_stack.push(getCurrentUri());
+
+    Q_EMIT updateWindowLocationRequest(uri, false);
 }
 
 bool DirectoryViewContainer::canCdUp()
@@ -89,15 +90,21 @@ void DirectoryViewContainer::cdUp()
     if (uri.isNull())
         return;
 
-    goToUri(uri, true);
+    Q_EMIT updateWindowLocationRequest(uri, true);
 }
 
 void DirectoryViewContainer::goToUri(const QString &uri, bool addHistory)
 {
+    if (uri.isNull())
+        return;
+    if (m_current_uri == uri)
+        return;
+
     if (addHistory) {
         m_forward_stack.clear();
-        m_back_stack.push(uri);
+        m_back_stack.push(getCurrentUri());
     }
+
     m_proxy->setDirectoryUri(uri);
     m_proxy->beginLocationChange();
     //m_active_view_prxoy->setDirectoryUri(uri);
@@ -148,4 +155,12 @@ const QStringList DirectoryViewContainer::getCurrentSelections()
         return getProxy()->getSelections();
     }
     return QStringList();
+}
+
+const QString DirectoryViewContainer::getCurrentUri()
+{
+    if (getProxy()) {
+        return getProxy()->getDirectoryUri();
+    }
+    return nullptr;
 }

@@ -69,6 +69,13 @@ FMWindow::FMWindow(const QString &uri, QWidget *parent) : QMainWindow (parent)
     t->addWidget(m_navigation_bar);
     t->setContentsMargins(0, 0, 0, 0);
     addToolBar(t);
+
+    m_navigation_bar->bindContainer(m_tab->getActivePage());
+
+    //connect signals
+    connect(m_side_bar, &SideBar::updateWindowLocationRequest, this, &FMWindow::goToUri);
+    connect(m_tab, &TabPage::updateWindowLocationRequest, this, &FMWindow::goToUri);
+    connect(m_navigation_bar, &NavigationBar::updateWindowLocationRequest, this, &FMWindow::goToUri);
 }
 
 const QString FMWindow::getCurrentUri()
@@ -97,6 +104,8 @@ void FMWindow::addNewTabs(const QStringList &uris)
 void FMWindow::goToUri(const QString &uri, bool addHistory)
 {
     m_tab->getActivePage()->goToUri(uri, addHistory);
+    m_navigation_bar->updateLocation(uri);
+    m_tool_bar->updateLocation(uri);
 }
 
 void FMWindow::beginSwitchView(const QString &viewId)

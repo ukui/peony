@@ -10,6 +10,8 @@
 #include <QAction>
 #include <QComboBox>
 
+#include <QStandardPaths>
+
 using namespace Peony;
 
 ToolBar::ToolBar(FMWindow *window, QWidget *parent) : QToolBar(parent)
@@ -40,8 +42,10 @@ void ToolBar::init(bool hasTopWindow)
     auto defaultViewId = viewManager->getDefaultViewId();
 
     QComboBox *viewCombox = new QComboBox(this);
+    m_view_option_box = viewCombox;
     auto model = new ViewFactoryModel(this);
-    model->setDirectoryUri("file:///");
+    m_view_factory_model = model;
+    model->setDirectoryUri("file://" + QStandardPaths::writableLocation(QStandardPaths::HomeLocation));
     viewCombox->setModel(model);
 
     addWidget(viewCombox);
@@ -158,5 +162,20 @@ void ToolBar::init(bool hasTopWindow)
         });
 
         //extension
+    }
+}
+
+void ToolBar::updateLocation(const QString &uri)
+{
+    if (uri.isNull())
+        return;
+    m_view_factory_model->setDirectoryUri(uri);
+    auto viewFactoryManager = DirectoryViewFactoryManager::getInstance();
+    auto defaultViewId = viewFactoryManager->getDefaultViewId();
+    auto index = m_view_factory_model->getIndexFromViewId(defaultViewId);
+    if (index.isValid())
+        m_view_option_box->setCurrentIndex(index.row());
+    else {
+        m_view_option_box->setCurrentIndex(0);
     }
 }
