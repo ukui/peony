@@ -4,6 +4,7 @@
 #include "side-bar.h"
 #include "navigation-bar.h"
 #include "tool-bar.h"
+#include "status-bar.h"
 
 #include "directory-view-container.h"
 #include "directory-view-plugin-iface.h"
@@ -71,6 +72,9 @@ FMWindow::FMWindow(const QString &uri, QWidget *parent) : QMainWindow (parent)
     t->setContentsMargins(0, 0, 0, 0);
     addToolBar(t);
 
+    m_status_bar = new StatusBar(this, this);
+    setStatusBar(m_status_bar);
+
     m_navigation_bar->bindContainer(m_tab->getActivePage());
 
     //connect signals
@@ -102,6 +106,13 @@ FMWindow::FMWindow(const QString &uri, QWidget *parent) : QMainWindow (parent)
         m_navigation_bar->updateLocation(getCurrentUri());
     });
 
+    //selection changed
+    connect(m_tab, &TabPage::currentSelectionChanged, [=](){
+        m_status_bar->update();
+        Q_EMIT this->windowSelectionChanged();
+    });
+
+    //location change
     connect(this, &FMWindow::locationChangeStart, [this](){
         QCursor c;
         c.setShape(Qt::WaitCursor);
@@ -112,6 +123,7 @@ FMWindow::FMWindow(const QString &uri, QWidget *parent) : QMainWindow (parent)
         QCursor c;
         c.setShape(Qt::ArrowCursor);
         this->setCursor(c);
+        m_status_bar->update();
     });
 }
 

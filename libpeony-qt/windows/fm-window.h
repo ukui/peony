@@ -12,6 +12,7 @@ class TabPage;
 class SideBar;
 class NavigationBar;
 class ToolBar;
+class StatusBar;
 
 class DirectoryViewProxyIface;
 class DirectoryViewContainer;
@@ -66,6 +67,8 @@ Q_SIGNALS:
      */
     void locationChangeEnd();
 
+    void windowSelectionChanged();
+
 public Q_SLOTS:
     void goToUri(const QString &uri, bool addHistory);
     void addNewTabs(const QStringList &uris);
@@ -84,6 +87,7 @@ private:
     SideBar *m_side_bar;
     NavigationBar *m_navigation_bar;
     ToolBar *m_tool_bar;
+    StatusBar *m_status_bar;
 };
 
 }
