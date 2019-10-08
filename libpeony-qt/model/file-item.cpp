@@ -133,6 +133,9 @@ void FileItem::findChildrenAsync()
                     });
                     job->queryAsync();
                 }
+            } else {
+                Q_EMIT m_model->findChildrenFinished();
+                return;
             }
 
             enumerator->cancel();

@@ -101,6 +101,18 @@ FMWindow::FMWindow(const QString &uri, QWidget *parent) : QMainWindow (parent)
         qDebug()<<this->getCurrentUri();
         m_navigation_bar->updateLocation(getCurrentUri());
     });
+
+    connect(this, &FMWindow::locationChangeStart, [this](){
+        QCursor c;
+        c.setShape(Qt::WaitCursor);
+        this->setCursor(c);
+    });
+
+    connect(this, &FMWindow::locationChangeEnd, [this](){
+        QCursor c;
+        c.setShape(Qt::ArrowCursor);
+        this->setCursor(c);
+    });
 }
 
 const QString FMWindow::getCurrentUri()

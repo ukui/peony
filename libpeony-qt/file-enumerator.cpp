@@ -309,13 +309,24 @@ GAsyncReadyCallback FileEnumerator::mount_enclosing_volume_callback(GFile *file,
             //show the connect dialog
             char *uri = g_file_get_uri(file);
             MountOperation *op = new MountOperation(uri);
+            op->setAutoDelete();
             g_free(uri);
             //op->setAutoDelete();
+            connect(op, &MountOperation::cancelled, [p_this](){
+                Q_EMIT p_this->enumerateFinished(false);
+            });
             connect(op, &MountOperation::finished, [=](const std::shared_ptr<GErrorWrapper> &finished_err){
                 if (finished_err) {
                     qDebug()<<"finished err:"<<finished_err->code()<<finished_err->message();
+                    if (finished_err->code() == G_IO_ERROR_PERMISSION_DENIED) {
+                        p_this->enumerateFinished(false);
+                        QMessageBox::critical(nullptr, tr("Error"), finished_err->message());
+                        return;
+                    }
+                    Q_EMIT p_this->prepared(finished_err);
+                } else {
+                    Q_EMIT p_this->prepared(nullptr);
                 }
-                Q_EMIT p_this->prepared(finished_err);
             });
             op->start();
         }

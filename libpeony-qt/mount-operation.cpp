@@ -35,6 +35,9 @@ void MountOperation::cancel()
     g_cancellable_cancel(m_cancellable);
     g_object_unref(m_cancellable);
     m_cancellable = g_cancellable_new();
+    Q_EMIT cancelled();
+    if (m_auto_delete)
+        deleteLater();
 }
 
 void MountOperation::start()
@@ -50,7 +53,14 @@ void MountOperation::start()
                                             dlg->savePassword()? G_PASSWORD_SAVE_NEVER: G_PASSWORD_SAVE_FOR_SESSION);
     });
     //block ui
-    dlg->exec();
+    auto code = dlg->exec();
+    if (code == QDialog::Rejected) {
+        cancel();
+        QMessageBox msg;
+        msg.setText(tr("Operation Cancelled"));
+        msg.exec();
+        return;
+    }
     dlg->deleteLater();
     g_file_mount_enclosing_volume(m_volume,
                                   G_MOUNT_MOUNT_NONE,

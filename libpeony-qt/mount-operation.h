@@ -33,6 +33,7 @@ public:
 
 Q_SIGNALS:
     void finished(const std::shared_ptr<GErrorWrapper> &err = nullptr);
+    void cancelled();
 
 public Q_SLOTS:
     void start();
