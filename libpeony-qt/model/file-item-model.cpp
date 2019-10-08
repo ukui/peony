@@ -29,6 +29,13 @@ FileItemModel::~FileItemModel()
         delete m_root_item;
 }
 
+const QString FileItemModel::getRootUri()
+{
+    if (!m_root_item)
+        return nullptr;
+    return m_root_item->uri();
+}
+
 void FileItemModel::setRootUri(const QString &uri)
 {
     if (uri.isNull()) {

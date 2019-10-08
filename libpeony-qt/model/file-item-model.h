@@ -44,6 +44,7 @@ public:
     void setPositiveResponse(bool positive = true) {m_is_positive = positive;}
     bool isPositiveResponse() {return m_is_positive;}
 
+    const QString getRootUri();
     void setRootUri(const QString &uri);
     /*!
      * \brief setRootItem

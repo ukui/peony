@@ -98,6 +98,8 @@ FMWindow::FMWindow(const QString &uri, QWidget *parent) : QMainWindow (parent)
         m_side_bar->blockSignals(false);
         m_tool_bar->blockSignals(false);
         m_navigation_bar->setBlock(false);
+        qDebug()<<this->getCurrentUri();
+        m_navigation_bar->updateLocation(getCurrentUri());
     });
 }
 

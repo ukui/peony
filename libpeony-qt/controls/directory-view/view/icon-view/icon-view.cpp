@@ -162,7 +162,7 @@ void IconView::setDirectoryUri(const QString &uri)
 
 const QString IconView::getDirectoryUri()
 {
-    return m_current_uri;
+    return m_model->getRootUri();
 }
 
 void IconView::beginLocationChange()

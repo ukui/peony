@@ -103,7 +103,8 @@ void DirectoryViewContainer::goToUri(const QString &uri, bool addHistory)
 {
     if (uri.isNull())
         return;
-    if (m_current_uri == uri)
+
+    if (getCurrentUri() == uri)
         return;
 
     if (addHistory) {

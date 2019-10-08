@@ -46,7 +46,10 @@ SideBar::SideBar(QWidget *parent) : QTreeView(parent)
         switch (index.column()) {
         case 0: {
             auto item = proxy_model->itemFromIndex(index);
-            Q_EMIT this->updateWindowLocationRequest(item->uri());
+            //some side bar item doesn't have a uri.
+            //do not emit signal with a null uri to window.
+            if (!item->uri().isNull())
+                Q_EMIT this->updateWindowLocationRequest(item->uri());
             break;
         }
         case 1: {
