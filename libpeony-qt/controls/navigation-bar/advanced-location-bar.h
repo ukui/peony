@@ -19,6 +19,7 @@ public:
 
 Q_SIGNALS:
     void updateWindowLocationRequest(const QString &uri, bool addHistory = true);
+    void refreshRequest();
 
 public Q_SLOTS:
     void updateLocation(const QString &uri);
@@ -28,6 +29,8 @@ private:
 
     LocationBar *m_bar;
     PathEdit *m_edit;
+
+    QString m_text;
 };
 
 }

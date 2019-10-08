@@ -24,13 +24,23 @@ AdvancedLocationBar::AdvancedLocationBar(QWidget *parent) : QWidget(parent)
     });
 
     m_edit->connect(m_edit, &Peony::PathEdit::returnPressed, [=](){
+        if (m_text == m_edit->text()) {
+            Q_EMIT this->refreshRequest();
+            return;
+        }
         m_bar->setRootUri(m_edit->text());
         layout->setCurrentWidget(m_bar);
         Q_EMIT this->updateWindowLocationRequest(m_edit->text());
+        m_text = m_edit->text();
     });
 
     m_bar->connect(m_bar, &LocationBar::groupChangedRequest, [=](const QString &uri){
+        if (m_text == uri) {
+            Q_EMIT this->refreshRequest();
+            return;
+        }
         Q_EMIT this->updateWindowLocationRequest(uri);
+        m_text = uri;
     });
 
     m_edit->connect(m_edit, &Peony::PathEdit::editCancelled, [=](){
@@ -48,4 +58,5 @@ void AdvancedLocationBar::updateLocation(const QString &uri)
 {
     m_bar->setRootUri(uri);
     m_edit->setUri(uri);
+    m_text = uri;
 }

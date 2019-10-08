@@ -32,6 +32,8 @@ NavigationBar::NavigationBar(QWidget *parent) : QToolBar(parent)
             this, &NavigationBar::refreshRequest);
     connect(m_center_control, &AdvancedLocationBar::updateWindowLocationRequest,
             this, &NavigationBar::updateWindowLocationRequest);
+    connect(m_center_control, &AdvancedLocationBar::refreshRequest,
+            this, &NavigationBar::refreshRequest);
 
     //FIXME: preview plugins
     addAction(QIcon::fromTheme("preview", QIcon::fromTheme("gtk-missing-image")),
