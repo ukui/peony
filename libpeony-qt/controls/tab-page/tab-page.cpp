@@ -91,3 +91,9 @@ void TabPage::refreshCurrentTabText()
                QIcon::fromTheme(FileUtils::getFileIconName(uri),
                                 QIcon::fromTheme("folder")));
 }
+
+void TabPage::stopLocationChange()
+{
+    auto view = getActivePage();
+    //if (view)
+}

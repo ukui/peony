@@ -174,3 +174,10 @@ const QString DirectoryViewContainer::getCurrentUri()
     }
     return nullptr;
 }
+
+void DirectoryViewContainer::stopLoading()
+{
+    if (getProxy()) {
+        getProxy()->stopLocationChange();
+    }
+}

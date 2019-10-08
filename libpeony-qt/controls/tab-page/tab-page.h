@@ -27,6 +27,8 @@ public Q_SLOTS:
     void addPage(const QString &uri);
     void refreshCurrentTabText();
 
+    void stopLocationChange();
+
 protected:
     void rebindContainer();
 };

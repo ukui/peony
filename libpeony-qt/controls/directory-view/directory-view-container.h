@@ -59,6 +59,7 @@ public Q_SLOTS:
     void cdUp();
 
     void refresh();
+    void stopLoading();
 
 protected:
     /*!

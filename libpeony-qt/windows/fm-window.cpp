@@ -125,6 +125,12 @@ FMWindow::FMWindow(const QString &uri, QWidget *parent) : QMainWindow (parent)
         this->setCursor(c);
         m_status_bar->update();
     });
+
+    //action
+    QAction *stopLoadingAction = new QAction(this);
+    stopLoadingAction->setShortcut(QKeySequence(Qt::Key_Escape));
+    addAction(stopLoadingAction);
+    connect(stopLoadingAction, &QAction::triggered, this, &FMWindow::forceStopLoading);
 }
 
 const QString FMWindow::getCurrentUri()
@@ -180,4 +186,10 @@ DirectoryViewContainer *FMWindow::getCurrentPage()
 void FMWindow::refresh()
 {
     m_tab->getActivePage()->refresh();
+}
+
+void FMWindow::forceStopLoading()
+{
+    qDebug()<<"aaaa";
+    m_tab->getActivePage()->stopLoading();
 }

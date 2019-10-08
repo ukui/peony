@@ -76,6 +76,7 @@ public Q_SLOTS:
     void beginSwitchView(const QString &viewId);
 
     void refresh();
+    void forceStopLoading();
 
 protected:
     void resizeEvent(QResizeEvent *e) override;

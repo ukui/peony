@@ -65,6 +65,14 @@ void StandardViewProxy::beginLocationChange()
 void StandardViewProxy::stopLocationChange()
 {
     m_view->stopLocationChange();
+    //NOTE:
+    //although we stop/cancel the location change,
+    //we should assume that we have end a location
+    //change operation in FMWindow.
+    //FIXME:
+    //maybe i should use another signal to distinguish
+    //that wether location change was done or force stopped.
+    Q_EMIT this->viewDirectoryChanged();
 }
 
 //other
