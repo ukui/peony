@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include "peony-core_global.h"
+#include <memory>
 
 class QSplitter;
 
@@ -16,6 +17,8 @@ class StatusBar;
 
 class DirectoryViewProxyIface;
 class DirectoryViewContainer;
+
+class FileInfo;
 
 /*!
  * \brief The FMWindow class, the normal window of peony-qt's file manager.
@@ -43,6 +46,7 @@ public:
 
     const QString getCurrentUri();
     const QStringList getCurrentSelections();
+    const QList<std::shared_ptr<FileInfo>> getCurrentSelectionFileInfos();
     DirectoryViewContainer *getCurrentPage();
 
     QSize sizeHint() const override {return QSize(800, 600);}

@@ -10,6 +10,7 @@
 #include "directory-view-plugin-iface.h"
 
 #include "file-utils.h"
+#include "file-info.h"
 
 #include <QDockWidget>
 #include <QStandardPaths>
@@ -88,6 +89,8 @@ FMWindow::FMWindow(const QString &uri, QWidget *parent) : QMainWindow (parent)
         this->m_tool_bar->updateLocation(getCurrentUri());
         this->m_navigation_bar->bindContainer(getCurrentPage());
         this->m_navigation_bar->updateLocation(getCurrentUri());
+        this->m_status_bar->update();
+        Q_EMIT this->tabPageChanged();
     });
 
     //location change
@@ -149,6 +152,17 @@ const QStringList FMWindow::getCurrentSelections()
     return QStringList();
 }
 
+const QList<std::shared_ptr<FileInfo>> FMWindow::getCurrentSelectionFileInfos()
+{
+    const QStringList uris = getCurrentSelections();
+    QList<std::shared_ptr<FileInfo>> infos;
+    for(auto uri : uris) {
+        auto info = FileInfo::fromUri(uri);
+        infos<<info;
+    }
+    return infos;
+}
+
 void FMWindow::addNewTabs(const QStringList &uris)
 {
     for (auto uri : uris) {
@@ -190,6 +204,5 @@ void FMWindow::refresh()
 
 void FMWindow::forceStopLoading()
 {
-    qDebug()<<"aaaa";
     m_tab->getActivePage()->stopLoading();
 }
