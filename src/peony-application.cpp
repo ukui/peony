@@ -41,7 +41,9 @@
 
 PeonyApplication::PeonyApplication(int &argc, char *argv[]) : QApplication (argc, argv)
 {
+    //QIcon::setThemeName("ukui-icon-theme-one");
     setAttribute(Qt::AA_UseHighDpiPixmaps);
+    setAttribute(Qt::AA_EnableHighDpiScaling);
 
     QFile file(":/data/libpeony-qt-light.qss");
     file.open(QFile::ReadOnly);

@@ -18,7 +18,8 @@ public:
     enum Type {
         FavoriteItem,
         PersonalItem,
-        FileSystemItem
+        FileSystemItem,
+        SeparatorItem
     };
 
     explicit SideBarAbstractItem(SideBarModel* model, QObject *parent = nullptr);

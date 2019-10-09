@@ -13,7 +13,8 @@ HEADERS += \
     $$PWD/side-bar-file-system-item.h \
     $$PWD/side-bar-proxy-filter-sort-model.h \
     $$PWD/path-bar-model.h \
-    $$PWD/path-completer.h
+    $$PWD/path-completer.h \
+    $$PWD/side-bar-separator-item.h
 
 SOURCES += \
     $$PWD/file-item.cpp \
@@ -26,4 +27,5 @@ SOURCES += \
     $$PWD/side-bar-file-system-item.cpp \
     $$PWD/side-bar-proxy-filter-sort-model.cpp \
     $$PWD/path-bar-model.cpp \
-    $$PWD/path-completer.cpp
+    $$PWD/path-completer.cpp \
+    $$PWD/side-bar-separator-item.cpp

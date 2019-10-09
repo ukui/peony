@@ -2,6 +2,7 @@
 #include "side-bar-favorite-item.h"
 #include "side-bar-personal-item.h"
 #include "side-bar-file-system-item.h"
+#include "side-bar-separator-item.h"
 #include <QIcon>
 
 #include <QDebug>
@@ -15,13 +16,22 @@ SideBarModel::SideBarModel(QObject *parent)
 
     m_root_children = new QVector<SideBarAbstractItem*>();
 
+    SideBarSeparatorItem *separator1 = new SideBarSeparatorItem(SideBarSeparatorItem::Large, nullptr, this, this);
+    m_root_children->append(separator1);
+
     SideBarFavoriteItem *favorite_root_item = new SideBarFavoriteItem(nullptr, nullptr, this);
     m_root_children->append(favorite_root_item);
     //favorite_root_item->findChildren();
 
+    SideBarSeparatorItem *separator2 = new SideBarSeparatorItem(SideBarSeparatorItem::Small, nullptr, this, this);
+    m_root_children->append(separator2);
+
     SideBarPersonalItem *personal_root_item = new SideBarPersonalItem(nullptr, nullptr, this);
     m_root_children->append(personal_root_item);
     //personal_root_item->findChildren();
+
+    SideBarSeparatorItem *separator3 = new SideBarSeparatorItem(SideBarSeparatorItem::Small, nullptr, this, this);
+    m_root_children->append(separator3);
 
     SideBarFileSystemItem *computerItem = new SideBarFileSystemItem(nullptr,
                                                                     nullptr,
@@ -46,13 +56,8 @@ QModelIndex SideBarModel::firstCloumnIndex(SideBarAbstractItem *item)
     if (item->parent() != nullptr) {
         return createIndex(item->parent()->m_children->indexOf(item), 0, item);
     } else {
-        for (auto child : *m_root_children) {
-            if (item->type() == child->type()) {
-                return createIndex(m_root_children->indexOf(child), 0, item);
-            }
-        }
+        return createIndex(m_root_children->indexOf(item), 0, item);
     }
-    return QModelIndex();
 }
 
 QModelIndex SideBarModel::lastCloumnIndex(SideBarAbstractItem *item)

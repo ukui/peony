@@ -1,6 +1,10 @@
 #include "side-bar-delegate.h"
 #include "side-bar.h"
 
+#include "side-bar-proxy-filter-sort-model.h"
+#include "side-bar-abstract-item.h"
+#include "side-bar-separator-item.h"
+
 #include <QPainter>
 
 #include <QDebug>
@@ -15,16 +19,26 @@ SideBarDelegate::SideBarDelegate(QObject *parent) : QStyledItemDelegate(parent)
 void SideBarDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
     //return QStyledItemDelegate::paint(painter, option, index);
+    QStyleOptionViewItem opt = option;
+    initStyleOption(&opt, index);
+
+    //draw separator
+    SideBar *sideBar = qobject_cast<SideBar*>(this->parent());
+    SideBarProxyFilterSortModel *model = qobject_cast<SideBarProxyFilterSortModel*>(sideBar->model());
+    auto item = model->itemFromIndex(index);
+    if (item->type() == SideBarAbstractItem::SeparatorItem) {
+        auto visualRect = sideBar->visualRect(index);
+        visualRect.setX(0);
+        painter->fillRect(visualRect, opt.widget->palette().brush(QPalette::Base));
+        return;
+    }
 
     //FIXME: maybe i should use qss "show-decoration-selected" instead
 
     if (index.column() != 0 || !index.isValid())
         return QStyledItemDelegate::paint(painter, option, index);
 
-    QStyleOptionViewItem opt = option;
-    initStyleOption(&opt, index);
-
-    auto sideBarView = qobject_cast<SideBar*>(parent());
+    auto sideBarView = sideBar;
 
     auto visualRect = sideBarView->visualRect(index);
     visualRect.setX(0);
@@ -55,6 +69,32 @@ void SideBarDelegate::paint(QPainter *painter, const QStyleOptionViewItem &optio
 
 QSize SideBarDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
+    //separator
+    SideBar *sideBar = qobject_cast<SideBar*>(this->parent());
+    SideBarProxyFilterSortModel *model = qobject_cast<SideBarProxyFilterSortModel*>(sideBar->model());
+    auto item = model->itemFromIndex(index);
+    if (item->type() == SideBarAbstractItem::SeparatorItem) {
+        auto separatorItem = static_cast<SideBarSeparatorItem*>(item);
+        int height = 0;
+        auto size = QStyledItemDelegate::sizeHint(option, index);
+        switch (separatorItem->separatorType()) {
+        case SideBarSeparatorItem::Large: {
+            height = 15;
+            break;
+        }
+        case SideBarSeparatorItem::Small: {
+            height = 12;
+            break;
+        }
+        case SideBarSeparatorItem::EmptyFile: {
+            height = 28;
+            break;
+        }
+        }
+        size.setHeight(height);
+        return size;
+    }
+
     if (index.column() != 0)
         return QStyledItemDelegate::sizeHint(option, index);
 
