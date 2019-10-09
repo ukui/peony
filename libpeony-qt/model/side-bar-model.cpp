@@ -3,6 +3,9 @@
 #include "side-bar-personal-item.h"
 #include "side-bar-file-system-item.h"
 #include "side-bar-separator-item.h"
+
+#include "file-info.h"
+
 #include <QIcon>
 
 #include <QDebug>
@@ -40,6 +43,9 @@ SideBarModel::SideBarModel(QObject *parent)
     //computerItem->findChildren();
 
     endResetModel();
+
+    //empty-file separator
+    connect(this, &SideBarModel::indexUpdated, this, &SideBarModel::onIndexUpdated);
 }
 
 SideBarModel::~SideBarModel()
@@ -224,4 +230,27 @@ bool SideBarModel::removeColumns(int column, int count, const QModelIndex &paren
     // FIXME: Implement me!
     endRemoveColumns();
     return true;
+}
+
+void SideBarModel::onIndexUpdated(const QModelIndex &index)
+{
+    auto item = itemFromIndex(index);
+    qDebug()<<item->m_children->count();
+    bool isEmpty = true;
+    SideBarAbstractItem *tmp = nullptr;
+    for (auto child : *item->m_children) {
+        auto info = FileInfo::fromUri(child->uri());
+        if (!info->displayName().startsWith(".") && (info->isDir() || info->isVolume()))
+            isEmpty = false;
+        if (child->type() == SideBarAbstractItem::SeparatorItem) {
+            removeRows(item->m_children->indexOf(child), 1, index);
+            item->m_children->removeOne(child);
+            qDebug()<<"separator"<<item->m_children->count();
+        }
+    }
+    if (isEmpty) {
+        auto separator = new SideBarSeparatorItem(SideBarSeparatorItem::EmptyFile, item, this);
+        item->m_children->append(separator);
+        insertRows(item->m_children->count() - 1, 1, index);
+    }
 }

@@ -27,10 +27,13 @@ void SideBarDelegate::paint(QPainter *painter, const QStyleOptionViewItem &optio
     SideBarProxyFilterSortModel *model = qobject_cast<SideBarProxyFilterSortModel*>(sideBar->model());
     auto item = model->itemFromIndex(index);
     if (item->type() == SideBarAbstractItem::SeparatorItem) {
-        auto visualRect = sideBar->visualRect(index);
-        visualRect.setX(0);
-        painter->fillRect(visualRect, opt.widget->palette().brush(QPalette::Base));
-        return;
+        SideBarSeparatorItem *separator = qobject_cast<SideBarSeparatorItem*>(item);
+        if  (separator->separatorType() != SideBarSeparatorItem::EmptyFile) {
+            auto visualRect = sideBar->visualRect(index);
+            visualRect.setX(0);
+            painter->fillRect(visualRect, opt.widget->palette().brush(QPalette::Base));
+            return;
+        }
     }
 
     //FIXME: maybe i should use qss "show-decoration-selected" instead

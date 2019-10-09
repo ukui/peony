@@ -59,8 +59,13 @@ public:
     bool removeRows(int row, int count, const QModelIndex &parent = QModelIndex()) override;
     bool removeColumns(int column, int count, const QModelIndex &parent = QModelIndex()) override;
 
+Q_SIGNALS:
+    void indexUpdated(const QModelIndex &index);
+
 protected:
     QVector<SideBarAbstractItem*> *m_root_children = nullptr;
+
+    void onIndexUpdated(const QModelIndex &index);
 };
 
 }

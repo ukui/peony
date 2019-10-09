@@ -7,6 +7,8 @@
 #include "gobject-template.h"
 #include "file-watcher.h"
 
+#include "side-bar-separator-item.h"
+
 #include <QIcon>
 
 using namespace Peony;
@@ -58,11 +60,19 @@ void SideBarFileSystemItem::findChildren()
     connect(e, &FileEnumerator::prepared, [=](const GErrorWrapperPtr &err){
         e->enumerateSync();
         auto infos = e->getChildren();
+        bool isEmpty = true;
         int real_children_count = infos.count();
-        if (infos.isEmpty())
+        if (infos.isEmpty()) {
+            auto separator = new SideBarSeparatorItem(SideBarSeparatorItem::EmptyFile, this, m_model);
+            this->m_children->prepend(separator);
+            m_model->insertRows(0, 1, this->firstColumnIndex());
             goto end;
+        }
 
         for (auto info: infos) {
+            if (!info->displayName().startsWith(".") && (info->isDir() || info->isVolume())) {
+                isEmpty = false;
+            }
             //skip the independent files
             if (!(info->isDir() || info->isVolume())) {
                 real_children_count--;
@@ -80,6 +90,12 @@ void SideBarFileSystemItem::findChildren()
             qDebug()<<info->uri();
         }
         m_model->insertRows(0, real_children_count, firstColumnIndex());
+
+        if (isEmpty) {
+            auto separator = new SideBarSeparatorItem(SideBarSeparatorItem::EmptyFile, this, m_model);
+            this->m_children->prepend(separator);
+            m_model->insertRows(0, 1, this->firstColumnIndex());
+        }
 end:
         Q_EMIT this->findChildrenFinished();
         if (err != nullptr) {
@@ -89,9 +105,12 @@ end:
 
         //NOTE: init watcher after prepared.
         this->initWatcher();
+        this->m_watcher->setMonitorChildrenChange();
+        /*
         if (this->uri() == "computer:///") {
             this->m_watcher->setMonitorChildrenChange();
         }
+        */
 
         //start listening.
         connect(m_watcher.get(), &FileWatcher::fileCreated, [=](const QString &uri){
@@ -101,6 +120,7 @@ end:
                                                                     m_model);
             m_children->append(item);
             m_model->insertRows(m_children->count() - 1, 1, firstColumnIndex());
+            m_model->indexUpdated(this->firstColumnIndex());
         });
 
         connect(m_watcher.get(), &FileWatcher::fileDeleted, [=](const QString &uri){
@@ -114,6 +134,7 @@ end:
                     break;
                 }
             }
+            m_model->indexUpdated(this->firstColumnIndex());
         });
 
         connect(m_watcher.get(), &FileWatcher::fileChanged, [=](const QString &uri) {

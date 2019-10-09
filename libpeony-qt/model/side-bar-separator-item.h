@@ -36,7 +36,7 @@ public:
     Type type() override {return SideBarAbstractItem::SeparatorItem;}
 
     QString uri() override {return nullptr;}
-    QString displayName() override {return m_type==EmptyFile?tr("(Empty)"):nullptr;}
+    QString displayName() override {return m_type==EmptyFile?tr("(No Sub Directory)"):nullptr;}
     QString iconName() override {return nullptr;}
     bool hasChildren() override {return false;}
 

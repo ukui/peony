@@ -42,8 +42,8 @@ IconView::~IconView()
 void IconView::init()
 {
     //FIXME: show i new a style for each icon view?
-    IconViewStyle *style = new IconViewStyle(QApplication::style());
-    setStyle(style);
+    //IconViewStyle *style = new IconViewStyle(QApplication::style());
+    //setStyle(style);
 
     IconViewDelegate *delegate = new IconViewDelegate(this);
     setItemDelegate(delegate);
