@@ -38,7 +38,7 @@ void ClipboardUtils::release()
 void ClipboardUtils::setClipboardFiles(const QStringList &uris, bool isCut)
 {
     if (!global_instance) {
-        return;
+        global_instance = new ClipboardUtils;
     }
 
     auto data = new QMimeData;
