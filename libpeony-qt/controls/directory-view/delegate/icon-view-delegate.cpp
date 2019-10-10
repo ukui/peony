@@ -24,12 +24,19 @@
 #include "icon-view-editor.h"
 #include "icon-view-index-widget.h"
 
+#include <QPushButton>
+
 using namespace Peony;
 using namespace Peony::DirectoryView;
 
 IconViewDelegate::IconViewDelegate(QObject *parent) : QStyledItemDelegate (parent)
 {
+    m_styled_button = new QPushButton;
+}
 
+IconViewDelegate::~IconViewDelegate()
+{
+    m_styled_button->deleteLater();
 }
 
 QSize IconViewDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const
@@ -57,11 +64,21 @@ void IconViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
     //QStyledItemDelegate::paint(painter, option, index);
     QIcon icon = qvariant_cast<QIcon>(index.data(Qt::DecorationRole));
     //qDebug()<<option.widget->style();
-    qDebug()<<option.widget;
+    //qDebug()<<option.widget;
     QStyleOptionViewItem opt = option;
     initStyleOption(&opt, index);
 
     auto style = option.widget->style();
+
+    painter->save();
+    painter->setClipRect(opt.rect);
+    if (opt.state.testFlag(QStyle::State_MouseOver) && !opt.state.testFlag(QStyle::State_Selected)) {
+        painter->fillRect(opt.rect, m_styled_button->palette().button());
+    }
+    if (opt.state.testFlag(QStyle::State_Selected)) {
+        painter->fillRect(opt.rect, m_styled_button->palette().highlight());
+    }
+    painter->restore();
 
     style->drawControl(QStyle::CE_ItemViewItem, &opt, painter, opt.widget);
 

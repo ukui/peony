@@ -48,9 +48,10 @@ PeonyApplication::PeonyApplication(int &argc, char *argv[]) : QApplication (argc
     setAttribute(Qt::AA_UseHighDpiPixmaps);
     setAttribute(Qt::AA_EnableHighDpiScaling);
 
-    QFile file(":/data/libpeony-qt-light.qss");
+    QFile file(":/data/libpeony-qt-styled.qss");
     file.open(QFile::ReadOnly);
     setStyleSheet(QString::fromLatin1(file.readAll()));
+    qDebug()<<file.readAll();
     file.close();
 
 

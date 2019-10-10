@@ -3,6 +3,8 @@
 
 #include <QStyledItemDelegate>
 
+class QPushButton;
+
 namespace Peony {
 
 namespace DirectoryView {
@@ -17,6 +19,7 @@ class IconViewDelegate : public QStyledItemDelegate
     Q_OBJECT
 public:
     explicit IconViewDelegate(QObject *parent = nullptr);
+    ~IconViewDelegate() override;
     IconView *getView() const;
 
 public Q_SLOTS:
@@ -39,6 +42,8 @@ private:
 
     QModelIndex m_index_widget_index;
     QWidget *m_index_widget;
+
+    QPushButton *m_styled_button;
 };
 
 }
