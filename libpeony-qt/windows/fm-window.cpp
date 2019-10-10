@@ -4,7 +4,10 @@
 #include "side-bar.h"
 #include "navigation-bar.h"
 #include "tool-bar.h"
+#include "search-bar.h"
 #include "status-bar.h"
+
+#include "search-vfs-uri-parser.h"
 
 #include "directory-view-container.h"
 #include "directory-view-plugin-iface.h"
@@ -57,9 +60,26 @@ FMWindow::FMWindow(const QString &uri, QWidget *parent) : QMainWindow (parent)
 
     m_tool_bar = new ToolBar(this, this);
     m_tool_bar->setContentsMargins(0, 0, 0, 0);
-    m_tool_bar->setMovable(false);
 
-    addToolBar(Qt::TopToolBarArea, m_tool_bar);
+    m_search_bar = new SearchBar(this);
+
+    //put the tool bar and search bar into
+    //a hobx-layout widget, and put the widget int a
+    //new tool bar.
+    QWidget *w1 = new QWidget(this);
+    w1->setContentsMargins(0, 0, 0, 0);
+    QHBoxLayout *l1 = new QHBoxLayout(w1);
+    l1->setContentsMargins(0, 0, 0, 0);
+    w1->setLayout(l1);
+    l1->addWidget(m_tool_bar, Qt::AlignLeft);
+    l1->addWidget(m_search_bar, Qt::AlignRight);
+
+    QToolBar *t1 = new QToolBar(this);
+    t1->setContentsMargins(0, 0, 10, 0);
+    t1->setMovable(false);
+    t1->addWidget(w1);
+
+    addToolBar(Qt::TopToolBarArea, t1);
     addToolBarBreak();
 
     m_navigation_bar = new NavigationBar(this);
@@ -127,6 +147,16 @@ FMWindow::FMWindow(const QString &uri, QWidget *parent) : QMainWindow (parent)
         c.setShape(Qt::ArrowCursor);
         this->setCursor(c);
         m_status_bar->update();
+    });
+
+    //search
+    connect(m_search_bar, &SearchBar::searchKeyChanged, [=](){
+        //FIXME: filter the current directory
+    });
+    connect(m_search_bar, &SearchBar::searchRequest, [=](const QString &key){
+        //FIXME: parse the search key to search vfs uri.
+        auto targetUri = SearchVFSUriParser::parseSearchKey(this->getCurrentUri(), key);
+        this->goToUri(targetUri, true);
     });
 
     //action

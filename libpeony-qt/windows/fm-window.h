@@ -13,6 +13,7 @@ class TabPage;
 class SideBar;
 class NavigationBar;
 class ToolBar;
+class SearchBar;
 class StatusBar;
 
 class DirectoryViewProxyIface;
@@ -92,6 +93,7 @@ private:
     SideBar *m_side_bar;
     NavigationBar *m_navigation_bar;
     ToolBar *m_tool_bar;
+    SearchBar *m_search_bar;
     StatusBar *m_status_bar;
 };
 

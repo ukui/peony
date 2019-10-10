@@ -39,8 +39,11 @@
 
 #include <QStyleFactory>
 
+#include "search-vfs-register.h"
+
 PeonyApplication::PeonyApplication(int &argc, char *argv[]) : QApplication (argc, argv)
 {
+    Peony::SearchVFSRegister::registSearchVFS();
     //QIcon::setThemeName("ukui-icon-theme-one");
     setAttribute(Qt::AA_UseHighDpiPixmaps);
     setAttribute(Qt::AA_EnableHighDpiScaling);

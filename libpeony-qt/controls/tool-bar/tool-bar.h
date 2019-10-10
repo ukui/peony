@@ -10,6 +10,7 @@ namespace Peony {
 
 class FMWindow;
 class ViewFactoryModel;
+class SearchBar;
 
 /*!
  * \brief The ToolBar class, providing a set of actions for file management.
@@ -46,6 +47,7 @@ public:
 
 Q_SIGNALS:
     void optionRequest(const RequestType &type);
+    void updateLocationRequest(const QString &uri);
 
 public Q_SLOTS:
     void updateLocation(const QString &uri);
@@ -58,6 +60,7 @@ private:
 
     ViewFactoryModel *m_view_factory_model;
     QComboBox *m_view_option_box;
+    SearchBar *m_search_bar;
 };
 
 }

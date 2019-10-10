@@ -1,4 +1,5 @@
 #include "tool-bar.h"
+#include "search-bar.h"
 #include "fm-window.h"
 #include "directory-view-factory-manager.h"
 #include "directory-view-plugin-iface.h"
@@ -67,6 +68,9 @@ void ToolBar::init(bool hasTopWindow)
     addSeparator();
 
     //advance usage
+    //...
+
+    //separator widget
 
     //other options
 
