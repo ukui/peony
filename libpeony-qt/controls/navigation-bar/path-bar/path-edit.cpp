@@ -16,6 +16,7 @@ PathEdit::PathEdit(QWidget *parent) : QLineEdit(parent)
     m_model = new PathBarModel(this);
     m_completer = new PathCompleter(this);
     m_completer->setModel(m_model);
+    m_completer->setCaseSensitivity(Qt::CaseInsensitive);
 
     setLayoutDirection(Qt::LeftToRight);
 
@@ -33,6 +34,9 @@ PathEdit::PathEdit(QWidget *parent) : QLineEdit(parent)
         } else {
             qDebug()<<"change dir request"<<this->text();
             Q_EMIT this->uriChangeRequest(this->text());
+            //NOTE: we have send the signal for location change.
+            //so we can use editCancelled hide the path edit.
+            this->editCancelled();
         }
     });
 }
@@ -47,6 +51,13 @@ void PathEdit::focusOutEvent(QFocusEvent *e)
 {
     QLineEdit::focusOutEvent(e);
     Q_EMIT editCancelled();
+}
+
+void PathEdit::focusInEvent(QFocusEvent *e)
+{
+    QLineEdit::focusInEvent(e);
+    m_model->setRootUri(this->text());
+    m_completer->complete();
 }
 
 void PathEdit::keyPressEvent(QKeyEvent *e)
