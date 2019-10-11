@@ -67,13 +67,14 @@ void IconViewIndexWidget::paintEvent(QPaintEvent *e)
     QRect rect = QRect(0, 0, textRect.width(), textRect.height() + iconRect.height() + 20);
     m_option.rect.size() = rect.size();
     resize(rect.size());
-    IconView *view = m_delegate->getView();
-    view->backgroundRole();
+    //IconView *view = m_delegate->getView();
+    //view->backgroundRole();
 
-    qDebug()<<m_option.backgroundBrush;
-    qDebug()<<this->size();
+    //qDebug()<<m_option.backgroundBrush;
+    //qDebug()<<this->size();
 
     QRect tmp(0, iconRect.height(), textRect.width(), textRect.height());
+    p.fillRect(this->rect(), m_delegate->selectedBrush());
     QApplication::style()->drawControl(QStyle::CE_ItemViewItem, &m_option, &p, m_delegate->getView());
 
     //extra emblems

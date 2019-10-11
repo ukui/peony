@@ -15,6 +15,8 @@ class PEONYCORESHARED_EXPORT SideBar : public QTreeView
 public:
     explicit SideBar(QWidget *parent = nullptr);
 
+    QSize sizeHint() const override;
+
 Q_SIGNALS:
     void updateWindowLocationRequest(const QString &uri, bool addHistory = true);
 

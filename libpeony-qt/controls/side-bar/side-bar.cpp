@@ -69,6 +69,13 @@ SideBar::SideBar(QWidget *parent) : QTreeView(parent)
     expandAll();
 }
 
+QSize SideBar::sizeHint() const
+{
+    auto size = QTreeView::sizeHint();
+    size.setWidth(180);
+    return size;
+}
+
 void SideBar::paintEvent(QPaintEvent *e)
 {
     QTreeView::paintEvent(e);

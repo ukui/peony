@@ -215,3 +215,8 @@ IconView *IconViewDelegate::getView() const
 {
     return qobject_cast<IconView*>(parent());
 }
+
+const QBrush IconViewDelegate::selectedBrush() const
+{
+    return m_styled_button->palette().highlight();
+}

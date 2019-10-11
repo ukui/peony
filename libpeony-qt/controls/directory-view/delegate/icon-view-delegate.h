@@ -22,6 +22,8 @@ public:
     ~IconViewDelegate() override;
     IconView *getView() const;
 
+    const QBrush selectedBrush() const;
+
 public Q_SLOTS:
     void setCutFiles(const QModelIndexList &indexes);
 
