@@ -49,9 +49,7 @@ void ClipboardUtils::setClipboardFiles(const QStringList &uris, bool isCut)
         urls<<uri;
     }
     data->setUrls(urls);
-    if (isCut) {
-        QApplication::clipboard()->setMimeData(data);
-    }
+    QApplication::clipboard()->setMimeData(data);
 }
 
 bool ClipboardUtils::isClipboardHasFiles()
