@@ -16,7 +16,7 @@ using namespace Peony;
 SideBarDelegate::SideBarDelegate(QObject *parent) : QStyledItemDelegate(parent)
 {
     QPushButton p;
-    m_hover_bg = p.palette().button();
+    m_hover_bg = p.palette().midlight();
     m_selected_bg = p.palette().highlight();
 }
 
@@ -42,8 +42,14 @@ void SideBarDelegate::paint(QPainter *painter, const QStyleOptionViewItem &optio
 
     //FIXME: maybe i should use qss "show-decoration-selected" instead
 
-    if (index.column() != 0 || !index.isValid())
+    if (index.column() != 0 || !index.isValid()) {
+        if (opt.state.testFlag(QStyle::State_Selected)) {
+            painter->fillRect(opt.rect, m_selected_bg);
+        } else if (opt.state.testFlag(QStyle::State_MouseOver)) {
+            painter->fillRect(opt.rect, m_hover_bg);
+        }
         return QStyledItemDelegate::paint(painter, option, index);
+    }
 
     auto sideBarView = sideBar;
 
@@ -76,7 +82,6 @@ void SideBarDelegate::paint(QPainter *painter, const QStyleOptionViewItem &optio
     }
 
     sideBarView->style()->drawControl(QStyle::CE_ItemViewItem, &opt, painter, sideBarView);
-
 }
 
 QSize SideBarDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const
