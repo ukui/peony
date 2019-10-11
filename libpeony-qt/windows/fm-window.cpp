@@ -24,6 +24,8 @@
 
 #include <QPainter>
 
+#include <QMessageBox>
+
 using namespace Peony;
 
 FMWindow::FMWindow(const QString &uri, QWidget *parent) : QMainWindow (parent)
@@ -155,6 +157,12 @@ FMWindow::FMWindow(const QString &uri, QWidget *parent) : QMainWindow (parent)
     });
     connect(m_search_bar, &SearchBar::searchRequest, [=](const QString &key){
         //FIXME: parse the search key to search vfs uri.
+        if (this->getCurrentUri().startsWith("search:///")) {
+            QMessageBox::warning(this, tr("Warning"), tr("You are now in a searching directory, "
+                                                         "If you want to search files, you should "
+                                                         "leave this path at first."));
+            return;
+        }
         auto targetUri = SearchVFSUriParser::parseSearchKey(this->getCurrentUri(), key);
         this->goToUri(targetUri, true);
     });

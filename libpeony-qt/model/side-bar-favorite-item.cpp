@@ -16,7 +16,7 @@ SideBarFavoriteItem::SideBarFavoriteItem(QString uri,
     m_is_root_child = m_parent == nullptr;
     if (m_is_root_child) {
         m_display_name = tr("Favorite");
-        m_icon_name = "favorite";
+        m_icon_name = "emblem-favorite";
 
         SideBarFavoriteItem *recentItem = new SideBarFavoriteItem("recent:///", this, m_model);
         QString desktopUri = "file://" + QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);

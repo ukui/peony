@@ -16,7 +16,7 @@ SideBarPersonalItem::SideBarPersonalItem(QString uri,
         QString homeUri = "file://" + QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
         m_uri = homeUri;
         m_display_name = tr("Personal");
-        m_icon_name = "personal";
+        m_icon_name = "emblem-personal";
 
         QString documentUri = "file://" + QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
         SideBarPersonalItem *documentItem = new SideBarPersonalItem(documentUri,

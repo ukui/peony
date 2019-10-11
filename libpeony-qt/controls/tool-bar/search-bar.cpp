@@ -23,8 +23,12 @@ SearchBar::SearchBar(QWidget *parent) : QLineEdit(parent)
 
     setLayoutDirection(Qt::LeftToRight);
     setPlaceholderText(tr("Input search key..."));
-    QAction *searchAction = addAction(QIcon::fromTheme("search"), QLineEdit::TrailingPosition);
-    searchAction->setShortcut(Qt::Key_Return);
+    QAction *searchAction = addAction(QIcon::fromTheme("search-symbolic"), QLineEdit::TrailingPosition);
+    //NOTE: we should not add a short cut for line edit,
+    //because it might have some bad effect for other controls.
+    //use returnPressed signal trigger the action instead.
+    //searchAction->setShortcut(Qt::Key_Return);
+    connect(this, &QLineEdit::returnPressed, searchAction, &QAction::trigger);
 
     connect(this, &QLineEdit::textChanged, this, &SearchBar::searchKeyChanged);
     connect(searchAction, &QAction::triggered, [=](){
