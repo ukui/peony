@@ -28,6 +28,7 @@ PathEdit::PathEdit(QWidget *parent) : QLineEdit(parent)
     setCompleter(m_completer);
 
     connect(this, &QLineEdit::returnPressed, [=]{
+        qDebug()<<"awerwer";
         if (this->text().isEmpty()) {
             this->setText(m_last_uri);
             return;

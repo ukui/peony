@@ -7,13 +7,17 @@
 
 #include <QPainter>
 
+#include <QPushButton>
+
 #include <QDebug>
 
 using namespace Peony;
 
 SideBarDelegate::SideBarDelegate(QObject *parent) : QStyledItemDelegate(parent)
 {
-
+    QPushButton p;
+    m_hover_bg = p.palette().button();
+    m_selected_bg = p.palette().highlight();
 }
 
 void SideBarDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
@@ -49,7 +53,12 @@ void SideBarDelegate::paint(QPainter *painter, const QStyleOptionViewItem &optio
 
     int x = opt.rect.x();
     opt.rect.setX(0);
-    sideBarView->style()->drawPrimitive(QStyle::PE_PanelItemViewItem, &opt, painter, sideBarView);
+    if (opt.state.testFlag(QStyle::State_Selected)) {
+        painter->fillRect(opt.rect, m_selected_bg);
+    } else if (opt.state.testFlag(QStyle::State_MouseOver)) {
+        painter->fillRect(opt.rect, m_hover_bg);
+    }
+    //sideBarView->style()->drawPrimitive(QStyle::PE_PanelItemViewItem, &opt, painter, sideBarView);
 
     opt.rect.setX(x + 7);
 
