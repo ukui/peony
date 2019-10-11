@@ -41,8 +41,22 @@
 
 #include "search-vfs-register.h"
 
+#include <QMessageBox>
+
 PeonyApplication::PeonyApplication(int &argc, char *argv[]) : QApplication (argc, argv)
 {
+    auto testIcon = QIcon::fromTheme("folder");
+    if (testIcon.isNull()) {
+        QIcon::setThemeName("ukui-icon-theme");
+        QMessageBox::warning(nullptr, tr("Warning"), tr("peony-qt might be running as root, "
+                                                        "that means you have the higher permission "
+                                                        "and can do some things which normally forbidden. "
+                                                        "But, you should learn that if you were in a "
+                                                        "root, the virtual file system will lose some "
+                                                        "featrue such as you can not use \"My Computer\", "
+                                                        "the theme and icons might also went wrong. So, run "
+                                                        "peony-qt in a root is not recommended."));
+    }
     Peony::SearchVFSRegister::registSearchVFS();
     //QIcon::setThemeName("ukui-icon-theme-one");
     setAttribute(Qt::AA_UseHighDpiPixmaps);

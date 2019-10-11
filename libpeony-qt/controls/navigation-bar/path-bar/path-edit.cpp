@@ -28,7 +28,6 @@ PathEdit::PathEdit(QWidget *parent) : QLineEdit(parent)
     setCompleter(m_completer);
 
     connect(this, &QLineEdit::returnPressed, [=]{
-        qDebug()<<"awerwer";
         if (this->text().isEmpty()) {
             this->setText(m_last_uri);
             this->editCancelled();
@@ -64,12 +63,8 @@ void PathEdit::focusInEvent(QFocusEvent *e)
 
 void PathEdit::keyPressEvent(QKeyEvent *e)
 {
-    qDebug()<<"key pressed:"<<e->key();
     QLineEdit::keyPressEvent(e);
     if (e->key() == Qt::Key_Escape) {
         Q_EMIT editCancelled();
-    }
-    if (e->key() == Qt::Key_Return) {
-        qDebug()<<"gawertqwt";
     }
 }
