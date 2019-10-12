@@ -6,15 +6,26 @@
 #include <QMenu>
 
 #include <QMouseEvent>
+#include <QPainter>
+#include <QStyleOptionFocusRect>
+#include <QLineEdit>
 
 using namespace Peony;
 
 LocationBar::LocationBar(QWidget *parent) : QToolBar(parent)
 {
+    setStyleSheet("padding-right: 15;"
+                  "margin-left: 2");
+    m_styled_edit = new QLineEdit;
     setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
     setIconSize(QSize(16, 16));
     qDebug()<<sizePolicy();
     //connect(this, &LocationBar::groupChangedRequest, this, &LocationBar::setRootUri);
+}
+
+LocationBar::~LocationBar()
+{
+    m_styled_edit->deleteLater();
 }
 
 void LocationBar::setRootUri(const QString &uri)
@@ -46,7 +57,12 @@ void LocationBar::addButton(const QString &uri, bool setMenu)
     QIcon icon = QIcon::fromTheme(Peony::FileUtils::getFileIconName(uri), QIcon::fromTheme("folder"));
 
     action->setIcon(icon);
-    action->setText(url.fileName());
+    if (!url.fileName().isEmpty()) {
+        action->setText(url.fileName());
+    } else {
+        action->setText(url.url());
+    }
+
     connect(action, &QAction::triggered, [=](){
         //this->setRootUri(uri);
         Q_EMIT this->groupChangedRequest(uri);
@@ -86,4 +102,25 @@ void LocationBar::mousePressEvent(QMouseEvent *e)
     if (e->button() == Qt::LeftButton) {
         Q_EMIT blankClicked();
     }
+}
+
+void LocationBar::paintEvent(QPaintEvent *e)
+{
+    //QToolBar::paintEvent(e);
+
+    QPainter p(this);
+    QStyleOptionFocusRect opt;
+    opt.initFrom(this);
+
+    //qDebug()<<opt.rect;
+    //p.drawRect(opt.rect);
+    auto rect = opt.rect;
+    rect.setHeight(rect.height() - 1);
+    rect.setWidth(rect.width() - 1);
+    p.setPen(this->palette().mid().color());
+    p.setBrush(m_styled_edit->palette().base());
+    p.drawRect(rect);
+
+    style()->drawControl(QStyle::CE_ToolBar, &opt, &p, this);
+    //style->drawPrimitive(QStyle::PE_FrameFocusRect, &opt, &p, this);
 }

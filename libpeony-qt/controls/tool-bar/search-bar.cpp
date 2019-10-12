@@ -57,5 +57,5 @@ void SearchBar::focusOutEvent(QFocusEvent *e)
 {
     blockSignals(true);
     QLineEdit::focusOutEvent(e);
-    this->clear();
+    //this->clear();
 }
