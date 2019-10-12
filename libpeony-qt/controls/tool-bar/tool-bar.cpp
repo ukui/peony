@@ -27,9 +27,9 @@ ToolBar::ToolBar(FMWindow *window, QWidget *parent) : QToolBar(parent)
 void ToolBar::init(bool hasTopWindow)
 {
     //layout
-    QAction *newWindowAction = addAction(QIcon::fromTheme("window", QIcon::fromTheme("folder")),
+    QAction *newWindowAction = addAction(QIcon::fromTheme("window-new-symbolic", QIcon::fromTheme("folder")),
                                          tr("Open in new &Window"));
-    QAction *newTabActon = addAction(QIcon::fromTheme("open", QIcon::fromTheme("folder")),
+    QAction *newTabActon = addAction(QIcon::fromTheme("tab-new-symbolic", QIcon::fromTheme("folder")),
                                      tr("Open in new &Tab"));
     QAction *newTerminalAction = addAction(QIcon::fromTheme("terminal", QIcon::fromTheme("folder")),
                                            tr("Open in Terminal"));
@@ -43,6 +43,7 @@ void ToolBar::init(bool hasTopWindow)
     auto defaultViewId = viewManager->getDefaultViewId();
 
     QComboBox *viewCombox = new QComboBox(this);
+    viewCombox->setToolTip(tr("Change Directory View"));
     m_view_option_box = viewCombox;
     auto model = new ViewFactoryModel(this);
     m_view_factory_model = model;

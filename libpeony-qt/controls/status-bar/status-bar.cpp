@@ -74,6 +74,11 @@ void StatusBar::update()
     }
 }
 
+void StatusBar::update(const QString &message)
+{
+    m_label->setText(message);
+}
+
 void StatusBar::paintEvent(QPaintEvent *e)
 {
     //I do not want status bar draw the inserted widget's

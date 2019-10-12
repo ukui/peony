@@ -13,6 +13,8 @@ SearchBar::SearchBar(QWidget *parent) : QLineEdit(parent)
     setTextMargins(5, 0, 0, 0);
     setFixedWidth(175);
 
+    setToolTip(tr("Input the search key of files you would like to find."));
+
     m_model = new QStringListModel(this);
     QCompleter *completer = new QCompleter(this);
     completer->setModel(m_model);

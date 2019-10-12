@@ -142,6 +142,7 @@ FMWindow::FMWindow(const QString &uri, QWidget *parent) : QMainWindow (parent)
         QCursor c;
         c.setShape(Qt::WaitCursor);
         this->setCursor(c);
+        m_status_bar->update(tr("Loaing... Press Esc to stop a loading."));
     });
 
     connect(this, &FMWindow::locationChangeEnd, [this](){

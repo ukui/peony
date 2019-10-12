@@ -171,10 +171,13 @@ QVariant SideBarModel::data(const QModelIndex &index, int role) const
             return QVariant();
         }
     }
+
     switch (role) {
     case Qt::DecorationRole:
         return QIcon::fromTheme(item->iconName());
     case Qt::DisplayRole:
+        return item->displayName();
+    case Qt::ToolTipRole:
         return item->displayName();
     default:
         break;

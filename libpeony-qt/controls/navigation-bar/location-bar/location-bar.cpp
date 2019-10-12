@@ -14,6 +14,8 @@ using namespace Peony;
 
 LocationBar::LocationBar(QWidget *parent) : QToolBar(parent)
 {
+    setToolTip(tr("click the blank area for edit"));
+
     setStyleSheet("padding-right: 15;"
                   "margin-left: 2");
     m_styled_edit = new QLineEdit;

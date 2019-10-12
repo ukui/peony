@@ -18,6 +18,7 @@ public:
 
 public Q_SLOTS:
     void update();
+    void update(const QString &message);
 
 protected:
     void paintEvent(QPaintEvent *e) override;
