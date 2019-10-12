@@ -74,8 +74,8 @@ private:
 
     DirectoryViewProxyIface *m_proxy = nullptr;
 
-    QStack<QString> m_back_stack;
-    QStack<QString> m_forward_stack;
+    QStringList m_back_list;
+    QStringList m_forward_list;
 
     QVBoxLayout *m_layout;
 };
