@@ -61,6 +61,9 @@ public Q_SLOTS:
     void refresh();
     void stopLoading();
 
+    void tryJump(int index);
+    void clearHistory() {m_back_list.clear(); m_forward_list.clear();}
+
 protected:
     /*!
      * \brief bindNewProxy

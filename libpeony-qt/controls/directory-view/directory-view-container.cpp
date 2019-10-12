@@ -45,7 +45,7 @@ const QStringList DirectoryViewContainer::getBackList()
 const QStringList DirectoryViewContainer::getForwardList()
 {
     QStringList l;
-    for (auto uri : l) {
+    for (auto uri : m_forward_list) {
         l<<uri;
     }
     return l;
@@ -61,7 +61,7 @@ void DirectoryViewContainer::goBack()
     if (!canGoBack())
         return;
 
-    auto uri = m_back_list.takeFirst();
+    auto uri = m_back_list.takeLast();
     m_forward_list.prepend(getCurrentUri());
     Q_EMIT updateWindowLocationRequest(uri, false);
 }
@@ -77,7 +77,7 @@ void DirectoryViewContainer::goForward()
         return;
 
     auto uri = m_forward_list.takeFirst();
-    m_back_list.prepend(getCurrentUri());
+    m_back_list.append(getCurrentUri());
 
     Q_EMIT updateWindowLocationRequest(uri, false);
 }
@@ -109,7 +109,7 @@ void DirectoryViewContainer::goToUri(const QString &uri, bool addHistory)
 
     if (addHistory) {
         m_forward_list.clear();
-        m_back_list.prepend(getCurrentUri());
+        m_back_list.append(getCurrentUri());
     }
 
     m_proxy->setDirectoryUri(uri);
@@ -179,5 +179,25 @@ void DirectoryViewContainer::stopLoading()
 {
     if (getProxy()) {
         getProxy()->stopLocationChange();
+    }
+}
+
+void DirectoryViewContainer::tryJump(int index)
+{
+    QStringList l;
+    l<<m_back_list<<getCurrentUri()<<m_forward_list;
+    if (0 <= index && index < l.count()) {
+        auto targetUri = l.at(index);
+        m_back_list.clear();
+        m_forward_list.clear();
+        for (int i = 0; i < l.count(); i++) {
+            if (i < index) {
+                m_back_list<<l.at(i);
+            }
+            if (i > index) {
+                m_forward_list<<l.at(i);
+            }
+        }
+        updateWindowLocationRequest(targetUri, false);
     }
 }
