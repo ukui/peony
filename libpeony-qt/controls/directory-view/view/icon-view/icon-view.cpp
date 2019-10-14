@@ -63,6 +63,21 @@ void IconView::init()
 
     setGridSize(QSize(115, 135));
     setIconSize(QSize(64, 64));
+
+    //default connect
+    connect(m_model, &FileItemModel::updated, [=](){
+        m_sort_filter_proxy_model->sort(FileItemModel::FileName);
+    });
+
+    //edit trigger
+    connect(this->selectionModel(), &QItemSelectionModel::selectionChanged, [=](const QItemSelection &selection, const QItemSelection &deselection){
+        qDebug()<<"selection changed";
+        auto currentSelections = selection.indexes();
+
+        for (auto index : deselection.indexes()) {
+            this->setIndexWidget(index, nullptr);
+        }
+    });
 }
 
 void IconView::rebindProxy()
