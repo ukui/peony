@@ -36,11 +36,9 @@ public:
      */
     enum Type {
         Invalid,
-        File,//selected files in a view
-        Volume = File << 1,//maybe an item computer view, or an item in sidebar
-        DirectoryBackground = File << 2,//a view background menu
-        DesktopBackground = File << 3,//a desktop view background menu
-        Other = File << 4
+        DirectoryView,
+        SideBar,
+        Other
     };
     Q_DECLARE_FLAGS(Types, Type)
 

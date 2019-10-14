@@ -15,13 +15,10 @@ QList<QAction *> MenuPluginTest1::menuActions(Types types, const QString &uri, c
     Q_UNUSED(uri);
     Q_UNUSED(selectionUris);
     QList<QAction *> actions;
-    if ((types |= Peony::MenuPluginInterface::File)) {
-        QAction *action = new QAction(QIcon::fromTheme("search"), tr("test"));
-        actions<<action;
-    }
-    if ((types |= Peony::MenuPluginInterface::Volume)) {
-        QAction *action = new QAction(QIcon::fromTheme("media-eject"), tr("test-volume"));
-        actions<<action;
-    }
+    QAction *action = new QAction(QIcon::fromTheme("search"), tr("test"));
+    actions<<action;
+    QAction *action2 = new QAction(QIcon::fromTheme("media-eject"), tr("test-volume"));
+    actions<<action2;
+
     return actions;
 }

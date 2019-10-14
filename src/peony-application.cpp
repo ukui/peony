@@ -43,6 +43,10 @@
 
 #include <QMessageBox>
 
+#include "menu-plugin-manager.h"
+#include "directory-view-menu.h"
+#include "icon-view.h"
+
 PeonyApplication::PeonyApplication(int &argc, char *argv[]) : QApplication (argc, argv)
 {
     auto testIcon = QIcon::fromTheme("folder");
@@ -289,10 +293,23 @@ PeonyApplication::PeonyApplication(int &argc, char *argv[]) : QApplication (argc
     w->show();
 #endif
 
-#define FM_WINDOW
+//#define FM_WINDOW
 #ifdef FM_WINDOW
     auto window = new Peony::FMWindow("file:///");
     window->setAttribute(Qt::WA_DeleteOnClose);
     window->show();
+#endif
+
+#define MENU
+#ifdef MENU
+    Peony::DirectoryView::IconView *view = new Peony::DirectoryView::IconView;
+    view->setDirectoryUri("file:///");
+    view->beginLocationChange();
+    view->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(view, &QWidget::customContextMenuRequested, [=](){
+        Peony::DirectoryViewMenu menu(view, view);
+        menu.exec(QCursor::pos());
+    });
+    view->show();
 #endif
 }
