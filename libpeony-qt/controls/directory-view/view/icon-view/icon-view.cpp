@@ -5,6 +5,8 @@
 #include "icon-view-delegate.h"
 #include "icon-view-style.h"
 
+#include "directory-view-menu.h"
+
 #include <QMouseEvent>
 
 #include <QDragEnterEvent>
@@ -55,6 +57,8 @@ void IconView::init()
     setMovement(QListView::Snap);
     //setWordWrap(true);
 
+    setContextMenuPolicy(Qt::CustomContextMenu);
+
     m_model = new FileItemModel(this);
     m_sort_filter_proxy_model = new FileItemProxyFilterSortModel(m_model);
     m_sort_filter_proxy_model->setSourceModel(m_model);
@@ -78,6 +82,13 @@ void IconView::init()
             this->setIndexWidget(index, nullptr);
         }
     });
+
+    if (m_use_peony_qt_directory_menu) {
+        connect(this, &IconView::customContextMenuRequested, [=](){
+            DirectoryViewMenu menu(this);
+            menu.exec(QCursor::pos());
+        });
+    }
 }
 
 void IconView::rebindProxy()
@@ -117,6 +128,13 @@ void IconView::rebindProxy()
             m_last_index = QModelIndex();
         }
     });
+
+    if (m_use_peony_qt_directory_menu) {
+        connect(this, &IconView::customContextMenuRequested, [=](){
+            DirectoryViewMenu menu(this);
+            menu.exec(QCursor::pos());
+        });
+    }
 }
 
 DirectoryViewProxyIface *IconView::getProxy()
@@ -241,6 +259,10 @@ void IconView::mousePressEvent(QMouseEvent *e)
 {
     QListView::mousePressEvent(e);
 
+    if (e->button() != Qt::LeftButton) {
+        return;
+    }
+
     qDebug()<<m_edit_trigger_timer.isActive()<<m_edit_trigger_timer.interval();
     if (indexAt(e->pos()) == m_last_index && m_last_index.isValid()) {
         if (m_edit_trigger_timer.isActive()) {
@@ -253,6 +275,11 @@ void IconView::mousePressEvent(QMouseEvent *e)
 void IconView::mouseReleaseEvent(QMouseEvent *e)
 {
     QListView::mouseReleaseEvent(e);
+
+    if (e->button() != Qt::LeftButton) {
+        return;
+    }
+
     if (!m_edit_trigger_timer.isActive() && indexAt(e->pos()).isValid() && this->selectedIndexes().count() == 1) {
         resetEditTriggerTimer();
     }

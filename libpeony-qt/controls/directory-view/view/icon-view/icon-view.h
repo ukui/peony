@@ -34,6 +34,7 @@ public:
     const QString viewId() override {return tr("Icon View");}
 
     void setProxy(DirectoryViewProxyIface *proxy) override;
+    void setUsePeonyQtDirectoryMenu(bool use) {m_use_peony_qt_directory_menu = use;}
 
     DirectoryViewProxyIface *getProxy() override;
 
@@ -89,6 +90,8 @@ private:
     FileItemProxyFilterSortModel *m_sort_filter_proxy_model = nullptr;
 
     QString m_current_uri = nullptr;
+
+    bool m_use_peony_qt_directory_menu = true;
 };
 
 }
