@@ -43,6 +43,7 @@ public:
     static QStringList getClipboardFilesUris();
     static void pasteClipboardFiles(const QString &targetDirUri);
     static void clearClipboard();
+    static const QString getClipedFilesParentUri();
 
 Q_SIGNALS:
     void clipboardChanged();

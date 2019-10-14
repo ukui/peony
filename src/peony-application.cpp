@@ -292,6 +292,7 @@ PeonyApplication::PeonyApplication(int &argc, char *argv[]) : QApplication (argc
 #define FM_WINDOW
 #ifdef FM_WINDOW
     auto window = new Peony::FMWindow("file:///");
+    window->setAttribute(Qt::WA_DeleteOnClose);
     window->show();
 #endif
 }

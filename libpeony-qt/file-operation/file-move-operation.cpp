@@ -682,7 +682,7 @@ void FileMoveOperation::run()
 {
     Q_EMIT operationStarted();
 start:
-    if (isInvalid()) {
+    if (!isInvalid()) {
         auto response = errored(nullptr,
                                 nullptr,
                                 GErrorWrapper::wrapFrom(g_error_new(G_IO_ERROR,

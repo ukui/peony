@@ -26,6 +26,8 @@
 
 #include <QPushButton>
 
+#include "clipboard-utils.h"
+
 using namespace Peony;
 using namespace Peony::DirectoryView;
 
@@ -58,8 +60,15 @@ QSize IconViewDelegate::sizeHint(const QStyleOptionViewItem &option, const QMode
 void IconViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
     //FIXME: how to deal with word wrap correctly?
+    painter->save();
 
     auto view = qobject_cast<IconView*>(this->parent());
+    if (view->state() == IconView::DraggingState) {
+        if (view->selectionModel()->selection().contains(index)) {
+            painter->setOpacity(0.8);
+        }
+    }
+
     //default painter
     //QStyledItemDelegate::paint(painter, option, index);
     QIcon icon = qvariant_cast<QIcon>(index.data(Qt::DecorationRole));
@@ -70,7 +79,6 @@ void IconViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
 
     auto style = option.widget->style();
 
-    painter->save();
     painter->setClipRect(opt.rect);
     if (opt.state.testFlag(QStyle::State_MouseOver) && !opt.state.testFlag(QStyle::State_Selected)) {
         QColor color = m_styled_button->palette().highlight().color();
@@ -80,7 +88,16 @@ void IconViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
     if (opt.state.testFlag(QStyle::State_Selected)) {
         painter->fillRect(opt.rect, m_styled_button->palette().highlight());
     }
-    painter->restore();
+
+    if (ClipboardUtils::getClipedFilesParentUri() == view->getDirectoryUri()) {
+        if (ClipboardUtils::isClipboardFilesBeCut()) {
+            auto clipedUris = ClipboardUtils::getClipboardFilesUris();
+            if (clipedUris.contains(index.data(FileItemModel::UriRole).toString())) {
+                painter->setOpacity(0.5);
+                qDebug()<<"cut item"<<index.data();
+            }
+        }
+    }
 
     style->drawControl(QStyle::CE_ItemViewItem, &opt, painter, opt.widget);
 
@@ -95,7 +112,6 @@ void IconViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
     auto info = item->info();
     auto rect = view->visualRect(index);
 
-    painter->save();
     //paint symbolic link emblems
     if (info->isSymbolLink()) {
         QIcon icon = QIcon::fromTheme("emblem-symbolic-link");

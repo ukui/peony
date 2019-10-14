@@ -146,13 +146,8 @@ void ToolBar::init(bool hasTopWindow)
         connect(pasteAction, &QAction::triggered, [=](){
             if (ClipboardUtils::isClipboardHasFiles()) {
                 //FIXME: how about duplicated copy?
-                if (ClipboardUtils::isClipboardFilesBeCut()) {
-                    FileOperationUtils::move(ClipboardUtils::getClipboardFilesUris(), m_top_window->getCurrentUri(), true);
-                    //FIXME: how to deal with a failed move?
-                    ClipboardUtils::clearClipboard();
-                } else {
-                    FileOperationUtils::copy(ClipboardUtils::getClipboardFilesUris(), m_top_window->getCurrentUri(), true);
-                }
+                //FIXME: how to deal with a failed move?
+                ClipboardUtils::pasteClipboardFiles(m_top_window->getCurrentUri());
             }
         });
         connect(cutAction, &QAction::triggered, [=](){
