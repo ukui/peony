@@ -4,6 +4,8 @@
 #include <QStyledItemDelegate>
 #include "peony-core_global.h"
 
+class QPushButton;
+
 namespace Peony {
 
 class PEONYCORESHARED_EXPORT SideBarDelegate : public QStyledItemDelegate
@@ -11,6 +13,7 @@ class PEONYCORESHARED_EXPORT SideBarDelegate : public QStyledItemDelegate
     Q_OBJECT
 public:
     explicit SideBarDelegate(QObject *parent = nullptr);
+    ~SideBarDelegate() override;
 
     void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const override;
     QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const override;
@@ -24,8 +27,7 @@ public:
     */
 
 private:
-    QBrush m_hover_bg;
-    QBrush m_selected_bg;
+    QPushButton *m_styled_button;
 };
 
 }

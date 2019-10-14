@@ -73,7 +73,9 @@ void IconViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
     painter->save();
     painter->setClipRect(opt.rect);
     if (opt.state.testFlag(QStyle::State_MouseOver) && !opt.state.testFlag(QStyle::State_Selected)) {
-        painter->fillRect(opt.rect, m_styled_button->palette().midlight());
+        QColor color = m_styled_button->palette().highlight().color();
+        color.setAlpha(127);//half transparent
+        painter->fillRect(opt.rect, color);
     }
     if (opt.state.testFlag(QStyle::State_Selected)) {
         painter->fillRect(opt.rect, m_styled_button->palette().highlight());

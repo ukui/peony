@@ -15,9 +15,12 @@ using namespace Peony;
 
 SideBarDelegate::SideBarDelegate(QObject *parent) : QStyledItemDelegate(parent)
 {
-    QPushButton p;
-    m_hover_bg = p.palette().midlight();
-    m_selected_bg = p.palette().highlight();
+    m_styled_button = new QPushButton;
+}
+
+SideBarDelegate::~SideBarDelegate()
+{
+    m_styled_button->deleteLater();
 }
 
 void SideBarDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
@@ -44,9 +47,9 @@ void SideBarDelegate::paint(QPainter *painter, const QStyleOptionViewItem &optio
 
     if (index.column() != 0 || !index.isValid()) {
         if (opt.state.testFlag(QStyle::State_Selected)) {
-            painter->fillRect(opt.rect, m_selected_bg);
+            painter->fillRect(opt.rect, m_styled_button->palette().highlight());
         } else if (opt.state.testFlag(QStyle::State_MouseOver)) {
-            painter->fillRect(opt.rect, m_hover_bg);
+            painter->fillRect(opt.rect, m_styled_button->palette().midlight());
         }
         return QStyledItemDelegate::paint(painter, option, index);
     }
@@ -60,9 +63,11 @@ void SideBarDelegate::paint(QPainter *painter, const QStyleOptionViewItem &optio
     int x = opt.rect.x();
     opt.rect.setX(0);
     if (opt.state.testFlag(QStyle::State_Selected)) {
-        painter->fillRect(opt.rect, m_selected_bg);
+        painter->fillRect(opt.rect, m_styled_button->palette().highlight());
     } else if (opt.state.testFlag(QStyle::State_MouseOver)) {
-        painter->fillRect(opt.rect, m_hover_bg);
+        QColor color = m_styled_button->palette().highlight().color();
+        color.setAlpha(127);
+        painter->fillRect(opt.rect, color);
     }
     //sideBarView->style()->drawPrimitive(QStyle::PE_PanelItemViewItem, &opt, painter, sideBarView);
 
