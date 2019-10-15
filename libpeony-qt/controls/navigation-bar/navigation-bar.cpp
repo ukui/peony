@@ -36,7 +36,7 @@ NavigationBar::NavigationBar(QWidget *parent) : QToolBar(parent)
             this, &NavigationBar::refreshRequest);
 
     //FIXME: preview plugins
-    addAction(QIcon::fromTheme("preview", QIcon::fromTheme("gtk-missing-image")),
+    addAction(QIcon::fromTheme("preview-file", QIcon::fromTheme("gtk-missing-image")),
               tr("Preview"));
 }
 

@@ -1,6 +1,8 @@
 #include "menuplugin.h"
 #include <QDebug>
 
+#include <QMenu>
+
 using namespace Peony;
 
 QString MenuPluginTest1::testPlugin()
@@ -17,6 +19,10 @@ QList<QAction *> MenuPluginTest1::menuActions(Types types, const QString &uri, c
     QList<QAction *> actions;
     QAction *action = new QAction(QIcon::fromTheme("search"), tr("test"));
     actions<<action;
+    QMenu *menu = new QMenu;
+    menu->addAction("sub test1");
+    menu->addSeparator();
+    menu->addAction("sub test2");
     QAction *action2 = new QAction(QIcon::fromTheme("media-eject"), tr("test-volume"));
     actions<<action2;
 

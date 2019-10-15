@@ -83,10 +83,22 @@ void IconView::init()
         }
     });
 
+    connectDefaultMenuAction();
+}
+
+void IconView::connectDefaultMenuAction()
+{
     if (m_use_peony_qt_directory_menu) {
-        connect(this, &IconView::customContextMenuRequested, [=](){
-            DirectoryViewMenu menu(this);
-            menu.exec(QCursor::pos());
+        connect(this, &IconView::customContextMenuRequested, [=](const QPoint &pos){
+            if (!indexAt(pos).isValid())
+                this->clearSelection();
+
+            //NOTE: we have to ensure that we have cleared the
+            //selection if menu request at blank pos.
+            QTimer::singleShot(1, [=](){
+                DirectoryViewMenu menu(this);
+                menu.exec(QCursor::pos());
+            });
         });
     }
 }
@@ -129,12 +141,7 @@ void IconView::rebindProxy()
         }
     });
 
-    if (m_use_peony_qt_directory_menu) {
-        connect(this, &IconView::customContextMenuRequested, [=](){
-            DirectoryViewMenu menu(this);
-            menu.exec(QCursor::pos());
-        });
-    }
+    connectDefaultMenuAction();
 }
 
 DirectoryViewProxyIface *IconView::getProxy()

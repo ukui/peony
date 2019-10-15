@@ -43,6 +43,10 @@ DirectoryViewFactoryManager::DirectoryViewFactoryManager(QObject *parent) : QObj
         qDebug()<<pluginLoader.load();
         QObject *plugin = pluginLoader.instance();
         if (plugin) {
+            PluginInterface *piface = dynamic_cast<PluginInterface*>(plugin);
+            if (piface->pluginType() != PluginInterface::DirectoryViewPlugin)
+                continue;
+
             DirectoryViewPluginIface *iface = qobject_cast<DirectoryViewPluginIface*>(plugin);
             qDebug()<<iface->name();
             qDebug()<<iface->description();

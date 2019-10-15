@@ -17,6 +17,8 @@ public:
         MenuPlugin,
         PreviewPagePlugin,
         DirectoryViewPlugin,
+        ToolBarPlugin,
+        PropertiesWindowPlugin,
         Other
     };
 

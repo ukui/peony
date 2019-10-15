@@ -10,16 +10,16 @@ using namespace Peony;
 
 NavigationToolBar::NavigationToolBar(QWidget *parent) : QToolBar(parent)
 {
-    m_back_action = addAction(QIcon::fromTheme("gtk-go-back-ltr"), tr("Go Back"), [=](){
+    m_back_action = addAction(QIcon::fromTheme("go-previous"), tr("Go Back"), [=](){
         this->onGoBack();
     });
 
 
-    m_forward_action = addAction(QIcon::fromTheme("gtk-go-forward-ltr"), tr("Go Forward"), [=](){
+    m_forward_action = addAction(QIcon::fromTheme("go-next"), tr("Go Forward"), [=](){
         this->onGoForward();
     });
 
-    m_history_action = addAction(QIcon::fromTheme("gtk-go-down"), tr("History"));
+    m_history_action = addAction(QIcon::fromTheme("go-down"), tr("History"));
 
     auto historyButtonWidget = widgetForAction(m_history_action);
     auto historyButton = qobject_cast<QToolButton*>(historyButtonWidget);
@@ -64,7 +64,7 @@ NavigationToolBar::NavigationToolBar(QWidget *parent) : QToolBar(parent)
         //historyButton->setMenu(nullptr);
     });
 
-    m_cd_up_action = addAction(QIcon::fromTheme("gtk-go-up"), tr("Cd Up"), [=](){
+    m_cd_up_action = addAction(QIcon::fromTheme("go-up"), tr("Cd Up"), [=](){
         if (m_current_container) {
             m_current_container->cdUp();
         }

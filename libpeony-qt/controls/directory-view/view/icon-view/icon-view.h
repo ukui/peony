@@ -65,6 +65,7 @@ public Q_SLOTS:
 protected:
     void changeZoomLevel();
     void resetEditTriggerTimer();
+    void connectDefaultMenuAction();
 
     void dragEnterEvent(QDragEnterEvent *e) override;
     void dragMoveEvent(QDragMoveEvent *e) override;

@@ -27,6 +27,10 @@ MenuPluginManager::MenuPluginManager(QObject *parent) : QObject(parent)
         qDebug()<<pluginLoader.load();
         QObject *plugin = pluginLoader.instance();
         qDebug()<<"test start";
+        PluginInterface *piface = dynamic_cast<PluginInterface*>(plugin);
+        if (piface->pluginType() != PluginInterface::MenuPlugin)
+            continue;
+
         MenuPluginInterface *test = qobject_cast<MenuPluginInterface*>(plugin);
         qDebug()<<test->name();
         m_hash.insert(test->name(), test);
