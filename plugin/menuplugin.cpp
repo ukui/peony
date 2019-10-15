@@ -18,12 +18,21 @@ QList<QAction *> MenuPluginTest1::menuActions(Types types, const QString &uri, c
     Q_UNUSED(selectionUris);
     QList<QAction *> actions;
     QAction *action = new QAction(QIcon::fromTheme("search"), tr("test"));
+
     actions<<action;
-    QMenu *menu = new QMenu;
+    QMenu *menu = new QMenu(action->parentWidget());
+    connect(action, &QAction::destroyed, [=](){
+        qDebug()<<"delete sub menu";
+        menu->deleteLater();
+    });
     menu->addAction("sub test1");
     menu->addSeparator();
     menu->addAction("sub test2");
+    action->setMenu(menu);
     QAction *action2 = new QAction(QIcon::fromTheme("media-eject"), tr("test-volume"));
+    connect(action2, &QAction::triggered, [=](){
+        qDebug()<<"action triggered";
+    });
     actions<<action2;
 
     return actions;
