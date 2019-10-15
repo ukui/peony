@@ -78,10 +78,10 @@ void SideBarDelegate::paint(QPainter *painter, const QStyleOptionViewItem &optio
     iconRect.moveTo(iconRect.topLeft() + QPoint(6, 0));
     if (sideBarView->model()->hasChildren(index)) {
         if (sideBarView->isExpanded(index)) {
-            auto icon = QIcon::fromTheme("gtk-go-down");
+            auto icon = QIcon::fromTheme("pan-down-symbolic", QIcon::fromTheme("go-down"));
             icon.paint(painter, iconRect, Qt::AlignCenter);
         } else {
-            auto icon = QIcon::fromTheme("gtk-go-forward-ltr");
+            auto icon = QIcon::fromTheme("pan-end-symbolic",QIcon::fromTheme("go-next"));
             icon.paint(painter, iconRect);
         }
     }
