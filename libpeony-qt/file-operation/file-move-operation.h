@@ -77,7 +77,7 @@ protected:
     void copyRecursively(FileNode *node);
     void deleteRecursively(FileNode *node);
 
-    bool isInvalid();
+    bool isValid();
     void move();
     void moveForceUseFallback();
 

@@ -652,7 +652,7 @@ void FileMoveOperation::moveForceUseFallback()
     nodes.clear();
 }
 
-bool FileMoveOperation::isInvalid()
+bool FileMoveOperation::isValid()
 {
     bool isInvalid = false;
     for (auto srcUri : m_source_uris) {
@@ -675,14 +675,14 @@ bool FileMoveOperation::isInvalid()
     }
     if (isInvalid)
         invalidExited(tr("Invalid Operation."));
-    return isInvalid;
+    return !isInvalid;
 }
 
 void FileMoveOperation::run()
 {
     Q_EMIT operationStarted();
 start:
-    if (!isInvalid()) {
+    if (!isValid()) {
         auto response = errored(nullptr,
                                 nullptr,
                                 GErrorWrapper::wrapFrom(g_error_new(G_IO_ERROR,

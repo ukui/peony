@@ -91,7 +91,7 @@ void IconViewIndexWidget::paintEvent(QPaintEvent *e)
 
     //paint access emblems
     //NOTE: we can not query the file attribute in smb:///(samba) and network:///.
-    if (info->uri().startsWith("smb:") || info->uri().startsWith("network:")) {
+    if (!info->uri().startsWith("file:")) {
         return;
     }
 

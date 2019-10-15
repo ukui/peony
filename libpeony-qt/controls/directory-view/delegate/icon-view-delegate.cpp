@@ -112,6 +112,16 @@ void IconViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
     auto info = item->info();
     auto rect = view->visualRect(index);
 
+    bool useIndexWidget = false;
+    if (view->selectedIndexes().count() == 1 && view->selectedIndexes().first() == index) {
+        useIndexWidget = true;
+        if (view->indexWidget(index)) {
+        } else if (view->state() != IconView::DragSelectingState) {
+            IconViewIndexWidget *indexWidget = new IconViewIndexWidget(this, option, index, getView());
+            view->setIndexWidget(index, indexWidget);
+        }
+    }
+
     //paint symbolic link emblems
     if (info->isSymbolLink()) {
         QIcon icon = QIcon::fromTheme("emblem-symbolic-link");
@@ -122,32 +132,22 @@ void IconViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
     //paint access emblems
 
     //NOTE: we can not query the file attribute in smb:///(samba) and network:///.
-    if (info->uri().startsWith("smb:") || info->uri().startsWith("network:")) {
+    if (info->uri().startsWith("file:")) {
+        if (!info->canRead()) {
+            QIcon icon = QIcon::fromTheme("emblem-unreadable");
+            icon.paint(painter, rect.x() + 10, rect.y() + 10, 20, 20);
+        } else if (!info->canWrite() && !info->canExecute()){
+            QIcon icon = QIcon::fromTheme("emblem-readonly");
+            icon.paint(painter, rect.x() + 10, rect.y() + 10, 20, 20);
+        }
         painter->restore();
         return;
     }
 
-    if (!info->canRead()) {
-        QIcon icon = QIcon::fromTheme("emblem-unreadable");
-        icon.paint(painter, rect.x() + 10, rect.y() + 10, 20, 20);
-    } else if (!info->canWrite() && !info->canExecute()){
-        QIcon icon = QIcon::fromTheme("emblem-readonly");
-        icon.paint(painter, rect.x() + 10, rect.y() + 10, 20, 20);
-    }
     painter->restore();
 
     //single selection, we have to repaint the emblems.
-    bool useIndexWidget = false;
-    if (view->selectedIndexes().count() == 1 && view->selectedIndexes().first() == index) {
-        useIndexWidget = true;
-        if (view->indexWidget(index)) {
-            return;
-        } else if (view->state() != IconView::DragSelectingState) {
-            IconViewIndexWidget *indexWidget = new IconViewIndexWidget(this, option, index, getView());
-            view->setIndexWidget(index, indexWidget);
-            return;
-        }
-    }
+
 }
 
 void IconViewDelegate::setCutFiles(const QModelIndexList &indexes)
