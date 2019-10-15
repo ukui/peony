@@ -1634,12 +1634,31 @@ eel_editable_label_draw (GtkWidget *widget,
         if (label->draw_outline)
         {
             gtk_style_context_save (style);
+
+            //there is a trouble for gtk_render_frame for render the rectangle with ukui style.
+            //i have to use cairo directly draw a rectangle.
+            /*
             gtk_style_context_set_state (style, gtk_widget_get_state_flags (widget));
 
             gtk_render_frame (style, cr,
                               0, 0,
                               gtk_widget_get_allocated_width (widget),
                               gtk_widget_get_allocated_height (widget));
+                              */
+
+            cairo_save (cr);
+
+            GdkRGBA color;
+            gtk_style_context_get_color (style, gtk_widget_get_state_flags (widget), &color);
+
+            cairo_set_line_width (cr, 1);
+            cairo_set_source_rgb (cr, color.red, color.green, color.blue);
+
+            cairo_rectangle (cr, 0, 0, gtk_widget_get_allocated_width (widget), gtk_widget_get_allocated_height (widget));
+
+            cairo_stroke (cr);
+
+            cairo_restore (cr);
 
             gtk_style_context_restore (style);
         }
