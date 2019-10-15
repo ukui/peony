@@ -3,12 +3,9 @@
 
 #include "icon-view-factory.h"
 
-#include <QDir>
-#include <QDebug>
-#include <QApplication>
-#include <QPluginLoader>
-
 #include <QSettings>
+
+#include <QDebug>
 
 using namespace Peony;
 
@@ -29,33 +26,6 @@ DirectoryViewFactoryManager::DirectoryViewFactoryManager(QObject *parent) : QObj
     //register icon view and list view
     auto iconViewFactory = IconViewFactory::getInstance();
     registerFactory(iconViewFactory->viewIdentity(), iconViewFactory);
-
-    //load plugins
-    QDir pluginsDir(qApp->applicationDirPath());
-    qDebug()<<pluginsDir;
-    pluginsDir.cdUp();
-    pluginsDir.cd("testdir2");
-    pluginsDir.setFilter(QDir::Files);
-    for (auto fileName : pluginsDir.entryList(QDir::Files)) {
-        qDebug()<<fileName;
-        QPluginLoader pluginLoader(pluginsDir.absoluteFilePath(fileName));
-        qDebug()<<pluginLoader.metaData();
-        qDebug()<<pluginLoader.load();
-        QObject *plugin = pluginLoader.instance();
-        if (plugin) {
-            PluginInterface *piface = dynamic_cast<PluginInterface*>(plugin);
-            if (piface->pluginType() != PluginInterface::DirectoryViewPlugin)
-                continue;
-
-            DirectoryViewPluginIface *iface = qobject_cast<DirectoryViewPluginIface*>(plugin);
-            qDebug()<<iface->name();
-            qDebug()<<iface->description();
-            qDebug()<<iface->viewIcon();
-            qDebug()<<iface->viewIdentity();
-            registerFactory(iface->viewIdentity(), iface);
-        }
-    }
-    qDebug()<<getFactoryNames();
 }
 
 DirectoryViewFactoryManager::~DirectoryViewFactoryManager()

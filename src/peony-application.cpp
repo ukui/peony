@@ -47,8 +47,12 @@
 #include "directory-view-menu.h"
 #include "icon-view.h"
 
+#include "plugin-manager.h"
+
 PeonyApplication::PeonyApplication(int &argc, char *argv[]) : QApplication (argc, argv)
 {
+    Peony::PluginManager::init();
+
     auto testIcon = QIcon::fromTheme("folder");
     if (testIcon.isNull()) {
         QIcon::setThemeName("ukui-icon-theme");

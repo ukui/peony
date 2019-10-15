@@ -11,6 +11,8 @@ class MenuPluginManager : public QObject
 {
     Q_OBJECT
 public:
+    bool registerPlugin(MenuPluginInterface *plugin);
+
     static MenuPluginManager *getInstance();
     const QStringList getPluginIds();
     MenuPluginInterface *getPlugin(const QString &pluginId);

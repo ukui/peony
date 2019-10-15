@@ -38,6 +38,8 @@ class DirectoryViewProxyIface;
 class DirectoryViewPluginIface : public PluginInterface
 {
 public:
+    virtual ~DirectoryViewPluginIface() {}
+
     virtual QString viewIdentity() = 0;
     virtual QIcon viewIcon() = 0;
     virtual bool supportUri(const QString &uri) = 0;

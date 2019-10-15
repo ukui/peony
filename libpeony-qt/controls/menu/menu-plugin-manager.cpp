@@ -1,10 +1,6 @@
 #include "menu-plugin-manager.h"
 
-#include <QDir>
-#include <QPluginLoader>
-
 #include <QDebug>
-#include <QApplication>
 
 using namespace Peony;
 
@@ -12,34 +8,21 @@ static MenuPluginManager *global_instance = nullptr;
 
 MenuPluginManager::MenuPluginManager(QObject *parent) : QObject(parent)
 {
-    QDir pluginsDir(qApp->applicationDirPath());
-    qDebug()<<pluginsDir;
-    pluginsDir.cdUp();
-    pluginsDir.cd("testdir");
-    pluginsDir.setFilter(QDir::Files);
 
-    qDebug()<<pluginsDir.entryList().count();
-    Q_FOREACH(QString fileName, pluginsDir.entryList(QDir::Files)) {
-        qDebug()<<fileName;
-        QPluginLoader pluginLoader(pluginsDir.absoluteFilePath(fileName));
-        qDebug()<<pluginLoader.fileName();
-        qDebug()<<pluginLoader.metaData();
-        qDebug()<<pluginLoader.load();
-        QObject *plugin = pluginLoader.instance();
-        qDebug()<<"test start";
-        PluginInterface *piface = dynamic_cast<PluginInterface*>(plugin);
-        if (piface->pluginType() != PluginInterface::MenuPlugin)
-            continue;
-
-        MenuPluginInterface *test = qobject_cast<MenuPluginInterface*>(plugin);
-        qDebug()<<test->name();
-        m_hash.insert(test->name(), test);
-    }
 }
 
 MenuPluginManager::~MenuPluginManager()
 {
 
+}
+
+bool MenuPluginManager::registerPlugin(MenuPluginInterface *plugin)
+{
+    if (m_hash.value(plugin->name())) {
+        return false;
+    }
+    m_hash.insert(plugin->name(), plugin);
+    return true;
 }
 
 MenuPluginManager *MenuPluginManager::getInstance()

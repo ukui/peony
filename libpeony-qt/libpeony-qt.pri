@@ -17,3 +17,9 @@ include(controls/controls.pri)
 include(windows/windows.pri)
 
 DISTFILES +=
+
+HEADERS += \
+    $$PWD/plugin-manager.h
+
+SOURCES += \
+    $$PWD/plugin-manager.cpp
