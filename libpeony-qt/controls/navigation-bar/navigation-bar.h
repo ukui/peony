@@ -18,7 +18,7 @@ public:
     explicit NavigationBar(QWidget *parent = nullptr);
 
 Q_SIGNALS:
-    void updateWindowLocationRequest(const QString &uri, bool addHistory);
+    void updateWindowLocationRequest(const QString &uri, bool addHistory, bool forceUpdate = false);
     void refreshRequest();
 
 public Q_SLOTS:

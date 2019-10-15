@@ -18,7 +18,7 @@ public:
     QSize sizeHint() const override;
 
 Q_SIGNALS:
-    void updateWindowLocationRequest(const QString &uri, bool addHistory = true);
+    void updateWindowLocationRequest(const QString &uri, bool addHistory = true, bool forceUpdate = false);
 
 protected:
     void paintEvent(QPaintEvent *e) override;

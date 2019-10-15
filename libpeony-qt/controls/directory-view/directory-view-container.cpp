@@ -99,14 +99,18 @@ void DirectoryViewContainer::cdUp()
     Q_EMIT updateWindowLocationRequest(uri, true);
 }
 
-void DirectoryViewContainer::goToUri(const QString &uri, bool addHistory)
+void DirectoryViewContainer::goToUri(const QString &uri, bool addHistory, bool forceUpdate)
 {
+    if (forceUpdate)
+        goto update;
+
     if (uri.isNull())
         return;
 
     if (getCurrentUri() == uri)
         return;
 
+update:
     if (addHistory) {
         m_forward_list.clear();
         m_back_list.append(getCurrentUri());
@@ -198,6 +202,6 @@ void DirectoryViewContainer::tryJump(int index)
                 m_forward_list<<l.at(i);
             }
         }
-        updateWindowLocationRequest(targetUri, false);
+        Q_EMIT updateWindowLocationRequest(targetUri, false, true);
     }
 }

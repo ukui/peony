@@ -48,10 +48,10 @@ Q_SIGNALS:
     void viewTypeChanged();
     void directoryChanged();
     void selectionChanged();
-    void updateWindowLocationRequest(const QString &uri, bool addHistory);
+    void updateWindowLocationRequest(const QString &uri, bool addHistory, bool forceUpdate = false);
 
 public Q_SLOTS:
-    void goToUri(const QString &uri, bool addHistory);
+    void goToUri(const QString &uri, bool addHistory, bool forceUpdate = false);
     void switchViewType(const QString &viewId);
 
     void goBack();

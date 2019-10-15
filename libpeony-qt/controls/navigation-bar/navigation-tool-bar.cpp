@@ -42,7 +42,7 @@ NavigationToolBar::NavigationToolBar(QWidget *parent) : QToolBar(parent)
         for (auto uri : historyList) {
             count++;
             auto action = historyMenu.addAction(QString::number(count) + ". " + uri);
-            if (historyList.indexOf(uri) == currentIndex) {
+            if (historyMenu.actions().indexOf(action) == currentIndex) {
                 action->setCheckable(true);
                 action->setChecked(true);
             }
@@ -119,11 +119,11 @@ void NavigationToolBar::onGoForward()
     }
 }
 
-void NavigationToolBar::onGoToUri(const QString &uri, bool addHistory)
+void NavigationToolBar::onGoToUri(const QString &uri, bool addHistory, bool forceUpdate)
 {
     if (m_current_container) {
         m_current_container->goToUri(uri, addHistory);
-        updateWindowLocationRequest(m_current_container->getCurrentUri(), false);
+        updateWindowLocationRequest(m_current_container->getCurrentUri(), false, forceUpdate);
     }
 }
 

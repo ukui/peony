@@ -75,7 +75,7 @@ Q_SIGNALS:
     void windowSelectionChanged();
 
 public Q_SLOTS:
-    void goToUri(const QString &uri, bool addHistory);
+    void goToUri(const QString &uri, bool addHistory, bool forceUpdate = false);
     void addNewTabs(const QStringList &uris);
 
     void beginSwitchView(const QString &viewId);

@@ -209,13 +209,17 @@ void FMWindow::addNewTabs(const QStringList &uris)
     }
 }
 
-void FMWindow::goToUri(const QString &uri, bool addHistory)
+void FMWindow::goToUri(const QString &uri, bool addHistory, bool forceUpdate)
 {
+    if (forceUpdate)
+        goto update;
+
     if (getCurrentUri() == uri)
         return;
 
+update:
     Q_EMIT locationChangeStart();
-    m_tab->getActivePage()->goToUri(uri, addHistory);
+    m_tab->getActivePage()->goToUri(uri, addHistory, forceUpdate);
     m_tab->refreshCurrentTabText();
     m_navigation_bar->updateLocation(uri);
     m_tool_bar->updateLocation(uri);

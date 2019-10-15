@@ -21,7 +21,7 @@ Q_SIGNALS:
     void currentLocationChanged();
     void currentSelectionChanged();
 
-    void updateWindowLocationRequest(const QString &uri, bool addHistory = true);
+    void updateWindowLocationRequest(const QString &uri, bool addHistory = true, bool forceUpdate = false);
 
 public Q_SLOTS:
     void addPage(const QString &uri);

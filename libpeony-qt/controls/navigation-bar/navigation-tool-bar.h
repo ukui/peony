@@ -20,7 +20,7 @@ public:
     bool canCdUp();
 
 Q_SIGNALS:
-    void updateWindowLocationRequest(const QString &uri, bool addHistory);
+    void updateWindowLocationRequest(const QString &uri, bool addHistory, bool forceUpdate = false);
     void refreshRequest();
 
 public Q_SLOTS:
@@ -30,7 +30,7 @@ public Q_SLOTS:
 
     void onGoBack();
     void onGoForward();
-    void onGoToUri(const QString &uri, bool addHistory);
+    void onGoToUri(const QString &uri, bool addHistory, bool forceUpdate = false);
 
     void clearHistory();
 
