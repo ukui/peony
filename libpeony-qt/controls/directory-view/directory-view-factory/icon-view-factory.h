@@ -27,6 +27,9 @@ public:
 
     DirectoryViewIface *create() override;
 
+    int zoom_level_hint() override {return 100;}
+    int priority(const QString &) override {return 0;}
+
 private:
     explicit IconViewFactory(QObject *parent = nullptr);
     ~IconViewFactory() override;

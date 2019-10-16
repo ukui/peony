@@ -20,6 +20,24 @@ void ViewFactoryModel::setDirectoryUri(const QString &uri)
 
     for (auto id : defaultList) {
         if (viewManager->getFactory(id)->supportUri(m_current_uri)) {
+            if (!m_support_views_id.isEmpty()) {
+                auto largestView = viewManager->getFactory(m_support_views_id.last());
+                auto smallestView = viewManager->getFactory(m_support_views_id.first());
+                auto currentView = viewManager->getFactory(id);
+                if (largestView->zoom_level_hint() < currentView->zoom_level_hint()) {
+                    m_support_views_id<<id;
+                } else if (smallestView->zoom_level_hint() > currentView->zoom_level_hint()) {
+                    m_support_views_id.prepend(id);
+                } else {
+                    for (auto tmp : m_support_views_id) {
+                        auto view = viewManager->getFactory(tmp);
+                        if (view->zoom_level_hint() > currentView->zoom_level_hint()) {
+                            m_support_views_id.insert(m_support_views_id.indexOf(tmp), id);
+                            break;
+                        }
+                    }
+                }
+            }
             m_support_views_id<<id;
         }
     }

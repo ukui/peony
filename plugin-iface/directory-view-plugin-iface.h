@@ -44,6 +44,36 @@ public:
     virtual QIcon viewIcon() = 0;
     virtual bool supportUri(const QString &uri) = 0;
 
+    /*!
+     * \brief zoom_level_hint
+     * \return the description value of this type of view's zoom level.
+     * \details
+     * Peony-Qt doesn't deal the zoom level in a kind of view. Insteadly,
+     * there is a value for a view for describing its zoom level. Through
+     * this zoom level, Peony-Qt can realize "zoom in/out" by switch the view's
+     * type.
+     *
+     * We usually use the Peony-Qt's default icon view. Its zoom level hint is 100.
+     * If you want to implement a larger directory view extension you should set the
+     * zoom level hint bigger than the default one, vice versa.
+     */
+    virtual int zoom_level_hint() = 0;
+
+    /*!
+     * \brief priority
+     * \return the priority of view that should be show when went to a location.
+     * \details
+     * In Peony-Qt, there are some special view should be shown when we went to some
+     * special directory, such as computer, it should be shown as a computer view.
+     * Peony-Qt first judge if it should switch the view if there is a higher-priority
+     * view than current view when the location change begin.
+     *
+     * The default icon view and details view's priority value is 0. If you want to
+     * implement an extension view replace the current view in some location, you should
+     * set the priority value larger than the default one.
+     */
+    virtual int priority(const QString &directoryUri) = 0;
+
     virtual DirectoryViewIface *create() = 0;
 };
 
