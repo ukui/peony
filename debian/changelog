@@ -1,3 +1,9 @@
+peony (1.1.7-1) unstable; urgency=medium
+
+  * Fix that the outline of the file name label is incomplete.
+
+ -- handsome_feng <jianfengli@ubuntukylin.com>  Wed, 16 Oct 2019 16:44:58 +0800
+
 peony (1.1.6-1) unstable; urgency=medium
 
   * Add file path to the address bar that can click.
