@@ -142,6 +142,12 @@ public:
     virtual void setCutFiles(const QStringList &uris) = 0;
 
     virtual DirectoryViewProxyIface *getProxy() = 0;
+
+    virtual int getSortType() = 0;
+    virtual void setSortType(int sortType) = 0;
+
+    virtual int getSortOrder() = 0;
+    virtual void setSortOrder(int sortOrder) = 0;
 };
 
 /*!
@@ -191,6 +197,9 @@ Q_SIGNALS:
     //window
     void updateWindowLocationRequest(const QString &uri);
 
+    virtual int getSortType() = 0;
+    virtual int getSortOrder() = 0;
+
 public Q_SLOTS:
     //location
     virtual void open(const QStringList &uris, bool newWindow) = 0;
@@ -208,6 +217,9 @@ public Q_SLOTS:
     //clipboard
     //cut items should be drawn differently.
     virtual void setCutFiles(const QStringList &uris) = 0;
+
+    virtual void setSortType(int sortType) = 0;
+    virtual void setSortOrder(int sortOrder) = 0;
 };
 
 }

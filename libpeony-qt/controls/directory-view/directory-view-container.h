@@ -5,6 +5,8 @@
 #include <QWidget>
 #include <QStack>
 
+#include "file-item-model.h"
+
 class QVBoxLayout;
 
 namespace Peony {
@@ -42,6 +44,9 @@ public:
     bool canGoForward();
     bool canCdUp();
 
+    FileItemModel::ColumnType getSortType();
+    Qt::SortOrder getSortOrder();
+
     DirectoryViewProxyIface *getProxy() {return m_proxy;}
 
 Q_SIGNALS:
@@ -63,6 +68,9 @@ public Q_SLOTS:
 
     void tryJump(int index);
     void clearHistory() {m_back_list.clear(); m_forward_list.clear();}
+
+    void setSortType(FileItemModel::ColumnType type);
+    void setSortOrder(Qt::SortOrder order);
 
 protected:
     /*!

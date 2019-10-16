@@ -33,10 +33,12 @@ public:
         Owner,
         Other
     };
+    Q_ENUM(ColumnType)
 
     enum ItemRole {
         UriRole = Qt::UserRole
     };
+    Q_ENUM(ItemRole)
 
     explicit FileItemModel(QObject *parent = nullptr);
     ~FileItemModel() override;

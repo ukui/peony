@@ -205,3 +205,26 @@ void DirectoryViewContainer::tryJump(int index)
         Q_EMIT updateWindowLocationRequest(targetUri, false, true);
     }
 }
+
+FileItemModel::ColumnType DirectoryViewContainer::getSortType()
+{
+
+    int type = m_proxy->getSortType();
+    return FileItemModel::ColumnType(type);
+}
+
+void DirectoryViewContainer::setSortType(FileItemModel::ColumnType type)
+{
+    m_proxy->setSortType(type);
+}
+
+Qt::SortOrder DirectoryViewContainer::getSortOrder()
+{
+    int order = m_proxy->getSortOrder();
+    return Qt::SortOrder(order);
+}
+
+void DirectoryViewContainer::setSortOrder(Qt::SortOrder order)
+{
+    m_proxy->setSortOrder(order);
+}

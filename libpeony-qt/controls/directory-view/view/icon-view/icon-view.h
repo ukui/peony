@@ -62,6 +62,12 @@ public Q_SLOTS:
     //clipboard
     void setCutFiles(const QStringList &uris) override;
 
+    int getSortType() override;
+    void setSortType(int sortType) override;
+
+    int getSortOrder() override;
+    void setSortOrder(int sortOrder) override;
+
 protected:
     void changeZoomLevel();
     void resetEditTriggerTimer();

@@ -131,10 +131,22 @@ const QList<QAction *> DirectoryViewMenu::constructViewOpActions()
         l<<sortTypeAction;
         QMenu *sortTypeMenu = new QMenu(this);
         //FIXME: add check for current type.
-        sortTypeMenu->addAction(tr("Name"));
-        sortTypeMenu->addAction(tr("File Type"));
-        sortTypeMenu->addAction(tr("File Size"));
-        sortTypeMenu->addAction(tr("Modified Date"));
+
+        QList<QAction *> tmp;
+        tmp<<sortTypeMenu->addAction(tr("Name"));
+        tmp<<sortTypeMenu->addAction(tr("File Type"));
+        tmp<<sortTypeMenu->addAction(tr("File Size"));
+        tmp<<sortTypeMenu->addAction(tr("Modified Date"));
+        int sortType = m_view->getSortType();
+        tmp.at(sortType)->setCheckable(true);
+        tmp.at(sortType)->setChecked(true);
+
+        for (int i = 0; i < tmp.count(); i++) {
+            connect(tmp.at(i), &QAction::triggered, [=](){
+                m_view->setSortType(i);
+            });
+        }
+
         sortTypeAction->setMenu(sortTypeMenu);
 
         //sort order
@@ -142,8 +154,19 @@ const QList<QAction *> DirectoryViewMenu::constructViewOpActions()
         l<<sortOrderAction;
         //FIXME: add check for current order
         QMenu *sortOrderMenu = new QMenu(this);
-        sortOrderMenu->addAction(tr("Ascending Order"));
-        sortOrderMenu->addAction(tr("Descending Order"));
+        tmp.clear();
+        tmp<<sortOrderMenu->addAction(tr("Ascending Order"));
+        tmp<<sortOrderMenu->addAction(tr("Descending Order"));
+        int sortOrder = m_view->getSortOrder();
+        tmp.at(sortOrder)->setCheckable(true);
+        tmp.at(sortOrder)->setChecked(true);
+
+        for (int i = 0; i < tmp.count(); i++) {
+            connect(tmp.at(i), &QAction::triggered, [=](){
+                m_view->setSortOrder(i);
+            });
+        }
+
         sortOrderAction->setMenu(sortOrderMenu);
     }
 

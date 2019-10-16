@@ -55,6 +55,12 @@ public Q_SLOTS:
     //clipboard
     void setCutFiles(const QStringList &uris) override;
 
+    int getSortType() override {return m_view->getSortType();}
+    void setSortType(int sortType) override {m_view->setSortType(sortType);}
+
+    int getSortOrder() override {return m_view->getSortOrder();}
+    void setSortOrder(int sortOrder) override {m_view->setSortOrder(sortOrder);}
+
 private:
     DirectoryViewIface *m_view = nullptr;
     QString m_viewId;

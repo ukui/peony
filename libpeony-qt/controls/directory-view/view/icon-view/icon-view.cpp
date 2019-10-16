@@ -351,3 +351,23 @@ QRect IconView::visualRect(const QModelIndex &index) const
     rect.setSize(size);
     return rect;
 }
+
+int IconView::getSortType()
+{
+    return m_sort_filter_proxy_model->sortColumn();
+}
+
+void IconView::setSortType(int sortType)
+{
+    m_sort_filter_proxy_model->sort(sortType, Qt::SortOrder(getSortOrder()));
+}
+
+int IconView::getSortOrder()
+{
+    return m_sort_filter_proxy_model->sortOrder();
+}
+
+void IconView::setSortOrder(int sortOrder)
+{
+    m_sort_filter_proxy_model->sort(getSortType(), Qt::SortOrder(sortOrder));
+}
