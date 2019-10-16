@@ -7,6 +7,9 @@
 #include "view-factory-model.h"
 
 #include "clipboard-utils.h"
+#include "file-operation-utils.h"
+
+#include "volume-manager.h"
 
 using namespace Peony;
 
@@ -74,16 +77,40 @@ const QList<QAction *> DirectoryViewMenu::constructOpenOpActions()
     bool isBackgroundMenu = m_selections.isEmpty();
     if (isBackgroundMenu) {
         l<<addAction(QIcon::fromTheme("window-new-symbolic"), tr("Open in &New Window"));
+        connect(l.last(), &QAction::triggered, [=](){
+            //FIXME:
+            //new window requeset
+        });
         l<<addAction(QIcon::fromTheme("tab-new-symbolic"), tr("Open in New &Tab"));
+        connect(l.last(), &QAction::triggered, [=](){
+            //FIXME:
+            //new tab request
+        });
     } else {
         if (m_selections.count() == 1) {
             auto info = FileInfo::fromUri(m_selections.first());
             if (info->isDir()) {
                 l<<addAction(QIcon::fromTheme("document-open-symbolic"), tr("&Open \"%1\"").arg(info->displayName()));
+                connect(l.last(), &QAction::triggered, [=](){
+                    //FIXME:
+                    //enter directory request
+                });
                 l<<addAction(QIcon::fromTheme("window-new-symbolic"), tr("Open \"%1\" in &New Window").arg(info->displayName()));
+                connect(l.last(), &QAction::triggered, [=](){
+                    //FIXME:
+                    //new window request
+                });
                 l<<addAction(QIcon::fromTheme("tab-new-symbolic"), tr("Open \"%1\" in New &Tab").arg(info->displayName()));
-            } else {
+                connect(l.last(), &QAction::triggered, [=](){
+                    //FIXME:
+                    //new tab request
+                });
+            } else if (!info->isVolume()) {
                 l<<addAction(QIcon::fromTheme("document-open-symbolic"), tr("&open \"%1\"").arg(info->displayName()));
+                connect(l.last(), &QAction::triggered, [=](){
+                    //FIXME:
+                    //open request
+                });
                 auto openWithAction = addAction(tr("open \"%1\" with...").arg(info->displayName()));
                 //FIXME: add sub menu for open with action.
                 QMenu *openWithMenu = new QMenu(this);
@@ -91,9 +118,19 @@ const QList<QAction *> DirectoryViewMenu::constructOpenOpActions()
                 openWithMenu->addSeparator();
                 openWithMenu->addAction(tr("&More applications..."));
                 openWithAction->setMenu(openWithMenu);
+            } else {
+                l<<addAction(tr("&Open"));
+                connect(l.last(), &QAction::triggered, [=](){
+                    //FIXME:
+                    //open request
+                });
             }
         } else {
             l<<addAction(QIcon::fromTheme("document-open-symbolic"), tr("&Open %1 selected files").arg(m_selections.count()));
+            connect(l.last(), &QAction::triggered, [=](){
+                //FIXME:
+                //open request
+            });
         }
     }
 
@@ -121,6 +158,11 @@ const QList<QAction *> DirectoryViewMenu::constructViewOpActions()
                 if (m_view->viewId() == viewId) {
                     viewType->setCheckable(true);
                     viewType->setChecked(true);
+                } else {
+                    connect(viewType, &QAction::triggered, [=](){
+                        //FIXME:
+                        //switch view type request.
+                    });
                 }
             }
             viewTypeAction->setMenu(viewTypeSubMenu);
@@ -130,7 +172,6 @@ const QList<QAction *> DirectoryViewMenu::constructViewOpActions()
         auto sortTypeAction = addAction(tr("Sort By..."));
         l<<sortTypeAction;
         QMenu *sortTypeMenu = new QMenu(this);
-        //FIXME: add check for current type.
 
         QList<QAction *> tmp;
         tmp<<sortTypeMenu->addAction(tr("Name"));
@@ -152,7 +193,6 @@ const QList<QAction *> DirectoryViewMenu::constructViewOpActions()
         //sort order
         auto sortOrderAction = addAction(tr("Sort Order..."));
         l<<sortOrderAction;
-        //FIXME: add check for current order
         QMenu *sortOrderMenu = new QMenu(this);
         tmp.clear();
         tmp<<sortOrderMenu->addAction(tr("Ascending Order"));
@@ -180,13 +220,24 @@ const QList<QAction *> DirectoryViewMenu::constructFileOpActions()
     if (!m_is_trash && !m_is_search && !m_is_computer) {
         if (!m_selections.isEmpty()) {
             l<<addAction(QIcon::fromTheme("gtk-copy"), tr("&Copy"));
+            connect(l.last(), &QAction::triggered, [=](){
+                ClipboardUtils::setClipboardFiles(m_selections, false);
+            });
             l<<addAction(QIcon::fromTheme("gtk-cut"), tr("Cu&t"));
-            //FIXME: force delete?
+            connect(l.last(), &QAction::triggered, [=](){
+                ClipboardUtils::setClipboardFiles(m_selections, true);
+            });
             l<<addAction(QIcon::fromTheme("user-trash"), tr("&Delete"));
+            connect(l.last(), &QAction::triggered, [=](){
+                FileOperationUtils::trash(m_selections, true);
+            });
         } else {
             auto pasteAction = addAction(QIcon::fromTheme("gtk-paste"), tr("&Paste"));
             l<<pasteAction;
             pasteAction->setEnabled(ClipboardUtils::isClipboardHasFiles());
+            connect(l.last(), &QAction::triggered, [=](){
+                ClipboardUtils::pasteClipboardFiles(m_directory);
+            });
         }
     }
 
@@ -197,8 +248,13 @@ const QList<QAction *> DirectoryViewMenu::constructFilePropertiesActions()
 {
     QList<QAction *> l;
 
-    if (!m_is_search)
+    if (!m_is_search) {
         l<<addAction(QIcon::fromTheme("preview-file"), tr("&Properties"));
+        connect(l.last(), &QAction::triggered, [=](){
+            //FIXME:
+            //properties window
+        });
+    }
 
     return l;
 }
@@ -211,7 +267,15 @@ const QList<QAction *> DirectoryViewMenu::constructComputerActions()
         //FIXME: get the volume state and add action dynamicly.
         if (m_selections.count() == 1) {
             l<<addAction(tr("&Umount"));
+            connect(l.last(), &QAction::triggered, [=](){
+                VolumeManager::unmount(m_selections.first());
+            });
             l<<addAction(tr("&Format"));
+            connect(l.last(), &QAction::triggered, [=](){
+                //FIXME:
+                //add format function?
+                //maybe put it in plugin...
+            });
         }
     }
 
@@ -225,9 +289,17 @@ const QList<QAction *> DirectoryViewMenu::constructTrashActions()
     if (m_is_trash) {
         if (m_selections.isEmpty()) {
             l<<addAction(QIcon::fromTheme("window-close-symbolic"), tr("&Clean the Trash"));
+            connect(l.last(), &QAction::triggered, [=](){
+                //FIXME:
+                //clean the trash
+            });
         } else {
             l<<addAction(tr("&Restore"));
             l<<addAction(QIcon::fromTheme("window-close-symbolic"), tr("&Delete"));
+            connect(l.last(), &QAction::triggered, [=](){
+                //FIXME:
+                //untrash the selected files.
+            });
         }
     }
 
@@ -242,7 +314,15 @@ const QList<QAction *> DirectoryViewMenu::constructSearchActions()
             return l;
 
         l<<addAction(QIcon::fromTheme("new-window-symbolc"), tr("Open Parent Folder in New Window"));
+        connect(l.last(), &QAction::triggered, [=](){
+            //FIXME:
+            //open window request
+        });
         l<<addAction(QIcon::fromTheme("new-tab-symbolic"), tr("Open Parent Folder in New Tab"));
+        connect(l.last(), &QAction::triggered, [=](){
+            //FIXME:
+            //open tab request
+        });
     }
     return l;
 }
