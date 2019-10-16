@@ -41,7 +41,28 @@ public:
     explicit FileItemModel(QObject *parent = nullptr);
     ~FileItemModel() override;
 
+    /*!
+     * \brief setPositiveResponse
+     * \param positive
+     * \details
+     * FileItem provide 2 kinds of data query type for find children,
+     * positive and inpositive. The positive query will report children
+     * were found when the FileEnumerator::childrenUpdated() signal emitted,
+     * this signal take a string list of uris enumerator found at that time (
+     * usually a batch of async enumeration callbacked results).
+     * and the inpositive query will report children being found the same time
+     * enumerationFinished() emitted, and use FileEnumerator::getChildren() get
+     * all children at once.
+     *
+     * The default positive type is inpositive.
+     */
     void setPositiveResponse(bool positive = true) {m_is_positive = positive;}
+
+    /*!
+     * \brief isPositiveResponse
+     * \return
+     * \see setPositiveResponse()
+     */
     bool isPositiveResponse() {return m_is_positive;}
 
     const QString getRootUri();

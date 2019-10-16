@@ -189,7 +189,7 @@ void FileItem::findChildrenAsync()
                 auto info = FileInfo::fromUri(uri);
                 auto item = new FileItem(info, this, m_model);
                 m_children->append(item);
-                m_model->insertRows(m_children->count() - 2, 1, firstColumnIndex());
+                m_model->insertRows(m_children->count() - 1, 1, firstColumnIndex());
 
                 auto infoJob = new FileInfoJob(info);
                 infoJob->setAutoDelete();
