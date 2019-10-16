@@ -21,7 +21,8 @@ class IconViewStyle : public QProxyStyle
 {
     Q_OBJECT
 public:
-    explicit IconViewStyle(QStyle *style = nullptr);
+    static IconViewStyle *getStyle();
+    void release();
 
     void drawControl(QStyle::ControlElement element,
                      const QStyleOption *option,
@@ -40,6 +41,10 @@ public:
                       bool enabled,
                       const QString &text,
                       QPalette::ColorRole textRole = QPalette::NoRole) const override;
+
+private:
+    explicit IconViewStyle(QStyle *style = nullptr);
+    ~IconViewStyle() override {}
 };
 
 }

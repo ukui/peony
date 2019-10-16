@@ -26,6 +26,7 @@ using namespace Peony::DirectoryView;
 
 IconView::IconView(QWidget *parent) : QListView(parent)
 {
+    setStyle(IconViewStyle::getStyle());
     //FIXME: do not create proxy in view itself.
     init();
 }
@@ -307,6 +308,12 @@ void IconView::paintEvent(QPaintEvent *e)
 {
     QPainter p(this->viewport());
     p.fillRect(this->geometry(), this->palette().base());
+    if (m_repaint_timer.isActive()) {
+        m_repaint_timer.stop();
+        QTimer::singleShot(100, [this](){
+            this->repaint();
+        });
+    }
     QListView::paintEvent(e);
 }
 
@@ -316,6 +323,14 @@ void IconView::resizeEvent(QResizeEvent *e)
     //but I have to reset the index widget in view's resize.
     QListView::resizeEvent(e);
     setIndexWidget(m_last_index, nullptr);
+}
+
+void IconView::wheelEvent(QWheelEvent *e)
+{
+    //FIXME: the old rubber band color will not be cleared complete
+    //when wheel with extend selection. I have to deal with this problem
+    //as soon as possible.
+    QListView::wheelEvent(e);
 }
 
 void IconView::setProxy(DirectoryViewProxyIface *proxy)

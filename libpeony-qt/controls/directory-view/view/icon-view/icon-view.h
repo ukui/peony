@@ -77,12 +77,15 @@ protected:
     void paintEvent(QPaintEvent *e) override;
     void resizeEvent(QResizeEvent *e) override;
 
+    void wheelEvent(QWheelEvent *e) override;
+
 protected:
     void init();
     void rebindProxy();
 
 private:
     QTimer m_edit_trigger_timer;
+    QTimer m_repaint_timer;
     QModelIndex m_last_index;
 
     DirectoryViewProxyIface *m_proxy = nullptr;
