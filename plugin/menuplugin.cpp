@@ -13,11 +13,12 @@ QString MenuPluginTest1::testPlugin()
 
 QList<QAction *> MenuPluginTest1::menuActions(Types types, const QString &uri, const QStringList &selectionUris)
 {
+    //return QList<QAction *>();
     Q_UNUSED(types);
     Q_UNUSED(uri);
     Q_UNUSED(selectionUris);
     QList<QAction *> actions;
-    QAction *action = new QAction(QIcon::fromTheme("search"), tr("test"));
+    QAction *action = new QAction(QIcon::fromTheme("search"), tr("plugin-sub-menu test"));
 
     actions<<action;
     QMenu *menu = new QMenu(action->parentWidget());
@@ -29,7 +30,7 @@ QList<QAction *> MenuPluginTest1::menuActions(Types types, const QString &uri, c
     menu->addSeparator();
     menu->addAction("sub test2");
     action->setMenu(menu);
-    QAction *action2 = new QAction(QIcon::fromTheme("media-eject"), tr("test-volume"));
+    QAction *action2 = new QAction(QIcon::fromTheme("media-eject"), tr("plugin-action test"));
     connect(action2, &QAction::triggered, [=](){
         qDebug()<<"action triggered";
     });

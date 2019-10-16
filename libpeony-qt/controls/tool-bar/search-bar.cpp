@@ -20,7 +20,7 @@ SearchBar::SearchBar(QWidget *parent) : QLineEdit(parent)
     completer->setModel(m_model);
     completer->setMaxVisibleItems(10);
     //completer->setCompletionPrefix(" ");
-    //completer->setCompletionMode(QCompleter::UnfilteredPopupCompletion);
+    completer->setCompletionMode(QCompleter::UnfilteredPopupCompletion);
     this->setCompleter(completer);
 
     setLayoutDirection(Qt::LeftToRight);

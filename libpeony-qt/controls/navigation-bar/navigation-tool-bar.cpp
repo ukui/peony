@@ -19,7 +19,7 @@ NavigationToolBar::NavigationToolBar(QWidget *parent) : QToolBar(parent)
         this->onGoForward();
     });
 
-    m_history_action = addAction(QIcon::fromTheme("go-down"), tr("History"));
+    m_history_action = addAction(QIcon::fromTheme("pan-down-symbolic", QIcon::fromTheme("go-down")), tr("History"));
 
     auto historyButtonWidget = widgetForAction(m_history_action);
     auto historyButton = qobject_cast<QToolButton*>(historyButtonWidget);

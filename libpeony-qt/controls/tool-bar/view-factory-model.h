@@ -29,6 +29,7 @@ public:
     const QModelIndex getIndexFromViewId(const QString &viewId);
 
     const QString getViewId(int index);
+    const QStringList supportViewIds() {return m_support_views_id;}
 
     // Basic functionality:
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
