@@ -18,8 +18,14 @@ void ViewFactoryModel::setDirectoryUri(const QString &uri)
     auto viewManager = DirectoryViewFactoryManager::getInstance();
     auto defaultList = viewManager->getFactoryNames();
 
+    int priority = 0;
     for (auto id : defaultList) {
         if (viewManager->getFactory(id)->supportUri(m_current_uri)) {
+            int p = viewManager->getFactory(id)->priority(m_current_uri);
+            if (p > priority) {
+                priority = p;
+                m_highest_priority_view_id = id;
+            }
             if (!m_support_views_id.isEmpty()) {
                 auto largestView = viewManager->getFactory(m_support_views_id.last());
                 auto smallestView = viewManager->getFactory(m_support_views_id.first());
@@ -61,6 +67,11 @@ int ViewFactoryModel::rowCount(const QModelIndex &parent) const
         return 0;
 
     return m_support_views_id.count();
+}
+
+const QString ViewFactoryModel::getHighestPriorityViewId()
+{
+    return m_highest_priority_view_id;
 }
 
 QVariant ViewFactoryModel::data(const QModelIndex &index, int role) const

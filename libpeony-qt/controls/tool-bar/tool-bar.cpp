@@ -13,6 +13,8 @@
 
 #include <QStandardPaths>
 
+#include <QDebug>
+
 using namespace Peony;
 
 ToolBar::ToolBar(FMWindow *window, QWidget *parent) : QToolBar(parent)
@@ -170,6 +172,12 @@ void ToolBar::updateLocation(const QString &uri)
     if (uri.isNull())
         return;
     m_view_factory_model->setDirectoryUri(uri);
+    qDebug()<<m_view_factory_model->getHighestPriorityViewId();
+    if (!m_view_factory_model->getHighestPriorityViewId().isEmpty()) {
+        //FIXME: switch to highest priority's view
+    } else {
+        //FIXME: use default view
+    }
     auto viewFactoryManager = DirectoryViewFactoryManager::getInstance();
     auto defaultViewId = viewFactoryManager->getDefaultViewId();
     auto index = m_view_factory_model->getIndexFromViewId(defaultViewId);
