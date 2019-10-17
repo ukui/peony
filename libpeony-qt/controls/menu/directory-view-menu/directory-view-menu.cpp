@@ -16,6 +16,8 @@
 
 #include "volume-manager.h"
 
+#include "file-enumerator.h"
+
 #include <QDesktopServices>
 #include <QUrl>
 #include <QMessageBox>
@@ -343,18 +345,53 @@ const QList<QAction *> DirectoryViewMenu::constructTrashActions()
     QList<QAction *> l;
 
     if (m_is_trash) {
+        FileEnumerator e;
+        e.setEnumerateDirectory("trash:///");
+        e.enumerateSync();
+        auto trashFileInfos = e.getChildren();
+        bool isTrashEmpty = trashFileInfos.isEmpty();
+
         if (m_selections.isEmpty()) {
             l<<addAction(QIcon::fromTheme("window-close-symbolic"), tr("&Clean the Trash"));
+            l.last()->setEnabled(!isTrashEmpty);
             connect(l.last(), &QAction::triggered, [=](){
-                //FIXME:
-                //clean the trash
+                auto result = QMessageBox::question(nullptr, tr("Delete Permanently"), tr("Are you sure that you want to delete these files? "
+                                                                                          "Once you start a deletion, the files deleting will never be "
+                                                                                          "restored again."));
+                if (result == QMessageBox::Ok) {
+                    auto enumerator = new FileEnumerator;
+                    enumerator->setEnumerateDirectory("trash:///");
+                    enumerator->connect(enumerator, &FileEnumerator::enumerateFinished, [=](){
+                        auto infos = enumerator->getChildren();
+                        QStringList uris;
+                        for (auto info : infos) {
+                            uris<<info->uri();
+                        }
+                        if (!uris.isEmpty())
+                            FileOperationUtils::remove(uris);
+
+                        enumerator->deleteLater();
+                    });
+                    enumerator->enumerateAsync();
+                }
             });
         } else {
             l<<addAction(tr("&Restore"));
+            connect(l.last(), &QAction::triggered, [=](){
+                if (m_selections.count() == 1) {
+                    FileOperationUtils::restore(m_selections.first());
+                } else {
+                    FileOperationUtils::restore(m_selections);
+                }
+            });
             l<<addAction(QIcon::fromTheme("window-close-symbolic"), tr("&Delete"));
             connect(l.last(), &QAction::triggered, [=](){
-                //FIXME:
-                //untrash the selected files.
+                auto result = QMessageBox::question(nullptr, tr("Delete Permanently"), tr("Are you sure that you want to delete these files? "
+                                                                                          "Once you start a deletion, the files deleting will never be "
+                                                                                          "restored again."));
+                if (result == QMessageBox::Ok) {
+                    FileOperationUtils::remove(m_selections);
+                }
             });
         }
     }
@@ -371,13 +408,14 @@ const QList<QAction *> DirectoryViewMenu::constructSearchActions()
 
         l<<addAction(QIcon::fromTheme("new-window-symbolc"), tr("Open Parent Folder in New Window"));
         connect(l.last(), &QAction::triggered, [=](){
-            //FIXME:
-            //open window request
+            for (auto uri : m_selections) {
+                FMWindow *newWindow = new FMWindow(uri);
+                newWindow->show();
+            }
         });
         l<<addAction(QIcon::fromTheme("new-tab-symbolic"), tr("Open Parent Folder in New Tab"));
         connect(l.last(), &QAction::triggered, [=](){
-            //FIXME:
-            //open tab request
+            m_top_window->addNewTabs(m_selections);
         });
     }
     return l;

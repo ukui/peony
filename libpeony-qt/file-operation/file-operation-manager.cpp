@@ -88,6 +88,8 @@ void FileOperationManager::startOperation(FileOperation *operation, bool addToHi
 
         if (addToHistory) {
             auto info = operation->getOperationInfo();
+            if (!info)
+                return;
             if (info->operationType() != FileOperationInfo::Delete) {
                 m_undo_stack.push(info);
                 m_redo_stack.clear();

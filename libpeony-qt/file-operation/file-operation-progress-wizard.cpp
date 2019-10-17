@@ -21,6 +21,9 @@ using namespace Peony;
 
 FileOperationProgressWizard::FileOperationProgressWizard(QWidget *parent) : QWizard(parent)
 {
+    setFixedWidth(600);
+    setFixedHeight(480);
+
     setWindowFlags(windowFlags());
     //only show cancel button at bottom-right of wizard
     QList<WizardButton> layout;

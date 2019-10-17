@@ -49,7 +49,9 @@ void SideBarDelegate::paint(QPainter *painter, const QStyleOptionViewItem &optio
         if (opt.state.testFlag(QStyle::State_Selected)) {
             painter->fillRect(opt.rect, m_styled_button->palette().highlight());
         } else if (opt.state.testFlag(QStyle::State_MouseOver)) {
-            painter->fillRect(opt.rect, m_styled_button->palette().midlight());
+            QColor color = m_styled_button->palette().highlight().color();
+            color.setAlpha(127);
+            painter->fillRect(opt.rect, color);
         }
         return QStyledItemDelegate::paint(painter, option, index);
     }

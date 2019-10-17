@@ -119,8 +119,10 @@ void VolumeManager::unmount_cb(GFile *file, GAsyncResult *result, GError **error
 {
     bool successed = g_file_unmount_mountable_with_operation_finish(file, result, error);
     if (!successed) {
-        auto err = GErrorWrapper::wrapFrom(g_error_copy(*error));
-        QMessageBox::warning(nullptr, tr("Error"), err.get()->message());
+        if (error) {
+            auto err = GErrorWrapper::wrapFrom(g_error_copy(*error));
+            QMessageBox::warning(nullptr, tr("Error"), err.get()->message());
+        }
     }
 }
 

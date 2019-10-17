@@ -21,6 +21,8 @@ public:
     static void remove(const QStringList &uris);
     static void rename(const QString &uri, const QString &newName, bool addHistory);
     static void link(const QString &srcUri, const QString &destUri, bool addHistory);
+    static void restore(const QString &uriInTrash);
+    static void restore(const QStringList &urisInTrash);
 
     /*!
      * \brief queryFileInfo

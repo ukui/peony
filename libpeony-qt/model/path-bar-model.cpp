@@ -31,7 +31,10 @@ void PathBarModel::setRootUri(const QString &uri, bool force)
     }
 
     //do not enumerate a search:/// directory
-    if (uri.startsWith("search:/"))
+    if (uri.startsWith("search://"))
+        return;
+
+    if (uri.startsWith("trash://"))
         return;
 
     //qDebug()<<"setUri"<<uri<<"raw"<<m_current_uri;

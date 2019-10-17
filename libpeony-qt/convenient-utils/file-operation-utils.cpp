@@ -8,6 +8,8 @@
 #include "file-delete-operation.h"
 #include "file-link-operation.h"
 
+#include "file-untrash-operation.h"
+
 #include "file-info-job.h"
 #include "file-info.h"
 
@@ -67,4 +69,21 @@ std::shared_ptr<FileInfo> FileOperationUtils::queryFileInfo(const QString &uri)
     job->querySync();
     job->deleteLater();
     return info;
+}
+
+void FileOperationUtils::restore(const QString &uriInTrash)
+{
+    QStringList uris;
+    uris<<uriInTrash;
+    auto fileOpMgr = FileOperationManager::getInstance();
+    auto untrashOp = new FileUntrashOperation(uris);
+    fileOpMgr->startOperation(untrashOp, true);
+}
+
+void FileOperationUtils::restore(const QStringList &urisInTrash)
+{
+    auto fileOpMgr = FileOperationManager::getInstance();
+    auto untrashOp = new FileUntrashOperation(urisInTrash);
+    //FIXME: support undo?
+    fileOpMgr->startOperation(untrashOp, false);
 }
