@@ -55,6 +55,8 @@ Q_SIGNALS:
     void selectionChanged();
     void updateWindowLocationRequest(const QString &uri, bool addHistory, bool forceUpdate = false);
 
+    void menuRequest(const QPoint &pos);
+
 public Q_SLOTS:
     void goToUri(const QString &uri, bool addHistory, bool forceUpdate = false);
     void switchViewType(const QString &viewId);

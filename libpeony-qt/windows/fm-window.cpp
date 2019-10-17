@@ -12,6 +12,8 @@
 #include "directory-view-container.h"
 #include "directory-view-plugin-iface.h"
 
+#include "directory-view-menu.h"
+
 #include "file-utils.h"
 #include "file-info.h"
 
@@ -173,6 +175,12 @@ FMWindow::FMWindow(const QString &uri, QWidget *parent) : QMainWindow (parent)
     stopLoadingAction->setShortcut(QKeySequence(Qt::Key_Escape));
     addAction(stopLoadingAction);
     connect(stopLoadingAction, &QAction::triggered, this, &FMWindow::forceStopLoading);
+
+    //menu
+    connect(m_tab, &TabPage::menuRequest, [=](const QPoint &pos){
+        DirectoryViewMenu menu(this, nullptr);
+        menu.exec(pos);
+    });
 }
 
 const QString FMWindow::getCurrentUri()

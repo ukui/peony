@@ -8,13 +8,23 @@
 
 namespace Peony {
 
+class FMWindow;
+
 class PEONYCORESHARED_EXPORT DirectoryViewMenu : public QMenu
 {
     Q_OBJECT
 public:
+    /*!
+     * \brief DirectoryViewMenu
+     * \param directoryView
+     * \param parent
+     * \deprecated
+     */
     explicit DirectoryViewMenu(DirectoryViewIface *directoryView, QWidget *parent = nullptr);
+    explicit DirectoryViewMenu(FMWindow *window, QWidget *parent = nullptr);
 
 protected:
+    void fillActions();
     const QList<QAction *> constructOpenOpActions();
     const QList<QAction *> constructViewOpActions();
     const QList<QAction *> constructFileOpActions();
@@ -25,6 +35,8 @@ protected:
     const QList<QAction *> constructSearchActions();
 
 private:
+    FMWindow *m_top_window;
+
     DirectoryViewIface *m_view;
     QString m_directory;
     QStringList m_selections;

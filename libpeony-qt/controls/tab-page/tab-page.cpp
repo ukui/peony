@@ -7,6 +7,9 @@
 
 #include <QTabBar>
 
+#include <QDesktopServices>
+#include <QUrl>
+
 #include <QDebug>
 
 using namespace Peony;
@@ -50,8 +53,17 @@ void TabPage::addPage(const QString &uri)
     container->connect(container->getProxy(), &Peony::DirectoryViewProxyIface::viewDoubleClicked, [=](const QString &uri){
         qDebug()<<"double clicked"<<uri;
         auto info = Peony::FileInfo::fromUri(uri);
+        if (info->uri().startsWith("trash://")) {
+            //FIXME: open properties window
+            return;
+        }
         if (info->isDir() || info->isVolume() || uri.startsWith("network:")) {
             Q_EMIT this->updateWindowLocationRequest(uri);
+        } else {
+            //FIXME: i have to use gio's api for opening a file,
+            //instead of QDesktopService::openUrl(). It also should
+            //be handled in DirectoryViewMenu's open actions.
+            QDesktopServices::openUrl(QUrl(uri));
         }
     });
 
@@ -70,8 +82,17 @@ void TabPage::rebindContainer()
     container->connect(container->getProxy(), &Peony::DirectoryViewProxyIface::viewDoubleClicked, [=](const QString &uri){
         qDebug()<<"double clicked"<<uri;
         auto info = Peony::FileInfo::fromUri(uri);
+        if (info->uri().startsWith("trash://")) {
+            //FIXME: open properties window
+            return;
+        }
         if (info->isDir() || info->isVolume() || uri.startsWith("network:")) {
             Q_EMIT this->updateWindowLocationRequest(uri);
+        } else {
+            //FIXME: i have to use gio's api for opening a file,
+            //instead of QDesktopService::openUrl(). It also should
+            //be handled in DirectoryViewMenu's open actions.
+            QDesktopServices::openUrl(QUrl(uri));
         }
     });
 
@@ -81,6 +102,8 @@ void TabPage::rebindContainer()
                        this, &TabPage::currentLocationChanged);
     container->connect(container, &DirectoryViewContainer::selectionChanged,
                        this, &TabPage::currentSelectionChanged);
+    container->connect(container, &DirectoryViewContainer::menuRequest,
+                       this, &TabPage::menuRequest);
 }
 
 void TabPage::refreshCurrentTabText()
@@ -95,5 +118,5 @@ void TabPage::refreshCurrentTabText()
 void TabPage::stopLocationChange()
 {
     auto view = getActivePage();
-    //if (view)
+    view->stopLoading();
 }

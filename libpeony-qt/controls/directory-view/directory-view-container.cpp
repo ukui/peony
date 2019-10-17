@@ -24,6 +24,9 @@ DirectoryViewContainer::DirectoryViewContainer(QWidget *parent) : QWidget(parent
 
     connect(m_proxy, &DirectoryViewProxyIface::viewSelectionChanged,
             this, &DirectoryViewContainer::selectionChanged);
+
+    connect(m_proxy, &DirectoryViewProxyIface::menuRequest,
+            this, &DirectoryViewContainer::menuRequest);
 }
 
 DirectoryViewContainer::~DirectoryViewContainer()

@@ -1,5 +1,8 @@
 #include "directory-view-menu.h"
 
+#include "fm-window.h"
+#include "directory-view-container.h"
+
 #include "menu-plugin-manager.h"
 #include "file-info.h"
 
@@ -9,17 +12,42 @@
 #include "clipboard-utils.h"
 #include "file-operation-utils.h"
 
+#include "file-utils.h"
+
 #include "volume-manager.h"
+
+#include <QDesktopServices>
+#include <QUrl>
+#include <QMessageBox>
+
+#include <QDebug>
 
 using namespace Peony;
 
 DirectoryViewMenu::DirectoryViewMenu(DirectoryViewIface *directoryView, QWidget *parent) : QMenu(parent)
 {
+    m_top_window = nullptr;
     m_view = directoryView;
 
     m_directory = directoryView->getDirectoryUri();
     m_selections = directoryView->getSelections();
 
+    fillActions();
+}
+
+DirectoryViewMenu::DirectoryViewMenu(FMWindow *window, QWidget *parent) : QMenu(parent)
+{
+    m_top_window = window;
+    m_view = window->getCurrentPage()->getProxy()->getView();
+
+    m_directory = window->getCurrentUri();
+    m_selections = window->getCurrentSelections();
+
+    fillActions();
+}
+
+void DirectoryViewMenu::fillActions()
+{
     if (m_directory == "computer:///")
         m_is_computer = true;
 
@@ -78,40 +106,52 @@ const QList<QAction *> DirectoryViewMenu::constructOpenOpActions()
     if (isBackgroundMenu) {
         l<<addAction(QIcon::fromTheme("window-new-symbolic"), tr("Open in &New Window"));
         connect(l.last(), &QAction::triggered, [=](){
-            //FIXME:
-            //new window requeset
+            FMWindow *newWindow = new FMWindow(m_directory);
+            newWindow->setAttribute(Qt::WA_DeleteOnClose);
+            //FIXME: show when prepared?
+            newWindow->show();
         });
         l<<addAction(QIcon::fromTheme("tab-new-symbolic"), tr("Open in New &Tab"));
         connect(l.last(), &QAction::triggered, [=](){
-            //FIXME:
-            //new tab request
+            if (!m_top_window)
+                return;
+            QStringList uris;
+            uris<<m_directory;
+            m_top_window->addNewTabs(uris);
         });
     } else {
         if (m_selections.count() == 1) {
             auto info = FileInfo::fromUri(m_selections.first());
+            auto displayName = info->displayName();
+            if (displayName.isEmpty())
+                displayName = FileUtils::getFileDisplayName(info->uri());
             if (info->isDir()) {
-                l<<addAction(QIcon::fromTheme("document-open-symbolic"), tr("&Open \"%1\"").arg(info->displayName()));
+                l<<addAction(QIcon::fromTheme("document-open-symbolic"), tr("&Open \"%1\"").arg(displayName));
                 connect(l.last(), &QAction::triggered, [=](){
-                    //FIXME:
-                    //enter directory request
+                    if (!m_top_window)
+                        return;
+                    m_top_window->goToUri(m_selections.first(), true);
                 });
-                l<<addAction(QIcon::fromTheme("window-new-symbolic"), tr("Open \"%1\" in &New Window").arg(info->displayName()));
+                l<<addAction(QIcon::fromTheme("window-new-symbolic"), tr("Open \"%1\" in &New Window").arg(displayName));
                 connect(l.last(), &QAction::triggered, [=](){
-                    //FIXME:
-                    //new window request
+                    FMWindow *newWindow = new FMWindow(m_selections.first());
+                    newWindow->setAttribute(Qt::WA_DeleteOnClose);
+                    //FIXME: show when prepared?
+                    newWindow->show();
                 });
-                l<<addAction(QIcon::fromTheme("tab-new-symbolic"), tr("Open \"%1\" in New &Tab").arg(info->displayName()));
+                l<<addAction(QIcon::fromTheme("tab-new-symbolic"), tr("Open \"%1\" in New &Tab").arg(displayName));
                 connect(l.last(), &QAction::triggered, [=](){
-                    //FIXME:
-                    //new tab request
+                    if (!m_top_window)
+                        return;
+                    m_top_window->addNewTabs(m_selections);
                 });
             } else if (!info->isVolume()) {
-                l<<addAction(QIcon::fromTheme("document-open-symbolic"), tr("&open \"%1\"").arg(info->displayName()));
+                l<<addAction(QIcon::fromTheme("document-open-symbolic"), tr("&open \"%1\"").arg(displayName));
                 connect(l.last(), &QAction::triggered, [=](){
-                    //FIXME:
-                    //open request
+                    auto uri = m_selections.first();
+                    if (!QDesktopServices::openUrl(QUrl(uri))) {QMessageBox::critical(nullptr, tr("Open Failed"), tr("Can not open %1").arg(uri));}
                 });
-                auto openWithAction = addAction(tr("open \"%1\" with...").arg(info->displayName()));
+                auto openWithAction = addAction(tr("open \"%1\" with...").arg(displayName));
                 //FIXME: add sub menu for open with action.
                 QMenu *openWithMenu = new QMenu(this);
                 openWithMenu->addAction("app1");
@@ -121,15 +161,31 @@ const QList<QAction *> DirectoryViewMenu::constructOpenOpActions()
             } else {
                 l<<addAction(tr("&Open"));
                 connect(l.last(), &QAction::triggered, [=](){
-                    //FIXME:
-                    //open request
+                    auto uri = m_selections.first();
+                    if (!QDesktopServices::openUrl(QUrl(uri))) {QMessageBox::critical(nullptr, tr("Open Failed"), tr("Can not open %1").arg(uri));}
                 });
             }
         } else {
             l<<addAction(QIcon::fromTheme("document-open-symbolic"), tr("&Open %1 selected files").arg(m_selections.count()));
             connect(l.last(), &QAction::triggered, [=](){
-                //FIXME:
-                //open request
+                qDebug()<<"triggered";
+                QStringList dirs;
+                QStringList files;
+                for (auto uri : m_selections) {
+                    auto info = FileInfo::fromUri(uri);
+                    if (info->isDir() || info->isVolume()) {
+                        dirs<<uri;
+                    } else {
+                        files<<uri;
+                    }
+                }
+                if (!dirs.isEmpty())
+                    m_top_window->addNewTabs(dirs);
+                if (!files.isEmpty()) {
+                    for (auto uri : files) {
+                        if (!QDesktopServices::openUrl(QUrl(uri))) {QMessageBox::critical(nullptr, tr("Open Failed"), tr("Can not open %1").arg(uri));}
+                    }
+                }
             });
         }
     }

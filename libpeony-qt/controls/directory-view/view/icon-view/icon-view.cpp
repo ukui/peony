@@ -89,19 +89,16 @@ void IconView::init()
 
 void IconView::connectDefaultMenuAction()
 {
-    if (m_use_peony_qt_directory_menu) {
-        connect(this, &IconView::customContextMenuRequested, [=](const QPoint &pos){
-            if (!indexAt(pos).isValid())
-                this->clearSelection();
+    connect(this, &IconView::customContextMenuRequested, [=](const QPoint &pos){
+        if (!indexAt(pos).isValid())
+            this->clearSelection();
 
-            //NOTE: we have to ensure that we have cleared the
-            //selection if menu request at blank pos.
-            QTimer::singleShot(1, [=](){
-                DirectoryViewMenu menu(this);
-                menu.exec(QCursor::pos());
-            });
+        //NOTE: we have to ensure that we have cleared the
+        //selection if menu request at blank pos.
+        QTimer::singleShot(1, [=](){
+            Q_EMIT this->getProxy()->menuRequest(QCursor::pos());
         });
-    }
+    });
 }
 
 void IconView::rebindProxy()
