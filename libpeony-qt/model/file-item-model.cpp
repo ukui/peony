@@ -18,7 +18,7 @@ using namespace Peony;
 
 FileItemModel::FileItemModel(QObject *parent) : QAbstractItemModel (parent)
 {
-
+    setPositiveResponse(true);
 }
 
 FileItemModel::~FileItemModel()
