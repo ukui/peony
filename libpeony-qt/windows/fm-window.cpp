@@ -32,6 +32,8 @@ using namespace Peony;
 
 FMWindow::FMWindow(const QString &uri, QWidget *parent) : QMainWindow (parent)
 {
+    m_operation_minimum_interval.setSingleShot(true);
+
     setAttribute(Qt::WA_DeleteOnClose);
     setAnimated(false);
 
@@ -121,11 +123,13 @@ FMWindow::FMWindow(const QString &uri, QWidget *parent) : QMainWindow (parent)
     connect(m_tab, &TabPage::currentLocationChanged,
             this, &FMWindow::locationChangeEnd);
     connect(this, &FMWindow::locationChangeStart, [=](){
+        m_is_loading = true;
         m_side_bar->blockSignals(true);
         m_tool_bar->blockSignals(true);
         m_navigation_bar->setBlock(true);
     });
     connect(this, &FMWindow::locationChangeEnd, [=](){
+        m_is_loading = false;
         m_side_bar->blockSignals(false);
         m_tool_bar->blockSignals(false);
         m_navigation_bar->setBlock(false);
@@ -177,7 +181,9 @@ FMWindow::FMWindow(const QString &uri, QWidget *parent) : QMainWindow (parent)
     connect(stopLoadingAction, &QAction::triggered, this, &FMWindow::forceStopLoading);
 
     //menu
-    connect(m_tab, &TabPage::menuRequest, [=](const QPoint &pos){
+    m_tab->connect(m_tab, &TabPage::menuRequest, [=](const QPoint &pos){
+        if (m_is_loading)
+            return;
         DirectoryViewMenu menu(this, nullptr);
         menu.exec(pos);
     });
@@ -250,10 +256,15 @@ DirectoryViewContainer *FMWindow::getCurrentPage()
 
 void FMWindow::refresh()
 {
+    if (m_operation_minimum_interval.isActive()) {
+        return;
+    }
+    m_operation_minimum_interval.start(500);
     m_tab->getActivePage()->refresh();
 }
 
 void FMWindow::forceStopLoading()
 {
     m_tab->getActivePage()->stopLoading();
+    m_is_loading = false;
 }

@@ -5,6 +5,8 @@
 #include "peony-core_global.h"
 #include <memory>
 
+#include <QTimer>
+
 class QSplitter;
 
 namespace Peony {
@@ -95,6 +97,9 @@ private:
     ToolBar *m_tool_bar;
     SearchBar *m_search_bar;
     StatusBar *m_status_bar;
+
+    QTimer m_operation_minimum_interval;
+    bool m_is_loading = false;
 };
 
 }
