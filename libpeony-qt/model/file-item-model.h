@@ -18,6 +18,11 @@ class FileItemProxyFilterSortModel;
  * that it could tell the view how to show its or its children's data through
  * the model.
  * </br>
+ * \bug
+ * If we setRootItem() too frequently, there is a certain cause of crash.
+ * I guess it is because the glib async callback call after the user data (enumerator)
+ * has been deleted. I have no idea how to fix this bug now, maybe set a restriction
+ * of frequency of model root change in UI is one solution.
  */
 class PEONYCORESHARED_EXPORT FileItemModel : public QAbstractItemModel
 {

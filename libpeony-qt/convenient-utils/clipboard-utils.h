@@ -13,6 +13,8 @@ namespace Peony {
  * For example, isClipboardFilesBeCut is used in Peony::DirectoryView::IconView.
  * IconViewDelegate paint the cut files with different opacity. The paint event
  * is triggered by clipboardChanged() signal.
+ * \todo
+ * Automatically detect the duplicated copy/paste and handle in backend.
  */
 class ClipboardUtils : public QObject
 {

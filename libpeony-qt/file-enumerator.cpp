@@ -47,26 +47,11 @@ FileEnumerator::~FileEnumerator()
     g_object_unref(m_root_file);
     g_object_unref(m_cancellable);
 
-    auto list = getChildren();
-    for (auto child : list) {
-        //qDebug()<<child->uri()<<child.use_count();
-        if (child.use_count() <= 3)
-            FileInfoManager::getInstance()->remove(child);
-    }
-
     delete m_children_uris;
 }
 
 void FileEnumerator::setEnumerateDirectory(QString uri)
 {
-    //This usually doesn't happen.
-    auto list = getChildren();
-    for (auto child : list) {
-        //qDebug()<<child->uri()<<child.use_count();
-        if (child.use_count() <= 3)
-            FileInfoManager::getInstance()->remove(child);
-    }
-
     if (m_cancellable) {
         g_cancellable_cancel(m_cancellable);
         g_object_unref(m_cancellable);
@@ -81,14 +66,6 @@ void FileEnumerator::setEnumerateDirectory(QString uri)
 
 void FileEnumerator::setEnumerateDirectory(GFile *file)
 {
-    //This usually doesn't happen.
-    auto list = getChildren();
-    for (auto child : list) {
-        //qDebug()<<child->uri()<<child.use_count();
-        if (child.use_count() <= 3)
-            FileInfoManager::getInstance()->remove(child);
-    }
-
     if (m_cancellable) {
         g_cancellable_cancel(m_cancellable);
         g_object_unref(m_cancellable);

@@ -10,6 +10,11 @@ namespace Peony {
 
 class SideBarAbstractItem;
 
+/*!
+ * \brief The SideBarModel class
+ * \todo
+ * Add dnd support and custom favorite items support.
+ */
 class PEONYCORESHARED_EXPORT SideBarModel : public QAbstractItemModel
 {
     friend class SideBarAbstractItem;

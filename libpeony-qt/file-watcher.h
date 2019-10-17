@@ -19,6 +19,10 @@ namespace Peony {
  * its monitors. If you delete the path (or trash), it will be deleted
  * automaticly later.
  * </br>
+ * \bug
+ * FileWatcher can't monitor some special directory, such as a sftp:// server.
+ * It will cause the model can not stay in sync with filesystem. This bug is the
+ * gio's limitations of GFileMonitor.
  */
 class PEONYCORESHARED_EXPORT FileWatcher : public QObject
 {

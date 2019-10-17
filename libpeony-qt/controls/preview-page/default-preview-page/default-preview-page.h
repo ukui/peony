@@ -9,6 +9,11 @@ class QGridLayout;
 
 namespace Peony {
 
+/*!
+ * \brief The DefaultPreviewPage class
+ * \todo
+ * Implement a preview page containing file thumbnail and descriptions.
+ */
 class PEONYCORESHARED_EXPORT DefaultPreviewPage : public QWidget, public PreviewPageIface
 {
     Q_OBJECT

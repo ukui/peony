@@ -4,6 +4,7 @@
 #include "file-info.h"
 
 #include <QHash>
+#include <QMutex>
 
 namespace Peony {
 
@@ -26,6 +27,9 @@ namespace Peony {
  * Otherwise, it might cause an one-time memory leak.
  * \see FileInfo, FileInfoJob, FileEnumerator; FileInfo::~FileInfo(), FileInfoJob::~FileInfoJob(),
  * FileEnumerator::~FileEnumerator().
+ * \bug
+ * Even though I try my best to make share the file info data, it seems that the info is not be shared
+ * sometimes. Maybe there were some wrong in other classes?
  */
 class PEONYCORESHARED_EXPORT FileInfoManager
 {
@@ -37,6 +41,9 @@ public:
     void remove(QString uri);
     void remove(std::shared_ptr<FileInfo> info);
 
+    void lock() {m_mutex.lock();}
+    void unlock() {m_mutex.unlock();}
+
 protected:
     void insertFileInfo(std::shared_ptr<FileInfo> info); //{global_info_list->insert(info->uri(), info);}
     void removeFileInfobyUri(QString uri); //{global_info_list->remove(uri);}
@@ -44,6 +51,8 @@ protected:
 private:
     FileInfoManager();
     ~FileInfoManager();
+
+    QMutex m_mutex;
 };
 
 }

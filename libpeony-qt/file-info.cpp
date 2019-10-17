@@ -65,8 +65,10 @@ FileInfo::~FileInfo()
 std::shared_ptr<FileInfo> FileInfo::fromUri(QString uri)
 {
     FileInfoManager *info_manager = FileInfoManager::getInstance();
+    info_manager->lock();
     std::shared_ptr<FileInfo> info = info_manager->findFileInfoByUri(uri);
     if (info != nullptr) {
+        info_manager->unlock();
         return info;
     } else {
         std::shared_ptr<FileInfo> newly_info = std::make_shared<FileInfo>();
@@ -91,6 +93,7 @@ std::shared_ptr<FileInfo> FileInfo::fromUri(QString uri)
             break;
         }
         info_manager->insertFileInfo(newly_info);
+        info_manager->unlock();
         return newly_info;
     }
 }

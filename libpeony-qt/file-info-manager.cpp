@@ -1,4 +1,5 @@
 #include "file-info-manager.h"
+#include <QDebug>
 
 using namespace Peony;
 
@@ -31,6 +32,10 @@ std::shared_ptr<FileInfo> FileInfoManager::findFileInfoByUri(QString uri)
 void FileInfoManager::insertFileInfo(std::shared_ptr<FileInfo> info)
 {
     Q_ASSERT(global_info_list);
+    if (global_info_list->value(info->uri())) {
+        qDebug()<<"has info yet";
+        return;
+    }
     global_info_list->insert(info->uri(), info);
 }
 
@@ -48,6 +53,7 @@ void FileInfoManager::clear()
 
 void FileInfoManager::remove(QString uri)
 {
+    qDebug()<<"remove"<<uri;
     Q_ASSERT(global_info_list);
     global_info_list->remove(uri);
 }
