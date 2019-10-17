@@ -128,7 +128,7 @@ int SideBarModel::rowCount(const QModelIndex &parent) const
         return m_root_children->count();
 
     SideBarAbstractItem *parentItem = static_cast<SideBarAbstractItem*>(parent.internalPointer());
-    qDebug()<<parentItem->uri();
+    //qDebug()<<parentItem->uri();
     return parentItem->m_children->count();
 }
 
@@ -238,7 +238,7 @@ bool SideBarModel::removeColumns(int column, int count, const QModelIndex &paren
 void SideBarModel::onIndexUpdated(const QModelIndex &index)
 {
     auto item = itemFromIndex(index);
-    qDebug()<<item->m_children->count();
+    //qDebug()<<item->m_children->count();
     bool isEmpty = true;
     SideBarAbstractItem *tmp = nullptr;
     for (auto child : *item->m_children) {

@@ -135,7 +135,7 @@ GFile *FileEnumerator::enumerateTargetFile()
 
     GFile *target = nullptr;
     if (uri) {
-        qDebug()<<"enumerateTargetFile"<<uri;
+        //qDebug()<<"enumerateTargetFile"<<uri;
         target = g_file_new_for_uri(uri);
         g_free(uri);
     } else {

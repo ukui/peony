@@ -35,7 +35,7 @@ public:
     }
 
     ~GObjectTemplate() {
-        qDebug()<<"~GObjectTemplate";
+        //qDebug()<<"~GObjectTemplate";
         if (m_obj)
             g_object_unref(m_obj);
     }

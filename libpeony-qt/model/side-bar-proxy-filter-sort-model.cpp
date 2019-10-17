@@ -27,7 +27,7 @@ bool SideBarProxyFilterSortModel::filterAcceptsRow(int sourceRow, const QModelIn
 
 bool SideBarProxyFilterSortModel::lessThan(const QModelIndex &left, const QModelIndex &right) const
 {
-    qDebug()<<"less than";
+    //qDebug()<<"less than";
     if (!(left.isValid() && right.isValid())) {
         return QSortFilterProxyModel::lessThan(left, right);
     }
@@ -36,7 +36,7 @@ bool SideBarProxyFilterSortModel::lessThan(const QModelIndex &left, const QModel
     if (leftItem->type() != SideBarAbstractItem::FileSystemItem || rightItem->type() != SideBarAbstractItem::FileSystemItem) {
         return false;
     }
-    qDebug()<<leftItem->displayName()<<rightItem->displayName();
+    //qDebug()<<leftItem->displayName()<<rightItem->displayName();
     return leftItem->displayName().compare(rightItem->displayName()) > 0;
 }
 

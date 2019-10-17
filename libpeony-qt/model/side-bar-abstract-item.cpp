@@ -12,7 +12,7 @@ SideBarAbstractItem::SideBarAbstractItem(SideBarModel *model, QObject *parent) :
 
 SideBarAbstractItem::~SideBarAbstractItem()
 {
-    qDebug()<<"~SideBarAbstractItem";
+    //qDebug()<<"~SideBarAbstractItem";
     for (auto child : *m_children) {
         delete child;
     }
@@ -27,5 +27,5 @@ void SideBarAbstractItem::clearChildren()
         child->deleteLater();
     }
     m_children->clear();
-    qDebug()<<"clear children has children"<<m_model->hasChildren(firstColumnIndex());
+    //qDebug()<<"clear children has children"<<m_model->hasChildren(firstColumnIndex());
 }

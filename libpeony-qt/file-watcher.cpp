@@ -179,7 +179,7 @@ void FileWatcher::file_changed_callback(GFileMonitor *monitor,
     case G_FILE_MONITOR_EVENT_DELETED: {
         p_this->stopMonitor();
         p_this->cancel();
-        qDebug()<<p_this->m_target_uri;
+        //qDebug()<<p_this->m_target_uri;
         Q_EMIT p_this->directoryDeleted(p_this->m_target_uri);
         break;
     }

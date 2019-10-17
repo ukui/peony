@@ -87,7 +87,7 @@ void SideBarFileSystemItem::findChildren()
             auto targetUri = FileUtils::getTargetUri(info->uri());
             item->m_is_mounted = !targetUri.isEmpty() && (targetUri != "file:///");
             m_children->append(item);
-            qDebug()<<info->uri();
+            //qDebug()<<info->uri();
         }
         m_model->insertRows(0, real_children_count, firstColumnIndex());
 
@@ -99,7 +99,7 @@ void SideBarFileSystemItem::findChildren()
 end:
         Q_EMIT this->findChildrenFinished();
         if (err != nullptr) {
-            qDebug()<<"prepared:"<<err.get()->message();
+            //qDebug()<<"prepared:"<<err.get()->message();
         }
         delete e;
 
@@ -114,7 +114,7 @@ end:
 
         //start listening.
         connect(m_watcher.get(), &FileWatcher::fileCreated, [=](const QString &uri){
-            qDebug()<<"created:"<<uri;
+            //qDebug()<<"created:"<<uri;
             SideBarFileSystemItem *item = new SideBarFileSystemItem(uri,
                                                                     this,
                                                                     m_model);
@@ -124,7 +124,7 @@ end:
         });
 
         connect(m_watcher.get(), &FileWatcher::fileDeleted, [=](const QString &uri){
-            qDebug()<<"deleted:"<<uri;
+            //qDebug()<<"deleted:"<<uri;
             for (auto child : *m_children) {
                 if (child->uri() == uri) {
                     int index = m_children->indexOf(child);
@@ -140,7 +140,7 @@ end:
         connect(m_watcher.get(), &FileWatcher::fileChanged, [=](const QString &uri) {
             //FIXME: maybe i have to remove this changed item then add it again to avoid
             //qt's view expander cannot show correctly after the volume item unmounted.
-            qDebug()<<"side bar fs item changed:"<<uri;
+            //qDebug()<<"side bar fs item changed:"<<uri;
             for (auto child : *m_children) {
                 if (child->uri() == uri) {
                     SideBarFileSystemItem *changedItem = static_cast<SideBarFileSystemItem*>(child);

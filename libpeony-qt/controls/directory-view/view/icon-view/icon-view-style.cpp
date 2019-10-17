@@ -12,7 +12,7 @@ static IconViewStyle *global_instance = nullptr;
 
 IconViewStyle::IconViewStyle(QStyle *style) : QProxyStyle(style)
 {
-    qDebug()<<"icon view style";
+    //qDebug()<<"icon view style";
 }
 
 IconViewStyle *IconViewStyle::getStyle()
@@ -63,12 +63,12 @@ void IconViewStyle::drawControl(QStyle::ControlElement element, const QStyleOpti
 
 void IconViewStyle::drawItemPixmap(QPainter *painter, const QRect &rect, int alignment, const QPixmap &pixmap) const
 {
-    qDebug()<<"drawItemPixmap";
+    //qDebug()<<"drawItemPixmap";
     QProxyStyle::drawItemPixmap(painter, rect, alignment, pixmap);
 }
 
 void IconViewStyle::drawItemText(QPainter *painter, const QRect &rect, int flags, const QPalette &pal, bool enabled, const QString &text, QPalette::ColorRole textRole) const
 {
-    qDebug()<<"drawItemText";
+    //qDebug()<<"drawItemText";
     QProxyStyle::drawItemText(painter, rect, flags, pal, enabled, text, textRole);
 }
