@@ -28,26 +28,6 @@ IconView::IconView(QWidget *parent) : QListView(parent)
 {
     setStyle(IconViewStyle::getStyle());
     //FIXME: do not create proxy in view itself.
-    init();
-}
-
-IconView::IconView(DirectoryViewProxyIface *proxy, QWidget *parent) : QListView (parent)
-{
-    m_proxy = proxy;
-    init();
-}
-
-IconView::~IconView()
-{
-
-}
-
-void IconView::init()
-{
-    //FIXME: show i new a style for each icon view?
-    //IconViewStyle *style = new IconViewStyle(QApplication::style());
-    //setStyle(style);
-
     IconViewDelegate *delegate = new IconViewDelegate(this);
     setItemDelegate(delegate);
 
@@ -60,31 +40,13 @@ void IconView::init()
 
     setContextMenuPolicy(Qt::CustomContextMenu);
 
-    m_model = new FileItemModel(this);
-    m_sort_filter_proxy_model = new FileItemProxyFilterSortModel(m_model);
-    m_sort_filter_proxy_model->setSourceModel(m_model);
-
-    setModel(m_sort_filter_proxy_model);
-
     setGridSize(QSize(115, 135));
     setIconSize(QSize(64, 64));
+}
 
-    //default connect
-    connect(m_model, &FileItemModel::updated, [=](){
-        m_sort_filter_proxy_model->sort(FileItemModel::FileName);
-    });
+IconView::~IconView()
+{
 
-    //edit trigger
-    connect(this->selectionModel(), &QItemSelectionModel::selectionChanged, [=](const QItemSelection &selection, const QItemSelection &deselection){
-        qDebug()<<"selection changed";
-        auto currentSelections = selection.indexes();
-
-        for (auto index : deselection.indexes()) {
-            this->setIndexWidget(index, nullptr);
-        }
-    });
-
-    connectDefaultMenuAction();
 }
 
 void IconView::connectDefaultMenuAction()
@@ -328,6 +290,14 @@ void IconView::wheelEvent(QWheelEvent *e)
     //when wheel with extend selection. I have to deal with this problem
     //as soon as possible.
     QListView::wheelEvent(e);
+}
+
+void IconView::bindModel(FileItemModel *sourceModel, FileItemProxyFilterSortModel *proxyModel)
+{
+    m_model = sourceModel;
+    m_sort_filter_proxy_model = proxyModel;
+
+    setModel(m_sort_filter_proxy_model);
 }
 
 void IconView::setProxy(DirectoryViewProxyIface *proxy)

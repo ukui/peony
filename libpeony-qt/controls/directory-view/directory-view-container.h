@@ -11,6 +11,9 @@ class QVBoxLayout;
 
 namespace Peony {
 
+class FileItemModel;
+class FileItemProxyFilterSortModel;
+
 class DirectoryViewProxyIface;
 
 /*!
@@ -93,6 +96,9 @@ private:
     QStringList m_forward_list;
 
     QVBoxLayout *m_layout;
+
+    FileItemModel *m_model;
+    FileItemProxyFilterSortModel *m_proxy_model;
 };
 
 }

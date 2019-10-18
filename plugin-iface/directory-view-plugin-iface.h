@@ -12,6 +12,9 @@ namespace Peony {
 class DirectoryViewIface;
 class DirectoryViewProxyIface;
 
+class FileItemModel;
+class FileItemProxyFilterSortModel;
+
 /*!
  * \brief The DirectoryViewPluginIface class
  * \details
@@ -97,6 +100,7 @@ class DirectoryViewIface
 public:
     virtual ~DirectoryViewIface() {}
 
+    virtual void bindModel(FileItemModel *sourceModel, FileItemProxyFilterSortModel *proxyModel) = 0;
     virtual void setProxy(DirectoryViewProxyIface *proxy) = 0;
 
     const virtual QString viewId() = 0;

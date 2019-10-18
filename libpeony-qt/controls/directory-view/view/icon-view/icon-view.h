@@ -33,6 +33,7 @@ public:
 
     const QString viewId() override {return tr("Icon View");}
 
+    void bindModel(FileItemModel *sourceModel, FileItemProxyFilterSortModel *proxyModel) override;
     void setProxy(DirectoryViewProxyIface *proxy) override;
 
     /*!
@@ -95,7 +96,6 @@ protected:
     void wheelEvent(QWheelEvent *e) override;
 
 protected:
-    void init();
     void rebindProxy();
 
 private:

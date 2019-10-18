@@ -4,12 +4,18 @@
 #include "standard-view-proxy.h"
 #include "file-utils.h"
 
+#include "file-item-proxy-filter-sort-model.h"
+
 #include <QVBoxLayout>
 
 using namespace Peony;
 
 DirectoryViewContainer::DirectoryViewContainer(QWidget *parent) : QWidget(parent)
 {
+    m_model = new FileItemModel(this);
+    m_proxy_model = new FileItemProxyFilterSortModel(this);
+    m_proxy_model->setSourceModel(m_model);
+
     m_proxy = new DirectoryView::StandardViewProxy;
 
     setContentsMargins(0, 0, 0, 0);
@@ -27,6 +33,9 @@ DirectoryViewContainer::DirectoryViewContainer(QWidget *parent) : QWidget(parent
 
     connect(m_proxy, &DirectoryViewProxyIface::menuRequest,
             this, &DirectoryViewContainer::menuRequest);
+
+    auto viewId = DirectoryViewFactoryManager::getInstance()->getDefaultViewId();
+    switchViewType(viewId);
 }
 
 DirectoryViewContainer::~DirectoryViewContainer()
@@ -141,14 +150,15 @@ void DirectoryViewContainer::switchViewType(const QString &viewId)
     if (!factory)
         return;
 
-    auto view = factory->create();
-    //connect the signal.
-    view->setProxy(m_proxy);
-
     auto oldView = m_proxy->getView();
     if (oldView) {
         m_layout->removeWidget(dynamic_cast<QWidget*>(oldView));
     }
+    auto view = factory->create();
+    //connect the view's signal.
+    view->bindModel(m_model, m_proxy_model);
+    view->setProxy(m_proxy);
+
     m_proxy->switchView(view);
     m_layout->addWidget(dynamic_cast<QWidget*>(view), Qt::AlignBottom);
 
