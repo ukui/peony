@@ -51,7 +51,7 @@ Q_SIGNALS:
 
 public Q_SLOTS:
     void updateLocation(const QString &uri);
-    void update();
+    void updateStates();
 
 protected:
     void init(bool hasTopWindow);

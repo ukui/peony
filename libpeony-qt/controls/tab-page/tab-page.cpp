@@ -104,6 +104,9 @@ void TabPage::rebindContainer()
                        this, &TabPage::currentSelectionChanged);
     container->connect(container, &DirectoryViewContainer::menuRequest,
                        this, &TabPage::menuRequest);
+
+    container->connect(container, &DirectoryViewContainer::viewTypeChanged,
+                       this, &TabPage::viewTypeChanged);
 }
 
 void TabPage::refreshCurrentTabText()

@@ -113,6 +113,7 @@ FMWindow::FMWindow(const QString &uri, QWidget *parent) : QMainWindow (parent)
     //tab changed
     connect(m_tab, &TabPage::currentActiveViewChanged, [=](){
         this->m_tool_bar->updateLocation(getCurrentUri());
+        this->m_tool_bar->updateStates();
         this->m_navigation_bar->bindContainer(getCurrentPage());
         this->m_navigation_bar->updateLocation(getCurrentUri());
         this->m_status_bar->update();
@@ -142,6 +143,7 @@ FMWindow::FMWindow(const QString &uri, QWidget *parent) : QMainWindow (parent)
     //selection changed
     connect(m_tab, &TabPage::currentSelectionChanged, [=](){
         m_status_bar->update();
+        m_tool_bar->updateStates();
         Q_EMIT this->windowSelectionChanged();
     });
 
@@ -160,19 +162,21 @@ FMWindow::FMWindow(const QString &uri, QWidget *parent) : QMainWindow (parent)
         m_status_bar->update();
     });
 
+    //view switched
+    connect(m_tab, &TabPage::viewTypeChanged, [=](){
+        m_tool_bar->updateStates();
+    });
+
     //search
     connect(m_search_bar, &SearchBar::searchKeyChanged, [=](){
         //FIXME: filter the current directory
     });
     connect(m_search_bar, &SearchBar::searchRequest, [=](const QString &key){
-        //FIXME: parse the search key to search vfs uri.
-        if (this->getCurrentUri().startsWith("search:///")) {
-            QMessageBox::warning(this, tr("Warning"), tr("You are now in a searching directory, "
-                                                         "If you want to search files, you should "
-                                                         "leave this path at first."));
-            return;
+        QString uri = this->getCurrentUri();
+        if (uri.startsWith("search:///")) {
+            uri = m_last_non_search_location;
         }
-        auto targetUri = SearchVFSUriParser::parseSearchKey(this->getCurrentUri(), key);
+        auto targetUri = SearchVFSUriParser::parseSearchKey(uri, key);
         this->goToUri(targetUri, true);
     });
 
@@ -242,6 +246,9 @@ void FMWindow::goToUri(const QString &uri, bool addHistory, bool forceUpdate)
         return;
 
 update:
+    if (!uri.startsWith("search://")) {
+        m_last_non_search_location = uri;
+    }
     Q_EMIT locationChangeStart();
     m_tab->getActivePage()->goToUri(uri, addHistory, forceUpdate);
     m_tab->refreshCurrentTabText();

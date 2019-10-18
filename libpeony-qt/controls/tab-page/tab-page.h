@@ -21,6 +21,8 @@ Q_SIGNALS:
     void currentLocationChanged();
     void currentSelectionChanged();
 
+    void viewTypeChanged();
+
     void updateWindowLocationRequest(const QString &uri, bool addHistory = true, bool forceUpdate = false);
 
     void menuRequest(const QPoint &pos);

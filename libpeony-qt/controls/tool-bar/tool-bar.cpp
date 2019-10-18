@@ -177,10 +177,17 @@ void ToolBar::updateLocation(const QString &uri)
     m_restore_action->setVisible(uri.startsWith("trash://"));
 }
 
-void ToolBar::update()
+void ToolBar::updateStates()
 {
     if (!m_top_window)
         return;
 
-    updateLocation(m_top_window->getCurrentUri());
+    auto directory = m_top_window->getCurrentUri();
+    auto selection = m_top_window->getCurrentSelections();
+
+    if (directory.startsWith("trash://")) {
+        auto files = m_top_window->getCurrentAllFileUris();
+        m_clean_trash_action->setEnabled(!files.isEmpty());
+        m_restore_action->setEnabled(!selection.isEmpty());
+    }
 }

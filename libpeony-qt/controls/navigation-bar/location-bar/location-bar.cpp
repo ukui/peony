@@ -2,6 +2,9 @@
 
 #include "path-bar-model.h"
 #include "file-utils.h"
+
+#include "search-vfs-uri-parser.h"
+
 #include <QUrl>
 #include <QMenu>
 
@@ -36,6 +39,13 @@ void LocationBar::setRootUri(const QString &uri)
 
     for (auto action : actions()) {
         removeAction(action);
+    }
+
+    if (m_current_uri.startsWith("search://")) {
+        QString nameRegexp = SearchVFSUriParser::getSearchUriNameRegexp(m_current_uri);
+        QString targetDirectory = SearchVFSUriParser::getSearchUriTargetDirectory(m_current_uri);
+        addAction(QIcon::fromTheme("edit-find-symbolic"), tr("Search \"%1\" in \"%2\"").arg(nameRegexp).arg(targetDirectory));
+        return;
     }
 
     QStringList uris;

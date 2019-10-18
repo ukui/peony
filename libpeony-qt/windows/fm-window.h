@@ -101,6 +101,8 @@ private:
 
     QTimer m_operation_minimum_interval;
     bool m_is_loading = false;
+
+    QString m_last_non_search_location;
 };
 
 }
