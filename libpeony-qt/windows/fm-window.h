@@ -49,6 +49,7 @@ public:
 
     const QString getCurrentUri();
     const QStringList getCurrentSelections();
+    const QStringList getCurrentAllFileUris();
     const QList<std::shared_ptr<FileInfo>> getCurrentSelectionFileInfos();
     DirectoryViewContainer *getCurrentPage();
 

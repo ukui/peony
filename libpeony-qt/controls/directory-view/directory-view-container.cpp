@@ -182,6 +182,13 @@ const QString DirectoryViewContainer::getCurrentUri()
     return nullptr;
 }
 
+const QStringList DirectoryViewContainer::getAllFileUris()
+{
+    if (getProxy())
+        return getProxy()->getAllFileUris();
+    return QStringList();
+}
+
 void DirectoryViewContainer::stopLoading()
 {
     if (getProxy()) {

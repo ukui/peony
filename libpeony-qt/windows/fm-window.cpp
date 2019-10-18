@@ -129,6 +129,7 @@ FMWindow::FMWindow(const QString &uri, QWidget *parent) : QMainWindow (parent)
         m_navigation_bar->setBlock(true);
     });
     connect(this, &FMWindow::locationChangeEnd, [=](){
+        //qDebug()<<this->getCurrentAllFileUris();
         m_is_loading = false;
         m_side_bar->blockSignals(false);
         m_tool_bar->blockSignals(false);
@@ -196,6 +197,14 @@ const QString FMWindow::getCurrentUri()
         return m_tab->getActivePage()->getCurrentUri();
     }
     return nullptr;
+}
+
+const QStringList FMWindow::getCurrentAllFileUris()
+{
+    if (m_tab->getActivePage()) {
+        return m_tab->getActivePage()->getAllFileUris();
+    }
+    return QStringList();
 }
 
 const QStringList FMWindow::getCurrentSelections()

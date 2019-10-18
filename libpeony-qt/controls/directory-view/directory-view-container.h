@@ -37,6 +37,8 @@ public:
     const QString getCurrentUri();
     const QStringList getCurrentSelections();
 
+    const QStringList getAllFileUris();
+
     const QStringList getBackList();
     const QStringList getForwardList();
 

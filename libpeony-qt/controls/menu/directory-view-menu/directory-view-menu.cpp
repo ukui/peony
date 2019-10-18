@@ -16,8 +16,6 @@
 
 #include "volume-manager.h"
 
-#include "file-enumerator.h"
-
 #include <QDesktopServices>
 #include <QUrl>
 #include <QMessageBox>
@@ -347,11 +345,7 @@ const QList<QAction *> DirectoryViewMenu::constructTrashActions()
     QList<QAction *> l;
 
     if (m_is_trash) {
-        FileEnumerator e;
-        e.setEnumerateDirectory("trash:///");
-        e.enumerateSync();
-        auto trashFileInfos = e.getChildren();
-        bool isTrashEmpty = trashFileInfos.isEmpty();
+        bool isTrashEmpty = m_top_window->getCurrentAllFileUris().isEmpty();
 
         if (m_selections.isEmpty()) {
             l<<addAction(QIcon::fromTheme("window-close-symbolic"), tr("&Clean the Trash"));
@@ -361,20 +355,7 @@ const QList<QAction *> DirectoryViewMenu::constructTrashActions()
                                                                                           "Once you start a deletion, the files deleting will never be "
                                                                                           "restored again."));
                 if (result == QMessageBox::Ok) {
-                    auto enumerator = new FileEnumerator;
-                    enumerator->setEnumerateDirectory("trash:///");
-                    enumerator->connect(enumerator, &FileEnumerator::enumerateFinished, [=](){
-                        auto infos = enumerator->getChildren();
-                        QStringList uris;
-                        for (auto info : infos) {
-                            uris<<info->uri();
-                        }
-                        if (!uris.isEmpty())
-                            FileOperationUtils::remove(uris);
-
-                        enumerator->deleteLater();
-                    });
-                    enumerator->enumerateAsync();
+                    auto uris = m_top_window->getCurrentAllFileUris();
                 }
             });
         } else {

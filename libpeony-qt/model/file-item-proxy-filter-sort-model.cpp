@@ -3,6 +3,8 @@
 #include "file-item-proxy-filter-sort-model.h"
 #include "file-info.h"
 
+#include "file-utils.h"
+
 #include <QDebug>
 #include <QMessageBox>
 
@@ -135,10 +137,24 @@ bool FileItemProxyFilterSortModel::startWithChinese(const QString &displayName) 
 
 QModelIndexList FileItemProxyFilterSortModel::getAllFileIndexes()
 {
+    //FIXME: how about the tree?
     QModelIndexList l;
     int i = 0;
     while (this->index(i, 0, QModelIndex()).isValid()) {
-        l<<this->index(i, 0, QModelIndex());
+        auto index = this->index(i, 0, QModelIndex());
+        if (m_show_hidden) {
+            l<<index;
+        } else {
+            auto disyplayName = index.data(Qt::DisplayRole).toString();
+            if (disyplayName.isEmpty()) {
+                auto uri = this->index(i, 0, QModelIndex()).data(FileItemModel::UriRole).toString();
+                disyplayName = FileUtils::getFileDisplayName(uri);
+            }
+            if (!disyplayName.startsWith(".")) {
+                l<<index;
+            }
+        }
+
         i++;
     }
     return l;
