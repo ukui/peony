@@ -23,6 +23,9 @@ public:
     QModelIndex getSourceIndex(const QModelIndex &proxyIndex);
     const QModelIndex indexFromUri(const QString &uri);
 
+    QStringList getAllFileUris();
+    QModelIndexList getAllFileIndexes();
+
 public Q_SLOTS:
     void update();
 

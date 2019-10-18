@@ -36,7 +36,7 @@ void StandardViewProxy::setSelections(const QStringList &uris)
     m_view->setSelections(uris);
 }
 
-QStringList StandardViewProxy::getSelections()
+const QStringList StandardViewProxy::getSelections()
 {
     return m_view->getSelections();
 }
@@ -97,4 +97,9 @@ void StandardViewProxy::switchView(DirectoryViewIface *view)
         old_view->closeView();
 
     m_view = view;
+}
+
+const QStringList StandardViewProxy::getAllFileUris()
+{
+    return m_view->getAllFileUris();
 }

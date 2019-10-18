@@ -160,7 +160,7 @@ void IconView::setSelections(const QStringList &uris)
     }
 }
 
-QStringList IconView::getSelections()
+const QStringList IconView::getSelections()
 {
     QStringList uris;
     QModelIndexList selections = selectedIndexes();
@@ -367,4 +367,9 @@ int IconView::getSortOrder()
 void IconView::setSortOrder(int sortOrder)
 {
     m_sort_filter_proxy_model->sort(getSortType(), Qt::SortOrder(sortOrder));
+}
+
+const QStringList IconView::getAllFileUris()
+{
+    return m_sort_filter_proxy_model->getAllFileUris();
 }

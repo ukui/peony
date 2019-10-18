@@ -105,7 +105,10 @@ public:
     const virtual QString getDirectoryUri() = 0;
 
     //selections
-    virtual QStringList getSelections() = 0;
+    const virtual QStringList getSelections() = 0;
+
+    //children
+    const virtual QStringList getAllFileUris() = 0;
 
     /*
     //loaction
@@ -181,7 +184,10 @@ public:
     const virtual QString getDirectoryUri() = 0; 
 
     //selections
-    virtual QStringList getSelections() = 0;
+    const virtual QStringList getSelections() = 0;
+
+    //children
+    const virtual QStringList getAllFileUris() = 0;
 
 Q_SIGNALS:
     //loaction

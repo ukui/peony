@@ -48,7 +48,10 @@ public:
     const QString getDirectoryUri() override;
 
     //selections
-    QStringList getSelections() override;
+    const QStringList getSelections() override;
+
+    //children
+    const QStringList getAllFileUris() override;
 
     QRect visualRect(const QModelIndex &index) const override;
 

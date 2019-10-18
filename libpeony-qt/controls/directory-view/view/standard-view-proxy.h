@@ -36,7 +36,10 @@ public:
     const QString getDirectoryUri() override;
 
     //selections
-    QStringList getSelections() override;
+    const QStringList getSelections() override;
+
+    //children
+    const QStringList getAllFileUris() override;
 
 public Q_SLOTS:
     //location

@@ -132,3 +132,24 @@ bool FileItemProxyFilterSortModel::startWithChinese(const QString &displayName) 
     auto firstStrUnicode = displayName.at(0).unicode();
     return (firstStrUnicode <=0x9FA5 && firstStrUnicode >= 0x4E00);
 }
+
+QModelIndexList FileItemProxyFilterSortModel::getAllFileIndexes()
+{
+    QModelIndexList l;
+    int i = 0;
+    while (this->index(i, 0, QModelIndex()).isValid()) {
+        l<<this->index(i, 0, QModelIndex());
+        i++;
+    }
+    return l;
+}
+
+QStringList FileItemProxyFilterSortModel::getAllFileUris()
+{
+    QStringList l;
+    auto indexes = getAllFileIndexes();
+    for (auto index : indexes) {
+        l<<index.data(FileItemModel::UriRole).toString();
+    }
+    return l;
+}
