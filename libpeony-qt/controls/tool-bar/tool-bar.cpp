@@ -7,9 +7,11 @@
 #include "file-operation-utils.h"
 
 #include "view-factory-model.h"
+#include "directory-view-container.h"
 
 #include <QAction>
 #include <QComboBox>
+#include <QPushButton>
 
 #include <QStandardPaths>
 
@@ -33,8 +35,6 @@ void ToolBar::init(bool hasTopWindow)
                                          tr("Open in new &Window"));
     QAction *newTabActon = addAction(QIcon::fromTheme("tab-new-symbolic", QIcon::fromTheme("folder")),
                                      tr("Open in new &Tab"));
-    QAction *newTerminalAction = addAction(QIcon::fromTheme("terminal", QIcon::fromTheme("folder")),
-                                           tr("Open in Terminal"));
 
     addSeparator();
 
@@ -57,16 +57,18 @@ void ToolBar::init(bool hasTopWindow)
     addSeparator();
 
     //file operations
-    QAction *copyAction = addAction(QIcon::fromTheme("gtk-copy"), tr("&Copy"));
+    QAction *copyAction = addAction(QIcon::fromTheme("edit-copy-symbolic"), tr("&Copy"));
 
-    QAction *pasteAction = addAction(QIcon::fromTheme("gtk-paste"), tr("Paste"));
+    QAction *pasteAction = addAction(QIcon::fromTheme("edit-paste-symbolic"), tr("Paste"));
     pasteAction->setShortcut(QKeySequence::Paste);
 
-    QAction *cutAction = addAction(QIcon::fromTheme("gtk-cut"), tr("Cut"));
+    QAction *cutAction = addAction(QIcon::fromTheme("edit-cut-symbolic"), tr("Cut"));
     cutAction->setShortcut(QKeySequence::Cut);
 
-    QAction *trashAction = addAction(QIcon::fromTheme("user-trash"), tr("Trash"));
+    QAction *trashAction = addAction(QIcon::fromTheme("edit-delete-symbolic"), tr("Trash"));
     trashAction->setShortcut(QKeySequence::Delete);
+
+    m_file_op_actions<<copyAction<<pasteAction<<cutAction<<trashAction;
 
     addSeparator();
 
@@ -75,102 +77,85 @@ void ToolBar::init(bool hasTopWindow)
 
     //separator widget
 
-    //other options
+    //extension
+
+    //other options?
+
+    //trash
+    m_clean_trash_action = addAction(QIcon::fromTheme("edit-clear-symbolic"), tr("Clean Trash"), [=](){
+        //FIXME:
+    });
+    m_restore_action = addAction(QIcon::fromTheme("view-refresh-symbolic"), tr("Restore"), [=](){
+        //FIXME:
+    });
 
     //connect signal
-    if (!hasTopWindow) {
-        connect(newWindowAction, &QAction::triggered, [=](){
-            Q_EMIT this->optionRequest(OpenInNewWindow);
-        });
-        connect(newTabActon, &QAction::triggered, [=](){
-            Q_EMIT this->optionRequest(OpenInNewTab);
-        });
-        connect(newTerminalAction, &QAction::triggered, [=](){
-            Q_EMIT this->optionRequest(OpenInTerminal);
-        });
-
-        connect(viewCombox, QOverload<const QString &>::of(&QComboBox::currentIndexChanged), [=](const QString &text){
-            Q_EMIT this->optionRequest(SwitchView);
-        });
-
-        connect(copyAction, &QAction::triggered, [=](){
-            Q_EMIT this->optionRequest(Copy);
-        });
-        connect(pasteAction, &QAction::triggered, [=](){
-            Q_EMIT this->optionRequest(Paste);
-        });
-        connect(cutAction, &QAction::triggered, [=](){
-            Q_EMIT this->optionRequest(Cut);
-        });
-        connect(trashAction, &QAction::triggered, [=](){
-            Q_EMIT this->optionRequest(Trash);
-        });
-    } else {
-        connect(newWindowAction, &QAction::triggered, [=](){
-            if (m_top_window->getCurrentSelections().isEmpty()) {
+    connect(newWindowAction, &QAction::triggered, [=](){
+        if (m_top_window->getCurrentSelections().isEmpty()) {
+            FMWindow *newWindow = new FMWindow(m_top_window->getCurrentUri());
+            newWindow->show();
+            //FIXME: show when prepared
+        } else {
+            for (auto uri : m_top_window->getCurrentSelections()) {
                 FMWindow *newWindow = new FMWindow(m_top_window->getCurrentUri());
                 newWindow->show();
                 //FIXME: show when prepared
-            } else {
-                for (auto uri : m_top_window->getCurrentSelections()) {
-                    FMWindow *newWindow = new FMWindow(m_top_window->getCurrentUri());
-                    newWindow->show();
-                    //FIXME: show when prepared
-                }
             }
-        });
+        }
+    });
 
-        connect(newTabActon, &QAction::triggered, [=](){
-            QStringList l;
-            if (m_top_window->getCurrentSelections().isEmpty()) {
-                l<<m_top_window->getCurrentUri();
-            } else {
-                l = m_top_window->getCurrentSelections();
-            }
-            m_top_window->addNewTabs(l);
-        });
+    connect(newTabActon, &QAction::triggered, [=](){
+        QStringList l;
+        if (m_top_window->getCurrentSelections().isEmpty()) {
+            l<<m_top_window->getCurrentUri();
+        } else {
+            l = m_top_window->getCurrentSelections();
+        }
+        m_top_window->addNewTabs(l);
+    });
 
-        connect(newTerminalAction, &QAction::triggered, [=](){
-            auto uri = m_top_window->getCurrentUri();
-            //FIXME: call terminal
-            Q_EMIT this->optionRequest(OpenInTerminal);
-        });
+    connect(viewCombox, QOverload<const QString &>::of(&QComboBox::currentIndexChanged), [=](const QString &text){
+        Q_EMIT this->optionRequest(SwitchView);
+        //FIXME: i have to add interface to view proxy for view switch.
+    });
 
-        connect(viewCombox, QOverload<const QString &>::of(&QComboBox::currentIndexChanged), [=](const QString &text){
-            Q_EMIT this->optionRequest(SwitchView);
-            //FIXME: i have to add interface to view proxy for view switch.
-        });
+    connect(copyAction, &QAction::triggered, [=](){
+        if (!m_top_window->getCurrentSelections().isEmpty())
+            ClipboardUtils::setClipboardFiles(m_top_window->getCurrentSelections(), false);
+    });
+    connect(pasteAction, &QAction::triggered, [=](){
+        if (ClipboardUtils::isClipboardHasFiles()) {
+            //FIXME: how about duplicated copy?
+            //FIXME: how to deal with a failed move?
+            ClipboardUtils::pasteClipboardFiles(m_top_window->getCurrentUri());
+        }
+    });
+    connect(cutAction, &QAction::triggered, [=](){
+        if (!m_top_window->getCurrentSelections().isEmpty()) {
+            ClipboardUtils::setClipboardFiles(m_top_window->getCurrentSelections(), true);
+        }
+    });
+    connect(trashAction, &QAction::triggered, [=](){
+        if (!m_top_window->getCurrentSelections().isEmpty()) {
+            FileOperationUtils::trash(m_top_window->getCurrentSelections(), true);
+        }
+    });
 
-        connect(copyAction, &QAction::triggered, [=](){
-            if (!m_top_window->getCurrentSelections().isEmpty())
-                ClipboardUtils::setClipboardFiles(m_top_window->getCurrentSelections(), false);
-        });
-        connect(pasteAction, &QAction::triggered, [=](){
-            if (ClipboardUtils::isClipboardHasFiles()) {
-                //FIXME: how about duplicated copy?
-                //FIXME: how to deal with a failed move?
-                ClipboardUtils::pasteClipboardFiles(m_top_window->getCurrentUri());
-            }
-        });
-        connect(cutAction, &QAction::triggered, [=](){
-            if (!m_top_window->getCurrentSelections().isEmpty()) {
-                ClipboardUtils::setClipboardFiles(m_top_window->getCurrentSelections(), true);
-            }
-        });
-        connect(trashAction, &QAction::triggered, [=](){
-            if (!m_top_window->getCurrentSelections().isEmpty()) {
-                FileOperationUtils::trash(m_top_window->getCurrentSelections(), true);
-            }
-        });
+    //extension
 
-        //extension
-    }
+    //trash
 }
 
 void ToolBar::updateLocation(const QString &uri)
 {
     if (uri.isNull())
         return;
+
+    bool isFileOpDisable = uri.startsWith("trash://") || uri.startsWith("search://");
+    for (auto action : m_file_op_actions) {
+        action->setEnabled(!isFileOpDisable);
+    }
+
     m_view_factory_model->setDirectoryUri(uri);
     qDebug()<<m_view_factory_model->getHighestPriorityViewId();
     if (!m_view_factory_model->getHighestPriorityViewId().isEmpty()) {
@@ -178,6 +163,7 @@ void ToolBar::updateLocation(const QString &uri)
     } else {
         //FIXME: use default view
     }
+
     auto viewFactoryManager = DirectoryViewFactoryManager::getInstance();
     auto defaultViewId = viewFactoryManager->getDefaultViewId();
     auto index = m_view_factory_model->getIndexFromViewId(defaultViewId);
@@ -186,4 +172,15 @@ void ToolBar::updateLocation(const QString &uri)
     else {
         m_view_option_box->setCurrentIndex(0);
     }
+
+    m_clean_trash_action->setVisible(uri.startsWith("trash://"));
+    m_restore_action->setVisible(uri.startsWith("trash://"));
+}
+
+void ToolBar::update()
+{
+    if (!m_top_window)
+        return;
+
+    updateLocation(m_top_window->getCurrentUri());
 }

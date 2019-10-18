@@ -43,7 +43,7 @@ public:
     };
     Q_ENUM(RequestType)
 
-    explicit ToolBar(FMWindow *window = nullptr, QWidget *parent = nullptr);
+    explicit ToolBar(FMWindow *window, QWidget *parent = nullptr);
 
 Q_SIGNALS:
     void optionRequest(const RequestType &type);
@@ -51,6 +51,7 @@ Q_SIGNALS:
 
 public Q_SLOTS:
     void updateLocation(const QString &uri);
+    void update();
 
 protected:
     void init(bool hasTopWindow);
@@ -61,6 +62,10 @@ private:
     ViewFactoryModel *m_view_factory_model;
     QComboBox *m_view_option_box;
     SearchBar *m_search_bar;
+
+    QList<QAction *> m_file_op_actions;
+    QAction *m_clean_trash_action;
+    QAction *m_restore_action;
 };
 
 }

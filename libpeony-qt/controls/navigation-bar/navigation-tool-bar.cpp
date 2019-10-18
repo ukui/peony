@@ -14,7 +14,6 @@ NavigationToolBar::NavigationToolBar(QWidget *parent) : QToolBar(parent)
         this->onGoBack();
     });
 
-
     m_forward_action = addAction(QIcon::fromTheme("go-next"), tr("Go Forward"), [=](){
         this->onGoForward();
     });
