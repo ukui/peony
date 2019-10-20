@@ -56,14 +56,20 @@ PeonyApplication::PeonyApplication(int &argc, char *argv[]) : QApplication (argc
     auto testIcon = QIcon::fromTheme("folder");
     if (testIcon.isNull()) {
         QIcon::setThemeName("ukui-icon-theme");
-        QMessageBox::warning(nullptr, tr("Warning"), tr("peony-qt might be running as root, "
+        QMessageBox::warning(nullptr, tr("Warning"), tr("Peony-Qt can not get the system's icon theme. "
+                                                        "There are 2 reasons might lead to this problem:\n\n"
+                                                        "1. Peony-Qt might be running as root, "
                                                         "that means you have the higher permission "
                                                         "and can do some things which normally forbidden. "
                                                         "But, you should learn that if you were in a "
                                                         "root, the virtual file system will lose some "
                                                         "featrue such as you can not use \"My Computer\", "
                                                         "the theme and icons might also went wrong. So, run "
-                                                        "peony-qt in a root is not recommended."));
+                                                        "peony-qt in a root is not recommended.\n\n"
+                                                        "2. You are using a non-qt theme for your system but "
+                                                        "you didn't install the platform theme plugin for qt's "
+                                                        "applications. If you are using gtk-theme, try installing "
+                                                        "the qt5-gtk2-platformtheme package to resolve this problem."));
     }
     Peony::SearchVFSRegister::registSearchVFS();
     //QIcon::setThemeName("ukui-icon-theme-one");

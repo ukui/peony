@@ -15,6 +15,10 @@ bool SideBarProxyFilterSortModel::filterAcceptsRow(int sourceRow, const QModelIn
 {
     auto index = sourceModel()->index(sourceRow, 0, sourceParent);
     auto item = static_cast<SideBarAbstractItem*>(index.internalPointer());
+    if (item->type() != SideBarAbstractItem::SeparatorItem) {
+        if (item->displayName().isNull())
+            return false;
+    }
     if (item) {
         if (!item->displayName().isEmpty()) {
             if (item->displayName().at(0) == ".") {
