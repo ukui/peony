@@ -155,6 +155,16 @@ public:
 
     virtual int getSortOrder() = 0;
     virtual void setSortOrder(int sortOrder) = 0;
+
+    //edit
+    virtual void editUri(const QString &uri) = 0;
+    /*!
+     * \brief editUris
+     * \param uris
+     * \todo
+     * implement batch rename
+     */
+    virtual void editUris(const QStringList uris) = 0;
 };
 
 /*!
@@ -230,6 +240,9 @@ public Q_SLOTS:
 
     virtual void setSortType(int sortType) = 0;
     virtual void setSortOrder(int sortOrder) = 0;
+
+    virtual void editUri(const QString &uri) = 0;
+    virtual void editUris(const QStringList uris) = 0;
 };
 
 }

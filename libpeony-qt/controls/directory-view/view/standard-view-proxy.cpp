@@ -103,3 +103,13 @@ const QStringList StandardViewProxy::getAllFileUris()
 {
     return m_view->getAllFileUris();
 }
+
+void StandardViewProxy::editUri(const QString &uri)
+{
+    m_view->editUri(uri);
+}
+
+void StandardViewProxy::editUris(const QStringList uris)
+{
+    m_view->editUris(uris);
+}

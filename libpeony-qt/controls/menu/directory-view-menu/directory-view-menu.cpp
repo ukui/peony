@@ -39,6 +39,7 @@ DirectoryViewMenu::DirectoryViewMenu(FMWindow *window, QWidget *parent) : QMenu(
 {
     m_top_window = window;
     m_view = window->getCurrentPage()->getProxy()->getView();
+    //setParent(dynamic_cast<QWidget*>(m_view));
 
     m_directory = window->getCurrentUri();
     m_selections = window->getCurrentSelections();
@@ -277,20 +278,26 @@ const QList<QAction *> DirectoryViewMenu::constructFileOpActions()
 
     if (!m_is_trash && !m_is_search && !m_is_computer) {
         if (!m_selections.isEmpty()) {
-            l<<addAction(QIcon::fromTheme("gtk-copy"), tr("&Copy"));
+            l<<addAction(QIcon::fromTheme("edit-copy-symbolic"), tr("&Copy"));
             connect(l.last(), &QAction::triggered, [=](){
                 ClipboardUtils::setClipboardFiles(m_selections, false);
             });
-            l<<addAction(QIcon::fromTheme("gtk-cut"), tr("Cu&t"));
+            l<<addAction(QIcon::fromTheme("edit-cut-symbolic"), tr("Cu&t"));
             connect(l.last(), &QAction::triggered, [=](){
                 ClipboardUtils::setClipboardFiles(m_selections, true);
             });
-            l<<addAction(QIcon::fromTheme("user-trash"), tr("&Delete"));
+            l<<addAction(QIcon::fromTheme("edit-delete-symbolic"), tr("&Delete"));
             connect(l.last(), &QAction::triggered, [=](){
                 FileOperationUtils::trash(m_selections, true);
             });
+            if (m_selections.count() == 1) {
+                l<<addAction(QIcon::fromTheme("document-edit-symbolic"), tr("&Rename"));
+                connect(l.last(), &QAction::triggered, [=](){
+                    m_view->editUri(m_selections.first());
+                });
+            }
         } else {
-            auto pasteAction = addAction(QIcon::fromTheme("gtk-paste"), tr("&Paste"));
+            auto pasteAction = addAction(QIcon::fromTheme("edit-paste-symbolic"), tr("&Paste"));
             l<<pasteAction;
             pasteAction->setEnabled(ClipboardUtils::isClipboardHasFiles());
             connect(l.last(), &QAction::triggered, [=](){

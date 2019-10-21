@@ -78,6 +78,9 @@ public Q_SLOTS:
     int getSortOrder() override;
     void setSortOrder(int sortOrder) override;
 
+    void editUri(const QString &uri) override;
+    void editUris(const QStringList uris) override;
+
 protected:
     void changeZoomLevel();
     void resetEditTriggerTimer();

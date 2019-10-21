@@ -64,6 +64,8 @@ public Q_SLOTS:
     int getSortOrder() override {return m_view->getSortOrder();}
     void setSortOrder(int sortOrder) override {m_view->setSortOrder(sortOrder);}
 
+    void editUri(const QString &uri) override;
+    void editUris(const QStringList uris) override;
 private:
     DirectoryViewIface *m_view = nullptr;
     QString m_viewId;
