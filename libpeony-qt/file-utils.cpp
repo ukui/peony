@@ -20,7 +20,9 @@ QString FileUtils::getQStringFromCString(char *c_string, bool free)
 QString FileUtils::getFileUri(const GFileWrapperPtr &file)
 {
     char *uri = g_file_get_uri(file.get()->get());
-    return getQStringFromCString(uri);
+    QUrl url = QString(uri);
+    g_free(uri);
+    return url.toDisplayString();
 }
 
 QString FileUtils::getFileBaseName(const GFileWrapperPtr &file)

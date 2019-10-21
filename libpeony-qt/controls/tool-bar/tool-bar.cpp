@@ -15,6 +15,8 @@
 
 #include <QStandardPaths>
 
+#include <QMessageBox>
+
 #include <QDebug>
 
 using namespace Peony;
@@ -83,10 +85,18 @@ void ToolBar::init(bool hasTopWindow)
 
     //trash
     m_clean_trash_action = addAction(QIcon::fromTheme("edit-clear-symbolic"), tr("Clean Trash"), [=](){
-        //FIXME:
+        auto result = QMessageBox::question(nullptr, tr("Delete Permanently"), tr("Are you sure that you want to delete these files? "
+                                                                                  "Once you start a deletion, the files deleting will never be "
+                                                                                  "restored again."));
+        if (result == QMessageBox::Yes) {
+            auto uris = m_top_window->getCurrentAllFileUris();
+            qDebug()<<uris;
+            FileOperationUtils::remove(uris);
+        }
     });
+
     m_restore_action = addAction(QIcon::fromTheme("view-refresh-symbolic"), tr("Restore"), [=](){
-        //FIXME:
+        FileOperationUtils::restore(m_top_window->getCurrentSelections());
     });
 
     //connect signal

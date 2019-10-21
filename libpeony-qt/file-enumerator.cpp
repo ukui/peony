@@ -154,9 +154,15 @@ void FileEnumerator::enumerateSync()
                                                             m_cancellable,
                                                             nullptr);
 
-    enumerateChildren(enumerator);
+    if (enumerator) {
+        enumerateChildren(enumerator);
 
-    g_object_unref(enumerator);
+        g_file_enumerator_close_async(enumerator, 0, nullptr, nullptr, nullptr);
+        g_object_unref(enumerator);
+    } else {
+        Q_EMIT this->enumerateFinished(false);
+    }
+
     g_object_unref(target);
 }
 

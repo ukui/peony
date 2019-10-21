@@ -160,7 +160,8 @@ void FileOperationProgressWizard::onElementClearOne(const QString &uri)
                                       arg(m_third_page->m_file_deleted_count).
                                       arg(m_total_count));
 
-    m_third_page->m_progress_bar->setValue(int(m_third_page->m_file_deleted_count*100.0)/m_total_count);
+    if (m_total_count > 0)
+        m_third_page->m_progress_bar->setValue(int(m_third_page->m_file_deleted_count*100.0)/m_total_count);
 
 }
 

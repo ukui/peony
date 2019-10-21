@@ -6,6 +6,11 @@
 
 namespace Peony {
 
+/*!
+ * \brief The FileUntrashOperation class
+ * \bug
+ * can not restore the files which's parents has chinese.
+ */
 class PEONYCORESHARED_EXPORT FileUntrashOperation : public FileOperation
 {
     Q_OBJECT

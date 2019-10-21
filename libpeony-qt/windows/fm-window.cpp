@@ -138,6 +138,7 @@ FMWindow::FMWindow(const QString &uri, QWidget *parent) : QMainWindow (parent)
         qDebug()<<this->getCurrentUri();
         m_navigation_bar->updateLocation(getCurrentUri());
         m_tool_bar->updateLocation(getCurrentUri());
+        m_tool_bar->updateStates();
     });
 
     //selection changed
