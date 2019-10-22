@@ -2,6 +2,7 @@
 #include "directory-view-plugin-iface.h"
 
 #include "icon-view-factory.h"
+#include "list-view-factory.h"
 
 #include <QSettings>
 
@@ -26,6 +27,9 @@ DirectoryViewFactoryManager::DirectoryViewFactoryManager(QObject *parent) : QObj
     //register icon view and list view
     auto iconViewFactory = IconViewFactory::getInstance();
     registerFactory(iconViewFactory->viewIdentity(), iconViewFactory);
+
+    auto listViewFactory = ListViewFactory::getInstance();
+    registerFactory(listViewFactory->viewIdentity(), listViewFactory);
 }
 
 DirectoryViewFactoryManager::~DirectoryViewFactoryManager()

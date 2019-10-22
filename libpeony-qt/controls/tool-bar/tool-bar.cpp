@@ -55,6 +55,10 @@ void ToolBar::init(bool hasTopWindow)
     viewCombox->setModel(model);
 
     addWidget(viewCombox);
+    connect(viewCombox, QOverload<int>::of(&QComboBox::currentIndexChanged), [=](int index){
+        auto viewId = viewCombox->itemData(index, Qt::ToolTipRole).toString();
+        m_top_window->beginSwitchView(viewId);
+    });
 
     addSeparator();
 

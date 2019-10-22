@@ -217,8 +217,7 @@ const QList<QAction *> DirectoryViewMenu::constructViewOpActions()
                     viewType->setChecked(true);
                 } else {
                     connect(viewType, &QAction::triggered, [=](){
-                        //FIXME:
-                        //switch view type request.
+                        m_top_window->beginSwitchView(viewType->text());
                     });
                 }
             }
@@ -302,6 +301,10 @@ const QList<QAction *> DirectoryViewMenu::constructFileOpActions()
             pasteAction->setEnabled(ClipboardUtils::isClipboardHasFiles());
             connect(l.last(), &QAction::triggered, [=](){
                 ClipboardUtils::pasteClipboardFiles(m_directory);
+            });
+            l<<addAction(QIcon::fromTheme("view-refresh-symbolic"), tr("&Refresh"));
+            connect(l.last(), &QAction::triggered, [=](){
+                m_top_window->refresh();
             });
         }
     }

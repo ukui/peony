@@ -6,15 +6,26 @@
 
 #include <QHeaderView>
 
+#include <QDebug>
+
 using namespace Peony;
 using namespace Peony::DirectoryView;
 
 ListView::ListView(QWidget *parent) : QTreeView(parent)
 {
-    header()->setSectionResizeMode(QHeaderView::ResizeToContents);
+    header()->setSectionResizeMode(QHeaderView::Interactive);
+    header()->setSectionsMovable(true);
+    header()->setStretchLastSection(false);
 
     setExpandsOnDoubleClick(false);
     setSortingEnabled(true);
+
+    setEditTriggers(QTreeView::NoEditTriggers);
+    setDragEnabled(true);
+    setDragDropMode(QTreeView::DragDrop);
+    setSelectionMode(QTreeView::ExtendedSelection);
+
+    setContextMenuPolicy(Qt::CustomContextMenu);
 }
 
 void ListView::bindModel(FileItemModel *sourceModel, FileItemProxyFilterSortModel *proxyModel)
@@ -30,7 +41,69 @@ void ListView::bindModel(FileItemModel *sourceModel, FileItemProxyFilterSortMode
 void ListView::setProxy(DirectoryViewProxyIface *proxy)
 {
     m_proxy = proxy;
-    //FIXME: connect to proxy
+
+    if (!proxy)
+        return;
+
+    m_proxy = proxy;
+    if (!m_proxy) {
+        return;
+    }
+
+    connect(m_model, &FileItemModel::updated, this, &ListView::resort);
+
+    connect(m_model, &FileItemModel::findChildrenFinished,
+            this, &ListView::reportViewDirectoryChanged);
+
+    connect(this, &ListView::doubleClicked, [=](const QModelIndex &index){
+        qDebug()<<"double click"<<index.data(FileItemModel::UriRole);
+        Q_EMIT m_proxy->viewDoubleClicked(index.data(FileItemModel::UriRole).toString());
+    });
+
+    //edit trigger
+    connect(this->selectionModel(), &QItemSelectionModel::selectionChanged, [=](const QItemSelection &selection, const QItemSelection &deselection){
+        qDebug()<<"selection changed";
+        auto currentSelections = selection.indexes();
+
+        for (auto index : deselection.indexes()) {
+            this->setIndexWidget(index, nullptr);
+        }
+
+        Q_EMIT m_proxy->viewSelectionChanged();
+        //rename trigger
+    });
+
+    //menu
+    connect(this, &ListView::customContextMenuRequested, [=](const QPoint &pos){
+        qDebug()<<"menu request";
+        if (!indexAt(pos).isValid())
+            this->clearSelection();
+
+        auto index = indexAt(pos);
+        if (index.column() != 0) {
+            auto visualRect = this->visualRect(index);
+            auto sizeHint = this->itemDelegate()->sizeHint(viewOptions(), index);
+            auto validRect = QRect(visualRect.topLeft(), sizeHint);
+            if (!validRect.contains(pos))
+                this->clearSelection();
+        }
+
+        //NOTE: we have to ensure that we have cleared the
+        //selection if menu request at blank pos.
+        QTimer::singleShot(1, [=](){
+            Q_EMIT this->getProxy()->menuRequest(QCursor::pos());
+        });
+    });
+}
+
+void ListView::resort()
+{
+    m_proxy_model->sort(getSortType(), Qt::SortOrder(getSortOrder()));
+}
+
+void ListView::reportViewDirectoryChanged()
+{
+    Q_EMIT m_proxy->viewDirectoryChanged();
 }
 
 DirectoryViewProxyIface *ListView::getProxy()
@@ -55,7 +128,8 @@ const QStringList ListView::getSelections()
     QStringList uris;
     QModelIndexList selections = selectedIndexes();
     for (auto index : selections) {
-        uris<<index.data(FileItemModel::UriRole).toString();
+        if (index.column() == 0)
+            uris<<index.data(FileItemModel::UriRole).toString();
     }
     return uris;
 }
@@ -117,7 +191,8 @@ void ListView::setCutFiles(const QStringList &uris)
 
 int ListView::getSortType()
 {
-    return m_proxy_model->sortColumn();
+    int type = m_proxy_model->sortColumn();
+    return type<0? 0: type;
 }
 
 void ListView::setSortType(int sortType)

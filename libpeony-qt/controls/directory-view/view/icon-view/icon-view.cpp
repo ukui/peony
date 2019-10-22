@@ -49,61 +49,6 @@ IconView::~IconView()
 
 }
 
-void IconView::connectDefaultMenuAction()
-{
-    connect(this, &IconView::customContextMenuRequested, [=](const QPoint &pos){
-        if (!indexAt(pos).isValid())
-            this->clearSelection();
-
-        //NOTE: we have to ensure that we have cleared the
-        //selection if menu request at blank pos.
-        QTimer::singleShot(1, [=](){
-            Q_EMIT this->getProxy()->menuRequest(QCursor::pos());
-        });
-    });
-}
-
-void IconView::rebindProxy()
-{
-    if (!m_proxy) {
-        return;
-    }
-
-    disconnect();
-
-    connect(m_model, &FileItemModel::updated, [=](){
-        m_sort_filter_proxy_model->sort(FileItemModel::FileName);
-    });
-
-    connect(m_model, &FileItemModel::findChildrenFinished,
-            m_proxy, &DirectoryViewProxyIface::viewDirectoryChanged);
-
-    connect(this, &IconView::doubleClicked, [=](const QModelIndex &index){
-        qDebug()<<"double click"<<index.data(FileItemModel::UriRole);
-        Q_EMIT m_proxy->viewDoubleClicked(index.data(FileItemModel::UriRole).toString());
-    });
-
-    //edit trigger
-    connect(this->selectionModel(), &QItemSelectionModel::selectionChanged, [=](const QItemSelection &selection, const QItemSelection &deselection){
-        qDebug()<<"selection changed";
-        auto currentSelections = selection.indexes();
-
-        for (auto index : deselection.indexes()) {
-            this->setIndexWidget(index, nullptr);
-        }
-
-        Q_EMIT m_proxy->viewSelectionChanged();
-        if (currentSelections.count() == 1) {
-            m_last_index = currentSelections.first();
-            this->resetEditTriggerTimer();
-        } else {
-            m_last_index = QModelIndex();
-        }
-    });
-
-    connectDefaultMenuAction();
-}
-
 DirectoryViewProxyIface *IconView::getProxy()
 {
     return m_proxy;
@@ -306,7 +251,61 @@ void IconView::setProxy(DirectoryViewProxyIface *proxy)
         return;
 
     m_proxy = proxy;
-    rebindProxy();
+    if (!m_proxy) {
+        return;
+    }
+
+    connect(m_model, &FileItemModel::updated, this, &IconView::resort);
+
+    connect(m_model, &FileItemModel::findChildrenFinished,
+            this, &IconView::reportViewDirectoryChanged);
+
+    connect(this, &IconView::doubleClicked, [=](const QModelIndex &index){
+        qDebug()<<"double click"<<index.data(FileItemModel::UriRole);
+        Q_EMIT m_proxy->viewDoubleClicked(index.data(FileItemModel::UriRole).toString());
+    });
+
+    //edit trigger
+    connect(this->selectionModel(), &QItemSelectionModel::selectionChanged, [=](const QItemSelection &selection, const QItemSelection &deselection){
+        qDebug()<<"selection changed";
+        auto currentSelections = selection.indexes();
+
+        for (auto index : deselection.indexes()) {
+            this->setIndexWidget(index, nullptr);
+        }
+
+        Q_EMIT m_proxy->viewSelectionChanged();
+        if (currentSelections.count() == 1) {
+            m_last_index = currentSelections.first();
+            this->resetEditTriggerTimer();
+        } else {
+            m_last_index = QModelIndex();
+        }
+    });
+
+    //menu
+    connect(this, &IconView::customContextMenuRequested, [=](const QPoint &pos){
+        if (!indexAt(pos).isValid())
+            this->clearSelection();
+
+        //NOTE: we have to ensure that we have cleared the
+        //selection if menu request at blank pos.
+        QTimer::singleShot(1, [=](){
+            Q_EMIT this->getProxy()->menuRequest(QCursor::pos());
+        });
+    });
+}
+
+void IconView::resort()
+{
+    if (m_sort_filter_proxy_model)
+        m_sort_filter_proxy_model->sort(getSortType());
+}
+
+void IconView::reportViewDirectoryChanged()
+{
+    if (m_proxy)
+        Q_EMIT m_proxy->viewDirectoryChanged();
 }
 
 QRect IconView::visualRect(const QModelIndex &index) const
@@ -321,7 +320,8 @@ QRect IconView::visualRect(const QModelIndex &index) const
 
 int IconView::getSortType()
 {
-    return m_sort_filter_proxy_model->sortColumn();
+    int type = m_sort_filter_proxy_model->sortColumn();
+    return type<0? 0: type;
 }
 
 void IconView::setSortType(int sortType)

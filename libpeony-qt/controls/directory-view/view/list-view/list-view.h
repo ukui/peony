@@ -14,6 +14,11 @@ class FileItemProxyFilterSortModel;
 
 namespace DirectoryView {
 
+/*!
+ * \brief The ListView class
+ * \todo
+ * improve extend selection actions.
+ */
 class ListView : public QTreeView, public DirectoryViewIface
 {
     Q_OBJECT
@@ -62,6 +67,9 @@ public Q_SLOTS:
 
     void editUri(const QString &uri) override;
     void editUris(const QStringList uris) override;
+
+    void resort();
+    void reportViewDirectoryChanged();
 
 private:
     FileItemModel *m_model = nullptr;

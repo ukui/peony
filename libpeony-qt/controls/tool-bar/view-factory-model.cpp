@@ -21,6 +21,12 @@ void ViewFactoryModel::setDirectoryUri(const QString &uri)
     int priority = 0;
     for (auto id : defaultList) {
         if (viewManager->getFactory(id)->supportUri(m_current_uri)) {
+            /*!
+              \bug
+              there is a bug of these code. i have to correct the filter/sort process, or
+              use proxy model to replace this model to show the data in the view.
+              */
+            /*
             int p = viewManager->getFactory(id)->priority(m_current_uri);
             if (p > priority) {
                 priority = p;
@@ -44,6 +50,7 @@ void ViewFactoryModel::setDirectoryUri(const QString &uri)
                     }
                 }
             }
+            */
             m_support_views_id<<id;
         }
     }
@@ -82,8 +89,13 @@ QVariant ViewFactoryModel::data(const QModelIndex &index, int role) const
     auto viewManager = DirectoryViewFactoryManager::getInstance();
     auto factory = viewManager->getFactory(viewManager->getFactoryNames().at(index.row()));
 
-    if (role == Qt::DecorationRole) {
+    switch (role) {
+    case Qt::DecorationRole:
         return factory->viewIcon();
+    case Qt::ToolTipRole:
+        return factory->viewIdentity();
+    default:
+        break;
     }
     return QVariant();
 }
