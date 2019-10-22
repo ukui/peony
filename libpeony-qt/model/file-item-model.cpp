@@ -255,7 +255,7 @@ bool FileItemModel::hasChildren(const QModelIndex &parent) const
     if (!parent.isValid())
         return true;
     FileItem *parent_item = static_cast<FileItem*>(parent.internalPointer());
-    if (parent_item->hasChildren())
+    if (parent_item->hasChildren() && m_can_expand)
         return true;
     return false;
 }

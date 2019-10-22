@@ -72,6 +72,9 @@ public:
      */
     bool isPositiveResponse() {return m_is_positive;}
 
+    void setExpandable(bool expandable) {m_can_expand = expandable;}
+    bool canExpandChildren() {return  m_can_expand;}
+
     const QString getRootUri();
     void setRootUri(const QString &uri);
     /*!
@@ -230,6 +233,7 @@ public Q_SLOTS:
 private:
     FileItem *m_root_item = nullptr;
     bool m_is_positive = false;
+    bool m_can_expand = false;
 };
 
 }

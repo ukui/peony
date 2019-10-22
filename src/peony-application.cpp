@@ -49,6 +49,8 @@
 
 #include "plugin-manager.h"
 
+#include "list-view.h"
+
 PeonyApplication::PeonyApplication(int &argc, char *argv[]) : QApplication (argc, argv)
 {
     Peony::PluginManager::init();
@@ -303,7 +305,7 @@ PeonyApplication::PeonyApplication(int &argc, char *argv[]) : QApplication (argc
     w->show();
 #endif
 
-#define FM_WINDOW
+//#define FM_WINDOW
 #ifdef FM_WINDOW
     auto window = new Peony::FMWindow("file:///");
     window->setAttribute(Qt::WA_DeleteOnClose);
@@ -317,5 +319,18 @@ PeonyApplication::PeonyApplication(int &argc, char *argv[]) : QApplication (argc
     view->beginLocationChange();
     view->setContextMenuPolicy(Qt::CustomContextMenu);
     view->show();
+#endif
+
+#define LIST_VIEW
+#ifdef LIST_VIEW
+    Peony::DirectoryView::ListView *listView = new Peony::DirectoryView::ListView;
+    auto model = new Peony::FileItemModel;
+    auto proxyModel = new Peony::FileItemProxyFilterSortModel;
+
+    listView->bindModel(model, proxyModel);
+    listView->setDirectoryUri("file:///");
+    listView->beginLocationChange();
+
+    listView->show();
 #endif
 }
