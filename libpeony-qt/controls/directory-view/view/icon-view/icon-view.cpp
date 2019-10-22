@@ -299,7 +299,7 @@ void IconView::setProxy(DirectoryViewProxyIface *proxy)
 void IconView::resort()
 {
     if (m_sort_filter_proxy_model)
-        m_sort_filter_proxy_model->sort(getSortType());
+        m_sort_filter_proxy_model->sort(getSortType(), Qt::SortOrder(getSortOrder()));
 }
 
 void IconView::reportViewDirectoryChanged()

@@ -2,6 +2,8 @@
 #include "file-item-model.h"
 #include "file-item-proxy-filter-sort-model.h"
 
+#include "list-view-delegate.h"
+
 #include "file-item.h"
 
 #include <QHeaderView>
@@ -13,16 +15,18 @@ using namespace Peony::DirectoryView;
 
 ListView::ListView(QWidget *parent) : QTreeView(parent)
 {
-    header()->setSectionResizeMode(QHeaderView::Interactive);
+    setItemDelegate(new ListViewDelegate(this));
+
+    header()->setSectionResizeMode(QHeaderView::ResizeToContents);
     header()->setSectionsMovable(true);
-    header()->setStretchLastSection(false);
+    //header()->setStretchLastSection(false);
 
     setExpandsOnDoubleClick(false);
     setSortingEnabled(true);
 
     setEditTriggers(QTreeView::NoEditTriggers);
     setDragEnabled(true);
-    setDragDropMode(QTreeView::DragDrop);
+    setDragDropMode(QTreeView::DropOnly);
     setSelectionMode(QTreeView::ExtendedSelection);
 
     setContextMenuPolicy(Qt::CustomContextMenu);
