@@ -165,6 +165,7 @@ FMWindow::FMWindow(const QString &uri, QWidget *parent) : QMainWindow (parent)
 
     //view switched
     connect(m_tab, &TabPage::viewTypeChanged, [=](){
+        m_tool_bar->updateLocation(getCurrentUri());
         m_tool_bar->updateStates();
     });
 

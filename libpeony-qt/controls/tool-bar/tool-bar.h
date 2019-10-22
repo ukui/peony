@@ -9,7 +9,7 @@ class QComboBox;
 namespace Peony {
 
 class FMWindow;
-class ViewFactoryModel;
+class ViewFactorySortFilterModel;
 class SearchBar;
 
 /*!
@@ -59,7 +59,7 @@ protected:
 private:
     FMWindow *m_top_window;
 
-    ViewFactoryModel *m_view_factory_model;
+    ViewFactorySortFilterModel *m_view_factory_model;
     QComboBox *m_view_option_box;
     SearchBar *m_search_bar;
 

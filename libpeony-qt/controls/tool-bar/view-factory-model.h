@@ -20,6 +20,7 @@ namespace Peony {
  */
 class PEONYCORESHARED_EXPORT ViewFactoryModel : public QAbstractListModel
 {
+    friend class ViewFactorySortFilterModel;
     Q_OBJECT
 
 public:
@@ -30,7 +31,7 @@ public:
 
     const QString getViewId(int index);
     const QStringList supportViewIds() {return m_support_views_id;}
-    const QString getHighestPriorityViewId();
+    const QString getHighestPriorityViewId(int zoom_level_hint);
 
     // Basic functionality:
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
@@ -40,7 +41,8 @@ public:
 private:
     QString m_current_uri;
     QStringList m_support_views_id;
-    QString m_highest_priority_view_id;
+
+    QHash<int /*zoom_level*/, QPair<int/*priority*/, QString /*view id*/>> m_factory_hash;
 };
 
 }

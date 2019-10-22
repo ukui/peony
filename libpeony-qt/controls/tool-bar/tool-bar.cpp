@@ -7,6 +7,7 @@
 #include "file-operation-utils.h"
 
 #include "view-factory-model.h"
+#include "view-factory-sort-filter-model.h"
 #include "directory-view-container.h"
 
 #include <QAction>
@@ -49,7 +50,7 @@ void ToolBar::init(bool hasTopWindow)
     QComboBox *viewCombox = new QComboBox(this);
     viewCombox->setToolTip(tr("Change Directory View"));
     m_view_option_box = viewCombox;
-    auto model = new ViewFactoryModel(this);
+    auto model = new ViewFactorySortFilterModel(this);
     m_view_factory_model = model;
     model->setDirectoryUri("file://" + QStandardPaths::writableLocation(QStandardPaths::HomeLocation));
     viewCombox->setModel(model);
@@ -171,16 +172,9 @@ void ToolBar::updateLocation(const QString &uri)
     }
 
     m_view_factory_model->setDirectoryUri(uri);
-    qDebug()<<m_view_factory_model->getHighestPriorityViewId();
-    if (!m_view_factory_model->getHighestPriorityViewId().isEmpty()) {
-        //FIXME: switch to highest priority's view
-    } else {
-        //FIXME: use default view
-    }
 
-    auto viewFactoryManager = DirectoryViewFactoryManager::getInstance();
-    auto defaultViewId = viewFactoryManager->getDefaultViewId();
-    auto index = m_view_factory_model->getIndexFromViewId(defaultViewId);
+    auto viewId = m_top_window->getCurrentPage()->getProxy()->getView()->viewId();
+    auto index = m_view_factory_model->getIndexFromViewId(viewId);
     if (index.isValid())
         m_view_option_box->setCurrentIndex(index.row());
     else {

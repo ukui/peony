@@ -1,6 +1,7 @@
 #include "view-factory-model.h"
 #include "directory-view-factory-manager.h"
 #include "directory-view-plugin-iface.h"
+#include <QPair>
 
 using namespace Peony;
 
@@ -14,43 +15,17 @@ void ViewFactoryModel::setDirectoryUri(const QString &uri)
 {
     beginResetModel();
     m_support_views_id.clear();
+    m_factory_hash.clear();
     m_current_uri = uri;
     auto viewManager = DirectoryViewFactoryManager::getInstance();
     auto defaultList = viewManager->getFactoryNames();
 
-    int priority = 0;
     for (auto id : defaultList) {
         if (viewManager->getFactory(id)->supportUri(m_current_uri)) {
-            /*!
-              \bug
-              there is a bug of these code. i have to correct the filter/sort process, or
-              use proxy model to replace this model to show the data in the view.
-              */
-            /*
-            int p = viewManager->getFactory(id)->priority(m_current_uri);
-            if (p > priority) {
-                priority = p;
-                m_highest_priority_view_id = id;
-            }
-            if (!m_support_views_id.isEmpty()) {
-                auto largestView = viewManager->getFactory(m_support_views_id.last());
-                auto smallestView = viewManager->getFactory(m_support_views_id.first());
-                auto currentView = viewManager->getFactory(id);
-                if (largestView->zoom_level_hint() < currentView->zoom_level_hint()) {
-                    m_support_views_id<<id;
-                } else if (smallestView->zoom_level_hint() > currentView->zoom_level_hint()) {
-                    m_support_views_id.prepend(id);
-                } else {
-                    for (auto tmp : m_support_views_id) {
-                        auto view = viewManager->getFactory(tmp);
-                        if (view->zoom_level_hint() > currentView->zoom_level_hint()) {
-                            m_support_views_id.insert(m_support_views_id.indexOf(tmp), id);
-                            break;
-                        }
-                    }
-                }
-            }
-            */
+            QPair<int, QString> pair(viewManager->getFactory(id)->priority(m_current_uri), id);
+            m_factory_hash.insert(viewManager->getFactory(id)->zoom_level_hint(),
+                                  pair);
+
             m_support_views_id<<id;
         }
     }
@@ -76,9 +51,21 @@ int ViewFactoryModel::rowCount(const QModelIndex &parent) const
     return m_support_views_id.count();
 }
 
-const QString ViewFactoryModel::getHighestPriorityViewId()
+const QString ViewFactoryModel::getHighestPriorityViewId(int zoom_level_hint)
 {
-    return m_highest_priority_view_id;
+    auto manager = DirectoryViewFactoryManager::getInstance();
+    auto pairs = m_factory_hash.values(zoom_level_hint);
+    DirectoryViewPluginIface *factory = nullptr;
+    int priority = -9999;
+    QString result;
+    for (auto pair : pairs) {
+        factory = manager->getFactory(pair.second);
+        if (factory->priority(m_current_uri) > priority) {
+            result = pair.second;
+            priority = pair.first;
+        }
+    }
+    return result;
 }
 
 QVariant ViewFactoryModel::data(const QModelIndex &index, int role) const

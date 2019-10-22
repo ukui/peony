@@ -8,6 +8,7 @@
 
 #include "directory-view-factory-manager.h"
 #include "view-factory-model.h"
+#include "view-factory-sort-filter-model.h"
 
 #include "clipboard-utils.h"
 #include "file-operation-utils.h"
@@ -199,7 +200,7 @@ const QList<QAction *> DirectoryViewMenu::constructViewOpActions()
     QList<QAction *> l;
 
     if (m_selections.isEmpty()) {
-        ViewFactoryModel model;
+        ViewFactorySortFilterModel model;
         model.setDirectoryUri(m_directory);
         auto viewNames = model.supportViewIds();
 
