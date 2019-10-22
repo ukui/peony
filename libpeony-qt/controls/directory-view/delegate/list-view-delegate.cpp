@@ -4,12 +4,20 @@
 #include <QTextEdit>
 
 #include <QTimer>
+#include <QPushButton>
+
+#include <QPainter>
 
 using namespace Peony;
 
 ListViewDelegate::ListViewDelegate(QObject *parent) : QStyledItemDelegate(parent)
 {
+    m_styled_button = new QPushButton;
+}
 
+ListViewDelegate::~ListViewDelegate()
+{
+    m_styled_button->deleteLater();
 }
 
 void ListViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
@@ -20,6 +28,26 @@ void ListViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
 
     auto widget = qobject_cast<QWidget*>(parent());
     auto style = widget->style();
+    painter->save();
+    if (opt.state.testFlag(QStyle::State_MouseOver)) {
+        if (index.column() == 0) {
+            if (!opt.state.testFlag(QStyle::State_Selected)) {
+                auto rect = opt.rect;
+                rect.setX(0);
+                rect.setRight(9999);
+                QColor color = m_styled_button->palette().highlight().color();
+                color.setAlpha(127);//half transparent
+                painter->fillRect(rect, color);
+            } else {
+                auto rect = opt.rect;
+                rect.setX(0);
+                rect.setRight(9999);
+                QColor color = m_styled_button->palette().highlight().color();
+                painter->fillRect(rect, color);
+            }
+        }
+    }
+    painter->restore();
     style->drawControl(QStyle::CE_ItemViewItem, &opt, painter, widget);
 }
 
