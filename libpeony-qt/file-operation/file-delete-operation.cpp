@@ -84,3 +84,10 @@ void FileDeleteOperation::run()
 
     Q_EMIT operationFinished();
 }
+
+void FileDeleteOperation::cancel()
+{
+    if (m_reporter)
+        m_reporter->cancel();
+    FileOperation::cancel();
+}

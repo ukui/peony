@@ -20,6 +20,8 @@ public:
     void deleteRecursively(FileNode *node);
     void run() override;
 
+    void cancel() override;
+
 private:
     QStringList m_source_uris;
 

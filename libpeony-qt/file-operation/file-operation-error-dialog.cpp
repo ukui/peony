@@ -6,10 +6,15 @@
 #include <QPushButton>
 #include <QButtonGroup>
 
+#include <QDesktopWidget>
+#include <QApplication>
+
 using namespace Peony;
 
 FileOperationErrorDialog::FileOperationErrorDialog(QWidget *parent) : QDialog(parent)
 {
+    //center to desktop.
+    setParent(QApplication::desktop());
     setWindowTitle(tr("File Operation Error"));
     setWindowIcon(QIcon::fromTheme("system-error"));
     m_layout = new QFormLayout(this);
@@ -79,11 +84,9 @@ QVariant FileOperationErrorDialog::handleError(const QString &srcUri,
                                                const GErrorWrapperPtr &err,
                                                bool isCritical)
 {
-    for (int i = 1; i < 8; i++) {
+    for (int i = 2; i < 8; i++) {
         btGroup->button(i)->setVisible(!isCritical);
     }
-    m_src_line->setVisible(!isCritical);
-    m_src_line->setVisible(!isCritical);
 
     m_src_line->setText(srcUri);
     m_dest_line->setText(destDirUri);

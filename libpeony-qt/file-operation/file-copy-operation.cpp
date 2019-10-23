@@ -346,3 +346,10 @@ void FileCopyOperation::run()
 
     Q_EMIT operationFinished();
 }
+
+void FileCopyOperation::cancel()
+{
+    if (m_reporter)
+        m_reporter->cancel();
+    FileOperation::cancel();
+}

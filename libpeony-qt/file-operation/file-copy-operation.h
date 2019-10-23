@@ -20,6 +20,9 @@ public:
     void run() override;
     std::shared_ptr<FileOperationInfo> getOperationInfo() override {return m_info;}
 
+public Q_SLOTS:
+    void cancel() override;
+
 protected:
     ResponseType prehandle(GError *err);
     static void progress_callback(goffset current_num_bytes,

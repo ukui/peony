@@ -17,6 +17,9 @@
 
 #include <QDebug>
 
+#include <QDesktopWidget>
+#include <QApplication>
+
 using namespace Peony;
 
 FileOperationProgressWizard::FileOperationProgressWizard(QWidget *parent) : QWizard(parent)
@@ -182,8 +185,11 @@ void FileOperationProgressWizard::onFileRollbacked(const QString &destUri, const
     Q_UNUSED(destUri);
     Q_UNUSED(srcUri);
     m_last_page->m_current_count++;
+    auto c = m_last_page->m_current_count;
+    auto t = m_current_count;
+    auto v = qreal(c*1.0/t)*100;
     //use wizard's m_current_count as total count of files need rollback.
-    m_last_page->m_progress_bar->setValue(int(m_last_page->m_current_count*100.0/m_current_count));
+    m_last_page->m_progress_bar->setValue(int(v));
 }
 
 //FileOperationPreparePage
@@ -256,13 +262,16 @@ FileOperationAfterProgressPage::FileOperationAfterProgressPage(QWidget *parent) 
     m_src_line = new QLabel("clearing: null", this);
     //avoid wizard size hint changed.
     m_src_line->setWordWrap(true);
+    m_src_line->setVisible(false);
     m_progress_bar = new QProgressBar(this);
 
     m_layout->addWidget(m_progress_bar, 0, 0);
+
     QPushButton *details_button = new QPushButton(tr("&More Details"), this);
     details_button->setCheckable(true);
     m_layout->addWidget(details_button, 1, 0, Qt::AlignRight);
     m_layout->addWidget(m_src_line, 2, 0);
+    details_button->setVisible(false);
     m_src_line->hide();
     connect(details_button, &QAbstractButton::toggled, m_src_line, &QLabel::setVisible);
 
