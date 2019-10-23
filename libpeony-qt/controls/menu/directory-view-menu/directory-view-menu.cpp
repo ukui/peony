@@ -324,15 +324,15 @@ const QList<QAction *> DirectoryViewMenu::constructFilePropertiesActions()
         connect(l.last(), &QAction::triggered, [=](){
             //FIXME:
             if (m_selections.isEmpty()) {
-                PropertiesWindow *p = new PropertiesWindow(m_directory);
+                QStringList uris;
+                uris<<m_directory;
+                PropertiesWindow *p = new PropertiesWindow(uris);
                 p->setAttribute(Qt::WA_DeleteOnClose);
                 p->show();
             } else {
-                for (auto uri : m_selections) {
-                    PropertiesWindow *p = new PropertiesWindow(uri);
-                    p->setAttribute(Qt::WA_DeleteOnClose);
-                    p->show();
-                }
+                PropertiesWindow *p = new PropertiesWindow(m_selections);
+                p->setAttribute(Qt::WA_DeleteOnClose);
+                p->show();
             }
         });
     }

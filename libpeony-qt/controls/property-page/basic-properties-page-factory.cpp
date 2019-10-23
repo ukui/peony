@@ -22,7 +22,7 @@ BasicPropertiesPageFactory::~BasicPropertiesPageFactory()
 
 }
 
-bool BasicPropertiesPageFactory::supportUri(const QString &uri)
+bool BasicPropertiesPageFactory::supportUris(const QStringList &uri)
 {
     //FIXME:
     return true;
@@ -33,8 +33,8 @@ void BasicPropertiesPageFactory::closeFactory()
     deleteLater();
 }
 
-QWidget *BasicPropertiesPageFactory::createTabPage(const QString &uri)
+QWidget *BasicPropertiesPageFactory::createTabPage(const QStringList &uris)
 {
-    BasicPropertiesPage *p = new BasicPropertiesPage(uri);
+    BasicPropertiesPage *p = new BasicPropertiesPage(uris);
     return p;
 }

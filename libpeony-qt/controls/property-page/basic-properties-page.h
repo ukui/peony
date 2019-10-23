@@ -12,7 +12,7 @@ class BasicPropertiesPage : public QWidget
 {
     Q_OBJECT
 public:
-    explicit BasicPropertiesPage(const QString &uri, QWidget *parent = nullptr);
+    explicit BasicPropertiesPage(const QStringList &uris, QWidget *parent = nullptr);
 
 protected:
     void addSeparator();

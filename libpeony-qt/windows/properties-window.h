@@ -31,7 +31,7 @@ class PEONYCORESHARED_EXPORT PropertiesWindow : public QTabWidget
 {
     Q_OBJECT
 public:
-    explicit PropertiesWindow(const QString &uri, QWidget *parent = nullptr);
+    explicit PropertiesWindow(const QStringList &uris, QWidget *parent = nullptr);
 
 };
 

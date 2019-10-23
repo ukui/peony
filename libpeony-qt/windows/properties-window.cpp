@@ -58,7 +58,7 @@ PropertiesWindowTabPagePluginIface *PropertiesWindowPluginManager::getFactory(co
 }
 
 //properties window
-PropertiesWindow::PropertiesWindow(const QString &uri, QWidget *parent) : QTabWidget(parent)
+PropertiesWindow::PropertiesWindow(const QStringList &uris, QWidget *parent) : QTabWidget(parent)
 {
     setTabsClosable(false);
     setMovable(false);
@@ -67,8 +67,8 @@ PropertiesWindow::PropertiesWindow(const QString &uri, QWidget *parent) : QTabWi
     auto names = manager->getFactoryNames();
     for (auto name : names) {
         auto factory = manager->getFactory(name);
-        if (factory->supportUri(uri)) {
-            auto tabPage = factory->createTabPage(uri);
+        if (factory->supportUris(uris)) {
+            auto tabPage = factory->createTabPage(uris);
             tabPage->setParent(this);
             addTab(tabPage, factory->name());
         }

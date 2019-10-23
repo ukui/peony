@@ -23,8 +23,8 @@ public:
 
     //properties plugin iface
     int tabOrder() override {return 1000;}
-    bool supportUri(const QString &uri) override;
-    QWidget *createTabPage(const QString &uri) override;
+    bool supportUris(const QStringList &uris) override;
+    QWidget *createTabPage(const QStringList &uris) override;
 
     void closeFactory() override;
 

@@ -6,7 +6,7 @@
 
 using namespace Peony;
 
-BasicPropertiesPage::BasicPropertiesPage(const QString &uri, QWidget *parent) : QWidget(parent)
+BasicPropertiesPage::BasicPropertiesPage(const QStringList &uris, QWidget *parent) : QWidget(parent)
 {
     //FIXME: complete the content
     QVBoxLayout *layout = new QVBoxLayout(this);
@@ -20,7 +20,7 @@ BasicPropertiesPage::BasicPropertiesPage(const QString &uri, QWidget *parent) : 
     QLabel *label = new QLabel("FIXME:\n"
                                "display name:\n"
                                "location\n"
-                               "uri"+uri, this);
+                               "uri"+uris.join(", "), this);
     layout->addWidget(label);
     addSeparator();
 

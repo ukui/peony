@@ -3,7 +3,7 @@
 
 #include <QPluginLoader>
 #include <QtPlugin>
-#include <QString>
+#include <QStringList>
 #include "plugin-iface.h"
 
 class QWidget;
@@ -18,8 +18,8 @@ public:
     virtual ~PropertiesWindowTabPagePluginIface() {}
 
     virtual int tabOrder() = 0;
-    virtual bool supportUri(const QString &uri) = 0;
-    virtual QWidget *createTabPage(const QString &uri) = 0;
+    virtual bool supportUris(const QStringList &uris) = 0;
+    virtual QWidget *createTabPage(const QStringList &uris) = 0;
 
     virtual void closeFactory() = 0;
 };
