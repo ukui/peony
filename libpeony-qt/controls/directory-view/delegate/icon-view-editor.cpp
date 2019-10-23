@@ -24,7 +24,7 @@ void IconViewEditor::paintEvent(QPaintEvent *e)
     p.fillRect(this->viewport()->rect(), this->palette().base());
     QPen pen;
     pen.setWidth(2);
-    pen.setColor("black");
+    pen.setColor(this->palette().highlight().color());
     QPolygon polygon = this->viewport()->rect();
     p.setPen(pen);
     p.drawPolygon(polygon);
