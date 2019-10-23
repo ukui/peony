@@ -10,6 +10,11 @@ namespace Peony {
 class FileNodeReporter;
 class FileNode;
 
+/*!
+ * \brief The FileCopyOperation class
+ * \todo
+ * implment duplicated copy. this should be consumed as the backup handler.
+ */
 class PEONYCORESHARED_EXPORT FileCopyOperation : public FileOperation
 {
     Q_OBJECT

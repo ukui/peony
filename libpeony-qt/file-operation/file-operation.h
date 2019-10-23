@@ -31,6 +31,10 @@ class FileOperationInfo;
  * Insteadly, using QThreadPool::start() is the best choice.
  * \see
  * FileOperationProgressWizard, FileOperationErrorHandler, FileOperationErrorDialog.
+ *
+ * \todo
+ * add disk i/o speed computing function, this should be implement by implement
+ * gio's progress callback.
  */
 class PEONYCORESHARED_EXPORT FileOperation : public QObject, public QRunnable
 {

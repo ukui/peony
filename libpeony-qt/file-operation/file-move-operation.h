@@ -11,6 +11,11 @@ class FileNode;
 
 class FileOperationInfo;
 
+/*!
+ * \brief The FileMoveOperation class
+ * \todo
+ * implement the backup option of err handling.
+ */
 class PEONYCORESHARED_EXPORT FileMoveOperation : public FileOperation
 {
     Q_OBJECT
