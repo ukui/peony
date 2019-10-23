@@ -19,7 +19,7 @@ namespace DirectoryView {
  * \todo
  * improve extend selection actions.
  */
-class ListView : public QTreeView, public DirectoryViewIface
+class PEONYCORESHARED_EXPORT ListView : public QTreeView, public DirectoryViewIface
 {
     Q_OBJECT
 public:

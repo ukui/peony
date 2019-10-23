@@ -16,9 +16,9 @@ class MenuPluginTest1 : public QObject, public MenuPluginInterface
 
 public:
     PluginInterface::PluginType pluginType() override {return PluginInterface::MenuPlugin;}
-    QString name() override {return "testMenuPlugin1";}
-    QString description() override {return "This is a menu type test plugin";}
-    QIcon icon() override {return QIcon::fromTheme("search");}
+    const QString name() override {return "testMenuPlugin1";}
+    const QString description() override {return "This is a menu type test plugin";}
+    const QIcon icon() override {return QIcon::fromTheme("search");}
     void setEnable(bool enable) override {m_enable = enable;}
     bool isEnable() override {return m_enable;}
 

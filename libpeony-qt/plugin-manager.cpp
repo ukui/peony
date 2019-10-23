@@ -7,6 +7,9 @@
 #include "directory-view-plugin-iface.h"
 #include "preview-page-plugin-iface.h"
 
+#include "properties-window.h" //properties factory manager define is in this header
+#include "properties-window-tab-page-plugin-iface.h"
+
 #include <QDebug>
 #include <QDir>
 #include <QPluginLoader>
@@ -51,6 +54,11 @@ PluginManager::PluginManager(QObject *parent) : QObject(parent)
         case PluginInterface::PreviewPagePlugin: {
             PreviewPagePluginIface *previewPageFactory = dynamic_cast<PreviewPagePluginIface*>(plugin);
             PreviewPageFactoryManager::getInstance()->registerFactory(previewPageFactory->name(), previewPageFactory);
+            break;
+        }
+        case PluginInterface::PropertiesWindowPlugin: {
+            PropertiesWindowTabPagePluginIface *propertiesWindowTabPageFactory = dynamic_cast<PropertiesWindowTabPagePluginIface*>(plugin);
+            PropertiesWindowPluginManager::getInstance()->registerFactory(propertiesWindowTabPageFactory);
             break;
         }
         default:

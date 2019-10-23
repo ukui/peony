@@ -26,9 +26,9 @@ public:
 
     virtual PluginType pluginType() = 0;
 
-    virtual QString name() = 0;
-    virtual QString description() = 0;
-    virtual QIcon icon() = 0;
+    virtual const QString name() = 0;
+    virtual const QString description() = 0;
+    virtual const QIcon icon() = 0;
     virtual void setEnable(bool enable) = 0;
     virtual bool isEnable() = 0;
 };

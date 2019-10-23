@@ -51,6 +51,8 @@
 
 #include "list-view.h"
 
+#include "basic-properties-page.h"
+
 PeonyApplication::PeonyApplication(int &argc, char *argv[]) : QApplication (argc, argv)
 {
     Peony::PluginManager::init();
@@ -332,5 +334,11 @@ PeonyApplication::PeonyApplication(int &argc, char *argv[]) : QApplication (argc
     listView->beginLocationChange();
 
     listView->show();
+#endif
+
+//#define BASIC_PROPERTIES_PAGE
+#ifdef BASIC_PROPERTIES_PAGE
+    Peony::BasicPropertiesPage *p = new Peony::BasicPropertiesPage("file:///");
+    p->show();
 #endif
 }

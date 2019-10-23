@@ -17,6 +17,8 @@
 
 #include "volume-manager.h"
 
+#include "properties-window.h"
+
 #include <QDesktopServices>
 #include <QUrl>
 #include <QMessageBox>
@@ -321,7 +323,17 @@ const QList<QAction *> DirectoryViewMenu::constructFilePropertiesActions()
         l<<addAction(QIcon::fromTheme("preview-file"), tr("&Properties"));
         connect(l.last(), &QAction::triggered, [=](){
             //FIXME:
-            //properties window
+            if (m_selections.isEmpty()) {
+                PropertiesWindow *p = new PropertiesWindow(m_directory);
+                p->setAttribute(Qt::WA_DeleteOnClose);
+                p->show();
+            } else {
+                for (auto uri : m_selections) {
+                    PropertiesWindow *p = new PropertiesWindow(uri);
+                    p->setAttribute(Qt::WA_DeleteOnClose);
+                    p->show();
+                }
+            }
         });
     }
 

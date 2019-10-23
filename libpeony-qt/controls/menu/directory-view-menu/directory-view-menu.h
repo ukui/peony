@@ -10,6 +10,12 @@ namespace Peony {
 
 class FMWindow;
 
+/*!
+ * \brief The DirectoryViewMenu class
+ *
+ * \todo
+ * add create template function.
+ */
 class PEONYCORESHARED_EXPORT DirectoryViewMenu : public QMenu
 {
     Q_OBJECT

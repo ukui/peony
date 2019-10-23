@@ -15,10 +15,10 @@ public:
     static ListViewFactory* getInstance();
 
     //plugin implement
-    QString name() override {return QObject::tr("List View");}
+    const QString name() override {return QObject::tr("List View");}
     PluginType pluginType() override {return PluginType::DirectoryViewPlugin;}
-    QString description() override {return QObject::tr("Show the folder children as rows in a list.");}
-    QIcon icon() override {return QIcon::fromTheme("view-list-symbolic", QIcon::fromTheme("folder"));}
+    const QString description() override {return QObject::tr("Show the folder children as rows in a list.");}
+    const QIcon icon() override {return QIcon::fromTheme("view-list-symbolic", QIcon::fromTheme("folder"));}
     void setEnable(bool enable) override {Q_UNUSED(enable)}
     bool isEnable() override {return true;}
 
