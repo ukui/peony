@@ -24,7 +24,7 @@ public:
     PluginType pluginType() override {return PluginType::PreviewPagePlugin;}
     const QString name() override {return tr("Default Preview");}
     const QString description() override {return tr("This is the Default Preview of peony-qt");}
-    const QIcon icon() override {return QIcon::fromTheme("edit-find-symbolic");}
+    const QIcon icon() override {return QIcon::fromTheme("preview-file");}
     void setEnable(bool enable) override {m_enable = enable;}
     bool isEnable() override {return m_enable;}
 

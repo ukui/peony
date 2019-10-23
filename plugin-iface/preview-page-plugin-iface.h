@@ -35,6 +35,7 @@ public:
     virtual ~PreviewPageIface() {}
 
     virtual void prepare(const QString &uri, PreviewType type) = 0;
+    virtual void prepare(const QString &uri) = 0;
     virtual void startPreview() = 0;
     virtual void cancel() = 0;
     virtual void closePreviewPage() = 0;

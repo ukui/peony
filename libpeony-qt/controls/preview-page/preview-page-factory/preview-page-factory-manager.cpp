@@ -19,6 +19,7 @@ PreviewPageFactoryManager::PreviewPageFactoryManager(QObject *parent) : QObject(
     //load default and plugins.
     auto defaultFactory = DefaultPreviewPageFactory::getInstance();
     registerFactory(defaultFactory->name(), static_cast<PreviewPagePluginIface*>(defaultFactory));
+    //registerFactory("test", static_cast<PreviewPagePluginIface*>(defaultFactory));
 }
 
 PreviewPageFactoryManager::~PreviewPageFactoryManager()

@@ -21,6 +21,8 @@ Q_SIGNALS:
     void updateWindowLocationRequest(const QString &uri, bool addHistory, bool forceUpdate = false);
     void refreshRequest();
 
+    void switchPreviewPageRequest(const QString &id);
+
 public Q_SLOTS:
     void bindContainer(DirectoryViewContainer *container);
     void updateLocation(const QString &uri);
@@ -33,6 +35,8 @@ protected:
 private:
     NavigationToolBar *m_left_control;
     AdvancedLocationBar *m_center_control;
+
+    QAction *m_checked_preview_action;
 };
 
 }

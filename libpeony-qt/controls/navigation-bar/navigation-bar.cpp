@@ -4,6 +4,9 @@
 #include "advanced-location-bar.h"
 #include "directory-view-container.h"
 
+#include "preview-page-factory-manager.h"
+#include "preview-page-plugin-iface.h"
+
 #include <QDebug>
 
 using namespace Peony;
@@ -35,9 +38,26 @@ NavigationBar::NavigationBar(QWidget *parent) : QToolBar(parent)
     connect(m_center_control, &AdvancedLocationBar::refreshRequest,
             this, &NavigationBar::refreshRequest);
 
-    //FIXME: preview plugins
-    addAction(QIcon::fromTheme("preview-file", QIcon::fromTheme("gtk-missing-image")),
-              tr("Preview"));
+    auto manager = PreviewPageFactoryManager::getInstance();
+    auto ids = manager->getPluginNames();
+    QActionGroup *group = new QActionGroup(this);
+    group->setExclusive(true);
+    for (auto id : ids) {
+        auto factory = manager->getPlugin(id);
+        auto action = group->addAction(factory->icon(), factory->name());
+        action->setCheckable(true);
+        connect(action, &QAction::triggered, [=](){
+            if (m_checked_preview_action == action) {
+                action->setChecked(false);
+                m_checked_preview_action = nullptr;
+            } else {
+                m_checked_preview_action = action;
+                action->setChecked(true);
+            }
+            Q_EMIT this->switchPreviewPageRequest(m_checked_preview_action? m_checked_preview_action->text(): nullptr);
+        });
+    }
+    addActions(group->actions());
 }
 
 void NavigationBar::bindContainer(DirectoryViewContainer *container)
