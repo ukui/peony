@@ -65,6 +65,7 @@ void ToolBar::init(bool hasTopWindow)
 
     //file operations
     QAction *copyAction = addAction(QIcon::fromTheme("edit-copy-symbolic"), tr("&Copy"));
+    copyAction->setShortcut(QKeySequence::Copy);
 
     QAction *pasteAction = addAction(QIcon::fromTheme("edit-paste-symbolic"), tr("Paste"));
     pasteAction->setShortcut(QKeySequence::Paste);
@@ -138,6 +139,7 @@ void ToolBar::init(bool hasTopWindow)
         if (!m_top_window->getCurrentSelections().isEmpty())
             ClipboardUtils::setClipboardFiles(m_top_window->getCurrentSelections(), false);
     });
+
     connect(pasteAction, &QAction::triggered, [=](){
         if (ClipboardUtils::isClipboardHasFiles()) {
             //FIXME: how about duplicated copy?

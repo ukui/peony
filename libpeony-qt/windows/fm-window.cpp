@@ -17,6 +17,8 @@
 #include "file-utils.h"
 #include "file-info.h"
 
+#include "file-operation-manager.h"
+
 #include <QDockWidget>
 #include <QStandardPaths>
 #include <QDebug>
@@ -187,6 +189,20 @@ FMWindow::FMWindow(const QString &uri, QWidget *parent) : QMainWindow (parent)
     stopLoadingAction->setShortcut(QKeySequence(Qt::Key_Escape));
     addAction(stopLoadingAction);
     connect(stopLoadingAction, &QAction::triggered, this, &FMWindow::forceStopLoading);
+
+    auto undoAction = new QAction(QIcon::fromTheme("edit-undo-symbolic"), tr("Undo"), this);
+    undoAction->setShortcut(QKeySequence::Undo);
+    addAction(undoAction);
+    connect(undoAction, &QAction::triggered, [=](){
+        FileOperationManager::getInstance()->undo();
+    });
+
+    auto redoAction = new QAction(QIcon::fromTheme("edit-redo-symbolic"), tr("Redo"), this);
+    redoAction->setShortcut(QKeySequence::Redo);
+    addAction(redoAction);
+    connect(redoAction, &QAction::triggered, [=](){
+        FileOperationManager::getInstance()->redo();
+    });
 
     //menu
     m_tab->connect(m_tab, &TabPage::menuRequest, [=](const QPoint &pos){
