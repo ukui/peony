@@ -64,10 +64,6 @@ PluginManager::PluginManager(QObject *parent) : QObject(parent)
         default:
             break;
         }
-
-        MenuPluginInterface *test = qobject_cast<MenuPluginInterface*>(plugin);
-        qDebug()<<test->name();
-        m_hash.insert(test->name(), test);
     }
 }
 
