@@ -4,6 +4,8 @@
 #include <QTabWidget>
 #include "peony-core_global.h"
 
+#include <QTimer>
+
 namespace Peony {
 
 class DirectoryViewContainer;
@@ -35,6 +37,9 @@ public Q_SLOTS:
 
 protected:
     void rebindContainer();
+
+private:
+    QTimer m_double_click_limiter;
 };
 
 }

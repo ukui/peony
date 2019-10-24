@@ -19,6 +19,9 @@
 
 #include "properties-window.h"
 
+#include "file-launch-manager.h"
+#include "file-launch-action.h"
+
 #include <QDesktopServices>
 #include <QUrl>
 #include <QMessageBox>
@@ -153,12 +156,21 @@ const QList<QAction *> DirectoryViewMenu::constructOpenOpActions()
                 l<<addAction(QIcon::fromTheme("document-open-symbolic"), tr("&open \"%1\"").arg(displayName));
                 connect(l.last(), &QAction::triggered, [=](){
                     auto uri = m_selections.first();
-                    if (!QDesktopServices::openUrl(QUrl(uri))) {QMessageBox::critical(nullptr, tr("Open Failed"), tr("Can not open %1").arg(uri));}
+                    FileLaunchManager::openAsync(uri);
                 });
                 auto openWithAction = addAction(tr("open \"%1\" with...").arg(displayName));
                 //FIXME: add sub menu for open with action.
                 QMenu *openWithMenu = new QMenu(this);
-                openWithMenu->addAction("app1");
+                auto recommendActions = FileLaunchManager::getRecommendActions(m_selections.first());
+                for (auto action : recommendActions) {
+                    action->setParent(openWithMenu);
+                    openWithMenu->addAction(static_cast<QAction*>(action));
+                }
+                auto fallbackActions = FileLaunchManager::getFallbackActions(m_selections.first());
+                for (auto action : fallbackActions) {
+                    action->setParent(openWithMenu);
+                    openWithMenu->addAction(static_cast<QAction*>(action));
+                }
                 openWithMenu->addSeparator();
                 openWithMenu->addAction(tr("&More applications..."));
                 openWithAction->setMenu(openWithMenu);
@@ -166,7 +178,7 @@ const QList<QAction *> DirectoryViewMenu::constructOpenOpActions()
                 l<<addAction(tr("&Open"));
                 connect(l.last(), &QAction::triggered, [=](){
                     auto uri = m_selections.first();
-                    if (!QDesktopServices::openUrl(QUrl(uri))) {QMessageBox::critical(nullptr, tr("Open Failed"), tr("Can not open %1").arg(uri));}
+                    //FIXME:
                 });
             }
         } else {
@@ -187,7 +199,11 @@ const QList<QAction *> DirectoryViewMenu::constructOpenOpActions()
                     m_top_window->addNewTabs(dirs);
                 if (!files.isEmpty()) {
                     for (auto uri : files) {
-                        if (!QDesktopServices::openUrl(QUrl(uri))) {QMessageBox::critical(nullptr, tr("Open Failed"), tr("Can not open %1").arg(uri));}
+                        /*!
+                         * \bug
+                         * open muti-files has bug some times.
+                         */
+                        FileLaunchManager::openAsync(uri);
                     }
                 }
             });

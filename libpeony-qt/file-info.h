@@ -30,6 +30,16 @@ class PEONYCORESHARED_EXPORT FileInfo : public QObject
 
     Q_OBJECT
 public:
+    enum Access {
+        Readable,
+        Writeable,
+        Executable,
+        Deleteable,
+        Trashable,
+        Renameable
+    };
+    Q_DECLARE_FLAGS(AccessFlags, Access)
+
     explicit FileInfo(QObject *parent = nullptr);
     explicit FileInfo(const QString &uri, QObject *parent = nullptr);
     ~FileInfo();
@@ -46,6 +56,7 @@ public:
     QString iconName() {return m_icon_name;}
     QString symbolicIconName() {return m_symbolic_icon_name;}
     QString fileID() {return m_file_id;}
+    QString mimeType() {return m_mime_type_string;}
     QString fileType() {return m_file_type;}
 
     QString fileSize() {return m_file_size;}
@@ -60,6 +71,20 @@ public:
     bool canDelete() {return m_can_delete;}
     bool canTrash() {return m_can_trash;}
     bool canRename() {return m_can_rename;}
+
+    bool isDesktopFile() {return m_can_excute && m_uri.endsWith(".desktop");}
+    bool isEmptyInfo() {return m_display_name == nullptr;}
+
+    AccessFlags accesses() {
+        auto flags = AccessFlags();
+        flags.setFlag(Readable, m_can_read);
+        flags.setFlag(Writeable, m_can_write);
+        flags.setFlag(Executable, m_can_excute);
+        flags.setFlag(Deleteable, m_can_delete);
+        flags.setFlag(Trashable, m_can_trash);
+        flags.setFlag(Renameable, m_can_rename);
+        return flags;
+    }
 
     GFile *gFileHandle() {return m_file;}
 
@@ -85,6 +110,7 @@ private:
     guint64 m_size = 0;
     guint64 m_modified_time = 0;
 
+    QString m_mime_type_string = nullptr;
     QString m_file_type = nullptr;
     QString m_file_size = nullptr;
     QString m_modified_date = nullptr;

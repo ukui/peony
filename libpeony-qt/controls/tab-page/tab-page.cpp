@@ -5,9 +5,10 @@
 #include "file-info.h"
 #include "file-utils.h"
 
+#include "file-launch-manager.h"
+
 #include <QTabBar>
 
-#include <QDesktopServices>
 #include <QUrl>
 
 #include <QDebug>
@@ -16,6 +17,8 @@ using namespace Peony;
 
 TabPage::TabPage(QWidget *parent) : QTabWidget(parent)
 {
+    m_double_click_limiter.setSingleShot(true);
+
     setMovable(true);
     setDocumentMode(true);
     setElideMode(Qt::ElideRight);
@@ -50,26 +53,11 @@ void TabPage::addPage(const QString &uri)
     container->getProxy()->setDirectoryUri(uri);
     container->getProxy()->beginLocationChange();
 
-    container->connect(container->getProxy(), &Peony::DirectoryViewProxyIface::viewDoubleClicked, [=](const QString &uri){
-        qDebug()<<"double clicked"<<uri;
-        auto info = Peony::FileInfo::fromUri(uri);
-        if (info->uri().startsWith("trash://")) {
-            //FIXME: open properties window
-            return;
-        }
-        if (info->isDir() || info->isVolume() || uri.startsWith("network:")) {
-            Q_EMIT this->updateWindowLocationRequest(uri);
-        } else {
-            //FIXME: i have to use gio's api for opening a file,
-            //instead of QDesktopService::openUrl(). It also should
-            //be handled in DirectoryViewMenu's open actions.
-            QDesktopServices::openUrl(QUrl(uri));
-        }
-    });
-
     addTab(container,
            QIcon::fromTheme(FileUtils::getFileIconName(uri), QIcon::fromTheme("folder")),
            FileUtils::getFileDisplayName(uri));
+
+    rebindContainer();
 }
 
 void TabPage::rebindContainer()
@@ -80,6 +68,11 @@ void TabPage::rebindContainer()
 
     auto container = getActivePage();
     container->connect(container->getProxy(), &Peony::DirectoryViewProxyIface::viewDoubleClicked, [=](const QString &uri){
+        if (m_double_click_limiter.isActive())
+            return;
+
+        m_double_click_limiter.start(500);
+
         qDebug()<<"double clicked"<<uri;
         auto info = Peony::FileInfo::fromUri(uri);
         if (info->uri().startsWith("trash://")) {
@@ -89,10 +82,7 @@ void TabPage::rebindContainer()
         if (info->isDir() || info->isVolume() || uri.startsWith("network:")) {
             Q_EMIT this->updateWindowLocationRequest(uri);
         } else {
-            //FIXME: i have to use gio's api for opening a file,
-            //instead of QDesktopService::openUrl(). It also should
-            //be handled in DirectoryViewMenu's open actions.
-            QDesktopServices::openUrl(QUrl(uri));
+            FileLaunchManager::openAsync(uri);
         }
     });
 
