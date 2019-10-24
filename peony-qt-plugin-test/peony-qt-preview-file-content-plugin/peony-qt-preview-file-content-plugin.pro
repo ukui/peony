@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += widgets network webengine webenginewidgets webkit webkitwidgets
+QT       += widgets #network webengine webenginewidgets webkit webkitwidgets
 
 TARGET = peony-qt-preview-file-content-plugin
 TEMPLATE = lib
