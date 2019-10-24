@@ -4,6 +4,8 @@
 #include <QTabWidget>
 #include "peony-core_global.h"
 
+#include <QMap>
+
 namespace Peony {
 
 class PropertiesWindowTabPagePluginIface;
@@ -25,6 +27,7 @@ private:
     ~PropertiesWindowPluginManager() override;
 
     QHash<QString, PropertiesWindowTabPagePluginIface*> m_factory_hash;
+    QMap<int, QString> m_sorted_factory_map;
 };
 
 class PEONYCORESHARED_EXPORT PropertiesWindow : public QTabWidget

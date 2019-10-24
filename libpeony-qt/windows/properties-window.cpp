@@ -44,12 +44,17 @@ bool PropertiesWindowPluginManager::registerFactory(PropertiesWindowTabPagePlugi
         return false;
     }
     m_factory_hash.insert(id, factory);
+    m_sorted_factory_map.insert(-factory->tabOrder(), id);
     return true;
 }
 
 const QStringList PropertiesWindowPluginManager::getFactoryNames()
 {
-    return m_factory_hash.keys();
+    QStringList l;
+    for (auto factoryId : m_sorted_factory_map) {
+        l<<factoryId;
+    }
+    return l;
 }
 
 PropertiesWindowTabPagePluginIface *PropertiesWindowPluginManager::getFactory(const QString &id)
