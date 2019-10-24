@@ -16,7 +16,6 @@ using namespace Peony;
 
 DefaultPreviewPage::DefaultPreviewPage(QWidget *parent) : QStackedWidget (parent)
 {
-    setMinimumWidth(300);
     auto label = new QLabel(tr("Select the file you want to preview..."), this);
     label->setWordWrap(true);
     label->setAlignment(Qt::AlignCenter);

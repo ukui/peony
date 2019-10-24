@@ -75,6 +75,10 @@ FMWindow::FMWindow(const QString &uri, QWidget *parent) : QMainWindow (parent)
 
     m_search_bar = new SearchBar(this);
 
+    m_preview_page_container = new PreviewPageContainer(this);
+    m_splitter->addWidget(m_preview_page_container);
+    m_preview_page_container->hide();
+
     //put the tool bar and search bar into
     //a hobx-layout widget, and put the widget int a
     //new tool bar.
@@ -220,30 +224,30 @@ FMWindow::FMWindow(const QString &uri, QWidget *parent) : QMainWindow (parent)
     connect(m_navigation_bar, &NavigationBar::switchPreviewPageRequest,
             this, &FMWindow::onPreviewPageSwitch);
     connect(m_tab, &TabPage::currentSelectionChanged, [=](){
-        if (m_preview_page) {
+        if (m_preview_page_container->getCurrentPage()) {
             auto selection = getCurrentSelections();
             if (!selection.isEmpty()) {
-                m_preview_page->cancel();
-                m_preview_page->prepare(selection.first());
-                m_preview_page->startPreview();
+                m_preview_page_container->getCurrentPage()->cancel();
+                m_preview_page_container->getCurrentPage()->prepare(selection.first());
+                m_preview_page_container->getCurrentPage()->startPreview();
             } else {
-                m_preview_page->cancel();
+                m_preview_page_container->getCurrentPage()->cancel();
             }
         }
     });
     connect(m_tab, &TabPage::currentLocationChanged, [=](){
-        if (m_preview_page) {
-            m_preview_page->cancel();
+        if (m_preview_page_container->getCurrentPage()) {
+            m_preview_page_container->getCurrentPage()->cancel();
         }
     });
     connect(m_tab, &TabPage::currentActiveViewChanged, [=](){
-        if (m_preview_page) {
+        if (m_preview_page_container->getCurrentPage()) {
             auto selection = getCurrentSelections();
             if (selection.isEmpty()) {
-                m_preview_page->cancel();
+                m_preview_page_container->getCurrentPage()->cancel();
             } else {
-                m_preview_page->prepare(selection.first());
-                m_preview_page->startPreview();
+                m_preview_page_container->getCurrentPage()->prepare(selection.first());
+                m_preview_page_container->getCurrentPage()->startPreview();
             }
         }
     });
@@ -343,22 +347,51 @@ void FMWindow::forceStopLoading()
 void FMWindow::onPreviewPageSwitch(const QString &id)
 {
     if (id.isNull()) {
-        PreviewPageIface *page = dynamic_cast<PreviewPageIface*>(m_splitter->widget(2));
+        PreviewPageIface *page = m_preview_page_container->getCurrentPage();
         if (page) {
-            page->closePreviewPage();
-            m_preview_page = nullptr;
+            m_preview_page_container->removePage(page);
         }
     } else {
-        PreviewPageIface *page = dynamic_cast<PreviewPageIface*>(m_splitter->widget(2));
-        if (page) {
-            page->closePreviewPage();
-        }
-        page = PreviewPageFactoryManager::getInstance()->getPlugin(id)->createPreviewPage();
-        m_splitter->addWidget(dynamic_cast<QWidget*>(page));
-        if (!getCurrentSelections().isEmpty()) {
-            page->prepare(getCurrentSelections().first());
-            page->startPreview();
-        }
-        m_preview_page = page;
+        auto oldPage = m_preview_page_container->getCurrentPage();
+        PreviewPageIface *page = PreviewPageFactoryManager::getInstance()->getPlugin(id)->createPreviewPage();
+        m_preview_page_container->setCurrentPage(page);
+        m_preview_page_container->removePage(oldPage);
     }
+}
+
+//preview page container
+PreviewPageContainer::PreviewPageContainer(QWidget *parent) : QStackedWidget (parent)
+{
+    setMinimumWidth(300);
+}
+
+void PreviewPageContainer::setCurrentPage(PreviewPageIface *page)
+{
+    if (count() > 0) {
+        PreviewPageIface *oldPage = getCurrentPage();
+        if (oldPage) {
+            removePage(oldPage);
+        }
+    }
+
+    addWidget(dynamic_cast<QWidget*>(page));
+    setCurrentWidget(dynamic_cast<QWidget*>(page));
+    dynamic_cast<QWidget*>(page)->show();
+    show();
+}
+
+void PreviewPageContainer::removePage(PreviewPageIface *page)
+{
+    if (!page)
+        return;
+    removeWidget(dynamic_cast<QWidget*>(page));
+    if (count() == 0) {
+        hide();
+    }
+    page->closePreviewPage();
+}
+
+PreviewPageIface *PreviewPageContainer::getCurrentPage()
+{
+    return dynamic_cast<PreviewPageIface*>(currentWidget());
 }
