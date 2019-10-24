@@ -356,6 +356,8 @@ void FMWindow::onPreviewPageSwitch(const QString &id)
         PreviewPageIface *page = PreviewPageFactoryManager::getInstance()->getPlugin(id)->createPreviewPage();
         m_preview_page_container->setCurrentPage(page);
         m_preview_page_container->removePage(oldPage);
+        //emit selection changed signal manually for starting a preview with new page.
+        Q_EMIT m_tab->currentSelectionChanged();
     }
 }
 
