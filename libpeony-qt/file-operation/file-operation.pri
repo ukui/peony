@@ -18,7 +18,8 @@ HEADERS += \
     $$PWD/file-link-operation.h \
     $$PWD/file-trash-operation.h \
     $$PWD/file-untrash-operation.h \
-    $$PWD/file-rename-operation.h
+    $$PWD/file-rename-operation.h \
+    $$PWD/file-count-operation.h
 
 SOURCES += \
     $$PWD/file-operation.cpp \
@@ -33,4 +34,5 @@ SOURCES += \
     $$PWD/file-link-operation.cpp \
     $$PWD/file-trash-operation.cpp \
     $$PWD/file-untrash-operation.cpp \
-    $$PWD/file-rename-operation.cpp
+    $$PWD/file-rename-operation.cpp \
+    $$PWD/file-count-operation.cpp

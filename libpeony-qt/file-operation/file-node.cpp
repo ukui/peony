@@ -34,6 +34,11 @@ FileNode::FileNode(QString uri, FileNode *parent, FileNodeReporter *reporter)
 }
 
 FileNode::~FileNode() {
+    qDebug()<<"delete node:"<<m_uri;
+    m_uri.clear();
+    m_basename.clear();
+    m_dest_uri.clear();
+
     for (auto child : *m_children) {
         delete child;
     }
