@@ -74,12 +74,12 @@ void TabPage::rebindContainer()
         m_double_click_limiter.start(500);
 
         qDebug()<<"double clicked"<<uri;
-        auto info = Peony::FileInfo::fromUri(uri);
+        auto info = Peony::FileInfo::fromUri(uri, false);
         if (info->uri().startsWith("trash://")) {
             //FIXME: open properties window
             return;
         }
-        if (info->isDir() || info->isVolume() || uri.startsWith("network:")) {
+        if (info->isDir() || info->isVolume() || info->isVirtual()) {
             Q_EMIT this->updateWindowLocationRequest(uri);
         } else {
             FileLaunchManager::openAsync(uri);

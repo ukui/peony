@@ -48,9 +48,10 @@ public:
     static std::shared_ptr<FileInfo> fromGFile(GFile *file, bool addToHash = true);
 
     QString uri() {return m_uri;}
-    bool isDir() {return m_is_dir;}
+    bool isDir() {return m_is_dir | m_content_type == "inode/directory";}
     bool isVolume() {return m_is_volume;}
     bool isSymbolLink() {return m_is_symbol_link;}
+    bool isVirtual() {return m_is_virtual;}
 
     QString displayName() {return m_display_name;}
     QString iconName() {return m_icon_name;}
@@ -98,6 +99,7 @@ private:
     bool m_is_volume = false;
     bool m_is_remote = false;
     bool m_is_symbol_link = false;
+    bool m_is_virtual = false;
 
     bool m_is_loaded = false;
 

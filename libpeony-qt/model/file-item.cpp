@@ -203,6 +203,9 @@ void FileItem::findChildrenAsync()
 
         enumerator->connect(enumerator, &Peony::FileEnumerator::enumerateFinished, [=](){
             delete enumerator;
+            if (!m_model||!m_children||!m_info)
+                return;
+
             Q_EMIT m_model->findChildrenFinished();
             Q_EMIT m_model->updated();
 
