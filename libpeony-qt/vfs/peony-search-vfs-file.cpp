@@ -144,6 +144,7 @@ GFile *peony_search_vfs_file_resolve_relative_path(GFile *file, const char *rela
         tmp = tmp.remove("real-uri:");
         return g_file_new_for_uri(tmp.toUtf8().constData());
     }
+    return g_file_new_for_uri("serarch:///");
 }
 
 GFile *peony_search_vfs_file_new_for_uri(const char *uri)

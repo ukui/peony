@@ -61,7 +61,9 @@ public:
      * \brief getChildren
      * \return
      */
-    QList<std::shared_ptr<FileInfo>> getChildren();
+    const QList<std::shared_ptr<FileInfo>> getChildren();
+
+    const QStringList getChildrenUris() {return *m_children_uris;}
 
 Q_SIGNALS:
     /*!
