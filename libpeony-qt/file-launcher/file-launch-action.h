@@ -24,6 +24,9 @@ public:
     const QString getAppInfoName();
     const QString getAppInfoDisplayName();
 
+protected:
+    bool isValid();
+
 public Q_SLOTS:
     void lauchFileSync();
     void lauchFileAsync();

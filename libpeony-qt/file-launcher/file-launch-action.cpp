@@ -4,12 +4,18 @@
 #include "file-info.h"
 #include "file-info-job.h"
 
+#include <QMessageBox>
+
 using namespace Peony;
 
 FileLaunchAction::FileLaunchAction(const QString &uri, GAppInfo *app_info, QObject *parent) : QAction(parent)
 {
     m_uri = uri;
     m_app_info = static_cast<GAppInfo*>(g_object_ref(app_info));
+
+    if (!isValid())
+        return;
+
     GThemedIcon *icon = G_THEMED_ICON(g_app_info_get_icon(m_app_info));
     const char * const * icon_names = g_themed_icon_get_names(icon);
 
@@ -25,7 +31,8 @@ FileLaunchAction::FileLaunchAction(const QString &uri, GAppInfo *app_info, QObje
 
 FileLaunchAction::~FileLaunchAction()
 {
-    g_object_unref(m_app_info);
+    if (m_app_info)
+        g_object_unref(m_app_info);
 }
 
 const QString FileLaunchAction::getUri()
@@ -35,7 +42,7 @@ const QString FileLaunchAction::getUri()
 
 bool FileLaunchAction::isDesktopFileAction()
 {
-    auto info = FileInfo::fromUri(m_uri);
+    auto info = FileInfo::fromUri(m_uri, false);
     if (info->isEmptyInfo()) {
         FileInfoJob j(info);
         j.querySync();
@@ -55,6 +62,11 @@ const QString FileLaunchAction::getAppInfoDisplayName()
 
 void FileLaunchAction::lauchFileSync()
 {
+    if (!isValid()) {
+        QMessageBox::critical(nullptr, tr("Open Failed"), tr("Can not open %1").arg(m_uri));
+        return;
+    }
+
     if (isDesktopFileAction()) {
         g_app_info_launch(m_app_info, nullptr, nullptr, nullptr);
     } else {
@@ -89,6 +101,11 @@ void FileLaunchAction::lauchFileSync()
 
 void FileLaunchAction::lauchFileAsync()
 {
+    if (!isValid()) {
+        QMessageBox::critical(nullptr, tr("Open Failed"), tr("Can not open %1").arg(m_uri));
+        return;
+    }
+
     if (isDesktopFileAction()) {
         g_app_info_launch_uris_async(m_app_info, nullptr,
                                      nullptr, nullptr,
@@ -125,4 +142,9 @@ void FileLaunchAction::lauchFileAsync()
                                                 nullptr,
                                                 nullptr);
     }
+}
+
+bool FileLaunchAction::isValid()
+{
+    return G_IS_APP_INFO(m_app_info);
 }

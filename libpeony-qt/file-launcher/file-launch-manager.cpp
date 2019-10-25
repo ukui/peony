@@ -21,10 +21,13 @@ FileLaunchAction *FileLaunchManager::getDefaultAction(const QString &uri)
 {
     auto info = FileInfo::fromUri(uri);
     QString mimeType = info->mimeType();
+
     if (mimeType.isEmpty()) {
         FileInfoJob job(info);
         job.querySync();
+        mimeType = info->mimeType();
     }
+
     if (info->canExecute() && info->uri().endsWith(".desktop")) {
         QUrl url = uri;
         auto path = url.path();

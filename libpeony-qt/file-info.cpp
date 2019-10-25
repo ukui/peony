@@ -62,7 +62,7 @@ FileInfo::~FileInfo()
     m_uri = nullptr;
 }
 
-std::shared_ptr<FileInfo> FileInfo::fromUri(QString uri)
+std::shared_ptr<FileInfo> FileInfo::fromUri(QString uri, bool addToHash)
 {
     FileInfoManager *info_manager = FileInfoManager::getInstance();
     info_manager->lock();
@@ -92,22 +92,24 @@ std::shared_ptr<FileInfo> FileInfo::fromUri(QString uri)
         default:
             break;
         }
-        info_manager->insertFileInfo(newly_info);
+        if (addToHash) {
+            info_manager->insertFileInfo(newly_info);
+        }
         info_manager->unlock();
         return newly_info;
     }
 }
 
-std::shared_ptr<FileInfo> FileInfo::fromPath(QString path)
+std::shared_ptr<FileInfo> FileInfo::fromPath(QString path, bool addToHash)
 {
     QString uri = "file://"+path;
-    return fromUri(uri);
+    return fromUri(uri, addToHash);
 }
 
-std::shared_ptr<FileInfo> FileInfo::fromGFile(GFile *file)
+std::shared_ptr<FileInfo> FileInfo::fromGFile(GFile *file, bool addToHash)
 {
     char *uri_str = g_file_get_uri(file);
     QString uri = uri_str;
     g_free(uri_str);
-    return fromUri(uri);
+    return fromUri(uri, addToHash);
 }

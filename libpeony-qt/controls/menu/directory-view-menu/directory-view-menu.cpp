@@ -199,10 +199,6 @@ const QList<QAction *> DirectoryViewMenu::constructOpenOpActions()
                     m_top_window->addNewTabs(dirs);
                 if (!files.isEmpty()) {
                     for (auto uri : files) {
-                        /*!
-                         * \bug
-                         * open muti-files has bug some times.
-                         */
                         FileLaunchManager::openAsync(uri);
                     }
                 }

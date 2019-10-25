@@ -43,9 +43,9 @@ public:
     explicit FileInfo(QObject *parent = nullptr);
     explicit FileInfo(const QString &uri, QObject *parent = nullptr);
     ~FileInfo();
-    static std::shared_ptr<FileInfo> fromUri(QString uri);
-    static std::shared_ptr<FileInfo> fromPath(QString path);
-    static std::shared_ptr<FileInfo> fromGFile(GFile *file);
+    static std::shared_ptr<FileInfo> fromUri(QString uri, bool addToHash = true);
+    static std::shared_ptr<FileInfo> fromPath(QString path, bool addToHash = true);
+    static std::shared_ptr<FileInfo> fromGFile(GFile *file, bool addToHash = true);
 
     QString uri() {return m_uri;}
     bool isDir() {return m_is_dir;}
