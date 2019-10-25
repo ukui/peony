@@ -2,6 +2,8 @@
 #include "menu-plugin-iface.h"
 #include "file-info.h"
 
+#include "file-info-manager.h"
+
 #include <QDebug>
 #include <QDir>
 #include <QPluginLoader>
@@ -351,6 +353,7 @@ PeonyApplication::PeonyApplication(int &argc, char *argv[]) : QApplication (argc
 
     connect(op, &Peony::FileCountOperation::operationFinished, [=](){
         qDebug()<<"finished";
+        Peony::FileInfoManager::getInstance()->showState();
     });
 #endif
 

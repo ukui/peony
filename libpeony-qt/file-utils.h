@@ -35,6 +35,8 @@ public:
 
     static const QString getParentUri(const QString &uri);
 
+    static bool isFileExsit(const QString &uri);
+
 private:
     FileUtils();
 };

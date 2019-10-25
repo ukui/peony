@@ -44,6 +44,8 @@ public:
     void lock() {m_mutex.lock();}
     void unlock() {m_mutex.unlock();}
 
+    void showState();
+
 protected:
     void insertFileInfo(std::shared_ptr<FileInfo> info); //{global_info_list->insert(info->uri(), info);}
     void removeFileInfobyUri(QString uri); //{global_info_list->remove(uri);}

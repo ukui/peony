@@ -63,3 +63,8 @@ void FileInfoManager::remove(std::shared_ptr<FileInfo> info)
     Q_ASSERT(global_info_list);
     global_info_list->remove(info->uri());
 }
+
+void FileInfoManager::showState()
+{
+    qDebug()<<global_info_list->keys().count()<<global_info_list->values().count();
+}

@@ -57,16 +57,26 @@ public:
     State state() {return m_state;}
     FileOperation::ResponseType responseType() {return m_err_response;}
     QString baseName() {return m_basename;}
+    const QString destBaseName() {return m_dest_basename;}
     FileNode *parent() {return m_parent;}
     QList<FileNode*> *children() {return m_children;}
     qint64 size() {return m_size;}
     bool isFolder() {return m_is_folder;}
 
+    /*!
+     * \brief getRelativePath
+     * \return
+     * \deprecated
+     */
     QString getRelativePath();
 
     /*!
      * \brief setDestUri
      * \param uri, the raw source uri of this file.
+     * \deprecated
+     * this method should not be used in newly writen code.
+     *
+     * \details
      * <br>
      * In peony-qt, operantion is cancellable. That means we need add rollback function
      * for handling cancelled operation, to make sure that the operation is completed.
@@ -104,9 +114,15 @@ public:
      * For example, if a g_file move operation is ignored, it will not be cleared when clearing.
      */
     void setErrorResponse(FileOperation::ResponseType type) {m_err_response = type;}
+
+    void setDestFileName(const QString &name) {m_dest_basename = name;}
+    const QString resoveDestFileUri(const QString &destRootDir);
+
 private:
     QString m_uri = nullptr;
     QString m_basename = nullptr;
+    QString m_dest_basename = nullptr;
+
     goffset m_size = 0;
     bool m_is_folder = false;
     FileNode *m_parent = nullptr;

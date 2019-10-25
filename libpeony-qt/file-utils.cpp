@@ -184,3 +184,12 @@ const QString FileUtils::getParentUri(const QString &uri)
     auto parentUri = getFileUri(parent);
     return parentUri == uri? nullptr: parentUri;
 }
+
+bool FileUtils::isFileExsit(const QString &uri)
+{
+    bool exist = false;
+    GFile *file = g_file_new_for_uri(uri.toUtf8().constData());
+    exist = g_file_query_exists(file, nullptr);
+    g_object_unref(file);
+    return exist;
+}

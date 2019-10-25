@@ -5,14 +5,57 @@
 #include "file-enumerator.h"
 #include "file-info.h"
 
+#include "file-utils.h"
+
 #include "file-operation-manager.h"
 
 #include <QDebug>
 
 using namespace Peony;
 
+static void handleDuplicate(FileNode *node) {
+    QString name = node->destBaseName();
+    QRegExp regExp("\\(\\d+\\)");
+    if (name.contains(regExp)) {
+        int pos = 0;
+        int num = 0;
+        QString tmp;
+        while ((pos = regExp.indexIn(name, pos)) != -1) {
+            tmp = regExp.cap(0).toUtf8();
+            pos += regExp.matchedLength();
+            qDebug()<<"pos"<<pos;
+        }
+        tmp.remove(0,1);
+        tmp.chop(1);
+        num = tmp.toInt();
+
+        num++;
+        name = name.replace(regExp, QString("(%1)").arg(num));
+        node->setDestFileName(name);
+    } else {
+        if (name.contains(".")) {
+            auto list = name.split(".");
+            if (list.count() <= 1) {
+                node->setDestFileName(name+"(1)");
+            } else {
+                list.insert(1, "(1)");
+                name = list.join(".");
+                if (name.endsWith("."))
+                    name.chop(1);
+                node->setDestFileName(name);
+            }
+        } else {
+            name = name + "(1)";
+            node->setDestFileName(name);
+        }
+    }
+}
+
 FileCopyOperation::FileCopyOperation(QStringList sourceUris, QString destDirUri, QObject *parent) : FileOperation (parent)
 {
+    if (sourceUris.first().contains(destDirUri)) {
+        m_is_duplicated_copy = true;
+    }
     m_source_uris = sourceUris;
     m_dest_dir_uri = destDirUri;
     m_reporter = new FileNodeReporter;
@@ -28,6 +71,9 @@ FileCopyOperation::~FileCopyOperation()
 
 FileOperation::ResponseType FileCopyOperation::prehandle(GError *err)
 {
+    if (m_is_duplicated_copy)
+        return BackupAll;
+
     if (m_prehandle_hash.contains(err->code))
         return m_prehandle_hash.value(err->code);
 
@@ -49,23 +95,16 @@ void FileCopyOperation::copyRecursively(FileNode *node)
     if (isCancelled())
         return;
 
-    QString relativePath = node->getRelativePath();
-    //FIXME: the smart pointers' deconstruction spends too much time.
-    GFileWrapperPtr destRoot = wrapGFile(g_file_new_for_uri(m_dest_dir_uri.toUtf8().constData()));
-    GFileWrapperPtr destFile = wrapGFile(g_file_resolve_relative_path(destRoot.get()->get(),
-                                                                      relativePath.toUtf8().constData()));
-
-    char *dest_file_uri = g_file_get_uri(destFile.get()->get());
-    node->setDestUri(dest_file_uri);
-    g_free(dest_file_uri);
-    m_current_src_uri = node->uri();
-    GFile *dest_parent = g_file_get_parent(destFile.get()->get());
-    char *dest_dir_uri = g_file_get_uri(dest_parent);
-    m_current_dest_dir_uri = dest_dir_uri;
-    g_free(dest_dir_uri);
-    g_object_unref(dest_parent);
-
 fallback_retry:
+    QString destFileUri = node->resoveDestFileUri(m_dest_dir_uri);
+    node->setDestUri(destFileUri);
+    qDebug()<<"dest file uri:"<<destFileUri;
+
+    GFileWrapperPtr destFile = wrapGFile(g_file_new_for_uri(destFileUri.toUtf8().constData()));
+
+    m_current_src_uri = node->uri();
+    m_current_dest_dir_uri = destFileUri;
+
     if (node->isFolder()) {
         GError *err = nullptr;
 
@@ -113,15 +152,20 @@ fallback_retry:
             case BackupOne: {
                 node->setState(FileNode::Handled);
                 node->setErrorResponse(BackupOne);
-                //make dir has no backup
-                break;
+                while (FileUtils::isFileExsit(node->resoveDestFileUri(m_dest_dir_uri))) {
+                    handleDuplicate(node);
+                }
+                goto fallback_retry;
             }
             case BackupAll: {
                 node->setState(FileNode::Handled);
                 node->setErrorResponse(BackupOne);
+                while (FileUtils::isFileExsit(node->resoveDestFileUri(m_dest_dir_uri))) {
+                    handleDuplicate(node);
+                }
                 //make dir has no backup
                 m_prehandle_hash.insert(err->code, BackupOne);
-                break;
+                goto fallback_retry;
             }
             case Retry: {
                 goto fallback_retry;
@@ -203,29 +247,21 @@ fallback_retry:
                 break;
             }
             case BackupOne: {
-                g_file_copy(sourceFile.get()->get(),
-                            destFile.get()->get(),
-                            GFileCopyFlags(m_default_copy_flag | G_FILE_COPY_BACKUP),
-                            getCancellable().get()->get(),
-                            GFileProgressCallback(progress_callback),
-                            this,
-                            nullptr);
                 node->setState(FileNode::Handled);
                 node->setErrorResponse(BackupOne);
-                break;
+                while (FileUtils::isFileExsit(node->resoveDestFileUri(m_dest_dir_uri))) {
+                    handleDuplicate(node);
+                }
+                goto fallback_retry;
             }
             case BackupAll: {
-                g_file_copy(sourceFile.get()->get(),
-                            destFile.get()->get(),
-                            GFileCopyFlags(m_default_copy_flag | G_FILE_COPY_BACKUP),
-                            getCancellable().get()->get(),
-                            GFileProgressCallback(progress_callback),
-                            this,
-                            nullptr);
                 node->setState(FileNode::Handled);
                 node->setErrorResponse(BackupOne);
+                while (FileUtils::isFileExsit(node->resoveDestFileUri(m_dest_dir_uri))) {
+                    handleDuplicate(node);
+                }
                 m_prehandle_hash.insert(err->code, BackupOne);
-                break;
+                goto fallback_retry;
             }
             case Retry: {
                 goto fallback_retry;
@@ -243,7 +279,6 @@ fallback_retry:
         Q_EMIT operationProgressedOne(node->uri(), node->destUri(), node->size());
     }
     destFile.reset();
-    destRoot.reset();
 }
 
 void FileCopyOperation::rollbackNodeRecursively(FileNode *node)
