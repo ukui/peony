@@ -4,8 +4,8 @@
 <component type="addon">
     <id>peony-admin</id>
     <extends>org.mate.Peony.desktop</extends>
-    <metadata_license>GPL-3.0+</metadata_license>
-    <project_license>GPL-3.0+</project_license>
+    <metadata_license>GPL-3+</metadata_license>
+    <project_license>GPL-3+</project_license>
     <name>Peony Admin</name>
     <summary>Extension for Peony to do administrative operations</summary>
     <summary xml:lang="pt">Extensão para o Peony para realizar operações administrativas</summary>

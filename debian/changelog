@@ -1,3 +1,21 @@
+peony-extensions (1.1.3-1) unstable; urgency=medium
+
+  [ Andreas Henriksson ]
+  * New upstream release.
+    - Fixes FTBFS by dropping unused locally defined g_ptr_array_copy
+      which collides with glib function with same name. (Closes: #942339)
+  * Debian/control:
+    - Drop gupnp build-dependency, disabling upnp sendto support.
+      needs porting to gupnp 1.2
+
+  [ handsome_feng ]
+  * Debian:
+    - Bump standards-vertion to 4.4.0.
+    - Bump compat level to 12.
+    - Fix the warning of inconsistent license.
+
+ -- handsome_feng <jianfengli@ubuntukylin.com>  Fri, 25 Oct 2019 11:30:51 +0800
+
 peony-extensions (1.1.2-1) unstable; urgency=medium
 
   * Initial release. (Closes: #913874)

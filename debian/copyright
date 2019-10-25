@@ -88,7 +88,6 @@ Files: image-converter/Makefile.am
        parchives/src/commands/Makefile.am
        parchives/Makefile.am
        AUTHORS
-       COPYING
        ChangeLog
        Makefile.am
        NEWS
@@ -104,7 +103,6 @@ Files: peony-admin/AUTHORS
        peony-admin/CMakeLists.txt
        peony-admin/CONTRIBUTING.md
        peony-admin/INSTALL.md
-       peony-admin/LICENSE
        peony-admin/NEWS
        peony-admin/NEWS.GNOME
        peony-admin/README.md
@@ -112,7 +110,6 @@ Files: peony-admin/AUTHORS
        peony-admin/cmake/cmake_uninstall.cmake.in
        peony-admin/extension/peony-admin.py.in
        peony-admin/generate-pot-file.sh
-       peony-admin/peony-admin.appdata.xml
        peony-admin/po/*.po
        peony-admin/po/peony-admin.pot
        peony-admin/polkit/org.freedesktop.peony-admin.policy.in
@@ -387,6 +384,11 @@ Files: peony-admin/extension/peony-admin.py.in
 Copyright: 2015-2016 Bruno Nova <brunomb.nova@gmail.com>
            2016 frmdstryr <frmdstryr@gmail.com>
            2018, Tianjin KYLIN Information Technology Co., Ltd.
+License: GPL-3+
+
+Files: peony-admin/peony-admin.appdata.xml
+Copyright: 2015-2016 Bruno Nova <brunomb.nova@gmail.com>
+           2019, Tianjin KYLIN Information Technology Co., Ltd.
 License: GPL-3+
 
 Files: parchives/help/*
