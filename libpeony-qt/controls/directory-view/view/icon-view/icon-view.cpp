@@ -296,8 +296,15 @@ void IconView::setProxy(DirectoryViewProxyIface *proxy)
     });
 }
 
+// NOTE: When icon view was resorted,
+// index widget would deviated from its normal position by somehow.
+// So, do not set any index widget when the resorting.
 void IconView::resort()
 {
+    if (m_last_index.isValid()) {
+        this->setIndexWidget(m_last_index, nullptr);
+    }
+
     if (m_sort_filter_proxy_model)
         m_sort_filter_proxy_model->sort(getSortType(), Qt::SortOrder(getSortOrder()));
 }

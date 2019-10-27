@@ -356,6 +356,8 @@ GAsyncReadyCallback FileEnumerator::enumerator_next_files_async_ready_callback(G
     GList *files = g_file_enumerator_next_files_finish(enumerator,
                                                        res,
                                                        &err);
+
+    auto errPtr = GErrorWrapper::wrapFrom(err);
     if (!files && !err) {
         //if a directory children count is same with BATCH_SIZE,
         //just send finished signal.
@@ -369,7 +371,6 @@ GAsyncReadyCallback FileEnumerator::enumerator_next_files_async_ready_callback(G
     }
     if (err) {
         qDebug()<<"next_files_async:"<<err->code<<err->message;
-        g_error_free(err);
     }
 
     GList *l = files;

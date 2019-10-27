@@ -167,6 +167,11 @@ QVariant FileItemModel::data(const QModelIndex &index, int role) const
 
     FileItem *item = static_cast<FileItem*>(index.internalPointer());
 
+    // we have to add uri role to every valid index, so that we can ensure
+    // that we can open the file/directory correctly.
+    if (role == FileItemModel::UriRole)
+        return QVariant(item->uri());
+
     //qDebug()<<item->m_info->uri();
     switch (index.column()) {
     case FileName:{
@@ -186,9 +191,6 @@ QVariant FileItemModel::data(const QModelIndex &index, int role) const
         }
         case Qt::ToolTipRole: {
             return QVariant(item->m_info->displayName());
-        }
-        case UriRole: {
-            return QVariant(item->uri());
         }
         default:
             return QVariant();
