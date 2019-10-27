@@ -389,8 +389,9 @@ const QList<QAction *> DirectoryViewMenu::constructTrashActions()
                 auto result = QMessageBox::question(nullptr, tr("Delete Permanently"), tr("Are you sure that you want to delete these files? "
                                                                                           "Once you start a deletion, the files deleting will never be "
                                                                                           "restored again."));
-                if (result == QMessageBox::Ok) {
+                if (result == QMessageBox::Yes) {
                     auto uris = m_top_window->getCurrentAllFileUris();
+                    FileOperationUtils::remove(uris);
                 }
             });
         } else {
@@ -407,7 +408,7 @@ const QList<QAction *> DirectoryViewMenu::constructTrashActions()
                 auto result = QMessageBox::question(nullptr, tr("Delete Permanently"), tr("Are you sure that you want to delete these files? "
                                                                                           "Once you start a deletion, the files deleting will never be "
                                                                                           "restored again."));
-                if (result == QMessageBox::Ok) {
+                if (result == QMessageBox::Yes) {
                     FileOperationUtils::remove(m_selections);
                 }
             });
@@ -427,13 +428,25 @@ const QList<QAction *> DirectoryViewMenu::constructSearchActions()
         l<<addAction(QIcon::fromTheme("new-window-symbolc"), tr("Open Parent Folder in New Window"));
         connect(l.last(), &QAction::triggered, [=](){
             for (auto uri : m_selections) {
-                FMWindow *newWindow = new FMWindow(uri);
-                newWindow->show();
+                auto parentUri = FileUtils::getParentUri(uri);
+                if (!parentUri.isNull()) {
+                    FMWindow *newWindow = new FMWindow(uri);
+                    newWindow->show();
+                }
             }
         });
         l<<addAction(QIcon::fromTheme("new-tab-symbolic"), tr("Open Parent Folder in New Tab"));
         connect(l.last(), &QAction::triggered, [=](){
-            m_top_window->addNewTabs(m_selections);
+            QStringList parentUris;
+            for (auto uri : m_selections) {
+                auto parentUri = FileUtils::getParentUri(uri);
+                if (!uri.isNull()) {
+                    parentUris<<parentUri;
+                }
+            }
+            if (!parentUris.isEmpty()) {
+                m_top_window->addNewTabs(parentUris);
+            }
         });
     }
     return l;
