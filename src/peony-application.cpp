@@ -4,6 +4,10 @@
 
 #include "file-info-manager.h"
 
+#include <QCommandLineParser>
+#include <QCommandLineOption>
+#include <QUrl>
+
 #include <QDebug>
 #include <QDir>
 #include <QPluginLoader>
@@ -58,9 +62,21 @@
 #include "file-count-operation.h"
 #include <QThreadPool>
 
-PeonyApplication::PeonyApplication(int &argc, char *argv[], const char *applicationName) : SingleApplication (argc, argv, applicationName)
+PeonyApplication::PeonyApplication(int &argc, char *argv[], const char *applicationName) : SingleApplication (argc, argv, applicationName, true)
 {
-    Peony::PluginManager::init();
+    if (this->isSecondary()) {
+        auto message = this->arguments().join(' ').toUtf8();
+        sendMessage(message);
+        return;
+    }
+
+    if (this->isPrimary()) {
+        connect(this, &SingleApplication::receivedMessage, this, &PeonyApplication::parseCmd);
+    }
+
+    //parse cmd
+    auto message = this->arguments().join(' ').toUtf8();
+    parseCmd(this->instanceId(), message);
 
     auto testIcon = QIcon::fromTheme("folder");
     if (testIcon.isNull()) {
@@ -90,7 +106,6 @@ PeonyApplication::PeonyApplication(int &argc, char *argv[], const char *applicat
     setStyleSheet(QString::fromLatin1(file.readAll()));
     qDebug()<<file.readAll();
     file.close();
-
 
     //setStyle(QStyleFactory::create("windows"));
 
@@ -357,10 +372,83 @@ PeonyApplication::PeonyApplication(int &argc, char *argv[], const char *applicat
     });
 #endif
 
-#define FM_WINDOW
+//#define FM_WINDOW
 #ifdef FM_WINDOW
     auto window = new Peony::FMWindow("file:///");
     window->setAttribute(Qt::WA_DeleteOnClose);
     window->show();
 #endif
+}
+
+void PeonyApplication::parseCmd(quint32 id, QByteArray msg)
+{
+    qDebug()<<"parse cmd:"<<"id:"<<id<<"msg:"<<msg;
+    const QStringList args = QString(msg).split(' ');
+    qDebug()<<args;
+
+    QCommandLineParser parser;
+    auto helpOption = parser.addHelpOption();
+    auto versionOption = parser.addVersionOption();
+
+    QCommandLineOption quitOption(QStringList()<<"q"<<"quit", tr("Close all peony-qt windows and quit"));
+    parser.addOption(quitOption);
+
+    parser.addPositionalArgument("files", tr("Files or directories to open"), tr("[FILE1, FILE2,...]"));
+
+    parser.process(args);
+    if (parser.isSet(quitOption)) {
+        QTimer::singleShot(1, [=](){
+            qApp->quit();
+        });
+        return;
+    }
+
+    if (parser.isSet(helpOption)) {
+        parser.showHelp();
+    }
+
+    if (parser.isSet(versionOption)) {
+        parser.showVersion();
+    }
+
+    Peony::PluginManager::init();
+
+    if (!parser.positionalArguments().isEmpty()) {
+        qDebug()<<parser.positionalArguments();
+        for (QString path : parser.positionalArguments()) {
+            QUrl url = path;
+            if (path.contains(QRegExp("*://"))) {
+                auto window = new Peony::FMWindow(path);
+                window->setAttribute(Qt::WA_DeleteOnClose);
+                window->show();
+                return;
+            }
+            if (path.startsWith("/")) {
+                url = QUrl::fromLocalFile(path);
+            }
+            if (path.startsWith("~/")) {
+                path.remove(0, 1);
+                url = QUrl::fromLocalFile(QStandardPaths::writableLocation(QStandardPaths::HomeLocation) + path);
+            }
+            if (path == ".") {
+                auto current_dir = g_get_current_dir();
+                url = QUrl::fromLocalFile(QString(current_dir));
+                g_free(current_dir);
+            }
+            if (path.startsWith("./")) {
+                path.remove(0, 1);
+                auto current_dir = g_get_current_dir();
+                url = QUrl::fromLocalFile(QString(current_dir) + path);
+                g_free(current_dir);
+            }
+
+            auto window = new Peony::FMWindow(url.toString());
+            window->setAttribute(Qt::WA_DeleteOnClose);
+            window->show();
+        }
+    } else {
+        auto window = new Peony::FMWindow;
+        window->setAttribute(Qt::WA_DeleteOnClose);
+        window->show();
+    }
 }

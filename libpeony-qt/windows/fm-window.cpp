@@ -43,7 +43,7 @@ FMWindow::FMWindow(const QString &uri, QWidget *parent) : QMainWindow (parent)
     setAnimated(false);
 
     auto location = uri;
-    if (uri.isEmpty()) {
+    if (uri.isNull()) {
         location = "file://" + QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
     }
 
@@ -61,7 +61,7 @@ FMWindow::FMWindow(const QString &uri, QWidget *parent) : QMainWindow (parent)
     setCentralWidget(m_splitter);
 
     m_tab = new TabPage(this);
-    m_tab->addPage(uri);
+    m_tab->addPage(location);
 
     m_side_bar = new SideBar(this);
 
@@ -101,7 +101,6 @@ FMWindow::FMWindow(const QString &uri, QWidget *parent) : QMainWindow (parent)
     m_navigation_bar = new NavigationBar(this);
     m_navigation_bar->setMovable(false);
     m_navigation_bar->bindContainer(m_tab->getActivePage());
-    m_navigation_bar->updateLocation(uri);
 
     QToolBar *t = new QToolBar(this);
     t->setMovable(false);

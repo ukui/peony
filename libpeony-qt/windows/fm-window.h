@@ -50,7 +50,7 @@ class PEONYCORESHARED_EXPORT FMWindow : public QMainWindow
 {
     Q_OBJECT
 public:
-    explicit FMWindow(const QString &uri, QWidget *parent = nullptr);
+    explicit FMWindow(const QString &uri = nullptr, QWidget *parent = nullptr);
 
     const QString getCurrentUri();
     const QStringList getCurrentSelections();
