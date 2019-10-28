@@ -13,6 +13,8 @@ TARGET = peony-qt
 TEMPLATE = app
 
 include(../libpeony-qt/libpeony-qt.pri)
+include(../3rd-parties/SingleApplication/singleapplication.pri)
+DEFINES += QAPPLICATION_CLASS=QApplication
 
 PKGCONFIG +=gio-2.0 glib-2.0 gio-unix-2.0
 LIBS +=-lgio-2.0 -lglib-2.0 -lX11

@@ -83,10 +83,10 @@ SingleApplicationPrivate::~SingleApplicationPrivate()
     delete memory;
 }
 
-void SingleApplicationPrivate::genBlockServerName()
+void SingleApplicationPrivate::genBlockServerName(const char* appName)
 {
     QCryptographicHash appData( QCryptographicHash::Sha256 );
-    appData.addData( "SingleApplication", 17 );
+    appData.addData( appName, 17 );
     appData.addData( SingleApplication::app_t::applicationName().toUtf8() );
     appData.addData( SingleApplication::app_t::organizationName().toUtf8() );
     appData.addData( SingleApplication::app_t::organizationDomain().toUtf8() );

@@ -13,13 +13,13 @@
  *
  */
 
-#include <QApplication>
+#include "singleapplication.h"
 
-class PeonyApplication : public QApplication
+class PeonyApplication : public SingleApplication
 {
     Q_OBJECT
 public:
-    PeonyApplication(int &argc, char *argv[]);
+    PeonyApplication(int &argc, char *argv[], const char *applicationName = "peony-qt");
 };
 
 #endif // PEONYAPPLICATION_H

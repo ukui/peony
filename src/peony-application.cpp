@@ -58,7 +58,7 @@
 #include "file-count-operation.h"
 #include <QThreadPool>
 
-PeonyApplication::PeonyApplication(int &argc, char *argv[]) : QApplication (argc, argv)
+PeonyApplication::PeonyApplication(int &argc, char *argv[], const char *applicationName) : SingleApplication (argc, argv, applicationName)
 {
     Peony::PluginManager::init();
 
