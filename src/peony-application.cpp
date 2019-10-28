@@ -415,14 +415,9 @@ void PeonyApplication::parseCmd(quint32 id, QByteArray msg)
 
     if (!parser.positionalArguments().isEmpty()) {
         qDebug()<<parser.positionalArguments();
+        QStringList uris;
         for (QString path : parser.positionalArguments()) {
             QUrl url = path;
-            if (path.contains(QRegExp("*://"))) {
-                auto window = new Peony::FMWindow(path);
-                window->setAttribute(Qt::WA_DeleteOnClose);
-                window->show();
-                return;
-            }
             if (path.startsWith("/")) {
                 url = QUrl::fromLocalFile(path);
             }
@@ -441,11 +436,23 @@ void PeonyApplication::parseCmd(quint32 id, QByteArray msg)
                 url = QUrl::fromLocalFile(QString(current_dir) + path);
                 g_free(current_dir);
             }
-
-            auto window = new Peony::FMWindow(url.toString());
-            window->setAttribute(Qt::WA_DeleteOnClose);
-            window->show();
+            if (path.startsWith("../")) {
+                auto current_dir = g_get_current_dir();
+                url = QUrl::fromLocalFile(QString(current_dir));
+                g_free(current_dir);
+                QDir dir(url.toString());
+                dir.relativeFilePath(path);
+                url = "file://" + dir.absolutePath();
+            }
+            uris<<url.toDisplayString();
         }
+        auto window = new Peony::FMWindow(uris.first());
+        uris.removeAt(0);
+        if (!uris.isEmpty()) {
+            window->addNewTabs(uris);
+        }
+        window->setAttribute(Qt::WA_DeleteOnClose);
+        window->show();
     } else {
         auto window = new Peony::FMWindow;
         window->setAttribute(Qt::WA_DeleteOnClose);
