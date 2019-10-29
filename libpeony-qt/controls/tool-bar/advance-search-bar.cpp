@@ -27,13 +27,11 @@ void AdvanceSearchBar::init(bool hasTopWindow)
     //m_filter->setFixedWidth(160);
     m_filter->setContentsMargins(0, 0, 0, 0);
     QLabel *keyLabel = new QLabel(tr("Key Words"), m_filter);
-    //keyLabel->setText("关键词");
     m_advanced_key = new QLineEdit(m_filter);
     m_advanced_key->setFixedWidth(120);
     keyLabel->setBuddy(m_advanced_key);
     m_advanced_key->setPlaceholderText(tr("input key words..."));
     QLabel *searchLocation = new QLabel(tr("Search Location"), m_filter);
-    //searchLocation->setText("搜索位置");
     m_advance_bar = new AdvancedLocationBar(m_filter);
     m_advance_bar->setFixedWidth(120);
     QString uri = m_top_window->getCurrentUri();
@@ -41,11 +39,9 @@ void AdvanceSearchBar::init(bool hasTopWindow)
     m_advance_target_path = uri;
 
     QPushButton *m_browse_button = new QPushButton(tr("browse"), nullptr);
-    //m_browse_button->setText("浏览");
     m_browse_button->setFixedWidth(80);
 
     QLabel *fileType = new QLabel(tr("File Type"), m_filter);
-    //fileType->setText("搜索类型");
     fileType->setFixedWidth(120);
     typeViewCombox = new QComboBox(m_filter);
     typeViewCombox->setToolTip(tr("Choose File Type"));
@@ -55,7 +51,6 @@ void AdvanceSearchBar::init(bool hasTopWindow)
     typeViewCombox->setModel(model);
 
     QLabel *modifyTime = new QLabel(tr("Modify Time"), m_filter);
-    //modifyTime->setText("修改时间");
     modifyTime->setFixedWidth(120);
     timeViewCombox = new QComboBox(m_filter);
     timeViewCombox->setToolTip(tr("Choose Modify Time"));
@@ -65,7 +60,6 @@ void AdvanceSearchBar::init(bool hasTopWindow)
     timeViewCombox->setModel(time_model);
 
     QLabel *fileSize = new QLabel(tr("File Size"), m_filter);
-    //fileSize->setText("文件大小");
     fileSize->setFixedWidth(120);
     sizeViewCombox = new QComboBox(m_filter);
     sizeViewCombox->setToolTip(tr("Choose file size"));
@@ -75,11 +69,9 @@ void AdvanceSearchBar::init(bool hasTopWindow)
     sizeViewCombox->setModel(size_model);
 
     QPushButton *m_show_hidden_button = new QPushButton(tr("show hidden file"), nullptr);
-    //m_show_hidden_button->setText("显示隐藏文件");
     m_show_hidden_button->setFixedWidth(120);
 
     QPushButton *m_filter_button = new QPushButton(tr("search"), nullptr);
-    //m_filter_button->setText("搜索");
     m_filter_button->setFixedWidth(80);
     m_filter_button->setToolTip("start search");
 

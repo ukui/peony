@@ -29,9 +29,9 @@ public Q_SLOTS:
 
 public:
     //advance search filter options
-    QStringList m_file_type_list = {"all", "file folder", "image", "video", "text file", "audio", "others"};
-    QStringList m_file_mtime_list = {"all", "today", "this week", "this month", "this year", "year ago"};
-    QStringList m_file_size_list = {"all", "tiny(0-16K)", "small(16k-1M)", "medium(1M-100M)", "big(100M-1G)","large(>1G)"};
+    QStringList m_file_type_list = {tr("all"), tr("file folder"), tr("image"), tr("video"), tr("text file"), tr("audio"), tr("others")};
+    QStringList m_file_mtime_list = {tr("all"), tr("today"), tr("this week"), tr("this month"), tr("this year"), tr("year ago")};
+    QStringList m_file_size_list = {tr("all"), tr("tiny(0-16K)"), tr("small(16k-1M)"), tr("medium(1M-100M)"), tr("big(100M-1G)"),tr("large(>1G)")};
 
 protected:
     void init(bool hasTopWindow);
