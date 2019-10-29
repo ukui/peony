@@ -1,8 +1,9 @@
 #include "peony-application.h"
 #include "menu-plugin-iface.h"
-#include "file-info.h"
 
-#include "file-info-manager.h"
+#include "file-info.h"
+#include "file-info-job.h"
+#include "file-utils.h"
 
 #include <QCommandLineParser>
 #include <QCommandLineOption>
@@ -61,6 +62,8 @@
 
 #include "file-count-operation.h"
 #include <QThreadPool>
+
+#include "properties-window.h"
 
 PeonyApplication::PeonyApplication(int &argc, char *argv[], const char *applicationName) : SingleApplication (argc, argv, applicationName, true)
 {
@@ -393,6 +396,15 @@ void PeonyApplication::parseCmd(quint32 id, QByteArray msg)
     QCommandLineOption quitOption(QStringList()<<"q"<<"quit", tr("Close all peony-qt windows and quit"));
     parser.addOption(quitOption);
 
+    QCommandLineOption showItemsOption(QStringList()<<"i"<<"show-items", tr("Show items"));
+    parser.addOption(showItemsOption);
+
+    QCommandLineOption showFoldersOption(QStringList()<<"f"<<"show-folders", tr("Show folders"));
+    parser.addOption(showFoldersOption);
+
+    QCommandLineOption showPropertiesOption(QStringList()<<"p"<<"show-properties", tr("Show properties"));
+    parser.addOption(showPropertiesOption);
+
     parser.addPositionalArgument("files", tr("Files or directories to open"), tr("[FILE1, FILE2,...]"));
 
     parser.process(args);
@@ -413,49 +425,95 @@ void PeonyApplication::parseCmd(quint32 id, QByteArray msg)
 
     Peony::PluginManager::init();
 
-    if (!parser.positionalArguments().isEmpty()) {
-        qDebug()<<parser.positionalArguments();
-        QStringList uris;
-        for (QString path : parser.positionalArguments()) {
-            QUrl url = path;
-            if (path.startsWith("/")) {
-                url = QUrl::fromLocalFile(path);
+    if (!parser.optionNames().isEmpty()) {
+        if (parser.isSet(showItemsOption)) {
+            //FIXME: show item parent folder and set selection for item.
+            QHash<QString, QStringList> itemHash;
+            for (auto uri : parser.positionalArguments()) {
+                auto parentUri = Peony::FileUtils::getParentUri(uri);
+                if (itemHash.value(parentUri).isEmpty()) {
+                    QStringList l;
+                    l<<uri;
+                    itemHash.insert(parentUri, l);
+                } else {
+                    auto l = itemHash.value(parentUri);
+                    l<<uri;
+                    itemHash.remove(parentUri);
+                    itemHash.insert(parentUri, l);
+                }
             }
-            if (path.startsWith("~/")) {
-                path.remove(0, 1);
-                url = QUrl::fromLocalFile(QStandardPaths::writableLocation(QStandardPaths::HomeLocation) + path);
+            auto parentUris = itemHash.keys();
+
+            for (auto parentUri : parentUris) {
+                Peony::FMWindow *window = new Peony::FMWindow(parentUri);
+                connect(window, &Peony::FMWindow::locationChangeEnd, [=](){
+                    QTimer::singleShot(500, [=]{
+                        window->getCurrentPage()->getProxy()->getView()->setSelections(itemHash.value(parentUri));
+                        window->getCurrentPage()->getProxy()->getView()->scrollToSelection(itemHash.value(parentUri).first());
+                    });
+                });
+                window->show();
             }
-            if (path == ".") {
-                auto current_dir = g_get_current_dir();
-                url = QUrl::fromLocalFile(QString(current_dir));
-                g_free(current_dir);
-            }
-            if (path.startsWith("./")) {
-                path.remove(0, 1);
-                auto current_dir = g_get_current_dir();
-                url = QUrl::fromLocalFile(QString(current_dir) + path);
-                g_free(current_dir);
-            }
-            if (path.startsWith("../")) {
-                auto current_dir = g_get_current_dir();
-                url = QUrl::fromLocalFile(QString(current_dir));
-                g_free(current_dir);
-                QDir dir(url.toString());
-                dir.relativeFilePath(path);
-                url = "file://" + dir.absolutePath();
-            }
-            uris<<url.toDisplayString();
         }
-        auto window = new Peony::FMWindow(uris.first());
-        uris.removeAt(0);
-        if (!uris.isEmpty()) {
-            window->addNewTabs(uris);
+
+        if (parser.isSet(showFoldersOption)) {
+            QStringList uris = parser.positionalArguments();
+            Peony::FMWindow *window = new Peony::FMWindow(uris.first());
+            uris.removeAt(0);
+            if (!uris.isEmpty()) {
+                window->addNewTabs(uris);
+            }
+            window->show();
         }
-        window->setAttribute(Qt::WA_DeleteOnClose);
-        window->show();
+        if (parser.isSet(showPropertiesOption)) {
+            Peony::PropertiesWindow *window = new Peony::PropertiesWindow(parser.positionalArguments());
+            window->show();
+        }
     } else {
-        auto window = new Peony::FMWindow;
-        window->setAttribute(Qt::WA_DeleteOnClose);
-        window->show();
+        if (!parser.positionalArguments().isEmpty()) {
+            qDebug()<<parser.positionalArguments();
+            QStringList uris;
+            for (QString path : parser.positionalArguments()) {
+                QUrl url = path;
+                if (path.startsWith("/")) {
+                    url = QUrl::fromLocalFile(path);
+                }
+                if (path.startsWith("~/")) {
+                    path.remove(0, 1);
+                    url = QUrl::fromLocalFile(QStandardPaths::writableLocation(QStandardPaths::HomeLocation) + path);
+                }
+                if (path == ".") {
+                    auto current_dir = g_get_current_dir();
+                    url = QUrl::fromLocalFile(QString(current_dir));
+                    g_free(current_dir);
+                }
+                if (path.startsWith("./")) {
+                    path.remove(0, 1);
+                    auto current_dir = g_get_current_dir();
+                    url = QUrl::fromLocalFile(QString(current_dir) + path);
+                    g_free(current_dir);
+                }
+                if (path.startsWith("../")) {
+                    auto current_dir = g_get_current_dir();
+                    url = QUrl::fromLocalFile(QString(current_dir));
+                    g_free(current_dir);
+                    QDir dir(url.toString());
+                    dir.relativeFilePath(path);
+                    url = "file://" + dir.absolutePath();
+                }
+                uris<<url.toDisplayString();
+            }
+            auto window = new Peony::FMWindow(uris.first());
+            uris.removeAt(0);
+            if (!uris.isEmpty()) {
+                window->addNewTabs(uris);
+            }
+            window->setAttribute(Qt::WA_DeleteOnClose);
+            window->show();
+        } else {
+            auto window = new Peony::FMWindow;
+            window->setAttribute(Qt::WA_DeleteOnClose);
+            window->show();
+        }
     }
 }
