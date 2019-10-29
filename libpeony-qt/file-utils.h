@@ -37,6 +37,8 @@ public:
 
     static bool isFileExsit(const QString &uri);
 
+    static const QStringList toDisplayUris(const QStringList &args);
+
 private:
     FileUtils();
 };

@@ -22,25 +22,27 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
-include(../libpeony-qt/libpeony-qt.pri)
+include(../libpeony-qt/libpeony-qt-header.pri)
 include(../3rd-parties/SingleApplication/singleapplication.pri)
 DEFINES += QAPPLICATION_CLASS=QApplication
 
 PKGCONFIG +=gio-2.0 glib-2.0 gio-unix-2.0
 CONFIG += c++11 link_pkgconfig no_keywords
 
+LIBS += -L$$PWD/../libpeony-qt/ -lpeony-qt
+
 SOURCES += \
         main.cpp \
         desktop-window.cpp \
     peony-desktop-application.cpp \
-    fm-dbus-service.cpp
+    fm-dbus-service.cpp \
+    desktop-item-model.cpp
 
 HEADERS += \
         desktop-window.h \
     peony-desktop-application.h \
-    fm-dbus-service.h
+    fm-dbus-service.h \
+    desktop-item-model.h
 
-# Default rules for deployment.
-qnx: target.path = /tmp/$${TARGET}/bin
-else: unix:!android: target.path = /opt/$${TARGET}/bin
+target.path = /usr/bin
 !isEmpty(target.path): INSTALLS += target

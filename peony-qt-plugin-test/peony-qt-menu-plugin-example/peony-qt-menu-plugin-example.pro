@@ -1,20 +1,15 @@
 #-------------------------------------------------
 #
-# Project created by QtCreator 2019-07-20T10:23:11
+# Project created by QtCreator 2019-10-29T09:29:17
 #
 #-------------------------------------------------
 
-QT       += core widgets gui
+QT       += widgets
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += printsupport
-
-TARGET = peony-qt
+TARGET = peony-qt-menu-plugin-example
 TEMPLATE = lib
 
-CONFIG += link_pkgconfig no_keywords c++11
-PKGCONFIG += glib-2.0 gio-2.0 gio-unix-2.0
-
-DEFINES += PEONYCORE_LIBRARY
+DEFINES += PEONYQTMENUPLUGINEXAMPLE_LIBRARY
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which has been marked as deprecated (the exact warnings
@@ -27,20 +22,18 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
-include(libpeony-qt.pri)
+include(../../plugin-iface/plugin-iface.pri)
 
-DESTDIR += $$PWD
+SOURCES += \
+        menu-plugin-example.cpp
+
+HEADERS += \
+        menu-plugin-example.h \
+        peony-qt-menu-plugin-example_global.h 
+
+DESTDIR += ../../testdir
 
 unix {
-    target.path = $$[QT_INSTALL_LIBS]
+    target.path = /usr/lib/peony-qt-extensions
     INSTALLS += target
-
-    header.path = /usr/include/peony-qt
-    header.files += *.h model/*.h file-operation/*.h vfs/*.h controls/ ../plugin-iface/*.h
-    header.files += development-files/header-files/*
-    INSTALLS += header
-
-    pcfile.path = $$[QT_INSTALL_LIBS]/pkgconfig
-    pcfile.files = development-files/peony-qt.pc
-    INSTALLS += pcfile
 }

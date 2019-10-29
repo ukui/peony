@@ -12,13 +12,15 @@ TARGET = peony-qt
 
 TEMPLATE = app
 
-include(../libpeony-qt/libpeony-qt.pri)
+include(../libpeony-qt/libpeony-qt-header.pri)
 include(../3rd-parties/SingleApplication/singleapplication.pri)
 DEFINES += QAPPLICATION_CLASS=QApplication
 
 PKGCONFIG +=gio-2.0 glib-2.0 gio-unix-2.0
 LIBS +=-lgio-2.0 -lglib-2.0 -lX11
 CONFIG += c++11 link_pkgconfig no_keywords
+
+LIBS += -L$$PWD/../libpeony-qt/ -lpeony-qt
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which has been marked as deprecated (the exact warnings
@@ -40,7 +42,5 @@ HEADERS += \
 
 INCLUDEPATH    += ../plugin-iface
 
-# Default rules for deployment.
-#qnx: target.path = /tmp/$${TARGET}/bin
-#else: unix:!android: target.path = /opt/$${TARGET}/bin
-#!isEmpty(target.path): INSTALLS += target
+target.path = /usr/bin
+INSTALLS += target

@@ -17,8 +17,6 @@ include(controls/controls.pri)
 #windows
 include(windows/windows.pri)
 
-DISTFILES +=
-
 HEADERS += \
     $$PWD/plugin-manager.h
 

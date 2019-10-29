@@ -7,6 +7,8 @@
 
 #include "directory-view-menu.h"
 
+#include "desktop-item-model.h"
+
 #include <QStandardPaths>
 #include <QLabel>
 #include <QListView>
@@ -62,11 +64,8 @@ DesktopWindow::DesktopWindow(QWidget *parent)
     layout->addWidget(m_bg_font);
     layout->addWidget(m_bg_back);
 
-    auto model = new FileItemModel(this);
-    auto proxy_model = new FileItemProxyFilterSortModel(this);
-    proxy_model->setSourceModel(model);
+    auto model = new DesktopItemModel(this);
 
-    model->setRootUri("file://" + QStandardPaths::writableLocation(QStandardPaths::DesktopLocation));
     m_view = new QListView(this);
     m_view->setContentsMargins(0, 0, 0, 0);
     m_view->setAttribute(Qt::WA_TranslucentBackground);
@@ -84,7 +83,7 @@ DesktopWindow::DesktopWindow(QWidget *parent)
     m_view->setContextMenuPolicy(Qt::CustomContextMenu);
     m_view->setSelectionMode(QListView::ExtendedSelection);
 
-    m_view->setModel(proxy_model);
+    m_view->setModel(model);
     layout->addWidget(m_view);
     setCurrentWidget(m_view);
 
