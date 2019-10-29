@@ -22,6 +22,9 @@ protected:
     void focusInEvent(QFocusEvent *e) override;
     void focusOutEvent(QFocusEvent *e) override;
 
+public Q_SLOTS:
+    void clear_search_record();
+
 private:
     QStringListModel *m_model = nullptr;
 };

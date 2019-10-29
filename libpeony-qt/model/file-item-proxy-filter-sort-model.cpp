@@ -109,7 +109,7 @@ bool FileItemProxyFilterSortModel::filterAcceptsRow(int sourceRow, const QModelI
         if (!m_show_hidden) {
             //qDebug()<<sourceRow<<item->m_info->displayName()<<model->rowCount(sourceParent);
             //QMessageBox::warning(nullptr, "filter", item->m_info->displayName());
-             qDebug()<<item->m_info->fileType()<<item->m_info->fileSize()<<item->m_info->modifiedDate()<<item->m_info->size()<<item->m_info->type();
+             //qDebug()<<item->m_info->fileType()<<item->m_info->fileSize()<<item->m_info->modifiedDate()<<item->m_info->size()<<item->m_info->type();
             if (item->m_info->displayName() != nullptr) {
                 if (item->m_info->displayName().at(0) == '.')
                     //qDebug()<<sourceRow<<item->m_info->displayName()<<model->rowCount(sourceParent);
@@ -119,7 +119,7 @@ bool FileItemProxyFilterSortModel::filterAcceptsRow(int sourceRow, const QModelI
         //regExp
 
         //check the filter conditions
-        qDebug()<<"start filter conditions check";
+        //qDebug()<<"start filter conditions check";
         if (m_show_file_type != ALL_FILE && ! checkFileTypeFilter(item->m_info->type()))
             return false;
         if (m_show_modify_time != ALL_FILE && ! checkFileModifyTimeFilter(item->m_info->modifiedDate()))

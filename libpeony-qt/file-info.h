@@ -63,6 +63,7 @@ public:
     QString fileSize() {return m_file_size;}
     QString modifiedDate() {return m_modified_date;}
 
+    QString type() {return m_content_type;}
     quint64 size() {return m_size;}
     quint64 modifiedTime() {return m_modified_time;}
 

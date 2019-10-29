@@ -61,3 +61,11 @@ void SearchBar::focusOutEvent(QFocusEvent *e)
     QLineEdit::focusOutEvent(e);
     //this->clear();
 }
+
+void SearchBar::clear_search_record()
+{
+    auto l = m_model->stringList();
+    l.clear();
+    m_model->setStringList(l);
+    //qDebug()<<"clear_search_record";
+}

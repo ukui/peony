@@ -79,6 +79,9 @@ public Q_SLOTS:
     void setSortType(FileItemModel::ColumnType type);
     void setSortOrder(Qt::SortOrder order);
 
+    void setSortFilter(int FileTypeIndex, int FileMTimeIndex, int FileSizeIndex);
+    void setShowHidden(bool showHidden = false);
+
 protected:
     /*!
      * \brief bindNewProxy

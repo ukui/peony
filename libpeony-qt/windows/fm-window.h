@@ -3,9 +3,14 @@
 
 #include <QMainWindow>
 #include "peony-core_global.h"
+#include "advanced-location-bar.h"
+#include "advance-search-bar.h"
 #include <memory>
 
 #include <QTimer>
+#include <QLineEdit>
+#include <QComboBox>
+#include <QPushButton>
 
 #include <QStackedWidget>
 
@@ -90,11 +95,24 @@ public Q_SLOTS:
 
     void refresh();
     void forceStopLoading();
+    void advanceSearch();
+    void clearRecord();
+    void searchFilter(QString target_path, QString keyWord);
+    void filterUpdate(int type_index=0, int time_index=0, int size_index=0);
+    void setShowHidden();
 
     void onPreviewPageSwitch(const QString &uri);
 
 protected:
     void resizeEvent(QResizeEvent *e) override;
+
+public:
+    //advance search filter options
+    bool m_update_condition = false;
+
+    QStringList m_file_type_list = {"all", "file folder", "image", "video", "text file", "audio", "others"};
+    QStringList m_file_mtime_list = {"all", "today", "this week", "this month", "this year", "year ago"};
+    QStringList m_file_size_list = {"all", "tiny(0-16K)", "small(16k-1M)", "medium(1M-100M)", "big(100M-1G)","large(>1G)"};
 
 private:
     QSplitter *m_splitter;
@@ -106,11 +124,21 @@ private:
     SearchBar *m_search_bar;
     StatusBar *m_status_bar;
 
+    QWidget *m_filter;
+    AdvanceSearchBar *m_filter_bar;
+
+    QPushButton *m_advanced_button;
+    QPushButton *m_clear_record;
+
     QTimer m_operation_minimum_interval;
     bool m_is_loading = false;
+    bool m_filter_visible = false;
+    bool m_show_hidden_file = false;
 
     QString m_last_non_search_location;
+    QString m_advance_target_path;
 
+    QStackedWidget *m_side_bar_container = nullptr;
     PreviewPageContainer *m_preview_page_container = nullptr;
 };
 

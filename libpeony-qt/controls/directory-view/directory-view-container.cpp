@@ -113,6 +113,17 @@ void DirectoryViewContainer::cdUp()
     Q_EMIT updateWindowLocationRequest(uri, true);
 }
 
+void DirectoryViewContainer::setSortFilter(int FileTypeIndex, int FileMTimeIndex, int FileSizeIndex)
+{
+    qDebug()<<"setSortFilter:"<<FileTypeIndex<<"MTime:"<<FileMTimeIndex<<"size:"<<FileSizeIndex;
+    m_proxy_model->setFilterConditions(FileTypeIndex, FileMTimeIndex, FileSizeIndex);
+}
+
+void DirectoryViewContainer::setShowHidden(bool showHidden)
+{
+    m_proxy_model->setShowHidden(showHidden);
+}
+
 void DirectoryViewContainer::goToUri(const QString &uri, bool addHistory, bool forceUpdate)
 {
     if (forceUpdate)
