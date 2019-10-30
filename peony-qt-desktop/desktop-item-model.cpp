@@ -3,6 +3,7 @@
 #include "file-enumerator.h"
 #include "file-info.h"
 #include "file-info-job.h"
+#include "file-info-manager.h"
 #include "file-watcher.h"
 
 #include <QStandardPaths>
@@ -15,9 +16,9 @@ using namespace Peony;
 DesktopItemModel::DesktopItemModel(QObject *parent)
     : QAbstractListModel(parent)
 {
-    auto computer = FileInfo::fromUri("computer:///", false);
+    auto computer = FileInfo::fromUri("computer:///", true);
     auto personal = FileInfo::fromPath(QStandardPaths::writableLocation(QStandardPaths::HomeLocation), false);
-    auto trash = FileInfo::fromUri("trash:///", false);
+    auto trash = FileInfo::fromUri("trash:///", true);
     m_files<<computer;
     m_files<<personal;
     m_files<<trash;
@@ -44,7 +45,7 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
     //m_desktop_watcher->setMonitorChildrenChange(true);
     this->connect(m_desktop_watcher, &FileWatcher::fileCreated, [=](const QString &uri){
         qDebug()<<"created"<<uri;
-        auto info = FileInfo::fromUri(uri, false);
+        auto info = FileInfo::fromUri(uri, true);
         m_files<<info;
         this->insertRows(m_files.count() - 1, 1);
         auto job = new FileInfoJob(info);
@@ -61,6 +62,7 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
             if (info->uri() == uri) {
                 this->removeRows(m_files.indexOf(info), 1);
                 m_files.removeOne(info);
+                FileInfoManager::getInstance()->remove(info);
                 return;
             }
         }
@@ -80,15 +82,20 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
     });
 }
 
+DesktopItemModel::~DesktopItemModel()
+{
+    FileInfoManager::getInstance()->clear();
+}
+
 void DesktopItemModel::refresh()
 {
     beginResetModel();
     //m_trash_watcher->stopMonitor();
     //m_desktop_watcher->stopMonitor();
     m_files.clear();
-    auto computer = FileInfo::fromUri("computer:///", false);
+    auto computer = FileInfo::fromUri("computer:///", true);
     auto personal = FileInfo::fromPath(QStandardPaths::writableLocation(QStandardPaths::HomeLocation), false);
-    auto trash = FileInfo::fromUri("trash:///", false);
+    auto trash = FileInfo::fromUri("trash:///", true);
     m_files<<computer;
     m_files<<personal;
     m_files<<trash;
@@ -197,4 +204,21 @@ bool DesktopItemModel::removeRow(int row, const QModelIndex &parent)
     beginRemoveRows(parent, row, row);
     endRemoveRows();
     return true;
+}
+
+Qt::ItemFlags DesktopItemModel::flags(const QModelIndex &index) const
+{
+    auto uri = index.data(UriRole).toString();
+    auto info = FileInfo::fromUri(uri, false);
+    if (index.isValid()) {
+        Qt::ItemFlags flags = QAbstractItemModel::flags(index);
+        flags |= Qt::ItemIsDragEnabled;
+        flags |= Qt::ItemIsEditable;
+        if (info->isDir()) {
+            flags |= Qt::ItemIsDropEnabled;
+        }
+        return flags;
+    } else {
+        return Qt::ItemIsDropEnabled;
+    }
 }

@@ -8,10 +8,10 @@
 #include "directory-view-menu.h"
 
 #include "desktop-item-model.h"
+#include "desktop-icon-view.h"
 
 #include <QStandardPaths>
 #include <QLabel>
-#include <QListView>
 
 #include <QApplication>
 #include <QScreen>
@@ -29,7 +29,6 @@
 #include <QDebug>
 
 using namespace Peony;
-using namespace Peony::DirectoryView;
 
 static QModelIndex m_last_index = QModelIndex();
 
@@ -66,22 +65,7 @@ DesktopWindow::DesktopWindow(QWidget *parent)
 
     auto model = new DesktopItemModel(this);
 
-    m_view = new QListView(this);
-    m_view->setContentsMargins(0, 0, 0, 0);
-    m_view->setAttribute(Qt::WA_TranslucentBackground);
-    m_view->setStyleSheet("background-color:transparent;"
-                          "border: 0px;"
-                          "padding: 0px");
-
-    m_view->setViewMode(QListView::IconMode);
-    m_view->setFlow(QListView::TopToBottom);
-    m_view->setGridSize(QSize(80, 120));
-    m_view->setIconSize(QSize(48, 48));
-    m_view->setResizeMode(QListView::Adjust);
-    m_view->setMovement(QListView::Snap);
-
-    m_view->setContextMenuPolicy(Qt::CustomContextMenu);
-    m_view->setSelectionMode(QListView::ExtendedSelection);
+    m_view = new DesktopIconView(this);
 
     m_view->setModel(model);
     layout->addWidget(m_view);
@@ -137,6 +121,14 @@ DesktopWindow::DesktopWindow(QWidget *parent)
             auto url = dlg.selectedUrls().first();
             this->setBg(url.path());
             qDebug()<<url;
+        });
+        menu.addAction(tr("zoom in"), [=](){
+            m_view->zoomIn();
+            m_view->update();
+        });
+        menu.addAction(tr("zoom out"), [=](){
+            m_view->zoomOut();
+            m_view->update();
         });
         menu.exec(QCursor::pos());
         qDebug()<<"menu request";

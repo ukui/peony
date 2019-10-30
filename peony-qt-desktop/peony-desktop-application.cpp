@@ -8,6 +8,7 @@
 #include <QTimer>
 
 #include <QProcess>
+#include <QFile>
 
 static bool has_desktop = false;
 static bool has_daemon = false;
@@ -23,6 +24,10 @@ PeonyDesktopApplication::PeonyDesktopApplication(int &argc, char *argv[], const 
     if (this->isPrimary()) {
         connect(this, &SingleApplication::receivedMessage, this, &PeonyDesktopApplication::parseCmd);
     }
+    QFile file(":/desktop-icon-view.qss");
+    file.open(QFile::ReadOnly);
+    setStyleSheet(QString::fromLatin1(file.readAll()));
+    file.close();
 
     //parse cmd
     auto message = this->arguments().join(' ').toUtf8();

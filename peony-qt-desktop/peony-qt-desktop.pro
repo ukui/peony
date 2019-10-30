@@ -37,14 +37,21 @@ SOURCES += \
     peony-desktop-application.cpp \
     fm-dbus-service.cpp \
     desktop-item-model.cpp \
-    desktop-icon-view.cpp
+    desktop-icon-view.cpp \
+    desktop-icon-view-delegate.cpp
 
 HEADERS += \
         desktop-window.h \
     peony-desktop-application.h \
     fm-dbus-service.h \
     desktop-item-model.h \
-    desktop-icon-view.h
+    desktop-icon-view.h \
+    desktop-icon-view-delegate.h
 
 target.path = /usr/bin
 !isEmpty(target.path): INSTALLS += target
+
+DISTFILES +=
+
+RESOURCES += \
+    peony-qt-desktop-style.qrc

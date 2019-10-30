@@ -20,6 +20,8 @@ public:
     Q_ENUM(Role)
 
     explicit DesktopItemModel(QObject *parent = nullptr);
+    ~DesktopItemModel() override;
+
     const QModelIndex indexFromUri(const QString &uri);
     const QString indexUri(const QModelIndex &index);
 
@@ -35,6 +37,8 @@ public:
     // Remove data:
     bool removeRows(int row, int count, const QModelIndex &parent = QModelIndex()) override;
     bool removeRow(int row, const QModelIndex &parent = QModelIndex());
+
+    Qt::ItemFlags flags(const QModelIndex &index) const override;
 
 public Q_SLOTS:
     void refresh();

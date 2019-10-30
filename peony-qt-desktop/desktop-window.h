@@ -10,9 +10,7 @@ class QGraphicsOpacityEffect;
 
 namespace Peony {
 
-namespace DirectoryView {
-class IconView;
-}
+class DesktopIconView;
 
 class DesktopWindow : public QStackedWidget
 {
@@ -33,7 +31,7 @@ private:
 
     QLabel *m_bg_font;
     QLabel *m_bg_back;
-    QListView *m_view;
+    DesktopIconView *m_view;
 
     QPixmap m_bg_font_pixmap;
     QPixmap m_bg_back_pixmap;
