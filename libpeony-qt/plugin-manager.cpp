@@ -21,10 +21,7 @@ static PluginManager *global_instance = nullptr;
 
 PluginManager::PluginManager(QObject *parent) : QObject(parent)
 {
-    QDir pluginsDir(qApp->applicationDirPath());
-    qDebug()<<pluginsDir;
-    pluginsDir.cdUp();
-    pluginsDir.cd("testdir");
+    QDir pluginsDir("/usr/lib/peony-qt-extensions");
     pluginsDir.setFilter(QDir::Files);
 
     qDebug()<<pluginsDir.entryList().count();
