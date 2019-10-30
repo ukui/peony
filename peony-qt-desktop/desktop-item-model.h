@@ -13,8 +13,12 @@ class FileWatcher;
 class DesktopItemModel : public QAbstractListModel
 {
     Q_OBJECT
-
 public:
+    enum Role {
+        UriRole = Qt::UserRole
+    };
+    Q_ENUM(Role)
+
     explicit DesktopItemModel(QObject *parent = nullptr);
     const QModelIndex indexFromUri(const QString &uri);
     const QString indexUri(const QModelIndex &index);

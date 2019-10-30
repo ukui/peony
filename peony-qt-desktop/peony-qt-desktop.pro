@@ -36,13 +36,15 @@ SOURCES += \
         desktop-window.cpp \
     peony-desktop-application.cpp \
     fm-dbus-service.cpp \
-    desktop-item-model.cpp
+    desktop-item-model.cpp \
+    desktop-icon-view.cpp
 
 HEADERS += \
         desktop-window.h \
     peony-desktop-application.h \
     fm-dbus-service.h \
-    desktop-item-model.h
+    desktop-item-model.h \
+    desktop-icon-view.h
 
 target.path = /usr/bin
 !isEmpty(target.path): INSTALLS += target

@@ -40,7 +40,7 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
         job->queryAsync();
     });
 
-    m_desktop_watcher = new FileWatcher("file://" + QStandardPaths::writableLocation(QStandardPaths::HomeLocation));
+    m_desktop_watcher = new FileWatcher("file://" + QStandardPaths::writableLocation(QStandardPaths::DesktopLocation), this);
     //m_desktop_watcher->setMonitorChildrenChange(true);
     this->connect(m_desktop_watcher, &FileWatcher::fileCreated, [=](const QString &uri){
         qDebug()<<"created"<<uri;
@@ -122,6 +122,8 @@ QVariant DesktopItemModel::data(const QModelIndex &index, int role) const
         return info->displayName();
     case Qt::DecorationRole:
         return QIcon::fromTheme(info->iconName(), QIcon::fromTheme("text-x-generic"));
+    case UriRole:
+        return info->uri();
     }
     return QVariant();
 }
@@ -146,6 +148,7 @@ void DesktopItemModel::onEnumerateFinished()
         job->queryAsync();
     }
 
+    qDebug()<<"startMornitor";
     m_trash_watcher->startMonitor();
     m_desktop_watcher->startMonitor();
 }
