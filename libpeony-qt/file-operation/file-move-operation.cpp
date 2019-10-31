@@ -8,6 +8,44 @@
 
 using namespace Peony;
 
+static void handleDuplicate(FileNode *node) {
+    QString name = node->destBaseName();
+    QRegExp regExp("\\(\\d+\\)");
+    if (name.contains(regExp)) {
+        int pos = 0;
+        int num = 0;
+        QString tmp;
+        while ((pos = regExp.indexIn(name, pos)) != -1) {
+            tmp = regExp.cap(0).toUtf8();
+            pos += regExp.matchedLength();
+            qDebug()<<"pos"<<pos;
+        }
+        tmp.remove(0,1);
+        tmp.chop(1);
+        num = tmp.toInt();
+
+        num++;
+        name = name.replace(regExp, QString("(%1)").arg(num));
+        node->setDestFileName(name);
+    } else {
+        if (name.contains(".")) {
+            auto list = name.split(".");
+            if (list.count() <= 1) {
+                node->setDestFileName(name+"(1)");
+            } else {
+                list.insert(1, "(1)");
+                name = list.join(".");
+                if (name.endsWith("."))
+                    name.chop(1);
+                node->setDestFileName(name);
+            }
+        } else {
+            name = name + "(1)";
+            node->setDestFileName(name);
+        }
+    }
+}
+
 FileMoveOperation::FileMoveOperation(QStringList sourceUris, QString destDirUri, QObject *parent) : FileOperation (parent)
 {
     m_source_uris = sourceUris;
@@ -152,8 +190,11 @@ retry:
             case BackupOne: {
                 file->setState(FileNode::Handled);
                 file->setErrorResponse(FileOperation::BackupOne);
+                handleDuplicate(file);
+                auto handledDestFileUri = file->resoveDestFileUri(m_dest_dir_uri);
+                auto handledDestFile = wrapGFile(g_file_new_for_uri(handledDestFileUri.toUtf8()));
                 g_file_move(srcFile.get()->get(),
-                            destFile.get()->get(),
+                            handledDestFile.get()->get(),
                             GFileCopyFlags(m_default_copy_flag|G_FILE_COPY_BACKUP),
                             getCancellable().get()->get(),
                             GFileProgressCallback(progress_callback),
@@ -164,8 +205,10 @@ retry:
             case BackupAll: {
                 file->setState(FileNode::Handled);
                 file->setErrorResponse(FileOperation::BackupOne);
+                auto handledDestFileUri = file->resoveDestFileUri(m_dest_dir_uri);
+                auto handledDestFile = wrapGFile(g_file_new_for_uri(handledDestFileUri.toUtf8()));
                 g_file_move(srcFile.get()->get(),
-                            destFile.get()->get(),
+                            handledDestFile.get()->get(),
                             GFileCopyFlags(m_default_copy_flag|G_FILE_COPY_BACKUP),
                             getCancellable().get()->get(),
                             GFileProgressCallback(progress_callback),

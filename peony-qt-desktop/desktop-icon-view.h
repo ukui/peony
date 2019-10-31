@@ -5,10 +5,14 @@
 #include "directory-view-plugin-iface.h"
 
 #include <QStandardPaths>
+#include <QTimer>
 
 class QLabel;
 
 namespace Peony {
+
+class DesktopItemModel;
+class DesktopItemSortFilterProxyModel;
 
 class DesktopIconView : public QListView, public DirectoryViewIface
 {
@@ -100,8 +104,23 @@ public Q_SLOTS:
     void zoomIn();
     void zoomOut();
 
+protected:
+    void mousePressEvent(QMouseEvent *e);
+    void mouseReleaseEvent(QMouseEvent *e);
+
+    void dragEnterEvent(QDragEnterEvent *e);
+    void dragMoveEvent(QDragMoveEvent *e);
+    void dropEvent(QDropEvent *e);
+
+    void resetEditTriggerTimer();
+
 private:
     ZoomLevel m_zoom_level = Invalid;
+
+    QModelIndex m_last_index;
+    QTimer m_edit_trigger_timer;
+
+    DesktopItemModel *m_model;
 };
 
 }

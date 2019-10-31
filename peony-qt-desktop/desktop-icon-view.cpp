@@ -3,10 +3,22 @@
 #include "icon-view-style.h"
 #include "desktop-icon-view-delegate.h"
 
+#include "desktop-item-model.h"
+
+#include <QMouseEvent>
+#include <QDragEnterEvent>
+#include <QDragMoveEvent>
+#include <QDropEvent>
+#include <QMimeData>
+#include <QDebug>
+
 using namespace Peony;
 
 DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
 {
+    m_edit_trigger_timer.setSingleShot(true);
+    m_last_index = QModelIndex();
+
     setContentsMargins(0, 0, 0, 0);
     setAttribute(Qt::WA_TranslucentBackground);
 
@@ -17,6 +29,8 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
     setStyle(DirectoryView::IconViewStyle::getStyle());
 
     setItemDelegate(new DesktopIconViewDelegate(this));
+
+    setDefaultDropAction(Qt::MoveAction);
 
     setSelectionMode(QListView::ExtendedSelection);
     setEditTriggers(QListView::NoEditTriggers);
@@ -33,6 +47,27 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
 
     auto zoomLevel = this->zoomLevel();
     setDeafultZoomLevel(zoomLevel);
+
+    QTimer::singleShot(1, [=](){
+        connect(this->selectionModel(), &QItemSelectionModel::selectionChanged, [=](const QItemSelection &selection, const QItemSelection &deselection){
+            //qDebug()<<"selection changed";
+            this->resetEditTriggerTimer();
+            auto currentSelections = this->selectionModel()->selection().indexes();
+
+            if (currentSelections.count() == 1) {
+                m_last_index = currentSelections.first();
+            } else {
+                m_last_index = QModelIndex();
+                for (auto index : deselection.indexes()) {
+                    this->setIndexWidget(index, nullptr);
+                }
+            }
+        });
+    });
+
+    m_model = new DesktopItemModel(this);
+
+    setModel(m_model);
 }
 
 DesktopIconView::~DesktopIconView()
@@ -175,4 +210,82 @@ DesktopIconView::ZoomLevel DesktopIconView::zoomLevel()
 {
     //FIXME:
     return m_zoom_level != Invalid? m_zoom_level: Normal;
+}
+
+void DesktopIconView::mousePressEvent(QMouseEvent *e)
+{
+    QListView::mousePressEvent(e);
+
+    //qDebug()<<m_last_index.data();
+    if (e->button() != Qt::LeftButton) {
+        return;
+    }
+
+    if (indexAt(e->pos()) == m_last_index && m_last_index.isValid()) {
+        //qDebug()<<"check";
+        if (m_edit_trigger_timer.isActive()) {
+            qDebug()<<"edit";
+            setIndexWidget(m_last_index, nullptr);
+            edit(m_last_index);
+        }
+    }
+}
+
+void DesktopIconView::mouseReleaseEvent(QMouseEvent *e)
+{
+    QListView::mouseReleaseEvent(e);
+
+    if (e->button() != Qt::LeftButton) {
+        return;
+    }
+
+    if (!m_edit_trigger_timer.isActive() && indexAt(e->pos()).isValid() && this->selectedIndexes().count() == 1) {
+        resetEditTriggerTimer();
+    }
+}
+
+void DesktopIconView::resetEditTriggerTimer()
+{
+    m_edit_trigger_timer.disconnect();
+    m_edit_trigger_timer.stop();
+    QTimer::singleShot(750, [&](){
+        //qDebug()<<"start";
+        m_edit_trigger_timer.setSingleShot(true);
+        m_edit_trigger_timer.start(1000);
+    });
+}
+
+void DesktopIconView::dragEnterEvent(QDragEnterEvent *e)
+{
+    qDebug()<<"drag enter event";
+    if (e->mimeData()->hasUrls()) {
+        e->setDropAction(Qt::MoveAction);
+        e->accept();
+    }
+}
+
+void DesktopIconView::dragMoveEvent(QDragMoveEvent *e)
+{
+    if (e->isAccepted())
+        return;
+    qDebug()<<"drag move event";
+    if (this == e->source()) {
+        e->accept();
+        return QListView::dragMoveEvent(e);
+    }
+    e->setDropAction(Qt::CopyAction);
+    e->accept();
+}
+
+void DesktopIconView::dropEvent(QDropEvent *e)
+{
+    qDebug()<<"drop event";
+    m_last_index = QModelIndex();
+    m_edit_trigger_timer.stop();
+    if (this == e->source()) {
+        e->accept();
+        return QListView::dropEvent(e);
+    }
+    m_model->dropMimeData(e->mimeData(), Qt::MoveAction, -1, -1, this->indexAt(e->pos()));
+    //FIXME: save item position
 }

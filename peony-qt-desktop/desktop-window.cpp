@@ -30,8 +30,6 @@
 
 using namespace Peony;
 
-static QModelIndex m_last_index = QModelIndex();
-
 DesktopWindow::DesktopWindow(QWidget *parent)
     : QStackedWidget(parent)
 {
@@ -63,11 +61,8 @@ DesktopWindow::DesktopWindow(QWidget *parent)
     layout->addWidget(m_bg_font);
     layout->addWidget(m_bg_back);
 
-    auto model = new DesktopItemModel(this);
-
     m_view = new DesktopIconView(this);
 
-    m_view->setModel(model);
     layout->addWidget(m_view);
     setCurrentWidget(m_view);
     m_view->setFixedSize(QApplication::primaryScreen()->availableGeometry().size());
@@ -92,21 +87,6 @@ DesktopWindow::DesktopWindow(QWidget *parent)
             }
         });
         job->queryAsync();
-    });
-
-    connect(m_view->selectionModel(), &QItemSelectionModel::selectionChanged, [=](const QItemSelection &selection, const QItemSelection &deselection){
-        qDebug()<<"selection changed";
-        auto currentSelections = selection.indexes();
-
-        for (auto index : deselection.indexes()) {
-            m_view->setIndexWidget(index, nullptr);
-        }
-
-        if (currentSelections.count() == 1) {
-            m_last_index = currentSelections.first();
-        } else {
-            m_last_index = QModelIndex();
-        }
     });
 
     //edit trigger

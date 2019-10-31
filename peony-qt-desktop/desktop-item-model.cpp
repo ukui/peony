@@ -5,9 +5,14 @@
 #include "file-info-job.h"
 #include "file-info-manager.h"
 #include "file-watcher.h"
+#include "file-operation-manager.h"
+#include "file-move-operation.h"
 
 #include <QStandardPaths>
 #include <QIcon>
+
+#include <QMimeData>
+#include <QUrl>
 
 #include <QDebug>
 
@@ -221,4 +226,67 @@ Qt::ItemFlags DesktopItemModel::flags(const QModelIndex &index) const
     } else {
         return Qt::ItemIsDropEnabled;
     }
+}
+
+QMimeData *DesktopItemModel::mimeData(const QModelIndexList &indexes) const
+{
+    QMimeData* data = QAbstractItemModel::mimeData(indexes);
+    //set urls data URLs correspond to the MIME type text/uri-list.
+    QList<QUrl> urls;
+    for (auto index : indexes) {
+        QUrl url = index.data(UriRole).toString();
+        urls<<url;
+    }
+    data->setUrls(urls);
+    return data;
+}
+
+bool DesktopItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent)
+{
+    qDebug()<<row<<column;
+    qDebug()<<"drop mime data"<<parent.data()<<index(row, column, parent).data();
+    //judge the drop dest uri.
+    QString destDirUri = nullptr;
+    if (parent.isValid()) {
+        destDirUri = parent.data(UriRole).toString();
+    } else {
+        destDirUri = "file://" + QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
+    }
+
+    //if destDirUri was not set, do not execute a drop.
+    if (destDirUri.isNull()) {
+        return QAbstractItemModel::dropMimeData(data, action, row, column, parent);
+    }
+
+    //NOTE:
+    //do not allow drop on it self.
+    auto urls = data->urls();
+    if (urls.isEmpty()) {
+        return false;
+    }
+
+    QStringList srcUris;
+    for (auto url : urls) {
+        srcUris<<url.url();
+    }
+
+    if (srcUris.contains(destDirUri)) {
+        return true;
+    }
+
+    auto fileOpMgr = FileOperationManager::getInstance();
+    bool addHistory = true;
+    FileMoveOperation *moveOp = new FileMoveOperation(srcUris, destDirUri);
+    fileOpMgr->startOperation(moveOp, addHistory);
+
+    //NOTE:
+    //we have to handle the dnd with file operation, so do not
+    //use QAbstractModel::dropMimeData() here;
+    return QAbstractItemModel::dropMimeData(data, action, row, column, parent);
+}
+
+Qt::DropActions DesktopItemModel::supportedDropActions() const
+{
+    //return Qt::MoveAction;
+    return QAbstractItemModel::supportedDropActions();
 }

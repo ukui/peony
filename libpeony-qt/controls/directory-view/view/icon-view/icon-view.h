@@ -85,6 +85,10 @@ public Q_SLOTS:
     void reportViewDirectoryChanged();
 
 protected:
+    /*!
+     * \brief changeZoomLevel
+     * \deprecated
+     */
     void changeZoomLevel();
     void resetEditTriggerTimer();
 

@@ -49,6 +49,7 @@ public:
         OverWriteAll,
         BackupOne,
         BackupAll,
+        Rename,
         Retry,
         Cancel,
         Other
