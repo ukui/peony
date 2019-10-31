@@ -97,9 +97,6 @@ QStringList ClipboardUtils::getClipboardFilesUris()
 {
     QStringList l;
 
-    if (m_clipboard_parent_uri.isNull())
-        return l;
-
     if (!isClipboardHasFiles()) {
         return l;
     }

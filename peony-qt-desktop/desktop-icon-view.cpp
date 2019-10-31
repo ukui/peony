@@ -5,6 +5,13 @@
 
 #include "desktop-item-model.h"
 
+#include "file-operation-manager.h"
+#include "file-move-operation.h"
+#include "file-copy-operation.h"
+#include "file-trash-operation.h"
+#include "clipboard-utils.h"
+
+#include <QAction>
 #include <QMouseEvent>
 #include <QDragEnterEvent>
 #include <QDragMoveEvent>
@@ -77,7 +84,12 @@ DesktopIconView::~DesktopIconView()
 
 const QStringList DesktopIconView::getSelections()
 {
-
+    QStringList uris;
+    auto indexes = selectionModel()->selection().indexes();
+    for (auto index : indexes) {
+        uris<<index.data(Qt::UserRole).toString();
+    }
+    return uris;
 }
 
 const QStringList DesktopIconView::getAllFileUris()
@@ -283,7 +295,6 @@ void DesktopIconView::dropEvent(QDropEvent *e)
     m_last_index = QModelIndex();
     m_edit_trigger_timer.stop();
     if (this == e->source()) {
-        e->accept();
         return QListView::dropEvent(e);
     }
     m_model->dropMimeData(e->mimeData(), Qt::MoveAction, -1, -1, this->indexAt(e->pos()));

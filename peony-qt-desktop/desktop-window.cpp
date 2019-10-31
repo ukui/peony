@@ -10,6 +10,12 @@
 #include "desktop-item-model.h"
 #include "desktop-icon-view.h"
 
+#include "file-operation-manager.h"
+#include "file-move-operation.h"
+#include "file-copy-operation.h"
+#include "file-trash-operation.h"
+#include "clipboard-utils.h"
+
 #include <QStandardPaths>
 #include <QLabel>
 
@@ -116,6 +122,8 @@ DesktopWindow::DesktopWindow(QWidget *parent)
         menu.exec(QCursor::pos());
         qDebug()<<"menu request";
     });
+
+    initShortcut();
 }
 
 DesktopWindow::~DesktopWindow()
@@ -168,4 +176,68 @@ void DesktopWindow::setBg(const QString &path)
         m_bg_font->setGraphicsEffect(m_opacity_effect);
         m_trans_timer.start(50);
     });
+}
+
+void DesktopWindow::initShortcut()
+{
+    //shotcut
+    QAction *copyAction = new QAction(this);
+    copyAction->setShortcut(QKeySequence::Copy);
+    connect(copyAction, &QAction::triggered, [=](){
+        auto selectedUris = m_view->getSelections();
+        if (!selectedUris.isEmpty())
+            ClipboardUtils::setClipboardFiles(selectedUris, false);
+    });
+    addAction(copyAction);
+
+    QAction *cutAction = new QAction(this);
+    cutAction->setShortcut(QKeySequence::Cut);
+    connect(cutAction, &QAction::triggered, [=](){
+        auto selectedUris = m_view->getSelections();
+        if (!selectedUris.isEmpty())
+            ClipboardUtils::setClipboardFiles(selectedUris, true);
+    });
+    addAction(cutAction);
+
+    QAction *pasteAction = new QAction(this);
+    pasteAction->setShortcut(QKeySequence::Paste);
+    connect(pasteAction, &QAction::triggered, [=](){
+        auto clipUris = ClipboardUtils::getClipboardFilesUris();
+        if (ClipboardUtils::isClipboardHasFiles()) {
+            auto uris = ClipboardUtils::getClipboardFilesUris();
+            if (ClipboardUtils::isClipboardFilesBeCut()) {
+                auto op = new FileMoveOperation(uris, m_view->getDirectoryUri());
+                FileOperationManager::getInstance()->startOperation(op, true);
+            } else {
+                auto op = new FileCopyOperation(uris, m_view->getDirectoryUri());
+                FileOperationManager::getInstance()->startOperation(op, true);
+            }
+        }
+    });
+    addAction(pasteAction);
+
+    QAction *trashAction = new QAction(this);
+    trashAction->setShortcut(QKeySequence::Delete);
+    connect(trashAction, &QAction::triggered, [=](){
+        auto selectedUris = m_view->getSelections();
+        if (!selectedUris.isEmpty()) {
+            auto op = new FileTrashOperation(selectedUris);
+            FileOperationManager::getInstance()->startOperation(op, true);
+        }
+    });
+    addAction(trashAction);
+
+    QAction *undoAction = new QAction(this);
+    undoAction->setShortcut(QKeySequence::Undo);
+    connect(undoAction, &QAction::triggered, [=](){
+        FileOperationManager::getInstance()->undo();
+    });
+    addAction(undoAction);
+
+    QAction *redoAction = new QAction(this);
+    redoAction->setShortcut(QKeySequence::Redo);
+    connect(redoAction, &QAction::triggered, [=](){
+        FileOperationManager::getInstance()->redo();
+    });
+    addAction(redoAction);
 }

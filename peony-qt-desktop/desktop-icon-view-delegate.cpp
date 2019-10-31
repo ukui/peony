@@ -95,10 +95,13 @@ void DesktopIconViewDelegate::paint(QPainter *painter, const QStyleOptionViewIte
 
     style->drawControl(QStyle::CE_ItemViewItem, &opt, painter, opt.widget);
 
-    //qDebug()<<index.data();
-    //qDebug()<<opt.rect;
-    //qDebug()<<style->subElementRect(QStyle::SE_ItemViewItemText, &opt, opt.widget);
-
+    /*
+    qDebug()<<index.data();
+    qDebug()<<opt.rect;
+    qDebug()<<view->visualRect(index);
+    qDebug()<<view->rectForIndex(index);
+    qDebug()<<style->subElementRect(QStyle::SE_ItemViewItemText, &opt, opt.widget);
+    */
     painter->restore();
     //return QStyledItemDelegate::paint(painter, option, index);
 }

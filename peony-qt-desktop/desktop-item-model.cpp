@@ -7,6 +7,7 @@
 #include "file-watcher.h"
 #include "file-operation-manager.h"
 #include "file-move-operation.h"
+#include "file-trash-operation.h"
 
 #include <QStandardPaths>
 #include <QIcon>
@@ -276,8 +277,13 @@ bool DesktopItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action
 
     auto fileOpMgr = FileOperationManager::getInstance();
     bool addHistory = true;
-    FileMoveOperation *moveOp = new FileMoveOperation(srcUris, destDirUri);
-    fileOpMgr->startOperation(moveOp, addHistory);
+    if (destDirUri == "trash:///") {
+        FileTrashOperation *trashOp = new FileTrashOperation(srcUris);
+        fileOpMgr->startOperation(trashOp, addHistory);
+    } else {
+        FileMoveOperation *moveOp = new FileMoveOperation(srcUris, destDirUri);
+        fileOpMgr->startOperation(moveOp, addHistory);
+    }
 
     //NOTE:
     //we have to handle the dnd with file operation, so do not

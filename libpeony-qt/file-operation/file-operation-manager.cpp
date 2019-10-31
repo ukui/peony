@@ -84,6 +84,7 @@ void FileOperationManager::startOperation(FileOperation *operation, bool addToHi
 
     operation->connect(operation, &FileOperation::operationFinished, [=](){
         if (operation->hasError()) {
+            this->clearHistory();
             return ;
         }
 

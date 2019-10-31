@@ -26,6 +26,9 @@ public:
 public Q_SLOTS:
     void setBg(const QString &bgPath);
 
+protected:
+    void initShortcut();
+
 private:
     QString m_current_bg_path;
 
