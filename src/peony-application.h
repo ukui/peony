@@ -14,6 +14,8 @@
  */
 
 #include "singleapplication.h"
+#include <QCommandLineParser>
+#include <QCommandLineOption>
 
 class PeonyApplication : public SingleApplication
 {
@@ -23,6 +25,13 @@ public:
 
 protected Q_SLOTS:
     void parseCmd(quint32 id, QByteArray msg);
+
+private:
+    QCommandLineParser parser;
+    QCommandLineOption quitOption = QCommandLineOption(QStringList()<<"q"<<"quit", tr("Close all peony-qt windows and quit"));
+    QCommandLineOption showItemsOption = QCommandLineOption(QStringList()<<"i"<<"show-items", tr("Show items"));
+    QCommandLineOption showFoldersOption = QCommandLineOption(QStringList()<<"f"<<"show-folders", tr("Show folders"));
+    QCommandLineOption showPropertiesOption = QCommandLineOption(QStringList()<<"p"<<"show-properties", tr("Show properties"));
 };
 
 #endif // PEONYAPPLICATION_H

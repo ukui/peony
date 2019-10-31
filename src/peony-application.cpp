@@ -67,7 +67,17 @@
 
 PeonyApplication::PeonyApplication(int &argc, char *argv[], const char *applicationName) : SingleApplication (argc, argv, applicationName, true)
 {
+    parser.addOption(quitOption);
+    parser.addOption(showItemsOption);
+    parser.addOption(showFoldersOption);
+    parser.addOption(showPropertiesOption);
+
+    parser.addPositionalArgument("files", tr("Files or directories to open"), tr("[FILE1, FILE2,...]"));
+
     if (this->isSecondary()) {
+        parser.addHelpOption();
+        parser.addVersionOption();
+        parser.process(arguments());
         auto message = this->arguments().join(' ').toUtf8();
         sendMessage(message);
         return;
@@ -389,38 +399,12 @@ void PeonyApplication::parseCmd(quint32 id, QByteArray msg)
     const QStringList args = QString(msg).split(' ');
     qDebug()<<args;
 
-    QCommandLineParser parser;
-    auto helpOption = parser.addHelpOption();
-    auto versionOption = parser.addVersionOption();
-
-    QCommandLineOption quitOption(QStringList()<<"q"<<"quit", tr("Close all peony-qt windows and quit"));
-    parser.addOption(quitOption);
-
-    QCommandLineOption showItemsOption(QStringList()<<"i"<<"show-items", tr("Show items"));
-    parser.addOption(showItemsOption);
-
-    QCommandLineOption showFoldersOption(QStringList()<<"f"<<"show-folders", tr("Show folders"));
-    parser.addOption(showFoldersOption);
-
-    QCommandLineOption showPropertiesOption(QStringList()<<"p"<<"show-properties", tr("Show properties"));
-    parser.addOption(showPropertiesOption);
-
-    parser.addPositionalArgument("files", tr("Files or directories to open"), tr("[FILE1, FILE2,...]"));
-
-    parser.process(args);
+    parser.parse(args);
     if (parser.isSet(quitOption)) {
         QTimer::singleShot(1, [=](){
             qApp->quit();
         });
         return;
-    }
-
-    if (parser.isSet(helpOption)) {
-        parser.showHelp();
-    }
-
-    if (parser.isSet(versionOption)) {
-        parser.showVersion();
     }
 
     Peony::PluginManager::init();

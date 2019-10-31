@@ -11,7 +11,7 @@ public:
     explicit PeonyDesktopApplication(int &argc, char *argv[], const char *applicationName = "peony-qt-desktop");
 
 protected Q_SLOTS:
-    void parseCmd(quint32 id, QByteArray msg);
+    void parseCmd(quint32 id, QByteArray msg, bool isPrimary);
 };
 
 #endif // PEONYDESKTOPAPPLICATION_H
