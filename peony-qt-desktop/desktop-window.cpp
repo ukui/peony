@@ -70,6 +70,8 @@ DesktopWindow::DesktopWindow(QWidget *parent)
     m_view->setModel(model);
     layout->addWidget(m_view);
     setCurrentWidget(m_view);
+    m_view->setFixedSize(QApplication::primaryScreen()->availableGeometry().size());
+    m_view->setGeometry(QApplication::primaryScreen()->availableGeometry());
 
     setBg(getCurrentBgPath());
 
@@ -117,10 +119,11 @@ DesktopWindow::DesktopWindow(QWidget *parent)
         connect(action, &QAction::triggered, [=](){
             QFileDialog dlg;
             dlg.setNameFilters(QStringList()<<"*.jpg"<<"*.png");
-            dlg.exec();
-            auto url = dlg.selectedUrls().first();
-            this->setBg(url.path());
-            qDebug()<<url;
+            if (dlg.exec()) {
+                auto url = dlg.selectedUrls().first();
+                this->setBg(url.path());
+                qDebug()<<url;
+            }
         });
         menu.addAction(tr("zoom in"), [=](){
             m_view->zoomIn();

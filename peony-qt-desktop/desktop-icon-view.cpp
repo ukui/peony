@@ -10,6 +10,9 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
     setContentsMargins(0, 0, 0, 0);
     setAttribute(Qt::WA_TranslucentBackground);
 
+    setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+
     //fix rubberband style.
     setStyle(DirectoryView::IconViewStyle::getStyle());
 
@@ -158,7 +161,7 @@ void DesktopIconView::setDeafultZoomLevel(ZoomLevel level)
         break;
     case Huge:
         setIconSize(QSize(96, 96));
-        setGridSize(QSize(130, 150));
+        setGridSize(QSize(140, 170));
         break;
     default:
         //Normal

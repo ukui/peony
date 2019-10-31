@@ -16,10 +16,10 @@ class DesktopIconView : public QListView, public DirectoryViewIface
     Q_OBJECT
 public:
     enum ZoomLevel {
-        Small, //icon: 36x36; grid: 56x64; hover rect: 40x56; font: system*0.8
-        Normal, //icon: 48x48; grid: 64x72; hover rect = 56x64; font: system
+        Small, //icon: 24x24; grid: 64x64; hover rect: 60x60; font: system*0.8
+        Normal, //icon: 48x48; grid: 96x96; hover rect = 90x90; font: system
         Large, //icon: 64x64; grid: 115x135; hover rect = 105x118; font: system*1.2
-        Huge, //icon: 96x96; grid: 130x150; hover rect = 120x140; font: system*1.4
+        Huge, //icon: 96x96; grid: 140x170; hover rect = 120x140; font: system*1.4
         Invalid
     };
     Q_ENUM(ZoomLevel)
@@ -43,6 +43,26 @@ public:
 
     int getSortType();
     int getSortOrder();
+
+    QRect visualRect(const QModelIndex &index) const {
+        auto rect = QListView::visualRect(index);
+        QPoint p(10, 5);
+        switch (m_zoom_level) {
+        case Small:
+            p *= 0.8;
+            break;
+        case Large:
+            p *= 1.2;
+            break;
+        case Huge:
+            p *= 1.4;
+            break;
+        default:
+            break;
+        }
+        rect.moveTo(rect.topLeft() + p);
+        return rect;
+    }
 
 Q_SIGNALS:
     void zoomLevelChanged(ZoomLevel level);
