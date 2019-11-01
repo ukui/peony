@@ -142,7 +142,8 @@ void DesktopIconView::setSortOrder(int sortOrder)
 
 void DesktopIconView::editUri(const QString &uri)
 {
-
+    clearAllIndexWidgets();
+    edit(m_last_index);
 }
 
 void DesktopIconView::editUris(const QStringList uris)
@@ -152,7 +153,7 @@ void DesktopIconView::editUris(const QStringList uris)
 
 void DesktopIconView::setCutFiles(const QStringList &uris)
 {
-
+    ClipboardUtils::setClipboardFiles(uris, true);
 }
 
 void DesktopIconView::closeView()
@@ -160,7 +161,7 @@ void DesktopIconView::closeView()
     deleteLater();
 }
 
-void DesktopIconView::zoomIn()
+void DesktopIconView::zoomOut()
 {
     switch (m_zoom_level) {
     case Huge:
@@ -177,7 +178,7 @@ void DesktopIconView::zoomIn()
     }
 }
 
-void DesktopIconView::zoomOut()
+void DesktopIconView::zoomIn()
 {
     switch (m_zoom_level) {
     case Small:
@@ -342,4 +343,9 @@ void DesktopIconView::clearAllIndexWidgets()
         row++;
         index = model()->index(row, 0);
     }
+}
+
+void DesktopIconView::refresh()
+{
+    m_model->refresh();
 }

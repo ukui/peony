@@ -39,7 +39,8 @@ SOURCES += \
     desktop-item-model.cpp \
     desktop-icon-view.cpp \
     desktop-icon-view-delegate.cpp \
-    desktop-index-widget.cpp
+    desktop-index-widget.cpp \
+    desktop-menu.cpp
 
 HEADERS += \
         desktop-window.h \
@@ -48,7 +49,8 @@ HEADERS += \
     desktop-item-model.h \
     desktop-icon-view.h \
     desktop-icon-view-delegate.h \
-    desktop-index-widget.h
+    desktop-index-widget.h \
+    desktop-menu.h
 
 target.path = /usr/bin
 !isEmpty(target.path): INSTALLS += target

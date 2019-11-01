@@ -105,6 +105,7 @@ DesktopItemModel::~DesktopItemModel()
 void DesktopItemModel::refresh()
 {
     beginResetModel();
+    removeRows(0, m_files.count());
     //m_trash_watcher->stopMonitor();
     //m_desktop_watcher->stopMonitor();
     m_files.clear();
@@ -114,6 +115,8 @@ void DesktopItemModel::refresh()
     m_files<<computer;
     m_files<<personal;
     m_files<<trash;
+    m_enumerator->deleteLater();
+    m_enumerator = new FileEnumerator(this);
     m_enumerator->setEnumerateDirectory("file://" + QStandardPaths::writableLocation(QStandardPaths::DesktopLocation));
     m_enumerator->connect(m_enumerator, &FileEnumerator::enumerateFinished, this, &DesktopItemModel::onEnumerateFinished);
     m_enumerator->enumerateAsync();
@@ -152,6 +155,9 @@ QVariant DesktopItemModel::data(const QModelIndex &index, int role) const
 
 void DesktopItemModel::onEnumerateFinished()
 {
+    if (m_files.count() > 3)
+        return;
+
     m_files<<m_enumerator->getChildren();
     for (auto info : m_files) {
         //qDebug()<<info->uri();

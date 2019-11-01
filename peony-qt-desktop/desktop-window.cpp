@@ -5,7 +5,7 @@
 #include "file-info-job.h"
 #include "file-launch-manager.h"
 
-#include "directory-view-menu.h"
+#include "desktop-menu.h"
 
 #include "desktop-item-model.h"
 #include "desktop-icon-view.h"
@@ -100,27 +100,28 @@ DesktopWindow::DesktopWindow(QWidget *parent)
     //menu
     connect(m_view, &QListView::customContextMenuRequested, [=](const QPoint &pos){
         //FIXME: use other menu
-        QMenu menu;
-        auto action = menu.addAction(tr("set background"));
-        connect(action, &QAction::triggered, [=](){
-            QFileDialog dlg;
-            dlg.setNameFilters(QStringList()<<"*.jpg"<<"*.png");
-            if (dlg.exec()) {
-                auto url = dlg.selectedUrls().first();
-                this->setBg(url.path());
-                qDebug()<<url;
-            }
-        });
-        menu.addAction(tr("zoom in"), [=](){
-            m_view->zoomIn();
-            m_view->update();
-        });
-        menu.addAction(tr("zoom out"), [=](){
-            m_view->zoomOut();
-            m_view->update();
-        });
-        menu.exec(QCursor::pos());
         qDebug()<<"menu request";
+        if (!m_view->indexAt(pos).isValid())
+            m_view->clearSelection();
+
+        QTimer::singleShot(1, [=](){
+            DesktopMenu menu(m_view);
+            if (m_view->getSelections().isEmpty()) {
+                auto action = menu.addAction(tr("set background"));
+                connect(action, &QAction::triggered, [=](){
+                    QFileDialog dlg;
+                    dlg.setNameFilters(QStringList()<<"*.jpg"<<"*.png");
+                    if (dlg.exec()) {
+                        auto url = dlg.selectedUrls().first();
+                        this->setBg(url.path());
+                        qDebug()<<url;
+                    }
+                });
+            }
+            menu.exec(QCursor::pos());
+
+            //qDebug()<<"menu request";
+        });
     });
 
     initShortcut();

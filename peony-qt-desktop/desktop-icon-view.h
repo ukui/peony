@@ -109,6 +109,8 @@ public Q_SLOTS:
 
     void clearAllIndexWidgets();
 
+    void refresh();
+
 protected:
     void mousePressEvent(QMouseEvent *e);
     void mouseReleaseEvent(QMouseEvent *e);
