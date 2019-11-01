@@ -16,6 +16,7 @@ class DesktopItemSortFilterProxyModel;
 
 class DesktopIconView : public QListView, public DirectoryViewIface
 {
+    friend class DesktopIndexWidget;
     friend class DesktopIconViewDelegate;
     Q_OBJECT
 public:
@@ -68,6 +69,8 @@ public:
         return rect;
     }
 
+    const QFont getViewItemFont(QStyleOptionViewItem *item);
+
 Q_SIGNALS:
     void zoomLevelChanged(ZoomLevel level);
 
@@ -103,6 +106,8 @@ public Q_SLOTS:
     ZoomLevel zoomLevel();
     void zoomIn();
     void zoomOut();
+
+    void clearAllIndexWidgets();
 
 protected:
     void mousePressEvent(QMouseEvent *e);

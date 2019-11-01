@@ -38,7 +38,8 @@ SOURCES += \
     fm-dbus-service.cpp \
     desktop-item-model.cpp \
     desktop-icon-view.cpp \
-    desktop-icon-view-delegate.cpp
+    desktop-icon-view-delegate.cpp \
+    desktop-index-widget.cpp
 
 HEADERS += \
         desktop-window.h \
@@ -46,7 +47,8 @@ HEADERS += \
     fm-dbus-service.h \
     desktop-item-model.h \
     desktop-icon-view.h \
-    desktop-icon-view-delegate.h
+    desktop-icon-view-delegate.h \
+    desktop-index-widget.h
 
 target.path = /usr/bin
 !isEmpty(target.path): INSTALLS += target

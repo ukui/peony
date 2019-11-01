@@ -7,6 +7,8 @@ class QPushButton;
 
 namespace Peony {
 
+class DesktopIconView;
+
 class DesktopIconViewDelegate : public QStyledItemDelegate
 {
     Q_OBJECT
@@ -14,9 +16,13 @@ public:
     explicit DesktopIconViewDelegate(QObject *parent = nullptr);
     ~DesktopIconViewDelegate() override;
 
+    void initStyleOption(QStyleOptionViewItem *option, const QModelIndex &index) const override {return QStyledItemDelegate::initStyleOption(option, index);}
+    QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const override;
+
+    DesktopIconView *getView() const;
+
 protected:
     void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const override;
-    QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const override;
 
     //edit
     QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const override;

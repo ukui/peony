@@ -11,6 +11,8 @@
 #include "file-trash-operation.h"
 #include "clipboard-utils.h"
 
+#include "desktop-index-widget.h"
+
 #include <QAction>
 #include <QMouseEvent>
 #include <QDragEnterEvent>
@@ -58,11 +60,15 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
     QTimer::singleShot(1, [=](){
         connect(this->selectionModel(), &QItemSelectionModel::selectionChanged, [=](const QItemSelection &selection, const QItemSelection &deselection){
             //qDebug()<<"selection changed";
+            this->setIndexWidget(m_last_index, nullptr);
             this->resetEditTriggerTimer();
             auto currentSelections = this->selectionModel()->selection().indexes();
 
             if (currentSelections.count() == 1) {
+                qDebug()<<"set index widget";
                 m_last_index = currentSelections.first();
+                auto delegate = qobject_cast<DesktopIconViewDelegate *>(itemDelegate());
+                this->setIndexWidget(m_last_index, new DesktopIndexWidget(delegate, viewOptions(), m_last_index, this));
             } else {
                 m_last_index = QModelIndex();
                 for (auto index : deselection.indexes()) {
@@ -216,6 +222,7 @@ void DesktopIconView::setDeafultZoomLevel(ZoomLevel level)
         setGridSize(QSize(96, 96));
         break;
     }
+    clearAllIndexWidgets();
 }
 
 DesktopIconView::ZoomLevel DesktopIconView::zoomLevel()
@@ -231,6 +238,10 @@ void DesktopIconView::mousePressEvent(QMouseEvent *e)
     //qDebug()<<m_last_index.data();
     if (e->button() != Qt::LeftButton) {
         return;
+    }
+
+    if (!indexAt(e->pos()).isValid()) {
+        clearAllIndexWidgets();
     }
 
     if (indexAt(e->pos()) == m_last_index && m_last_index.isValid()) {
@@ -272,7 +283,7 @@ void DesktopIconView::dragEnterEvent(QDragEnterEvent *e)
     qDebug()<<"drag enter event";
     if (e->mimeData()->hasUrls()) {
         e->setDropAction(Qt::MoveAction);
-        e->accept();
+        e->acceptProposedAction();
     }
 }
 
@@ -292,11 +303,43 @@ void DesktopIconView::dragMoveEvent(QDragMoveEvent *e)
 void DesktopIconView::dropEvent(QDropEvent *e)
 {
     qDebug()<<"drop event";
-    m_last_index = QModelIndex();
     m_edit_trigger_timer.stop();
     if (this == e->source()) {
         return QListView::dropEvent(e);
     }
     m_model->dropMimeData(e->mimeData(), Qt::MoveAction, -1, -1, this->indexAt(e->pos()));
     //FIXME: save item position
+}
+
+const QFont DesktopIconView::getViewItemFont(QStyleOptionViewItem *item)
+{
+    auto font = item->font;
+    switch (zoomLevel()) {
+    case DesktopIconView::Small:
+        font.setPointSizeF(font.pointSizeF() * 0.8);
+        break;
+    case DesktopIconView::Large:
+        font.setPointSizeF(font.pointSizeF() * 1.2);
+        break;
+    case DesktopIconView::Huge:
+        font.setPointSizeF(font.pointSizeF() * 1.4);
+        break;
+    default:
+        break;
+    }
+    return font;
+}
+
+void DesktopIconView::clearAllIndexWidgets()
+{
+    if (!model())
+        return;
+
+    int row = 0;
+    auto index = model()->index(row, 0);
+    while (index.isValid()) {
+        setIndexWidget(index, nullptr);
+        row++;
+        index = model()->index(row, 0);
+    }
 }

@@ -28,16 +28,21 @@ void DesktopIconViewDelegate::paint(QPainter *painter, const QStyleOptionViewIte
 {
     painter->save();
     auto view = qobject_cast<Peony::DesktopIconView*>(parent());
-    if (view->state() == DesktopIconView::DraggingState) {
-        if (view->selectionModel()->selection().contains(index)) {
-            painter->setOpacity(0.8);
-        }
-    }
 
     auto style = option.widget->style();
 
     QStyleOptionViewItem opt = option;
     initStyleOption(&opt, index);
+
+    if (view->state() == DesktopIconView::DraggingState) {
+        if (view->selectionModel()->selection().contains(index)) {
+            painter->setOpacity(0.8);
+        }
+    } else if (opt.state.testFlag(QStyle::State_Selected)) {
+        if (view->indexWidget(index)) {
+            opt.text = nullptr;
+        }
+    }
 
     auto font = opt.font;
     switch (view->zoomLevel()) {
@@ -73,25 +78,27 @@ void DesktopIconViewDelegate::paint(QPainter *painter, const QStyleOptionViewIte
     opt.palette.setColor(QPalette::HighlightedText, color);
     opt.font = font;
 
-    painter->setClipRect(opt.rect);
-    painter->save();
-    if (opt.state.testFlag(QStyle::State_MouseOver) && !opt.state.testFlag(QStyle::State_Selected)) {
-        QColor color = m_styled_button->palette().highlight().color();
-        color.setAlpha(255*0.3);//half transparent
-        painter->fillRect(opt.rect, color);
-        color.setAlpha(255*0.5);
-        painter->setPen(color.darker(100));
-        painter->drawRect(opt.rect.adjusted(0, 0, -1, -1));
+    if (!view->indexWidget(index)) {
+        painter->setClipRect(opt.rect);
+        painter->save();
+        if (opt.state.testFlag(QStyle::State_MouseOver) && !opt.state.testFlag(QStyle::State_Selected)) {
+            QColor color = m_styled_button->palette().highlight().color();
+            color.setAlpha(255*0.3);//half transparent
+            painter->fillRect(opt.rect, color);
+            color.setAlpha(255*0.5);
+            painter->setPen(color.darker(100));
+            painter->drawRect(opt.rect.adjusted(0, 0, -1, -1));
+        }
+        if (opt.state.testFlag(QStyle::State_Selected)) {
+            QColor color = m_styled_button->palette().highlight().color();
+            color.setAlpha(255*0.7);//half transparent
+            painter->fillRect(opt.rect, color);
+            color.setAlpha(255*0.8);
+            painter->setPen(color);
+            painter->drawRect(opt.rect.adjusted(0, 0, -1, -1));
+        }
+        painter->restore();
     }
-    if (opt.state.testFlag(QStyle::State_Selected)) {
-        QColor color = m_styled_button->palette().highlight().color();
-        color.setAlpha(255*0.7);//half transparent
-        painter->fillRect(opt.rect, color);
-        color.setAlpha(255*0.8);
-        painter->setPen(color);
-        painter->drawRect(opt.rect.adjusted(0, 0, -1, -1));
-    }
-    painter->restore();
 
     style->drawControl(QStyle::CE_ItemViewItem, &opt, painter, opt.widget);
 
@@ -206,4 +213,10 @@ void DesktopIconViewDelegate::setModelData(QWidget *editor, QAbstractItemModel *
             fileOpMgr->startOperation(renameOp, true);
         }
     }
+}
+
+DesktopIconView *DesktopIconViewDelegate::getView() const
+{
+    auto view = qobject_cast<Peony::DesktopIconView*>(parent());
+    return view;
 }

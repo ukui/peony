@@ -72,6 +72,7 @@ void FileMoveOperation::progress_callback(goffset current_num_bytes,
 
 FileOperation::ResponseType FileMoveOperation::prehandle(GError *err)
 {
+    setHasError(true);
     if (m_prehandle_hash.contains(err->code))
         return m_prehandle_hash.value(err->code);
 

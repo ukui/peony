@@ -71,6 +71,7 @@ FileCopyOperation::~FileCopyOperation()
 
 FileOperation::ResponseType FileCopyOperation::prehandle(GError *err)
 {
+    setHasError(true);
     if (m_is_duplicated_copy)
         return BackupAll;
 

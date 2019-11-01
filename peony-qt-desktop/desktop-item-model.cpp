@@ -35,9 +35,18 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
     m_enumerator->enumerateAsync();
 
     m_trash_watcher = new FileWatcher("trash:///", this);
-    //m_trash_watcher->setMonitorChildrenChange(true);
 
-    this->connect(m_trash_watcher, &FileWatcher::fileChanged, [=](){
+    this->connect(m_trash_watcher, &FileWatcher::fileCreated, [=](){
+        qDebug()<<"trash changed";
+        auto job = new FileInfoJob(trash);
+        connect(job, &FileInfoJob::queryAsyncFinished, [=](){
+            this->dataChanged(this->index(m_files.indexOf(trash)), this->index(m_files.indexOf(trash)));
+            job->deleteLater();
+        });
+        job->queryAsync();
+    });
+
+    this->connect(m_trash_watcher, &FileWatcher::fileDeleted, [=](){
         qDebug()<<"trash changed";
         auto job = new FileInfoJob(trash);
         connect(job, &FileInfoJob::queryAsyncFinished, [=](){
