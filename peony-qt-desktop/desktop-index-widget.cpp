@@ -28,6 +28,8 @@ DesktopIndexWidget::DesktopIndexWidget(DesktopIconViewDelegate *delegate,
 void DesktopIndexWidget::paintEvent(QPaintEvent *e)
 {
     //qDebug()<<"paint";
+    auto visualRect = m_delegate->getView()->visualRect(m_index);
+    move(visualRect.topLeft());
 
     Q_UNUSED(e)
     QPainter p(this);
