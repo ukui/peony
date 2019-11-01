@@ -71,9 +71,13 @@ void AdvanceSearchBar::init(bool hasTopWindow)
     QPushButton *m_show_hidden_button = new QPushButton(tr("show hidden file"), nullptr);
     m_show_hidden_button->setFixedWidth(120);
 
+    QPushButton *m_go_back = new QPushButton(tr("go back"), nullptr);
+    m_go_back->setFixedWidth(120);
+    m_go_back->setToolTip(tr("hidden advance search page"));
+
     QPushButton *m_filter_button = new QPushButton(tr("search"), nullptr);
     m_filter_button->setFixedWidth(80);
-    m_filter_button->setToolTip("start search");
+    m_filter_button->setToolTip(tr("start search"));
 
     QFormLayout *topLayout = new QFormLayout();
     topLayout->setContentsMargins(10, 10, 10, 10);
@@ -102,7 +106,8 @@ void AdvanceSearchBar::init(bool hasTopWindow)
     topLayout->addWidget(fileSize);
     topLayout->addWidget(sizeViewCombox);
     topLayout->addWidget(m_show_hidden_button);
-    bottomLayout->setContentsMargins(10,30,10,10);
+    topLayout->addWidget(m_go_back);
+    bottomLayout->setContentsMargins(10,20,10,10);
     bottomLayout->addWidget(m_filter_button, Qt::AlignCenter);
     topLayout->addWidget(b2);
     //end mutiple filter
@@ -122,6 +127,11 @@ void AdvanceSearchBar::init(bool hasTopWindow)
         else
             m_advance_target_path = "file://" + uri;
     });
+
+    //go back hidden this page
+    connect(m_go_back, &QPushButton::clicked, [=](){
+        m_top_window->advanceSearch();
+    });
 }
 
 void AdvanceSearchBar::browsePath()
@@ -134,7 +144,7 @@ void AdvanceSearchBar::browsePath()
     else
         m_advance_target_path = "file://" + target_path;
 
-    updateLocation(target_path);
+    updateLocation(m_advance_target_path);
 }
 
 void AdvanceSearchBar::searchFilter()
