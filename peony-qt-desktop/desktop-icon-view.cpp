@@ -19,6 +19,10 @@
 #include <QDragMoveEvent>
 #include <QDropEvent>
 #include <QMimeData>
+
+#include <QWheelEvent>
+#include <QApplication>
+
 #include <QDebug>
 
 using namespace Peony;
@@ -159,6 +163,18 @@ void DesktopIconView::setCutFiles(const QStringList &uris)
 void DesktopIconView::closeView()
 {
     deleteLater();
+}
+
+void DesktopIconView::wheelEvent(QWheelEvent *e)
+{
+    if (QApplication::keyboardModifiers() == Qt::ControlModifier)
+    {
+       if (e->delta() > 0) {
+           zoomIn();
+       } else {
+           zoomOut();
+       }
+    }
 }
 
 void DesktopIconView::zoomOut()

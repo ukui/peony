@@ -241,4 +241,18 @@ void DesktopWindow::initShortcut()
         FileOperationManager::getInstance()->redo();
     });
     addAction(redoAction);
+
+    QAction *zoomInAction = new QAction(this);
+    zoomInAction->setShortcut(QKeySequence::ZoomIn);
+    connect(zoomInAction, &QAction::triggered, [=](){
+        m_view->zoomIn();
+    });
+    addAction(zoomInAction);
+
+    QAction *zoomOutAction = new QAction(this);
+    zoomOutAction->setShortcut(QKeySequence::ZoomOut);
+    connect(zoomOutAction, &QAction::triggered, [=](){
+        m_view->zoomOut();
+    });
+    addAction(zoomOutAction);
 }

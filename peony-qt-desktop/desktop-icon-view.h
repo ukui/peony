@@ -119,6 +119,8 @@ protected:
     void dragMoveEvent(QDragMoveEvent *e);
     void dropEvent(QDropEvent *e);
 
+    void wheelEvent(QWheelEvent *e);
+
     void resetEditTriggerTimer();
 
 private:
