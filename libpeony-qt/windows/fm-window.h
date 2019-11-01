@@ -8,10 +8,7 @@
 #include <memory>
 
 #include <QTimer>
-#include <QLineEdit>
-#include <QComboBox>
 #include <QPushButton>
-
 #include <QStackedWidget>
 
 class QSplitter;
@@ -109,10 +106,6 @@ protected:
 public:
     //advance search filter options
     bool m_update_condition = false;
-
-    QStringList m_file_type_list = {"all", "file folder", "image", "video", "text file", "audio", "others"};
-    QStringList m_file_mtime_list = {"all", "today", "this week", "this month", "this year", "year ago"};
-    QStringList m_file_size_list = {"all", "tiny(0-16K)", "small(16k-1M)", "medium(1M-100M)", "big(100M-1G)","large(>1G)"};
 
 private:
     QSplitter *m_splitter;

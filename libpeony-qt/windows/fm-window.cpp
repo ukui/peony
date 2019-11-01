@@ -30,9 +30,6 @@
 
 #include <QSplitter>
 #include <QHBoxLayout>
-#include <QVBoxLayout>
-#include <QFormLayout>
-
 #include <QPainter>
 
 #include <QMessageBox>
@@ -55,6 +52,8 @@ FMWindow::FMWindow(const QString &uri, QWidget *parent) : QMainWindow (parent)
     if (uri.isNull()) {
         location = "file://" + QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
     }
+    //init to solve second search in empty path issue
+    m_last_non_search_location = location;
 
     m_splitter = new QSplitter(Qt::Horizontal, this);
     m_splitter->setChildrenCollapsible(false);
@@ -74,6 +73,7 @@ FMWindow::FMWindow(const QString &uri, QWidget *parent) : QMainWindow (parent)
 
     m_side_bar = new SideBar(this);
     m_filter_bar = new AdvanceSearchBar(this);
+    m_filter_bar->setMinimumWidth(180);
     m_filter = dynamic_cast<QWidget*>(m_filter_bar);
 
     m_side_bar_container = new QStackedWidget(this);
@@ -92,6 +92,7 @@ FMWindow::FMWindow(const QString &uri, QWidget *parent) : QMainWindow (parent)
     m_tool_bar->setContentsMargins(0, 0, 0, 0);
 
     m_search_bar = new SearchBar(this);
+    m_search_bar->setMinimumWidth(200);
     m_advanced_button = new QPushButton(tr("advanced search"), nullptr);
     m_advanced_button->setFixedWidth(110);
     m_advanced_button->setStyleSheet("color: rgb(10,10,255)");
@@ -130,7 +131,7 @@ FMWindow::FMWindow(const QString &uri, QWidget *parent) : QMainWindow (parent)
     m_navigation_bar = new NavigationBar(this);
     m_navigation_bar->setMovable(false);
     m_navigation_bar->bindContainer(m_tab->getActivePage());
-    m_navigation_bar->updateLocation(uri);
+    m_navigation_bar->updateLocation(location);
 
     QToolBar *t = new QToolBar(this);
     t->setMovable(false);
@@ -418,7 +419,7 @@ void FMWindow::advanceSearch()
 void FMWindow::clearRecord()
 {
     //qDebug()<<"clearRecord clicked";
-    m_search_bar->clear_search_record();
+    m_search_bar->clearSearchRecord();
     m_clear_record->setDisabled(true);
 }
 
