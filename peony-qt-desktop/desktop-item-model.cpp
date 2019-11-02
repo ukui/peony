@@ -59,7 +59,7 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
     });
 
     m_desktop_watcher = new FileWatcher("file://" + QStandardPaths::writableLocation(QStandardPaths::DesktopLocation), this);
-    //m_desktop_watcher->setMonitorChildrenChange(true);
+    m_desktop_watcher->setMonitorChildrenChange(true);
     this->connect(m_desktop_watcher, &FileWatcher::fileCreated, [=](const QString &uri){
         qDebug()<<"created"<<uri;
         auto info = FileInfo::fromUri(uri, true);
@@ -69,6 +69,7 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
         connect(job, &FileInfoJob::queryAsyncFinished, [=](){
             this->dataChanged(this->index(m_files.indexOf(info)), this->index(m_files.indexOf(info)));
             job->deleteLater();
+            ThumbnailManager::getInstance()->createThumbnail(info->uri(), m_desktop_watcher);
         });
         job->queryAsync();
     });
@@ -165,9 +166,6 @@ void DesktopItemModel::onEnumerateFinished()
         return;
 
     m_files<<m_enumerator->getChildren();
-    for (auto info : m_files) {
-        ThumbnailManager::getInstance()->createThumbnail(info->uri());
-    }
 
     //qDebug()<<m_files.count();
     this->beginResetModel();
@@ -178,6 +176,7 @@ void DesktopItemModel::onEnumerateFinished()
         connect(job, &FileInfoJob::queryAsyncFinished, [=](){
             this->dataChanged(this->index(m_files.indexOf(info)), this->index(m_files.indexOf(info)));
             job->deleteLater();
+            ThumbnailManager::getInstance()->createThumbnail(info->uri(), m_desktop_watcher);
         });
         job->queryAsync();
     }

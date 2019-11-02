@@ -19,6 +19,7 @@ class PEONYCORESHARED_EXPORT ThumbnailManager : public QObject
 public:
     static ThumbnailManager *getInstance();
 
+    bool hasThumbnail(const QString &uri) {return !m_hash.values(uri).isEmpty();}
     void createThumbnail(const QString &uri, FileWatcher *watcher = nullptr);
     void releaseThumbnail(const QString &uri);
     const QIcon tryGetThumbnail(const QString &uri);

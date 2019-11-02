@@ -223,6 +223,7 @@ void FileItem::findChildrenAsync()
                 //tell the model update
                 this->onChildAdded(uri);
                 Q_EMIT this->childAdded(uri);
+                ThumbnailManager::getInstance()->createThumbnail(uri, m_watcher);
             });
             connect(m_watcher, &FileWatcher::fileDeleted, [=](QString uri){
                 //remove the crosponding child
