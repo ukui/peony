@@ -6,6 +6,7 @@
 
 #include <QDebug>
 #include <QDateTime>
+#include <QIcon>
 
 using namespace Peony;
 
@@ -175,8 +176,18 @@ void FileInfoJob::refreshInfoContents(GFileInfo *new_info)
     GIcon *g_icon = g_file_info_get_icon (new_info);
     if (G_IS_ICON(g_icon)) {
         const gchar* const* icon_names = g_themed_icon_get_names(G_THEMED_ICON (g_icon));
-        if (icon_names)
-            info->m_icon_name = QString (*icon_names);
+        if (icon_names) {
+            auto p = icon_names;
+            while (*p) {
+                QIcon icon = QIcon::fromTheme(*p);
+                if (!icon.isNull()) {
+                    info->m_icon_name = QString (*p);
+                    break;
+                } else {
+                    p++;
+                }
+            }
+        }
         //g_object_unref(g_icon);
     }
 
