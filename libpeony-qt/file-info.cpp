@@ -2,6 +2,9 @@
 
 #include "file-info-manager.h"
 #include "file-info-job.h"
+
+#include "thumbnail-manager.h"
+
 #include <QUrl>
 
 #include <QDebug>
@@ -49,6 +52,8 @@ FileInfo::FileInfo(const QString &uri, QObject *parent) : QObject (parent)
 FileInfo::~FileInfo()
 {
     //qDebug()<<"~FileInfo"<<m_uri;
+    //if a file info is deconstruct, its thumbnail should also be clean.
+    ThumbnailManager::getInstance()->releaseThumbnail(m_uri);
     disconnect();
 
     g_object_unref(m_cancellable);

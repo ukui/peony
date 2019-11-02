@@ -9,6 +9,8 @@
 #include "file-move-operation.h"
 #include "file-trash-operation.h"
 
+#include "thumbnail-manager.h"
+
 #include <QStandardPaths>
 #include <QIcon>
 
@@ -145,8 +147,12 @@ QVariant DesktopItemModel::data(const QModelIndex &index, int role) const
         return info->displayName();
     case Qt::ToolTipRole:
         return info->displayName();
-    case Qt::DecorationRole:
+    case Qt::DecorationRole: {
+        auto thumbnail = ThumbnailManager::getInstance()->tryGetThumbnail(info->uri());
+        if (!thumbnail.isNull())
+            return thumbnail;
         return QIcon::fromTheme(info->iconName(), QIcon::fromTheme("text-x-generic"));
+    }
     case UriRole:
         return info->uri();
     }
@@ -160,7 +166,7 @@ void DesktopItemModel::onEnumerateFinished()
 
     m_files<<m_enumerator->getChildren();
     for (auto info : m_files) {
-        //qDebug()<<info->uri();
+        ThumbnailManager::getInstance()->createThumbnail(info->uri());
     }
 
     //qDebug()<<m_files.count();

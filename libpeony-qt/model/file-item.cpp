@@ -7,6 +7,8 @@
 
 #include "file-item-model.h"
 
+#include "thumbnail-manager.h"
+
 #include "gerror-wrapper.h"
 
 #include <QDebug>
@@ -129,6 +131,7 @@ void FileItem::findChildrenAsync()
                             m_model->insertRows(0, m_children->count(), this->firstColumnIndex());
                             Q_EMIT this->m_model->findChildrenFinished();
                             Q_EMIT m_model->updated();
+                            ThumbnailManager::getInstance()->createThumbnail(info->uri(), m_watcher);
                         }
                     });
                     job->queryAsync();
@@ -153,6 +156,10 @@ void FileItem::findChildrenAsync()
                 //tell the model update
                 this->onChildRemoved(uri);
                 Q_EMIT this->childRemoved(uri);
+            });
+            connect(m_watcher, &FileWatcher::fileChanged, [=](const QString &uri){
+                auto index = m_model->indexFromUri(uri);
+                m_model->dataChanged(index, index);
             });
             connect(m_watcher, &FileWatcher::directoryDeleted, [=](QString uri){
                 //clean all the children, if item index is root index, cd up.
@@ -196,6 +203,7 @@ void FileItem::findChildrenAsync()
                 infoJob->connect(infoJob, &FileInfoJob::infoUpdated, [=](){
                     Q_EMIT m_model->dataChanged(item->firstColumnIndex(), item->lastColumnIndex());
                     //Q_EMIT m_model->updated();
+                    ThumbnailManager::getInstance()->createThumbnail(info->uri(), m_watcher);
                 });
                 infoJob->queryAsync();
             }
@@ -221,6 +229,10 @@ void FileItem::findChildrenAsync()
                 //tell the model update
                 this->onChildRemoved(uri);
                 Q_EMIT this->childRemoved(uri);
+            });
+            connect(m_watcher, &FileWatcher::fileChanged, [=](const QString &uri){
+                auto index = m_model->indexFromUri(uri);
+                m_model->dataChanged(index, index);
             });
             connect(m_watcher, &FileWatcher::directoryDeleted, [=](QString uri){
                 //clean all the children, if item index is root index, cd up.

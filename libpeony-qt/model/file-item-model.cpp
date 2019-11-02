@@ -8,6 +8,8 @@
 
 #include "file-utils.h"
 
+#include "thumbnail-manager.h"
+
 #include <QIcon>
 #include <QMimeData>
 #include <QUrl>
@@ -186,6 +188,10 @@ QVariant FileItemModel::data(const QModelIndex &index, int role) const
             /**
               \todo handle the desktop file icon
               */
+            auto thumbnail = ThumbnailManager::getInstance()->tryGetThumbnail(item->m_info->uri());
+            if (!thumbnail.isNull()) {
+                return thumbnail;
+            }
             QIcon icon = QIcon::fromTheme(item->m_info->iconName(), QIcon::fromTheme("text-x-generic"));
             return QVariant(icon);
         }
