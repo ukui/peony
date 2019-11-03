@@ -9,6 +9,8 @@
 #include "file-move-operation.h"
 #include "file-trash-operation.h"
 
+#include "thumbnail-manager.h"
+
 #include <QStandardPaths>
 #include <QIcon>
 
@@ -57,7 +59,7 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
     });
 
     m_desktop_watcher = new FileWatcher("file://" + QStandardPaths::writableLocation(QStandardPaths::DesktopLocation), this);
-    //m_desktop_watcher->setMonitorChildrenChange(true);
+    m_desktop_watcher->setMonitorChildrenChange(true);
     this->connect(m_desktop_watcher, &FileWatcher::fileCreated, [=](const QString &uri){
         qDebug()<<"created"<<uri;
         auto info = FileInfo::fromUri(uri, true);
@@ -67,6 +69,7 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
         connect(job, &FileInfoJob::queryAsyncFinished, [=](){
             this->dataChanged(this->index(m_files.indexOf(info)), this->index(m_files.indexOf(info)));
             job->deleteLater();
+            ThumbnailManager::getInstance()->createThumbnail(info->uri(), m_desktop_watcher);
         });
         job->queryAsync();
     });
@@ -85,11 +88,9 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
     this->connect(m_desktop_watcher, &FileWatcher::fileChanged, [=](const QString &uri){
         for (auto info : m_files) {
             if (info->uri() == uri) {
+                this->dataChanged(indexFromUri(uri), indexFromUri(uri));
                 auto job = new FileInfoJob(info);
-                connect(job, &FileInfoJob::queryAsyncFinished, [=](){
-                    this->dataChanged(this->index(m_files.indexOf(info)), this->index(m_files.indexOf(info)));
-                    job->deleteLater();
-                });
+                job->setAutoDelete();
                 job->queryAsync();
                 return;
             }
@@ -106,6 +107,7 @@ void DesktopItemModel::refresh()
 {
     beginResetModel();
     removeRows(0, m_files.count());
+    FileInfoManager::getInstance()->clear();
     //m_trash_watcher->stopMonitor();
     //m_desktop_watcher->stopMonitor();
     m_files.clear();
@@ -145,8 +147,12 @@ QVariant DesktopItemModel::data(const QModelIndex &index, int role) const
         return info->displayName();
     case Qt::ToolTipRole:
         return info->displayName();
-    case Qt::DecorationRole:
+    case Qt::DecorationRole: {
+        auto thumbnail = ThumbnailManager::getInstance()->tryGetThumbnail(info->uri());
+        if (!thumbnail.isNull())
+            return thumbnail;
         return QIcon::fromTheme(info->iconName(), QIcon::fromTheme("text-x-generic"));
+    }
     case UriRole:
         return info->uri();
     }
@@ -158,10 +164,7 @@ void DesktopItemModel::onEnumerateFinished()
     if (m_files.count() > 3)
         return;
 
-    m_files<<m_enumerator->getChildren();
-    for (auto info : m_files) {
-        //qDebug()<<info->uri();
-    }
+    m_files<<m_enumerator->getChildren(true);
 
     //qDebug()<<m_files.count();
     this->beginResetModel();
@@ -169,11 +172,18 @@ void DesktopItemModel::onEnumerateFinished()
     this->endResetModel();
     for (auto info : m_files) {
         auto job = new FileInfoJob(info);
-        connect(job, &FileInfoJob::queryAsyncFinished, [=](){
-            this->dataChanged(this->index(m_files.indexOf(info)), this->index(m_files.indexOf(info)));
+        connect(job, &FileInfoJob::queryAsyncFinished, [=](bool successed){
+            if (successed) {
+                ThumbnailManager::getInstance()->createThumbnail(info->uri(), m_desktop_watcher);
+            }
             job->deleteLater();
         });
         job->queryAsync();
+
+        connect(info.get(), &FileInfo::updated, [=](){
+            qDebug()<<"info updated"<<info->uri();
+            this->dataChanged(this->index(m_files.indexOf(info)), this->index(m_files.indexOf(info)));
+        });
     }
 
     qDebug()<<"startMornitor";

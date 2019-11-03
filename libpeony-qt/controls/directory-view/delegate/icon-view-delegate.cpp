@@ -99,6 +99,10 @@ void IconViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
         }
     }
 
+    auto iconSizeExpected = view->iconSize();
+    auto iconRect = style->subElementRect(QStyle::SE_ItemViewItemDecoration, &opt, opt.widget);
+    int y_delta = iconSizeExpected.height() - iconRect.height();
+    opt.rect.setY(opt.rect.y() + y_delta);
     style->drawControl(QStyle::CE_ItemViewItem, &opt, painter, opt.widget);
 
     //get file info from index

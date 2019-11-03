@@ -78,12 +78,12 @@ void FileEnumerator::setEnumerateDirectory(GFile *file)
     m_root_file = g_file_dup(file);
 }
 
-const QList<std::shared_ptr<FileInfo>> FileEnumerator::getChildren()
+const QList<std::shared_ptr<FileInfo>> FileEnumerator::getChildren(bool addToHash)
 {
     //qDebug()<<"FileEnumerator::getChildren():";
     QList<std::shared_ptr<FileInfo>> children;
     for (auto uri : *m_children_uris) {
-        auto file_info = FileInfo::fromUri(uri, false);
+        auto file_info = FileInfo::fromUri(uri, addToHash);
         children<<file_info;
     }
     return children;

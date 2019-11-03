@@ -430,7 +430,7 @@ const QList<QAction *> DirectoryViewMenu::constructSearchActions()
             for (auto uri : m_selections) {
                 auto parentUri = FileUtils::getParentUri(uri);
                 if (!parentUri.isNull()) {
-                    FMWindow *newWindow = new FMWindow(uri);
+                    FMWindow *newWindow = new FMWindow(parentUri);
                     newWindow->show();
                 }
             }

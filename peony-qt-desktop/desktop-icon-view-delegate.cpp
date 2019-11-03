@@ -59,25 +59,7 @@ void DesktopIconViewDelegate::paint(QPainter *painter, const QStyleOptionViewIte
         break;
     }
 
-    //paint text shadow
-    auto opt2 = opt;
-    opt2.font = font;
-    opt2.icon = QIcon();
-    QColor black = Qt::black;
-    black.setAlpha(200);
-    opt2.palette.setColor(QPalette::Text, black);
-    black.setAlpha(225);
-    opt2.palette.setColor(QPalette::HighlightedText, black);
-    opt2.rect.moveTo(opt2.rect.topLeft() + QPoint(1, 1));
-    style->drawControl(QStyle::CE_ItemViewItem, &opt2, painter, opt.widget);
-
-    //paint item
-    auto color = QColor(230, 230, 230);
-    opt.palette.setColor(QPalette::Text, color);
-    color.setRgb(240, 240, 240);
-    opt.palette.setColor(QPalette::HighlightedText, color);
-    opt.font = font;
-
+    //paint background
     if (!view->indexWidget(index)) {
         painter->setClipRect(opt.rect);
         painter->save();
@@ -99,6 +81,30 @@ void DesktopIconViewDelegate::paint(QPainter *painter, const QStyleOptionViewIte
         }
         painter->restore();
     }
+
+    auto iconSizeExpected = view->iconSize();
+    auto iconRect = style->subElementRect(QStyle::SE_ItemViewItemDecoration, &opt, opt.widget);
+    int y_delta = iconSizeExpected.height() - iconRect.height();
+    opt.rect.setY(opt.rect.y() + y_delta);
+
+    //paint text shadow
+    auto opt2 = opt;
+    opt2.font = font;
+    opt2.icon = QIcon();
+    QColor black = Qt::black;
+    black.setAlpha(200);
+    opt2.palette.setColor(QPalette::Text, black);
+    black.setAlpha(225);
+    opt2.palette.setColor(QPalette::HighlightedText, black);
+    opt2.rect.moveTo(opt2.rect.topLeft() + QPoint(1, 1));
+    style->drawControl(QStyle::CE_ItemViewItem, &opt2, painter, opt.widget);
+
+    //paint item
+    auto color = QColor(230, 230, 230);
+    opt.palette.setColor(QPalette::Text, color);
+    color.setRgb(240, 240, 240);
+    opt.palette.setColor(QPalette::HighlightedText, color);
+    opt.font = font;
 
     style->drawControl(QStyle::CE_ItemViewItem, &opt, painter, opt.widget);
 

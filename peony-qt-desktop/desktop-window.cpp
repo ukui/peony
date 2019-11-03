@@ -168,7 +168,7 @@ void DesktopWindow::setBg(const QString &path)
         if (m_opacity > 0.95) {
             m_opacity = 1.0;
             m_bg_back_pixmap.detach();
-            m_bg_back->setPixmap(m_bg_font_pixmap);
+            m_bg_back->setPixmap(QPixmap());
             m_trans_timer.stop();
             return;
         }
