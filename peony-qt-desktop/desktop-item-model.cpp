@@ -88,11 +88,9 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
     this->connect(m_desktop_watcher, &FileWatcher::fileChanged, [=](const QString &uri){
         for (auto info : m_files) {
             if (info->uri() == uri) {
+                this->dataChanged(indexFromUri(uri), indexFromUri(uri));
                 auto job = new FileInfoJob(info);
-                connect(job, &FileInfoJob::queryAsyncFinished, [=](){
-                    this->dataChanged(this->index(m_files.indexOf(info)), this->index(m_files.indexOf(info)));
-                    job->deleteLater();
-                });
+                job->setAutoDelete();
                 job->queryAsync();
                 return;
             }
@@ -109,6 +107,7 @@ void DesktopItemModel::refresh()
 {
     beginResetModel();
     removeRows(0, m_files.count());
+    FileInfoManager::getInstance()->clear();
     //m_trash_watcher->stopMonitor();
     //m_desktop_watcher->stopMonitor();
     m_files.clear();
@@ -165,7 +164,7 @@ void DesktopItemModel::onEnumerateFinished()
     if (m_files.count() > 3)
         return;
 
-    m_files<<m_enumerator->getChildren();
+    m_files<<m_enumerator->getChildren(true);
 
     //qDebug()<<m_files.count();
     this->beginResetModel();
@@ -173,12 +172,18 @@ void DesktopItemModel::onEnumerateFinished()
     this->endResetModel();
     for (auto info : m_files) {
         auto job = new FileInfoJob(info);
-        connect(job, &FileInfoJob::queryAsyncFinished, [=](){
-            this->dataChanged(this->index(m_files.indexOf(info)), this->index(m_files.indexOf(info)));
+        connect(job, &FileInfoJob::queryAsyncFinished, [=](bool successed){
+            if (successed) {
+                ThumbnailManager::getInstance()->createThumbnail(info->uri(), m_desktop_watcher);
+            }
             job->deleteLater();
-            ThumbnailManager::getInstance()->createThumbnail(info->uri(), m_desktop_watcher);
         });
         job->queryAsync();
+
+        connect(info.get(), &FileInfo::updated, [=](){
+            qDebug()<<"info updated"<<info->uri();
+            this->dataChanged(this->index(m_files.indexOf(info)), this->index(m_files.indexOf(info)));
+        });
     }
 
     qDebug()<<"startMornitor";

@@ -40,7 +40,15 @@ void DesktopIndexWidget::paintEvent(QPaintEvent *e)
     auto view = m_delegate->getView();
     auto font = view->getViewItemFont(&m_option);
 
-    auto textOpt = m_option;
+    auto opt = m_option;
+    auto iconSizeExcepted = m_delegate->getView()->iconSize();
+    auto iconRect = QApplication::style()->subElementRect(QStyle::SE_ItemViewItemDecoration, &opt, opt.widget);
+    int y_delta = iconSizeExcepted.height() - iconRect.height();
+    opt.rect.moveTo(opt.rect.x(), opt.rect.y() + y_delta);
+
+    setFixedHeight(opt.rect.height() + y_delta);
+
+    auto textOpt = opt;
     textOpt.font = font;
     textOpt.icon = QIcon();
     auto black = QColor(Qt::black);
@@ -49,7 +57,6 @@ void DesktopIndexWidget::paintEvent(QPaintEvent *e)
     textOpt.rect.moveTo(textOpt.rect.topLeft() + QPoint(1, 1));
     QApplication::style()->drawControl(QStyle::CE_ItemViewItem, &textOpt, &p, m_delegate->getView());
 
-    auto opt = m_option;
     opt.font = font;
     auto text = opt.text;
     auto white = QColor(Qt::white);
