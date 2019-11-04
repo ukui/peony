@@ -232,10 +232,9 @@ void IconView::resizeEvent(QResizeEvent *e)
 
 void IconView::wheelEvent(QWheelEvent *e)
 {
-    //FIXME: the old rubber band color will not be cleared complete
-    //when wheel with extend selection. I have to deal with this problem
-    //as soon as possible.
     QListView::wheelEvent(e);
+    if (e->buttons() == Qt::LeftButton)
+        this->viewport()->update();
 }
 
 void IconView::bindModel(FileItemModel *sourceModel, FileItemProxyFilterSortModel *proxyModel)
