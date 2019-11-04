@@ -152,18 +152,19 @@ void IconView::dropEvent(QDropEvent *e)
 {
     m_last_index = QModelIndex();
     m_edit_trigger_timer.stop();
+    e->setDropAction(Qt::MoveAction);
+    auto proxy_index = indexAt(e->pos());
+    auto index = m_sort_filter_proxy_model->mapToSource(proxy_index);
     qDebug()<<"dropEvent";
     if (e->source() == this) {
         if (indexAt(e->pos()).isValid()) {
-            return QListView::dropEvent(e);
+            m_model->dropMimeData(e->mimeData(), Qt::MoveAction, 0, 0, index);
+            return;
         }
         else {
             return;
         }
     }
-    e->setDropAction(Qt::MoveAction);
-    auto proxy_index = indexAt(e->pos());
-    auto index = m_sort_filter_proxy_model->mapToSource(proxy_index);
     m_model->dropMimeData(e->mimeData(), Qt::MoveAction, 0, 0, index);
 }
 

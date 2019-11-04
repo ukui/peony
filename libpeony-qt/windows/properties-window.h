@@ -2,6 +2,7 @@
 #define PROPERTIESWINDOW_H
 
 #include <QTabWidget>
+#include <QMainWindow>
 #include "peony-core_global.h"
 
 #include <QMap>
@@ -30,11 +31,20 @@ private:
     QMap<int, QString> m_sorted_factory_map;
 };
 
-class PEONYCORESHARED_EXPORT PropertiesWindow : public QTabWidget
+class PEONYCORESHARED_EXPORT PropertiesWindow : public QMainWindow
 {
     Q_OBJECT
 public:
     explicit PropertiesWindow(const QStringList &uris, QWidget *parent = nullptr);
+
+};
+
+class PropertiesWindowPrivate : public QTabWidget
+{
+    friend class PropertiesWindow;
+    Q_OBJECT
+private:
+    explicit PropertiesWindowPrivate(const QStringList &uris, QWidget *parent = nullptr);
 
 };
 

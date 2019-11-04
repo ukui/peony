@@ -62,8 +62,16 @@ PropertiesWindowTabPagePluginIface *PropertiesWindowPluginManager::getFactory(co
     return m_factory_hash.value(id);
 }
 
+PropertiesWindow::PropertiesWindow(const QStringList &uris, QWidget *parent) : QMainWindow (parent)
+{
+    setAttribute(Qt::WA_DeleteOnClose);
+    setContentsMargins(15, 15, 15, 15);
+    setMinimumSize(360, 480);
+    setCentralWidget(new PropertiesWindowPrivate(uris, this));
+}
+
 //properties window
-PropertiesWindow::PropertiesWindow(const QStringList &uris, QWidget *parent) : QTabWidget(parent)
+PropertiesWindowPrivate::PropertiesWindowPrivate(const QStringList &uris, QWidget *parent) : QTabWidget(parent)
 {
     setTabsClosable(false);
     setMovable(false);

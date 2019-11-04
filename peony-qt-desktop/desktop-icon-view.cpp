@@ -320,6 +320,14 @@ void DesktopIconView::dragMoveEvent(QDragMoveEvent *e)
 void DesktopIconView::dropEvent(QDropEvent *e)
 {
     qDebug()<<"drop event";
+    /*!
+      \todo
+      fix the bug that move drop action can not move the desktop
+      item to correct position.
+
+      i use copy action to avoid this bug, but the drop indicator
+      is incorrect.
+      */
     m_edit_trigger_timer.stop();
     if (this == e->source()) {
         return QListView::dropEvent(e);

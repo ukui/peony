@@ -34,6 +34,6 @@ HEADERS += \
 DESTDIR = ../../testdir
 
 unix {
-    target.path = /usr/lib/peony-qt-extension
+    target.path = /usr/lib/peony-qt-extensions
     INSTALLS += target
 }
