@@ -167,9 +167,11 @@ void DirectoryViewContainer::switchViewType(const QString &viewId)
     auto sortOrder = 0;
 
     auto oldView = m_proxy->getView();
+    QStringList selection;
     if (oldView) {
         sortType = oldView->getSortType();
         sortOrder = oldView->getSortOrder();
+        selection = oldView->getSelections();
         m_layout->removeWidget(dynamic_cast<QWidget*>(oldView));
     }
     auto view = factory->create();
@@ -183,6 +185,9 @@ void DirectoryViewContainer::switchViewType(const QString &viewId)
     m_proxy->switchView(view);
     m_layout->addWidget(dynamic_cast<QWidget*>(view), Qt::AlignBottom);
     DirectoryViewFactoryManager::getInstance()->setDefaultViewId(viewId);
+    if (!selection.isEmpty()) {
+        view->setSelections(selection);
+    }
 
     Q_EMIT viewTypeChanged();
 }

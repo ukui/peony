@@ -4,9 +4,12 @@
 
 #include "file-info-manager.h"
 
+#include <gio/gdesktopappinfo.h>
+
 #include <QDebug>
 #include <QDateTime>
 #include <QIcon>
+#include <QUrl>
 
 using namespace Peony;
 
@@ -222,6 +225,22 @@ void FileInfoJob::refreshInfoContents(GFileInfo *new_info)
     QDateTime date = QDateTime::fromMSecsSinceEpoch(info->m_modified_time*1000);
     info->m_modified_date = date.toString(Qt::SystemLocaleShortDate);
 
+    if (info->isDesktopFile()) {
+        QUrl url = info->uri();
+        GDesktopAppInfo *desktop_info = g_desktop_app_info_new_from_filename(url.path().toUtf8());
+        auto string = g_desktop_app_info_get_locale_string(desktop_info, "GenericName");
+        if (string) {
+            info->m_display_name = string;
+            g_free(string);
+        } else {
+            string = g_desktop_app_info_get_string(desktop_info, "GenericName");
+            if (string) {
+                info->m_display_name = string;
+                g_free(string);
+            }
+        }
+        g_object_unref(desktop_info);
+    }
     Q_EMIT info->updated();
     m_info->m_mutex.unlock();
 }

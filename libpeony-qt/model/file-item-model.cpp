@@ -219,8 +219,12 @@ QVariant FileItemModel::data(const QModelIndex &index, int role) const
     }
     case FileType:
         switch (role) {
-        case Qt::DisplayRole:
+        case Qt::DisplayRole: {
+            if (item->m_info->isSymbolLink()) {
+                return QVariant(tr("Symbol Link, ") + item->m_info->fileType());
+            }
             return QVariant(item->m_info->fileType());
+        }
         default:
             return QVariant();
         }

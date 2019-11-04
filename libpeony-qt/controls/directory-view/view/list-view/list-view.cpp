@@ -144,7 +144,8 @@ void ListView::setSelections(const QStringList &uris)
     for (auto uri: uris) {
         const QModelIndex index = m_proxy_model->indexFromUri(uri);
         if (index.isValid()) {
-            selectionModel()->select(index, QItemSelectionModel::Select);
+            auto flags = QItemSelectionModel::Select|QItemSelectionModel::Rows;
+            selectionModel()->select(index, flags);
         }
     }
 }

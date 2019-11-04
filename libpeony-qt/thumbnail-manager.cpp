@@ -50,7 +50,7 @@ void ThumbnailManager::createThumbnail(const QString &uri, FileWatcher *watcher)
                     m_mutex.unlock();
                 }
             });
-        } else if (uri.endsWith(".desktop") /*info->isDesktopFile()*/) {
+        } else if (info->isDesktopFile()) {
             qDebug()<<"is desktop file"<<uri;
             //get desktop file icon.
             //async
