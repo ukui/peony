@@ -32,6 +32,7 @@ public:
 protected:
     void fillActions();
     const QList<QAction *> constructOpenOpActions();
+    const QList<QAction *> constructCreateTemplateActions();
     const QList<QAction *> constructViewOpActions();
     const QList<QAction *> constructFileOpActions();
     const QList<QAction *> constructMenuPluginActions(); //directory view menu extension.

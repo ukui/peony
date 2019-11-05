@@ -26,6 +26,11 @@
 #include <QUrl>
 #include <QMessageBox>
 
+#include <QFileInfo>
+#include <QDir>
+#include <QStandardPaths>
+#include <QFileIconProvider>
+
 #include <QDebug>
 
 using namespace Peony;
@@ -67,6 +72,11 @@ void DirectoryViewMenu::fillActions()
     //add open actions
     auto openActions = constructOpenOpActions();
     if (!openActions.isEmpty())
+        addSeparator();
+
+    //create template actions
+    auto templateActions = constructCreateTemplateActions();
+    if (!templateActions.isEmpty())
         addSeparator();
 
     //add view actions
@@ -204,6 +214,49 @@ const QList<QAction *> DirectoryViewMenu::constructOpenOpActions()
                 }
             });
         }
+    }
+
+    return l;
+}
+
+const QList<QAction *> DirectoryViewMenu::constructCreateTemplateActions()
+{
+    QList<QAction *> l;
+    if (m_selections.isEmpty()) {
+        auto createAction = new QAction(tr("&New..."), this);
+        l<<createAction;
+        QMenu *subMenu = new QMenu(this);
+        createAction->setMenu(subMenu);
+        addAction(createAction);
+
+        //enumerate template dir
+        QDir templateDir(g_get_user_special_dir(G_USER_DIRECTORY_TEMPLATES));
+        auto templates = templateDir.entryList(QDir::AllEntries|QDir::NoDotAndDotDot);
+        if (!templates.isEmpty()) {
+            QFileIconProvider p;
+            for (auto t : templates) {
+                QFileInfo info(t);
+                QAction *action = new QAction(p.icon(info), info.baseName(), this);
+                connect(action, &QAction::triggered, [=](){
+                    FileOperationUtils::create(m_directory, t, CreateTemplateOperation::Template);
+                });
+                subMenu->addAction(action);
+            }
+            subMenu->addSeparator();
+        }
+
+         QList<QAction *> actions;
+        auto createEmptyFileAction = new QAction(QIcon::fromTheme("document-new-symbolic"), tr("Empty &File"), this);
+        actions<<createEmptyFileAction;
+        connect(actions.last(), &QAction::triggered, [=](){
+            FileOperationUtils::create(m_directory);
+        });
+        auto createFolderActions = new QAction(QIcon::fromTheme("folder-new-symbolic"), tr("&Folder"), this);
+        actions<<createFolderActions;
+        connect(actions.last(), &QAction::triggered, [=](){
+            FileOperationUtils::create(m_directory, nullptr, CreateTemplateOperation::EmptyFolder);
+        });
+        subMenu->addActions(actions);
     }
 
     return l;

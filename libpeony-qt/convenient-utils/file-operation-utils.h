@@ -3,6 +3,7 @@
 
 #include <QStringList>
 #include <memory>
+#include "create-template-operation.h"
 
 namespace Peony {
 
@@ -23,6 +24,7 @@ public:
     static void link(const QString &srcUri, const QString &destUri, bool addHistory);
     static void restore(const QString &uriInTrash);
     static void restore(const QStringList &urisInTrash);
+    static void create(const QString &destDirUri, const QString &name = nullptr, CreateTemplateOperation::Type type = CreateTemplateOperation::EmptyFile);
 
     /*!
      * \brief queryFileInfo

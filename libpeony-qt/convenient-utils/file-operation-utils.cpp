@@ -87,3 +87,10 @@ void FileOperationUtils::restore(const QStringList &urisInTrash)
     //FIXME: support undo?
     fileOpMgr->startOperation(untrashOp, false);
 }
+
+void FileOperationUtils::create(const QString &destDirUri, const QString &name, CreateTemplateOperation::Type type)
+{
+    auto fileOpMgr = FileOperationManager::getInstance();
+    auto createOp = new CreateTemplateOperation(destDirUri, type, name);
+    fileOpMgr->startOperation(createOp, true);
+}
