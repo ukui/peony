@@ -4,6 +4,7 @@
 
 int main(int argc, char *argv[])
 {
+    PeonyDesktopApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     PeonyDesktopApplication a(argc, argv);
     if (a.isSecondary())
         return 0;

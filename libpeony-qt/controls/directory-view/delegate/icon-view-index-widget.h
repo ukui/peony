@@ -33,7 +33,7 @@ private:
     QModelIndex m_index;
     const IconViewDelegate *m_delegate;
 
-    std::shared_ptr<FileInfo> m_info;
+    std::weak_ptr<FileInfo> m_info;
 };
 
 }

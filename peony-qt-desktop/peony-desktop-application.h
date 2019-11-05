@@ -12,6 +12,9 @@ public:
 
 protected Q_SLOTS:
     void parseCmd(quint32 id, QByteArray msg, bool isPrimary);
+
+private:
+    bool m_first_parse = true;
 };
 
 #endif // PEONYDESKTOPAPPLICATION_H

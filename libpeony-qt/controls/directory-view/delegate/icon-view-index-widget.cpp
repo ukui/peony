@@ -23,25 +23,12 @@ IconViewIndexWidget::IconViewIndexWidget(const IconViewDelegate *delegate, const
     setMouseTracking(true);
 
     m_option = option;
-    m_option.features.setFlag(QStyleOptionViewItem::WrapText);
-    m_option.textElideMode = Qt::ElideNone;
-    m_option.widget = nullptr;
-
     m_index = index;
-
-    //TODO: should i create a new view (with a unlimte grid height)
-    //and delegate for indexWidget item's calculation?
-    //For now i couldn't use this delegate to calculate the real text
-    //height.
-    delegate->initStyleOption(&m_option, index);
 
     m_delegate = delegate;
 
     QSize size = delegate->sizeHint(option, index);
     setMinimumSize(size);
-
-    auto opt = m_option;
-    qDebug()<<opt;
 
     //extra emblems
     auto proxy_model = static_cast<FileItemProxyFilterSortModel*>(delegate->getView()->model());
@@ -49,6 +36,24 @@ IconViewIndexWidget::IconViewIndexWidget(const IconViewDelegate *delegate, const
     if (item) {
         m_info = item->info();
     }
+
+    m_delegate->initStyleOption(&m_option, m_index);
+    m_option.features.setFlag(QStyleOptionViewItem::WrapText);
+    m_option.textElideMode = Qt::ElideNone;
+
+    auto opt = m_option;
+    opt.rect.setHeight(9999);
+    opt.rect.moveTo(0, 0);
+
+    //qDebug()<<m_option.rect;
+    auto iconExpectedSize = m_delegate->getView()->iconSize();
+    QRect iconRect = QApplication::style()->subElementRect(QStyle::SE_ItemViewItemDecoration, &opt, opt.widget);
+    QRect textRect = QApplication::style()->subElementRect(QStyle::SE_ItemViewItemText, &opt, opt.widget);
+    auto y_delta = iconExpectedSize.height() - iconRect.height();
+    opt.rect.moveTo(opt.rect.x(), opt.rect.y() + y_delta);
+    setFixedHeight(iconExpectedSize.height() + textRect.height() + 20);
+
+    m_option = opt;
 }
 
 void IconViewIndexWidget::paintEvent(QPaintEvent *e)
@@ -57,16 +62,7 @@ void IconViewIndexWidget::paintEvent(QPaintEvent *e)
     QPainter p(this);
     //p.fillRect(0, 0, 999, 999, Qt::red);
 
-    m_option.rect.setWidth(size().width());
-    m_option.rect.setHeight(9999);
-    m_option.rect.moveTo(0, 0);
 
-    //qDebug()<<m_option.rect;
-    QRect iconRect = QApplication::style()->subElementRect(QStyle::SE_ItemViewItemDecoration, &m_option, m_delegate->getView());
-    QRect textRect = QApplication::style()->subElementRect(QStyle::SE_ItemViewItemText, &m_option, m_delegate->getView());
-    QRect rect = QRect(0, 0, textRect.width(), textRect.height() + iconRect.height() + 20);
-    m_option.rect.size() = rect.size();
-    resize(rect.size());
     IconView *view = m_delegate->getView();
     auto visualRect = view->visualRect(m_index);
     this->move(visualRect.topLeft());
@@ -74,15 +70,15 @@ void IconViewIndexWidget::paintEvent(QPaintEvent *e)
     //qDebug()<<m_option.backgroundBrush;
     //qDebug()<<this->size();
 
-    QRect tmp(0, iconRect.height(), textRect.width(), textRect.height());
-    p.fillRect(this->rect(), m_delegate->selectedBrush());
-    QApplication::style()->drawControl(QStyle::CE_ItemViewItem, &m_option, &p, m_delegate->getView());
+    auto opt = m_option;
+    p.fillRect(opt.rect, m_delegate->selectedBrush());
+    QApplication::style()->drawControl(QStyle::CE_ItemViewItem, &opt, &p, opt.widget);
 
     //extra emblems
-    if (!m_info) {
+    if (!m_info.lock()) {
         return;
     }
-    auto info = m_info;
+    auto info = m_info.lock();
     //paint symbolic link emblems
     if (info->isSymbolLink()) {
         QIcon icon = QIcon::fromTheme("emblem-symbolic-link");
@@ -96,6 +92,7 @@ void IconViewIndexWidget::paintEvent(QPaintEvent *e)
         return;
     }
 
+    auto rect = this->rect();
     if (!info->canRead()) {
         QIcon icon = QIcon::fromTheme("emblem-unreadable");
         icon.paint(&p, rect.x() + 10, rect.y() + 10, 20, 20);

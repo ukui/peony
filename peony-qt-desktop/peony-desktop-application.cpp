@@ -44,10 +44,16 @@ void PeonyDesktopApplication::parseCmd(quint32 id, QByteArray msg, bool isPrimar
     parser.addOption(desktopOption);
 
     if (isPrimary) {
+        if (m_first_parse) {
+            auto helpOption = parser.addHelpOption();
+            auto versionOption = parser.addVersionOption();
+            m_first_parse = false;
+        }
+
         Q_UNUSED(id)
         const QStringList args = QString(msg).split(' ');
 
-        parser.parse(args);
+        parser.process(args);
         if (parser.isSet(quitOption)) {
             QTimer::singleShot(1, [=](){
                 qApp->quit();
@@ -105,5 +111,4 @@ void PeonyDesktopApplication::parseCmd(quint32 id, QByteArray msg, bool isPrimar
 
         sendMessage(msg);
     }
-
 }

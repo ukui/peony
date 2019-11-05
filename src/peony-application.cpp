@@ -117,7 +117,7 @@ PeonyApplication::PeonyApplication(int &argc, char *argv[], const char *applicat
     QFile file(":/data/libpeony-qt-styled.qss");
     file.open(QFile::ReadOnly);
     setStyleSheet(QString::fromLatin1(file.readAll()));
-    qDebug()<<file.readAll();
+    //qDebug()<<file.readAll();
     file.close();
 
     //setStyle(QStyleFactory::create("windows"));
@@ -395,11 +395,22 @@ PeonyApplication::PeonyApplication(int &argc, char *argv[], const char *applicat
 
 void PeonyApplication::parseCmd(quint32 id, QByteArray msg)
 {
-    qDebug()<<"parse cmd:"<<"id:"<<id<<"msg:"<<msg;
-    const QStringList args = QString(msg).split(' ');
-    qDebug()<<args;
+    QCommandLineParser parser;
+    if (m_first_parse) {
+        parser.addHelpOption();
+        parser.addVersionOption();
+        m_first_parse = false;
+    }
+    parser.addOption(quitOption);
+    parser.addOption(showItemsOption);
+    parser.addOption(showFoldersOption);
+    parser.addOption(showPropertiesOption);
 
-    parser.parse(args);
+    //qDebug()<<"parse cmd:"<<"id:"<<id<<"msg:"<<msg;
+    const QStringList args = QString(msg).split(' ');
+    //qDebug()<<args;
+
+    parser.process(args);
     if (parser.isSet(quitOption)) {
         QTimer::singleShot(1, [=](){
             qApp->quit();

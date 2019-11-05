@@ -250,15 +250,16 @@ DesktopIconView::ZoomLevel DesktopIconView::zoomLevel()
 
 void DesktopIconView::mousePressEvent(QMouseEvent *e)
 {
+    if (!indexAt(e->pos()).isValid()) {
+        clearAllIndexWidgets();
+        clearSelection();
+    }
+
     QListView::mousePressEvent(e);
 
     //qDebug()<<m_last_index.data();
     if (e->button() != Qt::LeftButton) {
         return;
-    }
-
-    if (!indexAt(e->pos()).isValid()) {
-        clearAllIndexWidgets();
     }
 
     if (indexAt(e->pos()) == m_last_index && m_last_index.isValid()) {
