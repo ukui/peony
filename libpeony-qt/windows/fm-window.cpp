@@ -84,7 +84,6 @@ FMWindow::FMWindow(const QString &uri, QWidget *parent) : QMainWindow (parent)
 
     m_splitter->addWidget(m_tab);
     m_splitter->setStretchFactor(0, 0);
-    m_splitter->setStretchFactor(1, 0);
     m_splitter->setStretchFactor(1, 1);
     m_splitter->setStretchFactor(2, 1);
 
@@ -411,9 +410,13 @@ void FMWindow::advanceSearch()
         else
              m_advance_target_path = "file://" + target_path;
 
-        m_filter_bar->updateLocation(target_path);
+        m_filter_bar->updateLocation();
         m_side_bar_container->setCurrentWidget(m_filter);
     }
+    //to solve back up automatic pop up issue
+    QTimer::singleShot(100, this, [=](){
+        m_search_bar->hideTableView();
+    });
 }
 
 void FMWindow::clearRecord()

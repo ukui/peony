@@ -37,7 +37,7 @@ const QString SearchVFSUriParser::getSearchUriTargetDirectory(const QString &sea
     auto list = string.split("&");
     for (auto arg : list) {
         if (arg.startsWith("search_uris=")) {
-            qDebug()<<arg;
+            qDebug()<<"arg:"<<arg;
             auto tmp = arg.remove("search_uris=");
             auto uris = tmp.split(",");
             if (uris.count() == 1) {
@@ -47,7 +47,10 @@ const QString SearchVFSUriParser::getSearchUriTargetDirectory(const QString &sea
             QStringList names;
             for (auto uri : uris) {
                 auto displayName = FileUtils::getFileDisplayName(uri);
-                tmp = tmp + ", " + displayName;
+                if (tmp == nullptr)
+                    tmp = displayName;
+                else
+                    tmp = tmp + ", " + displayName;
             }
             return tmp;
         }
