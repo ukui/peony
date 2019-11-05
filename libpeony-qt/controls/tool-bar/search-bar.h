@@ -32,6 +32,7 @@ public Q_SLOTS:
     void updateTableModel();
     void onTableClicked(const QModelIndex &index);
     void clearSearchRecord();
+    void hideTableView();
 
 private:
     FMWindow *m_top_window;

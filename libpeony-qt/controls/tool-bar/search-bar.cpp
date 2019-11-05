@@ -76,6 +76,9 @@ void SearchBar::clearSearchRecord()
 {
     m_model->clear();
     initTableModel();
+    QTimer::singleShot(100, this, [=](){
+        m_table_view->setVisible(false);
+    });
 }
 
 void SearchBar::initTableModel()
@@ -87,6 +90,7 @@ void SearchBar::initTableModel()
     m_model->insertRow(0,firstRow);
     m_model->item(0)->setForeground(QBrush(QColor(10,10,255)));
     m_table_view->setMinimumHeight(25);
+    m_table_view->setVisible(true);
 }
 
 void SearchBar::updateTableModel()
@@ -133,4 +137,9 @@ void SearchBar::onTableClicked(const QModelIndex &index)
         clearSearchRecord();
     }
     this->setText("");
+}
+
+void SearchBar::hideTableView()
+{
+    m_table_view->setVisible(false);
 }

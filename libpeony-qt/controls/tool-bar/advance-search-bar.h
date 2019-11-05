@@ -25,7 +25,8 @@ public Q_SLOTS:
     void searchFilter();
     void filterUpdate();
     void setShowHidden();
-    void updateLocation(const QString uri);
+    void updateLocation();
+    void pathChanged();
 
 public:
     //advance search filter options
@@ -34,17 +35,17 @@ public:
     QStringList m_file_size_list = {tr("all"), tr("tiny(0-16K)"), tr("small(16k-1M)"), tr("medium(1M-100M)"), tr("big(100M-1G)"),tr("large(>1G)")};
 
 protected:
-    void init(bool hasTopWindow);
+    void init();
 
 private:
     FMWindow *m_top_window;
 
     QWidget *m_filter;
-    QLineEdit *m_advanced_key;
+    QLineEdit *m_advanced_key, *m_search_path;
     QComboBox *typeViewCombox, *timeViewCombox, *sizeViewCombox;
-    AdvancedLocationBar *m_advance_bar;
 
-    QString m_advance_target_path;
+    QString m_advance_target_path, m_last_show_name;
+    QList<QString> m_choosed_paths;
 };
 
 }
