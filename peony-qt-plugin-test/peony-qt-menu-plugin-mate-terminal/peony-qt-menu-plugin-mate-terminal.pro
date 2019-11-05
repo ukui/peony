@@ -37,7 +37,12 @@ HEADERS += \
 
 DESTDIR = ../../testdir
 
+TRANSLATIONS += translations/peony-qt-mate-terminal-extension_zh_CN.ts
+
 unix {
     target.path = /usr/lib/peony-qt-extensions
     INSTALLS += target
 }
+
+RESOURCES += \
+    peony-qt-menu-plugin-mate-terminal.qrc

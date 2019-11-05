@@ -5,12 +5,19 @@
 #include <QAction>
 #include <QUrl>
 
+#include <QTranslator>
+#include <QLocale>
+#include <QApplication>
+
 #include <QDebug>
 
 using namespace Peony;
 
 MateTerminalMenuPlugin::MateTerminalMenuPlugin(QObject *parent) : QObject (parent)
 {
+    QTranslator *t = new QTranslator(this);
+    qDebug()<<"\n\n\n\n\n\n\ntranslate:"<<t->load(":/translations/peony-qt-mate-terminal-extension_"+QLocale::system().name());
+    QApplication::installTranslator(t);
 }
 
 void openTerminal(const QString &uri){
