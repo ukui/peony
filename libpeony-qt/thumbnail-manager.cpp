@@ -28,6 +28,10 @@ ThumbnailManager *ThumbnailManager::getInstance()
 
 void ThumbnailManager::createThumbnail(const QString &uri, FileWatcher *watcher)
 {
+    QUrl url = uri;
+    if (!url.isLocalFile())
+        return;
+
     qDebug()<<"create thumbnail"<<uri;
     //NOTE: we should do createThumbnail() after we have queried the file's info.
     auto info = FileInfo::fromUri(uri, false);
@@ -35,7 +39,6 @@ void ThumbnailManager::createThumbnail(const QString &uri, FileWatcher *watcher)
         if (info->mimeType().startsWith("image/")) {
             QtConcurrent::run([=]() {
                 QIcon thumbnail;
-                QUrl url = uri;
                 thumbnail.addFile(url.path());
                 if (!thumbnail.isNull()) {
                     //add lock
