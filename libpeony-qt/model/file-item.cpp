@@ -89,6 +89,13 @@ void FileItem::findChildrenAsync()
     //the root item will be delete, so we should cancel the previous enumeration.
     enumerator->connect(this, &FileItem::cancelFindChildren, enumerator, &FileEnumerator::cancel);
     enumerator->connect(enumerator, &FileEnumerator::prepared, [=](std::shared_ptr<GErrorWrapper> err){
+        auto target = FileUtils::getTargetUri(m_info->uri());
+        if (!target.isEmpty()) {
+            enumerator->cancel();
+            enumerator->deleteLater();
+            m_model->setRootUri(target);
+            return;
+        }
         if (err) {
             qDebug()<<err->message();
             if (err.get()->code() == G_IO_ERROR_NOT_FOUND) {
