@@ -66,7 +66,7 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
         m_files<<info;
         this->insertRows(m_files.count() - 1, 1);
         auto job = new FileInfoJob(info);
-        connect(job, &FileInfoJob::queryAsyncFinished, [=](){
+        connect(job, &FileInfoJob::infoUpdated, [=](){
             this->dataChanged(this->index(m_files.indexOf(info)), this->index(m_files.indexOf(info)));
             job->deleteLater();
             ThumbnailManager::getInstance()->createThumbnail(info->uri(), m_desktop_watcher);
@@ -148,7 +148,7 @@ QVariant DesktopItemModel::data(const QModelIndex &index, int role) const
     case Qt::ToolTipRole:
         return info->displayName();
     case Qt::DecorationRole: {
-        auto thumbnail = ThumbnailManager::getInstance()->tryGetThumbnail(info->uri());
+        auto thumbnail = info->thumbnail();
         if (!thumbnail.isNull())
             return thumbnail;
         return QIcon::fromTheme(info->iconName(), QIcon::fromTheme("text-x-generic"));

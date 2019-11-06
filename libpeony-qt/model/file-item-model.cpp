@@ -188,7 +188,7 @@ QVariant FileItemModel::data(const QModelIndex &index, int role) const
             /**
               \todo handle the desktop file icon
               */
-            auto thumbnail = ThumbnailManager::getInstance()->tryGetThumbnail(item->m_info->uri());
+            auto thumbnail = item->info()->thumbnail();
             if (!thumbnail.isNull()) {
                 return thumbnail;
             }

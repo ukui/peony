@@ -43,13 +43,14 @@ void ThumbnailManager::createThumbnail(const QString &uri, FileWatcher *watcher)
                 if (!thumbnail.isNull()) {
                     //add lock
                     m_mutex.lock();
-                    m_hash.remove(uri);
-                    m_hash.insert(uri, thumbnail);
+                    //m_hash.remove(uri);
+                    //m_hash.insert(uri, thumbnail);
                     auto info = FileInfo::fromUri(uri);
                     Q_EMIT info->updated();
                     if (watcher) {
                         watcher->fileChanged(uri);
                     }
+                    info->setThumbnail(thumbnail);
                     m_mutex.unlock();
                 }
             });
@@ -77,13 +78,14 @@ void ThumbnailManager::createThumbnail(const QString &uri, FileWatcher *watcher)
                 if (!thumbnail.isNull()) {
                     //add lock
                     m_mutex.lock();
-                    m_hash.remove(uri);
-                    m_hash.insert(uri, thumbnail);
+                    //m_hash.remove(uri);
+                    //m_hash.insert(uri, thumbnail);
                     auto info = FileInfo::fromUri(uri);
                     Q_EMIT info->updated();
                     if (watcher) {
                         watcher->fileChanged(uri);
                     }
+                    info->setThumbnail(thumbnail);
                     m_mutex.unlock();
                 }
             });

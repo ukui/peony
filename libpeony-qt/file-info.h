@@ -10,6 +10,8 @@
 
 #include <QMutex>
 
+#include <QIcon>
+
 namespace Peony {
 
 class FileInfoJob;
@@ -90,6 +92,9 @@ public:
 
     GFile *gFileHandle() {return m_file;}
 
+    const QIcon thumbnail() {return m_thumbnail;}
+    void setThumbnail(const QIcon &thumbnail) {m_thumbnail = thumbnail;}
+
 Q_SIGNALS:
     void updated();
 
@@ -137,6 +142,8 @@ private:
      * This cancellable is used in async query file info in FileInfoJob instance.
      */
     GCancellable *m_cancellable = nullptr;
+
+    QIcon m_thumbnail;
 
     QMutex m_mutex;
 };
