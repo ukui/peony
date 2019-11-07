@@ -23,6 +23,7 @@ public:
     bool isDesktopFileAction();
     const QString getAppInfoName();
     const QString getAppInfoDisplayName();
+    GAppInfo *gAppInfo() {return m_app_info;}
 
 protected:
     bool isValid();

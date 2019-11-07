@@ -133,3 +133,15 @@ void FileLaunchManager::openAsync(const QString &uri)
     action->lauchFileAsync();
     action->deleteLater();
 }
+
+void FileLaunchManager::setDefaultLauchAction(const QString &uri, FileLaunchAction *action)
+{
+    auto info = FileInfo::fromUri(uri, false);
+    if (info->mimeType().isEmpty()) {
+        FileInfoJob job(info);
+        job.querySync();
+    }
+    g_app_info_set_as_default_for_type(action->gAppInfo(),
+                                       info->mimeType().toUtf8(),
+                                       nullptr);
+}

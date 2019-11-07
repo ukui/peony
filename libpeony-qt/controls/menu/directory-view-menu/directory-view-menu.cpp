@@ -21,6 +21,7 @@
 
 #include "file-launch-manager.h"
 #include "file-launch-action.h"
+#include "file-lauch-dialog.h"
 
 #include <QDesktopServices>
 #include <QUrl>
@@ -182,7 +183,10 @@ const QList<QAction *> DirectoryViewMenu::constructOpenOpActions()
                     openWithMenu->addAction(static_cast<QAction*>(action));
                 }
                 openWithMenu->addSeparator();
-                openWithMenu->addAction(tr("&More applications..."));
+                openWithMenu->addAction(tr("&More applications..."), [=](){
+                    FileLauchDialog d(m_selections.first());
+                    d.exec();
+                });
                 openWithAction->setMenu(openWithMenu);
             } else {
                 l<<addAction(tr("&Open"));
