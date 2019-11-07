@@ -17,7 +17,10 @@ class FileLaunchAction : public QAction
 {
     Q_OBJECT
 public:
-    explicit FileLaunchAction(const QString &uri, GAppInfo *app_info, QObject *parent = nullptr);
+    explicit FileLaunchAction(const QString &uri,
+                              GAppInfo *app_info,
+                              bool forceWithArg = false,
+                              QObject *parent = nullptr);
     ~FileLaunchAction() override;
     const QString getUri();
     bool isDesktopFileAction();
@@ -29,8 +32,8 @@ protected:
     bool isValid();
 
 public Q_SLOTS:
-    void lauchFileSync();
-    void lauchFileAsync();
+    void lauchFileSync(bool forceWithArg = false);
+    void lauchFileAsync(bool forceWithArg = false);
 
 private:
     QString m_uri;
@@ -40,6 +43,8 @@ private:
     QIcon m_icon;
     QString m_info_name;
     QString m_info_display_name;
+
+    bool m_force_with_arg = false;
 };
 
 }

@@ -47,7 +47,7 @@ FileLauchDialog::FileLauchDialog(const QString &uri, QWidget *parent) : QDialog(
             if (m_check_box->isChecked()) {
                 FileLaunchManager::setDefaultLauchAction(m_uri, action);
             }
-            action->lauchFileAsync();
+            action->lauchFileAsync(true);
         } else {
             FileLaunchManager::openAsync(m_uri);
         }

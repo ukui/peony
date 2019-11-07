@@ -6,12 +6,15 @@
 
 #include <QMessageBox>
 
+#include <QDebug>
+
 using namespace Peony;
 
-FileLaunchAction::FileLaunchAction(const QString &uri, GAppInfo *app_info, QObject *parent) : QAction(parent)
+FileLaunchAction::FileLaunchAction(const QString &uri, GAppInfo *app_info, bool forceWithArg, QObject *parent) : QAction(parent)
 {
     m_uri = uri;
     m_app_info = static_cast<GAppInfo*>(g_object_ref(app_info));
+    m_force_with_arg = forceWithArg;
 
     if (!isValid())
         return;
@@ -26,7 +29,9 @@ FileLaunchAction::FileLaunchAction(const QString &uri, GAppInfo *app_info, QObje
     setText(m_info_name);
     m_info_display_name = g_app_info_get_display_name(m_app_info);
 
-    connect(this, &QAction::triggered, this, &FileLaunchAction::lauchFileAsync);
+    connect(this, &QAction::triggered, [=](){
+        this->lauchFileAsync(m_force_with_arg);
+    });
 }
 
 FileLaunchAction::~FileLaunchAction()
@@ -60,14 +65,14 @@ const QString FileLaunchAction::getAppInfoDisplayName()
     return m_info_display_name;
 }
 
-void FileLaunchAction::lauchFileSync()
+void FileLaunchAction::lauchFileSync(bool forceWithArg)
 {
     if (!isValid()) {
         QMessageBox::critical(nullptr, tr("Open Failed"), tr("Can not open %1").arg(m_uri));
         return;
     }
 
-    if (isDesktopFileAction()) {
+    if (isDesktopFileAction() && !forceWithArg) {
         g_app_info_launch(m_app_info, nullptr, nullptr, nullptr);
     } else {
         GList *l = nullptr;
@@ -81,7 +86,7 @@ void FileLaunchAction::lauchFileSync()
     }
 
     return;
-    if (isDesktopFileAction()) {
+    if (isDesktopFileAction() && !forceWithArg) {
         auto desktop_info = G_DESKTOP_APP_INFO(m_app_info);
         g_desktop_app_info_launch_uris_as_manager (desktop_info,
                                                    nullptr,
@@ -99,14 +104,14 @@ void FileLaunchAction::lauchFileSync()
     }
 }
 
-void FileLaunchAction::lauchFileAsync()
+void FileLaunchAction::lauchFileAsync(bool forceWithArg)
 {
     if (!isValid()) {
         QMessageBox::critical(nullptr, tr("Open Failed"), tr("Can not open %1").arg(m_uri));
         return;
     }
 
-    if (isDesktopFileAction()) {
+    if (isDesktopFileAction() && !forceWithArg) {
         g_app_info_launch_uris_async(m_app_info, nullptr,
                                      nullptr, nullptr,
                                      nullptr, nullptr);
@@ -124,7 +129,7 @@ void FileLaunchAction::lauchFileAsync()
     }
 
     return;
-    if (isDesktopFileAction()) {
+    if (isDesktopFileAction() && !forceWithArg) {
         auto desktop_info = G_DESKTOP_APP_INFO(m_app_info);
         g_desktop_app_info_launch_uris_as_manager (desktop_info,
                                                    nullptr,
