@@ -112,19 +112,24 @@ void FileLaunchAction::lauchFileAsync(bool forceWithArg)
     }
 
     if (isDesktopFileAction() && !forceWithArg) {
+#if GLIB_CHECK_VERSION(2, 60, 0)
         g_app_info_launch_uris_async(m_app_info, nullptr,
                                      nullptr, nullptr,
                                      nullptr, nullptr);
+#else
+        g_app_info_launch_uris(m_app_info, nullptr, nullptr, nullptr);
+#endif
     } else {
         GList *l = nullptr;
         char *uri = g_strdup(m_uri.toUtf8().constData());
         l = g_list_prepend(l, uri);
-        g_app_info_launch_uris_async(m_app_info,
-                                     l,
-                                     nullptr,
-                                     nullptr,
-                                     nullptr,
-                                     nullptr);
+#if GLIB_CHECK_VERSION(2, 60, 0)
+        g_app_info_launch_uris_async(m_app_info, l,
+                                     nullptr, nullptr,
+                                     nullptr, nullptr);
+#else
+        g_app_info_launch_uris(m_app_info, l, nullptr, nullptr);
+#endif
         g_list_free(l);
     }
 
