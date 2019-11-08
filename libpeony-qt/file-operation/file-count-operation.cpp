@@ -5,9 +5,10 @@
 
 using namespace Peony;
 
-FileCountOperation::FileCountOperation(const QStringList &uris, QObject *parent)
+FileCountOperation::FileCountOperation(const QStringList &uris, bool countRoot, QObject *parent)
     : FileOperation (parent)
 {
+    m_count_root = countRoot;
     m_reporter = new FileNodeReporter(this);
     connect(m_reporter, &FileNodeReporter::nodeFound, this, &FileOperation::operationPreparedOne);
     connect(m_reporter, &FileNodeReporter::nodeFound, [=](const QString &uri, quint64 size){
@@ -43,8 +44,18 @@ void FileCountOperation::run()
         node->findChildrenRecursively();
         nodes<<node;
     }
-    if (!this->isCancelled())
+    if (!this->isCancelled()) {
+        if (!m_count_root) {
+            for (auto node : nodes) {
+                m_file_count--;
+                if (node->baseName().startsWith(".")) {
+                    m_hidden_file_count--;
+                }
+                m_total_size -= node->size();
+            }
+        }
         Q_EMIT countDone(m_file_count, m_hidden_file_count, m_total_size);
+    }
     qDebug()<<m_file_count<<m_hidden_file_count<<m_total_size;
     Q_EMIT operationPrepared();
     Q_EMIT operationFinished();

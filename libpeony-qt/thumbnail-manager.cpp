@@ -14,6 +14,17 @@ using namespace Peony;
 
 static ThumbnailManager *global_instance = nullptr;
 
+/*!
+ * \brief ThumbnailManager::ThumbnailManager
+ * \param parent
+ * \bug
+ * thumbnail will do i/o on the file. if we write on a pictrue and save
+ * save it, the image editor might report a modified error due to we hold
+ * the file in peony-qt.
+ *
+ * this bug is not critical, but i have to consider current thumbnailer
+ * might be a bad desgin.
+ */
 ThumbnailManager::ThumbnailManager(QObject *parent) : QObject(parent)
 {
 

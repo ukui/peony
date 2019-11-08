@@ -25,6 +25,8 @@ BasicPropertiesPageFactory::~BasicPropertiesPageFactory()
 bool BasicPropertiesPageFactory::supportUris(const QStringList &uri)
 {
     //FIXME:
+    if (uri.first().contains("computer:///") || uri.first().contains("network:///") || uri.first().contains("trash:///"))
+        return false;
     return true;
 }
 

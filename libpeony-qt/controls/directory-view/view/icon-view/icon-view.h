@@ -83,6 +83,7 @@ public Q_SLOTS:
 
     void resort();
     void reportViewDirectoryChanged();
+    void clearIndexWidget();
 
 protected:
     /*!

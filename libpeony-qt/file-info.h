@@ -64,6 +64,7 @@ public:
 
     QString fileSize() {return m_file_size;}
     QString modifiedDate() {return m_modified_date;}
+    QString accessDate() {return m_access_date;}
 
     QString type() {return m_content_type;}
     quint64 size() {return m_size;}
@@ -117,11 +118,13 @@ private:
     QString m_content_type = nullptr;
     guint64 m_size = 0;
     guint64 m_modified_time = 0;
+    guint64 m_access_time = 0;
 
     QString m_mime_type_string = nullptr;
     QString m_file_type = nullptr;
     QString m_file_size = nullptr;
     QString m_modified_date = nullptr;
+    QString m_access_date = nullptr;
 
     //access
     bool m_can_read = true;

@@ -152,6 +152,7 @@ void FileItem::findChildrenAsync()
             delete enumerator;
 
             m_watcher = new FileWatcher(this->m_info->uri());
+            m_watcher->setMonitorChildrenChange(true);
             connect(m_watcher, &FileWatcher::fileCreated, [=](QString uri){
                 //add new item to m_children
                 //tell the model update
@@ -225,6 +226,7 @@ void FileItem::findChildrenAsync()
             Q_EMIT m_model->updated();
 
             m_watcher = new FileWatcher(this->m_info->uri());
+            m_watcher->setMonitorChildrenChange(true);
             connect(m_watcher, &FileWatcher::fileCreated, [=](QString uri){
                 //add new item to m_children
                 //tell the model update

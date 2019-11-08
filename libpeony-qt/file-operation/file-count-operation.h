@@ -11,7 +11,7 @@ class FileCountOperation : public FileOperation
 {
     Q_OBJECT
 public:
-    explicit FileCountOperation(const QStringList &uris, QObject *parent = nullptr);
+    explicit FileCountOperation(const QStringList &uris, bool countRoot = true, QObject *parent = nullptr);
     ~FileCountOperation() override;
     void run() override;
     std::shared_ptr<FileOperationInfo> getOperationInfo() override {return nullptr;}
@@ -34,6 +34,8 @@ private:
     quint64 m_file_count = 0;
     quint64 m_hidden_file_count = 0;
     quint64 m_total_size = 0;
+
+    bool m_count_root = true;
 };
 
 }

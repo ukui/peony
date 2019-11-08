@@ -208,6 +208,7 @@ void FileInfoJob::refreshInfoContents(GFileInfo *new_info)
     info->m_content_type = g_file_info_get_content_type (new_info);
     info->m_size = g_file_info_get_attribute_uint64(new_info, G_FILE_ATTRIBUTE_STANDARD_SIZE);
     info->m_modified_time = g_file_info_get_attribute_uint64(new_info, G_FILE_ATTRIBUTE_TIME_MODIFIED);
+    info->m_access_time = g_file_info_get_attribute_uint64(new_info, G_FILE_ATTRIBUTE_TIME_ACCESS);
 
     const char *content_type_str = g_file_info_get_content_type (new_info);
     info->m_mime_type_string = content_type_str;
@@ -224,6 +225,9 @@ void FileInfoJob::refreshInfoContents(GFileInfo *new_info)
 
     QDateTime date = QDateTime::fromMSecsSinceEpoch(info->m_modified_time*1000);
     info->m_modified_date = date.toString(Qt::SystemLocaleShortDate);
+
+    date = QDateTime::fromMSecsSinceEpoch(info->m_access_time*1000);
+    info->m_access_date = date.toString(Qt::SystemLocaleShortDate);
 
     if (info->isDesktopFile()) {
         QUrl url = info->uri();

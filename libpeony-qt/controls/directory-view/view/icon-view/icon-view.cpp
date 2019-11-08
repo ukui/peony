@@ -255,6 +255,7 @@ void IconView::setProxy(DirectoryViewProxyIface *proxy)
         return;
     }
 
+    connect(m_model, &FileItemModel::dataChanged, this, &IconView::clearIndexWidget);
     connect(m_model, &FileItemModel::updated, this, &IconView::resort);
 
     connect(m_model, &FileItemModel::findChildrenFinished,
@@ -361,4 +362,12 @@ void IconView::editUris(const QStringList uris)
 {
     //FIXME:
     //implement batch rename.
+}
+
+void IconView::clearIndexWidget()
+{
+    for (int i = 0; i < m_sort_filter_proxy_model->rowCount(); i++) {
+        auto index = m_sort_filter_proxy_model->index(i, 0);
+        setIndexWidget(index, nullptr);
+    }
 }

@@ -5,7 +5,17 @@
 #include "preview-page-plugin-iface.h"
 #include <QStackedWidget>
 
+#include <memory>
+
+class QGridLayout;
+class QPushButton;
+class QFormLayout;
+class QLabel;
+
 namespace Peony {
+
+class FileInfo;
+class FileWatcher;
 
 /*!
  * \brief The DefaultPreviewPage class
@@ -25,12 +35,54 @@ public:
     void cancel() override;
     void closePreviewPage() override;
 
+protected:
+    bool eventFilter(QObject *obj, QEvent *ev) override;
+
 private:
     QString m_current_uri;
     PreviewType m_current_type;
 
     QWidget *m_empty_tab_widget;
     QWidget *m_preview_tab_widget;
+
+    std::shared_ptr<FileInfo> m_info;
+    std::shared_ptr<FileWatcher> m_watcher;
+
+    bool m_support = true;
+};
+
+class FileCountOperation;
+class FilePreviewPage : public QFrame
+{
+    friend class DefaultPreviewPage;
+    Q_OBJECT
+private:
+    explicit FilePreviewPage(QWidget *parent = nullptr);
+    ~FilePreviewPage();
+
+private Q_SLOTS:
+    void updateInfo(FileInfo *info);
+    void countAsync(const QString &uri);
+    void updateCount();
+    void cancel();
+
+    void resizeIcon(QSize size);
+
+private:
+    FileCountOperation *m_count_op = nullptr;
+    quint64 m_file_count = 0;
+    quint64 m_hidden_count = 0;
+    quint64 m_total_size = 0;
+
+    QGridLayout *m_layout;
+    QPushButton *m_icon;
+    QFormLayout *m_form;
+    QLabel *m_display_name_label;
+    QLabel *m_type_label;
+    QLabel *m_file_count_label;
+    QLabel *m_total_size_label;
+    QLabel *m_time_modified_label;
+    QLabel *m_time_access_label;
 };
 
 }
