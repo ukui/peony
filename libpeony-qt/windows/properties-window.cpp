@@ -4,6 +4,9 @@
 
 #include "basic-properties-page-factory.h"
 
+#include <QToolBar>
+#include <QDialogButtonBox>
+
 using namespace Peony;
 
 //plugin manager
@@ -65,9 +68,22 @@ PropertiesWindowTabPagePluginIface *PropertiesWindowPluginManager::getFactory(co
 PropertiesWindow::PropertiesWindow(const QStringList &uris, QWidget *parent) : QMainWindow (parent)
 {
     setAttribute(Qt::WA_DeleteOnClose);
-    setContentsMargins(15, 15, 15, 15);
+    setContentsMargins(0, 15, 0, 0);
     setMinimumSize(360, 480);
-    setCentralWidget(new PropertiesWindowPrivate(uris, this));
+    auto w = new PropertiesWindowPrivate(uris, this);
+    setCentralWidget(w);
+
+    QToolBar *buttonToolBar = new QToolBar(this);
+    addToolBar(Qt::BottomToolBarArea, buttonToolBar);
+
+    QDialogButtonBox *box = new QDialogButtonBox(QDialogButtonBox::Ok,
+                                                 buttonToolBar);
+    box->setContentsMargins(0, 5, 5, 5);
+    buttonToolBar->addWidget(box);
+
+    connect(box, &QDialogButtonBox::accepted, [=](){
+        this->close();
+    });
 }
 
 //properties window

@@ -167,6 +167,8 @@ void FileWatcher::file_changed_callback(GFileMonitor *monitor,
     Q_UNUSED(monitor);
     Q_UNUSED(file);
     switch (event_type) {
+    case G_FILE_MONITOR_EVENT_MOVED_IN:
+    case G_FILE_MONITOR_EVENT_MOVED_OUT:
     case G_FILE_MONITOR_EVENT_RENAMED: {
         char *new_uri = g_file_get_uri(other_file);
         QString uri = new_uri;

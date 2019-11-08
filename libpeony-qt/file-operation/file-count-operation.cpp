@@ -10,6 +10,13 @@ FileCountOperation::FileCountOperation(const QStringList &uris, QObject *parent)
 {
     m_reporter = new FileNodeReporter(this);
     connect(m_reporter, &FileNodeReporter::nodeFound, this, &FileOperation::operationPreparedOne);
+    connect(m_reporter, &FileNodeReporter::nodeFound, [=](const QString &uri, quint64 size){
+        m_file_count++;
+        if (uri.contains("/.")) {
+            m_hidden_file_count++;
+        }
+        m_total_size += size;
+    });
     m_uris = uris;
 }
 
@@ -30,11 +37,18 @@ void FileCountOperation::run()
     if (m_uris.isEmpty())
         Q_EMIT operationFinished();
 
+    QList<FileNode *> nodes;
     for (auto uri : m_uris) {
         auto node = new FileNode(uri, nullptr, m_reporter);
         node->findChildrenRecursively();
-        delete node;
+        nodes<<node;
     }
+    if (!this->isCancelled())
+        Q_EMIT countDone(m_file_count, m_hidden_file_count, m_total_size);
+    qDebug()<<m_file_count<<m_hidden_file_count<<m_total_size;
     Q_EMIT operationPrepared();
     Q_EMIT operationFinished();
+    for (auto node : nodes) {
+        delete node;
+    }
 }

@@ -41,9 +41,9 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
     this->connect(m_trash_watcher, &FileWatcher::fileCreated, [=](){
         qDebug()<<"trash changed";
         auto job = new FileInfoJob(trash);
-        connect(job, &FileInfoJob::queryAsyncFinished, [=](){
+        job->setAutoDelete();
+        connect(job, &FileInfoJob::infoUpdated, [=](){
             this->dataChanged(this->index(m_files.indexOf(trash)), this->index(m_files.indexOf(trash)));
-            job->deleteLater();
         });
         job->queryAsync();
     });
@@ -51,9 +51,9 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
     this->connect(m_trash_watcher, &FileWatcher::fileDeleted, [=](){
         qDebug()<<"trash changed";
         auto job = new FileInfoJob(trash);
-        connect(job, &FileInfoJob::queryAsyncFinished, [=](){
+        job->setAutoDelete();
+        connect(job, &FileInfoJob::infoUpdated, [=](){
             this->dataChanged(this->index(m_files.indexOf(trash)), this->index(m_files.indexOf(trash)));
-            job->deleteLater();
         });
         job->queryAsync();
     });
