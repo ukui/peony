@@ -27,13 +27,21 @@
 
 ## 如何去衡量工作的进展
 
-目前的peony-qt项目正处于UI层重构的阶段，大家可以在build之后，执行./src/peony-qt查看，或者使用qt-creator构建项目然后选择src运行（默认运行的二进制文件为file-operation-test）
+目前的peony-qt项目已经接近初次提测，大家请关注github和launchpad平台上的动向：
+
+> [GitHub源码仓库](https://github.com/explorer-cs/peony-qt)
+
+> [Launchpad PPA](https://launchpad.net/~ubuntukylin-members/+archive/ubuntu/ukui3.0
+)
+
 
 ## 构建&测试
 
 ### 条件
 1、系统要求：Ubuntu/UbuntuKylin 19.10
-2、编译依赖： libglib2.0-dev， qt-default(>=5.12), libqt5x11extras5-dev
+
+2、编译依赖： libglib2.0-dev， qt5-default(>=5.12), libqt5x11extras5-dev
+
 3、推荐： qt5-gtk2-platformtheme（针对gtk桌面环境，提供系统主题支持）
 
 ### 步骤(以优麒麟为例)
@@ -47,4 +55,11 @@
 
 > make
 
-> ./src/peony-qt
+> sudo make install
+
+> /usr/bin/peony-qt
+
+#### peony-qt-desktop
+peony-qt-desktop也是peony-qt项目的一个部分，如果你希望它接管桌面和文件管理器的DBus服务,你需要：
+
+> /usr/bin/peony-qt-desktop -w -d
