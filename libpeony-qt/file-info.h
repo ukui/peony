@@ -93,8 +93,8 @@ public:
 
     GFile *gFileHandle() {return m_file;}
 
-    const QIcon thumbnail() {return m_thumbnail;}
-    void setThumbnail(const QIcon &thumbnail) {m_thumbnail = thumbnail;}
+    //const QIcon thumbnail() {return m_thumbnail;}
+    //void setThumbnail(const QIcon &thumbnail) {m_thumbnail = thumbnail;}
 
 Q_SIGNALS:
     void updated();
@@ -146,7 +146,7 @@ private:
      */
     GCancellable *m_cancellable = nullptr;
 
-    QIcon m_thumbnail;
+    //QIcon m_thumbnail;
 
     QMutex m_mutex;
 };

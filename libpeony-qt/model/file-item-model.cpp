@@ -185,10 +185,13 @@ QVariant FileItemModel::data(const QModelIndex &index, int role) const
             return QVariant(item->m_info->displayName());
         }
         case Qt::DecorationRole:{
-            /**
-              \todo handle the desktop file icon
-              */
+            /*
             auto thumbnail = item->info()->thumbnail();
+            if (!thumbnail.isNull()) {
+                return thumbnail;
+            }
+            */
+            auto thumbnail = ThumbnailManager::getInstance()->tryGetThumbnail(item->m_info->uri());
             if (!thumbnail.isNull()) {
                 return thumbnail;
             }

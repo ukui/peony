@@ -52,14 +52,6 @@ FileInfo::FileInfo(const QString &uri, QObject *parent) : QObject (parent)
 FileInfo::~FileInfo()
 {
     //qDebug()<<"~FileInfo"<<m_uri;
-    //if a file info is deconstruct, its thumbnail should also be clean.
-    /*!
-      \bug
-      if we not insert info to hash (not ref in global), info will deconstruct
-      after it has been used.
-      however it not means that there is not a global info in global hash.
-      */
-    //ThumbnailManager::getInstance()->releaseThumbnail(m_uri);
     disconnect();
 
     g_object_unref(m_cancellable);
@@ -104,7 +96,7 @@ std::shared_ptr<FileInfo> FileInfo::fromUri(QString uri, bool addToHash)
             break;
         }
         if (addToHash) {
-            info_manager->insertFileInfo(newly_info);
+            newly_info = info_manager->insertFileInfo(newly_info);
         }
         info_manager->unlock();
         return newly_info;

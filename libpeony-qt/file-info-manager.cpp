@@ -1,4 +1,5 @@
 #include "file-info-manager.h"
+#include "thumbnail-manager.h"
 #include <QDebug>
 
 using namespace Peony;
@@ -29,14 +30,18 @@ std::shared_ptr<FileInfo> FileInfoManager::findFileInfoByUri(QString uri)
     return global_info_list->value(uri);//.lock();
 }
 
-void FileInfoManager::insertFileInfo(std::shared_ptr<FileInfo> info)
+std::shared_ptr<FileInfo> FileInfoManager::insertFileInfo(std::shared_ptr<FileInfo> info)
 {
     Q_ASSERT(global_info_list);
+
     if (global_info_list->value(info->uri())) {
-        qDebug()<<"has info yet";
-        return;
+        //qDebug()<<"has info yet"<<info->uri();
+        info = global_info_list->value(info->uri());
+    } else {
+        global_info_list->insert(info->uri(), info);
     }
-    global_info_list->insert(info->uri(), info);
+
+    return info;
 }
 
 void FileInfoManager::removeFileInfobyUri(QString uri)
@@ -53,7 +58,7 @@ void FileInfoManager::clear()
 
 void FileInfoManager::remove(QString uri)
 {
-    qDebug()<<"remove"<<uri;
+    ThumbnailManager::getInstance()->releaseThumbnail(uri);
     Q_ASSERT(global_info_list);
     global_info_list->remove(uri);
 }
@@ -61,7 +66,7 @@ void FileInfoManager::remove(QString uri)
 void FileInfoManager::remove(std::shared_ptr<FileInfo> info)
 {
     Q_ASSERT(global_info_list);
-    global_info_list->remove(info->uri());
+    this->remove(info->uri());
 }
 
 void FileInfoManager::showState()

@@ -110,6 +110,9 @@ void DesktopItemModel::refresh()
     FileInfoManager::getInstance()->clear();
     //m_trash_watcher->stopMonitor();
     //m_desktop_watcher->stopMonitor();
+    for (auto info : m_files) {
+        ThumbnailManager::getInstance()->releaseThumbnail(info->uri());
+    }
     m_files.clear();
     auto computer = FileInfo::fromUri("computer:///", true);
     auto personal = FileInfo::fromPath(QStandardPaths::writableLocation(QStandardPaths::HomeLocation), false);
@@ -148,7 +151,8 @@ QVariant DesktopItemModel::data(const QModelIndex &index, int role) const
     case Qt::ToolTipRole:
         return info->displayName();
     case Qt::DecorationRole: {
-        auto thumbnail = info->thumbnail();
+        //auto thumbnail = info->thumbnail();
+        auto thumbnail = ThumbnailManager::getInstance()->tryGetThumbnail(info->uri());
         if (!thumbnail.isNull())
             return thumbnail;
         return QIcon::fromTheme(info->iconName(), QIcon::fromTheme("text-x-generic"));

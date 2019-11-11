@@ -33,8 +33,14 @@ FileItem::~FileItem()
     //qDebug()<<"~FileItem"<<m_info->uri();
     Q_EMIT cancelFindChildren();
     //disconnect();
+
     if (m_info.use_count() <= 2) {
-        Peony::FileInfoManager::getInstance()->remove(m_info);
+        auto info = FileInfoManager::getInstance()->findFileInfoByUri(m_info->uri()).get();
+        if (info == m_info.get()) {
+            Peony::FileInfoManager::getInstance()->lock();
+            Peony::FileInfoManager::getInstance()->remove(m_info);
+            Peony::FileInfoManager::getInstance()->unlock();
+        }
     }
     if (m_watcher) {
         delete m_watcher;
@@ -64,7 +70,7 @@ QVector<FileItem*> *FileItem::findChildrenSync()
     std::shared_ptr<Peony::FileEnumerator> enumerator = std::make_shared<Peony::FileEnumerator>();
     enumerator->setEnumerateDirectory(m_info->uri());
     enumerator->enumerateSync();
-    auto infos = enumerator->getChildren();
+    auto infos = enumerator->getChildren(true);
     for (auto info : infos) {
         FileItem *child = new FileItem(info, this, m_model);
         m_children->append(child);
@@ -111,7 +117,7 @@ void FileItem::findChildrenAsync()
     if (!m_model->isPositiveResponse()) {
         enumerator->connect(enumerator, &Peony::FileEnumerator::enumerateFinished, [=](bool successed){
             if (successed) {
-                auto infos = enumerator->getChildren();
+                auto infos = enumerator->getChildren(true);
                 m_async_count = infos.count();
                 if (infos.count() == 0) {
                     Q_EMIT m_model->findChildrenFinished();

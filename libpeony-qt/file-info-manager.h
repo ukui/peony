@@ -47,7 +47,7 @@ public:
     void showState();
 
 protected:
-    void insertFileInfo(std::shared_ptr<FileInfo> info); //{global_info_list->insert(info->uri(), info);}
+    std::shared_ptr<FileInfo> insertFileInfo(std::shared_ptr<FileInfo> info); //{global_info_list->insert(info->uri(), info);}
     void removeFileInfobyUri(QString uri); //{global_info_list->remove(uri);}
 
 private:

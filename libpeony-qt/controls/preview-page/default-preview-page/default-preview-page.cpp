@@ -156,7 +156,7 @@ void FilePreviewPage::updateInfo(FileInfo *info)
         FileInfoJob j(info->uri());
         j.querySync();
     }
-    m_icon->setIcon(info->thumbnail().isNull()? QIcon::fromTheme(info->iconName()): info->thumbnail());
+    //m_icon->setIcon(info->thumbnail().isNull()? QIcon::fromTheme(info->iconName()): info->thumbnail());
     m_display_name_label->setText(info->displayName());
     m_type_label->setText(info->fileType());
     m_time_access_label->setText(info->accessDate());

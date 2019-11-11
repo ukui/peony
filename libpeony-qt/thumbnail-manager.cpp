@@ -43,9 +43,9 @@ void ThumbnailManager::createThumbnail(const QString &uri, FileWatcher *watcher)
     if (!url.isLocalFile())
         return;
 
-    qDebug()<<"create thumbnail"<<uri;
+    //qDebug()<<"create thumbnail"<<uri;
     //NOTE: we should do createThumbnail() after we have queried the file's info.
-    auto info = FileInfo::fromUri(uri, false);
+    auto info = FileInfo::fromUri(uri);
     if (!info->mimeType().isEmpty()) {
         if (info->mimeType().startsWith("image/")) {
             QtConcurrent::run([=]() {
@@ -54,14 +54,14 @@ void ThumbnailManager::createThumbnail(const QString &uri, FileWatcher *watcher)
                 if (!thumbnail.isNull()) {
                     //add lock
                     m_mutex.lock();
-                    //m_hash.remove(uri);
-                    //m_hash.insert(uri, thumbnail);
+                    m_hash.remove(uri);
+                    m_hash.insert(uri, thumbnail);
                     auto info = FileInfo::fromUri(uri);
                     Q_EMIT info->updated();
                     if (watcher) {
                         watcher->fileChanged(uri);
                     }
-                    info->setThumbnail(thumbnail);
+                    //info->setThumbnail(thumbnail);
                     m_mutex.unlock();
                 }
             });
@@ -89,14 +89,14 @@ void ThumbnailManager::createThumbnail(const QString &uri, FileWatcher *watcher)
                 if (!thumbnail.isNull()) {
                     //add lock
                     m_mutex.lock();
-                    //m_hash.remove(uri);
-                    //m_hash.insert(uri, thumbnail);
+                    m_hash.remove(uri);
+                    m_hash.insert(uri, thumbnail);
                     auto info = FileInfo::fromUri(uri);
                     Q_EMIT info->updated();
                     if (watcher) {
                         watcher->fileChanged(uri);
                     }
-                    info->setThumbnail(thumbnail);
+                    //info->setThumbnail(thumbnail);
                     m_mutex.unlock();
                 }
             });
