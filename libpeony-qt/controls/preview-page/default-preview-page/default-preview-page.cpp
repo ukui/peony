@@ -1,4 +1,5 @@
 #include "default-preview-page.h"
+#include "thumbnail-manager.h"
 
 #include <QLabel>
 
@@ -156,6 +157,9 @@ void FilePreviewPage::updateInfo(FileInfo *info)
         FileInfoJob j(info->uri());
         j.querySync();
     }
+    auto thumbnail = ThumbnailManager::getInstance()->tryGetThumbnail(info->uri());
+    auto icon = QIcon::fromTheme(info->iconName());
+    m_icon->setIcon(thumbnail.isNull()? icon: thumbnail);
     //m_icon->setIcon(info->thumbnail().isNull()? QIcon::fromTheme(info->iconName()): info->thumbnail());
     m_display_name_label->setText(info->displayName());
     m_type_label->setText(info->fileType());
@@ -179,20 +183,11 @@ void FilePreviewPage::countAsync(const QString &uri)
 
     QStringList uris;
     uris<<uri;
-    m_count_op = new FileCountOperation(uris, false);
-    connect(m_count_op, &FileOperation::operationPreparedOne, [=](const QString &uri, quint64 size){
-        m_file_count++;
-        if (uri.contains("/.")) {
-            m_hidden_count++;
-        }
-        m_total_size += size;
-        this->updateCount();
-    });
-    connect(m_count_op, &FileCountOperation::countDone, [=](){
-        m_count_op->getInfo(m_file_count, m_hidden_count, m_total_size);
-        this->updateCount();
-        m_count_op = nullptr;
-    });
+    auto info = FileInfo::fromUri(uri);
+    m_count_op = new FileCountOperation(uris, !info->isDir());
+    connect(m_count_op, &FileOperation::operationStarted, this, &FilePreviewPage::resetCount, Qt::BlockingQueuedConnection);
+    connect(m_count_op, &FileOperation::operationPreparedOne, this, &FilePreviewPage::onPreparedOne, Qt::BlockingQueuedConnection);
+    connect(m_count_op, &FileCountOperation::countDone, this, &FilePreviewPage::onCountDone, Qt::BlockingQueuedConnection);
     QThreadPool::globalInstance()->start(m_count_op);
 }
 
@@ -213,4 +208,19 @@ void FilePreviewPage::cancel()
 void FilePreviewPage::resizeIcon(QSize size)
 {
     m_icon->setIconSize(size);
+}
+
+void FilePreviewPage::resetCount()
+{
+    m_file_count = 0;
+    m_hidden_count = 0;
+    m_total_size = 0;
+    updateCount();
+}
+
+void FilePreviewPage::onCountDone()
+{
+    m_count_op->getInfo(m_file_count, m_hidden_count, m_total_size);
+    this->updateCount();
+    m_count_op = nullptr;
 }

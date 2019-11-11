@@ -187,7 +187,7 @@ void BasicPropertiesPage::countFilesAsync(const QStringList &uris)
     m_total_size = 0;
     m_count_op = new FileCountOperation(uris);
     m_count_op->setAutoDelete(true);
-    connect(m_count_op, &FileOperation::operationPreparedOne, this, &BasicPropertiesPage::onFileCountOne);
+    connect(m_count_op, &FileOperation::operationPreparedOne, this, &BasicPropertiesPage::onFileCountOne, Qt::BlockingQueuedConnection);
     connect(m_count_op, &FileCountOperation::countDone, [=](quint64 file_count, quint64 hidden_file_count, quint64 total_size){
         m_file_count = file_count;
         m_hidden_file_count = hidden_file_count;

@@ -68,6 +68,18 @@ private Q_SLOTS:
 
     void resizeIcon(QSize size);
 
+protected Q_SLOTS:
+    void resetCount();
+    void onPreparedOne(const QString &uri, quint64 size) {
+        m_file_count++;
+        if (uri.contains("/.")) {
+            m_hidden_count++;
+        }
+        m_total_size += size;
+        this->updateCount();
+    }
+    void onCountDone();
+
 private:
     FileCountOperation *m_count_op = nullptr;
     quint64 m_file_count = 0;

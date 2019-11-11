@@ -10,13 +10,14 @@ FileCountOperation::FileCountOperation(const QStringList &uris, bool countRoot, 
 {
     m_count_root = countRoot;
     m_reporter = new FileNodeReporter(this);
-    connect(m_reporter, &FileNodeReporter::nodeFound, this, &FileOperation::operationPreparedOne);
+    //connect(m_reporter, &FileNodeReporter::nodeFound, this, &FileOperation::operationPreparedOne);
     connect(m_reporter, &FileNodeReporter::nodeFound, [=](const QString &uri, quint64 size){
         m_file_count++;
         if (uri.contains("/.")) {
             m_hidden_file_count++;
         }
         m_total_size += size;
+        Q_EMIT this->operationPreparedOne(uri, size);
     });
     m_uris = uris;
 }
@@ -51,7 +52,7 @@ void FileCountOperation::run()
                 if (node->baseName().startsWith(".")) {
                     m_hidden_file_count--;
                 }
-                m_total_size -= node->size();
+                //m_total_size -= node->size();
             }
         }
         Q_EMIT countDone(m_file_count, m_hidden_file_count, m_total_size);
