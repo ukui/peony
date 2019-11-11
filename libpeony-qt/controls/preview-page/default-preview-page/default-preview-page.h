@@ -95,6 +95,10 @@ private:
     QLabel *m_total_size_label;
     QLabel *m_time_modified_label;
     QLabel *m_time_access_label;
+
+    //image
+    QLabel *m_image_size;
+    QLabel *m_image_format;
 };
 
 }

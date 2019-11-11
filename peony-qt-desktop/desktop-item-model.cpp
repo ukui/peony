@@ -63,8 +63,18 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
     this->connect(m_desktop_watcher, &FileWatcher::fileCreated, [=](const QString &uri){
         qDebug()<<"created"<<uri;
         auto info = FileInfo::fromUri(uri, true);
-        m_files<<info;
-        this->insertRows(m_files.count() - 1, 1);
+        bool exsited = false;
+        for (auto file : m_files) {
+            if (file->uri() == info->uri()) {
+                exsited = true;
+                break;
+            }
+        }
+        if (!exsited) {
+            m_files<<info;
+            this->insertRows(m_files.count() - 1, 1);
+        }
+
         auto job = new FileInfoJob(info);
         connect(job, &FileInfoJob::infoUpdated, [=](){
             this->dataChanged(this->index(m_files.indexOf(info)), this->index(m_files.indexOf(info)));

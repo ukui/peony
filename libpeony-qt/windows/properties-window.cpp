@@ -76,12 +76,12 @@ PropertiesWindow::PropertiesWindow(const QStringList &uris, QWidget *parent) : Q
     QToolBar *buttonToolBar = new QToolBar(this);
     addToolBar(Qt::BottomToolBarArea, buttonToolBar);
 
-    QDialogButtonBox *box = new QDialogButtonBox(QDialogButtonBox::Ok,
+    QDialogButtonBox *box = new QDialogButtonBox(QDialogButtonBox::Close,
                                                  buttonToolBar);
     box->setContentsMargins(0, 5, 5, 5);
     buttonToolBar->addWidget(box);
 
-    connect(box, &QDialogButtonBox::accepted, [=](){
+    connect(box, &QDialogButtonBox::rejected, [=](){
         this->close();
     });
 }

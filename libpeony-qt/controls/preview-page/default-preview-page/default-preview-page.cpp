@@ -19,6 +19,8 @@
 
 #include <QResizeEvent>
 
+#include <QImageReader>
+
 #include "file-info.h"
 #include "file-info-manager.h"
 #include "file-watcher.h"
@@ -83,6 +85,7 @@ void DefaultPreviewPage::prepare(const QString &uri, PreviewType type)
         this->prepare(newUri);
         this->startPreview();
     });
+    m_watcher->startMonitor();
 }
 
 void DefaultPreviewPage::prepare(const QString &uri)
@@ -137,6 +140,12 @@ FilePreviewPage::FilePreviewPage(QWidget *parent) : QFrame(parent)
     m_total_size_label = new QLabel(this);
     m_form->addRow(tr("Size:"), m_total_size_label);
 
+    //image
+    m_image_size = new QLabel(this);
+    m_form->addRow(tr("Image size:"), m_image_size);
+    m_image_format = new QLabel(this);
+    m_form->addRow(tr("Image format:"), m_image_format);
+
     m_form->setFieldGrowthPolicy(QFormLayout::FieldsStayAtSizeHint);
     m_form->setFormAlignment(Qt::AlignHCenter);
     m_form->setLabelAlignment(Qt::AlignRight);
@@ -172,6 +181,35 @@ void FilePreviewPage::updateInfo(FileInfo *info)
     } else {
         m_form->itemAt(4, QFormLayout::LabelRole)->widget()->setVisible(false);
         m_file_count_label->setVisible(false);
+    }
+
+    if (info->mimeType().startsWith("image/")) {
+        QUrl url = info->uri();
+        QImageReader r(url.path());
+        auto image_size_row_left = m_form->itemAt(6, QFormLayout::LabelRole)->widget();
+        image_size_row_left->setVisible(true);
+
+        m_image_size->setText(tr("%1x%2").arg(r.size().width()).arg(r.size().height()));
+        auto thumbnail = ThumbnailManager::getInstance()->tryGetThumbnail(info->uri());
+        bool rgba = thumbnail.pixmap(r.size()).hasAlphaChannel();
+        m_image_size->setVisible(true);
+        auto image_format_row_left = m_form->itemAt(7, QFormLayout::LabelRole)->widget();
+        image_format_row_left->setVisible(true);
+        m_image_format->setText(rgba? "RGBA": "RGB");
+        m_image_format->setVisible(true);
+    } else {
+        auto image_size_row_left = m_form->itemAt(6, QFormLayout::LabelRole)->widget();
+        image_size_row_left->setVisible(false);
+        m_image_size->setVisible(false);
+        auto image_format_row_left = m_form->itemAt(7, QFormLayout::LabelRole)->widget();
+        image_format_row_left->setVisible(false);
+        m_image_format->setVisible(false);
+    }
+    if (info->fileType().startsWith("video/")) {
+
+    }
+    if (info->fileType().startsWith("audio/")) {
+
     }
 
     countAsync(info->uri());
@@ -220,7 +258,12 @@ void FilePreviewPage::resetCount()
 
 void FilePreviewPage::onCountDone()
 {
+    if (!m_count_op)
+        return;
     m_count_op->getInfo(m_file_count, m_hidden_count, m_total_size);
     this->updateCount();
     m_count_op = nullptr;
+    m_file_count = 0;
+    m_hidden_count = 0;
+    m_total_size = 0;
 }

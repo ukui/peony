@@ -84,6 +84,8 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
 
     m_model = new DesktopItemModel(this);
 
+    connect(m_model, &DesktopItemModel::dataChanged, this, &DesktopIconView::clearAllIndexWidgets);
+
     setModel(m_model);
 }
 

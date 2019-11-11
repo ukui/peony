@@ -189,17 +189,13 @@ void BasicPropertiesPage::countFilesAsync(const QStringList &uris)
     m_count_op->setAutoDelete(true);
     connect(m_count_op, &FileOperation::operationPreparedOne, this, &BasicPropertiesPage::onFileCountOne, Qt::BlockingQueuedConnection);
     connect(m_count_op, &FileCountOperation::countDone, [=](quint64 file_count, quint64 hidden_file_count, quint64 total_size){
+        m_count_op = nullptr;
         m_file_count = file_count;
         m_hidden_file_count = hidden_file_count;
         m_total_size = total_size;
         this->updateCountInfo();
     });
-    connect(m_count_op, &FileCountOperation::countDone, [=](){
-        qDebug()<<"op"<<m_count_op;
-        m_count_op->getInfo(m_file_count, m_hidden_file_count, m_total_size);
-        this->updateCountInfo();
-        m_count_op = nullptr;
-    });
+
     QThreadPool::globalInstance()->start(m_count_op);
 }
 
