@@ -10,6 +10,7 @@
 #include <QTimer>
 #include <QPushButton>
 #include <QStackedWidget>
+#include <QToolBar>
 
 class QSplitter;
 
@@ -145,6 +146,15 @@ class PreviewPageContainer : public QStackedWidget
     void removePage(PreviewPageIface *page);
     PreviewPageIface *getCurrentPage();
     bool isHidden() {return isVisible();}
+};
+
+class ToolBarContainer : public QToolBar
+{
+    friend class FMWindow;
+    explicit ToolBarContainer(QWidget *parent = nullptr);
+
+protected:
+    void paintEvent(QPaintEvent *e);
 };
 
 }

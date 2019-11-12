@@ -7,13 +7,15 @@
 #include "preview-page-factory-manager.h"
 #include "preview-page-plugin-iface.h"
 
+#include <QPainter>
+#include <QColor>
 #include <QDebug>
 
 using namespace Peony;
 
 NavigationBar::NavigationBar(QWidget *parent) : QToolBar(parent)
 {
-    setContentsMargins(0, 0, 0, 0);
+    setContentsMargins(0, 0, 5, 0);
     setFixedHeight(38);
     setMovable(false);
     setFloatable(false);
@@ -81,4 +83,13 @@ void NavigationBar::setBlock(bool block)
     m_center_control->blockSignals(block);
     m_left_control->setDisabled(block);
     m_center_control->setDisabled(block);
+}
+
+void NavigationBar::paintEvent(QPaintEvent *e)
+{
+    QPainter p(this);
+    auto color = this->palette().base().color();
+    color.setAlpha(127);
+    p.fillRect(this->rect().adjusted(-1, -1, 1, 1), color);
+    QToolBar::paintEvent(e);
 }

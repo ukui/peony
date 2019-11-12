@@ -9,3 +9,10 @@ include(side-bar/side-bar.pri)
 include(status-bar/status-bar.pri)
 include(tool-bar/tool-bar.pri)
 include(tab-page/tab-page.pri)
+
+HEADERS += \
+    $$PWD/icon-container.h
+
+SOURCES += \
+    $$PWD/icon-container.cpp
+

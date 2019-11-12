@@ -16,6 +16,7 @@ namespace Peony {
 
 class FileInfo;
 class FileWatcher;
+class IconContainer;
 
 /*!
  * \brief The DefaultPreviewPage class
@@ -37,6 +38,7 @@ public:
 
 protected:
     bool eventFilter(QObject *obj, QEvent *ev) override;
+    void paintEvent(QPaintEvent *e) override;
 
 private:
     QString m_current_uri;
@@ -87,7 +89,7 @@ private:
     quint64 m_total_size = 0;
 
     QGridLayout *m_layout;
-    QPushButton *m_icon;
+    IconContainer *m_icon;
     QFormLayout *m_form;
     QLabel *m_display_name_label;
     QLabel *m_type_label;

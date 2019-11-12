@@ -39,14 +39,27 @@
 #include <QStringListModel>
 #include <QFileDialog>
 
+#include <QLayout>
+
 using namespace Peony;
 
 FMWindow::FMWindow(const QString &uri, QWidget *parent) : QMainWindow (parent)
 {
     m_operation_minimum_interval.setSingleShot(true);
 
+    //setStyleSheet(".Peony--FMWindow::separator{border:0; padding:0}");
     setAttribute(Qt::WA_DeleteOnClose);
-    setAnimated(false);
+    //setAnimated(false);
+    /*
+    QTimer::singleShot(1000, [=](){
+        QDockWidget *d = new QDockWidget(this);
+        //d->setFeatures(QDockWidget::DockWidgetClosable);
+        auto l = new QLabel(tr("test"), d);
+        d->setTitleBarWidget(l);
+        //d->setWidget(new QLabel(tr("test"), d));
+        addDockWidget(Qt::TopDockWidgetArea, d);
+    });
+    */
 
     auto location = uri;
     if (uri.isNull()) {
@@ -119,7 +132,7 @@ FMWindow::FMWindow(const QString &uri, QWidget *parent) : QMainWindow (parent)
     l1->addWidget(m_advanced_button, Qt::AlignRight);
     l1->addWidget(m_clear_record, Qt::AlignRight);
 
-    QToolBar *t1 = new QToolBar(this);
+    ToolBarContainer *t1 = new ToolBarContainer(this);
     t1->setContentsMargins(0, 0, 10, 0);
     t1->setMovable(false);
     t1->addWidget(w1);
@@ -133,6 +146,7 @@ FMWindow::FMWindow(const QString &uri, QWidget *parent) : QMainWindow (parent)
     m_navigation_bar->updateLocation(location);
 
     QToolBar *t = new QToolBar(this);
+    t->setStyleSheet(".QToolBar{border: 0; padding: 0}");
     t->setMovable(false);
     t->addWidget(m_navigation_bar);
     t->setContentsMargins(0, 0, 0, 0);
@@ -505,4 +519,17 @@ void PreviewPageContainer::removePage(PreviewPageIface *page)
 PreviewPageIface *PreviewPageContainer::getCurrentPage()
 {
     return dynamic_cast<PreviewPageIface*>(currentWidget());
+}
+
+//ToolBarContainer
+ToolBarContainer::ToolBarContainer(QWidget *parent) : QToolBar(parent)
+{
+
+}
+
+void ToolBarContainer::paintEvent(QPaintEvent *e)
+{
+    QPainter p(this);
+    p.setPen(this->palette().dark().color());
+    p.drawLine(this->rect().bottomLeft(), this->rect().bottomRight());
 }

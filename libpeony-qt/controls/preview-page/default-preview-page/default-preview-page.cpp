@@ -11,7 +11,6 @@
 #include <QIcon>
 #include <QMimeDatabase>
 
-#include <QPushButton>
 #include <QGridLayout>
 #include <QFormLayout>
 
@@ -20,6 +19,10 @@
 #include <QResizeEvent>
 
 #include <QImageReader>
+
+#include <QPainter>
+
+#include "icon-container.h"
 
 #include "file-info.h"
 #include "file-info-manager.h"
@@ -55,7 +58,7 @@ DefaultPreviewPage::DefaultPreviewPage(QWidget *parent) : QStackedWidget (parent
 
 DefaultPreviewPage::~DefaultPreviewPage()
 {
-    if (m_info.use_count() <= 2) {
+    if (m_info && m_info.use_count() <= 2) {
         FileInfoManager::getInstance()->remove(m_info);
     }
 }
@@ -117,12 +120,21 @@ void DefaultPreviewPage::closePreviewPage()
     deleteLater();
 }
 
+void DefaultPreviewPage::paintEvent(QPaintEvent *e)
+{
+    QPainter p(this);
+    p.fillRect(this->rect(), this->palette().base());
+    p.setPen(this->palette().dark().color());
+    p.drawRect(this->rect().adjusted(0, 0, -1, -1));
+    QStackedWidget::paintEvent(e);
+}
+
 FilePreviewPage::FilePreviewPage(QWidget *parent) : QFrame(parent)
 {
     m_layout = new QGridLayout(this);
     setLayout(m_layout);
 
-    m_icon = new QPushButton(this);
+    m_icon = new IconContainer(this);
     m_icon->setIconSize(QSize(96, 96));
     m_layout->addWidget(m_icon);
 
@@ -167,7 +179,7 @@ void FilePreviewPage::updateInfo(FileInfo *info)
         j.querySync();
     }
     auto thumbnail = ThumbnailManager::getInstance()->tryGetThumbnail(info->uri());
-    auto icon = QIcon::fromTheme(info->iconName());
+    auto icon = QIcon::fromTheme(info->iconName(), QIcon::fromTheme("text-x-generic"));
     m_icon->setIcon(thumbnail.isNull()? icon: thumbnail);
     //m_icon->setIcon(info->thumbnail().isNull()? QIcon::fromTheme(info->iconName()): info->thumbnail());
     m_display_name_label->setText(info->displayName());

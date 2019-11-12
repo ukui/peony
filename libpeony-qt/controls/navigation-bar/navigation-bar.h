@@ -32,6 +32,8 @@ public Q_SLOTS:
 protected:
     const QString getCurrentUri();
 
+    void paintEvent(QPaintEvent *e);
+
 private:
     NavigationToolBar *m_left_control;
     AdvancedLocationBar *m_center_control;
