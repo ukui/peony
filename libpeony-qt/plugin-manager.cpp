@@ -6,6 +6,7 @@
 
 #include "directory-view-plugin-iface.h"
 #include "preview-page-plugin-iface.h"
+#include "style-plugin-iface.h"
 
 #include "properties-window.h" //properties factory manager define is in this header
 #include "properties-window-tab-page-plugin-iface.h"
@@ -14,6 +15,7 @@
 #include <QDir>
 #include <QPluginLoader>
 #include <QApplication>
+#include <QProxyStyle>
 
 using namespace Peony;
 
@@ -36,6 +38,8 @@ PluginManager::PluginManager(QObject *parent) : QObject(parent)
             continue;
         qDebug()<<"test start";
         PluginInterface *piface = dynamic_cast<PluginInterface*>(plugin);
+        if (!piface)
+            continue;
         m_hash.insert(piface->name(), piface);
         switch (piface->pluginType()) {
         case PluginInterface::MenuPlugin: {
@@ -56,6 +60,19 @@ PluginManager::PluginManager(QObject *parent) : QObject(parent)
         case PluginInterface::PropertiesWindowPlugin: {
             PropertiesWindowTabPagePluginIface *propertiesWindowTabPageFactory = dynamic_cast<PropertiesWindowTabPagePluginIface*>(plugin);
             PropertiesWindowPluginManager::getInstance()->registerFactory(propertiesWindowTabPageFactory);
+            break;
+        }
+        case PluginInterface::ColumnProviderPlugin: {
+            //FIXME:
+            break;
+        }
+        case  PluginInterface::StylePlugin: {
+            /*!
+              \todo
+              manage the style plugin
+              */
+            auto styleProvider = dynamic_cast<StylePluginIface*>(plugin);
+            QApplication::setStyle(styleProvider->getStyle());
             break;
         }
         default:

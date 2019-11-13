@@ -69,7 +69,7 @@
 
 PeonyApplication::PeonyApplication(int &argc, char *argv[], const char *applicationName) : SingleApplication (argc, argv, applicationName, true)
 {
-    setStyle(Peony::ComplementaryStyle::getStyle());
+    //setStyle(Peony::ComplementaryStyle::getStyle());
 
     parser.addOption(quitOption);
     parser.addOption(showItemsOption);

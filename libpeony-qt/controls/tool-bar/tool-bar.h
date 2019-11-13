@@ -5,6 +5,7 @@
 #include "peony-core_global.h"
 
 class QComboBox;
+class QMenu;
 
 namespace Peony {
 
@@ -54,18 +55,22 @@ public Q_SLOTS:
     void updateStates();
 
 protected:
-    void init(bool hasTopWindow);
+    void init();
 
 private:
     FMWindow *m_top_window;
 
     ViewFactorySortFilterModel *m_view_factory_model;
-    QComboBox *m_view_option_box;
+    //QComboBox *m_view_option_box;
     SearchBar *m_search_bar;
 
     QList<QAction *> m_file_op_actions;
     QAction *m_clean_trash_action;
     QAction *m_restore_action;
+
+    QAction *m_view_action;
+    QMenu *m_view_menu;
+    QAction *m_sort_action;
 };
 
 }

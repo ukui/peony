@@ -74,3 +74,10 @@ const QStringList ViewFactorySortFilterModel::supportViewIds()
     }
     return l;
 }
+
+const QIcon ViewFactorySortFilterModel::iconFromViewId(const QString &viewId)
+{
+    auto manager = DirectoryViewFactoryManager::getInstance();
+    auto factory = manager->getFactory(viewId);
+    return factory->icon();
+}

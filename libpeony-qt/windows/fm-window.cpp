@@ -490,6 +490,36 @@ void FMWindow::onPreviewPageSwitch(const QString &id)
     }
 }
 
+void FMWindow::setCurrentSelectionUris(const QStringList &uris)
+{
+    m_tab->getActivePage()->getProxy()->setSelections(uris);
+}
+
+void FMWindow::setCurrentSortOrder(Qt::SortOrder order)
+{
+    m_tab->getActivePage()->getProxy()->setSortOrder(order);
+}
+
+Qt::SortOrder FMWindow::getCurrentSortOrder()
+{
+    return Qt::SortOrder(m_tab->getActivePage()->getProxy()->getSortOrder());
+}
+
+void FMWindow::setCurrentSortColumn(int column)
+{
+    m_tab->getActivePage()->getProxy()->setSortType(column);
+}
+
+int FMWindow::getCurrentSortColumn()
+{
+    return m_tab->getActivePage()->getProxy()->getSortType();
+}
+
+const QString FMWindow::getCurrentPageViewType()
+{
+    return m_tab->getActivePage()->getProxy()->getView()->viewId();
+}
+
 //preview page container
 PreviewPageContainer::PreviewPageContainer(QWidget *parent) : QStackedWidget (parent)
 {

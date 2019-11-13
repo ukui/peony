@@ -97,7 +97,9 @@ void NavigationBar::setBlock(bool block)
 void NavigationBar::paintEvent(QPaintEvent *e)
 {
     QPainter p(this);
-    auto color = m_styled_menu->palette().window().color();
+    //auto color = m_styled_menu->palette().window().color();
+    auto color = this->palette().base().color();
+    color.setAlpha(127);
     p.fillRect(this->rect().adjusted(-1, -1, 1, 1), color);
     QToolBar::paintEvent(e);
 }

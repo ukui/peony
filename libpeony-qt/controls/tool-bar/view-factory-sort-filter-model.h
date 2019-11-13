@@ -18,6 +18,8 @@ public:
     const QString getHighestPriorityViewId(int zoom_level_hint);
     const QStringList supportViewIds();
 
+    const QIcon iconFromViewId(const QString &viewId);
+
 public Q_SLOTS:
     void setDirectoryUri(const QString &uri);
 

@@ -30,24 +30,16 @@ ToolBar::ToolBar(FMWindow *window, QWidget *parent) : QToolBar(parent)
     setFixedHeight(50);
 
     m_top_window = window;
-    init(window? true: false);
+    init();
 }
 
-void ToolBar::init(bool hasTopWindow)
+void ToolBar::init()
 {
     //layout
     QAction *newWindowAction = addAction(QIcon::fromTheme("window-new-symbolic", QIcon::fromTheme("folder")),
                                          tr("Open in new &Window"));
     QAction *newTabActon = addAction(QIcon::fromTheme("tab-new-symbolic", QIcon::fromTheme("folder")),
                                      tr("Open in new &Tab"));
-
-    QAction *testAction = new QAction(QIcon::fromTheme("text-x-generic"), nullptr);
-    auto menu = new QMenu(this);
-    menu->addAction(tr("test"));
-    menu->addAction(QIcon::fromTheme("text-x-generic"), "test");
-
-    testAction->setMenu(menu);
-    addAction(testAction);
 
     addSeparator();
 
@@ -57,12 +49,15 @@ void ToolBar::init(bool hasTopWindow)
 
     auto defaultViewId = viewManager->getDefaultViewId();
 
-    QComboBox *viewCombox = new QComboBox(this);
-    viewCombox->setToolTip(tr("Change Directory View"));
-    m_view_option_box = viewCombox;
     auto model = new ViewFactorySortFilterModel(this);
     m_view_factory_model = model;
     model->setDirectoryUri("file://" + QStandardPaths::writableLocation(QStandardPaths::HomeLocation));
+
+    /*
+    QComboBox *viewCombox = new QComboBox(this);
+    m_view_option_box = viewCombox;
+    viewCombox->setToolTip(tr("Change Directory View"));
+
     viewCombox->setModel(model);
 
     addWidget(viewCombox);
@@ -71,6 +66,90 @@ void ToolBar::init(bool hasTopWindow)
         m_top_window->beginSwitchView(viewId);
     });
 
+    addSeparator();
+    */
+
+    m_view_action = new QAction(m_view_factory_model->iconFromViewId(m_top_window->getCurrentPageViewType()),
+                                m_top_window->getCurrentPageViewType());
+    m_view_menu = new QMenu(this);
+    m_view_action->setMenu(m_view_menu);
+    connect(m_view_action, &QAction::triggered, [=](){
+        auto point = this->widgetForAction(m_view_action)->geometry().bottomLeft();
+        auto global_point = mapToGlobal(point);
+        m_view_menu->exec(global_point);
+    });
+    connect(m_view_menu, &QMenu::aboutToShow, [=](){
+        for (auto id : m_view_factory_model->supportViewIds()) {
+            auto action = m_view_menu->addAction(m_view_factory_model->iconFromViewId(id), id, [=](){
+                m_top_window->getCurrentPage()->switchViewType(id);
+            });
+            if (id == m_top_window->getCurrentPageViewType()) {
+                action->setCheckable(true);
+                action->setChecked(true);
+            }
+        }
+    });
+    connect(m_view_menu, &QMenu::aboutToHide, [=](){
+        for (auto action : m_view_menu->actions()) {
+            action->deleteLater();
+        }
+    });
+
+    addAction(m_view_action);
+    addSeparator();
+
+    //sort type
+    /*!
+      \todo
+      make column extensionable.
+      */
+    m_sort_action = new QAction(QIcon::fromTheme("view-sort-ascending-symbolic"), tr("Sort Type"));
+    QMenu *sortMenu = new QMenu(this);
+    sortMenu->addAction(tr("File Name"), [=](){
+        m_top_window->setCurrentSortColumn(0);
+    });
+    sortMenu->addAction(tr("File Type"), [=](){
+        m_top_window->setCurrentSortColumn(1);
+    });
+    sortMenu->addAction(tr("File Size"), [=](){
+        m_top_window->setCurrentSortColumn(2);
+    });
+    sortMenu->addAction(tr("Modified Date"), [=](){
+        m_top_window->setCurrentSortColumn(3);
+    });
+
+    sortMenu->addSeparator();
+
+    sortMenu->addAction(tr("Ascending"), [=](){
+        m_top_window->setCurrentSortOrder(Qt::AscendingOrder);
+        m_sort_action->setIcon(QIcon::fromTheme("view-sort-ascending-symbolic"));
+    });
+    sortMenu->addAction(tr("Descending"), [=]{
+        m_top_window->setCurrentSortOrder(Qt::DescendingOrder);
+        m_sort_action->setIcon(QIcon::fromTheme("view-sort-descending-symbolic"));
+    });
+
+    m_sort_action->setMenu(sortMenu);
+    addAction(m_sort_action);
+
+    connect(m_sort_action, &QAction::triggered, [=](){
+        auto point = this->widgetForAction(m_sort_action)->geometry().bottomLeft();
+        auto global_point = mapToGlobal(point);
+        sortMenu->exec(global_point);
+    });
+
+    connect(sortMenu, &QMenu::aboutToShow, [=](){
+        for (auto action : sortMenu->actions()) {
+            action->setCheckable(false);
+            action->setChecked(false);
+        }
+        int column = m_top_window->getCurrentSortColumn();
+        int order = m_top_window->getCurrentSortOrder();
+        sortMenu->actions().at(column)->setCheckable(true);
+        sortMenu->actions().at(column)->setChecked(true);
+        sortMenu->actions().at(order + 5)->setCheckable(true);
+        sortMenu->actions().at(order + 5)->setChecked(true);
+    });
     addSeparator();
 
     //file operations
@@ -140,10 +219,12 @@ void ToolBar::init(bool hasTopWindow)
         m_top_window->addNewTabs(l);
     });
 
+    /*
     connect(viewCombox, QOverload<const QString &>::of(&QComboBox::currentIndexChanged), [=](const QString &text){
         Q_EMIT this->optionRequest(SwitchView);
         //FIXME: i have to add interface to view proxy for view switch.
     });
+    */
 
     connect(copyAction, &QAction::triggered, [=](){
         if (!m_top_window->getCurrentSelections().isEmpty())
@@ -186,12 +267,18 @@ void ToolBar::updateLocation(const QString &uri)
     m_view_factory_model->setDirectoryUri(uri);
 
     auto viewId = m_top_window->getCurrentPage()->getProxy()->getView()->viewId();
+
+    m_view_action->setIcon(m_view_factory_model->iconFromViewId(viewId));
+    m_view_action->setText(m_top_window->getCurrentPageViewType());
+
+    /*
     auto index = m_view_factory_model->getIndexFromViewId(viewId);
     if (index.isValid())
         m_view_option_box->setCurrentIndex(index.row());
     else {
         m_view_option_box->setCurrentIndex(0);
     }
+    */
 
     m_clean_trash_action->setVisible(uri.startsWith("trash://"));
     m_restore_action->setVisible(uri.startsWith("trash://"));

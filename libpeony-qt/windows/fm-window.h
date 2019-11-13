@@ -61,6 +61,11 @@ public:
     const QList<std::shared_ptr<FileInfo>> getCurrentSelectionFileInfos();
     DirectoryViewContainer *getCurrentPage();
 
+    Qt::SortOrder getCurrentSortOrder();
+    int getCurrentSortColumn();
+
+    const QString getCurrentPageViewType();
+
     QSize sizeHint() const override {return QSize(800, 600);}
 
 Q_SIGNALS:
@@ -100,6 +105,10 @@ public Q_SLOTS:
     void setShowHidden();
 
     void onPreviewPageSwitch(const QString &uri);
+
+    void setCurrentSelectionUris(const QStringList &uris);
+    void setCurrentSortOrder (Qt::SortOrder order);
+    void setCurrentSortColumn (int sortColumn);
 
 protected:
     void resizeEvent(QResizeEvent *e) override;
