@@ -121,10 +121,13 @@ void SearchBar::updateTableModel()
 
 void SearchBar::onTableClicked(const QModelIndex &index)
 {
-    qDebug()<<"onTableClicked"<<index.row()<<m_model->rowCount();
+    qDebug()<<"onTableClicked"<<index.row()<<m_model->rowCount()<<index.column()<<this->text();
     m_table_view->clearSelection();
     if (index.row() != m_model->rowCount()-1)
+    {
+        this->setText(m_model->item(index.row())->text());
         return;
+    }
     if (index.column() == 0)
     {
         //clicked advance search
