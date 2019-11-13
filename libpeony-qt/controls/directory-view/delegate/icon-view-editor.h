@@ -6,6 +6,7 @@
 #include "peony-core_global.h"
 
 class QLabel;
+class QLineEdit;
 
 namespace Peony {
 
@@ -16,6 +17,7 @@ class PEONYCORESHARED_EXPORT IconViewEditor : public QTextEdit
     Q_OBJECT
 public:
     explicit IconViewEditor(QWidget *parent = nullptr);
+    ~IconViewEditor() override;
 
 Q_SIGNALS:
     void returnPressed();
@@ -26,6 +28,9 @@ public Q_SLOTS:
 protected:
     void paintEvent(QPaintEvent *e) override;
     void keyPressEvent(QKeyEvent *e) override;
+
+private:
+    QLineEdit *m_styled_edit;
 };
 
 }

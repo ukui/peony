@@ -18,6 +18,8 @@
 
 #include <QMessageBox>
 
+#include <QMenu>
+
 #include <QDebug>
 
 using namespace Peony;
@@ -38,6 +40,14 @@ void ToolBar::init(bool hasTopWindow)
                                          tr("Open in new &Window"));
     QAction *newTabActon = addAction(QIcon::fromTheme("tab-new-symbolic", QIcon::fromTheme("folder")),
                                      tr("Open in new &Tab"));
+
+    QAction *testAction = new QAction(QIcon::fromTheme("text-x-generic"), nullptr);
+    auto menu = new QMenu(this);
+    menu->addAction(tr("test"));
+    menu->addAction(QIcon::fromTheme("text-x-generic"), "test");
+
+    testAction->setMenu(menu);
+    addAction(testAction);
 
     addSeparator();
 

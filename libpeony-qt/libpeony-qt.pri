@@ -18,7 +18,9 @@ include(controls/controls.pri)
 include(windows/windows.pri)
 
 HEADERS += \
-    $$PWD/plugin-manager.h
+    $$PWD/plugin-manager.h \
+    $$PWD/complementary-style.h
 
 SOURCES += \
-    $$PWD/plugin-manager.cpp
+    $$PWD/plugin-manager.cpp \
+    $$PWD/complementary-style.cpp

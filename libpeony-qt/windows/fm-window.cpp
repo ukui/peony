@@ -58,8 +58,14 @@ FMWindow::FMWindow(const QString &uri, QWidget *parent) : QMainWindow (parent)
         d->setTitleBarWidget(l);
         //d->setWidget(new QLabel(tr("test"), d));
         addDockWidget(Qt::TopDockWidgetArea, d);
+        QTimer::singleShot(1000, [=](){
+            d->hide();
+            QTimer::singleShot(1000, [=](){
+                d->show();
+            });
+        });
     });
-    */
+     */
 
     auto location = uri;
     if (uri.isNull()) {
@@ -125,7 +131,7 @@ FMWindow::FMWindow(const QString &uri, QWidget *parent) : QMainWindow (parent)
     QWidget *w1 = new QWidget(this);
     w1->setContentsMargins(0, 0, 0, 0);
     QHBoxLayout *l1 = new QHBoxLayout(w1);
-    l1->setContentsMargins(0, 0, 0, 0);
+    l1->setContentsMargins(5, 0, 0, 0);
     w1->setLayout(l1);
     l1->addWidget(m_tool_bar, Qt::AlignLeft);
     l1->addWidget(m_search_bar, Qt::AlignRight);

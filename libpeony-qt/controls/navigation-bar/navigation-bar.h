@@ -4,6 +4,8 @@
 #include <QToolBar>
 #include "peony-core_global.h"
 
+class QMenu;
+
 namespace Peony {
 
 class DirectoryViewContainer;
@@ -16,6 +18,7 @@ class PEONYCORESHARED_EXPORT NavigationBar : public QToolBar
     Q_OBJECT
 public:
     explicit NavigationBar(QWidget *parent = nullptr);
+    ~NavigationBar();
 
 Q_SIGNALS:
     void updateWindowLocationRequest(const QString &uri, bool addHistory, bool forceUpdate = false);
@@ -39,6 +42,7 @@ private:
     AdvancedLocationBar *m_center_control;
 
     QAction *m_checked_preview_action;
+    QMenu *m_styled_menu;
 };
 
 }

@@ -1,0 +1,144 @@
+#include "complementary-style.h"
+
+#include "tool-bar.h"
+
+#include <QMenu>
+#include <QPushButton>
+#include <QStyleOptionComplex>
+
+#include <QDebug>
+#include <qdrawutil.h>
+
+using namespace Peony;
+
+static ComplementaryStyle *global_instance = nullptr;
+
+ComplementaryStyle::ComplementaryStyle(QStyle *parent) : QProxyStyle(parent)
+{
+    m_styled_menu = new QMenu;
+    m_styled_button = new QPushButton;
+}
+
+ComplementaryStyle::~ComplementaryStyle()
+{
+    m_styled_menu->deleteLater();
+    m_styled_button->deleteLater();
+}
+
+ComplementaryStyle *ComplementaryStyle::getStyle()
+{
+    if (!global_instance)
+        global_instance = new ComplementaryStyle;
+    return global_instance;
+}
+
+void ComplementaryStyle::drawPrimitive(QStyle::PrimitiveElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget) const
+{
+    return QProxyStyle::drawPrimitive(element, option, painter, widget);
+}
+
+void ComplementaryStyle::drawComplexControl(QStyle::ComplexControl cc, const QStyleOptionComplex *opt, QPainter *p, const QWidget *widget) const
+{
+    switch (cc) {
+    case QStyle::CC_ToolButton: {
+        if (const QStyleOptionToolButton *toolbutton
+                = qstyleoption_cast<const QStyleOptionToolButton *>(opt)) {
+
+            //Peony::ToolBar has different style with other toolbar.
+            ToolBar *parentWidget = qobject_cast<ToolBar*>(widget->parentWidget());
+
+            QRect button, menuarea;
+            button = proxy()->subControlRect(cc, toolbutton, SC_ToolButton, widget);
+            menuarea = proxy()->subControlRect(cc, toolbutton, SC_ToolButtonMenu, widget);
+
+            State bflags = toolbutton->state & ~State_Sunken;
+
+            if (bflags & State_AutoRaise) {
+                if (!(bflags & State_MouseOver) || !(bflags & State_Enabled)) {
+                    bflags &= ~State_Raised;
+                }
+            }
+            State mflags = bflags;
+            if (toolbutton->state & State_Sunken) {
+                if (toolbutton->activeSubControls & SC_ToolButton)
+                    bflags |= State_Sunken;
+                mflags |= State_Sunken;
+            }
+
+            QStyleOption tool = *toolbutton;
+            if (toolbutton->subControls & SC_ToolButton) {
+                if (bflags & (State_Sunken | State_On | State_Raised)) {
+                    tool.rect = button;
+                    tool.state = bflags;
+                    if (parentWidget) {
+                        if (toolbutton->features.testFlag(QStyleOptionToolButton::Menu)) {
+                            tool.rect = QRect(button.topLeft(), QSize(button.width() + menuarea.width(), button.height()));
+                        }
+                        proxy()->drawPrimitive(PE_PanelButtonTool, &tool, p, widget);
+                    } else {
+                        proxy()->drawPrimitive(PE_PanelButtonTool, &tool, p, widget);
+                    }
+                } else {
+                    if (parentWidget) {
+                        tool.rect = button;
+                        tool.state = bflags;
+                        if (toolbutton->features.testFlag(QStyleOptionToolButton::HasMenu)) {
+                            tool.rect = QRect(button.topLeft(), QSize(button.width() + menuarea.width(), button.height()));
+                        }
+
+                        qDrawShadePanel(p,
+                                        tool.rect.adjusted(1, 1, -1, -1),
+                                        m_styled_menu->palette().button().color(),
+                                        false,
+                                        0,
+                                        &m_styled_menu->palette().brush(QPalette::Normal, QPalette::Button));
+                    }
+                }
+            }
+
+            if (toolbutton->state & State_HasFocus) {
+                QStyleOptionFocusRect fr;
+                fr.QStyleOption::operator=(*toolbutton);
+                fr.rect.adjust(3, 3, -3, -3);
+                if (toolbutton->features & QStyleOptionToolButton::MenuButtonPopup)
+                    fr.rect.adjust(0, 0, -proxy()->pixelMetric(QStyle::PM_MenuButtonIndicator,
+                                   toolbutton, widget), 0);
+                proxy()->drawPrimitive(PE_FrameFocusRect, &fr, p, widget);
+            }
+            QStyleOptionToolButton label = *toolbutton;
+            label.state = bflags;
+            int fw = proxy()->pixelMetric(PM_DefaultFrameWidth, opt, widget);
+            label.rect = button.adjusted(fw, fw, -fw, -fw);
+            label.palette.setColor(QPalette::Window, m_styled_menu->palette().window().color());
+
+            proxy()->drawControl(CE_ToolButtonLabel, &label, p, widget);
+
+            if (toolbutton->subControls & SC_ToolButtonMenu) {
+                tool.rect = menuarea;//.adjusted(1, 1, -1, -1);
+                tool.state = mflags;
+                tool.palette.setColor(QPalette::Button, m_styled_button->palette().highlight().color());
+                //FIXME: paint indicator button background correctly.
+                if (mflags & (State_Sunken | State_On | State_Raised)) {
+                    if (parentWidget) {
+                        //do nothing
+                    } else {
+                        proxy()->drawPrimitive(PE_PanelButtonCommand, &tool, p, widget);
+                    }
+
+                }
+                proxy()->drawPrimitive(PE_IndicatorArrowDown, &tool, p, widget);
+            } else if (toolbutton->features & QStyleOptionToolButton::HasMenu) {
+                int mbi = proxy()->pixelMetric(PM_MenuButtonIndicator, toolbutton, widget);
+                QRect ir = toolbutton->rect;
+                QStyleOptionToolButton newBtn = *toolbutton;
+                newBtn.rect = QRect(ir.right() + 5 - mbi, ir.y() + ir.height() - mbi + 4, mbi - 6, mbi - 6);
+                newBtn.rect = visualRect(toolbutton->direction, button, newBtn.rect);
+                proxy()->drawPrimitive(PE_IndicatorArrowDown, &newBtn, p, widget);
+            }
+        }
+        break;
+    }
+    default:
+        return QProxyStyle::drawComplexControl(cc, opt, p, widget);
+    }
+}

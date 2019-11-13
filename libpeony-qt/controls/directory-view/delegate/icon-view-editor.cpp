@@ -1,6 +1,7 @@
 #include <QPaintEvent>
 #include <QPainter>
 #include <QPolygon>
+#include <QLineEdit>
 
 #include "icon-view-editor.h"
 
@@ -9,6 +10,7 @@ using namespace DirectoryView;
 
 IconViewEditor::IconViewEditor(QWidget *parent) : QTextEdit(parent)
 {
+    m_styled_edit = new QLineEdit;
     setContentsMargins(0, 0, 0, 0);
     setAlignment(Qt::AlignCenter);
 
@@ -18,10 +20,15 @@ IconViewEditor::IconViewEditor(QWidget *parent) : QTextEdit(parent)
     connect(this, &IconViewEditor::textChanged, this, &IconViewEditor::minimalAdjust);
 }
 
+IconViewEditor::~IconViewEditor()
+{
+    m_styled_edit->deleteLater();
+}
+
 void IconViewEditor::paintEvent(QPaintEvent *e)
 {
     QPainter p(this->viewport());
-    p.fillRect(this->viewport()->rect(), this->palette().base());
+    p.fillRect(this->viewport()->rect(), m_styled_edit->palette().base());
     QPen pen;
     pen.setWidth(2);
     pen.setColor(this->palette().highlight().color());

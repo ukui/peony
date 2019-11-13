@@ -9,12 +9,16 @@
 
 #include <QPainter>
 #include <QColor>
+#include <QMenu>
+
 #include <QDebug>
 
 using namespace Peony;
 
 NavigationBar::NavigationBar(QWidget *parent) : QToolBar(parent)
 {
+    m_styled_menu = new QMenu;
+
     setContentsMargins(0, 0, 5, 0);
     setFixedHeight(38);
     setMovable(false);
@@ -62,6 +66,11 @@ NavigationBar::NavigationBar(QWidget *parent) : QToolBar(parent)
     addActions(group->actions());
 }
 
+NavigationBar::~NavigationBar()
+{
+    m_styled_menu->deleteLater();
+}
+
 void NavigationBar::bindContainer(DirectoryViewContainer *container)
 {
     m_left_control->setCurrentContainer(container);
@@ -88,8 +97,7 @@ void NavigationBar::setBlock(bool block)
 void NavigationBar::paintEvent(QPaintEvent *e)
 {
     QPainter p(this);
-    auto color = this->palette().base().color();
-    color.setAlpha(127);
+    auto color = m_styled_menu->palette().window().color();
     p.fillRect(this->rect().adjusted(-1, -1, 1, 1), color);
     QToolBar::paintEvent(e);
 }
