@@ -1,0 +1,29 @@
+name: CI
+
+on:
+  schedule:
+    - cron: "0 2 * * 1-5"
+  push:
+    branches:
+    - release/*
+  pull_request:
+    branches:
+    - master
+
+jobs:
+  build:
+    name: build test
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Install Dependencies
+      run: apt install libglib2.0-dev qt5-default libqt5x11extras5-dev
+    - name: Build & Test
+      run: |
+        qmake .
+        make
+        make install
+        /usr/bin/peony-qt
+        /usr/bin/peony-qt-desktop -w -d
