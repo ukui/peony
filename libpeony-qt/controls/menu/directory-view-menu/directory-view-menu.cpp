@@ -404,6 +404,13 @@ const QList<QAction *> DirectoryViewMenu::constructFilePropertiesActions()
                 p->show();
             }
         });
+    } else if (m_selections.count() == 1) {
+        l<<addAction(QIcon::fromTheme("preview-file"), tr("&Properties"));
+        connect(l.last(), &QAction::triggered, [=](){
+            PropertiesWindow *p = new PropertiesWindow(m_selections);
+            p->setAttribute(Qt::WA_DeleteOnClose);
+            p->show();
+        });
     }
 
     return l;
@@ -488,21 +495,13 @@ const QList<QAction *> DirectoryViewMenu::constructSearchActions()
                 auto parentUri = FileUtils::getParentUri(uri);
                 if (!parentUri.isNull()) {
                     FMWindow *newWindow = new FMWindow(parentUri);
+                    auto selection = m_selections;
+                    QTimer::singleShot(1000, newWindow, [=](){
+                        if (newWindow)
+                            newWindow->setCurrentSelectionUris(selection);
+                    });
                     newWindow->show();
                 }
-            }
-        });
-        l<<addAction(QIcon::fromTheme("new-tab-symbolic"), tr("Open Parent Folder in New Tab"));
-        connect(l.last(), &QAction::triggered, [=](){
-            QStringList parentUris;
-            for (auto uri : m_selections) {
-                auto parentUri = FileUtils::getParentUri(uri);
-                if (!uri.isNull()) {
-                    parentUris<<parentUri;
-                }
-            }
-            if (!parentUris.isEmpty()) {
-                m_top_window->addNewTabs(parentUris);
             }
         });
     }
