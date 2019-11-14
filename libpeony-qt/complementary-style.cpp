@@ -34,6 +34,31 @@ ComplementaryStyle *ComplementaryStyle::getStyle()
 
 void ComplementaryStyle::drawPrimitive(QStyle::PrimitiveElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget) const
 {
+    switch (element) {
+    case QStyle::PE_IndicatorToolBarSeparator: {
+        //do not draw toolbar separator
+        return;
+    }
+    case PE_IndicatorArrowDown: {
+        ToolBar *toolBar = qobject_cast<ToolBar*>(widget->parentWidget());
+        if (toolBar) {
+            auto rect = option->rect;
+            rect.setY((rect.top()+rect.bottom())/2 - 8);
+            rect.setWidth(16);
+            rect.setHeight(16);
+            if (option->state & State_Sunken) {
+                rect.adjust(1, 1, 1, 1);
+            }
+            QIcon arrowDown = QIcon::fromTheme("pan-down-symbolic");
+            arrowDown.paint(painter, rect.adjusted(-3, 0, -3, 0));
+            return;
+        } else {
+            break;
+        }
+    }
+    default:
+        break;
+    }
     return QProxyStyle::drawPrimitive(element, option, painter, widget);
 }
 
