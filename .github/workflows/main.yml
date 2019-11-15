@@ -19,11 +19,11 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Install Dependencies
-      run: apt install libglib2.0-dev qt5-default libqt5x11extras5-dev
+      run: sudo apt install libglib2.0-dev qt5-default libqt5x11extras5-dev
     - name: Build & Test
       run: |
         qmake .
         make
-        make install
+        sudo make install
         /usr/bin/peony-qt
         /usr/bin/peony-qt-desktop -w -d
