@@ -1,6 +1,5 @@
 #include "peony-desktop-application.h"
 
-#include "desktop-window.h"
 #include "fm-dbus-service.h"
 
 #include <QCommandLineParser>
@@ -9,13 +8,16 @@
 
 #include <QProcess>
 #include <QFile>
+#include <QLabel>
 
 static bool has_desktop = false;
 static bool has_daemon = false;
 
 PeonyDesktopApplication::PeonyDesktopApplication(int &argc, char *argv[], const char *applicationName) : SingleApplication (argc, argv, applicationName, true)
 {
+    m_screen_list= this->screens();
     if (this->isPrimary()) {
+        qDebug()<<"isPrimary screen";
         connect(this, &SingleApplication::receivedMessage, [=](quint32 id, QByteArray msg){
             this->parseCmd(id, msg, true);
         });
@@ -24,6 +26,11 @@ PeonyDesktopApplication::PeonyDesktopApplication(int &argc, char *argv[], const 
         setStyleSheet(QString::fromLatin1(file.readAll()));
         file.close();
     }
+
+    connect(this, &SingleApplication::layoutDirectionChanged, this, &PeonyDesktopApplication::layoutDirectionChangedProcess);
+    connect(this, &SingleApplication::primaryScreenChanged, this, &PeonyDesktopApplication::primaryScreenChangedProcess);
+    connect(this, &SingleApplication::screenAdded, this, &PeonyDesktopApplication::screenAddedProcess);
+    connect(this, &SingleApplication::screenRemoved, this, &PeonyDesktopApplication::screenRemovedProcess);
 
     //parse cmd
     auto message = this->arguments().join(' ').toUtf8();
@@ -95,12 +102,15 @@ void PeonyDesktopApplication::parseCmd(quint32 id, QByteArray msg, bool isPrimar
             if (!has_desktop) {
                 //FIXME: load menu plugin
                 //FIXME: take over desktop displaying
-                Peony::DesktopWindow *window = new Peony::DesktopWindow;
-                window->showFullScreen();
+                for(auto screen : m_screen_list)
+                {
+                    addWindow(screen);
+                }
             }
             has_desktop = true;
         }
-    } else {
+    }
+    else {
         auto helpOption = parser.addHelpOption();
         auto versionOption = parser.addVersionOption();
 
@@ -110,5 +120,101 @@ void PeonyDesktopApplication::parseCmd(quint32 id, QByteArray msg, bool isPrimar
         parser.process(arguments());
 
         sendMessage(msg);
+    }
+}
+
+void PeonyDesktopApplication::addWindow(QScreen *screen)
+{
+    bool is_primary = isPrimaryScreen(screen);
+    Peony::DesktopWindow *window = new Peony::DesktopWindow(screen, is_primary);
+    window->showFullScreen();
+    m_window_list<<window;
+    if (is_primary)
+    {
+        connect(window, &Peony::DesktopWindow::changeBg, this, &PeonyDesktopApplication::changeBgProcess);
+    }
+}
+
+void PeonyDesktopApplication::layoutDirectionChangedProcess(Qt::LayoutDirection direction)
+{
+    qDebug()<<"layoutDirectionChangedProcess"<<direction;
+}
+
+void PeonyDesktopApplication::primaryScreenChangedProcess(QScreen *screen)
+{
+    if (screen != nullptr)
+        qDebug()<<"primaryScreenChangedProcess"<<screen->name()<<screen->size()<<screen->availableSize()<<screen->virtualGeometry();
+
+    updateWindowGeometry();
+}
+
+void PeonyDesktopApplication::updateWindowGeometry()
+{
+    for (auto window : m_window_list) {
+        qDebug()<<"updateWindowGeometry:"<<window->getScreen()->geometry()<<window->getScreen()->virtualGeometry();
+        window->setGeometry(window->getScreen()->geometry());
+        window->updateView();
+    }
+}
+
+void PeonyDesktopApplication::screenAddedProcess(QScreen *screen)
+{
+    if (screen != nullptr)
+        qDebug()<<"screenAdded"<<screen->name()<<screen<<m_window_list.size()<<screen->availableSize();
+
+    addWindow(screen);
+    if (! m_screen_list.contains(screen)) //new expanded screen
+         m_screen_list<<screen;
+
+    for(auto m_screen : m_screen_list)
+    {
+        qDebug()<<"screenAddedProcess m_screen:"<<m_screen->geometry()<<m_screen->virtualGeometry();
+    }
+    for(auto top_screen : this->screens())
+    {
+        if (top_screen)
+            qDebug()<<"screenAddedProcess top_screen:"<<top_screen->geometry()<<top_screen->virtualGeometry();
+    }
+}
+
+void PeonyDesktopApplication::screenRemovedProcess(QScreen *screen)
+{
+    if (screen != nullptr)
+        qDebug()<<"screenRemoved"<<screen->name()<<screen->serialNumber();
+
+    //window manage
+    for(auto win :m_window_list)
+    {
+        if (win->getScreen() == screen)
+        {
+            m_window_list.removeOne(win);
+            win->deleteLater();
+        }
+    }
+    m_screen_list.removeOne(screen);
+    for(auto m_screen : m_screen_list)
+    {
+        qDebug()<<"screenRemovedProcess:"<<m_screen->geometry()<<m_screen->virtualGeometry();
+    }
+    for(auto top_screen : this->screens())
+    {
+        if (top_screen)
+            qDebug()<<"screenRemovedProcess top_screen:"<<top_screen->geometry()<<top_screen->virtualGeometry();
+    }
+}
+
+bool PeonyDesktopApplication::isPrimaryScreen(QScreen *screen)
+{
+    if (screen == this->primaryScreen())
+        return true;
+
+    return false;
+}
+
+void PeonyDesktopApplication::changeBgProcess(const QString& bgPath)
+{
+    for (auto win : m_window_list) {
+        if (!isPrimaryScreen(win->getScreen()))
+            win->setBg(bgPath);
     }
 }

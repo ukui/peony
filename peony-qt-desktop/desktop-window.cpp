@@ -16,13 +16,15 @@
 #include "file-trash-operation.h"
 #include "clipboard-utils.h"
 
+#include "peony-desktop-application.h"
+#include "singleapplication.h"
+
 #include <QStandardPaths>
 #include <QLabel>
 
 #include <QApplication>
 #include <QScreen>
 #include <QDesktopWidget>
-#include <QStackedLayout>
 
 #include <QItemSelectionModel>
 
@@ -36,26 +38,23 @@
 
 using namespace Peony;
 
-DesktopWindow::DesktopWindow(QWidget *parent)
+DesktopWindow::DesktopWindow(QScreen *screen, bool is_primary, QWidget *parent)
     : QStackedWidget(parent)
 {
+    m_screen = screen;
+    m_is_primary = is_primary;
     setContentsMargins(0, 0, 0, 0);
-    QStackedLayout *layout = static_cast<QStackedLayout*>(this->layout());
-    layout->setStackingMode(QStackedLayout::StackAll);
-    qDebug()<<QApplication::primaryScreen()->geometry();
+    m_layout = static_cast<QStackedLayout*>(this->layout());
+    m_layout->setStackingMode(QStackedLayout::StackAll);
+    qDebug()<<"DesktopWindow is_primary:"<<is_primary<<screen->objectName()<<screen->name();
     setWindowFlags(Qt::FramelessWindowHint);
     setAttribute(Qt::WA_X11NetWmWindowTypeDesktop);
     setAttribute(Qt::WA_TranslucentBackground);
 
-    setGeometry(QApplication::primaryScreen()->geometry());
-    setFixedSize(QApplication::primaryScreen()->size());
+    setGeometry(screen->geometry());
+    setFixedSize(screen->size());
 
     setContextMenuPolicy(Qt::CustomContextMenu);
-
-    connect(qApp, &QApplication::primaryScreenChanged, [=](QScreen *screen){
-        qDebug()<<"primary screen changed";
-        this->setFixedSize(screen->size());
-    });
 
     m_trans_timer.setSingleShot(true);
     m_opacity_effect = new QGraphicsOpacityEffect(this);
@@ -64,17 +63,20 @@ DesktopWindow::DesktopWindow(QWidget *parent)
     m_bg_font->setContentsMargins(0, 0, 0, 0);
     m_bg_back = new QLabel(this);
     m_bg_back->setContentsMargins(0, 0, 0, 0);
-    layout->addWidget(m_bg_font);
-    layout->addWidget(m_bg_back);
+    m_layout->addWidget(m_bg_font);
+    m_layout->addWidget(m_bg_back);
+
+    setBg(getCurrentBgPath());
+
+    connect(m_screen, &QScreen::availableGeometryChanged, this, &DesktopWindow::availableGeometryChangedProcess);
 
     m_view = new DesktopIconView(this);
 
-    layout->addWidget(m_view);
+    m_layout->addWidget(m_view);
     setCurrentWidget(m_view);
-    m_view->setFixedSize(QApplication::primaryScreen()->availableGeometry().size());
-    m_view->setGeometry(QApplication::primaryScreen()->availableGeometry());
-
-    setBg(getCurrentBgPath());
+    qDebug()<<"create view:"<<m_screen->availableGeometry();
+    m_view->setFixedSize(m_screen->availableGeometry().size());
+    m_view->setGeometry(m_screen->availableGeometry());
 
     connect(m_view, &QListView::doubleClicked, [=](const QModelIndex &index){
         qDebug()<<"double click"<<index.data(FileItemModel::UriRole);
@@ -114,7 +116,8 @@ DesktopWindow::DesktopWindow(QWidget *parent)
                     if (dlg.exec()) {
                         auto url = dlg.selectedUrls().first();
                         this->setBg(url.path());
-                        qDebug()<<url;
+                        //qDebug()<<url;
+                        Q_EMIT this->changeBg(url.path());
                     }
                 });
             }
@@ -125,6 +128,10 @@ DesktopWindow::DesktopWindow(QWidget *parent)
     });
 
     initShortcut();
+    if (! is_primary)
+    {
+        m_view->hide();
+    }
 }
 
 DesktopWindow::~DesktopWindow()
@@ -153,7 +160,7 @@ void DesktopWindow::setBg(const QString &path)
 
     m_bg_font_pixmap = QPixmap(path);
     //FIXME: implement different pixmap clip algorithm.
-    m_bg_font_pixmap = m_bg_font_pixmap.scaled(QApplication::primaryScreen()->size(),
+    m_bg_font_pixmap = m_bg_font_pixmap.scaled(m_screen->size(),
                                                Qt::KeepAspectRatioByExpanding,
                                                Qt::SmoothTransformation);
     m_bg_font->setPixmap(m_bg_font_pixmap);
@@ -177,6 +184,25 @@ void DesktopWindow::setBg(const QString &path)
         m_bg_font->setGraphicsEffect(m_opacity_effect);
         m_trans_timer.start(50);
     });
+}
+
+void DesktopWindow::scaleBg(const QRect &geometry)
+{
+    QString path = getCurrentBgPath();
+    if (path.isNull()) {
+        return;
+    }
+
+    qDebug()<<"scaleBg:"<<m_screen<<geometry;
+    m_bg_font_pixmap = QPixmap(path);
+    //FIXME: implement different pixmap clip algorithm.
+    m_bg_font_pixmap = m_bg_font_pixmap.scaled(geometry.size(),
+                                               Qt::KeepAspectRatioByExpanding,
+                                               Qt::SmoothTransformation);
+
+    m_bg_font->setPixmap(m_bg_font_pixmap);
+    m_bg_back_pixmap = m_bg_font_pixmap;
+    m_bg_back->setPixmap(m_bg_back_pixmap);
 }
 
 void DesktopWindow::initShortcut()
@@ -255,4 +281,31 @@ void DesktopWindow::initShortcut()
         m_view->zoomOut();
     });
     addAction(zoomOutAction);
+}
+
+void DesktopWindow::availableGeometryChangedProcess(const QRect &geometry)
+{
+    if (m_screen == QApplication::primaryScreen())
+    {
+       qDebug()<<"availableGeometryChangedProcess:"<<geometry<<m_screen->geometry()<<this->geometry();
+       m_view->setFixedSize(this->geometry().size());
+       m_view->setGeometry(this->geometry());
+       scaleBg(this->geometry());
+    }
+}
+
+void DesktopWindow::updateView()
+{
+    bool m_is_primary = (m_screen == QApplication::primaryScreen());
+    qDebug()<<"updateView"<<m_is_primary<<m_screen->name()<<m_screen->virtualGeometry();
+    if (m_is_primary)
+    {
+        qDebug()<<"show view:"<<m_screen->availableGeometry()<<m_screen->availableVirtualGeometry();
+        m_view->setFixedSize(m_screen->availableGeometry().size());
+        m_view->setGeometry(m_screen->availableGeometry());
+        m_view->show();
+    }
+    else {
+        m_view->hide();
+    }
 }

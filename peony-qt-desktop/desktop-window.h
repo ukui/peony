@@ -3,6 +3,7 @@
 
 #include <QStackedWidget>
 #include <QTimer>
+#include <QStackedLayout>
 
 class QLabel;
 class QListView;
@@ -17,14 +18,22 @@ class DesktopWindow : public QStackedWidget
     Q_OBJECT
 
 public:
-    DesktopWindow(QWidget *parent = nullptr);
+    DesktopWindow(QScreen *screen, bool is_primary, QWidget *parent = nullptr);
     ~DesktopWindow();
 
 public:
     const QString getCurrentBgPath();
+    bool getIsPrimary(){return m_is_primary;}
+    QScreen *getScreen(){return m_screen;}
+
+Q_SIGNALS:
+    void changeBg(const QString &bgPath);
 
 public Q_SLOTS:
     void setBg(const QString &bgPath);
+    void availableGeometryChangedProcess(const QRect &geometry);
+    void scaleBg(const QRect &geometry);
+    void updateView();
 
 protected:
     void initShortcut();
@@ -43,6 +52,10 @@ private:
     QGraphicsOpacityEffect *m_opacity_effect;
 
     qreal m_opacity = 1.0;
+
+    QScreen *m_screen;
+    QStackedLayout *m_layout;
+    bool m_is_primary;
 };
 
 }
