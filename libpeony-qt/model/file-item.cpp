@@ -247,6 +247,7 @@ void FileItem::findChildrenAsync()
                 Q_EMIT this->childRemoved(uri);
             });
             connect(m_watcher, &FileWatcher::fileChanged, [=](const QString &uri){
+                //qDebug()<<"file changed"<<uri;
                 auto index = m_model->indexFromUri(uri);
                 m_model->dataChanged(index, index);
             });

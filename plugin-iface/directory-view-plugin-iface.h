@@ -16,6 +16,20 @@ class FileItemModel;
 class FileItemProxyFilterSortModel;
 
 /*!
+  \todo
+  I have to redesgin the DirectoryView extensions framework, because
+  current framework can't load DirectoryView Plugin correctly.
+
+  The new framework will deprecate the proxy and do not create DirectoryView by it self.
+  New directory view factory will just only "fill" the provided view container from peony-qt,
+  and connect the view container's signal.
+
+  I will define an instantiable QWidget interface classes providing a set of signals and slots as interface.
+  The new DirectoryViewIface is a part of libpeony-qt (not only in plugin-iface), and directory plugin should include the libraries
+  and implement the factory's filling function, connect the interface signal and slot to implement the UI.
+  */
+
+/*!
  * \brief The DirectoryViewPluginIface class
  * \details
  * It is a few complex to implement a peony-qt's directory view's plugin.

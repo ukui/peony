@@ -421,6 +421,7 @@ const QList<QAction *> DirectoryViewMenu::constructComputerActions()
     QList<QAction *> l;
 
     if (m_is_computer) {
+        /*
         //FIXME: get the volume state and add action dynamicly.
         if (m_selections.count() == 1) {
             l<<addAction(tr("&Umount"));
@@ -434,6 +435,7 @@ const QList<QAction *> DirectoryViewMenu::constructComputerActions()
                 //maybe put it in plugin...
             });
         }
+        */
     }
 
     return l;
