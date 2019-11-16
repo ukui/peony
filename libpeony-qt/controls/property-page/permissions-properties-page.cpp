@@ -148,7 +148,7 @@ GAsyncReadyCallback PermissionsPropertiesPage::async_query_permisson_callback(GO
 
             auto other_readable = mode & S_IROTH;
             p_this->m_permissions[2][0] = other_readable;
-            auto other_writeable = mode & S_IWGRP;
+            auto other_writeable = mode & S_IWOTH;
             p_this->m_permissions[2][1] = other_writeable;
             auto other_executeable = mode & S_IXOTH;
             p_this->m_permissions[2][2] = other_executeable;
