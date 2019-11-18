@@ -3,6 +3,7 @@
 #include "properties-window-tab-page-plugin-iface.h"
 
 #include "basic-properties-page-factory.h"
+#include "permissions-properties-page-factory.h"
 
 #include <QToolBar>
 #include <QDialogButtonBox>
@@ -29,6 +30,7 @@ PropertiesWindowPluginManager::PropertiesWindowPluginManager(QObject *parent) : 
 {
     //register internal factories.
     registerFactory(BasicPropertiesPageFactory::getInstance());
+    registerFactory(PermissionsPropertiesPageFactory::getInstance());
 }
 
 PropertiesWindowPluginManager::~PropertiesWindowPluginManager()

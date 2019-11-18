@@ -295,7 +295,7 @@ GAsyncReadyCallback FileEnumerator::mount_enclosing_volume_callback(GFile *file,
             op->setAutoDelete();
             g_free(uri);
             //op->setAutoDelete();
-            p_this->connect(op, &MountOperation::cancelled, [p_this](){
+            p_this->connect(op, &MountOperation::cancelled, p_this, [p_this](){
                 Q_EMIT p_this->enumerateFinished(false);
             });
             p_this->connect(op, &MountOperation::finished, [=](const std::shared_ptr<GErrorWrapper> &finished_err){

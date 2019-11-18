@@ -160,7 +160,7 @@ void FileWatcher::file_changed_callback(GFileMonitor *monitor,
                                         GFileMonitorEvent event_type,
                                         FileWatcher *p_this)
 {
-    //qDebug()<<"file_changed_callback";
+    //qDebug()<<"file_changed_callback"<<event_type;
     //FIXME: when a volume unmounted, the delete signal
     //will be sent, but the volume may not be deleted (in computer:///).
     //I need deal with this case.
@@ -185,6 +185,13 @@ void FileWatcher::file_changed_callback(GFileMonitor *monitor,
         Q_EMIT p_this->directoryDeleted(p_this->m_target_uri);
         break;
     }
+    case G_FILE_MONITOR_EVENT_ATTRIBUTE_CHANGED: {
+        char *uri = g_file_get_uri(file);
+        qDebug()<<uri;
+        Q_EMIT p_this->fileChanged(uri);
+        g_free(uri);
+        break;
+    }
     default:
         break;
     }
@@ -200,10 +207,12 @@ void FileWatcher::dir_changed_callback(GFileMonitor *monitor,
     Q_UNUSED(monitor);
     Q_UNUSED(other_file);
     switch (event_type) {
+    case G_FILE_MONITOR_EVENT_ATTRIBUTE_CHANGED:
     case G_FILE_MONITOR_EVENT_CHANGED: {
         if (p_this->m_montor_children_change) {
             char *uri = g_file_get_uri(file);
             QString changedFileUri = uri;
+            //qDebug()<<uri;
             QUrl url = changedFileUri;
             changedFileUri = url.toDisplayString();
             g_free(uri);
