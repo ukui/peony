@@ -92,6 +92,7 @@ QString FileUtils::getNonSuffixedBaseNameFromUri(const QString &uri)
         QString suffixedBaseName = url.fileName();
         int index = suffixedBaseName.lastIndexOf(".");
         if (index != -1) {
+#if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
             QString suffix = suffixedBaseName.chopped(suffixedBaseName.size() - index);
             if (suffix == ".gz" || suffix == ".xz" || suffix == ".bz"
                     || suffix == ".bz2" || suffix == ".Z" ||
@@ -99,6 +100,9 @@ QString FileUtils::getNonSuffixedBaseNameFromUri(const QString &uri)
                 int secondIndex = suffixedBaseName.lastIndexOf('.');
                 suffixedBaseName.chop(suffixedBaseName.size() - secondIndex);
             }
+#else
+            suffixedBaseName.chop(suffixedBaseName.size() - index);
+#endif
         }
         return suffixedBaseName;
     }
