@@ -24,13 +24,11 @@ public Q_SLOTS:
     void screenAddedProcess(QScreen *screen);
     void screenRemovedProcess(QScreen *screen);
 
-    void addWindow(QScreen *screen);
+    void addWindow(QScreen *screen, bool checkPrimay = true);
     void changeBgProcess(const QString& bgPath);
-    void updateWindowGeometry();
 
 private:
     bool m_first_parse = true;
-    QList<QScreen*> m_screen_list;
     QList<Peony::DesktopWindow*> m_window_list;
 };
 

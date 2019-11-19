@@ -24,7 +24,10 @@ public:
 public:
     const QString getCurrentBgPath();
     bool getIsPrimary(){return m_is_primary;}
+    void setIsPrimary(bool is_primary);
     QScreen *getScreen(){return m_screen;}
+    void setScreen(QScreen *screen);
+    DesktopIconView *getView(){return m_view;}
 
 Q_SIGNALS:
     void changeBg(const QString &bgPath);
@@ -32,8 +35,14 @@ Q_SIGNALS:
 public Q_SLOTS:
     void setBg(const QString &bgPath);
     void availableGeometryChangedProcess(const QRect &geometry);
+    void virtualGeometryChangedProcess(const QRect &geometry);
+    void geometryChangedProcess(const QRect &geometry);
     void scaleBg(const QRect &geometry);
     void updateView();
+    void updateWinGeometry();
+
+    void connectSignal();
+    void disconnectSignal();
 
 protected:
     void initShortcut();

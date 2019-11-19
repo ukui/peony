@@ -15,7 +15,6 @@ static bool has_daemon = false;
 
 PeonyDesktopApplication::PeonyDesktopApplication(int &argc, char *argv[], const char *applicationName) : SingleApplication (argc, argv, applicationName, true)
 {
-    m_screen_list= this->screens();
     if (this->isPrimary()) {
         qDebug()<<"isPrimary screen";
         connect(this, &SingleApplication::receivedMessage, [=](quint32 id, QByteArray msg){
@@ -102,7 +101,7 @@ void PeonyDesktopApplication::parseCmd(quint32 id, QByteArray msg, bool isPrimar
             if (!has_desktop) {
                 //FIXME: load menu plugin
                 //FIXME: take over desktop displaying
-                for(auto screen : m_screen_list)
+                for(auto screen : this->screens())
                 {
                     addWindow(screen);
                 }
@@ -123,37 +122,69 @@ void PeonyDesktopApplication::parseCmd(quint32 id, QByteArray msg, bool isPrimar
     }
 }
 
-void PeonyDesktopApplication::addWindow(QScreen *screen)
+void PeonyDesktopApplication::addWindow(QScreen *screen, bool checkPrimay)
 {
-    bool is_primary = isPrimaryScreen(screen);
-    Peony::DesktopWindow *window = new Peony::DesktopWindow(screen, is_primary);
+    Peony::DesktopWindow *window;
+    if (checkPrimay) {
+        bool is_primary = isPrimaryScreen(screen);
+        window = new Peony::DesktopWindow(screen, is_primary);
+        if (is_primary)
+        {
+            connect(window, &Peony::DesktopWindow::changeBg, this, &PeonyDesktopApplication::changeBgProcess);
+        }
+    } else {
+        window = new Peony::DesktopWindow(screen, false);
+    }
+
     window->showFullScreen();
     m_window_list<<window;
-    if (is_primary)
-    {
-        connect(window, &Peony::DesktopWindow::changeBg, this, &PeonyDesktopApplication::changeBgProcess);
-    }
 }
 
 void PeonyDesktopApplication::layoutDirectionChangedProcess(Qt::LayoutDirection direction)
 {
+    //not regular operate, to complete later
     qDebug()<<"layoutDirectionChangedProcess"<<direction;
 }
 
 void PeonyDesktopApplication::primaryScreenChangedProcess(QScreen *screen)
 {
     if (screen != nullptr)
-        qDebug()<<"primaryScreenChangedProcess"<<screen->name()<<screen->size()<<screen->availableSize()<<screen->virtualGeometry();
+        qDebug()<<"primaryScreenChangedProcess"<<screen->name()<<screen->geometry()<<screen->availableGeometry()<<screen->virtualGeometry();
 
-    updateWindowGeometry();
-}
+    bool need_exchange = false;
+    QScreen *preMainScreen = nullptr;
+    for(auto win : m_window_list)
+    {
+        //need exchange window screen
+        if (win->getView() && win->getScreen() != screen)
+        {
+            preMainScreen = win->getScreen();
+            need_exchange = true;
+            break;
+        }
+    }
 
-void PeonyDesktopApplication::updateWindowGeometry()
-{
-    for (auto window : m_window_list) {
-        qDebug()<<"updateWindowGeometry:"<<window->getScreen()->geometry()<<window->getScreen()->virtualGeometry();
-        window->setGeometry(window->getScreen()->geometry());
-        window->updateView();
+    if (need_exchange)
+    {
+        for(auto win : m_window_list)
+        {
+            //qDebug()<<"before screen info"<<win->getScreen()->name()<<win->getScreen()->geometry()<<win->geometry()<<preMainScreen->name();
+            win->disconnectSignal();
+            if (win->getScreen() == preMainScreen)
+            {
+               win->setScreen(screen);
+               win->setIsPrimary(true);
+            }
+            else if (win->getScreen() == screen) {
+               win->setScreen(preMainScreen);
+               win->setIsPrimary(false);
+            }
+            win->connectSignal();
+            win->updateWinGeometry();
+            //qDebug()<<"end screen info"<<win->getScreen()->name()<<win->getScreen()->geometry()<<win->geometry();
+            //if (win->getView())
+                //qDebug()<<"view info:"<<win->getView();
+        }
     }
 }
 
@@ -162,19 +193,7 @@ void PeonyDesktopApplication::screenAddedProcess(QScreen *screen)
     if (screen != nullptr)
         qDebug()<<"screenAdded"<<screen->name()<<screen<<m_window_list.size()<<screen->availableSize();
 
-    addWindow(screen);
-    if (! m_screen_list.contains(screen)) //new expanded screen
-         m_screen_list<<screen;
-
-    for(auto m_screen : m_screen_list)
-    {
-        qDebug()<<"screenAddedProcess m_screen:"<<m_screen->geometry()<<m_screen->virtualGeometry();
-    }
-    for(auto top_screen : this->screens())
-    {
-        if (top_screen)
-            qDebug()<<"screenAddedProcess top_screen:"<<top_screen->geometry()<<top_screen->virtualGeometry();
-    }
+    addWindow(screen, false);
 }
 
 void PeonyDesktopApplication::screenRemovedProcess(QScreen *screen)
@@ -185,21 +204,13 @@ void PeonyDesktopApplication::screenRemovedProcess(QScreen *screen)
     //window manage
     for(auto win :m_window_list)
     {
+        //screen not changed
         if (win->getScreen() == screen)
         {
+            qDebug()<<"remove window";
             m_window_list.removeOne(win);
             win->deleteLater();
         }
-    }
-    m_screen_list.removeOne(screen);
-    for(auto m_screen : m_screen_list)
-    {
-        qDebug()<<"screenRemovedProcess:"<<m_screen->geometry()<<m_screen->virtualGeometry();
-    }
-    for(auto top_screen : this->screens())
-    {
-        if (top_screen)
-            qDebug()<<"screenRemovedProcess top_screen:"<<top_screen->geometry()<<top_screen->virtualGeometry();
     }
 }
 

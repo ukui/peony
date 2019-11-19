@@ -68,10 +68,18 @@ DesktopWindow::DesktopWindow(QScreen *screen, bool is_primary, QWidget *parent)
 
     setBg(getCurrentBgPath());
 
+    connect(m_screen, &QScreen::geometryChanged, this, &DesktopWindow::geometryChangedProcess);
+    connect(m_screen, &QScreen::virtualGeometryChanged, this, &DesktopWindow::virtualGeometryChangedProcess);
+
+    if (! m_is_primary)
+    {
+        m_view = nullptr;
+        return;
+    }
+
     connect(m_screen, &QScreen::availableGeometryChanged, this, &DesktopWindow::availableGeometryChangedProcess);
 
     m_view = new DesktopIconView(this);
-
     m_layout->addWidget(m_view);
     setCurrentWidget(m_view);
     qDebug()<<"create view:"<<m_screen->availableGeometry();
@@ -122,16 +130,10 @@ DesktopWindow::DesktopWindow(QScreen *screen, bool is_primary, QWidget *parent)
                 });
             }
             menu.exec(QCursor::pos());
-
-            //qDebug()<<"menu request";
         });
     });
 
     initShortcut();
-    if (! is_primary)
-    {
-        m_view->hide();
-    }
 }
 
 DesktopWindow::~DesktopWindow()
@@ -186,6 +188,38 @@ void DesktopWindow::setBg(const QString &path)
     });
 }
 
+void DesktopWindow::setScreen(QScreen *screen)
+{
+    m_screen = screen;
+}
+
+void DesktopWindow::setIsPrimary(bool is_primary)
+{
+    m_is_primary = is_primary;
+}
+
+void DesktopWindow::connectSignal()
+{
+    connect(m_screen, &QScreen::geometryChanged, this, &DesktopWindow::geometryChangedProcess);
+    connect(m_screen, &QScreen::virtualGeometryChanged, this, &DesktopWindow::virtualGeometryChangedProcess);
+
+    if (m_is_primary)
+    {
+        connect(m_screen, &QScreen::availableGeometryChanged, this, &DesktopWindow::availableGeometryChangedProcess);
+    }
+}
+
+void DesktopWindow::disconnectSignal()
+{
+    disconnect(m_screen, &QScreen::geometryChanged, this, &DesktopWindow::geometryChangedProcess);
+    disconnect(m_screen, &QScreen::virtualGeometryChanged, this, &DesktopWindow::virtualGeometryChangedProcess);
+
+    if (m_is_primary)
+    {
+        disconnect(m_screen, &QScreen::availableGeometryChanged, this, &DesktopWindow::availableGeometryChangedProcess);
+    }
+}
+
 void DesktopWindow::scaleBg(const QRect &geometry)
 {
     QString path = getCurrentBgPath();
@@ -193,7 +227,7 @@ void DesktopWindow::scaleBg(const QRect &geometry)
         return;
     }
 
-    qDebug()<<"scaleBg:"<<m_screen<<geometry;
+    qDebug()<<"scaleBg:"<<m_screen->geometry()<<geometry;
     m_bg_font_pixmap = QPixmap(path);
     //FIXME: implement different pixmap clip algorithm.
     m_bg_font_pixmap = m_bg_font_pixmap.scaled(geometry.size(),
@@ -285,27 +319,39 @@ void DesktopWindow::initShortcut()
 
 void DesktopWindow::availableGeometryChangedProcess(const QRect &geometry)
 {
-    if (m_screen == QApplication::primaryScreen())
-    {
-       qDebug()<<"availableGeometryChangedProcess:"<<geometry<<m_screen->geometry()<<this->geometry();
-       m_view->setFixedSize(this->geometry().size());
-       m_view->setGeometry(this->geometry());
-       scaleBg(this->geometry());
-    }
+    qDebug()<<"availableGeometryChangedProcess"<<geometry<<m_screen->geometry()<<m_screen->availableGeometry()<<m_screen->name();
+    updateView();
+}
+
+void DesktopWindow::virtualGeometryChangedProcess(const QRect &geometry)
+{
+    qDebug()<<"virtualGeometryChangedProcess"<<geometry<<m_screen->geometry()<<m_screen->virtualGeometry()<<m_screen->name();
+    this->setGeometry(m_screen->geometry());
+    scaleBg(m_screen->geometry());
+}
+
+void DesktopWindow::geometryChangedProcess(const QRect &geometry)
+{
+    //screen resolution ratio change
+    qDebug()<<"geometryChangedProcess:"<<geometry<<m_screen->geometry()<<this->geometry()<<m_screen->name();
+    updateWinGeometry();
+    scaleBg(geometry);
 }
 
 void DesktopWindow::updateView()
 {
-    bool m_is_primary = (m_screen == QApplication::primaryScreen());
-    qDebug()<<"updateView"<<m_is_primary<<m_screen->name()<<m_screen->virtualGeometry();
-    if (m_is_primary)
+    if (m_view)
     {
-        qDebug()<<"show view:"<<m_screen->availableGeometry()<<m_screen->availableVirtualGeometry();
-        m_view->setFixedSize(m_screen->availableGeometry().size());
+        qDebug()<<"updateView"<<m_screen->name()<<m_screen->availableGeometry()<<this->geometry();
         m_view->setGeometry(m_screen->availableGeometry());
-        m_view->show();
+        m_view->setFixedSize(m_screen->availableGeometry().size());
     }
-    else {
-        m_view->hide();
-    }
+}
+
+void DesktopWindow::updateWinGeometry()
+{
+    qDebug()<<"befoere updateWinGeometry:"<<this->objectName()<<this->getScreen()->geometry()<<this->geometry()<<this->getScreen()->virtualGeometry();
+    this->setGeometry(m_screen->geometry());
+    this->setFixedSize(m_screen->geometry().size());
+    qDebug()<<"end updateWinGeometry:"<<this->objectName()<<this->getScreen()->geometry()<<this->geometry()<<this->getScreen()->virtualGeometry();
 }
