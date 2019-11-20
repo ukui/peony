@@ -4,7 +4,7 @@
 #include <QMenu>
 #include "peony-core_global.h"
 
-#include "directory-view-plugin-iface.h"
+#include "directory-view-plugin-iface2.h"
 
 namespace Peony {
 
@@ -26,7 +26,7 @@ public:
      * \param parent
      * \deprecated
      */
-    explicit DirectoryViewMenu(DirectoryViewIface *directoryView, QWidget *parent = nullptr);
+    explicit DirectoryViewMenu(DirectoryViewWidget *directoryView, QWidget *parent = nullptr);
     explicit DirectoryViewMenu(FMWindow *window, QWidget *parent = nullptr);
 
 protected:
@@ -44,7 +44,7 @@ protected:
 private:
     FMWindow *m_top_window;
 
-    DirectoryViewIface *m_view;
+    DirectoryViewWidget *m_view;
     QString m_directory;
     QStringList m_selections;
 

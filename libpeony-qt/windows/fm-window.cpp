@@ -13,6 +13,7 @@
 
 #include "directory-view-container.h"
 #include "directory-view-plugin-iface.h"
+#include "directory-view-widget.h"
 
 #include "directory-view-menu.h"
 
@@ -23,6 +24,8 @@
 
 #include "preview-page-plugin-iface.h"
 #include "preview-page-factory-manager.h"
+
+#include "directory-view-factory-manager.h"
 
 #include <QDockWidget>
 #include <QStandardPaths>
@@ -277,11 +280,11 @@ FMWindow::FMWindow(const QString &uri, QWidget *parent) : QMainWindow (parent)
     });
 
     //menu
-    m_tab->connect(m_tab, &TabPage::menuRequest, [=](const QPoint &pos){
+    m_tab->connect(m_tab, &TabPage::menuRequest, [=](){
         if (m_is_loading)
             return;
         DirectoryViewMenu menu(this, nullptr);
-        menu.exec(pos);
+        menu.exec(QCursor::pos());
     });
 
     //preview page
@@ -492,32 +495,37 @@ void FMWindow::onPreviewPageSwitch(const QString &id)
 
 void FMWindow::setCurrentSelectionUris(const QStringList &uris)
 {
-    m_tab->getActivePage()->getProxy()->setSelections(uris);
+    m_tab->getActivePage()->getView()->setSelections(uris);
 }
 
 void FMWindow::setCurrentSortOrder(Qt::SortOrder order)
 {
-    m_tab->getActivePage()->getProxy()->setSortOrder(order);
+    m_tab->getActivePage()->getView()->setSortOrder(order);
 }
 
 Qt::SortOrder FMWindow::getCurrentSortOrder()
 {
-    return Qt::SortOrder(m_tab->getActivePage()->getProxy()->getSortOrder());
+    return Qt::SortOrder(m_tab->getActivePage()->getView()->getSortOrder());
 }
 
 void FMWindow::setCurrentSortColumn(int column)
 {
-    m_tab->getActivePage()->getProxy()->setSortType(column);
+    m_tab->getActivePage()->getView()->setSortType(column);
 }
 
 int FMWindow::getCurrentSortColumn()
 {
-    return m_tab->getActivePage()->getProxy()->getSortType();
+    return m_tab->getActivePage()->getView()->getSortType();
 }
 
 const QString FMWindow::getCurrentPageViewType()
 {
-    return m_tab->getActivePage()->getProxy()->getView()->viewId();
+    if (m_tab->getActivePage()->getView()) {
+        return m_tab->getActivePage()->getView()->viewId();
+    }
+    else {
+        return DirectoryViewFactoryManager2::getInstance()->getDefaultViewId();
+    }
 }
 
 //preview page container

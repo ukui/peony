@@ -1,5 +1,7 @@
 #include "directory-view-container.h"
 #include "directory-view-plugin-iface.h"
+#include "directory-view-plugin-iface2.h"
+#include "directory-view-widget.h"
 #include "directory-view-factory-manager.h"
 #include "standard-view-proxy.h"
 #include "file-utils.h"
@@ -18,7 +20,7 @@ DirectoryViewContainer::DirectoryViewContainer(QWidget *parent) : QWidget(parent
     m_proxy_model = new FileItemProxyFilterSortModel(this);
     m_proxy_model->setSourceModel(m_model);
 
-    m_proxy = new DirectoryView::StandardViewProxy;
+    //m_proxy = new DirectoryView::StandardViewProxy;
 
     setContentsMargins(0, 0, 0, 0);
     m_layout = new QVBoxLayout(this);
@@ -27,24 +29,24 @@ DirectoryViewContainer::DirectoryViewContainer(QWidget *parent) : QWidget(parent
     m_layout->setSpacing(0);
     setLayout(m_layout);
 
-    connect(m_proxy, &DirectoryViewProxyIface::viewDirectoryChanged,
-            this, &DirectoryViewContainer::directoryChanged);
+//    connect(m_proxy, &DirectoryViewProxyIface::viewDirectoryChanged,
+//            this, &DirectoryViewContainer::directoryChanged);
 
-    connect(m_proxy, &DirectoryViewProxyIface::viewSelectionChanged,
-            this, &DirectoryViewContainer::selectionChanged);
+//    connect(m_proxy, &DirectoryViewProxyIface::viewSelectionChanged,
+//            this, &DirectoryViewContainer::selectionChanged);
 
-    connect(m_proxy, &DirectoryViewProxyIface::menuRequest,
-            this, &DirectoryViewContainer::menuRequest);
+//    connect(m_proxy, &DirectoryViewProxyIface::menuRequest,
+//            this, &DirectoryViewContainer::menuRequest);
 
-    auto viewId = DirectoryViewFactoryManager::getInstance()->getDefaultViewId();
+    auto viewId = DirectoryViewFactoryManager2::getInstance()->getDefaultViewId();
     switchViewType(viewId);
 }
 
 DirectoryViewContainer::~DirectoryViewContainer()
 {
-    m_proxy->closeProxy();
-    if (m_proxy->getView())
-        m_proxy->getView()->closeView();
+//    m_proxy->closeProxy();
+//    if (m_proxy->getView())
+//        m_proxy->getView()->closeView();
 }
 
 const QStringList DirectoryViewContainer::getBackList()
@@ -98,7 +100,9 @@ void DirectoryViewContainer::goForward()
 
 bool DirectoryViewContainer::canCdUp()
 {
-    return !FileUtils::getParentUri(m_proxy->getDirectoryUri()).isNull();
+    if (!m_view)
+        return false;
+    return !FileUtils::getParentUri(m_view->getDirectoryUri()).isNull();
 }
 
 void DirectoryViewContainer::cdUp()
@@ -106,7 +110,7 @@ void DirectoryViewContainer::cdUp()
     if (!canCdUp())
         return;
 
-    auto uri = FileUtils::getParentUri(m_proxy->getDirectoryUri());
+    auto uri = FileUtils::getParentUri(m_view->getDirectoryUri());
     if (uri.isNull())
         return;
 
@@ -141,15 +145,18 @@ update:
         m_back_list.append(getCurrentUri());
     }
 
-    m_proxy->setDirectoryUri(uri);
-    m_proxy->beginLocationChange();
-    //m_active_view_prxoy->setDirectoryUri(uri);
-
     m_current_uri = uri;
+
+    if (m_view) {
+        m_view->setDirectoryUri(uri);
+        m_view->beginLocationChange();
+        //m_active_view_prxoy->setDirectoryUri(uri);
+    }
 }
 
 void DirectoryViewContainer::switchViewType(const QString &viewId)
 {
+    /*
     if (!m_proxy)
         return;
 
@@ -157,8 +164,9 @@ void DirectoryViewContainer::switchViewType(const QString &viewId)
         if (viewId == m_proxy->getView()->viewId())
             return;
     }
+    */
 
-    auto viewManager = DirectoryViewFactoryManager::getInstance();
+    auto viewManager = DirectoryViewFactoryManager2::getInstance();
     auto factory = viewManager->getFactory(viewId);
     if (!factory)
         return;
@@ -166,25 +174,33 @@ void DirectoryViewContainer::switchViewType(const QString &viewId)
     auto sortType = 0;
     auto sortOrder = 0;
 
-    auto oldView = m_proxy->getView();
+    auto oldView = m_view;
     QStringList selection;
     if (oldView) {
         sortType = oldView->getSortType();
         sortOrder = oldView->getSortOrder();
         selection = oldView->getSelections();
         m_layout->removeWidget(dynamic_cast<QWidget*>(oldView));
+        oldView->deleteLater();
     }
     auto view = factory->create();
+    m_view = view;
     //connect the view's signal.
     view->bindModel(m_model, m_proxy_model);
-    view->setProxy(m_proxy);
+    //view->setProxy(m_proxy);
 
     view->setSortType(sortType);
     view->setSortOrder(sortOrder);
 
-    m_proxy->switchView(view);
+    connect(m_view, &DirectoryViewWidget::menuRequest, this, &DirectoryViewContainer::menuRequest);
+    connect(m_view, &DirectoryViewWidget::viewDirectoryChanged, this, &DirectoryViewContainer::directoryChanged);
+    connect(m_view, &DirectoryViewWidget::viewDoubleClicked, this, &DirectoryViewContainer::viewDoubleClicked);
+    connect(m_view, &DirectoryViewWidget::viewDoubleClicked, this, &DirectoryViewContainer::onViewDoubleClicked);
+    connect(m_view, &DirectoryViewWidget::viewSelectionChanged, this, &DirectoryViewContainer::selectionChanged);
+
+    //m_proxy->switchView(view);
     m_layout->addWidget(dynamic_cast<QWidget*>(view), Qt::AlignBottom);
-    DirectoryViewFactoryManager::getInstance()->setDefaultViewId(viewId);
+    DirectoryViewFactoryManager2::getInstance()->setDefaultViewId(viewId);
     if (!selection.isEmpty()) {
         view->setSelections(selection);
     }
@@ -194,7 +210,9 @@ void DirectoryViewContainer::switchViewType(const QString &viewId)
 
 void DirectoryViewContainer::refresh()
 {
-    m_proxy->beginLocationChange();
+    if (!m_view)
+        return;
+    m_view->beginLocationChange();
 }
 
 void DirectoryViewContainer::bindNewProxy(DirectoryViewProxyIface *proxy)
@@ -205,31 +223,31 @@ void DirectoryViewContainer::bindNewProxy(DirectoryViewProxyIface *proxy)
 
 const QStringList DirectoryViewContainer::getCurrentSelections()
 {
-    if (getProxy()) {
-        return getProxy()->getSelections();
-    }
+    if (m_view)
+        return m_view->getSelections();
     return QStringList();
 }
 
 const QString DirectoryViewContainer::getCurrentUri()
 {
-    if (getProxy()) {
-        return getProxy()->getDirectoryUri();
+    if (m_view) {
+        return m_view->getDirectoryUri();
     }
     return nullptr;
 }
 
 const QStringList DirectoryViewContainer::getAllFileUris()
 {
-    if (getProxy())
-        return getProxy()->getAllFileUris();
+    if (m_view)
+        return m_view->getAllFileUris();
     return QStringList();
 }
 
 void DirectoryViewContainer::stopLoading()
 {
-    if (getProxy()) {
-        getProxy()->stopLocationChange();
+    if (m_view) {
+        m_view->stopLocationChange();
+        Q_EMIT this->directoryChanged();
     }
 }
 
@@ -255,23 +273,35 @@ void DirectoryViewContainer::tryJump(int index)
 
 FileItemModel::ColumnType DirectoryViewContainer::getSortType()
 {
-
-    int type = m_proxy->getSortType();
+    if (!m_view)
+        return FileItemModel::FileName;
+    int type = m_view->getSortType();
     return FileItemModel::ColumnType(type);
 }
 
 void DirectoryViewContainer::setSortType(FileItemModel::ColumnType type)
 {
-    m_proxy->setSortType(type);
+    if (!m_view)
+        return;
+    m_view->setSortType(type);
 }
 
 Qt::SortOrder DirectoryViewContainer::getSortOrder()
 {
-    int order = m_proxy->getSortOrder();
+    if (!m_view)
+        return Qt::AscendingOrder;
+    int order = m_view->getSortOrder();
     return Qt::SortOrder(order);
 }
 
 void DirectoryViewContainer::setSortOrder(Qt::SortOrder order)
 {
-    m_proxy->setSortOrder(order);
+    if (!m_view)
+        return;
+    m_view->setSortOrder(order);
+}
+
+void DirectoryViewContainer::onViewDoubleClicked(const QString& uri)
+{
+
 }

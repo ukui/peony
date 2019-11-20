@@ -5,6 +5,9 @@
 #include "directory-view-plugin-iface.h"
 #include "file-item-model.h"
 #include "file-item-proxy-filter-sort-model.h"
+
+#include "directory-view-widget.h"
+
 #include <QListView>
 #include <QTimer>
 
@@ -122,6 +125,61 @@ private:
      * \deprecated
      */
     bool m_use_peony_qt_directory_menu = false;
+};
+
+//IconView2
+class IconView2 : public DirectoryViewWidget
+{
+    Q_OBJECT
+    //internal plugin
+public:
+    explicit IconView2(QWidget *parent = nullptr);
+    ~IconView2();
+
+    const QString viewId() {return tr("Icon View");}
+
+    //location
+    const QString getDirectoryUri() {return m_view->getDirectoryUri();}
+
+    //selections
+    const QStringList getSelections() {return m_view->getSelections();}
+
+    //children
+    const QStringList getAllFileUris() {return m_view->getAllFileUris();}
+
+    int getSortType() {return m_view->getSortType();}
+    Qt::SortOrder getSortOrder() {return Qt::SortOrder(m_view->getSortOrder());}
+
+public Q_SLOTS:
+    void bindModel(FileItemModel *model, FileItemProxyFilterSortModel *proxyModel);
+
+    //location
+    //void open(const QStringList &uris, bool newWindow);
+    void setDirectoryUri(const QString &uri) {m_view->setDirectoryUri(uri);}
+    void beginLocationChange() {m_view->beginLocationChange();}
+    void stopLocationChange() {m_view->stopLocationChange();}
+
+    void closeDirectoryView() {m_view->closeView();}
+
+    //selections
+    void setSelections(const QStringList &uris) {m_view->setSelections(uris);}
+    void invertSelections() {m_view->invertSelections();}
+    void scrollToSelection(const QString &uri) {m_view->scrollToSelection(uri);}
+
+    //clipboard
+    //cut items should be drawn differently.
+    void setCutFiles(const QStringList &uris) {m_view->setCutFiles(uris);}
+
+    void setSortType(int sortType) {m_view->setSortType(sortType);}
+    void setSortOrder(int sortOrder) {m_view->setSortOrder(sortOrder);}
+
+    void editUri(const QString &uri) {m_view->editUri(uri);}
+    void editUris(const QStringList uris) {m_view->editUris(uris);}
+
+private:
+    IconView *m_view = nullptr;
+    FileItemModel *m_model = nullptr;
+    FileItemProxyFilterSortModel *m_proxy_model = nullptr;
 };
 
 }

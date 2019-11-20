@@ -3,6 +3,8 @@
 #include "fm-window.h"
 #include "directory-view-factory-manager.h"
 #include "directory-view-plugin-iface.h"
+#include "directory-view-plugin-iface2.h"
+#include "directory-view-widget.h"
 #include "clipboard-utils.h"
 #include "file-operation-utils.h"
 
@@ -49,7 +51,7 @@ void ToolBar::init()
 
     auto defaultViewId = viewManager->getDefaultViewId();
 
-    auto model = new ViewFactorySortFilterModel(this);
+    auto model = new ViewFactorySortFilterModel2(this);
     m_view_factory_model = model;
     model->setDirectoryUri("file://" + QStandardPaths::writableLocation(QStandardPaths::HomeLocation));
 
@@ -266,7 +268,7 @@ void ToolBar::updateLocation(const QString &uri)
 
     m_view_factory_model->setDirectoryUri(uri);
 
-    auto viewId = m_top_window->getCurrentPage()->getProxy()->getView()->viewId();
+    auto viewId = m_top_window->getCurrentPage()->getView()->viewId();
 
     m_view_action->setIcon(m_view_factory_model->iconFromViewId(viewId));
     m_view_action->setText(m_top_window->getCurrentPageViewType());

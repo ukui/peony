@@ -5,11 +5,14 @@
 #include "preview-page-factory-manager.h"
 
 #include "directory-view-plugin-iface.h"
+#include "directory-view-plugin-iface2.h"
 #include "preview-page-plugin-iface.h"
 #include "style-plugin-iface.h"
 
 #include "properties-window.h" //properties factory manager define is in this header
 #include "properties-window-tab-page-plugin-iface.h"
+
+#include "directory-view-widget.h"
 
 #include <QDebug>
 #include <QDir>
@@ -73,6 +76,14 @@ PluginManager::PluginManager(QObject *parent) : QObject(parent)
               */
             auto styleProvider = dynamic_cast<StylePluginIface*>(plugin);
             QApplication::setStyle(styleProvider->getStyle());
+            break;
+        }
+        case PluginInterface::DirectoryViewPlugin2: {
+            auto p = dynamic_cast<DirectoryViewPluginIface2*>(plugin);
+            DirectoryViewFactoryManager2::getInstance()->registerFactory(p->name(), p);
+//            auto w = new DirectoryViewWidget;
+//            p->fillDirectoryView(w);
+//            w->show();
             break;
         }
         default:

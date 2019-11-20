@@ -8,6 +8,8 @@
 
 #include <QHeaderView>
 
+#include <QVBoxLayout>
+
 #include <QDebug>
 
 using namespace Peony;
@@ -40,6 +42,19 @@ void ListView::bindModel(FileItemModel *sourceModel, FileItemProxyFilterSortMode
     m_proxy_model = proxyModel;
     m_proxy_model->setSourceModel(m_model);
     setModel(proxyModel);
+
+    //edit trigger
+    connect(this->selectionModel(), &QItemSelectionModel::selectionChanged, [=](const QItemSelection &selection, const QItemSelection &deselection){
+        qDebug()<<"selection changed";
+        auto currentSelections = selection.indexes();
+
+        for (auto index : deselection.indexes()) {
+            this->setIndexWidget(index, nullptr);
+        }
+
+        //Q_EMIT m_proxy->viewSelectionChanged();
+        //rename trigger
+    });
 }
 
 void ListView::setProxy(DirectoryViewProxyIface *proxy)
@@ -225,4 +240,63 @@ void ListView::editUris(const QStringList uris)
 {
     //FIXME:
     //implement batch rename.
+}
+
+//List View 2
+ListView2::ListView2(QWidget *parent) : DirectoryViewWidget(parent)
+{
+    auto layout = new QVBoxLayout(this);
+    layout->setMargin(0);
+    layout->setSpacing(0);
+    m_view = new ListView(this);
+    layout->addWidget(m_view);
+
+    setLayout(layout);
+}
+
+ListView2::~ListView2()
+{
+
+}
+
+void ListView2::bindModel(FileItemModel *model, FileItemProxyFilterSortModel *proxyModel)
+{
+    disconnect(m_model);
+    disconnect(m_proxy_model);
+    m_model = model;
+    m_proxy_model = proxyModel;
+
+    m_view->bindModel(model, proxyModel);
+    connect(model, &FileItemModel::findChildrenFinished, this, &DirectoryViewWidget::viewDirectoryChanged);
+    connect(m_model, &FileItemModel::updated, m_view, &ListView::resort);
+
+    connect(m_view->selectionModel(), &QItemSelectionModel::selectionChanged,
+            this, &DirectoryViewWidget::viewSelectionChanged);
+
+    connect(m_view, &ListView::doubleClicked, this, [=](const QModelIndex &index){
+        qDebug()<<index.data(Qt::UserRole).toString();
+        Q_EMIT this->viewDoubleClicked(index.data(Qt::UserRole).toString());
+    });
+
+    //menu
+    connect(m_view, &ListView::customContextMenuRequested, this, [=](const QPoint &pos){
+        qDebug()<<"menu request";
+        if (!m_view->indexAt(pos).isValid())
+            m_view->clearSelection();
+
+        auto index = m_view->indexAt(pos);
+        if (index.column() != 0) {
+            auto visualRect = m_view->visualRect(index);
+            auto sizeHint = m_view->itemDelegate()->sizeHint(m_view->viewOptions(), index);
+            auto validRect = QRect(visualRect.topLeft(), sizeHint);
+            if (!validRect.contains(pos))
+                m_view->clearSelection();
+        }
+
+        //NOTE: we have to ensure that we have cleared the
+        //selection if menu request at blank pos.
+        QTimer::singleShot(1, [=](){
+            Q_EMIT this->menuRequest(QCursor::pos());
+        });
+    });
 }

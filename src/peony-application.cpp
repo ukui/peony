@@ -448,8 +448,8 @@ void PeonyApplication::parseCmd(quint32 id, QByteArray msg)
                 Peony::FMWindow *window = new Peony::FMWindow(parentUri);
                 connect(window, &Peony::FMWindow::locationChangeEnd, [=](){
                     QTimer::singleShot(500, [=]{
-                        window->getCurrentPage()->getProxy()->getView()->setSelections(itemHash.value(parentUri));
-                        window->getCurrentPage()->getProxy()->getView()->scrollToSelection(itemHash.value(parentUri).first());
+                        window->getCurrentPage()->getView()->setSelections(itemHash.value(parentUri));
+                        window->getCurrentPage()->getView()->scrollToSelection(itemHash.value(parentUri).first());
                     });
                 });
                 window->show();

@@ -5,6 +5,8 @@
 #include "directory-view-plugin-iface.h"
 #include "peony-core_global.h"
 
+#include "directory-view-widget.h"
+
 #include <QTimer>
 
 namespace Peony {
@@ -21,6 +23,7 @@ namespace DirectoryView {
  */
 class PEONYCORESHARED_EXPORT ListView : public QTreeView, public DirectoryViewIface
 {
+    friend class ListView2;
     Q_OBJECT
 public:
     explicit ListView(QWidget *parent = nullptr);
@@ -80,6 +83,61 @@ private:
     DirectoryViewProxyIface *m_proxy = nullptr;
 
     QString m_current_uri;
+};
+
+//ListView2
+class ListView2 : public DirectoryViewWidget
+{
+    Q_OBJECT
+    //internal plugin
+public:
+    explicit ListView2(QWidget *parent = nullptr);
+    ~ListView2();
+
+    const QString viewId() {return tr("List View");}
+
+    //location
+    const QString getDirectoryUri() {return m_view->getDirectoryUri();}
+
+    //selections
+    const QStringList getSelections() {return m_view->getSelections();}
+
+    //children
+    const QStringList getAllFileUris() {return m_view->getAllFileUris();}
+
+    int getSortType() {return m_view->getSortType();}
+    Qt::SortOrder getSortOrder() {return Qt::SortOrder(m_view->getSortOrder());}
+
+public Q_SLOTS:
+    void bindModel(FileItemModel *model, FileItemProxyFilterSortModel *proxyModel);
+
+    //location
+    //void open(const QStringList &uris, bool newWindow);
+    void setDirectoryUri(const QString &uri) {m_view->setDirectoryUri(uri);}
+    void beginLocationChange() {m_view->beginLocationChange();}
+    void stopLocationChange() {m_view->stopLocationChange();}
+
+    void closeDirectoryView() {m_view->closeView();}
+
+    //selections
+    void setSelections(const QStringList &uris) {m_view->setSelections(uris);}
+    void invertSelections() {m_view->invertSelections();}
+    void scrollToSelection(const QString &uri) {m_view->scrollToSelection(uri);}
+
+    //clipboard
+    //cut items should be drawn differently.
+    void setCutFiles(const QStringList &uris) {m_view->setCutFiles(uris);}
+
+    void setSortType(int sortType) {m_view->setSortType(sortType);}
+    void setSortOrder(int sortOrder) {m_view->setSortOrder(sortOrder);}
+
+    void editUri(const QString &uri) {m_view->editUri(uri);}
+    void editUris(const QStringList uris) {m_view->editUris(uris);}
+
+private:
+    ListView *m_view = nullptr;
+    FileItemModel *m_model = nullptr;
+    FileItemProxyFilterSortModel *m_proxy_model = nullptr;
 };
 
 }

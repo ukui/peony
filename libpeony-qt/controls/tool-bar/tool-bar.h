@@ -10,7 +10,7 @@ class QMenu;
 namespace Peony {
 
 class FMWindow;
-class ViewFactorySortFilterModel;
+class ViewFactorySortFilterModel2;
 class SearchBar;
 
 /*!
@@ -60,7 +60,7 @@ protected:
 private:
     FMWindow *m_top_window;
 
-    ViewFactorySortFilterModel *m_view_factory_model;
+    ViewFactorySortFilterModel2 *m_view_factory_model;
     //QComboBox *m_view_option_box;
     SearchBar *m_search_bar;
 

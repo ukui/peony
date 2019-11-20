@@ -17,6 +17,7 @@ public:
         MenuPlugin,
         PreviewPagePlugin,
         DirectoryViewPlugin,
+        DirectoryViewPlugin2,
         ToolBarPlugin,
         PropertiesWindowPlugin,
         ColumnProviderPlugin,

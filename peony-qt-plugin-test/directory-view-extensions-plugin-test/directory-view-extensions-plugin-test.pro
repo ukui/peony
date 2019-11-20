@@ -1,15 +1,15 @@
 #-------------------------------------------------
 #
-# Project created by QtCreator 2019-11-05T10:40:52
+# Project created by QtCreator 2019-11-18T09:07:42
 #
 #-------------------------------------------------
 
 QT       += widgets
 
-TARGET = peony-qt-menu-plugin-mate-terminal
+TARGET = directory-view-extensions-plugin-test
 TEMPLATE = lib
 
-DEFINES += PEONYQTMENUPLUGINMATETERMINAL_LIBRARY
+DEFINES += DIRECTORYVIEWEXTENSIONSPLUGINTEST_LIBRARY
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which has been marked as deprecated (the exact warnings
@@ -29,20 +29,13 @@ CONFIG += c++11 link_pkgconfig no_keywords
 LIBS += -L$$PWD/../../libpeony-qt/ -lpeony-qt
 
 SOURCES += \
-        mate-terminal-menu-plugin.cpp
+        directory-view-extensions-test-plugin.cpp
 
 HEADERS += \
-        mate-terminal-menu-plugin.h \
-        peony-qt-menu-plugin-mate-terminal_global.h 
-
-DESTDIR = ../../testdir
-
-TRANSLATIONS += translations/peony-qt-mate-terminal-extension_zh_CN.ts
+        directory-view-extensions-test-plugin.h \
+        directory-view-extensions-plugin-test_global.h 
 
 unix {
     target.path = /usr/lib/peony-qt-extensions
     INSTALLS += target
 }
-
-RESOURCES += \
-    peony-qt-menu-plugin-mate-terminal.qrc

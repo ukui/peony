@@ -1,4 +1,6 @@
 #include "directory-view-menu.h"
+#include "directory-view-plugin-iface2.h"
+#include "directory-view-widget.h"
 
 #include "fm-window.h"
 #include "directory-view-container.h"
@@ -36,7 +38,7 @@
 
 using namespace Peony;
 
-DirectoryViewMenu::DirectoryViewMenu(DirectoryViewIface *directoryView, QWidget *parent) : QMenu(parent)
+DirectoryViewMenu::DirectoryViewMenu(DirectoryViewWidget *directoryView, QWidget *parent) : QMenu(parent)
 {
     m_top_window = nullptr;
     m_view = directoryView;
@@ -50,7 +52,7 @@ DirectoryViewMenu::DirectoryViewMenu(DirectoryViewIface *directoryView, QWidget 
 DirectoryViewMenu::DirectoryViewMenu(FMWindow *window, QWidget *parent) : QMenu(parent)
 {
     m_top_window = window;
-    m_view = window->getCurrentPage()->getProxy()->getView();
+    m_view = window->getCurrentPage()->getView();
     //setParent(dynamic_cast<QWidget*>(m_view));
 
     m_directory = window->getCurrentUri();
@@ -271,11 +273,11 @@ const QList<QAction *> DirectoryViewMenu::constructViewOpActions()
     QList<QAction *> l;
 
     if (m_selections.isEmpty()) {
-        ViewFactorySortFilterModel model;
+        ViewFactorySortFilterModel2 model;
         model.setDirectoryUri(m_directory);
         auto viewNames = model.supportViewIds();
 
-        auto viewFactorysManager = DirectoryViewFactoryManager::getInstance();
+        auto viewFactorysManager = DirectoryViewFactoryManager2::getInstance();
 
         if (!viewNames.isEmpty()) {
             //view type;

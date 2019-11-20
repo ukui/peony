@@ -19,6 +19,8 @@
 
 #include <QApplication>
 
+#include <QVBoxLayout>
+
 #include <QDebug>
 
 using namespace Peony;
@@ -243,6 +245,24 @@ void IconView::bindModel(FileItemModel *sourceModel, FileItemProxyFilterSortMode
     m_sort_filter_proxy_model = proxyModel;
 
     setModel(m_sort_filter_proxy_model);
+
+    //edit trigger
+    connect(this->selectionModel(), &QItemSelectionModel::selectionChanged, [=](const QItemSelection &selection, const QItemSelection &deselection){
+        qDebug()<<"selection changed";
+        auto currentSelections = selection.indexes();
+
+        for (auto index : deselection.indexes()) {
+            this->setIndexWidget(index, nullptr);
+        }
+
+        //Q_EMIT m_proxy->viewSelectionChanged();
+        if (currentSelections.count() == 1) {
+            m_last_index = currentSelections.first();
+            this->resetEditTriggerTimer();
+        } else {
+            m_last_index = QModelIndex();
+        }
+    });
 }
 
 void IconView::setProxy(DirectoryViewProxyIface *proxy)
@@ -266,35 +286,19 @@ void IconView::setProxy(DirectoryViewProxyIface *proxy)
         Q_EMIT m_proxy->viewDoubleClicked(index.data(FileItemModel::UriRole).toString());
     });
 
-    //edit trigger
-    connect(this->selectionModel(), &QItemSelectionModel::selectionChanged, [=](const QItemSelection &selection, const QItemSelection &deselection){
-        qDebug()<<"selection changed";
-        auto currentSelections = selection.indexes();
 
-        for (auto index : deselection.indexes()) {
-            this->setIndexWidget(index, nullptr);
-        }
-
-        Q_EMIT m_proxy->viewSelectionChanged();
-        if (currentSelections.count() == 1) {
-            m_last_index = currentSelections.first();
-            this->resetEditTriggerTimer();
-        } else {
-            m_last_index = QModelIndex();
-        }
-    });
 
     //menu
-    connect(this, &IconView::customContextMenuRequested, [=](const QPoint &pos){
-        if (!indexAt(pos).isValid())
-            this->clearSelection();
+//    connect(this, &IconView::customContextMenuRequested, [=](const QPoint &pos){
+//        if (!indexAt(pos).isValid())
+//            this->clearSelection();
 
-        //NOTE: we have to ensure that we have cleared the
-        //selection if menu request at blank pos.
-        QTimer::singleShot(1, [=](){
-            Q_EMIT this->getProxy()->menuRequest(QCursor::pos());
-        });
-    });
+//        //NOTE: we have to ensure that we have cleared the
+//        //selection if menu request at blank pos.
+//        QTimer::singleShot(1, [=](){
+//            Q_EMIT this->getProxy()->menuRequest(QCursor::pos());
+//        });
+//    });
 }
 
 // NOTE: When icon view was resorted,
@@ -371,3 +375,53 @@ void IconView::clearIndexWidget()
         setIndexWidget(index, nullptr);
     }
 }
+
+//Icon View 2
+IconView2::IconView2(QWidget *parent) : DirectoryViewWidget(parent)
+{
+    auto layout = new QVBoxLayout(this);
+    layout->setMargin(0);
+    layout->setSpacing(0);
+    m_view = new IconView(this);
+    layout->addWidget(m_view);
+
+    setLayout(layout);
+}
+
+IconView2::~IconView2()
+{
+
+}
+
+void IconView2::bindModel(FileItemModel *model, FileItemProxyFilterSortModel *proxyModel)
+{
+    disconnect(m_model);
+    disconnect(m_proxy_model);
+    m_model = model;
+    m_proxy_model = proxyModel;
+
+    m_view->bindModel(model, proxyModel);
+    connect(model, &FileItemModel::findChildrenFinished, this, &DirectoryViewWidget::viewDirectoryChanged);
+    connect(m_model, &FileItemModel::dataChanged, m_view, &IconView::clearIndexWidget);
+    connect(m_model, &FileItemModel::updated, m_view, &IconView::resort);
+
+    connect(m_view->selectionModel(), &QItemSelectionModel::selectionChanged,
+            this, &DirectoryViewWidget::viewSelectionChanged);
+
+    connect(m_view, &IconView::doubleClicked, this, [=](const QModelIndex &index){
+        Q_EMIT this->viewDoubleClicked(index.data(Qt::UserRole).toString());
+    });
+
+    connect(m_view, &IconView::customContextMenuRequested, this, [=](const QPoint &pos){
+        if (!m_view->indexAt(pos).isValid())
+            m_view->clearSelection();
+
+        //NOTE: we have to ensure that we have cleared the
+        //selection if menu request at blank pos.
+        QTimer::singleShot(1, [=](){
+            Q_EMIT this->menuRequest(QCursor::pos());
+        });
+    });
+}
+
+

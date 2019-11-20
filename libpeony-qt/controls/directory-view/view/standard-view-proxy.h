@@ -19,6 +19,9 @@ namespace DirectoryView {
  * you can use this proxy class as your plugin-view's proxy. It
  * is recommend, otherwise you should spend a while to re-write a new
  * proxy by yourself.
+ *
+ * \deprecated
+ * This class is deprecated and useless. It should be removed from codes.
  */
 class StandardViewProxy : public DirectoryViewProxyIface
 {

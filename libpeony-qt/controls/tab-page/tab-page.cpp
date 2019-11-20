@@ -2,6 +2,7 @@
 #include "directory-view-container.h"
 #include "directory-view-factory-manager.h"
 #include "directory-view-plugin-iface.h"
+#include "directory-view-widget.h"
 #include "file-info.h"
 #include "file-utils.h"
 
@@ -50,8 +51,8 @@ void TabPage::addPage(const QString &uri)
 {
     auto container = new DirectoryViewContainer(this);
     container->switchViewType(DirectoryViewFactoryManager::getInstance()->getDefaultViewId());
-    container->getProxy()->setDirectoryUri(uri);
-    container->getProxy()->beginLocationChange();
+    container->getView()->setDirectoryUri(uri);
+    container->getView()->beginLocationChange();
 
     addTab(container,
            QIcon::fromTheme(FileUtils::getFileIconName(uri), QIcon::fromTheme("folder")),
@@ -67,7 +68,7 @@ void TabPage::rebindContainer()
     }
 
     auto container = getActivePage();
-    container->connect(container->getProxy(), &Peony::DirectoryViewProxyIface::viewDoubleClicked, [=](const QString &uri){
+    container->connect(container, &Peony::DirectoryViewContainer::viewDoubleClicked, [=](const QString &uri){
         if (m_double_click_limiter.isActive())
             return;
 
