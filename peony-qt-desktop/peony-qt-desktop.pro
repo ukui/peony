@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui x11extras dbus
+QT       += core gui x11extras dbus concurrent
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -40,7 +40,8 @@ SOURCES += \
     desktop-icon-view.cpp \
     desktop-icon-view-delegate.cpp \
     desktop-index-widget.cpp \
-    desktop-menu.cpp
+    desktop-menu.cpp \
+    desktop-menu-plugin-manager.cpp
 
 HEADERS += \
         desktop-window.h \
@@ -50,7 +51,8 @@ HEADERS += \
     desktop-icon-view.h \
     desktop-icon-view-delegate.h \
     desktop-index-widget.h \
-    desktop-menu.h
+    desktop-menu.h \
+    desktop-menu-plugin-manager.h
 
 target.path = /usr/bin
 !isEmpty(target.path): INSTALLS += target

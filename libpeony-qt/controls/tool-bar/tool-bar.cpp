@@ -155,7 +155,7 @@ void ToolBar::init()
     addSeparator();
 
     //file operations
-    QAction *copyAction = addAction(QIcon::fromTheme("edit-copy-symbolic"), tr("&Copy"));
+    QAction *copyAction = addAction(QIcon::fromTheme("edit-copy-symbolic"), tr("Copy"));
     copyAction->setShortcut(QKeySequence::Copy);
 
     QAction *pasteAction = addAction(QIcon::fromTheme("edit-paste-symbolic"), tr("Paste"));
@@ -264,6 +264,11 @@ void ToolBar::updateLocation(const QString &uri)
     bool isFileOpDisable = uri.startsWith("trash://") || uri.startsWith("search://");
     for (auto action : m_file_op_actions) {
         action->setEnabled(!isFileOpDisable);
+        if (uri.startsWith("search://")) {
+            if (action->text() == tr("Copy")) {
+                action->setEnabled(true);
+            }
+        }
     }
 
     m_view_factory_model->setDirectoryUri(uri);

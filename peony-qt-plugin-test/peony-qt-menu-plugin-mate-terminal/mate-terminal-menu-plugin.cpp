@@ -46,7 +46,7 @@ void openTerminal(const QString &uri){
 QList<QAction *> MateTerminalMenuPlugin::menuActions(Types types, const QString &uri, const QStringList &selectionUris)
 {
     QList<QAction *> actions;
-    if (types == MenuPluginInterface::DirectoryView) {
+    if (types == MenuPluginInterface::DirectoryView || types == MenuPluginInterface::DesktopWindow) {
         if (selectionUris.isEmpty()) {
             QAction *dirAction = new QAction(QIcon::fromTheme("utilities-terminal-symbolic"), tr("Open Directory in Terminal"));
             dirAction->connect(dirAction, &QAction::triggered, [=](){

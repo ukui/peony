@@ -9,6 +9,7 @@
 #include <QHeaderView>
 
 #include <QVBoxLayout>
+#include <QMouseEvent>
 
 #include <QDebug>
 
@@ -52,67 +53,71 @@ void ListView::bindModel(FileItemModel *sourceModel, FileItemProxyFilterSortMode
             this->setIndexWidget(index, nullptr);
         }
 
-        //Q_EMIT m_proxy->viewSelectionChanged();
         //rename trigger
+        if (!currentSelections.isEmpty()) {
+            int first_index_row = currentSelections.first().row();
+            bool all_index_in_same_row = true;
+            for (auto index : currentSelections) {
+                if (first_index_row != index.row()) {
+                    all_index_in_same_row = false;
+                    break;
+                }
+            }
+            if (all_index_in_same_row) {
+                m_last_index = currentSelections.first();
+                this->resetEditTriggerTimer();
+            }
+        } else {
+            m_last_index = QModelIndex();
+        }
+    });
+}
+
+void ListView::mousePressEvent(QMouseEvent *e)
+{
+    QTreeView::mousePressEvent(e);
+
+    if (e->button() != Qt::LeftButton) {
+        return;
+    }
+
+    qDebug()<<m_edit_trigger_timer.isActive()<<m_edit_trigger_timer.interval();
+    if (indexAt(e->pos()).row() == m_last_index.row() && m_last_index.isValid()) {
+        if (m_edit_trigger_timer.isActive()) {
+            setIndexWidget(m_last_index, nullptr);
+            //qDebug()<<"edit"<<m_last_index.data(Qt::UserRole).toString();
+            editUri(m_last_index.data(Qt::UserRole).toString());
+        }
+    }
+}
+
+void ListView::mouseReleaseEvent(QMouseEvent *e)
+{
+    QTreeView::mouseReleaseEvent(e);
+
+    if (e->button() != Qt::LeftButton) {
+        return;
+    }
+
+    if (!m_edit_trigger_timer.isActive() && indexAt(e->pos()).isValid() && this->selectedIndexes().count() == 1) {
+        resetEditTriggerTimer();
+    }
+}
+
+void ListView::resetEditTriggerTimer()
+{
+    m_edit_trigger_timer.disconnect();
+    m_edit_trigger_timer.stop();
+    QTimer::singleShot(750, [&](){
+        qDebug()<<"start";
+        m_edit_trigger_timer.setSingleShot(true);
+        m_edit_trigger_timer.start(1000);
     });
 }
 
 void ListView::setProxy(DirectoryViewProxyIface *proxy)
 {
-    m_proxy = proxy;
 
-    if (!proxy)
-        return;
-
-    m_proxy = proxy;
-    if (!m_proxy) {
-        return;
-    }
-
-    connect(m_model, &FileItemModel::updated, this, &ListView::resort);
-
-    connect(m_model, &FileItemModel::findChildrenFinished,
-            this, &ListView::reportViewDirectoryChanged);
-
-    connect(this, &ListView::doubleClicked, [=](const QModelIndex &index){
-        qDebug()<<"double click"<<index.data(FileItemModel::UriRole);
-        Q_EMIT m_proxy->viewDoubleClicked(index.data(FileItemModel::UriRole).toString());
-    });
-
-    //edit trigger
-    connect(this->selectionModel(), &QItemSelectionModel::selectionChanged, [=](const QItemSelection &selection, const QItemSelection &deselection){
-        qDebug()<<"selection changed";
-        auto currentSelections = selection.indexes();
-
-        for (auto index : deselection.indexes()) {
-            this->setIndexWidget(index, nullptr);
-        }
-
-        Q_EMIT m_proxy->viewSelectionChanged();
-        //rename trigger
-    });
-
-    //menu
-    connect(this, &ListView::customContextMenuRequested, [=](const QPoint &pos){
-        qDebug()<<"menu request";
-        if (!indexAt(pos).isValid())
-            this->clearSelection();
-
-        auto index = indexAt(pos);
-        if (index.column() != 0) {
-            auto visualRect = this->visualRect(index);
-            auto sizeHint = this->itemDelegate()->sizeHint(viewOptions(), index);
-            auto validRect = QRect(visualRect.topLeft(), sizeHint);
-            if (!validRect.contains(pos))
-                this->clearSelection();
-        }
-
-        //NOTE: we have to ensure that we have cleared the
-        //selection if menu request at blank pos.
-        QTimer::singleShot(1, [=](){
-            Q_EMIT this->getProxy()->menuRequest(QCursor::pos());
-        });
-    });
 }
 
 void ListView::resort()
@@ -298,5 +303,12 @@ void ListView2::bindModel(FileItemModel *model, FileItemProxyFilterSortModel *pr
         QTimer::singleShot(1, [=](){
             Q_EMIT this->menuRequest(QCursor::pos());
         });
+    });
+
+    connect(m_proxy_model, &FileItemProxyFilterSortModel::layoutChanged, this, [=](){
+        Q_EMIT this->sortOrderChanged(Qt::SortOrder(getSortOrder()));
+    });
+    connect(m_proxy_model, &FileItemProxyFilterSortModel::layoutChanged, this, [=](){
+        Q_EMIT this->sortTypeChanged(getSortType());
     });
 }

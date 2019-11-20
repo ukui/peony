@@ -74,11 +74,17 @@ public Q_SLOTS:
     void resort();
     void reportViewDirectoryChanged();
 
+protected:
+    void mousePressEvent(QMouseEvent *e) override;
+    void mouseReleaseEvent(QMouseEvent *e) override;
+    void resetEditTriggerTimer();
+
 private:
     FileItemModel *m_model = nullptr;
     FileItemProxyFilterSortModel *m_proxy_model = nullptr;
 
     QTimer m_edit_trigger_timer;
+    QModelIndex m_last_index;
 
     DirectoryViewProxyIface *m_proxy = nullptr;
 

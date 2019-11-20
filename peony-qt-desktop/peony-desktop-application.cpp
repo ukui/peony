@@ -1,6 +1,7 @@
 #include "peony-desktop-application.h"
 
 #include "fm-dbus-service.h"
+#include "desktop-menu-plugin-manager.h"
 
 #include <QCommandLineParser>
 #include <QCommandLineOption>
@@ -24,6 +25,7 @@ PeonyDesktopApplication::PeonyDesktopApplication(int &argc, char *argv[], const 
         file.open(QFile::ReadOnly);
         setStyleSheet(QString::fromLatin1(file.readAll()));
         file.close();
+        Peony::DesktopMenuPluginManager::getInstance();
     }
 
     connect(this, &SingleApplication::layoutDirectionChanged, this, &PeonyDesktopApplication::layoutDirectionChangedProcess);

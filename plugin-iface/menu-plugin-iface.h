@@ -38,6 +38,7 @@ public:
         Invalid,
         DirectoryView,
         SideBar,
+        DesktopWindow,
         Other
     };
     Q_DECLARE_FLAGS(Types, Type)

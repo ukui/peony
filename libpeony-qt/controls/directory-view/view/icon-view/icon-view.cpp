@@ -422,6 +422,13 @@ void IconView2::bindModel(FileItemModel *model, FileItemProxyFilterSortModel *pr
             Q_EMIT this->menuRequest(QCursor::pos());
         });
     });
+
+    connect(m_proxy_model, &FileItemProxyFilterSortModel::layoutChanged, this, [=](){
+        Q_EMIT this->sortOrderChanged(Qt::SortOrder(getSortOrder()));
+    });
+    connect(m_proxy_model, &FileItemProxyFilterSortModel::layoutChanged, this, [=](){
+        Q_EMIT this->sortTypeChanged(getSortType());
+    });
 }
 
 

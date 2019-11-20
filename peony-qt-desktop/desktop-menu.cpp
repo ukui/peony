@@ -13,6 +13,8 @@
 
 #include "desktop-icon-view.h"
 
+#include "desktop-menu-plugin-manager.h"
+
 #include <QProcess>
 #include <QStandardPaths>
 #include <QMessageBox>
@@ -349,6 +351,21 @@ const QList<QAction *> DesktopMenu::constructMenuPluginActions()
 {
     QList<QAction *> l;
     //FIXME:
+    auto mgr = DesktopMenuPluginManager::getInstance();
+    if (mgr->isLoaded()) {
+        auto plugins = mgr->getPlugins();
+        qDebug()<<plugins;
+        for (auto plugin : plugins) {
+            auto actions = plugin->menuActions(MenuPluginInterface::DesktopWindow,
+                                               m_directory,
+                                               m_selections);
+            for (auto action : actions) {
+                action->setParent(this);
+            }
+            l<<actions;
+        }
+    }
+    addActions(l);
     return l;
 }
 

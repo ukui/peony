@@ -59,6 +59,7 @@ void FileOperationManager::startOperation(FileOperation *operation, bool addToHi
     }
 
     FileOperationProgressWizard *wizard = new FileOperationProgressWizard;
+    wizard->setAttribute(Qt::WA_DeleteOnClose);
     wizard->connect(operation, &FileOperation::operationRequestShowWizard, wizard, &FileOperationProgressWizard::show);
     wizard->connect(operation, &FileOperation::operationRequestShowWizard, wizard, &FileOperationProgressWizard::switchToPreparedPage);
     wizard->connect(operation, &FileOperation::operationPreparedOne, wizard, &FileOperationProgressWizard::onElementFoundOne);
