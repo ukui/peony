@@ -76,24 +76,33 @@ void PeonyDesktopApplication::parseCmd(quint32 id, QByteArray msg, bool isPrimar
                 Peony::FMDBusService *service = new Peony::FMDBusService(this);
                 connect(service, &Peony::FMDBusService::showItemsRequest, [=](const QStringList &urisList){
                     QProcess p;
+#if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
                     p.setProgram("peony-qt");
                     p.setArguments(QStringList()<<"--show-items"<<urisList);
                     p.startDetached();
-                    qDebug()<<"1";
+#else
+                    p.startDetached("peony-qt", QStringList()<<"--show-items"<<urisList, nullptr);
+#endif
                 });
                 connect(service, &Peony::FMDBusService::showFolderRequest, [=](const QStringList &urisList){
                     QProcess p;
+#if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
                     p.setProgram("peony-qt");
-                    p.setArguments(QStringList()<<"--show-forders"<<urisList);
+                    p.setArguments(QStringList()<<"--show-folders"<<urisList);
                     p.startDetached();
-                    qDebug()<<"2";
+#else
+                    p.startDetached("peony-qt", QStringList()<<"--show-folders"<<urisList, nullptr);
+#endif
                 });
                 connect(service, &Peony::FMDBusService::showItemPropertiesRequest, [=](const QStringList &urisList){
                     QProcess p;
+#if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
                     p.setProgram("peony-qt");
                     p.setArguments(QStringList()<<"--show-properties"<<urisList);
                     p.startDetached();
-                    qDebug()<<"3";
+#else
+                    p.startDetached("peony-qt", QStringList()<<"--show-properties"<<urisList, nullptr);
+#endif
                 });
             }
             has_daemon = true;
@@ -226,8 +235,8 @@ bool PeonyDesktopApplication::isPrimaryScreen(QScreen *screen)
 
 void PeonyDesktopApplication::changeBgProcess(const QString& bgPath)
 {
-    for (auto win : m_window_list) {
-        if (!isPrimaryScreen(win->getScreen()))
-            win->setBg(bgPath);
-    }
+//    for (auto win : m_window_list) {
+//        if (!isPrimaryScreen(win->getScreen()))
+//            win->setBg(bgPath);
+//    }
 }

@@ -34,13 +34,21 @@
 
 #include <QProcess>
 
+#include <QGSettings/QGSettings>
+
 #include <QDebug>
+
+#define BACKGROUND_SETTINGS "org.mate.background"
+#define PICTRUE "picture-filename"
+#define FALLBACK_COLOR "primary-color"
 
 using namespace Peony;
 
 DesktopWindow::DesktopWindow(QScreen *screen, bool is_primary, QWidget *parent)
     : QStackedWidget(parent)
 {
+    initGSettings();
+
     m_screen = screen;
     m_is_primary = is_primary;
     setContentsMargins(0, 0, 0, 0);
@@ -56,7 +64,8 @@ DesktopWindow::DesktopWindow(QScreen *screen, bool is_primary, QWidget *parent)
 
     setContextMenuPolicy(Qt::CustomContextMenu);
 
-    m_trans_timer.setSingleShot(true);
+    m_trans_timer = new QTimer(this);
+    m_trans_timer->setSingleShot(true);
     m_opacity_effect = new QGraphicsOpacityEffect(this);
 
     m_bg_font = new QLabel(this);
@@ -141,11 +150,48 @@ DesktopWindow::~DesktopWindow()
 
 }
 
+void DesktopWindow::initGSettings()
+{
+    if (!QGSettings::isSchemaInstalled(BACKGROUND_SETTINGS))
+        return;
+
+    m_bg_settings = new QGSettings(BACKGROUND_SETTINGS, QByteArray(), this);
+
+    connect(m_bg_settings, &QGSettings::changed, this, [=](const QString &key){
+        qDebug()<<"bg settings changed:"<<key;
+        if (key == "pictureFilename") {
+            auto bg_path = m_bg_settings->get("pictureFilename").toString();
+            if (!bg_path.startsWith("/")) {
+                //use pure color;
+                auto colorString = m_bg_settings->get("primary-color").toString();
+                auto color = QColor(colorString);
+                qDebug()<<colorString;
+                this->setBg(color);
+            } else {
+                if (m_current_bg_path == bg_path)
+                    return;
+                this->setBg(bg_path);
+            }
+        }
+        if (key == "primaryColor") {
+            auto bg_path = m_bg_settings->get("pictureFilename").toString();
+            if (!bg_path.startsWith("/")) {
+                auto colorString = m_bg_settings->get("primary-color").toString();
+                auto color = QColor(colorString);
+                qDebug()<<colorString;
+                this->setBg(color);
+            } else {
+                //do nothing
+            }
+        }
+    });
+}
+
 const QString DesktopWindow::getCurrentBgPath()
 {
     //FIXME: implement custom bg settings storage
     if (m_current_bg_path.isEmpty()) {
-        m_current_bg_path = "/usr/share/backgrounds/ubuntukylin-default-settings.jpg";
+        m_current_bg_path = m_bg_settings->get("pictureFilename").toString();
     }
     return m_current_bg_path;
 }
@@ -170,22 +216,69 @@ void DesktopWindow::setBg(const QString &path)
     m_opacity_effect->setOpacity(0);
     m_bg_font->setGraphicsEffect(m_opacity_effect);
     m_opacity = 0;
-    m_trans_timer.start(50);
+    m_trans_timer->start(50);
 
-    m_trans_timer.connect(&m_trans_timer, &QTimer::timeout, [=](){
+    m_trans_timer->connect(m_trans_timer, &QTimer::timeout, [=](){
         qDebug()<<m_opacity;
         if (m_opacity > 0.95) {
             m_opacity = 1.0;
             m_bg_back_pixmap.detach();
             m_bg_back->setPixmap(QPixmap());
-            m_trans_timer.stop();
+            m_trans_timer->stop();
+            m_trans_timer->deleteLater();
+            m_trans_timer = new QTimer(this);
+            m_trans_timer->setSingleShot(true);
             return;
         }
         m_opacity += 0.05;
         m_opacity_effect->setOpacity(m_opacity);
         m_bg_font->setGraphicsEffect(m_opacity_effect);
-        m_trans_timer.start(50);
+        m_trans_timer->start(50);
     });
+
+    m_current_bg_path = path;
+    setBgPath(path);
+}
+
+void DesktopWindow::setBg(const QColor &color)
+{
+    m_bg_font_pixmap = QPixmap(m_screen->size());
+    m_bg_font_pixmap.fill(color);
+    m_bg_back_pixmap = QPixmap(m_screen->size());
+    m_bg_back_pixmap.fill(m_last_pure_color);
+    m_bg_back->setPixmap(m_bg_back_pixmap);
+
+    m_last_pure_color = color;
+
+    m_bg_font->setPixmap(m_bg_font_pixmap);
+    m_opacity_effect->setOpacity(0);
+    m_bg_font->setGraphicsEffect(m_opacity_effect);
+    m_opacity = 0;
+    m_trans_timer->start(50);
+
+    m_trans_timer->connect(m_trans_timer, &QTimer::timeout, [=](){
+        qDebug()<<m_opacity;
+        if (m_opacity > 0.95) {
+            m_opacity = 1.0;
+            m_bg_back_pixmap.detach();
+            m_bg_back->setPixmap(QPixmap());
+            m_trans_timer->stop();
+            m_trans_timer = new QTimer(this);
+            m_trans_timer->setSingleShot(true);
+            return;
+        }
+        m_opacity += 0.05;
+        m_opacity_effect->setOpacity(m_opacity);
+        m_bg_font->setGraphicsEffect(m_opacity_effect);
+        m_trans_timer->start(50);
+    });
+}
+
+void DesktopWindow::setBgPath(const QString &bgPath)
+{
+    if (m_bg_settings) {
+        m_bg_settings->set(PICTRUE, bgPath);
+    }
 }
 
 void DesktopWindow::setScreen(QScreen *screen)
@@ -328,6 +421,7 @@ void DesktopWindow::virtualGeometryChangedProcess(const QRect &geometry)
     qDebug()<<"virtualGeometryChangedProcess"<<geometry<<m_screen->geometry()<<m_screen->virtualGeometry()<<m_screen->name();
     this->setGeometry(m_screen->geometry());
     scaleBg(m_screen->geometry());
+    updateView();
 }
 
 void DesktopWindow::geometryChangedProcess(const QRect &geometry)
@@ -336,6 +430,7 @@ void DesktopWindow::geometryChangedProcess(const QRect &geometry)
     qDebug()<<"geometryChangedProcess:"<<geometry<<m_screen->geometry()<<this->geometry()<<m_screen->name();
     updateWinGeometry();
     scaleBg(geometry);
+    updateView();
 }
 
 void DesktopWindow::updateView()
@@ -345,6 +440,7 @@ void DesktopWindow::updateView()
         qDebug()<<"updateView"<<m_screen->name()<<m_screen->availableGeometry()<<this->geometry();
         m_view->setGeometry(m_screen->availableGeometry());
         m_view->setFixedSize(m_screen->availableGeometry().size());
+        setCurrentWidget(m_view);
     }
 }
 

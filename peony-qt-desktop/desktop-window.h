@@ -8,6 +8,7 @@
 class QLabel;
 class QListView;
 class QGraphicsOpacityEffect;
+class QGSettings;
 
 namespace Peony {
 
@@ -33,7 +34,7 @@ Q_SIGNALS:
     void changeBg(const QString &bgPath);
 
 public Q_SLOTS:
-    void setBg(const QString &bgPath);
+    void setBgPath(const QString &bgPath);
     void availableGeometryChangedProcess(const QRect &geometry);
     void virtualGeometryChangedProcess(const QRect &geometry);
     void geometryChangedProcess(const QRect &geometry);
@@ -44,8 +45,13 @@ public Q_SLOTS:
     void connectSignal();
     void disconnectSignal();
 
+protected Q_SLOTS:
+    void setBg(const QString &bgPath);
+    void setBg(const QColor &color);
+
 protected:
     void initShortcut();
+    void initGSettings();
 
 private:
     QString m_current_bg_path;
@@ -57,7 +63,7 @@ private:
     QPixmap m_bg_font_pixmap;
     QPixmap m_bg_back_pixmap;
 
-    QTimer m_trans_timer;
+    QTimer *m_trans_timer;
     QGraphicsOpacityEffect *m_opacity_effect;
 
     qreal m_opacity = 1.0;
@@ -65,6 +71,9 @@ private:
     QScreen *m_screen;
     QStackedLayout *m_layout;
     bool m_is_primary;
+
+    QGSettings *m_bg_settings;
+    QColor m_last_pure_color = Qt::black;
 };
 
 }

@@ -422,6 +422,7 @@ void PeonyApplication::parseCmd(quint32 id, QByteArray msg)
         return;
     }
 
+    //FIXME: should I load plugins async?
     Peony::PluginManager::init();
 
     if (!parser.optionNames().isEmpty()) {
