@@ -147,6 +147,7 @@ void PeonyDesktopApplication::addWindow(QScreen *screen, bool checkPrimay)
         window = new Peony::DesktopWindow(screen, false);
     }
 
+    connect(window, &Peony::DesktopWindow::checkWindow, this, &PeonyDesktopApplication::checkWindowProcess);
     window->showFullScreen();
     m_window_list<<window;
 }
@@ -239,4 +240,22 @@ void PeonyDesktopApplication::changeBgProcess(const QString& bgPath)
 //        if (!isPrimaryScreen(win->getScreen()))
 //            win->setBg(bgPath);
 //    }
+}
+
+void PeonyDesktopApplication::checkWindowProcess()
+{
+    for(auto win : m_window_list)
+    {
+        //fix duplicate screen cover main screen view problem
+        if (win->getScreen() != this->primaryScreen())
+        {
+            if (win->getScreen()->geometry() == this->primaryScreen()->geometry())
+            {
+                win->setVisible(false);
+            }
+            else {
+                win->setVisible(true);
+            }
+        }
+    }
 }

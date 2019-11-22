@@ -449,5 +449,6 @@ void DesktopWindow::updateWinGeometry()
     qDebug()<<"befoere updateWinGeometry:"<<this->objectName()<<this->getScreen()->geometry()<<this->geometry()<<this->getScreen()->virtualGeometry();
     this->setGeometry(m_screen->geometry());
     this->setFixedSize(m_screen->geometry().size());
+    Q_EMIT this->checkWindow();
     qDebug()<<"end updateWinGeometry:"<<this->objectName()<<this->getScreen()->geometry()<<this->geometry()<<this->getScreen()->virtualGeometry();
 }

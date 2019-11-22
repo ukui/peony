@@ -32,6 +32,7 @@ public:
 
 Q_SIGNALS:
     void changeBg(const QString &bgPath);
+    void checkWindow();
 
 public Q_SLOTS:
     void setBgPath(const QString &bgPath);
