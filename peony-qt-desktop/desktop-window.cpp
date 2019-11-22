@@ -103,10 +103,14 @@ DesktopWindow::DesktopWindow(QScreen *screen, bool is_primary, QWidget *parent)
         job->setAutoDelete();
         job->connect(job, &FileInfoJob::queryAsyncFinished, [=](){
             if (info->isDir() || info->isVolume() || info->isVirtual()) {
+#if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
                 QProcess p;
                 p.setProgram("peony-qt");
                 p.setArguments(QStringList()<<uri);
                 p.startDetached();
+#else
+                p.startDetached("peony-qt", QStringList()<<uri);
+#endif
             } else {
                 FileLaunchManager::openAsync(uri);
             }
