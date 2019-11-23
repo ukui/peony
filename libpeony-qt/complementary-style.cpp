@@ -1,6 +1,7 @@
 #include "complementary-style.h"
 
 #include "tool-bar.h"
+#include "location-bar.h"
 
 #include <QMenu>
 #include <QPushButton>
@@ -41,6 +42,7 @@ void ComplementaryStyle::drawPrimitive(QStyle::PrimitiveElement element, const Q
     }
     case PE_IndicatorArrowDown: {
         ToolBar *toolBar = qobject_cast<ToolBar*>(widget->parentWidget());
+        LocationBar *locationBar = qobject_cast<LocationBar*>(widget->parentWidget());
         if (toolBar) {
             auto rect = option->rect;
             rect.setY((rect.top()+rect.bottom())/2 - 8);
@@ -52,9 +54,22 @@ void ComplementaryStyle::drawPrimitive(QStyle::PrimitiveElement element, const Q
             QIcon arrowDown = QIcon::fromTheme("pan-down-symbolic");
             arrowDown.paint(painter, rect.adjusted(-3, 0, -3, 0));
             return;
-        } else {
-            break;
+        } else if (locationBar) {
+            auto rect = option->rect;
+            rect.setY((rect.top()+rect.bottom())/2 - 8);
+            rect.setX((rect.left()+rect.right())/2 - 8);
+            rect.setWidth(16);
+            rect.setHeight(16);
+            if (option->state & State_Sunken) {
+                QIcon arrowDown = QIcon::fromTheme("pan-down-symbolic");
+                arrowDown.paint(painter, rect.adjusted(1, 1, 1, 1));
+            } else {
+                QIcon arrowDown = QIcon::fromTheme("pan-end-symbolic");
+                arrowDown.paint(painter, rect.adjusted(1, 1, 1, 1));
+            }
+            return;
         }
+        break;
     }
     default:
         break;
@@ -151,14 +166,14 @@ void ComplementaryStyle::drawComplexControl(QStyle::ComplexControl cc, const QSt
                     }
 
                 }
-                proxy()->drawPrimitive(PE_IndicatorArrowDown, &tool, p, widget);
+                drawPrimitive(PE_IndicatorArrowDown, &tool, p, widget);
             } else if (toolbutton->features & QStyleOptionToolButton::HasMenu) {
                 int mbi = proxy()->pixelMetric(PM_MenuButtonIndicator, toolbutton, widget);
                 QRect ir = toolbutton->rect;
                 QStyleOptionToolButton newBtn = *toolbutton;
                 newBtn.rect = QRect(ir.right() + 5 - mbi, ir.y() + ir.height() - mbi + 4, mbi - 6, mbi - 6);
                 newBtn.rect = visualRect(toolbutton->direction, button, newBtn.rect);
-                proxy()->drawPrimitive(PE_IndicatorArrowDown, &newBtn, p, widget);
+                drawPrimitive(PE_IndicatorArrowDown, &newBtn, p, widget);
             }
         }
         break;

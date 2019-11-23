@@ -34,6 +34,7 @@ class LinuxPWDHelper
 {
 public:
     static const QList<PWDItem> getAllUserInfos();
+    static const PWDItem getCurrentUser();
 
 private:
     LinuxPWDHelper();

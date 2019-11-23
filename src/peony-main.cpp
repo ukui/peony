@@ -1,4 +1,5 @@
 #include "peony-application.h"
+#include "linux-pwd-helper.h"
 
 int main(int argc, char *argv[]) {
     QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);

@@ -97,7 +97,7 @@ PeonyApplication::PeonyApplication(int &argc, char *argv[], const char *applicat
 
     auto testIcon = QIcon::fromTheme("folder");
     if (testIcon.isNull()) {
-        QIcon::setThemeName("ukui-icon-theme");
+        QIcon::setThemeName("ukui-icon-theme-default");
         QMessageBox::warning(nullptr, tr("Warning"), tr("Peony-Qt can not get the system's icon theme. "
                                                         "There are 2 reasons might lead to this problem:\n\n"
                                                         "1. Peony-Qt might be running as root, "

@@ -70,9 +70,22 @@ void LocationBar::addButton(const QString &uri, bool setMenu)
 
     action->setIcon(icon);
     if (!url.fileName().isEmpty()) {
+        if (FileUtils::getParentUri(uri).isNull()) {
+            setMenu = false;
+        }
         action->setText(url.fileName());
     } else {
-        action->setText(url.url());
+        if (uri == "file:///") {
+            action->setText(tr("root"));
+        } else if (uri == "trash:///") {
+            action->setText(tr("Trash"));
+        } else if (uri == "computer:///") {
+            action->setText(tr("Computer"));
+        } else if (uri == "recent:///") {
+            action->setText(tr("Recent"));
+        } else {
+            action->setText(url.url());
+        }
     }
 
     connect(action, &QAction::triggered, [=](){

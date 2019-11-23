@@ -9,6 +9,8 @@
 
 #include "side-bar-separator-item.h"
 
+#include "linux-pwd-helper.h"
+
 #include <QIcon>
 
 using namespace Peony;
@@ -51,8 +53,18 @@ void SideBarFileSystemItem::clearChildren()
     SideBarAbstractItem::clearChildren();
 }
 
+/*!
+ * \brief SideBarFileSystemItem::findChildren
+ * \bug root doesn't support gvfs, so computer:/// cannot be enumerated.
+ * to avoid the bug, I forbided find filesystem item children in root.
+ * I should use another way to display the devices/volumes.
+ */
 void SideBarFileSystemItem::findChildren()
 {
+    auto pwdItem = LinuxPWDHelper::getCurrentUser();
+    if (pwdItem.userId() == 0) {
+        return;
+    }
     clearChildren();
 
     FileEnumerator *e = new FileEnumerator;
