@@ -109,6 +109,7 @@ DesktopWindow::DesktopWindow(QScreen *screen, bool is_primary, QWidget *parent)
                 p.setArguments(QStringList()<<uri);
                 p.startDetached();
 #else
+                QProcess p;
                 p.startDetached("peony-qt", QStringList()<<uri);
 #endif
             } else {
