@@ -25,5 +25,5 @@ jobs:
         qmake .
         make
         sudo make install
-        /usr/bin/peony-qt
-        /usr/bin/peony-qt-desktop -w -d
+        /usr/bin/peony-qt -h
+        /usr/bin/peony-qt-desktop -h
