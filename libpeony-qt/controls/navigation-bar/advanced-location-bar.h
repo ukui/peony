@@ -16,6 +16,7 @@ class PEONYCORESHARED_EXPORT AdvancedLocationBar : public QWidget
     Q_OBJECT
 public:
     explicit AdvancedLocationBar(QWidget *parent = nullptr);
+    bool isEditing();
 
 Q_SIGNALS:
     void updateWindowLocationRequest(const QString &uri, bool addHistory = true, bool forceUpdate = false);
@@ -23,6 +24,7 @@ Q_SIGNALS:
 
 public Q_SLOTS:
     void updateLocation(const QString &uri);
+    void finishEdit();
 
 private:
     QStackedLayout *m_layout;

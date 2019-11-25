@@ -45,6 +45,8 @@
 
 #include <QLayout>
 
+#include <QKeyEvent>
+
 using namespace Peony;
 
 FMWindow::FMWindow(const QString &uri, QWidget *parent) : QMainWindow (parent)
@@ -565,6 +567,21 @@ void FMWindow::editUri(const QString &uri)
 void FMWindow::editUris(const QStringList &uris)
 {
     getCurrentPage()->getView()->editUris(uris);
+}
+
+void FMWindow::keyPressEvent(QKeyEvent *e)
+{
+    if (e->key() == Qt::Key_Enter || e->key() == Qt::Key_Return) {
+        if (m_navigation_bar->isPathEditing()) {
+            m_navigation_bar->finishEdit();
+        } else {
+            auto selections = this->getCurrentSelections();
+            if (selections.count() == 1) {
+                this->goToUri(selections.first(), true, false);
+            }
+        }
+    }
+    return QMainWindow::keyPressEvent(e);
 }
 
 //preview page container

@@ -100,3 +100,13 @@ void NavigationBar::paintEvent(QPaintEvent *e)
     p.fillRect(this->rect().adjusted(-1, -1, 1, 1), color);
     QToolBar::paintEvent(e);
 }
+
+bool NavigationBar::isPathEditing()
+{
+    return m_center_control->isEditing();
+}
+
+void NavigationBar::finishEdit()
+{
+    m_center_control->finishEdit();
+}

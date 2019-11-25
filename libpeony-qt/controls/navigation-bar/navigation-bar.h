@@ -20,6 +20,8 @@ public:
     explicit NavigationBar(QWidget *parent = nullptr);
     ~NavigationBar();
 
+    bool isPathEditing();
+
 Q_SIGNALS:
     void updateWindowLocationRequest(const QString &uri, bool addHistory, bool forceUpdate = false);
     void refreshRequest();
@@ -31,6 +33,7 @@ public Q_SLOTS:
     void updateLocation(const QString &uri);
 
     void setBlock(bool block = true);
+    void finishEdit();
 
 protected:
     const QString getCurrentUri();

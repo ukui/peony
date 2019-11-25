@@ -115,6 +115,7 @@ public Q_SLOTS:
 
 protected:
     void resizeEvent(QResizeEvent *e) override;
+    void keyPressEvent(QKeyEvent *e) override;
 
 public:
     //advance search filter options

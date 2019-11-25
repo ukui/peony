@@ -60,3 +60,13 @@ void AdvancedLocationBar::updateLocation(const QString &uri)
     m_edit->setUri(uri);
     m_text = uri;
 }
+
+bool AdvancedLocationBar::isEditing()
+{
+    return m_edit->isVisible();
+}
+
+void AdvancedLocationBar::finishEdit()
+{
+    Q_EMIT m_edit->returnPressed();
+}

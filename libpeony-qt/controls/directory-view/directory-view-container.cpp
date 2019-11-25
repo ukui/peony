@@ -206,16 +206,6 @@ void DirectoryViewContainer::switchViewType(const QString &viewId)
         view->setSelections(selection);
     }
 
-    QAction *returnAction = new QAction(m_view);
-    returnAction->setShortcut(Qt::Key_Return);
-    connect(returnAction, &QAction::triggered, this, [=](){
-        auto selections = m_view->getSelections();
-        if (selections.count() == 1) {
-            this->updateWindowLocationRequest(selections.first(), true, false);
-        }
-    });
-    m_view->addAction(returnAction);
-
     QAction *cdUpAction = new QAction(m_view);
     cdUpAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_Up));
     connect(cdUpAction, &QAction::triggered, this, [=](){
