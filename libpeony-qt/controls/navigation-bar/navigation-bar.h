@@ -42,7 +42,6 @@ private:
     AdvancedLocationBar *m_center_control;
 
     QAction *m_checked_preview_action;
-    QMenu *m_styled_menu;
 };
 
 }

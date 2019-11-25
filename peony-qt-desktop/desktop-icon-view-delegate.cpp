@@ -173,6 +173,7 @@ QWidget *DesktopIconViewDelegate::createEditor(QWidget *parent, const QStyleOpti
 
     connect(edit, &IconViewEditor::returnPressed, [=](){
         this->setModelData(edit, nullptr, index);
+        edit->close();
     });
 
     return edit;

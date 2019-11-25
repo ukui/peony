@@ -11,6 +11,7 @@
 #include "file-item-proxy-filter-sort-model.h"
 
 #include <QVBoxLayout>
+#include <QAction>
 
 using namespace Peony;
 
@@ -204,6 +205,47 @@ void DirectoryViewContainer::switchViewType(const QString &viewId)
     if (!selection.isEmpty()) {
         view->setSelections(selection);
     }
+
+    QAction *returnAction = new QAction(m_view);
+    returnAction->setShortcut(Qt::Key_Return);
+    connect(returnAction, &QAction::triggered, this, [=](){
+        auto selections = m_view->getSelections();
+        if (selections.count() == 1) {
+            this->updateWindowLocationRequest(selections.first(), true, false);
+        }
+    });
+    m_view->addAction(returnAction);
+
+    QAction *cdUpAction = new QAction(m_view);
+    cdUpAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_Up));
+    connect(cdUpAction, &QAction::triggered, this, [=](){
+        this->cdUp();
+    });
+    this->addAction(cdUpAction);
+
+    QAction *goBackAction = new QAction(m_view);
+    goBackAction->setShortcut(QKeySequence::Back);
+    connect(goBackAction, &QAction::triggered, this, [=](){
+        this->goBack();
+    });
+    this->addAction(goBackAction);
+
+    QAction *goForwardAction = new QAction(m_view);
+    goForwardAction->setShortcut(QKeySequence::Forward);
+    connect(goForwardAction, &QAction::triggered, this, [=](){
+        this->goForward();
+    });
+    this->addAction(goForwardAction);
+
+    QAction *editAction = new QAction(m_view);
+    editAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_E));
+    connect(editAction, &QAction::triggered, this, [=](){
+        auto selections = m_view->getSelections();
+        if (selections.count() == 1) {
+            m_view->editUri(selections.first());
+        }
+    });
+    this->addAction(editAction);
 
     Q_EMIT viewTypeChanged();
 }

@@ -5,6 +5,7 @@
 #include "peony-core_global.h"
 
 class QLabel;
+class QToolBar;
 
 namespace Peony {
 
@@ -15,6 +16,7 @@ class PEONYCORESHARED_EXPORT StatusBar : public QStatusBar
     Q_OBJECT
 public:
     explicit StatusBar(FMWindow *window, QWidget *parent = nullptr);
+    ~StatusBar() override;
 
 public Q_SLOTS:
     void update();
@@ -27,6 +29,7 @@ private:
     FMWindow *m_window = nullptr;
 
     QLabel *m_label = nullptr;
+    QToolBar *m_styled_toolbar = nullptr;
 };
 
 }

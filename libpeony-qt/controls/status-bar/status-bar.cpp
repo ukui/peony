@@ -7,10 +7,14 @@
 #include <QApplication>
 #include <QStyle>
 
+#include <QToolBar>
+
 using namespace Peony;
 
 StatusBar::StatusBar(FMWindow *window, QWidget *parent) : QStatusBar(parent)
 {
+    m_styled_toolbar = new QToolBar;
+
     setContentsMargins(0, 0, 0, 0);
     setStyleSheet("padding: 0;");
     setSizeGripEnabled(false);
@@ -25,6 +29,11 @@ StatusBar::StatusBar(FMWindow *window, QWidget *parent) : QStatusBar(parent)
 
     //setStyleSheet("align: center;");
     //showMessage(tr("Status Bar"));
+}
+
+StatusBar::~StatusBar()
+{
+    m_styled_toolbar->deleteLater();
 }
 
 void StatusBar::update()
@@ -85,8 +94,11 @@ void StatusBar::paintEvent(QPaintEvent *e)
     //'border', so I use painter overwrite it.
     QStatusBar::paintEvent(e);
     QPainter p(this);
-    QPalette palette;
     auto rect = this->rect();
-    rect.adjust(1, 2, 1, 1);
-    p.fillRect(rect, palette.brush(QPalette::Background));
+    rect.adjust(0, 2, 0, 0);
+    auto bg = m_styled_toolbar->palette().window().color();
+    p.fillRect(rect, bg);
+    auto base = m_styled_toolbar->palette().base().color();
+    base.setAlpha(114);
+    p.fillRect(rect, base);
 }
