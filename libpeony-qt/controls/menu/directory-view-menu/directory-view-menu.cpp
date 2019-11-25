@@ -14,6 +14,7 @@
 
 #include "clipboard-utils.h"
 #include "file-operation-utils.h"
+#include "file-operation-manager.h" //FileOpInfo
 
 #include "file-utils.h"
 
@@ -244,7 +245,10 @@ const QList<QAction *> DirectoryViewMenu::constructCreateTemplateActions()
                 QFileInfo info(t);
                 QAction *action = new QAction(p.icon(info), info.baseName(), this);
                 connect(action, &QAction::triggered, [=](){
-                    FileOperationUtils::create(m_directory, t, CreateTemplateOperation::Template);
+                    CreateTemplateOperation op(m_directory, CreateTemplateOperation::Template, t);
+                    op.run();
+                    auto target = op.target();
+                    m_uris_to_edit<<target;
                 });
                 subMenu->addAction(action);
             }
@@ -255,12 +259,22 @@ const QList<QAction *> DirectoryViewMenu::constructCreateTemplateActions()
         auto createEmptyFileAction = new QAction(QIcon::fromTheme("document-new-symbolic"), tr("Empty &File"), this);
         actions<<createEmptyFileAction;
         connect(actions.last(), &QAction::triggered, [=](){
-            FileOperationUtils::create(m_directory);
+            //FileOperationUtils::create(m_directory);
+            CreateTemplateOperation op(m_directory);
+            op.run();
+            auto targetUri = op.target();
+            qDebug()<<"target:"<<targetUri;
+            m_uris_to_edit<<targetUri;
         });
         auto createFolderActions = new QAction(QIcon::fromTheme("folder-new-symbolic"), tr("&Folder"), this);
         actions<<createFolderActions;
         connect(actions.last(), &QAction::triggered, [=](){
-            FileOperationUtils::create(m_directory, nullptr, CreateTemplateOperation::EmptyFolder);
+            //FileOperationUtils::create(m_directory, nullptr, CreateTemplateOperation::EmptyFolder);
+            CreateTemplateOperation op(m_directory, CreateTemplateOperation::EmptyFolder, tr("New Folder"));
+            op.run();
+            auto targetUri = op.target();
+            qDebug()<<"target:"<<targetUri;
+            m_uris_to_edit<<targetUri;
         });
         subMenu->addActions(actions);
     }

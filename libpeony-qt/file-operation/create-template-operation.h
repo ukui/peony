@@ -22,6 +22,8 @@ public:
     void run() override;
     std::shared_ptr<FileOperationInfo> getOperationInfo() override {return m_info;}
 
+    const QString target() {return m_target_uri;}
+
 protected:
     void handleDuplicate(const QString &uri);
 

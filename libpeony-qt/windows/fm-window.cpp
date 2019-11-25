@@ -18,6 +18,7 @@
 #include "directory-view-menu.h"
 
 #include "file-utils.h"
+#include "file-operation-utils.h"
 #include "file-info.h"
 
 #include "file-operation-manager.h"
@@ -279,12 +280,40 @@ FMWindow::FMWindow(const QString &uri, QWidget *parent) : QMainWindow (parent)
         FileOperationManager::getInstance()->redo();
     });
 
+    auto deleteAction = new QAction(this);
+    deleteAction->setShortcut(QKeySequence(Qt::SHIFT + Qt::Key_Delete));
+    addAction(deleteAction);
+    connect(deleteAction, &QAction::triggered, [=](){
+        auto uris = this->getCurrentSelections();
+        int result = 0;
+        if (uris.count() == 1) {
+            result = QMessageBox::question(nullptr, tr("Delete Permanently"), tr("Are you sure that you want to delete %1? "
+                                                                                 "Once you start a deletion, the files deleting will never be "
+                                                                                 "restored again.").arg(uris.first().split("/").last()));
+        } else {
+            result = QMessageBox::question(nullptr, tr("Delete Permanently"), tr("Are you sure that you want to delete these %1 files? "
+                                                                                 "Once you start a deletion, the files deleting will never be "
+                                                                                 "restored again.").arg(uris.count()));
+        }
+
+        if (result == QMessageBox::Yes) {
+            FileOperationUtils::remove(uris);
+        }
+    });
+
     //menu
     m_tab->connect(m_tab, &TabPage::menuRequest, [=](){
         if (m_is_loading)
             return;
         DirectoryViewMenu menu(this, nullptr);
         menu.exec(QCursor::pos());
+        auto urisToEdit = menu.urisToEdit();
+        if (!urisToEdit.isEmpty()) {
+            QTimer::singleShot(100, this, [=](){
+                this->editUri(urisToEdit.first());
+                this->getCurrentPage()->getView()->scrollToSelection(urisToEdit.first());
+            });
+        }
     });
 
     //preview page
@@ -526,6 +555,16 @@ const QString FMWindow::getCurrentPageViewType()
     else {
         return DirectoryViewFactoryManager2::getInstance()->getDefaultViewId();
     }
+}
+
+void FMWindow::editUri(const QString &uri)
+{
+    getCurrentPage()->getView()->editUri(uri);
+}
+
+void FMWindow::editUris(const QStringList &uris)
+{
+    getCurrentPage()->getView()->editUris(uris);
 }
 
 //preview page container

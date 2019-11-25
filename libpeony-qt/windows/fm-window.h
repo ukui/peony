@@ -110,6 +110,9 @@ public Q_SLOTS:
     void setCurrentSortOrder (Qt::SortOrder order);
     void setCurrentSortColumn (int sortColumn);
 
+    void editUri(const QString &uri);
+    void editUris(const QStringList &uris);
+
 protected:
     void resizeEvent(QResizeEvent *e) override;
 

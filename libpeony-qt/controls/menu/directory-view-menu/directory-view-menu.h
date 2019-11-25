@@ -29,6 +29,8 @@ public:
     explicit DirectoryViewMenu(DirectoryViewWidget *directoryView, QWidget *parent = nullptr);
     explicit DirectoryViewMenu(FMWindow *window, QWidget *parent = nullptr);
 
+    const QStringList &urisToEdit() {return m_uris_to_edit;}
+
 protected:
     void fillActions();
     const QList<QAction *> constructOpenOpActions();
@@ -51,6 +53,8 @@ private:
     bool m_is_computer = false;
     bool m_is_trash = false;
     bool m_is_search = false;
+
+    QStringList m_uris_to_edit;
 };
 
 }
