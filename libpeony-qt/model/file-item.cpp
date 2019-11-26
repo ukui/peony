@@ -94,11 +94,11 @@ void FileItem::findChildrenAsync()
     //NOTE: entry a new root might destroyed the current enumeration work.
     //the root item will be delete, so we should cancel the previous enumeration.
     enumerator->connect(this, &FileItem::cancelFindChildren, enumerator, &FileEnumerator::cancel);
-    enumerator->connect(enumerator, &FileEnumerator::prepared, [=](std::shared_ptr<GErrorWrapper> err){
+    enumerator->connect(enumerator, &FileEnumerator::prepared, this, [=](std::shared_ptr<GErrorWrapper> err){
         auto target = FileUtils::getTargetUri(m_info->uri());
         if (!target.isEmpty()) {
             enumerator->cancel();
-            enumerator->deleteLater();
+            //enumerator->deleteLater();
             m_model->setRootUri(target);
             return;
         }
@@ -106,7 +106,7 @@ void FileItem::findChildrenAsync()
             qDebug()<<err->message();
             if (err.get()->code() == G_IO_ERROR_NOT_FOUND) {
                 enumerator->cancel();
-                enumerator->deleteLater();
+                //enumerator->deleteLater();
                 m_model->setRootUri(FileUtils::getParentUri(this->uri()));
                 return;
             }
@@ -115,7 +115,7 @@ void FileItem::findChildrenAsync()
     });
 
     if (!m_model->isPositiveResponse()) {
-        enumerator->connect(enumerator, &Peony::FileEnumerator::enumerateFinished, [=](bool successed){
+        enumerator->connect(enumerator, &Peony::FileEnumerator::enumerateFinished, this, [=](bool successed){
             if (successed) {
                 auto infos = enumerator->getChildren(true);
                 m_async_count = infos.count();
@@ -132,11 +132,11 @@ void FileItem::findChildrenAsync()
                     FileInfo *shared_info = info.get();
                     int row = infos.indexOf(info);
                     //qDebug()<<info->uri()<<row;
-                    job->connect(job, &FileInfoJob::infoUpdated, [=](){
+                    job->connect(job, &FileInfoJob::infoUpdated, this, [=](){
                         qDebug()<<shared_info->iconName()<<row;
                     });
                     */
-                    connect(job, &FileInfoJob::infoUpdated, [=](){
+                    connect(job, &FileInfoJob::infoUpdated, this, [=](){
                         //the query job is finished and will be deleted soon,
                         //whatever info was updated, we need decrease the async count.
                         m_async_count--;
@@ -159,43 +159,43 @@ void FileItem::findChildrenAsync()
 
             m_watcher = new FileWatcher(this->m_info->uri());
             m_watcher->setMonitorChildrenChange(true);
-            connect(m_watcher, &FileWatcher::fileCreated, [=](QString uri){
+            connect(m_watcher, &FileWatcher::fileCreated, this, [=](QString uri){
                 //add new item to m_children
                 //tell the model update
                 this->onChildAdded(uri);
                 Q_EMIT this->childAdded(uri);
             });
-            connect(m_watcher, &FileWatcher::fileDeleted, [=](QString uri){
+            connect(m_watcher, &FileWatcher::fileDeleted, this, [=](QString uri){
                 //remove the crosponding child
                 //tell the model update
                 this->onChildRemoved(uri);
                 Q_EMIT this->childRemoved(uri);
             });
-            connect(m_watcher, &FileWatcher::fileChanged, [=](const QString &uri){
+            connect(m_watcher, &FileWatcher::fileChanged, this, [=](const QString &uri){
                 auto index = m_model->indexFromUri(uri);
                 m_model->dataChanged(index, index);
             });
-            connect(m_watcher, &FileWatcher::directoryDeleted, [=](QString uri){
+            connect(m_watcher, &FileWatcher::directoryDeleted, this, [=](QString uri){
                 //clean all the children, if item index is root index, cd up.
                 //this might use FileItemModel::setRootItem()
                 Q_EMIT this->deleted(uri);
                 this->onDeleted(uri);
             });
 
-            connect(m_watcher, &FileWatcher::locationChanged, [=](QString oldUri, QString newUri){
+            connect(m_watcher, &FileWatcher::locationChanged, this, [=](QString oldUri, QString newUri){
                 //this might use FileItemModel::setRootItem()
                 Q_EMIT this->renamed(oldUri, newUri);
                 this->onRenamed(oldUri, newUri);
             });
 
-            connect(m_watcher, &FileWatcher::directoryUnmounted, [=](){
+            connect(m_watcher, &FileWatcher::directoryUnmounted, this, [=](){
                 m_model->setRootUri("computer:///");
             });
             //qDebug()<<"startMonitor";
             m_watcher->startMonitor();
         });
     } else {
-        enumerator->connect(enumerator, &Peony::FileEnumerator::childrenUpdated, [=](const QStringList &uris){
+        enumerator->connect(enumerator, &Peony::FileEnumerator::childrenUpdated, this, [=](const QStringList &uris){
             if (uris.isEmpty()) {
                 Q_EMIT m_model->findChildrenFinished();
             }
@@ -214,7 +214,7 @@ void FileItem::findChildrenAsync()
 
                 auto infoJob = new FileInfoJob(info);
                 infoJob->setAutoDelete();
-                infoJob->connect(infoJob, &FileInfoJob::infoUpdated, [=](){
+                infoJob->connect(infoJob, &FileInfoJob::infoUpdated, this, [=](){
                     Q_EMIT m_model->dataChanged(item->firstColumnIndex(), item->lastColumnIndex());
                     //Q_EMIT m_model->updated();
                     ThumbnailManager::getInstance()->createThumbnail(info->uri(), m_watcher);
@@ -223,7 +223,7 @@ void FileItem::findChildrenAsync()
             }
         });
 
-        enumerator->connect(enumerator, &Peony::FileEnumerator::enumerateFinished, [=](){
+        enumerator->connect(enumerator, &Peony::FileEnumerator::enumerateFinished, this, [=](){
             delete enumerator;
             if (!m_model||!m_children||!m_info)
                 return;
@@ -233,37 +233,37 @@ void FileItem::findChildrenAsync()
 
             m_watcher = new FileWatcher(this->m_info->uri());
             m_watcher->setMonitorChildrenChange(true);
-            connect(m_watcher, &FileWatcher::fileCreated, [=](QString uri){
+            connect(m_watcher, &FileWatcher::fileCreated, this, [=](QString uri){
                 //add new item to m_children
                 //tell the model update
                 this->onChildAdded(uri);
                 Q_EMIT this->childAdded(uri);
                 ThumbnailManager::getInstance()->createThumbnail(uri, m_watcher);
             });
-            connect(m_watcher, &FileWatcher::fileDeleted, [=](QString uri){
+            connect(m_watcher, &FileWatcher::fileDeleted, this, [=](QString uri){
                 //remove the crosponding child
                 //tell the model update
                 this->onChildRemoved(uri);
                 Q_EMIT this->childRemoved(uri);
             });
-            connect(m_watcher, &FileWatcher::fileChanged, [=](const QString &uri){
+            connect(m_watcher, &FileWatcher::fileChanged, this, [=](const QString &uri){
                 //qDebug()<<"file changed"<<uri;
                 auto index = m_model->indexFromUri(uri);
                 m_model->dataChanged(index, index);
             });
-            connect(m_watcher, &FileWatcher::directoryDeleted, [=](QString uri){
+            connect(m_watcher, &FileWatcher::directoryDeleted, this, [=](QString uri){
                 //clean all the children, if item index is root index, cd up.
                 //this might use FileItemModel::setRootItem()
                 Q_EMIT this->deleted(uri);
                 this->onDeleted(uri);
             });
-            connect(m_watcher, &FileWatcher::locationChanged, [=](QString oldUri, QString newUri){
+            connect(m_watcher, &FileWatcher::locationChanged, this, [=](QString oldUri, QString newUri){
                 //this might use FileItemModel::setRootItem()
                 Q_EMIT this->renamed(oldUri, newUri);
                 this->onRenamed(oldUri, newUri);
             });
 
-            connect(m_watcher, &FileWatcher::directoryUnmounted, [=](){
+            connect(m_watcher, &FileWatcher::directoryUnmounted, this, [=](){
                 m_model->setRootUri("computer:///");
             });
             //qDebug()<<"startMonitor";
@@ -390,7 +390,7 @@ void FileItem::updateInfoAsync()
 {
     FileInfoJob *job = new FileInfoJob(m_info);
     job->setAutoDelete();
-    job->connect(job, &FileInfoJob::infoUpdated, [=](){
+    job->connect(job, &FileInfoJob::infoUpdated, this, [=](){
         m_model->dataChanged(this->firstColumnIndex(), this->lastColumnIndex());
     });
     job->queryAsync();

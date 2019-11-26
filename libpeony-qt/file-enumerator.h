@@ -65,6 +65,8 @@ public:
 
     const QStringList getChildrenUris() {return *m_children_uris;}
 
+    void setAutoDelete(bool autoDelete = true) {m_auto_delete = true;}
+
 Q_SIGNALS:
     /*!
      * \brief prepared
@@ -189,6 +191,8 @@ private:
     GCancellable *m_cancellable = nullptr;
 
     QList<QString> *m_children_uris = nullptr;
+
+    bool m_auto_delete = false;
 };
 
 }

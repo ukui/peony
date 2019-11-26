@@ -24,6 +24,12 @@ FileEnumerator::FileEnumerator(QObject *parent) : QObject(parent)
     m_cancellable = g_cancellable_new();
 
     m_children_uris = new QList<QString>();
+
+    connect(this, &FileEnumerator::enumerateFinished, this, [=](){
+        if (m_auto_delete) {
+            this->deleteLater();
+        }
+    });
 }
 
 /*!
@@ -94,6 +100,8 @@ void FileEnumerator::cancel()
     g_cancellable_cancel(m_cancellable);
     g_object_unref(m_cancellable);
     m_cancellable = g_cancellable_new();
+
+    Q_EMIT enumerateFinished(false);
 }
 
 void FileEnumerator::prepare()
@@ -298,7 +306,7 @@ GAsyncReadyCallback FileEnumerator::mount_enclosing_volume_callback(GFile *file,
             p_this->connect(op, &MountOperation::cancelled, p_this, [p_this](){
                 Q_EMIT p_this->enumerateFinished(false);
             });
-            p_this->connect(op, &MountOperation::finished, [=](const std::shared_ptr<GErrorWrapper> &finished_err){
+            p_this->connect(op, &MountOperation::finished, p_this, [=](const std::shared_ptr<GErrorWrapper> &finished_err){
                 if (finished_err) {
                     qDebug()<<"finished err:"<<finished_err->code()<<finished_err->message();
                     if (finished_err->code() == G_IO_ERROR_PERMISSION_DENIED) {
