@@ -19,6 +19,8 @@
 #include <QStandardPaths>
 #include <QMessageBox>
 
+#include <QUrl>
+
 using namespace Peony;
 
 DesktopMenu::DesktopMenu(DirectoryViewIface *view, QWidget *parent) : QMenu(parent)
@@ -341,13 +343,14 @@ const QList<QAction *> DesktopMenu::constructFilePropertiesActions()
 
 void DesktopMenu::openWindow(const QString &uri)
 {
+    QUrl url = uri;
     QProcess p;
 #if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
     p.setProgram("peony-qt");
-    p.setArguments(QStringList()<<"--show-folders"<<uri);
+    p.setArguments(QStringList()<<"--show-folders"<<url.toEncoded());
     p.startDetached();
 #else
-    p.startDetached("peony-qt", QStringList()<<"--show-folders"<<uri);
+    p.startDetached("peony-qt", QStringList()<<"--show-folders"<<url.toEncoded);
 #endif
 }
 
@@ -375,36 +378,47 @@ const QList<QAction *> DesktopMenu::constructMenuPluginActions()
 
 void DesktopMenu::openWindow(const QStringList &uris)
 {
+    QStringList args;
+    for (auto arg : uris) {
+        QUrl url = arg;
+        args<<url.toEncoded();
+    }
     QProcess p;
 #if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
     p.setProgram("peony-qt");
-    p.setArguments(QStringList()<<"--show-folders"<<uris);
+    p.setArguments(QStringList()<<"--show-folders"<<args);
     p.startDetached();
 #else
-    p.startDetached("peony-qt", QStringList()<<"--show-folders"<<uris);
+    p.startDetached("peony-qt", QStringList()<<"--show-folders"<<args);
 #endif
 }
 
 void DesktopMenu::showProperties(const QString &uri)
 {
+    QUrl url = uri;
     QProcess p;
 #if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
     p.setProgram("peony-qt");
-    p.setArguments(QStringList()<<"--show-properties"<<uri);
+    p.setArguments(QStringList()<<"--show-properties"<<url.toEncoded());
     p.startDetached();
 #else
-    p.startDetached("peony-qt", QStringList()<<"--show-properties"<<uri);
+    p.startDetached("peony-qt", QStringList()<<"--show-properties"<<url.toEncoded());
 #endif
 }
 
 void DesktopMenu::showProperties(const QStringList &uris)
 {
+    QStringList args;
+    for (auto arg : uris) {
+        QUrl url = arg;
+        args<<url.toEncoded();
+    }
     QProcess p;
 #if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
     p.setProgram("peony-qt");
-    p.setArguments(QStringList()<<"--show-properties"<<uris);
+    p.setArguments(QStringList()<<"--show-properties"<<args);
     p.startDetached();
 #else
-    p.startDetached("peony-qt", QStringList()<<"--show-properties"<<uris);
+    p.startDetached("peony-qt", QStringList()<<"--show-properties"<<args);
 #endif
 }
