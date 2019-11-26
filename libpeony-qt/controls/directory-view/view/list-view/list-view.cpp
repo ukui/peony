@@ -32,7 +32,7 @@ ListView::ListView(QWidget *parent) : QTreeView(parent)
     setDragDropMode(QTreeView::DropOnly);
     setSelectionMode(QTreeView::ExtendedSelection);
 
-    setContextMenuPolicy(Qt::CustomContextMenu);
+    //setContextMenuPolicy(Qt::CustomContextMenu);
 }
 
 void ListView::bindModel(FileItemModel *sourceModel, FileItemProxyFilterSortModel *proxyModel)
@@ -75,18 +75,21 @@ void ListView::bindModel(FileItemModel *sourceModel, FileItemProxyFilterSortMode
 
 void ListView::mousePressEvent(QMouseEvent *e)
 {
-    QTreeView::mousePressEvent(e);
-
-    if (e->button() != Qt::LeftButton) {
+    if (e->button() == Qt::RightButton) {
+        Q_EMIT customContextMenuRequested(e->pos());
         return;
     }
 
-    qDebug()<<m_edit_trigger_timer.isActive()<<m_edit_trigger_timer.interval();
-    if (indexAt(e->pos()).row() == m_last_index.row() && m_last_index.isValid()) {
-        if (m_edit_trigger_timer.isActive()) {
-            setIndexWidget(m_last_index, nullptr);
-            //qDebug()<<"edit"<<m_last_index.data(Qt::UserRole).toString();
-            editUri(m_last_index.data(Qt::UserRole).toString());
+    QTreeView::mousePressEvent(e);
+
+    if (e->button() == Qt::LeftButton) {
+        qDebug()<<m_edit_trigger_timer.isActive()<<m_edit_trigger_timer.interval();
+        if (indexAt(e->pos()).row() == m_last_index.row() && m_last_index.isValid()) {
+            if (m_edit_trigger_timer.isActive()) {
+                setIndexWidget(m_last_index, nullptr);
+                //qDebug()<<"edit"<<m_last_index.data(Qt::UserRole).toString();
+                editUri(m_last_index.data(Qt::UserRole).toString());
+            }
         }
     }
 }
@@ -283,6 +286,7 @@ void ListView2::bindModel(FileItemModel *model, FileItemProxyFilterSortModel *pr
         Q_EMIT this->viewDoubleClicked(index.data(Qt::UserRole).toString());
     });
 
+    //FIXME: how about multi-selection?
     //menu
     connect(m_view, &ListView::customContextMenuRequested, this, [=](const QPoint &pos){
         qDebug()<<"menu request";
@@ -290,12 +294,18 @@ void ListView2::bindModel(FileItemModel *model, FileItemProxyFilterSortModel *pr
             m_view->clearSelection();
 
         auto index = m_view->indexAt(pos);
-        if (index.column() != 0) {
-            auto visualRect = m_view->visualRect(index);
-            auto sizeHint = m_view->itemDelegate()->sizeHint(m_view->viewOptions(), index);
-            auto validRect = QRect(visualRect.topLeft(), sizeHint);
-            if (!validRect.contains(pos))
+        auto selectedIndexes = m_view->selectionModel()->selection().indexes();
+        auto visualRect = m_view->visualRect(index);
+        auto sizeHint = m_view->itemDelegate()->sizeHint(m_view->viewOptions(), index);
+        auto validRect = QRect(visualRect.topLeft(), sizeHint);
+        if (!selectedIndexes.contains(index)) {
+            if (!validRect.contains(pos)) {
                 m_view->clearSelection();
+            } else {
+                auto flags = QItemSelectionModel::Select|QItemSelectionModel::Rows;
+                m_view->clearSelection();
+                m_view->selectionModel()->select(m_view->indexAt(pos), flags);
+            }
         }
 
         //NOTE: we have to ensure that we have cleared the

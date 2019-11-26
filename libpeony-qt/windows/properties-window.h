@@ -6,6 +6,7 @@
 #include "peony-core_global.h"
 
 #include <QMap>
+#include <QMutex>
 
 namespace Peony {
 
@@ -29,6 +30,8 @@ private:
 
     QHash<QString, PropertiesWindowTabPagePluginIface*> m_factory_hash;
     QMap<int, QString> m_sorted_factory_map;
+
+    QMutex m_mutex;
 };
 
 class PEONYCORESHARED_EXPORT PropertiesWindow : public QMainWindow

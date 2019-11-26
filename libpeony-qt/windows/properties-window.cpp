@@ -44,12 +44,16 @@ PropertiesWindowPluginManager::~PropertiesWindowPluginManager()
 
 bool PropertiesWindowPluginManager::registerFactory(PropertiesWindowTabPagePluginIface *factory)
 {
+    m_mutex.lock();
     auto id = factory->name();
     if (m_factory_hash.value(id)) {
+        m_mutex.unlock();
         return false;
     }
+
     m_factory_hash.insert(id, factory);
     m_sorted_factory_map.insert(-factory->tabOrder(), id);
+    m_mutex.unlock();
     return true;
 }
 

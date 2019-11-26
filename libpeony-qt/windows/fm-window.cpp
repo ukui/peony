@@ -312,8 +312,8 @@ FMWindow::FMWindow(const QString &uri, QWidget *parent) : QMainWindow (parent)
         auto urisToEdit = menu.urisToEdit();
         if (!urisToEdit.isEmpty()) {
             QTimer::singleShot(100, this, [=](){
-                this->editUri(urisToEdit.first());
                 this->getCurrentPage()->getView()->scrollToSelection(urisToEdit.first());
+                this->editUri(urisToEdit.first());
             });
         }
     });

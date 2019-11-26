@@ -72,7 +72,7 @@ void ToolBar::init()
     */
 
     m_view_action = new QAction(m_view_factory_model->iconFromViewId(m_top_window->getCurrentPageViewType()),
-                                m_top_window->getCurrentPageViewType());
+                                m_top_window->getCurrentPageViewType(), this);
     m_view_menu = new QMenu(this);
     m_view_action->setMenu(m_view_menu);
     connect(m_view_action, &QAction::triggered, [=](){
@@ -105,7 +105,7 @@ void ToolBar::init()
       \todo
       make column extensionable.
       */
-    m_sort_action = new QAction(QIcon::fromTheme("view-sort-ascending-symbolic"), tr("Sort Type"));
+    m_sort_action = new QAction(QIcon::fromTheme("view-sort-ascending-symbolic"), tr("Sort Type"), this);
     QMenu *sortMenu = new QMenu(this);
     sortMenu->addAction(tr("File Name"), [=](){
         m_top_window->setCurrentSortColumn(0);

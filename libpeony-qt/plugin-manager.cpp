@@ -26,6 +26,12 @@ static PluginManager *global_instance = nullptr;
 
 PluginManager::PluginManager(QObject *parent) : QObject(parent)
 {
+    //FIXME: we have to ensure that internal factory being registered successfully.
+    PropertiesWindowPluginManager::getInstance();
+    MenuPluginManager::getInstance();
+    DirectoryViewFactoryManager::getInstance();
+    PreviewPageFactoryManager::getInstance();
+
     QDir pluginsDir("/usr/lib/peony-qt-extensions");
     pluginsDir.setFilter(QDir::Files);
 
