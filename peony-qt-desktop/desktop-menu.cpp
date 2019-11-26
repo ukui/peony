@@ -341,8 +341,8 @@ const QList<QAction *> DesktopMenu::constructFilePropertiesActions()
 
 void DesktopMenu::openWindow(const QString &uri)
 {
-#if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
     QProcess p;
+#if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
     p.setProgram("peony-qt");
     p.setArguments(QStringList()<<"--show-folders"<<uri);
     p.startDetached();
@@ -375,8 +375,8 @@ const QList<QAction *> DesktopMenu::constructMenuPluginActions()
 
 void DesktopMenu::openWindow(const QStringList &uris)
 {
-#if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
     QProcess p;
+#if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
     p.setProgram("peony-qt");
     p.setArguments(QStringList()<<"--show-folders"<<uris);
     p.startDetached();
@@ -387,8 +387,8 @@ void DesktopMenu::openWindow(const QStringList &uris)
 
 void DesktopMenu::showProperties(const QString &uri)
 {
-#if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
     QProcess p;
+#if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
     p.setProgram("peony-qt");
     p.setArguments(QStringList()<<"--show-properties"<<uri);
     p.startDetached();
@@ -399,8 +399,8 @@ void DesktopMenu::showProperties(const QString &uri)
 
 void DesktopMenu::showProperties(const QStringList &uris)
 {
-#if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
     QProcess p;
+#if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
     p.setProgram("peony-qt");
     p.setArguments(QStringList()<<"--show-properties"<<uris);
     p.startDetached();
