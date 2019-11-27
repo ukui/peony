@@ -1,6 +1,7 @@
 #include "file-info-job.h"
 
 #include "file-info.h"
+#include "file-meta-info.h"
 
 #include "file-info-manager.h"
 
@@ -75,7 +76,7 @@ bool FileInfoJob::querySync()
     GError *err = nullptr;
 
     auto _info = g_file_query_info(info->m_file,
-                                   "standard::*," "time::*," "access::*," G_FILE_ATTRIBUTE_ID_FILE,
+                                   "standard::*," "time::*," "access::*," "metadata::*," G_FILE_ATTRIBUTE_ID_FILE,
                                    G_FILE_QUERY_INFO_NONE,
                                    nullptr,
                                    &err);
@@ -131,7 +132,7 @@ void FileInfoJob::queryAsync()
         return;
     }
     g_file_query_info_async(info->m_file,
-                            "standard::*," "time::*," "access::*," G_FILE_ATTRIBUTE_ID_FILE,
+                            "standard::*," "time::*," "access::*," "metadata::*," G_FILE_ATTRIBUTE_ID_FILE,
                             G_FILE_QUERY_INFO_NONE,
                             G_PRIORITY_DEFAULT,
                             info->m_cancellable,
@@ -245,6 +246,9 @@ void FileInfoJob::refreshInfoContents(GFileInfo *new_info)
         }
         g_object_unref(desktop_info);
     }
+
+    m_info->m_meta_info = FileMetaInfo::fromGFileInfo(m_info->uri(), new_info);
+
     Q_EMIT info->updated();
     m_info->m_mutex.unlock();
 }

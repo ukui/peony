@@ -15,6 +15,7 @@
 namespace Peony {
 
 class FileInfoJob;
+class FileMetaInfo;
 
 /*!
  * \brief The FileInfo class
@@ -29,6 +30,7 @@ class FileInfoJob;
 class PEONYCORESHARED_EXPORT FileInfo : public QObject
 {
     friend class FileInfoJob;
+    friend class FileMetaInfo;
 
     Q_OBJECT
 public:
@@ -147,6 +149,7 @@ private:
     GCancellable *m_cancellable = nullptr;
 
     //QIcon m_thumbnail;
+    std::shared_ptr<FileMetaInfo> m_meta_info = nullptr;
 
     QMutex m_mutex;
 };

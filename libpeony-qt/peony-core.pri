@@ -13,7 +13,8 @@ HEADERS += $$PWD/peony-core_global.h \
     $$PWD/gobject-template.h \
     $$PWD/file-utils.h \
     $$PWD/thumbnail-manager.h \
-    $$PWD/linux-pwd-helper.h
+    $$PWD/linux-pwd-helper.h \
+    $$PWD/file-meta-info.h
 
 SOURCES += $$PWD/file-info.cpp \
            $$PWD/file-info-job.cpp \
@@ -27,6 +28,7 @@ SOURCES += $$PWD/file-info.cpp \
     $$PWD/gobject-template.cpp \
     $$PWD/file-utils.cpp \
     $$PWD/thumbnail-manager.cpp \
-    $$PWD/linux-pwd-helper.cpp
+    $$PWD/linux-pwd-helper.cpp \
+    $$PWD/file-meta-info.cpp
 
 FORMS += $$PWD/connect-server-dialog.ui

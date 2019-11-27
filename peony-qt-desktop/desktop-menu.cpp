@@ -350,7 +350,7 @@ void DesktopMenu::openWindow(const QString &uri)
     p.setArguments(QStringList()<<"--show-folders"<<url.toEncoded());
     p.startDetached();
 #else
-    p.startDetached("peony-qt", QStringList()<<"--show-folders"<<url.toEncoded);
+    p.startDetached("peony-qt", QStringList()<<"--show-folders"<<uri);
 #endif
 }
 
@@ -381,7 +381,7 @@ void DesktopMenu::openWindow(const QStringList &uris)
     QStringList args;
     for (auto arg : uris) {
         QUrl url = arg;
-        args<<url.toEncoded();
+        args<<QString(url.toEncoded());
     }
     QProcess p;
 #if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)

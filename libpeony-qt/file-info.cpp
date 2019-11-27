@@ -2,6 +2,7 @@
 
 #include "file-info-manager.h"
 #include "file-info-job.h"
+#include "file-meta-info.h"
 
 #include "thumbnail-manager.h"
 
