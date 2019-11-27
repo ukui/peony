@@ -66,9 +66,12 @@ void LocationBar::addButton(const QString &uri, bool setMenu)
 {
     QAction *action = new QAction(this);
     QUrl url = uri;
-    QIcon icon = QIcon::fromTheme(Peony::FileUtils::getFileIconName(uri), QIcon::fromTheme("folder"));
+    auto parent = FileUtils::getParentUri(uri);
+    if (parent.isNull()) {
+        QIcon icon = QIcon::fromTheme(Peony::FileUtils::getFileIconName(uri), QIcon::fromTheme("folder"));
+        action->setIcon(icon);
+    }
 
-    action->setIcon(icon);
     if (!url.fileName().isEmpty()) {
         if (FileUtils::getParentUri(uri).isNull()) {
             setMenu = false;

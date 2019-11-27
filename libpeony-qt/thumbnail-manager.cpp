@@ -3,6 +3,7 @@
 #include "file-info-manager.h"
 
 #include "file-watcher.h"
+#include "file-utils.h"
 
 #include <QtConcurrent>
 #include <QIcon>
@@ -39,16 +40,18 @@ ThumbnailManager *ThumbnailManager::getInstance()
 
 void ThumbnailManager::createThumbnail(const QString &uri, FileWatcher *watcher)
 {
-    QUrl url = uri;
-    if (!url.isLocalFile())
-        return;
-
     //qDebug()<<"create thumbnail"<<uri;
     //NOTE: we should do createThumbnail() after we have queried the file's info.
     auto info = FileInfo::fromUri(uri);
     if (!info->mimeType().isEmpty()) {
         if (info->mimeType().startsWith("image/")) {
             QtConcurrent::run([=]() {
+                QUrl url = uri;
+                qDebug()<<url;
+                if (!info->uri().startsWith("file:///")) {
+                    url = FileUtils::getTargetUri(info->uri());
+                    qDebug()<<url;
+                }
                 QIcon thumbnail;
                 thumbnail.addFile(url.path());
                 if (!thumbnail.isNull()) {
