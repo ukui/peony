@@ -98,9 +98,11 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
     this->connect(m_desktop_watcher, &FileWatcher::fileChanged, [=](const QString &uri){
         for (auto info : m_files) {
             if (info->uri() == uri) {
-                this->dataChanged(indexFromUri(uri), indexFromUri(uri));
                 auto job = new FileInfoJob(info);
                 job->setAutoDelete();
+                connect(job, &FileInfoJob::queryAsyncFinished, this, [=](){
+                    this->dataChanged(indexFromUri(uri), indexFromUri(uri));
+                });
                 job->queryAsync();
                 return;
             }

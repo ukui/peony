@@ -173,7 +173,14 @@ void FileItem::findChildrenAsync()
             });
             connect(m_watcher, &FileWatcher::fileChanged, this, [=](const QString &uri){
                 auto index = m_model->indexFromUri(uri);
-                m_model->dataChanged(index, index);
+                if (index.isValid()) {
+                    auto infoJob = new FileInfoJob(FileInfo::fromUri(index.data(FileItemModel::UriRole).toString()));
+                    infoJob->setAutoDelete();
+                    connect(infoJob, &FileInfoJob::queryAsyncFinished, this, [=](){
+                        m_model->dataChanged(m_model->indexFromUri(uri), m_model->indexFromUri(uri));
+                    });
+                    infoJob->queryAsync();
+                }
             });
             connect(m_watcher, &FileWatcher::directoryDeleted, this, [=](QString uri){
                 //clean all the children, if item index is root index, cd up.
@@ -247,9 +254,15 @@ void FileItem::findChildrenAsync()
                 Q_EMIT this->childRemoved(uri);
             });
             connect(m_watcher, &FileWatcher::fileChanged, this, [=](const QString &uri){
-                //qDebug()<<"file changed"<<uri;
                 auto index = m_model->indexFromUri(uri);
-                m_model->dataChanged(index, index);
+                if (index.isValid()) {
+                    auto infoJob = new FileInfoJob(FileInfo::fromUri(index.data(FileItemModel::UriRole).toString()));
+                    infoJob->setAutoDelete();
+                    connect(infoJob, &FileInfoJob::queryAsyncFinished, this, [=](){
+                        m_model->dataChanged(m_model->indexFromUri(uri), m_model->indexFromUri(uri));
+                    });
+                    infoJob->queryAsync();
+                }
             });
             connect(m_watcher, &FileWatcher::directoryDeleted, this, [=](QString uri){
                 //clean all the children, if item index is root index, cd up.
