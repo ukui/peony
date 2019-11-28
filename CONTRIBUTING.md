@@ -9,7 +9,7 @@ What role do you want to play in this project? This point is very important.
 
 - If you are good at one or more foreign languages, you should be a translator.
 
-- If you are be familiar with the framework and develop on it, you should be a developer or programer of peony-qt.
+- If you are familiar with the framework and developing on it, you should be a developer or programer of peony-qt.
 
 The different character's contribution is equally important. But the threshold is different.
 

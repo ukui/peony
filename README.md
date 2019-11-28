@@ -58,10 +58,10 @@ NOTE: peony-qt & peony-qt-desktop is based on libpeony-qt, so you should put the
 # Examples
 Another way to get familiar with the project is through [some examples which I provided](https://github.com/Yue-Lan/libpeony-qt-development-examples).
 
-These examples is based on libpeony-qt and display some basic usage of the peony-qt's api. It is simpler than the project but can help us understand how to use the libpeony-qt for development.
+These examples are based on libpeony-qt and display some basic usage of the peony-qt's api. It is simpler than the project but can help us understand how to use the libpeony-qt for development.
 
 # Contribution
-I really welcome you to participate in this project. Before that, you'd better read the [contribution manual](CONTRIBUTION.md).
+I really welcome you to participate in this project. Before that, you'd better read the [contribution manual](CONTRIBUTING.md).
 
 # About third-party open source codes
 I used some third-party code and modified it to fit into my project.

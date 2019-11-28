@@ -8,6 +8,8 @@
 
 #include "file-launch-manager.h"
 
+#include "properties-window.h"
+
 #include <QTabBar>
 
 #include <QUrl>
@@ -77,7 +79,8 @@ void TabPage::rebindContainer()
         qDebug()<<"double clicked"<<uri;
         auto info = Peony::FileInfo::fromUri(uri, false);
         if (info->uri().startsWith("trash://")) {
-            //FIXME: open properties window
+            auto w = new PropertiesWindow(QStringList()<<uri);
+            w->show();
             return;
         }
         if (info->isDir() || info->isVolume() || info->isVirtual()) {
