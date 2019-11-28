@@ -36,9 +36,9 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
     m_enumerator->connect(m_enumerator, &FileEnumerator::enumerateFinished, this, &DesktopItemModel::onEnumerateFinished);
     m_enumerator->enumerateAsync();
 
-    m_trash_watcher = new FileWatcher("trash:///", this);
+    m_trash_watcher = std::make_shared<FileWatcher>("trash:///", this);
 
-    this->connect(m_trash_watcher, &FileWatcher::fileCreated, [=](){
+    this->connect(m_trash_watcher.get(), &FileWatcher::fileCreated, [=](){
         qDebug()<<"trash changed";
         auto job = new FileInfoJob(trash);
         job->setAutoDelete();
@@ -48,7 +48,7 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
         job->queryAsync();
     });
 
-    this->connect(m_trash_watcher, &FileWatcher::fileDeleted, [=](){
+    this->connect(m_trash_watcher.get(), &FileWatcher::fileDeleted, [=](){
         qDebug()<<"trash changed";
         auto job = new FileInfoJob(trash);
         job->setAutoDelete();
@@ -58,9 +58,9 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
         job->queryAsync();
     });
 
-    m_desktop_watcher = new FileWatcher("file://" + QStandardPaths::writableLocation(QStandardPaths::DesktopLocation), this);
+    m_desktop_watcher = std::make_shared<FileWatcher>("file://" + QStandardPaths::writableLocation(QStandardPaths::DesktopLocation), this);
     m_desktop_watcher->setMonitorChildrenChange(true);
-    this->connect(m_desktop_watcher, &FileWatcher::fileCreated, [=](const QString &uri){
+    this->connect(m_desktop_watcher.get(), &FileWatcher::fileCreated, [=](const QString &uri){
         qDebug()<<"created"<<uri;
         auto info = FileInfo::fromUri(uri, true);
         bool exsited = false;
@@ -84,7 +84,7 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
         job->queryAsync();
     });
 
-    this->connect(m_desktop_watcher, &FileWatcher::fileDeleted, [=](const QString &uri){
+    this->connect(m_desktop_watcher.get(), &FileWatcher::fileDeleted, [=](const QString &uri){
         for (auto info : m_files) {
             qDebug()<<"deleted"<<uri;
             if (info->uri() == uri) {
@@ -95,7 +95,7 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
             }
         }
     });
-    this->connect(m_desktop_watcher, &FileWatcher::fileChanged, [=](const QString &uri){
+    this->connect(m_desktop_watcher.get(), &FileWatcher::fileChanged, [=](const QString &uri){
         for (auto info : m_files) {
             if (info->uri() == uri) {
                 auto job = new FileInfoJob(info);

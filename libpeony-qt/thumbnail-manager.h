@@ -20,7 +20,7 @@ public:
     static ThumbnailManager *getInstance();
 
     bool hasThumbnail(const QString &uri) {return !m_hash.values(uri).isEmpty();}
-    void createThumbnail(const QString &uri, FileWatcher *watcher = nullptr);
+    void createThumbnail(const QString &uri, std::shared_ptr<FileWatcher> watcher = nullptr);
     void releaseThumbnail(const QString &uri);
     const QIcon tryGetThumbnail(const QString &uri);
 
@@ -32,7 +32,7 @@ private:
     explicit ThumbnailManager(QObject *parent = nullptr);
 
     QHash<QString, QIcon> m_hash;
-    QMutex m_mutex;
+    //QMutex m_mutex;
 };
 
 }

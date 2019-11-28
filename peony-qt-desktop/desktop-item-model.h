@@ -56,8 +56,8 @@ protected Q_SLOTS:
 private:
     FileEnumerator *m_enumerator;
     QList<std::shared_ptr<FileInfo>> m_files;
-    FileWatcher *m_trash_watcher;
-    FileWatcher *m_desktop_watcher;
+    std::shared_ptr<FileWatcher> m_trash_watcher;
+    std::shared_ptr<FileWatcher> m_desktop_watcher;
 };
 
 }

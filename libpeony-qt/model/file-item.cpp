@@ -42,9 +42,7 @@ FileItem::~FileItem()
             Peony::FileInfoManager::getInstance()->unlock();
         }
     }
-    if (m_watcher) {
-        delete m_watcher;
-    }
+
     for (auto child : *m_children) {
         delete child;
     }
@@ -157,21 +155,21 @@ void FileItem::findChildrenAsync()
             enumerator->cancel();
             delete enumerator;
 
-            m_watcher = new FileWatcher(this->m_info->uri());
+             m_watcher = std::make_shared<FileWatcher>(this->m_info->uri());
             m_watcher->setMonitorChildrenChange(true);
-            connect(m_watcher, &FileWatcher::fileCreated, this, [=](QString uri){
+            connect(m_watcher.get(), &FileWatcher::fileCreated, this, [=](QString uri){
                 //add new item to m_children
                 //tell the model update
                 this->onChildAdded(uri);
                 Q_EMIT this->childAdded(uri);
             });
-            connect(m_watcher, &FileWatcher::fileDeleted, this, [=](QString uri){
+            connect(m_watcher.get(), &FileWatcher::fileDeleted, this, [=](QString uri){
                 //remove the crosponding child
                 //tell the model update
                 this->onChildRemoved(uri);
                 Q_EMIT this->childRemoved(uri);
             });
-            connect(m_watcher, &FileWatcher::fileChanged, this, [=](const QString &uri){
+            connect(m_watcher.get(), &FileWatcher::fileChanged, this, [=](const QString &uri){
                 auto index = m_model->indexFromUri(uri);
                 if (index.isValid()) {
                     auto infoJob = new FileInfoJob(FileInfo::fromUri(index.data(FileItemModel::UriRole).toString()));
@@ -182,20 +180,20 @@ void FileItem::findChildrenAsync()
                     infoJob->queryAsync();
                 }
             });
-            connect(m_watcher, &FileWatcher::directoryDeleted, this, [=](QString uri){
+            connect(m_watcher.get(), &FileWatcher::directoryDeleted, this, [=](QString uri){
                 //clean all the children, if item index is root index, cd up.
                 //this might use FileItemModel::setRootItem()
                 Q_EMIT this->deleted(uri);
                 this->onDeleted(uri);
             });
 
-            connect(m_watcher, &FileWatcher::locationChanged, this, [=](QString oldUri, QString newUri){
+            connect(m_watcher.get(), &FileWatcher::locationChanged, this, [=](QString oldUri, QString newUri){
                 //this might use FileItemModel::setRootItem()
                 Q_EMIT this->renamed(oldUri, newUri);
                 this->onRenamed(oldUri, newUri);
             });
 
-            connect(m_watcher, &FileWatcher::directoryUnmounted, this, [=](){
+            connect(m_watcher.get(), &FileWatcher::directoryUnmounted, this, [=](){
                 m_model->setRootUri("computer:///");
             });
             //qDebug()<<"startMonitor";
@@ -238,22 +236,22 @@ void FileItem::findChildrenAsync()
             Q_EMIT m_model->findChildrenFinished();
             Q_EMIT m_model->updated();
 
-            m_watcher = new FileWatcher(this->m_info->uri());
+            m_watcher = std::make_shared<FileWatcher>(this->m_info->uri());
             m_watcher->setMonitorChildrenChange(true);
-            connect(m_watcher, &FileWatcher::fileCreated, this, [=](QString uri){
+            connect(m_watcher.get(), &FileWatcher::fileCreated, this, [=](QString uri){
                 //add new item to m_children
                 //tell the model update
                 this->onChildAdded(uri);
                 Q_EMIT this->childAdded(uri);
                 ThumbnailManager::getInstance()->createThumbnail(uri, m_watcher);
             });
-            connect(m_watcher, &FileWatcher::fileDeleted, this, [=](QString uri){
+            connect(m_watcher.get(), &FileWatcher::fileDeleted, this, [=](QString uri){
                 //remove the crosponding child
                 //tell the model update
                 this->onChildRemoved(uri);
                 Q_EMIT this->childRemoved(uri);
             });
-            connect(m_watcher, &FileWatcher::fileChanged, this, [=](const QString &uri){
+            connect(m_watcher.get(), &FileWatcher::fileChanged, this, [=](const QString &uri){
                 auto index = m_model->indexFromUri(uri);
                 if (index.isValid()) {
                     auto infoJob = new FileInfoJob(FileInfo::fromUri(index.data(FileItemModel::UriRole).toString()));
@@ -264,19 +262,19 @@ void FileItem::findChildrenAsync()
                     infoJob->queryAsync();
                 }
             });
-            connect(m_watcher, &FileWatcher::directoryDeleted, this, [=](QString uri){
+            connect(m_watcher.get(), &FileWatcher::directoryDeleted, this, [=](QString uri){
                 //clean all the children, if item index is root index, cd up.
                 //this might use FileItemModel::setRootItem()
                 Q_EMIT this->deleted(uri);
                 this->onDeleted(uri);
             });
-            connect(m_watcher, &FileWatcher::locationChanged, this, [=](QString oldUri, QString newUri){
+            connect(m_watcher.get(), &FileWatcher::locationChanged, this, [=](QString oldUri, QString newUri){
                 //this might use FileItemModel::setRootItem()
                 Q_EMIT this->renamed(oldUri, newUri);
                 this->onRenamed(oldUri, newUri);
             });
 
-            connect(m_watcher, &FileWatcher::directoryUnmounted, this, [=](){
+            connect(m_watcher.get(), &FileWatcher::directoryUnmounted, this, [=](){
                 m_model->setRootUri("computer:///");
             });
             //qDebug()<<"startMonitor";
@@ -418,6 +416,6 @@ void FileItem::clearChildren()
     }
     m_children->clear();
     m_expanded = false;
-    delete m_watcher;
+    m_watcher.reset();
     m_watcher = nullptr;
 }

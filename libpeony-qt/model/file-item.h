@@ -122,7 +122,7 @@ private:
 
     bool m_expanded = false;
 
-    FileWatcher *m_watcher = nullptr;
+    std::shared_ptr<FileWatcher> m_watcher = nullptr;
 
     /*!
      * \brief m_async_count

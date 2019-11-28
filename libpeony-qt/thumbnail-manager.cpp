@@ -38,7 +38,7 @@ ThumbnailManager *ThumbnailManager::getInstance()
     return global_instance;
 }
 
-void ThumbnailManager::createThumbnail(const QString &uri, FileWatcher *watcher)
+void ThumbnailManager::createThumbnail(const QString &uri, std::shared_ptr<FileWatcher> watcher)
 {
     //qDebug()<<"create thumbnail"<<uri;
     //NOTE: we should do createThumbnail() after we have queried the file's info.
@@ -56,16 +56,16 @@ void ThumbnailManager::createThumbnail(const QString &uri, FileWatcher *watcher)
                 thumbnail.addFile(url.path());
                 if (!thumbnail.isNull()) {
                     //add lock
-                    m_mutex.lock();
+                    //m_mutex.lock();
                     m_hash.remove(uri);
                     m_hash.insert(uri, thumbnail);
                     auto info = FileInfo::fromUri(uri);
-                    Q_EMIT info->updated();
+                    //Q_EMIT info->updated();
                     if (watcher) {
                         watcher->fileChanged(uri);
                     }
                     //info->setThumbnail(thumbnail);
-                    m_mutex.unlock();
+                    //m_mutex.unlock();
                 }
             });
         } else if (info->isDesktopFile()) {
@@ -76,6 +76,11 @@ void ThumbnailManager::createThumbnail(const QString &uri, FileWatcher *watcher)
             QtConcurrent::run([=]() {
                 QIcon thumbnail;
                 QUrl url = uri;
+                qDebug()<<url;
+                if (!info->uri().startsWith("file:///")) {
+                    url = FileUtils::getTargetUri(info->uri());
+                    qDebug()<<url;
+                }
 
                 auto _desktop_file = g_desktop_app_info_new_from_filename(url.path().toUtf8().constData());
                 auto _icon_string = g_desktop_app_info_get_string(_desktop_file, "Icon");
@@ -91,16 +96,16 @@ void ThumbnailManager::createThumbnail(const QString &uri, FileWatcher *watcher)
 
                 if (!thumbnail.isNull()) {
                     //add lock
-                    m_mutex.lock();
+                    //m_mutex.lock();
                     m_hash.remove(uri);
                     m_hash.insert(uri, thumbnail);
                     auto info = FileInfo::fromUri(uri);
-                    Q_EMIT info->updated();
+                    //Q_EMIT info->updated();
                     if (watcher) {
                         watcher->fileChanged(uri);
                     }
                     //info->setThumbnail(thumbnail);
-                    m_mutex.unlock();
+                    //m_mutex.unlock();
                 }
             });
         }
@@ -109,15 +114,15 @@ void ThumbnailManager::createThumbnail(const QString &uri, FileWatcher *watcher)
 
 void ThumbnailManager::releaseThumbnail(const QString &uri)
 {
-    m_mutex.lock();
+    //m_mutex.lock();
     m_hash.remove(uri);
-    m_mutex.unlock();
+    //m_mutex.unlock();
 }
 
 const QIcon ThumbnailManager::tryGetThumbnail(const QString &uri)
 {
-    m_mutex.lock();
+    //m_mutex.lock();
     auto icon = m_hash.value(uri);
-    m_mutex.unlock();
+    //m_mutex.unlock();
     return icon;
 }
