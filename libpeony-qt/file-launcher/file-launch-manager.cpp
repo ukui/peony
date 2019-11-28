@@ -122,14 +122,25 @@ const QList<FileLaunchAction*> FileLaunchManager::getAllActions(const QString &u
 
 void FileLaunchManager::openSync(const QString &uri)
 {
-    auto action = getDefaultAction(uri);
+    QString tmp = uri;
+    auto targetUri = FileUtils::getTargetUri(uri);
+    if (targetUri.isNull()) {
+        tmp = targetUri;
+    }
+    auto action = getDefaultAction(tmp);
     action->lauchFileSync();
     action->deleteLater();
 }
 
 void FileLaunchManager::openAsync(const QString &uri)
 {
-    auto action = getDefaultAction(uri);
+    QString tmp = uri;
+    auto targetUri = FileUtils::getTargetUri(uri);
+    if (!targetUri.isNull()) {
+        tmp = targetUri;
+        qDebug()<<"open async"<<targetUri;
+    }
+    auto action = getDefaultAction(tmp);
     action->lauchFileAsync();
     action->deleteLater();
 }
