@@ -165,8 +165,12 @@ QVariant DesktopItemModel::data(const QModelIndex &index, int role) const
     case Qt::DecorationRole: {
         //auto thumbnail = info->thumbnail();
         auto thumbnail = ThumbnailManager::getInstance()->tryGetThumbnail(info->uri());
-        if (!thumbnail.isNull())
+        if (!thumbnail.isNull()) {
+            if (info->uri().endsWith(".desktop") && !info->canExecute()) {
+                return QIcon::fromTheme(info->iconName(), QIcon::fromTheme("text-x-generic"));
+            }
             return thumbnail;
+        }
         return QIcon::fromTheme(info->iconName(), QIcon::fromTheme("text-x-generic"));
     }
     case UriRole:

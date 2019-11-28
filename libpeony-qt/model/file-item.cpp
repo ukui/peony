@@ -176,9 +176,16 @@ void FileItem::findChildrenAsync()
                     infoJob->setAutoDelete();
                     connect(infoJob, &FileInfoJob::queryAsyncFinished, this, [=](){
                         m_model->dataChanged(m_model->indexFromUri(uri), m_model->indexFromUri(uri));
+                        auto info = FileInfo::fromUri(uri);
+                        if (info->isDesktopFile()) {
+                            ThumbnailManager::getInstance()->updateDesktopFileThumbnail(info->uri(), m_watcher);
+                        }
                     });
                     infoJob->queryAsync();
                 }
+            });
+            connect(m_watcher.get(), &FileWatcher::thumbnailUpdated, this, [=](const QString &uri){
+                m_model->dataChanged(m_model->indexFromUri(uri), m_model->indexFromUri(uri));
             });
             connect(m_watcher.get(), &FileWatcher::directoryDeleted, this, [=](QString uri){
                 //clean all the children, if item index is root index, cd up.
@@ -258,9 +265,16 @@ void FileItem::findChildrenAsync()
                     infoJob->setAutoDelete();
                     connect(infoJob, &FileInfoJob::queryAsyncFinished, this, [=](){
                         m_model->dataChanged(m_model->indexFromUri(uri), m_model->indexFromUri(uri));
+                        auto info = FileInfo::fromUri(uri);
+                        if (info->isDesktopFile()) {
+                            ThumbnailManager::getInstance()->updateDesktopFileThumbnail(info->uri(), m_watcher);
+                        }
                     });
                     infoJob->queryAsync();
                 }
+            });
+            connect(m_watcher.get(), &FileWatcher::thumbnailUpdated, this, [=](const QString &uri){
+                m_model->dataChanged(m_model->indexFromUri(uri), m_model->indexFromUri(uri));
             });
             connect(m_watcher.get(), &FileWatcher::directoryDeleted, this, [=](QString uri){
                 //clean all the children, if item index is root index, cd up.

@@ -22,6 +22,7 @@ public:
     bool hasThumbnail(const QString &uri) {return !m_hash.values(uri).isEmpty();}
     void createThumbnail(const QString &uri, std::shared_ptr<FileWatcher> watcher = nullptr);
     void releaseThumbnail(const QString &uri);
+    void updateDesktopFileThumbnail(const QString &uri, std::shared_ptr<FileWatcher> watcher = nullptr);
     const QIcon tryGetThumbnail(const QString &uri);
 
 Q_SIGNALS:

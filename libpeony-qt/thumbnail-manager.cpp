@@ -112,6 +112,57 @@ void ThumbnailManager::createThumbnail(const QString &uri, std::shared_ptr<FileW
     }
 }
 
+void ThumbnailManager::updateDesktopFileThumbnail(const QString &uri, std::shared_ptr<FileWatcher> watcher)
+{
+    auto info = FileInfo::fromUri(uri);
+    if (info->isDesktopFile() && info->canExecute()) {
+        qDebug()<<"is desktop file"<<uri;
+        //get desktop file icon.
+        //async
+        qDebug()<<"desktop file"<<uri;
+        QtConcurrent::run([=]() {
+            QIcon thumbnail;
+            QUrl url = uri;
+            qDebug()<<url;
+            if (!info->uri().startsWith("file:///")) {
+                url = FileUtils::getTargetUri(info->uri());
+                qDebug()<<url;
+            }
+
+            auto _desktop_file = g_desktop_app_info_new_from_filename(url.path().toUtf8().constData());
+            auto _icon_string = g_desktop_app_info_get_string(_desktop_file, "Icon");
+            thumbnail = QIcon::fromTheme(_icon_string);
+            qDebug()<<_icon_string;
+            QString string = _icon_string;
+            if (thumbnail.isNull() && string.startsWith("/")) {
+                qDebug()<<"add file";
+                thumbnail.addFile(_icon_string);
+            }
+            g_free(_icon_string);
+            g_object_unref(_desktop_file);
+
+            if (!thumbnail.isNull()) {
+                //add lock
+                //m_mutex.lock();
+                m_hash.remove(uri);
+                m_hash.insert(uri, thumbnail);
+                auto info = FileInfo::fromUri(uri);
+                //Q_EMIT info->updated();
+                if (watcher) {
+                    watcher->thumbnailUpdated(uri);
+                }
+                //info->setThumbnail(thumbnail);
+                //m_mutex.unlock();
+            }
+        });
+    } else {
+        releaseThumbnail(uri);
+        if (watcher) {
+            watcher->thumbnailUpdated(uri);
+        }
+    }
+}
+
 void ThumbnailManager::releaseThumbnail(const QString &uri)
 {
     //m_mutex.lock();

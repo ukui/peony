@@ -63,6 +63,8 @@ Q_SIGNALS:
     void fileDeleted(const QString &uri);
     void fileChanged(const QString &uri);
 
+    void thumbnailUpdated(const QString &uri);
+
 public Q_SLOTS:
     void cancel();
 

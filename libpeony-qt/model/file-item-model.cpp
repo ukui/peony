@@ -193,6 +193,9 @@ QVariant FileItemModel::data(const QModelIndex &index, int role) const
             */
             auto thumbnail = ThumbnailManager::getInstance()->tryGetThumbnail(item->m_info->uri());
             if (!thumbnail.isNull()) {
+                if (item->m_info->uri().endsWith(".desktop") && !item->m_info->canExecute()) {
+                    return QIcon::fromTheme(item->m_info->iconName(), QIcon::fromTheme("text-x-generic"));
+                }
                 return thumbnail;
             }
             QIcon icon = QIcon::fromTheme(item->m_info->iconName(), QIcon::fromTheme("text-x-generic"));
