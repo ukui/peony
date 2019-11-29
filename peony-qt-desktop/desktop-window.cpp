@@ -4,6 +4,7 @@
 #include "file-info.h"
 #include "file-info-job.h"
 #include "file-launch-manager.h"
+#include "file-operation-utils.h"
 
 #include "desktop-menu.h"
 
@@ -105,8 +106,9 @@ DesktopWindow::DesktopWindow(QScreen *screen, bool is_primary, QWidget *parent)
             if (info->isDir() || info->isVolume() || info->isVirtual()) {
 #if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
                 QProcess p;
+                QUrl url = uri;
                 p.setProgram("peony-qt");
-                p.setArguments(QStringList()<<uri);
+                p.setArguments(QStringList()<<url.toEncoded());
                 p.startDetached();
 #else
                 QProcess p;
@@ -144,6 +146,12 @@ DesktopWindow::DesktopWindow(QScreen *screen, bool is_primary, QWidget *parent)
                 });
             }
             menu.exec(QCursor::pos());
+            auto urisToEdit = menu.urisToEdit();
+            if (urisToEdit.count() == 1) {
+                QTimer::singleShot(100, this, [=](){
+                    m_view->editUri(urisToEdit.first());
+                });
+            }
         });
     });
 
@@ -413,6 +421,24 @@ void DesktopWindow::initShortcut()
         m_view->zoomOut();
     });
     addAction(zoomOutAction);
+
+    QAction *renameAction = new QAction(this);
+    renameAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_E));
+    connect(renameAction, &QAction::triggered, [=](){
+        auto selections = m_view->getSelections();
+        if (selections.count() == 1) {
+            m_view->editUri(selections.first());
+        }
+    });
+    addAction(renameAction);
+
+    QAction *removeAction = new QAction(this);
+    removeAction->setShortcut(QKeySequence(Qt::SHIFT + Qt::Key_Delete));
+    connect(removeAction, &QAction::triggered, [=](){
+        qDebug()<<"delete"<<m_view->getSelections();
+        FileOperationUtils::executeRemoveActionWithDialog(m_view->getSelections());
+    });
+    addAction(removeAction);
 }
 
 void DesktopWindow::availableGeometryChangedProcess(const QRect &geometry)

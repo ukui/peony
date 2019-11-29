@@ -153,7 +153,7 @@ void DesktopIconView::setSortOrder(int sortOrder)
 void DesktopIconView::editUri(const QString &uri)
 {
     clearAllIndexWidgets();
-    edit(m_last_index);
+    edit(m_model->indexFromUri(uri));
 }
 
 void DesktopIconView::editUris(const QStringList uris)

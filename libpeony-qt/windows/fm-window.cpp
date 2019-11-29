@@ -299,20 +299,7 @@ FMWindow::FMWindow(const QString &uri, QWidget *parent) : QMainWindow (parent)
     addAction(deleteAction);
     connect(deleteAction, &QAction::triggered, [=](){
         auto uris = this->getCurrentSelections();
-        int result = 0;
-        if (uris.count() == 1) {
-            result = QMessageBox::question(nullptr, tr("Delete Permanently"), tr("Are you sure that you want to delete %1? "
-                                                                                 "Once you start a deletion, the files deleting will never be "
-                                                                                 "restored again.").arg(uris.first().split("/").last()));
-        } else {
-            result = QMessageBox::question(nullptr, tr("Delete Permanently"), tr("Are you sure that you want to delete these %1 files? "
-                                                                                 "Once you start a deletion, the files deleting will never be "
-                                                                                 "restored again.").arg(uris.count()));
-        }
-
-        if (result == QMessageBox::Yes) {
-            FileOperationUtils::remove(uris);
-        }
+        FileOperationUtils::executeRemoveActionWithDialog(uris);
     });
 
     //menu

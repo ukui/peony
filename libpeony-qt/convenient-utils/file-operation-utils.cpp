@@ -13,6 +13,8 @@
 #include "file-info-job.h"
 #include "file-info.h"
 
+#include <QMessageBox>
+
 using namespace Peony;
 
 FileOperationUtils::FileOperationUtils()
@@ -93,4 +95,25 @@ void FileOperationUtils::create(const QString &destDirUri, const QString &name, 
     auto fileOpMgr = FileOperationManager::getInstance();
     auto createOp = new CreateTemplateOperation(destDirUri, type, name);
     fileOpMgr->startOperation(createOp, true);
+}
+
+void FileOperationUtils::executeRemoveActionWithDialog(const QStringList &uris)
+{
+    if (uris.isEmpty())
+        return;
+
+    int result = 0;
+    if (uris.count() == 1) {
+        result = QMessageBox::question(nullptr, QObject::tr("Delete Permanently"), QObject::tr("Are you sure that you want to delete %1? "
+                                                                                               "Once you start a deletion, the files deleting will never be "
+                                                                                               "restored again.").arg(uris.first().split("/").last()));
+    } else {
+        result = QMessageBox::question(nullptr, QObject::tr("Delete Permanently"), QObject::tr("Are you sure that you want to delete these %1 files? "
+                                                                                               "Once you start a deletion, the files deleting will never be "
+                                                                                               "restored again.").arg(uris.count()));
+    }
+
+    if (result == QMessageBox::Yes) {
+        FileOperationUtils::remove(uris);
+    }
 }

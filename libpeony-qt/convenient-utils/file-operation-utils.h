@@ -26,6 +26,8 @@ public:
     static void restore(const QStringList &urisInTrash);
     static void create(const QString &destDirUri, const QString &name = nullptr, CreateTemplateOperation::Type type = CreateTemplateOperation::EmptyFile);
 
+    static void executeRemoveActionWithDialog(const QStringList &uris);
+
     /*!
      * \brief queryFileInfo
      * \param uri
