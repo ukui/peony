@@ -45,6 +45,8 @@ public:
     void setMetaInfoVariant(const QString &key, const QVariant &value);
     const QVariant getMetaInfoVariant(const QString &key);
 
+    void removeMetaInfo(const QString &key);
+
 private:
     QString m_uri;
     QHash<QString, QVariant> m_meta_hash;

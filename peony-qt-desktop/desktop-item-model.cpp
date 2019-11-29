@@ -27,8 +27,8 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
     auto computer = FileInfo::fromUri("computer:///", true);
     auto personal = FileInfo::fromPath(QStandardPaths::writableLocation(QStandardPaths::HomeLocation), false);
     auto trash = FileInfo::fromUri("trash:///", true);
-    m_files<<computer;
     m_files<<personal;
+    m_files<<computer;
     m_files<<trash;
 
     m_enumerator = new FileEnumerator(this);
@@ -191,6 +191,7 @@ void DesktopItemModel::onEnumerateFinished()
     insertRows(0, m_files.count());
     this->endResetModel();
     for (auto info : m_files) {
+        m_info_query_queue<<info->uri();
         auto job = new FileInfoJob(info);
         connect(job, &FileInfoJob::queryAsyncFinished, [=](bool successed){
             if (successed) {
@@ -203,6 +204,7 @@ void DesktopItemModel::onEnumerateFinished()
         connect(info.get(), &FileInfo::updated, [=](){
             qDebug()<<"info updated"<<info->uri();
             this->dataChanged(this->index(m_files.indexOf(info)), this->index(m_files.indexOf(info)));
+            Q_EMIT this->requestUpdateItemPositions(info->uri());
         });
     }
 

@@ -32,7 +32,8 @@ include(libpeony-qt.pri)
 DESTDIR += $$PWD
 
 unix {
-    target.path = $$[QT_INSTALL_LIBS]
+    #target.path = $$[QT_INSTALL_LIBS]
+    target.path = /usr/lib
     INSTALLS += target
 
     header.path = /usr/include/peony-qt

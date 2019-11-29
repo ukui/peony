@@ -2,6 +2,7 @@
 #define DESKTOPITEMMODEL_H
 
 #include <QAbstractListModel>
+#include <QQueue>
 #include <memory>
 
 namespace Peony {
@@ -47,6 +48,9 @@ public:
 
     Qt::DropActions supportedDropActions() const override;
 
+Q_SIGNALS:
+    void requestUpdateItemPositions(const QString &uri = nullptr);
+
 public Q_SLOTS:
     void refresh();
 
@@ -58,6 +62,8 @@ private:
     QList<std::shared_ptr<FileInfo>> m_files;
     std::shared_ptr<FileWatcher> m_trash_watcher;
     std::shared_ptr<FileWatcher> m_desktop_watcher;
+
+    QQueue<QString> m_info_query_queue;
 };
 
 }

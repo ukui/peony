@@ -13,6 +13,8 @@
 
 #include "desktop-index-widget.h"
 
+#include "file-meta-info.h"
+
 #include <QAction>
 #include <QMouseEvent>
 #include <QDragEnterEvent>
@@ -26,6 +28,8 @@
 #include <QDebug>
 
 using namespace Peony;
+
+#define ITEM_POS_ATTRIBUTE "metadata::peony-qt-desktop-item-posistion"
 
 DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
 {
@@ -90,12 +94,98 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
 
     connect(m_model, &DesktopItemModel::dataChanged, this, &DesktopIconView::clearAllIndexWidgets);
 
+    connect(m_model, &DesktopItemModel::requestUpdateItemPositions, this, &DesktopIconView::updateItemPosistions);
+
     setModel(m_model);
 }
 
 DesktopIconView::~DesktopIconView()
 {
+    saveAllItemPosistionInfos();
+}
 
+/*!
+ * \brief DesktopIconView::saveAllItemPosistionInfos
+ * \bug
+ * 1. there is some offset than an item's real posistion when i setPositionForIndex(), i guess it caused by overrided visualRect();
+ * 2. home dir can not set attribute by default for permission.
+ */
+void DesktopIconView::saveAllItemPosistionInfos()
+{
+    return;
+    //qDebug()<<"======================save";
+    for (int i = 0; i < m_model->rowCount(); i++) {
+        auto index = m_model->index(i);
+        auto indexRect = visualRect(index);
+        QStringList topLeft;
+        topLeft<<QString::number(indexRect.top());
+        topLeft<<QString::number(indexRect.left());
+        auto metaInfo = FileMetaInfo::fromUri(index.data(Qt::UserRole).toString());
+        if (metaInfo)
+            metaInfo->setMetaInfoStringList(ITEM_POS_ATTRIBUTE, topLeft);
+    }
+    //qDebug()<<"======================save finished";
+}
+
+void DesktopIconView::saveItemPositionInfo(const QString &uri)
+{
+    auto index = m_model->indexFromUri(uri);
+    auto indexRect = QListView::visualRect(index);
+    QStringList topLeft;
+    topLeft<<QString::number(indexRect.top());
+    topLeft<<QString::number(indexRect.left());
+    auto metaInfo = FileMetaInfo::fromUri(index.data(Qt::UserRole).toString());
+    if (metaInfo)
+        metaInfo->setMetaInfoStringList(ITEM_POS_ATTRIBUTE, topLeft);
+}
+
+void DesktopIconView::resetAllItemPositionInfos()
+{
+    for (int i = 0; i < m_model->rowCount(); i++) {
+        auto index = m_model->index(i);
+        auto indexRect = visualRect(index);
+        QStringList topLeft;
+        topLeft<<QString::number(indexRect.top());
+        topLeft<<QString::number(indexRect.left());
+        auto metaInfo = FileMetaInfo::fromUri(index.data(Qt::UserRole).toString());
+        if (metaInfo) {
+            QStringList tmp;
+            tmp<<"-1"<<"-1";
+            metaInfo->setMetaInfoStringList(ITEM_POS_ATTRIBUTE, tmp);
+        }
+    }
+}
+
+void DesktopIconView::resetItemPosistionInfo(const QString &uri)
+{
+    auto metaInfo = FileMetaInfo::fromUri(uri);
+    if (metaInfo)
+        metaInfo->removeMetaInfo(ITEM_POS_ATTRIBUTE);
+}
+
+void DesktopIconView::updateItemPosistions(const QString &uri)
+{
+    auto index = m_model->indexFromUri(uri);
+    if (!index.isValid())
+        return;
+    auto metaInfo = FileMetaInfo::fromUri(index.data(Qt::UserRole).toString());
+    if (!metaInfo)
+        return;
+
+    auto list = metaInfo->getMetaInfoStringList(ITEM_POS_ATTRIBUTE);
+    if (!list.isEmpty()) {
+        if (list.count() == 2) {
+            int top = list.first().toInt();
+            int left = list.at(1).toInt();
+            if (top > 0 && left > 0) {
+//                auto rect = visualRect(index);
+//                auto grid = gridSize();
+//                if (abs(rect.top() - top) < grid.width() && abs(rect.left() - left))
+//                    return;
+                setPositionForIndex(QPoint(left, top), index);
+            }
+        }
+    }
 }
 
 const QStringList DesktopIconView::getSelections()
@@ -198,6 +288,7 @@ void DesktopIconView::zoomOut()
     default:
         break;
     }
+    resetAllItemPositionInfos();
 }
 
 void DesktopIconView::zoomIn()
@@ -215,6 +306,7 @@ void DesktopIconView::zoomIn()
     default:
         break;
     }
+    resetAllItemPositionInfos();
 }
 
 /*
@@ -337,7 +429,23 @@ void DesktopIconView::dropEvent(QDropEvent *e)
       */
     m_edit_trigger_timer.stop();
     if (this == e->source()) {
-        return QListView::dropEvent(e);
+
+        auto index = indexAt(e->pos());
+        if (index.isValid()) {
+            auto info = FileInfo::fromUri(index.data(Qt::UserRole).toString());
+            if (!info->isDir())
+                return;
+        }
+
+        QListView::dropEvent(e);
+
+        auto urls = e->mimeData()->urls();
+        for (auto url : urls) {
+            if (url.path() == QStandardPaths::writableLocation(QStandardPaths::HomeLocation))
+                continue;
+            saveItemPositionInfo(url.toDisplayString());
+        }
+        return;
     }
     m_model->dropMimeData(e->mimeData(), Qt::MoveAction, -1, -1, this->indexAt(e->pos()));
     //FIXME: save item position

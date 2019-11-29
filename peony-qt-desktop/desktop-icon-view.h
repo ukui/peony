@@ -111,6 +111,13 @@ public Q_SLOTS:
 
     void refresh();
 
+    void saveAllItemPosistionInfos();
+    void saveItemPositionInfo(const QString &uri);
+    void resetAllItemPositionInfos();
+    void resetItemPosistionInfo(const QString &uri);
+
+    void updateItemPosistions(const QString &uri);
+
 protected:
     void mousePressEvent(QMouseEvent *e);
     void mouseReleaseEvent(QMouseEvent *e);

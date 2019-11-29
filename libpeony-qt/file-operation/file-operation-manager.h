@@ -185,7 +185,7 @@ private:
     //FIXME: if files in different src dir, how to deal with it?
     QStringList m_dest_uris;
     QString m_src_dir_uri;
-    QMutex m_mutex;
+    //QMutex m_mutex;
 
     Type m_type;
     Type m_opposite_type;

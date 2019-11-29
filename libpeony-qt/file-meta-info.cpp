@@ -58,13 +58,17 @@ void FileMetaInfo::setMetaInfoStringList(const QString &key, const QStringList &
 void FileMetaInfo::setMetaInfoVariant(const QString &key, const QVariant &value)
 {
     m_mutex.lock();
-    auto realKey = "metadata::" + key;
-    m_meta_hash.remove(key);
-    m_meta_hash.insert(key, value);
+    QString realKey = key;
+    if (!key.startsWith("metadata::"))
+        realKey = "metadata::" + key;
+
+    m_meta_hash.remove(realKey);
+    m_meta_hash.insert(realKey, value);
     GFile *file = g_file_new_for_uri(m_uri.toUtf8().constData());
     GFileInfo *info = g_file_info_new();
     std::string tmp = realKey.toStdString();
-    g_file_info_set_attribute(info, tmp.c_str(), G_FILE_ATTRIBUTE_TYPE_INVALID, (gpointer)value.data());
+    auto data = value.toString().toUtf8().data();
+    g_file_info_set_attribute(info, tmp.c_str(), G_FILE_ATTRIBUTE_TYPE_STRING, (gpointer)data);
     //FIXME: should i add callback?
     g_file_set_attributes_async(file,
                                 info,
@@ -73,6 +77,15 @@ void FileMetaInfo::setMetaInfoVariant(const QString &key, const QVariant &value)
                                 nullptr,
                                 nullptr,
                                 nullptr);
+    //qDebug()<<tmp.c_str()<<value;
+    GError *err = nullptr;
+    g_file_set_attribute(file, tmp.c_str(), G_FILE_ATTRIBUTE_TYPE_STRING, (gpointer)data,
+                         G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, nullptr, &err);
+
+    if (err) {
+        qDebug()<<err->message;
+        g_error_free(err);
+    }
     g_object_unref(info);
     g_object_unref(file);
     m_mutex.unlock();
@@ -80,8 +93,11 @@ void FileMetaInfo::setMetaInfoVariant(const QString &key, const QVariant &value)
 
 const QVariant FileMetaInfo::getMetaInfoVariant(const QString &key)
 {
-    if (m_meta_hash.value(key).isValid())
-        return m_meta_hash.value(key);
+    QString realKey = key;
+    if (!key.startsWith("metadata::"))
+        realKey = "metadata::" + key;
+    if (m_meta_hash.value(realKey).isValid())
+        return m_meta_hash.value(realKey);
     //FIXME: should i use gio query meta here?
     return QVariant();
 }
@@ -99,4 +115,29 @@ const QStringList FileMetaInfo::getMetaInfoStringList(const QString &key)
 int FileMetaInfo::getMetaInfoInt(const QString &key)
 {
     return getMetaInfoVariant(key).toString().toInt();
+}
+
+void FileMetaInfo::removeMetaInfo(const QString &key)
+{
+    m_mutex.lock();
+    QString realKey = key;
+    if (!key.startsWith("metadata::"))
+        realKey = "metadata::" + key;
+    m_meta_hash.remove(realKey);
+    GFile *file = g_file_new_for_uri(m_uri.toUtf8().constData());
+    GFileInfo *info = g_file_info_new();
+    std::string tmp = realKey.toStdString();
+    g_file_info_set_attribute(info, tmp.c_str(), G_FILE_ATTRIBUTE_TYPE_STRING, nullptr);
+    g_file_info_remove_attribute(info, tmp.c_str());
+    //FIXME: should i add callback?
+    g_file_set_attributes_async(file,
+                                info,
+                                G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
+                                0,
+                                nullptr,
+                                nullptr,
+                                nullptr);
+    g_object_unref(info);
+    g_object_unref(file);
+    m_mutex.unlock();
 }
