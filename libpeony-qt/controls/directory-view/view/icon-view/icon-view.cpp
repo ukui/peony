@@ -431,4 +431,10 @@ void IconView2::bindModel(FileItemModel *model, FileItemProxyFilterSortModel *pr
     });
 }
 
+void IconView2::repaintView()
+{
+    m_view->update();
+    m_view->viewport()->update();
+}
+
 

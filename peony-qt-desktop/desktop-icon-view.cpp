@@ -29,6 +29,10 @@ using namespace Peony;
 
 DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
 {
+    connect(qApp, &QApplication::paletteChanged, this, [=](){
+        viewport()->update();
+    });
+
     m_edit_trigger_timer.setSingleShot(true);
     m_last_index = QModelIndex();
 

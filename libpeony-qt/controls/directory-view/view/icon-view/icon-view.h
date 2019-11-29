@@ -176,6 +176,8 @@ public Q_SLOTS:
     void editUri(const QString &uri) {m_view->editUri(uri);}
     void editUris(const QStringList uris) {m_view->editUris(uris);}
 
+    void repaintView();
+
 private:
     IconView *m_view = nullptr;
     FileItemModel *m_model = nullptr;

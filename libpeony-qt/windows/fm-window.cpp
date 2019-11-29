@@ -47,11 +47,23 @@
 
 #include <QKeyEvent>
 
+#include <QApplication>
+
 using namespace Peony;
 
 FMWindow::FMWindow(const QString &uri, QWidget *parent) : QMainWindow (parent)
 {
     m_operation_minimum_interval.setSingleShot(true);
+
+    connect(qApp, &QApplication::paletteChanged, this, [=](){
+        this->repaint();
+        for (auto child : this->children()) {
+            QWidget *widget = qobject_cast<QWidget*>(child);
+            if (widget) {
+                widget->repaint();
+            }
+        }
+    });
 
     //setStyleSheet(".Peony--FMWindow::separator{border:0; padding:0}");
     setAttribute(Qt::WA_DeleteOnClose);

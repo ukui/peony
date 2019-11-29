@@ -8,12 +8,19 @@
 #include <QTimer>
 #include <QPainter>
 
+#include <QApplication>
+
 #include <QDebug>
 
 using namespace Peony;
 
 SideBar::SideBar(QWidget *parent) : QTreeView(parent)
 {
+    connect(qApp, &QApplication::paletteChanged, this, [=](){
+        this->update();
+        this->viewport()->update();
+    });
+
     setIndentation(15);
     setSelectionBehavior(QTreeView::SelectRows);
     setContentsMargins(0, 0, 0, 0);

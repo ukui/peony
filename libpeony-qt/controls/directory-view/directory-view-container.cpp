@@ -13,6 +13,8 @@
 #include <QVBoxLayout>
 #include <QAction>
 
+#include <QApplication>
+
 using namespace Peony;
 
 DirectoryViewContainer::DirectoryViewContainer(QWidget *parent) : QWidget(parent)
@@ -186,6 +188,7 @@ void DirectoryViewContainer::switchViewType(const QString &viewId)
     }
     auto view = factory->create();
     m_view = view;
+    view->setParent(this);
     //connect the view's signal.
     view->bindModel(m_model, m_proxy_model);
     //view->setProxy(m_proxy);

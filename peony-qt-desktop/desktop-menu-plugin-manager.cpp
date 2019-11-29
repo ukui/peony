@@ -1,8 +1,12 @@
 #include "desktop-menu-plugin-manager.h"
 
+#include "style-plugin-iface.h"
+
 #include <QDir>
 #include <QPluginLoader>
 #include <QtConcurrent>
+#include <QApplication>
+#include <QProxyStyle>
 
 #include <QDebug>
 
@@ -27,10 +31,23 @@ DesktopMenuPluginManager::~DesktopMenuPluginManager()
 
 void DesktopMenuPluginManager::loadAsync()
 {
-    QtConcurrent::run([=](){
-        QDir pluginsDir("/usr/lib/peony-qt-extensions");
-        pluginsDir.setFilter(QDir::Files);
+    qDebug()<<"test start";
+    QDir pluginsDir("/usr/lib/peony-qt-extensions");
+    pluginsDir.setFilter(QDir::Files);
+    Q_FOREACH(QString fileName, pluginsDir.entryList(QDir::Files)) {
+        QPluginLoader pluginLoader(pluginsDir.absoluteFilePath(fileName));
+        QObject *plugin = pluginLoader.instance();
+        if (!plugin)
+            continue;
 
+        StylePluginIface *splugin = dynamic_cast<StylePluginIface*>(plugin);
+        if (splugin) {
+            QApplication::setStyle(splugin->getStyle());
+            break;
+        }
+    }
+
+    QtConcurrent::run([=](){
         qDebug()<<pluginsDir.entryList().count();
         Q_FOREACH(QString fileName, pluginsDir.entryList(QDir::Files)) {
             qDebug()<<fileName;
@@ -41,7 +58,7 @@ void DesktopMenuPluginManager::loadAsync()
             QObject *plugin = pluginLoader.instance();
             if (!plugin)
                 continue;
-            qDebug()<<"test start";
+
             MenuPluginInterface *piface = dynamic_cast<MenuPluginInterface*>(plugin);
             if (!piface)
                 continue;

@@ -86,6 +86,8 @@ public Q_SLOTS:
 
     virtual void editUri(const QString &uri) {}
     virtual void editUris(const QStringList uris) {}
+
+    virtual void repaintView() {}
 };
 
 }
