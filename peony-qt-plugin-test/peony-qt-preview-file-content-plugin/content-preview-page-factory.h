@@ -35,7 +35,7 @@ public:
     PluginInterface::PluginType pluginType() override {return PluginInterface::PreviewPagePlugin;}
     const QString name() override {return "Preview Page Plugin";}
     const QString description() override {return "This plugin is a factory plugin providing the content preview page for FMWindow";}
-    const QIcon icon() override {return QIcon::fromTheme("edit-find-symbolic");}
+    const QIcon icon() override {return QIcon::fromTheme("ukui-preview-file-details");}
     void setEnable(bool enable) override {m_enable = enable;}
     bool isEnable() override {return m_enable;}
 
