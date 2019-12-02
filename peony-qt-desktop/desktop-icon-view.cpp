@@ -165,6 +165,21 @@ void DesktopIconView::resetItemPosistionInfo(const QString &uri)
 
 void DesktopIconView::updateItemPosistions(const QString &uri)
 {
+    if (uri.isNull()) {
+        for (int i = 0; i < m_model->rowCount(); i++) {
+            auto index = m_model->index(i);
+            auto indexRect = visualRect(index);
+            QStringList topLeft;
+            topLeft<<QString::number(indexRect.top());
+            topLeft<<QString::number(indexRect.left());
+            auto metaInfo = FileMetaInfo::fromUri(index.data(Qt::UserRole).toString());
+            if (metaInfo) {
+                updateItemPosistions(index.data(Qt::UserRole).toString());
+            }
+        }
+        return;
+    }
+
     auto index = m_model->indexFromUri(uri);
     if (!index.isValid())
         return;
@@ -182,7 +197,11 @@ void DesktopIconView::updateItemPosistions(const QString &uri)
 //                auto grid = gridSize();
 //                if (abs(rect.top() - top) < grid.width() && abs(rect.left() - left))
 //                    return;
-                setPositionForIndex(QPoint(left, top), index);
+                QPoint p(left, top);
+                if (!indexAt(p).isValid())
+                    setPositionForIndex(QPoint(left, top), index);
+            } else {
+                saveItemPositionInfo(uri);
             }
         }
     }

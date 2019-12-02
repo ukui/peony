@@ -11,6 +11,8 @@
 
 #include "thumbnail-manager.h"
 
+#include "file-meta-info.h"
+
 #include <QStandardPaths>
 #include <QIcon>
 
@@ -76,10 +78,11 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
         }
 
         auto job = new FileInfoJob(info);
+        job->setAutoDelete();
         connect(job, &FileInfoJob::infoUpdated, [=](){
             this->dataChanged(this->index(m_files.indexOf(info)), this->index(m_files.indexOf(info)));
-            job->deleteLater();
             ThumbnailManager::getInstance()->createThumbnail(info->uri(), m_desktop_watcher);
+            Q_EMIT this->requestUpdateItemPositions();
         });
         job->queryAsync();
     });
@@ -91,6 +94,7 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
                 this->removeRows(m_files.indexOf(info), 1);
                 m_files.removeOne(info);
                 FileInfoManager::getInstance()->remove(info);
+                Q_EMIT this->requestUpdateItemPositions();
                 return;
             }
         }
@@ -104,6 +108,7 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
                     this->dataChanged(indexFromUri(uri), indexFromUri(uri));
                 });
                 job->queryAsync();
+                this->dataChanged(indexFromUri(uri), indexFromUri(uri));
                 return;
             }
         }
