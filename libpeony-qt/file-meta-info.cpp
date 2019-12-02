@@ -57,7 +57,10 @@ void FileMetaInfo::setMetaInfoStringList(const QString &key, const QStringList &
 
 void FileMetaInfo::setMetaInfoVariant(const QString &key, const QVariant &value)
 {
-    m_mutex.lock();
+    if (!m_mutex.tryLock()) {
+        return;
+    }
+
     QString realKey = key;
     if (!key.startsWith("metadata::"))
         realKey = "metadata::" + key;
@@ -119,7 +122,10 @@ int FileMetaInfo::getMetaInfoInt(const QString &key)
 
 void FileMetaInfo::removeMetaInfo(const QString &key)
 {
-    m_mutex.lock();
+    if (!m_mutex.tryLock()) {
+        return;
+    }
+
     QString realKey = key;
     if (!key.startsWith("metadata::"))
         realKey = "metadata::" + key;

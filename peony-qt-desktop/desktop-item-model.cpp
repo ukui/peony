@@ -79,7 +79,7 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
 
         auto job = new FileInfoJob(info);
         job->setAutoDelete();
-        connect(job, &FileInfoJob::infoUpdated, [=](){
+        connect(job, &FileInfoJob::queryAsyncFinished, [=](){
             this->dataChanged(this->index(m_files.indexOf(info)), this->index(m_files.indexOf(info)));
             ThumbnailManager::getInstance()->createThumbnail(info->uri(), m_desktop_watcher);
             Q_EMIT this->requestUpdateItemPositions();

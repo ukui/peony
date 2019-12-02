@@ -145,7 +145,9 @@ void FileInfoJob::queryAsync()
 
 void FileInfoJob::refreshInfoContents(GFileInfo *new_info)
 {
-    m_info->m_mutex.lock();
+    if (!m_info->m_mutex.tryLock())
+        return;
+
     FileInfo *info = nullptr;
     if (auto data = m_info) {
         info = data.get();

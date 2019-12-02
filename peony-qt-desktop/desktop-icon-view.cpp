@@ -351,18 +351,33 @@ void DesktopIconView::setDeafultZoomLevel(ZoomLevel level)
         setGridSize(QSize(140, 170));
         break;
     default:
-        //Normal
+        m_zoom_level = Normal;
         setIconSize(QSize(48, 48));
         setGridSize(QSize(96, 96));
         break;
     }
     clearAllIndexWidgets();
+    auto metaInfo = FileMetaInfo::fromUri("computer:///");
+    if (metaInfo)
+        metaInfo->setMetaInfoInt("peony-qt-desktop-zoom-level", int(m_zoom_level));
 }
 
 DesktopIconView::ZoomLevel DesktopIconView::zoomLevel()
 {
     //FIXME:
-    return m_zoom_level != Invalid? m_zoom_level: Normal;
+    if (m_zoom_level != Invalid)
+        return m_zoom_level;
+
+    GFile *computer = g_file_new_for_uri("computer:///");
+    GFileInfo *info = g_file_query_info(computer,
+                                        "metadata::peony-qt-desktop-zoom-level",
+                                        G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
+                                        nullptr,
+                                        nullptr);
+    const char* zoom_level = g_file_info_get_attribute_as_string(info, "metadata::peony-qt-desktop-zoom-level");
+    g_object_unref(info);
+    g_object_unref(computer);
+    return ZoomLevel(QString(zoom_level).toInt()) == Invalid? Normal: ZoomLevel(QString(zoom_level).toInt());
 }
 
 void DesktopIconView::mousePressEvent(QMouseEvent *e)
