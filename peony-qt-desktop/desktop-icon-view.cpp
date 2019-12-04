@@ -4,6 +4,7 @@
 #include "desktop-icon-view-delegate.h"
 
 #include "desktop-item-model.h"
+#include "desktop-item-proxy-model.h"
 
 #include "file-operation-manager.h"
 #include "file-move-operation.h"
@@ -29,7 +30,7 @@
 
 using namespace Peony;
 
-#define ITEM_POS_ATTRIBUTE "metadata::peony-qt-desktop-item-posistion"
+#define ITEM_POS_ATTRIBUTE "metadata::peony-qt-desktop-item-position"
 
 DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
 {
@@ -67,9 +68,9 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
     setSelectionMode(QListView::ExtendedSelection);
 
     auto zoomLevel = this->zoomLevel();
-    setDeafultZoomLevel(zoomLevel);
+    setDefaultZoomLevel(zoomLevel);
 
-    QTimer::singleShot(1, [=](){
+    QTimer::singleShot(1, this, [=](){
         connect(this->selectionModel(), &QItemSelectionModel::selectionChanged, [=](const QItemSelection &selection, const QItemSelection &deselection){
             //qDebug()<<"selection changed";
             this->setIndexWidget(m_last_index, nullptr);
@@ -77,7 +78,7 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
             auto currentSelections = this->selectionModel()->selection().indexes();
 
             if (currentSelections.count() == 1) {
-                qDebug()<<"set index widget";
+                //qDebug()<<"set index widget";
                 m_last_index = currentSelections.first();
                 auto delegate = qobject_cast<DesktopIconViewDelegate *>(itemDelegate());
                 this->setIndexWidget(m_last_index, new DesktopIndexWidget(delegate, viewOptions(), m_last_index, this));
@@ -91,59 +92,135 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
     });
 
     m_model = new DesktopItemModel(this);
+    m_proxy_model = new DesktopItemProxyModel(m_model);
+
+    m_proxy_model->setSourceModel(m_model);
 
     connect(m_model, &DesktopItemModel::dataChanged, this, &DesktopIconView::clearAllIndexWidgets);
 
+    connect(m_model, &DesktopItemModel::refreshed, this, [=](){
+        this->updateItemPosistions(nullptr);
+    });
+
+    connect(m_model, &DesktopItemModel::requestClearIndexWidget, this, &DesktopIconView::clearAllIndexWidgets);
+
+    connect(m_model, &DesktopItemModel::requestLayoutNewItem, this, [=](const QString &uri){
+        auto index = m_proxy_model->mapFromSource(m_model->indexFromUri(uri));
+        //qDebug()<<"=====================layout new item"<<index.data();
+        bool isOverlapping = false;
+        for (int i = 0; i < m_proxy_model->rowCount(); i++) {
+            auto other = m_proxy_model->index(i, 0);
+            if (index == other)
+                continue;
+            if (this->visualRect(index) == this->visualRect(other)) {
+                isOverlapping = true;
+                break;
+            }
+        }
+
+        if (isOverlapping) {
+            //qDebug()<<"=====================find a new empty place put new item";
+            bool find = false;
+            auto rect = this->QListView::visualRect(index);
+            auto grid = this->gridSize();
+            auto viewRect = this->rect();
+            auto next = rect;
+            while (!find) {
+                next.translate(0, grid.height());
+                if (next.bottom() > viewRect.bottom()) {
+                    //put item to next column first column
+                    next.translate(grid.width(), 0);
+                    auto tmp = next;
+                    int row_count_to_move = 0;
+                    while (tmp.top() > 0) {
+                        tmp.translate(0, -grid.height());
+                        row_count_to_move++;
+                    }
+                    next = tmp.translated(0, grid.height());
+                }
+                if (!this->indexAt(next.center()).isValid()) {
+                    find = true;
+                    //put it into empty
+                    qDebug()<<"put"<<index.data()<<next.topLeft();
+                    this->setPositionForIndex(next.topLeft(), index);
+                    this->saveItemPositionInfo(uri);
+                }
+            }
+        }
+    });
+
     connect(m_model, &DesktopItemModel::requestUpdateItemPositions, this, &DesktopIconView::updateItemPosistions);
 
-    setModel(m_model);
+    connect(m_proxy_model, &QSortFilterProxyModel::layoutChanged, this, [=](){
+        //qDebug()<<"layout changed=========================\n\n\n\n\n";
+        if (m_proxy_model->getSortType() == DesktopItemProxyModel::Other) {
+            return;
+        }
+        if (m_proxy_model->sortColumn() != 0) {
+            return;
+        }
+        //qDebug()<<"save====================================";
+        QTimer::singleShot(100, this, [=](){
+            this->saveAllItemPosistionInfos();
+        });
+    });
+
+    connect(this, &QListView::iconSizeChanged, this, [=](){
+        //qDebug()<<"save=============";
+        QTimer::singleShot(100, this, [=](){
+            this->saveAllItemPosistionInfos();
+        });
+    });
+
+    setModel(m_proxy_model);
+    //m_proxy_model->sort(0);
+
+    m_model->refresh();
 }
 
 DesktopIconView::~DesktopIconView()
 {
-    saveAllItemPosistionInfos();
+    //saveAllItemPosistionInfos();
 }
 
-/*!
- * \brief DesktopIconView::saveAllItemPosistionInfos
- * \bug
- * 1. there is some offset than an item's real posistion when i setPositionForIndex(), i guess it caused by overrided visualRect();
- * 2. home dir can not set attribute by default for permission.
- */
 void DesktopIconView::saveAllItemPosistionInfos()
 {
-    return;
     //qDebug()<<"======================save";
-    for (int i = 0; i < m_model->rowCount(); i++) {
-        auto index = m_model->index(i);
-        auto indexRect = visualRect(index);
+    for (int i = 0; i < m_proxy_model->rowCount(); i++) {
+        auto index = m_proxy_model->index(i, 0);
+        auto indexRect = QListView::visualRect(index);
         QStringList topLeft;
         topLeft<<QString::number(indexRect.top());
         topLeft<<QString::number(indexRect.left());
+
         auto metaInfo = FileMetaInfo::fromUri(index.data(Qt::UserRole).toString());
-        if (metaInfo)
+        if (metaInfo) {
+            //qDebug()<<"save real"<<index.data()<<topLeft;
             metaInfo->setMetaInfoStringList(ITEM_POS_ATTRIBUTE, topLeft);
+        }
     }
     //qDebug()<<"======================save finished";
 }
 
 void DesktopIconView::saveItemPositionInfo(const QString &uri)
 {
-    auto index = m_model->indexFromUri(uri);
+    auto index = m_proxy_model->mapFromSource(m_model->indexFromUri(uri));
     auto indexRect = QListView::visualRect(index);
     QStringList topLeft;
     topLeft<<QString::number(indexRect.top());
     topLeft<<QString::number(indexRect.left());
     auto metaInfo = FileMetaInfo::fromUri(index.data(Qt::UserRole).toString());
-    if (metaInfo)
+    if (metaInfo) {
+        //qDebug()<<"save"<<uri<<topLeft;
         metaInfo->setMetaInfoStringList(ITEM_POS_ATTRIBUTE, topLeft);
+    }
 }
 
 void DesktopIconView::resetAllItemPositionInfos()
 {
-    for (int i = 0; i < m_model->rowCount(); i++) {
-        auto index = m_model->index(i);
-        auto indexRect = visualRect(index);
+    for (int i = 0; i < m_proxy_model->rowCount(); i++) {
+        auto index = m_proxy_model->index(i, 0);
+        auto indexRect = QListView::visualRect(index);
         QStringList topLeft;
         topLeft<<QString::number(indexRect.top());
         topLeft<<QString::number(indexRect.left());
@@ -166,12 +243,8 @@ void DesktopIconView::resetItemPosistionInfo(const QString &uri)
 void DesktopIconView::updateItemPosistions(const QString &uri)
 {
     if (uri.isNull()) {
-        for (int i = 0; i < m_model->rowCount(); i++) {
-            auto index = m_model->index(i);
-            auto indexRect = visualRect(index);
-            QStringList topLeft;
-            topLeft<<QString::number(indexRect.top());
-            topLeft<<QString::number(indexRect.left());
+        for (int i = 0; i < m_proxy_model->rowCount(); i++) {
+            auto index = m_proxy_model->index(i, 0);
             auto metaInfo = FileMetaInfo::fromUri(index.data(Qt::UserRole).toString());
             if (metaInfo) {
                 updateItemPosistions(index.data(Qt::UserRole).toString());
@@ -180,26 +253,32 @@ void DesktopIconView::updateItemPosistions(const QString &uri)
         return;
     }
 
-    auto index = m_model->indexFromUri(uri);
-    if (!index.isValid())
+    auto index = m_proxy_model->mapFromSource(m_model->indexFromUri(uri));
+    //qDebug()<<"update"<<uri<<index.data();
+
+    if (!index.isValid()) {
+        //qDebug()<<"err: index invalid";
         return;
-    auto metaInfo = FileMetaInfo::fromUri(index.data(Qt::UserRole).toString());
-    if (!metaInfo)
+    }
+    auto metaInfo = FileMetaInfo::fromUri(uri);
+    if (!metaInfo) {
+        //qDebug()<<"err: no meta data";
         return;
+    }
 
     auto list = metaInfo->getMetaInfoStringList(ITEM_POS_ATTRIBUTE);
     if (!list.isEmpty()) {
         if (list.count() == 2) {
             int top = list.first().toInt();
             int left = list.at(1).toInt();
-            if (top > 0 && left > 0) {
+            if (top >= 0 && left >= 0) {
 //                auto rect = visualRect(index);
 //                auto grid = gridSize();
 //                if (abs(rect.top() - top) < grid.width() && abs(rect.left() - left))
 //                    return;
                 QPoint p(left, top);
-                if (!indexAt(p).isValid())
-                    setPositionForIndex(QPoint(left, top), index);
+                //qDebug()<<"set"<<index.data()<<p;
+                setPositionForIndex(QPoint(left, top), index);
             } else {
                 saveItemPositionInfo(uri);
             }
@@ -239,30 +318,33 @@ void DesktopIconView::scrollToSelection(const QString &uri)
 
 int DesktopIconView::getSortType()
 {
-    //FIXME:
-    return 0;
+    return m_proxy_model->getSortType();
 }
 
 void DesktopIconView::setSortType(int sortType)
 {
-
+    //resetAllItemPositionInfos();
+    m_proxy_model->setSortType(sortType);
+    m_proxy_model->sort(1);
+    m_proxy_model->sort(0, m_proxy_model->sortOrder());
 }
 
 int DesktopIconView::getSortOrder()
 {
-    //FIXME:
-    return Qt::AscendingOrder;
+    return m_proxy_model->sortOrder();
 }
 
 void DesktopIconView::setSortOrder(int sortOrder)
 {
-
+    m_proxy_model->sort(0, Qt::SortOrder(sortOrder));
 }
 
 void DesktopIconView::editUri(const QString &uri)
 {
     clearAllIndexWidgets();
-    edit(m_model->indexFromUri(uri));
+    QTimer::singleShot(100, this, [=](){
+        edit(m_proxy_model->mapFromSource(m_model->indexFromUri(uri)));
+    });
 }
 
 void DesktopIconView::editUris(const QStringList uris)
@@ -289,43 +371,44 @@ void DesktopIconView::wheelEvent(QWheelEvent *e)
        } else {
            zoomOut();
        }
+       resetAllItemPositionInfos();
     }
 }
 
 void DesktopIconView::zoomOut()
 {
-    switch (m_zoom_level) {
+    switch (zoomLevel()) {
     case Huge:
-        setDeafultZoomLevel(Large);
+        setDefaultZoomLevel(Large);
         break;
     case Large:
-        setDeafultZoomLevel(Normal);
+        setDefaultZoomLevel(Normal);
         break;
     case Normal:
-        setDeafultZoomLevel(Small);
+        setDefaultZoomLevel(Small);
         break;
     default:
+        setDefaultZoomLevel(zoomLevel());
         break;
     }
-    resetAllItemPositionInfos();
 }
 
 void DesktopIconView::zoomIn()
 {
-    switch (m_zoom_level) {
+    switch (zoomLevel()) {
     case Small:
-        setDeafultZoomLevel(Normal);
+        setDefaultZoomLevel(Normal);
         break;
     case Normal:
-        setDeafultZoomLevel(Large);
+        setDefaultZoomLevel(Large);
         break;
     case Large:
-        setDeafultZoomLevel(Huge);
+        setDefaultZoomLevel(Huge);
         break;
     default:
+        setDefaultZoomLevel(zoomLevel());
         break;
     }
-    resetAllItemPositionInfos();
 }
 
 /*
@@ -334,7 +417,7 @@ Normal, //icon: 48x48; grid: 64x72; hover rect = 56x64; font: system
 Large, //icon: 64x64; grid: 115x135; hover rect = 105x118; font: system*1.2
 Huge //icon: 96x96; grid: 130x150; hover rect = 120x140; font: system*1.4
 */
-void DesktopIconView::setDeafultZoomLevel(ZoomLevel level)
+void DesktopIconView::setDefaultZoomLevel(ZoomLevel level)
 {
     m_zoom_level = level;
     switch (level) {
@@ -362,7 +445,7 @@ void DesktopIconView::setDeafultZoomLevel(ZoomLevel level)
         metaInfo->setMetaInfoInt("peony-qt-desktop-zoom-level", int(m_zoom_level));
 }
 
-DesktopIconView::ZoomLevel DesktopIconView::zoomLevel()
+DesktopIconView::ZoomLevel DesktopIconView::zoomLevel() const
 {
     //FIXME:
     if (m_zoom_level != Invalid)
@@ -377,6 +460,7 @@ DesktopIconView::ZoomLevel DesktopIconView::zoomLevel()
     const char* zoom_level = g_file_info_get_attribute_as_string(info, "metadata::peony-qt-desktop-zoom-level");
     g_object_unref(info);
     g_object_unref(computer);
+    //qDebug()<<ZoomLevel(QString(zoom_level).toInt())<<"\n\n\n\n\n\n\n\n";
     return ZoomLevel(QString(zoom_level).toInt()) == Invalid? Normal: ZoomLevel(QString(zoom_level).toInt());
 }
 
@@ -397,7 +481,7 @@ void DesktopIconView::mousePressEvent(QMouseEvent *e)
     if (indexAt(e->pos()) == m_last_index && m_last_index.isValid()) {
         //qDebug()<<"check";
         if (m_edit_trigger_timer.isActive()) {
-            qDebug()<<"edit";
+            //qDebug()<<"edit";
             setIndexWidget(m_last_index, nullptr);
             edit(m_last_index);
         }
@@ -430,7 +514,7 @@ void DesktopIconView::resetEditTriggerTimer()
 
 void DesktopIconView::dragEnterEvent(QDragEnterEvent *e)
 {
-    qDebug()<<"drag enter event";
+    //qDebug()<<"drag enter event";
     if (e->mimeData()->hasUrls()) {
         e->setDropAction(Qt::MoveAction);
         e->acceptProposedAction();
@@ -441,7 +525,7 @@ void DesktopIconView::dragMoveEvent(QDragMoveEvent *e)
 {
     if (e->isAccepted())
         return;
-    qDebug()<<"drag move event";
+    //qDebug()<<"drag move event";
     if (this == e->source()) {
         e->accept();
         return QListView::dragMoveEvent(e);
@@ -452,7 +536,7 @@ void DesktopIconView::dragMoveEvent(QDragMoveEvent *e)
 
 void DesktopIconView::dropEvent(QDropEvent *e)
 {
-    qDebug()<<"drop event";
+    //qDebug()<<"drop event";
     /*!
       \todo
       fix the bug that move drop action can not move the desktop
@@ -475,8 +559,8 @@ void DesktopIconView::dropEvent(QDropEvent *e)
 
         auto urls = e->mimeData()->urls();
         for (auto url : urls) {
-            if (url.path() == QStandardPaths::writableLocation(QStandardPaths::HomeLocation))
-                continue;
+//            if (url.path() == QStandardPaths::writableLocation(QStandardPaths::HomeLocation))
+//                continue;
             saveItemPositionInfo(url.toDisplayString());
         }
         return;
@@ -521,4 +605,26 @@ void DesktopIconView::clearAllIndexWidgets()
 void DesktopIconView::refresh()
 {
     m_model->refresh();
+}
+
+QRect DesktopIconView::visualRect(const QModelIndex &index) const
+{
+    auto rect = QListView::visualRect(index);
+    QPoint p(10, 5);
+
+    switch (zoomLevel()) {
+    case Small:
+        p *= 0.8;
+        break;
+    case Large:
+        p *= 1.2;
+        break;
+    case Huge:
+        p *= 1.4;
+        break;
+    default:
+        break;
+    }
+    rect.moveTo(rect.topLeft() + p);
+    return rect;
 }

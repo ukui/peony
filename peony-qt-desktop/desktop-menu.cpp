@@ -228,16 +228,16 @@ const QList<QAction *> DesktopMenu::constructViewOpActions()
         auto zoomLevel = desktopView->zoomLevel();
 
         auto smallAction = viewTypeSubMenu->addAction(tr("&Small"), [=](){
-            desktopView->setDeafultZoomLevel(DesktopIconView::Small);
+            desktopView->setDefaultZoomLevel(DesktopIconView::Small);
         });
         auto normalAction = viewTypeSubMenu->addAction(tr("&Normal"), [=](){
-            desktopView->setDeafultZoomLevel(DesktopIconView::Normal);
+            desktopView->setDefaultZoomLevel(DesktopIconView::Normal);
         });
         auto largeAction = viewTypeSubMenu->addAction(tr("&Large"), [=](){
-            desktopView->setDeafultZoomLevel(DesktopIconView::Large);
+            desktopView->setDefaultZoomLevel(DesktopIconView::Large);
         });
         auto hugeAction = viewTypeSubMenu->addAction(tr("&Huge"), [=](){
-            desktopView->setDeafultZoomLevel(DesktopIconView::Huge);
+            desktopView->setDefaultZoomLevel(DesktopIconView::Huge);
         });
 
         switch (zoomLevel) {
@@ -273,11 +273,11 @@ const QList<QAction *> DesktopMenu::constructViewOpActions()
         tmp<<sortTypeMenu->addAction(tr("File Type"));
         tmp<<sortTypeMenu->addAction(tr("File Size"));
         tmp<<sortTypeMenu->addAction(tr("Modified Date"));
-        int sortType = m_view->getSortType();
-        if (sortType >= 0) {
-            tmp.at(sortType)->setCheckable(true);
-            tmp.at(sortType)->setChecked(true);
-        }
+//        int sortType = m_view->getSortType();
+//        if (sortType >= 0) {
+//            tmp.at(sortType)->setCheckable(true);
+//            tmp.at(sortType)->setChecked(true);
+//        }
 
         for (int i = 0; i < tmp.count(); i++) {
             connect(tmp.at(i), &QAction::triggered, [=](){
@@ -294,9 +294,9 @@ const QList<QAction *> DesktopMenu::constructViewOpActions()
         tmp.clear();
         tmp<<sortOrderMenu->addAction(tr("Ascending Order"));
         tmp<<sortOrderMenu->addAction(tr("Descending Order"));
-        int sortOrder = m_view->getSortOrder();
-        tmp.at(sortOrder)->setCheckable(true);
-        tmp.at(sortOrder)->setChecked(true);
+//        int sortOrder = m_view->getSortOrder();
+//        tmp.at(sortOrder)->setCheckable(true);
+//        tmp.at(sortOrder)->setChecked(true);
 
         for (int i = 0; i < tmp.count(); i++) {
             connect(tmp.at(i), &QAction::triggered, [=](){

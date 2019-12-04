@@ -41,7 +41,8 @@ SOURCES += \
     desktop-icon-view-delegate.cpp \
     desktop-index-widget.cpp \
     desktop-menu.cpp \
-    desktop-menu-plugin-manager.cpp
+    desktop-menu-plugin-manager.cpp \
+    desktop-item-proxy-model.cpp
 
 HEADERS += \
         desktop-window.h \
@@ -52,7 +53,8 @@ HEADERS += \
     desktop-icon-view-delegate.h \
     desktop-index-widget.h \
     desktop-menu.h \
-    desktop-menu-plugin-manager.h
+    desktop-menu-plugin-manager.h \
+    desktop-item-proxy-model.h
 
 target.path = /usr/bin
 !isEmpty(target.path): INSTALLS += target

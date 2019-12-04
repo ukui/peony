@@ -19,6 +19,8 @@
 #include <QMimeData>
 #include <QUrl>
 
+#include <QTimer>
+
 #include <QDebug>
 
 using namespace Peony;
@@ -26,36 +28,28 @@ using namespace Peony;
 DesktopItemModel::DesktopItemModel(QObject *parent)
     : QAbstractListModel(parent)
 {
-    auto computer = FileInfo::fromUri("computer:///", true);
-    auto personal = FileInfo::fromPath(QStandardPaths::writableLocation(QStandardPaths::HomeLocation), false);
-    auto trash = FileInfo::fromUri("trash:///", true);
-    m_files<<personal;
-    m_files<<computer;
-    m_files<<trash;
-
-    m_enumerator = new FileEnumerator(this);
-    m_enumerator->setEnumerateDirectory("file://" + QStandardPaths::writableLocation(QStandardPaths::DesktopLocation));
-    m_enumerator->connect(m_enumerator, &FileEnumerator::enumerateFinished, this, &DesktopItemModel::onEnumerateFinished);
-    m_enumerator->enumerateAsync();
-
     m_trash_watcher = std::make_shared<FileWatcher>("trash:///", this);
 
     this->connect(m_trash_watcher.get(), &FileWatcher::fileCreated, [=](){
-        qDebug()<<"trash changed";
+        //qDebug()<<"trash changed";
+        auto trash = FileInfo::fromUri("trash:///", true);
         auto job = new FileInfoJob(trash);
         job->setAutoDelete();
         connect(job, &FileInfoJob::infoUpdated, [=](){
-            this->dataChanged(this->index(m_files.indexOf(trash)), this->index(m_files.indexOf(trash)));
+            auto trashIndex = this->indexFromUri("trash:///");
+            this->dataChanged(trashIndex, trashIndex);
         });
         job->queryAsync();
     });
 
     this->connect(m_trash_watcher.get(), &FileWatcher::fileDeleted, [=](){
-        qDebug()<<"trash changed";
+        //qDebug()<<"trash changed";
+        auto trash = FileInfo::fromUri("trash:///", true);
         auto job = new FileInfoJob(trash);
         job->setAutoDelete();
         connect(job, &FileInfoJob::infoUpdated, [=](){
-            this->dataChanged(this->index(m_files.indexOf(trash)), this->index(m_files.indexOf(trash)));
+            auto trashIndex = this->indexFromUri("trash:///");
+            this->dataChanged(trashIndex, trashIndex);
         });
         job->queryAsync();
     });
@@ -63,7 +57,7 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
     m_desktop_watcher = std::make_shared<FileWatcher>("file://" + QStandardPaths::writableLocation(QStandardPaths::DesktopLocation), this);
     m_desktop_watcher->setMonitorChildrenChange(true);
     this->connect(m_desktop_watcher.get(), &FileWatcher::fileCreated, [=](const QString &uri){
-        qDebug()<<"created"<<uri;
+        //qDebug()<<"created"<<uri;
         auto info = FileInfo::fromUri(uri, true);
         bool exsited = false;
         for (auto file : m_files) {
@@ -72,33 +66,40 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
                 break;
             }
         }
-        if (!exsited) {
-            m_files<<info;
-            this->insertRows(m_files.count() - 1, 1);
-        }
 
-        auto job = new FileInfoJob(info);
-        job->setAutoDelete();
-        connect(job, &FileInfoJob::queryAsyncFinished, [=](){
-            this->dataChanged(this->index(m_files.indexOf(info)), this->index(m_files.indexOf(info)));
-            ThumbnailManager::getInstance()->createThumbnail(info->uri(), m_desktop_watcher);
-            Q_EMIT this->requestUpdateItemPositions();
-        });
-        job->queryAsync();
+        if (!exsited) {
+            auto job = new FileInfoJob(info);
+            job->setAutoDelete();
+            connect(job, &FileInfoJob::infoUpdated, [=](){
+                m_mutex.lock();
+                this->beginResetModel();
+                ThumbnailManager::getInstance()->createThumbnail(info->uri(), m_desktop_watcher);
+                m_files<<info;
+                //this->insertRows(m_files.indexOf(info), 1);
+                this->endResetModel();
+                Q_EMIT this->requestUpdateItemPositions();
+                Q_EMIT this->requestLayoutNewItem(info->uri());
+                m_mutex.unlock();
+            });
+            job->queryAsync();
+        }
     });
 
     this->connect(m_desktop_watcher.get(), &FileWatcher::fileDeleted, [=](const QString &uri){
-        for (auto info : m_files) {
-            qDebug()<<"deleted"<<uri;
-            if (info->uri() == uri) {
-                this->removeRows(m_files.indexOf(info), 1);
-                m_files.removeOne(info);
-                FileInfoManager::getInstance()->remove(info);
-                Q_EMIT this->requestUpdateItemPositions();
-                return;
-            }
+        m_mutex.lock();
+        auto info = FileInfo::fromUri(uri);
+        if (m_files.indexOf(info) >= 0) {
+            //qDebug()<<"remove one"<<info->uri();
+            this->beginResetModel();
+            m_files.removeOne(info);
+            this->endResetModel();
+            Q_EMIT this->requestClearIndexWidget();
+            Q_EMIT this->requestUpdateItemPositions();
         }
+        FileInfoManager::getInstance()->remove(info);
+        m_mutex.unlock();
     });
+
     this->connect(m_desktop_watcher.get(), &FileWatcher::fileChanged, [=](const QString &uri){
         for (auto info : m_files) {
             if (info->uri() == uri) {
@@ -137,8 +138,9 @@ void DesktopItemModel::refresh()
     m_files<<computer;
     m_files<<personal;
     m_files<<trash;
-    m_enumerator->deleteLater();
+
     m_enumerator = new FileEnumerator(this);
+    m_enumerator->setAutoDelete();
     m_enumerator->setEnumerateDirectory("file://" + QStandardPaths::writableLocation(QStandardPaths::DesktopLocation));
     m_enumerator->connect(m_enumerator, &FileEnumerator::enumerateFinished, this, &DesktopItemModel::onEnumerateFinished);
     m_enumerator->enumerateAsync();
@@ -186,34 +188,47 @@ QVariant DesktopItemModel::data(const QModelIndex &index, int role) const
 
 void DesktopItemModel::onEnumerateFinished()
 {
-    if (m_files.count() > 3)
-        return;
+    beginResetModel();
+    FileInfoManager::getInstance()->clear();
+    m_files.clear();
 
-    m_files<<m_enumerator->getChildren(true);
+    auto computer = FileInfo::fromUri("computer:///", true);
+    auto personal = FileInfo::fromPath(QStandardPaths::writableLocation(QStandardPaths::HomeLocation), true);
+    auto trash = FileInfo::fromUri("trash:///", true);
+
+    QList<std::shared_ptr<FileInfo>> infos;
+
+    infos<<personal;
+    infos<<computer;
+    infos<<trash;
+
+    infos<<m_enumerator->getChildren(true);
 
     //qDebug()<<m_files.count();
-    this->beginResetModel();
-    insertRows(0, m_files.count());
     this->endResetModel();
-    for (auto info : m_files) {
+    for (auto info : infos) {
         m_info_query_queue<<info->uri();
-        auto job = new FileInfoJob(info);
-        connect(job, &FileInfoJob::queryAsyncFinished, [=](bool successed){
-            if (successed) {
-                ThumbnailManager::getInstance()->createThumbnail(info->uri(), m_desktop_watcher);
-            }
-            job->deleteLater();
-        });
-        job->queryAsync();
+        m_files<<info;
+        this->insertRow(m_files.indexOf(info));
 
-        connect(info.get(), &FileInfo::updated, [=](){
-            qDebug()<<"info updated"<<info->uri();
+        auto job = new FileInfoJob(info);
+
+        connect(job, &FileInfoJob::infoUpdated, [=](){
+            //qDebug()<<"info updated"<<info->uri();
+
             this->dataChanged(this->index(m_files.indexOf(info)), this->index(m_files.indexOf(info)));
-            Q_EMIT this->requestUpdateItemPositions(info->uri());
+            ThumbnailManager::getInstance()->createThumbnail(info->uri(), m_desktop_watcher);
+
+            m_info_query_queue.removeOne(info->uri());
+            if (m_info_query_queue.isEmpty()) {
+                Q_EMIT this->refreshed();
+            }
         });
+        job->setAutoDelete();
+        job->queryAsync();
     }
 
-    qDebug()<<"startMornitor";
+    //qDebug()<<"startMornitor";
     m_trash_watcher->startMonitor();
     m_desktop_watcher->startMonitor();
 }
@@ -296,8 +311,8 @@ QMimeData *DesktopItemModel::mimeData(const QModelIndexList &indexes) const
 
 bool DesktopItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent)
 {
-    qDebug()<<row<<column;
-    qDebug()<<"drop mime data"<<parent.data()<<index(row, column, parent).data();
+    //qDebug()<<row<<column;
+    //qDebug()<<"drop mime data"<<parent.data()<<index(row, column, parent).data();
     //judge the drop dest uri.
     QString destDirUri = nullptr;
     if (parent.isValid()) {

@@ -12,7 +12,7 @@ class QLabel;
 namespace Peony {
 
 class DesktopItemModel;
-class DesktopItemSortFilterProxyModel;
+class DesktopItemProxyModel;
 
 class DesktopIconView : public QListView, public DirectoryViewIface
 {
@@ -49,26 +49,7 @@ public:
     int getSortType();
     int getSortOrder();
 
-    QRect visualRect(const QModelIndex &index) const {
-        auto rect = QListView::visualRect(index);
-        QPoint p(10, 5);
-        switch (m_zoom_level) {
-        case Small:
-            p *= 0.8;
-            break;
-        case Large:
-            p *= 1.2;
-            break;
-        case Huge:
-            p *= 1.4;
-            break;
-        default:
-            break;
-        }
-        rect.moveTo(rect.topLeft() + p);
-        return rect;
-    }
-
+    QRect visualRect(const QModelIndex &index) const;
     const QFont getViewItemFont(QStyleOptionViewItem *item);
 
 Q_SIGNALS:
@@ -102,8 +83,8 @@ public Q_SLOTS:
     void editUris(const QStringList uris);
 
     //zoom
-    void setDeafultZoomLevel(ZoomLevel level);
-    ZoomLevel zoomLevel();
+    void setDefaultZoomLevel(ZoomLevel level);
+    ZoomLevel zoomLevel() const;
     void zoomIn();
     void zoomOut();
 
@@ -116,7 +97,7 @@ public Q_SLOTS:
     void resetAllItemPositionInfos();
     void resetItemPosistionInfo(const QString &uri);
 
-    void updateItemPosistions(const QString &uri);
+    void updateItemPosistions(const QString &uri = nullptr);
 
 protected:
     void mousePressEvent(QMouseEvent *e);
@@ -137,6 +118,7 @@ private:
     QTimer m_edit_trigger_timer;
 
     DesktopItemModel *m_model;
+    DesktopItemProxyModel *m_proxy_model;
 };
 
 }

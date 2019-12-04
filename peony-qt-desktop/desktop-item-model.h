@@ -5,6 +5,8 @@
 #include <QQueue>
 #include <memory>
 
+#include <QMutex>
+
 namespace Peony {
 
 class FileEnumerator;
@@ -49,7 +51,10 @@ public:
     Qt::DropActions supportedDropActions() const override;
 
 Q_SIGNALS:
+    void requestLayoutNewItem(const QString &uri);
+    void requestClearIndexWidget();
     void requestUpdateItemPositions(const QString &uri = nullptr);
+    void refreshed();
 
 public Q_SLOTS:
     void refresh();
@@ -64,6 +69,8 @@ private:
     std::shared_ptr<FileWatcher> m_desktop_watcher;
 
     QQueue<QString> m_info_query_queue;
+
+    QMutex m_mutex;
 };
 
 }
