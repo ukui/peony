@@ -419,6 +419,7 @@ Huge //icon: 96x96; grid: 130x150; hover rect = 120x140; font: system*1.4
 */
 void DesktopIconView::setDefaultZoomLevel(ZoomLevel level)
 {
+    //qDebug()<<"set default zoom level:"<<level;
     m_zoom_level = level;
     switch (level) {
     case Small:
@@ -441,8 +442,12 @@ void DesktopIconView::setDefaultZoomLevel(ZoomLevel level)
     }
     clearAllIndexWidgets();
     auto metaInfo = FileMetaInfo::fromUri("computer:///");
-    if (metaInfo)
+    if (metaInfo) {
+        qDebug()<<"set zoom level"<<m_zoom_level;
         metaInfo->setMetaInfoInt("peony-qt-desktop-zoom-level", int(m_zoom_level));
+    } else {
+
+    }
 }
 
 DesktopIconView::ZoomLevel DesktopIconView::zoomLevel() const
@@ -451,17 +456,31 @@ DesktopIconView::ZoomLevel DesktopIconView::zoomLevel() const
     if (m_zoom_level != Invalid)
         return m_zoom_level;
 
+    auto metaInfo = FileMetaInfo::fromUri("computer:///");
+    if (metaInfo) {
+        auto i = metaInfo->getMetaInfoInt("peony-qt-desktop-zoom-level");
+        return ZoomLevel(i);
+    }
+
     GFile *computer = g_file_new_for_uri("computer:///");
     GFileInfo *info = g_file_query_info(computer,
                                         "metadata::peony-qt-desktop-zoom-level",
                                         G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
                                         nullptr,
                                         nullptr);
-    const char* zoom_level = g_file_info_get_attribute_as_string(info, "metadata::peony-qt-desktop-zoom-level");
+    char* zoom_level = g_file_info_get_attribute_as_string(info, "metadata::peony-qt-desktop-zoom-level");
+    if (!zoom_level) {
+        //qDebug()<<"======================no zoom level meta info\n\n\n";
+        g_object_unref(info);
+        g_object_unref(computer);
+        return Normal;
+    }
     g_object_unref(info);
     g_object_unref(computer);
-    //qDebug()<<ZoomLevel(QString(zoom_level).toInt())<<"\n\n\n\n\n\n\n\n";
-    return ZoomLevel(QString(zoom_level).toInt()) == Invalid? Normal: ZoomLevel(QString(zoom_level).toInt());
+    QString zoomLevel = zoom_level;
+    g_free(zoom_level);
+    //qDebug()<<ZoomLevel(QString(zoomLevel).toInt())<<"\n\n\n\n\n\n\n\n";
+    return ZoomLevel(zoomLevel.toInt()) == Invalid? Normal: ZoomLevel(QString(zoomLevel).toInt());
 }
 
 void DesktopIconView::mousePressEvent(QMouseEvent *e)

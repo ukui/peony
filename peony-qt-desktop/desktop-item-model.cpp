@@ -132,12 +132,6 @@ void DesktopItemModel::refresh()
         ThumbnailManager::getInstance()->releaseThumbnail(info->uri());
     }
     m_files.clear();
-    auto computer = FileInfo::fromUri("computer:///", true);
-    auto personal = FileInfo::fromPath(QStandardPaths::writableLocation(QStandardPaths::HomeLocation), false);
-    auto trash = FileInfo::fromUri("trash:///", true);
-    m_files<<computer;
-    m_files<<personal;
-    m_files<<trash;
 
     m_enumerator = new FileEnumerator(this);
     m_enumerator->setAutoDelete();
@@ -198,9 +192,9 @@ void DesktopItemModel::onEnumerateFinished()
 
     QList<std::shared_ptr<FileInfo>> infos;
 
-    infos<<personal;
     infos<<computer;
     infos<<trash;
+    infos<<personal;
 
     infos<<m_enumerator->getChildren(true);
 

@@ -21,11 +21,12 @@ class DesktopIconView : public QListView, public DirectoryViewIface
     Q_OBJECT
 public:
     enum ZoomLevel {
+        Invalid,
         Small, //icon: 24x24; grid: 64x64; hover rect: 60x60; font: system*0.8
         Normal, //icon: 48x48; grid: 96x96; hover rect = 90x90; font: system
         Large, //icon: 64x64; grid: 115x135; hover rect = 105x118; font: system*1.2
-        Huge, //icon: 96x96; grid: 140x170; hover rect = 120x140; font: system*1.4
-        Invalid
+        Huge //icon: 96x96; grid: 140x170; hover rect = 120x140; font: system*1.4
+
     };
     Q_ENUM(ZoomLevel)
 
