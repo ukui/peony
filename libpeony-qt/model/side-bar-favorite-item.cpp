@@ -2,6 +2,8 @@
 #include "side-bar-model.h"
 #include "file-utils.h"
 
+#include "bookmark-manager.h"
+
 #include <QStandardPaths>
 #include <QUrl>
 
@@ -27,6 +29,15 @@ SideBarFavoriteItem::SideBarFavoriteItem(QString uri,
         m_children->append(trashItem);
         m_model->insertRows(0, m_children->count(), firstColumnIndex());
         //TODO: support custom bookmarks.
+        auto bookmark = BookMarkManager::getInstance();
+        if (bookmark->isLoaded()) {
+            syncBookMark();
+        } else {
+            connect(bookmark, &BookMarkManager::urisLoaded, this, [=](){
+                syncBookMark();
+                disconnect(bookmark, &BookMarkManager::urisLoaded, this, nullptr);
+            });
+        }
         return;
     }
     m_uri = uri;
@@ -68,4 +79,33 @@ QModelIndex SideBarFavoriteItem::lastColumnIndex()
 {
     //TODO: bind with model
     return m_model->firstCloumnIndex(this);
+}
+
+void SideBarFavoriteItem::syncBookMark()
+{
+    qDebug()<<"sync book mark=================="<<this->displayName();
+    auto bookmark = BookMarkManager::getInstance();
+    auto uris = bookmark->getCurrentUris();
+    for (auto uri : uris) {
+        auto item = new SideBarFavoriteItem(uri, this, m_model);
+        *m_children<<item;
+        m_model->insertRows(m_children->count() - 1, 1, this->firstColumnIndex());
+    }
+    connect(bookmark, &BookMarkManager::bookMarkAdded, this, [=](const QString &uri, bool successed){
+        if (successed) {
+            auto item = new SideBarFavoriteItem(uri, this, m_model);
+            *m_children<<item;
+            m_model->insertRows(m_children->count() - 1, 1, this->firstColumnIndex());
+        }
+    });
+    connect(bookmark, &BookMarkManager::bookMarkRemoved, this, [=](const QString &uri, bool successed){
+        if (successed) {
+            for (auto item : *m_children) {
+                if (item->uri() == uri) {
+                    m_model->removeRow(m_children->indexOf(item));
+                    m_children->removeOne(item);
+                }
+            }
+        }
+    });
 }

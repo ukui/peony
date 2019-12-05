@@ -14,7 +14,8 @@ HEADERS += $$PWD/peony-core_global.h \
     $$PWD/file-utils.h \
     $$PWD/thumbnail-manager.h \
     $$PWD/linux-pwd-helper.h \
-    $$PWD/file-meta-info.h
+    $$PWD/file-meta-info.h \
+    $$PWD/bookmark-manager.h
 
 SOURCES += $$PWD/file-info.cpp \
            $$PWD/file-info-job.cpp \
@@ -29,6 +30,7 @@ SOURCES += $$PWD/file-info.cpp \
     $$PWD/file-utils.cpp \
     $$PWD/thumbnail-manager.cpp \
     $$PWD/linux-pwd-helper.cpp \
-    $$PWD/file-meta-info.cpp
+    $$PWD/file-meta-info.cpp \
+    $$PWD/bookmark-manager.cpp
 
 FORMS += $$PWD/connect-server-dialog.ui

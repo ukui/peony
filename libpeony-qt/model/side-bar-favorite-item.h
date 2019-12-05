@@ -43,6 +43,8 @@ public Q_SLOTS:
     void clearChildren() override {}
 
 private:
+    void syncBookMark();
+
     SideBarFavoriteItem *m_parent = nullptr;
 
     bool m_is_root_child = false;

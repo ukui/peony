@@ -71,6 +71,9 @@ protected:
     QVector<SideBarAbstractItem*> *m_root_children = nullptr;
 
     void onIndexUpdated(const QModelIndex &index);
+
+protected:
+    QStringList m_bookmark_uris;
 };
 
 }
