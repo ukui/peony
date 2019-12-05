@@ -5,6 +5,7 @@
 #include "peony-core_global.h"
 
 class QMenu;
+class QActionGroup;
 
 namespace Peony {
 
@@ -21,6 +22,7 @@ public:
     ~NavigationBar();
 
     bool isPathEditing();
+    const QString getLastPreviewPageId();
 
 Q_SIGNALS:
     void updateWindowLocationRequest(const QString &uri, bool addHistory, bool forceUpdate = false);
@@ -33,7 +35,10 @@ public Q_SLOTS:
     void updateLocation(const QString &uri);
 
     void setBlock(bool block = true);
+    void startEdit();
     void finishEdit();
+
+    void triggerAction(const QString &id);
 
 protected:
     const QString getCurrentUri();
@@ -43,8 +48,10 @@ protected:
 private:
     NavigationToolBar *m_left_control;
     AdvancedLocationBar *m_center_control;
+    QActionGroup *m_group;
 
     QAction *m_checked_preview_action;
+    QString m_last_preview_page_id_in_window = nullptr;
 };
 
 }

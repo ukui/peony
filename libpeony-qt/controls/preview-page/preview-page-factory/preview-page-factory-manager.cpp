@@ -15,7 +15,7 @@ PreviewPageFactoryManager *PreviewPageFactoryManager::getInstance()
 
 PreviewPageFactoryManager::PreviewPageFactoryManager(QObject *parent) : QObject(parent)
 {
-    m_hash = new QHash<QString, PreviewPagePluginIface*>();
+    m_map = new QMap<QString, PreviewPagePluginIface*>();
     //load default and plugins.
     auto defaultFactory = DefaultPreviewPageFactory::getInstance();
     registerFactory(defaultFactory->name(), static_cast<PreviewPagePluginIface*>(defaultFactory));
@@ -24,27 +24,40 @@ PreviewPageFactoryManager::PreviewPageFactoryManager(QObject *parent) : QObject(
 
 PreviewPageFactoryManager::~PreviewPageFactoryManager()
 {
-    if (m_hash) {
+    if (m_map) {
         //FIXME: unload all module?
-        delete m_hash;
+        delete m_map;
     }
 }
 
 const QStringList PreviewPageFactoryManager::getPluginNames()
 {
-    return m_hash->keys();
+    QStringList l;
+    for (auto key : m_map->keys()) {
+        l<<key;
+    }
+    return l;
 }
 
 bool PreviewPageFactoryManager::registerFactory(const QString &name, PreviewPagePluginIface *plugin)
 {
-    if (m_hash->value(name)) {
+    if (m_map->value(name)) {
         return false;
     }
-    m_hash->insert(name, plugin);
+    m_map->insert(name, plugin);
     return true;
 }
 
 PreviewPagePluginIface *PreviewPageFactoryManager::getPlugin(const QString &name)
 {
-    return m_hash->value(name);
+    m_last_preview_page_id = name;
+    return m_map->value(name);
+}
+
+const QString PreviewPageFactoryManager::getLastPreviewPageId()
+{
+    if (m_last_preview_page_id.isNull()) {
+        return m_map->firstKey();
+    }
+    return m_last_preview_page_id;
 }

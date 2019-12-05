@@ -28,6 +28,8 @@
 
 #include "directory-view-factory-manager.h"
 
+#include "properties-window.h"
+
 #include <QDockWidget>
 #include <QStandardPaths>
 #include <QDebug>
@@ -301,6 +303,117 @@ FMWindow::FMWindow(const QString &uri, QWidget *parent) : QMainWindow (parent)
         auto uris = this->getCurrentSelections();
         FileOperationUtils::executeRemoveActionWithDialog(uris);
     });
+
+    auto searchAction = new QAction(this);
+    searchAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::CTRL + Qt::Key_F)<<QKeySequence(Qt::CTRL + Qt::Key_E));
+    connect(searchAction, &QAction::triggered, this, [=](){
+        m_search_bar->setFocus();
+    });
+    addAction(searchAction);
+
+    auto locationAction = new QAction(this);
+    locationAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::CTRL + Qt::Key_D));
+    connect(locationAction, &QAction::triggered, this, [=](){
+        m_navigation_bar->startEdit();
+    });
+    addAction(locationAction);
+
+    auto newWindowAction = new QAction(this);
+    newWindowAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_N));
+    connect(newWindowAction, &QAction::triggered, this, [=](){
+        FMWindow *newWindow = new FMWindow(getCurrentUri());
+        newWindow->show();
+    });
+    addAction(newWindowAction);
+
+    auto newTabAction = new QAction(this);
+    newTabAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_T));
+    connect(newTabAction, &QAction::triggered, this, [=](){
+        this->addNewTabs(QStringList()<<this->getCurrentUri());
+    });
+    addAction(newTabAction);
+
+    auto closeTabAction = new QAction(this);
+    closeTabAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_W));
+    connect(closeTabAction, &QAction::triggered, this, [=](){
+        if (m_tab->count() <= 1) {
+            this->close();
+        } else {
+            m_tab->removeTab(m_tab->currentIndex());
+        }
+    });
+    addAction(closeTabAction);
+
+    auto nextTabAction = new QAction(this);
+    nextTabAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Tab));
+    connect(nextTabAction, &QAction::triggered, this, [=](){
+        int currentIndex = m_tab->currentIndex();
+        if (currentIndex + 1 < m_tab->count()) {
+            m_tab->setCurrentIndex(currentIndex + 1);
+        } else {
+            m_tab->setCurrentIndex(0);
+        }
+    });
+    addAction(nextTabAction);
+
+    auto previousTabAction = new QAction(this);
+    previousTabAction->setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_Tab));
+    connect(previousTabAction, &QAction::triggered, this, [=](){
+        int currentIndex = m_tab->currentIndex();
+        if (currentIndex > 0) {
+            m_tab->setCurrentIndex(currentIndex - 1);
+        } else {
+            m_tab->setCurrentIndex(m_tab->count() - 1);
+        }
+    });
+    addAction(previousTabAction);
+
+    auto newFolderAction = new QAction(this);
+    newFolderAction->setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_N));
+    connect(newFolderAction, &QAction::triggered, this, [=](){
+        CreateTemplateOperation op(getCurrentUri(), CreateTemplateOperation::EmptyFolder, tr("New Folder"));
+        op.run();
+        auto targetUri = op.target();
+        QTimer::singleShot(500, this, [=](){
+            this->getCurrentPage()->getView()->scrollToSelection(targetUri);
+            this->editUri(targetUri);
+        });
+    });
+    addAction(newFolderAction);
+
+    auto propertiesWindowAction = new QAction(this);
+    propertiesWindowAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_Return));
+    connect(propertiesWindowAction, &QAction::triggered, this, [=](){
+        PropertiesWindow *w = new PropertiesWindow(getCurrentSelections());
+        w->show();
+    });
+    addAction(propertiesWindowAction);
+
+    auto helpAction = new QAction(this);
+    helpAction->setShortcut(QKeySequence(Qt::Key_F1));
+    connect(helpAction, &QAction::triggered, this, [=](){
+        //FIXME: add help program.
+    });
+    addAction(helpAction);
+
+    auto maxAction = new QAction(this);
+    maxAction->setShortcut(QKeySequence(Qt::Key_F11));
+    connect(maxAction, &QAction::triggered, this, [=](){
+        if (!this->isFullScreen()) {
+            this->showFullScreen();
+        } else {
+            this->showMaximized();
+        }
+    });
+    addAction(maxAction);
+
+    auto previewPageAction = new QAction(this);
+    previewPageAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_P));
+    connect(previewPageAction, &QAction::triggered, this, [=](){
+        auto lastPreviewPageId = m_navigation_bar->getLastPreviewPageId();
+        m_navigation_bar->triggerAction(lastPreviewPageId);
+    });
+    addAction(previewPageAction);
 
     //menu
     m_tab->connect(m_tab, &TabPage::menuRequest, [=](){

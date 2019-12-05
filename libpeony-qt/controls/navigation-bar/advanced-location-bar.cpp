@@ -66,6 +66,13 @@ bool AdvancedLocationBar::isEditing()
     return m_edit->isVisible();
 }
 
+void AdvancedLocationBar::startEdit()
+{
+    m_layout->setCurrentWidget(m_edit);
+    m_edit->setFocus();
+    m_edit->setUri(m_bar->getCurentUri());
+}
+
 void AdvancedLocationBar::finishEdit()
 {
     Q_EMIT m_edit->returnPressed();

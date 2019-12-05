@@ -24,6 +24,7 @@ Q_SIGNALS:
 
 public Q_SLOTS:
     void updateLocation(const QString &uri);
+    void startEdit();
     void finishEdit();
 
 private:

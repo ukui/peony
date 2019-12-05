@@ -3,7 +3,7 @@
 
 #include "peony-core_global.h"
 #include <QObject>
-#include <QHash>
+#include <QMap>
 
 namespace Peony {
 
@@ -38,11 +38,14 @@ public:
     const QStringList getPluginNames();
     PreviewPagePluginIface *getPlugin(const QString &name);
 
+    const QString getLastPreviewPageId();
+
 private:
     explicit PreviewPageFactoryManager(QObject *parent = nullptr);
     ~PreviewPageFactoryManager();
 
-    QHash<QString, PreviewPagePluginIface*> *m_hash = nullptr;
+    QMap<QString, PreviewPagePluginIface*> *m_map = nullptr;
+    QString m_last_preview_page_id = nullptr;
 };
 
 }

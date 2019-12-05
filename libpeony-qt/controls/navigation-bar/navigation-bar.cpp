@@ -44,6 +44,7 @@ NavigationBar::NavigationBar(QWidget *parent) : QToolBar(parent)
     auto manager = PreviewPageFactoryManager::getInstance();
     auto ids = manager->getPluginNames();
     QActionGroup *group = new QActionGroup(this);
+    m_group = group;
     group->setExclusive(true);
     for (auto id : ids) {
         auto factory = manager->getPlugin(id);
@@ -57,6 +58,7 @@ NavigationBar::NavigationBar(QWidget *parent) : QToolBar(parent)
                 m_checked_preview_action = action;
                 action->setChecked(true);
             }
+            m_last_preview_page_id_in_window = id;
             Q_EMIT this->switchPreviewPageRequest(m_checked_preview_action? m_checked_preview_action->text(): nullptr);
         });
     }
@@ -106,7 +108,29 @@ bool NavigationBar::isPathEditing()
     return m_center_control->isEditing();
 }
 
+const QString NavigationBar::getLastPreviewPageId()
+{
+    if (m_last_preview_page_id_in_window.isNull()) {
+        return PreviewPageFactoryManager::getInstance()->getLastPreviewPageId();
+    }
+    return m_last_preview_page_id_in_window;
+}
+
+void NavigationBar::startEdit()
+{
+    m_center_control->startEdit();
+}
+
 void NavigationBar::finishEdit()
 {
     m_center_control->finishEdit();
+}
+
+void NavigationBar::triggerAction(const QString &id) {
+    for (auto action : m_group->actions()) {
+        if (action->text() == id) {
+            action->trigger();
+            return;
+        }
+    }
 }
