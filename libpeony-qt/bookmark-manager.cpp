@@ -20,11 +20,11 @@ BookMarkManager *BookMarkManager::getInstance()
 BookMarkManager::BookMarkManager(QObject *parent) : QObject(parent)
 {
     QtConcurrent::run([=](){
-        m_book_mark = new QSettings("org.ukui", "peony-qt");
+        m_book_mark = new QSettings(QSettings::UserScope, "org.ukui", "peony-qt");
         m_uris = m_book_mark->value("uris").toStringList();
         m_is_loaded = true;
-        m_uris<<"computer:///";
-        //qDebug()<<"====================ok============\n\n\n\n";
+        //m_uris<<"computer:///";
+        //qDebug()<<"====================ok============\n\n\n\n"<<m_uris;
         Q_EMIT this->urisLoaded();
     });
 }
@@ -45,9 +45,11 @@ void BookMarkManager::addBookMark(const QString &uri)
         if (m_mutex.tryLock(1000)) {
             bool successed = !m_uris.contains(uri);
             if (successed) {
-                m_uris<<m_uris;
+                m_uris<<uri;
                 m_uris.removeDuplicates();
                 m_book_mark->setValue("uris", m_uris);
+                m_book_mark->sync();
+                qDebug()<<"add"<<uri;
                 Q_EMIT this->bookMarkAdded(uri, true);
             } else {
                 Q_EMIT this->bookMarkAdded(uri, false);
@@ -71,6 +73,8 @@ void BookMarkManager::removeBookMark(const QString &uri)
                 m_uris.removeOne(uri);
                 m_uris.removeDuplicates();
                 m_book_mark->setValue("uris", m_uris);
+                m_book_mark->sync();
+                qDebug()<<"remove"<<uri;
                 Q_EMIT this->bookMarkRemoved(uri, true);
             } else {
                 Q_EMIT this->bookMarkRemoved(uri, false);

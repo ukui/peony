@@ -64,6 +64,11 @@ public:
     bool removeRows(int row, int count, const QModelIndex &parent = QModelIndex()) override;
     bool removeColumns(int column, int count, const QModelIndex &parent = QModelIndex()) override;
 
+    bool dropMimeData(const QMimeData *data, Qt::DropAction action,
+                      int row, int column, const QModelIndex &parent) override;
+
+    Qt::DropActions supportedDropActions() const override;
+
 Q_SIGNALS:
     void indexUpdated(const QModelIndex &index);
 

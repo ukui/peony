@@ -5,8 +5,14 @@
 #include "side-bar-separator-item.h"
 
 #include "file-info.h"
+#include "file-info-job.h"
+
+#include "bookmark-manager.h"
+#include "file-operation-utils.h"
 
 #include <QIcon>
+#include <QMimeData>
+#include <QUrl>
 
 #include <QDebug>
 
@@ -197,10 +203,7 @@ bool SideBarModel::setData(const QModelIndex &index, const QVariant &value, int 
 
 Qt::ItemFlags SideBarModel::flags(const QModelIndex &index) const
 {
-    if (!index.isValid())
-        return Qt::NoItemFlags;
-
-    return QAbstractItemModel::flags(index); // FIXME: Implement me!
+    return QAbstractItemModel::flags(index) | Qt::ItemIsDropEnabled; // FIXME: Implement me!
 }
 
 bool SideBarModel::insertRows(int row, int count, const QModelIndex &parent)
@@ -240,7 +243,6 @@ void SideBarModel::onIndexUpdated(const QModelIndex &index)
     auto item = itemFromIndex(index);
     //qDebug()<<item->m_children->count();
     bool isEmpty = true;
-    SideBarAbstractItem *tmp = nullptr;
     for (auto child : *item->m_children) {
         auto info = FileInfo::fromUri(child->uri());
         if (!info->displayName().startsWith(".") && (info->isDir() || info->isVolume()))
@@ -256,4 +258,58 @@ void SideBarModel::onIndexUpdated(const QModelIndex &index)
         item->m_children->append(separator);
         insertRows(item->m_children->count() - 1, 1, index);
     }
+}
+
+bool SideBarModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent)
+{
+    if (data->urls().isEmpty())
+        return false;
+
+    qDebug()<<action<<row<<column<<parent.data();
+    if (!parent.isValid()) {
+        auto bookmark = BookMarkManager::getInstance();
+        if (bookmark->isLoaded()) {
+            for (auto url : data->urls()) {
+                bookmark->addBookMark(url.url());
+            }
+        }
+        return true;
+    }
+
+    auto item = this->itemFromIndex(parent);
+    switch (item->type()) {
+    case SideBarAbstractItem::SeparatorItem:
+    case SideBarAbstractItem::FavoriteItem: {
+        auto bookmark = BookMarkManager::getInstance();
+        if (bookmark->isLoaded()) {
+            for (auto url : data->urls()) {
+                auto info = FileInfo::fromUri(url.toDisplayString(), false);
+                if (info->displayName().isNull()) {
+                    FileInfoJob j(info);
+                    j.querySync();
+                }
+                if (info->isDir()) {
+                    bookmark->addBookMark(url.url());
+                }
+            }
+        }
+        break;
+    }
+    case SideBarAbstractItem::FileSystemItem: {
+        QStringList uris;
+        for (auto url : data->urls()) {
+            uris<<url.url();
+        }
+        FileOperationUtils::move(uris, item->uri(), true);
+        break;
+    }
+    default:
+        break;
+    }
+    return true;
+}
+
+Qt::DropActions SideBarModel::supportedDropActions() const
+{
+    return Qt::MoveAction;
 }

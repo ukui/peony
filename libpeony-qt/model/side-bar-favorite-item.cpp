@@ -102,7 +102,7 @@ void SideBarFavoriteItem::syncBookMark()
         if (successed) {
             for (auto item : *m_children) {
                 if (item->uri() == uri) {
-                    m_model->removeRow(m_children->indexOf(item));
+                    m_model->removeRow(m_children->indexOf(item), this->firstColumnIndex());
                     m_children->removeOne(item);
                 }
             }

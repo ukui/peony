@@ -21,6 +21,8 @@ SideBar::SideBar(QWidget *parent) : QTreeView(parent)
         this->viewport()->update();
     });
 
+    setDragDropMode(QTreeView::DragDrop);
+
     setIndentation(15);
     setSelectionBehavior(QTreeView::SelectRows);
     setContentsMargins(0, 0, 0, 0);
