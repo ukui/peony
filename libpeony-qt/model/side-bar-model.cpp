@@ -174,7 +174,7 @@ QVariant SideBarModel::data(const QModelIndex &index, int role) const
 
     switch (role) {
     case Qt::DecorationRole:
-        return QIcon::fromTheme(item->iconName());
+        return QIcon::fromTheme("ukui-" + item->iconName(), QIcon::fromTheme(item->iconName()));
     case Qt::DisplayRole:
         return item->displayName();
     case Qt::ToolTipRole:

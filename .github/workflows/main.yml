@@ -19,7 +19,8 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Install Dependencies
-      run: sudo apt -y install libglib2.0-dev qt5-default libqt5x11extras5-dev libgsettings-qt-dev
+      run: sudo apt update | 
+      sudo apt -y install libglib2.0-dev qt5-default libqt5x11extras5-dev libgsettings-qt-dev
     - name: Build & Test
       run: |
         qmake .
