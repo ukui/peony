@@ -4,6 +4,8 @@
 #include "side-bar-abstract-item.h"
 #include "side-bar-delegate.h"
 
+#include "side-bar-menu.h"
+
 #include <QHeaderView>
 #include <QTimer>
 #include <QPainter>
@@ -20,6 +22,8 @@ SideBar::SideBar(QWidget *parent) : QTreeView(parent)
         this->update();
         this->viewport()->update();
     });
+
+    setContextMenuPolicy(Qt::CustomContextMenu);
 
     setDragDropMode(QTreeView::DragDrop);
 
@@ -73,6 +77,13 @@ SideBar::SideBar(QWidget *parent) : QTreeView(parent)
         default:
             break;
         }
+    });
+
+    connect(this, &QTreeView::customContextMenuRequested, this, [=](const QPoint &pos){
+        auto index = indexAt(pos);
+        auto item = proxy_model->itemFromIndex(index);
+        SideBarMenu menu(item, this);
+        menu.exec(QCursor::pos());
     });
 
     expandAll();
