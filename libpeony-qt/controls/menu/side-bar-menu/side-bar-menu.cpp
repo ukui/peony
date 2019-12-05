@@ -96,7 +96,7 @@ const QList<QAction *> SideBarMenu::constructFileSystemItemActions()
     auto ids = mgr->getPluginIds();
     for (auto id : ids) {
         auto factory = mgr->getPlugin(id);
-        qDebug()<<id;
+        //qDebug()<<id;
         auto tmp = factory->menuActions(MenuPluginInterface::SideBar, m_uri, QStringList()<<m_uri);
         addActions(tmp);
         for (auto action : tmp) {

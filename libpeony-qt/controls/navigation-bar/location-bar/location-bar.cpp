@@ -13,6 +13,8 @@
 #include <QStyleOptionFocusRect>
 #include <QLineEdit>
 
+#include <QStandardPaths>
+
 using namespace Peony;
 
 LocationBar::LocationBar(QWidget *parent) : QToolBar(parent)
@@ -49,25 +51,28 @@ void LocationBar::setRootUri(const QString &uri)
     }
 
     QStringList uris;
-    uris<<uri;
-    QString tmp = Peony::FileUtils::getParentUri(uri);
+    QString tmp = uri;
     while (!tmp.isEmpty()) {
         uris.prepend(tmp);
+        QUrl url = tmp;
+        if (url.path() == QStandardPaths::writableLocation(QStandardPaths::HomeLocation)) {
+            break;
+        }
         tmp = Peony::FileUtils::getParentUri(tmp);
     }
 
     for (auto uri : uris) {
         //addButton(uri, uri != uris.last());
-        addButton(uri);
+        addButton(uri, uris.first() == uri);
     }
 }
 
-void LocationBar::addButton(const QString &uri, bool setMenu)
+void LocationBar::addButton(const QString &uri, bool setIcon, bool setMenu)
 {
     QAction *action = new QAction(this);
     QUrl url = uri;
     auto parent = FileUtils::getParentUri(uri);
-    if (parent.isNull()) {
+    if (setIcon) {
         QIcon icon = QIcon::fromTheme(Peony::FileUtils::getFileIconName(uri), QIcon::fromTheme("folder"));
         action->setIcon(icon);
     }
@@ -79,15 +84,13 @@ void LocationBar::addButton(const QString &uri, bool setMenu)
         action->setText(url.fileName());
     } else {
         if (uri == "file:///") {
-            action->setText(tr("root"));
-        } else if (uri == "trash:///") {
-            action->setText(tr("Trash"));
-        } else if (uri == "computer:///") {
-            action->setText(tr("Computer"));
-        } else if (uri == "recent:///") {
-            action->setText(tr("Recent"));
+            auto text = FileUtils::getFileDisplayName("computer:///root.link");
+            if (text.isNull()) {
+                text = tr("File System");
+            }
+            action->setText(text);
         } else {
-            action->setText(url.url());
+            action->setText(FileUtils::getFileDisplayName(uri));
         }
     }
 

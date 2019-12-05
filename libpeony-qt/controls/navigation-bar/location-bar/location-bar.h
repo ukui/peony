@@ -24,7 +24,7 @@ public Q_SLOTS:
     void setRootUri(const QString &uri);
 
 protected:
-    void addButton(const QString &uri, bool setMenu = true);
+    void addButton(const QString &uri, bool setIcon = false, bool setMenu = true);
 
     void mousePressEvent(QMouseEvent *e) override;
     void paintEvent(QPaintEvent *e) override;

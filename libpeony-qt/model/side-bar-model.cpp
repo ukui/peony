@@ -265,8 +265,10 @@ bool SideBarModel::dropMimeData(const QMimeData *data, Qt::DropAction action, in
     if (data->urls().isEmpty())
         return false;
 
+    auto item = this->itemFromIndex(parent);
     qDebug()<<action<<row<<column<<parent.data();
     if (!parent.isValid()) {
+
         auto bookmark = BookMarkManager::getInstance();
         if (bookmark->isLoaded()) {
             for (auto url : data->urls()) {
@@ -276,7 +278,7 @@ bool SideBarModel::dropMimeData(const QMimeData *data, Qt::DropAction action, in
         return true;
     }
 
-    auto item = this->itemFromIndex(parent);
+
     switch (item->type()) {
     case SideBarAbstractItem::SeparatorItem:
     case SideBarAbstractItem::FavoriteItem: {
@@ -295,6 +297,7 @@ bool SideBarModel::dropMimeData(const QMimeData *data, Qt::DropAction action, in
         }
         break;
     }
+    case SideBarAbstractItem::PersonalItem:
     case SideBarAbstractItem::FileSystemItem: {
         QStringList uris;
         for (auto url : data->urls()) {
@@ -303,8 +306,6 @@ bool SideBarModel::dropMimeData(const QMimeData *data, Qt::DropAction action, in
         FileOperationUtils::move(uris, item->uri(), true);
         break;
     }
-    default:
-        break;
     }
     return true;
 }
