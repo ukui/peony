@@ -24,6 +24,9 @@ protected:
     void paintEvent(QPaintEvent *e) override;
     QRect visualRect(const QModelIndex &index) const override;
     //int horizontalOffset() const override {return 100;}
+
+    void dragEnterEvent(QDragEnterEvent *e) override;
+    void dragMoveEvent(QDragMoveEvent *e) override;
 };
 
 }

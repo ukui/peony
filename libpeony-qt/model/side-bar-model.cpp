@@ -272,12 +272,18 @@ bool SideBarModel::dropMimeData(const QMimeData *data, Qt::DropAction action, in
         auto bookmark = BookMarkManager::getInstance();
         if (bookmark->isLoaded()) {
             for (auto url : data->urls()) {
-                bookmark->addBookMark(url.url());
+                auto info = FileInfo::fromUri(url.toDisplayString(), false);
+                if (info->displayName().isNull()) {
+                    FileInfoJob j(info);
+                    j.querySync();
+                }
+                if (info->isDir()) {
+                    bookmark->addBookMark(url.url());
+                }
             }
         }
         return true;
     }
-
 
     switch (item->type()) {
     case SideBarAbstractItem::SeparatorItem:
@@ -312,5 +318,5 @@ bool SideBarModel::dropMimeData(const QMimeData *data, Qt::DropAction action, in
 
 Qt::DropActions SideBarModel::supportedDropActions() const
 {
-    return Qt::MoveAction;
+    return Qt::MoveAction|Qt::CopyAction|Qt::LinkAction;
 }

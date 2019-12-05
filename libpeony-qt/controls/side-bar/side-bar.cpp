@@ -12,12 +12,18 @@
 
 #include <QApplication>
 
+#include <QDragEnterEvent>
+#include <QDragMoveEvent>
+
 #include <QDebug>
 
 using namespace Peony;
 
 SideBar::SideBar(QWidget *parent) : QTreeView(parent)
 {
+    setDropIndicatorShown(false);
+    setAttribute(Qt::WA_Hover);
+
     connect(qApp, &QApplication::paletteChanged, this, [=](){
         this->update();
         this->viewport()->update();
@@ -104,4 +110,24 @@ void SideBar::paintEvent(QPaintEvent *e)
 QRect SideBar::visualRect(const QModelIndex &index) const
 {
     return QTreeView::visualRect(index);
+}
+
+void SideBar::dragEnterEvent(QDragEnterEvent *e)
+{
+    //qDebug()<<"enter";
+    e->accept();
+    setState(DraggingState);
+}
+
+void SideBar::dragMoveEvent(QDragMoveEvent *e)
+{
+    //qDebug()<<"move";
+    auto widget = static_cast<QWidget*>(e->source());
+    if (widget) {
+        if (widget->topLevelWidget() == this->topLevelWidget()) {
+            QTreeView::dragMoveEvent(e);
+        }
+    }
+
+    e->accept();
 }
