@@ -10,7 +10,7 @@ class PEONYCORESHARED_EXPORT FileLinkOperation : public FileOperation
 {
     Q_OBJECT
 public:
-    FileLinkOperation(QString srcUri, QString destUri, QObject *parent = nullptr);
+    FileLinkOperation(QString srcUri, QString destDirUri, QObject *parent = nullptr);
     ~FileLinkOperation() override;
 
     std::shared_ptr<FileOperationInfo> getOperationInfo() override {return m_info;}
