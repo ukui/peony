@@ -18,7 +18,8 @@ class DesktopItemModel : public QAbstractListModel
     Q_OBJECT
 public:
     enum Role {
-        UriRole = Qt::UserRole
+        UriRole = Qt::UserRole,
+        IsLinkRole = Qt::UserRole + 1
     };
     Q_ENUM(Role)
 

@@ -117,8 +117,13 @@ public:
         } else {
             if (type == Link) {
                 QUrl url = srcUris.first();
-                auto dest_uri = destDirUri + "/" + url.fileName() + tr(" - Symbolic Link");
-                m_dest_uris<<dest_uri;
+                if (!url.fileName().contains(".")) {
+                    m_dest_uris<<destDirUri + "/" + url.fileName() + tr(" - Symbolic Link");
+                } else {
+                    auto dest_uri = destDirUri + "/" + url.fileName();
+                    dest_uri = dest_uri.insert(dest_uri.lastIndexOf('.'), tr(" - Symbolic Link"));
+                    m_dest_uris<<dest_uri;
+                }
             } else {
                 //Rename also use the common args format.
                 QString src = srcUris.at(0);

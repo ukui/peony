@@ -176,6 +176,8 @@ QVariant DesktopItemModel::data(const QModelIndex &index, int role) const
     }
     case UriRole:
         return info->uri();
+    case IsLinkRole:
+        return info->isSymbolLink();
     }
     return QVariant();
 }

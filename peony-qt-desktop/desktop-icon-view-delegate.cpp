@@ -108,6 +108,41 @@ void DesktopIconViewDelegate::paint(QPainter *painter, const QStyleOptionViewIte
 
     style->drawControl(QStyle::CE_ItemViewItem, &opt, painter, opt.widget);
 
+    //paint link icon
+    if (index.data(Qt::UserRole + 1).toBool()) {
+        QSize symbolicIconSize = QSize(16, 16);
+        int offset = 8;
+        switch (view->zoomLevel()) {
+        case DesktopIconView::Small: {
+            symbolicIconSize = QSize(8, 8);
+            offset = 10;
+            break;
+        }
+        case DesktopIconView::Normal: {
+            break;
+        }
+        case DesktopIconView::Large: {
+            offset = 4;
+            symbolicIconSize = QSize(24, 24);
+            break;
+        }
+        case DesktopIconView::Huge: {
+            offset = 2;
+            symbolicIconSize = QSize(32, 32);
+            break;
+        }
+        default: {
+            break;
+        }
+        }
+        auto topRight = opt.rect.topRight();
+        topRight.setX(topRight.x() - offset - symbolicIconSize.width());
+        topRight.setY(topRight.y() + offset);
+        auto linkRect = QRect(topRight, symbolicIconSize);
+        QIcon symbolicLinkIcon = QIcon::fromTheme("emblem-symbolic-link");
+        symbolicLinkIcon.paint(painter, linkRect, Qt::AlignCenter);
+    }
+
     /*
     qDebug()<<index.data();
     qDebug()<<opt.rect;

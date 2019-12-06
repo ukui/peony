@@ -11,7 +11,13 @@ FileLinkOperation::FileLinkOperation(QString srcUri, QString destDirUri, QObject
 {
     m_src_uri = srcUri;
     QUrl url = srcUri;
-    m_dest_uri = destDirUri + "/" + url.fileName() + tr(" - Symbolic Link");
+    if (!url.fileName().contains(".")) {
+        m_dest_uri = destDirUri + "/" + url.fileName() + tr(" - Symbolic Link");
+    } else {
+        m_dest_uri = destDirUri + "/" + url.fileName();
+        m_dest_uri = m_dest_uri.insert(m_dest_uri.lastIndexOf('.'), tr(" - Symbolic Link"));
+    }
+
     QStringList fake_uris;
     fake_uris<<srcUri;
     m_info = std::make_shared<FileOperationInfo>(fake_uris, destDirUri, FileOperationInfo::Link);
