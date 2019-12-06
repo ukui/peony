@@ -259,7 +259,7 @@
     <message>
         <location filename="../../libpeony-qt/controls/property-page/basic-properties-page.cpp" line="222"/>
         <source>%1 total</source>
-        <translation>供%1个文件</translation>
+        <translation>共%1个文件</translation>
     </message>
 </context>
 <context>
