@@ -31,6 +31,8 @@ CONFIG += c++11 link_pkgconfig no_keywords
 
 LIBS += -L$$PWD/../libpeony-qt/ -lpeony-qt
 
+TRANSLATIONS += ../translations/peony-qt-desktop/peony-qt-desktop_zh_CN.ts
+
 SOURCES += \
         main.cpp \
         desktop-window.cpp \

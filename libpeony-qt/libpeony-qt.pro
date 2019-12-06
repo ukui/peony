@@ -29,6 +29,8 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 include(libpeony-qt.pri)
 
+TRANSLATIONS += ../translations/libpeony-qt/libpeony-qt_zh_CN.ts
+
 DESTDIR += $$PWD
 
 unix {
