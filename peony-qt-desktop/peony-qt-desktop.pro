@@ -61,6 +61,9 @@ HEADERS += \
 target.path = /usr/bin
 !isEmpty(target.path): INSTALLS += target
 
+translation.path = /usr/share/peony-qt-desktop
+translation.files += ../translations/peony-qt-desktop/*
+
 DISTFILES +=
 
 RESOURCES += \

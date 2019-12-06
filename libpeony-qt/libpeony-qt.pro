@@ -40,10 +40,21 @@ unix {
 
     header.path = /usr/include/peony-qt
     header.files += *.h model/*.h file-operation/*.h vfs/*.h controls/ ../plugin-iface/*.h
+#    header.depends = header2
     header.files += development-files/header-files/*
     INSTALLS += header
+
+#    header2.commands = sh $$PWD/copy-headers.sh
+#    INSTALLS += header2
+
+#    QMAKE_EXTRA_TARGETS += header header2
 
     pcfile.path = $$[QT_INSTALL_LIBS]/pkgconfig
     pcfile.files = development-files/peony-qt.pc
     INSTALLS += pcfile
+
+    translation.path = /usr/share/libpeony-qt
+    translation.commands = sh $$PWD/../translations/update-translations.sh
+    translation.files += ../translations/libpeony-qt/*
+    INSTALLS += translation
 }

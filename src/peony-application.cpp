@@ -67,8 +67,14 @@
 
 #include "complementary-style.h"
 
+#include <QTranslator>
+#include <QLocale>
+
 PeonyApplication::PeonyApplication(int &argc, char *argv[], const char *applicationName) : SingleApplication (argc, argv, applicationName, true)
 {
+    QTranslator *t = new QTranslator(this);
+    qDebug()<<"\n\n\n\n\n\n\ntranslate:"<<t->load("/usr/share/libpeony-qt/libpeony-qt_"+QLocale::system().name());
+    QApplication::installTranslator(t);
     //setStyle(Peony::ComplementaryStyle::getStyle());
 
     parser.addOption(quitOption);

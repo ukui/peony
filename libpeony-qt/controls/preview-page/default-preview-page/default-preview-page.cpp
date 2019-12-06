@@ -105,7 +105,7 @@ void DefaultPreviewPage::startPreview()
         setCurrentWidget(previewPage);
     } else {
         QLabel *label = qobject_cast<QLabel*>(m_empty_tab_widget);
-        label->setText(tr("Can not preivew this file."));
+        label->setText(tr("Can not preview this file."));
     }
 }
 

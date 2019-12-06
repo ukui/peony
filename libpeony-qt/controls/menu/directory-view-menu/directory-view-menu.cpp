@@ -167,12 +167,12 @@ const QList<QAction *> DirectoryViewMenu::constructOpenOpActions()
                     m_top_window->addNewTabs(m_selections);
                 });
             } else if (!info->isVolume()) {
-                l<<addAction(QIcon::fromTheme("document-open-symbolic"), tr("&open \"%1\"").arg(displayName));
+                l<<addAction(QIcon::fromTheme("document-open-symbolic"), tr("&Open \"%1\"").arg(displayName));
                 connect(l.last(), &QAction::triggered, [=](){
                     auto uri = m_selections.first();
                     FileLaunchManager::openAsync(uri);
                 });
-                auto openWithAction = addAction(tr("open \"%1\" with...").arg(displayName));
+                auto openWithAction = addAction(tr("Open \"%1\" with...").arg(displayName));
                 //FIXME: add sub menu for open with action.
                 QMenu *openWithMenu = new QMenu(this);
                 auto recommendActions = FileLaunchManager::getRecommendActions(m_selections.first());

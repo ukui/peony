@@ -46,3 +46,7 @@ INCLUDEPATH    += ../plugin-iface
 
 target.path = /usr/bin
 INSTALLS += target
+
+translation.path = /usr/share/peony-qt
+translation.files += ../translations/peony-qt/*
+INSTALLS += translation
