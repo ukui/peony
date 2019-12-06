@@ -10,9 +10,23 @@
 #include <QProcess>
 #include <QFile>
 #include <QLabel>
+#include <QtConcurrent>
+
+#include <gio/gio.h>
 
 static bool has_desktop = false;
 static bool has_daemon = false;
+
+void trySetDefaultFolderUrlHandler() {
+    QtConcurrent::run([=](){
+        GAppInfo *peony_qt = g_app_info_create_from_commandline("peony-qt",
+                                                                nullptr,
+                                                                G_APP_INFO_CREATE_SUPPORTS_URIS,
+                                                                nullptr);
+        g_app_info_set_as_default_for_type(peony_qt, "inode/directory", nullptr);
+        g_object_unref(peony_qt);
+    });
+}
 
 PeonyDesktopApplication::PeonyDesktopApplication(int &argc, char *argv[], const char *applicationName) : SingleApplication (argc, argv, applicationName, true)
 {
@@ -72,6 +86,9 @@ void PeonyDesktopApplication::parseCmd(quint32 id, QByteArray msg, bool isPrimar
         if (parser.isSet(daemonOption)) {
             if (!has_daemon) {
                 qDebug()<<"-d";
+
+                trySetDefaultFolderUrlHandler();
+
                 //FIXME: take over org.freedesktop.FileManager1
                 Peony::FMDBusService *service = new Peony::FMDBusService(this);
                 connect(service, &Peony::FMDBusService::showItemsRequest, [=](const QStringList &urisList){
