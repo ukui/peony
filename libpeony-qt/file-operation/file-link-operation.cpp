@@ -11,7 +11,7 @@ FileLinkOperation::FileLinkOperation(QString srcUri, QString destDirUri, QObject
 {
     m_src_uri = srcUri;
     QUrl url = srcUri;
-    m_dest_uri = destDirUri + "/" + url.fileName();
+    m_dest_uri = destDirUri + "/" + url.fileName() + tr(" - Symbolic Link");
     QStringList fake_uris;
     fake_uris<<srcUri;
     m_info = std::make_shared<FileOperationInfo>(fake_uris, destDirUri, FileOperationInfo::Link);
@@ -34,6 +34,7 @@ retry:
                               nullptr,
                               &err);
     if (err) {
+        setHasError(true);
         //forbid response actions except retry and cancel.
         auto responseType = errored(m_src_uri, m_dest_uri, GErrorWrapper::wrapFrom(err), true);
         if (responseType.value<FileOperation::ResponseType>() == FileOperation::Retry) {

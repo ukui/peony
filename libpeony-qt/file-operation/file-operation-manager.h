@@ -12,6 +12,8 @@
 #include <QStack>
 #include <QThreadPool>
 
+#include <QUrl>
+
 namespace Peony {
 
 class FileOperationInfo;
@@ -99,7 +101,7 @@ public:
         m_type = type;
 
         //compute opposite.
-        if (type != Rename) {
+        if (type != Rename && type != Link) {
             for (auto srcUri : srcUris) {
                 auto srcFile = wrapGFile(g_file_new_for_uri(srcUri.toUtf8().constData()));
                 if (m_src_dir_uri.isNull()) {
@@ -113,11 +115,17 @@ public:
                 m_dest_uris<<destUri;
             }
         } else {
-            //Rename also use the common args format.
-            QString src = srcUris.at(0);
-            QString dest = destDirUri;
-            m_dest_uris<<src;
-            m_src_dir_uri = dest;
+            if (type == Link) {
+                QUrl url = srcUris.first();
+                auto dest_uri = destDirUri + "/" + url.fileName() + tr(" - Symbolic Link");
+                m_dest_uris<<dest_uri;
+            } else {
+                //Rename also use the common args format.
+                QString src = srcUris.at(0);
+                QString dest = destDirUri;
+                m_dest_uris<<src;
+                m_src_dir_uri = dest;
+            }
         }
 
         switch (type) {
