@@ -1,0 +1,39 @@
+Source: peony-qt
+Section: x11
+Priority: optional
+Maintainer: Yue Lan <lanyue@kylinos.cn>
+Build-Depends: debhelper (>=11~), pkg-config, qt5-qmake, qtbase5-dev, qtchooser, qtbase5-dev-tools, libglib2.0-dev, libqt5x11extras5-dev, libgsettings-qt-dev 
+Standards-Version: 4.4.0
+Homepage: https://github.com/explorer-cs/peony-qt
+
+Package: libpeony-qt
+Section: libs
+Architecture: all
+Multi-Arch: foreign
+Depends: ${misc:Depends}, ${shlibs:Depends}, libglib2.0-0, libqt5widgets5
+Recommends: gvfs-backends, qt5-gtk2-platformtheme, qt5-gtk-platformtheme
+Breaks: libpeony-extensions1
+Replaces: libpeony-extensions1
+Description: PeonyQt is the file-manager of UKUI3.0
+ This pakage provide the libraries which peony-qt requires.
+
+Package: libpeony-qt-dev
+Section: libdevel
+Architecture: all
+Multi-Arch: foreign
+Depends: ${misc:Depends}, ${shlibs:Depends}, libpeony-qt
+Description: PeonyQt is the file-manager of UKUI3.0
+ This pakage provides the development files which peony-qt requires.
+ It also can be used for other projects about qt/gio-based file-manager.
+
+Package: peony-qt
+Section: utils
+Architecture: all
+Multi-Arch: foreign
+Depends: ${misc:Depends}, ${shlibs:Depends}, libpeony-qt
+Breaks: peony, ukui-desktop-environment (<= 1.2.1), ukui-desktop-environment-core (<= 1.2.1), ubuntukylin-desktop (<= 0.39)
+Replaces: peony, peony-common
+Recommends: gvfs-backends, qt5-gtk2-platformtheme, peony-qt-extensions
+Description: PeonyQt is the file-manager of UKUI3.0
+ This package provides filemanager and desktop applications of UKUI3.0.
+

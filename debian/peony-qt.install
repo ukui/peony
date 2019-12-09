@@ -1,0 +1,5 @@
+src/peony-qt usr/bin
+peony-qt-desktop/peony-qt-desktop usr/bin
+data/*.desktop usr/share/applications
+peony-qt-desktop/freedesktop-dbus-interfaces.xml usr/share/dbus-1/interfaces
+peony-qt-desktop/org.ukui.freedesktop.FileManager1.service usr/share/dbus-1/services
