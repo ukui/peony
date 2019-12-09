@@ -1,2 +1,1 @@
-libpeony-qt/*.so
-libpeony-qt/*.so.*
+libpeony-qt/*.so* usr/lib
