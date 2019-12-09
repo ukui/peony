@@ -12,6 +12,9 @@
 #include <QLabel>
 #include <QtConcurrent>
 
+#include <QTranslator>
+#include <QLocale>
+
 #include <gio/gio.h>
 
 static bool has_desktop = false;
@@ -30,6 +33,13 @@ void trySetDefaultFolderUrlHandler() {
 
 PeonyDesktopApplication::PeonyDesktopApplication(int &argc, char *argv[], const char *applicationName) : SingleApplication (argc, argv, applicationName, true)
 {
+    QTranslator *t = new QTranslator(this);
+    t->load("/usr/share/libpeony-qt/libpeony-qt_"+QLocale::system().name());
+    QApplication::installTranslator(t);
+    QTranslator *t2 = new QTranslator(this);
+    t2->load("/usr/share/peony-qt-desktop/peony-qt-desktop_"+QLocale::system().name());
+    QApplication::installTranslator(t2);
+
     if (this->isPrimary()) {
         qDebug()<<"isPrimary screen";
         connect(this, &SingleApplication::receivedMessage, [=](quint32 id, QByteArray msg){

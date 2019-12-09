@@ -64,6 +64,8 @@ target.path = /usr/bin
 translation.path = /usr/share/peony-qt-desktop
 translation.files += ../translations/peony-qt-desktop/*
 
+INSTALLS += translation
+
 DISTFILES +=
 
 RESOURCES += \

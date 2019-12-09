@@ -254,12 +254,12 @@
     <message>
         <location filename="../../libpeony-qt/controls/property-page/basic-properties-page.cpp" line="220"/>
         <source>%1 files (include root files), %2 hidden</source>
-        <translation>共%1个文件（包括选中），有%2个隐藏文件</translation>
+        <translation>共%1个文件（包括顶层目录），有%2个隐藏文件</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/property-page/basic-properties-page.cpp" line="222"/>
         <source>%1 total</source>
-        <translation>共%1个文件</translation>
+        <translation>共%1</translation>
     </message>
 </context>
 <context>
@@ -350,28 +350,28 @@
     <message>
         <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="128"/>
         <source>Open in &amp;New Window</source>
-        <translation>(&amp;N)在新窗口中打开</translation>
+        <translation type="unfinished">在新窗口中打开(&amp;N)</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="135"/>
         <source>Open in New &amp;Tab</source>
-        <translation>(&amp;T)在新标签页中打开</translation>
+        <translation type="unfinished">在新标签页中打开(&amp;T)</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="150"/>
         <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="170"/>
         <source>&amp;Open &quot;%1&quot;</source>
-        <translation>(&amp;O)打开“%1”</translation>
+        <translation type="unfinished">打开“%1”(&amp;O)</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="156"/>
         <source>Open &quot;%1&quot; in &amp;New Window</source>
-        <translation>(&amp;N)在新窗口中打开“%1”</translation>
+        <translation type="unfinished">在新窗口中打开“%1”(&amp;N)</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="163"/>
         <source>Open &quot;%1&quot; in New &amp;Tab</source>
-        <translation>(&amp;T)在新标签页中打开“%1”</translation>
+        <translation type="unfinished">在新标签页中打开“%1”(&amp;T)</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="175"/>
@@ -381,32 +381,32 @@
     <message>
         <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="189"/>
         <source>&amp;More applications...</source>
-        <translation>(&amp;M)更多应用...</translation>
+        <translation type="unfinished">更多应用...(&amp;M)</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="195"/>
         <source>&amp;Open</source>
-        <translation>(&amp;O)打开</translation>
+        <translation type="unfinished">打开(&amp;O)</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="202"/>
         <source>&amp;Open %1 selected files</source>
-        <translation>(&amp;O)打开%1个选中文件</translation>
+        <translation type="unfinished">打开%1个选中文件(&amp;O)</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="233"/>
         <source>&amp;New...</source>
-        <translation>(&amp;N)新建...</translation>
+        <translation type="unfinished">新建...(&amp;N)</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="259"/>
         <source>Empty &amp;File</source>
-        <translation>(&amp;E)空文件</translation>
+        <translation type="unfinished">空文件(&amp;E)</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="269"/>
         <source>&amp;Folder</source>
-        <translation>(&amp;F)文件夹</translation>
+        <translation type="unfinished">文件夹(&amp;F)</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="273"/>
@@ -446,59 +446,59 @@
     <message>
         <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="340"/>
         <source>Sort Order...</source>
-        <translation>排序规则...</translation>
+        <translation type="unfinished">排序顺序...</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="344"/>
         <source>Ascending Order</source>
-        <translation>升序排序</translation>
+        <translation>升序</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="345"/>
         <source>Descending Order</source>
-        <translation>降序排序</translation>
+        <translation>降序</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="368"/>
         <source>&amp;Copy</source>
-        <translation>(&amp;C)复制</translation>
+        <translation type="unfinished">复制(&amp;C)</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="372"/>
         <source>Cu&amp;t</source>
-        <translation>(&amp;T)剪切</translation>
+        <translation type="unfinished">剪切(&amp;T)</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="376"/>
         <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="488"/>
         <source>&amp;Delete</source>
-        <translation>(&amp;D)删除</translation>
+        <translation type="unfinished">删除(&amp;D)</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="381"/>
         <source>&amp;Rename</source>
-        <translation>(&amp;R)重命名</translation>
+        <translation type="unfinished">重命名(&amp;R)</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="387"/>
         <source>&amp;Paste</source>
-        <translation>(&amp;P)粘贴</translation>
+        <translation type="unfinished">粘贴(&amp;P)</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="393"/>
         <source>&amp;Refresh</source>
-        <translation>(&amp;R)刷新</translation>
+        <translation type="unfinished">刷新(&amp;R)</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="408"/>
         <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="424"/>
         <source>&amp;Properties</source>
-        <translation>(&amp;P)属性</translation>
+        <translation type="unfinished">属性(&amp;P)</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="468"/>
         <source>&amp;Clean the Trash</source>
-        <translation>(&amp;C)清空回收站</translation>
+        <translation type="unfinished">清空回收站(&amp;C)</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="471"/>
@@ -515,7 +515,7 @@
     <message>
         <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="480"/>
         <source>&amp;Restore</source>
-        <translation>(&amp;R)还原</translation>
+        <translation type="unfinished">还原(&amp;R)</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="510"/>
@@ -673,7 +673,7 @@
     <message>
         <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="270"/>
         <source>&amp;More Details</source>
-        <translation>&amp;详细信息</translation>
+        <translation type="unfinished">详细信息(&amp;M)</translation>
     </message>
 </context>
 <context>
@@ -731,12 +731,12 @@
     <message>
         <location filename="../../libpeony-qt/file-operation/file-operation-error-dialog.cpp" line="43"/>
         <source>&amp;Retry</source>
-        <translation>&amp;重试</translation>
+        <translation type="unfinished">重试(&amp;R)</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/file-operation/file-operation-error-dialog.cpp" line="44"/>
         <source>&amp;Cancel</source>
-        <translation>&amp;取消</translation>
+        <translation type="unfinished">取消(&amp;C)</translation>
     </message>
 </context>
 <context>
@@ -779,7 +779,7 @@
     <message>
         <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="229"/>
         <source>&amp;More Details</source>
-        <translation>&amp;详细信息</translation>
+        <translation type="unfinished">详细信息(&amp;M)</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="240"/>
@@ -797,7 +797,7 @@
     <message>
         <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="34"/>
         <source>&amp;Cancel</source>
-        <translation>(&amp;C)取消</translation>
+        <translation type="unfinished">取消(&amp;C)</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="43"/>
@@ -1101,17 +1101,17 @@
         <location filename="../../libpeony-qt/controls/menu/side-bar-menu/side-bar-menu.cpp" line="76"/>
         <location filename="../../libpeony-qt/controls/menu/side-bar-menu/side-bar-menu.cpp" line="108"/>
         <source>&amp;Properties</source>
-        <translation>(&amp;P)属性</translation>
+        <translation type="unfinished">属性(&amp;P)</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/menu/side-bar-menu/side-bar-menu.cpp" line="52"/>
         <source>&amp;Delete Symbolic</source>
-        <translation>(&amp;D)删除</translation>
+        <translation type="unfinished">删除(&amp;D)</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/menu/side-bar-menu/side-bar-menu.cpp" line="89"/>
         <source>&amp;Unmount</source>
-        <translation>(&amp;U)卸载</translation>
+        <translation type="unfinished">卸载(&amp;U)</translation>
     </message>
 </context>
 <context>
@@ -1165,12 +1165,12 @@
     <message>
         <location filename="../../libpeony-qt/controls/tool-bar/tool-bar.cpp" line="42"/>
         <source>Open in new &amp;Window</source>
-        <translation>在新窗口中打开</translation>
+        <translation type="unfinished">在新窗口中打开(&amp;W)</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/tool-bar/tool-bar.cpp" line="44"/>
         <source>Open in new &amp;Tab</source>
-        <translation>在新标签页中打开</translation>
+        <translation type="unfinished">在新标签页中打开(&amp;T)</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/tool-bar/tool-bar.cpp" line="108"/>
