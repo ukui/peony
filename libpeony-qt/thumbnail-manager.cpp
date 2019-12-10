@@ -17,6 +17,7 @@
  * along with this library.  If not, see <https://www.gnu.org/licenses/>.
  *
  * Authors: Yue Lan <lanyue@kylinos.cn>
+ *          Burgess Chang <brs@sdf.org>
  *
  */
 
@@ -26,6 +27,8 @@
 
 #include "file-watcher.h"
 #include "file-utils.h"
+
+#include "thumbnail/pdf-thumbnail.h"
 
 #include <QtConcurrent>
 #include <QIcon>
@@ -76,6 +79,32 @@ void ThumbnailManager::createThumbnail(const QString &uri, std::shared_ptr<FileW
                 }
                 QIcon thumbnail;
                 thumbnail.addFile(url.path());
+                if (!thumbnail.isNull()) {
+                    //add lock
+                    //m_mutex.lock();
+                    m_hash.remove(uri);
+                    m_hash.insert(uri, thumbnail);
+                    auto info = FileInfo::fromUri(uri);
+                    //Q_EMIT info->updated();
+                    if (watcher) {
+                        watcher->fileChanged(uri);
+                    }
+                    //info->setThumbnail(thumbnail);
+                    //m_mutex.unlock();
+                }
+            });
+        } else if (info->mimeType().contains("pdf")) {
+            QtConcurrent::run([=]() {
+                QUrl url = uri;
+                qDebug()<<url;
+                if (!info->uri().startsWith("file:///")) {
+                    url = FileUtils::getTargetUri(info->uri());
+                    qDebug()<<url;
+                }
+                PdfThumbnail pdfThumbnail(info->uri());
+                QIcon thumbnail;
+                thumbnail.addPixmap(pdfThumbnail.generateThumbnail());
+                //thumbnail.addFile(url.path());
                 if (!thumbnail.isNull()) {
                     //add lock
                     //m_mutex.lock();

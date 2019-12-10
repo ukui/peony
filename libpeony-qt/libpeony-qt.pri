@@ -17,6 +17,9 @@ include(controls/controls.pri)
 #windows
 include(windows/windows.pri)
 
+# preview
+include(thumbnail/thumbnail.pri)
+
 HEADERS += \
     $$PWD/plugin-manager.h \
     $$PWD/complementary-style.h
