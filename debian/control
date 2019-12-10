@@ -2,7 +2,7 @@ Source: peony-qt
 Section: x11
 Priority: optional
 Maintainer: Yue Lan <lanyue@kylinos.cn>
-Build-Depends: debhelper (>=11~), pkg-config, qt5-qmake, qtbase5-dev, qtchooser, qtbase5-dev-tools, libglib2.0-dev, libqt5x11extras5-dev, libgsettings-qt-dev 
+Build-Depends: debhelper (>=11~), pkg-config, qt5-qmake, qtbase5-dev, qtchooser, qtbase5-dev-tools, libglib2.0-dev, libqt5x11extras5-dev, libgsettings-qt-dev, libpoppler-dev, libpoppler-qt5-dev 
 Standards-Version: 4.4.0
 Homepage: https://github.com/explorer-cs/peony-qt
 
@@ -10,7 +10,7 @@ Package: libpeony-qt
 Section: libs
 Architecture: all
 Multi-Arch: foreign
-Depends: ${misc:Depends}, ${shlibs:Depends}, libglib2.0-0, libqt5widgets5
+Depends: ${misc:Depends}, ${shlibs:Depends}, libglib2.0-0, libqt5widgets5, libpoppler-qt5-1
 Recommends: gvfs-backends, qt5-gtk2-platformtheme, qt5-gtk-platformtheme
 Breaks: libpeony-extensions1
 Replaces: libpeony-extensions1
