@@ -4,8 +4,8 @@
 * Update submodules
 
 ``` sh
-git submodules init
-git submodules update
+git submodule init
+git submodule update
 ```
 
 * Create *build* directory and change to it, then build with cmake. The follow
