@@ -28,6 +28,7 @@
 #include "file-utils.h"
 #include "file-launch-action.h"
 #include "file-launch-manager.h"
+#include "file-lauch-dialog.h"
 
 #include "clipboard-utils.h"
 #include "file-operation-utils.h"
@@ -121,7 +122,10 @@ const QList<QAction *> DesktopMenu::constructOpenOpActions()
                     openWithMenu->addAction(static_cast<QAction*>(action));
                 }
                 openWithMenu->addSeparator();
-                openWithMenu->addAction(tr("&More applications..."));
+                openWithMenu->addAction(tr("&More applications..."), [=](){
+                    FileLauchDialog d(m_selections.first());
+                    d.exec();
+                });
                 openWithAction->setMenu(openWithMenu);
             } else if (!info->isVolume()) {
                 l<<addAction(QIcon::fromTheme("document-open-symbolic"), tr("&Open \"%1\"").arg(displayName));
@@ -143,7 +147,10 @@ const QList<QAction *> DesktopMenu::constructOpenOpActions()
                     openWithMenu->addAction(static_cast<QAction*>(action));
                 }
                 openWithMenu->addSeparator();
-                openWithMenu->addAction(tr("&More applications..."));
+                openWithMenu->addAction(tr("&More applications..."), [=](){
+                    FileLauchDialog d(m_selections.first());
+                    d.exec();
+                });
                 openWithAction->setMenu(openWithMenu);
             } else {
                 l<<addAction(tr("&Open"));

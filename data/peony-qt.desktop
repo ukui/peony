@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Peony-Qt
+GenericName=UKUI File Manager
+GenericName[zh_CN]=文件管理器
+Name[zh_CN]=文件管理器
+Exec=/usr/bin/peony-qt %U
+Icon=system-file-manager
+Terminal=false
+Type=Application

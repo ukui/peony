@@ -50,3 +50,7 @@ INSTALLS += target
 translation.path = /usr/share/peony-qt
 translation.files += ../translations/peony-qt/*
 INSTALLS += translation
+
+data.path = /usr/share/applications
+data.files += ../data/peony-qt.desktop
+INSTALLS += data

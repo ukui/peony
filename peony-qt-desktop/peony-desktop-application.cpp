@@ -45,12 +45,30 @@ static bool has_daemon = false;
 
 void trySetDefaultFolderUrlHandler() {
     QtConcurrent::run([=](){
-        GAppInfo *peony_qt = g_app_info_create_from_commandline("peony-qt",
-                                                                nullptr,
-                                                                G_APP_INFO_CREATE_SUPPORTS_URIS,
-                                                                nullptr);
-        g_app_info_set_as_default_for_type(peony_qt, "inode/directory", nullptr);
-        g_object_unref(peony_qt);
+        GList *apps = g_app_info_get_all_for_type("inode/directory");
+        bool hasPeonyQtAppInfo = false;
+        GList *l = apps;
+        while (l) {
+            GAppInfo *info = static_cast<GAppInfo*>(l->data);
+            QString cmd = g_app_info_get_commandline(info);
+            if (cmd == "peony-qt") {
+                hasPeonyQtAppInfo = true;
+                g_app_info_set_as_default_for_type(info, "inode/directory", nullptr);
+                break;
+            }
+        }
+        if (apps) {
+            g_list_free_full(apps, g_object_unref);
+        }
+
+        if (!hasPeonyQtAppInfo) {
+            GAppInfo *peony_qt = g_app_info_create_from_commandline("peony-qt",
+                                                                    nullptr,
+                                                                    G_APP_INFO_CREATE_SUPPORTS_URIS,
+                                                                    nullptr);
+            g_app_info_set_as_default_for_type(peony_qt, "inode/directory", nullptr);
+            g_object_unref(peony_qt);
+        }
     });
 }
 
