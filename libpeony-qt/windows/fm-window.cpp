@@ -53,6 +53,9 @@
 
 #include "properties-window.h"
 
+#include <QDesktopServices>
+#include <QUrl>
+
 #include <QDockWidget>
 #include <QStandardPaths>
 #include <QDebug>
@@ -415,7 +418,8 @@ FMWindow::FMWindow(const QString &uri, QWidget *parent) : QMainWindow (parent)
     auto helpAction = new QAction(this);
     helpAction->setShortcut(QKeySequence(Qt::Key_F1));
     connect(helpAction, &QAction::triggered, this, [=](){
-        //FIXME: add help program.
+        QUrl url = QUrl("help:ubuntu-kylin-help/files", QUrl::TolerantMode);
+        QDesktopServices::openUrl(url);
     });
     addAction(helpAction);
 

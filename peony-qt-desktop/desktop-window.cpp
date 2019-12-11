@@ -43,6 +43,8 @@
 #include "peony-desktop-application.h"
 #include "singleapplication.h"
 
+#include <QDesktopServices>
+
 #include <QLabel>
 #include <QStandardPaths>
 
@@ -461,6 +463,14 @@ void DesktopWindow::initShortcut() {
         FileOperationUtils::executeRemoveActionWithDialog(m_view->getSelections());
     });
     addAction(removeAction);
+
+    QAction *helpAction = new QAction(this);
+    helpAction->setShortcut(Qt::Key_F1);
+    connect(helpAction, &QAction::triggered, this, [=](){
+        QUrl url = QUrl("help:ubuntu-kylin-help/files", QUrl::TolerantMode);
+        QDesktopServices::openUrl(url);
+    });
+    addAction(helpAction);
 }
 
 void DesktopWindow::availableGeometryChangedProcess(const QRect &geometry) {
