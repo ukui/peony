@@ -13,7 +13,7 @@ ExternalProject_Add(peony-qt-extensions-cmake
   BUILD_IN_SOURCE   1
   CONFIGURE_COMMAND cmake ${peony-qt-extensions-cmake-impl-dir}
   BUILD_COMMAND     make
-  EXCLUDE_FROM_ALL TRUE
+  INSTALL_COMMAND   cmake -E echo "skip install step."
   )
 
 ExternalProject_Add(peony-qt-extensions-qmake
@@ -22,5 +22,5 @@ ExternalProject_Add(peony-qt-extensions-qmake
   BUILD_IN_SOURCE   1
   CONFIGURE_COMMAND qmake ${peony-qt-extensions-qmake-impl-dir}
   BUILD_COMMAND     make
-  EXCLUDE_FROM_ALL TRUE
+  INSTALL_COMMAND   cmake -E echo "skip install step."
   )
