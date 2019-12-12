@@ -1,6 +1,5 @@
 peony-qt (1.0.0) eoan; urgency=low
 
-  * Initial release. Closes: #nnnn
-    <nnnn is the bug number of your ITP>
+  * Initial release.
 
  -- Yue Lan <lanyue@kylinos.cn>  Mon, 09 Dec 2019 14:22:53 +0800

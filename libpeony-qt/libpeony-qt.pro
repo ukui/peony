@@ -34,8 +34,8 @@ TRANSLATIONS += ../translations/libpeony-qt/libpeony-qt_zh_CN.ts
 DESTDIR += $$PWD
 
 unix {
-    #target.path = $$[QT_INSTALL_LIBS]
-    target.path = /usr/lib
+    target.path = $$[QT_INSTALL_LIBS]
+    #target.path = /usr/lib
     INSTALLS += target
 
     header.path = /usr/include/peony-qt

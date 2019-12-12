@@ -3,4 +3,4 @@ libpeony-qt/file-operation/*.h usr/include/peony-qt
 libpeony-qt/model/*.h usr/include/peony-qt
 libpeony-qt/vfs/*.h usr/include/peony-qt
 libpeony-qt/development-files/header-files/* usr/include/peony-qt
-libpeony-qt/development-files/peony-qt.pc usr/lib/pkgconfig
+usr/lib/*/pkgconfig/*.pc

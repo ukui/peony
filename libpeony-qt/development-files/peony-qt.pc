@@ -3,5 +3,5 @@ Description: Providing the gvfs-based file-manager development frameworks. It is
 Home Page: https://github.com/explorer-cs/peony-qt
 Requires: Qt5Widgets >= 5.12.1 glib-2.0 gio-2.0
 Version: 0.1.1
-Libs: -L/usr/lib -lpeony-qt
+Libs: -L/usr/lib -L/usr/lib/x86_64-linux-gnu -lpeony-qt
 Cflags: -I/usr/include/peony-qt -I/usr/include/peony-qt/fileop -I/usr/include/peony-qt/model
