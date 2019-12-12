@@ -1,0 +1,2 @@
+libpeony-qt.so.1 libpeony-qt1 #MINVER#
+* Build-Depends-Package: libpeony-qt-dev
