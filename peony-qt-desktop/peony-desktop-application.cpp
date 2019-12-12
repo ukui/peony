@@ -44,31 +44,42 @@ static bool has_desktop = false;
 static bool has_daemon = false;
 
 void trySetDefaultFolderUrlHandler() {
-    QtConcurrent::run([=](){
-        GList *apps = g_app_info_get_all_for_type("inode/directory");
-        bool hasPeonyQtAppInfo = false;
-        GList *l = apps;
-        while (l) {
-            GAppInfo *info = static_cast<GAppInfo*>(l->data);
-            QString cmd = g_app_info_get_commandline(info);
-            if (cmd == "peony-qt") {
-                hasPeonyQtAppInfo = true;
-                g_app_info_set_as_default_for_type(info, "inode/directory", nullptr);
-                break;
+    //NOTE:
+    //There is a bug in qt concurrent. If we use QtConcurrent::run()
+    //to start a async function in the init stage, the qapplication will
+    //not quit when we call "peony-qt-desktop -q" in command line.
+    //
+    //To solve this problem, the simplest way is delaying a while to execute the
+    //async lambda function.
+    QTimer::singleShot(1000, [](){
+        QtConcurrent::run([=](){
+            GList *apps = g_app_info_get_all_for_type("inode/directory");
+            bool hasPeonyQtAppInfo = false;
+            GList *l = apps;
+            while (l) {
+                GAppInfo *info = static_cast<GAppInfo*>(l->data);
+                QString cmd = g_app_info_get_commandline(info);
+                if (cmd == "peony-qt") {
+                    hasPeonyQtAppInfo = true;
+                    g_app_info_set_as_default_for_type(info, "inode/directory", nullptr);
+                    break;
+                }
+                l = l->next;
             }
-        }
-        if (apps) {
-            g_list_free_full(apps, g_object_unref);
-        }
+            if (apps) {
+                g_list_free_full(apps, g_object_unref);
+            }
 
-        if (!hasPeonyQtAppInfo) {
-            GAppInfo *peony_qt = g_app_info_create_from_commandline("peony-qt",
-                                                                    nullptr,
-                                                                    G_APP_INFO_CREATE_SUPPORTS_URIS,
-                                                                    nullptr);
-            g_app_info_set_as_default_for_type(peony_qt, "inode/directory", nullptr);
-            g_object_unref(peony_qt);
-        }
+            if (!hasPeonyQtAppInfo) {
+                GAppInfo *peony_qt = g_app_info_create_from_commandline("peony-qt",
+                                                                        nullptr,
+                                                                        G_APP_INFO_CREATE_SUPPORTS_URIS,
+                                                                        nullptr);
+                g_app_info_set_as_default_for_type(peony_qt, "inode/directory", nullptr);
+                g_object_unref(peony_qt);
+            }
+            return;
+        });
     });
 }
 

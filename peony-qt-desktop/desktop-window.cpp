@@ -467,7 +467,7 @@ void DesktopWindow::initShortcut() {
     QAction *helpAction = new QAction(this);
     helpAction->setShortcut(Qt::Key_F1);
     connect(helpAction, &QAction::triggered, this, [=](){
-        QUrl url = QUrl("help:ubuntu-kylin-help/files", QUrl::TolerantMode);
+        QUrl url = QUrl("help:ubuntu-kylin-help", QUrl::TolerantMode);
         QDesktopServices::openUrl(url);
     });
     addAction(helpAction);
