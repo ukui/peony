@@ -81,6 +81,9 @@ using namespace Peony;
 
 FMWindow::FMWindow(const QString &uri, QWidget *parent) : QMainWindow (parent)
 {
+    setWindowIcon(QIcon::fromTheme("system-file-manager"));
+    setWindowTitle(tr("File Manager"));
+
     m_operation_minimum_interval.setSingleShot(true);
 
     connect(qApp, &QApplication::paletteChanged, this, [=](){

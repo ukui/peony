@@ -95,6 +95,9 @@ PropertiesWindowTabPagePluginIface *PropertiesWindowPluginManager::getFactory(co
 
 PropertiesWindow::PropertiesWindow(const QStringList &uris, QWidget *parent) : QMainWindow (parent)
 {
+    setWindowIcon(QIcon::fromTheme("system-file-manager"));
+    setWindowTitle(tr("Properties"));
+
     setAttribute(Qt::WA_DeleteOnClose);
     setContentsMargins(0, 15, 0, 0);
     setMinimumSize(360, 480);
