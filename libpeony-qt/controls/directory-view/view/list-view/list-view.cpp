@@ -98,6 +98,10 @@ void ListView::bindModel(FileItemModel *sourceModel, FileItemProxyFilterSortMode
 void ListView::mousePressEvent(QMouseEvent *e)
 {
     if (e->button() == Qt::RightButton) {
+        if (this->state() == QTreeView::EditingState) {
+            if (indexWidget(indexAt(e->pos())))
+                return;
+        }
         Q_EMIT customContextMenuRequested(e->pos());
         return;
     }

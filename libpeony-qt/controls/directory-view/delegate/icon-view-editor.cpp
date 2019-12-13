@@ -32,6 +32,7 @@ using namespace DirectoryView;
 
 IconViewEditor::IconViewEditor(QWidget *parent) : QTextEdit(parent)
 {
+    setContextMenuPolicy(Qt::CustomContextMenu);
     m_styled_edit = new QLineEdit;
     setContentsMargins(0, 0, 0, 0);
     setAlignment(Qt::AlignCenter);
