@@ -7,9 +7,11 @@ Standards-Version: 4.4.0
 Homepage: https://github.com/explorer-cs/peony-qt
 
 Package: libpeony-qt1
+Provides: libpeony-qt
 Section: libs
 Architecture: any
 Multi-Arch: same
+Pre-Depends: ${misc:Pre-Depends}
 Depends: ${misc:Depends}, ${shlibs:Depends}, libglib2.0-0, libqt5widgets5, libpoppler-qt5-1
 Recommends: gvfs-backends, qt5-gtk2-platformtheme, qt5-gtk-platformtheme
 Breaks: libpeony-extensions1
