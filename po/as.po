@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: UKUI Desktop Environment\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-12-18 10:18+0800\n"
+"POT-Creation-Date: 2019-12-14 11:19+0800\n"
 "PO-Revision-Date: 2016-12-05 21:34+0000\n"
 "Last-Translator: monsta <monsta@inbox.ru>\n"
 "Language-Team: Assamese (http://www.transifex.com/ukui/UKUI/language/as/)\n"
@@ -429,11 +429,11 @@ msgid ""
 msgstr ""
 "কাৰ্ছাৰৰ অৱস্থানৰ পৰা নিৰ্বাচিত অংশৰ বিপৰীত প্ৰান্ত, অক্ষৰ অনুসাৰে নিৰ্ধাৰিত  ।"
 
-#: ../eel/eel-editable-label.c:3119
+#: ../eel/eel-editable-label.c:3138
 msgid "Select All"
 msgstr "সমস্ত নিৰ্ব্বাচন কৰক"
 
-#: ../eel/eel-editable-label.c:3130
+#: ../eel/eel-editable-label.c:3149
 msgid "Input Methods"
 msgstr "নিবেশ পদ্ধতি"
 
@@ -559,10 +559,10 @@ msgstr "সদায়ে এই কৰ্ম সঞ্চালিত হ'ব (_A
 #. label, accelerator
 #. add the "Eject" menu item
 #: ../libpeony-private/peony-autorun.c:1146
-#: ../src/file-manager/fm-directory-view.c:7702
-#: ../src/file-manager/fm-directory-view.c:7730
-#: ../src/file-manager/fm-directory-view.c:7811
-#: ../src/file-manager/fm-tree-view.c:1384 ../src/peony-places-sidebar.c:2832
+#: ../src/file-manager/fm-directory-view.c:7820
+#: ../src/file-manager/fm-directory-view.c:7848
+#: ../src/file-manager/fm-directory-view.c:7929
+#: ../src/file-manager/fm-tree-view.c:1384 ../src/peony-places-sidebar.c:3453
 msgid "_Eject"
 msgstr "বহিষ্কাৰ (_E)"
 
@@ -570,10 +570,10 @@ msgstr "বহিষ্কাৰ (_E)"
 #. label, accelerator
 #. add the "Unmount" menu item
 #: ../libpeony-private/peony-autorun.c:1159
-#: ../src/file-manager/fm-directory-view.c:7698
-#: ../src/file-manager/fm-directory-view.c:7726
-#: ../src/file-manager/fm-directory-view.c:7807
-#: ../src/file-manager/fm-tree-view.c:1375 ../src/peony-places-sidebar.c:2825
+#: ../src/file-manager/fm-directory-view.c:7816
+#: ../src/file-manager/fm-directory-view.c:7844
+#: ../src/file-manager/fm-directory-view.c:7925
+#: ../src/file-manager/fm-tree-view.c:1375 ../src/peony-places-sidebar.c:3446
 msgid "_Unmount"
 msgstr "আন-মাউন্ট কৰক (_U)"
 
@@ -601,7 +601,7 @@ msgstr "ক্লিপ-বোৰ্ডে উপস্থিত তথ্য �
 #. name, stock id
 #. label, accelerator
 #: ../libpeony-private/peony-clipboard.c:470
-#: ../src/file-manager/fm-directory-view.c:7614
+#: ../src/file-manager/fm-directory-view.c:7732
 msgid "Select _All"
 msgstr "সমগ্ৰ নিৰ্বাচন কৰক (_A)"
 
@@ -624,7 +624,7 @@ msgstr "অবিকল্পিত ব্যবহাৰ কৰা হ'ব (_f)
 
 #: ../libpeony-private/peony-column-utilities.c:44
 #: ../libpeony-private/peony-mime-application-chooser.c:274
-#: ../src/file-manager/fm-list-view.c:1898
+#: ../src/file-manager/fm-list-view.c:1856
 msgid "Name"
 msgstr "নাম"
 
@@ -786,7 +786,7 @@ msgid "Network Servers"
 msgstr ""
 
 #: ../libpeony-private/peony-desktop-link.c:127
-#: ../src/file-manager/fm-tree-view.c:1443 ../src/peony-places-sidebar.c:559
+#: ../src/file-manager/fm-tree-view.c:1443 ../src/peony-places-sidebar.c:753
 #: ../src/peony-trash-bar.c:190
 msgid "Trash"
 msgstr "আৰ্বজনা"
@@ -808,6 +808,7 @@ msgid "Set as _Background"
 msgstr "পটভুমি ৰূপে ধাৰ্য কৰা হ'ব (_B)"
 
 #: ../libpeony-private/peony-dnd.c:817 ../libpeony-private/peony-dnd.c:871
+#: ../src/peony-kdisk-format.c:455
 msgid "Cancel"
 msgstr "বাতিল"
 
@@ -1075,8 +1076,8 @@ msgstr[1] "আনুমানিক %'d ঘন্টা"
 #. * to that kind of file (e.g. "link to folder").
 #.
 #: ../libpeony-private/peony-file-operations.c:409
-#: ../libpeony-private/peony-file.c:6413
-#: ../src/file-manager/fm-directory-view.c:10926
+#: ../libpeony-private/peony-file.c:6415
+#: ../src/file-manager/fm-directory-view.c:11044
 #, c-format
 msgid "Link to %s"
 msgstr "%s নিৰ্দেশক লিঙ্ক"
@@ -1244,7 +1245,7 @@ msgstr ""
 #. Empty Trash menu item
 #: ../libpeony-private/peony-file-operations.c:1396
 #: ../libpeony-private/peony-file-operations.c:2319
-#: ../src/peony-places-sidebar.c:2869 ../src/peony-trash-bar.c:197
+#: ../src/peony-places-sidebar.c:3490 ../src/peony-trash-bar.c:197
 msgid "Empty _Trash"
 msgstr "আবৰ্জনা মুছে ফেলুন (_T)"
 
@@ -1607,8 +1608,8 @@ msgstr ""
 "পৰ্যাপ্ত অনুমতি উপস্থিত না থাকাৰ ফলত আপনি \"%B\" ফোল্ডাৰ নকল কৰিবলৈ পাৰবেন না ।"
 
 #: ../libpeony-private/peony-file-operations.c:3691
-#: ../libpeony-private/peony-file-operations.c:4393
-#: ../libpeony-private/peony-file-operations.c:4985
+#: ../libpeony-private/peony-file-operations.c:4389
+#: ../libpeony-private/peony-file-operations.c:4981
 msgid "Error while moving \"%B\"."
 msgstr "\"%B\" স্থানান্তৰ কৰিবলৈ সমস্যা ।"
 
@@ -1618,8 +1619,8 @@ msgstr "মূল ফোল্ডাৰ আঁতৰুৱা সম্ভৱ �
 
 #: ../libpeony-private/peony-file-operations.c:3777
 #: ../libpeony-private/peony-file-operations.c:3818
-#: ../libpeony-private/peony-file-operations.c:4395
-#: ../libpeony-private/peony-file-operations.c:4467
+#: ../libpeony-private/peony-file-operations.c:4391
+#: ../libpeony-private/peony-file-operations.c:4463
 msgid "Error while copying \"%B\"."
 msgstr "\"%B\" নকল কৰিবলৈ সমস্যা ।"
 
@@ -1634,131 +1635,131 @@ msgid "Could not remove the already existing file %F."
 msgstr "উপস্থিত %F নামক নথিপত্ৰ সৰিয়ে ফেলতে সমস্যা ।"
 
 #. the run_warning() frees all strings passed in automatically
-#: ../libpeony-private/peony-file-operations.c:4142
-#: ../libpeony-private/peony-file-operations.c:4831
+#: ../libpeony-private/peony-file-operations.c:4138
+#: ../libpeony-private/peony-file-operations.c:4827
 msgid "You cannot move a folder into itself."
 msgstr "কোনো ফোল্ডাৰকে সেইটোৰ ভতৰেই স্থানান্তৰ কৰা যাব না ।"
 
-#: ../libpeony-private/peony-file-operations.c:4143
-#: ../libpeony-private/peony-file-operations.c:4832
+#: ../libpeony-private/peony-file-operations.c:4139
+#: ../libpeony-private/peony-file-operations.c:4828
 msgid "You cannot copy a folder into itself."
 msgstr "কোনো ফোল্ডাৰকে সেইটোৰ ভতৰেই নকল কৰা যাব না ।"
 
-#: ../libpeony-private/peony-file-operations.c:4144
-#: ../libpeony-private/peony-file-operations.c:4833
+#: ../libpeony-private/peony-file-operations.c:4140
+#: ../libpeony-private/peony-file-operations.c:4829
 msgid "The destination folder is inside the source folder."
 msgstr "গন্তব্য ফোল্ডাৰৰ অৱস্থান উৎস ফোল্ডাৰেত উপস্থিত আছে ।"
 
 #. the run_warning() frees all strings passed in automatically
-#: ../libpeony-private/peony-file-operations.c:4175
+#: ../libpeony-private/peony-file-operations.c:4171
 msgid "You cannot move a file over itself."
 msgstr "একই নথিপত্ৰৰ উপৰ সেইটোকে স্থানান্তৰ কৰা অসম্ভৱ ।"
 
-#: ../libpeony-private/peony-file-operations.c:4176
+#: ../libpeony-private/peony-file-operations.c:4172
 msgid "You cannot copy a file over itself."
 msgstr "কোনো নথিপত্ৰকে সেইটোৰ উপৰ নকল কৰা সম্ভৱ নহয় ।"
 
-#: ../libpeony-private/peony-file-operations.c:4177
+#: ../libpeony-private/peony-file-operations.c:4173
 msgid "The source file would be overwritten by the destination."
 msgstr "মূল নথিপত্ৰ মুছে উদ্দিষ্ট নথিপত্ৰ সেইটোৰ পৰিবৰ্তে লেখা হ'ব ।"
 
-#: ../libpeony-private/peony-file-operations.c:4397
+#: ../libpeony-private/peony-file-operations.c:4393
 #, c-format
 msgid "Could not remove the already existing file with the same name in %F."
 msgstr "%F-ত একই নামৰ এটা নথিপত্ৰ মুছে ফেলতে ব্যৰ্থ ।"
 
-#: ../libpeony-private/peony-file-operations.c:4468
+#: ../libpeony-private/peony-file-operations.c:4464
 #, c-format
 msgid "There was an error copying the file into %F."
 msgstr "নথিপত্ৰকে %F-ত নকল কৰাৰ সময় সমস্যা দেখা দিয়েছে ।"
 
-#: ../libpeony-private/peony-file-operations.c:4714
+#: ../libpeony-private/peony-file-operations.c:4710
 msgid "Copying Files"
 msgstr "নথিপত্ৰ নকল কৰা হৈছে"
 
-#: ../libpeony-private/peony-file-operations.c:4741
+#: ../libpeony-private/peony-file-operations.c:4737
 msgid "Preparing to Move to \"%B\""
 msgstr "\"%B\"-ত স্থানান্তৰৰ প্ৰস্তুতি চলছে"
 
-#: ../libpeony-private/peony-file-operations.c:4745
+#: ../libpeony-private/peony-file-operations.c:4741
 #, c-format
 msgid "Preparing to move %'d file"
 msgid_plural "Preparing to move %'d files"
 msgstr[0] "%'d নথিপত্ৰ আঁতৰুৱাৰ প্ৰস্তুতি চলছে"
 msgstr[1] "%'d নথিপত্ৰ আঁতৰুৱাৰ প্ৰস্তুতি চলছে"
 
-#: ../libpeony-private/peony-file-operations.c:4986
+#: ../libpeony-private/peony-file-operations.c:4982
 #, c-format
 msgid "There was an error moving the file into %F."
 msgstr "%F-ত নথিপত্ৰ স্থানান্তৰ কৰিবলৈ সমস্যা ।"
 
-#: ../libpeony-private/peony-file-operations.c:5256
+#: ../libpeony-private/peony-file-operations.c:5252
 msgid "Moving Files"
 msgstr "নথিপত্ৰ স্থানান্তৰ কৰা হৈছে"
 
-#: ../libpeony-private/peony-file-operations.c:5287
+#: ../libpeony-private/peony-file-operations.c:5283
 msgid "Creating links in \"%B\""
 msgstr "\"%B\"-ত লিংক তৈৰি কৰা হৈছে"
 
-#: ../libpeony-private/peony-file-operations.c:5291
+#: ../libpeony-private/peony-file-operations.c:5287
 #, c-format
 msgid "Making link to %'d file"
 msgid_plural "Making links to %'d files"
 msgstr[0] "%'d নথিপত্ৰৰ বাবে লিংক নিৰ্মাণ কৰা হৈছে"
 msgstr[1] "%'d নথিপত্ৰৰ বাবে লিংক নিৰ্মাণ কৰা হৈছে"
 
-#: ../libpeony-private/peony-file-operations.c:5426
+#: ../libpeony-private/peony-file-operations.c:5422
 msgid "Error while creating link to %B."
 msgstr "%B-ৰ লিংক তৈৰি কৰিবলৈ সমস্যা ।"
 
-#: ../libpeony-private/peony-file-operations.c:5428
+#: ../libpeony-private/peony-file-operations.c:5424
 msgid "Symbolic links only supported for local files"
 msgstr "অকল স্থানীয় নথিপত্ৰৰ ক্ষেত্ৰত সিম্বোলিক-লিংক প্ৰযোগ কৰা যাব ।"
 
-#: ../libpeony-private/peony-file-operations.c:5431
+#: ../libpeony-private/peony-file-operations.c:5427
 msgid "The target doesn't support symbolic links."
 msgstr "উদ্দিষ্ট বস্তু দ্বাৰা সিম্বোলিক-লিংক সমৰ্থিত নহয় ।"
 
-#: ../libpeony-private/peony-file-operations.c:5434
+#: ../libpeony-private/peony-file-operations.c:5430
 #, c-format
 msgid "There was an error creating the symlink in %F."
 msgstr "%F-ত এটা সিম-লিংক নিৰ্মাণ কৰিবলৈ সমস্যা"
 
-#: ../libpeony-private/peony-file-operations.c:5752
+#: ../libpeony-private/peony-file-operations.c:5748
 msgid "Setting permissions"
 msgstr "অনুমতি নিৰ্ধাৰণ কৰা হৈছে"
 
 #. localizers: the initial name of a new folder
-#: ../libpeony-private/peony-file-operations.c:6012
+#: ../libpeony-private/peony-file-operations.c:6008
 msgid "untitled folder"
 msgstr "নামবিহীন ফোল্ডাল"
 
 #. localizers: the initial name of a new empty file
-#: ../libpeony-private/peony-file-operations.c:6020
+#: ../libpeony-private/peony-file-operations.c:6016
 msgid "new file"
 msgstr "নতুন নথিপত্ৰ"
 
-#: ../libpeony-private/peony-file-operations.c:6208
+#: ../libpeony-private/peony-file-operations.c:6204
 msgid "Error while creating directory %B."
 msgstr "%B ডিৰেক্টৰি নিৰ্মাণ কৰিবলৈ সমস্যা ।"
 
-#: ../libpeony-private/peony-file-operations.c:6210
+#: ../libpeony-private/peony-file-operations.c:6206
 msgid "Error while creating file %B."
 msgstr "%B নথিপত্ৰ নিৰ্মাণ কৰিবলৈ সমস্যা ।"
 
-#: ../libpeony-private/peony-file-operations.c:6212
+#: ../libpeony-private/peony-file-operations.c:6208
 #, c-format
 msgid "There was an error creating the directory in %F."
 msgstr "%F-ত ডিৰেক্টৰি নিৰ্মাণ কৰিবলৈ সমস্যা ।"
 
-#: ../libpeony-private/peony-file-operations.c:6490
+#: ../libpeony-private/peony-file-operations.c:6486
 msgid "Emptying Trash"
 msgstr "আবৰ্জনাৰ বক্স ৰিক্ত কৰা হৈছে"
 
-#: ../libpeony-private/peony-file-operations.c:6539
-#: ../libpeony-private/peony-file-operations.c:6580
-#: ../libpeony-private/peony-file-operations.c:6615
-#: ../libpeony-private/peony-file-operations.c:6650
+#: ../libpeony-private/peony-file-operations.c:6535
+#: ../libpeony-private/peony-file-operations.c:6576
+#: ../libpeony-private/peony-file-operations.c:6611
+#: ../libpeony-private/peony-file-operations.c:6646
 msgid "Unable to mark launcher trusted (executable)"
 msgstr "Unable to mark launcher trusted (executable)"
 
@@ -1799,7 +1800,7 @@ msgid "Slashes are not allowed in filenames"
 msgstr "নথিপত্ৰৰ নামত স্ল্যাশ্ব চিহ্ন যোগ কৰা সম্ভৱ নহয়"
 
 #: ../libpeony-private/peony-file.c:1836
-#: ../libpeony-private/peony-mime-actions.c:1347
+#: ../libpeony-private/peony-mime-actions.c:1349
 #, c-format
 msgid "File not found"
 msgstr "নথিপত্ৰ পোৱা নাযায়"
@@ -1834,63 +1835,63 @@ msgstr "ডেস্কটপ নথিপত্ৰৰ নাম পৰিবৰ
 #. * off zero padding, and putting a "_" there will use
 #. * space padding instead of zero padding.
 #.
-#: ../libpeony-private/peony-file.c:4476
+#: ../libpeony-private/peony-file.c:4478
 msgid "today at 00:00:00 PM"
 msgstr "আজ অপৰাহ্ণ ০০:০০:০০"
 
-#: ../libpeony-private/peony-file.c:4477
+#: ../libpeony-private/peony-file.c:4479
 #: ../src/peony-file-management-properties.c:522
 msgid "today at %-I:%M:%S %p"
 msgstr "আজ %-I:%M:%S %p"
 
-#: ../libpeony-private/peony-file.c:4479
+#: ../libpeony-private/peony-file.c:4481
 msgid "today at 00:00 PM"
 msgstr "আজ অপৰাহ্ণ ০০:০০"
 
-#: ../libpeony-private/peony-file.c:4480
+#: ../libpeony-private/peony-file.c:4482
 msgid "today at %-I:%M %p"
 msgstr "আজ %-I:%M %p"
 
-#: ../libpeony-private/peony-file.c:4482
+#: ../libpeony-private/peony-file.c:4484
 msgid "today, 00:00 PM"
 msgstr "আজ, অপৰাহ্ণ ০০:০০"
 
-#: ../libpeony-private/peony-file.c:4483
+#: ../libpeony-private/peony-file.c:4485
 msgid "today, %-I:%M %p"
 msgstr "আজ, %-I:%M %p"
 
-#: ../libpeony-private/peony-file.c:4485 ../libpeony-private/peony-file.c:4486
+#: ../libpeony-private/peony-file.c:4487 ../libpeony-private/peony-file.c:4488
 msgid "today"
 msgstr "আজ"
 
 #. Yesterday, use special word.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: ../libpeony-private/peony-file.c:4495
+#: ../libpeony-private/peony-file.c:4497
 msgid "yesterday at 00:00:00 PM"
 msgstr "গতকাল অপৰাহ্ণ ০০:০০:০০"
 
-#: ../libpeony-private/peony-file.c:4496
+#: ../libpeony-private/peony-file.c:4498
 msgid "yesterday at %-I:%M:%S %p"
 msgstr "গতকাল %-I:%M:%S %p"
 
-#: ../libpeony-private/peony-file.c:4498
+#: ../libpeony-private/peony-file.c:4500
 msgid "yesterday at 00:00 PM"
 msgstr "গতকাল অপৰাহ্ণ ০০:০০"
 
-#: ../libpeony-private/peony-file.c:4499
+#: ../libpeony-private/peony-file.c:4501
 msgid "yesterday at %-I:%M %p"
 msgstr "গতকাল %-I:%M %p"
 
-#: ../libpeony-private/peony-file.c:4501
+#: ../libpeony-private/peony-file.c:4503
 msgid "yesterday, 00:00 PM"
 msgstr "গতকাল, অপৰাহ্ণ ০০:০০"
 
-#: ../libpeony-private/peony-file.c:4502
+#: ../libpeony-private/peony-file.c:4504
 msgid "yesterday, %-I:%M %p"
 msgstr "গতকাল, %-I:%M %p"
 
-#: ../libpeony-private/peony-file.c:4504 ../libpeony-private/peony-file.c:4505
+#: ../libpeony-private/peony-file.c:4506 ../libpeony-private/peony-file.c:4507
 msgid "yesterday"
 msgstr "গতকাল"
 
@@ -1899,103 +1900,103 @@ msgstr "গতকাল"
 #. * The width measurement templates correspond to
 #. * the day/month name with the most letters.
 #.
-#: ../libpeony-private/peony-file.c:4516
+#: ../libpeony-private/peony-file.c:4518
 msgid "Wednesday, September 00 0000 at 00:00:00 PM"
 msgstr "বুধবাৰ, সেপ্টেম্বৰ ০০ ০০০০ অপৰাহ্ণ ০০:০০:০০"
 
-#: ../libpeony-private/peony-file.c:4517
+#: ../libpeony-private/peony-file.c:4519
 msgid "%A, %B %-d %Y at %-I:%M:%S %p"
 msgstr "%A, %B %-d %Y সময় %-I:%M:%S %p"
 
-#: ../libpeony-private/peony-file.c:4519
+#: ../libpeony-private/peony-file.c:4521
 msgid "Mon, Oct 00 0000 at 00:00:00 PM"
 msgstr "সোমবাৰ, অক্টোবৰ ০০ ০০০০ অপৰাহ্ণ ০০:০০:০০"
 
-#: ../libpeony-private/peony-file.c:4520
+#: ../libpeony-private/peony-file.c:4522
 msgid "%a, %b %-d %Y at %-I:%M:%S %p"
 msgstr "%a, %b %-d %Y সময় %-I:%M:%S %p"
 
-#: ../libpeony-private/peony-file.c:4522
+#: ../libpeony-private/peony-file.c:4524
 msgid "Mon, Oct 00 0000 at 00:00 PM"
 msgstr "সোমবাৰ, অক্টোবৰ ০০ ০০০০ অপৰাহ্ণ ০০:০০"
 
-#: ../libpeony-private/peony-file.c:4523
+#: ../libpeony-private/peony-file.c:4525
 msgid "%a, %b %-d %Y at %-I:%M %p"
 msgstr "%a, %b %-d %Y সময় %-I:%M %p"
 
-#: ../libpeony-private/peony-file.c:4525
+#: ../libpeony-private/peony-file.c:4527
 msgid "Oct 00 0000 at 00:00 PM"
 msgstr "অক্টোবৰ ০০ ০০০০ অপৰাহ্ণ ০০:০০"
 
-#: ../libpeony-private/peony-file.c:4526
+#: ../libpeony-private/peony-file.c:4528
 msgid "%b %-d %Y at %-I:%M %p"
 msgstr "%b %-d %Y সময় %-I:%M %p"
 
-#: ../libpeony-private/peony-file.c:4528
+#: ../libpeony-private/peony-file.c:4530
 msgid "Oct 00 0000, 00:00 PM"
 msgstr "অক্টোবৰ ০০ ০০০০, অপৰাহ্ণ ০০:০০"
 
-#: ../libpeony-private/peony-file.c:4529
+#: ../libpeony-private/peony-file.c:4531
 msgid "%b %-d %Y, %-I:%M %p"
 msgstr "%b %-d %Y, %-I:%M %p"
 
-#: ../libpeony-private/peony-file.c:4531
+#: ../libpeony-private/peony-file.c:4533
 msgid "00/00/00, 00:00 PM"
 msgstr "০০/০০/০০, অপৰাহ্ণ ০০:০০"
 
-#: ../libpeony-private/peony-file.c:4532
+#: ../libpeony-private/peony-file.c:4534
 msgid "%m/%-d/%y, %-I:%M %p"
 msgstr "%m/%-d/%y, %-I:%M %p"
 
-#: ../libpeony-private/peony-file.c:4534
+#: ../libpeony-private/peony-file.c:4536
 msgid "00/00/00"
 msgstr "০০/০০/০০"
 
-#: ../libpeony-private/peony-file.c:4535
+#: ../libpeony-private/peony-file.c:4537
 msgid "%m/%d/%y"
 msgstr "%m/%d/%y"
 
-#: ../libpeony-private/peony-file.c:5147
+#: ../libpeony-private/peony-file.c:5149
 #, c-format
 msgid "Not allowed to set permissions"
 msgstr "অনুমতি নিৰ্ধাৰণ কৰাৰ বাবে অনুমোদিত নহয়"
 
-#: ../libpeony-private/peony-file.c:5441
+#: ../libpeony-private/peony-file.c:5443
 #, c-format
 msgid "Not allowed to set owner"
 msgstr "মালিকানা নিৰ্ধাৰণেৰ বাবে অনুমোদিত নহয়"
 
-#: ../libpeony-private/peony-file.c:5459
+#: ../libpeony-private/peony-file.c:5461
 #, c-format
 msgid "Specified owner '%s' doesn't exist"
 msgstr "উল্লিখিত মালিক \"%s\" বৰ্তমানে উপস্থিত নেই ।"
 
-#: ../libpeony-private/peony-file.c:5719
+#: ../libpeony-private/peony-file.c:5721
 #, c-format
 msgid "Not allowed to set group"
 msgstr "দল নিৰ্ধাৰণ কৰাৰ অনুমোদন নেই"
 
-#: ../libpeony-private/peony-file.c:5737
+#: ../libpeony-private/peony-file.c:5739
 #, c-format
 msgid "Specified group '%s' doesn't exist"
 msgstr "'%s' নাম চিহ্নিত দল অনুপস্থিত"
 
-#: ../libpeony-private/peony-file.c:5891
-#: ../src/file-manager/fm-directory-view.c:2432
+#: ../libpeony-private/peony-file.c:5893
+#: ../src/file-manager/fm-directory-view.c:2434
 #, c-format
 msgid "%'u item"
 msgid_plural "%'u items"
 msgstr[0] "%'u-টি বস্তু"
 msgstr[1] "%u-টি বস্তু"
 
-#: ../libpeony-private/peony-file.c:5892
+#: ../libpeony-private/peony-file.c:5894
 #, c-format
 msgid "%'u folder"
 msgid_plural "%'u folders"
 msgstr[0] "%'u-টি ফোল্ডাৰ"
 msgstr[1] "%u-টি ফোল্ডাৰ"
 
-#: ../libpeony-private/peony-file.c:5893
+#: ../libpeony-private/peony-file.c:5895
 #, c-format
 msgid "%'u file"
 msgid_plural "%'u files"
@@ -2003,50 +2004,50 @@ msgstr[0] "%'u-টি নথিপত্ৰ"
 msgstr[1] "%u-টি নথিপত্ৰ"
 
 #. Do this in a separate stage so that we don't have to put G_GUINT64_FORMAT in the translated string
-#: ../libpeony-private/peony-file.c:5980
+#: ../libpeony-private/peony-file.c:5982
 msgid "%"
 msgstr "%"
 
-#: ../libpeony-private/peony-file.c:5981
+#: ../libpeony-private/peony-file.c:5983
 #, c-format
 msgid "%s (%s bytes)"
 msgstr "%s (%s বাইট)"
 
 #. This means no contents at all were readable
-#: ../libpeony-private/peony-file.c:6299 ../libpeony-private/peony-file.c:6315
+#: ../libpeony-private/peony-file.c:6301 ../libpeony-private/peony-file.c:6317
 msgid "? items"
 msgstr "?-টি নথিপত্ৰ/ফোল্ডাৰ"
 
 #. This means no contents at all were readable
-#: ../libpeony-private/peony-file.c:6305
+#: ../libpeony-private/peony-file.c:6307
 msgid "? bytes"
 msgstr "? বাইট"
 
-#: ../libpeony-private/peony-file.c:6320
+#: ../libpeony-private/peony-file.c:6322
 msgid "unknown type"
 msgstr "অজ্ঞাত ধৰন"
 
-#: ../libpeony-private/peony-file.c:6323
+#: ../libpeony-private/peony-file.c:6325
 msgid "unknown MIME type"
 msgstr "অজ্ঞাত MIME ধৰন"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: ../libpeony-private/peony-file.c:6337
+#: ../libpeony-private/peony-file.c:6339
 #: ../src/file-manager/fm-properties-window.c:1286
 msgid "unknown"
 msgstr "অজ্ঞাত"
 
-#: ../libpeony-private/peony-file.c:6387
+#: ../libpeony-private/peony-file.c:6389
 msgid "program"
 msgstr "প্ৰোগ্ৰাম"
 
-#: ../libpeony-private/peony-file.c:6407
+#: ../libpeony-private/peony-file.c:6409
 msgid "link"
 msgstr "লিঙ্ক"
 
-#: ../libpeony-private/peony-file.c:6429
+#: ../libpeony-private/peony-file.c:6431
 msgid "link (broken)"
 msgstr "লিঙ্ক (ক্ষতিগ্ৰস্ত)"
 
@@ -2059,21 +2060,21 @@ msgstr ""
 msgid "The selection rectangle"
 msgstr "নিৰ্বাচন কৰিবলৈ ব্যবহৃত চতুৰ্ভূজ"
 
-#: ../libpeony-private/peony-mime-actions.c:720
+#: ../libpeony-private/peony-mime-actions.c:722
 #, c-format
 msgid "The Link \"%s\" is Broken."
 msgstr "\"%s\" লিঙ্কটি ক্ষতিগ্ৰস্ত ।"
 
-#: ../libpeony-private/peony-mime-actions.c:724
+#: ../libpeony-private/peony-mime-actions.c:726
 #, c-format
 msgid "The Link \"%s\" is Broken. Move it to Trash?"
 msgstr "\"%s\" লিঙ্কটি ক্ষতিগ্ৰস্ত । ইয়াক কি আবৰ্জনাৰ বক্সে সৰিয়ে নেৱ হ'ব?"
 
-#: ../libpeony-private/peony-mime-actions.c:731
+#: ../libpeony-private/peony-mime-actions.c:733
 msgid "This link cannot be used, because it has no target."
 msgstr "গন্তব্যস্থল উল্লিখিত না হৱৰ ফলত এই লিংকটি ব্যবহাৰ কৰা সম্ভৱ নহয় ।"
 
-#: ../libpeony-private/peony-mime-actions.c:735
+#: ../libpeony-private/peony-mime-actions.c:737
 #, c-format
 msgid "This link cannot be used, because its target \"%s\" doesn't exist."
 msgstr ""
@@ -2081,59 +2082,59 @@ msgstr ""
 
 #. name, stock id
 #. label, accelerator
-#: ../libpeony-private/peony-mime-actions.c:746
-#: ../src/file-manager/fm-directory-view.c:7650
-#: ../src/file-manager/fm-directory-view.c:7791
-#: ../src/file-manager/fm-directory-view.c:8890
-#: ../src/file-manager/fm-directory-view.c:9219
+#: ../libpeony-private/peony-mime-actions.c:748
+#: ../src/file-manager/fm-directory-view.c:7768
+#: ../src/file-manager/fm-directory-view.c:7909
+#: ../src/file-manager/fm-directory-view.c:9008
+#: ../src/file-manager/fm-directory-view.c:9337
 #: ../src/file-manager/fm-tree-view.c:1348
 msgid "Mo_ve to Trash"
 msgstr "আবৰ্জনাৰ বক্সে স্থানান্তৰণ (_v)"
 
-#: ../libpeony-private/peony-mime-actions.c:808
+#: ../libpeony-private/peony-mime-actions.c:810
 #, c-format
 msgid "Do you want to run \"%s\", or display its contents?"
 msgstr " \"%s\"সঞ্চালিত হ'ব নাকি অকল এত উপস্থিত বিষয়বস্তু প্ৰদৰ্শন কৰা হ'ব?"
 
-#: ../libpeony-private/peony-mime-actions.c:810
+#: ../libpeony-private/peony-mime-actions.c:812
 #, c-format
 msgid "\"%s\" is an executable text file."
 msgstr "\"%s\" এটা এক্সিকিউটেবল টেক্সট নথিপত্ৰ ।"
 
-#: ../libpeony-private/peony-mime-actions.c:816
+#: ../libpeony-private/peony-mime-actions.c:818
 msgid "Run in _Terminal"
 msgstr "টাৰ্মিনালত সঞ্চালন (_T)"
 
-#: ../libpeony-private/peony-mime-actions.c:817
+#: ../libpeony-private/peony-mime-actions.c:819
 msgid "_Display"
 msgstr "প্ৰদৰ্শন (_D)"
 
-#: ../libpeony-private/peony-mime-actions.c:820
+#: ../libpeony-private/peony-mime-actions.c:822
 #: ../src/peony-autorun-software.c:253
 msgid "_Run"
 msgstr "চালনা (_R)"
 
-#: ../libpeony-private/peony-mime-actions.c:1172
-#: ../src/file-manager/fm-directory-view.c:655
+#: ../libpeony-private/peony-mime-actions.c:1174
+#: ../src/file-manager/fm-directory-view.c:657
 msgid "Are you sure you want to open all files?"
 msgstr "আপনি কি নিশ্চিতৰূপে সব নথিপত্ৰসমূহ খুলতে ইচ্ছুক?"
 
-#: ../libpeony-private/peony-mime-actions.c:1175
+#: ../libpeony-private/peony-mime-actions.c:1177
 #, c-format
 msgid "This will open %d separate tab."
 msgid_plural "This will open %d separate tabs."
 msgstr[0] "এৰ ফলত %d-টি পৃথক ট্যাব খোলা হ'ব ।"
 msgstr[1] "এৰ ফলত %d-টি পৃথক উইন্ডো খোলা হ'ব ।"
 
-#: ../libpeony-private/peony-mime-actions.c:1180
-#: ../src/peony-location-bar.c:230
+#: ../libpeony-private/peony-mime-actions.c:1182
+#: ../src/peony-location-bar.c:273
 #, c-format
 msgid "This will open %d separate window."
 msgid_plural "This will open %d separate windows."
 msgstr[0] "এৰ ফলত %d-টি পৃথক উইন্ডো খোলা হ'ব ।"
 msgstr[1] "এৰ ফলত %d-টি পৃথক উইন্ডো খোলা হ'ব ।"
 
-#: ../libpeony-private/peony-mime-actions.c:1258
+#: ../libpeony-private/peony-mime-actions.c:1260
 #: ../src/peony-window-manage-views.c:2115
 #: ../src/peony-window-manage-views.c:2123
 #: ../src/peony-window-manage-views.c:2143
@@ -2144,28 +2145,28 @@ msgstr[1] "এৰ ফলত %d-টি পৃথক উইন্ডো খোল�
 msgid "Could not display \"%s\"."
 msgstr "\"%s\" প্ৰদৰ্শন কৰিবলৈ ব্যৰ্থ ।"
 
-#: ../libpeony-private/peony-mime-actions.c:1354
+#: ../libpeony-private/peony-mime-actions.c:1356
 msgid "The file is of an unknown type"
 msgstr "অজ্ঞাত ধৰনৰ নথিপত্ৰ"
 
-#: ../libpeony-private/peony-mime-actions.c:1359
+#: ../libpeony-private/peony-mime-actions.c:1361
 #, c-format
 msgid "There is no application installed for %s files"
 msgstr "There is no application installed for %s files"
 
-#: ../libpeony-private/peony-mime-actions.c:1374
+#: ../libpeony-private/peony-mime-actions.c:1376
 msgid "_Select Application"
 msgstr ""
 
-#: ../libpeony-private/peony-mime-actions.c:1412
+#: ../libpeony-private/peony-mime-actions.c:1414
 msgid "There was an internal error trying to search for applications:"
 msgstr "এপ্লিকেশন আৰম্ভ কৰিবলৈ ব্যৰ্থ ।"
 
-#: ../libpeony-private/peony-mime-actions.c:1414
+#: ../libpeony-private/peony-mime-actions.c:1416
 msgid "Unable to search for application"
 msgstr "এপ্লিকেশন অনুসন্ধান কৰিবলৈ ব্যৰ্থ"
 
-#: ../libpeony-private/peony-mime-actions.c:1540
+#: ../libpeony-private/peony-mime-actions.c:1542
 #, c-format
 msgid ""
 "There is no application installed for %s files.\n"
@@ -2174,11 +2175,11 @@ msgstr ""
 "There is no application installed for %s files.\n"
 "Do you want to search for an application to open this file?"
 
-#: ../libpeony-private/peony-mime-actions.c:1704
+#: ../libpeony-private/peony-mime-actions.c:1706
 msgid "Untrusted application launcher"
 msgstr "এপ্লিকেশন প্ৰাৰম্ভকৰ্তা বিশ্বস্ত নহয়"
 
-#: ../libpeony-private/peony-mime-actions.c:1707
+#: ../libpeony-private/peony-mime-actions.c:1709
 #, c-format
 msgid ""
 "The application launcher \"%s\" has not been marked as trusted. If you do "
@@ -2187,31 +2188,31 @@ msgstr ""
 "The application launcher \"%s\" has not been marked as trusted. If you do "
 "not know the source of this file, launching it may be unsafe."
 
-#: ../libpeony-private/peony-mime-actions.c:1722
+#: ../libpeony-private/peony-mime-actions.c:1724
 msgid "_Launch Anyway"
 msgstr "তথাপি আৰম্ভ কৰা হ'ব (_L)"
 
-#: ../libpeony-private/peony-mime-actions.c:1726
+#: ../libpeony-private/peony-mime-actions.c:1728
 msgid "Mark as _Trusted"
 msgstr "বিশ্বস্ত হিসাবে চিহ্নিত কৰা হ'ব (_T)"
 
-#: ../libpeony-private/peony-mime-actions.c:2022
-#: ../libpeony-private/peony-mime-actions.c:2328
-#: ../src/file-manager/fm-directory-view.c:6656
+#: ../libpeony-private/peony-mime-actions.c:2024
+#: ../libpeony-private/peony-mime-actions.c:2330
+#: ../src/file-manager/fm-directory-view.c:6774
 msgid "Unable to mount location"
 msgstr "চিহ্নিত অৱস্থান মাউন্ট কৰিবলৈ ব্যৰ্থ"
 
-#: ../libpeony-private/peony-mime-actions.c:2416
-#: ../src/file-manager/fm-directory-view.c:6830
+#: ../libpeony-private/peony-mime-actions.c:2418
+#: ../src/file-manager/fm-directory-view.c:6948
 msgid "Unable to start location"
 msgstr "অৱস্থান আৰম্ভ কৰিবলৈ ব্যৰ্থ"
 
-#: ../libpeony-private/peony-mime-actions.c:2509
+#: ../libpeony-private/peony-mime-actions.c:2516
 #, c-format
 msgid "Opening \"%s\"."
 msgstr "\"%s\" খোলা হৈছে ।"
 
-#: ../libpeony-private/peony-mime-actions.c:2514
+#: ../libpeony-private/peony-mime-actions.c:2521
 #, c-format
 msgid "Opening %d item."
 msgid_plural "Opening %d items."
@@ -2311,9 +2312,9 @@ msgstr "ব্ৰাউজ কৰক...(_B)"
 #. name, stock id
 #. label, accelerator
 #: ../libpeony-private/peony-open-with-dialog.c:962
-#: ../src/file-manager/fm-directory-view.c:7554
-#: ../src/file-manager/fm-directory-view.c:9086
-#: ../src/file-manager/fm-tree-view.c:1269 ../src/peony-places-sidebar.c:2774
+#: ../src/file-manager/fm-directory-view.c:7672
+#: ../src/file-manager/fm-directory-view.c:9204
+#: ../src/file-manager/fm-tree-view.c:1269 ../src/peony-places-sidebar.c:3395
 msgid "_Open"
 msgstr "খোলক (_O)"
 
@@ -2482,8 +2483,8 @@ msgstr "প্ৰস্তুতি"
 #. label, accelerator
 #. tooltip
 #: ../libpeony-private/peony-query.c:140
-#: ../src/file-manager/fm-directory-view.c:7622
-#: ../src/file-manager/fm-directory-view.c:7623
+#: ../src/file-manager/fm-directory-view.c:7740
+#: ../src/file-manager/fm-directory-view.c:7741
 #, fuzzy, c-format
 msgid "Find duplicate file"
 msgstr "%'d নথিপত্ৰৰ প্ৰতিলিপি তৈৰি কৰা হৈছে"
@@ -3057,18 +3058,26 @@ msgstr ""
 "। সম্ভাব্য মান 6 (৬)ৰ পৰা 14 (১৪)-ত হ'ব ।"
 
 #: ../libpeony-private/org.ukui.peony.gschema.xml.h:31
-msgid "Gsettings signal to peony search"
+msgid "Set right menuitem 'Undo' status"
 msgstr ""
 
 #: ../libpeony-private/org.ukui.peony.gschema.xml.h:32
-msgid "After peony-search changerd, peony search page refresh."
+msgid "If it is true, right menuitem 'Undo' show, else sensitive is false"
 msgstr ""
 
 #: ../libpeony-private/org.ukui.peony.gschema.xml.h:33
+msgid "Gsettings signal to peony search"
+msgstr ""
+
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:34
+msgid "After peony-search changerd, peony search page refresh."
+msgstr ""
+
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:35
 msgid "Mouse button to activate the \"Back\" command in browser window"
 msgstr "ব্ৰাউজাৰ উইন্ডোত \"পিছলৈ\" আদেশ সক্ৰিয় কৰাৰ বাবে মাউছ বুটাম"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:34
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:36
 msgid ""
 "For users with mice that have buttons for \"Forward\" and \"Back\", this key "
 "will set which button activates the \"Back\" command in a browser window. "
@@ -3077,11 +3086,11 @@ msgstr ""
 "\"আগলৈ\" আৰু \"পিছলৈ\" বুটাম সহ মাউছৰ ক্ষেত্ৰত এই দুটাৰ কোন কি টিপা হ'লে ব্ৰাউজাৰ "
 "উইন্ডোত \"Back\" (পূৰ্ববৰ্তী) আদেশ সঞ্চালিত হ'ব সেইটো(১৪)-ত হ'ব ।"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:35
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:37
 msgid "When to show thumbnails of image files"
 msgstr "ছবিৰ নথিপত্ৰৰ থাম্ব-নেইল কখন প্ৰদৰ্শন কৰা হ'ব"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:36
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:38
 msgid ""
 "Speed tradeoff for when to show an image file as a thumbnail. If set to "
 "\"always\" then always thumbnail, even if the folder is on a remote server. "
@@ -3090,11 +3099,11 @@ msgid ""
 "generic icon."
 msgstr ""
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:37
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:39
 msgid "Maximum image size for thumbnailing"
 msgstr "ছবিৰ থাম্ব-নেইল নিৰ্মাণেৰ সৰ্বোচ্চ মাপ"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:38
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:40
 msgid ""
 "Images over this size (in bytes) won't be thumbnailed. The purpose of this "
 "setting is to avoid thumbnailing large images that may take a long time to "
@@ -3104,11 +3113,11 @@ msgstr ""
 "সময় অত্যাধিক সময় আৰু মেমৰিৰ ব্যয় এড়ানোৰ বাবে বৃহৎ মাপেৰ ছবিৰ থাম্ব-নেইল নিৰ্মাণ না "
 "কৰাৰ বাবে এই বৈশিষ্ট্য ।"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:39
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:41
 msgid "Whether to preview sounds when mousing over an icon"
 msgstr "শব্দধাৰী নথিপত্ৰৰ উপৰ মাউছ চালানোৰ সময় শব্দ বাজানো হ'ব নে নহয়"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:40
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:42
 msgid ""
 "Speed tradeoff for when to preview a sound file when mousing over a files "
 "icon. If set to \"always\" then always plays the sound, even if the file is "
@@ -3116,11 +3125,11 @@ msgid ""
 "local file systems. If set to \"never\" then it never previews sound."
 msgstr ""
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:41
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:43
 msgid "Show advanced permissions in the file property dialog"
 msgstr "নথিপত্ৰৰ বৈশিষ্ট্যেৰ ডায়লগ বক্সে উন্নত মাত্ৰাৰ অনুমতি প্ৰদৰ্শন কৰা হ'ব"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:42
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:44
 msgid ""
 "If set to true, then Peony lets you edit and display file permissions in a "
 "more unix-like way, accessing some more esoteric options."
@@ -3128,11 +3137,11 @@ msgstr ""
 "মান সত্য (true) হলে, কিছু বোধগম্য পন্থায় Peony দ্বাৰা unix-ৰ ন্যায় নথিপত্ৰ অনুমতি "
 "প্ৰদৰ্শন আৰু নিৰ্ধাৰণেৰ প্ৰণালী উপলব্ধ কৰা হয় ।"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:43
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:45
 msgid "Show folders first in windows"
 msgstr "উইন্ডোত প্ৰথমে ফোল্ডাৰ প্ৰদৰ্শন কৰা হ'ব"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:44
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:46
 msgid ""
 "If set to true, then Peony shows folders prior to showing files in the icon "
 "and list views."
@@ -3140,21 +3149,21 @@ msgstr ""
 "মান সত্য (true) হলে, আইকন অথবা তালিকা-ভিত্তিক প্ৰদৰ্শনে নথিপত্ৰৰ পূৰ্বে Peony-এ "
 "ফোল্ডাৰ প্ৰদৰ্শন কৰা হ'ব ।"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:45
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:47
 msgid "Default sort order"
 msgstr "অবিকল্পিত অৱস্থায় ব্যবহৃত ক্ৰমবিন্যাস"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:46
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:48
 msgid ""
 "The default sort-order for items in the icon view. Possible values are \"name"
 "\", \"size\", \"type\", \"mtime\", and \"emblems\"."
 msgstr ""
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:47
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:49
 msgid "Reverse sort order in new windows"
 msgstr "নতুন উইন্ডোতে বিপৰীত দিশায় ক্ৰমবিন্যাস কৰা হ'ব"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:48
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:50
 msgid ""
 "If true, files in new windows will be sorted in reverse order. ie, if sorted "
 "by name, then instead of sorting the files from \"a\" to \"z\", they will be "
@@ -3166,11 +3175,11 @@ msgstr ""
 "প্ৰয়োগ কৰা হ'ব; মাপ অনুসাৰে সাজানো হলে ডাঙৰৰ পৰা সৰু মাপেৰ পৰিবৰ্তে সৰুৰ পৰা ডাঙৰ "
 "মাপে সাজানো হ'ব ।"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:49
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:51
 msgid "Peony uses the users home folder as the desktop"
 msgstr "Peony দ্বাৰা ডেস্কটপে ব্যবহাৰকৰ্তাদেৰ ব্যক্তিগত ফোল্ডাৰ প্ৰয়োগ কৰা হ'ব"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:50
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:52
 msgid ""
 "If set to true, then Peony will use the user's home folder as the desktop. "
 "If it is false, then it will use ~/Desktop as the desktop."
@@ -3179,47 +3188,47 @@ msgstr ""
 "হ'ব । অন্যথা, মান সত্য না হলে (false) ~/Desktop ফোল্ডাৰৰ বিষয়বস্তু ডেস্কটপে "
 "প্ৰদৰ্শিত হ'ব ।"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:51
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:53
 msgid "Custom Background"
 msgstr "স্বনিৰ্ধাৰিত পটভূমি"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:52
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:54
 msgid "Whether a custom default folder background has been set."
 msgstr "ফোল্ডাৰৰ বাবে স্বনিৰ্বাচিত পটভূমি নিৰ্ধাৰণ কৰা হয়েছে নে নহয় ।"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:53
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:55
 msgid "Default Background Color"
 msgstr "অবিকল্পিত অৱস্থায় পটভূমিৰ ৰং"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:54
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:56
 msgid ""
 "Color for the default folder background. Only used if background_set is true."
 msgstr ""
 "ফোল্ডাৰৰ অবিকল্পিত পটভূমিৰ ৰং । অকল background_set সত্য (true) হলেই ইয়াক ব্যবহৃত "
 "হয় ।"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:55
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:57
 msgid "Default Background Filename"
 msgstr "অবিকল্পিত অৱস্থায় পটভূমিতে ব্যবহৃত নথিপত্ৰৰ নাম"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:56
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:58
 msgid ""
 "Uri of the default folder background. Only used if background_set is true."
 msgstr ""
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:57
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:59
 msgid "Custom Side Pane Background Set"
 msgstr "পাৰ্শ্ববৰ্তী পেইনৰ পটভূমিৰ বাবে স্বনিৰ্বাচিত সংকলন"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:58
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:60
 msgid "Whether a custom default side pane background has been set."
 msgstr "পাৰ্শ্ববৰ্তী পেইনৰ বাবে স্বনিৰ্বাচিত পটভূমি নিৰ্ধাৰণ কৰা হয়েছে নে নহয় ।"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:59
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:61
 msgid "Default Side Pane Background Color"
 msgstr "অবিকল্পিত অৱস্থায় পাৰ্শ্ববৰ্তী পেইনৰ পটভূমিৰ ৰং"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:60
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:62
 msgid ""
 "Filename for the default side pane background. Only used if "
 "side_pane_background_set is true."
@@ -3227,72 +3236,80 @@ msgstr ""
 "পাৰ্শ্ববৰ্তী পেইনৰ অবিকল্পিত পটভূমিতে ব্যবহৃত নথিপত্ৰৰ নাম । একমাত্ৰ "
 "side_pane_background_set সত্য (true) ইয়াক হলেই ব্যবহৃত হয় ।"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:61
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:63
 msgid "Default Side Pane Background Filename"
 msgstr "অবিকল্পিত অৱস্থায় পাৰ্শ্ববৰ্তী পেইনে ব্যবহৃত পটভূমিৰ নথিপত্ৰৰ নাম"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:62
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:64
 msgid ""
 "Uri of the default side pane background. Only used if "
 "side_pane_background_set is true."
 msgstr ""
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:63
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:65
 msgid "Default folder viewer"
 msgstr "অবিকল্পিত ফোল্ডাৰ প্ৰদৰ্শন ব্যবস্থা"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:64
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:66
 msgid ""
 "When a folder is visited this viewer is used unless you have selected "
 "another view for that particular folder. Possible values are \"list-view\", "
 "\"icon-view\" and \"compact-view\"."
 msgstr ""
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:65
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:67
 msgid "Date Format"
 msgstr "তাৰিখ প্ৰদৰ্শনৰ বিন্যাস"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:66
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:68
 msgid ""
 "The format of file dates. Possible values are \"locale\", \"iso\", and "
 "\"informal\"."
 msgstr ""
 "নথিপত্ৰৰ তাৰিখেৰ বৰ্ণনা । সম্ভাব্য মান হল \"locale\", \"iso\" আৰু \"informal\" ।"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:67
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:69
 msgid "Whether to show hidden files"
 msgstr "আড়াল কৰা নথিপত্ৰ প্ৰদৰ্শিত হ'ব নে নহয়"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:68
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:70
 msgid ""
 "If set to true, then hidden files are shown by default in the file manager. "
 "Hidden files are either dotfiles, listed in the folder's .hidden file or "
 "backup files ending with a tilde (~)."
 msgstr ""
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:69
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:71
 msgid "Whether to show file sizes with IEC units"
 msgstr ""
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:70
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:72
 msgid ""
 "If set to true, file sizes are shown using IEC (base 1024) units with \"KiB"
 "\" style suffixes, instead of default with SI units."
 msgstr ""
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:71
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:73
 msgid "Whether to show desktop notifications"
 msgstr ""
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:72
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:74
 msgid "If set to true, Peony will show desktop notifications for eject events"
 msgstr ""
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:73
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:75
+msgid "Default favorite iter position"
+msgstr ""
+
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:76
+msgid "Record favorite iter position"
+msgstr ""
+
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:77
 msgid "List of possible captions on icons"
 msgstr "আইকনে প্ৰদৰ্শনযোগ্য সম্ভাব্য শীৰ্ষকেৰ তালিকা"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:74
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:78
 msgid ""
 "A list of captions below an icon in the icon view and the desktop. The "
 "actual number of captions shown depends on the zoom level. Some possible "
@@ -3301,48 +3318,48 @@ msgid ""
 "\" and \"mime_type\"."
 msgstr ""
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:75
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:79
 msgid "Use tighter layout in new windows"
 msgstr "নতুন উইন্ডো ঘন বিন্যাসে সাজানো হ'ব"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:76
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:80
 msgid "If true, icons will be laid out tighter by default in new windows."
 msgstr ""
 "মান সত্য (true) হলে নতুন উইন্ডোত প্ৰদৰ্শিত আইকনসমূহত অন্তৰ্বৰ্তী শূণ্যস্থান হ্ৰাস কৰা "
 "হ'ব  ।"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:77
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:81
 msgid "Put labels beside icons"
 msgstr "আইকনৰ পাশে লেবেল স্থাপিত হ'ব"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:78
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:82
 msgid ""
 "If true, labels will be placed beside icons rather than underneath them."
 msgstr ""
 "মান সত্য (true) হলে, আইকনসমূহৰ নীচে লেবেল স্থাপন না কৰি পাৰ্শ্ববৰ্তী অৱস্থানে সেসমূহ "
 "প্ৰদৰ্শিত হ'ব ।"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:79
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:83
 msgid "Default icon zoom level"
 msgstr "অবিকল্পিত অৱস্থায় আইকন প্ৰদৰ্শনৰ মাপ"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:80
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:84
 msgid "Default zoom level used by the icon view."
 msgstr "আইকন-ভিত্তিক প্ৰদৰ্শনে অবিকল্পিত প্ৰদৰ্শনৰ মাপ ।"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:81
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:85
 msgid "Default Thumbnail Icon Size"
 msgstr "অবিকল্পিত আইকন মাপ"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:82
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:86
 msgid "The default size of an icon for a thumbnail in the icon view."
 msgstr "সৰ্বমোট উল্লিখিত সময় অবধি."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:83
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:87
 msgid "Text Ellipsis Limit"
 msgstr "Text Ellipsis Limit"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:85
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:89
 #, no-c-format
 msgid ""
 "A string specifying how parts of overlong file names should be replaced by "
@@ -3362,19 +3379,19 @@ msgid ""
 "(100%), large (150%), larger (200%), largest (400%)"
 msgstr ""
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:88
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:92
 msgid "Default compact view zoom level"
 msgstr "সংক্ষিপ্ত প্ৰদৰ্শনে অবিকল্পিত অৱস্থায় প্ৰদৰ্শনৰ মাপ ।"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:89
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:93
 msgid "Default zoom level used by the compact view."
 msgstr "সংক্ষিপ্ত প্ৰদৰ্শনৰ ক্ষেত্ৰত অবিকল্পিত অৱস্থায় ব্যবহৃত প্ৰদৰ্শনৰ মাপ ।"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:90
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:94
 msgid "All columns have same width"
 msgstr "প্ৰতিটি কলামৰ ক্ষেত্ৰত প্ৰস্থেৰ একই মাপ প্ৰয়োগ কৰা হ'ব"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:91
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:95
 msgid ""
 "If this preference is set, all columns in the compact view have the same "
 "width. Otherwise, the width of each column is determined seperately."
@@ -3382,35 +3399,35 @@ msgstr ""
 "If this preference is set, all columns in the compact view have the same "
 "width. Otherwise, the width of each column is determined seperately."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:92
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:96
 msgid "Default list zoom level"
 msgstr "অবিকল্পিত অৱস্থায় তালিকা প্ৰদৰ্শনৰ মাপ"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:93
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:97
 msgid "Default zoom level used by the list view."
 msgstr "তালিক-ভিত্তিক প্ৰদৰ্শনে অবিকল্পিত প্ৰদৰ্শনৰ মাপ ।"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:94
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:98
 msgid "Default list of columns visible in the list view"
 msgstr "তালিকা-ভিত্তিক প্ৰদৰ্শনে অবিকল্পিত অৱস্থায় প্ৰদৰ্শিত কলামৰ তালিকা"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:95
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:99
 msgid "Default list of columns visible in the list view."
 msgstr "তালিকা-ভিত্তিক প্ৰদৰ্শনে অবিকল্পিত অৱস্থায় প্ৰদৰ্শিত কলামৰ তালিকা ।"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:96
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:100
 msgid "Default column order in the list view"
 msgstr "তালিকা-ভিত্তিক প্ৰদৰ্শনে অবিকল্পিত অৱস্থায় কলামৰ অনুক্ৰম"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:97
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:101
 msgid "Default column order in the list view."
 msgstr "তালিকা-ভিত্তিক প্ৰদৰ্শনে অবিকল্পিত অৱস্থায় কলামৰ অনুক্ৰম ।"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:98
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:102
 msgid "Only show folders in the tree side pane"
 msgstr "পাৰ্শ্ববৰ্তী পেইনৰ ট্ৰি-ত অকল ফোল্ডাৰ প্ৰদৰ্শন কৰা হ'ব"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:99
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:103
 msgid ""
 "If set to true, Peony will only show folders in the tree side pane. "
 "Otherwise it will show both folders and files."
@@ -3418,19 +3435,19 @@ msgstr ""
 "মান সত্য (true) হলে, Peony দ্বাৰা অকল পাৰ্শ্ববৰ্তী ট্ৰি পেইনেত ফোল্ডাৰ প্ৰদৰ্শন কৰা "
 "হ'ব । অন্যথা, ফোল্ডাৰ আৰু নথিপত্ৰ উভয় প্ৰদৰ্শন কৰা হ'ব ।"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:100
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:104
 msgid "Desktop font"
 msgstr "ডেস্কটপে ব্যবহৃত ফন্ট"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:101
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:105
 msgid "The font description used for the icons on the desktop."
 msgstr ""
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:102
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:106
 msgid "Home icon visible on desktop"
 msgstr "ডেস্কটপে ব্যক্তিগত ফোল্ডাৰৰ আইকন প্ৰদৰ্শিত হ'ব"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:103
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:107
 msgid ""
 "If this is set to true, an icon linking to the home folder will be put on "
 "the desktop."
@@ -3438,11 +3455,11 @@ msgstr ""
 "মান সত্য (true) হলে ডেস্কটপেৰ উপৰে ব্যক্তিগত ফোল্ডাৰ নিৰ্দেশকৰ্তা এটা আইকন প্ৰদৰ্শিত "
 "হ'ব ।"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:104
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:108
 msgid "Computer icon visible on desktop"
 msgstr "ডেস্কটপে কম্পিউটাৰ আইকন প্ৰদৰ্শন কৰা হ'ব"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:105
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:109
 msgid ""
 "If this is set to true, an icon linking to the computer location will be put "
 "on the desktop."
@@ -3450,11 +3467,11 @@ msgstr ""
 "মান সত্য (true) হলে ডেস্কটপেৰ উপৰে কম্পিউটাৰৰ অৱস্থান নিৰ্দেশকৰ্তা এটা আইকন "
 "প্ৰদৰ্শিত হ'ব ।"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:106
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:110
 msgid "Trash icon visible on desktop"
 msgstr "আবৰ্জনাৰ বক্সৰ আইকন ডেস্কটপে প্ৰদৰ্শিত হ'ব"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:107
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:111
 msgid ""
 "If this is set to true, an icon linking to the trash will be put on the "
 "desktop."
@@ -3462,22 +3479,22 @@ msgstr ""
 "মান সত্য (true) হলে ডেস্কটপেৰ উপৰে আবৰ্জনাৰ বক্স নিৰ্দেশকৰ্তা এটা আইকন প্ৰদৰ্শিত হ'ব "
 "।"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:108
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:112
 msgid "Show mounted volumes on the desktop"
 msgstr "মাউন্ট কৰা ভলিউমসমূহ ডেস্কটপে প্ৰদৰ্শন কৰা হ'ব"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:109
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:113
 msgid ""
 "If this is set to true, icons linking to mounted volumes will be put on the "
 "desktop."
 msgstr ""
 "মান সত্য (true) হলে, মাউন্ট কৰা ভলিউম উল্লেখকৰ্তা আইকনসমূহ ডেস্কটপে স্থাপিত হ'ব ।"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:110
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:114
 msgid "Network Servers icon visible on the desktop"
 msgstr "ডেস্কটপে নেটৱৰ্ক সাৰ্ভাৰৰ আইকন প্ৰদৰ্শিত হ'ব"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:111
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:115
 msgid ""
 "If this is set to true, an icon linking to the Network Servers view will be "
 "put on the desktop."
@@ -3485,11 +3502,11 @@ msgstr ""
 "মান সত্য (true) হলে ডেস্কটপেৰ উপৰে নেটৱৰ্ক সাৰ্ভাৰৰ প্ৰদৰ্শন নিৰ্দেশকৰ্তা এটা আইকন "
 "প্ৰদৰ্শিত হ'ব ।"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:112
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:116
 msgid "Desktop computer icon name"
 msgstr "ডেস্কটপে প্ৰদৰ্শিত কম্পিউটাৰ আইকনৰ নাম"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:113
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:117
 msgid ""
 "This name can be set if you want a custom name for the computer icon on the "
 "desktop."
@@ -3497,11 +3514,11 @@ msgstr ""
 "ডেস্কটপে অবস্থিত কম্পিউটাৰ আইকনৰ বাবে স্বনিৰ্বাচিত নাম ব্যবহাৰৰ বাবে তা ধাৰ্য কৰা "
 "যাব ।"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:114
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:118
 msgid "Desktop home icon name"
 msgstr "ডেস্কটপে প্ৰদৰ্শিত ব্যক্তিগত ফোল্ডাৰৰ আইকনৰ নাম"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:115
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:119
 msgid ""
 "This name can be set if you want a custom name for the home icon on the "
 "desktop."
@@ -3509,11 +3526,11 @@ msgstr ""
 "ডেস্কটপে অবস্থিত ব্যক্তিগত ফোল্ডাৰৰ আইকনৰ বাবে স্বনিৰ্বাচিত নাম ব্যবহাৰৰ বাবে তা "
 "ধাৰ্য কৰা যাব ।"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:116
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:120
 msgid "Desktop trash icon name"
 msgstr "ডেস্কটপে প্ৰদৰ্শিত আবৰ্জনাৰ বক্সৰ আইকনৰ নাম"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:117
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:121
 msgid ""
 "This name can be set if you want a custom name for the trash icon on the "
 "desktop."
@@ -3521,11 +3538,11 @@ msgstr ""
 "ডেস্কটপে অবস্থিত আবৰ্জনাৰ বক্স আইকনৰ বাবে স্বনিৰ্বাচিত নাম ব্যবহাৰৰ বাবে তা ধাৰ্য "
 "কৰা যাব ।"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:118
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:122
 msgid "Network servers icon name"
 msgstr "নেটৱৰ্ক সাৰ্ভাৰ আইকনৰ নাম"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:119
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:123
 msgid ""
 "This name can be set if you want a custom name for the network servers icon "
 "on the desktop."
@@ -3533,7 +3550,7 @@ msgstr ""
 "ডেস্কটপে অবস্থিত নেটৱৰ্ক সাৰ্ভাৰ আইকনৰ বাবে স্বনিৰ্বাচিত নাম ব্যবহাৰৰ বাবে তা ধাৰ্য "
 "কৰা যাব ।"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:120
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:124
 msgid ""
 "An integer specifying how parts of overlong file names should be replaced by "
 "ellipses on the desktop. If the number is larger than 0, the file name will "
@@ -3545,78 +3562,78 @@ msgstr ""
 "not exceed the given number of lines. If the number is 0 or smaller, no "
 "limit is imposed on the number of displayed lines."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:121
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:125
 msgid "The geometry string for a navigation window."
 msgstr ""
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:122
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:126
 msgid ""
 "A string containing the saved geometry and coordinates string for navigation "
 "windows."
 msgstr ""
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:123
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:127
 msgid "Whether the navigation window should be maximized."
 msgstr ""
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:124
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:128
 msgid "Whether the navigation window should be maximized by default."
 msgstr ""
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:125
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:129
 msgid "Width of the side pane"
 msgstr "পাৰ্শ্ববৰ্তী পেইন-ৰ প্ৰস্থ"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:126
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:130
 msgid "The default width of the side pane in new windows."
 msgstr "অবিকল্পিত অৱস্থায় নতুন উইন্ডোতে পাৰ্শ্ববৰ্তী পেইনৰ প্ৰস্থেৰ মাপ ।"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:127
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:131
 msgid "Show toolbar in new windows"
 msgstr "নতুন উইন্ডোতে টুলবাৰ প্ৰদৰ্শিত হ'ব"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:128
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:132
 msgid "If set to true, newly opened windows will have toolbars visible."
 msgstr "মান সত্য (true) হলে নতুন উইন্ডোতে টুলবাৰ প্ৰদৰ্শিত হ'ব"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:129
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:133
 msgid "Show location bar in new windows"
 msgstr "নতুন উইন্ডোতে অৱস্থান সূচক বাৰ প্ৰদৰ্শিত হ'ব"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:130
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:134
 msgid ""
 "If set to true, newly opened windows will have the location bar visible."
 msgstr "মান সত্য (true) হলে নতুন উইন্ডোতে অৱস্থানসূচক বাৰ প্ৰদৰ্শিত হ'ব ।"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:131
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:135
 msgid "Show status bar in new windows"
 msgstr "নতুন উইন্ডোতে অৱস্থা সূচক পেইন প্ৰদৰ্শিত হ'ব"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:132
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:136
 msgid "If set to true, newly opened windows will have the status bar visible."
 msgstr "মান সত্য (true) হলে নতুন উইন্ডোতে স্ট্যাটাস বাৰ প্ৰদৰ্শিত হ'ব ।"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:133
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:137
 msgid "Show side pane in new windows"
 msgstr "নতুন উইন্ডোতে পাৰ্শ্ববৰ্তী পেইন প্ৰদৰ্শিত হ'ব"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:134
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:138
 msgid "If set to true, newly opened windows will have the side pane visible."
 msgstr "মান সত্য (true) হলে নতুন উইন্ডোতে পাৰ্শ্ববৰ্তী পেইন প্ৰদৰ্শিত হ'ব ।"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:135
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:139
 msgid "Side pane view"
 msgstr "পাৰ্শ্ববৰ্তী পেইনৰ প্ৰদৰ্শন"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:136
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:140
 msgid "The side pane view to show in newly opened windows."
 msgstr "নতুন উইন্ডোত প্ৰদৰ্শনযোগ্য পাৰ্শ্ববৰ্তী পেইন ।"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:137
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:141
 msgid "List of extensions in disabled state."
 msgstr ""
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:138
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:142
 msgid "This list contains the extensions that are currently de-activated."
 msgstr ""
 
@@ -3710,7 +3727,7 @@ msgstr "অটোৰান সংক্ৰান্ত প্ৰমপ্ট"
 #: ../data/peony-browser.desktop.in.in.h:1
 #: ../data/peony-folder-handler.desktop.in.in.h:1
 #: ../data/peony.desktop.in.in.h:1 ../src/peony-spatial-window.c:373
-#: ../src/peony-window-menus.c:536 ../src/peony-window.c:172
+#: ../src/peony-window-menus.c:679 ../src/peony-window.c:172
 msgid "Peony"
 msgstr "Peony"
 
@@ -3723,7 +3740,7 @@ msgid "Browse the file system with the file manager"
 msgstr "নথিপত্ৰ ব্যবস্থাপকেৰ সাহায্যে নথিপত্ৰ-সিস্টেম ব্ৰাউজ কৰক"
 
 #. tooltip
-#: ../data/peony-computer.desktop.in.in.h:2 ../src/peony-window-menus.c:899
+#: ../data/peony-computer.desktop.in.in.h:2 ../src/peony-window-menus.c:1047
 msgid ""
 "Browse all local and remote disks and folders accessible from this computer"
 msgstr ""
@@ -3743,7 +3760,7 @@ msgid "Home Folder"
 msgstr "ব্যক্তিগত ফোল্ডাৰ"
 
 #. tooltip
-#: ../data/peony-home.desktop.in.in.h:2 ../src/peony-window-menus.c:894
+#: ../data/peony-home.desktop.in.in.h:2 ../src/peony-window-menus.c:1042
 msgid "Open your personal folder"
 msgstr "ব্যক্তিগত ফোল্ডাৰ খোলক"
 
@@ -3759,8 +3776,8 @@ msgstr "পটভূমি"
 #. name, stock id
 #. label, accelerator
 #: ../src/file-manager/fm-desktop-icon-view.c:893
-#: ../src/file-manager/fm-directory-view.c:7586
-#: ../src/file-manager/fm-directory-view.c:9388
+#: ../src/file-manager/fm-directory-view.c:7704
+#: ../src/file-manager/fm-directory-view.c:9506
 msgid "E_mpty Trash"
 msgstr "আবৰ্জনাৰ বক্স ৰিক্ত কৰক (_m)"
 
@@ -3768,13 +3785,13 @@ msgstr "আবৰ্জনাৰ বক্স ৰিক্ত কৰক (_m)"
 #. name, stock id
 #. label, accelerator
 #: ../src/file-manager/fm-desktop-icon-view.c:907
-#: ../src/file-manager/fm-directory-view.c:7550
+#: ../src/file-manager/fm-directory-view.c:7668
 msgid "Create L_auncher..."
 msgstr "লঞ্চাৰ তৈৰি কৰক... (_a)"
 
 #. tooltip
 #: ../src/file-manager/fm-desktop-icon-view.c:909
-#: ../src/file-manager/fm-directory-view.c:7551
+#: ../src/file-manager/fm-directory-view.c:7669
 msgid "Create a new launcher"
 msgstr "নতুন লঞ্চাৰ নিৰ্মাণ কৰক"
 
@@ -3807,7 +3824,7 @@ msgstr "আবৰ্জনাৰ বক্স ৰিক্ত কৰক"
 
 #. tooltip
 #: ../src/file-manager/fm-desktop-icon-view.c:936
-#: ../src/file-manager/fm-directory-view.c:7587 ../src/peony-trash-bar.c:204
+#: ../src/file-manager/fm-directory-view.c:7705 ../src/peony-trash-bar.c:204
 msgid "Delete all items in the Trash"
 msgstr "আবৰ্জনাৰ বক্সে উপস্থিত সব সামগ্ৰী আঁতৰুৱা হ'ব"
 
@@ -3819,68 +3836,68 @@ msgstr "ডেস্কটপ অনুসাৰে প্ৰদৰ্শন ব
 msgid "The desktop view encountered an error while starting up."
 msgstr "ডেস্কটপ অনুসাৰে প্ৰদৰ্শন ব্যবস্থা আৰম্ভ কৰাৰ সময় সমস্যা ।"
 
-#: ../src/file-manager/fm-directory-view.c:657
+#: ../src/file-manager/fm-directory-view.c:659
 #, c-format
 msgid "This will open %'d separate tab."
 msgid_plural "This will open %'d separate tabs."
 msgstr[0] "এৰ ফলত %'d -টি পৃথক ট্যাব খোলা হ'ব ।"
 msgstr[1] "এৰ ফলত %d-টি পৃথক উইন্ডো খোলা হ'ব ।"
 
-#: ../src/file-manager/fm-directory-view.c:660
+#: ../src/file-manager/fm-directory-view.c:662
 #, c-format
 msgid "This will open %'d separate window."
 msgid_plural "This will open %'d separate windows."
 msgstr[0] "এৰ ফলত %'d -টি পৃথক উইন্ডো খোলা হ'ব ।"
 msgstr[1] "এৰ ফলত %d-টি পৃথক উইন্ডো খোলা হ'ব ।"
 
-#: ../src/file-manager/fm-directory-view.c:1200
+#: ../src/file-manager/fm-directory-view.c:1202
 #: ../src/file-manager/fm-properties-window.c:5397
 #: ../src/peony-connect-server-dialog.c:718 ../src/peony-location-dialog.c:102
 msgid "There was an error displaying help."
 msgstr "সহায়িকা প্ৰদৰ্শনে সমস্যা ।"
 
-#: ../src/file-manager/fm-directory-view.c:1220
+#: ../src/file-manager/fm-directory-view.c:1222
 msgid "Select Items Matching"
 msgstr "বৰ্তমান উইন্ডোত উপস্থিত সব বিষয়বস্তু নিৰ্বাচন কৰক"
 
-#: ../src/file-manager/fm-directory-view.c:1235
+#: ../src/file-manager/fm-directory-view.c:1237
 msgid "_Pattern:"
 msgstr "বিন্যাস: (_P)"
 
-#: ../src/file-manager/fm-directory-view.c:1242
+#: ../src/file-manager/fm-directory-view.c:1244
 msgid "Examples: "
 msgstr ""
 
-#: ../src/file-manager/fm-directory-view.c:1396
+#: ../src/file-manager/fm-directory-view.c:1398
 msgid "Save Search as"
 msgstr "অনুসন্ধানৰ ফলাফল সংৰক্ষণেৰ নাম"
 
-#: ../src/file-manager/fm-directory-view.c:1419
+#: ../src/file-manager/fm-directory-view.c:1421
 msgid "Search _name:"
 msgstr "অনুসন্ধানৰ নাম: (_n)"
 
-#: ../src/file-manager/fm-directory-view.c:1439
+#: ../src/file-manager/fm-directory-view.c:1441
 msgid "_Folder:"
 msgstr "ফোল্ডাৰ: (_F)"
 
-#: ../src/file-manager/fm-directory-view.c:1448
+#: ../src/file-manager/fm-directory-view.c:1450
 msgid "Select Folder to Save Search In"
 msgstr "অনুসন্ধানৰ ফলাফল যে ডিৰেক্টৰিতে সংৰক্ষণ কৰা হ'ব তা বেছে নিন"
 
-#: ../src/file-manager/fm-directory-view.c:2345
-#: ../src/file-manager/fm-directory-view.c:2382
+#: ../src/file-manager/fm-directory-view.c:2347
+#: ../src/file-manager/fm-directory-view.c:2384
 #, c-format
 msgid "\"%s\" selected"
 msgstr "\"%s\" নিৰ্বাচিত হয়েছে"
 
-#: ../src/file-manager/fm-directory-view.c:2347
+#: ../src/file-manager/fm-directory-view.c:2349
 #, c-format
 msgid "%'d folder selected"
 msgid_plural "%'d folders selected"
 msgstr[0] "%'d-টি ফোল্ডাৰ নিৰ্বাচিত হয়েছে"
 msgstr[1] "%d-টি ফোল্ডাৰ নিৰ্বাচিত হয়েছে"
 
-#: ../src/file-manager/fm-directory-view.c:2357
+#: ../src/file-manager/fm-directory-view.c:2359
 #, c-format
 msgid " (containing %'d item)"
 msgid_plural " (containing %'d items)"
@@ -3888,14 +3905,14 @@ msgstr[0] " (%'d-টি বস্তু অন্তৰ্ভুক্ত)"
 msgstr[1] " (%d-টি বস্তু অন্তৰ্ভুক্ত)"
 
 #. translators: this is preceded with a string of form 'N folders' (N more than 1)
-#: ../src/file-manager/fm-directory-view.c:2368
+#: ../src/file-manager/fm-directory-view.c:2370
 #, c-format
 msgid " (containing a total of %'d item)"
 msgid_plural " (containing a total of %'d items)"
 msgstr[0] " (সৰ্বমোট %'d-টি বস্তু অন্তৰ্ভুক্ত)"
 msgstr[1] " (সৰ্বমোট %d-টি বস্তু অন্তৰ্ভুক্ত)"
 
-#: ../src/file-manager/fm-directory-view.c:2385
+#: ../src/file-manager/fm-directory-view.c:2387
 #, c-format
 msgid "%'d item selected"
 msgid_plural "%'d items selected"
@@ -3903,7 +3920,7 @@ msgstr[0] "%'d-টি বস্তু নিৰ্বাচিত হয়েছ�
 msgstr[1] "%d-টি বস্তু নিৰ্বাচিত হয়েছে"
 
 #. Folders selected also, use "other" terminology
-#: ../src/file-manager/fm-directory-view.c:2392
+#: ../src/file-manager/fm-directory-view.c:2394
 #, c-format
 msgid "%'d other item selected"
 msgid_plural "%'d other items selected"
@@ -3915,17 +3932,17 @@ msgstr[1] "অন্যান্য %d-টি বস্তু নিৰ্বা
 #. * first message gives the number of items selected;
 #. * the message in parentheses the size of those items.
 #.
-#: ../src/file-manager/fm-directory-view.c:2411
+#: ../src/file-manager/fm-directory-view.c:2413
 #, c-format
 msgid "%s (%s)"
 msgstr "%s (%s)"
 
-#: ../src/file-manager/fm-directory-view.c:2424
+#: ../src/file-manager/fm-directory-view.c:2426
 #, c-format
 msgid "Free space: %s"
 msgstr ""
 
-#: ../src/file-manager/fm-directory-view.c:2435
+#: ../src/file-manager/fm-directory-view.c:2437
 #, c-format
 msgid "%s, Free space: %s"
 msgstr "%s, ৰিক্ত স্থান: %s"
@@ -3935,7 +3952,7 @@ msgstr "%s, ৰিক্ত স্থান: %s"
 #. * After the comma the amount of free space will
 #. * be shown.
 #.
-#: ../src/file-manager/fm-directory-view.c:2450
+#: ../src/file-manager/fm-directory-view.c:2452
 #, c-format
 msgid "%s, %s"
 msgstr ""
@@ -3952,8 +3969,8 @@ msgstr ""
 #. * message about the number of other items and the
 #. * total size of those items.
 #.
-#: ../src/file-manager/fm-directory-view.c:2469
-#: ../src/file-manager/fm-directory-view.c:2483
+#: ../src/file-manager/fm-directory-view.c:2471
+#: ../src/file-manager/fm-directory-view.c:2485
 #, c-format
 msgid "%s%s, %s"
 msgstr "%s%s, %s"
@@ -3966,48 +3983,58 @@ msgstr "%s%s, %s"
 #. * total size of those items. After the second comma
 #. * the free space is written.
 #.
-#: ../src/file-manager/fm-directory-view.c:2496
+#: ../src/file-manager/fm-directory-view.c:2498
 #, c-format
 msgid "%s%s, %s, %s"
 msgstr ""
 
-#: ../src/file-manager/fm-directory-view.c:4631
+#: ../src/file-manager/fm-directory-view.c:4650
 #: ../src/peony-information-panel.c:905
 #, c-format
 msgid "Open With %s"
 msgstr ""
 
-#: ../src/file-manager/fm-directory-view.c:4633
+#: ../src/file-manager/fm-directory-view.c:4652
 #, c-format
 msgid "Use \"%s\" to open the selected item"
 msgid_plural "Use \"%s\" to open the selected items"
 msgstr[0] "\"%s\" ৰ সহায়ত নিৰ্বাচিত বস্তুটি খোলক"
 msgstr[1] "\"%s\" ৰ সহায়ত নিৰ্বাচিত বস্তুটি খোলক"
 
-#: ../src/file-manager/fm-directory-view.c:4724
+#: ../src/file-manager/fm-directory-view.c:4743
 msgid "Open parent location"
 msgstr ""
 
-#: ../src/file-manager/fm-directory-view.c:4725
+#: ../src/file-manager/fm-directory-view.c:4744
 msgid "Open parent location for the selected item"
 msgstr ""
 
-#: ../src/file-manager/fm-directory-view.c:5576
+#: ../src/file-manager/fm-directory-view.c:4819
+#, fuzzy
+msgid "Image Search"
+msgstr "অনুসন্ধানৰ ফলাফল সংৰক্ষণ কৰা হ'ব (_v)"
+
+#: ../src/file-manager/fm-directory-view.c:4820
+#, fuzzy
+msgid "Find simillar images for the selected item"
+msgstr "\"%s\" ৰ সহায়ত নিৰ্বাচিত বস্তুটি খোলক"
+
+#: ../src/file-manager/fm-directory-view.c:5686
 #, c-format
 msgid "Run \"%s\" on any selected items"
 msgstr "নিৰ্বাচিত যে কোনো বস্তুৰ বাবে \"%s\" সঞ্চালন কৰক"
 
-#: ../src/file-manager/fm-directory-view.c:5827
+#: ../src/file-manager/fm-directory-view.c:5937
 #, c-format
 msgid "Create Document from template \"%s\""
 msgstr "\"%s\" টেমপ্লেট প্ৰয়োগ কৰি ডকুমেন্ট নিৰ্মাণ কৰক"
 
-#: ../src/file-manager/fm-directory-view.c:6077
+#: ../src/file-manager/fm-directory-view.c:6187
 msgid "All executable files in this folder will appear in the Scripts menu."
 msgstr ""
 "চিহ্নিত ফোল্ডাৰেত উপস্থিত সব এক্সেকিউটেবল ফঅইলসমূহ স্ক্ৰিপ্ট মেনুত প্ৰদৰ্শিত হ'ব ।"
 
-#: ../src/file-manager/fm-directory-view.c:6079
+#: ../src/file-manager/fm-directory-view.c:6189
 msgid ""
 "Choosing a script from the menu will run that script with any selected items "
 "as input."
@@ -4015,7 +4042,7 @@ msgstr ""
 "মেনুৰ পৰা কোনো স্ক্ৰিপ্ট নিৰ্বাচন কৰা হলে, নিৰ্বাচিত বস্তু প্ৰয়োগ কৰি সংশ্লিষ্ট স্ক্ৰিপ্ট "
 "সঞ্চালিত হ'ব ।"
 
-#: ../src/file-manager/fm-directory-view.c:6081
+#: ../src/file-manager/fm-directory-view.c:6191
 msgid ""
 "All executable files in this folder will appear in the Scripts menu. "
 "Choosing a script from the menu will run that script.\n"
@@ -4046,19 +4073,19 @@ msgid ""
 "pane of a split-view window"
 msgstr ""
 
-#: ../src/file-manager/fm-directory-view.c:6149
+#: ../src/file-manager/fm-directory-view.c:6259
 #: ../src/file-manager/fm-tree-view.c:1011
 #, c-format
 msgid "\"%s\" will be moved if you select the Paste command"
 msgstr "পেস্ট আদেশ নিৰ্বাচন কৰা হলে \"%s\" স্থানান্তৰ কৰা হ'ব"
 
-#: ../src/file-manager/fm-directory-view.c:6153
+#: ../src/file-manager/fm-directory-view.c:6263
 #: ../src/file-manager/fm-tree-view.c:1017
 #, c-format
 msgid "\"%s\" will be copied if you select the Paste command"
 msgstr "পেস্ট আদেশ নিৰ্বাচন কৰা হলে \"%s\" নকল কৰা হ'ব"
 
-#: ../src/file-manager/fm-directory-view.c:6160
+#: ../src/file-manager/fm-directory-view.c:6270
 #, c-format
 msgid "The %'d selected item will be moved if you select the Paste command"
 msgid_plural ""
@@ -4066,7 +4093,7 @@ msgid_plural ""
 msgstr[0] "পেস্ট আদেশ নিৰ্বাচন কৰা হলে %'d-টি নিৰ্বাচিত বস্তু স্থানান্তৰ কৰা হ'ব"
 msgstr[1] "পেস্ট আদেশ নিৰ্বাচন কৰা হলে %d-টি নিৰ্বাচিত বস্তু স্থানান্তৰ কৰা হ'ব"
 
-#: ../src/file-manager/fm-directory-view.c:6167
+#: ../src/file-manager/fm-directory-view.c:6277
 #, c-format
 msgid "The %'d selected item will be copied if you select the Paste command"
 msgid_plural ""
@@ -4074,98 +4101,98 @@ msgid_plural ""
 msgstr[0] "পেস্ট আদেশ নিৰ্বাচন কৰা হলে %'d-টি নিৰ্বাচিত বস্তু নকল কৰা হ'ব"
 msgstr[1] "পেস্ট আদেশ নিৰ্বাচন কৰা হলে %d-টি নিৰ্বাচিত বস্তু নকল কৰা হ'ব"
 
-#: ../src/file-manager/fm-directory-view.c:6462
+#: ../src/file-manager/fm-directory-view.c:6572
 #: ../src/file-manager/fm-tree-view.c:1057
 msgid "There is nothing on the clipboard to paste."
 msgstr "পেস্ট কৰাৰ যোগ্য কোনো বিষয়বস্তু ক্লিপ-বোৰ্ডেত উপস্থিত নেই ।"
 
-#: ../src/file-manager/fm-directory-view.c:6677
+#: ../src/file-manager/fm-directory-view.c:6795
 msgid "Unable to unmount location"
 msgstr "চিহ্নিত অৱস্থান আন-মাউন্ট কৰিবলৈ ব্যৰ্থ"
 
-#: ../src/file-manager/fm-directory-view.c:6698
+#: ../src/file-manager/fm-directory-view.c:6816
 msgid "Unable to eject location"
 msgstr "চিহ্নিত অৱস্থান বাহিৰ কৰিবলৈ ব্যৰ্থ"
 
-#: ../src/file-manager/fm-directory-view.c:6713
+#: ../src/file-manager/fm-directory-view.c:6831
 msgid "Unable to stop drive"
 msgstr "ড্ৰাইভ বন্ধ কৰিবলৈ ব্যৰ্থ"
 
-#: ../src/file-manager/fm-directory-view.c:7270
+#: ../src/file-manager/fm-directory-view.c:7388
 #, c-format
 msgid "Connect to Server %s"
 msgstr "%s সাৰ্ভাৰৰ সৈতে সংযোগ স্থাপন কৰা হ'ব"
 
-#: ../src/file-manager/fm-directory-view.c:7275
-#: ../src/file-manager/fm-directory-view.c:8503
-#: ../src/file-manager/fm-directory-view.c:8595
-#: ../src/file-manager/fm-directory-view.c:8705
+#: ../src/file-manager/fm-directory-view.c:7393
+#: ../src/file-manager/fm-directory-view.c:8621
+#: ../src/file-manager/fm-directory-view.c:8713
+#: ../src/file-manager/fm-directory-view.c:8823
 msgid "_Connect"
 msgstr "সংযোগ স্থাপনা (_C)"
 
-#: ../src/file-manager/fm-directory-view.c:7289
+#: ../src/file-manager/fm-directory-view.c:7407
 msgid "Link _name:"
 msgstr "লিঙ্কেৰ নাম: (_n)"
 
 #. name, stock id, label
-#: ../src/file-manager/fm-directory-view.c:7528
+#: ../src/file-manager/fm-directory-view.c:7646
 msgid "Create _Document"
 msgstr "নতুন ডকুমেন্ট নিৰ্মাণ (_D)"
 
 #. name, stock id, label
-#: ../src/file-manager/fm-directory-view.c:7529
+#: ../src/file-manager/fm-directory-view.c:7647
 msgid "Open Wit_h"
 msgstr "উল্লিখিত প্ৰোগ্ৰাম ৰ সহায়ত সঞ্চালিত (_h)"
 
-#: ../src/file-manager/fm-directory-view.c:7530
+#: ../src/file-manager/fm-directory-view.c:7648
 msgid "Choose a program with which to open the selected item"
 msgstr "চিহ্নিত নথিপত্ৰকে ব্যবহাৰৰ বাবে এটা প্ৰোগ্ৰাম বেছে নিন"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7532
-#: ../src/file-manager/fm-directory-view.c:7832
+#: ../src/file-manager/fm-directory-view.c:7650
+#: ../src/file-manager/fm-directory-view.c:7950
 msgid "_Properties"
 msgstr "বৈশিষ্ট্যাবলী (_P)"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7533
-#: ../src/file-manager/fm-directory-view.c:9375
+#: ../src/file-manager/fm-directory-view.c:7651
+#: ../src/file-manager/fm-directory-view.c:9493
 msgid "View or modify the properties of each selected item"
 msgstr "প্ৰতিটি নিৰ্বাচিত বস্তুৰ বৈশিষ্ট্য প্ৰদৰ্শন অথবা পৰিবৰ্তন কৰক"
 
 #. name, stock id
 #. label, accelerator
 #. add the "create folder" menu item
-#: ../src/file-manager/fm-directory-view.c:7540
+#: ../src/file-manager/fm-directory-view.c:7658
 #: ../src/file-manager/fm-tree-view.c:1300
 msgid "Create _Folder"
 msgstr "নতুন ফোল্ডাৰ নিৰ্মাণ (_F)"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7541
+#: ../src/file-manager/fm-directory-view.c:7659
 msgid "Create a new empty folder inside this folder"
 msgstr "বৰ্তমান ফোল্ডাৰেত এটা নতুন ফোল্ডাৰ নিৰ্মাণ কৰক"
 
 #. name, stock id, label
-#: ../src/file-manager/fm-directory-view.c:7543
+#: ../src/file-manager/fm-directory-view.c:7661
 msgid "No templates installed"
 msgstr "কোনো টেমপ্লেট ইনস্টল কৰা হয়নি"
 
 #. name, stock id
 #. translators: this is used to indicate that a file doesn't contain anything
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7546
+#: ../src/file-manager/fm-directory-view.c:7664
 msgid "_Empty File"
 msgstr "ৰিক্ত নথিপত্ৰ"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7547
+#: ../src/file-manager/fm-directory-view.c:7665
 msgid "Create a new empty file inside this folder"
 msgstr "তৈৰি কৰক নথিপত্ৰ"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7555
+#: ../src/file-manager/fm-directory-view.c:7673
 msgid "Open the selected item in this window"
 msgstr "নিৰ্বাচিত বস্তুটি বৰ্তমান উইন্ডোত খোলক"
 
@@ -4174,91 +4201,91 @@ msgstr "নিৰ্বাচিত বস্তুটি বৰ্তমান 
 #. Location-specific actions
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7562
-#: ../src/file-manager/fm-directory-view.c:7764
+#: ../src/file-manager/fm-directory-view.c:7680
+#: ../src/file-manager/fm-directory-view.c:7882
 msgid "Open in Navigation Window"
 msgstr "ন্যাভিগেশন উইন্ডোত খোলক"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7563
+#: ../src/file-manager/fm-directory-view.c:7681
 msgid "Open each selected item in a navigation window"
 msgstr "নিৰ্বাচিত প্ৰতিটি বস্তু এটা ন্যাভিগেশন উইন্ডোত খোলক"
 
 #. name, stock id
 #. label, accelerator
 #. add the "open in new tab" menu item
-#: ../src/file-manager/fm-directory-view.c:7566
-#: ../src/file-manager/fm-directory-view.c:7768
-#: ../src/file-manager/fm-directory-view.c:8835
-#: ../src/file-manager/fm-directory-view.c:9165
-#: ../src/file-manager/fm-tree-view.c:1280 ../src/peony-places-sidebar.c:2782
+#: ../src/file-manager/fm-directory-view.c:7684
+#: ../src/file-manager/fm-directory-view.c:7886
+#: ../src/file-manager/fm-directory-view.c:8953
+#: ../src/file-manager/fm-directory-view.c:9283
+#: ../src/file-manager/fm-tree-view.c:1280 ../src/peony-places-sidebar.c:3403
 msgid "Open in New _Tab"
 msgstr "নতুন ট্যাব-এ প্ৰদৰ্শন কৰা হ'ব (_T)"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7567
+#: ../src/file-manager/fm-directory-view.c:7685
 msgid "Open each selected item in a new tab"
 msgstr "নিৰ্বাচিত প্ৰতিটি বস্তু এটা নতুন ট্যাবত খোলক"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7570
-#: ../src/file-manager/fm-directory-view.c:7773
+#: ../src/file-manager/fm-directory-view.c:7688
+#: ../src/file-manager/fm-directory-view.c:7891
 msgid "Open in _Folder Window"
 msgstr "ফোল্ডাৰ উইন্ডোত খোলা হ'ব (_F)"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7571
+#: ../src/file-manager/fm-directory-view.c:7689
 msgid "Open each selected item in a folder window"
 msgstr "নিৰ্বাচিত প্ৰতিটি বস্তু এটা ফোল্ডাৰ উইন্ডোত খোলক"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7574
+#: ../src/file-manager/fm-directory-view.c:7692
 msgid "Other _Application..."
 msgstr "অন্যান্য এপ্লিকেশন...(_A)"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7575
-#: ../src/file-manager/fm-directory-view.c:7579
+#: ../src/file-manager/fm-directory-view.c:7693
+#: ../src/file-manager/fm-directory-view.c:7697
 msgid "Choose another application with which to open the selected item"
 msgstr "চিহ্নিত নথিপত্ৰকে ব্যবহাৰৰ বাবে অপৰ এটা প্ৰোগ্ৰাম বেছে নিন"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7578
+#: ../src/file-manager/fm-directory-view.c:7696
 msgid "Open With Other _Application..."
 msgstr ""
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7582
+#: ../src/file-manager/fm-directory-view.c:7700
 msgid "_Open Scripts Folder"
 msgstr "স্ক্ৰিপ্ট ধাৰণকৰ্তা ফোল্ডাৰ খোলক (_O)"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7583
+#: ../src/file-manager/fm-directory-view.c:7701
 msgid "Show the folder containing the scripts that appear in this menu"
 msgstr "বৰ্তমান মেনুত উল্লিখিত স্ক্ৰিপ্ট ধাৰণকৰ্তা ফোল্ডাৰ প্ৰদৰ্শন কৰা হ'ব"
 
 #. name, stock id
 #. label, accelerator
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7591
+#: ../src/file-manager/fm-directory-view.c:7709
 msgid "Prepare the selected files to be moved with a Paste command"
 msgstr "নিৰ্বাচিত নথিপত্ৰসমূহ পেস্ট আদেশ ৰ সহায়ত স্থানান্তৰৰ উদ্দেশ্যে প্ৰস্তুত কৰক"
 
 #. name, stock id
 #. label, accelerator
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7595
+#: ../src/file-manager/fm-directory-view.c:7713
 msgid "Prepare the selected files to be copied with a Paste command"
 msgstr "নিৰ্বাচিত নথিপত্ৰসমূহ পেস্ট আদেশ ৰ সহায়ত নকল কৰাৰ উদ্দেশ্যে প্ৰস্তুত কৰক"
 
 #. name, stock id
 #. label, accelerator
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7599
+#: ../src/file-manager/fm-directory-view.c:7717
 msgid "Move or copy files previously selected by a Cut or Copy command"
 msgstr ""
 "কাট অথবা নকল আদেশেৰ সাহায্যে পূৰ্বে নিৰ্বাচিত নথিপত্ৰ যথাক্ৰমে স্থানান্তৰ অথবা নকল "
@@ -4267,8 +4294,8 @@ msgstr ""
 #. name, stock id
 #. label, accelerator
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7602
-#: ../src/file-manager/fm-directory-view.c:7603
+#: ../src/file-manager/fm-directory-view.c:7720
+#: ../src/file-manager/fm-directory-view.c:7721
 msgid "_Attached to the start menu"
 msgstr ""
 
@@ -4276,14 +4303,14 @@ msgstr ""
 #. accelerator for paste
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7608
-#: ../src/file-manager/fm-directory-view.c:7786
+#: ../src/file-manager/fm-directory-view.c:7726
+#: ../src/file-manager/fm-directory-view.c:7904
 #: ../src/file-manager/fm-tree-view.c:1332
 msgid "_Paste Into Folder"
 msgstr "ফোল্ডাৰেত পেস্ট কৰক (_P)"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7609
+#: ../src/file-manager/fm-directory-view.c:7727
 msgid ""
 "Move or copy files previously selected by a Cut or Copy command into the "
 "selected folder"
@@ -4292,163 +4319,165 @@ msgstr ""
 "যথাক্ৰমে স্থানান্তৰ অথবা নকল কৰক"
 
 #. name, stock id, label
-#: ../src/file-manager/fm-directory-view.c:7611
+#: ../src/file-manager/fm-directory-view.c:7729
 msgid "Cop_y to"
 msgstr ""
 
 #. name, stock id, label
-#: ../src/file-manager/fm-directory-view.c:7612
+#: ../src/file-manager/fm-directory-view.c:7730
 msgid "M_ove to"
 msgstr ""
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7615
+#: ../src/file-manager/fm-directory-view.c:7733
 msgid "Select all items in this window"
 msgstr "বৰ্তমান উইন্ডোত উপস্থিত সব বিষয়বস্তু নিৰ্বাচন কৰক"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7618
+#: ../src/file-manager/fm-directory-view.c:7736
 msgid "Select I_tems Matching..."
 msgstr "Select I_tems Matching..."
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7619
+#: ../src/file-manager/fm-directory-view.c:7737
 msgid "Select items in this window matching a given pattern"
 msgstr "বৰ্তমান উইন্ডোত উপস্থিত, সুনিৰ্দিষ্ট বিন্যাসৰ সৈতে সুসংগত বস্তুসমূহ নিৰ্বাচন কৰক"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7626
+#: ../src/file-manager/fm-directory-view.c:7744
 msgid "_Invert Selection"
 msgstr "নিৰ্বাচিত মান উল্টে দিন (_I)"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7627
+#: ../src/file-manager/fm-directory-view.c:7745
 msgid "Select all and only the items that are not currently selected"
 msgstr "অকল বৰ্তমানে নিৰ্বাচন না কৰা সকলো বস্তু নিৰ্বাচন কৰা হ'ব"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7630
+#: ../src/file-manager/fm-directory-view.c:7748
 msgid "D_uplicate"
 msgstr "প্ৰতিলিপি (_u)"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7631
+#: ../src/file-manager/fm-directory-view.c:7749
 msgid "Duplicate each selected item"
 msgstr "প্ৰতিটি চিহ্নিত বস্তুৰ প্ৰতিলিপি নিৰ্মাণ কৰক"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7634
-#: ../src/file-manager/fm-directory-view.c:9359
+#: ../src/file-manager/fm-directory-view.c:7752
+#: ../src/file-manager/fm-directory-view.c:9477
 msgid "Ma_ke Link"
 msgid_plural "Ma_ke Links"
 msgstr[0] "লিঙ্ক নিৰ্মাণ কৰক (_k)"
 msgstr[1] "লিঙ্ক নিৰ্মাণ কৰক (_k)"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7635
+#: ../src/file-manager/fm-directory-view.c:7753
 msgid "Create a symbolic link for each selected item"
 msgstr "প্ৰতিটি নিৰ্মাচিত বস্তুৰ বাবে সিম্বলিক-লিঙ্ক নিৰ্মাণ কৰক"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7638
+#: ../src/file-manager/fm-directory-view.c:7756
 msgid "Send to desktop _Shortcut"
 msgstr ""
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7639
+#: ../src/file-manager/fm-directory-view.c:7757
 #, fuzzy
 msgid "Send to desktop shortcut for each selected item"
 msgstr "প্ৰতিটি নিৰ্মাচিত বস্তুৰ বাবে সিম্বলিক-লিঙ্ক নিৰ্মাণ কৰক"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7642
+#: ../src/file-manager/fm-directory-view.c:7760
 msgid "_Rename..."
 msgstr "নাম পৰিবৰ্তন...(_R)"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7643
+#: ../src/file-manager/fm-directory-view.c:7761
 msgid "Rename selected item"
 msgstr "নিৰ্বাচিত বস্তুৰ নাম পৰিবৰ্তন কৰক"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7651
-#: ../src/file-manager/fm-directory-view.c:9220
+#: ../src/file-manager/fm-directory-view.c:7769
+#: ../src/file-manager/fm-directory-view.c:9338
 msgid "Move each selected item to the Trash"
 msgstr "প্ৰতিটি নিৰ্বাচিত বস্তু আবৰ্জনাৰ বক্সে স্থানান্তৰ কৰক"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7654
-#: ../src/file-manager/fm-directory-view.c:7795
-#: ../src/file-manager/fm-directory-view.c:9241
+#: ../src/file-manager/fm-directory-view.c:7772
+#: ../src/file-manager/fm-directory-view.c:7913
+#: ../src/file-manager/fm-directory-view.c:9359
 #: ../src/file-manager/fm-tree-view.c:1362
 msgid "_Delete"
 msgstr "মুছে ফেলুন (_D)"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7655
+#: ../src/file-manager/fm-directory-view.c:7773
 msgid "Delete each selected item, without moving to the Trash"
 msgstr "আবৰ্জনাৰ বক্সে স্থানান্তৰ না কৰি প্ৰতিটি নিৰ্বাচিত বস্তু মুছে ফেলুন"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7658
-#: ../src/file-manager/fm-directory-view.c:7799
+#: ../src/file-manager/fm-directory-view.c:7776
+#: ../src/file-manager/fm-directory-view.c:7917
 msgid "_Restore"
 msgstr "পুনৰুদ্ধাৰ কৰক (_R)"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7662
+#: ../src/file-manager/fm-directory-view.c:7780
+#: ../src/peony-window-menus.c:1006
 msgid "_Undo"
 msgstr "পূৰ্বাবস্থা (_U)"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7663
-#: ../src/file-manager/fm-directory-view.c:11522
+#: ../src/file-manager/fm-directory-view.c:7781
+#: ../src/file-manager/fm-directory-view.c:11640
+#: ../src/peony-window-menus.c:1007
 msgid "Undo the last action"
 msgstr ""
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7666
+#: ../src/file-manager/fm-directory-view.c:7784
 msgid "_Redo"
 msgstr ""
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7667
-#: ../src/file-manager/fm-directory-view.c:11540
+#: ../src/file-manager/fm-directory-view.c:7785
+#: ../src/file-manager/fm-directory-view.c:11663
 msgid "Redo the last undone action"
 msgstr ""
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7671
-#: ../src/file-manager/fm-directory-view.c:9276
+#: ../src/file-manager/fm-directory-view.c:7789
+#: ../src/file-manager/fm-directory-view.c:9394
 msgid "E_mpty Recent"
 msgstr ""
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7672
+#: ../src/file-manager/fm-directory-view.c:7790
 msgid "E_mpty Recent use"
 msgstr ""
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7675
-#: ../src/file-manager/fm-directory-view.c:9292
+#: ../src/file-manager/fm-directory-view.c:7793
+#: ../src/file-manager/fm-directory-view.c:9410
 #, fuzzy
 msgid "D_elete Recent"
 msgstr "স্থানীয়ৰূপে মুছে ফেলুন (_D)"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7676
+#: ../src/file-manager/fm-directory-view.c:7794
 msgid "D_elete Recent use"
 msgstr ""
 
@@ -4460,209 +4489,209 @@ msgstr ""
 #.
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7686
+#: ../src/file-manager/fm-directory-view.c:7804
 msgid "Reset View to _Defaults"
 msgstr "প্ৰদৰ্শনৰ বাবে অবিকল্পিত দৃশ্য ব্যবহাৰ কৰা হ'ব (_D)"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7687
+#: ../src/file-manager/fm-directory-view.c:7805
 msgid "Reset sorting order and zoom level to match preferences for this view"
 msgstr "পুনৰায় নিৰ্ধাৰণ"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7690
+#: ../src/file-manager/fm-directory-view.c:7808
 msgid "Connect To This Server"
 msgstr "চিহ্নিত সাৰ্ভাৰৰ সৈতে সংযোগ স্থাপন কৰক"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7691
+#: ../src/file-manager/fm-directory-view.c:7809
 msgid "Make a permanent connection to this server"
 msgstr "চিহ্নিত সাৰ্ভাৰৰ সৈতে স্থায়ী সংযোগ স্থাপন কৰক"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7694
-#: ../src/file-manager/fm-directory-view.c:7722
-#: ../src/file-manager/fm-directory-view.c:7803
-#: ../src/peony-places-sidebar.c:2818
+#: ../src/file-manager/fm-directory-view.c:7812
+#: ../src/file-manager/fm-directory-view.c:7840
+#: ../src/file-manager/fm-directory-view.c:7921
+#: ../src/peony-places-sidebar.c:3439
 msgid "_Mount"
 msgstr "মাউন্ট কৰক (_M)"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7695
+#: ../src/file-manager/fm-directory-view.c:7813
 msgid "Mount the selected volume"
 msgstr "চিহ্নিত ভলিউমটি মাউন্ট কৰক"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7699
+#: ../src/file-manager/fm-directory-view.c:7817
 msgid "Unmount the selected volume"
 msgstr "চিহ্নিত ভলিউম আন-মাউন্ট কৰক"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7703
+#: ../src/file-manager/fm-directory-view.c:7821
 msgid "Eject the selected volume"
 msgstr "নিৰ্বাচিত ভলিউমৰ পৰা বহিষ্কাৰ কৰক"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7706
-#: ../src/file-manager/fm-directory-view.c:7734
-#: ../src/file-manager/fm-directory-view.c:7815
-#: ../src/peony-places-sidebar.c:2846
+#: ../src/file-manager/fm-directory-view.c:7824
+#: ../src/file-manager/fm-directory-view.c:7852
+#: ../src/file-manager/fm-directory-view.c:7933
+#: ../src/peony-places-sidebar.c:3467
 msgid "_Format"
 msgstr "ফৰম্যাট কৰক (_F)"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7707
+#: ../src/file-manager/fm-directory-view.c:7825
 msgid "Format the selected volume"
 msgstr "চিহ্নিত ভলিউম ফৰম্যাট কৰক"
 
 #. name, stock id
 #. label, accelerator
 #. Adjust start/stop items to reflect the type of the drive
-#: ../src/file-manager/fm-directory-view.c:7710
-#: ../src/file-manager/fm-directory-view.c:7738
-#: ../src/file-manager/fm-directory-view.c:7819
-#: ../src/file-manager/fm-directory-view.c:8495
-#: ../src/file-manager/fm-directory-view.c:8499
-#: ../src/file-manager/fm-directory-view.c:8587
-#: ../src/file-manager/fm-directory-view.c:8591
-#: ../src/file-manager/fm-directory-view.c:8697
-#: ../src/file-manager/fm-directory-view.c:8701
-#: ../src/peony-places-sidebar.c:1884 ../src/peony-places-sidebar.c:2853
+#: ../src/file-manager/fm-directory-view.c:7828
+#: ../src/file-manager/fm-directory-view.c:7856
+#: ../src/file-manager/fm-directory-view.c:7937
+#: ../src/file-manager/fm-directory-view.c:8613
+#: ../src/file-manager/fm-directory-view.c:8617
+#: ../src/file-manager/fm-directory-view.c:8705
+#: ../src/file-manager/fm-directory-view.c:8709
+#: ../src/file-manager/fm-directory-view.c:8815
+#: ../src/file-manager/fm-directory-view.c:8819
+#: ../src/peony-places-sidebar.c:2474 ../src/peony-places-sidebar.c:3474
 msgid "_Start"
 msgstr "আৰম্ভ কৰক (_S)"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7711
+#: ../src/file-manager/fm-directory-view.c:7829
 msgid "Start the selected volume"
 msgstr "নিৰ্বাচিত ভলিউম আৰম্ভ কৰক"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7714
-#: ../src/file-manager/fm-directory-view.c:7742
-#: ../src/file-manager/fm-directory-view.c:7823
-#: ../src/file-manager/fm-directory-view.c:8524
-#: ../src/file-manager/fm-directory-view.c:8616
-#: ../src/file-manager/fm-directory-view.c:8726
-#: ../src/peony-places-sidebar.c:1885 ../src/peony-places-sidebar.c:2860
-#: ../src/peony-window-menus.c:838
+#: ../src/file-manager/fm-directory-view.c:7832
+#: ../src/file-manager/fm-directory-view.c:7860
+#: ../src/file-manager/fm-directory-view.c:7941
+#: ../src/file-manager/fm-directory-view.c:8642
+#: ../src/file-manager/fm-directory-view.c:8734
+#: ../src/file-manager/fm-directory-view.c:8844
+#: ../src/peony-places-sidebar.c:2475 ../src/peony-places-sidebar.c:3481
+#: ../src/peony-window-menus.c:981
 msgid "_Stop"
 msgstr "বন্ধ কৰক"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7715
-#: ../src/file-manager/fm-directory-view.c:8727
+#: ../src/file-manager/fm-directory-view.c:7833
+#: ../src/file-manager/fm-directory-view.c:8845
 msgid "Stop the selected volume"
 msgstr "নিৰ্বাচিত ভলিউম বন্ধ কৰক"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7718
-#: ../src/file-manager/fm-directory-view.c:7746
-#: ../src/file-manager/fm-directory-view.c:7827
-#: ../src/peony-places-sidebar.c:2839
+#: ../src/file-manager/fm-directory-view.c:7836
+#: ../src/file-manager/fm-directory-view.c:7864
+#: ../src/file-manager/fm-directory-view.c:7945
+#: ../src/peony-places-sidebar.c:3460
 msgid "_Detect Media"
 msgstr "মিডিয়া চিনাক্ত কৰা হ'ব (_D)"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7719
-#: ../src/file-manager/fm-directory-view.c:7747
-#: ../src/file-manager/fm-directory-view.c:7828
+#: ../src/file-manager/fm-directory-view.c:7837
+#: ../src/file-manager/fm-directory-view.c:7865
+#: ../src/file-manager/fm-directory-view.c:7946
 msgid "Detect media in the selected drive"
 msgstr "নিৰ্বাচিত ড্ৰাইভত মিডিয়াৰ উপস্থিতি চিনাক্ত কৰক"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7723
+#: ../src/file-manager/fm-directory-view.c:7841
 msgid "Mount the volume associated with the open folder"
 msgstr "খোলা ফোল্ডাৰৰ সৈতে যুক্ত ভলিউম মাউন্ট কৰক"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7727
+#: ../src/file-manager/fm-directory-view.c:7845
 msgid "Unmount the volume associated with the open folder"
 msgstr "খোলা ফোল্ডাৰৰ সৈতে যুক্ত ভলিউম আন-মাউন্ট কৰক"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7731
+#: ../src/file-manager/fm-directory-view.c:7849
 msgid "Eject the volume associated with the open folder"
 msgstr "খোলা ফোল্ডাৰৰ সৈতে যুক্ত ভলিউম বহিষ্কাৰ কৰা হ'ব"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7735
+#: ../src/file-manager/fm-directory-view.c:7853
 msgid "Format the volume associated with the open folder"
 msgstr "খোলা ফোল্ডাৰৰ সৈতে যুক্ত ভলিউম ফৰম্যাট কৰা হ'ব"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7739
+#: ../src/file-manager/fm-directory-view.c:7857
 msgid "Start the volume associated with the open folder"
 msgstr "খোলা ফোল্ডাৰৰ সৈতে যুক্ত ভলিউম আৰম্ভ কৰা হ'ব"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7743
+#: ../src/file-manager/fm-directory-view.c:7861
 msgid "Stop the volume associated with the open folder"
 msgstr "খোলা ফোল্ডাৰৰ সৈতে যুক্ত ভলিউম বন্ধ কৰা হ'ব"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7750
+#: ../src/file-manager/fm-directory-view.c:7868
 msgid "Open File and Close window"
 msgstr "নথিপত্ৰ খোলক আৰু উইন্ডো বন্ধ কৰক"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7754
+#: ../src/file-manager/fm-directory-view.c:7872
 msgid "Sa_ve Search"
 msgstr "অনুসন্ধানৰ ফলাফল সংৰক্ষণ কৰা হ'ব (_v)"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7755
+#: ../src/file-manager/fm-directory-view.c:7873
 msgid "Save the edited search"
 msgstr "অনুসন্ধানৰ সম্পাদিত ফলাফল সংৰক্ষণ কৰক"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7758
+#: ../src/file-manager/fm-directory-view.c:7876
 msgid "Sa_ve Search As..."
 msgstr "অনুসন্ধান সংসৰক্ষণেৰ নাম... (_v)"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7759
+#: ../src/file-manager/fm-directory-view.c:7877
 msgid "Save the current search as a file"
 msgstr "বৰ্তমান অনুসন্ধান নথিপত্ৰৰূপে সংৰক্ষণ কৰক"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7765
+#: ../src/file-manager/fm-directory-view.c:7883
 msgid "Open this folder in a navigation window"
 msgstr "বৰ্তমান ফোল্ডাৰটি ন্যাভিগেশন উইন্ডোত খোলক"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7769
+#: ../src/file-manager/fm-directory-view.c:7887
 msgid "Open this folder in a new tab"
 msgstr "বৰ্তমান ফোল্ডাৰটি এটা নতুন ট্যাবত খোলক"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7774
+#: ../src/file-manager/fm-directory-view.c:7892
 msgid "Open this folder in a folder window"
 msgstr "বৰ্তমান ফোল্ডাৰটি এটা ফোল্ডাৰ উইন্ডোত খোলক"
 
 #. name, stock id
 #. label, accelerator
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7779
+#: ../src/file-manager/fm-directory-view.c:7897
 msgid "Prepare this folder to be moved with a Paste command"
 msgstr "পেস্ট আদেশ ৰ সহায়ত বৰ্তমান ফোল্ডাৰ স্থানান্তৰৰ উদ্দেশ্যে প্ৰস্তুত কৰক"
 
 #. name, stock id
 #. label, accelerator
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7783
+#: ../src/file-manager/fm-directory-view.c:7901
 msgid "Prepare this folder to be copied with a Paste command"
 msgstr "পেস্ট আদেশ ৰ সহায়ত বৰ্তমান ফোল্ডাৰ নকল কৰাৰ উদ্দেশ্যে প্ৰস্তুত কৰক"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7787
+#: ../src/file-manager/fm-directory-view.c:7905
 msgid ""
 "Move or copy files previously selected by a Cut or Copy command into this "
 "folder"
@@ -4671,407 +4700,408 @@ msgstr ""
 "স্থানান্তৰ অথবা নকল কৰক"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7792
+#: ../src/file-manager/fm-directory-view.c:7910
 msgid "Move this folder to the Trash"
 msgstr "বৰ্তমান ফোল্ডাৰটি আবৰ্জনাৰ বক্সে স্থানান্তৰ কৰক"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7796
+#: ../src/file-manager/fm-directory-view.c:7914
 msgid "Delete this folder, without moving to the Trash"
 msgstr "বৰ্তমান ফোল্ডাৰটি আবৰ্জনাৰ বক্সে স্থানান্তৰ না কৰি মুছে ফেলুন"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7804
+#: ../src/file-manager/fm-directory-view.c:7922
 msgid "Mount the volume associated with this folder"
 msgstr "চিহ্নিত ফোল্ডাৰৰ সৈতে যুক্ত ভলিউম মাউন্ট কৰক"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7808
+#: ../src/file-manager/fm-directory-view.c:7926
 msgid "Unmount the volume associated with this folder"
 msgstr "চিহ্নিত ফোল্ডাৰৰ সৈতে যুক্ত ভলিউম আন-মাউন্ট কৰক"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7812
+#: ../src/file-manager/fm-directory-view.c:7930
 msgid "Eject the volume associated with this folder"
 msgstr "চিহ্নিত ফোল্ডাৰৰ সৈতে যুক্ত ভলিউম বাহিৰ কৰি নিন"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7816
+#: ../src/file-manager/fm-directory-view.c:7934
 msgid "Format the volume associated with this folder"
 msgstr "চিহ্নিত ফোল্ডাৰৰ সৈতে যুক্ত ভলিউম ফৰম্যাট কৰক"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7820
+#: ../src/file-manager/fm-directory-view.c:7938
 msgid "Start the volume associated with this folder"
 msgstr "চিহ্নিত ফোল্ডাৰৰ সৈতে যুক্ত ভলিউম আৰম্ভ কৰা হ'ব"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7824
+#: ../src/file-manager/fm-directory-view.c:7942
 msgid "Stop the volume associated with this folder"
 msgstr "চিহ্নিত ফোল্ডাৰৰ সৈতে যুক্ত ভলিউম বন্ধ কৰা হ'ব"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7833
+#: ../src/file-manager/fm-directory-view.c:7951
 msgid "View or modify the properties of this folder"
 msgstr "বৰ্তমান ফোল্ডাৰৰ বৈশিষ্ট্য প্ৰদৰ্শন অথবা পৰিবৰ্তন কৰক"
 
 #. name, stock id, label
-#: ../src/file-manager/fm-directory-view.c:7836
-#: ../src/file-manager/fm-directory-view.c:7839
+#: ../src/file-manager/fm-directory-view.c:7954
+#: ../src/file-manager/fm-directory-view.c:7957
 msgid "_Other pane"
 msgstr ""
 
-#: ../src/file-manager/fm-directory-view.c:7837
+#: ../src/file-manager/fm-directory-view.c:7955
 msgid "Copy the current selection to the other pane in the window"
 msgstr ""
 
-#: ../src/file-manager/fm-directory-view.c:7840
+#: ../src/file-manager/fm-directory-view.c:7958
 msgid "Move the current selection to the other pane in the window"
 msgstr ""
 
 #. name, stock id, label
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7843
-#: ../src/file-manager/fm-directory-view.c:7847 ../src/peony-window-menus.c:893
+#: ../src/file-manager/fm-directory-view.c:7961
+#: ../src/file-manager/fm-directory-view.c:7965
+#: ../src/peony-window-menus.c:1041
 msgid "_Home Folder"
 msgstr "ঘৰ ফোল্ডাৰ"
 
-#: ../src/file-manager/fm-directory-view.c:7844
+#: ../src/file-manager/fm-directory-view.c:7962
 msgid "Copy the current selection to the home folder"
 msgstr ""
 
-#: ../src/file-manager/fm-directory-view.c:7848
+#: ../src/file-manager/fm-directory-view.c:7966
 msgid "Move the current selection to the home folder"
 msgstr ""
 
 #. name, stock id, label
-#: ../src/file-manager/fm-directory-view.c:7851
-#: ../src/file-manager/fm-directory-view.c:7855
+#: ../src/file-manager/fm-directory-view.c:7969
+#: ../src/file-manager/fm-directory-view.c:7973
 msgid "_Desktop"
 msgstr ""
 
-#: ../src/file-manager/fm-directory-view.c:7852
+#: ../src/file-manager/fm-directory-view.c:7970
 msgid "Copy the current selection to the desktop"
 msgstr ""
 
-#: ../src/file-manager/fm-directory-view.c:7856
+#: ../src/file-manager/fm-directory-view.c:7974
 msgid "Move the current selection to the desktop"
 msgstr ""
 
 #. Translators: %s is a directory
-#: ../src/file-manager/fm-directory-view.c:7936
+#: ../src/file-manager/fm-directory-view.c:8054
 #, c-format
 msgid "Run or manage scripts from %s"
 msgstr "%sৰ পৰা প্ৰাপ্ত স্ক্ৰিপ্ট সঞ্চালন অথবা পৰিচালনা কৰক"
 
 #. Create a script action here specially because its tooltip is dynamic
-#: ../src/file-manager/fm-directory-view.c:7938
+#: ../src/file-manager/fm-directory-view.c:8056
 msgid "_Scripts"
 msgstr "স্ক্ৰিপ্ট (_S)"
 
-#: ../src/file-manager/fm-directory-view.c:8343
+#: ../src/file-manager/fm-directory-view.c:8461
 #, c-format
 msgid "Move the open folder out of the trash to \"%s\""
 msgstr "বৰ্তমান ফোল্ডাৰটি আবৰ্জনাৰ বক্সৰ পৰা \"%s\"-এ স্থানান্তৰ কৰক"
 
-#: ../src/file-manager/fm-directory-view.c:8346
+#: ../src/file-manager/fm-directory-view.c:8464
 #, c-format
 msgid "Move the selected folder out of the trash to \"%s\""
 msgid_plural "Move the selected folders out of the trash to \"%s\""
 msgstr[0] "চিহ্নিত ফোল্ডাৰটি আবৰ্জনাৰ বক্সৰ পৰা \"%s\"-এ স্থানান্তৰ কৰক"
 msgstr[1] "চিহ্নিত ফোল্ডাৰটি আবৰ্জনাৰ বক্সৰ পৰা \"%s\"-এ স্থানান্তৰ কৰক"
 
-#: ../src/file-manager/fm-directory-view.c:8350
+#: ../src/file-manager/fm-directory-view.c:8468
 #, c-format
 msgid "Move the selected folder out of the trash"
 msgid_plural "Move the selected folders out of the trash"
 msgstr[0] "চিহ্নিত ফোল্ডাৰটি আবৰ্জনাৰ বক্সৰ পৰা স্থানান্তৰ কৰক"
 msgstr[1] "বৰ্তমান ফোল্ডাৰটি আবৰ্জনাৰ বক্সে স্থানান্তৰ কৰক"
 
-#: ../src/file-manager/fm-directory-view.c:8356
+#: ../src/file-manager/fm-directory-view.c:8474
 #, c-format
 msgid "Move the selected file out of the trash to \"%s\""
 msgid_plural "Move the selected files out of the trash to \"%s\""
 msgstr[0] "চিহ্নিত নথিপত্ৰ আবৰ্জনাৰ বক্সৰ পৰা \"%s\"-এ স্থানান্তৰ কৰক"
 msgstr[1] "চিহ্নিত নথিপত্ৰ আবৰ্জনাৰ বক্সৰ পৰা \"%s\"-এ স্থানান্তৰ কৰক"
 
-#: ../src/file-manager/fm-directory-view.c:8360
+#: ../src/file-manager/fm-directory-view.c:8478
 #, c-format
 msgid "Move the selected file out of the trash"
 msgid_plural "Move the selected files out of the trash"
 msgstr[0] "চিহ্নিত নথিপত্ৰ আবৰ্জনাৰ বক্সৰ পৰা বাহিৰ কৰি নিন"
 msgstr[1] "প্ৰতিটি নিৰ্বাচিত বস্তু আবৰ্জনাৰ বক্সে স্থানান্তৰ কৰক"
 
-#: ../src/file-manager/fm-directory-view.c:8366
+#: ../src/file-manager/fm-directory-view.c:8484
 #, c-format
 msgid "Move the selected item out of the trash to \"%s\""
 msgid_plural "Move the selected items out of the trash to \"%s\""
 msgstr[0] "চিহ্নিত বস্তুটি আবৰ্জনাৰ বক্সৰ পৰা  \"%s\"-এ স্থানান্তৰ কৰক"
 msgstr[1] "চিহ্নিত বস্তুটি আবৰ্জনাৰ বক্সৰ পৰা  \"%s\"-এ স্থানান্তৰ কৰক"
 
-#: ../src/file-manager/fm-directory-view.c:8370
+#: ../src/file-manager/fm-directory-view.c:8488
 #, c-format
 msgid "Move the selected item out of the trash"
 msgid_plural "Move the selected items out of the trash"
 msgstr[0] "চিহ্নিত বস্তুটি আবৰ্জনাৰ বক্সৰ পৰা বাহিৰ কৰি নিন"
 msgstr[1] "প্ৰতিটি নিৰ্বাচিত বস্তু আবৰ্জনাৰ বক্সে স্থানান্তৰ কৰক"
 
-#: ../src/file-manager/fm-directory-view.c:8496
-#: ../src/file-manager/fm-directory-view.c:8500
-#: ../src/file-manager/fm-directory-view.c:8698
-#: ../src/file-manager/fm-directory-view.c:8702
+#: ../src/file-manager/fm-directory-view.c:8614
+#: ../src/file-manager/fm-directory-view.c:8618
+#: ../src/file-manager/fm-directory-view.c:8816
+#: ../src/file-manager/fm-directory-view.c:8820
 msgid "Start the selected drive"
 msgstr "নিৰ্বাচিত ড্ৰাইভ আৰম্ভ কৰা হ'ব"
 
-#: ../src/file-manager/fm-directory-view.c:8504
-#: ../src/file-manager/fm-directory-view.c:8706
+#: ../src/file-manager/fm-directory-view.c:8622
+#: ../src/file-manager/fm-directory-view.c:8824
 msgid "Connect to the selected drive"
 msgstr "নিৰ্বাচিত ড্ৰাইভৰ সৈতে সংযোগ স্থাপন কৰা হ'ব"
 
-#: ../src/file-manager/fm-directory-view.c:8507
-#: ../src/file-manager/fm-directory-view.c:8599
-#: ../src/file-manager/fm-directory-view.c:8709
+#: ../src/file-manager/fm-directory-view.c:8625
+#: ../src/file-manager/fm-directory-view.c:8717
+#: ../src/file-manager/fm-directory-view.c:8827
 msgid "_Start Multi-disk Drive"
 msgstr "মাল্টি-ডিস্ক ড্ৰাইভ আৰম্ভ কৰা হ'ব (_S)"
 
-#: ../src/file-manager/fm-directory-view.c:8508
-#: ../src/file-manager/fm-directory-view.c:8710
+#: ../src/file-manager/fm-directory-view.c:8626
+#: ../src/file-manager/fm-directory-view.c:8828
 msgid "Start the selected multi-disk drive"
 msgstr "নিৰ্বাচিত মাল্টি-ডিস্ক ড্ৰাইভ আৰম্ভ কৰা হ'ব"
 
-#: ../src/file-manager/fm-directory-view.c:8511
+#: ../src/file-manager/fm-directory-view.c:8629
 msgid "U_nlock Drive"
 msgstr "ড্ৰাইভ আন-লক কৰা হ'ব (_n)"
 
-#: ../src/file-manager/fm-directory-view.c:8512
-#: ../src/file-manager/fm-directory-view.c:8714
+#: ../src/file-manager/fm-directory-view.c:8630
+#: ../src/file-manager/fm-directory-view.c:8832
 msgid "Unlock the selected drive"
 msgstr "নিৰ্বাচিত ড্ৰাইভ আন-লক কৰা হ'ব"
 
-#: ../src/file-manager/fm-directory-view.c:8525
+#: ../src/file-manager/fm-directory-view.c:8643
 msgid "Stop the selected drive"
 msgstr "নিৰ্বাচিত ড্ৰাইভ বন্ধ কৰক"
 
-#: ../src/file-manager/fm-directory-view.c:8528
-#: ../src/file-manager/fm-directory-view.c:8620
-#: ../src/file-manager/fm-directory-view.c:8730
-#: ../src/peony-places-sidebar.c:1893
+#: ../src/file-manager/fm-directory-view.c:8646
+#: ../src/file-manager/fm-directory-view.c:8738
+#: ../src/file-manager/fm-directory-view.c:8848
+#: ../src/peony-places-sidebar.c:2483
 msgid "_Safely Remove Drive"
 msgstr "নিৰাপদভাবে ড্ৰাইভ আঁতৰাওক (_S)"
 
-#: ../src/file-manager/fm-directory-view.c:8529
-#: ../src/file-manager/fm-directory-view.c:8731
+#: ../src/file-manager/fm-directory-view.c:8647
+#: ../src/file-manager/fm-directory-view.c:8849
 msgid "Safely remove the selected drive"
 msgstr "নিৰ্বাচিত ড্ৰাইভ নিৰাপদভাবে আঁতৰাওক"
 
-#: ../src/file-manager/fm-directory-view.c:8532
-#: ../src/file-manager/fm-directory-view.c:8624
-#: ../src/file-manager/fm-directory-view.c:8734
+#: ../src/file-manager/fm-directory-view.c:8650
+#: ../src/file-manager/fm-directory-view.c:8742
+#: ../src/file-manager/fm-directory-view.c:8852
 msgid "_Disconnect"
 msgstr "বিচ্ছিন্ন কৰক (_D)"
 
-#: ../src/file-manager/fm-directory-view.c:8533
-#: ../src/file-manager/fm-directory-view.c:8735
+#: ../src/file-manager/fm-directory-view.c:8651
+#: ../src/file-manager/fm-directory-view.c:8853
 msgid "Disconnect the selected drive"
 msgstr "নিৰ্বাচিত ড্ৰাইভ বিচ্ছিন্ন কৰক"
 
-#: ../src/file-manager/fm-directory-view.c:8536
-#: ../src/file-manager/fm-directory-view.c:8628
-#: ../src/file-manager/fm-directory-view.c:8738
+#: ../src/file-manager/fm-directory-view.c:8654
+#: ../src/file-manager/fm-directory-view.c:8746
+#: ../src/file-manager/fm-directory-view.c:8856
 msgid "_Stop Multi-disk Drive"
 msgstr "মাল্টি-ডিস্ক ড্ৰাইভ বন্ধ কৰক (_S)"
 
-#: ../src/file-manager/fm-directory-view.c:8537
-#: ../src/file-manager/fm-directory-view.c:8739
+#: ../src/file-manager/fm-directory-view.c:8655
+#: ../src/file-manager/fm-directory-view.c:8857
 msgid "Stop the selected multi-disk drive"
 msgstr "নিৰ্বাচিত মাল্টি-ডিস্ক ড্ৰাইভ বন্ধ কৰক"
 
-#: ../src/file-manager/fm-directory-view.c:8540
-#: ../src/file-manager/fm-directory-view.c:8632
-#: ../src/file-manager/fm-directory-view.c:8742
-#: ../src/peony-places-sidebar.c:1906
+#: ../src/file-manager/fm-directory-view.c:8658
+#: ../src/file-manager/fm-directory-view.c:8750
+#: ../src/file-manager/fm-directory-view.c:8860
+#: ../src/peony-places-sidebar.c:2496
 msgid "_Lock Drive"
 msgstr "ড্ৰাইভ লক কৰক (_L)"
 
-#: ../src/file-manager/fm-directory-view.c:8541
-#: ../src/file-manager/fm-directory-view.c:8743
+#: ../src/file-manager/fm-directory-view.c:8659
+#: ../src/file-manager/fm-directory-view.c:8861
 msgid "Lock the selected drive"
 msgstr "নিৰ্বাচিত ড্ৰাইভ লক কৰা হ'ব"
 
-#: ../src/file-manager/fm-directory-view.c:8588
-#: ../src/file-manager/fm-directory-view.c:8592
+#: ../src/file-manager/fm-directory-view.c:8706
+#: ../src/file-manager/fm-directory-view.c:8710
 msgid "Start the drive associated with the open folder"
 msgstr "খোলা ফোল্ডাৰৰ সৈতে যুক্ত ড্ৰাইভ আৰম্ভ কৰা হ'ব"
 
-#: ../src/file-manager/fm-directory-view.c:8596
+#: ../src/file-manager/fm-directory-view.c:8714
 msgid "Connect to the drive associated with the open folder"
 msgstr "খোলা ফোল্ডাৰৰ সৈতে যুক্ত ড্ৰাইভৰ সৈতে সংযোগ স্থাপন কৰা হ'ব"
 
-#: ../src/file-manager/fm-directory-view.c:8600
+#: ../src/file-manager/fm-directory-view.c:8718
 msgid "Start the multi-disk drive associated with the open folder"
 msgstr "খোলা ফোল্ডাৰৰ সৈতে যুক্ত মাল্টি-ডিস্ক ড্ৰাইভ আৰম্ভ কৰা হ'ব"
 
 #. stop() for type G_DRIVE_START_STOP_TYPE_PASSWORD is normally not used
-#: ../src/file-manager/fm-directory-view.c:8603
-#: ../src/file-manager/fm-directory-view.c:8713
-#: ../src/peony-places-sidebar.c:1905
+#: ../src/file-manager/fm-directory-view.c:8721
+#: ../src/file-manager/fm-directory-view.c:8831
+#: ../src/peony-places-sidebar.c:2495
 msgid "_Unlock Drive"
 msgstr "ড্ৰাইভ আন-লক কৰা হ'ব (_U)"
 
-#: ../src/file-manager/fm-directory-view.c:8604
+#: ../src/file-manager/fm-directory-view.c:8722
 msgid "Unlock the drive associated with the open folder"
 msgstr "খোলা ফোল্ডাৰৰ সৈতে যুক্ত ড্ৰাইভ আন-লক কৰা হ'ব"
 
-#: ../src/file-manager/fm-directory-view.c:8617
+#: ../src/file-manager/fm-directory-view.c:8735
 msgid "_Stop the drive associated with the open folder"
 msgstr "খোলা ফোল্ডাৰৰ সৈতে যুক্ত ড্ৰাইভ বন্ধ কৰা হ'ব (_S)"
 
-#: ../src/file-manager/fm-directory-view.c:8621
+#: ../src/file-manager/fm-directory-view.c:8739
 msgid "Safely remove the drive associated with the open folder"
 msgstr "খোলা ফোল্ডাৰৰ সৈতে যুক্ত ড্ৰাইভটি নিৰাপদভাবে আঁতৰাওক"
 
-#: ../src/file-manager/fm-directory-view.c:8625
+#: ../src/file-manager/fm-directory-view.c:8743
 msgid "Disconnect the drive associated with the open folder"
 msgstr "খোলা ফোল্ডাৰৰ সৈতে যুক্ত ড্ৰাইভ বিচ্ছিন্ন কৰা হ'ব"
 
-#: ../src/file-manager/fm-directory-view.c:8629
+#: ../src/file-manager/fm-directory-view.c:8747
 msgid "Stop the multi-disk drive associated with the open folder"
 msgstr "খোলা ফোল্ডাৰৰ সৈতে যুক্ত মাল্টি-ডিস্ক ড্ৰাইভ বন্ধ কৰা হ'ব"
 
-#: ../src/file-manager/fm-directory-view.c:8633
+#: ../src/file-manager/fm-directory-view.c:8751
 msgid "Lock the drive associated with the open folder"
 msgstr "খোলা ফোল্ডাৰৰ সৈতে যুক্ত ড্ৰাইভ লক কৰা হ'ব"
 
 #. add the "open in new window" menu item
-#: ../src/file-manager/fm-directory-view.c:8812
-#: ../src/file-manager/fm-directory-view.c:9126
-#: ../src/file-manager/fm-tree-view.c:1289 ../src/peony-places-sidebar.c:2789
+#: ../src/file-manager/fm-directory-view.c:8930
+#: ../src/file-manager/fm-directory-view.c:9244
+#: ../src/file-manager/fm-tree-view.c:1289 ../src/peony-places-sidebar.c:3410
 msgid "Open in New _Window"
 msgstr "খোলক নতুন"
 
-#: ../src/file-manager/fm-directory-view.c:8814
-#: ../src/file-manager/fm-directory-view.c:9135
+#: ../src/file-manager/fm-directory-view.c:8932
+#: ../src/file-manager/fm-directory-view.c:9253
 msgid "Browse in New _Window"
 msgstr "নতুন উইন্ডোত ব্ৰাউজ কৰক (_W)"
 
-#: ../src/file-manager/fm-directory-view.c:8820
-#: ../src/file-manager/fm-directory-view.c:9145
+#: ../src/file-manager/fm-directory-view.c:8938
+#: ../src/file-manager/fm-directory-view.c:9263
 msgid "_Browse Folder"
 msgid_plural "_Browse Folders"
 msgstr[0] "ফোল্ডাৰ ব্ৰাউজ কৰক (_B)"
 msgstr[1] "ফোল্ডাৰ ব্ৰাউজ কৰক (_B)"
 
-#: ../src/file-manager/fm-directory-view.c:8837
-#: ../src/file-manager/fm-directory-view.c:9174
+#: ../src/file-manager/fm-directory-view.c:8955
+#: ../src/file-manager/fm-directory-view.c:9292
 msgid "Browse in New _Tab"
 msgstr "নতুন ট্যাবত ব্ৰাউজ কৰক (_T)"
 
-#: ../src/file-manager/fm-directory-view.c:8886
-#: ../src/file-manager/fm-directory-view.c:9215
-#: ../src/file-manager/fm-directory-view.c:9250
+#: ../src/file-manager/fm-directory-view.c:9004
+#: ../src/file-manager/fm-directory-view.c:9333
+#: ../src/file-manager/fm-directory-view.c:9368
 msgid "_Delete Permanently"
 msgstr "স্থানীয়ৰূপে মুছে ফেলুন (_D)"
 
-#: ../src/file-manager/fm-directory-view.c:8887
+#: ../src/file-manager/fm-directory-view.c:9005
 msgid "Delete the open folder permanently"
 msgstr "বৰ্তমান ফোল্ডাৰ স্থানীয়ৰূপে মুছে ফেলুন"
 
-#: ../src/file-manager/fm-directory-view.c:8891
+#: ../src/file-manager/fm-directory-view.c:9009
 msgid "Move the open folder to the Trash"
 msgstr "বৰ্তমান ফোল্ডাৰটি আবৰ্জনাৰ বক্সে স্থানান্তৰ কৰক"
 
-#: ../src/file-manager/fm-directory-view.c:9073
+#: ../src/file-manager/fm-directory-view.c:9191
 #, c-format
 msgid "_Open With %s"
 msgstr ""
 
-#: ../src/file-manager/fm-directory-view.c:9128
+#: ../src/file-manager/fm-directory-view.c:9246
 #, c-format
 msgid "Open in %'d New _Window"
 msgid_plural "Open in %'d New _Windows"
 msgstr[0] "%'d নতুন উইন্ডোত খোলক (_W)"
 msgstr[1] "%d-টি নতুন উইন্ডোত খোলক"
 
-#: ../src/file-manager/fm-directory-view.c:9137
+#: ../src/file-manager/fm-directory-view.c:9255
 #, c-format
 msgid "Browse in %'d New _Window"
 msgid_plural "Browse in %'d New _Windows"
 msgstr[0] "%'d নতুন উইন্ডোত ব্ৰাউজ কৰক (_W)"
 msgstr[1] "%d-টি নতুন উইন্ডোত খোলক"
 
-#: ../src/file-manager/fm-directory-view.c:9167
+#: ../src/file-manager/fm-directory-view.c:9285
 #, c-format
 msgid "Open in %'d New _Tab"
 msgid_plural "Open in %'d New _Tabs"
 msgstr[0] "%'d নতুন ট্যাবত খোলক (_T)"
 msgstr[1] "%d-টি নতুন উইন্ডোত খোলক"
 
-#: ../src/file-manager/fm-directory-view.c:9176
+#: ../src/file-manager/fm-directory-view.c:9294
 #, c-format
 msgid "Browse in %'d New _Tab"
 msgid_plural "Browse in %'d New _Tabs"
 msgstr[0] "%'d নতুন ট্যাবত ব্ৰাউজ কৰক (_T)"
 msgstr[1] "%'d নতুন ট্যাবত ব্ৰাউজ কৰক (_T)"
 
-#: ../src/file-manager/fm-directory-view.c:9216
+#: ../src/file-manager/fm-directory-view.c:9334
 msgid "Delete all selected items permanently"
 msgstr "নিৰ্বাচিত সব সামগ্ৰী স্থায়ীৰূপে মুছে ফেলুন"
 
-#: ../src/file-manager/fm-directory-view.c:9373
+#: ../src/file-manager/fm-directory-view.c:9491
 msgid "View or modify the properties of the open folder"
 msgstr "বৰ্তমান ফোল্ডাৰৰ বৈশিষ্ট্য প্ৰদৰ্শন অথবা পৰিবৰ্তন কৰক"
 
-#: ../src/file-manager/fm-directory-view.c:10676
+#: ../src/file-manager/fm-directory-view.c:10794
 msgid "Download location?"
 msgstr "এখানৰ পৰা ডাউনলোড কৰা হ'ব কি?"
 
-#: ../src/file-manager/fm-directory-view.c:10679
+#: ../src/file-manager/fm-directory-view.c:10797
 msgid "You can download it or make a link to it."
 msgstr "লিঙ্ক."
 
-#: ../src/file-manager/fm-directory-view.c:10682
+#: ../src/file-manager/fm-directory-view.c:10800
 msgid "Make a _Link"
 msgstr "লিঙ্ক"
 
-#: ../src/file-manager/fm-directory-view.c:10686
+#: ../src/file-manager/fm-directory-view.c:10804
 msgid "_Download"
 msgstr "ডাউনলোড কৰক(_D)"
 
-#: ../src/file-manager/fm-directory-view.c:10847
-#: ../src/file-manager/fm-directory-view.c:10906
-#: ../src/file-manager/fm-directory-view.c:11011
+#: ../src/file-manager/fm-directory-view.c:10965
+#: ../src/file-manager/fm-directory-view.c:11024
+#: ../src/file-manager/fm-directory-view.c:11129
 msgid "Drag and drop is not supported."
 msgstr "হলো."
 
-#: ../src/file-manager/fm-directory-view.c:10848
+#: ../src/file-manager/fm-directory-view.c:10966
 msgid "Drag and drop is only supported on local file systems."
 msgstr "হলো সক্ৰিয় নথিপত্ৰ."
 
-#: ../src/file-manager/fm-directory-view.c:10907
-#: ../src/file-manager/fm-directory-view.c:11012
+#: ../src/file-manager/fm-directory-view.c:11025
+#: ../src/file-manager/fm-directory-view.c:11130
 msgid "An invalid drag type was used."
 msgstr "টেনে আনাৰ সময় ভুল পদ্ধতি অবলম্বন কৰা হয়েছে ।"
 
 #. Translator: This is the filename used for when you dnd text to a directory
-#: ../src/file-manager/fm-directory-view.c:11089
+#: ../src/file-manager/fm-directory-view.c:11207
 msgid "dropped text.txt"
 msgstr "text.txt ড্ৰপ কৰা হয়েছে"
 
 #. Translator: This is the filename used for when you dnd raw
 #. * data to a directory, if the source didn't supply a name.
 #.
-#: ../src/file-manager/fm-directory-view.c:11134
+#: ../src/file-manager/fm-directory-view.c:11252
 msgid "dropped data"
 msgstr ""
 
 #. Reset to default info
-#: ../src/file-manager/fm-directory-view.c:11521
+#: ../src/file-manager/fm-directory-view.c:11639
 msgid "Undo"
 msgstr ""
 
 #. Reset to default info
-#: ../src/file-manager/fm-directory-view.c:11539
+#: ../src/file-manager/fm-directory-view.c:11662
 msgid "Redo"
 msgstr ""
 
@@ -5201,7 +5231,7 @@ msgstr "\"%s\"-ৰ নাম পৰিবৰ্তন কৰি \"%s\" কৰা
 #. translators: this is used in the view selection dropdown
 #. * of navigation windows and in the preferences dialog
 #: ../src/file-manager/fm-icon-container.c:649
-#: ../src/file-manager/fm-icon-view.c:3456
+#: ../src/file-manager/fm-icon-view.c:3419
 #: ../src/peony-file-management-properties.ui.h:1
 msgid "Icon View"
 msgstr "আইকন অনুসাৰে প্ৰদৰ্শন"
@@ -5378,43 +5408,43 @@ msgid "pointing at \"%s\""
 msgstr "\"%s\" নিৰ্দেশকৰ্তা"
 
 #. translators: this is used in the view menu
-#: ../src/file-manager/fm-icon-view.c:3458
+#: ../src/file-manager/fm-icon-view.c:3421
 msgid "_Icons"
 msgstr "আইকন (_I)"
 
-#: ../src/file-manager/fm-icon-view.c:3459
+#: ../src/file-manager/fm-icon-view.c:3422
 msgid "The icon view encountered an error."
 msgstr "আইকন অনুসাৰে প্ৰদৰ্শনে সমস্যা ।"
 
-#: ../src/file-manager/fm-icon-view.c:3460
+#: ../src/file-manager/fm-icon-view.c:3423
 msgid "The icon view encountered an error while starting up."
 msgstr "আইকন অনুসাৰে প্ৰদৰ্শন ব্যবস্থা আৰম্ভ কৰাৰ সময় সমস্যা ।"
 
-#: ../src/file-manager/fm-icon-view.c:3461
+#: ../src/file-manager/fm-icon-view.c:3424
 msgid "Display this location with the icon view."
 msgstr "ডিসপ্লে."
 
 #. translators: this is used in the view selection dropdown
 #. * of navigation windows and in the preferences dialog
-#: ../src/file-manager/fm-icon-view.c:3471
+#: ../src/file-manager/fm-icon-view.c:3434
 #: ../src/peony-file-management-properties.ui.h:3
 msgid "Compact View"
 msgstr "সংক্ষিপ্ত প্ৰদৰ্শন"
 
 #. translators: this is used in the view menu
-#: ../src/file-manager/fm-icon-view.c:3473
+#: ../src/file-manager/fm-icon-view.c:3436
 msgid "_Compact"
 msgstr "সংক্ষিপ্ত (_C)"
 
-#: ../src/file-manager/fm-icon-view.c:3474
+#: ../src/file-manager/fm-icon-view.c:3437
 msgid "The compact view encountered an error."
 msgstr "সংক্ষিপ্ত প্ৰদৰ্শনৰ ক্ষেত্ৰত কিছু সমস্যা দেখা দিয়েছে ।"
 
-#: ../src/file-manager/fm-icon-view.c:3475
+#: ../src/file-manager/fm-icon-view.c:3438
 msgid "The compact view encountered an error while starting up."
 msgstr "সংক্ষিপ্ত প্ৰদৰ্শন আৰম্ভৰ সময় এটা ত্ৰুটি দেখা দিয়েছে ।"
 
-#: ../src/file-manager/fm-icon-view.c:3476
+#: ../src/file-manager/fm-icon-view.c:3439
 msgid "Display this location with the compact view."
 msgstr "সংক্ষিপ্ত প্ৰদৰ্শন ৰ সহায়ত চিহ্নিত অৱস্থান প্ৰদৰ্শন কৰা হ'ব ।"
 
@@ -5423,55 +5453,62 @@ msgstr "সংক্ষিপ্ত প্ৰদৰ্শন ৰ সহায়ত
 msgid "(Empty)"
 msgstr "ৰিক্ত"
 
-#. we will wait for child progress finished.
+#.
+#. set_pdf_preview_widget_file_by_filename(window->details->pdf_view,(char*)data);
+#. gtk_widget_hide (window->details->empty_window);
+#. gtk_widget_show_all (window->details->pdf_swindow);
+#. gtk_widget_hide (window->details->test_widget);
+#. gtk_widget_hide (window->details->web_swindow);
+#.
 #: ../src/file-manager/fm-list-model.c:432
 #: ../src/file-manager/fm-tree-model.c:1358
-#: ../src/peony-navigation-window.c:1575 ../src/peony-window-slot.c:208
+#: ../src/peony-navigation-window.c:1659 ../src/peony-navigation-window.c:1684
+#: ../src/peony-window-slot.c:216
 msgid "Loading..."
 msgstr "তোলা হৈছে..."
 
 #. translators: this is used in the view selection dropdown
 #. * of navigation windows and in the preferences dialog
-#: ../src/file-manager/fm-list-view.c:1957
-#: ../src/file-manager/fm-list-view.c:3577
+#: ../src/file-manager/fm-list-view.c:1915
+#: ../src/file-manager/fm-list-view.c:3535
 #: ../src/peony-file-management-properties.ui.h:2
 msgid "List View"
 msgstr "তালিকা অনুসাৰে প্ৰদৰ্শন"
 
-#: ../src/file-manager/fm-list-view.c:2651
+#: ../src/file-manager/fm-list-view.c:2609
 #, c-format
 msgid "%s Visible Columns"
 msgstr "%s দৃশ্যমান Columns"
 
-#: ../src/file-manager/fm-list-view.c:2670
+#: ../src/file-manager/fm-list-view.c:2628
 msgid "Choose the order of information to appear in this folder:"
 msgstr "বৰ্তমান ফোল্ডাৰেত প্ৰদৰ্শিত তথ্যেৰ অনুক্ৰম নিৰ্বাচন কৰক:"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-list-view.c:2728
+#: ../src/file-manager/fm-list-view.c:2686
 msgid "Visible _Columns..."
 msgstr "দৃশ্যমান Columns."
 
 #. tooltip
-#: ../src/file-manager/fm-list-view.c:2729
+#: ../src/file-manager/fm-list-view.c:2687
 msgid "Select the columns visible in this folder"
 msgstr "কলাম দৃশ্যমান"
 
 #. translators: this is used in the view menu
-#: ../src/file-manager/fm-list-view.c:3579
+#: ../src/file-manager/fm-list-view.c:3537
 msgid "_List"
 msgstr "তালিকা (_L)"
 
-#: ../src/file-manager/fm-list-view.c:3580
+#: ../src/file-manager/fm-list-view.c:3538
 msgid "The list view encountered an error."
 msgstr "তালিকা."
 
-#: ../src/file-manager/fm-list-view.c:3581
+#: ../src/file-manager/fm-list-view.c:3539
 msgid "The list view encountered an error while starting up."
 msgstr "তালিকা."
 
-#: ../src/file-manager/fm-list-view.c:3582
+#: ../src/file-manager/fm-list-view.c:3540
 msgid "Display this location with the list view."
 msgstr "ডিসপ্লে তালিকা."
 
@@ -5586,7 +5623,7 @@ msgid "Link target:"
 msgstr "লিঙ্ক:"
 
 #: ../src/file-manager/fm-properties-window.c:3273
-#: ../src/peony-location-bar.c:59
+#: ../src/peony-location-bar.c:62
 msgid "Location:"
 msgstr "অৱস্থান:"
 
@@ -5794,7 +5831,8 @@ msgstr "বৈশিষ্ট্যাবলী."
 msgid "Select Custom Icon"
 msgstr "নিজস্ব আইকন"
 
-#: ../src/file-manager/fm-tree-view.c:1440 ../src/peony-places-sidebar.c:669
+#: ../src/file-manager/fm-tree-view.c:1440 ../src/peony-location-bar.c:1464
+#: ../src/peony-places-sidebar.c:908
 msgid "File System"
 msgstr "নথিপত্ৰ সিস্টেম"
 
@@ -5830,8 +5868,8 @@ msgstr ""
 "Peony আৰম্ভ কৰাৰ পূৰ্বে নিম্নলিখিত ফোল্ডাৰসমূহ নিৰ্মাণ কৰক অথবা Peony দ্বাৰা "
 "ফোল্ডাৰসমূহ নিৰ্মাণেৰ উদ্দেশ্যে প্ৰয়োজনীয় অনুমতি ধাৰ্য কৰক ।"
 
-#: ../src/peony-application.c:1362 ../src/peony-places-sidebar.c:2290
-#: ../src/peony-places-sidebar.c:2324 ../src/peony-places-sidebar.c:2359
+#: ../src/peony-application.c:1362 ../src/peony-places-sidebar.c:2911
+#: ../src/peony-places-sidebar.c:2945 ../src/peony-places-sidebar.c:2980
 #, c-format
 msgid "Unable to eject %s"
 msgstr "%s বাহিৰ কৰিবলৈ ব্যৰ্থ"
@@ -5946,7 +5984,7 @@ msgstr ""
 
 #: ../src/peony-bookmarks-window.c:158
 #: ../src/peony-file-management-properties.c:237
-#: ../src/peony-property-browser.c:1667 ../src/peony-window-menus.c:592
+#: ../src/peony-property-browser.c:1667 ../src/peony-window-menus.c:735
 #, c-format
 msgid ""
 "There was an error displaying help: \n"
@@ -6113,8 +6151,8 @@ msgstr ""
 msgid "Bookmark Name:"
 msgstr ""
 
-#: ../src/peony-desktop-window.c:87 ../src/peony-desktop-window.c:267
-#: ../src/peony-pathbar.c:1399 ../src/peony-places-sidebar.c:544
+#: ../src/peony-desktop-window.c:97 ../src/peony-desktop-window.c:280
+#: ../src/peony-pathbar.c:1399 ../src/peony-places-sidebar.c:738
 msgid "Desktop"
 msgstr "ডেস্কটপ"
 
@@ -6728,16 +6766,138 @@ msgstr "একই সময়ে একাধিক স্বনিৰ্ধাৰ
 msgid "You can only use images as custom icons."
 msgstr "স্বনিৰ্বাচিত."
 
-#: ../src/peony-location-bar.c:60
+#: ../src/peony-kdisk-format.c:78
+msgid "Formatting is in progress, do you want to continue?"
+msgstr ""
+
+#: ../src/peony-kdisk-format.c:99 ../src/peony-kdisk-format.c:548
+#: ../src/peony-kdisk-format.c:686
+msgid "Warning"
+msgstr ""
+
+#: ../src/peony-kdisk-format.c:197
+msgid "Capatity:"
+msgstr ""
+
+#: ../src/peony-kdisk-format.c:198
+#, fuzzy
+msgid "File System:"
+msgstr "নথিপত্ৰ সিস্টেম"
+
+#: ../src/peony-kdisk-format.c:199
+#, fuzzy
+msgid "Volume Label:"
+msgstr "ভলিউম:"
+
+#: ../src/peony-kdisk-format.c:200
+msgid "Formatting Options:"
+msgstr ""
+
+#: ../src/peony-kdisk-format.c:216
+msgid "Erase(Need more time)"
+msgstr ""
+
+#: ../src/peony-kdisk-format.c:226
+msgid "Begin"
+msgstr ""
+
+#: ../src/peony-kdisk-format.c:229 ../src/peony-kdisk-format.c:346
+#: ../src/peony-kdisk-format.c:405
+#, fuzzy
+msgid "Close"
+msgstr "বন্ধ কৰক (_C)"
+
+#: ../src/peony-kdisk-format.c:257 ../src/peony-kdisk-format.c:564
+msgid "The path is empty"
+msgstr ""
+
+#: ../src/peony-kdisk-format.c:264
+#, fuzzy, c-format
+msgid "can't find %s"
+msgstr "'%s' পাৱ যায়নি ।"
+
+#: ../src/peony-kdisk-format.c:285 ../src/peony-kdisk-format.c:356
+#: ../src/peony-kdisk-format.c:414
+#, fuzzy, c-format
+msgid "format %s volume"
+msgstr "চিহ্নিত ভলিউম ফৰম্যাট কৰক"
+
+#: ../src/peony-kdisk-format.c:289 ../src/peony-kdisk-format.c:360
+#: ../src/peony-kdisk-format.c:418
+#, fuzzy, c-format
+msgid "format %s"
+msgstr "ফৰম্যাট কৰক (_F)"
+
+#: ../src/peony-kdisk-format.c:330 ../src/peony-kdisk-format.c:389
+msgid "format succeed!"
+msgstr ""
+
+#: ../src/peony-kdisk-format.c:339 ../src/peony-kdisk-format.c:398
+msgid "format failed!"
+msgstr ""
+
+#: ../src/peony-kdisk-format.c:437
+#, c-format
+msgid "Current progress is %s%s"
+msgstr ""
+
+#: ../src/peony-kdisk-format.c:478 ../src/peony-kdisk-format.c:633
+#, fuzzy, c-format
+msgid "Unable to unmount %s volume"
+msgstr "%V আন-মাউন্ট কৰিবলৈ ব্যৰ্থ"
+
+#: ../src/peony-kdisk-format.c:482 ../src/peony-kdisk-format.c:637
+#, fuzzy, c-format
+msgid "Unable to unmount %s"
+msgstr "%V আন-মাউন্ট কৰিবলৈ ব্যৰ্থ"
+
+#: ../src/peony-kdisk-format.c:518
+msgid "Erase the device will takes a long time,do you want to continue?"
+msgstr ""
+
+#: ../src/peony-kdisk-format.c:527
+msgid ""
+"Formatting will delete all data,are you sure you want to format the device?"
+msgstr ""
+
+#: ../src/peony-kdisk-format.c:666
+msgid "Formatting is in progress, is it canceled?"
+msgstr ""
+
+#: ../src/peony-kdisk-format.c:720
+#, fuzzy
+msgid "Format Volume"
+msgstr "চিহ্নিত ভলিউম ফৰম্যাট কৰক"
+
+#: ../src/peony-location-bar.c:63
 msgid "Go To:"
 msgstr "গন্তব্য প্ৰাপক:"
 
-#: ../src/peony-location-bar.c:226
+#: ../src/peony-location-bar.c:269
 #, c-format
 msgid "Do you want to view %d location?"
 msgid_plural "Do you want to view %d locations?"
 msgstr[0] "%d-টি অৱস্থান কি আপনি দেখতে ইচ্ছুক?"
 msgstr[1] "%d-টি অৱস্থান কি আপনি দেখতে ইচ্ছুক?"
+
+#: ../src/peony-location-bar.c:1487
+msgid "recent"
+msgstr ""
+
+#: ../src/peony-location-bar.c:1490
+#, fuzzy
+msgid "trash"
+msgstr "আৰ্বজনা"
+
+#: ../src/peony-location-bar.c:1493
+#, fuzzy
+msgid "computer"
+msgstr "কম্পিউটাৰ"
+
+#: ../src/peony-location-bar.c:1496
+#, fuzzy
+msgid "search:"
+msgstr "অনুসন্ধান:"
 
 #: ../src/peony-location-dialog.c:157
 msgid "Open Location"
@@ -7023,17 +7183,19 @@ msgstr ""
 msgid "_Close Tab"
 msgstr "ট্যাব বন্ধ কৰক (_C)"
 
-#: ../src/peony-navigation-window.c:898
+#: ../src/peony-navigation-window.c:969
 #, c-format
 msgid "%s - File Browser"
 msgstr "%s - File Browser"
 
-#: ../src/peony-navigation-window.c:1516 ../src/peony-navigation-window.c:1625
-#: ../src/peony-navigation-window.c:1636
+#. printf ("null\n\n\n");
+#: ../src/peony-navigation-window.c:1606 ../src/peony-navigation-window.c:1753
+#: ../src/peony-navigation-window.c:1764
 msgid "Select the file you want to preview"
 msgstr ""
 
-#: ../src/peony-navigation-window.c:1582
+#. printf("can't preview this file\n");
+#: ../src/peony-navigation-window.c:1686 ../src/peony-navigation-window.c:1696
 msgid "Can't preview this file"
 msgstr ""
 
@@ -7049,103 +7211,109 @@ msgstr "নোট"
 msgid "Show Notes"
 msgstr "নোট"
 
-#: ../src/peony-places-sidebar.c:534
+#: ../src/peony-places-sidebar.c:728
 #, fuzzy
 msgid "Favorite"
 msgstr "লেখা"
 
-#: ../src/peony-places-sidebar.c:546
+#: ../src/peony-places-sidebar.c:740
 msgid "Open the contents of your desktop in a folder"
 msgstr ""
 
-#: ../src/peony-places-sidebar.c:561
+#: ../src/peony-places-sidebar.c:755
 msgid "Open the trash"
 msgstr ""
 
-#: ../src/peony-places-sidebar.c:572
+#: ../src/peony-places-sidebar.c:766
 msgid "Recent"
 msgstr ""
 
-#: ../src/peony-places-sidebar.c:574
+#: ../src/peony-places-sidebar.c:768
 #, fuzzy
 msgid "Open the recent"
 msgstr "ঊৰ্ধ্বস্থ ফোল্ডাৰ খোলক"
 
-#: ../src/peony-places-sidebar.c:586
+#: ../src/peony-places-sidebar.c:808 ../src/peony-places-sidebar.c:1998
+#: ../src/peony-places-sidebar.c:2256
+#, fuzzy
+msgid "Open the folder"
+msgstr "ঊৰ্ধ্বস্থ ফোল্ডাৰ খোলক"
+
+#: ../src/peony-places-sidebar.c:825
 msgid "Personal"
 msgstr ""
 
-#: ../src/peony-places-sidebar.c:661
+#: ../src/peony-places-sidebar.c:900
 #, fuzzy
 msgid "My Computer"
 msgstr "কম্পিউটাৰ"
 
-#: ../src/peony-places-sidebar.c:671
+#: ../src/peony-places-sidebar.c:910
 msgid "Open the contents of the File System"
 msgstr ""
 
-#: ../src/peony-places-sidebar.c:726 ../src/peony-places-sidebar.c:754
+#: ../src/peony-places-sidebar.c:965 ../src/peony-places-sidebar.c:993
 #, c-format
 msgid "Mount and open %s"
 msgstr ""
 
-#: ../src/peony-places-sidebar.c:899
+#: ../src/peony-places-sidebar.c:1138
 msgid "Browse Network"
 msgstr ""
 
-#: ../src/peony-places-sidebar.c:901
+#: ../src/peony-places-sidebar.c:1140
 msgid "Browse the contents of the network"
 msgstr ""
 
 #. start() for type G_DRIVE_START_STOP_TYPE_SHUTDOWN is normally not used
-#: ../src/peony-places-sidebar.c:1892
+#: ../src/peony-places-sidebar.c:2482
 msgid "_Power On"
 msgstr "বিদ্যুৎ সংযোগ (_P)"
 
-#: ../src/peony-places-sidebar.c:1896
+#: ../src/peony-places-sidebar.c:2486
 msgid "_Connect Drive"
 msgstr "ড্ৰাইভ সংযোগ কৰা হ'ব (_C)"
 
-#: ../src/peony-places-sidebar.c:1897
+#: ../src/peony-places-sidebar.c:2487
 msgid "_Disconnect Drive"
 msgstr "ড্ৰাইভ বিচ্ছিন্ন কৰক (_D)"
 
-#: ../src/peony-places-sidebar.c:1900
+#: ../src/peony-places-sidebar.c:2490
 msgid "_Start Multi-disk Device"
 msgstr "মাল্টি-ডিস্ক যন্ত্ৰ আৰম্ভ কৰা হ'ব (_S)"
 
-#: ../src/peony-places-sidebar.c:1901
+#: ../src/peony-places-sidebar.c:2491
 msgid "_Stop Multi-disk Device"
 msgstr "মাল্টি-ডিস্ক যন্ত্ৰ বন্ধ কৰা হ'ব (_S)"
 
-#: ../src/peony-places-sidebar.c:1987 ../src/peony-places-sidebar.c:2595
+#: ../src/peony-places-sidebar.c:2577 ../src/peony-places-sidebar.c:3216
 #, c-format
 msgid "Unable to start %s"
 msgstr "%s আৰম্ভ কৰিবলৈ ব্যৰ্থ"
 
-#: ../src/peony-places-sidebar.c:2523
+#: ../src/peony-places-sidebar.c:3144
 #, c-format
 msgid "Unable to poll %s for media changes"
 msgstr "Unable to poll %s for media changes"
 
-#: ../src/peony-places-sidebar.c:2655
+#: ../src/peony-places-sidebar.c:3276
 #, c-format
 msgid "Unable to stop %s"
 msgstr "%s বন্ধ কৰিবলৈ ব্যৰ্থ"
 
-#: ../src/peony-places-sidebar.c:2797
+#: ../src/peony-places-sidebar.c:3418
 msgid "Remove"
 msgstr "আঁতৰাওঁক"
 
-#: ../src/peony-places-sidebar.c:2806
+#: ../src/peony-places-sidebar.c:3427
 msgid "Rename..."
 msgstr "নাম পৰিবৰ্তন..."
 
-#: ../src/peony-places-sidebar.c:3498
+#: ../src/peony-places-sidebar.c:4120
 msgid "Places"
 msgstr "স্থান"
 
-#: ../src/peony-places-sidebar.c:3504
+#: ../src/peony-places-sidebar.c:4126
 msgid "Show Places"
 msgstr "স্থান"
 
@@ -7414,7 +7582,7 @@ msgstr "অনুসন্ধান"
 msgid "Search results"
 msgstr "অনুসন্ধান"
 
-#: ../src/peony-search-bar.c:202
+#: ../src/peony-search-bar.c:248
 msgid "Search:"
 msgstr "অনুসন্ধান:"
 
@@ -7546,11 +7714,11 @@ msgstr ""
 "ত্ৰুটি: %s\n"
 "অনুগ্ৰহ কৰি এটা পৃথক প্ৰদৰ্শন ব্যবস্থা নিৰ্বাচন কৰি পুনৰায় প্ৰচেষ্টা কৰক ।"
 
-#: ../src/peony-window-menus.c:195
+#: ../src/peony-window-menus.c:316
 msgid "Go to the location specified by this bookmark"
 msgstr "গন্তব্য"
 
-#: ../src/peony-window-menus.c:518
+#: ../src/peony-window-menus.c:661
 msgid ""
 "Peony is free software; you can redistribute it and/or modify it under the "
 "terms of the GNU General Public License as published by the Free Software "
@@ -7562,7 +7730,7 @@ msgstr ""
 "Foundation; either version 2 of the License, or (at your option) any later "
 "version."
 
-#: ../src/peony-window-menus.c:522
+#: ../src/peony-window-menus.c:665
 msgid ""
 "Peony is distributed in the hope that it will be useful, but WITHOUT ANY "
 "WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS "
@@ -7574,7 +7742,7 @@ msgstr ""
 "FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more "
 "details."
 
-#: ../src/peony-window-menus.c:526
+#: ../src/peony-window-menus.c:669
 msgid ""
 "You should have received a copy of the GNU General Public License along with "
 "Peony; if not, write to the Free Software Foundation, Inc., 51 Franklin "
@@ -7584,13 +7752,13 @@ msgstr ""
 "Peony; if not, write to the Free Software Foundation, Inc., 51 Franklin "
 "Street, Fifth Floor, Boston, MA 02110-1301 USA"
 
-#: ../src/peony-window-menus.c:538
+#: ../src/peony-window-menus.c:681
 msgid ""
 "Peony lets you organize files and folders, both on your computer and online."
 msgstr ""
 "Peony lets you organize files and folders, both on your computer and online."
 
-#: ../src/peony-window-menus.c:541
+#: ../src/peony-window-menus.c:684
 msgid ""
 "Copyright © 1999-2009 The Nautilus authors\n"
 "Copyright © 2011-2016 The Caja authors\n"
@@ -7601,212 +7769,212 @@ msgstr ""
 #. * which will be displayed at the bottom of the about
 #. * box to give credit to the translator(s).
 #.
-#: ../src/peony-window-menus.c:552
+#: ../src/peony-window-menus.c:695
 msgid "translator-credits"
 msgstr "অমিতাক্ষ ফুকন (aphukan@fedoraproject.org)"
 
-#: ../src/peony-window-menus.c:555
+#: ../src/peony-window-menus.c:698
 msgid "UKUI Web Site"
 msgstr ""
 
 #. name, stock id, label
-#: ../src/peony-window-menus.c:808
+#: ../src/peony-window-menus.c:951
 msgid "_File"
 msgstr "নথিপত্ৰ (_F)"
 
 #. name, stock id, label
-#: ../src/peony-window-menus.c:809
+#: ../src/peony-window-menus.c:952
 msgid "_Edit"
 msgstr "সম্পাদনা (_E)"
 
 #. name, stock id, label
-#: ../src/peony-window-menus.c:810
+#: ../src/peony-window-menus.c:953
 msgid "_View"
 msgstr "প্ৰদৰ্শন (_V)"
 
 #. name, stock id, label
-#: ../src/peony-window-menus.c:811
+#: ../src/peony-window-menus.c:954
 msgid "_Help"
 msgstr "সাহায্য(_H)"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/peony-window-menus.c:813
+#: ../src/peony-window-menus.c:956
 msgid "_Close"
 msgstr "বন্ধ কৰক (_C)"
 
 #. tooltip
-#: ../src/peony-window-menus.c:814
+#: ../src/peony-window-menus.c:957
 msgid "Close this folder"
 msgstr "বন্ধ কৰক"
 
-#: ../src/peony-window-menus.c:819
+#: ../src/peony-window-menus.c:962
 msgid "_Backgrounds and Emblems..."
 msgstr "পটভূমি এবং প্ৰতীক...(_B)"
 
-#: ../src/peony-window-menus.c:820
+#: ../src/peony-window-menus.c:963
 msgid ""
 "Display patterns, colors, and emblems that can be used to customize "
 "appearance"
 msgstr "ডিসপ্লে"
 
-#: ../src/peony-window-menus.c:825
+#: ../src/peony-window-menus.c:968
 msgid "Prefere_nces"
 msgstr "পছন্দ(_n)"
 
-#: ../src/peony-window-menus.c:826
+#: ../src/peony-window-menus.c:969
 msgid "Edit Peony preferences"
 msgstr "সম্পাদনা"
 
 #. name, stock id, label
-#: ../src/peony-window-menus.c:829
+#: ../src/peony-window-menus.c:972
 msgid "Open _Parent"
 msgstr "খোলক"
 
-#: ../src/peony-window-menus.c:830
+#: ../src/peony-window-menus.c:973
 msgid "Open the parent folder"
 msgstr "ঊৰ্ধ্বস্থ ফোল্ডাৰ খোলক"
 
 #. tooltip
-#: ../src/peony-window-menus.c:839
+#: ../src/peony-window-menus.c:982
 msgid "Stop loading the current location"
 msgstr "বন্ধ কৰক"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/peony-window-menus.c:843
+#: ../src/peony-window-menus.c:986
 msgid "_Reload"
 msgstr "পুনৰায় লোড কৰা হ'ব (_R)"
 
 #. tooltip
-#: ../src/peony-window-menus.c:844
+#: ../src/peony-window-menus.c:987
 msgid "Reload the current location"
 msgstr "বৰ্তমান অৱস্থান পুনৰায় লোড কৰক"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/peony-window-menus.c:848
+#: ../src/peony-window-menus.c:991
 msgid "_Contents"
 msgstr "সূচী (_C)"
 
 #. tooltip
-#: ../src/peony-window-menus.c:849
+#: ../src/peony-window-menus.c:992
 msgid "Display Peony help"
 msgstr "ডিসপ্লে"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/peony-window-menus.c:853
+#: ../src/peony-window-menus.c:996
 msgid "_About"
 msgstr "পৰিচিতি(_A)"
 
 #. tooltip
-#: ../src/peony-window-menus.c:854
+#: ../src/peony-window-menus.c:997
 msgid "Display credits for the creators of Peony"
 msgstr "ডিসপ্লে উল্লিখিত সময় অবধি সৰ্বমোট"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/peony-window-menus.c:858
+#: ../src/peony-window-menus.c:1001
 msgid "Zoom _In"
 msgstr "ডাঙৰ কৰি প্ৰদৰ্শন (_I)"
 
 #. tooltip
-#: ../src/peony-window-menus.c:859 ../src/peony-zoom-control.c:96
+#: ../src/peony-window-menus.c:1002 ../src/peony-zoom-control.c:96
 #: ../src/peony-zoom-control.c:384
 msgid "Increase the view size"
 msgstr "প্ৰদৰ্শনে মাপ বৃদ্ধি কৰক"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/peony-window-menus.c:873
+#: ../src/peony-window-menus.c:1021
 msgid "Zoom _Out"
 msgstr "সৰু কৰি প্ৰদৰ্শন (_O)"
 
 #. tooltip
-#: ../src/peony-window-menus.c:874 ../src/peony-zoom-control.c:97
+#: ../src/peony-window-menus.c:1022 ../src/peony-zoom-control.c:97
 #: ../src/peony-zoom-control.c:322
 msgid "Decrease the view size"
 msgstr "প্ৰদৰ্শনৰ মাপ হ্ৰাস কৰক"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/peony-window-menus.c:883
+#: ../src/peony-window-menus.c:1031
 msgid "Normal Si_ze"
 msgstr "স্বাভাৱিক"
 
 #. tooltip
-#: ../src/peony-window-menus.c:884 ../src/peony-zoom-control.c:98
+#: ../src/peony-window-menus.c:1032 ../src/peony-zoom-control.c:98
 #: ../src/peony-zoom-control.c:342
 msgid "Use the normal view size"
 msgstr "স্বাভাবিক প্ৰদৰ্শনৰ মাপ ব্যবহাৰ কৰা হ'ব"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/peony-window-menus.c:888
+#: ../src/peony-window-menus.c:1036
 msgid "Connect to _Server..."
 msgstr "সাৰ্ভাৰৰ সৈতে সংযোগ স্থাপন কৰা হ'ব... (_S)"
 
 #. tooltip
-#: ../src/peony-window-menus.c:889
+#: ../src/peony-window-menus.c:1037
 msgid "Connect to a remote computer or shared disk"
 msgstr "দূৰবৰ্তী কম্পিউটাৰ অথবা শেয়াৰ কৰা ডিস্কেৰ সৈতে সংযোগ কৰক"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/peony-window-menus.c:898
+#: ../src/peony-window-menus.c:1046
 msgid "_Computer"
 msgstr "কম্পিউটাৰ"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/peony-window-menus.c:903
+#: ../src/peony-window-menus.c:1051
 msgid "_Network"
 msgstr "নেটৱৰ্ক"
 
 #. tooltip
-#: ../src/peony-window-menus.c:904 ../src/ukui-network-scheme.desktop.in.h:2
+#: ../src/peony-window-menus.c:1052 ../src/ukui-network-scheme.desktop.in.h:2
 msgid "Browse bookmarked and local network locations"
 msgstr "বুকমাৰ্ক আৰু স্থানীয় নেটৱৰ্ক অৱস্থান ব্ৰাউজ কৰা হ'ব"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/peony-window-menus.c:908
+#: ../src/peony-window-menus.c:1056
 msgid "T_emplates"
 msgstr "টেমপ্লেট (_e)"
 
 #. tooltip
-#: ../src/peony-window-menus.c:909
+#: ../src/peony-window-menus.c:1057
 msgid "Open your personal templates folder"
 msgstr "খোলক"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/peony-window-menus.c:913
+#: ../src/peony-window-menus.c:1061
 msgid "_Trash"
 msgstr "আৰ্বজনা"
 
 #. tooltip
-#: ../src/peony-window-menus.c:914
+#: ../src/peony-window-menus.c:1062
 msgid "Open your personal trash folder"
 msgstr "খোলক"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/peony-window-menus.c:922
+#: ../src/peony-window-menus.c:1070
 msgid "Show _Hidden Files"
 msgstr "আড়াল কৰা নথিপত্ৰ প্ৰদৰ্শন কৰা হ'ব (_H)"
 
 #. tooltip
-#: ../src/peony-window-menus.c:923
+#: ../src/peony-window-menus.c:1071
 msgid "Toggle the display of hidden files in the current window"
 msgstr "বৰ্তমান উইন্ডোত আড়াল কৰা নথিপত্ৰৰ প্ৰদৰ্শন আৰম্ভ অথবা বন্ধ কৰক"
 
-#: ../src/peony-window-menus.c:954
+#: ../src/peony-window-menus.c:1102
 msgid "_Up"
 msgstr "উপৰে"
 
-#: ../src/peony-window-menus.c:957
+#: ../src/peony-window-menus.c:1105
 msgid "_Home"
 msgstr "ঘৰ"
 

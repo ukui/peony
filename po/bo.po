@@ -1,48 +1,46 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
+# Tibetan translations for peony package.
+# Copyright (C) 2019 THE peony'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the peony package.
+# feng <jianfengli@ubuntukylin.com>, 2019.
 #
-# Translators:
-# Alexandre Raymond, 2014-2016
 msgid ""
 msgstr ""
-"Project-Id-Version: UKUI Desktop Environment\n"
+"Project-Id-Version: peony 1.1.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-12-14 11:19+0800\n"
-"PO-Revision-Date: 2016-12-05 21:34+0000\n"
-"Last-Translator: monsta <monsta@inbox.ru>\n"
-"Language-Team: Franco-Provençal (Arpitan) (http://www.transifex.com/ukui/"
-"UKUI/language/frp/)\n"
-"Language: frp\n"
+"PO-Revision-Date: 2019-12-14 11:19+0800\n"
+"Last-Translator: handsome_feng <jianfengli@ubuntukylin.com>\n"
+"Language-Team: Tibetan\n"
+"Language: bo\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
 #: ../cut-n-paste-code/libegg/eggdesktopfile.c:166
 #, c-format
 msgid "File is not a valid .desktop file"
-msgstr "Ce fichiér est pas un fichiér “.desktop” valido."
+msgstr ""
 
 #: ../cut-n-paste-code/libegg/eggdesktopfile.c:189
 #, c-format
 msgid "Unrecognized desktop file Version '%s'"
-msgstr "Vèrsion '%s' de fichiér desktop pas reconyua"
+msgstr ""
 
 #: ../cut-n-paste-code/libegg/eggdesktopfile.c:958
 #, c-format
 msgid "Starting %s"
-msgstr "Enrayement de %s"
+msgstr ""
 
 #: ../cut-n-paste-code/libegg/eggdesktopfile.c:1100
 #, c-format
 msgid "Application does not accept documents on command line"
-msgstr "L’aplicacion accèpte pas de documents en linye de comanda"
+msgstr ""
 
 #: ../cut-n-paste-code/libegg/eggdesktopfile.c:1168
 #, c-format
 msgid "Unrecognized launch option: %d"
-msgstr "Opcion d’enrayement inconyua: %d"
+msgstr ""
 
 #: ../cut-n-paste-code/libegg/eggdesktopfile.c:1367
 #, c-format
@@ -52,7 +50,7 @@ msgstr ""
 #: ../cut-n-paste-code/libegg/eggdesktopfile.c:1386
 #, c-format
 msgid "Not a launchable item"
-msgstr "Impossîblo d’enrayér l’objèt"
+msgstr ""
 
 #: ../cut-n-paste-code/libegg/eggsmclient.c:237
 msgid "Disable connection to session manager"
@@ -64,7 +62,7 @@ msgstr ""
 
 #: ../cut-n-paste-code/libegg/eggsmclient.c:242
 msgid "FILE"
-msgstr "FICHIÉR"
+msgstr ""
 
 #: ../cut-n-paste-code/libegg/eggsmclient.c:247
 msgid "Specify session management ID"
@@ -72,11 +70,11 @@ msgstr ""
 
 #: ../cut-n-paste-code/libegg/eggsmclient.c:247
 msgid "ID"
-msgstr "ID"
+msgstr ""
 
 #: ../cut-n-paste-code/libegg/eggsmclient.c:273
 msgid "Session management options:"
-msgstr "Opcions de mènement de sèssion"
+msgstr ""
 
 #: ../cut-n-paste-code/libegg/eggsmclient.c:274
 msgid "Show session management options"
@@ -152,7 +150,7 @@ msgstr ""
 
 #: ../data/browser.xml.h:18
 msgid "UKUI"
-msgstr "UKUI"
+msgstr ""
 
 #: ../data/browser.xml.h:19
 msgid "Green Weave"
@@ -765,7 +763,7 @@ msgstr ""
 #: ../libpeony-private/peony-desktop-link.c:118
 #, c-format
 msgid "%s's Home"
-msgstr "La rèçua de %s"
+msgstr ""
 
 #: ../libpeony-private/peony-desktop-link.c:121
 #: ../data/peony-computer.desktop.in.in.h:1
@@ -774,7 +772,7 @@ msgstr ""
 
 #: ../libpeony-private/peony-desktop-link.c:124
 msgid "Network Servers"
-msgstr "Sèrvòr de baranye"
+msgstr ""
 
 #: ../libpeony-private/peony-desktop-link.c:127
 #: ../src/file-manager/fm-tree-view.c:1443 ../src/peony-places-sidebar.c:753
@@ -2073,7 +2071,7 @@ msgstr ""
 
 #: ../libpeony-private/peony-mime-actions.c:818
 msgid "Run in _Terminal"
-msgstr "Lancér diens un _tèrminâl"
+msgstr ""
 
 #: ../libpeony-private/peony-mime-actions.c:819
 msgid "_Display"
@@ -2443,9 +2441,9 @@ msgstr ""
 #: ../libpeony-private/peony-query.c:140
 #: ../src/file-manager/fm-directory-view.c:7740
 #: ../src/file-manager/fm-directory-view.c:7741
-#, fuzzy, c-format
+#, c-format
 msgid "Find duplicate file"
-msgstr "_Refâre la duplicacion d’%d objèt"
+msgstr ""
 
 #: ../libpeony-private/peony-query.c:145
 #: ../libpeony-private/peony-search-directory-file.c:170
@@ -2738,22 +2736,22 @@ msgstr[1] ""
 #, c-format
 msgid "_Redo copy of %d item"
 msgid_plural "_Redo copy of %d items"
-msgstr[0] "_Refâre la copia d’%d objèt"
-msgstr[1] "_Refâre la copia de %d objèts"
+msgstr[0] ""
+msgstr[1] ""
 
 #: ../libpeony-private/peony-undostack-manager.c:1608
 #, c-format
 msgid "_Redo duplicate of %d item"
 msgid_plural "_Redo duplicate of %d items"
-msgstr[0] "_Refâre la duplicacion d’%d objèt"
-msgstr[1] "_Refâre la duplicacion de %d objèts"
+msgstr[0] ""
+msgstr[1] ""
 
 #: ../libpeony-private/peony-undostack-manager.c:1613
 #, c-format
 msgid "_Redo move of %d item"
 msgid_plural "_Redo move of %d items"
-msgstr[0] "_Refâre lo dèplacement d’%d objèt"
-msgstr[1] "_Refâre lo dèplacement de %d objèts"
+msgstr[0] ""
+msgstr[1] ""
 
 #: ../libpeony-private/peony-undostack-manager.c:1618
 #, c-format
@@ -3629,7 +3627,7 @@ msgstr ""
 
 #: ../data/peony-home.desktop.in.in.h:1 ../src/file-manager/fm-tree-view.c:1436
 msgid "Home Folder"
-msgstr "Cartâblo de rèçua"
+msgstr ""
 
 #. tooltip
 #: ../data/peony-home.desktop.in.in.h:2 ../src/peony-window-menus.c:1042
@@ -4309,13 +4307,13 @@ msgstr ""
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:7784
 msgid "_Redo"
-msgstr "_Refâre"
+msgstr ""
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:7785
 #: ../src/file-manager/fm-directory-view.c:11663
 msgid "Redo the last undone action"
-msgstr "Refâre la dèrriére accion dèfêta"
+msgstr ""
 
 #. name, stock id
 #. label, accelerator
@@ -4623,7 +4621,7 @@ msgstr ""
 #: ../src/file-manager/fm-directory-view.c:7965
 #: ../src/peony-window-menus.c:1041
 msgid "_Home Folder"
-msgstr "Cartâblo de _Rèçua"
+msgstr ""
 
 #: ../src/file-manager/fm-directory-view.c:7962
 msgid "Copy the current selection to the home folder"
@@ -4956,12 +4954,12 @@ msgstr ""
 #. Reset to default info
 #: ../src/file-manager/fm-directory-view.c:11639
 msgid "Undo"
-msgstr "Dèfâre"
+msgstr ""
 
 #. Reset to default info
 #: ../src/file-manager/fm-directory-view.c:11662
 msgid "Redo"
-msgstr "Refâre"
+msgstr ""
 
 #: ../src/file-manager/fm-ditem-page.c:437
 #: ../src/file-manager/fm-ditem-page.c:449
@@ -5589,7 +5587,7 @@ msgstr ""
 
 #: ../src/file-manager/fm-properties-window.c:4271
 msgid "Set _user ID"
-msgstr "Dèfinir l’identitâ d’usancér"
+msgstr ""
 
 #: ../src/file-manager/fm-properties-window.c:4272
 msgid "Set gro_up ID"
@@ -5953,7 +5951,7 @@ msgstr ""
 
 #: ../src/peony-connect-server-dialog.c:1052
 msgid "User Details"
-msgstr "Dètalys d’usancér"
+msgstr ""
 
 #. first row: domain entry
 #: ../src/peony-connect-server-dialog.c:1076
@@ -5963,7 +5961,7 @@ msgstr ""
 #. second row: username entry
 #: ../src/peony-connect-server-dialog.c:1092
 msgid "User Name:"
-msgstr "Nom d’usancér:"
+msgstr ""
 
 #. third row: password entry
 #: ../src/peony-connect-server-dialog.c:1108
@@ -6117,7 +6115,7 @@ msgstr ""
 #: ../src/peony-file-management-properties.ui.h:18
 #, no-c-format
 msgid "50%"
-msgstr "50%"
+msgstr ""
 
 #: ../src/peony-file-management-properties.ui.h:20
 #, no-c-format
@@ -6417,7 +6415,7 @@ msgstr ""
 
 #: ../src/peony-file-management-properties.ui.h:96
 msgid "_Software:"
-msgstr "_Programâjo:"
+msgstr ""
 
 #: ../src/peony-file-management-properties.ui.h:97
 msgid "<b>Other Media</b>"
@@ -6526,7 +6524,7 @@ msgstr ""
 
 #: ../src/peony-image-properties-page.c:299
 msgid "Software"
-msgstr "Programâjo"
+msgstr ""
 
 #: ../src/peony-image-properties-page.c:371
 msgid "Keywords"
@@ -7077,11 +7075,11 @@ msgstr ""
 
 #: ../src/peony-places-sidebar.c:1138
 msgid "Browse Network"
-msgstr "Pèrcorir la baranye"
+msgstr ""
 
 #: ../src/peony-places-sidebar.c:1140
 msgid "Browse the contents of the network"
-msgstr "Navìgar diens lo contenyu de la baranye"
+msgstr ""
 
 #. start() for type G_DRIVE_START_STOP_TYPE_SHUTDOWN is normally not used
 #: ../src/peony-places-sidebar.c:2482
@@ -7572,11 +7570,11 @@ msgstr ""
 #.
 #: ../src/peony-window-menus.c:695
 msgid "translator-credits"
-msgstr "Èquipa de traduction"
+msgstr ""
 
 #: ../src/peony-window-menus.c:698
 msgid "UKUI Web Site"
-msgstr "Sito de malyâjo de UKUI"
+msgstr ""
 
 #. name, stock id, label
 #: ../src/peony-window-menus.c:951
@@ -7731,7 +7729,7 @@ msgstr ""
 #. label, accelerator
 #: ../src/peony-window-menus.c:1051
 msgid "_Network"
-msgstr "_Baranye"
+msgstr ""
 
 #. tooltip
 #: ../src/peony-window-menus.c:1052 ../src/ukui-network-scheme.desktop.in.h:2
@@ -7777,7 +7775,7 @@ msgstr ""
 
 #: ../src/peony-window-menus.c:1105
 msgid "_Home"
-msgstr "_Rèçua"
+msgstr ""
 
 #: ../src/peony-x-content-bar.c:70
 msgid "These files are on an Audio CD."
@@ -7847,4 +7845,4 @@ msgstr ""
 
 #: ../src/ukui-network-scheme.desktop.in.h:1
 msgid "Network"
-msgstr "Baranye"
+msgstr ""

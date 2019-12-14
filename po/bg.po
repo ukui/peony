@@ -16,7 +16,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: UKUI Desktop Environment\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-12-18 10:18+0800\n"
+"POT-Creation-Date: 2019-12-14 11:19+0800\n"
 "PO-Revision-Date: 2016-12-06 06:54+0000\n"
 "Last-Translator: Любомир Василев\n"
 "Language-Team: Bulgarian (http://www.transifex.com/ukui/UKUI/language/bg/)\n"
@@ -438,11 +438,11 @@ msgid ""
 "The position of the opposite end of the selection from the cursor in chars."
 msgstr "Положението на другия край на избраното от курсора в знаци."
 
-#: ../eel/eel-editable-label.c:3119
+#: ../eel/eel-editable-label.c:3138
 msgid "Select All"
 msgstr "Избиране на всички"
 
-#: ../eel/eel-editable-label.c:3130
+#: ../eel/eel-editable-label.c:3149
 msgid "Input Methods"
 msgstr "Методи за въвеждане"
 
@@ -568,10 +568,10 @@ msgstr "_Винаги да се извършва това действие"
 #. label, accelerator
 #. add the "Eject" menu item
 #: ../libpeony-private/peony-autorun.c:1146
-#: ../src/file-manager/fm-directory-view.c:7702
-#: ../src/file-manager/fm-directory-view.c:7730
-#: ../src/file-manager/fm-directory-view.c:7811
-#: ../src/file-manager/fm-tree-view.c:1384 ../src/peony-places-sidebar.c:2832
+#: ../src/file-manager/fm-directory-view.c:7820
+#: ../src/file-manager/fm-directory-view.c:7848
+#: ../src/file-manager/fm-directory-view.c:7929
+#: ../src/file-manager/fm-tree-view.c:1384 ../src/peony-places-sidebar.c:3453
 msgid "_Eject"
 msgstr "Из_важдане"
 
@@ -579,10 +579,10 @@ msgstr "Из_важдане"
 #. label, accelerator
 #. add the "Unmount" menu item
 #: ../libpeony-private/peony-autorun.c:1159
-#: ../src/file-manager/fm-directory-view.c:7698
-#: ../src/file-manager/fm-directory-view.c:7726
-#: ../src/file-manager/fm-directory-view.c:7807
-#: ../src/file-manager/fm-tree-view.c:1375 ../src/peony-places-sidebar.c:2825
+#: ../src/file-manager/fm-directory-view.c:7816
+#: ../src/file-manager/fm-directory-view.c:7844
+#: ../src/file-manager/fm-directory-view.c:7925
+#: ../src/file-manager/fm-tree-view.c:1375 ../src/peony-places-sidebar.c:3446
 msgid "_Unmount"
 msgstr "_Демонтиране"
 
@@ -610,7 +610,7 @@ msgstr "Поставяне на текста, запазен в буфера з�
 #. name, stock id
 #. label, accelerator
 #: ../libpeony-private/peony-clipboard.c:470
-#: ../src/file-manager/fm-directory-view.c:7614
+#: ../src/file-manager/fm-directory-view.c:7732
 msgid "Select _All"
 msgstr "Избиране на _всички"
 
@@ -633,7 +633,7 @@ msgstr "_Стандартни настройки"
 
 #: ../libpeony-private/peony-column-utilities.c:44
 #: ../libpeony-private/peony-mime-application-chooser.c:274
-#: ../src/file-manager/fm-list-view.c:1898
+#: ../src/file-manager/fm-list-view.c:1856
 msgid "Name"
 msgstr "Име"
 
@@ -795,7 +795,7 @@ msgid "Network Servers"
 msgstr "Мрежови сървъри"
 
 #: ../libpeony-private/peony-desktop-link.c:127
-#: ../src/file-manager/fm-tree-view.c:1443 ../src/peony-places-sidebar.c:559
+#: ../src/file-manager/fm-tree-view.c:1443 ../src/peony-places-sidebar.c:753
 #: ../src/peony-trash-bar.c:190
 msgid "Trash"
 msgstr "Кошче"
@@ -817,6 +817,7 @@ msgid "Set as _Background"
 msgstr "Задаване като _фон"
 
 #: ../libpeony-private/peony-dnd.c:817 ../libpeony-private/peony-dnd.c:871
+#: ../src/peony-kdisk-format.c:455
 msgid "Cancel"
 msgstr "Отказване"
 
@@ -1087,8 +1088,8 @@ msgstr[1] "приблизително %'d часа"
 #. * to that kind of file (e.g. "link to folder").
 #.
 #: ../libpeony-private/peony-file-operations.c:409
-#: ../libpeony-private/peony-file.c:6413
-#: ../src/file-manager/fm-directory-view.c:10926
+#: ../libpeony-private/peony-file.c:6415
+#: ../src/file-manager/fm-directory-view.c:11044
 #, c-format
 msgid "Link to %s"
 msgstr "Връзка към „%s“"
@@ -1258,7 +1259,7 @@ msgstr "Всички обекти в кошчето ще бъдат оконча
 #. Empty Trash menu item
 #: ../libpeony-private/peony-file-operations.c:1396
 #: ../libpeony-private/peony-file-operations.c:2319
-#: ../src/peony-places-sidebar.c:2869 ../src/peony-trash-bar.c:197
+#: ../src/peony-places-sidebar.c:3490 ../src/peony-trash-bar.c:197
 msgid "Empty _Trash"
 msgstr "Изчистване на _кошчето"
 
@@ -1622,8 +1623,8 @@ msgid ""
 msgstr "Папката „%B“ не може да бъде копирана, понеже нямате права за четене."
 
 #: ../libpeony-private/peony-file-operations.c:3691
-#: ../libpeony-private/peony-file-operations.c:4393
-#: ../libpeony-private/peony-file-operations.c:4985
+#: ../libpeony-private/peony-file-operations.c:4389
+#: ../libpeony-private/peony-file-operations.c:4981
 msgid "Error while moving \"%B\"."
 msgstr "Грешка при преместването на „%B“."
 
@@ -1633,8 +1634,8 @@ msgstr "Изходната папка не може да бъде изтрита
 
 #: ../libpeony-private/peony-file-operations.c:3777
 #: ../libpeony-private/peony-file-operations.c:3818
-#: ../libpeony-private/peony-file-operations.c:4395
-#: ../libpeony-private/peony-file-operations.c:4467
+#: ../libpeony-private/peony-file-operations.c:4391
+#: ../libpeony-private/peony-file-operations.c:4463
 msgid "Error while copying \"%B\"."
 msgstr "Грешка при копирането на „%B“."
 
@@ -1649,131 +1650,131 @@ msgid "Could not remove the already existing file %F."
 msgstr "Съществуващият файл „%F“ не може да бъде изтрит."
 
 #. the run_warning() frees all strings passed in automatically
-#: ../libpeony-private/peony-file-operations.c:4142
-#: ../libpeony-private/peony-file-operations.c:4831
+#: ../libpeony-private/peony-file-operations.c:4138
+#: ../libpeony-private/peony-file-operations.c:4827
 msgid "You cannot move a folder into itself."
 msgstr "Не може да преместите папката в самата нея."
 
-#: ../libpeony-private/peony-file-operations.c:4143
-#: ../libpeony-private/peony-file-operations.c:4832
+#: ../libpeony-private/peony-file-operations.c:4139
+#: ../libpeony-private/peony-file-operations.c:4828
 msgid "You cannot copy a folder into itself."
 msgstr "Не може да копирате папката в самата нея."
 
-#: ../libpeony-private/peony-file-operations.c:4144
-#: ../libpeony-private/peony-file-operations.c:4833
+#: ../libpeony-private/peony-file-operations.c:4140
+#: ../libpeony-private/peony-file-operations.c:4829
 msgid "The destination folder is inside the source folder."
 msgstr "Целевата папка е вътре в изходната папка."
 
 #. the run_warning() frees all strings passed in automatically
-#: ../libpeony-private/peony-file-operations.c:4175
+#: ../libpeony-private/peony-file-operations.c:4171
 msgid "You cannot move a file over itself."
 msgstr "Не може да преместите файла върху самия него."
 
-#: ../libpeony-private/peony-file-operations.c:4176
+#: ../libpeony-private/peony-file-operations.c:4172
 msgid "You cannot copy a file over itself."
 msgstr "Не може да копирате файла върху самия него."
 
-#: ../libpeony-private/peony-file-operations.c:4177
+#: ../libpeony-private/peony-file-operations.c:4173
 msgid "The source file would be overwritten by the destination."
 msgstr "Изходният файл ще бъде презаписан от целевото местоположение."
 
-#: ../libpeony-private/peony-file-operations.c:4397
+#: ../libpeony-private/peony-file-operations.c:4393
 #, c-format
 msgid "Could not remove the already existing file with the same name in %F."
 msgstr "Съществуващ вече файл със същото име в %F не може да бъде изтрит."
 
-#: ../libpeony-private/peony-file-operations.c:4468
+#: ../libpeony-private/peony-file-operations.c:4464
 #, c-format
 msgid "There was an error copying the file into %F."
 msgstr "Грешка при копирането на файла в %F."
 
-#: ../libpeony-private/peony-file-operations.c:4714
+#: ../libpeony-private/peony-file-operations.c:4710
 msgid "Copying Files"
 msgstr "Копиране на файлове"
 
-#: ../libpeony-private/peony-file-operations.c:4741
+#: ../libpeony-private/peony-file-operations.c:4737
 msgid "Preparing to Move to \"%B\""
 msgstr "Подготовка за преместване в „%B“"
 
-#: ../libpeony-private/peony-file-operations.c:4745
+#: ../libpeony-private/peony-file-operations.c:4741
 #, c-format
 msgid "Preparing to move %'d file"
 msgid_plural "Preparing to move %'d files"
 msgstr[0] "Подготовка за преместване на %'d файл"
 msgstr[1] "Подготовка за преместване на %'d файла"
 
-#: ../libpeony-private/peony-file-operations.c:4986
+#: ../libpeony-private/peony-file-operations.c:4982
 #, c-format
 msgid "There was an error moving the file into %F."
 msgstr "Грешка при преместването на файла в %F."
 
-#: ../libpeony-private/peony-file-operations.c:5256
+#: ../libpeony-private/peony-file-operations.c:5252
 msgid "Moving Files"
 msgstr "Преместване на файлове"
 
-#: ../libpeony-private/peony-file-operations.c:5287
+#: ../libpeony-private/peony-file-operations.c:5283
 msgid "Creating links in \"%B\""
 msgstr "Създаване на връзки в „%B“"
 
-#: ../libpeony-private/peony-file-operations.c:5291
+#: ../libpeony-private/peony-file-operations.c:5287
 #, c-format
 msgid "Making link to %'d file"
 msgid_plural "Making links to %'d files"
 msgstr[0] "Създаване на връзка към %'d файл"
 msgstr[1] "Създаване на връзка към %'d файла"
 
-#: ../libpeony-private/peony-file-operations.c:5426
+#: ../libpeony-private/peony-file-operations.c:5422
 msgid "Error while creating link to %B."
 msgstr "Грешка при създаване на връзка към „%B“."
 
-#: ../libpeony-private/peony-file-operations.c:5428
+#: ../libpeony-private/peony-file-operations.c:5424
 msgid "Symbolic links only supported for local files"
 msgstr "Символни връзки се поддържат само за локални файлове"
 
-#: ../libpeony-private/peony-file-operations.c:5431
+#: ../libpeony-private/peony-file-operations.c:5427
 msgid "The target doesn't support symbolic links."
 msgstr "Целевото местоположение не поддържа символни връзки."
 
-#: ../libpeony-private/peony-file-operations.c:5434
+#: ../libpeony-private/peony-file-operations.c:5430
 #, c-format
 msgid "There was an error creating the symlink in %F."
 msgstr "Грешка при създаването на символна връзка в „%F“."
 
-#: ../libpeony-private/peony-file-operations.c:5752
+#: ../libpeony-private/peony-file-operations.c:5748
 msgid "Setting permissions"
 msgstr "Задаване на права"
 
 #. localizers: the initial name of a new folder
-#: ../libpeony-private/peony-file-operations.c:6012
+#: ../libpeony-private/peony-file-operations.c:6008
 msgid "untitled folder"
 msgstr "папка без име"
 
 #. localizers: the initial name of a new empty file
-#: ../libpeony-private/peony-file-operations.c:6020
+#: ../libpeony-private/peony-file-operations.c:6016
 msgid "new file"
 msgstr "нов файл"
 
-#: ../libpeony-private/peony-file-operations.c:6208
+#: ../libpeony-private/peony-file-operations.c:6204
 msgid "Error while creating directory %B."
 msgstr "Грешка при създаване на папката „%B“."
 
-#: ../libpeony-private/peony-file-operations.c:6210
+#: ../libpeony-private/peony-file-operations.c:6206
 msgid "Error while creating file %B."
 msgstr "Грешка при създаване на файла „%B“."
 
-#: ../libpeony-private/peony-file-operations.c:6212
+#: ../libpeony-private/peony-file-operations.c:6208
 #, c-format
 msgid "There was an error creating the directory in %F."
 msgstr "Грешка при създаване на папката в „%F“."
 
-#: ../libpeony-private/peony-file-operations.c:6490
+#: ../libpeony-private/peony-file-operations.c:6486
 msgid "Emptying Trash"
 msgstr "Изчистване на кошчето"
 
-#: ../libpeony-private/peony-file-operations.c:6539
-#: ../libpeony-private/peony-file-operations.c:6580
-#: ../libpeony-private/peony-file-operations.c:6615
-#: ../libpeony-private/peony-file-operations.c:6650
+#: ../libpeony-private/peony-file-operations.c:6535
+#: ../libpeony-private/peony-file-operations.c:6576
+#: ../libpeony-private/peony-file-operations.c:6611
+#: ../libpeony-private/peony-file-operations.c:6646
 msgid "Unable to mark launcher trusted (executable)"
 msgstr "Стартерът не може да бъде отбелязан като доверен (изпълним)"
 
@@ -1814,7 +1815,7 @@ msgid "Slashes are not allowed in filenames"
 msgstr "Файловите имена не могат да съдържат знака „/“"
 
 #: ../libpeony-private/peony-file.c:1836
-#: ../libpeony-private/peony-mime-actions.c:1347
+#: ../libpeony-private/peony-mime-actions.c:1349
 #, c-format
 msgid "File not found"
 msgstr "Файлът не е открит"
@@ -1849,63 +1850,63 @@ msgstr "Неуспех при преименуването на файл на р
 #. * off zero padding, and putting a "_" there will use
 #. * space padding instead of zero padding.
 #.
-#: ../libpeony-private/peony-file.c:4476
+#: ../libpeony-private/peony-file.c:4478
 msgid "today at 00:00:00 PM"
 msgstr "днес в 00 ч. 00 мин. 00 сек."
 
-#: ../libpeony-private/peony-file.c:4477
+#: ../libpeony-private/peony-file.c:4479
 #: ../src/peony-file-management-properties.c:522
 msgid "today at %-I:%M:%S %p"
 msgstr "днес в %H ч. %M мин. %S сек."
 
-#: ../libpeony-private/peony-file.c:4479
+#: ../libpeony-private/peony-file.c:4481
 msgid "today at 00:00 PM"
 msgstr "днес в 00 ч. 00 мин."
 
-#: ../libpeony-private/peony-file.c:4480
+#: ../libpeony-private/peony-file.c:4482
 msgid "today at %-I:%M %p"
 msgstr "днес в %H ч. %M мин."
 
-#: ../libpeony-private/peony-file.c:4482
+#: ../libpeony-private/peony-file.c:4484
 msgid "today, 00:00 PM"
 msgstr "днес, 00 ч. 00 мин."
 
-#: ../libpeony-private/peony-file.c:4483
+#: ../libpeony-private/peony-file.c:4485
 msgid "today, %-I:%M %p"
 msgstr "днес, %H ч. %M мин."
 
-#: ../libpeony-private/peony-file.c:4485 ../libpeony-private/peony-file.c:4486
+#: ../libpeony-private/peony-file.c:4487 ../libpeony-private/peony-file.c:4488
 msgid "today"
 msgstr "днес"
 
 #. Yesterday, use special word.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: ../libpeony-private/peony-file.c:4495
+#: ../libpeony-private/peony-file.c:4497
 msgid "yesterday at 00:00:00 PM"
 msgstr "вчера в 00 ч. 00 мин. 00 сек."
 
-#: ../libpeony-private/peony-file.c:4496
+#: ../libpeony-private/peony-file.c:4498
 msgid "yesterday at %-I:%M:%S %p"
 msgstr "вчера в %H ч. %M мин. %S сек."
 
-#: ../libpeony-private/peony-file.c:4498
+#: ../libpeony-private/peony-file.c:4500
 msgid "yesterday at 00:00 PM"
 msgstr "вчера в 00 ч. 00 мин."
 
-#: ../libpeony-private/peony-file.c:4499
+#: ../libpeony-private/peony-file.c:4501
 msgid "yesterday at %-I:%M %p"
 msgstr "вчера в %H ч. %M мин."
 
-#: ../libpeony-private/peony-file.c:4501
+#: ../libpeony-private/peony-file.c:4503
 msgid "yesterday, 00:00 PM"
 msgstr "вчера, 00 ч. 00 мин."
 
-#: ../libpeony-private/peony-file.c:4502
+#: ../libpeony-private/peony-file.c:4504
 msgid "yesterday, %-I:%M %p"
 msgstr "вчера, %H ч. %M мин."
 
-#: ../libpeony-private/peony-file.c:4504 ../libpeony-private/peony-file.c:4505
+#: ../libpeony-private/peony-file.c:4506 ../libpeony-private/peony-file.c:4507
 msgid "yesterday"
 msgstr "вчера"
 
@@ -1914,103 +1915,103 @@ msgstr "вчера"
 #. * The width measurement templates correspond to
 #. * the day/month name with the most letters.
 #.
-#: ../libpeony-private/peony-file.c:4516
+#: ../libpeony-private/peony-file.c:4518
 msgid "Wednesday, September 00 0000 at 00:00:00 PM"
 msgstr "Понеделник, 00 септември 0000 в 00 ч. 00 мин. 00 сек."
 
-#: ../libpeony-private/peony-file.c:4517
+#: ../libpeony-private/peony-file.c:4519
 msgid "%A, %B %-d %Y at %-I:%M:%S %p"
 msgstr "%d %B %Y, %A в %H ч. %M мин. %S сек."
 
-#: ../libpeony-private/peony-file.c:4519
+#: ../libpeony-private/peony-file.c:4521
 msgid "Mon, Oct 00 0000 at 00:00:00 PM"
 msgstr "00 окт. 0000, пон. в 00 ч. 00 мин. 00 сек."
 
-#: ../libpeony-private/peony-file.c:4520
+#: ../libpeony-private/peony-file.c:4522
 msgid "%a, %b %-d %Y at %-I:%M:%S %p"
 msgstr "%d %b %y, %a в %H ч. %M мин. %S сек."
 
-#: ../libpeony-private/peony-file.c:4522
+#: ../libpeony-private/peony-file.c:4524
 msgid "Mon, Oct 00 0000 at 00:00 PM"
 msgstr "00 окт. 0000, пон. в 00 ч. 00 мин."
 
-#: ../libpeony-private/peony-file.c:4523
+#: ../libpeony-private/peony-file.c:4525
 msgid "%a, %b %-d %Y at %-I:%M %p"
 msgstr "%d %b %y, %a в %H ч. %M мин."
 
-#: ../libpeony-private/peony-file.c:4525
+#: ../libpeony-private/peony-file.c:4527
 msgid "Oct 00 0000 at 00:00 PM"
 msgstr "00 окт. 0000 в 00 ч. 00 мин."
 
-#: ../libpeony-private/peony-file.c:4526
+#: ../libpeony-private/peony-file.c:4528
 msgid "%b %-d %Y at %-I:%M %p"
 msgstr "%d %b %y в %H ч. %M мин."
 
-#: ../libpeony-private/peony-file.c:4528
+#: ../libpeony-private/peony-file.c:4530
 msgid "Oct 00 0000, 00:00 PM"
 msgstr "00 окт. 0000, 00 ч. 00 мин."
 
-#: ../libpeony-private/peony-file.c:4529
+#: ../libpeony-private/peony-file.c:4531
 msgid "%b %-d %Y, %-I:%M %p"
 msgstr "%d %b %y, %H ч. %M мин."
 
-#: ../libpeony-private/peony-file.c:4531
+#: ../libpeony-private/peony-file.c:4533
 msgid "00/00/00, 00:00 PM"
 msgstr "00.00.0000, 00 00"
 
-#: ../libpeony-private/peony-file.c:4532
+#: ../libpeony-private/peony-file.c:4534
 msgid "%m/%-d/%y, %-I:%M %p"
 msgstr "%d.%m.%Y, %H %M"
 
-#: ../libpeony-private/peony-file.c:4534
+#: ../libpeony-private/peony-file.c:4536
 msgid "00/00/00"
 msgstr "00.00.0000"
 
-#: ../libpeony-private/peony-file.c:4535
+#: ../libpeony-private/peony-file.c:4537
 msgid "%m/%d/%y"
 msgstr "%d.%m.%Y"
 
-#: ../libpeony-private/peony-file.c:5147
+#: ../libpeony-private/peony-file.c:5149
 #, c-format
 msgid "Not allowed to set permissions"
 msgstr "Нямате права да задавате такива"
 
-#: ../libpeony-private/peony-file.c:5441
+#: ../libpeony-private/peony-file.c:5443
 #, c-format
 msgid "Not allowed to set owner"
 msgstr "Нямате права да зададете собственик"
 
-#: ../libpeony-private/peony-file.c:5459
+#: ../libpeony-private/peony-file.c:5461
 #, c-format
 msgid "Specified owner '%s' doesn't exist"
 msgstr "Указаният собственик „%s“ не съществува."
 
-#: ../libpeony-private/peony-file.c:5719
+#: ../libpeony-private/peony-file.c:5721
 #, c-format
 msgid "Not allowed to set group"
 msgstr "Нямате права да зададете група"
 
-#: ../libpeony-private/peony-file.c:5737
+#: ../libpeony-private/peony-file.c:5739
 #, c-format
 msgid "Specified group '%s' doesn't exist"
 msgstr "Указаната група „%s“ не съществува."
 
-#: ../libpeony-private/peony-file.c:5891
-#: ../src/file-manager/fm-directory-view.c:2432
+#: ../libpeony-private/peony-file.c:5893
+#: ../src/file-manager/fm-directory-view.c:2434
 #, c-format
 msgid "%'u item"
 msgid_plural "%'u items"
 msgstr[0] "%'u обект"
 msgstr[1] "%'u обекта"
 
-#: ../libpeony-private/peony-file.c:5892
+#: ../libpeony-private/peony-file.c:5894
 #, c-format
 msgid "%'u folder"
 msgid_plural "%'u folders"
 msgstr[0] "%'u папка"
 msgstr[1] "%'u папки"
 
-#: ../libpeony-private/peony-file.c:5893
+#: ../libpeony-private/peony-file.c:5895
 #, c-format
 msgid "%'u file"
 msgid_plural "%'u files"
@@ -2018,50 +2019,50 @@ msgstr[0] "%'u файл"
 msgstr[1] "%'u файла"
 
 #. Do this in a separate stage so that we don't have to put G_GUINT64_FORMAT in the translated string
-#: ../libpeony-private/peony-file.c:5980
+#: ../libpeony-private/peony-file.c:5982
 msgid "%"
 msgstr "%"
 
-#: ../libpeony-private/peony-file.c:5981
+#: ../libpeony-private/peony-file.c:5983
 #, c-format
 msgid "%s (%s bytes)"
 msgstr "%s (%s байта)"
 
 #. This means no contents at all were readable
-#: ../libpeony-private/peony-file.c:6299 ../libpeony-private/peony-file.c:6315
+#: ../libpeony-private/peony-file.c:6301 ../libpeony-private/peony-file.c:6317
 msgid "? items"
 msgstr "? обекта"
 
 #. This means no contents at all were readable
-#: ../libpeony-private/peony-file.c:6305
+#: ../libpeony-private/peony-file.c:6307
 msgid "? bytes"
 msgstr "? байта"
 
-#: ../libpeony-private/peony-file.c:6320
+#: ../libpeony-private/peony-file.c:6322
 msgid "unknown type"
 msgstr "неизвестен вид"
 
-#: ../libpeony-private/peony-file.c:6323
+#: ../libpeony-private/peony-file.c:6325
 msgid "unknown MIME type"
 msgstr "неизвестен вид"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: ../libpeony-private/peony-file.c:6337
+#: ../libpeony-private/peony-file.c:6339
 #: ../src/file-manager/fm-properties-window.c:1286
 msgid "unknown"
 msgstr "неизвестно"
 
-#: ../libpeony-private/peony-file.c:6387
+#: ../libpeony-private/peony-file.c:6389
 msgid "program"
 msgstr "програма"
 
-#: ../libpeony-private/peony-file.c:6407
+#: ../libpeony-private/peony-file.c:6409
 msgid "link"
 msgstr "връзка"
 
-#: ../libpeony-private/peony-file.c:6429
+#: ../libpeony-private/peony-file.c:6431
 msgid "link (broken)"
 msgstr "връзка (повредена)"
 
@@ -2074,21 +2075,21 @@ msgstr ""
 msgid "The selection rectangle"
 msgstr "Правоъгълник за избиране"
 
-#: ../libpeony-private/peony-mime-actions.c:720
+#: ../libpeony-private/peony-mime-actions.c:722
 #, c-format
 msgid "The Link \"%s\" is Broken."
 msgstr "Връзката „%s“ е развалена."
 
-#: ../libpeony-private/peony-mime-actions.c:724
+#: ../libpeony-private/peony-mime-actions.c:726
 #, c-format
 msgid "The Link \"%s\" is Broken. Move it to Trash?"
 msgstr "Връзката „%s“ е развалена. Искате ли да я преместите в кошчето?"
 
-#: ../libpeony-private/peony-mime-actions.c:731
+#: ../libpeony-private/peony-mime-actions.c:733
 msgid "This link cannot be used, because it has no target."
 msgstr "Връзката не може да бъде използвана, защото не съдържа цел."
 
-#: ../libpeony-private/peony-mime-actions.c:735
+#: ../libpeony-private/peony-mime-actions.c:737
 #, c-format
 msgid "This link cannot be used, because its target \"%s\" doesn't exist."
 msgstr ""
@@ -2096,59 +2097,59 @@ msgstr ""
 
 #. name, stock id
 #. label, accelerator
-#: ../libpeony-private/peony-mime-actions.c:746
-#: ../src/file-manager/fm-directory-view.c:7650
-#: ../src/file-manager/fm-directory-view.c:7791
-#: ../src/file-manager/fm-directory-view.c:8890
-#: ../src/file-manager/fm-directory-view.c:9219
+#: ../libpeony-private/peony-mime-actions.c:748
+#: ../src/file-manager/fm-directory-view.c:7768
+#: ../src/file-manager/fm-directory-view.c:7909
+#: ../src/file-manager/fm-directory-view.c:9008
+#: ../src/file-manager/fm-directory-view.c:9337
 #: ../src/file-manager/fm-tree-view.c:1348
 msgid "Mo_ve to Trash"
 msgstr "Преместване в ко_шчето"
 
-#: ../libpeony-private/peony-mime-actions.c:808
+#: ../libpeony-private/peony-mime-actions.c:810
 #, c-format
 msgid "Do you want to run \"%s\", or display its contents?"
 msgstr "Искате ли да стартирате „%s“ или да изобразите неговото съдържание?"
 
-#: ../libpeony-private/peony-mime-actions.c:810
+#: ../libpeony-private/peony-mime-actions.c:812
 #, c-format
 msgid "\"%s\" is an executable text file."
 msgstr "„%s“ е изпълним текстов файл."
 
-#: ../libpeony-private/peony-mime-actions.c:816
+#: ../libpeony-private/peony-mime-actions.c:818
 msgid "Run in _Terminal"
 msgstr "Изпълняване в тер_минал"
 
-#: ../libpeony-private/peony-mime-actions.c:817
+#: ../libpeony-private/peony-mime-actions.c:819
 msgid "_Display"
 msgstr "По_казване"
 
-#: ../libpeony-private/peony-mime-actions.c:820
+#: ../libpeony-private/peony-mime-actions.c:822
 #: ../src/peony-autorun-software.c:253
 msgid "_Run"
 msgstr "Изп_ълняване"
 
-#: ../libpeony-private/peony-mime-actions.c:1172
-#: ../src/file-manager/fm-directory-view.c:655
+#: ../libpeony-private/peony-mime-actions.c:1174
+#: ../src/file-manager/fm-directory-view.c:657
 msgid "Are you sure you want to open all files?"
 msgstr "Сигурни ли сте, че искате да отворите всички файлове?"
 
-#: ../libpeony-private/peony-mime-actions.c:1175
+#: ../libpeony-private/peony-mime-actions.c:1177
 #, c-format
 msgid "This will open %d separate tab."
 msgid_plural "This will open %d separate tabs."
 msgstr[0] "Това ще отвори %d отделен подпрозорец."
 msgstr[1] "Това ще отвори %d отделни подпрозорци."
 
-#: ../libpeony-private/peony-mime-actions.c:1180
-#: ../src/peony-location-bar.c:230
+#: ../libpeony-private/peony-mime-actions.c:1182
+#: ../src/peony-location-bar.c:273
 #, c-format
 msgid "This will open %d separate window."
 msgid_plural "This will open %d separate windows."
 msgstr[0] "Това ще отвори %d отделен прозорец."
 msgstr[1] "Това ще отвори %d отделни прозорци."
 
-#: ../libpeony-private/peony-mime-actions.c:1258
+#: ../libpeony-private/peony-mime-actions.c:1260
 #: ../src/peony-window-manage-views.c:2115
 #: ../src/peony-window-manage-views.c:2123
 #: ../src/peony-window-manage-views.c:2143
@@ -2159,28 +2160,28 @@ msgstr[1] "Това ще отвори %d отделни прозорци."
 msgid "Could not display \"%s\"."
 msgstr "„%s“ не може да бъде показан."
 
-#: ../libpeony-private/peony-mime-actions.c:1354
+#: ../libpeony-private/peony-mime-actions.c:1356
 msgid "The file is of an unknown type"
 msgstr "Файлът е от непознат вид."
 
-#: ../libpeony-private/peony-mime-actions.c:1359
+#: ../libpeony-private/peony-mime-actions.c:1361
 #, c-format
 msgid "There is no application installed for %s files"
 msgstr "Не е инсталирана програма за файлове %s"
 
-#: ../libpeony-private/peony-mime-actions.c:1374
+#: ../libpeony-private/peony-mime-actions.c:1376
 msgid "_Select Application"
 msgstr "_Избор на програма"
 
-#: ../libpeony-private/peony-mime-actions.c:1412
+#: ../libpeony-private/peony-mime-actions.c:1414
 msgid "There was an internal error trying to search for applications:"
 msgstr "Имаше вътрешна грешка при опита за търсене на програми:"
 
-#: ../libpeony-private/peony-mime-actions.c:1414
+#: ../libpeony-private/peony-mime-actions.c:1416
 msgid "Unable to search for application"
 msgstr "Неуспех при търсенето на програма"
 
-#: ../libpeony-private/peony-mime-actions.c:1540
+#: ../libpeony-private/peony-mime-actions.c:1542
 #, c-format
 msgid ""
 "There is no application installed for %s files.\n"
@@ -2189,11 +2190,11 @@ msgstr ""
 "Не е инсталирана програма за файлове %s.\n"
 "Искате ли да потърсите такава?"
 
-#: ../libpeony-private/peony-mime-actions.c:1704
+#: ../libpeony-private/peony-mime-actions.c:1706
 msgid "Untrusted application launcher"
 msgstr "Недоверен стартер на програма"
 
-#: ../libpeony-private/peony-mime-actions.c:1707
+#: ../libpeony-private/peony-mime-actions.c:1709
 #, c-format
 msgid ""
 "The application launcher \"%s\" has not been marked as trusted. If you do "
@@ -2202,31 +2203,31 @@ msgstr ""
 "Стартерът „%s“ не е отбелязан като доверен. Ако произходът на файла ви е "
 "непознат, стартирането му може да е опасно."
 
-#: ../libpeony-private/peony-mime-actions.c:1722
+#: ../libpeony-private/peony-mime-actions.c:1724
 msgid "_Launch Anyway"
 msgstr "_Стартиране въпреки всичко"
 
-#: ../libpeony-private/peony-mime-actions.c:1726
+#: ../libpeony-private/peony-mime-actions.c:1728
 msgid "Mark as _Trusted"
 msgstr "_Отбелязване като доверен"
 
-#: ../libpeony-private/peony-mime-actions.c:2022
-#: ../libpeony-private/peony-mime-actions.c:2328
-#: ../src/file-manager/fm-directory-view.c:6656
+#: ../libpeony-private/peony-mime-actions.c:2024
+#: ../libpeony-private/peony-mime-actions.c:2330
+#: ../src/file-manager/fm-directory-view.c:6774
 msgid "Unable to mount location"
 msgstr "Неуспех при монтирането на местоположение"
 
-#: ../libpeony-private/peony-mime-actions.c:2416
-#: ../src/file-manager/fm-directory-view.c:6830
+#: ../libpeony-private/peony-mime-actions.c:2418
+#: ../src/file-manager/fm-directory-view.c:6948
 msgid "Unable to start location"
 msgstr "Неуспех при стартирането на местоположение"
 
-#: ../libpeony-private/peony-mime-actions.c:2509
+#: ../libpeony-private/peony-mime-actions.c:2516
 #, c-format
 msgid "Opening \"%s\"."
 msgstr "Отваряне на „%s“."
 
-#: ../libpeony-private/peony-mime-actions.c:2514
+#: ../libpeony-private/peony-mime-actions.c:2521
 #, c-format
 msgid "Opening %d item."
 msgid_plural "Opening %d items."
@@ -2327,9 +2328,9 @@ msgstr "_Избор…"
 #. name, stock id
 #. label, accelerator
 #: ../libpeony-private/peony-open-with-dialog.c:962
-#: ../src/file-manager/fm-directory-view.c:7554
-#: ../src/file-manager/fm-directory-view.c:9086
-#: ../src/file-manager/fm-tree-view.c:1269 ../src/peony-places-sidebar.c:2774
+#: ../src/file-manager/fm-directory-view.c:7672
+#: ../src/file-manager/fm-directory-view.c:9204
+#: ../src/file-manager/fm-tree-view.c:1269 ../src/peony-places-sidebar.c:3395
 msgid "_Open"
 msgstr "_Отваряне"
 
@@ -2504,8 +2505,8 @@ msgstr "Подготовка"
 #. label, accelerator
 #. tooltip
 #: ../libpeony-private/peony-query.c:140
-#: ../src/file-manager/fm-directory-view.c:7622
-#: ../src/file-manager/fm-directory-view.c:7623
+#: ../src/file-manager/fm-directory-view.c:7740
+#: ../src/file-manager/fm-directory-view.c:7741
 #, fuzzy, c-format
 msgid "Find duplicate file"
 msgstr "Отмяна на дублирането на %d елемента"
@@ -3115,18 +3116,26 @@ msgstr ""
 "стойности са между 6 и 14."
 
 #: ../libpeony-private/org.ukui.peony.gschema.xml.h:31
-msgid "Gsettings signal to peony search"
+msgid "Set right menuitem 'Undo' status"
 msgstr ""
 
 #: ../libpeony-private/org.ukui.peony.gschema.xml.h:32
-msgid "After peony-search changerd, peony search page refresh."
+msgid "If it is true, right menuitem 'Undo' show, else sensitive is false"
 msgstr ""
 
 #: ../libpeony-private/org.ukui.peony.gschema.xml.h:33
+msgid "Gsettings signal to peony search"
+msgstr ""
+
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:34
+msgid "After peony-search changerd, peony search page refresh."
+msgstr ""
+
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:35
 msgid "Mouse button to activate the \"Back\" command in browser window"
 msgstr "Бутон на мишката за действието „Назад“ на файловия мениджър"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:34
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:36
 msgid ""
 "For users with mice that have buttons for \"Forward\" and \"Back\", this key "
 "will set which button activates the \"Back\" command in a browser window. "
@@ -3136,11 +3145,11 @@ msgstr ""
 "определя кой бутон на мишката отговаря на действието „Назад“. Възможните "
 "стойности са между 6 и 14."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:35
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:37
 msgid "When to show thumbnails of image files"
 msgstr "Кога да се показват мини изображения"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:36
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:38
 msgid ""
 "Speed tradeoff for when to show an image file as a thumbnail. If set to "
 "\"always\" then always thumbnail, even if the folder is on a remote server. "
@@ -3153,11 +3162,11 @@ msgstr ""
 "отдалечен сървър. Ако е зададено „local_only“, иконката се променя за "
 "локални файлове. Ако е зададено „never“, иконката никога не се променя."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:37
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:39
 msgid "Maximum image size for thumbnailing"
 msgstr "Максимална големина на мини изображение за преглед"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:38
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:40
 msgid ""
 "Images over this size (in bytes) won't be thumbnailed. The purpose of this "
 "setting is to avoid thumbnailing large images that may take a long time to "
@@ -3167,11 +3176,11 @@ msgstr ""
 "е да се избегне създаването на мини изображения за големи, което може да "
 "отнеме много време и да използва много памет."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:39
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:41
 msgid "Whether to preview sounds when mousing over an icon"
 msgstr "Дали да се пускат звукови файлове, когато са посочени с мишката"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:40
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:42
 msgid ""
 "Speed tradeoff for when to preview a sound file when mousing over a files "
 "icon. If set to \"always\" then always plays the sound, even if the file is "
@@ -3183,11 +3192,11 @@ msgstr ""
 "отдалечен сървър. Ако е зададено „local_only“, аудиото се пуска само, ако е "
 "локален файл. Ако е зададено „never“, аудиото никога не се пуска."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:41
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:43
 msgid "Show advanced permissions in the file property dialog"
 msgstr "Показване на допълнителните права в прозореца за права на файл"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:42
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:44
 msgid ""
 "If set to true, then Peony lets you edit and display file permissions in a "
 "more unix-like way, accessing some more esoteric options."
@@ -3195,11 +3204,11 @@ msgstr ""
 "Ако е истина, Peony ще позволи да редактирате и виждате едни от по-сложните "
 "файлови опции в прозореца за настройките на файлове."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:43
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:45
 msgid "Show folders first in windows"
 msgstr "Първо показване на папките в прозорците"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:44
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:46
 msgid ""
 "If set to true, then Peony shows folders prior to showing files in the icon "
 "and list views."
@@ -3207,11 +3216,11 @@ msgstr ""
 "Ако е истина, Peony ще показва папките преди файловете в изгледа като иконки "
 "и изгледа като списък."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:45
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:47
 msgid "Default sort order"
 msgstr "Стандартно подреждане"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:46
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:48
 msgid ""
 "The default sort-order for items in the icon view. Possible values are \"name"
 "\", \"size\", \"type\", \"mtime\", and \"emblems\"."
@@ -3219,11 +3228,11 @@ msgstr ""
 "Стандартен ред на подреждане в изглед като иконки. Възможни стойности: "
 "„name“, „size“, „type“, „mtime“, и „emblems“."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:47
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:49
 msgid "Reverse sort order in new windows"
 msgstr "Обръщане на реда за подреждане в новите прозорци"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:48
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:50
 msgid ""
 "If true, files in new windows will be sorted in reverse order. ie, if sorted "
 "by name, then instead of sorting the files from \"a\" to \"z\", they will be "
@@ -3235,11 +3244,11 @@ msgstr ""
 "„а“, ако са подредени по размер, вместо да са подредени във възходящ ред, ще "
 "бъдат подредени в низходящ."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:49
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:51
 msgid "Peony uses the users home folder as the desktop"
 msgstr "Peony да ползва домашната папка на потребителя за работен плот"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:50
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:52
 msgid ""
 "If set to true, then Peony will use the user's home folder as the desktop. "
 "If it is false, then it will use ~/Desktop as the desktop."
@@ -3247,49 +3256,49 @@ msgstr ""
 "Ако е истина, Peony ще използва домашната папка на потребителя като работен "
 "плот. В противен случай за това ще се използва папката ~/Desktop."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:51
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:53
 msgid "Custom Background"
 msgstr "Фон, избран от потребителя"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:52
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:54
 msgid "Whether a custom default folder background has been set."
 msgstr "Дали е избран стандартен фон за папките."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:53
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:55
 msgid "Default Background Color"
 msgstr "Стандартен фонов цвят"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:54
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:56
 msgid ""
 "Color for the default folder background. Only used if background_set is true."
 msgstr ""
 "Файлово име за стандартния фон на папките. Използва се, само ако "
 "background_set е истина."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:55
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:57
 msgid "Default Background Filename"
 msgstr "Име на файла на стандартния фон"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:56
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:58
 msgid ""
 "Uri of the default folder background. Only used if background_set is true."
 msgstr ""
 "Файлово име за стандартния фон на папките. Използва се, само ако фонът за "
 "папката е включен, т.е background_set е истина."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:57
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:59
 msgid "Custom Side Pane Background Set"
 msgstr "Фон на страничния панел, избран от потребителя"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:58
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:60
 msgid "Whether a custom default side pane background has been set."
 msgstr "Дали е избран стандартен фон за страничния панел."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:59
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:61
 msgid "Default Side Pane Background Color"
 msgstr "Стандартен фонов цвят на страничния панел"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:60
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:62
 msgid ""
 "Filename for the default side pane background. Only used if "
 "side_pane_background_set is true."
@@ -3297,11 +3306,11 @@ msgstr ""
 "Файлово име за стандартния фон на страничния панел. Използва се, само ако "
 "фонът за страничния панел е включен."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:61
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:63
 msgid "Default Side Pane Background Filename"
 msgstr "Името на файла за стандартния фон на страничния панел"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:62
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:64
 msgid ""
 "Uri of the default side pane background. Only used if "
 "side_pane_background_set is true."
@@ -3309,11 +3318,11 @@ msgstr ""
 "Файлово име за стандартния фон на страничния панел. Използва се, само ако "
 "фонът за страничния панел е включен, т.е. side_pane_background_set е истина."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:63
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:65
 msgid "Default folder viewer"
 msgstr "Стандартен режим за преглед на папки"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:64
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:66
 msgid ""
 "When a folder is visited this viewer is used unless you have selected "
 "another view for that particular folder. Possible values are \"list-view\", "
@@ -3324,11 +3333,11 @@ msgstr ""
 "„list_view“ (изглед като списък), „icon_view“ (изглед като иконки) и "
 "„compact_view“ (сбит изглед)."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:65
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:67
 msgid "Date Format"
 msgstr "Формат на датата"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:66
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:68
 msgid ""
 "The format of file dates. Possible values are \"locale\", \"iso\", and "
 "\"informal\"."
@@ -3336,11 +3345,11 @@ msgstr ""
 "Форматът на датите на файловете. Възможните стойности са „locale“ (според "
 "локала), „iso“ (по ISO) и „informal“ (неофициален)."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:67
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:69
 msgid "Whether to show hidden files"
 msgstr "Дали да се показват скритите файлове"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:68
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:70
 msgid ""
 "If set to true, then hidden files are shown by default in the file manager. "
 "Hidden files are either dotfiles, listed in the folder's .hidden file or "
@@ -3350,11 +3359,11 @@ msgstr ""
 "файлове са тези, чиито имена започват с точка, тези които са описани във . "
 "hidden файла в папката, или файлове тип резервно копие започващи с тилда (~)"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:69
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:71
 msgid "Whether to show file sizes with IEC units"
 msgstr "Дали да се полазват размерите на файловете в IEC мерци единици"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:70
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:72
 msgid ""
 "If set to true, file sizes are shown using IEC (base 1024) units with \"KiB"
 "\" style suffixes, instead of default with SI units."
@@ -3362,19 +3371,27 @@ msgstr ""
 "Ако е избрано, размерите на файловете се показват в мерни единици на IEC (на "
 "база 1024)  с наставка „КиБ“ вместо със стандартните единици на SI."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:71
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:73
 msgid "Whether to show desktop notifications"
 msgstr "Дали да се показват известия на работния плот"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:72
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:74
 msgid "If set to true, Peony will show desktop notifications for eject events"
 msgstr "Ако е избрано, на работния плот ще се показват известия за изваждане"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:73
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:75
+msgid "Default favorite iter position"
+msgstr ""
+
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:76
+msgid "Record favorite iter position"
+msgstr ""
+
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:77
 msgid "List of possible captions on icons"
 msgstr "Списък с възможни надписи под иконките"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:74
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:78
 msgid ""
 "A list of captions below an icon in the icon view and the desktop. The "
 "actual number of captions shown depends on the zoom level. Some possible "
@@ -3391,49 +3408,49 @@ msgstr ""
 "„octal_permissions“ (права за достъп в осмичен вид) и „mime_type“ (вид на "
 "MIME)."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:75
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:79
 msgid "Use tighter layout in new windows"
 msgstr "Използване на стегнат изглед в новите прозорци"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:76
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:80
 msgid "If true, icons will be laid out tighter by default in new windows."
 msgstr ""
 "Ако е вярно, по подразбиране иконките ще са подредени стегнато в новите "
 "прозорци."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:77
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:81
 msgid "Put labels beside icons"
 msgstr "Поставяне на етикети до иконките"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:78
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:82
 msgid ""
 "If true, labels will be placed beside icons rather than underneath them."
 msgstr ""
 "Ако е вярно, етикетите ще бъдат поставяни отстрани на иконките вместо под "
 "тях."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:79
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:83
 msgid "Default icon zoom level"
 msgstr "Стандартен мащаб на иконките"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:80
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:84
 msgid "Default zoom level used by the icon view."
 msgstr "Стандартен мащаб, използван от изгледа като иконки."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:81
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:85
 msgid "Default Thumbnail Icon Size"
 msgstr "Стандартна големина на мини изображенията"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:82
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:86
 msgid "The default size of an icon for a thumbnail in the icon view."
 msgstr ""
 "Стандартният размер на иконка за мини изображение в изгледа като иконки."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:83
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:87
 msgid "Text Ellipsis Limit"
 msgstr "Ограничение за съкращаване на текста"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:85
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:89
 #, no-c-format
 msgid ""
 "A string specifying how parts of overlong file names should be replaced by "
@@ -3467,19 +3484,19 @@ msgstr ""
 "50%), „small“ (малък — 66%), „standard“ (нормален — 100%), „large“ (голям — "
 "150%), „larger“ (по-голям — 200%), „largest“ (най-голям — 400%)."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:88
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:92
 msgid "Default compact view zoom level"
 msgstr "Стандартно увеличение за сбития изглед"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:89
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:93
 msgid "Default zoom level used by the compact view."
 msgstr "Стандартен мащаб използван от сбития изглед."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:90
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:94
 msgid "All columns have same width"
 msgstr "Всички колони да са с еднаква широчина"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:91
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:95
 msgid ""
 "If this preference is set, all columns in the compact view have the same "
 "width. Otherwise, the width of each column is determined seperately."
@@ -3487,35 +3504,35 @@ msgstr ""
 "Ако е истина, всички колони в сбития изглед ще са с еднаква широчина. Иначе "
 "широчината на всяка може да се задава поотделно."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:92
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:96
 msgid "Default list zoom level"
 msgstr "Стандартен мащаб на изгледа като списък"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:93
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:97
 msgid "Default zoom level used by the list view."
 msgstr "Стандартен мащаб използван от изгледа като списък."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:94
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:98
 msgid "Default list of columns visible in the list view"
 msgstr "Стандартен списък с видими колони в изгледа като списък"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:95
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:99
 msgid "Default list of columns visible in the list view."
 msgstr "Стандартен списък с видими колони в изгледа като списък"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:96
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:100
 msgid "Default column order in the list view"
 msgstr "Стандартен ред на колоните в изгледа като списък"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:97
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:101
 msgid "Default column order in the list view."
 msgstr "Стандартен ред на колоните в изгледа като списък"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:98
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:102
 msgid "Only show folders in the tree side pane"
 msgstr "Показване само на папките в страничния панел с дървото"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:99
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:103
 msgid ""
 "If set to true, Peony will only show folders in the tree side pane. "
 "Otherwise it will show both folders and files."
@@ -3523,19 +3540,19 @@ msgstr ""
 "Ако е истина, Peony ще показва само папки в страничния панел. В противен "
 "случай ще показва едновременно папки и файлове."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:100
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:104
 msgid "Desktop font"
 msgstr "Шрифт на работния плот"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:101
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:105
 msgid "The font description used for the icons on the desktop."
 msgstr "Описанието на шрифта, използван за иконките на работния плот."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:102
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:106
 msgid "Home icon visible on desktop"
 msgstr "Иконка за домашната папка върху работния плот"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:103
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:107
 msgid ""
 "If this is set to true, an icon linking to the home folder will be put on "
 "the desktop."
@@ -3543,11 +3560,11 @@ msgstr ""
 "Ако е вярно, на работния плот ще бъде поставена иконка, водеща към домашната "
 "папка."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:104
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:108
 msgid "Computer icon visible on desktop"
 msgstr "Иконката „Този компютър“ да бъде видима на работния плот"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:105
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:109
 msgid ""
 "If this is set to true, an icon linking to the computer location will be put "
 "on the desktop."
@@ -3555,11 +3572,11 @@ msgstr ""
 "Ако е вярно, на работния плот ще бъде поставена иконка препращаща към "
 "местоположението „Този компютър“."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:106
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:110
 msgid "Trash icon visible on desktop"
 msgstr "Иконката на кошчето е видима върху работния плот"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:107
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:111
 msgid ""
 "If this is set to true, an icon linking to the trash will be put on the "
 "desktop."
@@ -3567,11 +3584,11 @@ msgstr ""
 "Ако е вярно, на работния плот ще бъде поставена иконка, препращаща към "
 "кошчето."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:108
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:112
 msgid "Show mounted volumes on the desktop"
 msgstr "Показване на монтираните файлови системи на работния плот"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:109
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:113
 msgid ""
 "If this is set to true, icons linking to mounted volumes will be put on the "
 "desktop."
@@ -3579,11 +3596,11 @@ msgstr ""
 "Ако е вярно, на работния плот ще бъдат поставени иконки, препращащи към "
 "монтираните файлови системи."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:110
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:114
 msgid "Network Servers icon visible on the desktop"
 msgstr "Иконка за мрежовите сървъри върху работния плот"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:111
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:115
 msgid ""
 "If this is set to true, an icon linking to the Network Servers view will be "
 "put on the desktop."
@@ -3591,11 +3608,11 @@ msgstr ""
 "Ако е вярно, на работния плот ще бъде поставена иконка, препращаща към "
 "мрежовите сървъри."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:112
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:116
 msgid "Desktop computer icon name"
 msgstr "Име на иконката за периферните устройства"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:113
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:117
 msgid ""
 "This name can be set if you want a custom name for the computer icon on the "
 "desktop."
@@ -3603,11 +3620,11 @@ msgstr ""
 "Това име може да бъде променено, ако искате друго име за иконката за "
 "компютъра на работния плот."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:114
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:118
 msgid "Desktop home icon name"
 msgstr "Име на иконката за домашната папка"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:115
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:119
 msgid ""
 "This name can be set if you want a custom name for the home icon on the "
 "desktop."
@@ -3615,11 +3632,11 @@ msgstr ""
 "Това име може да бъде променено, ако искате друго име за иконката на личните "
 "файлове на работния плот."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:116
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:120
 msgid "Desktop trash icon name"
 msgstr "Име на иконката за кошчето"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:117
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:121
 msgid ""
 "This name can be set if you want a custom name for the trash icon on the "
 "desktop."
@@ -3627,11 +3644,11 @@ msgstr ""
 "Това име може да бъде променено, ако искате друго име за иконката на кошчето "
 "върху работния плот."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:118
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:122
 msgid "Network servers icon name"
 msgstr "Име на иконката за мрежовите сървъри"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:119
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:123
 msgid ""
 "This name can be set if you want a custom name for the network servers icon "
 "on the desktop."
@@ -3639,7 +3656,7 @@ msgstr ""
 "Това име може да бъде променено, ако искате друго име за иконката за "
 "мрежовите сървъри върху работния плот."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:120
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:124
 msgid ""
 "An integer specifying how parts of overlong file names should be replaced by "
 "ellipses on the desktop. If the number is larger than 0, the file name will "
@@ -3650,11 +3667,11 @@ msgstr ""
 "работния плот. Ако числото е над 0, то името на файл ще се съкрати до този "
 "брой ридове. Ако числото е 0 или по-малко, имената не се съкращават."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:121
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:125
 msgid "The geometry string for a navigation window."
 msgstr "Низът с размерите на прозорците за навигация."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:122
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:126
 msgid ""
 "A string containing the saved geometry and coordinates string for navigation "
 "windows."
@@ -3662,68 +3679,68 @@ msgstr ""
 "Низ, който съдържа запазените размери и разположението на прозорците за "
 "навигация."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:123
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:127
 msgid "Whether the navigation window should be maximized."
 msgstr "Дали прозорецът за навигация да бъде максимизиран."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:124
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:128
 msgid "Whether the navigation window should be maximized by default."
 msgstr "Дали прозорецът за навигация да бъде максимизиран по подразбиране."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:125
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:129
 msgid "Width of the side pane"
 msgstr "Широчина на страничния панел"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:126
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:130
 msgid "The default width of the side pane in new windows."
 msgstr "Стандартната широчина на страничния панел в новите прозорци."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:127
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:131
 msgid "Show toolbar in new windows"
 msgstr "Показване на лентата за състояние в новите прозорци"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:128
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:132
 msgid "If set to true, newly opened windows will have toolbars visible."
 msgstr "Ако е истина, новите прозорци ще имат видима лента с инструменти."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:129
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:133
 msgid "Show location bar in new windows"
 msgstr "Показване на страничната лента в новите прозорци"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:130
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:134
 msgid ""
 "If set to true, newly opened windows will have the location bar visible."
 msgstr "Ако е истина, новите прозорци ще имат видима адресна лента."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:131
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:135
 msgid "Show status bar in new windows"
 msgstr "Показване на лентата за състояние в новите прозорци"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:132
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:136
 msgid "If set to true, newly opened windows will have the status bar visible."
 msgstr "Ако е истина, новите прозорци ще имат видима лента за състоянието."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:133
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:137
 msgid "Show side pane in new windows"
 msgstr "Показване на страничния панел в новите прозорци"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:134
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:138
 msgid "If set to true, newly opened windows will have the side pane visible."
 msgstr "Ако е истина, новите прозорци ще имат видим страничен панел."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:135
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:139
 msgid "Side pane view"
 msgstr "Изглед на страничния панел"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:136
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:140
 msgid "The side pane view to show in newly opened windows."
 msgstr "Изгледът на страничния панел, който да се показва в новите прозорци."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:137
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:141
 msgid "List of extensions in disabled state."
 msgstr "Списък от разширения в спрян режим."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:138
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:142
 msgid "This list contains the extensions that are currently de-activated."
 msgstr "Този списък съдържа разширенията, които са изключени вмомента."
 
@@ -3831,7 +3848,7 @@ msgstr "Питане за автоматично стартиране"
 #: ../data/peony-browser.desktop.in.in.h:1
 #: ../data/peony-folder-handler.desktop.in.in.h:1
 #: ../data/peony.desktop.in.in.h:1 ../src/peony-spatial-window.c:373
-#: ../src/peony-window-menus.c:536 ../src/peony-window.c:172
+#: ../src/peony-window-menus.c:679 ../src/peony-window.c:172
 msgid "Peony"
 msgstr "Файлов мениджър (Peony)"
 
@@ -3844,7 +3861,7 @@ msgid "Browse the file system with the file manager"
 msgstr "Разглеждане на файловата система с файловия мениджър"
 
 #. tooltip
-#: ../data/peony-computer.desktop.in.in.h:2 ../src/peony-window-menus.c:899
+#: ../data/peony-computer.desktop.in.in.h:2 ../src/peony-window-menus.c:1047
 msgid ""
 "Browse all local and remote disks and folders accessible from this computer"
 msgstr ""
@@ -3864,7 +3881,7 @@ msgid "Home Folder"
 msgstr "Домашна папка"
 
 #. tooltip
-#: ../data/peony-home.desktop.in.in.h:2 ../src/peony-window-menus.c:894
+#: ../data/peony-home.desktop.in.in.h:2 ../src/peony-window-menus.c:1042
 msgid "Open your personal folder"
 msgstr "Отваряне на вашата лична папка"
 
@@ -3880,8 +3897,8 @@ msgstr "Фон"
 #. name, stock id
 #. label, accelerator
 #: ../src/file-manager/fm-desktop-icon-view.c:893
-#: ../src/file-manager/fm-directory-view.c:7586
-#: ../src/file-manager/fm-directory-view.c:9388
+#: ../src/file-manager/fm-directory-view.c:7704
+#: ../src/file-manager/fm-directory-view.c:9506
 msgid "E_mpty Trash"
 msgstr "Из_чистване на кошчето"
 
@@ -3889,13 +3906,13 @@ msgstr "Из_чистване на кошчето"
 #. name, stock id
 #. label, accelerator
 #: ../src/file-manager/fm-desktop-icon-view.c:907
-#: ../src/file-manager/fm-directory-view.c:7550
+#: ../src/file-manager/fm-directory-view.c:7668
 msgid "Create L_auncher..."
 msgstr "Създаване на ст_артер…"
 
 #. tooltip
 #: ../src/file-manager/fm-desktop-icon-view.c:909
-#: ../src/file-manager/fm-directory-view.c:7551
+#: ../src/file-manager/fm-directory-view.c:7669
 msgid "Create a new launcher"
 msgstr "Създаване на нов стартер"
 
@@ -3932,7 +3949,7 @@ msgstr "Изчистване на кошчето"
 
 #. tooltip
 #: ../src/file-manager/fm-desktop-icon-view.c:936
-#: ../src/file-manager/fm-directory-view.c:7587 ../src/peony-trash-bar.c:204
+#: ../src/file-manager/fm-directory-view.c:7705 ../src/peony-trash-bar.c:204
 msgid "Delete all items in the Trash"
 msgstr "Изтриване на всички обекти от кошчето"
 
@@ -3944,68 +3961,68 @@ msgstr "Получи се грешка в изгледа като работен
 msgid "The desktop view encountered an error while starting up."
 msgstr "Получи се грешка при стартирането на изгледа като работен плот."
 
-#: ../src/file-manager/fm-directory-view.c:657
+#: ../src/file-manager/fm-directory-view.c:659
 #, c-format
 msgid "This will open %'d separate tab."
 msgid_plural "This will open %'d separate tabs."
 msgstr[0] "Това ще отвори %'d отделен подпрозорец."
 msgstr[1] "Това ще отвори %'d отделни подпрозорци."
 
-#: ../src/file-manager/fm-directory-view.c:660
+#: ../src/file-manager/fm-directory-view.c:662
 #, c-format
 msgid "This will open %'d separate window."
 msgid_plural "This will open %'d separate windows."
 msgstr[0] "Това ще отвори %'d отделен прозорец."
 msgstr[1] "Това ще отвори %'d отделни прозорци."
 
-#: ../src/file-manager/fm-directory-view.c:1200
+#: ../src/file-manager/fm-directory-view.c:1202
 #: ../src/file-manager/fm-properties-window.c:5397
 #: ../src/peony-connect-server-dialog.c:718 ../src/peony-location-dialog.c:102
 msgid "There was an error displaying help."
 msgstr "Грешка при показването на помощта."
 
-#: ../src/file-manager/fm-directory-view.c:1220
+#: ../src/file-manager/fm-directory-view.c:1222
 msgid "Select Items Matching"
 msgstr "Избор на обекти по критерии"
 
-#: ../src/file-manager/fm-directory-view.c:1235
+#: ../src/file-manager/fm-directory-view.c:1237
 msgid "_Pattern:"
 msgstr "_Шаблон:"
 
-#: ../src/file-manager/fm-directory-view.c:1242
+#: ../src/file-manager/fm-directory-view.c:1244
 msgid "Examples: "
 msgstr "Примери:"
 
-#: ../src/file-manager/fm-directory-view.c:1396
+#: ../src/file-manager/fm-directory-view.c:1398
 msgid "Save Search as"
 msgstr "Запазване на търсенето"
 
-#: ../src/file-manager/fm-directory-view.c:1419
+#: ../src/file-manager/fm-directory-view.c:1421
 msgid "Search _name:"
 msgstr "_Име, което да се търси:"
 
-#: ../src/file-manager/fm-directory-view.c:1439
+#: ../src/file-manager/fm-directory-view.c:1441
 msgid "_Folder:"
 msgstr "П_апка:"
 
-#: ../src/file-manager/fm-directory-view.c:1448
+#: ../src/file-manager/fm-directory-view.c:1450
 msgid "Select Folder to Save Search In"
 msgstr "Изберете папка, в която да запазите търсенето"
 
-#: ../src/file-manager/fm-directory-view.c:2345
-#: ../src/file-manager/fm-directory-view.c:2382
+#: ../src/file-manager/fm-directory-view.c:2347
+#: ../src/file-manager/fm-directory-view.c:2384
 #, c-format
 msgid "\"%s\" selected"
 msgstr "„%s“ — избран(а)"
 
-#: ../src/file-manager/fm-directory-view.c:2347
+#: ../src/file-manager/fm-directory-view.c:2349
 #, c-format
 msgid "%'d folder selected"
 msgid_plural "%'d folders selected"
 msgstr[0] "%'d избрана папка"
 msgstr[1] "%'d избрани папки"
 
-#: ../src/file-manager/fm-directory-view.c:2357
+#: ../src/file-manager/fm-directory-view.c:2359
 #, c-format
 msgid " (containing %'d item)"
 msgid_plural " (containing %'d items)"
@@ -4013,14 +4030,14 @@ msgstr[0] " (съдържа %'d обект)"
 msgstr[1] " (съдържа %'d обекта)"
 
 #. translators: this is preceded with a string of form 'N folders' (N more than 1)
-#: ../src/file-manager/fm-directory-view.c:2368
+#: ../src/file-manager/fm-directory-view.c:2370
 #, c-format
 msgid " (containing a total of %'d item)"
 msgid_plural " (containing a total of %'d items)"
 msgstr[0] " (съдържат общо %'d обект)"
 msgstr[1] " (съдържат общо %'d обекта)"
 
-#: ../src/file-manager/fm-directory-view.c:2385
+#: ../src/file-manager/fm-directory-view.c:2387
 #, c-format
 msgid "%'d item selected"
 msgid_plural "%'d items selected"
@@ -4028,7 +4045,7 @@ msgstr[0] "%'d избран обект"
 msgstr[1] "%'d избрани обекта"
 
 #. Folders selected also, use "other" terminology
-#: ../src/file-manager/fm-directory-view.c:2392
+#: ../src/file-manager/fm-directory-view.c:2394
 #, c-format
 msgid "%'d other item selected"
 msgid_plural "%'d other items selected"
@@ -4040,17 +4057,17 @@ msgstr[1] "още %'d избрани обекта"
 #. * first message gives the number of items selected;
 #. * the message in parentheses the size of those items.
 #.
-#: ../src/file-manager/fm-directory-view.c:2411
+#: ../src/file-manager/fm-directory-view.c:2413
 #, c-format
 msgid "%s (%s)"
 msgstr "%s (%s)"
 
-#: ../src/file-manager/fm-directory-view.c:2424
+#: ../src/file-manager/fm-directory-view.c:2426
 #, c-format
 msgid "Free space: %s"
 msgstr "Свободно пространство: %s"
 
-#: ../src/file-manager/fm-directory-view.c:2435
+#: ../src/file-manager/fm-directory-view.c:2437
 #, c-format
 msgid "%s, Free space: %s"
 msgstr "%s, свободни: %s"
@@ -4060,7 +4077,7 @@ msgstr "%s, свободни: %s"
 #. * After the comma the amount of free space will
 #. * be shown.
 #.
-#: ../src/file-manager/fm-directory-view.c:2450
+#: ../src/file-manager/fm-directory-view.c:2452
 #, c-format
 msgid "%s, %s"
 msgstr "%s, %s"
@@ -4077,8 +4094,8 @@ msgstr "%s, %s"
 #. * message about the number of other items and the
 #. * total size of those items.
 #.
-#: ../src/file-manager/fm-directory-view.c:2469
-#: ../src/file-manager/fm-directory-view.c:2483
+#: ../src/file-manager/fm-directory-view.c:2471
+#: ../src/file-manager/fm-directory-view.c:2485
 #, c-format
 msgid "%s%s, %s"
 msgstr "%s%s, %s"
@@ -4091,48 +4108,58 @@ msgstr "%s%s, %s"
 #. * total size of those items. After the second comma
 #. * the free space is written.
 #.
-#: ../src/file-manager/fm-directory-view.c:2496
+#: ../src/file-manager/fm-directory-view.c:2498
 #, c-format
 msgid "%s%s, %s, %s"
 msgstr "%s%s, %s, %s"
 
-#: ../src/file-manager/fm-directory-view.c:4631
+#: ../src/file-manager/fm-directory-view.c:4650
 #: ../src/peony-information-panel.c:905
 #, c-format
 msgid "Open With %s"
 msgstr "Отваряне с %s"
 
-#: ../src/file-manager/fm-directory-view.c:4633
+#: ../src/file-manager/fm-directory-view.c:4652
 #, c-format
 msgid "Use \"%s\" to open the selected item"
 msgid_plural "Use \"%s\" to open the selected items"
 msgstr[0] "Използвайте „%s“ за отваряне на избрания елемент"
 msgstr[1] "Използвайте „%s“ за отваряне на избраните елементи"
 
-#: ../src/file-manager/fm-directory-view.c:4724
+#: ../src/file-manager/fm-directory-view.c:4743
 msgid "Open parent location"
 msgstr "Отвори основното местоположение"
 
-#: ../src/file-manager/fm-directory-view.c:4725
+#: ../src/file-manager/fm-directory-view.c:4744
 msgid "Open parent location for the selected item"
 msgstr "Отвори основното местоположение на избрания елемент"
 
-#: ../src/file-manager/fm-directory-view.c:5576
+#: ../src/file-manager/fm-directory-view.c:4819
+#, fuzzy
+msgid "Image Search"
+msgstr "За_пазване на търсенето"
+
+#: ../src/file-manager/fm-directory-view.c:4820
+#, fuzzy
+msgid "Find simillar images for the selected item"
+msgstr "Отвори основното местоположение на избрания елемент"
+
+#: ../src/file-manager/fm-directory-view.c:5686
 #, c-format
 msgid "Run \"%s\" on any selected items"
 msgstr "Изпълняване на „%s“ за всеки избран елемент"
 
-#: ../src/file-manager/fm-directory-view.c:5827
+#: ../src/file-manager/fm-directory-view.c:5937
 #, c-format
 msgid "Create Document from template \"%s\""
 msgstr "Създаване на документ от шаблона „%s“"
 
-#: ../src/file-manager/fm-directory-view.c:6077
+#: ../src/file-manager/fm-directory-view.c:6187
 msgid "All executable files in this folder will appear in the Scripts menu."
 msgstr ""
 "Всички изпълними файлове в тази папка ще се появят в менюто „Скриптове“."
 
-#: ../src/file-manager/fm-directory-view.c:6079
+#: ../src/file-manager/fm-directory-view.c:6189
 msgid ""
 "Choosing a script from the menu will run that script with any selected items "
 "as input."
@@ -4140,7 +4167,7 @@ msgstr ""
 "Избирането на скрипт от менюто ще пусне този скрипт с избраните обекти като "
 "вход."
 
-#: ../src/file-manager/fm-directory-view.c:6081
+#: ../src/file-manager/fm-directory-view.c:6191
 msgid ""
 "All executable files in this folder will appear in the Scripts menu. "
 "Choosing a script from the menu will run that script.\n"
@@ -4199,19 +4226,19 @@ msgstr ""
 "PEONY_SCRIPT_NEXT_PANE_CURRENT_URI: текущ адрес в неактивния панел на "
 "прозореца"
 
-#: ../src/file-manager/fm-directory-view.c:6149
+#: ../src/file-manager/fm-directory-view.c:6259
 #: ../src/file-manager/fm-tree-view.c:1011
 #, c-format
 msgid "\"%s\" will be moved if you select the Paste command"
 msgstr "„%s“ ще бъде преместен, ако изберете командата за поставяне на файлове"
 
-#: ../src/file-manager/fm-directory-view.c:6153
+#: ../src/file-manager/fm-directory-view.c:6263
 #: ../src/file-manager/fm-tree-view.c:1017
 #, c-format
 msgid "\"%s\" will be copied if you select the Paste command"
 msgstr "„%s“ ще бъде копиран, ако изберете командата за поставяне на файлове"
 
-#: ../src/file-manager/fm-directory-view.c:6160
+#: ../src/file-manager/fm-directory-view.c:6270
 #, c-format
 msgid "The %'d selected item will be moved if you select the Paste command"
 msgid_plural ""
@@ -4223,7 +4250,7 @@ msgstr[1] ""
 "%'d избрани обекта ще бъдат преместени, ако изберете командата за поставяне "
 "на файлове"
 
-#: ../src/file-manager/fm-directory-view.c:6167
+#: ../src/file-manager/fm-directory-view.c:6277
 #, c-format
 msgid "The %'d selected item will be copied if you select the Paste command"
 msgid_plural ""
@@ -4235,98 +4262,98 @@ msgstr[1] ""
 "%'d избрани обекта ще бъдат копирани, ако изберете командата за поставяне на "
 "файлове"
 
-#: ../src/file-manager/fm-directory-view.c:6462
+#: ../src/file-manager/fm-directory-view.c:6572
 #: ../src/file-manager/fm-tree-view.c:1057
 msgid "There is nothing on the clipboard to paste."
 msgstr "В буфера за обмен няма нищо за поставяне."
 
-#: ../src/file-manager/fm-directory-view.c:6677
+#: ../src/file-manager/fm-directory-view.c:6795
 msgid "Unable to unmount location"
 msgstr "Неуспех при демонтирането на местоположение"
 
-#: ../src/file-manager/fm-directory-view.c:6698
+#: ../src/file-manager/fm-directory-view.c:6816
 msgid "Unable to eject location"
 msgstr "Неуспех при изваждането на местоположение"
 
-#: ../src/file-manager/fm-directory-view.c:6713
+#: ../src/file-manager/fm-directory-view.c:6831
 msgid "Unable to stop drive"
 msgstr "Неуспех при спирането на устройство"
 
-#: ../src/file-manager/fm-directory-view.c:7270
+#: ../src/file-manager/fm-directory-view.c:7388
 #, c-format
 msgid "Connect to Server %s"
 msgstr "Свързване със сървър %s"
 
-#: ../src/file-manager/fm-directory-view.c:7275
-#: ../src/file-manager/fm-directory-view.c:8503
-#: ../src/file-manager/fm-directory-view.c:8595
-#: ../src/file-manager/fm-directory-view.c:8705
+#: ../src/file-manager/fm-directory-view.c:7393
+#: ../src/file-manager/fm-directory-view.c:8621
+#: ../src/file-manager/fm-directory-view.c:8713
+#: ../src/file-manager/fm-directory-view.c:8823
 msgid "_Connect"
 msgstr "_Свързване"
 
-#: ../src/file-manager/fm-directory-view.c:7289
+#: ../src/file-manager/fm-directory-view.c:7407
 msgid "Link _name:"
 msgstr "_Име на връзката:"
 
 #. name, stock id, label
-#: ../src/file-manager/fm-directory-view.c:7528
+#: ../src/file-manager/fm-directory-view.c:7646
 msgid "Create _Document"
 msgstr "Създаване на до_кумент"
 
 #. name, stock id, label
-#: ../src/file-manager/fm-directory-view.c:7529
+#: ../src/file-manager/fm-directory-view.c:7647
 msgid "Open Wit_h"
 msgstr "Отваряне _с"
 
-#: ../src/file-manager/fm-directory-view.c:7530
+#: ../src/file-manager/fm-directory-view.c:7648
 msgid "Choose a program with which to open the selected item"
 msgstr "Избор на програма за отваряне на избрания обект"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7532
-#: ../src/file-manager/fm-directory-view.c:7832
+#: ../src/file-manager/fm-directory-view.c:7650
+#: ../src/file-manager/fm-directory-view.c:7950
 msgid "_Properties"
 msgstr "_Свойства"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7533
-#: ../src/file-manager/fm-directory-view.c:9375
+#: ../src/file-manager/fm-directory-view.c:7651
+#: ../src/file-manager/fm-directory-view.c:9493
 msgid "View or modify the properties of each selected item"
 msgstr "Преглед или промяна на свойствата на всеки избран обект"
 
 #. name, stock id
 #. label, accelerator
 #. add the "create folder" menu item
-#: ../src/file-manager/fm-directory-view.c:7540
+#: ../src/file-manager/fm-directory-view.c:7658
 #: ../src/file-manager/fm-tree-view.c:1300
 msgid "Create _Folder"
 msgstr "Създаване на _папка"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7541
+#: ../src/file-manager/fm-directory-view.c:7659
 msgid "Create a new empty folder inside this folder"
 msgstr "Създаване на нова празна папка в тази папка"
 
 #. name, stock id, label
-#: ../src/file-manager/fm-directory-view.c:7543
+#: ../src/file-manager/fm-directory-view.c:7661
 msgid "No templates installed"
 msgstr "Не са инсталирани шаблони"
 
 #. name, stock id
 #. translators: this is used to indicate that a file doesn't contain anything
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7546
+#: ../src/file-manager/fm-directory-view.c:7664
 msgid "_Empty File"
 msgstr "_Празен файл"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7547
+#: ../src/file-manager/fm-directory-view.c:7665
 msgid "Create a new empty file inside this folder"
 msgstr "Създаване на нов празен файл в тази папка"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7555
+#: ../src/file-manager/fm-directory-view.c:7673
 msgid "Open the selected item in this window"
 msgstr "Отваряне на избрания обект в нов прозорец"
 
@@ -4335,70 +4362,70 @@ msgstr "Отваряне на избрания обект в нов прозор
 #. Location-specific actions
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7562
-#: ../src/file-manager/fm-directory-view.c:7764
+#: ../src/file-manager/fm-directory-view.c:7680
+#: ../src/file-manager/fm-directory-view.c:7882
 msgid "Open in Navigation Window"
 msgstr "Отваряне на навигационен прозорец"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7563
+#: ../src/file-manager/fm-directory-view.c:7681
 msgid "Open each selected item in a navigation window"
 msgstr "Отваряне на всеки избран обект в навигационен прозорец"
 
 #. name, stock id
 #. label, accelerator
 #. add the "open in new tab" menu item
-#: ../src/file-manager/fm-directory-view.c:7566
-#: ../src/file-manager/fm-directory-view.c:7768
-#: ../src/file-manager/fm-directory-view.c:8835
-#: ../src/file-manager/fm-directory-view.c:9165
-#: ../src/file-manager/fm-tree-view.c:1280 ../src/peony-places-sidebar.c:2782
+#: ../src/file-manager/fm-directory-view.c:7684
+#: ../src/file-manager/fm-directory-view.c:7886
+#: ../src/file-manager/fm-directory-view.c:8953
+#: ../src/file-manager/fm-directory-view.c:9283
+#: ../src/file-manager/fm-tree-view.c:1280 ../src/peony-places-sidebar.c:3403
 msgid "Open in New _Tab"
 msgstr "_Отваряне в нов подпрозорец"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7567
+#: ../src/file-manager/fm-directory-view.c:7685
 msgid "Open each selected item in a new tab"
 msgstr "Отваряне на всеки избран обект в подпрозорец за папка"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7570
-#: ../src/file-manager/fm-directory-view.c:7773
+#: ../src/file-manager/fm-directory-view.c:7688
+#: ../src/file-manager/fm-directory-view.c:7891
 msgid "Open in _Folder Window"
 msgstr "Отваряне в _прозорец за папка"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7571
+#: ../src/file-manager/fm-directory-view.c:7689
 msgid "Open each selected item in a folder window"
 msgstr "Отваряне на всеки избран обект в прозорец за папка"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7574
+#: ../src/file-manager/fm-directory-view.c:7692
 msgid "Other _Application..."
 msgstr "_Друга програма…"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7575
-#: ../src/file-manager/fm-directory-view.c:7579
+#: ../src/file-manager/fm-directory-view.c:7693
+#: ../src/file-manager/fm-directory-view.c:7697
 msgid "Choose another application with which to open the selected item"
 msgstr "Избор на друга програма за отваряне на избрания обект"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7578
+#: ../src/file-manager/fm-directory-view.c:7696
 msgid "Open With Other _Application..."
 msgstr "Отваряне с _друга програма…"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7582
+#: ../src/file-manager/fm-directory-view.c:7700
 msgid "_Open Scripts Folder"
 msgstr "Отва_ряне на папката със скриптовете"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7583
+#: ../src/file-manager/fm-directory-view.c:7701
 msgid "Show the folder containing the scripts that appear in this menu"
 msgstr ""
 "Показване съдържанието на папката със скриптовете, които се появяват в менюто"
@@ -4406,7 +4433,7 @@ msgstr ""
 #. name, stock id
 #. label, accelerator
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7591
+#: ../src/file-manager/fm-directory-view.c:7709
 msgid "Prepare the selected files to be moved with a Paste command"
 msgstr ""
 "Подготвяне на избраните файлове за преместване с командата за поставяне на "
@@ -4415,7 +4442,7 @@ msgstr ""
 #. name, stock id
 #. label, accelerator
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7595
+#: ../src/file-manager/fm-directory-view.c:7713
 msgid "Prepare the selected files to be copied with a Paste command"
 msgstr ""
 "Подготвяне на избраните файлове за копиране с командата за поставяне на "
@@ -4424,7 +4451,7 @@ msgstr ""
 #. name, stock id
 #. label, accelerator
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7599
+#: ../src/file-manager/fm-directory-view.c:7717
 msgid "Move or copy files previously selected by a Cut or Copy command"
 msgstr ""
 "Преместване или копиране на файловете, предварително избрани от командите за "
@@ -4433,8 +4460,8 @@ msgstr ""
 #. name, stock id
 #. label, accelerator
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7602
-#: ../src/file-manager/fm-directory-view.c:7603
+#: ../src/file-manager/fm-directory-view.c:7720
+#: ../src/file-manager/fm-directory-view.c:7721
 msgid "_Attached to the start menu"
 msgstr ""
 
@@ -4442,14 +4469,14 @@ msgstr ""
 #. accelerator for paste
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7608
-#: ../src/file-manager/fm-directory-view.c:7786
+#: ../src/file-manager/fm-directory-view.c:7726
+#: ../src/file-manager/fm-directory-view.c:7904
 #: ../src/file-manager/fm-tree-view.c:1332
 msgid "_Paste Into Folder"
 msgstr "_Поставяне в папката"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7609
+#: ../src/file-manager/fm-directory-view.c:7727
 msgid ""
 "Move or copy files previously selected by a Cut or Copy command into the "
 "selected folder"
@@ -4458,163 +4485,165 @@ msgstr ""
 "командата за отрязване или копиране, в избраната папка"
 
 #. name, stock id, label
-#: ../src/file-manager/fm-directory-view.c:7611
+#: ../src/file-manager/fm-directory-view.c:7729
 msgid "Cop_y to"
 msgstr "Ко_пиране в"
 
 #. name, stock id, label
-#: ../src/file-manager/fm-directory-view.c:7612
+#: ../src/file-manager/fm-directory-view.c:7730
 msgid "M_ove to"
 msgstr "Пре_местване в"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7615
+#: ../src/file-manager/fm-directory-view.c:7733
 msgid "Select all items in this window"
 msgstr "Избор на всички обекти в този прозорец"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7618
+#: ../src/file-manager/fm-directory-view.c:7736
 msgid "Select I_tems Matching..."
 msgstr "Избор на обекти по _шаблон…"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7619
+#: ../src/file-manager/fm-directory-view.c:7737
 msgid "Select items in this window matching a given pattern"
 msgstr "Избиране на обекти в този прозорец напасващи на даден шаблон"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7626
+#: ../src/file-manager/fm-directory-view.c:7744
 msgid "_Invert Selection"
 msgstr "_Обръщане на избора"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7627
+#: ../src/file-manager/fm-directory-view.c:7745
 msgid "Select all and only the items that are not currently selected"
 msgstr "Избор само на обектите, които в момента не са избрани"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7630
+#: ../src/file-manager/fm-directory-view.c:7748
 msgid "D_uplicate"
 msgstr "Д_ублиране"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7631
+#: ../src/file-manager/fm-directory-view.c:7749
 msgid "Duplicate each selected item"
 msgstr "Дублиране на всеки избран обект"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7634
-#: ../src/file-manager/fm-directory-view.c:9359
+#: ../src/file-manager/fm-directory-view.c:7752
+#: ../src/file-manager/fm-directory-view.c:9477
 msgid "Ma_ke Link"
 msgid_plural "Ma_ke Links"
 msgstr[0] "Създаване на _връзка"
 msgstr[1] "Създаване на _връзки"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7635
+#: ../src/file-manager/fm-directory-view.c:7753
 msgid "Create a symbolic link for each selected item"
 msgstr "Създаване на символна връзка за всеки избран обект"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7638
+#: ../src/file-manager/fm-directory-view.c:7756
 msgid "Send to desktop _Shortcut"
 msgstr ""
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7639
+#: ../src/file-manager/fm-directory-view.c:7757
 #, fuzzy
 msgid "Send to desktop shortcut for each selected item"
 msgstr "Създаване на символна връзка за всеки избран обект"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7642
+#: ../src/file-manager/fm-directory-view.c:7760
 msgid "_Rename..."
 msgstr "Пре_именуване…"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7643
+#: ../src/file-manager/fm-directory-view.c:7761
 msgid "Rename selected item"
 msgstr "Преименуване на избрания обект"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7651
-#: ../src/file-manager/fm-directory-view.c:9220
+#: ../src/file-manager/fm-directory-view.c:7769
+#: ../src/file-manager/fm-directory-view.c:9338
 msgid "Move each selected item to the Trash"
 msgstr "Преместване на всеки избран елемент в кошчето"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7654
-#: ../src/file-manager/fm-directory-view.c:7795
-#: ../src/file-manager/fm-directory-view.c:9241
+#: ../src/file-manager/fm-directory-view.c:7772
+#: ../src/file-manager/fm-directory-view.c:7913
+#: ../src/file-manager/fm-directory-view.c:9359
 #: ../src/file-manager/fm-tree-view.c:1362
 msgid "_Delete"
 msgstr "Из_триване"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7655
+#: ../src/file-manager/fm-directory-view.c:7773
 msgid "Delete each selected item, without moving to the Trash"
 msgstr "Изтриване на всеки избран обект, без преместване в кошчето"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7658
-#: ../src/file-manager/fm-directory-view.c:7799
+#: ../src/file-manager/fm-directory-view.c:7776
+#: ../src/file-manager/fm-directory-view.c:7917
 msgid "_Restore"
 msgstr "_Изваждане"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7662
+#: ../src/file-manager/fm-directory-view.c:7780
+#: ../src/peony-window-menus.c:1006
 msgid "_Undo"
 msgstr "_Назад"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7663
-#: ../src/file-manager/fm-directory-view.c:11522
+#: ../src/file-manager/fm-directory-view.c:7781
+#: ../src/file-manager/fm-directory-view.c:11640
+#: ../src/peony-window-menus.c:1007
 msgid "Undo the last action"
 msgstr "Отмяна на последното действие"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7666
+#: ../src/file-manager/fm-directory-view.c:7784
 msgid "_Redo"
 msgstr "_Повторение"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7667
-#: ../src/file-manager/fm-directory-view.c:11540
+#: ../src/file-manager/fm-directory-view.c:7785
+#: ../src/file-manager/fm-directory-view.c:11663
 msgid "Redo the last undone action"
 msgstr "Повторение на последно отмененото действие"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7671
-#: ../src/file-manager/fm-directory-view.c:9276
+#: ../src/file-manager/fm-directory-view.c:7789
+#: ../src/file-manager/fm-directory-view.c:9394
 msgid "E_mpty Recent"
 msgstr ""
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7672
+#: ../src/file-manager/fm-directory-view.c:7790
 msgid "E_mpty Recent use"
 msgstr ""
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7675
-#: ../src/file-manager/fm-directory-view.c:9292
+#: ../src/file-manager/fm-directory-view.c:7793
+#: ../src/file-manager/fm-directory-view.c:9410
 #, fuzzy
 msgid "D_elete Recent"
 msgstr "_Окончателно изтриване"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7676
+#: ../src/file-manager/fm-directory-view.c:7794
 msgid "D_elete Recent use"
 msgstr ""
 
@@ -4626,12 +4655,12 @@ msgstr ""
 #.
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7686
+#: ../src/file-manager/fm-directory-view.c:7804
 msgid "Reset View to _Defaults"
 msgstr "С_тандартен изглед"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7687
+#: ../src/file-manager/fm-directory-view.c:7805
 msgid "Reset sorting order and zoom level to match preferences for this view"
 msgstr ""
 "Посоката на подредбата и нивото на мащаб да се върнат към стандартните за "
@@ -4639,186 +4668,186 @@ msgstr ""
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7690
+#: ../src/file-manager/fm-directory-view.c:7808
 msgid "Connect To This Server"
 msgstr "Свързване с този сървър"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7691
+#: ../src/file-manager/fm-directory-view.c:7809
 msgid "Make a permanent connection to this server"
 msgstr "Създаване на постоянна връзка към този сървър"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7694
-#: ../src/file-manager/fm-directory-view.c:7722
-#: ../src/file-manager/fm-directory-view.c:7803
-#: ../src/peony-places-sidebar.c:2818
+#: ../src/file-manager/fm-directory-view.c:7812
+#: ../src/file-manager/fm-directory-view.c:7840
+#: ../src/file-manager/fm-directory-view.c:7921
+#: ../src/peony-places-sidebar.c:3439
 msgid "_Mount"
 msgstr "_Монтиране"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7695
+#: ../src/file-manager/fm-directory-view.c:7813
 msgid "Mount the selected volume"
 msgstr "Монтиране на избраната файлова система"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7699
+#: ../src/file-manager/fm-directory-view.c:7817
 msgid "Unmount the selected volume"
 msgstr "Демонтиране на избраната файлова система"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7703
+#: ../src/file-manager/fm-directory-view.c:7821
 msgid "Eject the selected volume"
 msgstr "Изваждане на избраната файлова система"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7706
-#: ../src/file-manager/fm-directory-view.c:7734
-#: ../src/file-manager/fm-directory-view.c:7815
-#: ../src/peony-places-sidebar.c:2846
+#: ../src/file-manager/fm-directory-view.c:7824
+#: ../src/file-manager/fm-directory-view.c:7852
+#: ../src/file-manager/fm-directory-view.c:7933
+#: ../src/peony-places-sidebar.c:3467
 msgid "_Format"
 msgstr "_Форматиране"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7707
+#: ../src/file-manager/fm-directory-view.c:7825
 msgid "Format the selected volume"
 msgstr "Форматиране на избраната файлова система"
 
 #. name, stock id
 #. label, accelerator
 #. Adjust start/stop items to reflect the type of the drive
-#: ../src/file-manager/fm-directory-view.c:7710
-#: ../src/file-manager/fm-directory-view.c:7738
-#: ../src/file-manager/fm-directory-view.c:7819
-#: ../src/file-manager/fm-directory-view.c:8495
-#: ../src/file-manager/fm-directory-view.c:8499
-#: ../src/file-manager/fm-directory-view.c:8587
-#: ../src/file-manager/fm-directory-view.c:8591
-#: ../src/file-manager/fm-directory-view.c:8697
-#: ../src/file-manager/fm-directory-view.c:8701
-#: ../src/peony-places-sidebar.c:1884 ../src/peony-places-sidebar.c:2853
+#: ../src/file-manager/fm-directory-view.c:7828
+#: ../src/file-manager/fm-directory-view.c:7856
+#: ../src/file-manager/fm-directory-view.c:7937
+#: ../src/file-manager/fm-directory-view.c:8613
+#: ../src/file-manager/fm-directory-view.c:8617
+#: ../src/file-manager/fm-directory-view.c:8705
+#: ../src/file-manager/fm-directory-view.c:8709
+#: ../src/file-manager/fm-directory-view.c:8815
+#: ../src/file-manager/fm-directory-view.c:8819
+#: ../src/peony-places-sidebar.c:2474 ../src/peony-places-sidebar.c:3474
 msgid "_Start"
 msgstr "_Стартиране"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7711
+#: ../src/file-manager/fm-directory-view.c:7829
 msgid "Start the selected volume"
 msgstr "Стартиране на избраната файлова система"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7714
-#: ../src/file-manager/fm-directory-view.c:7742
-#: ../src/file-manager/fm-directory-view.c:7823
-#: ../src/file-manager/fm-directory-view.c:8524
-#: ../src/file-manager/fm-directory-view.c:8616
-#: ../src/file-manager/fm-directory-view.c:8726
-#: ../src/peony-places-sidebar.c:1885 ../src/peony-places-sidebar.c:2860
-#: ../src/peony-window-menus.c:838
+#: ../src/file-manager/fm-directory-view.c:7832
+#: ../src/file-manager/fm-directory-view.c:7860
+#: ../src/file-manager/fm-directory-view.c:7941
+#: ../src/file-manager/fm-directory-view.c:8642
+#: ../src/file-manager/fm-directory-view.c:8734
+#: ../src/file-manager/fm-directory-view.c:8844
+#: ../src/peony-places-sidebar.c:2475 ../src/peony-places-sidebar.c:3481
+#: ../src/peony-window-menus.c:981
 msgid "_Stop"
 msgstr "Сп_иране"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7715
-#: ../src/file-manager/fm-directory-view.c:8727
+#: ../src/file-manager/fm-directory-view.c:7833
+#: ../src/file-manager/fm-directory-view.c:8845
 msgid "Stop the selected volume"
 msgstr "Спиране на избраната файлова система"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7718
-#: ../src/file-manager/fm-directory-view.c:7746
-#: ../src/file-manager/fm-directory-view.c:7827
-#: ../src/peony-places-sidebar.c:2839
+#: ../src/file-manager/fm-directory-view.c:7836
+#: ../src/file-manager/fm-directory-view.c:7864
+#: ../src/file-manager/fm-directory-view.c:7945
+#: ../src/peony-places-sidebar.c:3460
 msgid "_Detect Media"
 msgstr "_Засичане на носител"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7719
-#: ../src/file-manager/fm-directory-view.c:7747
-#: ../src/file-manager/fm-directory-view.c:7828
+#: ../src/file-manager/fm-directory-view.c:7837
+#: ../src/file-manager/fm-directory-view.c:7865
+#: ../src/file-manager/fm-directory-view.c:7946
 msgid "Detect media in the selected drive"
 msgstr "Засичане на носител в избраното устройство"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7723
+#: ../src/file-manager/fm-directory-view.c:7841
 msgid "Mount the volume associated with the open folder"
 msgstr "Монтиране на файловата система, отговаряща на отворената папка"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7727
+#: ../src/file-manager/fm-directory-view.c:7845
 msgid "Unmount the volume associated with the open folder"
 msgstr "Демонтиране на файловата система, отговаряща на отворената папка"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7731
+#: ../src/file-manager/fm-directory-view.c:7849
 msgid "Eject the volume associated with the open folder"
 msgstr "Изваждане на файловата система, отговаряща на отворената папка"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7735
+#: ../src/file-manager/fm-directory-view.c:7853
 msgid "Format the volume associated with the open folder"
 msgstr "Форматиране на файловата система, отговаряща на отворената папка"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7739
+#: ../src/file-manager/fm-directory-view.c:7857
 msgid "Start the volume associated with the open folder"
 msgstr "Стартиране на файловата система, отговаряща на отворената папка"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7743
+#: ../src/file-manager/fm-directory-view.c:7861
 msgid "Stop the volume associated with the open folder"
 msgstr "Спиране на файловата система, отговаряща на отворената папка"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7750
+#: ../src/file-manager/fm-directory-view.c:7868
 msgid "Open File and Close window"
 msgstr "Отваряне на файл и затваряне на прозорец"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7754
+#: ../src/file-manager/fm-directory-view.c:7872
 msgid "Sa_ve Search"
 msgstr "За_пазване на търсенето"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7755
+#: ../src/file-manager/fm-directory-view.c:7873
 msgid "Save the edited search"
 msgstr "Запазване на редактираното търсене"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7758
+#: ../src/file-manager/fm-directory-view.c:7876
 msgid "Sa_ve Search As..."
 msgstr "Запазване на търсенето _като…"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7759
+#: ../src/file-manager/fm-directory-view.c:7877
 msgid "Save the current search as a file"
 msgstr "Запазване на текущото търсене във файл"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7765
+#: ../src/file-manager/fm-directory-view.c:7883
 msgid "Open this folder in a navigation window"
 msgstr "Отваряне на тази папка в навигационен прозорец"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7769
+#: ../src/file-manager/fm-directory-view.c:7887
 msgid "Open this folder in a new tab"
 msgstr "Отваряне на тази папка в подпрозорец за папка"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7774
+#: ../src/file-manager/fm-directory-view.c:7892
 msgid "Open this folder in a folder window"
 msgstr "Отваряне на тази папка в прозорец за папка"
 
 #. name, stock id
 #. label, accelerator
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7779
+#: ../src/file-manager/fm-directory-view.c:7897
 msgid "Prepare this folder to be moved with a Paste command"
 msgstr ""
 "Подготвяне на тази папка за преместване с командата за поставяне на файлове"
@@ -4826,13 +4855,13 @@ msgstr ""
 #. name, stock id
 #. label, accelerator
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7783
+#: ../src/file-manager/fm-directory-view.c:7901
 msgid "Prepare this folder to be copied with a Paste command"
 msgstr ""
 "Подготвяне на тази папка за копиране с командата за поставяне на файлове"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7787
+#: ../src/file-manager/fm-directory-view.c:7905
 msgid ""
 "Move or copy files previously selected by a Cut or Copy command into this "
 "folder"
@@ -4841,408 +4870,409 @@ msgstr ""
 "командата за отрязване или копиране, в избраната папка"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7792
+#: ../src/file-manager/fm-directory-view.c:7910
 msgid "Move this folder to the Trash"
 msgstr "Преместване на тази папка в кошчето"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7796
+#: ../src/file-manager/fm-directory-view.c:7914
 msgid "Delete this folder, without moving to the Trash"
 msgstr "Изтриване на тази папка, без преместване в кошчето"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7804
+#: ../src/file-manager/fm-directory-view.c:7922
 msgid "Mount the volume associated with this folder"
 msgstr "Монтиране на файловата система, отговаряща на тази папка"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7808
+#: ../src/file-manager/fm-directory-view.c:7926
 msgid "Unmount the volume associated with this folder"
 msgstr "Демонтиране на файловата система, отговаряща на тази папка"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7812
+#: ../src/file-manager/fm-directory-view.c:7930
 msgid "Eject the volume associated with this folder"
 msgstr "Изваждане на файловата система, отговаряща на тази папка"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7816
+#: ../src/file-manager/fm-directory-view.c:7934
 msgid "Format the volume associated with this folder"
 msgstr "Форматиране на файловата система, отговаряща на тази папка"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7820
+#: ../src/file-manager/fm-directory-view.c:7938
 msgid "Start the volume associated with this folder"
 msgstr "Включването на файловата система, отговаряща на тази папка"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7824
+#: ../src/file-manager/fm-directory-view.c:7942
 msgid "Stop the volume associated with this folder"
 msgstr "Спиране на файловата система, отговаряща на тази папка"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7833
+#: ../src/file-manager/fm-directory-view.c:7951
 msgid "View or modify the properties of this folder"
 msgstr "Преглед или промяна на свойствата на тази папка"
 
 #. name, stock id, label
-#: ../src/file-manager/fm-directory-view.c:7836
-#: ../src/file-manager/fm-directory-view.c:7839
+#: ../src/file-manager/fm-directory-view.c:7954
+#: ../src/file-manager/fm-directory-view.c:7957
 msgid "_Other pane"
 msgstr "_Друг панел…"
 
-#: ../src/file-manager/fm-directory-view.c:7837
+#: ../src/file-manager/fm-directory-view.c:7955
 msgid "Copy the current selection to the other pane in the window"
 msgstr "Копиране на избраното в другия панел в прозореца"
 
-#: ../src/file-manager/fm-directory-view.c:7840
+#: ../src/file-manager/fm-directory-view.c:7958
 msgid "Move the current selection to the other pane in the window"
 msgstr "Преместване на избраното в другия панел в прозореца"
 
 #. name, stock id, label
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7843
-#: ../src/file-manager/fm-directory-view.c:7847 ../src/peony-window-menus.c:893
+#: ../src/file-manager/fm-directory-view.c:7961
+#: ../src/file-manager/fm-directory-view.c:7965
+#: ../src/peony-window-menus.c:1041
 msgid "_Home Folder"
 msgstr "_Домашна папка"
 
-#: ../src/file-manager/fm-directory-view.c:7844
+#: ../src/file-manager/fm-directory-view.c:7962
 msgid "Copy the current selection to the home folder"
 msgstr "Копиране на избраното в домашната папка"
 
-#: ../src/file-manager/fm-directory-view.c:7848
+#: ../src/file-manager/fm-directory-view.c:7966
 msgid "Move the current selection to the home folder"
 msgstr "Преместване на избраното в домашната папка"
 
 #. name, stock id, label
-#: ../src/file-manager/fm-directory-view.c:7851
-#: ../src/file-manager/fm-directory-view.c:7855
+#: ../src/file-manager/fm-directory-view.c:7969
+#: ../src/file-manager/fm-directory-view.c:7973
 msgid "_Desktop"
 msgstr "Работен _плот"
 
-#: ../src/file-manager/fm-directory-view.c:7852
+#: ../src/file-manager/fm-directory-view.c:7970
 msgid "Copy the current selection to the desktop"
 msgstr "Копиране на избраното в работния плот"
 
-#: ../src/file-manager/fm-directory-view.c:7856
+#: ../src/file-manager/fm-directory-view.c:7974
 msgid "Move the current selection to the desktop"
 msgstr "Преместване на избраното в работния плот"
 
 #. Translators: %s is a directory
-#: ../src/file-manager/fm-directory-view.c:7936
+#: ../src/file-manager/fm-directory-view.c:8054
 #, c-format
 msgid "Run or manage scripts from %s"
 msgstr "Стартиране или управление на скриптове от %s"
 
 #. Create a script action here specially because its tooltip is dynamic
-#: ../src/file-manager/fm-directory-view.c:7938
+#: ../src/file-manager/fm-directory-view.c:8056
 msgid "_Scripts"
 msgstr "_Скриптове"
 
-#: ../src/file-manager/fm-directory-view.c:8343
+#: ../src/file-manager/fm-directory-view.c:8461
 #, c-format
 msgid "Move the open folder out of the trash to \"%s\""
 msgstr "Изваждане на отворената папка от кошчето в „%s“"
 
-#: ../src/file-manager/fm-directory-view.c:8346
+#: ../src/file-manager/fm-directory-view.c:8464
 #, c-format
 msgid "Move the selected folder out of the trash to \"%s\""
 msgid_plural "Move the selected folders out of the trash to \"%s\""
 msgstr[0] "Изваждане на избраната папка от кошчето в „%s“"
 msgstr[1] "Изваждане на избраните папки от кошчето в „%s“"
 
-#: ../src/file-manager/fm-directory-view.c:8350
+#: ../src/file-manager/fm-directory-view.c:8468
 #, c-format
 msgid "Move the selected folder out of the trash"
 msgid_plural "Move the selected folders out of the trash"
 msgstr[0] "Изваждане на избраната папка от кошчето"
 msgstr[1] "Изваждане на избраните папки от кошчето"
 
-#: ../src/file-manager/fm-directory-view.c:8356
+#: ../src/file-manager/fm-directory-view.c:8474
 #, c-format
 msgid "Move the selected file out of the trash to \"%s\""
 msgid_plural "Move the selected files out of the trash to \"%s\""
 msgstr[0] "Изваждане на избрания файл от кошчето в „%s“"
 msgstr[1] "Изваждане на избраните файлове от кошчето в „%s“"
 
-#: ../src/file-manager/fm-directory-view.c:8360
+#: ../src/file-manager/fm-directory-view.c:8478
 #, c-format
 msgid "Move the selected file out of the trash"
 msgid_plural "Move the selected files out of the trash"
 msgstr[0] "Изваждане на избрания файл от кошчето"
 msgstr[1] "Изваждане на избраните файлове от кошчето"
 
-#: ../src/file-manager/fm-directory-view.c:8366
+#: ../src/file-manager/fm-directory-view.c:8484
 #, c-format
 msgid "Move the selected item out of the trash to \"%s\""
 msgid_plural "Move the selected items out of the trash to \"%s\""
 msgstr[0] "Изваждане на избрания обект от кошчето в „%s“"
 msgstr[1] "Изваждане на избраните обекти от кошчето в „%s“"
 
-#: ../src/file-manager/fm-directory-view.c:8370
+#: ../src/file-manager/fm-directory-view.c:8488
 #, c-format
 msgid "Move the selected item out of the trash"
 msgid_plural "Move the selected items out of the trash"
 msgstr[0] "Изваждане на избрания обект от кошчето"
 msgstr[1] "Изваждане на избраните обекти от кошчето"
 
-#: ../src/file-manager/fm-directory-view.c:8496
-#: ../src/file-manager/fm-directory-view.c:8500
-#: ../src/file-manager/fm-directory-view.c:8698
-#: ../src/file-manager/fm-directory-view.c:8702
+#: ../src/file-manager/fm-directory-view.c:8614
+#: ../src/file-manager/fm-directory-view.c:8618
+#: ../src/file-manager/fm-directory-view.c:8816
+#: ../src/file-manager/fm-directory-view.c:8820
 msgid "Start the selected drive"
 msgstr "Стартиране на избраното устройство"
 
-#: ../src/file-manager/fm-directory-view.c:8504
-#: ../src/file-manager/fm-directory-view.c:8706
+#: ../src/file-manager/fm-directory-view.c:8622
+#: ../src/file-manager/fm-directory-view.c:8824
 msgid "Connect to the selected drive"
 msgstr "Свързване към избраното устройство"
 
-#: ../src/file-manager/fm-directory-view.c:8507
-#: ../src/file-manager/fm-directory-view.c:8599
-#: ../src/file-manager/fm-directory-view.c:8709
+#: ../src/file-manager/fm-directory-view.c:8625
+#: ../src/file-manager/fm-directory-view.c:8717
+#: ../src/file-manager/fm-directory-view.c:8827
 msgid "_Start Multi-disk Drive"
 msgstr "_Стартиране на многодисковото устройство"
 
-#: ../src/file-manager/fm-directory-view.c:8508
-#: ../src/file-manager/fm-directory-view.c:8710
+#: ../src/file-manager/fm-directory-view.c:8626
+#: ../src/file-manager/fm-directory-view.c:8828
 msgid "Start the selected multi-disk drive"
 msgstr "Стартиране на избраното многодисково устройство"
 
-#: ../src/file-manager/fm-directory-view.c:8511
+#: ../src/file-manager/fm-directory-view.c:8629
 msgid "U_nlock Drive"
 msgstr "_Отключване на устройството"
 
-#: ../src/file-manager/fm-directory-view.c:8512
-#: ../src/file-manager/fm-directory-view.c:8714
+#: ../src/file-manager/fm-directory-view.c:8630
+#: ../src/file-manager/fm-directory-view.c:8832
 msgid "Unlock the selected drive"
 msgstr "Отключване на избраното устройство"
 
-#: ../src/file-manager/fm-directory-view.c:8525
+#: ../src/file-manager/fm-directory-view.c:8643
 msgid "Stop the selected drive"
 msgstr "Спиране на избраното устройство"
 
-#: ../src/file-manager/fm-directory-view.c:8528
-#: ../src/file-manager/fm-directory-view.c:8620
-#: ../src/file-manager/fm-directory-view.c:8730
-#: ../src/peony-places-sidebar.c:1893
+#: ../src/file-manager/fm-directory-view.c:8646
+#: ../src/file-manager/fm-directory-view.c:8738
+#: ../src/file-manager/fm-directory-view.c:8848
+#: ../src/peony-places-sidebar.c:2483
 msgid "_Safely Remove Drive"
 msgstr "_Безопасно махане на устройство"
 
-#: ../src/file-manager/fm-directory-view.c:8529
-#: ../src/file-manager/fm-directory-view.c:8731
+#: ../src/file-manager/fm-directory-view.c:8647
+#: ../src/file-manager/fm-directory-view.c:8849
 msgid "Safely remove the selected drive"
 msgstr "Безопасно махане на избраното устройство"
 
-#: ../src/file-manager/fm-directory-view.c:8532
-#: ../src/file-manager/fm-directory-view.c:8624
-#: ../src/file-manager/fm-directory-view.c:8734
+#: ../src/file-manager/fm-directory-view.c:8650
+#: ../src/file-manager/fm-directory-view.c:8742
+#: ../src/file-manager/fm-directory-view.c:8852
 msgid "_Disconnect"
 msgstr "_Изключване"
 
-#: ../src/file-manager/fm-directory-view.c:8533
-#: ../src/file-manager/fm-directory-view.c:8735
+#: ../src/file-manager/fm-directory-view.c:8651
+#: ../src/file-manager/fm-directory-view.c:8853
 msgid "Disconnect the selected drive"
 msgstr "Изключване на избраното устройство"
 
-#: ../src/file-manager/fm-directory-view.c:8536
-#: ../src/file-manager/fm-directory-view.c:8628
-#: ../src/file-manager/fm-directory-view.c:8738
+#: ../src/file-manager/fm-directory-view.c:8654
+#: ../src/file-manager/fm-directory-view.c:8746
+#: ../src/file-manager/fm-directory-view.c:8856
 msgid "_Stop Multi-disk Drive"
 msgstr "_Спиране на многодисково устройство"
 
-#: ../src/file-manager/fm-directory-view.c:8537
-#: ../src/file-manager/fm-directory-view.c:8739
+#: ../src/file-manager/fm-directory-view.c:8655
+#: ../src/file-manager/fm-directory-view.c:8857
 msgid "Stop the selected multi-disk drive"
 msgstr "Спиране на избраното многодисково устройство"
 
-#: ../src/file-manager/fm-directory-view.c:8540
-#: ../src/file-manager/fm-directory-view.c:8632
-#: ../src/file-manager/fm-directory-view.c:8742
-#: ../src/peony-places-sidebar.c:1906
+#: ../src/file-manager/fm-directory-view.c:8658
+#: ../src/file-manager/fm-directory-view.c:8750
+#: ../src/file-manager/fm-directory-view.c:8860
+#: ../src/peony-places-sidebar.c:2496
 msgid "_Lock Drive"
 msgstr "_Заключване на устройство"
 
-#: ../src/file-manager/fm-directory-view.c:8541
-#: ../src/file-manager/fm-directory-view.c:8743
+#: ../src/file-manager/fm-directory-view.c:8659
+#: ../src/file-manager/fm-directory-view.c:8861
 msgid "Lock the selected drive"
 msgstr "Заключване на избраното устройство"
 
-#: ../src/file-manager/fm-directory-view.c:8588
-#: ../src/file-manager/fm-directory-view.c:8592
+#: ../src/file-manager/fm-directory-view.c:8706
+#: ../src/file-manager/fm-directory-view.c:8710
 msgid "Start the drive associated with the open folder"
 msgstr "Стартиране на устройството, отговарящо на отворената папка"
 
-#: ../src/file-manager/fm-directory-view.c:8596
+#: ../src/file-manager/fm-directory-view.c:8714
 msgid "Connect to the drive associated with the open folder"
 msgstr "Свързване към устройството, отговарящо на отворената папка"
 
-#: ../src/file-manager/fm-directory-view.c:8600
+#: ../src/file-manager/fm-directory-view.c:8718
 msgid "Start the multi-disk drive associated with the open folder"
 msgstr ""
 "Стартиране на многодисковото устройство, отговарящо на отворената папка"
 
 #. stop() for type G_DRIVE_START_STOP_TYPE_PASSWORD is normally not used
-#: ../src/file-manager/fm-directory-view.c:8603
-#: ../src/file-manager/fm-directory-view.c:8713
-#: ../src/peony-places-sidebar.c:1905
+#: ../src/file-manager/fm-directory-view.c:8721
+#: ../src/file-manager/fm-directory-view.c:8831
+#: ../src/peony-places-sidebar.c:2495
 msgid "_Unlock Drive"
 msgstr "_Отключване на устройството"
 
-#: ../src/file-manager/fm-directory-view.c:8604
+#: ../src/file-manager/fm-directory-view.c:8722
 msgid "Unlock the drive associated with the open folder"
 msgstr "Отключване на устройството, отговарящо на отворената папка"
 
-#: ../src/file-manager/fm-directory-view.c:8617
+#: ../src/file-manager/fm-directory-view.c:8735
 msgid "_Stop the drive associated with the open folder"
 msgstr "_Спиране на устройството, отговарящо на отворената папка"
 
-#: ../src/file-manager/fm-directory-view.c:8621
+#: ../src/file-manager/fm-directory-view.c:8739
 msgid "Safely remove the drive associated with the open folder"
 msgstr "Безопасно махане на устройството, отговарящо на отворената папка"
 
-#: ../src/file-manager/fm-directory-view.c:8625
+#: ../src/file-manager/fm-directory-view.c:8743
 msgid "Disconnect the drive associated with the open folder"
 msgstr "Изключване на устройството, отговарящо на отворената папка"
 
-#: ../src/file-manager/fm-directory-view.c:8629
+#: ../src/file-manager/fm-directory-view.c:8747
 msgid "Stop the multi-disk drive associated with the open folder"
 msgstr "Спиране на многодисковото устройството, отговарящо на отворената папка"
 
-#: ../src/file-manager/fm-directory-view.c:8633
+#: ../src/file-manager/fm-directory-view.c:8751
 msgid "Lock the drive associated with the open folder"
 msgstr "Заключване на устройството, отговарящо на отворената папка"
 
 #. add the "open in new window" menu item
-#: ../src/file-manager/fm-directory-view.c:8812
-#: ../src/file-manager/fm-directory-view.c:9126
-#: ../src/file-manager/fm-tree-view.c:1289 ../src/peony-places-sidebar.c:2789
+#: ../src/file-manager/fm-directory-view.c:8930
+#: ../src/file-manager/fm-directory-view.c:9244
+#: ../src/file-manager/fm-tree-view.c:1289 ../src/peony-places-sidebar.c:3410
 msgid "Open in New _Window"
 msgstr "Отваряне в _нов прозорец"
 
-#: ../src/file-manager/fm-directory-view.c:8814
-#: ../src/file-manager/fm-directory-view.c:9135
+#: ../src/file-manager/fm-directory-view.c:8932
+#: ../src/file-manager/fm-directory-view.c:9253
 msgid "Browse in New _Window"
 msgstr "_Разглеждане в нов прозорец"
 
-#: ../src/file-manager/fm-directory-view.c:8820
-#: ../src/file-manager/fm-directory-view.c:9145
+#: ../src/file-manager/fm-directory-view.c:8938
+#: ../src/file-manager/fm-directory-view.c:9263
 msgid "_Browse Folder"
 msgid_plural "_Browse Folders"
 msgstr[0] "_Разглеждане на папка"
 msgstr[1] "_Разглеждане на папки"
 
-#: ../src/file-manager/fm-directory-view.c:8837
-#: ../src/file-manager/fm-directory-view.c:9174
+#: ../src/file-manager/fm-directory-view.c:8955
+#: ../src/file-manager/fm-directory-view.c:9292
 msgid "Browse in New _Tab"
 msgstr "Разглеждане в нов _подпрозорец"
 
-#: ../src/file-manager/fm-directory-view.c:8886
-#: ../src/file-manager/fm-directory-view.c:9215
-#: ../src/file-manager/fm-directory-view.c:9250
+#: ../src/file-manager/fm-directory-view.c:9004
+#: ../src/file-manager/fm-directory-view.c:9333
+#: ../src/file-manager/fm-directory-view.c:9368
 msgid "_Delete Permanently"
 msgstr "_Окончателно изтриване"
 
-#: ../src/file-manager/fm-directory-view.c:8887
+#: ../src/file-manager/fm-directory-view.c:9005
 msgid "Delete the open folder permanently"
 msgstr "Окончателно изтриване на отворената папка"
 
-#: ../src/file-manager/fm-directory-view.c:8891
+#: ../src/file-manager/fm-directory-view.c:9009
 msgid "Move the open folder to the Trash"
 msgstr "Преместване на отворената папка в кошчето"
 
-#: ../src/file-manager/fm-directory-view.c:9073
+#: ../src/file-manager/fm-directory-view.c:9191
 #, c-format
 msgid "_Open With %s"
 msgstr "_Отваряне с %s"
 
-#: ../src/file-manager/fm-directory-view.c:9128
+#: ../src/file-manager/fm-directory-view.c:9246
 #, c-format
 msgid "Open in %'d New _Window"
 msgid_plural "Open in %'d New _Windows"
 msgstr[0] "Отваряне в %'d _нов прозорец"
 msgstr[1] "Отваряне в %'d _нови прозорци"
 
-#: ../src/file-manager/fm-directory-view.c:9137
+#: ../src/file-manager/fm-directory-view.c:9255
 #, c-format
 msgid "Browse in %'d New _Window"
 msgid_plural "Browse in %'d New _Windows"
 msgstr[0] "Разглеждане в %'d _нов прозорец"
 msgstr[1] "Разглеждане в %'d _нови прозорци"
 
-#: ../src/file-manager/fm-directory-view.c:9167
+#: ../src/file-manager/fm-directory-view.c:9285
 #, c-format
 msgid "Open in %'d New _Tab"
 msgid_plural "Open in %'d New _Tabs"
 msgstr[0] "Отваряне в %'d нов _подпрозорец"
 msgstr[1] "Отваряне в %'d нови _подпрозорци"
 
-#: ../src/file-manager/fm-directory-view.c:9176
+#: ../src/file-manager/fm-directory-view.c:9294
 #, c-format
 msgid "Browse in %'d New _Tab"
 msgid_plural "Browse in %'d New _Tabs"
 msgstr[0] "Разглеждане в %'d нов _подпрозорец"
 msgstr[1] "Разглеждане в %'d нови _подпрозорци"
 
-#: ../src/file-manager/fm-directory-view.c:9216
+#: ../src/file-manager/fm-directory-view.c:9334
 msgid "Delete all selected items permanently"
 msgstr "Окончателно изтриване на всички избрани елементи"
 
-#: ../src/file-manager/fm-directory-view.c:9373
+#: ../src/file-manager/fm-directory-view.c:9491
 msgid "View or modify the properties of the open folder"
 msgstr "Преглед или промяна на свойствата на отворената папка"
 
-#: ../src/file-manager/fm-directory-view.c:10676
+#: ../src/file-manager/fm-directory-view.c:10794
 msgid "Download location?"
 msgstr "Да се изтегли ли този ресурс?"
 
-#: ../src/file-manager/fm-directory-view.c:10679
+#: ../src/file-manager/fm-directory-view.c:10797
 msgid "You can download it or make a link to it."
 msgstr "Не може да изтегляте или да създавате връзка към тази папка."
 
-#: ../src/file-manager/fm-directory-view.c:10682
+#: ../src/file-manager/fm-directory-view.c:10800
 msgid "Make a _Link"
 msgstr "Създаване на _връзка"
 
-#: ../src/file-manager/fm-directory-view.c:10686
+#: ../src/file-manager/fm-directory-view.c:10804
 msgid "_Download"
 msgstr "_Изтегляне"
 
-#: ../src/file-manager/fm-directory-view.c:10847
-#: ../src/file-manager/fm-directory-view.c:10906
-#: ../src/file-manager/fm-directory-view.c:11011
+#: ../src/file-manager/fm-directory-view.c:10965
+#: ../src/file-manager/fm-directory-view.c:11024
+#: ../src/file-manager/fm-directory-view.c:11129
 msgid "Drag and drop is not supported."
 msgstr "Изтеглянето и пускането не се поддържа."
 
-#: ../src/file-manager/fm-directory-view.c:10848
+#: ../src/file-manager/fm-directory-view.c:10966
 msgid "Drag and drop is only supported on local file systems."
 msgstr "Изтеглянето и пускането се поддържа само в локалните файлови системи."
 
-#: ../src/file-manager/fm-directory-view.c:10907
-#: ../src/file-manager/fm-directory-view.c:11012
+#: ../src/file-manager/fm-directory-view.c:11025
+#: ../src/file-manager/fm-directory-view.c:11130
 msgid "An invalid drag type was used."
 msgstr "Използван е невалиден вид изтегляне."
 
 #. Translator: This is the filename used for when you dnd text to a directory
-#: ../src/file-manager/fm-directory-view.c:11089
+#: ../src/file-manager/fm-directory-view.c:11207
 msgid "dropped text.txt"
 msgstr "пуснат_текст.txt"
 
 #. Translator: This is the filename used for when you dnd raw
 #. * data to a directory, if the source didn't supply a name.
 #.
-#: ../src/file-manager/fm-directory-view.c:11134
+#: ../src/file-manager/fm-directory-view.c:11252
 msgid "dropped data"
 msgstr "пуснат текст"
 
 #. Reset to default info
-#: ../src/file-manager/fm-directory-view.c:11521
+#: ../src/file-manager/fm-directory-view.c:11639
 msgid "Undo"
 msgstr "Отмяна"
 
 #. Reset to default info
-#: ../src/file-manager/fm-directory-view.c:11539
+#: ../src/file-manager/fm-directory-view.c:11662
 msgid "Redo"
 msgstr "Повторение"
 
@@ -5366,7 +5396,7 @@ msgstr "Преименуване на „%s“ на „%s“."
 #. translators: this is used in the view selection dropdown
 #. * of navigation windows and in the preferences dialog
 #: ../src/file-manager/fm-icon-container.c:649
-#: ../src/file-manager/fm-icon-view.c:3456
+#: ../src/file-manager/fm-icon-view.c:3419
 #: ../src/peony-file-management-properties.ui.h:1
 msgid "Icon View"
 msgstr "Изглед като иконки"
@@ -5544,43 +5574,43 @@ msgid "pointing at \"%s\""
 msgstr "Сочи към „%s“"
 
 #. translators: this is used in the view menu
-#: ../src/file-manager/fm-icon-view.c:3458
+#: ../src/file-manager/fm-icon-view.c:3421
 msgid "_Icons"
 msgstr "_Иконки"
 
-#: ../src/file-manager/fm-icon-view.c:3459
+#: ../src/file-manager/fm-icon-view.c:3422
 msgid "The icon view encountered an error."
 msgstr "Получи се грешка в изгледа като иконки."
 
-#: ../src/file-manager/fm-icon-view.c:3460
+#: ../src/file-manager/fm-icon-view.c:3423
 msgid "The icon view encountered an error while starting up."
 msgstr "Получи се грешка при стартиране на изгледа като иконки."
 
-#: ../src/file-manager/fm-icon-view.c:3461
+#: ../src/file-manager/fm-icon-view.c:3424
 msgid "Display this location with the icon view."
 msgstr "Показване на това местоположение чрез изглед като иконки."
 
 #. translators: this is used in the view selection dropdown
 #. * of navigation windows and in the preferences dialog
-#: ../src/file-manager/fm-icon-view.c:3471
+#: ../src/file-manager/fm-icon-view.c:3434
 #: ../src/peony-file-management-properties.ui.h:3
 msgid "Compact View"
 msgstr "Сбит изглед"
 
 #. translators: this is used in the view menu
-#: ../src/file-manager/fm-icon-view.c:3473
+#: ../src/file-manager/fm-icon-view.c:3436
 msgid "_Compact"
 msgstr "_Сбит"
 
-#: ../src/file-manager/fm-icon-view.c:3474
+#: ../src/file-manager/fm-icon-view.c:3437
 msgid "The compact view encountered an error."
 msgstr "Грешка в сбития изглед."
 
-#: ../src/file-manager/fm-icon-view.c:3475
+#: ../src/file-manager/fm-icon-view.c:3438
 msgid "The compact view encountered an error while starting up."
 msgstr "Имаше грешка в сбития изглед при отварянето му."
 
-#: ../src/file-manager/fm-icon-view.c:3476
+#: ../src/file-manager/fm-icon-view.c:3439
 msgid "Display this location with the compact view."
 msgstr "Отваряне на това местоположение в сбития изглед."
 
@@ -5589,55 +5619,62 @@ msgstr "Отваряне на това местоположение в сбит�
 msgid "(Empty)"
 msgstr "(Празно)"
 
-#. we will wait for child progress finished.
+#.
+#. set_pdf_preview_widget_file_by_filename(window->details->pdf_view,(char*)data);
+#. gtk_widget_hide (window->details->empty_window);
+#. gtk_widget_show_all (window->details->pdf_swindow);
+#. gtk_widget_hide (window->details->test_widget);
+#. gtk_widget_hide (window->details->web_swindow);
+#.
 #: ../src/file-manager/fm-list-model.c:432
 #: ../src/file-manager/fm-tree-model.c:1358
-#: ../src/peony-navigation-window.c:1575 ../src/peony-window-slot.c:208
+#: ../src/peony-navigation-window.c:1659 ../src/peony-navigation-window.c:1684
+#: ../src/peony-window-slot.c:216
 msgid "Loading..."
 msgstr "Зареждане…"
 
 #. translators: this is used in the view selection dropdown
 #. * of navigation windows and in the preferences dialog
-#: ../src/file-manager/fm-list-view.c:1957
-#: ../src/file-manager/fm-list-view.c:3577
+#: ../src/file-manager/fm-list-view.c:1915
+#: ../src/file-manager/fm-list-view.c:3535
 #: ../src/peony-file-management-properties.ui.h:2
 msgid "List View"
 msgstr "Изглед като списък"
 
-#: ../src/file-manager/fm-list-view.c:2651
+#: ../src/file-manager/fm-list-view.c:2609
 #, c-format
 msgid "%s Visible Columns"
 msgstr "%s видими колони"
 
-#: ../src/file-manager/fm-list-view.c:2670
+#: ../src/file-manager/fm-list-view.c:2628
 msgid "Choose the order of information to appear in this folder:"
 msgstr "Изберете реда, по който информацията да се показва в тази папка:"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-list-view.c:2728
+#: ../src/file-manager/fm-list-view.c:2686
 msgid "Visible _Columns..."
 msgstr "Видими _колони…"
 
 #. tooltip
-#: ../src/file-manager/fm-list-view.c:2729
+#: ../src/file-manager/fm-list-view.c:2687
 msgid "Select the columns visible in this folder"
 msgstr "Избиране на колоните видими в тази папка"
 
 #. translators: this is used in the view menu
-#: ../src/file-manager/fm-list-view.c:3579
+#: ../src/file-manager/fm-list-view.c:3537
 msgid "_List"
 msgstr "_Списък"
 
-#: ../src/file-manager/fm-list-view.c:3580
+#: ../src/file-manager/fm-list-view.c:3538
 msgid "The list view encountered an error."
 msgstr "Получи се грешка в изгледа като списък."
 
-#: ../src/file-manager/fm-list-view.c:3581
+#: ../src/file-manager/fm-list-view.c:3539
 msgid "The list view encountered an error while starting up."
 msgstr "Получи се грешка при стартирането на изгледа като списък."
 
-#: ../src/file-manager/fm-list-view.c:3582
+#: ../src/file-manager/fm-list-view.c:3540
 msgid "Display this location with the list view."
 msgstr "Показване на местоположението в изгледа като списък."
 
@@ -5752,7 +5789,7 @@ msgid "Link target:"
 msgstr "Цел на връзката:"
 
 #: ../src/file-manager/fm-properties-window.c:3273
-#: ../src/peony-location-bar.c:59
+#: ../src/peony-location-bar.c:62
 msgid "Location:"
 msgstr "Адрес:"
 
@@ -5959,7 +5996,8 @@ msgstr "Създаване на прозорец за свойствата."
 msgid "Select Custom Icon"
 msgstr "Избор на друга иконка…"
 
-#: ../src/file-manager/fm-tree-view.c:1440 ../src/peony-places-sidebar.c:669
+#: ../src/file-manager/fm-tree-view.c:1440 ../src/peony-location-bar.c:1464
+#: ../src/peony-places-sidebar.c:908
 msgid "File System"
 msgstr "Файлова система"
 
@@ -5997,8 +6035,8 @@ msgstr ""
 "Преди да изпълните Peony, създайте тези папки или задайте права, при които "
 "Peony да може да ги създаде."
 
-#: ../src/peony-application.c:1362 ../src/peony-places-sidebar.c:2290
-#: ../src/peony-places-sidebar.c:2324 ../src/peony-places-sidebar.c:2359
+#: ../src/peony-application.c:1362 ../src/peony-places-sidebar.c:2911
+#: ../src/peony-places-sidebar.c:2945 ../src/peony-places-sidebar.c:2980
 #, c-format
 msgid "Unable to eject %s"
 msgstr "Неуспех при изваждането на %s"
@@ -6120,7 +6158,7 @@ msgstr ""
 
 #: ../src/peony-bookmarks-window.c:158
 #: ../src/peony-file-management-properties.c:237
-#: ../src/peony-property-browser.c:1667 ../src/peony-window-menus.c:592
+#: ../src/peony-property-browser.c:1667 ../src/peony-window-menus.c:735
 #, c-format
 msgid ""
 "There was an error displaying help: \n"
@@ -6289,8 +6327,8 @@ msgstr "_Добавяне на отметка"
 msgid "Bookmark Name:"
 msgstr "Име на отметка:"
 
-#: ../src/peony-desktop-window.c:87 ../src/peony-desktop-window.c:267
-#: ../src/peony-pathbar.c:1399 ../src/peony-places-sidebar.c:544
+#: ../src/peony-desktop-window.c:97 ../src/peony-desktop-window.c:280
+#: ../src/peony-pathbar.c:1399 ../src/peony-places-sidebar.c:738
 msgid "Desktop"
 msgstr "Работен плот"
 
@@ -6911,16 +6949,138 @@ msgstr "Не може да задавате повече от една личн�
 msgid "You can only use images as custom icons."
 msgstr "За лични иконки можете да използвате само изображения."
 
-#: ../src/peony-location-bar.c:60
+#: ../src/peony-kdisk-format.c:78
+msgid "Formatting is in progress, do you want to continue?"
+msgstr ""
+
+#: ../src/peony-kdisk-format.c:99 ../src/peony-kdisk-format.c:548
+#: ../src/peony-kdisk-format.c:686
+msgid "Warning"
+msgstr ""
+
+#: ../src/peony-kdisk-format.c:197
+msgid "Capatity:"
+msgstr ""
+
+#: ../src/peony-kdisk-format.c:198
+#, fuzzy
+msgid "File System:"
+msgstr "Файлова система"
+
+#: ../src/peony-kdisk-format.c:199
+#, fuzzy
+msgid "Volume Label:"
+msgstr "Файлова система:"
+
+#: ../src/peony-kdisk-format.c:200
+msgid "Formatting Options:"
+msgstr ""
+
+#: ../src/peony-kdisk-format.c:216
+msgid "Erase(Need more time)"
+msgstr ""
+
+#: ../src/peony-kdisk-format.c:226
+msgid "Begin"
+msgstr ""
+
+#: ../src/peony-kdisk-format.c:229 ../src/peony-kdisk-format.c:346
+#: ../src/peony-kdisk-format.c:405
+#, fuzzy
+msgid "Close"
+msgstr "_Затваряне"
+
+#: ../src/peony-kdisk-format.c:257 ../src/peony-kdisk-format.c:564
+msgid "The path is empty"
+msgstr ""
+
+#: ../src/peony-kdisk-format.c:264
+#, fuzzy, c-format
+msgid "can't find %s"
+msgstr "„%s“ не може да се открие"
+
+#: ../src/peony-kdisk-format.c:285 ../src/peony-kdisk-format.c:356
+#: ../src/peony-kdisk-format.c:414
+#, fuzzy, c-format
+msgid "format %s volume"
+msgstr "Форматиране на избраната файлова система"
+
+#: ../src/peony-kdisk-format.c:289 ../src/peony-kdisk-format.c:360
+#: ../src/peony-kdisk-format.c:418
+#, fuzzy, c-format
+msgid "format %s"
+msgstr "_Форматиране"
+
+#: ../src/peony-kdisk-format.c:330 ../src/peony-kdisk-format.c:389
+msgid "format succeed!"
+msgstr ""
+
+#: ../src/peony-kdisk-format.c:339 ../src/peony-kdisk-format.c:398
+msgid "format failed!"
+msgstr ""
+
+#: ../src/peony-kdisk-format.c:437
+#, c-format
+msgid "Current progress is %s%s"
+msgstr ""
+
+#: ../src/peony-kdisk-format.c:478 ../src/peony-kdisk-format.c:633
+#, fuzzy, c-format
+msgid "Unable to unmount %s volume"
+msgstr "%V не може да бъде демонтиран"
+
+#: ../src/peony-kdisk-format.c:482 ../src/peony-kdisk-format.c:637
+#, fuzzy, c-format
+msgid "Unable to unmount %s"
+msgstr "%V не може да бъде демонтиран"
+
+#: ../src/peony-kdisk-format.c:518
+msgid "Erase the device will takes a long time,do you want to continue?"
+msgstr ""
+
+#: ../src/peony-kdisk-format.c:527
+msgid ""
+"Formatting will delete all data,are you sure you want to format the device?"
+msgstr ""
+
+#: ../src/peony-kdisk-format.c:666
+msgid "Formatting is in progress, is it canceled?"
+msgstr ""
+
+#: ../src/peony-kdisk-format.c:720
+#, fuzzy
+msgid "Format Volume"
+msgstr "Форматиране на избраната файлова система"
+
+#: ../src/peony-location-bar.c:63
 msgid "Go To:"
 msgstr "Отиване:"
 
-#: ../src/peony-location-bar.c:226
+#: ../src/peony-location-bar.c:269
 #, c-format
 msgid "Do you want to view %d location?"
 msgid_plural "Do you want to view %d locations?"
 msgstr[0] "Искате ли да видите %d адрес?"
 msgstr[1] "Искате ли да видите %d адреса?"
+
+#: ../src/peony-location-bar.c:1487
+msgid "recent"
+msgstr ""
+
+#: ../src/peony-location-bar.c:1490
+#, fuzzy
+msgid "trash"
+msgstr "Кошче"
+
+#: ../src/peony-location-bar.c:1493
+#, fuzzy
+msgid "computer"
+msgstr "Този компютър"
+
+#: ../src/peony-location-bar.c:1496
+#, fuzzy
+msgid "search:"
+msgstr "Търсене:"
 
 #: ../src/peony-location-dialog.c:157
 msgid "Open Location"
@@ -7210,17 +7370,19 @@ msgstr "Нов Подпрозорец"
 msgid "_Close Tab"
 msgstr "_Затваряне на подпрозореца"
 
-#: ../src/peony-navigation-window.c:898
+#: ../src/peony-navigation-window.c:969
 #, c-format
 msgid "%s - File Browser"
 msgstr "%s — файлов браузър"
 
-#: ../src/peony-navigation-window.c:1516 ../src/peony-navigation-window.c:1625
-#: ../src/peony-navigation-window.c:1636
+#. printf ("null\n\n\n");
+#: ../src/peony-navigation-window.c:1606 ../src/peony-navigation-window.c:1753
+#: ../src/peony-navigation-window.c:1764
 msgid "Select the file you want to preview"
 msgstr ""
 
-#: ../src/peony-navigation-window.c:1582
+#. printf("can't preview this file\n");
+#: ../src/peony-navigation-window.c:1686 ../src/peony-navigation-window.c:1696
 msgid "Can't preview this file"
 msgstr ""
 
@@ -7236,103 +7398,109 @@ msgstr "Бележки"
 msgid "Show Notes"
 msgstr "Показване на бележки"
 
-#: ../src/peony-places-sidebar.c:534
+#: ../src/peony-places-sidebar.c:728
 #, fuzzy
 msgid "Favorite"
 msgstr "запис"
 
-#: ../src/peony-places-sidebar.c:546
+#: ../src/peony-places-sidebar.c:740
 msgid "Open the contents of your desktop in a folder"
 msgstr "Отваряне на работния ви плот като папка"
 
-#: ../src/peony-places-sidebar.c:561
+#: ../src/peony-places-sidebar.c:755
 msgid "Open the trash"
 msgstr "Отваряне на кошчето"
 
-#: ../src/peony-places-sidebar.c:572
+#: ../src/peony-places-sidebar.c:766
 msgid "Recent"
 msgstr ""
 
-#: ../src/peony-places-sidebar.c:574
+#: ../src/peony-places-sidebar.c:768
 #, fuzzy
 msgid "Open the recent"
 msgstr "Отваряне на горната папка"
 
-#: ../src/peony-places-sidebar.c:586
+#: ../src/peony-places-sidebar.c:808 ../src/peony-places-sidebar.c:1998
+#: ../src/peony-places-sidebar.c:2256
+#, fuzzy
+msgid "Open the folder"
+msgstr "Отваряне на горната папка"
+
+#: ../src/peony-places-sidebar.c:825
 msgid "Personal"
 msgstr ""
 
-#: ../src/peony-places-sidebar.c:661
+#: ../src/peony-places-sidebar.c:900
 #, fuzzy
 msgid "My Computer"
 msgstr "Този компютър"
 
-#: ../src/peony-places-sidebar.c:671
+#: ../src/peony-places-sidebar.c:910
 msgid "Open the contents of the File System"
 msgstr "Отваряне на съдържанието на файловата система"
 
-#: ../src/peony-places-sidebar.c:726 ../src/peony-places-sidebar.c:754
+#: ../src/peony-places-sidebar.c:965 ../src/peony-places-sidebar.c:993
 #, c-format
 msgid "Mount and open %s"
 msgstr "Монтиране и отваряне на %s"
 
-#: ../src/peony-places-sidebar.c:899
+#: ../src/peony-places-sidebar.c:1138
 msgid "Browse Network"
 msgstr "Преглед на мрежата"
 
-#: ../src/peony-places-sidebar.c:901
+#: ../src/peony-places-sidebar.c:1140
 msgid "Browse the contents of the network"
 msgstr "Разглеждане на мрежата"
 
 #. start() for type G_DRIVE_START_STOP_TYPE_SHUTDOWN is normally not used
-#: ../src/peony-places-sidebar.c:1892
+#: ../src/peony-places-sidebar.c:2482
 msgid "_Power On"
 msgstr "_Включване"
 
-#: ../src/peony-places-sidebar.c:1896
+#: ../src/peony-places-sidebar.c:2486
 msgid "_Connect Drive"
 msgstr "_Свързване на устройството"
 
-#: ../src/peony-places-sidebar.c:1897
+#: ../src/peony-places-sidebar.c:2487
 msgid "_Disconnect Drive"
 msgstr "_Изключване на устройството"
 
-#: ../src/peony-places-sidebar.c:1900
+#: ../src/peony-places-sidebar.c:2490
 msgid "_Start Multi-disk Device"
 msgstr "_Стартиране на многодисковото устройство"
 
-#: ../src/peony-places-sidebar.c:1901
+#: ../src/peony-places-sidebar.c:2491
 msgid "_Stop Multi-disk Device"
 msgstr "_Спиране на многодисковото устройство"
 
-#: ../src/peony-places-sidebar.c:1987 ../src/peony-places-sidebar.c:2595
+#: ../src/peony-places-sidebar.c:2577 ../src/peony-places-sidebar.c:3216
 #, c-format
 msgid "Unable to start %s"
 msgstr "%s не може да се стартира"
 
-#: ../src/peony-places-sidebar.c:2523
+#: ../src/peony-places-sidebar.c:3144
 #, c-format
 msgid "Unable to poll %s for media changes"
 msgstr "%s не може да се следи за смяна на носител"
 
-#: ../src/peony-places-sidebar.c:2655
+#: ../src/peony-places-sidebar.c:3276
 #, c-format
 msgid "Unable to stop %s"
 msgstr "%s не може да се спре"
 
-#: ../src/peony-places-sidebar.c:2797
+#: ../src/peony-places-sidebar.c:3418
 msgid "Remove"
 msgstr "Изтриване"
 
-#: ../src/peony-places-sidebar.c:2806
+#: ../src/peony-places-sidebar.c:3427
 msgid "Rename..."
 msgstr "Преименуване…"
 
-#: ../src/peony-places-sidebar.c:3498
+#: ../src/peony-places-sidebar.c:4120
 msgid "Places"
 msgstr "Места"
 
-#: ../src/peony-places-sidebar.c:3504
+#: ../src/peony-places-sidebar.c:4126
 msgid "Show Places"
 msgstr "Показване на местата"
 
@@ -7599,7 +7767,7 @@ msgstr "Резултати от търсенето"
 msgid "Search results"
 msgstr "Резултати от търсенето"
 
-#: ../src/peony-search-bar.c:202
+#: ../src/peony-search-bar.c:248
 msgid "Search:"
 msgstr "Търсене:"
 
@@ -7735,11 +7903,11 @@ msgstr ""
 "Грешка: %s\n"
 "Изберете друга програма за преглед на изображения и опитайте отново."
 
-#: ../src/peony-window-menus.c:195
+#: ../src/peony-window-menus.c:316
 msgid "Go to the location specified by this bookmark"
 msgstr "Отиване на местоположението указано от тази отметка"
 
-#: ../src/peony-window-menus.c:518
+#: ../src/peony-window-menus.c:661
 msgid ""
 "Peony is free software; you can redistribute it and/or modify it under the "
 "terms of the GNU General Public License as published by the Free Software "
@@ -7751,7 +7919,7 @@ msgstr ""
 "публикуван от Фондацията за свободен софтуер — версия 2 на лиценза или (по "
 "ваше решение) по-късна версия."
 
-#: ../src/peony-window-menus.c:522
+#: ../src/peony-window-menus.c:665
 msgid ""
 "Peony is distributed in the hope that it will be useful, but WITHOUT ANY "
 "WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS "
@@ -7762,7 +7930,7 @@ msgstr ""
 "НИКАКВИ ГАРАНЦИИ, дори и косвените за ПРОДАЖБА или СЪОТВЕТСТВИЕ С КАКВАТО И "
 "ДА Е УПОТРЕБА. За подробности погледнете Общия публичен лиценз на GNU."
 
-#: ../src/peony-window-menus.c:526
+#: ../src/peony-window-menus.c:669
 msgid ""
 "You should have received a copy of the GNU General Public License along with "
 "Peony; if not, write to the Free Software Foundation, Inc., 51 Franklin "
@@ -7772,14 +7940,14 @@ msgstr ""
 "заедно с тази програма. Ако не сте, пишете до Free Software Foundation, "
 "Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA."
 
-#: ../src/peony-window-menus.c:538
+#: ../src/peony-window-menus.c:681
 msgid ""
 "Peony lets you organize files and folders, both on your computer and online."
 msgstr ""
 "Peony ви позволява да организирате файловете както на компютъра си, така и "
 "по мрежата."
 
-#: ../src/peony-window-menus.c:541
+#: ../src/peony-window-menus.c:684
 #, fuzzy
 msgid ""
 "Copyright © 1999-2009 The Nautilus authors\n"
@@ -7793,7 +7961,7 @@ msgstr ""
 #. * which will be displayed at the bottom of the about
 #. * box to give credit to the translator(s).
 #.
-#: ../src/peony-window-menus.c:552
+#: ../src/peony-window-menus.c:695
 msgid "translator-credits"
 msgstr ""
 "Александър Шопов <ash@contact.bg>\n"
@@ -7807,209 +7975,209 @@ msgstr ""
 "Научете повече за нас на http://ukui.cult.bg\n"
 "Докладвайте за грешки на http://ukui.cult.bg/bugs"
 
-#: ../src/peony-window-menus.c:555
+#: ../src/peony-window-menus.c:698
 msgid "UKUI Web Site"
 msgstr "Уеб-страница на UKUI"
 
 #. name, stock id, label
-#: ../src/peony-window-menus.c:808
+#: ../src/peony-window-menus.c:951
 msgid "_File"
 msgstr "_Файл"
 
 #. name, stock id, label
-#: ../src/peony-window-menus.c:809
+#: ../src/peony-window-menus.c:952
 msgid "_Edit"
 msgstr "_Редактиране"
 
 #. name, stock id, label
-#: ../src/peony-window-menus.c:810
+#: ../src/peony-window-menus.c:953
 msgid "_View"
 msgstr "_Изглед"
 
 #. name, stock id, label
-#: ../src/peony-window-menus.c:811
+#: ../src/peony-window-menus.c:954
 msgid "_Help"
 msgstr "Помо_щ"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/peony-window-menus.c:813
+#: ../src/peony-window-menus.c:956
 msgid "_Close"
 msgstr "_Затваряне"
 
 #. tooltip
-#: ../src/peony-window-menus.c:814
+#: ../src/peony-window-menus.c:957
 msgid "Close this folder"
 msgstr "Затваряне на тази папка"
 
-#: ../src/peony-window-menus.c:819
+#: ../src/peony-window-menus.c:962
 msgid "_Backgrounds and Emblems..."
 msgstr "_Фонове и емблеми…"
 
-#: ../src/peony-window-menus.c:820
+#: ../src/peony-window-menus.c:963
 msgid ""
 "Display patterns, colors, and emblems that can be used to customize "
 "appearance"
 msgstr ""
 "Показване на шарките, цветовете и емблемите, които могат да бъдат използвани"
 
-#: ../src/peony-window-menus.c:825
+#: ../src/peony-window-menus.c:968
 msgid "Prefere_nces"
 msgstr "Настрой_ки"
 
-#: ../src/peony-window-menus.c:826
+#: ../src/peony-window-menus.c:969
 msgid "Edit Peony preferences"
 msgstr "Редактиране на настройките на Peony"
 
 #. name, stock id, label
-#: ../src/peony-window-menus.c:829
+#: ../src/peony-window-menus.c:972
 msgid "Open _Parent"
 msgstr "Отваряне на _горната папка"
 
-#: ../src/peony-window-menus.c:830
+#: ../src/peony-window-menus.c:973
 msgid "Open the parent folder"
 msgstr "Отваряне на горната папка"
 
 #. tooltip
-#: ../src/peony-window-menus.c:839
+#: ../src/peony-window-menus.c:982
 msgid "Stop loading the current location"
 msgstr "Спиране на зареждането на текущия адрес"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/peony-window-menus.c:843
+#: ../src/peony-window-menus.c:986
 msgid "_Reload"
 msgstr "_Презареждане"
 
 #. tooltip
-#: ../src/peony-window-menus.c:844
+#: ../src/peony-window-menus.c:987
 msgid "Reload the current location"
 msgstr "Презареждане на текущата папка"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/peony-window-menus.c:848
+#: ../src/peony-window-menus.c:991
 msgid "_Contents"
 msgstr "_Ръководство"
 
 #. tooltip
-#: ../src/peony-window-menus.c:849
+#: ../src/peony-window-menus.c:992
 msgid "Display Peony help"
 msgstr "Показване на помощта за Peony"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/peony-window-menus.c:853
+#: ../src/peony-window-menus.c:996
 msgid "_About"
 msgstr "_Относно"
 
 #. tooltip
-#: ../src/peony-window-menus.c:854
+#: ../src/peony-window-menus.c:997
 msgid "Display credits for the creators of Peony"
 msgstr "Показване на благодарностите за създателите на Peony"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/peony-window-menus.c:858
+#: ../src/peony-window-menus.c:1001
 msgid "Zoom _In"
 msgstr "_Увеличаване"
 
 #. tooltip
-#: ../src/peony-window-menus.c:859 ../src/peony-zoom-control.c:96
+#: ../src/peony-window-menus.c:1002 ../src/peony-zoom-control.c:96
 #: ../src/peony-zoom-control.c:384
 msgid "Increase the view size"
 msgstr "Увеличаване на обектите в изгледа"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/peony-window-menus.c:873
+#: ../src/peony-window-menus.c:1021
 msgid "Zoom _Out"
 msgstr "_Намаляване"
 
 #. tooltip
-#: ../src/peony-window-menus.c:874 ../src/peony-zoom-control.c:97
+#: ../src/peony-window-menus.c:1022 ../src/peony-zoom-control.c:97
 #: ../src/peony-zoom-control.c:322
 msgid "Decrease the view size"
 msgstr "Намаляване на обектите в изгледа"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/peony-window-menus.c:883
+#: ../src/peony-window-menus.c:1031
 msgid "Normal Si_ze"
 msgstr "Н_ормален размер"
 
 #. tooltip
-#: ../src/peony-window-menus.c:884 ../src/peony-zoom-control.c:98
+#: ../src/peony-window-menus.c:1032 ../src/peony-zoom-control.c:98
 #: ../src/peony-zoom-control.c:342
 msgid "Use the normal view size"
 msgstr "Нормален размер на обектите в изгледа"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/peony-window-menus.c:888
+#: ../src/peony-window-menus.c:1036
 msgid "Connect to _Server..."
 msgstr "_Свързване към сървър…"
 
 #. tooltip
-#: ../src/peony-window-menus.c:889
+#: ../src/peony-window-menus.c:1037
 msgid "Connect to a remote computer or shared disk"
 msgstr "Свързване към отдалечен компютър или споделен диск"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/peony-window-menus.c:898
+#: ../src/peony-window-menus.c:1046
 msgid "_Computer"
 msgstr "_Този компютър"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/peony-window-menus.c:903
+#: ../src/peony-window-menus.c:1051
 msgid "_Network"
 msgstr "_Локална мрежа"
 
 #. tooltip
-#: ../src/peony-window-menus.c:904 ../src/ukui-network-scheme.desktop.in.h:2
+#: ../src/peony-window-menus.c:1052 ../src/ukui-network-scheme.desktop.in.h:2
 msgid "Browse bookmarked and local network locations"
 msgstr "Преглед на локални или отметнати мрежови местоположения"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/peony-window-menus.c:908
+#: ../src/peony-window-menus.c:1056
 msgid "T_emplates"
 msgstr "_Шаблони"
 
 #. tooltip
-#: ../src/peony-window-menus.c:909
+#: ../src/peony-window-menus.c:1057
 msgid "Open your personal templates folder"
 msgstr "Отваряне на папката с личните шаблони"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/peony-window-menus.c:913
+#: ../src/peony-window-menus.c:1061
 msgid "_Trash"
 msgstr "_Кошче"
 
 #. tooltip
-#: ../src/peony-window-menus.c:914
+#: ../src/peony-window-menus.c:1062
 msgid "Open your personal trash folder"
 msgstr "Отваряне на вашето лично кошче"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/peony-window-menus.c:922
+#: ../src/peony-window-menus.c:1070
 msgid "Show _Hidden Files"
 msgstr "По_казване на скритите файлове"
 
 #. tooltip
-#: ../src/peony-window-menus.c:923
+#: ../src/peony-window-menus.c:1071
 msgid "Toggle the display of hidden files in the current window"
 msgstr "Превключване на показването на скритите файлове в текущия прозорец"
 
-#: ../src/peony-window-menus.c:954
+#: ../src/peony-window-menus.c:1102
 msgid "_Up"
 msgstr "_Нагоре"
 
-#: ../src/peony-window-menus.c:957
+#: ../src/peony-window-menus.c:1105
 msgid "_Home"
 msgstr "_Домашна папка"
 

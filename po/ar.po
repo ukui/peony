@@ -15,7 +15,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: UKUI Desktop Environment\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-12-18 10:18+0800\n"
+"POT-Creation-Date: 2019-12-14 11:19+0800\n"
 "PO-Revision-Date: 2016-12-19 11:51+0000\n"
 "Last-Translator: Geek SUKY <Nihad.zeitouni@gmail.com>\n"
 "Language-Team: Arabic (http://www.transifex.com/ukui/UKUI/language/ar/)\n"
@@ -436,11 +436,11 @@ msgid ""
 "The position of the opposite end of the selection from the cursor in chars."
 msgstr "موقع الطّرف المقابل للتحديد عن المؤشر في الرّموز."
 
-#: ../eel/eel-editable-label.c:3119
+#: ../eel/eel-editable-label.c:3138
 msgid "Select All"
 msgstr "اختر الكل"
 
-#: ../eel/eel-editable-label.c:3130
+#: ../eel/eel-editable-label.c:3149
 msgid "Input Methods"
 msgstr "طرق الإدخال"
 
@@ -566,10 +566,10 @@ msgstr "قم بهذا الإجراء دوما"
 #. label, accelerator
 #. add the "Eject" menu item
 #: ../libpeony-private/peony-autorun.c:1146
-#: ../src/file-manager/fm-directory-view.c:7702
-#: ../src/file-manager/fm-directory-view.c:7730
-#: ../src/file-manager/fm-directory-view.c:7811
-#: ../src/file-manager/fm-tree-view.c:1384 ../src/peony-places-sidebar.c:2832
+#: ../src/file-manager/fm-directory-view.c:7820
+#: ../src/file-manager/fm-directory-view.c:7848
+#: ../src/file-manager/fm-directory-view.c:7929
+#: ../src/file-manager/fm-tree-view.c:1384 ../src/peony-places-sidebar.c:3453
 msgid "_Eject"
 msgstr "أ_خرج"
 
@@ -577,10 +577,10 @@ msgstr "أ_خرج"
 #. label, accelerator
 #. add the "Unmount" menu item
 #: ../libpeony-private/peony-autorun.c:1159
-#: ../src/file-manager/fm-directory-view.c:7698
-#: ../src/file-manager/fm-directory-view.c:7726
-#: ../src/file-manager/fm-directory-view.c:7807
-#: ../src/file-manager/fm-tree-view.c:1375 ../src/peony-places-sidebar.c:2825
+#: ../src/file-manager/fm-directory-view.c:7816
+#: ../src/file-manager/fm-directory-view.c:7844
+#: ../src/file-manager/fm-directory-view.c:7925
+#: ../src/file-manager/fm-tree-view.c:1375 ../src/peony-places-sidebar.c:3446
 msgid "_Unmount"
 msgstr "ا_فصل"
 
@@ -608,7 +608,7 @@ msgstr "الصق النص المخزن في الحافظة"
 #. name, stock id
 #. label, accelerator
 #: ../libpeony-private/peony-clipboard.c:470
-#: ../src/file-manager/fm-directory-view.c:7614
+#: ../src/file-manager/fm-directory-view.c:7732
 msgid "Select _All"
 msgstr "اختر ال_كل"
 
@@ -631,7 +631,7 @@ msgstr "استخدم ال_مبدئي"
 
 #: ../libpeony-private/peony-column-utilities.c:44
 #: ../libpeony-private/peony-mime-application-chooser.c:274
-#: ../src/file-manager/fm-list-view.c:1898
+#: ../src/file-manager/fm-list-view.c:1856
 msgid "Name"
 msgstr "الاسم"
 
@@ -793,7 +793,7 @@ msgid "Network Servers"
 msgstr "خواديم الشّبكة"
 
 #: ../libpeony-private/peony-desktop-link.c:127
-#: ../src/file-manager/fm-tree-view.c:1443 ../src/peony-places-sidebar.c:559
+#: ../src/file-manager/fm-tree-view.c:1443 ../src/peony-places-sidebar.c:753
 #: ../src/peony-trash-bar.c:190
 msgid "Trash"
 msgstr "المهملات"
@@ -815,6 +815,7 @@ msgid "Set as _Background"
 msgstr "اجعلها ال_خلفية"
 
 #: ../libpeony-private/peony-dnd.c:817 ../libpeony-private/peony-dnd.c:871
+#: ../src/peony-kdisk-format.c:455
 msgid "Cancel"
 msgstr "ألغِ"
 
@@ -1102,8 +1103,8 @@ msgstr[5] "تقريبا %I'd ساعة"
 #. * to that kind of file (e.g. "link to folder").
 #.
 #: ../libpeony-private/peony-file-operations.c:409
-#: ../libpeony-private/peony-file.c:6413
-#: ../src/file-manager/fm-directory-view.c:10926
+#: ../libpeony-private/peony-file.c:6415
+#: ../src/file-manager/fm-directory-view.c:11044
 #, c-format
 msgid "Link to %s"
 msgstr "وصلة إلى %s "
@@ -1273,7 +1274,7 @@ msgstr "ستحذف نهائيا كل العناصر الموجودة في الم
 #. Empty Trash menu item
 #: ../libpeony-private/peony-file-operations.c:1396
 #: ../libpeony-private/peony-file-operations.c:2319
-#: ../src/peony-places-sidebar.c:2869 ../src/peony-trash-bar.c:197
+#: ../src/peony-places-sidebar.c:3490 ../src/peony-trash-bar.c:197
 msgid "Empty _Trash"
 msgstr "أفرغ ال_مهملات"
 
@@ -1695,8 +1696,8 @@ msgid ""
 msgstr "لا يمكن نسخ المجلد \"%B\" لأنك لا تملك التصاريح الكافية لقراءته."
 
 #: ../libpeony-private/peony-file-operations.c:3691
-#: ../libpeony-private/peony-file-operations.c:4393
-#: ../libpeony-private/peony-file-operations.c:4985
+#: ../libpeony-private/peony-file-operations.c:4389
+#: ../libpeony-private/peony-file-operations.c:4981
 msgid "Error while moving \"%B\"."
 msgstr "خطأ أثناء نقل \"%B\" . "
 
@@ -1706,8 +1707,8 @@ msgstr "تعذر حذف المجلد المصدر."
 
 #: ../libpeony-private/peony-file-operations.c:3777
 #: ../libpeony-private/peony-file-operations.c:3818
-#: ../libpeony-private/peony-file-operations.c:4395
-#: ../libpeony-private/peony-file-operations.c:4467
+#: ../libpeony-private/peony-file-operations.c:4391
+#: ../libpeony-private/peony-file-operations.c:4463
 msgid "Error while copying \"%B\"."
 msgstr "خطأ أثناء نسخ \"%B\"."
 
@@ -1722,53 +1723,53 @@ msgid "Could not remove the already existing file %F."
 msgstr "تعذّر إزالة الملف %F الموجود مسبقا."
 
 #. the run_warning() frees all strings passed in automatically
-#: ../libpeony-private/peony-file-operations.c:4142
-#: ../libpeony-private/peony-file-operations.c:4831
+#: ../libpeony-private/peony-file-operations.c:4138
+#: ../libpeony-private/peony-file-operations.c:4827
 msgid "You cannot move a folder into itself."
 msgstr "لا يمكنك نقل مجلد إلى نفسه."
 
-#: ../libpeony-private/peony-file-operations.c:4143
-#: ../libpeony-private/peony-file-operations.c:4832
+#: ../libpeony-private/peony-file-operations.c:4139
+#: ../libpeony-private/peony-file-operations.c:4828
 msgid "You cannot copy a folder into itself."
 msgstr "لا يمكنك نسخ مجلد إلى نفسه."
 
-#: ../libpeony-private/peony-file-operations.c:4144
-#: ../libpeony-private/peony-file-operations.c:4833
+#: ../libpeony-private/peony-file-operations.c:4140
+#: ../libpeony-private/peony-file-operations.c:4829
 msgid "The destination folder is inside the source folder."
 msgstr "المجلد الوِجهة داخل المجلد المصدر."
 
 #. the run_warning() frees all strings passed in automatically
-#: ../libpeony-private/peony-file-operations.c:4175
+#: ../libpeony-private/peony-file-operations.c:4171
 msgid "You cannot move a file over itself."
 msgstr "لا يمكنك نقل مجلد إلى نفسه."
 
-#: ../libpeony-private/peony-file-operations.c:4176
+#: ../libpeony-private/peony-file-operations.c:4172
 msgid "You cannot copy a file over itself."
 msgstr "لا يمكنك نسخ مجلد إلى نفسه."
 
-#: ../libpeony-private/peony-file-operations.c:4177
+#: ../libpeony-private/peony-file-operations.c:4173
 msgid "The source file would be overwritten by the destination."
 msgstr "سيطمس الملف الهدف الملف المصدر."
 
-#: ../libpeony-private/peony-file-operations.c:4397
+#: ../libpeony-private/peony-file-operations.c:4393
 #, c-format
 msgid "Could not remove the already existing file with the same name in %F."
 msgstr "تعذّر إزالة الملف الموجود فعلا بنفس الاسم في %F."
 
-#: ../libpeony-private/peony-file-operations.c:4468
+#: ../libpeony-private/peony-file-operations.c:4464
 #, c-format
 msgid "There was an error copying the file into %F."
 msgstr "حدث خطأ أثناء نسخ الملف إلى %F."
 
-#: ../libpeony-private/peony-file-operations.c:4714
+#: ../libpeony-private/peony-file-operations.c:4710
 msgid "Copying Files"
 msgstr "نسخ الملفات"
 
-#: ../libpeony-private/peony-file-operations.c:4741
+#: ../libpeony-private/peony-file-operations.c:4737
 msgid "Preparing to Move to \"%B\""
 msgstr "يجري التحضير للنقل إلى \"%B\"..."
 
-#: ../libpeony-private/peony-file-operations.c:4745
+#: ../libpeony-private/peony-file-operations.c:4741
 #, c-format
 msgid "Preparing to move %'d file"
 msgid_plural "Preparing to move %'d files"
@@ -1779,20 +1780,20 @@ msgstr[3] "يجري التحضير لنقل %I'd ملفات"
 msgstr[4] "يجري التحضير لنقل %I'd ملفا"
 msgstr[5] "يجري التحضير لنقل %I'd ملف"
 
-#: ../libpeony-private/peony-file-operations.c:4986
+#: ../libpeony-private/peony-file-operations.c:4982
 #, c-format
 msgid "There was an error moving the file into %F."
 msgstr "حدث خطأ عند نقل الملف إلى %F."
 
-#: ../libpeony-private/peony-file-operations.c:5256
+#: ../libpeony-private/peony-file-operations.c:5252
 msgid "Moving Files"
 msgstr "نقل الملفات"
 
-#: ../libpeony-private/peony-file-operations.c:5287
+#: ../libpeony-private/peony-file-operations.c:5283
 msgid "Creating links in \"%B\""
 msgstr "يجري إنشاء وصلات في \"%B\""
 
-#: ../libpeony-private/peony-file-operations.c:5291
+#: ../libpeony-private/peony-file-operations.c:5287
 #, c-format
 msgid "Making link to %'d file"
 msgid_plural "Making links to %'d files"
@@ -1803,58 +1804,58 @@ msgstr[3] "يجري إنشاء وصلات إلى %I'd ملفات"
 msgstr[4] "يجري إنشاء وصلات إلى %I'd ملفا"
 msgstr[5] "يجري إنشاء وصلات إلى %I'd ملف"
 
-#: ../libpeony-private/peony-file-operations.c:5426
+#: ../libpeony-private/peony-file-operations.c:5422
 msgid "Error while creating link to %B."
 msgstr "خطأ أثناء إنشاء وصلة إلى %B. "
 
-#: ../libpeony-private/peony-file-operations.c:5428
+#: ../libpeony-private/peony-file-operations.c:5424
 msgid "Symbolic links only supported for local files"
 msgstr "الوصلات الرمزية مدعومة في أنظمة الملفات المحلية فقط."
 
-#: ../libpeony-private/peony-file-operations.c:5431
+#: ../libpeony-private/peony-file-operations.c:5427
 msgid "The target doesn't support symbolic links."
 msgstr "الوِجهة لا تدعم الوصلات الرمزية."
 
-#: ../libpeony-private/peony-file-operations.c:5434
+#: ../libpeony-private/peony-file-operations.c:5430
 #, c-format
 msgid "There was an error creating the symlink in %F."
 msgstr "حدث خطأ عند إنشاء الوصلة الرمزية في %F."
 
-#: ../libpeony-private/peony-file-operations.c:5752
+#: ../libpeony-private/peony-file-operations.c:5748
 msgid "Setting permissions"
 msgstr "تحديد التصاريح"
 
 #. localizers: the initial name of a new folder
-#: ../libpeony-private/peony-file-operations.c:6012
+#: ../libpeony-private/peony-file-operations.c:6008
 msgid "untitled folder"
 msgstr "مجلد دون اسم"
 
 #. localizers: the initial name of a new empty file
-#: ../libpeony-private/peony-file-operations.c:6020
+#: ../libpeony-private/peony-file-operations.c:6016
 msgid "new file"
 msgstr "ملف جديد"
 
-#: ../libpeony-private/peony-file-operations.c:6208
+#: ../libpeony-private/peony-file-operations.c:6204
 msgid "Error while creating directory %B."
 msgstr "خطأ أثناء إنشاء المجلد %B."
 
-#: ../libpeony-private/peony-file-operations.c:6210
+#: ../libpeony-private/peony-file-operations.c:6206
 msgid "Error while creating file %B."
 msgstr "خطأ أثناء إنشاء الملف %B."
 
-#: ../libpeony-private/peony-file-operations.c:6212
+#: ../libpeony-private/peony-file-operations.c:6208
 #, c-format
 msgid "There was an error creating the directory in %F."
 msgstr "حدث خطأ عند إنشاء المجلد في %F."
 
-#: ../libpeony-private/peony-file-operations.c:6490
+#: ../libpeony-private/peony-file-operations.c:6486
 msgid "Emptying Trash"
 msgstr "إفراغ المهملات"
 
-#: ../libpeony-private/peony-file-operations.c:6539
-#: ../libpeony-private/peony-file-operations.c:6580
-#: ../libpeony-private/peony-file-operations.c:6615
-#: ../libpeony-private/peony-file-operations.c:6650
+#: ../libpeony-private/peony-file-operations.c:6535
+#: ../libpeony-private/peony-file-operations.c:6576
+#: ../libpeony-private/peony-file-operations.c:6611
+#: ../libpeony-private/peony-file-operations.c:6646
 msgid "Unable to mark launcher trusted (executable)"
 msgstr "تعذّر التأشير بالموثوقية على المُطلق (تنفيذي)"
 
@@ -1895,7 +1896,7 @@ msgid "Slashes are not allowed in filenames"
 msgstr "غير مسموح باستخدام الشرطات المائلة (/) في أسماء الملفات "
 
 #: ../libpeony-private/peony-file.c:1836
-#: ../libpeony-private/peony-mime-actions.c:1347
+#: ../libpeony-private/peony-mime-actions.c:1349
 #, c-format
 msgid "File not found"
 msgstr "الملف غير موجود"
@@ -1930,63 +1931,63 @@ msgstr "تعذر تغيير اسم ملف سطح المكتب"
 #. * off zero padding, and putting a "_" there will use
 #. * space padding instead of zero padding.
 #.
-#: ../libpeony-private/peony-file.c:4476
+#: ../libpeony-private/peony-file.c:4478
 msgid "today at 00:00:00 PM"
 msgstr "اليوم في 00:00:00 م"
 
-#: ../libpeony-private/peony-file.c:4477
+#: ../libpeony-private/peony-file.c:4479
 #: ../src/peony-file-management-properties.c:522
 msgid "today at %-I:%M:%S %p"
 msgstr "اليوم في %-OI:%OM:%OS %p"
 
-#: ../libpeony-private/peony-file.c:4479
+#: ../libpeony-private/peony-file.c:4481
 msgid "today at 00:00 PM"
 msgstr "اليوم في 00:00 م"
 
-#: ../libpeony-private/peony-file.c:4480
+#: ../libpeony-private/peony-file.c:4482
 msgid "today at %-I:%M %p"
 msgstr "اليوم في %-OI:%OM %p"
 
-#: ../libpeony-private/peony-file.c:4482
+#: ../libpeony-private/peony-file.c:4484
 msgid "today, 00:00 PM"
 msgstr "اليوم، 00:00 م"
 
-#: ../libpeony-private/peony-file.c:4483
+#: ../libpeony-private/peony-file.c:4485
 msgid "today, %-I:%M %p"
 msgstr "اليوم، %-OI:%OM %p"
 
-#: ../libpeony-private/peony-file.c:4485 ../libpeony-private/peony-file.c:4486
+#: ../libpeony-private/peony-file.c:4487 ../libpeony-private/peony-file.c:4488
 msgid "today"
 msgstr "اليوم"
 
 #. Yesterday, use special word.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: ../libpeony-private/peony-file.c:4495
+#: ../libpeony-private/peony-file.c:4497
 msgid "yesterday at 00:00:00 PM"
 msgstr "أمس في 00:00:00 م"
 
-#: ../libpeony-private/peony-file.c:4496
+#: ../libpeony-private/peony-file.c:4498
 msgid "yesterday at %-I:%M:%S %p"
 msgstr "أمس في %-OI:%OM:%OS %p"
 
-#: ../libpeony-private/peony-file.c:4498
+#: ../libpeony-private/peony-file.c:4500
 msgid "yesterday at 00:00 PM"
 msgstr "أمس في 00:00 م"
 
-#: ../libpeony-private/peony-file.c:4499
+#: ../libpeony-private/peony-file.c:4501
 msgid "yesterday at %-I:%M %p"
 msgstr "أمس في %-OI:%OM %p"
 
-#: ../libpeony-private/peony-file.c:4501
+#: ../libpeony-private/peony-file.c:4503
 msgid "yesterday, 00:00 PM"
 msgstr "أمس، 00:00 م"
 
-#: ../libpeony-private/peony-file.c:4502
+#: ../libpeony-private/peony-file.c:4504
 msgid "yesterday, %-I:%M %p"
 msgstr "أمس، %-OI:%OM %p"
 
-#: ../libpeony-private/peony-file.c:4504 ../libpeony-private/peony-file.c:4505
+#: ../libpeony-private/peony-file.c:4506 ../libpeony-private/peony-file.c:4507
 msgid "yesterday"
 msgstr "أمس"
 
@@ -1995,89 +1996,89 @@ msgstr "أمس"
 #. * The width measurement templates correspond to
 #. * the day/month name with the most letters.
 #.
-#: ../libpeony-private/peony-file.c:4516
+#: ../libpeony-private/peony-file.c:4518
 msgid "Wednesday, September 00 0000 at 00:00:00 PM"
 msgstr "الأربعاء، سبتمبر 00 0000 في 00:00:00 م"
 
-#: ../libpeony-private/peony-file.c:4517
+#: ../libpeony-private/peony-file.c:4519
 msgid "%A, %B %-d %Y at %-I:%M:%S %p"
 msgstr "%A، %-Od %B %Y في %-OI:%OM:%OS %p"
 
-#: ../libpeony-private/peony-file.c:4519
+#: ../libpeony-private/peony-file.c:4521
 msgid "Mon, Oct 00 0000 at 00:00:00 PM"
 msgstr "الإثنين، أكتوبر 00 0000 في 00:00:00 م"
 
-#: ../libpeony-private/peony-file.c:4520
+#: ../libpeony-private/peony-file.c:4522
 msgid "%a, %b %-d %Y at %-I:%M:%S %p"
 msgstr "%A، %-Od %b %Y في %-OI:%OM:%OS %p"
 
-#: ../libpeony-private/peony-file.c:4522
+#: ../libpeony-private/peony-file.c:4524
 msgid "Mon, Oct 00 0000 at 00:00 PM"
 msgstr "الاثنين، أكتوبر 00 0000 عند الساعة 00:00 م"
 
-#: ../libpeony-private/peony-file.c:4523
+#: ../libpeony-private/peony-file.c:4525
 msgid "%a, %b %-d %Y at %-I:%M %p"
 msgstr "%A، %-Od %b %Y في %-OI:%OM %p"
 
-#: ../libpeony-private/peony-file.c:4525
+#: ../libpeony-private/peony-file.c:4527
 msgid "Oct 00 0000 at 00:00 PM"
 msgstr "أكتوبر 00 0000 عند الساعة 00:00 م"
 
-#: ../libpeony-private/peony-file.c:4526
+#: ../libpeony-private/peony-file.c:4528
 msgid "%b %-d %Y at %-I:%M %p"
 msgstr "%-Od %b %Y في %-OI:%OM %p"
 
-#: ../libpeony-private/peony-file.c:4528
+#: ../libpeony-private/peony-file.c:4530
 msgid "Oct 00 0000, 00:00 PM"
 msgstr "أكتوبر 00 0000، 00:00 م"
 
-#: ../libpeony-private/peony-file.c:4529
+#: ../libpeony-private/peony-file.c:4531
 msgid "%b %-d %Y, %-I:%M %p"
 msgstr "%-Od %b %Y، %-OI:%OM %p"
 
-#: ../libpeony-private/peony-file.c:4531
+#: ../libpeony-private/peony-file.c:4533
 msgid "00/00/00, 00:00 PM"
 msgstr "00/00/00، 00:00 م"
 
-#: ../libpeony-private/peony-file.c:4532
+#: ../libpeony-private/peony-file.c:4534
 msgid "%m/%-d/%y, %-I:%M %p"
 msgstr "%Om/%-Od/%Oy، %-OI:%OM %p"
 
-#: ../libpeony-private/peony-file.c:4534
+#: ../libpeony-private/peony-file.c:4536
 msgid "00/00/00"
 msgstr "00/00/00"
 
-#: ../libpeony-private/peony-file.c:4535
+#: ../libpeony-private/peony-file.c:4537
 msgid "%m/%d/%y"
 msgstr "%Om/%Od/%Oy"
 
-#: ../libpeony-private/peony-file.c:5147
+#: ../libpeony-private/peony-file.c:5149
 #, c-format
 msgid "Not allowed to set permissions"
 msgstr "غير مسموح بضبط التصاريح"
 
-#: ../libpeony-private/peony-file.c:5441
+#: ../libpeony-private/peony-file.c:5443
 #, c-format
 msgid "Not allowed to set owner"
 msgstr "غير مسموح بتعيين المالك"
 
-#: ../libpeony-private/peony-file.c:5459
+#: ../libpeony-private/peony-file.c:5461
 #, c-format
 msgid "Specified owner '%s' doesn't exist"
 msgstr "المالك المحدد '%s' غير موجود"
 
-#: ../libpeony-private/peony-file.c:5719
+#: ../libpeony-private/peony-file.c:5721
 #, c-format
 msgid "Not allowed to set group"
 msgstr "غير مسموح بتعيين مجموعة "
 
-#: ../libpeony-private/peony-file.c:5737
+#: ../libpeony-private/peony-file.c:5739
 #, c-format
 msgid "Specified group '%s' doesn't exist"
 msgstr "المجموعة المحددة '%s' غير موجودة "
 
-#: ../libpeony-private/peony-file.c:5891
-#: ../src/file-manager/fm-directory-view.c:2432
+#: ../libpeony-private/peony-file.c:5893
+#: ../src/file-manager/fm-directory-view.c:2434
 #, c-format
 msgid "%'u item"
 msgid_plural "%'u items"
@@ -2088,7 +2089,7 @@ msgstr[3] "%I'u عناصر"
 msgstr[4] "%I'u عنصرًا"
 msgstr[5] "%I'u عنصر"
 
-#: ../libpeony-private/peony-file.c:5892
+#: ../libpeony-private/peony-file.c:5894
 #, c-format
 msgid "%'u folder"
 msgid_plural "%'u folders"
@@ -2099,7 +2100,7 @@ msgstr[3] "%I'u مجلّدات"
 msgstr[4] "%I'u مجلّدًا"
 msgstr[5] "%I'u مجلّد"
 
-#: ../libpeony-private/peony-file.c:5893
+#: ../libpeony-private/peony-file.c:5895
 #, c-format
 msgid "%'u file"
 msgid_plural "%'u files"
@@ -2111,50 +2112,50 @@ msgstr[4] "%I'u ملفًّا"
 msgstr[5] "%I'u ملفّ"
 
 #. Do this in a separate stage so that we don't have to put G_GUINT64_FORMAT in the translated string
-#: ../libpeony-private/peony-file.c:5980
+#: ../libpeony-private/peony-file.c:5982
 msgid "%"
 msgstr "%"
 
-#: ../libpeony-private/peony-file.c:5981
+#: ../libpeony-private/peony-file.c:5983
 #, c-format
 msgid "%s (%s bytes)"
 msgstr "‏%s ‏(%s بايتات)"
 
 #. This means no contents at all were readable
-#: ../libpeony-private/peony-file.c:6299 ../libpeony-private/peony-file.c:6315
+#: ../libpeony-private/peony-file.c:6301 ../libpeony-private/peony-file.c:6317
 msgid "? items"
 msgstr "؟ عناصر"
 
 #. This means no contents at all were readable
-#: ../libpeony-private/peony-file.c:6305
+#: ../libpeony-private/peony-file.c:6307
 msgid "? bytes"
 msgstr "؟ بايتات"
 
-#: ../libpeony-private/peony-file.c:6320
+#: ../libpeony-private/peony-file.c:6322
 msgid "unknown type"
 msgstr "نوع مجهول"
 
-#: ../libpeony-private/peony-file.c:6323
+#: ../libpeony-private/peony-file.c:6325
 msgid "unknown MIME type"
 msgstr "نوع مايم مجهول"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: ../libpeony-private/peony-file.c:6337
+#: ../libpeony-private/peony-file.c:6339
 #: ../src/file-manager/fm-properties-window.c:1286
 msgid "unknown"
 msgstr "مجهول"
 
-#: ../libpeony-private/peony-file.c:6387
+#: ../libpeony-private/peony-file.c:6389
 msgid "program"
 msgstr "برنامج"
 
-#: ../libpeony-private/peony-file.c:6407
+#: ../libpeony-private/peony-file.c:6409
 msgid "link"
 msgstr "وصلة"
 
-#: ../libpeony-private/peony-file.c:6429
+#: ../libpeony-private/peony-file.c:6431
 msgid "link (broken)"
 msgstr "وصلة (مكسورة)"
 
@@ -2167,65 +2168,65 @@ msgstr ""
 msgid "The selection rectangle"
 msgstr "مستطيل الاختيار"
 
-#: ../libpeony-private/peony-mime-actions.c:720
+#: ../libpeony-private/peony-mime-actions.c:722
 #, c-format
 msgid "The Link \"%s\" is Broken."
 msgstr "الوصلة \"%s\" مكسورة"
 
-#: ../libpeony-private/peony-mime-actions.c:724
+#: ../libpeony-private/peony-mime-actions.c:726
 #, c-format
 msgid "The Link \"%s\" is Broken. Move it to Trash?"
 msgstr "الوصلة \"%s\" مكسورة، هل تريد نقلها للمهملات؟"
 
-#: ../libpeony-private/peony-mime-actions.c:731
+#: ../libpeony-private/peony-mime-actions.c:733
 msgid "This link cannot be used, because it has no target."
 msgstr "لا يمكن استخدام هذه الوصلة لعدم وجود هدف لها."
 
-#: ../libpeony-private/peony-mime-actions.c:735
+#: ../libpeony-private/peony-mime-actions.c:737
 #, c-format
 msgid "This link cannot be used, because its target \"%s\" doesn't exist."
 msgstr "لا يمكن استخدام هذه الوصلة، لأن هدفها \"%s\" غير موجود."
 
 #. name, stock id
 #. label, accelerator
-#: ../libpeony-private/peony-mime-actions.c:746
-#: ../src/file-manager/fm-directory-view.c:7650
-#: ../src/file-manager/fm-directory-view.c:7791
-#: ../src/file-manager/fm-directory-view.c:8890
-#: ../src/file-manager/fm-directory-view.c:9219
+#: ../libpeony-private/peony-mime-actions.c:748
+#: ../src/file-manager/fm-directory-view.c:7768
+#: ../src/file-manager/fm-directory-view.c:7909
+#: ../src/file-manager/fm-directory-view.c:9008
+#: ../src/file-manager/fm-directory-view.c:9337
 #: ../src/file-manager/fm-tree-view.c:1348
 msgid "Mo_ve to Trash"
 msgstr "ا_نقل إلى المهملات"
 
-#: ../libpeony-private/peony-mime-actions.c:808
+#: ../libpeony-private/peony-mime-actions.c:810
 #, c-format
 msgid "Do you want to run \"%s\", or display its contents?"
 msgstr "هل تريد تشغيل \"%s\" أم عرض محتوياته؟"
 
-#: ../libpeony-private/peony-mime-actions.c:810
+#: ../libpeony-private/peony-mime-actions.c:812
 #, c-format
 msgid "\"%s\" is an executable text file."
 msgstr "‏\"%s\" ملف نصي تنفيذي."
 
-#: ../libpeony-private/peony-mime-actions.c:816
+#: ../libpeony-private/peony-mime-actions.c:818
 msgid "Run in _Terminal"
 msgstr "شغّل في ال_طرفية"
 
-#: ../libpeony-private/peony-mime-actions.c:817
+#: ../libpeony-private/peony-mime-actions.c:819
 msgid "_Display"
 msgstr "ا_عرض"
 
-#: ../libpeony-private/peony-mime-actions.c:820
+#: ../libpeony-private/peony-mime-actions.c:822
 #: ../src/peony-autorun-software.c:253
 msgid "_Run"
 msgstr "_شغّل"
 
-#: ../libpeony-private/peony-mime-actions.c:1172
-#: ../src/file-manager/fm-directory-view.c:655
+#: ../libpeony-private/peony-mime-actions.c:1174
+#: ../src/file-manager/fm-directory-view.c:657
 msgid "Are you sure you want to open all files?"
 msgstr "أمتأكد من أنك تريد فتح كل الملفات؟"
 
-#: ../libpeony-private/peony-mime-actions.c:1175
+#: ../libpeony-private/peony-mime-actions.c:1177
 #, c-format
 msgid "This will open %d separate tab."
 msgid_plural "This will open %d separate tabs."
@@ -2236,8 +2237,8 @@ msgstr[3] "سيفتح هذا %Id ألسنة منفصلة."
 msgstr[4] "سيفتح هذا %Id لسانا منفصلا."
 msgstr[5] "سيفتح هذا %Id لسان منفصل."
 
-#: ../libpeony-private/peony-mime-actions.c:1180
-#: ../src/peony-location-bar.c:230
+#: ../libpeony-private/peony-mime-actions.c:1182
+#: ../src/peony-location-bar.c:273
 #, c-format
 msgid "This will open %d separate window."
 msgid_plural "This will open %d separate windows."
@@ -2248,7 +2249,7 @@ msgstr[3] "سيفتح هذا %I'd نوافذ منفصلة."
 msgstr[4] "سيفتح هذا %I'd نافذةً منفصلة."
 msgstr[5] "سيفتح هذا %I'd نافذة منفصلة."
 
-#: ../libpeony-private/peony-mime-actions.c:1258
+#: ../libpeony-private/peony-mime-actions.c:1260
 #: ../src/peony-window-manage-views.c:2115
 #: ../src/peony-window-manage-views.c:2123
 #: ../src/peony-window-manage-views.c:2143
@@ -2259,28 +2260,28 @@ msgstr[5] "سيفتح هذا %I'd نافذة منفصلة."
 msgid "Could not display \"%s\"."
 msgstr "تعذّر عرض \"%s\"."
 
-#: ../libpeony-private/peony-mime-actions.c:1354
+#: ../libpeony-private/peony-mime-actions.c:1356
 msgid "The file is of an unknown type"
 msgstr "نوع الملف غير معروف"
 
-#: ../libpeony-private/peony-mime-actions.c:1359
+#: ../libpeony-private/peony-mime-actions.c:1361
 #, c-format
 msgid "There is no application installed for %s files"
 msgstr "لا يوجد تطبيق مثبت لملفات %s"
 
-#: ../libpeony-private/peony-mime-actions.c:1374
+#: ../libpeony-private/peony-mime-actions.c:1376
 msgid "_Select Application"
 msgstr "ا_ختر تطبيقا"
 
-#: ../libpeony-private/peony-mime-actions.c:1412
+#: ../libpeony-private/peony-mime-actions.c:1414
 msgid "There was an internal error trying to search for applications:"
 msgstr "حدث خطأ داخلي أثناء محاولة البحث عن تطبيق:"
 
-#: ../libpeony-private/peony-mime-actions.c:1414
+#: ../libpeony-private/peony-mime-actions.c:1416
 msgid "Unable to search for application"
 msgstr "تعذر البحث عن تطبيق"
 
-#: ../libpeony-private/peony-mime-actions.c:1540
+#: ../libpeony-private/peony-mime-actions.c:1542
 #, c-format
 msgid ""
 "There is no application installed for %s files.\n"
@@ -2289,11 +2290,11 @@ msgstr ""
 "لا يوجد تطبيق مثبت لملفات %s.\n"
 "أترغب بالبحث عن تطبيق يفتح هذا الملف؟"
 
-#: ../libpeony-private/peony-mime-actions.c:1704
+#: ../libpeony-private/peony-mime-actions.c:1706
 msgid "Untrusted application launcher"
 msgstr "مُطلق تطبيق غير موثوق"
 
-#: ../libpeony-private/peony-mime-actions.c:1707
+#: ../libpeony-private/peony-mime-actions.c:1709
 #, c-format
 msgid ""
 "The application launcher \"%s\" has not been marked as trusted. If you do "
@@ -2302,31 +2303,31 @@ msgstr ""
 "لم يُؤشر بالموثوقية على مُطلق التطبيق \"%s\". إذا لم تكن تعرف مصدر هذا الملف "
 "فقد يكون من غير الآمن تشغيله."
 
-#: ../libpeony-private/peony-mime-actions.c:1722
+#: ../libpeony-private/peony-mime-actions.c:1724
 msgid "_Launch Anyway"
 msgstr "_شغّله على أي حال"
 
-#: ../libpeony-private/peony-mime-actions.c:1726
+#: ../libpeony-private/peony-mime-actions.c:1728
 msgid "Mark as _Trusted"
 msgstr "أ_شّر عليه بالموثوقية"
 
-#: ../libpeony-private/peony-mime-actions.c:2022
-#: ../libpeony-private/peony-mime-actions.c:2328
-#: ../src/file-manager/fm-directory-view.c:6656
+#: ../libpeony-private/peony-mime-actions.c:2024
+#: ../libpeony-private/peony-mime-actions.c:2330
+#: ../src/file-manager/fm-directory-view.c:6774
 msgid "Unable to mount location"
 msgstr "تعذر وصْل المكان"
 
-#: ../libpeony-private/peony-mime-actions.c:2416
-#: ../src/file-manager/fm-directory-view.c:6830
+#: ../libpeony-private/peony-mime-actions.c:2418
+#: ../src/file-manager/fm-directory-view.c:6948
 msgid "Unable to start location"
 msgstr "تعذر بدء المكان"
 
-#: ../libpeony-private/peony-mime-actions.c:2509
+#: ../libpeony-private/peony-mime-actions.c:2516
 #, c-format
 msgid "Opening \"%s\"."
 msgstr "يجري فتح \"%s\"."
 
-#: ../libpeony-private/peony-mime-actions.c:2514
+#: ../libpeony-private/peony-mime-actions.c:2521
 #, c-format
 msgid "Opening %d item."
 msgid_plural "Opening %d items."
@@ -2430,9 +2431,9 @@ msgstr "ت_صفح..."
 #. name, stock id
 #. label, accelerator
 #: ../libpeony-private/peony-open-with-dialog.c:962
-#: ../src/file-manager/fm-directory-view.c:7554
-#: ../src/file-manager/fm-directory-view.c:9086
-#: ../src/file-manager/fm-tree-view.c:1269 ../src/peony-places-sidebar.c:2774
+#: ../src/file-manager/fm-directory-view.c:7672
+#: ../src/file-manager/fm-directory-view.c:9204
+#: ../src/file-manager/fm-tree-view.c:1269 ../src/peony-places-sidebar.c:3395
 msgid "_Open"
 msgstr "ا_فتح"
 
@@ -2607,8 +2608,8 @@ msgstr "يجري التحضير "
 #. label, accelerator
 #. tooltip
 #: ../libpeony-private/peony-query.c:140
-#: ../src/file-manager/fm-directory-view.c:7622
-#: ../src/file-manager/fm-directory-view.c:7623
+#: ../src/file-manager/fm-directory-view.c:7740
+#: ../src/file-manager/fm-directory-view.c:7741
 #, fuzzy, c-format
 msgid "Find duplicate file"
 msgstr "ترا_جع عن مضاعفة %d عنصر"
@@ -3304,18 +3305,26 @@ msgstr ""
 "المتاحة من 6 و حتّى 14."
 
 #: ../libpeony-private/org.ukui.peony.gschema.xml.h:31
-msgid "Gsettings signal to peony search"
+msgid "Set right menuitem 'Undo' status"
 msgstr ""
 
 #: ../libpeony-private/org.ukui.peony.gschema.xml.h:32
-msgid "After peony-search changerd, peony search page refresh."
+msgid "If it is true, right menuitem 'Undo' show, else sensitive is false"
 msgstr ""
 
 #: ../libpeony-private/org.ukui.peony.gschema.xml.h:33
+msgid "Gsettings signal to peony search"
+msgstr ""
+
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:34
+msgid "After peony-search changerd, peony search page refresh."
+msgstr ""
+
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:35
 msgid "Mouse button to activate the \"Back\" command in browser window"
 msgstr "زر الفأرة المفعّل لوظيفة \"الخلف\" في استعراض النّوافذ"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:34
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:36
 msgid ""
 "For users with mice that have buttons for \"Forward\" and \"Back\", this key "
 "will set which button activates the \"Back\" command in a browser window. "
@@ -3325,11 +3334,11 @@ msgstr ""
 "هذا المفتاح الزر الذي يفعّل وظيفة \"الخلف\" في استعراض النّوافذ. الخيارات "
 "المتاحة من 6 و حتّى 14."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:35
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:37
 msgid "When to show thumbnails of image files"
 msgstr "متى تعرض مُصغّرة لملفّات الصور"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:36
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:38
 msgid ""
 "Speed tradeoff for when to show an image file as a thumbnail. If set to "
 "\"always\" then always thumbnail, even if the folder is on a remote server. "
@@ -3342,11 +3351,11 @@ msgstr ""
 "على نظم الملفات المحلية أما إذا ضبط لـ \"never\" فلن تُعرض مُصغّرات أبدًا، "
 "استخدم فقط أيقونة عامة."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:37
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:39
 msgid "Maximum image size for thumbnailing"
 msgstr "حجم الصور الأقصى عند الاستعراض"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:38
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:40
 msgid ""
 "Images over this size (in bytes) won't be thumbnailed. The purpose of this "
 "setting is to avoid thumbnailing large images that may take a long time to "
@@ -3356,11 +3365,11 @@ msgstr ""
 "استعراض الصور الكبيرة التي قد تستغرق وقتا طويلا لتحميلها أو قد تستهلك الكثير "
 "من الذاكرة."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:39
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:41
 msgid "Whether to preview sounds when mousing over an icon"
 msgstr "فيما إذا ستعزف معاينة للأصوات عند مرور الفأرة فوق أيقونة"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:40
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:42
 msgid ""
 "Speed tradeoff for when to preview a sound file when mousing over a files "
 "icon. If set to \"always\" then always plays the sound, even if the file is "
@@ -3372,11 +3381,11 @@ msgstr ""
 "\"local_only\" 'محلي فقط' فلن تعزف المعاينات إلا على نُظم الملفات المحلية أما "
 "إذا ضبط لـ \"never 'أبدًا' فلن يعزف الصوت أبدًا."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:41
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:43
 msgid "Show advanced permissions in the file property dialog"
 msgstr "اعرض الصلاحيات المتقدمة في حوار خصائص الملف"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:42
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:44
 msgid ""
 "If set to true, then Peony lets you edit and display file permissions in a "
 "more unix-like way, accessing some more esoteric options."
@@ -3384,11 +3393,11 @@ msgstr ""
 "إذا ضبط كصحيح، فسيسمح لك كاجا بعرض وتحرير صلاحيات الملفات بطريقة أكثر شبها "
 "بيونكس، سامحة بالنفاذ إلى خيارات خَفِيّة أكثر."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:43
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:45
 msgid "Show folders first in windows"
 msgstr "اعرض المجلدات أولا في النوافذ"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:44
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:46
 msgid ""
 "If set to true, then Peony shows folders prior to showing files in the icon "
 "and list views."
@@ -3396,11 +3405,11 @@ msgstr ""
 "إذا ضبط كصحيح، فسيعرض كاجا المجلدات قبل عرض الملفات في منظوري الأيقونات و "
 "القوائم."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:45
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:47
 msgid "Default sort order"
 msgstr "ترتيب التصنيف المبدئي"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:46
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:48
 msgid ""
 "The default sort-order for items in the icon view. Possible values are \"name"
 "\", \"size\", \"type\", \"mtime\", and \"emblems\"."
@@ -3409,11 +3418,11 @@ msgstr ""
 "'الاسم' و \"size\" 'الحجم' و \"type\" 'النوع' و \"mtime\" 'وقت التعديل' و "
 "\"emblems\" 'الشعارات'."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:47
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:49
 msgid "Reverse sort order in new windows"
 msgstr "اقلب ترتيب التصنيف في النوافذ الجديدة"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:48
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:50
 msgid ""
 "If true, files in new windows will be sorted in reverse order. ie, if sorted "
 "by name, then instead of sorting the files from \"a\" to \"z\", they will be "
@@ -3424,11 +3433,11 @@ msgstr ""
 "الترتيب حسب الاسم سترتب الملفات من \"ي\" إلى \"ا\" عوض أن ترتّب من \"ا\" إلى "
 "\"ي\". إذا رتبت بحسب الحجم فسترتب تنازليتا عوضا عن أن ترتب تصاعديا."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:49
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:51
 msgid "Peony uses the users home folder as the desktop"
 msgstr "يستخدم كاجا مجلد المستخدم المنزلي كسطح المكتب"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:50
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:52
 msgid ""
 "If set to true, then Peony will use the user's home folder as the desktop. "
 "If it is false, then it will use ~/Desktop as the desktop."
@@ -3436,45 +3445,45 @@ msgstr ""
 "إذا ضبط كصحيح، فسيستخدم كاجا مجلد المستخدم المنزلي كسطح المكتب. إذا كان خطأ، "
 "فسيستخدم ‪~/Desktop‬ كسطح المكتب."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:51
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:53
 msgid "Custom Background"
 msgstr "ضبط خلفية مخصصة"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:52
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:54
 msgid "Whether a custom default folder background has been set."
 msgstr "فيما إذا ضبطت خلفية مبدئية مخصصة للمجلد."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:53
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:55
 msgid "Default Background Color"
 msgstr "لون الخلفية المبدئي"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:54
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:56
 msgid ""
 "Color for the default folder background. Only used if background_set is true."
 msgstr "لون ملف خلفية المجلد المبدئي. يستخدم فقط إذا ضبط background_set كصحيح."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:55
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:57
 msgid "Default Background Filename"
 msgstr "اسم ملف الخلفية المبدئي"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:56
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:58
 msgid ""
 "Uri of the default folder background. Only used if background_set is true."
 msgstr "لون ملف خلفية المجلد المبدئي. يستخدم فقط إذا ضبط background_set كصحيح."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:57
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:59
 msgid "Custom Side Pane Background Set"
 msgstr "ضبط خلفية للوح الجانبي مخصصة"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:58
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:60
 msgid "Whether a custom default side pane background has been set."
 msgstr "فيما إذا ضبطت خلفية مبدئية مخصصة للوح الجانبي."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:59
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:61
 msgid "Default Side Pane Background Color"
 msgstr "اللون المبدئي لخلفية اللوح الجانبي"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:60
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:62
 msgid ""
 "Filename for the default side pane background. Only used if "
 "side_pane_background_set is true."
@@ -3482,11 +3491,11 @@ msgstr ""
 "اسم ملف خلفية اللوح الجانبي المبدئية. يستخدم فقط إذا ضبط "
 "side_pane_background_set كصحيح."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:61
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:63
 msgid "Default Side Pane Background Filename"
 msgstr "اسم الملف المبدئي لخلفية اللوح الجانبي"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:62
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:64
 msgid ""
 "Uri of the default side pane background. Only used if "
 "side_pane_background_set is true."
@@ -3494,11 +3503,11 @@ msgstr ""
 "اسم ملف خلفية اللوح الجانبي المبدئية. يستخدم فقط إذا ضبط "
 "side_pane_background_set كصحيح."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:63
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:65
 msgid "Default folder viewer"
 msgstr "عارض المجلدات المبدئي"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:64
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:66
 msgid ""
 "When a folder is visited this viewer is used unless you have selected "
 "another view for that particular folder. Possible values are \"list-view\", "
@@ -3508,11 +3517,11 @@ msgstr ""
 "المجلد. القيم الممكنة هي \"list_view 'منظور قائمة' و \"icon_view\" 'منظور "
 "أيقونات' و \"compact_view\" 'منظور متضام'."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:65
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:67
 msgid "Date Format"
 msgstr "تنسيق التاريخ"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:66
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:68
 msgid ""
 "The format of file dates. Possible values are \"locale\", \"iso\", and "
 "\"informal\"."
@@ -3520,11 +3529,11 @@ msgstr ""
 "تنسيق تواريخ الملفّات. القيم الممكنة هي \"locale\" (محلّي) و \"iso\" و "
 "\"informal\" (غير رسمي)."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:67
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:69
 msgid "Whether to show hidden files"
 msgstr "فيما إذا ستعرض الملفات المخفية"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:68
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:70
 msgid ""
 "If set to true, then hidden files are shown by default in the file manager. "
 "Hidden files are either dotfiles, listed in the folder's .hidden file or "
@@ -3534,11 +3543,11 @@ msgstr ""
 "المخفية هي إما ملفات تبدأ بنقطة أو ملفات مسردة في ملف ‪.hidden‬ للمجلد أو "
 "ملفات الاستعادة البادئة بـ (~)."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:69
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:71
 msgid "Whether to show file sizes with IEC units"
 msgstr "ما إذا سيتّم عرض حجوم الملفات وفق وحدات IEC"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:70
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:72
 msgid ""
 "If set to true, file sizes are shown using IEC (base 1024) units with \"KiB"
 "\" style suffixes, instead of default with SI units."
@@ -3546,19 +3555,27 @@ msgstr ""
 "في حال الضبط، فإنّ الحجوم ستظهر بطريقة IEC (بأساس 1024) وبنمط \"كب\"، بدلًا من "
 "الوحدات الافتراضية SI."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:71
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:73
 msgid "Whether to show desktop notifications"
 msgstr ""
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:72
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:74
 msgid "If set to true, Peony will show desktop notifications for eject events"
 msgstr ""
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:73
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:75
+msgid "Default favorite iter position"
+msgstr ""
+
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:76
+msgid "Record favorite iter position"
+msgstr ""
+
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:77
 msgid "List of possible captions on icons"
 msgstr "قائمة للعناوين الممكنة للأيقونات"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:74
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:78
 msgid ""
 "A list of captions below an icon in the icon view and the desktop. The "
 "actual number of captions shown depends on the zoom level. Some possible "
@@ -3572,44 +3589,44 @@ msgstr ""
 "\"المالك\" و\"المجموعة\" و \"التصاريح\" و \"التصاريح الثمانية\" و \"نوع مايم"
 "\" ."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:75
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:79
 msgid "Use tighter layout in new windows"
 msgstr "استخدم نسق أضيق في النوافذ الجديدة"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:76
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:80
 msgid "If true, icons will be laid out tighter by default in new windows."
 msgstr "إذا ضبط كصحيح، فسترصّ الأيقونات أضيق مبدئيا في النوافذ الجديدة."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:77
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:81
 msgid "Put labels beside icons"
 msgstr "ضع التسميات بجانب الأيقونات"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:78
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:82
 msgid ""
 "If true, labels will be placed beside icons rather than underneath them."
 msgstr "إذا ضبط كصحيح، ستوضع التسميات بجانب الأيقونات عوضا عن أن توضع تحتها."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:79
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:83
 msgid "Default icon zoom level"
 msgstr "مستوى تكبير الأيقونات المبدئي"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:80
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:84
 msgid "Default zoom level used by the icon view."
 msgstr "مستوى التكبير المبدئي المستعمل من قبل منظور الأيقونات."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:81
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:85
 msgid "Default Thumbnail Icon Size"
 msgstr "مقاس أيقونات المصغّرات المبدئي"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:82
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:86
 msgid "The default size of an icon for a thumbnail in the icon view."
 msgstr "الحجم المبدئي لأيقونة المُصغّرات في منظور الأيقونات."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:83
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:87
 msgid "Text Ellipsis Limit"
 msgstr "حدودية أقواس النص"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:85
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:89
 #, no-c-format
 msgid ""
 "A string specifying how parts of overlong file names should be replaced by "
@@ -3643,19 +3660,19 @@ msgstr ""
 "مستويات التقريب المتوفرة هي الأصغر (%33) ، أصغر (%50)، صغير (%66) ، قياسي "
 "(%100) ، كبير (%150)، أكبر (%200) ، الأكبر (%400) ."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:88
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:92
 msgid "Default compact view zoom level"
 msgstr "مستوى التكبير المبدئي في المنظور المتضام"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:89
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:93
 msgid "Default zoom level used by the compact view."
 msgstr "مستوى التكبير المبدئي المستعمل من قبل المنظور المتضام."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:90
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:94
 msgid "All columns have same width"
 msgstr "كل الأعمدة لها نفس العرض"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:91
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:95
 msgid ""
 "If this preference is set, all columns in the compact view have the same "
 "width. Otherwise, the width of each column is determined seperately."
@@ -3663,35 +3680,35 @@ msgstr ""
 "إذا ضبط هذا التفضيل قسيكون لكل الأعمدة في المنظور المتضام نفس العرض. وإلا "
 "فسيحدد عرض كل عمود على حدة."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:92
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:96
 msgid "Default list zoom level"
 msgstr "مستوى تكبير القائمة المبدئي"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:93
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:97
 msgid "Default zoom level used by the list view."
 msgstr "مستوى التكبير المبدئي المستعمل من قبل منظور القائمة."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:94
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:98
 msgid "Default list of columns visible in the list view"
 msgstr "القائمة المبدئية للأعمدة المرئية في منظور القائمة"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:95
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:99
 msgid "Default list of columns visible in the list view."
 msgstr "القائمة المبدئية للأعمدة المرئية في منظور القائمة."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:96
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:100
 msgid "Default column order in the list view"
 msgstr "ترتيب الأعمدة المبدئي في منظور القائمة"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:97
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:101
 msgid "Default column order in the list view."
 msgstr "ترتيب الأعمدة المبدئي في منظور القائمة."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:98
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:102
 msgid "Only show folders in the tree side pane"
 msgstr "اعرض المجلدات فقط في الشريط الشجري الجانبي"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:99
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:103
 msgid ""
 "If set to true, Peony will only show folders in the tree side pane. "
 "Otherwise it will show both folders and files."
@@ -3699,103 +3716,103 @@ msgstr ""
 "إذا ضبط كصحيح، فسيعرض كاجا المجلدات فقط في لوح الشجرة الجانبي. خلافا لذلك "
 "سيعرض المجلدات و الملفات."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:100
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:104
 msgid "Desktop font"
 msgstr "خط سطح المكتب"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:101
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:105
 msgid "The font description used for the icons on the desktop."
 msgstr "توصيف الخط المستخدم من أجل الأيقونات على سطح المكتب "
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:102
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:106
 msgid "Home icon visible on desktop"
 msgstr "أيقونة المنزل مرئية على سطح المكتب"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:103
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:107
 msgid ""
 "If this is set to true, an icon linking to the home folder will be put on "
 "the desktop."
 msgstr "إذا ضبط كصحيح، ستوضع أيقونة تصل بالمجلد المنزلي فوق سطح المكتب."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:104
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:108
 msgid "Computer icon visible on desktop"
 msgstr "أيقونة الحاسوب مرئية على سطح المكتب"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:105
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:109
 msgid ""
 "If this is set to true, an icon linking to the computer location will be put "
 "on the desktop."
 msgstr "إذا ضبط كصحيح، ستوضع أيقونة تصل بالحاسوب فوق سطح المكتب."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:106
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:110
 msgid "Trash icon visible on desktop"
 msgstr "أيقونة مهملات مرئية فوق سطح المكتب"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:107
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:111
 msgid ""
 "If this is set to true, an icon linking to the trash will be put on the "
 "desktop."
 msgstr "إذا ضبط كصحيح، ستوضع أيقونة تصل بالمهملات فوق سطح المكتب."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:108
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:112
 msgid "Show mounted volumes on the desktop"
 msgstr "اعرض الأجزاء الموصولة على سطح المكتب"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:109
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:113
 msgid ""
 "If this is set to true, icons linking to mounted volumes will be put on the "
 "desktop."
 msgstr ""
 "إذا ضبط كصحيح، فستوضع على سطح المكتب أيقوناتٌ تشير إلى الأجزاء الموصولة."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:110
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:114
 msgid "Network Servers icon visible on the desktop"
 msgstr "أيقونة خواديم الشبكة مرئية على سطح المكتب"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:111
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:115
 msgid ""
 "If this is set to true, an icon linking to the Network Servers view will be "
 "put on the desktop."
 msgstr "إذا ضبط كصحيح، ستوضع أيقونة تصل بخواديم الشبكة فوق سطح المكتب."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:112
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:116
 msgid "Desktop computer icon name"
 msgstr "اسم أيقونة الحاسوب على سطح المكتب"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:113
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:117
 msgid ""
 "This name can be set if you want a custom name for the computer icon on the "
 "desktop."
 msgstr ""
 "يمكن ضبط هذا الاسم إذا كنت تريد اسما خاصا لأيقونة الحاسوب على سطح المكتب."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:114
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:118
 msgid "Desktop home icon name"
 msgstr "اسم أيقونة المنزل على سطح المكتب"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:115
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:119
 msgid ""
 "This name can be set if you want a custom name for the home icon on the "
 "desktop."
 msgstr ""
 "يمكن ضبط هذا الاسم إذا كنت تريد اسما خاصا لأيقونة المنزل على سطح المكتب."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:116
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:120
 msgid "Desktop trash icon name"
 msgstr "اسم أيقونة المهملات على سطح المكتب"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:117
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:121
 msgid ""
 "This name can be set if you want a custom name for the trash icon on the "
 "desktop."
 msgstr ""
 "يمكن ضبط هذا الاسم إذا كنت تريد اسما خاصا لأيقونة المهملات على سطح المكتب."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:118
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:122
 msgid "Network servers icon name"
 msgstr "اسم أيقونة خواديم الشبكة"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:119
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:123
 msgid ""
 "This name can be set if you want a custom name for the network servers icon "
 "on the desktop."
@@ -3803,7 +3820,7 @@ msgstr ""
 "يمكن ضبط هذا الاسم إذا كنت تريد اسما خاصا لأيقونة خواديم الشبكة على سطح "
 "المكتب."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:120
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:124
 msgid ""
 "An integer specifying how parts of overlong file names should be replaced by "
 "ellipses on the desktop. If the number is larger than 0, the file name will "
@@ -3814,78 +3831,78 @@ msgstr ""
 "سطح المكتب. إذا كان الرقم أكبر من 0، لن يتجاوز اسم الملف الرقم المعطى من "
 "السطور. إذا كان الرقم 0 أو أصغر، لن يتم تطبيق قيود على عدد الأسطر المعروضة."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:121
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:125
 msgid "The geometry string for a navigation window."
 msgstr "إحداثيات نافذة الإبحار."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:122
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:126
 msgid ""
 "A string containing the saved geometry and coordinates string for navigation "
 "windows."
 msgstr "يحتوي على الحدود و الإحداثيات المحفوظة لنوافذ التنقل."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:123
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:127
 msgid "Whether the navigation window should be maximized."
 msgstr "ما إذا وجب أن تكون نافذة الإبحار مكبّرة"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:124
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:128
 msgid "Whether the navigation window should be maximized by default."
 msgstr "ما إذا وجب أن تكون نافذة الإبحار مكبّرة افتراضيًا"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:125
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:129
 msgid "Width of the side pane"
 msgstr "عرض اللوح الجانبي"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:126
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:130
 msgid "The default width of the side pane in new windows."
 msgstr "العرض المبدئي للوح الجانبي في النوافذ الجديدة."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:127
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:131
 msgid "Show toolbar in new windows"
 msgstr "اعرض شريط الأدوات في نوافذ جديدة"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:128
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:132
 msgid "If set to true, newly opened windows will have toolbars visible."
 msgstr "إذا ضبط كصحيح، فسيظهر شريط الأدوات في النوافذ التي ستفتح جديدا."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:129
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:133
 msgid "Show location bar in new windows"
 msgstr "اعرض شريط الموقع في النوافذ الجديدة"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:130
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:134
 msgid ""
 "If set to true, newly opened windows will have the location bar visible."
 msgstr "إذا ضبط كصحيح، فسيظهر شريط الموقع في النوافذ التي ستفتح جديدا."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:131
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:135
 msgid "Show status bar in new windows"
 msgstr "اعرض شريط الحالة في النوافذ الجديدة"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:132
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:136
 msgid "If set to true, newly opened windows will have the status bar visible."
 msgstr "إذا ضبط كصحيح، فسيظهر شريط الحالة في النوافذ التي ستفتح جديدا."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:133
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:137
 msgid "Show side pane in new windows"
 msgstr "اعرض الشريط الجانبي في النوافذ الجديدة"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:134
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:138
 msgid "If set to true, newly opened windows will have the side pane visible."
 msgstr "إذا ضبط كصحيح، فسيظهر الشريط الجانبي في النوافذ التي ستفتح جديدا."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:135
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:139
 msgid "Side pane view"
 msgstr "منظور اللوح الجانبي"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:136
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:140
 msgid "The side pane view to show in newly opened windows."
 msgstr "منظور اللوح الجانبي الذي سيعرض في النوافذ المفتوحة حديثا."
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:137
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:141
 msgid "List of extensions in disabled state."
 msgstr "قائمة من الإمتدادات في حالة التعطيل"
 
-#: ../libpeony-private/org.ukui.peony.gschema.xml.h:138
+#: ../libpeony-private/org.ukui.peony.gschema.xml.h:142
 msgid "This list contains the extensions that are currently de-activated."
 msgstr "القائمة تحوي على امتدادات غير مفعّلة في الوقت الحالي "
 
@@ -3979,7 +3996,7 @@ msgstr "محث التنفيذ التلقائي"
 #: ../data/peony-browser.desktop.in.in.h:1
 #: ../data/peony-folder-handler.desktop.in.in.h:1
 #: ../data/peony.desktop.in.in.h:1 ../src/peony-spatial-window.c:373
-#: ../src/peony-window-menus.c:536 ../src/peony-window.c:172
+#: ../src/peony-window-menus.c:679 ../src/peony-window.c:172
 msgid "Peony"
 msgstr "كاجا"
 
@@ -3992,7 +4009,7 @@ msgid "Browse the file system with the file manager"
 msgstr "تصفح نظام الملفات بمدير الملفات"
 
 #. tooltip
-#: ../data/peony-computer.desktop.in.in.h:2 ../src/peony-window-menus.c:899
+#: ../data/peony-computer.desktop.in.in.h:2 ../src/peony-window-menus.c:1047
 msgid ""
 "Browse all local and remote disks and folders accessible from this computer"
 msgstr "تصفّح كل الأقراص والمجلّدات المحلّية والبعيدة المتاحة لهذا الحاسوب"
@@ -4010,7 +4027,7 @@ msgid "Home Folder"
 msgstr "المجلد المنزل"
 
 #. tooltip
-#: ../data/peony-home.desktop.in.in.h:2 ../src/peony-window-menus.c:894
+#: ../data/peony-home.desktop.in.in.h:2 ../src/peony-window-menus.c:1042
 msgid "Open your personal folder"
 msgstr "افتح مجلّدك الشخصي"
 
@@ -4026,8 +4043,8 @@ msgstr "الخلفية"
 #. name, stock id
 #. label, accelerator
 #: ../src/file-manager/fm-desktop-icon-view.c:893
-#: ../src/file-manager/fm-directory-view.c:7586
-#: ../src/file-manager/fm-directory-view.c:9388
+#: ../src/file-manager/fm-directory-view.c:7704
+#: ../src/file-manager/fm-directory-view.c:9506
 msgid "E_mpty Trash"
 msgstr "أفرغ ا_لمهملات"
 
@@ -4035,13 +4052,13 @@ msgstr "أفرغ ا_لمهملات"
 #. name, stock id
 #. label, accelerator
 #: ../src/file-manager/fm-desktop-icon-view.c:907
-#: ../src/file-manager/fm-directory-view.c:7550
+#: ../src/file-manager/fm-directory-view.c:7668
 msgid "Create L_auncher..."
 msgstr "أنشئ مطلقا..."
 
 #. tooltip
 #: ../src/file-manager/fm-desktop-icon-view.c:909
-#: ../src/file-manager/fm-directory-view.c:7551
+#: ../src/file-manager/fm-directory-view.c:7669
 msgid "Create a new launcher"
 msgstr "أنشئ مطلقا جديدا"
 
@@ -4074,7 +4091,7 @@ msgstr "أفرغ المهملات"
 
 #. tooltip
 #: ../src/file-manager/fm-desktop-icon-view.c:936
-#: ../src/file-manager/fm-directory-view.c:7587 ../src/peony-trash-bar.c:204
+#: ../src/file-manager/fm-directory-view.c:7705 ../src/peony-trash-bar.c:204
 msgid "Delete all items in the Trash"
 msgstr "احذف كل العناصر في المهملات"
 
@@ -4086,7 +4103,7 @@ msgstr "واجه منظور سطح المكتب خطأ"
 msgid "The desktop view encountered an error while starting up."
 msgstr "واجه منظور سطح المكتب خطأ أثناء بدأ التشغيل."
 
-#: ../src/file-manager/fm-directory-view.c:657
+#: ../src/file-manager/fm-directory-view.c:659
 #, c-format
 msgid "This will open %'d separate tab."
 msgid_plural "This will open %'d separate tabs."
@@ -4097,7 +4114,7 @@ msgstr[3] "سيفتح هذا %I'd ألسنة منفصلة."
 msgstr[4] "سيفتح هذا %I'd لسانا منفصلا."
 msgstr[5] "سيفتح هذا %I'd لسان منفصل."
 
-#: ../src/file-manager/fm-directory-view.c:660
+#: ../src/file-manager/fm-directory-view.c:662
 #, c-format
 msgid "This will open %'d separate window."
 msgid_plural "This will open %'d separate windows."
@@ -4108,47 +4125,47 @@ msgstr[3] "سيفتح هذا %I'd نوافذ منفصلة."
 msgstr[4] "سيفتح هذا %I'd نافذةً منفصلة."
 msgstr[5] "سيفتح هذا %I'd نافذة منفصلة."
 
-#: ../src/file-manager/fm-directory-view.c:1200
+#: ../src/file-manager/fm-directory-view.c:1202
 #: ../src/file-manager/fm-properties-window.c:5397
 #: ../src/peony-connect-server-dialog.c:718 ../src/peony-location-dialog.c:102
 msgid "There was an error displaying help."
 msgstr "حدث خطأ عند عرض المساعدة."
 
-#: ../src/file-manager/fm-directory-view.c:1220
+#: ../src/file-manager/fm-directory-view.c:1222
 msgid "Select Items Matching"
 msgstr "اختر العناصر المطابقة"
 
-#: ../src/file-manager/fm-directory-view.c:1235
+#: ../src/file-manager/fm-directory-view.c:1237
 msgid "_Pattern:"
 msgstr "ال_نمط:"
 
-#: ../src/file-manager/fm-directory-view.c:1242
+#: ../src/file-manager/fm-directory-view.c:1244
 msgid "Examples: "
 msgstr "أمثلة:"
 
-#: ../src/file-manager/fm-directory-view.c:1396
+#: ../src/file-manager/fm-directory-view.c:1398
 msgid "Save Search as"
 msgstr "احفظ نتائج البحث باسم"
 
-#: ../src/file-manager/fm-directory-view.c:1419
+#: ../src/file-manager/fm-directory-view.c:1421
 msgid "Search _name:"
 msgstr "ا_سم البحث:"
 
-#: ../src/file-manager/fm-directory-view.c:1439
+#: ../src/file-manager/fm-directory-view.c:1441
 msgid "_Folder:"
 msgstr "ال_مجلد:"
 
-#: ../src/file-manager/fm-directory-view.c:1448
+#: ../src/file-manager/fm-directory-view.c:1450
 msgid "Select Folder to Save Search In"
 msgstr "اختر مجلدا لتحفظ البحث به"
 
-#: ../src/file-manager/fm-directory-view.c:2345
-#: ../src/file-manager/fm-directory-view.c:2382
+#: ../src/file-manager/fm-directory-view.c:2347
+#: ../src/file-manager/fm-directory-view.c:2384
 #, c-format
 msgid "\"%s\" selected"
 msgstr "‏\"%s\" مختار"
 
-#: ../src/file-manager/fm-directory-view.c:2347
+#: ../src/file-manager/fm-directory-view.c:2349
 #, c-format
 msgid "%'d folder selected"
 msgid_plural "%'d folders selected"
@@ -4159,7 +4176,7 @@ msgstr[3] "%I'd مجلّدات مختارة"
 msgstr[4] "%I'd مجلّدًا مختارًا"
 msgstr[5] "%I'd مجلّد مختار"
 
-#: ../src/file-manager/fm-directory-view.c:2357
+#: ../src/file-manager/fm-directory-view.c:2359
 #, c-format
 msgid " (containing %'d item)"
 msgid_plural " (containing %'d items)"
@@ -4171,7 +4188,7 @@ msgstr[4] " (يحتوي %I'd عنصرًا)"
 msgstr[5] " (يحتوي %I'd عنصر)"
 
 #. translators: this is preceded with a string of form 'N folders' (N more than 1)
-#: ../src/file-manager/fm-directory-view.c:2368
+#: ../src/file-manager/fm-directory-view.c:2370
 #, c-format
 msgid " (containing a total of %'d item)"
 msgid_plural " (containing a total of %'d items)"
@@ -4182,7 +4199,7 @@ msgstr[3] " (يحتوي ما مجموعه %I'd عناصر)"
 msgstr[4] " (يحتوي ما مجموعه %I'd عنصرًا)"
 msgstr[5] " (يحتوي ما مجموعه %I'd عنصر)"
 
-#: ../src/file-manager/fm-directory-view.c:2385
+#: ../src/file-manager/fm-directory-view.c:2387
 #, c-format
 msgid "%'d item selected"
 msgid_plural "%'d items selected"
@@ -4194,7 +4211,7 @@ msgstr[4] "%I'd عنصرا مختارا "
 msgstr[5] "%I'd عنصر مختار "
 
 #. Folders selected also, use "other" terminology
-#: ../src/file-manager/fm-directory-view.c:2392
+#: ../src/file-manager/fm-directory-view.c:2394
 #, c-format
 msgid "%'d other item selected"
 msgid_plural "%'d other items selected"
@@ -4210,17 +4227,17 @@ msgstr[5] "%I'd عنصر آخر مختار "
 #. * first message gives the number of items selected;
 #. * the message in parentheses the size of those items.
 #.
-#: ../src/file-manager/fm-directory-view.c:2411
+#: ../src/file-manager/fm-directory-view.c:2413
 #, c-format
 msgid "%s (%s)"
 msgstr "%s (%s)"
 
-#: ../src/file-manager/fm-directory-view.c:2424
+#: ../src/file-manager/fm-directory-view.c:2426
 #, c-format
 msgid "Free space: %s"
 msgstr "المساحة الخالية: %s "
 
-#: ../src/file-manager/fm-directory-view.c:2435
+#: ../src/file-manager/fm-directory-view.c:2437
 #, c-format
 msgid "%s, Free space: %s"
 msgstr "%s، مساحة خالية: %s"
@@ -4230,7 +4247,7 @@ msgstr "%s، مساحة خالية: %s"
 #. * After the comma the amount of free space will
 #. * be shown.
 #.
-#: ../src/file-manager/fm-directory-view.c:2450
+#: ../src/file-manager/fm-directory-view.c:2452
 #, c-format
 msgid "%s, %s"
 msgstr "%s، %s"
@@ -4247,8 +4264,8 @@ msgstr "%s، %s"
 #. * message about the number of other items and the
 #. * total size of those items.
 #.
-#: ../src/file-manager/fm-directory-view.c:2469
-#: ../src/file-manager/fm-directory-view.c:2483
+#: ../src/file-manager/fm-directory-view.c:2471
+#: ../src/file-manager/fm-directory-view.c:2485
 #, c-format
 msgid "%s%s, %s"
 msgstr "%s%s، %s"
@@ -4261,18 +4278,18 @@ msgstr "%s%s، %s"
 #. * total size of those items. After the second comma
 #. * the free space is written.
 #.
-#: ../src/file-manager/fm-directory-view.c:2496
+#: ../src/file-manager/fm-directory-view.c:2498
 #, c-format
 msgid "%s%s, %s, %s"
 msgstr "%s%s، %s، %s"
 
-#: ../src/file-manager/fm-directory-view.c:4631
+#: ../src/file-manager/fm-directory-view.c:4650
 #: ../src/peony-information-panel.c:905
 #, c-format
 msgid "Open With %s"
 msgstr "افتح باستخدام %s"
 
-#: ../src/file-manager/fm-directory-view.c:4633
+#: ../src/file-manager/fm-directory-view.c:4652
 #, c-format
 msgid "Use \"%s\" to open the selected item"
 msgid_plural "Use \"%s\" to open the selected items"
@@ -4283,35 +4300,45 @@ msgstr[3] "استعمل \"%s\" لفتح العناصر المختارة"
 msgstr[4] "استعمل \"%s\" لفتح العناصر المختارة"
 msgstr[5] "استعمل \"%s\" لفتح العناصر المختارة"
 
-#: ../src/file-manager/fm-directory-view.c:4724
+#: ../src/file-manager/fm-directory-view.c:4743
 msgid "Open parent location"
 msgstr "افتح الدليل الأصل"
 
-#: ../src/file-manager/fm-directory-view.c:4725
+#: ../src/file-manager/fm-directory-view.c:4744
 msgid "Open parent location for the selected item"
 msgstr "افتح الدّليل الأصل للعنصر المحدّد"
 
-#: ../src/file-manager/fm-directory-view.c:5576
+#: ../src/file-manager/fm-directory-view.c:4819
+#, fuzzy
+msgid "Image Search"
+msgstr "ا_حفظ البحث"
+
+#: ../src/file-manager/fm-directory-view.c:4820
+#, fuzzy
+msgid "Find simillar images for the selected item"
+msgstr "افتح الدّليل الأصل للعنصر المحدّد"
+
+#: ../src/file-manager/fm-directory-view.c:5686
 #, c-format
 msgid "Run \"%s\" on any selected items"
 msgstr "شغّل \"%s\" على أي عنصر مختار"
 
-#: ../src/file-manager/fm-directory-view.c:5827
+#: ../src/file-manager/fm-directory-view.c:5937
 #, c-format
 msgid "Create Document from template \"%s\""
 msgstr "أنشئ مستندا من القالب \"%s\""
 
-#: ../src/file-manager/fm-directory-view.c:6077
+#: ../src/file-manager/fm-directory-view.c:6187
 msgid "All executable files in this folder will appear in the Scripts menu."
 msgstr "ستظهر جميع الملفات التنفيذية في هذا المجلد في قائمة النصوص الشفرية."
 
-#: ../src/file-manager/fm-directory-view.c:6079
+#: ../src/file-manager/fm-directory-view.c:6189
 msgid ""
 "Choosing a script from the menu will run that script with any selected items "
 "as input."
 msgstr "اختيار نص شفري من القائمة سيشغله بأي عنصر مختار كدَخْل."
 
-#: ../src/file-manager/fm-directory-view.c:6081
+#: ../src/file-manager/fm-directory-view.c:6191
 msgid ""
 "All executable files in this folder will appear in the Scripts menu. "
 "Choosing a script from the menu will run that script.\n"
@@ -4368,19 +4395,19 @@ msgstr ""
 "PEONY_SCRIPT_NEXT_PANE_CURRENT_URI: مسار المكان الحالي في اللوحة غير النشطة "
 "من المنظور المشقوق"
 
-#: ../src/file-manager/fm-directory-view.c:6149
+#: ../src/file-manager/fm-directory-view.c:6259
 #: ../src/file-manager/fm-tree-view.c:1011
 #, c-format
 msgid "\"%s\" will be moved if you select the Paste command"
 msgstr "سيُنقل \"%s\" إذا اخترت أمر اللصق"
 
-#: ../src/file-manager/fm-directory-view.c:6153
+#: ../src/file-manager/fm-directory-view.c:6263
 #: ../src/file-manager/fm-tree-view.c:1017
 #, c-format
 msgid "\"%s\" will be copied if you select the Paste command"
 msgstr "سيُنسخ \"%s\" إذا اخترت أمر اللصق"
 
-#: ../src/file-manager/fm-directory-view.c:6160
+#: ../src/file-manager/fm-directory-view.c:6270
 #, c-format
 msgid "The %'d selected item will be moved if you select the Paste command"
 msgid_plural ""
@@ -4392,7 +4419,7 @@ msgstr[3] "ستنقل الـ%I'd عناصر المختارة إذا اخترت �
 msgstr[4] "سينقل الـ%I'd عنصرا المختار إذا اخترت أمر اللصق"
 msgstr[5] "سينقل الـ%I'd عنصر المختار إذا اخترت أمر اللصق"
 
-#: ../src/file-manager/fm-directory-view.c:6167
+#: ../src/file-manager/fm-directory-view.c:6277
 #, c-format
 msgid "The %'d selected item will be copied if you select the Paste command"
 msgid_plural ""
@@ -4404,98 +4431,98 @@ msgstr[3] "ستنسخ العناصر الـ%I'd المختارة إذا اختر
 msgstr[4] "سينسخ لـ%I'd عنصرا المختارة إذا اخترت أمر اللصق"
 msgstr[5] "سينسخ لـ%I'd عنصر المختارة إذا اخترت أمر اللصق"
 
-#: ../src/file-manager/fm-directory-view.c:6462
+#: ../src/file-manager/fm-directory-view.c:6572
 #: ../src/file-manager/fm-tree-view.c:1057
 msgid "There is nothing on the clipboard to paste."
 msgstr "لا شيء في الحافظة للصقه."
 
-#: ../src/file-manager/fm-directory-view.c:6677
+#: ../src/file-manager/fm-directory-view.c:6795
 msgid "Unable to unmount location"
 msgstr "تعذر فصْل المكان"
 
-#: ../src/file-manager/fm-directory-view.c:6698
+#: ../src/file-manager/fm-directory-view.c:6816
 msgid "Unable to eject location"
 msgstr "تعذر إخراج المكان"
 
-#: ../src/file-manager/fm-directory-view.c:6713
+#: ../src/file-manager/fm-directory-view.c:6831
 msgid "Unable to stop drive"
 msgstr "تعذر إيقاف السواقة"
 
-#: ../src/file-manager/fm-directory-view.c:7270
+#: ../src/file-manager/fm-directory-view.c:7388
 #, c-format
 msgid "Connect to Server %s"
 msgstr "اتّصل بالخادوم %s"
 
-#: ../src/file-manager/fm-directory-view.c:7275
-#: ../src/file-manager/fm-directory-view.c:8503
-#: ../src/file-manager/fm-directory-view.c:8595
-#: ../src/file-manager/fm-directory-view.c:8705
+#: ../src/file-manager/fm-directory-view.c:7393
+#: ../src/file-manager/fm-directory-view.c:8621
+#: ../src/file-manager/fm-directory-view.c:8713
+#: ../src/file-manager/fm-directory-view.c:8823
 msgid "_Connect"
 msgstr "اتّ_صل"
 
-#: ../src/file-manager/fm-directory-view.c:7289
+#: ../src/file-manager/fm-directory-view.c:7407
 msgid "Link _name:"
 msgstr "اسم ال_وصلة:"
 
 #. name, stock id, label
-#: ../src/file-manager/fm-directory-view.c:7528
+#: ../src/file-manager/fm-directory-view.c:7646
 msgid "Create _Document"
 msgstr "أنشئ م_ستندا"
 
 #. name, stock id, label
-#: ../src/file-manager/fm-directory-view.c:7529
+#: ../src/file-manager/fm-directory-view.c:7647
 msgid "Open Wit_h"
 msgstr "افتح با_ستخدام"
 
-#: ../src/file-manager/fm-directory-view.c:7530
+#: ../src/file-manager/fm-directory-view.c:7648
 msgid "Choose a program with which to open the selected item"
 msgstr "اختر برنامجا لفتح العنصر المختار به"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7532
-#: ../src/file-manager/fm-directory-view.c:7832
+#: ../src/file-manager/fm-directory-view.c:7650
+#: ../src/file-manager/fm-directory-view.c:7950
 msgid "_Properties"
 msgstr "ال_خصائص"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7533
-#: ../src/file-manager/fm-directory-view.c:9375
+#: ../src/file-manager/fm-directory-view.c:7651
+#: ../src/file-manager/fm-directory-view.c:9493
 msgid "View or modify the properties of each selected item"
 msgstr "اعرض أو عدّل خصائص كل عنصر مختار"
 
 #. name, stock id
 #. label, accelerator
 #. add the "create folder" menu item
-#: ../src/file-manager/fm-directory-view.c:7540
+#: ../src/file-manager/fm-directory-view.c:7658
 #: ../src/file-manager/fm-tree-view.c:1300
 msgid "Create _Folder"
 msgstr "أنشئ _مجلدا"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7541
+#: ../src/file-manager/fm-directory-view.c:7659
 msgid "Create a new empty folder inside this folder"
 msgstr "أنشئ مجلدا جديدا فارغا داخل هذا المجلد"
 
 #. name, stock id, label
-#: ../src/file-manager/fm-directory-view.c:7543
+#: ../src/file-manager/fm-directory-view.c:7661
 msgid "No templates installed"
 msgstr "لا قوالب مثبتة"
 
 #. name, stock id
 #. translators: this is used to indicate that a file doesn't contain anything
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7546
+#: ../src/file-manager/fm-directory-view.c:7664
 msgid "_Empty File"
 msgstr "ملف _فارغ"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7547
+#: ../src/file-manager/fm-directory-view.c:7665
 msgid "Create a new empty file inside this folder"
 msgstr "أنشئ ملفا جديدا فارغا داخل هذا المجلد"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7555
+#: ../src/file-manager/fm-directory-view.c:7673
 msgid "Open the selected item in this window"
 msgstr "افتح العنصر المختار في هذه النافذة"
 
@@ -4504,99 +4531,99 @@ msgstr "افتح العنصر المختار في هذه النافذة"
 #. Location-specific actions
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7562
-#: ../src/file-manager/fm-directory-view.c:7764
+#: ../src/file-manager/fm-directory-view.c:7680
+#: ../src/file-manager/fm-directory-view.c:7882
 msgid "Open in Navigation Window"
 msgstr "افتح في نافذة جديدة"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7563
+#: ../src/file-manager/fm-directory-view.c:7681
 msgid "Open each selected item in a navigation window"
 msgstr "افتح كل عنصر مختار في نافذة جديدة"
 
 #. name, stock id
 #. label, accelerator
 #. add the "open in new tab" menu item
-#: ../src/file-manager/fm-directory-view.c:7566
-#: ../src/file-manager/fm-directory-view.c:7768
-#: ../src/file-manager/fm-directory-view.c:8835
-#: ../src/file-manager/fm-directory-view.c:9165
-#: ../src/file-manager/fm-tree-view.c:1280 ../src/peony-places-sidebar.c:2782
+#: ../src/file-manager/fm-directory-view.c:7684
+#: ../src/file-manager/fm-directory-view.c:7886
+#: ../src/file-manager/fm-directory-view.c:8953
+#: ../src/file-manager/fm-directory-view.c:9283
+#: ../src/file-manager/fm-tree-view.c:1280 ../src/peony-places-sidebar.c:3403
 msgid "Open in New _Tab"
 msgstr "افتح في _لسان جديد"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7567
+#: ../src/file-manager/fm-directory-view.c:7685
 msgid "Open each selected item in a new tab"
 msgstr "افتح كل عنصر مختار في لسان جديد"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7570
-#: ../src/file-manager/fm-directory-view.c:7773
+#: ../src/file-manager/fm-directory-view.c:7688
+#: ../src/file-manager/fm-directory-view.c:7891
 msgid "Open in _Folder Window"
 msgstr "افتح في نافذة _مجلد"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7571
+#: ../src/file-manager/fm-directory-view.c:7689
 msgid "Open each selected item in a folder window"
 msgstr "افتح كل عنصر مختار في نافذة مجلد"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7574
+#: ../src/file-manager/fm-directory-view.c:7692
 msgid "Other _Application..."
 msgstr "_تطبيق آخر..."
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7575
-#: ../src/file-manager/fm-directory-view.c:7579
+#: ../src/file-manager/fm-directory-view.c:7693
+#: ../src/file-manager/fm-directory-view.c:7697
 msgid "Choose another application with which to open the selected item"
 msgstr "اختر تطبيقا آخرا لفتح العنصر المختار به"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7578
+#: ../src/file-manager/fm-directory-view.c:7696
 msgid "Open With Other _Application..."
 msgstr "افتح ب_تطبيق آخر..."
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7582
+#: ../src/file-manager/fm-directory-view.c:7700
 msgid "_Open Scripts Folder"
 msgstr "ا_فتح مجلد النصوص الشفرية"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7583
+#: ../src/file-manager/fm-directory-view.c:7701
 msgid "Show the folder containing the scripts that appear in this menu"
 msgstr "اعرض المجلد المحتوي على النصوص الشفرية التي تظهر في هذه القائمة"
 
 #. name, stock id
 #. label, accelerator
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7591
+#: ../src/file-manager/fm-directory-view.c:7709
 msgid "Prepare the selected files to be moved with a Paste command"
 msgstr "جَهّز الملفات المختارة ليتم نقلها بأمر لصق"
 
 #. name, stock id
 #. label, accelerator
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7595
+#: ../src/file-manager/fm-directory-view.c:7713
 msgid "Prepare the selected files to be copied with a Paste command"
 msgstr "جَهّز الملفات المختارة ليتم نسخها بأمر لصق"
 
 #. name, stock id
 #. label, accelerator
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7599
+#: ../src/file-manager/fm-directory-view.c:7717
 msgid "Move or copy files previously selected by a Cut or Copy command"
 msgstr "انقل أو انسخ الملفات المختارة سابقا بأمر قص أو انسخ "
 
 #. name, stock id
 #. label, accelerator
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7602
-#: ../src/file-manager/fm-directory-view.c:7603
+#: ../src/file-manager/fm-directory-view.c:7720
+#: ../src/file-manager/fm-directory-view.c:7721
 msgid "_Attached to the start menu"
 msgstr ""
 
@@ -4604,71 +4631,71 @@ msgstr ""
 #. accelerator for paste
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7608
-#: ../src/file-manager/fm-directory-view.c:7786
+#: ../src/file-manager/fm-directory-view.c:7726
+#: ../src/file-manager/fm-directory-view.c:7904
 #: ../src/file-manager/fm-tree-view.c:1332
 msgid "_Paste Into Folder"
 msgstr "ال_صق في المجلد"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7609
+#: ../src/file-manager/fm-directory-view.c:7727
 msgid ""
 "Move or copy files previously selected by a Cut or Copy command into the "
 "selected folder"
 msgstr "انقل أو انسخ الملفات المختارة سابقا بأمر قص أو انسخ إلى المجلد المختار"
 
 #. name, stock id, label
-#: ../src/file-manager/fm-directory-view.c:7611
+#: ../src/file-manager/fm-directory-view.c:7729
 msgid "Cop_y to"
 msgstr "ا_نسخ إلى"
 
 #. name, stock id, label
-#: ../src/file-manager/fm-directory-view.c:7612
+#: ../src/file-manager/fm-directory-view.c:7730
 msgid "M_ove to"
 msgstr "ا_نقل إلى"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7615
+#: ../src/file-manager/fm-directory-view.c:7733
 msgid "Select all items in this window"
 msgstr "اختر جميع العناصر في هذه النافذة"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7618
+#: ../src/file-manager/fm-directory-view.c:7736
 msgid "Select I_tems Matching..."
 msgstr "اختر العنا_صر المُطابقة..."
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7619
+#: ../src/file-manager/fm-directory-view.c:7737
 msgid "Select items in this window matching a given pattern"
 msgstr "اختر العناصر في هذه النافذة التي تقابل النمط المعطى"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7626
+#: ../src/file-manager/fm-directory-view.c:7744
 msgid "_Invert Selection"
 msgstr "اع_كس الاختيار"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7627
+#: ../src/file-manager/fm-directory-view.c:7745
 msgid "Select all and only the items that are not currently selected"
 msgstr "اختر فقط كل العناصر غير المختارة حاليا"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7630
+#: ../src/file-manager/fm-directory-view.c:7748
 msgid "D_uplicate"
 msgstr "_ضاعِف"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7631
+#: ../src/file-manager/fm-directory-view.c:7749
 msgid "Duplicate each selected item"
 msgstr "ضاعِف كل عنصر مختار"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7634
-#: ../src/file-manager/fm-directory-view.c:9359
+#: ../src/file-manager/fm-directory-view.c:7752
+#: ../src/file-manager/fm-directory-view.c:9477
 msgid "Ma_ke Link"
 msgid_plural "Ma_ke Links"
 msgstr[0] "لا تنشئ وصلات"
@@ -4679,106 +4706,108 @@ msgstr[4] "أن_شئ وصلات"
 msgstr[5] "أن_شئ وصلات"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7635
+#: ../src/file-manager/fm-directory-view.c:7753
 msgid "Create a symbolic link for each selected item"
 msgstr "أنشئ وصلة رمزية لكل عنصر مختار"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7638
+#: ../src/file-manager/fm-directory-view.c:7756
 msgid "Send to desktop _Shortcut"
 msgstr ""
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7639
+#: ../src/file-manager/fm-directory-view.c:7757
 #, fuzzy
 msgid "Send to desktop shortcut for each selected item"
 msgstr "أنشئ وصلة رمزية لكل عنصر مختار"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7642
+#: ../src/file-manager/fm-directory-view.c:7760
 msgid "_Rename..."
 msgstr "_غيّر الاسم..."
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7643
+#: ../src/file-manager/fm-directory-view.c:7761
 msgid "Rename selected item"
 msgstr "غيّر اسم العنصر المختار"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7651
-#: ../src/file-manager/fm-directory-view.c:9220
+#: ../src/file-manager/fm-directory-view.c:7769
+#: ../src/file-manager/fm-directory-view.c:9338
 msgid "Move each selected item to the Trash"
 msgstr "انقل كل عنصر مختار إلى المهملات"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7654
-#: ../src/file-manager/fm-directory-view.c:7795
-#: ../src/file-manager/fm-directory-view.c:9241
+#: ../src/file-manager/fm-directory-view.c:7772
+#: ../src/file-manager/fm-directory-view.c:7913
+#: ../src/file-manager/fm-directory-view.c:9359
 #: ../src/file-manager/fm-tree-view.c:1362
 msgid "_Delete"
 msgstr "ا_حذف"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7655
+#: ../src/file-manager/fm-directory-view.c:7773
 msgid "Delete each selected item, without moving to the Trash"
 msgstr "احذف كل عنصر مختار، دون نقله إلى المهملات"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7658
-#: ../src/file-manager/fm-directory-view.c:7799
+#: ../src/file-manager/fm-directory-view.c:7776
+#: ../src/file-manager/fm-directory-view.c:7917
 msgid "_Restore"
 msgstr "ا_ستعد"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7662
+#: ../src/file-manager/fm-directory-view.c:7780
+#: ../src/peony-window-menus.c:1006
 msgid "_Undo"
 msgstr "_تراجع"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7663
-#: ../src/file-manager/fm-directory-view.c:11522
+#: ../src/file-manager/fm-directory-view.c:7781
+#: ../src/file-manager/fm-directory-view.c:11640
+#: ../src/peony-window-menus.c:1007
 msgid "Undo the last action"
 msgstr "التراجع عن الفعل الأخير"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7666
+#: ../src/file-manager/fm-directory-view.c:7784
 msgid "_Redo"
 msgstr "أ_عِد"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7667
-#: ../src/file-manager/fm-directory-view.c:11540
+#: ../src/file-manager/fm-directory-view.c:7785
+#: ../src/file-manager/fm-directory-view.c:11663
 msgid "Redo the last undone action"
 msgstr "أعِد آخر عملية متراجع عنها"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7671
-#: ../src/file-manager/fm-directory-view.c:9276
+#: ../src/file-manager/fm-directory-view.c:7789
+#: ../src/file-manager/fm-directory-view.c:9394
 msgid "E_mpty Recent"
 msgstr ""
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7672
+#: ../src/file-manager/fm-directory-view.c:7790
 msgid "E_mpty Recent use"
 msgstr ""
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7675
-#: ../src/file-manager/fm-directory-view.c:9292
+#: ../src/file-manager/fm-directory-view.c:7793
+#: ../src/file-manager/fm-directory-view.c:9410
 #, fuzzy
 msgid "D_elete Recent"
 msgstr "ا_حذف نهائيا"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7676
+#: ../src/file-manager/fm-directory-view.c:7794
 msgid "D_elete Recent use"
 msgstr ""
 
@@ -4790,320 +4819,321 @@ msgstr ""
 #.
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7686
+#: ../src/file-manager/fm-directory-view.c:7804
 msgid "Reset View to _Defaults"
 msgstr "أعِد المنظور لل_مبدئي"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7687
+#: ../src/file-manager/fm-directory-view.c:7805
 msgid "Reset sorting order and zoom level to match preferences for this view"
 msgstr "أعِد ترتيب التصنيف ومستوى التكبير لتطابق تفضيلات هذا المنظور"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7690
+#: ../src/file-manager/fm-directory-view.c:7808
 msgid "Connect To This Server"
 msgstr "اتّصل بهذا الخادوم"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7691
+#: ../src/file-manager/fm-directory-view.c:7809
 msgid "Make a permanent connection to this server"
 msgstr "أنشئ اتّصالا دائما بهذا الخادوم"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7694
-#: ../src/file-manager/fm-directory-view.c:7722
-#: ../src/file-manager/fm-directory-view.c:7803
-#: ../src/peony-places-sidebar.c:2818
+#: ../src/file-manager/fm-directory-view.c:7812
+#: ../src/file-manager/fm-directory-view.c:7840
+#: ../src/file-manager/fm-directory-view.c:7921
+#: ../src/peony-places-sidebar.c:3439
 msgid "_Mount"
 msgstr "_صِل"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7695
+#: ../src/file-manager/fm-directory-view.c:7813
 msgid "Mount the selected volume"
 msgstr "صِل الجزء المختار"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7699
+#: ../src/file-manager/fm-directory-view.c:7817
 msgid "Unmount the selected volume"
 msgstr "افصل الجزء المختار"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7703
+#: ../src/file-manager/fm-directory-view.c:7821
 msgid "Eject the selected volume"
 msgstr "أخرج الجزء المختار"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7706
-#: ../src/file-manager/fm-directory-view.c:7734
-#: ../src/file-manager/fm-directory-view.c:7815
-#: ../src/peony-places-sidebar.c:2846
+#: ../src/file-manager/fm-directory-view.c:7824
+#: ../src/file-manager/fm-directory-view.c:7852
+#: ../src/file-manager/fm-directory-view.c:7933
+#: ../src/peony-places-sidebar.c:3467
 msgid "_Format"
 msgstr "_هيّء"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7707
+#: ../src/file-manager/fm-directory-view.c:7825
 msgid "Format the selected volume"
 msgstr "هيّء الجزء المختار"
 
 #. name, stock id
 #. label, accelerator
 #. Adjust start/stop items to reflect the type of the drive
-#: ../src/file-manager/fm-directory-view.c:7710
-#: ../src/file-manager/fm-directory-view.c:7738
-#: ../src/file-manager/fm-directory-view.c:7819
-#: ../src/file-manager/fm-directory-view.c:8495
-#: ../src/file-manager/fm-directory-view.c:8499
-#: ../src/file-manager/fm-directory-view.c:8587
-#: ../src/file-manager/fm-directory-view.c:8591
-#: ../src/file-manager/fm-directory-view.c:8697
-#: ../src/file-manager/fm-directory-view.c:8701
-#: ../src/peony-places-sidebar.c:1884 ../src/peony-places-sidebar.c:2853
+#: ../src/file-manager/fm-directory-view.c:7828
+#: ../src/file-manager/fm-directory-view.c:7856
+#: ../src/file-manager/fm-directory-view.c:7937
+#: ../src/file-manager/fm-directory-view.c:8613
+#: ../src/file-manager/fm-directory-view.c:8617
+#: ../src/file-manager/fm-directory-view.c:8705
+#: ../src/file-manager/fm-directory-view.c:8709
+#: ../src/file-manager/fm-directory-view.c:8815
+#: ../src/file-manager/fm-directory-view.c:8819
+#: ../src/peony-places-sidebar.c:2474 ../src/peony-places-sidebar.c:3474
 msgid "_Start"
 msgstr "اب_دأ"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7711
+#: ../src/file-manager/fm-directory-view.c:7829
 msgid "Start the selected volume"
 msgstr "ابدأ الجزء المختار"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7714
-#: ../src/file-manager/fm-directory-view.c:7742
-#: ../src/file-manager/fm-directory-view.c:7823
-#: ../src/file-manager/fm-directory-view.c:8524
-#: ../src/file-manager/fm-directory-view.c:8616
-#: ../src/file-manager/fm-directory-view.c:8726
-#: ../src/peony-places-sidebar.c:1885 ../src/peony-places-sidebar.c:2860
-#: ../src/peony-window-menus.c:838
+#: ../src/file-manager/fm-directory-view.c:7832
+#: ../src/file-manager/fm-directory-view.c:7860
+#: ../src/file-manager/fm-directory-view.c:7941
+#: ../src/file-manager/fm-directory-view.c:8642
+#: ../src/file-manager/fm-directory-view.c:8734
+#: ../src/file-manager/fm-directory-view.c:8844
+#: ../src/peony-places-sidebar.c:2475 ../src/peony-places-sidebar.c:3481
+#: ../src/peony-window-menus.c:981
 msgid "_Stop"
 msgstr "_قف"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7715
-#: ../src/file-manager/fm-directory-view.c:8727
+#: ../src/file-manager/fm-directory-view.c:7833
+#: ../src/file-manager/fm-directory-view.c:8845
 msgid "Stop the selected volume"
 msgstr "أوقف الجزء المختار"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7718
-#: ../src/file-manager/fm-directory-view.c:7746
-#: ../src/file-manager/fm-directory-view.c:7827
-#: ../src/peony-places-sidebar.c:2839
+#: ../src/file-manager/fm-directory-view.c:7836
+#: ../src/file-manager/fm-directory-view.c:7864
+#: ../src/file-manager/fm-directory-view.c:7945
+#: ../src/peony-places-sidebar.c:3460
 msgid "_Detect Media"
 msgstr "_تعرف على الوسائط"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7719
-#: ../src/file-manager/fm-directory-view.c:7747
-#: ../src/file-manager/fm-directory-view.c:7828
+#: ../src/file-manager/fm-directory-view.c:7837
+#: ../src/file-manager/fm-directory-view.c:7865
+#: ../src/file-manager/fm-directory-view.c:7946
 msgid "Detect media in the selected drive"
 msgstr "تعرف على الوسائط في السواقة المختارة"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7723
+#: ../src/file-manager/fm-directory-view.c:7841
 msgid "Mount the volume associated with the open folder"
 msgstr "صِل الجزء المرتبط بالمجلد المفتوح"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7727
+#: ../src/file-manager/fm-directory-view.c:7845
 msgid "Unmount the volume associated with the open folder"
 msgstr "افصِل الجزء المرتبط بالمجلد المفتوح"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7731
+#: ../src/file-manager/fm-directory-view.c:7849
 msgid "Eject the volume associated with the open folder"
 msgstr "أخرج الجزء المرتبط بالمجلد المفتوح"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7735
+#: ../src/file-manager/fm-directory-view.c:7853
 msgid "Format the volume associated with the open folder"
 msgstr "هيّء الجزء المرتبط بالمجلد المفتوح"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7739
+#: ../src/file-manager/fm-directory-view.c:7857
 msgid "Start the volume associated with the open folder"
 msgstr "ابدأ الجزء المرتبط بالمجلد المفتوح"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7743
+#: ../src/file-manager/fm-directory-view.c:7861
 msgid "Stop the volume associated with the open folder"
 msgstr "أوقف الجزء المرتبط بالمجلد المفتوح"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7750
+#: ../src/file-manager/fm-directory-view.c:7868
 msgid "Open File and Close window"
 msgstr "افتح الملف وأغلق النافذة"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7754
+#: ../src/file-manager/fm-directory-view.c:7872
 msgid "Sa_ve Search"
 msgstr "ا_حفظ البحث"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7755
+#: ../src/file-manager/fm-directory-view.c:7873
 msgid "Save the edited search"
 msgstr "احفظ البحث المحرر"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7758
+#: ../src/file-manager/fm-directory-view.c:7876
 msgid "Sa_ve Search As..."
 msgstr "احفظ البحث با_سم..."
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7759
+#: ../src/file-manager/fm-directory-view.c:7877
 msgid "Save the current search as a file"
 msgstr "احفظ البحث الحالي كملف"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7765
+#: ../src/file-manager/fm-directory-view.c:7883
 msgid "Open this folder in a navigation window"
 msgstr "افتح هذا المجلد في نافذة إبحار"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7769
+#: ../src/file-manager/fm-directory-view.c:7887
 msgid "Open this folder in a new tab"
 msgstr "افتح هذا المجلد في لسان جديد"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7774
+#: ../src/file-manager/fm-directory-view.c:7892
 msgid "Open this folder in a folder window"
 msgstr "افتح هذا المجلد في نافذة مجلد"
 
 #. name, stock id
 #. label, accelerator
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7779
+#: ../src/file-manager/fm-directory-view.c:7897
 msgid "Prepare this folder to be moved with a Paste command"
 msgstr "حضّر هذا المجلد لينقل بأمر لصق"
 
 #. name, stock id
 #. label, accelerator
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7783
+#: ../src/file-manager/fm-directory-view.c:7901
 msgid "Prepare this folder to be copied with a Paste command"
 msgstr "حضّر هذا المجلد لينسخ بأمر لصق"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7787
+#: ../src/file-manager/fm-directory-view.c:7905
 msgid ""
 "Move or copy files previously selected by a Cut or Copy command into this "
 "folder"
 msgstr "انقل أو انسخ الملفات المختارة سابقا بأمر قص أو انسخ إلى هذا المجلد"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7792
+#: ../src/file-manager/fm-directory-view.c:7910
 msgid "Move this folder to the Trash"
 msgstr "انقل هذا المجلد للمهملات"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7796
+#: ../src/file-manager/fm-directory-view.c:7914
 msgid "Delete this folder, without moving to the Trash"
 msgstr "احذف هذا المجلد، دون نقله إلى المهملات"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7804
+#: ../src/file-manager/fm-directory-view.c:7922
 msgid "Mount the volume associated with this folder"
 msgstr "صِل الجزء المرتبط بهذا المجلد"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7808
+#: ../src/file-manager/fm-directory-view.c:7926
 msgid "Unmount the volume associated with this folder"
 msgstr "افصِل الجزء المرتبط بهذا المجلد"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7812
+#: ../src/file-manager/fm-directory-view.c:7930
 msgid "Eject the volume associated with this folder"
 msgstr "أخرج الجزء المرتبط بهذا المجلد"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7816
+#: ../src/file-manager/fm-directory-view.c:7934
 msgid "Format the volume associated with this folder"
 msgstr "هيّء الجزء المرتبط بهذا المجلد"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7820
+#: ../src/file-manager/fm-directory-view.c:7938
 msgid "Start the volume associated with this folder"
 msgstr "ابدأ الجزء المرتبط بهذا المجلد"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7824
+#: ../src/file-manager/fm-directory-view.c:7942
 msgid "Stop the volume associated with this folder"
 msgstr "أوقف الجزء المرتبط بهذا المجلد"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7833
+#: ../src/file-manager/fm-directory-view.c:7951
 msgid "View or modify the properties of this folder"
 msgstr "اعرض أو عدّل خصائص هذا المجلد"
 
 #. name, stock id, label
-#: ../src/file-manager/fm-directory-view.c:7836
-#: ../src/file-manager/fm-directory-view.c:7839
+#: ../src/file-manager/fm-directory-view.c:7954
+#: ../src/file-manager/fm-directory-view.c:7957
 msgid "_Other pane"
 msgstr "ال_لوحة الأخرى"
 
-#: ../src/file-manager/fm-directory-view.c:7837
+#: ../src/file-manager/fm-directory-view.c:7955
 msgid "Copy the current selection to the other pane in the window"
 msgstr "انسخ التحديد إلى اللوحة الأخرى في النافذة"
 
-#: ../src/file-manager/fm-directory-view.c:7840
+#: ../src/file-manager/fm-directory-view.c:7958
 msgid "Move the current selection to the other pane in the window"
 msgstr "انقل التحديد إلى اللوحة الأخرى في النافذة"
 
 #. name, stock id, label
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7843
-#: ../src/file-manager/fm-directory-view.c:7847 ../src/peony-window-menus.c:893
+#: ../src/file-manager/fm-directory-view.c:7961
+#: ../src/file-manager/fm-directory-view.c:7965
+#: ../src/peony-window-menus.c:1041
 msgid "_Home Folder"
 msgstr "مجلّد ال_منزل"
 
-#: ../src/file-manager/fm-directory-view.c:7844
+#: ../src/file-manager/fm-directory-view.c:7962
 msgid "Copy the current selection to the home folder"
 msgstr "انسخ التحديد إلى مجلد المنزل"
 
-#: ../src/file-manager/fm-directory-view.c:7848
+#: ../src/file-manager/fm-directory-view.c:7966
 msgid "Move the current selection to the home folder"
 msgstr "انقل التحديد إلى مجلد المنزل"
 
 #. name, stock id, label
-#: ../src/file-manager/fm-directory-view.c:7851
-#: ../src/file-manager/fm-directory-view.c:7855
+#: ../src/file-manager/fm-directory-view.c:7969
+#: ../src/file-manager/fm-directory-view.c:7973
 msgid "_Desktop"
 msgstr "_سطح المكتب"
 
-#: ../src/file-manager/fm-directory-view.c:7852
+#: ../src/file-manager/fm-directory-view.c:7970
 msgid "Copy the current selection to the desktop"
 msgstr "انسخ التحديد الحالي إلى سطح المكتب"
 
-#: ../src/file-manager/fm-directory-view.c:7856
+#: ../src/file-manager/fm-directory-view.c:7974
 msgid "Move the current selection to the desktop"
 msgstr "انقل التحديد الحالي إلى سطح المكتب"
 
 #. Translators: %s is a directory
-#: ../src/file-manager/fm-directory-view.c:7936
+#: ../src/file-manager/fm-directory-view.c:8054
 #, c-format
 msgid "Run or manage scripts from %s"
 msgstr "شغّل أو أدر النصوص الشفرية من %s"
 
 #. Create a script action here specially because its tooltip is dynamic
-#: ../src/file-manager/fm-directory-view.c:7938
+#: ../src/file-manager/fm-directory-view.c:8056
 msgid "_Scripts"
 msgstr "_نصوص شفرية"
 
-#: ../src/file-manager/fm-directory-view.c:8343
+#: ../src/file-manager/fm-directory-view.c:8461
 #, c-format
 msgid "Move the open folder out of the trash to \"%s\""
 msgstr "انقل المجلد المفتوح من المهملات إلى \"%s\""
 
-#: ../src/file-manager/fm-directory-view.c:8346
+#: ../src/file-manager/fm-directory-view.c:8464
 #, c-format
 msgid "Move the selected folder out of the trash to \"%s\""
 msgid_plural "Move the selected folders out of the trash to \"%s\""
@@ -5114,7 +5144,7 @@ msgstr[3] "انقل المجلدات المختارة من المهملات إل
 msgstr[4] "انقل المجلدات المختارة من المهملات إلى \"%s\""
 msgstr[5] "انقل المجلدات المختارة من المهملات إلى \"%s\""
 
-#: ../src/file-manager/fm-directory-view.c:8350
+#: ../src/file-manager/fm-directory-view.c:8468
 #, c-format
 msgid "Move the selected folder out of the trash"
 msgid_plural "Move the selected folders out of the trash"
@@ -5125,7 +5155,7 @@ msgstr[3] "انقل المجلدات المختارة خارج سلة المهم
 msgstr[4] "انقل المجلدات المختارة خارج سلة المهملات"
 msgstr[5] "انقل المجلدات المختارة خارج سلة المهملات"
 
-#: ../src/file-manager/fm-directory-view.c:8356
+#: ../src/file-manager/fm-directory-view.c:8474
 #, c-format
 msgid "Move the selected file out of the trash to \"%s\""
 msgid_plural "Move the selected files out of the trash to \"%s\""
@@ -5136,7 +5166,7 @@ msgstr[3] "انقل الملفات المختارة من المهملات إلى
 msgstr[4] "انقل الملفات المختارة من المهملات إلى \"%s\""
 msgstr[5] "انقل الملفات المختارة من المهملات إلى \"%s\""
 
-#: ../src/file-manager/fm-directory-view.c:8360
+#: ../src/file-manager/fm-directory-view.c:8478
 #, c-format
 msgid "Move the selected file out of the trash"
 msgid_plural "Move the selected files out of the trash"
@@ -5147,7 +5177,7 @@ msgstr[3] "انقل الملفات المختارة خارج سلة المهمل
 msgstr[4] "انقل الملفات المختارة خارج سلة المهملات"
 msgstr[5] "انقل الملفات المختارة خارج سلة المهملات"
 
-#: ../src/file-manager/fm-directory-view.c:8366
+#: ../src/file-manager/fm-directory-view.c:8484
 #, c-format
 msgid "Move the selected item out of the trash to \"%s\""
 msgid_plural "Move the selected items out of the trash to \"%s\""
@@ -5158,7 +5188,7 @@ msgstr[3] "انقل العناصر المختارة من المهملات إلى
 msgstr[4] "انقل العناصر المختارة من المهملات إلى \"%s\""
 msgstr[5] "انقل العناصر المختارة من المهملات إلى \"%s\""
 
-#: ../src/file-manager/fm-directory-view.c:8370
+#: ../src/file-manager/fm-directory-view.c:8488
 #, c-format
 msgid "Move the selected item out of the trash"
 msgid_plural "Move the selected items out of the trash"
@@ -5169,146 +5199,146 @@ msgstr[3] "انقل العناصر المختارة خارج المهملات"
 msgstr[4] "انقل العناصر المختارة خارج المهملات"
 msgstr[5] "انقل العناصر المختارة خارج المهملات"
 
-#: ../src/file-manager/fm-directory-view.c:8496
-#: ../src/file-manager/fm-directory-view.c:8500
-#: ../src/file-manager/fm-directory-view.c:8698
-#: ../src/file-manager/fm-directory-view.c:8702
+#: ../src/file-manager/fm-directory-view.c:8614
+#: ../src/file-manager/fm-directory-view.c:8618
+#: ../src/file-manager/fm-directory-view.c:8816
+#: ../src/file-manager/fm-directory-view.c:8820
 msgid "Start the selected drive"
 msgstr "ابدأ السواقة المختارة"
 
-#: ../src/file-manager/fm-directory-view.c:8504
-#: ../src/file-manager/fm-directory-view.c:8706
+#: ../src/file-manager/fm-directory-view.c:8622
+#: ../src/file-manager/fm-directory-view.c:8824
 msgid "Connect to the selected drive"
 msgstr "أوقف السواقة المختار"
 
-#: ../src/file-manager/fm-directory-view.c:8507
-#: ../src/file-manager/fm-directory-view.c:8599
-#: ../src/file-manager/fm-directory-view.c:8709
+#: ../src/file-manager/fm-directory-view.c:8625
+#: ../src/file-manager/fm-directory-view.c:8717
+#: ../src/file-manager/fm-directory-view.c:8827
 msgid "_Start Multi-disk Drive"
 msgstr "اب_دأ سواقة متعددة الأقراص"
 
-#: ../src/file-manager/fm-directory-view.c:8508
-#: ../src/file-manager/fm-directory-view.c:8710
+#: ../src/file-manager/fm-directory-view.c:8626
+#: ../src/file-manager/fm-directory-view.c:8828
 msgid "Start the selected multi-disk drive"
 msgstr "ابدأ السواقة متعددة الأقراص المختارة"
 
-#: ../src/file-manager/fm-directory-view.c:8511
+#: ../src/file-manager/fm-directory-view.c:8629
 msgid "U_nlock Drive"
 msgstr "ا_فتح قفل السواقة"
 
-#: ../src/file-manager/fm-directory-view.c:8512
-#: ../src/file-manager/fm-directory-view.c:8714
+#: ../src/file-manager/fm-directory-view.c:8630
+#: ../src/file-manager/fm-directory-view.c:8832
 msgid "Unlock the selected drive"
 msgstr "افتح قفل السواقة المختارة"
 
-#: ../src/file-manager/fm-directory-view.c:8525
+#: ../src/file-manager/fm-directory-view.c:8643
 msgid "Stop the selected drive"
 msgstr "أوقف السواقة المختارة"
 
-#: ../src/file-manager/fm-directory-view.c:8528
-#: ../src/file-manager/fm-directory-view.c:8620
-#: ../src/file-manager/fm-directory-view.c:8730
-#: ../src/peony-places-sidebar.c:1893
+#: ../src/file-manager/fm-directory-view.c:8646
+#: ../src/file-manager/fm-directory-view.c:8738
+#: ../src/file-manager/fm-directory-view.c:8848
+#: ../src/peony-places-sidebar.c:2483
 msgid "_Safely Remove Drive"
 msgstr "أزِل السواقة بأ_مان"
 
-#: ../src/file-manager/fm-directory-view.c:8529
-#: ../src/file-manager/fm-directory-view.c:8731
+#: ../src/file-manager/fm-directory-view.c:8647
+#: ../src/file-manager/fm-directory-view.c:8849
 msgid "Safely remove the selected drive"
 msgstr "أزِل السواقة المختارة بأمان"
 
-#: ../src/file-manager/fm-directory-view.c:8532
-#: ../src/file-manager/fm-directory-view.c:8624
-#: ../src/file-manager/fm-directory-view.c:8734
+#: ../src/file-manager/fm-directory-view.c:8650
+#: ../src/file-manager/fm-directory-view.c:8742
+#: ../src/file-manager/fm-directory-view.c:8852
 msgid "_Disconnect"
 msgstr "ا_قطع الاتصال"
 
-#: ../src/file-manager/fm-directory-view.c:8533
-#: ../src/file-manager/fm-directory-view.c:8735
+#: ../src/file-manager/fm-directory-view.c:8651
+#: ../src/file-manager/fm-directory-view.c:8853
 msgid "Disconnect the selected drive"
 msgstr "اقطع السواقة المختارة"
 
-#: ../src/file-manager/fm-directory-view.c:8536
-#: ../src/file-manager/fm-directory-view.c:8628
-#: ../src/file-manager/fm-directory-view.c:8738
+#: ../src/file-manager/fm-directory-view.c:8654
+#: ../src/file-manager/fm-directory-view.c:8746
+#: ../src/file-manager/fm-directory-view.c:8856
 msgid "_Stop Multi-disk Drive"
 msgstr "أو_قف سواقة متعددة الأقراص"
 
-#: ../src/file-manager/fm-directory-view.c:8537
-#: ../src/file-manager/fm-directory-view.c:8739
+#: ../src/file-manager/fm-directory-view.c:8655
+#: ../src/file-manager/fm-directory-view.c:8857
 msgid "Stop the selected multi-disk drive"
 msgstr "أوقف السواقة متعددة الأقراص المختارة"
 
-#: ../src/file-manager/fm-directory-view.c:8540
-#: ../src/file-manager/fm-directory-view.c:8632
-#: ../src/file-manager/fm-directory-view.c:8742
-#: ../src/peony-places-sidebar.c:1906
+#: ../src/file-manager/fm-directory-view.c:8658
+#: ../src/file-manager/fm-directory-view.c:8750
+#: ../src/file-manager/fm-directory-view.c:8860
+#: ../src/peony-places-sidebar.c:2496
 msgid "_Lock Drive"
 msgstr "أ_وصد السواقة"
 
-#: ../src/file-manager/fm-directory-view.c:8541
-#: ../src/file-manager/fm-directory-view.c:8743
+#: ../src/file-manager/fm-directory-view.c:8659
+#: ../src/file-manager/fm-directory-view.c:8861
 msgid "Lock the selected drive"
 msgstr "أوصد السواقة المختارة"
 
-#: ../src/file-manager/fm-directory-view.c:8588
-#: ../src/file-manager/fm-directory-view.c:8592
+#: ../src/file-manager/fm-directory-view.c:8706
+#: ../src/file-manager/fm-directory-view.c:8710
 msgid "Start the drive associated with the open folder"
 msgstr "ابدأ السواقة المرتبطة بالمجلد المفتوح"
 
-#: ../src/file-manager/fm-directory-view.c:8596
+#: ../src/file-manager/fm-directory-view.c:8714
 msgid "Connect to the drive associated with the open folder"
 msgstr "صِل السواقة المرتبطة بالمجلد المفتوح"
 
-#: ../src/file-manager/fm-directory-view.c:8600
+#: ../src/file-manager/fm-directory-view.c:8718
 msgid "Start the multi-disk drive associated with the open folder"
 msgstr "ابدأ السواقة متعددة الأقراص المرتبطة بالمجلد المفتوح"
 
 #. stop() for type G_DRIVE_START_STOP_TYPE_PASSWORD is normally not used
-#: ../src/file-manager/fm-directory-view.c:8603
-#: ../src/file-manager/fm-directory-view.c:8713
-#: ../src/peony-places-sidebar.c:1905
+#: ../src/file-manager/fm-directory-view.c:8721
+#: ../src/file-manager/fm-directory-view.c:8831
+#: ../src/peony-places-sidebar.c:2495
 msgid "_Unlock Drive"
 msgstr "ا_فتح قفل السواقة"
 
-#: ../src/file-manager/fm-directory-view.c:8604
+#: ../src/file-manager/fm-directory-view.c:8722
 msgid "Unlock the drive associated with the open folder"
 msgstr "افتح قفل السواقة المرتبطة بالمجلد المفتوح"
 
-#: ../src/file-manager/fm-directory-view.c:8617
+#: ../src/file-manager/fm-directory-view.c:8735
 msgid "_Stop the drive associated with the open folder"
 msgstr "أو_قف السواقة المرتبطة بالمجلد المفتوح"
 
-#: ../src/file-manager/fm-directory-view.c:8621
+#: ../src/file-manager/fm-directory-view.c:8739
 msgid "Safely remove the drive associated with the open folder"
 msgstr "أزِل بأمان السواقة المرتبطة بالمجلد المفتوح"
 
-#: ../src/file-manager/fm-directory-view.c:8625
+#: ../src/file-manager/fm-directory-view.c:8743
 msgid "Disconnect the drive associated with the open folder"
 msgstr "افصل السواقة المرتبطة بالمجلد المفتوح"
 
-#: ../src/file-manager/fm-directory-view.c:8629
+#: ../src/file-manager/fm-directory-view.c:8747
 msgid "Stop the multi-disk drive associated with the open folder"
 msgstr "أوقف السواقة متعددة الأقراص المرتبطة بالمجلد المفتوح"
 
-#: ../src/file-manager/fm-directory-view.c:8633
+#: ../src/file-manager/fm-directory-view.c:8751
 msgid "Lock the drive associated with the open folder"
 msgstr "أوصِد السواقة المرتبطة بالمجلد المفتوح"
 
 #. add the "open in new window" menu item
-#: ../src/file-manager/fm-directory-view.c:8812
-#: ../src/file-manager/fm-directory-view.c:9126
-#: ../src/file-manager/fm-tree-view.c:1289 ../src/peony-places-sidebar.c:2789
+#: ../src/file-manager/fm-directory-view.c:8930
+#: ../src/file-manager/fm-directory-view.c:9244
+#: ../src/file-manager/fm-tree-view.c:1289 ../src/peony-places-sidebar.c:3410
 msgid "Open in New _Window"
 msgstr "افتح في _نافذة جديدة"
 
-#: ../src/file-manager/fm-directory-view.c:8814
-#: ../src/file-manager/fm-directory-view.c:9135
+#: ../src/file-manager/fm-directory-view.c:8932
+#: ../src/file-manager/fm-directory-view.c:9253
 msgid "Browse in New _Window"
 msgstr "تصفح في _نافذة جديدة"
 
-#: ../src/file-manager/fm-directory-view.c:8820
-#: ../src/file-manager/fm-directory-view.c:9145
+#: ../src/file-manager/fm-directory-view.c:8938
+#: ../src/file-manager/fm-directory-view.c:9263
 msgid "_Browse Folder"
 msgid_plural "_Browse Folders"
 msgstr[0] "_تصفح المجلد"
@@ -5318,31 +5348,31 @@ msgstr[3] "_تصفح المجلدات"
 msgstr[4] "_تصفح المجلدات"
 msgstr[5] "_تصفح المجلدات"
 
-#: ../src/file-manager/fm-directory-view.c:8837
-#: ../src/file-manager/fm-directory-view.c:9174
+#: ../src/file-manager/fm-directory-view.c:8955
+#: ../src/file-manager/fm-directory-view.c:9292
 msgid "Browse in New _Tab"
 msgstr "تصفح في _لسان جديد"
 
-#: ../src/file-manager/fm-directory-view.c:8886
-#: ../src/file-manager/fm-directory-view.c:9215
-#: ../src/file-manager/fm-directory-view.c:9250
+#: ../src/file-manager/fm-directory-view.c:9004
+#: ../src/file-manager/fm-directory-view.c:9333
+#: ../src/file-manager/fm-directory-view.c:9368
 msgid "_Delete Permanently"
 msgstr "ا_حذف نهائيا"
 
-#: ../src/file-manager/fm-directory-view.c:8887
+#: ../src/file-manager/fm-directory-view.c:9005
 msgid "Delete the open folder permanently"
 msgstr "احذف المجلد المفتوح نهائيا"
 
-#: ../src/file-manager/fm-directory-view.c:8891
+#: ../src/file-manager/fm-directory-view.c:9009
 msgid "Move the open folder to the Trash"
 msgstr "انقل المجلد المفتوح للمهملات"
 
-#: ../src/file-manager/fm-directory-view.c:9073
+#: ../src/file-manager/fm-directory-view.c:9191
 #, c-format
 msgid "_Open With %s"
 msgstr "ا_فتح باستخدام %s"
 
-#: ../src/file-manager/fm-directory-view.c:9128
+#: ../src/file-manager/fm-directory-view.c:9246
 #, c-format
 msgid "Open in %'d New _Window"
 msgid_plural "Open in %'d New _Windows"
@@ -5353,7 +5383,7 @@ msgstr[3] "افتح في %I'd ألسنة جديدة"
 msgstr[4] "افتح في %I'd لسانا جديدا"
 msgstr[5] "افتح في %I'd لسان جديد"
 
-#: ../src/file-manager/fm-directory-view.c:9137
+#: ../src/file-manager/fm-directory-view.c:9255
 #, c-format
 msgid "Browse in %'d New _Window"
 msgid_plural "Browse in %'d New _Windows"
@@ -5364,7 +5394,7 @@ msgstr[3] "تصفح في %I'd _نوافذ جديدة"
 msgstr[4] "تصفح في %I'd _نافذة جديدة"
 msgstr[5] "تصفح في %I'd _نافذة جديدة"
 
-#: ../src/file-manager/fm-directory-view.c:9167
+#: ../src/file-manager/fm-directory-view.c:9285
 #, c-format
 msgid "Open in %'d New _Tab"
 msgid_plural "Open in %'d New _Tabs"
@@ -5375,7 +5405,7 @@ msgstr[3] "افتح في %I'd أ_لسنة جديدة"
 msgstr[4] "افتح في %I'd _لسانا جديدا"
 msgstr[5] "افتح في %I'd _لسان جديد"
 
-#: ../src/file-manager/fm-directory-view.c:9176
+#: ../src/file-manager/fm-directory-view.c:9294
 #, c-format
 msgid "Browse in %'d New _Tab"
 msgid_plural "Browse in %'d New _Tabs"
@@ -5386,64 +5416,64 @@ msgstr[3] "تصفح في %I'd أ_لسنة جديدة"
 msgstr[4] "تصفح في %I'd _لسانا جديدا"
 msgstr[5] "تصفح في %I'd _لسان جديد"
 
-#: ../src/file-manager/fm-directory-view.c:9216
+#: ../src/file-manager/fm-directory-view.c:9334
 msgid "Delete all selected items permanently"
 msgstr "احذف كل العناصر المختارة نهائيا"
 
-#: ../src/file-manager/fm-directory-view.c:9373
+#: ../src/file-manager/fm-directory-view.c:9491
 msgid "View or modify the properties of the open folder"
 msgstr "اعرض أو عدّل خصائص المجلد المفتوح"
 
-#: ../src/file-manager/fm-directory-view.c:10676
+#: ../src/file-manager/fm-directory-view.c:10794
 msgid "Download location?"
 msgstr "أأنزّل المكان؟"
 
-#: ../src/file-manager/fm-directory-view.c:10679
+#: ../src/file-manager/fm-directory-view.c:10797
 msgid "You can download it or make a link to it."
 msgstr "لا يمكنك تنزيله أو عمل وصلة إليه."
 
-#: ../src/file-manager/fm-directory-view.c:10682
+#: ../src/file-manager/fm-directory-view.c:10800
 msgid "Make a _Link"
 msgstr "ا_عمل وصلة"
 
-#: ../src/file-manager/fm-directory-view.c:10686
+#: ../src/file-manager/fm-directory-view.c:10804
 msgid "_Download"
 msgstr "_نزّل"
 
-#: ../src/file-manager/fm-directory-view.c:10847
-#: ../src/file-manager/fm-directory-view.c:10906
-#: ../src/file-manager/fm-directory-view.c:11011
+#: ../src/file-manager/fm-directory-view.c:10965
+#: ../src/file-manager/fm-directory-view.c:11024
+#: ../src/file-manager/fm-directory-view.c:11129
 msgid "Drag and drop is not supported."
 msgstr "السحب والإفلات غير مدعوم."
 
-#: ../src/file-manager/fm-directory-view.c:10848
+#: ../src/file-manager/fm-directory-view.c:10966
 msgid "Drag and drop is only supported on local file systems."
 msgstr "السحب والإفلات مدعوم في أنظمة الملفات المحلية فقط."
 
-#: ../src/file-manager/fm-directory-view.c:10907
-#: ../src/file-manager/fm-directory-view.c:11012
+#: ../src/file-manager/fm-directory-view.c:11025
+#: ../src/file-manager/fm-directory-view.c:11130
 msgid "An invalid drag type was used."
 msgstr "استُخدم نوع سحب غير صحيح."
 
 #. Translator: This is the filename used for when you dnd text to a directory
-#: ../src/file-manager/fm-directory-view.c:11089
+#: ../src/file-manager/fm-directory-view.c:11207
 msgid "dropped text.txt"
 msgstr "أُفْلِت الملف text.txt "
 
 #. Translator: This is the filename used for when you dnd raw
 #. * data to a directory, if the source didn't supply a name.
 #.
-#: ../src/file-manager/fm-directory-view.c:11134
+#: ../src/file-manager/fm-directory-view.c:11252
 msgid "dropped data"
 msgstr "بيانات مفلتة"
 
 #. Reset to default info
-#: ../src/file-manager/fm-directory-view.c:11521
+#: ../src/file-manager/fm-directory-view.c:11639
 msgid "Undo"
 msgstr "تراجع"
 
 #. Reset to default info
-#: ../src/file-manager/fm-directory-view.c:11539
+#: ../src/file-manager/fm-directory-view.c:11662
 msgid "Redo"
 msgstr "أعِد"
 
@@ -5567,7 +5597,7 @@ msgstr "يجري تغيير اسم \"%s\" إلى \"%s\"."
 #. translators: this is used in the view selection dropdown
 #. * of navigation windows and in the preferences dialog
 #: ../src/file-manager/fm-icon-container.c:649
-#: ../src/file-manager/fm-icon-view.c:3456
+#: ../src/file-manager/fm-icon-view.c:3419
 #: ../src/peony-file-management-properties.ui.h:1
 msgid "Icon View"
 msgstr "منظور الأيقونات"
@@ -5744,43 +5774,43 @@ msgid "pointing at \"%s\""
 msgstr "تُشير إلى \"%s\""
 
 #. translators: this is used in the view menu
-#: ../src/file-manager/fm-icon-view.c:3458
+#: ../src/file-manager/fm-icon-view.c:3421
 msgid "_Icons"
 msgstr "أي_قونات"
 
-#: ../src/file-manager/fm-icon-view.c:3459
+#: ../src/file-manager/fm-icon-view.c:3422
 msgid "The icon view encountered an error."
 msgstr "واجه منظور الأيقونات خطأ."
 
-#: ../src/file-manager/fm-icon-view.c:3460
+#: ../src/file-manager/fm-icon-view.c:3423
 msgid "The icon view encountered an error while starting up."
 msgstr "واجه منظور الأيقونات خطأ أثناء بدء التشغيل."
 
-#: ../src/file-manager/fm-icon-view.c:3461
+#: ../src/file-manager/fm-icon-view.c:3424
 msgid "Display this location with the icon view."
 msgstr "اعرض شريط المكان هذا مع منظور الأيقونات."
 
 #. translators: this is used in the view selection dropdown
 #. * of navigation windows and in the preferences dialog
-#: ../src/file-manager/fm-icon-view.c:3471
+#: ../src/file-manager/fm-icon-view.c:3434
 #: ../src/peony-file-management-properties.ui.h:3
 msgid "Compact View"
 msgstr "منظور متضام"
 
 #. translators: this is used in the view menu
-#: ../src/file-manager/fm-icon-view.c:3473
+#: ../src/file-manager/fm-icon-view.c:3436
 msgid "_Compact"
 msgstr "_متضام"
 
-#: ../src/file-manager/fm-icon-view.c:3474
+#: ../src/file-manager/fm-icon-view.c:3437
 msgid "The compact view encountered an error."
 msgstr "واجه المنظور المتضام خطأ."
 
-#: ../src/file-manager/fm-icon-view.c:3475
+#: ../src/file-manager/fm-icon-view.c:3438
 msgid "The compact view encountered an error while starting up."
 msgstr "واجه منظور المتضام خطأ أثناء بدء التشغيل."
 
-#: ../src/file-manager/fm-icon-view.c:3476
+#: ../src/file-manager/fm-icon-view.c:3439
 msgid "Display this location with the compact view."
 msgstr "اعرض شريط المكان هذا مع المنظور المتضام."
 
@@ -5789,55 +5819,62 @@ msgstr "اعرض شريط المكان هذا مع المنظور المتضام
 msgid "(Empty)"
 msgstr "(فارغ)"
 
-#. we will wait for child progress finished.
+#.
+#. set_pdf_preview_widget_file_by_filename(window->details->pdf_view,(char*)data);
+#. gtk_widget_hide (window->details->empty_window);
+#. gtk_widget_show_all (window->details->pdf_swindow);
+#. gtk_widget_hide (window->details->test_widget);
+#. gtk_widget_hide (window->details->web_swindow);
+#.
 #: ../src/file-manager/fm-list-model.c:432
 #: ../src/file-manager/fm-tree-model.c:1358
-#: ../src/peony-navigation-window.c:1575 ../src/peony-window-slot.c:208
+#: ../src/peony-navigation-window.c:1659 ../src/peony-navigation-window.c:1684
+#: ../src/peony-window-slot.c:216
 msgid "Loading..."
 msgstr "يجري التحميل..."
 
 #. translators: this is used in the view selection dropdown
 #. * of navigation windows and in the preferences dialog
-#: ../src/file-manager/fm-list-view.c:1957
-#: ../src/file-manager/fm-list-view.c:3577
+#: ../src/file-manager/fm-list-view.c:1915
+#: ../src/file-manager/fm-list-view.c:3535
 #: ../src/peony-file-management-properties.ui.h:2
 msgid "List View"
 msgstr "منظور القائمة"
 
-#: ../src/file-manager/fm-list-view.c:2651
+#: ../src/file-manager/fm-list-view.c:2609
 #, c-format
 msgid "%s Visible Columns"
 msgstr "‏%s أعمدة مرئية"
 
-#: ../src/file-manager/fm-list-view.c:2670
+#: ../src/file-manager/fm-list-view.c:2628
 msgid "Choose the order of information to appear in this folder:"
 msgstr "اختر ترتيب ظهور المعلومات في هذا المجلد."
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-list-view.c:2728
+#: ../src/file-manager/fm-list-view.c:2686
 msgid "Visible _Columns..."
 msgstr "الأ_عمدة المرئية..."
 
 #. tooltip
-#: ../src/file-manager/fm-list-view.c:2729
+#: ../src/file-manager/fm-list-view.c:2687
 msgid "Select the columns visible in this folder"
 msgstr "اختر أي الأعمدة ستكون مرئية في هذا المجلد"
 
 #. translators: this is used in the view menu
-#: ../src/file-manager/fm-list-view.c:3579
+#: ../src/file-manager/fm-list-view.c:3537
 msgid "_List"
 msgstr "_قائمة"
 
-#: ../src/file-manager/fm-list-view.c:3580
+#: ../src/file-manager/fm-list-view.c:3538
 msgid "The list view encountered an error."
 msgstr "واجه منظور القائمة خطأ"
 
-#: ../src/file-manager/fm-list-view.c:3581
+#: ../src/file-manager/fm-list-view.c:3539
 msgid "The list view encountered an error while starting up."
 msgstr "واجه منظور القائمة خطأ أثناء بدء التشغيل."
 
-#: ../src/file-manager/fm-list-view.c:3582
+#: ../src/file-manager/fm-list-view.c:3540
 msgid "Display this location with the list view."
 msgstr "اعرض شريط المكان هذا مع منظور القوائم."
 
@@ -5960,7 +5997,7 @@ msgid "Link target:"
 msgstr "وِجهة الوصلة:"
 
 #: ../src/file-manager/fm-properties-window.c:3273
-#: ../src/peony-location-bar.c:59
+#: ../src/peony-location-bar.c:62
 msgid "Location:"
 msgstr "المكان:"
 
@@ -6167,7 +6204,8 @@ msgstr "يجري إنشاء نافذة الخصائص."
 msgid "Select Custom Icon"
 msgstr "اختر أيقونة مخصصة"
 
-#: ../src/file-manager/fm-tree-view.c:1440 ../src/peony-places-sidebar.c:669
+#: ../src/file-manager/fm-tree-view.c:1440 ../src/peony-location-bar.c:1464
+#: ../src/peony-places-sidebar.c:908
 msgid "File System"
 msgstr "نظام الملفات"
 
@@ -6205,8 +6243,8 @@ msgstr ""
 "رجاء قم بإنشاء هذه المجلدات قبل تشغيل كاجا ، أو بضبط التصاريح حتى يتمكن كاجا "
 "من انشائها."
 
-#: ../src/peony-application.c:1362 ../src/peony-places-sidebar.c:2290
-#: ../src/peony-places-sidebar.c:2324 ../src/peony-places-sidebar.c:2359
+#: ../src/peony-application.c:1362 ../src/peony-places-sidebar.c:2911
+#: ../src/peony-places-sidebar.c:2945 ../src/peony-places-sidebar.c:2980
 #, c-format
 msgid "Unable to eject %s"
 msgstr "تعذّر إخراج %s"
@@ -6319,7 +6357,7 @@ msgstr ""
 
 #: ../src/peony-bookmarks-window.c:158
 #: ../src/peony-file-management-properties.c:237
-#: ../src/peony-property-browser.c:1667 ../src/peony-window-menus.c:592
+#: ../src/peony-property-browser.c:1667 ../src/peony-window-menus.c:735
 #, c-format
 msgid ""
 "There was an error displaying help: \n"
@@ -6488,8 +6526,8 @@ msgstr "أضف _علامة"
 msgid "Bookmark Name:"
 msgstr "اسم العلامة:"
 
-#: ../src/peony-desktop-window.c:87 ../src/peony-desktop-window.c:267
-#: ../src/peony-pathbar.c:1399 ../src/peony-places-sidebar.c:544
+#: ../src/peony-desktop-window.c:97 ../src/peony-desktop-window.c:280
+#: ../src/peony-pathbar.c:1399 ../src/peony-places-sidebar.c:738
 msgid "Desktop"
 msgstr "سطح المكتب"
 
@@ -7115,11 +7153,114 @@ msgstr "لا يمكنك استخدام أكثر من أيقونة مخصصة و�
 msgid "You can only use images as custom icons."
 msgstr "لا يمكنك إلا استخدام الصور كأيقونات مخصصة."
 
-#: ../src/peony-location-bar.c:60
+#: ../src/peony-kdisk-format.c:78
+msgid "Formatting is in progress, do you want to continue?"
+msgstr ""
+
+#: ../src/peony-kdisk-format.c:99 ../src/peony-kdisk-format.c:548
+#: ../src/peony-kdisk-format.c:686
+msgid "Warning"
+msgstr ""
+
+#: ../src/peony-kdisk-format.c:197
+msgid "Capatity:"
+msgstr ""
+
+#: ../src/peony-kdisk-format.c:198
+#, fuzzy
+msgid "File System:"
+msgstr "نظام الملفات"
+
+#: ../src/peony-kdisk-format.c:199
+#, fuzzy
+msgid "Volume Label:"
+msgstr "الجزء:"
+
+#: ../src/peony-kdisk-format.c:200
+msgid "Formatting Options:"
+msgstr ""
+
+#: ../src/peony-kdisk-format.c:216
+msgid "Erase(Need more time)"
+msgstr ""
+
+#: ../src/peony-kdisk-format.c:226
+msgid "Begin"
+msgstr ""
+
+#: ../src/peony-kdisk-format.c:229 ../src/peony-kdisk-format.c:346
+#: ../src/peony-kdisk-format.c:405
+#, fuzzy
+msgid "Close"
+msgstr "أ_غلق"
+
+#: ../src/peony-kdisk-format.c:257 ../src/peony-kdisk-format.c:564
+msgid "The path is empty"
+msgstr ""
+
+#: ../src/peony-kdisk-format.c:264
+#, fuzzy, c-format
+msgid "can't find %s"
+msgstr "تعذر إيجاد '%s'"
+
+#: ../src/peony-kdisk-format.c:285 ../src/peony-kdisk-format.c:356
+#: ../src/peony-kdisk-format.c:414
+#, fuzzy, c-format
+msgid "format %s volume"
+msgstr "هيّء الجزء المختار"
+
+#: ../src/peony-kdisk-format.c:289 ../src/peony-kdisk-format.c:360
+#: ../src/peony-kdisk-format.c:418
+#, fuzzy, c-format
+msgid "format %s"
+msgstr "_هيّء"
+
+#: ../src/peony-kdisk-format.c:330 ../src/peony-kdisk-format.c:389
+msgid "format succeed!"
+msgstr ""
+
+#: ../src/peony-kdisk-format.c:339 ../src/peony-kdisk-format.c:398
+msgid "format failed!"
+msgstr ""
+
+#: ../src/peony-kdisk-format.c:437
+#, c-format
+msgid "Current progress is %s%s"
+msgstr ""
+
+#: ../src/peony-kdisk-format.c:478 ../src/peony-kdisk-format.c:633
+#, fuzzy, c-format
+msgid "Unable to unmount %s volume"
+msgstr "تعذر فصْل %V"
+
+#: ../src/peony-kdisk-format.c:482 ../src/peony-kdisk-format.c:637
+#, fuzzy, c-format
+msgid "Unable to unmount %s"
+msgstr "تعذر فصْل %V"
+
+#: ../src/peony-kdisk-format.c:518
+msgid "Erase the device will takes a long time,do you want to continue?"
+msgstr ""
+
+#: ../src/peony-kdisk-format.c:527
+msgid ""
+"Formatting will delete all data,are you sure you want to format the device?"
+msgstr ""
+
+#: ../src/peony-kdisk-format.c:666
+msgid "Formatting is in progress, is it canceled?"
+msgstr ""
+
+#: ../src/peony-kdisk-format.c:720
+#, fuzzy
+msgid "Format Volume"
+msgstr "هيّء الجزء المختار"
+
+#: ../src/peony-location-bar.c:63
 msgid "Go To:"
 msgstr "اذهب إلى:"
 
-#: ../src/peony-location-bar.c:226
+#: ../src/peony-location-bar.c:269
 #, c-format
 msgid "Do you want to view %d location?"
 msgid_plural "Do you want to view %d locations?"
@@ -7129,6 +7270,25 @@ msgstr[2] "هل تريد استعراض مكانين؟"
 msgstr[3] "هل تريد استعراض %Id أماكن؟"
 msgstr[4] "هل تريد استعراض %Id مكانًا؟"
 msgstr[5] "هل تريد استعراض %Id مكان؟"
+
+#: ../src/peony-location-bar.c:1487
+msgid "recent"
+msgstr ""
+
+#: ../src/peony-location-bar.c:1490
+#, fuzzy
+msgid "trash"
+msgstr "المهملات"
+
+#: ../src/peony-location-bar.c:1493
+#, fuzzy
+msgid "computer"
+msgstr "الحاسوب"
+
+#: ../src/peony-location-bar.c:1496
+#, fuzzy
+msgid "search:"
+msgstr "ابحث:"
 
 #: ../src/peony-location-dialog.c:157
 msgid "Open Location"
@@ -7414,17 +7574,19 @@ msgstr "_لسان جديد"
 msgid "_Close Tab"
 msgstr "أ_غلق اللسان"
 
-#: ../src/peony-navigation-window.c:898
+#: ../src/peony-navigation-window.c:969
 #, c-format
 msgid "%s - File Browser"
 msgstr "‏%s - متصفح الملفات"
 
-#: ../src/peony-navigation-window.c:1516 ../src/peony-navigation-window.c:1625
-#: ../src/peony-navigation-window.c:1636
+#. printf ("null\n\n\n");
+#: ../src/peony-navigation-window.c:1606 ../src/peony-navigation-window.c:1753
+#: ../src/peony-navigation-window.c:1764
 msgid "Select the file you want to preview"
 msgstr ""
 
-#: ../src/peony-navigation-window.c:1582
+#. printf("can't preview this file\n");
+#: ../src/peony-navigation-window.c:1686 ../src/peony-navigation-window.c:1696
 msgid "Can't preview this file"
 msgstr ""
 
@@ -7440,103 +7602,109 @@ msgstr "ملاحظات"
 msgid "Show Notes"
 msgstr "أظهر الملاحظات"
 
-#: ../src/peony-places-sidebar.c:534
+#: ../src/peony-places-sidebar.c:728
 #, fuzzy
 msgid "Favorite"
 msgstr "كتابة"
 
-#: ../src/peony-places-sidebar.c:546
+#: ../src/peony-places-sidebar.c:740
 msgid "Open the contents of your desktop in a folder"
 msgstr "افتح محتويات سطح المكتب في مجلد"
 
-#: ../src/peony-places-sidebar.c:561
+#: ../src/peony-places-sidebar.c:755
 msgid "Open the trash"
 msgstr "افتح المهملات"
 
-#: ../src/peony-places-sidebar.c:572
+#: ../src/peony-places-sidebar.c:766
 msgid "Recent"
 msgstr ""
 
-#: ../src/peony-places-sidebar.c:574
+#: ../src/peony-places-sidebar.c:768
 #, fuzzy
 msgid "Open the recent"
 msgstr "افتح المجلد الأب"
 
-#: ../src/peony-places-sidebar.c:586
+#: ../src/peony-places-sidebar.c:808 ../src/peony-places-sidebar.c:1998
+#: ../src/peony-places-sidebar.c:2256
+#, fuzzy
+msgid "Open the folder"
+msgstr "افتح المجلد الأب"
+
+#: ../src/peony-places-sidebar.c:825
 msgid "Personal"
 msgstr ""
 
-#: ../src/peony-places-sidebar.c:661
+#: ../src/peony-places-sidebar.c:900
 #, fuzzy
 msgid "My Computer"
 msgstr "الحاسوب"
 
-#: ../src/peony-places-sidebar.c:671
+#: ../src/peony-places-sidebar.c:910
 msgid "Open the contents of the File System"
 msgstr "افتح محتويات نظام الملفات"
 
-#: ../src/peony-places-sidebar.c:726 ../src/peony-places-sidebar.c:754
+#: ../src/peony-places-sidebar.c:965 ../src/peony-places-sidebar.c:993
 #, c-format
 msgid "Mount and open %s"
 msgstr "أوصل وافتح %s"
 
-#: ../src/peony-places-sidebar.c:899
+#: ../src/peony-places-sidebar.c:1138
 msgid "Browse Network"
 msgstr "استعرض الشبكة"
 
-#: ../src/peony-places-sidebar.c:901
+#: ../src/peony-places-sidebar.c:1140
 msgid "Browse the contents of the network"
 msgstr "تصفّح محتويات الشبكة"
 
 #. start() for type G_DRIVE_START_STOP_TYPE_SHUTDOWN is normally not used
-#: ../src/peony-places-sidebar.c:1892
+#: ../src/peony-places-sidebar.c:2482
 msgid "_Power On"
 msgstr "_شغّل"
 
-#: ../src/peony-places-sidebar.c:1896
+#: ../src/peony-places-sidebar.c:2486
 msgid "_Connect Drive"
 msgstr "أ_وصل السواقة"
 
-#: ../src/peony-places-sidebar.c:1897
+#: ../src/peony-places-sidebar.c:2487
 msgid "_Disconnect Drive"
 msgstr "ا_فصل السواقة"
 
-#: ../src/peony-places-sidebar.c:1900
+#: ../src/peony-places-sidebar.c:2490
 msgid "_Start Multi-disk Device"
 msgstr "اب_دأ السواقة متعددة الأقراص"
 
-#: ../src/peony-places-sidebar.c:1901
+#: ../src/peony-places-sidebar.c:2491
 msgid "_Stop Multi-disk Device"
 msgstr "أو_قف السواقة متعددة الأقراص"
 
-#: ../src/peony-places-sidebar.c:1987 ../src/peony-places-sidebar.c:2595
+#: ../src/peony-places-sidebar.c:2577 ../src/peony-places-sidebar.c:3216
 #, c-format
 msgid "Unable to start %s"
 msgstr "تعذّر بدء %s"
 
-#: ../src/peony-places-sidebar.c:2523
+#: ../src/peony-places-sidebar.c:3144
 #, c-format
 msgid "Unable to poll %s for media changes"
 msgstr "تعذّر جس %s للتأكد من التغيرات في الوسائط"
 
-#: ../src/peony-places-sidebar.c:2655
+#: ../src/peony-places-sidebar.c:3276
 #, c-format
 msgid "Unable to stop %s"
 msgstr "تعذّر إيقاف %s"
 
-#: ../src/peony-places-sidebar.c:2797
+#: ../src/peony-places-sidebar.c:3418
 msgid "Remove"
 msgstr "احذف"
 
-#: ../src/peony-places-sidebar.c:2806
+#: ../src/peony-places-sidebar.c:3427
 msgid "Rename..."
 msgstr "غيّر الاسم..."
 
-#: ../src/peony-places-sidebar.c:3498
+#: ../src/peony-places-sidebar.c:4120
 msgid "Places"
 msgstr "أماكن"
 
-#: ../src/peony-places-sidebar.c:3504
+#: ../src/peony-places-sidebar.c:4126
 msgid "Show Places"
 msgstr "اعرض الأماكن"
 
@@ -7803,7 +7971,7 @@ msgstr "نتائج البحث"
 msgid "Search results"
 msgstr "نتائج البحث"
 
-#: ../src/peony-search-bar.c:202
+#: ../src/peony-search-bar.c:248
 msgid "Search:"
 msgstr "ابحث:"
 
@@ -7935,11 +8103,11 @@ msgstr ""
 "خطأ: %s\n"
 "رجاء اختر عارضا آخر ثم أعد المحاولة."
 
-#: ../src/peony-window-menus.c:195
+#: ../src/peony-window-menus.c:316
 msgid "Go to the location specified by this bookmark"
 msgstr "اذهب إلى الموقع الذي تحدده هذه العلامة"
 
-#: ../src/peony-window-menus.c:518
+#: ../src/peony-window-menus.c:661
 msgid ""
 "Peony is free software; you can redistribute it and/or modify it under the "
 "terms of the GNU General Public License as published by the Free Software "
@@ -7950,7 +8118,7 @@ msgstr ""
 "العامة لجنو والتي نشرتها منظمة البرمجيات الحرة؛ سواء الإصدارة 2 من الرخصة "
 "(أو أي إصدارة بعدها حسب رغبتك)."
 
-#: ../src/peony-window-menus.c:522
+#: ../src/peony-window-menus.c:665
 msgid ""
 "Peony is distributed in the hope that it will be useful, but WITHOUT ANY "
 "WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS "
@@ -7961,7 +8129,7 @@ msgstr ""
 "ضمان يضمن صلاحية العرض في السوق أو توافقه مع أي استخدام محدد. يمكنك مراجعة "
 "الرخصة العمومية العامة لجنو لمزيد من التفاصيل."
 
-#: ../src/peony-window-menus.c:526
+#: ../src/peony-window-menus.c:669
 msgid ""
 "You should have received a copy of the GNU General Public License along with "
 "Peony; if not, write to the Free Software Foundation, Inc., 51 Franklin "
@@ -7973,12 +8141,12 @@ msgstr ""
 "منظمة البرمجيات الحرة ، 51 شارع فرانكلين ، الطابق الرابع ، بوسطن ، MA "
 "02110-1301 ، الولايات المتحدة الأمريكية.\""
 
-#: ../src/peony-window-menus.c:538
+#: ../src/peony-window-menus.c:681
 msgid ""
 "Peony lets you organize files and folders, both on your computer and online."
 msgstr "يمكنك كاجا من تنظيم ملفاتك ومجلداتك على حاسوبك أو عبر الإنترنت."
 
-#: ../src/peony-window-menus.c:541
+#: ../src/peony-window-menus.c:684
 #, fuzzy
 msgid ""
 "Copyright © 1999-2009 The Nautilus authors\n"
@@ -7992,7 +8160,7 @@ msgstr ""
 #. * which will be displayed at the bottom of the about
 #. * box to give credit to the translator(s).
 #.
-#: ../src/peony-window-menus.c:552
+#: ../src/peony-window-menus.c:695
 msgid "translator-credits"
 msgstr ""
 "فريق عيون العرب للترجمة http://www.arabeyes.org :\n"
@@ -8008,208 +8176,208 @@ msgstr ""
 "مراجعة و إتمام بواسطة عيون العرب http://arabeyes.org و مجتمع لينكس العربي "
 "http://linuxac.org عام 1434 بإشراف مصعب الزعبي moceap@hotmail.com"
 
-#: ../src/peony-window-menus.c:555
+#: ../src/peony-window-menus.c:698
 msgid "UKUI Web Site"
 msgstr "موقع متّة"
 
 #. name, stock id, label
-#: ../src/peony-window-menus.c:808
+#: ../src/peony-window-menus.c:951
 msgid "_File"
 msgstr "_ملف"
 
 #. name, stock id, label
-#: ../src/peony-window-menus.c:809
+#: ../src/peony-window-menus.c:952
 msgid "_Edit"
 msgstr "تح_رير"
 
 #. name, stock id, label
-#: ../src/peony-window-menus.c:810
+#: ../src/peony-window-menus.c:953
 msgid "_View"
 msgstr "_عرض"
 
 #. name, stock id, label
-#: ../src/peony-window-menus.c:811
+#: ../src/peony-window-menus.c:954
 msgid "_Help"
 msgstr "م_ساعدة"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/peony-window-menus.c:813
+#: ../src/peony-window-menus.c:956
 msgid "_Close"
 msgstr "أ_غلق"
 
 #. tooltip
-#: ../src/peony-window-menus.c:814
+#: ../src/peony-window-menus.c:957
 msgid "Close this folder"
 msgstr "أغلق هذا المجلد"
 
-#: ../src/peony-window-menus.c:819
+#: ../src/peony-window-menus.c:962
 msgid "_Backgrounds and Emblems..."
 msgstr "_خلفيات و شعارات..."
 
-#: ../src/peony-window-menus.c:820
+#: ../src/peony-window-menus.c:963
 msgid ""
 "Display patterns, colors, and emblems that can be used to customize "
 "appearance"
 msgstr "اعرض الأنماط و الألوان و الشعارات التي يمكن استخدامها لتخصيص المظهر"
 
-#: ../src/peony-window-menus.c:825
+#: ../src/peony-window-menus.c:968
 msgid "Prefere_nces"
 msgstr "الت_فضيلات"
 
-#: ../src/peony-window-menus.c:826
+#: ../src/peony-window-menus.c:969
 msgid "Edit Peony preferences"
 msgstr "حرّر تفضيلات كاجا"
 
 #. name, stock id, label
-#: ../src/peony-window-menus.c:829
+#: ../src/peony-window-menus.c:972
 msgid "Open _Parent"
 msgstr "افتح ال_أب"
 
-#: ../src/peony-window-menus.c:830
+#: ../src/peony-window-menus.c:973
 msgid "Open the parent folder"
 msgstr "افتح المجلد الأب"
 
 #. tooltip
-#: ../src/peony-window-menus.c:839
+#: ../src/peony-window-menus.c:982
 msgid "Stop loading the current location"
 msgstr "أوقف تحميل الأماكن الحالية"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/peony-window-menus.c:843
+#: ../src/peony-window-menus.c:986
 msgid "_Reload"
 msgstr "أع_د التحميل"
 
 #. tooltip
-#: ../src/peony-window-menus.c:844
+#: ../src/peony-window-menus.c:987
 msgid "Reload the current location"
 msgstr "أعِد تحميل المجلد الحالي"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/peony-window-menus.c:848
+#: ../src/peony-window-menus.c:991
 msgid "_Contents"
 msgstr "الم_حتويات"
 
 #. tooltip
-#: ../src/peony-window-menus.c:849
+#: ../src/peony-window-menus.c:992
 msgid "Display Peony help"
 msgstr "اعرض مساعدة كاجا"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/peony-window-menus.c:853
+#: ../src/peony-window-menus.c:996
 msgid "_About"
 msgstr "_عنْ"
 
 #. tooltip
-#: ../src/peony-window-menus.c:854
+#: ../src/peony-window-menus.c:997
 msgid "Display credits for the creators of Peony"
 msgstr "اعرض المساهمين في إنشاء كاجا"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/peony-window-menus.c:858
+#: ../src/peony-window-menus.c:1001
 msgid "Zoom _In"
 msgstr "_قرّب"
 
 #. tooltip
-#: ../src/peony-window-menus.c:859 ../src/peony-zoom-control.c:96
+#: ../src/peony-window-menus.c:1002 ../src/peony-zoom-control.c:96
 #: ../src/peony-zoom-control.c:384
 msgid "Increase the view size"
 msgstr "كبّر حجم المنظور"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/peony-window-menus.c:873
+#: ../src/peony-window-menus.c:1021
 msgid "Zoom _Out"
 msgstr "_بعّد"
 
 #. tooltip
-#: ../src/peony-window-menus.c:874 ../src/peony-zoom-control.c:97
+#: ../src/peony-window-menus.c:1022 ../src/peony-zoom-control.c:97
 #: ../src/peony-zoom-control.c:322
 msgid "Decrease the view size"
 msgstr "صغّر حجم المنظور"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/peony-window-menus.c:883
+#: ../src/peony-window-menus.c:1031
 msgid "Normal Si_ze"
 msgstr "ال_حجم عادي"
 
 #. tooltip
-#: ../src/peony-window-menus.c:884 ../src/peony-zoom-control.c:98
+#: ../src/peony-window-menus.c:1032 ../src/peony-zoom-control.c:98
 #: ../src/peony-zoom-control.c:342
 msgid "Use the normal view size"
 msgstr "استخدم الحجم العادي للمنظور"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/peony-window-menus.c:888
+#: ../src/peony-window-menus.c:1036
 msgid "Connect to _Server..."
 msgstr "اتصل ب_خادوم..."
 
 #. tooltip
-#: ../src/peony-window-menus.c:889
+#: ../src/peony-window-menus.c:1037
 msgid "Connect to a remote computer or shared disk"
 msgstr "تعذّر الاتصال بحاسوب بعيد أو قرص مشترك"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/peony-window-menus.c:898
+#: ../src/peony-window-menus.c:1046
 msgid "_Computer"
 msgstr "ال_حاسوب"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/peony-window-menus.c:903
+#: ../src/peony-window-menus.c:1051
 msgid "_Network"
 msgstr "ال_شبكة"
 
 #. tooltip
-#: ../src/peony-window-menus.c:904 ../src/ukui-network-scheme.desktop.in.h:2
+#: ../src/peony-window-menus.c:1052 ../src/ukui-network-scheme.desktop.in.h:2
 msgid "Browse bookmarked and local network locations"
 msgstr "تصفح مواقع الشبكة والمحلّية المعلّمة"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/peony-window-menus.c:908
+#: ../src/peony-window-menus.c:1056
 msgid "T_emplates"
 msgstr "_قوالب"
 
 #. tooltip
-#: ../src/peony-window-menus.c:909
+#: ../src/peony-window-menus.c:1057
 msgid "Open your personal templates folder"
 msgstr "افتح مجلّد قوالبك الشخصيّة"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/peony-window-menus.c:913
+#: ../src/peony-window-menus.c:1061
 msgid "_Trash"
 msgstr "ال_مهملات"
 
 #. tooltip
-#: ../src/peony-window-menus.c:914
+#: ../src/peony-window-menus.c:1062
 msgid "Open your personal trash folder"
 msgstr "افتح مجلّد المهملات الشخصي"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/peony-window-menus.c:922
+#: ../src/peony-window-menus.c:1070
 msgid "Show _Hidden Files"
 msgstr "أظهر الملفات ال_مخفيّة"
 
 #. tooltip
-#: ../src/peony-window-menus.c:923
+#: ../src/peony-window-menus.c:1071
 msgid "Toggle the display of hidden files in the current window"
 msgstr "بدّل عرض الملفّات المخفيّة في النّافذة الحاليّة"
 
-#: ../src/peony-window-menus.c:954
+#: ../src/peony-window-menus.c:1102
 msgid "_Up"
 msgstr "أ_على"
 
-#: ../src/peony-window-menus.c:957
+#: ../src/peony-window-menus.c:1105
 msgid "_Home"
 msgstr "ال_منزل"
 
