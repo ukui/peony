@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: MATE Desktop Environment\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-12-27 11:13+0800\n"
+"POT-Creation-Date: 2019-12-14 11:23+0800\n"
 "PO-Revision-Date: 2016-05-29 15:22+0000\n"
 "Last-Translator: Carlos Moreira\n"
 "Language-Team: Portuguese (http://www.transifex.com/mate/MATE/language/pt/)\n"
@@ -20,47 +20,19 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../gksu/libpeony-gksu.c:135
-msgid "Open as administrator"
-msgstr "Abrir como administrador"
-
-#: ../gksu/libpeony-gksu.c:136
-msgid "Opens the file with administrator privileges"
-msgstr "Abre o ficheiro com privilégios de administrador"
-
-#: ../gksu/libpeony-gksu.c:223
-msgid ""
-"<big><b>Unable to determine the program to run.</b></big>\n"
-"\n"
-"The item you selected cannot be open with administrator powers because the "
-"correct application cannot be determined."
-msgstr ""
-"<big><b>Incapaz de determinar o programa a executar.</b></big>\n"
-"\n"
-"O item selecionado não pode ser aberto com permissões de administrador "
-"porque a aplicação correta não pode ser determinada."
-
-#: ../gksu/libpeony-gksu.peony-extension.in.in.h:1
-msgid "Gksu"
-msgstr "Gksu"
-
-#: ../gksu/libpeony-gksu.peony-extension.in.in.h:2
-msgid "Privilege granting extension"
-msgstr "Extensão que garante privilégio"
-
-#: ../image-converter/peony-image-converter.c:120
+#: ../image-converter/peony-image-converter.c:121
 msgid "_Resize Images..."
 msgstr "_Redimensionar Imagens..."
 
-#: ../image-converter/peony-image-converter.c:121
+#: ../image-converter/peony-image-converter.c:122
 msgid "Resize each selected image"
 msgstr "Redimensionar as imagens selecionadas"
 
-#: ../image-converter/peony-image-converter.c:130
+#: ../image-converter/peony-image-converter.c:131
 msgid "Ro_tate Images..."
 msgstr "Ro_dar Imagens..."
 
-#: ../image-converter/peony-image-converter.c:131
+#: ../image-converter/peony-image-converter.c:132
 msgid "Rotate each selected image"
 msgstr "Rodar as imagens selecionadas"
 
@@ -151,29 +123,29 @@ msgstr "Redimensionar imediatamente"
 msgid "_Resize"
 msgstr "_Redimensionar"
 
-#: ../image-converter/peony-image-resizer.c:211
-#: ../image-converter/peony-image-rotator.c:208
-#: ../parchives/src/fr-window.c:6818
+#: ../image-converter/peony-image-resizer.c:212
+#: ../image-converter/peony-image-rotator.c:209
+#: ../parchives/src/fr-window.c:6819
 msgid "_Skip"
 msgstr "_Ignorar"
 
-#: ../image-converter/peony-image-resizer.c:213
-#: ../image-converter/peony-image-rotator.c:210
+#: ../image-converter/peony-image-resizer.c:214
+#: ../image-converter/peony-image-rotator.c:211
 msgid "_Retry"
 msgstr "Tenta_r novamente"
 
-#: ../image-converter/peony-image-resizer.c:291
+#: ../image-converter/peony-image-resizer.c:292
 #, c-format
 msgid "Resizing image: %d of %d"
 msgstr "A redimensionar: %d de %d"
 
-#: ../image-converter/peony-image-resizer.c:296
+#: ../image-converter/peony-image-resizer.c:297
 #, c-format
 msgid "<i>Resizing \"%s\"</i>"
 msgstr "<i>Redimensionar \"%s\"</i>"
 
-#: ../image-converter/peony-image-resizer.c:314
-#: ../image-converter/peony-image-rotator.c:313
+#: ../image-converter/peony-image-resizer.c:315
+#: ../image-converter/peony-image-rotator.c:314
 msgid "Please enter a valid filename suffix!"
 msgstr "Por favor indique um sufixo válido!"
 
@@ -209,12 +181,12 @@ msgstr "Rodar imediatamente"
 msgid "_Rotate"
 msgstr "_Rodar"
 
-#: ../image-converter/peony-image-rotator.c:290
+#: ../image-converter/peony-image-rotator.c:291
 #, c-format
 msgid "Rotating image: %d of %d"
 msgstr "A rodar imagem: %d de %d"
 
-#: ../image-converter/peony-image-rotator.c:295
+#: ../image-converter/peony-image-rotator.c:296
 #, c-format
 msgid "<i>Rotating \"%s\"</i>"
 msgstr "<i>Rodar \"%s\"</i>"
@@ -227,25 +199,25 @@ msgstr "Conversor de Imagens"
 msgid "Rotate and resize images"
 msgstr "Rodar e redimensionar imagens"
 
-#: ../open-terminal/peony-open-terminal.c:432
-#: ../open-terminal/peony-open-terminal.c:445
+#: ../open-terminal/peony-open-terminal.c:433
+#: ../open-terminal/peony-open-terminal.c:446
 msgid "Open in _Terminal"
 msgstr "Abrir na _consola"
 
-#: ../open-terminal/peony-open-terminal.c:434
+#: ../open-terminal/peony-open-terminal.c:435
 msgid "Open the currently selected folder in a terminal"
 msgstr "Abrir numa consola a pasta que está selecionada"
 
-#: ../open-terminal/peony-open-terminal.c:436
-#: ../open-terminal/peony-open-terminal.c:446
+#: ../open-terminal/peony-open-terminal.c:437
+#: ../open-terminal/peony-open-terminal.c:447
 msgid "Open the currently open folder in a terminal"
 msgstr "Abrir numa consola a pasta que está aberta"
 
-#: ../open-terminal/peony-open-terminal.c:442
+#: ../open-terminal/peony-open-terminal.c:443
 msgid "Open _Terminal"
 msgstr "Abrir _Consola"
 
-#: ../open-terminal/peony-open-terminal.c:443
+#: ../open-terminal/peony-open-terminal.c:444
 msgid "Open a terminal"
 msgstr "Abrir uma consola"
 
@@ -276,37 +248,37 @@ msgstr ""
 "área de trabalho. Note que esta chave é irrelevante caso o diretório da área "
 "de trabalho seja o mesmo que a pasta pessoal."
 
-#: ../sendto/peony-nste.c:78 ../sendto/peony-nste.c:83
+#: ../sendto/peony-nste.c:79 ../sendto/peony-nste.c:84
 msgid "Send to..."
 msgstr "Enviar para..."
 
-#: ../sendto/peony-nste.c:79
+#: ../sendto/peony-nste.c:80
 msgid "Send file by mail, instant message..."
 msgstr "Enviar ficheiro por email, mensagem instantânea..."
 
-#: ../sendto/peony-nste.c:84
+#: ../sendto/peony-nste.c:85
 msgid "Send files by mail, instant message..."
 msgstr "Enviar ficheiros por email, mensagem instantânea..."
 
-#: ../sendto/peony-sendto-command.c:578
+#: ../sendto/peony-sendto-command.c:580
 msgid "Files"
 msgstr "Ficheiros"
 
-#: ../sendto/peony-sendto-command.c:790
+#: ../sendto/peony-sendto-command.c:792
 #, c-format
 msgid "Expects URIs or filenames to be passed as options\n"
 msgstr "Espera URIs ou nomes de ficheiro como opções\n"
 
-#: ../sendto/peony-sendto-command.c:810
+#: ../sendto/peony-sendto-command.c:812
 #, c-format
 msgid "Could not parse command-line options: %s\n"
 msgstr "Incapaz de processar as opções da linha de comandos: %s\n"
 
-#: ../sendto/peony-sendto-command.c:825
+#: ../sendto/peony-sendto-command.c:827
 msgid "Could not load any plugins."
 msgstr "Não pôde carregar quaisquer suplementos."
 
-#: ../sendto/peony-sendto-command.c:828
+#: ../sendto/peony-sendto-command.c:830
 msgid "Please verify your installation"
 msgstr "Por favor verifique a sua instalação"
 
@@ -346,60 +318,60 @@ msgstr "<b>Compressão</b>"
 msgid "Send _packed in:"
 msgstr "Enviar _empacotado em:"
 
-#: ../sendto/plugins/emailclient/emailclient.c:263
+#: ../sendto/plugins/emailclient/emailclient.c:265
 msgid "Email"
 msgstr "Correio Eletrónico"
 
-#: ../sendto/plugins/gajim/gajim.c:419
+#: ../sendto/plugins/gajim/gajim.c:420
 msgid "Unable to send file"
 msgstr "Incapaz de enviar ficheiro"
 
-#: ../sendto/plugins/gajim/gajim.c:420
+#: ../sendto/plugins/gajim/gajim.c:421
 msgid "There is no connection to gajim remote service."
 msgstr "Não existe qualquer ligação ao serviço remoto do gajim."
 
-#: ../sendto/plugins/gajim/gajim.c:444 ../sendto/plugins/gajim/gajim.c:484
+#: ../sendto/plugins/gajim/gajim.c:445 ../sendto/plugins/gajim/gajim.c:485
 msgid "Sending file failed"
 msgstr "Falha ao enviar ficheiro"
 
-#: ../sendto/plugins/gajim/gajim.c:445
+#: ../sendto/plugins/gajim/gajim.c:446
 msgid "Recipient is missing."
 msgstr "Destinatário em falta."
 
-#: ../sendto/plugins/gajim/gajim.c:484
+#: ../sendto/plugins/gajim/gajim.c:485
 msgid "Unknown recipient."
 msgstr "Destinatário desconhecido."
 
-#: ../sendto/plugins/gajim/gajim.c:507
+#: ../sendto/plugins/gajim/gajim.c:508
 msgid "Instant Message (Gajim)"
 msgstr "Mensagem Instantânea (Gajim)"
 
-#: ../sendto/plugins/peony-burn/peony-burn.c:92
+#: ../sendto/plugins/peony-burn/peony-burn.c:94
 msgid "New CD/DVD"
 msgstr "Novo CD/DVD"
 
-#: ../sendto/plugins/peony-burn/peony-burn.c:99
+#: ../sendto/plugins/peony-burn/peony-burn.c:101
 msgid "Existing CD/DVD"
 msgstr "CD/DVD Existente"
 
-#: ../sendto/plugins/peony-burn/peony-burn.c:178
+#: ../sendto/plugins/peony-burn/peony-burn.c:180
 msgid "CD/DVD Creator"
 msgstr "Criador de CD/DVD"
 
-#: ../sendto/plugins/pidgin/pidgin.c:462
+#: ../sendto/plugins/pidgin/pidgin.c:464
 msgid "Instant Message (Pidgin)"
 msgstr "Mensagem Instantânea (Pidgin)"
 
-#: ../sendto/plugins/removable-devices/removable-devices.c:248
+#: ../sendto/plugins/removable-devices/removable-devices.c:251
 msgid "Removable disks and shares"
 msgstr "Discos e partilhas removíveis"
 
-#: ../sendto/plugins/upnp/upnp.c:309
+#: ../sendto/plugins/upnp/upnp.c:310
 msgid "UPnP Media Server"
 msgstr "Servidor de Media UPnP"
 
 #: ../share/libpeony-share.peony-extension.in.in.h:1
-#: ../share/peony-share.c:1063
+#: ../share/peony-share.c:1064
 msgid "Share"
 msgstr "Partilha"
 
@@ -407,7 +379,7 @@ msgstr "Partilha"
 msgid "Allows to quickly share a folder"
 msgstr "Permite partilhar rapidamente uma pasta"
 
-#: ../share/peony-share.c:123
+#: ../share/peony-share.c:124
 #, c-format
 msgid ""
 "Peony needs to add some permissions to your folder \"%s\" in order to share "
@@ -416,7 +388,7 @@ msgstr ""
 "Peony precisa de adicionar algumas permissões à sua pasta \"%s\" para a "
 "partilhar"
 
-#: ../share/peony-share.c:131
+#: ../share/peony-share.c:132
 #, c-format
 msgid ""
 "The folder \"%s\" needs the following extra permissions for sharing to "
@@ -427,65 +399,65 @@ msgstr ""
 "funcione: \n"
 "%s%s%sPretende que a Peony adicione estas permissões à pasta automaticamente?"
 
-#: ../share/peony-share.c:135
+#: ../share/peony-share.c:136
 msgid "  - read permission by others\n"
 msgstr "  - permissão de leitura de outros\n"
 
-#: ../share/peony-share.c:136
+#: ../share/peony-share.c:137
 msgid "  - write permission by others\n"
 msgstr "  - permissão de escrita de outros\n"
 
-#: ../share/peony-share.c:137
+#: ../share/peony-share.c:138
 msgid "  - execute permission by others\n"
 msgstr "  - permissão de execução de outros\n"
 
-#: ../share/peony-share.c:141
+#: ../share/peony-share.c:142
 msgid "Add the permissions automatically"
 msgstr "Adicionar permissões automaticamente"
 
-#: ../share/peony-share.c:167
+#: ../share/peony-share.c:168
 #, c-format
 msgid "Could not change the permissions of folder \"%s\""
 msgstr "Incapaz de alterar as permissões da pasta \"%s\""
 
-#: ../share/peony-share.c:451
+#: ../share/peony-share.c:452
 msgid "Share name is too long"
 msgstr "Nome de partilha demasiado extenso"
 
-#: ../share/peony-share.c:493
+#: ../share/peony-share.c:494
 msgid "The share name cannot be empty"
 msgstr "O nome de partilha não pode estar vazio"
 
-#: ../share/peony-share.c:506
+#: ../share/peony-share.c:507
 #, c-format
 msgid "Error while getting share information: %s"
 msgstr "Erro ao obter informação de partilha: %s"
 
-#: ../share/peony-share.c:516
+#: ../share/peony-share.c:517
 msgid "Another share has the same name"
 msgstr "Outra partilha tem o mesmo nome"
 
-#: ../share/peony-share.c:563 ../share/peony-share.c:799
+#: ../share/peony-share.c:564 ../share/peony-share.c:800
 msgid "Modify _Share"
 msgstr "Modificar _Partilha"
 
-#: ../share/peony-share.c:563 ../share/peony-share.c:801
+#: ../share/peony-share.c:564 ../share/peony-share.c:802
 msgid "Create _Share"
 msgstr "Crar _Partilha"
 
-#: ../share/peony-share.c:691
+#: ../share/peony-share.c:692
 msgid "There was an error while getting the sharing information"
 msgstr "Houve um erro ao obter a informação de partilha"
 
-#: ../share/peony-share.c:1123
+#: ../share/peony-share.c:1124
 msgid "Folder Sharing"
 msgstr "Partilha de Pastas"
 
-#: ../share/peony-share.c:1164
+#: ../share/peony-share.c:1165
 msgid "Sharing Options"
 msgstr "Opções de Partilha"
 
-#: ../share/peony-share.c:1165
+#: ../share/peony-share.c:1166
 msgid "Share this Folder"
 msgstr "Partilhar esta Pasta"
 
@@ -578,11 +550,11 @@ msgstr ""
 "Não pode mudar o caminho de uma partilha existente; por favor remova a "
 "partilha antiga primeiro, e adicione uma nova"
 
-#: ../wallpaper/peony-wallpaper-extension.c:109
+#: ../wallpaper/peony-wallpaper-extension.c:111
 msgid "Set as wallpaper"
 msgstr "Definir como papel de parede"
 
-#: ../wallpaper/peony-wallpaper-extension.c:110
+#: ../wallpaper/peony-wallpaper-extension.c:112
 msgid "Set image as the current wallpaper"
 msgstr "Guardar imagem como papel de parede atual"
 
@@ -594,11 +566,11 @@ msgstr "Papel de parede"
 msgid "Allows to quickly set wallpaper"
 msgstr "Permite definir rapidamente papel de parede"
 
-#: ../xattr-tags/peony-xattr-tags-extension.c:177
+#: ../xattr-tags/peony-xattr-tags-extension.c:179
 msgid "Tags"
 msgstr ""
 
-#: ../xattr-tags/peony-xattr-tags-extension.c:178
+#: ../xattr-tags/peony-xattr-tags-extension.c:180
 msgid "Tags contained on xattrs"
 msgstr ""
 
@@ -630,7 +602,8 @@ msgstr "Opção de lançamento não reconhecida:%d"
 #: ../parchives/copy-n-paste/eggdesktopfile.c:1367
 #, c-format
 msgid "Can't pass documents to this desktop element"
-msgstr "Não é possível passar documentos para este elemento da área de trabalho"
+msgstr ""
+"Não é possível passar documentos para este elemento da área de trabalho"
 
 #: ../parchives/copy-n-paste/eggdesktopfile.c:1386
 #, c-format
@@ -667,7 +640,8 @@ msgstr "Mostrar opções de gerenciamento de sessão"
 
 #: ../parchives/data/parchives.appdata.xml.in.h:1
 msgid "An Archive Manager for the MATE desktop environment"
-msgstr "Um gerenciador de arquivamento para o ambiente de área de trabalho MATE"
+msgstr ""
+"Um gerenciador de arquivamento para o ambiente de área de trabalho MATE"
 
 #: ../parchives/data/parchives.appdata.xml.in.h:2
 msgid ""
@@ -695,36 +669,38 @@ msgid ""
 "the MATE Desktop Environment. If you would like to know more about MATE and "
 "Parchives, please visit the project's home page. </p>"
 msgstr ""
-"<p> Parchives é um gerenciador de arquivos para o ambiente MATE. Permite que você"
-"para criar e modificar arquivos, ver o conteúdo de um arquivo, ver um arquivo"
-"contidos em um arquivo e extrair arquivos do arquivo. </ p> <p> Parchives"
-"é apenas um front-end (uma interface gráfica) para arquivar programas como tar"
-"e zip. Os tipos de arquivos suportados são: </ p> <ul> <li> Arquivo compactado com 7-zip"
-"(.7z) </ li> <li> Arquivo compactado WinAce (.ace) </ li> <li> Arquivo compactado ALZip"
-"(.alz) </ li> <li> Arquivo indexado pequeno do AIX (.ar) </ li> <li> ARJ comprimido"
-"Arquivo (.arj) </ li> <li> Arquivo do Gabinete (.cab) </ li> <li> Arquivo CPIO do UNIX (."
-"cpio) </ li> <li> Pacote Debian Linux (.deb) [modo somente leitura] </ li>"
-"<li> Imagem de disco de CD ISO-9660 (.iso) [modo somente leitura] </ li> <li> Arquivo Java (."
-"jar) </ li> <li> Arquivo Java Enterprise (.ear) </ li> <li> Arquivo da Web Java (."
-"war) </ li> <li> Arquivo LHA ​​(.lzh, .lha) </ li> <li> Arquivo compactado WinRAR (."
-"rar) </ li> <li> RAR Arquivo em quadrinhos (.cbr) </ li> <li> Pacote Linux RPM (."
-"rpm) [Modo somente leitura] </ li> <li> Arquivo de fita descompactado (.tar) ou"
-"compactado com: gzip (.tar.gz, .tgz), bzip (.tar.bz, .tbz), bzip2 (.tar."
-"bz2, .tbz2), compactar (.tar.Z, .taz), lrzip (.tar.lrz, .tlrz), lzip (.tar."
-"lz, .tlz), lzop (.tar.lzo, .tzo), 7zip (.tar.7z), xz (.tar.xz) </ li>"
-"<li> Arquivos Stuffit (.bin, .sit) </ li> <li> Arquivo ZIP (.zip) </ li> <li> ZIP"
-"Banda Desenhada Arquivada (.cbz) </ li> <li> Arquivo de Arquivo Compactado ZOO (.zoo) </ li>"
-"<li> Arquivos únicos compactados com gzip, bzip, bzip2, compress, lrzip, lzip,"
-"lzop, rzip, xz </ li> </ ul> <p> Parchives é um fork do File Roller e parte do"
-"o MATE Desktop Environment. Se você gostaria de saber mais sobre o MATE e"
-"Parchives, por favor visite a home page do projeto. </ p>"
+"<p> Parchives é um gerenciador de arquivos para o ambiente MATE. Permite que "
+"vocêpara criar e modificar arquivos, ver o conteúdo de um arquivo, ver um "
+"arquivocontidos em um arquivo e extrair arquivos do arquivo. </ p> <p> "
+"Parchivesé apenas um front-end (uma interface gráfica) para arquivar "
+"programas como tare zip. Os tipos de arquivos suportados são: </ p> <ul> "
+"<li> Arquivo compactado com 7-zip(.7z) </ li> <li> Arquivo compactado WinAce "
+"(.ace) </ li> <li> Arquivo compactado ALZip(.alz) </ li> <li> Arquivo "
+"indexado pequeno do AIX (.ar) </ li> <li> ARJ comprimidoArquivo (.arj) </ "
+"li> <li> Arquivo do Gabinete (.cab) </ li> <li> Arquivo CPIO do UNIX (.cpio) "
+"</ li> <li> Pacote Debian Linux (.deb) [modo somente leitura] </ li><li> "
+"Imagem de disco de CD ISO-9660 (.iso) [modo somente leitura] </ li> <li> "
+"Arquivo Java (.jar) </ li> <li> Arquivo Java Enterprise (.ear) </ li> <li> "
+"Arquivo da Web Java (.war) </ li> <li> Arquivo LHA ​​(.lzh, .lha) </ li> <li> "
+"Arquivo compactado WinRAR (.rar) </ li> <li> RAR Arquivo em quadrinhos (."
+"cbr) </ li> <li> Pacote Linux RPM (.rpm) [Modo somente leitura] </ li> <li> "
+"Arquivo de fita descompactado (.tar) oucompactado com: gzip (.tar.gz, .tgz), "
+"bzip (.tar.bz, .tbz), bzip2 (.tar.bz2, .tbz2), compactar (.tar.Z, .taz), "
+"lrzip (.tar.lrz, .tlrz), lzip (.tar.lz, .tlz), lzop (.tar.lzo, .tzo), 7zip (."
+"tar.7z), xz (.tar.xz) </ li><li> Arquivos Stuffit (.bin, .sit) </ li> <li> "
+"Arquivo ZIP (.zip) </ li> <li> ZIPBanda Desenhada Arquivada (.cbz) </ li> "
+"<li> Arquivo de Arquivo Compactado ZOO (.zoo) </ li><li> Arquivos únicos "
+"compactados com gzip, bzip, bzip2, compress, lrzip, lzip,lzop, rzip, xz </ "
+"li> </ ul> <p> Parchives é um fork do File Roller e parte doo MATE Desktop "
+"Environment. Se você gostaria de saber mais sobre o MATE eParchives, por "
+"favor visite a home page do projeto. </ p>"
 
 #: ../parchives/data/parchives.desktop.in.in.h:1
 msgid "Parchives Archive Manager"
 msgstr "Gerente de Arquivo do Parchives"
 
 #: ../parchives/data/parchives.desktop.in.in.h:2
-#: ../parchives/src/fr-window.c:2000 ../parchives/src/fr-window.c:5503
+#: ../parchives/src/fr-window.c:2001 ../parchives/src/fr-window.c:5504
 msgid "Archive Manager"
 msgstr "Gerenciador de arquivamento"
 
@@ -740,7 +716,9 @@ msgstr "Como classificar arquivos"
 msgid ""
 "What criteria must be used to arrange files. Possible values: name, size, "
 "type, time, path."
-msgstr "Quais critérios devem ser usados para organizar arquivos. Valores possíveis: nome, tamanho, tipo, hora, caminho."
+msgstr ""
+"Quais critérios devem ser usados para organizar arquivos. Valores possíveis: "
+"nome, tamanho, tipo, hora, caminho."
 
 #: ../parchives/data/org.mate.parchives.gschema.xml.in.h:3
 msgid "Sort type"
@@ -750,7 +728,9 @@ msgstr "Tipo de classificação"
 msgid ""
 "Whether to sort in ascending or descending direction. Possible values: "
 "ascending, descending."
-msgstr "Se classificar em direção ascendente ou descendente. Valores possíveis: ascendente, descendente."
+msgstr ""
+"Se classificar em direção ascendente ou descendente. Valores possíveis: "
+"ascendente, descendente."
 
 #: ../parchives/data/org.mate.parchives.gschema.xml.in.h:5
 msgid "List Mode"
@@ -760,7 +740,9 @@ msgstr "Modo de lista"
 msgid ""
 "Whether to view all files in the archive (all_files), or view the archive as "
 "a folder (as_folder)."
-msgstr "Se deseja visualizar todos os arquivos no archive (all_files) ou visualizar o archive como uma pasta (as_folder)."
+msgstr ""
+"Se deseja visualizar todos os arquivos no archive (all_files) ou visualizar "
+"o archive como uma pasta (as_folder)."
 
 #: ../parchives/data/org.mate.parchives.gschema.xml.in.h:7
 msgid "Display type"
@@ -803,8 +785,8 @@ msgid ""
 "if TRUE will display icons depending on the file type (slower), otherwise "
 "will use always the same icon for all files (faster)."
 msgstr ""
-"se TRUE exibirá ícones dependendo do tipo de arquivo (mais lento), caso contrário"
-"usará sempre o mesmo ícone para todos os arquivos (mais rápido)."
+"se TRUE exibirá ícones dependendo do tipo de arquivo (mais lento), caso "
+"contráriousará sempre o mesmo ícone para todos os arquivos (mais rápido)."
 
 #: ../parchives/data/org.mate.parchives.gschema.xml.in.h:17
 msgid "Name column width"
@@ -839,7 +821,7 @@ msgid "Whether to display the statusbar."
 msgstr "Se deseja exibir a barra de status."
 
 #: ../parchives/data/org.mate.parchives.gschema.xml.in.h:25
-#: ../parchives/src/ui.h:234
+#: ../parchives/src/ui.h:235
 msgid "View the folders pane"
 msgstr "Visualizar o painel de pastas"
 
@@ -855,8 +837,9 @@ msgstr "Editores"
 msgid ""
 "List of applications entered in the Open file dialog and not associated with "
 "the file type."
-msgstr "Lista de aplicativos inseridos na caixa de diálogo Abrir arquivo e não associada ao "
-"tipo de arquivo."
+msgstr ""
+"Lista de aplicativos inseridos na caixa de diálogo Abrir arquivo e não "
+"associada ao tipo de arquivo."
 
 #: ../parchives/data/org.mate.parchives.gschema.xml.in.h:29
 #, fuzzy
@@ -868,8 +851,8 @@ msgid ""
 "Compression level used when adding files to an archive. Possible values: "
 "very_fast, fast, normal, maximum."
 msgstr ""
-"Nível de compactação usado ao adicionar arquivos a um arquivo. Valores possíveis:"
-"very_fast, rápido, normal, máximo."
+"Nível de compactação usado ao adicionar arquivos a um arquivo. Valores "
+"possíveis:very_fast, rápido, normal, máximo."
 
 #: ../parchives/data/org.mate.parchives.gschema.xml.in.h:31
 msgid "Encrypt the archive header"
@@ -879,8 +862,9 @@ msgstr "Criptografar o cabeçalho do arquivo"
 msgid ""
 "Whether to encrypt the archive header. If the header is encrypted the "
 "password will be required to list the archive content as well."
-msgstr "Se deseja criptografar o cabeçalho do arquivo. Se o cabeçalho estiver criptografado,"
-"senha será necessária para listar o conteúdo do arquivo também."
+msgstr ""
+"Se deseja criptografar o cabeçalho do arquivo. Se o cabeçalho estiver "
+"criptografado,senha será necessária para listar o conteúdo do arquivo também."
 
 #: ../parchives/data/org.mate.parchives.gschema.xml.in.h:33
 msgid "Overwrite existing files"
@@ -902,34 +886,34 @@ msgstr "Tamanho do volume padrão"
 msgid "The default size for volumes."
 msgstr "The default size for volumes."
 
-#: ../parchives/peony/peony-parchives.c:335
+#: ../parchives/peony/peony-parchives.c:336
 msgid "Extract Here"
 msgstr "Extrair aqui"
 
 #. Translators: the current position is the current folder
-#: ../parchives/peony/peony-parchives.c:337
+#: ../parchives/peony/peony-parchives.c:338
 msgid "Extract the selected archive to the current position"
 msgstr "Extraia o arquivo selecionado para a posição atual"
 
-#: ../parchives/peony/peony-parchives.c:354
+#: ../parchives/peony/peony-parchives.c:355
 msgid "Extract To..."
 msgstr "Extrair para..."
 
-#: ../parchives/peony/peony-parchives.c:355
+#: ../parchives/peony/peony-parchives.c:356
 #, fuzzy
 msgid "Extract the selected archive"
 msgstr "Rodar as imagens selecionadas"
 
-#: ../parchives/peony/peony-parchives.c:374
+#: ../parchives/peony/peony-parchives.c:387
 msgid "Compress..."
 msgstr "Comprimir..."
 
-#: ../parchives/peony/peony-parchives.c:375
+#: ../parchives/peony/peony-parchives.c:388
 msgid "Create a compressed archive with the selected objects"
 msgstr "Crie um arquivo compactado com os objetos selecionados"
 
 #: ../parchives/peony/libpeony-parchives.peony-extension.in.in.h:1
-#: ../parchives/src/main.c:330 ../parchives/src/server.c:457
+#: ../parchives/src/main.c:331 ../parchives/src/server.c:458
 msgid "Parchives"
 msgstr "Parcas"
 
@@ -937,64 +921,65 @@ msgstr "Parcas"
 msgid "Allows to create and extract archives"
 msgstr "Permite criar e extrair arquivos"
 
-#: ../parchives/src/actions.c:157 ../parchives/src/actions.c:196
-#: ../parchives/src/actions.c:232 ../parchives/src/dlg-batch-add.c:163
-#: ../parchives/src/dlg-batch-add.c:179 ../parchives/src/dlg-batch-add.c:208
-#: ../parchives/src/dlg-batch-add.c:253 ../parchives/src/dlg-batch-add.c:299
-#: ../parchives/src/fr-window.c:2993
+#: ../parchives/src/actions.c:158 ../parchives/src/actions.c:197
+#: ../parchives/src/actions.c:233 ../parchives/src/dlg-batch-add.c:164
+#: ../parchives/src/dlg-batch-add.c:180 ../parchives/src/dlg-batch-add.c:209
+#: ../parchives/src/dlg-batch-add.c:254 ../parchives/src/dlg-batch-add.c:300
+#: ../parchives/src/fr-window.c:2994
 msgid "Could not create the archive"
 msgstr "Não foi possível criar o arquivo"
 
-#: ../parchives/src/actions.c:159 ../parchives/src/dlg-batch-add.c:165
-#: ../parchives/src/dlg-batch-add.c:301
+#: ../parchives/src/actions.c:160 ../parchives/src/dlg-batch-add.c:166
+#: ../parchives/src/dlg-batch-add.c:302
 msgid "You have to specify an archive name."
 msgstr "Você precisa especificar um nome de arquivo."
 
-#: ../parchives/src/actions.c:198
+#: ../parchives/src/actions.c:199
 #, fuzzy
 msgid "You don't have permission to create an archive in this folder"
 msgstr "_Permitir a outros criar e apagar ficheiros nesta pasta"
 
-#: ../parchives/src/actions.c:234 ../parchives/src/dlg-package-installer.c:269
-#: ../parchives/src/dlg-package-installer.c:278
-#: ../parchives/src/dlg-package-installer.c:306
-#: ../parchives/src/fr-archive.c:1160 ../parchives/src/fr-window.c:6140
-#: ../parchives/src/fr-window.c:6316
+#: ../parchives/src/actions.c:235 ../parchives/src/dlg-package-installer.c:270
+#: ../parchives/src/dlg-package-installer.c:279
+#: ../parchives/src/dlg-package-installer.c:307
+#: ../parchives/src/fr-archive.c:1161 ../parchives/src/fr-window.c:6141
+#: ../parchives/src/fr-window.c:6317
 msgid "Archive type not supported."
 msgstr "Tipo de arquivo não suportado."
 
-#: ../parchives/src/actions.c:248
+#: ../parchives/src/actions.c:249
 msgid "Could not delete the old archive."
 msgstr "Não foi possível excluir o arquivo antigo."
 
-#: ../parchives/src/actions.c:382 ../parchives/src/fr-window.c:5881
+#: ../parchives/src/actions.c:383 ../parchives/src/fr-window.c:5882
 msgid "Open"
 msgstr "Abrir"
 
-#: ../parchives/src/actions.c:393 ../parchives/src/fr-window.c:5322
+#: ../parchives/src/actions.c:394 ../parchives/src/fr-window.c:5323
 msgid "All archives"
 msgstr "Todos os arquivos"
 
-#: ../parchives/src/actions.c:400
+#: ../parchives/src/actions.c:401
 msgid "All files"
 msgstr "Todos os arquivos"
 
-#: ../parchives/src/actions.c:794 ../parchives/src/fr-window.c:7349
+#: ../parchives/src/actions.c:795 ../parchives/src/fr-window.c:7350
 msgid "Last Output"
 msgstr "Última saída"
 
-#: ../parchives/src/actions.c:860
+#: ../parchives/src/actions.c:861
 msgid ""
 "Parchives is free software; you can redistribute it and/or modify it under "
 "the terms of the GNU General Public License as published by the Free "
 "Software Foundation; either version 2 of the License, or (at your option) "
 "any later version."
-msgstr "" 
-"Parchives é um software livre; você pode redistribuí-lo e/ou modificá-lo sob"
-"os termos da Licença Pública Geral GNU publicada pela Free Software Foundation;" 
-"ou a versão 2 da Licença, ou (a seu critério) qualquer versão posterior."
+msgstr ""
+"Parchives é um software livre; você pode redistribuí-lo e/ou modificá-lo "
+"sobos termos da Licença Pública Geral GNU publicada pela Free Software "
+"Foundation;ou a versão 2 da Licença, ou (a seu critério) qualquer versão "
+"posterior."
 
-#: ../parchives/src/actions.c:864
+#: ../parchives/src/actions.c:865
 msgid ""
 "Parchives is distributed in the hope that it will be useful, but WITHOUT ANY "
 "WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS "
@@ -1002,128 +987,129 @@ msgid ""
 "details."
 msgstr ""
 
-#: ../parchives/src/actions.c:868
+#: ../parchives/src/actions.c:869
 msgid ""
 "You should have received a copy of the GNU General Public License along with "
 "Parchives; if not, write to the Free Software Foundation, Inc., 51 Franklin "
 "St, Fifth Floor, Boston, MA  02110-1301 USA"
 msgstr ""
-"Você deve ter recebido uma cópia da Licença Pública Geral GNU juntamente com"
-"Parchives; se não, escreva para a Free Software Foundation, Inc.," 
-"51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 EUAi"
+"Você deve ter recebido uma cópia da Licença Pública Geral GNU juntamente "
+"comParchives; se não, escreva para a Free Software Foundation, Inc.,51 "
+"Franklin Street, Fifth Floor, Boston, MA 02110-1301 EUAi"
 
-#: ../parchives/src/actions.c:878
+#: ../parchives/src/actions.c:879
 msgid "Copyright © 2001–2010 Free Software Foundation, Inc."
 msgstr "Copyright © 2001–2010 Free Software Foundation, Inc."
 
-#: ../parchives/src/actions.c:879
+#: ../parchives/src/actions.c:880
 msgid "An archive manager for MATE."
 msgstr "Um gerenciador de arquivos para o MATE."
 
-#: ../parchives/src/actions.c:882
+#: ../parchives/src/actions.c:883
 msgid "translator-credits"
 msgstr "tradutor-créditos"
 
-#: ../parchives/src/dlg-add-files.c:103 ../parchives/src/dlg-add-folder.c:136
+#: ../parchives/src/dlg-add-files.c:104 ../parchives/src/dlg-add-folder.c:137
 msgid "Could not add the files to the archive"
 msgstr "Não foi possível adicionar os arquivos ao arquivo"
 
-#: ../parchives/src/dlg-add-files.c:104 ../parchives/src/dlg-add-folder.c:137
+#: ../parchives/src/dlg-add-files.c:105 ../parchives/src/dlg-add-folder.c:138
 #, fuzzy, c-format
 msgid "You don't have the right permissions to read files from folder \"%s\""
 msgstr "Incapaz de alterar as permissões da pasta \"%s\""
 
-#: ../parchives/src/dlg-add-files.c:152 ../parchives/src/ui.h:47
+#: ../parchives/src/dlg-add-files.c:153 ../parchives/src/ui.h:48
 #, fuzzy
 msgid "Add Files"
 msgstr "Ficheiros"
 
 #. Translators: add a file to the archive only if the disk version is
 #. * newer than the archive version.
-#: ../parchives/src/dlg-add-files.c:168 ../parchives/src/dlg-add-folder.c:238
+#: ../parchives/src/dlg-add-files.c:169 ../parchives/src/dlg-add-folder.c:239
 msgid "Add only if _newer"
 msgstr "Adicione somente se _newer"
 
-#: ../parchives/src/dlg-add-folder.c:224
+#: ../parchives/src/dlg-add-folder.c:225
 msgid "Add a Folder"
 msgstr "Adicionar uma pasta"
 
-#: ../parchives/src/dlg-add-folder.c:239
+#: ../parchives/src/dlg-add-folder.c:240
 msgid "_Include subfolders"
 msgstr "_Incluir subpastas"
 
-#: ../parchives/src/dlg-add-folder.c:240
+#: ../parchives/src/dlg-add-folder.c:241
 msgid "Exclude folders that are symbolic lin_ks"
 msgstr "Excluir pastas que são lin_ks simbólicos"
 
-#: ../parchives/src/dlg-add-folder.c:243 ../parchives/src/dlg-add-folder.c:253
-#: ../parchives/src/dlg-add-folder.c:263
+#: ../parchives/src/dlg-add-folder.c:244 ../parchives/src/dlg-add-folder.c:254
+#: ../parchives/src/dlg-add-folder.c:264
 msgid "example: *.o; *.bak"
 msgstr "exemplo: *.o; *.bak"
 
-#: ../parchives/src/dlg-add-folder.c:244
+#: ../parchives/src/dlg-add-folder.c:245
 msgid "Include _files:"
 msgstr "Incluir _files:"
 
-#: ../parchives/src/dlg-add-folder.c:254
+#: ../parchives/src/dlg-add-folder.c:255
 msgid "E_xclude files:"
 msgstr "E_xcluir arquivos:"
 
-#: ../parchives/src/dlg-add-folder.c:264
+#: ../parchives/src/dlg-add-folder.c:265
 msgid "_Exclude folders:"
 msgstr "_Excluir pastas:"
 
-#: ../parchives/src/dlg-add-folder.c:272
+#: ../parchives/src/dlg-add-folder.c:273
 #, fuzzy
 msgid "_Load Options"
 msgstr "Opções de Partilha"
 
-#: ../parchives/src/dlg-add-folder.c:273
+#: ../parchives/src/dlg-add-folder.c:274
 #, fuzzy
 msgid "Sa_ve Options"
 msgstr "Opções de Partilha"
 
-#: ../parchives/src/dlg-add-folder.c:274
+#: ../parchives/src/dlg-add-folder.c:275
 msgid "_Reset Options"
 msgstr "Opções _Reset"
 
-#: ../parchives/src/dlg-add-folder.c:890
+#: ../parchives/src/dlg-add-folder.c:891
 #, fuzzy
 msgid "Save Options"
 msgstr "Opções de Partilha"
 
-#: ../parchives/src/dlg-add-folder.c:891
+#: ../parchives/src/dlg-add-folder.c:892
 msgid "_Options Name:"
 msgstr "_Opções Nome:"
 
-#: ../parchives/src/dlg-ask-password.c:124
+#: ../parchives/src/dlg-ask-password.c:125
 #, c-format
 msgid "Enter the password for the archive '%s'."
 msgstr "Digite a senha para o arquivo '%s'."
 
-#: ../parchives/src/dlg-batch-add.c:180
+#: ../parchives/src/dlg-batch-add.c:181
 #, c-format
 msgid ""
 "The name \"%s\" is not valid because it cannot contain the characters: %s\n"
 "\n"
 "%s"
-msgstr "er a senha do arquivo '%s'."
-"\n"
+msgstr ""
+"er a senha do arquivo '%s'.\n"
 "%s"
 
-#: ../parchives/src/dlg-batch-add.c:183 ../parchives/src/fr-window.c:7700
-#: ../parchives/src/fr-window.c:7702
+#: ../parchives/src/dlg-batch-add.c:184 ../parchives/src/fr-window.c:7701
+#: ../parchives/src/fr-window.c:7703
 msgid "Please use a different name."
 msgstr "Por favor, use um nome diferente."
 
-#: ../parchives/src/dlg-batch-add.c:210
+#: ../parchives/src/dlg-batch-add.c:211
 msgid ""
 "You don't have the right permissions to create an archive in the destination "
 "folder."
-msgstr "Você não tem as permissões certas para criar um arquivo no destino pasta."
+msgstr ""
+"Você não tem as permissões certas para criar um arquivo no destino pasta."
 
-#: ../parchives/src/dlg-batch-add.c:226 ../parchives/src/dlg-extract.c:104
-#: ../parchives/src/fr-window.c:6918
+#: ../parchives/src/dlg-batch-add.c:227 ../parchives/src/dlg-extract.c:105
+#: ../parchives/src/fr-window.c:6919
 #, c-format
 msgid ""
 "Destination folder \"%s\" does not exist.\n"
@@ -1134,101 +1120,101 @@ msgstr ""
 "\n"
 "você quer criar isso?"
 
-#: ../parchives/src/dlg-batch-add.c:235 ../parchives/src/dlg-extract.c:113
-#: ../parchives/src/fr-window.c:6927
+#: ../parchives/src/dlg-batch-add.c:236 ../parchives/src/dlg-extract.c:114
+#: ../parchives/src/fr-window.c:6928
 #, fuzzy
 msgid "Create _Folder"
 msgstr "Crar _Partilha"
 
-#: ../parchives/src/dlg-batch-add.c:254 ../parchives/src/dlg-extract.c:133
-#: ../parchives/src/fr-window.c:6944
+#: ../parchives/src/dlg-batch-add.c:255 ../parchives/src/dlg-extract.c:134
+#: ../parchives/src/fr-window.c:6945
 #, fuzzy, c-format
 msgid "Could not create the destination folder: %s."
 msgstr "Incapaz de alterar as permissões da pasta \"%s\""
 
-#: ../parchives/src/dlg-batch-add.c:271
+#: ../parchives/src/dlg-batch-add.c:272
 msgid "Archive not created"
 msgstr "Arquivo não criado"
 
-#: ../parchives/src/dlg-batch-add.c:319
+#: ../parchives/src/dlg-batch-add.c:320
 msgid "The archive is already present.  Do you want to overwrite it?"
 msgstr "O arquivo já está presente. Você deseja sobrescrever isso?"
 
-#: ../parchives/src/dlg-batch-add.c:322
+#: ../parchives/src/dlg-batch-add.c:323
 msgid "_Overwrite"
 msgstr "_Sobrescrever"
 
-#: ../parchives/src/dlg-extract.c:132 ../parchives/src/dlg-extract.c:150
-#: ../parchives/src/dlg-extract.c:177 ../parchives/src/fr-window.c:4265
-#: ../parchives/src/fr-window.c:6859 ../parchives/src/fr-window.c:6864
-#: ../parchives/src/fr-window.c:6948 ../parchives/src/fr-window.c:6967
-#: ../parchives/src/fr-window.c:6972
+#: ../parchives/src/dlg-extract.c:133 ../parchives/src/dlg-extract.c:151
+#: ../parchives/src/dlg-extract.c:178 ../parchives/src/fr-window.c:4266
+#: ../parchives/src/fr-window.c:6860 ../parchives/src/fr-window.c:6865
+#: ../parchives/src/fr-window.c:6949 ../parchives/src/fr-window.c:6968
+#: ../parchives/src/fr-window.c:6973
 msgid "Extraction not performed"
 msgstr "Extração não realizada"
 
-#: ../parchives/src/dlg-extract.c:178 ../parchives/src/fr-window.c:4434
-#: ../parchives/src/fr-window.c:4514
+#: ../parchives/src/dlg-extract.c:179 ../parchives/src/fr-window.c:4435
+#: ../parchives/src/fr-window.c:4515
 #, fuzzy, c-format
 msgid ""
 "You don't have the right permissions to extract archives in the folder \"%s\""
 msgstr "Incapaz de alterar as permissões da pasta \"%s\""
 
-#: ../parchives/src/dlg-extract.c:333 ../parchives/src/dlg-extract.c:431
-#: ../parchives/src/ui.h:122
+#: ../parchives/src/dlg-extract.c:334 ../parchives/src/dlg-extract.c:432
+#: ../parchives/src/ui.h:123
 msgid "Extract"
 msgstr "Extrair"
 
-#: ../parchives/src/dlg-extract.c:354 ../parchives/src/ui/delete.ui.h:2
+#: ../parchives/src/dlg-extract.c:355 ../parchives/src/ui/delete.ui.h:2
 #, fuzzy
 msgid "_Files:"
 msgstr "Ficheiros"
 
-#: ../parchives/src/dlg-extract.c:361 ../parchives/src/ui/delete.ui.h:3
+#: ../parchives/src/dlg-extract.c:362 ../parchives/src/ui/delete.ui.h:3
 msgid "example: *.txt; *.doc"
 msgstr "exemplo: *.txt; * .doc"
 
-#: ../parchives/src/dlg-extract.c:364 ../parchives/src/ui/delete.ui.h:4
+#: ../parchives/src/dlg-extract.c:365 ../parchives/src/ui/delete.ui.h:4
 msgid "_All files"
 msgstr "_Todos os arquivos"
 
-#: ../parchives/src/dlg-extract.c:369 ../parchives/src/ui/delete.ui.h:5
+#: ../parchives/src/dlg-extract.c:370 ../parchives/src/ui/delete.ui.h:5
 #, fuzzy
 msgid "_Selected files"
 msgstr "Escolha o tamanho:"
 
-#: ../parchives/src/dlg-extract.c:378
+#: ../parchives/src/dlg-extract.c:379
 msgid "Actions"
 msgstr "Ações"
 
-#: ../parchives/src/dlg-extract.c:398
+#: ../parchives/src/dlg-extract.c:399
 msgid "Re-crea_te folders"
 msgstr "Recriar pastas"
 
-#: ../parchives/src/dlg-extract.c:402
+#: ../parchives/src/dlg-extract.c:403
 msgid "Over_write existing files"
 msgstr "Sobr_escrever arquivos existentes"
 
-#: ../parchives/src/dlg-extract.c:406
+#: ../parchives/src/dlg-extract.c:407
 msgid "Do not e_xtract older files"
 msgstr "Não e_xtractar arquivos antigos"
 
-#: ../parchives/src/dlg-new.c:426
+#: ../parchives/src/dlg-new.c:427
 msgctxt "File"
 msgid "New"
 msgstr "Novo"
 
-#: ../parchives/src/dlg-new.c:439
+#: ../parchives/src/dlg-new.c:440
 msgctxt "File"
 msgid "Save"
 msgstr "Salve "
 
-#: ../parchives/src/dlg-package-installer.c:108
-#: ../parchives/src/dlg-package-installer.c:220
+#: ../parchives/src/dlg-package-installer.c:109
+#: ../parchives/src/dlg-package-installer.c:221
 #, fuzzy
 msgid "There was an internal error trying to search for applications:"
 msgstr "Houve um erro ao obter a informação de partilha"
 
-#: ../parchives/src/dlg-package-installer.c:288
+#: ../parchives/src/dlg-package-installer.c:289
 #, c-format
 msgid ""
 "There is no command installed for %s files.\n"
@@ -1237,58 +1223,58 @@ msgstr ""
 "There is no command installed for %s files.\n"
 "Do you want to search for a command to open this file?"
 
-#: ../parchives/src/dlg-package-installer.c:293
+#: ../parchives/src/dlg-package-installer.c:294
 msgid "Could not open this file type"
 msgstr "Não foi possível abrir este tipo de arquivo"
 
-#: ../parchives/src/dlg-package-installer.c:296
+#: ../parchives/src/dlg-package-installer.c:297
 msgid "_Search Command"
 msgstr "Comando de _pesquisa"
 
 #. Translators: after the colon there is a folder name.
-#: ../parchives/src/dlg-prop.c:108
+#: ../parchives/src/dlg-prop.c:109
 msgid "Location:"
 msgstr "Localização:"
 
-#: ../parchives/src/dlg-prop.c:120
+#: ../parchives/src/dlg-prop.c:121
 msgctxt "File"
 msgid "Name:"
 msgstr "Nome:"
 
-#: ../parchives/src/dlg-prop.c:126
+#: ../parchives/src/dlg-prop.c:127
 #, c-format
 msgid "%s Properties"
 msgstr "Propriedades de%s"
 
-#: ../parchives/src/dlg-prop.c:135
+#: ../parchives/src/dlg-prop.c:136
 msgid "Last modified:"
 msgstr "Última modificação:"
 
-#: ../parchives/src/dlg-prop.c:145
+#: ../parchives/src/dlg-prop.c:146
 msgid "Archive size:"
 msgstr "Tamanho do arquivo:"
 
-#: ../parchives/src/dlg-prop.c:156
+#: ../parchives/src/dlg-prop.c:157
 #, fuzzy
 msgid "Content size:"
 msgstr "Tamanho personalizado:"
 
-#: ../parchives/src/dlg-prop.c:176
+#: ../parchives/src/dlg-prop.c:177
 #, fuzzy
 msgid "Compression ratio:"
 msgstr "<b>Compressão</b>"
 
-#: ../parchives/src/dlg-prop.c:191
+#: ../parchives/src/dlg-prop.c:192
 msgid "Number of files:"
 msgstr "Número de arquivos:"
 
-#: ../parchives/src/dlg-update.c:164
+#: ../parchives/src/dlg-update.c:165
 #, c-format
 msgid "Update the file \"%s\" in the archive \"%s\"?"
 msgstr "Atualize o arquivo \"%s\" no arquivo \"%s\"?"
 
 #. secondary text
-#: ../parchives/src/dlg-update.c:176 ../parchives/src/dlg-update.c:204
+#: ../parchives/src/dlg-update.c:177 ../parchives/src/dlg-update.c:205
 #: ../parchives/src/ui/update.ui.h:2
 #, c-format
 msgid ""
@@ -1297,12 +1283,14 @@ msgid ""
 msgid_plural ""
 "%d files have been modified with an external application. If you don't "
 "update the files in the archive, all of your changes will be lost."
-msgstr[0] "% d arquivos foram modificados com um aplicativo externo. Se você não fizer "
+msgstr[0] ""
+"% d arquivos foram modificados com um aplicativo externo. Se você não fizer "
 "atualizar os arquivos no arquivo, todas as suas alterações serão perdidas."
-msgstr[1] "% d arquivos foram modificados com um aplicativo externo. Se você não fizer "
+msgstr[1] ""
+"% d arquivos foram modificados com um aplicativo externo. Se você não fizer "
 "atualizar os arquivos no arquivo, todas as suas alterações serão perdidas."
 
-#: ../parchives/src/dlg-update.c:193
+#: ../parchives/src/dlg-update.c:194
 #, c-format
 msgid "Update the files in the archive \"%s\"?"
 msgstr "Atualize os arquivos no arquivo \"%s\"?"
@@ -1339,371 +1327,372 @@ msgid ""
 "The program was not able to find out the file format you want to use for `"
 "%s'. Please make sure to use a known extension for that file or manually "
 "choose a file format from the list below."
-msgstr "O programa não conseguiu descobrir o formato de arquivo que você deseja usar para `"
-"%s'. Por favor, certifique-se de usar uma extensão conhecida para esse arquivo ou manualmente"
-"escolha um formato de arquivo na lista abaixo."
+msgstr ""
+"O programa não conseguiu descobrir o formato de arquivo que você deseja usar "
+"para `%s'. Por favor, certifique-se de usar uma extensão conhecida para esse "
+"arquivo ou manualmenteescolha um formato de arquivo na lista abaixo."
 
 #: ../parchives/src/eggfileformatchooser.c:676
 msgid "File format not recognized"
 msgstr "Formato de arquivo não reconhecido"
 
-#: ../parchives/src/fr-archive.c:1140
+#: ../parchives/src/fr-archive.c:1141
 msgid "File not found."
 msgstr "Arquivo não encontrado."
 
-#: ../parchives/src/fr-archive.c:1246
+#: ../parchives/src/fr-archive.c:1247
 #, c-format
 msgid "Archive not found"
 msgstr "Arquivo não encontrado"
 
-#: ../parchives/src/fr-archive.c:2444
+#: ../parchives/src/fr-archive.c:2445
 msgid "You don't have the right permissions."
 msgstr "Você não tem as permissões certas."
 
-#: ../parchives/src/fr-archive.c:2444
+#: ../parchives/src/fr-archive.c:2445
 #, fuzzy
 msgid "This archive type cannot be modified"
 msgstr "O nome de partilha não pode estar vazio"
 
-#: ../parchives/src/fr-archive.c:2456
+#: ../parchives/src/fr-archive.c:2457
 msgid "You can't add an archive to itself."
 msgstr "Você não pode adicionar um arquivo para si mesmo."
 
 #. Translators: after the colon there is a filename.
-#: ../parchives/src/fr-command-7z.c:300 ../parchives/src/fr-command-rar.c:451
-#: ../parchives/src/fr-command-tar.c:316
+#: ../parchives/src/fr-command-7z.c:301 ../parchives/src/fr-command-rar.c:452
+#: ../parchives/src/fr-command-tar.c:317
 #, fuzzy
 msgid "Adding file: "
 msgstr "Falha ao enviar ficheiro"
 
 #. Translators: after the colon there is a filename.
-#: ../parchives/src/fr-command-7z.c:445 ../parchives/src/fr-command-rar.c:578
-#: ../parchives/src/fr-command-tar.c:437
+#: ../parchives/src/fr-command-7z.c:446 ../parchives/src/fr-command-rar.c:579
+#: ../parchives/src/fr-command-tar.c:438
 msgid "Extracting file: "
 msgstr "Extraindo arquivo:"
 
 #. Translators: after the colon there is a filename.
-#: ../parchives/src/fr-command-rar.c:529 ../parchives/src/fr-command-tar.c:382
+#: ../parchives/src/fr-command-rar.c:530 ../parchives/src/fr-command-tar.c:383
 msgid "Removing file: "
 msgstr "Removendo o arquivo:"
 
-#: ../parchives/src/fr-command-rar.c:717
+#: ../parchives/src/fr-command-rar.c:718
 #, c-format
 msgid "Could not find the volume: %s"
 msgstr "Não foi possível encontrar o volume:%s"
 
-#: ../parchives/src/fr-command-tar.c:391
+#: ../parchives/src/fr-command-tar.c:392
 #, fuzzy
 msgid "Deleting files from archive"
 msgstr "Falha ao enviar ficheiro"
 
-#: ../parchives/src/fr-command-tar.c:497
+#: ../parchives/src/fr-command-tar.c:498
 msgid "Recompressing archive"
 msgstr "Recomprimir o arquivo"
 
-#: ../parchives/src/fr-command-tar.c:738
+#: ../parchives/src/fr-command-tar.c:739
 msgid "Decompressing archive"
 msgstr "Descompactando arquivo"
 
-#: ../parchives/src/fr-init.c:61
+#: ../parchives/src/fr-init.c:62
 msgid "7-Zip (.7z)"
 msgstr "7-Zip (.7z)"
 
-#: ../parchives/src/fr-init.c:62
+#: ../parchives/src/fr-init.c:63
 msgid "Tar compressed with 7z (.tar.7z)"
 msgstr "Alcatrão comprimido com 7z (.tar.7z)"
 
-#: ../parchives/src/fr-init.c:63
+#: ../parchives/src/fr-init.c:64
 msgid "Ace (.ace)"
 msgstr "Ace (.ace)"
 
-#: ../parchives/src/fr-init.c:65
+#: ../parchives/src/fr-init.c:66
 msgid "Ar (.ar)"
 msgstr "Ar (.ar)"
 
-#: ../parchives/src/fr-init.c:66
+#: ../parchives/src/fr-init.c:67
 msgid "Arj (.arj)"
 msgstr "Arj (.arj)"
 
-#: ../parchives/src/fr-init.c:68
+#: ../parchives/src/fr-init.c:69
 msgid "Tar compressed with bzip2 (.tar.bz2)"
 msgstr "Alcatrão comprimido com bzip2 (.tar.bz2)"
 
-#: ../parchives/src/fr-init.c:70
+#: ../parchives/src/fr-init.c:71
 msgid "Tar compressed with bzip (.tar.bz)"
 msgstr "Alcatrão comprimido com bzip (.tar.bz)"
 
-#: ../parchives/src/fr-init.c:71
+#: ../parchives/src/fr-init.c:72
 msgid "Cabinet (.cab)"
 msgstr "Cabinet (.cab)"
 
-#: ../parchives/src/fr-init.c:72
+#: ../parchives/src/fr-init.c:73
 msgid "Rar Archived Comic Book (.cbr)"
 msgstr "Rar Archived Comic Book (.cbr)"
 
-#: ../parchives/src/fr-init.c:73
+#: ../parchives/src/fr-init.c:74
 msgid "Zip Archived Comic Book (.cbz)"
 msgstr "Banda Desenhada Arquivada (.cbz)"
 
-#: ../parchives/src/fr-init.c:76
+#: ../parchives/src/fr-init.c:77
 msgid "Tar compressed with gzip (.tar.gz)"
 msgstr "Alcatrão comprimido com gzip (.tar.gz)"
 
-#: ../parchives/src/fr-init.c:79
+#: ../parchives/src/fr-init.c:80
 msgid "Ear (.ear)"
 msgstr "Ear (.ear)"
 
-#: ../parchives/src/fr-init.c:80
+#: ../parchives/src/fr-init.c:81
 msgid "Self-extracting zip (.exe)"
 msgstr "Zip auto-extraível (.exe)"
 
-#: ../parchives/src/fr-init.c:82
+#: ../parchives/src/fr-init.c:83
 msgid "Jar (.jar)"
 msgstr "Jar (.jar)"
 
-#: ../parchives/src/fr-init.c:83
+#: ../parchives/src/fr-init.c:84
 msgid "Lha (.lzh)"
 msgstr "Lha (.lzh)"
 
-#: ../parchives/src/fr-init.c:84
+#: ../parchives/src/fr-init.c:85
 msgid "Lrzip (.lrz)"
 msgstr "Lrzip (.lrz)"
 
-#: ../parchives/src/fr-init.c:85
+#: ../parchives/src/fr-init.c:86
 msgid "Tar compressed with lrzip (.tar.lrz)"
 msgstr "Alcatrão comprimido com lrzip (.tar.lrz)"
 
-#: ../parchives/src/fr-init.c:87
+#: ../parchives/src/fr-init.c:88
 msgid "Tar compressed with lzip (.tar.lz)"
 msgstr "Alcatrão comprimido com lzip (.tar.lz)"
 
-#: ../parchives/src/fr-init.c:89
+#: ../parchives/src/fr-init.c:90
 msgid "Tar compressed with lzma (.tar.lzma)"
 msgstr "Alcatrão comprimido com lzma (.tar.lzma)"
 
-#: ../parchives/src/fr-init.c:91
+#: ../parchives/src/fr-init.c:92
 msgid "Tar compressed with lzop (.tar.lzo)"
 msgstr "Alcatrão comprimido com lzop (.tar.lzo)"
 
-#: ../parchives/src/fr-init.c:92
+#: ../parchives/src/fr-init.c:93
 msgid "Windows Imaging Format (.wim)"
 msgstr "Formato de imagem do Windows (.wim)"
 
-#: ../parchives/src/fr-init.c:93
+#: ../parchives/src/fr-init.c:94
 msgid "Rar (.rar)"
 msgstr "Rar (.rar)"
 
-#: ../parchives/src/fr-init.c:96
+#: ../parchives/src/fr-init.c:97
 msgid "Tar uncompressed (.tar)"
 msgstr "Tar não comprimido (.tar)"
 
-#: ../parchives/src/fr-init.c:97
+#: ../parchives/src/fr-init.c:98
 msgid "Tar compressed with compress (.tar.Z)"
 msgstr "Alcatrão comprimido com compressa (.tar.Z)"
 
-#: ../parchives/src/fr-init.c:99
+#: ../parchives/src/fr-init.c:100
 msgid "War (.war)"
 msgstr "War (.war)"
 
-#: ../parchives/src/fr-init.c:100
+#: ../parchives/src/fr-init.c:101
 msgid "Xz (.xz)"
 msgstr "Xz (.xz)"
 
-#: ../parchives/src/fr-init.c:101
+#: ../parchives/src/fr-init.c:102
 msgid "Tar compressed with xz (.tar.xz)"
 msgstr "Alcatrão comprimido com xz (.tar.xz)"
 
-#: ../parchives/src/fr-init.c:102
+#: ../parchives/src/fr-init.c:103
 msgid "Zoo (.zoo)"
 msgstr "Zoo (.zoo)"
 
-#: ../parchives/src/fr-init.c:103
+#: ../parchives/src/fr-init.c:104
 msgid "Zip (.zip)"
 msgstr "Zip (.zip)"
 
-#: ../parchives/src/fr-stock.c:42
+#: ../parchives/src/fr-stock.c:43
 #, fuzzy
 msgid "C_reate"
 msgstr "Crar _Partilha"
 
-#: ../parchives/src/fr-stock.c:43 ../parchives/src/fr-stock.c:44
+#: ../parchives/src/fr-stock.c:44 ../parchives/src/fr-stock.c:45
 msgid "_Add"
 msgstr "_Adicionar"
 
-#: ../parchives/src/fr-stock.c:45
+#: ../parchives/src/fr-stock.c:46
 msgid "_Extract"
 msgstr "_Extrair"
 
-#: ../parchives/src/fr-window.c:1536
+#: ../parchives/src/fr-window.c:1537
 #, c-format
 msgid "%d object (%s)"
 msgid_plural "%d objects (%s)"
 msgstr[0] "%d objeto (%s)"
 msgstr[1] "%d objetos (%s)"
 
-#: ../parchives/src/fr-window.c:1541
+#: ../parchives/src/fr-window.c:1542
 #, c-format
 msgid "%d object selected (%s)"
 msgid_plural "%d objects selected (%s)"
 msgstr[0] "%d objeto selecionado (%s)"
 msgstr[1] "%d objetos selecionados (%s)"
 
-#: ../parchives/src/fr-window.c:1611
+#: ../parchives/src/fr-window.c:1612
 #, fuzzy
 msgid "Folder"
 msgstr "Partilha de Pastas"
 
-#: ../parchives/src/fr-window.c:2008
+#: ../parchives/src/fr-window.c:2009
 msgid "[read only]"
 msgstr "[somente leitura]"
 
-#: ../parchives/src/fr-window.c:2260
+#: ../parchives/src/fr-window.c:2261
 #, fuzzy, c-format
 msgid "Could not display the folder \"%s\""
 msgstr "Incapaz de alterar as permissões da pasta \"%s\""
 
 #. Translators: %s is a filename
-#: ../parchives/src/fr-window.c:2334 ../parchives/src/fr-window.c:2372
+#: ../parchives/src/fr-window.c:2335 ../parchives/src/fr-window.c:2373
 #, fuzzy, c-format
 msgid "Creating \"%s\""
 msgstr "<i>Rodar \"%s\"</i>"
 
 #. Translators: %s is a filename
-#: ../parchives/src/fr-window.c:2338
+#: ../parchives/src/fr-window.c:2339
 #, fuzzy, c-format
 msgid "Loading \"%s\""
 msgstr "<i>Rodar \"%s\"</i>"
 
 #. Translators: %s is a filename
-#: ../parchives/src/fr-window.c:2342
+#: ../parchives/src/fr-window.c:2343
 #, fuzzy, c-format
 msgid "Reading \"%s\""
 msgstr "<i>Redimensionar \"%s\"</i>"
 
 #. Translators: %s is a filename
-#: ../parchives/src/fr-window.c:2346
+#: ../parchives/src/fr-window.c:2347
 #, c-format
 msgid "Deleting files from \"%s\""
 msgstr ""
 
 #. Translators: %s is a filename
-#: ../parchives/src/fr-window.c:2350
+#: ../parchives/src/fr-window.c:2351
 #, fuzzy, c-format
 msgid "Testing \"%s\""
 msgstr "<i>Redimensionar \"%s\"</i>"
 
-#: ../parchives/src/fr-window.c:2353
+#: ../parchives/src/fr-window.c:2354
 msgid "Getting the file list"
 msgstr "Obtendo a lista de arquivos"
 
 #. Translators: %s is a filename
-#: ../parchives/src/fr-window.c:2357
+#: ../parchives/src/fr-window.c:2358
 #, c-format
 msgid "Copying the files to add to \"%s\""
 msgstr "Copiando os arquivos para adicionar a \"%s\""
 
 #. Translators: %s is a filename
-#: ../parchives/src/fr-window.c:2361
+#: ../parchives/src/fr-window.c:2362
 #, c-format
 msgid "Adding files to \"%s\""
 msgstr "Adicionando arquivos para \"%s\""
 
 #. Translators: %s is a filename
-#: ../parchives/src/fr-window.c:2365
+#: ../parchives/src/fr-window.c:2366
 #, c-format
 msgid "Extracting files from \"%s\""
 msgstr "Extraindo arquivos de \"%s\""
 
-#: ../parchives/src/fr-window.c:2368
+#: ../parchives/src/fr-window.c:2369
 msgid "Copying the extracted files to the destination"
 msgstr "Copiando os arquivos extraídos para o destino"
 
 #. Translators: %s is a filename
-#: ../parchives/src/fr-window.c:2376
+#: ../parchives/src/fr-window.c:2377
 #, c-format
 msgid "Saving \"%s\""
 msgstr "Salvando \"%s\""
 
-#: ../parchives/src/fr-window.c:2523
+#: ../parchives/src/fr-window.c:2524
 #, fuzzy
 msgid "_Open the Archive"
 msgstr "Abrir consola"
 
-#: ../parchives/src/fr-window.c:2524
+#: ../parchives/src/fr-window.c:2525
 msgid "_Show the Files"
 msgstr "_Mostrar os arquivos"
 
-#: ../parchives/src/fr-window.c:2705
+#: ../parchives/src/fr-window.c:2706
 #, c-format
 msgid "%d file remaining"
 msgid_plural "%'d files remaining"
 msgstr[0] "%d arquivo restante"
 msgstr[1] "%'d arquivos restantes"
 
-#: ../parchives/src/fr-window.c:2755
+#: ../parchives/src/fr-window.c:2756
 msgid "Extraction completed successfully"
 msgstr "Extração concluída com sucesso"
 
-#: ../parchives/src/fr-window.c:2778
+#: ../parchives/src/fr-window.c:2779
 msgid "Archive created successfully"
 msgstr "Arquivo criado com sucesso"
 
-#: ../parchives/src/fr-window.c:2836
+#: ../parchives/src/fr-window.c:2837
 msgid "Please wait…"
 msgstr "com sucesso"
 
-#: ../parchives/src/fr-window.c:2905 ../parchives/src/fr-window.c:3040
+#: ../parchives/src/fr-window.c:2906 ../parchives/src/fr-window.c:3041
 msgid "Command exited abnormally."
 msgstr "Comando saiu anormalmente."
 
-#: ../parchives/src/fr-window.c:2998
+#: ../parchives/src/fr-window.c:2999
 msgid "An error occurred while extracting files."
 msgstr "Ocorreu um erro ao extrair arquivos."
 
-#: ../parchives/src/fr-window.c:3004
+#: ../parchives/src/fr-window.c:3005
 #, fuzzy, c-format
 msgid "Could not open \"%s\""
 msgstr "Não pôde carregar quaisquer suplementos."
 
-#: ../parchives/src/fr-window.c:3009
+#: ../parchives/src/fr-window.c:3010
 msgid "An error occurred while loading the archive."
 msgstr "Ocorreu um erro ao carregar o arquivo."
 
-#: ../parchives/src/fr-window.c:3013
+#: ../parchives/src/fr-window.c:3014
 msgid "An error occurred while deleting files from the archive."
 msgstr "Ocorreu um erro ao excluir arquivos do arquivo."
 
-#: ../parchives/src/fr-window.c:3019
+#: ../parchives/src/fr-window.c:3020
 msgid "An error occurred while adding files to the archive."
 msgstr "Ocorreu um erro ao adicionar arquivos ao arquivo."
 
-#: ../parchives/src/fr-window.c:3023
+#: ../parchives/src/fr-window.c:3024
 msgid "An error occurred while testing archive."
 msgstr "Ocorreu um erro durante o teste de arquivamento."
 
-#: ../parchives/src/fr-window.c:3027
+#: ../parchives/src/fr-window.c:3028
 msgid "An error occurred while saving the archive."
 msgstr "Ocorreu um erro ao salvar o arquivo."
 
-#: ../parchives/src/fr-window.c:3031
+#: ../parchives/src/fr-window.c:3032
 msgid "An error occurred."
 msgstr "Um erro ocorreu."
 
-#: ../parchives/src/fr-window.c:3037
+#: ../parchives/src/fr-window.c:3038
 msgid "Command not found."
 msgstr "Comando não encontrado."
 
-#: ../parchives/src/fr-window.c:3240
+#: ../parchives/src/fr-window.c:3241
 msgid "Test Result"
 msgstr "Resultado do teste"
 
-#: ../parchives/src/fr-window.c:4108 ../parchives/src/fr-window.c:8252
-#: ../parchives/src/fr-window.c:8288 ../parchives/src/fr-window.c:8538
+#: ../parchives/src/fr-window.c:4109 ../parchives/src/fr-window.c:8253
+#: ../parchives/src/fr-window.c:8289 ../parchives/src/fr-window.c:8539
 #, fuzzy
 msgid "Could not perform the operation"
 msgstr "Incapaz de processar as opções da linha de comandos: %s\n"
 
-#: ../parchives/src/fr-window.c:4134
+#: ../parchives/src/fr-window.c:4135
 msgid ""
 "Do you want to add this file to the current archive or open it as a new "
 "archive?"
@@ -1711,237 +1700,238 @@ msgstr ""
 "Deseja adicionar este arquivo ao arquivo atual ou abri-lo como um novo "
 "arquivo?"
 
-#: ../parchives/src/fr-window.c:4164
+#: ../parchives/src/fr-window.c:4165
 msgid "Do you want to create a new archive with these files?"
 msgstr "Você quer criar um novo arquivo com esses arquivos?"
 
-#: ../parchives/src/fr-window.c:4167
+#: ../parchives/src/fr-window.c:4168
 #, fuzzy
 msgid "Create _Archive"
 msgstr "Crar _Partilha"
 
-#: ../parchives/src/fr-window.c:4765 ../parchives/src/fr-window.c:5826
+#: ../parchives/src/fr-window.c:4766 ../parchives/src/fr-window.c:5827
 msgid "Folders"
 msgstr "Pastas"
 
-#: ../parchives/src/fr-window.c:4803
+#: ../parchives/src/fr-window.c:4804
 msgctxt "File"
 msgid "Size"
 msgstr "Tamanho"
 
-#: ../parchives/src/fr-window.c:4804
+#: ../parchives/src/fr-window.c:4805
 msgctxt "File"
 msgid "Type"
 msgstr "Tipo"
 
-#: ../parchives/src/fr-window.c:4805
+#: ../parchives/src/fr-window.c:4806
 msgctxt "File"
 msgid "Date Modified"
 msgstr "Data modificada"
 
-#: ../parchives/src/fr-window.c:4806
+#: ../parchives/src/fr-window.c:4807
 msgctxt "File"
 msgid "Location"
 msgstr "Localização"
 
-#: ../parchives/src/fr-window.c:4815
+#: ../parchives/src/fr-window.c:4816
 msgctxt "File"
 msgid "Name"
 msgstr "Nome"
 
-#: ../parchives/src/fr-window.c:5745
+#: ../parchives/src/fr-window.c:5746
 msgid "Find:"
 msgstr "Encontrar:"
 
-#: ../parchives/src/fr-window.c:5838
+#: ../parchives/src/fr-window.c:5839
 msgid "Close the folders pane"
 msgstr "Feche o painel de pastas"
 
 #. Translators: this is the label for the "open recent file" sub-menu.
-#: ../parchives/src/fr-window.c:5869
+#: ../parchives/src/fr-window.c:5870
 #, fuzzy
 msgid "Open _Recent"
 msgstr "percentagem"
 
-#: ../parchives/src/fr-window.c:5870 ../parchives/src/fr-window.c:5882
+#: ../parchives/src/fr-window.c:5871 ../parchives/src/fr-window.c:5883
 msgid "Open a recently used archive"
 msgstr "Abra um arquivo usado recentemente"
 
 #. Translators: after the colon there is a folder name.
-#: ../parchives/src/fr-window.c:5959 ../parchives/src/ui/batch-add-files.ui.h:3
+#: ../parchives/src/fr-window.c:5960 ../parchives/src/ui/batch-add-files.ui.h:3
 msgid "_Location:"
 msgstr "_Localização:"
 
-#: ../parchives/src/fr-window.c:6308
+#: ../parchives/src/fr-window.c:6309
 #, fuzzy, c-format
 msgid "Could not save the archive \"%s\""
 msgstr "Incapaz de alterar as permissões da pasta \"%s\""
 
-#: ../parchives/src/fr-window.c:6807
+#: ../parchives/src/fr-window.c:6808
 #, c-format
 msgid "Replace file \"%s\"?"
 msgstr "Substituir arquivo \"%s\"?"
 
-#: ../parchives/src/fr-window.c:6810
+#: ../parchives/src/fr-window.c:6811
 #, c-format
 msgid "Another file with the same name already exists in \"%s\"."
 msgstr "Outro arquivo com o mesmo nome já existe em \"%s\"."
 
-#: ../parchives/src/fr-window.c:6817
+#: ../parchives/src/fr-window.c:6818
 msgid "Replace _All"
 msgstr "Substitua _tudo"
 
-#: ../parchives/src/fr-window.c:6819
+#: ../parchives/src/fr-window.c:6820
 #, fuzzy
 msgid "_Replace"
 msgstr "Redimensionar imediatamente"
 
 #. Translators: the name references to a filename.  This message can appear when renaming a file.
-#: ../parchives/src/fr-window.c:7654
+#: ../parchives/src/fr-window.c:7655
 msgid "New name is void, please type a name."
 msgstr "Novo nome é nulo, por favor digite um nome."
 
 #. Translators: the name references to a filename.  This message can appear when renaming a file.
-#: ../parchives/src/fr-window.c:7659
+#: ../parchives/src/fr-window.c:7660
 msgid "New name is the same as old one, please type other name."
 msgstr "O novo nome é o mesmo que o antigo, por favor digite outro nome."
 
 #. Translators: the %s references to a filename.  This message can appear when renaming a file.
-#: ../parchives/src/fr-window.c:7664
+#: ../parchives/src/fr-window.c:7665
 #, c-format
 msgid ""
 "Name \"%s\" is not valid because it contains at least one of the following "
 "characters: %s, please type other name."
-msgstr "" 
+msgstr ""
 "O nome \"%s\" não é válido porque contém pelo menos um dos seguintes "
 "caracteres:%s, por favor digite outro nome."
 
-#: ../parchives/src/fr-window.c:7700
+#: ../parchives/src/fr-window.c:7701
 #, c-format
 msgid ""
 "A folder named \"%s\" already exists.\n"
 "\n"
 "%s"
-msgstr "Uma pasta chamada \"%s\" já existe. \n"
+msgstr ""
+"Uma pasta chamada \"%s\" já existe. \n"
 "\n"
 "%s"
 
-#: ../parchives/src/fr-window.c:7702
+#: ../parchives/src/fr-window.c:7703
 #, c-format
 msgid ""
 "A file named \"%s\" already exists.\n"
 "\n"
 "%s"
-msgstr "Um arquivo chamado \"%s\" já existe. \n "
-"\n"
+msgstr ""
+"Um arquivo chamado \"%s\" já existe. \n"
+" \n"
 "%s"
 
-#: ../parchives/src/fr-window.c:7772
+#: ../parchives/src/fr-window.c:7773
 msgid "Rename"
 msgstr "Renomear"
 
-#: ../parchives/src/fr-window.c:7773
+#: ../parchives/src/fr-window.c:7774
 msgid "_New folder name:"
 msgstr "_Novo nome da pasta:"
 
-#: ../parchives/src/fr-window.c:7773
+#: ../parchives/src/fr-window.c:7774
 msgid "_New file name:"
 msgstr "_Novo nome do arquivo:"
 
-#: ../parchives/src/fr-window.c:7777
+#: ../parchives/src/fr-window.c:7778
 msgid "_Rename"
 msgstr "_Renomear"
 
-#: ../parchives/src/fr-window.c:7794 ../parchives/src/fr-window.c:7813
+#: ../parchives/src/fr-window.c:7795 ../parchives/src/fr-window.c:7814
 #, fuzzy
 msgid "Could not rename the folder"
 msgstr "Incapaz de alterar as permissões da pasta \"%s\""
 
-#: ../parchives/src/fr-window.c:7794 ../parchives/src/fr-window.c:7813
+#: ../parchives/src/fr-window.c:7795 ../parchives/src/fr-window.c:7814
 msgid "Could not rename the file"
 msgstr "Não foi possível renomear o arquivo"
 
-#: ../parchives/src/fr-window.c:8213
+#: ../parchives/src/fr-window.c:8214
 msgid "Paste Selection"
 msgstr "Colar Seleção"
 
-#: ../parchives/src/fr-window.c:8214
+#: ../parchives/src/fr-window.c:8215
 msgid "_Destination folder:"
 msgstr "Pasta de _destino:"
 
-#: ../parchives/src/fr-window.c:8817
+#: ../parchives/src/fr-window.c:8818
 msgid "Add files to an archive"
 msgstr "Adicionar arquivos a um arquivo"
 
-#: ../parchives/src/fr-window.c:8860 ../parchives/src/main.c:185
-#: ../parchives/src/server.c:329 ../parchives/src/server.c:354
-#: ../parchives/src/server.c:377
+#: ../parchives/src/fr-window.c:8861 ../parchives/src/main.c:186
+#: ../parchives/src/server.c:330 ../parchives/src/server.c:355
+#: ../parchives/src/server.c:378
 msgid "Extract archive"
 msgstr "Extrair arquivo"
 
 #. This is the time format used in the "Date Modified" column and
 #. * in the Properties dialog.  See the man page of strftime for an
 #. * explanation of the values.
-#: ../parchives/src/glib-utils.c:562
+#: ../parchives/src/glib-utils.c:563
 msgid "%d %B %Y, %H:%M"
 msgstr "%Yano%-mmês%-ddia %H:%M"
 
 #. Expander
-#: ../parchives/src/gtk-utils.c:431
+#: ../parchives/src/gtk-utils.c:432
 msgid "Command _Line Output"
 msgstr "Comando _Line Output"
 
-#: ../parchives/src/gtk-utils.c:770
+#: ../parchives/src/gtk-utils.c:771
 #, fuzzy
 msgid "Could not display help"
 msgstr "Não foi possível exibir a ajuda"
 
-#: ../parchives/src/main.c:51
+#: ../parchives/src/main.c:52
 msgid "Add files to the specified archive and quit the program"
 msgstr "Adicione arquivos ao arquivo especificado e saia do programa"
 
-#: ../parchives/src/main.c:52
+#: ../parchives/src/main.c:53
 msgid "ARCHIVE"
 msgstr "ARQUIVO"
 
-#: ../parchives/src/main.c:55
+#: ../parchives/src/main.c:56
 msgid "Add files asking the name of the archive and quit the program"
 msgstr "Adicione arquivos pedindo o nome do arquivo e saia do programa"
 
-#: ../parchives/src/main.c:59
+#: ../parchives/src/main.c:60
 msgid "Extract archives to the specified folder and quit the program"
 msgstr "Extrair arquivos para a pasta especificada e sair do programa"
 
-#: ../parchives/src/main.c:60 ../parchives/src/main.c:72
+#: ../parchives/src/main.c:61 ../parchives/src/main.c:73
 msgid "FOLDER"
 msgstr "PASTA"
 
-#: ../parchives/src/main.c:63
+#: ../parchives/src/main.c:64
 msgid "Extract archives asking the destination folder and quit the program"
 msgstr "Extrair arquivos pedindo a pasta de destino e sair do programa"
 
-#: ../parchives/src/main.c:67
+#: ../parchives/src/main.c:68
 msgid ""
 "Extract the contents of the archives in the archive folder and quit the "
 "program"
-msgstr "Extraia o conteúdo dos arquivos na pasta de arquivo e saia do "
-"programa"
+msgstr "Extraia o conteúdo dos arquivos na pasta de arquivo e saia do programa"
 
-#: ../parchives/src/main.c:71
+#: ../parchives/src/main.c:72
 msgid "Default folder to use for the '--add' and '--extract' commands"
 msgstr "Pasta padrão a ser usada para os comandos '--add' e '--extract'"
 
-#: ../parchives/src/main.c:75
+#: ../parchives/src/main.c:76
 msgid "Create destination folder without asking confirmation"
 msgstr "Criar pasta de destino sem pedir confirmação"
 
-#: ../parchives/src/main.c:165 ../parchives/src/server.c:296
+#: ../parchives/src/main.c:166 ../parchives/src/server.c:297
 #: ../parchives/src/ui/batch-add-files.ui.h:1
 #, fuzzy
 msgid "Compress"
 msgstr "<b>Compressão</b>"
 
-#: ../parchives/src/main.c:314 ../parchives/src/server.c:444
+#: ../parchives/src/main.c:315 ../parchives/src/server.c:445
 msgid "- Create and modify an archive"
 msgstr "- Criar e modificar um arquivo"
 
@@ -1950,7 +1940,7 @@ msgstr "- Criar e modificar um arquivo"
 msgid "Load Options"
 msgstr "Opções de Partilha"
 
-#: ../parchives/src/ui/app-menu.ui.h:1 ../parchives/src/ui.h:35
+#: ../parchives/src/ui/app-menu.ui.h:1 ../parchives/src/ui.h:36
 msgid "_Help"
 msgstr "_Socorro"
 
@@ -2004,281 +1994,281 @@ msgstr "<span weight=\"bold\" size=\"larger\">Senha requerida</span>"
 msgid "Delete"
 msgstr "Excluir"
 
-#: ../parchives/src/ui.h:32
+#: ../parchives/src/ui.h:33
 msgid "_Archive"
 msgstr "_Arquivo"
 
-#: ../parchives/src/ui.h:33
+#: ../parchives/src/ui.h:34
 msgid "_Edit"
 msgstr "_Edit"
 
-#: ../parchives/src/ui.h:34
+#: ../parchives/src/ui.h:35
 msgid "_View"
 msgstr "_Visão"
 
-#: ../parchives/src/ui.h:36
+#: ../parchives/src/ui.h:37
 msgid "_Arrange Files"
 msgstr "_Arranjar arquivos"
 
-#: ../parchives/src/ui.h:40
+#: ../parchives/src/ui.h:41
 msgid "Information about the program"
 msgstr "Informações sobre o programa"
 
-#: ../parchives/src/ui.h:43
+#: ../parchives/src/ui.h:44
 msgid "_Add Files…"
 msgstr "_Adicionar arquivos…"
 
-#: ../parchives/src/ui.h:44 ../parchives/src/ui.h:48
+#: ../parchives/src/ui.h:45 ../parchives/src/ui.h:49
 msgid "Add files to the archive"
 msgstr "Adicionar arquivos ao arquivo"
 
-#: ../parchives/src/ui.h:51
+#: ../parchives/src/ui.h:52
 msgid "Add a _Folder…"
 msgstr "Adicione uma _Folder…"
 
-#: ../parchives/src/ui.h:52 ../parchives/src/ui.h:56
+#: ../parchives/src/ui.h:53 ../parchives/src/ui.h:57
 msgid "Add a folder to the archive"
 msgstr "Adicione uma pasta ao arquivo"
 
-#: ../parchives/src/ui.h:55
+#: ../parchives/src/ui.h:56
 msgid "Add Folder"
 msgstr "Adicionar pasta"
 
-#: ../parchives/src/ui.h:60
+#: ../parchives/src/ui.h:61
 msgid "Close the current archive"
 msgstr "Feche o arquivo atual"
 
-#: ../parchives/src/ui.h:63
+#: ../parchives/src/ui.h:64
 msgid "Contents"
 msgstr "Conteúdo"
 
-#: ../parchives/src/ui.h:64
+#: ../parchives/src/ui.h:65
 msgid "Display the Parchives Manual"
 msgstr "Exibir o manual do Parchives"
 
-#: ../parchives/src/ui.h:69 ../parchives/src/ui.h:90
+#: ../parchives/src/ui.h:70 ../parchives/src/ui.h:91
 msgid "Copy the selection"
 msgstr "Copie a seleção"
 
-#: ../parchives/src/ui.h:73 ../parchives/src/ui.h:94
+#: ../parchives/src/ui.h:74 ../parchives/src/ui.h:95
 msgid "Cut the selection"
 msgstr "Cortar a seleção"
 
-#: ../parchives/src/ui.h:77 ../parchives/src/ui.h:98
+#: ../parchives/src/ui.h:78 ../parchives/src/ui.h:99
 msgid "Paste the clipboard"
 msgstr "Cole a área de transferência"
 
-#: ../parchives/src/ui.h:80 ../parchives/src/ui.h:101
+#: ../parchives/src/ui.h:81 ../parchives/src/ui.h:102
 msgid "_Rename…"
 msgstr "_Renomeie…"
 
-#: ../parchives/src/ui.h:81 ../parchives/src/ui.h:102
+#: ../parchives/src/ui.h:82 ../parchives/src/ui.h:103
 msgid "Rename the selection"
 msgstr "Renomeie a seleção"
 
-#: ../parchives/src/ui.h:85 ../parchives/src/ui.h:106
+#: ../parchives/src/ui.h:86 ../parchives/src/ui.h:107
 msgid "Delete the selection from the archive"
 msgstr "Excluir a seleção do arquivo"
 
-#: ../parchives/src/ui.h:110
+#: ../parchives/src/ui.h:111
 msgid "Dese_lect All"
 msgstr "Desmarcar todos"
 
-#: ../parchives/src/ui.h:111
+#: ../parchives/src/ui.h:112
 #, fuzzy
 msgid "Deselect all files"
 msgstr "Escolha o tamanho:"
 
-#: ../parchives/src/ui.h:114 ../parchives/src/ui.h:118
+#: ../parchives/src/ui.h:115 ../parchives/src/ui.h:119
 msgid "_Extract…"
 msgstr "_Extrair…"
 
-#: ../parchives/src/ui.h:115 ../parchives/src/ui.h:119
-#: ../parchives/src/ui.h:123
+#: ../parchives/src/ui.h:116 ../parchives/src/ui.h:120
+#: ../parchives/src/ui.h:124
 msgid "Extract files from the archive"
 msgstr "Extrair arquivos do arquivo"
 
-#: ../parchives/src/ui.h:126
+#: ../parchives/src/ui.h:127
 msgid "Find…"
 msgstr "Encontrar…"
 
-#: ../parchives/src/ui.h:131
+#: ../parchives/src/ui.h:132
 msgid "_Last Output"
 msgstr "_Última saída"
 
-#: ../parchives/src/ui.h:132
+#: ../parchives/src/ui.h:133
 msgid "View the output produced by the last executed command"
 msgstr "Veja a saída produzida pelo último comando executado"
 
-#: ../parchives/src/ui.h:135
+#: ../parchives/src/ui.h:136
 msgid "New…"
 msgstr "Novo…"
 
-#: ../parchives/src/ui.h:136
+#: ../parchives/src/ui.h:137
 #, fuzzy
 msgid "Create a new archive"
 msgstr "Crar _Partilha"
 
-#: ../parchives/src/ui.h:139
+#: ../parchives/src/ui.h:140
 msgid "Open…"
 msgstr "Abrir…"
 
-#: ../parchives/src/ui.h:140 ../parchives/src/ui.h:144
+#: ../parchives/src/ui.h:141 ../parchives/src/ui.h:145
 msgid "Open archive"
 msgstr "Arquivo aberto"
 
-#: ../parchives/src/ui.h:147
+#: ../parchives/src/ui.h:148
 msgid "_Open With…"
 msgstr "_Abrir com…"
 
-#: ../parchives/src/ui.h:148
+#: ../parchives/src/ui.h:149
 msgid "Open selected files with an application"
 msgstr "Abrir arquivos selecionados com um aplicativo"
 
-#: ../parchives/src/ui.h:151
+#: ../parchives/src/ui.h:152
 msgid "Pass_word…"
 msgstr "Senha…"
 
-#: ../parchives/src/ui.h:152
+#: ../parchives/src/ui.h:153
 msgid "Specify a password for this archive"
 msgstr "Especifique uma senha para este arquivo"
 
-#: ../parchives/src/ui.h:156
+#: ../parchives/src/ui.h:157
 msgid "Show archive properties"
 msgstr "Mostrar propriedades do arquivo"
 
-#: ../parchives/src/ui.h:160
+#: ../parchives/src/ui.h:161
 msgid "Reload current archive"
 msgstr "Recarregar o arquivo atual"
 
-#: ../parchives/src/ui.h:163
+#: ../parchives/src/ui.h:164
 msgid "Save As…"
 msgstr "Salvar como…"
 
-#: ../parchives/src/ui.h:164
+#: ../parchives/src/ui.h:165
 msgid "Save the current archive with a different name"
 msgstr "Salve o arquivo atual com um nome diferente"
 
-#: ../parchives/src/ui.h:168
+#: ../parchives/src/ui.h:169
 #, fuzzy
 msgid "Select all files"
 msgstr "Escolha o tamanho:"
 
-#: ../parchives/src/ui.h:172
+#: ../parchives/src/ui.h:173
 msgid "Stop current operation"
 msgstr "Parar a operação atual"
 
-#: ../parchives/src/ui.h:175
+#: ../parchives/src/ui.h:176
 msgid "_Test Integrity"
 msgstr "_Teste de integridad"
 
-#: ../parchives/src/ui.h:176
+#: ../parchives/src/ui.h:177
 msgid "Test whether the archive contains errors"
 msgstr "Teste se o arquivo contém erros"
 
-#: ../parchives/src/ui.h:180 ../parchives/src/ui.h:184
+#: ../parchives/src/ui.h:181 ../parchives/src/ui.h:185
 #, fuzzy
 msgid "Open the selected file"
 msgstr "Redimensionar as imagens selecionadas"
 
-#: ../parchives/src/ui.h:188 ../parchives/src/ui.h:192
+#: ../parchives/src/ui.h:189 ../parchives/src/ui.h:193
 #, fuzzy
 msgid "Open the selected folder"
 msgstr "Abrir numa consola a pasta que está selecionada"
 
-#: ../parchives/src/ui.h:197
+#: ../parchives/src/ui.h:198
 msgid "Go to the previous visited location"
 msgstr "Ir para o local visitado anterior"
 
-#: ../parchives/src/ui.h:201
+#: ../parchives/src/ui.h:202
 msgid "Go to the next visited location"
 msgstr "Ir para o próximo local visitado"
 
-#: ../parchives/src/ui.h:205
+#: ../parchives/src/ui.h:206
 msgid "Go up one level"
 msgstr "Suba um nível"
 
 #. Translators: the home location is the home folder.
-#: ../parchives/src/ui.h:210
+#: ../parchives/src/ui.h:211
 msgid "Go to the home location"
 msgstr "Vá para o local da casa"
 
-#: ../parchives/src/ui.h:218
+#: ../parchives/src/ui.h:219
 msgid "_Toolbar"
 msgstr "_Toolbar"
 
-#: ../parchives/src/ui.h:219
+#: ../parchives/src/ui.h:220
 msgid "View the main toolbar"
 msgstr "Visualizar a barra de ferramentas principal"
 
-#: ../parchives/src/ui.h:223
+#: ../parchives/src/ui.h:224
 msgid "Stat_usbar"
 msgstr "Barra de status"
 
-#: ../parchives/src/ui.h:224
+#: ../parchives/src/ui.h:225
 msgid "View the statusbar"
 msgstr "Ver a barra de status"
 
-#: ../parchives/src/ui.h:228
+#: ../parchives/src/ui.h:229
 msgid "_Reversed Order"
 msgstr "Ordem invertida"
 
-#: ../parchives/src/ui.h:229
+#: ../parchives/src/ui.h:230
 #, fuzzy
 msgid "Reverse the list order"
 msgstr "Partilhar esta Pasta"
 
-#: ../parchives/src/ui.h:233
+#: ../parchives/src/ui.h:234
 msgid "_Folders"
 msgstr "_Pastas"
 
-#: ../parchives/src/ui.h:243
+#: ../parchives/src/ui.h:244
 msgid "View All _Files"
 msgstr "Ver todos _os arquivos"
 
-#: ../parchives/src/ui.h:246
+#: ../parchives/src/ui.h:247
 msgid "View as a F_older"
 msgstr "Visualizar c_omo uma pasta"
 
-#: ../parchives/src/ui.h:254
+#: ../parchives/src/ui.h:255
 msgid "by _Name"
 msgstr "por _nome"
 
-#: ../parchives/src/ui.h:255
+#: ../parchives/src/ui.h:256
 msgid "Sort file list by name"
 msgstr "Ordenar lista de arquivos por nome"
 
-#: ../parchives/src/ui.h:257
+#: ../parchives/src/ui.h:258
 msgid "by _Size"
 msgstr "por _tamanho"
 
-#: ../parchives/src/ui.h:258
+#: ../parchives/src/ui.h:259
 msgid "Sort file list by file size"
 msgstr "Ordenar lista de arquivos por tamanho de arquivo"
 
-#: ../parchives/src/ui.h:260
+#: ../parchives/src/ui.h:261
 msgid "by T_ype"
 msgstr "por tipo"
 
-#: ../parchives/src/ui.h:261
+#: ../parchives/src/ui.h:262
 msgid "Sort file list by type"
 msgstr "Ordenar lista de arquivos por tipo"
 
-#: ../parchives/src/ui.h:263
+#: ../parchives/src/ui.h:264
 msgid "by _Date Modified"
 msgstr "por _Date Modified"
 
-#: ../parchives/src/ui.h:264
+#: ../parchives/src/ui.h:265
 msgid "Sort file list by modification time"
 msgstr "Ordenar lista de arquivos por hora de modificação"
 
 #. Translators: this is the "sort by file location" menu item
-#: ../parchives/src/ui.h:267
+#: ../parchives/src/ui.h:268
 msgid "by _Location"
 msgstr "Por localização"
 
 #. Translators: location is the file location
-#: ../parchives/src/ui.h:269
+#: ../parchives/src/ui.h:270
 msgid "Sort file list by location"
 msgstr "Ordenar lista de arquivos por localização"
 
@@ -2304,3 +2294,26 @@ msgstr "_Atualizar"
 #: ../parchives/src/ui/update.ui.h:3
 msgid "S_elect the files you want to update:"
 msgstr "S_elecione os arquivos que você deseja atualizar:"
+
+#~ msgid "Open as administrator"
+#~ msgstr "Abrir como administrador"
+
+#~ msgid "Opens the file with administrator privileges"
+#~ msgstr "Abre o ficheiro com privilégios de administrador"
+
+#~ msgid ""
+#~ "<big><b>Unable to determine the program to run.</b></big>\n"
+#~ "\n"
+#~ "The item you selected cannot be open with administrator powers because "
+#~ "the correct application cannot be determined."
+#~ msgstr ""
+#~ "<big><b>Incapaz de determinar o programa a executar.</b></big>\n"
+#~ "\n"
+#~ "O item selecionado não pode ser aberto com permissões de administrador "
+#~ "porque a aplicação correta não pode ser determinada."
+
+#~ msgid "Gksu"
+#~ msgstr "Gksu"
+
+#~ msgid "Privilege granting extension"
+#~ msgstr "Extensão que garante privilégio"
