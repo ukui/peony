@@ -1,3 +1,9 @@
+peony-qt-extensions (1.1ubuntu1) eoan; urgency=medium
+
+  * test build.
+
+ -- Yue Lan <lanyue@kylinos.cn>  Mon, 16 Dec 2019 11:50:11 +0800
+
 peony-qt-extensions (1.1) eoan; urgency=medium
 
   * Initial release. Closes: #nnnn
