@@ -168,6 +168,8 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
                     this->saveItemPositionInfo(uri);
                 }
             }
+        } else {
+            this->saveItemPositionInfo(uri);
         }
     });
 
