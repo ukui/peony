@@ -98,7 +98,7 @@ bool FileInfoJob::querySync()
     GError *err = nullptr;
 
     auto _info = g_file_query_info(info->m_file,
-                                   "standard::*," "time::*," "access::*," "metadata::*," G_FILE_ATTRIBUTE_ID_FILE,
+                                   "standard::*," "time::*," "access::*," "mountable::*," "metadata::*," G_FILE_ATTRIBUTE_ID_FILE,
                                    G_FILE_QUERY_INFO_NONE,
                                    nullptr,
                                    &err);
@@ -154,7 +154,7 @@ void FileInfoJob::queryAsync()
         return;
     }
     g_file_query_info_async(info->m_file,
-                            "standard::*," "time::*," "access::*," "metadata::*," G_FILE_ATTRIBUTE_ID_FILE,
+                            "standard::*," "time::*," "access::*," "mountable::*," "metadata::*," G_FILE_ATTRIBUTE_ID_FILE,
                             G_FILE_QUERY_INFO_NONE,
                             G_PRIORITY_DEFAULT,
                             info->m_cancellable,
@@ -197,6 +197,10 @@ void FileInfoJob::refreshInfoContents(GFileInfo *new_info)
     info->m_can_delete = g_file_info_get_attribute_boolean(new_info, G_FILE_ATTRIBUTE_ACCESS_CAN_DELETE);
     info->m_can_trash = g_file_info_get_attribute_boolean(new_info, G_FILE_ATTRIBUTE_ACCESS_CAN_TRASH);
     info->m_can_rename = g_file_info_get_attribute_boolean(new_info, G_FILE_ATTRIBUTE_ACCESS_CAN_RENAME);
+
+    info->m_can_mount = g_file_info_get_attribute_boolean(new_info, G_FILE_ATTRIBUTE_MOUNTABLE_CAN_MOUNT);
+    info->m_can_unmount = g_file_info_get_attribute_boolean(new_info, G_FILE_ATTRIBUTE_MOUNTABLE_CAN_UNMOUNT);
+    info->m_can_eject = g_file_info_get_attribute_boolean(new_info, G_FILE_ATTRIBUTE_MOUNTABLE_CAN_EJECT);
 
     info->m_is_virtual = g_file_info_get_attribute_boolean(new_info, G_FILE_ATTRIBUTE_STANDARD_IS_VIRTUAL);
 

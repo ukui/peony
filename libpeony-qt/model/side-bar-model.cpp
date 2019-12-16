@@ -207,6 +207,8 @@ QVariant SideBarModel::data(const QModelIndex &index, int role) const
         return item->displayName();
     case Qt::ToolTipRole:
         return item->displayName();
+    case Qt::UserRole:
+        return item->uri();
     default:
         break;
     }

@@ -225,8 +225,16 @@ bool SideBarFileSystemItem::isEjectable()
 
 bool SideBarFileSystemItem::isMountable()
 {
+    auto info = FileInfo::fromUri(m_uri);
+    if (info->displayName().isEmpty()) {
+        FileInfoJob j(info);
+        j.querySync();
+    }
     if (m_uri.contains("computer:///") && m_uri != "computer:///") {
-        return true;
+        //some mountable item can be unmounted but can't be mounted.
+        //the most of them is remote servers and shared directories.
+        //they should be seemed as mountable items.
+        return info->canMount() || info->canUnmount();
     }
     return false;
 }
