@@ -4,8 +4,7 @@
 * Update submodules
 
 ``` sh
-git submodule init
-git submodule update
+git pull origin master --recurse-submodules
 ```
 
 * Create *build* directory and change to it, then build with cmake. The follow
