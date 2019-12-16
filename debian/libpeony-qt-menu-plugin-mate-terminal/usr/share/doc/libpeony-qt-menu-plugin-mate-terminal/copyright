@@ -1,0 +1,60 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: peony-qt-extensions
+Source: <https://github.com/explorer-cs/peony-qt-extensions>
+#
+# Please double check copyright with the licensecheck(1) command.
+
+Files:     .gitignore
+           .gitmodules
+           CMakeLists.txt
+           README.md
+           peony-qt-extensions-cmake/.git
+           peony-qt-extensions-cmake/.gitignore
+           peony-qt-extensions-cmake/CMakeLists.txt
+           peony-qt-extensions-cmake/README.md
+           peony-qt-extensions-cmake/peony-qt-admin/CMakeLists.txt
+           peony-qt-extensions-cmake/peony-qt-admin/admin-menu-plugin.cpp
+           peony-qt-extensions-cmake/peony-qt-admin/admin-menu-plugin.h
+           peony-qt-extensions-cmake/peony-qt-share/CMakeLists.txt
+           peony-qt-extensions-cmake/peony-qt-share/net-usershare-helper.cpp
+           peony-qt-extensions-cmake/peony-qt-share/net-usershare-helper.h
+           peony-qt-extensions-cmake/peony-qt-share/share-page.cpp
+           peony-qt-extensions-cmake/peony-qt-share/share-page.h
+           peony-qt-extensions-cmake/peony-qt-share/share-properties-page-plugin.cpp
+           peony-qt-extensions-cmake/peony-qt-share/share-properties-page-plugin.h
+           peony-qt-extensions-qmake/.gitignore
+           peony-qt-extensions-qmake/.qmake.stash
+           peony-qt-extensions-qmake/README.md
+           peony-qt-extensions-qmake/gtk2-style-enhanced-plugin/gtk2-style-enhanced-plugin.cpp
+           peony-qt-extensions-qmake/gtk2-style-enhanced-plugin/gtk2-style-enhanced-plugin.h
+           peony-qt-extensions-qmake/gtk2-style-enhanced-plugin/gtk2-style-enhanced-plugin.pro
+           peony-qt-extensions-qmake/gtk2-style-enhanced-plugin/gtk2-style-enhanced-plugin_global.h
+           peony-qt-extensions-qmake/peony-qt-create-link/create-link-menu-plugin.cpp
+           peony-qt-extensions-qmake/peony-qt-create-link/create-link-menu-plugin.h
+           peony-qt-extensions-qmake/peony-qt-create-link/peony-qt-create-link.pro
+           peony-qt-extensions-qmake/peony-qt-create-link/peony-qt-create-link_global.h
+           peony-qt-extensions-qmake/peony-qt-engrampa-menu-plugin/engrampa-menu-plugin.cpp
+           peony-qt-extensions-qmake/peony-qt-engrampa-menu-plugin/engrampa-menu-plugin.h
+           peony-qt-extensions-qmake/peony-qt-engrampa-menu-plugin/peony-qt-engrampa-menu-plugin.pro
+           peony-qt-extensions-qmake/peony-qt-engrampa-menu-plugin/peony-qt-engrampa-menu-plugin_global.h
+           peony-qt-extensions-qmake/peony-qt-extensions-qmake.pro
+           peony-qt-extensions-qmake/peony-qt-menu-plugin-mate-terminal/mate-terminal-menu-plugin.cpp
+           peony-qt-extensions-qmake/peony-qt-menu-plugin-mate-terminal/mate-terminal-menu-plugin.h
+           peony-qt-extensions-qmake/peony-qt-menu-plugin-mate-terminal/peony-qt-menu-plugin-mate-terminal.pro
+           peony-qt-extensions-qmake/peony-qt-menu-plugin-mate-terminal/peony-qt-menu-plugin-mate-terminal_global.h
+Copyright: __NO_COPYRIGHT_NOR_LICENSE__
+License:   __NO_COPYRIGHT_NOR_LICENSE__
+
+#----------------------------------------------------------------------------
+# xml and html files (skipped):
+#         peony-qt-extensions-qmake/peony-qt-menu-plugin-mate-terminal/peony-qt-menu-plugin-mate-terminal.qrc
+#         peony-qt-extensions-qmake/peony-qt-menu-plugin-mate-terminal/translations/peony-qt-mate-terminal-extension_zh_CN.ts
+#         peony-qt-extensions-qmake/peony-qt-menu-plugin-mate-terminal/translations/peony-qt-mate-terminal-extension_zh_CN.qm
+#         peony-qt-extensions-qmake/peony-qt-engrampa-menu-plugin/peony-qt-engrampa-menu.qrc
+#         peony-qt-extensions-qmake/peony-qt-engrampa-menu-plugin/translations/peony-qt-engrampa-menu-extension_zh_CN.ts
+#         peony-qt-extensions-qmake/peony-qt-engrampa-menu-plugin/translations/peony-qt-engrampa-menu-extension_zh_CN.qm
+#         peony-qt-extensions-cmake/peony-qt-admin/org.freedesktop.peony-qt-admin.policy.in
+
+#----------------------------------------------------------------------------
+# Files marked as NO_LICENSE_TEXT_FOUND may be covered by the following
+# license/copyright files.

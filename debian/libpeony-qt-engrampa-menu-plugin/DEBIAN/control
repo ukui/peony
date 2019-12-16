@@ -1,0 +1,11 @@
+Package: libpeony-qt-engrampa-menu-plugin
+Source: peony-qt-extensions
+Version: 1.0
+Architecture: amd64
+Maintainer: hemh <hemeihong@kylinos.cn>
+Installed-Size: 12
+Section: libs
+Priority: optional
+Multi-Arch: same
+Homepage: https://github.com/explorer-cs/peony-qt-extensions
+Description: peony-qt-engrampa-menu-plugin is file compress/uncompress manager plugin.

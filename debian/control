@@ -1,0 +1,58 @@
+Source: peony-qt-extensions
+Section: x11
+Priority: optional
+Maintainer: Meihong <919052316@qq.com>
+Build-Depends: cmake, debhelper (>=11~),pkg-config, qt5-qmake, qtbase5-dev, qtchooser, qtbase5-dev-tools, libpeony-qt-dev
+Standards-Version: 4.1.4
+Homepage: https://github.com/explorer-cs/peony-qt-extensions
+
+Package: peony-qt-admin
+Architecture: any
+Multi-Arch: same
+Build-Depends: libpeony-qt-dev
+Depends: ${misc:Depends}, ${shlibs:Depends}, libpeony-qt1
+Description: peony-qt-admin is user authority manager plugin.
+
+Package: peony-qt-share
+Architecture: any
+Multi-Arch: same
+Build-Depends: libpeony-qt-dev
+Depends: ${misc:Depends}, ${shlibs:Depends}, libpeony-qt1
+Description: peony-qt-share is user share plugin.
+
+Package: gtk2-style-enhanced-plugin
+Architecture: any
+Multi-Arch: same
+Build-Depends: libpeony-qt-dev
+Depends: ${misc:Depends}, ${shlibs:Depends}, libpeony-qt1
+Description: gtk2-style-enhanced-plugin is theme anhance manager plugin.
+
+Package: peony-qt-create-link
+Architecture: any
+Multi-Arch: same
+Build-Depends: libpeony-qt-dev
+Depends: ${misc:Depends}, ${shlibs:Depends}, libpeony-qt
+Description: peony-qt-create-link is create link plugin.
+
+Package: peony-qt-engrampa-menu-plugin
+Architecture: any
+Multi-Arch: same
+Build-Depends: libpeony-qt-dev
+Depends: ${misc:Depends}, ${shlibs:Depends}, libpeony-qt1
+Description: peony-qt-engrampa-menu-plugin is file compress/uncompress manager plugin.
+
+Package: peony-qt-menu-plugin-mate-terminal
+Architecture: any
+Multi-Arch: same
+Build-Depends: libpeony-qt-dev
+Depends: ${misc:Depends}, ${shlibs:Depends}, libpeony-qt1
+Description: peony-qt-menu-plugin-mate-terminal is quick way to open terminal for user.
+
+Package: peony-qt-extensions
+Architecture: any
+Multi-Arch: same
+Build-Depends: libpeony-qt-dev
+Depends: ${misc:Depends}, ${shlibs:Depends},peony-qt-admin, peony-qt-share, gtk2-style-enhanced-plugin, peony-qt-create-link, peony-qt-engrampa-menu-plugin, peony-qt-menu-plugin-mate-terminal
+Description: peony-qt-extensions is the Plugin Manager of UKUI3.0
+ This package providers all plugin so file in cmake and qmake project.
+
