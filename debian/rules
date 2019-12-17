@@ -3,3 +3,7 @@ export QT_SELECT=5
 
 %:
 	dh $@
+
+override_dh_install:
+	sh translations/update-translations.sh
+	dh_install
