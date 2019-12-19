@@ -4,22 +4,22 @@
 <context>
     <name>PeonyApplication</name>
     <message>
-        <location filename="../../src/peony-application.cpp" line="85"/>
+        <location filename="../../src/peony-application.cpp" line="110"/>
         <source>Files or directories to open</source>
         <translation>需要打开的文件或文件夹</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.cpp" line="85"/>
+        <location filename="../../src/peony-application.cpp" line="110"/>
         <source>[FILE1, FILE2,...]</source>
         <translation>[文件1，文件2...]</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.cpp" line="107"/>
+        <location filename="../../src/peony-application.cpp" line="132"/>
         <source>Warning</source>
         <translation>警告</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.cpp" line="107"/>
+        <location filename="../../src/peony-application.cpp" line="132"/>
         <source>Peony-Qt can not get the system&apos;s icon theme. There are 2 reasons might lead to this problem:
 
 1. Peony-Qt might be running as root, that means you have the higher permission and can do some things which normally forbidden. But, you should learn that if you were in a root, the virtual file system will lose some featrue such as you can not use &quot;My Computer&quot;, the theme and icons might also went wrong. So, run peony-qt in a root is not recommended.
@@ -32,22 +32,22 @@
 2.你使用的系统主题不是qt默认支持的主题，并且你没有安装相关的平台插件。如果你正在使用Gtk主题作为系统主题，尝试安装qt5-gtk2-platformtheme以解决此问题。</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.h" line="31"/>
+        <location filename="../../src/peony-application.h" line="53"/>
         <source>Close all peony-qt windows and quit</source>
         <translation>关闭所有窗口并退出</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.h" line="32"/>
+        <location filename="../../src/peony-application.h" line="54"/>
         <source>Show items</source>
         <translation>打开文件所在目录并选中它们</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.h" line="33"/>
+        <location filename="../../src/peony-application.h" line="55"/>
         <source>Show folders</source>
         <translation>显示文件夹下的内容</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.h" line="34"/>
+        <location filename="../../src/peony-application.h" line="56"/>
         <source>Show properties</source>
         <translation>打开文件属性窗口</translation>
     </message>
