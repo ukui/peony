@@ -371,6 +371,19 @@ FMWindow::FMWindow(const QString &uri, QWidget *parent) : QMainWindow (parent)
     });
     addAction(closeWindowAction);
 
+    auto aboutAction = new QAction(this);
+    aboutAction->setShortcut(QKeySequence(Qt::Key_F2));
+    connect(aboutAction, &QAction::triggered, this, [=](){
+        QMessageBox::about(this,
+                           tr("Peony Qt"),
+                           tr("Authour: \n"
+                              "\tYue Lan <lanyue@kylinos.cn>\n"
+                              "\tMeihong He <hemeihong@kylinos.cn>\n"
+                              "\n"
+                              "Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd."));
+    });
+    addAction(aboutAction);
+
     auto newTabAction = new QAction(this);
     newTabAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_T));
     connect(newTabAction, &QAction::triggered, this, [=](){
@@ -454,12 +467,19 @@ FMWindow::FMWindow(const QString &uri, QWidget *parent) : QMainWindow (parent)
     addAction(maxAction);
 
     auto previewPageAction = new QAction(this);
-    previewPageAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_P));
+    previewPageAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::ALT + Qt::Key_P)<<Qt::Key_F3);
     connect(previewPageAction, &QAction::triggered, this, [=](){
         auto lastPreviewPageId = m_navigation_bar->getLastPreviewPageId();
         m_navigation_bar->triggerAction(lastPreviewPageId);
     });
     addAction(previewPageAction);
+
+    auto refreshAction = new QAction(this);
+    refreshAction->setShortcut(Qt::Key_F5);
+    connect(refreshAction, &QAction::triggered, this, [=](){
+        this->refresh();
+    });
+    addAction(refreshAction);
 
     //menu
     m_tab->connect(m_tab, &TabPage::menuRequest, [=](){
