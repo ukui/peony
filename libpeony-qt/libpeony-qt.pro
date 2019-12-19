@@ -55,6 +55,7 @@ unix {
 
     translation.path = /usr/share/libpeony-qt
     translation.commands = sh $$PWD/../translations/update-translations.sh
-    translation.files += ../translations/libpeony-qt/*
+    translation.files += ../translations/libpeony-qt/*.ts
+    translation.files += ../translations/libpeony-qt/*.qm
     INSTALLS += translation
 }

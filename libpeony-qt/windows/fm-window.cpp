@@ -364,6 +364,13 @@ FMWindow::FMWindow(const QString &uri, QWidget *parent) : QMainWindow (parent)
     });
     addAction(newWindowAction);
 
+    auto closeWindowAction = new QAction(this);
+    closeWindowAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::ALT + Qt::Key_F4));
+    connect(closeWindowAction, &QAction::triggered, this, [=](){
+        this->close();
+    });
+    addAction(closeWindowAction);
+
     auto newTabAction = new QAction(this);
     newTabAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_T));
     connect(newTabAction, &QAction::triggered, this, [=](){

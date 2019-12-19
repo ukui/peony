@@ -48,7 +48,8 @@ target.path = /usr/bin
 INSTALLS += target
 
 translation.path = /usr/share/peony-qt
-translation.files += ../translations/peony-qt/*
+translation.files += ../translations/peony-qt/*.ts
+translation.files += ../translations/peony-qt/*.qm
 INSTALLS += translation
 
 data.path = /usr/share/applications
