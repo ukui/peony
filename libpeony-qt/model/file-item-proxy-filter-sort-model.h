@@ -76,6 +76,8 @@ public:
     explicit FileItemProxyFilterSortModel(QObject *parent = nullptr);
     void setSourceModel(QAbstractItemModel *model) override;
     void setShowHidden(bool showHidden);
+    void setUseDefaultNameSortOrder(bool use);
+    void setFolderFirst(bool folderFirst);
     void setFilterConditions(int fileType=0, int modifyTime=0, int fileSize=0);
 
     FileItem *itemFromIndex(const QModelIndex &proxyIndex);
@@ -100,6 +102,8 @@ private:
 
 private:
     bool m_show_hidden = false;
+    bool m_use_default_name_sort_order = true;
+    bool m_folder_first = true;
     const int ALL_FILE = 0;
     const quint64 K_BASE = 1000;
     int m_show_file_type=ALL_FILE, m_show_modify_time=ALL_FILE, m_show_file_size=ALL_FILE;

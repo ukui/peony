@@ -326,4 +326,10 @@ void ToolBar::updateStates()
         m_clean_trash_action->setEnabled(!files.isEmpty());
         m_restore_action->setEnabled(!selection.isEmpty());
     }
+
+    if (m_top_window->getCurrentSortOrder() == Qt::AscendingOrder) {
+        m_sort_action->setIcon(QIcon::fromTheme("view-sort-ascending-symbolic"));
+    } else {
+        m_sort_action->setIcon(QIcon::fromTheme("view-sort-descending-symbolic"));
+    }
 }

@@ -87,6 +87,10 @@ public:
     Qt::SortOrder getCurrentSortOrder();
     int getCurrentSortColumn();
 
+    bool getWindowShowHidden() {return m_show_hidden_file;}
+    bool getWindowUseDefaultNameSortOrder() {return m_use_default_name_sort_order;}
+    bool getWindowSortFolderFirst() {return m_folder_first;}
+
     const QString getCurrentPageViewType();
 
     QSize sizeHint() const override {return QSize(800, 600);}
@@ -125,7 +129,11 @@ public Q_SLOTS:
     void clearRecord();
     void searchFilter(QString target_path, QString keyWord);
     void filterUpdate(int type_index=0, int time_index=0, int size_index=0);
+
+    void setShowHidden(bool showHidden);
     void setShowHidden();
+    void setUseDefaultNameSortOrder(bool use);
+    void setSortFolderFirst(bool folderFirst);
 
     void onPreviewPageSwitch(const QString &uri);
 
@@ -164,6 +172,8 @@ private:
     bool m_is_loading = false;
     bool m_filter_visible = false;
     bool m_show_hidden_file = false;
+    bool m_use_default_name_sort_order = true;
+    bool m_folder_first = true;
 
     QString m_last_non_search_location;
     QString m_advance_target_path;

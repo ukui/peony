@@ -154,6 +154,16 @@ void DirectoryViewContainer::setShowHidden(bool showHidden)
     m_proxy_model->setShowHidden(showHidden);
 }
 
+void DirectoryViewContainer::setUseDefaultNameSortOrder(bool use)
+{
+    m_proxy_model->setUseDefaultNameSortOrder(use);
+}
+
+void DirectoryViewContainer::setSortFolderFirst(bool folderFirst)
+{
+    m_proxy_model->setFolderFirst(folderFirst);
+}
+
 void DirectoryViewContainer::goToUri(const QString &uri, bool addHistory, bool forceUpdate)
 {
     if (forceUpdate)

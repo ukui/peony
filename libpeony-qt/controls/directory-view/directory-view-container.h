@@ -107,6 +107,8 @@ public Q_SLOTS:
 
     void setSortFilter(int FileTypeIndex, int FileMTimeIndex, int FileSizeIndex);
     void setShowHidden(bool showHidden = false);
+    void setUseDefaultNameSortOrder(bool use);
+    void setSortFolderFirst(bool folderFirst);
 
     void onViewDoubleClicked(const QString &uri);
 

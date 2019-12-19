@@ -28,6 +28,8 @@
 
 #include "file-utils.h"
 
+#include "global-settings.h"
+
 #include <QDebug>
 #include <QMessageBox>
 #include <QDate>
@@ -36,7 +38,10 @@ using namespace Peony;
 
 FileItemProxyFilterSortModel::FileItemProxyFilterSortModel(QObject *parent) : QSortFilterProxyModel(parent)
 {
-
+    auto settings = GlobalSettings::getInstance();
+    m_show_hidden = settings->isExist("show-hidden")? settings->getValue("show-hidden").toBool(): false;
+    m_use_default_name_sort_order = settings->isExist("chinese-first")? !settings->getValue("chinese-first").toBool(): false;
+    m_folder_first = settings->isExist("folder-first")? settings->getValue("folder-first").toBool(): true;
 }
 
 void FileItemProxyFilterSortModel::setSourceModel(QAbstractItemModel *model)
@@ -79,28 +84,32 @@ bool FileItemProxyFilterSortModel::lessThan(const QModelIndex &left, const QMode
             if (!leftItem->hasChildren() && !rightItem->hasChildren()) {
                 goto default_sort;
             }
-            bool lesser = leftItem->hasChildren();
-            if (sortOrder() == Qt::AscendingOrder)
-                return lesser;
-            return !lesser;
+            if (m_folder_first) {
+                bool lesser = leftItem->hasChildren();
+                if (sortOrder() == Qt::AscendingOrder)
+                    return lesser;
+                return !lesser;
+            }
         }
 
 default_sort:
         switch (sortColumn()) {
         case FileItemModel::FileName: {
-            QString leftDisplayName = leftItem->m_info->displayName();
-            QString rightDisplayName = rightItem->m_info->displayName();
-            bool leftStartWithChinese = startWithChinese(leftDisplayName);
-            bool rightStartWithChinese = startWithChinese(rightDisplayName);
-            //all start with Chinese, use the default compare directly
-            if (leftStartWithChinese && rightStartWithChinese)
-                break;
-            //simplify the logic
-            if (leftStartWithChinese || rightStartWithChinese) {
-                if (sortOrder() == Qt::AscendingOrder) {
-                    return leftStartWithChinese;
+            if (!m_use_default_name_sort_order) {
+                QString leftDisplayName = leftItem->m_info->displayName();
+                QString rightDisplayName = rightItem->m_info->displayName();
+                bool leftStartWithChinese = startWithChinese(leftDisplayName);
+                bool rightStartWithChinese = startWithChinese(rightDisplayName);
+                //all start with Chinese, use the default compare directly
+                if (leftStartWithChinese && rightStartWithChinese)
+                    break;
+                //simplify the logic
+                if (leftStartWithChinese || rightStartWithChinese) {
+                    if (sortOrder() == Qt::AscendingOrder) {
+                        return leftStartWithChinese;
+                    }
+                    return rightStartWithChinese;
                 }
-                return rightStartWithChinese;
             }
             return leftItem->m_info->displayName().toLower() < rightItem->m_info->displayName().toLower();
         }
@@ -335,8 +344,27 @@ void FileItemProxyFilterSortModel::update()
 
 void FileItemProxyFilterSortModel::setShowHidden(bool showHidden)
 {
+    GlobalSettings::getInstance()->setValue("show-hidden", showHidden);
     m_show_hidden = showHidden;
     invalidateFilter();
+}
+
+void FileItemProxyFilterSortModel::setUseDefaultNameSortOrder(bool use)
+{
+    GlobalSettings::getInstance()->setValue("chinese-first", !use);
+    m_use_default_name_sort_order = use;
+    beginResetModel();
+    sort(sortColumn()>0? sortColumn(): 0, sortOrder()==Qt::DescendingOrder? Qt::DescendingOrder: Qt::AscendingOrder);
+    endResetModel();
+}
+
+void FileItemProxyFilterSortModel::setFolderFirst(bool folderFirst)
+{
+    GlobalSettings::getInstance()->setValue("folder-first", folderFirst);
+    m_folder_first = folderFirst;
+    beginResetModel();
+    sort(sortColumn()>0? sortColumn(): 0, sortOrder()==Qt::DescendingOrder? Qt::DescendingOrder: Qt::AscendingOrder);
+    endResetModel();
 }
 
 void FileItemProxyFilterSortModel::setFilterConditions(int fileType, int modifyTime, int fileSize)

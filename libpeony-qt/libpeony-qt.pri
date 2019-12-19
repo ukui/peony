@@ -22,8 +22,10 @@ include(thumbnail/thumbnail.pri)
 
 HEADERS += \
     $$PWD/plugin-manager.h \
-    $$PWD/complementary-style.h
+    $$PWD/complementary-style.h \
+    $$PWD/global-settings.h
 
 SOURCES += \
     $$PWD/plugin-manager.cpp \
-    $$PWD/complementary-style.cpp
+    $$PWD/complementary-style.cpp \
+    $$PWD/global-settings.cpp

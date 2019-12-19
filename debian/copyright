@@ -6,6 +6,8 @@ Source: <https://github.com/explorer-cs/peony-qt.git>
 
 Files:     COPYING.EXTENSIONS
            COPYING.LIB
+           libpeony-qt/global-settings.cpp
+           libpeony-qt/global-settings.h
            libpeony-qt/bookmark-manager.cpp
            libpeony-qt/bookmark-manager.h
            libpeony-qt/complementary-style.cpp

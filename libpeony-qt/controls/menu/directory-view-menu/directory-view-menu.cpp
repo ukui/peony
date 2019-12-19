@@ -57,6 +57,8 @@
 #include <QStandardPaths>
 #include <QFileIconProvider>
 
+#include <QLocale>
+
 #include <QDebug>
 
 using namespace Peony;
@@ -352,7 +354,7 @@ const QList<QAction *> DirectoryViewMenu::constructViewOpActions()
 
         for (int i = 0; i < tmp.count(); i++) {
             connect(tmp.at(i), &QAction::triggered, [=](){
-                m_view->setSortType(i);
+                m_top_window->setCurrentSortColumn(i);
             });
         }
 
@@ -371,11 +373,40 @@ const QList<QAction *> DirectoryViewMenu::constructViewOpActions()
 
         for (int i = 0; i < tmp.count(); i++) {
             connect(tmp.at(i), &QAction::triggered, [=](){
-                m_view->setSortOrder(i);
+                m_top_window->setCurrentSortOrder(Qt::SortOrder(i));
             });
         }
 
         sortOrderAction->setMenu(sortOrderMenu);
+
+        auto sortPreferencesAction = addAction(tr("Sort Preferences..."));
+        l<<sortPreferencesAction;
+
+        auto sortPreferencesMenu = new QMenu(this);
+        auto folderFirst = sortPreferencesMenu->addAction(tr("Folder First"));
+        folderFirst->setCheckable(true);
+        folderFirst->setChecked(m_top_window->getWindowSortFolderFirst());
+        connect(folderFirst, &QAction::triggered, this, [=](bool checked){
+            m_top_window->setSortFolderFirst(checked);
+        });
+
+        if (QLocale::system().name().contains("zh")) {
+            auto useDefaultNameSortOrder = sortPreferencesMenu->addAction(tr("Chinese First"));
+            useDefaultNameSortOrder->setCheckable(true);
+            useDefaultNameSortOrder->setChecked(!m_top_window->getWindowUseDefaultNameSortOrder());
+            connect(useDefaultNameSortOrder, &QAction::triggered, this, [=](bool checked){
+                m_top_window->setUseDefaultNameSortOrder(!checked);
+            });
+        }
+
+        auto showHidden = sortPreferencesMenu->addAction(tr("Show Hidden"));
+        showHidden->setCheckable(true);
+        showHidden->setChecked(m_top_window->getWindowShowHidden());
+        connect(showHidden, &QAction::triggered, this, [=](bool checked){
+            m_top_window->setShowHidden(checked);
+        });
+
+        sortPreferencesAction->setMenu(sortPreferencesMenu);
     }
 
     return l;

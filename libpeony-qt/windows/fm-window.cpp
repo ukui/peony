@@ -53,6 +53,8 @@
 
 #include "properties-window.h"
 
+#include "global-settings.h"
+
 #include <QDesktopServices>
 #include <QUrl>
 
@@ -81,6 +83,11 @@ using namespace Peony;
 
 FMWindow::FMWindow(const QString &uri, QWidget *parent) : QMainWindow (parent)
 {
+    auto settings = GlobalSettings::getInstance();
+    m_show_hidden_file = settings->isExist("show-hidden")? settings->getValue("show-hidden").toBool(): false;
+    m_use_default_name_sort_order = settings->isExist("chinese-first")? !settings->getValue("chinese-first").toBool(): false;
+    m_folder_first = settings->isExist("folder-first")? settings->getValue("folder-first").toBool(): true;
+
     setWindowIcon(QIcon::fromTheme("system-file-manager"));
     setWindowTitle(tr("File Manager"));
 
@@ -309,7 +316,9 @@ FMWindow::FMWindow(const QString &uri, QWidget *parent) : QMainWindow (parent)
     QAction *showHiddenAction = new QAction(this);
     showHiddenAction->setShortcut(QKeySequence(tr("Ctrl+H", "Show|Hidden")));
     addAction(showHiddenAction);
-    connect(showHiddenAction, &QAction::triggered, this, &FMWindow::setShowHidden);
+    connect(showHiddenAction, &QAction::triggered, this, [=](){
+        this->setShowHidden();
+    });
 
     auto undoAction = new QAction(QIcon::fromTheme("edit-undo-symbolic"), tr("Undo"), this);
     undoAction->setShortcut(QKeySequence::Undo);
@@ -636,11 +645,30 @@ void FMWindow::filterUpdate(int type_index, int time_index, int size_index)
     m_tab->getActivePage()->setSortFilter(type_index, time_index, size_index);
 }
 
+void FMWindow::setShowHidden(bool showHidden)
+{
+    //qDebug()<<"setShowHidden"<<m_show_hidden_file;
+    m_show_hidden_file = showHidden;
+    m_tab->getActivePage()->setShowHidden(m_show_hidden_file);
+}
+
 void FMWindow::setShowHidden()
 {
     //qDebug()<<"setShowHidden"<<m_show_hidden_file;
     m_show_hidden_file = !m_show_hidden_file;
     m_tab->getActivePage()->setShowHidden(m_show_hidden_file);
+}
+
+void FMWindow::setUseDefaultNameSortOrder(bool use)
+{
+    m_use_default_name_sort_order = use;
+    getCurrentPage()->setUseDefaultNameSortOrder(use);
+}
+
+void FMWindow::setSortFolderFirst(bool folderFirst)
+{
+    m_folder_first = folderFirst;
+    getCurrentPage()->setSortFolderFirst(folderFirst);
 }
 
 void FMWindow::forceStopLoading()
@@ -669,11 +697,13 @@ void FMWindow::onPreviewPageSwitch(const QString &id)
 void FMWindow::setCurrentSelectionUris(const QStringList &uris)
 {
     m_tab->getActivePage()->getView()->setSelections(uris);
+    m_tool_bar->updateStates();
 }
 
 void FMWindow::setCurrentSortOrder(Qt::SortOrder order)
 {
     m_tab->getActivePage()->getView()->setSortOrder(order);
+    m_tool_bar->updateStates();
 }
 
 Qt::SortOrder FMWindow::getCurrentSortOrder()
