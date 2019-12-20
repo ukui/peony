@@ -5,8 +5,8 @@ export QT_SELECT=5
 	dh $@
 
 override_dh_install:
-	dh_install
 	sh translations/update-translations.sh
-	mv translations/libpeony-qt/*.qm debian/tmp/usr/share/libpeony-qt
-	mv translations/peony-qt/*.qm debian/tmp/usr/share/peony-qt
-	mv translations/peony-qt-desktop/*.qm debian/tmp/usr/share/peony-qt-desktop
+	cp -a translations/libpeony-qt/*.qm debian/tmp/usr/share/libpeony-qt
+	cp -a translations/peony-qt/*.qm debian/tmp/usr/share/peony-qt
+	cp -a translations/peony-qt-desktop/*.qm debian/tmp/usr/share/peony-qt-desktop
+	dh_install

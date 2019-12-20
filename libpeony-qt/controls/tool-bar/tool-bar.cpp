@@ -33,6 +33,7 @@
 #include "view-factory-model.h"
 #include "view-factory-sort-filter-model.h"
 #include "directory-view-container.h"
+#include "global-settings.h"
 
 #include <QAction>
 #include <QComboBox>
@@ -43,6 +44,11 @@
 #include <QMessageBox>
 
 #include <QMenu>
+
+#include <QUrl>
+#include <QDesktopServices>
+
+#include <QApplication>
 
 #include <QDebug>
 
@@ -218,6 +224,8 @@ void ToolBar::init()
         FileOperationUtils::restore(m_top_window->getCurrentSelections());
     });
 
+    m_trash_actions_sperator = addSeparator();
+
     //connect signal
     connect(newWindowAction, &QAction::triggered, [=](){
         if (m_top_window->getCurrentSelections().isEmpty()) {
@@ -273,6 +281,58 @@ void ToolBar::init()
         }
     });
 
+    QAction *optionAction = new QAction(QIcon::fromTheme("ukui-settings-app-symbolic", QIcon::fromTheme("settings-app-symbolic")), tr("Options"));
+    connect(optionAction, &QAction::triggered, this, [=](){
+        QMenu optionMenu;
+        auto forbidThumbnail = optionMenu.addAction(tr("Forbid Thumbnail"), this, [=](bool checked){
+            GlobalSettings::getInstance()->setValue("do-not-thumbnail", checked);
+        });
+        forbidThumbnail->setCheckable(true);
+        forbidThumbnail->setChecked(GlobalSettings::getInstance()->isExist("do-not-thumbnail")? GlobalSettings::getInstance()->getValue("do-not-thumbnail").toBool(): false);
+
+        auto showHidden = optionMenu.addAction(tr("Show Hidden"), this, [=](bool checked){
+            m_top_window->setShowHidden(checked);
+        });
+        showHidden->setCheckable(true);
+        showHidden->setChecked(GlobalSettings::getInstance()->isExist("show-hidden")? GlobalSettings::getInstance()->getValue("show-hidden").toBool(): false);
+
+        auto resident = optionMenu.addAction(tr("Resident in Backend"));
+        resident->setToolTip(tr("Let the program still run after closing the last window. "
+                                "This will reduce the time for the next launch, but it will "
+                                "also consume resources in backend."));
+        connect(resident, &QAction::triggered, this, [=](bool checked){
+            GlobalSettings::getInstance()->setValue("resident", checked);
+            qApp->setQuitOnLastWindowClosed(!checked);
+        });
+        resident->setCheckable(true);
+        resident->setChecked(GlobalSettings::getInstance()->isExist("resident")? GlobalSettings::getInstance()->getValue("resident").toBool(): false);
+
+        optionMenu.addSeparator();
+
+        auto help = optionMenu.addAction(QIcon::fromTheme("help-symbolic"), tr("&Help"), this, [=](){
+            QUrl url = QUrl("help:ubuntu-kylin-help", QUrl::TolerantMode);
+            QDesktopServices::openUrl(url);
+        });
+        help->setShortcut(Qt::Key_F1);
+
+        auto about = optionMenu.addAction(tr("&About..."), this, [=](){
+            QMessageBox::about(m_top_window,
+                               tr("Peony Qt"),
+                               tr("Authour: \n"
+                                  "\tYue Lan <lanyue@kylinos.cn>\n"
+                                  "\tMeihong He <hemeihong@kylinos.cn>\n"
+                                  "\n"
+                                  "Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd."));
+        });
+        about->setShortcut(Qt::Key_F2);
+
+        auto point = this->widgetForAction(optionAction)->geometry().bottomLeft();
+        auto global_point = mapToGlobal(point);
+        optionMenu.exec(global_point);
+    });
+
+    addAction(optionAction);
+
     //extension
 
     //trash
@@ -311,6 +371,7 @@ void ToolBar::updateLocation(const QString &uri)
 
     m_clean_trash_action->setVisible(uri.startsWith("trash://"));
     m_restore_action->setVisible(uri.startsWith("trash://"));
+    m_trash_actions_sperator->setVisible(uri.startsWith("trash://"));
 }
 
 void ToolBar::updateStates()

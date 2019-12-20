@@ -41,8 +41,10 @@ class PEONYCORESHARED_EXPORT ThumbnailManager : public QObject
 public:
     static ThumbnailManager *getInstance();
 
+    void setForbidThumbnailInView(bool forbid);
+
     bool hasThumbnail(const QString &uri) {return !m_hash.values(uri).isEmpty();}
-    void createThumbnail(const QString &uri, std::shared_ptr<FileWatcher> watcher = nullptr);
+    void createThumbnail(const QString &uri, std::shared_ptr<FileWatcher> watcher = nullptr, bool force = false);
     void releaseThumbnail(const QString &uri);
     void updateDesktopFileThumbnail(const QString &uri, std::shared_ptr<FileWatcher> watcher = nullptr);
     const QIcon tryGetThumbnail(const QString &uri);
@@ -50,6 +52,7 @@ public:
 Q_SIGNALS:
 
 public Q_SLOTS:
+    void syncThumbnailPreferences();
 
 private:
     explicit ThumbnailManager(QObject *parent = nullptr);

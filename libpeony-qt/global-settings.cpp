@@ -98,3 +98,17 @@ void GlobalSettings::setValue(const QString &key, const QVariant &value)
         }
     });
 }
+
+void GlobalSettings::forceSync(const QString &key)
+{
+    m_settings->sync();
+    if (key.isNull()) {
+        m_cache.clear();
+        for (auto key : m_settings->allKeys()) {
+            m_cache.insert(key, m_settings->value(key));
+        }
+    } else {
+        m_cache.remove(key);
+        m_cache.insert(key, m_settings->value(key));
+    }
+}

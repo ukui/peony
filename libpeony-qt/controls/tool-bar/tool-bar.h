@@ -93,6 +93,7 @@ private:
     QAction *m_view_action;
     QMenu *m_view_menu;
     QAction *m_sort_action;
+    QAction *m_trash_actions_sperator;
 };
 
 }

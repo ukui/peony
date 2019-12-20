@@ -30,6 +30,8 @@
 
 #include "thumbnail/pdf-thumbnail.h"
 
+#include "global-settings.h"
+
 #include <QtConcurrent>
 #include <QIcon>
 #include <QUrl>
@@ -53,7 +55,7 @@ static ThumbnailManager *global_instance = nullptr;
  */
 ThumbnailManager::ThumbnailManager(QObject *parent) : QObject(parent)
 {
-
+    GlobalSettings::getInstance();
 }
 
 ThumbnailManager *ThumbnailManager::getInstance()
@@ -63,8 +65,25 @@ ThumbnailManager *ThumbnailManager::getInstance()
     return global_instance;
 }
 
-void ThumbnailManager::createThumbnail(const QString &uri, std::shared_ptr<FileWatcher> watcher)
+void ThumbnailManager::syncThumbnailPreferences()
 {
+    GlobalSettings::getInstance()->forceSync("do-not-thumbnail");
+}
+
+void ThumbnailManager::setForbidThumbnailInView(bool forbid)
+{
+    GlobalSettings::getInstance()->setValue("do-not-thumbnail", forbid);
+}
+
+void ThumbnailManager::createThumbnail(const QString &uri, std::shared_ptr<FileWatcher> watcher, bool force)
+{
+    auto settings = GlobalSettings::getInstance();
+    if (settings->isExist("do-not-thumbnail")) {
+        bool do_not_thumbnail = settings->getValue("do-not-thumbnail").toBool();
+        if (do_not_thumbnail && !force) {
+            return;
+        }
+    }
     //qDebug()<<"create thumbnail"<<uri;
     //NOTE: we should do createThumbnail() after we have queried the file's info.
     auto info = FileInfo::fromUri(uri);

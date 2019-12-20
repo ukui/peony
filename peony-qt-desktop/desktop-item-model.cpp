@@ -145,6 +145,7 @@ DesktopItemModel::~DesktopItemModel()
 
 void DesktopItemModel::refresh()
 {
+    ThumbnailManager::getInstance()->syncThumbnailPreferences();
     beginResetModel();
     removeRows(0, m_files.count());
     FileInfoManager::getInstance()->clear();

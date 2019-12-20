@@ -29,6 +29,12 @@
 
 #include "peony-core_global.h"
 
+#define FORBID_THUMBNAIL_IN_VIEW "do-not-thumbnail"
+#define SHOW_HIDDEN_PREFERENCE "show-hidden"
+#define SORT_CHINESE_FIRST "chinese-first"
+#define SORT_FOLDER_FIRST "folder-first"
+#define RESIDENT_IN_BACKEND "resident"
+
 namespace Peony {
 
 /*!
@@ -56,6 +62,15 @@ public Q_SLOTS:
     void setValue(const QString &key, const QVariant &value);
     void reset(const QString &key);
     void resetAll();
+
+    /*!
+     * \brief forceSync
+     * \param key
+     * \details
+     * use force sync to ensure the settings key-value and cached map's data
+     * keep same. this may be used in out progress, such as peony-qt-desktop.
+     */
+    void forceSync(const QString &key = nullptr);
 
 private:
     explicit GlobalSettings(QObject *parent = nullptr);
