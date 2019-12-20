@@ -590,7 +590,25 @@
         <translation>重做</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/windows/fm-window.cpp" line="412"/>
+        <location filename="../../libpeony-qt/windows/fm-window.cpp" line="378"/>
+        <source>Peony Qt</source>
+        <translation type="unfinished">文件管理器</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/windows/fm-window.cpp" line="379"/>
+        <source>Authour: 
+	Yue Lan &lt;lanyue@kylinos.cn&gt;
+	Meihong He &lt;hemeihong@kylinos.cn&gt;
+
+Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
+        <translation type="unfinished">作者:
+	Yue Lan &lt;lanyue@kylinos.cn&gt;
+	Meihong He &lt;hemeihong@kylinos.cn&gt;
+
+版权所有(C): 2019,天津麒麟信息技术有限公司.</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/windows/fm-window.cpp" line="432"/>
         <source>New Folder</source>
         <translation>新建文件夹</translation>
     </message>
@@ -1196,90 +1214,143 @@
 <context>
     <name>Peony::ToolBar</name>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/tool-bar.cpp" line="64"/>
+        <location filename="../../libpeony-qt/controls/tool-bar/tool-bar.cpp" line="70"/>
         <source>Open in new &amp;Window</source>
         <translation>在新窗口中打开(&amp;W)</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/tool-bar.cpp" line="66"/>
+        <location filename="../../libpeony-qt/controls/tool-bar/tool-bar.cpp" line="72"/>
         <source>Open in new &amp;Tab</source>
         <translation>在新标签页中打开(&amp;T)</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/tool-bar.cpp" line="130"/>
+        <location filename="../../libpeony-qt/controls/tool-bar/tool-bar.cpp" line="136"/>
         <source>Sort Type</source>
         <translation>排序类型</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/tool-bar.cpp" line="132"/>
+        <location filename="../../libpeony-qt/controls/tool-bar/tool-bar.cpp" line="138"/>
         <source>File Name</source>
         <translation>文件名称</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/tool-bar.cpp" line="135"/>
+        <location filename="../../libpeony-qt/controls/tool-bar/tool-bar.cpp" line="141"/>
         <source>File Type</source>
         <translation>文件类型</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/tool-bar.cpp" line="138"/>
+        <location filename="../../libpeony-qt/controls/tool-bar/tool-bar.cpp" line="144"/>
         <source>File Size</source>
         <translation>文件大小</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/tool-bar.cpp" line="141"/>
+        <location filename="../../libpeony-qt/controls/tool-bar/tool-bar.cpp" line="147"/>
         <source>Modified Date</source>
         <translation>修改日期</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/tool-bar.cpp" line="147"/>
+        <location filename="../../libpeony-qt/controls/tool-bar/tool-bar.cpp" line="153"/>
         <source>Ascending</source>
         <translation>升序</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/tool-bar.cpp" line="151"/>
+        <location filename="../../libpeony-qt/controls/tool-bar/tool-bar.cpp" line="157"/>
         <source>Descending</source>
         <translation>降序</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/tool-bar.cpp" line="180"/>
-        <location filename="../../libpeony-qt/controls/tool-bar/tool-bar.cpp" line="290"/>
+        <location filename="../../libpeony-qt/controls/tool-bar/tool-bar.cpp" line="186"/>
+        <location filename="../../libpeony-qt/controls/tool-bar/tool-bar.cpp" line="350"/>
         <source>Copy</source>
         <translation>复制</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/tool-bar.cpp" line="183"/>
+        <location filename="../../libpeony-qt/controls/tool-bar/tool-bar.cpp" line="189"/>
         <source>Paste</source>
         <translation>粘贴</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/tool-bar.cpp" line="186"/>
+        <location filename="../../libpeony-qt/controls/tool-bar/tool-bar.cpp" line="192"/>
         <source>Cut</source>
         <translation>剪切</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/tool-bar.cpp" line="189"/>
+        <location filename="../../libpeony-qt/controls/tool-bar/tool-bar.cpp" line="195"/>
         <source>Trash</source>
         <translation>删除</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/tool-bar.cpp" line="206"/>
+        <location filename="../../libpeony-qt/controls/tool-bar/tool-bar.cpp" line="212"/>
         <source>Clean Trash</source>
         <translation>清空回收站</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/tool-bar.cpp" line="207"/>
+        <location filename="../../libpeony-qt/controls/tool-bar/tool-bar.cpp" line="213"/>
         <source>Delete Permanently</source>
         <translation>永久删除</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/tool-bar.cpp" line="207"/>
+        <location filename="../../libpeony-qt/controls/tool-bar/tool-bar.cpp" line="213"/>
         <source>Are you sure that you want to delete these files? Once you start a deletion, the files deleting will never be restored again.</source>
         <translation>确定是否删除这些文件？一旦确定，这些文件将被永久删除并无法恢复。</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/tool-bar.cpp" line="217"/>
+        <location filename="../../libpeony-qt/controls/tool-bar/tool-bar.cpp" line="223"/>
         <source>Restore</source>
         <translation>还原</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/controls/tool-bar/tool-bar.cpp" line="284"/>
+        <source>Options</source>
+        <translation>选项</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/controls/tool-bar/tool-bar.cpp" line="287"/>
+        <source>Forbid Thumbnail</source>
+        <translation>禁用缩略图</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/controls/tool-bar/tool-bar.cpp" line="293"/>
+        <source>Show Hidden</source>
+        <translation>显示隐藏文件</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/controls/tool-bar/tool-bar.cpp" line="299"/>
+        <source>Resident in Backend</source>
+        <translation>常驻后台</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/controls/tool-bar/tool-bar.cpp" line="300"/>
+        <source>Let the program still run after closing the last window. This will reduce the time for the next launch, but it will also consume resources in backend.</source>
+        <translation>让文件管理器在关闭所有窗口后仍然运行，这将缩短下次启动所需要的时间，但是也会一直占用资源。</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/controls/tool-bar/tool-bar.cpp" line="312"/>
+        <source>&amp;Help</source>
+        <translation>帮助(&amp;H)</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/controls/tool-bar/tool-bar.cpp" line="318"/>
+        <source>&amp;About...</source>
+        <translation>关于...(&amp;A)</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/controls/tool-bar/tool-bar.cpp" line="320"/>
+        <source>Peony Qt</source>
+        <translation>文件管理器</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/controls/tool-bar/tool-bar.cpp" line="321"/>
+        <source>Authour: 
+	Yue Lan &lt;lanyue@kylinos.cn&gt;
+	Meihong He &lt;hemeihong@kylinos.cn&gt;
+
+Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
+        <translation>作者:
+	Yue Lan &lt;lanyue@kylinos.cn&gt;
+	Meihong He &lt;hemeihong@kylinos.cn&gt;
+
+版权所有(C): 2019,天津麒麟信息技术有限公司.</translation>
     </message>
 </context>
 <context>
