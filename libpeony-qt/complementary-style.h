@@ -53,6 +53,11 @@ class ComplementaryStyle : public QProxyStyle
 public:
     static ComplementaryStyle *getStyle();
 
+    int styleHint(QStyle::StyleHint hint,
+                  const QStyleOption *option = nullptr,
+                  const QWidget *widget = nullptr,
+                  QStyleHintReturn *returnData = nullptr) const;
+
     void drawPrimitive(QStyle::PrimitiveElement element,
                        const QStyleOption *option,
                        QPainter *painter,

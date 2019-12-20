@@ -293,6 +293,7 @@ void ToolBar::init()
         auto showHidden = optionMenu.addAction(tr("Show Hidden"), this, [=](bool checked){
             m_top_window->setShowHidden(checked);
         });
+        showHidden->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_H));
         showHidden->setCheckable(true);
         showHidden->setChecked(GlobalSettings::getInstance()->isExist("show-hidden")? GlobalSettings::getInstance()->getValue("show-hidden").toBool(): false);
 

@@ -55,8 +55,23 @@ ComplementaryStyle *ComplementaryStyle::getStyle()
     return global_instance;
 }
 
+int ComplementaryStyle::styleHint(QStyle::StyleHint hint, const QStyleOption *option, const QWidget *widget, QStyleHintReturn *returnData) const
+{
+    switch (hint) {
+    case QStyle::SH_Menu_Scrollable: {
+        return 1;
+    }
+    default:
+        return QProxyStyle::styleHint(hint, option, widget, returnData);
+    }
+}
+
 void ComplementaryStyle::drawPrimitive(QStyle::PrimitiveElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget) const
 {
+    if (widget->inherits("QMenu")) {
+        return QProxyStyle::drawPrimitive(element, option, painter, widget);
+    }
+
     switch (element) {
     case QStyle::PE_IndicatorToolBarSeparator: {
         //do not draw toolbar separator
