@@ -37,11 +37,13 @@ class PEONYCORESHARED_EXPORT Drive
 {
 public:
     Drive();//do not use this constructor
-    Drive(GDrive *drive) {m_drive = drive;}
+    Drive(GDrive *drive, bool takeOver = false) {m_drive = drive; m_take_over = takeOver;}
     ~Drive()
     {
         //do not unref the handle, it is managed by GVolumeMonitor.
-        //g_object_unref(m_drive);
+        if (m_take_over) {
+            g_object_unref(m_drive);
+        }
     }
 
     QString name()
@@ -86,21 +88,24 @@ public:
 
 private:
     GDrive *m_drive = nullptr;
+    bool m_take_over = false;
 };
 
 class PEONYCORESHARED_EXPORT Volume
 {
 public:
     Volume();//do not use this constructor
-    Volume(GVolume *volume)
+    Volume(GVolume *volume, bool takeOver = false)
     {
         m_volume = volume;
+        m_take_over = takeOver;
     }
 
     ~Volume()
     {
         //do not unref the handle, it is managed by GVolumeMonitor.
-        //g_object_unref(m_volume);
+        if (m_take_over)
+            g_object_unref(m_volume);
     }
 
     QString name()
@@ -167,21 +172,24 @@ public:
 
 private:
     GVolume *m_volume = nullptr;
+    bool m_take_over = false;
 };
 
 class PEONYCORESHARED_EXPORT Mount
 {
 public:
     Mount();//do not use this constructor
-    Mount(GMount *mount)
+    Mount(GMount *mount, bool takeOver = false)
     {
         m_mount = mount;
+        m_take_over = takeOver;
     }
 
     ~Mount()
     {
         //do not unref the handle, it is managed by GVolumeMonitor.
-        //g_object_unref(m_mount);
+        if (m_take_over)
+            g_object_unref(m_mount);
     }
 
     QString name()
@@ -242,6 +250,7 @@ public:
 
 private:
     GMount *m_mount = nullptr;
+    bool m_take_over = false;
 };
 
 class PEONYCORESHARED_EXPORT VolumeManager : public QObject
@@ -249,6 +258,38 @@ class PEONYCORESHARED_EXPORT VolumeManager : public QObject
     Q_OBJECT
 public:
     static VolumeManager *getInstance();
+
+    /*!
+     * \brief getMountFromUri
+     * \param Uri
+     * \return a Mount represent a GMount for uri, null if not.
+     * \details
+     * GMount is returned only for user interesting locations, see GVolumeMonitor.
+     * If the GFileIface for file does not have a mount, error will be set to
+     * G_IO_ERROR_NOT_FOUND and NULL will be returned.
+     */
+    static std::shared_ptr<Mount> getMountFromUri(const QString &uri);
+
+    /*!
+     * \brief getVolumeFromUri
+     * \param uri
+     * \return a Volume represent a GVolume for uri, null if not.
+     * \details
+     * Volume is from a GMount with g_mount_get_volume().
+     */
+    static std::shared_ptr<Volume> getVolumeFromUri(const QString &uri);
+
+    /*!
+     * \brief getDriveFromUri
+     * \param uri
+     * \return a Drive represent a GDrive for uri, null if not.
+     * \details
+     * Drive is from a GMount with g_mount_get_drive().
+     */
+    static std::shared_ptr<Drive> getDriveFromUri(const QString &uri);
+
+    static std::shared_ptr<Volume> getVolumeFromMount(const std::shared_ptr<Mount> &mount);
+    static std::shared_ptr<Drive> getDriveFromMount(const std::shared_ptr<Mount> &mount);
 
 Q_SIGNALS:
     /*!

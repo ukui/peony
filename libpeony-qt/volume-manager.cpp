@@ -158,3 +158,69 @@ void VolumeManager::unmount(const QString &uri)
                                             GAsyncReadyCallback(unmount_cb),
                                             nullptr);
 }
+
+//FIXME: should i add async support?
+std::shared_ptr<Mount> VolumeManager::getMountFromUri(const QString &uri)
+{
+    GFile *file = g_file_new_for_uri(uri.toUtf8().constData());
+    if (!file)
+        return nullptr;
+
+    std::shared_ptr<Mount> tmp;
+    GMount *mount = g_file_find_enclosing_mount(file, nullptr, nullptr);
+    g_object_unref(file);
+    if (mount) {
+        tmp = std::make_shared<Mount>(mount, true);
+    }
+    return tmp;
+}
+
+std::shared_ptr<Volume> VolumeManager::getVolumeFromUri(const QString &uri)
+{
+    GFile *file = g_file_new_for_uri(uri.toUtf8().constData());
+    if (!file)
+        return nullptr;
+
+    std::shared_ptr<Volume> tmp;
+    GMount *mount = g_file_find_enclosing_mount(file, nullptr, nullptr);
+    g_object_unref(file);
+    if (mount) {
+        GVolume *volume = g_mount_get_volume(mount);
+        if (volume) {
+            tmp = std::make_shared<Volume>(volume, true);
+        }
+
+        g_object_unref(mount);
+    }
+    return tmp;
+}
+
+std::shared_ptr<Drive> VolumeManager::getDriveFromMount(const std::shared_ptr<Mount> &mount)
+{
+    GMount *m = mount->getGMount();
+    if (!m) {
+        return nullptr;
+    }
+    GDrive *drive = g_mount_get_drive(m);
+    std::shared_ptr<Drive> tmp;
+    if (!drive) {
+        return nullptr;
+    }
+    tmp = std::make_shared<Drive>(drive, true);
+    return tmp;
+}
+
+std::shared_ptr<Volume> VolumeManager::getVolumeFromMount(const std::shared_ptr<Mount> &mount)
+{
+    GMount *m = mount->getGMount();
+    if (!m) {
+        return nullptr;
+    }
+    GVolume *volume = g_mount_get_volume(m);
+    std::shared_ptr<Volume> tmp;
+    if (!volume) {
+        return nullptr;
+    }
+    tmp = std::make_shared<Volume>(volume, true);
+    return tmp;
+}
