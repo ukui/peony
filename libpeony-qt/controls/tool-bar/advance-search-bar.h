@@ -28,12 +28,13 @@
 #include <QWidget>
 #include <QLineEdit>
 #include <QComboBox>
+#include <QScrollArea>
 
 namespace Peony {
 
 class FMWindow;
 
-class AdvanceSearchBar : public QWidget
+class AdvanceSearchBar : public QScrollArea
 {
     Q_OBJECT
 public:

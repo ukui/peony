@@ -38,7 +38,7 @@
 
 using namespace Peony;
 
-AdvanceSearchBar::AdvanceSearchBar(FMWindow *window, QWidget *parent) : QWidget(parent)
+AdvanceSearchBar::AdvanceSearchBar(FMWindow *window, QWidget *parent) : QScrollArea(parent)
 {
     m_top_window = window;
     init();
@@ -47,8 +47,10 @@ AdvanceSearchBar::AdvanceSearchBar(FMWindow *window, QWidget *parent) : QWidget(
 void AdvanceSearchBar::init()
 {
     //add mutiple filter page
+    //this->setBackgroundRole(QPalette::Light);
     m_filter = new QWidget(this);
     m_filter->setContentsMargins(0, 0, 0, 0);
+
     QLabel *keyLabel = new QLabel(tr("Key Words"), m_filter);
     m_advanced_key = new QLineEdit(m_filter);
     keyLabel->setBuddy(m_advanced_key);
@@ -57,12 +59,12 @@ void AdvanceSearchBar::init()
     m_search_path = new QLineEdit(m_filter);
     m_search_path->setPlaceholderText(tr("choose search path..."));
     QString uri = m_top_window->getCurrentUri();
-    m_search_path->setText(uri);
+    m_search_path->setText(FileUtils::getFileDisplayName(uri));
     m_advance_target_path = uri;
+    m_choosed_paths.push_back(uri);
 
     QPushButton *m_browse_button = new QPushButton(tr("browse"), nullptr);
     QLabel *fileType = new QLabel(tr("File Type"), m_filter);
-    fileType->setFixedWidth(120);
     typeViewCombox = new QComboBox(m_filter);
     typeViewCombox->setToolTip(tr("Choose File Type"));
     auto model = new QStringListModel(m_filter);
@@ -121,8 +123,10 @@ void AdvanceSearchBar::init()
     bottomLayout->setContentsMargins(10,20,10,10);
     bottomLayout->addWidget(m_filter_button, Qt::AlignCenter);
     topLayout->addWidget(b2);
-    //end mutiple filter
 
+    m_filter->setLayout(mainLayout);
+    this->setWidget(m_filter);
+    //end mutiple filter
 
     connect(m_browse_button, &QPushButton::clicked, this, &AdvanceSearchBar::browsePath);
     connect(m_filter_button, &QPushButton::clicked, this, &AdvanceSearchBar::searchFilter);
@@ -216,6 +220,7 @@ void AdvanceSearchBar::updateLocation()
 
     if (m_choosed_paths.size() == 0)
         m_advance_target_path = "";
+
     m_last_show_name = show;
     m_search_path->setText(show);
 }
