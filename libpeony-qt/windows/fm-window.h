@@ -78,6 +78,7 @@ class PEONYCORESHARED_EXPORT FMWindow : public QMainWindow
 public:
     explicit FMWindow(const QString &uri = nullptr, QWidget *parent = nullptr);
 
+    const QString getLastNonSearchUri() {return m_last_non_search_location;}
     const QString getCurrentUri();
     const QStringList getCurrentSelections();
     const QStringList getCurrentAllFileUris();

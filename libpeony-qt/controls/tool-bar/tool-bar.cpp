@@ -228,26 +228,14 @@ void ToolBar::init()
 
     //connect signal
     connect(newWindowAction, &QAction::triggered, [=](){
-        if (m_top_window->getCurrentSelections().isEmpty()) {
-            FMWindow *newWindow = new FMWindow(m_top_window->getCurrentUri());
-            newWindow->show();
-            //FIXME: show when prepared
-        } else {
-            for (auto uri : m_top_window->getCurrentSelections()) {
-                FMWindow *newWindow = new FMWindow(m_top_window->getCurrentUri());
-                newWindow->show();
-                //FIXME: show when prepared
-            }
-        }
+        FMWindow *newWindow = new FMWindow(m_top_window->getLastNonSearchUri());
+        newWindow->show();
+        //FIXME: show when prepared
     });
 
     connect(newTabActon, &QAction::triggered, [=](){
         QStringList l;
-        if (m_top_window->getCurrentSelections().isEmpty()) {
-            l<<m_top_window->getCurrentUri();
-        } else {
-            l = m_top_window->getCurrentSelections();
-        }
+        l<<m_top_window->getLastNonSearchUri();
         m_top_window->addNewTabs(l);
     });
 

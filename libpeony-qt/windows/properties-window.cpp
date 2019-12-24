@@ -26,6 +26,7 @@
 
 #include "basic-properties-page-factory.h"
 #include "permissions-properties-page-factory.h"
+#include "computer-properties-page-factory.h"
 
 #include <QToolBar>
 #include <QDialogButtonBox>
@@ -53,6 +54,7 @@ PropertiesWindowPluginManager::PropertiesWindowPluginManager(QObject *parent) : 
     //register internal factories.
     registerFactory(BasicPropertiesPageFactory::getInstance());
     registerFactory(PermissionsPropertiesPageFactory::getInstance());
+    registerFactory(ComputerPropertiesPageFactory::getInstance());
 }
 
 PropertiesWindowPluginManager::~PropertiesWindowPluginManager()
