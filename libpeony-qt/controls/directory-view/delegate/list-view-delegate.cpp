@@ -23,12 +23,13 @@
 #include "list-view-delegate.h"
 #include "file-operation-utils.h"
 #include "file-item-model.h"
-#include <QTextEdit>
 
 #include <QTimer>
 #include <QPushButton>
 
 #include <QPainter>
+
+#include <QKeyEvent>
 
 using namespace Peony;
 
@@ -75,7 +76,7 @@ void ListViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
 
 QWidget *ListViewDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
-    QTextEdit *edit = new QTextEdit(parent);
+    TextEdit *edit = new TextEdit(parent);
     edit->setContextMenuPolicy(Qt::CustomContextMenu);
     edit->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     edit->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -85,8 +86,13 @@ QWidget *ListViewDelegate::createEditor(QWidget *parent, const QStyleOptionViewI
         this->updateEditorGeometry(edit, option, index);
     });
 
-    connect(edit, &QTextEdit::textChanged, [=](){
+    connect(edit, &TextEdit::textChanged, [=](){
         updateEditorGeometry(edit, option, index);
+    });
+
+    connect(edit, &TextEdit::finishEditRequest, [=](){
+        setModelData(edit, nullptr, index);
+        edit->close();
     });
 
     return edit;
@@ -94,7 +100,7 @@ QWidget *ListViewDelegate::createEditor(QWidget *parent, const QStyleOptionViewI
 
 void ListViewDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const
 {
-    QTextEdit *edit = qobject_cast<QTextEdit *>(editor);
+    TextEdit *edit = qobject_cast<TextEdit *>(editor);
     if (!edit)
         return;
 
@@ -114,14 +120,14 @@ void ListViewDelegate::setEditorData(QWidget *editor, const QModelIndex &index) 
 void ListViewDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
     QStyledItemDelegate::updateEditorGeometry(editor, option, index);
-    QTextEdit *edit = qobject_cast<QTextEdit*>(editor);
+    TextEdit *edit = qobject_cast<TextEdit*>(editor);
     edit->setFixedHeight(editor->height());
     edit->resize(edit->document()->size().width(), -1);
 }
 
 void ListViewDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const
 {
-    QTextEdit *edit = qobject_cast<QTextEdit*>(editor);
+    TextEdit *edit = qobject_cast<TextEdit*>(editor);
 
     auto text = edit->toPlainText();
     if (text.isEmpty())
@@ -130,4 +136,19 @@ void ListViewDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, 
         return;
 
     FileOperationUtils::rename(index.data(FileItemModel::UriRole).toString(), text, true);
+}
+
+//TextEdit
+TextEdit::TextEdit(QWidget *parent) : QTextEdit (parent)
+{
+
+}
+
+void TextEdit::keyPressEvent(QKeyEvent *e)
+{
+    if (e->key() == Qt::Key_Return) {
+        Q_EMIT finishEditRequest();
+        return;
+    }
+    return QTextEdit::keyPressEvent(e);
 }

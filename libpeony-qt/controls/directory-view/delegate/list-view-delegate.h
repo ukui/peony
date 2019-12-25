@@ -24,11 +24,14 @@
 #define LISTVIEWDELEGATE_H
 
 #include <QStyledItemDelegate>
+#include <QTextEdit>
 #include "peony-core_global.h"
 
 class QPushButton;
 
 namespace Peony {
+
+class TextEdit;
 
 class ListViewDelegate : public QStyledItemDelegate
 {
@@ -48,6 +51,19 @@ public:
 
 private:
     QPushButton *m_styled_button;
+};
+
+class TextEdit : public QTextEdit
+{
+    Q_OBJECT
+public:
+    explicit TextEdit(QWidget *parent = nullptr);
+
+Q_SIGNALS:
+    void finishEditRequest();
+
+protected:
+    void keyPressEvent(QKeyEvent *e);
 };
 
 }
