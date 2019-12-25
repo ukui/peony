@@ -27,6 +27,7 @@
 #include "basic-properties-page-factory.h"
 #include "permissions-properties-page-factory.h"
 #include "computer-properties-page-factory.h"
+#include "recent-and-trash-properties-page-factory.h"
 
 #include <QToolBar>
 #include <QDialogButtonBox>
@@ -55,6 +56,7 @@ PropertiesWindowPluginManager::PropertiesWindowPluginManager(QObject *parent) : 
     registerFactory(BasicPropertiesPageFactory::getInstance());
     registerFactory(PermissionsPropertiesPageFactory::getInstance());
     registerFactory(ComputerPropertiesPageFactory::getInstance());
+    registerFactory(RecentAndTrashPropertiesPageFactory::getInstance());
 }
 
 PropertiesWindowPluginManager::~PropertiesWindowPluginManager()

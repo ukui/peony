@@ -6,6 +6,10 @@ Source: <https://github.com/explorer-cs/peony-qt.git>
 
 Files:     COPYING.EXTENSIONS
            COPYING.LIB
+           libpeony-qt/controls/property-page/recent-and-trash-properties-page-factory.cpp
+           libpeony-qt/controls/property-page/recent-and-trash-properties-page-factory.h
+           libpeony-qt/controls/property-page/recent-and-trash-properties-page.cpp
+           libpeony-qt/controls/property-page/recent-and-trash-properties-page.h
            libpeony-qt/controls/property-page/computer-properties-page-factory.cpp
            libpeony-qt/controls/property-page/computer-properties-page-factory.h
            libpeony-qt/controls/property-page/computer-properties-page.cpp

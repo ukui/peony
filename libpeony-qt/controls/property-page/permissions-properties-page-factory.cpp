@@ -27,7 +27,7 @@
 
 using namespace Peony;
 
-PermissionsPropertiesPageFactory *global_instance = nullptr;
+static PermissionsPropertiesPageFactory *global_instance = nullptr;
 
 PermissionsPropertiesPageFactory::PermissionsPropertiesPageFactory(QObject *parent) : QObject(parent)
 {
@@ -36,7 +36,13 @@ PermissionsPropertiesPageFactory::PermissionsPropertiesPageFactory(QObject *pare
 
 bool PermissionsPropertiesPageFactory::supportUris(const QStringList &uris)
 {
-    return uris.count() == 1;
+    if (uris.count() != 1)
+        return false;
+
+    if (uris.first().contains("computer:///") || uris.first().contains("trash:///") || uris.first().contains("recent:///"))
+        return false;
+
+    return true;
 }
 
 QWidget *PermissionsPropertiesPageFactory::createTabPage(const QStringList &uris)

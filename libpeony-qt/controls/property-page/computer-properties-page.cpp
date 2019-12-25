@@ -34,6 +34,8 @@
 #include <QLabel>
 #include <QFrame>
 
+#include <QProgressBar>
+
 #include <glib.h>
 
 using namespace Peony;
@@ -106,15 +108,72 @@ ComputerPropertiesPage::ComputerPropertiesPage(const QString &uri, QWidget *pare
 
         auto targetUri = FileUtils::getTargetUri(uri);
         if (targetUri.isNull()) {
-            m_layout->addRow(new QLabel(tr("Unkown"), nullptr));
+            m_layout->addRow(new QLabel(tr("You should mount this volume first"), nullptr));
+            return;
         }
         auto mount = VolumeManager::getMountFromUri(targetUri);
+        if (targetUri == "file:///") {
+            //NOTE: file:/// has not mount.
+            GFile *file = g_file_new_for_uri(targetUri.toUtf8().constData());
+            GFileInfo *info = g_file_query_filesystem_info(file, "*", nullptr, nullptr);
+            quint64 total = g_file_info_get_attribute_uint64(info, G_FILE_ATTRIBUTE_FILESYSTEM_SIZE);
+            quint64 used = g_file_info_get_attribute_uint64(info, G_FILE_ATTRIBUTE_FILESYSTEM_USED);
+            quint64 aviliable = g_file_info_get_attribute_uint64(info, G_FILE_ATTRIBUTE_FILESYSTEM_FREE);
+            char *total_format = g_format_size(total);
+            char *used_format = g_format_size(used);
+            char *aviliable_format = g_format_size(aviliable);
+            char *fs_type = g_file_info_get_attribute_as_string(info, G_FILE_ATTRIBUTE_FILESYSTEM_TYPE);
+            m_layout->addRow(tr("Name: "), new QLabel(tr("File System"), this));
+            m_layout->addRow(tr("Total Space: "), new QLabel(total_format, this));
+            m_layout->addRow(tr("Used Space: "), new QLabel(used_format, this));
+            m_layout->addRow(tr("Free Space: "), new QLabel(aviliable_format, this));
+            m_layout->addRow(tr("Type: "), new QLabel(fs_type, this));
+            g_free(total_format);
+            g_free(used_format);
+            g_free(aviliable_format);
+            g_free(fs_type);
+            g_object_unref(info);
+            g_object_unref(file);
+
+            auto progressBar = new QProgressBar(this);
+            auto value = double(used*1.0/total)*100;
+            progressBar->setValue(int(value));
+            m_layout->addRow(progressBar);
+            m_layout->setAlignment(progressBar, Qt::AlignBottom);
+            return;
+        }
         if (mount) {
             auto volume = VolumeManager::getVolumeFromMount(mount);
             auto drive = VolumeManager::getDriveFromMount(mount);
-            m_layout->addRow(tr("Name: "), new QLabel(mount->name(), this));
-        } else {
 
+            GFile *file = g_file_new_for_uri(targetUri.toUtf8().constData());
+            GFileInfo *info = g_file_query_filesystem_info(file, "*", nullptr, nullptr);
+            quint64 total = g_file_info_get_attribute_uint64(info, G_FILE_ATTRIBUTE_FILESYSTEM_SIZE);
+            quint64 used = g_file_info_get_attribute_uint64(info, G_FILE_ATTRIBUTE_FILESYSTEM_USED);
+            quint64 aviliable = g_file_info_get_attribute_uint64(info, G_FILE_ATTRIBUTE_FILESYSTEM_FREE);
+            char *total_format = g_format_size(total);
+            char *used_format = g_format_size(used);
+            char *aviliable_format = g_format_size(aviliable);
+            char *fs_type = g_file_info_get_attribute_as_string(info, G_FILE_ATTRIBUTE_FILESYSTEM_TYPE);
+            m_layout->addRow(tr("Name: "), new QLabel(mount->name(), this));
+            m_layout->addRow(tr("Total Space: "), new QLabel(total_format, this));
+            m_layout->addRow(tr("Used Space: "), new QLabel(used_format, this));
+            m_layout->addRow(tr("Free Space: "), new QLabel(aviliable_format, this));
+            m_layout->addRow(tr("Type: "), new QLabel(fs_type, this));
+            g_free(total_format);
+            g_free(used_format);
+            g_free(aviliable_format);
+            g_free(fs_type);
+            g_object_unref(info);
+            g_object_unref(file);
+
+            auto progressBar = new QProgressBar(this);
+            auto value = double(used*1.0/total)*100;
+            progressBar->setValue(int(value));
+            m_layout->addRow(progressBar);
+            m_layout->setAlignment(progressBar, Qt::AlignBottom);
+        } else {
+            m_layout->addRow(new QLabel(tr("Unkown"), nullptr));
         }
     }
 }

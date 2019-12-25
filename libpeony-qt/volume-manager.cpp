@@ -167,7 +167,12 @@ std::shared_ptr<Mount> VolumeManager::getMountFromUri(const QString &uri)
         return nullptr;
 
     std::shared_ptr<Mount> tmp;
-    GMount *mount = g_file_find_enclosing_mount(file, nullptr, nullptr);
+    GError *err = nullptr;
+    GMount *mount = g_file_find_enclosing_mount(file, nullptr, &err);
+    if (err) {
+        qDebug()<<err->message;
+        g_error_free(err);
+    }
     g_object_unref(file);
     if (mount) {
         tmp = std::make_shared<Mount>(mount, true);

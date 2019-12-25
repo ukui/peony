@@ -220,6 +220,7 @@ const QList<QAction *> DirectoryViewMenu::constructOpenOpActions()
                 connect(l.last(), &QAction::triggered, [=](){
                     auto uri = m_selections.first();
                     //FIXME:
+                    m_top_window->goToUri(uri, true);
                 });
             }
         } else {
