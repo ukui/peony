@@ -2,7 +2,7 @@ Source: peony-qt
 Section: x11
 Priority: optional
 Maintainer: Yue Lan <lanyue@kylinos.cn>
-Build-Depends: debhelper (>=11~), pkg-config, qt5-qmake, qtbase5-dev, qtchooser, qtbase5-dev-tools, libglib2.0-dev, libqt5x11extras5-dev, libgsettings-qt-dev, libpoppler-dev, libpoppler-qt5-dev
+Build-Depends: debhelper (>=11~), pkg-config, qt5-qmake, qtbase5-dev, qtchooser, qtbase5-dev-tools, qttools5-dev-tools, libglib2.0-dev, libqt5x11extras5-dev, libgsettings-qt-dev, libpoppler-dev, libpoppler-qt5-dev
 Standards-Version: 4.4.0
 Homepage: https://github.com/explorer-cs/peony-qt
 
