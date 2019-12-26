@@ -20,7 +20,6 @@ override_dh_installdocs:
 
 override_dh_auto_configure:
 	# upstream tarball is without configure. autogen.sh will create it
-	cmake -Hpeony-admin -Bpeony-admin/
 	NOCONFIGURE=1 ./autogen.sh
 	dh_auto_configure $(DHFLAGS) -- \
 		--disable-silent-rules \

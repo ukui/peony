@@ -1,3 +1,13 @@
+peony-extensions (1.1.4-1) unstable; urgency=medium
+
+  * New upstream release. (Closes: #945683)
+  * Debian/control:
+    - Drop peony-admin.
+  * Debian/{compat,control}:
+    - Use debhelper-compat notation. Bump to DH compat level version 12.
+
+ -- handsome_feng <jianfengli@ubuntukylin.com>  Thu, 26 Dec 2019 22:49:18 +0800
+
 peony-extensions (1.1.3-1) unstable; urgency=medium
 
   [ Andreas Henriksson ]

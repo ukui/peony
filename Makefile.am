@@ -14,8 +14,6 @@ if ENABLE_IMAGE_CONVERTER
 SUBDIRS += image-converter
 endif
 
-SUBDIRS += peony-admin
-
 if ENABLE_SHARE
 SUBDIRS += share
 endif

@@ -3,7 +3,7 @@ Section: x11
 Priority: optional
 Maintainer: Kylin Team <pkg-kylin-devel@lists.alioth.debian.org>
 Uploaders: handsome_feng <jianfengli@ubuntukylin.com>,
-Build-Depends: debhelper (>= 12),
+Build-Depends: debhelper-compat (= 12),
                dpkg-dev (>= 1.16.1.1),
                cmake,
                gettext,
@@ -26,27 +26,6 @@ Rules-Requires-Root: no
 Homepage: http://www.ukui.org/
 Vcs-Git: https://github.com/ukui/peony-extensions.git
 Vcs-Browser: https://github.com/ukui/peony-extensions
-
-Package: peony-admin
-Architecture: all
-Depends: ${misc:Depends},
-         python-gi,
-         gir1.2-gtk-3.0,
-         peony,
-         policykit-1,
-         python-caja,
-Recommends: pluma,
-            mate-terminal,
-Description: Add administrative actions to Peony's right-click menu
- Peony Admin is a simple Python extension for the Peony file manager that
- adds some administrative actions to the right-click menu:
- .
-   - Open as Administrator: opens a folder in a new Peony window running
-     with administrator (root) privileges.
-   - Edit as Administrator: opens a file in a Pluma window running with
-     administrator (root) privileges.
-   - Run as Administrator: runs an executable file with administrator
-     (root) privileges inside a MATE Terminal.
 
 Package: peony-image-converter
 Architecture: any
