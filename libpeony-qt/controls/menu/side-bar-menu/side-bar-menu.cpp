@@ -28,6 +28,9 @@
 
 #include "menu-plugin-manager.h"
 
+#include "file-info.h"
+#include "file-info-job.h"
+
 #include <QAction>
 #include <QModelIndex>
 
@@ -107,7 +110,12 @@ const QList<QAction *> SideBarMenu::constructFileSystemItemActions()
 {
     QList<QAction *> l;
 
-    if (m_item->isEjectable() || m_item->isMountable() || m_item->isEjectable()) {
+    auto info = FileInfo::fromUri(m_uri);
+    if (info->displayName().isEmpty()) {
+        FileInfoJob j(info);
+        j.querySync();
+    }
+    if (info->canUnmount() || info->canMount()) {
         l<<addAction(QIcon::fromTheme("media-eject"), tr("&Unmount"), [=](){
             m_item->unmount();
         });

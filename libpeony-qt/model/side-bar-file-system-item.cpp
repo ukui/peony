@@ -33,6 +33,8 @@
 
 #include "linux-pwd-helper.h"
 
+#include "volume-manager.h"
+
 #include <QIcon>
 
 using namespace Peony;
@@ -91,7 +93,7 @@ void SideBarFileSystemItem::findChildren()
 
     FileEnumerator *e = new FileEnumerator;
     e->setEnumerateDirectory(m_uri);
-    connect(e, &FileEnumerator::prepared, [=](const GErrorWrapperPtr &err){
+    connect(e, &FileEnumerator::prepared, this, [=](const GErrorWrapperPtr &err){
         e->enumerateSync();
         auto infos = e->getChildren();
         bool isEmpty = true;
@@ -147,8 +149,13 @@ end:
         */
 
         //start listening.
-        connect(m_watcher.get(), &FileWatcher::fileCreated, [=](const QString &uri){
+        connect(m_watcher.get(), &FileWatcher::fileCreated, this, [=](const QString &uri){
             //qDebug()<<"created:"<<uri;
+            for (auto item : *m_children) {
+                if (item->uri() == uri)
+                    return;
+            }
+
             SideBarFileSystemItem *item = new SideBarFileSystemItem(uri,
                                                                     this,
                                                                     m_model);
@@ -157,21 +164,21 @@ end:
             m_model->indexUpdated(this->firstColumnIndex());
         });
 
-        connect(m_watcher.get(), &FileWatcher::fileDeleted, [=](const QString &uri){
+        connect(m_watcher.get(), &FileWatcher::fileDeleted, this, [=](const QString &uri){
             //qDebug()<<"deleted:"<<uri;
             for (auto child : *m_children) {
                 if (child->uri() == uri) {
                     int index = m_children->indexOf(child);
+                    m_model->removeRows(index, 1, firstColumnIndex());
                     m_children->removeOne(child);
                     child->deleteLater();
-                    m_model->removeRows(index, 1, firstColumnIndex());
                     break;
                 }
             }
             m_model->indexUpdated(this->firstColumnIndex());
         });
 
-        connect(m_watcher.get(), &FileWatcher::fileChanged, [=](const QString &uri) {
+        connect(m_watcher.get(), &FileWatcher::fileChanged, this, [=](const QString &uri) {
             //FIXME: maybe i have to remove this changed item then add it again to avoid
             //qt's view expander cannot show correctly after the volume item unmounted.
             //qDebug()<<"side bar fs item changed:"<<uri;
@@ -210,7 +217,12 @@ void SideBarFileSystemItem::findChildrenAsync()
 bool SideBarFileSystemItem::isRemoveable()
 {
     if (m_uri.contains("computer:///") && m_uri != "computer:///") {
-
+        auto info = FileInfo::fromUri(m_uri);
+        if (info->displayName().isEmpty()) {
+            FileInfoJob j(info);
+            j.querySync();
+        }
+        return info->canEject();
     }
     return false;
 }
@@ -218,22 +230,27 @@ bool SideBarFileSystemItem::isRemoveable()
 bool SideBarFileSystemItem::isEjectable()
 {
     if (m_uri.contains("computer:///") && m_uri != "computer:///") {
-
+        auto info = FileInfo::fromUri(m_uri);
+        if (info->displayName().isEmpty()) {
+            FileInfoJob j(info);
+            j.querySync();
+        }
+        return info->canEject();
     }
     return false;
 }
 
 bool SideBarFileSystemItem::isMountable()
-{
-    auto info = FileInfo::fromUri(m_uri);
-    if (info->displayName().isEmpty()) {
-        FileInfoJob j(info);
-        j.querySync();
-    }
+{ 
     if (m_uri.contains("computer:///") && m_uri != "computer:///") {
         //some mountable item can be unmounted but can't be mounted.
         //the most of them is remote servers and shared directories.
         //they should be seemed as mountable items.
+        auto info = FileInfo::fromUri(m_uri);
+        if (info->displayName().isEmpty()) {
+            FileInfoJob j(info);
+            j.querySync();
+        }
         return info->canMount() || info->canUnmount();
     }
     return false;
@@ -242,6 +259,33 @@ bool SideBarFileSystemItem::isMountable()
 bool SideBarFileSystemItem::isMounted()
 {
     return m_is_mounted;
+}
+
+static GAsyncReadyCallback eject_cb(GFile *file,
+                                    GAsyncResult *res,
+                                    SideBarFileSystemItem *p_this)
+{
+    GError *err = nullptr;
+    bool successed = g_file_eject_mountable_with_operation_finish(file, res, &err);
+    qDebug()<<successed;
+    if (err) {
+        qDebug()<<err->message;
+        g_error_free(err);
+    }
+    return nullptr;
+}
+
+void SideBarFileSystemItem::eject()
+{
+    auto file = wrapGFile(g_file_new_for_uri(this->uri().toUtf8().constData()));
+    auto target = FileUtils::getTargetUri(m_uri);
+    auto drive = VolumeManager::getDriveFromUri(target);
+    g_file_eject_mountable_with_operation(file.get()->get(),
+                                          G_MOUNT_UNMOUNT_NONE,
+                                          nullptr,
+                                          nullptr,
+                                          GAsyncReadyCallback(eject_cb),
+                                          this);
 }
 
 void SideBarFileSystemItem::unmount()

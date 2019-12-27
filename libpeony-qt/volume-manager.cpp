@@ -180,6 +180,26 @@ std::shared_ptr<Mount> VolumeManager::getMountFromUri(const QString &uri)
     return tmp;
 }
 
+std::shared_ptr<Drive> VolumeManager::getDriveFromUri(const QString &uri)
+{
+    GFile *file = g_file_new_for_uri(uri.toUtf8().constData());
+    if (!file)
+        return nullptr;
+
+    std::shared_ptr<Drive> tmp;
+    GMount *mount = g_file_find_enclosing_mount(file, nullptr, nullptr);
+    g_object_unref(file);
+    if (mount) {
+        GDrive *drive = g_mount_get_drive(mount);
+        if (drive) {
+            tmp = std::make_shared<Drive>(drive, true);
+        }
+
+        g_object_unref(mount);
+    }
+    return tmp;
+}
+
 std::shared_ptr<Volume> VolumeManager::getVolumeFromUri(const QString &uri)
 {
     GFile *file = g_file_new_for_uri(uri.toUtf8().constData());

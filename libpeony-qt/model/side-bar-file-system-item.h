@@ -60,7 +60,7 @@ public:
     SideBarAbstractItem *parent() override {return m_parent;}
 
 public Q_SLOTS:
-    void eject() override {}
+    void eject() override;
     void unmount() override;
     void format() override {}
 
