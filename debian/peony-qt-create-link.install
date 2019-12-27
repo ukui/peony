@@ -1,1 +1,1 @@
-peony-qt-extensions-qmake/peony-qt-create-link/libpeony-qt-create-link.* usr/lib/peony-qt-extensions
+../../testdir/libpeony-qt-create-link.* usr/lib/peony-qt-extensions
