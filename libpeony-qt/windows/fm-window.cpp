@@ -776,7 +776,24 @@ void FMWindow::keyPressEvent(QKeyEvent *e)
         } else {
             auto selections = this->getCurrentSelections();
             if (selections.count() == 1) {
-                this->goToUri(selections.first(), true, false);
+                Q_EMIT m_tab->getActivePage()->viewDoubleClicked(selections.first());
+            } else {
+                QStringList files;
+                QStringList dirs;
+                for (auto uri : selections) {
+                    auto info = FileInfo::fromUri(uri);
+                    if (info->isDir() || info->isVolume()) {
+                        dirs<<uri;
+                    } else {
+                        files<<uri;
+                    }
+                }
+                for (auto uri : dirs) {
+                    m_tab->addPage(uri);
+                }
+                for (auto uri : files) {
+                    Q_EMIT m_tab->getActivePage()->viewDoubleClicked(uri);
+                }
             }
         }
     }
