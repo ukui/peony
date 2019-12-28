@@ -26,6 +26,8 @@
 #include "fm-dbus-service.h"
 #include "desktop-menu-plugin-manager.h"
 
+#include "volume-manager.h"
+
 #include <QCommandLineParser>
 #include <QCommandLineOption>
 #include <QTimer>
@@ -37,6 +39,8 @@
 
 #include <QTranslator>
 #include <QLocale>
+
+#include <QSystemTrayIcon>
 
 #include <gio/gio.h>
 
@@ -102,6 +106,19 @@ PeonyDesktopApplication::PeonyDesktopApplication(int &argc, char *argv[], const 
         setStyleSheet(QString::fromLatin1(file.readAll()));
         file.close();
         Peony::DesktopMenuPluginManager::getInstance();
+
+        QSystemTrayIcon *trayIcon = new QSystemTrayIcon(this);
+        auto volumeManager = Peony::VolumeManager::getInstance();
+        connect(volumeManager, &Peony::VolumeManager::driveConnected, this, [=](const std::shared_ptr<Peony::Drive> &drive){
+            trayIcon->show();
+            trayIcon->showMessage(tr("Drive"), tr("%1 connected").arg(drive->name()));
+        });
+        connect(volumeManager, &Peony::VolumeManager::driveDisconnected, this, [=](const std::shared_ptr<Peony::Drive> &drive){
+            trayIcon->show();
+            trayIcon->showMessage(tr("Drive"), tr("%1 disconnected").arg(drive->name()));
+        });
+
+        connect(trayIcon, &QSystemTrayIcon::messageClicked, trayIcon, &QSystemTrayIcon::hide);
     }
 
     connect(this, &SingleApplication::layoutDirectionChanged, this, &PeonyDesktopApplication::layoutDirectionChangedProcess);

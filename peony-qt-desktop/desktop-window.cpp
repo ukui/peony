@@ -393,14 +393,7 @@ void DesktopWindow::initShortcut() {
     connect(pasteAction, &QAction::triggered, [=]() {
         auto clipUris = ClipboardUtils::getClipboardFilesUris();
         if (ClipboardUtils::isClipboardHasFiles()) {
-            auto uris = ClipboardUtils::getClipboardFilesUris();
-            if (ClipboardUtils::isClipboardFilesBeCut()) {
-                auto op = new FileMoveOperation(uris, m_view->getDirectoryUri());
-                FileOperationManager::getInstance()->startOperation(op, true);
-            } else {
-                auto op = new FileCopyOperation(uris, m_view->getDirectoryUri());
-                FileOperationManager::getInstance()->startOperation(op, true);
-            }
+            ClipboardUtils::pasteClipboardFiles(m_view->getDirectoryUri());
         }
     });
     addAction(pasteAction);

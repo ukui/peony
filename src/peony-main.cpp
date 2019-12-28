@@ -75,7 +75,7 @@ void messageOutput(QtMsgType type, const QMessageLogContext &context, const QStr
 int main(int argc, char *argv[]) {
     qInstallMessageHandler(messageOutput);
     QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
-    PeonyApplication app(argc, argv, "peony-qt-single-app-test");
+    PeonyApplication app(argc, argv, "peony-qt");
     if (app.isSecondary())
         return 0;
 
