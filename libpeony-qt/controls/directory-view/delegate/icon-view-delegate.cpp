@@ -204,6 +204,17 @@ QWidget *IconViewDelegate::createEditor(QWidget *parent, const QStyleOptionViewI
         edit->close();
     });
 
+    connect(edit, &QWidget::destroyed, this, [=](){
+        // NOTE: resort view after edit closed.
+        // it's because if we not, the viewport might
+        // not be updated in some cases.
+        QTimer::singleShot(100, this, [=](){
+            auto model = qobject_cast<QSortFilterProxyModel*>(getView()->model());
+            model->sort(-1, Qt::SortOrder(getView()->getSortOrder()));
+            model->sort(getView()->getSortType(), Qt::SortOrder(getView()->getSortOrder()));
+        });
+    });
+
     return edit;
 }
 

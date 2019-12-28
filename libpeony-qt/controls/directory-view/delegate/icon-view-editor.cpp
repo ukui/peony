@@ -24,6 +24,7 @@
 #include <QPainter>
 #include <QPolygon>
 #include <QLineEdit>
+#include <QAbstractItemView>
 
 #include "icon-view-editor.h"
 

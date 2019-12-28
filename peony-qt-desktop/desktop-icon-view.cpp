@@ -118,58 +118,52 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
 
     m_proxy_model->setSourceModel(m_model);
 
-    connect(m_model, &DesktopItemModel::dataChanged, this, &DesktopIconView::clearAllIndexWidgets);
+    //connect(m_model, &DesktopItemModel::dataChanged, this, &DesktopIconView::clearAllIndexWidgets);
 
     connect(m_model, &DesktopItemModel::refreshed, this, [=](){
         this->updateItemPosistions(nullptr);
     });
 
-    connect(m_model, &DesktopItemModel::requestClearIndexWidget, this, &DesktopIconView::clearAllIndexWidgets);
+    //connect(m_model, &DesktopItemModel::requestClearIndexWidget, this, &DesktopIconView::clearAllIndexWidgets);
 
     connect(m_model, &DesktopItemModel::requestLayoutNewItem, this, [=](const QString &uri){
         auto index = m_proxy_model->mapFromSource(m_model->indexFromUri(uri));
         //qDebug()<<"=====================layout new item"<<index.data();
-        bool isOverlapping = false;
-        for (int i = 0; i < m_proxy_model->rowCount(); i++) {
-            auto other = m_proxy_model->index(i, 0);
-            if (index == other)
-                continue;
-            if (this->visualRect(index) == this->visualRect(other)) {
-                isOverlapping = true;
+
+        //qDebug()<<"=====================find a new empty place put new item";
+        auto rect = QRect(QPoint(0, 0), gridSize());
+        rect.moveTo(this->contentsMargins().left(), this->contentsMargins().top());
+
+        auto grid = this->gridSize();
+        auto viewRect = this->rect();
+        auto next = rect;
+        while (true) {
+            if (this->indexAt(next.center()).data(Qt::UserRole).toString() == uri) {
+                this->setPositionForIndex(next.topLeft(), index);
+                this->saveItemPositionInfo(uri);
+                return;
+            }
+            if (!this->indexAt(next.center()).isValid()) {
+                //put it into empty
+                qDebug()<<"put"<<index.data()<<next.topLeft();
+                this->setPositionForIndex(next.topLeft(), index);
+                this->saveItemPositionInfo(uri);
                 break;
             }
-        }
-
-        if (isOverlapping) {
-            //qDebug()<<"=====================find a new empty place put new item";
-            bool find = false;
-            auto rect = this->QListView::visualRect(index);
-            auto grid = this->gridSize();
-            auto viewRect = this->rect();
-            auto next = rect;
-            while (!find) {
-                next.translate(0, grid.height());
-                if (next.bottom() > viewRect.bottom()) {
-                    //put item to next column first column
-                    next.translate(grid.width(), 0);
-                    auto tmp = next;
-                    int row_count_to_move = 0;
-                    while (tmp.top() > 0) {
-                        tmp.translate(0, -grid.height());
-                        row_count_to_move++;
+            //aligin.
+            next = QListView::visualRect(this->indexAt(next.center()));
+            next.translate(0, grid.height());
+            if (next.bottom() > viewRect.bottom()) {
+                int top = next.y();
+                while (true) {
+                    if (top < gridSize().height()) {
+                        break;
                     }
-                    next = tmp.translated(0, grid.height());
+                    top-=gridSize().height();
                 }
-                if (!this->indexAt(next.center()).isValid()) {
-                    find = true;
-                    //put it into empty
-                    qDebug()<<"put"<<index.data()<<next.topLeft();
-                    this->setPositionForIndex(next.topLeft(), index);
-                    this->saveItemPositionInfo(uri);
-                }
+                //put item to next column first column
+                next.moveTo(next.x() + grid.width(), top);
             }
-        } else {
-            this->saveItemPositionInfo(uri);
         }
     });
 
@@ -401,6 +395,7 @@ void DesktopIconView::wheelEvent(QWheelEvent *e)
 
 void DesktopIconView::zoomOut()
 {
+    clearAllIndexWidgets();
     switch (zoomLevel()) {
     case Huge:
         setDefaultZoomLevel(Large);
@@ -419,6 +414,7 @@ void DesktopIconView::zoomOut()
 
 void DesktopIconView::zoomIn()
 {
+    clearAllIndexWidgets();
     switch (zoomLevel()) {
     case Small:
         setDefaultZoomLevel(Normal);
