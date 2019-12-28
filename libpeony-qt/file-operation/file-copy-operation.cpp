@@ -60,8 +60,27 @@ static void handleDuplicate(FileNode *node) {
             if (list.count() <= 1) {
                 node->setDestFileName(name+"(1)");
             } else {
-                list.insert(1, "(1)");
-                name = list.join(".");
+                int pos = list.count() - 1;
+                if (list.last() == "gz" |
+                        list.last() == "xz" |
+                        list.last() == "Z" |
+                        list.last() == "sit" |
+                        list.last() == "bz" |
+                        list.last() == "bz2") {
+                    pos--;
+                }
+                if (pos < 0)
+                    pos = 0;
+                //list.insert(pos, "(1)");
+                auto tmp = list;
+                QStringList suffixList;
+                for (int i = 0; i < list.count() - pos; i++) {
+                    suffixList.prepend(tmp.takeLast());
+                }
+                auto suffix = suffixList.join(".");
+
+                auto basename = tmp.join(".");
+                name = basename + "(1)" + "." + suffix;
                 if (name.endsWith("."))
                     name.chop(1);
                 node->setDestFileName(name);
