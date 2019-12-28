@@ -139,3 +139,42 @@ void FileOperationUtils::executeRemoveActionWithDialog(const QStringList &uris)
         FileOperationUtils::remove(uris);
     }
 }
+
+
+bool FileOperationUtils::leftNameIsDuplicatedFileOfRightName(const QString &left, const QString &right)
+{
+    auto tmpl = left;
+    auto tmpr = right;
+    tmpl.remove(QRegExp("\\(\\d+\\)"));
+    tmpr.remove(QRegExp("\\(\\d+\\)"));
+    return tmpl == tmpr;
+}
+
+static int getNumOfFileName(const QString &name)
+{
+    QRegExp regExp("\\(\\d+\\)");
+    int num = 0;
+
+    if (name.contains(regExp)) {
+        int pos = 0;
+        QString tmp;
+        while ((pos = regExp.indexIn(name, pos)) != -1) {
+            tmp = regExp.cap(0).toUtf8();
+            pos += regExp.matchedLength();
+            qDebug()<<"pos"<<pos;
+        }
+        tmp.remove(0,1);
+        tmp.chop(1);
+        num = tmp.toInt();
+    }
+    return num;
+}
+
+bool FileOperationUtils::leftNameLesserThanRightName(const QString &left, const QString &right)
+{
+    auto tmpl = left;
+    auto tmpr = right;
+    int numl = getNumOfFileName(tmpl);
+    int numr = getNumOfFileName(tmpr);
+    return numl == numr? left < right: numl < numr;
+}

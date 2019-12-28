@@ -27,6 +27,7 @@
 #include "file-info.h"
 
 #include "file-utils.h"
+#include "file-operation-utils.h"
 
 #include "global-settings.h"
 
@@ -95,6 +96,9 @@ bool FileItemProxyFilterSortModel::lessThan(const QModelIndex &left, const QMode
 default_sort:
         switch (sortColumn()) {
         case FileItemModel::FileName: {
+            if (FileOperationUtils::leftNameIsDuplicatedFileOfRightName(leftItem->m_info->displayName(), rightItem->m_info->displayName())) {
+                return FileOperationUtils::leftNameLesserThanRightName(leftItem->info()->displayName(), rightItem->info()->displayName());
+            }
             if (!m_use_default_name_sort_order) {
                 QString leftDisplayName = leftItem->m_info->displayName();
                 QString rightDisplayName = rightItem->m_info->displayName();

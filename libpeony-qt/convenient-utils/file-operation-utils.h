@@ -50,6 +50,9 @@ public:
 
     static void executeRemoveActionWithDialog(const QStringList &uris);
 
+    static bool leftNameIsDuplicatedFileOfRightName(const QString &left, const QString &right);
+    static bool leftNameLesserThanRightName(const QString &left, const QString &right);
+
     /*!
      * \brief queryFileInfo
      * \param uri

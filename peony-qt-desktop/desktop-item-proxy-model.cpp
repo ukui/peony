@@ -24,6 +24,8 @@
 #include "file-info.h"
 #include "file-meta-info.h"
 
+#include "file-operation-utils.h"
+
 #include <QDebug>
 
 using namespace Peony;
@@ -106,6 +108,9 @@ bool DesktopItemProxyModel::lessThan(const QModelIndex &source_left, const QMode
     //qDebug()<<"sort===================================="<<SortType(m_sort_type)<<m_sort_type;
     switch (m_sort_type) {
     case FileName: {
+        if (FileOperationUtils::leftNameIsDuplicatedFileOfRightName(leftInfo->displayName(), rightInfo->displayName())) {
+            return FileOperationUtils::leftNameLesserThanRightName(leftInfo->displayName(), rightInfo->displayName());
+        }
         if (startWithChinese(leftInfo->displayName())) {
             if (!startWithChinese(rightInfo->displayName())) {
                 return (sortOrder()==Qt::AscendingOrder)? true: false;
