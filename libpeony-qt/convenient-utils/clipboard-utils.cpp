@@ -134,15 +134,26 @@ void ClipboardUtils::pasteClipboardFiles(const QString &targetDirUri)
     if (!isClipboardHasFiles()) {
         return;
     }
+    //check existed
+    auto uris = getClipboardFilesUris();
+    for (auto uri : getClipboardFilesUris()) {
+        if (!FileUtils::isFileExsit(uri)) {
+            uris.removeAll(uri);
+        }
+    }
+    if (uris.isEmpty()) {
+        return;
+    }
+
     //auto uris = getClipboardFilesUris();
     auto fileOpMgr = FileOperationManager::getInstance();
     if (isClipboardFilesBeCut()) {
-        qDebug()<<getClipboardFilesUris();
-        auto moveOp = new FileMoveOperation(getClipboardFilesUris(), targetDirUri);
+        qDebug()<<uris;
+        auto moveOp = new FileMoveOperation(uris, targetDirUri);
         fileOpMgr->startOperation(moveOp, true);
         QApplication::clipboard()->clear();
     } else {
-        auto copyOp = new FileCopyOperation(getClipboardFilesUris(), targetDirUri);
+        auto copyOp = new FileCopyOperation(uris, targetDirUri);
         fileOpMgr->startOperation(copyOp, true);
     }
 }

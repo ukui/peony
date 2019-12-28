@@ -74,6 +74,8 @@ Q_SIGNALS:
     void cancelled();
 
 public Q_SLOTS:
+    virtual void delayShow();
+
     virtual void switchToPreparedPage();
     virtual void onElementFoundOne(const QString &uri, const qint64 &size);
     virtual void onElementFoundAll();
@@ -87,6 +89,8 @@ public Q_SLOTS:
 
     virtual void switchToRollbackPage();
     virtual void onFileRollbacked(const QString &destUri, const QString &srcUri);
+
+    virtual void updateProgress(const QString &srcUri, const QString &destUri, quint64 current, quint64 total);
 
 protected:
     void closeEvent(QCloseEvent *e) override;

@@ -35,6 +35,8 @@
 
 #include <QSystemTrayIcon>
 
+#include <QTimer>
+
 #include <gio/gio.h>
 
 #include <QDebug>
@@ -103,6 +105,11 @@ void FileOperationProgressWizard::closeEvent(QCloseEvent *e)
     hide();
 
     QWizard::closeEvent(e);
+}
+
+void FileOperationProgressWizard::delayShow()
+{
+    QTimer::singleShot(1000, this, &FileOperationProgressWizard::show);
 }
 
 void FileOperationProgressWizard::switchToPreparedPage()
@@ -212,6 +219,18 @@ void FileOperationProgressWizard::onFileRollbacked(const QString &destUri, const
     auto v = qreal(c*1.0/t)*100;
     //use wizard's m_current_count as total count of files need rollback.
     m_last_page->m_progress_bar->setValue(int(v));
+}
+
+void FileOperationProgressWizard::updateProgress(const QString &srcUri, const QString &destUri, quint64 current, quint64 total)
+{
+    if (m_second_page->m_state_line->text() == "unknow") {
+        m_second_page->m_state_line->setText(tr("copying..."));
+    }
+    m_second_page->m_src_line->setText(srcUri);
+    m_second_page->m_dest_line->setText(destUri);
+
+    double progress = current*1.0/total;
+    m_second_page->m_progress_bar->setValue(int(progress*100));
 }
 
 //FileOperationPreparePage

@@ -267,7 +267,7 @@
     <message>
         <location filename="../../libpeony-qt/controls/property-page/computer-properties-page.cpp" line="90"/>
         <source>CPU Name:</source>
-        <translation>CPU:</translation>
+        <translation>处理器:</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/property-page/computer-properties-page.cpp" line="91"/>
@@ -630,7 +630,7 @@
     <message>
         <location filename="../../libpeony-qt/windows/fm-window.cpp" line="92"/>
         <source>File Manager</source>
-        <translation type="unfinished"></translation>
+        <translation>文件管理器</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/windows/fm-window.cpp" line="170"/>
@@ -666,7 +666,7 @@
     <message>
         <location filename="../../libpeony-qt/windows/fm-window.cpp" line="378"/>
         <source>Peony Qt</source>
-        <translation type="unfinished">文件管理器</translation>
+        <translation>文件管理器</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/windows/fm-window.cpp" line="379"/>
@@ -675,7 +675,7 @@
 	Meihong He &lt;hemeihong@kylinos.cn&gt;
 
 Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
-        <translation type="unfinished">作者:
+        <translation>作者:
 	Yue Lan &lt;lanyue@kylinos.cn&gt;
 	Meihong He &lt;hemeihong@kylinos.cn&gt;
 
@@ -770,17 +770,17 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
 <context>
     <name>Peony::FileMoveOperation</name>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="730"/>
+        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="735"/>
         <source>Invalid move operation, cannot move a file itself.</source>
         <translation>非法的移动操作，不能自移动到自身。</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="743"/>
+        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="748"/>
         <source>Invalid Operation.</source>
         <translation>非法的操作.</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="756"/>
+        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="761"/>
         <source>Invalid Operation</source>
         <translation>非法的操作</translation>
     </message>
@@ -788,7 +788,7 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
 <context>
     <name>Peony::FileOperationAfterProgressPage</name>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="292"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="311"/>
         <source>&amp;More Details</source>
         <translation type="unfinished">详细信息(&amp;M)</translation>
     </message>
@@ -881,12 +881,12 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
 <context>
     <name>Peony::FileOperationPreparePage</name>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="228"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="247"/>
         <source>counting:</source>
         <translation>总计：</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="229"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="248"/>
         <source>state:</source>
         <translation>状态：</translation>
     </message>
@@ -894,17 +894,17 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
 <context>
     <name>Peony::FileOperationProgressPage</name>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="251"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="270"/>
         <source>&amp;More Details</source>
         <translation type="unfinished">详细信息(&amp;M)</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="262"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="281"/>
         <source>From:</source>
         <translation>从：</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="263"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="282"/>
         <source>To:</source>
         <translation>到：</translation>
     </message>
@@ -912,55 +912,60 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
 <context>
     <name>Peony::FileOperationProgressWizard</name>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="56"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="58"/>
         <source>&amp;Cancel</source>
         <translation type="unfinished">取消(&amp;C)</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="65"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="67"/>
         <source>Preparing...</source>
         <translation>准备中...</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="68"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="70"/>
         <source>Handling...</source>
         <translation>正在处理...</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="71"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="73"/>
         <source>Clearing...</source>
         <translation>正在清理...</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="74"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="76"/>
         <source>Rollbacking...</source>
         <translation>回滚中...</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="78"/>
-        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="99"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="80"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="101"/>
         <source>File Operation</source>
         <translation>文件操作</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="100"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="102"/>
         <source>A file operation is running backend...</source>
         <translation>一个文件操作正在后台运行中...</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="127"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="134"/>
         <source>%1 files, %2</source>
         <translation>%1个文件，共%2</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="154"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="161"/>
         <source>%1 done, %2 total, %3 of %4.</source>
         <translation>完成%1，共%2，%4中的第%3个。</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="184"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="191"/>
         <source>clearing: %1, %2 of %3</source>
         <translation>正在清理：%1，%3中的第%2个</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="227"/>
+        <source>copying...</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1230,7 +1235,7 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
 <context>
     <name>Peony::SideBarFileSystemItem</name>
     <message>
-        <location filename="../../libpeony-qt/model/side-bar-file-system-item.cpp" line="50"/>
+        <location filename="../../libpeony-qt/model/side-bar-file-system-item.cpp" line="52"/>
         <source>Computer</source>
         <translation>计算机</translation>
     </message>
@@ -1238,21 +1243,21 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
 <context>
     <name>Peony::SideBarMenu</name>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/side-bar-menu/side-bar-menu.cpp" line="45"/>
-        <location filename="../../libpeony-qt/controls/menu/side-bar-menu/side-bar-menu.cpp" line="64"/>
-        <location filename="../../libpeony-qt/controls/menu/side-bar-menu/side-bar-menu.cpp" line="83"/>
-        <location filename="../../libpeony-qt/controls/menu/side-bar-menu/side-bar-menu.cpp" line="98"/>
-        <location filename="../../libpeony-qt/controls/menu/side-bar-menu/side-bar-menu.cpp" line="130"/>
+        <location filename="../../libpeony-qt/controls/menu/side-bar-menu/side-bar-menu.cpp" line="48"/>
+        <location filename="../../libpeony-qt/controls/menu/side-bar-menu/side-bar-menu.cpp" line="67"/>
+        <location filename="../../libpeony-qt/controls/menu/side-bar-menu/side-bar-menu.cpp" line="86"/>
+        <location filename="../../libpeony-qt/controls/menu/side-bar-menu/side-bar-menu.cpp" line="101"/>
+        <location filename="../../libpeony-qt/controls/menu/side-bar-menu/side-bar-menu.cpp" line="138"/>
         <source>&amp;Properties</source>
         <translation>属性(&amp;P)</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/side-bar-menu/side-bar-menu.cpp" line="74"/>
+        <location filename="../../libpeony-qt/controls/menu/side-bar-menu/side-bar-menu.cpp" line="77"/>
         <source>&amp;Delete Symbolic</source>
         <translation>删除(&amp;D)</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/side-bar-menu/side-bar-menu.cpp" line="111"/>
+        <location filename="../../libpeony-qt/controls/menu/side-bar-menu/side-bar-menu.cpp" line="119"/>
         <source>&amp;Unmount</source>
         <translation>卸载(&amp;U)</translation>
     </message>

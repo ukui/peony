@@ -93,33 +93,35 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
             auto job = new FileInfoJob(info);
             job->setAutoDelete();
             connect(job, &FileInfoJob::infoUpdated, [=](){
-                m_mutex.lock();
-                this->beginResetModel();
-                ThumbnailManager::getInstance()->createThumbnail(info->uri(), m_desktop_watcher);
-                m_files<<info;
-                //this->insertRows(m_files.indexOf(info), 1);
-                this->endResetModel();
-                Q_EMIT this->requestUpdateItemPositions();
-                Q_EMIT this->requestLayoutNewItem(info->uri());
-                m_mutex.unlock();
+                if(m_mutex.tryLock(200)) {
+                    this->beginResetModel();
+                    ThumbnailManager::getInstance()->createThumbnail(info->uri(), m_desktop_watcher);
+                    m_files<<info;
+                    //this->insertRows(m_files.indexOf(info), 1);
+                    this->endResetModel();
+                    Q_EMIT this->requestUpdateItemPositions();
+                    Q_EMIT this->requestLayoutNewItem(info->uri());
+                    m_mutex.unlock();
+                }
             });
             job->queryAsync();
         }
     });
 
     this->connect(m_desktop_watcher.get(), &FileWatcher::fileDeleted, [=](const QString &uri){
-        m_mutex.lock();
-        auto info = FileInfo::fromUri(uri);
-        if (m_files.indexOf(info) >= 0) {
-            //qDebug()<<"remove one"<<info->uri();
-            this->beginResetModel();
-            m_files.removeOne(info);
-            this->endResetModel();
-            Q_EMIT this->requestClearIndexWidget();
-            Q_EMIT this->requestUpdateItemPositions();
+        if(m_mutex.tryLock(200)) {
+            auto info = FileInfo::fromUri(uri);
+            if (m_files.indexOf(info) >= 0) {
+                //qDebug()<<"remove one"<<info->uri();
+                this->beginResetModel();
+                m_files.removeOne(info);
+                this->endResetModel();
+                Q_EMIT this->requestClearIndexWidget();
+                Q_EMIT this->requestUpdateItemPositions();
+            }
+            FileInfoManager::getInstance()->remove(info);
+            m_mutex.unlock();
         }
-        FileInfoManager::getInstance()->remove(info);
-        m_mutex.unlock();
     });
 
     this->connect(m_desktop_watcher.get(), &FileWatcher::fileChanged, [=](const QString &uri){

@@ -85,10 +85,12 @@ void FileMoveOperation::progress_callback(goffset current_num_bytes,
                                           goffset total_num_bytes,
                                           FileMoveOperation *p_this)
 {
+    auto currnet = p_this->m_current_offset + current_num_bytes;
+    auto total = p_this->m_total_szie;
     Q_EMIT p_this->FileProgressCallback(p_this->m_current_src_uri,
                                         p_this->m_current_dest_dir_uri,
-                                        current_num_bytes,
-                                        total_num_bytes);
+                                        currnet,
+                                        total);
     //format: move srcUri to destDirUri: curent_bytes(count) of total_bytes(count).
 }
 
@@ -530,10 +532,11 @@ fallback_retry:
             node->setState(FileNode::Handled);
         }
         //assume that make dir finished anyway
+        m_current_offset += node->size();
         Q_EMIT FileProgressCallback(m_current_src_uri,
                                     m_current_dest_dir_uri,
-                                    node->size(),
-                                    node->size());
+                                    m_current_offset,
+                                    m_total_szie);
         Q_EMIT operationProgressedOne(node->uri(), node->destUri(), node->size());
         for (auto child : *(node->children())) {
             copyRecursively(child);
@@ -637,6 +640,8 @@ fallback_retry:
         } else {
             node->setState(FileNode::Handled);
         }
+        m_current_offset += node->size();
+        Q_EMIT FileProgressCallback(node->uri(), node->destUri(), m_current_offset, m_total_szie);
         Q_EMIT operationProgressedOne(node->uri(), node->destUri(), node->size());
     }
     destFile.reset();
