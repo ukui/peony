@@ -107,6 +107,7 @@ PeonyDesktopApplication::PeonyDesktopApplication(int &argc, char *argv[], const 
         file.close();
         Peony::DesktopMenuPluginManager::getInstance();
 
+        /*
         QSystemTrayIcon *trayIcon = new QSystemTrayIcon(this);
         auto volumeManager = Peony::VolumeManager::getInstance();
         connect(volumeManager, &Peony::VolumeManager::driveConnected, this, [=](const std::shared_ptr<Peony::Drive> &drive){
@@ -119,6 +120,7 @@ PeonyDesktopApplication::PeonyDesktopApplication(int &argc, char *argv[], const 
         });
 
         connect(trayIcon, &QSystemTrayIcon::messageClicked, trayIcon, &QSystemTrayIcon::hide);
+        */
     }
 
     connect(this, &SingleApplication::layoutDirectionChanged, this, &PeonyDesktopApplication::layoutDirectionChangedProcess);

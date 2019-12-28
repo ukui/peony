@@ -103,8 +103,6 @@ void FileOperationProgressWizard::closeEvent(QCloseEvent *e)
                              QIcon::fromTheme("system-file-manager"),
                              5000);
     hide();
-
-    QWizard::closeEvent(e);
 }
 
 void FileOperationProgressWizard::delayShow()

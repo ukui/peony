@@ -22,7 +22,12 @@
 
 #include "file-operation-manager.h"
 #include "file-operation.h"
+
+#include "global-settings.h"
+
 #include <QMessageBox>
+#include <QApplication>
+#include <QTimer>
 
 #include "file-copy-operation.h"
 #include "file-delete-operation.h"
@@ -71,6 +76,24 @@ void FileOperationManager::close()
 
 void FileOperationManager::startOperation(FileOperation *operation, bool addToHistory)
 {
+    QApplication::setQuitOnLastWindowClosed(false);
+
+    connect(operation, &FileOperation::operationFinished, this, [=](){
+        auto settings = GlobalSettings::getInstance();
+        bool runbackend = settings->getInstance()->getValue(RESIDENT_IN_BACKEND).toBool();
+        QApplication::setQuitOnLastWindowClosed(!runbackend);
+        QTimer::singleShot(1000, this, [=](){
+            int last_op_count = m_thread_pool->children().count();
+            if (last_op_count == 0) {
+                if (qApp->allWidgets().isEmpty()) {
+                    if (!runbackend) {
+                        qApp->quit();
+                    }
+                }
+            }
+        });
+    });
+
     if (m_thread_pool->activeThreadCount() > 0) {
         QMessageBox::warning(nullptr,
                              tr("File Operation is Busy"),
