@@ -95,6 +95,9 @@ PeonyDesktopApplication::PeonyDesktopApplication(int &argc, char *argv[], const 
     QTranslator *t2 = new QTranslator(this);
     t2->load("/usr/share/peony-qt-desktop/peony-qt-desktop_"+QLocale::system().name());
     QApplication::installTranslator(t2);
+    QTranslator *t3 = new QTranslator(this);
+    t3->load("/usr/share/qt5/translations/qt_"+QLocale::system().name());
+    QApplication::installTranslator(t3);
 
     if (this->isPrimary()) {
         qDebug()<<"isPrimary screen";
