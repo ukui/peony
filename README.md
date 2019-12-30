@@ -35,9 +35,13 @@ I recommend you use latest UbuntuKylin(19.10 for now), and you can build pre-dep
 
 > sudo apt install libglib2.0-dev qt5-default libqt5x11extras5-dev libgsettings-qt-dev
 
+NOTE: build-depends references the paragraph in debian/control.
+
 and this is a recommend plugin:
 
 > sudo apt install qt5-gtk2-platformtheme
+
+NOTE: actually peony-qt is designed to adapt to all different qt styles, but for now there are lots of things to be done. You can also experience it with other styles, such as breeze, oxygen, not only gtk.
 
 This qpa plugin will let qt applications use system style in UbuntuKylin.
 
