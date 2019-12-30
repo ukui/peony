@@ -30,7 +30,7 @@ namespace Peony {
 class SearchVFSUriParser
 {
 public:
-    const static QString parseSearchKey(const QString &uri, const QString &key);
+    const static QString parseSearchKey(const QString &uri, const QString &key, const bool &search_file_name=true, const bool &search_content=false);
     const static QString getSearchUriNameRegexp(const QString &searchUri);
     const static QString getSearchUriTargetDirectory(const QString &searchUri);
 private:

@@ -33,6 +33,7 @@
 #include <QStringListModel>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QCheckBox>
 
 #include <QDebug>
 
@@ -89,6 +90,12 @@ void AdvanceSearchBar::init()
     QPushButton *m_go_back = new QPushButton(tr("go back"), nullptr);
     m_go_back->setToolTip(tr("hidden advance search page"));
 
+    QCheckBox *file_name = new QCheckBox(tr("file name"), nullptr);
+    QCheckBox *file_content = new QCheckBox(tr("content"), nullptr);
+    file_name->setChecked(true);
+    m_search_content = false;
+    m_search_name = true;
+
     QPushButton *m_filter_button = new QPushButton(tr("search"), nullptr);
     m_filter_button->setToolTip(tr("start search"));
 
@@ -120,6 +127,8 @@ void AdvanceSearchBar::init()
     topLayout->addWidget(sizeViewCombox);
     topLayout->addWidget(m_show_hidden_button);
     topLayout->addWidget(m_go_back);
+    topLayout->addWidget(file_name);
+    topLayout->addWidget(file_content);
     bottomLayout->setContentsMargins(10,20,10,10);
     bottomLayout->addWidget(m_filter_button, Qt::AlignCenter);
     topLayout->addWidget(b2);
@@ -135,6 +144,14 @@ void AdvanceSearchBar::init()
     connect(typeViewCombox, QOverload<int>::of(&QComboBox::currentIndexChanged),this, &AdvanceSearchBar::filterUpdate);
     connect(timeViewCombox, QOverload<int>::of(&QComboBox::currentIndexChanged),this, &AdvanceSearchBar::filterUpdate);
     connect(sizeViewCombox, QOverload<int>::of(&QComboBox::currentIndexChanged),this, &AdvanceSearchBar::filterUpdate);
+    connect(file_name, &QCheckBox::clicked, this, [=](){
+        m_search_name = file_name->isChecked();
+        qDebug()<<"search name"<<m_search_name;
+    });
+    connect(file_content, &QCheckBox::clicked, this, [=](){
+        m_search_content = file_content->isChecked();
+        qDebug()<<"search content"<<m_search_content;
+    });
 
     //go back hidden this page
     connect(m_go_back, &QPushButton::clicked, [=](){
@@ -169,7 +186,16 @@ void AdvanceSearchBar::searchFilter()
         return;
     }
 
-    m_top_window->searchFilter(m_advance_target_path, m_advanced_key->text());
+    if (! m_search_name && !m_search_content)
+    {
+        QMessageBox *msgBox = new QMessageBox(this);
+        msgBox->setWindowTitle(tr("Operate Tips"));
+        msgBox->setText(tr("Search file name or content at leat choose one!"));
+        msgBox->exec();
+        return;
+    }
+
+    m_top_window->searchFilter(m_advance_target_path, m_advanced_key->text(), m_search_name, m_search_content);
 }
 
 void AdvanceSearchBar::filterUpdate()

@@ -69,6 +69,8 @@ private:
 
     QString m_advance_target_path, m_last_show_name;
     QList<QString> m_choosed_paths;
+
+    bool m_search_content, m_search_name;
 };
 
 }

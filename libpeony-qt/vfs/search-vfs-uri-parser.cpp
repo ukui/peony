@@ -33,9 +33,21 @@ SearchVFSUriParser::SearchVFSUriParser()
 
 }
 
-const QString SearchVFSUriParser::parseSearchKey(const QString &uri, const QString &key)
+const QString SearchVFSUriParser:: parseSearchKey(const QString &uri, const QString &key, const bool &search_file_name, const bool &search_content)
 {
-    return QString("search:///search_uris="+uri+"&name_regexp="+key+"&recursive=1");
+    QString search_str = "search:///search_uris="+uri;
+    if (search_file_name)
+        search_str += "&name_regexp="+key;
+    if (search_content)
+        search_str += "&content_regexp="+key;
+    else if (! search_file_name)
+    {
+        qWarning()<<"Search content or file name at leat one be true!";
+        //use default search file name
+        search_str += "&name_regexp="+key;
+    }
+
+    return QString(search_str+"&recursive=1");
 }
 
 const QString SearchVFSUriParser::getSearchUriNameRegexp(const QString &searchUri)

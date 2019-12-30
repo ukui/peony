@@ -37,94 +37,114 @@
 <context>
     <name>Peony::AdvanceSearchBar</name>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.cpp" line="54"/>
+        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.cpp" line="55"/>
         <source>Key Words</source>
         <translation>关键词</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.cpp" line="57"/>
+        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.cpp" line="58"/>
         <source>input key words...</source>
         <translation>输入关键词...</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.cpp" line="58"/>
+        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.cpp" line="59"/>
         <source>Search Location</source>
         <translation>搜索路径</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.cpp" line="60"/>
+        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.cpp" line="61"/>
         <source>choose search path...</source>
         <translation>选择要搜索的位置...</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.cpp" line="66"/>
+        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.cpp" line="67"/>
         <source>browse</source>
         <translation>浏览</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.cpp" line="67"/>
+        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.cpp" line="68"/>
         <source>File Type</source>
         <translation>文件类型</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.cpp" line="69"/>
+        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.cpp" line="70"/>
         <source>Choose File Type</source>
         <translation>选择文件类型</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.cpp" line="74"/>
+        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.cpp" line="75"/>
         <source>Modify Time</source>
         <translation>修改时间</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.cpp" line="76"/>
+        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.cpp" line="77"/>
         <source>Choose Modify Time</source>
         <translation>选择修改时间</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.cpp" line="81"/>
+        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.cpp" line="82"/>
         <source>File Size</source>
         <translation>文件大小</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.cpp" line="83"/>
+        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.cpp" line="84"/>
         <source>Choose file size</source>
         <translation>选择文件大小</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.cpp" line="88"/>
+        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.cpp" line="89"/>
         <source>show hidden file</source>
         <translation>显示隐藏文件</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.cpp" line="89"/>
+        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.cpp" line="90"/>
         <source>go back</source>
         <translation>后退</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.cpp" line="90"/>
+        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.cpp" line="91"/>
         <source>hidden advance search page</source>
         <translation>隐藏高级搜索界面</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.cpp" line="92"/>
+        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.cpp" line="93"/>
+        <source>file name</source>
+        <translation>文件名</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.cpp" line="94"/>
+        <source>content</source>
+        <translation>内容</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.cpp" line="99"/>
         <source>search</source>
         <translation>搜索</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.cpp" line="93"/>
+        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.cpp" line="100"/>
         <source>start search</source>
         <translation>开始搜索</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.cpp" line="166"/>
+        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.cpp" line="183"/>
+        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.cpp" line="192"/>
         <source>Operate Tips</source>
         <translation>提示</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.cpp" line="167"/>
+        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.cpp" line="184"/>
         <source>Have no key words or search location!</source>
         <translation>没有关键字或路径!</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.cpp" line="193"/>
+        <source>Search file name or content at leat choose one!</source>
+        <translation>搜索文件名或者内容请至少指定一个！</translation>
+    </message>
+    <message>
+        <source>Search content or file name at leat choose one!</source>
+        <translation type="vanished">搜索文件名或者内容请至少指定一个！</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.h" line="56"/>
@@ -338,12 +358,12 @@
 <context>
     <name>Peony::CreateTemplateOperation</name>
     <message>
-        <location filename="../../libpeony-qt/file-operation/create-template-operation.cpp" line="91"/>
+        <location filename="../../libpeony-qt/file-operation/create-template-operation.cpp" line="110"/>
         <source>NewFile</source>
         <translation>新建文件</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/create-template-operation.cpp" line="110"/>
+        <location filename="../../libpeony-qt/file-operation/create-template-operation.cpp" line="129"/>
         <source>NewFolder</source>
         <translation>新建文件夹</translation>
     </message>
@@ -770,17 +790,17 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
 <context>
     <name>Peony::FileMoveOperation</name>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="735"/>
+        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="754"/>
         <source>Invalid move operation, cannot move a file itself.</source>
         <translation>非法的移动操作，不能自移动到自身。</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="748"/>
+        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="767"/>
         <source>Invalid Operation.</source>
         <translation>非法的操作.</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="761"/>
+        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="780"/>
         <source>Invalid Operation</source>
         <translation>非法的操作</translation>
     </message>
@@ -788,7 +808,7 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
 <context>
     <name>Peony::FileOperationAfterProgressPage</name>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="311"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="309"/>
         <source>&amp;More Details</source>
         <translation type="unfinished">详细信息(&amp;M)</translation>
     </message>
@@ -868,12 +888,12 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
 <context>
     <name>Peony::FileOperationManager</name>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="76"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="99"/>
         <source>File Operation is Busy</source>
         <translation>操作正忙</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="77"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="100"/>
         <source>There have been one or more fileoperation(s) executing before. Youroperation will wait for executinguntil it/them done.</source>
         <translation>在执行该操作之前有操作未完成，它需要等待上一个操作完成后再执行。</translation>
     </message>
@@ -881,12 +901,12 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
 <context>
     <name>Peony::FileOperationPreparePage</name>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="247"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="245"/>
         <source>counting:</source>
         <translation>总计：</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="248"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="246"/>
         <source>state:</source>
         <translation>状态：</translation>
     </message>
@@ -894,17 +914,17 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
 <context>
     <name>Peony::FileOperationProgressPage</name>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="270"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="268"/>
         <source>&amp;More Details</source>
         <translation type="unfinished">详细信息(&amp;M)</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="281"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="279"/>
         <source>From:</source>
         <translation>从：</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="282"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="280"/>
         <source>To:</source>
         <translation>到：</translation>
     </message>
@@ -948,22 +968,22 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
         <translation>一个文件操作正在后台运行中...</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="134"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="132"/>
         <source>%1 files, %2</source>
         <translation>%1个文件，共%2</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="161"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="159"/>
         <source>%1 done, %2 total, %3 of %4.</source>
         <translation>完成%1，共%2，%4中的第%3个。</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="191"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="189"/>
         <source>clearing: %1, %2 of %3</source>
         <translation>正在清理：%1，%3中的第%2个</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="227"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="225"/>
         <source>copying...</source>
         <translation type="unfinished"></translation>
     </message>

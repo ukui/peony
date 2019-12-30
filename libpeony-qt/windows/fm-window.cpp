@@ -658,9 +658,9 @@ void FMWindow::clearRecord()
     m_clear_record->setDisabled(true);
 }
 
-void FMWindow::searchFilter(QString target_path, QString keyWord)
+void FMWindow::searchFilter(QString target_path, QString keyWord, bool search_file_name, bool search_content)
 {
-    auto targetUri = SearchVFSUriParser::parseSearchKey(target_path, keyWord);
+    auto targetUri = SearchVFSUriParser::parseSearchKey(target_path, keyWord, search_file_name, search_content);
     //qDebug()<<"targeturi:"<<targetUri;
     m_update_condition = true;
     this->goToUri(targetUri, true);
