@@ -1,0 +1,4 @@
+usr/include/peony-qt/*
+usr/lib/*/pkgconfig/*.pc
+
+usr/lib/*/*.so
