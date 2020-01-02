@@ -34,6 +34,8 @@ Description: Allows one to quickly share a folder from the Peony file manager
 
 Package: peony-qt-gtk2-style-enhanced-plugin
 Architecture: any
+Breaks: gtk2-style-enhanced-plugin
+Replaces: peony-qt-gtk2-style-enhanced-plugin, gtk2-style-enhanced-plugin
 Depends: ${misc:Depends}, ${shlibs:Depends}, libpeony-qt1, qt5-gtk2-platformtheme
 Description: Allow one to quickly use theme enhance manager plugin.
  You can use this plugin to get better ukui-theme effects. This
