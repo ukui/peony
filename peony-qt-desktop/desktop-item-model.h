@@ -79,6 +79,8 @@ Q_SIGNALS:
     void requestUpdateItemPositions(const QString &uri = nullptr);
     void refreshed();
 
+    void fileCreated(const QString &uri);
+
 public Q_SLOTS:
     void refresh();
 

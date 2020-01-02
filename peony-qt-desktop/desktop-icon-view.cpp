@@ -169,6 +169,20 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
 
     connect(m_model, &DesktopItemModel::requestUpdateItemPositions, this, &DesktopIconView::updateItemPosistions);
 
+    connect(m_model, &DesktopItemModel::fileCreated, this, [=](const QString &uri){
+        if (m_new_files_to_be_selected.isEmpty()) {
+            m_new_files_to_be_selected<<uri;
+            QTimer::singleShot(500, this, [=](){
+                this->setSelections(m_new_files_to_be_selected);
+                m_new_files_to_be_selected.clear();
+            });
+        } else {
+            if (!m_new_files_to_be_selected.contains(uri)) {
+                m_new_files_to_be_selected<<uri;
+            }
+        }
+    });
+
     connect(m_proxy_model, &QSortFilterProxyModel::layoutChanged, this, [=](){
         //qDebug()<<"layout changed=========================\n\n\n\n\n";
         if (m_proxy_model->getSortType() == DesktopItemProxyModel::Other) {
@@ -321,7 +335,13 @@ const QStringList DesktopIconView::getAllFileUris()
 
 void DesktopIconView::setSelections(const QStringList &uris)
 {
-
+    clearSelection();
+    for (int i = 0; i < m_proxy_model->rowCount(); i++) {
+        auto index = m_proxy_model->index(i, 0);
+        if (uris.contains(index.data(Qt::UserRole).toString())) {
+            selectionModel()->select(index, QItemSelectionModel::Select);
+        }
+    }
 }
 
 void DesktopIconView::invertSelections()

@@ -99,9 +99,10 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
                     m_files<<info;
                     //this->insertRows(m_files.indexOf(info), 1);
                     this->endResetModel();
+                    m_mutex.unlock();
                     Q_EMIT this->requestUpdateItemPositions();
                     Q_EMIT this->requestLayoutNewItem(info->uri());
-                    m_mutex.unlock();
+                    Q_EMIT this->fileCreated(uri);
                 }
             });
             job->queryAsync();
