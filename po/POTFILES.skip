@@ -1,9 +1,0 @@
-# List of source files that should NOT be translated.
-# Please keep this file sorted alphabetically.
-data/peony-autorun-software.desktop.in
-data/peony-browser.desktop.in
-data/peony-computer.desktop.in
-data/peony-file-management-properties.desktop.in
-data/peony-folder-handler.desktop.in
-data/peony-home.desktop.in
-data/peony.desktop.in
