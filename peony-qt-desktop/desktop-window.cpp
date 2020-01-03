@@ -119,8 +119,10 @@ DesktopWindow::DesktopWindow(QScreen *screen, bool is_primary, QWidget *parent)
             &DesktopWindow::availableGeometryChangedProcess);
 
     m_view = new DesktopIconView(this);
-    m_layout->addWidget(m_view);
-    setCurrentWidget(m_view);
+    //fix m_view in QStackedWidget can not change geometry issue
+    m_view->raise();
+//    m_layout->addWidget(m_view);
+//    setCurrentWidget(m_view);
     qDebug() << "create view:" << m_screen->availableGeometry();
     m_view->setFixedSize(m_screen->availableGeometry().size());
     m_view->setGeometry(m_screen->availableGeometry());
@@ -494,10 +496,11 @@ void DesktopWindow::geometryChangedProcess(const QRect &geometry) {
 void DesktopWindow::updateView() {
     if (m_view) {
         qDebug() << "updateView" << m_screen->name()
-                 << m_screen->availableGeometry() << this->geometry();
+                 << m_screen->availableGeometry() << this->geometry() << m_view->geometry();
         m_view->setGeometry(m_screen->availableGeometry());
         m_view->setFixedSize(m_screen->availableGeometry().size());
-        setCurrentWidget(m_view);
+        m_view->raise();
+        //setCurrentWidget(m_view);
     }
 }
 
