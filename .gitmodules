@@ -1,6 +1,0 @@
-[submodule "peony-qt-extensions-qmake"]
-	path = peony-qt-extensions-qmake
-	url = https://github.com/explorer-cs/peony-qt-extensions-qmake.git
-[submodule "peony-qt-extensions-cmake"]
-	path = peony-qt-extensions-cmake
-	url = https://github.com/explorer-cs/peony-qt-extensions-cmake.git
