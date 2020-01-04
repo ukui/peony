@@ -1,3 +1,0 @@
-# peony extensions in /usr/lib/*/peony/extensions-2.0/ erroneously trigger
-# debhelper's makeshlibs script
-peony-image-converter: postinst-has-useless-call-to-ldconfig
