@@ -30,6 +30,8 @@
 
 #include <QApplication>
 #include <QStyle>
+#include <QTextEdit>
+#include <QScrollBar>
 
 #include "file-info.h"
 #include "file-item-proxy-filter-sort-model.h"
@@ -73,7 +75,7 @@ IconViewIndexWidget::IconViewIndexWidget(const IconViewDelegate *delegate, const
     QRect textRect = QApplication::style()->subElementRect(QStyle::SE_ItemViewItemText, &opt, opt.widget);
     auto y_delta = iconExpectedSize.height() - iconRect.height();
     opt.rect.moveTo(opt.rect.x(), opt.rect.y() + y_delta);
-    setFixedHeight(iconExpectedSize.height() + textRect.height() + 20);
+    setFixedHeight(iconExpectedSize.height() + textRect.height() + 20 + opt.text.size()/12 * 12);
 
     m_option = opt;
 }
@@ -84,7 +86,6 @@ void IconViewIndexWidget::paintEvent(QPaintEvent *e)
     QPainter p(this);
     //p.fillRect(0, 0, 999, 999, Qt::red);
 
-
     IconView *view = m_delegate->getView();
     auto visualRect = view->visualRect(m_index);
     this->move(visualRect.topLeft());
@@ -94,7 +95,27 @@ void IconViewIndexWidget::paintEvent(QPaintEvent *e)
 
     auto opt = m_option;
     p.fillRect(opt.rect, m_delegate->selectedBrush());
+
+    //add \n in long file name to show complete name when choose
+    const int CharCount = 13;
+    QString temp = opt.text.left(CharCount);
+    int count = 1;
+    while (opt.text.size() > CharCount * count)
+    {
+        temp.append("\n");
+        if (opt.text.size() > CharCount* (count + 1))
+           temp += opt.text.mid(CharCount * count +1, CharCount);
+        else {
+            temp += opt.text.mid(CharCount * count +1, -1);
+        }
+        count++;
+    }
+    opt.text = temp;
+    //qDebug()<< "size:" <<opt.text.size() << "temp:" << temp << count;
+
+    visualRect.size().setHeight(this->size().height() + count * 10);
     QApplication::style()->drawControl(QStyle::CE_ItemViewItem, &opt, &p, opt.widget);
+    //qDebug() << "visualRect:" << visualRect << "text:" << text_opt.text;
 
     //extra emblems
     if (!m_info.lock()) {
@@ -104,7 +125,7 @@ void IconViewIndexWidget::paintEvent(QPaintEvent *e)
     //paint symbolic link emblems
     if (info->isSymbolLink()) {
         QIcon icon = QIcon::fromTheme("emblem-symbolic-link");
-        //qDebug()<<info->symbolicIconName();
+        //qDebug()<< "symbolic:" << info->symbolicIconName();
         icon.paint(&p, this->width() - 30, 10, 20, 20, Qt::AlignCenter);
     }
 
