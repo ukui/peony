@@ -93,35 +93,29 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
             auto job = new FileInfoJob(info);
             job->setAutoDelete();
             connect(job, &FileInfoJob::infoUpdated, [=](){
-                if(m_mutex.tryLock(200)) {
-                    this->beginResetModel();
-                    ThumbnailManager::getInstance()->createThumbnail(info->uri(), m_desktop_watcher);
-                    m_files<<info;
-                    //this->insertRows(m_files.indexOf(info), 1);
-                    this->endResetModel();
-                    m_mutex.unlock();
-                    Q_EMIT this->requestUpdateItemPositions();
-                    Q_EMIT this->requestLayoutNewItem(info->uri());
-                    Q_EMIT this->fileCreated(uri);
-                }
+                this->beginResetModel();
+                ThumbnailManager::getInstance()->createThumbnail(info->uri(), m_desktop_watcher);
+                m_files<<info;
+                //this->insertRows(m_files.indexOf(info), 1);
+                this->endResetModel();
+                Q_EMIT this->requestUpdateItemPositions();
+                Q_EMIT this->requestLayoutNewItem(info->uri());
+                Q_EMIT this->fileCreated(uri);
             });
             job->queryAsync();
         }
     });
 
     this->connect(m_desktop_watcher.get(), &FileWatcher::fileDeleted, [=](const QString &uri){
-        if(m_mutex.tryLock(200)) {
-            auto info = FileInfo::fromUri(uri);
-            if (m_files.indexOf(info) >= 0) {
-                //qDebug()<<"remove one"<<info->uri();
+        for (auto info : m_files) {
+            if (info->uri() == uri) {
                 this->beginResetModel();
                 m_files.removeOne(info);
                 this->endResetModel();
                 Q_EMIT this->requestClearIndexWidget();
                 Q_EMIT this->requestUpdateItemPositions();
+                FileInfoManager::getInstance()->remove(info);
             }
-            FileInfoManager::getInstance()->remove(info);
-            m_mutex.unlock();
         }
     });
 

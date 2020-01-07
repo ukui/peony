@@ -27,8 +27,6 @@
 #include <QQueue>
 #include <memory>
 
-#include <QMutex>
-
 namespace Peony {
 
 class FileEnumerator;
@@ -94,8 +92,6 @@ private:
     std::shared_ptr<FileWatcher> m_desktop_watcher;
 
     QQueue<QString> m_info_query_queue;
-
-    QMutex m_mutex;
 };
 
 }
