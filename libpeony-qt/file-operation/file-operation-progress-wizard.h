@@ -98,7 +98,7 @@ protected:
     qint64 m_total_size = 0;
     int m_current_size = 0;
     int m_total_count = 0;
-    int m_current_count = 0;
+    int m_current_count = 1;
 
     FileOperationPreparePage *m_first_page = nullptr;
     FileOperationProgressPage *m_second_page = nullptr;
@@ -107,6 +107,7 @@ protected:
 
 private:
     QSystemTrayIcon *m_tray_icon = nullptr;
+    QTimer *m_delayer;
 };
 
 class PEONYCORESHARED_EXPORT FileOperationPreparePage : public QWizardPage

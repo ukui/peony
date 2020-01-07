@@ -83,6 +83,10 @@ FileOperationProgressWizard::FileOperationProgressWizard(QWidget *parent) : QWiz
         this->show();
         m_tray_icon->hide();
     });
+
+    m_delayer = new QTimer(this);
+    m_delayer->setSingleShot(true);
+    m_delayer->setInterval(100);
 }
 
 FileOperationProgressWizard::~FileOperationProgressWizard()
@@ -221,11 +225,29 @@ void FileOperationProgressWizard::onFileRollbacked(const QString &destUri, const
 
 void FileOperationProgressWizard::updateProgress(const QString &srcUri, const QString &destUri, quint64 current, quint64 total)
 {
+    if (m_delayer->isActive()) {
+        return;
+    }
+    m_delayer->start();
+
     if (m_second_page->m_state_line->text() == "unknow") {
         m_second_page->m_state_line->setText(tr("copying..."));
     }
     m_second_page->m_src_line->setText(srcUri);
     m_second_page->m_dest_line->setText(destUri);
+
+    char *current_format_size = g_format_size (quint64(current));
+    char *total_format_size = g_format_size(quint64(m_total_size));
+    m_second_page->m_state_line->setText(tr("%1 done, %2 total, %3 of %4.").
+                                         arg(current_format_size).arg(total_format_size)
+                                         .arg(m_current_count).arg(m_total_count));
+
+    g_free(current_format_size);
+    g_free(total_format_size);
+    m_second_page->m_src_line->setText(srcUri);
+    m_second_page->m_dest_line->setText(destUri);
+    double test = (m_current_size*1.0/m_total_size)*100;
+    m_second_page->m_progress_bar->setValue(int(test));
 
     double progress = current*1.0/total;
     m_second_page->m_progress_bar->setValue(int(progress*100));
