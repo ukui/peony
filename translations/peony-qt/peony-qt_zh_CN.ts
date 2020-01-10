@@ -4,22 +4,22 @@
 <context>
     <name>PeonyApplication</name>
     <message>
-        <location filename="../../src/peony-application.cpp" line="110"/>
+        <location filename="../../src/peony-application.cpp" line="113"/>
         <source>Files or directories to open</source>
         <translation>需要打开的文件或文件夹</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.cpp" line="110"/>
+        <location filename="../../src/peony-application.cpp" line="113"/>
         <source>[FILE1, FILE2,...]</source>
         <translation>[文件1，文件2...]</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.cpp" line="132"/>
+        <location filename="../../src/peony-application.cpp" line="135"/>
         <source>Warning</source>
         <translation>警告</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.cpp" line="132"/>
+        <location filename="../../src/peony-application.cpp" line="135"/>
         <source>Peony-Qt can not get the system&apos;s icon theme. There are 2 reasons might lead to this problem:
 
 1. Peony-Qt might be running as root, that means you have the higher permission and can do some things which normally forbidden. But, you should learn that if you were in a root, the virtual file system will lose some featrue such as you can not use &quot;My Computer&quot;, the theme and icons might also went wrong. So, run peony-qt in a root is not recommended.

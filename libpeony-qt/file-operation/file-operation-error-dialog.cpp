@@ -46,9 +46,9 @@ FileOperationErrorDialog::FileOperationErrorDialog(QWidget *parent) : QDialog(pa
     m_layout->setLabelAlignment(Qt::AlignRight);
     m_layout->setFormAlignment(Qt::AlignLeft);
 
-    m_err_line = new QLabel("unkwon", this);
-    m_src_line = new QLabel("null", this);
-    m_dest_line = new QLabel("null", this);
+    m_err_line = new QLabel(tr("unkwon"), this);
+    m_src_line = new QLabel(tr("null"), this);
+    m_dest_line = new QLabel(tr("null"), this);
 
     m_layout->addRow(tr("Error message:"), m_err_line);
     m_layout->addRow(tr("Source File:"), m_src_line);

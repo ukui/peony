@@ -32,6 +32,7 @@
 #include <QListWidget>
 #include <QCheckBox>
 #include <QDialogButtonBox>
+#include <QPushButton>
 
 using namespace Peony;
 
@@ -51,6 +52,10 @@ FileLauchDialog::FileLauchDialog(const QString &uri, QWidget *parent) : QDialog(
                                         | QDialogButtonBox::Cancel,
                                         this);
     m_layout->addWidget(m_button_box);
+
+    //add button translate
+    m_button_box->button(QDialogButtonBox::Ok)->setText(tr("OK"));
+    m_button_box->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
 
     m_uri = uri;
     auto actions = FileLaunchManager::getAllActions(uri);

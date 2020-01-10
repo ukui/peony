@@ -202,7 +202,7 @@
 <context>
     <name>Peony::DesktopWindow</name>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-window.cpp" line="166"/>
+        <location filename="../../peony-qt-desktop/desktop-window.cpp" line="168"/>
         <source>set background</source>
         <translation>设置壁纸</translation>
     </message>
@@ -210,17 +210,17 @@
 <context>
     <name>PeonyDesktopApplication</name>
     <message>
-        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="140"/>
+        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="143"/>
         <source>Close the peony-qt desktop window</source>
         <translation>关闭桌面并退出</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="143"/>
+        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="146"/>
         <source>Take over the dbus service.</source>
         <translation>接管DBus服务</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="146"/>
+        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="149"/>
         <source>Take over the desktop displaying</source>
         <translation>接管桌面</translation>
     </message>
