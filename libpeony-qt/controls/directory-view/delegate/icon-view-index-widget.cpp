@@ -31,6 +31,8 @@
 #include <QApplication>
 #include <QStyle>
 #include <QTextEdit>
+#include <QTextDocument>
+#include <QFontMetrics>
 #include <QScrollBar>
 
 #include "file-info.h"
@@ -75,7 +77,8 @@ IconViewIndexWidget::IconViewIndexWidget(const IconViewDelegate *delegate, const
     QRect textRect = QApplication::style()->subElementRect(QStyle::SE_ItemViewItemText, &opt, opt.widget);
     auto y_delta = iconExpectedSize.height() - iconRect.height();
     opt.rect.moveTo(opt.rect.x(), opt.rect.y() + y_delta);
-    setFixedHeight(iconExpectedSize.height() + textRect.height() + 20 + opt.text.size()/12 * 12);
+    if (opt.text.size() <= 10)
+        setFixedHeight(iconExpectedSize.height() + textRect.height() + 20);
 
     m_option = opt;
 }
@@ -91,31 +94,49 @@ void IconViewIndexWidget::paintEvent(QPaintEvent *e)
     this->move(visualRect.topLeft());
 
     //qDebug()<<m_option.backgroundBrush;
-    //qDebug()<<this->size();
+    //qDebug()<<this->size() << m_delegate->getView()->iconSize();
 
     auto opt = m_option;
     p.fillRect(opt.rect, m_delegate->selectedBrush());
 
-    //add \n in long file name to show complete name when choose
-    const int CharCount = 13;
-    QString temp = opt.text.left(CharCount);
-    int count = 1;
-    while (opt.text.size() > CharCount * count)
+    if (opt.text.size() > 10)
     {
-        temp.append("\n");
-        if (opt.text.size() > CharCount* (count + 1))
-           temp += opt.text.mid(CharCount * count +1, CharCount);
-        else {
-            temp += opt.text.mid(CharCount * count +1, -1);
-        }
-        count++;
-    }
-    opt.text = temp;
-    //qDebug()<< "size:" <<opt.text.size() << "temp:" << temp << count;
+        //use QTextEdit to show full file name when select
+        QTextDocument * doc = new QTextDocument();
+        QTextEdit *pEdit = new QTextEdit();
+        pEdit->setDocument(doc);
+        //QRect text_rect(0, m_delegate->getView()->iconSize().height(), this->size().width(), this->size().height());
+        QRect text_rect(0, 0, this->size().width(), this->size().height());
 
-    visualRect.size().setHeight(this->size().height() + count * 10);
+        //different font and size, leave space for file icon, need to improve
+        auto fm = new QFontMetrics(opt.font);
+        //qDebug() << "font height:" << fm->height() << m_delegate->getView()->iconSize().height();
+        QString show = "";
+        int count = (m_delegate->getView()->iconSize().height() + 30)/fm->height();
+        //small size font improve
+        if (fm->height() <= 15)
+            count = (m_delegate->getView()->iconSize().height() + 20)/fm->height();
+        for (int i=0;i<count;i++)
+        {
+           show += "\r";
+        }
+        show += opt.text;
+        doc->setPlainText(show);
+
+        doc->setDefaultFont(opt.font);
+        doc->setTextWidth(this->size().width()-5);
+        pEdit->setAlignment(Qt::AlignCenter);
+        doc->drawContents(&p);
+        //pEdit->setTextColor(QColor(255,255,255));
+        pEdit->adjustSize();
+        setFixedHeight(int(doc->size().height()));
+
+        //text already draw by doc, clear text
+        opt.text = "";
+    }
+
     QApplication::style()->drawControl(QStyle::CE_ItemViewItem, &opt, &p, opt.widget);
-    //qDebug() << "visualRect:" << visualRect << "text:" << text_opt.text;
+    //qDebug() << "visualRect:" << visualRect << "text:" << opt.text;
 
     //extra emblems
     if (!m_info.lock()) {
