@@ -1,11 +1,11 @@
-Source: peony-qt-extensions
+Source: peony-extensions
 Section: x11
 Priority: optional
-Maintainer: Meihong <919052316@qq.com>
+Maintainer: MeihongHe <hemeihong@kylinos.cn>
 Build-Depends: debhelper (>=12), cmake, pkg-config, libglib2.0-dev, qt5-qmake, qtbase5-dev, qtchooser, qtbase5-dev-tools, libpoppler-qt5-dev, libgtk2.0-dev, libpeony-qt-dev
 Standards-Version: 4.4.0
 Rules-Requires-Root: no
-Homepage: https://github.com/explorer-cs/peony-qt-extensions
+Homepage: https://github.com/ukui/peony-extensions
 
 Package: peony-qt-admin
 Architecture: any
@@ -65,7 +65,7 @@ Description: Peony plugin for opening terminals in arbitrary local paths
  peony-open-terminal is a proof-of-concept Peony extension
  which allows you to open a terminal in arbitrary local folders.
 
-Package: peony-qt-extensions
+Package: peony-extensions
 Architecture: any
 Depends: ${misc:Depends}, ${shlibs:Depends}, peony-qt-admin, peony-qt-share, peony-qt-gtk2-style-enhanced-plugin, peony-qt-create-link, peony-qt-engrampa-menu-plugin, peony-qt-menu-plugin-mate-terminal
 Description: Peony qt extensions (common files)
