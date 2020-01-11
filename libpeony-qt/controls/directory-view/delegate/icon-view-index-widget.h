@@ -27,6 +27,7 @@
 
 #include <QModelIndex>
 #include <QStyleOptionViewItem>
+#include <QTextEdit>
 
 #include <memory>
 
@@ -53,6 +54,7 @@ protected:
 private:
     QStyleOptionViewItem m_option;
     QModelIndex m_index;
+    QTextEdit *m_edit;
     const IconViewDelegate *m_delegate;
 
     std::weak_ptr<FileInfo> m_info;

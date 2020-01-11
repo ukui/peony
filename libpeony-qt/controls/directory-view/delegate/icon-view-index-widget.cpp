@@ -30,7 +30,6 @@
 
 #include <QApplication>
 #include <QStyle>
-#include <QTextEdit>
 #include <QTextDocument>
 #include <QFontMetrics>
 #include <QScrollBar>
@@ -102,9 +101,7 @@ void IconViewIndexWidget::paintEvent(QPaintEvent *e)
     if (opt.text.size() > 10)
     {
         //use QTextEdit to show full file name when select
-        QTextDocument * doc = new QTextDocument();
-        QTextEdit *pEdit = new QTextEdit();
-        pEdit->setDocument(doc);
+        m_edit = new QTextEdit();
         //QRect text_rect(0, m_delegate->getView()->iconSize().height(), this->size().width(), this->size().height());
         QRect text_rect(0, 0, this->size().width(), this->size().height());
 
@@ -121,18 +118,20 @@ void IconViewIndexWidget::paintEvent(QPaintEvent *e)
            show += "\r";
         }
         show += opt.text;
-        doc->setPlainText(show);
+        m_edit->document()->setPlainText(show);
 
-        doc->setDefaultFont(opt.font);
-        doc->setTextWidth(this->size().width()-5);
-        pEdit->setAlignment(Qt::AlignCenter);
-        doc->drawContents(&p);
-        //pEdit->setTextColor(QColor(255,255,255));
-        pEdit->adjustSize();
-        setFixedHeight(int(doc->size().height()));
+        m_edit->document()->setDefaultFont(opt.font);
+        m_edit->document()->setTextWidth(this->size().width()-5);
+        m_edit->setAlignment(Qt::AlignCenter);
+        m_edit->document()->drawContents(&p);
+        //set color is ineffective, FIX ME
+        //m_edit->setTextColor(QColor(255,255,255));
+        m_edit->adjustSize();
+        setFixedHeight(int(m_edit->document()->size().height()));
 
         //text already draw by doc, clear text
         opt.text = "";
+        delete m_edit;
     }
 
     QApplication::style()->drawControl(QStyle::CE_ItemViewItem, &opt, &p, opt.widget);

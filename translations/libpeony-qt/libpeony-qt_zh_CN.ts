@@ -147,72 +147,91 @@
         <translation type="vanished">搜索文件名或者内容请至少指定一个！</translation>
     </message>
     <message>
+        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.h" line="56"/>
+        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.h" line="57"/>
+        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.h" line="58"/>
         <source>all</source>
-        <translation type="vanished">全部</translation>
+        <translation>全部</translation>
     </message>
     <message>
+        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.h" line="56"/>
         <source>file folder</source>
-        <translation type="vanished">文件夹</translation>
+        <translation>文件夹</translation>
     </message>
     <message>
+        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.h" line="56"/>
         <source>image</source>
-        <translation type="vanished">图片</translation>
+        <translation>图片</translation>
     </message>
     <message>
+        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.h" line="56"/>
         <source>video</source>
-        <translation type="vanished">视频</translation>
+        <translation>视频</translation>
     </message>
     <message>
+        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.h" line="56"/>
         <source>text file</source>
-        <translation type="vanished">文本</translation>
+        <translation>文本</translation>
     </message>
     <message>
+        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.h" line="56"/>
         <source>audio</source>
-        <translation type="vanished">音频</translation>
+        <translation>音频</translation>
     </message>
     <message>
+        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.h" line="56"/>
         <source>others</source>
-        <translation type="vanished">其它</translation>
+        <translation>其它</translation>
     </message>
     <message>
+        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.h" line="57"/>
         <source>today</source>
-        <translation type="vanished">今天</translation>
+        <translation>今天</translation>
     </message>
     <message>
+        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.h" line="57"/>
         <source>this week</source>
-        <translation type="vanished">本周</translation>
+        <translation>本周</translation>
     </message>
     <message>
+        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.h" line="57"/>
         <source>this month</source>
-        <translation type="vanished">本月</translation>
+        <translation>本月</translation>
     </message>
     <message>
+        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.h" line="57"/>
         <source>this year</source>
-        <translation type="vanished">今年</translation>
+        <translation>今年</translation>
     </message>
     <message>
+        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.h" line="57"/>
         <source>year ago</source>
-        <translation type="vanished">去年</translation>
+        <translation>去年</translation>
     </message>
     <message>
+        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.h" line="58"/>
         <source>tiny(0-16K)</source>
-        <translation type="vanished">极小</translation>
+        <translation>极小</translation>
     </message>
     <message>
+        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.h" line="58"/>
         <source>small(16k-1M)</source>
-        <translation type="vanished">较小</translation>
+        <translation>较小</translation>
     </message>
     <message>
+        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.h" line="58"/>
         <source>medium(1M-100M)</source>
-        <translation type="vanished">中等</translation>
+        <translation>中等</translation>
     </message>
     <message>
+        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.h" line="58"/>
         <source>big(100M-1G)</source>
-        <translation type="vanished">较大</translation>
+        <translation>较大</translation>
     </message>
     <message>
+        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.h" line="58"/>
         <source>large(&gt;1G)</source>
-        <translation type="vanished">极大</translation>
+        <translation>极大</translation>
     </message>
 </context>
 <context>
@@ -383,29 +402,33 @@
 <context>
     <name>Peony::DirectoryView::IconView</name>
     <message>
+        <location filename="../../libpeony-qt/controls/directory-view/view/icon-view/icon-view.h" line="59"/>
         <source>Icon View</source>
-        <translation type="vanished">图标视图</translation>
+        <translation>图标视图</translation>
     </message>
 </context>
 <context>
     <name>Peony::DirectoryView::IconView2</name>
     <message>
+        <location filename="../../libpeony-qt/controls/directory-view/view/icon-view/icon-view.h" line="161"/>
         <source>Icon View</source>
-        <translation type="vanished">图标视图</translation>
+        <translation>图标视图</translation>
     </message>
 </context>
 <context>
     <name>Peony::DirectoryView::ListView</name>
     <message>
+        <location filename="../../libpeony-qt/controls/directory-view/view/list-view/list-view.h" line="53"/>
         <source>List View</source>
-        <translation type="vanished">列表视图</translation>
+        <translation>列表视图</translation>
     </message>
 </context>
 <context>
     <name>Peony::DirectoryView::ListView2</name>
     <message>
+        <location filename="../../libpeony-qt/controls/directory-view/view/list-view/list-view.h" line="125"/>
         <source>List View</source>
-        <translation type="vanished">列表视图</translation>
+        <translation>列表视图</translation>
     </message>
 </context>
 <context>
@@ -617,8 +640,9 @@
 <context>
     <name>Peony::DirectoryViewWidget</name>
     <message>
+        <location filename="../../libpeony-qt/controls/directory-view/directory-view-widget.h" line="57"/>
         <source>Directory View</source>
-        <translation type="vanished">文件视图</translation>
+        <translation>文件视图</translation>
     </message>
 </context>
 <context>
