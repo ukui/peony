@@ -228,31 +228,14 @@ const QStringList FileUtils::toDisplayUris(const QStringList &args)
     QStringList uris;
     for (QString path : args) {
         QUrl url = path;
-        if (path.startsWith("/")) {
-            url = QUrl::fromLocalFile(path);
-        }
-        if (path.startsWith("~/")) {
-            path.remove(0, 1);
-            url = QUrl::fromLocalFile(QStandardPaths::writableLocation(QStandardPaths::HomeLocation) + path);
-        }
-        if (path == ".") {
+        if (url.scheme().isEmpty()) {
             auto current_dir = g_get_current_dir();
-            url = QUrl::fromLocalFile(QString(current_dir));
+            QDir currentDir = QDir(current_dir);
             g_free(current_dir);
-        }
-        if (path.startsWith("./")) {
-            path.remove(0, 1);
-            auto current_dir = g_get_current_dir();
-            url = QUrl::fromLocalFile(QString(current_dir) + path);
-            g_free(current_dir);
-        }
-        if (path.startsWith("../")) {
-            auto current_dir = g_get_current_dir();
-            url = QUrl::fromLocalFile(QString(current_dir));
-            g_free(current_dir);
-            QDir dir(url.toString());
-            dir.relativeFilePath(path);
-            url = "file://" + dir.absolutePath();
+            currentDir.cd(path);
+            auto absPath = currentDir.absoluteFilePath(path);
+            path = absPath;
+            url = QUrl::fromLocalFile(absPath);
         }
         uris<<url.toDisplayString();
     }
