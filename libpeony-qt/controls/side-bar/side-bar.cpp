@@ -110,8 +110,12 @@ SideBar::SideBar(QWidget *parent) : QTreeView(parent)
     connect(this, &QTreeView::customContextMenuRequested, this, [=](const QPoint &pos){
         auto index = indexAt(pos);
         auto item = proxy_model->itemFromIndex(index);
-        SideBarMenu menu(item, this);
-        menu.exec(QCursor::pos());
+        if (item) {
+            if (item->type() != SideBarAbstractItem::SeparatorItem) {
+                SideBarMenu menu(item, this);
+                menu.exec(QCursor::pos());
+            }
+        }
     });
 
     expandAll();
