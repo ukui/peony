@@ -81,15 +81,10 @@ IconViewIndexWidget::IconViewIndexWidget(const IconViewDelegate *delegate, const
     opt.rect.moveTo(0, 0);
 
     //qDebug()<<m_option.rect;
-    /*
     auto iconExpectedSize = m_delegate->getView()->iconSize();
     QRect iconRect = QApplication::style()->subElementRect(QStyle::SE_ItemViewItemDecoration, &opt, opt.widget);
-    QRect textRect = QApplication::style()->subElementRect(QStyle::SE_ItemViewItemText, &opt, opt.widget);
     auto y_delta = iconExpectedSize.height() - iconRect.height();
     opt.rect.moveTo(opt.rect.x(), opt.rect.y() + y_delta);
-    if (opt.text.size() <= 10)
-        setFixedHeight(iconExpectedSize.height() + textRect.height() + 20);
-        */
 
     m_option = opt;
 }
