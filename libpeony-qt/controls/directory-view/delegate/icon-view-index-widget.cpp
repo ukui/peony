@@ -31,8 +31,9 @@
 #include <QApplication>
 #include <QStyle>
 #include <QTextDocument>
-#include <QFontMetrics>
 #include <QScrollBar>
+
+#include <QMouseEvent>
 
 #include "file-info.h"
 #include "file-item-proxy-filter-sort-model.h"
@@ -46,6 +47,15 @@ using namespace Peony::DirectoryView;
 IconViewIndexWidget::IconViewIndexWidget(const IconViewDelegate *delegate, const QStyleOptionViewItem &option, const QModelIndex &index, QWidget *parent) : QWidget(parent)
 {
     setMouseTracking(true);
+
+    m_edit_trigger.setInterval(3000);
+    m_edit_trigger.setSingleShot(true);
+    QTimer::singleShot(750, this, [=](){
+        m_edit_trigger.start();
+    });
+
+    //use QTextEdit to show full file name when select
+    m_edit = new QTextEdit();
 
     m_option = option;
     m_index = index;
@@ -71,6 +81,7 @@ IconViewIndexWidget::IconViewIndexWidget(const IconViewDelegate *delegate, const
     opt.rect.moveTo(0, 0);
 
     //qDebug()<<m_option.rect;
+    /*
     auto iconExpectedSize = m_delegate->getView()->iconSize();
     QRect iconRect = QApplication::style()->subElementRect(QStyle::SE_ItemViewItemDecoration, &opt, opt.widget);
     QRect textRect = QApplication::style()->subElementRect(QStyle::SE_ItemViewItemText, &opt, opt.widget);
@@ -78,8 +89,14 @@ IconViewIndexWidget::IconViewIndexWidget(const IconViewDelegate *delegate, const
     opt.rect.moveTo(opt.rect.x(), opt.rect.y() + y_delta);
     if (opt.text.size() <= 10)
         setFixedHeight(iconExpectedSize.height() + textRect.height() + 20);
+        */
 
     m_option = opt;
+}
+
+IconViewIndexWidget::~IconViewIndexWidget()
+{
+    delete m_edit;
 }
 
 void IconViewIndexWidget::paintEvent(QPaintEvent *e)
@@ -98,44 +115,30 @@ void IconViewIndexWidget::paintEvent(QPaintEvent *e)
     auto opt = m_option;
     p.fillRect(opt.rect, m_delegate->selectedBrush());
 
-    if (opt.text.size() > 10)
-    {
-        //use QTextEdit to show full file name when select
-        m_edit = new QTextEdit();
-        //QRect text_rect(0, m_delegate->getView()->iconSize().height(), this->size().width(), this->size().height());
-        QRect text_rect(0, 0, this->size().width(), this->size().height());
-
-        //different font and size, leave space for file icon, need to improve
-        auto fm = new QFontMetrics(opt.font);
-        //qDebug() << "font height:" << fm->height() << m_delegate->getView()->iconSize().height();
-        QString show = "";
-        int count = (m_delegate->getView()->iconSize().height() + 30)/fm->height();
-        //small size font improve
-        if (fm->height() <= 15)
-            count = (m_delegate->getView()->iconSize().height() + 20)/fm->height();
-        for (int i=0;i<count;i++)
-        {
-           show += "\r";
-        }
-        show += opt.text;
-        m_edit->document()->setPlainText(show);
-
-        m_edit->document()->setDefaultFont(opt.font);
-        m_edit->document()->setTextWidth(this->size().width()-5);
-        m_edit->setAlignment(Qt::AlignCenter);
-        m_edit->document()->drawContents(&p);
-        //set color is ineffective, FIX ME
-        //m_edit->setTextColor(QColor(255,255,255));
-        m_edit->adjustSize();
-        setFixedHeight(int(m_edit->document()->size().height()));
-
-        //text already draw by doc, clear text
-        opt.text = "";
-        delete m_edit;
-    }
-
+    auto tmp = opt.text;
+    opt.text = nullptr;
     QApplication::style()->drawControl(QStyle::CE_ItemViewItem, &opt, &p, opt.widget);
-    //qDebug() << "visualRect:" << visualRect << "text:" << opt.text;
+    opt.text = std::move(tmp);
+
+    m_edit->document()->setPlainText(opt.text);
+    m_edit->document()->setDefaultFont(opt.font);
+    m_edit->document()->setTextWidth(this->size().width());
+    m_edit->setAlignment(Qt::AlignTop|Qt::AlignHCenter);
+
+    //auto textRectF = QRectF(0, m_delegate->getView()->iconSize().height(), this->width(), this->height());
+    p.save();
+    p.translate(0, m_delegate->getView()->iconSize().height() + 9);
+    //m_edit->document()->drawContents(&p);
+    QTextOption textOption(Qt::AlignTop|Qt::AlignHCenter);
+    textOption.setWrapMode(QTextOption::WrapAtWordBoundaryOrAnywhere);
+    p.setFont(opt.font);
+    p.setPen(opt.palette.highlightedText().color());
+    p.drawText(QRect(0, 5, this->width(), 9999), opt.text, textOption);
+    p.restore();
+
+    m_edit->adjustSize();
+    if (this->height() != int(m_edit->document()->size().height()) + m_delegate->getView()->iconSize().height() + 10)
+        setFixedHeight(int(m_edit->document()->size().height()) + m_delegate->getView()->iconSize().height() + 10);
 
     //extra emblems
     if (!m_info.lock()) {
@@ -163,4 +166,16 @@ void IconViewIndexWidget::paintEvent(QPaintEvent *e)
         QIcon icon = QIcon::fromTheme("emblem-readonly");
         icon.paint(&p, rect.x() + 10, rect.y() + 10, 20, 20);
     }
+}
+
+void IconViewIndexWidget::mousePressEvent(QMouseEvent *e)
+{
+    if (e->button() == Qt::LeftButton) {
+        if (m_edit_trigger.isActive()) {
+            m_delegate->getView()->setIndexWidget(m_index, nullptr);
+            m_delegate->getView()->edit(m_index);
+            return;
+        }
+    }
+    QWidget::mousePressEvent(e);
 }

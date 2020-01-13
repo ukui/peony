@@ -204,7 +204,7 @@ void IconView::mousePressEvent(QMouseEvent *e)
     if (indexAt(e->pos()) == m_last_index && m_last_index.isValid()) {
         if (m_edit_trigger_timer.isActive()) {
             setIndexWidget(m_last_index, nullptr);
-            edit(m_last_index);
+            //edit(m_last_index);
         }
     }
 }

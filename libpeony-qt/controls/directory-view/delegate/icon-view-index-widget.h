@@ -28,6 +28,7 @@
 #include <QModelIndex>
 #include <QStyleOptionViewItem>
 #include <QTextEdit>
+#include <QTimer>
 
 #include <memory>
 
@@ -48,8 +49,11 @@ public:
                                  const QModelIndex &index,
                                  QWidget *parent = nullptr);
 
+    ~IconViewIndexWidget() override;
+
 protected:
     void paintEvent(QPaintEvent *e) override;
+    void mousePressEvent(QMouseEvent *e) override;
 
 private:
     QStyleOptionViewItem m_option;
@@ -58,6 +62,8 @@ private:
     const IconViewDelegate *m_delegate;
 
     std::weak_ptr<FileInfo> m_info;
+
+    QTimer m_edit_trigger;
 };
 
 }
