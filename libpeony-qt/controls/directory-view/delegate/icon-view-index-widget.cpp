@@ -92,6 +92,17 @@ IconViewIndexWidget::IconViewIndexWidget(const IconViewDelegate *delegate, const
     opt.rect.moveTo(opt.rect.x(), opt.rect.y() + y_delta);
 
     m_option = opt;
+
+    m_edit->document()->setPlainText(opt.text);
+    m_edit->document()->setDefaultFont(opt.font);
+    m_edit->document()->setTextWidth(this->size().width());
+    m_edit->setContentsMargins(1, 0, 1, 0);
+    m_edit->viewport()->setContentsMargins(0, 0, 0, 0);
+    m_edit->setAlignment(Qt::AlignTop|Qt::AlignHCenter);
+    m_edit->adjustSize();
+
+    if (this->height() != int(m_edit->document()->size().height()) + m_delegate->getView()->iconSize().height() + 10)
+        setFixedHeight(int(m_edit->document()->size().height()) + m_delegate->getView()->iconSize().height() + 10);
 }
 
 IconViewIndexWidget::~IconViewIndexWidget()
@@ -120,11 +131,6 @@ void IconViewIndexWidget::paintEvent(QPaintEvent *e)
     QApplication::style()->drawControl(QStyle::CE_ItemViewItem, &opt, &p, opt.widget);
     opt.text = std::move(tmp);
 
-    m_edit->document()->setPlainText(opt.text);
-    m_edit->document()->setDefaultFont(opt.font);
-    m_edit->document()->setTextWidth(this->size().width());
-    m_edit->setAlignment(Qt::AlignTop|Qt::AlignHCenter);
-
     //auto textRectF = QRectF(0, m_delegate->getView()->iconSize().height(), this->width(), this->height());
     p.save();
     p.translate(0, m_delegate->getView()->iconSize().height() + 9);
@@ -133,12 +139,8 @@ void IconViewIndexWidget::paintEvent(QPaintEvent *e)
     textOption.setWrapMode(QTextOption::WrapAtWordBoundaryOrAnywhere);
     p.setFont(opt.font);
     p.setPen(opt.palette.highlightedText().color());
-    p.drawText(QRect(0, 5, this->width(), 9999), opt.text, textOption);
+    p.drawText(QRect(1, 5, this->width() -1, 9999), opt.text, textOption);
     p.restore();
-
-    m_edit->adjustSize();
-    if (this->height() != int(m_edit->document()->size().height()) + m_delegate->getView()->iconSize().height() + 10)
-        setFixedHeight(int(m_edit->document()->size().height()) + m_delegate->getView()->iconSize().height() + 10);
 
     //extra emblems
     if (!m_info.lock()) {
