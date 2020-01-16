@@ -193,7 +193,7 @@ void ToolBar::init()
     cutAction->setShortcut(QKeySequence::Cut);
 
     QAction *trashAction = addAction(QIcon::fromTheme("edit-delete-symbolic"), tr("Trash"));
-    trashAction->setShortcut(QKeySequence::Delete);
+    //trashAction->setShortcut(QKeySequence::Delete);
 
     m_file_op_actions<<copyAction<<pasteAction<<cutAction<<trashAction;
 

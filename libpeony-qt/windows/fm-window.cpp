@@ -334,6 +334,21 @@ FMWindow::FMWindow(const QString &uri, QWidget *parent) : QMainWindow (parent)
         FileOperationManager::getInstance()->redo();
     });
 
+    auto trashAction = new QAction(this);
+    trashAction->setShortcut(Qt::Key_Delete);
+    connect(trashAction, &QAction::triggered, [=](){
+        auto uris = this->getCurrentSelections();
+        if (!uris.isEmpty()) {
+            bool isTrash = this->getCurrentUri() == "trash:///";
+            if (!isTrash) {
+                FileOperationUtils::trash(uris, true);
+            } else {
+                FileOperationUtils::executeRemoveActionWithDialog(uris);
+            }
+        }
+    });
+    addAction(trashAction);
+
     auto deleteAction = new QAction(this);
     deleteAction->setShortcut(QKeySequence(Qt::SHIFT + Qt::Key_Delete));
     addAction(deleteAction);
