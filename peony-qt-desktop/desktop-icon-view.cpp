@@ -92,7 +92,11 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
     auto zoomLevel = this->zoomLevel();
     setDefaultZoomLevel(zoomLevel);
 
-    QTimer::singleShot(1, this, [=](){
+#if QT_VERSION_CHECK(5, 12, 0)
+    QTimer::singleShot(500, this, [=](){
+#else
+    QTimer::singleShot(500, [=](){
+#endif
         connect(this->selectionModel(), &QItemSelectionModel::selectionChanged, [=](const QItemSelection &selection, const QItemSelection &deselection){
             //qDebug()<<"selection changed";
             this->setIndexWidget(m_last_index, nullptr);
@@ -172,7 +176,11 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
     connect(m_model, &DesktopItemModel::fileCreated, this, [=](const QString &uri){
         if (m_new_files_to_be_selected.isEmpty()) {
             m_new_files_to_be_selected<<uri;
+#if QT_VERSION_CHECK(5, 12, 0)
             QTimer::singleShot(500, this, [=](){
+#else
+            QTimer::singleShot(500, [=](){
+#endif
                 this->setSelections(m_new_files_to_be_selected);
                 m_new_files_to_be_selected.clear();
             });
@@ -192,14 +200,22 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
             return;
         }
         //qDebug()<<"save====================================";
+#if QT_VERSION_CHECK(5, 12, 0)
         QTimer::singleShot(100, this, [=](){
+#else
+        QTimer::singleShot(100, [=](){
+#endif
             this->saveAllItemPosistionInfos();
         });
     });
 
     connect(this, &QListView::iconSizeChanged, this, [=](){
         //qDebug()<<"save=============";
+#if QT_VERSION_CHECK(5, 12, 0)
         QTimer::singleShot(100, this, [=](){
+#else
+        QTimer::singleShot(100, [=](){
+#endif
             this->saveAllItemPosistionInfos();
         });
     });
@@ -380,7 +396,11 @@ void DesktopIconView::setSortOrder(int sortOrder)
 void DesktopIconView::editUri(const QString &uri)
 {
     clearAllIndexWidgets();
+#if QT_VERSION_CHECK(5, 12, 0)
     QTimer::singleShot(100, this, [=](){
+#else
+    QTimer::singleShot(100, [=](){
+#endif
         edit(m_proxy_model->mapFromSource(m_model->indexFromUri(uri)));
     });
 }

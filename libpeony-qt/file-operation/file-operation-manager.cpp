@@ -82,7 +82,11 @@ void FileOperationManager::startOperation(FileOperation *operation, bool addToHi
         auto settings = GlobalSettings::getInstance();
         bool runbackend = settings->getInstance()->getValue(RESIDENT_IN_BACKEND).toBool();
         QApplication::setQuitOnLastWindowClosed(!runbackend);
+#if QT_VERSION_CHECK(5, 12, 0)
         QTimer::singleShot(1000, this, [=](){
+#else
+        QTimer::singleShot(1000, [=](){
+#endif
             int last_op_count = m_thread_pool->children().count();
             if (last_op_count == 0) {
                 if (qApp->allWidgets().isEmpty()) {

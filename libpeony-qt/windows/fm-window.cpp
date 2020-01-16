@@ -447,7 +447,11 @@ FMWindow::FMWindow(const QString &uri, QWidget *parent) : QMainWindow (parent)
         CreateTemplateOperation op(getCurrentUri(), CreateTemplateOperation::EmptyFolder, tr("New Folder"));
         op.run();
         auto targetUri = op.target();
-        QTimer::singleShot(500, this, [=](){
+#if QT_VERSION_CHECK(5, 12, 0)
+            QTimer::singleShot(500, this, [=](){
+#else
+            QTimer::singleShot(500, [=](){
+#endif
             this->getCurrentPage()->getView()->scrollToSelection(targetUri);
             this->editUri(targetUri);
         });
@@ -504,7 +508,11 @@ FMWindow::FMWindow(const QString &uri, QWidget *parent) : QMainWindow (parent)
         menu.exec(QCursor::pos());
         auto urisToEdit = menu.urisToEdit();
         if (!urisToEdit.isEmpty()) {
+#if QT_VERSION_CHECK(5, 12, 0)
             QTimer::singleShot(100, this, [=](){
+#else
+            QTimer::singleShot(100, [=](){
+#endif
                 this->getCurrentPage()->getView()->scrollToSelection(urisToEdit.first());
                 this->editUri(urisToEdit.first());
             });

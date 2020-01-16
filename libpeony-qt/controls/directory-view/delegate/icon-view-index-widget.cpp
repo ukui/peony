@@ -50,10 +50,15 @@ IconViewIndexWidget::IconViewIndexWidget(const IconViewDelegate *delegate, const
 
     m_edit_trigger.setInterval(3000);
     m_edit_trigger.setSingleShot(true);
+#if QT_VERSION_CHECK(5, 12, 0)
     QTimer::singleShot(750, this, [=](){
         m_edit_trigger.start();
     });
-
+#else
+    QTimer::singleShot(750, [=](){
+        m_edit_trigger.start();
+    });
+#endif
     //use QTextEdit to show full file name when select
     m_edit = new QTextEdit();
 
