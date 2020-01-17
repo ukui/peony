@@ -684,12 +684,12 @@
         <translation>重做</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/windows/fm-window.cpp" line="378"/>
+        <location filename="../../libpeony-qt/windows/fm-window.cpp" line="393"/>
         <source>Peony Qt</source>
         <translation>文件管理器</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/windows/fm-window.cpp" line="379"/>
+        <location filename="../../libpeony-qt/windows/fm-window.cpp" line="394"/>
         <source>Authour: 
 	Yue Lan &lt;lanyue@kylinos.cn&gt;
 	Meihong He &lt;hemeihong@kylinos.cn&gt;
@@ -702,7 +702,7 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
 版权所有(C): 2019,天津麒麟信息技术有限公司.</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/windows/fm-window.cpp" line="432"/>
+        <location filename="../../libpeony-qt/windows/fm-window.cpp" line="447"/>
         <source>New Folder</source>
         <translation>新建文件夹</translation>
     </message>
@@ -710,9 +710,9 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
 <context>
     <name>Peony::FileEnumerator</name>
     <message>
-        <location filename="../../libpeony-qt/file-enumerator.cpp" line="231"/>
         <location filename="../../libpeony-qt/file-enumerator.cpp" line="235"/>
-        <location filename="../../libpeony-qt/file-enumerator.cpp" line="336"/>
+        <location filename="../../libpeony-qt/file-enumerator.cpp" line="239"/>
+        <location filename="../../libpeony-qt/file-enumerator.cpp" line="340"/>
         <source>Error</source>
         <translation>错误</translation>
     </message>
@@ -909,12 +909,12 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
 <context>
     <name>Peony::FileOperationManager</name>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="99"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="103"/>
         <source>File Operation is Busy</source>
         <translation>操作正忙</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="100"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="104"/>
         <source>There have been one or more fileoperation(s) executing before. Youroperation will wait for executinguntil it/them done.</source>
         <translation>在执行该操作之前有操作未完成，它需要等待上一个操作完成后再执行。</translation>
     </message>
@@ -1261,12 +1261,12 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
         <translation>输入关键词...</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/search-bar.cpp" line="109"/>
+        <location filename="../../libpeony-qt/controls/tool-bar/search-bar.cpp" line="115"/>
         <source>advance search</source>
         <translation>高级搜索</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/search-bar.cpp" line="110"/>
+        <location filename="../../libpeony-qt/controls/tool-bar/search-bar.cpp" line="116"/>
         <source>clear record</source>
         <translation>清空历史</translation>
     </message>

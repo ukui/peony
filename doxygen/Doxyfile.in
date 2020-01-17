@@ -44,7 +44,7 @@ PROJECT_NUMBER         =
 # for a project that appears at the top of each page and should give viewer a
 # quick idea about the purpose of the project. Keep the description short.
 
-PROJECT_BRIEF          = "Poeny Qt 是基于qt前端和gio后端的文件管理器，除了peony-qt文件管理本身，它也将提供一个libpeony-qt的文件管理器开发包用于文件管理器的二次开发。整个项目开源，目前项目地址为：https://github.com/explorer-cs/peony-qt。注：peony-qt基于GPLv3发布，而libpeony-qt基于LGPLv3发布。"
+PROJECT_BRIEF          = "Poeny Qt 是基于qt前端和gio后端的文件管理器，除了peony-qt文件管理本身，它也将提供一个libpeony-qt的文件管理器开发包用于文件管理器的二次开发。整个项目开源，目前项目地址为：https://github.com/ukui/peony。注：peony-qt基于GPLv3发布，而libpeony-qt基于LGPLv3发布。"
 
 # With the PROJECT_LOGO tag one can specify a logo or an icon that is included
 # in the documentation. The maximum height of the logo should not exceed 55

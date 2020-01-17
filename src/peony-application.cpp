@@ -94,6 +94,10 @@
 
 PeonyApplication::PeonyApplication(int &argc, char *argv[], const char *applicationName) : SingleApplication (argc, argv, applicationName, true)
 {
+    setApplicationVersion("v2.0.0");
+    setApplicationName("peony-qt");
+    setApplicationDisplayName(tr("Peony-Qt"));
+
     QTranslator *t = new QTranslator(this);
     qDebug()<<"\n\n\n\n\n\n\ntranslate:"<<t->load("/usr/share/libpeony-qt/libpeony-qt_"+QLocale::system().name());
     QApplication::installTranslator(t);

@@ -8,6 +8,8 @@ QT       += core widgets gui concurrent
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += printsupport
 
+VERSION = 2.0.0
+
 TARGET = peony-qt
 TEMPLATE = lib
 
