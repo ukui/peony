@@ -62,6 +62,74 @@ void FileUntrashOperation::cacheOriginalUri()
     }
 }
 
+const QString FileUntrashOperation::handleDuplicate(const QString &uri)
+{
+    setHasError(true);
+
+    QStringList l = uri.split("/");
+    QString name = l.last();
+    l.removeLast();
+
+    QRegExp regExp("\\(\\d+\\)");
+    if (name.contains(regExp)) {
+        int pos = 0;
+        int num = 0;
+        QString tmp;
+        while ((pos = regExp.indexIn(name, pos)) != -1) {
+            tmp = regExp.cap(0).toUtf8();
+            pos += regExp.matchedLength();
+            qDebug()<<"pos"<<pos;
+        }
+        tmp.remove(0,1);
+        tmp.chop(1);
+        num = tmp.toInt();
+
+        num++;
+        name = name.replace(regExp, QString("(%1)").arg(num));
+        l.append(name);
+        auto newUri = l.join("/");
+        return newUri;
+    } else {
+        if (name.contains(".")) {
+            auto list = name.split(".");
+            if (list.count() <= 1) {
+                l.append(name + "(1)");
+                auto newUri = l.join("/");
+                return newUri;
+            } else {
+                int pos = list.count() - 1;
+                if (list.last() == "gz" |
+                        list.last() == "xz" |
+                        list.last() == "Z" |
+                        list.last() == "sit" |
+                        list.last() == "bz" |
+                        list.last() == "bz2") {
+                    pos--;
+                }
+                if (pos < 0)
+                    pos = 0;
+                //list.insert(pos, "(1)");
+                auto tmp = list;
+                QStringList suffixList;
+                for (int i = 0; i < list.count() - pos; i++) {
+                    suffixList.prepend(tmp.takeLast());
+                }
+                auto suffix = suffixList.join(".");
+
+                auto basename = tmp.join(".");
+                name = basename + "(1)" + "." + suffix;
+                if (name.endsWith("."))
+                    name.chop(1);
+                l.append(name);
+                auto newUri = l.join("/");
+                return newUri;
+            }
+        } else {
+            return uri + "(1)";
+        }
+    }
+}
+
 void FileUntrashOperation::run()
 {
     /*!
@@ -81,18 +149,30 @@ void FileUntrashOperation::run()
 
 retry:
         GError *err = nullptr;
-        g_file_move(file.get()->get(),
-                    destFile.get()->get(),
-                    GFileCopyFlags(m_default_copy_flag|G_FILE_COPY_OVERWRITE),
-                    getCancellable().get()->get(),
-                    nullptr,
-                    nullptr,
-                    &err);
+        if (FileUtils::isFileExsit(originUri)) {
+            err = g_error_new(G_IO_ERROR, G_IO_ERROR_EXISTS, "");
+        } else {
+            g_file_move(file.get()->get(),
+                        destFile.get()->get(),
+                        GFileCopyFlags(m_default_copy_flag),
+                        getCancellable().get()->get(),
+                        nullptr,
+                        nullptr,
+                        &err);
+        }
 
         if (err) {
+            this->setHasError(true);
             qDebug()<<"untrash err"<<uri<<originUri<<err->message;
-            auto responseData = Q_EMIT errored(uri, originUri, GErrorWrapper::wrapFrom(err), false);
-            switch (responseData.value<ResponseType>()) {
+            ResponseType type = Invalid;
+            if (m_pre_handler != Invalid) {
+                type = m_pre_handler;
+            } else {
+                auto responseData = Q_EMIT errored(uri, originUri, GErrorWrapper::wrapFrom(err), false);
+                type = responseData.value<ResponseType>();
+            }
+
+            switch (type) {
             case Retry:
                 goto retry;
             case Cancel:
@@ -115,7 +195,26 @@ retry:
                             nullptr,
                             nullptr,
                             &err);
+                m_pre_handler = OverWriteOne;
                 break;
+            case BackupOne: {
+                originUri = handleDuplicate(originUri);
+                destFile = wrapGFile(g_file_new_for_uri(originUri.toUtf8().constData()));
+                goto retry;
+            }
+            case BackupAll: {
+                originUri = handleDuplicate(originUri);
+                destFile = wrapGFile(g_file_new_for_uri(originUri.toUtf8().constData()));
+                m_pre_handler = BackupOne;
+                break;
+            }
+            case IgnoreOne: {
+                break;
+            }
+            case IgnoreAll: {
+                m_pre_handler = IgnoreOne;
+                break;
+            }
             default:
                 break;
             }

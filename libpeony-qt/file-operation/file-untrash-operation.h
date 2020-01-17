@@ -44,6 +44,7 @@ public:
 
 protected:
     void cacheOriginalUri();
+    const QString handleDuplicate(const QString &uri);
 
 private:
     GFileCopyFlags m_default_copy_flag = GFileCopyFlags(G_FILE_COPY_NOFOLLOW_SYMLINKS|
@@ -52,6 +53,8 @@ private:
     QStringList m_uris;
     QHash<QString, QString> m_restore_hash;
     std::shared_ptr<FileOperationInfo> m_info = nullptr;
+
+    ResponseType m_pre_handler = Invalid;
 };
 
 }

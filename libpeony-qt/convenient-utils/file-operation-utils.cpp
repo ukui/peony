@@ -34,6 +34,10 @@
 
 #include "file-info-job.h"
 #include "file-info.h"
+#include "file-enumerator.h"
+
+#include <QUrl>
+#include <QFileInfo>
 
 #include <QMessageBox>
 
@@ -60,6 +64,44 @@ void FileOperationUtils::copy(const QStringList &srcUris, const QString &destUri
 
 void FileOperationUtils::trash(const QStringList &uris, bool addHistory)
 {
+    bool canNotTrash = false;
+    for (auto uri : uris) {
+        if (!uri.startsWith("file:/")) {
+            canNotTrash = true;
+        }
+    }
+
+    if (!canNotTrash) {
+        for (auto uri : uris) {
+            QUrl url(uri);
+            QFile file(url.path());
+            if (file.size() > 1024*1024*1024) {
+                canNotTrash = true;
+                break;
+            }
+        }
+    }
+
+    if (!canNotTrash) {
+        FileEnumerator e;
+        e.setEnumerateDirectory("trash:///");
+        e.enumerateSync();
+        if (e.getChildrenUris().count() > 1000) {
+            canNotTrash = true;
+        }
+    }
+
+    if (canNotTrash) {
+        auto result = QMessageBox::question(nullptr, QObject::tr("Can not trash"), QObject::tr("Can not trash these files. "
+                                                                                               "You can delete them permanently. "
+                                                                                               "Are you sure doing that?"));
+
+        if (result == QMessageBox::Yes) {
+            FileOperationUtils::remove(uris);
+        }
+        return;
+    }
+
     auto fileOpMgr = FileOperationManager::getInstance();
     auto trashOp = new FileTrashOperation(uris);
     fileOpMgr->startOperation(trashOp, addHistory);

@@ -57,6 +57,10 @@ void FileDeleteOperation::deleteRecursively(FileNode *node)
             //if delete a file get into error, it might be a critical error.
             auto response = errored(node->uri(), nullptr, GErrorWrapper::wrapFrom(err), true);
             qDebug()<<response;
+            auto responseType = response.value<ResponseType>();
+            if (responseType == Cancel) {
+                cancel();
+            }
         }
     } else {
         GError *err = nullptr;
@@ -67,6 +71,10 @@ void FileDeleteOperation::deleteRecursively(FileNode *node)
             //if delete a file get into error, it might be a critical error.
             auto response = errored(node->uri(), nullptr, GErrorWrapper::wrapFrom(err), true);
             qDebug()<<response;
+            auto responseType = response.value<ResponseType>();
+            if (responseType == Cancel) {
+                cancel();
+            }
         }
     }
     g_object_unref(file);
