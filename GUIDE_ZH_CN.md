@@ -29,7 +29,7 @@
 
 目前的peony-qt项目已经接近初次提测，大家请关注github和launchpad平台上的动向：
 
-> [GitHub源码仓库](https://github.com/explorer-cs/peony-qt)
+> [GitHub源码仓库](https://github.com/ukui/peony)
 
 > [Launchpad PPA](https://launchpad.net/~ubuntukylin-members/+archive/ubuntu/ukui3.0
 )
@@ -47,7 +47,7 @@
 ### 步骤(以优麒麟为例)
 > sudo apt install libglib2.0-dev libqt5x11extras5-dev qt5-default libgsettings-qt-dev
 
-> git clone https://github.com/explorer-cs/peony-qt.git
+> git clone https://github.com/ukui/peony.git
 
 > cd peony-qt && mkdir build && cd build
 

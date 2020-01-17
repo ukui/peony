@@ -148,6 +148,7 @@ DesktopWindow::DesktopWindow(QScreen *screen, bool is_primary, QWidget *parent)
             } else {
                 FileLaunchManager::openAsync(uri);
             }
+            m_view->clearSelection();
         });
         job->queryAsync();
     });

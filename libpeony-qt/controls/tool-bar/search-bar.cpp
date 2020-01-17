@@ -99,7 +99,7 @@ void SearchBar::clearSearchRecord()
 {
     m_model->clear();
     initTableModel();
-#if QT_VERSION_CHECK(5, 12, 0)
+#if QT_VERSION > QT_VERSION_CHECK(5, 12, 0)
     QTimer::singleShot(100, this, [=](){
         m_table_view->setVisible(false);
     });

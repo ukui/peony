@@ -92,7 +92,7 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
     auto zoomLevel = this->zoomLevel();
     setDefaultZoomLevel(zoomLevel);
 
-#if QT_VERSION_CHECK(5, 12, 0)
+#if QT_VERSION > QT_VERSION_CHECK(5, 12, 0)
     QTimer::singleShot(500, this, [=](){
 #else
     QTimer::singleShot(500, [=](){
@@ -176,7 +176,7 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
     connect(m_model, &DesktopItemModel::fileCreated, this, [=](const QString &uri){
         if (m_new_files_to_be_selected.isEmpty()) {
             m_new_files_to_be_selected<<uri;
-#if QT_VERSION_CHECK(5, 12, 0)
+#if QT_VERSION > QT_VERSION_CHECK(5, 12, 0)
             QTimer::singleShot(500, this, [=](){
 #else
             QTimer::singleShot(500, [=](){
@@ -200,7 +200,7 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
             return;
         }
         //qDebug()<<"save====================================";
-#if QT_VERSION_CHECK(5, 12, 0)
+#if QT_VERSION > QT_VERSION_CHECK(5, 12, 0)
         QTimer::singleShot(100, this, [=](){
 #else
         QTimer::singleShot(100, [=](){
@@ -211,7 +211,7 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
 
     connect(this, &QListView::iconSizeChanged, this, [=](){
         //qDebug()<<"save=============";
-#if QT_VERSION_CHECK(5, 12, 0)
+#if QT_VERSION > QT_VERSION_CHECK(5, 12, 0)
         QTimer::singleShot(100, this, [=](){
 #else
         QTimer::singleShot(100, [=](){
@@ -396,7 +396,7 @@ void DesktopIconView::setSortOrder(int sortOrder)
 void DesktopIconView::editUri(const QString &uri)
 {
     clearAllIndexWidgets();
-#if QT_VERSION_CHECK(5, 12, 0)
+#if QT_VERSION > QT_VERSION_CHECK(5, 12, 0)
     QTimer::singleShot(100, this, [=](){
 #else
     QTimer::singleShot(100, [=](){

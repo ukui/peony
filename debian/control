@@ -1,12 +1,12 @@
-Source: peony-qt
+Source: peony
 Section: x11
 Priority: optional
 Maintainer: Yue Lan <lanyue@kylinos.cn>
 Build-Depends: debhelper (>=11~), pkg-config, qt5-qmake, qtbase5-dev, qtchooser, qtbase5-dev-tools, qttools5-dev-tools, libglib2.0-dev, libqt5x11extras5-dev, libgsettings-qt-dev, libpoppler-dev, libpoppler-qt5-dev
 Standards-Version: 4.4.0
-Homepage: https://github.com/explorer-cs/peony-qt
+Homepage: https://github.com/ukui/peony
 
-Package: libpeony-qt1
+Package: libpeony-qt2
 Provides: libpeony-qt
 Section: libs
 Architecture: any
@@ -14,8 +14,8 @@ Multi-Arch: same
 Pre-Depends: ${misc:Pre-Depends}
 Depends: ${misc:Depends}, ${shlibs:Depends}, libglib2.0-0, libqt5widgets5, libpoppler-qt5-1
 Recommends: gvfs-backends, qt5-gtk2-platformtheme, qt5-gtk-platformtheme
-Breaks: libpeony-extensions1
-Replaces: libpeony-extensions1
+Breaks: libpeony-extensions1, libpeony-qt1
+Replaces: libpeony-extensions1, libpeony-qt1
 Description: PeonyQt is the file-manager of UKUI3.0
  This package provide the libraries which peony-qt requires.
 
@@ -23,18 +23,17 @@ Package: libpeony-qt-dev
 Section: libdevel
 Architecture: any
 Multi-Arch: same
-Depends: ${misc:Depends}, ${shlibs:Depends}, libpeony-qt1 (= ${binary:Version})
+Depends: ${misc:Depends}, ${shlibs:Depends}, libpeony-qt2 (= ${binary:Version})
 Description: PeonyQt is the file-manager of UKUI3.0
  This package provides the development files which peony-qt requires.
  It also can be used for other projects about qt/gio-based file-manager.
 
-Package: peony-qt
+Package: peony
 Section: utils
 Architecture: any
 Multi-Arch: foreign
-Depends: ${misc:Depends}, ${shlibs:Depends}, libpeony-qt1 (= ${binary:Version})
-Breaks: peony, ukui-desktop-environment (<= 1.2.1), ukui-desktop-environment-core (<= 1.2.1), ubuntukylin-desktop (<= 0.39)
-Replaces: peony, peony-common
+Depends: ${misc:Depends}, ${shlibs:Depends}, libpeony-qt2 (= ${binary:Version})
+Replaces: peony(<< 2.0.0), peony-common
 Recommends: gvfs-backends, qt5-gtk2-platformtheme, peony-qt-extensions
 Description: PeonyQt is the file-manager of UKUI3.0
  This package provides filemanager and desktop applications of UKUI3.0.

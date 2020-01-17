@@ -47,7 +47,7 @@ This qpa plugin will let qt applications use system style in UbuntuKylin.
 
 ## build from source and test
 
-> git clone https://github.com/explorer-cs/peony-qt.git
+> git clone https://github.com/ukui/peony.git
 
 > cd peony-qt && mkdir build && cd build
 
