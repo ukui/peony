@@ -50,7 +50,7 @@ IconViewIndexWidget::IconViewIndexWidget(const IconViewDelegate *delegate, const
 
     m_edit_trigger.setInterval(3000);
     m_edit_trigger.setSingleShot(true);
-#if QT_VERSION_CHECK(5, 12, 0)
+#if QT_VERSION > QT_VERSION_CHECK(5, 12, 0)
     QTimer::singleShot(750, this, [=](){
         m_edit_trigger.start();
     });

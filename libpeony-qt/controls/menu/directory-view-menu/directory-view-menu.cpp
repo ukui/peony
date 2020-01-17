@@ -568,7 +568,7 @@ const QList<QAction *> DirectoryViewMenu::constructSearchActions()
                 if (!parentUri.isNull()) {
                     FMWindow *newWindow = new FMWindow(parentUri);
                     auto selection = m_selections;
-#if QT_VERSION_CHECK(5, 12, 0)
+#if QT_VERSION > QT_VERSION_CHECK(5, 12, 0)
                     QTimer::singleShot(1000, newWindow, [=](){
                         if (newWindow)
                             newWindow->setCurrentSelectionUris(selection);

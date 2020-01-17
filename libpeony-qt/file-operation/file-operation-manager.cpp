@@ -82,7 +82,7 @@ void FileOperationManager::startOperation(FileOperation *operation, bool addToHi
         auto settings = GlobalSettings::getInstance();
         bool runbackend = settings->getInstance()->getValue(RESIDENT_IN_BACKEND).toBool();
         QApplication::setQuitOnLastWindowClosed(!runbackend);
-#if QT_VERSION_CHECK(5, 12, 0)
+#if QT_VERSION > QT_VERSION_CHECK(5, 12, 0)
         QTimer::singleShot(1000, this, [=](){
 #else
         QTimer::singleShot(1000, [=](){
