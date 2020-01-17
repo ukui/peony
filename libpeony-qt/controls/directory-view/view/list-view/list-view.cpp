@@ -42,8 +42,9 @@ ListView::ListView(QWidget *parent) : QTreeView(parent)
 {
     setItemDelegate(new ListViewDelegate(this));
 
-    header()->setSectionResizeMode(QHeaderView::ResizeToContents);
+    header()->setSectionResizeMode(QHeaderView::Interactive);
     header()->setSectionsMovable(true);
+    header()->setDefaultSectionSize(200);
     //header()->setStretchLastSection(false);
 
     setExpandsOnDoubleClick(false);
@@ -51,8 +52,10 @@ ListView::ListView(QWidget *parent) : QTreeView(parent)
 
     setEditTriggers(QTreeView::NoEditTriggers);
     setDragEnabled(true);
-    setDragDropMode(QTreeView::DropOnly);
+    setDragDropMode(QTreeView::DragDrop);
     setSelectionMode(QTreeView::ExtendedSelection);
+
+    //setAlternatingRowColors(true);
 
     //setContextMenuPolicy(Qt::CustomContextMenu);
 }
@@ -107,6 +110,10 @@ void ListView::mousePressEvent(QMouseEvent *e)
     }
 
     QTreeView::mousePressEvent(e);
+
+    if (indexAt(e->pos()).column() != 0) {
+        this->setState(QAbstractItemView::DragSelectingState);
+    }
 
     if (e->button() == Qt::LeftButton) {
         qDebug()<<m_edit_trigger_timer.isActive()<<m_edit_trigger_timer.interval();

@@ -304,12 +304,13 @@ Qt::ItemFlags FileItemModel::flags(const QModelIndex &index) const
 {
     if (index.isValid()) {
         Qt::ItemFlags flags = QAbstractItemModel::flags(index);
-        flags |= Qt::ItemIsDragEnabled;
+
         auto item = itemFromIndex(index);
         if (item->m_info->isDir()) {
             flags |= Qt::ItemIsDropEnabled;
         }
         if (index.column() == FileName) {
+            flags |= Qt::ItemIsDragEnabled;
             flags |= Qt::ItemIsEditable;
         }
         return flags;
