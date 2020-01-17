@@ -52,6 +52,7 @@ FileOperationProgressWizard::FileOperationProgressWizard(QWidget *parent) : QWiz
     setFixedHeight(480);
 
     setWindowFlags(windowFlags());
+    setWindowTitle(tr("File Manager"));
     //only show cancel button at bottom-right of wizard
     QList<WizardButton> layout;
     layout<<Stretch<<CustomButton1;
