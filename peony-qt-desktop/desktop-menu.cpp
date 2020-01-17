@@ -38,6 +38,8 @@
 
 #include "desktop-menu-plugin-manager.h"
 
+#include "global-settings.h"
+
 #include <QProcess>
 #include <QStandardPaths>
 #include <QMessageBox>
@@ -247,8 +249,6 @@ const QList<QAction *> DesktopMenu::constructViewOpActions()
 {
     QList<QAction *> l;
 
-
-
     if (m_selections.isEmpty()) {
         auto viewTypeAction = addAction(tr("View Type..."));
         l<<viewTypeAction;
@@ -311,11 +311,13 @@ const QList<QAction *> DesktopMenu::constructViewOpActions()
         for (int i = 0; i < tmp.count(); i++) {
             connect(tmp.at(i), &QAction::triggered, [=](){
                 m_view->setSortType(i);
+                GlobalSettings::getInstance()->setValue(LAST_DESKTOP_SORT_ORDER, i);
             });
         }
 
         sortTypeAction->setMenu(sortTypeMenu);
 
+        /*
         //sort order
         auto sortOrderAction = addAction(tr("Sort Order..."));
         l<<sortOrderAction;
@@ -343,6 +345,7 @@ const QList<QAction *> DesktopMenu::constructViewOpActions()
             auto desktopView = dynamic_cast<DesktopIconView*>(m_view);
             desktopView->zoomOut();
         });
+        */
     }
 
     return l;

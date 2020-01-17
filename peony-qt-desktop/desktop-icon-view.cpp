@@ -38,6 +38,8 @@
 
 #include "file-meta-info.h"
 
+#include "global-settings.h"
+
 #include <QAction>
 #include <QMouseEvent>
 #include <QDragEnterEvent>
@@ -211,6 +213,7 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
 
     connect(this, &QListView::iconSizeChanged, this, [=](){
         //qDebug()<<"save=============";
+        this->setSortType(GlobalSettings::getInstance()->getValue(LAST_DESKTOP_SORT_ORDER).toInt());
 #if QT_VERSION > QT_VERSION_CHECK(5, 12, 0)
         QTimer::singleShot(100, this, [=](){
 #else

@@ -34,6 +34,7 @@
 #define SORT_CHINESE_FIRST "chinese-first"
 #define SORT_FOLDER_FIRST "folder-first"
 #define RESIDENT_IN_BACKEND "resident"
+#define LAST_DESKTOP_SORT_ORDER "last-desktop-sort-order"
 
 namespace Peony {
 
