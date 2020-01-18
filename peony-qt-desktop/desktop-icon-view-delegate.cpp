@@ -69,13 +69,13 @@ void DesktopIconViewDelegate::paint(QPainter *painter, const QStyleOptionViewIte
     auto font = opt.font;
     switch (view->zoomLevel()) {
     case DesktopIconView::Small:
-        font.setPointSizeF(font.pointSizeF() * 0.8);
+        font.setPixelSize(int(font.pixelSize() * 0.8));
         break;
     case DesktopIconView::Large:
-        font.setPointSizeF(font.pointSizeF() * 1.2);
+        font.setPixelSize(int(font.pixelSize() * 1.2));
         break;
     case DesktopIconView::Huge:
-        font.setPointSizeF(font.pointSizeF() * 1.4);
+        font.setPixelSize(int(font.pixelSize() * 1.4));
         break;
     default:
         break;
@@ -201,13 +201,13 @@ QWidget *DesktopIconViewDelegate::createEditor(QWidget *parent, const QStyleOpti
     auto view = qobject_cast<Peony::DesktopIconView*>(this->parent());
     switch (view->zoomLevel()) {
     case DesktopIconView::Small:
-        font.setPointSizeF(font.pointSizeF() * 0.8);
+        font.setPixelSize(int(font.pixelSize() * 0.8));
         break;
     case DesktopIconView::Large:
-        font.setPointSizeF(font.pointSizeF() * 1.2);
+        font.setPixelSize(int(font.pixelSize() * 1.2));
         break;
     case DesktopIconView::Huge:
-        font.setPointSizeF(font.pointSizeF() * 1.4);
+        font.setPixelSize(int(font.pixelSize() * 1.4));
         break;
     default:
         break;

@@ -27,6 +27,8 @@
 #include <QStyleOptionViewItem>
 #include <QModelIndex>
 
+class QTextEdit;
+
 namespace Peony {
 
 class DesktopIconViewDelegate;
@@ -40,6 +42,8 @@ public:
                                 const QModelIndex &index,
                                 QWidget *parent = nullptr);
 
+    ~DesktopIndexWidget();
+
 protected:
     void paintEvent(QPaintEvent *e);
 
@@ -50,6 +54,8 @@ private:
     QModelIndex m_index;
     const DesktopIconViewDelegate *m_delegate;
     QFont m_current_font;
+
+    QRect m_text_rect;
 };
 
 }

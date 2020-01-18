@@ -29,6 +29,9 @@
 #include <QStyle>
 #include <QApplication>
 
+#include <QTextEdit>
+#include <QTextOption>
+
 #include <QDebug>
 
 using namespace Peony;
@@ -45,6 +48,11 @@ DesktopIndexWidget::DesktopIndexWidget(DesktopIconViewDelegate *delegate,
     m_delegate = delegate;
 
     updateItem();
+}
+
+DesktopIndexWidget::~DesktopIndexWidget()
+{
+
 }
 
 void DesktopIndexWidget::paintEvent(QPaintEvent *e)
@@ -68,22 +76,30 @@ void DesktopIndexWidget::paintEvent(QPaintEvent *e)
     int y_delta = iconSizeExcepted.height() - iconRect.height();
     opt.rect.moveTo(opt.rect.x(), opt.rect.y() + y_delta);
 
-    setFixedHeight(opt.rect.height() + y_delta);
+    //setFixedHeight(opt.rect.height() + y_delta);
 
-    auto textOpt = opt;
-    textOpt.font = font;
-    textOpt.icon = QIcon();
-    auto black = QColor(Qt::black);
-    black.setAlpha(255*0.8);
-    textOpt.palette.setColor(QPalette::Text, black);
-    textOpt.rect.moveTo(textOpt.rect.topLeft() + QPoint(1, 1));
-    QApplication::style()->drawControl(QStyle::CE_ItemViewItem, &textOpt, &p, m_delegate->getView());
-
-    opt.font = font;
-    auto text = opt.text;
-    auto white = QColor(Qt::white);
-    opt.palette.setColor(QPalette::Text, white);
+    // draw icon
+    opt.text = nullptr;
     QApplication::style()->drawControl(QStyle::CE_ItemViewItem, &opt, &p, m_delegate->getView());
+
+    p.save();
+    p.translate(0, iconSizeExcepted.height() + 15);
+    QTextOption textOption(Qt::AlignTop|Qt::AlignHCenter);
+    textOption.setWrapMode(QTextOption::WrapAnywhere);
+
+    // draw text shadow
+    p.save();
+    p.translate(1, 1);
+    p.setFont(opt.font);
+    p.setPen(QColor(50, 50, 50));
+    p.drawText(m_text_rect, m_option.text, textOption);
+    p.restore();
+
+    // draw text
+    p.setFont(opt.font);
+    p.setPen(QColor(245, 245, 245));
+    p.drawText(m_text_rect, m_option.text, textOption);
+    p.restore();
 
     bgColor.setAlpha(255*0.8);
     p.setPen(bgColor);
@@ -113,14 +129,39 @@ void DesktopIndexWidget::updateItem()
 
     //qDebug()<<m_option.rect;
     auto font = view->getViewItemFont(&m_option);
-    auto opt = m_option;
-    opt.font = font;
-    QRect iconRect = QApplication::style()->subElementRect(QStyle::SE_ItemViewItemDecoration, &opt, m_delegate->getView());
-    QRect textRect = QApplication::style()->subElementRect(QStyle::SE_ItemViewItemText, &opt, m_delegate->getView());
-    qDebug()<<m_option.text<<textRect;
-    QRect rect = QRect(0, 0, textRect.width(), textRect.height() + iconRect.height() + 20);
-    m_option.rect.setHeight(rect.height());
-    qDebug()<<m_option.rect;
 
+    QFontMetrics fm(font);
+    auto textRect = QApplication::style()->itemTextRect(fm,
+                                                        m_option.rect,
+                                                        Qt::AlignTop|Qt::AlignHCenter|Qt::TextWrapAnywhere,
+                                                        true,
+                                                        m_option.text);
+
+    auto tmpRect = textRect;
+    while (textRect.x() < 4) {
+        m_option.rect.adjust(1, 0, -1, 0);
+        if (m_option.rect.width() > 0) {
+            textRect = QApplication::style()->itemTextRect(fm,
+                                                           m_option.rect,
+                                                           Qt::AlignTop|Qt::AlignHCenter|Qt::TextWrapAnywhere,
+                                                           true,
+                                                           m_option.text);
+        } else {
+            m_option.rect.setX(0);
+            m_option.rect.setWidth(this->width());
+            textRect = tmpRect;
+            break;
+        }
+    }
+
+    textRect.adjust(0, 0, 0, fm.height()/1.5);
+    m_text_rect = textRect;
+
+    m_option.font = font;
+    auto opt = m_option;
+    QRect iconRect = QApplication::style()->subElementRect(QStyle::SE_ItemViewItemDecoration, &opt, m_delegate->getView());
+    QRect rect = QRect(0, 0, textRect.width(), textRect.height() + iconRect.height() + 20);
+
+    qDebug()<<textRect;
     setFixedHeight(rect.height() > size.height()? rect.height(): size.height());
 }
