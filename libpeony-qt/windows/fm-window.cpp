@@ -596,23 +596,38 @@ void FMWindow::addNewTabs(const QStringList &uris)
 
 void FMWindow::goToUri(const QString &uri, bool addHistory, bool forceUpdate)
 {
+    QUrl url(uri);
+    auto realUri = uri;
+    if (url.scheme().isEmpty()) {
+        if (uri.startsWith("/")) {
+            realUri = "file://" + uri;
+        } else {
+            QDir currentDir = QDir(QStandardPaths::writableLocation(QStandardPaths::HomeLocation));
+            currentDir.cd(uri);
+            auto absPath = currentDir.absoluteFilePath(uri);
+            url = QUrl::fromLocalFile(absPath);
+
+            realUri = url.toDisplayString();
+        }
+    }
+
     if (forceUpdate)
         goto update;
 
-    if (getCurrentUri() == uri)
+    if (getCurrentUri() == realUri)
         return;
 
 update:
-    if (!uri.startsWith("search://")) {
-        m_last_non_search_location = uri;
+    if (!realUri.startsWith("search://")) {
+        m_last_non_search_location = realUri;
     }
     Q_EMIT locationChangeStart();
     if (m_update_condition)
         filterUpdate();
-    m_tab->getActivePage()->goToUri(uri, addHistory, forceUpdate);
+    m_tab->getActivePage()->goToUri(realUri, addHistory, forceUpdate);
     m_tab->refreshCurrentTabText();
-    m_navigation_bar->updateLocation(uri);
-    m_tool_bar->updateLocation(uri);
+    m_navigation_bar->updateLocation(realUri);
+    m_tool_bar->updateLocation(realUri);
 }
 
 void FMWindow::beginSwitchView(const QString &viewId)
