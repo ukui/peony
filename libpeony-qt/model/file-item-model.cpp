@@ -32,6 +32,8 @@
 
 #include "thumbnail-manager.h"
 
+#include "file-operation-utils.h"
+
 #include <QIcon>
 #include <QMimeData>
 #include <QUrl>
@@ -491,8 +493,7 @@ bool FileItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action, i
     bool addHistory = true;
     switch (action) {
     case Qt::MoveAction: {
-        FileMoveOperation *moveOp = new FileMoveOperation(srcUris, destDirUri);
-        fileOpMgr->startOperation(moveOp, addHistory);
+        FileOperationUtils::move(srcUris, destDirUri, addHistory);
         break;
     }
     case Qt::CopyAction: {
