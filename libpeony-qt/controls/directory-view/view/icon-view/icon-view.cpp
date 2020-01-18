@@ -28,6 +28,7 @@
 #include "icon-view-style.h"
 
 #include "directory-view-menu.h"
+#include "file-info.h"
 
 #include <QMouseEvent>
 
@@ -42,6 +43,8 @@
 #include <QApplication>
 
 #include <QVBoxLayout>
+
+#include <QHoverEvent>
 
 #include <QDebug>
 
@@ -165,6 +168,14 @@ void IconView::dragEnterEvent(QDragEnterEvent *e)
 
 void IconView::dragMoveEvent(QDragMoveEvent *e)
 {
+    auto index = indexAt(e->pos());
+    if (index.isValid() && index != m_last_index) {
+        QHoverEvent he(QHoverEvent::HoverMove, e->posF(), e->posF());
+        viewportEvent(&he);
+    } else {
+        QHoverEvent he(QHoverEvent::HoverLeave, e->posF(), e->posF());
+        viewportEvent(&he);
+    }
     if (this == e->source()) {
         return QListView::dragMoveEvent(e);
     }

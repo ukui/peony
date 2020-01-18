@@ -47,6 +47,8 @@
 #include <QDropEvent>
 #include <QMimeData>
 
+#include <QHoverEvent>
+
 #include <QWheelEvent>
 #include <QApplication>
 
@@ -605,6 +607,14 @@ void DesktopIconView::dragEnterEvent(QDragEnterEvent *e)
 
 void DesktopIconView::dragMoveEvent(QDragMoveEvent *e)
 {
+    auto index = indexAt(e->pos());
+    if (index.isValid() && index != m_last_index) {
+        QHoverEvent he(QHoverEvent::HoverMove, e->posF(), e->posF());
+        viewportEvent(&he);
+    } else {
+        QHoverEvent he(QHoverEvent::HoverLeave, e->posF(), e->posF());
+        viewportEvent(&he);
+    }
     if (e->isAccepted())
         return;
     //qDebug()<<"drag move event";
