@@ -51,8 +51,12 @@ FileOperationUtils::FileOperationUtils()
 void FileOperationUtils::move(const QStringList &srcUris, const QString &destUri, bool addHistory)
 {
     auto fileOpMgr = FileOperationManager::getInstance();
-    auto moveOp = new FileMoveOperation(srcUris, destUri);
-    fileOpMgr->startOperation(moveOp, addHistory);
+    if (destUri != "trash:///") {
+        auto moveOp = new FileMoveOperation(srcUris, destUri);
+        fileOpMgr->startOperation(moveOp, addHistory);
+    } else {
+        FileOperationUtils::trash(srcUris, true);
+    }
 }
 
 void FileOperationUtils::copy(const QStringList &srcUris, const QString &destUri, bool addHistory)
