@@ -131,6 +131,7 @@ protected:
     void dropEvent(QDropEvent *e);
 
     void wheelEvent(QWheelEvent *e);
+    void keyPressEvent(QKeyEvent *e);
 
     void resetEditTriggerTimer();
 

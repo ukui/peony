@@ -438,6 +438,70 @@ void DesktopIconView::wheelEvent(QWheelEvent *e)
     }
 }
 
+void DesktopIconView::keyPressEvent(QKeyEvent *e)
+{
+    switch (e->key()) {
+    case Qt::Key_Up: {
+        if (getSelections().isEmpty()) {
+            selectionModel()->select(model()->index(0, 0), QItemSelectionModel::SelectCurrent);
+        } else {
+            auto index = selectionModel()->selectedIndexes().first();
+            auto center = visualRect(index).center();
+            auto up = center - QPoint(0, gridSize().height());
+            auto upIndex = indexAt(up);
+            if (upIndex.isValid()) {
+                selectionModel()->select(upIndex, QItemSelectionModel::SelectCurrent);
+            }
+        }
+        return;
+    }
+    case Qt::Key_Down: {
+        if (getSelections().isEmpty()) {
+            selectionModel()->select(model()->index(0, 0), QItemSelectionModel::SelectCurrent);
+        } else {
+            auto index = selectionModel()->selectedIndexes().first();
+            auto center = visualRect(index).center();
+            auto down = center + QPoint(0, gridSize().height());
+            auto downIndex = indexAt(down);
+            if (downIndex.isValid()) {
+                selectionModel()->select(downIndex, QItemSelectionModel::SelectCurrent);
+            }
+        }
+        return;
+    }
+    case Qt::Key_Left: {
+        if (getSelections().isEmpty()) {
+            selectionModel()->select(model()->index(0, 0), QItemSelectionModel::SelectCurrent);
+        } else {
+            auto index = selectionModel()->selectedIndexes().first();
+            auto center = visualRect(index).center();
+            auto left = center - QPoint(gridSize().width(), 0);
+            auto leftIndex = indexAt(left);
+            if (leftIndex.isValid()) {
+                selectionModel()->select(leftIndex, QItemSelectionModel::SelectCurrent);
+            }
+        }
+        return;
+    }
+    case Qt::Key_Right: {
+        if (getSelections().isEmpty()) {
+            selectionModel()->select(model()->index(0, 0), QItemSelectionModel::SelectCurrent);
+        } else {
+            auto index = selectionModel()->selectedIndexes().first();
+            auto center = visualRect(index).center();
+            auto right = center + QPoint(gridSize().width(), 0);
+            auto rightIndex = indexAt(right);
+            if (rightIndex.isValid()) {
+                selectionModel()->select(rightIndex, QItemSelectionModel::SelectCurrent);
+            }
+        }
+        return;
+    }
+    default:
+        return QListView::keyPressEvent(e);
+    }
+}
+
 void DesktopIconView::zoomOut()
 {
     clearAllIndexWidgets();
