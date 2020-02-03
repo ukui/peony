@@ -33,6 +33,10 @@
 
 namespace Peony {
 
+/*!
+ * \brief The Drive class
+ * is the abtraction of GDrive of glib.
+ */
 class PEONYCORESHARED_EXPORT Drive
 {
 public:
@@ -91,6 +95,10 @@ private:
     bool m_take_over = false;
 };
 
+/*!
+ * \brief The Volume class
+ * is the abstraction of GVolume in glib
+ */
 class PEONYCORESHARED_EXPORT Volume
 {
 public:
@@ -175,6 +183,10 @@ private:
     bool m_take_over = false;
 };
 
+/*!
+ * \brief The Mount class
+ * is the abstraction of GMount in glib.
+ */
 class PEONYCORESHARED_EXPORT Mount
 {
 public:

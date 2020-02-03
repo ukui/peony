@@ -28,6 +28,10 @@
 #include <pwd.h>
 #include <sys/types.h>
 
+/*!
+ * \brief The PWDItem class
+ * is the abstraction of passwd struct in linux.
+ */
 class PWDItem
 {
 public:

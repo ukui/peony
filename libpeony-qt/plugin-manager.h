@@ -30,6 +30,14 @@
 
 namespace Peony {
 
+/*!
+ * \brief The PluginManager class
+ * \details
+ * This class is used to manage plugins of peony.
+ *
+ * \todo
+ * add gui.
+ */
 class PluginManager : public QObject
 {
     Q_OBJECT
