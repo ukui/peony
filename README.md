@@ -33,7 +33,7 @@ The dependency of Peony-Qt is very "clean". It is not difficult to build pre-dep
 
 I recommend you use latest UbuntuKylin(19.10 for now), and you can build pre-depends with such command:
 
-> sudo apt install libglib2.0-dev qt5-default libqt5x11extras5-dev libgsettings-qt-dev
+> sudo apt install libglib2.0-dev qt5-default libqt5x11extras5-dev libgsettings-qt-dev  libpoppler-qt5-dev  qttools5-dev-tools
 
 NOTE: build-depends references the paragraph in debian/control.
 

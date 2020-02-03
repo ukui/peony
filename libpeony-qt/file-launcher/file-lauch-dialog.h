@@ -39,6 +39,10 @@ namespace Peony {
 
 class FileLaunchAction;
 
+/*!
+ * \brief The FileLauchDialog class
+ * provides the dialog for choosing which application to open a file.
+ */
 class PEONYCORESHARED_EXPORT FileLauchDialog : public QDialog
 {
     Q_OBJECT

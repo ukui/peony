@@ -32,6 +32,8 @@ class FileLaunchAction;
 
 /*!
  * \brief The FileLaunchManager class
+ * \details
+ * This class provides the convenient way for file's uri and lauch action.
  * \todo
  * support open multi-files.
  */

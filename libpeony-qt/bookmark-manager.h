@@ -31,6 +31,12 @@
 
 namespace Peony {
 
+/*!
+ * \brief The BookMarkManager class
+ * \details
+ * This class is use to manage bookmarks of peony.
+ * You can add/remove custom bookmark at peony's side bar.
+ */
 class PEONYCORESHARED_EXPORT BookMarkManager : public QObject
 {
     Q_OBJECT

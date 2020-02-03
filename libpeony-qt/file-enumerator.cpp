@@ -200,6 +200,14 @@ void FileEnumerator::enumerateSync()
     g_object_unref(target);
 }
 
+/*!
+ * \brief FileEnumerator::handleError
+ * \param err
+ * \bug
+ * Some special vfs, such as mtp, can not be handled correctly.
+ * \todo
+ * Handle mtp, ptp correctly.
+ */
 void FileEnumerator::handleError(GError *err)
 {
     qDebug()<<"handleError"<<err->code<<err->message;

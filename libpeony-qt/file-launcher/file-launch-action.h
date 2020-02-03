@@ -32,6 +32,8 @@ namespace Peony {
 
 /*!
  * \brief The FileLaunchAction class
+ * \details
+ * This class is used to launch a file with a specific application info.
  * \todo
  * add error reprot GUI.
  */
@@ -66,6 +68,10 @@ private:
     QString m_info_name;
     QString m_info_display_name;
 
+    /*!
+     * \brief m_force_with_arg
+     * \value true for forcing to execute action asynchonously.
+     */
     bool m_force_with_arg = false;
 };
 

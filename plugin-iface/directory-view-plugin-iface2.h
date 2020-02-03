@@ -33,6 +33,15 @@ namespace Peony {
 
 class DirectoryViewWidget;
 
+/*!
+ * \brief The DirectoryViewPluginIface2 class
+ * \details
+ * This class is a pure virtual interface class. It defines an extensionalbe
+ * interface for making newly type item view for peony.
+ *
+ * There are 2 kinds of internal implement at peony, icon view and list view.
+ * \see IconView2, ListView2
+ */
 class DirectoryViewPluginIface2 : public PluginInterface
 {
 public:

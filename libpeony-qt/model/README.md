@@ -1,5 +1,9 @@
 # Model and ModelItem
 
+As we should display a large number element in the file manager's view, we should not handle them directly. Model is desgin to help us doing that.
+
+There are 2 main types model item in peony. Item in directory view and item in side bar.
+
 ## FileItem
 FileItem is the absctract item class contract with FileItemModel.
 
@@ -17,3 +21,8 @@ This class is use for sorting and filtering the FileItemModel instance. Every pr
 FileItemModel is disordered and non-filterable, that means we can't sort the files by name or other order and filter the hidden files.
 
 With this interface, it's much easier to implement the sorting and filtering.
+
+## item in side bar
+Item in side bar is similar to item in directory view. The main differences between 2 items are:
+- side bar item is extensionable by impling SideBarAbstractItem interface.
+- side bar item is more lightweight, it doesn't hold a FileInfo instance.

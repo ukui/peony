@@ -7,6 +7,8 @@ Core part of peony-qt, providing a set of APIs for peony-qt and other projects f
 - qtbase5-dev
 - qtbase5-dev-tools
 - pkg-config
+- libgsettings-qt5-dev
+- libpoppler-qt5-dev
 
 # description
 peony-qt is the filemanager of ukui3.0，which refactoring peony based on qt and glib/gio.

@@ -9,7 +9,10 @@ FileOperation is an QRunnable based interface of several file operation. Such as
 -  The error handler is variable. It could have a UI, or just running in backend.
 -  There should be a operation manager to manager the operations' stack for operation undo or redo.
 
-## FileMoveOperation
+## Implement example -- FileMoveOperation
 FileMoveOperatoin is dervied from FileOperation. It is an synchronous and cancellable operation. There are two types internal move operation provieded by the class, the native move and the fallback move.
 
 The native move is very fast, but it might not be support in many cases, such as move from different computer. The fallback move is actually a copy and delete operation of files. It might spend a lot of times for a large file directory's movement.
+
+## FileOperationProgressWizard
+FileOperationProgressWizard is used to indicate the progress of a FileOperation instance. Cause the operation running in thread, wizard should connect the providing signal of FileOperation and then it will handle the sending signal internally.
