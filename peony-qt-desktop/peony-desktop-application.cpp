@@ -63,7 +63,7 @@ void trySetDefaultFolderUrlHandler() {
             while (l) {
                 GAppInfo *info = static_cast<GAppInfo*>(l->data);
                 QString cmd = g_app_info_get_commandline(info);
-                if (cmd == "peony-qt") {
+                if (cmd == "peony") {
                     hasPeonyQtAppInfo = true;
                     g_app_info_set_as_default_for_type(info, "inode/directory", nullptr);
                     break;
@@ -75,7 +75,7 @@ void trySetDefaultFolderUrlHandler() {
             }
 
             if (!hasPeonyQtAppInfo) {
-                GAppInfo *peony_qt = g_app_info_create_from_commandline("peony-qt",
+                GAppInfo *peony_qt = g_app_info_create_from_commandline("peony",
                                                                         nullptr,
                                                                         G_APP_INFO_CREATE_SUPPORTS_URIS,
                                                                         nullptr);
@@ -144,7 +144,7 @@ void PeonyDesktopApplication::parseCmd(quint32 id, QByteArray msg, bool isPrimar
 {
     QCommandLineParser parser;
 
-    QCommandLineOption quitOption(QStringList()<<"q"<<"quit", tr("Close the peony-qt desktop window"));
+    QCommandLineOption quitOption(QStringList()<<"q"<<"quit", tr("Close the peony desktop window"));
     parser.addOption(quitOption);
 
     QCommandLineOption daemonOption(QStringList()<<"d"<<"deamon", tr("Take over the dbus service."));
@@ -182,31 +182,31 @@ void PeonyDesktopApplication::parseCmd(quint32 id, QByteArray msg, bool isPrimar
                 connect(service, &Peony::FMDBusService::showItemsRequest, [=](const QStringList &urisList){
                     QProcess p;
 #if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
-                    p.setProgram("peony-qt");
+                    p.setProgram("peony");
                     p.setArguments(QStringList()<<"--show-items"<<urisList);
                     p.startDetached();
 #else
-                    p.startDetached("peony-qt", QStringList()<<"--show-items"<<urisList, nullptr);
+                    p.startDetached("peony", QStringList()<<"--show-items"<<urisList, nullptr);
 #endif
                 });
                 connect(service, &Peony::FMDBusService::showFolderRequest, [=](const QStringList &urisList){
                     QProcess p;
 #if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
-                    p.setProgram("peony-qt");
+                    p.setProgram("peony");
                     p.setArguments(QStringList()<<"--show-folders"<<urisList);
                     p.startDetached();
 #else
-                    p.startDetached("peony-qt", QStringList()<<"--show-folders"<<urisList, nullptr);
+                    p.startDetached("peony", QStringList()<<"--show-folders"<<urisList, nullptr);
 #endif
                 });
                 connect(service, &Peony::FMDBusService::showItemPropertiesRequest, [=](const QStringList &urisList){
                     QProcess p;
 #if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
-                    p.setProgram("peony-qt");
+                    p.setProgram("peony");
                     p.setArguments(QStringList()<<"--show-properties"<<urisList);
                     p.startDetached();
 #else
-                    p.startDetached("peony-qt", QStringList()<<"--show-properties"<<urisList, nullptr);
+                    p.startDetached("peony", QStringList()<<"--show-properties"<<urisList, nullptr);
 #endif
                 });
             }

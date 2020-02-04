@@ -138,12 +138,12 @@ DesktopWindow::DesktopWindow(QScreen *screen, bool is_primary, QWidget *parent)
 #if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
                 QProcess p;
                 QUrl url = uri;
-                p.setProgram("peony-qt");
+                p.setProgram("peony");
                 p.setArguments(QStringList() << url.toEncoded());
                 p.startDetached();
 #else
                 QProcess p;
-                p.startDetached("peony-qt", QStringList()<<uri);
+                p.startDetached("peony", QStringList()<<uri);
 #endif
             } else {
                 FileLaunchManager::openAsync(uri);
