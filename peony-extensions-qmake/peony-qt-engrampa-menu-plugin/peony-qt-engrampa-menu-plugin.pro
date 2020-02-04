@@ -24,7 +24,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 CONFIG += link_pkgconfig plugin
 
-PKGCONFIG += peony-qt
+PKGCONFIG += peony
 
 TRANSLATIONS = translations/peony-qt-engrampa-menu-extension_zh_CN.ts
 

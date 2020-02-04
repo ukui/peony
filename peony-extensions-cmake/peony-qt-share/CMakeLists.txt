@@ -9,11 +9,11 @@ set(PROJECTNAME peony-qt-admin)
 find_package(Qt5 COMPONENTS Core Gui Widgets Concurrent REQUIRED)
 find_package(PkgConfig REQUIRED)
 
-pkg_check_modules(PEONY_QT REQUIRED peony-qt)
-message(${PEONY_QT_INCLUDE_DIRS})
-message(${PEONY_QT_LIBRARIES})
+pkg_check_modules(PEONY REQUIRED peony)
+message(${PEONY_INCLUDE_DIRS})
+message(${PEONY_LIBRARIES})
 
-include_directories(${PEONY_QT_INCLUDE_DIRS})
+include_directories(${PEONY_INCLUDE_DIRS})
 
 aux_source_directory(. SRC_FILES)
 
@@ -23,6 +23,6 @@ qt5_add_resources(QRC_FILES ${QRC_SOURCE_FILES})
 
 add_library(${PROJECT_NAME} SHARED ${SRC_FILES} ${QRC_FILES})
 
-target_link_libraries(${PROJECT_NAME} Qt5::Core Qt5::Gui Qt5::Widgets Qt5::Concurrent ${PEONY_QT_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} Qt5::Core Qt5::Gui Qt5::Widgets Qt5::Concurrent ${PEONY_LIBRARIES})
 
 install(TARGETS peony-qt-share DESTINATION /usr/lib/peony-qt-extensions)
