@@ -1,43 +1,43 @@
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
-Upstream-Name: peony-qt-extensions
-Source: <https://github.com/explorer-cs/peony-qt-extensions>
+Upstream-Name: peony-extensions
+Source: <https://github.com/ukui/peony-extensions.git>
 
-Files:     peony-qt-extensions-cmake/peony-qt-admin/admin-menu-plugin.cpp
-           peony-qt-extensions-cmake/peony-qt-admin/admin-menu-plugin.h
-           peony-qt-extensions-cmake/peony-qt-share/net-usershare-helper.cpp
-           peony-qt-extensions-cmake/peony-qt-share/net-usershare-helper.h
-           peony-qt-extensions-cmake/peony-qt-share/share-page.cpp
-           peony-qt-extensions-cmake/peony-qt-share/share-page.h
-           peony-qt-extensions-cmake/peony-qt-share/share-properties-page-plugin.cpp
-           peony-qt-extensions-cmake/peony-qt-share/share-properties-page-plugin.h
-           peony-qt-extensions-qmake/gtk2-style-enhanced-plugin/gtk2-style-enhanced-plugin.cpp
-           peony-qt-extensions-qmake/gtk2-style-enhanced-plugin/gtk2-style-enhanced-plugin.h
-           peony-qt-extensions-qmake/gtk2-style-enhanced-plugin/gtk2-style-enhanced-plugin_global.h
-           peony-qt-extensions-qmake/peony-qt-create-link/create-link-menu-plugin.cpp
-           peony-qt-extensions-qmake/peony-qt-create-link/create-link-menu-plugin.h
-           peony-qt-extensions-qmake/peony-qt-create-link/peony-qt-create-link_global.h
-           peony-qt-extensions-qmake/peony-qt-engrampa-menu-plugin/engrampa-menu-plugin.cpp
-           peony-qt-extensions-qmake/peony-qt-engrampa-menu-plugin/engrampa-menu-plugin.h
-           peony-qt-extensions-qmake/peony-qt-engrampa-menu-plugin/peony-qt-engrampa-menu-plugin_global.h
-           peony-qt-extensions-qmake/peony-qt-menu-plugin-mate-terminal/mate-terminal-menu-plugin.cpp
-           peony-qt-extensions-qmake/peony-qt-menu-plugin-mate-terminal/mate-terminal-menu-plugin.h
-           peony-qt-extensions-qmake/peony-qt-menu-plugin-mate-terminal/peony-qt-menu-plugin-mate-terminal_global.h
+Files:     peony-extensions-cmake/peony-qt-admin/admin-menu-plugin.cpp
+           peony-extensions-cmake/peony-qt-admin/admin-menu-plugin.h
+           peony-extensions-cmake/peony-qt-share/net-usershare-helper.cpp
+           peony-extensions-cmake/peony-qt-share/net-usershare-helper.h
+           peony-extensions-cmake/peony-qt-share/share-page.cpp
+           peony-extensions-cmake/peony-qt-share/share-page.h
+           peony-extensions-cmake/peony-qt-share/share-properties-page-plugin.cpp
+           peony-extensions-cmake/peony-qt-share/share-properties-page-plugin.h
+           peony-extensions-qmake/gtk2-style-enhanced-plugin/gtk2-style-enhanced-plugin.cpp
+           peony-extensions-qmake/gtk2-style-enhanced-plugin/gtk2-style-enhanced-plugin.h
+           peony-extensions-qmake/gtk2-style-enhanced-plugin/gtk2-style-enhanced-plugin_global.h
+           peony-extensions-qmake/peony-qt-create-link/create-link-menu-plugin.cpp
+           peony-extensions-qmake/peony-qt-create-link/create-link-menu-plugin.h
+           peony-extensions-qmake/peony-qt-create-link/peony-qt-create-link_global.h
+           peony-extensions-qmake/peony-qt-engrampa-menu-plugin/engrampa-menu-plugin.cpp
+           peony-extensions-qmake/peony-qt-engrampa-menu-plugin/engrampa-menu-plugin.h
+           peony-extensions-qmake/peony-qt-engrampa-menu-plugin/peony-qt-engrampa-menu-plugin_global.h
+           peony-extensions-qmake/peony-qt-menu-plugin-mate-terminal/mate-terminal-menu-plugin.cpp
+           peony-extensions-qmake/peony-qt-menu-plugin-mate-terminal/mate-terminal-menu-plugin.h
+           peony-extensions-qmake/peony-qt-menu-plugin-mate-terminal/peony-qt-menu-plugin-mate-terminal_global.h
 Copyright: 2019 Tianjin KYLIN Information Technology Co., Ltd.
 License:   LGPL-3.0+
 
 Files:     CMakeLists.txt
            README.md
            insert_copyright.sh
-           peony-qt-extensions-cmake/CMakeLists.txt
-           peony-qt-extensions-cmake/README.md
-           peony-qt-extensions-cmake/peony-qt-admin/CMakeLists.txt
-           peony-qt-extensions-cmake/peony-qt-share/CMakeLists.txt
-           peony-qt-extensions-qmake/README.md
-           peony-qt-extensions-qmake/gtk2-style-enhanced-plugin/gtk2-style-enhanced-plugin.pro
-           peony-qt-extensions-qmake/peony-qt-create-link/peony-qt-create-link.pro
-           peony-qt-extensions-qmake/peony-qt-engrampa-menu-plugin/peony-qt-engrampa-menu-plugin.pro
-           peony-qt-extensions-qmake/peony-qt-extensions-qmake.pro
-           peony-qt-extensions-qmake/peony-qt-menu-plugin-mate-terminal/peony-qt-menu-plugin-mate-terminal.pro
+           peony-extensions-cmake/CMakeLists.txt
+           peony-extensions-cmake/README.md
+           peony-extensions-cmake/peony-qt-admin/CMakeLists.txt
+           peony-extensions-cmake/peony-qt-share/CMakeLists.txt
+           peony-extensions-qmake/README.md
+           peony-extensions-qmake/gtk2-style-enhanced-plugin/gtk2-style-enhanced-plugin.pro
+           peony-extensions-qmake/peony-qt-create-link/peony-qt-create-link.pro
+           peony-extensions-qmake/peony-qt-engrampa-menu-plugin/peony-qt-engrampa-menu-plugin.pro
+           peony-extensions-qmake/peony-extensions-qmake.pro
+           peony-extensions-qmake/peony-qt-menu-plugin-mate-terminal/peony-qt-menu-plugin-mate-terminal.pro
 Copyright: 2019 Tianjin KYLIN Information Technology Co., Ltd.
 License:   LGPL-3.0+
 
@@ -45,11 +45,11 @@ Files: debian/*
 Copyright: 2019 Tianjin KYLIN Information Technology Co., Ltd.
 License:   LGPL-3.0+
 
-Files: peony-qt-extensions-cmake/*
+Files: peony-extensions-cmake/*
 Copyright: 2019 Tianjin KYLIN Information Technology Co., Ltd.
 License:   LGPL-3.0+
 
-Files: peony-qt-extensions-qmake/*
+Files: peony-extensions-qmake/*
 Copyright: 2019 Tianjin KYLIN Information Technology Co., Ltd.
 License:   LGPL-3.0+
 

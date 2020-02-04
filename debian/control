@@ -7,7 +7,7 @@ Standards-Version: 4.4.0
 Rules-Requires-Root: no
 Homepage: https://github.com/ukui/peony-extensions
 
-Package: peony-qt-admin
+Package: peony-admin
 Architecture: any
 Depends: ${misc:Depends}, ${shlibs:Depends}, libpeony2, policykit-1
 Description: Add administrative actions to Peony's right-click menu
@@ -21,7 +21,7 @@ Description: Add administrative actions to Peony's right-click menu
    - Run as Administrator: runs an executable file with administrator
      (root) privileges inside a MATE Terminal.
 
-Package: peony-qt-share
+Package: peony-share
 Architecture: any
 Depends: ${misc:Depends}, ${shlibs:Depends}, libpeony2, samba-common-bin
 Description: Allows one to quickly share a folder from the Peony file manager
@@ -32,30 +32,30 @@ Description: Allows one to quickly share a folder from the Peony file manager
  Peony file manager without requiring root access. It uses Samba, so your
  folders can be accessed by any operating system.
 
-Package: peony-qt-gtk2-style-enhanced-plugin
+Package: peony-gtk2-style-enhanced-plugin
 Architecture: any
 Breaks: gtk2-style-enhanced-plugin
-Replaces: peony-qt-gtk2-style-enhanced-plugin, gtk2-style-enhanced-plugin
+Replaces: peony-gtk2-style-enhanced-plugin, gtk2-style-enhanced-plugin
 Depends: ${misc:Depends}, ${shlibs:Depends}, libpeony2, qt5-gtk2-platformtheme
 Description: Allow one to quickly use theme enhance manager plugin.
  You can use this plugin to get better ukui-theme effects. This
  package adds extended functionality to the Peony file manager.
 
-Package: peony-qt-create-link
+Package: peony-create-link
 Architecture: any
 Depends: ${misc:Depends}, ${shlibs:Depends}, libpeony2
 Description: Allow one to quickly create a link of file or dictory.
  You can use this plugin to create a link of file or directory in desktop. This
  package adds extended functionality to the Peony file manager.
 
-Package: peony-qt-engrampa-menu-plugin
+Package: peony-engrampa-menu-plugin
 Architecture: any
 Depends: ${misc:Depends}, ${shlibs:Depends}, libpeony2, engrampa
 Description: Peony qt plugin for file compress and uncompress.
  You can use this plugin to compress or uncompress file or folder. This
  package adds extended functionality to the Peony file manager.
 
-Package: peony-qt-menu-plugin-mate-terminal
+Package: peony-menu-plugin-mate-terminal
 Architecture: any
 Depends: ${misc:Depends}, ${shlibs:Depends}, libpeony2, mate-terminal
 Description: Peony plugin for opening terminals in arbitrary local paths
@@ -67,7 +67,7 @@ Description: Peony plugin for opening terminals in arbitrary local paths
 
 Package: peony-extensions
 Architecture: any
-Depends: ${misc:Depends}, ${shlibs:Depends}, peony-qt-admin, peony-qt-share, peony-qt-gtk2-style-enhanced-plugin, peony-qt-create-link, peony-qt-engrampa-menu-plugin, peony-qt-menu-plugin-mate-terminal
+Depends: ${misc:Depends}, ${shlibs:Depends}, peony-admin, peony-share, peony-gtk2-style-enhanced-plugin, peony-create-link, peony-engrampa-menu-plugin, peony-menu-plugin-mate-terminal
 Description: Peony qt extensions (common files)
  Peony is the official file manager for the UKUI desktop. This
  package adds extended functionality to the Peony file manager.
