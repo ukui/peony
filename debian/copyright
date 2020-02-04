@@ -211,6 +211,7 @@ Files:     COPYING.EXTENSIONS
            libpeony-qt/vfs/search-vfs-register.h
            libpeony-qt/vfs/search-vfs-uri-parser.cpp
            libpeony-qt/vfs/search-vfs-uri-parser.h
+           libpeony-qt/vfs/README.md
            libpeony-qt/volume-manager.cpp
            libpeony-qt/volume-manager.h
            libpeony-qt/windows/fm-window.cpp
@@ -325,7 +326,7 @@ Files:     .github/ISSUE_TEMPLATE/bug-report-zh_cn.md
            libpeony-qt/development-files/header-files/model/PeonyPathCompleter
            libpeony-qt/development-files/header-files/model/PeonySideBarModel
            libpeony-qt/development-files/header-files/model/PeonySideBarProxyModel
-           libpeony-qt/development-files/peony-qt.pc
+           libpeony-qt/development-files/peony.pc
            libpeony-qt/file-launcher/file-launcher.pri
            libpeony-qt/file-operation/README.md
            libpeony-qt/file-operation/file-operation-test/file-operation-test.pro
@@ -355,7 +356,7 @@ Files:     .github/ISSUE_TEMPLATE/bug-report-zh_cn.md
            plugin-iface/plugin-iface.pri
            plugin/menuplugintest1.json
            plugin/plugin.pro
-           src/man/peony-qt.1
+           src/man/peony.1
            src/src.pro
            translations/clean-translated-resources.sh
            translations/update-translations.sh

@@ -10,7 +10,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 VERSION = 2.0.0
 
-TARGET = peony-qt
+TARGET = peony
 
 TEMPLATE = app
 
@@ -22,7 +22,7 @@ PKGCONFIG +=gio-2.0 glib-2.0 gio-unix-2.0
 LIBS +=-lgio-2.0 -lglib-2.0 -lX11
 CONFIG += c++11 link_pkgconfig no_keywords
 
-LIBS += -L$$PWD/../libpeony-qt/ -lpeony-qt
+LIBS += -L$$PWD/../libpeony-qt/ -lpeony
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which has been marked as deprecated (the exact warnings

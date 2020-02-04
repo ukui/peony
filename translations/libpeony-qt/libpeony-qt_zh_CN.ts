@@ -710,9 +710,9 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
 <context>
     <name>Peony::FileEnumerator</name>
     <message>
-        <location filename="../../libpeony-qt/file-enumerator.cpp" line="235"/>
-        <location filename="../../libpeony-qt/file-enumerator.cpp" line="239"/>
-        <location filename="../../libpeony-qt/file-enumerator.cpp" line="340"/>
+        <location filename="../../libpeony-qt/file-enumerator.cpp" line="243"/>
+        <location filename="../../libpeony-qt/file-enumerator.cpp" line="247"/>
+        <location filename="../../libpeony-qt/file-enumerator.cpp" line="348"/>
         <source>Error</source>
         <translation>错误</translation>
     </message>

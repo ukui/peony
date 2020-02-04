@@ -10,7 +10,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += printsupport
 
 VERSION = 2.0.0
 
-TARGET = peony-qt
+TARGET = peony
 TEMPLATE = lib
 
 CONFIG += link_pkgconfig no_keywords c++11
@@ -52,7 +52,7 @@ unix {
 #    QMAKE_EXTRA_TARGETS += header header2
 
     pcfile.path = $$[QT_INSTALL_LIBS]/pkgconfig
-    pcfile.files = development-files/peony-qt.pc
+    pcfile.files = development-files/peony.pc
     INSTALLS += pcfile
 
     translation.path = /usr/share/libpeony-qt
