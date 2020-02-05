@@ -1,9 +1,10 @@
 [Desktop Entry]
-Name=Peony Qt Desktop
-GenericName=Desktop Manager
-GenericName[zh_CN]=UKUI桌面
-Name[zh_CN]=UKUI桌面
-Exec=/usr/bin/peony-qt-desktop -w -d
-Icon=user-desktop
+Name=Peony
+GenericName=UKUI File Manager
+GenericName[zh_CN]=文件管理器
+Name[zh_CN]=文件管理器
+Exec=/usr/bin/peony %U
+MimeType=inode/directory
+Icon=system-file-manager
 Terminal=false
 Type=Application

@@ -190,7 +190,7 @@ void AdvanceSearchBar::searchFilter()
     {
         QMessageBox *msgBox = new QMessageBox(this);
         msgBox->setWindowTitle(tr("Operate Tips"));
-        msgBox->setText(tr("Search file name or content at leat choose one!"));
+        msgBox->setText(tr("Search file name or content at least choose one!"));
         msgBox->exec();
         return;
     }

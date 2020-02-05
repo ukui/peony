@@ -173,7 +173,7 @@ ComputerPropertiesPage::ComputerPropertiesPage(const QString &uri, QWidget *pare
             m_layout->addRow(progressBar);
             m_layout->setAlignment(progressBar, Qt::AlignBottom);
         } else {
-            m_layout->addRow(new QLabel(tr("Unkown"), nullptr));
+            m_layout->addRow(new QLabel(tr("Unknown"), nullptr));
         }
     }
 }

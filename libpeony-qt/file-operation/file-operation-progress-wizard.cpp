@@ -231,7 +231,7 @@ void FileOperationProgressWizard::updateProgress(const QString &srcUri, const QS
     }
     m_delayer->start();
 
-    if (m_second_page->m_state_line->text() == "unknow") {
+    if (m_second_page->m_state_line->text() == "unknown") {
         m_second_page->m_state_line->setText(tr("copying..."));
     }
     m_second_page->m_src_line->setText(srcUri);
@@ -281,7 +281,7 @@ FileOperationProgressPage::FileOperationProgressPage(QWidget *parent) : QWizardP
 {
     m_layout = new QGridLayout(this);
 
-    m_state_line = new QLabel("unknow", this);
+    m_state_line = new QLabel("unknown", this);
 
     m_progress_bar = new QProgressBar(this);
 

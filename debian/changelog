@@ -1,8 +1,15 @@
-peony (2.0.0) unstable; urgency=medium
+peony (2.0.0-1) unstable; urgency=medium
 
-  * refactor peony ui with Qt (from Gtk3).
+  * New upstream release.
+    - Refactor peony ui with Qt (from Gtk3).
+  * debian/control:
+    - Bump to compat 12.
+    - Bump Standards-Version to 4.5.0.
+    - Refresh the dependency.
+    - Set Rules-requires-Root to no.
+  * debian/copyright: Refreash the copyright entry.
 
- -- Yue Lan <lanyue@kylinos.cn>  Fri, 17 Jan 2020 10:49:11 +0800
+ -- handsome_feng <jianfengli@ubuntukylin.com>  Tue, 04 Feb 2020 11:09:14 +0800
 
 peony (1.1.7-1) unstable; urgency=medium
 

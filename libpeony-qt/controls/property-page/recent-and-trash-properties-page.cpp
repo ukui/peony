@@ -86,7 +86,7 @@ RecentAndTrashPropertiesPage::RecentAndTrashPropertiesPage(const QStringList &ur
             auto label = new QLabel(QUrl(targetUri).toDisplayString(), this);
             label->setWordWrap(true);
             m_layout->addRow(tr("Size: "), new QLabel(info->fileSize(), this));
-            m_layout->addRow(tr("Orignal Location: "), label);
+            m_layout->addRow(tr("Original Location: "), label);
         }
     }
 }

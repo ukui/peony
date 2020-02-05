@@ -147,7 +147,7 @@ void PeonyDesktopApplication::parseCmd(quint32 id, QByteArray msg, bool isPrimar
     QCommandLineOption quitOption(QStringList()<<"q"<<"quit", tr("Close the peony desktop window"));
     parser.addOption(quitOption);
 
-    QCommandLineOption daemonOption(QStringList()<<"d"<<"deamon", tr("Take over the dbus service."));
+    QCommandLineOption daemonOption(QStringList()<<"d"<<"daemon", tr("Take over the dbus service."));
     parser.addOption(daemonOption);
 
     QCommandLineOption desktopOption(QStringList()<<"w"<<"desktop-window", tr("Take over the desktop displaying"));

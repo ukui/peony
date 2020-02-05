@@ -139,11 +139,11 @@
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.cpp" line="193"/>
-        <source>Search file name or content at leat choose one!</source>
+        <source>Search file name or content at least choose one!</source>
         <translation>搜索文件名或者内容请至少指定一个！</translation>
     </message>
     <message>
-        <source>Search content or file name at leat choose one!</source>
+        <source>Search content or file name at least choose one!</source>
         <translation type="vanished">搜索文件名或者内容请至少指定一个！</translation>
     </message>
     <message>
@@ -351,7 +351,7 @@
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/property-page/computer-properties-page.cpp" line="176"/>
-        <source>Unkown</source>
+        <source>Unknown</source>
         <translation>未知的分区</translation>
     </message>
 </context>
@@ -1249,7 +1249,7 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/property-page/recent-and-trash-properties-page.cpp" line="89"/>
-        <source>Orignal Location: </source>
+        <source>Original Location: </source>
         <translation>原路径: </translation>
     </message>
 </context>

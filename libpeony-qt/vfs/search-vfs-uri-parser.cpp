@@ -42,7 +42,7 @@ const QString SearchVFSUriParser:: parseSearchKey(const QString &uri, const QStr
         search_str += "&content_regexp="+key;
     else if (! search_file_name)
     {
-        qWarning()<<"Search content or file name at leat one be true!";
+        qWarning()<<"Search content or file name at least one be true!";
         //use default search file name
         search_str += "&name_regexp="+key;
     }
