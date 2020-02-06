@@ -50,6 +50,7 @@ public Q_SLOTS:
     void setShowHidden();
     void updateLocation();
     void pathChanged();
+    void setdefaultpath(QString path);
 
 public:
     //advance search filter options

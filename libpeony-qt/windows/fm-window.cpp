@@ -680,6 +680,11 @@ void FMWindow::advanceSearch()
         else
              m_advance_target_path = "file://" + target_path;
 
+        //set default search path as current path
+        if (m_filter_bar)
+        {
+            m_filter_bar->setdefaultpath(target_path);
+        }
         m_filter_bar->updateLocation();
         m_side_bar_container->setCurrentWidget(m_filter);
     }

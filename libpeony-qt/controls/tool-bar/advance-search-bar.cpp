@@ -159,6 +159,12 @@ void AdvanceSearchBar::init()
     });
 }
 
+void AdvanceSearchBar::setdefaultpath(QString path)
+{
+    m_choosed_paths.clear();
+    m_choosed_paths.push_back(path);
+}
+
 void AdvanceSearchBar::browsePath()
 {
     QString target_path = QFileDialog::getExistingDirectory(this, "caption", m_top_window->getCurrentUri(), QFileDialog::ShowDirsOnly);
