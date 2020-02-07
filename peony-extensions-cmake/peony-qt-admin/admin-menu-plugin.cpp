@@ -58,7 +58,7 @@ QList<QAction *> AdminMenuPlugin::menuActions(Types types, const QString &uri, c
                 QProcess p;
                 QUrl url = uri;
                 p.setProgram("pkexec");
-                p.setArguments(QStringList()<<"peony-qt"<<url.toEncoded());
+                p.setArguments(QStringList()<<"peony"<<url.toEncoded());
                 p.start();
                 p.waitForFinished();
             });
@@ -73,7 +73,7 @@ QList<QAction *> AdminMenuPlugin::menuActions(Types types, const QString &uri, c
                     QProcess p;
                     QUrl url = selectionUris.first();
                     p.setProgram("pkexec");
-                    p.setArguments(QStringList()<<"peony-qt"<<url.toEncoded());
+                    p.setArguments(QStringList()<<"peony"<<url.toEncoded());
                     p.start();
                     p.waitForFinished();
                 });
