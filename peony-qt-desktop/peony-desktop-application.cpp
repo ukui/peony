@@ -62,8 +62,8 @@ void trySetDefaultFolderUrlHandler() {
             GList *l = apps;
             while (l) {
                 GAppInfo *info = static_cast<GAppInfo*>(l->data);
-                QString cmd = g_app_info_get_commandline(info);
-                if (cmd == "peony") {
+                QString cmd = g_app_info_get_executable(info);
+                if (cmd.contains("peony")) {
                     hasPeonyQtAppInfo = true;
                     g_app_info_set_as_default_for_type(info, "inode/directory", nullptr);
                     break;

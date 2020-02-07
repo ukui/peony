@@ -440,11 +440,11 @@ void DesktopMenu::openWindow(const QString &uri)
     QUrl url = uri;
     QProcess p;
 #if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
-    p.setProgram("peony-qt");
+    p.setProgram("peony");
     p.setArguments(QStringList()<<"--show-folders"<<url.toEncoded());
     p.startDetached();
 #else
-    p.startDetached("peony-qt", QStringList()<<"--show-folders"<<uri);
+    p.startDetached("peony", QStringList()<<"--show-folders"<<uri);
 #endif
 }
 
@@ -479,11 +479,11 @@ void DesktopMenu::openWindow(const QStringList &uris)
     }
     QProcess p;
 #if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
-    p.setProgram("peony-qt");
+    p.setProgram("peony");
     p.setArguments(QStringList()<<"--show-folders"<<args);
     p.startDetached();
 #else
-    p.startDetached("peony-qt", QStringList()<<"--show-folders"<<args);
+    p.startDetached("peony", QStringList()<<"--show-folders"<<args);
 #endif
 }
 
@@ -492,11 +492,11 @@ void DesktopMenu::showProperties(const QString &uri)
     QUrl url = uri;
     QProcess p;
 #if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
-    p.setProgram("peony-qt");
+    p.setProgram("peony");
     p.setArguments(QStringList()<<"--show-properties"<<url.toEncoded());
     p.startDetached();
 #else
-    p.startDetached("peony-qt", QStringList()<<"--show-properties"<<url.toEncoded());
+    p.startDetached("peony", QStringList()<<"--show-properties"<<url.toEncoded());
 #endif
 }
 
@@ -509,10 +509,10 @@ void DesktopMenu::showProperties(const QStringList &uris)
     }
     QProcess p;
 #if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
-    p.setProgram("peony-qt");
+    p.setProgram("peony");
     p.setArguments(QStringList()<<"--show-properties"<<args);
     p.startDetached();
 #else
-    p.startDetached("peony-qt", QStringList()<<"--show-properties"<<args);
+    p.startDetached("peony", QStringList()<<"--show-properties"<<args);
 #endif
 }
