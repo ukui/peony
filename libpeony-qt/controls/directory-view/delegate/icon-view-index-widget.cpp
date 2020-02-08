@@ -133,13 +133,13 @@ void IconViewIndexWidget::paintEvent(QPaintEvent *e)
 
     //auto textRectF = QRectF(0, m_delegate->getView()->iconSize().height(), this->width(), this->height());
     p.save();
-    p.translate(0, m_delegate->getView()->iconSize().height() + 9);
+    p.translate(-1, m_delegate->getView()->iconSize().height() + 13);
     //m_edit->document()->drawContents(&p);
     QTextOption textOption(Qt::AlignTop|Qt::AlignHCenter);
     textOption.setWrapMode(QTextOption::WrapAtWordBoundaryOrAnywhere);
     p.setFont(opt.font);
     p.setPen(opt.palette.highlightedText().color());
-    p.drawText(QRect(1, 5, this->width() -1, 9999), opt.text, textOption);
+    p.drawText(QRect(1, 0, this->width() - 1, 9999), opt.text, textOption);
     p.restore();
 
     //extra emblems

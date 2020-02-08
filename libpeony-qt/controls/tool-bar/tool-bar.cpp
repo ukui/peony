@@ -66,9 +66,9 @@ ToolBar::ToolBar(FMWindow *window, QWidget *parent) : QToolBar(parent)
 void ToolBar::init()
 {
     //layout
-    QAction *newWindowAction = addAction(QIcon::fromTheme("window-new-symbolic", QIcon::fromTheme("folder")),
+    QAction *newWindowAction = addAction(QIcon::fromTheme("window-new-symbolic"),
                                          tr("Open in new &Window"));
-    QAction *newTabActon = addAction(QIcon::fromTheme("tab-new-symbolic", QIcon::fromTheme("folder")),
+    QAction *newTabActon = addAction(QIcon::fromTheme("tab-new-symbolic"),
                                      tr("Open in new &Tab"));
 
     addSeparator();
