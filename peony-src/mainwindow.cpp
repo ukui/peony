@@ -16,12 +16,22 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
-    //TODO: make window be recognized as csd window in window manager.
-    setWindowFlag(Qt::FramelessWindowHint);
+    /*!
+      \todo
+      make window be recognized as csd window in all window managers.
+      .
+      In kwin, it also detect _GTK_FRAME_EXTENT atom, and asume it as csd window.
+      However it seems that there is no effect for qt window, and maybe
+      I have to try implementing a KDecorator for client side decorations in kwin.
+
+      make window can be maximumed/half-maximumed like other windows have titlebar.
+      */
+    //setWindowFlag(Qt::FramelessWindowHint);
     setAttribute(Qt::WA_Hover);
-    setContentsMargins(4, 4, 4, 4);
+    //setContentsMargins(4, 4, 4, 4);
     //use qt private api resize the widget.
-    new QWidgetResizeHandler(this);
+    auto handler = new QWidgetResizeHandler(this);
+    handler->setActive(QWidgetResizeHandler::Resize, false);
 
     //title bar
     ui->setupUi(this);

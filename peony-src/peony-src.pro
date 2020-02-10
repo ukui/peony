@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui x11extras
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets widgets-private
 
@@ -34,10 +34,13 @@ LIBS += -L$$PWD/../libpeony-qt/ -lpeony
 
 SOURCES += \
         main.cpp \
-        mainwindow.cpp
+        mainwindow.cpp \
+    decorator.cpp
 
 HEADERS += \
-        mainwindow.h
+        mainwindow.h \
+    decorator.h \
+    mwmutil.h
 
 FORMS += \
         mainwindow.ui
