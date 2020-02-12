@@ -313,7 +313,7 @@ void ToolBar::init()
                                   "\n"
                                   "Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd."));
         });
-        about->setShortcut(Qt::Key_F2);
+        about->setShortcut(Qt::CTRL + Qt::Key_F2);
 
         auto point = this->widgetForAction(optionAction)->geometry().bottomLeft();
         auto global_point = mapToGlobal(point);

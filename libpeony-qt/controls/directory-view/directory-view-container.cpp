@@ -264,7 +264,7 @@ void DirectoryViewContainer::switchViewType(const QString &viewId)
     this->addAction(goForwardAction);
 
     QAction *editAction = new QAction(m_view);
-    editAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_E));
+    editAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::ALT + Qt::Key_E)<<Qt::Key_F2);
     connect(editAction, &QAction::triggered, this, [=](){
         auto selections = m_view->getSelections();
         if (selections.count() == 1) {
