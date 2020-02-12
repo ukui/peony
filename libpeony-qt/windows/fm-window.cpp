@@ -358,7 +358,7 @@ FMWindow::FMWindow(const QString &uri, QWidget *parent) : QMainWindow (parent)
     });
 
     auto searchAction = new QAction(this);
-    searchAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::CTRL + Qt::Key_F)<<QKeySequence(Qt::CTRL + Qt::Key_E));
+    searchAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::CTRL + Qt::Key_F)<<QKeySequence(Qt::CTRL + Qt::Key_E)<<Qt::Key_F3);
     connect(searchAction, &QAction::triggered, this, [=](){
         m_search_bar->setFocus();
     });
@@ -387,7 +387,7 @@ FMWindow::FMWindow(const QString &uri, QWidget *parent) : QMainWindow (parent)
     addAction(closeWindowAction);
 
     auto aboutAction = new QAction(this);
-    aboutAction->setShortcut(QKeySequence(Qt::Key_F2));
+    aboutAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_F2));
     connect(aboutAction, &QAction::triggered, this, [=](){
         QMessageBox::about(this,
                            tr("Peony Qt"),
@@ -486,7 +486,7 @@ FMWindow::FMWindow(const QString &uri, QWidget *parent) : QMainWindow (parent)
     addAction(maxAction);
 
     auto previewPageAction = new QAction(this);
-    previewPageAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::ALT + Qt::Key_P)<<Qt::Key_F3);
+    previewPageAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::ALT + Qt::Key_P));
     connect(previewPageAction, &QAction::triggered, this, [=](){
         auto lastPreviewPageId = m_navigation_bar->getLastPreviewPageId();
         m_navigation_bar->triggerAction(lastPreviewPageId);
