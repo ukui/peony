@@ -210,9 +210,13 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="147"/>
         <source>Close the peony-qt desktop window</source>
-        <translation>关闭桌面并退出</translation>
+        <translation type="vanished">关闭桌面并退出</translation>
+    </message>
+    <message>
+        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="147"/>
+        <source>Close the peony desktop window</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="150"/>

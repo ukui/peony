@@ -55,5 +55,5 @@ translation.files += ../translations/peony-qt/*.qm
 INSTALLS += translation
 
 data.path = /usr/share/applications
-data.files += ../data/peony-qt.desktop
+data.files += ../data/peony.desktop
 INSTALLS += data
