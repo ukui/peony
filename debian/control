@@ -64,8 +64,6 @@ Provides: libpeony,
 Recommends: gvfs-backends,
             qt5-gtk2-platformtheme,
             qt5-gtk-platformtheme
-Breaks: libpeony-extensions1
-Replaces: libpeony-extensions1
 Description: libraries for Peony components
  Peony is the official file manager for the UKUI desktop. It allows one
  to browse directories, preview files and launch applications associated

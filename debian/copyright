@@ -254,17 +254,13 @@ Files: libpeony-qt/controls/property-page/recent-and-trash-properties-page-facto
 Copyright: 2019 Tianjin KYLIN Information Technology Co., Ltd.
 License:   LGPL-3.0+
 
-Files: 3rd-parties/SingleApplication/CHANGELOG.md
-       3rd-parties/SingleApplication/CMakeLists.txt
-       3rd-parties/SingleApplication/README.md
-       3rd-parties/SingleApplication/Windows.md
-       3rd-parties/SingleApplication/singleapplication.pri
+Files:
        CONTRIBUTING.md
        GUIDE_ZH_CN.md
        README.md
+       NEWS
        doxygen/Doxyfile.in
        doxygen/README.md
-       insert_copyright.sh
        libpeony-qt/README.md
        libpeony-qt/controls/controls.pri
        libpeony-qt/controls/directory-view/delegate/delegate.pri
@@ -386,10 +382,7 @@ Files: 3rd-parties/SingleApplication/CHANGELOG.md
 Copyright: 2019 Tianjin KYLIN Information Technology Co., Ltd.
 License: GPL-3.0+
 
-Files:     3rd-parties/SingleApplication/singleapplication_p.cpp
-           3rd-parties/SingleApplication/singleapplication_p.h
-           3rd-parties/SingleApplication/singleapplication.cpp
-           3rd-parties/SingleApplication/singleapplication.h
+Files:     3rd-parties/SingleApplication/*
 Copyright: 2015-2018 Itay Grudev
 License:   Expat
  Permission is hereby granted, free of charge, to any person obtaining a copy

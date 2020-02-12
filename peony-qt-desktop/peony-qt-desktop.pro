@@ -36,8 +36,8 @@ LIBS += -L$$PWD/../libpeony-qt/ -lpeony
 TRANSLATIONS += ../translations/peony-qt-desktop/peony-qt-desktop_zh_CN.ts
 
 SOURCES += \
-        main.cpp \
-        desktop-window.cpp \
+    main.cpp \
+    desktop-window.cpp \
     peony-desktop-application.cpp \
     fm-dbus-service.cpp \
     desktop-item-model.cpp \
@@ -49,7 +49,7 @@ SOURCES += \
     desktop-item-proxy-model.cpp
 
 HEADERS += \
-        desktop-window.h \
+    desktop-window.h \
     peony-desktop-application.h \
     fm-dbus-service.h \
     desktop-item-model.h \
@@ -67,8 +67,8 @@ translation.path = /usr/share/peony-qt-desktop
 translation.files += ../translations/peony-qt-desktop/*
 INSTALLS += translation
 
-data.path = /usr/share/applications
-data.files += ../data/peony.desktop
+data.path = /etc/xdg/autostart
+data.files += ../data/peony-desktop.desktop
 
 DISTFILES +=
 
