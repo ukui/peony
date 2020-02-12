@@ -23,15 +23,22 @@ MainWindow::MainWindow(QWidget *parent) :
       In kwin, it also detect _GTK_FRAME_EXTENT atom, and asume it as csd window.
       However it seems that there is no effect for qt window, and maybe
       I have to try implementing a KDecorator for client side decorations in kwin.
-
-      make window can be maximumed/half-maximumed like other windows have titlebar.
       */
-    //setWindowFlag(Qt::FramelessWindowHint);
+    //Even though I have used Decorator tell window manager decorate border only,
+    //some window manager, such as kwin still add titlebar to the widget. For now
+    //I have to add FramelessWindowHint first to tell it realy doesn't need titlebar.
+    //Then i will manually set it border with Decorator.
+    //This hint is useless for window manager know how to response my request, such
+    //as ukwm.
+    setWindowFlag(Qt::FramelessWindowHint);
     setAttribute(Qt::WA_Hover);
     //setContentsMargins(4, 4, 4, 4);
     //use qt private api resize the widget.
     auto handler = new QWidgetResizeHandler(this);
-    handler->setActive(QWidgetResizeHandler::Resize, false);
+    Q_UNUSED(handler)
+    //handler->setActive(QWidgetResizeHandler::Resize, false);
+
+    setMinimumSize(600, 480);
 
     //title bar
     ui->setupUi(this);
@@ -50,17 +57,22 @@ MainWindow::MainWindow(QWidget *parent) :
 
     auto hlayout = new QHBoxLayout();
     auto tmp = new QWidget(this);
+    tmp->setFocusPolicy(Qt::NoFocus);
     tmp->setLayout(hlayout);
     hlayout->setMargin(0);
     hlayout->setSpacing(0);
 
-    auto p = new QPushButton(QIcon::fromTheme("go-previous"), nullptr, this);
+    auto p = new QToolButton(this);
+    p->setAutoRaise(true);
+    p->setIcon(QIcon::fromTheme("go-previous"));
     p->setFixedSize(QSize(36, 28));
     p->setToolTip(tr("Go Back"));
     p->setIconSize(QSize(16, 16));
     hlayout->addWidget(p);
 
-    p = new QPushButton(QIcon::fromTheme("go-next"), nullptr, this);
+    p = new QToolButton(this);
+    p->setAutoRaise(true);
+    p->setIcon(QIcon::fromTheme("go-next"));
     p->setFixedSize(QSize(36, 28));
     p->setToolTip(tr("Go Forward"));
     p->setIconSize(QSize(16, 16));
@@ -69,7 +81,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->mainToolBar->addWidget(tmp);
 
     ui->mainToolBar->addSeparator();
-    ui->mainToolBar->addWidget(new Peony::AdvancedLocationBar(this));
+    auto bar = new Peony::AdvancedLocationBar(this);
+    bar->updateLocation("file:///etc");
+    ui->mainToolBar->addWidget(bar);
     ui->mainToolBar->addSeparator();
 
     a = ui->mainToolBar->addAction(QIcon::fromTheme("search-symbolic"), tr("Find"));

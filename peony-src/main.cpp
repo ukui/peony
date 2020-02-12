@@ -9,6 +9,7 @@ int main(int argc, char *argv[])
     MainWindow w;
     Decorator::wrapWindow(&w);
     w.resize(800, 600);
+    //w.setMask(w.geometry().adjusted(100, 100, -100, -100));
     w.show();
 
     return a.exec();
