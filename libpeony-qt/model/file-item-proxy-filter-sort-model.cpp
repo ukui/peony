@@ -35,7 +35,13 @@
 #include <QMessageBox>
 #include <QDate>
 
+#include <QLocale>
+#include <QCollator>
+
 using namespace Peony;
+
+QLocale locale = QLocale(QLocale::system().name());
+QCollator comparer = QCollator(locale);
 
 FileItemProxyFilterSortModel::FileItemProxyFilterSortModel(QObject *parent) : QSortFilterProxyModel(parent)
 {
@@ -106,7 +112,7 @@ default_sort:
                 bool rightStartWithChinese = startWithChinese(rightDisplayName);
                 //all start with Chinese, use the default compare directly
                 if (leftStartWithChinese && rightStartWithChinese)
-                    break;
+                    return comparer.compare(leftDisplayName, rightDisplayName) < 0;
                 //simplify the logic
                 if (leftStartWithChinese || rightStartWithChinese) {
                     if (sortOrder() == Qt::AscendingOrder) {
