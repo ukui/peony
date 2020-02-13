@@ -48,6 +48,26 @@ private:
     ~MenuPluginManager();
 };
 
+class CreateLinkInternalPlugin : public QObject, public MenuPluginInterface
+{
+    Q_OBJECT
+public:
+    explicit CreateLinkInternalPlugin(QObject *parent);
+
+    PluginInterface::PluginType pluginType() override {return PluginInterface::MenuPlugin;}
+    const QString name() override {return tr("Peony-Qt Create Link Extension");}
+    const QString description() override {return tr("Create Link Menu Extension.");}
+    const QIcon icon() override {return QIcon::fromTheme("emblem-symbolic-link");}
+    void setEnable(bool enable) override {m_enable = enable;}
+    bool isEnable() override {return m_enable;}
+
+    QString testPlugin() override {return "test create link";}
+    QList<QAction *> menuActions(Types types, const QString &uri, const QStringList &selectionUris) override;
+
+private:
+    bool m_enable = true;
+};
+
 }
 
 #endif // MENUPLUGINMANAGER_H

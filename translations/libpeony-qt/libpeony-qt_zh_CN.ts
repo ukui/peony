@@ -356,6 +356,34 @@
     </message>
 </context>
 <context>
+    <name>Peony::CreateLinkInternalPlugin</name>
+    <message>
+        <location filename="../../libpeony-qt/controls/menu/menu-plugin-manager.cpp" line="95"/>
+        <source>Create Link to Desktop</source>
+        <translation>链接到桌面</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/controls/menu/menu-plugin-manager.cpp" line="110"/>
+        <source>Create Link to...</source>
+        <translation>链接到...</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/controls/menu/menu-plugin-manager.cpp" line="113"/>
+        <source>Choose a Directory to Create Link</source>
+        <translation>选择创建链接的目录</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/controls/menu/menu-plugin-manager.h" line="58"/>
+        <source>Peony-Qt Create Link Extension</source>
+        <translation>创建链接</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/controls/menu/menu-plugin-manager.h" line="59"/>
+        <source>Create Link Menu Extension.</source>
+        <translation>创建链接.</translation>
+    </message>
+</context>
+<context>
     <name>Peony::CreateTemplateOperation</name>
     <message>
         <location filename="../../libpeony-qt/file-operation/create-template-operation.cpp" line="110"/>
