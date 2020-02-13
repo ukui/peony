@@ -1,4 +1,4 @@
-peony-extensions (1.2.2-ubuntu1) focal; urgency=medium
+peony-extensions (1.2.2-ubuntu1) eoan; urgency=medium
 
   * Change package rely.
 

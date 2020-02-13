@@ -1,15 +1,29 @@
 Source: peony-extensions
 Section: x11
 Priority: optional
-Maintainer: MeihongHe <hemeihong@kylinos.cn>
-Build-Depends: debhelper (>=12), cmake, pkg-config, libglib2.0-dev, qt5-qmake, qtbase5-dev, qtchooser, qtbase5-dev-tools, libpoppler-qt5-dev, libpeony-dev
+Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
+XSBC-Original-Maintainer: Kylin Team <pkg-kylin-devel@lists.alioth.debian.org>
+Uploaders: handsome_feng <jianfengli@ubuntukylin.com>,
+Build-Depends: debhelper-compat (= 12), 
+               cmake,
+               pkg-config,
+               libglib2.0-dev,
+               qt5-qmake,
+               qtbase5-dev,
+               qtchooser,
+               qtbase5-dev-tools,
+               libpoppler-qt5-dev,
+               libpeony-dev
 Standards-Version: 4.4.0
 Rules-Requires-Root: no
 Homepage: https://github.com/ukui/peony-extensions
 
 Package: peony-admin
 Architecture: any
-Depends: ${misc:Depends}, ${shlibs:Depends}, libpeony2, policykit-1
+Depends: ${misc:Depends},
+         ${shlibs:Depends},
+         libpeony2,
+         policykit-1
 Description: Add administrative actions to Peony's right-click menu
  Peony Admin is a simple Python extension for the Peony file manager that
  adds some administrative actions to the right-click menu:
@@ -23,7 +37,10 @@ Description: Add administrative actions to Peony's right-click menu
 
 Package: peony-share
 Architecture: any
-Depends: ${misc:Depends}, ${shlibs:Depends}, libpeony2, samba-common-bin
+Depends: ${misc:Depends},
+         ${shlibs:Depends},
+         libpeony2,
+         samba-common-bin
 Description: Allows one to quickly share a folder from the Peony file manager
  Peony is the official file manager for the UKUI desktop. This
  package adds extended functionality to the Peony file manager.
@@ -32,23 +49,24 @@ Description: Allows one to quickly share a folder from the Peony file manager
  Peony file manager without requiring root access. It uses Samba, so your
  folders can be accessed by any operating system.
 
-Package: peony-create-link
+Package: parchives
 Architecture: any
-Depends: ${misc:Depends}, ${shlibs:Depends}, libpeony2
-Description: Allow one to quickly create a link of file or dictory.
- You can use this plugin to create a link of file or directory in desktop. This
- package adds extended functionality to the Peony file manager.
-
-Package: peony-engrampa-menu-plugin
-Architecture: any
-Depends: ${misc:Depends}, ${shlibs:Depends}, libpeony2, engrampa
+Depends: ${misc:Depends},
+         ${shlibs:Depends},
+         libpeony2,
+         engrampa
+Replaces: peony-engrampa-menu-plugin
 Description: Peony qt plugin for file compress and uncompress.
  You can use this plugin to compress or uncompress file or folder. This
  package adds extended functionality to the Peony file manager.
 
-Package: peony-menu-plugin-mate-terminal
+Package: peony-open-terminal
 Architecture: any
-Depends: ${misc:Depends}, ${shlibs:Depends}, libpeony2, mate-terminal
+Depends: ${misc:Depends},
+         ${shlibs:Depends},
+         libpeony2,
+         mate-terminal
+Replaces: peony-menu-plugin-mate-terminal
 Description: Peony plugin for opening terminals in arbitrary local paths
  Peony is the official file manager for the UKUI desktop. This
  package adds extended functionality to the Peony file manager.
@@ -58,10 +76,14 @@ Description: Peony plugin for opening terminals in arbitrary local paths
 
 Package: peony-extensions
 Architecture: any
-Depends: ${misc:Depends}, ${shlibs:Depends}, peony-admin, peony-share, peony-create-link, peony-engrampa-menu-plugin, peony-menu-plugin-mate-terminal
+Depends: ${misc:Depends},
+         ${shlibs:Depends},
+         peony-admin,
+         peony-share,
+         parchives,
+         peony-open-terminal
 Description: Peony qt extensions (common files)
  Peony is the official file manager for the UKUI desktop. This
  package adds extended functionality to the Peony file manager.
- .
  This empty package contains the architecture independent files for
  various available Peony extensions.
