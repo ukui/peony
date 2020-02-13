@@ -22,6 +22,17 @@
 
 #include "menu-plugin-manager.h"
 
+//create link
+#include <file-operation-manager.h>
+#include <file-link-operation.h>
+#include <file-info.h>
+#include <gio/gio.h>
+
+#include <QStandardPaths>
+#include <QFileDialog>
+#include <QApplication>
+//create link
+
 #include <QDebug>
 
 using namespace Peony;
@@ -30,7 +41,7 @@ static MenuPluginManager *global_instance = nullptr;
 
 MenuPluginManager::MenuPluginManager(QObject *parent) : QObject(parent)
 {
-
+    registerPlugin(new CreateLinkInternalPlugin(this));
 }
 
 MenuPluginManager::~MenuPluginManager()
@@ -68,4 +79,49 @@ const QStringList MenuPluginManager::getPluginIds()
 MenuPluginInterface *MenuPluginManager::getPlugin(const QString &pluginId)
 {
     return m_hash.value(pluginId);
+}
+
+//CreateLinkInternalPlugin
+CreateLinkInternalPlugin::CreateLinkInternalPlugin(QObject *parent) : QObject (parent)
+{
+
+}
+
+QList<QAction *> CreateLinkInternalPlugin::menuActions(MenuPluginInterface::Types types, const QString &uri, const QStringList &selectionUris)
+{
+    QList<QAction *> l;
+    if (types == MenuPluginInterface::DesktopWindow || types == MenuPluginInterface::DirectoryView) {
+        if (selectionUris.count() == 1) {
+            auto createLinkToDesktop = new QAction(QIcon::fromTheme("emblem-symbolic-link"), tr("Create Link to Desktop"));
+            auto info = FileInfo::fromUri(selectionUris.first(), false);
+            //special type mountable, or isVirtual then return
+            if (selectionUris.first().startsWith("computer:///") || info->isVirtual())
+                return l;
+
+            connect(createLinkToDesktop, &QAction::triggered, [=](){
+                QUrl src = selectionUris.first();
+                QString desktopUri = "file://" + QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
+                FileLinkOperation *op = new FileLinkOperation(selectionUris.first(), desktopUri);
+                op->setAutoDelete(true);
+                FileOperationManager::getInstance()->startOperation(op, true);
+            });
+            l<<createLinkToDesktop;
+
+            auto createLinkTo = new QAction(tr("Create Link to..."));
+            connect(createLinkTo, &QAction::triggered, [=](){
+                QUrl targetDir = QFileDialog::getExistingDirectoryUrl(nullptr,
+                                                                      tr("Choose a Directory to Create Link"),
+                                                                      uri);
+                if (!targetDir.isEmpty()) {
+                    QUrl src = selectionUris.first();
+                    QString target = targetDir.url();
+                    FileLinkOperation *op = new FileLinkOperation(selectionUris.first(), target);
+                    op->setAutoDelete(true);
+                    FileOperationManager::getInstance()->startOperation(op, true);
+                }
+            });
+            l<<createLinkTo;
+        }
+    }
+    return l;
 }
