@@ -1414,6 +1414,22 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZN5Peony23PropertiesWindowPrivateD0Ev@Base 2.0.0
  _ZN5Peony23PropertiesWindowPrivateD1Ev@Base 2.0.0
  _ZN5Peony23PropertiesWindowPrivateD2Ev@Base 2.0.0
+ _ZN5Peony24CreateLinkInternalPlugin10pluginTypeEv@Base 2.0.0
+ _ZN5Peony24CreateLinkInternalPlugin10testPluginEv@Base 2.0.0
+ _ZN5Peony24CreateLinkInternalPlugin11descriptionEv@Base 2.0.0
+ _ZN5Peony24CreateLinkInternalPlugin11menuActionsE6QFlagsINS_19MenuPluginInterface4TypeEERK7QStringRK11QStringList@Base 2.0.0
+ _ZN5Peony24CreateLinkInternalPlugin11qt_metacallEN11QMetaObject4CallEiPPv@Base 2.0.0
+ _ZN5Peony24CreateLinkInternalPlugin11qt_metacastEPKc@Base 2.0.0
+ _ZN5Peony24CreateLinkInternalPlugin16staticMetaObjectE@Base 2.0.0
+ _ZN5Peony24CreateLinkInternalPlugin4iconEv@Base 2.0.0
+ _ZN5Peony24CreateLinkInternalPlugin4nameEv@Base 2.0.0
+ _ZN5Peony24CreateLinkInternalPlugin8isEnableEv@Base 2.0.0
+ _ZN5Peony24CreateLinkInternalPlugin9setEnableEb@Base 2.0.0
+ _ZN5Peony24CreateLinkInternalPluginC1EP7QObject@Base 2.0.0
+ _ZN5Peony24CreateLinkInternalPluginC2EP7QObject@Base 2.0.0
+ _ZN5Peony24CreateLinkInternalPluginD0Ev@Base 2.0.0
+ _ZN5Peony24CreateLinkInternalPluginD1Ev@Base 2.0.0
+ _ZN5Peony24CreateLinkInternalPluginD2Ev@Base 2.0.0
  _ZN5Peony24FileOperationErrorDialog11handleErrorERK7QStringS3_RKSt10shared_ptrINS_13GErrorWrapperEEb@Base 2.0.0
  _ZN5Peony24FileOperationErrorDialog11qt_metacallEN11QMetaObject4CallEiPPv@Base 2.0.0
  _ZN5Peony24FileOperationErrorDialog11qt_metacastEPKc@Base 2.0.0
@@ -2233,6 +2249,7 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZNK5Peony23CreateTemplateOperation10metaObjectEv@Base 2.0.0
  _ZNK5Peony23DirectoryViewProxyIface10metaObjectEv@Base 2.0.0
  _ZNK5Peony23PropertiesWindowPrivate10metaObjectEv@Base 2.0.0
+ _ZNK5Peony24CreateLinkInternalPlugin10metaObjectEv@Base 2.0.0
  _ZNK5Peony24FileOperationErrorDialog10metaObjectEv@Base 2.0.0
  _ZNK5Peony24FileOperationPreparePage10metaObjectEv@Base 2.0.0
  _ZNK5Peony25DefaultPreviewPageFactory10metaObjectEv@Base 2.0.0
@@ -2520,6 +2537,7 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZTIN5Peony23CreateTemplateOperationE@Base 2.0.0
  _ZTIN5Peony23DirectoryViewProxyIfaceE@Base 2.0.0
  _ZTIN5Peony23PropertiesWindowPrivateE@Base 2.0.0
+ _ZTIN5Peony24CreateLinkInternalPluginE@Base 2.0.0
  _ZTIN5Peony24DirectoryViewPluginIfaceE@Base 2.0.0
  _ZTIN5Peony24FileOperationErrorDialogE@Base 2.0.0
  _ZTIN5Peony24FileOperationPreparePageE@Base 2.0.0
@@ -2663,6 +2681,7 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZTSN5Peony23CreateTemplateOperationE@Base 2.0.0
  _ZTSN5Peony23DirectoryViewProxyIfaceE@Base 2.0.0
  _ZTSN5Peony23PropertiesWindowPrivateE@Base 2.0.0
+ _ZTSN5Peony24CreateLinkInternalPluginE@Base 2.0.0
  _ZTSN5Peony24DirectoryViewPluginIfaceE@Base 2.0.0
  _ZTSN5Peony24FileOperationErrorDialogE@Base 2.0.0
  _ZTSN5Peony24FileOperationPreparePageE@Base 2.0.0
@@ -2800,6 +2819,7 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZTVN5Peony23CreateTemplateOperationE@Base 2.0.0
  _ZTVN5Peony23DirectoryViewProxyIfaceE@Base 2.0.0
  _ZTVN5Peony23PropertiesWindowPrivateE@Base 2.0.0
+ _ZTVN5Peony24CreateLinkInternalPluginE@Base 2.0.0
  _ZTVN5Peony24FileOperationErrorDialogE@Base 2.0.0
  _ZTVN5Peony24FileOperationPreparePageE@Base 2.0.0
  _ZTVN5Peony25DefaultPreviewPageFactoryE@Base 2.0.0
@@ -2995,6 +3015,16 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZThn16_N5Peony23CreateTemplateOperationD1Ev@Base 2.0.0
  _ZThn16_N5Peony23PropertiesWindowPrivateD0Ev@Base 2.0.0
  _ZThn16_N5Peony23PropertiesWindowPrivateD1Ev@Base 2.0.0
+ _ZThn16_N5Peony24CreateLinkInternalPlugin10pluginTypeEv@Base 2.0.0
+ _ZThn16_N5Peony24CreateLinkInternalPlugin10testPluginEv@Base 2.0.0
+ _ZThn16_N5Peony24CreateLinkInternalPlugin11descriptionEv@Base 2.0.0
+ _ZThn16_N5Peony24CreateLinkInternalPlugin11menuActionsE6QFlagsINS_19MenuPluginInterface4TypeEERK7QStringRK11QStringList@Base 2.0.0
+ _ZThn16_N5Peony24CreateLinkInternalPlugin4iconEv@Base 2.0.0
+ _ZThn16_N5Peony24CreateLinkInternalPlugin4nameEv@Base 2.0.0
+ _ZThn16_N5Peony24CreateLinkInternalPlugin8isEnableEv@Base 2.0.0
+ _ZThn16_N5Peony24CreateLinkInternalPlugin9setEnableEb@Base 2.0.0
+ _ZThn16_N5Peony24CreateLinkInternalPluginD0Ev@Base 2.0.0
+ _ZThn16_N5Peony24CreateLinkInternalPluginD1Ev@Base 2.0.0
  _ZThn16_N5Peony24FileOperationErrorDialogD0Ev@Base 2.0.0
  _ZThn16_N5Peony24FileOperationErrorDialogD1Ev@Base 2.0.0
  _ZThn16_N5Peony24FileOperationPreparePageD0Ev@Base 2.0.0
@@ -3157,7 +3187,9 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZZN9QtPrivate19ValueTypeIsMetaTypeI5QListI11QModelIndexELb1EE17registerConverterEiE1f@Base 2.0.0
  _ZZN9QtPrivate19ValueTypeIsMetaTypeI5QListI21QPersistentModelIndexELb1EE17registerConverterEiE1f@Base 2.0.0
  _ZZNSt19_Sp_make_shared_tag5_S_tiEvE5__tag@Base 2.0.0
+ comparer@Base 2.0.0
  is_registed@Base 2.0.0
+ locale@Base 2.0.0
  peony_search_vfs_file_enumerator_get_type@Base 2.0.0
  peony_search_vfs_file_get_type@Base 2.0.0
  peony_search_vfs_file_new_for_uri@Base 2.0.0
