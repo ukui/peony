@@ -1,5 +1,5 @@
-peony-extensions (1.2.0-ubuntu1) eoan; urgency=medium
+peony-extensions (1.2.2-ubuntu1) focal; urgency=medium
 
-  * Initial release formal version.
+  * Change package rely.
 
- -- MeihongHe <hemeihong@kylinos.cn>  Wed, 25 Dec 2019 16:05:11 +0800
+ -- MeihongHe <hemeihong@kylinos.cn>  Mon, 10 Feb 2020 12:05:11 +0800

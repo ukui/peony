@@ -2,7 +2,7 @@ Source: peony-extensions
 Section: x11
 Priority: optional
 Maintainer: MeihongHe <hemeihong@kylinos.cn>
-Build-Depends: debhelper (>=12), cmake, pkg-config, libglib2.0-dev, qt5-qmake, qtbase5-dev, qtchooser, qtbase5-dev-tools, libpoppler-qt5-dev, libgtk2.0-dev, libpeony-dev
+Build-Depends: debhelper (>=12), cmake, pkg-config, libglib2.0-dev, qt5-qmake, qtbase5-dev, qtchooser, qtbase5-dev-tools, libpoppler-qt5-dev, libpeony-dev
 Standards-Version: 4.4.0
 Rules-Requires-Root: no
 Homepage: https://github.com/ukui/peony-extensions
@@ -32,15 +32,6 @@ Description: Allows one to quickly share a folder from the Peony file manager
  Peony file manager without requiring root access. It uses Samba, so your
  folders can be accessed by any operating system.
 
-Package: peony-gtk2-style-enhanced-plugin
-Architecture: any
-Breaks: gtk2-style-enhanced-plugin
-Replaces: peony-gtk2-style-enhanced-plugin, gtk2-style-enhanced-plugin
-Depends: ${misc:Depends}, ${shlibs:Depends}, libpeony2, qt5-gtk2-platformtheme
-Description: Allow one to quickly use theme enhance manager plugin.
- You can use this plugin to get better ukui-theme effects. This
- package adds extended functionality to the Peony file manager.
-
 Package: peony-create-link
 Architecture: any
 Depends: ${misc:Depends}, ${shlibs:Depends}, libpeony2
@@ -67,7 +58,7 @@ Description: Peony plugin for opening terminals in arbitrary local paths
 
 Package: peony-extensions
 Architecture: any
-Depends: ${misc:Depends}, ${shlibs:Depends}, peony-admin, peony-share, peony-gtk2-style-enhanced-plugin, peony-create-link, peony-engrampa-menu-plugin, peony-menu-plugin-mate-terminal
+Depends: ${misc:Depends}, ${shlibs:Depends}, peony-admin, peony-share, peony-create-link, peony-engrampa-menu-plugin, peony-menu-plugin-mate-terminal
 Description: Peony qt extensions (common files)
  Peony is the official file manager for the UKUI desktop. This
  package adds extended functionality to the Peony file manager.
