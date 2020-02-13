@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += widgets
+QT       += widgets concurrent
 
 TARGET = peony-qt-menu-plugin-mate-terminal
 TEMPLATE = lib

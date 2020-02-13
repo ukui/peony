@@ -31,23 +31,45 @@
 #include <QLocale>
 #include <QApplication>
 
+#include <QtConcurrent>
+
 #include <QDebug>
 
 using namespace Peony;
+
+static QString terminal_cmd = nullptr;
 
 MateTerminalMenuPlugin::MateTerminalMenuPlugin(QObject *parent) : QObject (parent)
 {
     QTranslator *t = new QTranslator(this);
     qDebug()<<"\n\n\n\n\n\n\ntranslate:"<<t->load(":/translations/peony-qt-mate-terminal-extension_"+QLocale::system().name());
     QApplication::installTranslator(t);
+
+    QtConcurrent::run([=]{
+        GList *infos = g_app_info_get_all();
+        GList *l = infos;
+        while (l) {
+            const char *cmd = g_app_info_get_executable(static_cast<GAppInfo*>(l->data));
+            QString tmp = cmd;
+            if (tmp.contains("terminal")) {
+                terminal_cmd = tmp;
+                if (tmp == "mate-terminal") {
+                    break;
+                }
+            }
+            l = l->next;
+        }
+        g_list_free_full(infos, g_object_unref);
+    });
 }
 
 void openTerminal(const QString &uri){
+
     qDebug()<<"triggered"<<uri;
     QUrl url = uri;
     auto directory = url.path().toUtf8().constData();
     gchar **argv = nullptr;
-    g_shell_parse_argv ("mate-terminal", nullptr, &argv, nullptr);
+    g_shell_parse_argv (terminal_cmd.toUtf8().constData(), nullptr, &argv, nullptr);
     GError *err = nullptr;
     g_spawn_async (directory,
                    argv,
@@ -68,6 +90,9 @@ void openTerminal(const QString &uri){
 QList<QAction *> MateTerminalMenuPlugin::menuActions(Types types, const QString &uri, const QStringList &selectionUris)
 {
     QList<QAction *> actions;
+    if (terminal_cmd.isNull()) {
+        return actions;
+    }
     if (types == MenuPluginInterface::DirectoryView || types == MenuPluginInterface::DesktopWindow) {
         if (selectionUris.isEmpty()) {
             QAction *dirAction = new QAction(QIcon::fromTheme("utilities-terminal-symbolic"), tr("Open Directory in Terminal"));
