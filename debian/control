@@ -1,10 +1,10 @@
 Source: peony-extensions
 Section: x11
 Priority: optional
-Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
-XSBC-Original-Maintainer: Kylin Team <pkg-kylin-devel@lists.alioth.debian.org>
-Uploaders: handsome_feng <jianfengli@ubuntukylin.com>,
-Build-Depends: debhelper-compat (= 12), 
+Maintainer: Kylin Team <team+kylin@tracker.debian.org>
+Uploaders: Aron Xu <aron@debian.org>,
+           handsome_feng <jianfengli@ubuntukylin.com>,
+Build-Depends: debhelper-compat (= 12),
                cmake,
                pkg-config,
                libglib2.0-dev,
@@ -14,9 +14,11 @@ Build-Depends: debhelper-compat (= 12),
                qtbase5-dev-tools,
                libpoppler-qt5-dev,
                libpeony-dev
-Standards-Version: 4.4.0
+Standards-Version: 4.5.0
 Rules-Requires-Root: no
 Homepage: https://github.com/ukui/peony-extensions
+Vcs-Git: https://github.com/ukui/peony-extensions.git
+Vcs-Browser: https://github.com/ukui/peony-extensions
 
 Package: peony-admin
 Architecture: any
@@ -55,10 +57,11 @@ Depends: ${misc:Depends},
          ${shlibs:Depends},
          libpeony2,
          engrampa
-Replaces: peony-engrampa-menu-plugin
-Description: Peony qt plugin for file compress and uncompress.
- You can use this plugin to compress or uncompress file or folder. This
- package adds extended functionality to the Peony file manager.
+Description: Peony qt plugin for file compress and uncompress
+ Parchives is an archive manager for the UKUI environment. You can use
+ this plugin to compress or uncompress file or folder.
+ .
+ This package adds extended functionality to the Peony file manager.
 
 Package: peony-open-terminal
 Architecture: any
@@ -66,7 +69,6 @@ Depends: ${misc:Depends},
          ${shlibs:Depends},
          libpeony2,
          mate-terminal
-Replaces: peony-menu-plugin-mate-terminal
 Description: Peony plugin for opening terminals in arbitrary local paths
  Peony is the official file manager for the UKUI desktop. This
  package adds extended functionality to the Peony file manager.
