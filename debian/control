@@ -73,17 +73,3 @@ Description: Peony plugin for opening terminals in arbitrary local paths
  .
  peony-open-terminal is a proof-of-concept Peony extension
  which allows you to open a terminal in arbitrary local folders.
-
-Package: peony-extensions
-Architecture: any
-Depends: ${misc:Depends},
-         ${shlibs:Depends},
-         peony-admin,
-         peony-share,
-         parchives,
-         peony-open-terminal
-Description: Peony qt extensions (common files)
- Peony is the official file manager for the UKUI desktop. This
- package adds extended functionality to the Peony file manager.
- This empty package contains the architecture independent files for
- various available Peony extensions.
