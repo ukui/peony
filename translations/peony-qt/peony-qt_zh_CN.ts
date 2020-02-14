@@ -6,7 +6,7 @@
     <message>
         <location filename="../../src/peony-application.cpp" line="101"/>
         <source>Peony-Qt</source>
-        <translation type="unfinished"></translation>
+        <translation>文件管理器</translation>
     </message>
     <message>
         <location filename="../../src/peony-application.cpp" line="119"/>
