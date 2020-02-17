@@ -96,12 +96,14 @@ MainWindow::MainWindow(QWidget *parent) :
     a = ui->mainToolBar->addAction(QIcon::fromTheme("view-grid-symbolic"), tr("View"));
     b = qobject_cast<QToolButton*>(ui->mainToolBar->widgetForAction(a));
     b->setAutoRaise(false);
+    b->setFixedWidth(57);
     b->setFixedHeight(40);
     b->setPopupMode(QToolButton::MenuButtonPopup);
 
     a = ui->mainToolBar->addAction(QIcon::fromTheme("view-sort-ascending-symbolic"), tr("View"));
     b = qobject_cast<QToolButton*>(ui->mainToolBar->widgetForAction(a));
     b->setAutoRaise(false);
+    b->setFixedWidth(57);
     b->setFixedHeight(40);
     b->setPopupMode(QToolButton::MenuButtonPopup);
 
