@@ -493,7 +493,7 @@ bool FileItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action, i
     bool addHistory = true;
     switch (action) {
     case Qt::MoveAction: {
-        FileOperationUtils::move(srcUris, destDirUri, addHistory);
+        FileOperationUtils::move(srcUris, destDirUri, addHistory, true);
         break;
     }
     case Qt::CopyAction: {

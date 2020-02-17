@@ -365,6 +365,7 @@ bool DesktopItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action
         fileOpMgr->startOperation(trashOp, addHistory);
     } else {
         FileMoveOperation *moveOp = new FileMoveOperation(srcUris, destDirUri);
+        moveOp->setCopyMove(true);
         fileOpMgr->startOperation(moveOp, addHistory);
     }
 

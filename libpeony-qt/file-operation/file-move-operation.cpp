@@ -721,8 +721,10 @@ void FileMoveOperation::moveForceUseFallback()
     }
     operationProgressed();
 
-    for (auto node : nodes) {
-        deleteRecursively(node);
+    if (!m_copy_move) {
+        for (auto node : nodes) {
+            deleteRecursively(node);
+        }
     }
 
     if (isCancelled())

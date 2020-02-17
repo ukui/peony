@@ -60,6 +60,15 @@ public:
     ~FileMoveOperation() override;
 
     /*!
+     * \brief setCopyMove
+     * \param copyMove
+     * \details
+     * If a move operation is not native move, it will do a copy and delete operation
+     * as a 'move'. setCopyMove will tell the operation do not delete the source files.
+     */
+    void setCopyMove(bool copyMove = true) {m_copy_move = copyMove;}
+
+    /*!
      * \brief setForceUseFallback
      * \param useFallback
      * \value true, force using copy and delete replace native move function provided by file system.
@@ -157,8 +166,16 @@ private:
      */
     bool m_force_use_fallback = false;
 
+    /*!
+     * \brief m_copy_move
+     * \value true, if native move operation is not supported.
+     * just copy source files and do not delete source files.
+     */
+    bool m_copy_move = false;
+
     GFileCopyFlags m_default_copy_flag = GFileCopyFlags(G_FILE_COPY_NOFOLLOW_SYMLINKS|
-                                                        G_FILE_COPY_ALL_METADATA);
+                                                        G_FILE_COPY_ALL_METADATA|
+                                                        G_FILE_COPY_NO_FALLBACK_FOR_MOVE);
 
     FileNodeReporter *m_reporter = nullptr;
 

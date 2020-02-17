@@ -333,7 +333,7 @@ bool SideBarModel::dropMimeData(const QMimeData *data, Qt::DropAction action, in
         for (auto url : data->urls()) {
             uris<<url.url();
         }
-        FileOperationUtils::move(uris, item->uri(), true);
+        FileOperationUtils::move(uris, item->uri(), true, true);
         break;
     }
     }

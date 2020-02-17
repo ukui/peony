@@ -38,7 +38,7 @@ class FileInfo;
 class FileOperationUtils
 {
 public:
-    static void move(const QStringList &srcUris, const QString &destUri, bool addHistory);
+    static void move(const QStringList &srcUris, const QString &destUri, bool addHistory, bool copyMove = false);
     static void copy(const QStringList &srcUris, const QString &destUri, bool addHistory);
     static void trash(const QStringList &uris, bool addHistory);
     static void remove(const QStringList &uris);
