@@ -501,6 +501,7 @@ void DesktopWindow::updateView() {
         m_view->setGeometry(m_screen->availableGeometry());
         m_view->setFixedSize(m_screen->availableGeometry().size());
         m_view->raise();
+        m_view->refresh();
         //setCurrentWidget(m_view);
     }
 }
