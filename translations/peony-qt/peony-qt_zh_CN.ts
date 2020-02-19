@@ -4,9 +4,8 @@
 <context>
     <name>PeonyApplication</name>
     <message>
-        <location filename="../../src/peony-application.cpp" line="101"/>
         <source>Peony-Qt</source>
-        <translation>文件管理器</translation>
+        <translation type="vanished">文件管理器</translation>
     </message>
     <message>
         <location filename="../../src/peony-application.cpp" line="119"/>

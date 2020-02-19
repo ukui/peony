@@ -1,4 +1,4 @@
-# SymbolsHelper-Confirmed: 2.0.0 amd64
+# SymbolsHelper-Confirmed: 2.0.1 amd64
 libpeony.so.2 libpeony2 #MINVER#
  (optional=templinst)_Z17qRegisterMetaTypeISt10shared_ptrIN5Peony13GErrorWrapperEEEiPKcPT_N9QtPrivate21MetaTypeDefinedHelperIS6_Xaasr12QMetaTypeId2IS6_E7DefinedntsrSB_9IsBuiltInEE11DefinedTypeE@Base 2.0.0
  _Z26qInitResources_libpeony_qtv@Base 2.0.0
@@ -80,12 +80,12 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZN20QStyleOptionViewItemD2Ev@Base 2.0.0
  _ZN22QStyleOptionToolButtonD1Ev@Base 2.0.0
  _ZN22QStyleOptionToolButtonD2Ev@Base 2.0.0
- _ZN22Ui_ConnectServerDialog7setupUiEP7QDialog@Base 2.0.0
- (optional=templinst)_ZN4QMapI7QString8QVariantE13detach_helperEv@Base 2.0.0
+ (arch= !s390x)_ZN22Ui_ConnectServerDialog7setupUiEP7QDialog@Base 2.0.0
+ (optional=templinst|arch= !s390x !ppc64el)_ZN4QMapI7QString8QVariantE13detach_helperEv@Base 2.0.0
  (optional=templinst)_ZN4QMapI7QString8QVariantE6removeERKS0_@Base 2.0.0
  (optional=templinst)_ZN4QMapI7QString8QVariantED1Ev@Base 2.0.0
  (optional=templinst)_ZN4QMapI7QString8QVariantED2Ev@Base 2.0.0
- (optional=templinst)_ZN4QMapIi7QStringE13detach_helperEv@Base 2.0.0
+ (optional=templinst|arch= !s390x !ppc64el)_ZN4QMapIi7QStringE13detach_helperEv@Base 2.0.0
  _ZN5Peony10wrapGDriveEP7_GDrive@Base 2.0.0
  _ZN5Peony10wrapGMountEP7_GMount@Base 2.0.0
  _ZN5Peony11FileInfoJob10queryAsyncEv@Base 2.0.0
@@ -900,7 +900,7 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZN5Peony17FileCopyOperation15copyRecursivelyEPNS_8FileNodeE@Base 2.0.0
  _ZN5Peony17FileCopyOperation16getOperationInfoEv@Base 2.0.0
  _ZN5Peony17FileCopyOperation16staticMetaObjectE@Base 2.0.0
- _ZN5Peony17FileCopyOperation17progress_callbackEllPS0_@Base 2.0.0
+ (arch= !armel !armhf !i386 !mipsel !hppa !m68k !sh4 !x32)_ZN5Peony17FileCopyOperation17progress_callbackEllPS0_@Base 2.0.0
  _ZN5Peony17FileCopyOperation23rollbackNodeRecursivelyEPNS_8FileNodeE@Base 2.0.0
  _ZN5Peony17FileCopyOperation3runEv@Base 2.0.0
  _ZN5Peony17FileCopyOperation6cancelEv@Base 2.0.0
@@ -942,7 +942,7 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZN5Peony17FileMoveOperation16getOperationInfoEv@Base 2.0.0
  _ZN5Peony17FileMoveOperation16staticMetaObjectE@Base 2.0.0
  _ZN5Peony17FileMoveOperation17deleteRecursivelyEPNS_8FileNodeE@Base 2.0.0
- _ZN5Peony17FileMoveOperation17progress_callbackEllPS0_@Base 2.0.0
+ (arch= !armel !armhf !i386 !mipsel !hppa !m68k !sh4 !x32)_ZN5Peony17FileMoveOperation17progress_callbackEllPS0_@Base 2.0.0
  _ZN5Peony17FileMoveOperation20moveForceUseFallbackEv@Base 2.0.0
  _ZN5Peony17FileMoveOperation23rollbackNodeRecursivelyEPNS_8FileNodeE@Base 2.0.0
  _ZN5Peony17FileMoveOperation3runEv@Base 2.0.0
@@ -1052,7 +1052,7 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZN5Peony18FileOperationUtils35leftNameIsDuplicatedFileOfRightNameERK7QStringS3_@Base 2.0.0
  _ZN5Peony18FileOperationUtils4copyERK11QStringListRK7QStringb@Base 2.0.0
  _ZN5Peony18FileOperationUtils4linkERK7QStringS3_b@Base 2.0.0
- _ZN5Peony18FileOperationUtils4moveERK11QStringListRK7QStringb@Base 2.0.0
+ _ZN5Peony18FileOperationUtils4moveERK11QStringListRK7QStringbb@Base 2.0.1
  _ZN5Peony18FileOperationUtils5trashERK11QStringListb@Base 2.0.0
  _ZN5Peony18FileOperationUtils6createERK7QStringS3_NS_23CreateTemplateOperation4TypeE@Base 2.0.0
  _ZN5Peony18FileOperationUtils6removeERK11QStringList@Base 2.0.0
@@ -1853,7 +1853,7 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZN5Peony8FileItemD2Ev@Base 2.0.0
  _ZN5Peony8FileItemeqERKS0_@Base 2.0.0
  _ZN5Peony8FileNode15getRelativePathEv@Base 2.0.0
- _ZN5Peony8FileNode16computeTotalSizeEPl@Base 2.0.0
+ (arch= !armel !armhf !i386 !mipsel !hppa !m68k !sh4 !x32 !ppc64el)_ZN5Peony8FileNode16computeTotalSizeEPl@Base 2.0.0
  _ZN5Peony8FileNode17resoveDestFileUriERK7QString@Base 2.0.0
  _ZN5Peony8FileNode23findChildrenRecursivelyEv@Base 2.0.0
  _ZN5Peony8FileNodeC1E7QStringPS0_PNS_16FileNodeReporterE@Base 2.0.0
@@ -1939,13 +1939,13 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZN5Peony9wrapGIconEP6_GIcon@Base 2.0.0
  (optional=templinst)_ZN5QHashI7QString11QStringListE11deleteNode2EPN9QHashData4NodeE@Base 2.0.0
  (optional=templinst)_ZN5QHashI7QString11QStringListE13duplicateNodeEPN9QHashData4NodeEPv@Base 2.0.0
- (optional=templinst)_ZN5QHashI7QString11QStringListE6removeERKS0_@Base 2.0.0
+ (optional=templinst|arch= !s390x)_ZN5QHashI7QString11QStringListE6removeERKS0_@Base 2.0.0
  (optional=templinst)_ZN5QHashI7QString5QIconE11deleteNode2EPN9QHashData4NodeE@Base 2.0.0
  (optional=templinst)_ZN5QHashI7QString5QIconE13duplicateNodeEPN9QHashData4NodeEPv@Base 2.0.0
- (optional=templinst)_ZN5QHashI7QString5QIconE6removeERKS0_@Base 2.0.0
+ (optional=templinst|arch= !s390x)_ZN5QHashI7QString5QIconE6removeERKS0_@Base 2.0.0
  (optional=templinst)_ZN5QHashI7QString8QVariantE11deleteNode2EPN9QHashData4NodeE@Base 2.0.0
  (optional=templinst)_ZN5QHashI7QString8QVariantE13duplicateNodeEPN9QHashData4NodeEPv@Base 2.0.0
- (optional=templinst)_ZN5QHashI7QString8QVariantE6removeERKS0_@Base 2.0.0
+ (optional=templinst|arch= !s390x)_ZN5QHashI7QString8QVariantE6removeERKS0_@Base 2.0.0
  (optional=templinst)_ZN5QHashI7QStringPN5Peony15PluginInterfaceEE11deleteNode2EPN9QHashData4NodeE@Base 2.0.0
  (optional=templinst)_ZN5QHashI7QStringPN5Peony15PluginInterfaceEE13duplicateNodeEPN9QHashData4NodeEPv@Base 2.0.0
  (optional=templinst)_ZN5QHashI7QStringPN5Peony19MenuPluginInterfaceEE11deleteNode2EPN9QHashData4NodeE@Base 2.0.0
@@ -1960,7 +1960,7 @@ libpeony.so.2 libpeony2 #MINVER#
  (optional=templinst)_ZN5QHashI7QStringS0_E13duplicateNodeEPN9QHashData4NodeEPv@Base 2.0.0
  (optional=templinst)_ZN5QHashI7QStringSt10shared_ptrIN5Peony8FileInfoEEE11deleteNode2EPN9QHashData4NodeE@Base 2.0.0
  (optional=templinst)_ZN5QHashI7QStringSt10shared_ptrIN5Peony8FileInfoEEE13duplicateNodeEPN9QHashData4NodeEPv@Base 2.0.0
- (optional=templinst)_ZN5QHashI7QStringSt10shared_ptrIN5Peony8FileInfoEEE6removeERKS0_@Base 2.0.0
+ (optional=templinst|arch= !s390x)_ZN5QHashI7QStringSt10shared_ptrIN5Peony8FileInfoEEE6removeERKS0_@Base 2.0.0
  (optional=templinst)_ZN5QHashIP15QListWidgetItemPN5Peony16FileLaunchActionEE11deleteNode2EPN9QHashData4NodeE@Base 2.0.0
  (optional=templinst)_ZN5QHashIP15QListWidgetItemPN5Peony16FileLaunchActionEE13duplicateNodeEPN9QHashData4NodeEPv@Base 2.0.0
  (optional=templinst)_ZN5QHashIi5QPairIi7QStringEE11deleteNode2EPN9QHashData4NodeE@Base 2.0.0
@@ -1985,8 +1985,8 @@ libpeony.so.2 libpeony2 #MINVER#
  (optional=templinst)_ZN5QListI19QItemSelectionRangeEC2ERKS1_@Base 2.0.0
  (optional=templinst)_ZN5QListI19QItemSelectionRangeED1Ev@Base 2.0.0
  (optional=templinst)_ZN5QListI19QItemSelectionRangeED2Ev@Base 2.0.0
- (optional=templinst)_ZN5QListI21QPersistentModelIndexEC1ERKS1_@Base 2.0.0
- (optional=templinst)_ZN5QListI21QPersistentModelIndexEC2ERKS1_@Base 2.0.0
+ (optional=templinst|arch= !ppc64el)_ZN5QListI21QPersistentModelIndexEC1ERKS1_@Base 2.0.0
+ (optional=templinst|arch= !ppc64el)_ZN5QListI21QPersistentModelIndexEC2ERKS1_@Base 2.0.0
  (optional=templinst)_ZN5QListI4QUrlE13detach_helperEi@Base 2.0.0
  (optional=templinst)_ZN5QListI4QUrlE18detach_helper_growEii@Base 2.0.0
  (optional=templinst)_ZN5QListI4QUrlE6appendERKS0_@Base 2.0.0
@@ -1994,7 +1994,7 @@ libpeony.so.2 libpeony2 #MINVER#
  (optional=templinst)_ZN5QListI4QUrlED2Ev@Base 2.0.0
  (optional=templinst)_ZN5QListI5QPairIi7QStringEE13detach_helperEi@Base 2.0.0
  (optional=templinst)_ZN5QListI5QPairIi7QStringEE18detach_helper_growEii@Base 2.0.0
- (optional=templinst)_ZN5QListI5QPairIi7QStringEE6appendERKS2_@Base 2.0.0
+ (optional=templinst|arch= !ppc64el)_ZN5QListI5QPairIi7QStringEE6appendERKS2_@Base 2.0.0
  (optional=templinst)_ZN5QListI5QPairIi7QStringEED1Ev@Base 2.0.0
  (optional=templinst)_ZN5QListI5QPairIi7QStringEED2Ev@Base 2.0.0
  (optional=templinst)_ZN5QListI7PWDItemE18detach_helper_growEii@Base 2.0.0
@@ -2027,7 +2027,7 @@ libpeony.so.2 libpeony2 #MINVER#
  (optional=templinst)_ZN5QListIP7QActionED1Ev@Base 2.0.0
  (optional=templinst)_ZN5QListIP7QActionED2Ev@Base 2.0.0
  (optional=templinst)_ZN5QListIP7QActionEpLERKS2_@Base 2.0.0
- (optional=templinst)_ZN5QListIPN5Peony16FileLaunchActionEE13detach_helperEi@Base 2.0.0
+ (optional=templinst|arch= !ppc64el)_ZN5QListIPN5Peony16FileLaunchActionEE13detach_helperEi@Base 2.0.0
  (optional=templinst)_ZN5QListIPN5Peony16FileLaunchActionEE18detach_helper_growEii@Base 2.0.0
  (optional=templinst)_ZN5QListIPN5Peony16FileLaunchActionEE6appendERKS2_@Base 2.0.0
  (optional=templinst)_ZN5QListIPN5Peony16FileLaunchActionEED1Ev@Base 2.0.0
@@ -2058,10 +2058,10 @@ libpeony.so.2 libpeony2 #MINVER#
  (optional=templinst)_ZN7QVectorIPN5Peony19SideBarAbstractItemEE6appendEOS2_@Base 2.0.0
  (optional=templinst)_ZN7QVectorIPN5Peony8FileItemEE11reallocDataEii6QFlagsIN10QArrayData16AllocationOptionEE@Base 2.0.0
  (optional=templinst)_ZN7QVectorIPN5Peony8FileItemEE6appendERKS2_@Base 2.0.0
- (optional=templinst)_ZN7QVectorIPN5Peony8FileItemEE6resizeEi@Base 2.0.0
+ (optional=templinst|arch= !ppc64el)_ZN7QVectorIPN5Peony8FileItemEE6resizeEi@Base 2.0.0
  (optional=templinst)_ZN7QVectorISt10shared_ptrIN5Peony17FileOperationInfoEEE11reallocDataEii6QFlagsIN10QArrayData16AllocationOptionEE@Base 2.0.0
  (optional=templinst)_ZN7QVectorISt10shared_ptrIN5Peony17FileOperationInfoEEE6appendERKS3_@Base 2.0.0
- (optional=templinst)_ZN7QVectorISt10shared_ptrIN5Peony17FileOperationInfoEEE6resizeEi@Base 2.0.0
+ (optional=templinst|arch= !ppc64el)_ZN7QVectorISt10shared_ptrIN5Peony17FileOperationInfoEEE6resizeEi@Base 2.0.0
  (optional=templinst)_ZN7QVectorISt10shared_ptrIN5Peony17FileOperationInfoEEED1Ev@Base 2.0.0
  (optional=templinst)_ZN7QVectorISt10shared_ptrIN5Peony17FileOperationInfoEEED2Ev@Base 2.0.0
  (optional=templinst)_ZN7QVectorIiE11reallocDataEii6QFlagsIN10QArrayData16AllocationOptionEE@Base 2.0.0
@@ -2321,8 +2321,8 @@ libpeony.so.2 libpeony2 #MINVER#
  (optional=templinst)_ZNK5QHashIiN5Peony13FileOperation12ResponseTypeEE8findNodeERKiPj@Base 2.0.0
  (optional=templinst)_ZNK5QListI7QStringE7indexOfERKS0_i@Base 2.0.0
  (optional=templinst)_ZNK5QListIP7QActionE7indexOfERKS1_i@Base 2.0.0
- (optional=templinst)_ZNK7QVectorIPN5Peony19SideBarAbstractItemEE7indexOfERKS2_i@Base 2.0.0
- (optional=templinst)_ZNK7QVectorIPN5Peony8FileItemEE7indexOfERKS2_i@Base 2.0.0
+ (optional=templinst|arch= !s390x)_ZNK7QVectorIPN5Peony19SideBarAbstractItemEE7indexOfERKS2_i@Base 2.0.0
+ (optional=templinst|arch= !s390x)_ZNK7QVectorIPN5Peony8FileItemEE7indexOfERKS2_i@Base 2.0.0
  (optional=templinst)_ZNK8QMapDataI7QString8QVariantE8findNodeERKS0_@Base 2.0.0
  (optional=templinst)_ZNK8QMapDataI7QStringPN5Peony22PreviewPagePluginIfaceEE8findNodeERKS0_@Base 2.0.0
  (optional=templinst)_ZNK8QMapNodeI7QString8QVariantE4copyEP8QMapDataIS0_S1_E@Base 2.0.0
@@ -2451,7 +2451,7 @@ libpeony.so.2 libpeony2 #MINVER#
  (optional=templinst)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony8FileInfoESaIS1_ELN9__gnu_cxx12_Lock_policyE2EED0Ev@Base 2.0.0
  (optional=templinst)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony8FileInfoESaIS1_ELN9__gnu_cxx12_Lock_policyE2EED1Ev@Base 2.0.0
  (optional=templinst)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony8FileInfoESaIS1_ELN9__gnu_cxx12_Lock_policyE2EED2Ev@Base 2.0.0
- (optional=templinst)_ZSt9__find_ifIPK7QStringN9__gnu_cxx5__ops16_Iter_equals_valIS1_EEET_S7_S7_T0_St26random_access_iterator_tag@Base 2.0.0
+ (optional=templinst|arch= !s390x)_ZSt9__find_ifIPK7QStringN9__gnu_cxx5__ops16_Iter_equals_valIS1_EEET_S7_S7_T0_St26random_access_iterator_tag@Base 2.0.0
  _ZTI16QFutureInterfaceIvE@Base 2.0.0
  _ZTI19ConnectServerDialog@Base 2.0.0
  _ZTIN12QtConcurrent15RunFunctionTaskIvEE@Base 2.0.0
@@ -2576,6 +2576,7 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZTIN5Peony9StatusBarE@Base 2.0.0
  _ZTISt11_Mutex_baseILN9__gnu_cxx12_Lock_policyE2EE@Base 2.0.0
  _ZTISt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE2EE@Base 2.0.0
+ (arch= armhf)_ZTISt19_Sp_make_shared_tag@Base 2.0.0
  _ZTISt23_Sp_counted_ptr_inplaceIN5Peony11FileWatcherESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE@Base 2.0.0
  _ZTISt23_Sp_counted_ptr_inplaceIN5Peony12FileMetaInfoESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE@Base 2.0.0
  _ZTISt23_Sp_counted_ptr_inplaceIN5Peony13GErrorWrapperESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE@Base 2.0.0

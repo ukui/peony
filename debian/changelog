@@ -1,3 +1,15 @@
+peony (2.0.1-1) unstable; urgency=medium
+
+  * New upstream release.
+  * debian/control:
+    - Add build-depends pkg-kde-tools.
+  * debian/rule:
+    - using pkgkde_symbolshelper.
+  * debian/libpeony2.symbols.
+    - Using pkg-kde-tools update the symbols file. (Closes: #951607)
+
+ -- handsome_feng <jianfengli@ubuntukylin.com>  Wed, 19 Feb 2020 14:15:38 +0800
+
 peony (2.0.0-1) unstable; urgency=medium
 
   * New upstream release.

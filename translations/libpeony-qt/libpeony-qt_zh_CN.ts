@@ -828,17 +828,17 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
 <context>
     <name>Peony::FileMoveOperation</name>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="754"/>
+        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="756"/>
         <source>Invalid move operation, cannot move a file itself.</source>
         <translation>非法的移动操作，不能自移动到自身。</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="767"/>
+        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="769"/>
         <source>Invalid Operation.</source>
         <translation>非法的操作.</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="780"/>
+        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="782"/>
         <source>Invalid Operation</source>
         <translation>非法的操作</translation>
     </message>
@@ -1589,28 +1589,28 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
         <translation>查看和修改文件的权限。</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/convenient-utils/file-operation-utils.cpp" line="99"/>
+        <location filename="../../libpeony-qt/convenient-utils/file-operation-utils.cpp" line="100"/>
         <source>Can not trash</source>
         <translation>不能回收</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/convenient-utils/file-operation-utils.cpp" line="99"/>
+        <location filename="../../libpeony-qt/convenient-utils/file-operation-utils.cpp" line="100"/>
         <source>Can not trash these files. You can delete them permanently. Are you sure doing that?</source>
         <translation>不能将这些文件完全放入回收站，但可以选择以永久删除这些文件，确定这样做吗？</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/convenient-utils/file-operation-utils.cpp" line="175"/>
-        <location filename="../../libpeony-qt/convenient-utils/file-operation-utils.cpp" line="179"/>
+        <location filename="../../libpeony-qt/convenient-utils/file-operation-utils.cpp" line="176"/>
+        <location filename="../../libpeony-qt/convenient-utils/file-operation-utils.cpp" line="180"/>
         <source>Delete Permanently</source>
         <translation>永久删除</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/convenient-utils/file-operation-utils.cpp" line="175"/>
+        <location filename="../../libpeony-qt/convenient-utils/file-operation-utils.cpp" line="176"/>
         <source>Are you sure that you want to delete %1? Once you start a deletion, the files deleting will never be restored again.</source>
         <translation>确定删除%1？一旦确定，文件将被永久删除并且不可恢复。</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/convenient-utils/file-operation-utils.cpp" line="179"/>
+        <location filename="../../libpeony-qt/convenient-utils/file-operation-utils.cpp" line="180"/>
         <source>Are you sure that you want to delete these %1 files? Once you start a deletion, the files deleting will never be restored again.</source>
         <translation>确定删除这%1个文件？一旦确定，文件将被永久删除并且不可恢复。</translation>
     </message>
