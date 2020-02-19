@@ -5,6 +5,7 @@ Maintainer: Kylin Team <team+kylin@tracker.debian.org>
 Uploaders: Aron Xu <aron@debian.org>,
            handsome_feng <jianfengli@ubuntukylin.com>
 Build-Depends: debhelper-compat (=12),
+               pkg-kde-tools,
                pkg-config,
                qt5-qmake,
                qtbase5-dev,
