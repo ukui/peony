@@ -1,3 +1,10 @@
+peony (2.0.1-2) unstable; urgency=medium
+
+  * debian/libpeony2.symbols:
+    - fixed symbols for armel.
+
+ -- handsome_feng <jianfengli@ubuntukylin.com>  Thu, 20 Feb 2020 11:00:36 +0800
+
 peony (2.0.1-1) unstable; urgency=medium
 
   * New upstream release.
