@@ -108,6 +108,10 @@ void ComplementaryStyle::drawPrimitive(QStyle::PrimitiveElement element, const Q
         }
         break;
     }
+    case PE_FrameLineEdit:
+    {
+
+    }
     default:
         break;
     }
@@ -214,6 +218,86 @@ void ComplementaryStyle::drawComplexControl(QStyle::ComplexControl cc, const QSt
             }
         }
         break;
+    }
+    case QStyle::CC_ScrollBar:
+    {
+       //migrate changes from style-example-qt5
+        /// 我们参考qt的官方文档和源码，可以知道滚动条需要绘制的子控件有8个
+        /// QStyle::SC_ScrollBarAddLine     一般的向下或者向右箭头 Scroll bar add line (i.e., down/right arrow); see also QScrollBar.
+        /// QStyle::SC_ScrollBarSubLine     向下或向左箭头 Scroll bar sub line (i.e., up/left arrow).
+        /// QStyle::SC_ScrollBarAddPage     slider一侧的区域 Scroll bar add page (i.e., page down).
+        /// QStyle::SC_ScrollBarSubPage     slider另一侧的区域 Scroll bar sub page (i.e., page up).
+        /// QStyle::SC_ScrollBarFirst       置顶按钮，某些style没有 Scroll bar first line (i.e., home).
+        /// QStyle::SC_ScrollBarLast        至底按钮 Scroll bar last line (i.e., end).
+        /// QStyle::SC_ScrollBarSlider      滚动条slider Scroll bar slider handle.
+        /// QStyle::SC_ScrollBarGroove      滚动槽 Special sub-control which contains the area in which the slider handle may move.
+        /// 其实有一些子控件不一定要绘制，比如SC_ScrollBarFirst和SC_ScrollBarLast，有一些style中默认是没有的（比如fusion）
+        /// 还有SC_ScrollBarGroove也未必被绘制或者被遮蔽，
+        /// SC_ScrollBarAddLine，SC_ScrollBarSubLine，
+        /// SC_ScrollBarAddPage，SC_ScrollBarSubPage和SC_ScrollBarSlider是一个
+        /// 滚动条最为常见的组成部分
+
+        /// 我们需要获取scrollbar的详细信息，通过qstyleoption_cast可以得到
+        /// 对应的option，通过拷贝构造函数得到一份备份用于绘制子控件
+        /// 我们一般不用在意option是怎么得到的，大部分的Qt控件都能够提供了option的init方法
+        const QStyleOptionSlider option = *qstyleoption_cast<const QStyleOptionSlider*>(opt);
+        QStyleOption tmp = option;
+
+        /// 绘制两端指示器
+        /// 我们可以通过subControlRect获取对应子控件的rect
+        auto subLineRect = proxy()->subControlRect(CC_ScrollBar, opt, SC_ScrollBarSubLine, widget);
+        tmp.rect = subLineRect;
+        drawControl(CE_ScrollBarSubLine, &tmp, p, widget);
+
+        auto addLineRect = proxy()->subControlRect(CC_ScrollBar, opt, SC_ScrollBarAddLine, widget);
+        tmp.rect = addLineRect;
+        drawControl(CE_ScrollBarAddLine, &tmp, p, widget);
+
+        /// 绘制slider两侧的翻页控件，一般来说可以认为是背景
+        /// 其实我们一般没有必要在两端各绘制一次背景，除非我们希望两端的背景根据状态有所区别
+        /// 不论如何，Qt还是提供了这两个枚举，这里尊重一下规范
+        auto subPageRect = proxy()->subControlRect(CC_ScrollBar, opt, SC_ScrollBarSubPage, widget);
+        tmp.rect = subPageRect;
+        drawControl(CE_ScrollBarSubPage, &tmp, p, widget);
+
+        auto addPageRect = proxy()->subControlRect(CC_ScrollBar, opt, SC_ScrollBarAddPage, widget);
+        tmp.rect = addPageRect;
+        drawControl(CE_ScrollBarAddPage, &tmp, p, widget);
+
+        /// 绘制滚动条slider
+        ///
+        /// complex control与一般控件不同之处之一在于它可能拥有不统一的子控件状态，
+        /// 以滚动条为例，我们在把鼠标移动到滚动条上时，slider未必属于被hover的状态，
+        /// 这是通过activeSubControls来进行判断的
+        ///
+        /// 我们可以通过activeSubControls和state赋予不同subcontrol更详细的状态，
+        /// 比如如果scrollbar本身是被悬停但是并未悬停在slider上，
+        /// 那么我们的tmp opt也可以将state的State_MouseOver设置为false，
+        /// 然后再绘制这个SC
+        bool hover = false;
+        bool pressed = false;
+        if (opt->activeSubControls.testFlag(SC_ScrollBarSlider)) {
+            /// 鼠标是否悬停在slider上
+            if (opt->state.testFlag(State_MouseOver)) {
+                hover = true;
+                /// 鼠标是否按住slider
+                if (opt->state.testFlag(State_Sunken)) {
+                    pressed = true;
+                }
+            }
+        }
+        //p->save();
+        /// 根据slider的state不同，drawControl可以做不同的绘制，
+        /// 简单的处理也可以放在这里进行
+
+        tmp.state.setFlag(State_MouseOver, hover);
+        tmp.state.setFlag(State_Sunken, pressed);
+        auto sliderRect = subControlRect(CC_ScrollBar, opt, SC_ScrollBarSlider, widget);
+        tmp.rect = sliderRect;
+        drawControl(CE_ScrollBarSlider, &tmp, p, widget);
+        //p->restore();
+
+        return;
     }
     default:
         return QProxyStyle::drawComplexControl(cc, opt, p, widget);
