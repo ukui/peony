@@ -1,2 +1,0 @@
-peony-extensions-cmake/peony-qt-admin/libpeony-qt-admin.* usr/lib/peony-qt-extensions
-peony-extensions-cmake/peony-qt-admin/org.freedesktop.peony-qt-admin.policy usr/share/polkit-1/actions

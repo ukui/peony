@@ -20,23 +20,6 @@ Homepage: https://github.com/ukui/peony-extensions
 Vcs-Git: https://github.com/ukui/peony-extensions.git
 Vcs-Browser: https://github.com/ukui/peony-extensions
 
-Package: peony-admin
-Architecture: any
-Depends: ${misc:Depends},
-         ${shlibs:Depends},
-         libpeony2,
-         policykit-1
-Description: Add administrative actions to Peony's right-click menu
- Peony Admin is a simple Python extension for the Peony file manager that
- adds some administrative actions to the right-click menu:
- .
-   - Open as Administrator: opens a folder in a new Peony window running
-     with administrator (root) privileges.
-   - Edit as Administrator: opens a file in a Pluma window running with
-     administrator (root) privileges.
-   - Run as Administrator: runs an executable file with administrator
-     (root) privileges inside a MATE Terminal.
-
 Package: peony-share
 Architecture: any
 Depends: ${misc:Depends},
