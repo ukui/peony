@@ -3,11 +3,22 @@ peony-extensions (2.0.0-1) unstable; urgency=medium
   * New upstream release.
     - Rewrite the plugins according to the peony-2.0.0.
   * debian/control:
-    - Bump standards-version to 4.5.0.
     - Drop peony-image-converter, peony-sendto, peony-wallpaper,
       peony-xattr-tags.
 
  -- handsome_feng <jianfengli@ubuntukylin.com>  Fri, 14 Feb 2020 15:23:33 +0800
+
+peony-extensions (1.1.5-1) unstable; urgency=medium
+
+  * New upstream release.
+    - Remove the useless icons.
+  * debian/control:
+    - Bump standards-version to 4.5.0.
+  * debian/peony-wallpaper.lintian-overrides:
+    - Add library-not-linked-against-libc override for peony-wallpaper
+      extension file.
+
+ -- handsome_feng <jianfengli@ubuntukylin.com>  Tue, 18 Feb 2020 20:19:18 +0800
 
 peony-extensions (1.1.4-1) unstable; urgency=medium
 
