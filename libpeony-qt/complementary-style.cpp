@@ -108,9 +108,12 @@ void ComplementaryStyle::drawPrimitive(QStyle::PrimitiveElement element, const Q
         }
         break;
     }
+    //draw custome QLineEdit
     case PE_FrameLineEdit:
+    case PE_PanelLineEdit:
     {
 
+        break;
     }
     default:
         break;
