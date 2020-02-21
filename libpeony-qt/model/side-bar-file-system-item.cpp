@@ -50,7 +50,9 @@ SideBarFileSystemItem::SideBarFileSystemItem(QString uri,
         m_is_root_child = true;
         m_uri = "computer:///";
         m_display_name = tr("Computer");
-        m_icon_name = "computer";
+        //m_icon_name = "computer";
+        //top dir don't show icon
+        m_icon_name = "";
 
         //m_watcher->setMonitorChildrenChange();
         //connect(m_watcher.get(), &FileWatcher::fileChanged, [=]())
