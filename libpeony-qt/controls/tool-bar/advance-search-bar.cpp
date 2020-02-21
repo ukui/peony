@@ -137,6 +137,9 @@ void AdvanceSearchBar::init()
     this->setWidget(m_filter);
     //end mutiple filter
 
+    //don't show HorizontalScroll
+    setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+
     connect(m_browse_button, &QPushButton::clicked, this, &AdvanceSearchBar::browsePath);
     connect(m_filter_button, &QPushButton::clicked, this, &AdvanceSearchBar::searchFilter);
     connect(m_show_hidden_button, &QPushButton::clicked, this, &AdvanceSearchBar::setShowHidden);

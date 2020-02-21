@@ -66,6 +66,8 @@ SideBar::SideBar(QWidget *parent) : QTreeView(parent)
 
     setSortingEnabled(true);
     setExpandsOnDoubleClick(false);
+    //don't show HorizontalScroll
+    setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     header()->setSectionResizeMode(QHeaderView::ResizeToContents);
     header()->setVisible(false);
 
