@@ -112,7 +112,12 @@ void ComplementaryStyle::drawPrimitive(QStyle::PrimitiveElement element, const Q
     case PE_FrameLineEdit:
     case PE_PanelLineEdit:
     {
-
+        if (const QStyleOptionFrame *toolbutton
+                = qstyleoption_cast<const QStyleOptionFrame *>(option))
+        if (toolbutton)
+        {
+            drawPrimitive(PE_FrameLineEdit, toolbutton, painter, widget);
+        }
         break;
     }
     default:
