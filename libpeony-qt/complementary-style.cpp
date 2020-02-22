@@ -109,14 +109,15 @@ void ComplementaryStyle::drawPrimitive(QStyle::PrimitiveElement element, const Q
         break;
     }
     //draw custome QLineEdit
-    case PE_FrameLineEdit:
     case PE_PanelLineEdit:
     {
-        if (const QStyleOptionFrame *toolbutton
+        if (const QStyleOptionFrame *editOpt
                 = qstyleoption_cast<const QStyleOptionFrame *>(option))
-        if (toolbutton)
+        if (editOpt)
         {
-            drawPrimitive(PE_FrameLineEdit, toolbutton, painter, widget);
+            //editOpt->features = QStyleOptionFrame::Rounded;
+            proxy()->drawPrimitive(PE_FrameLineEdit, editOpt, painter, widget);
+            return;
         }
         break;
     }
