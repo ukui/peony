@@ -111,11 +111,16 @@ void ComplementaryStyle::drawPrimitive(QStyle::PrimitiveElement element, const Q
     //draw custome QLineEdit
     case PE_PanelLineEdit:
     {
-        if (const QStyleOptionFrame *editOpt
-                = qstyleoption_cast<const QStyleOptionFrame *>(option))
+        QStyleOption *editOpt = const_cast<QStyleOption*>(option);
         if (editOpt)
         {
-            //editOpt->features = QStyleOptionFrame::Rounded;
+            editOpt->initFrom(widget);
+            //designed outline color rgb value
+            auto outline_color = QColor(61, 107, 229);
+            //designed innerline color rgb value
+            auto innerline_color = QColor(28, 47, 146);
+            editOpt->palette.setColor(QPalette::Light, outline_color);
+            editOpt->palette.setColor(QPalette::Midlight, innerline_color);
             proxy()->drawPrimitive(PE_FrameLineEdit, editOpt, painter, widget);
             return;
         }
