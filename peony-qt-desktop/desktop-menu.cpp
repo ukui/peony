@@ -86,7 +86,11 @@ void DesktopMenu::fillActions()
         addSeparator();
 
     //add propertries actions
-    auto propertiesAction = constructFilePropertiesActions();
+    //if this is a backgroud menu, then it should not add propertries actions
+    bool isBackgroundMenu = m_selections.isEmpty();
+    if(!isBackgroundMenu) {
+        auto propertiesAction = constructFilePropertiesActions();
+    }
 }
 
 const QList<QAction *> DesktopMenu::constructOpenOpActions()
