@@ -1,5 +1,5 @@
 # peony-qt-core
-Core part of peony-qt, providing a set of APIs for peony-qt and other projects for file manager development.
+Core part of Peony, providing a set of APIs for Peony and other projects for file manager development.
 
 # build-depends
 - glib-2.0 (development files)
@@ -11,7 +11,7 @@ Core part of peony-qt, providing a set of APIs for peony-qt and other projects f
 - libpoppler-qt5-dev
 
 # description
-peony-qt is the filemanager of ukui3.0，which refactoring peony based on qt and glib/gio.
+Peony is the filemanager of ukui3.0，which refactoring Peony(UKUI 2.0) based on qt and glib/gio.
 
 In simple terms, this project can be seem as the qt/c++ style wrapper of gio's api. It should provide all kinds of file operation that gio has supported, such as querying, enumerating, monitoring copying/moving, mounting, etc... And it will translate g_signal to qt's signals for using signal/slot between QObject based classes.
 
@@ -23,7 +23,7 @@ In simple terms, this project can be seem as the qt/c++ style wrapper of gio's a
 
 ## content
 ### FileInfo and FileInfoManager
-In peony-qt, a file can be abstracted to a FileInfo class. It contains some information about the file, such as uri, icon, size, etc. When the FileInfo was created, it should be managed by FileInfoManager. So that the file system will be mapped to a hash table.
+In Peony, a file can be abstracted to a FileInfo class. It contains some information about the file, such as uri, icon, size, etc. When the FileInfo was created, it should be managed by FileInfoManager. So that the file system will be mapped to a hash table.
 The FileInfoManager is desgined to a static single global instance, and the FileInfo instances are wrapped by a std::shared_ptr.
 The FileInfo instance life is not same as a regular smart pointer's instance life.
 Actually, FileInfo in FileInfoManager will destoryed by a third classed instance which hold this smart pointer. It will be destoryed when the last third classed instance holder deconstrunction.

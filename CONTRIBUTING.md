@@ -1,15 +1,15 @@
-# Peony-Qt contribution guide
+# Peony contribution guide
 ## Introduction
 If you are reading this page, you might volunteer to be a contributor of this project. There are some suggestions from me.
 
 ##  Your role(s)
 What role do you want to play in this project? This point is very important.
 
-- If you just find the problem and report a bug, you should be a user of peony-qt.
+- If you just find the problem and report a bug, you should be a user of Peony.
 
 - If you are good at one or more foreign languages, you should be a translator.
 
-- If you are familiar with the framework and developing on it, you should be a developer or programer of peony-qt.
+- If you are familiar with the framework and developing on it, you should be a developer or programer of Peony.
 
 The different character's contribution is equally important. But the threshold is different.
 
@@ -19,7 +19,7 @@ You need to choose your role(s) based on your own situation.
 If you are a new commer, I suggest you start by emitting an issue. I can get to know you from the issue you submitted, and there's no "risk" in emitting a issue.
 
 ## Translators are in short supply
-Peony-Qt is an i18n project, and it is shamed that I only studied Chinese and English. If you are familiar with English and proficient in other languages, I hope you can help me with the internationalization of the project.
+Peony is an i18n project, and it is shamed that I only studied Chinese and English. If you are familiar with English and proficient in other languages, I hope you can help me with the internationalization of the project.
 
 ## Pull request will be treated with caution
 I need to think carefully about your PR. If your idea doesn't agree with mine or I find a problem during my code review, I may refuse your request or ask you to modify it.
