@@ -376,6 +376,8 @@ const QList<QAction *> DesktopMenu::constructFileOpActions()
                 if (result == QMessageBox::Yes) {
                     FileEnumerator e;
                     FileOperationUtils::remove(trashChildren);
+                    auto desktopView = dynamic_cast<DesktopIconView*>(m_view);
+                    desktopView->refresh();
                 }
             });
             l.last()->setEnabled(!trashChildren.isEmpty());
