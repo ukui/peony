@@ -133,7 +133,7 @@ FMWindow::FMWindow(const QString &uri, QWidget *parent) : QMainWindow (parent)
     m_splitter = new QSplitter(Qt::Horizontal, this);
     m_splitter->setChildrenCollapsible(false);
     m_splitter->setLayoutDirection(Qt::LeftToRight);
-    m_splitter->setHandleWidth(2);
+    m_splitter->setHandleWidth(-0.5);
     m_splitter->setStyleSheet("QSplitter"
                               "{"
                               "border: 0;"

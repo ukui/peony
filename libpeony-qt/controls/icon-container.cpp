@@ -39,6 +39,6 @@ void IconContainer::paintEvent(QPaintEvent *e)
     QPainter p(this);
     p.fillRect(this->rect(), this->palette().base());
     p.setPen(this->palette().dark().color());
-    p.drawRect(this->rect().adjusted(0, 0, -1, -1));
+    //p.drawRect(this->rect().adjusted(0, 0, -1, -1));
     QPushButton::paintEvent(e);
 }
