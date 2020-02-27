@@ -93,11 +93,13 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
             auto job = new FileInfoJob(info);
             job->setAutoDelete();
             connect(job, &FileInfoJob::infoUpdated, [=](){
-                this->beginResetModel();
+                //this->beginResetModel();
+                this->beginInsertRows(QModelIndex(), m_files.count(), m_files.count());
                 ThumbnailManager::getInstance()->createThumbnail(info->uri(), m_desktop_watcher);
                 m_files<<info;
                 //this->insertRows(m_files.indexOf(info), 1);
-                this->endResetModel();
+                this->endInsertRows();
+                //this->endResetModel();
                 Q_EMIT this->requestUpdateItemPositions();
                 Q_EMIT this->requestLayoutNewItem(info->uri());
                 Q_EMIT this->fileCreated(uri);
@@ -109,9 +111,11 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
     this->connect(m_desktop_watcher.get(), &FileWatcher::fileDeleted, [=](const QString &uri){
         for (auto info : m_files) {
             if (info->uri() == uri) {
-                this->beginResetModel();
+                //this->beginResetModel();
+                this->beginRemoveRows(QModelIndex(), m_files.indexOf(info), m_files.indexOf(info));
                 m_files.removeOne(info);
-                this->endResetModel();
+                this->endRemoveRows();
+                //this->endResetModel();
                 Q_EMIT this->requestClearIndexWidget();
                 Q_EMIT this->requestUpdateItemPositions();
                 FileInfoManager::getInstance()->remove(info);
