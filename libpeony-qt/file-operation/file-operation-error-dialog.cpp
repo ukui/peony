@@ -37,7 +37,9 @@ FileOperationErrorDialog::FileOperationErrorDialog(QWidget *parent) : QDialog(pa
 {
     //center to desktop.
     setParent(QApplication::desktop());
-    setWindowFlag(Qt::Dialog);
+    //setWindowFlag(Qt::Dialog);
+    //use WindowStaysOnTopHint flag to make sure this dialog always stay on top
+    setWindowFlags(Qt::Dialog | Qt::WindowStaysOnTopHint);
     setWindowTitle(tr("File Operation Error"));
     setWindowIcon(QIcon::fromTheme("system-error"));
     m_layout = new QFormLayout(this);
