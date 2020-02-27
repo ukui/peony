@@ -185,6 +185,8 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
 #else
             QTimer::singleShot(500, [=](){
 #endif
+                if (this->state() & QAbstractItemView::EditingState)
+                    return;
                 this->setSelections(m_new_files_to_be_selected);
                 m_new_files_to_be_selected.clear();
             });
