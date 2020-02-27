@@ -132,7 +132,7 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
         this->updateItemPosistions(nullptr);
     });
 
-    //connect(m_model, &DesktopItemModel::requestClearIndexWidget, this, &DesktopIconView::clearAllIndexWidgets);
+    connect(m_model, &DesktopItemModel::requestClearIndexWidget, this, &DesktopIconView::clearAllIndexWidgets);
 
     connect(m_model, &DesktopItemModel::requestLayoutNewItem, this, [=](const QString &uri){
         auto index = m_proxy_model->mapFromSource(m_model->indexFromUri(uri));

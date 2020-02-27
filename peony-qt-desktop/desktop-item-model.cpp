@@ -60,6 +60,7 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
         connect(job, &FileInfoJob::infoUpdated, [=](){
             auto trashIndex = this->indexFromUri("trash:///");
             this->dataChanged(trashIndex, trashIndex);
+            Q_EMIT this->requestClearIndexWidget();
         });
         job->queryAsync();
     });
@@ -72,6 +73,7 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
         connect(job, &FileInfoJob::infoUpdated, [=](){
             auto trashIndex = this->indexFromUri("trash:///");
             this->dataChanged(trashIndex, trashIndex);
+            Q_EMIT this->requestClearIndexWidget();
         });
         job->queryAsync();
     });
