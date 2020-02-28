@@ -408,6 +408,8 @@ void DesktopIconView::editUri(const QString &uri)
 #else
     QTimer::singleShot(100, [=](){
 #endif
+        if (this->state() & QAbstractItemView::EditingState)
+            return;
         edit(m_proxy_model->mapFromSource(m_model->indexFromUri(uri)));
     });
 }
