@@ -656,6 +656,9 @@ void FMWindow::refresh()
         advanceSearch();
         filterUpdate();
     }
+    //qDebug() << "page refresh:" << getCurrentUri();
+    //update page uri before refresh, fix go to root path issue after refresh
+    m_tab->getActivePage()->getView()->setDirectoryUri(getCurrentUri());
     m_tab->getActivePage()->refresh();
 }
 
