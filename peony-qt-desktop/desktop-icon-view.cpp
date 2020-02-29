@@ -629,9 +629,15 @@ void DesktopIconView::mousePressEvent(QMouseEvent *e)
     }
 
     if (indexAt(e->pos()) == m_last_index && m_last_index.isValid()) {
-        //qDebug()<<"check";
-        if (m_edit_trigger_timer.isActive()) {
-            //qDebug()<<"edit";
+        //not allow to edit special items:computer,trash and personal home path folder name
+        bool special_index = false;
+        QString homeUri = "file://" + QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
+        special_index = (m_last_index.data(Qt::UserRole).toString() == "computer:///" ||
+                         m_last_index.data(Qt::UserRole).toString() == "trash:///" ||
+                         m_last_index.data(Qt::UserRole).toString() == homeUri);
+        //qDebug()<<"check" << m_last_index.data() << special_index <<m_last_index.data(Qt::UserRole).toString();
+        if (m_edit_trigger_timer.isActive() && !special_index) {
+            //qDebug()<<"edit" << m_last_index.data(Qt::UserRole).toString();
             setIndexWidget(m_last_index, nullptr);
             edit(m_last_index);
         }
@@ -656,7 +662,7 @@ void DesktopIconView::resetEditTriggerTimer()
     m_edit_trigger_timer.disconnect();
     m_edit_trigger_timer.stop();
     QTimer::singleShot(750, [&](){
-        //qDebug()<<"start";
+        qDebug()<<"start";
         m_edit_trigger_timer.setSingleShot(true);
         m_edit_trigger_timer.start(1000);
     });

@@ -398,7 +398,9 @@ const QList<QAction *> DesktopMenu::constructFileOpActions()
                 });
             }
 
-            if (m_selections.count() == 1) {
+            //don't show rename when select home path
+            QString homeUri = "file://" + QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
+            if (m_selections.count() == 1 && m_selections.first() != homeUri) {
                 l<<addAction(QIcon::fromTheme("document-edit-symbolic"), tr("&Rename"));
                 connect(l.last(), &QAction::triggered, [=](){
                     m_view->editUri(m_selections.first());
