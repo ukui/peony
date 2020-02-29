@@ -6,6 +6,7 @@ include(model/model.pri)
 include(vfs/vfs.pri)
 #plugin interface
 include(../plugin-iface/plugin-iface.pri)
+include(effects/effects.pri)
 
 include(convenient-utils/convenient-utils.pri)
 

@@ -4,9 +4,9 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui gui-private
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets widgets-private
 
 VERSION = 2.0.0
 
@@ -16,6 +16,7 @@ TEMPLATE = app
 
 include(../libpeony-qt/libpeony-qt-header.pri)
 include(../3rd-parties/SingleApplication/singleapplication.pri)
+include(windows/windows.pri)
 DEFINES += QAPPLICATION_CLASS=QApplication
 
 PKGCONFIG +=gio-2.0 glib-2.0 gio-unix-2.0

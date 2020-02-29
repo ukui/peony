@@ -22,6 +22,8 @@
 
 #include "peony-application.h"
 
+#include "main-window.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <QTime>
@@ -75,6 +77,10 @@ void messageOutput(QtMsgType type, const QMessageLogContext &context, const QStr
 int main(int argc, char *argv[]) {
     qInstallMessageHandler(messageOutput);
     QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+    QApplication a(argc, argv);
+        MainWindow w;
+        w.show();
+    return a.exec();
     PeonyApplication app(argc, argv, "peony-qt");
     if (app.isSecondary())
         return 0;

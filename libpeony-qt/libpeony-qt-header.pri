@@ -36,4 +36,6 @@ INCLUDEPATH += $$PWD/controls/tab-page
 
 INCLUDEPATH += $$PWD/controls/tool-bar
 
+INCLUDEPATH += $$PWD/effects
+
 INCLUDEPATH += $$PWD/../plugin-iface/
