@@ -92,7 +92,7 @@ QWidget *ListViewDelegate::createEditor(QWidget *parent, const QStyleOptionViewI
 
     connect(edit, &TextEdit::finishEditRequest, [=](){
         setModelData(edit, nullptr, index);
-        edit->close();
+        edit->deleteLater();
     });
 
     return edit;
@@ -128,6 +128,8 @@ void ListViewDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptionV
 void ListViewDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const
 {
     TextEdit *edit = qobject_cast<TextEdit*>(editor);
+    if (!edit)
+        return;
 
     auto text = edit->toPlainText();
     if (text.isEmpty())
