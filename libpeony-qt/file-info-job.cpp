@@ -261,12 +261,12 @@ void FileInfoJob::refreshInfoContents(GFileInfo *new_info)
     if (info->isDesktopFile()) {
         QUrl url = info->uri();
         GDesktopAppInfo *desktop_info = g_desktop_app_info_new_from_filename(url.path().toUtf8());
-        auto string = g_desktop_app_info_get_locale_string(desktop_info, "GenericName");
+        auto string = g_desktop_app_info_get_locale_string(desktop_info, "Name");
         if (string) {
             info->m_display_name = string;
             g_free(string);
         } else {
-            string = g_desktop_app_info_get_string(desktop_info, "GenericName");
+            string = g_desktop_app_info_get_string(desktop_info, "Name");
             if (string) {
                 info->m_display_name = string;
                 g_free(string);
