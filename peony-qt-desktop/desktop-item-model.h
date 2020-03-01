@@ -90,6 +90,7 @@ private:
     QList<std::shared_ptr<FileInfo>> m_files;
     std::shared_ptr<FileWatcher> m_trash_watcher;
     std::shared_ptr<FileWatcher> m_desktop_watcher;
+    std::shared_ptr<FileWatcher> m_thumbnail_watcher; //just handle the thumbnail created.
 
     QQueue<QString> m_info_query_queue;
 };

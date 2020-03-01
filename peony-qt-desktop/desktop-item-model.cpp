@@ -50,6 +50,17 @@ using namespace Peony;
 DesktopItemModel::DesktopItemModel(QObject *parent)
     : QAbstractListModel(parent)
 {
+    m_thumbnail_watcher = std::make_shared<FileWatcher>("thumbnail:///, this");
+
+    connect(m_thumbnail_watcher.get(), &FileWatcher::fileChanged, this, [=](const QString &uri){
+        for (auto info : m_files) {
+            if (info->uri() == uri) {
+                auto index = indexFromUri(uri);
+                Q_EMIT this->dataChanged(index, index);
+            }
+        }
+    });
+
     m_trash_watcher = std::make_shared<FileWatcher>("trash:///", this);
 
     this->connect(m_trash_watcher.get(), &FileWatcher::fileCreated, [=](){
@@ -131,7 +142,9 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
                 auto job = new FileInfoJob(info);
                 job->setAutoDelete();
                 connect(job, &FileInfoJob::queryAsyncFinished, this, [=](){
+                    ThumbnailManager::getInstance()->createThumbnail(uri, m_thumbnail_watcher);
                     this->dataChanged(indexFromUri(uri), indexFromUri(uri));
+                    Q_EMIT this->requestClearIndexWidget();
                 });
                 job->queryAsync();
                 this->dataChanged(indexFromUri(uri), indexFromUri(uri));
