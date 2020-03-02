@@ -1,33 +1,36 @@
 /*
- * Peony-Qt's Library
+ * Peony-Qt
  *
  * Copyright (C) 2020, Tianjin KYLIN Information Technology Co., Ltd.
  *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 3 of the License, or (at your option) any later version.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- * This library is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this library.  If not, see <https://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * Authors: Yue Lan <lanyue@kylinos.cn>
  *
  */
 
 #include "main-window.h"
+#include "header-bar.h"
 
 #include "border-shadow-effect.h"
 #include <private/qwidgetresizehandler_p.h>
 
 #include <QVariant>
 
-MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
+#include <QTreeWidget>
+
+MainWindow::MainWindow(const QString &uri, QWidget *parent) : QMainWindow(parent)
 {
     m_effect = new BorderShadowEffect(this);
     m_effect->setPadding(4);
@@ -35,13 +38,29 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     m_effect->setBlurRadius(4);
     setGraphicsEffect(m_effect);
 
+    setAnimated(false);
     setAttribute(Qt::WA_TranslucentBackground);
+    setAttribute(Qt::WA_OpaquePaintEvent);
     setWindowFlag(Qt::FramelessWindowHint);
     setContentsMargins(4, 4, 4, 4);
 
     //bind resize handler
     auto handler = new QWidgetResizeHandler(this);
     handler->setMovingEnabled(false);
+
+    //init UI
+    initUI();
+}
+
+void MainWindow::syncControlsLocation(const QString &uri)
+{
+    //FIXME:
+}
+
+void MainWindow::goToUri(const QString &uri, bool addHistory, bool force)
+{
+    //FIXME:
+    //go to uri
 }
 
 void MainWindow::resizeEvent(QResizeEvent *e)
@@ -75,4 +94,10 @@ void MainWindow::validBorder()
         path.addRoundedRect(rect, 6, 6);
         setProperty("blurRegion", QRegion(path.toFillPolygon().toPolygon()));
     }
+}
+
+void MainWindow::initUI()
+{
+    auto headerBar = new HeaderBar(this);
+    addToolBar(headerBar);
 }

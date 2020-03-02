@@ -17,6 +17,8 @@ TEMPLATE = app
 include(../libpeony-qt/libpeony-qt-header.pri)
 include(../3rd-parties/SingleApplication/singleapplication.pri)
 include(windows/windows.pri)
+include(control/control.pri)
+include(view/view.pri)
 DEFINES += QAPPLICATION_CLASS=QApplication
 
 PKGCONFIG +=gio-2.0 glib-2.0 gio-unix-2.0

@@ -22,6 +22,7 @@
 
 #include "border-shadow-effect.h"
 #include <QPainter>
+#include <QWidget>
 #include <QDebug>
 
 //qt's global function
@@ -62,6 +63,9 @@ void BorderShadowEffect::setShadowColor(const QColor &color)
 void BorderShadowEffect::setWindowBackground(const QColor &color)
 {
     m_window_bg = color;
+    if (auto w = qobject_cast<QWidget *>(parent())) {
+        w->update();
+    }
 }
 
 void BorderShadowEffect::draw(QPainter *painter)
