@@ -354,6 +354,9 @@ void FileItem::onChildAdded(const QString &uri)
     FileItem *child = getChildFromUri(uri);
     if (child) {
         qDebug()<<"has added";
+        //child info maybe changed, so need sync update again
+        child->updateInfoSync();
+        m_model->updated();
         return;
     }
     FileItem *newChild = new FileItem(FileInfo::fromUri(uri), this, m_model);
