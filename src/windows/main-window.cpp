@@ -88,7 +88,7 @@ void MainWindow::paintEvent(QPaintEvent *e)
 
 void MainWindow::mousePressEvent(QMouseEvent *e)
 {
-    qDebug()<<"mouse pressed";
+    //qDebug()<<"mouse pressed"<<e;
     QMainWindow::mousePressEvent(e);
     if (e->button() == Qt::LeftButton && !e->isAccepted())
         m_is_draging = true;
@@ -99,7 +99,7 @@ void MainWindow::mouseMoveEvent(QMouseEvent *e)
     //NOTE: when starting a X11 window move, the mouse move event
     //will unreachable when draging, and after draging we could not
     //get the release event correctly.
-    qDebug()<<"mouse move";
+    //qDebug()<<"mouse move";
     QMainWindow::mouseMoveEvent(e);
     if (!m_is_draging)
         return;
@@ -137,7 +137,7 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *e)
      * X11 window manager for movement.
      */
     QMainWindow::mouseReleaseEvent(e);
-    qDebug()<<"mouse released";
+    //qDebug()<<"mouse released";
     m_is_draging = false;
 }
 

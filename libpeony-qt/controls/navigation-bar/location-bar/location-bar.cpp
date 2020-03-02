@@ -150,7 +150,8 @@ void LocationBar::addButton(const QString &uri, bool setIcon, bool setMenu)
 
 void LocationBar::mousePressEvent(QMouseEvent *e)
 {
-    QToolBar::mousePressEvent(e);
+    //eat this event.
+    //QToolBar::mousePressEvent(e);
     qDebug()<<"black clicked";
     if (e->button() == Qt::LeftButton) {
         Q_EMIT blankClicked();
