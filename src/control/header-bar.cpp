@@ -11,8 +11,9 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
     setStyleSheet(".HeaderBar{"
                   "background-color: transparent;"
                   "border: 0px solid transparent;"
-                  "margin: 4, 5, 4, 5;"
+                  "margin: 4px 5px 4px 5px;"
                   "};");
+
     setMovable(false);
 
     auto createFolder = new HeaderBarToolButton(this);

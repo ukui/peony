@@ -50,11 +50,18 @@ protected:
     void resizeEvent(QResizeEvent *e);
     void paintEvent(QPaintEvent *e);
 
+    void mousePressEvent(QMouseEvent *e);
+    void mouseMoveEvent(QMouseEvent *e);
+    void mouseReleaseEvent(QMouseEvent *e);
+
     void validBorder();
     void initUI();
 
 private:
     BorderShadowEffect *m_effect;
+
+    HeaderBar *m_header_bar;
+    bool m_is_draging = false;
 };
 
 #endif // MAINWINDOW_H

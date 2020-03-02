@@ -73,13 +73,13 @@ void BorderShadowEffect::draw(QPainter *painter)
     //draw window bg;
     auto sourceRect = boundingRect();
     auto contentRect = boundingRect().adjusted(m_padding, m_padding, -m_padding, -m_padding);
-    qDebug()<<contentRect;
+    //qDebug()<<contentRect;
     QPainterPath sourcePath;
     QPainterPath contentPath;
     sourcePath.addRect(sourceRect);
     contentPath.addRoundedRect(contentRect, m_x_border_radius, m_y_border_radius);
     auto targetPath = sourcePath - contentPath;
-    qDebug()<<contentPath;
+    //qDebug()<<contentPath;
     painter->fillPath(contentPath, m_window_bg);
 
     QPoint offset;
@@ -93,7 +93,7 @@ void BorderShadowEffect::draw(QPainter *painter)
         painter->setWorldTransform(QTransform());
         painter->drawPixmap(offset, pixmap);
     }
-    qDebug()<<this->boundingRect()<<offset;
+    //qDebug()<<this->boundingRect()<<offset;
     if (m_padding > 0) {
         //draw shadow
         QPixmap pixmap(sourceRect.size().width(), sourceRect.height());

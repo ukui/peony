@@ -27,8 +27,12 @@
 #include <private/qwidgetresizehandler_p.h>
 
 #include <QVariant>
+#include <QMouseEvent>
+#include <QX11Info>
 
-#include <QTreeWidget>
+#include <QDebug>
+
+#include <X11/Xlib.h>
 
 MainWindow::MainWindow(const QString &uri, QWidget *parent) : QMainWindow(parent)
 {
@@ -47,6 +51,9 @@ MainWindow::MainWindow(const QString &uri, QWidget *parent) : QMainWindow(parent
     //bind resize handler
     auto handler = new QWidgetResizeHandler(this);
     handler->setMovingEnabled(false);
+
+    //disable style window manager
+    setProperty("useStyleWindowManager", false);
 
     //init UI
     initUI();
@@ -79,6 +86,61 @@ void MainWindow::paintEvent(QPaintEvent *e)
     QMainWindow::paintEvent(e);
 }
 
+void MainWindow::mousePressEvent(QMouseEvent *e)
+{
+    qDebug()<<"mouse pressed";
+    QMainWindow::mousePressEvent(e);
+    if (e->button() == Qt::LeftButton && !e->isAccepted())
+        m_is_draging = true;
+}
+
+void MainWindow::mouseMoveEvent(QMouseEvent *e)
+{
+    //NOTE: when starting a X11 window move, the mouse move event
+    //will unreachable when draging, and after draging we could not
+    //get the release event correctly.
+    qDebug()<<"mouse move";
+    QMainWindow::mouseMoveEvent(e);
+    if (!m_is_draging)
+        return;
+    Display *display = QX11Info::display();
+    Atom netMoveResize = XInternAtom(display, "_NET_WM_MOVERESIZE", False);
+    XEvent xEvent;
+    const auto pos = QCursor::pos();
+
+    memset(&xEvent, 0, sizeof(XEvent));
+    xEvent.xclient.type = ClientMessage;
+    xEvent.xclient.message_type = netMoveResize;
+    xEvent.xclient.display = display;
+    xEvent.xclient.window = this->winId();
+    xEvent.xclient.format = 32;
+    xEvent.xclient.data.l[0] = pos.x();
+    xEvent.xclient.data.l[1] = pos.y();
+    xEvent.xclient.data.l[2] = 8;
+    xEvent.xclient.data.l[3] = Button1;
+    xEvent.xclient.data.l[4] = 0;
+
+    XUngrabPointer(display, CurrentTime);
+    XSendEvent(display, QX11Info::appRootWindow(QX11Info::appScreen()),
+               False, SubstructureNotifyMask | SubstructureRedirectMask,
+               &xEvent);
+    XFlush(display);
+
+    m_is_draging = false;
+}
+
+void MainWindow::mouseReleaseEvent(QMouseEvent *e)
+{
+    /*!
+     * \bug
+     * release event sometimes "disappear" when we request
+     * X11 window manager for movement.
+     */
+    QMainWindow::mouseReleaseEvent(e);
+    qDebug()<<"mouse released";
+    m_is_draging = false;
+}
+
 void MainWindow::validBorder()
 {
     if (this->isMaximized()) {
@@ -99,5 +161,6 @@ void MainWindow::validBorder()
 void MainWindow::initUI()
 {
     auto headerBar = new HeaderBar(this);
+    m_header_bar = headerBar;
     addToolBar(headerBar);
 }
