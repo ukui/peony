@@ -69,6 +69,9 @@ private:
     int m_padding = 0;
     QColor m_shadow_color = QColor(63, 63, 63, 180); // dark gray
     QColor m_window_bg = Qt::transparent;
+
+    QImage m_cache_shadow;
+    bool m_force_update_cache = false;
 };
 
 #endif // BORDERSHADOWEFFECT_H

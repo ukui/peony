@@ -40,6 +40,7 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
 
     setMovable(false);
 
+
     auto createFolder = new HeaderBarToolButton(this);
     createFolder->setAutoRaise(false);
     createFolder->setToolTip(tr("Create Folder"));
@@ -122,17 +123,20 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
     minimize->setIcon(QIcon::fromTheme("window-minimize-symbolic"));
     minimize->setFixedSize(QSize(40, 40));
 
-    QWidget *container = new QWidget(this);
-    container->setContentsMargins(0, 0, 0, 0);
-    QHBoxLayout *hbox = new QHBoxLayout();
-    hbox->setContentsMargins(0, 0, 0, 0);
-    hbox->setSpacing(5);
-    hbox->addWidget(minimize);
-    hbox->addWidget(maximizeAndRestore);
-    hbox->addWidget(close);
-    container->setLayout(hbox);
+//    QWidget *container = new QWidget(this);
+//    container->setContentsMargins(0, 0, 0, 0);
+//    QHBoxLayout *hbox = new QHBoxLayout();
+//    hbox->setContentsMargins(0, 0, 0, 0);
+//    hbox->setSpacing(5);
+//    hbox->addWidget(minimize);
+//    hbox->addWidget(maximizeAndRestore);
+//    hbox->addWidget(close);
+//    container->setLayout(hbox);
 
-    addWidget(container);
+//    addWidget(container);
+    addWidget(minimize);
+    addWidget(maximizeAndRestore);
+    addWidget(close);
 }
 
 void HeaderBar::setLocation(const QString &uri)

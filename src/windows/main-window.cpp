@@ -50,6 +50,7 @@
 
 MainWindow::MainWindow(const QString &uri, QWidget *parent) : QMainWindow(parent)
 {
+    setMinimumWidth(600);
     m_effect = new BorderShadowEffect(this);
     m_effect->setPadding(4);
     m_effect->setBorderRadius(6);
@@ -188,7 +189,7 @@ void MainWindow::initUI()
                                     "background-color: transparent;"
                                     "border: 0px solid transparent"
                                     "}");
-    sidebarContainer->setTitleBarWidget(new QWidget);
+    sidebarContainer->setTitleBarWidget(new QWidget(this));
     sidebarContainer->titleBarWidget()->setFixedHeight(0);
     sidebarContainer->setAttribute(Qt::WA_TranslucentBackground);
     sidebarContainer->setContentsMargins(0, 0, 0, 0);

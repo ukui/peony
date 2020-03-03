@@ -57,6 +57,9 @@ void BorderShadowEffect::setPadding(int padding)
 
 void BorderShadowEffect::setShadowColor(const QColor &color)
 {
+    if (color != m_shadow_color) {
+        m_force_update_cache = true;
+    }
     m_shadow_color = color;
 }
 
@@ -84,19 +87,29 @@ void BorderShadowEffect::drawWindowShadowManually(QPainter *painter, const QRect
 
     //qDebug()<<this->boundingRect()<<offset;
     if (m_padding > 0) {
-        //draw shadow
-        QPixmap pixmap(sourceRect.size().width(), sourceRect.height());
-        pixmap.fill(Qt::transparent);
-        QPainter p(&pixmap);
-        p.fillPath(contentPath, m_shadow_color);
-        p.end();
-        QImage img = pixmap.toImage();
-        qt_blurImage(img, m_blur_radius, false, false);
-        pixmap.convertFromImage(img);
-        painter->save();
-        painter->setClipPath(sourcePath - contentPath);
-        painter->drawImage(QPoint(), img);
-        painter->restore();
+        if (m_cache_shadow.size() == windowRect.size() && !m_force_update_cache) {
+            //use cache pixmap draw shadow.
+            painter->save();
+            painter->setClipPath(sourcePath - contentPath);
+            painter->drawImage(QPoint(), m_cache_shadow);
+            painter->restore();
+        } else {
+            //draw shadow and cache shadow pixmap
+            QPixmap pixmap(sourceRect.size().width(), sourceRect.height());
+            pixmap.fill(Qt::transparent);
+            QPainter p(&pixmap);
+            p.fillPath(contentPath, m_shadow_color);
+            p.end();
+            QImage img = pixmap.toImage();
+            qt_blurImage(img, m_blur_radius, false, false);
+            pixmap.convertFromImage(img);
+            m_cache_shadow = img;
+            painter->save();
+            painter->setClipPath(sourcePath - contentPath);
+            painter->drawImage(QPoint(), img);
+            painter->restore();
+            m_force_update_cache = false;
+        }
     }
 }
 

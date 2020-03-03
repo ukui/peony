@@ -29,6 +29,8 @@
 #include <QStyle>
 #include <QStyleOptionTabBarBase>
 
+#include <QApplication>
+
 #include <QDebug>
 
 #include <QX11Info>

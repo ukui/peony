@@ -37,7 +37,7 @@ public:
     explicit SideBar(QWidget *parent = nullptr);
 
 Q_SIGNALS:
-    void updateLocationRequest(const QString &uri);
+    void updateWindowLocationRequest(const QString &uri);
 
 private:
     Peony::SideBarProxyFilterSortModel *m_proxy_model;
