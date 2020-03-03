@@ -20,47 +20,28 @@
  *
  */
 
-#ifndef HEADERBAR_H
-#define HEADERBAR_H
+#ifndef SIDEBAR_H
+#define SIDEBAR_H
 
-#include <QToolBar>
-#include <QToolButton>
-#include <QPushButton>
+#include <QTreeView>
 
-class MainWindow;
+namespace Peony {
+class SideBarModel;
+class SideBarProxyFilterSortModel;
+}
 
-class HeaderBar : public QToolBar
+class SideBar : public QTreeView
 {
-    friend class MainWindow;
     Q_OBJECT
-private:
-    explicit HeaderBar(MainWindow *parent = nullptr);
+public:
+    explicit SideBar(QWidget *parent = nullptr);
 
 Q_SIGNALS:
     void updateLocationRequest(const QString &uri);
 
-private Q_SLOTS:
-    void setLocation(const QString &uri);
-
 private:
-    const QString m_uri;
-    MainWindow *m_window;
+    Peony::SideBarProxyFilterSortModel *m_proxy_model;
+    Peony::SideBarModel *m_model;
 };
 
-class HeaderBarToolButton : public QToolButton
-{
-    friend class HeaderBar;
-    friend class MainWindow;
-    Q_OBJECT;
-    explicit HeaderBarToolButton(QWidget *parent = nullptr);
-};
-
-class HeadBarPushButton : public QPushButton
-{
-    friend class HeaderBar;
-    friend class MainWindow;
-    Q_OBJECT
-    explicit HeadBarPushButton(QWidget *parent = nullptr);
-};
-
-#endif // HEADERBAR_H
+#endif // SIDEBAR_H

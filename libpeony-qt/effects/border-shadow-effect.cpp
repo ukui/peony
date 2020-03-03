@@ -68,6 +68,38 @@ void BorderShadowEffect::setWindowBackground(const QColor &color)
     }
 }
 
+void BorderShadowEffect::drawWindowShadowManually(QPainter *painter, const QRect &windowRect)
+{
+    //draw window bg;
+    QRect sourceRect = windowRect;
+    auto contentRect = sourceRect.adjusted(m_padding, m_padding, -m_padding, -m_padding);
+    //qDebug()<<contentRect;
+    QPainterPath sourcePath;
+    QPainterPath contentPath;
+    sourcePath.addRect(sourceRect);
+    contentPath.addRoundedRect(contentRect, m_x_border_radius, m_y_border_radius);
+    auto targetPath = sourcePath - contentPath;
+    //qDebug()<<contentPath;
+    painter->fillPath(contentPath, m_window_bg);
+
+    //qDebug()<<this->boundingRect()<<offset;
+    if (m_padding > 0) {
+        //draw shadow
+        QPixmap pixmap(sourceRect.size().width(), sourceRect.height());
+        pixmap.fill(Qt::transparent);
+        QPainter p(&pixmap);
+        p.fillPath(contentPath, m_shadow_color);
+        p.end();
+        QImage img = pixmap.toImage();
+        qt_blurImage(img, m_blur_radius, false, false);
+        pixmap.convertFromImage(img);
+        painter->save();
+        painter->setClipPath(sourcePath - contentPath);
+        painter->drawImage(QPoint(), img);
+        painter->restore();
+    }
+}
+
 void BorderShadowEffect::draw(QPainter *painter)
 {
     //draw window bg;

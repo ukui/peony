@@ -28,7 +28,6 @@ class MainWindowPrivate;
 class BorderShadowEffect;
 class HeaderBar;
 class DirectoryViewContainter;
-class SideBar;
 
 class MainWindow : public QMainWindow
 {

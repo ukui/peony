@@ -30,6 +30,20 @@
 #include <QMouseEvent>
 #include <QX11Info>
 
+#include <QDockWidget>
+#include <QTreeView>
+
+#include "side-bar-proxy-filter-sort-model.h"
+#include "side-bar-model.h"
+
+#include "directory-view-container.h"
+#include "tab-page.h"
+#include "x11-window-manager.h"
+
+#include "navigation-side-bar.h"
+
+#include <QPainter>
+
 #include <QDebug>
 
 #include <X11/Xlib.h>
@@ -40,9 +54,10 @@ MainWindow::MainWindow(const QString &uri, QWidget *parent) : QMainWindow(parent
     m_effect->setPadding(4);
     m_effect->setBorderRadius(6);
     m_effect->setBlurRadius(4);
-    setGraphicsEffect(m_effect);
+    //setGraphicsEffect(m_effect);
 
     setAnimated(false);
+    //setAttribute(Qt::WA_DeleteOnClose); //double free, why?
     setAttribute(Qt::WA_TranslucentBackground);
     setAttribute(Qt::WA_OpaquePaintEvent);
     setWindowFlag(Qt::FramelessWindowHint);
@@ -83,6 +98,8 @@ void MainWindow::paintEvent(QPaintEvent *e)
     QColor color = this->palette().base().color();
     color.setAlphaF(0.5);
     m_effect->setWindowBackground(color);
+    QPainter p(this);
+    m_effect->drawWindowShadowManually(&p, this->rect());
     QMainWindow::paintEvent(e);
 }
 
@@ -160,7 +177,33 @@ void MainWindow::validBorder()
 
 void MainWindow::initUI()
 {
+    //HeaderBar
     auto headerBar = new HeaderBar(this);
     m_header_bar = headerBar;
     addToolBar(headerBar);
+
+    //SideBar
+    QDockWidget *sidebarContainer = new QDockWidget(this);
+    sidebarContainer->setStyleSheet("{"
+                                    "background-color: transparent;"
+                                    "border: 0px solid transparent"
+                                    "}");
+    sidebarContainer->setTitleBarWidget(new QWidget);
+    sidebarContainer->titleBarWidget()->setFixedHeight(0);
+    sidebarContainer->setAttribute(Qt::WA_TranslucentBackground);
+    sidebarContainer->setContentsMargins(0, 0, 0, 0);
+    SideBar *sidebar = new SideBar(this);
+
+    sidebarContainer->setWidget(sidebar);
+    addDockWidget(Qt::LeftDockWidgetArea, sidebarContainer);
+
+    Peony::TabPage *views = new Peony::TabPage(this);
+    views->setTabBarAutoHide(false);
+    views->addPage("file:///");
+    views->addPage("file:///home");
+
+    X11WindowManager *tabBarHandler = new X11WindowManager(this);
+    tabBarHandler->registerWidget(views->tabBar());
+
+    setCentralWidget(views);
 }

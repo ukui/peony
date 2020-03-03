@@ -20,47 +20,24 @@
  *
  */
 
-#ifndef HEADERBAR_H
-#define HEADERBAR_H
+#ifndef X11WINDOWMANAGER_H
+#define X11WINDOWMANAGER_H
 
-#include <QToolBar>
-#include <QToolButton>
-#include <QPushButton>
+#include <QObject>
 
-class MainWindow;
-
-class HeaderBar : public QToolBar
+class X11WindowManager : public QObject
 {
-    friend class MainWindow;
     Q_OBJECT
-private:
-    explicit HeaderBar(MainWindow *parent = nullptr);
+public:
+    explicit X11WindowManager(QObject *parent = nullptr);
 
-Q_SIGNALS:
-    void updateLocationRequest(const QString &uri);
+    bool eventFilter(QObject *watched, QEvent *event) override;
 
-private Q_SLOTS:
-    void setLocation(const QString &uri);
+    void registerWidget(QWidget *widget);
 
 private:
-    const QString m_uri;
-    MainWindow *m_window;
+    bool m_is_draging = false;
+    QWidget *m_current_widget = nullptr;
 };
 
-class HeaderBarToolButton : public QToolButton
-{
-    friend class HeaderBar;
-    friend class MainWindow;
-    Q_OBJECT;
-    explicit HeaderBarToolButton(QWidget *parent = nullptr);
-};
-
-class HeadBarPushButton : public QPushButton
-{
-    friend class HeaderBar;
-    friend class MainWindow;
-    Q_OBJECT
-    explicit HeadBarPushButton(QWidget *parent = nullptr);
-};
-
-#endif // HEADERBAR_H
+#endif // X11WINDOWMANAGER_H

@@ -57,6 +57,8 @@ public:
 
     void setWindowBackground(const QColor &color);
 
+    void drawWindowShadowManually(QPainter *painter, const QRect &windowRect);
+
 protected:
     void draw(QPainter *painter) override;
 

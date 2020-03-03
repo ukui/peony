@@ -1,3 +1,25 @@
+/*
+ * Peony-Qt
+ *
+ * Copyright (C) 2020, Tianjin KYLIN Information Technology Co., Ltd.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * Authors: Yue Lan <lanyue@kylinos.cn>
+ *
+ */
+
 #include "header-bar.h"
 #include "main-window.h"
 
@@ -7,6 +29,8 @@
 HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
 {
     m_window = parent;
+    //disable default menu
+    setContextMenuPolicy(Qt::CustomContextMenu);
     setAttribute(Qt::WA_OpaquePaintEvent);
     setStyleSheet(".HeaderBar{"
                   "background-color: transparent;"
@@ -17,6 +41,7 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
     setMovable(false);
 
     auto createFolder = new HeaderBarToolButton(this);
+    createFolder->setAutoRaise(false);
     createFolder->setToolTip(tr("Create Folder"));
     createFolder->setIcon(QIcon::fromTheme("folder-new-symbolic"));
     createFolder->setFixedSize(QSize(40, 40));
@@ -47,12 +72,12 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
     auto locationBar = new Peony::AdvancedLocationBar(this);
     addWidget(locationBar);
 
-    auto serach = new HeaderBarToolButton(this);
-    serach->setToolTip(tr("Search"));
-    serach->setIcon(QIcon::fromTheme("edit-find-symbolic"));
-    serach->setFixedSize(QSize(40, 40));
+    auto search = new HeaderBarToolButton(this);
+    search->setToolTip(tr("Search"));
+    search->setIcon(QIcon::fromTheme("edit-find-symbolic"));
+    search->setFixedSize(QSize(40, 40));
     addSeparator();
-    addWidget(serach);
+    addWidget(search);
 
     addSeparator();
 
@@ -81,6 +106,9 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
     close->setToolTip(tr("Close"));
     close->setIcon(QIcon::fromTheme("window-close-symbolic"));
     close->setFixedSize(QSize(40, 40));
+    connect(close, &QToolButton::clicked, this, [=](){
+        m_window->close();
+    });
 
     //window-maximize-symbolic
     //window-restore-symbolic
@@ -96,7 +124,7 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
 
     QWidget *container = new QWidget(this);
     container->setContentsMargins(0, 0, 0, 0);
-    QHBoxLayout *hbox = new QHBoxLayout(container);
+    QHBoxLayout *hbox = new QHBoxLayout();
     hbox->setContentsMargins(0, 0, 0, 0);
     hbox->setSpacing(5);
     hbox->addWidget(minimize);
@@ -115,6 +143,7 @@ void HeaderBar::setLocation(const QString &uri)
 //HeaderBarToolButton
 HeaderBarToolButton::HeaderBarToolButton(QWidget *parent) : QToolButton(parent)
 {
+    setAutoRaise(false);
     setIconSize(QSize(16, 16));
 }
 
