@@ -185,10 +185,13 @@ void MainWindow::initUI()
 
     //SideBar
     QDockWidget *sidebarContainer = new QDockWidget(this);
-    sidebarContainer->setStyleSheet("{"
-                                    "background-color: transparent;"
-                                    "border: 0px solid transparent"
-                                    "}");
+    auto palette = sidebarContainer->palette();
+    palette.setColor(QPalette::Window, Qt::transparent);
+    sidebarContainer->setPalette(palette);
+//    sidebarContainer->setStyleSheet("{"
+//                                    "background-color: transparent;"
+//                                    "border: 0px solid transparent"
+//                                    "}");
     sidebarContainer->setTitleBarWidget(new QWidget(this));
     sidebarContainer->titleBarWidget()->setFixedHeight(0);
     sidebarContainer->setAttribute(Qt::WA_TranslucentBackground);
