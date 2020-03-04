@@ -130,6 +130,7 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
 
     connect(m_model, &DesktopItemModel::refreshed, this, [=](){
         this->updateItemPosistions(nullptr);
+        this->m_is_refreshing = false;
     });
 
     connect(m_model, &DesktopItemModel::requestClearIndexWidget, this, &DesktopIconView::clearAllIndexWidgets);
@@ -230,7 +231,7 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
     setModel(m_proxy_model);
     //m_proxy_model->sort(0);
 
-    m_model->refresh();
+    this->refresh();
 }
 
 DesktopIconView::~DesktopIconView()
@@ -771,6 +772,9 @@ void DesktopIconView::clearAllIndexWidgets()
 
 void DesktopIconView::refresh()
 {
+    if (m_is_refreshing)
+        return;
+    m_is_refreshing = true;
     m_model->refresh();
 }
 
