@@ -163,7 +163,7 @@ void DesktopItemModel::refresh()
 {
     ThumbnailManager::getInstance()->syncThumbnailPreferences();
     beginResetModel();
-    removeRows(0, m_files.count());
+    //removeRows(0, m_files.count());
     FileInfoManager::getInstance()->clear();
     //m_trash_watcher->stopMonitor();
     //m_desktop_watcher->stopMonitor();
@@ -223,7 +223,7 @@ QVariant DesktopItemModel::data(const QModelIndex &index, int role) const
 
 void DesktopItemModel::onEnumerateFinished()
 {
-    beginResetModel();
+    //beginResetModel();
     FileInfoManager::getInstance()->clear();
     m_files.clear();
 
@@ -240,11 +240,11 @@ void DesktopItemModel::onEnumerateFinished()
     infos<<m_enumerator->getChildren(true);
 
     //qDebug()<<m_files.count();
-    this->endResetModel();
+    //this->endResetModel();
     for (auto info : infos) {
         m_info_query_queue<<info->uri();
         m_files<<info;
-        this->insertRow(m_files.indexOf(info));
+        //this->insertRow(m_files.indexOf(info));
 
         auto job = new FileInfoJob(info);
 
@@ -256,6 +256,8 @@ void DesktopItemModel::onEnumerateFinished()
 
             m_info_query_queue.removeOne(info->uri());
             if (m_info_query_queue.isEmpty()) {
+                this->beginResetModel();
+                this->endResetModel();
                 Q_EMIT this->refreshed();
             }
         });
