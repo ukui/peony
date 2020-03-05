@@ -20,8 +20,8 @@
  *
  */
 
-#ifndef SIDEBAR_H
-#define SIDEBAR_H
+#ifndef NAVIGATIONSIDEBAR_H
+#define NAVIGATIONSIDEBAR_H
 
 #include <QTreeView>
 
@@ -30,11 +30,11 @@ class SideBarModel;
 class SideBarProxyFilterSortModel;
 }
 
-class SideBar : public QTreeView
+class NavigationSideBar : public QTreeView
 {
     Q_OBJECT
 public:
-    explicit SideBar(QWidget *parent = nullptr);
+    explicit NavigationSideBar(QWidget *parent = nullptr);
 
 Q_SIGNALS:
     void updateWindowLocationRequest(const QString &uri);
@@ -44,4 +44,4 @@ private:
     Peony::SideBarModel *m_model;
 };
 
-#endif // SIDEBAR_H
+#endif // NAVIGATIONSIDEBAR_H

@@ -196,7 +196,7 @@ void MainWindow::initUI()
     sidebarContainer->titleBarWidget()->setFixedHeight(0);
     sidebarContainer->setAttribute(Qt::WA_TranslucentBackground);
     sidebarContainer->setContentsMargins(0, 0, 0, 0);
-    SideBar *sidebar = new SideBar(this);
+    NavigationSideBar *sidebar = new NavigationSideBar(this);
 
     sidebarContainer->setWidget(sidebar);
     addDockWidget(Qt::LeftDockWidgetArea, sidebarContainer);

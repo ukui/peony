@@ -32,7 +32,7 @@
 
 #include <QDebug>
 
-SideBar::SideBar(QWidget *parent) : QTreeView(parent)
+NavigationSideBar::NavigationSideBar(QWidget *parent) : QTreeView(parent)
 {
     setAttribute(Qt::WA_TranslucentBackground);
     viewport()->setAttribute(Qt::WA_TranslucentBackground);
