@@ -29,13 +29,15 @@ class X11WindowManager : public QObject
 {
     Q_OBJECT
 public:
-    explicit X11WindowManager(QObject *parent = nullptr);
+    static X11WindowManager *getInstance();
 
     bool eventFilter(QObject *watched, QEvent *event) override;
 
     void registerWidget(QWidget *widget);
 
 private:
+    explicit X11WindowManager(QObject *parent = nullptr);
+
     bool m_is_draging = false;
     QWidget *m_current_widget = nullptr;
 };

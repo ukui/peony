@@ -206,7 +206,7 @@ void MainWindow::initUI()
     views->addPage("file:///");
     views->addPage("file:///home");
 
-    X11WindowManager *tabBarHandler = new X11WindowManager(this);
+    X11WindowManager *tabBarHandler = X11WindowManager::getInstance();
     tabBarHandler->registerWidget(views->tabBar());
 
     setCentralWidget(views);

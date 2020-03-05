@@ -36,6 +36,16 @@
 #include <QX11Info>
 #include <X11/Xlib.h>
 
+static X11WindowManager *global_instance = nullptr;
+
+X11WindowManager *X11WindowManager::getInstance()
+{
+    if (!global_instance) {
+        global_instance = new X11WindowManager;
+    }
+    return global_instance;
+}
+
 X11WindowManager::X11WindowManager(QObject *parent) : QObject(parent)
 {
 

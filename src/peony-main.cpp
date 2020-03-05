@@ -31,6 +31,8 @@
 
 #include <QStandardPaths>
 
+#include "navigation-tab-bar.h"
+
 void messageOutput(QtMsgType type, const QMessageLogContext &context, const QString &msg)
 {
     QByteArray localMsg = msg.toLocal8Bit();
@@ -80,6 +82,11 @@ int main(int argc, char *argv[]) {
     QApplication a(argc, argv);
         MainWindow w;
         w.show();
+        NavigationTabBar t;
+        t.connect(&t, &NavigationTabBar::closeWindowRequest, [&](){
+            t.close();
+        });
+        t.show();
     return a.exec();
     PeonyApplication app(argc, argv, "peony-qt");
     if (app.isSecondary())
