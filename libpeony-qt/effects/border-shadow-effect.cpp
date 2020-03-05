@@ -66,9 +66,6 @@ void BorderShadowEffect::setShadowColor(const QColor &color)
 void BorderShadowEffect::setWindowBackground(const QColor &color)
 {
     m_window_bg = color;
-    if (auto w = qobject_cast<QWidget *>(parent())) {
-        w->update();
-    }
 }
 
 void BorderShadowEffect::drawWindowShadowManually(QPainter *painter, const QRect &windowRect)
