@@ -70,7 +70,7 @@ bool X11WindowManager::eventFilter(QObject *watched, QEvent *event)
             m_current_widget = static_cast<QWidget *>(watched);
         }
 
-        qDebug()<<event->type();
+        //qDebug()<<event->type();
 
         break;
     }

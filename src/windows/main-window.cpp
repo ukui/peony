@@ -37,7 +37,7 @@
 #include "side-bar-model.h"
 
 #include "directory-view-container.h"
-#include "tab-page.h"
+#include "tab-widget.h"
 #include "x11-window-manager.h"
 
 #include "navigation-side-bar.h"
@@ -201,10 +201,11 @@ void MainWindow::initUI()
     sidebarContainer->setWidget(sidebar);
     addDockWidget(Qt::LeftDockWidgetArea, sidebarContainer);
 
-    Peony::TabPage *views = new Peony::TabPage(this);
-    views->setTabBarAutoHide(false);
+    auto views = new TabWidget;
     views->addPage("file:///");
     views->addPage("file:///home");
+
+    connect(views, &TabWidget::closeWindowRequest, this, &QWidget::close);
 
     X11WindowManager *tabBarHandler = X11WindowManager::getInstance();
     tabBarHandler->registerWidget(views->tabBar());

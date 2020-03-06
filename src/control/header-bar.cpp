@@ -40,19 +40,21 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
 
     setMovable(false);
 
-
-    auto createFolder = new HeaderBarToolButton(this);
+    auto a = addAction(QIcon::fromTheme("folder-new-symbolic"), tr("Create Folder"), [=](){
+        //FIXME:
+    });
+    auto createFolder = qobject_cast<QToolButton *>(widgetForAction(a));
     createFolder->setAutoRaise(false);
-    createFolder->setToolTip(tr("Create Folder"));
-    createFolder->setIcon(QIcon::fromTheme("folder-new-symbolic"));
     createFolder->setFixedSize(QSize(40, 40));
-    addWidget(createFolder);
+    createFolder->setIconSize(QSize(16, 16));
 
-    auto openTerminal = new HeaderBarToolButton(this);
-    openTerminal->setToolTip(tr("Open Terminal"));
-    openTerminal->setIcon(QIcon::fromTheme("terminal-app-symbolic"));
+    a = addAction(QIcon::fromTheme("terminal-app-symbolic"), tr("Open Terminal"), [=](){
+        //FIXME:
+    });
+    auto openTerminal = qobject_cast<QToolButton *>(widgetForAction(a));
+    openTerminal->setAutoRaise(false);
     openTerminal->setFixedSize(QSize(40, 40));
-    addWidget(openTerminal);
+    openTerminal->setIconSize(QSize(16, 16));
 
     addSeparator();
 
@@ -73,70 +75,73 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
     auto locationBar = new Peony::AdvancedLocationBar(this);
     addWidget(locationBar);
 
-    auto search = new HeaderBarToolButton(this);
-    search->setToolTip(tr("Search"));
-    search->setIcon(QIcon::fromTheme("edit-find-symbolic"));
+    addSeparator();
+    a = addAction(QIcon::fromTheme("edit-find-symbolic"), tr("Search"), [=](){
+        //FIXME:
+    });
+    auto search = qobject_cast<QToolButton *>(widgetForAction(a));
+    search->setAutoRaise(false);
     search->setFixedSize(QSize(40, 40));
-    addSeparator();
-    addWidget(search);
+    setIconSize(QSize(16, 16));
 
     addSeparator();
 
-    auto viewType = new HeaderBarToolButton(this);
-    viewType->setToolTip(tr("View Type"));
-    viewType->setIcon(QIcon::fromTheme("view-grid-symbolic"));
+    a = addAction(QIcon::fromTheme("view-grid-symbolic"), tr("View Type"), [=](){
+        //FIXME:
+    });
+    auto viewType = qobject_cast<QToolButton *>(widgetForAction(a));
+    viewType->setAutoRaise(false);
     viewType->setFixedSize(QSize(57, 40));
+    viewType->setIconSize(QSize(16, 16));
     viewType->setPopupMode(QToolButton::MenuButtonPopup);
-    addWidget(viewType);
 
-    auto sortType = new HeaderBarToolButton(this);
-    sortType->setToolTip(tr("Sort Type"));
-    sortType->setIcon(QIcon::fromTheme("view-sort-descending-symbolic"));
+    a = addAction(QIcon::fromTheme("view-sort-descending-symbolic"), tr("Sort Type"), [=](){
+        //FIXME:
+    });
+    auto sortType = qobject_cast<QToolButton *>(widgetForAction(a));
+    sortType->setAutoRaise(false);
     sortType->setFixedSize(QSize(57, 40));
+    sortType->setIconSize(QSize(16, 16));
     sortType->setPopupMode(QToolButton::MenuButtonPopup);
-    addWidget(sortType);
 
-    auto popMenu = new HeaderBarToolButton(this);
-    popMenu->setToolTip(tr("Option"));
-    popMenu->setIcon(QIcon::fromTheme("open-menu-symbolic"));
-    popMenu->setFixedSize(QSize(40, 40));
-    addWidget(popMenu);
+    a = addAction(QIcon::fromTheme("open-menu-symbolic"), tr("Option"), [=](){
+        //FIXME:
+    });
+    auto popMenu = qobject_cast<QToolButton *>(widgetForAction(a));
+    popMenu->setAutoRaise(false);
+    popMenu->setFixedSize(QSize(57, 40));
+    popMenu->setIconSize(QSize(16, 16));
+    popMenu->setPopupMode(QToolButton::MenuButtonPopup);
 
     //minimize, maximize and close
-    auto close = new HeaderBarToolButton(this);
-    close->setToolTip(tr("Close"));
-    close->setIcon(QIcon::fromTheme("window-close-symbolic"));
-    close->setFixedSize(QSize(40, 40));
-    connect(close, &QToolButton::clicked, this, [=](){
-        m_window->close();
+    a = addAction(QIcon::fromTheme("window-minimize-symbolic"), tr("Minimize"), [=](){
+        //FIXME:
     });
+    auto minimize = qobject_cast<QToolButton *>(widgetForAction(a));
+    minimize->setAutoRaise(false);
+    minimize->setFixedSize(QSize(40, 40));
+    minimize->setIconSize(QSize(16, 16));
 
     //window-maximize-symbolic
     //window-restore-symbolic
-    auto maximizeAndRestore = new HeaderBarToolButton(this);
-    maximizeAndRestore->setToolTip(tr("Maximize"));
-    maximizeAndRestore->setIcon(QIcon::fromTheme("window-maximize-symbolic"));
+    a = addAction(QIcon::fromTheme("window-maximize-symbolic"), nullptr, [=](){
+        //FIXME:
+    });
+    auto maximizeAndRestore = qobject_cast<QToolButton *>(widgetForAction(a));
+    maximizeAndRestore->setAutoRaise(false);
     maximizeAndRestore->setFixedSize(QSize(40, 40));
+    maximizeAndRestore->setIconSize(QSize(16, 16));
 
-    auto minimize = new HeaderBarToolButton(this);
-    minimize->setToolTip(tr("Minimize"));
-    minimize->setIcon(QIcon::fromTheme("window-minimize-symbolic"));
-    minimize->setFixedSize(QSize(40, 40));
+    a = addAction(QIcon::fromTheme("window-close-symbolic"), tr("Close"), [=](){
 
-//    QWidget *container = new QWidget(this);
-//    container->setContentsMargins(0, 0, 0, 0);
-//    QHBoxLayout *hbox = new QHBoxLayout();
-//    hbox->setContentsMargins(0, 0, 0, 0);
-//    hbox->setSpacing(5);
-//    hbox->addWidget(minimize);
-//    hbox->addWidget(maximizeAndRestore);
-//    hbox->addWidget(close);
-//    container->setLayout(hbox);
-
-//    addWidget(container);
-    addWidget(minimize);
-    addWidget(maximizeAndRestore);
-    addWidget(close);
+    });
+    auto close = qobject_cast<QToolButton *>(widgetForAction(a));
+    close->setAutoRaise(false);
+    close->setFixedSize(QSize(40, 40));
+    close->setIconSize(QSize(16, 16));
+    connect(close, &QToolButton::clicked, this, [=](){
+        m_window->close();
+    });
 }
 
 void HeaderBar::setLocation(const QString &uri)

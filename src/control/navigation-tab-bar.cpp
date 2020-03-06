@@ -15,21 +15,35 @@ NavigationTabBar::NavigationTabBar(QWidget *parent) : QTabBar(parent)
     setTabsClosable(true);
     X11WindowManager::getInstance()->registerWidget(this);
 
+    connect(this, &QTabBar::currentChanged, this, [=](int index){
+        //qDebug()<<"current changed"<<index;
+    });
+
+    connect(this, &QTabBar::tabMoved, this, [=](int from, int to){
+        //qDebug()<<"move"<<from<<"to"<<to;
+    });
+
+    connect(this, &QTabBar::tabBarClicked, this, [=](int index){
+        //qDebug()<<"tab bar clicked"<<index;
+    });
+
+    connect(this, &QTabBar::tabBarDoubleClicked, this, [=](int index){
+        //qDebug()<<"tab bar double clicked"<<index;
+    });
+
     QToolButton *addPageButton = new QToolButton(this);
     addPageButton->setFixedSize(QSize(36, 36));
     addPageButton->setIcon(QIcon::fromTheme("list-add-symbolic"));
     connect(addPageButton, &QToolButton::clicked, this, [=](){
-        addPage(nullptr, true);
+        auto uri = tabData(currentIndex()).toString();
+        Q_EMIT addPageRequest(uri, true);
     });
 
     m_float_button = addPageButton;
 
-    connect(this, &QTabBar::tabCloseRequested, this, [=](int index){
-        removeTab(index);
-    });
-
-    addPage("file:///");
-    addPage("file:///etc");
+//    connect(this, &QTabBar::tabCloseRequested, this, [=](int index){
+//        removeTab(index);
+//    });
 
     setDrawBase(false);
 }
@@ -50,13 +64,18 @@ void NavigationTabBar::addPage(const QString &uri, bool jumpToNewTab)
             setCurrentIndex(count() - 1);
         Q_EMIT this->pageAdded(uri);
     } else {
-        QString uri = tabData(count() - 1).toString();
-        addPage(uri, jumpToNewTab);
+        if (currentIndex() == -1) {
+            addPage("file:///", true);
+        } else {
+            QString uri = tabData(currentIndex()).toString();
+            addPage(uri, jumpToNewTab);
+        }
     }
 }
 
 void NavigationTabBar::tabRemoved(int index)
 {
+    //qDebug()<<"tab removed"<<index;
     QTabBar::tabRemoved(index);
     if (count() == 0) {
         Q_EMIT closeWindowRequest();
@@ -66,15 +85,18 @@ void NavigationTabBar::tabRemoved(int index)
 
 void NavigationTabBar::tabInserted(int index)
 {
+    //qDebug()<<"tab inserted"<<index;
     QTabBar::tabInserted(index);
     relayoutFloatButton(true);
 }
 
 void NavigationTabBar::relayoutFloatButton(bool insterted)
 {
-    if (count() == 0)
+    if (count() == 0) {
+        m_float_button->move(0, 0);
         return;
-    qDebug()<<"relayout";
+    }
+    //qDebug()<<"relayout";
     auto lastTabRect = tabRect(count() - 1);
     if (insterted) {
         m_float_button->move(lastTabRect.right(), 0);

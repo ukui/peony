@@ -14,6 +14,7 @@ public:
 Q_SIGNALS:
     void pageAdded(const QString &uri);
     void closeWindowRequest();
+    void addPageRequest(const QString &uri, bool jumpTo);
 
 public Q_SLOTS:
     void addPage(const QString &uri = nullptr, bool jumpToNewTab = false);
