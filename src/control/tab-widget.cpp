@@ -16,8 +16,12 @@
 
 #include "directory-view-container.h"
 
+#include "peony-main-window-style.h"
+
 TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
 {
+    setStyle(PeonyMainWindowStyle::getStyle());
+
     setAttribute(Qt::WA_TranslucentBackground);
 
     m_tab_bar = new NavigationTabBar(this);
@@ -73,10 +77,7 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
     addDockWidget(Qt::RightDockWidgetArea, m_preview_page_container);
     m_preview_page_container->hide();
 
-    auto c = new QDockWidget(this);
-    c->setTitleBarWidget(new QWidget(this));
-    c->setWidget(m_stack);
-    addDockWidget(Qt::LeftDockWidgetArea, c);
+    setCentralWidget(m_stack);
 }
 
 void TabWidget::setCurrentIndex(int index)

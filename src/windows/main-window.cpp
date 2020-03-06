@@ -42,6 +42,8 @@
 
 #include "navigation-side-bar.h"
 
+#include "peony-main-window-style.h"
+
 #include <QPainter>
 
 #include <QDebug>
@@ -50,6 +52,8 @@
 
 MainWindow::MainWindow(const QString &uri, QWidget *parent) : QMainWindow(parent)
 {
+    setStyle(PeonyMainWindowStyle::getStyle());
+
     setMinimumWidth(600);
     m_effect = new BorderShadowEffect(this);
     m_effect->setPadding(4);

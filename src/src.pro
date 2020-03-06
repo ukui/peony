@@ -42,10 +42,12 @@ TRANSLATIONS += ../translations/peony-qt/peony-qt_zh_CN.ts
 
 SOURCES += \
     peony-application.cpp \
+    peony-main-window-style.cpp \
     peony-main.cpp \
 
 HEADERS += \
-    peony-application.h \
+    peony-application.h \ \
+    peony-main-window-style.h
 
 INCLUDEPATH    += ../plugin-iface
 
