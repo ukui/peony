@@ -7,6 +7,8 @@ INCLUDEPATH += $$PWD/convenient-utils
 INCLUDEPATH += $$PWD/controls
 INCLUDEPATH += $$PWD/windows
 
+INCLUDEPATH += $$PWD/effects
+
 INCLUDEPATH += $$PWD/controls/directory-view
 INCLUDEPATH += $$PWD/controls/directory-view/directory-view-factory
 INCLUDEPATH += $$PWD/controls/directory-view/delegate
