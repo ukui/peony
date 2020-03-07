@@ -26,8 +26,12 @@
 #include <QHBoxLayout>
 #include <advanced-location-bar.h>
 
+static HeaderBarStyle *global_instance = nullptr;
+
 HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
 {
+    setStyle(HeaderBarStyle::getStyle());
+
     m_window = parent;
     //disable default menu
     setContextMenuPolicy(Qt::CustomContextMenu);
@@ -160,4 +164,39 @@ HeaderBarToolButton::HeaderBarToolButton(QWidget *parent) : QToolButton(parent)
 HeadBarPushButton::HeadBarPushButton(QWidget *parent) : QPushButton(parent)
 {
     setIconSize(QSize(16, 16));
+}
+
+//HeaderBarStyle
+HeaderBarStyle *HeaderBarStyle::getStyle()
+{
+    if (!global_instance) {
+        global_instance = new HeaderBarStyle;
+    }
+    return global_instance;
+}
+
+int HeaderBarStyle::pixelMetric(QStyle::PixelMetric metric, const QStyleOption *option, const QWidget *widget) const
+{
+    switch (metric) {
+    case PM_ToolBarIconSize:
+        return 16;
+    case PM_ToolBarSeparatorExtent:
+        return 6;
+    case PM_ToolBarItemSpacing: {
+        return 2;
+    }
+    case PM_ToolBarItemMargin:
+    case PM_ToolBarFrameWidth:
+        return 0;
+    default:
+        return QProxyStyle::pixelMetric(metric, option, widget);
+    }
+}
+
+void HeaderBarStyle::drawPrimitive(QStyle::PrimitiveElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget) const
+{
+    if (element == PE_IndicatorToolBarSeparator) {
+        return;
+    }
+    return QProxyStyle::drawPrimitive(element, option, painter, widget);
 }

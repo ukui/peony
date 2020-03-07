@@ -26,6 +26,7 @@
 #include <QToolBar>
 #include <QToolButton>
 #include <QPushButton>
+#include <QProxyStyle>
 
 class MainWindow;
 
@@ -61,6 +62,18 @@ class HeadBarPushButton : public QPushButton
     friend class MainWindow;
     Q_OBJECT
     explicit HeadBarPushButton(QWidget *parent = nullptr);
+};
+
+class HeaderBarStyle : public QProxyStyle
+{
+    friend class HeaderBar;
+    static HeaderBarStyle *getStyle();
+
+    HeaderBarStyle() {}
+
+    int pixelMetric(PixelMetric metric, const QStyleOption *option = nullptr, const QWidget *widget = nullptr) const override;
+
+    void drawPrimitive(PrimitiveElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget = nullptr) const override;
 };
 
 #endif // HEADERBAR_H

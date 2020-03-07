@@ -50,6 +50,14 @@ void IconViewStyle::release()
         global_instance->deleteLater();
 }
 
+void IconViewStyle::drawPrimitive(QStyle::PrimitiveElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget) const
+{
+    if (element == PE_Frame) {
+        return;
+    }
+    return QProxyStyle::drawPrimitive(element, option, painter, widget);
+}
+
 void IconViewStyle::drawControl(QStyle::ControlElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget) const
 {
     if (element == QStyle::CE_RubberBand) {

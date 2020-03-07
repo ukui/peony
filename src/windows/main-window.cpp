@@ -100,8 +100,8 @@ void MainWindow::resizeEvent(QResizeEvent *e)
 void MainWindow::paintEvent(QPaintEvent *e)
 {
     validBorder();
-    QColor color = this->palette().base().color();
-    color.setAlphaF(0.5);
+    QColor color = this->palette().window().color();
+    //color.setAlphaF(0.5);
     m_effect->setWindowBackground(color);
     QPainter p(this);
     m_effect->drawWindowShadowManually(&p, this->rect());

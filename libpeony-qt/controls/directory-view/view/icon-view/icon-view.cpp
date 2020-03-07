@@ -53,6 +53,9 @@ using namespace Peony::DirectoryView;
 
 IconView::IconView(QWidget *parent) : QListView(parent)
 {
+    setAttribute(Qt::WA_TranslucentBackground);
+    viewport()->setAttribute(Qt::WA_TranslucentBackground);
+
     setStyle(IconViewStyle::getStyle());
     //FIXME: do not create proxy in view itself.
     IconViewDelegate *delegate = new IconViewDelegate(this);
@@ -247,7 +250,7 @@ void IconView::resetEditTriggerTimer()
 void IconView::paintEvent(QPaintEvent *e)
 {
     QPainter p(this->viewport());
-    p.fillRect(this->geometry(), this->palette().base());
+    //p.fillRect(this->geometry(), this->palette().base());
     if (m_repaint_timer.isActive()) {
         m_repaint_timer.stop();
         QTimer::singleShot(100, [this](){

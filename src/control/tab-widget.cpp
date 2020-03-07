@@ -1,3 +1,25 @@
+/*
+ * Peony-Qt
+ *
+ * Copyright (C) 2020, Tianjin KYLIN Information Technology Co., Ltd.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * Authors: Yue Lan <lanyue@kylinos.cn>
+ *
+ */
+
 #include "tab-widget.h"
 //#include "navigation-tab-bar.h"
 
@@ -9,6 +31,7 @@
 #include <QHBoxLayout>
 #include <QDockWidget>
 #include <QToolBar>
+#include <QSplitter>
 
 #include <QAction>
 
@@ -17,6 +40,8 @@
 #include "directory-view-container.h"
 
 #include "peony-main-window-style.h"
+
+#include <QDebug>
 
 TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
 {
@@ -27,6 +52,7 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
     m_tab_bar = new NavigationTabBar(this);
     m_tab_bar->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     m_stack = new QStackedWidget(this);
+    m_stack->setContentsMargins(0, 0, 0, 0);
     m_buttons = new PreviewPageButtonGroups(this);
     m_preview_page_container = new QDockWidget(this);
     m_preview_page_container->setTitleBarWidget(new QWidget);
@@ -48,36 +74,55 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
 
     connect(m_tab_bar, &NavigationTabBar::closeWindowRequest, this, &TabWidget::closeWindowRequest);
 
-    QToolBar *t = new QToolBar(this);
-    t->setContextMenuPolicy(Qt::CustomContextMenu);
-    t->setContentsMargins(0, 0, 0, 0);
-    t->setMovable(false);
+    QHBoxLayout *t = new QHBoxLayout(this);
+    QActionGroup *group = new QActionGroup(this);
+    group->setExclusive(true);
+    QToolBar *previewButtons = new QToolBar(this);
+    previewButtons->setFixedHeight(m_tab_bar->height());
+    t->setContentsMargins(0, 0, 5, 0);
     t->addWidget(m_tab_bar);
     auto manager = Peony::PreviewPageFactoryManager::getInstance();
     auto pluginNames = manager->getPluginNames();
     for (auto name : pluginNames) {
-        auto plugin = manager->getPlugin(name);
-        auto action = t->addAction(plugin->icon(), plugin->name());
+        auto factory = manager->getPlugin(name);
+        auto action = group->addAction(factory->icon(), factory->name());
         action->setCheckable(true);
-        auto button = qobject_cast<QToolButton *>(t->widgetForAction(action));
-        button->setIcon(plugin->icon());
-        button->setToolTip(plugin->name());
-        button->setWhatsThis(plugin->description());
-        button->setFixedSize(QSize(26, 26));
-        button->setIconSize(QSize(16, 16));
-        //m_buttons->addButton(button);
-
-        connect(action, &QAction::triggered, this, [=](bool checked){
-            Q_EMIT m_buttons->previewPageButtonTrigger(checked, plugin->name());
+        connect(action, &QAction::triggered, [=](/*bool checked*/){
+            if (!m_current_preview_action) {
+                m_current_preview_action = action;
+                action->setChecked(true);
+                Q_EMIT m_buttons->previewPageButtonTrigger(true, factory->name());
+            } else {
+                if (m_current_preview_action == action) {
+                    m_current_preview_action = nullptr;
+                    action->setChecked(false);
+                    Q_EMIT m_buttons->previewPageButtonTrigger(false, factory->name());
+                } else {
+                    m_current_preview_action = action;
+                    action->setChecked(true);
+                    Q_EMIT m_buttons->previewPageButtonTrigger(true, factory->name());
+                }
+            }
         });
     }
+    previewButtons->addActions(group->actions());
+    t->addWidget(previewButtons);
 
-    addToolBar(t);
-
-    addDockWidget(Qt::RightDockWidgetArea, m_preview_page_container);
+    QWidget *w = new QWidget();
+    w->setAttribute(Qt::WA_TranslucentBackground);
+    auto vbox = new QVBoxLayout();
+    vbox->setSpacing(0);
+    vbox->setContentsMargins(0, 0, 0, 0);
+    vbox->addLayout(t);
+    QSplitter *s = new QSplitter(this);
+    s->setContentsMargins(0, 0, 0, 0);
+    s->setHandleWidth(1);
+    s->addWidget(m_stack);
+    s->addWidget(m_preview_page_container);
     m_preview_page_container->hide();
-
-    setCentralWidget(m_stack);
+    vbox->addWidget(s);
+    w->setLayout(vbox);
+    setCentralWidget(w);
 }
 
 void TabWidget::setCurrentIndex(int index)
