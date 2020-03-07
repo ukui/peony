@@ -44,6 +44,10 @@
 
 #include "peony-main-window-style.h"
 
+#include "file-label-box.h"
+
+#include <QSplitter>
+
 #include <QPainter>
 
 #include <QDebug>
@@ -189,6 +193,8 @@ void MainWindow::initUI()
 
     //SideBar
     QDockWidget *sidebarContainer = new QDockWidget(this);
+
+    sidebarContainer->setFeatures(QDockWidget::NoDockWidgetFeatures);
     auto palette = sidebarContainer->palette();
     palette.setColor(QPalette::Window, Qt::transparent);
     sidebarContainer->setPalette(palette);
@@ -202,7 +208,17 @@ void MainWindow::initUI()
     sidebarContainer->setContentsMargins(0, 0, 0, 0);
     NavigationSideBar *sidebar = new NavigationSideBar(this);
 
-    sidebarContainer->setWidget(sidebar);
+    auto labelDialog = new FileLabelBox(this);
+    labelDialog->hide();
+
+    auto splitter = new QSplitter(this);
+    splitter->setHandleWidth(0);
+    splitter->addWidget(sidebar);
+    splitter->addWidget(labelDialog);
+
+    connect(sidebar, &NavigationSideBar::labelButtonClicked, labelDialog, &QWidget::setVisible);
+
+    sidebarContainer->setWidget(splitter);
     addDockWidget(Qt::LeftDockWidgetArea, sidebarContainer);
 
     auto views = new TabWidget;

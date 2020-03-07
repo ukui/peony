@@ -250,7 +250,14 @@ void IconView::resetEditTriggerTimer()
 void IconView::paintEvent(QPaintEvent *e)
 {
     QPainter p(this->viewport());
+    p.setRenderHint(QPainter::Antialiasing);
     //p.fillRect(this->geometry(), this->palette().base());
+    QPainterPath path;
+    path.setFillRule(Qt::WindingFill);
+    path.addRoundedRect(this->rect().adjusted(0, 0, -1, -1), 6, 6);
+    path.addRect(0, 0, this->width(), 6);
+    path.addRect(0, 0, 6, this->height());
+    p.fillPath(path, this->palette().base());
     if (m_repaint_timer.isActive()) {
         m_repaint_timer.stop();
         QTimer::singleShot(100, [this](){

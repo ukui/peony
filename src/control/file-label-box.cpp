@@ -20,36 +20,9 @@
  *
  */
 
-#ifndef NAVIGATIONSIDEBAR_H
-#define NAVIGATIONSIDEBAR_H
+#include "file-label-box.h"
 
-#include <QTreeView>
-
-namespace Peony {
-class SideBarModel;
-class SideBarProxyFilterSortModel;
-}
-
-class QPushButton;
-
-class NavigationSideBar : public QTreeView
+FileLabelBox::FileLabelBox(QWidget *parent) : QListView(parent)
 {
-    Q_OBJECT
-public:
-    explicit NavigationSideBar(QWidget *parent = nullptr);
-    bool eventFilter(QObject *obj, QEvent *e);
 
-    void updateGeometries();
-
-Q_SIGNALS:
-    void updateWindowLocationRequest(const QString &uri);
-    void labelButtonClicked(bool checked);
-
-private:
-    Peony::SideBarProxyFilterSortModel *m_proxy_model;
-    Peony::SideBarModel *m_model;
-
-    QPushButton *m_label_button;
-};
-
-#endif // NAVIGATIONSIDEBAR_H
+}

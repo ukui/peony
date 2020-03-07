@@ -29,19 +29,28 @@
 #include "side-bar-abstract-item.h"
 
 #include <QHeaderView>
+#include <QPushButton>
+
+#include <QEvent>
 
 #include <QDebug>
 
 NavigationSideBar::NavigationSideBar(QWidget *parent) : QTreeView(parent)
 {
+    installEventFilter(this);
+
     setAttribute(Qt::WA_TranslucentBackground);
     viewport()->setAttribute(Qt::WA_TranslucentBackground);
     header()->setSectionResizeMode(QHeaderView::ResizeToContents);
     header()->hide();
 
+    setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+
     m_model = new Peony::SideBarModel(this);
     m_proxy_model = new Peony::SideBarProxyFilterSortModel(this);
     m_proxy_model->setSourceModel(m_model);
+
+    this->setViewportMargins(4, 0, 4, 37);
 
     this->setModel(m_proxy_model);
 
@@ -95,4 +104,24 @@ NavigationSideBar::NavigationSideBar(QWidget *parent) : QTreeView(parent)
     });
 
     expandAll();
+
+    m_label_button = new QPushButton(QIcon::fromTheme("emblem-important-symbolic"), tr("All tags..."), this);
+    m_label_button->setCheckable(true);
+
+    connect(m_label_button, &QPushButton::clicked, this, &NavigationSideBar::labelButtonClicked);
+}
+
+bool NavigationSideBar::eventFilter(QObject *obj, QEvent *e)
+{
+    if (e->type() == QEvent::Resize) {
+        m_label_button->resize(this->width() - 8, 33);
+        m_label_button->move(4, this->height() - 37);
+    }
+    return false;
+}
+
+void NavigationSideBar::updateGeometries()
+{
+    setViewportMargins(0, 0, 0, 40);
+    QTreeView::updateGeometries();
 }

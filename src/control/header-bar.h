@@ -40,6 +40,9 @@ private:
 Q_SIGNALS:
     void updateLocationRequest(const QString &uri);
 
+protected:
+    void addSpacing(int pixel);
+
 private Q_SLOTS:
     void setLocation(const QString &uri);
 

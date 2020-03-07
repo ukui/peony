@@ -60,7 +60,7 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
     openTerminal->setFixedSize(QSize(40, 40));
     openTerminal->setIconSize(QSize(16, 16));
 
-    addSeparator();
+    addSpacing(9);
 
     auto goBack = new HeadBarPushButton(this);
     goBack->setToolTip(tr("Go Back"));
@@ -74,12 +74,12 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
     goForward->setIcon(QIcon::fromTheme("go-next-symbolic"));
     addWidget(goForward);
 
-    addSeparator();
+    addSpacing(9);
 
     auto locationBar = new Peony::AdvancedLocationBar(this);
     addWidget(locationBar);
 
-    addSeparator();
+    addSpacing(9);
     a = addAction(QIcon::fromTheme("edit-find-symbolic"), tr("Search"), [=](){
         //FIXME:
     });
@@ -88,7 +88,7 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
     search->setFixedSize(QSize(40, 40));
     setIconSize(QSize(16, 16));
 
-    addSeparator();
+    addSpacing(9);
 
     a = addAction(QIcon::fromTheme("view-grid-symbolic"), tr("View Type"), [=](){
         //FIXME:
@@ -148,6 +148,13 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
     });
 }
 
+void HeaderBar::addSpacing(int pixel)
+{
+    for (int i = 0; i < pixel; i++) {
+        addSeparator();
+    }
+}
+
 void HeaderBar::setLocation(const QString &uri)
 {
     //FIXME:
@@ -181,9 +188,9 @@ int HeaderBarStyle::pixelMetric(QStyle::PixelMetric metric, const QStyleOption *
     case PM_ToolBarIconSize:
         return 16;
     case PM_ToolBarSeparatorExtent:
-        return 6;
+        return 1;
     case PM_ToolBarItemSpacing: {
-        return 2;
+        return 1;
     }
     case PM_ToolBarItemMargin:
     case PM_ToolBarFrameWidth:
