@@ -64,6 +64,9 @@
 // fixed by replaced `QGSettings/QGSettings' with `QGSettings'
 #include <QGSettings>
 
+// backup settings
+#include <QSettings>
+
 #include <QDebug>
 
 #define BACKGROUND_SETTINGS "org.mate.background"
@@ -196,8 +199,14 @@ DesktopWindow::DesktopWindow(QScreen *screen, bool is_primary, QWidget *parent)
 DesktopWindow::~DesktopWindow() {}
 
 void DesktopWindow::initGSettings() {
-    if (!QGSettings::isSchemaInstalled(BACKGROUND_SETTINGS))
+    if (!QGSettings::isSchemaInstalled(BACKGROUND_SETTINGS)) {
+        m_backup_setttings = new QSettings("org.ukui", "peony-qt-desktop", this);
+        if (m_backup_setttings->value("color").isNull()) {
+            auto defaultColor = QColor(Qt::cyan).darker();
+            m_backup_setttings->setValue("color", defaultColor);
+        }
         return;
+    }
 
     m_bg_settings = new QGSettings(BACKGROUND_SETTINGS, QByteArray(), this);
 
@@ -234,14 +243,29 @@ void DesktopWindow::initGSettings() {
 const QString DesktopWindow::getCurrentBgPath() {
     // FIXME: implement custom bg settings storage
     if (m_current_bg_path.isEmpty()) {
-        m_current_bg_path = m_bg_settings->get("pictureFilename").toString();
+        if (m_bg_settings)
+            m_current_bg_path = m_bg_settings->get("pictureFilename").toString();
+        else
+            m_current_bg_path = m_backup_setttings->value("pictrue").toString();
     }
     return m_current_bg_path;
+}
+
+const QColor DesktopWindow::getCurrentColor()
+{
+    QColor color;
+    if (m_bg_settings) {
+        color = qvariant_cast<QColor>(m_bg_settings->get("primary-color"));
+    } else {
+        color = qvariant_cast<QColor>(m_backup_setttings->value("color"));
+    }
+    return color;
 }
 
 void DesktopWindow::setBg(const QString &path) {
     qDebug() << path;
     if (path.isNull()) {
+        setBg(getCurrentColor());
         return;
     }
 
@@ -318,6 +342,10 @@ void DesktopWindow::setBg(const QColor &color) {
 void DesktopWindow::setBgPath(const QString &bgPath) {
     if (m_bg_settings) {
         m_bg_settings->set(PICTRUE, bgPath);
+    } else {
+        m_backup_setttings->setValue("pictrue", bgPath);
+        m_backup_setttings->sync();
+        Q_EMIT this->changeBg(bgPath);
     }
 }
 
@@ -356,6 +384,14 @@ void DesktopWindow::disconnectSignal() {
 void DesktopWindow::scaleBg(const QRect &geometry) {
     QString path = getCurrentBgPath();
     if (path.isNull()) {
+        if (m_bg_settings) {
+            auto colorString = m_bg_settings->get("primary-color").toString();
+            auto color = QColor(colorString);
+            setBg(color);
+        } else {
+            auto color = qvariant_cast<QColor>(m_backup_setttings->value("color"));
+            setBg(color);
+        }
         return;
     }
 

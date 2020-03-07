@@ -32,6 +32,7 @@ class QLabel;
 class QListView;
 class QGraphicsOpacityEffect;
 class QGSettings;
+class QSettings;
 
 namespace Peony {
 
@@ -47,6 +48,7 @@ public:
 
 public:
     const QString getCurrentBgPath();
+    const QColor getCurrentColor();
     bool getIsPrimary(){return m_is_primary;}
     void setIsPrimary(bool is_primary);
     QScreen *getScreen(){return m_screen;}
@@ -96,7 +98,8 @@ private:
     QStackedLayout *m_layout;
     bool m_is_primary;
 
-    QGSettings *m_bg_settings;
+    QGSettings *m_bg_settings = nullptr;
+    QSettings *m_backup_setttings = nullptr;
     QColor m_last_pure_color = Qt::black;
 };
 
