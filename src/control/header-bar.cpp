@@ -35,7 +35,7 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
     m_window = parent;
     //disable default menu
     setContextMenuPolicy(Qt::CustomContextMenu);
-    setAttribute(Qt::WA_OpaquePaintEvent);
+    //setAttribute(Qt::WA_OpaquePaintEvent);
     setStyleSheet(".HeaderBar{"
                   "background-color: transparent;"
                   "border: 0px solid transparent;"
