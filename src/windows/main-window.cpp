@@ -105,6 +105,11 @@ void MainWindow::paintEvent(QPaintEvent *e)
 {
     validBorder();
     QColor color = this->palette().window().color();
+
+    QPainterPath sidebarPath;
+    sidebarPath.addRect(sideBarRect());
+    m_effect->setTransParentPath(sidebarPath);
+
     //color.setAlphaF(0.5);
     m_effect->setWindowBackground(color);
     QPainter p(this);
@@ -207,6 +212,7 @@ void MainWindow::initUI()
     sidebarContainer->setAttribute(Qt::WA_TranslucentBackground);
     sidebarContainer->setContentsMargins(0, 0, 0, 0);
     NavigationSideBar *sidebar = new NavigationSideBar(this);
+    m_side_bar = sidebar;
 
     auto labelDialog = new FileLabelBox(this);
     labelDialog->hide();
@@ -231,4 +237,10 @@ void MainWindow::initUI()
     tabBarHandler->registerWidget(views->tabBar());
 
     setCentralWidget(views);
+}
+
+QRect MainWindow::sideBarRect()
+{
+    auto pos = m_side_bar->mapTo(this, QPoint());
+    return QRect(pos, m_side_bar->size());
 }

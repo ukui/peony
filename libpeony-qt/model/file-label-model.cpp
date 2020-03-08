@@ -22,14 +22,26 @@
 
 #include "file-label-model.h"
 
+#include <QMessageBox>
+
 static FileLabelModel *global_instance = nullptr;
 
 FileLabelModel::FileLabelModel(QObject *parent)
     : QAbstractListModel(parent)
 {
     m_label_settings = new QSettings(QSettings::UserScope, "org.ukui", "peony-qt", this);
-    if (m_label_settings->value("id").isNull()) {
+    if (m_label_settings->value("lastid").isNull()) {
         //init settings
+        addLabel(tr("Red"), Qt::red);
+        addLabel(tr("Orange"), QColor("orange"));
+        addLabel(tr("Yellow"), Qt::yellow);
+        addLabel(tr("Green"), Qt::green);
+        addLabel(tr("Blue"), Qt::blue);
+        addLabel(tr("Purple"), QColor("purple"));
+        addLabel(tr("Gray"), Qt::gray);
+        addLabel(tr("Transparent"), Qt::transparent);
+    } else {
+        initLabelItems();
     }
 }
 
@@ -46,6 +58,136 @@ FileLabelModel *FileLabelModel::getGlobalModel()
     return global_instance;
 }
 
+const QStringList FileLabelModel::getLabels()
+{
+    QStringList l;
+
+    int size = m_label_settings->beginReadArray("labels");
+    for (int i = 0; i < size; i++) {
+        m_label_settings->setArrayIndex(i);
+        if (m_label_settings->value("visible").toBool()) {
+            l<<m_label_settings->value("label").toString();
+        }
+    }
+
+    return l;
+}
+
+const QList<QColor> FileLabelModel::getColors()
+{
+    QList<QColor> l;
+
+    int size = m_label_settings->beginReadArray("labels");
+    for (int i = 0; i < size; i++) {
+        m_label_settings->setArrayIndex(i);
+        if (m_label_settings->value("visible").toBool()) {
+            l<<qvariant_cast<QColor>(m_label_settings->value("color"));
+        }
+    }
+
+    return l;
+}
+
+int FileLabelModel::lastLabelId()
+{
+    m_label_settings = new QSettings(QSettings::UserScope, "org.ukui", "peony-qt", this);
+    if (m_label_settings->value("lastid").isNull()) {
+        return -1;
+    } else {
+        return m_label_settings->value("lastid").toInt();
+    }
+}
+
+void FileLabelModel::addLabel(const QString &label, const QColor &color)
+{
+    beginResetModel();
+
+    if (getLabels().contains(label) || getColors().contains(color)) {
+        QMessageBox::critical(nullptr, tr("Error"), tr("Label or color is duplicated."));
+        return;
+    }
+
+    int lastid = lastLabelId();
+    m_label_settings->beginWriteArray("labels");
+    m_label_settings->setArrayIndex(lastid + 1);
+    m_label_settings->setValue("label", label);
+    m_label_settings->setValue("color", color);
+    m_label_settings->setValue("visible", true);
+    m_label_settings->endArray();
+
+    auto item = new FileLabelItem(this);
+    item->m_id = lastid + 1;
+    item->m_name = label;
+    item->m_color = color;
+
+    m_labels.append(item);
+
+    addId();
+
+    connect(item, &FileLabelItem::nameChanged, this, [=](const QString &name){
+        m_label_settings->beginWriteArray("labels");
+        m_label_settings->setArrayIndex(item->id());
+        m_label_settings->setValue("label", name);
+        m_label_settings->endArray();
+        m_label_settings->sync();
+    });
+
+    connect(item, &FileLabelItem::colorChanged, this, [=](const QColor &color){
+        m_label_settings->beginWriteArray("labels");
+        m_label_settings->setArrayIndex(item->id());
+        m_label_settings->setValue("color", color);
+        m_label_settings->endArray();
+        m_label_settings->sync();
+    });
+
+    endResetModel();
+}
+
+void FileLabelModel::removeLabel(int id)
+{
+    beginResetModel();
+
+    for (auto item : m_labels) {
+        if (item->id() == id) {
+            m_labels.removeOne(item);
+            item->deleteLater();
+            break;
+        }
+    }
+
+    m_label_settings->beginWriteArray("labels");
+    m_label_settings->setArrayIndex(id);
+    m_label_settings->setValue("visible", false);
+    m_label_settings->endArray();
+    m_label_settings->sync();
+
+    endResetModel();
+}
+
+void FileLabelModel::setLabelName(int id, const QString &name)
+{
+    for (auto item : m_labels) {
+        if (item->id() == id) {
+            item->setName(name);
+            int row = m_labels.indexOf(item);
+            Q_EMIT dataChanged(index(row), index(row));
+            break;
+        }
+    }
+}
+
+void FileLabelModel::setLabelColor(int id, const QColor &color)
+{
+    for (auto item : m_labels) {
+        if (item->id() == id) {
+            item->setColor(color);
+            int row = m_labels.indexOf(item);
+            Q_EMIT dataChanged(index(row), index(row));
+            break;
+        }
+    }
+}
+
 int FileLabelModel::rowCount(const QModelIndex &parent) const
 {
     // For list models only the root node (an invalid parent) should return the list's size. For all
@@ -54,7 +196,7 @@ int FileLabelModel::rowCount(const QModelIndex &parent) const
         return 0;
 
     // FIXME: Implement me!
-    return 0;
+    return m_labels.size();
 }
 
 QVariant FileLabelModel::data(const QModelIndex &index, int role) const
@@ -63,7 +205,16 @@ QVariant FileLabelModel::data(const QModelIndex &index, int role) const
         return QVariant();
 
     // FIXME: Implement me!
-    return QVariant();
+    switch (role) {
+    case Qt::DisplayRole: {
+        return m_labels.at(index.row())->name();
+    }
+    case Qt::DecorationRole: {
+        return m_labels.at(index.row())->color();
+    }
+    default:
+        return QVariant();
+    }
 }
 
 bool FileLabelModel::setData(const QModelIndex &index, const QVariant &value, int role)
@@ -81,7 +232,7 @@ Qt::ItemFlags FileLabelModel::flags(const QModelIndex &index) const
     if (!index.isValid())
         return Qt::NoItemFlags;
 
-    return Qt::ItemIsEditable; // FIXME: Implement me!
+    return QAbstractItemModel::flags(index); // FIXME: Implement me!
 }
 
 bool FileLabelModel::insertRows(int row, int count, const QModelIndex &parent)
@@ -98,4 +249,70 @@ bool FileLabelModel::removeRows(int row, int count, const QModelIndex &parent)
     // FIXME: Implement me!
     endRemoveRows();
     return true;
+}
+
+void FileLabelModel::initLabelItems()
+{
+    beginResetModel();
+    auto size = m_label_settings->beginReadArray("labels");
+    for (int i = 0; i < size; i++) {
+        m_label_settings->setArrayIndex(i);
+        bool visible = m_label_settings->value("visible").toBool();
+        if (visible) {
+            auto name = m_label_settings->value("label").toString();
+            auto color = qvariant_cast<QColor>(m_label_settings->value("color"));
+
+            auto item = new FileLabelItem(this);
+            item->m_id = i;
+            item->setName(name);
+            item->setColor(color);
+
+            m_labels.append(item);
+        }
+    }
+    endResetModel();
+}
+
+void FileLabelModel::addId()
+{
+    int lastid = lastLabelId();
+    m_label_settings->setValue("lastid", lastid + 1);
+    m_label_settings->sync();
+}
+
+//FileLabelItem
+FileLabelItem::FileLabelItem(QObject *parent)
+{
+    //should be initialized in model.
+}
+
+int FileLabelItem::id()
+{
+    return m_id;
+}
+
+const QString FileLabelItem::name()
+{
+    return m_name;
+}
+
+const QColor FileLabelItem::color()
+{
+    return m_color;
+}
+
+void FileLabelItem::setName(const QString &name)
+{
+    m_name = name;
+    if (m_id >= 0) {
+        nameChanged(name);
+    }
+}
+
+void FileLabelItem::setColor(const QColor &color)
+{
+    m_color = color;
+    if (m_id >= 0) {
+        colorChanged(color);
+    }
 }

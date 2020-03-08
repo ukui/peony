@@ -68,6 +68,11 @@ void BorderShadowEffect::setWindowBackground(const QColor &color)
     m_window_bg = color;
 }
 
+void BorderShadowEffect::setTransParentPath(const QPainterPath &path)
+{
+    m_transparent_path = path;
+}
+
 void BorderShadowEffect::drawWindowShadowManually(QPainter *painter, const QRect &windowRect)
 {
     //draw window bg;
@@ -80,7 +85,8 @@ void BorderShadowEffect::drawWindowShadowManually(QPainter *painter, const QRect
     contentPath.addRoundedRect(contentRect, m_x_border_radius, m_y_border_radius);
     auto targetPath = sourcePath - contentPath;
     //qDebug()<<contentPath;
-    painter->fillPath(contentPath, m_window_bg);
+    auto bgPath = contentPath - m_transparent_path;
+    painter->fillPath(bgPath, m_window_bg);
 
     //qDebug()<<this->boundingRect()<<offset;
     if (m_padding > 0) {

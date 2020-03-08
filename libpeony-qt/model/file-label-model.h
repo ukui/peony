@@ -26,6 +26,10 @@
 #include <QAbstractListModel>
 #include <QSettings>
 
+#include <QColor>
+
+class FileLabelItem;
+
 class FileLabelModel : public QAbstractListModel
 {
     Q_OBJECT
@@ -33,9 +37,15 @@ class FileLabelModel : public QAbstractListModel
 public:
     static FileLabelModel *getGlobalModel();
 
+    const QStringList getLabels();
+    const QList<QColor> getColors();
+
+    int lastLabelId();
+
     void addLabel(const QString &label, const QColor &color);
-    void removeLabel(const QString &label);
-    void setLabelColor(const QString &label, const QColor);
+    void removeLabel(int id);
+    void setLabelName(int id, const QString &name);
+    void setLabelColor(int id, const QColor &color);
 
     // Basic functionality:
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
@@ -54,11 +64,41 @@ public:
     // Remove data:
     bool removeRows(int row, int count, const QModelIndex &parent = QModelIndex()) override;
 
+protected:
+    void initLabelItems();
+    void addId();
+
 private:
     explicit FileLabelModel(QObject *parent = nullptr);
     ~FileLabelModel();
 
     QSettings *m_label_settings;
+
+    QList<FileLabelItem *> m_labels;
+};
+
+class FileLabelItem : public QObject
+{
+    friend class FileLabelModel;
+    Q_OBJECT
+public:
+    explicit FileLabelItem(QObject *parent = nullptr);
+
+    int id();
+    const QString name();
+    const QColor color();
+
+    void setName(const QString &name);
+    void setColor(const QColor &color);
+
+Q_SIGNALS:
+    void nameChanged(const QString &name);
+    void colorChanged(const QColor &color);
+
+private:
+    int m_id = -1; //invalid
+    QString m_name = nullptr;
+    QColor m_color = Qt::transparent;
 };
 
 #endif // FILELABELMODEL_H

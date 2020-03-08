@@ -57,6 +57,8 @@ public:
 
     void setWindowBackground(const QColor &color);
 
+    void setTransParentPath(const QPainterPath &path);
+
     void drawWindowShadowManually(QPainter *painter, const QRect &windowRect);
 
 protected:
@@ -72,6 +74,8 @@ private:
 
     QImage m_cache_shadow;
     bool m_force_update_cache = false;
+
+    QPainterPath m_transparent_path;
 };
 
 #endif // BORDERSHADOWEFFECT_H

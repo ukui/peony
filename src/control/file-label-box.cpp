@@ -21,8 +21,9 @@
  */
 
 #include "file-label-box.h"
+#include "file-label-model.h"
 
 FileLabelBox::FileLabelBox(QWidget *parent) : QListView(parent)
 {
-
+    setModel(FileLabelModel::getGlobalModel());
 }

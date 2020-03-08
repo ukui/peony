@@ -27,6 +27,8 @@
 class MainWindowPrivate;
 class BorderShadowEffect;
 class HeaderBar;
+class NavigationSideBar;
+class TabWidget;
 class DirectoryViewContainter;
 
 class MainWindow : public QMainWindow
@@ -56,10 +58,14 @@ protected:
     void validBorder();
     void initUI();
 
+    QRect sideBarRect();
+
 private:
     BorderShadowEffect *m_effect;
 
     HeaderBar *m_header_bar;
+    NavigationSideBar *m_side_bar;
+    TabWidget *m_tab;
     bool m_is_draging = false;
 };
 
