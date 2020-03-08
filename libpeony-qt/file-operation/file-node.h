@@ -62,6 +62,7 @@ class PEONYCORESHARED_EXPORT FileNode
 public:
     enum State {
         Unhandled,
+        Handling,
         Handled,
         Cleared,
         Invalid

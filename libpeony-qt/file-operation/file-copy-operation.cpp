@@ -140,6 +140,8 @@ void FileCopyOperation::copyRecursively(FileNode *node)
     if (isCancelled())
         return;
 
+    node->setState(FileNode::Handling);
+
 fallback_retry:
     QString destFileUri = node->resoveDestFileUri(m_dest_dir_uri);
     node->setDestUri(destFileUri);
@@ -216,6 +218,7 @@ fallback_retry:
                 goto fallback_retry;
             }
             case Cancel: {
+                node->setState(FileNode::Handled);
                 cancel();
                 break;
             }
@@ -313,6 +316,7 @@ fallback_retry:
                 goto fallback_retry;
             }
             case Cancel: {
+                node->setState(FileNode::Handled);
                 cancel();
                 break;
             }
@@ -331,6 +335,7 @@ fallback_retry:
 void FileCopyOperation::rollbackNodeRecursively(FileNode *node)
 {
     switch (node->state()) {
+    case FileNode::Handling:
     case FileNode::Handled: {
         //do not clear the dest file if ignored or overwrite or backuped.
         //FIXME: should i put it after recusion?

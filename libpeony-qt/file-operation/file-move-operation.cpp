@@ -265,6 +265,7 @@ retry:
                 goto retry;
             }
             case Cancel: {
+                file->setState(FileNode::Handled);
                 cancel();
                 break;
             }
@@ -342,6 +343,7 @@ retry:
 void FileMoveOperation::rollbackNodeRecursively(FileNode *node)
 {
     switch (node->state()) {
+    case FileNode::Handling:
     case FileNode::Handled: {
         //do not clear the dest file if ignored or overwrite or backuped.
         if (node->responseType() != Other)
@@ -459,6 +461,8 @@ void FileMoveOperation::copyRecursively(FileNode *node)
     if (isCancelled())
         return;
 
+    node->setState(FileNode::Handling);
+
     QString relativePath = node->getRelativePath();
     //FIXME: the smart pointers' deconstruction spends too much time.
     GFileWrapperPtr destRoot = wrapGFile(g_file_new_for_uri(m_dest_dir_uri.toUtf8().constData()));
@@ -541,6 +545,7 @@ fallback_retry:
                 goto fallback_retry;
             }
             case Cancel: {
+                node->setState(FileNode::Handled);
                 cancel();
                 break;
             }
@@ -650,6 +655,7 @@ fallback_retry:
                 goto fallback_retry;
             }
             case Cancel: {
+                node->setState(FileNode::Handled);
                 cancel();
                 break;
             }
