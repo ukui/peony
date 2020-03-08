@@ -65,6 +65,12 @@ QList<QAction *> AdminMenuPlugin::menuActions(Types types, const QString &uri, c
         });
     } else if (selectionUris.count() == 1) {
         auto info = FileInfo::fromUri(selectionUris.first());
+        //special type mountable, return
+        qDebug()<<"info isVirtual:"<<info->isVirtual()<<info->mimeType();
+        if (selectionUris.first().startsWith("computer:///") || 
+            selectionUris.first().startsWith("trash:///")|| 
+            info->isVirtual())
+            return l;
         if (info->isDir()) {
             auto directoryAction = new QAction(tr("Open Directory as Admin"));
             l<<directoryAction;

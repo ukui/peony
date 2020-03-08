@@ -64,13 +64,18 @@ MateTerminalMenuPlugin::MateTerminalMenuPlugin(QObject *parent) : QObject (paren
 }
 
 void openTerminal(const QString &uri){
-
-    qDebug()<<"triggered"<<uri;
+    //QString test_path = "/develop";
     QUrl url = uri;
     auto directory = url.path().toUtf8().constData();
+    qDebug() <<"triggered" <<uri << url.path();
+    //qDebug()<< "openTerminal directory" << directory;
     gchar **argv = nullptr;
     g_shell_parse_argv (terminal_cmd.toUtf8().constData(), nullptr, &argv, nullptr);
     GError *err = nullptr;
+    QString path, dir;
+    path.prepend(directory);
+    dir.append(directory);
+    qDebug() << "terminal_cmd:" << terminal_cmd <<"directory" << path <<dir;
     g_spawn_async (directory,
                    argv,
                    nullptr,

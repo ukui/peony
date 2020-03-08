@@ -51,7 +51,9 @@ QList<QAction*> EngrampaMenuPlugin::menuActions(Types types, const QString &uri,
             auto info = FileInfo::fromUri(selectionUris.first(), false);
             //special type mountable, return
             qDebug()<<"info isVirtual:"<<info->isVirtual()<<info->mimeType();
-            if (selectionUris.first().startsWith("computer:///") || info->isVirtual())
+            if (selectionUris.first().startsWith("computer:///") ||
+                    selectionUris.first().startsWith("trash:///")||
+                    info->isVirtual())
                 return actions;
 
             QFileInfo file(selectionUris.first());
