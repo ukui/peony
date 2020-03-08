@@ -28,6 +28,8 @@
 
 #include <QColor>
 
+#define PEONY_FILE_LABEL_IDS "peony-file-label-ids"
+
 class FileLabelItem;
 
 class FileLabelModel : public QAbstractListModel
@@ -46,6 +48,13 @@ public:
     void removeLabel(int id);
     void setLabelName(int id, const QString &name);
     void setLabelColor(int id, const QColor &color);
+
+    void addLabelToFile(const QString &uri, int labelId);
+    void removeFileLabel(const QString &uri, int labelId = -1);
+
+    const QList<int> getFileLabelIds(const QString &uri);
+    const QStringList getFileLabels(const QString &uri);
+    FileLabelItem *itemFromId(int id);
 
     // Basic functionality:
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;

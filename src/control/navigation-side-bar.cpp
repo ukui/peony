@@ -50,8 +50,6 @@ NavigationSideBar::NavigationSideBar(QWidget *parent) : QTreeView(parent)
     m_proxy_model = new Peony::SideBarProxyFilterSortModel(this);
     m_proxy_model->setSourceModel(m_model);
 
-    this->setViewportMargins(4, 0, 4, 37);
-
     this->setModel(m_proxy_model);
 
     connect(this, &QTreeView::expanded, [=](const QModelIndex &index){
@@ -122,6 +120,6 @@ bool NavigationSideBar::eventFilter(QObject *obj, QEvent *e)
 
 void NavigationSideBar::updateGeometries()
 {
-    setViewportMargins(0, 0, 0, 40);
+    setViewportMargins(4, 0, 4, 37);
     QTreeView::updateGeometries();
 }

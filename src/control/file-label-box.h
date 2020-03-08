@@ -24,6 +24,7 @@
 #define FILELABELBOX_H
 
 #include <QListView>
+#include <QProxyStyle>
 
 class FileLabelBox : public QListView
 {
@@ -33,6 +34,16 @@ public:
 
 Q_SIGNALS:
 
+};
+
+class LabelBoxStyle : public QProxyStyle
+{
+    static LabelBoxStyle *getStyle();
+
+    friend class FileLabelBox;
+    LabelBoxStyle() {}
+
+    void drawPrimitive(PrimitiveElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget = nullptr) const override;
 };
 
 #endif // FILELABELBOX_H

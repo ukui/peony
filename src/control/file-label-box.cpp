@@ -23,7 +23,28 @@
 #include "file-label-box.h"
 #include "file-label-model.h"
 
+#include <QApplication>
+#include <QDebug>
+
+static LabelBoxStyle *global_instance = nullptr;
+
 FileLabelBox::FileLabelBox(QWidget *parent) : QListView(parent)
 {
+    setStyle(LabelBoxStyle::getStyle());
+    viewport()->setStyle(LabelBoxStyle::getStyle());
     setModel(FileLabelModel::getGlobalModel());
+}
+
+//LabelBoxStyle
+LabelBoxStyle *LabelBoxStyle::getStyle()
+{
+    if (!global_instance) {
+        global_instance = new LabelBoxStyle;
+    }
+    return global_instance;
+}
+
+void LabelBoxStyle::drawPrimitive(QStyle::PrimitiveElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget) const
+{
+    return QApplication::style()->drawPrimitive(element, option, painter, widget);
 }

@@ -22,6 +22,9 @@
 
 #include "file-label-model.h"
 
+#include "file-meta-info.h"
+#include "file-info.h"
+
 #include <QMessageBox>
 
 static FileLabelModel *global_instance = nullptr;
@@ -185,6 +188,63 @@ void FileLabelModel::setLabelColor(int id, const QColor &color)
             Q_EMIT dataChanged(index(row), index(row));
             break;
         }
+    }
+}
+
+const QList<int> FileLabelModel::getFileLabelIds(const QString &uri)
+{
+    QList<int> l;
+    auto metaInfo = Peony::FileMetaInfo::fromUri(uri);
+    auto labels = metaInfo->getMetaInfoStringList(PEONY_FILE_LABEL_IDS);
+    for (auto label : labels) {
+        l<<label.toInt();
+    }
+    return l;
+}
+
+const QStringList FileLabelModel::getFileLabels(const QString &uri)
+{
+    QStringList l;
+    auto metaInfo = Peony::FileMetaInfo::fromUri(uri);
+    auto labels = metaInfo->getMetaInfoStringList(PEONY_FILE_LABEL_IDS);
+    for (auto label : labels) {
+        auto id = label.toInt();
+        auto item = itemFromId(id);
+        if (item) {
+            l<<item->name();
+        }
+    }
+    return l;
+}
+
+FileLabelItem *FileLabelModel::itemFromId(int id)
+{
+    for (auto item : this->m_labels) {
+        if (id == item->id()) {
+            return item;
+        }
+    }
+    return nullptr;
+}
+
+void FileLabelModel::addLabelToFile(const QString &uri, int labelId)
+{
+    auto metaInfo = Peony::FileMetaInfo::fromUri(uri);
+    QStringList labelIds = metaInfo->getMetaInfoStringList(PEONY_FILE_LABEL_IDS);
+    labelIds<<QString::number(labelId);
+    labelIds.removeDuplicates();
+    metaInfo->setMetaInfoStringList(PEONY_FILE_LABEL_IDS, labelIds);
+}
+
+void FileLabelModel::removeFileLabel(const QString &uri, int labelId)
+{
+    auto metaInfo = Peony::FileMetaInfo::fromUri(uri);
+    if (labelId < 0) {
+        metaInfo->removeMetaInfo(PEONY_FILE_LABEL_IDS);
+    } else {
+        QStringList labelIds = metaInfo->getMetaInfoStringList(PEONY_FILE_LABEL_IDS);
+        labelIds.removeOne(QString::number(labelId));
+        metaInfo->setMetaInfoStringList(PEONY_FILE_LABEL_IDS, labelIds);
     }
 }
 
