@@ -23,7 +23,10 @@
 #include "file-watcher.h"
 #include "gerror-wrapper.h"
 
+#include "file-label-model.h"
+
 #include <QUrl>
+#include "file-utils.h"
 
 #include <QDebug>
 
@@ -35,6 +38,14 @@ FileWatcher::FileWatcher(QString uri, QObject *parent) : QObject(parent)
     m_target_uri = uri;
     m_file = g_file_new_for_uri(uri.toUtf8().constData());
     m_cancellable = g_cancellable_new();
+
+    connect(FileLabelModel::getGlobalModel(), &FileLabelModel::fileLabelChanged, this, [=](const QString &uri){
+        auto parentUri = FileUtils::getParentUri(uri);
+        if (parentUri == m_uri || parentUri == m_target_uri) {
+            Q_EMIT fileChanged(uri);
+            qDebug()<<"file label changed"<<uri;
+        }
+    });
 
     //monitor target file if existed.
     prepare();

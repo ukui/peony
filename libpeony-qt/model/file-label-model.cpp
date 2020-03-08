@@ -72,6 +72,7 @@ const QStringList FileLabelModel::getLabels()
             l<<m_label_settings->value("label").toString();
         }
     }
+    m_label_settings->endArray();
 
     return l;
 }
@@ -87,6 +88,7 @@ const QList<QColor> FileLabelModel::getColors()
             l<<qvariant_cast<QColor>(m_label_settings->value("color"));
         }
     }
+    m_label_settings->endArray();
 
     return l;
 }
@@ -195,6 +197,8 @@ const QList<int> FileLabelModel::getFileLabelIds(const QString &uri)
 {
     QList<int> l;
     auto metaInfo = Peony::FileMetaInfo::fromUri(uri);
+    if (metaInfo->getMetaInfoVariant(PEONY_FILE_LABEL_IDS).isNull())
+        return l;
     auto labels = metaInfo->getMetaInfoStringList(PEONY_FILE_LABEL_IDS);
     for (auto label : labels) {
         l<<label.toInt();
@@ -206,6 +210,8 @@ const QStringList FileLabelModel::getFileLabels(const QString &uri)
 {
     QStringList l;
     auto metaInfo = Peony::FileMetaInfo::fromUri(uri);
+    if (metaInfo->getMetaInfoVariant(PEONY_FILE_LABEL_IDS).isNull())
+        return l;
     auto labels = metaInfo->getMetaInfoStringList(PEONY_FILE_LABEL_IDS);
     for (auto label : labels) {
         auto id = label.toInt();
@@ -227,13 +233,29 @@ FileLabelItem *FileLabelModel::itemFromId(int id)
     return nullptr;
 }
 
+FileLabelItem *FileLabelModel::itemFormIndex(const QModelIndex &index)
+{
+    if (index.isValid()) {
+        return m_labels.at(index.row());
+    }
+    return nullptr;
+}
+
+QList<FileLabelItem *> FileLabelModel::getAllFileLabelItems()
+{
+    return m_labels;
+}
+
 void FileLabelModel::addLabelToFile(const QString &uri, int labelId)
 {
     auto metaInfo = Peony::FileMetaInfo::fromUri(uri);
-    QStringList labelIds = metaInfo->getMetaInfoStringList(PEONY_FILE_LABEL_IDS);
+    QStringList labelIds;
+    if (!metaInfo->getMetaInfoVariant(PEONY_FILE_LABEL_IDS).isNull())
+        labelIds = metaInfo->getMetaInfoStringList(PEONY_FILE_LABEL_IDS);
     labelIds<<QString::number(labelId);
     labelIds.removeDuplicates();
     metaInfo->setMetaInfoStringList(PEONY_FILE_LABEL_IDS, labelIds);
+    Q_EMIT fileLabelChanged(uri);
 }
 
 void FileLabelModel::removeFileLabel(const QString &uri, int labelId)
@@ -242,10 +264,13 @@ void FileLabelModel::removeFileLabel(const QString &uri, int labelId)
     if (labelId < 0) {
         metaInfo->removeMetaInfo(PEONY_FILE_LABEL_IDS);
     } else {
+        if (metaInfo->getMetaInfoVariant(PEONY_FILE_LABEL_IDS).isNull())
+            return;
         QStringList labelIds = metaInfo->getMetaInfoStringList(PEONY_FILE_LABEL_IDS);
         labelIds.removeOne(QString::number(labelId));
         metaInfo->setMetaInfoStringList(PEONY_FILE_LABEL_IDS, labelIds);
     }
+    Q_EMIT fileLabelChanged(uri);
 }
 
 int FileLabelModel::rowCount(const QModelIndex &parent) const
@@ -281,6 +306,12 @@ bool FileLabelModel::setData(const QModelIndex &index, const QVariant &value, in
 {
     if (data(index, role) != value) {
         // FIXME: Implement me!
+        auto name = value.toString();
+        if (getLabels().contains(name)) {
+            QMessageBox::critical(nullptr, tr("Error"), tr("Label or color is duplicated."));
+            return false;
+        }
+        this->setLabelName(m_labels.at(index.row())->id(), name);
         Q_EMIT dataChanged(index, index, QVector<int>() << role);
         return true;
     }
@@ -292,7 +323,7 @@ Qt::ItemFlags FileLabelModel::flags(const QModelIndex &index) const
     if (!index.isValid())
         return Qt::NoItemFlags;
 
-    return QAbstractItemModel::flags(index); // FIXME: Implement me!
+    return QAbstractItemModel::flags(index) | Qt::ItemIsEditable; // FIXME: Implement me!
 }
 
 bool FileLabelModel::insertRows(int row, int count, const QModelIndex &parent)
@@ -309,6 +340,24 @@ bool FileLabelModel::removeRows(int row, int count, const QModelIndex &parent)
     // FIXME: Implement me!
     endRemoveRows();
     return true;
+}
+
+void FileLabelModel::setName(FileLabelItem *item, const QString &name)
+{
+    m_label_settings->beginWriteArray("labels");
+    m_label_settings->setArrayIndex(item->id());
+    m_label_settings->setValue("label", name);
+    m_label_settings->endArray();
+    m_label_settings->sync();
+}
+
+void FileLabelModel::setColor(FileLabelItem *item, const QColor &color)
+{
+    m_label_settings->beginWriteArray("labels");
+    m_label_settings->setArrayIndex(item->id());
+    m_label_settings->setValue("color", color);
+    m_label_settings->endArray();
+    m_label_settings->sync();
 }
 
 void FileLabelModel::initLabelItems()
@@ -330,6 +379,7 @@ void FileLabelModel::initLabelItems()
             m_labels.append(item);
         }
     }
+    m_label_settings->endArray();
     endResetModel();
 }
 
@@ -365,7 +415,8 @@ void FileLabelItem::setName(const QString &name)
 {
     m_name = name;
     if (m_id >= 0) {
-        nameChanged(name);
+        if (global_instance)
+            global_instance->setName(this, name);
     }
 }
 
@@ -373,6 +424,7 @@ void FileLabelItem::setColor(const QColor &color)
 {
     m_color = color;
     if (m_id >= 0) {
-        colorChanged(color);
+        if (global_instance)
+            global_instance->setColor(this, color);
     }
 }

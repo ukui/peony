@@ -33,6 +33,10 @@
 #include <QApplication>
 //create link
 
+//tag file
+#include "file-label-model.h"
+#include <QMenu>
+
 #include <QDebug>
 
 using namespace Peony;
@@ -42,6 +46,7 @@ static MenuPluginManager *global_instance = nullptr;
 MenuPluginManager::MenuPluginManager(QObject *parent) : QObject(parent)
 {
     registerPlugin(new CreateLinkInternalPlugin(this));
+    registerPlugin(new FileLabelInternalMenuPlugin(this));
 }
 
 MenuPluginManager::~MenuPluginManager()
@@ -121,6 +126,45 @@ QList<QAction *> CreateLinkInternalPlugin::menuActions(MenuPluginInterface::Type
                 }
             });
             l<<createLinkTo;
+        }
+    }
+    return l;
+}
+
+//FileLabelInternalMenuPlugin
+FileLabelInternalMenuPlugin::FileLabelInternalMenuPlugin(QObject *parent)
+{
+
+}
+
+QList<QAction *> FileLabelInternalMenuPlugin::menuActions(MenuPluginInterface::Types types, const QString &uri, const QStringList &selectionUris)
+{
+    QList<QAction *> l;
+    if (types == DirectoryView) {
+        if (selectionUris.count() == 1) {
+            auto action = new QAction(tr("Add File Label..."));
+            auto uri = selectionUris.first();
+            auto menu = new QMenu();
+            auto items = FileLabelModel::getGlobalModel()->getAllFileLabelItems();
+            for (auto item : items) {
+                auto ids = FileLabelModel::getGlobalModel()->getFileLabelIds(uri);
+                bool checked = ids.contains(item->id());
+                auto a = menu->addAction(item->name(), [=](){
+                    if (!checked) {
+                        FileLabelModel::getGlobalModel()->addLabelToFile(uri, item->id());
+                    } else {
+                        FileLabelModel::getGlobalModel()->removeFileLabel(uri, item->id());
+                    }
+                });
+                a->setCheckable(true);
+                a->setChecked(checked);
+            }
+            menu->addSeparator();
+            menu->addAction(tr("Delete All Label"), [=](){
+                FileLabelModel::getGlobalModel()->removeFileLabel(uri);
+            });
+            action->setMenu(menu);
+            l<<action;
         }
     }
     return l;

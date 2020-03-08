@@ -68,6 +68,26 @@ private:
     bool m_enable = true;
 };
 
+class FileLabelInternalMenuPlugin : public QObject, public MenuPluginInterface
+{
+    Q_OBJECT
+public:
+    explicit FileLabelInternalMenuPlugin(QObject *parent);
+
+    PluginInterface::PluginType pluginType() override {return PluginInterface::MenuPlugin;}
+    const QString name() override {return tr("Peony File Labels Menu Extension");}
+    const QString description() override {return tr("Tag a File with Menu.");}
+    const QIcon icon() override {return QIcon::fromTheme("emblem-symbolic-link");}
+    void setEnable(bool enable) override {m_enable = enable;}
+    bool isEnable() override {return m_enable;}
+
+    QString testPlugin() override {return "test create file label";}
+    QList<QAction *> menuActions(Types types, const QString &uri, const QStringList &selectionUris) override;
+
+private:
+    bool m_enable = true;
+};
+
 }
 
 #endif // MENUPLUGINMANAGER_H

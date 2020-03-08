@@ -55,6 +55,9 @@ public:
     const QList<int> getFileLabelIds(const QString &uri);
     const QStringList getFileLabels(const QString &uri);
     FileLabelItem *itemFromId(int id);
+    FileLabelItem *itemFormIndex(const QModelIndex &index);
+
+    QList<FileLabelItem *> getAllFileLabelItems();
 
     // Basic functionality:
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
@@ -72,6 +75,13 @@ public:
 
     // Remove data:
     bool removeRows(int row, int count, const QModelIndex &parent = QModelIndex()) override;
+
+Q_SIGNALS:
+    void fileLabelChanged(const QString &uri);
+
+public Q_SLOTS:
+    void setName(FileLabelItem *item, const QString &name);
+    void setColor(FileLabelItem *item, const QColor &color);
 
 protected:
     void initLabelItems();

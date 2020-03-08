@@ -23,6 +23,10 @@
 #include "file-label-box.h"
 #include "file-label-model.h"
 
+#include <QMenu>
+
+#include <QColorDialog>
+
 #include <QApplication>
 #include <QDebug>
 
@@ -33,6 +37,39 @@ FileLabelBox::FileLabelBox(QWidget *parent) : QListView(parent)
     setStyle(LabelBoxStyle::getStyle());
     viewport()->setStyle(LabelBoxStyle::getStyle());
     setModel(FileLabelModel::getGlobalModel());
+
+    setContextMenuPolicy(Qt::CustomContextMenu);
+
+    connect(this, &QWidget::customContextMenuRequested, this, [=](const QPoint &pos){
+        auto index = indexAt(pos);
+        bool labelRemovable = false;
+        QMenu menu;
+        if (index.isValid()) {
+            auto item = FileLabelModel::getGlobalModel()->itemFormIndex(index);
+            int id = item->id();
+            if (id > 7)
+                labelRemovable = true;
+
+            menu.addAction(tr("Rename"), [=](){
+                //FIXME: edit
+                edit(index);
+            });
+            auto a = menu.addAction(tr("Delete"), [=](){
+                FileLabelModel::getGlobalModel()->removeLabel(id);
+            });
+            a->setEnabled(labelRemovable);
+        } else {
+            menu.addAction(tr("Create New Label"), [=](){
+                QColorDialog dialog;
+                if (dialog.exec()) {
+                    auto color = dialog.selectedColor();
+                    auto name = color.name();
+                    FileLabelModel::getGlobalModel()->addLabel(name, color);
+                }
+            });
+        }
+        menu.exec(QCursor::pos());
+    });
 }
 
 //LabelBoxStyle
