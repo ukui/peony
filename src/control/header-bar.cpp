@@ -25,6 +25,7 @@
 
 #include "view-type-menu.h"
 #include "sort-type-menu.h"
+#include "operation-menu.h"
 
 #include <QHBoxLayout>
 #include <advanced-location-bar.h>
@@ -124,6 +125,9 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
     popMenu->setFixedSize(QSize(57, 40));
     popMenu->setIconSize(QSize(16, 16));
     popMenu->setPopupMode(QToolButton::InstantPopup);
+
+    m_operation_menu = new OperationMenu(m_window, this);
+    popMenu->setMenu(m_operation_menu);
 
     //minimize, maximize and close
     a = addAction(QIcon::fromTheme("window-minimize-symbolic"), tr("Minimize"), [=](){
