@@ -97,7 +97,7 @@ int FileLabelModel::lastLabelId()
 {
     m_label_settings = new QSettings(QSettings::UserScope, "org.ukui", "peony-qt", this);
     if (m_label_settings->value("lastid").isNull()) {
-        return -1;
+        return 0;
     } else {
         return m_label_settings->value("lastid").toInt();
     }
@@ -261,7 +261,7 @@ void FileLabelModel::addLabelToFile(const QString &uri, int labelId)
 void FileLabelModel::removeFileLabel(const QString &uri, int labelId)
 {
     auto metaInfo = Peony::FileMetaInfo::fromUri(uri);
-    if (labelId < 0) {
+    if (labelId <= 0) {
         metaInfo->removeMetaInfo(PEONY_FILE_LABEL_IDS);
     } else {
         if (metaInfo->getMetaInfoVariant(PEONY_FILE_LABEL_IDS).isNull())
@@ -307,6 +307,9 @@ bool FileLabelModel::setData(const QModelIndex &index, const QVariant &value, in
     if (data(index, role) != value) {
         // FIXME: Implement me!
         auto name = value.toString();
+        if (name.isEmpty()) {
+            return false;
+        }
         if (getLabels().contains(name)) {
             QMessageBox::critical(nullptr, tr("Error"), tr("Label or color is duplicated."));
             return false;

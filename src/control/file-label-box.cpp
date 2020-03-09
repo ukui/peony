@@ -54,6 +54,15 @@ FileLabelBox::FileLabelBox(QWidget *parent) : QListView(parent)
                 //FIXME: edit
                 edit(index);
             });
+
+            menu.addAction(tr("Edit Color"), [=](){
+                QColorDialog d;
+                if (d.exec()) {
+                    auto color = d.selectedColor();
+                    item->setColor(color);
+                }
+            });
+
             auto a = menu.addAction(tr("Delete"), [=](){
                 FileLabelModel::getGlobalModel()->removeLabel(id);
             });

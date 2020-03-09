@@ -153,19 +153,26 @@ void FileMetaInfo::removeMetaInfo(const QString &key)
         realKey = "metadata::" + key;
     m_meta_hash.remove(realKey);
     GFile *file = g_file_new_for_uri(m_uri.toUtf8().constData());
-    GFileInfo *info = g_file_info_new();
-    std::string tmp = realKey.toStdString();
-    g_file_info_set_attribute(info, tmp.c_str(), G_FILE_ATTRIBUTE_TYPE_STRING, nullptr);
-    g_file_info_remove_attribute(info, tmp.c_str());
-    //FIXME: should i add callback?
-    g_file_set_attributes_async(file,
-                                info,
-                                G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
-                                0,
-                                nullptr,
-                                nullptr,
-                                nullptr);
-    g_object_unref(info);
+    g_file_set_attribute(file,
+                         realKey.toUtf8().constData(),
+                         G_FILE_ATTRIBUTE_TYPE_INVALID,
+                         nullptr,
+                         G_FILE_QUERY_INFO_NONE,
+                         nullptr,
+                         nullptr);
+//    GFileInfo *info = g_file_info_new();
+//    std::string tmp = realKey.toStdString();
+//    //g_file_info_set_attribute(info, realKey.toUtf8(), G_FILE_ATTRIBUTE_TYPE_INVALID, nullptr);
+//    g_file_info_remove_attribute(info, realKey.toUtf8());
+//    //FIXME: should i add callback?
+//    g_file_set_attributes_async(file,
+//                                info,
+//                                G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
+//                                0,
+//                                nullptr,
+//                                nullptr,
+//                                nullptr);
+//    g_object_unref(info);
     g_object_unref(file);
     m_mutex.unlock();
 }
