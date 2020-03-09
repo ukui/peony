@@ -29,6 +29,9 @@
 #include <QProxyStyle>
 
 class MainWindow;
+class ViewTypeMenu;
+class SortTypeMenu;
+class OperationMenu;
 
 class HeaderBar : public QToolBar
 {
@@ -49,6 +52,10 @@ private Q_SLOTS:
 private:
     const QString m_uri;
     MainWindow *m_window;
+
+    ViewTypeMenu *m_view_type_menu;
+    SortTypeMenu *m_sort_type_menu;
+    OperationMenu *m_operation_menu;
 };
 
 class HeaderBarToolButton : public QToolButton

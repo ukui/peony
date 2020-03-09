@@ -23,6 +23,9 @@
 #include "header-bar.h"
 #include "main-window.h"
 
+#include "view-type-menu.h"
+#include "sort-type-menu.h"
+
 #include <QHBoxLayout>
 #include <advanced-location-bar.h>
 
@@ -90,32 +93,37 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
 
     addSpacing(9);
 
-    a = addAction(QIcon::fromTheme("view-grid-symbolic"), tr("View Type"), [=](){
-        //FIXME:
-    });
+    a = addAction(QIcon::fromTheme("view-grid-symbolic"), tr("View Type"));
     auto viewType = qobject_cast<QToolButton *>(widgetForAction(a));
     viewType->setAutoRaise(false);
     viewType->setFixedSize(QSize(57, 40));
     viewType->setIconSize(QSize(16, 16));
-    viewType->setPopupMode(QToolButton::MenuButtonPopup);
+    viewType->setPopupMode(QToolButton::InstantPopup);
 
-    a = addAction(QIcon::fromTheme("view-sort-descending-symbolic"), tr("Sort Type"), [=](){
-        //FIXME:
+    m_view_type_menu = new ViewTypeMenu(viewType);
+    viewType->setMenu(m_view_type_menu);
+
+    connect(m_view_type_menu, &ViewTypeMenu::switchViewRequest, this, [=](const QString &id, const QIcon &icon){
+        viewType->setText(id);
+        viewType->setIcon(icon);
     });
+
+    a = addAction(QIcon::fromTheme("view-sort-descending-symbolic"), tr("Sort Type"));
     auto sortType = qobject_cast<QToolButton *>(widgetForAction(a));
     sortType->setAutoRaise(false);
     sortType->setFixedSize(QSize(57, 40));
     sortType->setIconSize(QSize(16, 16));
-    sortType->setPopupMode(QToolButton::MenuButtonPopup);
+    sortType->setPopupMode(QToolButton::InstantPopup);
 
-    a = addAction(QIcon::fromTheme("open-menu-symbolic"), tr("Option"), [=](){
-        //FIXME:
-    });
+    m_sort_type_menu = new SortTypeMenu(this);
+    sortType->setMenu(m_sort_type_menu);
+
+    a = addAction(QIcon::fromTheme("open-menu-symbolic"), tr("Option"));
     auto popMenu = qobject_cast<QToolButton *>(widgetForAction(a));
     popMenu->setAutoRaise(false);
     popMenu->setFixedSize(QSize(57, 40));
     popMenu->setIconSize(QSize(16, 16));
-    popMenu->setPopupMode(QToolButton::MenuButtonPopup);
+    popMenu->setPopupMode(QToolButton::InstantPopup);
 
     //minimize, maximize and close
     a = addAction(QIcon::fromTheme("window-minimize-symbolic"), tr("Minimize"), [=](){

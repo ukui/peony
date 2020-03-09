@@ -44,6 +44,10 @@ NavigationSideBar::NavigationSideBar(QWidget *parent) : QTreeView(parent)
     header()->setSectionResizeMode(QHeaderView::ResizeToContents);
     header()->hide();
 
+    setContextMenuPolicy(Qt::CustomContextMenu);
+
+    setExpandsOnDoubleClick(false);
+
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
     m_model = new Peony::SideBarModel(this);
