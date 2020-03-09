@@ -115,6 +115,14 @@ void ListView::mousePressEvent(QMouseEvent *e)
         this->setState(QAbstractItemView::DragSelectingState);
     }
 
+    //if click left button at blank space, it should select nothing
+    if(e->button() == Qt::LeftButton && (!indexAt(e->pos()).isValid()) )
+    {
+        this->clearSelection();
+        this->clearFocus();
+        return;
+    }
+
     if (e->button() == Qt::LeftButton) {
         qDebug()<<m_edit_trigger_timer.isActive()<<m_edit_trigger_timer.interval();
         if (indexAt(e->pos()).row() == m_last_index.row() && m_last_index.isValid()) {
@@ -324,7 +332,10 @@ void ListView2::bindModel(FileItemModel *model, FileItemProxyFilterSortModel *pr
     connect(m_view, &ListView::customContextMenuRequested, this, [=](const QPoint &pos){
         qDebug()<<"menu request";
         if (!m_view->indexAt(pos).isValid())
+        {
             m_view->clearSelection();
+            m_view->clearFocus();
+        }
 
         auto index = m_view->indexAt(pos);
         auto selectedIndexes = m_view->selectionModel()->selection().indexes();
@@ -334,9 +345,11 @@ void ListView2::bindModel(FileItemModel *model, FileItemProxyFilterSortModel *pr
         if (!selectedIndexes.contains(index)) {
             if (!validRect.contains(pos)) {
                 m_view->clearSelection();
+                m_view->clearFocus();
             } else {
                 auto flags = QItemSelectionModel::Select|QItemSelectionModel::Rows;
                 m_view->clearSelection();
+                m_view->clearFocus();
                 m_view->selectionModel()->select(m_view->indexAt(pos), flags);
             }
         }
