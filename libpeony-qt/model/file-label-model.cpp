@@ -223,6 +223,23 @@ const QStringList FileLabelModel::getFileLabels(const QString &uri)
     return l;
 }
 
+const QList<QColor> FileLabelModel::getFileColors(const QString &uri)
+{
+    QList<QColor> l;
+    auto metaInfo = Peony::FileMetaInfo::fromUri(uri);
+    if (metaInfo->getMetaInfoVariant(PEONY_FILE_LABEL_IDS).isNull())
+        return l;
+    auto labels = metaInfo->getMetaInfoStringList(PEONY_FILE_LABEL_IDS);
+    for (auto label : labels) {
+        auto id = label.toInt();
+        auto item = itemFromId(id);
+        if (item) {
+            l<<item->color();
+        }
+    }
+    return l;
+}
+
 FileLabelItem *FileLabelModel::itemFromId(int id)
 {
     for (auto item : this->m_labels) {

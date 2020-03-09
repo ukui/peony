@@ -26,6 +26,7 @@
 
 #include <QObject>
 #include <QSortFilterProxyModel>
+#include <QColor>
 
 #include "peony-core_global.h"
 
@@ -79,6 +80,9 @@ public:
     void setUseDefaultNameSortOrder(bool use);
     void setFolderFirst(bool folderFirst);
     void setFilterConditions(int fileType=0, int modifyTime=0, int fileSize=0);
+    //set file label filter conditions, default value mean all files are accepted
+    //use it without any paras can clear the filter conditions
+    void setFilterLabelConditions(QString name = "", QColor color=Qt::transparent);
 
     FileItem *itemFromIndex(const QModelIndex &proxyIndex);
     QModelIndex getSourceIndex(const QModelIndex &proxyIndex);
@@ -104,6 +108,8 @@ private:
     bool m_show_hidden = false;
     bool m_use_default_name_sort_order = true;
     bool m_folder_first = true;
+    QString m_label_name = "";
+    QColor m_label_color = Qt::transparent;
     const int ALL_FILE = 0;
     const quint64 K_BASE = 1000;
     int m_show_file_type=ALL_FILE, m_show_modify_time=ALL_FILE, m_show_file_size=ALL_FILE;

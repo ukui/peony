@@ -25,6 +25,8 @@
 #include "file-item.h"
 #include "file-item-proxy-filter-sort-model.h"
 #include "file-info.h"
+#include "file-meta-info.h"
+#include "file-label-model.h"
 
 #include "file-utils.h"
 #include "file-operation-utils.h"
@@ -151,7 +153,7 @@ bool FileItemProxyFilterSortModel::filterAcceptsRow(int sourceRow, const QModelI
         if (!m_show_hidden) {
             //qDebug()<<sourceRow<<item->m_info->displayName()<<model->rowCount(sourceParent);
             //QMessageBox::warning(nullptr, "filter", item->m_info->displayName());
-             //qDebug()<<item->m_info->fileType()<<item->m_info->fileSize()<<item->m_info->modifiedDate()<<item->m_info->size()<<item->m_info->type();
+            //qDebug()<<item->m_info->displayName();
             if (item->m_info->displayName() != nullptr) {
                 if (item->m_info->displayName().at(0) == '.')
                     //qDebug()<<sourceRow<<item->m_info->displayName()<<model->rowCount(sourceParent);
@@ -160,7 +162,7 @@ bool FileItemProxyFilterSortModel::filterAcceptsRow(int sourceRow, const QModelI
         }
         //regExp
 
-        //check the filter conditions
+        //check the file info filter conditions
         //qDebug()<<"start filter conditions check";
         if (m_show_file_type != ALL_FILE && ! checkFileTypeFilter(item->m_info->type()))
             return false;
@@ -168,10 +170,28 @@ bool FileItemProxyFilterSortModel::filterAcceptsRow(int sourceRow, const QModelI
             return false;
         if (m_show_file_size != ALL_FILE && ! checkFileSizeFilter(item->m_info->size()))
             return false;
+
+        //check the file label filter conditions
+        if (m_label_name != "" || m_label_color != Qt::transparent)
+        {
+            QString uri = item->m_info->uri();
+            if (m_label_name != "")
+            {
+                auto names = FileLabelModel::getGlobalModel()->getFileLabels(uri);
+                if (! names.contains(m_label_name))
+                    return false;
+            }
+
+            if (m_label_color != Qt::transparent)
+            {
+                 auto colors = FileLabelModel::getGlobalModel()->getFileColors(uri);
+                 if (! colors.contains(m_label_color))
+                     return false;
+            }
+        }
     }
     return true;
 }
-
 
 bool FileItemProxyFilterSortModel::checkFileTypeFilter(QString type) const
 {
@@ -382,6 +402,13 @@ void FileItemProxyFilterSortModel::setFilterConditions(int fileType, int modifyT
     m_show_file_type = fileType;
     m_show_file_size = fileSize;
     m_show_modify_time = modifyTime;
+    invalidateFilter();
+}
+
+void FileItemProxyFilterSortModel::setFilterLabelConditions(QString name, QColor color)
+{
+    m_label_name = name;
+    m_label_color = color;
     invalidateFilter();
 }
 

@@ -54,6 +54,7 @@ public:
 
     const QList<int> getFileLabelIds(const QString &uri);
     const QStringList getFileLabels(const QString &uri);
+    const QList<QColor> getFileColors(const QString &uri);
     FileLabelItem *itemFromId(int id);
     FileLabelItem *itemFormIndex(const QModelIndex &index);
 
