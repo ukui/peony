@@ -189,6 +189,60 @@ bool FileItemProxyFilterSortModel::filterAcceptsRow(int sourceRow, const QModelI
                      return false;
             }
         }
+
+        //check mutiple label filter conditions, file has any one of these label is accepted
+        if(m_show_label_names.size() >0 || m_show_label_colors.size() >0)
+        {
+            bool bfind = false;
+            QString uri = item->m_info->uri();
+            if (m_show_label_names.size() >0 )
+            {
+               auto names = FileLabelModel::getGlobalModel()->getFileLabels(uri);
+               for(auto temp : m_show_label_names)
+               {
+                   if(names.contains(temp))
+                   {
+                       bfind = true;
+                       break;
+                   }
+               }
+            }
+
+            if (! bfind && m_show_label_colors.size() >0)
+            {
+                auto colors = FileLabelModel::getGlobalModel()->getFileColors(uri);
+                for(auto temp : m_show_label_colors)
+                {
+                    if (colors.contains(temp))
+                    {
+                        bfind = true;
+                        break;
+                    }
+                }
+            }
+
+            if (! bfind)
+                return false;
+        }
+
+        //check the blur name, can use as search color labels
+        if (m_blur_name != "")
+        {
+            QString uri = item->m_info->uri();
+            auto names = FileLabelModel::getGlobalModel()->getFileLabels(uri);
+            bool find = false;
+            for(auto temp : names)
+            {
+                if ((m_case_sensitive && temp.indexOf(m_blur_name) >= 0) ||
+                   (! m_case_sensitive && temp.toLower().indexOf(m_blur_name.toLower()) >= 0))
+                {
+                    find = true;
+                    break;
+                }
+            }
+            if (! find)
+                return false;
+        }
     }
     return true;
 }
@@ -409,6 +463,29 @@ void FileItemProxyFilterSortModel::setFilterLabelConditions(QString name, QColor
 {
     m_label_name = name;
     m_label_color = color;
+    invalidateFilter();
+}
+
+void FileItemProxyFilterSortModel::setMutipleLabelConditions(QStringList names, QList<QColor> colors)
+{
+    m_show_label_names.clear();
+    m_show_label_colors.clear();
+
+    for(auto name : names)
+    {
+        m_show_label_names.append(name);
+    }
+    for(auto color : colors)
+    {
+        m_show_label_colors.append(color);
+    }
+    invalidateFilter();
+}
+
+void FileItemProxyFilterSortModel::setLabelBlurName(QString blurName, bool caseSensitive)
+{
+    m_blur_name = blurName;
+    m_case_sensitive = caseSensitive;
     invalidateFilter();
 }
 

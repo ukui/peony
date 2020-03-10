@@ -83,6 +83,10 @@ public:
     //set file label filter conditions, default value mean all files are accepted
     //use it without any paras can clear the filter conditions
     void setFilterLabelConditions(QString name = "", QColor color=Qt::transparent);
+    //select mutiple labels to filter files, file has any one of these label is accepted
+    void setMutipleLabelConditions(QStringList names, QList<QColor> colors);
+    //give blur name to search color labels, can set CaseSensitive or not
+    void setLabelBlurName(QString blurName = "", bool CaseSensitive = false);
 
     FileItem *itemFromIndex(const QModelIndex &proxyIndex);
     QModelIndex getSourceIndex(const QModelIndex &proxyIndex);
@@ -108,11 +112,15 @@ private:
     bool m_show_hidden = false;
     bool m_use_default_name_sort_order = true;
     bool m_folder_first = true;
+    bool m_case_sensitive = false;
+    QString m_blur_name = "";
     QString m_label_name = "";
     QColor m_label_color = Qt::transparent;
     const int ALL_FILE = 0;
     const quint64 K_BASE = 1000;
     int m_show_file_type=ALL_FILE, m_show_modify_time=ALL_FILE, m_show_file_size=ALL_FILE;
+    QStringList m_show_label_names;
+    QList<QColor> m_show_label_colors;
 };
 
 }

@@ -197,7 +197,7 @@ const QList<int> FileLabelModel::getFileLabelIds(const QString &uri)
 {
     QList<int> l;
     auto metaInfo = Peony::FileMetaInfo::fromUri(uri);
-    if (metaInfo->getMetaInfoVariant(PEONY_FILE_LABEL_IDS).isNull())
+    if (! metaInfo || metaInfo->getMetaInfoVariant(PEONY_FILE_LABEL_IDS).isNull())
         return l;
     auto labels = metaInfo->getMetaInfoStringList(PEONY_FILE_LABEL_IDS);
     for (auto label : labels) {
@@ -210,7 +210,7 @@ const QStringList FileLabelModel::getFileLabels(const QString &uri)
 {
     QStringList l;
     auto metaInfo = Peony::FileMetaInfo::fromUri(uri);
-    if (metaInfo->getMetaInfoVariant(PEONY_FILE_LABEL_IDS).isNull())
+    if (! metaInfo || metaInfo->getMetaInfoVariant(PEONY_FILE_LABEL_IDS).isNull())
         return l;
     auto labels = metaInfo->getMetaInfoStringList(PEONY_FILE_LABEL_IDS);
     for (auto label : labels) {
@@ -227,7 +227,7 @@ const QList<QColor> FileLabelModel::getFileColors(const QString &uri)
 {
     QList<QColor> l;
     auto metaInfo = Peony::FileMetaInfo::fromUri(uri);
-    if (metaInfo->getMetaInfoVariant(PEONY_FILE_LABEL_IDS).isNull())
+    if (! metaInfo || metaInfo->getMetaInfoVariant(PEONY_FILE_LABEL_IDS).isNull())
         return l;
     auto labels = metaInfo->getMetaInfoStringList(PEONY_FILE_LABEL_IDS);
     for (auto label : labels) {
@@ -267,7 +267,7 @@ void FileLabelModel::addLabelToFile(const QString &uri, int labelId)
 {
     auto metaInfo = Peony::FileMetaInfo::fromUri(uri);
     QStringList labelIds;
-    if (!metaInfo->getMetaInfoVariant(PEONY_FILE_LABEL_IDS).isNull())
+    if (! metaInfo && !metaInfo->getMetaInfoVariant(PEONY_FILE_LABEL_IDS).isNull())
         labelIds = metaInfo->getMetaInfoStringList(PEONY_FILE_LABEL_IDS);
     labelIds<<QString::number(labelId);
     labelIds.removeDuplicates();
@@ -278,6 +278,8 @@ void FileLabelModel::addLabelToFile(const QString &uri, int labelId)
 void FileLabelModel::removeFileLabel(const QString &uri, int labelId)
 {
     auto metaInfo = Peony::FileMetaInfo::fromUri(uri);
+    if (! metaInfo)
+        return;
     if (labelId <= 0) {
         metaInfo->removeMetaInfo(PEONY_FILE_LABEL_IDS);
     } else {

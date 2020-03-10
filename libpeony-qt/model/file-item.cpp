@@ -243,9 +243,9 @@ void FileItem::findChildrenAsync()
             for (auto uri : uris) {
                 auto info = FileInfo::fromUri(uri);
                 auto item = new FileItem(info, this, m_model);
+                m_model->beginInsertRows(firstColumnIndex(), m_children->count(), m_children->count());
                 m_children->append(item);
-                m_model->insertRows(m_children->count() - 1, 1, firstColumnIndex());
-
+                m_model->endInsertRows();
                 auto infoJob = new FileInfoJob(info);
                 infoJob->setAutoDelete();
                 infoJob->connect(infoJob, &FileInfoJob::infoUpdated, this, [=](){
