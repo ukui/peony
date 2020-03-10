@@ -22,6 +22,8 @@
 
 #include "sort-type-menu.h"
 
+#include <QDebug>
+
 SortTypeMenu::SortTypeMenu(QWidget *parent) : QMenu(parent)
 {
     auto sortTypeGroup = new QActionGroup(this);
@@ -44,10 +46,6 @@ SortTypeMenu::SortTypeMenu(QWidget *parent) : QMenu(parent)
     modifiedDate->setCheckable(true);
     sortTypeGroup->addAction(modifiedDate);
 
-    auto fileLabel = addAction(tr("File Label"));
-    fileLabel->setCheckable(true);
-    sortTypeGroup->addAction(fileLabel);
-
     connect(sortTypeGroup, &QActionGroup::triggered, this, [=](QAction *action){
         int index = sortTypeGroup->actions().indexOf(action);
         switchSortTypeRequest(index);
@@ -67,24 +65,28 @@ SortTypeMenu::SortTypeMenu(QWidget *parent) : QMenu(parent)
     descending->setCheckable(true);
     sortOrderGroup->addAction(descending);
 
-    connect(sortTypeGroup, &QActionGroup::triggered, this, [=](QAction *action){
-        int index = sortTypeGroup->actions().indexOf(action);
+    connect(sortOrderGroup, &QActionGroup::triggered, this, [=](QAction *action){
+        int index = sortOrderGroup->actions().indexOf(action);
         switchSortOrderRequest(Qt::SortOrder(index));
     });
 }
 
 void SortTypeMenu::setSortType(int type)
 {
+    m_sort_types->actions().at(type)->setChecked(true);
+    qDebug()<<m_sort_type<<type;
     if (m_sort_type != type) {
         m_sort_type = type;
-        m_sort_types->triggered(m_sort_types->actions().at(type));
     }
 }
 
 void SortTypeMenu::setSortOrder(Qt::SortOrder order)
 {
+    qDebug()<<m_sort_order<<order;
+    if (order < 0)
+        return;
+    m_sort_orders->actions().at(order)->setChecked(true);
     if (m_sort_order != order) {
         m_sort_order = order;
-        m_sort_orders->triggered(m_sort_orders->actions().at(order));
     }
 }

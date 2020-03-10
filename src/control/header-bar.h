@@ -54,6 +54,7 @@ protected:
 private Q_SLOTS:
     void setLocation(const QString &uri);
     void updateIcons();
+    void updateMaximizeState();
 
 private:
     const QString m_uri;
@@ -65,6 +66,8 @@ private:
     SortTypeMenu *m_sort_type_menu;
     OperationMenu *m_operation_menu;
 
+    QPushButton *m_go_back;
+    QPushButton *m_go_forward;
     QToolButton *m_maximize_restore_button;
 };
 

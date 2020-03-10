@@ -364,6 +364,8 @@ Qt::SortOrder DirectoryViewContainer::getSortOrder()
 
 void DirectoryViewContainer::setSortOrder(Qt::SortOrder order)
 {
+    if (order < 0)
+        return;
     if (!m_view)
         return;
     m_view->setSortOrder(order);

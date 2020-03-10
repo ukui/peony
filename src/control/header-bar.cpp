@@ -35,6 +35,8 @@
 
 #include <QStyleOptionToolButton>
 
+#include <QDebug>
+
 static HeaderBarStyle *global_instance = nullptr;
 
 HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
@@ -72,16 +74,26 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
     addSpacing(9);
 
     auto goBack = new HeadBarPushButton(this);
+    m_go_back = goBack;
+    goBack->setEnabled(false);
     goBack->setToolTip(tr("Go Back"));
     goBack->setFixedSize(QSize(36, 28));
     goBack->setIcon(QIcon::fromTheme("go-previous-symbolic"));
     addWidget(goBack);
+    connect(goBack, &QPushButton::clicked, m_window, [=](){
+        m_window->getCurrentPage()->goBack();
+    });
 
     auto goForward = new HeadBarPushButton(this);
+    m_go_forward = goForward;
+    goForward->setEnabled(false);
     goForward->setToolTip(tr("Go Forward"));
     goForward->setFixedSize(QSize(36, 28));
     goForward->setIcon(QIcon::fromTheme("go-next-symbolic"));
     addWidget(goForward);
+    connect(goForward, &QPushButton::clicked, m_window, [=](){
+        m_window->getCurrentPage()->goForward();
+    });
 
     addSpacing(9);
 
@@ -118,7 +130,7 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
         this->viewTypeChangeRequest(id);
     });
 
-    a = addAction(QIcon::fromTheme("view-sort-descending-symbolic"), tr("Sort Type"));
+    a = addAction(QIcon::fromTheme("view-sort-ascending-symbolic"), tr("Sort Type"));
     auto sortType = qobject_cast<QToolButton *>(widgetForAction(a));
     sortType->setAutoRaise(false);
     sortType->setFixedSize(QSize(57, 40));
@@ -127,6 +139,20 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
 
     m_sort_type_menu = new SortTypeMenu(this);
     sortType->setMenu(m_sort_type_menu);
+
+    connect(m_sort_type_menu, &SortTypeMenu::switchSortTypeRequest, m_window, &MainWindow::setCurrentSortColumn);
+    connect(m_sort_type_menu, &SortTypeMenu::switchSortOrderRequest, m_window, [=](Qt::SortOrder order){
+        if (order == Qt::AscendingOrder) {
+            sortType->setIcon(QIcon::fromTheme("view-sort-ascending-symbolic"));
+        } else {
+            sortType->setIcon(QIcon::fromTheme("view-sort-descending-symbolic"));
+        }
+        m_window->setCurrentSortOrder(order);
+    });
+    connect(m_sort_type_menu, &QMenu::aboutToShow, m_sort_type_menu, [=](){
+        m_sort_type_menu->setSortType(m_window->getCurrentSortColumn());
+        m_sort_type_menu->setSortOrder(m_window->getCurrentSortOrder());
+    });
 
     a = addAction(QIcon::fromTheme("open-menu-symbolic"), tr("Option"));
     auto popMenu = qobject_cast<QToolButton *>(widgetForAction(a));
@@ -140,7 +166,7 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
 
     //minimize, maximize and close
     a = addAction(QIcon::fromTheme("window-minimize-symbolic"), tr("Minimize"), [=](){
-        //FIXME:
+        m_window->showMinimized();
     });
     auto minimize = qobject_cast<QToolButton *>(widgetForAction(a));
     minimize->setAutoRaise(false);
@@ -150,7 +176,7 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
     //window-maximize-symbolic
     //window-restore-symbolic
     a = addAction(QIcon::fromTheme("window-maximize-symbolic"), nullptr, [=](){
-        //FIXME:
+        m_window->maximizeOrRestore();
     });
     auto maximizeAndRestore = qobject_cast<QToolButton *>(widgetForAction(a));
     m_maximize_restore_button = maximizeAndRestore;
@@ -159,7 +185,7 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
     maximizeAndRestore->setIconSize(QSize(16, 16));
 
     a = addAction(QIcon::fromTheme("window-close-symbolic"), tr("Close"), [=](){
-
+        m_window->close();
     });
     auto close = qobject_cast<QToolButton *>(widgetForAction(a));
     close->setAutoRaise(false);
@@ -184,11 +210,30 @@ void HeaderBar::setLocation(const QString &uri)
 
 void HeaderBar::updateIcons()
 {
+    qDebug()<<m_window->getCurrentUri();
+    qDebug()<<m_window->getCurrentSortColumn();
+    qDebug()<<m_window->getCurrentSortOrder();
     m_view_type_menu->setCurrentView(m_window->getCurrentPage()->getView()->viewId());
-    m_sort_type_menu->setSortType(m_window->getCurrentSortColumn());
-    m_sort_type_menu->setSortOrder(m_window->getCurrentSortOrder());
+    m_sort_type_menu->switchSortTypeRequest(m_window->getCurrentSortColumn());
+    m_sort_type_menu->switchSortOrderRequest(m_window->getCurrentSortOrder());
 
     //go back & go forward
+    m_go_back->setEnabled(m_window->getCurrentPage()->canGoBack());
+    m_go_forward->setEnabled(m_window->getCurrentPage()->canGoForward());
+
+    //maximize & restore
+    updateMaximizeState();
+}
+
+void HeaderBar::updateMaximizeState()
+{
+    //maximize & restore
+    bool maximized = m_window->isMaximized();
+    if (maximized) {
+        m_maximize_restore_button->setIcon(QIcon::fromTheme("window-restore-symbolic"));
+    } else {
+        m_maximize_restore_button->setIcon(QIcon::fromTheme("window-maximize-symbolic"));
+    }
 }
 
 //HeaderBarToolButton

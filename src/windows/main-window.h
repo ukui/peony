@@ -74,6 +74,8 @@ Q_SIGNALS:
     void locationChangeEnd();
 
 public Q_SLOTS:
+    void maximizeOrRestore();
+
     void syncControlsLocation(const QString &uri);
     void updateHeaderBar();
     void goToUri(const QString &uri, bool addHistory = false, bool force = false);
@@ -101,7 +103,7 @@ protected:
     void mouseReleaseEvent(QMouseEvent *e);
 
     void validBorder();
-    void initUI();
+    void initUI(const QString &uri);
 
     QRect sideBarRect();
 

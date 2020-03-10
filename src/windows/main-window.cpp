@@ -84,7 +84,7 @@ MainWindow::MainWindow(const QString &uri, QWidget *parent) : QMainWindow(parent
     setProperty("useStyleWindowManager", false);
 
     //init UI
-    initUI();
+    initUI(uri);
 }
 
 Peony::DirectoryViewContainer *MainWindow::getCurrentPage()
@@ -109,18 +109,27 @@ const QStringList MainWindow::getCurrentAllFileUris()
 
 Qt::SortOrder MainWindow::getCurrentSortOrder()
 {
-    m_tab->getSortOrder();
+    return m_tab->getSortOrder();
 }
 
 int MainWindow::getCurrentSortColumn()
 {
-    m_tab->getSortType();
+    return m_tab->getSortType();
+}
+
+void MainWindow::maximizeOrRestore()
+{
+    if (!this->isMaximized()) {
+        this->showMaximized();
+    } else {
+        this->showNormal();
+    }
+    m_header_bar->updateIcons();
 }
 
 void MainWindow::syncControlsLocation(const QString &uri)
 {
     m_tab->goToUri(uri, false, false);
-    m_header_bar->setLocation(uri);
 }
 
 void MainWindow::updateHeaderBar()
@@ -209,6 +218,7 @@ void MainWindow::editUris(const QStringList &uris)
 
 void MainWindow::resizeEvent(QResizeEvent *e)
 {
+    m_header_bar->updateMaximizeState();
     validBorder();
     update();
     QMainWindow::resizeEvent(e);
@@ -308,7 +318,7 @@ void MainWindow::validBorder()
     }
 }
 
-void MainWindow::initUI()
+void MainWindow::initUI(const QString &uri)
 {
     connect(this, &MainWindow::locationChangeStart, this, [=](){
         QCursor c;
@@ -320,6 +330,7 @@ void MainWindow::initUI()
         QCursor c;
         c.setShape(Qt::ArrowCursor);
         this->setCursor(c);
+        updateHeaderBar();
     });
 
     //HeaderBar
@@ -364,9 +375,17 @@ void MainWindow::initUI()
 
     auto views = new TabWidget;
     m_tab = views;
-    views->addPage("file:///");
-    views->addPage("file:///home");
+    if (uri.isNull()) {
+        auto home = "file://" + QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
+        m_tab->addPage(home);
+    } else {
+        m_tab->addPage(uri, true);
+    }
 
+    connect(views->tabBar(), &QTabBar::tabBarDoubleClicked, this, [=](int index){
+        if (index == -1)
+            maximizeOrRestore();
+    });
     connect(views, &TabWidget::closeWindowRequest, this, &QWidget::close);
 
     X11WindowManager *tabBarHandler = X11WindowManager::getInstance();

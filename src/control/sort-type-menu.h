@@ -40,8 +40,8 @@ public Q_SLOTS:
     void setSortOrder(Qt::SortOrder order);
 
 private:
-    int m_sort_type;
-    Qt::SortOrder m_sort_order;
+    int m_sort_type = 0;
+    Qt::SortOrder m_sort_order = Qt::AscendingOrder;
 
     QActionGroup *m_sort_types;
     QActionGroup *m_sort_orders;

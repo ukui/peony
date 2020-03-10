@@ -213,9 +213,11 @@ void TabWidget::addPage(const QString &uri, bool jumpTo)
 {
     m_tab_bar->addPage(uri, jumpTo);
     auto viewContainer = new Peony::DirectoryViewContainer(m_stack);
+    viewContainer->setSortType(Peony::FileItemModel::FileName);
+    viewContainer->setSortOrder(Qt::AscendingOrder);
 
     m_stack->addWidget(viewContainer);
-    viewContainer->goToUri(uri, true, true);
+    viewContainer->goToUri(uri, false, true);
     if (jumpTo) {
         m_stack->setCurrentWidget(viewContainer);
     }
@@ -360,6 +362,7 @@ void TabWidget::removeTab(int index)
 
 void TabWidget::bindContainerSignal(Peony::DirectoryViewContainer *container)
 {
+    connect(container, &Peony::DirectoryViewContainer::updateWindowLocationRequest, this, &TabWidget::updateWindowLocationRequest);
     connect(container, &Peony::DirectoryViewContainer::directoryChanged, this, &TabWidget::activePageLocationChanged);
     connect(container, &Peony::DirectoryViewContainer::selectionChanged, this, &TabWidget::activePageSelectionChanged);
     connect(container, &Peony::DirectoryViewContainer::viewTypeChanged, this, &TabWidget::activePageViewTypeChanged);

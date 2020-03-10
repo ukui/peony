@@ -20,6 +20,7 @@
  *
  */
 
+#include "main-window.h"
 #include "operation-menu.h"
 #include <QHBoxLayout>
 #include <QVBoxLayout>
@@ -47,6 +48,12 @@ OperationMenu::OperationMenu(MainWindow *window, QWidget *parent) : QMenu(parent
     addAction(tr("Conditional Filter"));
 
     addSeparator();
+
+    auto keepAllow = addAction(tr("Keep Allow"), this, [=](bool checked){
+        m_window->setWindowFlag(Qt::WindowStaysOnTopHint, checked);
+        m_window->show();
+    });
+    keepAllow->setCheckable(true);
 
     auto showHidden = addAction(tr("Show Hidden"), this, [=](bool checked){
         //window set show hidden
