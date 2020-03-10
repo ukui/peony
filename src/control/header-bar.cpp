@@ -115,6 +115,7 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
     connect(m_view_type_menu, &ViewTypeMenu::switchViewRequest, this, [=](const QString &id, const QIcon &icon){
         viewType->setText(id);
         viewType->setIcon(icon);
+        this->viewTypeChangeRequest(id);
     });
 
     a = addAction(QIcon::fromTheme("view-sort-descending-symbolic"), tr("Sort Type"));

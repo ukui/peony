@@ -29,6 +29,7 @@ class BorderShadowEffect;
 class HeaderBar;
 class NavigationSideBar;
 class TabWidget;
+class QWidgetResizeHandler;
 
 namespace Peony {
 class DirectoryViewContainer;
@@ -106,6 +107,8 @@ protected:
 
 private:
     BorderShadowEffect *m_effect;
+
+    QWidgetResizeHandler *m_resize_handler;
 
     HeaderBar *m_header_bar;
     NavigationSideBar *m_side_bar;

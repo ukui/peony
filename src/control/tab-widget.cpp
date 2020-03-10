@@ -335,7 +335,6 @@ void TabWidget::changeCurrentIndex(int index)
     m_tab_bar->setCurrentIndex(index);
     m_stack->setCurrentIndex(index);
     Q_EMIT currentIndexChanged(index);
-
     Q_EMIT activePageChanged();
 }
 
@@ -352,7 +351,11 @@ void TabWidget::moveTab(int from, int to)
 void TabWidget::removeTab(int index)
 {
     m_tab_bar->removeTab(index);
-    m_stack->removeWidget(m_stack->widget(index));
+    auto widget = m_stack->widget(index);
+    m_stack->removeWidget(widget);
+    widget->deleteLater();
+    if (m_stack->count() > 0)
+        Q_EMIT activePageChanged();
 }
 
 void TabWidget::bindContainerSignal(Peony::DirectoryViewContainer *container)

@@ -59,7 +59,7 @@ public:
 
     void setTransParentPath(const QPainterPath &path);
 
-    void drawWindowShadowManually(QPainter *painter, const QRect &windowRect);
+    void drawWindowShadowManually(QPainter *painter, const QRect &windowRect, bool fakeShadow = false);
 
 protected:
     void draw(QPainter *painter) override;

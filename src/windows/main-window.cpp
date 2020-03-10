@@ -78,6 +78,7 @@ MainWindow::MainWindow(const QString &uri, QWidget *parent) : QMainWindow(parent
     //bind resize handler
     auto handler = new QWidgetResizeHandler(this);
     handler->setMovingEnabled(false);
+    m_resize_handler = handler;
 
     //disable style window manager
     setProperty("useStyleWindowManager", false);
@@ -213,6 +214,11 @@ void MainWindow::resizeEvent(QResizeEvent *e)
     QMainWindow::resizeEvent(e);
 }
 
+/*!
+ * \note
+ * The window has a noticeable tearing effect due to the drawing of shadow effects.
+ * I should consider do not painting a shadow when resizing.
+ */
 void MainWindow::paintEvent(QPaintEvent *e)
 {
     validBorder();
@@ -225,7 +231,8 @@ void MainWindow::paintEvent(QPaintEvent *e)
     //color.setAlphaF(0.5);
     m_effect->setWindowBackground(color);
     QPainter p(this);
-    m_effect->drawWindowShadowManually(&p, this->rect());
+
+    m_effect->drawWindowShadowManually(&p, this->rect(), m_resize_handler->isButtonDown());
     QMainWindow::paintEvent(e);
 }
 
@@ -321,6 +328,7 @@ void MainWindow::initUI()
     addToolBar(headerBar);
 
     connect(m_header_bar, &HeaderBar::updateLocationRequest, this, &MainWindow::goToUri);
+    connect(m_header_bar, &HeaderBar::viewTypeChangeRequest, this, &MainWindow::beginSwitchView);
 
     //SideBar
     QDockWidget *sidebarContainer = new QDockWidget(this);
