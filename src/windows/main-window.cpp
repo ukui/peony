@@ -50,6 +50,9 @@
 
 #include <QPainter>
 
+#include <QDir>
+#include <QStandardPaths>
+
 #include <QDebug>
 
 #include <X11/Xlib.h>
@@ -83,15 +86,124 @@ MainWindow::MainWindow(const QString &uri, QWidget *parent) : QMainWindow(parent
     initUI();
 }
 
+Peony::DirectoryViewContainer *MainWindow::getCurrentPage()
+{
+    return m_tab->currentPage();
+}
+
+const QString MainWindow::getCurrentUri()
+{
+    return m_tab->getCurrentUri();
+}
+
+const QStringList MainWindow::getCurrentSelections()
+{
+    return m_tab->getCurrentSelections();
+}
+
+const QStringList MainWindow::getCurrentAllFileUris()
+{
+    return m_tab->getAllFileUris();
+}
+
+Qt::SortOrder MainWindow::getCurrentSortOrder()
+{
+    m_tab->getSortOrder();
+}
+
+int MainWindow::getCurrentSortColumn()
+{
+    m_tab->getSortType();
+}
+
 void MainWindow::syncControlsLocation(const QString &uri)
 {
-    //FIXME:
+    m_tab->goToUri(uri, false, false);
+    m_header_bar->setLocation(uri);
+}
+
+void MainWindow::updateHeaderBar()
+{
+    m_header_bar->setLocation(getCurrentUri());
+    m_header_bar->updateIcons();
 }
 
 void MainWindow::goToUri(const QString &uri, bool addHistory, bool force)
 {
-    //FIXME:
-    //go to uri
+    QUrl url(uri);
+    auto realUri = uri;
+    if (url.scheme().isEmpty()) {
+        if (uri.startsWith("/")) {
+            realUri = "file://" + uri;
+        } else {
+            QDir currentDir = QDir(QStandardPaths::writableLocation(QStandardPaths::HomeLocation));
+            currentDir.cd(uri);
+            auto absPath = currentDir.absoluteFilePath(uri);
+            url = QUrl::fromLocalFile(absPath);
+
+            realUri = url.toDisplayString();
+        }
+    }
+
+    if (getCurrentUri() == realUri) {
+        if (!force)
+            return;
+    }
+
+    locationChangeStart();
+    m_tab->goToUri(realUri, addHistory, force);
+    m_header_bar->setLocation(uri);
+}
+
+void MainWindow::addNewTabs(const QStringList &uris)
+{
+    for (auto uri : uris) {
+        m_tab->addPage(uri, false);
+    }
+}
+
+void MainWindow::beginSwitchView(const QString &viewId)
+{
+    auto selection = getCurrentSelections();
+//    int sortType = getCurrentSortColumn();
+//    Qt::SortOrder sortOrder = getCurrentSortOrder();
+    m_tab->switchViewType(viewId);
+    m_tab->setCurrentSelections(selection);
+}
+
+void MainWindow::refresh()
+{
+    goToUri(getCurrentUri(), false, true);
+}
+
+void MainWindow::forceStopLoading()
+{
+    m_tab->stopLoading();
+}
+
+void MainWindow::setCurrentSelectionUris(const QStringList &uris)
+{
+    m_tab->setCurrentSelections(uris);
+}
+
+void MainWindow::setCurrentSortOrder(Qt::SortOrder order)
+{
+    m_tab->setSortOrder(order);
+}
+
+void MainWindow::setCurrentSortColumn(int sortColumn)
+{
+    m_tab->setSortType(sortColumn);
+}
+
+void MainWindow::editUri(const QString &uri)
+{
+    m_tab->editUri(uri);
+}
+
+void MainWindow::editUris(const QStringList &uris)
+{
+    m_tab->editUris(uris);
 }
 
 void MainWindow::resizeEvent(QResizeEvent *e)
@@ -191,10 +303,24 @@ void MainWindow::validBorder()
 
 void MainWindow::initUI()
 {
+    connect(this, &MainWindow::locationChangeStart, this, [=](){
+        QCursor c;
+        c.setShape(Qt::WaitCursor);
+        this->setCursor(c);
+    });
+
+    connect(this, &MainWindow::locationChangeEnd, this, [=](){
+        QCursor c;
+        c.setShape(Qt::ArrowCursor);
+        this->setCursor(c);
+    });
+
     //HeaderBar
     auto headerBar = new HeaderBar(this);
     m_header_bar = headerBar;
     addToolBar(headerBar);
+
+    connect(m_header_bar, &HeaderBar::updateLocationRequest, this, &MainWindow::goToUri);
 
     //SideBar
     QDockWidget *sidebarContainer = new QDockWidget(this);
@@ -213,6 +339,7 @@ void MainWindow::initUI()
     sidebarContainer->setContentsMargins(0, 0, 0, 0);
     NavigationSideBar *sidebar = new NavigationSideBar(this);
     m_side_bar = sidebar;
+    connect(m_side_bar, &NavigationSideBar::updateWindowLocationRequest, this, &MainWindow::goToUri);
 
     auto labelDialog = new FileLabelBox(this);
     labelDialog->hide();
@@ -228,6 +355,7 @@ void MainWindow::initUI()
     addDockWidget(Qt::LeftDockWidgetArea, sidebarContainer);
 
     auto views = new TabWidget;
+    m_tab = views;
     views->addPage("file:///");
     views->addPage("file:///home");
 
@@ -237,6 +365,12 @@ void MainWindow::initUI()
     tabBarHandler->registerWidget(views->tabBar());
 
     setCentralWidget(views);
+
+    //bind signals
+    connect(m_tab, &TabWidget::updateWindowLocationRequest, this, &MainWindow::goToUri);
+    connect(m_tab, &TabWidget::activePageLocationChanged, this, &MainWindow::locationChangeEnd);
+    connect(m_tab, &TabWidget::activePageViewTypeChanged, this, &MainWindow::updateHeaderBar);
+    connect(m_tab, &TabWidget::activePageChanged, this, &MainWindow::updateHeaderBar);
 }
 
 QRect MainWindow::sideBarRect()

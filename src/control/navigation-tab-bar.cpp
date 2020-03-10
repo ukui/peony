@@ -80,6 +80,16 @@ void NavigationTabBar::addPages(const QStringList &uri)
 
 }
 
+void NavigationTabBar::updateLocation(int index, const QString &uri)
+{
+    auto iconName = Peony::FileUtils::getFileIconName(uri);
+    auto displayName = Peony::FileUtils::getFileDisplayName(uri);
+    setTabText(index, displayName);
+    setTabIcon(index, QIcon::fromTheme(iconName));
+    setTabData(index, uri);
+    relayoutFloatButton(false);
+}
+
 void NavigationTabBar::addPage(const QString &uri, bool jumpToNewTab)
 {
     if (!uri.isNull()) {

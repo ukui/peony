@@ -27,8 +27,13 @@
 #include "sort-type-menu.h"
 #include "operation-menu.h"
 
+#include "directory-view-container.h"
+#include "directory-view-widget.h"
+
 #include <QHBoxLayout>
 #include <advanced-location-bar.h>
+
+#include <QStyleOptionToolButton>
 
 static HeaderBarStyle *global_instance = nullptr;
 
@@ -81,7 +86,10 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
     addSpacing(9);
 
     auto locationBar = new Peony::AdvancedLocationBar(this);
+    m_location_bar = locationBar;
     addWidget(locationBar);
+
+    connect(m_location_bar, &Peony::AdvancedLocationBar::updateWindowLocationRequest, this, &HeaderBar::updateLocationRequest);
 
     addSpacing(9);
     a = addAction(QIcon::fromTheme("edit-find-symbolic"), tr("Search"), [=](){
@@ -144,6 +152,7 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
         //FIXME:
     });
     auto maximizeAndRestore = qobject_cast<QToolButton *>(widgetForAction(a));
+    m_maximize_restore_button = maximizeAndRestore;
     maximizeAndRestore->setAutoRaise(false);
     maximizeAndRestore->setFixedSize(QSize(40, 40));
     maximizeAndRestore->setIconSize(QSize(16, 16));
@@ -169,7 +178,16 @@ void HeaderBar::addSpacing(int pixel)
 
 void HeaderBar::setLocation(const QString &uri)
 {
-    //FIXME:
+    m_location_bar->updateLocation(uri);
+}
+
+void HeaderBar::updateIcons()
+{
+    m_view_type_menu->setCurrentView(m_window->getCurrentPage()->getView()->viewId());
+    m_sort_type_menu->setSortType(m_window->getCurrentSortColumn());
+    m_sort_type_menu->setSortOrder(m_window->getCurrentSortOrder());
+
+    //go back & go forward
 }
 
 //HeaderBarToolButton
@@ -210,6 +228,24 @@ int HeaderBarStyle::pixelMetric(QStyle::PixelMetric metric, const QStyleOption *
     default:
         return QProxyStyle::pixelMetric(metric, option, widget);
     }
+}
+
+void HeaderBarStyle::drawComplexControl(QStyle::ComplexControl control, const QStyleOptionComplex *option, QPainter *painter, const QWidget *widget) const
+{
+    //This is a "lie". We want to use instant popup menu for tool button, and we aslo
+    //want use popup menu style with this tool button, so we change the related flags
+    //to draw in our expected.
+    if (control == CC_ToolButton) {
+        QStyleOptionToolButton button = *qstyleoption_cast<const QStyleOptionToolButton *>(option);
+        if (button.features.testFlag(QStyleOptionToolButton::HasMenu)) {
+            button.features = QStyleOptionToolButton::None;
+            button.features |= QStyleOptionToolButton::HasMenu;
+            button.features |= QStyleOptionToolButton::MenuButtonPopup;
+            button.subControls |= QStyle::SC_ToolButtonMenu;
+            return QProxyStyle::drawComplexControl(control, &button, painter, widget);
+        }
+    }
+    return QProxyStyle::drawComplexControl(control, option, painter, widget);
 }
 
 void HeaderBarStyle::drawPrimitive(QStyle::PrimitiveElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget) const

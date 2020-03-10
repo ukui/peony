@@ -27,6 +27,8 @@
 #include <QToolButton>
 #include <QWidgetAction>
 
+#include "global-settings.h"
+
 OperationMenu::OperationMenu(MainWindow *window, QWidget *parent) : QMenu(parent)
 {
     m_window = window;
@@ -46,20 +48,46 @@ OperationMenu::OperationMenu(MainWindow *window, QWidget *parent) : QMenu(parent
 
     addSeparator();
 
-    addAction(tr("Show Hidden"));
-    addAction(tr("Forbid thumbnailing"));
-    addAction(tr("Resident in Backend"));
+    auto showHidden = addAction(tr("Show Hidden"), this, [=](bool checked){
+        //window set show hidden
+    });
+    m_show_hidden = showHidden;
+    showHidden->setCheckable(true);
+
+    auto forbidThumbnailing = addAction(tr("Forbid thumbnailing"), this, [=](bool checked){
+        //FIXME:
+    });
+    m_forbid_thumbnailing = forbidThumbnailing;
+    forbidThumbnailing->setCheckable(true);
+
+    auto residentInBackend = addAction(tr("Resident in Backend"), this, [=](bool checked){
+        //FIXME:
+    });
+    m_resident_in_backend = residentInBackend;
+    residentInBackend->setCheckable(true);
 
     addSeparator();
 
-    addAction(tr("Help"));
+    addAction(QIcon::fromTheme("help-app-symbolic"), tr("Help"));
 
-    addAction(tr("About"));
+    addAction(QIcon::fromTheme("help-about", QIcon::fromTheme("gtk-about-symbolic")), tr("About"));
 }
 
 void OperationMenu::updateMenu()
 {
+    m_show_hidden->setChecked(Peony::GlobalSettings::getInstance()->isExist("show-hidden")?
+                                  Peony::GlobalSettings::getInstance()->getValue("show-hidden").toBool():
+                                  false);
 
+    m_forbid_thumbnailing->setChecked(Peony::GlobalSettings::getInstance()->isExist("do-not-thumbnail")?
+                                          Peony::GlobalSettings::getInstance()->getValue("do-not-thumbnail").toBool():
+                                          false);
+
+    m_resident_in_backend->setChecked(Peony::GlobalSettings::getInstance()->isExist("resident")?
+                                          Peony::GlobalSettings::getInstance()->getValue("resident").toBool():
+                                          false);
+
+    //get window current directory and selections, then update ohter actions.
 }
 
 OperationMenuEditWidget::OperationMenuEditWidget(QWidget *parent) : QWidget(parent)
@@ -102,4 +130,9 @@ OperationMenuEditWidget::OperationMenuEditWidget(QWidget *parent) : QWidget(pare
     hbox->addWidget(trash);
 
     vbox->addLayout(hbox);
+}
+
+void OperationMenuEditWidget::updateActions(const QString &currentDirUri, const QStringList &selections)
+{
+    //FIXME:
 }

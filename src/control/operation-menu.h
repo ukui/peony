@@ -37,6 +37,11 @@ public Q_SLOTS:
     void updateMenu();
 
 private:
+    QAction *m_show_hidden;
+    QAction *m_forbid_thumbnailing;
+    QAction *m_resident_in_backend;
+
+private:
     MainWindow *m_window;
 };
 
@@ -45,6 +50,13 @@ class OperationMenuEditWidget : public QWidget
     friend class OperationMenu;
     Q_OBJECT
     explicit OperationMenuEditWidget(QWidget *parent = nullptr);
+
+    void updateActions(const QString &currentDirUri, const QStringList &selections);
+
+    QAction *m_copy;
+    QAction *m_paste;
+    QAction *m_cut;
+    QAction *m_trash;
 };
 
 #endif // OPERATIONMENU_H

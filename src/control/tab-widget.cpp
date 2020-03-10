@@ -25,6 +25,11 @@
 
 #include "preview-page-factory-manager.h"
 #include "preview-page-plugin-iface.h"
+#include "directory-view-widget.h"
+
+#include "file-info.h"
+#include "file-launch-manager.h"
+#include "properties-window.h"
 
 #include <QStackedWidget>
 #include <QToolButton>
@@ -125,6 +130,61 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
     setCentralWidget(w);
 }
 
+Peony::DirectoryViewContainer *TabWidget::currentPage()
+{
+    return qobject_cast<Peony::DirectoryViewContainer *>(m_stack->currentWidget());
+}
+
+const QString TabWidget::getCurrentUri()
+{
+    return currentPage()->getCurrentUri();
+}
+
+const QStringList TabWidget::getCurrentSelections()
+{
+    return currentPage()->getCurrentSelections();
+}
+
+const QStringList TabWidget::getAllFileUris()
+{
+    return currentPage()->getAllFileUris();
+}
+
+const QStringList TabWidget::getBackList()
+{
+    return currentPage()->getBackList();
+}
+
+const QStringList TabWidget::getForwardList()
+{
+    return currentPage()->getForwardList();
+}
+
+bool TabWidget::canGoBack()
+{
+    return currentPage()->canGoBack();
+}
+
+bool TabWidget::canGoForward()
+{
+    return currentPage()->canGoForward();
+}
+
+bool TabWidget::canCdUp()
+{
+    return currentPage()->canCdUp();
+}
+
+int TabWidget::getSortType()
+{
+    return currentPage()->getSortType();
+}
+
+Qt::SortOrder TabWidget::getSortOrder()
+{
+    return currentPage()->getSortOrder();
+}
+
 void TabWidget::setCurrentIndex(int index)
 {
     m_tab_bar->setCurrentIndex(index);
@@ -153,10 +213,120 @@ void TabWidget::addPage(const QString &uri, bool jumpTo)
 {
     m_tab_bar->addPage(uri, jumpTo);
     auto viewContainer = new Peony::DirectoryViewContainer(m_stack);
+
     m_stack->addWidget(viewContainer);
     viewContainer->goToUri(uri, true, true);
     if (jumpTo) {
         m_stack->setCurrentWidget(viewContainer);
+    }
+
+    bindContainerSignal(viewContainer);
+}
+
+void TabWidget::goToUri(const QString &uri, bool addHistory, bool forceUpdate)
+{
+    currentPage()->goToUri(uri, addHistory, forceUpdate);
+    m_tab_bar->updateLocation(m_tab_bar->currentIndex(), uri);
+}
+
+void TabWidget::switchViewType(const QString &viewId)
+{
+    currentPage()->switchViewType(viewId);
+}
+
+void TabWidget::goBack()
+{
+    currentPage()->goBack();
+}
+
+void TabWidget::goForward()
+{
+    currentPage()->goForward();
+}
+
+void TabWidget::cdUp()
+{
+    currentPage()->cdUp();
+}
+
+void TabWidget::refresh()
+{
+    currentPage()->refresh();
+}
+
+void TabWidget::stopLoading()
+{
+    currentPage()->stopLoading();
+}
+
+void TabWidget::tryJump(int index)
+{
+    currentPage()->tryJump(index);
+}
+
+void TabWidget::clearHistory()
+{
+    currentPage()->clearHistory();
+}
+
+void TabWidget::setSortType(int type)
+{
+    currentPage()->setSortType(Peony::FileItemModel::ColumnType(type));
+}
+
+void TabWidget::setSortOrder(Qt::SortOrder order)
+{
+    currentPage()->setSortOrder(order);
+}
+
+void TabWidget::setSortFilter(int FileTypeIndex, int FileMTimeIndex, int FileSizeIndex)
+{
+    currentPage()->setSortFilter(FileTypeIndex, FileMTimeIndex, FileSizeIndex);
+}
+
+void TabWidget::setShowHidden(bool showHidden)
+{
+    currentPage()->setShowHidden(showHidden);
+}
+
+void TabWidget::setUseDefaultNameSortOrder(bool use)
+{
+    currentPage()->setUseDefaultNameSortOrder(use);
+}
+
+void TabWidget::setSortFolderFirst(bool folderFirst)
+{
+    currentPage()->setSortFolderFirst(folderFirst);
+}
+
+void TabWidget::setCurrentSelections(const QStringList &uris)
+{
+    currentPage()->getView()->setSelections(uris);
+}
+
+void TabWidget::editUri(const QString &uri)
+{
+    currentPage()->getView()->editUri(uri);
+}
+
+void TabWidget::editUris(const QStringList &uris)
+{
+    currentPage()->getView()->editUris(uris);
+}
+
+void TabWidget::onViewDoubleClicked(const QString &uri)
+{
+    qDebug()<<"double clicked"<<uri;
+    auto info = Peony::FileInfo::fromUri(uri, false);
+    if (info->uri().startsWith("trash://")) {
+        auto w = new Peony::PropertiesWindow(QStringList()<<uri);
+        w->show();
+        return;
+    }
+    if (info->isDir() || info->isVolume() || info->isVirtual()) {
+        Q_EMIT this->updateWindowLocationRequest(uri, true);
+    } else {
+        Peony::FileLaunchManager::openAsync(uri);
     }
 }
 
@@ -165,6 +335,8 @@ void TabWidget::changeCurrentIndex(int index)
     m_tab_bar->setCurrentIndex(index);
     m_stack->setCurrentIndex(index);
     Q_EMIT currentIndexChanged(index);
+
+    Q_EMIT activePageChanged();
 }
 
 void TabWidget::moveTab(int from, int to)
@@ -181,6 +353,15 @@ void TabWidget::removeTab(int index)
 {
     m_tab_bar->removeTab(index);
     m_stack->removeWidget(m_stack->widget(index));
+}
+
+void TabWidget::bindContainerSignal(Peony::DirectoryViewContainer *container)
+{
+    connect(container, &Peony::DirectoryViewContainer::directoryChanged, this, &TabWidget::activePageLocationChanged);
+    connect(container, &Peony::DirectoryViewContainer::selectionChanged, this, &TabWidget::activePageSelectionChanged);
+    connect(container, &Peony::DirectoryViewContainer::viewTypeChanged, this, &TabWidget::activePageViewTypeChanged);
+    connect(container, &Peony::DirectoryViewContainer::viewDoubleClicked, this, &TabWidget::onViewDoubleClicked);
+    connect(container, &Peony::DirectoryViewContainer::menuRequest, this, &TabWidget::menuRequest);
 }
 
 PreviewPageButtonGroups::PreviewPageButtonGroups(QWidget *parent) : QButtonGroup(parent)

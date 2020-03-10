@@ -33,6 +33,10 @@ class ViewTypeMenu;
 class SortTypeMenu;
 class OperationMenu;
 
+namespace Peony {
+class AdvancedLocationBar;
+}
+
 class HeaderBar : public QToolBar
 {
     friend class MainWindow;
@@ -41,21 +45,26 @@ private:
     explicit HeaderBar(MainWindow *parent = nullptr);
 
 Q_SIGNALS:
-    void updateLocationRequest(const QString &uri);
+    void updateLocationRequest(const QString &uri, bool addHistory = true, bool force = true);
 
 protected:
     void addSpacing(int pixel);
 
 private Q_SLOTS:
     void setLocation(const QString &uri);
+    void updateIcons();
 
 private:
     const QString m_uri;
     MainWindow *m_window;
 
+    Peony::AdvancedLocationBar *m_location_bar;
+
     ViewTypeMenu *m_view_type_menu;
     SortTypeMenu *m_sort_type_menu;
     OperationMenu *m_operation_menu;
+
+    QToolButton *m_maximize_restore_button;
 };
 
 class HeaderBarToolButton : public QToolButton
@@ -83,6 +92,7 @@ class HeaderBarStyle : public QProxyStyle
 
     int pixelMetric(PixelMetric metric, const QStyleOption *option = nullptr, const QWidget *widget = nullptr) const override;
 
+    void drawComplexControl(ComplexControl control, const QStyleOptionComplex *option, QPainter *painter, const QWidget *widget = nullptr) const override;
     void drawPrimitive(PrimitiveElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget = nullptr) const override;
 };
 

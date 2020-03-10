@@ -42,7 +42,7 @@ public:
     void updateGeometries();
 
 Q_SIGNALS:
-    void updateWindowLocationRequest(const QString &uri);
+    void updateWindowLocationRequest(const QString &uri, bool addHistory = true, bool force = false);
     void labelButtonClicked(bool checked);
 
 private:

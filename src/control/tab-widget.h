@@ -33,6 +33,7 @@ class PreviewPageButtonGroups;
 
 namespace Peony {
 class PreviewPageIface;
+class DirectoryViewContainer;
 }
 
 /*!
@@ -55,16 +56,40 @@ public:
 
     QTabBar *tabBar() {return m_tab_bar;}
 
+    Peony::DirectoryViewContainer *currentPage();
+
+    const QString getCurrentUri();
+    const QStringList getCurrentSelections();
+
+    const QStringList getAllFileUris();
+
+    const QStringList getBackList();
+    const QStringList getForwardList();
+
+    bool canGoBack();
+    bool canGoForward();
+    bool canCdUp();
+
+    int getSortType();
+    Qt::SortOrder getSortOrder();
+
 Q_SIGNALS:
     void currentIndexChanged(int index);
     void tabMoved(int from, int to);
     void tabInserted(int index);
     void tabRemoved(int index);
 
+    void activePageSelectionChanged();
     void activePageChanged();
     void activePageLocationChanged();
     void activePageViewTypeChanged();
     void activePageViewSortTypeChanged();
+
+    void selectionChanged();
+    void viewDoubleClicked(const QString &uri);
+    void updateWindowLocationRequest(const QString &uri, bool addHistory, bool forceUpdate = false);
+
+    void menuRequest(const QPoint &pos);
 
     void closeWindowRequest();
 
@@ -73,10 +98,40 @@ public Q_SLOTS:
     void setPreviewPage(Peony::PreviewPageIface *previewPage = nullptr);
     void addPage(const QString &uri, bool jumpTo = false);
 
+    void goToUri(const QString &uri, bool addHistory, bool forceUpdate = false);
+    void switchViewType(const QString &viewId);
+
+    void goBack();
+    void goForward();
+    void cdUp();
+
+    void refresh();
+    void stopLoading();
+
+    void tryJump(int index);
+    void clearHistory();
+
+    void setSortType(int type);
+    void setSortOrder(Qt::SortOrder order);
+
+    void setSortFilter(int FileTypeIndex, int FileMTimeIndex, int FileSizeIndex);
+    void setShowHidden(bool showHidden = false);
+    void setUseDefaultNameSortOrder(bool use);
+    void setSortFolderFirst(bool folderFirst);
+
+    void setCurrentSelections(const QStringList &uris);
+
+    void editUri(const QString &uri);
+    void editUris(const QStringList &uris);
+
+    void onViewDoubleClicked(const QString &uri);
+
 protected:
     void changeCurrentIndex(int index);
     void moveTab(int from, int to);
     void removeTab(int index);
+
+    void bindContainerSignal(Peony::DirectoryViewContainer *container);
 
 private:
     NavigationTabBar *m_tab_bar;

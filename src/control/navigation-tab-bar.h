@@ -42,6 +42,7 @@ Q_SIGNALS:
 public Q_SLOTS:
     void addPage(const QString &uri = nullptr, bool jumpToNewTab = false);
     void addPages(const QStringList &uri);
+    void updateLocation(int index, const QString &uri);
 
 protected:
     void tabRemoved(int index) override;

@@ -29,7 +29,10 @@ class BorderShadowEffect;
 class HeaderBar;
 class NavigationSideBar;
 class TabWidget;
-class DirectoryViewContainter;
+
+namespace Peony {
+class DirectoryViewContainer;
+}
 
 class MainWindow : public QMainWindow
 {
@@ -39,13 +42,54 @@ public:
 
     QSize sizeHint() const {return QSize(800, 600);}
 
+    Peony::DirectoryViewContainer *getCurrentPage();
+
+    const QString getCurrentUri();
+    const QStringList getCurrentSelections();
+    const QStringList getCurrentAllFileUris();
+
+    Qt::SortOrder getCurrentSortOrder();
+    int getCurrentSortColumn();
+
 Q_SIGNALS:
+    void windowSelectionChanged();
     void locationChanged(const QString &uri);
     void viewLoaded(bool successed = true);
 
+    /*!
+     * \brief locationChangeStart
+     * \details
+     * This signal is used to tell the window doing a location change.
+     * When a window is excuting a location change, it should not excute another
+     * one util the location change finished.
+     */
+    void locationChangeStart();
+    /*!
+     * \brief endLocationChange
+     * \details
+     * This signal is used to tell the window that a location change finished.
+     * Once a location change finished, we can start a new location change.
+     */
+    void locationChangeEnd();
+
 public Q_SLOTS:
     void syncControlsLocation(const QString &uri);
+    void updateHeaderBar();
     void goToUri(const QString &uri, bool addHistory = false, bool force = false);
+
+    void addNewTabs(const QStringList &uris);
+
+    void beginSwitchView(const QString &viewId);
+
+    void refresh();
+    void forceStopLoading();
+
+    void setCurrentSelectionUris(const QStringList &uris);
+    void setCurrentSortOrder (Qt::SortOrder order);
+    void setCurrentSortColumn (int sortColumn);
+
+    void editUri(const QString &uri);
+    void editUris(const QStringList &uris);
 
 protected:
     void resizeEvent(QResizeEvent *e);
