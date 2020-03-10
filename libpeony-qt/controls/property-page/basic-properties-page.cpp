@@ -263,6 +263,13 @@ void BasicPropertiesPage::updateInfo(const QString &uri)
     m_form3->itemAt(0, QFormLayout::LabelRole)->widget()->setVisible(m_time_created != 0);
     m_form3->itemAt(0, QFormLayout::FieldRole)->widget()->setVisible(m_time_created != 0);
 
+    //folder don't show access time
+    if (m_info->isDir())
+    {
+        m_form3->itemAt(2, QFormLayout::LabelRole)->widget()->setVisible(false);
+        m_form3->itemAt(2, QFormLayout::FieldRole)->widget()->setVisible(false);
+    }
+
     m_time_modified = g_file_info_get_attribute_uint64(info,
                                                        "time::modified");
     QDateTime date2 = QDateTime::fromMSecsSinceEpoch(m_time_modified*1000);
