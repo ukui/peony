@@ -1,6 +1,7 @@
 INCLUDEPATH += $$PWD
 
 HEADERS += \
+    $$PWD/FMWindowIface.h \
     $$PWD/fm-window.h \
     $$PWD/properties-window.h
 

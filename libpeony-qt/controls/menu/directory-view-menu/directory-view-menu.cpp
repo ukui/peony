@@ -74,7 +74,7 @@ DirectoryViewMenu::DirectoryViewMenu(DirectoryViewWidget *directoryView, QWidget
     fillActions();
 }
 
-DirectoryViewMenu::DirectoryViewMenu(FMWindow *window, QWidget *parent) : QMenu(parent)
+DirectoryViewMenu::DirectoryViewMenu(FMWindowIface *window, QWidget *parent) : QMenu(parent)
 {
     m_top_window = window;
     m_view = window->getCurrentPage()->getView();

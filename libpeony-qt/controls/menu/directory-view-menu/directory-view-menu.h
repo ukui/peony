@@ -30,7 +30,7 @@
 
 namespace Peony {
 
-class FMWindow;
+class FMWindowIface;
 
 /*!
  * \brief The DirectoryViewMenu class
@@ -49,7 +49,7 @@ public:
      * \deprecated
      */
     explicit DirectoryViewMenu(DirectoryViewWidget *directoryView, QWidget *parent = nullptr);
-    explicit DirectoryViewMenu(FMWindow *window, QWidget *parent = nullptr);
+    explicit DirectoryViewMenu(FMWindowIface *window, QWidget *parent = nullptr);
 
     const QStringList &urisToEdit() {return m_uris_to_edit;}
 
@@ -66,7 +66,7 @@ protected:
     const QList<QAction *> constructSearchActions();
 
 private:
-    FMWindow *m_top_window;
+    FMWindowIface *m_top_window;
 
     DirectoryViewWidget *m_view;
     QString m_directory;

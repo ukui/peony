@@ -46,6 +46,8 @@
 
 #include "file-label-box.h"
 
+#include "directory-view-menu.h"
+
 #include <QSplitter>
 
 #include <QPainter>
@@ -400,6 +402,10 @@ void MainWindow::initUI(const QString &uri)
     connect(m_tab, &TabWidget::activePageLocationChanged, this, &MainWindow::locationChangeEnd);
     connect(m_tab, &TabWidget::activePageViewTypeChanged, this, &MainWindow::updateHeaderBar);
     connect(m_tab, &TabWidget::activePageChanged, this, &MainWindow::updateHeaderBar);
+    connect(m_tab, &TabWidget::menuRequest, this, [=](){
+        Peony::DirectoryViewMenu menu(this);
+        menu.exec(QCursor::pos());
+    });
 }
 
 QRect MainWindow::sideBarRect()

@@ -28,6 +28,7 @@
 #include "peony-core_global.h"
 #include "advanced-location-bar.h"
 #include "advance-search-bar.h"
+#include "FMWindowIface.h"
 #include <memory>
 
 #include <QTimer>
@@ -72,27 +73,27 @@ class PreviewPageContainer;
  * the design difficulty. If you plan to develop a file manager application.
  * You should consider wether it is needed.
  */
-class PEONYCORESHARED_EXPORT FMWindow : public QMainWindow
+class PEONYCORESHARED_EXPORT FMWindow : public QMainWindow, public FMWindowIface
 {
     Q_OBJECT
 public:
     explicit FMWindow(const QString &uri = nullptr, QWidget *parent = nullptr);
 
-    const QString getLastNonSearchUri() {return m_last_non_search_location;}
-    const QString getCurrentUri();
-    const QStringList getCurrentSelections();
-    const QStringList getCurrentAllFileUris();
-    const QList<std::shared_ptr<FileInfo>> getCurrentSelectionFileInfos();
-    DirectoryViewContainer *getCurrentPage();
+    const QString getLastNonSearchUri() override {return m_last_non_search_location;}
+    const QString getCurrentUri() override;
+    const QStringList getCurrentSelections() override;
+    const QStringList getCurrentAllFileUris() override;
+    const QList<std::shared_ptr<FileInfo>> getCurrentSelectionFileInfos() override;
+    DirectoryViewContainer *getCurrentPage() override;
 
-    Qt::SortOrder getCurrentSortOrder();
-    int getCurrentSortColumn();
+    Qt::SortOrder getCurrentSortOrder() override;
+    int getCurrentSortColumn() override;
 
-    bool getWindowShowHidden() {return m_show_hidden_file;}
-    bool getWindowUseDefaultNameSortOrder() {return m_use_default_name_sort_order;}
-    bool getWindowSortFolderFirst() {return m_folder_first;}
+    bool getWindowShowHidden() override {return m_show_hidden_file;}
+    bool getWindowUseDefaultNameSortOrder() override {return m_use_default_name_sort_order;}
+    bool getWindowSortFolderFirst() override {return m_folder_first;}
 
-    const QString getCurrentPageViewType();
+    const QString getCurrentPageViewType() override;
 
     QSize sizeHint() const override {return QSize(800, 600);}
 
@@ -119,31 +120,31 @@ Q_SIGNALS:
     void windowSelectionChanged();
 
 public Q_SLOTS:
-    void goToUri(const QString &uri, bool addHistory, bool forceUpdate = false);
-    void addNewTabs(const QStringList &uris);
+    void goToUri(const QString &uri, bool addHistory, bool forceUpdate = false) override;
+    void addNewTabs(const QStringList &uris) override;
 
-    void beginSwitchView(const QString &viewId);
+    void beginSwitchView(const QString &viewId) override;
 
-    void refresh();
-    void forceStopLoading();
-    void advanceSearch();
-    void clearRecord();
-    void searchFilter(QString target_path, QString keyWord, bool search_file_name, bool search_content);
-    void filterUpdate(int type_index=0, int time_index=0, int size_index=0);
+    void refresh() override;
+    void forceStopLoading() override;
+    void advanceSearch() override;
+    void clearRecord() override;
+    void searchFilter(QString target_path, QString keyWord, bool search_file_name, bool search_content) override;
+    void filterUpdate(int type_index=0, int time_index=0, int size_index=0) override;
 
-    void setShowHidden(bool showHidden);
-    void setShowHidden();
-    void setUseDefaultNameSortOrder(bool use);
-    void setSortFolderFirst(bool folderFirst);
+    void setShowHidden(bool showHidden) override;
+    void setShowHidden() override;
+    void setUseDefaultNameSortOrder(bool use) override;
+    void setSortFolderFirst(bool folderFirst) override;
 
-    void onPreviewPageSwitch(const QString &uri);
+    void onPreviewPageSwitch(const QString &uri) override;
 
-    void setCurrentSelectionUris(const QStringList &uris);
-    void setCurrentSortOrder (Qt::SortOrder order);
-    void setCurrentSortColumn (int sortColumn);
+    void setCurrentSelectionUris(const QStringList &uris) override;
+    void setCurrentSortOrder (Qt::SortOrder order) override;
+    void setCurrentSortColumn (int sortColumn) override;
 
-    void editUri(const QString &uri);
-    void editUris(const QStringList &uris);
+    void editUri(const QString &uri) override;
+    void editUris(const QStringList &uris) override;
 
 protected:
     void resizeEvent(QResizeEvent *e) override;

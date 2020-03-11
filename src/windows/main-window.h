@@ -24,6 +24,8 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include "FMWindowIface.h"
+
 class MainWindowPrivate;
 class BorderShadowEffect;
 class HeaderBar;
@@ -35,7 +37,7 @@ namespace Peony {
 class DirectoryViewContainer;
 }
 
-class MainWindow : public QMainWindow
+class MainWindow : public QMainWindow, public Peony::FMWindowIface
 {
     Q_OBJECT
 public:
