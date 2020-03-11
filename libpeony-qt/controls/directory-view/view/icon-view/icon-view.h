@@ -125,14 +125,21 @@ protected:
     void mousePressEvent(QMouseEvent *e) override;
     void mouseReleaseEvent(QMouseEvent *e) override;
 
+    void mouseDoubleClickEvent(QMouseEvent *event) override;
+
     void paintEvent(QPaintEvent *e) override;
     void resizeEvent(QResizeEvent *e) override;
 
     void wheelEvent(QWheelEvent *e) override;
 
+private Q_SLOTS:
+    void slotSingleClicked();
+
 private:
     QTimer m_edit_trigger_timer;
     QTimer m_repaint_timer;
+    QTimer* m_clickTimer;
+    bool  m_editValid;
     QModelIndex m_last_index;
 
     DirectoryViewProxyIface *m_proxy = nullptr;

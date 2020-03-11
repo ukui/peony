@@ -173,11 +173,12 @@ void IconViewIndexWidget::paintEvent(QPaintEvent *e)
 void IconViewIndexWidget::mousePressEvent(QMouseEvent *e)
 {
     if (e->button() == Qt::LeftButton) {
-        if (m_edit_trigger.isActive()) {
-            m_delegate->getView()->setIndexWidget(m_index, nullptr);
-            m_delegate->getView()->edit(m_index);
-            return;
-        }
+//        if (m_edit_trigger.isActive()) {
+//            qDebug()<<"IconViewIndexWidget::mousePressEvent: edit"<<e->type();
+//            m_delegate->getView()->setIndexWidget(m_index, nullptr);
+//            m_delegate->getView()->edit(m_index);
+//            return;
+//        }
     }
     QWidget::mousePressEvent(e);
 }

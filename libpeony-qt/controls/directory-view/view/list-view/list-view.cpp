@@ -58,6 +58,9 @@ ListView::ListView(QWidget *parent) : QTreeView(parent)
     //setAlternatingRowColors(true);
 
     //setContextMenuPolicy(Qt::CustomContextMenu);
+    m_clickTimer = new QTimer(this);
+    m_editValid = false;
+    connect(m_clickTimer, &QTimer::timeout, this, &ListView::slotSingleClicked);
 }
 
 void ListView::bindModel(FileItemModel *sourceModel, FileItemProxyFilterSortModel *proxyModel)
@@ -100,6 +103,8 @@ void ListView::bindModel(FileItemModel *sourceModel, FileItemProxyFilterSortMode
 
 void ListView::mousePressEvent(QMouseEvent *e)
 {
+    m_editValid = false;
+
     if (e->button() == Qt::RightButton) {
         if (this->state() == QTreeView::EditingState) {
             if (indexWidget(indexAt(e->pos())))
@@ -124,12 +129,14 @@ void ListView::mousePressEvent(QMouseEvent *e)
     }
 
     if (e->button() == Qt::LeftButton) {
-        qDebug()<<m_edit_trigger_timer.isActive()<<m_edit_trigger_timer.interval();
+        //only trigger edit state at single click
+        qDebug()<<"ListView::mousePressEvent(QMouseEvent *e)"<<m_edit_trigger_timer.isActive();
+        m_clickTimer->start(500);
         if (indexAt(e->pos()).row() == m_last_index.row() && m_last_index.isValid()) {
-            if (m_edit_trigger_timer.isActive()) {
-                setIndexWidget(m_last_index, nullptr);
-                //qDebug()<<"edit"<<m_last_index.data(Qt::UserRole).toString();
-                editUri(m_last_index.data(Qt::UserRole).toString());
+            m_editValid = true;
+            if(m_edit_trigger_timer.isActive()){
+                slotSingleClicked();
+                return;
             }
         }
     }
@@ -142,10 +149,41 @@ void ListView::mouseReleaseEvent(QMouseEvent *e)
     if (e->button() != Qt::LeftButton) {
         return;
     }
-
-    if (!m_edit_trigger_timer.isActive() && indexAt(e->pos()).isValid() && this->selectedIndexes().count() == 1) {
+    qDebug()<<"ListView::mouseReleaseEvent"<<this->selectedIndexes().count();
+    //to make sure only click one row
+    bool all_index_in_same_row = true;
+    if (!this->selectedIndexes().isEmpty()) {
+        int first_index_row = this->selectedIndexes().first().row();
+        for (auto index : this->selectedIndexes()) {
+            if (first_index_row != index.row()) {
+                all_index_in_same_row = false;
+                break;
+            }
+        }
+    }
+    if (!m_edit_trigger_timer.isActive() && indexAt(e->pos()).isValid() && all_index_in_same_row) {
         resetEditTriggerTimer();
     }
+}
+
+void ListView::mouseDoubleClickEvent(QMouseEvent *event)
+{
+    m_clickTimer->stop();
+    m_edit_trigger_timer.stop();
+
+    QTreeView::mouseDoubleClickEvent(event);
+}
+
+void ListView::slotSingleClicked()
+{
+    qDebug()<<"ListView::slotSingleClicked()"<<m_edit_trigger_timer.isActive()<<m_editValid;
+    m_clickTimer->stop();
+    if (m_edit_trigger_timer.isActive() && m_editValid) {
+        setIndexWidget(m_last_index, nullptr);
+        editUri(m_last_index.data(Qt::UserRole).toString());
+        m_edit_trigger_timer.stop();
+    }
+    m_editValid = false;
 }
 
 void ListView::resetEditTriggerTimer()
@@ -153,9 +191,10 @@ void ListView::resetEditTriggerTimer()
     m_edit_trigger_timer.disconnect();
     m_edit_trigger_timer.stop();
     QTimer::singleShot(750, [&](){
-        qDebug()<<"start";
+        qDebug()<<"ListView::resetEditTriggerTimer()"<<"start";
         m_edit_trigger_timer.setSingleShot(true);
         m_edit_trigger_timer.start(1000);
+        m_editValid = false;
     });
 }
 
