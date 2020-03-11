@@ -67,7 +67,7 @@ void ToolBar::init()
 {
     //layout
     QAction *newWindowAction = addAction(QIcon::fromTheme("window-new-symbolic"),
-                                         tr("Open in new &Window"));
+                                         tr("Open in &New window"));
     QAction *newTabActon = addAction(QIcon::fromTheme("tab-new-symbolic"),
                                      tr("Open in new &Tab"));
 

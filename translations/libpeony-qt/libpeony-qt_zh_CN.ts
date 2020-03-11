@@ -127,18 +127,18 @@
         <translation>开始搜索</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.cpp" line="189"/>
-        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.cpp" line="198"/>
+        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.cpp" line="192"/>
+        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.cpp" line="201"/>
         <source>Operate Tips</source>
         <translation>提示</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.cpp" line="190"/>
+        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.cpp" line="193"/>
         <source>Have no key words or search location!</source>
         <translation>没有关键字或路径!</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.cpp" line="199"/>
+        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.cpp" line="202"/>
         <source>Search file name or content at least choose one!</source>
         <translation>搜索文件名或者内容请至少指定一个！</translation>
     </message>
@@ -828,17 +828,17 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
 <context>
     <name>Peony::FileMoveOperation</name>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="756"/>
+        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="762"/>
         <source>Invalid move operation, cannot move a file itself.</source>
         <translation>非法的移动操作，不能自移动到自身。</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="769"/>
+        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="775"/>
         <source>Invalid Operation.</source>
         <translation>非法的操作.</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="782"/>
+        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="788"/>
         <source>Invalid Operation</source>
         <translation>非法的操作</translation>
     </message>
@@ -854,73 +854,73 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
 <context>
     <name>Peony::FileOperationErrorDialog</name>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialog.cpp" line="41"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialog.cpp" line="43"/>
         <source>File Operation Error</source>
         <translation>文件操作错误</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialog.cpp" line="49"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialog.cpp" line="51"/>
         <source>unkwon</source>
         <translation>未知原因</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialog.cpp" line="50"/>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialog.cpp" line="51"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialog.cpp" line="52"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialog.cpp" line="53"/>
         <source>null</source>
         <translation>空</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialog.cpp" line="53"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialog.cpp" line="55"/>
         <source>Error message:</source>
         <translation>错误信息：</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialog.cpp" line="54"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialog.cpp" line="56"/>
         <source>Source File:</source>
         <translation>源文件：</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialog.cpp" line="55"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialog.cpp" line="57"/>
         <source>Dest File:</source>
         <translation>目标文件：</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialog.cpp" line="59"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialog.cpp" line="61"/>
         <source>Ignore</source>
         <translation>忽略</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialog.cpp" line="60"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialog.cpp" line="62"/>
         <source>Ignore All</source>
         <translation>全部忽略</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialog.cpp" line="61"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialog.cpp" line="63"/>
         <source>Overwrite</source>
         <translation>覆盖</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialog.cpp" line="62"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialog.cpp" line="64"/>
         <source>Overwrite All</source>
         <translation>全部覆盖</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialog.cpp" line="63"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialog.cpp" line="65"/>
         <source>Backup</source>
         <translation>备份</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialog.cpp" line="64"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialog.cpp" line="66"/>
         <source>Backup All</source>
         <translation>全部备份</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialog.cpp" line="65"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialog.cpp" line="67"/>
         <source>&amp;Retry</source>
         <translation>重试(&amp;R)</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialog.cpp" line="66"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialog.cpp" line="68"/>
         <source>&amp;Cancel</source>
         <translation>取消(&amp;C)</translation>
     </message>
@@ -1286,7 +1286,7 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
     <message>
         <location filename="../../libpeony-qt/controls/tool-bar/search-bar.cpp" line="46"/>
         <source>Input the search key of files you would like to find.</source>
-        <translation>输入关键词以搜索你想搜索的文件</translation>
+        <translation>输入关键词以搜索你想搜索的文件.</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/tool-bar/search-bar.cpp" line="72"/>
@@ -1391,9 +1391,13 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
 <context>
     <name>Peony::ToolBar</name>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/tool-bar.cpp" line="70"/>
         <source>Open in new &amp;Window</source>
-        <translation>在新窗口中打开(&amp;W)</translation>
+        <translation type="vanished">在新窗口中打开(&amp;W)</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/controls/tool-bar/tool-bar.cpp" line="70"/>
+        <source>Open in &amp;New window</source>
+        <translation>在新窗口中打开(&amp;N)</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/tool-bar/tool-bar.cpp" line="72"/>
