@@ -99,13 +99,20 @@ public Q_SLOTS:
 protected:
     void mousePressEvent(QMouseEvent *e) override;
     void mouseReleaseEvent(QMouseEvent *e) override;
+    void mouseDoubleClickEvent(QMouseEvent *event) override;
+
     void resetEditTriggerTimer();
 
+private Q_SLOTS:
+    void slotSingleClicked();
 private:
     FileItemModel *m_model = nullptr;
     FileItemProxyFilterSortModel *m_proxy_model = nullptr;
 
     QTimer m_edit_trigger_timer;
+    QTimer* m_clickTimer;
+    bool  m_editValid;
+
     QModelIndex m_last_index;
 
     DirectoryViewProxyIface *m_proxy = nullptr;

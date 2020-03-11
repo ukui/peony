@@ -69,6 +69,10 @@ IconView::IconView(QWidget *parent) : QListView(parent)
 
     setGridSize(QSize(115, 135));
     setIconSize(QSize(64, 64));
+
+    m_clickTimer = new QTimer(this);
+    m_editValid = false;
+    connect(m_clickTimer, &QTimer::timeout, this, &IconView::slotSingleClicked);
 }
 
 IconView::~IconView()
@@ -205,17 +209,21 @@ void IconView::dropEvent(QDropEvent *e)
 
 void IconView::mousePressEvent(QMouseEvent *e)
 {
+    m_editValid = false;
     QListView::mousePressEvent(e);
 
     if (e->button() != Qt::LeftButton) {
         return;
     }
 
-    qDebug()<<m_edit_trigger_timer.isActive()<<m_edit_trigger_timer.interval();
+    qDebug()<<"IconView::mousePressEvent, m_edit_trigger_timer"<<m_edit_trigger_timer.isActive()<<m_clickTimer->isActive();
+    //only trigger edit state at single click
+    m_clickTimer->start(500);
     if (indexAt(e->pos()) == m_last_index && m_last_index.isValid()) {
-        if (m_edit_trigger_timer.isActive()) {
-            setIndexWidget(m_last_index, nullptr);
-            //edit(m_last_index);
+        m_editValid = true;
+        if(m_edit_trigger_timer.isActive()){
+            slotSingleClicked();
+            return;
         }
     }
 }
@@ -233,14 +241,23 @@ void IconView::mouseReleaseEvent(QMouseEvent *e)
     }
 }
 
+void IconView::mouseDoubleClickEvent(QMouseEvent *event)
+{
+    m_clickTimer->stop();
+    m_edit_trigger_timer.stop();
+
+    QListView::mouseDoubleClickEvent(event);
+}
+
 void IconView::resetEditTriggerTimer()
 {
     m_edit_trigger_timer.disconnect();
     m_edit_trigger_timer.stop();
     QTimer::singleShot(750, [&](){
-        qDebug()<<"start";
+        qDebug()<<"IconView::resetEditTriggerTimer()"<<"start";
         m_edit_trigger_timer.setSingleShot(true);
         m_edit_trigger_timer.start(1000);
+        m_editValid = false;
     });
 }
 
@@ -272,6 +289,19 @@ void IconView::wheelEvent(QWheelEvent *e)
         this->viewport()->update();
 }
 
+void IconView::slotSingleClicked()
+{
+    qDebug()<<"IconView::slotSingleClicked()"<<m_edit_trigger_timer.isActive()<<m_editValid;
+    m_clickTimer->stop();
+    if (m_edit_trigger_timer.isActive() && m_editValid) {
+        qDebug()<<"start edit"<<"***************************";
+        setIndexWidget(m_last_index, nullptr);
+        edit(m_last_index);
+        m_edit_trigger_timer.stop();
+    }
+    m_editValid = false;
+}
+
 void IconView::bindModel(FileItemModel *sourceModel, FileItemProxyFilterSortModel *proxyModel)
 {
     m_model = sourceModel;
@@ -291,9 +321,14 @@ void IconView::bindModel(FileItemModel *sourceModel, FileItemProxyFilterSortMode
         //Q_EMIT m_proxy->viewSelectionChanged();
         if (currentSelections.count() == 1) {
             m_last_index = currentSelections.first();
-            this->resetEditTriggerTimer();
+            //qDebug()<<"IconView::bindModel:"<<"selection changed: "<<"resetEditTriggerTimer";
+            //this->resetEditTriggerTimer();
         } else {
             m_last_index = QModelIndex();
+        }
+
+        if (currentSelections.count() == 1) {
+            this->resetEditTriggerTimer();
         }
     });
 }
