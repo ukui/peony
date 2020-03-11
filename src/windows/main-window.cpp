@@ -324,12 +324,14 @@ void MainWindow::initUI(const QString &uri)
         QCursor c;
         c.setShape(Qt::WaitCursor);
         this->setCursor(c);
+        m_tab->setCursor(c);
     });
 
     connect(this, &MainWindow::locationChangeEnd, this, [=](){
         QCursor c;
         c.setShape(Qt::ArrowCursor);
         this->setCursor(c);
+        m_tab->setCursor(c);
         updateHeaderBar();
     });
 
