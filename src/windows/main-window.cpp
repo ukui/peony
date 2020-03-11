@@ -47,6 +47,7 @@
 #include "file-label-box.h"
 
 #include "directory-view-menu.h"
+#include "main-window-factory.h"
 
 #include <QSplitter>
 
@@ -87,6 +88,11 @@ MainWindow::MainWindow(const QString &uri, QWidget *parent) : QMainWindow(parent
 
     //init UI
     initUI(uri);
+}
+
+Peony::FMWindowFactory *MainWindow::getFactory()
+{
+    return MainWindowFactory::getInstance();
 }
 
 Peony::DirectoryViewContainer *MainWindow::getCurrentPage()

@@ -151,7 +151,9 @@ const QList<QAction *> DirectoryViewMenu::constructOpenOpActions()
     if (isBackgroundMenu) {
         l<<addAction(QIcon::fromTheme("window-new-symbolic"), tr("Open in &New Window"));
         connect(l.last(), &QAction::triggered, [=](){
-            FMWindow *newWindow = new FMWindow(m_directory);
+            auto factory = m_top_window->getFactory();
+            auto windowIface = factory->create(m_directory);
+            auto newWindow = dynamic_cast<QWidget *>(windowIface);
             newWindow->setAttribute(Qt::WA_DeleteOnClose);
             //FIXME: show when prepared?
             newWindow->show();
@@ -179,7 +181,9 @@ const QList<QAction *> DirectoryViewMenu::constructOpenOpActions()
                 });
                 l<<addAction(QIcon::fromTheme("window-new-symbolic"), tr("Open \"%1\" in &New Window").arg(displayName));
                 connect(l.last(), &QAction::triggered, [=](){
-                    FMWindow *newWindow = new FMWindow(m_selections.first());
+                    auto factory = m_top_window->getFactory();
+                    auto windowIface = factory->create(m_selections.first());
+                    auto newWindow = dynamic_cast<QWidget *>(windowIface);
                     newWindow->setAttribute(Qt::WA_DeleteOnClose);
                     //FIXME: show when prepared?
                     newWindow->show();
@@ -566,17 +570,19 @@ const QList<QAction *> DirectoryViewMenu::constructSearchActions()
             for (auto uri : m_selections) {
                 auto parentUri = FileUtils::getParentUri(uri);
                 if (!parentUri.isNull()) {
-                    FMWindow *newWindow = new FMWindow(parentUri);
+                    auto factory = this->m_top_window->getFactory();
+                    auto *windowIface = factory->create(parentUri);
+                    auto newWindow = dynamic_cast<QWidget *>(windowIface);
                     auto selection = m_selections;
 #if QT_VERSION > QT_VERSION_CHECK(5, 12, 0)
                     QTimer::singleShot(1000, newWindow, [=](){
                         if (newWindow)
-                            newWindow->setCurrentSelectionUris(selection);
+                            windowIface->setCurrentSelectionUris(selection);
                     });
 #else
                     QTimer::singleShot(1000, [=](){
                         if (newWindow)
-                            newWindow->setCurrentSelectionUris(selection);
+                            windowIface->setCurrentSelectionUris(selection);
                     });
 #endif
                     newWindow->show();

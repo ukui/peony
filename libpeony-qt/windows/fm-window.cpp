@@ -555,6 +555,11 @@ FMWindow::FMWindow(const QString &uri, QWidget *parent) : QMainWindow (parent)
     });
 }
 
+FMWindowFactory *FMWindow::getFactory()
+{
+    return FMWindowFactory::getInstance();
+}
+
 const QString FMWindow::getCurrentUri()
 {
     if (m_tab->getActivePage()) {

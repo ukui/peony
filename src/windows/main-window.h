@@ -45,6 +45,8 @@ public:
 
     QSize sizeHint() const {return QSize(800, 600);}
 
+    Peony::FMWindowFactory *getFactory();
+
     Peony::DirectoryViewContainer *getCurrentPage();
 
     const QString getCurrentUri();

@@ -30,10 +30,13 @@
 namespace Peony {
 
 class DirectoryViewContainer;
+class FMWindowFactory;
 
 class PEONYCORESHARED_EXPORT FMWindowIface
 {
 public:
+    virtual FMWindowFactory *getFactory() {return nullptr;}
+
     virtual const QString getCurrentUri() = 0; //do not allow initialize this iface directly
     virtual const QString getLastNonSearchUri() {return nullptr;}
     virtual const QStringList getCurrentSelections() {return QStringList();}

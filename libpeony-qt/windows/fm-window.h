@@ -29,6 +29,7 @@
 #include "advanced-location-bar.h"
 #include "advance-search-bar.h"
 #include "FMWindowIface.h"
+#include "fm-window-factory.h"
 #include <memory>
 
 #include <QTimer>
@@ -78,6 +79,8 @@ class PEONYCORESHARED_EXPORT FMWindow : public QMainWindow, public FMWindowIface
     Q_OBJECT
 public:
     explicit FMWindow(const QString &uri = nullptr, QWidget *parent = nullptr);
+
+    FMWindowFactory *getFactory() override;
 
     const QString getLastNonSearchUri() override {return m_last_non_search_location;}
     const QString getCurrentUri() override;
