@@ -1,3 +1,6 @@
 usr/bin/*
 data/peony.desktop usr/share/applications
+data/peony-computer.desktop usr/share/applications
+data/peony-home.desktop usr/share/applications
+data/peony-trash.desktop usr/share/applications
 data/peony-desktop.desktop etc/xdg/autostart

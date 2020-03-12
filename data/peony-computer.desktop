@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=Peony Computer
+GenericName=Computer
+GenericName[zh_CN]=打开计算机
+Name[zh_CN]=计算机
+Exec=/usr/bin/peony computer:///
+MimeType=inode/directory
+Icon=computer
+Terminal=false
+Type=Application
+Keywords=file;home;folder;browser;disk;computer;

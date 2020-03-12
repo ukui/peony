@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=Peony Trash
+GenericName=Trash
+GenericName[zh_CN]=打开回收站
+Name[zh_CN]=回收站
+Exec=/usr/bin/peony trash:///
+MimeType=inode/directory
+Icon=user-trash
+Terminal=false
+Type=Application
+Keywords=file;home;folder;browser;disk;computer;
