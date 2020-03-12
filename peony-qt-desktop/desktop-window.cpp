@@ -39,6 +39,7 @@
 #include "file-move-operation.h"
 #include "file-operation-manager.h"
 #include "file-trash-operation.h"
+#include "properties-window.h"
 
 #include "peony-desktop-application.h"
 #include "singleapplication.h"
@@ -467,6 +468,17 @@ void DesktopWindow::initShortcut() {
         QDesktopServices::openUrl(url);
     });
     addAction(helpAction);
+
+    auto propertiesWindowAction = new QAction(this);
+    propertiesWindowAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_Return));
+    connect(propertiesWindowAction, &QAction::triggered, this, [=](){
+        if (m_view->getSelections().count() > 0)
+        {
+            PropertiesWindow *w = new PropertiesWindow(m_view->getSelections());
+            w->show();
+        }
+    });
+    addAction(propertiesWindowAction);
 }
 
 void DesktopWindow::availableGeometryChangedProcess(const QRect &geometry) {
