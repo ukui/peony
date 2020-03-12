@@ -515,6 +515,39 @@ void DesktopWindow::initShortcut() {
         }
     });
     addAction(propertiesWindowAction);
+
+    auto newFolderAction = new QAction(this);
+    newFolderAction->setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_N));
+    connect(newFolderAction, &QAction::triggered, this, [=](){
+        CreateTemplateOperation op(m_view->getDirectoryUri(), CreateTemplateOperation::EmptyFolder, tr("New Folder"));
+        op.run();
+        auto targetUri = op.target();
+#if QT_VERSION > QT_VERSION_CHECK(5, 12, 0)
+            QTimer::singleShot(500, this, [=](){
+#else
+            QTimer::singleShot(500, [=](){
+#endif
+            this->m_view->scrollToSelection(targetUri);
+        });
+    });
+    addAction(newFolderAction);
+
+    auto refreshAction = new QAction(this);
+    refreshAction->setShortcut(Qt::Key_F5);
+    connect(refreshAction, &QAction::triggered, this, [=](){
+        m_view->refresh();
+    });
+    addAction(refreshAction);
+
+    QAction *editAction = new QAction(m_view);
+    editAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::ALT + Qt::Key_E)<<Qt::Key_F2);
+    connect(editAction, &QAction::triggered, this, [=](){
+        auto selections = m_view->getSelections();
+        if (selections.count() == 1) {
+            m_view->editUri(selections.first());
+        }
+    });
+    addAction(editAction);
 }
 
 void DesktopWindow::availableGeometryChangedProcess(const QRect &geometry) {
