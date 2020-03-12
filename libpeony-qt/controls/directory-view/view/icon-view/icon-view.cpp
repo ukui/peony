@@ -216,16 +216,17 @@ void IconView::mousePressEvent(QMouseEvent *e)
         return;
     }
 
-    qDebug()<<"IconView::mousePressEvent, m_edit_trigger_timer"<<m_edit_trigger_timer.isActive()<<m_clickTimer->isActive();
-    //only trigger edit state at single click
-    m_clickTimer->start(500);
-    if (indexAt(e->pos()) == m_last_index && m_last_index.isValid()) {
-        m_editValid = true;
-        if(m_edit_trigger_timer.isActive()){
-            slotSingleClicked();
-            return;
-        }
-    }
+    //qDebug()<<"IconView::mousePressEvent, m_edit_trigger_timer"<<m_edit_trigger_timer.isActive()<<m_clickTimer->isActive();
+    //only trigger edit state at single click;
+    //click timer can not put in the press event, it has conflict with dragEvent
+//    m_clickTimer->start(500);
+//    if (indexAt(e->pos()) == m_last_index && m_last_index.isValid()) {
+//        m_editValid = true;
+//        if(m_edit_trigger_timer.isActive()){
+//            slotSingleClicked();
+//            return;
+//        }
+//    }
 }
 
 void IconView::mouseReleaseEvent(QMouseEvent *e)
@@ -238,6 +239,15 @@ void IconView::mouseReleaseEvent(QMouseEvent *e)
 
     if (!m_edit_trigger_timer.isActive() && indexAt(e->pos()).isValid() && this->selectedIndexes().count() == 1) {
         resetEditTriggerTimer();
+    }
+
+    m_clickTimer->start(500);
+    if (indexAt(e->pos()) == m_last_index && m_last_index.isValid()) {
+        m_editValid = true;
+        if(m_edit_trigger_timer.isActive()){
+            slotSingleClicked();
+            return;
+        }
     }
 }
 

@@ -128,18 +128,6 @@ void ListView::mousePressEvent(QMouseEvent *e)
         return;
     }
 
-    if (e->button() == Qt::LeftButton) {
-        //only trigger edit state at single click
-        qDebug()<<"ListView::mousePressEvent(QMouseEvent *e)"<<m_edit_trigger_timer.isActive();
-        m_clickTimer->start(500);
-        if (indexAt(e->pos()).row() == m_last_index.row() && m_last_index.isValid()) {
-            m_editValid = true;
-            if(m_edit_trigger_timer.isActive()){
-                slotSingleClicked();
-                return;
-            }
-        }
-    }
 }
 
 void ListView::mouseReleaseEvent(QMouseEvent *e)
@@ -163,6 +151,19 @@ void ListView::mouseReleaseEvent(QMouseEvent *e)
     }
     if (!m_edit_trigger_timer.isActive() && indexAt(e->pos()).isValid() && all_index_in_same_row) {
         resetEditTriggerTimer();
+    }
+
+    if (e->button() == Qt::LeftButton) {
+        //only trigger edit state at single click
+        qDebug()<<"ListView::mousePressEvent(QMouseEvent *e)"<<m_edit_trigger_timer.isActive();
+        m_clickTimer->start(500);
+        if (indexAt(e->pos()).row() == m_last_index.row() && m_last_index.isValid()) {
+            m_editValid = true;
+            if(m_edit_trigger_timer.isActive()){
+                slotSingleClicked();
+                return;
+            }
+        }
     }
 }
 
