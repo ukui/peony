@@ -104,6 +104,7 @@ public Q_SLOTS:
     void setUseDefaultNameSortOrder(bool use);
     void setSortFolderFirst(bool folderFirst);
     void setShortCuts();
+    void checkSettings();
     //imgrate end, need to complete
 
     void setCurrentSelectionUris(const QStringList &uris);

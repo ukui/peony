@@ -48,9 +48,10 @@
 #include "peony-main-window-style.h"
 
 #include "file-label-box.h"
-#include <file-operation-manager.h>
-#include <file-operation-utils.h>
-#include <create-template-operation.h>
+#include "file-operation-manager.h"
+#include "file-operation-utils.h"
+#include "create-template-operation.h"
+#include "clipboard-utils.h"
 
 #include "directory-view-menu.h"
 #include "directory-view-widget.h"
@@ -72,10 +73,8 @@
 
 MainWindow::MainWindow(const QString &uri, QWidget *parent) : QMainWindow(parent)
 {
-    auto settings = Peony::GlobalSettings::getInstance();
-    m_show_hidden_file = settings->isExist("show-hidden")? settings->getValue("show-hidden").toBool(): false;
-    m_use_default_name_sort_order = settings->isExist("chinese-first")? !settings->getValue("chinese-first").toBool(): false;
-    m_folder_first = settings->isExist("folder-first")? settings->getValue("folder-first").toBool(): true;
+    //check all settings and init
+    checkSettings();
 
     setStyle(PeonyMainWindowStyle::getStyle());
 
@@ -116,6 +115,14 @@ Peony::FMWindowFactory *MainWindow::getFactory()
 Peony::DirectoryViewContainer *MainWindow::getCurrentPage()
 {
     return m_tab->currentPage();
+}
+
+void MainWindow::checkSettings()
+{
+    auto settings = Peony::GlobalSettings::getInstance();
+    m_show_hidden_file = settings->isExist("show-hidden")? settings->getValue("show-hidden").toBool(): false;
+    m_use_default_name_sort_order = settings->isExist("chinese-first")? !settings->getValue("chinese-first").toBool(): false;
+    m_folder_first = settings->isExist("folder-first")? settings->getValue("folder-first").toBool(): true;
 }
 
 void MainWindow::setShortCuts()
@@ -178,8 +185,9 @@ void MainWindow::setShortCuts()
 //    });
 //    addAction(searchAction);
 
+    //old version Ctrl+D, change to agree with the new standard
     auto locationAction = new QAction(this);
-    locationAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::CTRL + Qt::Key_D));
+    locationAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::ALT + Qt::Key_D));
     connect(locationAction, &QAction::triggered, this, [=](){
         m_header_bar->startEdit();
     });
@@ -318,6 +326,35 @@ void MainWindow::setShortCuts()
         this->refresh();
     });
     addAction(refreshAction);
+
+    //file operations
+    auto *copyAction = new QAction(this);
+    copyAction->setShortcut(QKeySequence::Copy);
+    connect(copyAction, &QAction::triggered, [=](){
+        if (!this->getCurrentSelections().isEmpty())
+            Peony::ClipboardUtils::setClipboardFiles(this->getCurrentSelections(), false);
+    });
+    addAction(copyAction);
+
+    auto *pasteAction = new QAction(this);
+    pasteAction->setShortcut(QKeySequence::Paste);
+    connect(pasteAction, &QAction::triggered, [=](){
+        if (Peony::ClipboardUtils::isClipboardHasFiles()) {
+            //FIXME: how about duplicated copy?
+            //FIXME: how to deal with a failed move?
+            Peony::ClipboardUtils::pasteClipboardFiles(this->getCurrentUri());
+        }
+    });
+    addAction(pasteAction);
+
+    auto *cutAction = new QAction(this);
+    cutAction->setShortcut(QKeySequence::Cut);
+    connect(cutAction, &QAction::triggered, [=](){
+        if (!this->getCurrentSelections().isEmpty()) {
+            Peony::ClipboardUtils::setClipboardFiles(this->getCurrentSelections(), true);
+        }
+    });
+    addAction(cutAction);
 }
 
 const QString MainWindow::getCurrentUri()

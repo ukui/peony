@@ -332,7 +332,8 @@ void ToolBar::updateLocation(const QString &uri)
     if (uri.isNull())
         return;
 
-    bool isFileOpDisable = uri.startsWith("trash://") || uri.startsWith("search://");
+    bool isFileOpDisable = uri.startsWith("trash://") || uri.startsWith("search://")
+            || uri.startsWith("computer:///");
     for (auto action : m_file_op_actions) {
         action->setEnabled(!isFileOpDisable);
         if (uri.startsWith("search://")) {
