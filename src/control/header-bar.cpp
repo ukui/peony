@@ -63,6 +63,8 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
     createFolder->setFixedSize(QSize(40, 40));
     createFolder->setIconSize(QSize(16, 16));
 
+    addSpacing(2);
+
     a = addAction(QIcon::fromTheme("terminal-app-symbolic"), tr("Open Terminal"), [=](){
         //FIXME:
     });
@@ -130,6 +132,8 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
         this->viewTypeChangeRequest(id);
     });
 
+    addSpacing(2);
+
     a = addAction(QIcon::fromTheme("view-sort-ascending-symbolic"), tr("Sort Type"));
     auto sortType = qobject_cast<QToolButton *>(widgetForAction(a));
     sortType->setAutoRaise(false);
@@ -154,6 +158,8 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
         m_sort_type_menu->setSortOrder(m_window->getCurrentSortOrder());
     });
 
+    addSpacing(2);
+
     a = addAction(QIcon::fromTheme("open-menu-symbolic"), tr("Option"));
     auto popMenu = qobject_cast<QToolButton *>(widgetForAction(a));
     popMenu->setAutoRaise(false);
@@ -164,6 +170,8 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
     m_operation_menu = new OperationMenu(m_window, this);
     popMenu->setMenu(m_operation_menu);
 
+    addSpacing(2);
+
     //minimize, maximize and close
     a = addAction(QIcon::fromTheme("window-minimize-symbolic"), tr("Minimize"), [=](){
         m_window->showMinimized();
@@ -172,6 +180,8 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
     minimize->setAutoRaise(false);
     minimize->setFixedSize(QSize(40, 40));
     minimize->setIconSize(QSize(16, 16));
+
+    addSpacing(2);
 
     //window-maximize-symbolic
     //window-restore-symbolic
@@ -183,6 +193,8 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
     maximizeAndRestore->setAutoRaise(false);
     maximizeAndRestore->setFixedSize(QSize(40, 40));
     maximizeAndRestore->setIconSize(QSize(16, 16));
+
+    addSpacing(2);
 
     a = addAction(QIcon::fromTheme("window-close-symbolic"), tr("Close"), [=](){
         m_window->close();
