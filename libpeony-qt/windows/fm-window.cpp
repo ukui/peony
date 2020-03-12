@@ -461,8 +461,11 @@ FMWindow::FMWindow(const QString &uri, QWidget *parent) : QMainWindow (parent)
     auto propertiesWindowAction = new QAction(this);
     propertiesWindowAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_Return));
     connect(propertiesWindowAction, &QAction::triggered, this, [=](){
-        PropertiesWindow *w = new PropertiesWindow(getCurrentSelections());
-        w->show();
+        if (getCurrentSelections().count() >0)
+        {
+            PropertiesWindow *w = new PropertiesWindow(getCurrentSelections());
+            w->show();
+        }
     });
     addAction(propertiesWindowAction);
 
