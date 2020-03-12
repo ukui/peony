@@ -32,13 +32,13 @@
 
 namespace Peony {
 
-class FMWindow;
+class FMWindowIface;
 
 class AdvanceSearchBar : public QScrollArea
 {
     Q_OBJECT
 public:
-    explicit AdvanceSearchBar(FMWindow *window, QWidget *parent = nullptr);
+    explicit AdvanceSearchBar(FMWindowIface *window, QWidget *parent = nullptr);
 
 Q_SIGNALS:
 
@@ -62,7 +62,7 @@ protected:
     void init();
 
 private:
-    FMWindow *m_top_window;
+    FMWindowIface *m_top_window;
 
     QWidget *m_filter;
     QLineEdit *m_advanced_key, *m_search_path;

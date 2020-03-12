@@ -39,7 +39,7 @@
 
 using namespace Peony;
 
-AdvanceSearchBar::AdvanceSearchBar(FMWindow *window, QWidget *parent) : QScrollArea(parent)
+AdvanceSearchBar::AdvanceSearchBar(FMWindowIface *window, QWidget *parent) : QScrollArea(parent)
 {
     m_top_window = window;
     init();

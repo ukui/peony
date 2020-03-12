@@ -45,7 +45,11 @@ OperationMenu::OperationMenu(MainWindow *window, QWidget *parent) : QMenu(parent
 
     addSeparator();
 
-    addAction(tr("Conditional Filter"));
+    //addAction(tr("Conditional Filter"));
+    auto advanceSearch = addAction(tr("Advance Search"), this, [=]()
+    {
+       m_window->advanceSearch();
+    });
 
     addSeparator();
 
@@ -57,6 +61,7 @@ OperationMenu::OperationMenu(MainWindow *window, QWidget *parent) : QMenu(parent
 
     auto showHidden = addAction(tr("Show Hidden"), this, [=](bool checked){
         //window set show hidden
+        m_window->setShowHidden(checked);
     });
     m_show_hidden = showHidden;
     showHidden->setCheckable(true);

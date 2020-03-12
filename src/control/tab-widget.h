@@ -126,10 +126,13 @@ public Q_SLOTS:
 
     void onViewDoubleClicked(const QString &uri);
 
+    int count();
+    int currentIndex();
+    void removeTab(int index);
+
 protected:
     void changeCurrentIndex(int index);
     void moveTab(int from, int to);
-    void removeTab(int index);
 
     void bindContainerSignal(Peony::DirectoryViewContainer *container);
 

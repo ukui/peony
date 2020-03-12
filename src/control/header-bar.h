@@ -55,6 +55,8 @@ private Q_SLOTS:
     void setLocation(const QString &uri);
     void updateIcons();
     void updateMaximizeState();
+    void startEdit();
+    void finishEdit();
 
 private:
     const QString m_uri;

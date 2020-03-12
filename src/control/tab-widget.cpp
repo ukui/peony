@@ -340,6 +340,16 @@ void TabWidget::changeCurrentIndex(int index)
     Q_EMIT activePageChanged();
 }
 
+int TabWidget::count()
+{
+    return m_stack->count();
+}
+
+int TabWidget::currentIndex()
+{
+    return m_stack->currentIndex();
+}
+
 void TabWidget::moveTab(int from, int to)
 {
     auto w = m_stack->widget(from);

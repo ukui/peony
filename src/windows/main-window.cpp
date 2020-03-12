@@ -22,6 +22,7 @@
 
 #include "main-window.h"
 #include "header-bar.h"
+#include "global-settings.h"
 
 #include "border-shadow-effect.h"
 #include <private/qwidgetresizehandler_p.h>
@@ -39,14 +40,20 @@
 #include "directory-view-container.h"
 #include "tab-widget.h"
 #include "x11-window-manager.h"
+#include "properties-window.h"
 
 #include "navigation-side-bar.h"
+#include "advance-search-bar.h"
 
 #include "peony-main-window-style.h"
 
 #include "file-label-box.h"
+#include <file-operation-manager.h>
+#include <file-operation-utils.h>
+#include <create-template-operation.h>
 
 #include "directory-view-menu.h"
+#include "directory-view-widget.h"
 #include "main-window-factory.h"
 
 #include <QSplitter>
@@ -55,6 +62,9 @@
 
 #include <QDir>
 #include <QStandardPaths>
+#include <QMessageBox>
+#include <QTimer>
+#include <QDesktopServices>
 
 #include <QDebug>
 
@@ -62,6 +72,11 @@
 
 MainWindow::MainWindow(const QString &uri, QWidget *parent) : QMainWindow(parent)
 {
+    auto settings = Peony::GlobalSettings::getInstance();
+    m_show_hidden_file = settings->isExist("show-hidden")? settings->getValue("show-hidden").toBool(): false;
+    m_use_default_name_sort_order = settings->isExist("chinese-first")? !settings->getValue("chinese-first").toBool(): false;
+    m_folder_first = settings->isExist("folder-first")? settings->getValue("folder-first").toBool(): true;
+
     setStyle(PeonyMainWindowStyle::getStyle());
 
     setMinimumWidth(600);
@@ -86,6 +101,9 @@ MainWindow::MainWindow(const QString &uri, QWidget *parent) : QMainWindow(parent
     //disable style window manager
     setProperty("useStyleWindowManager", false);
 
+    //short cut settings
+    setShortCuts();
+
     //init UI
     initUI(uri);
 }
@@ -100,8 +118,211 @@ Peony::DirectoryViewContainer *MainWindow::getCurrentPage()
     return m_tab->currentPage();
 }
 
+void MainWindow::setShortCuts()
+{
+    //stop loading action
+    QAction *stopLoadingAction = new QAction(this);
+    stopLoadingAction->setShortcut(QKeySequence(Qt::Key_Escape));
+    addAction(stopLoadingAction);
+    connect(stopLoadingAction, &QAction::triggered, this, &MainWindow::forceStopLoading);
+
+    //show hidden action
+    QAction *showHiddenAction = new QAction(this);
+    showHiddenAction->setShortcut(QKeySequence(tr("Ctrl+H", "Show|Hidden")));
+    addAction(showHiddenAction);
+    connect(showHiddenAction, &QAction::triggered, this, [=](){
+        this->setShowHidden();
+    });
+
+    auto undoAction = new QAction(QIcon::fromTheme("edit-undo-symbolic"), tr("Undo"), this);
+    undoAction->setShortcut(QKeySequence::Undo);
+    addAction(undoAction);
+    connect(undoAction, &QAction::triggered, [=](){
+        Peony::FileOperationManager::getInstance()->undo();
+    });
+
+    auto redoAction = new QAction(QIcon::fromTheme("edit-redo-symbolic"), tr("Redo"), this);
+    redoAction->setShortcut(QKeySequence::Redo);
+    addAction(redoAction);
+    connect(redoAction, &QAction::triggered, [=](){
+        Peony::FileOperationManager::getInstance()->redo();
+    });
+
+    auto trashAction = new QAction(this);
+    trashAction->setShortcut(Qt::Key_Delete);
+    connect(trashAction, &QAction::triggered, [=](){
+        auto uris = this->getCurrentSelections();
+        if (!uris.isEmpty()) {
+            bool isTrash = this->getCurrentUri() == "trash:///";
+            if (!isTrash) {
+                Peony::FileOperationUtils::trash(uris, true);
+            } else {
+                Peony::FileOperationUtils::executeRemoveActionWithDialog(uris);
+            }
+        }
+    });
+    addAction(trashAction);
+
+    auto deleteAction = new QAction(this);
+    deleteAction->setShortcut(QKeySequence(Qt::SHIFT + Qt::Key_Delete));
+    addAction(deleteAction);
+    connect(deleteAction, &QAction::triggered, [=](){
+        auto uris = this->getCurrentSelections();
+        Peony::FileOperationUtils::executeRemoveActionWithDialog(uris);
+    });
+
+//    auto searchAction = new QAction(this);
+//    searchAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::CTRL + Qt::Key_F)<<QKeySequence(Qt::CTRL + Qt::Key_E)<<Qt::Key_F3);
+//    connect(searchAction, &QAction::triggered, this, [=](){
+//        m_search_bar->setFocus();
+//    });
+//    addAction(searchAction);
+
+    auto locationAction = new QAction(this);
+    locationAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::CTRL + Qt::Key_D));
+    connect(locationAction, &QAction::triggered, this, [=](){
+        m_header_bar->startEdit();
+    });
+    addAction(locationAction);
+
+    auto newWindowAction = new QAction(this);
+    newWindowAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_N));
+    connect(newWindowAction, &QAction::triggered, this, [=](){
+        MainWindow *newWindow = new MainWindow(getCurrentUri());
+        newWindow->show();
+    });
+    addAction(newWindowAction);
+
+    auto closeWindowAction = new QAction(this);
+    closeWindowAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::ALT + Qt::Key_F4));
+    connect(closeWindowAction, &QAction::triggered, this, [=](){
+        this->close();
+    });
+    addAction(closeWindowAction);
+
+    auto aboutAction = new QAction(this);
+    aboutAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_F2));
+    connect(aboutAction, &QAction::triggered, this, [=](){
+        QMessageBox::about(this,
+                           tr("Peony Qt"),
+                           tr("Authour: \n"
+                              "\tYue Lan <lanyue@kylinos.cn>\n"
+                              "\tMeihong He <hemeihong@kylinos.cn>\n"
+                              "\n"
+                              "Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd."));
+    });
+    addAction(aboutAction);
+
+    auto newTabAction = new QAction(this);
+    newTabAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_T));
+    connect(newTabAction, &QAction::triggered, this, [=](){
+        this->addNewTabs(QStringList()<<this->getCurrentUri());
+    });
+    addAction(newTabAction);
+
+    auto closeTabAction = new QAction(this);
+    closeTabAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_W));
+    connect(closeTabAction, &QAction::triggered, this, [=](){
+        if (m_tab->count() <= 1) {
+            this->close();
+        } else {
+            m_tab->removeTab(m_tab->currentIndex());
+        }
+    });
+    addAction(closeTabAction);
+
+    auto nextTabAction = new QAction(this);
+    nextTabAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Tab));
+    connect(nextTabAction, &QAction::triggered, this, [=](){
+        int currentIndex = m_tab->currentIndex();
+        if (currentIndex + 1 < m_tab->count()) {
+            m_tab->setCurrentIndex(currentIndex + 1);
+        } else {
+            m_tab->setCurrentIndex(0);
+        }
+    });
+    addAction(nextTabAction);
+
+    auto previousTabAction = new QAction(this);
+    previousTabAction->setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_Tab));
+    connect(previousTabAction, &QAction::triggered, this, [=](){
+        int currentIndex = m_tab->currentIndex();
+        if (currentIndex > 0) {
+            m_tab->setCurrentIndex(currentIndex - 1);
+        } else {
+            m_tab->setCurrentIndex(m_tab->count() - 1);
+        }
+    });
+    addAction(previousTabAction);
+
+    auto newFolderAction = new QAction(this);
+    newFolderAction->setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_N));
+    connect(newFolderAction, &QAction::triggered, this, [=](){
+        Peony::CreateTemplateOperation op(getCurrentUri(), Peony::CreateTemplateOperation::EmptyFolder, tr("New Folder"));
+        op.run();
+        auto targetUri = op.target();
+#if QT_VERSION > QT_VERSION_CHECK(5, 12, 0)
+            QTimer::singleShot(500, this, [=](){
+#else
+            QTimer::singleShot(500, [=](){
+#endif
+            this->getCurrentPage()->getView()->scrollToSelection(targetUri);
+            this->editUri(targetUri);
+        });
+    });
+    addAction(newFolderAction);
+
+    //show selected item's properties
+    auto propertiesWindowAction = new QAction(this);
+    propertiesWindowAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_Return));
+    connect(propertiesWindowAction, &QAction::triggered, this, [=](){
+        //Fixed issue:when use this shortcut without any selections, this will crash
+        if (getCurrentSelections().count() > 0)
+        {
+            Peony::PropertiesWindow *w = new Peony::PropertiesWindow(getCurrentSelections());
+            w->show();
+        }
+    });
+    addAction(propertiesWindowAction);
+
+    auto helpAction = new QAction(this);
+    helpAction->setShortcut(QKeySequence(Qt::Key_F1));
+    connect(helpAction, &QAction::triggered, this, [=](){
+        QUrl url = QUrl("help:ubuntu-kylin-help/files", QUrl::TolerantMode);
+        QDesktopServices::openUrl(url);
+    });
+    addAction(helpAction);
+
+    auto maxAction = new QAction(this);
+    maxAction->setShortcut(QKeySequence(Qt::Key_F11));
+    connect(maxAction, &QAction::triggered, this, [=](){
+        if (!this->isFullScreen()) {
+            this->showFullScreen();
+        } else {
+            this->showMaximized();
+        }
+    });
+    addAction(maxAction);
+
+//    auto previewPageAction = new QAction(this);
+//    previewPageAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::ALT + Qt::Key_P));
+//    connect(previewPageAction, &QAction::triggered, this, [=](){
+//        auto lastPreviewPageId = m_navigation_bar->getLastPreviewPageId();
+//        m_navigation_bar->triggerAction(lastPreviewPageId);
+//    });
+//    addAction(previewPageAction);
+
+    auto refreshAction = new QAction(this);
+    refreshAction->setShortcut(Qt::Key_F5);
+    connect(refreshAction, &QAction::triggered, this, [=](){
+        this->refresh();
+    });
+    addAction(refreshAction);
+}
+
 const QString MainWindow::getCurrentUri()
 {
+    //qDebug() << "getCurrentUri in Main-window";
     return m_tab->getCurrentUri();
 }
 
@@ -192,6 +413,59 @@ void MainWindow::beginSwitchView(const QString &viewId)
 void MainWindow::refresh()
 {
     goToUri(getCurrentUri(), false, true);
+}
+
+void MainWindow::advanceSearch()
+{
+    qDebug()<<"advanceSearch clicked";
+    initAdvancePage();
+}
+
+void MainWindow::clearRecord()
+{
+    //qDebug()<<"clearRecord clicked";
+//    m_search_bar->clearSearchRecord();
+//    m_clear_record->setDisabled(true);
+}
+
+void MainWindow::searchFilter(QString target_path, QString keyWord, bool search_file_name, bool search_content)
+{
+//    auto targetUri = SearchVFSUriParser::parseSearchKey(target_path, keyWord, search_file_name, search_content);
+//    //qDebug()<<"targeturi:"<<targetUri;
+//    m_update_condition = true;
+//    this->goToUri(targetUri, true);
+}
+
+void MainWindow::filterUpdate(int type_index, int time_index, int size_index)
+{
+    //qDebug()<<"filterUpdate:";
+    //m_tab->getActivePage()->setSortFilter(type_index, time_index, size_index);
+}
+
+void MainWindow::setShowHidden(bool showHidden)
+{
+    //qDebug()<<"setShowHidden"<<m_show_hidden_file;
+    m_show_hidden_file = showHidden;
+    getCurrentPage()->setShowHidden(showHidden);
+}
+
+void MainWindow::setShowHidden()
+{
+    //qDebug()<<"setShowHidden"<<m_show_hidden_file;
+    m_show_hidden_file = !m_show_hidden_file;
+    getCurrentPage()->setShowHidden(m_show_hidden_file);
+}
+
+void MainWindow::setUseDefaultNameSortOrder(bool use)
+{
+    m_use_default_name_sort_order = use;
+    getCurrentPage()->setUseDefaultNameSortOrder(use);
+}
+
+void MainWindow::setSortFolderFirst(bool folderFirst)
+{
+    m_folder_first = folderFirst;
+    getCurrentPage()->setSortFolderFirst(folderFirst);
 }
 
 void MainWindow::forceStopLoading()
@@ -366,6 +640,7 @@ void MainWindow::initUI(const QString &uri)
     sidebarContainer->titleBarWidget()->setFixedHeight(0);
     sidebarContainer->setAttribute(Qt::WA_TranslucentBackground);
     sidebarContainer->setContentsMargins(0, 0, 0, 0);
+
     NavigationSideBar *sidebar = new NavigationSideBar(this);
     m_side_bar = sidebar;
     connect(m_side_bar, &NavigationSideBar::updateWindowLocationRequest, this, &MainWindow::goToUri);
@@ -412,6 +687,12 @@ void MainWindow::initUI(const QString &uri)
         Peony::DirectoryViewMenu menu(this);
         menu.exec(QCursor::pos());
     });
+}
+
+void MainWindow::initAdvancePage()
+{
+    //Fix me: advance search page, need the new design to develop new UI
+    //auto filterBar = new Peony::AdvanceSearchBar(this);
 }
 
 QRect MainWindow::sideBarRect()

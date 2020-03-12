@@ -208,6 +208,16 @@ void HeaderBar::setLocation(const QString &uri)
     m_location_bar->updateLocation(uri);
 }
 
+void HeaderBar::startEdit()
+{
+    m_location_bar->startEdit();
+}
+
+void HeaderBar::finishEdit()
+{
+    m_location_bar->finishEdit();
+}
+
 void HeaderBar::updateIcons()
 {
     qDebug()<<m_window->getCurrentUri();

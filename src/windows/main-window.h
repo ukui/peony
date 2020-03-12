@@ -32,9 +32,11 @@ class HeaderBar;
 class NavigationSideBar;
 class TabWidget;
 class QWidgetResizeHandler;
+class QStackedWidget;
 
 namespace Peony {
 class DirectoryViewContainer;
+class AdvanceSearchBar;
 }
 
 class MainWindow : public QMainWindow, public Peony::FMWindowIface
@@ -91,6 +93,19 @@ public Q_SLOTS:
     void refresh();
     void forceStopLoading();
 
+    //imigrate from fm-window
+    void advanceSearch();
+    void clearRecord();
+    void searchFilter(QString target_path, QString keyWord, bool search_file_name, bool search_content);
+    void filterUpdate(int type_index=0, int time_index=0, int size_index=0);
+
+    void setShowHidden(bool showHidden);
+    void setShowHidden();
+    void setUseDefaultNameSortOrder(bool use);
+    void setSortFolderFirst(bool folderFirst);
+    void setShortCuts();
+    //imgrate end, need to complete
+
     void setCurrentSelectionUris(const QStringList &uris);
     void setCurrentSortOrder (Qt::SortOrder order);
     void setCurrentSortColumn (int sortColumn);
@@ -108,6 +123,7 @@ protected:
 
     void validBorder();
     void initUI(const QString &uri);
+    void initAdvancePage();
 
     QRect sideBarRect();
 
@@ -118,8 +134,15 @@ private:
 
     HeaderBar *m_header_bar;
     NavigationSideBar *m_side_bar;
+    Peony::AdvanceSearchBar *m_filter_bar;
+    QWidget *m_filter;
+    QStackedWidget *m_side_bar_container;
     TabWidget *m_tab;
+
     bool m_is_draging = false;
+    bool m_show_hidden_file = false;
+    bool m_use_default_name_sort_order = true;
+    bool m_folder_first = true;
 };
 
 #endif // MAINWINDOW_H
