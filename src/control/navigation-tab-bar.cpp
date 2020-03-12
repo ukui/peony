@@ -34,7 +34,7 @@ NavigationTabBar::NavigationTabBar(QWidget *parent) : QTabBar(parent)
     setStyle(TabBarStyle::getStyle());
 
     setContentsMargins(0, 0, 0, 0);
-    setFixedHeight(36);
+    //setFixedHeight(36);
 
     setProperty("useStyleWindowManager", false);
     setMovable(true);
@@ -59,7 +59,7 @@ NavigationTabBar::NavigationTabBar(QWidget *parent) : QTabBar(parent)
     });
 
     QToolButton *addPageButton = new QToolButton(this);
-    addPageButton->setFixedSize(QSize(36, 36));
+    addPageButton->setFixedSize(QSize(this->height() + 2, this->height() + 2));
     addPageButton->setIcon(QIcon::fromTheme("list-add-symbolic"));
     connect(addPageButton, &QToolButton::clicked, this, [=](){
         auto uri = tabData(currentIndex()).toString();

@@ -55,7 +55,7 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
     setAttribute(Qt::WA_TranslucentBackground);
 
     m_tab_bar = new NavigationTabBar(this);
-    m_tab_bar->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    m_tab_bar->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     m_stack = new QStackedWidget(this);
     m_stack->setContentsMargins(0, 0, 0, 0);
     m_buttons = new PreviewPageButtonGroups(this);
@@ -109,6 +109,11 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
         });
     }
     previewButtons->addActions(group->actions());
+    for (auto action : group->actions()) {
+        auto button = qobject_cast<QToolButton *>(previewButtons->widgetForAction(action));
+        button->setFixedSize(20, 20);
+        button->setIconSize(QSize(16, 16));
+    }
     t->addWidget(previewButtons);
 
     QWidget *w = new QWidget();
