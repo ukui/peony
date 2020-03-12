@@ -87,8 +87,8 @@ bool X11WindowManager::eventFilter(QObject *watched, QEvent *event)
             xEvent.xclient.display = display;
             xEvent.xclient.window = m_current_widget->topLevelWidget()->winId();
             xEvent.xclient.format = 32;
-            xEvent.xclient.data.l[0] = pos.x();
-            xEvent.xclient.data.l[1] = pos.y();
+            xEvent.xclient.data.l[0] = pos.x() * qApp->devicePixelRatio();
+            xEvent.xclient.data.l[1] = pos.y() * qApp->devicePixelRatio();
             xEvent.xclient.data.l[2] = 8;
             xEvent.xclient.data.l[3] = Button1;
             xEvent.xclient.data.l[4] = 0;
