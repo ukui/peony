@@ -25,6 +25,7 @@
 
 #include <QMainWindow>
 #include <QButtonGroup>
+#include <QStackedWidget>
 #include "navigation-tab-bar.h"
 
 class NavigationTabBar;
@@ -85,7 +86,6 @@ Q_SIGNALS:
     void activePageViewTypeChanged();
     void activePageViewSortTypeChanged();
 
-    void selectionChanged();
     void viewDoubleClicked(const QString &uri);
     void updateWindowLocationRequest(const QString &uri, bool addHistory, bool forceUpdate = false);
 
@@ -135,6 +135,7 @@ protected:
     void moveTab(int from, int to);
 
     void bindContainerSignal(Peony::DirectoryViewContainer *container);
+    void updatePreviewPage();
 
 private:
     NavigationTabBar *m_tab_bar;
@@ -143,9 +144,17 @@ private:
     PreviewPageButtonGroups *m_buttons;
 
     Peony::PreviewPageIface *m_preview_page = nullptr;
-    QDockWidget *m_preview_page_container;
+    QStackedWidget *m_preview_page_container;
 
     QAction *m_current_preview_action = nullptr;
+};
+
+class PreviewPageContainer : public QStackedWidget
+{
+    friend class TabWidget;
+    Q_OBJECT
+    explicit PreviewPageContainer(QWidget *parent = nullptr);
+    QSize sizeHint() const {return QSize(200, QStackedWidget::sizeHint().height());}
 };
 
 class PreviewPageButtonGroups : public QButtonGroup

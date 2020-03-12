@@ -59,9 +59,7 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
     m_stack = new QStackedWidget(this);
     m_stack->setContentsMargins(0, 0, 0, 0);
     m_buttons = new PreviewPageButtonGroups(this);
-    m_preview_page_container = new QDockWidget(this);
-    m_preview_page_container->setTitleBarWidget(new QWidget);
-    m_preview_page_container->setFeatures(QDockWidget::NoDockWidgetFeatures);
+    m_preview_page_container = new QStackedWidget(this);
 
     connect(m_buttons, &PreviewPageButtonGroups::previewPageButtonTrigger, [=](bool trigger, const QString &id){
         if (trigger) {
@@ -128,6 +126,15 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
     vbox->addWidget(s);
     w->setLayout(vbox);
     setCentralWidget(w);
+
+    //bind preview page
+    connect(this, &TabWidget::activePageSelectionChanged, this, [=](){
+        updatePreviewPage();
+    });
+
+    connect(this, &TabWidget::currentIndexChanged, this, [=](){
+        updatePreviewPage();
+    });
 }
 
 Peony::DirectoryViewContainer *TabWidget::currentPage()
@@ -199,11 +206,14 @@ void TabWidget::setPreviewPage(Peony::PreviewPageIface *previewPage)
         visible = true;
 
     if (m_preview_page) {
-        m_preview_page_container->setWidget(nullptr);
+        m_preview_page_container->removeWidget(m_preview_page_container->widget(0));
         m_preview_page->closePreviewPage();
     }
+
     m_preview_page = previewPage;
-    m_preview_page_container->setWidget(previewPageWidget);
+
+    if (m_preview_page)
+        m_preview_page_container->addWidget(previewPageWidget);
 
     m_preview_page_container->blockSignals(!visible);
     m_preview_page_container->setVisible(visible);
@@ -378,6 +388,23 @@ void TabWidget::bindContainerSignal(Peony::DirectoryViewContainer *container)
     connect(container, &Peony::DirectoryViewContainer::viewTypeChanged, this, &TabWidget::activePageViewTypeChanged);
     connect(container, &Peony::DirectoryViewContainer::viewDoubleClicked, this, &TabWidget::onViewDoubleClicked);
     connect(container, &Peony::DirectoryViewContainer::menuRequest, this, &TabWidget::menuRequest);
+}
+
+void TabWidget::updatePreviewPage()
+{
+    if (!m_preview_page)
+        return;
+    auto selection = getCurrentSelections();
+    m_preview_page->cancel();
+    if (selection.isEmpty())
+        return ;
+    m_preview_page->prepare(selection.first());
+    m_preview_page->startPreview();
+}
+
+PreviewPageContainer::PreviewPageContainer(QWidget *parent) : QStackedWidget(parent)
+{
+
 }
 
 PreviewPageButtonGroups::PreviewPageButtonGroups(QWidget *parent) : QButtonGroup(parent)
