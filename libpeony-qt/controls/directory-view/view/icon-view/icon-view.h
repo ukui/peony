@@ -116,7 +116,6 @@ protected:
      * \deprecated
      */
     void changeZoomLevel();
-    void resetEditTriggerTimer();
 
     void dragEnterEvent(QDragEnterEvent *e) override;
     void dragMoveEvent(QDragMoveEvent *e) override;
@@ -125,14 +124,22 @@ protected:
     void mousePressEvent(QMouseEvent *e) override;
     void mouseReleaseEvent(QMouseEvent *e) override;
 
+    void mouseDoubleClickEvent(QMouseEvent *event) override;
+
     void paintEvent(QPaintEvent *e) override;
     void resizeEvent(QResizeEvent *e) override;
 
     void wheelEvent(QWheelEvent *e) override;
 
+private Q_SLOTS:
+    void slotRename();
+
 private:
-    QTimer m_edit_trigger_timer;
     QTimer m_repaint_timer;
+
+    bool  m_editValid;
+    QTimer* m_renameTimer;
+
     QModelIndex m_last_index;
 
     DirectoryViewProxyIface *m_proxy = nullptr;
