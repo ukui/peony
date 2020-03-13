@@ -137,8 +137,10 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
         updatePreviewPage();
     });
 
-    connect(this, &TabWidget::currentIndexChanged, this, [=](){
-        updatePreviewPage();
+    connect(this, &TabWidget::activePageChanged, this, [=](){
+        QTimer::singleShot(100, this, [=](){
+            this->updatePreviewPage();
+        });
     });
 }
 
@@ -217,8 +219,10 @@ void TabWidget::setPreviewPage(Peony::PreviewPageIface *previewPage)
 
     m_preview_page = previewPage;
 
-    if (m_preview_page)
+    if (m_preview_page) {
         m_preview_page_container->addWidget(previewPageWidget);
+        updatePreviewPage();
+    }
 
     m_preview_page_container->blockSignals(!visible);
     m_preview_page_container->setVisible(visible);
@@ -226,6 +230,10 @@ void TabWidget::setPreviewPage(Peony::PreviewPageIface *previewPage)
 
 void TabWidget::addPage(const QString &uri, bool jumpTo)
 {
+    QCursor c;
+    c.setShape(Qt::WaitCursor);
+    this->setCursor(c);
+
     m_tab_bar->addPage(uri, jumpTo);
     auto viewContainer = new Peony::DirectoryViewContainer(m_stack);
     viewContainer->setSortType(Peony::FileItemModel::FileName);
