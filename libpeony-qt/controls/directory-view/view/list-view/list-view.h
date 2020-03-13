@@ -101,16 +101,15 @@ protected:
     void mouseReleaseEvent(QMouseEvent *e) override;
     void mouseDoubleClickEvent(QMouseEvent *event) override;
 
-    void resetEditTriggerTimer();
+    void dragEnterEvent(QDragEnterEvent *e) override;
 
 private Q_SLOTS:
-    void slotSingleClicked();
+    void slotRename();
 private:
     FileItemModel *m_model = nullptr;
     FileItemProxyFilterSortModel *m_proxy_model = nullptr;
 
-    QTimer m_edit_trigger_timer;
-    QTimer* m_clickTimer;
+    QTimer* m_renameTimer;
     bool  m_editValid;
 
     QModelIndex m_last_index;

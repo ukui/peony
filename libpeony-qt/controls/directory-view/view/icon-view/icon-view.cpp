@@ -73,9 +73,10 @@ IconView::IconView(QWidget *parent) : QListView(parent)
     setGridSize(QSize(115, 135));
     setIconSize(QSize(64, 64));
 
-    m_clickTimer = new QTimer(this);
+
+    m_renameTimer = new QTimer(this);
+    m_renameTimer->setInterval(3000);
     m_editValid = false;
-    connect(m_clickTimer, &QTimer::timeout, this, &IconView::slotSingleClicked);
 }
 
 IconView::~IconView()
@@ -167,6 +168,8 @@ void IconView::closeView()
 
 void IconView::dragEnterEvent(QDragEnterEvent *e)
 {
+    m_editValid = false;
+    qDebug()<<"dragEnterEvent()";
     if (e->mimeData()->hasUrls()) {
         e->setDropAction(Qt::MoveAction);
         e->accept();
@@ -193,7 +196,7 @@ void IconView::dragMoveEvent(QDragMoveEvent *e)
 void IconView::dropEvent(QDropEvent *e)
 {
     m_last_index = QModelIndex();
-    m_edit_trigger_timer.stop();
+    //m_edit_trigger_timer.stop();
     e->setDropAction(Qt::MoveAction);
     auto proxy_index = indexAt(e->pos());
     auto index = m_sort_filter_proxy_model->mapToSource(proxy_index);
@@ -212,24 +215,33 @@ void IconView::dropEvent(QDropEvent *e)
 
 void IconView::mousePressEvent(QMouseEvent *e)
 {
-    m_editValid = false;
+    qDebug()<<"moursePressEvent";
+    m_editValid = true;
     QListView::mousePressEvent(e);
 
     if (e->button() != Qt::LeftButton) {
         return;
     }
 
-    //qDebug()<<"IconView::mousePressEvent, m_edit_trigger_timer"<<m_edit_trigger_timer.isActive()<<m_clickTimer->isActive();
-    //only trigger edit state at single click;
-    //click timer can not put in the press event, it has conflict with dragEvent
-//    m_clickTimer->start(500);
-//    if (indexAt(e->pos()) == m_last_index && m_last_index.isValid()) {
-//        m_editValid = true;
-//        if(m_edit_trigger_timer.isActive()){
-//            slotSingleClicked();
-//            return;
-//        }
-//    }
+    //m_renameTimer
+    if(!m_renameTimer->isActive())
+    {
+        m_renameTimer->start();
+        m_editValid = false;
+    }
+    else
+    {
+        //if remain time is between[0.75, 3000],then trigger rename event;
+        if(m_renameTimer->remainingTime()>=750 && m_renameTimer->remainingTime() <= 3000
+                && indexAt(e->pos()) == m_last_index && m_last_index.isValid() && m_editValid == true)
+        {
+            slotRename();
+        } else
+        {
+            m_editValid = false;
+        }
+    }
+
 }
 
 void IconView::mouseReleaseEvent(QMouseEvent *e)
@@ -239,39 +251,12 @@ void IconView::mouseReleaseEvent(QMouseEvent *e)
     if (e->button() != Qt::LeftButton) {
         return;
     }
-
-    if (!m_edit_trigger_timer.isActive() && indexAt(e->pos()).isValid() && this->selectedIndexes().count() == 1) {
-        resetEditTriggerTimer();
-    }
-
-    m_clickTimer->start(500);
-    if (indexAt(e->pos()) == m_last_index && m_last_index.isValid()) {
-        m_editValid = true;
-        if(m_edit_trigger_timer.isActive()){
-            slotSingleClicked();
-            return;
-        }
-    }
 }
 
 void IconView::mouseDoubleClickEvent(QMouseEvent *event)
 {
-    m_clickTimer->stop();
-    m_edit_trigger_timer.stop();
-
+    m_editValid = false;
     QListView::mouseDoubleClickEvent(event);
-}
-
-void IconView::resetEditTriggerTimer()
-{
-    m_edit_trigger_timer.disconnect();
-    m_edit_trigger_timer.stop();
-    QTimer::singleShot(750, [&](){
-        qDebug()<<"IconView::resetEditTriggerTimer()"<<"start";
-        m_edit_trigger_timer.setSingleShot(true);
-        m_edit_trigger_timer.start(1000);
-        m_editValid = false;
-    });
 }
 
 void IconView::paintEvent(QPaintEvent *e)
@@ -309,17 +294,20 @@ void IconView::wheelEvent(QWheelEvent *e)
         this->viewport()->update();
 }
 
-void IconView::slotSingleClicked()
+void IconView::slotRename()
 {
-    qDebug()<<"IconView::slotSingleClicked()"<<m_edit_trigger_timer.isActive()<<m_editValid;
-    m_clickTimer->stop();
-    if (m_edit_trigger_timer.isActive() && m_editValid) {
-        qDebug()<<"start edit"<<"***************************";
-        setIndexWidget(m_last_index, nullptr);
-        edit(m_last_index);
-        m_edit_trigger_timer.stop();
-    }
-    m_editValid = false;
+    //delay edit action to avoid doubleClick or dragEvent
+    qDebug()<<"slotRename"<<m_editValid;
+    QTimer::singleShot(300, [&](){
+        qDebug()<<"singleshot"<<m_editValid;
+        if(m_editValid) {
+            m_renameTimer->stop();
+            setIndexWidget(m_last_index, nullptr);
+            edit(m_last_index);
+            m_editValid = false;
+        }
+    });
+
 }
 
 void IconView::bindModel(FileItemModel *sourceModel, FileItemProxyFilterSortModel *proxyModel)
@@ -340,16 +328,21 @@ void IconView::bindModel(FileItemModel *sourceModel, FileItemProxyFilterSortMode
 
         //Q_EMIT m_proxy->viewSelectionChanged();
         if (currentSelections.count() == 1) {
+            qDebug()<<"m_last_index  "<<(m_last_index == currentSelections.first());
+            if(m_last_index != currentSelections.first())
+            {
+                m_editValid = false;
+            }
             m_last_index = currentSelections.first();
             //qDebug()<<"IconView::bindModel:"<<"selection changed: "<<"resetEditTriggerTimer";
             //this->resetEditTriggerTimer();
         } else {
             m_last_index = QModelIndex();
+            m_editValid = false;
         }
 
-        if (currentSelections.count() == 1) {
-            this->resetEditTriggerTimer();
-        }
+
+        qDebug()<<"selection changed2"<<m_editValid;
     });
 }
 
