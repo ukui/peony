@@ -57,6 +57,7 @@ private Q_SLOTS:
     void updateMaximizeState();
     void startEdit();
     void finishEdit();
+    void searchButtonClicked();
 
 private:
     const QString m_uri;
@@ -71,6 +72,7 @@ private:
     QPushButton *m_go_back;
     QPushButton *m_go_forward;
     QToolButton *m_maximize_restore_button;
+    QToolButton *m_search_button;
 };
 
 class HeaderBarToolButton : public QToolButton

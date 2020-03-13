@@ -106,13 +106,13 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
     connect(m_location_bar, &Peony::AdvancedLocationBar::updateWindowLocationRequest, this, &HeaderBar::updateLocationRequest);
 
     addSpacing(9);
-    a = addAction(QIcon::fromTheme("edit-find-symbolic"), tr("Search"), [=](){
-        //FIXME:
-    });
+    a = addAction(QIcon::fromTheme("edit-find-symbolic"), tr("Search"));
+    connect(a, &QAction::triggered, this, &HeaderBar::searchButtonClicked);
     auto search = qobject_cast<QToolButton *>(widgetForAction(a));
     search->setAutoRaise(false);
     search->setFixedSize(QSize(40, 40));
     setIconSize(QSize(16, 16));
+    m_search_button = search;
 
     addSpacing(9);
 
@@ -206,6 +206,14 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
     connect(close, &QToolButton::clicked, this, [=](){
         m_window->close();
     });
+}
+
+void HeaderBar::searchButtonClicked()
+{
+    m_search_button->setCheckable(true);
+    m_search_button->setChecked(true);
+    m_search_button->setDown(true);
+    m_location_bar->switchEditMode();
 }
 
 void HeaderBar::addSpacing(int pixel)

@@ -24,6 +24,7 @@
 #define ADVANCEDLOCATIONBAR_H
 
 #include <QWidget>
+#include <QLineEdit>
 #include "peony-core_global.h"
 
 class QStackedLayout;
@@ -43,19 +44,24 @@ public:
 Q_SIGNALS:
     void updateWindowLocationRequest(const QString &uri, bool addHistory = true, bool forceUpdate = false);
     void refreshRequest();
+    void searchRequest(const QString &key);
 
 public Q_SLOTS:
     void updateLocation(const QString &uri);
     void startEdit();
     void finishEdit();
+    void switchEditMode();
 
 private:
     QStackedLayout *m_layout;
 
     LocationBar *m_bar;
     PathEdit *m_edit;
+    QLineEdit *m_search_bar;
 
     QString m_text;
+
+    bool m_search_mode = false;
 };
 
 }
