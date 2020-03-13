@@ -42,6 +42,8 @@ public:
 
     void updateGeometries();
 
+    void paintEvent(QPaintEvent *event);
+
 Q_SIGNALS:
     void updateWindowLocationRequest(const QString &uri, bool addHistory = true, bool force = false);
     void labelButtonClicked(bool checked);

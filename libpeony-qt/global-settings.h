@@ -36,6 +36,11 @@
 #define RESIDENT_IN_BACKEND "resident"
 #define LAST_DESKTOP_SORT_ORDER "last-desktop-sort-order"
 
+//gsettings
+#define SIDEBAR_BG_OPACITY "sidebar-bg-opacity"
+
+class QGSettings;
+
 namespace Peony {
 
 /*!
@@ -79,6 +84,8 @@ private:
 
     QSettings *m_settings;
     QMap<QString, QVariant> m_cache;
+
+    QGSettings *m_gsettings = nullptr;
 
     QMutex m_mutex;
 };

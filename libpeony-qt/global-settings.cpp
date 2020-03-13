@@ -23,6 +23,11 @@
 #include "global-settings.h"
 #include <QtConcurrent>
 
+#include <QGSettings>
+
+#include <QApplication>
+#include <QPalette>
+
 using namespace Peony;
 
 static GlobalSettings *global_instance = nullptr;
@@ -40,6 +45,17 @@ GlobalSettings::GlobalSettings(QObject *parent) : QObject(parent)
     m_settings = new QSettings("org.ukui", "peony-qt-preferences", this);
     for (auto key : m_settings->allKeys()) {
         m_cache.insert(key, m_settings->value(key));
+    }
+
+    if (QGSettings::isSchemaInstalled("org.ukui.style")) {
+        m_gsettings = new QGSettings("org.ukui.style", QByteArray(), this);
+        connect(m_gsettings, &QGSettings::changed, this, [=](const QString &key){
+            if (key == "peonySideBarTransparency") {
+                m_cache.remove(SIDEBAR_BG_OPACITY);
+                m_cache.insert(SIDEBAR_BG_OPACITY, m_gsettings->get(key).toString());
+                qApp->paletteChanged(qApp->palette());
+            }
+        });
     }
 }
 

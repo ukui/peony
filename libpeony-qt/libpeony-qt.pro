@@ -14,7 +14,7 @@ TARGET = peony
 TEMPLATE = lib
 
 CONFIG += link_pkgconfig no_keywords c++11
-PKGCONFIG += glib-2.0 gio-2.0 gio-unix-2.0 poppler-qt5
+PKGCONFIG += glib-2.0 gio-2.0 gio-unix-2.0 poppler-qt5 gsettings-qt
 
 DEFINES += PEONYCORE_LIBRARY
 

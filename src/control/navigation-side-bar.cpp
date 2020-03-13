@@ -33,15 +33,24 @@
 
 #include <QEvent>
 
+#include <QPainter>
+
 #include <QDebug>
 
 NavigationSideBar::NavigationSideBar(QWidget *parent) : QTreeView(parent)
 {
+    setProperty("doNotBlur", true);
+    viewport()->setProperty("doNotBlur", true);
+
     auto delegate = new NavigationSideBarItemDelegate(this);
     setItemDelegate(delegate);
 
     installEventFilter(this);
 
+    setStyleSheet(".NavigationSideBar"
+                  "{"
+                  "border: 0px solid transparent"
+                  "}");
     setAttribute(Qt::WA_TranslucentBackground);
     viewport()->setAttribute(Qt::WA_TranslucentBackground);
     header()->setSectionResizeMode(QHeaderView::ResizeToContents);
@@ -129,6 +138,11 @@ void NavigationSideBar::updateGeometries()
 {
     setViewportMargins(4, 0, 4, 37);
     QTreeView::updateGeometries();
+}
+
+void NavigationSideBar::paintEvent(QPaintEvent *event)
+{
+    QTreeView::paintEvent(event);
 }
 
 NavigationSideBarItemDelegate::NavigationSideBarItemDelegate(QObject *parent)
