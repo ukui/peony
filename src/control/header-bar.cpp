@@ -290,9 +290,6 @@ int HeaderBarStyle::pixelMetric(QStyle::PixelMetric metric, const QStyleOption *
     case PM_ToolBarItemSpacing: {
         return 1;
     }
-    case PM_ToolBarItemMargin:
-    case PM_ToolBarFrameWidth:
-        return 0;
     default:
         return QProxyStyle::pixelMetric(metric, option, widget);
     }

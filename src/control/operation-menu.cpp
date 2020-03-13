@@ -20,6 +20,8 @@
  *
  */
 
+#include "peony-application.h"
+
 #include "main-window.h"
 #include "operation-menu.h"
 #include <QHBoxLayout>
@@ -29,6 +31,8 @@
 #include <QWidgetAction>
 
 #include "global-settings.h"
+#include "clipboard-utils.h"
+#include "file-operation-utils.h"
 
 OperationMenu::OperationMenu(MainWindow *window, QWidget *parent) : QMenu(parent)
 {
@@ -39,9 +43,12 @@ OperationMenu::OperationMenu(MainWindow *window, QWidget *parent) : QMenu(parent
     //FIXME: implement all actions.
 
     auto editWidgetContainer = new QWidgetAction(this);
-    auto editWidget = new OperationMenuEditWidget(this);
+    auto editWidget = new OperationMenuEditWidget(window, this);
+    m_edit_widget = editWidget;
     editWidgetContainer->setDefaultWidget(editWidget);
     addAction(editWidgetContainer);
+
+    connect(m_edit_widget, &OperationMenuEditWidget::operationAccepted, this, &QMenu::hide);
 
     addSeparator();
 
@@ -68,21 +75,30 @@ OperationMenu::OperationMenu(MainWindow *window, QWidget *parent) : QMenu(parent
 
     auto forbidThumbnailing = addAction(tr("Forbid thumbnailing"), this, [=](bool checked){
         //FIXME:
+        Peony::GlobalSettings::getInstance()->setValue("do-not-thumbnail", checked);
     });
     m_forbid_thumbnailing = forbidThumbnailing;
     forbidThumbnailing->setCheckable(true);
+    forbidThumbnailing->setChecked(Peony::GlobalSettings::getInstance()->getValue("do-not-thumbnail").toBool());
 
     auto residentInBackend = addAction(tr("Resident in Backend"), this, [=](bool checked){
         //FIXME:
+        Peony::GlobalSettings::getInstance()->setValue("resident", checked);
+        qApp->setQuitOnLastWindowClosed(!checked);
     });
     m_resident_in_backend = residentInBackend;
     residentInBackend->setCheckable(true);
+    residentInBackend->setChecked(Peony::GlobalSettings::getInstance()->getValue("resident").toBool());
 
     addSeparator();
 
-    addAction(QIcon::fromTheme("help-app-symbolic"), tr("Help"));
+    addAction(QIcon::fromTheme("help-app-symbolic"), tr("Help"), this, [=](){
+        PeonyApplication::help();
+    });
 
-    addAction(QIcon::fromTheme("help-about", QIcon::fromTheme("gtk-about-symbolic")), tr("About"));
+    addAction(QIcon::fromTheme("help-about", QIcon::fromTheme("gtk-about-symbolic")), tr("About"), this, [=](){
+        PeonyApplication::about();
+    });
 }
 
 void OperationMenu::updateMenu()
@@ -100,9 +116,10 @@ void OperationMenu::updateMenu()
                                           false);
 
     //get window current directory and selections, then update ohter actions.
+    m_edit_widget->updateActions(m_window->getCurrentUri(), m_window->getCurrentSelections());
 }
 
-OperationMenuEditWidget::OperationMenuEditWidget(QWidget *parent) : QWidget(parent)
+OperationMenuEditWidget::OperationMenuEditWidget(MainWindow *window, QWidget *parent) : QWidget(parent)
 {
     auto vbox = new QVBoxLayout;
     setLayout(vbox);
@@ -114,6 +131,7 @@ OperationMenuEditWidget::OperationMenuEditWidget(QWidget *parent) : QWidget(pare
 
     auto hbox = new QHBoxLayout;
     auto copy = new QToolButton(this);
+    m_copy = copy;
     copy->setFixedSize(QSize(40, 40));
     copy->setIcon(QIcon::fromTheme("edit-copy-symbolic"));
     copy->setIconSize(QSize(16, 16));
@@ -121,6 +139,7 @@ OperationMenuEditWidget::OperationMenuEditWidget(QWidget *parent) : QWidget(pare
     hbox->addWidget(copy);
 
     auto paste = new QToolButton(this);
+    m_paste = paste;
     paste->setFixedSize(QSize(40, 40));
     paste->setIcon(QIcon::fromTheme("edit-paste-symbolic"));
     paste->setIconSize(QSize(16, 16));
@@ -128,6 +147,7 @@ OperationMenuEditWidget::OperationMenuEditWidget(QWidget *parent) : QWidget(pare
     hbox->addWidget(paste);
 
     auto cut = new QToolButton(this);
+    m_cut = cut;
     cut->setFixedSize(QSize(40, 40));
     cut->setIcon(QIcon::fromTheme("edit-cut-symbolic"));
     cut->setIconSize(QSize(16, 16));
@@ -135,6 +155,7 @@ OperationMenuEditWidget::OperationMenuEditWidget(QWidget *parent) : QWidget(pare
     hbox->addWidget(cut);
 
     auto trash = new QToolButton(this);
+    m_trash = trash;
     trash->setFixedSize(QSize(40, 40));
     trash->setIcon(QIcon::fromTheme("user-trash-symbolic"));
     trash->setIconSize(QSize(16, 16));
@@ -142,9 +163,44 @@ OperationMenuEditWidget::OperationMenuEditWidget(QWidget *parent) : QWidget(pare
     hbox->addWidget(trash);
 
     vbox->addLayout(hbox);
+
+    connect(m_copy, &QToolButton::clicked, this, [=](){
+        Peony::ClipboardUtils::setClipboardFiles(window->getCurrentSelections(), false);
+        Q_EMIT operationAccepted();
+    });
+
+    connect(m_cut, &QToolButton::clicked, this, [=](){
+        Peony::ClipboardUtils::setClipboardFiles(window->getCurrentSelections(), true);
+        Q_EMIT operationAccepted();
+    });
+
+    connect(m_paste, &QToolButton::clicked, this, [=](){
+        Peony::ClipboardUtils::pasteClipboardFiles(window->getCurrentUri());
+        Q_EMIT operationAccepted();
+    });
+
+    connect(m_trash, &QToolButton::clicked, this, [=](){
+        if (window->getCurrentUri() == "trash:///") {
+            Peony::FileOperationUtils::executeRemoveActionWithDialog(window->getCurrentSelections());
+        } else {
+            Peony::FileOperationUtils::trash(window->getCurrentSelections(), true);
+        }
+        Q_EMIT operationAccepted();
+    });
 }
 
 void OperationMenuEditWidget::updateActions(const QString &currentDirUri, const QStringList &selections)
 {
     //FIXME:
+    bool isSelectionEmpty = selections.isEmpty();
+    m_copy->setEnabled(!isSelectionEmpty);
+    m_cut->setEnabled(!isSelectionEmpty);
+    m_trash->setEnabled(!isSelectionEmpty);
+
+    if (isSelectionEmpty) {
+        bool isClipboradHasFile = Peony::ClipboardUtils::isClipboardHasFiles();
+        m_paste->setEnabled(isClipboradHasFile);
+    } else {
+        m_paste->setEnabled(false);
+    }
 }

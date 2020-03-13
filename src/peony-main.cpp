@@ -78,7 +78,7 @@ void messageOutput(QtMsgType type, const QMessageLogContext &context, const QStr
 }
 
 int main(int argc, char *argv[]) {
-    //qInstallMessageHandler(messageOutput);
+    qInstallMessageHandler(messageOutput);
     //QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     //QGuiApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
 

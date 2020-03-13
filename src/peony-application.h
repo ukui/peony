@@ -44,6 +44,8 @@ class PeonyApplication : public SingleApplication
     Q_OBJECT
 public:
     explicit PeonyApplication(int &argc, char *argv[], const char *applicationName = "peony-qt");
+    static void about();
+    static void help();
 
 protected Q_SLOTS:
     void parseCmd(quint32 id, QByteArray msg);

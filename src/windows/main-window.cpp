@@ -78,7 +78,7 @@ MainWindow::MainWindow(const QString &uri, QWidget *parent) : QMainWindow(parent
 
     setStyle(PeonyMainWindowStyle::getStyle());
 
-    setMinimumWidth(600);
+    setMinimumWidth(750);
     m_effect = new BorderShadowEffect(this);
     m_effect->setPadding(4);
     m_effect->setBorderRadius(6);
@@ -644,6 +644,7 @@ void MainWindow::initUI(const QString &uri)
         c.setShape(Qt::WaitCursor);
         this->setCursor(c);
         m_tab->setCursor(c);
+        m_side_bar->setCursor(c);
     });
 
     connect(this, &MainWindow::locationChangeEnd, this, [=](){
@@ -651,6 +652,7 @@ void MainWindow::initUI(const QString &uri)
         c.setShape(Qt::ArrowCursor);
         this->setCursor(c);
         m_tab->setCursor(c);
+        m_side_bar->setCursor(c);
         updateHeaderBar();
     });
 

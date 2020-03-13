@@ -26,6 +26,8 @@
 #include <QMenu>
 
 class MainWindow;
+class QToolButton;
+class OperationMenuEditWidget;
 
 class OperationMenu : public QMenu
 {
@@ -43,20 +45,27 @@ private:
 
 private:
     MainWindow *m_window;
+    OperationMenuEditWidget *m_edit_widget;
 };
 
 class OperationMenuEditWidget : public QWidget
 {
+public:
     friend class OperationMenu;
     Q_OBJECT
-    explicit OperationMenuEditWidget(QWidget *parent = nullptr);
+
+Q_SIGNALS:
+    void operationAccepted();
+
+private:
+    explicit OperationMenuEditWidget(MainWindow *window, QWidget *parent = nullptr);
 
     void updateActions(const QString &currentDirUri, const QStringList &selections);
 
-    QAction *m_copy;
-    QAction *m_paste;
-    QAction *m_cut;
-    QAction *m_trash;
+    QToolButton *m_copy;
+    QToolButton *m_paste;
+    QToolButton *m_cut;
+    QToolButton *m_trash;
 };
 
 #endif // OPERATIONMENU_H

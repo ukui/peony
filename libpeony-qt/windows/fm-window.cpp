@@ -395,7 +395,7 @@ FMWindow::FMWindow(const QString &uri, QWidget *parent) : QMainWindow (parent)
                               "\tYue Lan <lanyue@kylinos.cn>\n"
                               "\tMeihong He <hemeihong@kylinos.cn>\n"
                               "\n"
-                              "Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd."));
+                              "Copyright (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd."));
     });
     addAction(aboutAction);
 

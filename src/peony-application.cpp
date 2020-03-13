@@ -94,6 +94,7 @@
 #include <QLocale>
 
 #include <QStyleFactory>
+#include <QDesktopServices>
 
 PeonyApplication::PeonyApplication(int &argc, char *argv[], const char *applicationName) : SingleApplication (argc, argv, applicationName, true)
 {
@@ -536,4 +537,21 @@ void PeonyApplication::parseCmd(quint32 id, QByteArray msg)
             window->show();
         }
     }
+}
+
+void PeonyApplication::about()
+{
+    QMessageBox::about(nullptr,
+                       tr("Peony Qt"),
+                       tr("Authour: \n"
+                          "\tYue Lan <lanyue@kylinos.cn>\n"
+                          "\tMeihong He <hemeihong@kylinos.cn>\n"
+                          "\n"
+                          "Copyright (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd."));
+}
+
+void PeonyApplication::help()
+{
+    QUrl url = QUrl("help:ubuntu-kylin-help/files", QUrl::TolerantMode);
+    QDesktopServices::openUrl(url);
 }
