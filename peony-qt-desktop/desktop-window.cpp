@@ -215,7 +215,7 @@ void DesktopWindow::initGSettings() {
         qDebug() << "bg settings changed:" << key;
         if (key == "pictureFilename") {
             auto bg_path = m_bg_settings->get("pictureFilename").toString();
-            if (!bg_path.startsWith("/")) {
+            if (!QFile::exists(bg_path)) {
                 // use pure color;
                 auto colorString = m_bg_settings->get("primary-color").toString();
                 auto color = QColor(colorString);
