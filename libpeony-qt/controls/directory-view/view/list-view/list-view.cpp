@@ -107,6 +107,8 @@ void ListView::bindModel(FileItemModel *sourceModel, FileItemProxyFilterSortMode
 
 void ListView::mousePressEvent(QMouseEvent *e)
 {
+    m_editValid = false;
+
     if (e->button() == Qt::RightButton) {
         if (this->state() == QTreeView::EditingState) {
             if (indexWidget(indexAt(e->pos())))
