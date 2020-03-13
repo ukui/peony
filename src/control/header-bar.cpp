@@ -230,9 +230,22 @@ void HeaderBar::setLocation(const QString &uri)
     m_location_bar->updateLocation(uri);
 }
 
-void HeaderBar::startEdit()
+void HeaderBar::startEdit(bool bSearch)
 {
-    m_location_bar->startEdit();
+    //qDebug() << "bSearch" <<bSearch <<m_search_mode;
+    if (bSearch && m_search_mode)
+        return;
+
+    if (bSearch)
+    {
+        searchButtonClicked();
+    }
+    else
+    {
+        m_search_mode = false;
+        m_location_bar->startEdit();
+        m_location_bar->switchEditMode(false);
+    }
 }
 
 void HeaderBar::finishEdit()

@@ -55,7 +55,7 @@ private Q_SLOTS:
     void setLocation(const QString &uri);
     void updateIcons();
     void updateMaximizeState();
-    void startEdit();
+    void startEdit(bool bSearch = false);
     void finishEdit();
     void searchButtonClicked();
 

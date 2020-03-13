@@ -358,14 +358,14 @@ FMWindow::FMWindow(const QString &uri, QWidget *parent) : QMainWindow (parent)
     });
 
     auto searchAction = new QAction(this);
-    searchAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::CTRL + Qt::Key_F)<<QKeySequence(Qt::CTRL + Qt::Key_E)<<Qt::Key_F3);
+    searchAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::CTRL + Qt::Key_F)<<QKeySequence(Qt::CTRL + Qt::Key_E));
     connect(searchAction, &QAction::triggered, this, [=](){
         m_search_bar->setFocus();
     });
     addAction(searchAction);
 
     auto locationAction = new QAction(this);
-    locationAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::CTRL + Qt::Key_D));
+    locationAction->setShortcuts(QList<QKeySequence>()<<Qt::Key_F4<<QKeySequence(Qt::CTRL + Qt::Key_D));
     connect(locationAction, &QAction::triggered, this, [=](){
         m_navigation_bar->startEdit();
     });
@@ -489,7 +489,7 @@ FMWindow::FMWindow(const QString &uri, QWidget *parent) : QMainWindow (parent)
     addAction(maxAction);
 
     auto previewPageAction = new QAction(this);
-    previewPageAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::ALT + Qt::Key_P));
+    previewPageAction->setShortcuts(QList<QKeySequence>()<<Qt::Key_F3<<QKeySequence(Qt::ALT + Qt::Key_P));
     connect(previewPageAction, &QAction::triggered, this, [=](){
         auto lastPreviewPageId = m_navigation_bar->getLastPreviewPageId();
         m_navigation_bar->triggerAction(lastPreviewPageId);

@@ -50,6 +50,7 @@
 #include "file-label-box.h"
 #include "file-operation-manager.h"
 #include "file-operation-utils.h"
+#include "file-utils.h"
 #include "create-template-operation.h"
 #include "clipboard-utils.h"
 
@@ -180,16 +181,16 @@ void MainWindow::setShortCuts()
         Peony::FileOperationUtils::executeRemoveActionWithDialog(uris);
     });
 
-//    auto searchAction = new QAction(this);
-//    searchAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::CTRL + Qt::Key_F)<<QKeySequence(Qt::CTRL + Qt::Key_E)<<Qt::Key_F3);
-//    connect(searchAction, &QAction::triggered, this, [=](){
-//        m_search_bar->setFocus();
-//    });
-//    addAction(searchAction);
+    auto searchAction = new QAction(this);
+    searchAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::CTRL + Qt::Key_F)<<QKeySequence(Qt::CTRL + Qt::Key_E));
+    connect(searchAction, &QAction::triggered, this, [=](){
+        m_header_bar->startEdit(true);
+    });
+    addAction(searchAction);
 
-    //old version Ctrl+D, change to agree with the new standard
+    //F4 or Alt+D, change to address
     auto locationAction = new QAction(this);
-    locationAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::ALT + Qt::Key_D));
+    locationAction->setShortcuts(QList<QKeySequence>()<<Qt::Key_F4<<QKeySequence(Qt::ALT + Qt::Key_D));
     connect(locationAction, &QAction::triggered, this, [=](){
         m_header_bar->startEdit();
     });
@@ -309,10 +310,10 @@ void MainWindow::setShortCuts()
     addAction(maxAction);
 
 //    auto previewPageAction = new QAction(this);
-//    previewPageAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::ALT + Qt::Key_P));
+//    previewPageAction->setShortcuts(QList<QKeySequence>()<<Qt::Key_F3<<QKeySequence(Qt::ALT + Qt::Key_P));
 //    connect(previewPageAction, &QAction::triggered, this, [=](){
-//        auto lastPreviewPageId = m_navigation_bar->getLastPreviewPageId();
-//        m_navigation_bar->triggerAction(lastPreviewPageId);
+//        qDebug() << "previewPageAction short cut";
+//        m_tab->updatePreviewPage();
 //    });
 //    addAction(previewPageAction);
 
@@ -351,6 +352,19 @@ void MainWindow::setShortCuts()
         }
     });
     addAction(cutAction);
+}
+
+void MainWindow::keyPressEvent(QKeyEvent *e)
+{
+    if (e->key() == Qt::Key_Backspace)
+    {
+        auto uri = Peony::FileUtils::getParentUri(getCurrentUri());
+        //qDebug() << "goUp Action" << getCurrentUri() << uri;
+        if (uri.isNull())
+            return;
+        m_tab->goToUri(uri, true, true);
+    }
+    return QMainWindow::keyPressEvent(e);
 }
 
 const QString MainWindow::getCurrentUri()
