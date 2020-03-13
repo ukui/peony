@@ -65,6 +65,7 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
     });
 
     m_edit_trigger_timer.setSingleShot(true);
+    m_edit_trigger_timer.setInterval(3000);
     m_last_index = QModelIndex();
 
     setContentsMargins(0, 0, 0, 0);
@@ -103,8 +104,8 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
 #endif
         connect(this->selectionModel(), &QItemSelectionModel::selectionChanged, [=](const QItemSelection &selection, const QItemSelection &deselection){
             //qDebug()<<"selection changed";
+            m_real_do_edit = false;
             this->setIndexWidget(m_last_index, nullptr);
-            this->resetEditTriggerTimer();
             auto currentSelections = this->selectionModel()->selection().indexes();
 
             if (currentSelections.count() == 1) {
@@ -617,19 +618,20 @@ DesktopIconView::ZoomLevel DesktopIconView::zoomLevel() const
 
 void DesktopIconView::mousePressEvent(QMouseEvent *e)
 {
+    m_real_do_edit = false;
     if (!indexAt(e->pos()).isValid()) {
         clearAllIndexWidgets();
         clearSelection();
     }
-
-    QListView::mousePressEvent(e);
 
     //qDebug()<<m_last_index.data();
     if (e->button() != Qt::LeftButton) {
         return;
     }
 
-    if (indexAt(e->pos()) == m_last_index && m_last_index.isValid()) {
+    if (!m_edit_trigger_timer.isActive()) {
+        m_edit_trigger_timer.start();
+    } else {
         //not allow to edit special items:computer,trash and personal home path folder name
         bool special_index = false;
         QString homeUri = "file://" + QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
@@ -637,40 +639,39 @@ void DesktopIconView::mousePressEvent(QMouseEvent *e)
                          m_last_index.data(Qt::UserRole).toString() == "trash:///" ||
                          m_last_index.data(Qt::UserRole).toString() == homeUri);
         //qDebug()<<"check" << m_last_index.data() << special_index <<m_last_index.data(Qt::UserRole).toString();
-        if (m_edit_trigger_timer.isActive() && !special_index) {
+        if (m_edit_trigger_timer.remainingTime() >= 0 && m_edit_trigger_timer.remainingTime() <= 2250 && !special_index && indexAt(e->pos()) == m_last_index && m_last_index.isValid()) {
             //qDebug()<<"edit" << m_last_index.data(Qt::UserRole).toString();
-            setIndexWidget(m_last_index, nullptr);
-            edit(m_last_index);
+            m_real_do_edit = true;
+            QTimer::singleShot(300, this, [=](){
+                if (m_real_do_edit) {
+                    setIndexWidget(m_last_index, nullptr);
+                    edit(m_last_index);
+                    m_real_do_edit = false;
+                    m_edit_trigger_timer.stop();
+                }
+            });
+        } else {
+            m_real_do_edit = false;
         }
     }
+
+    QListView::mousePressEvent(e);
 }
 
 void DesktopIconView::mouseReleaseEvent(QMouseEvent *e)
 {
     QListView::mouseReleaseEvent(e);
-
-    if (e->button() != Qt::LeftButton) {
-        return;
-    }
-
-    if (!m_edit_trigger_timer.isActive() && indexAt(e->pos()).isValid() && this->selectedIndexes().count() == 1) {
-        resetEditTriggerTimer();
-    }
 }
 
-void DesktopIconView::resetEditTriggerTimer()
+void DesktopIconView::mouseDoubleClickEvent(QMouseEvent *event)
 {
-    m_edit_trigger_timer.disconnect();
-    m_edit_trigger_timer.stop();
-    QTimer::singleShot(750, [&](){
-        qDebug()<<"start";
-        m_edit_trigger_timer.setSingleShot(true);
-        m_edit_trigger_timer.start(1000);
-    });
+    QListView::mouseDoubleClickEvent(event);
+    m_real_do_edit = false;
 }
 
 void DesktopIconView::dragEnterEvent(QDragEnterEvent *e)
 {
+    m_real_do_edit = false;
     //qDebug()<<"drag enter event";
     if (e->mimeData()->hasUrls()) {
         e->setDropAction(Qt::MoveAction);
@@ -680,6 +681,7 @@ void DesktopIconView::dragEnterEvent(QDragEnterEvent *e)
 
 void DesktopIconView::dragMoveEvent(QDragMoveEvent *e)
 {
+    m_real_do_edit = false;
     auto index = indexAt(e->pos());
     if (index.isValid() && index != m_last_index) {
         QHoverEvent he(QHoverEvent::HoverMove, e->posF(), e->posF());
@@ -701,6 +703,7 @@ void DesktopIconView::dragMoveEvent(QDragMoveEvent *e)
 
 void DesktopIconView::dropEvent(QDropEvent *e)
 {
+    m_real_do_edit = false;
     //qDebug()<<"drop event";
     /*!
       \todo

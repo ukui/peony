@@ -125,6 +125,7 @@ public Q_SLOTS:
 protected:
     void mousePressEvent(QMouseEvent *e);
     void mouseReleaseEvent(QMouseEvent *e);
+    void mouseDoubleClickEvent(QMouseEvent *event);
 
     void dragEnterEvent(QDragEnterEvent *e);
     void dragMoveEvent(QDragMoveEvent *e);
@@ -132,8 +133,6 @@ protected:
 
     void wheelEvent(QWheelEvent *e);
     void keyPressEvent(QKeyEvent *e);
-
-    void resetEditTriggerTimer();
 
 private:
     ZoomLevel m_zoom_level = Invalid;
@@ -147,6 +146,8 @@ private:
     QStringList m_new_files_to_be_selected;
 
     bool m_is_refreshing = false;
+
+    bool m_real_do_edit = false;
 };
 
 }
