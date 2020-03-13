@@ -63,6 +63,7 @@
 #include "navigation-bar.h"
 
 #include "fm-window.h"
+#include "main-window.h"
 
 #include <QFile>
 
@@ -489,8 +490,9 @@ void PeonyApplication::parseCmd(quint32 id, QByteArray msg)
             auto parentUris = itemHash.keys();
 
             for (auto parentUri : parentUris) {
-                Peony::FMWindow *window = new Peony::FMWindow(parentUri);
-                connect(window, &Peony::FMWindow::locationChangeEnd, [=](){
+                auto window = new MainWindow(parentUri);
+                //Peony::FMWindow *window = new Peony::FMWindow(parentUri);
+                connect(window, &MainWindow::locationChangeEnd, [=](){
                     QTimer::singleShot(500, [=]{
                         window->getCurrentPage()->getView()->setSelections(itemHash.value(parentUri));
                         window->getCurrentPage()->getView()->scrollToSelection(itemHash.value(parentUri).first());
@@ -502,7 +504,8 @@ void PeonyApplication::parseCmd(quint32 id, QByteArray msg)
 
         if (parser.isSet(showFoldersOption)) {
             QStringList uris = Peony::FileUtils::toDisplayUris(parser.positionalArguments());
-            Peony::FMWindow *window = new Peony::FMWindow(uris.first());
+            auto window = new MainWindow(uris.first());
+            //Peony::FMWindow *window = new Peony::FMWindow(uris.first());
             uris.removeAt(0);
             if (!uris.isEmpty()) {
                 window->addNewTabs(uris);
@@ -518,7 +521,8 @@ void PeonyApplication::parseCmd(quint32 id, QByteArray msg)
     } else {
         if (!parser.positionalArguments().isEmpty()) {
             QStringList uris = Peony::FileUtils::toDisplayUris(parser.positionalArguments());
-            auto window = new Peony::FMWindow(uris.first());
+            //auto window = new Peony::FMWindow(uris.first());
+            auto window = new MainWindow(uris.first());
             uris.removeAt(0);
             if (!uris.isEmpty()) {
                 window->addNewTabs(uris);
@@ -526,7 +530,8 @@ void PeonyApplication::parseCmd(quint32 id, QByteArray msg)
             window->setAttribute(Qt::WA_DeleteOnClose);
             window->show();
         } else {
-            auto window = new Peony::FMWindow;
+            auto window = new MainWindow;
+            //auto window = new Peony::FMWindow;
             window->setAttribute(Qt::WA_DeleteOnClose);
             window->show();
         }

@@ -23,6 +23,7 @@
 #include "view-type-menu.h"
 
 #include "view-factory-sort-filter-model.h"
+#include "directory-view-factory-manager.h"
 
 #include <QActionGroup>
 
@@ -45,7 +46,8 @@ ViewTypeMenu::ViewTypeMenu(QWidget *parent) : QMenu(parent)
     });
 
     setCurrentDirectory("file:///");
-    setCurrentView(tr("Icon View"));
+    auto viewFactory = Peony::DirectoryViewFactoryManager2::getInstance();
+    setCurrentView(viewFactory->getDefaultViewId());
 }
 
 void ViewTypeMenu::setCurrentView(const QString &viewId)
