@@ -73,6 +73,8 @@ private:
     QPushButton *m_go_forward;
     QToolButton *m_maximize_restore_button;
     QToolButton *m_search_button;
+
+    bool m_search_mode = false;
 };
 
 class HeaderBarToolButton : public QToolButton

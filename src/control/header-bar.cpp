@@ -210,10 +210,12 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
 
 void HeaderBar::searchButtonClicked()
 {
-    m_search_button->setCheckable(true);
-    m_search_button->setChecked(true);
-    m_search_button->setDown(true);
-    m_location_bar->switchEditMode();
+    m_search_mode = ! m_search_mode;
+    //qDebug() << "searchButtonClicked" <<m_search_mode;
+    m_search_button->setCheckable(m_search_mode);
+    m_search_button->setChecked(m_search_mode);
+    m_search_button->setDown(m_search_mode);
+    m_location_bar->switchEditMode(m_search_mode);
 }
 
 void HeaderBar::addSpacing(int pixel)

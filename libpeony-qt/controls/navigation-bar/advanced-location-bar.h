@@ -50,7 +50,7 @@ public Q_SLOTS:
     void updateLocation(const QString &uri);
     void startEdit();
     void finishEdit();
-    void switchEditMode();
+    void switchEditMode(bool bSearchMode);
 
 private:
     QStackedLayout *m_layout;
@@ -60,8 +60,6 @@ private:
     QLineEdit *m_search_bar;
 
     QString m_text;
-
-    bool m_search_mode = false;
 };
 
 }
