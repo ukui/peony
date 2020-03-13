@@ -57,6 +57,8 @@
 #include "directory-view-widget.h"
 #include "main-window-factory.h"
 
+#include "peony-application.h"
+
 #include <QSplitter>
 
 #include <QPainter>
@@ -211,13 +213,7 @@ void MainWindow::setShortCuts()
     auto aboutAction = new QAction(this);
     aboutAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_F2));
     connect(aboutAction, &QAction::triggered, this, [=](){
-        QMessageBox::about(this,
-                           tr("Peony Qt"),
-                           tr("Authour: \n"
-                              "\tYue Lan <lanyue@kylinos.cn>\n"
-                              "\tMeihong He <hemeihong@kylinos.cn>\n"
-                              "\n"
-                              "Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd."));
+        PeonyApplication::about();
     });
     addAction(aboutAction);
 

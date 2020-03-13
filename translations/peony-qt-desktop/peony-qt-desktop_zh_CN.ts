@@ -197,9 +197,14 @@
 <context>
     <name>Peony::DesktopWindow</name>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-window.cpp" line="172"/>
+        <location filename="../../peony-qt-desktop/desktop-window.cpp" line="173"/>
         <source>set background</source>
         <translation>设置壁纸</translation>
+    </message>
+    <message>
+        <location filename="../../peony-qt-desktop/desktop-window.cpp" line="522"/>
+        <source>New Folder</source>
+        <translation>新建文件夹</translation>
     </message>
 </context>
 <context>
@@ -211,7 +216,7 @@
     <message>
         <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="147"/>
         <source>Close the peony desktop window</source>
-        <translation type="unfinished"></translation>
+        <translation>关闭桌面程序</translation>
     </message>
     <message>
         <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="150"/>

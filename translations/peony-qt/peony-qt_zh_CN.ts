@@ -2,28 +2,186 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="zh_CN">
 <context>
+    <name>FileLabelBox</name>
+    <message>
+        <location filename="../../src/control/file-label-box.cpp" line="53"/>
+        <source>Rename</source>
+        <translation>重命名</translation>
+    </message>
+    <message>
+        <location filename="../../src/control/file-label-box.cpp" line="58"/>
+        <source>Edit Color</source>
+        <translation>编辑颜色</translation>
+    </message>
+    <message>
+        <location filename="../../src/control/file-label-box.cpp" line="66"/>
+        <source>Delete</source>
+        <translation>删除标记</translation>
+    </message>
+    <message>
+        <location filename="../../src/control/file-label-box.cpp" line="71"/>
+        <source>Create New Label</source>
+        <translation>创建标记</translation>
+    </message>
+</context>
+<context>
+    <name>HeaderBar</name>
+    <message>
+        <location filename="../../src/control/header-bar.cpp" line="58"/>
+        <source>Create Folder</source>
+        <translation>新建文件夹</translation>
+    </message>
+    <message>
+        <location filename="../../src/control/header-bar.cpp" line="68"/>
+        <source>Open Terminal</source>
+        <translation>打开终端</translation>
+    </message>
+    <message>
+        <location filename="../../src/control/header-bar.cpp" line="81"/>
+        <source>Go Back</source>
+        <translation>后退</translation>
+    </message>
+    <message>
+        <location filename="../../src/control/header-bar.cpp" line="92"/>
+        <source>Go Forward</source>
+        <translation>前进</translation>
+    </message>
+    <message>
+        <location filename="../../src/control/header-bar.cpp" line="109"/>
+        <source>Search</source>
+        <translation>搜索</translation>
+    </message>
+    <message>
+        <location filename="../../src/control/header-bar.cpp" line="119"/>
+        <source>View Type</source>
+        <translation>视图类型</translation>
+    </message>
+    <message>
+        <location filename="../../src/control/header-bar.cpp" line="137"/>
+        <source>Sort Type</source>
+        <translation>排序类型</translation>
+    </message>
+    <message>
+        <location filename="../../src/control/header-bar.cpp" line="163"/>
+        <source>Option</source>
+        <translation>选项</translation>
+    </message>
+    <message>
+        <location filename="../../src/control/header-bar.cpp" line="176"/>
+        <source>Minimize</source>
+        <translation>最小化</translation>
+    </message>
+    <message>
+        <location filename="../../src/control/header-bar.cpp" line="199"/>
+        <source>Close</source>
+        <translation>最大化</translation>
+    </message>
+</context>
+<context>
+    <name>MainWindow</name>
+    <message>
+        <location filename="../../src/windows/main-window.cpp" line="140"/>
+        <source>Ctrl+H</source>
+        <comment>Show|Hidden</comment>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../../src/windows/main-window.cpp" line="146"/>
+        <source>Undo</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../../src/windows/main-window.cpp" line="153"/>
+        <source>Redo</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Peony Qt</source>
+        <translation type="vanished">文件管理器</translation>
+    </message>
+    <message>
+        <location filename="../../src/windows/main-window.cpp" line="265"/>
+        <source>New Folder</source>
+        <translation>新建文件夹</translation>
+    </message>
+</context>
+<context>
+    <name>NavigationSideBar</name>
+    <message>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="113"/>
+        <source>All tags...</source>
+        <translation>所有标记...</translation>
+    </message>
+</context>
+<context>
+    <name>OperationMenu</name>
+    <message>
+        <location filename="../../src/control/operation-menu.cpp" line="56"/>
+        <source>Advance Search</source>
+        <translation>高级搜索</translation>
+    </message>
+    <message>
+        <location filename="../../src/control/operation-menu.cpp" line="63"/>
+        <source>Keep Allow</source>
+        <translation>置顶窗口</translation>
+    </message>
+    <message>
+        <location filename="../../src/control/operation-menu.cpp" line="69"/>
+        <source>Show Hidden</source>
+        <translation>显示隐藏文件</translation>
+    </message>
+    <message>
+        <location filename="../../src/control/operation-menu.cpp" line="76"/>
+        <source>Forbid thumbnailing</source>
+        <translation>禁用缩略图</translation>
+    </message>
+    <message>
+        <location filename="../../src/control/operation-menu.cpp" line="84"/>
+        <source>Resident in Backend</source>
+        <translation>常驻后台</translation>
+    </message>
+    <message>
+        <location filename="../../src/control/operation-menu.cpp" line="95"/>
+        <source>Help</source>
+        <translation>帮助</translation>
+    </message>
+    <message>
+        <location filename="../../src/control/operation-menu.cpp" line="99"/>
+        <source>About</source>
+        <translation>关于</translation>
+    </message>
+</context>
+<context>
+    <name>OperationMenuEditWidget</name>
+    <message>
+        <location filename="../../src/control/operation-menu.cpp" line="128"/>
+        <source>Edit</source>
+        <translation>编辑</translation>
+    </message>
+</context>
+<context>
     <name>PeonyApplication</name>
     <message>
         <source>Peony-Qt</source>
         <translation type="vanished">文件管理器</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.cpp" line="119"/>
+        <location filename="../../src/peony-application.cpp" line="127"/>
         <source>Files or directories to open</source>
         <translation>需要打开的文件或文件夹</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.cpp" line="119"/>
+        <location filename="../../src/peony-application.cpp" line="127"/>
         <source>[FILE1, FILE2,...]</source>
         <translation>[文件1，文件2...]</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.cpp" line="144"/>
+        <location filename="../../src/peony-application.cpp" line="152"/>
         <source>Warning</source>
         <translation>警告</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.cpp" line="144"/>
+        <location filename="../../src/peony-application.cpp" line="152"/>
         <source>Peony-Qt can not get the system&apos;s icon theme. There are 2 reasons might lead to this problem:
 
 1. Peony-Qt might be running as root, that means you have the higher permission and can do some things which normally forbidden. But, you should learn that if you were in a root, the virtual file system will lose some featrue such as you can not use &quot;My Computer&quot;, the theme and icons might also went wrong. So, run peony-qt in a root is not recommended.
@@ -36,24 +194,75 @@
 2.你使用的系统主题不是qt默认支持的主题，并且你没有安装相关的平台插件。如果你正在使用Gtk主题作为系统主题，尝试安装qt5-gtk2-platformtheme以解决此问题。</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.h" line="53"/>
+        <location filename="../../src/peony-application.cpp" line="545"/>
+        <source>Peony Qt</source>
+        <translation>文件管理器</translation>
+    </message>
+    <message>
+        <location filename="../../src/peony-application.cpp" line="546"/>
+        <source>Authour: 
+	Yue Lan &lt;lanyue@kylinos.cn&gt;
+	Meihong He &lt;hemeihong@kylinos.cn&gt;
+
+Copyright (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</source>
+        <translation>作者:
+	Yue Lan &lt;lanyue@kylinos.cn&gt;
+	Meihong He &lt;hemeihong@kylinos.cn&gt;
+
+版权所有(C): 2019-2020,天津麒麟信息技术有限公司.</translation>
+    </message>
+    <message>
+        <location filename="../../src/peony-application.h" line="55"/>
         <source>Close all peony-qt windows and quit</source>
         <translation>关闭所有窗口并退出</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.h" line="54"/>
+        <location filename="../../src/peony-application.h" line="56"/>
         <source>Show items</source>
         <translation>打开文件所在目录并选中它们</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.h" line="55"/>
+        <location filename="../../src/peony-application.h" line="57"/>
         <source>Show folders</source>
         <translation>显示文件夹下的内容</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.h" line="56"/>
+        <location filename="../../src/peony-application.h" line="58"/>
         <source>Show properties</source>
         <translation>打开文件属性窗口</translation>
+    </message>
+</context>
+<context>
+    <name>SortTypeMenu</name>
+    <message>
+        <location filename="../../src/control/sort-type-menu.cpp" line="33"/>
+        <source>File Name</source>
+        <translation>文件名称</translation>
+    </message>
+    <message>
+        <location filename="../../src/control/sort-type-menu.cpp" line="37"/>
+        <source>File Size</source>
+        <translation>文件大小</translation>
+    </message>
+    <message>
+        <location filename="../../src/control/sort-type-menu.cpp" line="41"/>
+        <source>File Type</source>
+        <translation>文件类型</translation>
+    </message>
+    <message>
+        <location filename="../../src/control/sort-type-menu.cpp" line="45"/>
+        <source>Modified Data</source>
+        <translation>修改日期</translation>
+    </message>
+    <message>
+        <location filename="../../src/control/sort-type-menu.cpp" line="60"/>
+        <source>Ascending</source>
+        <translation>升序</translation>
+    </message>
+    <message>
+        <location filename="../../src/control/sort-type-menu.cpp" line="64"/>
+        <source>Descending</source>
+        <translation>降序</translation>
     </message>
 </context>
 </TS>
