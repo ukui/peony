@@ -37,6 +37,9 @@
 
 NavigationSideBar::NavigationSideBar(QWidget *parent) : QTreeView(parent)
 {
+    auto delegate = new NavigationSideBarItemDelegate(this);
+    setItemDelegate(delegate);
+
     installEventFilter(this);
 
     setAttribute(Qt::WA_TranslucentBackground);
@@ -126,4 +129,16 @@ void NavigationSideBar::updateGeometries()
 {
     setViewportMargins(4, 0, 4, 37);
     QTreeView::updateGeometries();
+}
+
+NavigationSideBarItemDelegate::NavigationSideBarItemDelegate(QObject *parent)
+{
+
+}
+
+QSize NavigationSideBarItemDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const
+{
+    auto size = QStyledItemDelegate::sizeHint(option, index);
+    size.setHeight(36);
+    return size;
 }

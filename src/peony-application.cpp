@@ -101,6 +101,12 @@ PeonyApplication::PeonyApplication(int &argc, char *argv[], const char *applicat
     setApplicationName("peony-qt");
     //setApplicationDisplayName(tr("Peony-Qt"));
 
+    QFile file(":/data/libpeony-qt-styled.qss");
+    file.open(QFile::ReadOnly);
+    setStyleSheet(QString::fromLatin1(file.readAll()));
+    //qDebug()<<file.readAll();
+    file.close();
+
     QTranslator *t = new QTranslator(this);
     qDebug()<<"\n\n\n\n\n\n\ntranslate:"<<t->load("/usr/share/libpeony-qt/libpeony-qt_"+QLocale::system().name());
     QApplication::installTranslator(t);
@@ -159,14 +165,8 @@ PeonyApplication::PeonyApplication(int &argc, char *argv[], const char *applicat
     }
     Peony::SearchVFSRegister::registSearchVFS();
     //QIcon::setThemeName("ukui-icon-theme-one");
-    setAttribute(Qt::AA_UseHighDpiPixmaps);
+    //setAttribute(Qt::AA_UseHighDpiPixmaps);
     //setAttribute(Qt::AA_EnableHighDpiScaling);
-
-    QFile file(":/data/libpeony-qt-styled.qss");
-    file.open(QFile::ReadOnly);
-    setStyleSheet(QString::fromLatin1(file.readAll()));
-    //qDebug()<<file.readAll();
-    file.close();
 
     //setStyle(QStyleFactory::create("windows"));
 

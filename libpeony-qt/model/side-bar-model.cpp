@@ -47,22 +47,22 @@ SideBarModel::SideBarModel(QObject *parent)
 
     m_root_children = new QVector<SideBarAbstractItem*>();
 
-    SideBarSeparatorItem *separator1 = new SideBarSeparatorItem(SideBarSeparatorItem::Large, nullptr, this, this);
-    m_root_children->append(separator1);
+//    SideBarSeparatorItem *separator1 = new SideBarSeparatorItem(SideBarSeparatorItem::Large, nullptr, this, this);
+//    m_root_children->append(separator1);
 
     SideBarFavoriteItem *favorite_root_item = new SideBarFavoriteItem(nullptr, nullptr, this);
     m_root_children->append(favorite_root_item);
     //favorite_root_item->findChildren();
 
-    SideBarSeparatorItem *separator2 = new SideBarSeparatorItem(SideBarSeparatorItem::Small, nullptr, this, this);
-    m_root_children->append(separator2);
+//    SideBarSeparatorItem *separator2 = new SideBarSeparatorItem(SideBarSeparatorItem::Small, nullptr, this, this);
+//    m_root_children->append(separator2);
 
     SideBarPersonalItem *personal_root_item = new SideBarPersonalItem(nullptr, nullptr, this);
     m_root_children->append(personal_root_item);
     //personal_root_item->findChildren();
 
-    SideBarSeparatorItem *separator3 = new SideBarSeparatorItem(SideBarSeparatorItem::Small, nullptr, this, this);
-    m_root_children->append(separator3);
+//    SideBarSeparatorItem *separator3 = new SideBarSeparatorItem(SideBarSeparatorItem::Small, nullptr, this, this);
+//    m_root_children->append(separator3);
 
     SideBarFileSystemItem *computerItem = new SideBarFileSystemItem(nullptr,
                                                                     nullptr,

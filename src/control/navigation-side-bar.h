@@ -24,6 +24,7 @@
 #define NAVIGATIONSIDEBAR_H
 
 #include <QTreeView>
+#include <QStyledItemDelegate>
 
 namespace Peony {
 class SideBarModel;
@@ -50,6 +51,14 @@ private:
     Peony::SideBarModel *m_model;
 
     QPushButton *m_label_button;
+};
+
+class NavigationSideBarItemDelegate : public QStyledItemDelegate
+{
+    friend class NavigationSideBar;
+    explicit NavigationSideBarItemDelegate(QObject *parent = nullptr);
+
+    QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const override;
 };
 
 #endif // NAVIGATIONSIDEBAR_H
