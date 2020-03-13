@@ -73,6 +73,11 @@ void BorderShadowEffect::setTransParentPath(const QPainterPath &path)
     m_transparent_path = path;
 }
 
+void BorderShadowEffect::setTransParentAreaBg(const QColor &transparentBg)
+{
+    m_transparent_bg = transparentBg;
+}
+
 void BorderShadowEffect::drawWindowShadowManually(QPainter *painter, const QRect &windowRect, bool fakeShadow)
 {
     //draw window bg;
@@ -87,6 +92,7 @@ void BorderShadowEffect::drawWindowShadowManually(QPainter *painter, const QRect
     //qDebug()<<contentPath;
     auto bgPath = contentPath - m_transparent_path;
     painter->fillPath(bgPath, m_window_bg);
+    painter->fillPath(m_transparent_path, m_transparent_bg);
 
     if (fakeShadow) {
         painter->save();

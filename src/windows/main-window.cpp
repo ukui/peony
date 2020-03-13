@@ -60,6 +60,8 @@
 
 #include "peony-application.h"
 
+#include "global-settings.h"
+
 #include <QSplitter>
 
 #include <QPainter>
@@ -562,10 +564,20 @@ void MainWindow::paintEvent(QPaintEvent *e)
 {
     validBorder();
     QColor color = this->palette().window().color();
+    QColor colorBase = this->palette().base().color();
+
+    auto sidebarOpacity = Peony::GlobalSettings::getInstance()->getValue(SIDEBAR_BG_OPACITY).toInt();
+
+    colorBase.setAlphaF(sidebarOpacity/100.0);
 
     QPainterPath sidebarPath;
-    sidebarPath.addRect(sideBarRect());
+    sidebarPath.setFillRule(Qt::FillRule::WindingFill);
+    auto adjustedRect = sideBarRect().adjusted(0, 1, 0, 0);
+    sidebarPath.addRoundedRect(adjustedRect, 6, 6);
+    sidebarPath.addRect(adjustedRect.adjusted(0, 0, 0, -6));
+    sidebarPath.addRect(adjustedRect.adjusted(6, 0, 0, 0));
     m_effect->setTransParentPath(sidebarPath);
+    m_effect->setTransParentAreaBg(colorBase);
 
     //color.setAlphaF(0.5);
     m_effect->setWindowBackground(color);
