@@ -125,6 +125,8 @@ public Q_SLOTS:
     void editUris(const QStringList &uris);
 
     void onViewDoubleClicked(const QString &uri);
+    bool getTriggeredPreviewPage(){return m_triggered_preview_page;}
+    void setTriggeredPreviewPage(bool trigger) {m_triggered_preview_page = trigger;}
 
     int count();
     int currentIndex();
@@ -147,6 +149,8 @@ private:
     QStackedWidget *m_preview_page_container;
 
     QAction *m_current_preview_action = nullptr;
+
+    bool m_triggered_preview_page = false;
 };
 
 class PreviewPageContainer : public QStackedWidget

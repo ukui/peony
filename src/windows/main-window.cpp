@@ -43,6 +43,8 @@
 #include "tab-widget.h"
 #include "x11-window-manager.h"
 #include "properties-window.h"
+#include "preview-page-factory-manager.h"
+#include "preview-page-plugin-iface.h"
 
 #include "navigation-side-bar.h"
 #include "advance-search-bar.h"
@@ -271,19 +273,7 @@ void MainWindow::setShortCuts()
 
     auto newFolderAction = new QAction(this);
     newFolderAction->setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_N));
-    connect(newFolderAction, &QAction::triggered, this, [=](){
-        Peony::CreateTemplateOperation op(getCurrentUri(), Peony::CreateTemplateOperation::EmptyFolder, tr("New Folder"));
-        op.run();
-        auto targetUri = op.target();
-#if QT_VERSION > QT_VERSION_CHECK(5, 12, 0)
-            QTimer::singleShot(500, this, [=](){
-#else
-            QTimer::singleShot(500, [=](){
-#endif
-            this->getCurrentPage()->getView()->scrollToSelection(targetUri);
-            this->editUri(targetUri);
-        });
-    });
+    connect(newFolderAction, &QAction::triggered, this, &MainWindow::createFolderOperation);
     addAction(newFolderAction);
 
     //show selected item's properties
@@ -318,13 +308,24 @@ void MainWindow::setShortCuts()
     });
     addAction(maxAction);
 
-//    auto previewPageAction = new QAction(this);
-//    previewPageAction->setShortcuts(QList<QKeySequence>()<<Qt::Key_F3<<QKeySequence(Qt::ALT + Qt::Key_P));
-//    connect(previewPageAction, &QAction::triggered, this, [=](){
-//        qDebug() << "previewPageAction short cut";
-//        m_tab->updatePreviewPage();
-//    });
-//    addAction(previewPageAction);
+    auto previewPageAction = new QAction(this);
+    previewPageAction->setShortcuts(QList<QKeySequence>()<<Qt::Key_F3<<QKeySequence(Qt::ALT + Qt::Key_P));
+    connect(previewPageAction, &QAction::triggered, this, [=](){
+        auto triggered = m_tab->getTriggeredPreviewPage();
+        if (triggered)
+        {
+            m_tab->setPreviewPage(nullptr);
+        }
+        else
+        {
+            auto instance = Peony::PreviewPageFactoryManager::getInstance();
+            auto lastPreviewPageId  = instance->getLastPreviewPageId();
+            auto *page = instance->getPlugin(lastPreviewPageId)->createPreviewPage();
+            m_tab->setPreviewPage(page);
+        }
+        m_tab->setTriggeredPreviewPage(! triggered);
+    });
+    addAction(previewPageAction);
 
     auto refreshAction = new QAction(this);
     refreshAction->setShortcut(Qt::Key_F5);
@@ -363,6 +364,21 @@ void MainWindow::setShortCuts()
     addAction(cutAction);
 }
 
+void MainWindow::createFolderOperation()
+{
+    Peony::CreateTemplateOperation op(getCurrentUri(), Peony::CreateTemplateOperation::EmptyFolder, tr("New Folder"));
+    op.run();
+    auto targetUri = op.target();
+#if QT_VERSION > QT_VERSION_CHECK(5, 12, 0)
+        QTimer::singleShot(500, this, [=](){
+#else
+        QTimer::singleShot(500, [=](){
+#endif
+        this->getCurrentPage()->getView()->scrollToSelection(targetUri);
+        this->editUri(targetUri);
+    });
+}
+
 void MainWindow::keyPressEvent(QKeyEvent *e)
 {
     if (e->key() == Qt::Key_Backspace)
@@ -378,7 +394,6 @@ void MainWindow::keyPressEvent(QKeyEvent *e)
 
 const QString MainWindow::getCurrentUri()
 {
-    //qDebug() << "getCurrentUri in Main-window";
     return m_tab->getCurrentUri();
 }
 

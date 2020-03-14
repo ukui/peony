@@ -36,7 +36,6 @@ class QStackedWidget;
 
 namespace Peony {
 class DirectoryViewContainer;
-class AdvanceSearchBar;
 }
 
 class MainWindow : public QMainWindow, public Peony::FMWindowIface
@@ -84,6 +83,7 @@ public Q_SLOTS:
 
     void syncControlsLocation(const QString &uri);
     void updateHeaderBar();
+    void createFolderOperation();
     void goToUri(const QString &uri, bool addHistory = false, bool force = false);
 
     void addNewTabs(const QStringList &uris);
@@ -136,8 +136,6 @@ private:
 
     HeaderBar *m_header_bar;
     NavigationSideBar *m_side_bar;
-    Peony::AdvanceSearchBar *m_filter_bar;
-    QWidget *m_filter;
     QStackedWidget *m_side_bar_container;
     TabWidget *m_tab;
 

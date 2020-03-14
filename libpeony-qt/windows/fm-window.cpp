@@ -562,7 +562,6 @@ FMWindowFactory *FMWindow::getFactory()
 
 const QString FMWindow::getCurrentUri()
 {
-    //qDebug() << "getCurrentUri in fm-window";
     if (m_tab->getActivePage()) {
         return m_tab->getActivePage()->getCurrentUri();
     }

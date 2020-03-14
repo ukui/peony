@@ -29,9 +29,9 @@
 
 #include "directory-view-container.h"
 #include "directory-view-widget.h"
+#include "advanced-location-bar.h"
 
 #include <QHBoxLayout>
-#include <advanced-location-bar.h>
 
 #include <QStyleOptionToolButton>
 
@@ -56,7 +56,8 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
     setMovable(false);
 
     auto a = addAction(QIcon::fromTheme("folder-new-symbolic"), tr("Create Folder"), [=](){
-        //FIXME:
+        //use the same function
+        m_window->createFolderOperation();
     });
     auto createFolder = qobject_cast<QToolButton *>(widgetForAction(a));
     createFolder->setAutoRaise(false);

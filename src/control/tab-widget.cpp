@@ -62,6 +62,7 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
     m_preview_page_container = new QStackedWidget(this);
 
     connect(m_buttons, &PreviewPageButtonGroups::previewPageButtonTrigger, [=](bool trigger, const QString &id){
+        setTriggeredPreviewPage(trigger);
         if (trigger) {
             auto plugin = Peony::PreviewPageFactoryManager::getInstance()->getPlugin(id);
             setPreviewPage(plugin->createPreviewPage());
