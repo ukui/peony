@@ -169,43 +169,6 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
 
     m_operation_menu = new OperationMenu(m_window, this);
     popMenu->setMenu(m_operation_menu);
-
-    addSpacing(2);
-
-    //minimize, maximize and close
-    a = addAction(QIcon::fromTheme("window-minimize-symbolic"), tr("Minimize"), [=](){
-        m_window->showMinimized();
-    });
-    auto minimize = qobject_cast<QToolButton *>(widgetForAction(a));
-    minimize->setAutoRaise(false);
-    minimize->setFixedSize(QSize(40, 40));
-    minimize->setIconSize(QSize(16, 16));
-
-    addSpacing(2);
-
-    //window-maximize-symbolic
-    //window-restore-symbolic
-    a = addAction(QIcon::fromTheme("window-maximize-symbolic"), nullptr, [=](){
-        m_window->maximizeOrRestore();
-    });
-    auto maximizeAndRestore = qobject_cast<QToolButton *>(widgetForAction(a));
-    m_maximize_restore_button = maximizeAndRestore;
-    maximizeAndRestore->setAutoRaise(false);
-    maximizeAndRestore->setFixedSize(QSize(40, 40));
-    maximizeAndRestore->setIconSize(QSize(16, 16));
-
-    addSpacing(2);
-
-    a = addAction(QIcon::fromTheme("window-close-symbolic"), tr("Close"), [=](){
-        m_window->close();
-    });
-    auto close = qobject_cast<QToolButton *>(widgetForAction(a));
-    close->setAutoRaise(false);
-    close->setFixedSize(QSize(40, 40));
-    close->setIconSize(QSize(16, 16));
-    connect(close, &QToolButton::clicked, this, [=](){
-        m_window->close();
-    });
 }
 
 void HeaderBar::searchButtonClicked()
@@ -273,12 +236,7 @@ void HeaderBar::updateIcons()
 void HeaderBar::updateMaximizeState()
 {
     //maximize & restore
-    bool maximized = m_window->isMaximized();
-    if (maximized) {
-        m_maximize_restore_button->setIcon(QIcon::fromTheme("window-restore-symbolic"));
-    } else {
-        m_maximize_restore_button->setIcon(QIcon::fromTheme("window-maximize-symbolic"));
-    }
+    //do it in container
 }
 
 //HeaderBarToolButton
@@ -305,6 +263,9 @@ HeaderBarStyle *HeaderBarStyle::getStyle()
 
 int HeaderBarStyle::pixelMetric(QStyle::PixelMetric metric, const QStyleOption *option, const QWidget *widget) const
 {
+    if (qobject_cast<const HeaderBarContainer *>(widget))
+        return 0;
+
     switch (metric) {
     case PM_ToolBarIconSize:
         return 16;
@@ -342,4 +303,94 @@ void HeaderBarStyle::drawPrimitive(QStyle::PrimitiveElement element, const QStyl
         return;
     }
     return QProxyStyle::drawPrimitive(element, option, painter, widget);
+}
+
+HeaderBarContainer::HeaderBarContainer(QWidget *parent) : QToolBar(parent)
+{
+    setStyle(HeaderBarStyle::getStyle());
+
+    setStyleSheet(".HeaderBarContainer"
+                  "{"
+                  "background-color: transparent;"
+                  "border: 0px solid transparent"
+                  "}");
+
+    setFixedHeight(50);
+    setMovable(false);
+
+    m_layout = new QHBoxLayout;
+    m_layout->setSpacing(0);
+    m_layout->setContentsMargins(0, 0, 0, 0);
+
+    m_internal_widget = new QWidget(this);
+    m_internal_widget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+}
+
+void HeaderBarContainer::addHeaderBar(HeaderBar *headerBar)
+{
+    if (m_header_bar)
+        return;
+    m_header_bar = headerBar;
+
+    headerBar->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    m_layout->addWidget(headerBar);
+
+    addWindowButtons();
+
+    m_internal_widget->setLayout(m_layout);
+    addWidget(m_internal_widget);
+}
+
+void HeaderBarContainer::addWindowButtons()
+{
+    //m_window_buttons = new QWidget(this);
+    auto layout = new QHBoxLayout;
+
+    layout->setContentsMargins(0, 0, 4, 0);
+    layout->setSpacing(4);
+
+    //minimize, maximize and close
+    auto minimize = new QToolButton(m_internal_widget);
+    minimize->setIcon(QIcon::fromTheme("window-minimize-symbolic"));
+    minimize->setToolTip(tr("Minimize"));
+    minimize->setAutoRaise(false);
+    minimize->setFixedSize(QSize(40, 40));
+    minimize->setIconSize(QSize(16, 16));
+    connect(minimize, &QToolButton::clicked, this, [=](){
+        m_header_bar->m_window->showMinimized();
+    });
+
+    //window-maximize-symbolic
+    //window-restore-symbolic
+    auto maximizeAndRestore = new QToolButton(m_internal_widget);
+    maximizeAndRestore->setIcon(QIcon::fromTheme("window-maximize-symbolic"));
+    maximizeAndRestore->setAutoRaise(false);
+    maximizeAndRestore->setFixedSize(QSize(40, 40));
+    maximizeAndRestore->setIconSize(QSize(16, 16));
+    connect(maximizeAndRestore, &QToolButton::clicked, this, [=](){
+        m_header_bar->m_window->maximizeOrRestore();
+
+        bool maximized = m_header_bar->m_window->isMaximized();
+        if (maximized) {
+            maximizeAndRestore->setIcon(QIcon::fromTheme("window-restore-symbolic"));
+        } else {
+            maximizeAndRestore->setIcon(QIcon::fromTheme("window-maximize-symbolic"));
+        }
+    });
+
+    auto close = new QToolButton(m_internal_widget);
+    close->setIcon(QIcon::fromTheme("window-close-symbolic"));
+    close->setToolTip(tr("Close"));
+    close->setAutoRaise(false);
+    close->setFixedSize(QSize(40, 40));
+    close->setIconSize(QSize(16, 16));
+    connect(close, &QToolButton::clicked, this, [=](){
+        m_header_bar->m_window->close();
+    });
+
+    layout->addWidget(minimize);
+    layout->addWidget(maximizeAndRestore);
+    layout->addWidget(close);
+
+    m_layout->addLayout(layout);
 }

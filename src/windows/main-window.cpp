@@ -85,7 +85,6 @@ MainWindow::MainWindow(const QString &uri, QWidget *parent) : QMainWindow(parent
 
     setStyle(PeonyMainWindowStyle::getStyle());
 
-    setMinimumWidth(750);
     m_effect = new BorderShadowEffect(this);
     m_effect->setPadding(4);
     m_effect->setBorderRadius(6);
@@ -689,7 +688,9 @@ void MainWindow::initUI(const QString &uri)
     //HeaderBar
     auto headerBar = new HeaderBar(this);
     m_header_bar = headerBar;
-    addToolBar(headerBar);
+    auto headerBarContainer = new HeaderBarContainer(this);
+    headerBarContainer->addHeaderBar(headerBar);
+    addToolBar(headerBarContainer);
 
     connect(m_header_bar, &HeaderBar::updateLocationRequest, this, &MainWindow::goToUri);
     connect(m_header_bar, &HeaderBar::viewTypeChangeRequest, this, &MainWindow::beginSwitchView);

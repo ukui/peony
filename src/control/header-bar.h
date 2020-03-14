@@ -37,8 +37,30 @@ namespace Peony {
 class AdvancedLocationBar;
 }
 
+class HeaderBar;
+class QHBoxLayout;
+
+class HeaderBarContainer : public QToolBar
+{
+    Q_OBJECT
+public:
+    explicit HeaderBarContainer(QWidget *parent = nullptr);
+
+    void addHeaderBar(HeaderBar *headerBar);
+
+protected:
+    void addWindowButtons();
+
+private:
+    QWidget *m_internal_widget;
+    QHBoxLayout *m_layout;
+
+    HeaderBar *m_header_bar = nullptr;
+};
+
 class HeaderBar : public QToolBar
 {
+    friend class HeaderBarContainer;
     friend class MainWindow;
     Q_OBJECT
 private:
@@ -71,7 +93,7 @@ private:
 
     QPushButton *m_go_back;
     QPushButton *m_go_forward;
-    QToolButton *m_maximize_restore_button;
+    //QToolButton *m_maximize_restore_button;
     QToolButton *m_search_button;
 
     bool m_search_mode = false;
@@ -96,6 +118,7 @@ class HeadBarPushButton : public QPushButton
 class HeaderBarStyle : public QProxyStyle
 {
     friend class HeaderBar;
+    friend class HeaderBarContainer;
     static HeaderBarStyle *getStyle();
 
     HeaderBarStyle() {}

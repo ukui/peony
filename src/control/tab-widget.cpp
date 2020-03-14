@@ -125,6 +125,7 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
     QSplitter *s = new QSplitter(this);
     s->setContentsMargins(0, 0, 0, 0);
     s->setHandleWidth(1);
+    s->setStretchFactor(0, 1);
     s->addWidget(m_stack);
     s->addWidget(m_preview_page_container);
     m_preview_page_container->hide();

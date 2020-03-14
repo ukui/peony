@@ -154,7 +154,7 @@ class PreviewPageContainer : public QStackedWidget
     friend class TabWidget;
     Q_OBJECT
     explicit PreviewPageContainer(QWidget *parent = nullptr);
-    QSize sizeHint() const {return QSize(200, QStackedWidget::sizeHint().height());}
+    //QSize sizeHint() const {return QSize(200, QStackedWidget::sizeHint().height());}
 };
 
 class PreviewPageButtonGroups : public QButtonGroup
