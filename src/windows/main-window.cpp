@@ -747,6 +747,12 @@ void MainWindow::initUI(const QString &uri)
 
     NavigationSideBar *sidebar = new NavigationSideBar(this);
     m_side_bar = sidebar;
+
+    auto navigationSidebarContainer = new NavigationSideBarContainer(this);
+    navigationSidebarContainer->addSideBar(m_side_bar);
+
+    m_transparent_area_widget = navigationSidebarContainer;
+
     connect(m_side_bar, &NavigationSideBar::updateWindowLocationRequest, this, &MainWindow::goToUri);
 
     auto labelDialog = new FileLabelBox(this);
@@ -754,7 +760,7 @@ void MainWindow::initUI(const QString &uri)
 
     auto splitter = new QSplitter(this);
     splitter->setHandleWidth(0);
-    splitter->addWidget(sidebar);
+    splitter->addWidget(navigationSidebarContainer);
     splitter->addWidget(labelDialog);
 
     connect(sidebar, &NavigationSideBar::labelButtonClicked, labelDialog, &QWidget::setVisible);
@@ -801,6 +807,6 @@ void MainWindow::initAdvancePage()
 
 QRect MainWindow::sideBarRect()
 {
-    auto pos = m_side_bar->mapTo(this, QPoint());
-    return QRect(pos, m_side_bar->size());
+    auto pos = m_transparent_area_widget->mapTo(this, QPoint());
+    return QRect(pos, m_transparent_area_widget->size());
 }

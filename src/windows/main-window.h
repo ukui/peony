@@ -139,6 +139,7 @@ private:
 
     HeaderBar *m_header_bar;
     NavigationSideBar *m_side_bar;
+    QWidget *m_transparent_area_widget;
     QStackedWidget *m_side_bar_container;
     TabWidget *m_tab;
 

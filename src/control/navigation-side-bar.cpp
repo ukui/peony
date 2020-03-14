@@ -31,6 +31,8 @@
 #include <QHeaderView>
 #include <QPushButton>
 
+#include <QVBoxLayout>
+
 #include <QEvent>
 
 #include <QPainter>
@@ -118,25 +120,16 @@ NavigationSideBar::NavigationSideBar(QWidget *parent) : QTreeView(parent)
     });
 
     expandAll();
-
-    m_label_button = new QPushButton(QIcon::fromTheme("emblem-important-symbolic"), tr("All tags..."), this);
-    m_label_button->setCheckable(true);
-
-    connect(m_label_button, &QPushButton::clicked, this, &NavigationSideBar::labelButtonClicked);
 }
 
 bool NavigationSideBar::eventFilter(QObject *obj, QEvent *e)
 {
-    if (e->type() == QEvent::Resize) {
-        m_label_button->resize(this->width() - 8, 33);
-        m_label_button->move(4, this->height() - 37);
-    }
     return false;
 }
 
 void NavigationSideBar::updateGeometries()
 {
-    setViewportMargins(4, 0, 4, 37);
+    setViewportMargins(4, 0, 4, 0);
     QTreeView::updateGeometries();
 }
 
@@ -162,5 +155,48 @@ QSize NavigationSideBarItemDelegate::sizeHint(const QStyleOptionViewItem &option
 {
     auto size = QStyledItemDelegate::sizeHint(option, index);
     size.setHeight(36);
+    return size;
+}
+
+NavigationSideBarContainer::NavigationSideBarContainer(QWidget *parent)
+{
+    setAttribute(Qt::WA_TranslucentBackground);
+
+    m_layout = new QVBoxLayout;
+    m_layout->setContentsMargins(0, 0, 0, 0);
+    m_layout->setSpacing(0);
+}
+
+void NavigationSideBarContainer::addSideBar(NavigationSideBar *sidebar)
+{
+    if (m_sidebar)
+        return;
+
+    m_sidebar = sidebar;
+    m_layout->addWidget(sidebar);
+
+    QWidget *w = new QWidget(this);
+    QVBoxLayout *l = new QVBoxLayout;
+    l->setContentsMargins(4, 4, 2, 4);
+
+    m_label_button = new QPushButton(QIcon::fromTheme("emblem-important-symbolic"), tr("All tags..."), this);
+    m_label_button->setCheckable(true);
+
+    l->addWidget(m_label_button);
+
+    connect(m_label_button, &QPushButton::clicked, m_sidebar, &NavigationSideBar::labelButtonClicked);
+
+    w->setLayout(l);
+
+    m_layout->addWidget(w);
+
+    setLayout(m_layout);
+}
+
+QSize NavigationSideBarContainer::sizeHint() const
+{
+    auto size = QWidget::sizeHint();
+    auto width = this->topLevelWidget()->width();
+    size.setWidth(width/5);
     return size;
 }

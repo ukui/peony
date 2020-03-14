@@ -32,6 +32,7 @@ class SideBarProxyFilterSortModel;
 }
 
 class QPushButton;
+class QVBoxLayout;
 
 class NavigationSideBar : public QTreeView
 {
@@ -53,6 +54,20 @@ Q_SIGNALS:
 private:
     Peony::SideBarProxyFilterSortModel *m_proxy_model;
     Peony::SideBarModel *m_model;
+};
+
+class NavigationSideBarContainer : public QWidget
+{
+    Q_OBJECT
+public:
+    explicit NavigationSideBarContainer(QWidget *parent = nullptr);
+    void addSideBar(NavigationSideBar *sidebar);
+
+    QSize sizeHint() const override;
+
+private:
+    NavigationSideBar *m_sidebar = nullptr;
+    QVBoxLayout *m_layout = nullptr;
 
     QPushButton *m_label_button;
 };
