@@ -560,6 +560,27 @@ FMWindowFactory *FMWindow::getFactory()
     return FMWindowFactory::getInstance();
 }
 
+FMWindowIface *FMWindow::create(const QString &uri)
+{
+    return new FMWindow(uri);
+}
+
+FMWindowIface *FMWindow::create(const QStringList &uris)
+{
+    if (uris.isEmpty())
+        return nullptr;
+    auto window = new FMWindow(uris.first());
+    QStringList l;
+    for (auto uri : uris) {
+        if (uris.indexOf(uri) != 0) {
+            l<<uri;
+        }
+    }
+    if (!l.isEmpty())
+        window->addNewTabs(l);
+    return window;
+}
+
 const QString FMWindow::getCurrentUri()
 {
     if (m_tab->getActivePage()) {

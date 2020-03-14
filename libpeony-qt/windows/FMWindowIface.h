@@ -35,7 +35,15 @@ class FMWindowFactory;
 class PEONYCORESHARED_EXPORT FMWindowIface
 {
 public:
+    /*!
+     * \brief getFactory
+     * \return
+     * \deprecated
+     */
     virtual FMWindowFactory *getFactory() {return nullptr;}
+
+    virtual FMWindowIface *create(const QString &uri) = 0;
+    virtual FMWindowIface *create(const QStringList &uris) = 0;
 
     virtual const QString getCurrentUri() = 0; //do not allow initialize this iface directly
     virtual const QString getLastNonSearchUri() {return nullptr;}

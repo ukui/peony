@@ -27,6 +27,7 @@ MainWindowFactory *global_instance = nullptr;
 
 Peony::FMWindowFactory *MainWindowFactory::getInstance()
 {
+    auto g = global_instance;
     if (!global_instance)
         global_instance = new MainWindowFactory;
     return global_instance;

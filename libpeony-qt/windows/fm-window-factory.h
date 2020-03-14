@@ -28,6 +28,10 @@
 
 namespace Peony {
 
+/*!
+ * \brief The FMWindowFactory class
+ * \deprecated
+ */
 class FMWindowFactory : public QObject
 {
     Q_OBJECT

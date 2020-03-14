@@ -151,8 +151,7 @@ const QList<QAction *> DirectoryViewMenu::constructOpenOpActions()
     if (isBackgroundMenu) {
         l<<addAction(QIcon::fromTheme("window-new-symbolic"), tr("Open in &New Window"));
         connect(l.last(), &QAction::triggered, [=](){
-            auto factory = m_top_window->getFactory();
-            auto windowIface = factory->create(m_directory);
+            auto windowIface = m_top_window->create(m_directory);
             auto newWindow = dynamic_cast<QWidget *>(windowIface);
             newWindow->setAttribute(Qt::WA_DeleteOnClose);
             //FIXME: show when prepared?
@@ -181,8 +180,7 @@ const QList<QAction *> DirectoryViewMenu::constructOpenOpActions()
                 });
                 l<<addAction(QIcon::fromTheme("window-new-symbolic"), tr("Open \"%1\" in &New Window").arg(displayName));
                 connect(l.last(), &QAction::triggered, [=](){
-                    auto factory = m_top_window->getFactory();
-                    auto windowIface = factory->create(m_selections.first());
+                    auto windowIface = m_top_window->create(m_selections.first());
                     auto newWindow = dynamic_cast<QWidget *>(windowIface);
                     newWindow->setAttribute(Qt::WA_DeleteOnClose);
                     //FIXME: show when prepared?
@@ -570,8 +568,7 @@ const QList<QAction *> DirectoryViewMenu::constructSearchActions()
             for (auto uri : m_selections) {
                 auto parentUri = FileUtils::getParentUri(uri);
                 if (!parentUri.isNull()) {
-                    auto factory = this->m_top_window->getFactory();
-                    auto *windowIface = factory->create(parentUri);
+                    auto *windowIface = m_top_window->create(parentUri);
                     auto newWindow = dynamic_cast<QWidget *>(windowIface);
                     auto selection = m_selections;
 #if QT_VERSION > QT_VERSION_CHECK(5, 12, 0)

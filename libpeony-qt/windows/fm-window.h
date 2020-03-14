@@ -80,7 +80,15 @@ class PEONYCORESHARED_EXPORT FMWindow : public QMainWindow, public FMWindowIface
 public:
     explicit FMWindow(const QString &uri = nullptr, QWidget *parent = nullptr);
 
+    /*!
+     * \brief getFactory
+     * \return
+     * \deprecated
+     */
     FMWindowFactory *getFactory() override;
+
+    FMWindowIface * create(const QString &uri) override;
+    FMWindowIface * create(const QStringList &uris) override;
 
     const QString getLastNonSearchUri() override {return m_last_non_search_location;}
     const QString getCurrentUri() override;

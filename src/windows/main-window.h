@@ -46,6 +46,9 @@ public:
 
     QSize sizeHint() const;
 
+    Peony::FMWindowIface *create(const QString &uri);
+    Peony::FMWindowIface *create(const QStringList &uris);
+
     Peony::FMWindowFactory *getFactory();
 
     Peony::DirectoryViewContainer *getCurrentPage();

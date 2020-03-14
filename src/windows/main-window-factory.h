@@ -26,6 +26,10 @@
 #include <QObject>
 #include "fm-window-factory.h"
 
+/*!
+ * \brief The MainWindowFactory class
+ * \deprecated
+ */
 class MainWindowFactory : public Peony::FMWindowFactory
 {
     Q_OBJECT

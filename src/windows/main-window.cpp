@@ -123,6 +123,23 @@ QSize MainWindow::sizeHint() const
     return QSize(screenSize*2/3);
 }
 
+Peony::FMWindowIface *MainWindow::create(const QString &uri)
+{
+    return new MainWindow(uri);
+}
+
+Peony::FMWindowIface *MainWindow::create(const QStringList &uris)
+{
+    if (uris.isEmpty())
+        return new MainWindow;
+    auto uri = uris.first();
+    auto l = uris;
+    l.removeAt(0);
+    auto window = new MainWindow(uri);
+    window->addNewTabs(l);
+    return window;
+}
+
 Peony::FMWindowFactory *MainWindow::getFactory()
 {
     return MainWindowFactory::getInstance();
