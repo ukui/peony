@@ -26,7 +26,7 @@
 #include <QDebug>
 
 //qt's global function
-export void qt_blurImage(QImage &blurImage, qreal radius, bool quality, int transposed);
+extern void qt_blurImage(QImage &blurImage, qreal radius, bool quality, int transposed);
 
 BorderShadowEffect::BorderShadowEffect(QObject *parent) : QGraphicsEffect(parent)
 {
