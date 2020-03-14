@@ -147,9 +147,8 @@ void DefaultPreviewPage::closePreviewPage()
 void DefaultPreviewPage::paintEvent(QPaintEvent *e)
 {
     QPainter p(this);
+    p.setCompositionMode(QPainter::CompositionMode_SourceIn);
     p.fillRect(this->rect(), this->palette().base());
-    p.setPen(this->palette().dark().color());
-    p.drawRect(this->rect().adjusted(0, 0, -1, -1));
     QStackedWidget::paintEvent(e);
 }
 
