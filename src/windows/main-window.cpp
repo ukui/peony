@@ -34,6 +34,8 @@
 #include <QDockWidget>
 #include <QTreeView>
 
+#include <QScreen>
+
 #include "side-bar-proxy-filter-sort-model.h"
 #include "side-bar-model.h"
 
@@ -110,6 +112,12 @@ MainWindow::MainWindow(const QString &uri, QWidget *parent) : QMainWindow(parent
 
     //init UI
     initUI(uri);
+}
+
+QSize MainWindow::sizeHint() const
+{
+    auto screenSize = QApplication::primaryScreen()->size();
+    return QSize(screenSize*2/3);
 }
 
 Peony::FMWindowFactory *MainWindow::getFactory()

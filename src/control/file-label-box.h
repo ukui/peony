@@ -32,6 +32,8 @@ class FileLabelBox : public QListView
 public:
     explicit FileLabelBox(QWidget *parent = nullptr);
 
+    QSize sizeHint() const;
+
 Q_SIGNALS:
 
 };

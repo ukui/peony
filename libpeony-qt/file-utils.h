@@ -61,6 +61,8 @@ public:
 
     static const QStringList toDisplayUris(const QStringList &args);
 
+    static bool isMountRoot(const QString &uri);
+
 private:
     FileUtils();
 };

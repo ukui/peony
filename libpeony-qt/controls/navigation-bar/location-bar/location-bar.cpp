@@ -36,7 +36,6 @@
 #include <QLineEdit>
 
 #include <QStandardPaths>
-#include <QStorageInfo>
 
 using namespace Peony;
 
@@ -78,8 +77,7 @@ void LocationBar::setRootUri(const QString &uri)
     while (!tmp.isEmpty()) {
         uris.prepend(tmp);
         QUrl url = tmp;
-        QStorageInfo mount = QStorageInfo(url.path());
-        if (mount.isValid())
+        if (FileUtils::isMountRoot(tmp))
             break;
 
         if (url.path() == QStandardPaths::writableLocation(QStandardPaths::HomeLocation)) {

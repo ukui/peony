@@ -45,7 +45,7 @@ class MainWindow : public QMainWindow, public Peony::FMWindowIface
 public:
     explicit MainWindow(const QString &uri = nullptr, QWidget *parent = nullptr);
 
-    QSize sizeHint() const {return QSize(800, 600);}
+    QSize sizeHint() const;
 
     Peony::FMWindowFactory *getFactory();
 
@@ -121,7 +121,7 @@ protected:
     void mousePressEvent(QMouseEvent *e);
     void mouseMoveEvent(QMouseEvent *e);
     void mouseReleaseEvent(QMouseEvent *e);
-    void keyPressEvent(QKeyEvent *e) override;
+    void keyPressEvent(QKeyEvent *e);
 
     void validBorder();
     void initUI(const QString &uri);

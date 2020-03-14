@@ -145,6 +145,14 @@ void NavigationSideBar::paintEvent(QPaintEvent *event)
     QTreeView::paintEvent(event);
 }
 
+QSize NavigationSideBar::sizeHint() const
+{
+    auto w = this->topLevelWidget()->width();
+    auto size = QTreeView::sizeHint();
+    size.setWidth(w/5);
+    return size;
+}
+
 NavigationSideBarItemDelegate::NavigationSideBarItemDelegate(QObject *parent)
 {
 

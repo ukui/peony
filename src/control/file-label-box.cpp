@@ -81,6 +81,14 @@ FileLabelBox::FileLabelBox(QWidget *parent) : QListView(parent)
     });
 }
 
+QSize FileLabelBox::sizeHint() const
+{
+    auto w = this->topLevelWidget()->width();
+    auto size = QListView::sizeHint();
+    size.setWidth(w/5);
+    return size;
+}
+
 //LabelBoxStyle
 LabelBoxStyle *LabelBoxStyle::getStyle()
 {
