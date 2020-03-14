@@ -80,6 +80,8 @@ private Q_SLOTS:
     void startEdit(bool bSearch = false);
     void finishEdit();
     void searchButtonClicked();
+    void openDefaultTerminal();
+    void findDefaultTerminal();
 
 private:
     const QString m_uri;

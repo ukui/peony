@@ -22,6 +22,7 @@
 
 #include "header-bar.h"
 #include "main-window.h"
+#include <gio/gio.h>
 
 #include "view-type-menu.h"
 #include "sort-type-menu.h"
@@ -32,12 +33,15 @@
 #include "advanced-location-bar.h"
 
 #include <QHBoxLayout>
+#include <QUrl>
+#include <QMessageBox>
 
 #include <QStyleOptionToolButton>
 
 #include <QDebug>
 
 static HeaderBarStyle *global_instance = nullptr;
+static QString terminal_cmd = nullptr;
 
 HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
 {
@@ -66,8 +70,11 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
 
     addSpacing(2);
 
+    //find a terminal when init
+    findDefaultTerminal();
     a = addAction(QIcon::fromTheme("terminal-app-symbolic"), tr("Open Terminal"), [=](){
-        //FIXME:
+        //open the default terminal
+        openDefaultTerminal();
     });
     auto openTerminal = qobject_cast<QToolButton *>(widgetForAction(a));
     openTerminal->setAutoRaise(false);
@@ -170,6 +177,57 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
 
     m_operation_menu = new OperationMenu(m_window, this);
     popMenu->setMenu(m_operation_menu);
+}
+
+void HeaderBar::findDefaultTerminal()
+{
+    GList *infos = g_app_info_get_all();
+    GList *l = infos;
+    while (l) {
+        const char *cmd = g_app_info_get_executable(static_cast<GAppInfo*>(l->data));
+        QString tmp = cmd;
+        if (tmp.contains("terminal")) {
+            terminal_cmd = tmp;
+            if (tmp == "mate-terminal") {
+                break;
+            }
+        }
+        l = l->next;
+    }
+    g_list_free_full(infos, g_object_unref);
+}
+
+void HeaderBar::openDefaultTerminal()
+{
+    //don't find any terminal
+    if (terminal_cmd == nullptr)
+    {
+        QMessageBox *msgBox = new QMessageBox(this);
+        msgBox->setWindowTitle(tr("Operate Tips"));
+        msgBox->setText(tr("Don't find any terminal, please install at least one terminal!"));
+        msgBox->exec();
+        return;
+    }
+
+    QUrl url = m_window->getCurrentUri();
+    auto directory = url.path().toUtf8().constData();
+    gchar **argv = nullptr;
+    g_shell_parse_argv (terminal_cmd.toUtf8().constData(), nullptr, &argv, nullptr);
+    GError *err = nullptr;
+    g_spawn_async (directory,
+                   argv,
+                   nullptr,
+                   G_SPAWN_SEARCH_PATH,
+                   nullptr,
+                   nullptr,
+                   nullptr,
+                   &err);
+    if (err) {
+        qDebug()<<err->message;
+        g_error_free(err);
+        err = nullptr;
+    }
+    g_strfreev (argv);
 }
 
 void HeaderBar::searchButtonClicked()
