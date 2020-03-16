@@ -454,9 +454,12 @@ const QList<QAction *> DesktopMenu::constructMenuPluginActions()
     //FIXME:
     auto mgr = DesktopMenuPluginManager::getInstance();
     if (mgr->isLoaded()) {
-        auto plugins = mgr->getPlugins();
-        qDebug()<<plugins;
-        for (auto plugin : plugins) {
+        //sort plugiins by name, so the menu option orders is relatively fixed
+        auto pluginIds = mgr->getPluginIds();
+        qSort(pluginIds.begin(), pluginIds.end());
+
+        for (auto id : pluginIds) {
+            auto plugin = mgr->getPlugin(id);
             auto actions = plugin->menuActions(MenuPluginInterface::DesktopWindow,
                                                m_directory,
                                                m_selections);
