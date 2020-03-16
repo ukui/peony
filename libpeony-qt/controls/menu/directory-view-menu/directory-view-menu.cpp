@@ -594,6 +594,9 @@ const QList<QAction *> DirectoryViewMenu::constructMenuPluginActions()
 {
     QList<QAction *> l;
     auto pluginIds = MenuPluginManager::getInstance()->getPluginIds();
+    //sort plugiins by name, so the menu option orders is relatively fixed
+    qSort(pluginIds.begin(), pluginIds.end());
+
     for (auto id : pluginIds) {
         auto plugin = MenuPluginManager::getInstance()->getPlugin(id);
         auto actions = plugin->menuActions(MenuPluginInterface::DirectoryView, m_directory, m_selections);
