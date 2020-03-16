@@ -28,6 +28,7 @@
 #include <QMessageBox>
 #include <QApplication>
 #include <QTimer>
+#include <QtConcurrent>
 
 #include "file-copy-operation.h"
 #include "file-delete-operation.h"
@@ -98,13 +99,38 @@ void FileOperationManager::startOperation(FileOperation *operation, bool addToHi
         });
     });
 
-    if (m_thread_pool->activeThreadCount() > 0) {
-        QMessageBox::warning(nullptr,
-                             tr("File Operation is Busy"),
-                             tr("There have been one or more file"
-                                "operation(s) executing before. Your"
-                                "operation will wait for executing"
-                                "until it/them done."));
+    auto operationInfo = operation->getOperationInfo();
+
+    bool allowParallel = false;
+
+    auto opType = operationInfo->operationType();
+    switch (opType) {
+    case FileOperationInfo::Trash:
+    case FileOperationInfo::Delete: {
+        allowParallel = true;
+        auto operationSrcs = operationInfo->sources();
+        auto currentOps = m_thread_pool->children();
+        QList<FileOperation *> ops;
+        for (auto child : currentOps) {
+            auto op = qobject_cast<FileOperation *>(child);
+            auto opInfo = op->getOperationInfo();
+            {
+                for (auto src : operationSrcs) {
+                    if (opInfo->sources().contains(src)) {
+                        //do not allow operation.
+                        QMessageBox::critical(nullptr,
+                                              tr("Can't delete."),
+                                              tr("You can't delete a file when"
+                                                 "the file is doing another operation"));
+                        return;
+                    }
+                }
+            }
+        }
+        break;
+    }
+    default:
+        break;
     }
 
     FileOperationProgressWizard *wizard = new FileOperationProgressWizard;
@@ -152,7 +178,26 @@ void FileOperationManager::startOperation(FileOperation *operation, bool addToHi
         }
     });
 
-    m_thread_pool->start(operation);
+    if (!allowParallel) {
+        if (m_thread_pool->activeThreadCount() > 0) {
+            QMessageBox::warning(nullptr,
+                                 tr("File Operation is Busy"),
+                                 tr("There have been one or more file"
+                                    "operation(s) executing before. Your"
+                                    "operation will wait for executing"
+                                    "until it/them done."));
+        }
+        operation->setParent(m_thread_pool);
+        m_thread_pool->start(operation);
+    } else {
+        QtConcurrent::run([=]{
+            operation->setParent(m_thread_pool);
+            operation->setAutoDelete(false);
+            operation->run();
+            operation->setParent(nullptr);
+            operation->deleteLater();
+        });
+    }
 }
 
 void FileOperationManager::startUndoOrRedo(std::shared_ptr<FileOperationInfo> info)

@@ -39,6 +39,8 @@ public:
     explicit FileDeleteOperation(QStringList sourceUris, QObject *parent = nullptr);
     ~FileDeleteOperation() override;
 
+    std::shared_ptr<FileOperationInfo> getOperationInfo() override;
+
     void deleteRecursively(FileNode *node);
     void run() override;
 

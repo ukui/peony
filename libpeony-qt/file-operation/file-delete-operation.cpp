@@ -31,12 +31,18 @@ FileDeleteOperation::FileDeleteOperation(QStringList sourceUris, QObject *parent
 {
     m_source_uris = sourceUris;
     m_reporter = new FileNodeReporter;
+    m_info = std::make_shared<FileOperationInfo>(sourceUris, nullptr, FileOperationInfo::Delete);
     connect(m_reporter, &FileNodeReporter::nodeFound, this, &FileOperation::operationPreparedOne);
 }
 
 FileDeleteOperation::~FileDeleteOperation()
 {
     delete m_reporter;
+}
+
+std::shared_ptr<FileOperationInfo> FileDeleteOperation::getOperationInfo()
+{
+    return m_info;
 }
 
 void FileDeleteOperation::deleteRecursively(FileNode *node)
