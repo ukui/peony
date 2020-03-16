@@ -37,10 +37,14 @@
 
 #include <QPainter>
 
+#include <QScrollBar>
+
 #include <QDebug>
 
 NavigationSideBar::NavigationSideBar(QWidget *parent) : QTreeView(parent)
 {
+    this->verticalScrollBar()->setProperty("drawScrollBarGroove", false);
+
     setProperty("doNotBlur", true);
     viewport()->setProperty("doNotBlur", true);
 
@@ -163,7 +167,7 @@ NavigationSideBarContainer::NavigationSideBarContainer(QWidget *parent)
     setAttribute(Qt::WA_TranslucentBackground);
 
     m_layout = new QVBoxLayout;
-    m_layout->setContentsMargins(0, 0, 0, 0);
+    m_layout->setContentsMargins(0, 4, 0, 0);
     m_layout->setSpacing(0);
 }
 
