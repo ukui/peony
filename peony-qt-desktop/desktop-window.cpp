@@ -164,8 +164,12 @@ DesktopWindow::DesktopWindow(QScreen *screen, bool is_primary, QWidget *parent)
     [=](const QPoint &pos) {
         // FIXME: use other menu
         qDebug() << "menu request";
-        if (!m_view->indexAt(pos).isValid())
+        if (!m_view->indexAt(pos).isValid()) {
             m_view->clearSelection();
+        } else {
+            m_view->clearSelection();
+            m_view->selectionModel()->select(m_view->indexAt(pos), QItemSelectionModel::Select);
+        }
 
         QTimer::singleShot(1, [=]() {
             DesktopMenu menu(m_view);
