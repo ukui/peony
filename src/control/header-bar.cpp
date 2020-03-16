@@ -45,6 +45,7 @@ static QString terminal_cmd = nullptr;
 
 HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
 {
+    setMouseTracking(true);
     setStyle(HeaderBarStyle::getStyle());
 
     m_window = parent;
@@ -245,6 +246,14 @@ void HeaderBar::addSpacing(int pixel)
     for (int i = 0; i < pixel; i++) {
         addSeparator();
     }
+}
+
+void HeaderBar::mouseMoveEvent(QMouseEvent *e)
+{
+    QToolBar::mouseMoveEvent(e);
+    QCursor c;
+    c.setShape(Qt::ArrowCursor);
+    this->topLevelWidget()->setCursor(c);
 }
 
 void HeaderBar::setLocation(const QString &uri)
