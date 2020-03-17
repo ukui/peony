@@ -360,6 +360,8 @@ const QList<QAction *> DesktopMenu::constructFileOpActions()
     QList<QAction *> l;
 
     if (!m_selections.isEmpty()) {
+        //don't show file operations when select home path
+        QString homeUri = "file://" + QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
         if (m_selections.count() == 1 && m_selections.first() == "trash:///") {
             FileEnumerator e;
             e.setEnumerateDirectory("trash:///");
@@ -381,7 +383,7 @@ const QList<QAction *> DesktopMenu::constructFileOpActions()
             l.last()->setEnabled(!trashChildren.isEmpty());
         } else if (m_selections.count() == 1 && m_selections.first() == "computer:///") {
 
-        } else {
+        } else if (! m_selections.contains(homeUri)) {
             l<<addAction(QIcon::fromTheme("edit-copy-symbolic"), tr("&Copy"));
             connect(l.last(), &QAction::triggered, [=](){
                 ClipboardUtils::setClipboardFiles(m_selections, false);
@@ -398,9 +400,7 @@ const QList<QAction *> DesktopMenu::constructFileOpActions()
                 });
             }
 
-            //don't show rename when select home path
-            QString homeUri = "file://" + QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
-            if (m_selections.count() == 1 && m_selections.first() != homeUri) {
+            if (m_selections.count() == 1) {
                 l<<addAction(QIcon::fromTheme("document-edit-symbolic"), tr("&Rename"));
                 connect(l.last(), &QAction::triggered, [=](){
                     m_view->editUri(m_selections.first());

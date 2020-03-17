@@ -58,6 +58,7 @@
 #include <QFileIconProvider>
 
 #include <QLocale>
+#include <QStandardPaths>
 
 #include <QDebug>
 
@@ -424,7 +425,8 @@ const QList<QAction *> DirectoryViewMenu::constructFileOpActions()
     QList<QAction *> l;
 
     if (!m_is_trash && !m_is_search && !m_is_computer) {
-        if (!m_selections.isEmpty()) {
+        QString homeUri = "file://" +  QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
+        if (!m_selections.isEmpty() && !m_selections.contains(homeUri)) {
             l<<addAction(QIcon::fromTheme("edit-copy-symbolic"), tr("&Copy"));
             connect(l.last(), &QAction::triggered, [=](){
                 ClipboardUtils::setClipboardFiles(m_selections, false);
