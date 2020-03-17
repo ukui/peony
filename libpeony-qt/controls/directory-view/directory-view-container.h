@@ -109,6 +109,7 @@ public Q_SLOTS:
     void setShowHidden(bool showHidden = false);
     void setUseDefaultNameSortOrder(bool use);
     void setSortFolderFirst(bool folderFirst);
+    void setFilterLabelConditions(QString name);
 
     void onViewDoubleClicked(const QString &uri);
 

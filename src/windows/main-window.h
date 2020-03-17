@@ -111,6 +111,7 @@ public Q_SLOTS:
     void setSortFolderFirst();
     void setShortCuts();
     void checkSettings();
+    void setLabelNameFilter(QString name);
     //imgrate end, need to complete
 
     void setCurrentSelectionUris(const QStringList &uris);

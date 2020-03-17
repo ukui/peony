@@ -47,7 +47,7 @@ FileLabelBox::FileLabelBox(QWidget *parent) : QListView(parent)
         if (index.isValid()) {
             auto item = FileLabelModel::getGlobalModel()->itemFormIndex(index);
             int id = item->id();
-            if (id > 7)
+            if (id > TOTAL_DEFAULT_COLOR)
                 labelRemovable = true;
 
             menu.addAction(tr("Rename"), [=](){

@@ -149,6 +149,11 @@ void DirectoryViewContainer::setSortFilter(int FileTypeIndex, int FileMTimeIndex
     m_proxy_model->setFilterConditions(FileTypeIndex, FileMTimeIndex, FileSizeIndex);
 }
 
+void DirectoryViewContainer::setFilterLabelConditions(QString name)
+{
+    m_proxy_model->setFilterLabelConditions(name);
+}
+
 void DirectoryViewContainer::setShowHidden(bool showHidden)
 {
     m_proxy_model->setShowHidden(showHidden);

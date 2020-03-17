@@ -534,6 +534,11 @@ void MainWindow::filterUpdate(int type_index, int time_index, int size_index)
     //m_tab->getActivePage()->setSortFilter(type_index, time_index, size_index);
 }
 
+void MainWindow::setLabelNameFilter(QString name)
+{
+    getCurrentPage()->setFilterLabelConditions(name);
+}
+
 void MainWindow::setShowHidden()
 {
     m_show_hidden_file = !m_show_hidden_file;
@@ -757,6 +762,20 @@ void MainWindow::initUI(const QString &uri)
     splitter->addWidget(navigationSidebarContainer);
     splitter->addWidget(labelDialog);
 
+    connect(labelDialog, &FileLabelBox::clicked, [=](const QModelIndex index)
+    {
+        if (index.row() >= labelDialog->getTotalDefaultColor())
+        {
+            //clear label filter
+            setLabelNameFilter("");
+        }
+        else
+        {
+            //qDebug() << "main-window FileLabelBox clicked:" << index.data().toString() <<index.row();
+            auto name = index.data().toString();
+            setLabelNameFilter(name);
+        }
+    });
     connect(sidebar, &NavigationSideBar::labelButtonClicked, labelDialog, &QWidget::setVisible);
 
     sidebarContainer->setWidget(splitter);

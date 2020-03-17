@@ -34,6 +34,10 @@ public:
 
     QSize sizeHint() const;
 
+    int getTotalDefaultColor(){return TOTAL_DEFAULT_COLOR;}
+
+    const int TOTAL_DEFAULT_COLOR = 7;
+
 Q_SIGNALS:
 
 };
