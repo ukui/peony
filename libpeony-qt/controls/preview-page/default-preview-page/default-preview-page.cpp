@@ -202,6 +202,10 @@ void FilePreviewPage::updateInfo(FileInfo *info)
         j.querySync();
     }
     auto thumbnail = ThumbnailManager::getInstance()->tryGetThumbnail(info->uri());
+    if (!thumbnail.isNull()) {
+        QUrl url = info->uri();
+        thumbnail.addFile(url.path());
+    }
     auto icon = QIcon::fromTheme(info->iconName(), QIcon::fromTheme("text-x-generic"));
     m_icon->setIcon(thumbnail.isNull()? icon: thumbnail);
     //m_icon->setIcon(info->thumbnail().isNull()? QIcon::fromTheme(info->iconName()): info->thumbnail());
