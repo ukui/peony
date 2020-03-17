@@ -127,7 +127,7 @@ void ListView::mousePressEvent(QMouseEvent *e)
     if(e->button() == Qt::LeftButton && (!indexAt(e->pos()).isValid()) )
     {
         this->clearSelection();
-        this->clearFocus();
+        //this->clearFocus();
         return;
     }
 
@@ -379,7 +379,7 @@ void ListView2::bindModel(FileItemModel *model, FileItemProxyFilterSortModel *pr
         if (!m_view->indexAt(pos).isValid())
         {
             m_view->clearSelection();
-            m_view->clearFocus();
+            //m_view->clearFocus();
         }
 
         auto index = m_view->indexAt(pos);
@@ -390,11 +390,11 @@ void ListView2::bindModel(FileItemModel *model, FileItemProxyFilterSortModel *pr
         if (!selectedIndexes.contains(index)) {
             if (!validRect.contains(pos)) {
                 m_view->clearSelection();
-                m_view->clearFocus();
+                //m_view->clearFocus();
             } else {
                 auto flags = QItemSelectionModel::Select|QItemSelectionModel::Rows;
                 m_view->clearSelection();
-                m_view->clearFocus();
+                //m_view->clearFocus();
                 m_view->selectionModel()->select(m_view->indexAt(pos), flags);
             }
         }
