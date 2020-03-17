@@ -344,6 +344,11 @@ bool DesktopItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action
         return QAbstractItemModel::dropMimeData(data, action, row, column, parent);
     }
 
+    auto info = FileInfo::fromUri(destDirUri);
+    if (!info->isDir()) {
+        return false;
+    }
+
     //NOTE:
     //do not allow drop on it self.
     auto urls = data->urls();
