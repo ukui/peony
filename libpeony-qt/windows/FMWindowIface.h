@@ -74,10 +74,9 @@ public:
     virtual void searchFilter(QString target_path, QString keyWord, bool search_file_name, bool search_content) {}
     virtual void filterUpdate(int type_index=0, int time_index=0, int size_index=0) {}
 
-    virtual void setShowHidden(bool showHidden) {}
     virtual void setShowHidden() {}
-    virtual void setUseDefaultNameSortOrder(bool use) {}
-    virtual void setSortFolderFirst(bool folderFirst) {}
+    virtual void setUseDefaultNameSortOrder() {}
+    virtual void setSortFolderFirst() {}
 
     virtual void onPreviewPageSwitch(const QString &uri) {}
 

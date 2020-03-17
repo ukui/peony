@@ -109,9 +109,9 @@ private:
     bool checkFileSizeFilter(quint64 size) const;
 
 private:
-    bool m_show_hidden = false;
-    bool m_use_default_name_sort_order = true;
-    bool m_folder_first = true;
+    bool m_show_hidden;
+    bool m_use_default_name_sort_order;
+    bool m_folder_first;
     bool m_case_sensitive = false;
     QString m_blur_name = "";
     QString m_label_name = "";

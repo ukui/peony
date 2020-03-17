@@ -389,24 +389,28 @@ const QList<QAction *> DirectoryViewMenu::constructViewOpActions()
         auto folderFirst = sortPreferencesMenu->addAction(tr("Folder First"));
         folderFirst->setCheckable(true);
         folderFirst->setChecked(m_top_window->getWindowSortFolderFirst());
-        connect(folderFirst, &QAction::triggered, this, [=](bool checked){
-            m_top_window->setSortFolderFirst(checked);
+        connect(folderFirst, &QAction::triggered, this, [=](){
+            m_top_window->setSortFolderFirst();
+            folderFirst->setChecked(m_top_window->getWindowSortFolderFirst());
         });
 
         if (QLocale::system().name().contains("zh")) {
             auto useDefaultNameSortOrder = sortPreferencesMenu->addAction(tr("Chinese First"));
             useDefaultNameSortOrder->setCheckable(true);
-            useDefaultNameSortOrder->setChecked(!m_top_window->getWindowUseDefaultNameSortOrder());
-            connect(useDefaultNameSortOrder, &QAction::triggered, this, [=](bool checked){
-                m_top_window->setUseDefaultNameSortOrder(!checked);
+            useDefaultNameSortOrder->setChecked(m_top_window->getWindowUseDefaultNameSortOrder());
+            connect(useDefaultNameSortOrder, &QAction::triggered, this, [=](){
+                m_top_window->setUseDefaultNameSortOrder();
+                bool checked = m_top_window->getWindowUseDefaultNameSortOrder();
+                useDefaultNameSortOrder->setChecked(checked);
             });
         }
 
         auto showHidden = sortPreferencesMenu->addAction(tr("Show Hidden"));
         showHidden->setCheckable(true);
         showHidden->setChecked(m_top_window->getWindowShowHidden());
-        connect(showHidden, &QAction::triggered, this, [=](bool checked){
-            m_top_window->setShowHidden(checked);
+        connect(showHidden, &QAction::triggered, this, [=](){
+            m_top_window->setShowHidden();
+            showHidden->setChecked(m_top_window->getWindowShowHidden());
         });
 
         sortPreferencesAction->setMenu(sortPreferencesMenu);

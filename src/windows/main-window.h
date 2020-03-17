@@ -60,6 +60,10 @@ public:
     Qt::SortOrder getCurrentSortOrder();
     int getCurrentSortColumn();
 
+    bool getWindowShowHidden() override {return m_show_hidden_file;}
+    bool getWindowUseDefaultNameSortOrder() override {return m_use_default_name_sort_order;}
+    bool getWindowSortFolderFirst() override {return m_folder_first;}
+
 Q_SIGNALS:
     void windowSelectionChanged();
     void locationChanged(const QString &uri);
@@ -102,10 +106,9 @@ public Q_SLOTS:
     void searchFilter(QString target_path, QString keyWord, bool search_file_name, bool search_content);
     void filterUpdate(int type_index=0, int time_index=0, int size_index=0);
 
-    void setShowHidden(bool showHidden);
     void setShowHidden();
-    void setUseDefaultNameSortOrder(bool use);
-    void setSortFolderFirst(bool folderFirst);
+    void setUseDefaultNameSortOrder();
+    void setSortFolderFirst();
     void setShortCuts();
     void checkSettings();
     //imgrate end, need to complete
@@ -144,9 +147,9 @@ private:
     TabWidget *m_tab;
 
     bool m_is_draging = false;
-    bool m_show_hidden_file = false;
-    bool m_use_default_name_sort_order = true;
-    bool m_folder_first = true;
+    bool m_show_hidden_file;
+    bool m_use_default_name_sort_order;
+    bool m_folder_first;
 };
 
 #endif // MAINWINDOW_H

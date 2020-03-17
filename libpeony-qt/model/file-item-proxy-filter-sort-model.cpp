@@ -49,7 +49,7 @@ FileItemProxyFilterSortModel::FileItemProxyFilterSortModel(QObject *parent) : QS
 {
     auto settings = GlobalSettings::getInstance();
     m_show_hidden = settings->isExist("show-hidden")? settings->getValue("show-hidden").toBool(): false;
-    m_use_default_name_sort_order = settings->isExist("chinese-first")? !settings->getValue("chinese-first").toBool(): false;
+    m_use_default_name_sort_order = settings->isExist("chinese-first")? settings->getValue("chinese-first").toBool(): false;
     m_folder_first = settings->isExist("folder-first")? settings->getValue("folder-first").toBool(): true;
 }
 
@@ -107,7 +107,7 @@ default_sort:
             if (FileOperationUtils::leftNameIsDuplicatedFileOfRightName(leftItem->m_info->displayName(), rightItem->m_info->displayName())) {
                 return FileOperationUtils::leftNameLesserThanRightName(leftItem->info()->displayName(), rightItem->info()->displayName());
             }
-            if (!m_use_default_name_sort_order) {
+            if (m_use_default_name_sort_order) {
                 QString leftDisplayName = leftItem->m_info->displayName();
                 QString rightDisplayName = rightItem->m_info->displayName();
                 bool leftStartWithChinese = startWithChinese(leftDisplayName);
@@ -435,7 +435,7 @@ void FileItemProxyFilterSortModel::setShowHidden(bool showHidden)
 
 void FileItemProxyFilterSortModel::setUseDefaultNameSortOrder(bool use)
 {
-    GlobalSettings::getInstance()->setValue("chinese-first", !use);
+    GlobalSettings::getInstance()->setValue("chinese-first", use);
     m_use_default_name_sort_order = use;
     beginResetModel();
     sort(sortColumn()>0? sortColumn(): 0, sortOrder()==Qt::DescendingOrder? Qt::DescendingOrder: Qt::AscendingOrder);

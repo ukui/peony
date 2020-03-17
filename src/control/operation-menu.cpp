@@ -68,7 +68,7 @@ OperationMenu::OperationMenu(MainWindow *window, QWidget *parent) : QMenu(parent
 
     auto showHidden = addAction(tr("Show Hidden"), this, [=](bool checked){
         //window set show hidden
-        m_window->setShowHidden(checked);
+        m_window->setShowHidden();
     });
     m_show_hidden = showHidden;
     showHidden->setCheckable(true);

@@ -278,8 +278,8 @@ void ToolBar::init()
         forbidThumbnail->setCheckable(true);
         forbidThumbnail->setChecked(GlobalSettings::getInstance()->isExist("do-not-thumbnail")? GlobalSettings::getInstance()->getValue("do-not-thumbnail").toBool(): false);
 
-        auto showHidden = optionMenu.addAction(tr("Show Hidden"), this, [=](bool checked){
-            m_top_window->setShowHidden(checked);
+        auto showHidden = optionMenu.addAction(tr("Show Hidden"), this, [=](){
+            m_top_window->setShowHidden();
         });
         showHidden->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_H));
         showHidden->setCheckable(true);

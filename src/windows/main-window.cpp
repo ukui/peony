@@ -154,7 +154,7 @@ void MainWindow::checkSettings()
 {
     auto settings = Peony::GlobalSettings::getInstance();
     m_show_hidden_file = settings->isExist("show-hidden")? settings->getValue("show-hidden").toBool(): false;
-    m_use_default_name_sort_order = settings->isExist("chinese-first")? !settings->getValue("chinese-first").toBool(): false;
+    m_use_default_name_sort_order = settings->isExist("chinese-first")? settings->getValue("chinese-first").toBool(): false;
     m_folder_first = settings->isExist("folder-first")? settings->getValue("folder-first").toBool(): true;
 }
 
@@ -171,6 +171,7 @@ void MainWindow::setShortCuts()
     showHiddenAction->setShortcut(QKeySequence(tr("Ctrl+H", "Show|Hidden")));
     addAction(showHiddenAction);
     connect(showHiddenAction, &QAction::triggered, this, [=](){
+        //qDebug() << "show hidden";
         this->setShowHidden();
     });
 
@@ -532,30 +533,22 @@ void MainWindow::filterUpdate(int type_index, int time_index, int size_index)
     //m_tab->getActivePage()->setSortFilter(type_index, time_index, size_index);
 }
 
-void MainWindow::setShowHidden(bool showHidden)
-{
-    //qDebug()<<"setShowHidden"<<m_show_hidden_file;
-    m_show_hidden_file = showHidden;
-    getCurrentPage()->setShowHidden(showHidden);
-}
-
 void MainWindow::setShowHidden()
 {
-    //qDebug()<<"setShowHidden"<<m_show_hidden_file;
     m_show_hidden_file = !m_show_hidden_file;
     getCurrentPage()->setShowHidden(m_show_hidden_file);
 }
 
-void MainWindow::setUseDefaultNameSortOrder(bool use)
+void MainWindow::setUseDefaultNameSortOrder()
 {
-    m_use_default_name_sort_order = use;
-    getCurrentPage()->setUseDefaultNameSortOrder(use);
+    m_use_default_name_sort_order = ! m_use_default_name_sort_order;
+    getCurrentPage()->setUseDefaultNameSortOrder(m_use_default_name_sort_order);
 }
 
-void MainWindow::setSortFolderFirst(bool folderFirst)
+void MainWindow::setSortFolderFirst()
 {
-    m_folder_first = folderFirst;
-    getCurrentPage()->setSortFolderFirst(folderFirst);
+    m_folder_first = ! m_folder_first;
+    getCurrentPage()->setSortFolderFirst(m_folder_first);
 }
 
 void MainWindow::forceStopLoading()

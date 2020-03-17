@@ -143,10 +143,9 @@ public Q_SLOTS:
     void searchFilter(QString target_path, QString keyWord, bool search_file_name, bool search_content) override;
     void filterUpdate(int type_index=0, int time_index=0, int size_index=0) override;
 
-    void setShowHidden(bool showHidden) override;
     void setShowHidden() override;
-    void setUseDefaultNameSortOrder(bool use) override;
-    void setSortFolderFirst(bool folderFirst) override;
+    void setUseDefaultNameSortOrder() override;
+    void setSortFolderFirst() override;
 
     void onPreviewPageSwitch(const QString &uri) override;
 
@@ -184,9 +183,9 @@ private:
     QTimer m_operation_minimum_interval;
     bool m_is_loading = false;
     bool m_filter_visible = false;
-    bool m_show_hidden_file = false;
-    bool m_use_default_name_sort_order = true;
-    bool m_folder_first = true;
+    bool m_show_hidden_file;
+    bool m_use_default_name_sort_order;
+    bool m_folder_first;
 
     QString m_last_non_search_location;
     QString m_advance_target_path;
