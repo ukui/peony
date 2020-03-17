@@ -117,6 +117,7 @@ void AdvancedLocationBar::switchEditMode(bool bSearchMode)
     {
         m_layout->setCurrentWidget(m_search_bar);
         m_search_bar->setPlaceholderText(tr("Search Content..."));
+        m_search_bar->setFocus();
     }
     else
     {

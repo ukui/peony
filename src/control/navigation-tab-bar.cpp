@@ -24,6 +24,7 @@
 #include "x11-window-manager.h"
 
 #include "file-utils.h"
+#include "search-vfs-uri-parser.h"
 
 #include <QToolButton>
 
@@ -84,6 +85,13 @@ void NavigationTabBar::updateLocation(int index, const QString &uri)
 {
     auto iconName = Peony::FileUtils::getFileIconName(uri);
     auto displayName = Peony::FileUtils::getFileDisplayName(uri);
+    //qDebug() << "updateLocation text:" <<displayName <<uri;
+    if (uri.startsWith("search:///"))
+    {
+        QString nameRegexp = Peony::SearchVFSUriParser::getSearchUriNameRegexp(uri);
+        QString targetDirectory = Peony::SearchVFSUriParser::getSearchUriTargetDirectory(uri);
+        displayName = tr("Search \"%1\" in \"%2\"").arg(nameRegexp).arg(targetDirectory);
+    }
     setTabText(index, displayName);
     setTabIcon(index, QIcon::fromTheme(iconName));
     setTabData(index, uri);

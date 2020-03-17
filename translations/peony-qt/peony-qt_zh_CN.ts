@@ -115,7 +115,7 @@
         <translation type="vanished">文件管理器</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="389"/>
+        <location filename="../../src/windows/main-window.cpp" line="390"/>
         <source>New Folder</source>
         <translation>新建文件夹</translation>
     </message>
@@ -133,6 +133,14 @@
         <location filename="../../src/control/navigation-side-bar.cpp" line="186"/>
         <source>All tags...</source>
         <translation>所有标记...</translation>
+    </message>
+</context>
+<context>
+    <name>NavigationTabBar</name>
+    <message>
+        <location filename="../../src/control/navigation-tab-bar.cpp" line="93"/>
+        <source>Search &quot;%1&quot; in &quot;%2&quot;</source>
+        <translation type="unfinished">在%2中搜索%1</translation>
     </message>
 </context>
 <context>
