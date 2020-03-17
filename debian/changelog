@@ -1,3 +1,11 @@
+peony-extensions (2.0.1-1) unstable; urgency=medium
+
+  * New upstream bugfix-only release.
+    - Not allowed to open in admin or compress against the computer and
+      trash.
+
+ -- handsome_feng <jianfengli@ubuntukylin.com>  Tue, 17 Mar 2020 15:34:06 +0800
+
 peony-extensions (2.0.0-1) unstable; urgency=medium
 
   * New upstream release.
