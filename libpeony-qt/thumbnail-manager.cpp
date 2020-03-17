@@ -1,7 +1,7 @@
 /*
  * Peony-Qt's Library
  *
- * Copyright (C) 2019, Tianjin KYLIN Information Technology Co., Ltd.
+ * Copyright (C) 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -29,6 +29,8 @@
 #include "file-utils.h"
 
 #include "thumbnail/pdf-thumbnail.h"
+
+#include "generic-thumbnailer.h"
 
 #include "global-settings.h"
 
@@ -96,8 +98,8 @@ void ThumbnailManager::createThumbnail(const QString &uri, std::shared_ptr<FileW
                     url = FileUtils::getTargetUri(info->uri());
                     qDebug()<<url;
                 }
-                QIcon thumbnail;
-                thumbnail.addFile(url.path());
+                QIcon thumbnail = GenericThumbnailer::generateThumbnail(url.path(), true);
+                //thumbnail.addFile(url.path());
                 if (!thumbnail.isNull()) {
                     //add lock
                     //m_mutex.lock();
@@ -122,7 +124,8 @@ void ThumbnailManager::createThumbnail(const QString &uri, std::shared_ptr<FileW
                 }
                 PdfThumbnail pdfThumbnail(info->uri());
                 QIcon thumbnail;
-                thumbnail.addPixmap(pdfThumbnail.generateThumbnail());
+                QPixmap pix = pdfThumbnail.generateThumbnail();
+                thumbnail = GenericThumbnailer::generateThumbnail(pix, true);
                 //thumbnail.addFile(url.path());
                 if (!thumbnail.isNull()) {
                     //add lock
@@ -159,7 +162,8 @@ void ThumbnailManager::createThumbnail(const QString &uri, std::shared_ptr<FileW
                 QString string = _icon_string;
                 if (thumbnail.isNull() && string.startsWith("/")) {
                     qDebug()<<"add file";
-                    thumbnail.addFile(_icon_string);
+                    QIcon thumbnail = GenericThumbnailer::generateThumbnail(_icon_string, true);
+                    //thumbnail.addFile(_icon_string);
                 }
                 g_free(_icon_string);
                 g_object_unref(_desktop_file);
@@ -206,7 +210,8 @@ void ThumbnailManager::updateDesktopFileThumbnail(const QString &uri, std::share
             QString string = _icon_string;
             if (thumbnail.isNull() && string.startsWith("/")) {
                 qDebug()<<"add file";
-                thumbnail.addFile(_icon_string);
+                QIcon thumbnail = GenericThumbnailer::generateThumbnail(_icon_string, true);
+                //thumbnail.addFile(_icon_string);
             }
             g_free(_icon_string);
             g_object_unref(_desktop_file);
