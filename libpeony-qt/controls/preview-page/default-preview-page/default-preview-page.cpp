@@ -163,6 +163,7 @@ FilePreviewPage::FilePreviewPage(QWidget *parent) : QFrame(parent)
 
     m_form = new QFormLayout(this);
     m_display_name_label = new QLabel(this);
+    m_display_name_label->setWordWrap(true);
     m_form->addRow(tr("File Name:"), m_display_name_label);
     m_type_label = new QLabel(this);
     m_form->addRow(tr("File Type:"), m_type_label);

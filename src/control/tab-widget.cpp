@@ -60,6 +60,7 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
     m_stack->setContentsMargins(0, 0, 0, 0);
     m_buttons = new PreviewPageButtonGroups(this);
     m_preview_page_container = new QStackedWidget(this);
+    m_preview_page_container->setMinimumWidth(200);
 
     connect(m_buttons, &PreviewPageButtonGroups::previewPageButtonTrigger, [=](bool trigger, const QString &id){
         setTriggeredPreviewPage(trigger);
@@ -124,6 +125,7 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
     vbox->setContentsMargins(0, 0, 0, 0);
     vbox->addLayout(t);
     QSplitter *s = new QSplitter(this);
+    s->setChildrenCollapsible(false);
     s->setContentsMargins(0, 0, 0, 0);
     s->setHandleWidth(1);
     s->setStretchFactor(0, 1);
@@ -222,6 +224,7 @@ void TabWidget::setPreviewPage(Peony::PreviewPageIface *previewPage)
     m_preview_page = previewPage;
 
     if (m_preview_page) {
+        previewPageWidget->setParent(m_preview_page_container);
         m_preview_page_container->addWidget(previewPageWidget);
         updatePreviewPage();
     }
