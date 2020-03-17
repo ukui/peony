@@ -168,7 +168,7 @@ void MainWindow::setShortCuts()
 
     //show hidden action
     QAction *showHiddenAction = new QAction(this);
-    showHiddenAction->setShortcut(QKeySequence(tr("Ctrl+H", "Show|Hidden")));
+    showHiddenAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_H));
     addAction(showHiddenAction);
     connect(showHiddenAction, &QAction::triggered, this, [=](){
         //qDebug() << "show hidden";
@@ -189,8 +189,9 @@ void MainWindow::setShortCuts()
         Peony::FileOperationManager::getInstance()->redo();
     });
 
+    //add CTRL+D for delete operation
     auto trashAction = new QAction(this);
-    trashAction->setShortcut(Qt::Key_Delete);
+    trashAction->setShortcuts(QList<QKeySequence>()<<Qt::Key_Delete<<QKeySequence(Qt::CTRL + Qt::Key_D));
     connect(trashAction, &QAction::triggered, [=](){
         auto uris = this->getCurrentSelections();
         if (!uris.isEmpty()) {

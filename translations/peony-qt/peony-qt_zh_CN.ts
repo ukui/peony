@@ -27,54 +27,54 @@
 <context>
     <name>HeaderBar</name>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="62"/>
+        <location filename="../../src/control/header-bar.cpp" line="63"/>
         <source>Create Folder</source>
         <translation>新建文件夹</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="75"/>
+        <location filename="../../src/control/header-bar.cpp" line="76"/>
         <source>Open Terminal</source>
         <translation>打开终端</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="89"/>
+        <location filename="../../src/control/header-bar.cpp" line="90"/>
         <source>Go Back</source>
         <translation>后退</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="100"/>
+        <location filename="../../src/control/header-bar.cpp" line="101"/>
         <source>Go Forward</source>
         <translation>前进</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="117"/>
+        <location filename="../../src/control/header-bar.cpp" line="118"/>
         <source>Search</source>
         <translation>搜索</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="127"/>
+        <location filename="../../src/control/header-bar.cpp" line="128"/>
         <source>View Type</source>
         <translation>视图类型</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="145"/>
+        <location filename="../../src/control/header-bar.cpp" line="146"/>
         <source>Sort Type</source>
         <translation>排序类型</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="171"/>
+        <location filename="../../src/control/header-bar.cpp" line="172"/>
         <source>Option</source>
         <translation>选项</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="206"/>
+        <location filename="../../src/control/header-bar.cpp" line="207"/>
         <source>Operate Tips</source>
-        <translation type="unfinished"></translation>
+        <translation>操作提示</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="207"/>
+        <location filename="../../src/control/header-bar.cpp" line="208"/>
         <source>Don&apos;t find any terminal, please install at least one terminal!</source>
-        <translation type="unfinished"></translation>
+        <translation>没有找到任何终端插件，请确认您至少安装了一个！</translation>
     </message>
     <message>
         <source>Minimize</source>
@@ -88,31 +88,25 @@
 <context>
     <name>HeaderBarContainer</name>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="414"/>
+        <location filename="../../src/control/header-bar.cpp" line="423"/>
         <source>Minimize</source>
-        <translation type="unfinished">最小化</translation>
+        <translation>最小化</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="442"/>
+        <location filename="../../src/control/header-bar.cpp" line="451"/>
         <source>Close</source>
-        <translation type="unfinished">最大化</translation>
+        <translation>最大化</translation>
     </message>
 </context>
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="171"/>
-        <source>Ctrl+H</source>
-        <comment>Show|Hidden</comment>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../../src/windows/main-window.cpp" line="177"/>
+        <location filename="../../src/windows/main-window.cpp" line="178"/>
         <source>Undo</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="184"/>
+        <location filename="../../src/windows/main-window.cpp" line="185"/>
         <source>Redo</source>
         <translation></translation>
     </message>
@@ -121,7 +115,7 @@
         <translation type="vanished">文件管理器</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="388"/>
+        <location filename="../../src/windows/main-window.cpp" line="389"/>
         <source>New Folder</source>
         <translation>新建文件夹</translation>
     </message>
@@ -138,7 +132,7 @@
     <message>
         <location filename="../../src/control/navigation-side-bar.cpp" line="186"/>
         <source>All tags...</source>
-        <translation type="unfinished">所有标记...</translation>
+        <translation>所有标记...</translation>
     </message>
 </context>
 <context>

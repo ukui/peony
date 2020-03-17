@@ -314,7 +314,7 @@ FMWindow::FMWindow(const QString &uri, QWidget *parent) : QMainWindow (parent)
 
     //show hidden action
     QAction *showHiddenAction = new QAction(this);
-    showHiddenAction->setShortcut(QKeySequence(tr("Ctrl+H", "Show|Hidden")));
+    showHiddenAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_H));
     addAction(showHiddenAction);
     connect(showHiddenAction, &QAction::triggered, this, [=](){
         this->setShowHidden();
@@ -365,7 +365,7 @@ FMWindow::FMWindow(const QString &uri, QWidget *parent) : QMainWindow (parent)
     addAction(searchAction);
 
     auto locationAction = new QAction(this);
-    locationAction->setShortcuts(QList<QKeySequence>()<<Qt::Key_F4<<QKeySequence(Qt::CTRL + Qt::Key_D));
+    locationAction->setShortcuts(QList<QKeySequence>()<<Qt::Key_F4<<QKeySequence(Qt::ALT + Qt::Key_D));
     connect(locationAction, &QAction::triggered, this, [=](){
         m_navigation_bar->startEdit();
     });
