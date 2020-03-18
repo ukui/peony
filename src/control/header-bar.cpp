@@ -35,6 +35,8 @@
 #include <QHBoxLayout>
 #include <QUrl>
 #include <QMessageBox>
+#include <QProcess>
+#include <QDir>
 
 #include <QStyleOptionToolButton>
 
@@ -212,25 +214,14 @@ void HeaderBar::openDefaultTerminal()
         return;
     }
 
-    QUrl url = m_window->getCurrentUri();
-    auto directory = url.path().toUtf8().constData();
-    gchar **argv = nullptr;
-    g_shell_parse_argv (terminal_cmd.toUtf8().constData(), nullptr, &argv, nullptr);
-    GError *err = nullptr;
-    g_spawn_async (directory,
-                   argv,
-                   nullptr,
-                   G_SPAWN_SEARCH_PATH,
-                   nullptr,
-                   nullptr,
-                   nullptr,
-                   &err);
-    if (err) {
-        qDebug()<<err->message;
-        g_error_free(err);
-        err = nullptr;
-    }
-    g_strfreev (argv);
+    auto url = m_window->getCurrentUri();
+    auto absPath = url.replace("file://", "");
+    //qDebug() << "working-directory url" <<url<<absPath;
+    QProcess p;
+    p.setProgram(terminal_cmd);
+    p.setArguments(QStringList()<<"--working-directory"<<absPath);
+    p.startDetached();
+    p.waitForFinished(-1);
 }
 
 void HeaderBar::searchButtonClicked()
