@@ -39,6 +39,7 @@ namespace Peony {
 class FileInfo;
 class FileWatcher;
 class IconContainer;
+class FilePreviewPage;
 
 /*!
  * \brief The DefaultPreviewPage class
@@ -67,7 +68,7 @@ private:
     PreviewType m_current_type;
 
     QWidget *m_empty_tab_widget;
-    QWidget *m_preview_tab_widget;
+    FilePreviewPage *m_preview_tab_widget;
 
     std::shared_ptr<FileInfo> m_info;
     std::shared_ptr<FileWatcher> m_watcher;

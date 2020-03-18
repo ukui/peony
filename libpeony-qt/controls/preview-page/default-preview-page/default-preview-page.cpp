@@ -133,6 +133,7 @@ void DefaultPreviewPage::startPreview()
 
 void DefaultPreviewPage::cancel()
 {
+    m_preview_tab_widget->cancel();
     setCurrentWidget(m_empty_tab_widget);
     QLabel *label = qobject_cast<QLabel*>(m_empty_tab_widget);
     label->setText(tr("Select the file you want to preview..."));
@@ -258,6 +259,9 @@ void FilePreviewPage::updateInfo(FileInfo *info)
 void FilePreviewPage::countAsync(const QString &uri)
 {
     cancel();
+    m_file_count = 0;
+    m_hidden_count = 0;
+    m_total_size = 0;
 
     QStringList uris;
     uris<<uri;
@@ -279,8 +283,12 @@ void FilePreviewPage::updateCount()
 
 void FilePreviewPage::cancel()
 {
-    if (m_count_op)
+    if (m_count_op) {
+        m_count_op->blockSignals(true);
         m_count_op->cancel();
+        onCountDone();
+    }
+    m_count_op = nullptr;
 }
 
 void FilePreviewPage::resizeIcon(QSize size)
