@@ -46,6 +46,8 @@ class HeaderBarContainer : public QToolBar
 public:
     explicit HeaderBarContainer(QWidget *parent = nullptr);
 
+    bool eventFilter(QObject *obj, QEvent *e);
+
     void addHeaderBar(HeaderBar *headerBar);
 
 protected:

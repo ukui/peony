@@ -38,6 +38,8 @@
 
 #include <QStyleOptionToolButton>
 
+#include <QEvent>
+
 #include <QDebug>
 
 static HeaderBarStyle *global_instance = nullptr;
@@ -377,6 +379,8 @@ HeaderBarContainer::HeaderBarContainer(QWidget *parent) : QToolBar(parent)
 {
     setStyle(HeaderBarStyle::getStyle());
 
+    setContextMenuPolicy(Qt::CustomContextMenu);
+
     setStyleSheet(".HeaderBarContainer"
                   "{"
                   "background-color: transparent;"
@@ -392,6 +396,20 @@ HeaderBarContainer::HeaderBarContainer(QWidget *parent) : QToolBar(parent)
 
     m_internal_widget = new QWidget(this);
     m_internal_widget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+}
+
+bool HeaderBarContainer::eventFilter(QObject *obj, QEvent *e)
+{
+    Q_UNUSED(obj)
+    if (e->type() == QEvent::MouseMove) {
+        //auto w = qobject_cast<QWidget *>(obj);
+        QCursor c;
+        c.setShape(Qt::ArrowCursor);
+        //this->setCursor(c);
+        //w->setCursor(c);
+        this->topLevelWidget()->setCursor(c);
+    }
+    return false;
 }
 
 void HeaderBarContainer::addHeaderBar(HeaderBar *headerBar)
@@ -461,4 +479,11 @@ void HeaderBarContainer::addWindowButtons()
     layout->addWidget(close);
 
     m_layout->addLayout(layout);
+
+    minimize->setMouseTracking(true);
+    minimize->installEventFilter(this);
+    maximizeAndRestore->setMouseTracking(true);
+    maximizeAndRestore->installEventFilter(this);
+    close->setMouseTracking(true);
+    close->installEventFilter(this);
 }
