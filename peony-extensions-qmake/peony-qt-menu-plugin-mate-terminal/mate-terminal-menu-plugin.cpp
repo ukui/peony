@@ -32,12 +32,14 @@
 #include <QApplication>
 
 #include <QtConcurrent>
+#include <QProcess>
 
 #include <QDebug>
 
 using namespace Peony;
 
 static QString terminal_cmd = nullptr;
+static QString m_uri = nullptr;
 
 MateTerminalMenuPlugin::MateTerminalMenuPlugin(QObject *parent) : QObject (parent)
 {
@@ -63,10 +65,10 @@ MateTerminalMenuPlugin::MateTerminalMenuPlugin(QObject *parent) : QObject (paren
     });
 }
 
-void openTerminal(const QString &uri){
+void MateTerminalMenuPlugin::openTerminal(){
 
-    qDebug()<<"triggered"<<uri;
-    QUrl url = uri;
+    //qDebug()<<"triggered"<<uri;
+    QUrl url = m_uri;
     auto directory = url.path().toUtf8().constData();
     gchar **argv = nullptr;
     g_shell_parse_argv (terminal_cmd.toUtf8().constData(), nullptr, &argv, nullptr);
@@ -83,8 +85,22 @@ void openTerminal(const QString &uri){
         qDebug()<<err->message;
         g_error_free(err);
         err = nullptr;
+        //try again to open terminal
+        //maybe this method is better,but still need more test to confirm
+        tryOpenAgain();
     }
     g_strfreev (argv);
+}
+
+void MateTerminalMenuPlugin::tryOpenAgain()
+{
+    auto absPath = m_uri.replace("file://", "");
+    qDebug() << "tryOpenAgain terminal url:" <<absPath;
+    QProcess p;
+    p.setProgram(terminal_cmd);
+    p.setArguments(QStringList()<<"--working-directory"<<absPath);
+    p.startDetached();
+    p.waitForFinished(-1);
 }
 
 QList<QAction *> MateTerminalMenuPlugin::menuActions(Types types, const QString &uri, const QStringList &selectionUris)
@@ -93,20 +109,23 @@ QList<QAction *> MateTerminalMenuPlugin::menuActions(Types types, const QString 
     if (terminal_cmd.isNull()) {
         return actions;
     }
+
     if (types == MenuPluginInterface::DirectoryView || types == MenuPluginInterface::DesktopWindow) {
         if (selectionUris.isEmpty()) {
+            m_uri = uri;
             QAction *dirAction = new QAction(QIcon::fromTheme("utilities-terminal-symbolic"), tr("Open Directory in Terminal"));
             dirAction->connect(dirAction, &QAction::triggered, [=](){
-                openTerminal(uri);
+                openTerminal();
             });
             actions<<dirAction;
         }
         if (selectionUris.count() == 1) {
             auto info = FileInfo::fromUri(selectionUris.first(), false);
             if (info->isDir()) {
+                m_uri = selectionUris.first();
                 QAction *dirAction = new QAction(QIcon::fromTheme("utilities-terminal-symbolic"), tr("Open Directory in Terminal"));
                 dirAction->connect(dirAction, &QAction::triggered, [=](){
-                    openTerminal(selectionUris.first());
+                    openTerminal();
                 });
                 actions<<dirAction;
             }

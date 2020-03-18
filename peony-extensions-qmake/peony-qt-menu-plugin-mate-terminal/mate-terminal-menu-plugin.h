@@ -46,6 +46,9 @@ public:
     void setEnable(bool enable) override {m_enable = enable;}
     bool isEnable() override {return m_enable;}
 
+    void openTerminal();
+    void tryOpenAgain();
+
     QString testPlugin() override {return "test";}
     QList<QAction *> menuActions(Types types, const QString &uri, const QStringList &selectionUris) override;
 
