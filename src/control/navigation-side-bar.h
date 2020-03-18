@@ -42,6 +42,7 @@ public:
     bool eventFilter(QObject *obj, QEvent *e);
 
     void updateGeometries();
+    void scrollTo(const QModelIndex &index, ScrollHint hint = EnsureVisible);
 
     void paintEvent(QPaintEvent *event);
 

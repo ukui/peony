@@ -137,6 +137,16 @@ void NavigationSideBar::updateGeometries()
     QTreeView::updateGeometries();
 }
 
+void NavigationSideBar::scrollTo(const QModelIndex &index, QAbstractItemView::ScrollHint hint)
+{
+    //skip unmount indicator index
+    if (index.isValid()) {
+        if (index.column() == 0) {
+            QTreeView::scrollTo(index, hint);
+        }
+    }
+}
+
 void NavigationSideBar::paintEvent(QPaintEvent *event)
 {
     QTreeView::paintEvent(event);
