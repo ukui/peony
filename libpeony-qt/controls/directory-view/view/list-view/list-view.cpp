@@ -40,6 +40,8 @@ using namespace Peony::DirectoryView;
 
 ListView::ListView(QWidget *parent) : QTreeView(parent)
 {
+    setAlternatingRowColors(true);
+
     setItemDelegate(new ListViewDelegate(this));
 
     header()->setSectionResizeMode(QHeaderView::Interactive);

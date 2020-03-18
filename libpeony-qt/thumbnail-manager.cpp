@@ -156,6 +156,9 @@ void ThumbnailManager::createThumbnail(const QString &uri, std::shared_ptr<FileW
                 }
 
                 auto _desktop_file = g_desktop_app_info_new_from_filename(url.path().toUtf8().constData());
+                if (!_desktop_file) {
+                    return;
+                }
                 auto _icon_string = g_desktop_app_info_get_string(_desktop_file, "Icon");
                 thumbnail = QIcon::fromTheme(_icon_string);
                 qDebug()<<_icon_string;

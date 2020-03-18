@@ -53,21 +53,15 @@ void ListViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
     auto style = widget->style();
     painter->save();
     if (opt.state.testFlag(QStyle::State_MouseOver)) {
-        if (index.column() == 0) {
-            if (!opt.state.testFlag(QStyle::State_Selected)) {
-                auto rect = opt.rect;
-                rect.setX(0);
-                rect.setRight(9999);
-                QColor color = m_styled_button->palette().highlight().color();
-                color.setAlpha(127);//half transparent
-                painter->fillRect(rect, color);
-            } else {
-                auto rect = opt.rect;
-                rect.setX(0);
-                rect.setRight(9999);
-                QColor color = m_styled_button->palette().highlight().color();
-                painter->fillRect(rect, color);
-            }
+        if (!opt.state.testFlag(QStyle::State_Selected)) {
+            auto rect = opt.rect;
+            QColor color = m_styled_button->palette().highlight().color();
+            color.setAlpha(127);//half transparent
+            painter->fillRect(rect, color);
+        } else {
+            auto rect = opt.rect;
+            QColor color = m_styled_button->palette().highlight().color();
+            painter->fillRect(rect, color);
         }
     }
     painter->restore();
