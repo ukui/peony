@@ -176,15 +176,17 @@ DesktopWindow::DesktopWindow(QScreen *screen, bool is_primary, QWidget *parent)
             if (m_view->getSelections().isEmpty()) {
                 auto action = menu.addAction(tr("set background"));
                 connect(action, &QAction::triggered, [=]() {
-                    QFileDialog dlg;
-                    dlg.setNameFilters(QStringList() << "*.jpg"
-                                       << "*.png");
-                    if (dlg.exec()) {
-                        auto url = dlg.selectedUrls().first();
-                        this->setBg(url.path());
-                        // qDebug()<<url;
-                        Q_EMIT this->changeBg(url.path());
-                    }
+                    //go to control center set background
+                    gotoSetBackground();
+//                    QFileDialog dlg;
+//                    dlg.setNameFilters(QStringList() << "*.jpg"
+//                                       << "*.png");
+//                    if (dlg.exec()) {
+//                        auto url = dlg.selectedUrls().first();
+//                        this->setBg(url.path());
+//                        // qDebug()<<url;
+//                        Q_EMIT this->changeBg(url.path());
+//                    }
                 });
             }
             menu.exec(QCursor::pos());
@@ -243,6 +245,16 @@ void DesktopWindow::initGSettings() {
             }
         }
     });
+}
+
+void DesktopWindow::gotoSetBackground()
+{
+    QProcess p;
+    p.setProgram("ukui-control-center");
+    //old version use -a, new version use -b as para
+    p.setArguments(QStringList()<<"-b");
+    p.startDetached();
+    p.waitForFinished(-1);
 }
 
 const QString DesktopWindow::getCurrentBgPath() {

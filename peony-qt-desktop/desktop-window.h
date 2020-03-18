@@ -70,6 +70,7 @@ public Q_SLOTS:
 
     void connectSignal();
     void disconnectSignal();
+    void gotoSetBackground();
 
 protected Q_SLOTS:
     void setBg(const QString &bgPath);
