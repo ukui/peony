@@ -100,6 +100,14 @@ bool X11WindowManager::eventFilter(QObject *watched, QEvent *event)
             XFlush(display);
 
             m_is_draging = false;
+
+            //NOTE: use x11 move will ungrab the window focus
+            //hide and show will restore the focus and it seems
+            //there is no bad effect for peony main window.
+            if (!m_current_widget->isTopLevel()) {
+                m_current_widget->hide();
+                m_current_widget->show();
+            }
         }
         break;
     }
