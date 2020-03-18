@@ -137,17 +137,15 @@ void NavigationTabBar::tabInserted(int index)
 
 void NavigationTabBar::relayoutFloatButton(bool insterted)
 {
+    int fixedY = 0;
     if (count() == 0) {
-        m_float_button->move(0, 0);
+        m_float_button->move(0, fixedY);
         return;
     }
     //qDebug()<<"relayout";
     auto lastTabRect = tabRect(count() - 1);
-    if (insterted) {
-        m_float_button->move(lastTabRect.right(), 0);
-    } else {
-        m_float_button->move(lastTabRect.right(), 0);
-    }
+    fixedY = lastTabRect.center().y() - m_float_button->height()/2;
+    m_float_button->move(lastTabRect.right(), fixedY);
 }
 
 TabBarStyle *TabBarStyle::getStyle()

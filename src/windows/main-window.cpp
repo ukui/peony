@@ -758,6 +758,7 @@ void MainWindow::initUI(const QString &uri)
     labelDialog->hide();
 
     auto splitter = new QSplitter(this);
+    splitter->setChildrenCollapsible(false);
     splitter->setHandleWidth(0);
     splitter->addWidget(navigationSidebarContainer);
     splitter->addWidget(labelDialog);
