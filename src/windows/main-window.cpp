@@ -767,20 +767,22 @@ void MainWindow::initUI(const QString &uri)
     splitter->addWidget(navigationSidebarContainer);
     splitter->addWidget(labelDialog);
 
-    connect(labelDialog, &FileLabelBox::clicked, [=](const QModelIndex index)
+    connect(labelDialog->selectionModel(), &QItemSelectionModel::selectionChanged, [=]()
     {
-        if (index.row() >= labelDialog->getTotalDefaultColor())
+        auto selected = labelDialog->selectionModel()->selectedIndexes();
+        //qDebug() << "FileLabelBox selectionChanged:" <<selected.count();
+        if (selected.count() > 0)
         {
-            //clear label filter
-            setLabelNameFilter("");
-        }
-        else
-        {
-            //qDebug() << "main-window FileLabelBox clicked:" << index.data().toString() <<index.row();
-            auto name = index.data().toString();
+            auto name = selected.first().data().toString();
             setLabelNameFilter(name);
         }
     });
+    //when clicked in blank, currentChanged may not triggered
+    connect(labelDialog, &FileLabelBox::clearSelection, [=]()
+    {
+        setLabelNameFilter("");
+    });
+
     connect(sidebar, &NavigationSideBar::labelButtonClicked, labelDialog, &QWidget::setVisible);
 
     sidebarContainer->setWidget(splitter);

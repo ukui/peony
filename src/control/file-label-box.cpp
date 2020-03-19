@@ -26,6 +26,7 @@
 #include <QMenu>
 
 #include <QColorDialog>
+#include <QMouseEvent>
 
 #include <QApplication>
 #include <QDebug>
@@ -87,6 +88,20 @@ QSize FileLabelBox::sizeHint() const
     auto size = QListView::sizeHint();
     size.setWidth(w/5);
     return size;
+}
+
+void FileLabelBox::mousePressEvent(QMouseEvent *e)
+{
+    QModelIndex index = indexAt(e->pos());
+    //qDebug() << "mousePressEvent:"<<e->pos() <<index.isValid() <<index.data() <<e->type();
+    if (!index.isValid() && e->button() == Qt::LeftButton)
+    {
+        this->clearSelection();
+        Q_EMIT clearSelection();
+    }
+    else {
+        QListView::mousePressEvent(e);
+    }
 }
 
 //LabelBoxStyle
