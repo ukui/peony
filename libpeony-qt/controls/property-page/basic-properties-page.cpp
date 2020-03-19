@@ -247,6 +247,8 @@ void BasicPropertiesPage::updateCountInfo()
 
 void BasicPropertiesPage::updateInfo(const QString &uri)
 {
+    m_info = FileInfo::fromUri(uri);
+
     GFile *file = g_file_new_for_uri(uri.toUtf8().constData());
     GFileInfo *info = g_file_query_info(file,
                                         "time::*",
