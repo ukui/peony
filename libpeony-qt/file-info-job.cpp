@@ -258,9 +258,16 @@ void FileInfoJob::refreshInfoContents(GFileInfo *new_info)
     date = QDateTime::fromMSecsSinceEpoch(info->m_access_time*1000);
     info->m_access_date = date.toString(Qt::SystemLocaleShortDate);
 
+    m_info->m_meta_info = FileMetaInfo::fromGFileInfo(m_info->uri(), new_info);
+
     if (info->isDesktopFile()) {
         QUrl url = info->uri();
         GDesktopAppInfo *desktop_info = g_desktop_app_info_new_from_filename(url.path().toUtf8());
+        if (!desktop_info) {
+            m_info->m_mutex.unlock();
+            info->updated();
+            return;
+        }
         auto string = g_desktop_app_info_get_locale_string(desktop_info, "Name");
         if (string) {
             info->m_display_name = string;
@@ -274,8 +281,6 @@ void FileInfoJob::refreshInfoContents(GFileInfo *new_info)
         }
         g_object_unref(desktop_info);
     }
-
-    m_info->m_meta_info = FileMetaInfo::fromGFileInfo(m_info->uri(), new_info);
 
     Q_EMIT info->updated();
     m_info->m_mutex.unlock();
