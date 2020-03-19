@@ -79,7 +79,7 @@ void FileMetaInfo::setMetaInfoStringList(const QString &key, const QStringList &
 
 void FileMetaInfo::setMetaInfoVariant(const QString &key, const QVariant &value)
 {
-    if (!m_mutex.tryLock()) {
+    if (!m_mutex.tryLock(300)) {
         return;
     }
 
@@ -144,7 +144,7 @@ int FileMetaInfo::getMetaInfoInt(const QString &key)
 
 void FileMetaInfo::removeMetaInfo(const QString &key)
 {
-    if (!m_mutex.tryLock()) {
+    if (!m_mutex.tryLock(300)) {
         return;
     }
 
