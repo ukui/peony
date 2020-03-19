@@ -47,6 +47,8 @@ DesktopIndexWidget::DesktopIndexWidget(DesktopIconViewDelegate *delegate,
     m_index = index;
     m_delegate = delegate;
 
+    m_current_font = QApplication::font();
+
     updateItem();
 }
 
@@ -68,7 +70,7 @@ void DesktopIndexWidget::paintEvent(QPaintEvent *e)
     p.fillRect(this->rect(), bgColor);
 
     auto view = m_delegate->getView();
-    auto font = view->getViewItemFont(&m_option);
+    //auto font = view->getViewItemFont(&m_option);
 
     auto opt = m_option;
     auto iconSizeExcepted = m_delegate->getView()->iconSize();
@@ -83,22 +85,29 @@ void DesktopIndexWidget::paintEvent(QPaintEvent *e)
     QApplication::style()->drawControl(QStyle::CE_ItemViewItem, &opt, &p, m_delegate->getView());
 
     p.save();
-    p.translate(0, iconSizeExcepted.height() + 15);
-    QTextOption textOption(Qt::AlignTop|Qt::AlignHCenter);
-    textOption.setWrapMode(QTextOption::WrapAnywhere);
 
     // draw text shadow
     p.save();
     p.translate(1, 1);
-    p.setFont(opt.font);
-    p.setPen(QColor(50, 50, 50));
-    p.drawText(m_text_rect, m_option.text, textOption);
+    QFontMetrics fm(m_current_font);
+
+    style()->drawItemText(&p,
+                          m_text_rect,
+                          Qt::AlignTop|Qt::TextWrapAnywhere|Qt::AlignHCenter,
+                          this->palette(),
+                          true,
+                          m_option.text,
+                          QPalette::Shadow);
     p.restore();
 
     // draw text
-    p.setFont(opt.font);
-    p.setPen(QColor(245, 245, 245));
-    p.drawText(m_text_rect, m_option.text, textOption);
+    style()->drawItemText(&p,
+                          m_text_rect,
+                          Qt::AlignTop|Qt::TextWrapAnywhere|Qt::AlignHCenter,
+                          this->palette(),
+                          true,
+                          m_option.text,
+                          QPalette::HighlightedText);
     p.restore();
 
     bgColor.setAlpha(255*0.8);
@@ -124,44 +133,34 @@ void DesktopIndexWidget::updateItem()
     m_option.textElideMode = Qt::ElideNone;
 
     m_option.rect.setWidth(this->size().width());
-    m_option.rect.setHeight(9999);
+    //m_option.rect.setHeight(9999);
     m_option.rect.moveTo(0, 0);
 
     //qDebug()<<m_option.rect;
-    auto font = view->getViewItemFont(&m_option);
+    //auto font = view->getViewItemFont(&m_option);
 
-    QFontMetrics fm(font);
+    auto rawTextRect = QApplication::style()->subElementRect(QStyle::SE_ItemViewItemText, &m_option, m_option.widget);
+    auto iconSizeExcepted = m_delegate->getView()->iconSize();
+
+    auto iconRect = QApplication::style()->subElementRect(QStyle::SE_ItemViewItemDecoration, &m_option, m_option.widget);
+
+    auto y_delta = iconSizeExcepted.height() - iconRect.height();
+
+    rawTextRect.setTop(iconRect.bottom() + y_delta + 5);
+    rawTextRect.setHeight(9999);
+
+    QFontMetrics fm(m_current_font);
     auto textRect = QApplication::style()->itemTextRect(fm,
-                                                        m_option.rect,
+                                                        rawTextRect,
                                                         Qt::AlignTop|Qt::AlignHCenter|Qt::TextWrapAnywhere,
                                                         true,
                                                         m_option.text);
 
-    auto tmpRect = textRect;
-    while (textRect.x() < 4) {
-        m_option.rect.adjust(1, 0, -1, 0);
-        if (m_option.rect.width() > 0) {
-            textRect = QApplication::style()->itemTextRect(fm,
-                                                           m_option.rect,
-                                                           Qt::AlignTop|Qt::AlignHCenter|Qt::TextWrapAnywhere,
-                                                           true,
-                                                           m_option.text);
-        } else {
-            m_option.rect.setX(0);
-            m_option.rect.setWidth(this->width());
-            textRect = tmpRect;
-            break;
-        }
-    }
-
-    textRect.adjust(0, 0, 0, fm.height()/1.5);
     m_text_rect = textRect;
 
-    m_option.font = font;
+    //m_option.font = font;
     auto opt = m_option;
-    QRect iconRect = QApplication::style()->subElementRect(QStyle::SE_ItemViewItemDecoration, &opt, m_delegate->getView());
-    QRect rect = QRect(0, 0, textRect.width(), textRect.height() + iconRect.height() + 20);
 
     qDebug()<<textRect;
-    setFixedHeight(rect.height() > size.height()? rect.height(): size.height());
+    setFixedHeight(textRect.bottom() + 10);
 }

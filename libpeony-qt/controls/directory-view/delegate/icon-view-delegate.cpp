@@ -74,6 +74,7 @@ QSize IconViewDelegate::sizeHint(const QStyleOptionViewItem &option, const QMode
     qDebug()<<option.decorationSize;
     qDebug()<<QStyledItemDelegate::sizeHint(option, index);
     */
+
     return QSize(105, 118);
 
     return QStyledItemDelegate::sizeHint(option, index);

@@ -31,6 +31,9 @@
 #include <QPushButton>
 #include <QWidget>
 #include <QPainter>
+
+#include <QApplication>
+
 #include <QDebug>
 
 using namespace Peony;
@@ -66,20 +69,22 @@ void DesktopIconViewDelegate::paint(QPainter *painter, const QStyleOptionViewIte
         }
     }
 
-    auto font = opt.font;
-    switch (view->zoomLevel()) {
-    case DesktopIconView::Small:
-        font.setPixelSize(int(font.pixelSize() * 0.8));
-        break;
-    case DesktopIconView::Large:
-        font.setPixelSize(int(font.pixelSize() * 1.2));
-        break;
-    case DesktopIconView::Huge:
-        font.setPixelSize(int(font.pixelSize() * 1.4));
-        break;
-    default:
-        break;
-    }
+//    auto font = opt.font;
+//    switch (view->zoomLevel()) {
+//    case DesktopIconView::Small:
+//        font.setPixelSize(int(font.pixelSize() * 0.8));
+//        break;
+//    case DesktopIconView::Large:
+//        font.setPixelSize(int(font.pixelSize() * 1.2));
+//        break;
+//    case DesktopIconView::Huge:
+//        font.setPixelSize(int(font.pixelSize() * 1.4));
+//        break;
+//    default:
+//        break;
+//    }
+    auto font = QApplication::font();
+    opt.font = font;
 
     //paint background
     if (!view->indexWidget(index)) {
@@ -107,7 +112,7 @@ void DesktopIconViewDelegate::paint(QPainter *painter, const QStyleOptionViewIte
     auto iconSizeExpected = view->iconSize();
     auto iconRect = style->subElementRect(QStyle::SE_ItemViewItemDecoration, &opt, opt.widget);
     int y_delta = iconSizeExpected.height() - iconRect.height();
-    opt.rect.setY(opt.rect.y() + y_delta);
+    opt.rect.translate(0, y_delta);
 
     //paint text shadow
     auto opt2 = opt;
@@ -199,19 +204,19 @@ QWidget *DesktopIconViewDelegate::createEditor(QWidget *parent, const QStyleOpti
     auto edit = new IconViewEditor(parent);
     auto font = option.font;
     auto view = qobject_cast<Peony::DesktopIconView*>(this->parent());
-    switch (view->zoomLevel()) {
-    case DesktopIconView::Small:
-        font.setPixelSize(int(font.pixelSize() * 0.8));
-        break;
-    case DesktopIconView::Large:
-        font.setPixelSize(int(font.pixelSize() * 1.2));
-        break;
-    case DesktopIconView::Huge:
-        font.setPixelSize(int(font.pixelSize() * 1.4));
-        break;
-    default:
-        break;
-    }
+//    switch (view->zoomLevel()) {
+//    case DesktopIconView::Small:
+//        font.setPixelSize(int(font.pixelSize() * 0.8));
+//        break;
+//    case DesktopIconView::Large:
+//        font.setPixelSize(int(font.pixelSize() * 1.2));
+//        break;
+//    case DesktopIconView::Huge:
+//        font.setPixelSize(int(font.pixelSize() * 1.4));
+//        break;
+//    default:
+//        break;
+//    }
 
     edit->setFont(font);
 
