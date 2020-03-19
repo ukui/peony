@@ -498,6 +498,13 @@ void DesktopMenu::openWindow(const QStringList &uris)
 
 void DesktopMenu::showProperties(const QString &uri)
 {
+    //qDebug() << "showProperties uri:" <<uri;
+    if (uri == "computer:///" || uri == "//")
+    {
+        gotoAboutComputer();
+        return;
+    }
+
     QUrl url = uri;
     QProcess p;
 #if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
@@ -516,6 +523,13 @@ void DesktopMenu::showProperties(const QStringList &uris)
         QUrl url = arg;
         args<<url.toEncoded();
     }
+
+    if (uris.contains("computer:///"))
+    {
+        gotoAboutComputer();
+        return;
+    }
+
     QProcess p;
 #if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
     p.setProgram("peony");
@@ -524,4 +538,14 @@ void DesktopMenu::showProperties(const QStringList &uris)
 #else
     p.startDetached("peony", QStringList()<<"--show-properties"<<args);
 #endif
+}
+
+void DesktopMenu::gotoAboutComputer()
+{
+    QProcess p;
+    p.setProgram("ukui-control-center");
+    //-a para to show about computer infos
+    p.setArguments(QStringList()<<"-a");
+    p.startDetached();
+    p.waitForFinished(-1);
 }

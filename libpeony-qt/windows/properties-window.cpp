@@ -32,6 +32,7 @@
 #include <QToolBar>
 #include <QDialogButtonBox>
 #include <QPushButton>
+#include <QProcess>
 
 using namespace Peony;
 
@@ -100,28 +101,54 @@ PropertiesWindowTabPagePluginIface *PropertiesWindowPluginManager::getFactory(co
 
 PropertiesWindow::PropertiesWindow(const QStringList &uris, QWidget *parent) : QMainWindow (parent)
 {
-    setWindowIcon(QIcon::fromTheme("system-file-manager"));
-    setWindowTitle(tr("Properties"));
+    m_uris = uris;
+    if (uris.contains("computer:///"))
+    {
+        gotoAboutComputer();
+    }
+    else
+    {
+        setWindowIcon(QIcon::fromTheme("system-file-manager"));
+        setWindowTitle(tr("Properties"));
 
-    setAttribute(Qt::WA_DeleteOnClose);
-    setContentsMargins(0, 15, 0, 0);
-    setMinimumSize(360, 480);
-    auto w = new PropertiesWindowPrivate(uris, this);
-    setCentralWidget(w);
+        setAttribute(Qt::WA_DeleteOnClose);
+        setContentsMargins(0, 15, 0, 0);
+        setMinimumSize(360, 480);
+        auto w = new PropertiesWindowPrivate(uris, this);
+        setCentralWidget(w);
 
-    QToolBar *buttonToolBar = new QToolBar(this);
-    addToolBar(Qt::BottomToolBarArea, buttonToolBar);
+        QToolBar *buttonToolBar = new QToolBar(this);
+        addToolBar(Qt::BottomToolBarArea, buttonToolBar);
 
-    QDialogButtonBox *box = new QDialogButtonBox(QDialogButtonBox::Close,
-                                                 buttonToolBar);
-    box->setContentsMargins(0, 5, 5, 5);
-    //get close button and do translate operation
-    box->button(QDialogButtonBox::Close)->setText(tr("Close"));
-    buttonToolBar->addWidget(box);
+        QDialogButtonBox *box = new QDialogButtonBox(QDialogButtonBox::Close,
+                                                     buttonToolBar);
+        box->setContentsMargins(0, 5, 5, 5);
+        //get close button and do translate operation
+        box->button(QDialogButtonBox::Close)->setText(tr("Close"));
+        buttonToolBar->addWidget(box);
 
-    connect(box, &QDialogButtonBox::rejected, [=](){
-        this->close();
-    });
+        connect(box, &QDialogButtonBox::rejected, [=](){
+            this->close();
+        });
+    }
+}
+
+void PropertiesWindow::show()
+{
+    if (m_uris.contains("computer:///"))
+        close();
+    else
+        return QWidget::show();
+}
+
+void PropertiesWindow::gotoAboutComputer()
+{
+    QProcess p;
+    p.setProgram("ukui-control-center");
+    //-a para to show about computer infos
+    p.setArguments(QStringList()<<"-a");
+    p.startDetached();
+    p.waitForFinished(-1);
 }
 
 //properties window

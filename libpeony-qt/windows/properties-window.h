@@ -62,6 +62,11 @@ class PEONYCORESHARED_EXPORT PropertiesWindow : public QMainWindow
 public:
     explicit PropertiesWindow(const QStringList &uris, QWidget *parent = nullptr);
 
+    void gotoAboutComputer();
+    void show();
+
+public:
+    QStringList m_uris;
 };
 
 class PropertiesWindowPrivate : public QTabWidget

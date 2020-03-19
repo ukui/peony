@@ -49,6 +49,7 @@ protected:
     void openWindow(const QStringList &uris);
     void showProperties(const QString &uri);
     void showProperties(const QStringList &uris);
+    void gotoAboutComputer();
 
 private:
     DirectoryViewIface *m_view;
