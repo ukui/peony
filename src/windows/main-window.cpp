@@ -778,7 +778,7 @@ void MainWindow::initUI(const QString &uri)
         }
     });
     //when clicked in blank, currentChanged may not triggered
-    connect(labelDialog, &FileLabelBox::clearSelection, [=]()
+    connect(labelDialog, &FileLabelBox::leftClickOnBlank, [=]()
     {
         setLabelNameFilter("");
     });

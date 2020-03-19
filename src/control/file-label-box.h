@@ -39,7 +39,7 @@ public:
     const int TOTAL_DEFAULT_COLOR = 7;
 
 Q_SIGNALS:
-    void clearSelection();
+    void leftClickOnBlank();
 
 protected:
     void mousePressEvent(QMouseEvent *e);

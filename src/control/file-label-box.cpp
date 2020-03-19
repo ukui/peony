@@ -97,7 +97,7 @@ void FileLabelBox::mousePressEvent(QMouseEvent *e)
     if (!index.isValid() && e->button() == Qt::LeftButton)
     {
         this->clearSelection();
-        Q_EMIT clearSelection();
+        Q_EMIT leftClickOnBlank();
     }
     else {
         QListView::mousePressEvent(e);
