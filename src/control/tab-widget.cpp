@@ -259,6 +259,11 @@ void TabWidget::goToUri(const QString &uri, bool addHistory, bool forceUpdate)
     m_tab_bar->updateLocation(m_tab_bar->currentIndex(), uri);
 }
 
+void TabWidget::updateTabPageTitle()
+{
+   m_tab_bar->updateLocation(m_tab_bar->currentIndex(), getCurrentUri());
+}
+
 void TabWidget::switchViewType(const QString &viewId)
 {
     currentPage()->switchViewType(viewId);

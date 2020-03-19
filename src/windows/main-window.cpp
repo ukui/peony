@@ -385,6 +385,11 @@ void MainWindow::setShortCuts()
     addAction(cutAction);
 }
 
+void MainWindow::updateTabPageTitle()
+{
+    m_tab->updateTabPageTitle();
+}
+
 void MainWindow::createFolderOperation()
 {
     Peony::CreateTemplateOperation op(getCurrentUri(), Peony::CreateTemplateOperation::EmptyFolder, tr("New Folder"));

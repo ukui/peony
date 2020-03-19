@@ -89,9 +89,11 @@ AdvancedLocationBar::AdvancedLocationBar(QWidget *parent) : QWidget(parent)
 
 void AdvancedLocationBar::updateLocation(const QString &uri)
 {
+    //qDebug() << "AdvancedLocationBar updateLocation:"<<uri;
     m_bar->setRootUri(uri);
     m_edit->setUri(uri);
     m_text = uri;
+    Q_EMIT this->refreshRequest();
 }
 
 bool AdvancedLocationBar::isEditing()

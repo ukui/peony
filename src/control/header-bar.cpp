@@ -116,6 +116,10 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
     m_location_bar = locationBar;
     addWidget(locationBar);
 
+    connect(m_location_bar, &Peony::AdvancedLocationBar::refreshRequest, [=]()
+    {
+         m_window->updateTabPageTitle();
+    });
     connect(m_location_bar, &Peony::AdvancedLocationBar::updateWindowLocationRequest, this, &HeaderBar::updateLocationRequest);
 
     addSpacing(9);

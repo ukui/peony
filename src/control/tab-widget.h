@@ -100,6 +100,7 @@ public Q_SLOTS:
 
     void goToUri(const QString &uri, bool addHistory, bool forceUpdate = false);
     void switchViewType(const QString &viewId);
+    void updateTabPageTitle();
 
     void goBack();
     void goForward();
