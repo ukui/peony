@@ -40,6 +40,29 @@ Files: libpeony-qt/controls/property-page/recent-and-trash-properties-page-facto
        libpeony-qt/controls/directory-view/directory-view-factory/list-view-factory.h
        libpeony-qt/controls/directory-view/directory-view-widget.cpp
        libpeony-qt/controls/directory-view/directory-view-widget.h
+       libpeony-qt/controls/directory-view/directory-view-container.cpp
+       libpeony-qt/controls/directory-view/directory-view-container.h
+       libpeony-qt/controls/directory-view/directory-view-factory/directory-view-factory-manager.cpp
+       libpeony-qt/controls/directory-view/directory-view-factory/directory-view-factory-manager.h
+       libpeony-qt/controls/directory-view/directory-view-factory/directory-view-factory.pri
+       libpeony-qt/controls/directory-view/directory-view-factory/icon-view-factory.cpp
+       libpeony-qt/controls/directory-view/directory-view-factory/icon-view-factory.h
+       libpeony-qt/controls/directory-view/directory-view-factory/list-view-factory.cpp
+       libpeony-qt/controls/directory-view/directory-view-factory/list-view-factory.h
+       libpeony-qt/controls/directory-view/directory-view-widget.cpp
+       libpeony-qt/controls/directory-view/directory-view-widget.h
+       libpeony-qt/controls/directory-view/directory-view.pri
+       libpeony-qt/controls/directory-view/view/icon-view/icon-view-style.cpp
+       libpeony-qt/controls/directory-view/view/icon-view/icon-view-style.h
+       libpeony-qt/controls/directory-view/view/icon-view/icon-view.cpp
+       libpeony-qt/controls/directory-view/view/icon-view/icon-view.h
+       libpeony-qt/controls/directory-view/view/icon-view/icon-view.pri
+       libpeony-qt/controls/directory-view/view/list-view/list-view.cpp
+       libpeony-qt/controls/directory-view/view/list-view/list-view.h
+       libpeony-qt/controls/directory-view/view/list-view/list-view.pri
+       libpeony-qt/controls/directory-view/view/standard-view-proxy.cpp
+       libpeony-qt/controls/directory-view/view/standard-view-proxy.h
+       libpeony-qt/controls/directory-view/view/view.pri
        libpeony-qt/controls/directory-view/view/icon-view/icon-view-style.cpp
        libpeony-qt/controls/directory-view/view/icon-view/icon-view-style.h
        libpeony-qt/controls/directory-view/view/icon-view/icon-view.cpp
@@ -97,11 +120,231 @@ Files: libpeony-qt/controls/property-page/recent-and-trash-properties-page-facto
        libpeony-qt/controls/tool-bar/view-factory-model.cpp
        libpeony-qt/controls/tool-bar/view-factory-model.h
        libpeony-qt/controls/tool-bar/view-factory-sort-filter-model.cpp
+       libpeony-qt/controls/tool-bar/view-factory-sort-filter-model.h 
+       libpeony-qt/controls/icon-container.cpp
+       libpeony-qt/controls/icon-container.h
+       libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp
+       libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.h
+       libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.pri
+       libpeony-qt/controls/menu/menu-iface/menu-iface.pri
+       libpeony-qt/controls/menu/menu-plugin-manager.cpp
+       libpeony-qt/controls/menu/menu-plugin-manager.h
+       libpeony-qt/controls/menu/menu.pri
+       libpeony-qt/controls/menu/side-bar-menu/side-bar-menu.cpp
+       libpeony-qt/controls/menu/side-bar-menu/side-bar-menu.h
+       libpeony-qt/controls/menu/side-bar-menu/side-bar-menu.pri
+       libpeony-qt/controls/navigation-bar/advanced-location-bar.cpp
+       libpeony-qt/controls/navigation-bar/advanced-location-bar.h
+       libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp
+       libpeony-qt/controls/navigation-bar/location-bar/location-bar.h
+       libpeony-qt/controls/navigation-bar/location-bar/location-bar.pri
+       libpeony-qt/controls/navigation-bar/navigation-bar.cpp
+       libpeony-qt/controls/navigation-bar/navigation-bar.h
+       libpeony-qt/controls/navigation-bar/navigation-bar.pri
+       libpeony-qt/controls/navigation-bar/navigation-tool-bar.cpp
+       libpeony-qt/controls/navigation-bar/navigation-tool-bar.h
+       libpeony-qt/controls/navigation-bar/path-bar/path-bar.pri
+       libpeony-qt/controls/navigation-bar/path-bar/path-edit.cpp
+       libpeony-qt/controls/navigation-bar/path-bar/path-edit.h
+       libpeony-qt/controls/navigation-bar/preview-option-toolbar.cpp
+       libpeony-qt/controls/navigation-bar/preview-option-toolbar.h
+       libpeony-qt/controls/preview-page/default-preview-page/default-preview-page-factory.cpp
+       libpeony-qt/controls/preview-page/default-preview-page/default-preview-page-factory.h
+       libpeony-qt/controls/preview-page/default-preview-page/default-preview-page.cpp
+       libpeony-qt/controls/preview-page/default-preview-page/default-preview-page.h
+       libpeony-qt/controls/preview-page/default-preview-page/default-preview-page.pri
+       libpeony-qt/controls/preview-page/preview-page-factory/preview-page-factory-manager.cpp
+       libpeony-qt/controls/preview-page/preview-page-factory/preview-page-factory-manager.h
+       libpeony-qt/controls/preview-page/preview-page-factory/preview-page-factory.pri
+       libpeony-qt/controls/preview-page/preview-page.pri
+       libpeony-qt/controls/property-page/basic-properties-page-factory.cpp
+       libpeony-qt/controls/property-page/basic-properties-page-factory.h
+       libpeony-qt/controls/property-page/basic-properties-page.cpp
+       libpeony-qt/controls/property-page/basic-properties-page.h
+       libpeony-qt/controls/property-page/computer-properties-page-factory.cpp
+       libpeony-qt/controls/property-page/computer-properties-page-factory.h
+       libpeony-qt/controls/property-page/computer-properties-page.cpp
+       libpeony-qt/controls/property-page/computer-properties-page.h
+       libpeony-qt/controls/property-page/permissions-properties-page-factory.cpp
+       libpeony-qt/controls/property-page/permissions-properties-page-factory.h
+       libpeony-qt/controls/property-page/permissions-properties-page.cpp
+       libpeony-qt/controls/property-page/permissions-properties-page.h
+       libpeony-qt/controls/property-page/property-page.pri
+       libpeony-qt/controls/property-page/recent-and-trash-properties-page-factory.cpp
+       libpeony-qt/controls/property-page/recent-and-trash-properties-page-factory.h
+       libpeony-qt/controls/property-page/recent-and-trash-properties-page.cpp
+       libpeony-qt/controls/property-page/recent-and-trash-properties-page.h
+       libpeony-qt/controls/side-bar/side-bar.cpp
+       libpeony-qt/controls/side-bar/side-bar.h
+       libpeony-qt/controls/side-bar/side-bar.pri
+       libpeony-qt/controls/status-bar/status-bar.cpp
+       libpeony-qt/controls/status-bar/status-bar.h
+       libpeony-qt/controls/status-bar/status-bar.pri
+       libpeony-qt/controls/tab-page/tab-page.cpp
+       libpeony-qt/controls/tab-page/tab-page.h
+       libpeony-qt/controls/tab-page/tab-page.pri
+       libpeony-qt/controls/tool-bar/advance-search-bar.cpp
+       libpeony-qt/controls/tool-bar/advance-search-bar.h
+       libpeony-qt/controls/tool-bar/search-bar.cpp
+       libpeony-qt/controls/tool-bar/search-bar.h
+       libpeony-qt/controls/tool-bar/tool-bar.cpp
+       libpeony-qt/controls/tool-bar/tool-bar.h
+       libpeony-qt/controls/tool-bar/tool-bar.pri
+       libpeony-qt/controls/tool-bar/view-factory-model.cpp
+       libpeony-qt/controls/tool-bar/view-factory-model.h
+       libpeony-qt/controls/tool-bar/view-factory-sort-filter-model.cpp
        libpeony-qt/controls/tool-bar/view-factory-sort-filter-model.h
+       libpeony-qt/convenient-utils/clipboard-utils.cpp
+       libpeony-qt/convenient-utils/clipboard-utils.h
+       libpeony-qt/convenient-utils/convenient-utils.pri
+       libpeony-qt/convenient-utils/file-operation-utils.cpp
+       libpeony-qt/convenient-utils/file-operation-utils.h
        libpeony-qt/convenient-utils/clipboard-utils.cpp
        libpeony-qt/convenient-utils/clipboard-utils.h
        libpeony-qt/convenient-utils/file-operation-utils.cpp
        libpeony-qt/convenient-utils/file-operation-utils.h
+       libpeony-qt/copy-headers.sh
+       libpeony-qt/data/libpeony-qt-dark.qss
+       libpeony-qt/data/libpeony-qt-light.qss
+       libpeony-qt/data/libpeony-qt-styled.qss
+       libpeony-qt/data/peony-computer.desktop
+       libpeony-qt/data/peony-home.desktop
+       libpeony-qt/data/peony-trash.desktop
+       libpeony-qt/development-files/header-files/PeonyFileEnumerator
+       libpeony-qt/development-files/header-files/PeonyFileInfo
+       libpeony-qt/development-files/header-files/PeonyFileInfoJob
+       libpeony-qt/development-files/header-files/PeonyFileInfoManager
+       libpeony-qt/development-files/header-files/PeonyFileUtils
+       libpeony-qt/development-files/header-files/PeonyFileWatcher
+       libpeony-qt/development-files/header-files/PeonyGObjectWrapper
+       libpeony-qt/development-files/header-files/PeonyMountOperation
+       libpeony-qt/development-files/header-files/PeonyQtAPI
+       libpeony-qt/development-files/header-files/PeonySearchVFSManager
+       libpeony-qt/development-files/header-files/PeonySearchVFSRegister
+       libpeony-qt/development-files/header-files/PeonyVolumeManager
+       libpeony-qt/development-files/header-files/fileop/PeonyFileOperationErrorHandler
+       libpeony-qt/development-files/header-files/fileop/PeonyFileOperationManager
+       libpeony-qt/development-files/header-files/fileop/PeonyFileOperationWizard
+       libpeony-qt/development-files/header-files/fileop/PeonyFileOperations
+       libpeony-qt/development-files/header-files/model/PeonyFileItem
+       libpeony-qt/development-files/header-files/model/PeonyFileItemModel
+       libpeony-qt/development-files/header-files/model/PeonyFileItemProxyModel
+       libpeony-qt/development-files/header-files/model/PeonyPathBarModel
+       libpeony-qt/development-files/header-files/model/PeonyPathCompleter
+       libpeony-qt/development-files/header-files/model/PeonySideBarModel
+       libpeony-qt/development-files/header-files/model/PeonySideBarProxyModel
+       libpeony-qt/development-files/peony.pc
+       libpeony-qt/effects/border-shadow-effect.cpp
+       libpeony-qt/effects/border-shadow-effect.h
+       libpeony-qt/effects/effects.pri
+       libpeony-qt/file-enumerator.cpp
+       libpeony-qt/file-enumerator.h
+       libpeony-qt/file-info-job.cpp
+       libpeony-qt/file-info-job.h
+       libpeony-qt/file-info-manager.cpp
+       libpeony-qt/file-info-manager.h
+       libpeony-qt/file-info.cpp
+       libpeony-qt/file-info.h
+       libpeony-qt/file-launcher/file-lauch-dialog.cpp
+       libpeony-qt/file-launcher/file-lauch-dialog.h
+       libpeony-qt/file-launcher/file-launch-action.cpp
+       libpeony-qt/file-launcher/file-launch-action.h
+       libpeony-qt/file-launcher/file-launch-manager.cpp
+       libpeony-qt/file-launcher/file-launch-manager.h
+       libpeony-qt/file-launcher/file-launcher.pri
+       libpeony-qt/file-meta-info.cpp
+       libpeony-qt/file-meta-info.h
+       libpeony-qt/file-operation/README.md
+       libpeony-qt/file-operation/create-template-operation.cpp
+       libpeony-qt/file-operation/create-template-operation.h
+       libpeony-qt/file-operation/file-copy-operation.cpp
+       libpeony-qt/file-operation/file-copy-operation.h
+       libpeony-qt/file-operation/file-count-operation.cpp
+       libpeony-qt/file-operation/file-count-operation.h
+       libpeony-qt/file-operation/file-delete-operation.cpp
+       libpeony-qt/file-operation/file-delete-operation.h
+       libpeony-qt/file-operation/file-link-operation.cpp
+       libpeony-qt/file-operation/file-link-operation.h
+       libpeony-qt/file-operation/file-move-operation.cpp
+       libpeony-qt/file-operation/file-move-operation.h
+       libpeony-qt/file-operation/file-node-reporter.cpp
+       libpeony-qt/file-operation/file-node-reporter.h
+       libpeony-qt/file-operation/file-node.cpp
+       libpeony-qt/file-operation/file-node.h
+       libpeony-qt/file-operation/file-operation-error-dialog.cpp
+       libpeony-qt/file-operation/file-operation-error-dialog.h
+       libpeony-qt/file-operation/file-operation-error-handler.h
+       libpeony-qt/file-operation/file-operation-manager.cpp
+       libpeony-qt/file-operation/file-operation-manager.h
+       libpeony-qt/file-operation/file-operation-progress-wizard.cpp
+       libpeony-qt/file-operation/file-operation-progress-wizard.h
+       libpeony-qt/file-operation/file-operation-test/file-operation-test.pro
+       libpeony-qt/file-operation/file-operation-test/main.cpp
+       libpeony-qt/file-operation/file-operation-test/mainwindow.cpp
+       libpeony-qt/file-operation/file-operation-test/mainwindow.h
+       libpeony-qt/file-operation/file-operation.cpp
+       libpeony-qt/file-operation/file-operation.h
+       libpeony-qt/file-operation/file-operation.pri
+       libpeony-qt/file-operation/file-rename-operation.cpp
+       libpeony-qt/file-operation/file-rename-operation.h
+       libpeony-qt/file-operation/file-trash-operation.cpp
+       libpeony-qt/file-operation/file-trash-operation.h
+       libpeony-qt/file-operation/file-untrash-operation.cpp
+       libpeony-qt/file-operation/file-untrash-operation.h
+       libpeony-qt/file-utils.cpp
+       libpeony-qt/file-utils.h
+       libpeony-qt/file-watcher.cpp
+       libpeony-qt/file-watcher.h
+       libpeony-qt/gerror-wrapper.cpp
+       libpeony-qt/gerror-wrapper.h
+       libpeony-qt/global-settings.cpp
+       libpeony-qt/global-settings.h
+       libpeony-qt/gobject-template.cpp
+       libpeony-qt/gobject-template.h
+       libpeony-qt/libpeony-qt-header.pri
+       libpeony-qt/libpeony-qt.pri
+       libpeony-qt/libpeony-qt.pro
+       libpeony-qt/libpeony-qt.qrc
+       libpeony-qt/linux-pwd-helper.cpp
+       libpeony-qt/linux-pwd-helper.h
+       libpeony-qt/model/README.md
+       libpeony-qt/model/file-item-model.cpp
+       libpeony-qt/model/file-item-model.h
+       libpeony-qt/model/file-item-proxy-filter-sort-model.cpp
+       libpeony-qt/model/file-item-proxy-filter-sort-model.h
+       libpeony-qt/model/file-item.cpp
+       libpeony-qt/model/file-item.h
+       libpeony-qt/model/file-label-model.cpp
+       libpeony-qt/model/file-label-model.h
+       libpeony-qt/model/model-test/main.cpp
+       libpeony-qt/model/model-test/mainwindow.cpp
+       libpeony-qt/model/model-test/mainwindow.h
+       libpeony-qt/model/model-test/model-test.pro
+       libpeony-qt/model/model.pri
+       libpeony-qt/model/path-bar-model.cpp
+       libpeony-qt/model/path-bar-model.h
+       libpeony-qt/model/path-completer.cpp
+       libpeony-qt/model/path-completer.h
+       libpeony-qt/model/side-bar-abstract-item.cpp
+       libpeony-qt/model/side-bar-abstract-item.h
+       libpeony-qt/model/side-bar-favorite-item.cpp
+       libpeony-qt/model/side-bar-favorite-item.h
+       libpeony-qt/model/side-bar-file-system-item.cpp
+       libpeony-qt/model/side-bar-file-system-item.h
+       libpeony-qt/model/side-bar-model.cpp
+       libpeony-qt/model/side-bar-model.h
+       libpeony-qt/model/side-bar-personal-item.cpp
+       libpeony-qt/model/side-bar-personal-item.h
+       libpeony-qt/model/side-bar-proxy-filter-sort-model.cpp
+       libpeony-qt/model/side-bar-proxy-filter-sort-model.h
+       libpeony-qt/model/side-bar-separator-item.cpp
+       libpeony-qt/model/side-bar-separator-item.h
+       libpeony-qt/mount-operation.cpp
+       libpeony-qt/mount-operation.h
+       libpeony-qt/peony-core.pri
+       libpeony-qt/peony-core_global.h
+       libpeony-qt/plugin-manager.cpp
+       libpeony-qt/plugin-manager.h
        libpeony-qt/file-enumerator.cpp
        libpeony-qt/file-enumerator.h
        libpeony-qt/file-info-job.cpp
@@ -327,6 +570,11 @@ Files:
        libpeony-qt/test/test.pro
        libpeony-qt/vfs/vfs.pri
        libpeony-qt/windows/windows.pri
+       libpeony-qt/thumbnail/generic-thumbnailer.cpp
+       libpeony-qt/thumbnail/generic-thumbnailer.h
+       libpeony-qt/windows/FMWindowIface.h
+       libpeony-qt/windows/fm-window-factory.cpp
+       libpeony-qt/windows/fm-window-factory.h
        peony-qt-desktop/desktop-icon-view.qss
        peony-qt-desktop/man/peony-qt-desktop.1
        peony-qt-desktop/org.ukui.freedesktop.FileManager1.service
@@ -355,6 +603,65 @@ Files:
        src/peony-application.cpp
        src/peony-application.h
        src/peony-main.cpp
+       src/control/control.pri
+       src/control/file-label-box.cpp
+       src/control/file-label-box.h
+       src/control/header-bar.cpp
+       src/control/header-bar.h
+       src/control/navigation-side-bar.cpp
+       src/control/navigation-side-bar.h
+       src/control/navigation-tab-bar.cpp
+       src/control/navigation-tab-bar.h
+       src/control/operation-menu.cpp
+       src/control/operation-menu.h
+       src/control/sort-type-menu.cpp
+       src/control/sort-type-menu.h
+       src/control/tab-widget.cpp
+       src/control/tab-widget.h
+       src/control/view-type-menu.cpp
+       src/control/view-type-menu.h
+       src/peony-main-window-style.cpp
+       src/peony-main-window-style.h
+       src/windows/main-window-factory.cpp
+       src/windows/main-window-factory.h
+       src/windows/main-window.cpp
+       src/windows/main-window.h
+       src/windows/windows.pri
+       src/windows/x11-window-manager.cpp
+       src/windows/x11-window-manager.h
+       test/main.cpp
+       test/test.pro
+       test/testwidget.cpp
+       test/testwidget.h
+       thumbnail-manager.cpp
+       thumbnail-manager.h
+       thumbnail/generic-thumbnailer.cpp
+       thumbnail/generic-thumbnailer.h
+       thumbnail/pdf-thumbnail.cpp
+       thumbnail/pdf-thumbnail.h
+       thumbnail/thumbnail.pri
+       vfs/README.md
+       vfs/peony-search-vfs-file-enumerator.cpp
+       vfs/peony-search-vfs-file-enumerator.h
+       vfs/peony-search-vfs-file.cpp
+       vfs/peony-search-vfs-file.h
+       vfs/search-vfs-manager.cpp
+       vfs/search-vfs-manager.h
+       vfs/search-vfs-register.cpp
+       vfs/search-vfs-register.h
+       vfs/search-vfs-uri-parser.cpp
+       vfs/search-vfs-uri-parser.h
+       vfs/vfs.pri
+       volume-manager.cpp
+       volume-manager.h
+       windows/FMWindowIface.h
+       windows/fm-window-factory.cpp
+       windows/fm-window-factory.h
+       windows/fm-window.cpp
+       windows/fm-window.h
+       windows/properties-window.cpp
+       windows/properties-window.h
+       windows/windows.pri
        peony-qt-desktop/freedesktop-dbus-interfaces.xml
        peony-qt-desktop/peony-qt-desktop-style.qrc
        peony-qt-plugin-test/directory-view-extensions-plugin-test/directory-view-extensions-plugin-test.pro
@@ -374,6 +681,9 @@ Files:
        translations/update-translations.sh
        data/peony-desktop.desktop
        data/peony.desktop
+       data/peony-computer.desktop
+       data/peony-home.desktop
+       data/peony-trash.desktop
        peony-qt-plugin-test/peony-qt-menu-plugin-mate-terminal/peony-qt-menu-plugin-mate-terminal.qrc
        peony-qt-plugin-test/peony-qt-menu-plugin-mate-terminal/translations/peony-qt-mate-terminal-extension_zh_CN.qm
        peony-qt-plugin-test/peony-qt-menu-plugin-mate-terminal/translations/peony-qt-mate-terminal-extension_zh_CN.ts

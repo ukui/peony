@@ -140,7 +140,7 @@
     <message>
         <location filename="../../src/control/navigation-tab-bar.cpp" line="93"/>
         <source>Search &quot;%1&quot; in &quot;%2&quot;</source>
-        <translation type="unfinished">在%2中搜索%1</translation>
+        <translation>在%2中搜索%1</translation>
     </message>
 </context>
 <context>
