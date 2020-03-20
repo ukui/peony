@@ -53,12 +53,12 @@ OperationMenu::OperationMenu(MainWindow *window, QWidget *parent) : QMenu(parent
     addSeparator();
 
     //addAction(tr("Conditional Filter"));
-    auto advanceSearch = addAction(tr("Advance Search"), this, [=]()
-    {
-       m_window->advanceSearch();
-    });
+//    auto advanceSearch = addAction(tr("Advance Search"), this, [=]()
+//    {
+//       m_window->advanceSearch();
+//    });
 
-    addSeparator();
+//    addSeparator();
 
     auto keepAllow = addAction(tr("Keep Allow"), this, [=](bool checked){
         m_window->setWindowFlag(Qt::WindowStaysOnTopHint, checked);

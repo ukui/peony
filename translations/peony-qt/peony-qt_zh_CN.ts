@@ -115,8 +115,9 @@
         <translation type="vanished">文件管理器</translation>
     </message>
     <message>
+        <location filename="../../src/windows/main-window.cpp" line="396"/>
         <source>New Folder</source>
-        <translation type="vanished">新建文件夹</translation>
+        <translation>新建文件夹</translation>
     </message>
 </context>
 <context>
