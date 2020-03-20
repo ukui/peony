@@ -81,6 +81,20 @@ DesktopWindow::DesktopWindow(QScreen *screen, bool is_primary, QWidget *parent)
     : QMainWindow(parent) {
     initGSettings();
 
+    m_opacity = new QVariantAnimation(this);
+    m_opacity->setDuration(1000);
+    m_opacity->setStartValue(double(0));
+    m_opacity->setEndValue(double(1));
+    connect(m_opacity, &QVariantAnimation::valueChanged, this, [=](){
+        this->update();
+    });
+
+    connect(m_opacity, &QVariantAnimation::finished, this, [=](){
+        m_bg_back_pixmap = m_bg_font_pixmap;
+        m_bg_back_cache_pixmap = m_bg_font_cache_pixmap;
+        m_last_pure_color = m_color_to_be_set;
+    });
+
     m_screen = screen;
     m_is_primary = is_primary;
     setContentsMargins(0, 0, 0, 0);
@@ -102,6 +116,7 @@ DesktopWindow::DesktopWindow(QScreen *screen, bool is_primary, QWidget *parent)
 
     if (!m_is_primary) {
         m_view = nullptr;
+        setBg(getCurrentBgPath());
         return;
     }
 
@@ -178,20 +193,6 @@ DesktopWindow::DesktopWindow(QScreen *screen, bool is_primary, QWidget *parent)
                 });
             }
         });
-    });
-
-    m_opacity = new QVariantAnimation(this);
-    m_opacity->setDuration(1000);
-    m_opacity->setStartValue(double(0));
-    m_opacity->setEndValue(double(1));
-    connect(m_opacity, &QVariantAnimation::valueChanged, this, [=](){
-        this->update();
-    });
-
-    connect(m_opacity, &QVariantAnimation::finished, this, [=](){
-        m_bg_back_pixmap = m_bg_font_pixmap;
-        m_bg_back_cache_pixmap = m_bg_font_cache_pixmap;
-        m_last_pure_color = m_color_to_be_set;
     });
 
     initShortcut();
@@ -395,7 +396,7 @@ void DesktopWindow::disconnectSignal() {
 
 void DesktopWindow::scaleBg(const QRect &geometry) {
     setGeometry(geometry);
-    updateView();
+    //updateView();
     m_bg_back_cache_pixmap = m_bg_back_pixmap.scaled(geometry.size(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
     m_bg_font_cache_pixmap = m_bg_font_pixmap.scaled(geometry.size(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
     this->update();
@@ -585,5 +586,5 @@ void DesktopWindow::updateWinGeometry() {
     Q_EMIT this->checkWindow();
 
     scaleBg(g);
-    updateView();
+    //updateView();
 }

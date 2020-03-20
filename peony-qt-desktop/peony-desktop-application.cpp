@@ -349,6 +349,9 @@ void PeonyDesktopApplication::changeBgProcess(const QString& bgPath)
 
 void PeonyDesktopApplication::checkWindowProcess()
 {
+    //do not check windows, primary window should be handled to exchange in
+    //primaryScreenChanged signal emitted.
+    return;
     for(auto win : m_window_list)
     {
         //fix duplicate screen cover main screen view problem
