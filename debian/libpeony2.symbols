@@ -1,4 +1,4 @@
-# SymbolsHelper-Confirmed: 2.0.1 amd64 armel
+# SymbolsHelper-Confirmed: 2.1.0 amd64
 libpeony.so.2 libpeony2 #MINVER#
  (optional=templinst)_Z17qRegisterMetaTypeISt10shared_ptrIN5Peony13GErrorWrapperEEEiPKcPT_N9QtPrivate21MetaTypeDefinedHelperIS6_Xaasr12QMetaTypeId2IS6_E7DefinedntsrSB_9IsBuiltInEE11DefinedTypeE@Base 2.0.0
  _Z26qInitResources_libpeony_qtv@Base 2.0.0
@@ -18,6 +18,53 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZN12PdfThumbnailD2Ev@Base 2.0.0
  (optional=templinst)_ZN12QtConcurrent15RunFunctionTaskIvE3runEv@Base 2.0.0
  (optional=templinst)_ZN12QtConcurrent19RunFunctionTaskBaseIvE3runEv@Base 2.0.0
+ _ZN13FileLabelItem11nameChangedERK7QString@Base 2.1.0
+ _ZN13FileLabelItem11qt_metacallEN11QMetaObject4CallEiPPv@Base 2.1.0
+ _ZN13FileLabelItem11qt_metacastEPKc@Base 2.1.0
+ _ZN13FileLabelItem12colorChangedERK6QColor@Base 2.1.0
+ _ZN13FileLabelItem16staticMetaObjectE@Base 2.1.0
+ _ZN13FileLabelItem2idEv@Base 2.1.0
+ _ZN13FileLabelItem4nameEv@Base 2.1.0
+ _ZN13FileLabelItem5colorEv@Base 2.1.0
+ _ZN13FileLabelItem7setNameERK7QString@Base 2.1.0
+ _ZN13FileLabelItem8setColorERK6QColor@Base 2.1.0
+ _ZN13FileLabelItemC1EP7QObject@Base 2.1.0
+ _ZN13FileLabelItemC2EP7QObject@Base 2.1.0
+ _ZN13FileLabelItemD0Ev@Base 2.1.0
+ _ZN13FileLabelItemD1Ev@Base 2.1.0
+ _ZN13FileLabelItemD2Ev@Base 2.1.0
+ _ZN14FileLabelModel10insertRowsEiiRK11QModelIndex@Base 2.1.0
+ _ZN14FileLabelModel10itemFromIdEi@Base 2.1.0
+ _ZN14FileLabelModel10removeRowsEiiRK11QModelIndex@Base 2.1.0
+ _ZN14FileLabelModel11lastLabelIdEv@Base 2.1.0
+ _ZN14FileLabelModel11qt_metacallEN11QMetaObject4CallEiPPv@Base 2.1.0
+ _ZN14FileLabelModel11qt_metacastEPKc@Base 2.1.0
+ _ZN14FileLabelModel11removeLabelEi@Base 2.1.0
+ _ZN14FileLabelModel12setLabelNameEiRK7QString@Base 2.1.0
+ _ZN14FileLabelModel13getFileColorsERK7QString@Base 2.1.0
+ _ZN14FileLabelModel13getFileLabelsERK7QString@Base 2.1.0
+ _ZN14FileLabelModel13itemFormIndexERK11QModelIndex@Base 2.1.0
+ _ZN14FileLabelModel13setLabelColorEiRK6QColor@Base 2.1.0
+ _ZN14FileLabelModel14addLabelToFileERK7QStringi@Base 2.1.0
+ _ZN14FileLabelModel14getGlobalModelEv@Base 2.1.0
+ _ZN14FileLabelModel14initLabelItemsEv@Base 2.1.0
+ _ZN14FileLabelModel15getFileLabelIdsERK7QString@Base 2.1.0
+ _ZN14FileLabelModel15removeFileLabelERK7QStringi@Base 2.1.0
+ _ZN14FileLabelModel16fileLabelChangedERK7QString@Base 2.1.0
+ _ZN14FileLabelModel16staticMetaObjectE@Base 2.1.0
+ _ZN14FileLabelModel20getAllFileLabelItemsEv@Base 2.1.0
+ _ZN14FileLabelModel5addIdEv@Base 2.1.0
+ _ZN14FileLabelModel7setDataERK11QModelIndexRK8QVarianti@Base 2.1.0
+ _ZN14FileLabelModel7setNameEP13FileLabelItemRK7QString@Base 2.1.0
+ _ZN14FileLabelModel8addLabelERK7QStringRK6QColor@Base 2.1.0
+ _ZN14FileLabelModel8setColorEP13FileLabelItemRK6QColor@Base 2.1.0
+ _ZN14FileLabelModel9getColorsEv@Base 2.1.0
+ _ZN14FileLabelModel9getLabelsEv@Base 2.1.0
+ _ZN14FileLabelModelC1EP7QObject@Base 2.1.0
+ _ZN14FileLabelModelC2EP7QObject@Base 2.1.0
+ _ZN14FileLabelModelD0Ev@Base 2.1.0
+ _ZN14FileLabelModelD1Ev@Base 2.1.0
+ _ZN14FileLabelModelD2Ev@Base 2.1.0
  _ZN14LinuxPWDHelper14getCurrentUserEv@Base 2.0.0
  _ZN14LinuxPWDHelper15getAllUserInfosEv@Base 2.0.0
  _ZN14LinuxPWDHelperC1Ev@Base 2.0.0
@@ -45,6 +92,8 @@ libpeony.so.2 libpeony2 #MINVER#
  (optional=templinst)_ZN17QtMetaTypePrivate23QMetaTypeFunctionHelperIN5Peony13FileOperation12ResponseTypeELb1EE9ConstructEPvPKv@Base 2.0.0
  (optional=templinst)_ZN17QtMetaTypePrivate23QMetaTypeFunctionHelperINS_23QSequentialIterableImplELb1EE8DestructEPv@Base 2.0.0
  (optional=templinst)_ZN17QtMetaTypePrivate23QMetaTypeFunctionHelperINS_23QSequentialIterableImplELb1EE9ConstructEPvPKv@Base 2.0.0
+ (optional=templinst)_ZN17QtMetaTypePrivate23QMetaTypeFunctionHelperIP13FileLabelItemLb1EE8DestructEPv@Base 2.1.0
+ (optional=templinst)_ZN17QtMetaTypePrivate23QMetaTypeFunctionHelperIP13FileLabelItemLb1EE9ConstructEPvPKv@Base 2.1.0
  (optional=templinst)_ZN17QtMetaTypePrivate23QMetaTypeFunctionHelperIPN5Peony13FileItemModelELb1EE8DestructEPv@Base 2.0.0
  (optional=templinst)_ZN17QtMetaTypePrivate23QMetaTypeFunctionHelperIPN5Peony13FileItemModelELb1EE9ConstructEPvPKv@Base 2.0.0
  (optional=templinst)_ZN17QtMetaTypePrivate23QMetaTypeFunctionHelperIPN5Peony13FileOperationELb1EE8DestructEPv@Base 2.0.0
@@ -63,6 +112,36 @@ libpeony.so.2 libpeony2 #MINVER#
  (optional=templinst)_ZN17QtMetaTypePrivate23QSequentialIterableImpl7getImplI5QListI21QPersistentModelIndexEEENS_11VariantDataEPKPvij@Base 2.0.0
  (optional=templinst)_ZN17QtMetaTypePrivate23QSequentialIterableImpl8sizeImplI5QListI11QModelIndexEEEiPKv@Base 2.0.0
  (optional=templinst)_ZN17QtMetaTypePrivate23QSequentialIterableImpl8sizeImplI5QListI21QPersistentModelIndexEEEiPKv@Base 2.0.0
+ _ZN18BorderShadowEffect10setPaddingEi@Base 2.1.0
+ _ZN18BorderShadowEffect11qt_metacallEN11QMetaObject4CallEiPPv@Base 2.1.0
+ _ZN18BorderShadowEffect11qt_metacastEPKc@Base 2.1.0
+ _ZN18BorderShadowEffect13setBlurRadiusEi@Base 2.1.0
+ _ZN18BorderShadowEffect14setShadowColorERK6QColor@Base 2.1.0
+ _ZN18BorderShadowEffect15setBorderRadiusEi@Base 2.1.0
+ _ZN18BorderShadowEffect15setBorderRadiusEii@Base 2.1.0
+ _ZN18BorderShadowEffect16staticMetaObjectE@Base 2.1.0
+ _ZN18BorderShadowEffect18setTransParentPathERK12QPainterPath@Base 2.1.0
+ _ZN18BorderShadowEffect19setWindowBackgroundERK6QColor@Base 2.1.0
+ _ZN18BorderShadowEffect20setTransParentAreaBgERK6QColor@Base 2.1.0
+ _ZN18BorderShadowEffect24drawWindowShadowManuallyEP8QPainterRK5QRectb@Base 2.1.0
+ _ZN18BorderShadowEffect4drawEP8QPainter@Base 2.1.0
+ _ZN18BorderShadowEffectC1EP7QObject@Base 2.1.0
+ _ZN18BorderShadowEffectC2EP7QObject@Base 2.1.0
+ _ZN18BorderShadowEffectD0Ev@Base 2.1.0
+ _ZN18BorderShadowEffectD1Ev@Base 2.1.0
+ _ZN18BorderShadowEffectD2Ev@Base 2.1.0
+ _ZN18GenericThumbnailer11qt_metacallEN11QMetaObject4CallEiPPv@Base 2.1.0
+ _ZN18GenericThumbnailer11qt_metacastEPKc@Base 2.1.0
+ _ZN18GenericThumbnailer16staticMetaObjectE@Base 2.1.0
+ _ZN18GenericThumbnailer17generateThumbnailERK4QUrlbRK5QSize@Base 2.1.0
+ _ZN18GenericThumbnailer17generateThumbnailERK7QPixmapbRK5QSize@Base 2.1.0
+ _ZN18GenericThumbnailer17generateThumbnailERK7QStringbRK5QSize@Base 2.1.0
+ _ZN18GenericThumbnailerC1EP7QObject@Base 2.1.0
+ _ZN18GenericThumbnailerC2EP7QObject@Base 2.1.0
+ _ZN18GenericThumbnailerD0Ev@Base 2.1.0
+ _ZN18GenericThumbnailerD1Ev@Base 2.1.0
+ _ZN18GenericThumbnailerD2Ev@Base 2.1.0
+ (optional=templinst)_ZN18QAlgorithmsPrivate11qSortHelperIN5QListI7QStringE8iteratorES2_5qLessIS2_EEEvT_S7_RKT0_T1_@Base 2.1.0
  _ZN19ConnectServerDialog11qt_metacallEN11QMetaObject4CallEiPPv@Base 2.0.0
  _ZN19ConnectServerDialog11qt_metacastEPKc@Base 2.0.0
  _ZN19ConnectServerDialog12savePasswordEv@Base 2.0.0
@@ -271,6 +350,7 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZN5Peony13DirectoryView19IconViewIndexWidgetD1Ev@Base 2.0.0
  _ZN5Peony13DirectoryView19IconViewIndexWidgetD2Ev@Base 2.0.0
  _ZN5Peony13DirectoryView8IconView10paintEventEP11QPaintEvent@Base 2.0.0
+ _ZN5Peony13DirectoryView8IconView10slotRenameEv@Base 2.1.0
  _ZN5Peony13DirectoryView8IconView10wheelEventEP11QWheelEvent@Base 2.0.0
  _ZN5Peony13DirectoryView8IconView11getSortTypeEv@Base 2.0.0
  _ZN5Peony13DirectoryView8IconView11qt_metacallEN11QMetaObject4CallEiPPv@Base 2.0.0
@@ -295,7 +375,8 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZN5Peony13DirectoryView8IconView17scrollToSelectionERK7QString@Base 2.0.0
  _ZN5Peony13DirectoryView8IconView18stopLocationChangeEv@Base 2.0.0
  _ZN5Peony13DirectoryView8IconView19beginLocationChangeEv@Base 2.0.0
- _ZN5Peony13DirectoryView8IconView21resetEditTriggerTimerEv@Base 2.0.0
+ _ZN5Peony13DirectoryView8IconView21mouseDoubleClickEventEP11QMouseEvent@Base 2.1.0
+#MISSING: 2.1.0# _ZN5Peony13DirectoryView8IconView21resetEditTriggerTimerEv@Base 2.0.0
  _ZN5Peony13DirectoryView8IconView26reportViewDirectoryChangedEv@Base 2.0.0
  _ZN5Peony13DirectoryView8IconView4openERK11QStringListb@Base 2.0.0
  _ZN5Peony13DirectoryView8IconView6resortEv@Base 2.0.0
@@ -312,6 +393,7 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZN5Peony13DirectoryView8IconViewD0Ev@Base 2.0.0
  _ZN5Peony13DirectoryView8IconViewD1Ev@Base 2.0.0
  _ZN5Peony13DirectoryView8IconViewD2Ev@Base 2.0.0
+ _ZN5Peony13DirectoryView8ListView10slotRenameEv@Base 2.1.0
  _ZN5Peony13DirectoryView8ListView11getSortTypeEv@Base 2.0.0
  _ZN5Peony13DirectoryView8ListView11qt_metacallEN11QMetaObject4CallEiPPv@Base 2.0.0
  _ZN5Peony13DirectoryView8ListView11qt_metacastEPKc@Base 2.0.0
@@ -321,6 +403,7 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZN5Peony13DirectoryView8ListView12setSortOrderEi@Base 2.0.0
  _ZN5Peony13DirectoryView8ListView13getSelectionsEv@Base 2.0.0
  _ZN5Peony13DirectoryView8ListView13setSelectionsERK11QStringList@Base 2.0.0
+ _ZN5Peony13DirectoryView8ListView14dragEnterEventEP15QDragEnterEvent@Base 2.1.0
  _ZN5Peony13DirectoryView8ListView14getAllFileUrisEv@Base 2.0.0
  _ZN5Peony13DirectoryView8ListView15getDirectoryUriEv@Base 2.0.0
  _ZN5Peony13DirectoryView8ListView15mousePressEventEP11QMouseEvent@Base 2.0.0
@@ -331,7 +414,8 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZN5Peony13DirectoryView8ListView17scrollToSelectionERK7QString@Base 2.0.0
  _ZN5Peony13DirectoryView8ListView18stopLocationChangeEv@Base 2.0.0
  _ZN5Peony13DirectoryView8ListView19beginLocationChangeEv@Base 2.0.0
- _ZN5Peony13DirectoryView8ListView21resetEditTriggerTimerEv@Base 2.0.0
+ _ZN5Peony13DirectoryView8ListView21mouseDoubleClickEventEP11QMouseEvent@Base 2.1.0
+#MISSING: 2.1.0# _ZN5Peony13DirectoryView8ListView21resetEditTriggerTimerEv@Base 2.0.0
  _ZN5Peony13DirectoryView8ListView26reportViewDirectoryChangedEv@Base 2.0.0
  _ZN5Peony13DirectoryView8ListView4openERK11QStringListb@Base 2.0.0
  _ZN5Peony13DirectoryView8ListView6resortEv@Base 2.0.0
@@ -402,6 +486,10 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZN5Peony13DirectoryView9ListView2D0Ev@Base 2.0.0
  _ZN5Peony13DirectoryView9ListView2D1Ev@Base 2.0.0
  _ZN5Peony13DirectoryView9ListView2D2Ev@Base 2.0.0
+ _ZN5Peony13FMWindowIface12filterUpdateEiii@Base 2.1.0
+ _ZN5Peony13FMWindowIface12searchFilterE7QStringS1_bb@Base 2.1.0
+ _ZN5Peony13FMWindowIface13advanceSearchEv@Base 2.1.0
+ _ZN5Peony13FMWindowIface13setShowHiddenEv@Base 2.1.0
  _ZN5Peony13FileItemModel10getRootUriEv@Base 2.0.0
  _ZN5Peony13FileItemModel10insertRowsEiiRK11QModelIndex@Base 2.0.0
  _ZN5Peony13FileItemModel10removeRowsEiiRK11QModelIndex@Base 2.0.0
@@ -638,6 +726,17 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZN5Peony15BookMarkManagerD0Ev@Base 2.0.0
  _ZN5Peony15BookMarkManagerD1Ev@Base 2.0.0
  _ZN5Peony15BookMarkManagerD2Ev@Base 2.0.0
+ _ZN5Peony15FMWindowFactory11getInstanceEv@Base 2.1.0
+ _ZN5Peony15FMWindowFactory11qt_metacallEN11QMetaObject4CallEiPPv@Base 2.1.0
+ _ZN5Peony15FMWindowFactory11qt_metacastEPKc@Base 2.1.0
+ _ZN5Peony15FMWindowFactory16staticMetaObjectE@Base 2.1.0
+ _ZN5Peony15FMWindowFactory6createERK11QStringList@Base 2.1.0
+ _ZN5Peony15FMWindowFactory6createERK7QString@Base 2.1.0
+ _ZN5Peony15FMWindowFactoryC1EP7QObject@Base 2.1.0
+ _ZN5Peony15FMWindowFactoryC2EP7QObject@Base 2.1.0
+ _ZN5Peony15FMWindowFactoryD0Ev@Base 2.1.0
+ _ZN5Peony15FMWindowFactoryD1Ev@Base 2.1.0
+ _ZN5Peony15FMWindowFactoryD2Ev@Base 2.1.0
  _ZN5Peony15FileInfoManager11getInstanceEv@Base 2.0.0
  _ZN5Peony15FileInfoManager14insertFileInfoESt10shared_ptrINS_8FileInfoEE@Base 2.0.0
  _ZN5Peony15FileInfoManager17findFileInfoByUriE7QString@Base 2.0.0
@@ -737,8 +836,10 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZN5Peony16AdvanceSearchBar16staticMetaObjectE@Base 2.0.0
  _ZN5Peony16AdvanceSearchBar4initEv@Base 2.0.0
  _ZN5Peony16AdvanceSearchBar9clearDataEv@Base 2.0.0
- _ZN5Peony16AdvanceSearchBarC1EPNS_8FMWindowEP7QWidget@Base 2.0.0
- _ZN5Peony16AdvanceSearchBarC2EPNS_8FMWindowEP7QWidget@Base 2.0.0
+ _ZN5Peony16AdvanceSearchBarC1EPNS_13FMWindowIfaceEP7QWidget@Base 2.1.0
+#MISSING: 2.1.0# _ZN5Peony16AdvanceSearchBarC1EPNS_8FMWindowEP7QWidget@Base 2.0.0
+ _ZN5Peony16AdvanceSearchBarC2EPNS_13FMWindowIfaceEP7QWidget@Base 2.1.0
+#MISSING: 2.1.0# _ZN5Peony16AdvanceSearchBarC2EPNS_8FMWindowEP7QWidget@Base 2.0.0
  _ZN5Peony16AdvanceSearchBarD0Ev@Base 2.0.0
  _ZN5Peony16AdvanceSearchBarD1Ev@Base 2.0.0
  _ZN5Peony16AdvanceSearchBarD2Ev@Base 2.0.0
@@ -821,6 +922,8 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZN5Peony16PropertiesWindow11qt_metacallEN11QMetaObject4CallEiPPv@Base 2.0.0
  _ZN5Peony16PropertiesWindow11qt_metacastEPKc@Base 2.0.0
  _ZN5Peony16PropertiesWindow16staticMetaObjectE@Base 2.0.0
+ _ZN5Peony16PropertiesWindow17gotoAboutComputerEv@Base 2.1.0
+ _ZN5Peony16PropertiesWindow4showEv@Base 2.1.0
  _ZN5Peony16PropertiesWindowC1ERK11QStringListP7QWidget@Base 2.0.0
  _ZN5Peony16PropertiesWindowC2ERK11QStringListP7QWidget@Base 2.0.0
  _ZN5Peony16PropertiesWindowD0Ev@Base 2.0.0
@@ -888,10 +991,12 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZN5Peony17DirectoryViewMenu26constructMenuPluginActionsEv@Base 2.0.0
  _ZN5Peony17DirectoryViewMenu30constructCreateTemplateActionsEv@Base 2.0.0
  _ZN5Peony17DirectoryViewMenu30constructFilePropertiesActionsEv@Base 2.0.0
+ _ZN5Peony17DirectoryViewMenuC1EPNS_13FMWindowIfaceEP7QWidget@Base 2.1.0
  _ZN5Peony17DirectoryViewMenuC1EPNS_19DirectoryViewWidgetEP7QWidget@Base 2.0.0
- _ZN5Peony17DirectoryViewMenuC1EPNS_8FMWindowEP7QWidget@Base 2.0.0
+#MISSING: 2.1.0# _ZN5Peony17DirectoryViewMenuC1EPNS_8FMWindowEP7QWidget@Base 2.0.0
+ _ZN5Peony17DirectoryViewMenuC2EPNS_13FMWindowIfaceEP7QWidget@Base 2.1.0
  _ZN5Peony17DirectoryViewMenuC2EPNS_19DirectoryViewWidgetEP7QWidget@Base 2.0.0
- _ZN5Peony17DirectoryViewMenuC2EPNS_8FMWindowEP7QWidget@Base 2.0.0
+#MISSING: 2.1.0# _ZN5Peony17DirectoryViewMenuC2EPNS_8FMWindowEP7QWidget@Base 2.0.0
  _ZN5Peony17DirectoryViewMenuD0Ev@Base 2.0.0
  _ZN5Peony17DirectoryViewMenuD1Ev@Base 2.0.0
  _ZN5Peony17DirectoryViewMenuD2Ev@Base 2.0.0
@@ -1082,7 +1187,9 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZN5Peony19AdvancedLocationBar10finishEditEv@Base 2.0.0
  _ZN5Peony19AdvancedLocationBar11qt_metacallEN11QMetaObject4CallEiPPv@Base 2.0.0
  _ZN5Peony19AdvancedLocationBar11qt_metacastEPKc@Base 2.0.0
+ _ZN5Peony19AdvancedLocationBar13searchRequestERK7QString@Base 2.1.0
  _ZN5Peony19AdvancedLocationBar14refreshRequestEv@Base 2.0.0
+ _ZN5Peony19AdvancedLocationBar14switchEditModeEb@Base 2.1.0
  _ZN5Peony19AdvancedLocationBar14updateLocationERK7QString@Base 2.0.0
  _ZN5Peony19AdvancedLocationBar16staticMetaObjectE@Base 2.0.0
  _ZN5Peony19AdvancedLocationBar27updateWindowLocationRequestERK7QStringbb@Base 2.0.0
@@ -1145,6 +1252,7 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZN5Peony19DirectoryViewWidgetD2Ev@Base 2.0.0
  _ZN5Peony19FileDeleteOperation11qt_metacallEN11QMetaObject4CallEiPPv@Base 2.0.0
  _ZN5Peony19FileDeleteOperation11qt_metacastEPKc@Base 2.0.0
+ _ZN5Peony19FileDeleteOperation16getOperationInfoEv@Base 2.1.0
  _ZN5Peony19FileDeleteOperation16staticMetaObjectE@Base 2.0.0
  _ZN5Peony19FileDeleteOperation17deleteRecursivelyEPNS_8FileNodeE@Base 2.0.0
  _ZN5Peony19FileDeleteOperation3runEv@Base 2.0.0
@@ -1373,6 +1481,7 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZN5Peony22DirectoryViewContainer18setSortFolderFirstEb@Base 2.0.0
  _ZN5Peony22DirectoryViewContainer19onViewDoubleClickedERK7QString@Base 2.0.0
  _ZN5Peony22DirectoryViewContainer20getCurrentSelectionsEv@Base 2.0.0
+ _ZN5Peony22DirectoryViewContainer24setFilterLabelConditionsE7QString@Base 2.1.0
  _ZN5Peony22DirectoryViewContainer26setUseDefaultNameSortOrderEb@Base 2.0.0
  _ZN5Peony22DirectoryViewContainer27updateWindowLocationRequestERK7QStringbb@Base 2.0.0
  _ZN5Peony22DirectoryViewContainer4cdUpEv@Base 2.0.0
@@ -1558,6 +1667,22 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZN5Peony27DirectoryViewFactoryManagerD0Ev@Base 2.0.0
  _ZN5Peony27DirectoryViewFactoryManagerD1Ev@Base 2.0.0
  _ZN5Peony27DirectoryViewFactoryManagerD2Ev@Base 2.0.0
+ _ZN5Peony27FileLabelInternalMenuPlugin10pluginTypeEv@Base 2.1.0
+ _ZN5Peony27FileLabelInternalMenuPlugin10testPluginEv@Base 2.1.0
+ _ZN5Peony27FileLabelInternalMenuPlugin11descriptionEv@Base 2.1.0
+ _ZN5Peony27FileLabelInternalMenuPlugin11menuActionsE6QFlagsINS_19MenuPluginInterface4TypeEERK7QStringRK11QStringList@Base 2.1.0
+ _ZN5Peony27FileLabelInternalMenuPlugin11qt_metacallEN11QMetaObject4CallEiPPv@Base 2.1.0
+ _ZN5Peony27FileLabelInternalMenuPlugin11qt_metacastEPKc@Base 2.1.0
+ _ZN5Peony27FileLabelInternalMenuPlugin16staticMetaObjectE@Base 2.1.0
+ _ZN5Peony27FileLabelInternalMenuPlugin4iconEv@Base 2.1.0
+ _ZN5Peony27FileLabelInternalMenuPlugin4nameEv@Base 2.1.0
+ _ZN5Peony27FileLabelInternalMenuPlugin8isEnableEv@Base 2.1.0
+ _ZN5Peony27FileLabelInternalMenuPlugin9setEnableEb@Base 2.1.0
+ _ZN5Peony27FileLabelInternalMenuPluginC1EP7QObject@Base 2.1.0
+ _ZN5Peony27FileLabelInternalMenuPluginC2EP7QObject@Base 2.1.0
+ _ZN5Peony27FileLabelInternalMenuPluginD0Ev@Base 2.1.0
+ _ZN5Peony27FileLabelInternalMenuPluginD1Ev@Base 2.1.0
+ _ZN5Peony27FileLabelInternalMenuPluginD2Ev@Base 2.1.0
  _ZN5Peony27FileOperationProgressWizard10closeEventEP11QCloseEvent@Base 2.0.0
  _ZN5Peony27FileOperationProgressWizard11qt_metacallEN11QMetaObject4CallEiPPv@Base 2.0.0
  _ZN5Peony27FileOperationProgressWizard11qt_metacastEPKc@Base 2.0.0
@@ -1629,9 +1754,12 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZN5Peony28FileItemProxyFilterSortModel14getSourceIndexERK11QModelIndex@Base 2.0.0
  _ZN5Peony28FileItemProxyFilterSortModel14setFolderFirstEb@Base 2.0.0
  _ZN5Peony28FileItemProxyFilterSortModel14setSourceModelEP18QAbstractItemModel@Base 2.0.0
+ _ZN5Peony28FileItemProxyFilterSortModel16setLabelBlurNameE7QStringb@Base 2.1.0
  _ZN5Peony28FileItemProxyFilterSortModel16staticMetaObjectE@Base 2.0.0
  _ZN5Peony28FileItemProxyFilterSortModel17getAllFileIndexesEv@Base 2.0.0
  _ZN5Peony28FileItemProxyFilterSortModel19setFilterConditionsEiii@Base 2.0.0
+ _ZN5Peony28FileItemProxyFilterSortModel24setFilterLabelConditionsE7QString6QColor@Base 2.1.0
+ _ZN5Peony28FileItemProxyFilterSortModel25setMutipleLabelConditionsE11QStringList5QListI6QColorE@Base 2.1.0
  _ZN5Peony28FileItemProxyFilterSortModel26setUseDefaultNameSortOrderEb@Base 2.0.0
  _ZN5Peony28FileItemProxyFilterSortModel6updateEv@Base 2.0.0
  _ZN5Peony28FileItemProxyFilterSortModelC1EP7QObject@Base 2.0.0
@@ -1771,6 +1899,7 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZN5Peony7ToolBarD1Ev@Base 2.0.0
  _ZN5Peony7ToolBarD2Ev@Base 2.0.0
  _ZN5Peony8FMWindow10addNewTabsERK11QStringList@Base 2.0.0
+ _ZN5Peony8FMWindow10getFactoryEv@Base 2.1.0
  _ZN5Peony8FMWindow11clearRecordEv@Base 2.0.0
  _ZN5Peony8FMWindow11qt_metacallEN11QMetaObject4CallEiPPv@Base 2.0.0
  _ZN5Peony8FMWindow11qt_metacastEPKc@Base 2.0.0
@@ -1780,7 +1909,7 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZN5Peony8FMWindow13advanceSearchEv@Base 2.0.0
  _ZN5Peony8FMWindow13getCurrentUriEv@Base 2.0.0
  _ZN5Peony8FMWindow13keyPressEventEP9QKeyEvent@Base 2.0.0
- _ZN5Peony8FMWindow13setShowHiddenEb@Base 2.0.0
+#MISSING: 2.1.0# _ZN5Peony8FMWindow13setShowHiddenEb@Base 2.0.0
  _ZN5Peony8FMWindow13setShowHiddenEv@Base 2.0.0
  _ZN5Peony8FMWindow14getCurrentPageEv@Base 2.0.0
  _ZN5Peony8FMWindow14tabPageChangedEv@Base 2.0.0
@@ -1789,8 +1918,11 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZN5Peony8FMWindow16staticMetaObjectE@Base 2.0.0
  _ZN5Peony8FMWindow17activeViewChangedEPKNS_23DirectoryViewProxyIfaceE@Base 2.0.0
  _ZN5Peony8FMWindow17locationChangeEndEv@Base 2.0.0
- _ZN5Peony8FMWindow18setSortFolderFirstEb@Base 2.0.0
+#MISSING: 2.1.0# _ZN5Peony8FMWindow18setSortFolderFirstEb@Base 2.0.0
+ _ZN5Peony8FMWindow18setSortFolderFirstEv@Base 2.1.0
  _ZN5Peony8FMWindow19getCurrentSortOrderEv@Base 2.0.0
+ _ZN5Peony8FMWindow19getLastNonSearchUriEv@Base 2.1.0
+ _ZN5Peony8FMWindow19getWindowShowHiddenEv@Base 2.1.0
  _ZN5Peony8FMWindow19locationChangeStartEv@Base 2.0.0
  _ZN5Peony8FMWindow19onPreviewPageSwitchERK7QString@Base 2.0.0
  _ZN5Peony8FMWindow19setCurrentSortOrderEN2Qt9SortOrderE@Base 2.0.0
@@ -1801,8 +1933,13 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZN5Peony8FMWindow22getCurrentPageViewTypeEv@Base 2.0.0
  _ZN5Peony8FMWindow22windowSelectionChangedEv@Base 2.0.0
  _ZN5Peony8FMWindow23setCurrentSelectionUrisERK11QStringList@Base 2.0.0
- _ZN5Peony8FMWindow26setUseDefaultNameSortOrderEb@Base 2.0.0
+ _ZN5Peony8FMWindow24getWindowSortFolderFirstEv@Base 2.1.0
+#MISSING: 2.1.0# _ZN5Peony8FMWindow26setUseDefaultNameSortOrderEb@Base 2.0.0
+ _ZN5Peony8FMWindow26setUseDefaultNameSortOrderEv@Base 2.1.0
  _ZN5Peony8FMWindow28getCurrentSelectionFileInfosEv@Base 2.0.0
+ _ZN5Peony8FMWindow32getWindowUseDefaultNameSortOrderEv@Base 2.1.0
+ _ZN5Peony8FMWindow6createERK11QStringList@Base 2.1.0
+ _ZN5Peony8FMWindow6createERK7QString@Base 2.1.0
  _ZN5Peony8FMWindow7editUriERK7QString@Base 2.0.0
  _ZN5Peony8FMWindow7goToUriERK7QStringbb@Base 2.0.0
  _ZN5Peony8FMWindow7refreshEv@Base 2.0.0
@@ -1889,6 +2026,7 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZN5Peony8TextEditD2Ev@Base 2.0.0
  _ZN5Peony9FileUtils10getFileUriERKSt10shared_ptrINS_15GObjectTemplateI6_GFileEEE@Base 2.0.0
  _ZN5Peony9FileUtils11isFileExsitERK7QString@Base 2.0.0
+ _ZN5Peony9FileUtils11isMountRootERK7QString@Base 2.1.0
  _ZN5Peony9FileUtils12getParentUriERK7QString@Base 2.0.0
  _ZN5Peony9FileUtils12getTargetUriERK7QString@Base 2.0.0
  _ZN5Peony9FileUtils13getFileParentERKSt10shared_ptrINS_15GObjectTemplateI6_GFileEEE@Base 2.0.0
@@ -1970,6 +2108,7 @@ libpeony.so.2 libpeony2 #MINVER#
  (optional=templinst)_ZN5QHashIi5QPairIi7QStringEE13duplicateNodeEPN9QHashData4NodeEPv@Base 2.0.0
  (optional=templinst)_ZN5QHashIiN5Peony13FileOperation12ResponseTypeEE11deleteNode2EPN9QHashData4NodeE@Base 2.0.0
  (optional=templinst)_ZN5QHashIiN5Peony13FileOperation12ResponseTypeEE13duplicateNodeEPN9QHashData4NodeEPv@Base 2.0.0
+ (optional=templinst)_ZN5QHashIiN5Peony13FileOperation12ResponseTypeEE6insertERKiRKS2_@Base 2.1.0
  (optional=templinst)_ZN5QListI10QByteArrayE13detach_helperEi@Base 2.0.0
  (optional=templinst)_ZN5QListI10QByteArrayED1Ev@Base 2.0.0
  (optional=templinst)_ZN5QListI10QByteArrayED2Ev@Base 2.0.0
@@ -2000,6 +2139,11 @@ libpeony.so.2 libpeony2 #MINVER#
  (optional=templinst|arch= !ppc64el)_ZN5QListI5QPairIi7QStringEE6appendERKS2_@Base 2.0.0
  (optional=templinst)_ZN5QListI5QPairIi7QStringEED1Ev@Base 2.0.0
  (optional=templinst)_ZN5QListI5QPairIi7QStringEED2Ev@Base 2.0.0
+ (optional=templinst)_ZN5QListI6QColorE13detach_helperEi@Base 2.1.0
+ (optional=templinst)_ZN5QListI6QColorE18detach_helper_growEii@Base 2.1.0
+ (optional=templinst)_ZN5QListI6QColorE6appendERKS0_@Base 2.1.0
+ (optional=templinst)_ZN5QListI6QColorED1Ev@Base 2.1.0
+ (optional=templinst)_ZN5QListI6QColorED2Ev@Base 2.1.0
  (optional=templinst)_ZN5QListI7PWDItemE18detach_helper_growEii@Base 2.0.0
  (optional=templinst)_ZN5QListI7PWDItemE6appendERKS0_@Base 2.0.0
  (optional=templinst)_ZN5QListI7QStringE13detach_helperEi@Base 2.0.0
@@ -2018,6 +2162,13 @@ libpeony.so.2 libpeony2 #MINVER#
  (optional=templinst)_ZN5QListIN7QWizard12WizardButtonEE6appendERKS1_@Base 2.0.0
  (optional=templinst)_ZN5QListIN7QWizard12WizardButtonEED1Ev@Base 2.0.0
  (optional=templinst)_ZN5QListIN7QWizard12WizardButtonEED2Ev@Base 2.0.0
+ (optional=templinst)_ZN5QListIP13FileLabelItemE13detach_helperEi@Base 2.1.0
+ (optional=templinst)_ZN5QListIP13FileLabelItemE18detach_helper_growEii@Base 2.1.0
+ (optional=templinst)_ZN5QListIP13FileLabelItemE6appendERKS1_@Base 2.1.0
+ (optional=templinst)_ZN5QListIP13FileLabelItemEC1ERKS2_@Base 2.1.0
+ (optional=templinst)_ZN5QListIP13FileLabelItemEC2ERKS2_@Base 2.1.0
+ (optional=templinst)_ZN5QListIP13FileLabelItemED1Ev@Base 2.1.0
+ (optional=templinst)_ZN5QListIP13FileLabelItemED2Ev@Base 2.1.0
  (optional=templinst)_ZN5QListIP13QStandardItemE18detach_helper_growEii@Base 2.0.0
  (optional=templinst)_ZN5QListIP13QStandardItemE6appendERKS1_@Base 2.0.0
  (optional=templinst)_ZN5QListIP13QStandardItemED1Ev@Base 2.0.0
@@ -2030,6 +2181,12 @@ libpeony.so.2 libpeony2 #MINVER#
  (optional=templinst)_ZN5QListIP7QActionED1Ev@Base 2.0.0
  (optional=templinst)_ZN5QListIP7QActionED2Ev@Base 2.0.0
  (optional=templinst)_ZN5QListIP7QActionEpLERKS2_@Base 2.0.0
+ (optional=templinst)_ZN5QListIP7QObjectEC1ERKS2_@Base 2.1.0
+ (optional=templinst)_ZN5QListIP7QObjectEC2ERKS2_@Base 2.1.0
+ (optional=templinst)_ZN5QListIP7QObjectED1Ev@Base 2.1.0
+ (optional=templinst)_ZN5QListIP7QObjectED2Ev@Base 2.1.0
+ (optional=templinst)_ZN5QListIPN5Peony13FileOperationEED1Ev@Base 2.1.0
+ (optional=templinst)_ZN5QListIPN5Peony13FileOperationEED2Ev@Base 2.1.0
  (optional=templinst|arch= !ppc64el)_ZN5QListIPN5Peony16FileLaunchActionEE13detach_helperEi@Base 2.0.0
  (optional=templinst)_ZN5QListIPN5Peony16FileLaunchActionEE18detach_helper_growEii@Base 2.0.0
  (optional=templinst)_ZN5QListIPN5Peony16FileLaunchActionEE6appendERKS2_@Base 2.0.0
@@ -2049,6 +2206,10 @@ libpeony.so.2 libpeony2 #MINVER#
  (optional=templinst)_ZN5QListISt10shared_ptrIN5Peony8FileInfoEEED1Ev@Base 2.0.0
  (optional=templinst)_ZN5QListISt10shared_ptrIN5Peony8FileInfoEEED2Ev@Base 2.0.0
  (optional=templinst)_ZN5QListISt10shared_ptrIN5Peony8FileInfoEEEpLERKS4_@Base 2.0.0
+ (optional=templinst)_ZN5QListIiE18detach_helper_growEii@Base 2.1.0
+ (optional=templinst)_ZN5QListIiE6appendERKi@Base 2.1.0
+ (optional=templinst)_ZN5QListIiED1Ev@Base 2.1.0
+ (optional=templinst)_ZN5QListIiED2Ev@Base 2.1.0
  _ZN6QDebuglsEPKc@Base 2.0.0
  _ZN7PWDItemC1EP6passwd@Base 2.0.0
  _ZN7PWDItemC2EP6passwd@Base 2.0.0
@@ -2131,6 +2292,13 @@ libpeony.so.2 libpeony2 #MINVER#
  (arch=armel)_ZN9__gnu_cxx26__concurrence_unlock_errorD0Ev@Base 2.0.1
  (arch=armel)_ZN9__gnu_cxx26__concurrence_unlock_errorD1Ev@Base 2.0.1
  (arch=armel)_ZN9__gnu_cxx26__concurrence_unlock_errorD2Ev@Base 2.0.1
+ _ZNK13FileLabelItem10metaObjectEv@Base 2.1.0
+ _ZNK14FileLabelModel10metaObjectEv@Base 2.1.0
+ _ZNK14FileLabelModel4dataERK11QModelIndexi@Base 2.1.0
+ _ZNK14FileLabelModel5flagsERK11QModelIndex@Base 2.1.0
+ _ZNK14FileLabelModel8rowCountERK11QModelIndex@Base 2.1.0
+ _ZNK18BorderShadowEffect10metaObjectEv@Base 2.1.0
+ _ZNK18GenericThumbnailer10metaObjectEv@Base 2.1.0
  _ZNK19ConnectServerDialog10metaObjectEv@Base 2.0.0
  _ZNK5Peony11FileInfoJob10metaObjectEv@Base 2.0.0
  _ZNK5Peony11FileWatcher10metaObjectEv@Base 2.0.0
@@ -2151,6 +2319,7 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZNK5Peony13DirectoryView13IconViewStyle10metaObjectEv@Base 2.0.0
  _ZNK5Peony13DirectoryView13IconViewStyle11drawControlEN6QStyle14ControlElementEPK12QStyleOptionP8QPainterPK7QWidget@Base 2.0.0
  _ZNK5Peony13DirectoryView13IconViewStyle12drawItemTextEP8QPainterRK5QRectiRK8QPalettebRK7QStringNS7_9ColorRoleE@Base 2.0.0
+ _ZNK5Peony13DirectoryView13IconViewStyle13drawPrimitiveEN6QStyle16PrimitiveElementEPK12QStyleOptionP8QPainterPK7QWidget@Base 2.1.0
  _ZNK5Peony13DirectoryView13IconViewStyle14drawItemPixmapEP8QPainterRK5QRectiRK7QPixmap@Base 2.0.0
  _ZNK5Peony13DirectoryView14IconViewEditor10metaObjectEv@Base 2.0.0
  _ZNK5Peony13DirectoryView16IconViewDelegate10metaObjectEv@Base 2.0.0
@@ -2196,6 +2365,7 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZNK5Peony14GlobalSettings10metaObjectEv@Base 2.0.0
  _ZNK5Peony14MountOperation10metaObjectEv@Base 2.0.0
  _ZNK5Peony15BookMarkManager10metaObjectEv@Base 2.0.0
+ _ZNK5Peony15FMWindowFactory10metaObjectEv@Base 2.1.0
  _ZNK5Peony15FileLauchDialog10metaObjectEv@Base 2.0.0
  _ZNK5Peony15FileLauchDialog8sizeHintEv@Base 2.0.0
  _ZNK5Peony15FilePreviewPage10metaObjectEv@Base 2.0.0
@@ -2271,6 +2441,7 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZNK5Peony26ViewFactorySortFilterModel16filterAcceptsRowEiRK11QModelIndex@Base 2.0.0
  _ZNK5Peony26ViewFactorySortFilterModel8lessThanERK11QModelIndexS3_@Base 2.0.0
  _ZNK5Peony27DirectoryViewFactoryManager10metaObjectEv@Base 2.0.0
+ _ZNK5Peony27FileLabelInternalMenuPlugin10metaObjectEv@Base 2.1.0
  _ZNK5Peony27FileOperationProgressWizard10metaObjectEv@Base 2.0.0
  _ZNK5Peony27SideBarProxyFilterSortModel10metaObjectEv@Base 2.0.0
  _ZNK5Peony27SideBarProxyFilterSortModel16filterAcceptsRowEiRK11QModelIndex@Base 2.0.0
@@ -2329,6 +2500,7 @@ libpeony.so.2 libpeony2 #MINVER#
  (optional=templinst)_ZNK5QHashIi5QPairIi7QStringEE8findNodeERKiPj@Base 2.0.0
  (optional=templinst)_ZNK5QHashIiN5Peony13FileOperation12ResponseTypeEE8findNodeERKiPj@Base 2.0.0
  (optional=templinst)_ZNK5QListI7QStringE7indexOfERKS0_i@Base 2.0.0
+ (optional=templinst)_ZNK5QListIP13FileLabelItemE7indexOfERKS1_i@Base 2.1.0
  (optional=templinst)_ZNK5QListIP7QActionE7indexOfERKS1_i@Base 2.0.0
  (optional=templinst|arch= !s390x)_ZNK7QVectorIPN5Peony19SideBarAbstractItemEE7indexOfERKS2_i@Base 2.0.0
  (optional=templinst|arch= !s390x)_ZNK7QVectorIPN5Peony8FileItemEE7indexOfERKS2_i@Base 2.0.0
@@ -2586,7 +2758,11 @@ libpeony.so.2 libpeony2 #MINVER#
  (optional=templinst|arch=amd64)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony8FileInfoESaIS1_ELN9__gnu_cxx12_Lock_policyE2EED1Ev@Base 2.0.0
  (optional=templinst|arch=amd64)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony8FileInfoESaIS1_ELN9__gnu_cxx12_Lock_policyE2EED2Ev@Base 2.0.0
  (optional=templinst|arch= !s390x)_ZSt9__find_ifIPK7QStringN9__gnu_cxx5__ops16_Iter_equals_valIS1_EEET_S7_S7_T0_St26random_access_iterator_tag@Base 2.0.0
+ _ZTI13FileLabelItem@Base 2.1.0
+ _ZTI14FileLabelModel@Base 2.1.0
  _ZTI16QFutureInterfaceIvE@Base 2.0.0
+ _ZTI18BorderShadowEffect@Base 2.1.0
+ _ZTI18GenericThumbnailer@Base 2.1.0
  _ZTI19ConnectServerDialog@Base 2.0.0
  _ZTIN12QtConcurrent15RunFunctionTaskIvEE@Base 2.0.0
  _ZTIN12QtConcurrent19RunFunctionTaskBaseIvEE@Base 2.0.0
@@ -2605,6 +2781,7 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZTIN5Peony13DirectoryView8ListViewE@Base 2.0.0
  _ZTIN5Peony13DirectoryView9IconView2E@Base 2.0.0
  _ZTIN5Peony13DirectoryView9ListView2E@Base 2.0.0
+ _ZTIN5Peony13FMWindowIfaceE@Base 2.1.0
  _ZTIN5Peony13FileItemModelE@Base 2.0.0
  _ZTIN5Peony13FileOperationE@Base 2.0.0
  _ZTIN5Peony13IconContainerE@Base 2.0.0
@@ -2617,6 +2794,7 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZTIN5Peony14GlobalSettingsE@Base 2.0.0
  _ZTIN5Peony14MountOperationE@Base 2.0.0
  _ZTIN5Peony15BookMarkManagerE@Base 2.0.0
+ _ZTIN5Peony15FMWindowFactoryE@Base 2.1.0
  _ZTIN5Peony15FileLauchDialogE@Base 2.0.0
  _ZTIN5Peony15FilePreviewPageE@Base 2.0.0
  _ZTIN5Peony15IconViewFactoryE@Base 2.0.0
@@ -2685,6 +2863,7 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZTIN5Peony26BasicPropertiesPageFactoryE@Base 2.0.0
  _ZTIN5Peony26ViewFactorySortFilterModelE@Base 2.0.0
  _ZTIN5Peony27DirectoryViewFactoryManagerE@Base 2.0.0
+ _ZTIN5Peony27FileLabelInternalMenuPluginE@Base 2.1.0
  _ZTIN5Peony27FileOperationProgressWizardE@Base 2.0.0
  _ZTIN5Peony27SideBarProxyFilterSortModelE@Base 2.0.0
  _ZTIN5Peony27ToolBarExtensionActionIfaceE@Base 2.0.0
@@ -2756,7 +2935,11 @@ libpeony.so.2 libpeony2 #MINVER#
  (arch=amd64)_ZTISt23_Sp_counted_ptr_inplaceIN5Peony6VolumeESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE@Base 2.0.1
  (arch=armel)_ZTISt23_Sp_counted_ptr_inplaceIN5Peony8FileInfoESaIS1_ELN9__gnu_cxx12_Lock_policyE1EE@Base 2.0.1
  (arch=amd64)_ZTISt23_Sp_counted_ptr_inplaceIN5Peony8FileInfoESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE@Base 2.0.1
+ _ZTS13FileLabelItem@Base 2.1.0
+ _ZTS14FileLabelModel@Base 2.1.0
  _ZTS16QFutureInterfaceIvE@Base 2.0.0
+ _ZTS18BorderShadowEffect@Base 2.1.0
+ _ZTS18GenericThumbnailer@Base 2.1.0
  _ZTS19ConnectServerDialog@Base 2.0.0
  _ZTSN12QtConcurrent15RunFunctionTaskIvEE@Base 2.0.0
  _ZTSN12QtConcurrent19RunFunctionTaskBaseIvEE@Base 2.0.0
@@ -2775,6 +2958,7 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZTSN5Peony13DirectoryView8ListViewE@Base 2.0.0
  _ZTSN5Peony13DirectoryView9IconView2E@Base 2.0.0
  _ZTSN5Peony13DirectoryView9ListView2E@Base 2.0.0
+ _ZTSN5Peony13FMWindowIfaceE@Base 2.1.0
  _ZTSN5Peony13FileItemModelE@Base 2.0.0
  _ZTSN5Peony13FileOperationE@Base 2.0.0
  _ZTSN5Peony13IconContainerE@Base 2.0.0
@@ -2787,6 +2971,7 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZTSN5Peony14GlobalSettingsE@Base 2.0.0
  _ZTSN5Peony14MountOperationE@Base 2.0.0
  _ZTSN5Peony15BookMarkManagerE@Base 2.0.0
+ _ZTSN5Peony15FMWindowFactoryE@Base 2.1.0
  _ZTSN5Peony15FileLauchDialogE@Base 2.0.0
  _ZTSN5Peony15FilePreviewPageE@Base 2.0.0
  _ZTSN5Peony15IconViewFactoryE@Base 2.0.0
@@ -2855,6 +3040,7 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZTSN5Peony26BasicPropertiesPageFactoryE@Base 2.0.0
  _ZTSN5Peony26ViewFactorySortFilterModelE@Base 2.0.0
  _ZTSN5Peony27DirectoryViewFactoryManagerE@Base 2.0.0
+ _ZTSN5Peony27FileLabelInternalMenuPluginE@Base 2.1.0
  _ZTSN5Peony27FileOperationProgressWizardE@Base 2.0.0
  _ZTSN5Peony27SideBarProxyFilterSortModelE@Base 2.0.0
  _ZTSN5Peony27ToolBarExtensionActionIfaceE@Base 2.0.0
@@ -2926,7 +3112,11 @@ libpeony.so.2 libpeony2 #MINVER#
  (arch=amd64)_ZTSSt23_Sp_counted_ptr_inplaceIN5Peony6VolumeESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE@Base 2.0.1
  (arch=armel)_ZTSSt23_Sp_counted_ptr_inplaceIN5Peony8FileInfoESaIS1_ELN9__gnu_cxx12_Lock_policyE1EE@Base 2.0.1
  (arch=amd64)_ZTSSt23_Sp_counted_ptr_inplaceIN5Peony8FileInfoESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE@Base 2.0.1
+ _ZTV13FileLabelItem@Base 2.1.0
+ _ZTV14FileLabelModel@Base 2.1.0
  _ZTV16QFutureInterfaceIvE@Base 2.0.0
+ _ZTV18BorderShadowEffect@Base 2.1.0
+ _ZTV18GenericThumbnailer@Base 2.1.0
  _ZTV19ConnectServerDialog@Base 2.0.0
  _ZTVN12QtConcurrent19RunFunctionTaskBaseIvEE@Base 2.0.0
  _ZTVN5Peony11FileInfoJobE@Base 2.0.0
@@ -2956,6 +3146,7 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZTVN5Peony14GlobalSettingsE@Base 2.0.0
  _ZTVN5Peony14MountOperationE@Base 2.0.0
  _ZTVN5Peony15BookMarkManagerE@Base 2.0.0
+ _ZTVN5Peony15FMWindowFactoryE@Base 2.1.0
  _ZTVN5Peony15FileLauchDialogE@Base 2.0.0
  _ZTVN5Peony15FilePreviewPageE@Base 2.0.0
  _ZTVN5Peony15IconViewFactoryE@Base 2.0.0
@@ -3016,6 +3207,7 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZTVN5Peony26BasicPropertiesPageFactoryE@Base 2.0.0
  _ZTVN5Peony26ViewFactorySortFilterModelE@Base 2.0.0
  _ZTVN5Peony27DirectoryViewFactoryManagerE@Base 2.0.0
+ _ZTVN5Peony27FileLabelInternalMenuPluginE@Base 2.1.0
  _ZTVN5Peony27FileOperationProgressWizardE@Base 2.0.0
  _ZTVN5Peony27SideBarProxyFilterSortModelE@Base 2.0.0
  _ZTVN5Peony27ToolBarExtensionActionIfaceE@Base 2.0.0
@@ -3085,6 +3277,7 @@ libpeony.so.2 libpeony2 #MINVER#
  (optional=templinst)_ZZN11QMetaTypeIdIN17QtMetaTypePrivate23QSequentialIterableImplEE14qt_metatype_idEvE11metatype_id@Base 2.0.0
  (optional=templinst)_ZZN11QMetaTypeIdIN5Peony13FileOperation12ResponseTypeEE14qt_metatype_idEvE11metatype_id@Base 2.0.0
  (optional=templinst)_ZZN11QMetaTypeIdISt10shared_ptrIN5Peony13GErrorWrapperEEE14qt_metatype_idEvE11metatype_id@Base 2.0.0
+ (optional=templinst)_ZZN18QMetaTypeIdQObjectIP13FileLabelItemLi8EE14qt_metatype_idEvE11metatype_id@Base 2.1.0
  (optional=templinst)_ZZN18QMetaTypeIdQObjectIPN5Peony13FileItemModelELi8EE14qt_metatype_idEvE11metatype_id@Base 2.0.0
  (optional=templinst)_ZZN18QMetaTypeIdQObjectIPN5Peony13FileOperationELi8EE14qt_metatype_idEvE11metatype_id@Base 2.0.0
  (optional=templinst)_ZZN18QMetaTypeIdQObjectIPN5Peony28FileItemProxyFilterSortModelELi8EE14qt_metatype_idEvE11metatype_id@Base 2.0.0
@@ -3096,6 +3289,7 @@ libpeony.so.2 libpeony2 #MINVER#
  (optional=templinst)_ZZN9QtPrivate19ValueTypeIsMetaTypeI5QListI21QPersistentModelIndexELb1EE17registerConverterEiE1f@Base 2.0.0
  _ZZNSt19_Sp_make_shared_tag5_S_tiEvE5__tag@Base 2.0.0
  comparer@Base 2.0.0
+ global_instance@Base 2.1.0
  is_registed@Base 2.0.0
  locale@Base 2.0.0
  (c++)"non-virtual thunk to ConnectServerDialog::~ConnectServerDialog()@Base" 2.0.0
@@ -3203,6 +3397,39 @@ libpeony.so.2 libpeony2 #MINVER#
  (c++)"non-virtual thunk to Peony::DirectoryViewContainer::~DirectoryViewContainer()@Base" 2.0.0
  (c++)"non-virtual thunk to Peony::DirectoryViewMenu::~DirectoryViewMenu()@Base" 2.0.0
  (c++)"non-virtual thunk to Peony::DirectoryViewWidget::~DirectoryViewWidget()@Base" 2.0.0
+ (c++)"non-virtual thunk to Peony::FMWindow::addNewTabs(QStringList const&)@Base" 2.1.0
+ (c++)"non-virtual thunk to Peony::FMWindow::advanceSearch()@Base" 2.1.0
+ (c++)"non-virtual thunk to Peony::FMWindow::beginSwitchView(QString const&)@Base" 2.1.0
+ (c++)"non-virtual thunk to Peony::FMWindow::clearRecord()@Base" 2.1.0
+ (c++)"non-virtual thunk to Peony::FMWindow::create(QString const&)@Base" 2.1.0
+ (c++)"non-virtual thunk to Peony::FMWindow::create(QStringList const&)@Base" 2.1.0
+ (c++)"non-virtual thunk to Peony::FMWindow::editUri(QString const&)@Base" 2.1.0
+ (c++)"non-virtual thunk to Peony::FMWindow::editUris(QStringList const&)@Base" 2.1.0
+ (c++)"non-virtual thunk to Peony::FMWindow::filterUpdate(int, int, int)@Base" 2.1.0
+ (c++)"non-virtual thunk to Peony::FMWindow::forceStopLoading()@Base" 2.1.0
+ (c++)"non-virtual thunk to Peony::FMWindow::getCurrentAllFileUris()@Base" 2.1.0
+ (c++)"non-virtual thunk to Peony::FMWindow::getCurrentPage()@Base" 2.1.0
+ (c++)"non-virtual thunk to Peony::FMWindow::getCurrentPageViewType()@Base" 2.1.0
+ (c++)"non-virtual thunk to Peony::FMWindow::getCurrentSelectionFileInfos()@Base" 2.1.0
+ (c++)"non-virtual thunk to Peony::FMWindow::getCurrentSelections()@Base" 2.1.0
+ (c++)"non-virtual thunk to Peony::FMWindow::getCurrentSortColumn()@Base" 2.1.0
+ (c++)"non-virtual thunk to Peony::FMWindow::getCurrentSortOrder()@Base" 2.1.0
+ (c++)"non-virtual thunk to Peony::FMWindow::getCurrentUri()@Base" 2.1.0
+ (c++)"non-virtual thunk to Peony::FMWindow::getFactory()@Base" 2.1.0
+ (c++)"non-virtual thunk to Peony::FMWindow::getLastNonSearchUri()@Base" 2.1.0
+ (c++)"non-virtual thunk to Peony::FMWindow::getWindowShowHidden()@Base" 2.1.0
+ (c++)"non-virtual thunk to Peony::FMWindow::getWindowSortFolderFirst()@Base" 2.1.0
+ (c++)"non-virtual thunk to Peony::FMWindow::getWindowUseDefaultNameSortOrder()@Base" 2.1.0
+ (c++)"non-virtual thunk to Peony::FMWindow::goToUri(QString const&, bool, bool)@Base" 2.1.0
+ (c++)"non-virtual thunk to Peony::FMWindow::onPreviewPageSwitch(QString const&)@Base" 2.1.0
+ (c++)"non-virtual thunk to Peony::FMWindow::refresh()@Base" 2.1.0
+ (c++)"non-virtual thunk to Peony::FMWindow::searchFilter(QString, QString, bool, bool)@Base" 2.1.0
+ (c++)"non-virtual thunk to Peony::FMWindow::setCurrentSelectionUris(QStringList const&)@Base" 2.1.0
+ (c++)"non-virtual thunk to Peony::FMWindow::setCurrentSortColumn(int)@Base" 2.1.0
+ (c++)"non-virtual thunk to Peony::FMWindow::setCurrentSortOrder(Qt::SortOrder)@Base" 2.1.0
+ (c++)"non-virtual thunk to Peony::FMWindow::setShowHidden()@Base" 2.1.0
+ (c++)"non-virtual thunk to Peony::FMWindow::setSortFolderFirst()@Base" 2.1.0
+ (c++)"non-virtual thunk to Peony::FMWindow::setUseDefaultNameSortOrder()@Base" 2.1.0
  (c++)"non-virtual thunk to Peony::FMWindow::~FMWindow()@Base" 2.0.0
  (c++)"non-virtual thunk to Peony::FileCopyOperation::run()@Base" 2.0.0
  (c++)"non-virtual thunk to Peony::FileCopyOperation::~FileCopyOperation()@Base" 2.0.0
@@ -3210,6 +3437,15 @@ libpeony.so.2 libpeony2 #MINVER#
  (c++)"non-virtual thunk to Peony::FileCountOperation::~FileCountOperation()@Base" 2.0.0
  (c++)"non-virtual thunk to Peony::FileDeleteOperation::run()@Base" 2.0.0
  (c++)"non-virtual thunk to Peony::FileDeleteOperation::~FileDeleteOperation()@Base" 2.0.0
+ (c++)"non-virtual thunk to Peony::FileLabelInternalMenuPlugin::description()@Base" 2.1.0
+ (c++)"non-virtual thunk to Peony::FileLabelInternalMenuPlugin::icon()@Base" 2.1.0
+ (c++)"non-virtual thunk to Peony::FileLabelInternalMenuPlugin::isEnable()@Base" 2.1.0
+ (c++)"non-virtual thunk to Peony::FileLabelInternalMenuPlugin::menuActions(QFlags<Peony::MenuPluginInterface::Type>, QString const&, QStringList const&)@Base" 2.1.0
+ (c++)"non-virtual thunk to Peony::FileLabelInternalMenuPlugin::name()@Base" 2.1.0
+ (c++)"non-virtual thunk to Peony::FileLabelInternalMenuPlugin::pluginType()@Base" 2.1.0
+ (c++)"non-virtual thunk to Peony::FileLabelInternalMenuPlugin::setEnable(bool)@Base" 2.1.0
+ (c++)"non-virtual thunk to Peony::FileLabelInternalMenuPlugin::testPlugin()@Base" 2.1.0
+ (c++)"non-virtual thunk to Peony::FileLabelInternalMenuPlugin::~FileLabelInternalMenuPlugin()@Base" 2.1.0
  (c++)"non-virtual thunk to Peony::FileLauchDialog::~FileLauchDialog()@Base" 2.0.0
  (c++)"non-virtual thunk to Peony::FileLinkOperation::run()@Base" 2.0.0
  (c++)"non-virtual thunk to Peony::FileLinkOperation::~FileLinkOperation()@Base" 2.0.0
