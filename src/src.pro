@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui gui-private x11extras
+QT       += core gui gui-private x11extras dbus
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets widgets-private
 

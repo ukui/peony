@@ -314,8 +314,7 @@ void MainWindow::setShortCuts()
     auto helpAction = new QAction(this);
     helpAction->setShortcut(QKeySequence(Qt::Key_F1));
     connect(helpAction, &QAction::triggered, this, [=](){
-        QUrl url = QUrl("help:ubuntu-kylin-help/files", QUrl::TolerantMode);
-        QDesktopServices::openUrl(url);
+        PeonyApplication::help();
     });
     addAction(helpAction);
 

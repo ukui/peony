@@ -96,6 +96,15 @@
 #include <QStyleFactory>
 #include <QDesktopServices>
 
+#include <QDBusConnection>
+#include <QDBusReply>
+#include <QDBusMessage>
+#include <QDBusConnectionInterface>
+
+#define KYLIN_USER_GUIDE_PATH "/"
+#define KYLIN_USER_GUIDE_SERVICE "com.kylinUserGuide.hotel"
+#define KYLIN_USER_GUIDE_INTERFACE "com.guide.hotel"
+
 PeonyApplication::PeonyApplication(int &argc, char *argv[], const char *applicationName) : SingleApplication (argc, argv, applicationName, true)
 {
     setApplicationVersion("v2.0.0");
@@ -552,6 +561,44 @@ void PeonyApplication::about()
 
 void PeonyApplication::help()
 {
-    QUrl url = QUrl("help:ubuntu-kylin-help/files", QUrl::TolerantMode);
-    QDesktopServices::openUrl(url);
+    showGuide();
+}
+
+bool PeonyApplication::userGuideDaemonRunning()
+{
+    QDBusConnection conn = QDBusConnection::sessionBus();
+
+    if (!conn.isConnected())
+        return false;
+
+    QDBusReply<QString> reply = conn.interface()->call("GetNameOwner", KYLIN_USER_GUIDE_SERVICE);
+
+    return reply == "";
+}
+
+void PeonyApplication::showGuide(const QString &appName)
+{
+    if (!userGuideDaemonRunning()) {
+        QUrl url = QUrl("help:ubuntu-kylin-help/files", QUrl::TolerantMode);
+        QDesktopServices::openUrl(url);
+        return;
+    }
+
+    bool bRet  = false;
+
+    QDBusMessage m = QDBusMessage::createMethodCall(KYLIN_USER_GUIDE_SERVICE,
+                                                    KYLIN_USER_GUIDE_PATH,
+                                                    KYLIN_USER_GUIDE_INTERFACE,
+                                                    "ShowGuide");
+    m << appName;
+
+    QDBusMessage response = QDBusConnection::sessionBus().call(m);
+    if (response.type()== QDBusMessage::ReplyMessage)
+    {
+        bRet = response.arguments().at(0).toBool();
+    }
+    else {
+        QUrl url = QUrl("help:ubuntu-kylin-help/files", QUrl::TolerantMode);
+        QDesktopServices::openUrl(url);
+    }
 }

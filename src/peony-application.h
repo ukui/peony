@@ -47,6 +47,9 @@ public:
     static void about();
     static void help();
 
+    static bool userGuideDaemonRunning();
+    static void showGuide(const QString &appName = "peony");
+
 protected Q_SLOTS:
     void parseCmd(quint32 id, QByteArray msg);
 

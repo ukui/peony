@@ -38,6 +38,8 @@ public:
     explicit PeonyDesktopApplication(int &argc, char *argv[], const char *applicationName = "peony-qt-desktop");
 
     static Peony::DesktopIconView *getIconView();
+    static bool userGuideDaemonRunning();
+    static void showGuide(const QString &appName = "peony-dekstop");
 
 protected Q_SLOTS:
     void parseCmd(quint32 id, QByteArray msg, bool isPrimary);

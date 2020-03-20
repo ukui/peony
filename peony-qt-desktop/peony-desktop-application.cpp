@@ -46,6 +46,16 @@
 
 #include <gio/gio.h>
 
+#include <QDBusConnection>
+#include <QDBusConnectionInterface>
+#include <QDBusMessage>
+#include <QDBusReply>
+#include <QDesktopServices>
+
+#define KYLIN_USER_GUIDE_PATH "/"
+#define KYLIN_USER_GUIDE_SERVICE "com.kylinUserGuide.hotel"
+#define KYLIN_USER_GUIDE_INTERFACE "com.guide.hotel"
+
 static bool has_desktop = false;
 static bool has_daemon = false;
 static Peony::DesktopIconView *desktop_icon_view = nullptr;
@@ -148,6 +158,45 @@ Peony::DesktopIconView *PeonyDesktopApplication::getIconView()
     if (!desktop_icon_view)
         desktop_icon_view = new Peony::DesktopIconView;
     return desktop_icon_view;
+}
+
+bool PeonyDesktopApplication::userGuideDaemonRunning()
+{
+    QDBusConnection conn = QDBusConnection::sessionBus();
+
+    if (!conn.isConnected())
+        return false;
+
+    QDBusReply<QString> reply = conn.interface()->call("GetNameOwner", KYLIN_USER_GUIDE_SERVICE);
+
+    return reply == "";
+}
+
+void PeonyDesktopApplication::showGuide(const QString &appName)
+{
+    if (!userGuideDaemonRunning()) {
+        QUrl url = QUrl("help:ubuntu-kylin-help", QUrl::TolerantMode);
+        QDesktopServices::openUrl(url);
+        return;
+    }
+
+    bool bRet  = false;
+
+    QDBusMessage m = QDBusMessage::createMethodCall(KYLIN_USER_GUIDE_SERVICE,
+                                                    KYLIN_USER_GUIDE_PATH,
+                                                    KYLIN_USER_GUIDE_INTERFACE,
+                                                    "ShowGuide");
+    m << appName;
+
+    QDBusMessage response = QDBusConnection::sessionBus().call(m);
+    if (response.type()== QDBusMessage::ReplyMessage)
+    {
+        bRet = response.arguments().at(0).toBool();
+    }
+    else {
+        QUrl url = QUrl("help:ubuntu-kylin-help", QUrl::TolerantMode);
+        QDesktopServices::openUrl(url);
+    }
 }
 
 void PeonyDesktopApplication::parseCmd(quint32 id, QByteArray msg, bool isPrimary)

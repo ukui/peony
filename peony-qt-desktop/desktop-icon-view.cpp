@@ -20,6 +20,7 @@
  *
  */
 
+#include "peony-desktop-application.h"
 #include "desktop-icon-view.h"
 
 #include "icon-view-style.h"
@@ -350,8 +351,7 @@ void DesktopIconView::initShoutCut()
     QAction *helpAction = new QAction(this);
     helpAction->setShortcut(Qt::Key_F1);
     connect(helpAction, &QAction::triggered, this, [=](){
-        QUrl url = QUrl("help:ubuntu-kylin-help", QUrl::TolerantMode);
-        QDesktopServices::openUrl(url);
+        PeonyDesktopApplication::showGuide();
     });
     addAction(helpAction);
 

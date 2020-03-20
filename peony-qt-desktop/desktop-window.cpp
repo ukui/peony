@@ -451,14 +451,6 @@ void DesktopWindow::initShortcut() {
     });
     addAction(removeAction);
 
-    QAction *helpAction = new QAction(this);
-    helpAction->setShortcut(Qt::Key_F1);
-    connect(helpAction, &QAction::triggered, this, [=](){
-        QUrl url = QUrl("help:ubuntu-kylin-help", QUrl::TolerantMode);
-        QDesktopServices::openUrl(url);
-    });
-    addAction(helpAction);
-
     auto propertiesWindowAction = new QAction(this);
     propertiesWindowAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::ALT + Qt::Key_Return)
                                          <<QKeySequence(Qt::ALT + Qt::Key_Enter));
