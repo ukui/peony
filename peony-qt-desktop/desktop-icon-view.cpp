@@ -34,6 +34,20 @@
 #include "file-trash-operation.h"
 #include "clipboard-utils.h"
 
+#include "properties-window.h"
+#include "file-utils.h"
+#include "file-operation-utils.h"
+
+#include "desktop-menu.h"
+#include "desktop-window.h"
+
+#include "file-item-model.h"
+#include "file-info-job.h"
+#include "file-launch-manager.h"
+#include <QProcess>
+
+#include <QDesktopServices>
+
 #include "desktop-index-widget.h"
 
 #include "file-meta-info.h"
@@ -60,6 +74,10 @@ using namespace Peony;
 
 DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
 {
+    initShoutCut();
+    //initMenu();
+    initDoubleClick();
+
     connect(qApp, &QApplication::paletteChanged, this, [=](){
         viewport()->update();
     });
@@ -91,7 +109,7 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
 
     setDragDropMode(QListView::DragDrop);
 
-    setContextMenuPolicy(Qt::CustomContextMenu);
+    //setContextMenuPolicy(Qt::CustomContextMenu);
     setSelectionMode(QListView::ExtendedSelection);
 
     auto zoomLevel = this->zoomLevel();
@@ -238,6 +256,230 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
 DesktopIconView::~DesktopIconView()
 {
     //saveAllItemPosistionInfos();
+}
+
+void DesktopIconView::initShoutCut()
+{
+    QAction *copyAction = new QAction(this);
+    copyAction->setShortcut(QKeySequence::Copy);
+    connect(copyAction, &QAction::triggered, [=]() {
+        auto selectedUris = this->getSelections();
+        if (!selectedUris.isEmpty())
+            ClipboardUtils::setClipboardFiles(selectedUris, false);
+    });
+    addAction(copyAction);
+
+    QAction *cutAction = new QAction(this);
+    cutAction->setShortcut(QKeySequence::Cut);
+    connect(cutAction, &QAction::triggered, [=]() {
+        auto selectedUris = this->getSelections();
+        if (!selectedUris.isEmpty())
+            ClipboardUtils::setClipboardFiles(selectedUris, true);
+    });
+    addAction(cutAction);
+
+    QAction *pasteAction = new QAction(this);
+    pasteAction->setShortcut(QKeySequence::Paste);
+    connect(pasteAction, &QAction::triggered, [=]() {
+        auto clipUris = ClipboardUtils::getClipboardFilesUris();
+        if (ClipboardUtils::isClipboardHasFiles()) {
+            ClipboardUtils::pasteClipboardFiles(this->getDirectoryUri());
+        }
+    });
+    addAction(pasteAction);
+
+    QAction *trashAction = new QAction(this);
+    trashAction->setShortcut(QKeySequence::Delete);
+    connect(trashAction, &QAction::triggered, [=]() {
+        auto selectedUris = this->getSelections();
+        if (!selectedUris.isEmpty()) {
+            auto op = new FileTrashOperation(selectedUris);
+            FileOperationManager::getInstance()->startOperation(op, true);
+        }
+    });
+    addAction(trashAction);
+
+    QAction *undoAction = new QAction(this);
+    undoAction->setShortcut(QKeySequence::Undo);
+    connect(undoAction, &QAction::triggered,
+    [=]() {
+        FileOperationManager::getInstance()->undo();
+    });
+    addAction(undoAction);
+
+    QAction *redoAction = new QAction(this);
+    redoAction->setShortcut(QKeySequence::Redo);
+    connect(redoAction, &QAction::triggered,
+    [=]() {
+        FileOperationManager::getInstance()->redo();
+    });
+    addAction(redoAction);
+
+    QAction *zoomInAction = new QAction(this);
+    zoomInAction->setShortcut(QKeySequence::ZoomIn);
+    connect(zoomInAction, &QAction::triggered, [=]() {
+        this->zoomIn();
+    });
+    addAction(zoomInAction);
+
+    QAction *zoomOutAction = new QAction(this);
+    zoomOutAction->setShortcut(QKeySequence::ZoomOut);
+    connect(zoomOutAction, &QAction::triggered, [=]() {
+        this->zoomOut();
+    });
+    addAction(zoomOutAction);
+
+    QAction *renameAction = new QAction(this);
+    renameAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_E));
+    connect(renameAction, &QAction::triggered, [=]() {
+        auto selections = this->getSelections();
+        if (selections.count() == 1) {
+            this->editUri(selections.first());
+        }
+    });
+    addAction(renameAction);
+
+    QAction *removeAction = new QAction(this);
+    removeAction->setShortcut(QKeySequence(Qt::SHIFT + Qt::Key_Delete));
+    connect(removeAction, &QAction::triggered, [=]() {
+        qDebug() << "delete" << this->getSelections();
+        FileOperationUtils::executeRemoveActionWithDialog(this->getSelections());
+    });
+    addAction(removeAction);
+
+    QAction *helpAction = new QAction(this);
+    helpAction->setShortcut(Qt::Key_F1);
+    connect(helpAction, &QAction::triggered, this, [=](){
+        QUrl url = QUrl("help:ubuntu-kylin-help", QUrl::TolerantMode);
+        QDesktopServices::openUrl(url);
+    });
+    addAction(helpAction);
+
+    auto propertiesWindowAction = new QAction(this);
+    propertiesWindowAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_Return));
+    connect(propertiesWindowAction, &QAction::triggered, this, [=](){
+        if (this->getSelections().count() > 0)
+        {
+            PropertiesWindow *w = new PropertiesWindow(this->getSelections());
+            w->show();
+        }
+    });
+    addAction(propertiesWindowAction);
+
+    auto newFolderAction = new QAction(this);
+    newFolderAction->setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_N));
+    connect(newFolderAction, &QAction::triggered, this, [=](){
+        CreateTemplateOperation op(this->getDirectoryUri(), CreateTemplateOperation::EmptyFolder, tr("New Folder"));
+        op.run();
+        auto targetUri = op.target();
+#if QT_VERSION > QT_VERSION_CHECK(5, 12, 0)
+            QTimer::singleShot(500, this, [=](){
+#else
+            QTimer::singleShot(500, [=](){
+#endif
+            this->scrollToSelection(targetUri);
+        });
+    });
+    addAction(newFolderAction);
+
+    auto refreshAction = new QAction(this);
+    refreshAction->setShortcut(Qt::Key_F5);
+    connect(refreshAction, &QAction::triggered, this, [=](){
+        this->refresh();
+    });
+    addAction(refreshAction);
+
+    QAction *editAction = new QAction(this);
+    editAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::ALT + Qt::Key_E)<<Qt::Key_F2);
+    connect(editAction, &QAction::triggered, this, [=](){
+        auto selections = this->getSelections();
+        if (selections.count() == 1) {
+            this->editUri(selections.first());
+        }
+    });
+    addAction(editAction);
+}
+
+void DesktopIconView::initMenu()
+{
+    /*!
+     * \bug
+     *
+     * when view switch to another desktop window,
+     * menu might no be callable.
+     */
+    return;
+    setContextMenuPolicy(Qt::CustomContextMenu);
+
+    // menu
+    connect(this, &QListView::customContextMenuRequested, this,
+    [=](const QPoint &pos) {
+        // FIXME: use other menu
+        qDebug() << "menu request";
+        if (!this->indexAt(pos).isValid()) {
+            this->clearSelection();
+        } else {
+            this->clearSelection();
+            this->selectionModel()->select(this->indexAt(pos), QItemSelectionModel::Select);
+        }
+
+        QTimer::singleShot(1, [=]() {
+            DesktopMenu menu(this);
+            if (this->getSelections().isEmpty()) {
+                auto action = menu.addAction(tr("set background"));
+                connect(action, &QAction::triggered, [=]() {
+                    //go to control center set background
+                    DesktopWindow::gotoSetBackground();
+//                    QFileDialog dlg;
+//                    dlg.setNameFilters(QStringList() << "*.jpg"
+//                                       << "*.png");
+//                    if (dlg.exec()) {
+//                        auto url = dlg.selectedUrls().first();
+//                        this->setBg(url.path());
+//                        // qDebug()<<url;
+//                        Q_EMIT this->changeBg(url.path());
+//                    }
+                });
+            }
+            menu.exec(QCursor::pos());
+            auto urisToEdit = menu.urisToEdit();
+            if (urisToEdit.count() == 1) {
+                QTimer::singleShot(
+                100, this, [=]() {
+                    this->editUri(urisToEdit.first());
+                });
+            }
+        });
+    }, Qt::UniqueConnection);
+}
+
+void DesktopIconView::initDoubleClick()
+{
+    connect(this, &QListView::doubleClicked, this, [=](const QModelIndex &index) {
+        qDebug() << "double click" << index.data(FileItemModel::UriRole);
+        auto uri = index.data(FileItemModel::UriRole).toString();
+        auto info = FileInfo::fromUri(uri, false);
+        auto job = new FileInfoJob(info);
+        job->setAutoDelete();
+        job->connect(job, &FileInfoJob::queryAsyncFinished, [=]() {
+            if (info->isDir() || info->isVolume() || info->isVirtual()) {
+#if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
+                QProcess p;
+                QUrl url = uri;
+                p.setProgram("peony");
+                p.setArguments(QStringList() << url.toEncoded());
+                p.startDetached();
+#else
+                QProcess p;
+                p.startDetached("peony", QStringList()<<uri);
+#endif
+            } else {
+                FileLaunchManager::openAsync(uri);
+            }
+            this->clearSelection();
+        });
+        job->queryAsync();
+    }, Qt::UniqueConnection);
 }
 
 void DesktopIconView::saveAllItemPosistionInfos()

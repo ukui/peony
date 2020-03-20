@@ -28,6 +28,8 @@
 
 #include "volume-manager.h"
 
+#include "desktop-icon-view.h"
+
 #include <QCommandLineParser>
 #include <QCommandLineOption>
 #include <QTimer>
@@ -46,6 +48,7 @@
 
 static bool has_desktop = false;
 static bool has_daemon = false;
+static Peony::DesktopIconView *desktop_icon_view = nullptr;
 
 void trySetDefaultFolderUrlHandler() {
     //NOTE:
@@ -140,6 +143,13 @@ PeonyDesktopApplication::PeonyDesktopApplication(int &argc, char *argv[], const 
     parseCmd(this->instanceId(), message, isPrimary());
 }
 
+Peony::DesktopIconView *PeonyDesktopApplication::getIconView()
+{
+    if (!desktop_icon_view)
+        desktop_icon_view = new Peony::DesktopIconView;
+    return desktop_icon_view;
+}
+
 void PeonyDesktopApplication::parseCmd(quint32 id, QByteArray msg, bool isPrimary)
 {
     QCommandLineParser parser;
@@ -217,6 +227,7 @@ void PeonyDesktopApplication::parseCmd(quint32 id, QByteArray msg, bool isPrimar
             if (!has_desktop) {
                 //FIXME: load menu plugin
                 //FIXME: take over desktop displaying
+                getIconView();
                 for(auto screen : this->screens())
                 {
                     addWindow(screen);
@@ -246,7 +257,8 @@ void PeonyDesktopApplication::addWindow(QScreen *screen, bool checkPrimay)
         window = new Peony::DesktopWindow(screen, is_primary);
         if (is_primary)
         {
-            connect(window, &Peony::DesktopWindow::changeBg, this, &PeonyDesktopApplication::changeBgProcess);
+            window->setCentralWidget(desktop_icon_view);
+            //connect(window, &Peony::DesktopWindow::changeBg, this, &PeonyDesktopApplication::changeBgProcess);
         }
     } else {
         window = new Peony::DesktopWindow(screen, false);
@@ -270,17 +282,34 @@ void PeonyDesktopApplication::primaryScreenChangedProcess(QScreen *screen)
 
     bool need_exchange = false;
     QScreen *preMainScreen = nullptr;
+    Peony::DesktopWindow *rawPrimaryWindow = nullptr;
+    Peony::DesktopWindow *currentPrimayWindow = nullptr;
     for(auto win : m_window_list)
     {
+        if (win->centralWidget())
+            rawPrimaryWindow = win;
+
+        if (win->getScreen() == screen)
+            currentPrimayWindow = win;
         //need exchange window screen
-        if (win->getView() && win->getScreen() != screen)
-        {
-            preMainScreen = win->getScreen();
-            need_exchange = true;
-            break;
-        }
+//        if (win->getView() && win->getScreen() != screen)
+//        {
+//            preMainScreen = win->getScreen();
+//            need_exchange = true;
+//            break;
+//        }
     }
 
+    if (rawPrimaryWindow && currentPrimayWindow) {
+        currentPrimayWindow->setCentralWidget(getIconView());
+        //desktop_icon_view->show();
+        currentPrimayWindow->updateView();
+    }
+    return;
+
+    //do not check window need exchange
+    //cause we always put the desktop icon view into window
+    //which in current primary screen.
     if (need_exchange)
     {
         for(auto win : m_window_list)

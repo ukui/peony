@@ -109,66 +109,21 @@ DesktopWindow::DesktopWindow(QScreen *screen, bool is_primary, QWidget *parent)
 
     setContextMenuPolicy(Qt::CustomContextMenu);
 
-    connect(m_screen, &QScreen::geometryChanged, this,
-            &DesktopWindow::geometryChangedProcess);
-    connect(m_screen, &QScreen::virtualGeometryChanged, this,
-            &DesktopWindow::virtualGeometryChangedProcess);
-
-    if (!m_is_primary) {
-        m_view = nullptr;
-        setBg(getCurrentBgPath());
-        return;
-    }
-
-    connect(m_screen, &QScreen::availableGeometryChanged, this,
-            &DesktopWindow::availableGeometryChangedProcess);
-
-    m_view = new DesktopIconView(this);
-    setCentralWidget(m_view);
-
-    connect(m_view, &QListView::doubleClicked, [=](const QModelIndex &index) {
-        qDebug() << "double click" << index.data(FileItemModel::UriRole);
-        auto uri = index.data(FileItemModel::UriRole).toString();
-        auto info = FileInfo::fromUri(uri, false);
-        auto job = new FileInfoJob(info);
-        job->setAutoDelete();
-        job->connect(job, &FileInfoJob::queryAsyncFinished, [=]() {
-            if (info->isDir() || info->isVolume() || info->isVirtual()) {
-#if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
-                QProcess p;
-                QUrl url = uri;
-                p.setProgram("peony");
-                p.setArguments(QStringList() << url.toEncoded());
-                p.startDetached();
-#else
-                QProcess p;
-                p.startDetached("peony", QStringList()<<uri);
-#endif
-            } else {
-                FileLaunchManager::openAsync(uri);
-            }
-            m_view->clearSelection();
-        });
-        job->queryAsync();
-    });
-
-    // edit trigger
-
     // menu
-    connect(m_view, &QListView::customContextMenuRequested,
+    connect(this, &QMainWindow::customContextMenuRequested,
     [=](const QPoint &pos) {
         // FIXME: use other menu
         qDebug() << "menu request";
-        if (!m_view->indexAt(pos).isValid()) {
-            m_view->clearSelection();
+        if (!PeonyDesktopApplication::getIconView()->indexAt(pos).isValid() || !centralWidget()) {
+            PeonyDesktopApplication::getIconView()->clearSelection();
         } else {
-            m_view->clearSelection();
-            m_view->selectionModel()->select(m_view->indexAt(pos), QItemSelectionModel::Select);
+            PeonyDesktopApplication::getIconView()->clearSelection();
+            PeonyDesktopApplication::getIconView()->selectionModel()->select(PeonyDesktopApplication::getIconView()->indexAt(pos), QItemSelectionModel::Select);
         }
 
         QTimer::singleShot(1, [=]() {
-            DesktopMenu menu(m_view);
-            if (m_view->getSelections().isEmpty()) {
+            DesktopMenu menu(PeonyDesktopApplication::getIconView());
+            if (PeonyDesktopApplication::getIconView()->getSelections().isEmpty()) {
                 auto action = menu.addAction(tr("set background"));
                 connect(action, &QAction::triggered, [=]() {
                     //go to control center set background
@@ -184,22 +139,26 @@ DesktopWindow::DesktopWindow(QScreen *screen, bool is_primary, QWidget *parent)
 //                    }
                 });
             }
-            menu.exec(QCursor::pos());
+            menu.exec(mapToGlobal(pos));
             auto urisToEdit = menu.urisToEdit();
             if (urisToEdit.count() == 1) {
                 QTimer::singleShot(
                 100, this, [=]() {
-                    m_view->editUri(urisToEdit.first());
+                    PeonyDesktopApplication::getIconView()->editUri(urisToEdit.first());
                 });
             }
         });
     });
 
-    initShortcut();
+    connect(m_screen, &QScreen::geometryChanged, this,
+            &DesktopWindow::geometryChangedProcess);
+    connect(m_screen, &QScreen::virtualGeometryChanged, this,
+            &DesktopWindow::virtualGeometryChangedProcess);
 
-    updateView();
-
-    setBg(getCurrentBgPath());
+    if (!m_is_primary || true) {
+        setBg(getCurrentBgPath());
+        return;
+    }
 }
 
 DesktopWindow::~DesktopWindow() {}
@@ -404,10 +363,11 @@ void DesktopWindow::scaleBg(const QRect &geometry) {
 
 void DesktopWindow::initShortcut() {
     // shotcut
+    return;
     QAction *copyAction = new QAction(this);
     copyAction->setShortcut(QKeySequence::Copy);
     connect(copyAction, &QAction::triggered, [=]() {
-        auto selectedUris = m_view->getSelections();
+        auto selectedUris = PeonyDesktopApplication::getIconView()->getSelections();
         if (!selectedUris.isEmpty())
             ClipboardUtils::setClipboardFiles(selectedUris, false);
     });
@@ -416,7 +376,7 @@ void DesktopWindow::initShortcut() {
     QAction *cutAction = new QAction(this);
     cutAction->setShortcut(QKeySequence::Cut);
     connect(cutAction, &QAction::triggered, [=]() {
-        auto selectedUris = m_view->getSelections();
+        auto selectedUris = PeonyDesktopApplication::getIconView()->getSelections();
         if (!selectedUris.isEmpty())
             ClipboardUtils::setClipboardFiles(selectedUris, true);
     });
@@ -427,7 +387,7 @@ void DesktopWindow::initShortcut() {
     connect(pasteAction, &QAction::triggered, [=]() {
         auto clipUris = ClipboardUtils::getClipboardFilesUris();
         if (ClipboardUtils::isClipboardHasFiles()) {
-            ClipboardUtils::pasteClipboardFiles(m_view->getDirectoryUri());
+            ClipboardUtils::pasteClipboardFiles(PeonyDesktopApplication::getIconView()->getDirectoryUri());
         }
     });
     addAction(pasteAction);
@@ -435,7 +395,7 @@ void DesktopWindow::initShortcut() {
     QAction *trashAction = new QAction(this);
     trashAction->setShortcut(QKeySequence::Delete);
     connect(trashAction, &QAction::triggered, [=]() {
-        auto selectedUris = m_view->getSelections();
+        auto selectedUris = PeonyDesktopApplication::getIconView()->getSelections();
         if (!selectedUris.isEmpty()) {
             auto op = new FileTrashOperation(selectedUris);
             FileOperationManager::getInstance()->startOperation(op, true);
@@ -462,23 +422,23 @@ void DesktopWindow::initShortcut() {
     QAction *zoomInAction = new QAction(this);
     zoomInAction->setShortcut(QKeySequence::ZoomIn);
     connect(zoomInAction, &QAction::triggered, [=]() {
-        m_view->zoomIn();
+        PeonyDesktopApplication::getIconView()->zoomIn();
     });
     addAction(zoomInAction);
 
     QAction *zoomOutAction = new QAction(this);
     zoomOutAction->setShortcut(QKeySequence::ZoomOut);
     connect(zoomOutAction, &QAction::triggered, [=]() {
-        m_view->zoomOut();
+        PeonyDesktopApplication::getIconView()->zoomOut();
     });
     addAction(zoomOutAction);
 
     QAction *renameAction = new QAction(this);
     renameAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::ALT + Qt::Key_E)<<Qt::Key_F2);
     connect(renameAction, &QAction::triggered, [=]() {
-        auto selections = m_view->getSelections();
+        auto selections = PeonyDesktopApplication::getIconView()->getSelections();
         if (selections.count() == 1) {
-            m_view->editUri(selections.first());
+            PeonyDesktopApplication::getIconView()->editUri(selections.first());
         }
     });
     addAction(renameAction);
@@ -486,8 +446,8 @@ void DesktopWindow::initShortcut() {
     QAction *removeAction = new QAction(this);
     removeAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::SHIFT + Qt::Key_Delete));
     connect(removeAction, &QAction::triggered, [=]() {
-        qDebug() << "delete" << m_view->getSelections();
-        FileOperationUtils::executeRemoveActionWithDialog(m_view->getSelections());
+        qDebug() << "delete" << PeonyDesktopApplication::getIconView()->getSelections();
+        FileOperationUtils::executeRemoveActionWithDialog(PeonyDesktopApplication::getIconView()->getSelections());
     });
     addAction(removeAction);
 
@@ -503,9 +463,9 @@ void DesktopWindow::initShortcut() {
     propertiesWindowAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::ALT + Qt::Key_Return)
                                          <<QKeySequence(Qt::ALT + Qt::Key_Enter));
     connect(propertiesWindowAction, &QAction::triggered, this, [=](){
-        if (m_view->getSelections().count() > 0)
+        if (PeonyDesktopApplication::getIconView()->getSelections().count() > 0)
         {
-            PropertiesWindow *w = new PropertiesWindow(m_view->getSelections());
+            PropertiesWindow *w = new PropertiesWindow(PeonyDesktopApplication::getIconView()->getSelections());
             w->show();
         }
     });
@@ -514,7 +474,7 @@ void DesktopWindow::initShortcut() {
     auto newFolderAction = new QAction(this);
     newFolderAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_N));
     connect(newFolderAction, &QAction::triggered, this, [=](){
-        CreateTemplateOperation op(m_view->getDirectoryUri(), CreateTemplateOperation::EmptyFolder, tr("New Folder"));
+        CreateTemplateOperation op(PeonyDesktopApplication::getIconView()->getDirectoryUri(), CreateTemplateOperation::EmptyFolder, tr("New Folder"));
         op.run();
         auto targetUri = op.target();
 #if QT_VERSION > QT_VERSION_CHECK(5, 12, 0)
@@ -522,7 +482,7 @@ void DesktopWindow::initShortcut() {
 #else
             QTimer::singleShot(500, [=](){
 #endif
-            this->m_view->scrollToSelection(targetUri);
+            PeonyDesktopApplication::getIconView()->scrollToSelection(targetUri);
         });
     });
     addAction(newFolderAction);
@@ -530,16 +490,16 @@ void DesktopWindow::initShortcut() {
     auto refreshAction = new QAction(this);
     refreshAction->setShortcut(Qt::Key_F5);
     connect(refreshAction, &QAction::triggered, this, [=](){
-        m_view->refresh();
+        PeonyDesktopApplication::getIconView()->refresh();
     });
     addAction(refreshAction);
 
-    QAction *editAction = new QAction(m_view);
+    QAction *editAction = new QAction(PeonyDesktopApplication::getIconView());
     editAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::ALT + Qt::Key_E)<<Qt::Key_F2);
     connect(editAction, &QAction::triggered, this, [=](){
-        auto selections = m_view->getSelections();
+        auto selections = PeonyDesktopApplication::getIconView()->getSelections();
         if (selections.count() == 1) {
-            m_view->editUri(selections.first());
+            PeonyDesktopApplication::getIconView()->editUri(selections.first());
         }
     });
     addAction(editAction);
@@ -559,7 +519,7 @@ void DesktopWindow::geometryChangedProcess(const QRect &geometry) {
 }
 
 void DesktopWindow::updateView() {
-    if (m_view) {
+    if (PeonyDesktopApplication::getIconView()) {
         auto avaliableGeometry = m_screen->availableGeometry();
         auto geomerty = m_screen->geometry();
         int top = qAbs(avaliableGeometry.top() - geomerty.top());

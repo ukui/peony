@@ -56,6 +56,8 @@ public:
     void setScreen(QScreen *screen);
     DesktopIconView *getView(){return m_view;}
 
+    static void gotoSetBackground();
+
 Q_SIGNALS:
     void changeBg(const QString &bgPath);
     void checkWindow();
@@ -72,7 +74,6 @@ public Q_SLOTS:
 
     void connectSignal();
     void disconnectSignal();
-    void gotoSetBackground();
 
 protected:
     void paintEvent(QPaintEvent *e);
