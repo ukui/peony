@@ -248,7 +248,7 @@ void DirectoryViewContainer::switchViewType(const QString &viewId)
     }
 
     QAction *cdUpAction = new QAction(m_view);
-    cdUpAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_Up));
+    cdUpAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::ALT + Qt::Key_Up));
     connect(cdUpAction, &QAction::triggered, this, [=](){
         this->cdUp();
     });

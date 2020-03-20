@@ -206,7 +206,7 @@ void MainWindow::setShortCuts()
     addAction(trashAction);
 
     auto deleteAction = new QAction(this);
-    deleteAction->setShortcut(QKeySequence(Qt::SHIFT + Qt::Key_Delete));
+    deleteAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::SHIFT + Qt::Key_Delete));
     addAction(deleteAction);
     connect(deleteAction, &QAction::triggered, [=](){
         auto uris = this->getCurrentSelections();
@@ -214,7 +214,7 @@ void MainWindow::setShortCuts()
     });
 
     auto searchAction = new QAction(this);
-    searchAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::CTRL + Qt::Key_F)<<QKeySequence(Qt::CTRL + Qt::Key_E));
+    searchAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::CTRL + Qt::Key_F);
     connect(searchAction, &QAction::triggered, this, [=](){
         m_header_bar->startEdit(true);
     });
@@ -281,7 +281,7 @@ void MainWindow::setShortCuts()
     addAction(nextTabAction);
 
     auto previousTabAction = new QAction(this);
-    previousTabAction->setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_Tab));
+    previousTabAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_Tab));
     connect(previousTabAction, &QAction::triggered, this, [=](){
         int currentIndex = m_tab->currentIndex();
         if (currentIndex > 0) {
@@ -293,13 +293,14 @@ void MainWindow::setShortCuts()
     addAction(previousTabAction);
 
     auto newFolderAction = new QAction(this);
-    newFolderAction->setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_N));
+    newFolderAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_N));
     connect(newFolderAction, &QAction::triggered, this, &MainWindow::createFolderOperation);
     addAction(newFolderAction);
 
     //show selected item's properties
     auto propertiesWindowAction = new QAction(this);
-    propertiesWindowAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_Return));
+    propertiesWindowAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::ALT + Qt::Key_Return)
+                                         <<QKeySequence(Qt::ALT + Qt::Key_Enter));
     connect(propertiesWindowAction, &QAction::triggered, this, [=](){
         //Fixed issue:when use this shortcut without any selections, this will crash
         if (getCurrentSelections().count() > 0)

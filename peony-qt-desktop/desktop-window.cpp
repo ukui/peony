@@ -473,7 +473,7 @@ void DesktopWindow::initShortcut() {
     addAction(zoomOutAction);
 
     QAction *renameAction = new QAction(this);
-    renameAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_E));
+    renameAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::ALT + Qt::Key_E)<<Qt::Key_F2);
     connect(renameAction, &QAction::triggered, [=]() {
         auto selections = m_view->getSelections();
         if (selections.count() == 1) {
@@ -483,7 +483,7 @@ void DesktopWindow::initShortcut() {
     addAction(renameAction);
 
     QAction *removeAction = new QAction(this);
-    removeAction->setShortcut(QKeySequence(Qt::SHIFT + Qt::Key_Delete));
+    removeAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::SHIFT + Qt::Key_Delete));
     connect(removeAction, &QAction::triggered, [=]() {
         qDebug() << "delete" << m_view->getSelections();
         FileOperationUtils::executeRemoveActionWithDialog(m_view->getSelections());
@@ -499,7 +499,8 @@ void DesktopWindow::initShortcut() {
     addAction(helpAction);
 
     auto propertiesWindowAction = new QAction(this);
-    propertiesWindowAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_Return));
+    propertiesWindowAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::ALT + Qt::Key_Return)
+                                         <<QKeySequence(Qt::ALT + Qt::Key_Enter));
     connect(propertiesWindowAction, &QAction::triggered, this, [=](){
         if (m_view->getSelections().count() > 0)
         {
@@ -510,7 +511,7 @@ void DesktopWindow::initShortcut() {
     addAction(propertiesWindowAction);
 
     auto newFolderAction = new QAction(this);
-    newFolderAction->setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_N));
+    newFolderAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_N));
     connect(newFolderAction, &QAction::triggered, this, [=](){
         CreateTemplateOperation op(m_view->getDirectoryUri(), CreateTemplateOperation::EmptyFolder, tr("New Folder"));
         op.run();
