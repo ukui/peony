@@ -139,37 +139,37 @@
         <translation type="vanished">缩小(&amp;O)</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="368"/>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="370"/>
         <source>&amp;Restore all</source>
         <translation>恢复全部(&amp;R)</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="372"/>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="374"/>
         <source>&amp;Clean the trash</source>
         <translation>清空回收站(&amp;C)</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="373"/>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="375"/>
         <source>Delete Permanently</source>
         <translation>永久删除</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="373"/>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="375"/>
         <source>Are you sure that you want to delete these files? Once you start a deletion, the files deleting will never be restored again.</source>
         <translation>确定删除这些文件？一旦确定这些文件将被永久删除且不可恢复。</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="385"/>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="387"/>
         <source>&amp;Copy</source>
         <translation>复制(&amp;C)</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="389"/>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="391"/>
         <source>Cu&amp;t</source>
         <translation>剪切(&amp;T)</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="395"/>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="397"/>
         <source>&amp;Delete</source>
         <translation>删除(&amp;D)</translation>
     </message>
@@ -197,12 +197,12 @@
 <context>
     <name>Peony::DesktopWindow</name>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-window.cpp" line="177"/>
+        <location filename="../../peony-qt-desktop/desktop-window.cpp" line="157"/>
         <source>set background</source>
         <translation>设置壁纸</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-window.cpp" line="526"/>
+        <location filename="../../peony-qt-desktop/desktop-window.cpp" line="516"/>
         <source>New Folder</source>
         <translation>新建文件夹</translation>
     </message>
@@ -221,7 +221,7 @@
     <message>
         <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="150"/>
         <source>Take over the dbus service.</source>
-        <translation>接管DBus服务</translation>
+        <translation>接管DBus服务。</translation>
     </message>
     <message>
         <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="153"/>

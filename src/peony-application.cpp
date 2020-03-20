@@ -547,7 +547,7 @@ void PeonyApplication::about()
                           "\tYue Lan <lanyue@kylinos.cn>\n"
                           "\tMeihong He <hemeihong@kylinos.cn>\n"
                           "\n"
-                          "Copyright (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd."));
+                          "Copyright (C): 2019-2020, KYLIN Software Co., Ltd."));
 }
 
 void PeonyApplication::help()

@@ -4,22 +4,22 @@
 <context>
     <name>FileLabelBox</name>
     <message>
-        <location filename="../../src/control/file-label-box.cpp" line="53"/>
+        <location filename="../../src/control/file-label-box.cpp" line="54"/>
         <source>Rename</source>
         <translation>重命名</translation>
     </message>
     <message>
-        <location filename="../../src/control/file-label-box.cpp" line="58"/>
+        <location filename="../../src/control/file-label-box.cpp" line="59"/>
         <source>Edit Color</source>
         <translation>编辑颜色</translation>
     </message>
     <message>
-        <location filename="../../src/control/file-label-box.cpp" line="66"/>
+        <location filename="../../src/control/file-label-box.cpp" line="67"/>
         <source>Delete</source>
         <translation>删除标记</translation>
     </message>
     <message>
-        <location filename="../../src/control/file-label-box.cpp" line="71"/>
+        <location filename="../../src/control/file-label-box.cpp" line="72"/>
         <source>Create New Label</source>
         <translation>创建标记</translation>
     </message>
@@ -27,52 +27,52 @@
 <context>
     <name>HeaderBar</name>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="63"/>
+        <location filename="../../src/control/header-bar.cpp" line="67"/>
         <source>Create Folder</source>
         <translation>新建文件夹</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="76"/>
+        <location filename="../../src/control/header-bar.cpp" line="80"/>
         <source>Open Terminal</source>
         <translation>打开终端</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="90"/>
+        <location filename="../../src/control/header-bar.cpp" line="94"/>
         <source>Go Back</source>
         <translation>后退</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="101"/>
+        <location filename="../../src/control/header-bar.cpp" line="105"/>
         <source>Go Forward</source>
         <translation>前进</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="118"/>
+        <location filename="../../src/control/header-bar.cpp" line="126"/>
         <source>Search</source>
         <translation>搜索</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="128"/>
+        <location filename="../../src/control/header-bar.cpp" line="136"/>
         <source>View Type</source>
         <translation>视图类型</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="146"/>
+        <location filename="../../src/control/header-bar.cpp" line="154"/>
         <source>Sort Type</source>
         <translation>排序类型</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="172"/>
+        <location filename="../../src/control/header-bar.cpp" line="180"/>
         <source>Option</source>
         <translation>选项</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="207"/>
+        <location filename="../../src/control/header-bar.cpp" line="215"/>
         <source>Operate Tips</source>
         <translation>操作提示</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="208"/>
+        <location filename="../../src/control/header-bar.cpp" line="216"/>
         <source>Don&apos;t find any terminal, please install at least one terminal!</source>
         <translation>没有找到任何终端插件，请确认您至少安装了一个！</translation>
     </message>
@@ -88,12 +88,12 @@
 <context>
     <name>HeaderBarContainer</name>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="423"/>
+        <location filename="../../src/control/header-bar.cpp" line="461"/>
         <source>Minimize</source>
         <translation>最小化</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="451"/>
+        <location filename="../../src/control/header-bar.cpp" line="489"/>
         <source>Close</source>
         <translation>最大化</translation>
     </message>
@@ -115,9 +115,8 @@
         <translation type="vanished">文件管理器</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="390"/>
         <source>New Folder</source>
-        <translation>新建文件夹</translation>
+        <translation type="vanished">新建文件夹</translation>
     </message>
 </context>
 <context>
@@ -130,7 +129,7 @@
 <context>
     <name>NavigationSideBarContainer</name>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="186"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="196"/>
         <source>All tags...</source>
         <translation>所有标记...</translation>
     </message>
@@ -234,8 +233,20 @@
 	Yue Lan &lt;lanyue@kylinos.cn&gt;
 	Meihong He &lt;hemeihong@kylinos.cn&gt;
 
-Copyright (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</source>
+Copyright (C): 2019-2020, KYLIN Software Co., Ltd.</source>
         <translation>作者:
+	Yue Lan &lt;lanyue@kylinos.cn&gt;
+	Meihong He &lt;hemeihong@kylinos.cn&gt;
+
+版权所有(C): 2019-2020,麒麟软件有限公司.</translation>
+    </message>
+    <message>
+        <source>Authour: 
+	Yue Lan &lt;lanyue@kylinos.cn&gt;
+	Meihong He &lt;hemeihong@kylinos.cn&gt;
+
+Copyright (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</source>
+        <translation type="vanished">作者:
 	Yue Lan &lt;lanyue@kylinos.cn&gt;
 	Meihong He &lt;hemeihong@kylinos.cn&gt;
 
