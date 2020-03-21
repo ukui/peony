@@ -146,6 +146,7 @@ void NavigationTabBar::relayoutFloatButton(bool insterted)
     auto lastTabRect = tabRect(count() - 1);
     fixedY = lastTabRect.center().y() - m_float_button->height()/2;
     m_float_button->move(lastTabRect.right(), fixedY);
+    setFixedHeight(lastTabRect.height());
 }
 
 TabBarStyle *TabBarStyle::getStyle()

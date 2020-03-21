@@ -82,10 +82,15 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
     QHBoxLayout *t = new QHBoxLayout(this);
     QActionGroup *group = new QActionGroup(this);
     group->setExclusive(true);
+    m_tab_bar_bg = new QWidget(this);
+    m_tab_bar_bg->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     QToolBar *previewButtons = new QToolBar(this);
-    previewButtons->setFixedHeight(m_tab_bar->height());
+    //previewButtons->setFixedHeight(m_tab_bar->height());
     t->setContentsMargins(0, 0, 5, 0);
-    t->addWidget(m_tab_bar);
+    t->addWidget(m_tab_bar_bg);
+
+    updateTabBarGeometry();
+
     auto manager = Peony::PreviewPageFactoryManager::getInstance();
     auto pluginNames = manager->getPluginNames();
     for (auto name : pluginNames) {
@@ -423,6 +428,19 @@ void TabWidget::updatePreviewPage()
         return ;
     m_preview_page->prepare(selection.first());
     m_preview_page->startPreview();
+}
+
+void TabWidget::resizeEvent(QResizeEvent *e)
+{
+    QMainWindow::resizeEvent(e);
+    updateTabBarGeometry();
+}
+
+void TabWidget::updateTabBarGeometry()
+{
+    m_tab_bar->setGeometry(0, 4, m_tab_bar_bg->width(), m_tab_bar->height());
+    m_tab_bar_bg->setFixedHeight(m_tab_bar->height());
+    m_tab_bar->raise();
 }
 
 PreviewPageContainer::PreviewPageContainer(QWidget *parent) : QStackedWidget(parent)

@@ -140,8 +140,14 @@ protected:
     void bindContainerSignal(Peony::DirectoryViewContainer *container);
     void updatePreviewPage();
 
+    void resizeEvent(QResizeEvent *e);
+    void updateTabBarGeometry();
+
 private:
     NavigationTabBar *m_tab_bar;
+
+    QWidget *m_tab_bar_bg;
+
     QStackedWidget *m_stack;
 
     PreviewPageButtonGroups *m_buttons;
