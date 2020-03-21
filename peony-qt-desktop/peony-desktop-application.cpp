@@ -53,7 +53,7 @@
 #include <QDesktopServices>
 
 #define KYLIN_USER_GUIDE_PATH "/"
-#define KYLIN_USER_GUIDE_SERVICE "com.kylinUserGuide.hotel"
+#define KYLIN_USER_GUIDE_SERVICE QString("com.kylinUserGuide.hotel_%1").arg(getuid())
 #define KYLIN_USER_GUIDE_INTERFACE "com.guide.hotel"
 
 static bool has_desktop = false;
@@ -102,7 +102,7 @@ void trySetDefaultFolderUrlHandler() {
 
 PeonyDesktopApplication::PeonyDesktopApplication(int &argc, char *argv[], const char *applicationName) : SingleApplication (argc, argv, applicationName, true)
 {
-    setApplicationVersion("v2.0.0");
+    setApplicationVersion("v2.1.0");
     setApplicationName("peony-qt-desktop");
     //setApplicationDisplayName(tr("Peony-Qt Desktop"));
 
@@ -169,7 +169,7 @@ bool PeonyDesktopApplication::userGuideDaemonRunning()
 
     QDBusReply<QString> reply = conn.interface()->call("GetNameOwner", KYLIN_USER_GUIDE_SERVICE);
 
-    return reply == "";
+    return reply != "";
 }
 
 void PeonyDesktopApplication::showGuide(const QString &appName)
@@ -185,13 +185,13 @@ void PeonyDesktopApplication::showGuide(const QString &appName)
     QDBusMessage m = QDBusMessage::createMethodCall(KYLIN_USER_GUIDE_SERVICE,
                                                     KYLIN_USER_GUIDE_PATH,
                                                     KYLIN_USER_GUIDE_INTERFACE,
-                                                    "ShowGuide");
+                                                    "showGuide");
     m << appName;
 
     QDBusMessage response = QDBusConnection::sessionBus().call(m);
     if (response.type()== QDBusMessage::ReplyMessage)
     {
-        bRet = response.arguments().at(0).toBool();
+        //bRet = response.arguments().at(0).toBool();
     }
     else {
         QUrl url = QUrl("help:ubuntu-kylin-help", QUrl::TolerantMode);
