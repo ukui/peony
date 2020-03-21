@@ -4,7 +4,6 @@ GenericName=Home
 GenericName[zh_CN]=打开个人目录
 Name[zh_CN]=个人目录
 Exec=/usr/bin/peony
-MimeType=inode/directory
 Icon=user-home
 Terminal=false
 Type=Application
