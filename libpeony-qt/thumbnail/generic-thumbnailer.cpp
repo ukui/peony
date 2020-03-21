@@ -40,7 +40,8 @@ QIcon GenericThumbnailer::generateThumbnail(const QUrl &url, bool shadow, const 
 
     //skip svg
     if (url.path().endsWith(".svg")) {
-        icon.addFile(url.path());
+        if (file.size() < 1024*1024*8)
+            icon.addFile(url.path());
         return icon;
     }
 
@@ -94,7 +95,8 @@ QIcon GenericThumbnailer::generateThumbnail(const QString &path, bool shadow, co
 
     //skip svg
     if (path.endsWith(".svg")) {
-        icon.addFile(path);
+        if (file.size() < 1024*1024*8)
+            icon.addFile(path);
         return icon;
     }
 
