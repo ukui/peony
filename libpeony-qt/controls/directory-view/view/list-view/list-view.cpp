@@ -353,7 +353,7 @@ ListView2::ListView2(QWidget *parent) : DirectoryViewWidget(parent)
 
 ListView2::~ListView2()
 {
-
+    m_model->setPositiveResponse(true);
 }
 
 void ListView2::bindModel(FileItemModel *model, FileItemProxyFilterSortModel *proxyModel)
@@ -362,6 +362,8 @@ void ListView2::bindModel(FileItemModel *model, FileItemProxyFilterSortModel *pr
     disconnect(m_proxy_model);
     m_model = model;
     m_proxy_model = proxyModel;
+
+    m_model->setPositiveResponse(false);
 
     m_view->bindModel(model, proxyModel);
     connect(model, &FileItemModel::findChildrenFinished, this, &DirectoryViewWidget::viewDirectoryChanged);
