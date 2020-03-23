@@ -1,7 +1,7 @@
 echo "update translations..."
-lupdate ../libpeony-qt/libpeony-qt.pro
-lupdate ../src/src.pro
-lupdate ../peony-qt-desktop/peony-qt-desktop.pro
+lupdate $(dirname $0)/../libpeony-qt/libpeony-qt.pro
+lupdate $(dirname $0)/../src/src.pro
+lupdate $(dirname $0)/../peony-qt-desktop/peony-qt-desktop.pro
 
 echo "generate new translate resources files"
 for file in $(dirname $0)/*/*.ts

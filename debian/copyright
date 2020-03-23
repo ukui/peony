@@ -204,6 +204,8 @@ Files: libpeony-qt/bookmark-manager.cpp
        libpeony-qt/thumbnail-manager.h
        libpeony-qt/thumbnail/generic-thumbnailer.cpp
        libpeony-qt/thumbnail/generic-thumbnailer.h
+       libpeony-qt/thumbnail/thumbnail-job.cpp
+       libpeony-qt/thumbnail/thumbnail-job.h
        libpeony-qt/thumbnail/pdf-thumbnail.cpp
        libpeony-qt/thumbnail/pdf-thumbnail.h
        libpeony-qt/vfs/peony-search-vfs-file-enumerator.cpp
