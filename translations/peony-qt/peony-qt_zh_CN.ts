@@ -111,11 +111,21 @@
         <translation></translation>
     </message>
     <message>
+        <location filename="../../src/windows/main-window.cpp" line="832"/>
+        <source>Delete Permanently</source>
+        <translation>永久删除</translation>
+    </message>
+    <message>
+        <location filename="../../src/windows/main-window.cpp" line="833"/>
+        <source>Are you sure that you want to delete these files? Once you start a deletion, the files deleting will never be restored again.</source>
+        <translation>您确定要删除这些文件吗？一旦开始删除，这些文件将不可再恢复。</translation>
+    </message>
+    <message>
         <source>Peony Qt</source>
         <translation type="vanished">文件管理器</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="396"/>
+        <location filename="../../src/windows/main-window.cpp" line="395"/>
         <source>New Folder</source>
         <translation>新建文件夹</translation>
     </message>
@@ -146,9 +156,8 @@
 <context>
     <name>OperationMenu</name>
     <message>
-        <location filename="../../src/control/operation-menu.cpp" line="56"/>
         <source>Advance Search</source>
-        <translation>高级搜索</translation>
+        <translation type="vanished">高级搜索</translation>
     </message>
     <message>
         <location filename="../../src/control/operation-menu.cpp" line="63"/>
@@ -196,22 +205,22 @@
         <translation type="vanished">文件管理器</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.cpp" line="127"/>
+        <location filename="../../src/peony-application.cpp" line="136"/>
         <source>Files or directories to open</source>
         <translation>需要打开的文件或文件夹</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.cpp" line="127"/>
+        <location filename="../../src/peony-application.cpp" line="136"/>
         <source>[FILE1, FILE2,...]</source>
         <translation>[文件1，文件2...]</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.cpp" line="152"/>
+        <location filename="../../src/peony-application.cpp" line="161"/>
         <source>Warning</source>
         <translation>警告</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.cpp" line="152"/>
+        <location filename="../../src/peony-application.cpp" line="161"/>
         <source>Peony-Qt can not get the system&apos;s icon theme. There are 2 reasons might lead to this problem:
 
 1. Peony-Qt might be running as root, that means you have the higher permission and can do some things which normally forbidden. But, you should learn that if you were in a root, the virtual file system will lose some featrue such as you can not use &quot;My Computer&quot;, the theme and icons might also went wrong. So, run peony-qt in a root is not recommended.
@@ -224,12 +233,12 @@
 2.你使用的系统主题不是qt默认支持的主题，并且你没有安装相关的平台插件。如果你正在使用Gtk主题作为系统主题，尝试安装qt5-gtk2-platformtheme以解决此问题。</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.cpp" line="545"/>
+        <location filename="../../src/peony-application.cpp" line="554"/>
         <source>Peony Qt</source>
         <translation>文件管理器</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.cpp" line="546"/>
+        <location filename="../../src/peony-application.cpp" line="555"/>
         <source>Authour: 
 	Yue Lan &lt;lanyue@kylinos.cn&gt;
 	Meihong He &lt;hemeihong@kylinos.cn&gt;
@@ -254,22 +263,22 @@ Copyright (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</source
 版权所有(C): 2019-2020,天津麒麟信息技术有限公司.</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.h" line="55"/>
+        <location filename="../../src/peony-application.h" line="58"/>
         <source>Close all peony-qt windows and quit</source>
         <translation>关闭所有窗口并退出</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.h" line="56"/>
+        <location filename="../../src/peony-application.h" line="59"/>
         <source>Show items</source>
         <translation>打开文件所在目录并选中它们</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.h" line="57"/>
+        <location filename="../../src/peony-application.h" line="60"/>
         <source>Show folders</source>
         <translation>显示文件夹下的内容</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.h" line="58"/>
+        <location filename="../../src/peony-application.h" line="61"/>
         <source>Show properties</source>
         <translation>打开文件属性窗口</translation>
     </message>
@@ -305,6 +314,24 @@ Copyright (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</source
         <location filename="../../src/control/sort-type-menu.cpp" line="64"/>
         <source>Descending</source>
         <translation>降序</translation>
+    </message>
+</context>
+<context>
+    <name>TabWidget</name>
+    <message>
+        <location filename="../../src/control/tab-widget.cpp" line="140"/>
+        <source>Trash</source>
+        <translation>回收站</translation>
+    </message>
+    <message>
+        <location filename="../../src/control/tab-widget.cpp" line="144"/>
+        <source>Clear</source>
+        <translation>清空</translation>
+    </message>
+    <message>
+        <location filename="../../src/control/tab-widget.cpp" line="148"/>
+        <source>Recover</source>
+        <translation>还原</translation>
     </message>
 </context>
 </TS>

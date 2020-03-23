@@ -4,9 +4,19 @@
 <context>
     <name>Peony::DesktopIconView</name>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-icon-view.h" line="61"/>
+        <location filename="../../peony-qt-desktop/desktop-icon-view.h" line="65"/>
         <source>Desktop Icon View</source>
         <translation>桌面图标视图</translation>
+    </message>
+    <message>
+        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="372"/>
+        <source>New Folder</source>
+        <translation>新建文件夹</translation>
+    </message>
+    <message>
+        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="429"/>
+        <source>set background</source>
+        <translation>设置壁纸</translation>
     </message>
 </context>
 <context>
@@ -197,12 +207,12 @@
 <context>
     <name>Peony::DesktopWindow</name>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-window.cpp" line="157"/>
+        <location filename="../../peony-qt-desktop/desktop-window.cpp" line="127"/>
         <source>set background</source>
         <translation>设置壁纸</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-window.cpp" line="516"/>
+        <location filename="../../peony-qt-desktop/desktop-window.cpp" line="469"/>
         <source>New Folder</source>
         <translation>新建文件夹</translation>
     </message>
@@ -214,17 +224,17 @@
         <translation type="vanished">关闭桌面并退出</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="147"/>
+        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="206"/>
         <source>Close the peony desktop window</source>
         <translation>关闭桌面程序</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="150"/>
+        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="209"/>
         <source>Take over the dbus service.</source>
         <translation>接管DBus服务。</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="153"/>
+        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="212"/>
         <source>Take over the desktop displaying</source>
         <translation>接管桌面</translation>
     </message>

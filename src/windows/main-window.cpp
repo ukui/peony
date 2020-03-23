@@ -733,6 +733,7 @@ void MainWindow::initUI(const QString &uri)
     auto headerBarContainer = new HeaderBarContainer(this);
     headerBarContainer->addHeaderBar(headerBar);
     addToolBar(headerBarContainer);
+    //m_header_bar->setVisible(false);
 
     connect(m_header_bar, &HeaderBar::updateLocationRequest, this, &MainWindow::goToUri);
     connect(m_header_bar, &HeaderBar::viewTypeChangeRequest, this, &MainWindow::beginSwitchView);
@@ -814,6 +815,8 @@ void MainWindow::initUI(const QString &uri)
     setCentralWidget(views);
 
     //bind signals
+    connect(m_tab, &TabWidget::clearTrash, this, &MainWindow::cleanTrash);
+    connect(m_tab, &TabWidget::recoverFromTrash, this, &MainWindow::recoverFromTrash);
     connect(m_tab, &TabWidget::updateWindowLocationRequest, this, &MainWindow::goToUri);
     connect(m_tab, &TabWidget::activePageLocationChanged, this, &MainWindow::locationChangeEnd);
     connect(m_tab, &TabWidget::activePageViewTypeChanged, this, &MainWindow::updateHeaderBar);
@@ -822,6 +825,30 @@ void MainWindow::initUI(const QString &uri)
         Peony::DirectoryViewMenu menu(this);
         menu.exec(QCursor::pos());
     });
+}
+
+void MainWindow::cleanTrash()
+{
+    auto result = QMessageBox::question(nullptr, tr("Delete Permanently"),
+                                        tr("Are you sure that you want to delete these files? "
+                                           "Once you start a deletion, the files deleting will never be "
+                                           "restored again."));
+    if (result == QMessageBox::Yes) {
+        auto uris = getCurrentAllFileUris();
+        Peony::FileOperationUtils::remove(uris);
+    }
+}
+
+void MainWindow::recoverFromTrash()
+{
+    auto m_selections = getCurrentSelections();
+    if (m_selections.isEmpty())
+        m_selections = getCurrentAllFileUris();
+    if (m_selections.count() == 1) {
+        Peony::FileOperationUtils::restore(m_selections.first());
+    } else {
+        Peony::FileOperationUtils::restore(m_selections);
+    }
 }
 
 void MainWindow::initAdvancePage()

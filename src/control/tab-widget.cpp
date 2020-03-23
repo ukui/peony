@@ -123,12 +123,58 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
     }
     t->addWidget(previewButtons);
 
+    //trash quick operate buttons
+    QHBoxLayout *trash = new QHBoxLayout(this);
+    trash->setContentsMargins(10, 5, 10, 5);
+    QToolBar *trashButtons = new QToolBar(this);
+    m_trash_bar = trashButtons;
+    //trashButtons->setFloatable(true);
+    QPushButton *closeButton = new QPushButton(QIcon::fromTheme("tab-close"), "");
+    closeButton->setFixedHeight(20);
+    closeButton->setFixedWidth(20);
+    m_close_tab = closeButton;
+    connect(closeButton, &QPushButton::clicked, [=]{
+        updateTrashBarVisible();
+    });
+
+    QLabel *Label = new QLabel(tr("Trash"), trashButtons);
+    Label->setFixedHeight(TRASH_BUTTON_HEIGHT);
+    Label->setFixedWidth(TRASH_BUTTON_WIDTH);
+    m_trash_label = Label;
+    QPushButton *clearAll = new QPushButton(tr("Clear"), trashButtons);
+    clearAll->setFixedWidth(TRASH_BUTTON_WIDTH);
+    clearAll->setFixedHeight(TRASH_BUTTON_HEIGHT);
+    m_clear_button = clearAll;
+    QPushButton *recover = new QPushButton(tr("Recover"), trashButtons);
+    recover->setFixedWidth(TRASH_BUTTON_WIDTH);
+    recover->setFixedHeight(TRASH_BUTTON_HEIGHT);
+    m_recover_button = recover;
+    trash->addWidget(closeButton, Qt::AlignRight);
+    trash->addSpacing(10);
+    trash->addWidget(Label, Qt::AlignRight);
+    trash->addWidget(trashButtons);
+    trash->addWidget(recover, Qt::AlignLeft);
+    trash->addSpacing(10);
+    trash->addWidget(clearAll, Qt::AlignLeft);
+    updateTrashBarVisible();
+
+    connect(clearAll, &QPushButton::clicked, this, [=]()
+    {
+        Q_EMIT this->clearTrash();
+    });
+
+    connect(recover, &QPushButton::clicked, this, [=]()
+    {
+        Q_EMIT this->recoverFromTrash();
+    });
+
     QWidget *w = new QWidget();
     w->setAttribute(Qt::WA_TranslucentBackground);
     auto vbox = new QVBoxLayout();
     vbox->setSpacing(0);
     vbox->setContentsMargins(0, 0, 0, 0);
     vbox->addLayout(t);
+    vbox->addLayout(trash);
     QSplitter *s = new QSplitter(this);
     s->setChildrenCollapsible(false);
     s->setContentsMargins(0, 0, 0, 0);
@@ -151,6 +197,20 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
             this->updatePreviewPage();
         });
     });
+}
+
+void TabWidget::updateTrashBarVisible(const QString &uri)
+{
+    bool visible = false;
+    if (uri == "trash:///")
+    {
+       visible = true;
+    }
+    m_trash_bar->setVisible(visible);
+    m_trash_label->setVisible(visible);
+    m_close_tab->setVisible(visible);
+    m_clear_button->setVisible(visible);
+    m_recover_button->setVisible(visible);
 }
 
 Peony::DirectoryViewContainer *TabWidget::currentPage()
@@ -256,12 +316,14 @@ void TabWidget::addPage(const QString &uri, bool jumpTo)
     }
 
     bindContainerSignal(viewContainer);
+    updateTrashBarVisible(uri);
 }
 
 void TabWidget::goToUri(const QString &uri, bool addHistory, bool forceUpdate)
 {
     currentPage()->goToUri(uri, addHistory, forceUpdate);
     m_tab_bar->updateLocation(m_tab_bar->currentIndex(), uri);
+    updateTrashBarVisible(uri);
 }
 
 void TabWidget::updateTabPageTitle()

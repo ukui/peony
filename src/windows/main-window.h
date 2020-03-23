@@ -109,11 +109,15 @@ public Q_SLOTS:
     void setShowHidden();
     void setUseDefaultNameSortOrder();
     void setSortFolderFirst();
+
     void setShortCuts();
     void checkSettings();
     void setLabelNameFilter(QString name);
     void updateTabPageTitle();
-    //imgrate end, need to complete
+
+    //trash quick operations
+    void cleanTrash();
+    void recoverFromTrash();
 
     void setCurrentSelectionUris(const QStringList &uris);
     void setCurrentSortOrder (Qt::SortOrder order);

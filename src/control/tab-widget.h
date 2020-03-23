@@ -26,6 +26,8 @@
 #include <QMainWindow>
 #include <QButtonGroup>
 #include <QStackedWidget>
+#include <QPushButton>
+#include <QLabel>
 #include "navigation-tab-bar.h"
 
 class NavigationTabBar;
@@ -93,6 +95,9 @@ Q_SIGNALS:
 
     void closeWindowRequest();
 
+    void clearTrash();
+    void recoverFromTrash();
+
 public Q_SLOTS:
     void setCurrentIndex(int index);
     void setPreviewPage(Peony::PreviewPageIface *previewPage = nullptr);
@@ -133,6 +138,8 @@ public Q_SLOTS:
     int currentIndex();
     void removeTab(int index);
 
+    void updateTrashBarVisible(const QString &uri = "");
+
 protected:
     void changeCurrentIndex(int index);
     void moveTab(int from, int to);
@@ -157,7 +164,17 @@ private:
 
     QAction *m_current_preview_action = nullptr;
 
+    QToolBar *m_trash_bar;
+    QLabel *m_trash_label;
+    QPushButton *m_clear_button;
+    QPushButton *m_recover_button;
+    QPushButton *m_close_tab;
+
     bool m_triggered_preview_page = false;
+
+    //Button size macro definition
+    const int TRASH_BUTTON_HEIGHT = 28;
+    const int TRASH_BUTTON_WIDTH = 60;
 };
 
 class PreviewPageContainer : public QStackedWidget
