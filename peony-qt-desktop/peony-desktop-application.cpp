@@ -284,6 +284,13 @@ void PeonyDesktopApplication::parseCmd(quint32 id, QByteArray msg, bool isPrimar
             }
             has_desktop = true;
         }
+
+        connect(this, &QApplication::paletteChanged, this, [=](const QPalette &pal){
+            for (auto w : allWidgets()) {
+                w->setPalette(pal);
+                w->update();
+            }
+        });
     }
     else {
         auto helpOption = parser.addHelpOption();

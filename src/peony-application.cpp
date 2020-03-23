@@ -546,6 +546,13 @@ void PeonyApplication::parseCmd(quint32 id, QByteArray msg)
             window->show();
         }
     }
+
+    connect(this, &QApplication::paletteChanged, this, [=](const QPalette &pal){
+        for (auto w : allWidgets()) {
+            w->setPalette(pal);
+            w->update();
+        }
+    });
 }
 
 void PeonyApplication::about()
