@@ -101,22 +101,22 @@
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="178"/>
+        <location filename="../../src/windows/main-window.cpp" line="179"/>
         <source>Undo</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="185"/>
+        <location filename="../../src/windows/main-window.cpp" line="186"/>
         <source>Redo</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="832"/>
+        <location filename="../../src/windows/main-window.cpp" line="839"/>
         <source>Delete Permanently</source>
         <translation>永久删除</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="833"/>
+        <location filename="../../src/windows/main-window.cpp" line="840"/>
         <source>Are you sure that you want to delete these files? Once you start a deletion, the files deleting will never be restored again.</source>
         <translation>您确定要删除这些文件吗？一旦开始删除，这些文件将不可再恢复。</translation>
     </message>
@@ -125,7 +125,7 @@
         <translation type="vanished">文件管理器</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="395"/>
+        <location filename="../../src/windows/main-window.cpp" line="396"/>
         <source>New Folder</source>
         <translation>新建文件夹</translation>
     </message>

@@ -57,7 +57,6 @@ Description: file manager for the UKUI desktop (common files)
 Package: libpeony2
 Section: libs
 Architecture: any
-Multi-Arch: same
 Pre-Depends: ${misc:Pre-Depends}
 Depends: ${misc:Depends},
          ${shlibs:Depends},
@@ -80,7 +79,6 @@ Description: libraries for Peony components
 Package: libpeony-dev
 Section: libdevel
 Architecture: any
-Multi-Arch: same
 Depends: ${misc:Depends},
          ${shlibs:Depends},
          libpeony2 (= ${binary:Version})

@@ -500,6 +500,7 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZN5Peony13FMWindowIface12searchFilterE7QStringS1_bb@Base 2.1.0
  _ZN5Peony13FMWindowIface13advanceSearchEv@Base 2.1.0
  _ZN5Peony13FMWindowIface13setShowHiddenEv@Base 2.1.0
+ _ZN5Peony13FMWindowIface28getCurrentSelectionFileInfosEv@Base 2.1.0
  _ZN5Peony13FileItemModel10getRootUriEv@Base 2.0.0
  _ZN5Peony13FileItemModel10insertRowsEiiRK11QModelIndex@Base 2.0.0
  _ZN5Peony13FileItemModel10removeRowsEiiRK11QModelIndex@Base 2.0.0
@@ -2082,8 +2083,10 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZN5Peony9StatusBar16staticMetaObjectE@Base 2.0.0
  _ZN5Peony9StatusBar6updateERK7QString@Base 2.0.0
  _ZN5Peony9StatusBar6updateEv@Base 2.0.0
- _ZN5Peony9StatusBarC1EPNS_8FMWindowEP7QWidget@Base 2.0.0
- _ZN5Peony9StatusBarC2EPNS_8FMWindowEP7QWidget@Base 2.0.0
+ _ZN5Peony9StatusBarC1EPNS_13FMWindowIfaceEP7QWidget@Base 2.1.0
+#MISSING: 2.1.0# _ZN5Peony9StatusBarC1EPNS_8FMWindowEP7QWidget@Base 2.0.0
+ _ZN5Peony9StatusBarC2EPNS_13FMWindowIfaceEP7QWidget@Base 2.1.0
+#MISSING: 2.1.0# _ZN5Peony9StatusBarC2EPNS_8FMWindowEP7QWidget@Base 2.0.0
  _ZN5Peony9StatusBarD0Ev@Base 2.0.0
  _ZN5Peony9StatusBarD1Ev@Base 2.0.0
  _ZN5Peony9StatusBarD2Ev@Base 2.0.0
@@ -2119,7 +2122,7 @@ libpeony.so.2 libpeony2 #MINVER#
  (optional=templinst)_ZN5QHashIi5QPairIi7QStringEE13duplicateNodeEPN9QHashData4NodeEPv@Base 2.0.0
  (optional=templinst)_ZN5QHashIiN5Peony13FileOperation12ResponseTypeEE11deleteNode2EPN9QHashData4NodeE@Base 2.0.0
  (optional=templinst)_ZN5QHashIiN5Peony13FileOperation12ResponseTypeEE13duplicateNodeEPN9QHashData4NodeEPv@Base 2.0.0
- (optional=templinst)_ZN5QHashIiN5Peony13FileOperation12ResponseTypeEE6insertERKiRKS2_@Base 2.1.0
+#MISSING: 2.1.0# (optional=templinst)_ZN5QHashIiN5Peony13FileOperation12ResponseTypeEE6insertERKiRKS2_@Base 2.1.0
  (optional=templinst)_ZN5QListI10QByteArrayE13detach_helperEi@Base 2.0.0
  (optional=templinst)_ZN5QListI10QByteArrayED1Ev@Base 2.0.0
  (optional=templinst)_ZN5QListI10QByteArrayED2Ev@Base 2.0.0
