@@ -1,5 +1,6 @@
 # SymbolsHelper-Confirmed: 2.1.0 amd64
 libpeony.so.2 libpeony2 #MINVER#
+* Build-Depends-Package: libpeony-dev
  (optional=templinst)_Z17qRegisterMetaTypeISt10shared_ptrIN5Peony13GErrorWrapperEEEiPKcPT_N9QtPrivate21MetaTypeDefinedHelperIS6_Xaasr12QMetaTypeId2IS6_E7DefinedntsrSB_9IsBuiltInEE11DefinedTypeE@Base 2.0.0
  _Z26qInitResources_libpeony_qtv@Base 2.0.0
  (optional=templinst)_Z27qRegisterNormalizedMetaTypeI5QListI21QPersistentModelIndexEEiRK10QByteArrayPT_N9QtPrivate21MetaTypeDefinedHelperIS6_Xaasr12QMetaTypeId2IS6_E7DefinedntsrSB_9IsBuiltInEE11DefinedTypeE@Base 2.0.0

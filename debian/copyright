@@ -1,7 +1,7 @@
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
-Upstream-Name: FIXME
-Upstream-Contact: FIXME
-Source: FIXME
+Upstream-Name: peony
+Upstream-Contact: Yue Lan <lanyue@kylinos.cn>
+Source: Source: <https://github.com/ukui/peony.git>
 
 Files: libpeony-qt/bookmark-manager.cpp
        libpeony-qt/bookmark-manager.h
