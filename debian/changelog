@@ -1,16 +1,16 @@
-peony (2.1.0) unstable; urgency=medium
+peony (2.1.0-1) unstable; urgency=medium
 
-  * Refactor UI:
+  * New upstream release.
     - Use custom header bar, and border rounded window.
     - Remove current advance search page, and relpace it with file label page.
-  * Improve the thumbnail frameworks.
-  * Improve the mouse right click interaction in desktop view.
-  * Allow unrelated trash or delete file operation executed when a file operation is running.
-  * Refactor the desktop window background displaying process.
+    - Improve the thumbnail frameworks.
+    - Improve the mouse right click interaction in desktop view.
+    - Allow unrelated trash or delete file operation executed when a file operation is running.
+    - Refactor the desktop window background displaying process.
   * debian/libpeony2.symbols:
     - update symbols file.
 
- -- Yue Lan <lanyue@ubuntukylin.com>  Fri, 20 Mar 2020 09:42:54 +0800
+ -- handsome_feng <jianfengli@ubuntukylin.com>  Sat, 21 Mar 2020 15:17:56 +0800
 
 peony (2.0.1-2) unstable; urgency=medium
 
