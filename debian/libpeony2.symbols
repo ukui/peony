@@ -278,6 +278,15 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZN5Peony12SideBarModelD0Ev@Base 2.0.0
  _ZN5Peony12SideBarModelD1Ev@Base 2.0.0
  _ZN5Peony12SideBarModelD2Ev@Base 2.0.0
+ _ZN5Peony12ThumbnailJob11qt_metacallEN11QMetaObject4CallEiPPv@Base 2.1.0
+ _ZN5Peony12ThumbnailJob11qt_metacastEPKc@Base 2.1.0
+ _ZN5Peony12ThumbnailJob16staticMetaObjectE@Base 2.1.0
+ _ZN5Peony12ThumbnailJob3runEv@Base 2.1.0
+ _ZN5Peony12ThumbnailJobC1ERK7QStringSt10shared_ptrINS_11FileWatcherEEP7QObject@Base 2.1.0
+ _ZN5Peony12ThumbnailJobC2ERK7QStringSt10shared_ptrINS_11FileWatcherEEP7QObject@Base 2.1.0
+ _ZN5Peony12ThumbnailJobD0Ev@Base 2.1.0
+ _ZN5Peony12ThumbnailJobD1Ev@Base 2.1.0
+ _ZN5Peony12ThumbnailJobD2Ev@Base 2.1.0
  _ZN5Peony13DirectoryView13IconViewStyle11qt_metacallEN11QMetaObject4CallEiPPv@Base 2.0.0
  _ZN5Peony13DirectoryView13IconViewStyle11qt_metacastEPKc@Base 2.0.0
  _ZN5Peony13DirectoryView13IconViewStyle16staticMetaObjectE@Base 2.0.0
@@ -950,6 +959,7 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZN5Peony16ThumbnailManager15tryGetThumbnailERK7QString@Base 2.0.0
  _ZN5Peony16ThumbnailManager16releaseThumbnailERK7QString@Base 2.0.0
  _ZN5Peony16ThumbnailManager16staticMetaObjectE@Base 2.0.0
+ _ZN5Peony16ThumbnailManager23createThumbnailInternalERK7QStringSt10shared_ptrINS_11FileWatcherEEb@Base 2.1.0
  _ZN5Peony16ThumbnailManager24setForbidThumbnailInViewEb@Base 2.0.0
  _ZN5Peony16ThumbnailManager24syncThumbnailPreferencesEv@Base 2.0.0
  _ZN5Peony16ThumbnailManager26updateDesktopFileThumbnailERK7QStringSt10shared_ptrINS_11FileWatcherEE@Base 2.0.0
@@ -2316,6 +2326,7 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZNK5Peony12SideBarModel5indexEiiRK11QModelIndex@Base 2.0.0
  _ZNK5Peony12SideBarModel6parentERK11QModelIndex@Base 2.0.0
  _ZNK5Peony12SideBarModel8rowCountERK11QModelIndex@Base 2.0.0
+ _ZNK5Peony12ThumbnailJob10metaObjectEv@Base 2.1.0
  _ZNK5Peony13DirectoryView13IconViewStyle10metaObjectEv@Base 2.0.0
  _ZNK5Peony13DirectoryView13IconViewStyle11drawControlEN6QStyle14ControlElementEPK12QStyleOptionP8QPainterPK7QWidget@Base 2.0.0
  _ZNK5Peony13DirectoryView13IconViewStyle12drawItemTextEP8QPainterRK5QRectiRK8QPalettebRK7QStringNS7_9ColorRoleE@Base 2.0.0
@@ -2772,6 +2783,7 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZTIN5Peony11SideBarMenuE@Base 2.0.0
  _ZTIN5Peony12PathBarModelE@Base 2.0.0
  _ZTIN5Peony12SideBarModelE@Base 2.0.0
+ _ZTIN5Peony12ThumbnailJobE@Base 2.1.0
  _ZTIN5Peony13DirectoryView13IconViewStyleE@Base 2.0.0
  _ZTIN5Peony13DirectoryView14IconViewEditorE@Base 2.0.0
  _ZTIN5Peony13DirectoryView16IconViewDelegateE@Base 2.0.0
@@ -2949,6 +2961,7 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZTSN5Peony11SideBarMenuE@Base 2.0.0
  _ZTSN5Peony12PathBarModelE@Base 2.0.0
  _ZTSN5Peony12SideBarModelE@Base 2.0.0
+ _ZTSN5Peony12ThumbnailJobE@Base 2.1.0
  _ZTSN5Peony13DirectoryView13IconViewStyleE@Base 2.0.0
  _ZTSN5Peony13DirectoryView14IconViewEditorE@Base 2.0.0
  _ZTSN5Peony13DirectoryView16IconViewDelegateE@Base 2.0.0
@@ -3125,6 +3138,7 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZTVN5Peony11SideBarMenuE@Base 2.0.0
  _ZTVN5Peony12PathBarModelE@Base 2.0.0
  _ZTVN5Peony12SideBarModelE@Base 2.0.0
+ _ZTVN5Peony12ThumbnailJobE@Base 2.1.0
  _ZTVN5Peony13DirectoryView13IconViewStyleE@Base 2.0.0
  _ZTVN5Peony13DirectoryView14IconViewEditorE@Base 2.0.0
  _ZTVN5Peony13DirectoryView16IconViewDelegateE@Base 2.0.0
@@ -3558,6 +3572,8 @@ libpeony.so.2 libpeony2 #MINVER#
  (c++)"non-virtual thunk to Peony::StatusBar::~StatusBar()@Base" 2.0.0
  (c++)"non-virtual thunk to Peony::TabPage::~TabPage()@Base" 2.0.0
  (c++)"non-virtual thunk to Peony::TextEdit::~TextEdit()@Base" 2.0.0
+ (c++)"non-virtual thunk to Peony::ThumbnailJob::run()@Base" 2.1.0
+ (c++)"non-virtual thunk to Peony::ThumbnailJob::~ThumbnailJob()@Base" 2.1.0
  (c++)"non-virtual thunk to Peony::ToolBar::~ToolBar()@Base" 2.0.0
  (c++)"non-virtual thunk to Peony::ToolBarContainer::~ToolBarContainer()@Base" 2.0.0
  (c++)"non-virtual thunk to QtConcurrent::RunFunctionTask<void>::run()@Base" 2.0.0
