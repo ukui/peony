@@ -36,6 +36,8 @@ class QStackedWidget;
 
 namespace Peony {
 class DirectoryViewContainer;
+class FileInfo;
+class StatusBar;
 }
 
 class MainWindow : public QMainWindow, public Peony::FMWindowIface
@@ -56,6 +58,7 @@ public:
     const QString getCurrentUri();
     const QStringList getCurrentSelections();
     const QStringList getCurrentAllFileUris();
+    const QList<std::shared_ptr<Peony::FileInfo>> getCurrentSelectionFileInfos() override;
 
     Qt::SortOrder getCurrentSortOrder();
     int getCurrentSortColumn();
@@ -151,6 +154,7 @@ private:
     QWidget *m_transparent_area_widget;
     QStackedWidget *m_side_bar_container;
     TabWidget *m_tab;
+    Peony::StatusBar *m_status_bar;
 
     bool m_is_draging = false;
     bool m_show_hidden_file;

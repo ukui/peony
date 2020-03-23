@@ -33,7 +33,7 @@
 
 using namespace Peony;
 
-StatusBar::StatusBar(FMWindow *window, QWidget *parent) : QStatusBar(parent)
+StatusBar::StatusBar(FMWindowIface *window, QWidget *parent) : QStatusBar(parent)
 {
     m_styled_toolbar = new QToolBar;
 

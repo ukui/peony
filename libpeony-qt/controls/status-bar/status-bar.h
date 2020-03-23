@@ -31,13 +31,13 @@ class QToolBar;
 
 namespace Peony {
 
-class FMWindow;
+class FMWindowIface;
 
 class PEONYCORESHARED_EXPORT StatusBar : public QStatusBar
 {
     Q_OBJECT
 public:
-    explicit StatusBar(FMWindow *window, QWidget *parent = nullptr);
+    explicit StatusBar(FMWindowIface *window, QWidget *parent = nullptr);
     ~StatusBar() override;
 
 public Q_SLOTS:
@@ -48,7 +48,7 @@ protected:
     void paintEvent(QPaintEvent *e) override;
 
 private:
-    FMWindow *m_window = nullptr;
+    FMWindowIface *m_window = nullptr;
 
     QLabel *m_label = nullptr;
     QToolBar *m_styled_toolbar = nullptr;
