@@ -33,6 +33,7 @@
 class NavigationTabBar;
 class QStackedWidget;
 class PreviewPageButtonGroups;
+class QHBoxLayout;
 
 namespace Peony {
 class PreviewPageIface;
@@ -166,6 +167,7 @@ private:
     QAction *m_current_preview_action = nullptr;
 
     QToolBar *m_trash_bar;
+    QHBoxLayout *m_trash_bar_layout;
     QLabel *m_trash_label;
     QPushButton *m_clear_button;
     QPushButton *m_recover_button;

@@ -125,7 +125,8 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
 
     //trash quick operate buttons
     QHBoxLayout *trash = new QHBoxLayout(this);
-    trash->setContentsMargins(10, 5, 10, 0);
+    trash->setContentsMargins(10, 0, 10, 0);
+    m_trash_bar_layout = trash;
     QToolBar *trashButtons = new QToolBar(this);
     m_trash_bar = trashButtons;
     //trashButtons->setFloatable(true);
@@ -203,9 +204,11 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
 void TabWidget::updateTrashBarVisible(const QString &uri)
 {
     bool visible = false;
+    m_trash_bar_layout->setContentsMargins(10, 0, 10, 0);
     if (uri == "trash:///")
     {
        visible = true;
+       m_trash_bar_layout->setContentsMargins(10, 5, 10, 0);
     }
     m_trash_bar->setVisible(visible);
     m_trash_label->setVisible(visible);
