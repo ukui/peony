@@ -832,6 +832,9 @@ void MainWindow::initUI(const QString &uri)
         Peony::DirectoryViewMenu menu(this);
         menu.exec(QCursor::pos());
     });
+//    connect(m_tab, &TabWidget::currentSelectionChanged, this, [=](){
+//        m_status_bar->update();
+//    });
 }
 
 void MainWindow::cleanTrash()

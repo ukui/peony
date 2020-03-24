@@ -117,10 +117,12 @@ void StatusBar::paintEvent(QPaintEvent *e)
     QStatusBar::paintEvent(e);
     QPainter p(this);
     auto rect = this->rect();
-    rect.adjust(0, 2, 0, 0);
+    //rect.adjust(0, 2, 0, 0);
     auto bg = m_styled_toolbar->palette().window().color();
     p.fillRect(rect, bg);
     auto base = m_styled_toolbar->palette().base().color();
-    base.setAlpha(114);
+    base.setAlpha(0);
+    p.setCompositionMode(QPainter::CompositionMode_SourceIn);
+    //p.fillRect(this->rect(), this->palette().base());
     p.fillRect(rect, base);
 }

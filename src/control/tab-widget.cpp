@@ -190,6 +190,7 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
     //bind preview page
     connect(this, &TabWidget::activePageSelectionChanged, this, [=](){
         updatePreviewPage();
+        Q_EMIT this->currentSelectionChanged();
     });
 
     connect(this, &TabWidget::activePageChanged, this, [=](){

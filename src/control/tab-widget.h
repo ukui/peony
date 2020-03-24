@@ -97,6 +97,7 @@ Q_SIGNALS:
 
     void clearTrash();
     void recoverFromTrash();
+    void currentSelectionChanged();
 
 public Q_SLOTS:
     void setCurrentIndex(int index);

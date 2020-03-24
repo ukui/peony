@@ -88,12 +88,12 @@
 <context>
     <name>HeaderBarContainer</name>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="461"/>
+        <location filename="../../src/control/header-bar.cpp" line="466"/>
         <source>Minimize</source>
         <translation>最小化</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="489"/>
+        <location filename="../../src/control/header-bar.cpp" line="494"/>
         <source>Close</source>
         <translation>最大化</translation>
     </message>
@@ -111,12 +111,12 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="839"/>
+        <location filename="../../src/windows/main-window.cpp" line="842"/>
         <source>Delete Permanently</source>
         <translation>永久删除</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="840"/>
+        <location filename="../../src/windows/main-window.cpp" line="843"/>
         <source>Are you sure that you want to delete these files? Once you start a deletion, the files deleting will never be restored again.</source>
         <translation>您确定要删除这些文件吗？一旦开始删除，这些文件将不可再恢复。</translation>
     </message>
@@ -233,12 +233,12 @@
 2.你使用的系统主题不是qt默认支持的主题，并且你没有安装相关的平台插件。如果你正在使用Gtk主题作为系统主题，尝试安装qt5-gtk2-platformtheme以解决此问题。</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.cpp" line="554"/>
+        <location filename="../../src/peony-application.cpp" line="561"/>
         <source>Peony Qt</source>
         <translation>文件管理器</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.cpp" line="555"/>
+        <location filename="../../src/peony-application.cpp" line="562"/>
         <source>Authour: 
 	Yue Lan &lt;lanyue@kylinos.cn&gt;
 	Meihong He &lt;hemeihong@kylinos.cn&gt;
