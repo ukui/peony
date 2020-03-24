@@ -125,7 +125,7 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
 
     //trash quick operate buttons
     QHBoxLayout *trash = new QHBoxLayout(this);
-    trash->setContentsMargins(10, 5, 10, 5);
+    trash->setContentsMargins(10, 5, 10, 0);
     QToolBar *trashButtons = new QToolBar(this);
     m_trash_bar = trashButtons;
     //trashButtons->setFloatable(true);

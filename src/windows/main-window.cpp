@@ -463,7 +463,7 @@ void MainWindow::updateHeaderBar()
 {
     m_header_bar->setLocation(getCurrentUri());
     m_header_bar->updateIcons();
-    m_status_bar->update();
+    //m_status_bar->update();
 }
 
 void MainWindow::goToUri(const QString &uri, bool addHistory, bool force)
@@ -716,7 +716,7 @@ void MainWindow::initUI(const QString &uri)
         this->setCursor(c);
         m_tab->setCursor(c);
         m_side_bar->setCursor(c);
-        m_status_bar->update();
+        //m_status_bar->update();
     });
 
     connect(this, &MainWindow::locationChangeEnd, this, [=](){
@@ -728,7 +728,7 @@ void MainWindow::initUI(const QString &uri)
         m_tab->setCursor(c);
         m_side_bar->setCursor(c);
         updateHeaderBar();
-        m_status_bar->update();
+        //m_status_bar->update();
     });
 
     //HeaderBar
@@ -798,8 +798,8 @@ void MainWindow::initUI(const QString &uri)
     sidebarContainer->setWidget(splitter);
     addDockWidget(Qt::LeftDockWidgetArea, sidebarContainer);
 
-    m_status_bar = new Peony::StatusBar(this, this);
-    setStatusBar(m_status_bar);
+//    m_status_bar = new Peony::StatusBar(this, this);
+//    setStatusBar(m_status_bar);
 
     auto views = new TabWidget;
     m_tab = views;
