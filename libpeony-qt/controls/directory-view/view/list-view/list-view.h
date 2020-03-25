@@ -95,6 +95,7 @@ public Q_SLOTS:
 
     void resort();
     void reportViewDirectoryChanged();
+    void adjustColumnsSize();
 
 protected:
     void mousePressEvent(QMouseEvent *e) override;
@@ -102,6 +103,8 @@ protected:
     void mouseDoubleClickEvent(QMouseEvent *event) override;
 
     void dragEnterEvent(QDragEnterEvent *e) override;
+
+    void resizeEvent(QResizeEvent *e) override;
 
 private Q_SLOTS:
     void slotRename();

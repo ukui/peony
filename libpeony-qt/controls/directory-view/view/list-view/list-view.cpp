@@ -46,8 +46,7 @@ ListView::ListView(QWidget *parent) : QTreeView(parent)
 
     header()->setSectionResizeMode(QHeaderView::Interactive);
     header()->setSectionsMovable(true);
-    header()->setDefaultSectionSize(200);
-    //header()->setStretchLastSection(false);
+    header()->setStretchLastSection(true);
 
     setExpandsOnDoubleClick(false);
     setSortingEnabled(true);
@@ -73,6 +72,8 @@ void ListView::bindModel(FileItemModel *sourceModel, FileItemProxyFilterSortMode
     m_proxy_model = proxyModel;
     m_proxy_model->setSourceModel(m_model);
     setModel(proxyModel);
+    //adjust columns layout.
+    adjustColumnsSize();
 
     //edit trigger
     connect(this->selectionModel(), &QItemSelectionModel::selectionChanged, [=](const QItemSelection &selection, const QItemSelection &deselection){
@@ -190,6 +191,12 @@ void ListView::dragEnterEvent(QDragEnterEvent *e)
     QTreeView::dragEnterEvent(e);
 }
 
+void ListView::resizeEvent(QResizeEvent *e)
+{
+    QTreeView::resizeEvent(e);
+    adjustColumnsSize();
+}
+
 void ListView::slotRename()
 {
     //delay edit action to avoid doubleClick or dragEvent
@@ -219,6 +226,30 @@ void ListView::resort()
 void ListView::reportViewDirectoryChanged()
 {
     Q_EMIT m_proxy->viewDirectoryChanged();
+}
+
+void ListView::adjustColumnsSize()
+{
+    if (!model())
+        return;
+
+    if (model()->columnCount() == 0)
+        return;
+
+    resizeColumnToContents(0);
+
+    int rightPartsSize = 0;
+    for (int column = 1; column < model()->columnCount(); column++) {
+        resizeColumnToContents(column);
+        int columnSize = header()->sectionSize(column);
+        rightPartsSize += columnSize;
+    }
+
+    if (this->width() - rightPartsSize < 150)
+        return;
+
+    //resizeColumnToContents(0);
+    header()->resizeSection(0, this->viewport()->width() - rightPartsSize);
 }
 
 DirectoryViewProxyIface *ListView::getProxy()
@@ -422,6 +453,8 @@ void ListView2::bindModel(FileItemModel *model, FileItemProxyFilterSortModel *pr
         //delay a while for proxy model sorting.
         QTimer::singleShot(100, this, [=](){
             m_view->setModel(m_proxy_model);
+            //adjust columns layout.
+            m_view->adjustColumnsSize();
         });
     });
 }
