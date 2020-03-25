@@ -80,8 +80,8 @@ class IconViewTextHelper
 {
     friend class IconViewDelegate;
     friend class IconViewIndexWidget;
-    friend class DesktopIndexWidget;
-    friend class DesktopIconViewDelegate;
+    friend class Peony::DesktopIndexWidget;
+    friend class Peony::DesktopIconViewDelegate;
     /*!
      * \brief getTextRectForIndex
      * \return the adjusted text rect to be painted.

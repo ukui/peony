@@ -28,6 +28,8 @@
 #include "file-operation-manager.h"
 #include "file-rename-operation.h"
 
+#include "icon-view-delegate.h"
+
 #include <QPushButton>
 #include <QWidget>
 #include <QPainter>
@@ -88,7 +90,7 @@ void DesktopIconViewDelegate::paint(QPainter *painter, const QStyleOptionViewIte
 
     //paint background
     if (!view->indexWidget(index)) {
-        painter->setClipRect(opt.rect);
+        //painter->setClipRect(opt.rect);
         painter->save();
         if (opt.state.testFlag(QStyle::State_MouseOver) && !opt.state.testFlag(QStyle::State_Selected)) {
             QColor color = m_styled_button->palette().highlight().color();
@@ -109,22 +111,66 @@ void DesktopIconViewDelegate::paint(QPainter *painter, const QStyleOptionViewIte
         painter->restore();
     }
 
+//    auto opt2 = opt;
+//    opt2.font = font;
+//    opt2.icon = QIcon();
+//    QColor black = Qt::black;
+//    black.setAlpha(200);
+//    opt2.palette.setColor(QPalette::Text, black);
+//    black.setAlpha(225);
+//    opt2.palette.setColor(QPalette::HighlightedText, black);
+//    opt2.rect.moveTo(opt2.rect.topLeft() + QPoint(1, 1));
+//    style->drawControl(QStyle::CE_ItemViewItem, &opt2, painter, opt.widget);
+
     auto iconSizeExpected = view->iconSize();
     auto iconRect = style->subElementRect(QStyle::SE_ItemViewItemDecoration, &opt, opt.widget);
     int y_delta = iconSizeExpected.height() - iconRect.height();
     opt.rect.translate(0, y_delta);
 
+    opt.font.setPixelSize(14);
+    opt.fontMetrics = QFontMetrics(opt.font);
+
+    auto visualRect = getView()->visualRect(index);
+
+    int maxTextHight = visualRect.height() - iconSizeExpected.height() - 10;
+    if (maxTextHight < 0) {
+        maxTextHight = 0;
+    }
+
+    painter->save();
+    painter->translate(visualRect.topLeft());
+
+    painter->setFont(opt.font);
+
     //paint text shadow
-    auto opt2 = opt;
-    opt2.font = font;
-    opt2.icon = QIcon();
-    QColor black = Qt::black;
-    black.setAlpha(200);
-    opt2.palette.setColor(QPalette::Text, black);
-    black.setAlpha(225);
-    opt2.palette.setColor(QPalette::HighlightedText, black);
-    opt2.rect.moveTo(opt2.rect.topLeft() + QPoint(1, 1));
-    style->drawControl(QStyle::CE_ItemViewItem, &opt2, painter, opt.widget);
+    painter->save();
+    painter->translate(1, 1 + iconSizeExpected.height() + 10);
+    //painter->setFont(opt.font);
+    QColor shadow = Qt::black;
+    shadow.setAlpha(127);
+    painter->setPen(shadow);
+    IconViewTextHelper::paintText(painter,
+                                  opt,
+                                  index,
+                                  maxTextHight,
+                                  0,
+                                  2);
+    painter->restore();
+
+    //paint text
+    painter->save();
+    painter->translate(0, 0 + iconSizeExpected.height() + 10);
+    //painter->setFont(opt.font);
+    painter->setPen(opt.palette.highlightedText().color());
+    IconViewTextHelper::paintText(painter,
+                                  opt,
+                                  index,
+                                  maxTextHight,
+                                  0,
+                                  2);
+    painter->restore();
+
+    painter->restore();
 
     //paint item
     auto color = QColor(230, 230, 230);
@@ -132,8 +178,12 @@ void DesktopIconViewDelegate::paint(QPainter *painter, const QStyleOptionViewIte
     color.setRgb(240, 240, 240);
     opt.palette.setColor(QPalette::HighlightedText, color);
     opt.font = font;
+    auto text = opt.text;
+    opt.text = nullptr;
 
     style->drawControl(QStyle::CE_ItemViewItem, &opt, painter, opt.widget);
+
+    opt.text = text;
 
     //paint link icon
     if (index.data(Qt::UserRole + 1).toBool()) {
