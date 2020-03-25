@@ -171,7 +171,6 @@ private:
     QLabel *m_trash_label;
     QPushButton *m_clear_button;
     QPushButton *m_recover_button;
-    QPushButton *m_close_tab;
 
     bool m_triggered_preview_page = false;
 

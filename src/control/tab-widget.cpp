@@ -125,18 +125,9 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
 
     //trash quick operate buttons
     QHBoxLayout *trash = new QHBoxLayout(this);
-    trash->setContentsMargins(10, 0, 10, 0);
     m_trash_bar_layout = trash;
     QToolBar *trashButtons = new QToolBar(this);
     m_trash_bar = trashButtons;
-    //trashButtons->setFloatable(true);
-    QPushButton *closeButton = new QPushButton(QIcon::fromTheme("tab-close"), "");
-    closeButton->setFixedHeight(20);
-    closeButton->setFixedWidth(20);
-    m_close_tab = closeButton;
-    connect(closeButton, &QPushButton::clicked, [=]{
-        updateTrashBarVisible();
-    });
 
     QLabel *Label = new QLabel(tr("Trash"), trashButtons);
     Label->setFixedHeight(TRASH_BUTTON_HEIGHT);
@@ -150,9 +141,9 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
     recover->setFixedWidth(TRASH_BUTTON_WIDTH);
     recover->setFixedHeight(TRASH_BUTTON_HEIGHT);
     m_recover_button = recover;
-    trash->addWidget(closeButton, Qt::AlignRight);
-    trash->addSpacing(10);
+    //trash->addSpacing(10);
     trash->addWidget(Label, Qt::AlignRight);
+    trash->setContentsMargins(10, 0, 10, 0);
     trash->addWidget(trashButtons);
     trash->addWidget(recover, Qt::AlignLeft);
     trash->addSpacing(10);
@@ -205,14 +196,13 @@ void TabWidget::updateTrashBarVisible(const QString &uri)
 {
     bool visible = false;
     m_trash_bar_layout->setContentsMargins(10, 0, 10, 0);
-    if (uri == "trash:///")
+    if (uri.indexOf("trash:///") >= 0)
     {
        visible = true;
-       m_trash_bar_layout->setContentsMargins(10, 5, 10, 0);
+       m_trash_bar_layout->setContentsMargins(10, 5, 10, 5);
     }
     m_trash_bar->setVisible(visible);
     m_trash_label->setVisible(visible);
-    m_close_tab->setVisible(visible);
     m_clear_button->setVisible(visible);
     m_recover_button->setVisible(visible);
 }
@@ -333,6 +323,7 @@ void TabWidget::goToUri(const QString &uri, bool addHistory, bool forceUpdate)
 void TabWidget::updateTabPageTitle()
 {
    m_tab_bar->updateLocation(m_tab_bar->currentIndex(), getCurrentUri());
+   updateTrashBarVisible(getCurrentUri());
 }
 
 void TabWidget::switchViewType(const QString &viewId)
