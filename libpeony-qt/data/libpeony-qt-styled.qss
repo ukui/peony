@@ -1,6 +1,6 @@
 Peony--DirectoryView--IconView::Item
 {
-    padding-top: 10px;
+    padding-top: 5px;
     padding-bottom: 10px;
     image-position: bottom;
 }

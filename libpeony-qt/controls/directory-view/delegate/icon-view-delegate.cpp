@@ -50,6 +50,9 @@
 
 #include "clipboard-utils.h"
 
+#include <QTextLayout>
+#include <QPainter>
+
 using namespace Peony;
 using namespace Peony::DirectoryView;
 
@@ -65,6 +68,10 @@ IconViewDelegate::~IconViewDelegate()
 
 QSize IconViewDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
+    QStyleOptionViewItem opt = option;
+    initStyleOption(&opt, index);
+
+
     /*
     qDebug()<<option;
     qDebug()<<option.font;
@@ -102,7 +109,7 @@ void IconViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
 
     auto style = option.widget->style();
 
-    painter->setClipRect(opt.rect);
+    //painter->setClipRect(opt.rect);
     if (opt.state.testFlag(QStyle::State_MouseOver) && !opt.state.testFlag(QStyle::State_Selected)) {
         QColor color = m_styled_button->palette().highlight().color();
         color.setAlpha(127);//half transparent
@@ -126,7 +133,23 @@ void IconViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
     auto iconRect = style->subElementRect(QStyle::SE_ItemViewItemDecoration, &opt, opt.widget);
     int y_delta = iconSizeExpected.height() - iconRect.height();
     opt.rect.setY(opt.rect.y() + y_delta);
+
+    auto text = opt.text;
+    opt.text = nullptr;
     style->drawControl(QStyle::CE_ItemViewItem, &opt, painter, opt.widget);
+    opt.text = text;
+    //auto textSize = IconViewTextHelper::getTextSizeForIndex(opt, index, 2, 2);
+    painter->save();
+    painter->translate(opt.rect.topLeft());
+    painter->translate(0, iconRect.size().height() + 5);
+    IconViewTextHelper::paintText(painter,
+                                  opt,
+                                  index,
+                                  9999,
+                                  2,
+                                  2);
+
+    painter->restore();
 
     //get file info from index
     auto model = static_cast<FileItemProxyFilterSortModel*>(view->model());
@@ -291,4 +314,92 @@ IconView *IconViewDelegate::getView() const
 const QBrush IconViewDelegate::selectedBrush() const
 {
     return m_styled_button->palette().highlight();
+}
+
+QSize IconViewTextHelper::getTextSizeForIndex(const QStyleOptionViewItem &option, const QModelIndex &index, int horizalMargin, int maxLineCount)
+{
+    int fixedWidth = option.rect.width() - horizalMargin*2;
+    QString text = option.text;
+    QFont font = option.font;
+    QFontMetrics fontMetrics = option.fontMetrics;
+    int lineSpacing = fontMetrics.lineSpacing();
+    int textHight = 0;
+
+    QTextLayout textLayout(text, font);
+
+    QTextOption opt;
+    opt.setWrapMode(QTextOption::WrapAtWordBoundaryOrAnywhere);
+    opt.setAlignment(Qt::AlignHCenter);
+
+    textLayout.setTextOption(opt);
+    textLayout.beginLayout();
+
+    while (true) {
+        QTextLine line = textLayout.createLine();
+        if (!line.isValid())
+            break;
+
+        line.setLineWidth(fixedWidth);
+        textHight += lineSpacing;
+    }
+
+    textLayout.endLayout();
+    if (maxLineCount > 0) {
+        textHight = qMin(maxLineCount * lineSpacing, textHight);
+    }
+
+    return QSize(fixedWidth, textHight);
+}
+
+void IconViewTextHelper::paintText(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index, int textMaxHeight, int horizalMargin, int maxLineCount)
+{
+    painter->save();
+    painter->translate(horizalMargin, 0);
+
+    int lineCount = 0;
+
+    QString text = option.text;
+    QFont font = option.font;
+    QFontMetrics fontMetrics = option.fontMetrics;
+    int lineSpacing = fontMetrics.lineSpacing();
+
+    QTextLayout textLayout(text, font);
+
+    QTextOption opt;
+    opt.setWrapMode(QTextOption::WrapAtWordBoundaryOrAnywhere);
+    opt.setAlignment(Qt::AlignHCenter);
+
+    textLayout.setTextOption(opt);
+    textLayout.beginLayout();
+
+    int width = option.rect.width() - 2*horizalMargin;
+
+    int y = 0;
+    while (true) {
+        QTextLine line = textLayout.createLine();
+        if (!line.isValid())
+            break;
+
+        line.setLineWidth(width);
+        int nextLineY = y + lineSpacing;
+        lineCount++;
+
+        if (textMaxHeight >= nextLineY + lineSpacing && lineCount != maxLineCount) {
+            line.draw(painter, QPoint(0, y));
+            y = nextLineY;
+        } else {
+            QString lastLine = option.text.mid(line.textStart());
+            QString elidedLastLine = fontMetrics.elidedText(lastLine, Qt::ElideRight, width);
+            auto rect = QRect(horizalMargin, y /*+ fontMetrics.ascent()*/, width, textMaxHeight);
+            //opt.setWrapMode(QTextOption::NoWrap);
+            opt.setWrapMode(QTextOption::NoWrap);
+            painter->drawText(rect, elidedLastLine, opt);
+            //painter->drawText(QPoint(0, y + fontMetrics.ascent()), elidedLastLine);
+            line = textLayout.createLine();
+            break;
+        }
+    }
+    textLayout.endLayout();
+
+    painter->restore();
 }

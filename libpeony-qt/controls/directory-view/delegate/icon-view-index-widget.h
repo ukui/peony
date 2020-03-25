@@ -55,6 +55,8 @@ protected:
     void paintEvent(QPaintEvent *e) override;
     void mousePressEvent(QMouseEvent *e) override;
 
+    void adjustPos();
+
 private:
     QStyleOptionViewItem m_option;
     QModelIndex m_index;
