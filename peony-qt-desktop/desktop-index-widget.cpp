@@ -33,6 +33,8 @@
 #include <QTextEdit>
 #include <QTextOption>
 
+#include <QMouseEvent>
+
 #include <QDebug>
 
 using namespace Peony;
@@ -129,6 +131,45 @@ void DesktopIndexWidget::paintEvent(QPaintEvent *e)
     bgColor.setAlpha(255*0.8);
     p.setPen(bgColor);
     p.drawRect(this->rect().adjusted(0, 0, -1, -1));
+}
+
+void DesktopIndexWidget::mousePressEvent(QMouseEvent *event)
+{
+    if (event->button() == Qt::LeftButton) {
+        auto *view = m_delegate->getView();
+        view->m_real_do_edit = true;
+        if (view->m_edit_trigger_timer.isActive()) {
+            if (view->m_edit_trigger_timer.remainingTime() < 2250 && view->m_edit_trigger_timer.remainingTime() > 0) {
+                QTimer::singleShot(300, view, [=](){
+                    if (view->m_real_do_edit) {
+                        view->setIndexWidget(m_index, nullptr);
+                        view->edit(m_index);
+                    }
+                });
+            } else {
+                view->m_real_do_edit = false;
+                view->m_edit_trigger_timer.stop();
+            }
+        } else {
+            view->m_real_do_edit = false;
+            view->m_edit_trigger_timer.start();
+        }
+        event->accept();
+        return;
+//        if (m_edit_trigger.isActive()) {
+//            qDebug()<<"IconViewIndexWidget::mousePressEvent: edit"<<e->type();
+//            m_delegate->getView()->setIndexWidget(m_index, nullptr);
+//            m_delegate->getView()->edit(m_index);
+//            return;
+//        }
+    }
+    QWidget::mousePressEvent(event);
+}
+
+void DesktopIndexWidget::mouseDoubleClickEvent(QMouseEvent *event)
+{
+    m_delegate->getView()->doubleClicked(m_index);
+    return;
 }
 
 void DesktopIndexWidget::updateItem()
