@@ -183,8 +183,9 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
 
     a = addAction(QIcon::fromTheme("open-menu-symbolic"), tr("Option"));
     auto popMenu = qobject_cast<QToolButton *>(widgetForAction(a));
+    popMenu->setProperty("isOptionButton", true);
     popMenu->setAutoRaise(false);
-    popMenu->setFixedSize(QSize(57, 40));
+    popMenu->setFixedSize(QSize(40, 40));
     popMenu->setIconSize(QSize(16, 16));
     popMenu->setPopupMode(QToolButton::InstantPopup);
 
@@ -382,9 +383,11 @@ void HeaderBarStyle::drawComplexControl(QStyle::ComplexControl control, const QS
         QStyleOptionToolButton button = *qstyleoption_cast<const QStyleOptionToolButton *>(option);
         if (button.features.testFlag(QStyleOptionToolButton::HasMenu)) {
             button.features = QStyleOptionToolButton::None;
-            button.features |= QStyleOptionToolButton::HasMenu;
-            button.features |= QStyleOptionToolButton::MenuButtonPopup;
-            button.subControls |= QStyle::SC_ToolButtonMenu;
+            if (!widget->property("isOptionButton").toBool()) {
+                button.features |= QStyleOptionToolButton::HasMenu;
+                button.features |= QStyleOptionToolButton::MenuButtonPopup;
+                button.subControls |= QStyle::SC_ToolButtonMenu;
+            }
             return QProxyStyle::drawComplexControl(control, &button, painter, widget);
         }
     }
