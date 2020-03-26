@@ -42,6 +42,7 @@ class IconViewDelegate;
 class PEONYCORESHARED_EXPORT IconView : public QListView, public DirectoryViewIface
 {
     friend class IconViewDelegate;
+    friend class IconViewIndexWidget;
     Q_OBJECT
 public:
 

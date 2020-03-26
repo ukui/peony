@@ -67,6 +67,10 @@ IconViewIndexWidget::IconViewIndexWidget(const IconViewDelegate *delegate, const
 
     m_delegate = delegate;
 
+    m_delegate->getView()->m_renameTimer->stop();
+    m_delegate->getView()->m_editValid = false;
+    m_delegate->getView()->m_renameTimer->start();
+
     QSize size = delegate->sizeHint(option, index);
     setMinimumSize(size);
 
@@ -173,6 +177,21 @@ void IconViewIndexWidget::paintEvent(QPaintEvent *e)
 void IconViewIndexWidget::mousePressEvent(QMouseEvent *e)
 {
     if (e->button() == Qt::LeftButton) {
+        IconView *view = m_delegate->getView();
+        view->m_editValid = true;
+        if (view->m_renameTimer->isActive()) {
+            if (view->m_renameTimer->remainingTime() < 2250 && view->m_renameTimer->remainingTime() > 0) {
+                view->slotRename();
+            } else {
+                view->m_editValid = false;
+                view->m_renameTimer->stop();
+            }
+        } else {
+            view->m_editValid = false;
+            view->m_renameTimer->start();
+        }
+        e->accept();
+        return;
 //        if (m_edit_trigger.isActive()) {
 //            qDebug()<<"IconViewIndexWidget::mousePressEvent: edit"<<e->type();
 //            m_delegate->getView()->setIndexWidget(m_index, nullptr);
@@ -181,4 +200,10 @@ void IconViewIndexWidget::mousePressEvent(QMouseEvent *e)
 //        }
     }
     QWidget::mousePressEvent(e);
+}
+
+void IconViewIndexWidget::mouseDoubleClickEvent(QMouseEvent *event)
+{
+    m_delegate->getView()->doubleClicked(m_index);
+    return;
 }

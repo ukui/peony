@@ -257,7 +257,7 @@ void IconViewDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptionV
     //auto iconRect = opt.widget->style()->subElementRect(QStyle::SE_ItemViewItemDecoration, &opt, opt.widget);
     //auto y_delta = iconExpectedSize.height() - iconRect.height();
     //edit->move(opt.rect.x(), opt.rect.y() + y_delta + 10);
-    edit->move(opt.rect.x(), opt.rect.y() + iconExpectedSize.height() + 15);
+    edit->move(opt.rect.x(), opt.rect.y() + iconExpectedSize.height() + 10);
 
     edit->resize(edit->document()->size().width(), edit->document()->size().height() + 10);
 }
