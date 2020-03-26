@@ -143,13 +143,11 @@ void DesktopIndexWidget::updateItem()
 
     m_option.rect.setWidth(visualRect.width());
 
-    int rawHeight = m_option.rect.height();
+    int rawHeight = size.height();
     auto textSize = Peony::DirectoryView::IconViewTextHelper::getTextSizeForIndex(m_option, m_index, 2);
     int fixedHeight = 5 + m_delegate->getView()->iconSize().height() + 5 + textSize.height() + 5;
     if (fixedHeight < rawHeight)
         fixedHeight = rawHeight;
-
-    setMinimumHeight(size.height());
 
     m_option.text = m_index.data().toString();
     //qDebug()<<m_option.text;
