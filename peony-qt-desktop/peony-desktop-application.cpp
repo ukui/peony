@@ -314,6 +314,7 @@ void PeonyDesktopApplication::addWindow(QScreen *screen, bool checkPrimay)
         if (is_primary)
         {
             window->setCentralWidget(desktop_icon_view);
+            window->updateView();
             //connect(window, &Peony::DesktopWindow::changeBg, this, &PeonyDesktopApplication::changeBgProcess);
         }
     } else {

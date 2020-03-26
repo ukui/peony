@@ -96,6 +96,10 @@ DesktopWindow::DesktopWindow(QScreen *screen, bool is_primary, QWidget *parent)
     });
 
     m_screen = screen;
+
+    //connect(m_screen, &QScreen::availableGeometryChanged, this, &DesktopWindow::updateView);
+    connectSignal();
+
     m_is_primary = is_primary;
     setContentsMargins(0, 0, 0, 0);
 
@@ -334,11 +338,8 @@ void DesktopWindow::connectSignal() {
             &DesktopWindow::geometryChangedProcess);
     connect(m_screen, &QScreen::virtualGeometryChanged, this,
             &DesktopWindow::virtualGeometryChangedProcess);
-
-    if (m_is_primary) {
-        connect(m_screen, &QScreen::availableGeometryChanged, this,
-                &DesktopWindow::availableGeometryChangedProcess);
-    }
+    connect(m_screen, &QScreen::availableGeometryChanged, this,
+            &DesktopWindow::availableGeometryChangedProcess);
 }
 
 void DesktopWindow::disconnectSignal() {
@@ -511,15 +512,13 @@ void DesktopWindow::geometryChangedProcess(const QRect &geometry) {
 }
 
 void DesktopWindow::updateView() {
-    if (PeonyDesktopApplication::getIconView()) {
-        auto avaliableGeometry = m_screen->availableGeometry();
-        auto geomerty = m_screen->geometry();
-        int top = qAbs(avaliableGeometry.top() - geomerty.top());
-        int left = qAbs(avaliableGeometry.left() - geomerty.left());
-        int bottom = qAbs(avaliableGeometry.bottom() - geomerty.bottom());
-        int right = qAbs(avaliableGeometry.right() - geomerty.right());
-        setContentsMargins(left, top, right, bottom);
-    }
+    auto avaliableGeometry = m_screen->availableGeometry();
+    auto geomerty = m_screen->geometry();
+    int top = qAbs(avaliableGeometry.top() - geomerty.top());
+    int left = qAbs(avaliableGeometry.left() - geomerty.left());
+    int bottom = qAbs(avaliableGeometry.bottom() - geomerty.bottom());
+    int right = qAbs(avaliableGeometry.right() - geomerty.right());
+    setContentsMargins(left, top, right, bottom);
 }
 
 void DesktopWindow::updateWinGeometry() {
