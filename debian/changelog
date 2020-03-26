@@ -1,3 +1,10 @@
+peony-extensions (2.0.2-1) unstable; urgency=medium
+
+  * New upstream bugfix release.
+    - Fix that sometimes failed to open terminal.
+
+ -- handsome_feng <jianfengli@ubuntukylin.com>  Thu, 26 Mar 2020 15:19:56 +0800
+
 peony-extensions (2.0.1-1) unstable; urgency=medium
 
   * New upstream bugfix-only release.
