@@ -109,7 +109,7 @@ PeonyApplication::PeonyApplication(int &argc, char *argv[], const char *applicat
 {
     setApplicationVersion("v2.1.0");
     setApplicationName("peony-qt");
-    //setApplicationDisplayName(tr("Peony-Qt"));
+    setApplicationDisplayName(tr("Peony-Qt"));
 
     QFile file(":/data/libpeony-qt-styled.qss");
     file.open(QFile::ReadOnly);

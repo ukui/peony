@@ -201,7 +201,12 @@
 <context>
     <name>PeonyApplication</name>
     <message>
+        <location filename="../../src/peony-application.cpp" line="112"/>
         <source>Peony-Qt</source>
+        <translation>文件管理器</translation>
+    </message>
+    <message>
+        <source>peony-qt</source>
         <translation type="vanished">文件管理器</translation>
     </message>
     <message>
