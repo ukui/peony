@@ -292,7 +292,7 @@
 <context>
     <name>Peony::AdvancedLocationBar</name>
     <message>
-        <location filename="../../libpeony-qt/controls/navigation-bar/advanced-location-bar.cpp" line="121"/>
+        <location filename="../../libpeony-qt/controls/navigation-bar/advanced-location-bar.cpp" line="129"/>
         <source>Search Content...</source>
         <translation>搜索内容</translation>
     </message>
@@ -517,7 +517,7 @@
 <context>
     <name>Peony::DirectoryView::ListView2</name>
     <message>
-        <location filename="../../libpeony-qt/controls/directory-view/view/list-view/list-view.h" line="131"/>
+        <location filename="../../libpeony-qt/controls/directory-view/view/list-view/list-view.h" line="134"/>
         <source>List View</source>
         <translation>列表视图</translation>
     </message>
@@ -1409,6 +1409,55 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
         <location filename="../../libpeony-qt/controls/tool-bar/search-bar.cpp" line="116"/>
         <source>clear record</source>
         <translation>清空历史</translation>
+    </message>
+</context>
+<context>
+    <name>Peony::SearchBarContainer</name>
+    <message>
+        <location filename="../../libpeony-qt/controls/tool-bar/search-bar-container.cpp" line="42"/>
+        <source>Choose File Type</source>
+        <translation>选择文件类型</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/controls/tool-bar/search-bar-container.cpp" line="63"/>
+        <location filename="../../libpeony-qt/controls/tool-bar/search-bar-container.cpp" line="113"/>
+        <source>Clear</source>
+        <translation>清空</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/controls/tool-bar/search-bar-container.h" line="47"/>
+        <source>all</source>
+        <translation>全部</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/controls/tool-bar/search-bar-container.h" line="47"/>
+        <source>file folder</source>
+        <translation>文件夹</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/controls/tool-bar/search-bar-container.h" line="47"/>
+        <source>image</source>
+        <translation>图片</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/controls/tool-bar/search-bar-container.h" line="48"/>
+        <source>video</source>
+        <translation>视频</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/controls/tool-bar/search-bar-container.h" line="48"/>
+        <source>text file</source>
+        <translation>文本</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/controls/tool-bar/search-bar-container.h" line="48"/>
+        <source>audio</source>
+        <translation>音频</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/controls/tool-bar/search-bar-container.h" line="48"/>
+        <source>others</source>
+        <translation>其它</translation>
     </message>
 </context>
 <context>

@@ -120,6 +120,10 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
     {
          m_window->updateTabPageTitle();
     });
+    connect(m_location_bar, &Peony::AdvancedLocationBar::updateFileTypeFilter, [=](const int &index){
+         m_window->getCurrentPage()->setSortFilter(index);
+    });
+
     connect(m_location_bar, &Peony::AdvancedLocationBar::updateWindowLocationRequest, this, &HeaderBar::updateLocationRequest);
 
     addSpacing(9);

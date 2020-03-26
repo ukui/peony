@@ -47,32 +47,32 @@
         <translation>前进</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="126"/>
+        <location filename="../../src/control/header-bar.cpp" line="130"/>
         <source>Search</source>
         <translation>搜索</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="136"/>
+        <location filename="../../src/control/header-bar.cpp" line="140"/>
         <source>View Type</source>
         <translation>视图类型</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="154"/>
+        <location filename="../../src/control/header-bar.cpp" line="158"/>
         <source>Sort Type</source>
         <translation>排序类型</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="180"/>
+        <location filename="../../src/control/header-bar.cpp" line="184"/>
         <source>Option</source>
         <translation>选项</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="215"/>
+        <location filename="../../src/control/header-bar.cpp" line="219"/>
         <source>Operate Tips</source>
         <translation>操作提示</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="216"/>
+        <location filename="../../src/control/header-bar.cpp" line="220"/>
         <source>Don&apos;t find any terminal, please install at least one terminal!</source>
         <translation>没有找到任何终端插件，请确认您至少安装了一个！</translation>
     </message>
@@ -88,12 +88,12 @@
 <context>
     <name>HeaderBarContainer</name>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="466"/>
+        <location filename="../../src/control/header-bar.cpp" line="465"/>
         <source>Minimize</source>
         <translation>最小化</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="494"/>
+        <location filename="../../src/control/header-bar.cpp" line="493"/>
         <source>Close</source>
         <translation>最大化</translation>
     </message>
@@ -319,17 +319,17 @@ Copyright (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</source
 <context>
     <name>TabWidget</name>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="140"/>
+        <location filename="../../src/control/tab-widget.cpp" line="132"/>
         <source>Trash</source>
         <translation>回收站</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="144"/>
+        <location filename="../../src/control/tab-widget.cpp" line="136"/>
         <source>Clear</source>
         <translation>清空</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="148"/>
+        <location filename="../../src/control/tab-widget.cpp" line="140"/>
         <source>Recover</source>
         <translation>还原</translation>
     </message>

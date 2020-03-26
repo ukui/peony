@@ -105,7 +105,7 @@ public Q_SLOTS:
     void setSortType(FileItemModel::ColumnType type);
     void setSortOrder(Qt::SortOrder order);
 
-    void setSortFilter(int FileTypeIndex, int FileMTimeIndex, int FileSizeIndex);
+    void setSortFilter(int FileTypeIndex=0, int FileMTimeIndex=0, int FileSizeIndex=0);
     void setShowHidden(bool showHidden = false);
     void setUseDefaultNameSortOrder(bool use);
     void setSortFolderFirst(bool folderFirst);
