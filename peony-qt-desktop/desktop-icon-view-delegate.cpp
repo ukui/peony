@@ -92,21 +92,24 @@ void DesktopIconViewDelegate::paint(QPainter *painter, const QStyleOptionViewIte
     if (!view->indexWidget(index)) {
         //painter->setClipRect(opt.rect);
         painter->save();
+        painter->setRenderHint(QPainter::Antialiasing);
         if (opt.state.testFlag(QStyle::State_MouseOver) && !opt.state.testFlag(QStyle::State_Selected)) {
             QColor color = m_styled_button->palette().highlight().color();
             color.setAlpha(255*0.3);//half transparent
-            painter->fillRect(opt.rect, color);
+            //painter->fillRect(opt.rect, color);
             color.setAlpha(255*0.5);
             painter->setPen(color.darker(100));
-            painter->drawRect(opt.rect.adjusted(0, 0, -1, -1));
+            painter->setBrush(color);
+            painter->drawRoundedRect(opt.rect.adjusted(1, 1, -1, -1), 6, 6);
         }
         if (opt.state.testFlag(QStyle::State_Selected)) {
             QColor color = m_styled_button->palette().highlight().color();
             color.setAlpha(255*0.7);//half transparent
-            painter->fillRect(opt.rect, color);
+            //painter->fillRect(opt.rect, color);
             color.setAlpha(255*0.8);
             painter->setPen(color);
-            painter->drawRect(opt.rect.adjusted(0, 0, -1, -1));
+            painter->setBrush(color);
+            painter->drawRoundedRect(opt.rect.adjusted(1, 1, -1, -1), 6, 6);
         }
         painter->restore();
     }

@@ -107,17 +107,9 @@ void IconViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
     QStyleOptionViewItem opt = option;
     initStyleOption(&opt, index);
 
-    auto style = option.widget->style();
+    auto style = QApplication::style();
 
-    //painter->setClipRect(opt.rect);
-    if (opt.state.testFlag(QStyle::State_MouseOver) && !opt.state.testFlag(QStyle::State_Selected)) {
-        QColor color = m_styled_button->palette().highlight().color();
-        color.setAlpha(127);//half transparent
-        painter->fillRect(opt.rect, color);
-    }
-    if (opt.state.testFlag(QStyle::State_Selected)) {
-        painter->fillRect(opt.rect, m_styled_button->palette().highlight());
-    }
+    style->drawPrimitive(QStyle::PE_PanelItemViewItem, &opt, painter, nullptr);
 
     if (ClipboardUtils::getClipedFilesParentUri() == view->getDirectoryUri()) {
         if (ClipboardUtils::isClipboardFilesBeCut()) {

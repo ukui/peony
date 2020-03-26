@@ -86,7 +86,7 @@ IconViewIndexWidget::IconViewIndexWidget(const IconViewDelegate *delegate, const
     m_option.textElideMode = Qt::ElideNone;
 
     auto opt = m_option;
-    opt.rect.setHeight(9999);
+    //opt.rect.setHeight(9999);
     opt.rect.moveTo(0, 0);
 
     //qDebug()<<m_option.rect;
@@ -106,6 +106,8 @@ IconViewIndexWidget::IconViewIndexWidget(const IconViewDelegate *delegate, const
         setFixedHeight(fixedHeight);
     else
         setFixedHeight(option.rect.height());
+
+    m_option.rect.setHeight(fixedHeight);
     return;
 
     //deprecated, use IconViewTextHelper get text size instead.
@@ -138,7 +140,11 @@ void IconViewIndexWidget::paintEvent(QPaintEvent *e)
     //qDebug()<<this->size() << m_delegate->getView()->iconSize();
 
     auto opt = m_option;
-    p.fillRect(opt.rect, m_delegate->selectedBrush());
+    //p.fillRect(opt.rect, m_delegate->selectedBrush());
+    QApplication::style()->drawPrimitive(QStyle::PE_PanelItemViewItem,
+                                         &opt,
+                                         &p,
+                                         nullptr);
 
     auto tmp = opt.text;
     opt.text = nullptr;
