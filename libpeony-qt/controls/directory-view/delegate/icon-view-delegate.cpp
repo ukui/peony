@@ -348,6 +348,11 @@ void IconViewTextHelper::paintText(QPainter *painter, const QStyleOptionViewItem
     painter->save();
     painter->translate(horizalMargin, 0);
 
+    if (option.state.testFlag(QStyle::State_Selected))
+        painter->setPen(option.palette.highlightedText().color());
+    else
+        painter->setPen(option.palette.text().color());
+
     int lineCount = 0;
 
     QString text = option.text;
