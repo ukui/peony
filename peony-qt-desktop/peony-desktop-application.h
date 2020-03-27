@@ -37,6 +37,8 @@ class PeonyDesktopApplication : public SingleApplication
 public:
     explicit PeonyDesktopApplication(int &argc, char *argv[], const char *applicationName = "peony-qt-desktop");
 
+    static Peony::DesktopIconView *getIconView();
+
 protected Q_SLOTS:
     void parseCmd(quint32 id, QByteArray msg, bool isPrimary);
     bool isPrimaryScreen(QScreen *screen);

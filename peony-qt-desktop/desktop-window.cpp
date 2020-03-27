@@ -55,7 +55,8 @@
 
 #include <QItemSelectionModel>
 
-#include <QGraphicsOpacityEffect>
+#include <QVariantAnimation>
+#include <QPainter>
 
 #include <QFileDialog>
 
@@ -74,14 +75,27 @@
 using namespace Peony;
 
 DesktopWindow::DesktopWindow(QScreen *screen, bool is_primary, QWidget *parent)
-    : QStackedWidget(parent) {
+    : QMainWindow(parent) {
     initGSettings();
+
+    m_opacity = new QVariantAnimation(this);
+    m_opacity->setDuration(1000);
+    m_opacity->setStartValue(double(0));
+    m_opacity->setEndValue(double(1));
+    connect(m_opacity, &QVariantAnimation::valueChanged, this, [=](){
+        this->update();
+    });
+
+    connect(m_opacity, &QVariantAnimation::finished, this, [=](){
+        m_bg_back_pixmap = m_bg_font_pixmap;
+        m_bg_back_cache_pixmap = m_bg_font_cache_pixmap;
+        m_last_pure_color = m_color_to_be_set;
+    });
 
     m_screen = screen;
     m_is_primary = is_primary;
     setContentsMargins(0, 0, 0, 0);
-    m_layout = static_cast<QStackedLayout *>(this->layout());
-    m_layout->setStackingMode(QStackedLayout::StackAll);
+
     qDebug() << "DesktopWindow is_primary:" << is_primary << screen->objectName()
              << screen->name();
     setWindowFlags(Qt::FramelessWindowHint);
@@ -89,90 +103,37 @@ DesktopWindow::DesktopWindow(QScreen *screen, bool is_primary, QWidget *parent)
     setAttribute(Qt::WA_TranslucentBackground);
 
     setGeometry(screen->geometry());
-    setFixedSize(screen->size());
 
     setContextMenuPolicy(Qt::CustomContextMenu);
-
-    m_trans_timer = new QTimer(this);
-    m_trans_timer->setSingleShot(true);
-    m_opacity_effect = new QGraphicsOpacityEffect(this);
-
-    m_bg_font = new QLabel(this);
-    m_bg_font->setContentsMargins(0, 0, 0, 0);
-    m_bg_back = new QLabel(this);
-    m_bg_back->setContentsMargins(0, 0, 0, 0);
-    m_layout->addWidget(m_bg_font);
-    m_layout->addWidget(m_bg_back);
-
-    setBg(getCurrentBgPath());
 
     connect(m_screen, &QScreen::geometryChanged, this,
             &DesktopWindow::geometryChangedProcess);
     connect(m_screen, &QScreen::virtualGeometryChanged, this,
             &DesktopWindow::virtualGeometryChangedProcess);
-
-    if (!m_is_primary) {
-        m_view = nullptr;
-        return;
-    }
-
     connect(m_screen, &QScreen::availableGeometryChanged, this,
             &DesktopWindow::availableGeometryChangedProcess);
 
-    m_view = new DesktopIconView(this);
-    //fix m_view in QStackedWidget can not change geometry issue
-    m_view->raise();
-//    m_layout->addWidget(m_view);
-//    setCurrentWidget(m_view);
-    qDebug() << "create view:" << m_screen->availableGeometry();
-    m_view->setFixedSize(m_screen->availableGeometry().size());
-    m_view->setGeometry(m_screen->availableGeometry());
+    initShortcut();
 
-    connect(m_view, &QListView::doubleClicked, [=](const QModelIndex &index) {
-        qDebug() << "double click" << index.data(FileItemModel::UriRole);
-        auto uri = index.data(FileItemModel::UriRole).toString();
-        auto info = FileInfo::fromUri(uri, false);
-        auto job = new FileInfoJob(info);
-        job->setAutoDelete();
-        job->connect(job, &FileInfoJob::queryAsyncFinished, [=]() {
-            if (info->isDir() || info->isVolume() || info->isVirtual()) {
-#if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
-                QProcess p;
-                QUrl url = uri;
-                p.setProgram("peony");
-                p.setArguments(QStringList() << url.toEncoded());
-                p.startDetached();
-#else
-                QProcess p;
-                p.startDetached("peony", QStringList()<<uri);
-#endif
-            } else {
-                FileLaunchManager::openAsync(uri);
-            }
-            m_view->clearSelection();
-        });
-        job->queryAsync();
-    });
+    updateView();
 
-    // edit trigger
+    setBg(getCurrentBgPath());
 
     // menu
-    connect(m_view, &QListView::customContextMenuRequested,
+    connect(this, &QMainWindow::customContextMenuRequested,
     [=](const QPoint &pos) {
         // FIXME: use other menu
         qDebug() << "menu request";
-        if (!m_view->indexAt(pos).isValid()) {
-            m_view->clearSelection();
+        if (!PeonyDesktopApplication::getIconView()->indexAt(pos).isValid() || !centralWidget()) {
+            PeonyDesktopApplication::getIconView()->clearSelection();
         } else {
-            if (!m_view->selectionModel()->selectedIndexes().contains(m_view->indexAt(pos))) {
-                m_view->clearSelection();
-                m_view->selectionModel()->select(m_view->indexAt(pos), QItemSelectionModel::Select);
-            }
+            PeonyDesktopApplication::getIconView()->clearSelection();
+            PeonyDesktopApplication::getIconView()->selectionModel()->select(PeonyDesktopApplication::getIconView()->indexAt(pos), QItemSelectionModel::Select);
         }
 
         QTimer::singleShot(1, [=]() {
-            DesktopMenu menu(m_view);
-            if (m_view->getSelections().isEmpty()) {
+            DesktopMenu menu(PeonyDesktopApplication::getIconView());
+            if (PeonyDesktopApplication::getIconView()->getSelections().isEmpty()) {
                 auto action = menu.addAction(tr("set background"));
                 connect(action, &QAction::triggered, [=]() {
                     QFileDialog dlg;
@@ -186,18 +147,16 @@ DesktopWindow::DesktopWindow(QScreen *screen, bool is_primary, QWidget *parent)
                     }
                 });
             }
-            menu.exec(QCursor::pos());
+            menu.exec(mapToGlobal(pos));
             auto urisToEdit = menu.urisToEdit();
             if (urisToEdit.count() == 1) {
                 QTimer::singleShot(
                 100, this, [=]() {
-                    m_view->editUri(urisToEdit.first());
+                    PeonyDesktopApplication::getIconView()->editUri(urisToEdit.first());
                 });
             }
         });
     });
-
-    initShortcut();
 }
 
 DesktopWindow::~DesktopWindow() {}
@@ -238,6 +197,38 @@ void DesktopWindow::initGSettings() {
     });
 }
 
+void DesktopWindow::paintEvent(QPaintEvent *e)
+{
+    QPainter p(this);
+    p.setRenderHint(QPainter::Antialiasing);
+    if (m_opacity->state() == QVariantAnimation::Running) {
+        //draw bg?
+        if (m_use_pure_color) {
+            auto opacity = m_opacity->currentValue().toDouble();
+            p.fillRect(this->rect(), m_last_pure_color);
+            p.save();
+            p.setOpacity(opacity);
+            p.fillRect(this->rect(), m_color_to_be_set);
+            p.restore();
+        } else {
+            auto opacity = m_opacity->currentValue().toDouble();
+            p.drawPixmap(this->rect(), m_bg_back_cache_pixmap, m_bg_back_cache_pixmap.rect());
+            p.save();
+            p.setOpacity(opacity);
+            p.drawPixmap(this->rect(), m_bg_font_cache_pixmap, m_bg_font_cache_pixmap.rect());
+            p.restore();
+        }
+    } else {
+        //draw bg?
+        if (m_use_pure_color) {
+            p.fillRect(this->rect(), m_last_pure_color);
+        } else {
+            p.drawPixmap(this->rect(), m_bg_back_cache_pixmap, m_bg_back_cache_pixmap.rect());
+        }
+    }
+    QMainWindow::paintEvent(e);
+}
+
 const QString DesktopWindow::getCurrentBgPath() {
     // FIXME: implement custom bg settings storage
     if (m_current_bg_path.isEmpty()) {
@@ -252,74 +243,39 @@ void DesktopWindow::setBg(const QString &path) {
         return;
     }
 
+    m_use_pure_color = false;
+
     m_bg_back_pixmap = m_bg_font_pixmap;
-    m_bg_back->setPixmap(m_bg_back_pixmap);
 
     m_bg_font_pixmap = QPixmap(path);
     // FIXME: implement different pixmap clip algorithm.
-    m_bg_font_pixmap =
-        m_bg_font_pixmap.scaled(m_screen->size(), Qt::KeepAspectRatioByExpanding,
-                                Qt::SmoothTransformation);
-    m_bg_font->setPixmap(m_bg_font_pixmap);
 
-    m_opacity_effect->setOpacity(0);
-    m_bg_font->setGraphicsEffect(m_opacity_effect);
-    m_opacity = 0;
-    m_trans_timer->start(50);
+    m_bg_back_cache_pixmap = m_bg_back_pixmap.scaled(m_screen->size(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
 
-    m_trans_timer->connect(m_trans_timer, &QTimer::timeout, [=]() {
-        qDebug() << m_opacity;
-        if (m_opacity > 0.95) {
-            m_opacity = 1.0;
-            m_bg_back_pixmap.detach();
-            m_bg_back->setPixmap(QPixmap());
-            m_trans_timer->stop();
-            m_trans_timer->deleteLater();
-            m_trans_timer = new QTimer(this);
-            m_trans_timer->setSingleShot(true);
-            return;
-        }
-        m_opacity += 0.05;
-        m_opacity_effect->setOpacity(m_opacity);
-        m_bg_font->setGraphicsEffect(m_opacity_effect);
-        m_trans_timer->start(50);
-    });
+    m_bg_font_cache_pixmap = m_bg_font_pixmap.scaled(m_screen->size(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
 
     m_current_bg_path = path;
     setBgPath(path);
+
+    if (m_opacity->state() == QVariantAnimation::Running) {
+        m_opacity->setCurrentTime(500);
+    } else {
+        m_opacity->stop();
+        m_opacity->start();
+    }
 }
 
 void DesktopWindow::setBg(const QColor &color) {
-    m_bg_font_pixmap = QPixmap(m_screen->size());
-    m_bg_font_pixmap.fill(color);
-    m_bg_back_pixmap = QPixmap(m_screen->size());
-    m_bg_back_pixmap.fill(m_last_pure_color);
-    m_bg_back->setPixmap(m_bg_back_pixmap);
+    m_color_to_be_set = color;
 
-    m_last_pure_color = color;
+    m_use_pure_color = true;
 
-    m_bg_font->setPixmap(m_bg_font_pixmap);
-    m_opacity_effect->setOpacity(0);
-    m_bg_font->setGraphicsEffect(m_opacity_effect);
-    m_opacity = 0;
-    m_trans_timer->start(50);
-
-    m_trans_timer->connect(m_trans_timer, &QTimer::timeout, [=]() {
-        qDebug() << m_opacity;
-        if (m_opacity > 0.95) {
-            m_opacity = 1.0;
-            m_bg_back_pixmap.detach();
-            m_bg_back->setPixmap(QPixmap());
-            m_trans_timer->stop();
-            m_trans_timer = new QTimer(this);
-            m_trans_timer->setSingleShot(true);
-            return;
-        }
-        m_opacity += 0.05;
-        m_opacity_effect->setOpacity(m_opacity);
-        m_bg_font->setGraphicsEffect(m_opacity_effect);
-        m_trans_timer->start(50);
-    });
+    if (m_opacity->state() == QVariantAnimation::Running) {
+        m_opacity->setCurrentTime(500);
+    } else {
+        m_opacity->stop();
+        m_opacity->start();
+    }
 }
 
 void DesktopWindow::setBgPath(const QString &bgPath) {
@@ -361,29 +317,35 @@ void DesktopWindow::disconnectSignal() {
 }
 
 void DesktopWindow::scaleBg(const QRect &geometry) {
-    QString path = getCurrentBgPath();
-    if (path.isNull()) {
+    if (this->geometry() == geometry)
         return;
-    }
 
-    qDebug() << "scaleBg:" << m_screen->geometry() << geometry;
-    m_bg_font_pixmap = QPixmap(path);
-    // FIXME: implement different pixmap clip algorithm.
-    m_bg_font_pixmap =
-        m_bg_font_pixmap.scaled(geometry.size(), Qt::KeepAspectRatioByExpanding,
-                                Qt::SmoothTransformation);
+    setGeometry(geometry);
+    /*!
+     * \note
+     * There is a bug in kwin, if we directly set window
+     * geometry or showFullScreen, window will not be resized
+     * correctly.
+     *
+     * reset the window flags will resovle the problem,
+     * but screen will be black a while.
+     * this is not user's expected.
+     */
+    setWindowFlag(Qt::FramelessWindowHint, false);
+    setWindowFlag(Qt::FramelessWindowHint);
+    show();
 
-    m_bg_font->setPixmap(m_bg_font_pixmap);
-    m_bg_back_pixmap = m_bg_font_pixmap;
-    m_bg_back->setPixmap(m_bg_back_pixmap);
+    m_bg_back_cache_pixmap = m_bg_back_pixmap.scaled(geometry.size(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+    m_bg_font_cache_pixmap = m_bg_font_pixmap.scaled(geometry.size(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+    this->update();
 }
 
 void DesktopWindow::initShortcut() {
-    // shotcut
+    return;
     QAction *copyAction = new QAction(this);
     copyAction->setShortcut(QKeySequence::Copy);
     connect(copyAction, &QAction::triggered, [=]() {
-        auto selectedUris = m_view->getSelections();
+        auto selectedUris = PeonyDesktopApplication::getIconView()->getSelections();
         if (!selectedUris.isEmpty())
             ClipboardUtils::setClipboardFiles(selectedUris, false);
     });
@@ -392,7 +354,7 @@ void DesktopWindow::initShortcut() {
     QAction *cutAction = new QAction(this);
     cutAction->setShortcut(QKeySequence::Cut);
     connect(cutAction, &QAction::triggered, [=]() {
-        auto selectedUris = m_view->getSelections();
+        auto selectedUris = PeonyDesktopApplication::getIconView()->getSelections();
         if (!selectedUris.isEmpty())
             ClipboardUtils::setClipboardFiles(selectedUris, true);
     });
@@ -403,7 +365,7 @@ void DesktopWindow::initShortcut() {
     connect(pasteAction, &QAction::triggered, [=]() {
         auto clipUris = ClipboardUtils::getClipboardFilesUris();
         if (ClipboardUtils::isClipboardHasFiles()) {
-            ClipboardUtils::pasteClipboardFiles(m_view->getDirectoryUri());
+            ClipboardUtils::pasteClipboardFiles(PeonyDesktopApplication::getIconView()->getDirectoryUri());
         }
     });
     addAction(pasteAction);
@@ -411,7 +373,7 @@ void DesktopWindow::initShortcut() {
     QAction *trashAction = new QAction(this);
     trashAction->setShortcut(QKeySequence::Delete);
     connect(trashAction, &QAction::triggered, [=]() {
-        auto selectedUris = m_view->getSelections();
+        auto selectedUris = PeonyDesktopApplication::getIconView()->getSelections();
         if (!selectedUris.isEmpty()) {
             auto op = new FileTrashOperation(selectedUris);
             FileOperationManager::getInstance()->startOperation(op, true);
@@ -438,23 +400,23 @@ void DesktopWindow::initShortcut() {
     QAction *zoomInAction = new QAction(this);
     zoomInAction->setShortcut(QKeySequence::ZoomIn);
     connect(zoomInAction, &QAction::triggered, [=]() {
-        m_view->zoomIn();
+        PeonyDesktopApplication::getIconView()->zoomIn();
     });
     addAction(zoomInAction);
 
     QAction *zoomOutAction = new QAction(this);
     zoomOutAction->setShortcut(QKeySequence::ZoomOut);
     connect(zoomOutAction, &QAction::triggered, [=]() {
-        m_view->zoomOut();
+        PeonyDesktopApplication::getIconView()->zoomOut();
     });
     addAction(zoomOutAction);
 
     QAction *renameAction = new QAction(this);
     renameAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_E));
     connect(renameAction, &QAction::triggered, [=]() {
-        auto selections = m_view->getSelections();
+        auto selections = PeonyDesktopApplication::getIconView()->getSelections();
         if (selections.count() == 1) {
-            m_view->editUri(selections.first());
+            PeonyDesktopApplication::getIconView()->editUri(selections.first());
         }
     });
     addAction(renameAction);
@@ -462,8 +424,8 @@ void DesktopWindow::initShortcut() {
     QAction *removeAction = new QAction(this);
     removeAction->setShortcut(QKeySequence(Qt::SHIFT + Qt::Key_Delete));
     connect(removeAction, &QAction::triggered, [=]() {
-        qDebug() << "delete" << m_view->getSelections();
-        FileOperationUtils::executeRemoveActionWithDialog(m_view->getSelections());
+        qDebug() << "delete" << PeonyDesktopApplication::getIconView()->getSelections();
+        FileOperationUtils::executeRemoveActionWithDialog(PeonyDesktopApplication::getIconView()->getSelections());
     });
     addAction(removeAction);
 
@@ -478,60 +440,91 @@ void DesktopWindow::initShortcut() {
     auto propertiesWindowAction = new QAction(this);
     propertiesWindowAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_Return));
     connect(propertiesWindowAction, &QAction::triggered, this, [=](){
-        if (m_view->getSelections().count() > 0)
+        if (PeonyDesktopApplication::getIconView()->getSelections().count() > 0)
         {
-            PropertiesWindow *w = new PropertiesWindow(m_view->getSelections());
+            PropertiesWindow *w = new PropertiesWindow(PeonyDesktopApplication::getIconView()->getSelections());
             w->show();
         }
     });
     addAction(propertiesWindowAction);
+
+    auto newFolderAction = new QAction(this);
+    newFolderAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_N));
+    connect(newFolderAction, &QAction::triggered, this, [=](){
+        CreateTemplateOperation op(PeonyDesktopApplication::getIconView()->getDirectoryUri(), CreateTemplateOperation::EmptyFolder, tr("New Folder"));
+        op.run();
+        auto targetUri = op.target();
+#if QT_VERSION > QT_VERSION_CHECK(5, 12, 0)
+            QTimer::singleShot(500, this, [=](){
+#else
+            QTimer::singleShot(500, [=](){
+#endif
+            PeonyDesktopApplication::getIconView()->scrollToSelection(targetUri);
+        });
+    });
+    addAction(newFolderAction);
+
+    auto refreshAction = new QAction(this);
+    refreshAction->setShortcut(Qt::Key_F5);
+    connect(refreshAction, &QAction::triggered, this, [=](){
+        PeonyDesktopApplication::getIconView()->refresh();
+    });
+    addAction(refreshAction);
+
+    QAction *editAction = new QAction(PeonyDesktopApplication::getIconView());
+    editAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::ALT + Qt::Key_E)<<Qt::Key_F2);
+    connect(editAction, &QAction::triggered, this, [=](){
+        auto selections = PeonyDesktopApplication::getIconView()->getSelections();
+        if (selections.count() == 1) {
+            PeonyDesktopApplication::getIconView()->editUri(selections.first());
+        }
+    });
+    addAction(editAction);
 }
 
 void DesktopWindow::availableGeometryChangedProcess(const QRect &geometry) {
-    qDebug() << "availableGeometryChangedProcess" << geometry
-             << m_screen->geometry() << m_screen->availableGeometry()
-             << m_screen->name();
     updateView();
 }
 
 void DesktopWindow::virtualGeometryChangedProcess(const QRect &geometry) {
-    qDebug() << "virtualGeometryChangedProcess" << geometry
-             << m_screen->geometry() << m_screen->virtualGeometry()
-             << m_screen->name();
-    this->setGeometry(m_screen->geometry());
-    scaleBg(m_screen->geometry());
-    updateView();
+    updateWinGeometry();
 }
 
 void DesktopWindow::geometryChangedProcess(const QRect &geometry) {
     // screen resolution ratio change
-    qDebug() << "geometryChangedProcess:" << geometry << m_screen->geometry()
-             << this->geometry() << m_screen->name();
     updateWinGeometry();
-    scaleBg(geometry);
-    updateView();
 }
 
 void DesktopWindow::updateView() {
-    if (m_view) {
-        qDebug() << "updateView" << m_screen->name()
-                 << m_screen->availableGeometry() << this->geometry() << m_view->geometry();
-        m_view->setGeometry(m_screen->availableGeometry());
-        m_view->setFixedSize(m_screen->availableGeometry().size());
-        m_view->raise();
-        m_view->refresh();
-        //setCurrentWidget(m_view);
+    auto avaliableGeometry = m_screen->availableGeometry();
+    auto geomerty = m_screen->geometry();
+    int top = qAbs(avaliableGeometry.top() - geomerty.top());
+    int left = qAbs(avaliableGeometry.left() - geomerty.left());
+    int bottom = qAbs(avaliableGeometry.bottom() - geomerty.bottom());
+    int right = qAbs(avaliableGeometry.right() - geomerty.right());
+    //skip unexpected avaliable geometry, it might lead by ukui-panel.
+    if (top > 200 | left > 200 | bottom > 200 | right > 200) {
+        setContentsMargins(0, 0, 0, 0);
+        return;
     }
+    setContentsMargins(left, top, right, bottom);
 }
 
 void DesktopWindow::updateWinGeometry() {
-    qDebug() << "befoere updateWinGeometry:" << this->objectName()
-             << this->getScreen()->geometry() << this->geometry()
-             << this->getScreen()->virtualGeometry();
-    this->setGeometry(m_screen->geometry());
-    this->setFixedSize(m_screen->geometry().size());
-    Q_EMIT this->checkWindow();
-    qDebug() << "end updateWinGeometry:" << this->objectName()
-             << this->getScreen()->geometry() << this->geometry()
-             << this->getScreen()->virtualGeometry();
+    auto g = getScreen()->geometry();
+    auto vg = getScreen()->virtualGeometry();
+    auto ag = getScreen()->availableGeometry();
+
+//    this->move(m_screen->geometry().topLeft());
+//    this->setFixedSize(m_screen->geometry().size());
+//    /*!
+//      \bug
+//      can not set window geometry correctly in kwin.
+//      strangely it works in ukwm.
+//      */
+//    this->setGeometry(m_screen->geometry());
+//    Q_EMIT this->checkWindow();
+
+    scaleBg(g);
+    //updateView();
 }

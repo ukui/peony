@@ -55,6 +55,10 @@ public:
     explicit DesktopIconView(QWidget *parent = nullptr);
     ~DesktopIconView();
 
+    void initShoutCut();
+    void initMenu();
+    void initDoubleClick();
+
     void bindModel(FileItemModel *sourceModel, FileItemProxyFilterSortModel *proxyModel) {Q_UNUSED(sourceModel) Q_UNUSED(proxyModel)}
     void setProxy(DirectoryViewProxyIface *proxy) {Q_UNUSED(proxy)}
 

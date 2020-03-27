@@ -24,10 +24,11 @@
 #ifndef DESKTOP_WINDOW_H
 #define DESKTOP_WINDOW_H
 
-#include <QStackedWidget>
+#include <QMainWindow>
 #include <QTimer>
 #include <QStackedLayout>
 
+class QVariantAnimation;
 class QLabel;
 class QListView;
 class QGraphicsOpacityEffect;
@@ -37,7 +38,7 @@ namespace Peony {
 
 class DesktopIconView;
 
-class DesktopWindow : public QStackedWidget
+class DesktopWindow : public QMainWindow
 {
     Q_OBJECT
 
@@ -53,6 +54,8 @@ public:
     void setScreen(QScreen *screen);
     DesktopIconView *getView(){return m_view;}
 
+    static void gotoSetBackground();
+
 Q_SIGNALS:
     void changeBg(const QString &bgPath);
     void checkWindow();
@@ -62,12 +65,16 @@ public Q_SLOTS:
     void availableGeometryChangedProcess(const QRect &geometry);
     void virtualGeometryChangedProcess(const QRect &geometry);
     void geometryChangedProcess(const QRect &geometry);
+
     void scaleBg(const QRect &geometry);
     void updateView();
     void updateWinGeometry();
 
     void connectSignal();
     void disconnectSignal();
+
+protected:
+    void paintEvent(QPaintEvent *e);
 
 protected Q_SLOTS:
     void setBg(const QString &bgPath);
@@ -80,24 +87,28 @@ protected:
 private:
     QString m_current_bg_path;
 
-    QLabel *m_bg_font;
-    QLabel *m_bg_back;
     DesktopIconView *m_view;
 
     QPixmap m_bg_font_pixmap;
     QPixmap m_bg_back_pixmap;
 
-    QTimer *m_trans_timer;
-    QGraphicsOpacityEffect *m_opacity_effect;
+    QPixmap m_bg_font_cache_pixmap;
+    QPixmap m_bg_back_cache_pixmap;
 
-    qreal m_opacity = 1.0;
+    QGraphicsOpacityEffect *m_opacity_effect;
 
     QScreen *m_screen;
     QStackedLayout *m_layout;
     bool m_is_primary;
 
     QGSettings *m_bg_settings;
-    QColor m_last_pure_color = Qt::black;
+
+    QColor m_last_pure_color = Qt::transparent;
+    QColor m_color_to_be_set = Qt::transparent;
+
+    bool m_use_pure_color = false;
+
+    QVariantAnimation *m_opacity = nullptr;
 };
 
 }
