@@ -145,6 +145,8 @@ private:
     DesktopItemProxyModel *m_proxy_model;
 
     QStringList m_new_files_to_be_selected;
+
+    bool m_is_refreshing = false;
 };
 
 }
