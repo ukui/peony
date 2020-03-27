@@ -67,12 +67,12 @@
         <translation>选项</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="219"/>
+        <location filename="../../src/control/header-bar.cpp" line="220"/>
         <source>Operate Tips</source>
         <translation>操作提示</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="220"/>
+        <location filename="../../src/control/header-bar.cpp" line="221"/>
         <source>Don&apos;t find any terminal, please install at least one terminal!</source>
         <translation>没有找到任何终端插件，请确认您至少安装了一个！</translation>
     </message>
@@ -88,12 +88,12 @@
 <context>
     <name>HeaderBarContainer</name>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="465"/>
+        <location filename="../../src/control/header-bar.cpp" line="468"/>
         <source>Minimize</source>
         <translation>最小化</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="493"/>
+        <location filename="../../src/control/header-bar.cpp" line="496"/>
         <source>Close</source>
         <translation>最大化</translation>
     </message>

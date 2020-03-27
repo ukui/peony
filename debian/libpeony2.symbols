@@ -349,11 +349,15 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZN5Peony13DirectoryView17StandardViewProxyD0Ev@Base 2.0.0
  _ZN5Peony13DirectoryView17StandardViewProxyD1Ev@Base 2.0.0
  _ZN5Peony13DirectoryView17StandardViewProxyD2Ev@Base 2.0.0
+ _ZN5Peony13DirectoryView18IconViewTextHelper19getTextSizeForIndexERK20QStyleOptionViewItemRK11QModelIndexii@Base 2.1.0
+ _ZN5Peony13DirectoryView18IconViewTextHelper9paintTextEP8QPainterRK20QStyleOptionViewItemRK11QModelIndexiiib@Base 2.1.0
  _ZN5Peony13DirectoryView19IconViewIndexWidget10paintEventEP11QPaintEvent@Base 2.0.0
  _ZN5Peony13DirectoryView19IconViewIndexWidget11qt_metacallEN11QMetaObject4CallEiPPv@Base 2.0.0
  _ZN5Peony13DirectoryView19IconViewIndexWidget11qt_metacastEPKc@Base 2.0.0
  _ZN5Peony13DirectoryView19IconViewIndexWidget15mousePressEventEP11QMouseEvent@Base 2.0.0
  _ZN5Peony13DirectoryView19IconViewIndexWidget16staticMetaObjectE@Base 2.0.0
+ _ZN5Peony13DirectoryView19IconViewIndexWidget21mouseDoubleClickEventEP11QMouseEvent@Base 2.1.0
+ _ZN5Peony13DirectoryView19IconViewIndexWidget9adjustPosEv@Base 2.1.0
  _ZN5Peony13DirectoryView19IconViewIndexWidgetC1EPKNS0_16IconViewDelegateERK20QStyleOptionViewItemRK11QModelIndexP7QWidget@Base 2.0.0
  _ZN5Peony13DirectoryView19IconViewIndexWidgetC2EPKNS0_16IconViewDelegateERK20QStyleOptionViewItemRK11QModelIndexP7QWidget@Base 2.0.0
  _ZN5Peony13DirectoryView19IconViewIndexWidgetD0Ev@Base 2.0.0
@@ -407,6 +411,7 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZN5Peony13DirectoryView8ListView11getSortTypeEv@Base 2.0.0
  _ZN5Peony13DirectoryView8ListView11qt_metacallEN11QMetaObject4CallEiPPv@Base 2.0.0
  _ZN5Peony13DirectoryView8ListView11qt_metacastEPKc@Base 2.0.0
+ _ZN5Peony13DirectoryView8ListView11resizeEventEP12QResizeEvent@Base 2.1.0
  _ZN5Peony13DirectoryView8ListView11setCutFilesERK11QStringList@Base 2.0.0
  _ZN5Peony13DirectoryView8ListView11setSortTypeEi@Base 2.0.0
  _ZN5Peony13DirectoryView8ListView12getSortOrderEv@Base 2.0.0
@@ -420,6 +425,7 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZN5Peony13DirectoryView8ListView15setDirectoryUriERK7QString@Base 2.0.0
  _ZN5Peony13DirectoryView8ListView16invertSelectionsEv@Base 2.0.0
  _ZN5Peony13DirectoryView8ListView16staticMetaObjectE@Base 2.0.0
+ _ZN5Peony13DirectoryView8ListView17adjustColumnsSizeEv@Base 2.1.0
  _ZN5Peony13DirectoryView8ListView17mouseReleaseEventEP11QMouseEvent@Base 2.0.0
  _ZN5Peony13DirectoryView8ListView17scrollToSelectionERK7QString@Base 2.0.0
  _ZN5Peony13DirectoryView8ListView18stopLocationChangeEv@Base 2.0.0
@@ -1190,6 +1196,17 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZN5Peony18FileTrashOperationD0Ev@Base 2.0.0
  _ZN5Peony18FileTrashOperationD1Ev@Base 2.0.0
  _ZN5Peony18FileTrashOperationD2Ev@Base 2.0.0
+ _ZN5Peony18SearchBarContainer11qt_metacallEN11QMetaObject4CallEiPPv@Base 2.1.0
+ _ZN5Peony18SearchBarContainer11qt_metacastEPKc@Base 2.1.0
+ _ZN5Peony18SearchBarContainer12filterUpdateERKi@Base 2.1.0
+ _ZN5Peony18SearchBarContainer13returnPressedEv@Base 2.1.0
+ _ZN5Peony18SearchBarContainer14onTableClickedERK11QModelIndex@Base 2.1.0
+ _ZN5Peony18SearchBarContainer16staticMetaObjectE@Base 2.1.0
+ _ZN5Peony18SearchBarContainerC1EP7QWidget@Base 2.1.0
+ _ZN5Peony18SearchBarContainerC2EP7QWidget@Base 2.1.0
+ _ZN5Peony18SearchBarContainerD0Ev@Base 2.1.0
+ _ZN5Peony18SearchBarContainerD1Ev@Base 2.1.0
+ _ZN5Peony18SearchBarContainerD2Ev@Base 2.1.0
  _ZN5Peony18SearchVFSUriParser14parseSearchKeyERK7QStringS3_RKbS5_@Base 2.0.0
  _ZN5Peony18SearchVFSUriParser22getSearchUriNameRegexpERK7QString@Base 2.0.0
  _ZN5Peony18SearchVFSUriParser27getSearchUriTargetDirectoryERK7QString@Base 2.0.0
@@ -1204,6 +1221,7 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZN5Peony19AdvancedLocationBar14switchEditModeEb@Base 2.1.0
  _ZN5Peony19AdvancedLocationBar14updateLocationERK7QString@Base 2.0.0
  _ZN5Peony19AdvancedLocationBar16staticMetaObjectE@Base 2.0.0
+ _ZN5Peony19AdvancedLocationBar20updateFileTypeFilterERKi@Base 2.1.0
  _ZN5Peony19AdvancedLocationBar27updateWindowLocationRequestERK7QStringbb@Base 2.0.0
  _ZN5Peony19AdvancedLocationBar9isEditingEv@Base 2.0.0
  _ZN5Peony19AdvancedLocationBar9startEditEv@Base 2.0.0
@@ -2424,6 +2442,8 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZNK5Peony18DefaultPreviewPage10metaObjectEv@Base 2.0.0
  _ZNK5Peony18FileCountOperation10metaObjectEv@Base 2.0.0
  _ZNK5Peony18FileTrashOperation10metaObjectEv@Base 2.0.0
+ _ZNK5Peony18SearchBarContainer10metaObjectEv@Base 2.1.0
+ _ZNK5Peony18SearchBarContainer8sizeHintEv@Base 2.1.0
  _ZNK5Peony19AdvancedLocationBar10metaObjectEv@Base 2.0.0
  _ZNK5Peony19BasicPropertiesPage10metaObjectEv@Base 2.0.0
  _ZNK5Peony19DirectoryViewWidget10metaObjectEv@Base 2.0.0
@@ -2844,6 +2864,7 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZTIN5Peony18DirectoryViewIfaceE@Base 2.0.0
  _ZTIN5Peony18FileCountOperationE@Base 2.0.0
  _ZTIN5Peony18FileTrashOperationE@Base 2.0.0
+ _ZTIN5Peony18SearchBarContainerE@Base 2.1.0
  _ZTIN5Peony19AdvancedLocationBarE@Base 2.0.0
  _ZTIN5Peony19BasicPropertiesPageE@Base 2.0.0
  _ZTIN5Peony19DirectoryViewWidgetE@Base 2.0.0
@@ -3022,6 +3043,7 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZTSN5Peony18DirectoryViewIfaceE@Base 2.0.0
  _ZTSN5Peony18FileCountOperationE@Base 2.0.0
  _ZTSN5Peony18FileTrashOperationE@Base 2.0.0
+ _ZTSN5Peony18SearchBarContainerE@Base 2.1.0
  _ZTSN5Peony19AdvancedLocationBarE@Base 2.0.0
  _ZTSN5Peony19BasicPropertiesPageE@Base 2.0.0
  _ZTSN5Peony19DirectoryViewWidgetE@Base 2.0.0
@@ -3194,6 +3216,7 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZTVN5Peony18DefaultPreviewPageE@Base 2.0.0
  _ZTVN5Peony18FileCountOperationE@Base 2.0.0
  _ZTVN5Peony18FileTrashOperationE@Base 2.0.0
+ _ZTVN5Peony18SearchBarContainerE@Base 2.1.0
  _ZTVN5Peony19AdvancedLocationBarE@Base 2.0.0
  _ZTVN5Peony19BasicPropertiesPageE@Base 2.0.0
  _ZTVN5Peony19DirectoryViewWidgetE@Base 2.0.0
@@ -3571,6 +3594,7 @@ libpeony.so.2 libpeony2 #MINVER#
  (c++)"non-virtual thunk to Peony::RecentAndTrashPropertiesPageFactory::tabOrder()@Base" 2.0.0
  (c++)"non-virtual thunk to Peony::RecentAndTrashPropertiesPageFactory::~RecentAndTrashPropertiesPageFactory()@Base" 2.0.0
  (c++)"non-virtual thunk to Peony::SearchBar::~SearchBar()@Base" 2.0.0
+ (c++)"non-virtual thunk to Peony::SearchBarContainer::~SearchBarContainer()@Base" 2.1.0
  (c++)"non-virtual thunk to Peony::SideBar::~SideBar()@Base" 2.0.0
  (c++)"non-virtual thunk to Peony::SideBarMenu::~SideBarMenu()@Base" 2.0.0
  (c++)"non-virtual thunk to Peony::StatusBar::~StatusBar()@Base" 2.0.0
