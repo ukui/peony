@@ -358,8 +358,11 @@ void DesktopWindow::disconnectSignal() {
 }
 
 void DesktopWindow::scaleBg(const QRect &geometry) {
+    if (this->geometry() == geometry)
+        return;
+
     setGeometry(geometry);
-    //updateView();
+
     m_bg_back_cache_pixmap = m_bg_back_pixmap.scaled(geometry.size(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
     m_bg_font_cache_pixmap = m_bg_font_pixmap.scaled(geometry.size(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
     this->update();
@@ -529,15 +532,15 @@ void DesktopWindow::updateWinGeometry() {
     auto vg = getScreen()->virtualGeometry();
     auto ag = getScreen()->availableGeometry();
 
-    this->move(m_screen->geometry().topLeft());
-    this->setFixedSize(m_screen->geometry().size());
-    /*!
-      \bug
-      can not set window geometry correctly in kwin.
-      strangely it works in ukwm.
-      */
-    this->setGeometry(m_screen->geometry());
-    Q_EMIT this->checkWindow();
+//    this->move(m_screen->geometry().topLeft());
+//    this->setFixedSize(m_screen->geometry().size());
+//    /*!
+//      \bug
+//      can not set window geometry correctly in kwin.
+//      strangely it works in ukwm.
+//      */
+//    this->setGeometry(m_screen->geometry());
+//    Q_EMIT this->checkWindow();
 
     scaleBg(g);
     //updateView();
