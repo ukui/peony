@@ -157,7 +157,8 @@ void DesktopIconViewDelegate::paint(QPainter *painter, const QStyleOptionViewIte
                                   index,
                                   maxTextHight,
                                   0,
-                                  2);
+                                  2,
+                                  false);
     painter->restore();
 
     //paint text
@@ -170,7 +171,8 @@ void DesktopIconViewDelegate::paint(QPainter *painter, const QStyleOptionViewIte
                                   index,
                                   maxTextHight,
                                   0,
-                                  2);
+                                  2,
+                                  false);
     painter->restore();
 
     painter->restore();

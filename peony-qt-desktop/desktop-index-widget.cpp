@@ -104,7 +104,9 @@ void DesktopIndexWidget::paintEvent(QPaintEvent *e)
                                                         m_option,
                                                         m_index,
                                                         9999,
-                                                        2);
+                                                        2,
+                                                        0,
+                                                        false);
 //    QFontMetrics fm(m_current_font);
 
 //    style()->drawItemText(&p,
@@ -122,7 +124,9 @@ void DesktopIndexWidget::paintEvent(QPaintEvent *e)
                                                         m_option,
                                                         m_index,
                                                         9999,
-                                                        2);
+                                                        2,
+                                                        0,
+                                                        false);
 //    style()->drawItemText(&p,
 //                          m_text_rect,
 //                          Qt::AlignTop|Qt::TextWrapAnywhere|Qt::AlignHCenter,

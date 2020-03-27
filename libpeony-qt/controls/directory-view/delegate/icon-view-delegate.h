@@ -95,7 +95,7 @@ class IconViewTextHelper
                           const QModelIndex &index,
                           int textMaxHeight,
                           int horizalMargin = 0,
-                          int maxLineCount = 0);
+                          int maxLineCount = 0, bool useSystemPalette = true);
 };
 
 }

@@ -343,15 +343,17 @@ QSize IconViewTextHelper::getTextSizeForIndex(const QStyleOptionViewItem &option
     return QSize(fixedWidth, textHight);
 }
 
-void IconViewTextHelper::paintText(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index, int textMaxHeight, int horizalMargin, int maxLineCount)
+void IconViewTextHelper::paintText(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index, int textMaxHeight, int horizalMargin, int maxLineCount, bool useSystemPalette)
 {
     painter->save();
     painter->translate(horizalMargin, 0);
 
-    if (option.state.testFlag(QStyle::State_Selected))
-        painter->setPen(option.palette.highlightedText().color());
-    else
-        painter->setPen(option.palette.text().color());
+    if (useSystemPalette) {
+        if (option.state.testFlag(QStyle::State_Selected))
+            painter->setPen(option.palette.highlightedText().color());
+        else
+            painter->setPen(option.palette.text().color());
+    }
 
     int lineCount = 0;
 
