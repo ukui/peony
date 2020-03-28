@@ -250,6 +250,10 @@ Files: libpeony-qt/controls/property-page/recent-and-trash-properties-page-facto
        libpeony-qt/libpeony-qt.qrc
        libpeony-qt/thumbnail/pdf-thumbnail.cpp
        libpeony-qt/thumbnail/pdf-thumbnail.h
+       libpeony-qt/thumbnail/generic-thumbnailer.cpp
+       libpeony-qt/thumbnail/generic-thumbnailer.h
+       libpeony-qt/thumbnail/thumbnail-job.cpp
+       libpeony-qt/thumbnail/thumbnail-job.h
        libpeony-qt/thumbnail/thumbnail.pri
 Copyright: 2019 Tianjin KYLIN Information Technology Co., Ltd.
 License:   LGPL-3.0+
