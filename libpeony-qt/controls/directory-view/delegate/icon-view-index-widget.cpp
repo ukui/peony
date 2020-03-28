@@ -108,19 +108,10 @@ IconViewIndexWidget::IconViewIndexWidget(const IconViewDelegate *delegate, const
         setFixedHeight(option.rect.height());
 
     m_option.rect.setHeight(fixedHeight);
-    return;
 
-    //deprecated, use IconViewTextHelper get text size instead.
-    m_edit->document()->setPlainText(opt.text);
-    m_edit->document()->setDefaultFont(opt.font);
-    m_edit->document()->setTextWidth(this->size().width());
-    m_edit->setContentsMargins(1, 0, 1, 0);
-    m_edit->viewport()->setContentsMargins(0, 0, 0, 0);
-    m_edit->setAlignment(Qt::AlignTop|Qt::AlignHCenter);
-    m_edit->adjustSize();
-
-    if (this->height() != int(m_edit->document()->size().height()) + m_delegate->getView()->iconSize().height() + 10)
-        setFixedHeight(int(m_edit->document()->size().height()) + m_delegate->getView()->iconSize().height() + 10);
+    connect(qApp, &QApplication::fontChanged, this, [=](){
+        m_delegate->getView()->setIndexWidget(m_index, nullptr);
+    });
 }
 
 IconViewIndexWidget::~IconViewIndexWidget()

@@ -53,6 +53,10 @@ DesktopIndexWidget::DesktopIndexWidget(DesktopIconViewDelegate *delegate,
     m_current_font = QApplication::font();
 
     updateItem();
+
+    connect(qApp, &QApplication::fontChanged, this, [=](){
+        m_delegate->getView()->setIndexWidget(m_index, nullptr);
+    });
 }
 
 DesktopIndexWidget::~DesktopIndexWidget()
