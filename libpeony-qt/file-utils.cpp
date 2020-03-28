@@ -258,3 +258,40 @@ bool FileUtils::isMountRoot(const QString &uri)
     }
     return false;
 }
+
+bool FileUtils::queryVolumeInfo(const QString &volumeUri, QString &volumeName, QString &unixDeviceName, const QString &volumeDisplayName)
+{
+    if (!volumeUri.startsWith("computer:///"))
+        return false;
+
+    GFile *file = g_file_new_for_uri(volumeUri.toUtf8().constData());
+    GFileInfo *info = g_file_query_info(file,
+                                        "mountable::*",
+                                        G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
+                                        nullptr,
+                                        nullptr);
+    g_object_unref(file);
+
+    if (!info) {
+        return false;
+    }
+
+    auto displayName = volumeDisplayName;
+    if (displayName.isNull()) {
+        displayName = getFileDisplayName(volumeUri);
+    }
+
+    char *unix_dev_file = g_file_info_get_attribute_as_string(info, G_FILE_ATTRIBUTE_MOUNTABLE_UNIX_DEVICE_FILE);
+    unixDeviceName = unix_dev_file;
+    if (unix_dev_file)
+        g_free(unix_dev_file);
+
+    auto list = displayName.split(":");
+    if (list.count() > 1) {
+        auto last = list.last();
+        if (last.startsWith(" "))
+            last.remove(0, 1);
+        volumeName = last;
+    }
+    return true;
+}

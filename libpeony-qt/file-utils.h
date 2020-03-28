@@ -63,6 +63,11 @@ public:
 
     static bool isMountRoot(const QString &uri);
 
+    static bool queryVolumeInfo(const QString &volumeUri,
+                                QString &volumeName,
+                                QString &unixDeviceName,
+                                const QString &volumeDisplayName = nullptr);
+
 private:
     FileUtils();
 };

@@ -43,7 +43,7 @@ public:
     Type type() override {return SideBarAbstractItem::FileSystemItem;}
 
     QString uri() override {return m_uri;}
-    QString displayName() override {return m_display_name;}
+    QString displayName() override;
     QString iconName() override {return m_icon_name;}
     bool hasChildren() override {return true;}
 
@@ -89,6 +89,9 @@ private:
 
     bool m_is_mounted = false;
     std::shared_ptr<FileWatcher> m_watcher = nullptr;
+
+    QString m_unix_device; // sdb1, etc...
+    QString m_volume_name; // Windows, Data etc...
 };
 
 }

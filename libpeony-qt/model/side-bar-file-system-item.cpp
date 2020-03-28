@@ -60,7 +60,23 @@ SideBarFileSystemItem::SideBarFileSystemItem(QString uri,
         m_uri = uri;
         m_display_name = FileUtils::getFileDisplayName(uri);
         m_icon_name = FileUtils::getFileIconName(uri);
+        FileUtils::queryVolumeInfo(m_uri, m_volume_name, m_unix_device, m_display_name);
     }
+}
+
+QString SideBarFileSystemItem::displayName()
+{
+    QString displayName;
+    if (!m_volume_name.isEmpty()) {
+        displayName = m_volume_name;
+    }
+    if (!m_unix_device.isEmpty()) {
+        displayName += QString(" (%1)").arg(m_unix_device);
+    }
+    if (!displayName.isEmpty())
+        return displayName;
+
+    return m_display_name;
 }
 
 QModelIndex SideBarFileSystemItem::firstColumnIndex()
