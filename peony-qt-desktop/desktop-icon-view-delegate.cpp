@@ -62,6 +62,13 @@ void DesktopIconViewDelegate::paint(QPainter *painter, const QStyleOptionViewIte
     initStyleOption(&opt, index);
 
     if (view->state() == DesktopIconView::DraggingState) {
+        if (auto widget = view->indexWidget(index)) {
+            if (widget->objectName() == nullptr) {
+                widget->setObjectName("toBeDeleted");
+                QTimer::singleShot(1000, widget, &QWidget::deleteLater);
+            }
+        }
+
         if (view->selectionModel()->selection().contains(index)) {
             painter->setOpacity(0.8);
         }
