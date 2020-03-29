@@ -191,6 +191,11 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
 
     m_operation_menu = new OperationMenu(m_window, this);
     popMenu->setMenu(m_operation_menu);
+
+    for (auto action : actions()) {
+        auto w = widgetForAction(action);
+        w->setProperty("useIconHighlightEffect", true);
+    }
 }
 
 void HeaderBar::findDefaultTerminal()
@@ -323,6 +328,9 @@ void HeaderBar::updateIcons()
     //go back & go forward
     m_go_back->setEnabled(m_window->getCurrentPage()->canGoBack());
     m_go_forward->setEnabled(m_window->getCurrentPage()->canGoForward());
+
+    m_go_back->setProperty("useIconHighlightEffect", true);
+    m_go_forward->setProperty("useIconHighlightEffect", true);
 
     //maximize & restore
     updateMaximizeState();
