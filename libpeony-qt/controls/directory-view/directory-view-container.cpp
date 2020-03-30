@@ -188,8 +188,14 @@ update:
 
     m_current_uri = uri;
 
+    //special uri process
+    if (m_current_uri.endsWith("/."))
+        m_current_uri = m_current_uri.left(m_current_uri.length()-2);
+    if (m_current_uri.endsWith("/.."))
+        m_current_uri = m_current_uri.left(m_current_uri.length()-3);
+
     if (m_view) {
-        m_view->setDirectoryUri(uri);
+        m_view->setDirectoryUri(m_current_uri);
         m_view->beginLocationChange();
         //m_active_view_prxoy->setDirectoryUri(uri);
     }
