@@ -748,6 +748,12 @@ void DesktopIconView::keyPressEvent(QKeyEvent *e)
     }
 }
 
+void DesktopIconView::resizeEvent(QResizeEvent *e)
+{
+    QListView::resizeEvent(e);
+    refresh();
+}
+
 void DesktopIconView::zoomOut()
 {
     clearAllIndexWidgets();

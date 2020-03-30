@@ -138,6 +138,8 @@ protected:
     void wheelEvent(QWheelEvent *e);
     void keyPressEvent(QKeyEvent *e);
 
+    void resizeEvent(QResizeEvent *e);
+
 private:
     ZoomLevel m_zoom_level = Invalid;
 
