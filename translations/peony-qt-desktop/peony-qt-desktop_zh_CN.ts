@@ -207,12 +207,12 @@
 <context>
     <name>Peony::DesktopWindow</name>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-window.cpp" line="127"/>
+        <location filename="../../peony-qt-desktop/desktop-window.cpp" line="136"/>
         <source>set background</source>
         <translation>设置壁纸</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-window.cpp" line="469"/>
+        <location filename="../../peony-qt-desktop/desktop-window.cpp" line="491"/>
         <source>New Folder</source>
         <translation>新建文件夹</translation>
     </message>

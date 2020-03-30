@@ -493,7 +493,7 @@
 <context>
     <name>Peony::DirectoryView::IconView</name>
     <message>
-        <location filename="../../libpeony-qt/controls/directory-view/view/icon-view/icon-view.h" line="59"/>
+        <location filename="../../libpeony-qt/controls/directory-view/view/icon-view/icon-view.h" line="60"/>
         <source>Icon View</source>
         <translation>图标视图</translation>
     </message>
@@ -501,7 +501,7 @@
 <context>
     <name>Peony::DirectoryView::IconView2</name>
     <message>
-        <location filename="../../libpeony-qt/controls/directory-view/view/icon-view/icon-view.h" line="168"/>
+        <location filename="../../libpeony-qt/controls/directory-view/view/icon-view/icon-view.h" line="169"/>
         <source>Icon View</source>
         <translation>图标视图</translation>
     </message>
