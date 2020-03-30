@@ -358,8 +358,24 @@ void DesktopWindow::disconnectSignal() {
 }
 
 void DesktopWindow::scaleBg(const QRect &geometry) {
+    if (this->geometry() == geometry)
+        return;
+
     setGeometry(geometry);
-    //updateView();
+    /*!
+     * \note
+     * There is a bug in kwin, if we directly set window
+     * geometry or showFullScreen, window will not be resized
+     * correctly.
+     *
+     * reset the window flags will resovle the problem,
+     * but screen will be black a while.
+     * this is not user's expected.
+     */
+    setWindowFlag(Qt::FramelessWindowHint, false);
+    setWindowFlag(Qt::FramelessWindowHint);
+    show();
+
     m_bg_back_cache_pixmap = m_bg_back_pixmap.scaled(geometry.size(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
     m_bg_font_cache_pixmap = m_bg_font_pixmap.scaled(geometry.size(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
     this->update();
@@ -521,6 +537,11 @@ void DesktopWindow::updateView() {
     int left = qAbs(avaliableGeometry.left() - geomerty.left());
     int bottom = qAbs(avaliableGeometry.bottom() - geomerty.bottom());
     int right = qAbs(avaliableGeometry.right() - geomerty.right());
+    //skip unexpected avaliable geometry, it might lead by ukui-panel.
+    if (top > 200 | left > 200 | bottom > 200 | right > 200) {
+        setContentsMargins(0, 0, 0, 0);
+        return;
+    }
     setContentsMargins(left, top, right, bottom);
 }
 
@@ -529,15 +550,15 @@ void DesktopWindow::updateWinGeometry() {
     auto vg = getScreen()->virtualGeometry();
     auto ag = getScreen()->availableGeometry();
 
-    this->move(m_screen->geometry().topLeft());
-    this->setFixedSize(m_screen->geometry().size());
-    /*!
-      \bug
-      can not set window geometry correctly in kwin.
-      strangely it works in ukwm.
-      */
-    this->setGeometry(m_screen->geometry());
-    Q_EMIT this->checkWindow();
+//    this->move(m_screen->geometry().topLeft());
+//    this->setFixedSize(m_screen->geometry().size());
+//    /*!
+//      \bug
+//      can not set window geometry correctly in kwin.
+//      strangely it works in ukwm.
+//      */
+//    this->setGeometry(m_screen->geometry());
+//    Q_EMIT this->checkWindow();
 
     scaleBg(g);
     //updateView();
