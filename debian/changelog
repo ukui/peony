@@ -1,3 +1,9 @@
+peony (2.1.1-1) unstable; urgency=medium
+
+  * New upstream bugfix release.
+
+ -- handsome_feng <jianfengli@ubuntukylin.com>  Mon, 30 Mar 2020 21:42:00 +0800
+
 peony (2.1.0-1) unstable; urgency=medium
 
   * New upstream release.
