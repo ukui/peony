@@ -67,12 +67,12 @@
         <translation>选项</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="220"/>
+        <location filename="../../src/control/header-bar.cpp" line="225"/>
         <source>Operate Tips</source>
         <translation>操作提示</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="221"/>
+        <location filename="../../src/control/header-bar.cpp" line="226"/>
         <source>Don&apos;t find any terminal, please install at least one terminal!</source>
         <translation>没有找到任何终端插件，请确认您至少安装了一个！</translation>
     </message>
@@ -88,12 +88,12 @@
 <context>
     <name>HeaderBarContainer</name>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="468"/>
+        <location filename="../../src/control/header-bar.cpp" line="476"/>
         <source>Minimize</source>
         <translation>最小化</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="496"/>
+        <location filename="../../src/control/header-bar.cpp" line="504"/>
         <source>Close</source>
         <translation>最大化</translation>
     </message>
@@ -101,22 +101,27 @@
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="179"/>
+        <location filename="../../src/windows/main-window.cpp" line="87"/>
+        <source>File Manager</source>
+        <translation>文件管理器</translation>
+    </message>
+    <message>
+        <location filename="../../src/windows/main-window.cpp" line="181"/>
         <source>Undo</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="186"/>
+        <location filename="../../src/windows/main-window.cpp" line="188"/>
         <source>Redo</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="842"/>
+        <location filename="../../src/windows/main-window.cpp" line="855"/>
         <source>Delete Permanently</source>
         <translation>永久删除</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="843"/>
+        <location filename="../../src/windows/main-window.cpp" line="856"/>
         <source>Are you sure that you want to delete these files? Once you start a deletion, the files deleting will never be restored again.</source>
         <translation>您确定要删除这些文件吗？一旦开始删除，这些文件将不可再恢复。</translation>
     </message>
@@ -125,7 +130,7 @@
         <translation type="vanished">文件管理器</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="396"/>
+        <location filename="../../src/windows/main-window.cpp" line="398"/>
         <source>New Folder</source>
         <translation>新建文件夹</translation>
     </message>
@@ -201,9 +206,8 @@
 <context>
     <name>PeonyApplication</name>
     <message>
-        <location filename="../../src/peony-application.cpp" line="112"/>
         <source>Peony-Qt</source>
-        <translation>文件管理器</translation>
+        <translation type="vanished">文件管理器</translation>
     </message>
     <message>
         <source>peony-qt</source>

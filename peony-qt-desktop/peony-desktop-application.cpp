@@ -104,7 +104,7 @@ PeonyDesktopApplication::PeonyDesktopApplication(int &argc, char *argv[], const 
 {
     setApplicationVersion("v2.1.0");
     setApplicationName("peony-qt-desktop");
-    setApplicationDisplayName(tr("Peony-Qt Desktop"));
+    //setApplicationDisplayName(tr("Peony-Qt Desktop"));
 
     QTranslator *t = new QTranslator(this);
     t->load("/usr/share/libpeony-qt/libpeony-qt_"+QLocale::system().name());

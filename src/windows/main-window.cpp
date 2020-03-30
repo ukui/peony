@@ -84,6 +84,7 @@
 MainWindow::MainWindow(const QString &uri, QWidget *parent) : QMainWindow(parent)
 {
     setWindowIcon(QIcon::fromTheme("system-file-manager"));
+    setWindowTitle(tr("File Manager"));
 
     //check all settings and init
     checkSettings();

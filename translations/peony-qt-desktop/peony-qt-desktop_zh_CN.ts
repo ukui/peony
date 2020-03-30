@@ -212,7 +212,7 @@
         <translation>设置壁纸</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-window.cpp" line="473"/>
+        <location filename="../../peony-qt-desktop/desktop-window.cpp" line="489"/>
         <source>New Folder</source>
         <translation>新建文件夹</translation>
     </message>
@@ -228,9 +228,8 @@
         <translation type="vanished">桌面</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="107"/>
         <source>Peony-Qt Desktop</source>
-        <translation>桌面</translation>
+        <translation type="vanished">桌面</translation>
     </message>
     <message>
         <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="206"/>
