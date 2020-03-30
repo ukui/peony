@@ -97,6 +97,18 @@ IconViewIndexWidget::IconViewIndexWidget(const IconViewDelegate *delegate, const
 
     m_option = opt;
 
+    adjustPos();
+
+    auto textSize = IconViewTextHelper::getTextSizeForIndex(opt, index, 2);
+
+    int fixedHeight = 5 + iconExpectedSize.height() + 5 + textSize.height() + 5;
+    if (fixedHeight >= option.rect.height())
+        setFixedHeight(fixedHeight);
+    else
+        setFixedHeight(option.rect.height());
+    return;
+
+    //deprecated, use IconViewTextHelper get text size instead.
     m_edit->document()->setPlainText(opt.text);
     m_edit->document()->setDefaultFont(opt.font);
     m_edit->document()->setTextWidth(this->size().width());
@@ -120,9 +132,7 @@ void IconViewIndexWidget::paintEvent(QPaintEvent *e)
     QPainter p(this);
     //p.fillRect(0, 0, 999, 999, Qt::red);
 
-    IconView *view = m_delegate->getView();
-    auto visualRect = view->visualRect(m_index);
-    this->move(visualRect.topLeft());
+    adjustPos();
 
     //qDebug()<<m_option.backgroundBrush;
     //qDebug()<<this->size() << m_delegate->getView()->iconSize();
@@ -137,13 +147,18 @@ void IconViewIndexWidget::paintEvent(QPaintEvent *e)
 
     //auto textRectF = QRectF(0, m_delegate->getView()->iconSize().height(), this->width(), this->height());
     p.save();
-    p.translate(-1, m_delegate->getView()->iconSize().height() + 13);
-    //m_edit->document()->drawContents(&p);
-    QTextOption textOption(Qt::AlignTop|Qt::AlignHCenter);
-    textOption.setWrapMode(QTextOption::WrapAtWordBoundaryOrAnywhere);
-    p.setFont(opt.font);
+
     p.setPen(opt.palette.highlightedText().color());
-    p.drawText(QRect(1, 0, this->width() - 1, 9999), opt.text, textOption);
+    p.translate(0, m_delegate->getView()->iconSize().height() + 5);
+    IconViewTextHelper::paintText(&p, m_option, m_index, 9999, 2, 0);
+
+//    p.translate(-1, m_delegate->getView()->iconSize().height() + 13);
+//    //m_edit->document()->drawContents(&p);
+//    QTextOption textOption(Qt::AlignTop|Qt::AlignHCenter);
+//    textOption.setWrapMode(QTextOption::WrapAtWordBoundaryOrAnywhere);
+//    p.setFont(opt.font);
+//    p.setPen(opt.palette.highlightedText().color());
+//    p.drawText(QRect(1, 0, this->width() - 1, 9999), opt.text, textOption);
     p.restore();
 
     //extra emblems
@@ -206,4 +221,12 @@ void IconViewIndexWidget::mouseDoubleClickEvent(QMouseEvent *event)
 {
     m_delegate->getView()->doubleClicked(m_index);
     return;
+}
+
+void IconViewIndexWidget::adjustPos()
+{
+    IconView *view = m_delegate->getView();
+    auto visualRect = view->visualRect(m_index);
+    if (this->mapToParent(QPoint()) != visualRect.topLeft())
+        this->move(visualRect.topLeft());
 }

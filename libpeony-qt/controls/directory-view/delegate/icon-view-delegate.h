@@ -29,10 +29,14 @@ class QPushButton;
 
 namespace Peony {
 
+class DesktopIconViewDelegate;
+class DesktopIndexWidget;
+
 namespace DirectoryView {
 
 class IconView;
 class IconViewIndexWidget;
+class IconViewTextHelper;
 
 class IconViewDelegate : public QStyledItemDelegate
 {
@@ -44,6 +48,7 @@ public:
     ~IconViewDelegate() override;
     IconView *getView() const;
 
+    void setMaxLineCount(int count = 0);
     const QBrush selectedBrush() const;
 
 public Q_SLOTS:
@@ -61,6 +66,7 @@ protected:
 
     void setIndexWidget(const QModelIndex &index, QWidget *widget) const;
 
+
 private:
     QModelIndexList m_cut_indexes;
 
@@ -68,6 +74,28 @@ private:
     QWidget *m_index_widget;
 
     QPushButton *m_styled_button;
+};
+
+class IconViewTextHelper
+{
+    friend class IconViewDelegate;
+    friend class IconViewIndexWidget;
+    friend class Peony::DesktopIndexWidget;
+    friend class Peony::DesktopIconViewDelegate;
+    /*!
+     * \brief getTextRectForIndex
+     * \return the adjusted text rect to be painted.
+     */
+    static QSize getTextSizeForIndex(const QStyleOptionViewItem &option,
+                                     const QModelIndex &index,
+                                     int horizalMargin = 0,
+                                     int maxLineCount = 0);
+    static void paintText(QPainter *painter,
+                          const QStyleOptionViewItem &option,
+                          const QModelIndex &index,
+                          int textMaxHeight,
+                          int horizalMargin = 0,
+                          int maxLineCount = 0, bool useSystemPalette = true);
 };
 
 }

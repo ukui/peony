@@ -7,7 +7,7 @@ Peony--DesktopIconView
 
 Peony--DesktopIconView::Item
 {
-    padding-top: 10px;
+    padding-top: 5px;
     image-position: bottom;
 }
 

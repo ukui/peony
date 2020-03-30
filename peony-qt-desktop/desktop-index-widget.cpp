@@ -20,6 +20,7 @@
  *
  */
 
+#include "icon-view-delegate.h"
 #include "desktop-index-widget.h"
 
 #include "desktop-icon-view-delegate.h"
@@ -87,29 +88,48 @@ void DesktopIndexWidget::paintEvent(QPaintEvent *e)
     QApplication::style()->drawControl(QStyle::CE_ItemViewItem, &opt, &p, m_delegate->getView());
 
     p.save();
+    p.translate(0, 5 + m_delegate->getView()->iconSize().height() + 5);
 
     // draw text shadow
     p.save();
     p.translate(1, 1);
-    QFontMetrics fm(m_current_font);
+    QColor shadow = Qt::black;
+    shadow.setAlpha(127);
+    p.setPen(shadow);
+    Peony::DirectoryView::IconViewTextHelper::paintText(&p,
+                                                        m_option,
+                                                        m_index,
+                                                        9999,
+                                                        2,
+                                                        0,
+                                                        false);
+//    QFontMetrics fm(m_current_font);
 
-    style()->drawItemText(&p,
-                          m_text_rect,
-                          Qt::AlignTop|Qt::TextWrapAnywhere|Qt::AlignHCenter,
-                          this->palette(),
-                          true,
-                          m_option.text,
-                          QPalette::Shadow);
+//    style()->drawItemText(&p,
+//                          m_text_rect,
+//                          Qt::AlignTop|Qt::TextWrapAnywhere|Qt::AlignHCenter,
+//                          this->palette(),
+//                          true,
+//                          m_option.text,
+//                          QPalette::Shadow);
     p.restore();
 
     // draw text
-    style()->drawItemText(&p,
-                          m_text_rect,
-                          Qt::AlignTop|Qt::TextWrapAnywhere|Qt::AlignHCenter,
-                          this->palette(),
-                          true,
-                          m_option.text,
-                          QPalette::HighlightedText);
+    p.setPen(m_option.palette.highlightedText().color());
+    Peony::DirectoryView::IconViewTextHelper::paintText(&p,
+                                                        m_option,
+                                                        m_index,
+                                                        9999,
+                                                        2,
+                                                        0,
+                                                        false);
+//    style()->drawItemText(&p,
+//                          m_text_rect,
+//                          Qt::AlignTop|Qt::TextWrapAnywhere|Qt::AlignHCenter,
+//                          this->palette(),
+//                          true,
+//                          m_option.text,
+//                          QPalette::HighlightedText);
     p.restore();
 
     bgColor.setAlpha(255*0.8);
@@ -161,11 +181,19 @@ void DesktopIndexWidget::updateItem()
     auto view = m_delegate->getView();
     m_option = view->viewOptions();
     m_delegate->initStyleOption(&m_option, m_index);
-
     QSize size = m_delegate->sizeHint(m_option, m_index);
     auto visualRect = m_delegate->getView()->visualRect(m_index);
     move(visualRect.topLeft());
-    setFixedWidth(size.width());
+    setFixedWidth(visualRect.width());
+
+    m_option.rect.setWidth(visualRect.width());
+
+    int rawHeight = m_option.rect.height();
+    auto textSize = Peony::DirectoryView::IconViewTextHelper::getTextSizeForIndex(m_option, m_index, 2);
+    int fixedHeight = 5 + m_delegate->getView()->iconSize().height() + 5 + textSize.height() + 5;
+    if (fixedHeight < rawHeight)
+        fixedHeight = rawHeight;
+
     setMinimumHeight(size.height());
 
     m_option.text = m_index.data().toString();
@@ -173,7 +201,6 @@ void DesktopIndexWidget::updateItem()
     m_option.features.setFlag(QStyleOptionViewItem::WrapText);
     m_option.textElideMode = Qt::ElideNone;
 
-    m_option.rect.setWidth(this->size().width());
     //m_option.rect.setHeight(9999);
     m_option.rect.moveTo(0, 0);
 
@@ -203,5 +230,6 @@ void DesktopIndexWidget::updateItem()
     auto opt = m_option;
 
     qDebug()<<textRect;
-    setFixedHeight(textRect.bottom() + 10);
+//    setFixedHeight(textRect.bottom() + 10);
+    setFixedHeight(fixedHeight);
 }
