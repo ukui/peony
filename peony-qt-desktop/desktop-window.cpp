@@ -118,13 +118,15 @@ DesktopWindow::DesktopWindow(QScreen *screen, bool is_primary, QWidget *parent)
     [=](const QPoint &pos) {
         // FIXME: use other menu
         qDebug() << "menu request";
-        auto index = PeonyDesktopApplication::getIconView()->indexAt(pos);
+        auto contentMargins = contentsMargins();
+        auto fixedPos = pos - QPoint(contentMargins.left(), contentMargins.top());
+        auto index = PeonyDesktopApplication::getIconView()->indexAt(fixedPos);
         if (!index.isValid() || !centralWidget()) {
             PeonyDesktopApplication::getIconView()->clearSelection();
         } else {
             if (!PeonyDesktopApplication::getIconView()->selectionModel()->selection().indexes().contains(index)) {
                 PeonyDesktopApplication::getIconView()->clearSelection();
-                PeonyDesktopApplication::getIconView()->selectionModel()->select(PeonyDesktopApplication::getIconView()->indexAt(pos), QItemSelectionModel::Select);
+                PeonyDesktopApplication::getIconView()->selectionModel()->select(index, QItemSelectionModel::Select);
             }
         }
 
