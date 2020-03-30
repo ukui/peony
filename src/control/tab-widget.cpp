@@ -125,7 +125,8 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
 
     //trash quick operate buttons
     QHBoxLayout *trash = new QHBoxLayout(this);
-    trash->setContentsMargins(10, 5, 10, 5);
+    trash->setContentsMargins(10, 0, 10, 0);
+    m_trash_bar_layout = trash;
     QToolBar *trashButtons = new QToolBar(this);
     m_trash_bar = trashButtons;
     //trashButtons->setFloatable(true);
@@ -202,9 +203,11 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
 void TabWidget::updateTrashBarVisible(const QString &uri)
 {
     bool visible = false;
-    if (uri == "trash:///")
+    m_trash_bar_layout->setContentsMargins(10, 0, 10, 0);
+    if (uri.indexOf("trash:///") >= 0)
     {
        visible = true;
+       m_trash_bar_layout->setContentsMargins(10, 5, 10, 5);
     }
     m_trash_bar->setVisible(visible);
     m_trash_label->setVisible(visible);
@@ -329,6 +332,7 @@ void TabWidget::goToUri(const QString &uri, bool addHistory, bool forceUpdate)
 void TabWidget::updateTabPageTitle()
 {
    m_tab_bar->updateLocation(m_tab_bar->currentIndex(), getCurrentUri());
+   updateTrashBarVisible(getCurrentUri());
 }
 
 void TabWidget::switchViewType(const QString &viewId)
