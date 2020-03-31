@@ -63,10 +63,7 @@ void DesktopIconViewDelegate::paint(QPainter *painter, const QStyleOptionViewIte
 
     if (view->state() == DesktopIconView::DraggingState) {
         if (auto widget = view->indexWidget(index)) {
-            if (widget->objectName() == nullptr) {
-                widget->setObjectName("toBeDeleted");
-                QTimer::singleShot(1000, widget, &QWidget::deleteLater);
-            }
+            view->setIndexWidget(index, nullptr);
         }
 
         if (view->selectionModel()->selection().contains(index)) {
