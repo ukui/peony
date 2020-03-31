@@ -53,6 +53,15 @@ DesktopIndexWidget::DesktopIndexWidget(DesktopIconViewDelegate *delegate,
     m_current_font = QApplication::font();
 
     updateItem();
+
+    connect(qApp, &QApplication::fontChanged, this, [=](){
+        m_delegate->getView()->setIndexWidget(m_index, nullptr);
+    });
+
+    auto view = m_delegate->getView();
+    view->m_real_do_edit = false;
+    view->m_edit_trigger_timer.stop();
+    view->m_edit_trigger_timer.start();
 }
 
 DesktopIndexWidget::~DesktopIndexWidget()
@@ -140,12 +149,21 @@ void DesktopIndexWidget::paintEvent(QPaintEvent *e)
 void DesktopIndexWidget::mousePressEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton) {
-        auto *view = m_delegate->getView();
+        auto view = m_delegate->getView();
         view->m_real_do_edit = true;
         if (view->m_edit_trigger_timer.isActive()) {
             if (view->m_edit_trigger_timer.remainingTime() < 2250 && view->m_edit_trigger_timer.remainingTime() > 0) {
                 QTimer::singleShot(300, view, [=](){
                     if (view->m_real_do_edit) {
+                        //not allow to edit special items:computer,trash and personal home path folder name
+                        bool special_index = false;
+                        QString homeUri = "file://" + QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
+                        special_index = (m_index.data(Qt::UserRole).toString() == "computer:///" ||
+                                         m_index.data(Qt::UserRole).toString() == "trash:///" ||
+                                         m_index.data(Qt::UserRole).toString() == homeUri);
+                        if (special_index)
+                            return ;
+
                         view->setIndexWidget(m_index, nullptr);
                         view->edit(m_index);
                     }

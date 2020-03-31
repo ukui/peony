@@ -137,6 +137,7 @@ protected:
 
     void wheelEvent(QWheelEvent *e);
     void keyPressEvent(QKeyEvent *e);
+    void keyReleaseEvent(QKeyEvent *e);
 
     void resizeEvent(QResizeEvent *e);
 
@@ -154,6 +155,8 @@ private:
     bool m_is_refreshing = false;
 
     bool m_real_do_edit = false;
+
+    bool m_ctrl_or_shift_pressed = false;
 };
 
 }
