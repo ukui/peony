@@ -62,6 +62,10 @@ void DesktopIconViewDelegate::paint(QPainter *painter, const QStyleOptionViewIte
     initStyleOption(&opt, index);
 
     if (view->state() == DesktopIconView::DraggingState) {
+        if (auto widget = view->indexWidget(index)) {
+            view->setIndexWidget(index, nullptr);
+        }
+
         if (view->selectionModel()->selection().contains(index)) {
             painter->setOpacity(0.8);
         }
