@@ -350,7 +350,7 @@ FileItem *FileItem::getChildFromUri(QString uri)
 
 void FileItem::onChildAdded(const QString &uri)
 {
-    qDebug()<<"add child" + uri;
+    qDebug()<<"add child:" << uri;
     FileItem *child = getChildFromUri(uri);
     if (child) {
         qDebug()<<"has added";

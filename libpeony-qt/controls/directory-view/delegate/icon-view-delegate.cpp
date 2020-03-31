@@ -227,13 +227,15 @@ QWidget *IconViewDelegate::createEditor(QWidget *parent, const QStyleOptionViewI
 #if QT_VERSION > QT_VERSION_CHECK(5, 12, 0)
         QTimer::singleShot(100, this, [=](){
             auto model = qobject_cast<QSortFilterProxyModel*>(getView()->model());
-            model->sort(-1, Qt::SortOrder(getView()->getSortOrder()));
+            //fix rename file back to default sort order
+            //model->sort(-1, Qt::SortOrder(getView()->getSortOrder()));
             model->sort(getView()->getSortType(), Qt::SortOrder(getView()->getSortOrder()));
         });
 #else
         QTimer::singleShot(100, [=](){
             auto model = qobject_cast<QSortFilterProxyModel*>(getView()->model());
-            model->sort(-1, Qt::SortOrder(getView()->getSortOrder()));
+            //fix rename file back to default sort order
+            //model->sort(-1, Qt::SortOrder(getView()->getSortOrder()));
             model->sort(getView()->getSortType(), Qt::SortOrder(getView()->getSortOrder()));
         });
 #endif
