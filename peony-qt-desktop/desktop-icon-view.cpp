@@ -116,30 +116,30 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
     auto zoomLevel = this->zoomLevel();
     setDefaultZoomLevel(zoomLevel);
 
-#if QT_VERSION > QT_VERSION_CHECK(5, 12, 0)
-    QTimer::singleShot(500, this, [=](){
-#else
-    QTimer::singleShot(500, [=](){
-#endif
-        connect(this->selectionModel(), &QItemSelectionModel::selectionChanged, [=](const QItemSelection &selection, const QItemSelection &deselection){
-            //qDebug()<<"selection changed";
-            m_real_do_edit = false;
-            this->setIndexWidget(m_last_index, nullptr);
-            auto currentSelections = this->selectionModel()->selection().indexes();
+//#if QT_VERSION > QT_VERSION_CHECK(5, 12, 0)
+//    QTimer::singleShot(500, this, [=](){
+//#else
+//    QTimer::singleShot(500, [=](){
+//#endif
+//        connect(this->selectionModel(), &QItemSelectionModel::selectionChanged, [=](const QItemSelection &selection, const QItemSelection &deselection){
+//            //qDebug()<<"selection changed";
+//            m_real_do_edit = false;
+//            this->setIndexWidget(m_last_index, nullptr);
+//            auto currentSelections = this->selectionModel()->selection().indexes();
 
-            if (currentSelections.count() == 1) {
-                //qDebug()<<"set index widget";
-                m_last_index = currentSelections.first();
-                auto delegate = qobject_cast<DesktopIconViewDelegate *>(itemDelegate());
-                this->setIndexWidget(m_last_index, new DesktopIndexWidget(delegate, viewOptions(), m_last_index, this));
-            } else {
-                m_last_index = QModelIndex();
-                for (auto index : deselection.indexes()) {
-                    this->setIndexWidget(index, nullptr);
-                }
-            }
-        });
-    });
+//            if (currentSelections.count() == 1) {
+//                //qDebug()<<"set index widget";
+//                m_last_index = currentSelections.first();
+//                auto delegate = qobject_cast<DesktopIconViewDelegate *>(itemDelegate());
+//                this->setIndexWidget(m_last_index, new DesktopIndexWidget(delegate, viewOptions(), m_last_index, this));
+//            } else {
+//                m_last_index = QModelIndex();
+//                for (auto index : deselection.indexes()) {
+//                    this->setIndexWidget(index, nullptr);
+//                }
+//            }
+//        });
+//    });
 
     m_model = new DesktopItemModel(this);
     m_proxy_model = new DesktopItemProxyModel(m_model);
@@ -744,9 +744,19 @@ void DesktopIconView::keyPressEvent(QKeyEvent *e)
         }
         return;
     }
+    case Qt::Key_Shift:
+    case Qt::Key_Control:
+        m_ctrl_or_shift_pressed = true;
+        break;
     default:
         return QListView::keyPressEvent(e);
     }
+}
+
+void DesktopIconView::keyReleaseEvent(QKeyEvent *e)
+{
+    QListView::keyReleaseEvent(e);
+    m_ctrl_or_shift_pressed = false;
 }
 
 void DesktopIconView::resizeEvent(QResizeEvent *e)
@@ -867,41 +877,27 @@ DesktopIconView::ZoomLevel DesktopIconView::zoomLevel() const
 
 void DesktopIconView::mousePressEvent(QMouseEvent *e)
 {
+    // bug extend selection bug
     m_real_do_edit = false;
-    if (!indexAt(e->pos()).isValid()) {
-        clearAllIndexWidgets();
-        clearSelection();
+
+    if (!m_ctrl_or_shift_pressed) {
+        if (!indexAt(e->pos()).isValid()) {
+            clearAllIndexWidgets();
+            clearSelection();
+        } else {
+            auto index = indexAt(e->pos());
+            clearAllIndexWidgets();
+            m_last_index = index;
+            if (!indexWidget(m_last_index)) {
+                setIndexWidget(m_last_index,
+                               new DesktopIndexWidget(qobject_cast<DesktopIconViewDelegate *>(itemDelegate()), viewOptions(), m_last_index));
+            }
+        }
     }
 
     //qDebug()<<m_last_index.data();
     if (e->button() != Qt::LeftButton) {
         return;
-    }
-
-    if (!m_edit_trigger_timer.isActive()) {
-        m_edit_trigger_timer.start();
-    } else {
-        //not allow to edit special items:computer,trash and personal home path folder name
-        bool special_index = false;
-        QString homeUri = "file://" + QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
-        special_index = (m_last_index.data(Qt::UserRole).toString() == "computer:///" ||
-                         m_last_index.data(Qt::UserRole).toString() == "trash:///" ||
-                         m_last_index.data(Qt::UserRole).toString() == homeUri);
-        //qDebug()<<"check" << m_last_index.data() << special_index <<m_last_index.data(Qt::UserRole).toString();
-        if (m_edit_trigger_timer.remainingTime() >= 0 && m_edit_trigger_timer.remainingTime() <= 2250 && !special_index && indexAt(e->pos()) == m_last_index && m_last_index.isValid()) {
-            //qDebug()<<"edit" << m_last_index.data(Qt::UserRole).toString();
-            m_real_do_edit = true;
-            QTimer::singleShot(300, this, [=](){
-                if (m_real_do_edit) {
-                    setIndexWidget(m_last_index, nullptr);
-                    edit(m_last_index);
-                    m_real_do_edit = false;
-                    m_edit_trigger_timer.stop();
-                }
-            });
-        } else {
-            m_real_do_edit = false;
-        }
     }
 
     QListView::mousePressEvent(e);
