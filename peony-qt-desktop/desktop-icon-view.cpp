@@ -356,7 +356,8 @@ void DesktopIconView::initShoutCut()
     addAction(helpAction);
 
     auto propertiesWindowAction = new QAction(this);
-    propertiesWindowAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_Return));
+    propertiesWindowAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::ALT + Qt::Key_Return)
+                                         <<QKeySequence(Qt::ALT + Qt::Key_Enter));
     connect(propertiesWindowAction, &QAction::triggered, this, [=](){
         if (this->getSelections().count() > 0)
         {
