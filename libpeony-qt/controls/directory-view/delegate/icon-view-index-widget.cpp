@@ -107,7 +107,7 @@ IconViewIndexWidget::IconViewIndexWidget(const IconViewDelegate *delegate, const
     else
         setFixedHeight(option.rect.height());
 
-    m_option.rect.setHeight(fixedHeight);
+    m_option.rect.setHeight(fixedHeight - y_delta);
 
     connect(qApp, &QApplication::fontChanged, this, [=](){
         m_delegate->getView()->setIndexWidget(m_index, nullptr);
