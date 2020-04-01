@@ -164,7 +164,9 @@ void FileItem::findChildrenAsync()
                             m_model->insertRows(0, m_children->count(), this->firstColumnIndex());
                             Q_EMIT this->m_model->findChildrenFinished();
                             Q_EMIT m_model->updated();
-                            ThumbnailManager::getInstance()->createThumbnail(info->uri(), m_watcher);
+                            for (auto info : infos) {
+                                ThumbnailManager::getInstance()->createThumbnail(info->uri(), m_watcher);
+                            }
                         }
                     });
                     job->queryAsync();
