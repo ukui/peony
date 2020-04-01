@@ -40,6 +40,7 @@
 #include <QUrl>
 
 #include <QThreadPool>
+#include <QSemaphore>
 
 #include <gio/gdesktopappinfo.h>
 
@@ -64,6 +65,13 @@ ThumbnailManager::ThumbnailManager(QObject *parent) : QObject(parent)
 
     m_thumbnail_thread_pool = new QThreadPool(this);
     m_thumbnail_thread_pool->setMaxThreadCount(1);
+
+    m_semaphore = new QSemaphore(1);
+}
+
+ThumbnailManager::~ThumbnailManager()
+{
+    delete m_semaphore;
 }
 
 ThumbnailManager *ThumbnailManager::getInstance()
@@ -76,6 +84,14 @@ ThumbnailManager *ThumbnailManager::getInstance()
 void ThumbnailManager::syncThumbnailPreferences()
 {
     GlobalSettings::getInstance()->forceSync("do-not-thumbnail");
+}
+
+void ThumbnailManager::insertOrUpdateThumbnail(const QString &uri, const QIcon &icon)
+{
+    m_semaphore->acquire();
+    m_hash.remove(uri);
+    m_hash.insert(uri, icon);
+    m_semaphore->release();
 }
 
 void ThumbnailManager::setForbidThumbnailInView(bool forbid)
@@ -108,8 +124,9 @@ void ThumbnailManager::createThumbnailInternal(const QString &uri, std::shared_p
             if (!thumbnail.isNull()) {
                 //add lock
                 //m_mutex.lock();
-                m_hash.remove(uri);
-                m_hash.insert(uri, thumbnail);
+                //m_hash.remove(uri);
+                //m_hash.insert(uri, thumbnail);
+                insertOrUpdateThumbnail(uri, thumbnail);
                 auto info = FileInfo::fromUri(uri);
                 //Q_EMIT info->updated();
                 if (watcher) {
@@ -133,8 +150,9 @@ void ThumbnailManager::createThumbnailInternal(const QString &uri, std::shared_p
             if (!thumbnail.isNull()) {
                 //add lock
                 //m_mutex.lock();
-                m_hash.remove(uri);
-                m_hash.insert(uri, thumbnail);
+                //m_hash.remove(uri);
+                //m_hash.insert(uri, thumbnail);
+                insertOrUpdateThumbnail(uri, thumbnail);
                 auto info = FileInfo::fromUri(uri);
                 //Q_EMIT info->updated();
                 if (watcher) {
@@ -175,8 +193,9 @@ void ThumbnailManager::createThumbnailInternal(const QString &uri, std::shared_p
             if (!thumbnail.isNull()) {
                 //add lock
                 //m_mutex.lock();
-                m_hash.remove(uri);
-                m_hash.insert(uri, thumbnail);
+                //m_hash.remove(uri);
+                //m_hash.insert(uri, thumbnail);
+                insertOrUpdateThumbnail(uri, thumbnail);
                 auto info = FileInfo::fromUri(uri);
                 //Q_EMIT info->updated();
                 if (watcher) {
@@ -228,8 +247,9 @@ void ThumbnailManager::updateDesktopFileThumbnail(const QString &uri, std::share
             if (!thumbnail.isNull()) {
                 //add lock
                 //m_mutex.lock();
-                m_hash.remove(uri);
-                m_hash.insert(uri, thumbnail);
+                //m_hash.remove(uri);
+                //m_hash.insert(uri, thumbnail);
+                insertOrUpdateThumbnail(uri, thumbnail);
                 auto info = FileInfo::fromUri(uri);
                 //Q_EMIT info->updated();
                 if (watcher) {
@@ -250,14 +270,18 @@ void ThumbnailManager::updateDesktopFileThumbnail(const QString &uri, std::share
 void ThumbnailManager::releaseThumbnail(const QString &uri)
 {
     //m_mutex.lock();
+    m_semaphore->acquire();
     m_hash.remove(uri);
+    m_semaphore->release();
     //m_mutex.unlock();
 }
 
 const QIcon ThumbnailManager::tryGetThumbnail(const QString &uri)
 {
     //m_mutex.lock();
+    m_semaphore->acquire();
     auto icon = m_hash.value(uri);
+    m_semaphore->release();
     //m_mutex.unlock();
     return icon;
 }
