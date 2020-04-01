@@ -187,6 +187,11 @@ OperationMenuEditWidget::OperationMenuEditWidget(MainWindow *window, QWidget *pa
         }
         Q_EMIT operationAccepted();
     });
+
+    copy->setProperty("useIconHighlightEffect", true);
+    paste->setProperty("useIconHighlightEffect", true);
+    cut->setProperty("useIconHighlightEffect", true);
+    trash->setProperty("useIconHighlightEffect", true);
 }
 
 void OperationMenuEditWidget::updateActions(const QString &currentDirUri, const QStringList &selections)

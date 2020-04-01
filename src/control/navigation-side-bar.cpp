@@ -43,6 +43,10 @@
 
 NavigationSideBar::NavigationSideBar(QWidget *parent) : QTreeView(parent)
 {
+    setProperty("useIconHighlightEffect", true);
+    //both default and highlight.
+    setProperty("iconHighlightEffectMode", 1);
+
     this->verticalScrollBar()->setProperty("drawScrollBarGroove", false);
 
     setDragDropMode(QTreeView::DropOnly);
@@ -196,6 +200,7 @@ void NavigationSideBarContainer::addSideBar(NavigationSideBar *sidebar)
     l->setContentsMargins(4, 4, 2, 4);
 
     m_label_button = new QPushButton(QIcon::fromTheme("emblem-important-symbolic"), tr("All tags..."), this);
+    m_label_button->setProperty("useIconHighlightEffect", true);
     m_label_button->setCheckable(true);
 
     l->addWidget(m_label_button);
