@@ -119,6 +119,12 @@ IconViewIndexWidget::IconViewIndexWidget(const IconViewDelegate *delegate, const
 
     if (this->height() != int(m_edit->document()->size().height()) + m_delegate->getView()->iconSize().height() + 10)
         setFixedHeight(int(m_edit->document()->size().height()) + m_delegate->getView()->iconSize().height() + 10);
+
+    m_option.rect.setHeight(fixedHeight - y_delta);
+
+    connect(qApp, &QApplication::fontChanged, this, [=](){
+        m_delegate->getView()->setIndexWidget(m_index, nullptr);
+    });
 }
 
 IconViewIndexWidget::~IconViewIndexWidget()
