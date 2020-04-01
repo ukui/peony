@@ -75,6 +75,8 @@ using namespace Peony;
 
 DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
 {
+    installEventFilter(this);
+
     initShoutCut();
     //initMenu();
     initDoubleClick();
@@ -257,6 +259,15 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
 DesktopIconView::~DesktopIconView()
 {
     //saveAllItemPosistionInfos();
+}
+
+bool DesktopIconView::eventFilter(QObject *obj, QEvent *e)
+{
+    if (e->type() == QEvent::StyleChange) {
+        if (m_model)
+            updateItemPosistions();
+    }
+    return false;
 }
 
 void DesktopIconView::initShoutCut()
@@ -1032,6 +1043,9 @@ void DesktopIconView::clearAllIndexWidgets()
 
 void DesktopIconView::refresh()
 {
+    if (!m_model)
+        return;
+
     if (m_is_refreshing)
         return;
     m_is_refreshing = true;

@@ -55,6 +55,8 @@ public:
     explicit DesktopIconView(QWidget *parent = nullptr);
     ~DesktopIconView();
 
+    bool eventFilter(QObject *obj, QEvent *e);
+
     void initShoutCut();
     void initMenu();
     void initDoubleClick();
@@ -147,7 +149,7 @@ private:
     QModelIndex m_last_index;
     QTimer m_edit_trigger_timer;
 
-    DesktopItemModel *m_model;
+    DesktopItemModel *m_model = nullptr;
     DesktopItemProxyModel *m_proxy_model;
 
     QStringList m_new_files_to_be_selected;
