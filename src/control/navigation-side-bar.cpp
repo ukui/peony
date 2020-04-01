@@ -45,6 +45,8 @@ NavigationSideBar::NavigationSideBar(QWidget *parent) : QTreeView(parent)
 {
     this->verticalScrollBar()->setProperty("drawScrollBarGroove", false);
 
+    setDragDropMode(QTreeView::DropOnly);
+
     setProperty("doNotBlur", true);
     viewport()->setProperty("doNotBlur", true);
 
