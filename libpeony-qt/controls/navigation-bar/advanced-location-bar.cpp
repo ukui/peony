@@ -103,6 +103,7 @@ bool AdvancedLocationBar::isEditing()
 
 void AdvancedLocationBar::startEdit()
 {
+    m_edit->setVisible(true);
     m_layout->setCurrentWidget(m_edit);
     m_edit->setFocus();
     m_edit->setUri(m_bar->getCurentUri());
@@ -117,6 +118,7 @@ void AdvancedLocationBar::switchEditMode(bool bSearchMode)
 {
     if (bSearchMode)
     {
+        m_edit->setVisible(false);
         m_layout->setCurrentWidget(m_search_bar);
         m_search_bar->setPlaceholderText(tr("Search Content..."));
         m_search_bar->setFocus();
