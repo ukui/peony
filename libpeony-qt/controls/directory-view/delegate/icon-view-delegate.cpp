@@ -293,12 +293,15 @@ void IconViewDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, 
     if (!edit)
         return;
     auto newName = edit->toPlainText();
-    if (!newName.isNull()) {
-        if (newName != index.data(Qt::DisplayRole).toString()) {
-            auto fileOpMgr = FileOperationManager::getInstance();
-            auto renameOp = new FileRenameOperation(index.data(FileItemModel::UriRole).toString(), newName);
-            fileOpMgr->startOperation(renameOp, true);
-        }
+    if (newName.isNull())
+        return;
+    //process special name . or ..
+    if (newName == "." || newName == "..")
+        newName = "";
+    if (newName.length() >0 && newName != index.data(Qt::DisplayRole).toString()) {
+        auto fileOpMgr = FileOperationManager::getInstance();
+        auto renameOp = new FileRenameOperation(index.data(FileItemModel::UriRole).toString(), newName);
+        fileOpMgr->startOperation(renameOp, true);
     }
 }
 
