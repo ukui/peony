@@ -77,6 +77,10 @@
 #include <QTimer>
 #include <QDesktopServices>
 
+#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
+#include <QPainterPath>
+#endif
+
 #include <QDebug>
 
 #include <X11/Xlib.h>
