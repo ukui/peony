@@ -147,6 +147,7 @@ const QString IconView::getDirectoryUri()
 
 void IconView::beginLocationChange()
 {
+    m_editValid = false;
     m_model->setRootUri(m_current_uri);
 }
 

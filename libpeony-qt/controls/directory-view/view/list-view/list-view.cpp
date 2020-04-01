@@ -304,6 +304,7 @@ void ListView::open(const QStringList &uris, bool newWindow)
 
 void ListView::beginLocationChange()
 {
+    m_editValid = false;
     setModel(nullptr);
     m_model->setRootUri(m_current_uri);
 }
