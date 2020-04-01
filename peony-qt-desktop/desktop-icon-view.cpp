@@ -697,7 +697,10 @@ void DesktopIconView::keyPressEvent(QKeyEvent *e)
             auto up = center - QPoint(0, gridSize().height());
             auto upIndex = indexAt(up);
             if (upIndex.isValid()) {
+                clearAllIndexWidgets();
                 selectionModel()->select(upIndex, QItemSelectionModel::SelectCurrent);
+                auto delegate = qobject_cast<DesktopIconViewDelegate *>(itemDelegate());
+                setIndexWidget(upIndex, new DesktopIndexWidget(delegate, viewOptions(), upIndex, this));
             }
         }
         return;
@@ -711,7 +714,10 @@ void DesktopIconView::keyPressEvent(QKeyEvent *e)
             auto down = center + QPoint(0, gridSize().height());
             auto downIndex = indexAt(down);
             if (downIndex.isValid()) {
+                clearAllIndexWidgets();
                 selectionModel()->select(downIndex, QItemSelectionModel::SelectCurrent);
+                auto delegate = qobject_cast<DesktopIconViewDelegate *>(itemDelegate());
+                setIndexWidget(downIndex, new DesktopIndexWidget(delegate, viewOptions(), downIndex, this));
             }
         }
         return;
@@ -725,7 +731,10 @@ void DesktopIconView::keyPressEvent(QKeyEvent *e)
             auto left = center - QPoint(gridSize().width(), 0);
             auto leftIndex = indexAt(left);
             if (leftIndex.isValid()) {
+                clearAllIndexWidgets();
                 selectionModel()->select(leftIndex, QItemSelectionModel::SelectCurrent);
+                auto delegate = qobject_cast<DesktopIconViewDelegate *>(itemDelegate());
+                setIndexWidget(leftIndex, new DesktopIndexWidget(delegate, viewOptions(), leftIndex, this));
             }
         }
         return;
@@ -739,7 +748,10 @@ void DesktopIconView::keyPressEvent(QKeyEvent *e)
             auto right = center + QPoint(gridSize().width(), 0);
             auto rightIndex = indexAt(right);
             if (rightIndex.isValid()) {
+                clearAllIndexWidgets();
                 selectionModel()->select(rightIndex, QItemSelectionModel::SelectCurrent);
+                auto delegate = qobject_cast<DesktopIconViewDelegate *>(itemDelegate());
+                setIndexWidget(rightIndex, new DesktopIndexWidget(delegate, viewOptions(), rightIndex, this));
             }
         }
         return;
