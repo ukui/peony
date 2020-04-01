@@ -305,7 +305,7 @@ void ListView::open(const QStringList &uris, bool newWindow)
 void ListView::beginLocationChange()
 {
     m_editValid = false;
-    setModel(nullptr);
+    //setModel(nullptr);
     m_model->setRootUri(m_current_uri);
 }
 
@@ -453,7 +453,7 @@ void ListView2::bindModel(FileItemModel *model, FileItemProxyFilterSortModel *pr
     connect(m_model, &FileItemModel::findChildrenFinished, this, [=](){
         //delay a while for proxy model sorting.
         QTimer::singleShot(100, this, [=](){
-            m_view->setModel(m_proxy_model);
+            //m_view->setModel(m_proxy_model);
             //adjust columns layout.
             m_view->adjustColumnsSize();
         });
