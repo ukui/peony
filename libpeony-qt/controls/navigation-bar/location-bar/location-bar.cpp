@@ -33,6 +33,7 @@
 #include <QMouseEvent>
 #include <QPainter>
 #include <QStyleOptionFocusRect>
+#include <QStyleOptionFrame>
 #include <QLineEdit>
 
 #include <QStandardPaths>
@@ -41,6 +42,9 @@ using namespace Peony;
 
 LocationBar::LocationBar(QWidget *parent) : QToolBar(parent)
 {
+    setAttribute(Qt::WA_Hover);
+    setMouseTracking(true);
+
     setToolTip(tr("click the blank area for edit"));
 
     setStyleSheet("padding-right: 15;"
@@ -169,15 +173,14 @@ void LocationBar::paintEvent(QPaintEvent *e)
     QStyleOptionFocusRect opt;
     opt.initFrom(this);
 
-    //qDebug()<<opt.rect;
-    //p.drawRect(opt.rect);
-    auto rect = opt.rect;
-    rect.setHeight(rect.height() - 1);
-    rect.setWidth(rect.width() - 1);
-    p.setPen(this->palette().mid().color());
-    p.setBrush(m_styled_edit->palette().base());
-    p.drawRect(rect);
+    QStyleOptionFrame fopt;
+    fopt.initFrom(this);
+    fopt.state.setFlag(QStyle::State_HasFocus);
+    fopt.rect.adjust(-2, 0, 0, 0);
+    if (!(opt.state & QStyle::State_MouseOver))
+        fopt.palette.setColor(QPalette::Highlight, fopt.palette.dark().color());
+
+    style()->drawPrimitive(QStyle::PE_PanelLineEdit, &fopt, &p, this);
 
     style()->drawControl(QStyle::CE_ToolBar, &opt, &p, this);
-    //style->drawPrimitive(QStyle::PE_FrameFocusRect, &opt, &p, this);
 }

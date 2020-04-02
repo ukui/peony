@@ -1007,24 +1007,25 @@ void DesktopIconView::dropEvent(QDropEvent *e)
 
 const QFont DesktopIconView::getViewItemFont(QStyleOptionViewItem *item)
 {
-    auto font = item->font;
-    if (font.pixelSize() <= 0) {
-        font = QApplication::font();
-    }
-    switch (zoomLevel()) {
-    case DesktopIconView::Small:
-        font.setPixelSize(int(font.pixelSize() * 0.8));
-        break;
-    case DesktopIconView::Large:
-        font.setPixelSize(int(font.pixelSize() * 1.2));
-        break;
-    case DesktopIconView::Huge:
-        font.setPixelSize(int(font.pixelSize() * 1.4));
-        break;
-    default:
-        break;
-    }
-    return font;
+    return item->font;
+//    auto font = item->font;
+//    if (font.pixelSize() <= 0) {
+//        font = QApplication::font();
+//    }
+//    switch (zoomLevel()) {
+//    case DesktopIconView::Small:
+//        font.setPixelSize(int(font.pixelSize() * 0.8));
+//        break;
+//    case DesktopIconView::Large:
+//        font.setPixelSize(int(font.pixelSize() * 1.2));
+//        break;
+//    case DesktopIconView::Huge:
+//        font.setPixelSize(int(font.pixelSize() * 1.4));
+//        break;
+//    default:
+//        break;
+//    }
+//    return font;
 }
 
 void DesktopIconView::clearAllIndexWidgets()
