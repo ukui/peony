@@ -193,6 +193,8 @@ retry:
                 handle_type = responseTypeWrapper.value<ResponseType>();
                 //block until error has been handled.
             }
+
+            GError *handled_err = nullptr;
             switch (handle_type) {
             case IgnoreOne: {
                 file->setState(FileNode::Unhandled);
@@ -211,11 +213,13 @@ retry:
                 file->setErrorResponse(FileOperation::OverWriteOne);
                 g_file_move(srcFile.get()->get(),
                             destFile.get()->get(),
-                            GFileCopyFlags(m_default_copy_flag|G_FILE_COPY_OVERWRITE),
+                            GFileCopyFlags(G_FILE_COPY_NOFOLLOW_SYMLINKS|
+                                           G_FILE_COPY_ALL_METADATA|
+                                           G_FILE_COPY_OVERWRITE),
                             getCancellable().get()->get(),
                             GFileProgressCallback(progress_callback),
                             this,
-                            nullptr);
+                            &handled_err);
                 break;
             }
             case OverWriteAll: {
@@ -223,11 +227,13 @@ retry:
                 file->setErrorResponse(FileOperation::OverWriteOne);
                 g_file_move(srcFile.get()->get(),
                             destFile.get()->get(),
-                            GFileCopyFlags(m_default_copy_flag|G_FILE_COPY_OVERWRITE),
+                            GFileCopyFlags(G_FILE_COPY_NOFOLLOW_SYMLINKS|
+                                           G_FILE_COPY_ALL_METADATA|
+                                           G_FILE_COPY_OVERWRITE),
                             getCancellable().get()->get(),
                             GFileProgressCallback(progress_callback),
                             this,
-                            nullptr);
+                            &handled_err);
                 m_prehandle_hash.insert(err->code, OverWriteOne);
                 break;
             }
@@ -237,13 +243,13 @@ retry:
                 handleDuplicate(file);
                 auto handledDestFileUri = file->resoveDestFileUri(m_dest_dir_uri);
                 auto handledDestFile = wrapGFile(g_file_new_for_uri(handledDestFileUri.toUtf8()));
-                g_file_move(srcFile.get()->get(),
+                g_file_copy(srcFile.get()->get(),
                             handledDestFile.get()->get(),
                             GFileCopyFlags(m_default_copy_flag|G_FILE_COPY_BACKUP),
                             getCancellable().get()->get(),
                             GFileProgressCallback(progress_callback),
                             this,
-                            nullptr);
+                            &handled_err);
                 break;
             }
             case BackupAll: {
@@ -251,13 +257,13 @@ retry:
                 file->setErrorResponse(FileOperation::BackupOne);
                 auto handledDestFileUri = file->resoveDestFileUri(m_dest_dir_uri);
                 auto handledDestFile = wrapGFile(g_file_new_for_uri(handledDestFileUri.toUtf8()));
-                g_file_move(srcFile.get()->get(),
+                g_file_copy(srcFile.get()->get(),
                             handledDestFile.get()->get(),
                             GFileCopyFlags(m_default_copy_flag|G_FILE_COPY_BACKUP),
                             getCancellable().get()->get(),
                             GFileProgressCallback(progress_callback),
                             this,
-                            nullptr);
+                            &handled_err);
                 m_prehandle_hash.insert(err->code, BackupOne);
                 break;
             }
@@ -271,6 +277,11 @@ retry:
             }
             default:
                 break;
+            }
+
+            if (handled_err) {
+                auto handledErr = GErrorWrapper::wrapFrom(handled_err);
+                this->errored(srcUri, m_dest_dir_uri, handledErr, true);
             }
         } else {
             file->setState(FileNode::Handled);

@@ -418,13 +418,4 @@ void ListView2::bindModel(FileItemModel *model, FileItemProxyFilterSortModel *pr
     connect(m_proxy_model, &FileItemProxyFilterSortModel::layoutChanged, this, [=](){
         Q_EMIT this->sortTypeChanged(getSortType());
     });
-
-    connect(m_model, &FileItemModel::findChildrenFinished, this, [=](){
-        //delay a while for proxy model sorting.
-        QTimer::singleShot(100, this, [=](){
-            //m_view->setModel(m_proxy_model);
-            //adjust columns layout.
-            m_view->adjustColumnsSize();
-        });
-    });
 }
