@@ -174,7 +174,8 @@ retry:
             case G_IO_ERROR_CANCELLED:
                 return;
             case G_IO_ERROR_NOT_SUPPORTED:
-            case G_IO_ERROR_WOULD_RECURSE: {
+            case G_IO_ERROR_WOULD_RECURSE:
+            case G_IO_ERROR_EXISTS: {
                 m_force_use_fallback = true;
                 for (auto node : nodes) {
                     delete node;
