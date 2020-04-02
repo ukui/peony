@@ -37,7 +37,9 @@ Peony::ThumbnailJob::ThumbnailJob(const QString &uri, const std::shared_ptr<Peon
     m_uri = uri;
     m_watcher = watcher;
     if (watcher) {
-        setParent(watcher->parent());
+        if (watcher->parent()) {
+            setParent(watcher->parent());
+        }
     }
 }
 
@@ -49,6 +51,8 @@ Peony::ThumbnailJob::~ThumbnailJob()
 
 void Peony::ThumbnailJob::run()
 {
+    if (!parent())
+        return;
     runCount++;
 
     qDebug()<<"job start, current end:"<<endCount<<"current start request:"<<runCount;

@@ -32,6 +32,7 @@
 #include <QMutex>
 
 class QThreadPool;
+class QSemaphore;
 
 namespace Peony {
 
@@ -58,14 +59,19 @@ Q_SIGNALS:
 public Q_SLOTS:
     void syncThumbnailPreferences();
 
+protected:
+    void insertOrUpdateThumbnail(const QString &uri, const QIcon &icon);
+
 private:
     explicit ThumbnailManager(QObject *parent = nullptr);
+    ~ThumbnailManager();
     void createThumbnailInternal(const QString &uri, std::shared_ptr<FileWatcher> watcher = nullptr, bool force = false);
 
     QHash<QString, QIcon> m_hash;
     //QMutex m_mutex;
 
     QThreadPool *m_thumbnail_thread_pool;
+    QSemaphore *m_semaphore;
 };
 
 }
