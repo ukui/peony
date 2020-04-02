@@ -422,6 +422,33 @@ void MainWindow::keyPressEvent(QKeyEvent *e)
             return;
         m_tab->goToUri(uri, true, true);
     }
+
+    if (e->key() == Qt::Key_Enter || e->key() == Qt::Key_Return)
+    {
+        auto selections = this->getCurrentSelections();
+        if (selections.count() == 1)
+            Q_EMIT m_tab->currentPage()->viewDoubleClicked(selections.first());
+        else
+        {
+            QStringList files;
+            QStringList dirs;
+            for (auto uri : selections) {
+                auto info = Peony::FileInfo::fromUri(uri);
+                if (info->isDir() || info->isVolume()) {
+                    dirs<<uri;
+                } else {
+                    files<<uri;
+                }
+            }
+            for (auto uri : dirs) {
+                m_tab->addPage(uri);
+            }
+            for (auto uri : files) {
+                Q_EMIT m_tab->currentPage()->viewDoubleClicked(uri);
+            }
+        }
+    }
+
     return QMainWindow::keyPressEvent(e);
 }
 
