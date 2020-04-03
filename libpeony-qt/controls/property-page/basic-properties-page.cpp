@@ -21,6 +21,7 @@
  */
 
 #include "basic-properties-page.h"
+#include "thumbnail-manager.h"
 
 #include <QVBoxLayout>
 #include <QFrame>
@@ -187,12 +188,16 @@ void BasicPropertiesPage::onSingleFileChanged(const QString &oldUri, const QStri
     FileInfoJob *j = new FileInfoJob(m_info);
     j->setAutoDelete();
     this->connect(j, &FileInfoJob::infoUpdated, [=](){
-        m_icon->setIcon(QIcon::fromTheme(m_info->iconName()));
+        auto icon = QIcon::fromTheme(m_info->iconName(), QIcon::fromTheme("text-x-generic"));
+        auto thumbnail = ThumbnailManager::getInstance()->tryGetThumbnail(m_info->uri());
+        m_icon->setIcon(thumbnail.isNull()? icon: thumbnail);
         m_display_name->setText(m_info->displayName());
         m_type->setText(m_info->fileType());
     });
     j->queryAsync();
-    m_icon->setIcon(QIcon::fromTheme(m_info->iconName(), QIcon::fromTheme("text-x-generic")));
+    auto icon = QIcon::fromTheme(m_info->iconName(), QIcon::fromTheme("text-x-generic"));
+    auto thumbnail = ThumbnailManager::getInstance()->tryGetThumbnail(m_info->uri());
+    m_icon->setIcon(thumbnail.isNull()? icon: thumbnail);
     m_location->setText(FileUtils::getParentUri(m_info->uri()));
 }
 
