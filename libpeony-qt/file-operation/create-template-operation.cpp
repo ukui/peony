@@ -120,7 +120,7 @@ retry_create_empty_file:
                 handleDuplicate(m_target_uri);
                 goto retry_create_empty_file;
             } else {
-                Q_EMIT errored(m_src_uri, m_dest_dir_uri, GErrorWrapper::wrapFrom(err));
+                Q_EMIT errored(m_src_uri, m_dest_dir_uri, GErrorWrapper::wrapFrom(err), true);
             }
         }
         break;
@@ -138,7 +138,7 @@ retry_create_empty_folder:
                 handleDuplicate(m_target_uri);
                 goto retry_create_empty_folder;
             } else {
-                Q_EMIT errored(m_src_uri, m_dest_dir_uri, GErrorWrapper::wrapFrom(err));
+                Q_EMIT errored(m_src_uri, m_dest_dir_uri, GErrorWrapper::wrapFrom(err), true);
             }
         }
         break;
@@ -160,7 +160,7 @@ retry_create_template:
                 handleDuplicate(m_target_uri);
                 goto retry_create_template;
             } else {
-                Q_EMIT errored(m_src_uri, m_dest_dir_uri, GErrorWrapper::wrapFrom(err));
+                Q_EMIT errored(m_src_uri, m_dest_dir_uri, GErrorWrapper::wrapFrom(err), true);
             }
         }
         break;
