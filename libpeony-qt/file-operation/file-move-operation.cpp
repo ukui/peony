@@ -169,12 +169,14 @@ retry:
                     &err);
 
         if (err) {
+            setHasError(true);
             auto errWrapper = GErrorWrapper::wrapFrom(err);
             switch (errWrapper.get()->code()) {
             case G_IO_ERROR_CANCELLED:
                 return;
             case G_IO_ERROR_NOT_SUPPORTED:
-            case G_IO_ERROR_WOULD_RECURSE: {
+            case G_IO_ERROR_WOULD_RECURSE:
+            case G_IO_ERROR_EXISTS: {
                 m_force_use_fallback = true;
                 for (auto node : nodes) {
                     delete node;
@@ -638,8 +640,11 @@ fallback_retry:
                 break;
             }
             case BackupOne: {
+                handleDuplicate(node);
+                auto handledDestFileUri = node->resoveDestFileUri(m_dest_dir_uri);
+                auto handledDestFile = wrapGFile(g_file_new_for_uri(handledDestFileUri.toUtf8()));
                 g_file_copy(sourceFile.get()->get(),
-                            destFile.get()->get(),
+                            handledDestFile.get()->get(),
                             GFileCopyFlags(m_default_copy_flag | G_FILE_COPY_BACKUP),
                             getCancellable().get()->get(),
                             GFileProgressCallback(progress_callback),
@@ -650,8 +655,11 @@ fallback_retry:
                 break;
             }
             case BackupAll: {
+                handleDuplicate(node);
+                auto handledDestFileUri = node->resoveDestFileUri(m_dest_dir_uri);
+                auto handledDestFile = wrapGFile(g_file_new_for_uri(handledDestFileUri.toUtf8()));
                 g_file_copy(sourceFile.get()->get(),
-                            destFile.get()->get(),
+                            handledDestFile.get()->get(),
                             GFileCopyFlags(m_default_copy_flag | G_FILE_COPY_BACKUP),
                             getCancellable().get()->get(),
                             GFileProgressCallback(progress_callback),
