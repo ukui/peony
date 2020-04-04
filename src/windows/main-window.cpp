@@ -646,9 +646,36 @@ void MainWindow::paintEvent(QPaintEvent *e)
     QColor color = this->palette().window().color();
     QColor colorBase = this->palette().base().color();
 
+    int R1 = color.red();
+    int G1 = color.green();
+    int B1 = color.blue();
+    qreal a1 = 0.3;
+
+    int R2 = colorBase.red();
+    int G2 = colorBase.green();
+    int B2 = colorBase.blue();
+    qreal a2 = 1;
+
+    qreal a = 1 - (1 - a1)*(1 - a2);
+
+    qreal R = (a1*R1 + (1 - a1)*a2*R2) / a;
+    qreal G = (a1*G1 + (1 - a1)*a2*G2) / a;
+    qreal B = (a1*B1 + (1 - a1)*a2*B2) / a;
+
+    colorBase.setRed(R);
+    colorBase.setGreen(G);
+    colorBase.setBlue(B);
+
     auto sidebarOpacity = Peony::GlobalSettings::getInstance()->getValue(SIDEBAR_BG_OPACITY).toInt();
 
     colorBase.setAlphaF(sidebarOpacity/100.0);
+
+    if (qApp->property("blurEnable").isValid()) {
+        bool blurEnable = qApp->property("blurEnable").toBool();
+        if (!blurEnable) {
+            colorBase.setAlphaF(1);
+        }
+    }
 
     QPainterPath sidebarPath;
     sidebarPath.setFillRule(Qt::FillRule::WindingFill);
