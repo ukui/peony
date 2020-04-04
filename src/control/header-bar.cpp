@@ -195,6 +195,7 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
     for (auto action : actions()) {
         auto w = widgetForAction(action);
         w->setProperty("useIconHighlightEffect", true);
+        w->setProperty("iconHighlightEffectMode", 1);
     }
 }
 
@@ -330,7 +331,9 @@ void HeaderBar::updateIcons()
     m_go_forward->setEnabled(m_window->getCurrentPage()->canGoForward());
 
     m_go_back->setProperty("useIconHighlightEffect", true);
+    m_go_back->setProperty("iconHighlightEffectMode", 1);
     m_go_forward->setProperty("useIconHighlightEffect", true);
+    m_go_forward->setProperty("iconHighlightEffectMode", 1);
 
     //maximize & restore
     updateMaximizeState();
@@ -521,4 +524,10 @@ void HeaderBarContainer::addWindowButtons()
     maximizeAndRestore->installEventFilter(this);
     close->setMouseTracking(true);
     close->installEventFilter(this);
+
+    for (int i = 0; i < 3; i++) {
+        auto w = layout->itemAt(i)->widget();
+        w->setProperty("useIconHighlightEffect", true);
+        w->setProperty("iconHighlightEffectMode", 1);
+    }
 }
