@@ -31,6 +31,8 @@
 
 #include <QKeyEvent>
 
+#include <QApplication>
+
 using namespace Peony;
 
 ListViewDelegate::ListViewDelegate(QObject *parent) : QStyledItemDelegate(parent)
@@ -48,24 +50,7 @@ void ListViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
     QStyleOptionViewItem opt = option;
     initStyleOption(&opt, index);
     opt.displayAlignment = Qt::Alignment(Qt::AlignLeft|Qt::AlignVCenter);
-
-    auto widget = qobject_cast<QWidget*>(parent());
-    auto style = widget->style();
-    painter->save();
-    if (opt.state.testFlag(QStyle::State_MouseOver)) {
-        if (!opt.state.testFlag(QStyle::State_Selected)) {
-            auto rect = opt.rect;
-            QColor color = m_styled_button->palette().highlight().color();
-            color.setAlpha(127);//half transparent
-            painter->fillRect(rect, color);
-        } else {
-            auto rect = opt.rect;
-            QColor color = m_styled_button->palette().highlight().color();
-            painter->fillRect(rect, color);
-        }
-    }
-    painter->restore();
-    style->drawControl(QStyle::CE_ItemViewItem, &opt, painter, widget);
+    return QApplication::style()->drawControl(QStyle::CE_ItemViewItem, &opt, painter);
 }
 
 QWidget *ListViewDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const

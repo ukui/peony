@@ -45,6 +45,8 @@
 
 NavigationSideBar::NavigationSideBar(QWidget *parent) : QTreeView(parent)
 {
+    setIconSize(QSize(16, 16));
+
     setProperty("useIconHighlightEffect", true);
     //both default and highlight.
     setProperty("iconHighlightEffectMode", 1);
