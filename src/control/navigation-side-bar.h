@@ -52,6 +52,9 @@ Q_SIGNALS:
     void updateWindowLocationRequest(const QString &uri, bool addHistory = true, bool force = false);
     void labelButtonClicked(bool checked);
 
+protected:
+    void keyPressEvent(QKeyEvent *event);
+
 private:
     Peony::SideBarProxyFilterSortModel *m_proxy_model;
     Peony::SideBarModel *m_model;
