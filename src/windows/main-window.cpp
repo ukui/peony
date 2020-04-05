@@ -57,6 +57,7 @@
 #include "file-operation-utils.h"
 #include "file-utils.h"
 #include "create-template-operation.h"
+#include "file-operation-error-dialog.h"
 #include "clipboard-utils.h"
 
 #include "directory-view-menu.h"
@@ -400,6 +401,8 @@ void MainWindow::updateTabPageTitle()
 void MainWindow::createFolderOperation()
 {
     Peony::CreateTemplateOperation op(getCurrentUri(), Peony::CreateTemplateOperation::EmptyFolder, tr("New Folder"));
+    Peony::FileOperationErrorDialog dlg;
+    connect(&op, &Peony::FileOperation::errored, &dlg, &Peony::FileOperationErrorDialog::handleError);
     op.run();
     auto targetUri = op.target();
 #if QT_VERSION > QT_VERSION_CHECK(5, 12, 0)
