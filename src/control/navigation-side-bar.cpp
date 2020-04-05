@@ -39,6 +39,8 @@
 
 #include <QScrollBar>
 
+#include <QKeyEvent>
+
 #include <QDebug>
 
 NavigationSideBar::NavigationSideBar(QWidget *parent) : QTreeView(parent)
@@ -158,6 +160,19 @@ QSize NavigationSideBar::sizeHint() const
     auto size = QTreeView::sizeHint();
     size.setWidth(w/5);
     return size;
+}
+
+void NavigationSideBar::keyPressEvent(QKeyEvent *event)
+{
+    QTreeView::keyPressEvent(event);
+
+    if (event->key() == Qt::Key_Return) {
+        if (!selectedIndexes().isEmpty()) {
+            auto index = selectedIndexes().first();
+            auto uri = index.data(Qt::UserRole).toString();
+            Q_EMIT this->updateWindowLocationRequest(uri, true);
+        }
+    }
 }
 
 NavigationSideBarItemDelegate::NavigationSideBarItemDelegate(QObject *parent)
