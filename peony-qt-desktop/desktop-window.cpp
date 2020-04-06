@@ -548,6 +548,8 @@ void DesktopWindow::updateView() {
 }
 
 void DesktopWindow::updateWinGeometry() {
+    auto screenName = m_screen->name();
+    auto screenSize = m_screen->size();
     auto g = getScreen()->geometry();
     auto vg = getScreen()->virtualGeometry();
     auto ag = getScreen()->availableGeometry();
@@ -563,5 +565,18 @@ void DesktopWindow::updateWinGeometry() {
 //    Q_EMIT this->checkWindow();
 
     scaleBg(g);
+
+    auto name = m_screen->name();
+    if (m_screen == qApp->primaryScreen()) {
+        if (auto view = qobject_cast<DesktopIconView *>(centralWidget())) {
+            this->show();
+        }
+    } else {
+        if (m_screen->geometry() == qApp->primaryScreen()->geometry())
+            this->hide();
+        else
+            this->show();
+    }
+
     //updateView();
 }
