@@ -678,6 +678,8 @@ void MainWindow::paintEvent(QPaintEvent *e)
         if (!blurEnable) {
             colorBase.setAlphaF(1);
         }
+    } else {
+        colorBase.setAlphaF(1);
     }
 
     QPainterPath sidebarPath;
