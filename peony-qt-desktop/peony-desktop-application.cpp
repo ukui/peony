@@ -322,8 +322,12 @@ void PeonyDesktopApplication::addWindow(QScreen *screen, bool checkPrimay)
     }
 
     connect(window, &Peony::DesktopWindow::checkWindow, this, &PeonyDesktopApplication::checkWindowProcess);
-    window->showFullScreen();
+    //window->showFullScreen();
     m_window_list<<window;
+
+    for (auto window : m_window_list) {
+        window->updateWinGeometry();
+    }
 }
 
 void PeonyDesktopApplication::layoutDirectionChangedProcess(Qt::LayoutDirection direction)
