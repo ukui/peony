@@ -95,13 +95,13 @@ void FileMetaInfo::setMetaInfoVariant(const QString &key, const QVariant &value)
     auto data = value.toString().toUtf8().data();
     g_file_info_set_attribute(info, tmp.c_str(), G_FILE_ATTRIBUTE_TYPE_STRING, (gpointer)data);
     //FIXME: should i add callback?
-    g_file_set_attributes_async(file,
-                                info,
-                                G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
-                                0,
-                                nullptr,
-                                nullptr,
-                                nullptr);
+//    g_file_set_attributes_async(file,
+//                                info,
+//                                G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
+//                                0,
+//                                nullptr,
+//                                nullptr,
+//                                nullptr);
     //qDebug()<<tmp.c_str()<<value;
     GError *err = nullptr;
     g_file_set_attribute(file, tmp.c_str(), G_FILE_ATTRIBUTE_TYPE_STRING, (gpointer)data,
