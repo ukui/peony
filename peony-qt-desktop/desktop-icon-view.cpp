@@ -75,6 +75,9 @@ using namespace Peony;
 
 DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
 {
+    m_refresh_timer.setInterval(500);
+    m_refresh_timer.setSingleShot(true);
+
     installEventFilter(this);
 
     initShoutCut();
@@ -1076,6 +1079,9 @@ void DesktopIconView::clearAllIndexWidgets()
 
 void DesktopIconView::refresh()
 {
+    if (m_refresh_timer.isActive())
+        return;
+
     if (!m_model)
         return;
 
@@ -1083,6 +1089,8 @@ void DesktopIconView::refresh()
         return;
     m_is_refreshing = true;
     m_model->refresh();
+
+    m_refresh_timer.start();
 }
 
 QRect DesktopIconView::visualRect(const QModelIndex &index) const

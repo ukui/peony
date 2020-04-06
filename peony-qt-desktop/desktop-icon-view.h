@@ -161,6 +161,8 @@ private:
     bool m_real_do_edit = false;
 
     bool m_ctrl_or_shift_pressed = false;
+
+    QTimer m_refresh_timer;
 };
 
 }
