@@ -1,3 +1,16 @@
+peony (2.1.2-1) unstable; urgency=medium
+
+  * New upstream bugfix release.
+    - Fix enter key as shortcut issues such as open selected file.
+    - Fix that file in drag state not show file name.
+    - Fix that file rename as empty and rename file change current sort.
+    - Fix that desktop app link show incorrect icon.
+    - Fix generate file thumbnail issue and ensure thread safety.
+    - Fix that screen mirror not show view.
+    - Fix file handle error.
+
+ -- handsome_feng <jianfengli@ubuntukylin.com>  Mon, 06 Apr 2020 19:57:13 +0800
+
 peony (2.1.1-1) unstable; urgency=medium
 
   * New upstream bugfix release.
