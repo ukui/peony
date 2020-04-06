@@ -143,6 +143,8 @@ protected:
 
     void resizeEvent(QResizeEvent *e);
 
+    bool isItemsOverlapped();
+
 private:
     ZoomLevel m_zoom_level = Invalid;
 

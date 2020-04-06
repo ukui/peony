@@ -153,6 +153,22 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
     connect(m_model, &DesktopItemModel::refreshed, this, [=](){
         this->updateItemPosistions(nullptr);
         this->m_is_refreshing = false;
+        if (isItemsOverlapped()) {
+            // try handling the problem items overlapped.
+            QTimer::singleShot(500, this, [=](){
+                if (m_is_refreshing)
+                    return;
+
+                setSortType(GlobalSettings::getInstance()->getValue(LAST_DESKTOP_SORT_ORDER).toInt());
+#if QT_VERSION > QT_VERSION_CHECK(5, 12, 0)
+                QTimer::singleShot(100, this, [=](){
+#else
+                QTimer::singleShot(100, [=](){
+#endif
+                    this->saveAllItemPosistionInfos();
+                });
+            });
+        }
     });
 
     connect(m_model, &DesktopItemModel::requestClearIndexWidget, this, &DesktopIconView::clearAllIndexWidgets);
@@ -786,6 +802,22 @@ void DesktopIconView::resizeEvent(QResizeEvent *e)
 {
     QListView::resizeEvent(e);
     refresh();
+}
+
+bool DesktopIconView::isItemsOverlapped()
+{
+    QList<QRect> itemRects;
+    if (model()) {
+        for (int i = 0; i < model()->rowCount(); i++) {
+            auto index = model()->index(i, 0);
+            auto rect = visualRect(index);
+            if (itemRects.contains(rect))
+                return true;
+            itemRects<<visualRect(index);
+        }
+    }
+
+    return false;
 }
 
 void DesktopIconView::zoomOut()
