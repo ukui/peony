@@ -73,7 +73,8 @@ void PathEdit::setUri(const QString &uri)
 void PathEdit::focusOutEvent(QFocusEvent *e)
 {
     QLineEdit::focusOutEvent(e);
-    Q_EMIT editCancelled();
+    if (! m_right_click)
+        Q_EMIT editCancelled();
 }
 
 void PathEdit::focusInEvent(QFocusEvent *e)
@@ -89,4 +90,14 @@ void PathEdit::keyPressEvent(QKeyEvent *e)
     if (e->key() == Qt::Key_Escape) {
         Q_EMIT editCancelled();
     }
+}
+
+void PathEdit::mousePressEvent(QMouseEvent *e)
+{
+    QLineEdit::mousePressEvent(e);
+    //qDebug() << "mousePressEvent"<<e->button();
+    if (e->button() == Qt::RightButton)
+        m_right_click = true;
+    else
+        m_right_click = false;
 }

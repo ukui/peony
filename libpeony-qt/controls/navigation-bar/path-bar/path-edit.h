@@ -48,12 +48,15 @@ protected:
     void focusInEvent(QFocusEvent *e) override;
     void focusOutEvent(QFocusEvent *e) override;
     void keyPressEvent(QKeyEvent *e) override;
+    void mousePressEvent(QMouseEvent *e) override;
 
 private:
     QString m_last_uri;
 
     PathBarModel *m_model;
     PathCompleter *m_completer;
+
+    bool m_right_click = false;
 };
 
 }
