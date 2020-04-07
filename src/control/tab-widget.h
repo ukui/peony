@@ -29,6 +29,8 @@
 #include <QPushButton>
 #include <QLabel>
 #include "navigation-tab-bar.h"
+#include "file-info.h"
+#include "tab-status-bar.h"
 
 class NavigationTabBar;
 class QStackedWidget;
@@ -66,6 +68,7 @@ public:
     const QStringList getCurrentSelections();
 
     const QStringList getAllFileUris();
+    const QList<std::shared_ptr<Peony::FileInfo>> getCurrentSelectionFileInfos();
 
     const QStringList getBackList();
     const QStringList getForwardList();
@@ -171,6 +174,8 @@ private:
     QLabel *m_trash_label;
     QPushButton *m_clear_button;
     QPushButton *m_recover_button;
+
+    TabStatusBar *m_status_bar = nullptr;
 
     bool m_triggered_preview_page = false;
 

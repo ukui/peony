@@ -7,6 +7,7 @@ HEADERS += \
     $$PWD/navigation-tab-bar.h \
     $$PWD/operation-menu.h \
     $$PWD/sort-type-menu.h \
+    $$PWD/tab-status-bar.h \
     $$PWD/tab-widget.h \
     $$PWD/view-type-menu.h
 
@@ -17,5 +18,6 @@ SOURCES += \
     $$PWD/navigation-tab-bar.cpp \
     $$PWD/operation-menu.cpp \
     $$PWD/sort-type-menu.cpp \
+    $$PWD/tab-status-bar.cpp \
     $$PWD/tab-widget.cpp \
     $$PWD/view-type-menu.cpp

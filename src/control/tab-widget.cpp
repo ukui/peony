@@ -62,6 +62,10 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
     m_preview_page_container = new QStackedWidget(this);
     m_preview_page_container->setMinimumWidth(200);
 
+    //status bar
+    m_status_bar = new TabStatusBar(this, this);
+    setStatusBar(m_status_bar);
+
     connect(m_buttons, &PreviewPageButtonGroups::previewPageButtonTrigger, [=](bool trigger, const QString &id){
         setTriggeredPreviewPage(trigger);
         if (trigger) {
@@ -183,11 +187,13 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
     //bind preview page
     connect(this, &TabWidget::activePageSelectionChanged, this, [=](){
         updatePreviewPage();
+        m_status_bar->update();
         Q_EMIT this->currentSelectionChanged();
     });
 
     connect(this, &TabWidget::activePageChanged, this, [=](){
         QTimer::singleShot(100, this, [=](){
+            m_status_bar->update();
             this->updatePreviewPage();
         });
     });
@@ -499,6 +505,17 @@ void TabWidget::updateTabBarGeometry()
     m_tab_bar->setGeometry(0, 4, m_tab_bar_bg->width(), m_tab_bar->height());
     m_tab_bar_bg->setFixedHeight(m_tab_bar->height());
     m_tab_bar->raise();
+}
+
+const QList<std::shared_ptr<Peony::FileInfo>> TabWidget::getCurrentSelectionFileInfos()
+{
+    const QStringList uris = getCurrentSelections();
+    QList<std::shared_ptr<Peony::FileInfo>> infos;
+    for(auto uri : uris) {
+        auto info = Peony::FileInfo::fromUri(uri);
+        infos<<info;
+    }
+    return infos;
 }
 
 PreviewPageContainer::PreviewPageContainer(QWidget *parent) : QStackedWidget(parent)
