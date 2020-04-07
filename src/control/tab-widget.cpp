@@ -122,7 +122,7 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
     previewButtons->addActions(group->actions());
     for (auto action : group->actions()) {
         auto button = qobject_cast<QToolButton *>(previewButtons->widgetForAction(action));
-        button->setFixedSize(20, 20);
+        button->setFixedSize(26, 26);
         button->setIconSize(QSize(16, 16));
         button->setProperty("useIconHighlightEffect", true);
     }
