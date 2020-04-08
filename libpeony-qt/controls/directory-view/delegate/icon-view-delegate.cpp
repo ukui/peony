@@ -51,7 +51,7 @@
 #include "clipboard-utils.h"
 
 #include <QTextLayout>
-#include <QPainter>
+#include <QFileInfo>
 
 using namespace Peony;
 using namespace Peony::DirectoryView;
@@ -285,12 +285,15 @@ void IconViewDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, 
     if (!edit)
         return;
     auto newName = edit->toPlainText();
+    auto oldName = index.data(Qt::DisplayRole).toString();
+    QFileInfo info(index.data().toUrl().path());
+    auto suffix = "." + info.suffix();
     if (newName.isNull())
         return;
     //process special name . or ..
     if (newName == "." || newName == "..")
         newName = "";
-    if (newName.length() >0 && newName != index.data(Qt::DisplayRole).toString()) {
+    if (newName.length() >0 && newName != oldName && newName != suffix) {
         auto fileOpMgr = FileOperationManager::getInstance();
         auto renameOp = new FileRenameOperation(index.data(FileItemModel::UriRole).toString(), newName);
         fileOpMgr->startOperation(renameOp, true);

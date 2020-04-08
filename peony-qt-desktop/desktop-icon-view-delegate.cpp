@@ -33,6 +33,7 @@
 #include <QPushButton>
 #include <QWidget>
 #include <QPainter>
+#include <QFileInfo>
 
 #include <QApplication>
 
@@ -308,12 +309,18 @@ void DesktopIconViewDelegate::setModelData(QWidget *editor, QAbstractItemModel *
     if (!edit)
         return;
     auto newName = edit->toPlainText();
-    if (!newName.isNull()) {
-        if (newName != index.data(Qt::DisplayRole).toString()) {
-            auto fileOpMgr = FileOperationManager::getInstance();
-            auto renameOp = new FileRenameOperation(index.data(Qt::UserRole).toString(), newName);
-            fileOpMgr->startOperation(renameOp, true);
-        }
+    auto oldName = index.data(Qt::DisplayRole).toString();
+    QFileInfo info(index.data().toUrl().path());
+    auto suffix = "." + info.suffix();
+    if (newName.isNull())
+        return;
+    //process special name . or ..
+    if (newName == "." || newName == "..")
+        newName = "";
+    if (newName.length() >0 && newName != oldName && newName != suffix) {
+        auto fileOpMgr = FileOperationManager::getInstance();
+        auto renameOp = new FileRenameOperation(index.data(Qt::UserRole).toString(), newName);
+        fileOpMgr->startOperation(renameOp, true);
     }
 }
 
