@@ -23,6 +23,8 @@
 #include "file-label-box.h"
 #include "file-label-model.h"
 
+#include "label-box-delegate.h"
+
 #include <QMenu>
 
 #include <QColorDialog>
@@ -35,6 +37,7 @@ static LabelBoxStyle *global_instance = nullptr;
 
 FileLabelBox::FileLabelBox(QWidget *parent) : QListView(parent)
 {
+    //setItemDelegate(new LabelBoxDelegate(this));
     setStyle(LabelBoxStyle::getStyle());
     viewport()->setStyle(LabelBoxStyle::getStyle());
     setModel(FileLabelModel::getGlobalModel());
@@ -102,6 +105,11 @@ void FileLabelBox::mousePressEvent(QMouseEvent *e)
     else {
         QListView::mousePressEvent(e);
     }
+}
+
+void FileLabelBox::paintEvent(QPaintEvent *e)
+{
+    QListView::paintEvent(e);
 }
 
 //LabelBoxStyle

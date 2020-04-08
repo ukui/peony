@@ -3,6 +3,7 @@ INCLUDEPATH += $$PWD
 HEADERS += \
     $$PWD/file-label-box.h \
     $$PWD/header-bar.h \
+    $$PWD/label-box-delegate.h \
     $$PWD/navigation-side-bar.h \
     $$PWD/navigation-tab-bar.h \
     $$PWD/operation-menu.h \
@@ -14,6 +15,7 @@ HEADERS += \
 SOURCES += \
     $$PWD/file-label-box.cpp \
     $$PWD/header-bar.cpp \
+    $$PWD/label-box-delegate.cpp \
     $$PWD/navigation-side-bar.cpp \
     $$PWD/navigation-tab-bar.cpp \
     $$PWD/operation-menu.cpp \
