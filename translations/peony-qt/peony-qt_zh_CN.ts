@@ -4,22 +4,22 @@
 <context>
     <name>FileLabelBox</name>
     <message>
-        <location filename="../../src/control/file-label-box.cpp" line="54"/>
+        <location filename="../../src/control/file-label-box.cpp" line="57"/>
         <source>Rename</source>
         <translation>重命名</translation>
     </message>
     <message>
-        <location filename="../../src/control/file-label-box.cpp" line="59"/>
+        <location filename="../../src/control/file-label-box.cpp" line="62"/>
         <source>Edit Color</source>
         <translation>编辑颜色</translation>
     </message>
     <message>
-        <location filename="../../src/control/file-label-box.cpp" line="67"/>
+        <location filename="../../src/control/file-label-box.cpp" line="70"/>
         <source>Delete</source>
         <translation>删除标记</translation>
     </message>
     <message>
-        <location filename="../../src/control/file-label-box.cpp" line="72"/>
+        <location filename="../../src/control/file-label-box.cpp" line="75"/>
         <source>Create New Label</source>
         <translation>创建标记</translation>
     </message>
@@ -67,12 +67,12 @@
         <translation>选项</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="225"/>
+        <location filename="../../src/control/header-bar.cpp" line="226"/>
         <source>Operate Tips</source>
         <translation>操作提示</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="226"/>
+        <location filename="../../src/control/header-bar.cpp" line="227"/>
         <source>Don&apos;t find any terminal, please install at least one terminal!</source>
         <translation>没有找到任何终端插件，请确认您至少安装了一个！</translation>
     </message>
@@ -88,12 +88,12 @@
 <context>
     <name>HeaderBarContainer</name>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="476"/>
+        <location filename="../../src/control/header-bar.cpp" line="479"/>
         <source>Minimize</source>
         <translation>最小化</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="504"/>
+        <location filename="../../src/control/header-bar.cpp" line="507"/>
         <source>Close</source>
         <translation>最大化</translation>
     </message>
@@ -101,27 +101,27 @@
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="87"/>
+        <location filename="../../src/windows/main-window.cpp" line="92"/>
         <source>File Manager</source>
         <translation>文件管理器</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="181"/>
+        <location filename="../../src/windows/main-window.cpp" line="186"/>
         <source>Undo</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="188"/>
+        <location filename="../../src/windows/main-window.cpp" line="193"/>
         <source>Redo</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="855"/>
+        <location filename="../../src/windows/main-window.cpp" line="918"/>
         <source>Delete Permanently</source>
         <translation>永久删除</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="856"/>
+        <location filename="../../src/windows/main-window.cpp" line="919"/>
         <source>Are you sure that you want to delete these files? Once you start a deletion, the files deleting will never be restored again.</source>
         <translation>您确定要删除这些文件吗？一旦开始删除，这些文件将不可再恢复。</translation>
     </message>
@@ -130,7 +130,7 @@
         <translation type="vanished">文件管理器</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="398"/>
+        <location filename="../../src/windows/main-window.cpp" line="403"/>
         <source>New Folder</source>
         <translation>新建文件夹</translation>
     </message>
@@ -145,7 +145,7 @@
 <context>
     <name>NavigationSideBarContainer</name>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="196"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="219"/>
         <source>All tags...</source>
         <translation>所有标记...</translation>
     </message>
@@ -153,7 +153,7 @@
 <context>
     <name>NavigationTabBar</name>
     <message>
-        <location filename="../../src/control/navigation-tab-bar.cpp" line="93"/>
+        <location filename="../../src/control/navigation-tab-bar.cpp" line="94"/>
         <source>Search &quot;%1&quot; in &quot;%2&quot;</source>
         <translation>在%2中搜索%1</translation>
     </message>
@@ -326,19 +326,49 @@ Copyright (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</source
     </message>
 </context>
 <context>
+    <name>TabStatusBar</name>
+    <message>
+        <location filename="../../src/control/tab-status-bar.cpp" line="83"/>
+        <location filename="../../src/control/tab-status-bar.cpp" line="89"/>
+        <source>; %1 folders</source>
+        <translation>; %1 个文件夹</translation>
+    </message>
+    <message>
+        <location filename="../../src/control/tab-status-bar.cpp" line="84"/>
+        <location filename="../../src/control/tab-status-bar.cpp" line="91"/>
+        <source>; %1 files, %2 total</source>
+        <translation>; %1 个文件, 共%2</translation>
+    </message>
+    <message>
+        <location filename="../../src/control/tab-status-bar.cpp" line="86"/>
+        <source>; %1 folder</source>
+        <translation>; %1 个文件夹</translation>
+    </message>
+    <message>
+        <location filename="../../src/control/tab-status-bar.cpp" line="87"/>
+        <source>; %1 file, %2</source>
+        <translation>; %1 个文件, %2</translation>
+    </message>
+    <message>
+        <location filename="../../src/control/tab-status-bar.cpp" line="94"/>
+        <source>%1 selected</source>
+        <translation>选中%1个</translation>
+    </message>
+</context>
+<context>
     <name>TabWidget</name>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="132"/>
+        <location filename="../../src/control/tab-widget.cpp" line="139"/>
         <source>Trash</source>
         <translation>回收站</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="136"/>
+        <location filename="../../src/control/tab-widget.cpp" line="143"/>
         <source>Clear</source>
         <translation>清空</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="140"/>
+        <location filename="../../src/control/tab-widget.cpp" line="147"/>
         <source>Recover</source>
         <translation>还原</translation>
     </message>
