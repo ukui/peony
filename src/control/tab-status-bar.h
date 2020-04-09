@@ -21,6 +21,7 @@ public Q_SLOTS:
 
 protected:
     void paintEvent(QPaintEvent *e) override;
+    void mousePressEvent(QMouseEvent *e) override;
 
 private:
     TabWidget *m_tab = nullptr;

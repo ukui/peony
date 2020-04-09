@@ -110,6 +110,11 @@ void TabStatusBar::paintEvent(QPaintEvent *e)
     return;
 }
 
+void TabStatusBar::mousePressEvent(QMouseEvent *e)
+{
+    return;
+}
+
 ElidedLabel::ElidedLabel(QWidget *parent) : QWidget(parent)
 {
     setAttribute(Qt::WA_TranslucentBackground);
