@@ -295,3 +295,14 @@ bool FileUtils::queryVolumeInfo(const QString &volumeUri, QString &volumeName, Q
     }
     return true;
 }
+
+bool FileUtils::isFileDirectory(const QString &uri)
+{
+    bool isFolder = false;
+    GFile *file = g_file_new_for_uri(uri.toUtf8().constData());
+    isFolder = g_file_query_file_type(file,
+                                      G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
+                                      nullptr) == G_FILE_TYPE_DIRECTORY;
+    g_object_unref(file);
+    return isFolder;
+}

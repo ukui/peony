@@ -68,6 +68,8 @@ public:
                                 QString &unixDeviceName,
                                 const QString &volumeDisplayName = nullptr);
 
+    static bool isFileDirectory(const QString &uri);
+
 private:
     FileUtils();
 };

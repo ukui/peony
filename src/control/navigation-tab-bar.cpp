@@ -28,10 +28,23 @@
 
 #include <QToolButton>
 
+#include <QDragEnterEvent>
+#include <QDragMoveEvent>
+#include <QDragLeaveEvent>
+#include <QDropEvent>
+
+#include <QMimeData>
+#include <QDrag>
+#include <QGraphicsOpacityEffect>
+
 static TabBarStyle *global_instance = nullptr;
 
 NavigationTabBar::NavigationTabBar(QWidget *parent) : QTabBar(parent)
 {
+    setAcceptDrops(true);
+    m_drag_timer.setInterval(750);
+    m_drag_timer.setSingleShot(true);
+
     setStyle(TabBarStyle::getStyle());
 
     setContentsMargins(0, 0, 0, 0);
@@ -148,6 +161,92 @@ void NavigationTabBar::relayoutFloatButton(bool insterted)
     fixedY = lastTabRect.center().y() - m_float_button->height()/2;
     m_float_button->move(lastTabRect.right(), fixedY);
     setFixedHeight(lastTabRect.height());
+}
+
+void NavigationTabBar::dragEnterEvent(QDragEnterEvent *e)
+{
+    e->accept();
+    return;
+}
+
+void NavigationTabBar::dragMoveEvent(QDragMoveEvent *e)
+{
+    e->accept();
+    return;
+}
+
+void NavigationTabBar::dragLeaveEvent(QDragLeaveEvent *e)
+{
+    QTabBar::dragLeaveEvent(e);
+}
+
+void NavigationTabBar::dropEvent(QDropEvent *e)
+{
+    if (e->source() != this) {
+        if (e->mimeData()->hasUrls()) {
+            for (auto url : e->mimeData()->urls()) {
+                if (Peony::FileUtils::isFileDirectory(url.url())) {
+                    addPageRequest(url.url(), true);
+                }
+            }
+        } else if (e->mimeData()->hasText()) {
+            auto uri = e->mimeData()->text();
+            if (Peony::FileUtils::isFileDirectory(uri)) {
+                addPageRequest(uri, true);
+            }
+        }
+
+        //finish the drag, remove old tab page from old tab.
+        if (auto oldTab = qobject_cast<NavigationTabBar *>(e->source())) {
+            oldTab->removeTab(oldTab->currentIndex());
+        }
+    }
+}
+
+void NavigationTabBar::mousePressEvent(QMouseEvent *e)
+{
+    QTabBar::mousePressEvent(e);
+    if (!m_drag_timer.isActive()) {
+        m_start_drag = true;
+        m_drag_timer.start();
+    } else {
+        m_start_drag = false;
+    }
+
+    QTimer::singleShot(750, this, [=](){
+        if (tabAt(e->pos()) == -1)
+            return;
+
+        if (!m_start_drag)
+            return;
+        //start a drag
+        //note that we should remove this tab from the window
+        //at other tab's drop event.
+
+        QDrag *d = new QDrag(this);
+        QMimeData *data = new QMimeData();
+        auto uri = tabData(currentIndex()).toString();
+        data->setText(uri);
+        d->setMimeData(data);
+        auto pixmap = this->topLevelWidget()->grab().scaledToWidth(this->topLevelWidget()->width()/2);
+        d->setPixmap(pixmap);
+        d->setHotSpot(pixmap.rect().center());
+        d->exec();
+    });
+}
+
+void NavigationTabBar::mouseMoveEvent(QMouseEvent *e)
+{
+    m_drag_timer.stop();
+    m_start_drag = false;
+    QTabBar::mouseMoveEvent(e);
+}
+
+void NavigationTabBar::mouseReleaseEvent(QMouseEvent *e)
+{
+    QTabBar::mouseReleaseEvent(e);
+    m_drag_timer.stop();
+    m_start_drag = false;
 }
 
 TabBarStyle *TabBarStyle::getStyle()

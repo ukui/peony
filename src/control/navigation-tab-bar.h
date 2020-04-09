@@ -25,6 +25,7 @@
 
 #include <QTabBar>
 #include <QProxyStyle>
+#include <QTimer>
 
 class QToolButton;
 
@@ -49,8 +50,20 @@ protected:
     void tabInserted(int index) override;
     void relayoutFloatButton(bool insterted);
 
+    void dragEnterEvent(QDragEnterEvent *e) override;
+    void dragMoveEvent(QDragMoveEvent *e) override;
+    void dragLeaveEvent(QDragLeaveEvent *e) override;
+    void dropEvent(QDropEvent *e) override;
+
+    void mousePressEvent(QMouseEvent *e) override;
+    void mouseMoveEvent(QMouseEvent *e) override;
+    void mouseReleaseEvent(QMouseEvent *e) override;
+
 private:
     QToolButton *m_float_button;
+
+    QTimer m_drag_timer;
+    bool m_start_drag = false;
 };
 
 class TabBarStyle : public QProxyStyle
