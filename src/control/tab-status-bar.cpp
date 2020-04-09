@@ -139,7 +139,6 @@ void ElidedLabel::paintEvent(QPaintEvent *event)
     int layoutWidth = qApp->style()->pixelMetric(QStyle::PM_DefaultFrameWidth);
     int adjustedY2 = qMin(0, overlap - layoutWidth);
 
-    p.save();
     QPainterPath path;
     path.addRect(this->rect().adjusted(0, 0, adjustedY2 - this->height(), 0));
 
