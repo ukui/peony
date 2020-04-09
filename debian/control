@@ -17,7 +17,8 @@ Build-Depends: debhelper-compat (=12),
                libqt5x11extras5-dev,
                libgsettings-qt-dev,
                libpoppler-dev,
-               libpoppler-qt5-dev
+               libpoppler-qt5-dev,
+               libkf5windowsystem-dev
 Standards-Version: 4.5.0
 Rules-Requires-Root: no
 Homepage: https://www.ukui.org/
@@ -30,7 +31,8 @@ Multi-Arch: foreign
 Depends: ${misc:Depends},
          ${shlibs:Depends},
          libpeony2 (= ${binary:Version}),
-         peony-common (= ${source:Version})
+         peony-common (= ${source:Version}),
+         libkf5windowsystem5
 Recommends: gvfs-backends,
             peony-open-terminal,
             peony-admin,

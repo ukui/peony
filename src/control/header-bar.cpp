@@ -42,6 +42,8 @@
 
 #include <QEvent>
 
+#include <KWindowSystem>
+
 #include <QDebug>
 
 static HeaderBarStyle *global_instance = nullptr;
@@ -481,7 +483,8 @@ void HeaderBarContainer::addWindowButtons()
     minimize->setFixedSize(QSize(40, 40));
     minimize->setIconSize(QSize(16, 16));
     connect(minimize, &QToolButton::clicked, this, [=](){
-        m_header_bar->m_window->showMinimized();
+        KWindowSystem::minimizeWindow(m_header_bar->m_window->winId());
+        //m_header_bar->m_window->showMinimized();
     });
 
     //window-maximize-symbolic

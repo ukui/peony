@@ -101,6 +101,8 @@
 #include <QDBusMessage>
 #include <QDBusConnectionInterface>
 
+#include <KWindowSystem>
+
 #define KYLIN_USER_GUIDE_PATH "/"
 #define KYLIN_USER_GUIDE_SERVICE QString("com.kylinUserGuide.hotel_%1").arg(getuid())
 #define KYLIN_USER_GUIDE_INTERFACE "com.guide.hotel"
@@ -509,6 +511,7 @@ void PeonyApplication::parseCmd(quint32 id, QByteArray msg)
                     });
                 });
                 window->show();
+                KWindowSystem::raiseWindow(window->winId());
             }
         }
 
@@ -521,12 +524,14 @@ void PeonyApplication::parseCmd(quint32 id, QByteArray msg)
                 window->addNewTabs(uris);
             }
             window->show();
+            KWindowSystem::raiseWindow(window->winId());
         }
         if (parser.isSet(showPropertiesOption)) {
             QStringList uris = Peony::FileUtils::toDisplayUris(parser.positionalArguments());
 
             Peony::PropertiesWindow *window = new Peony::PropertiesWindow(uris);
             window->show();
+            KWindowSystem::raiseWindow(window->winId());
         }
     } else {
         if (!parser.positionalArguments().isEmpty()) {
@@ -539,11 +544,13 @@ void PeonyApplication::parseCmd(quint32 id, QByteArray msg)
             }
             window->setAttribute(Qt::WA_DeleteOnClose);
             window->show();
+            KWindowSystem::raiseWindow(window->winId());
         } else {
             auto window = new MainWindow;
             //auto window = new Peony::FMWindow;
             window->setAttribute(Qt::WA_DeleteOnClose);
             window->show();
+            KWindowSystem::raiseWindow(window->winId());
         }
     }
 
