@@ -39,6 +39,8 @@
 
 #include <KWindowSystem>
 
+#include "FMWindowIface.h"
+
 static TabBarStyle *global_instance = nullptr;
 
 NavigationTabBar::NavigationTabBar(QWidget *parent) : QTabBar(parent)
@@ -191,8 +193,8 @@ void NavigationTabBar::dropEvent(QDropEvent *e)
                     addPageRequest(url.url(), true);
                 }
             }
-        } else if (e->mimeData()->hasText()) {
-            auto uri = e->mimeData()->text();
+        } else if (e->mimeData()->hasFormat("peony/tab-index")) {
+            auto uri = e->mimeData()->data("peony/tab-index");
             if (Peony::FileUtils::isFileDirectory(uri)) {
                 addPageRequest(uri, true);
             }
@@ -225,19 +227,31 @@ void NavigationTabBar::mousePressEvent(QMouseEvent *e)
         //note that we should remove this tab from the window
         //at other tab's drop event.
 
-        auto pixmap = this->topLevelWidget()->grab().scaledToWidth(this->topLevelWidget()->width()/2);
+        auto pixmap = this->topLevelWidget()->grab().scaledToWidth(this->topLevelWidget()->width()/2, Qt::SmoothTransformation);
 
         KWindowSystem::lowerWindow(this->topLevelWidget()->winId());
 
         QDrag *d = new QDrag(this);
         QMimeData *data = new QMimeData();
         auto uri = tabData(currentIndex()).toString();
-        data->setText(uri);
+        //data->setText(uri);
+        data->setData("peony/tab-index", uri.toUtf8());
         d->setMimeData(data);
 
         d->setPixmap(pixmap);
         d->setHotSpot(pixmap.rect().center());
         d->exec();
+
+        if (auto tab = qobject_cast<NavigationTabBar *>(d->target())) {
+            //do nothing for target tab bar helped us handling yet.
+        } else {
+            auto window = dynamic_cast<Peony::FMWindowIface *>(this->topLevelWidget());
+            auto newWindow = dynamic_cast<QWidget *>(window->create(this->tabData(currentIndex()).toString()));
+            newWindow->show();
+            KWindowSystem::raiseWindow(newWindow->winId());
+            newWindow->move(QCursor::pos() - newWindow->rect().center());
+            removeTab(currentIndex());
+        }
     });
 }
 
