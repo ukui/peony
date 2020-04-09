@@ -46,6 +46,8 @@
 
 #include "peony-main-window-style.h"
 
+#include <QApplication>
+
 #include <QDebug>
 
 TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
@@ -64,7 +66,7 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
 
     //status bar
     m_status_bar = new TabStatusBar(this, this);
-    setStatusBar(m_status_bar);
+    //setStatusBar(m_status_bar);
 
     connect(m_buttons, &PreviewPageButtonGroups::previewPageButtonTrigger, [=](bool trigger, const QString &id){
         setTriggeredPreviewPage(trigger);
@@ -196,6 +198,11 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
             m_status_bar->update();
             this->updatePreviewPage();
         });
+    });
+
+    connect(qApp, &QApplication::fontChanged, this, [=](){
+        updateTabBarGeometry();
+        updateStatusBarGeometry();
     });
 }
 
@@ -498,6 +505,7 @@ void TabWidget::resizeEvent(QResizeEvent *e)
 {
     QMainWindow::resizeEvent(e);
     updateTabBarGeometry();
+    updateStatusBarGeometry();
 }
 
 void TabWidget::updateTabBarGeometry()
@@ -505,6 +513,14 @@ void TabWidget::updateTabBarGeometry()
     m_tab_bar->setGeometry(0, 4, m_tab_bar_bg->width(), m_tab_bar->height());
     m_tab_bar_bg->setFixedHeight(m_tab_bar->height());
     m_tab_bar->raise();
+}
+
+void TabWidget::updateStatusBarGeometry()
+{
+    auto font = qApp->font();
+    QFontMetrics fm(font);
+    m_status_bar->setGeometry(0, this->height() - fm.height() - 10, this->width(), fm.height() + 10);
+    m_status_bar->raise();
 }
 
 const QList<std::shared_ptr<Peony::FileInfo>> TabWidget::getCurrentSelectionFileInfos()

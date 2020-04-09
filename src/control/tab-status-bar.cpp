@@ -34,6 +34,7 @@
 
 TabStatusBar::TabStatusBar(TabWidget *tab, QWidget *parent) : QStatusBar(parent)
 {
+    setAttribute(Qt::WA_TranslucentBackground);
     m_styled_toolbar = new QToolBar;
 
     setContentsMargins(0, 0, 0, 0);
@@ -42,10 +43,8 @@ TabStatusBar::TabStatusBar(TabWidget *tab, QWidget *parent) : QStatusBar(parent)
     setMinimumHeight(30);
 
     m_tab = tab;
-    m_label = new QLabel(this);
+    m_label = new ElidedLabel(this);
     m_label->setContentsMargins(25, 0, 0, 0);
-    m_label->setWordWrap(false);
-    m_label->setAlignment(Qt::AlignLeft);
     addWidget(m_label, 1);
 }
 
@@ -108,17 +107,61 @@ void TabStatusBar::update(const QString &message)
 
 void TabStatusBar::paintEvent(QPaintEvent *e)
 {
-    //I do not want status bar draw the inserted widget's
-    //'border', so I use painter overwrite it.
-    QStatusBar::paintEvent(e);
-    QPainter p(this);
-    auto rect = this->rect();
-    //rect.adjust(0, 2, 0, 0);
-    auto bg = m_styled_toolbar->palette().window().color();
-    p.fillRect(rect, bg);
-    auto base = m_styled_toolbar->palette().base().color();
-    base.setAlpha(0);
-    p.setCompositionMode(QPainter::CompositionMode_SourceIn);
-    //p.fillRect(this->rect(), this->palette().base());
-    p.fillRect(rect, base);
+    return;
 }
+
+ElidedLabel::ElidedLabel(QWidget *parent) : QWidget(parent)
+{
+    setAttribute(Qt::WA_TranslucentBackground);
+    setContentsMargins(30, 0, 120, 0);
+}
+
+void ElidedLabel::setText(const QString &text)
+{
+    m_text = text;
+    this->update();
+}
+
+void ElidedLabel::paintEvent(QPaintEvent *event)
+{
+    QFontMetrics fm(this->font());
+    auto elidedText = fm.elidedText(m_text, Qt::TextElideMode::ElideRight, this->size().width() - 150);
+    QPainter p(this);
+    //p.setCompositionMode(QPainter::CompositionMode_SourceIn);
+    QLinearGradient linearGradient;
+    linearGradient.setStart(QPoint(10, this->height()));
+    linearGradient.setFinalStop(QPoint(10, 0));
+    linearGradient.setColorAt(0, qApp->palette().base().color());
+    linearGradient.setColorAt(0.75, qApp->palette().base().color());
+    linearGradient.setColorAt(1, Qt::transparent);
+
+    int overlap = qApp->style()->pixelMetric(QStyle::PM_ScrollView_ScrollBarOverlap);
+    int layoutWidth = qApp->style()->pixelMetric(QStyle::PM_DefaultFrameWidth);
+    int adjustedY2 = qMin(0, overlap - layoutWidth);
+
+    p.save();
+    QPainterPath path;
+    path.addRect(this->rect().adjusted(0, 0, adjustedY2 - this->height(), 0));
+
+    p.fillPath(path, linearGradient);
+
+    QPainterPath path2;
+
+    int radius = this->height();
+    QPoint pos = QPoint(this->width() + adjustedY2 - this->height(), this->height());
+    QRect targetRect = QRect(pos.x() - radius, pos.y() - radius, radius*2, radius*2);
+    path2.moveTo(pos);
+    path2.arcTo(targetRect, 0, 90);
+
+    QRadialGradient radialGradient;
+    radialGradient.setCenter(pos);
+    radialGradient.setFocalPoint(pos);
+    radialGradient.setRadius(radius);
+    radialGradient.setColorAt(0, qApp->palette().base().color());
+    radialGradient.setColorAt(0.75, qApp->palette().base().color());
+    radialGradient.setColorAt(1, Qt::transparent);
+    p.fillPath(path2, radialGradient);
+
+    style()->drawItemText(&p, this->rect().adjusted(30, 0, -120, 0), Qt::AlignLeft, qApp->palette(), this->isEnabled(), elidedText, QPalette::WindowText);
+}
+

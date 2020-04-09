@@ -154,6 +154,7 @@ protected:
 
     void resizeEvent(QResizeEvent *e);
     void updateTabBarGeometry();
+    void updateStatusBarGeometry();
 
 private:
     NavigationTabBar *m_tab_bar;
