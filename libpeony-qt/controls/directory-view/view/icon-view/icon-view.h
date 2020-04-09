@@ -132,6 +132,8 @@ protected:
 
     void wheelEvent(QWheelEvent *e) override;
 
+    void updateGeometries() override;
+
 private Q_SLOTS:
     void slotRename();
 

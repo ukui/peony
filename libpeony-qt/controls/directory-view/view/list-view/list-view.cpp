@@ -33,6 +33,8 @@
 #include <QVBoxLayout>
 #include <QMouseEvent>
 
+#include <QScrollBar>
+
 #include <QDebug>
 
 using namespace Peony;
@@ -41,6 +43,8 @@ using namespace Peony::DirectoryView;
 ListView::ListView(QWidget *parent) : QTreeView(parent)
 {
     setAlternatingRowColors(true);
+    setAutoFillBackground(true);
+    setBackgroundRole(QPalette::Base);
 
     setItemDelegate(new ListViewDelegate(this));
 
@@ -195,6 +199,15 @@ void ListView::resizeEvent(QResizeEvent *e)
 {
     QTreeView::resizeEvent(e);
     adjustColumnsSize();
+}
+
+void ListView::updateGeometries()
+{
+    QTreeView::updateGeometries();
+    QStyleOptionViewItem opt = viewOptions();
+    int height = itemDelegate()->sizeHint(opt, QModelIndex()).height();
+    setViewportMargins(0, header()->height(), 0, height);
+    verticalScrollBar()->setMaximum(verticalScrollBar()->maximum() + 5);
 }
 
 void ListView::slotRename()

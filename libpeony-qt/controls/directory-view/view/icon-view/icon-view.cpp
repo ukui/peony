@@ -46,6 +46,8 @@
 
 #include <QHoverEvent>
 
+#include <QScrollBar>
+
 #include <QDebug>
 
 using namespace Peony;
@@ -287,6 +289,12 @@ void IconView::wheelEvent(QWheelEvent *e)
     QListView::wheelEvent(e);
     if (e->buttons() == Qt::LeftButton)
         this->viewport()->update();
+}
+
+void IconView::updateGeometries()
+{
+    QListView::updateGeometries();
+    verticalScrollBar()->setMaximum(verticalScrollBar()->maximum() + 200);
 }
 
 void IconView::slotRename()

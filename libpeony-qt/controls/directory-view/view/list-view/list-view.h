@@ -106,6 +106,8 @@ protected:
 
     void resizeEvent(QResizeEvent *e) override;
 
+    void updateGeometries() override;
+
 private Q_SLOTS:
     void slotRename();
 private:
