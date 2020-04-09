@@ -37,6 +37,8 @@
 #include <QDrag>
 #include <QGraphicsOpacityEffect>
 
+#include <KWindowSystem>
+
 static TabBarStyle *global_instance = nullptr;
 
 NavigationTabBar::NavigationTabBar(QWidget *parent) : QTabBar(parent)
@@ -223,12 +225,16 @@ void NavigationTabBar::mousePressEvent(QMouseEvent *e)
         //note that we should remove this tab from the window
         //at other tab's drop event.
 
+        auto pixmap = this->topLevelWidget()->grab().scaledToWidth(this->topLevelWidget()->width()/2);
+
+        KWindowSystem::lowerWindow(this->topLevelWidget()->winId());
+
         QDrag *d = new QDrag(this);
         QMimeData *data = new QMimeData();
         auto uri = tabData(currentIndex()).toString();
         data->setText(uri);
         d->setMimeData(data);
-        auto pixmap = this->topLevelWidget()->grab().scaledToWidth(this->topLevelWidget()->width()/2);
+
         d->setPixmap(pixmap);
         d->setHotSpot(pixmap.rect().center());
         d->exec();
