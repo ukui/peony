@@ -89,6 +89,7 @@ Q_SIGNALS:
     void menuRequest(const QPoint &pos);
 
     void zoomRequest(bool zoomIn);
+    void setZoomLevelRequest(int zoomLevel);
 
 public Q_SLOTS:
     void goToUri(const QString &uri, bool addHistory, bool forceUpdate = false);

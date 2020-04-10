@@ -537,6 +537,10 @@ void IconView2::setCurrentZoomLevel(int zoomLevel)
     if (zoomLevel <= maximumZoomLevel() && zoomLevel >= minimumZoomLevel()) {
         m_zoom_level = zoomLevel;
         //FIXME: implement zoom
+        int base = 64 - 25; //50
+        int adjusted = base + zoomLevel;
+        m_view->setIconSize(QSize(adjusted, adjusted));
+        m_view->setGridSize(m_view->itemDelegate()->sizeHint(QStyleOptionViewItem(), QModelIndex()) + QSize(20, 20));
     }
 }
 

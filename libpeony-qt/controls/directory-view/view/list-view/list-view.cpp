@@ -484,3 +484,10 @@ void ListView2::bindModel(FileItemModel *model, FileItemProxyFilterSortModel *pr
         });
     });
 }
+
+void ListView2::setCurrentZoomLevel(int zoomLevel)
+{
+    int base = 16;
+    int adjusted = base + zoomLevel;
+    m_view->setIconSize(QSize(adjusted, adjusted));
+}

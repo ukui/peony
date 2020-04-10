@@ -191,7 +191,7 @@ public:
     Qt::SortOrder getSortOrder() {return Qt::SortOrder(m_view->getSortOrder());}
 
     int currentZoomLevel() {return m_zoom_level;}
-    int minimumZoomLevel() {return 20;}
+    int minimumZoomLevel() {return 21;}
     int maximumZoomLevel() {return 100;}
 
 public Q_SLOTS:

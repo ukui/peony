@@ -159,7 +159,7 @@ public:
 
     int currentZoomLevel() {return 0;}
     int minimumZoomLevel() {return 0;}
-    int maximumZoomLevel() {return 0;}
+    int maximumZoomLevel() {return 20;}
 
     bool supportZoom() {return true;}
 
@@ -188,6 +188,8 @@ public Q_SLOTS:
 
     void editUri(const QString &uri) {m_view->editUri(uri);}
     void editUris(const QStringList uris) {m_view->editUris(uris);}
+
+    void setCurrentZoomLevel(int zoomLevel);
 
 private:
     ListView *m_view = nullptr;

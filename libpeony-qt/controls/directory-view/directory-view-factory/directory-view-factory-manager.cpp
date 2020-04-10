@@ -80,7 +80,7 @@ DirectoryViewPluginIface2 *DirectoryViewFactoryManager2::getFactory(const QStrin
     return m_hash->value(name);
 }
 
-const QString DirectoryViewFactoryManager2::getDefaultViewId()
+const QString DirectoryViewFactoryManager2::getDefaultViewId(const QString &uri)
 {
     if (m_default_view_id_cache.isNull()) {
         auto string = m_settings->value("directory-view/default-view-id").toString();
@@ -93,6 +93,38 @@ const QString DirectoryViewFactoryManager2::getDefaultViewId()
         m_default_view_id_cache = string;
     }
     return m_default_view_id_cache;
+}
+
+const QString DirectoryViewFactoryManager2::getDefaultViewId(int zoomLevel, const QString &uri)
+{
+    auto factorys = m_hash->values();
+
+    auto defaultFactory = getFactory(getDefaultViewId());
+    int priorty = 0;
+
+    for (auto factory : factorys) {
+        if (factory->supportUri(uri)) {
+            if (factory->priority(uri) > priorty) {
+                defaultFactory = factory;
+                priorty = factory->priority(uri);
+                continue;
+            }
+        }
+    }
+
+    if (!defaultFactory->supportZoom())
+        return defaultFactory->viewIdentity();
+
+    if (defaultFactory->supportZoom()) {
+        if (zoomLevel <= 20) {
+            defaultFactory = getFactory("List View");
+        }
+        if (zoomLevel >= 21) {
+            defaultFactory = getFactory("Icon View");
+        }
+    }
+
+    return defaultFactory->viewIdentity();
 }
 
 void DirectoryViewFactoryManager2::setDefaultViewId(const QString &viewId)

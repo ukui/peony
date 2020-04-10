@@ -65,6 +65,8 @@ DirectoryViewContainer::DirectoryViewContainer(QWidget *parent) : QWidget(parent
 
     auto viewId = DirectoryViewFactoryManager2::getInstance()->getDefaultViewId();
     switchViewType(viewId);
+    int zoomLevel = getView()->currentZoomLevel();
+    setZoomLevelRequest(zoomLevel);
 }
 
 DirectoryViewContainer::~DirectoryViewContainer()

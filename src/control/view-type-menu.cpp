@@ -46,8 +46,6 @@ ViewTypeMenu::ViewTypeMenu(QWidget *parent) : QMenu(parent)
     });
 
     setCurrentDirectory("file:///");
-    auto viewFactory = Peony::DirectoryViewFactoryManager2::getInstance();
-    setCurrentView(viewFactory->getDefaultViewId());
 }
 
 void ViewTypeMenu::setCurrentView(const QString &viewId)

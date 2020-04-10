@@ -146,6 +146,8 @@ public Q_SLOTS:
 
     void updateTrashBarVisible(const QString &uri = "");
 
+    void handleZoomLevel(int zoomLevel);
+
 protected:
     void changeCurrentIndex(int index);
     void moveTab(int from, int to);

@@ -71,7 +71,13 @@ QSize IconViewDelegate::sizeHint(const QStyleOptionViewItem &option, const QMode
     QStyleOptionViewItem opt = option;
     initStyleOption(&opt, index);
 
-
+    auto view = qobject_cast<IconView*>(this->parent());
+    auto iconSize = view->iconSize();
+    auto font = qApp->font();
+    auto fm = QFontMetrics(font);
+    int width = iconSize.width() + 41;
+    int height = iconSize.height() + fm.ascent()*2 + 15;
+    return QSize(width, height);
     /*
     qDebug()<<option;
     qDebug()<<option.font;
@@ -81,10 +87,6 @@ QSize IconViewDelegate::sizeHint(const QStyleOptionViewItem &option, const QMode
     qDebug()<<option.decorationSize;
     qDebug()<<QStyledItemDelegate::sizeHint(option, index);
     */
-
-    return QSize(105, 118);
-
-    return QStyledItemDelegate::sizeHint(option, index);
 }
 
 void IconViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const

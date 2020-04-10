@@ -49,6 +49,7 @@ TabStatusBar::TabStatusBar(TabWidget *tab, QWidget *parent) : QStatusBar(parent)
 
     m_slider = new QSlider(Qt::Horizontal, this);
     m_slider->setRange(0, 100);
+    m_slider->setValue(25);
 
     connect(m_slider, &QSlider::valueChanged, this, &TabStatusBar::zoomLevelChangedRequest);
 }
@@ -56,6 +57,14 @@ TabStatusBar::TabStatusBar(TabWidget *tab, QWidget *parent) : QStatusBar(parent)
 TabStatusBar::~TabStatusBar()
 {
     m_styled_toolbar->deleteLater();
+}
+
+int TabStatusBar::currentZoomLevel()
+{
+    if (m_slider->isEnabled()) {
+        m_slider->value();
+    }
+    return -1;
 }
 
 void TabStatusBar::update()
@@ -110,9 +119,9 @@ void TabStatusBar::update(const QString &message)
     m_label->setText(message);
 }
 
-void TabStatusBar::updateZoomLevelState()
+void TabStatusBar::updateZoomLevelState(int zoomLevel)
 {
-    //FIXME: read current view's zoom level
+    m_slider->setValue(zoomLevel);
 }
 
 void TabStatusBar::onZoomRequest(bool zoomIn)

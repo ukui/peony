@@ -46,6 +46,8 @@
 
 #include "peony-main-window-style.h"
 
+#include "directory-view-factory-manager.h"
+
 #include <QApplication>
 
 #include <QDebug>
@@ -67,6 +69,7 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
     //status bar
     m_status_bar = new TabStatusBar(this, this);
     connect(this, &TabWidget::zoomRequest, m_status_bar, &TabStatusBar::onZoomRequest);
+    connect(m_status_bar, &TabStatusBar::zoomLevelChangedRequest, this, &TabWidget::handleZoomLevel);
     //setStatusBar(m_status_bar);
 
     connect(m_buttons, &PreviewPageButtonGroups::previewPageButtonTrigger, [=](bool trigger, const QString &id){
@@ -220,6 +223,25 @@ void TabWidget::updateTrashBarVisible(const QString &uri)
     m_trash_label->setVisible(visible);
     m_clear_button->setVisible(visible);
     m_recover_button->setVisible(visible);
+}
+
+void TabWidget::handleZoomLevel(int zoomLevel)
+{
+    int currentViewZoomLevel = currentPage()->getView()->currentZoomLevel();
+    int currentViewMimZoomLevel = currentPage()->getView()->minimumZoomLevel();
+    int currentViewMaxZoomLevel = currentPage()->getView()->maximumZoomLevel();
+    if (zoomLevel == currentViewZoomLevel) {
+        return;
+    }
+    if (zoomLevel <= currentViewMaxZoomLevel && zoomLevel >= currentViewMimZoomLevel) {
+        currentPage()->getView()->setCurrentZoomLevel(zoomLevel);
+    } else {
+        //check which view to switch.
+        auto directoryViewManager = Peony::DirectoryViewFactoryManager2::getInstance();
+        auto viewId = directoryViewManager->getDefaultViewId(zoomLevel, getCurrentUri());
+        switchViewType(viewId);
+        currentPage()->getView()->setCurrentZoomLevel(zoomLevel);
+    }
 }
 
 Peony::DirectoryViewContainer *TabWidget::currentPage()
@@ -489,6 +511,7 @@ void TabWidget::bindContainerSignal(Peony::DirectoryViewContainer *container)
     connect(container, &Peony::DirectoryViewContainer::viewDoubleClicked, this, &TabWidget::onViewDoubleClicked);
     connect(container, &Peony::DirectoryViewContainer::menuRequest, this, &TabWidget::menuRequest);
     connect(container, &Peony::DirectoryViewContainer::zoomRequest, this, &TabWidget::zoomRequest);
+    connect(container, &Peony::DirectoryViewContainer::setZoomLevelRequest, m_status_bar, &TabStatusBar::updateZoomLevelState);
 }
 
 void TabWidget::updatePreviewPage()

@@ -38,13 +38,15 @@ public:
     explicit TabStatusBar(TabWidget *tab, QWidget *parent = nullptr);
     ~TabStatusBar() override;
 
+    int currentZoomLevel();
+
 Q_SIGNALS:
     void zoomLevelChangedRequest(int zoomLevel);
 
 public Q_SLOTS:
     void update();
     void update(const QString &message);
-    void updateZoomLevelState();
+    void updateZoomLevelState(int zoomLevel);
 
     void onZoomRequest(bool zoomIn);
 

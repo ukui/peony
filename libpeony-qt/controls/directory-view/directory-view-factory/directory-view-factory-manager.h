@@ -32,6 +32,7 @@ namespace Peony {
 class DirectoryViewIface;
 class DirectoryViewPluginIface;
 class DirectoryViewPluginIface2;
+class DirectoryViewWidget;
 
 class DirectoryViewFactoryManager2 : public QObject
 {
@@ -43,7 +44,8 @@ public:
     QStringList getFactoryNames();
     DirectoryViewPluginIface2 *getFactory(const QString &name);
 
-    const QString getDefaultViewId();
+    const QString getDefaultViewId(const QString &uri = nullptr);
+    const QString getDefaultViewId(int zoomLevel, const QString &uri = nullptr);
 
 public Q_SLOTS:
     void setDefaultViewId(const QString &viewId);

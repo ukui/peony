@@ -81,7 +81,7 @@ public:
     DirectoryViewWidget *create() override;
 
     int zoom_level_hint() override {return 50;}
-    int minimumSupportedZoomLevel() override {return 20;}
+    int minimumSupportedZoomLevel() override {return 21;}
     int maximumSupportedZoomLevel() override {return 100;}
 
     int priority(const QString &) override {return 0;}
