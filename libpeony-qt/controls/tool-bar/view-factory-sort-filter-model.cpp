@@ -117,7 +117,7 @@ bool ViewFactorySortFilterModel2::filterAcceptsRow(int sourceRow, const QModelIn
     ViewFactoryModel2 *model = static_cast<ViewFactoryModel2*>(sourceModel());
     auto index = model->index(sourceRow, 0, sourceParent);
     auto manager = DirectoryViewFactoryManager2::getInstance();
-    auto viewId = index.data(Qt::ToolTipRole).toString();
+    auto viewId = index.data(Qt::UserRole).toString();
     auto factory = manager->getFactory(viewId);
     int zoom_level_hint = factory->zoom_level_hint();
     int priority = factory->priority(model->m_current_uri);
@@ -137,8 +137,8 @@ bool ViewFactorySortFilterModel2::lessThan(const QModelIndex &left, const QModel
 {
     auto manager = DirectoryViewFactoryManager2::getInstance();
 
-    auto leftId = left.data(Qt::ToolTipRole).toString();
-    auto rightId = right.data(Qt::ToolTipRole).toString();
+    auto leftId = left.data(Qt::UserRole).toString();
+    auto rightId = right.data(Qt::UserRole).toString();
 
     auto leftFactory = manager->getFactory(leftId);
     auto rightFactory = manager->getFactory(rightId);
@@ -170,7 +170,7 @@ const QStringList ViewFactorySortFilterModel2::supportViewIds()
 {
     QStringList l;
     for (int i = 0; i < rowCount(); i++) {
-        l<<index(i, 0).data(Qt::ToolTipRole).toString();
+        l<<index(i, 0).data(Qt::UserRole).toString();
     }
     return l;
 }
@@ -180,4 +180,10 @@ const QIcon ViewFactorySortFilterModel2::iconFromViewId(const QString &viewId)
     auto manager = DirectoryViewFactoryManager2::getInstance();
     auto factory = manager->getFactory(viewId);
     return factory->icon();
+}
+
+const QString ViewFactorySortFilterModel2::getViewDisplayNameFromId(const QString &viewId)
+{
+    auto manager = DirectoryViewFactoryManager2::getInstance();
+    return manager->getFactory(viewId)->viewName();
 }

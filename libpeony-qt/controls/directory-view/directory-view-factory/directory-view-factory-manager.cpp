@@ -153,7 +153,10 @@ const QString DirectoryViewFactoryManager2::getDefaultViewId()
     if (m_default_view_id_cache.isNull()) {
         auto string = m_settings->value("directory-view/default-view-id").toString();
         if (string.isEmpty()) {
-            string = IconViewFactory2::getInstance()->name();
+            string = "Icon View";
+        } else {
+            if (!m_hash->contains(string))
+                string = "Icon View";
         }
         m_default_view_id_cache = string;
     }

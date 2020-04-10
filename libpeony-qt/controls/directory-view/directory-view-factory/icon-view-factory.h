@@ -73,7 +73,8 @@ public:
     bool isEnable() override {return true;}
 
     //directory view plugin implemeny
-    QString viewIdentity() override {return QObject::tr("Icon View");}
+    QString viewIdentity() override {return "Icon View";}
+    QString viewName() override {return name();}
     QIcon viewIcon() override {return QIcon::fromTheme("view-grid-symbolic", QIcon::fromTheme("folder"));}
     bool supportUri(const QString &uri) override {return !uri.isEmpty();}
 

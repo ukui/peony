@@ -61,6 +61,7 @@ public:
     const QStringList supportViewIds();
 
     const QIcon iconFromViewId(const QString &viewId);
+    const QString getViewDisplayNameFromId(const QString &viewId);
 
 public Q_SLOTS:
     void setDirectoryUri(const QString &uri);

@@ -194,6 +194,8 @@ QVariant ViewFactoryModel2::data(const QModelIndex &index, int role) const
         return factory->viewIcon();
     case Qt::ToolTipRole:
         return factory->viewIdentity();
+    case Qt::UserRole:
+        return factory->viewIdentity();
     default:
         break;
     }

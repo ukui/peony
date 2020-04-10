@@ -36,7 +36,7 @@ ViewTypeMenu::ViewTypeMenu(QWidget *parent) : QMenu(parent)
     m_view_actions->setExclusive(true);
 
     connect(m_view_actions, &QActionGroup::triggered, this, [=](QAction *action){
-        auto viewId = action->text();
+        auto viewId = action->data().toString();
         setCurrentView(viewId);
     });
 
@@ -89,7 +89,9 @@ void ViewTypeMenu::updateMenuActions()
     }
     for (auto id : supportViews) {
         auto action = new QAction(this);
-        action->setText(id);
+        auto text = m_model->getViewDisplayNameFromId(id);
+        action->setText(text);
+        action->setData(id);
         action->setIcon(m_model->iconFromViewId(id));
         m_view_actions->addAction(action);
         addAction(action);

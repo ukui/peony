@@ -133,7 +133,7 @@ public:
     explicit ListView2(QWidget *parent = nullptr);
     ~ListView2();
 
-    const QString viewId() {return tr("List View");}
+    const QString viewId() {return "List View";}
 
     //location
     const QString getDirectoryUri() {return m_view->getDirectoryUri();}
