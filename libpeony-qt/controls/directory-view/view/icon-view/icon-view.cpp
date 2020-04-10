@@ -21,7 +21,6 @@
  */
 
 #include "icon-view.h"
-#include "standard-view-proxy.h"
 #include "file-item.h"
 
 #include "icon-view-delegate.h"

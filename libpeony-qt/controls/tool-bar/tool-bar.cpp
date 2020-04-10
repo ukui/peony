@@ -75,7 +75,7 @@ void ToolBar::init()
 
     //view switch
     //FIXME: how about support uri?
-    auto viewManager = DirectoryViewFactoryManager::getInstance();
+    auto viewManager = DirectoryViewFactoryManager2::getInstance();
 
     auto defaultViewId = viewManager->getDefaultViewId();
 

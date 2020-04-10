@@ -75,7 +75,7 @@ void TabPage::addPage(const QString &uri)
 {
     auto container = new DirectoryViewContainer(this);
     auto view = container->getView();
-    container->switchViewType(DirectoryViewFactoryManager::getInstance()->getDefaultViewId());
+    container->switchViewType(DirectoryViewFactoryManager2::getInstance()->getDefaultViewId());
     container->getView()->setDirectoryUri(uri);
     container->getView()->beginLocationChange();
 

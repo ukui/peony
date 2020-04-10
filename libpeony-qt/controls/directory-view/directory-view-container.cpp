@@ -26,7 +26,6 @@
 #include "directory-view-plugin-iface2.h"
 #include "directory-view-widget.h"
 #include "directory-view-factory-manager.h"
-#include "standard-view-proxy.h"
 #include "file-utils.h"
 
 #include "directory-view-factory-manager.h"

@@ -211,20 +211,6 @@ public:
 
 /*!
  * \brief The DirectoryViewProxyIface class
- * \details
- * Unfortunately, Qt doesn't allow us dervied from over one QObject based classes.
- * This means we have to define our signal and slot interface outside the DirectoryViewIface.
- * This class define the signal and slot of a DirectoryViewIface should have.
- * Except the view proxy method, this class also define some higher level
- * function above the view class, such as history and clipboard.
- *
- * \note
- * You must bind a DirectoryViewIface(dervied) instance in your dervied class instance.
- * In libpeony-qt, there have been a proxy has been implemented,
- * which are used in icon view and list view by default.
- *
- * \see DirectoryViewIface, StandardViewProxy, IconView, ListView.
- *
  * \deprecated
  * This interface is deprecated, and it should be removed from codes.
  * To make a directory view extension,

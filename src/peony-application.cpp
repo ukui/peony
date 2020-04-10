@@ -43,7 +43,6 @@
 #include "preview-page-plugin-iface.h"
 #include "directory-view-factory-manager.h"
 #include "directory-view-plugin-iface.h"
-#include "standard-view-proxy.h"
 #include "directory-view-container.h"
 
 #include "path-edit.h"

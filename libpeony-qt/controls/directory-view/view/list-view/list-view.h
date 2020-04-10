@@ -55,6 +55,11 @@ public:
     void bindModel(FileItemModel *sourceModel, FileItemProxyFilterSortModel *proxyModel) override;
     void setProxy(DirectoryViewProxyIface *proxy) override;
 
+    /*!
+     * \brief getProxy
+     * \return
+     * \deprecated
+     */
     DirectoryViewProxyIface *getProxy() override;
 
     //location

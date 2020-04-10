@@ -69,6 +69,11 @@ public:
      */
     void setUsePeonyQtDirectoryMenu(bool use) {m_use_peony_qt_directory_menu = use;}
 
+    /*!
+     * \brief getProxy
+     * \return
+     * \deprecated
+     */
     DirectoryViewProxyIface *getProxy() override;
 
     //location

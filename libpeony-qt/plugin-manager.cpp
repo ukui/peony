@@ -51,7 +51,7 @@ PluginManager::PluginManager(QObject *parent) : QObject(parent)
     //FIXME: we have to ensure that internal factory being registered successfully.
     PropertiesWindowPluginManager::getInstance();
     MenuPluginManager::getInstance();
-    DirectoryViewFactoryManager::getInstance();
+    DirectoryViewFactoryManager2::getInstance();
     PreviewPageFactoryManager::getInstance();
 
     QDir pluginsDir("/usr/lib/peony-qt-extensions");
@@ -76,11 +76,6 @@ PluginManager::PluginManager(QObject *parent) : QObject(parent)
         case PluginInterface::MenuPlugin: {
             MenuPluginInterface *menuPlugin = dynamic_cast<MenuPluginInterface*>(piface);
             MenuPluginManager::getInstance()->registerPlugin(menuPlugin);
-            break;
-        }
-        case PluginInterface::DirectoryViewPlugin: {
-            DirectoryViewPluginIface *directoryViewFactory = dynamic_cast<DirectoryViewPluginIface*>(plugin);
-            DirectoryViewFactoryManager::getInstance()->registerFactory(directoryViewFactory->viewIdentity(), directoryViewFactory);
             break;
         }
         case PluginInterface::PreviewPagePlugin: {
@@ -122,7 +117,7 @@ PluginManager::~PluginManager()
     m_hash.clear();
     MenuPluginManager::getInstance()->close();
     //FIXME: use private deconstructor.
-    DirectoryViewFactoryManager::getInstance()->deleteLater();
+    DirectoryViewFactoryManager2::getInstance()->deleteLater();
     PreviewPageFactoryManager::getInstance()->deleteLater();
 }
 
