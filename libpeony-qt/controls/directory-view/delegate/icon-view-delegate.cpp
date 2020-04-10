@@ -76,7 +76,7 @@ QSize IconViewDelegate::sizeHint(const QStyleOptionViewItem &option, const QMode
     auto font = qApp->font();
     auto fm = QFontMetrics(font);
     int width = iconSize.width() + 41;
-    int height = iconSize.height() + fm.ascent()*2 + 15;
+    int height = iconSize.height() + fm.ascent()*2 + 20;
     return QSize(width, height);
     /*
     qDebug()<<option;
