@@ -82,8 +82,12 @@ public:
 
     DirectoryViewWidget *create() override;
 
-    int zoom_level_hint() override {return 75;}
+    int zoom_level_hint() override {return 0;}
+    int minimumSupportedZoomLevel() override {return 0;}
+    int maximumSupportedZoomLevel() override {return 0;}
+
     int priority(const QString &) override {return 0;}
+    bool supportZoom() override {return true;}
 
 private:
     explicit ListViewFactory2(QObject *parent = nullptr);

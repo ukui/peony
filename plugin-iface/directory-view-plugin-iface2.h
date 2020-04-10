@@ -40,6 +40,33 @@ class DirectoryViewWidget;
  * interface for making newly type item view for peony.
  *
  * There are 2 kinds of internal implement at peony, icon view and list view.
+ *
+ * \verbatim
+ *
+ * Directory View's Zoom In/Out:
+ *
+ * It is not cool that every view zoom in/out in itself at all.
+ * The zoom of the view should be linked with the view type,
+ * and the transition should be as smooth as possible.
+ *
+ * I defined some rules to indicate how peony zoom its view.
+ * there are 3 mainly parts:
+ *
+ * 1. the default zoom level hint of a view.
+ * 2. the range for a view can be zoomed.
+ * 3. wether a view supports zoomed.
+ *
+ * Zoom level has a range at 0 to 100. The hint should both contained
+ * in the range and between view's min zoom level and max zoom level.
+ *
+ * Due to all view rebase the rules, there could be a common interface controling
+ * the zoom of a window.
+ *
+ * For some special view, it might could not zoom, it better to indicate
+ * with a clearly state for that case.
+ *
+ * \endverbatim
+ *
  * \see IconView2, ListView2
  */
 class DirectoryViewPluginIface2 : public PluginInterface
@@ -53,8 +80,11 @@ public:
     virtual bool supportUri(const QString &uri) = 0;
 
     virtual int zoom_level_hint() = 0;
+    virtual int minimumSupportedZoomLevel() = 0;
+    virtual int maximumSupportedZoomLevel() = 0;
 
     virtual int priority(const QString &directoryUri) = 0;
+    virtual bool supportZoom() = 0;
 
     //virtual void fillDirectoryView(DirectoryViewWidget *view) = 0;
 

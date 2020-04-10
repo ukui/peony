@@ -54,7 +54,7 @@ public:
     explicit DirectoryViewWidget(QWidget *parent = nullptr);
     virtual ~DirectoryViewWidget() {}
 
-    const virtual QString viewId() {return tr("Directory View");}
+    const virtual QString viewId() {return "Directory View";}
 
     //location
     const virtual QString getDirectoryUri() {return nullptr;}
@@ -67,6 +67,12 @@ public:
 
     virtual int getSortType() {return 0;}
     virtual Qt::SortOrder getSortOrder() {return Qt::AscendingOrder;}
+
+    //zoom
+    virtual int currentZoomLevel() {return -1;}
+    virtual int minimumZoomLevel() {return -1;}
+    virtual int maximumZoomLevel() {return -1;}
+    virtual bool supportZoom() {return false;}
 
 Q_SIGNALS:
     //loaction
@@ -110,6 +116,9 @@ public Q_SLOTS:
     virtual void editUris(const QStringList uris) {}
 
     virtual void repaintView() {}
+
+    //zoom
+    virtual void setCurrentZoomLevel(int zoomLevel) {}
 };
 
 }
