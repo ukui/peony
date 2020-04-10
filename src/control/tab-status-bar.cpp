@@ -30,7 +30,7 @@
 #include <QStyle>
 
 #include <QToolBar>
-
+#include <QSlider>
 
 TabStatusBar::TabStatusBar(TabWidget *tab, QWidget *parent) : QStatusBar(parent)
 {
@@ -46,6 +46,11 @@ TabStatusBar::TabStatusBar(TabWidget *tab, QWidget *parent) : QStatusBar(parent)
     m_label = new ElidedLabel(this);
     m_label->setContentsMargins(25, 0, 0, 0);
     addWidget(m_label, 1);
+
+    m_slider = new QSlider(Qt::Horizontal, this);
+    m_slider->setRange(0, 100);
+
+    connect(m_slider, &QSlider::valueChanged, this, &TabStatusBar::zoomLevelChangedRequest);
 }
 
 TabStatusBar::~TabStatusBar()
@@ -105,6 +110,23 @@ void TabStatusBar::update(const QString &message)
     m_label->setText(message);
 }
 
+void TabStatusBar::updateZoomLevelState()
+{
+    //FIXME: read current view's zoom level
+}
+
+void TabStatusBar::onZoomRequest(bool zoomIn)
+{
+    int value = m_slider->value();
+    if (zoomIn) {
+        value++;
+    } else {
+        value--;
+    }
+    m_slider->setValue(value);
+}
+
+
 void TabStatusBar::paintEvent(QPaintEvent *e)
 {
     return;
@@ -113,6 +135,14 @@ void TabStatusBar::paintEvent(QPaintEvent *e)
 void TabStatusBar::mousePressEvent(QMouseEvent *e)
 {
     return;
+}
+
+void TabStatusBar::resizeEvent(QResizeEvent *e)
+{
+    QStatusBar::resizeEvent(e);
+    auto pos = this->rect().topRight();
+    auto size = m_slider->size();
+    m_slider->move(pos.x() - size.width() - 20, this->size().height()/2 - size.height()/2);
 }
 
 ElidedLabel::ElidedLabel(QWidget *parent) : QWidget(parent)

@@ -87,6 +87,9 @@ public:
 
     QRect visualRect(const QModelIndex &index) const override;
 
+Q_SIGNALS:
+    void zoomLevelChangedRequest(bool zoomIn);
+
 public Q_SLOTS:
     //location
     void open(const QStringList &uris, bool newWindow) override;
@@ -187,6 +190,10 @@ public:
     int getSortType() {return m_view->getSortType();}
     Qt::SortOrder getSortOrder() {return Qt::SortOrder(m_view->getSortOrder());}
 
+    int currentZoomLevel() {return m_zoom_level;}
+    int minimumZoomLevel() {return 20;}
+    int maximumZoomLevel() {return 100;}
+
 public Q_SLOTS:
     void bindModel(FileItemModel *model, FileItemProxyFilterSortModel *proxyModel);
 
@@ -215,10 +222,14 @@ public Q_SLOTS:
 
     void repaintView();
 
+    void setCurrentZoomLevel(int zoomLevel);
+
 private:
     IconView *m_view = nullptr;
     FileItemModel *m_model = nullptr;
     FileItemProxyFilterSortModel *m_proxy_model = nullptr;
+
+    int m_zoom_level = 50;
 };
 
 }

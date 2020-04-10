@@ -83,6 +83,9 @@ Q_SIGNALS:
     void sortTypeChanged(int type);
     void sortOrderChanged(Qt::SortOrder order);
 
+    //zoom in/out
+    void zoomRequest(bool isZoomIn);
+
     //menu
     void menuRequest(const QPoint &pos);
 

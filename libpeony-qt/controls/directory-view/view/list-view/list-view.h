@@ -73,6 +73,9 @@ public:
 
     //QRect visualRect(const QModelIndex &index) const override;
 
+Q_SIGNALS:
+    void zoomLevelChangedRequest(bool zoomIn);
+
 public Q_SLOTS:
     //location
     void open(const QStringList &uris, bool newWindow) override;
@@ -113,6 +116,8 @@ protected:
 
     void updateGeometries() override;
 
+    void wheelEvent (QWheelEvent *e) override;
+
 private Q_SLOTS:
     void slotRename();
 private:
@@ -151,6 +156,12 @@ public:
 
     int getSortType() {return m_view->getSortType();}
     Qt::SortOrder getSortOrder() {return Qt::SortOrder(m_view->getSortOrder());}
+
+    int currentZoomLevel() {return 0;}
+    int minimumZoomLevel() {return 0;}
+    int maximumZoomLevel() {return 0;}
+
+    bool supportZoom() {return true;}
 
 public Q_SLOTS:
     void bindModel(FileItemModel *model, FileItemProxyFilterSortModel *proxyModel);

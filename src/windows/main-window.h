@@ -58,14 +58,14 @@ public:
     const QString getCurrentUri();
     const QStringList getCurrentSelections();
     const QStringList getCurrentAllFileUris();
-    const QList<std::shared_ptr<Peony::FileInfo>> getCurrentSelectionFileInfos() override;
+    const QList<std::shared_ptr<Peony::FileInfo>> getCurrentSelectionFileInfos();
 
     Qt::SortOrder getCurrentSortOrder();
     int getCurrentSortColumn();
 
-    bool getWindowShowHidden() override {return m_show_hidden_file;}
-    bool getWindowUseDefaultNameSortOrder() override {return m_use_default_name_sort_order;}
-    bool getWindowSortFolderFirst() override {return m_folder_first;}
+    bool getWindowShowHidden() {return m_show_hidden_file;}
+    bool getWindowUseDefaultNameSortOrder() {return m_use_default_name_sort_order;}
+    bool getWindowSortFolderFirst() {return m_folder_first;}
 
 Q_SIGNALS:
     void windowSelectionChanged();

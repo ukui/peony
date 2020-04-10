@@ -29,6 +29,7 @@ class QLabel;
 class QToolBar;
 class TabWidget;
 class ElidedLabel;
+class QSlider;
 
 class TabStatusBar : public QStatusBar
 {
@@ -37,18 +38,27 @@ public:
     explicit TabStatusBar(TabWidget *tab, QWidget *parent = nullptr);
     ~TabStatusBar() override;
 
+Q_SIGNALS:
+    void zoomLevelChangedRequest(int zoomLevel);
+
 public Q_SLOTS:
     void update();
     void update(const QString &message);
+    void updateZoomLevelState();
+
+    void onZoomRequest(bool zoomIn);
 
 protected:
     void paintEvent(QPaintEvent *e) override;
     void mousePressEvent(QMouseEvent *e) override;
 
+    void resizeEvent(QResizeEvent *e) override;
+
 private:
     TabWidget *m_tab = nullptr;
     ElidedLabel *m_label = nullptr;
     QToolBar *m_styled_toolbar = nullptr;
+    QSlider *m_slider;
 };
 
 class ElidedLabel : public QWidget

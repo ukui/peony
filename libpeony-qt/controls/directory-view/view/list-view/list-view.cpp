@@ -35,6 +35,8 @@
 
 #include <QScrollBar>
 
+#include <QWheelEvent>
+
 #include <QDebug>
 
 using namespace Peony;
@@ -208,6 +210,15 @@ void ListView::updateGeometries()
     int height = itemDelegate()->sizeHint(opt, QModelIndex()).height();
     setViewportMargins(0, header()->height(), 0, height);
     verticalScrollBar()->setMaximum(verticalScrollBar()->maximum() + 5);
+}
+
+void ListView::wheelEvent(QWheelEvent *e)
+{
+    if (e->modifiers() & Qt::ControlModifier) {
+        zoomLevelChangedRequest(e->delta() > 0);
+        return;
+    }
+    QTreeView::wheelEvent(e);
 }
 
 void ListView::slotRename()
@@ -391,6 +402,7 @@ ListView2::ListView2(QWidget *parent) : DirectoryViewWidget(parent)
     layout->setMargin(0);
     layout->setSpacing(0);
     m_view = new ListView(this);
+    connect(m_view, &ListView::zoomLevelChangedRequest, this, &ListView2::zoomRequest);
     layout->addWidget(m_view);
 
     setLayout(layout);

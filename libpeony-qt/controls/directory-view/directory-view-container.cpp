@@ -245,6 +245,8 @@ void DirectoryViewContainer::switchViewType(const QString &viewId)
     connect(m_view, &DirectoryViewWidget::viewDoubleClicked, this, &DirectoryViewContainer::onViewDoubleClicked);
     connect(m_view, &DirectoryViewWidget::viewSelectionChanged, this, &DirectoryViewContainer::selectionChanged);
 
+    connect(m_view, &DirectoryViewWidget::zoomRequest, this, &DirectoryViewContainer::zoomRequest);
+
     //m_proxy->switchView(view);
     m_layout->addWidget(dynamic_cast<QWidget*>(view), Qt::AlignBottom);
     DirectoryViewFactoryManager2::getInstance()->setDefaultViewId(viewId);

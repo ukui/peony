@@ -96,6 +96,7 @@ Q_SIGNALS:
     void updateWindowLocationRequest(const QString &uri, bool addHistory, bool forceUpdate = false);
 
     void menuRequest(const QPoint &pos);
+    void zoomRequest(bool zoomIn);
 
     void closeWindowRequest();
 

@@ -66,6 +66,7 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
 
     //status bar
     m_status_bar = new TabStatusBar(this, this);
+    connect(this, &TabWidget::zoomRequest, m_status_bar, &TabStatusBar::onZoomRequest);
     //setStatusBar(m_status_bar);
 
     connect(m_buttons, &PreviewPageButtonGroups::previewPageButtonTrigger, [=](bool trigger, const QString &id){
@@ -487,6 +488,7 @@ void TabWidget::bindContainerSignal(Peony::DirectoryViewContainer *container)
     connect(container, &Peony::DirectoryViewContainer::viewTypeChanged, this, &TabWidget::activePageViewTypeChanged);
     connect(container, &Peony::DirectoryViewContainer::viewDoubleClicked, this, &TabWidget::onViewDoubleClicked);
     connect(container, &Peony::DirectoryViewContainer::menuRequest, this, &TabWidget::menuRequest);
+    connect(container, &Peony::DirectoryViewContainer::zoomRequest, this, &TabWidget::zoomRequest);
 }
 
 void TabWidget::updatePreviewPage()

@@ -285,6 +285,15 @@ void IconView::resizeEvent(QResizeEvent *e)
 
 void IconView::wheelEvent(QWheelEvent *e)
 {
+    if (e->modifiers() & Qt::ControlModifier) {
+        if (e->delta() > 0) {
+            zoomLevelChangedRequest(true);
+        } else {
+            zoomLevelChangedRequest(false);
+        }
+        return;
+    }
+
     QListView::wheelEvent(e);
     if (e->buttons() == Qt::LeftButton)
         this->viewport()->update();
@@ -466,6 +475,9 @@ IconView2::IconView2(QWidget *parent) : DirectoryViewWidget(parent)
     layout->setMargin(0);
     layout->setSpacing(0);
     m_view = new IconView(this);
+
+    connect(m_view, &IconView::zoomLevelChangedRequest, this, &IconView2::zoomRequest);
+
     layout->addWidget(m_view);
 
     setLayout(layout);
@@ -518,6 +530,14 @@ void IconView2::repaintView()
 {
     m_view->update();
     m_view->viewport()->update();
+}
+
+void IconView2::setCurrentZoomLevel(int zoomLevel)
+{
+    if (zoomLevel <= maximumZoomLevel() && zoomLevel >= minimumZoomLevel()) {
+        m_zoom_level = zoomLevel;
+        //FIXME: implement zoom
+    }
 }
 
 
