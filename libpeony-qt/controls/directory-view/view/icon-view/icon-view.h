@@ -229,7 +229,7 @@ private:
     FileItemModel *m_model = nullptr;
     FileItemProxyFilterSortModel *m_proxy_model = nullptr;
 
-    int m_zoom_level = 50;
+    int m_zoom_level = 25;
 };
 
 }

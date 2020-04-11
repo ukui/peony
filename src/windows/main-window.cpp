@@ -648,10 +648,10 @@ void MainWindow::setCurrentViewZoomLevel(int zoomLevel)
 
 void MainWindow::resizeEvent(QResizeEvent *e)
 {
+    QMainWindow::resizeEvent(e);
     m_header_bar->updateMaximizeState();
     validBorder();
     update();
-    QMainWindow::resizeEvent(e);
 }
 
 /*!
