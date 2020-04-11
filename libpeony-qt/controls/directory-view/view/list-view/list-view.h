@@ -157,7 +157,7 @@ public:
     int getSortType() {return m_view->getSortType();}
     Qt::SortOrder getSortOrder() {return Qt::SortOrder(m_view->getSortOrder());}
 
-    int currentZoomLevel() {return 0;}
+    int currentZoomLevel() {return m_zoom_level;}
     int minimumZoomLevel() {return 0;}
     int maximumZoomLevel() {return 20;}
 
@@ -195,6 +195,8 @@ private:
     ListView *m_view = nullptr;
     FileItemModel *m_model = nullptr;
     FileItemProxyFilterSortModel *m_proxy_model = nullptr;
+
+    int m_zoom_level = 0;
 };
 
 }

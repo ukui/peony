@@ -490,4 +490,5 @@ void ListView2::setCurrentZoomLevel(int zoomLevel)
     int base = 16;
     int adjusted = base + zoomLevel;
     m_view->setIconSize(QSize(adjusted, adjusted));
+    m_zoom_level = zoomLevel;
 }

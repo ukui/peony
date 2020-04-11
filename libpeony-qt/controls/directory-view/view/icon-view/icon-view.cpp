@@ -286,7 +286,9 @@ void IconView::resizeEvent(QResizeEvent *e)
 void IconView::wheelEvent(QWheelEvent *e)
 {
     if (e->modifiers() & Qt::ControlModifier) {
-        setIndexWidget(selectionModel()->selectedIndexes().first(), nullptr);
+        for (auto index : selectionModel()->selectedIndexes()) {
+            setIndexWidget(index, nullptr);
+        }
         if (e->delta() > 0) {
             zoomLevelChangedRequest(true);
         } else {

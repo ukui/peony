@@ -32,6 +32,9 @@
 #include "directory-view-widget.h"
 #include "advanced-location-bar.h"
 
+#include "directory-view-factory-manager.h"
+#include "directory-view-plugin-iface2.h"
+
 #include <QHBoxLayout>
 #include <QUrl>
 #include <QMessageBox>
@@ -149,10 +152,17 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
     m_view_type_menu = new ViewTypeMenu(viewType);
     viewType->setMenu(m_view_type_menu);
 
-    connect(m_view_type_menu, &ViewTypeMenu::switchViewRequest, this, [=](const QString &id, const QIcon &icon){
+    connect(m_view_type_menu, &ViewTypeMenu::switchViewRequest, this, [=](const QString &id, const QIcon &icon, bool resetToZoomLevel){
         viewType->setText(id);
         viewType->setIcon(icon);
         this->viewTypeChangeRequest(id);
+        if (resetToZoomLevel) {
+            auto viewId = m_window->getCurrentPage()->getView()->viewId();
+            auto factoryManger = Peony::DirectoryViewFactoryManager2::getInstance();
+            auto factory = factoryManger->getFactory(viewId);
+            int zoomLevelHint = factory->zoom_level_hint();
+            m_window->getCurrentPage()->setZoomLevelRequest(zoomLevelHint);
+        }
     });
 
     addSpacing(2);

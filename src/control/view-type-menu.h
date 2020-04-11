@@ -36,7 +36,7 @@ public:
     explicit ViewTypeMenu(QWidget *parent = nullptr);
 
 Q_SIGNALS:
-    void switchViewRequest(const QString &viewId, const QIcon &icon);
+    void switchViewRequest(const QString &viewId, const QIcon &icon, bool resetToZoomLevelHint = false);
 
 public Q_SLOTS:
     void setCurrentView(const QString &viewId);

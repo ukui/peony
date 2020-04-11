@@ -331,6 +331,11 @@ void TabWidget::addPage(const QString &uri, bool jumpTo)
     this->setCursor(c);
 
     m_tab_bar->addPage(uri, jumpTo);
+    int zoomLevel = -1;
+    if (currentPage()) {
+        zoomLevel = currentPage()->getView()->currentZoomLevel();
+    }
+
     auto viewContainer = new Peony::DirectoryViewContainer(m_stack);
     viewContainer->setSortType(Peony::FileItemModel::FileName);
     viewContainer->setSortOrder(Qt::AscendingOrder);
@@ -343,6 +348,9 @@ void TabWidget::addPage(const QString &uri, bool jumpTo)
 
     bindContainerSignal(viewContainer);
     updateTrashBarVisible(uri);
+
+    if (zoomLevel > 0)
+        viewContainer->getView()->setCurrentZoomLevel(zoomLevel);
 }
 
 void TabWidget::goToUri(const QString &uri, bool addHistory, bool forceUpdate)
