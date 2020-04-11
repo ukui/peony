@@ -120,6 +120,8 @@ public Q_SLOTS:
 
     virtual void repaintView() {}
 
+    virtual void clearIndexWidget() {}
+
     //zoom
     virtual void setCurrentZoomLevel(int zoomLevel) {}
 };

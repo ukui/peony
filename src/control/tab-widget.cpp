@@ -222,6 +222,8 @@ void TabWidget::updateTrashBarVisible(const QString &uri)
 
 void TabWidget::handleZoomLevel(int zoomLevel)
 {
+    currentPage()->getView()->clearIndexWidget();
+
     int currentViewZoomLevel = currentPage()->getView()->currentZoomLevel();
     int currentViewMimZoomLevel = currentPage()->getView()->minimumZoomLevel();
     int currentViewMaxZoomLevel = currentPage()->getView()->maximumZoomLevel();

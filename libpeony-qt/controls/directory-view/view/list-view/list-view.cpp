@@ -492,3 +492,10 @@ void ListView2::setCurrentZoomLevel(int zoomLevel)
     m_view->setIconSize(QSize(adjusted, adjusted));
     m_zoom_level = zoomLevel;
 }
+
+void ListView2::clearIndexWidget()
+{
+    for (auto index : m_view->selectedIndexes()) {
+        m_view->setIndexWidget(index, nullptr);
+    }
+}

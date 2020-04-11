@@ -286,9 +286,6 @@ void IconView::resizeEvent(QResizeEvent *e)
 void IconView::wheelEvent(QWheelEvent *e)
 {
     if (e->modifiers() & Qt::ControlModifier) {
-        for (auto index : selectionModel()->selectedIndexes()) {
-            setIndexWidget(index, nullptr);
-        }
         if (e->delta() > 0) {
             zoomLevelChangedRequest(true);
         } else {
@@ -544,6 +541,13 @@ void IconView2::setCurrentZoomLevel(int zoomLevel)
         int adjusted = base + zoomLevel;
         m_view->setIconSize(QSize(adjusted, adjusted));
         m_view->setGridSize(m_view->itemDelegate()->sizeHint(QStyleOptionViewItem(), QModelIndex()) + QSize(20, 20));
+    }
+}
+
+void IconView2::clearIndexWidget()
+{
+    for (auto index : m_view->selectedIndexes()) {
+        m_view->setIndexWidget(index, nullptr);
     }
 }
 

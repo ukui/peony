@@ -43,6 +43,7 @@ class PEONYCORESHARED_EXPORT IconView : public QListView, public DirectoryViewIf
 {
     friend class IconViewDelegate;
     friend class IconViewIndexWidget;
+    friend class IconView2;
     Q_OBJECT
 public:
 
@@ -223,6 +224,8 @@ public Q_SLOTS:
     void repaintView();
 
     void setCurrentZoomLevel(int zoomLevel);
+
+    void clearIndexWidget();
 
 private:
     IconView *m_view = nullptr;

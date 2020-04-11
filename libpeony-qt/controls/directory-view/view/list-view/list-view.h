@@ -191,6 +191,8 @@ public Q_SLOTS:
 
     void setCurrentZoomLevel(int zoomLevel);
 
+    void clearIndexWidget();
+
 private:
     ListView *m_view = nullptr;
     FileItemModel *m_model = nullptr;
