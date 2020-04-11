@@ -67,6 +67,9 @@ public:
     bool getWindowUseDefaultNameSortOrder() {return m_use_default_name_sort_order;}
     bool getWindowSortFolderFirst() {return m_folder_first;}
 
+    int currentViewZoomLevel();
+    bool currentViewSupportZoom();
+
 Q_SIGNALS:
     void windowSelectionChanged();
     void locationChanged(const QString &uri);
@@ -128,6 +131,8 @@ public Q_SLOTS:
 
     void editUri(const QString &uri);
     void editUris(const QStringList &uris);
+
+    void setCurrentViewZoomLevel(int zoomLevel);
 
 protected:
     void resizeEvent(QResizeEvent *e);

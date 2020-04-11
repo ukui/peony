@@ -480,6 +480,16 @@ int MainWindow::getCurrentSortColumn()
     return m_tab->getSortType();
 }
 
+int MainWindow::currentViewZoomLevel()
+{
+    return m_tab->m_status_bar->m_slider->value();
+}
+
+bool MainWindow::currentViewSupportZoom()
+{
+    return m_tab->m_status_bar->m_slider->isEnabled();
+}
+
 void MainWindow::maximizeOrRestore()
 {
     if (!this->isMaximized()) {
@@ -628,6 +638,12 @@ void MainWindow::editUri(const QString &uri)
 void MainWindow::editUris(const QStringList &uris)
 {
     m_tab->editUris(uris);
+}
+
+void MainWindow::setCurrentViewZoomLevel(int zoomLevel)
+{
+    if (currentViewSupportZoom())
+        m_tab->m_status_bar->m_slider->setValue(zoomLevel);
 }
 
 void MainWindow::resizeEvent(QResizeEvent *e)

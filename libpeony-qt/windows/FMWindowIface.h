@@ -61,6 +61,9 @@ public:
 
     virtual const QString getCurrentPageViewType() {return nullptr;}
 
+    virtual int currentViewZoomLevel() {return -1;}
+    virtual bool currentViewSupportZoom() {return false;}
+
     //slot
     virtual void goToUri(const QString &uri, bool addHistory, bool forceUpdate = false) {}
     virtual void addNewTabs(const QStringList &uris) {}
@@ -86,6 +89,8 @@ public:
 
     virtual void editUri(const QString &uri) {}
     virtual void editUris(const QStringList &uris) {}
+
+    virtual void setCurrentViewZoomLevel(int zoomLevel) {}
 };
 }
 
