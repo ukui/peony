@@ -33,6 +33,7 @@ class QSlider;
 
 class TabStatusBar : public QStatusBar
 {
+    friend class MainWindow;
     Q_OBJECT
 public:
     explicit TabStatusBar(TabWidget *tab, QWidget *parent = nullptr);

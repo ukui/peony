@@ -56,6 +56,7 @@ class DirectoryViewContainer;
  */
 class TabWidget : public QMainWindow
 {
+    friend class MainWindow;
     Q_OBJECT
 public:
     explicit TabWidget(QWidget *parent = nullptr);

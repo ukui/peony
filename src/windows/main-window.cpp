@@ -806,6 +806,14 @@ void MainWindow::initUI(const QString &uri)
 
     connect(m_header_bar, &HeaderBar::updateLocationRequest, this, &MainWindow::goToUri);
     connect(m_header_bar, &HeaderBar::viewTypeChangeRequest, this, &MainWindow::beginSwitchView);
+    connect(m_header_bar, &HeaderBar::updateZoomLevelHintRequest, this, [=](int zoomLevelHint){
+        if (zoomLevelHint >= 0) {
+            m_tab->m_status_bar->m_slider->setEnabled(true);
+            m_tab->m_status_bar->m_slider->setValue(zoomLevelHint);
+        } else {
+            m_tab->m_status_bar->m_slider->setEnabled(false);
+        }
+    });
 
     //SideBar
     QDockWidget *sidebarContainer = new QDockWidget(this);

@@ -165,6 +165,8 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
         }
     });
 
+    connect(m_view_type_menu, &ViewTypeMenu::updateZoomLevelHintRequest, this, &HeaderBar::updateZoomLevelHintRequest);
+
     addSpacing(2);
 
     a = addAction(QIcon::fromTheme("view-sort-ascending-symbolic"), tr("Sort Type"));
@@ -334,7 +336,7 @@ void HeaderBar::updateIcons()
     qDebug()<<m_window->getCurrentUri();
     qDebug()<<m_window->getCurrentSortColumn();
     qDebug()<<m_window->getCurrentSortOrder();
-    m_view_type_menu->setCurrentView(m_window->getCurrentPage()->getView()->viewId());
+    m_view_type_menu->setCurrentView(m_window->getCurrentPage()->getView()->viewId(), true);
     m_sort_type_menu->switchSortTypeRequest(m_window->getCurrentSortColumn());
     m_sort_type_menu->switchSortOrderRequest(m_window->getCurrentSortOrder());
 

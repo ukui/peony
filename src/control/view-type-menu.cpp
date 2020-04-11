@@ -24,6 +24,7 @@
 
 #include "view-factory-sort-filter-model.h"
 #include "directory-view-factory-manager.h"
+#include "directory-view-plugin-iface2.h"
 
 #include <QActionGroup>
 
@@ -48,7 +49,7 @@ ViewTypeMenu::ViewTypeMenu(QWidget *parent) : QMenu(parent)
     setCurrentDirectory("file:///");
 }
 
-void ViewTypeMenu::setCurrentView(const QString &viewId)
+void ViewTypeMenu::setCurrentView(const QString &viewId, bool blockSignal)
 {
     if (viewId == m_current_view_id)
         return;
@@ -63,7 +64,15 @@ void ViewTypeMenu::setCurrentView(const QString &viewId)
         }
     }
 
+
     Q_EMIT this->switchViewRequest(viewId, m_model->iconFromViewId(viewId));
+
+    if (!blockSignal) {
+        auto factoryManager = Peony::DirectoryViewFactoryManager2::getInstance();
+        auto factory = factoryManager->getFactory(viewId);
+        int zoomLevelHint = factory->zoom_level_hint();
+        Q_EMIT this->updateZoomLevelHintRequest(zoomLevelHint);
+    }
 }
 
 void ViewTypeMenu::setCurrentDirectory(const QString &uri)

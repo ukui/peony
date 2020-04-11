@@ -71,6 +71,7 @@ private:
 Q_SIGNALS:
     void updateLocationRequest(const QString &uri, bool addHistory = true, bool force = true);
     void viewTypeChangeRequest(const QString &viewId);
+    void updateZoomLevelHintRequest(int zoomLevelHint);
 
 protected:
     void addSpacing(int pixel);

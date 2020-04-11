@@ -37,9 +37,10 @@ public:
 
 Q_SIGNALS:
     void switchViewRequest(const QString &viewId, const QIcon &icon, bool resetToZoomLevelHint = false);
+    void updateZoomLevelHintRequest(int zoomLevelHint);
 
 public Q_SLOTS:
-    void setCurrentView(const QString &viewId);
+    void setCurrentView(const QString &viewId, bool blockSignal = false);
     void setCurrentDirectory(const QString &uri);
 
 protected:
