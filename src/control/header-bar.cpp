@@ -453,14 +453,30 @@ HeaderBarContainer::HeaderBarContainer(QWidget *parent) : QToolBar(parent)
 bool HeaderBarContainer::eventFilter(QObject *obj, QEvent *e)
 {
     Q_UNUSED(obj)
-    if (e->type() == QEvent::MouseMove) {
-        //auto w = qobject_cast<QWidget *>(obj);
-        QCursor c;
-        c.setShape(Qt::ArrowCursor);
-        //this->setCursor(c);
-        //w->setCursor(c);
-        this->topLevelWidget()->setCursor(c);
+    auto window = qobject_cast<MainWindow *>(obj);
+    if (window) {
+        if (e->type() == QEvent::Resize) {
+            if (window->isMaximized()) {
+                m_max_or_restore->setIcon(QIcon::fromTheme("window-restore-symbolic"));
+                m_max_or_restore->setToolTip(tr("Restore"));
+            } else {
+                m_max_or_restore->setIcon(QIcon::fromTheme("window-maximize-symbolic"));
+                m_max_or_restore->setToolTip(tr("Maximize"));
+            }
+        }
+        return false;
+    } else {
+        if (e->type() == QEvent::MouseMove) {
+            //auto w = qobject_cast<QWidget *>(obj);
+            QCursor c;
+            c.setShape(Qt::ArrowCursor);
+            //this->setCursor(c);
+            //w->setCursor(c);
+            this->topLevelWidget()->setCursor(c);
+        }
+
     }
+
     return false;
 }
 
@@ -477,6 +493,8 @@ void HeaderBarContainer::addHeaderBar(HeaderBar *headerBar)
 
     m_internal_widget->setLayout(m_layout);
     addWidget(m_internal_widget);
+
+    m_header_bar->m_window->installEventFilter(this);
 }
 
 void HeaderBarContainer::addWindowButtons()
@@ -519,6 +537,7 @@ void HeaderBarContainer::addWindowButtons()
             maximizeAndRestore->setToolTip(tr("Maximize"));
         }
     });
+    m_max_or_restore = maximizeAndRestore;
 
     auto close = new QToolButton(m_internal_widget);
     close->setIcon(QIcon::fromTheme("window-close-symbolic"));

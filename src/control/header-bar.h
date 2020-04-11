@@ -58,6 +58,8 @@ private:
     QHBoxLayout *m_layout;
 
     HeaderBar *m_header_bar = nullptr;
+
+    QToolButton *m_max_or_restore = nullptr;
 };
 
 class HeaderBar : public QToolBar
