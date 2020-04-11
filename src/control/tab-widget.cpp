@@ -203,11 +203,6 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
             this->updatePreviewPage();
         });
     });
-
-    connect(qApp, &QApplication::fontChanged, this, [=](){
-        updateTabBarGeometry();
-        updateStatusBarGeometry();
-    });
 }
 
 void TabWidget::updateTrashBarVisible(const QString &uri)
