@@ -501,9 +501,8 @@
 <context>
     <name>Peony::DirectoryView::IconView2</name>
     <message>
-        <location filename="../../libpeony-qt/controls/directory-view/view/icon-view/icon-view.h" line="169"/>
         <source>Icon View</source>
-        <translation>图标视图</translation>
+        <translation type="vanished">图标视图</translation>
     </message>
 </context>
 <context>
@@ -517,17 +516,15 @@
 <context>
     <name>Peony::DirectoryView::ListView2</name>
     <message>
-        <location filename="../../libpeony-qt/controls/directory-view/view/list-view/list-view.h" line="134"/>
         <source>List View</source>
-        <translation>列表视图</translation>
+        <translation type="vanished">列表视图</translation>
     </message>
 </context>
 <context>
     <name>Peony::DirectoryViewFactoryManager</name>
     <message>
-        <location filename="../../libpeony-qt/controls/directory-view/directory-view-factory/directory-view-factory-manager.cpp" line="86"/>
         <source>Icon View</source>
-        <translation>图标视图</translation>
+        <translation type="vanished">图标视图</translation>
     </message>
 </context>
 <context>
@@ -731,9 +728,8 @@
 <context>
     <name>Peony::DirectoryViewWidget</name>
     <message>
-        <location filename="../../libpeony-qt/controls/directory-view/directory-view-widget.h" line="57"/>
         <source>Directory View</source>
-        <translation>文件视图</translation>
+        <translation type="vanished">文件视图</translation>
     </message>
 </context>
 <context>
@@ -1704,7 +1700,6 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
         <location filename="../../libpeony-qt/controls/directory-view/directory-view-factory/icon-view-factory.h" line="39"/>
         <location filename="../../libpeony-qt/controls/directory-view/directory-view-factory/icon-view-factory.h" line="47"/>
         <location filename="../../libpeony-qt/controls/directory-view/directory-view-factory/icon-view-factory.h" line="68"/>
-        <location filename="../../libpeony-qt/controls/directory-view/directory-view-factory/icon-view-factory.h" line="76"/>
         <source>Icon View</source>
         <translation>图标视图</translation>
     </message>
@@ -1718,7 +1713,6 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
         <location filename="../../libpeony-qt/controls/directory-view/directory-view-factory/list-view-factory.h" line="41"/>
         <location filename="../../libpeony-qt/controls/directory-view/directory-view-factory/list-view-factory.h" line="49"/>
         <location filename="../../libpeony-qt/controls/directory-view/directory-view-factory/list-view-factory.h" line="70"/>
-        <location filename="../../libpeony-qt/controls/directory-view/directory-view-factory/list-view-factory.h" line="78"/>
         <source>List View</source>
         <translation>列表视图</translation>
     </message>
