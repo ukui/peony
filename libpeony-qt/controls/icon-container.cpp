@@ -24,6 +24,8 @@
 #include <QPaintEvent>
 #include <QPainter>
 
+#include <QStyleOptionButton>
+
 using namespace Peony;
 
 IconContainer::IconContainer(QWidget *parent) : QPushButton(parent)
@@ -32,6 +34,14 @@ IconContainer::IconContainer(QWidget *parent) : QPushButton(parent)
     setCheckable(false);
     setDefault(true);
     setFlat(true);
+
+    m_style = new IconContainerStyle;
+    setStyle(m_style);
+}
+
+IconContainer::~IconContainer()
+{
+    m_style->deleteLater();
 }
 
 void IconContainer::paintEvent(QPaintEvent *e)
@@ -41,4 +51,16 @@ void IconContainer::paintEvent(QPaintEvent *e)
     p.setPen(this->palette().dark().color());
     //p.drawRect(this->rect().adjusted(0, 0, -1, -1));
     QPushButton::paintEvent(e);
+}
+
+IconContainerStyle::IconContainerStyle() : QProxyStyle()
+{
+
+}
+
+void IconContainerStyle::drawControl(QStyle::ControlElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget) const
+{
+    QStyleOptionButton opt = *qstyleoption_cast<const QStyleOptionButton *>(option);
+    opt.palette.setColor(QPalette::Highlight, Qt::transparent);
+    return QProxyStyle::drawControl(element, &opt, painter, widget);
 }
