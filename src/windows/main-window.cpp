@@ -103,7 +103,7 @@ MainWindow::MainWindow(const QString &uri, QWidget *parent) : QMainWindow(parent
     //setGraphicsEffect(m_effect);
 
     setAnimated(false);
-    //setAttribute(Qt::WA_DeleteOnClose); //double free, why?
+    setAttribute(Qt::WA_DeleteOnClose);
     setAttribute(Qt::WA_TranslucentBackground);
     //setAttribute(Qt::WA_OpaquePaintEvent);
     setWindowFlag(Qt::FramelessWindowHint);
