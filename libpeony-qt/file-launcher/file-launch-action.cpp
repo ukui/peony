@@ -28,6 +28,9 @@
 
 #include <QMessageBox>
 
+#include <QUrl>
+#include <QProcess>
+
 #include <QDebug>
 
 using namespace Peony;
@@ -89,6 +92,24 @@ const QString FileLaunchAction::getAppInfoDisplayName()
 
 void FileLaunchAction::lauchFileSync(bool forceWithArg)
 {
+    auto fileInfo = FileInfo::fromUri(m_uri, false);
+    if (fileInfo->isEmptyInfo()) {
+        FileInfoJob j(fileInfo);
+        j.querySync();
+    }
+    bool isAppImage = fileInfo->type() == "application/vnd.appimage";
+    if (isAppImage) {
+        if (FileInfo::fromUri(m_uri)->canExecute()) {
+            QUrl url = m_uri;
+            auto path = url.path();
+
+            QProcess p;
+            p.setProgram(path);
+            p.startDetached();
+            return;
+        }
+    }
+
     if (!isValid()) {
         QMessageBox::critical(nullptr, tr("Open Failed"), tr("Can not open %1").arg(m_uri));
         return;
@@ -128,6 +149,24 @@ void FileLaunchAction::lauchFileSync(bool forceWithArg)
 
 void FileLaunchAction::lauchFileAsync(bool forceWithArg)
 {
+    auto fileInfo = FileInfo::fromUri(m_uri, false);
+    if (fileInfo->isEmptyInfo()) {
+        FileInfoJob j(fileInfo);
+        j.querySync();
+    }
+    bool isAppImage = fileInfo->type() == "application/vnd.appimage";
+    if (isAppImage) {
+        if (FileInfo::fromUri(m_uri)->canExecute()) {
+            QUrl url = m_uri;
+            auto path = url.path();
+
+            QProcess p;
+            p.setProgram(path);
+            p.startDetached();
+            return;
+        }
+    }
+
     if (!isValid()) {
         QMessageBox::critical(nullptr, tr("Open Failed"), tr("Can not open %1").arg(m_uri));
         return;
