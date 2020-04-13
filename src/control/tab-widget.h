@@ -28,6 +28,9 @@
 #include <QStackedWidget>
 #include <QPushButton>
 #include <QLabel>
+#include <QComboBox>
+#include <QList>
+#include <QLineEdit>
 #include "navigation-tab-bar.h"
 #include "file-info.h"
 #include "tab-status-bar.h"
@@ -36,6 +39,7 @@ class NavigationTabBar;
 class QStackedWidget;
 class PreviewPageButtonGroups;
 class QHBoxLayout;
+class QVBoxLayout;
 
 namespace Peony {
 class PreviewPageIface;
@@ -146,6 +150,8 @@ public Q_SLOTS:
     void removeTab(int index);
 
     void updateTrashBarVisible(const QString &uri = "");
+    void updateSearchBar(bool showSearch);
+    void updateSearchList();
 
     void handleZoomLevel(int zoomLevel);
 
@@ -159,6 +165,12 @@ protected:
     void resizeEvent(QResizeEvent *e);
     void updateTabBarGeometry();
     void updateStatusBarGeometry();
+
+    void initAdvanceSearch();
+    void addNewConditionBar();
+    void removeConditionBar(int index);
+
+    QStringList getCurrentClassify(int rowCount);
 
 private:
     NavigationTabBar *m_tab_bar;
@@ -175,18 +187,46 @@ private:
     QAction *m_current_preview_action = nullptr;
 
     QToolBar *m_trash_bar;
+    QToolBar *m_search_bar;
+    QVBoxLayout *m_top_layout;
     QHBoxLayout *m_trash_bar_layout;
+    QHBoxLayout *m_search_bar_layout;
     QLabel *m_trash_label;
     QPushButton *m_clear_button;
     QPushButton *m_recover_button;
+    QPushButton *m_search_path;
+    QPushButton *m_search_close;
+    QPushButton *m_search_child;
+    QPushButton *m_search_more;
+    QLabel *m_search_title;
+
+    //use qlist for dynamic generated search conditions list
+    QList<QHBoxLayout*> m_layout_list;
+    QList<QComboBox*> m_conditions_list;
+    QList<QComboBox*> m_classify_list;
+    QList<QLabel*> m_link_label_list;
+    QList<QPushButton*> m_add_button_list;
+    QList<QPushButton*> m_reduce_button_list;
+    QList<QToolBar*> m_search_bar_list;
+    QList<QLineEdit*> m_input_list;
+
+    int m_search_bar_count = 0;
 
     TabStatusBar *m_status_bar = nullptr;
 
     bool m_triggered_preview_page = false;
+    bool m_show_search_list = false;
 
     //Button size macro definition
     const int TRASH_BUTTON_HEIGHT = 28;
     const int TRASH_BUTTON_WIDTH = 60;
+
+    //advance search filter options
+    QStringList m_option_list = {tr("name"), tr("type"), tr("modify time"), tr("file size")};
+    QStringList m_file_type_list = {tr("all"), tr("file folder"), tr("image"), tr("video"), tr("text file"), tr("audio"), tr("others")};
+    QStringList m_file_mtime_list = {tr("all"), tr("today"), tr("this week"), tr("this month"), tr("this year"), tr("year ago")};
+    QStringList m_file_size_list = {tr("all"), tr("tiny(0-16K)"), tr("small(16k-1M)"), tr("medium(1M-100M)"), tr("big(100M-1G)"),tr("large(>1G)")};
+
 };
 
 class PreviewPageContainer : public QStackedWidget

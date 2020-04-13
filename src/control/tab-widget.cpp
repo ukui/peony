@@ -37,18 +37,20 @@
 #include <QDockWidget>
 #include <QToolBar>
 #include <QSplitter>
+#include <QStringListModel>
 
 #include <QAction>
 
 #include <QTimer>
 
 #include "directory-view-container.h"
-
+#include "file-utils.h"
 #include "peony-main-window-style.h"
 
 #include "directory-view-factory-manager.h"
 
 #include <QApplication>
+#include <QStandardPaths>
 
 #include <QDebug>
 
@@ -153,7 +155,7 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
     recover->setFixedHeight(TRASH_BUTTON_HEIGHT);
     m_recover_button = recover;
     //trash->addSpacing(10);
-    trash->addWidget(Label, Qt::AlignRight);
+    trash->addWidget(Label, Qt::AlignLeft);
     trash->setContentsMargins(10, 0, 10, 0);
     trash->addWidget(trashButtons);
     trash->addWidget(recover, Qt::AlignLeft);
@@ -171,13 +173,18 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
         Q_EMIT this->recoverFromTrash();
     });
 
+    //advance search ui init
+    initAdvanceSearch();
+
     QWidget *w = new QWidget();
     w->setAttribute(Qt::WA_TranslucentBackground);
     auto vbox = new QVBoxLayout();
+    m_top_layout = vbox;
     vbox->setSpacing(0);
     vbox->setContentsMargins(0, 0, 0, 0);
     vbox->addLayout(t);
     vbox->addLayout(trash);
+    vbox->addLayout(m_search_bar_layout);
     QSplitter *s = new QSplitter(this);
     s->setChildrenCollapsible(false);
     s->setContentsMargins(0, 0, 0, 0);
@@ -203,6 +210,163 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
             this->updatePreviewPage();
         });
     });
+}
+
+void TabWidget::initAdvanceSearch()
+{
+    //advance search bar
+    QHBoxLayout *search = new QHBoxLayout(this);
+    m_search_bar_layout = search;
+    QToolBar *searchButtons = new QToolBar(this);
+    m_search_bar = searchButtons;
+    QPushButton *closeButton = new QPushButton(QIcon::fromTheme("tab-close"), "", searchButtons);
+    m_search_close = closeButton;
+    closeButton->setFixedHeight(20);
+    closeButton->setFixedWidth(20);
+
+    connect(closeButton, &QPushButton::clicked, [=]()
+    {
+        updateSearchBar(false);
+        updateSearchList();
+    });
+
+    QLabel *title = new QLabel(tr("Search"), searchButtons);
+    m_search_title = title;
+    title->setFixedWidth(TRASH_BUTTON_WIDTH);
+    title->setFixedHeight(TRASH_BUTTON_HEIGHT);
+
+    QPushButton *tabButton = new QPushButton(searchButtons);
+    m_search_path = tabButton;
+    tabButton->setFixedHeight(TRASH_BUTTON_HEIGHT);
+    tabButton->setFixedWidth(TRASH_BUTTON_WIDTH * 2);
+
+    QPushButton *childButton = new QPushButton(searchButtons);
+    m_search_child = childButton;
+    childButton->setFixedHeight(TRASH_BUTTON_HEIGHT);
+    childButton->setFixedWidth(TRASH_BUTTON_HEIGHT);
+    //qDebug() << QIcon(":/custom/icons/child-folder").name();
+    childButton->setIcon(QIcon(":/custom/icons/child-folder"));
+
+    QPushButton *moreButton = new QPushButton("more options",searchButtons);
+    m_search_more = moreButton;
+    moreButton->setFixedHeight(TRASH_BUTTON_HEIGHT);
+    moreButton->setFixedWidth(TRASH_BUTTON_WIDTH *2);
+
+    connect(moreButton, &QPushButton::clicked, this, &TabWidget::updateSearchList);
+
+    search->addWidget(closeButton, Qt::AlignLeft);
+    search->addSpacing(10);
+    search->addWidget(title, Qt::AlignLeft);
+    search->addSpacing(10);
+    search->addWidget(tabButton, Qt::AlignLeft);
+    search->addSpacing(10);
+    search->addWidget(childButton, Qt::AlignLeft);
+    search->addSpacing(10);
+    search->addWidget(moreButton, Qt::AlignLeft);
+    search->addSpacing(10);
+    search->addWidget(searchButtons);
+    search->setContentsMargins(10, 0, 10, 0);
+    searchButtons->setVisible(false);
+    tabButton->setVisible(false);
+    closeButton->setVisible(false);
+    title->setVisible(false);
+    childButton->setVisible(false);
+    moreButton->setVisible(false);
+}
+
+void TabWidget::addNewConditionBar()
+{
+    QHBoxLayout *layout = new QHBoxLayout(this);
+    m_layout_list.append(layout);
+
+    QToolBar *optionBar = new QToolBar(this);
+    m_search_bar_list.append(optionBar);
+
+    QComboBox *conditionCombox = new QComboBox(optionBar);
+    m_conditions_list.append(conditionCombox);
+    conditionCombox->setFixedHeight(TRASH_BUTTON_HEIGHT);
+    conditionCombox->setFixedWidth(TRASH_BUTTON_WIDTH *2);
+    auto conditionModel = new QStringListModel(optionBar);
+    conditionModel->setStringList(m_option_list);
+    conditionCombox->setModel(conditionModel);
+    auto index = m_search_bar_count;
+    if (index > m_option_list.count())
+        index = m_option_list.count();
+    conditionCombox->setCurrentIndex(index);
+
+    QLabel *linkLabel = new QLabel(tr("is"));
+    m_link_label_list.append(linkLabel);
+    linkLabel->setFixedHeight(TRASH_BUTTON_HEIGHT);
+    linkLabel->setFixedWidth(TRASH_BUTTON_HEIGHT);
+
+    QComboBox *classifyCombox = new QComboBox(optionBar);
+    m_classify_list.append(classifyCombox);
+    classifyCombox->setFixedHeight(TRASH_BUTTON_HEIGHT);
+    classifyCombox->setFixedWidth(TRASH_BUTTON_WIDTH *2);
+    auto classifyModel = new QStringListModel(optionBar);
+    auto list = getCurrentClassify(index);
+    classifyModel->setStringList(list);
+    classifyCombox->setModel(classifyModel);
+
+    QLineEdit *inputBox = new QLineEdit(optionBar);
+    m_input_list.append(inputBox);
+    inputBox->setFixedHeight(TRASH_BUTTON_HEIGHT);
+    inputBox->setFixedWidth(TRASH_BUTTON_WIDTH *4);
+    inputBox->setPlaceholderText(tr("Please input kay words..."));
+
+    QPushButton *addButton = new QPushButton(QIcon::fromTheme("add"), "", optionBar);
+    m_add_button_list.append(addButton);
+    addButton->setFixedHeight(20);
+    addButton->setFixedWidth(20);
+
+    QPushButton *reduceButton = new QPushButton(QIcon::fromTheme("remove"), "", optionBar);
+    m_reduce_button_list.append(reduceButton);
+    reduceButton->setFixedHeight(20);
+    reduceButton->setFixedWidth(20);
+
+    layout->addSpacing(TRASH_BUTTON_WIDTH + 40);
+    layout->addWidget(conditionCombox, Qt::AlignLeft);
+    layout->addSpacing(10);
+    layout->addWidget(linkLabel, Qt::AlignLeft);
+    layout->addSpacing(10);
+    layout->addWidget(classifyCombox, Qt::AlignLeft);
+    layout->addWidget(inputBox, Qt::AlignLeft);
+    layout->addWidget(optionBar);
+    layout->addWidget(addButton, Qt::AlignRight);
+    layout->addSpacing(10);
+    layout->addWidget(reduceButton, Qt::AlignRight);
+    layout->setContentsMargins(10, 0, 10, 0);
+
+    if (index == 0)
+    {
+        classifyCombox->hide();
+        linkLabel->setFixedWidth(TRASH_BUTTON_WIDTH);
+        linkLabel->setText(tr("contains"));
+    }
+    else
+        inputBox->hide();
+
+    m_top_layout->insertLayout(m_top_layout->count()-1, layout);
+    m_search_bar_count++;
+}
+
+QStringList TabWidget::getCurrentClassify(int rowCount)
+{
+    QStringList currentList;
+    currentList.clear();
+    if (rowCount >= m_option_list.size())
+        return m_file_size_list;
+
+    switch (rowCount) {
+    case 1:
+        return m_file_type_list;
+    case 2:
+        return m_file_mtime_list;
+    default:
+        break;
+    }
+
+    return currentList;
 }
 
 void TabWidget::updateTrashBarVisible(const QString &uri)
@@ -239,6 +403,85 @@ void TabWidget::handleZoomLevel(int zoomLevel)
         switchViewType(viewId);
         currentPage()->getView()->setCurrentZoomLevel(zoomLevel);
     }
+}
+
+void TabWidget::updateSearchBar(bool showSearch)
+{
+    if (showSearch)
+    {
+        m_search_path->show();
+        m_search_close->show();
+        m_search_title->show();
+        m_search_bar->show();
+        m_search_child->show();
+        m_search_more->show();
+        m_search_bar_layout->setContentsMargins(10, 5, 10, 5);
+        auto uri = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
+        if (! getCurrentUri().isNull())
+            uri = getCurrentUri();
+        auto iconName = Peony::FileUtils::getFileIconName(uri);
+        auto displayName = Peony::FileUtils::getFileDisplayName(uri);
+        qDebug() << "iconName:" <<iconName <<displayName<<uri;
+        m_search_path->setIcon(QIcon::fromTheme(iconName));
+        m_search_path->setText(displayName);
+        m_search_more->setIcon(QIcon::fromTheme("go-down"));
+    }
+    else
+    {
+        m_search_path->hide();
+        m_search_close->hide();
+        m_search_title->hide();
+        m_search_bar->hide();
+        m_search_child->hide();
+        m_search_more->hide();
+        m_search_bar_layout->setContentsMargins(10, 0, 10, 0);
+    }
+}
+
+void TabWidget::updateSearchList()
+{
+   m_show_search_list = !m_show_search_list;
+   if (m_show_search_list)
+   {
+       m_search_more->setIcon(QIcon::fromTheme("go-up"));
+       //first click to show advance serach
+       if(m_search_bar_list.count() ==0)
+       {
+           addNewConditionBar();
+           return;
+       }
+
+       //already had a list,just set to show
+       for(int i=0;i<m_search_bar_list.count();i++)
+       {
+           m_conditions_list[i]->show();
+           m_link_label_list[i]->show();
+           if (m_conditions_list[i]->currentIndex() >0)
+               m_classify_list[i]->show();
+           else
+               m_input_list[i]->show();
+           m_search_bar_list[i]->show();
+           m_add_button_list[i]->show();
+           m_reduce_button_list[i]->show();
+           m_layout_list[i]->setContentsMargins(10, 5, 10, 5);
+       }
+   }
+   else
+   {
+       //hide search list
+       m_search_more->setIcon(QIcon::fromTheme("go-down"));
+       for(int i=0;i<m_search_bar_list.count();i++)
+       {
+           m_conditions_list[i]->hide();
+           m_link_label_list[i]->hide();
+           m_classify_list[i]->hide();
+           m_input_list[i]->hide();
+           m_search_bar_list[i]->hide();
+           m_add_button_list[i]->hide();
+           m_reduce_button_list[i]->hide();
+           m_layout_list[i]->setContentsMargins(10, 0, 10, 0);
+       }
+   }
 }
 
 Peony::DirectoryViewContainer *TabWidget::currentPage()

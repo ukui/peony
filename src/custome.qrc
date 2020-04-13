@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/custom">
+        <file>icons/child-folder.png</file>
+        <file>icons/child-folder2.png</file>
+    </qresource>
+</RCC>

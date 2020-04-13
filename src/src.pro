@@ -62,3 +62,6 @@ INSTALLS += translation
 data.path = /usr/share/applications
 data.files += ../data/peony.desktop
 INSTALLS += data
+
+RESOURCES += \
+    custome.qrc

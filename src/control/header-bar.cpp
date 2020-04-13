@@ -286,6 +286,7 @@ void HeaderBar::searchButtonClicked()
     m_search_button->setChecked(m_search_mode);
     m_search_button->setDown(m_search_mode);
     m_location_bar->switchEditMode(m_search_mode);
+    Q_EMIT this->updateSearchRequest(m_search_mode);
 }
 
 void HeaderBar::addSpacing(int pixel)
