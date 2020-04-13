@@ -93,13 +93,15 @@ Q_SIGNALS:
     /*!
      * \brief prepared
      * \param err
+     * \param targetUri return the real uri should enumerate.
+     * \param critical if true, show a critical dialog.
      * <br>
      * We often start an enumerating after prepared signal sended.
      * This will reduce the 'risks' of errors.
      * </br>
      * \see prepare().
      */
-    void prepared(const std::shared_ptr<Peony::GErrorWrapper> &err = nullptr);
+    void prepared(const std::shared_ptr<Peony::GErrorWrapper> &err = nullptr, const QString &targetUri = nullptr, bool critical = false);
     /*!
      * \brief childrenUpdated
      * \param uriList, uri list of newly enumerated files.

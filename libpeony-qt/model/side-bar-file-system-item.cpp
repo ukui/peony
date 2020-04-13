@@ -111,7 +111,13 @@ void SideBarFileSystemItem::findChildren()
 
     FileEnumerator *e = new FileEnumerator;
     e->setEnumerateDirectory(m_uri);
-    connect(e, &FileEnumerator::prepared, this, [=](const GErrorWrapperPtr &err){
+    connect(e, &FileEnumerator::prepared, this, [=](const GErrorWrapperPtr &err, const QString &targetUri){
+        if (targetUri != nullptr) {
+            if (targetUri != this->uri()) {
+                e->setEnumerateDirectory(targetUri);
+            }
+        }
+
         e->enumerateSync();
         auto infos = e->getChildren();
         bool isEmpty = true;

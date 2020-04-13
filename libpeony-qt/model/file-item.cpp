@@ -114,7 +114,35 @@ void FileItem::findChildrenAsync()
     //NOTE: entry a new root might destroyed the current enumeration work.
     //the root item will be delete, so we should cancel the previous enumeration.
     enumerator->connect(this, &FileItem::cancelFindChildren, enumerator, &FileEnumerator::cancel);
-    enumerator->connect(enumerator, &FileEnumerator::prepared, this, [=](std::shared_ptr<GErrorWrapper> err){
+    enumerator->connect(enumerator, &FileEnumerator::prepared, this, [=](std::shared_ptr<GErrorWrapper> err, const QString &targetUri, bool critical){
+        if (critical) {
+            QMessageBox::critical(nullptr, tr("Error"), err->message());
+            enumerator->cancel();
+            return;
+        }
+
+        if (!targetUri.isNull()) {
+            if (targetUri != this->uri()) {
+                this->m_info = FileInfo::fromUri(targetUri);
+
+                GFile *targetFile = g_file_new_for_uri(targetUri.toUtf8().constData());
+                auto path = g_file_get_path(targetFile);
+                if (path) {
+                    QString localUri = QString("file://%1").arg(path);
+                    this->m_info = FileInfo::fromUri(localUri);
+                    enumerator->setEnumerateDirectory(localUri);
+                    g_free(path);
+                } else {
+                    enumerator->setEnumerateDirectory(targetFile);
+                }
+
+                g_object_unref(targetFile);
+            }
+
+            enumerator->enumerateAsync();
+            return;
+        }
+
         auto target = FileUtils::getTargetUri(m_info->uri());
         if (!target.isEmpty()) {
             enumerator->cancel();
@@ -128,6 +156,10 @@ void FileItem::findChildrenAsync()
                 enumerator->cancel();
                 //enumerator->deleteLater();
                 m_model->setRootUri(FileUtils::getParentUri(this->uri()));
+                return;
+            } else {
+                QMessageBox::critical(nullptr, tr("Error"), err->message());
+                enumerator->cancel();
                 return;
             }
         }

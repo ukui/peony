@@ -28,6 +28,8 @@
 
 #include "gerror-wrapper.h"
 
+#include "file-utils.h"
+
 #include <QList>
 #include <QMessageBox>
 
@@ -212,8 +214,27 @@ void FileEnumerator::handleError(GError *err)
 {
     qDebug()<<"handleError"<<err->code<<err->message;
     switch (err->code) {
-    case G_IO_ERROR_NOT_DIRECTORY:
-        if (g_file_has_uri_scheme(m_root_file, "computer")) {
+    case G_IO_ERROR_NOT_DIRECTORY: {
+        auto uri = g_file_get_uri(m_root_file);
+        auto targetUri = FileUtils::getTargetUri(uri);
+        if (uri) {
+            g_free(uri);
+        }
+        if (!targetUri.isEmpty()) {
+            prepared(nullptr, targetUri);
+            return;
+        }
+
+        bool isMountable = false;
+        GFileInfo *file_mount_info = g_file_query_info(m_root_file, G_FILE_ATTRIBUTE_MOUNTABLE_CAN_MOUNT,
+                                                       G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, nullptr, nullptr);
+
+        if (file_mount_info) {
+            isMountable = g_file_info_get_attribute_boolean(file_mount_info, G_FILE_ATTRIBUTE_MOUNTABLE_CAN_MOUNT);
+            g_object_unref(file_mount_info);
+        }
+
+        if (isMountable) {
             g_file_mount_mountable(m_root_file,
                                    G_MOUNT_MOUNT_NONE,
                                    nullptr,
@@ -229,6 +250,7 @@ void FileEnumerator::handleError(GError *err)
                                           this);
         }
         break;
+    }
     case G_IO_ERROR_NOT_MOUNTED:
         //we first trying mount volume without mount operation,
         //because we might have saved password of target server.
@@ -250,15 +272,16 @@ void FileEnumerator::handleError(GError *err)
         Q_EMIT prepared(GErrorWrapper::wrapFrom(g_error_new(G_IO_ERROR, G_IO_ERROR_NOT_FOUND, "file not found")));
         break;
     default:
+        Q_EMIT prepared(GErrorWrapper::wrapFrom(err), nullptr, true);
         break;
     }
 }
 
 void FileEnumerator::enumerateAsync()
 {
-    GFile *target = enumerateTargetFile();
-
-    g_file_enumerate_children_async(target,
+    auto uri = g_file_get_uri(m_root_file);
+    auto path = g_file_get_path(m_root_file);
+    g_file_enumerate_children_async(m_root_file,
                                     G_FILE_ATTRIBUTE_STANDARD_NAME,
                                     G_FILE_QUERY_INFO_NONE,
                                     G_PRIORITY_DEFAULT,
@@ -266,7 +289,6 @@ void FileEnumerator::enumerateAsync()
                                     GAsyncReadyCallback(find_children_async_ready_callback),
                                     this);
 
-    g_object_unref(target);
 }
 
 void FileEnumerator::enumerateChildren(GFileEnumerator *enumerator)
@@ -281,8 +303,17 @@ void FileEnumerator::enumerateChildren(GFileEnumerator *enumerator)
     while (info) {
         child = g_file_enumerator_get_child(enumerator, info);
         char *uri = g_file_get_uri(child);
+        char *path = g_file_get_path(child);
         g_object_unref(child);
-        *m_children_uris<<uri;
+        //qDebug()<<uri;
+        if (path) {
+            QString localUri = QString("file://%1").arg(path);
+            *m_children_uris<<localUri;
+            g_free(path);
+        } else {
+           *m_children_uris<<uri;
+        }
+
         g_free(uri);
         g_object_unref(info);
         info = g_file_enumerator_next_file(enumerator, m_cancellable, nullptr);
@@ -320,7 +351,7 @@ GAsyncReadyCallback FileEnumerator::mount_enclosing_volume_callback(GFile *file,
     if (g_file_mount_enclosing_volume_finish (file, res, &err)) {
         if (err) {
             qDebug()<<"mount successed, err:"<<err->code<<err->message;
-            Q_EMIT p_this->prepared(GErrorWrapper::wrapFrom(err));
+            Q_EMIT p_this->prepared(GErrorWrapper::wrapFrom(err), nullptr, true);
         } else {
             Q_EMIT p_this->prepared();
         }
@@ -332,6 +363,11 @@ GAsyncReadyCallback FileEnumerator::mount_enclosing_volume_callback(GFile *file,
             }
             qDebug()<<"mount failed, err:"<<err->code<<err->message;
             //show the connect dialog
+            if (!p_this->m_root_file) {
+                //critical.
+                return nullptr;
+            }
+
             char *uri = g_file_get_uri(file);
             MountOperation *op = new MountOperation(uri);
             op->setAutoDelete();
@@ -422,10 +458,19 @@ GAsyncReadyCallback FileEnumerator::enumerator_next_files_async_ready_callback(G
         GFileInfo *info = static_cast<GFileInfo*>(l->data);
         GFile *file = g_file_enumerator_get_child(enumerator, info);
         char *uri = g_file_get_uri(file);
+        char *path = g_file_get_path(file);
         g_object_unref(file);
         //qDebug()<<uri;
-        uriList<<uri;
-        *(p_this->m_children_uris)<<uri;
+        if (path) {
+            QString localUri = QString("file://%1").arg(path);
+            uriList<<localUri;
+            *(p_this->m_children_uris)<<localUri;
+            g_free(path);
+        } else {
+            uriList<<uri;
+            *(p_this->m_children_uris)<<uri;
+        }
+
         g_free(uri);
         files_count++;
         l = l->next;
