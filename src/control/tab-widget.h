@@ -151,10 +151,15 @@ public Q_SLOTS:
     void removeTab(int index);
 
     void updateTrashBarVisible(const QString &uri = "");
+    void updateSearchPathButton(const QString &uri = "");
     void updateSearchBar(bool showSearch);
     void updateSearchList();
     void addNewConditionBar();
     void removeConditionBar(int index);
+    void filterUpdate();
+    void searchKeyUpdate();
+    void searchChildUpdate();
+    void browsePath();
 
     void handleZoomLevel(int zoomLevel);
 
@@ -219,6 +224,8 @@ private:
 
     bool m_triggered_preview_page = false;
     bool m_show_search_list = false;
+    bool m_show_search_bar = false;
+    bool m_search_child_flag = false;
 
     //Button size macro definition
     const int TRASH_BUTTON_HEIGHT = 28;

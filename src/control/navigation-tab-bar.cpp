@@ -114,6 +114,8 @@ void NavigationTabBar::updateLocation(int index, const QString &uri)
     setTabIcon(index, QIcon::fromTheme(iconName));
     setTabData(index, uri);
     relayoutFloatButton(false);
+
+    Q_EMIT this->locationUpdated(uri);
 }
 
 void NavigationTabBar::addPage(const QString &uri, bool jumpToNewTab)

@@ -38,6 +38,7 @@
 #include <QToolBar>
 #include <QSplitter>
 #include <QStringListModel>
+#include <QFileDialog>
 
 #include <QAction>
 
@@ -88,6 +89,7 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
     connect(m_tab_bar, &QTabBar::tabMoved, this, &TabWidget::moveTab);
     connect(m_tab_bar, &QTabBar::tabCloseRequested, this, &TabWidget::removeTab);
     connect(m_tab_bar, &NavigationTabBar::addPageRequest, this, &TabWidget::addPage);
+    connect(m_tab_bar, &NavigationTabBar::locationUpdated, this, &TabWidget::updateSearchPathButton);
 
     connect(m_tab_bar, &NavigationTabBar::closeWindowRequest, this, &TabWidget::closeWindowRequest);
 
@@ -227,7 +229,6 @@ void TabWidget::initAdvanceSearch()
     connect(closeButton, &QPushButton::clicked, [=]()
     {
         updateSearchBar(false);
-        updateSearchList();
     });
 
     QLabel *title = new QLabel(tr("Search"), searchButtons);
@@ -239,6 +240,7 @@ void TabWidget::initAdvanceSearch()
     m_search_path = tabButton;
     tabButton->setFixedHeight(TRASH_BUTTON_HEIGHT);
     tabButton->setFixedWidth(TRASH_BUTTON_WIDTH * 2);
+    connect(tabButton, &QPushButton::clicked, this, &TabWidget::browsePath);
 
     QPushButton *childButton = new QPushButton(searchButtons);
     m_search_child = childButton;
@@ -246,6 +248,7 @@ void TabWidget::initAdvanceSearch()
     childButton->setFixedWidth(TRASH_BUTTON_HEIGHT);
     //qDebug() << QIcon(":/custom/icons/child-folder").name();
     childButton->setIcon(QIcon(":/custom/icons/child-folder"));
+    connect(childButton, &QPushButton::clicked, this, &TabWidget::searchChildUpdate);
 
     QPushButton *moreButton = new QPushButton("more options",searchButtons);
     m_search_more = moreButton;
@@ -272,6 +275,41 @@ void TabWidget::initAdvanceSearch()
     title->setVisible(false);
     childButton->setVisible(false);
     moreButton->setVisible(false);
+}
+
+//search conditions changed, update filter
+void TabWidget::filterUpdate()
+{
+    qDebug() << "filterUpdate" <<m_search_child_flag;
+}
+
+void TabWidget::searchKeyUpdate()
+{
+    qDebug() << "searchKeyUpdate";
+}
+
+void TabWidget::searchChildUpdate()
+{
+    m_search_child_flag = ! m_search_child_flag;
+    m_search_child->setCheckable(m_search_child_flag);
+    m_search_child->setChecked(m_search_child_flag);
+    m_search_child->setDown(m_search_child_flag);
+    filterUpdate();
+}
+
+void TabWidget::browsePath()
+{
+    QString target_path = QFileDialog::getExistingDirectory(this, "caption", getCurrentUri(), QFileDialog::ShowDirsOnly);
+    qDebug()<<"browsePath Opened:"<<target_path;
+    //add root prefix
+    if (! target_path.contains("file://") && target_path != "")
+        target_path = "file://" + target_path;
+
+    if (target_path != "" && target_path != getCurrentUri())
+    {
+        updateSearchPathButton(target_path);
+        Q_EMIT this->updateWindowLocationRequest(target_path, true);
+    }
 }
 
 void TabWidget::addNewConditionBar()
@@ -344,7 +382,7 @@ void TabWidget::addNewConditionBar()
     layout->addWidget(addButton, Qt::AlignRight);
     layout->addSpacing(10);
     layout->addWidget(removeButton, Qt::AlignRight);
-    layout->setContentsMargins(10, 0, 10, 0);
+    layout->setContentsMargins(10, 0, 10, 5);
 
     if (index == 0)
     {
@@ -354,6 +392,32 @@ void TabWidget::addNewConditionBar()
     }
     else
         inputBox->hide();
+
+    connect(conditionCombox, QOverload<int>::of(&QComboBox::currentIndexChanged), [=]()
+    {
+        auto cur = conditionCombox->currentIndex();
+        if (cur == 0)
+        {
+            classifyCombox->hide();
+            inputBox->show();
+            linkLabel->setFixedWidth(TRASH_BUTTON_WIDTH);
+            linkLabel->setText(tr("contains"));
+        }
+        else
+        {
+            classifyCombox->show();
+            inputBox->hide();
+            linkLabel->setFixedWidth(TRASH_BUTTON_HEIGHT);
+            linkLabel->setText(tr("is"));
+            auto classifyList = getCurrentClassify(cur);
+            classifyModel->setStringList(classifyList);
+            classifyCombox->setModel(classifyModel);
+            classifyCombox->setCurrentIndex(0);
+        }
+    });
+
+    connect(classifyCombox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &TabWidget::filterUpdate);
+    connect(inputBox, &QLineEdit::textChanged, this, &TabWidget::searchKeyUpdate);
 
     m_top_layout->insertLayout(m_top_layout->count()-1, layout);
     m_search_bar_count++;
@@ -430,6 +494,7 @@ void TabWidget::updateTrashBarVisible(const QString &uri)
        visible = true;
        m_trash_bar_layout->setContentsMargins(10, 5, 10, 5);
     }
+
     m_trash_bar->setVisible(visible);
     m_trash_label->setVisible(visible);
     m_clear_button->setVisible(visible);
@@ -459,6 +524,7 @@ void TabWidget::handleZoomLevel(int zoomLevel)
 
 void TabWidget::updateSearchBar(bool showSearch)
 {
+    m_show_search_bar = showSearch;
     if (showSearch)
     {
         m_search_path->show();
@@ -468,15 +534,8 @@ void TabWidget::updateSearchBar(bool showSearch)
         m_search_child->show();
         m_search_more->show();
         m_search_bar_layout->setContentsMargins(10, 5, 10, 5);
-        auto uri = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
-        if (! getCurrentUri().isNull())
-            uri = getCurrentUri();
-        auto iconName = Peony::FileUtils::getFileIconName(uri);
-        auto displayName = Peony::FileUtils::getFileDisplayName(uri);
-        qDebug() << "iconName:" <<iconName <<displayName<<uri;
-        m_search_path->setIcon(QIcon::fromTheme(iconName));
-        m_search_path->setText(displayName);
         m_search_more->setIcon(QIcon::fromTheme("go-down"));
+        updateSearchPathButton();
     }
     else
     {
@@ -488,12 +547,32 @@ void TabWidget::updateSearchBar(bool showSearch)
         m_search_more->hide();
         m_search_bar_layout->setContentsMargins(10, 0, 10, 0);
     }
+
+    if (m_search_bar_count >0)
+        updateSearchList();
+}
+
+void TabWidget::updateSearchPathButton(const QString &uri)
+{
+    QString curUri = uri;
+    if (uri == "")
+    {
+        curUri = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
+        if (! getCurrentUri().isNull())
+            curUri = getCurrentUri();
+    }
+    auto iconName = Peony::FileUtils::getFileIconName(curUri);
+    auto displayName = Peony::FileUtils::getFileDisplayName(curUri);
+    qDebug() << "iconName:" <<iconName <<displayName<<curUri;
+    m_search_path->setIcon(QIcon::fromTheme(iconName));
+    m_search_path->setText(displayName);
 }
 
 void TabWidget::updateSearchList()
 {
    m_show_search_list = !m_show_search_list;
-   if (m_show_search_list)
+   //if not show search bar, then don't show search list
+   if (m_show_search_list && m_show_search_bar)
    {
        m_search_more->setIcon(QIcon::fromTheme("go-up"));
        //first click to show advance serach
@@ -515,7 +594,7 @@ void TabWidget::updateSearchList()
            m_search_bar_list[i]->show();
            m_add_button_list[i]->show();
            m_remove_button_list[i]->show();
-           m_layout_list[i]->setContentsMargins(10, 5, 10, 5);
+           m_layout_list[i]->setContentsMargins(10, 0, 10, 5);
        }
    }
    else
