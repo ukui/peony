@@ -31,6 +31,7 @@
 #include <QComboBox>
 #include <QList>
 #include <QLineEdit>
+#include <QSignalMapper>
 #include "navigation-tab-bar.h"
 #include "file-info.h"
 #include "tab-status-bar.h"
@@ -152,6 +153,8 @@ public Q_SLOTS:
     void updateTrashBarVisible(const QString &uri = "");
     void updateSearchBar(bool showSearch);
     void updateSearchList();
+    void addNewConditionBar();
+    void removeConditionBar(int index);
 
     void handleZoomLevel(int zoomLevel);
 
@@ -167,8 +170,6 @@ protected:
     void updateStatusBarGeometry();
 
     void initAdvanceSearch();
-    void addNewConditionBar();
-    void removeConditionBar(int index);
 
     QStringList getCurrentClassify(int rowCount);
 
@@ -206,9 +207,11 @@ private:
     QList<QComboBox*> m_classify_list;
     QList<QLabel*> m_link_label_list;
     QList<QPushButton*> m_add_button_list;
-    QList<QPushButton*> m_reduce_button_list;
+    QList<QPushButton*> m_remove_button_list;
     QList<QToolBar*> m_search_bar_list;
     QList<QLineEdit*> m_input_list;
+    QList<QSignalMapper*> m_add_mappper_list;
+    QList<QSignalMapper*> m_remove_mapper_list;
 
     int m_search_bar_count = 0;
 

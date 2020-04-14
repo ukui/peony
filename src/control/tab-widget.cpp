@@ -290,9 +290,11 @@ void TabWidget::addNewConditionBar()
     conditionModel->setStringList(m_option_list);
     conditionCombox->setModel(conditionModel);
     auto index = m_search_bar_count;
-    if (index > m_option_list.count())
-        index = m_option_list.count();
+    if (index > m_option_list.count()-1)
+        index = m_option_list.count()-1;
     conditionCombox->setCurrentIndex(index);
+
+    //qDebug() << "addNewConditionBar:" <<index;
 
     QLabel *linkLabel = new QLabel(tr("is"));
     m_link_label_list.append(linkLabel);
@@ -318,11 +320,18 @@ void TabWidget::addNewConditionBar()
     m_add_button_list.append(addButton);
     addButton->setFixedHeight(20);
     addButton->setFixedWidth(20);
+    connect(addButton, &QPushButton::clicked, this, &TabWidget::addNewConditionBar);
 
-    QPushButton *reduceButton = new QPushButton(QIcon::fromTheme("remove"), "", optionBar);
-    m_reduce_button_list.append(reduceButton);
-    reduceButton->setFixedHeight(20);
-    reduceButton->setFixedWidth(20);
+    QPushButton *removeButton = new QPushButton(QIcon::fromTheme("remove"), "", optionBar);
+    m_remove_button_list.append(removeButton);
+    removeButton->setFixedHeight(20);
+    removeButton->setFixedWidth(20);
+    //mapper for button clicked parse index
+    auto signalMapper = new QSignalMapper(this);
+    connect(removeButton, SIGNAL(clicked()), signalMapper, SLOT(map()));
+    signalMapper->setMapping(removeButton, index);
+    connect(signalMapper, SIGNAL(mapped(int)), this, SLOT(removeConditionBar(int)));
+    m_remove_mapper_list.append(signalMapper);
 
     layout->addSpacing(TRASH_BUTTON_WIDTH + 40);
     layout->addWidget(conditionCombox, Qt::AlignLeft);
@@ -334,7 +343,7 @@ void TabWidget::addNewConditionBar()
     layout->addWidget(optionBar);
     layout->addWidget(addButton, Qt::AlignRight);
     layout->addSpacing(10);
-    layout->addWidget(reduceButton, Qt::AlignRight);
+    layout->addWidget(removeButton, Qt::AlignRight);
     layout->setContentsMargins(10, 0, 10, 0);
 
     if (index == 0)
@@ -350,11 +359,54 @@ void TabWidget::addNewConditionBar()
     m_search_bar_count++;
 }
 
+void TabWidget::removeConditionBar(int index)
+{
+    //disconnect signals after index search bars
+    for(int cur=0;cur<m_layout_list.count();cur++)
+    {
+        disconnect(m_add_button_list[cur], &QPushButton::clicked, this, &TabWidget::addNewConditionBar);
+        disconnect(m_remove_button_list[cur], SIGNAL(clicked()), m_remove_mapper_list[cur], SLOT(map()));
+        disconnect(m_remove_mapper_list[cur], SIGNAL(mapped(int)), this, SLOT(removeConditionBar(int)));
+    }
+
+    //qDebug() << "removeConditionBar:" <<index <<m_conditions_list.count();
+    m_layout_list[index]->deleteLater();
+    m_conditions_list[index]->deleteLater();
+    m_link_label_list[index]->deleteLater();
+    m_classify_list[index]->deleteLater();
+    m_input_list[index]->deleteLater();
+    m_search_bar_list[index]->deleteLater();
+    m_add_button_list[index]->deleteLater();
+    m_remove_button_list[index]->deleteLater();
+    m_remove_mapper_list[index]->deleteLater();
+
+    m_layout_list.removeAt(index);
+    m_conditions_list.removeAt(index);
+    //qDebug() << "removeConditionBar:"<<m_conditions_list.count();
+    m_link_label_list.removeAt(index);
+    m_classify_list.removeAt(index);
+    m_input_list.removeAt(index);
+    m_search_bar_list.removeAt(index);
+    m_add_button_list.removeAt(index);
+    m_remove_button_list.removeAt(index);
+    m_remove_mapper_list.removeAt(index);
+
+    //reconnect signals after index search bars
+    for(int cur=0;cur<m_layout_list.count();cur++)
+    {
+        connect(m_add_button_list[cur], &QPushButton::clicked, this, &TabWidget::addNewConditionBar);
+        connect(m_remove_button_list[cur], SIGNAL(clicked()), m_remove_mapper_list[cur], SLOT(map()));
+        m_remove_mapper_list[cur]->setMapping(m_remove_button_list[cur], cur);
+        connect(m_remove_mapper_list[cur], SIGNAL(mapped(int)), this, SLOT(removeConditionBar(int)));
+    }
+    m_search_bar_count--;
+}
+
 QStringList TabWidget::getCurrentClassify(int rowCount)
 {
     QStringList currentList;
     currentList.clear();
-    if (rowCount >= m_option_list.size())
+    if (rowCount >= m_option_list.size()-1)
         return m_file_size_list;
 
     switch (rowCount) {
@@ -462,7 +514,7 @@ void TabWidget::updateSearchList()
                m_input_list[i]->show();
            m_search_bar_list[i]->show();
            m_add_button_list[i]->show();
-           m_reduce_button_list[i]->show();
+           m_remove_button_list[i]->show();
            m_layout_list[i]->setContentsMargins(10, 5, 10, 5);
        }
    }
@@ -478,7 +530,7 @@ void TabWidget::updateSearchList()
            m_input_list[i]->hide();
            m_search_bar_list[i]->hide();
            m_add_button_list[i]->hide();
-           m_reduce_button_list[i]->hide();
+           m_remove_button_list[i]->hide();
            m_layout_list[i]->setContentsMargins(10, 0, 10, 0);
        }
    }
