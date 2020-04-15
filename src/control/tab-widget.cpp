@@ -278,9 +278,9 @@ void TabWidget::initAdvanceSearch()
 }
 
 //search conditions changed, update filter
-void TabWidget::filterUpdate()
+void TabWidget::searchUpdate()
 {
-    qDebug() << "filterUpdate" <<m_search_child_flag;
+    qDebug() << "searchUpdate" <<m_search_child_flag;
 }
 
 void TabWidget::searchKeyUpdate()
@@ -294,7 +294,7 @@ void TabWidget::searchChildUpdate()
     m_search_child->setCheckable(m_search_child_flag);
     m_search_child->setChecked(m_search_child_flag);
     m_search_child->setDown(m_search_child_flag);
-    filterUpdate();
+    searchUpdate();
 }
 
 void TabWidget::browsePath()
@@ -416,11 +416,12 @@ void TabWidget::addNewConditionBar()
         }
     });
 
-    connect(classifyCombox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &TabWidget::filterUpdate);
+    connect(classifyCombox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &TabWidget::updateAdvanceConditions);
     connect(inputBox, &QLineEdit::textChanged, this, &TabWidget::searchKeyUpdate);
 
     m_top_layout->insertLayout(m_top_layout->count()-1, layout);
     m_search_bar_count++;
+    updateAdvanceConditions();
 }
 
 void TabWidget::removeConditionBar(int index)
@@ -464,6 +465,7 @@ void TabWidget::removeConditionBar(int index)
         connect(m_remove_mapper_list[cur], SIGNAL(mapped(int)), this, SLOT(removeConditionBar(int)));
     }
     m_search_bar_count--;
+    updateAdvanceConditions();
 }
 
 QStringList TabWidget::getCurrentClassify(int rowCount)
@@ -810,6 +812,36 @@ void TabWidget::setUseDefaultNameSortOrder(bool use)
 void TabWidget::setSortFolderFirst(bool folderFirst)
 {
     currentPage()->setSortFolderFirst(folderFirst);
+}
+
+void TabWidget::addFilterCondition(int option, int classify, bool updateNow)
+{
+    currentPage()->addFilterCondition(option, classify, updateNow);
+}
+
+void TabWidget::removeFilterCondition(int option, int classify, bool updateNow)
+{
+    currentPage()->removeFilterCondition(option, classify, updateNow);
+}
+
+void TabWidget::clearConditions()
+{
+    currentPage()->clearConditions();
+}
+
+void TabWidget::updateFilter()
+{
+    currentPage()->updateFilter();
+}
+
+void TabWidget::updateAdvanceConditions()
+{
+    clearConditions();
+    for(int i=0;i<m_layout_list.count();i++)
+    {
+        addFilterCondition(m_conditions_list[i]->currentIndex(), m_classify_list[i]->currentIndex());
+    }
+    updateFilter();
 }
 
 void TabWidget::setCurrentSelections(const QStringList &uris)

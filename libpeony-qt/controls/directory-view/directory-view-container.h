@@ -114,6 +114,12 @@ public Q_SLOTS:
     void setSortFolderFirst(bool folderFirst);
     void setFilterLabelConditions(QString name);
 
+    //mutiple filter conditions for new advance search
+    void addFilterCondition(int option, int classify, bool updateNow = false);
+    void removeFilterCondition(int option, int classify, bool updateNow = false);
+    void clearConditions();
+    void updateFilter();
+
     void onViewDoubleClicked(const QString &uri);
 
 protected:

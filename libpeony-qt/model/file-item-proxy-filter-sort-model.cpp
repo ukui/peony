@@ -164,11 +164,11 @@ bool FileItemProxyFilterSortModel::filterAcceptsRow(int sourceRow, const QModelI
 
         //check the file info filter conditions
         //qDebug()<<"start filter conditions check";
-        if (m_show_file_type != ALL_FILE && ! checkFileTypeFilter(item->m_info->type()))
+        if (! checkFileTypeFilter(item->m_info->type()))
             return false;
-        if (m_show_modify_time != ALL_FILE && ! checkFileModifyTimeFilter(item->m_info->modifiedDate()))
+        if (! checkFileModifyTimeFilter(item->m_info->modifiedDate()))
             return false;
-        if (m_show_file_size != ALL_FILE && ! checkFileSizeFilter(item->m_info->size()))
+        if (! checkFileSizeFilter(item->m_info->size()))
             return false;
 
         //check the file label filter conditions
@@ -250,55 +250,74 @@ bool FileItemProxyFilterSortModel::filterAcceptsRow(int sourceRow, const QModelI
 bool FileItemProxyFilterSortModel::checkFileTypeFilter(QString type) const
 {
     //qDebug()<<"m_show_file_type: "<<m_show_file_type<<" "<<item->info()->type();
-    switch (m_show_file_type)
+    //mutiple condition, advance search and default search
+    if (m_show_file_type == ALL_FILE || m_file_type_list.contains(ALL_FILE))
+        return true;
+
+    //suport mutiple file type choose
+    QList<int> totalTypeList;
+    if (m_file_type_list.count() > 0)
+        totalTypeList.append(m_file_type_list);
+    if (! totalTypeList.contains(m_show_file_type))
+        totalTypeList.append(m_show_file_type);
+
+    for(int i=0;i<totalTypeList.count();i++)
     {
-        case FILE_FOLDER:
+        auto cur = totalTypeList[i];
+        switch (cur)
         {
-            if (type != Folder_Type)
-                return false;
-            break;
+            case FILE_FOLDER:
+            {
+                if (type == Folder_Type)
+                    return true;
+                break;
+            }
+            case PICTURE:
+            {
+                if (type.contains(Image_Type))
+                    return true;
+                break;
+            }
+            case VIDEO:
+            {
+                if (type.contains(Video_Type))
+                    return true;
+                break;
+            }
+            case TXT_FILE:
+            {
+                if (type.contains(Text_Type))
+                    return true;
+                break;
+            }
+            case AUDIO:
+            {
+                if (type.contains(Audio_Type))
+                    return true;
+                break;
+            }
+            case OTHERS:
+            {
+                //exclude classfied types, show the rest other types
+                if (type != Folder_Type && ! type.contains(Image_Type) && ! type.contains(Video_Type)
+                        && ! type.contains(Text_Type) && ! type.contains(Audio_Type))
+                    return true;
+                break;
+            }
+            default:
+                break;
         }
-        case PICTURE:
-        {
-            if (! type.contains(Image_Type))
-                return false;
-            break;
-        }
-        case VIDEO:
-        {
-            if (! type.contains(Video_Type))
-                return false;
-            break;
-        }
-        case TXT_FILE:
-        {
-            if (! type.contains(Text_Type))
-                return false;
-            break;
-        }
-        case AUDIO:
-        {
-            if (! type.contains(Audio_Type))
-                return false;
-            break;
-        }
-        case OTHERS:
-        {
-            //exclude classfied types, show the rest other types
-            if (type == Folder_Type || type.contains(Image_Type) || type.contains(Video_Type)
-                    || type.contains(Text_Type) || type.contains(Audio_Type))
-                return false;
-            break;
-        }
-        default:
-            break;
     }
-    return true;
+
+    return false;
 }
 
 bool FileItemProxyFilterSortModel::checkFileModifyTimeFilter(QString modifiedDate) const
 {
     //qDebug()<<"checkFileModifyTimeFilter";
+    //have no date filter
+    if (m_modify_time_list.count() == 0 || m_modify_time_list.contains(ALL_FILE))
+        return true;
     //invalide date
     if (modifiedDate.size() < 8)
         return false;
@@ -314,110 +333,100 @@ bool FileItemProxyFilterSortModel::checkFileModifyTimeFilter(QString modifiedDat
     if (md_year.toInt() ==0 || md_month.toInt() ==0 || md_day.toInt() ==0)
         qDebug()<<"date format error:" <<md_year<<" "<<md_month<<" "<<md_day;
 
-    switch(m_show_modify_time)
+    for(int i=0;i<m_modify_time_list.size();i++)
     {
-        case TODAY:
+        auto cur = m_modify_time_list[i];
+        switch(cur)
         {
-            if (day != md_day.toInt())
-                return false;
-            break;
-        }
-        case THIS_WEEK:
-        {
-            //find a future time, return false
-            if (year < md_year.toInt() || (year == md_year.toInt() && month < md_month.toInt())
-                    || (year == md_year.toInt() && month == md_month.toInt() && day < md_day.toInt()))
+            case TODAY:
             {
-                qDebug()<<"Modify time is a future time, please check your system time is correct!";
-                return false;
+                if (year == md_year.toInt() && month == md_month.toInt() && day == md_day.toInt())
+                    return true;
+                break;
             }
-            if (year - md_year.toInt() >1) //more than a year
-                return false;
-            if (year - md_year.toInt() ==1)
+            case THIS_WEEK:
             {
-                if (month+12-md_month.toInt() > 1) //more than a month
-                    return false;
-                if (month+12-md_month.toInt() == 1 && day+31-md_day.toInt() >= date.dayOfWeek())
-                    return false;
+                QDate md_date(md_year.toInt(), md_month.toInt(), md_day.toInt());
+                int week, md_week,week_year, md_week_year;
+                week = date.weekNumber(&week_year);
+                md_week = md_date.weekNumber(&md_week_year);
+                if (week == md_week && week_year == md_week_year)
+                     return true;
+                break;
             }
-            if (month - md_month.toInt() > 1) //more than a month
-                return false;
-            if (month - md_month.toInt() == 1)
+            case THIS_MONTH:
             {
-                QDate *modify_data = new QDate(md_year.toInt(), md_month.toInt(), md_day.toInt());
-                if (day + modify_data->daysInMonth() - md_day.toInt() >= date.dayOfWeek())
-                    return false;
+                if (year == md_year.toInt() && month == md_month.toInt())
+                    return true;
+                break;
             }
-            if (day - md_day.toInt() >= date.dayOfWeek()) //same year,same month
-                return false;
-
-            break;
+            case THIS_YEAR:
+            {
+                if (year == md_year.toInt())
+                    return true;
+                break;
+            }
+            case YEAR_AGO:
+            {
+                if(year > md_year.toInt())
+                    return true;
+                break;
+            }
+            default:
+                break;
         }
-        case THIS_MONTH:
-        {
-            if (month != md_month.toInt())
-                return false;
-            break;
-        }
-        case THIS_YEAR:
-        {
-            if (year != md_year.toInt())
-                return false;
-            break;
-        }
-        case YEAR_AGO:
-        {
-            if(year == md_year.toInt())
-                return false;
-            break;
-        }
-        default:
-            break;
     }
 
-    return true;
+    return false;
 }
 
 bool FileItemProxyFilterSortModel::checkFileSizeFilter(quint64 size) const
 {
     //qDebug()<<"checkFileSizeFilter: "<<m_show_file_size<<" "<<size;
-    switch (m_show_file_size)
+    if (m_file_size_list.count() == 0 || m_file_size_list.contains(ALL_FILE))
+        return true;
+
+    for(int i=0;i<m_file_size_list.count();i++)
     {
-        case TINY: //[0-16K)
+        auto cur = m_file_size_list[i];
+        switch (cur)
         {
-            if (size >= 16 * K_BASE)
-                return false;
-            break;
+            case TINY: //[0-16K)
+            {
+                if (size < 16 * K_BASE)
+                    return true;
+                break;
+            }
+            case SMALL:  //[16k-1M]
+            {
+                if(size >= 16 * K_BASE && size <=K_BASE * K_BASE)
+                    return true;
+                break;
+            }
+            case MEDIUM: //(1M-100M]
+            {
+                if(size > K_BASE * K_BASE && size <= 100 * K_BASE * K_BASE)
+                    return true;
+                break;
+            }
+            case BIG:  //(100M-1G]
+            {
+                if(size > 100 * K_BASE * K_BASE && size <= K_BASE * K_BASE * K_BASE)
+                    return true;
+                break;
+            }
+            case LARGE: //>1G
+            {
+                if (size > K_BASE * K_BASE * K_BASE)
+                    return true;
+                break;
+            }
+            default:
+                break;
         }
-        case SMALL:  //[16k-1M]
-        {
-            if(size < 16 * K_BASE || size >K_BASE * K_BASE)
-                return false;
-            break;
-        }
-        case MEDIUM: //(1M-100M]
-        {
-            if(size <= K_BASE * K_BASE || size >100 * K_BASE * K_BASE)
-                return false;
-            break;
-        }
-        case BIG:  //(100M-1G]
-        {
-            if(size <= 100 * K_BASE * K_BASE || size >K_BASE * K_BASE * K_BASE)
-                return false;
-            break;
-        }
-        case LARGE: //>1G
-        {
-            if (size <= K_BASE * K_BASE * K_BASE)
-                return false;
-            break;
-        }
-        default:
-            break;
     }
 
-    return true;
+    return false;
 }
 
 
@@ -449,6 +458,61 @@ void FileItemProxyFilterSortModel::setFolderFirst(bool folderFirst)
     beginResetModel();
     sort(sortColumn()>0? sortColumn(): 0, sortOrder()==Qt::DescendingOrder? Qt::DescendingOrder: Qt::AscendingOrder);
     endResetModel();
+}
+
+void FileItemProxyFilterSortModel::addFilterCondition(int option, int classify, bool updateNow)
+{
+    switch (option) {
+    case 1:
+        if (! m_file_type_list.contains(classify))
+            m_file_type_list.append(classify);
+
+        break;
+    case 2:
+        if (! m_modify_time_list.contains(classify))
+            m_modify_time_list.append(classify);
+        break;
+    case 3:
+        if (! m_file_size_list.contains(classify))
+            m_file_size_list.append(classify);
+        break;
+    default:
+        break;
+    }
+
+    if (updateNow)
+        invalidateFilter();
+}
+
+void FileItemProxyFilterSortModel::removeFilterCondition(int option, int classify, bool updateNow)
+{
+    switch (option) {
+    case 1:
+        if (! m_file_type_list.contains(classify))
+            m_file_type_list.removeOne(classify);
+
+        break;
+    case 2:
+        if (! m_modify_time_list.contains(classify))
+            m_modify_time_list.removeOne(classify);
+        break;
+    case 3:
+        if (! m_file_size_list.contains(classify))
+            m_file_size_list.removeOne(classify);
+        break;
+    default:
+        break;
+    }
+
+    if (updateNow)
+        invalidateFilter();
+}
+
+void FileItemProxyFilterSortModel::clearConditions()
+{
+   m_file_type_list.clear();
+   m_file_size_list.clear();
+   m_modify_time_list.clear();
 }
 
 void FileItemProxyFilterSortModel::setFilterConditions(int fileType, int modifyTime, int fileSize)

@@ -137,6 +137,13 @@ public Q_SLOTS:
     void setUseDefaultNameSortOrder(bool use);
     void setSortFolderFirst(bool folderFirst);
 
+    //mutiple filter conditions for new advance search
+    void addFilterCondition(int option, int classify, bool updateNow = false);
+    void removeFilterCondition(int option, int classify, bool updateNow = false);
+    void clearConditions();
+    void updateFilter();
+    void updateAdvanceConditions();
+
     void setCurrentSelections(const QStringList &uris);
 
     void editUri(const QString &uri);
@@ -156,7 +163,7 @@ public Q_SLOTS:
     void updateSearchList();
     void addNewConditionBar();
     void removeConditionBar(int index);
-    void filterUpdate();
+    void searchUpdate();
     void searchKeyUpdate();
     void searchChildUpdate();
     void browsePath();

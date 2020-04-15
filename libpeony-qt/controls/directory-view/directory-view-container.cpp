@@ -170,6 +170,26 @@ void DirectoryViewContainer::setSortFolderFirst(bool folderFirst)
     m_proxy_model->setFolderFirst(folderFirst);
 }
 
+void DirectoryViewContainer::addFilterCondition(int option, int classify, bool updateNow)
+{
+    m_proxy_model->addFilterCondition(option, classify, updateNow);
+}
+
+void DirectoryViewContainer::removeFilterCondition(int option, int classify, bool updateNow)
+{
+    m_proxy_model->removeFilterCondition(option, classify, updateNow);
+}
+
+void DirectoryViewContainer::clearConditions()
+{
+    m_proxy_model->clearConditions();
+}
+
+void DirectoryViewContainer::updateFilter()
+{
+    m_proxy_model->update();
+}
+
 void DirectoryViewContainer::goToUri(const QString &uri, bool addHistory, bool forceUpdate)
 {
     if (forceUpdate)
