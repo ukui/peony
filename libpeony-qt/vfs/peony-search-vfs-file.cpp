@@ -139,6 +139,7 @@ static void peony_search_vfs_file_g_file_iface_init(GFileIface *iface)
     iface->enumerate_children = peony_search_vfs_file_enumerate_children;
     iface->query_info = peony_search_vfs_file_query_info;
     iface->get_uri = peony_search_vfs_file_get_uri;
+    iface->get_path = peony_search_vfs_file_get_path;
     iface->resolve_relative_path = peony_search_vfs_file_resolve_relative_path;
 }
 
@@ -175,6 +176,11 @@ GFile *peony_search_vfs_file_new_for_uri(const char *uri)
     search_vfs_file->priv->uri = g_strdup(uri);
 
     return G_FILE(search_vfs_file);
+}
+
+char *peony_search_vfs_file_get_path(GFile *file)
+{
+    return nullptr;
 }
 
 void peony_search_vfs_file_enumerator_parse_uri(PeonySearchVFSFileEnumerator *enumerator,
