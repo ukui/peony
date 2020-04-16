@@ -52,9 +52,11 @@ DirectoryViewFactoryManager2::DirectoryViewFactoryManager2(QObject *parent) : QO
     //register icon view and list view
     auto iconViewFactory2 = IconViewFactory2::getInstance();
     registerFactory(iconViewFactory2->viewIdentity(), iconViewFactory2);
+    m_internal_views<<"Icon View";
 
     auto listViewFactory2 = ListViewFactory2::getInstance();
     registerFactory(listViewFactory2->viewIdentity(), listViewFactory2);
+    m_internal_views<<"List View";
 }
 
 DirectoryViewFactoryManager2::~DirectoryViewFactoryManager2()
@@ -129,6 +131,9 @@ const QString DirectoryViewFactoryManager2::getDefaultViewId(int zoomLevel, cons
 
 void DirectoryViewFactoryManager2::setDefaultViewId(const QString &viewId)
 {
+    if (!m_internal_views.contains(viewId))
+        return;
+
     if (getFactoryNames().contains(viewId)) {
         m_default_view_id_cache = viewId;
     }

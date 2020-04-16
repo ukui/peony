@@ -62,11 +62,6 @@ DirectoryViewContainer::DirectoryViewContainer(QWidget *parent) : QWidget(parent
 
 //    connect(m_proxy, &DirectoryViewProxyIface::menuRequest,
 //            this, &DirectoryViewContainer::menuRequest);
-
-    auto viewId = DirectoryViewFactoryManager2::getInstance()->getDefaultViewId();
-    switchViewType(viewId);
-    int zoomLevel = getView()->currentZoomLevel();
-    setZoomLevelRequest(zoomLevel);
 }
 
 DirectoryViewContainer::~DirectoryViewContainer()
@@ -192,6 +187,10 @@ void DirectoryViewContainer::updateFilter()
 
 void DirectoryViewContainer::goToUri(const QString &uri, bool addHistory, bool forceUpdate)
 {
+    int zoomLevel = -1;
+    if (m_view)
+        zoomLevel = m_view->currentZoomLevel();
+
     if (forceUpdate)
         goto update;
 
@@ -202,6 +201,13 @@ void DirectoryViewContainer::goToUri(const QString &uri, bool addHistory, bool f
         return;
 
 update:
+    auto viewId = DirectoryViewFactoryManager2::getInstance()->getDefaultViewId(uri);
+    switchViewType(viewId);
+    if (zoomLevel < 0)
+        zoomLevel = getView()->currentZoomLevel();
+
+    setZoomLevelRequest(zoomLevel);
+
     if (addHistory) {
         m_forward_list.clear();
         m_back_list.append(getCurrentUri());

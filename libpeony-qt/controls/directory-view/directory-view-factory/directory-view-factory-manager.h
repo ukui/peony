@@ -58,6 +58,8 @@ private:
 
     QSettings *m_settings;
     QString m_default_view_id_cache;
+
+    QStringList m_internal_views;
 };
 
 }
