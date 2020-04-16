@@ -459,10 +459,10 @@ bool HeaderBarContainer::eventFilter(QObject *obj, QEvent *e)
         if (e->type() == QEvent::Resize) {
             if (window->isMaximized()) {
                 m_max_or_restore->setIcon(QIcon::fromTheme("window-restore-symbolic"));
-                m_max_or_restore->setToolTip(tr("Restore"));
+                //m_max_or_restore->setToolTip(tr("Restore"));
             } else {
                 m_max_or_restore->setIcon(QIcon::fromTheme("window-maximize-symbolic"));
-                m_max_or_restore->setToolTip(tr("Maximize"));
+                //m_max_or_restore->setToolTip(tr("Maximize"));
             }
         }
         return false;
@@ -521,7 +521,7 @@ void HeaderBarContainer::addWindowButtons()
     //window-maximize-symbolic
     //window-restore-symbolic
     auto maximizeAndRestore = new QToolButton(m_internal_widget);
-    maximizeAndRestore->setToolTip(tr("Maximize"));
+    maximizeAndRestore->setToolTip(tr("Maximize/Restore"));
     maximizeAndRestore->setIcon(QIcon::fromTheme("window-maximize-symbolic"));
     maximizeAndRestore->setAutoRaise(false);
     maximizeAndRestore->setFixedSize(QSize(40, 40));
@@ -532,10 +532,10 @@ void HeaderBarContainer::addWindowButtons()
         bool maximized = m_header_bar->m_window->isMaximized();
         if (maximized) {
             maximizeAndRestore->setIcon(QIcon::fromTheme("window-restore-symbolic"));
-            maximizeAndRestore->setToolTip(tr("Restore"));
+            //maximizeAndRestore->setToolTip(tr("Restore"));
         } else {
             maximizeAndRestore->setIcon(QIcon::fromTheme("window-maximize-symbolic"));
-            maximizeAndRestore->setToolTip(tr("Maximize"));
+            //maximizeAndRestore->setToolTip(tr("Maximize"));
         }
     });
     m_max_or_restore = maximizeAndRestore;

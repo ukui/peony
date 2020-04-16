@@ -493,7 +493,7 @@
 <context>
     <name>Peony::DirectoryView::IconView</name>
     <message>
-        <location filename="../../libpeony-qt/controls/directory-view/view/icon-view/icon-view.h" line="60"/>
+        <location filename="../../libpeony-qt/controls/directory-view/view/icon-view/icon-view.h" line="61"/>
         <source>Icon View</source>
         <translation>图标视图</translation>
     </message>
@@ -808,9 +808,18 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
 <context>
     <name>Peony::FileEnumerator</name>
     <message>
-        <location filename="../../libpeony-qt/file-enumerator.cpp" line="243"/>
-        <location filename="../../libpeony-qt/file-enumerator.cpp" line="247"/>
-        <location filename="../../libpeony-qt/file-enumerator.cpp" line="348"/>
+        <location filename="../../libpeony-qt/file-enumerator.cpp" line="265"/>
+        <location filename="../../libpeony-qt/file-enumerator.cpp" line="269"/>
+        <location filename="../../libpeony-qt/file-enumerator.cpp" line="384"/>
+        <source>Error</source>
+        <translation>错误</translation>
+    </message>
+</context>
+<context>
+    <name>Peony::FileItem</name>
+    <message>
+        <location filename="../../libpeony-qt/model/file-item.cpp" line="119"/>
+        <location filename="../../libpeony-qt/model/file-item.cpp" line="161"/>
         <source>Error</source>
         <translation>错误</translation>
     </message>
@@ -897,14 +906,14 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
 <context>
     <name>Peony::FileLaunchAction</name>
     <message>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="93"/>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="132"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="114"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="171"/>
         <source>Open Failed</source>
         <translation>无法打开</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="93"/>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="132"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="114"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="171"/>
         <source>Can not open %1</source>
         <translation>不能打开%1</translation>
     </message>

@@ -82,29 +82,31 @@
     </message>
     <message>
         <source>Close</source>
-        <translation type="vanished">最大化</translation>
+        <translation type="vanished">关闭</translation>
     </message>
 </context>
 <context>
     <name>HeaderBarContainer</name>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="493"/>
+        <location filename="../../src/control/header-bar.cpp" line="512"/>
         <source>Minimize</source>
         <translation>最小化</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="516"/>
+        <location filename="../../src/control/header-bar.cpp" line="524"/>
+        <source>Maximize/Restore</source>
+        <translation>最大化/还原</translation>
+    </message>
+    <message>
         <source>Restore</source>
-        <translation>还原</translation>
+        <translation type="vanished">还原</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="505"/>
-        <location filename="../../src/control/header-bar.cpp" line="519"/>
         <source>Maximize</source>
-        <translation>最大化</translation>
+        <translation type="vanished">最大化</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="525"/>
+        <location filename="../../src/control/header-bar.cpp" line="545"/>
         <source>Close</source>
         <translation>关闭</translation>
     </message>
@@ -127,12 +129,12 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="942"/>
+        <location filename="../../src/windows/main-window.cpp" line="943"/>
         <source>Delete Permanently</source>
         <translation>永久删除</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="943"/>
+        <location filename="../../src/windows/main-window.cpp" line="944"/>
         <source>Are you sure that you want to delete these files? Once you start a deletion, the files deleting will never be restored again.</source>
         <translation>您确定要删除这些文件吗？一旦开始删除，这些文件将不可再恢复。</translation>
     </message>
@@ -369,19 +371,168 @@ Copyright (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</source
 <context>
     <name>TabWidget</name>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="143"/>
+        <location filename="../../src/control/tab-widget.cpp" line="148"/>
         <source>Trash</source>
         <translation>回收站</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="147"/>
+        <location filename="../../src/control/tab-widget.cpp" line="152"/>
         <source>Clear</source>
         <translation>清空</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="151"/>
+        <location filename="../../src/control/tab-widget.cpp" line="156"/>
         <source>Recover</source>
         <translation>还原</translation>
+    </message>
+    <message>
+        <location filename="../../src/control/tab-widget.cpp" line="234"/>
+        <source>Close advance search.</source>
+        <translation>关闭高级搜索。</translation>
+    </message>
+    <message>
+        <location filename="../../src/control/tab-widget.cpp" line="241"/>
+        <source>Search</source>
+        <translation>搜索</translation>
+    </message>
+    <message>
+        <location filename="../../src/control/tab-widget.cpp" line="250"/>
+        <source>Choose other path to search.</source>
+        <translation>选择其他搜索路径。</translation>
+    </message>
+    <message>
+        <location filename="../../src/control/tab-widget.cpp" line="259"/>
+        <source>Search recursively</source>
+        <translation>递归搜索</translation>
+    </message>
+    <message>
+        <location filename="../../src/control/tab-widget.cpp" line="266"/>
+        <source>Show/hide advance search</source>
+        <translation>显示/隐藏高级搜索</translation>
+    </message>
+    <message>
+        <location filename="../../src/control/tab-widget.cpp" line="369"/>
+        <location filename="../../src/control/tab-widget.cpp" line="443"/>
+        <source>is</source>
+        <translation>是</translation>
+    </message>
+    <message>
+        <location filename="../../src/control/tab-widget.cpp" line="387"/>
+        <source>Please input kay words...</source>
+        <translation>请输入关键词...</translation>
+    </message>
+    <message>
+        <location filename="../../src/control/tab-widget.cpp" line="423"/>
+        <location filename="../../src/control/tab-widget.cpp" line="436"/>
+        <source>contains</source>
+        <translation>包含</translation>
+    </message>
+    <message>
+        <location filename="../../src/control/tab-widget.h" line="246"/>
+        <source>name</source>
+        <translation>名称</translation>
+    </message>
+    <message>
+        <location filename="../../src/control/tab-widget.h" line="246"/>
+        <source>type</source>
+        <translation>类型</translation>
+    </message>
+    <message>
+        <location filename="../../src/control/tab-widget.h" line="246"/>
+        <source>modify time</source>
+        <translation>修改时间</translation>
+    </message>
+    <message>
+        <location filename="../../src/control/tab-widget.h" line="246"/>
+        <source>file size</source>
+        <translation>文件大小</translation>
+    </message>
+    <message>
+        <location filename="../../src/control/tab-widget.h" line="247"/>
+        <location filename="../../src/control/tab-widget.h" line="248"/>
+        <location filename="../../src/control/tab-widget.h" line="249"/>
+        <source>all</source>
+        <translation>全部</translation>
+    </message>
+    <message>
+        <location filename="../../src/control/tab-widget.h" line="247"/>
+        <source>file folder</source>
+        <translation>文件夹</translation>
+    </message>
+    <message>
+        <location filename="../../src/control/tab-widget.h" line="247"/>
+        <source>image</source>
+        <translation>图片</translation>
+    </message>
+    <message>
+        <location filename="../../src/control/tab-widget.h" line="247"/>
+        <source>video</source>
+        <translation>视频</translation>
+    </message>
+    <message>
+        <location filename="../../src/control/tab-widget.h" line="247"/>
+        <source>text file</source>
+        <translation>文本文档</translation>
+    </message>
+    <message>
+        <location filename="../../src/control/tab-widget.h" line="247"/>
+        <source>audio</source>
+        <translation>音频</translation>
+    </message>
+    <message>
+        <location filename="../../src/control/tab-widget.h" line="247"/>
+        <source>others</source>
+        <translation>其他</translation>
+    </message>
+    <message>
+        <location filename="../../src/control/tab-widget.h" line="248"/>
+        <source>today</source>
+        <translation>今天</translation>
+    </message>
+    <message>
+        <location filename="../../src/control/tab-widget.h" line="248"/>
+        <source>this week</source>
+        <translation>本周</translation>
+    </message>
+    <message>
+        <location filename="../../src/control/tab-widget.h" line="248"/>
+        <source>this month</source>
+        <translation>本月</translation>
+    </message>
+    <message>
+        <location filename="../../src/control/tab-widget.h" line="248"/>
+        <source>this year</source>
+        <translation>今年</translation>
+    </message>
+    <message>
+        <location filename="../../src/control/tab-widget.h" line="248"/>
+        <source>year ago</source>
+        <translation>一年前</translation>
+    </message>
+    <message>
+        <location filename="../../src/control/tab-widget.h" line="249"/>
+        <source>tiny(0-16K)</source>
+        <translation>极小</translation>
+    </message>
+    <message>
+        <location filename="../../src/control/tab-widget.h" line="249"/>
+        <source>small(16k-1M)</source>
+        <translation>很小</translation>
+    </message>
+    <message>
+        <location filename="../../src/control/tab-widget.h" line="249"/>
+        <source>medium(1M-100M)</source>
+        <translation>中等</translation>
+    </message>
+    <message>
+        <location filename="../../src/control/tab-widget.h" line="249"/>
+        <source>big(100M-1G)</source>
+        <translation>很大</translation>
+    </message>
+    <message>
+        <location filename="../../src/control/tab-widget.h" line="249"/>
+        <source>large(&gt;1G)</source>
+        <translation>极大</translation>
     </message>
 </context>
 </TS>
