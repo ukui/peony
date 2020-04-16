@@ -240,6 +240,8 @@ private:
     const int TRASH_BUTTON_HEIGHT = 28;
     const int TRASH_BUTTON_WIDTH = 60;
 
+    QString m_last_non_search_path = "";
+
     //advance search filter options
     QStringList m_option_list = {tr("name"), tr("type"), tr("modify time"), tr("file size")};
     QStringList m_file_type_list = {tr("all"), tr("file folder"), tr("image"), tr("video"), tr("text file"), tr("audio"), tr("others")};

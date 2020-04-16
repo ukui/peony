@@ -51,6 +51,7 @@ typedef struct {
     gboolean case_sensitive;
     QRegExp *name_regexp;
     QRegExp *content_regexp;
+    QList<QRegExp*> *name_regexp_extend_list;
     gboolean match_name_or_content;
     QQueue<std::shared_ptr<Peony::FileInfo>> *enumerate_queue;
 } PeonySearchVFSFileEnumeratorPrivate;

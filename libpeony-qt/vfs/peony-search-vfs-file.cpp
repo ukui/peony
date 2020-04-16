@@ -236,6 +236,21 @@ void peony_search_vfs_file_enumerator_parse_uri(PeonySearchVFSFileEnumerator *en
             continue;
         }
 
+        if (arg.contains("extend_regexp="))
+        {
+            if (arg == "extend_regexp=")
+                continue;
+
+            QString tmp = arg;
+            tmp = tmp.remove("extend_regexp=");
+            QStringList keys = tmp.split(",", QString::SkipEmptyParts);
+            for(auto key : keys)
+            {
+                details->name_regexp_extend_list->append(new QRegExp(key));
+            }
+            continue;
+        }
+
         if (arg.contains("content_regexp=")) {
             if (arg == "content_regexp=") {
                 continue;
@@ -257,6 +272,8 @@ void peony_search_vfs_file_enumerator_parse_uri(PeonySearchVFSFileEnumerator *en
             if (arg.endsWith("1")) {
                 details->recursive = true;
             }
+            else
+                details->save_result = false;
             continue;
         }
 
@@ -292,6 +309,14 @@ void peony_search_vfs_file_enumerator_parse_uri(PeonySearchVFSFileEnumerator *en
         //details->content_regexp = new QRegExp;
     } else {
         details->content_regexp->setCaseSensitivity(sensitivity);
+    }
+
+    if (details->name_regexp_extend_list->count() >0)
+    {
+        for(int i=0;i<details->name_regexp_extend_list->count();i++)
+        {
+            details->name_regexp_extend_list->at(i)->setCaseSensitivity(sensitivity);
+        }
     }
 }
 

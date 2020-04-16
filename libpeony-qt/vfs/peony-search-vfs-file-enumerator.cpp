@@ -49,6 +49,7 @@ static void peony_search_vfs_file_enumerator_init(PeonySearchVFSFileEnumerator *
 
     self->priv->search_vfs_directory_uri = new QString;
     self->priv->enumerate_queue = new QQueue<std::shared_ptr<Peony::FileInfo>>;
+    self->priv->name_regexp_extend_list = new QList<QRegExp*>;
     self->priv->recursive = false;
     self->priv->save_result = false;
     self->priv->search_hidden = true;
@@ -109,6 +110,11 @@ void enumerator_dispose(GObject *object)
     delete self->priv->search_vfs_directory_uri;
     self->priv->enumerate_queue->clear();
     delete self->priv->enumerate_queue;
+    for(int i=self->priv->name_regexp_extend_list->count()-1; i>=0; i--)
+    {
+        delete self->priv->name_regexp_extend_list->at(i);
+    }
+    delete self->priv->name_regexp_extend_list;
 }
 
 static GFileInfo *enumerate_next_file(GFileEnumerator *enumerator,
@@ -267,7 +273,8 @@ static gboolean enumerator_close(GFileEnumerator *enumerator,
 gboolean peony_search_vfs_file_enumerator_is_file_match(PeonySearchVFSFileEnumerator *enumerator, std::shared_ptr<Peony::FileInfo> file_info)
 {
     PeonySearchVFSFileEnumeratorPrivate *details = enumerator->priv;
-    if (!details->name_regexp && !details->content_regexp)
+    if (!details->name_regexp && !details->content_regexp
+        && details->name_regexp_extend_list->count() == 0)
         return false;
 
     GFile *file = g_file_new_for_uri(file_info->uri().toUtf8().constData());
@@ -278,20 +285,40 @@ gboolean peony_search_vfs_file_enumerator_is_file_match(PeonySearchVFSFileEnumer
                                         nullptr);
     g_object_unref(file);
 
+    char *file_display_name = g_file_info_get_attribute_as_string(info, G_FILE_ATTRIBUTE_STANDARD_DISPLAY_NAME);
+    g_object_unref(info);
+    QString displayName = file_display_name;
+    g_free(file_display_name);
     if (details->name_regexp) {
-        char *file_display_name = g_file_info_get_attribute_as_string(info, G_FILE_ATTRIBUTE_STANDARD_DISPLAY_NAME);
-        g_object_unref(info);
-        QString displayName = file_display_name;
-        g_free(file_display_name);
-        if (details->use_regexp) {
-            if (displayName.contains(*enumerator->priv->name_regexp)) {
-                if (details->match_name_or_content) {
-                    return true;
-                }
+        if (details->use_regexp && details->match_name_or_content
+            && displayName.contains(*enumerator->priv->name_regexp))
+        {
+            return true;
+        }
+        else if (displayName == details->name_regexp->pattern())
+        {
+           //this is most used for querying files which might be duplicate.
+           return true;
+        }
+    }
+
+    //extend list name match
+    if (details->name_regexp_extend_list->count() >0)
+    {
+        for(int i=0;i<details->name_regexp_extend_list->count();i++)
+        {
+            auto curRegexp = details->name_regexp_extend_list->at(i);
+            //qDebug() <<"curRegexp:" <<*curRegexp<<i;
+            if (! curRegexp)
+                continue;
+            if (details->use_regexp && details->match_name_or_content
+                    && displayName.contains(*curRegexp))
+            {
+               return true;
             }
-        } else {
-            //this is most used for querying files which might be duplicate.
-            if (displayName == details->name_regexp->pattern()) {
+            else if (displayName == curRegexp->pattern())
+            {
+                //this is most used for querying files which might be duplicate.
                 return true;
             }
         }

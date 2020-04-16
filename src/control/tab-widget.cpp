@@ -29,6 +29,7 @@
 
 #include "file-info.h"
 #include "file-launch-manager.h"
+#include "search-vfs-uri-parser.h"
 #include "properties-window.h"
 
 #include <QStackedWidget>
@@ -230,6 +231,7 @@ void TabWidget::initAdvanceSearch()
     m_search_close = closeButton;
     closeButton->setFixedHeight(20);
     closeButton->setFixedWidth(20);
+    closeButton->setToolTip(tr("Close advance search."));
 
     connect(closeButton, &QPushButton::clicked, [=]()
     {
@@ -245,6 +247,7 @@ void TabWidget::initAdvanceSearch()
     m_search_path = tabButton;
     tabButton->setFixedHeight(TRASH_BUTTON_HEIGHT);
     tabButton->setFixedWidth(TRASH_BUTTON_WIDTH * 2);
+    tabButton->setToolTip(tr("Choose other path to search."));
     connect(tabButton, &QPushButton::clicked, this, &TabWidget::browsePath);
 
     QPushButton *childButton = new QPushButton(searchButtons);
@@ -253,12 +256,14 @@ void TabWidget::initAdvanceSearch()
     childButton->setFixedWidth(TRASH_BUTTON_HEIGHT);
     //qDebug() << QIcon(":/custom/icons/child-folder").name();
     childButton->setIcon(QIcon(":/custom/icons/child-folder"));
+    childButton->setToolTip(tr("Search recursively"));
     connect(childButton, &QPushButton::clicked, this, &TabWidget::searchChildUpdate);
 
     QPushButton *moreButton = new QPushButton("more options",searchButtons);
     m_search_more = moreButton;
     moreButton->setFixedHeight(TRASH_BUTTON_HEIGHT);
     moreButton->setFixedWidth(TRASH_BUTTON_WIDTH *2);
+    moreButton->setToolTip(tr("Show/hide advance search"));
 
     connect(moreButton, &QPushButton::clicked, this, &TabWidget::updateSearchList);
 
@@ -285,12 +290,34 @@ void TabWidget::initAdvanceSearch()
 //search conditions changed, update filter
 void TabWidget::searchUpdate()
 {
-    qDebug() << "searchUpdate" <<m_search_child_flag;
+    QString keyList = "";
+    for(int i=0;i<m_layout_list.count();i++)
+    {
+        //find name search bar
+        if (m_conditions_list[i]->currentIndex() == 0 && m_input_list[i]->text() != "")
+        {
+            if (keyList == "")
+                keyList = m_input_list[i]->text();
+            else
+                keyList += "," + m_input_list[i]->text();
+        }
+    }
+
+    qDebug() <<"keyList:" <<keyList <<m_last_non_search_path;
+    if (keyList != "")
+    {
+        if (m_last_non_search_path == "")
+            m_last_non_search_path = getCurrentUri();
+        auto targetUri = Peony::SearchVFSUriParser::parseSearchKey(m_last_non_search_path, "", true, false, keyList, m_search_child_flag);
+        Q_EMIT this->updateWindowLocationRequest(targetUri, true);
+        qDebug() << "searchUpdate" <<m_search_child_flag <<targetUri;;
+    }
 }
 
 void TabWidget::searchKeyUpdate()
 {
     qDebug() << "searchKeyUpdate";
+    searchUpdate();
 }
 
 void TabWidget::searchChildUpdate()
@@ -423,6 +450,7 @@ void TabWidget::addNewConditionBar()
 
     connect(classifyCombox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &TabWidget::updateAdvanceConditions);
     connect(inputBox, &QLineEdit::textChanged, this, &TabWidget::searchKeyUpdate);
+    //connect(inputBox, &QLineEdit::returnPressed, this, &TabWidget::searchKeyUpdate);
 
     m_top_layout->insertLayout(m_top_layout->count()-1, layout);
     m_search_bar_count++;
@@ -746,6 +774,9 @@ void TabWidget::addPage(const QString &uri, bool jumpTo)
 
 void TabWidget::goToUri(const QString &uri, bool addHistory, bool forceUpdate)
 {
+    //qDebug() << "goToUri:" <<uri;
+    if (! uri.startsWith("search://"))
+        m_last_non_search_path = uri;
     currentPage()->goToUri(uri, addHistory, forceUpdate);
     m_tab_bar->updateLocation(m_tab_bar->currentIndex(), uri);
     updateTrashBarVisible(uri);

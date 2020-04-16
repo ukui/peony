@@ -33,21 +33,28 @@ SearchVFSUriParser::SearchVFSUriParser()
 
 }
 
-const QString SearchVFSUriParser:: parseSearchKey(const QString &uri, const QString &key, const bool &search_file_name, const bool &search_content)
+const QString SearchVFSUriParser:: parseSearchKey(const QString &uri, const QString &key, const bool &search_file_name,
+                                          const bool &search_content, const QString &extend_key, const bool &recursive)
 {
     QString search_str = "search:///search_uris="+uri;
     if (search_file_name)
         search_str += "&name_regexp="+key;
     if (search_content)
         search_str += "&content_regexp="+key;
-    else if (! search_file_name)
+    //mutiple name key search
+    if (extend_key != "")
+        search_str += "&extend_regexp="+extend_key;
+    else if (! search_file_name && ! search_content && extend_key=="")
     {
         qWarning()<<"Search content or file name at least one be true!";
         //use default search file name
         search_str += "&name_regexp="+key;
     }
 
-    return QString(search_str+"&recursive=1");
+    if (recursive)
+        return QString(search_str+"&recursive=1");
+
+     return QString(search_str+"&recursive=0");
 }
 
 const QString SearchVFSUriParser::getSearchUriNameRegexp(const QString &searchUri)
@@ -55,14 +62,28 @@ const QString SearchVFSUriParser::getSearchUriNameRegexp(const QString &searchUr
     auto string = searchUri;
     string.remove("search:///");
     auto list = string.split("&");
+    QString ret = "";
     for (auto arg : list) {
         if (arg.startsWith("name_regexp=")) {
             qDebug()<<arg;
             auto tmp = arg.remove("name_regexp=");
-            return tmp;
+            if (ret == "")
+                ret = tmp;
+            else
+                ret += "," + tmp;
+        }
+
+        if (arg.startsWith("extend_regexp"))
+        {
+            qDebug()<<arg;
+            auto tmp = arg.remove("extend_regexp=");
+            if (ret == "")
+                ret = tmp;
+            else
+                ret += "," + tmp;
         }
     }
-    return nullptr;
+    return ret;
 }
 
 const QString SearchVFSUriParser::getSearchUriTargetDirectory(const QString &searchUri)
