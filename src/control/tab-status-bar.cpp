@@ -168,6 +168,12 @@ void ElidedLabel::setText(const QString &text)
 
 void ElidedLabel::paintEvent(QPaintEvent *event)
 {
+    QStyleOption opt;
+    opt.initFrom(this);
+    bool active = opt.state &QStyle::State_Active;
+
+    QColor base = active? qApp->palette().color(QPalette::Active, QPalette::Base): qApp->palette().color(QPalette::Inactive, QPalette::Base);
+
     QFontMetrics fm(this->font());
     auto elidedText = fm.elidedText(m_text, Qt::TextElideMode::ElideRight, this->size().width() - 150);
     QPainter p(this);
@@ -175,8 +181,8 @@ void ElidedLabel::paintEvent(QPaintEvent *event)
     QLinearGradient linearGradient;
     linearGradient.setStart(QPoint(10, this->height()));
     linearGradient.setFinalStop(QPoint(10, 0));
-    linearGradient.setColorAt(0, qApp->palette().base().color());
-    linearGradient.setColorAt(0.75, qApp->palette().base().color());
+    linearGradient.setColorAt(0, base);
+    linearGradient.setColorAt(0.75, base);
     linearGradient.setColorAt(1, Qt::transparent);
 
     int overlap = qApp->style()->pixelMetric(QStyle::PM_ScrollView_ScrollBarOverlap);
@@ -200,8 +206,8 @@ void ElidedLabel::paintEvent(QPaintEvent *event)
     radialGradient.setCenter(pos);
     radialGradient.setFocalPoint(pos);
     radialGradient.setRadius(radius);
-    radialGradient.setColorAt(0, qApp->palette().base().color());
-    radialGradient.setColorAt(0.75, qApp->palette().base().color());
+    radialGradient.setColorAt(0, base);
+    radialGradient.setColorAt(0.75, base);
     radialGradient.setColorAt(1, Qt::transparent);
     p.fillPath(path2, radialGradient);
 

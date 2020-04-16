@@ -193,6 +193,7 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
     s->setHandleWidth(1);
     s->setStretchFactor(0, 1);
     s->addWidget(m_stack);
+    m_stack->installEventFilter(this);
     s->addWidget(m_preview_page_container);
     m_preview_page_container->hide();
     vbox->addWidget(s);
@@ -672,6 +673,14 @@ Qt::SortOrder TabWidget::getSortOrder()
     return currentPage()->getSortOrder();
 }
 
+bool TabWidget::eventFilter(QObject *obj, QEvent *e)
+{
+    if (e->type() == QEvent::Resize) {
+        updateStatusBarGeometry();
+    }
+    return false;
+}
+
 void TabWidget::setCurrentIndex(int index)
 {
     m_tab_bar->setCurrentIndex(index);
@@ -941,7 +950,7 @@ void TabWidget::resizeEvent(QResizeEvent *e)
 {
     QMainWindow::resizeEvent(e);
     updateTabBarGeometry();
-    updateStatusBarGeometry();
+    //updateStatusBarGeometry();
 }
 
 void TabWidget::updateTabBarGeometry()
@@ -955,7 +964,7 @@ void TabWidget::updateStatusBarGeometry()
 {
     auto font = qApp->font();
     QFontMetrics fm(font);
-    m_status_bar->setGeometry(0, this->height() - fm.height() - 10, this->width(), fm.height() + 10);
+    m_status_bar->setGeometry(0, this->height() - fm.height() - 10, m_stack->width(), fm.height() + 10);
     m_status_bar->raise();
 }
 

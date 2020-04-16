@@ -86,6 +86,8 @@ public:
     int getSortType();
     Qt::SortOrder getSortOrder();
 
+    bool eventFilter(QObject *obj, QEvent *e);
+
 Q_SIGNALS:
     void currentIndexChanged(int index);
     void tabMoved(int from, int to);
