@@ -213,6 +213,10 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
             this->updatePreviewPage();
         });
     });
+
+    connect(this, &TabWidget::activePageLocationChanged, m_status_bar, [=](){
+        m_status_bar->update();
+    });
 }
 
 void TabWidget::initAdvanceSearch()
