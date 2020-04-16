@@ -226,6 +226,9 @@ void IconViewIndexWidget::mouseDoubleClickEvent(QMouseEvent *event)
 void IconViewIndexWidget::adjustPos()
 {
     IconView *view = m_delegate->getView();
+    if (m_index.model() != view->model())
+        return;
+
     auto visualRect = view->visualRect(m_index);
     if (this->mapToParent(QPoint()) != visualRect.topLeft())
         this->move(visualRect.topLeft());
