@@ -201,7 +201,7 @@ void DirectoryViewContainer::goToUri(const QString &uri, bool addHistory, bool f
         return;
 
 update:
-    auto viewId = DirectoryViewFactoryManager2::getInstance()->getDefaultViewId(uri);
+    auto viewId = DirectoryViewFactoryManager2::getInstance()->getDefaultViewId(zoomLevel, uri);
     switchViewType(viewId);
     if (zoomLevel < 0)
         zoomLevel = getView()->currentZoomLevel();
