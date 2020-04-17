@@ -111,7 +111,7 @@ protected:
 private:
     bool startWithChinese(const QString &displayName) const;
     bool checkFileTypeFilter(QString type) const;
-    bool checkFileModifyTimeFilter(QString modifiedDate) const;
+    bool checkFileModifyTimeFilter(quint64 modifiedTime) const;
     bool checkFileSizeFilter(quint64 size) const;
 
 private:

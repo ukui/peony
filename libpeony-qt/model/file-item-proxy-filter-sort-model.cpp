@@ -166,7 +166,7 @@ bool FileItemProxyFilterSortModel::filterAcceptsRow(int sourceRow, const QModelI
         //qDebug()<<"start filter conditions check";
         if (! checkFileTypeFilter(item->m_info->type()))
             return false;
-        if (! checkFileModifyTimeFilter(item->m_info->modifiedDate()))
+        if (! checkFileModifyTimeFilter(item->m_info->modifiedTime()))
             return false;
         if (! checkFileSizeFilter(item->m_info->size()))
             return false;
@@ -312,26 +312,25 @@ bool FileItemProxyFilterSortModel::checkFileTypeFilter(QString type) const
     return false;
 }
 
-bool FileItemProxyFilterSortModel::checkFileModifyTimeFilter(QString modifiedDate) const
+bool FileItemProxyFilterSortModel::checkFileModifyTimeFilter(quint64 modifiedTime) const
 {
     //qDebug()<<"checkFileModifyTimeFilter";
     //have no date filter
     if (m_modify_time_list.count() == 0 || m_modify_time_list.contains(ALL_FILE))
         return true;
-    //invalide date
-    if (modifiedDate.size() < 8)
-        return false;
-    QDate date = QDate::currentDate();
+
+    auto time = QDateTime::currentMSecsSinceEpoch();
+    auto dateTime = QDateTime::fromMSecsSinceEpoch(time);
+    //qDebug() << "cur QDateTime:" <<dateTime.toString(Qt::SystemLocaleShortDate);
+    QDate date = dateTime.date();
     int year = date.year();
     int month = date.month();
     int day = date.day();
-    QString md_year, md_month, md_day;
-    auto parts = modifiedDate.split('/', QString::KeepEmptyParts);
-    md_year = parts[0];
-    md_month = parts[1];
-    md_day = parts[2].split(' ', QString::KeepEmptyParts)[0];
-    if (md_year.toInt() ==0 || md_month.toInt() ==0 || md_day.toInt() ==0)
-        qDebug()<<"date format error:" <<md_year<<" "<<md_month<<" "<<md_day;
+    QDate md_date =  QDateTime::fromMSecsSinceEpoch(modifiedTime * 1000).date();
+    //qDebug() << "modify time:" <<QDateTime::fromMSecsSinceEpoch(modifiedTime *1000).toString(Qt::SystemLocaleShortDate);
+    int md_year= md_date.year();
+    int md_month = md_date.month();
+    int md_day = md_date.day();
 
     for(int i=0;i<m_modify_time_list.size();i++)
     {
@@ -340,13 +339,13 @@ bool FileItemProxyFilterSortModel::checkFileModifyTimeFilter(QString modifiedDat
         {
             case TODAY:
             {
-                if (year == md_year.toInt() && month == md_month.toInt() && day == md_day.toInt())
+                if (year == md_year && month == md_month && day == md_day)
                     return true;
                 break;
             }
             case THIS_WEEK:
             {
-                QDate md_date(md_year.toInt(), md_month.toInt(), md_day.toInt());
+                QDate md_date(md_year, md_month, md_day);
                 int week, md_week,week_year, md_week_year;
                 week = date.weekNumber(&week_year);
                 md_week = md_date.weekNumber(&md_week_year);
@@ -356,19 +355,19 @@ bool FileItemProxyFilterSortModel::checkFileModifyTimeFilter(QString modifiedDat
             }
             case THIS_MONTH:
             {
-                if (year == md_year.toInt() && month == md_month.toInt())
+                if (year == md_year && month == md_month)
                     return true;
                 break;
             }
             case THIS_YEAR:
             {
-                if (year == md_year.toInt())
+                if (year == md_year)
                     return true;
                 break;
             }
             case YEAR_AGO:
             {
-                if(year > md_year.toInt())
+                if(year > md_year)
                     return true;
                 break;
             }
