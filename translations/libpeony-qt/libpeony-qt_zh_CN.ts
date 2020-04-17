@@ -884,21 +884,26 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
     <name>Peony::FileLauchDialog</name>
     <message>
         <location filename="../../libpeony-qt/file-launcher/file-lauch-dialog.cpp" line="44"/>
+        <source>Applications</source>
+        <translation>应用程序</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/file-launcher/file-lauch-dialog.cpp" line="45"/>
         <source>Choose an Application to open this file</source>
         <translation>选择一个应用打开这个文件</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-launcher/file-lauch-dialog.cpp" line="49"/>
+        <location filename="../../libpeony-qt/file-launcher/file-lauch-dialog.cpp" line="50"/>
         <source>Set as Default</source>
         <translation>设为默认</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-launcher/file-lauch-dialog.cpp" line="57"/>
+        <location filename="../../libpeony-qt/file-launcher/file-lauch-dialog.cpp" line="58"/>
         <source>OK</source>
         <translation>确定</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-launcher/file-lauch-dialog.cpp" line="58"/>
+        <location filename="../../libpeony-qt/file-launcher/file-lauch-dialog.cpp" line="59"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>

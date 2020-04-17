@@ -81,6 +81,7 @@ DesktopWindow::DesktopWindow(QScreen *screen, bool is_primary, QWidget *parent)
     : QMainWindow(parent) {
     initGSettings();
 
+    setWindowTitle(tr("Desktop"));
     m_opacity = new QVariantAnimation(this);
     m_opacity->setDuration(1000);
     m_opacity->setStartValue(double(0));

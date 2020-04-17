@@ -41,6 +41,7 @@ FileLauchDialog::FileLauchDialog(const QString &uri, QWidget *parent) : QDialog(
     m_layout = new QVBoxLayout(this);
     setLayout(m_layout);
 
+    setWindowTitle(tr("Applications"));
     m_layout->addWidget(new QLabel(tr("Choose an Application to open this file"), this));
     m_view = new QListWidget(this);
     m_view->setIconSize(QSize(48, 48));

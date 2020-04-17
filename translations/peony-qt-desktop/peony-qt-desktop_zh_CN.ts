@@ -207,12 +207,17 @@
 <context>
     <name>Peony::DesktopWindow</name>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-window.cpp" line="136"/>
+        <location filename="../../peony-qt-desktop/desktop-window.cpp" line="84"/>
+        <source>Desktop</source>
+        <translation>桌面</translation>
+    </message>
+    <message>
+        <location filename="../../peony-qt-desktop/desktop-window.cpp" line="137"/>
         <source>set background</source>
         <translation>设置壁纸</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-window.cpp" line="491"/>
+        <location filename="../../peony-qt-desktop/desktop-window.cpp" line="492"/>
         <source>New Folder</source>
         <translation>新建文件夹</translation>
     </message>
@@ -229,6 +234,10 @@
     </message>
     <message>
         <source>Peony-Qt Desktop</source>
+        <translation type="vanished">桌面</translation>
+    </message>
+    <message>
+        <source>Desktop</source>
         <translation type="vanished">桌面</translation>
     </message>
     <message>
