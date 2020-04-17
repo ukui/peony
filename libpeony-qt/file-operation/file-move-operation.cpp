@@ -757,7 +757,7 @@ void FileMoveOperation::moveForceUseFallback()
 
     for (auto file : nodes) {
         qDebug()<<file->uri();
-        if (isCancelled()) {
+        if (isCancelled() && !hasError()) {
             rollbackNodeRecursively(file);
         }
     }

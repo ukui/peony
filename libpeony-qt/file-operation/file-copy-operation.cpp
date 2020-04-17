@@ -415,7 +415,7 @@ void FileCopyOperation::run()
     }
     Q_EMIT operationProgressed();
 
-    if (isCancelled()) {
+    if (isCancelled() && !hasError()) {
         Q_EMIT operationStartRollbacked();
         for (auto file : nodes) {
             qDebug()<<file->uri();
