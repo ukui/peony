@@ -259,7 +259,7 @@ void TabWidget::initAdvanceSearch()
     childButton->setToolTip(tr("Search recursively"));
     connect(childButton, &QPushButton::clicked, this, &TabWidget::searchChildUpdate);
 
-    QPushButton *moreButton = new QPushButton("more options",searchButtons);
+    QPushButton *moreButton = new QPushButton(tr("more options"),searchButtons);
     m_search_more = moreButton;
     moreButton->setFixedHeight(TRASH_BUTTON_HEIGHT);
     moreButton->setFixedWidth(TRASH_BUTTON_WIDTH *2);

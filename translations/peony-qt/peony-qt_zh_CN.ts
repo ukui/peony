@@ -406,6 +406,11 @@ Copyright (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</source
         <translation>递归搜索</translation>
     </message>
     <message>
+        <location filename="../../src/control/tab-widget.cpp" line="262"/>
+        <source>more options</source>
+        <translation>更多选项</translation>
+    </message>
+    <message>
         <location filename="../../src/control/tab-widget.cpp" line="266"/>
         <source>Show/hide advance search</source>
         <translation>显示/隐藏高级搜索</translation>
