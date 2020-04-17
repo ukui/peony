@@ -88,12 +88,12 @@
 <context>
     <name>HeaderBarContainer</name>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="512"/>
+        <location filename="../../src/control/header-bar.cpp" line="513"/>
         <source>Minimize</source>
         <translation>最小化</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="524"/>
+        <location filename="../../src/control/header-bar.cpp" line="525"/>
         <source>Maximize/Restore</source>
         <translation>最大化/还原</translation>
     </message>
@@ -106,7 +106,7 @@
         <translation type="vanished">最大化</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="545"/>
+        <location filename="../../src/control/header-bar.cpp" line="546"/>
         <source>Close</source>
         <translation>关闭</translation>
     </message>
@@ -166,7 +166,7 @@
 <context>
     <name>NavigationTabBar</name>
     <message>
-        <location filename="../../src/control/navigation-tab-bar.cpp" line="111"/>
+        <location filename="../../src/control/navigation-tab-bar.cpp" line="115"/>
         <source>Search &quot;%1&quot; in &quot;%2&quot;</source>
         <translation>在%2中搜索%1</translation>
     </message>
