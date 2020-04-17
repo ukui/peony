@@ -589,6 +589,10 @@ void TabWidget::updateSearchBar(bool showSearch)
 
 void TabWidget::updateSearchPathButton(const QString &uri)
 {
+    //search path not update
+    //qDebug() << "updateSearchPathButton:" <<uri;
+    if (uri.startsWith("search://"))
+        return;
     QString curUri = uri;
     if (uri == "")
     {
