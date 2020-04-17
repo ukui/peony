@@ -39,7 +39,11 @@
 
 #include <KWindowSystem>
 
+#include <QApplication>
+#include <QWindow>
+
 #include "FMWindowIface.h"
+#include "main-window.h"
 
 static TabBarStyle *global_instance = nullptr;
 
@@ -235,7 +239,15 @@ void NavigationTabBar::mousePressEvent(QMouseEvent *e)
 
             auto pixmap = this->topLevelWidget()->grab().scaledToWidth(this->topLevelWidget()->width()/2, Qt::SmoothTransformation);
 
-            KWindowSystem::lowerWindow(this->topLevelWidget()->winId());
+            auto thisWindow = this->topLevelWidget();
+            //KWindowSystem::lowerWindow(this->topLevelWidget()->winId());
+            for (auto win : qApp->allWidgets()) {
+                if (auto mainWin = qobject_cast<MainWindow *>(win)) {
+                    if (thisWindow != mainWin)
+                        KWindowSystem::raiseWindow(win->winId());
+                }
+            }
+
 
             QDrag *d = new QDrag(this);
             QMimeData *data = new QMimeData();
