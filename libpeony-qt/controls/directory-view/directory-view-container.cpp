@@ -203,6 +203,8 @@ void DirectoryViewContainer::goToUri(const QString &uri, bool addHistory, bool f
 update:
     auto viewId = DirectoryViewFactoryManager2::getInstance()->getDefaultViewId(zoomLevel, uri);
     switchViewType(viewId);
+    //update status bar zoom level
+    updateStatusBarSliderStateRequest();
     if (zoomLevel < 0)
         zoomLevel = getView()->currentZoomLevel();
 

@@ -194,6 +194,7 @@ public:
     int currentZoomLevel() {return m_zoom_level;}
     int minimumZoomLevel() {return 21;}
     int maximumZoomLevel() {return 100;}
+    bool supportZoom() {return true;}
 
 public Q_SLOTS:
     void bindModel(FileItemModel *model, FileItemProxyFilterSortModel *proxyModel);

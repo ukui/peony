@@ -798,6 +798,8 @@ void TabWidget::switchViewType(const QString &viewId)
         return;
 
     currentPage()->switchViewType(viewId);
+    bool supportZoom = this->currentPage()->getView()->supportZoom();
+    this->m_status_bar->m_slider->setEnabled(this->currentPage()->getView()->supportZoom());
 }
 
 void TabWidget::goBack()
@@ -974,6 +976,10 @@ void TabWidget::bindContainerSignal(Peony::DirectoryViewContainer *container)
     connect(container, &Peony::DirectoryViewContainer::menuRequest, this, &TabWidget::menuRequest);
     connect(container, &Peony::DirectoryViewContainer::zoomRequest, this, &TabWidget::zoomRequest);
     connect(container, &Peony::DirectoryViewContainer::setZoomLevelRequest, m_status_bar, &TabStatusBar::updateZoomLevelState);
+    connect(container, &Peony::DirectoryViewContainer::updateStatusBarSliderStateRequest, this, [=](){
+        bool enable = currentPage()->getView()->supportZoom();
+        m_status_bar->m_slider->setEnabled(enable);
+    });
 }
 
 void TabWidget::updatePreviewPage()

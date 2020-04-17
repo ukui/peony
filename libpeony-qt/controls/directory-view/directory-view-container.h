@@ -90,6 +90,7 @@ Q_SIGNALS:
 
     void zoomRequest(bool zoomIn);
     void setZoomLevelRequest(int zoomLevel);
+    void updateStatusBarSliderStateRequest();
 
 public Q_SLOTS:
     void goToUri(const QString &uri, bool addHistory, bool forceUpdate = false);

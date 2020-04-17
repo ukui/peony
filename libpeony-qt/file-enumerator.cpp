@@ -279,8 +279,8 @@ void FileEnumerator::handleError(GError *err)
 
 void FileEnumerator::enumerateAsync()
 {
-    auto uri = g_file_get_uri(m_root_file);
-    auto path = g_file_get_path(m_root_file);
+    //auto uri = g_file_get_uri(m_root_file);
+    //auto path = g_file_get_path(m_root_file);
     g_file_enumerate_children_async(m_root_file,
                                     G_FILE_ATTRIBUTE_STANDARD_NAME,
                                     G_FILE_QUERY_INFO_NONE,

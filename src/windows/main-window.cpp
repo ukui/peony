@@ -553,6 +553,7 @@ void MainWindow::beginSwitchView(const QString &viewId)
 //    Qt::SortOrder sortOrder = getCurrentSortOrder();
     m_tab->switchViewType(viewId);
     m_tab->setCurrentSelections(selection);
+    m_tab->m_status_bar->m_slider->setEnabled(m_tab->currentPage()->getView()->supportZoom());
 }
 
 void MainWindow::refresh()
