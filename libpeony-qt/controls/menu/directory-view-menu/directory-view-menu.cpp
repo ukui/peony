@@ -174,6 +174,13 @@ const QList<QAction *> DirectoryViewMenu::constructOpenOpActions()
             auto displayName = info->displayName();
             if (displayName.isEmpty())
                 displayName = FileUtils::getFileDisplayName(info->uri());
+            //when name is too long, show elideText
+            int  charWidth = fontMetrics().averageCharWidth();
+            //qDebug() << "charWidth:" <<charWidth;
+            if (displayName.length() > ELIDE_TEXT_LENGTH)
+            {
+                displayName = fontMetrics().elidedText(displayName, Qt::ElideRight, ELIDE_TEXT_LENGTH * charWidth);
+            }
             if (info->isDir()) {
                 l<<addAction(QIcon::fromTheme("document-open-symbolic"), tr("&Open \"%1\"").arg(displayName));
                 connect(l.last(), &QAction::triggered, [=](){

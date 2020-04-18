@@ -76,6 +76,8 @@ private:
     bool m_is_trash = false;
     bool m_is_search = false;
 
+    const int ELIDE_TEXT_LENGTH = 16;
+
     QStringList m_uris_to_edit;
 };
 
