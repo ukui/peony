@@ -225,7 +225,7 @@ void ListView::slotRename()
 {
     //delay edit action to avoid doubleClick or dragEvent
     qDebug()<<"slotRename"<<m_editValid;
-    QTimer::singleShot(300, [&](){
+    QTimer::singleShot(300, m_renameTimer, [&](){
         qDebug()<<"singleshot"<<m_editValid;
         if(m_editValid) {
             m_renameTimer->stop();
