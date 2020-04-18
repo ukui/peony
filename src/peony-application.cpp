@@ -139,6 +139,15 @@ PeonyApplication::PeonyApplication(int &argc, char *argv[], const char *applicat
     if (this->isSecondary()) {
         parser.addHelpOption();
         parser.addVersionOption();
+        if (this->arguments().count() == 2 && arguments().last() == ".") {
+            QStringList args;
+            auto dir = g_get_current_dir();
+            args<<"peony"<<dir;
+            g_free(dir);
+            auto message = args.join(' ').toUtf8();
+            sendMessage(message);
+            return;
+        }
         parser.process(arguments());
         auto message = this->arguments().join(' ').toUtf8();
         sendMessage(message);
