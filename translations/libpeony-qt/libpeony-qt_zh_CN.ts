@@ -462,13 +462,13 @@
 <context>
     <name>Peony::DefaultPreviewPage</name>
     <message>
-        <location filename="../../libpeony-qt/controls/preview-page/default-preview-page/default-preview-page.cpp" line="61"/>
-        <location filename="../../libpeony-qt/controls/preview-page/default-preview-page/default-preview-page.cpp" line="139"/>
+        <location filename="../../libpeony-qt/controls/preview-page/default-preview-page/default-preview-page.cpp" line="64"/>
+        <location filename="../../libpeony-qt/controls/preview-page/default-preview-page/default-preview-page.cpp" line="142"/>
         <source>Select the file you want to preview...</source>
         <translation>选择你想要预览的文件...</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/preview-page/default-preview-page/default-preview-page.cpp" line="130"/>
+        <location filename="../../libpeony-qt/controls/preview-page/default-preview-page/default-preview-page.cpp" line="133"/>
         <source>Can not preview this file.</source>
         <translation>不能预览该文件.</translation>
     </message>
@@ -1163,52 +1163,52 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
 <context>
     <name>Peony::FilePreviewPage</name>
     <message>
-        <location filename="../../libpeony-qt/controls/preview-page/default-preview-page/default-preview-page.cpp" line="168"/>
+        <location filename="../../libpeony-qt/controls/preview-page/default-preview-page/default-preview-page.cpp" line="171"/>
         <source>File Name:</source>
         <translation>文件名称：</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/preview-page/default-preview-page/default-preview-page.cpp" line="170"/>
+        <location filename="../../libpeony-qt/controls/preview-page/default-preview-page/default-preview-page.cpp" line="173"/>
         <source>File Type:</source>
         <translation>文件类型：</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/preview-page/default-preview-page/default-preview-page.cpp" line="172"/>
+        <location filename="../../libpeony-qt/controls/preview-page/default-preview-page/default-preview-page.cpp" line="175"/>
         <source>Time Access:</source>
         <translation>访问时间：</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/preview-page/default-preview-page/default-preview-page.cpp" line="174"/>
+        <location filename="../../libpeony-qt/controls/preview-page/default-preview-page/default-preview-page.cpp" line="177"/>
         <source>Time Modified:</source>
         <translation>修改时间：</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/preview-page/default-preview-page/default-preview-page.cpp" line="176"/>
+        <location filename="../../libpeony-qt/controls/preview-page/default-preview-page/default-preview-page.cpp" line="179"/>
         <source>Children Count:</source>
         <translation>子项计数：</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/preview-page/default-preview-page/default-preview-page.cpp" line="178"/>
+        <location filename="../../libpeony-qt/controls/preview-page/default-preview-page/default-preview-page.cpp" line="181"/>
         <source>Size:</source>
         <translation>文件大小：</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/preview-page/default-preview-page/default-preview-page.cpp" line="182"/>
+        <location filename="../../libpeony-qt/controls/preview-page/default-preview-page/default-preview-page.cpp" line="185"/>
         <source>Image size:</source>
         <translation>图片尺寸：</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/preview-page/default-preview-page/default-preview-page.cpp" line="184"/>
+        <location filename="../../libpeony-qt/controls/preview-page/default-preview-page/default-preview-page.cpp" line="187"/>
         <source>Image format:</source>
         <translation>图片格式：</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/preview-page/default-preview-page/default-preview-page.cpp" line="233"/>
+        <location filename="../../libpeony-qt/controls/preview-page/default-preview-page/default-preview-page.cpp" line="249"/>
         <source>%1x%2</source>
         <translation>%1x%2</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/preview-page/default-preview-page/default-preview-page.cpp" line="278"/>
+        <location filename="../../libpeony-qt/controls/preview-page/default-preview-page/default-preview-page.cpp" line="294"/>
         <source>%1 total, %2 hidden</source>
         <translation>共%1项，其中%2个隐藏文件</translation>
     </message>

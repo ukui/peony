@@ -36,6 +36,9 @@
 #include <QGridLayout>
 #include <QFormLayout>
 
+#include <QLocale>
+#include <QDateTime>
+
 #include <QThreadPool>
 
 #include <QResizeEvent>
@@ -213,8 +216,21 @@ void FilePreviewPage::updateInfo(FileInfo *info)
     //m_icon->setIcon(info->thumbnail().isNull()? QIcon::fromTheme(info->iconName()): info->thumbnail());
     m_display_name_label->setText(info->displayName());
     m_type_label->setText(info->fileType());
-    m_time_access_label->setText(info->accessDate());
-    m_time_modified_label->setText(info->modifiedDate());
+
+    QLocale locale;
+    auto access = QDateTime::fromMSecsSinceEpoch(info->accessTime()*1000);
+    auto modify = QDateTime::fromMSecsSinceEpoch(info->modifiedTime()*1000);
+    if (locale.language() == QLocale::Chinese)
+    {
+        m_time_access_label->setText(access.toString(Qt::SystemLocaleShortDate));
+        m_time_modified_label->setText(modify.toString(Qt::SystemLocaleShortDate));
+    }
+    else
+    {
+        m_time_access_label->setText(access.toString(Qt::ISODate));
+        m_time_modified_label->setText(modify.toString(Qt::ISODate));
+    }
+
     m_file_count_label->setText(tr(""));
     if (info->isDir()) {
         m_form->itemAt(4, QFormLayout::LabelRole)->widget()->setVisible(true);

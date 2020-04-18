@@ -42,7 +42,7 @@ SortTypeMenu::SortTypeMenu(QWidget *parent) : QMenu(parent)
     fileType->setCheckable(true);
     sortTypeGroup->addAction(fileType);
 
-    auto modifiedDate = addAction(tr("Modified Data"));
+    auto modifiedDate = addAction(tr("Modified Date"));
     modifiedDate->setCheckable(true);
     sortTypeGroup->addAction(modifiedDate);
 

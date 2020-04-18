@@ -94,6 +94,7 @@ public:
     QString type() {return m_content_type;}
     quint64 size() {return m_size;}
     quint64 modifiedTime() {return m_modified_time;}
+    quint64 accessTime() {return m_access_time;}
 
     bool canRead() {return m_can_read;}
     bool canWrite() {return m_can_write;}

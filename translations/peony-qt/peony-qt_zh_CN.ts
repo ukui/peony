@@ -129,12 +129,12 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="943"/>
+        <location filename="../../src/windows/main-window.cpp" line="944"/>
         <source>Delete Permanently</source>
         <translation>永久删除</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="944"/>
+        <location filename="../../src/windows/main-window.cpp" line="945"/>
         <source>Are you sure that you want to delete these files? Once you start a deletion, the files deleting will never be restored again.</source>
         <translation>您确定要删除这些文件吗？一旦开始删除，这些文件将不可再恢复。</translation>
     </message>
@@ -324,8 +324,12 @@ Copyright (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</source
     </message>
     <message>
         <location filename="../../src/control/sort-type-menu.cpp" line="45"/>
-        <source>Modified Data</source>
+        <source>Modified Date</source>
         <translation>修改日期</translation>
+    </message>
+    <message>
+        <source>Modified Data</source>
+        <translation type="vanished">修改日期</translation>
     </message>
     <message>
         <location filename="../../src/control/sort-type-menu.cpp" line="60"/>
