@@ -175,10 +175,10 @@ const QList<QAction *> DirectoryViewMenu::constructOpenOpActions()
             if (displayName.isEmpty())
                 displayName = FileUtils::getFileDisplayName(info->uri());
             //when name is too long, show elideText
-            int  charWidth = fontMetrics().averageCharWidth();
             //qDebug() << "charWidth:" <<charWidth;
             if (displayName.length() > ELIDE_TEXT_LENGTH)
             {
+                int  charWidth = fontMetrics().averageCharWidth();
                 displayName = fontMetrics().elidedText(displayName, Qt::ElideRight, ELIDE_TEXT_LENGTH * charWidth);
             }
             if (info->isDir()) {

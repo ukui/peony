@@ -57,6 +57,8 @@ private:
     QStringList m_selections;
 
     QStringList m_uris_to_edit;
+
+    const int ELIDE_TEXT_LENGTH = 16;
 };
 
 }
