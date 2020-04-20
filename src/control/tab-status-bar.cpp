@@ -22,6 +22,8 @@
 
 #include "tab-status-bar.h"
 #include "file-info.h"
+#include "file-utils.h"
+#include "search-vfs-uri-parser.h"
 #include "tab-widget.h"
 
 #include <QLabel>
@@ -31,6 +33,7 @@
 
 #include <QToolBar>
 #include <QSlider>
+#include <QDebug>
 
 TabStatusBar::TabStatusBar(TabWidget *tab, QWidget *parent) : QStatusBar(parent)
 {
@@ -108,9 +111,20 @@ void TabStatusBar::update()
         m_label->setText(tr("%1 selected").arg(selections.count()) + directoriesString + filesString);
         //showMessage(tr("%1 files selected ").arg(selections.count()));
         g_free(format_size);
-    } else {
-        m_label->setText(m_tab->getCurrentUri());
-        //showMessage(m_window->getCurrentUri());
+    }
+    else {
+        auto uri = m_tab->getCurrentUri();
+        auto displayName = Peony::FileUtils::getFileDisplayName(uri);
+        //qDebug() << "status bar text:" <<displayName <<uri;
+        if (uri.startsWith("search:///"))
+        {
+            QString nameRegexp = Peony::SearchVFSUriParser::getSearchUriNameRegexp(uri);
+            QString targetDirectory = Peony::SearchVFSUriParser::getSearchUriTargetDirectory(uri);
+            displayName = tr("Search \"%1\" in \"%2\"").arg(nameRegexp).arg(targetDirectory);
+            m_label->setText(displayName);
+        }
+        else
+            m_label->setText(m_tab->getCurrentUri());
     }
 }
 

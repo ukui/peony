@@ -345,31 +345,36 @@ Copyright (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</source
 <context>
     <name>TabStatusBar</name>
     <message>
-        <location filename="../../src/control/tab-status-bar.cpp" line="97"/>
-        <location filename="../../src/control/tab-status-bar.cpp" line="103"/>
+        <location filename="../../src/control/tab-status-bar.cpp" line="100"/>
+        <location filename="../../src/control/tab-status-bar.cpp" line="106"/>
         <source>; %1 folders</source>
         <translation>; %1 个文件夹</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-status-bar.cpp" line="98"/>
-        <location filename="../../src/control/tab-status-bar.cpp" line="105"/>
+        <location filename="../../src/control/tab-status-bar.cpp" line="101"/>
+        <location filename="../../src/control/tab-status-bar.cpp" line="108"/>
         <source>; %1 files, %2 total</source>
         <translation>; %1 个文件, 共%2</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-status-bar.cpp" line="100"/>
+        <location filename="../../src/control/tab-status-bar.cpp" line="103"/>
         <source>; %1 folder</source>
         <translation>; %1 个文件夹</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-status-bar.cpp" line="101"/>
+        <location filename="../../src/control/tab-status-bar.cpp" line="104"/>
         <source>; %1 file, %2</source>
         <translation>; %1 个文件, %2</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-status-bar.cpp" line="108"/>
+        <location filename="../../src/control/tab-status-bar.cpp" line="111"/>
         <source>%1 selected</source>
         <translation>选中%1个</translation>
+    </message>
+    <message>
+        <location filename="../../src/control/tab-status-bar.cpp" line="123"/>
+        <source>Search &quot;%1&quot; in &quot;%2&quot;</source>
+        <translation>在%2中搜索%1</translation>
     </message>
 </context>
 <context>
