@@ -258,6 +258,8 @@ void TabWidget::initAdvanceSearch()
     childButton->setIcon(QIcon(":/custom/icons/child-folder"));
     childButton->setToolTip(tr("Search recursively"));
     connect(childButton, &QPushButton::clicked, this, &TabWidget::searchChildUpdate);
+    //default select recursive
+    searchChildUpdate();
 
     QPushButton *moreButton = new QPushButton(tr("more options"),searchButtons);
     m_search_more = moreButton;
