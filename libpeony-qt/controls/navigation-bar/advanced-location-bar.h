@@ -61,6 +61,7 @@ private:
     SearchBarContainer *m_search_bar;
 
     QString m_text;
+    QString m_last_non_search_path;
 };
 
 }
