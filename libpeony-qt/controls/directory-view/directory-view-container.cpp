@@ -201,6 +201,11 @@ void DirectoryViewContainer::goToUri(const QString &uri, bool addHistory, bool f
         return;
 
 update:
+    if (addHistory) {
+        m_forward_list.clear();
+        m_back_list.append(getCurrentUri());
+    }
+
     auto viewId = DirectoryViewFactoryManager2::getInstance()->getDefaultViewId(zoomLevel, uri);
     switchViewType(viewId);
     //update status bar zoom level
@@ -209,11 +214,6 @@ update:
         zoomLevel = getView()->currentZoomLevel();
 
     setZoomLevelRequest(zoomLevel);
-
-    if (addHistory) {
-        m_forward_list.clear();
-        m_back_list.append(getCurrentUri());
-    }
 
     m_current_uri = uri;
 
