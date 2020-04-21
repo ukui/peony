@@ -224,7 +224,8 @@ void MainWindow::setShortCuts()
     auto searchAction = new QAction(this);
     searchAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::CTRL + Qt::Key_F));
     connect(searchAction, &QAction::triggered, this, [=](){
-        m_header_bar->startEdit(true);
+        m_is_search = ! m_is_search;
+        m_header_bar->startEdit(m_is_search);
     });
     addAction(searchAction);
 

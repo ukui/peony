@@ -162,6 +162,7 @@ private:
     Peony::StatusBar *m_status_bar;
 
     bool m_is_draging = false;
+    bool m_is_search = false;
     bool m_show_hidden_file;
     bool m_use_default_name_sort_order;
     bool m_folder_first;
