@@ -39,10 +39,14 @@ ViewFactorySortFilterModel2::ViewFactorySortFilterModel2(QObject *parent) : QSor
 bool ViewFactorySortFilterModel2::filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const
 {
     ViewFactoryModel2 *model = static_cast<ViewFactoryModel2*>(sourceModel());
+
     auto index = model->index(sourceRow, 0, sourceParent);
     auto manager = DirectoryViewFactoryManager2::getInstance();
     auto viewId = index.data(Qt::UserRole).toString();
     auto factory = manager->getFactory(viewId);
+
+    return factory->supportUri(model->m_current_uri);
+
     int zoom_level_hint = factory->zoom_level_hint();
     int priority = factory->priority(model->m_current_uri);
 
