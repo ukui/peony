@@ -277,6 +277,13 @@ void DirectoryViewContainer::switchViewType(const QString &viewId)
 
     connect(m_view, &DirectoryViewWidget::zoomRequest, this, &DirectoryViewContainer::zoomRequest);
 
+    //similar to double clicked, but just jump directory only.
+    //note that if view use double clicked signal, this signal should
+    //not sended again.
+    connect(m_view, &DirectoryViewWidget::updateWindowLocationRequest, this, [=](const QString &uri){
+        Q_EMIT this->updateWindowLocationRequest(uri, true);
+    });
+
     //m_proxy->switchView(view);
     m_layout->addWidget(dynamic_cast<QWidget*>(view), Qt::AlignBottom);
     DirectoryViewFactoryManager2::getInstance()->setDefaultViewId(viewId);

@@ -103,7 +103,7 @@ PluginManager::PluginManager(QObject *parent) : QObject(parent)
         }
         case PluginInterface::DirectoryViewPlugin2: {
             auto p = dynamic_cast<DirectoryViewPluginIface2*>(plugin);
-            DirectoryViewFactoryManager2::getInstance()->registerFactory(p->name(), p);
+            DirectoryViewFactoryManager2::getInstance()->registerFactory(p->viewIdentity(), p);
             break;
         }
         default:
