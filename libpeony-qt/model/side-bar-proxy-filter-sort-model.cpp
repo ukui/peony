@@ -43,7 +43,7 @@ bool SideBarProxyFilterSortModel::filterAcceptsRow(int sourceRow, const QModelIn
     }
     if (item) {
         if (!item->displayName().isEmpty()) {
-            if (item->displayName().at(0) == ".") {
+            if (QString(item->displayName().at(0)) == ".") {
                 return false;
             }
         }

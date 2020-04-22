@@ -74,9 +74,13 @@ void SearchVFSRegister::registSearchVFS()
         p++;
     }
 
+#if GLIB_CHECK_VERSION(2, 50, 0)
     res = g_vfs_register_uri_scheme (vfs, "search",
                                      test_vfs_lookup, NULL, NULL,
                                      test_vfs_parse_name, NULL, NULL);
+#else
+    //FIXME: how to implement search operation in old glib?
+#endif
 }
 
 SearchVFSRegister::SearchVFSRegister()

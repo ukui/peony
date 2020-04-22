@@ -103,9 +103,14 @@ void FileOperationProgressWizard::closeEvent(QCloseEvent *e)
     //was overwrite. is that a bug?
     e->ignore();
     m_tray_icon->show();
+
     m_tray_icon->showMessage(tr("File Operation"),
                              tr("A file operation is running backend..."),
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 9, 0))
                              QIcon::fromTheme("system-file-manager"),
+#else
+                             QSystemTrayIcon::MessageIcon::Information,
+#endif
                              5000);
     hide();
 }

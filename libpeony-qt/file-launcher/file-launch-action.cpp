@@ -105,7 +105,11 @@ void FileLaunchAction::lauchFileSync(bool forceWithArg)
 
             QProcess p;
             p.setProgram(path);
+#if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
             p.startDetached();
+#else
+            p.startDetached(path);
+#endif
             return;
         }
     }
@@ -162,7 +166,11 @@ void FileLaunchAction::lauchFileAsync(bool forceWithArg)
 
             QProcess p;
             p.setProgram(path);
+#if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
             p.startDetached();
+#else
+            p.startDetached(path);
+#endif
             return;
         }
     }
@@ -207,11 +215,17 @@ void FileLaunchAction::lauchFileAsync(bool forceWithArg)
                                                    nullptr,
                                                    nullptr);
     } else {
+#if GLIB_CHECK_VERSION(2, 50, 0)
         g_app_info_launch_default_for_uri_async(m_uri.toUtf8().constData(),
                                                 nullptr,
                                                 nullptr,
                                                 nullptr,
                                                 nullptr);
+#else
+        g_app_info_launch_default_for_uri(m_uri.toUtf8().constData(),
+                                          nullptr,
+                                          nullptr);
+#endif
     }
 }
 

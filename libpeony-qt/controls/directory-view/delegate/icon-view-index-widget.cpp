@@ -82,7 +82,11 @@ IconViewIndexWidget::IconViewIndexWidget(const IconViewDelegate *delegate, const
     }
 
     m_delegate->initStyleOption(&m_option, m_index);
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 7, 0))
     m_option.features.setFlag(QStyleOptionViewItem::WrapText);
+#else
+    m_option.features |= QStyleOptionViewItem::WrapText;
+#endif
     m_option.textElideMode = Qt::ElideNone;
 
     auto opt = m_option;
@@ -109,9 +113,13 @@ IconViewIndexWidget::IconViewIndexWidget(const IconViewDelegate *delegate, const
 
     m_option.rect.setHeight(fixedHeight - y_delta);
 
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 11, 0))
     connect(qApp, &QApplication::fontChanged, this, [=](){
         m_delegate->getView()->setIndexWidget(m_index, nullptr);
     });
+#else
+    //FIXME: handle font change.
+#endif
 }
 
 IconViewIndexWidget::~IconViewIndexWidget()

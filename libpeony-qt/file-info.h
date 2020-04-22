@@ -112,6 +112,7 @@ public:
 
     AccessFlags accesses() {
         auto flags = AccessFlags();
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 7, 0))
         flags.setFlag(Readable, m_can_read);
         flags.setFlag(Writeable, m_can_write);
         flags.setFlag(Executable, m_can_excute);
@@ -119,6 +120,21 @@ public:
         flags.setFlag(Trashable, m_can_trash);
         flags.setFlag(Renameable, m_can_rename);
         return flags;
+#else
+        flags = 0;
+        if (m_can_read)
+            flags |= Readable;
+        if (m_can_write)
+            flags |= Writeable;
+        if (m_can_excute)
+            flags |= Executable;
+        if (m_can_delete)
+            flags |= Deleteable;
+        if (m_can_trash)
+            flags |= Trashable;
+        if (m_can_rename)
+            flags |= Renameable;
+#endif
     }
 
     GFile *gFileHandle() {return m_file;}

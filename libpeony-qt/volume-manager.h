@@ -82,7 +82,13 @@ public:
     {
         if (!m_drive)
             return false;
+#if GLIB_CHECK_VERSION(2, 50, 0)
         return g_drive_is_removable(m_drive);
+#else
+        //FIXME: old glib does not have relative api.
+        //should i implete it?
+        return false;
+#endif
     }
 
     GDrive *getGDrive()

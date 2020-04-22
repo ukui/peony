@@ -268,7 +268,12 @@ void FileInfoJob::refreshInfoContents(GFileInfo *new_info)
             info->updated();
             return;
         }
+#if GLIB_CHECK_VERSION(2, 56, 0)
         auto string = g_desktop_app_info_get_locale_string(desktop_info, "Name");
+#else
+        //FIXME: should handle locale?
+        auto string = g_desktop_app_info_get_string(desktop_info, "Name");
+#endif
         if (string) {
             info->m_display_name = string;
             g_free(string);
