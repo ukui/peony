@@ -55,7 +55,7 @@ IconViewIndexWidget::IconViewIndexWidget(const IconViewDelegate *delegate, const
         m_edit_trigger.start();
     });
 #else
-    QTimer::singleShot(750, [=](){
+    QTimer::singleShot(750, this, [=](){
         m_edit_trigger.start();
     });
 #endif

@@ -251,7 +251,11 @@ void HeaderBar::openDefaultTerminal()
         QProcess p;
         p.setProgram(terminal_cmd);
         p.setArguments(QStringList()<<"--working-directory"<<absPath);
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 10, 0))
         p.startDetached();
+#else
+        p.startDetached(terminal_cmd, QStringList()<<"--working-directory"<<absPath);
+#endif
         p.waitForFinished(-1);
     }
     else

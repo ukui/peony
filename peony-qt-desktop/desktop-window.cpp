@@ -221,7 +221,11 @@ void DesktopWindow::gotoSetBackground()
     p.setProgram("ukui-control-center");
     //old version use -a, new version use -b as para
     p.setArguments(QStringList()<<"-b");
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 10, 0))
     p.startDetached();
+#else
+    p.startDetached("ukui-control-center", QStringList()<<"-b");
+#endif
     p.waitForFinished(-1);
 }
 

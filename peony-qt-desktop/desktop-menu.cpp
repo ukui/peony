@@ -553,6 +553,10 @@ void DesktopMenu::gotoAboutComputer()
     p.setProgram("ukui-control-center");
     //-a para to show about computer infos
     p.setArguments(QStringList()<<"-a");
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 10, 0))
     p.startDetached();
+#else
+    p.startDetached("ukui-control-center", QStringList()<<"-a");
+#endif
     p.waitForFinished(-1);
 }

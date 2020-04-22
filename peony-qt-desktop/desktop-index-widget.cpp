@@ -54,9 +54,12 @@ DesktopIndexWidget::DesktopIndexWidget(DesktopIconViewDelegate *delegate,
 
     updateItem();
 
+    //FIXME: how to handle it in old version?
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 11, 0))
     connect(qApp, &QApplication::fontChanged, this, [=](){
         m_delegate->getView()->setIndexWidget(m_index, nullptr);
     });
+#endif
 
     auto view = m_delegate->getView();
     view->m_real_do_edit = false;
