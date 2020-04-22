@@ -96,11 +96,12 @@ const QString ViewFactorySortFilterModel2::getHighestPriorityViewId(int zoom_lev
 
 const QStringList ViewFactorySortFilterModel2::supportViewIds()
 {
-    QStringList l;
-    for (int i = 0; i < rowCount(); i++) {
-        l<<index(i, 0).data(Qt::UserRole).toString();
-    }
+    //QStringList l;
+    ViewFactoryModel2 *model = static_cast<ViewFactoryModel2*>(sourceModel());
+    auto l = model->supportViewIds();
+    l.sort();
     return l;
+    //return l;
 }
 
 const QIcon ViewFactorySortFilterModel2::iconFromViewId(const QString &viewId)
