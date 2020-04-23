@@ -306,3 +306,16 @@ bool FileUtils::isFileDirectory(const QString &uri)
     g_object_unref(file);
     return isFolder;
 }
+
+bool FileUtils::isFileUnmountable(const QString &uri)
+{
+    GFile *file = g_file_new_for_uri(uri.toUtf8().constData());
+    GFileInfo *info = g_file_query_info(file, G_FILE_ATTRIBUTE_MOUNTABLE_CAN_UNMOUNT, G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, nullptr, nullptr);
+    g_object_unref(file);
+    if (info) {
+        bool unmountable = g_file_info_get_attribute_boolean(info, G_FILE_ATTRIBUTE_MOUNTABLE_CAN_UNMOUNT);
+        g_object_unref(info);
+        return unmountable;
+    }
+    return false;
+}

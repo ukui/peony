@@ -70,6 +70,8 @@ public:
 
     static bool isFileDirectory(const QString &uri);
 
+    static bool isFileUnmountable(const QString &uri);
+
 private:
     FileUtils();
 };

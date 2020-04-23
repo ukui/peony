@@ -145,7 +145,8 @@ void SideBarFileSystemItem::findChildren()
                                                                     this);
             //check is mounted.
             auto targetUri = FileUtils::getTargetUri(info->uri());
-            item->m_is_mounted = !targetUri.isEmpty() && (targetUri != "file:///");
+            bool isUmountable = FileUtils::isFileUnmountable(info->uri());
+            item->m_is_mounted = (!targetUri.isEmpty() && (targetUri != "file:///")) || isUmountable;
             m_children->append(item);
             //qDebug()<<info->uri();
         }
