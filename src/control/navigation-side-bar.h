@@ -45,6 +45,7 @@ public:
     void scrollTo(const QModelIndex &index, ScrollHint hint = EnsureVisible);
 
     void paintEvent(QPaintEvent *event);
+    void resizeEvent(QResizeEvent *e);
 
     QSize sizeHint() const;
 

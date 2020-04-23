@@ -69,7 +69,7 @@ NavigationSideBar::NavigationSideBar(QWidget *parent) : QTreeView(parent)
                   "}");
     setAttribute(Qt::WA_TranslucentBackground);
     viewport()->setAttribute(Qt::WA_TranslucentBackground);
-    header()->setSectionResizeMode(QHeaderView::ResizeToContents);
+    header()->setSectionResizeMode(QHeaderView::Custom);
     header()->hide();
 
     setContextMenuPolicy(Qt::CustomContextMenu);
@@ -160,6 +160,13 @@ void NavigationSideBar::scrollTo(const QModelIndex &index, QAbstractItemView::Sc
 void NavigationSideBar::paintEvent(QPaintEvent *event)
 {
     QTreeView::paintEvent(event);
+}
+
+void NavigationSideBar::resizeEvent(QResizeEvent *e)
+{
+    QTreeView::resizeEvent(e);
+    if (header()->count() > 0)
+        header()->resizeSection(0, this->viewport()->width() - 30);
 }
 
 QSize NavigationSideBar::sizeHint() const
