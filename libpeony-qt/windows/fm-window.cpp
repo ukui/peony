@@ -391,7 +391,7 @@ FMWindow::FMWindow(const QString &uri, QWidget *parent) : QMainWindow (parent)
     connect(aboutAction, &QAction::triggered, this, [=](){
         QMessageBox::about(this,
                            tr("Peony Qt"),
-                           tr("Authour: \n"
+                           tr("Author:\n"
                               "\tYue Lan <lanyue@kylinos.cn>\n"
                               "\tMeihong He <hemeihong@kylinos.cn>\n"
                               "\n"

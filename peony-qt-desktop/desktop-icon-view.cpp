@@ -1028,6 +1028,9 @@ void DesktopIconView::dropEvent(QDropEvent *e)
 
         QListView::dropEvent(e);
 
+        //fixme: handle overlapping.
+
+
         auto urls = e->mimeData()->urls();
         for (auto url : urls) {
 //            if (url.path() == QStandardPaths::writableLocation(QStandardPaths::HomeLocation))

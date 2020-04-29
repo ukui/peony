@@ -88,12 +88,12 @@
 <context>
     <name>HeaderBarContainer</name>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="513"/>
+        <location filename="../../src/control/header-bar.cpp" line="517"/>
         <source>Minimize</source>
         <translation>最小化</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="525"/>
+        <location filename="../../src/control/header-bar.cpp" line="529"/>
         <source>Maximize/Restore</source>
         <translation>最大化/还原</translation>
     </message>
@@ -106,7 +106,7 @@
         <translation type="vanished">最大化</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="546"/>
+        <location filename="../../src/control/header-bar.cpp" line="550"/>
         <source>Close</source>
         <translation>关闭</translation>
     </message>
@@ -129,12 +129,12 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="944"/>
+        <location filename="../../src/windows/main-window.cpp" line="945"/>
         <source>Delete Permanently</source>
         <translation>永久删除</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="945"/>
+        <location filename="../../src/windows/main-window.cpp" line="946"/>
         <source>Are you sure that you want to delete these files? Once you start a deletion, the files deleting will never be restored again.</source>
         <translation>您确定要删除这些文件吗？一旦开始删除，这些文件将不可再恢复。</translation>
     </message>
@@ -143,7 +143,7 @@
         <translation type="vanished">文件管理器</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="403"/>
+        <location filename="../../src/windows/main-window.cpp" line="404"/>
         <source>New Folder</source>
         <translation>新建文件夹</translation>
     </message>
@@ -158,7 +158,7 @@
 <context>
     <name>NavigationSideBarContainer</name>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="219"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="226"/>
         <source>All tags...</source>
         <translation>所有标记...</translation>
     </message>
@@ -261,12 +261,32 @@
     </message>
     <message>
         <location filename="../../src/peony-application.cpp" line="577"/>
+        <source>Author:
+	Yue Lan &lt;lanyue@kylinos.cn&gt;
+	Meihong He &lt;hemeihong@kylinos.cn&gt;
+
+Copyright (C): 2019-2020, KYLIN Software Co., Ltd.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Author: 
+	Yue Lan &lt;lanyue@kylinos.cn&gt;
+	Meihong He &lt;hemeihong@kylinos.cn&gt;
+
+Copyright (C): 2019-2020, KYLIN Software Co., Ltd.</source>
+        <translation type="vanished">作者:
+	Yue Lan &lt;lanyue@kylinos.cn&gt;
+	Meihong He &lt;hemeihong@kylinos.cn&gt;
+
+版权所有(C): 2019-2020,麒麟软件有限公司.</translation>
+    </message>
+    <message>
         <source>Authour: 
 	Yue Lan &lt;lanyue@kylinos.cn&gt;
 	Meihong He &lt;hemeihong@kylinos.cn&gt;
 
 Copyright (C): 2019-2020, KYLIN Software Co., Ltd.</source>
-        <translation>作者:
+        <translation type="vanished">作者:
 	Yue Lan &lt;lanyue@kylinos.cn&gt;
 	Meihong He &lt;hemeihong@kylinos.cn&gt;
 
@@ -415,29 +435,29 @@ Copyright (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</source
         <translation>递归搜索</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="262"/>
+        <location filename="../../src/control/tab-widget.cpp" line="264"/>
         <source>more options</source>
         <translation>更多选项</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="266"/>
+        <location filename="../../src/control/tab-widget.cpp" line="268"/>
         <source>Show/hide advance search</source>
         <translation>显示/隐藏高级搜索</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="369"/>
-        <location filename="../../src/control/tab-widget.cpp" line="443"/>
+        <location filename="../../src/control/tab-widget.cpp" line="371"/>
+        <location filename="../../src/control/tab-widget.cpp" line="445"/>
         <source>is</source>
         <translation>是</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="387"/>
+        <location filename="../../src/control/tab-widget.cpp" line="389"/>
         <source>Please input kay words...</source>
         <translation>请输入关键词...</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="423"/>
-        <location filename="../../src/control/tab-widget.cpp" line="436"/>
+        <location filename="../../src/control/tab-widget.cpp" line="425"/>
+        <location filename="../../src/control/tab-widget.cpp" line="438"/>
         <source>contains</source>
         <translation>包含</translation>
     </message>

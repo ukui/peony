@@ -307,7 +307,7 @@ void ToolBar::init()
         auto about = optionMenu.addAction(tr("&About..."), this, [=](){
             QMessageBox::about(m_top_window,
                                tr("Peony Qt"),
-                               tr("Authour: \n"
+                               tr("Author:\n"
                                   "\tYue Lan <lanyue@kylinos.cn>\n"
                                   "\tMeihong He <hemeihong@kylinos.cn>\n"
                                   "\n"

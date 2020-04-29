@@ -292,7 +292,7 @@
 <context>
     <name>Peony::AdvancedLocationBar</name>
     <message>
-        <location filename="../../libpeony-qt/controls/navigation-bar/advanced-location-bar.cpp" line="131"/>
+        <location filename="../../libpeony-qt/controls/navigation-bar/advanced-location-bar.cpp" line="137"/>
         <source>Search Content...</source>
         <translation>搜索内容</translation>
     </message>
@@ -755,6 +755,27 @@
         <translation>正在加载...按下Esc键取消.</translation>
     </message>
     <message>
+        <location filename="../../libpeony-qt/windows/fm-window.cpp" line="394"/>
+        <source>Author:
+	Yue Lan &lt;lanyue@kylinos.cn&gt;
+	Meihong He &lt;hemeihong@kylinos.cn&gt;
+
+Copyright (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Author: 
+	Yue Lan &lt;lanyue@kylinos.cn&gt;
+	Meihong He &lt;hemeihong@kylinos.cn&gt;
+
+Copyright (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</source>
+        <translation type="vanished">作者:
+	Yue Lan &lt;lanyue@kylinos.cn&gt;
+	Meihong He &lt;hemeihong@kylinos.cn&gt;
+
+版权所有(C): 2019-2020,天津麒麟信息技术有限公司.</translation>
+    </message>
+    <message>
         <source>Ctrl+H</source>
         <comment>Show|Hidden</comment>
         <translation type="vanished">Ctrl+H</translation>
@@ -775,13 +796,12 @@
         <translation>文件管理器</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/windows/fm-window.cpp" line="394"/>
         <source>Authour: 
 	Yue Lan &lt;lanyue@kylinos.cn&gt;
 	Meihong He &lt;hemeihong@kylinos.cn&gt;
 
 Copyright (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</source>
-        <translation>作者:
+        <translation type="vanished">作者:
 	Yue Lan &lt;lanyue@kylinos.cn&gt;
 	Meihong He &lt;hemeihong@kylinos.cn&gt;
 
@@ -911,14 +931,14 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
 <context>
     <name>Peony::FileLaunchAction</name>
     <message>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="114"/>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="171"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="118"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="179"/>
         <source>Open Failed</source>
         <translation>无法打开</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="114"/>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="171"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="118"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="179"/>
         <source>Can not open %1</source>
         <translation>不能打开%1</translation>
     </message>
@@ -953,7 +973,7 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
 <context>
     <name>Peony::FileOperationAfterProgressPage</name>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="332"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="337"/>
         <source>&amp;More Details</source>
         <translation>详细信息(&amp;M)</translation>
     </message>
@@ -1067,12 +1087,12 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
 <context>
     <name>Peony::FileOperationPreparePage</name>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="268"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="273"/>
         <source>counting:</source>
         <translation>总计：</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="269"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="274"/>
         <source>state:</source>
         <translation>状态：</translation>
     </message>
@@ -1080,17 +1100,17 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
 <context>
     <name>Peony::FileOperationProgressPage</name>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="291"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="296"/>
         <source>&amp;More Details</source>
         <translation>详细信息(&amp;M)</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="302"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="307"/>
         <source>From:</source>
         <translation>从：</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="303"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="308"/>
         <source>To:</source>
         <translation>到：</translation>
     </message>
@@ -1129,33 +1149,33 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
     </message>
     <message>
         <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="81"/>
-        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="106"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="107"/>
         <source>File Operation</source>
         <translation>文件操作</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="107"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="108"/>
         <source>A file operation is running backend...</source>
         <translation>一个文件操作正在后台运行中...</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="137"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="142"/>
         <source>%1 files, %2</source>
         <translation>%1个文件，共%2</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="164"/>
-        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="242"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="169"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="247"/>
         <source>%1 done, %2 total, %3 of %4.</source>
         <translation>完成%1，共%2，%4中的第%3个。</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="194"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="199"/>
         <source>clearing: %1, %2 of %3</source>
         <translation>正在清理：%1，%3中的第%2个</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="235"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="240"/>
         <source>copying...</source>
         <translation>复制中...</translation>
     </message>
@@ -1688,12 +1708,32 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/tool-bar/tool-bar.cpp" line="310"/>
+        <source>Author:
+	Yue Lan &lt;lanyue@kylinos.cn&gt;
+	Meihong He &lt;hemeihong@kylinos.cn&gt;
+
+Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Author: 
+	Yue Lan &lt;lanyue@kylinos.cn&gt;
+	Meihong He &lt;hemeihong@kylinos.cn&gt;
+
+Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
+        <translation type="vanished">作者:
+	Yue Lan &lt;lanyue@kylinos.cn&gt;
+	Meihong He &lt;hemeihong@kylinos.cn&gt;
+
+版权所有(C): 2019,天津麒麟信息技术有限公司.</translation>
+    </message>
+    <message>
         <source>Authour: 
 	Yue Lan &lt;lanyue@kylinos.cn&gt;
 	Meihong He &lt;hemeihong@kylinos.cn&gt;
 
 Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
-        <translation>作者:
+        <translation type="vanished">作者:
 	Yue Lan &lt;lanyue@kylinos.cn&gt;
 	Meihong He &lt;hemeihong@kylinos.cn&gt;
 

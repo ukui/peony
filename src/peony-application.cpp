@@ -574,7 +574,7 @@ void PeonyApplication::about()
 {
     QMessageBox::about(nullptr,
                        tr("Peony Qt"),
-                       tr("Authour: \n"
+                       tr("Author:\n"
                           "\tYue Lan <lanyue@kylinos.cn>\n"
                           "\tMeihong He <hemeihong@kylinos.cn>\n"
                           "\n"
