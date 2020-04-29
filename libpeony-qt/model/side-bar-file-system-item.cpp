@@ -247,7 +247,7 @@ bool SideBarFileSystemItem::isRemoveable()
             FileInfoJob j(info);
             j.querySync();
         }
-        return info->canEject();
+        return info->canEject() || info->canStop();
     }
     return false;
 }

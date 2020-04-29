@@ -201,6 +201,8 @@ void FileInfoJob::refreshInfoContents(GFileInfo *new_info)
     info->m_can_mount = g_file_info_get_attribute_boolean(new_info, G_FILE_ATTRIBUTE_MOUNTABLE_CAN_MOUNT);
     info->m_can_unmount = g_file_info_get_attribute_boolean(new_info, G_FILE_ATTRIBUTE_MOUNTABLE_CAN_UNMOUNT);
     info->m_can_eject = g_file_info_get_attribute_boolean(new_info, G_FILE_ATTRIBUTE_MOUNTABLE_CAN_EJECT);
+    info->m_can_start = g_file_info_get_attribute_boolean(new_info, G_FILE_ATTRIBUTE_MOUNTABLE_CAN_START);
+    info->m_can_stop = g_file_info_get_attribute_boolean(new_info, G_FILE_ATTRIBUTE_MOUNTABLE_CAN_STOP);
 
     info->m_is_virtual = g_file_info_get_attribute_boolean(new_info, G_FILE_ATTRIBUTE_STANDARD_IS_VIRTUAL);
 

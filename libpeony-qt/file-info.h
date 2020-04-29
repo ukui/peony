@@ -106,6 +106,8 @@ public:
     bool canMount() {return m_can_mount;}
     bool canUnmount() {return m_can_unmount;}
     bool canEject() {return m_can_eject;}
+    bool canStart() {return m_can_start;}
+    bool canStop() {return m_can_stop;}
 
     bool isDesktopFile() {return m_can_excute && m_uri.endsWith(".desktop");}
     bool isEmptyInfo() {return m_display_name == nullptr;}
@@ -183,6 +185,9 @@ private:
     bool m_can_mount = false;
     bool m_can_unmount = false;
     bool m_can_eject = false;
+
+    bool m_can_start = false;
+    bool m_can_stop = false;
 
     //FIXME: should i use smart pointer wrap these data?
     GFile *m_file = nullptr;

@@ -51,6 +51,8 @@ bool SideBarProxyFilterSortModel::filterAcceptsRow(int sourceRow, const QModelIn
     if (item->type() == SideBarAbstractItem::FileSystemItem) {
         if (sourceParent.data(Qt::UserRole).toString() == "computer:///") {
             if (item->uri() != "computer:///root.link") {
+                if (!item->isRemoveable() && !item->isEjectable())
+                    return true;
                 if (/*!item->isMountable() || */!item->isMounted()) {
                     return false;
                 }
