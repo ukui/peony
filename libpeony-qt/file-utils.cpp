@@ -44,6 +44,12 @@ QString FileUtils::getQStringFromCString(char *c_string, bool free)
 
 QString FileUtils::getFileUri(const GFileWrapperPtr &file)
 {
+    char *path = g_file_get_path(file.get()->get());
+    if (path) {
+        QUrl url = QString("file://%1").arg(path);
+        g_free(path);
+        return url.toDisplayString();
+    }
     char *uri = g_file_get_uri(file.get()->get());
     QUrl url = QString(uri);
     g_free(uri);
