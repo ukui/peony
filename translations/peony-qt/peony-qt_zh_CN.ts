@@ -121,12 +121,12 @@
     <message>
         <location filename="../../src/windows/main-window.cpp" line="186"/>
         <source>Undo</source>
-        <translation></translation>
+        <translation>撤销</translation>
     </message>
     <message>
         <location filename="../../src/windows/main-window.cpp" line="193"/>
         <source>Redo</source>
-        <translation></translation>
+        <translation>重做</translation>
     </message>
     <message>
         <location filename="../../src/windows/main-window.cpp" line="944"/>
