@@ -132,6 +132,8 @@ private:
     DirectoryViewProxyIface *m_proxy = nullptr;
 
     QString m_current_uri;
+
+    QSize m_last_size;
 };
 
 //ListView2

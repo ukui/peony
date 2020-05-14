@@ -200,7 +200,10 @@ void ListView::dragEnterEvent(QDragEnterEvent *e)
 void ListView::resizeEvent(QResizeEvent *e)
 {
     QTreeView::resizeEvent(e);
-    adjustColumnsSize();
+    if (m_last_size != size()) {
+        m_last_size = size();
+        adjustColumnsSize();
+    }
 }
 
 void ListView::updateGeometries()
