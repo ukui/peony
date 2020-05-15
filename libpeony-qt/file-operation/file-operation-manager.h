@@ -101,6 +101,8 @@ class FileOperationInfo : public QObject
     Q_OBJECT
     friend class FileOperationManager;
 public:
+    QMap<QString, QString> m_node_map;
+
     enum Type {
         Invalid,
         Move,//move back if no error in original moving
@@ -204,6 +206,12 @@ public:
 
     std::shared_ptr<FileOperationInfo> getOppositeInfo(FileOperationInfo *info) {
         auto oppositeInfo = std::make_shared<FileOperationInfo>(info->m_dest_uris, info->m_src_dir_uri, m_opposite_type);
+        QMap<QString, QString> oppsiteMap;
+        for (auto key : m_node_map.keys()) {
+            auto value = m_node_map.value(key);
+            oppsiteMap.insert(value, key);
+        }
+        oppositeInfo->m_node_map = oppsiteMap;
         oppositeInfo->m_newname = this->m_oldname;
         oppositeInfo->m_oldname = this->m_newname;
         return oppositeInfo;

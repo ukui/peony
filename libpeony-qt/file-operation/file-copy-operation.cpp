@@ -425,7 +425,11 @@ void FileCopyOperation::run()
         }
     }
 
+    setHasError(false);
+
     for (auto node : nodes) {
+        if (!isCancelled())
+            m_info->m_node_map.insert(node->uri(), node->destUri());
         delete node;
     }
 

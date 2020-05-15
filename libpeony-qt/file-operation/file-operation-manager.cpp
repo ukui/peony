@@ -209,7 +209,10 @@ void FileOperationManager::startUndoOrRedo(std::shared_ptr<FileOperationInfo> in
         break;
     }
     case FileOperationInfo::Delete: {
-        op = new FileDeleteOperation(info->m_src_uris);
+        if (info->m_node_map.isEmpty())
+            op = new FileDeleteOperation(info->m_src_uris);
+        else
+            op = new FileDeleteOperation(info->m_node_map.keys());
         break;
     }
     case FileOperationInfo::Link: {
