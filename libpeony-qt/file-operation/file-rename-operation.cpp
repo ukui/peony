@@ -50,6 +50,7 @@ FileRenameOperation::FileRenameOperation(QString uri, QString newName)
  */
 void FileRenameOperation::run()
 {
+    QString destUri;
     Q_EMIT operationStarted();
     auto file = wrapGFile(g_file_new_for_uri(m_uri.toUtf8().constData()));
     auto info = wrapGFileInfo(g_file_query_info(file.get()->get(),
@@ -170,5 +171,15 @@ retry:
         }
     }
     }
+
+    if (!isCancelled()) {
+        setHasError(false);
+        auto string = g_file_get_uri(newFile.get()->get());
+        destUri = string;
+        if (string)
+            g_free(string);
+        m_info->m_node_map.insert(m_uri, destUri);
+    }
+
     Q_EMIT operationFinished();
 }

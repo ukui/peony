@@ -224,8 +224,14 @@ void FileOperationManager::startUndoOrRedo(std::shared_ptr<FileOperationInfo> in
         break;
     }
     case FileOperationInfo::Rename: {
-        op = new FileRenameOperation(info->m_src_uris.isEmpty()? nullptr: info->m_src_uris.at(0),
-                                     info->m_dest_dir_uri);
+        if (info->m_node_map.isEmpty()) {
+            op = new FileRenameOperation(info->m_src_uris.isEmpty()? nullptr: info->m_src_uris.at(0),
+                                         info->m_dest_dir_uri);
+        } else {
+            auto destUri = info->m_node_map.first();
+            QUrl url = destUri;
+            op = new FileRenameOperation(info->m_node_map.firstKey(), url.fileName());
+        }
         break;
     }
     case FileOperationInfo::Trash: {
