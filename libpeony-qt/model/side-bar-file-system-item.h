@@ -40,12 +40,20 @@ public:
                                    SideBarModel *model,
                                    QObject *parent = nullptr);
 
-    Type type() override {return SideBarAbstractItem::FileSystemItem;}
+    Type type() override {
+        return SideBarAbstractItem::FileSystemItem;
+    }
 
-    QString uri() override {return m_uri;}
+    QString uri() override {
+        return m_uri;
+    }
     QString displayName() override;
-    QString iconName() override {return m_icon_name;}
-    bool hasChildren() override {return true;}
+    QString iconName() override {
+        return m_icon_name;
+    }
+    bool hasChildren() override {
+        return true;
+    }
 
     bool isRemoveable() override;
     bool isEjectable() override;
@@ -57,7 +65,9 @@ public:
     QModelIndex firstColumnIndex() override;
     QModelIndex lastColumnIndex() override;
 
-    SideBarAbstractItem *parent() override {return m_parent;}
+    SideBarAbstractItem *parent() override {
+        return m_parent;
+    }
 
 public Q_SLOTS:
     void eject() override;

@@ -100,11 +100,11 @@ void SearchBar::clearSearchRecord()
     m_model->clear();
     initTableModel();
 #if QT_VERSION > QT_VERSION_CHECK(5, 12, 0)
-    QTimer::singleShot(100, this, [=](){
+    QTimer::singleShot(100, this, [=]() {
         m_table_view->setVisible(false);
     });
 #else
-    QTimer::singleShot(100, [=](){
+    QTimer::singleShot(100, [=]() {
         m_table_view->setVisible(false);
     });
 #endif
@@ -126,7 +126,7 @@ void SearchBar::updateTableModel()
 {
     if (!this->text().isEmpty()) {
         bool contained = false;
-        for(int i=0;i<m_model->rowCount();i++)
+        for(int i=0; i<m_model->rowCount(); i++)
         {
             if(m_model->item(i)->text() == this->text())
             {

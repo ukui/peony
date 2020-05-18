@@ -39,7 +39,7 @@ FileWatcher::FileWatcher(QString uri, QObject *parent) : QObject(parent)
     m_file = g_file_new_for_uri(uri.toUtf8().constData());
     m_cancellable = g_cancellable_new();
 
-    connect(FileLabelModel::getGlobalModel(), &FileLabelModel::fileLabelChanged, this, [=](const QString &uri){
+    connect(FileLabelModel::getGlobalModel(), &FileLabelModel::fileLabelChanged, this, [=](const QString &uri) {
         auto parentUri = FileUtils::getParentUri(uri);
         if (parentUri == m_uri || parentUri == m_target_uri) {
             Q_EMIT fileChanged(uri);
@@ -62,9 +62,9 @@ FileWatcher::FileWatcher(QString uri, QObject *parent) : QObject(parent)
 
     GError *err2 = nullptr;
     m_dir_monitor = g_file_monitor_directory(m_file,
-                                             G_FILE_MONITOR_NONE,
-                                             m_cancellable,
-                                             &err2);
+                    G_FILE_MONITOR_NONE,
+                    m_cancellable,
+                    &err2);
     if (err2) {
         qDebug()<<err2->code<<err2->message;
         g_error_free(err2);
@@ -104,7 +104,7 @@ void FileWatcher::prepare()
                                         nullptr);
 
     char *uri = g_file_info_get_attribute_as_string(info,
-                                                    G_FILE_ATTRIBUTE_STANDARD_TARGET_URI);
+                G_FILE_ATTRIBUTE_STANDARD_TARGET_URI);
 
     if (uri) {
         g_object_unref(m_file);
@@ -173,9 +173,9 @@ void FileWatcher::changeMonitorUri(QString uri)
 
     GError *err2 = nullptr;
     m_dir_monitor = g_file_monitor_directory(m_file,
-                                             G_FILE_MONITOR_NONE,
-                                             m_cancellable,
-                                             &err2);
+                    G_FILE_MONITOR_NONE,
+                    m_cancellable,
+                    &err2);
     if (err2) {
         m_supprot_monitor = true;
         qDebug()<<err2->code<<err2->message;

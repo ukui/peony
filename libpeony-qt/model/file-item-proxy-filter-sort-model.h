@@ -39,7 +39,7 @@ class PEONYCORESHARED_EXPORT FileItemProxyFilterSortModel : public QSortFilterPr
 {
     Q_OBJECT
 public:
-    enum FilterFileType{
+    enum FilterFileType {
         ALL_TYPE,
         FILE_FOLDER,
         PICTURE,
@@ -49,7 +49,7 @@ public:
         OTHERS
     };
     Q_ENUM(FilterFileType)
-    enum FilterFileModifyTime{
+    enum FilterFileModifyTime {
         ALL_TIME,
         TODAY,
         THIS_WEEK,
@@ -58,7 +58,7 @@ public:
         YEAR_AGO
     };
     Q_ENUM(FilterFileModifyTime)
-    enum FilterFileSize{
+    enum FilterFileSize {
         ALL_SIZE,
         TINY,
         SMALL,

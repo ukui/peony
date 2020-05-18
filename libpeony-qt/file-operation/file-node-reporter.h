@@ -50,8 +50,12 @@ public:
         Q_EMIT nodeFound(uri, offset);
     }
 
-    void cancel() {m_cancelled = true;}
-    bool isOperationCancelled() {return m_cancelled;}
+    void cancel() {
+        m_cancelled = true;
+    }
+    bool isOperationCancelled() {
+        return m_cancelled;
+    }
 
 Q_SIGNALS:
     void nodeFound(const QString &uri, const qint64 &offset);

@@ -63,9 +63,15 @@ public:
     Qt::SortOrder getCurrentSortOrder();
     int getCurrentSortColumn();
 
-    bool getWindowShowHidden() {return m_show_hidden_file;}
-    bool getWindowUseDefaultNameSortOrder() {return m_use_default_name_sort_order;}
-    bool getWindowSortFolderFirst() {return m_folder_first;}
+    bool getWindowShowHidden() {
+        return m_show_hidden_file;
+    }
+    bool getWindowUseDefaultNameSortOrder() {
+        return m_use_default_name_sort_order;
+    }
+    bool getWindowSortFolderFirst() {
+        return m_folder_first;
+    }
 
     int currentViewZoomLevel();
     bool currentViewSupportZoom();

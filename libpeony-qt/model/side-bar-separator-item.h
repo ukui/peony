@@ -42,7 +42,7 @@ class PEONYCORESHARED_EXPORT SideBarSeparatorItem : public SideBarAbstractItem
 {
     Q_OBJECT
 public:
-    enum Details{
+    enum Details {
         Large,
         EmptyFile,
         Small
@@ -53,23 +53,43 @@ public:
                                   SideBarModel *model,
                                   QObject *parent = nullptr);
 
-    Details separatorType() {return m_type;}
+    Details separatorType() {
+        return m_type;
+    }
 
-    Type type() override {return SideBarAbstractItem::SeparatorItem;}
+    Type type() override {
+        return SideBarAbstractItem::SeparatorItem;
+    }
 
-    QString uri() override {return nullptr;}
-    QString displayName() override {return m_type==EmptyFile?tr("(No Sub Directory)"):nullptr;}
-    QString iconName() override {return nullptr;}
-    bool hasChildren() override {return false;}
+    QString uri() override {
+        return nullptr;
+    }
+    QString displayName() override {
+        return m_type==EmptyFile?tr("(No Sub Directory)"):nullptr;
+    }
+    QString iconName() override {
+        return nullptr;
+    }
+    bool hasChildren() override {
+        return false;
+    }
 
-    bool isRemoveable() override {return false;}
-    bool isEjectable() override {return false;}
-    bool isMountable() override {return false;}
+    bool isRemoveable() override {
+        return false;
+    }
+    bool isEjectable() override {
+        return false;
+    }
+    bool isMountable() override {
+        return false;
+    }
 
     QModelIndex firstColumnIndex() override;
     QModelIndex lastColumnIndex() override;
 
-    SideBarAbstractItem *parent() override {return m_parent;}
+    SideBarAbstractItem *parent() override {
+        return m_parent;
+    }
 
 public Q_SLOTS:
     void eject() override {}

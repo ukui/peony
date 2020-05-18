@@ -74,43 +74,105 @@ public:
     static std::shared_ptr<FileInfo> fromPath(QString path, bool addToHash = true);
     static std::shared_ptr<FileInfo> fromGFile(GFile *file, bool addToHash = true);
 
-    QString uri() {return m_uri;}
-    bool isDir() {return m_is_dir || m_content_type == "inode/directory";}
-    bool isVolume() {return m_is_volume;}
-    bool isSymbolLink() {return m_is_symbol_link;}
-    bool isVirtual() {return m_is_virtual;}
+    QString uri() {
+        return m_uri;
+    }
+    bool isDir() {
+        return m_is_dir || m_content_type == "inode/directory";
+    }
+    bool isVolume() {
+        return m_is_volume;
+    }
+    bool isSymbolLink() {
+        return m_is_symbol_link;
+    }
+    bool isVirtual() {
+        return m_is_virtual;
+    }
 
-    QString displayName() {return m_display_name;}
-    QString iconName() {return m_icon_name;}
-    QString symbolicIconName() {return m_symbolic_icon_name;}
-    QString fileID() {return m_file_id;}
-    QString mimeType() {return m_mime_type_string;}
-    QString fileType() {return m_file_type;}
+    QString displayName() {
+        return m_display_name;
+    }
+    QString iconName() {
+        return m_icon_name;
+    }
+    QString symbolicIconName() {
+        return m_symbolic_icon_name;
+    }
+    QString fileID() {
+        return m_file_id;
+    }
+    QString mimeType() {
+        return m_mime_type_string;
+    }
+    QString fileType() {
+        return m_file_type;
+    }
 
-    QString fileSize() {return m_file_size;}
-    QString modifiedDate() {return m_modified_date;}
-    QString accessDate() {return m_access_date;}
+    QString fileSize() {
+        return m_file_size;
+    }
+    QString modifiedDate() {
+        return m_modified_date;
+    }
+    QString accessDate() {
+        return m_access_date;
+    }
 
-    QString type() {return m_content_type;}
-    quint64 size() {return m_size;}
-    quint64 modifiedTime() {return m_modified_time;}
-    quint64 accessTime() {return m_access_time;}
+    QString type() {
+        return m_content_type;
+    }
+    quint64 size() {
+        return m_size;
+    }
+    quint64 modifiedTime() {
+        return m_modified_time;
+    }
+    quint64 accessTime() {
+        return m_access_time;
+    }
 
-    bool canRead() {return m_can_read;}
-    bool canWrite() {return m_can_write;}
-    bool canExecute() {return m_can_excute;}
-    bool canDelete() {return m_can_delete;}
-    bool canTrash() {return m_can_trash;}
-    bool canRename() {return m_can_rename;}
+    bool canRead() {
+        return m_can_read;
+    }
+    bool canWrite() {
+        return m_can_write;
+    }
+    bool canExecute() {
+        return m_can_excute;
+    }
+    bool canDelete() {
+        return m_can_delete;
+    }
+    bool canTrash() {
+        return m_can_trash;
+    }
+    bool canRename() {
+        return m_can_rename;
+    }
 
-    bool canMount() {return m_can_mount;}
-    bool canUnmount() {return m_can_unmount;}
-    bool canEject() {return m_can_eject;}
-    bool canStart() {return m_can_start;}
-    bool canStop() {return m_can_stop;}
+    bool canMount() {
+        return m_can_mount;
+    }
+    bool canUnmount() {
+        return m_can_unmount;
+    }
+    bool canEject() {
+        return m_can_eject;
+    }
+    bool canStart() {
+        return m_can_start;
+    }
+    bool canStop() {
+        return m_can_stop;
+    }
 
-    bool isDesktopFile() {return m_can_excute && m_uri.endsWith(".desktop");}
-    bool isEmptyInfo() {return m_display_name == nullptr;}
+    bool isDesktopFile() {
+        return m_can_excute && m_uri.endsWith(".desktop");
+    }
+    bool isEmptyInfo() {
+        return m_display_name == nullptr;
+    }
 
     AccessFlags accesses() {
         auto flags = AccessFlags();
@@ -139,7 +201,9 @@ public:
 #endif
     }
 
-    GFile *gFileHandle() {return m_file;}
+    GFile *gFileHandle() {
+        return m_file;
+    }
 
     //const QIcon thumbnail() {return m_thumbnail;}
     //void setThumbnail(const QIcon &thumbnail) {m_thumbnail = thumbnail;}

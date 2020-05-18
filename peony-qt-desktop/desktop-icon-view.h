@@ -61,13 +61,21 @@ public:
     void initMenu();
     void initDoubleClick();
 
-    void bindModel(FileItemModel *sourceModel, FileItemProxyFilterSortModel *proxyModel) {Q_UNUSED(sourceModel) Q_UNUSED(proxyModel)}
-    void setProxy(DirectoryViewProxyIface *proxy) {Q_UNUSED(proxy)}
+    void bindModel(FileItemModel *sourceModel, FileItemProxyFilterSortModel *proxyModel) {
+        Q_UNUSED(sourceModel) Q_UNUSED(proxyModel)
+    }
+    void setProxy(DirectoryViewProxyIface *proxy) {
+        Q_UNUSED(proxy)
+    }
 
-    const QString viewId() {return tr("Desktop Icon View");}
+    const QString viewId() {
+        return tr("Desktop Icon View");
+    }
 
     //location
-    const QString getDirectoryUri() {return "file://" + QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);}
+    const QString getDirectoryUri() {
+        return "file://" + QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
+    }
 
     //selections
     const QStringList getSelections();
@@ -100,7 +108,9 @@ public Q_SLOTS:
     //clipboard
     void setCutFiles(const QStringList &uris);
 
-    DirectoryViewProxyIface *getProxy() {return nullptr;}
+    DirectoryViewProxyIface *getProxy() {
+        return nullptr;
+    }
 
     void setSortType(int sortType);
 

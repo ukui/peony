@@ -68,8 +68,8 @@ void trySetDefaultFolderUrlHandler() {
     //
     //To solve this problem, the simplest way is delaying a while to execute the
     //async lambda function.
-    QTimer::singleShot(1000, [](){
-        QtConcurrent::run([=](){
+    QTimer::singleShot(1000, []() {
+        QtConcurrent::run([=]() {
             GList *apps = g_app_info_get_all_for_type("inode/directory");
             bool hasPeonyQtAppInfo = false;
             GList *l = apps;
@@ -89,9 +89,9 @@ void trySetDefaultFolderUrlHandler() {
 
             if (!hasPeonyQtAppInfo) {
                 GAppInfo *peony_qt = g_app_info_create_from_commandline("peony",
-                                                                        nullptr,
-                                                                        G_APP_INFO_CREATE_SUPPORTS_URIS,
-                                                                        nullptr);
+                                     nullptr,
+                                     G_APP_INFO_CREATE_SUPPORTS_URIS,
+                                     nullptr);
                 g_app_info_set_as_default_for_type(peony_qt, "inode/directory", nullptr);
                 g_object_unref(peony_qt);
             }
@@ -118,7 +118,7 @@ PeonyDesktopApplication::PeonyDesktopApplication(int &argc, char *argv[], const 
 
     if (this->isPrimary()) {
         qDebug()<<"isPrimary screen";
-        connect(this, &SingleApplication::receivedMessage, [=](quint32 id, QByteArray msg){
+        connect(this, &SingleApplication::receivedMessage, [=](quint32 id, QByteArray msg) {
             this->parseCmd(id, msg, true);
         });
         QFile file(":/desktop-icon-view.qss");
@@ -183,9 +183,9 @@ void PeonyDesktopApplication::showGuide(const QString &appName)
     bool bRet  = false;
 
     QDBusMessage m = QDBusMessage::createMethodCall(KYLIN_USER_GUIDE_SERVICE,
-                                                    KYLIN_USER_GUIDE_PATH,
-                                                    KYLIN_USER_GUIDE_INTERFACE,
-                                                    "showGuide");
+                     KYLIN_USER_GUIDE_PATH,
+                     KYLIN_USER_GUIDE_INTERFACE,
+                     "showGuide");
     m << appName;
 
     QDBusMessage response = QDBusConnection::sessionBus().call(m);
@@ -224,7 +224,7 @@ void PeonyDesktopApplication::parseCmd(quint32 id, QByteArray msg, bool isPrimar
 
         parser.process(args);
         if (parser.isSet(quitOption)) {
-            QTimer::singleShot(1, [=](){
+            QTimer::singleShot(1, [=]() {
                 qApp->quit();
             });
             return;
@@ -238,7 +238,7 @@ void PeonyDesktopApplication::parseCmd(quint32 id, QByteArray msg, bool isPrimar
 
                 //FIXME: take over org.freedesktop.FileManager1
                 Peony::FMDBusService *service = new Peony::FMDBusService(this);
-                connect(service, &Peony::FMDBusService::showItemsRequest, [=](const QStringList &urisList){
+                connect(service, &Peony::FMDBusService::showItemsRequest, [=](const QStringList &urisList) {
                     QProcess p;
 #if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
                     p.setProgram("peony");
@@ -248,7 +248,7 @@ void PeonyDesktopApplication::parseCmd(quint32 id, QByteArray msg, bool isPrimar
                     p.startDetached("peony", QStringList()<<"--show-items"<<urisList, nullptr);
 #endif
                 });
-                connect(service, &Peony::FMDBusService::showFolderRequest, [=](const QStringList &urisList){
+                connect(service, &Peony::FMDBusService::showFolderRequest, [=](const QStringList &urisList) {
                     QProcess p;
 #if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
                     p.setProgram("peony");
@@ -258,7 +258,7 @@ void PeonyDesktopApplication::parseCmd(quint32 id, QByteArray msg, bool isPrimar
                     p.startDetached("peony", QStringList()<<"--show-folders"<<urisList, nullptr);
 #endif
                 });
-                connect(service, &Peony::FMDBusService::showItemPropertiesRequest, [=](const QStringList &urisList){
+                connect(service, &Peony::FMDBusService::showItemPropertiesRequest, [=](const QStringList &urisList) {
                     QProcess p;
 #if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
                     p.setProgram("peony");
@@ -285,7 +285,7 @@ void PeonyDesktopApplication::parseCmd(quint32 id, QByteArray msg, bool isPrimar
             has_desktop = true;
         }
 
-        connect(this, &QApplication::paletteChanged, this, [=](const QPalette &pal){
+        connect(this, &QApplication::paletteChanged, this, [=](const QPalette &pal) {
             for (auto w : allWidgets()) {
                 w->setPalette(pal);
                 w->update();
@@ -379,18 +379,18 @@ void PeonyDesktopApplication::primaryScreenChangedProcess(QScreen *screen)
             win->disconnectSignal();
             if (win->getScreen() == preMainScreen)
             {
-               win->setScreen(screen);
-               win->setIsPrimary(true);
+                win->setScreen(screen);
+                win->setIsPrimary(true);
             }
             else if (win->getScreen() == screen) {
-               win->setScreen(preMainScreen);
-               win->setIsPrimary(false);
+                win->setScreen(preMainScreen);
+                win->setIsPrimary(false);
             }
             win->connectSignal();
             win->updateWinGeometry();
             //qDebug()<<"end screen info"<<win->getScreen()->name()<<win->getScreen()->geometry()<<win->geometry();
             //if (win->getView())
-                //qDebug()<<"view info:"<<win->getView();
+            //qDebug()<<"view info:"<<win->getView();
         }
     }
 }
@@ -406,7 +406,7 @@ void PeonyDesktopApplication::screenAddedProcess(QScreen *screen)
 void PeonyDesktopApplication::screenRemovedProcess(QScreen *screen)
 {
     //if (screen != nullptr)
-        //qDebug()<<"screenRemoved"<<screen->name()<<screen->serialNumber();
+    //qDebug()<<"screenRemoved"<<screen->name()<<screen->serialNumber();
 
     //window manage
     for(auto win :m_window_list)

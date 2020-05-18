@@ -38,7 +38,9 @@ public:
     explicit DesktopIconViewDelegate(QObject *parent = nullptr);
     ~DesktopIconViewDelegate() override;
 
-    void initStyleOption(QStyleOptionViewItem *option, const QModelIndex &index) const override {return QStyledItemDelegate::initStyleOption(option, index);}
+    void initStyleOption(QStyleOptionViewItem *option, const QModelIndex &index) const override {
+        return QStyledItemDelegate::initStyleOption(option, index);
+    }
     QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const override;
 
     DesktopIconView *getView() const;

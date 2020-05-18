@@ -69,7 +69,7 @@ FileLauchDialog::FileLauchDialog(const QString &uri, QWidget *parent) : QDialog(
         m_hash.insert(item, action);
     }
 
-    connect(this, &QDialog::accepted, [=](){
+    connect(this, &QDialog::accepted, [=]() {
         if (m_view->currentItem()) {
             auto action = m_hash.value(m_view->currentItem());
             if (m_check_box->isChecked()) {

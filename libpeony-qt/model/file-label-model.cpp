@@ -129,7 +129,7 @@ void FileLabelModel::addLabel(const QString &label, const QColor &color)
 
     addId();
 
-    connect(item, &FileLabelItem::nameChanged, this, [=](const QString &name){
+    connect(item, &FileLabelItem::nameChanged, this, [=](const QString &name) {
         m_label_settings->beginWriteArray("labels");
         m_label_settings->setArrayIndex(item->id());
         m_label_settings->setValue("label", name);
@@ -137,7 +137,7 @@ void FileLabelModel::addLabel(const QString &label, const QColor &color)
         m_label_settings->sync();
     });
 
-    connect(item, &FileLabelItem::colorChanged, this, [=](const QColor &color){
+    connect(item, &FileLabelItem::colorChanged, this, [=](const QColor &color) {
         m_label_settings->beginWriteArray("labels");
         m_label_settings->setArrayIndex(item->id());
         m_label_settings->setValue("color", color);

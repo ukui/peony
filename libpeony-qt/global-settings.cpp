@@ -50,7 +50,7 @@ GlobalSettings::GlobalSettings(QObject *parent) : QObject(parent)
     m_cache.insert(SIDEBAR_BG_OPACITY, 50);
     if (QGSettings::isSchemaInstalled("org.ukui.style")) {
         m_gsettings = new QGSettings("org.ukui.style", QByteArray(), this);
-        connect(m_gsettings, &QGSettings::changed, this, [=](const QString &key){
+        connect(m_gsettings, &QGSettings::changed, this, [=](const QString &key) {
             if (key == "peonySideBarTransparency") {
                 m_cache.remove(SIDEBAR_BG_OPACITY);
                 m_cache.insert(SIDEBAR_BG_OPACITY, m_gsettings->get(key).toString());
@@ -80,7 +80,7 @@ bool GlobalSettings::isExist(const QString &key)
 void GlobalSettings::reset(const QString &key)
 {
     m_cache.remove(key);
-    QtConcurrent::run([=](){
+    QtConcurrent::run([=]() {
         if (m_mutex.tryLock(1000)) {
             m_settings->remove(key);
             m_settings->sync();
@@ -97,7 +97,7 @@ void GlobalSettings::resetAll()
     for (auto key : tmp) {
         Q_EMIT this->valueChanged(key);
     }
-    QtConcurrent::run([=](){
+    QtConcurrent::run([=]() {
         if (m_mutex.tryLock(1000)) {
             m_settings->clear();
             m_settings->sync();
@@ -109,7 +109,7 @@ void GlobalSettings::resetAll()
 void GlobalSettings::setValue(const QString &key, const QVariant &value)
 {
     m_cache.insert(key, value);
-    QtConcurrent::run([=](){
+    QtConcurrent::run([=]() {
         if (m_mutex.tryLock(1000)) {
             m_settings->setValue(key, value);
             m_settings->sync();

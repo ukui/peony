@@ -53,7 +53,7 @@ struct ConnectionInfo {
 };
 
 class SingleApplicationPrivate : public QObject {
-Q_OBJECT
+    Q_OBJECT
 public:
     enum ConnectionType : quint8 {
         InvalidConnection = 0,
@@ -69,7 +69,7 @@ public:
     Q_DECLARE_PUBLIC(SingleApplication)
 
     SingleApplicationPrivate( SingleApplication *q_ptr );
-     ~SingleApplicationPrivate();
+    ~SingleApplicationPrivate();
 
     void genBlockServerName(const char *appName);
     void initializeMemoryBlock();

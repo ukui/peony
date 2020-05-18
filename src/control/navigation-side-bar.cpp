@@ -84,7 +84,7 @@ NavigationSideBar::NavigationSideBar(QWidget *parent) : QTreeView(parent)
 
     this->setModel(m_proxy_model);
 
-    connect(this, &QTreeView::expanded, [=](const QModelIndex &index){
+    connect(this, &QTreeView::expanded, [=](const QModelIndex &index) {
         auto item = m_proxy_model->itemFromIndex(index);
         qDebug()<<item->uri();
         /*!
@@ -93,12 +93,12 @@ NavigationSideBar::NavigationSideBar(QWidget *parent) : QTreeView(parent)
         item->findChildrenAsync();
     });
 
-    connect(this, &QTreeView::collapsed, [=](const QModelIndex &index){
+    connect(this, &QTreeView::collapsed, [=](const QModelIndex &index) {
         auto item = m_proxy_model->itemFromIndex(index);
         item->clearChildren();
     });
 
-    connect(this, &QTreeView::clicked, [=](const QModelIndex &index){
+    connect(this, &QTreeView::clicked, [=](const QModelIndex &index) {
         switch (index.column()) {
         case 0: {
             auto item = m_proxy_model->itemFromIndex(index);
@@ -122,7 +122,7 @@ NavigationSideBar::NavigationSideBar(QWidget *parent) : QTreeView(parent)
         }
     });
 
-    connect(this, &QTreeView::customContextMenuRequested, this, [=](const QPoint &pos){
+    connect(this, &QTreeView::customContextMenuRequested, this, [=](const QPoint &pos) {
         auto index = indexAt(pos);
         auto item = m_proxy_model->itemFromIndex(index);
         if (item) {

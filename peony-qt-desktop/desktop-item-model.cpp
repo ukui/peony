@@ -52,7 +52,7 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
 {
     m_thumbnail_watcher = std::make_shared<FileWatcher>("thumbnail:///, this");
 
-    connect(m_thumbnail_watcher.get(), &FileWatcher::fileChanged, this, [=](const QString &uri){
+    connect(m_thumbnail_watcher.get(), &FileWatcher::fileChanged, this, [=](const QString &uri) {
         for (auto info : m_files) {
             if (info->uri() == uri) {
                 auto index = indexFromUri(uri);
@@ -63,12 +63,12 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
 
     m_trash_watcher = std::make_shared<FileWatcher>("trash:///", this);
 
-    this->connect(m_trash_watcher.get(), &FileWatcher::fileCreated, [=](){
+    this->connect(m_trash_watcher.get(), &FileWatcher::fileCreated, [=]() {
         //qDebug()<<"trash changed";
         auto trash = FileInfo::fromUri("trash:///", true);
         auto job = new FileInfoJob(trash);
         job->setAutoDelete();
-        connect(job, &FileInfoJob::infoUpdated, [=](){
+        connect(job, &FileInfoJob::infoUpdated, [=]() {
             auto trashIndex = this->indexFromUri("trash:///");
             this->dataChanged(trashIndex, trashIndex);
             Q_EMIT this->requestClearIndexWidget();
@@ -76,12 +76,12 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
         job->queryAsync();
     });
 
-    this->connect(m_trash_watcher.get(), &FileWatcher::fileDeleted, [=](){
+    this->connect(m_trash_watcher.get(), &FileWatcher::fileDeleted, [=]() {
         //qDebug()<<"trash changed";
         auto trash = FileInfo::fromUri("trash:///", true);
         auto job = new FileInfoJob(trash);
         job->setAutoDelete();
-        connect(job, &FileInfoJob::infoUpdated, [=](){
+        connect(job, &FileInfoJob::infoUpdated, [=]() {
             auto trashIndex = this->indexFromUri("trash:///");
             this->dataChanged(trashIndex, trashIndex);
             Q_EMIT this->requestClearIndexWidget();
@@ -91,7 +91,7 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
 
     m_desktop_watcher = std::make_shared<FileWatcher>("file://" + QStandardPaths::writableLocation(QStandardPaths::DesktopLocation), this);
     m_desktop_watcher->setMonitorChildrenChange(true);
-    this->connect(m_desktop_watcher.get(), &FileWatcher::fileCreated, [=](const QString &uri){
+    this->connect(m_desktop_watcher.get(), &FileWatcher::fileCreated, [=](const QString &uri) {
         //qDebug()<<"created"<<uri;
         auto info = FileInfo::fromUri(uri, true);
         bool exsited = false;
@@ -105,7 +105,7 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
         if (!exsited) {
             auto job = new FileInfoJob(info);
             job->setAutoDelete();
-            connect(job, &FileInfoJob::infoUpdated, [=](){
+            connect(job, &FileInfoJob::infoUpdated, [=]() {
                 //this->beginResetModel();
                 this->beginInsertRows(QModelIndex(), m_files.count(), m_files.count());
                 ThumbnailManager::getInstance()->createThumbnail(info->uri(), m_desktop_watcher);
@@ -121,7 +121,7 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
         }
     });
 
-    this->connect(m_desktop_watcher.get(), &FileWatcher::fileDeleted, [=](const QString &uri){
+    this->connect(m_desktop_watcher.get(), &FileWatcher::fileDeleted, [=](const QString &uri) {
         for (auto info : m_files) {
             if (info->uri() == uri) {
                 //this->beginResetModel();
@@ -136,12 +136,12 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
         }
     });
 
-    this->connect(m_desktop_watcher.get(), &FileWatcher::fileChanged, [=](const QString &uri){
+    this->connect(m_desktop_watcher.get(), &FileWatcher::fileChanged, [=](const QString &uri) {
         for (auto info : m_files) {
             if (info->uri() == uri) {
                 auto job = new FileInfoJob(info);
                 job->setAutoDelete();
-                connect(job, &FileInfoJob::queryAsyncFinished, this, [=](){
+                connect(job, &FileInfoJob::queryAsyncFinished, this, [=]() {
                     ThumbnailManager::getInstance()->createThumbnail(uri, m_thumbnail_watcher);
                     this->dataChanged(indexFromUri(uri), indexFromUri(uri));
                     Q_EMIT this->requestClearIndexWidget();
@@ -248,7 +248,7 @@ void DesktopItemModel::onEnumerateFinished()
 
         auto job = new FileInfoJob(info);
 
-        connect(job, &FileInfoJob::infoUpdated, [=](){
+        connect(job, &FileInfoJob::infoUpdated, [=]() {
             //qDebug()<<"info updated"<<info->uri();
 
             this->dataChanged(this->index(m_files.indexOf(info)), this->index(m_files.indexOf(info)));

@@ -51,7 +51,9 @@ class PEONYCORESHARED_EXPORT MountOperation : public QObject
 public:
     explicit MountOperation(QString uri, QObject *parent = nullptr);
     ~MountOperation();
-    void setAutoDelete(bool isAuto = true) {m_auto_delete = isAuto;}
+    void setAutoDelete(bool isAuto = true) {
+        m_auto_delete = isAuto;
+    }
 
 Q_SIGNALS:
     void finished(const std::shared_ptr<GErrorWrapper> &err = nullptr);
@@ -63,8 +65,8 @@ public Q_SLOTS:
 
 protected:
     static GAsyncReadyCallback mount_enclosing_volume_callback(GFile *volume,
-                                                               GAsyncResult *res,
-                                                               MountOperation *p_this);
+            GAsyncResult *res,
+            MountOperation *p_this);
 
     static void
     aborted_cb (GMountOperation *op,

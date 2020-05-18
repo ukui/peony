@@ -111,7 +111,7 @@ bool X11WindowManager::eventFilter(QObject *watched, QEvent *event)
         }
         break;
     }
-    case QEvent::MouseButtonRelease:{
+    case QEvent::MouseButtonRelease: {
         m_is_draging = false;
         m_current_widget = nullptr;
         break;

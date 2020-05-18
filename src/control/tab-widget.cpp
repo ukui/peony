@@ -76,7 +76,7 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
     connect(m_status_bar, &TabStatusBar::zoomLevelChangedRequest, this, &TabWidget::handleZoomLevel);
     //setStatusBar(m_status_bar);
 
-    connect(m_buttons, &PreviewPageButtonGroups::previewPageButtonTrigger, [=](bool trigger, const QString &id){
+    connect(m_buttons, &PreviewPageButtonGroups::previewPageButtonTrigger, [=](bool trigger, const QString &id) {
         setTriggeredPreviewPage(trigger);
         if (trigger) {
             auto plugin = Peony::PreviewPageFactoryManager::getInstance()->getPlugin(id);
@@ -112,7 +112,7 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
         auto factory = manager->getPlugin(name);
         auto action = group->addAction(factory->icon(), factory->name());
         action->setCheckable(true);
-        connect(action, &QAction::triggered, [=](/*bool checked*/){
+        connect(action, &QAction::triggered, [=](/*bool checked*/) {
             if (!m_current_preview_action) {
                 m_current_preview_action = action;
                 action->setChecked(true);
@@ -204,20 +204,20 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
     setCentralWidget(w);
 
     //bind preview page
-    connect(this, &TabWidget::activePageSelectionChanged, this, [=](){
+    connect(this, &TabWidget::activePageSelectionChanged, this, [=]() {
         updatePreviewPage();
         m_status_bar->update();
         Q_EMIT this->currentSelectionChanged();
     });
 
-    connect(this, &TabWidget::activePageChanged, this, [=](){
-        QTimer::singleShot(100, this, [=](){
+    connect(this, &TabWidget::activePageChanged, this, [=]() {
+        QTimer::singleShot(100, this, [=]() {
             m_status_bar->update();
             this->updatePreviewPage();
         });
     });
 
-    connect(this, &TabWidget::activePageLocationChanged, m_status_bar, [=](){
+    connect(this, &TabWidget::activePageLocationChanged, m_status_bar, [=]() {
         m_status_bar->update();
     });
 }
@@ -295,7 +295,7 @@ void TabWidget::initAdvanceSearch()
 void TabWidget::searchUpdate()
 {
     QString keyList = "";
-    for(int i=0;i<m_layout_list.count();i++)
+    for(int i=0; i<m_layout_list.count(); i++)
     {
         //find name search bar
         if (m_conditions_list[i]->currentIndex() == 0 && m_input_list[i]->text() != "")
@@ -464,7 +464,7 @@ void TabWidget::addNewConditionBar()
 void TabWidget::removeConditionBar(int index)
 {
     //disconnect signals after index search bars
-    for(int cur=0;cur<m_layout_list.count();cur++)
+    for(int cur=0; cur<m_layout_list.count(); cur++)
     {
         disconnect(m_add_button_list[cur], &QPushButton::clicked, this, &TabWidget::addNewConditionBar);
         disconnect(m_remove_button_list[cur], SIGNAL(clicked()), m_remove_mapper_list[cur], SLOT(map()));
@@ -494,7 +494,7 @@ void TabWidget::removeConditionBar(int index)
     m_remove_mapper_list.removeAt(index);
 
     //reconnect signals after index search bars
-    for(int cur=0;cur<m_layout_list.count();cur++)
+    for(int cur=0; cur<m_layout_list.count(); cur++)
     {
         connect(m_add_button_list[cur], &QPushButton::clicked, this, &TabWidget::addNewConditionBar);
         connect(m_remove_button_list[cur], SIGNAL(clicked()), m_remove_mapper_list[cur], SLOT(map()));
@@ -530,8 +530,8 @@ void TabWidget::updateTrashBarVisible(const QString &uri)
     m_trash_bar_layout->setContentsMargins(10, 0, 10, 0);
     if (uri.indexOf("trash:///") >= 0)
     {
-       visible = true;
-       m_trash_bar_layout->setContentsMargins(10, 5, 10, 5);
+        visible = true;
+        m_trash_bar_layout->setContentsMargins(10, 5, 10, 5);
     }
 
     m_trash_bar->setVisible(visible);
@@ -613,49 +613,49 @@ void TabWidget::updateSearchPathButton(const QString &uri)
 
 void TabWidget::updateSearchList()
 {
-   m_show_search_list = !m_show_search_list;
-   //if not show search bar, then don't show search list
-   if (m_show_search_list && m_show_search_bar)
-   {
-       m_search_more->setIcon(QIcon::fromTheme("go-up"));
-       //first click to show advance serach
-       if(m_search_bar_list.count() ==0)
-       {
-           addNewConditionBar();
-           return;
-       }
+    m_show_search_list = !m_show_search_list;
+    //if not show search bar, then don't show search list
+    if (m_show_search_list && m_show_search_bar)
+    {
+        m_search_more->setIcon(QIcon::fromTheme("go-up"));
+        //first click to show advance serach
+        if(m_search_bar_list.count() ==0)
+        {
+            addNewConditionBar();
+            return;
+        }
 
-       //already had a list,just set to show
-       for(int i=0;i<m_search_bar_list.count();i++)
-       {
-           m_conditions_list[i]->show();
-           m_link_label_list[i]->show();
-           if (m_conditions_list[i]->currentIndex() >0)
-               m_classify_list[i]->show();
-           else
-               m_input_list[i]->show();
-           m_search_bar_list[i]->show();
-           m_add_button_list[i]->show();
-           m_remove_button_list[i]->show();
-           m_layout_list[i]->setContentsMargins(10, 0, 10, 5);
-       }
-   }
-   else
-   {
-       //hide search list
-       m_search_more->setIcon(QIcon::fromTheme("go-down"));
-       for(int i=0;i<m_search_bar_list.count();i++)
-       {
-           m_conditions_list[i]->hide();
-           m_link_label_list[i]->hide();
-           m_classify_list[i]->hide();
-           m_input_list[i]->hide();
-           m_search_bar_list[i]->hide();
-           m_add_button_list[i]->hide();
-           m_remove_button_list[i]->hide();
-           m_layout_list[i]->setContentsMargins(10, 0, 10, 0);
-       }
-   }
+        //already had a list,just set to show
+        for(int i=0; i<m_search_bar_list.count(); i++)
+        {
+            m_conditions_list[i]->show();
+            m_link_label_list[i]->show();
+            if (m_conditions_list[i]->currentIndex() >0)
+                m_classify_list[i]->show();
+            else
+                m_input_list[i]->show();
+            m_search_bar_list[i]->show();
+            m_add_button_list[i]->show();
+            m_remove_button_list[i]->show();
+            m_layout_list[i]->setContentsMargins(10, 0, 10, 5);
+        }
+    }
+    else
+    {
+        //hide search list
+        m_search_more->setIcon(QIcon::fromTheme("go-down"));
+        for(int i=0; i<m_search_bar_list.count(); i++)
+        {
+            m_conditions_list[i]->hide();
+            m_link_label_list[i]->hide();
+            m_classify_list[i]->hide();
+            m_input_list[i]->hide();
+            m_search_bar_list[i]->hide();
+            m_add_button_list[i]->hide();
+            m_remove_button_list[i]->hide();
+            m_layout_list[i]->setContentsMargins(10, 0, 10, 0);
+        }
+    }
 }
 
 Peony::DirectoryViewContainer *TabWidget::currentPage()
@@ -792,8 +792,8 @@ void TabWidget::goToUri(const QString &uri, bool addHistory, bool forceUpdate)
 
 void TabWidget::updateTabPageTitle()
 {
-   m_tab_bar->updateLocation(m_tab_bar->currentIndex(), getCurrentUri());
-   updateTrashBarVisible(getCurrentUri());
+    m_tab_bar->updateLocation(m_tab_bar->currentIndex(), getCurrentUri());
+    updateTrashBarVisible(getCurrentUri());
 }
 
 void TabWidget::switchViewType(const QString &viewId)
@@ -894,7 +894,7 @@ void TabWidget::updateFilter()
 void TabWidget::updateAdvanceConditions()
 {
     clearConditions();
-    for(int i=0;i<m_layout_list.count();i++)
+    for(int i=0; i<m_layout_list.count(); i++)
     {
         addFilterCondition(m_conditions_list[i]->currentIndex(), m_classify_list[i]->currentIndex());
     }
@@ -980,7 +980,7 @@ void TabWidget::bindContainerSignal(Peony::DirectoryViewContainer *container)
     connect(container, &Peony::DirectoryViewContainer::menuRequest, this, &TabWidget::menuRequest);
     connect(container, &Peony::DirectoryViewContainer::zoomRequest, this, &TabWidget::zoomRequest);
     connect(container, &Peony::DirectoryViewContainer::setZoomLevelRequest, m_status_bar, &TabStatusBar::updateZoomLevelState);
-    connect(container, &Peony::DirectoryViewContainer::updateStatusBarSliderStateRequest, this, [=](){
+    connect(container, &Peony::DirectoryViewContainer::updateStatusBarSliderStateRequest, this, [=]() {
         bool enable = currentPage()->getView()->supportZoom();
         m_status_bar->m_slider->setEnabled(enable);
     });

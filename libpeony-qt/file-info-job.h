@@ -67,11 +67,15 @@ public:
     explicit FileInfoJob(std::shared_ptr<FileInfo> info, QObject *parent = nullptr);
     explicit FileInfoJob(const QString &uri, QObject *parent = nullptr);
 
-    std::shared_ptr<FileInfo> getInfo() {return m_info;}
+    std::shared_ptr<FileInfo> getInfo() {
+        return m_info;
+    }
     ~FileInfoJob();
     bool querySync();
 
-    void setAutoDelete(bool deleteWhenJobFinished = true) {m_auto_delete = deleteWhenJobFinished;}
+    void setAutoDelete(bool deleteWhenJobFinished = true) {
+        m_auto_delete = deleteWhenJobFinished;
+    }
 
 Q_SIGNALS:
     /*!
@@ -112,8 +116,8 @@ public Q_SLOTS:
 
 protected:
     static GAsyncReadyCallback query_info_async_callback(GFile *file,
-                                                         GAsyncResult *res,
-                                                         FileInfoJob *thisJob);
+            GAsyncResult *res,
+            FileInfoJob *thisJob);
 
 private:
     void refreshInfoContents(GFileInfo *new_info);

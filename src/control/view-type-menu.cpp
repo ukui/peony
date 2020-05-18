@@ -36,12 +36,12 @@ ViewTypeMenu::ViewTypeMenu(QWidget *parent) : QMenu(parent)
     m_view_actions = new QActionGroup(this);
     m_view_actions->setExclusive(true);
 
-    connect(m_view_actions, &QActionGroup::triggered, this, [=](QAction *action){
+    connect(m_view_actions, &QActionGroup::triggered, this, [=](QAction *action) {
         auto viewId = action->data().toString();
         setCurrentView(viewId);
     });
 
-    connect(this, &QMenu::aboutToShow, this, [=](){
+    connect(this, &QMenu::aboutToShow, this, [=]() {
         qDebug()<<"show menu";
         updateMenuActions();
     });

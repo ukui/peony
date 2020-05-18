@@ -65,8 +65,8 @@ SideBarModel::SideBarModel(QObject *parent)
 //    m_root_children->append(separator3);
 
     SideBarFileSystemItem *computerItem = new SideBarFileSystemItem(nullptr,
-                                                                    nullptr,
-                                                                    this);
+            nullptr,
+            this);
     m_root_children->append(computerItem);
     //computerItem->findChildren();
 

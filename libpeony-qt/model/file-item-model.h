@@ -85,17 +85,25 @@ public:
      *
      * The default positive type is inpositive.
      */
-    void setPositiveResponse(bool positive = true) {m_is_positive = positive;}
+    void setPositiveResponse(bool positive = true) {
+        m_is_positive = positive;
+    }
 
     /*!
      * \brief isPositiveResponse
      * \return
      * \see setPositiveResponse()
      */
-    bool isPositiveResponse() {return m_is_positive;}
+    bool isPositiveResponse() {
+        return m_is_positive;
+    }
 
-    void setExpandable(bool expandable) {m_can_expand = expandable;}
-    bool canExpandChildren() {return  m_can_expand;}
+    void setExpandable(bool expandable) {
+        m_can_expand = expandable;
+    }
+    bool canExpandChildren() {
+        return  m_can_expand;
+    }
 
     const QString getRootUri();
     void setRootUri(const QString &uri);

@@ -147,17 +147,17 @@ void AdvanceSearchBar::init()
     connect(typeViewCombox, &QComboBox::currentTextChanged,this, &AdvanceSearchBar::filterUpdate);
     connect(timeViewCombox, &QComboBox::currentTextChanged,this, &AdvanceSearchBar::filterUpdate);
     connect(sizeViewCombox, &QComboBox::currentTextChanged,this, &AdvanceSearchBar::filterUpdate);
-    connect(file_name, &QCheckBox::clicked, this, [=](){
+    connect(file_name, &QCheckBox::clicked, this, [=]() {
         m_search_name = file_name->isChecked();
         qDebug()<<"search name"<<m_search_name;
     });
-    connect(file_content, &QCheckBox::clicked, this, [=](){
+    connect(file_content, &QCheckBox::clicked, this, [=]() {
         m_search_content = file_content->isChecked();
         qDebug()<<"search content"<<m_search_content;
     });
 
     //go back hidden this page
-    connect(m_go_back, &QPushButton::clicked, [=](){
+    connect(m_go_back, &QPushButton::clicked, [=]() {
         m_top_window->advanceSearch();
     });
 }
@@ -242,7 +242,7 @@ void AdvanceSearchBar::updateLocation()
 {
     QString show = nullptr;
     for(auto path : m_choosed_paths) {
-        if (show == nullptr){
+        if (show == nullptr) {
             show = FileUtils::getFileDisplayName(path);
             m_advance_target_path = path;
         }

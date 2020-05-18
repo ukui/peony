@@ -28,7 +28,7 @@ std::shared_ptr<GObjectTemplate<GFile>> wrapGFile(GFile *file) {
     return std::make_shared<GObjectTemplate<GFile>>(file);
 }
 
-std::shared_ptr<GObjectTemplate<GFileInfo>> wrapGFileInfo(GFileInfo *info){
+std::shared_ptr<GObjectTemplate<GFileInfo>> wrapGFileInfo(GFileInfo *info) {
     return std::make_shared<GObjectTemplate<GFileInfo>>(info);
 }
 
@@ -36,15 +36,15 @@ std::shared_ptr<GObjectTemplate<GFileEnumerator>> wrapGFileEnumerator(GFileEnume
     return std::make_shared<GObjectTemplate<GFileEnumerator>>(enumerator);
 }
 
-std::shared_ptr<GObjectTemplate<GFileMonitor>> wrapGFileMonitor(GFileMonitor *monitor){
+std::shared_ptr<GObjectTemplate<GFileMonitor>> wrapGFileMonitor(GFileMonitor *monitor) {
     return std::make_shared<GObjectTemplate<GFileMonitor>>(monitor);
 }
 
-std::shared_ptr<GObjectTemplate<GVolumeMonitor>> wrapGVolumeMonitor(GVolumeMonitor *monitor){
+std::shared_ptr<GObjectTemplate<GVolumeMonitor>> wrapGVolumeMonitor(GVolumeMonitor *monitor) {
     return std::make_shared<GObjectTemplate<GVolumeMonitor>>(monitor);
 }
 
-std::shared_ptr<GObjectTemplate<GDrive>> wrapGDrive(GDrive *drive){
+std::shared_ptr<GObjectTemplate<GDrive>> wrapGDrive(GDrive *drive) {
     return std::make_shared<GObjectTemplate<GDrive>>(drive);
 }
 

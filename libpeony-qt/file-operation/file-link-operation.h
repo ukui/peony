@@ -35,7 +35,9 @@ public:
     FileLinkOperation(QString srcUri, QString destDirUri, QObject *parent = nullptr);
     ~FileLinkOperation() override;
 
-    std::shared_ptr<FileOperationInfo> getOperationInfo() override {return m_info;}
+    std::shared_ptr<FileOperationInfo> getOperationInfo() override {
+        return m_info;
+    }
     void run() override;
 
 private:

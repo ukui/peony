@@ -79,14 +79,14 @@ void FileOperationManager::startOperation(FileOperation *operation, bool addToHi
 {
     QApplication::setQuitOnLastWindowClosed(false);
 
-    connect(operation, &FileOperation::operationFinished, this, [=](){
+    connect(operation, &FileOperation::operationFinished, this, [=]() {
         auto settings = GlobalSettings::getInstance();
         bool runbackend = settings->getInstance()->getValue(RESIDENT_IN_BACKEND).toBool();
         QApplication::setQuitOnLastWindowClosed(!runbackend);
 #if QT_VERSION > QT_VERSION_CHECK(5, 12, 0)
-        QTimer::singleShot(1000, this, [=](){
+        QTimer::singleShot(1000, this, [=]() {
 #else
-        QTimer::singleShot(1000, [=](){
+        QTimer::singleShot(1000, [=]() {
 #endif
             int last_op_count = m_thread_pool->children().count();
             if (last_op_count == 0) {
@@ -151,7 +151,7 @@ void FileOperationManager::startOperation(FileOperation *operation, bool addToHi
     connect(wizard, &Peony::FileOperationProgressWizard::cancelled,
             operation, &Peony::FileOperation::cancel);
 
-    operation->connect(operation, &FileOperation::errored, [=](){
+    operation->connect(operation, &FileOperation::errored, [=]() {
         operation->setHasError(true);
     });
 
@@ -159,7 +159,7 @@ void FileOperationManager::startOperation(FileOperation *operation, bool addToHi
                        this, &FileOperationManager::handleError,
                        Qt::BlockingQueuedConnection);
 
-    operation->connect(operation, &FileOperation::operationFinished, [=](){
+    operation->connect(operation, &FileOperation::operationFinished, [=]() {
         if (operation->hasError()) {
             this->clearHistory();
             return ;
@@ -190,7 +190,7 @@ void FileOperationManager::startOperation(FileOperation *operation, bool addToHi
         operation->setParent(m_thread_pool);
         m_thread_pool->start(operation);
     } else {
-        QtConcurrent::run([=]{
+        QtConcurrent::run([=] {
             operation->setParent(m_thread_pool);
             operation->setAutoDelete(false);
             operation->run();
@@ -311,9 +311,9 @@ void FileOperationManager::onFilesDeleted(const QStringList &uris)
 }
 
 QVariant FileOperationManager::handleError(const QString &srcUri,
-                                                              const QString &destUri,
-                                                              const GErrorWrapperPtr &err,
-                                                              bool critical)
+        const QString &destUri,
+        const GErrorWrapperPtr &err,
+        bool critical)
 {
     FileOperationErrorDialog dlg;
     return dlg.handleError(srcUri, destUri, err, critical);

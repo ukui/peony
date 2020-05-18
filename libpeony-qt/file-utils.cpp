@@ -82,7 +82,7 @@ QString FileUtils::getRelativePath(const GFileWrapperPtr &dir, const GFileWrappe
 GFileWrapperPtr FileUtils::resolveRelativePath(const GFileWrapperPtr &dir, const QString &relativePath)
 {
     return wrapGFile(g_file_resolve_relative_path(dir.get()->get(),
-                                                  relativePath.toUtf8().constData()));
+                     relativePath.toUtf8().constData()));
 }
 
 bool FileUtils::getFileHasChildren(const GFileWrapperPtr &file)
@@ -140,10 +140,10 @@ QString FileUtils::getFileDisplayName(const QString &uri)
 {
     auto file = wrapGFile(g_file_new_for_uri(uri.toUtf8().constData()));
     auto info = wrapGFileInfo(g_file_query_info(file.get()->get(),
-                                                G_FILE_ATTRIBUTE_STANDARD_DISPLAY_NAME,
-                                                G_FILE_QUERY_INFO_NONE,
-                                                nullptr,
-                                                nullptr));
+                              G_FILE_ATTRIBUTE_STANDARD_DISPLAY_NAME,
+                              G_FILE_QUERY_INFO_NONE,
+                              nullptr,
+                              nullptr));
     return g_file_info_get_display_name(info.get()->get());
 }
 
@@ -151,10 +151,10 @@ QString FileUtils::getFileIconName(const QString &uri)
 {
     auto file = wrapGFile(g_file_new_for_uri(uri.toUtf8().constData()));
     auto info = wrapGFileInfo(g_file_query_info(file.get()->get(),
-                                                G_FILE_ATTRIBUTE_STANDARD_ICON,
-                                                G_FILE_QUERY_INFO_NONE,
-                                                nullptr,
-                                                nullptr));
+                              G_FILE_ATTRIBUTE_STANDARD_ICON,
+                              G_FILE_QUERY_INFO_NONE,
+                              nullptr,
+                              nullptr));
     GIcon *g_icon = g_file_info_get_icon (info.get()->get());
     QString icon_name;
     //do not unref the GIcon from info.
@@ -171,10 +171,10 @@ GErrorWrapperPtr FileUtils::getEnumerateError(const QString &uri)
     auto file = wrapGFile(g_file_new_for_uri(uri.toUtf8().constData()));
     GError *err = nullptr;
     auto enumerator = wrapGFileEnumerator(g_file_enumerate_children(file.get()->get(),
-                                                                    G_FILE_ATTRIBUTE_STANDARD_NAME,
-                                                                    G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
-                                                                    nullptr,
-                                                                    &err));
+                                          G_FILE_ATTRIBUTE_STANDARD_NAME,
+                                          G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
+                                          nullptr,
+                                          &err));
     if (err) {
         return GErrorWrapper::wrapFrom(err);
     }
@@ -185,10 +185,10 @@ QString FileUtils::getTargetUri(const QString &uri)
 {
     auto file = wrapGFile(g_file_new_for_uri(uri.toUtf8().constData()));
     auto info = wrapGFileInfo(g_file_query_info(file.get()->get(),
-                                                G_FILE_ATTRIBUTE_STANDARD_TARGET_URI,
-                                                G_FILE_QUERY_INFO_NONE,
-                                                nullptr,
-                                                nullptr));
+                              G_FILE_ATTRIBUTE_STANDARD_TARGET_URI,
+                              G_FILE_QUERY_INFO_NONE,
+                              nullptr,
+                              nullptr));
     return g_file_info_get_attribute_string(info.get()->get(),
                                             G_FILE_ATTRIBUTE_STANDARD_TARGET_URI);
 }

@@ -30,7 +30,7 @@ ConnectServerDialog::ConnectServerDialog(QWidget *parent) :
     ui->setupUi(this);
     ui->passwd_edit->setEchoMode(QLineEdit::Password);
 
-    connect(ui->anonymous_checkbox, &QCheckBox::toggled, [=](bool checked){
+    connect(ui->anonymous_checkbox, &QCheckBox::toggled, [=](bool checked) {
         if (checked) {
             this->ui->usr_edit->clear();
             this->ui->usr_edit->setEnabled(false);

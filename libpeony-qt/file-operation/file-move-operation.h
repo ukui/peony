@@ -66,7 +66,9 @@ public:
      * If a move operation is not native move, it will do a copy and delete operation
      * as a 'move'. setCopyMove will tell the operation do not delete the source files.
      */
-    void setCopyMove(bool copyMove = true) {m_copy_move = copyMove;}
+    void setCopyMove(bool copyMove = true) {
+        m_copy_move = copyMove;
+    }
 
     /*!
      * \brief setForceUseFallback
@@ -80,7 +82,9 @@ public:
      * moving. So that we can count the total size, and dynamicly get the progress of operation.
      * </br>
      */
-    void setForceUseFallback(bool useFallback = true) {m_force_use_fallback = useFallback;}
+    void setForceUseFallback(bool useFallback = true) {
+        m_force_use_fallback = useFallback;
+    }
 
     /*!
      * \brief rollbackNodeRecursively
@@ -100,7 +104,9 @@ public:
 
     void run() override;
 
-    std::shared_ptr<FileOperationInfo> getOperationInfo() override {return m_info;}
+    std::shared_ptr<FileOperationInfo> getOperationInfo() override {
+        return m_info;
+    }
 
 public Q_SLOTS:
     void cancel() override;
@@ -174,8 +180,8 @@ private:
     bool m_copy_move = false;
 
     GFileCopyFlags m_default_copy_flag = GFileCopyFlags(G_FILE_COPY_NOFOLLOW_SYMLINKS|
-                                                        G_FILE_COPY_ALL_METADATA|
-                                                        G_FILE_COPY_NO_FALLBACK_FOR_MOVE);
+                                         G_FILE_COPY_ALL_METADATA|
+                                         G_FILE_COPY_NO_FALLBACK_FOR_MOVE);
 
     FileNodeReporter *m_reporter = nullptr;
 

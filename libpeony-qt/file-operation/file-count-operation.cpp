@@ -33,7 +33,7 @@ FileCountOperation::FileCountOperation(const QStringList &uris, bool countRoot, 
     m_count_root = countRoot;
     m_reporter = new FileNodeReporter(this);
     //connect(m_reporter, &FileNodeReporter::nodeFound, this, &FileOperation::operationPreparedOne);
-    connect(m_reporter, &FileNodeReporter::nodeFound, [=](const QString &uri, quint64 size){
+    connect(m_reporter, &FileNodeReporter::nodeFound, [=](const QString &uri, quint64 size) {
         m_file_count++;
         if (uri.contains("/.")) {
             m_hidden_file_count++;

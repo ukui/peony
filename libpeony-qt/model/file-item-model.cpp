@@ -200,15 +200,15 @@ QVariant FileItemModel::data(const QModelIndex &index, int role) const
 
     //qDebug()<<item->m_info->uri();
     switch (index.column()) {
-    case FileName:{
+    case FileName: {
         switch (role) {
         case Qt::TextAlignmentRole: {
             return QVariant(Qt::AlignHCenter | Qt::AlignBaseline);
         }
-        case Qt::DisplayRole:{
+        case Qt::DisplayRole: {
             return QVariant(item->m_info->displayName());
         }
-        case Qt::DecorationRole:{
+        case Qt::DecorationRole: {
             /*
             auto thumbnail = item->info()->thumbnail();
             if (!thumbnail.isNull()) {
@@ -232,9 +232,9 @@ QVariant FileItemModel::data(const QModelIndex &index, int role) const
             return QVariant();
         }
     }
-    case FileSize:{
+    case FileSize: {
         switch (role) {
-        case Qt::DisplayRole:{
+        case Qt::DisplayRole: {
             if (item->hasChildren()) {
                 if (item->m_expanded) {
                     return QVariant(QString::number(item->m_children->count()) + tr("child(ren)"));
@@ -258,7 +258,7 @@ QVariant FileItemModel::data(const QModelIndex &index, int role) const
         default:
             return QVariant();
         }
-    case ModifiedDate:{
+    case ModifiedDate: {
         switch (role) {
         case Qt::DisplayRole:
             return QVariant(item->m_info->modifiedDate());

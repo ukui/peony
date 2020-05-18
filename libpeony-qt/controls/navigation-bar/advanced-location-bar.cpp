@@ -43,13 +43,13 @@ AdvancedLocationBar::AdvancedLocationBar(QWidget *parent) : QWidget(parent)
     m_edit = new Peony::PathEdit(this);
     m_search_bar = new Peony::SearchBarContainer(this);
     //bar->connect(bar, &Peony::LocationBar::groupChangedRequest, bar, &Peony::LocationBar::setRootUri);
-    m_bar->connect(m_bar, &Peony::LocationBar::blankClicked, [=](){
+    m_bar->connect(m_bar, &Peony::LocationBar::blankClicked, [=]() {
         layout->setCurrentWidget(m_edit);
         m_edit->setFocus();
         m_edit->setUri(m_bar->getCurentUri());
     });
 
-    m_edit->connect(m_edit, &Peony::PathEdit::uriChangeRequest, [=](const QString uri){
+    m_edit->connect(m_edit, &Peony::PathEdit::uriChangeRequest, [=](const QString uri) {
         if (m_text == uri) {
             Q_EMIT this->refreshRequest();
             return;
@@ -62,7 +62,7 @@ AdvancedLocationBar::AdvancedLocationBar(QWidget *parent) : QWidget(parent)
             m_last_non_search_path = m_text;
     });
 
-    m_bar->connect(m_bar, &LocationBar::groupChangedRequest, [=](const QString &uri){
+    m_bar->connect(m_bar, &LocationBar::groupChangedRequest, [=](const QString &uri) {
         if (m_text == uri) {
             Q_EMIT this->refreshRequest();
             return;
@@ -73,15 +73,15 @@ AdvancedLocationBar::AdvancedLocationBar(QWidget *parent) : QWidget(parent)
             m_last_non_search_path = uri;
     });
 
-    m_edit->connect(m_edit, &Peony::PathEdit::editCancelled, [=](){
+    m_edit->connect(m_edit, &Peony::PathEdit::editCancelled, [=]() {
         layout->setCurrentWidget(m_bar);
     });
 
-    m_search_bar->connect(m_search_bar, &Peony::SearchBarContainer::returnPressed, [=](){
-         //qDebug() << "start search" << m_search_bar->text();
-         auto key = m_search_bar->text();
-         auto targetUri = Peony::SearchVFSUriParser::parseSearchKey(m_last_non_search_path, key);
-         Q_EMIT this->updateWindowLocationRequest(targetUri);
+    m_search_bar->connect(m_search_bar, &Peony::SearchBarContainer::returnPressed, [=]() {
+        //qDebug() << "start search" << m_search_bar->text();
+        auto key = m_search_bar->text();
+        auto targetUri = Peony::SearchVFSUriParser::parseSearchKey(m_last_non_search_path, key);
+        Q_EMIT this->updateWindowLocationRequest(targetUri);
 
     });
 

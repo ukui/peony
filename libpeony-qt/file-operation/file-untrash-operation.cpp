@@ -48,10 +48,10 @@ void FileUntrashOperation::cacheOriginalUri()
 
         auto file = wrapGFile(g_file_new_for_uri(uri.toUtf8().constData()));
         auto info = wrapGFileInfo(g_file_query_info(file.get()->get(),
-                                                    G_FILE_ATTRIBUTE_TRASH_ORIG_PATH,
-                                                    G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
-                                                    getCancellable().get()->get(),
-                                                    nullptr));
+                                  G_FILE_ATTRIBUTE_TRASH_ORIG_PATH,
+                                  G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
+                                  getCancellable().get()->get(),
+                                  nullptr));
         auto origin_path = g_file_info_get_attribute_byte_string(info.get()->get(), G_FILE_ATTRIBUTE_TRASH_ORIG_PATH);
         qDebug()<<"orig-path"<<origin_path;
 

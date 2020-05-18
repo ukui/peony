@@ -125,8 +125,8 @@ GAsyncReadyCallback FileInfoJob::query_info_async_callback(GFile *file, GAsyncRe
     GError *err = nullptr;
 
     GFileInfo *_info = g_file_query_info_finish(file,
-                                                res,
-                                                &err);
+                       res,
+                       &err);
 
     if (_info != nullptr) {
         thisJob->refreshInfoContents(_info);

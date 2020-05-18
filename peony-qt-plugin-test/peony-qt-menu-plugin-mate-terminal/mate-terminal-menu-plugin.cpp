@@ -42,7 +42,7 @@ MateTerminalMenuPlugin::MateTerminalMenuPlugin(QObject *parent) : QObject (paren
     QApplication::installTranslator(t);
 }
 
-void openTerminal(const QString &uri){
+void openTerminal(const QString &uri) {
     qDebug()<<"triggered"<<uri;
     QUrl url = uri;
     auto directory = url.path().toUtf8().constData();
@@ -71,7 +71,7 @@ QList<QAction *> MateTerminalMenuPlugin::menuActions(Types types, const QString 
     if (types == MenuPluginInterface::DirectoryView || types == MenuPluginInterface::DesktopWindow) {
         if (selectionUris.isEmpty()) {
             QAction *dirAction = new QAction(QIcon::fromTheme("utilities-terminal-symbolic"), tr("Open Directory in Terminal"));
-            dirAction->connect(dirAction, &QAction::triggered, [=](){
+            dirAction->connect(dirAction, &QAction::triggered, [=]() {
                 openTerminal(uri);
             });
             actions<<dirAction;
@@ -80,7 +80,7 @@ QList<QAction *> MateTerminalMenuPlugin::menuActions(Types types, const QString 
             auto info = FileInfo::fromUri(selectionUris.first(), false);
             if (info->isDir()) {
                 QAction *dirAction = new QAction(QIcon::fromTheme("utilities-terminal-symbolic"), tr("Open Directory in Terminal"));
-                dirAction->connect(dirAction, &QAction::triggered, [=](){
+                dirAction->connect(dirAction, &QAction::triggered, [=]() {
                     openTerminal(selectionUris.first());
                 });
                 actions<<dirAction;

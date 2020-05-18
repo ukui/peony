@@ -56,7 +56,7 @@ DesktopIndexWidget::DesktopIndexWidget(DesktopIconViewDelegate *delegate,
 
     //FIXME: how to handle it in old version?
 #if (QT_VERSION >= QT_VERSION_CHECK(5, 11, 0))
-    connect(qApp, &QApplication::fontChanged, this, [=](){
+    connect(qApp, &QApplication::fontChanged, this, [=]() {
         m_delegate->getView()->setIndexWidget(m_index, nullptr);
     });
 #endif
@@ -113,12 +113,12 @@ void DesktopIndexWidget::paintEvent(QPaintEvent *e)
     shadow.setAlpha(127);
     p.setPen(shadow);
     Peony::DirectoryView::IconViewTextHelper::paintText(&p,
-                                                        m_option,
-                                                        m_index,
-                                                        9999,
-                                                        2,
-                                                        0,
-                                                        false);
+            m_option,
+            m_index,
+            9999,
+            2,
+            0,
+            false);
 //    QFontMetrics fm(m_current_font);
 
 //    style()->drawItemText(&p,
@@ -133,12 +133,12 @@ void DesktopIndexWidget::paintEvent(QPaintEvent *e)
     // draw text
     p.setPen(m_option.palette.highlightedText().color());
     Peony::DirectoryView::IconViewTextHelper::paintText(&p,
-                                                        m_option,
-                                                        m_index,
-                                                        9999,
-                                                        2,
-                                                        0,
-                                                        false);
+            m_option,
+            m_index,
+            9999,
+            2,
+            0,
+            false);
 //    style()->drawItemText(&p,
 //                          m_text_rect,
 //                          Qt::AlignTop|Qt::TextWrapAnywhere|Qt::AlignHCenter,
@@ -160,7 +160,7 @@ void DesktopIndexWidget::mousePressEvent(QMouseEvent *event)
         view->m_real_do_edit = true;
         if (view->m_edit_trigger_timer.isActive()) {
             if (view->m_edit_trigger_timer.remainingTime() < 2250 && view->m_edit_trigger_timer.remainingTime() > 0) {
-                QTimer::singleShot(300, view, [=](){
+                QTimer::singleShot(300, view, [=]() {
                     if (view->m_real_do_edit) {
                         //not allow to edit special items:computer,trash and personal home path folder name
                         bool special_index = false;
@@ -244,10 +244,10 @@ void DesktopIndexWidget::updateItem()
 
     QFontMetrics fm(m_current_font);
     auto textRect = QApplication::style()->itemTextRect(fm,
-                                                        rawTextRect,
-                                                        Qt::AlignTop|Qt::AlignHCenter|Qt::TextWrapAnywhere,
-                                                        true,
-                                                        m_option.text);
+                    rawTextRect,
+                    Qt::AlignTop|Qt::AlignHCenter|Qt::TextWrapAnywhere,
+                    true,
+                    m_option.text);
 
     m_text_rect = textRect;
 

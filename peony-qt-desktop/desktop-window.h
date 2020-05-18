@@ -50,11 +50,17 @@ public:
 public:
     const QString getCurrentBgPath();
     const QColor getCurrentColor();
-    bool getIsPrimary(){return m_is_primary;}
+    bool getIsPrimary() {
+        return m_is_primary;
+    }
     void setIsPrimary(bool is_primary);
-    QScreen *getScreen(){return m_screen;}
+    QScreen *getScreen() {
+        return m_screen;
+    }
     void setScreen(QScreen *screen);
-    DesktopIconView *getView(){return m_view;}
+    DesktopIconView *getView() {
+        return m_view;
+    }
 
     static void gotoSetBackground();
 

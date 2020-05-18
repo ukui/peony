@@ -69,7 +69,7 @@ void DesktopMenuPluginManager::loadAsync()
         }
     }
 
-    QtConcurrent::run([=](){
+    QtConcurrent::run([=]() {
         qDebug()<<pluginsDir.entryList().count();
         Q_FOREACH(QString fileName, pluginsDir.entryList(QDir::Files)) {
             qDebug()<<fileName;

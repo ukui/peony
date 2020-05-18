@@ -36,7 +36,7 @@ G_DEFINE_TYPE_WITH_PRIVATE(PeonySearchVFSFileEnumerator,
                            G_TYPE_FILE_ENUMERATOR)
 
 static void peony_search_vfs_file_enumerator_parse_uri(PeonySearchVFSFileEnumerator *enumerator,
-                                                       const char *uri);
+        const char *uri);
 
 static gboolean peony_search_vfs_file_enumerator_is_file_match(PeonySearchVFSFileEnumerator *enumerator, std::shared_ptr<Peony::FileInfo> info);
 
@@ -274,7 +274,7 @@ gboolean peony_search_vfs_file_enumerator_is_file_match(PeonySearchVFSFileEnumer
 {
     PeonySearchVFSFileEnumeratorPrivate *details = enumerator->priv;
     if (!details->name_regexp && !details->content_regexp
-        && details->name_regexp_extend_list->count() == 0)
+            && details->name_regexp_extend_list->count() == 0)
         return false;
 
     GFile *file = g_file_new_for_uri(file_info->uri().toUtf8().constData());
@@ -291,21 +291,21 @@ gboolean peony_search_vfs_file_enumerator_is_file_match(PeonySearchVFSFileEnumer
     g_free(file_display_name);
     if (details->name_regexp) {
         if (details->use_regexp && details->match_name_or_content
-            && displayName.contains(*enumerator->priv->name_regexp))
+                && displayName.contains(*enumerator->priv->name_regexp))
         {
             return true;
         }
         else if (displayName == details->name_regexp->pattern())
         {
-           //this is most used for querying files which might be duplicate.
-           return true;
+            //this is most used for querying files which might be duplicate.
+            return true;
         }
     }
 
     //extend list name match
     if (details->name_regexp_extend_list->count() >0)
     {
-        for(int i=0;i<details->name_regexp_extend_list->count();i++)
+        for(int i=0; i<details->name_regexp_extend_list->count(); i++)
         {
             auto curRegexp = details->name_regexp_extend_list->at(i);
             //qDebug() <<"curRegexp:" <<*curRegexp<<i;
@@ -314,7 +314,7 @@ gboolean peony_search_vfs_file_enumerator_is_file_match(PeonySearchVFSFileEnumer
             if (details->use_regexp && details->match_name_or_content
                     && displayName.contains(*curRegexp))
             {
-               return true;
+                return true;
             }
             else if (displayName == curRegexp->pattern())
             {

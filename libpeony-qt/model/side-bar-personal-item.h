@@ -38,21 +38,39 @@ public:
                                  SideBarModel *model,
                                  QObject *parent = nullptr);
 
-    Type type() override {return SideBarAbstractItem::PersonalItem;}
+    Type type() override {
+        return SideBarAbstractItem::PersonalItem;
+    }
 
-    QString uri() override {return m_uri;}
-    QString displayName() override {return m_display_name;}
-    QString iconName() override {return m_icon_name;}
-    bool hasChildren() override {return m_is_root_child;}
+    QString uri() override {
+        return m_uri;
+    }
+    QString displayName() override {
+        return m_display_name;
+    }
+    QString iconName() override {
+        return m_icon_name;
+    }
+    bool hasChildren() override {
+        return m_is_root_child;
+    }
 
-    bool isRemoveable() override {return false;}
-    bool isEjectable() override {return false;}
-    bool isMountable() override {return false;}
+    bool isRemoveable() override {
+        return false;
+    }
+    bool isEjectable() override {
+        return false;
+    }
+    bool isMountable() override {
+        return false;
+    }
 
     QModelIndex firstColumnIndex() override;
     QModelIndex lastColumnIndex() override;
 
-    SideBarAbstractItem *parent() override {return m_parent;}
+    SideBarAbstractItem *parent() override {
+        return m_parent;
+    }
 
 public Q_SLOTS:
     void eject() override {}

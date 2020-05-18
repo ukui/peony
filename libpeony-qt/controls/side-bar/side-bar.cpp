@@ -46,7 +46,7 @@ SideBar::SideBar(QWidget *parent) : QTreeView(parent)
     setDropIndicatorShown(false);
     setAttribute(Qt::WA_Hover);
 
-    connect(qApp, &QApplication::paletteChanged, this, [=](){
+    connect(qApp, &QApplication::paletteChanged, this, [=]() {
         this->update();
         this->viewport()->update();
     });
@@ -75,17 +75,17 @@ SideBar::SideBar(QWidget *parent) : QTreeView(parent)
 
     proxy_model->setSourceModel(model);
 
-    connect(this, &QTreeView::expanded, [=](const QModelIndex &index){
+    connect(this, &QTreeView::expanded, [=](const QModelIndex &index) {
         auto item = proxy_model->itemFromIndex(index);
         item->findChildrenAsync();
     });
 
-    connect(this, &QTreeView::collapsed, [=](const QModelIndex &index){
+    connect(this, &QTreeView::collapsed, [=](const QModelIndex &index) {
         auto item = proxy_model->itemFromIndex(index);
         item->clearChildren();
     });
 
-    connect(this, &QTreeView::clicked, [=](const QModelIndex &index){
+    connect(this, &QTreeView::clicked, [=](const QModelIndex &index) {
         switch (index.column()) {
         case 0: {
             auto item = proxy_model->itemFromIndex(index);
@@ -109,7 +109,7 @@ SideBar::SideBar(QWidget *parent) : QTreeView(parent)
         }
     });
 
-    connect(this, &QTreeView::customContextMenuRequested, this, [=](const QPoint &pos){
+    connect(this, &QTreeView::customContextMenuRequested, this, [=](const QPoint &pos) {
         auto index = indexAt(pos);
         auto item = proxy_model->itemFromIndex(index);
         if (item) {

@@ -231,7 +231,7 @@ public:
     virtual DirectoryViewIface *getView() = 0;
 
     //location
-    const virtual QString getDirectoryUri() = 0; 
+    const virtual QString getDirectoryUri() = 0;
 
     //selections
     const virtual QStringList getSelections() = 0;

@@ -96,13 +96,13 @@ void TabStatusBar::update()
                 directoriesString = QString(", %1").arg(selections.first()->displayName());
             if (fileCount == 1)
                 filesString = QString(", %1, %2").arg(selections.first()->displayName()).arg(format_size);
-        } else if (directoryCount > 1 && (fileCount > 1)){
+        } else if (directoryCount > 1 && (fileCount > 1)) {
             directoriesString = tr("; %1 folders").arg(directoryCount);
             filesString = tr("; %1 files, %2 total").arg(fileCount).arg(format_size);
         } else if (directoryCount > 1 && (fileCount > 1)) {
             directoriesString = tr("; %1 folder").arg(directoryCount);
             filesString = tr("; %1 file, %2").arg(fileCount).arg(format_size);
-        } else if (fileCount == 0){
+        } else if (fileCount == 0) {
             directoriesString = tr("; %1 folders").arg(directoryCount);
         } else {
             filesString = tr("; %1 files, %2 total").arg(fileCount).arg(format_size);

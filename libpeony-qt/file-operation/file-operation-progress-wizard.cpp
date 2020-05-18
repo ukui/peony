@@ -57,7 +57,7 @@ FileOperationProgressWizard::FileOperationProgressWizard(QWidget *parent) : QWiz
     QList<WizardButton> layout;
     layout<<Stretch<<CustomButton1;
     setButtonText(CustomButton1, tr("&Cancel"));
-    connect(this, &QWizard::customButtonClicked, [=](){
+    connect(this, &QWizard::customButtonClicked, [=]() {
         this->cancelled();
     });
     setButtonLayout(layout);
@@ -80,7 +80,7 @@ FileOperationProgressWizard::FileOperationProgressWizard(QWidget *parent) : QWiz
     m_tray_icon = new QSystemTrayIcon(QIcon::fromTheme("system-file-manager"), this);
     m_tray_icon->setToolTip(tr("File Operation"));
 
-    connect(m_tray_icon, &QSystemTrayIcon::activated, [=](){
+    connect(m_tray_icon, &QSystemTrayIcon::activated, [=]() {
         this->show();
         m_tray_icon->hide();
     });

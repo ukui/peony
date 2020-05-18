@@ -42,9 +42,13 @@ public:
 
     explicit CreateTemplateOperation(const QString &destDirUri, Type type = EmptyFile, const QString &templateName = nullptr, QObject *parent = nullptr);
     void run() override;
-    std::shared_ptr<FileOperationInfo> getOperationInfo() override {return m_info;}
+    std::shared_ptr<FileOperationInfo> getOperationInfo() override {
+        return m_info;
+    }
 
-    const QString target() {return m_target_uri;}
+    const QString target() {
+        return m_target_uri;
+    }
 
 protected:
     void handleDuplicate(const QString &uri);

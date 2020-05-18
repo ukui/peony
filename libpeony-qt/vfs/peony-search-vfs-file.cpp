@@ -44,16 +44,16 @@ static GFile *peony_search_vfs_file_get_parent(GFile *file);//unused
 static gboolean peony_search_vfs_file_prefix_matches(GFile *prefix, GFile *file);//unused
 static char *peony_search_vfs_file_get_relative_path(GFile *file, const char *relative_path);//unused
 static GFile *peony_search_vfs_file_resolve_relative_path(GFile *file,
-                                                          const char *relative_path);
+        const char *relative_path);
 static GFile *peony_search_vfs_file_get_child_for_display_name (GFile *file,
-                                                                const char *display_name,
-                                                                GError **err);//unused
+        const char *display_name,
+        GError **err);//unused
 
 static GFileInfo *peony_search_vfs_file_query_info(GFile *file,
-                                                   const char *attributes,
-                                                   GFileQueryInfoFlags flags,
-                                                   GCancellable *cancellable,
-                                                   GError **error);
+        const char *attributes,
+        GFileQueryInfoFlags flags,
+        GCancellable *cancellable,
+        GError **error);
 
 /* -- Implement Iface -- */
 G_DEFINE_TYPE_EXTENDED(PeonySearchVFSFile,
@@ -79,10 +79,10 @@ static void peony_search_vfs_file_class_init (PeonySearchVFSFileClass *klass)
 }
 
 GFileEnumerator *peony_search_vfs_file_enumerate_children(GFile *file,
-                                                          const char *attribute,
-                                                          GFileQueryInfoFlags flags,
-                                                          GCancellable *cancellable,
-                                                          GError **error)
+        const char *attribute,
+        GFileQueryInfoFlags flags,
+        GCancellable *cancellable,
+        GError **error)
 {
     auto search_vfs_file = PEONY_SEARCH_VFS_FILE(file);
 
@@ -90,10 +90,10 @@ GFileEnumerator *peony_search_vfs_file_enumerate_children(GFile *file,
 }
 
 GFileInfo *peony_search_vfs_file_query_info(GFile *file,
-                                            const char *attributes,
-                                            GFileQueryInfoFlags flags,
-                                            GCancellable *cancellable,
-                                            GError **error)
+        const char *attributes,
+        GFileQueryInfoFlags flags,
+        GCancellable *cancellable,
+        GError **error)
 {
     auto vfs_file = PEONY_SEARCH_VFS_FILE(file);
     GFileInfo *info = g_file_info_new();
@@ -184,7 +184,7 @@ char *peony_search_vfs_file_get_path(GFile *file)
 }
 
 void peony_search_vfs_file_enumerator_parse_uri(PeonySearchVFSFileEnumerator *enumerator,
-                                                const char *uri)
+        const char *uri)
 {
     PeonySearchVFSFileEnumeratorPrivate *details = enumerator->priv;
 
@@ -313,7 +313,7 @@ void peony_search_vfs_file_enumerator_parse_uri(PeonySearchVFSFileEnumerator *en
 
     if (details->name_regexp_extend_list->count() >0)
     {
-        for(int i=0;i<details->name_regexp_extend_list->count();i++)
+        for(int i=0; i<details->name_regexp_extend_list->count(); i++)
         {
             details->name_regexp_extend_list->at(i)->setCaseSensitivity(sensitivity);
         }
@@ -321,18 +321,18 @@ void peony_search_vfs_file_enumerator_parse_uri(PeonySearchVFSFileEnumerator *en
 }
 
 GFileEnumerator *peony_search_vfs_file_enumerate_children_internal(GFile *file,
-                                                                   const char *attributes,
-                                                                   GFileQueryInfoFlags flags,
-                                                                   GCancellable *cancellable,
-                                                                   GError **error)
+        const char *attributes,
+        GFileQueryInfoFlags flags,
+        GCancellable *cancellable,
+        GError **error)
 {
     auto vfs_file = PEONY_SEARCH_VFS_FILE(file);
 
     //we should add enumerator container when search vfs enumerator created.
     //otherwise g_enumerator_get_child will went error.
     auto enumerator = PEONY_SEARCH_VFS_FILE_ENUMERATOR(g_object_new(PEONY_TYPE_SEARCH_VFS_FILE_ENUMERATOR,
-                                                                    "container", file,
-                                                                    nullptr));
+                      "container", file,
+                      nullptr));
     peony_search_vfs_file_enumerator_parse_uri(enumerator, vfs_file->priv->uri);
     //parse uri, add top folder uri to queue;
     return G_FILE_ENUMERATOR(enumerator);

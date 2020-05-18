@@ -34,7 +34,7 @@ FMDBusService::FMDBusService(QObject *parent) : QObject(parent)
     qDebug()<<QDBusConnection::sessionBus().registerObject(QStringLiteral("/org/freedesktop/FileManager1"), this,
             QDBusConnection::ExportScriptableContents | QDBusConnection::ExportAdaptors);
     qDebug()<<QDBusConnection::sessionBus().interface()->registerService(QStringLiteral("org.freedesktop.FileManager1"),
-                                                                         QDBusConnectionInterface::QueueService);
+            QDBusConnectionInterface::QueueService);
 }
 
 void FMDBusService::ShowFolders(const QStringList& uriList, const QString& startUpId)

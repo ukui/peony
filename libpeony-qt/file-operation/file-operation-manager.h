@@ -217,9 +217,15 @@ public:
         return oppositeInfo;
     }
 
-    Type operationType() {return m_type;}
-    QStringList sources() {return m_src_uris;}
-    QString target() {return m_dest_dir_uri;}
+    Type operationType() {
+        return m_type;
+    }
+    QStringList sources() {
+        return m_src_uris;
+    }
+    QString target() {
+        return m_dest_dir_uri;
+    }
 
 private:
     QStringList m_src_uris;

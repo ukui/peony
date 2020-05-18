@@ -52,13 +52,13 @@ TabPage::TabPage(QWidget *parent) : QTabWidget(parent)
     tabBar()->setExpanding(false);
     tabBar()->setAutoHide(true);
 
-    connect(this, &QTabWidget::tabCloseRequested, [=](int index){
+    connect(this, &QTabWidget::tabCloseRequested, [=](int index) {
         auto container = dynamic_cast<DirectoryViewContainer*>(widget(index));
         container->disconnect();
         container->deleteLater();
     });
 
-    connect(this, &QTabWidget::currentChanged, [=](int index){
+    connect(this, &QTabWidget::currentChanged, [=](int index) {
         Q_UNUSED(index)
         Q_EMIT this->currentActiveViewChanged();
 
@@ -93,7 +93,7 @@ void TabPage::rebindContainer()
     }
 
     auto container = getActivePage();
-    container->connect(container, &Peony::DirectoryViewContainer::viewDoubleClicked, [=](const QString &uri){
+    container->connect(container, &Peony::DirectoryViewContainer::viewDoubleClicked, [=](const QString &uri) {
         if (m_double_click_limiter.isActive())
             return;
 

@@ -48,7 +48,9 @@ class PEONYCORESHARED_EXPORT PathBarModel : public QStringListModel
 public:
     explicit PathBarModel(QObject *parent = nullptr);
     QString findDisplayName(const QString &uri);
-    QString currentDirUri() {return m_current_uri;}
+    QString currentDirUri() {
+        return m_current_uri;
+    }
 
 Q_SIGNALS:
     void updated();

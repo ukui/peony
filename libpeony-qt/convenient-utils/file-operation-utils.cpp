@@ -98,8 +98,8 @@ void FileOperationUtils::trash(const QStringList &uris, bool addHistory)
 
     if (canNotTrash) {
         auto result = QMessageBox::question(nullptr, QObject::tr("Can not trash"), QObject::tr("Can not trash these files. "
-                                                                                               "You can delete them permanently. "
-                                                                                               "Are you sure doing that?"));
+                                            "You can delete them permanently. "
+                                            "Are you sure doing that?"));
 
         if (result == QMessageBox::Yes) {
             FileOperationUtils::remove(uris);
@@ -174,12 +174,12 @@ void FileOperationUtils::executeRemoveActionWithDialog(const QStringList &uris)
     int result = 0;
     if (uris.count() == 1) {
         result = QMessageBox::question(nullptr, QObject::tr("Delete Permanently"), QObject::tr("Are you sure that you want to delete %1? "
-                                                                                               "Once you start a deletion, the files deleting will never be "
-                                                                                               "restored again.").arg(uris.first().split("/").last()));
+                                       "Once you start a deletion, the files deleting will never be "
+                                       "restored again.").arg(uris.first().split("/").last()));
     } else {
         result = QMessageBox::question(nullptr, QObject::tr("Delete Permanently"), QObject::tr("Are you sure that you want to delete these %1 files? "
-                                                                                               "Once you start a deletion, the files deleting will never be "
-                                                                                               "restored again.").arg(uris.count()));
+                                       "Once you start a deletion, the files deleting will never be "
+                                       "restored again.").arg(uris.count()));
     }
 
     if (result == QMessageBox::Yes) {

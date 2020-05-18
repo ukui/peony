@@ -51,11 +51,11 @@ IconViewIndexWidget::IconViewIndexWidget(const IconViewDelegate *delegate, const
     m_edit_trigger.setInterval(3000);
     m_edit_trigger.setSingleShot(true);
 #if QT_VERSION > QT_VERSION_CHECK(5, 12, 0)
-    QTimer::singleShot(750, this, [=](){
+    QTimer::singleShot(750, this, [=]() {
         m_edit_trigger.start();
     });
 #else
-    QTimer::singleShot(750, this, [=](){
+    QTimer::singleShot(750, this, [=]() {
         m_edit_trigger.start();
     });
 #endif
@@ -114,7 +114,7 @@ IconViewIndexWidget::IconViewIndexWidget(const IconViewDelegate *delegate, const
     m_option.rect.setHeight(fixedHeight - y_delta);
 
 #if (QT_VERSION >= QT_VERSION_CHECK(5, 11, 0))
-    connect(qApp, &QApplication::fontChanged, this, [=](){
+    connect(qApp, &QApplication::fontChanged, this, [=]() {
         m_delegate->getView()->setIndexWidget(m_index, nullptr);
     });
 #else
@@ -191,7 +191,7 @@ void IconViewIndexWidget::paintEvent(QPaintEvent *e)
     if (!info->canRead()) {
         QIcon icon = QIcon::fromTheme("emblem-unreadable");
         icon.paint(&p, rect.x() + 10, rect.y() + 10, 20, 20);
-    } else if (!info->canWrite() && !info->canExecute()){
+    } else if (!info->canWrite() && !info->canExecute()) {
         QIcon icon = QIcon::fromTheme("emblem-readonly");
         icon.paint(&p, rect.x() + 10, rect.y() + 10, 20, 20);
     }

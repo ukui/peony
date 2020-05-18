@@ -121,13 +121,13 @@ PropertiesWindow::PropertiesWindow(const QStringList &uris, QWidget *parent) : Q
         addToolBar(Qt::BottomToolBarArea, buttonToolBar);
 
         QDialogButtonBox *box = new QDialogButtonBox(QDialogButtonBox::Close,
-                                                     buttonToolBar);
+                buttonToolBar);
         box->setContentsMargins(0, 5, 5, 5);
         //get close button and do translate operation
         box->button(QDialogButtonBox::Close)->setText(tr("Close"));
         buttonToolBar->addWidget(box);
 
-        connect(box, &QDialogButtonBox::rejected, [=](){
+        connect(box, &QDialogButtonBox::rejected, [=]() {
             this->close();
         });
     }

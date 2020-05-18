@@ -181,7 +181,7 @@ void MainWindow::setShortCuts()
     QAction *showHiddenAction = new QAction(this);
     showHiddenAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_H));
     addAction(showHiddenAction);
-    connect(showHiddenAction, &QAction::triggered, this, [=](){
+    connect(showHiddenAction, &QAction::triggered, this, [=]() {
         //qDebug() << "show hidden";
         this->setShowHidden();
     });
@@ -189,21 +189,21 @@ void MainWindow::setShortCuts()
     auto undoAction = new QAction(QIcon::fromTheme("edit-undo-symbolic"), tr("Undo"), this);
     undoAction->setShortcut(QKeySequence::Undo);
     addAction(undoAction);
-    connect(undoAction, &QAction::triggered, [=](){
+    connect(undoAction, &QAction::triggered, [=]() {
         Peony::FileOperationManager::getInstance()->undo();
     });
 
     auto redoAction = new QAction(QIcon::fromTheme("edit-redo-symbolic"), tr("Redo"), this);
     redoAction->setShortcut(QKeySequence::Redo);
     addAction(redoAction);
-    connect(redoAction, &QAction::triggered, [=](){
+    connect(redoAction, &QAction::triggered, [=]() {
         Peony::FileOperationManager::getInstance()->redo();
     });
 
     //add CTRL+D for delete operation
     auto trashAction = new QAction(this);
     trashAction->setShortcuts(QList<QKeySequence>()<<Qt::Key_Delete<<QKeySequence(Qt::CTRL + Qt::Key_D));
-    connect(trashAction, &QAction::triggered, [=](){
+    connect(trashAction, &QAction::triggered, [=]() {
         auto uris = this->getCurrentSelections();
         if (!uris.isEmpty()) {
             bool isTrash = this->getCurrentUri() == "trash:///";
@@ -219,14 +219,14 @@ void MainWindow::setShortCuts()
     auto deleteAction = new QAction(this);
     deleteAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::SHIFT + Qt::Key_Delete));
     addAction(deleteAction);
-    connect(deleteAction, &QAction::triggered, [=](){
+    connect(deleteAction, &QAction::triggered, [=]() {
         auto uris = this->getCurrentSelections();
         Peony::FileOperationUtils::executeRemoveActionWithDialog(uris);
     });
 
     auto searchAction = new QAction(this);
     searchAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::CTRL + Qt::Key_F));
-    connect(searchAction, &QAction::triggered, this, [=](){
+    connect(searchAction, &QAction::triggered, this, [=]() {
         m_is_search = ! m_is_search;
         m_header_bar->startEdit(m_is_search);
     });
@@ -235,14 +235,14 @@ void MainWindow::setShortCuts()
     //F4 or Alt+D, change to address
     auto locationAction = new QAction(this);
     locationAction->setShortcuts(QList<QKeySequence>()<<Qt::Key_F4<<QKeySequence(Qt::ALT + Qt::Key_D));
-    connect(locationAction, &QAction::triggered, this, [=](){
+    connect(locationAction, &QAction::triggered, this, [=]() {
         m_header_bar->startEdit();
     });
     addAction(locationAction);
 
     auto newWindowAction = new QAction(this);
     newWindowAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_N));
-    connect(newWindowAction, &QAction::triggered, this, [=](){
+    connect(newWindowAction, &QAction::triggered, this, [=]() {
         MainWindow *newWindow = new MainWindow(getCurrentUri());
         newWindow->show();
     });
@@ -250,28 +250,28 @@ void MainWindow::setShortCuts()
 
     auto closeWindowAction = new QAction(this);
     closeWindowAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::ALT + Qt::Key_F4));
-    connect(closeWindowAction, &QAction::triggered, this, [=](){
+    connect(closeWindowAction, &QAction::triggered, this, [=]() {
         this->close();
     });
     addAction(closeWindowAction);
 
     auto aboutAction = new QAction(this);
     aboutAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_F2));
-    connect(aboutAction, &QAction::triggered, this, [=](){
+    connect(aboutAction, &QAction::triggered, this, [=]() {
         PeonyApplication::about();
     });
     addAction(aboutAction);
 
     auto newTabAction = new QAction(this);
     newTabAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_T));
-    connect(newTabAction, &QAction::triggered, this, [=](){
+    connect(newTabAction, &QAction::triggered, this, [=]() {
         this->addNewTabs(QStringList()<<this->getCurrentUri());
     });
     addAction(newTabAction);
 
     auto closeTabAction = new QAction(this);
     closeTabAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_W));
-    connect(closeTabAction, &QAction::triggered, this, [=](){
+    connect(closeTabAction, &QAction::triggered, this, [=]() {
         if (m_tab->count() <= 1) {
             this->close();
         } else {
@@ -282,7 +282,7 @@ void MainWindow::setShortCuts()
 
     auto nextTabAction = new QAction(this);
     nextTabAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Tab));
-    connect(nextTabAction, &QAction::triggered, this, [=](){
+    connect(nextTabAction, &QAction::triggered, this, [=]() {
         int currentIndex = m_tab->currentIndex();
         if (currentIndex + 1 < m_tab->count()) {
             m_tab->setCurrentIndex(currentIndex + 1);
@@ -294,7 +294,7 @@ void MainWindow::setShortCuts()
 
     auto previousTabAction = new QAction(this);
     previousTabAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_Tab));
-    connect(previousTabAction, &QAction::triggered, this, [=](){
+    connect(previousTabAction, &QAction::triggered, this, [=]() {
         int currentIndex = m_tab->currentIndex();
         if (currentIndex > 0) {
             m_tab->setCurrentIndex(currentIndex - 1);
@@ -313,7 +313,7 @@ void MainWindow::setShortCuts()
     auto propertiesWindowAction = new QAction(this);
     propertiesWindowAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::ALT + Qt::Key_Return)
                                          <<QKeySequence(Qt::ALT + Qt::Key_Enter));
-    connect(propertiesWindowAction, &QAction::triggered, this, [=](){
+    connect(propertiesWindowAction, &QAction::triggered, this, [=]() {
         //Fixed issue:when use this shortcut without any selections, this will crash
         if (getCurrentSelections().count() > 0)
         {
@@ -325,14 +325,14 @@ void MainWindow::setShortCuts()
 
     auto helpAction = new QAction(this);
     helpAction->setShortcut(QKeySequence(Qt::Key_F1));
-    connect(helpAction, &QAction::triggered, this, [=](){
+    connect(helpAction, &QAction::triggered, this, [=]() {
         PeonyApplication::help();
     });
     addAction(helpAction);
 
     auto maxAction = new QAction(this);
     maxAction->setShortcut(QKeySequence(Qt::Key_F11));
-    connect(maxAction, &QAction::triggered, this, [=](){
+    connect(maxAction, &QAction::triggered, this, [=]() {
         if (!this->isFullScreen()) {
             this->showFullScreen();
         } else {
@@ -343,7 +343,7 @@ void MainWindow::setShortCuts()
 
     auto previewPageAction = new QAction(this);
     previewPageAction->setShortcuts(QList<QKeySequence>()<<Qt::Key_F3<<QKeySequence(Qt::ALT + Qt::Key_P));
-    connect(previewPageAction, &QAction::triggered, this, [=](){
+    connect(previewPageAction, &QAction::triggered, this, [=]() {
         auto triggered = m_tab->getTriggeredPreviewPage();
         if (triggered)
         {
@@ -362,7 +362,7 @@ void MainWindow::setShortCuts()
 
     auto refreshAction = new QAction(this);
     refreshAction->setShortcut(Qt::Key_F5);
-    connect(refreshAction, &QAction::triggered, this, [=](){
+    connect(refreshAction, &QAction::triggered, this, [=]() {
         this->refresh();
     });
     addAction(refreshAction);
@@ -370,7 +370,7 @@ void MainWindow::setShortCuts()
     //file operations
     auto *copyAction = new QAction(this);
     copyAction->setShortcut(QKeySequence::Copy);
-    connect(copyAction, &QAction::triggered, [=](){
+    connect(copyAction, &QAction::triggered, [=]() {
         if (!this->getCurrentSelections().isEmpty())
             Peony::ClipboardUtils::setClipboardFiles(this->getCurrentSelections(), false);
     });
@@ -378,7 +378,7 @@ void MainWindow::setShortCuts()
 
     auto *pasteAction = new QAction(this);
     pasteAction->setShortcut(QKeySequence::Paste);
-    connect(pasteAction, &QAction::triggered, [=](){
+    connect(pasteAction, &QAction::triggered, [=]() {
         if (Peony::ClipboardUtils::isClipboardHasFiles()) {
             //FIXME: how about duplicated copy?
             //FIXME: how to deal with a failed move?
@@ -389,7 +389,7 @@ void MainWindow::setShortCuts()
 
     auto *cutAction = new QAction(this);
     cutAction->setShortcut(QKeySequence::Cut);
-    connect(cutAction, &QAction::triggered, [=](){
+    connect(cutAction, &QAction::triggered, [=]() {
         if (!this->getCurrentSelections().isEmpty()) {
             Peony::ClipboardUtils::setClipboardFiles(this->getCurrentSelections(), true);
         }
@@ -410,9 +410,9 @@ void MainWindow::createFolderOperation()
     op.run();
     auto targetUri = op.target();
 #if QT_VERSION > QT_VERSION_CHECK(5, 12, 0)
-        QTimer::singleShot(500, this, [=](){
+    QTimer::singleShot(500, this, [=]() {
 #else
-        QTimer::singleShot(500, [=](){
+    QTimer::singleShot(500, [=]() {
 #endif
         this->getCurrentPage()->getView()->scrollToSelection(targetUri);
         this->editUri(targetUri);
@@ -794,7 +794,7 @@ void MainWindow::validBorder()
 
 void MainWindow::initUI(const QString &uri)
 {
-    connect(this, &MainWindow::locationChangeStart, this, [=](){
+    connect(this, &MainWindow::locationChangeStart, this, [=]() {
         m_side_bar->blockSignals(true);
         m_header_bar->blockSignals(true);
         QCursor c;
@@ -805,7 +805,7 @@ void MainWindow::initUI(const QString &uri)
         //m_status_bar->update();
     });
 
-    connect(this, &MainWindow::locationChangeEnd, this, [=](){
+    connect(this, &MainWindow::locationChangeEnd, this, [=]() {
         m_side_bar->blockSignals(false);
         m_header_bar->blockSignals(false);
         QCursor c;
@@ -827,7 +827,7 @@ void MainWindow::initUI(const QString &uri)
 
     connect(m_header_bar, &HeaderBar::updateLocationRequest, this, &MainWindow::goToUri);
     connect(m_header_bar, &HeaderBar::viewTypeChangeRequest, this, &MainWindow::beginSwitchView);
-    connect(m_header_bar, &HeaderBar::updateZoomLevelHintRequest, this, [=](int zoomLevelHint){
+    connect(m_header_bar, &HeaderBar::updateZoomLevelHintRequest, this, [=](int zoomLevelHint) {
         if (zoomLevelHint >= 0) {
             m_tab->m_status_bar->m_slider->setEnabled(true);
             m_tab->m_status_bar->m_slider->setValue(zoomLevelHint);
@@ -904,7 +904,7 @@ void MainWindow::initUI(const QString &uri)
         m_tab->addPage(uri, true);
     }
 
-    connect(views->tabBar(), &QTabBar::tabBarDoubleClicked, this, [=](int index){
+    connect(views->tabBar(), &QTabBar::tabBarDoubleClicked, this, [=](int index) {
         if (index == -1)
             maximizeOrRestore();
     });
@@ -923,15 +923,15 @@ void MainWindow::initUI(const QString &uri)
     connect(m_tab, &TabWidget::activePageLocationChanged, this, &MainWindow::locationChangeEnd);
     connect(m_tab, &TabWidget::activePageViewTypeChanged, this, &MainWindow::updateHeaderBar);
     connect(m_tab, &TabWidget::activePageChanged, this, &MainWindow::updateHeaderBar);
-    connect(m_tab, &TabWidget::menuRequest, this, [=](){
+    connect(m_tab, &TabWidget::menuRequest, this, [=]() {
         Peony::DirectoryViewMenu menu(this);
         menu.exec(QCursor::pos());
         auto urisToEdit = menu.urisToEdit();
         if (!urisToEdit.isEmpty()) {
 #if QT_VERSION > QT_VERSION_CHECK(5, 12, 0)
-            QTimer::singleShot(100, this, [=](){
+            QTimer::singleShot(100, this, [=]() {
 #else
-            QTimer::singleShot(100, [=](){
+            QTimer::singleShot(100, [=]() {
 #endif
                 this->getCurrentPage()->getView()->scrollToSelection(urisToEdit.first());
                 this->editUri(urisToEdit.first());

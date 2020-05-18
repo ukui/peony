@@ -62,7 +62,9 @@ public:
      * to monitor the changed event that not created or deleted
      * (for volume file handle in computer:///, it might be mount/unmount).
      */
-    void setMonitorChildrenChange(bool monitor_children_change = true) {m_montor_children_change = monitor_children_change;}
+    void setMonitorChildrenChange(bool monitor_children_change = true) {
+        m_montor_children_change = monitor_children_change;
+    }
     void startMonitor();
     void stopMonitor();
 
@@ -75,7 +77,9 @@ public:
      * If not, we might take over the handle of file change in our own
      * code.
      */
-    bool supportMonitor() {return m_supprot_monitor;}
+    bool supportMonitor() {
+        return m_supprot_monitor;
+    }
 
 Q_SIGNALS:
     void locationChanged(const QString &oldUri, const QString &newUri);

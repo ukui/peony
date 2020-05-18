@@ -43,14 +43,14 @@
 #include "singleapplication_p.h"
 
 #ifdef Q_OS_UNIX
-    #include <unistd.h>
-    #include <sys/types.h>
-    #include <pwd.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <pwd.h>
 #endif
 
 #ifdef Q_OS_WIN
-    #include <windows.h>
-    #include <lmcons.h>
+#include <windows.h>
+#include <lmcons.h>
 #endif
 
 SingleApplicationPrivate::SingleApplicationPrivate( SingleApplication *q_ptr )
@@ -155,9 +155,9 @@ void SingleApplicationPrivate::startPrimary()
     // Restrict access to the socket according to the
     // SingleApplication::Mode::User flag on User level or no restrictions
     if( options & SingleApplication::Mode::User ) {
-      server->setSocketOptions( QLocalServer::UserAccessOption );
+        server->setSocketOptions( QLocalServer::UserAccessOption );
     } else {
-      server->setSocketOptions( QLocalServer::WorldAccessOption );
+        server->setSocketOptions( QLocalServer::WorldAccessOption );
     }
 
     server->listen( blockServerName );
@@ -196,7 +196,7 @@ void SingleApplicationPrivate::connectToPrimary( int msecs, ConnectionType conne
 
     // If not connect
     if( socket->state() == QLocalSocket::UnconnectedState ||
-        socket->state() == QLocalSocket::ClosingState ) {
+            socket->state() == QLocalSocket::ClosingState ) {
         socket->connectToServer( blockServerName );
     }
 
@@ -240,9 +240,9 @@ void SingleApplicationPrivate::connectToPrimary( int msecs, ConnectionType conne
 quint16 SingleApplicationPrivate::blockChecksum()
 {
     return qChecksum(
-       static_cast <const char *>( memory->data() ),
-       offsetof( InstancesInfo, checksum )
-   );
+               static_cast <const char *>( memory->data() ),
+               offsetof( InstancesInfo, checksum )
+           );
 }
 
 qint64 SingleApplicationPrivate::primaryPid()
@@ -266,37 +266,37 @@ void SingleApplicationPrivate::slotConnectionEstablished()
     connectionMap.insert(nextConnSocket, ConnectionInfo());
 
     QObject::connect(nextConnSocket, &QLocalSocket::aboutToClose,
-        [nextConnSocket, this]() {
-            auto &info = connectionMap[nextConnSocket];
-            Q_EMIT this->slotClientConnectionClosed( nextConnSocket, info.instanceId );
-        }
-    );
+    [nextConnSocket, this]() {
+        auto &info = connectionMap[nextConnSocket];
+        Q_EMIT this->slotClientConnectionClosed( nextConnSocket, info.instanceId );
+    }
+                    );
 
     QObject::connect(nextConnSocket, &QLocalSocket::disconnected,
-        [nextConnSocket, this](){
-            connectionMap.remove(nextConnSocket);
-            nextConnSocket->deleteLater();
-        }
-    );
+    [nextConnSocket, this]() {
+        connectionMap.remove(nextConnSocket);
+        nextConnSocket->deleteLater();
+    }
+                    );
 
     QObject::connect(nextConnSocket, &QLocalSocket::readyRead,
-        [nextConnSocket, this]() {
-            auto &info = connectionMap[nextConnSocket];
-            switch(info.stage) {
-            case StageHeader:
-                readInitMessageHeader(nextConnSocket);
-                break;
-            case StageBody:
-                readInitMessageBody(nextConnSocket);
-                break;
-            case StageConnected:
-                Q_EMIT this->slotDataAvailable( nextConnSocket, info.instanceId );
-                break;
-            default:
-                break;
-            };
-        }
-    );
+    [nextConnSocket, this]() {
+        auto &info = connectionMap[nextConnSocket];
+        switch(info.stage) {
+        case StageHeader:
+            readInitMessageHeader(nextConnSocket);
+            break;
+        case StageBody:
+            readInitMessageBody(nextConnSocket);
+            break;
+        case StageConnected:
+            Q_EMIT this->slotDataAvailable( nextConnSocket, info.instanceId );
+            break;
+        default:
+            break;
+        };
+    }
+                    );
 }
 
 void SingleApplicationPrivate::readInitMessageHeader( QLocalSocket *sock )
@@ -381,8 +381,8 @@ void SingleApplicationPrivate::readInitMessageBody( QLocalSocket *sock )
     info.stage = StageConnected;
 
     if( connectionType == NewInstance ||
-        ( connectionType == SecondaryInstance &&
-          options & SingleApplication::Mode::SecondaryNotification ) )
+            ( connectionType == SecondaryInstance &&
+              options & SingleApplication::Mode::SecondaryNotification ) )
     {
         Q_EMIT q->instanceStarted();
     }

@@ -85,9 +85,13 @@ public:
      */
     const QList<std::shared_ptr<FileInfo>> getChildren(bool addToHash = false);
 
-    const QStringList getChildrenUris() {return *m_children_uris;}
+    const QStringList getChildrenUris() {
+        return *m_children_uris;
+    }
 
-    void setAutoDelete(bool autoDelete = true) {m_auto_delete = true;}
+    void setAutoDelete(bool autoDelete = true) {
+        m_auto_delete = true;
+    }
 
 Q_SIGNALS:
     /*!
@@ -171,8 +175,8 @@ protected:
      * \see handleError().
      */
     static GAsyncReadyCallback mount_mountable_callback(GFile *file,
-                                                        GAsyncResult *res,
-                                                        FileEnumerator *p_this);
+            GAsyncResult *res,
+            FileEnumerator *p_this);
 
     /*!
      * \brief mount_enclosing_volume_callback
@@ -183,8 +187,8 @@ protected:
      * \see handleError().
      */
     static GAsyncReadyCallback mount_enclosing_volume_callback(GFile *file,
-                                                               GAsyncResult *res,
-                                                               FileEnumerator *p_this);
+            GAsyncResult *res,
+            FileEnumerator *p_this);
 
     /*!
      * \brief find_children_async_ready_callback
@@ -195,8 +199,8 @@ protected:
      * \see enumerateAsync().
      */
     static GAsyncReadyCallback find_children_async_ready_callback(GFile *file,
-                                                                  GAsyncResult *res,
-                                                                  FileEnumerator *p_this);
+            GAsyncResult *res,
+            FileEnumerator *p_this);
 
     /*!
      * \brief enumerator_next_files_async_ready_callback
@@ -207,8 +211,8 @@ protected:
      * \see enumerateAsync().
      */
     static GAsyncReadyCallback enumerator_next_files_async_ready_callback(GFileEnumerator *enumerator,
-                                                                          GAsyncResult *res,
-                                                                          FileEnumerator *p_this);
+            GAsyncResult *res,
+            FileEnumerator *p_this);
 
 private:
     GFile *m_root_file = nullptr;

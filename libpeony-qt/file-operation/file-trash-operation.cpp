@@ -37,7 +37,7 @@ void FileTrashOperation::run()
     for (auto src : m_src_uris) {
         if (isCancelled())
             break;
-        retry:
+retry:
         auto srcFile = wrapGFile(g_file_new_for_uri(src.toUtf8().constData()));
         GError *err = nullptr;
         g_file_trash(srcFile.get()->get(),

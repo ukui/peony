@@ -37,24 +37,46 @@ public:
     explicit DirectoryViewExtensionsTestPlugin(QObject *parent = nullptr);
 
     //plugin implement
-    const QString name() override {return QObject::tr("Directory View Plugin");}
-    PluginType pluginType() override {return PluginType::DirectoryViewPlugin2;}
-    const QString description() override {return QObject::tr("Show the folder children as icons.");}
-    const QIcon icon() override {return QIcon::fromTheme("folder");}
-    void setEnable(bool enable) override {Q_UNUSED(enable)}
-    bool isEnable() override {return true;}
+    const QString name() override {
+        return QObject::tr("Directory View Plugin");
+    }
+    PluginType pluginType() override {
+        return PluginType::DirectoryViewPlugin2;
+    }
+    const QString description() override {
+        return QObject::tr("Show the folder children as icons.");
+    }
+    const QIcon icon() override {
+        return QIcon::fromTheme("folder");
+    }
+    void setEnable(bool enable) override {
+        Q_UNUSED(enable)
+    }
+    bool isEnable() override {
+        return true;
+    }
 
     //directory view plugin implemeny
-    QString viewIdentity() override {return QObject::tr("Directory View Plugin");}
-    QIcon viewIcon() override {return QIcon::fromTheme("folder");}
-    bool supportUri(const QString &uri) override {return !uri.isEmpty();}
+    QString viewIdentity() override {
+        return QObject::tr("Directory View Plugin");
+    }
+    QIcon viewIcon() override {
+        return QIcon::fromTheme("folder");
+    }
+    bool supportUri(const QString &uri) override {
+        return !uri.isEmpty();
+    }
 
     //void fillDirectoryView(DirectoryViewWidget *view) override;
 
     DirectoryViewWidget *create() override;
 
-    int zoom_level_hint() override {return 0;}
-    int priority(const QString &) override {return -1;}
+    int zoom_level_hint() override {
+        return 0;
+    }
+    int priority(const QString &) override {
+        return -1;
+    }
 };
 
 }

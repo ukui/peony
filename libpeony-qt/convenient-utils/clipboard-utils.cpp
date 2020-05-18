@@ -56,7 +56,7 @@ ClipboardUtils *ClipboardUtils::getInstance()
 ClipboardUtils::ClipboardUtils(QObject *parent) : QObject(parent)
 {
     connect(QApplication::clipboard(), &QClipboard::dataChanged, this, &ClipboardUtils::clipboardChanged);
-    connect(QApplication::clipboard(), &QClipboard::dataChanged, [=](){
+    connect(QApplication::clipboard(), &QClipboard::dataChanged, [=]() {
         auto data = QApplication::clipboard()->mimeData();
         if (!data->hasFormat("peony-qt/is-cut")) {
             m_clipboard_parent_uri = nullptr;

@@ -36,7 +36,9 @@ class PEONYCORESHARED_EXPORT LocationBar : public QToolBar
 public:
     explicit LocationBar(QWidget *parent = nullptr);
     ~LocationBar() override;
-    const QString getCurentUri() {return m_current_uri;}
+    const QString getCurentUri() {
+        return m_current_uri;
+    }
 
 Q_SIGNALS:
     void groupChangedRequest(const QString &uri);

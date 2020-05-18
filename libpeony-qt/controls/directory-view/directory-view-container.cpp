@@ -280,7 +280,7 @@ void DirectoryViewContainer::switchViewType(const QString &viewId)
     //similar to double clicked, but just jump directory only.
     //note that if view use double clicked signal, this signal should
     //not sended again.
-    connect(m_view, &DirectoryViewWidget::updateWindowLocationRequest, this, [=](const QString &uri){
+    connect(m_view, &DirectoryViewWidget::updateWindowLocationRequest, this, [=](const QString &uri) {
         Q_EMIT this->updateWindowLocationRequest(uri, true);
     });
 
@@ -293,28 +293,28 @@ void DirectoryViewContainer::switchViewType(const QString &viewId)
 
     QAction *cdUpAction = new QAction(m_view);
     cdUpAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::ALT + Qt::Key_Up));
-    connect(cdUpAction, &QAction::triggered, this, [=](){
+    connect(cdUpAction, &QAction::triggered, this, [=]() {
         this->cdUp();
     });
     this->addAction(cdUpAction);
 
     QAction *goBackAction = new QAction(m_view);
     goBackAction->setShortcut(QKeySequence::Back);
-    connect(goBackAction, &QAction::triggered, this, [=](){
+    connect(goBackAction, &QAction::triggered, this, [=]() {
         this->goBack();
     });
     this->addAction(goBackAction);
 
     QAction *goForwardAction = new QAction(m_view);
     goForwardAction->setShortcut(QKeySequence::Forward);
-    connect(goForwardAction, &QAction::triggered, this, [=](){
+    connect(goForwardAction, &QAction::triggered, this, [=]() {
         this->goForward();
     });
     this->addAction(goForwardAction);
 
     QAction *editAction = new QAction(m_view);
     editAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::ALT + Qt::Key_E)<<Qt::Key_F2);
-    connect(editAction, &QAction::triggered, this, [=](){
+    connect(editAction, &QAction::triggered, this, [=]() {
         auto selections = m_view->getSelections();
         if (selections.count() == 1) {
             m_view->editUri(selections.first());

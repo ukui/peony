@@ -84,7 +84,7 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
     //initMenu();
     initDoubleClick();
 
-    connect(qApp, &QApplication::paletteChanged, this, [=](){
+    connect(qApp, &QApplication::paletteChanged, this, [=]() {
         viewport()->update();
     });
 
@@ -153,20 +153,20 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
 
     //connect(m_model, &DesktopItemModel::dataChanged, this, &DesktopIconView::clearAllIndexWidgets);
 
-    connect(m_model, &DesktopItemModel::refreshed, this, [=](){
+    connect(m_model, &DesktopItemModel::refreshed, this, [=]() {
         this->updateItemPosistions(nullptr);
         this->m_is_refreshing = false;
         if (isItemsOverlapped()) {
             // try handling the problem items overlapped.
-            QTimer::singleShot(500, this, [=](){
+            QTimer::singleShot(500, this, [=]() {
                 if (m_is_refreshing)
                     return;
 
                 setSortType(GlobalSettings::getInstance()->getValue(LAST_DESKTOP_SORT_ORDER).toInt());
 #if QT_VERSION > QT_VERSION_CHECK(5, 12, 0)
-                QTimer::singleShot(100, this, [=](){
+                QTimer::singleShot(100, this, [=]() {
 #else
-                QTimer::singleShot(100, [=](){
+                QTimer::singleShot(100, [=]() {
 #endif
                     this->saveAllItemPosistionInfos();
                 });
@@ -176,7 +176,7 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
 
     connect(m_model, &DesktopItemModel::requestClearIndexWidget, this, &DesktopIconView::clearAllIndexWidgets);
 
-    connect(m_model, &DesktopItemModel::requestLayoutNewItem, this, [=](const QString &uri){
+    connect(m_model, &DesktopItemModel::requestLayoutNewItem, this, [=](const QString &uri) {
         auto index = m_proxy_model->mapFromSource(m_model->indexFromUri(uri));
         //qDebug()<<"=====================layout new item"<<index.data();
 
@@ -219,13 +219,13 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
 
     connect(m_model, &DesktopItemModel::requestUpdateItemPositions, this, &DesktopIconView::updateItemPosistions);
 
-    connect(m_model, &DesktopItemModel::fileCreated, this, [=](const QString &uri){
+    connect(m_model, &DesktopItemModel::fileCreated, this, [=](const QString &uri) {
         if (m_new_files_to_be_selected.isEmpty()) {
             m_new_files_to_be_selected<<uri;
 #if QT_VERSION > QT_VERSION_CHECK(5, 12, 0)
-            QTimer::singleShot(500, this, [=](){
+            QTimer::singleShot(500, this, [=]() {
 #else
-            QTimer::singleShot(500, [=](){
+            QTimer::singleShot(500, [=]() {
 #endif
                 if (this->state() & QAbstractItemView::EditingState)
                     return;
@@ -239,7 +239,7 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
         }
     });
 
-    connect(m_proxy_model, &QSortFilterProxyModel::layoutChanged, this, [=](){
+    connect(m_proxy_model, &QSortFilterProxyModel::layoutChanged, this, [=]() {
         //qDebug()<<"layout changed=========================\n\n\n\n\n";
         if (m_proxy_model->getSortType() == DesktopItemProxyModel::Other) {
             return;
@@ -249,21 +249,21 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
         }
         //qDebug()<<"save====================================";
 #if QT_VERSION > QT_VERSION_CHECK(5, 12, 0)
-        QTimer::singleShot(100, this, [=](){
+        QTimer::singleShot(100, this, [=]() {
 #else
-        QTimer::singleShot(100, [=](){
+        QTimer::singleShot(100, [=]() {
 #endif
             this->saveAllItemPosistionInfos();
         });
     });
 
-    connect(this, &QListView::iconSizeChanged, this, [=](){
+    connect(this, &QListView::iconSizeChanged, this, [=]() {
         //qDebug()<<"save=============";
         this->setSortType(GlobalSettings::getInstance()->getValue(LAST_DESKTOP_SORT_ORDER).toInt());
 #if QT_VERSION > QT_VERSION_CHECK(5, 12, 0)
-        QTimer::singleShot(100, this, [=](){
+        QTimer::singleShot(100, this, [=]() {
 #else
-        QTimer::singleShot(100, [=](){
+        QTimer::singleShot(100, [=]() {
 #endif
             this->saveAllItemPosistionInfos();
         });
@@ -380,7 +380,7 @@ void DesktopIconView::initShoutCut()
 
     QAction *helpAction = new QAction(this);
     helpAction->setShortcut(Qt::Key_F1);
-    connect(helpAction, &QAction::triggered, this, [=](){
+    connect(helpAction, &QAction::triggered, this, [=]() {
         PeonyDesktopApplication::showGuide();
     });
     addAction(helpAction);
@@ -388,7 +388,7 @@ void DesktopIconView::initShoutCut()
     auto propertiesWindowAction = new QAction(this);
     propertiesWindowAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::ALT + Qt::Key_Return)
                                          <<QKeySequence(Qt::ALT + Qt::Key_Enter));
-    connect(propertiesWindowAction, &QAction::triggered, this, [=](){
+    connect(propertiesWindowAction, &QAction::triggered, this, [=]() {
         if (this->getSelections().count() > 0)
         {
             PropertiesWindow *w = new PropertiesWindow(this->getSelections());
@@ -399,14 +399,14 @@ void DesktopIconView::initShoutCut()
 
     auto newFolderAction = new QAction(this);
     newFolderAction->setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_N));
-    connect(newFolderAction, &QAction::triggered, this, [=](){
+    connect(newFolderAction, &QAction::triggered, this, [=]() {
         CreateTemplateOperation op(this->getDirectoryUri(), CreateTemplateOperation::EmptyFolder, tr("New Folder"));
         op.run();
         auto targetUri = op.target();
 #if QT_VERSION > QT_VERSION_CHECK(5, 12, 0)
-            QTimer::singleShot(500, this, [=](){
+        QTimer::singleShot(500, this, [=]() {
 #else
-            QTimer::singleShot(500, [=](){
+        QTimer::singleShot(500, [=]() {
 #endif
             this->scrollToSelection(targetUri);
         });
@@ -415,14 +415,14 @@ void DesktopIconView::initShoutCut()
 
     auto refreshAction = new QAction(this);
     refreshAction->setShortcut(Qt::Key_F5);
-    connect(refreshAction, &QAction::triggered, this, [=](){
+    connect(refreshAction, &QAction::triggered, this, [=]() {
         this->refresh();
     });
     addAction(refreshAction);
 
     QAction *editAction = new QAction(this);
     editAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::ALT + Qt::Key_E)<<Qt::Key_F2);
-    connect(editAction, &QAction::triggered, this, [=](){
+    connect(editAction, &QAction::triggered, this, [=]() {
         auto selections = this->getSelections();
         if (selections.count() == 1) {
             this->editUri(selections.first());
@@ -679,9 +679,9 @@ void DesktopIconView::editUri(const QString &uri)
 {
     clearAllIndexWidgets();
 #if QT_VERSION > QT_VERSION_CHECK(5, 12, 0)
-    QTimer::singleShot(100, this, [=](){
+    QTimer::singleShot(100, this, [=]() {
 #else
-    QTimer::singleShot(100, [=](){
+    QTimer::singleShot(100, [=]() {
 #endif
         edit(m_proxy_model->mapFromSource(m_model->indexFromUri(uri)));
     });
@@ -706,12 +706,12 @@ void DesktopIconView::wheelEvent(QWheelEvent *e)
 {
     if (QApplication::keyboardModifiers() == Qt::ControlModifier)
     {
-       if (e->delta() > 0) {
-           zoomIn();
-       } else {
-           zoomOut();
-       }
-       resetAllItemPositionInfos();
+        if (e->delta() > 0) {
+            zoomIn();
+        } else {
+            zoomOut();
+        }
+        resetAllItemPositionInfos();
     }
 }
 

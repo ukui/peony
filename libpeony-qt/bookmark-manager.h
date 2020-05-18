@@ -43,8 +43,12 @@ class PEONYCORESHARED_EXPORT BookMarkManager : public QObject
 public:
     static BookMarkManager *getInstance();
 
-    const QStringList getCurrentUris() {return m_uris;}
-    bool isLoaded() {return m_is_loaded;}
+    const QStringList getCurrentUris() {
+        return m_uris;
+    }
+    bool isLoaded() {
+        return m_is_loaded;
+    }
 
 Q_SIGNALS:
     void urisLoaded();

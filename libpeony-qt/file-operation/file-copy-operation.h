@@ -45,7 +45,9 @@ public:
     ~FileCopyOperation() override;
 
     void run() override;
-    std::shared_ptr<FileOperationInfo> getOperationInfo() override {return m_info;}
+    std::shared_ptr<FileOperationInfo> getOperationInfo() override {
+        return m_info;
+    }
 
 public Q_SLOTS:
     void cancel() override;
@@ -98,7 +100,7 @@ private:
     goffset m_total_szie = 0;
 
     GFileCopyFlags m_default_copy_flag = GFileCopyFlags(G_FILE_COPY_NOFOLLOW_SYMLINKS|
-                                                        G_FILE_COPY_ALL_METADATA);
+                                         G_FILE_COPY_ALL_METADATA);
 
     FileNodeReporter *m_reporter = nullptr;
 

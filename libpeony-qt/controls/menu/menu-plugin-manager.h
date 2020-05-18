@@ -54,14 +54,28 @@ class CreateLinkInternalPlugin : public QObject, public MenuPluginInterface
 public:
     explicit CreateLinkInternalPlugin(QObject *parent);
 
-    PluginInterface::PluginType pluginType() override {return PluginInterface::MenuPlugin;}
-    const QString name() override {return tr("Peony-Qt Create Link Extension");}
-    const QString description() override {return tr("Create Link Menu Extension.");}
-    const QIcon icon() override {return QIcon::fromTheme("emblem-symbolic-link");}
-    void setEnable(bool enable) override {m_enable = enable;}
-    bool isEnable() override {return m_enable;}
+    PluginInterface::PluginType pluginType() override {
+        return PluginInterface::MenuPlugin;
+    }
+    const QString name() override {
+        return tr("Peony-Qt Create Link Extension");
+    }
+    const QString description() override {
+        return tr("Create Link Menu Extension.");
+    }
+    const QIcon icon() override {
+        return QIcon::fromTheme("emblem-symbolic-link");
+    }
+    void setEnable(bool enable) override {
+        m_enable = enable;
+    }
+    bool isEnable() override {
+        return m_enable;
+    }
 
-    QString testPlugin() override {return "test create link";}
+    QString testPlugin() override {
+        return "test create link";
+    }
     QList<QAction *> menuActions(Types types, const QString &uri, const QStringList &selectionUris) override;
 
 private:
@@ -74,14 +88,28 @@ class FileLabelInternalMenuPlugin : public QObject, public MenuPluginInterface
 public:
     explicit FileLabelInternalMenuPlugin(QObject *parent);
 
-    PluginInterface::PluginType pluginType() override {return PluginInterface::MenuPlugin;}
-    const QString name() override {return tr("Peony File Labels Menu Extension");}
-    const QString description() override {return tr("Tag a File with Menu.");}
-    const QIcon icon() override {return QIcon::fromTheme("emblem-symbolic-link");}
-    void setEnable(bool enable) override {m_enable = enable;}
-    bool isEnable() override {return m_enable;}
+    PluginInterface::PluginType pluginType() override {
+        return PluginInterface::MenuPlugin;
+    }
+    const QString name() override {
+        return tr("Peony File Labels Menu Extension");
+    }
+    const QString description() override {
+        return tr("Tag a File with Menu.");
+    }
+    const QIcon icon() override {
+        return QIcon::fromTheme("emblem-symbolic-link");
+    }
+    void setEnable(bool enable) override {
+        m_enable = enable;
+    }
+    bool isEnable() override {
+        return m_enable;
+    }
 
-    QString testPlugin() override {return "test create file label";}
+    QString testPlugin() override {
+        return "test create file label";
+    }
     QList<QAction *> menuActions(Types types, const QString &uri, const QStringList &selectionUris) override;
 
 private:

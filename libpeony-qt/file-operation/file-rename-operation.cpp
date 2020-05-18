@@ -54,10 +54,10 @@ void FileRenameOperation::run()
     Q_EMIT operationStarted();
     auto file = wrapGFile(g_file_new_for_uri(m_uri.toUtf8().constData()));
     auto info = wrapGFileInfo(g_file_query_info(file.get()->get(),
-                                                "*",
-                                                G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
-                                                getCancellable().get()->get(),
-                                                nullptr));
+                              "*",
+                              G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
+                              getCancellable().get()->get(),
+                              nullptr));
 
     bool is_local_desktop_file = false;
     QUrl url = m_uri;
@@ -121,55 +121,55 @@ void FileRenameOperation::run()
     auto newFile = FileUtils::resolveRelativePath(parent, m_new_name);
     if (is_local_desktop_file) {
 fallback_retry:
-    GError *err = nullptr;
-    g_file_move(file.get()->get(),
-                newFile.get()->get(),
-                G_FILE_COPY_ALL_METADATA,
-                nullptr,
-                nullptr,
-                nullptr,
-                &err);
-    if (err) {
-        qDebug()<<err->message;
-        auto responseType = errored(m_uri,
-                                    FileUtils::getFileUri(newFile),
-                                    GErrorWrapper::wrapFrom(err),
-                                    true);
-        switch (responseType.value<ResponseType>()) {
-        case Retry:
-            goto fallback_retry;
-        case Cancel:
-            cancel();
-            break;
-        default:
-            break;
+        GError *err = nullptr;
+        g_file_move(file.get()->get(),
+                    newFile.get()->get(),
+                    G_FILE_COPY_ALL_METADATA,
+                    nullptr,
+                    nullptr,
+                    nullptr,
+                    &err);
+        if (err) {
+            qDebug()<<err->message;
+            auto responseType = errored(m_uri,
+                                        FileUtils::getFileUri(newFile),
+                                        GErrorWrapper::wrapFrom(err),
+                                        true);
+            switch (responseType.value<ResponseType>()) {
+            case Retry:
+                goto fallback_retry;
+            case Cancel:
+                cancel();
+                break;
+            default:
+                break;
+            }
         }
-    }
     } else {
 retry:
-    GError *err = nullptr;
-    g_file_move(file.get()->get(),
-                newFile.get()->get(),
-                m_default_copy_flag,
-                getCancellable().get()->get(),
-                nullptr,
-                nullptr,
-                &err);
-    if (err) {
-        auto responseType = errored(m_uri,
-                                    FileUtils::getFileUri(newFile),
-                                    GErrorWrapper::wrapFrom(err),
-                                    true);
-        switch (responseType.value<ResponseType>()) {
-        case Retry:
-            goto retry;
-        case Cancel:
-            cancel();
-            break;
-        default:
-            break;
+        GError *err = nullptr;
+        g_file_move(file.get()->get(),
+                    newFile.get()->get(),
+                    m_default_copy_flag,
+                    getCancellable().get()->get(),
+                    nullptr,
+                    nullptr,
+                    &err);
+        if (err) {
+            auto responseType = errored(m_uri,
+                                        FileUtils::getFileUri(newFile),
+                                        GErrorWrapper::wrapFrom(err),
+                                        true);
+            switch (responseType.value<ResponseType>()) {
+            case Retry:
+                goto retry;
+            case Cancel:
+                cancel();
+                break;
+            default:
+                break;
+            }
         }
-    }
     }
 
     if (!isCancelled()) {

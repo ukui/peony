@@ -65,7 +65,7 @@ void MountOperation::cancel()
 void MountOperation::start()
 {
     ConnectServerDialog *dlg = new ConnectServerDialog;
-    connect(dlg, &QDialog::accepted, [=](){
+    connect(dlg, &QDialog::accepted, [=]() {
         g_mount_operation_set_username(m_op, dlg->user().toUtf8().constData());
         g_mount_operation_set_password(m_op, dlg->password().toUtf8().constData());
         g_mount_operation_set_domain(m_op, dlg->domain().toUtf8().constData());
@@ -97,8 +97,8 @@ void MountOperation::start()
 }
 
 GAsyncReadyCallback MountOperation::mount_enclosing_volume_callback(GFile *volume,
-                                                                    GAsyncResult *res,
-                                                                    MountOperation *p_this)
+        GAsyncResult *res,
+        MountOperation *p_this)
 {
     GError *err = nullptr;
     g_file_mount_enclosing_volume_finish (volume, res, &err);
@@ -129,7 +129,7 @@ void MountOperation::ask_question_cb(GMountOperation *op,
     while (*choice) {
         qDebug()<<*choice;
         QPushButton *button = msg_box->addButton(QString(*choice), QMessageBox::ActionRole);
-        connect(button, &QPushButton::clicked, [=](){
+        connect(button, &QPushButton::clicked, [=]() {
             g_mount_operation_set_choice(op, i);
         });
         *choice++;

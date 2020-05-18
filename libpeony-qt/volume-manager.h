@@ -41,7 +41,10 @@ class PEONYCORESHARED_EXPORT Drive
 {
 public:
     Drive();//do not use this constructor
-    Drive(GDrive *drive, bool takeOver = false) {m_drive = drive; m_take_over = takeOver;}
+    Drive(GDrive *drive, bool takeOver = false) {
+        m_drive = drive;
+        m_take_over = takeOver;
+    }
     ~Drive()
     {
         //do not unref the handle, it is managed by GVolumeMonitor.

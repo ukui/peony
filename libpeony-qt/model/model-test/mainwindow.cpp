@@ -101,7 +101,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     //model/view
 
-    connect(line, &QLineEdit::returnPressed, [=](){
+    connect(line, &QLineEdit::returnPressed, [=]() {
 
 
         Peony::FileItemModel *model = new Peony::FileItemModel(this);
@@ -137,11 +137,11 @@ MainWindow::MainWindow(QWidget *parent)
         undoAction->setShortcut(QKeySequence::Undo);
         QAction *redoAction = new QAction(QIcon::fromTheme("redo"), tr("redo"), lv);
         redoAction->setShortcut(QKeySequence::Redo);
-        connect(undoAction, &QAction::triggered, [=](){
+        connect(undoAction, &QAction::triggered, [=]() {
             auto fileOpMgr = Peony::FileOperationManager::getInstance();
             fileOpMgr->undo();
         });
-        connect(redoAction, &QAction::triggered, [=](){
+        connect(redoAction, &QAction::triggered, [=]() {
             auto fileOpMgr = Peony::FileOperationManager::getInstance();
             fileOpMgr->redo();
         });
@@ -149,65 +149,65 @@ MainWindow::MainWindow(QWidget *parent)
         lv->addAction(undoAction);
         lv->addAction(redoAction);
 
-        connect(lv, &QListView::doubleClicked, [=](const QModelIndex &index){
+        connect(lv, &QListView::doubleClicked, [=](const QModelIndex &index) {
             lv->setWindowTitle(index.data().toString());
             model->setRootIndex(index);
             //pm->update();
         });
 
-        connect(model, &Peony::FileItemModel::findChildrenFinished, [=](){
+        connect(model, &Peony::FileItemModel::findChildrenFinished, [=]() {
             pm->sort(0);
         });
         lv->show();
 
 
         //tree view, expandable
-/*
-        QTreeView *v = new QTreeView();
-        v->setAttribute(Qt::WA_DeleteOnClose);
-        v->setModel(model);
-        model->setParent(v);
-        v->show();
-        connect(v, &QTreeView::expanded, [=](const QModelIndex &index){
-            auto item = model->itemFromIndex(index);
-            item->findChildrenAsync();
-        });
-        connect(v, &QTreeView::collapsed, [=](const QModelIndex &index){
-            auto item = model->itemFromIndex(index);
-            item->clearChildren();
-        });
+        /*
+                QTreeView *v = new QTreeView();
+                v->setAttribute(Qt::WA_DeleteOnClose);
+                v->setModel(model);
+                model->setParent(v);
+                v->show();
+                connect(v, &QTreeView::expanded, [=](const QModelIndex &index){
+                    auto item = model->itemFromIndex(index);
+                    item->findChildrenAsync();
+                });
+                connect(v, &QTreeView::collapsed, [=](const QModelIndex &index){
+                    auto item = model->itemFromIndex(index);
+                    item->clearChildren();
+                });
 
-        QTreeView *pv = new QTreeView;
-        Peony::FileItemProxyFilterSortModel *proxy_model = new Peony::FileItemProxyFilterSortModel(pv);
-        proxy_model->setSourceModel(model);
-        pv->setAttribute(Qt::WA_DeleteOnClose);
-        pv->setSortingEnabled(true);
-        pv->setModel(proxy_model);
-        connect(pv, &QTreeView::expanded, [=](const QModelIndex &proxyIndex){
-            auto item = proxy_model->itemFromIndex(proxyIndex);
-            item->findChildrenAsync();
-        });
-        connect(pv, &QTreeView::collapsed, [=](const QModelIndex &proxyIndex){
-            auto index = proxy_model->getSourceIndex(proxyIndex);
-            auto item = model->itemFromIndex(index);
-            item->clearChildren();
-        });
+                QTreeView *pv = new QTreeView;
+                Peony::FileItemProxyFilterSortModel *proxy_model = new Peony::FileItemProxyFilterSortModel(pv);
+                proxy_model->setSourceModel(model);
+                pv->setAttribute(Qt::WA_DeleteOnClose);
+                pv->setSortingEnabled(true);
+                pv->setModel(proxy_model);
+                connect(pv, &QTreeView::expanded, [=](const QModelIndex &proxyIndex){
+                    auto item = proxy_model->itemFromIndex(proxyIndex);
+                    item->findChildrenAsync();
+                });
+                connect(pv, &QTreeView::collapsed, [=](const QModelIndex &proxyIndex){
+                    auto index = proxy_model->getSourceIndex(proxyIndex);
+                    auto item = model->itemFromIndex(index);
+                    item->clearChildren();
+                });
 
-        pv->show();
-        pv->header()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
+                pv->show();
+                pv->header()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
 
-        connect(model, &Peony::FileItemModel::findChildrenStarted, [pv](){
-            QCursor c;
-            c.setShape(Qt::WaitCursor);
-            pv->setCursor(c);
-        });
-        connect(model, &Peony::FileItemModel::findChildrenFinished, [=](){
-            QCursor c;
-            c.setShape(Qt::ArrowCursor);
-            pv->setCursor(c);
-            pv->sortByColumn(0, Qt::AscendingOrder);
-        });
-*/
+                connect(model, &Peony::FileItemModel::findChildrenStarted, [pv](){
+                    QCursor c;
+                    c.setShape(Qt::WaitCursor);
+                    pv->setCursor(c);
+                });
+                connect(model, &Peony::FileItemModel::findChildrenFinished, [=](){
+                    QCursor c;
+                    c.setShape(Qt::ArrowCursor);
+                    pv->setCursor(c);
+                    pv->sortByColumn(0, Qt::AscendingOrder);
+                });
+        */
 
     });
 #endif

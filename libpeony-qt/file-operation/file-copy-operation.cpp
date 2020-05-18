@@ -123,8 +123,8 @@ FileOperation::ResponseType FileCopyOperation::prehandle(GError *err)
 }
 
 void FileCopyOperation::progress_callback(goffset current_num_bytes,
-                                          goffset total_num_bytes,
-                                          FileCopyOperation *p_this)
+        goffset total_num_bytes,
+        FileCopyOperation *p_this)
 {
     auto currnet = p_this->m_current_offset + current_num_bytes;
     auto total = p_this->m_total_szie;

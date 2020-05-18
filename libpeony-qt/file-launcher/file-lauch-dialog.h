@@ -49,7 +49,9 @@ class PEONYCORESHARED_EXPORT FileLauchDialog : public QDialog
 public:
     explicit FileLauchDialog(const QString &uri, QWidget *parent = nullptr);
 
-    QSize sizeHint() const override {return QSize(400, 600);}
+    QSize sizeHint() const override {
+        return QSize(400, 600);
+    }
 private:
     QVBoxLayout *m_layout;
 

@@ -50,7 +50,7 @@ FileEnumerator::FileEnumerator(QObject *parent) : QObject(parent)
 
     m_children_uris = new QList<QString>();
 
-    connect(this, &FileEnumerator::enumerateFinished, this, [=](){
+    connect(this, &FileEnumerator::enumerateFinished, this, [=]() {
         if (m_auto_delete) {
             this->deleteLater();
         }
@@ -145,10 +145,10 @@ void FileEnumerator::prepare()
 {
     GError *err = nullptr;
     GFileEnumerator *enumerator = g_file_enumerate_children(m_root_file,
-                                                            G_FILE_ATTRIBUTE_STANDARD_NAME,
-                                                            G_FILE_QUERY_INFO_NONE,
-                                                            m_cancellable,
-                                                            &err);
+                                  G_FILE_ATTRIBUTE_STANDARD_NAME,
+                                  G_FILE_QUERY_INFO_NONE,
+                                  m_cancellable,
+                                  &err);
 
     if (err) {
         //do not send prepared(err) here, wait handle err finished.
@@ -161,9 +161,9 @@ void FileEnumerator::prepare()
         //Q_EMIT prepared(nullptr);
         g_object_unref(enumerator);
 #if QT_VERSION > QT_VERSION_CHECK(5, 12, 0)
-        QTimer::singleShot(100, this, [=](){
+        QTimer::singleShot(100, this, [=]() {
 #else
-        QTimer::singleShot(100, [=](){
+        QTimer::singleShot(100, [=]() {
 #endif
             Q_EMIT prepared(nullptr);
         });
@@ -179,7 +179,7 @@ GFile *FileEnumerator::enumerateTargetFile()
                                         nullptr);
     char *uri = nullptr;
     uri = g_file_info_get_attribute_as_string(info,
-                                              G_FILE_ATTRIBUTE_STANDARD_TARGET_URI);
+            G_FILE_ATTRIBUTE_STANDARD_TARGET_URI);
     g_object_unref(info);
 
     GFile *target = nullptr;
@@ -198,10 +198,10 @@ void FileEnumerator::enumerateSync()
     GFile *target = enumerateTargetFile();
 
     GFileEnumerator *enumerator = g_file_enumerate_children(target,
-                                                            G_FILE_ATTRIBUTE_STANDARD_NAME,
-                                                            G_FILE_QUERY_INFO_NONE,
-                                                            m_cancellable,
-                                                            nullptr);
+                                  G_FILE_ATTRIBUTE_STANDARD_NAME,
+                                  G_FILE_QUERY_INFO_NONE,
+                                  m_cancellable,
+                                  nullptr);
 
     if (enumerator) {
         enumerateChildren(enumerator);
@@ -240,7 +240,7 @@ void FileEnumerator::handleError(GError *err)
 
         bool isMountable = false;
         GFileInfo *file_mount_info = g_file_query_info(m_root_file, G_FILE_ATTRIBUTE_MOUNTABLE_CAN_MOUNT,
-                                                       G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, nullptr, nullptr);
+                                     G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, nullptr, nullptr);
 
         if (file_mount_info) {
             isMountable = g_file_info_get_attribute_boolean(file_mount_info, G_FILE_ATTRIBUTE_MOUNTABLE_CAN_MOUNT);
@@ -324,7 +324,7 @@ void FileEnumerator::enumerateChildren(GFileEnumerator *enumerator)
             *m_children_uris<<localUri;
             g_free(path);
         } else {
-           *m_children_uris<<uri;
+            *m_children_uris<<uri;
         }
 
         g_free(uri);
@@ -335,8 +335,8 @@ void FileEnumerator::enumerateChildren(GFileEnumerator *enumerator)
 }
 
 GAsyncReadyCallback FileEnumerator::mount_mountable_callback(GFile *file,
-                                                             GAsyncResult *res,
-                                                             FileEnumerator *p_this)
+        GAsyncResult *res,
+        FileEnumerator *p_this)
 {
     GError *err = nullptr;
     GFile *target = g_file_mount_mountable_finish(file, res, &err);
@@ -356,8 +356,8 @@ GAsyncReadyCallback FileEnumerator::mount_mountable_callback(GFile *file,
 }
 
 GAsyncReadyCallback FileEnumerator::mount_enclosing_volume_callback(GFile *file,
-                                                                    GAsyncResult *res,
-                                                                    FileEnumerator *p_this)
+        GAsyncResult *res,
+        FileEnumerator *p_this)
 {
     //qDebug()<<"mount_enclosing_volume_callback";
     GError *err = nullptr;
@@ -386,10 +386,10 @@ GAsyncReadyCallback FileEnumerator::mount_enclosing_volume_callback(GFile *file,
             op->setAutoDelete();
             g_free(uri);
             //op->setAutoDelete();
-            p_this->connect(op, &MountOperation::cancelled, p_this, [p_this](){
+            p_this->connect(op, &MountOperation::cancelled, p_this, [p_this]() {
                 Q_EMIT p_this->enumerateFinished(false);
             });
-            p_this->connect(op, &MountOperation::finished, p_this, [=](const std::shared_ptr<GErrorWrapper> &finished_err){
+            p_this->connect(op, &MountOperation::finished, p_this, [=](const std::shared_ptr<GErrorWrapper> &finished_err) {
                 if (finished_err) {
                     qDebug()<<"finished err:"<<finished_err->code()<<finished_err->message();
                     if (finished_err->code() == G_IO_ERROR_PERMISSION_DENIED) {
@@ -409,8 +409,8 @@ GAsyncReadyCallback FileEnumerator::mount_enclosing_volume_callback(GFile *file,
 }
 
 GAsyncReadyCallback FileEnumerator::find_children_async_ready_callback(GFile *file,
-                                                                       GAsyncResult *res,
-                                                                       FileEnumerator *p_this)
+        GAsyncResult *res,
+        FileEnumerator *p_this)
 {
     GError *err = nullptr;
     GFileEnumerator *enumerator = g_file_enumerate_children_finish(file, res, &err);
@@ -440,13 +440,13 @@ GAsyncReadyCallback FileEnumerator::find_children_async_ready_callback(GFile *fi
 }
 
 GAsyncReadyCallback FileEnumerator::enumerator_next_files_async_ready_callback(GFileEnumerator *enumerator,
-                                                                               GAsyncResult *res,
-                                                                               FileEnumerator *p_this)
+        GAsyncResult *res,
+        FileEnumerator *p_this)
 {
     GError *err = nullptr;
     GList *files = g_file_enumerator_next_files_finish(enumerator,
-                                                       res,
-                                                       &err);
+                   res,
+                   &err);
 
     auto errPtr = GErrorWrapper::wrapFrom(err);
     if (!files && !err) {

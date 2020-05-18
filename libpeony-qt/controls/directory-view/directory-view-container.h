@@ -77,7 +77,9 @@ public:
     Qt::SortOrder getSortOrder();
 
     //DirectoryViewProxyIface *getProxy() {return m_proxy;}
-    DirectoryViewWidget *getView() {return m_view;}
+    DirectoryViewWidget *getView() {
+        return m_view;
+    }
 
 Q_SIGNALS:
     void viewTypeChanged();
@@ -104,7 +106,10 @@ public Q_SLOTS:
     void stopLoading();
 
     void tryJump(int index);
-    void clearHistory() {m_back_list.clear(); m_forward_list.clear();}
+    void clearHistory() {
+        m_back_list.clear();
+        m_forward_list.clear();
+    }
 
     void setSortType(FileItemModel::ColumnType type);
     void setSortOrder(Qt::SortOrder order);

@@ -64,19 +64,19 @@ NavigationTabBar::NavigationTabBar(QWidget *parent) : QTabBar(parent)
     setTabsClosable(true);
     X11WindowManager::getInstance()->registerWidget(this);
 
-    connect(this, &QTabBar::currentChanged, this, [=](int index){
+    connect(this, &QTabBar::currentChanged, this, [=](int index) {
         //qDebug()<<"current changed"<<index;
     });
 
-    connect(this, &QTabBar::tabMoved, this, [=](int from, int to){
+    connect(this, &QTabBar::tabMoved, this, [=](int from, int to) {
         //qDebug()<<"move"<<from<<"to"<<to;
     });
 
-    connect(this, &QTabBar::tabBarClicked, this, [=](int index){
+    connect(this, &QTabBar::tabBarClicked, this, [=](int index) {
         //qDebug()<<"tab bar clicked"<<index;
     });
 
-    connect(this, &QTabBar::tabBarDoubleClicked, this, [=](int index){
+    connect(this, &QTabBar::tabBarDoubleClicked, this, [=](int index) {
         //qDebug()<<"tab bar double clicked"<<index;
     });
 
@@ -86,7 +86,7 @@ NavigationTabBar::NavigationTabBar(QWidget *parent) : QTabBar(parent)
     addPageButton->setProperty("fillIconSymbolicColor", true);
     addPageButton->setFixedSize(QSize(this->height() + 2, this->height() + 2));
     addPageButton->setIcon(QIcon::fromTheme("list-add-symbolic"));
-    connect(addPageButton, &QToolButton::clicked, this, [=](){
+    connect(addPageButton, &QToolButton::clicked, this, [=]() {
         auto uri = tabData(currentIndex()).toString();
         Q_EMIT addPageRequest(uri, true);
     });
@@ -225,11 +225,11 @@ void NavigationTabBar::mousePressEvent(QMouseEvent *e)
         m_start_drag = false;
     }
 
-    QTimer::singleShot(1, this, [=](){
+    QTimer::singleShot(1, this, [=]() {
         if (!m_start_drag)
             return;
 
-        QTimer::singleShot(750, this, [=](){
+        QTimer::singleShot(750, this, [=]() {
             if (tabAt(e->pos()) == -1)
                 return;
 

@@ -32,66 +32,66 @@ using namespace Peony;
 
 SearchBarContainer::SearchBarContainer(QWidget *parent): QWidget(parent)
 {
-     QHBoxLayout *layout = new QHBoxLayout(this);
-     this->setLayout(layout);
-     m_layout = layout;
-     layout->setContentsMargins(0,0,0,0);
+    QHBoxLayout *layout = new QHBoxLayout(this);
+    this->setLayout(layout);
+    m_layout = layout;
+    layout->setContentsMargins(0,0,0,0);
 
-     QComboBox *filter = new QComboBox(this);
-     m_filter_box = filter;
-     filter->setToolTip(tr("Choose File Type"));
-     auto model = new QStringListModel(this);
-     model->setStringList(m_file_type_list);
-     filter->setModel(model);
-     filter->setFixedWidth(80);
-     filter->setFixedHeight(parent->height());
+    QComboBox *filter = new QComboBox(this);
+    m_filter_box = filter;
+    filter->setToolTip(tr("Choose File Type"));
+    auto model = new QStringListModel(this);
+    model->setStringList(m_file_type_list);
+    filter->setModel(model);
+    filter->setFixedWidth(80);
+    filter->setFixedHeight(parent->height());
 
-     QLineEdit *edit = new QLineEdit(this);
-     m_search_box = edit;
-     edit->setFixedHeight(parent->height());
+    QLineEdit *edit = new QLineEdit(this);
+    m_search_box = edit;
+    edit->setFixedHeight(parent->height());
 
-     layout->addWidget(filter, Qt::AlignLeft);
-     layout->addWidget(edit, Qt::AlignLeft);
+    layout->addWidget(filter, Qt::AlignLeft);
+    layout->addWidget(edit, Qt::AlignLeft);
 
-     //search history
-     m_model = new QStringListModel(m_search_box);
-     QCompleter *completer = new QCompleter(m_search_box);
-     completer->setModel(m_model);
-     completer->setMaxVisibleItems(10);
+    //search history
+    m_model = new QStringListModel(m_search_box);
+    QCompleter *completer = new QCompleter(m_search_box);
+    completer->setModel(m_model);
+    completer->setMaxVisibleItems(10);
 
-     auto m_list = m_model->stringList();
-     m_list.prepend(tr("Clear"));
-     m_model->setStringList(m_list);
-     m_list_view = new QListView(m_search_box);
-     m_list_view->setModel(m_model);
-     completer->setPopup(m_list_view);
-     completer->setCompletionMode(QCompleter::UnfilteredPopupCompletion);
-     m_search_box->setCompleter(completer);
+    auto m_list = m_model->stringList();
+    m_list.prepend(tr("Clear"));
+    m_model->setStringList(m_list);
+    m_list_view = new QListView(m_search_box);
+    m_list_view->setModel(m_model);
+    completer->setPopup(m_list_view);
+    completer->setCompletionMode(QCompleter::UnfilteredPopupCompletion);
+    m_search_box->setCompleter(completer);
 
-     connect(m_search_box, &QLineEdit::returnPressed, [=]()
-     {
-         if (! m_search_box->text().isEmpty())
-         {
-             auto l = m_model->stringList();
-             if (! l.contains(m_search_box->text()))
-                 l.prepend(m_search_box->text());
+    connect(m_search_box, &QLineEdit::returnPressed, [=]()
+    {
+        if (! m_search_box->text().isEmpty())
+        {
+            auto l = m_model->stringList();
+            if (! l.contains(m_search_box->text()))
+                l.prepend(m_search_box->text());
 
-             m_model->setStringList(l);
-         }
-         Q_EMIT this->returnPressed();
-     });
-     connect(m_filter_box, &QComboBox::currentTextChanged, [=]()
-     {
-         Q_EMIT this->filterUpdate(m_filter_box->currentIndex());
-     });
+            m_model->setStringList(l);
+        }
+        Q_EMIT this->returnPressed();
+    });
+    connect(m_filter_box, &QComboBox::currentTextChanged, [=]()
+    {
+        Q_EMIT this->filterUpdate(m_filter_box->currentIndex());
+    });
 
-     QAction *searchAction = m_search_box->addAction(QIcon::fromTheme("go-down"), QLineEdit::TrailingPosition);
-     connect(searchAction, &QAction::triggered, this, [=](){
-         //qDebug() << "triggered search history!";
-         m_search_box->completer()->complete();
-     });
+    QAction *searchAction = m_search_box->addAction(QIcon::fromTheme("go-down"), QLineEdit::TrailingPosition);
+    connect(searchAction, &QAction::triggered, this, [=]() {
+        //qDebug() << "triggered search history!";
+        m_search_box->completer()->complete();
+    });
 
-     connect(m_list_view, SIGNAL(clicked(const QModelIndex &)), this, SLOT(onTableClicked(const QModelIndex &)));
+    connect(m_list_view, SIGNAL(clicked(const QModelIndex &)), this, SLOT(onTableClicked(const QModelIndex &)));
 }
 
 QSize SearchBarContainer::sizeHint() const

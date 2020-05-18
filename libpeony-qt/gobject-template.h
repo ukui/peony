@@ -62,7 +62,9 @@ public:
             g_object_unref(m_obj);
     }
 
-    T *get() {return m_obj;}
+    T *get() {
+        return m_obj;
+    }
 
 private:
     mutable T *m_obj = nullptr;

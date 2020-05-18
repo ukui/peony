@@ -46,7 +46,7 @@ SortTypeMenu::SortTypeMenu(QWidget *parent) : QMenu(parent)
     modifiedDate->setCheckable(true);
     sortTypeGroup->addAction(modifiedDate);
 
-    connect(sortTypeGroup, &QActionGroup::triggered, this, [=](QAction *action){
+    connect(sortTypeGroup, &QActionGroup::triggered, this, [=](QAction *action) {
         int index = sortTypeGroup->actions().indexOf(action);
         switchSortTypeRequest(index);
     });
@@ -65,7 +65,7 @@ SortTypeMenu::SortTypeMenu(QWidget *parent) : QMenu(parent)
     descending->setCheckable(true);
     sortOrderGroup->addAction(descending);
 
-    connect(sortOrderGroup, &QActionGroup::triggered, this, [=](QAction *action){
+    connect(sortOrderGroup, &QActionGroup::triggered, this, [=](QAction *action) {
         int index = sortOrderGroup->actions().indexOf(action);
         switchSortOrderRequest(Qt::SortOrder(index));
     });

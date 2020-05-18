@@ -32,9 +32,9 @@
 using namespace Peony;
 
 SideBarFavoriteItem::SideBarFavoriteItem(QString uri,
-                                         SideBarFavoriteItem *parentItem,
-                                         SideBarModel *model,
-                                         QObject *parent) : SideBarAbstractItem (model, parent)
+        SideBarFavoriteItem *parentItem,
+        SideBarModel *model,
+        QObject *parent) : SideBarAbstractItem (model, parent)
 {
     m_parent = parentItem;
     m_is_root_child = m_parent == nullptr;
@@ -57,7 +57,7 @@ SideBarFavoriteItem::SideBarFavoriteItem(QString uri,
         if (bookmark->isLoaded()) {
             syncBookMark();
         } else {
-            connect(bookmark, &BookMarkManager::urisLoaded, this, [=](){
+            connect(bookmark, &BookMarkManager::urisLoaded, this, [=]() {
                 syncBookMark();
                 disconnect(bookmark, &BookMarkManager::urisLoaded, this, nullptr);
             });
@@ -115,14 +115,14 @@ void SideBarFavoriteItem::syncBookMark()
         *m_children<<item;
         m_model->insertRows(m_children->count() - 1, 1, this->firstColumnIndex());
     }
-    connect(bookmark, &BookMarkManager::bookMarkAdded, this, [=](const QString &uri, bool successed){
+    connect(bookmark, &BookMarkManager::bookMarkAdded, this, [=](const QString &uri, bool successed) {
         if (successed) {
             auto item = new SideBarFavoriteItem(uri, this, m_model);
             *m_children<<item;
             m_model->insertRows(m_children->count() - 1, 1, this->firstColumnIndex());
         }
     });
-    connect(bookmark, &BookMarkManager::bookMarkRemoved, this, [=](const QString &uri, bool successed){
+    connect(bookmark, &BookMarkManager::bookMarkRemoved, this, [=](const QString &uri, bool successed) {
         if (successed) {
             for (auto item : *m_children) {
                 if (item->uri() == uri) {

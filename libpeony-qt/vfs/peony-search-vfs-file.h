@@ -52,10 +52,10 @@ G_END_DECLS
 extern "C" {
     GFile *peony_search_vfs_file_new_for_uri(const char *uri);
     static GFileEnumerator *peony_search_vfs_file_enumerate_children_internal(GFile *file,
-                                                                              const char *attribute,
-                                                                              GFileQueryInfoFlags flags,
-                                                                              GCancellable *cancellable,
-                                                                              GError **error);
+            const char *attribute,
+            GFileQueryInfoFlags flags,
+            GCancellable *cancellable,
+            GError **error);
 }
 
 #endif // PEONYSEARCHVFSFILE_H

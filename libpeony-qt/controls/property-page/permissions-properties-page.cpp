@@ -223,7 +223,7 @@ GAsyncReadyCallback PermissionsPropertiesPage::async_query_permisson_callback(GO
 
                         checkbox->setChecked(p_this->m_permissions[i][j]);
 
-                        connect(checkbox, &QCheckBox::clicked, p_this, [=](){
+                        connect(checkbox, &QCheckBox::clicked, p_this, [=]() {
                             qDebug()<<"clicked"<<i<<j<<checkbox->isChecked();
                             p_this->checkBoxChanged(i, j, checkbox->isChecked());
                         });

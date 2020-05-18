@@ -38,13 +38,25 @@ public:
     explicit PWDItem(passwd *user);
     ~PWDItem() {}
 
-    const QString userName() {return m_user_name;}
-    int userId() {return m_uid;}
-    int groupId() {return m_gid;}
+    const QString userName() {
+        return m_user_name;
+    }
+    int userId() {
+        return m_uid;
+    }
+    int groupId() {
+        return m_gid;
+    }
 
-    const QString fullName() {return m_full_name;}
-    const QString homeDir() {return m_home_dir;}
-    const QString shellDir() {return m_shell_dir;}
+    const QString fullName() {
+        return m_full_name;
+    }
+    const QString homeDir() {
+        return m_home_dir;
+    }
+    const QString shellDir() {
+        return m_shell_dir;
+    }
 
 private:
     QString m_user_name;

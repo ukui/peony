@@ -47,7 +47,9 @@ public:
 
     void setForbidThumbnailInView(bool forbid);
 
-    bool hasThumbnail(const QString &uri) {return !m_hash.values(uri).isEmpty();}
+    bool hasThumbnail(const QString &uri) {
+        return !m_hash.values(uri).isEmpty();
+    }
 
     void createThumbnail(const QString &uri, std::shared_ptr<FileWatcher> watcher = nullptr, bool force = false);
     void releaseThumbnail(const QString &uri);

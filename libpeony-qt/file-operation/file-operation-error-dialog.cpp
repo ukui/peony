@@ -105,9 +105,9 @@ FileOperationErrorHandler::~FileOperationErrorHandler()
 }
 
 QVariant FileOperationErrorDialog::handleError(const QString &srcUri,
-                                               const QString &destDirUri,
-                                               const GErrorWrapperPtr &err,
-                                               bool isCritical)
+        const QString &destDirUri,
+        const GErrorWrapperPtr &err,
+        bool isCritical)
 {
     for (int i = 2; i < 8; i++) {
         btGroup->button(i)->setVisible(!isCritical);

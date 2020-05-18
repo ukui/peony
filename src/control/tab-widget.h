@@ -66,7 +66,9 @@ class TabWidget : public QMainWindow
 public:
     explicit TabWidget(QWidget *parent = nullptr);
 
-    QTabBar *tabBar() {return m_tab_bar;}
+    QTabBar *tabBar() {
+        return m_tab_bar;
+    }
 
     Peony::DirectoryViewContainer *currentPage();
 
@@ -152,8 +154,12 @@ public Q_SLOTS:
     void editUris(const QStringList &uris);
 
     void onViewDoubleClicked(const QString &uri);
-    bool getTriggeredPreviewPage(){return m_triggered_preview_page;}
-    void setTriggeredPreviewPage(bool trigger) {m_triggered_preview_page = trigger;}
+    bool getTriggeredPreviewPage() {
+        return m_triggered_preview_page;
+    }
+    void setTriggeredPreviewPage(bool trigger) {
+        m_triggered_preview_page = trigger;
+    }
 
     int count();
     int currentIndex();

@@ -81,8 +81,12 @@ public:
     ~FileOperation();
     virtual void run();
 
-    void setHasError(bool hasError = true) {m_has_error = hasError;}
-    bool hasError() {return m_has_error;}
+    void setHasError(bool hasError = true) {
+        m_has_error = hasError;
+    }
+    bool hasError() {
+        return m_has_error;
+    }
 
     /*!
      * \brief getOperationInfo
@@ -94,7 +98,9 @@ public:
      * The FileOperationInfo is a part of peony-qt's undo/redo stack(s). FileOperationManager
      * will manage the stack(s) made up of these info.
      */
-    virtual std::shared_ptr<FileOperationInfo> getOperationInfo() {return nullptr;}
+    virtual std::shared_ptr<FileOperationInfo> getOperationInfo() {
+        return nullptr;
+    }
 
     /*!
      * \brief setShouldReversible
@@ -107,10 +113,16 @@ public:
      * be undo, so it should not add into operation's history of undo/redo.
      * If you don't hope your operation keep records, just do not set it.
      */
-    void setShouldReversible(bool reversible = true) {m_reversible = reversible;}
-    virtual bool reversible() {return m_reversible;}
+    void setShouldReversible(bool reversible = true) {
+        m_reversible = reversible;
+    }
+    virtual bool reversible() {
+        return m_reversible;
+    }
 
-    bool isCancelled() {return m_is_cancelled;}
+    bool isCancelled() {
+        return m_is_cancelled;
+    }
 
 Q_SIGNALS:
     /*!
@@ -279,7 +291,9 @@ public Q_SLOTS:
     virtual void cancel();
 
 protected:
-    GCancellableWrapperPtr getCancellable(){return m_cancellable_wrapper;}
+    GCancellableWrapperPtr getCancellable() {
+        return m_cancellable_wrapper;
+    }
 
 private:
     GCancellableWrapperPtr m_cancellable_wrapper = nullptr;

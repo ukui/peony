@@ -67,7 +67,9 @@ public:
     ~FileItem();
 
     const QString uri();
-    const std::shared_ptr<FileInfo> info() {return m_info;}
+    const std::shared_ptr<FileInfo> info() {
+        return m_info;
+    }
 
     bool operator == (const FileItem &item);
 

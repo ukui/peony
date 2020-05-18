@@ -34,7 +34,9 @@ class DesktopMenuPluginManager : public QObject
     Q_OBJECT
 public:
     static DesktopMenuPluginManager *getInstance();
-    bool isLoaded() {return m_is_loaded;}
+    bool isLoaded() {
+        return m_is_loaded;
+    }
     const QStringList getPluginIds();
     QList<MenuPluginInterface*> getPlugins();
     MenuPluginInterface *getPlugin(const QString &pluginId);

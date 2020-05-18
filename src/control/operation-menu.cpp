@@ -60,20 +60,20 @@ OperationMenu::OperationMenu(MainWindow *window, QWidget *parent) : QMenu(parent
 
 //    addSeparator();
 
-    auto keepAllow = addAction(tr("Keep Allow"), this, [=](bool checked){
+    auto keepAllow = addAction(tr("Keep Allow"), this, [=](bool checked) {
         m_window->setWindowFlags(Qt::WindowStaysOnTopHint|m_window->windowFlags());
         m_window->show();
     });
     keepAllow->setCheckable(true);
 
-    auto showHidden = addAction(tr("Show Hidden"), this, [=](bool checked){
+    auto showHidden = addAction(tr("Show Hidden"), this, [=](bool checked) {
         //window set show hidden
         m_window->setShowHidden();
     });
     m_show_hidden = showHidden;
     showHidden->setCheckable(true);
 
-    auto forbidThumbnailing = addAction(tr("Forbid thumbnailing"), this, [=](bool checked){
+    auto forbidThumbnailing = addAction(tr("Forbid thumbnailing"), this, [=](bool checked) {
         //FIXME:
         Peony::GlobalSettings::getInstance()->setValue("do-not-thumbnail", checked);
     });
@@ -81,7 +81,7 @@ OperationMenu::OperationMenu(MainWindow *window, QWidget *parent) : QMenu(parent
     forbidThumbnailing->setCheckable(true);
     forbidThumbnailing->setChecked(Peony::GlobalSettings::getInstance()->getValue("do-not-thumbnail").toBool());
 
-    auto residentInBackend = addAction(tr("Resident in Backend"), this, [=](bool checked){
+    auto residentInBackend = addAction(tr("Resident in Backend"), this, [=](bool checked) {
         //FIXME:
         Peony::GlobalSettings::getInstance()->setValue("resident", checked);
         qApp->setQuitOnLastWindowClosed(!checked);
@@ -92,11 +92,11 @@ OperationMenu::OperationMenu(MainWindow *window, QWidget *parent) : QMenu(parent
 
     addSeparator();
 
-    addAction(QIcon::fromTheme("help-app-symbolic"), tr("Help"), this, [=](){
+    addAction(QIcon::fromTheme("help-app-symbolic"), tr("Help"), this, [=]() {
         PeonyApplication::help();
     });
 
-    addAction(QIcon::fromTheme("help-about", QIcon::fromTheme("gtk-about-symbolic")), tr("About"), this, [=](){
+    addAction(QIcon::fromTheme("help-about", QIcon::fromTheme("gtk-about-symbolic")), tr("About"), this, [=]() {
         PeonyApplication::about();
     });
 }
@@ -104,16 +104,16 @@ OperationMenu::OperationMenu(MainWindow *window, QWidget *parent) : QMenu(parent
 void OperationMenu::updateMenu()
 {
     m_show_hidden->setChecked(Peony::GlobalSettings::getInstance()->isExist("show-hidden")?
-                                  Peony::GlobalSettings::getInstance()->getValue("show-hidden").toBool():
-                                  false);
+                              Peony::GlobalSettings::getInstance()->getValue("show-hidden").toBool():
+                              false);
 
     m_forbid_thumbnailing->setChecked(Peony::GlobalSettings::getInstance()->isExist("do-not-thumbnail")?
-                                          Peony::GlobalSettings::getInstance()->getValue("do-not-thumbnail").toBool():
-                                          false);
+                                      Peony::GlobalSettings::getInstance()->getValue("do-not-thumbnail").toBool():
+                                      false);
 
     m_resident_in_backend->setChecked(Peony::GlobalSettings::getInstance()->isExist("resident")?
-                                          Peony::GlobalSettings::getInstance()->getValue("resident").toBool():
-                                          false);
+                                      Peony::GlobalSettings::getInstance()->getValue("resident").toBool():
+                                      false);
 
     //get window current directory and selections, then update ohter actions.
     m_edit_widget->updateActions(m_window->getCurrentUri(), m_window->getCurrentSelections());
@@ -164,22 +164,22 @@ OperationMenuEditWidget::OperationMenuEditWidget(MainWindow *window, QWidget *pa
 
     vbox->addLayout(hbox);
 
-    connect(m_copy, &QToolButton::clicked, this, [=](){
+    connect(m_copy, &QToolButton::clicked, this, [=]() {
         Peony::ClipboardUtils::setClipboardFiles(window->getCurrentSelections(), false);
         Q_EMIT operationAccepted();
     });
 
-    connect(m_cut, &QToolButton::clicked, this, [=](){
+    connect(m_cut, &QToolButton::clicked, this, [=]() {
         Peony::ClipboardUtils::setClipboardFiles(window->getCurrentSelections(), true);
         Q_EMIT operationAccepted();
     });
 
-    connect(m_paste, &QToolButton::clicked, this, [=](){
+    connect(m_paste, &QToolButton::clicked, this, [=]() {
         Peony::ClipboardUtils::pasteClipboardFiles(window->getCurrentUri());
         Q_EMIT operationAccepted();
     });
 
-    connect(m_trash, &QToolButton::clicked, this, [=](){
+    connect(m_trash, &QToolButton::clicked, this, [=]() {
         if (window->getCurrentUri() == "trash:///") {
             Peony::FileOperationUtils::executeRemoveActionWithDialog(window->getCurrentSelections());
         } else {

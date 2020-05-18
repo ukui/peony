@@ -34,7 +34,7 @@ const QList<PWDItem> LinuxPWDHelper::getAllUserInfos()
     setpwent();
     QList<PWDItem> l;
     struct passwd *user;
-    while((user = getpwent())!=nullptr){
+    while((user = getpwent())!=nullptr) {
         l<<PWDItem(user);
     }
     endpwent();

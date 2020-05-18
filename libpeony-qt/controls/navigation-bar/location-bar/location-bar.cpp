@@ -123,7 +123,7 @@ void LocationBar::addButton(const QString &uri, bool setIcon, bool setMenu)
         }
     }
 
-    connect(action, &QAction::triggered, [=](){
+    connect(action, &QAction::triggered, [=]() {
         //this->setRootUri(uri);
         Q_EMIT this->groupChangedRequest(uri);
     });
@@ -142,7 +142,7 @@ void LocationBar::addButton(const QString &uri, bool setIcon, bool setMenu)
                 QString tmp = uri;
                 QAction *action = new QAction(url.fileName(), this);
                 actions<<action;
-                connect(action, &QAction::triggered, [=](){
+                connect(action, &QAction::triggered, [=]() {
                     Q_EMIT groupChangedRequest(tmp);
                 });
             }

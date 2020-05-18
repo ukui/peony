@@ -40,9 +40,9 @@
 using namespace Peony;
 
 SideBarFileSystemItem::SideBarFileSystemItem(QString uri,
-                                             SideBarFileSystemItem *parentItem,
-                                             SideBarModel *model,
-                                             QObject *parent) : SideBarAbstractItem (model, parent)
+        SideBarFileSystemItem *parentItem,
+        SideBarModel *model,
+        QObject *parent) : SideBarAbstractItem (model, parent)
 {
     m_parent = parentItem;
 
@@ -111,7 +111,7 @@ void SideBarFileSystemItem::findChildren()
 
     FileEnumerator *e = new FileEnumerator;
     e->setEnumerateDirectory(m_uri);
-    connect(e, &FileEnumerator::prepared, this, [=](const GErrorWrapperPtr &err, const QString &targetUri){
+    connect(e, &FileEnumerator::prepared, this, [=](const GErrorWrapperPtr &err, const QString &targetUri) {
         if (targetUri != nullptr) {
             if (targetUri != this->uri()) {
                 e->setEnumerateDirectory(targetUri);
@@ -140,9 +140,9 @@ void SideBarFileSystemItem::findChildren()
             }
 
             SideBarFileSystemItem *item = new SideBarFileSystemItem(info->uri(),
-                                                                    this,
-                                                                    m_model,
-                                                                    this);
+                    this,
+                    m_model,
+                    this);
             //check is mounted.
             auto targetUri = FileUtils::getTargetUri(info->uri());
             bool isUmountable = FileUtils::isFileUnmountable(info->uri());
@@ -174,7 +174,7 @@ end:
         */
 
         //start listening.
-        connect(m_watcher.get(), &FileWatcher::fileCreated, this, [=](const QString &uri){
+        connect(m_watcher.get(), &FileWatcher::fileCreated, this, [=](const QString &uri) {
             //qDebug()<<"created:"<<uri;
             for (auto item : *m_children) {
                 if (item->uri() == uri)
@@ -182,14 +182,14 @@ end:
             }
 
             SideBarFileSystemItem *item = new SideBarFileSystemItem(uri,
-                                                                    this,
-                                                                    m_model);
+                    this,
+                    m_model);
             m_children->append(item);
             m_model->insertRows(m_children->count() - 1, 1, firstColumnIndex());
             m_model->indexUpdated(this->firstColumnIndex());
         });
 
-        connect(m_watcher.get(), &FileWatcher::fileDeleted, this, [=](const QString &uri){
+        connect(m_watcher.get(), &FileWatcher::fileDeleted, this, [=](const QString &uri) {
             //qDebug()<<"deleted:"<<uri;
             for (auto child : *m_children) {
                 if (child->uri() == uri) {
@@ -266,7 +266,7 @@ bool SideBarFileSystemItem::isEjectable()
 }
 
 bool SideBarFileSystemItem::isMountable()
-{ 
+{
     if (m_uri.contains("computer:///") && m_uri != "computer:///") {
         //some mountable item can be unmounted but can't be mounted.
         //the most of them is remote servers and shared directories.

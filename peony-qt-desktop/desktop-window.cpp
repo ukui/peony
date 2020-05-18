@@ -86,11 +86,11 @@ DesktopWindow::DesktopWindow(QScreen *screen, bool is_primary, QWidget *parent)
     m_opacity->setDuration(1000);
     m_opacity->setStartValue(double(0));
     m_opacity->setEndValue(double(1));
-    connect(m_opacity, &QVariantAnimation::valueChanged, this, [=](){
+    connect(m_opacity, &QVariantAnimation::valueChanged, this, [=]() {
         this->update();
     });
 
-    connect(m_opacity, &QVariantAnimation::finished, this, [=](){
+    connect(m_opacity, &QVariantAnimation::finished, this, [=]() {
         m_bg_back_pixmap = m_bg_font_pixmap;
         m_bg_back_cache_pixmap = m_bg_font_cache_pixmap;
         m_last_pure_color = m_color_to_be_set;
@@ -481,7 +481,7 @@ void DesktopWindow::initShortcut() {
     auto propertiesWindowAction = new QAction(this);
     propertiesWindowAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::ALT + Qt::Key_Return)
                                          <<QKeySequence(Qt::ALT + Qt::Key_Enter));
-    connect(propertiesWindowAction, &QAction::triggered, this, [=](){
+    connect(propertiesWindowAction, &QAction::triggered, this, [=]() {
         if (PeonyDesktopApplication::getIconView()->getSelections().count() > 0)
         {
             PropertiesWindow *w = new PropertiesWindow(PeonyDesktopApplication::getIconView()->getSelections());
@@ -492,14 +492,14 @@ void DesktopWindow::initShortcut() {
 
     auto newFolderAction = new QAction(this);
     newFolderAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_N));
-    connect(newFolderAction, &QAction::triggered, this, [=](){
+    connect(newFolderAction, &QAction::triggered, this, [=]() {
         CreateTemplateOperation op(PeonyDesktopApplication::getIconView()->getDirectoryUri(), CreateTemplateOperation::EmptyFolder, tr("New Folder"));
         op.run();
         auto targetUri = op.target();
 #if QT_VERSION > QT_VERSION_CHECK(5, 12, 0)
-            QTimer::singleShot(500, this, [=](){
+        QTimer::singleShot(500, this, [=]() {
 #else
-            QTimer::singleShot(500, [=](){
+        QTimer::singleShot(500, [=]() {
 #endif
             PeonyDesktopApplication::getIconView()->scrollToSelection(targetUri);
         });
@@ -508,14 +508,14 @@ void DesktopWindow::initShortcut() {
 
     auto refreshAction = new QAction(this);
     refreshAction->setShortcut(Qt::Key_F5);
-    connect(refreshAction, &QAction::triggered, this, [=](){
+    connect(refreshAction, &QAction::triggered, this, [=]() {
         PeonyDesktopApplication::getIconView()->refresh();
     });
     addAction(refreshAction);
 
     QAction *editAction = new QAction(PeonyDesktopApplication::getIconView());
     editAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::ALT + Qt::Key_E)<<Qt::Key_F2);
-    connect(editAction, &QAction::triggered, this, [=](){
+    connect(editAction, &QAction::triggered, this, [=]() {
         auto selections = PeonyDesktopApplication::getIconView()->getSelections();
         if (selections.count() == 1) {
             PeonyDesktopApplication::getIconView()->editUri(selections.first());

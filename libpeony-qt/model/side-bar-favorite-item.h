@@ -44,14 +44,22 @@ public:
     QString iconName() override;
     bool hasChildren() override;
 
-    bool isRemoveable() override {return false;}
-    bool isEjectable() override {return false;}
-    bool isMountable() override {return false;}
+    bool isRemoveable() override {
+        return false;
+    }
+    bool isEjectable() override {
+        return false;
+    }
+    bool isMountable() override {
+        return false;
+    }
 
     QModelIndex firstColumnIndex() override;
     QModelIndex lastColumnIndex() override;
 
-    SideBarAbstractItem *parent() override {return m_parent;}
+    SideBarAbstractItem *parent() override {
+        return m_parent;
+    }
 
 public Q_SLOTS:
     void eject() override {}

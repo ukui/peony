@@ -93,7 +93,7 @@ FMWindow::FMWindow(const QString &uri, QWidget *parent) : QMainWindow (parent)
 
     m_operation_minimum_interval.setSingleShot(true);
 
-    connect(qApp, &QApplication::paletteChanged, this, [=](){
+    connect(qApp, &QApplication::paletteChanged, this, [=]() {
         this->repaint();
         for (auto child : this->children()) {
             QWidget *widget = qobject_cast<QWidget*>(child);
@@ -228,7 +228,7 @@ FMWindow::FMWindow(const QString &uri, QWidget *parent) : QMainWindow (parent)
     connect(m_clear_record, &QPushButton::clicked, this, &FMWindow::clearRecord);
 
     //tab changed
-    connect(m_tab, &TabPage::currentActiveViewChanged, [=](){
+    connect(m_tab, &TabPage::currentActiveViewChanged, [=]() {
         this->m_tool_bar->updateLocation(getCurrentUri());
         this->m_tool_bar->updateStates();
         this->m_navigation_bar->bindContainer(getCurrentPage());
@@ -245,13 +245,13 @@ FMWindow::FMWindow(const QString &uri, QWidget *parent) : QMainWindow (parent)
     //location change
     connect(m_tab, &TabPage::currentLocationChanged,
             this, &FMWindow::locationChangeEnd);
-    connect(this, &FMWindow::locationChangeStart, [=](){
+    connect(this, &FMWindow::locationChangeStart, [=]() {
         m_is_loading = true;
         m_side_bar->blockSignals(true);
         m_tool_bar->blockSignals(true);
         m_navigation_bar->setBlock(true);
     });
-    connect(this, &FMWindow::locationChangeEnd, [=](){
+    connect(this, &FMWindow::locationChangeEnd, [=]() {
         //qDebug()<<this->getCurrentAllFileUris();
         m_is_loading = false;
         m_side_bar->blockSignals(false);
@@ -264,21 +264,21 @@ FMWindow::FMWindow(const QString &uri, QWidget *parent) : QMainWindow (parent)
     });
 
     //selection changed
-    connect(m_tab, &TabPage::currentSelectionChanged, [=](){
+    connect(m_tab, &TabPage::currentSelectionChanged, [=]() {
         m_status_bar->update();
         m_tool_bar->updateStates();
         Q_EMIT this->windowSelectionChanged();
     });
 
     //location change
-    connect(this, &FMWindow::locationChangeStart, [this](){
+    connect(this, &FMWindow::locationChangeStart, [this]() {
         QCursor c;
         c.setShape(Qt::WaitCursor);
         this->setCursor(c);
         m_status_bar->update(tr("Loaing... Press Esc to stop a loading."));
     });
 
-    connect(this, &FMWindow::locationChangeEnd, [this](){
+    connect(this, &FMWindow::locationChangeEnd, [this]() {
         QCursor c;
         c.setShape(Qt::ArrowCursor);
         this->setCursor(c);
@@ -286,16 +286,16 @@ FMWindow::FMWindow(const QString &uri, QWidget *parent) : QMainWindow (parent)
     });
 
     //view switched
-    connect(m_tab, &TabPage::viewTypeChanged, [=](){
+    connect(m_tab, &TabPage::viewTypeChanged, [=]() {
         m_tool_bar->updateLocation(getCurrentUri());
         m_tool_bar->updateStates();
     });
 
     //search
-    connect(m_search_bar, &SearchBar::searchKeyChanged, [=](){
+    connect(m_search_bar, &SearchBar::searchKeyChanged, [=]() {
         //FIXME: filter the current directory
     });
-    connect(m_search_bar, &SearchBar::searchRequest, [=](const QString &key){
+    connect(m_search_bar, &SearchBar::searchRequest, [=](const QString &key) {
         QString uri = this->getCurrentUri();
         if (uri.startsWith("search:///")) {
             uri = m_last_non_search_location;
@@ -316,27 +316,27 @@ FMWindow::FMWindow(const QString &uri, QWidget *parent) : QMainWindow (parent)
     QAction *showHiddenAction = new QAction(this);
     showHiddenAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_H));
     addAction(showHiddenAction);
-    connect(showHiddenAction, &QAction::triggered, this, [=](){
+    connect(showHiddenAction, &QAction::triggered, this, [=]() {
         this->setShowHidden();
     });
 
     auto undoAction = new QAction(QIcon::fromTheme("edit-undo-symbolic"), tr("Undo"), this);
     undoAction->setShortcut(QKeySequence::Undo);
     addAction(undoAction);
-    connect(undoAction, &QAction::triggered, [=](){
+    connect(undoAction, &QAction::triggered, [=]() {
         FileOperationManager::getInstance()->undo();
     });
 
     auto redoAction = new QAction(QIcon::fromTheme("edit-redo-symbolic"), tr("Redo"), this);
     redoAction->setShortcut(QKeySequence::Redo);
     addAction(redoAction);
-    connect(redoAction, &QAction::triggered, [=](){
+    connect(redoAction, &QAction::triggered, [=]() {
         FileOperationManager::getInstance()->redo();
     });
 
     auto trashAction = new QAction(this);
     trashAction->setShortcut(Qt::Key_Delete);
-    connect(trashAction, &QAction::triggered, [=](){
+    connect(trashAction, &QAction::triggered, [=]() {
         auto uris = this->getCurrentSelections();
         if (!uris.isEmpty()) {
             bool isTrash = this->getCurrentUri() == "trash:///";
@@ -352,28 +352,28 @@ FMWindow::FMWindow(const QString &uri, QWidget *parent) : QMainWindow (parent)
     auto deleteAction = new QAction(this);
     deleteAction->setShortcut(QKeySequence(Qt::SHIFT + Qt::Key_Delete));
     addAction(deleteAction);
-    connect(deleteAction, &QAction::triggered, [=](){
+    connect(deleteAction, &QAction::triggered, [=]() {
         auto uris = this->getCurrentSelections();
         FileOperationUtils::executeRemoveActionWithDialog(uris);
     });
 
     auto searchAction = new QAction(this);
     searchAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::CTRL + Qt::Key_F)<<QKeySequence(Qt::CTRL + Qt::Key_E));
-    connect(searchAction, &QAction::triggered, this, [=](){
+    connect(searchAction, &QAction::triggered, this, [=]() {
         m_search_bar->setFocus();
     });
     addAction(searchAction);
 
     auto locationAction = new QAction(this);
     locationAction->setShortcuts(QList<QKeySequence>()<<Qt::Key_F4<<QKeySequence(Qt::ALT + Qt::Key_D));
-    connect(locationAction, &QAction::triggered, this, [=](){
+    connect(locationAction, &QAction::triggered, this, [=]() {
         m_navigation_bar->startEdit();
     });
     addAction(locationAction);
 
     auto newWindowAction = new QAction(this);
     newWindowAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_N));
-    connect(newWindowAction, &QAction::triggered, this, [=](){
+    connect(newWindowAction, &QAction::triggered, this, [=]() {
         FMWindow *newWindow = new FMWindow(getCurrentUri());
         newWindow->show();
     });
@@ -381,14 +381,14 @@ FMWindow::FMWindow(const QString &uri, QWidget *parent) : QMainWindow (parent)
 
     auto closeWindowAction = new QAction(this);
     closeWindowAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::ALT + Qt::Key_F4));
-    connect(closeWindowAction, &QAction::triggered, this, [=](){
+    connect(closeWindowAction, &QAction::triggered, this, [=]() {
         this->close();
     });
     addAction(closeWindowAction);
 
     auto aboutAction = new QAction(this);
     aboutAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_F2));
-    connect(aboutAction, &QAction::triggered, this, [=](){
+    connect(aboutAction, &QAction::triggered, this, [=]() {
         QMessageBox::about(this,
                            tr("Peony Qt"),
                            tr("Author:\n"
@@ -401,14 +401,14 @@ FMWindow::FMWindow(const QString &uri, QWidget *parent) : QMainWindow (parent)
 
     auto newTabAction = new QAction(this);
     newTabAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_T));
-    connect(newTabAction, &QAction::triggered, this, [=](){
+    connect(newTabAction, &QAction::triggered, this, [=]() {
         this->addNewTabs(QStringList()<<this->getCurrentUri());
     });
     addAction(newTabAction);
 
     auto closeTabAction = new QAction(this);
     closeTabAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_W));
-    connect(closeTabAction, &QAction::triggered, this, [=](){
+    connect(closeTabAction, &QAction::triggered, this, [=]() {
         if (m_tab->count() <= 1) {
             this->close();
         } else {
@@ -419,7 +419,7 @@ FMWindow::FMWindow(const QString &uri, QWidget *parent) : QMainWindow (parent)
 
     auto nextTabAction = new QAction(this);
     nextTabAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Tab));
-    connect(nextTabAction, &QAction::triggered, this, [=](){
+    connect(nextTabAction, &QAction::triggered, this, [=]() {
         int currentIndex = m_tab->currentIndex();
         if (currentIndex + 1 < m_tab->count()) {
             m_tab->setCurrentIndex(currentIndex + 1);
@@ -431,7 +431,7 @@ FMWindow::FMWindow(const QString &uri, QWidget *parent) : QMainWindow (parent)
 
     auto previousTabAction = new QAction(this);
     previousTabAction->setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_Tab));
-    connect(previousTabAction, &QAction::triggered, this, [=](){
+    connect(previousTabAction, &QAction::triggered, this, [=]() {
         int currentIndex = m_tab->currentIndex();
         if (currentIndex > 0) {
             m_tab->setCurrentIndex(currentIndex - 1);
@@ -443,14 +443,14 @@ FMWindow::FMWindow(const QString &uri, QWidget *parent) : QMainWindow (parent)
 
     auto newFolderAction = new QAction(this);
     newFolderAction->setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_N));
-    connect(newFolderAction, &QAction::triggered, this, [=](){
+    connect(newFolderAction, &QAction::triggered, this, [=]() {
         CreateTemplateOperation op(getCurrentUri(), CreateTemplateOperation::EmptyFolder, tr("New Folder"));
         op.run();
         auto targetUri = op.target();
 #if QT_VERSION > QT_VERSION_CHECK(5, 12, 0)
-            QTimer::singleShot(500, this, [=](){
+        QTimer::singleShot(500, this, [=]() {
 #else
-            QTimer::singleShot(500, [=](){
+        QTimer::singleShot(500, [=]() {
 #endif
             this->getCurrentPage()->getView()->scrollToSelection(targetUri);
             this->editUri(targetUri);
@@ -460,7 +460,7 @@ FMWindow::FMWindow(const QString &uri, QWidget *parent) : QMainWindow (parent)
 
     auto propertiesWindowAction = new QAction(this);
     propertiesWindowAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_Return));
-    connect(propertiesWindowAction, &QAction::triggered, this, [=](){
+    connect(propertiesWindowAction, &QAction::triggered, this, [=]() {
         if (getCurrentSelections().count() >0)
         {
             PropertiesWindow *w = new PropertiesWindow(getCurrentSelections());
@@ -471,7 +471,7 @@ FMWindow::FMWindow(const QString &uri, QWidget *parent) : QMainWindow (parent)
 
     auto helpAction = new QAction(this);
     helpAction->setShortcut(QKeySequence(Qt::Key_F1));
-    connect(helpAction, &QAction::triggered, this, [=](){
+    connect(helpAction, &QAction::triggered, this, [=]() {
         QUrl url = QUrl("help:ubuntu-kylin-help/files", QUrl::TolerantMode);
         QDesktopServices::openUrl(url);
     });
@@ -479,7 +479,7 @@ FMWindow::FMWindow(const QString &uri, QWidget *parent) : QMainWindow (parent)
 
     auto maxAction = new QAction(this);
     maxAction->setShortcut(QKeySequence(Qt::Key_F11));
-    connect(maxAction, &QAction::triggered, this, [=](){
+    connect(maxAction, &QAction::triggered, this, [=]() {
         if (!this->isFullScreen()) {
             this->showFullScreen();
         } else {
@@ -490,7 +490,7 @@ FMWindow::FMWindow(const QString &uri, QWidget *parent) : QMainWindow (parent)
 
     auto previewPageAction = new QAction(this);
     previewPageAction->setShortcuts(QList<QKeySequence>()<<Qt::Key_F3<<QKeySequence(Qt::ALT + Qt::Key_P));
-    connect(previewPageAction, &QAction::triggered, this, [=](){
+    connect(previewPageAction, &QAction::triggered, this, [=]() {
         auto lastPreviewPageId = m_navigation_bar->getLastPreviewPageId();
         m_navigation_bar->triggerAction(lastPreviewPageId);
     });
@@ -498,13 +498,13 @@ FMWindow::FMWindow(const QString &uri, QWidget *parent) : QMainWindow (parent)
 
     auto refreshAction = new QAction(this);
     refreshAction->setShortcut(Qt::Key_F5);
-    connect(refreshAction, &QAction::triggered, this, [=](){
+    connect(refreshAction, &QAction::triggered, this, [=]() {
         this->refresh();
     });
     addAction(refreshAction);
 
     //menu
-    m_tab->connect(m_tab, &TabPage::menuRequest, [=](){
+    m_tab->connect(m_tab, &TabPage::menuRequest, [=]() {
         if (m_is_loading)
             return;
         DirectoryViewMenu menu(this, nullptr);
@@ -512,9 +512,9 @@ FMWindow::FMWindow(const QString &uri, QWidget *parent) : QMainWindow (parent)
         auto urisToEdit = menu.urisToEdit();
         if (!urisToEdit.isEmpty()) {
 #if QT_VERSION > QT_VERSION_CHECK(5, 12, 0)
-            QTimer::singleShot(100, this, [=](){
+            QTimer::singleShot(100, this, [=]() {
 #else
-            QTimer::singleShot(100, [=](){
+            QTimer::singleShot(100, [=]() {
 #endif
                 this->getCurrentPage()->getView()->scrollToSelection(urisToEdit.first());
                 this->editUri(urisToEdit.first());
@@ -525,7 +525,7 @@ FMWindow::FMWindow(const QString &uri, QWidget *parent) : QMainWindow (parent)
     //preview page
     connect(m_navigation_bar, &NavigationBar::switchPreviewPageRequest,
             this, &FMWindow::onPreviewPageSwitch);
-    connect(m_tab, &TabPage::currentSelectionChanged, [=](){
+    connect(m_tab, &TabPage::currentSelectionChanged, [=]() {
         if (m_preview_page_container->getCurrentPage()) {
             auto selection = getCurrentSelections();
             if (!selection.isEmpty()) {
@@ -537,12 +537,12 @@ FMWindow::FMWindow(const QString &uri, QWidget *parent) : QMainWindow (parent)
             }
         }
     });
-    connect(m_tab, &TabPage::currentLocationChanged, [=](){
+    connect(m_tab, &TabPage::currentLocationChanged, [=]() {
         if (m_preview_page_container->getCurrentPage()) {
             m_preview_page_container->getCurrentPage()->cancel();
         }
     });
-    connect(m_tab, &TabPage::currentActiveViewChanged, [=](){
+    connect(m_tab, &TabPage::currentActiveViewChanged, [=]() {
         if (m_preview_page_container->getCurrentPage()) {
             auto selection = getCurrentSelections();
             if (selection.isEmpty()) {
@@ -708,9 +708,9 @@ void FMWindow::advanceSearch()
         //before show, update cur uri
         QString target_path = getCurrentUri();
         if (target_path.contains("file://"))
-             m_advance_target_path = target_path;
+            m_advance_target_path = target_path;
         else
-             m_advance_target_path = "file://" + target_path;
+            m_advance_target_path = "file://" + target_path;
 
         //set default search path as current path
         if (m_filter_bar)
@@ -721,7 +721,7 @@ void FMWindow::advanceSearch()
         m_side_bar_container->setCurrentWidget(m_filter);
     }
     //to solve back up automatic pop up issue
-    QTimer::singleShot(100, this, [=](){
+    QTimer::singleShot(100, this, [=]() {
         m_search_bar->hideTableView();
     });
 }

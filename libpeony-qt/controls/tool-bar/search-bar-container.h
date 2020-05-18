@@ -19,14 +19,26 @@ public:
 
     QSize sizeHint() const override;
 
-    void setPlaceholderText(const QString &content){m_search_box->setPlaceholderText(content);}
-    void setFocus(){m_search_box->setFocus();}
-    QString text(){return m_search_box->text();}
-    void setText(QString text){m_search_box->setText(text);}
+    void setPlaceholderText(const QString &content) {
+        m_search_box->setPlaceholderText(content);
+    }
+    void setFocus() {
+        m_search_box->setFocus();
+    }
+    QString text() {
+        return m_search_box->text();
+    }
+    void setText(QString text) {
+        m_search_box->setText(text);
+    }
 
     //get user selected index of file type
-    int getFilterIndex(){return m_filter_box->currentIndex();}
-    void clearFilter(){m_filter_box->setCurrentIndex(0);}
+    int getFilterIndex() {
+        return m_filter_box->currentIndex();
+    }
+    void clearFilter() {
+        m_filter_box->setCurrentIndex(0);
+    }
 
 Q_SIGNALS:
     void returnPressed();
@@ -45,7 +57,8 @@ private:
     QListView *m_list_view = nullptr;
 
     QStringList m_file_type_list = {tr("all"), tr("file folder"), tr("image"),
-                                    tr("video"), tr("text file"), tr("audio"), tr("others")};
+                                    tr("video"), tr("text file"), tr("audio"), tr("others")
+                                   };
 };
 
 }

@@ -69,7 +69,7 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
 
     setMovable(false);
 
-    auto a = addAction(QIcon::fromTheme("folder-new-symbolic"), tr("Create Folder"), [=](){
+    auto a = addAction(QIcon::fromTheme("folder-new-symbolic"), tr("Create Folder"), [=]() {
         //use the same function
         m_window->createFolderOperation();
     });
@@ -82,7 +82,7 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
 
     //find a terminal when init
     findDefaultTerminal();
-    a = addAction(QIcon::fromTheme("terminal-app-symbolic"), tr("Open Terminal"), [=](){
+    a = addAction(QIcon::fromTheme("terminal-app-symbolic"), tr("Open Terminal"), [=]() {
         //open the default terminal
         openDefaultTerminal();
     });
@@ -100,7 +100,7 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
     goBack->setFixedSize(QSize(36, 28));
     goBack->setIcon(QIcon::fromTheme("go-previous-symbolic"));
     addWidget(goBack);
-    connect(goBack, &QPushButton::clicked, m_window, [=](){
+    connect(goBack, &QPushButton::clicked, m_window, [=]() {
         m_window->getCurrentPage()->goBack();
     });
 
@@ -111,7 +111,7 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
     goForward->setFixedSize(QSize(36, 28));
     goForward->setIcon(QIcon::fromTheme("go-next-symbolic"));
     addWidget(goForward);
-    connect(goForward, &QPushButton::clicked, m_window, [=](){
+    connect(goForward, &QPushButton::clicked, m_window, [=]() {
         m_window->getCurrentPage()->goForward();
     });
 
@@ -123,10 +123,10 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
 
     connect(m_location_bar, &Peony::AdvancedLocationBar::refreshRequest, [=]()
     {
-         m_window->updateTabPageTitle();
+        m_window->updateTabPageTitle();
     });
-    connect(m_location_bar, &Peony::AdvancedLocationBar::updateFileTypeFilter, [=](const int &index){
-         m_window->getCurrentPage()->setSortFilter(index);
+    connect(m_location_bar, &Peony::AdvancedLocationBar::updateFileTypeFilter, [=](const int &index) {
+        m_window->getCurrentPage()->setSortFilter(index);
     });
 
     connect(m_location_bar, &Peony::AdvancedLocationBar::updateWindowLocationRequest, this, &HeaderBar::updateLocationRequest);
@@ -152,7 +152,7 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
     m_view_type_menu = new ViewTypeMenu(viewType);
     viewType->setMenu(m_view_type_menu);
 
-    connect(m_view_type_menu, &ViewTypeMenu::switchViewRequest, this, [=](const QString &id, const QIcon &icon, bool resetToZoomLevel){
+    connect(m_view_type_menu, &ViewTypeMenu::switchViewRequest, this, [=](const QString &id, const QIcon &icon, bool resetToZoomLevel) {
         viewType->setText(id);
         viewType->setIcon(icon);
         this->viewTypeChangeRequest(id);
@@ -180,7 +180,7 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
     sortType->setMenu(m_sort_type_menu);
 
     connect(m_sort_type_menu, &SortTypeMenu::switchSortTypeRequest, m_window, &MainWindow::setCurrentSortColumn);
-    connect(m_sort_type_menu, &SortTypeMenu::switchSortOrderRequest, m_window, [=](Qt::SortOrder order){
+    connect(m_sort_type_menu, &SortTypeMenu::switchSortOrderRequest, m_window, [=](Qt::SortOrder order) {
         if (order == Qt::AscendingOrder) {
             sortType->setIcon(QIcon::fromTheme("view-sort-ascending-symbolic"));
         } else {
@@ -188,7 +188,7 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
         }
         m_window->setCurrentSortOrder(order);
     });
-    connect(m_sort_type_menu, &QMenu::aboutToShow, m_sort_type_menu, [=](){
+    connect(m_sort_type_menu, &QMenu::aboutToShow, m_sort_type_menu, [=]() {
         m_sort_type_menu->setSortType(m_window->getCurrentSortColumn());
         m_sort_type_menu->setSortOrder(m_window->getCurrentSortOrder());
     });
@@ -518,7 +518,7 @@ void HeaderBarContainer::addWindowButtons()
     minimize->setAutoRaise(false);
     minimize->setFixedSize(QSize(40, 40));
     minimize->setIconSize(QSize(16, 16));
-    connect(minimize, &QToolButton::clicked, this, [=](){
+    connect(minimize, &QToolButton::clicked, this, [=]() {
         KWindowSystem::minimizeWindow(m_header_bar->m_window->winId());
         //m_header_bar->m_window->showMinimized();
     });
@@ -531,7 +531,7 @@ void HeaderBarContainer::addWindowButtons()
     maximizeAndRestore->setAutoRaise(false);
     maximizeAndRestore->setFixedSize(QSize(40, 40));
     maximizeAndRestore->setIconSize(QSize(16, 16));
-    connect(maximizeAndRestore, &QToolButton::clicked, this, [=](){
+    connect(maximizeAndRestore, &QToolButton::clicked, this, [=]() {
         m_header_bar->m_window->maximizeOrRestore();
 
         bool maximized = m_header_bar->m_window->isMaximized();
@@ -551,7 +551,7 @@ void HeaderBarContainer::addWindowButtons()
     close->setAutoRaise(false);
     close->setFixedSize(QSize(40, 40));
     close->setIconSize(QSize(16, 16));
-    connect(close, &QToolButton::clicked, this, [=](){
+    connect(close, &QToolButton::clicked, this, [=]() {
         m_header_bar->m_window->close();
     });
 

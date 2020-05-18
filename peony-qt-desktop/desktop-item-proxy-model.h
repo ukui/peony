@@ -40,8 +40,12 @@ public:
     };
     explicit DesktopItemProxyModel(QObject *parent = nullptr);
 
-    void setSortType(int type) {m_sort_type = type;}
-    int getSortType() {return m_sort_type;}
+    void setSortType(int type) {
+        m_sort_type = type;
+    }
+    int getSortType() {
+        return m_sort_type;
+    }
 
     bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const;
     bool lessThan(const QModelIndex &source_left, const QModelIndex &source_right) const;

@@ -54,25 +54,45 @@ public:
     explicit DirectoryViewWidget(QWidget *parent = nullptr);
     virtual ~DirectoryViewWidget() {}
 
-    const virtual QString viewId() {return "Directory View";}
+    const virtual QString viewId() {
+        return "Directory View";
+    }
 
     //location
-    const virtual QString getDirectoryUri() {return nullptr;}
+    const virtual QString getDirectoryUri() {
+        return nullptr;
+    }
 
     //selections
-    const virtual QStringList getSelections() {return QStringList();}
+    const virtual QStringList getSelections() {
+        return QStringList();
+    }
 
     //children
-    const virtual QStringList getAllFileUris() {return QStringList();}
+    const virtual QStringList getAllFileUris() {
+        return QStringList();
+    }
 
-    virtual int getSortType() {return 0;}
-    virtual Qt::SortOrder getSortOrder() {return Qt::AscendingOrder;}
+    virtual int getSortType() {
+        return 0;
+    }
+    virtual Qt::SortOrder getSortOrder() {
+        return Qt::AscendingOrder;
+    }
 
     //zoom
-    virtual int currentZoomLevel() {return -1;}
-    virtual int minimumZoomLevel() {return -1;}
-    virtual int maximumZoomLevel() {return -1;}
-    virtual bool supportZoom() {return false;}
+    virtual int currentZoomLevel() {
+        return -1;
+    }
+    virtual int minimumZoomLevel() {
+        return -1;
+    }
+    virtual int maximumZoomLevel() {
+        return -1;
+    }
+    virtual bool supportZoom() {
+        return false;
+    }
 
 Q_SIGNALS:
     //loaction

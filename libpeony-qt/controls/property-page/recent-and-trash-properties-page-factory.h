@@ -36,15 +36,29 @@ public:
     static RecentAndTrashPropertiesPageFactory *getInstance();
 
     //plugin iface
-    const QString name() override {return QObject::tr("Trash and Recent Properties Page");}
-    PluginType pluginType() override {return PluginType::PropertiesWindowPlugin;}
-    const QString description() override {return QObject::tr("Show the file properties or items in trash or recent.");}
-    const QIcon icon() override {return QIcon::fromTheme("view-paged-symbolic", QIcon::fromTheme("folder"));}
-    void setEnable(bool enable) override {Q_UNUSED(enable)}
-    bool isEnable() override {return true;}
+    const QString name() override {
+        return QObject::tr("Trash and Recent Properties Page");
+    }
+    PluginType pluginType() override {
+        return PluginType::PropertiesWindowPlugin;
+    }
+    const QString description() override {
+        return QObject::tr("Show the file properties or items in trash or recent.");
+    }
+    const QIcon icon() override {
+        return QIcon::fromTheme("view-paged-symbolic", QIcon::fromTheme("folder"));
+    }
+    void setEnable(bool enable) override {
+        Q_UNUSED(enable)
+    }
+    bool isEnable() override {
+        return true;
+    }
 
     //properties plugin iface
-    int tabOrder() override {return 1000-3;}
+    int tabOrder() override {
+        return 1000-3;
+    }
     bool supportUris(const QStringList &uris) override;
     QWidget *createTabPage(const QStringList &uris) override;
 

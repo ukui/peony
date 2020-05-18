@@ -40,29 +40,57 @@ public:
      * \return
      * \deprecated
      */
-    virtual FMWindowFactory *getFactory() {return nullptr;}
+    virtual FMWindowFactory *getFactory() {
+        return nullptr;
+    }
 
     virtual FMWindowIface *create(const QString &uri) = 0;
     virtual FMWindowIface *create(const QStringList &uris) = 0;
 
     virtual const QString getCurrentUri() = 0; //do not allow initialize this iface directly
-    virtual const QString getLastNonSearchUri() {return nullptr;}
-    virtual const QStringList getCurrentSelections() {return QStringList();}
-    virtual const QStringList getCurrentAllFileUris() {return QStringList();}
-    virtual const QList<std::shared_ptr<FileInfo>> getCurrentSelectionFileInfos() {return QList<std::shared_ptr<FileInfo>>();}
-    virtual DirectoryViewContainer *getCurrentPage() {return nullptr;}
+    virtual const QString getLastNonSearchUri() {
+        return nullptr;
+    }
+    virtual const QStringList getCurrentSelections() {
+        return QStringList();
+    }
+    virtual const QStringList getCurrentAllFileUris() {
+        return QStringList();
+    }
+    virtual const QList<std::shared_ptr<FileInfo>> getCurrentSelectionFileInfos() {
+        return QList<std::shared_ptr<FileInfo>>();
+    }
+    virtual DirectoryViewContainer *getCurrentPage() {
+        return nullptr;
+    }
 
-    virtual Qt::SortOrder getCurrentSortOrder() {return Qt::AscendingOrder;}
-    virtual int getCurrentSortColumn() {return 0;}
+    virtual Qt::SortOrder getCurrentSortOrder() {
+        return Qt::AscendingOrder;
+    }
+    virtual int getCurrentSortColumn() {
+        return 0;
+    }
 
-    virtual bool getWindowShowHidden() {return false;}
-    virtual bool getWindowUseDefaultNameSortOrder() {return false;}
-    virtual bool getWindowSortFolderFirst() {return false;}
+    virtual bool getWindowShowHidden() {
+        return false;
+    }
+    virtual bool getWindowUseDefaultNameSortOrder() {
+        return false;
+    }
+    virtual bool getWindowSortFolderFirst() {
+        return false;
+    }
 
-    virtual const QString getCurrentPageViewType() {return nullptr;}
+    virtual const QString getCurrentPageViewType() {
+        return nullptr;
+    }
 
-    virtual int currentViewZoomLevel() {return -1;}
-    virtual bool currentViewSupportZoom() {return false;}
+    virtual int currentViewZoomLevel() {
+        return -1;
+    }
+    virtual bool currentViewSupportZoom() {
+        return false;
+    }
 
     //slot
     virtual void goToUri(const QString &uri, bool addHistory, bool forceUpdate = false) {}

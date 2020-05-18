@@ -63,8 +63,12 @@ public:
     void remove(QString uri);
     void remove(std::shared_ptr<FileInfo> info);
 
-    void lock() {m_mutex.tryLock();}
-    void unlock() {m_mutex.unlock();}
+    void lock() {
+        m_mutex.tryLock();
+    }
+    void unlock() {
+        m_mutex.unlock();
+    }
 
     void showState();
 

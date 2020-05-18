@@ -50,7 +50,7 @@ QList<QAction *> MenuPluginExample::menuActions(Types types, const QString &uri,
 
     actions<<action;
     QMenu *menu = new QMenu(action->parentWidget());
-    connect(action, &QAction::destroyed, [=](){
+    connect(action, &QAction::destroyed, [=]() {
         qDebug()<<"delete sub menu";
         menu->deleteLater();
     });
@@ -59,7 +59,7 @@ QList<QAction *> MenuPluginExample::menuActions(Types types, const QString &uri,
     menu->addAction("sub test2");
     action->setMenu(menu);
     QAction *action2 = new QAction(QIcon::fromTheme("media-eject"), tr("plugin-action test"));
-    connect(action2, &QAction::triggered, [=](){
+    connect(action2, &QAction::triggered, [=]() {
         qDebug()<<"action triggered";
     });
     actions<<action2;

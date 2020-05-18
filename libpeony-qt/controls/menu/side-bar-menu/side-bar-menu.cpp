@@ -74,7 +74,7 @@ SideBarMenu::SideBarMenu(SideBarAbstractItem *item, SideBar *sideBar, QWidget *p
 const QList<QAction *> SideBarMenu::constructFavoriteActions()
 {
     QList<QAction *> l;
-    l<<addAction(QIcon::fromTheme("window-close-symbolic"), tr("&Delete Symbolic"), [=](){
+    l<<addAction(QIcon::fromTheme("window-close-symbolic"), tr("&Delete Symbolic"), [=]() {
         BookMarkManager::getInstance()->removeBookMark(m_uri);
     });
     if (!m_item->firstColumnIndex().parent().isValid()) {
@@ -83,7 +83,7 @@ const QList<QAction *> SideBarMenu::constructFavoriteActions()
         l.last()->setEnabled(false);
     }
 
-    l<<addAction(QIcon::fromTheme("preview-file"), tr("&Properties"), [=](){
+    l<<addAction(QIcon::fromTheme("preview-file"), tr("&Properties"), [=]() {
         PropertiesWindow *w = new PropertiesWindow(QStringList()<<m_uri);
         w->show();
     });
@@ -98,7 +98,7 @@ const QList<QAction *> SideBarMenu::constructPersonalActions()
 {
     QList<QAction *> l;
 
-    l<<addAction(QIcon::fromTheme("preview-file"), tr("&Properties"), [=](){
+    l<<addAction(QIcon::fromTheme("preview-file"), tr("&Properties"), [=]() {
         PropertiesWindow *w = new PropertiesWindow(QStringList()<<m_uri);
         w->show();
     });
@@ -116,7 +116,7 @@ const QList<QAction *> SideBarMenu::constructFileSystemItemActions()
         j.querySync();
     }
     if (info->canUnmount() || info->canMount()) {
-        l<<addAction(QIcon::fromTheme("media-eject"), tr("&Unmount"), [=](){
+        l<<addAction(QIcon::fromTheme("media-eject"), tr("&Unmount"), [=]() {
             m_item->unmount();
         });
         l.last()->setEnabled(m_item->isMounted());
@@ -135,7 +135,7 @@ const QList<QAction *> SideBarMenu::constructFileSystemItemActions()
         l<<tmp;
     }
 
-    l<<addAction(QIcon::fromTheme("preview-file"), tr("&Properties"), [=](){
+    l<<addAction(QIcon::fromTheme("preview-file"), tr("&Properties"), [=]() {
         PropertiesWindow *w = new PropertiesWindow(QStringList()<<m_uri);
         w->show();
     });

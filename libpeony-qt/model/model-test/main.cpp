@@ -79,7 +79,7 @@ int main(int argc, char *argv[])
 
     e.setText("network:///");
     //e.setText("file://" + QStandardPaths::writableLocation(QStandardPaths::HomeLocation));
-    e.connect(&e, &QLineEdit::returnPressed, [&](){
+    e.connect(&e, &QLineEdit::returnPressed, [&]() {
         QListView *v = new QListView;
 
         /// set view attribute
@@ -102,18 +102,18 @@ int main(int argc, char *argv[])
         proxy_model->setSourceModel(model);
 
         /// resort when load directory finished
-        model->connect(model, &Peony::FileItemModel::findChildrenFinished, [=](){
+        model->connect(model, &Peony::FileItemModel::findChildrenFinished, [=]() {
             proxy_model->sort(0);
         });
 
         /// re-sort when file(s) moved in/out.
-        model->connect(model, &Peony::FileItemModel::updated, [=](){
+        model->connect(model, &Peony::FileItemModel::updated, [=]() {
             proxy_model->sort(0);
         });
 
         /// double clicked for location change.
         v->setEditTriggers(QListView::EditKeyPressed);
-        v->connect(v, &QListView::doubleClicked, [=](const QModelIndex &index){
+        v->connect(v, &QListView::doubleClicked, [=](const QModelIndex &index) {
             auto item = proxy_model->itemFromIndex(index);
             if (item->hasChildren() || item->uri().startsWith("network:")) {
                 model->setRootUri(item->uri());

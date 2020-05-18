@@ -46,7 +46,7 @@ TestWidget::TestWidget(QWidget *parent) : QWidget(parent)
     //get uri of info.
     QString uri = info->uri();
 
-    connect(info.get(), &Peony::FileInfo::updated, [=](){
+    connect(info.get(), &Peony::FileInfo::updated, [=]() {
         qDebug()<<"this info was updated";
         //qDebug()<<info->iconName(); //this is uncorrect. be caleful that using info shared_ptr in lambda also causes ref count increased.
         auto file_info = Peony::FileInfoManager::getInstance()->findFileInfoByUri(uri); //this is correct.
@@ -61,7 +61,7 @@ TestWidget::TestWidget(QWidget *parent) : QWidget(parent)
     for (int i = 0; i < 4; i++) {
         Peony::FileInfoJob *job2 = new Peony::FileInfoJob(info, nullptr);
         job2->setAutoDelete(true);
-        job2->connect(job2, &Peony::FileInfoJob::queryAsyncFinished, [=](bool successed){
+        job2->connect(job2, &Peony::FileInfoJob::queryAsyncFinished, [=](bool successed) {
             qDebug()<<successed;
         });
         job2->queryAsync();
@@ -83,7 +83,7 @@ TestWidget::TestWidget(QWidget *parent) : QWidget(parent)
     //enumerator->setEnumerateDirectory("file:///root");
     enumerator->setEnumerateDirectory("file:///");
     enumerator->prepare();
-    connect(enumerator/*.get()*/, &Peony::FileEnumerator::prepared, [=](std::shared_ptr<Peony::GErrorWrapper> prepared_err){
+    connect(enumerator/*.get()*/, &Peony::FileEnumerator::prepared, [=](std::shared_ptr<Peony::GErrorWrapper> prepared_err) {
         qDebug()<<"prepared";
         if (prepared_err) {
             qDebug()<<prepared_err->code()<<prepared_err->message();
@@ -102,12 +102,12 @@ TestWidget::TestWidget(QWidget *parent) : QWidget(parent)
         */
 
         //async enumerate
-        this->connect(enumerator, &Peony::FileEnumerator::childrenUpdated, [=](const QStringList &uriList){
+        this->connect(enumerator, &Peony::FileEnumerator::childrenUpdated, [=](const QStringList &uriList) {
             if (uriList.isEmpty())
                 return;
             qDebug()<<"update async:"<<uriList;
         });
-        this->connect(enumerator, &Peony::FileEnumerator::enumerateFinished, [=](bool successed){
+        this->connect(enumerator, &Peony::FileEnumerator::enumerateFinished, [=](bool successed) {
             if (!successed) {
                 qDebug()<<"failed enumerate children";
                 return;
@@ -125,44 +125,44 @@ TestWidget::TestWidget(QWidget *parent) : QWidget(parent)
 
     //Peony::FileWatcher *watcher = new Peony::FileWatcher("file:///home/lanyue/gvfs-test");
     Peony::FileWatcher *watcher = new Peony::FileWatcher("computer:///");
-    connect(watcher, &Peony::FileWatcher::locationChanged, [=](QString old, QString newly){
+    connect(watcher, &Peony::FileWatcher::locationChanged, [=](QString old, QString newly) {
         qDebug()<<"monitor location changed"<<old<<"to"<<newly;
     });
-    connect(watcher, &Peony::FileWatcher::directoryDeleted, [=](QString uri){
+    connect(watcher, &Peony::FileWatcher::directoryDeleted, [=](QString uri) {
         qDebug()<<uri<<"was deleted";
         //the watcher instance will be deleted automaticly later.
     });
-    connect(watcher, &Peony::FileWatcher::fileCreated, [=](QString uri){
+    connect(watcher, &Peony::FileWatcher::fileCreated, [=](QString uri) {
         qDebug()<<uri<<"was created";
     });
-    connect(watcher, &Peony::FileWatcher::fileDeleted, [=](QString uri){
+    connect(watcher, &Peony::FileWatcher::fileDeleted, [=](QString uri) {
         qDebug()<<uri<<"was deleted";
     });
     watcher->startMonitor();
 
     Peony::VolumeManager *volumeManager = Peony::VolumeManager::getInstance();
 
-    connect(volumeManager, &Peony::VolumeManager::driveConnected, [=](std::shared_ptr<Peony::Drive> drive){
+    connect(volumeManager, &Peony::VolumeManager::driveConnected, [=](std::shared_ptr<Peony::Drive> drive) {
         auto name = drive->name();
         qDebug()<<"drive conneceted"<<name;
     });
-    connect(volumeManager, &Peony::VolumeManager::driveDisconnected, [=](std::shared_ptr<Peony::Drive> drive){
+    connect(volumeManager, &Peony::VolumeManager::driveDisconnected, [=](std::shared_ptr<Peony::Drive> drive) {
         auto name = drive->name();
         qDebug()<<"drive disconneceted"<<name;
     });
-    connect(volumeManager, &Peony::VolumeManager::volumeAdded, [=](std::shared_ptr<Peony::Volume> volume){
+    connect(volumeManager, &Peony::VolumeManager::volumeAdded, [=](std::shared_ptr<Peony::Volume> volume) {
         auto name = volume->name();
         qDebug()<<"volume added"<<name;
     });
-    connect(volumeManager, &Peony::VolumeManager::volumeRemoved, [=](std::shared_ptr<Peony::Volume> volume){
+    connect(volumeManager, &Peony::VolumeManager::volumeRemoved, [=](std::shared_ptr<Peony::Volume> volume) {
         auto name = volume->name();
         qDebug()<<"volume removed"<<name;
     });
-    connect(volumeManager, &Peony::VolumeManager::mountAdded, [=](std::shared_ptr<Peony::Mount> mount){
+    connect(volumeManager, &Peony::VolumeManager::mountAdded, [=](std::shared_ptr<Peony::Mount> mount) {
         auto name = mount->name();
         qDebug()<<"mount added"<<name;
     });
-    connect(volumeManager, &Peony::VolumeManager::mountRemoved, [=](std::shared_ptr<Peony::Mount> mount){
+    connect(volumeManager, &Peony::VolumeManager::mountRemoved, [=](std::shared_ptr<Peony::Mount> mount) {
         auto name = mount->name();
         qDebug()<<"mount removed"<<name;
     });

@@ -106,7 +106,7 @@ QList<QAction *> CreateLinkInternalPlugin::menuActions(MenuPluginInterface::Type
             if (selectionUris.first().startsWith("computer:///") || info->isVirtual())
                 return l;
 
-            connect(createLinkToDesktop, &QAction::triggered, [=](){
+            connect(createLinkToDesktop, &QAction::triggered, [=]() {
                 QUrl src = selectionUris.first();
                 QString desktopUri = "file://" + QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
                 FileLinkOperation *op = new FileLinkOperation(selectionUris.first(), desktopUri);
@@ -116,10 +116,10 @@ QList<QAction *> CreateLinkInternalPlugin::menuActions(MenuPluginInterface::Type
             l<<createLinkToDesktop;
 
             auto createLinkTo = new QAction(tr("Create Link to..."), nullptr);
-            connect(createLinkTo, &QAction::triggered, [=](){
+            connect(createLinkTo, &QAction::triggered, [=]() {
                 QUrl targetDir = QFileDialog::getExistingDirectoryUrl(nullptr,
-                                                                      tr("Choose a Directory to Create Link"),
-                                                                      uri);
+                                 tr("Choose a Directory to Create Link"),
+                                 uri);
                 if (!targetDir.isEmpty()) {
                     QUrl src = selectionUris.first();
                     QString target = targetDir.url();
@@ -152,7 +152,7 @@ QList<QAction *> FileLabelInternalMenuPlugin::menuActions(MenuPluginInterface::T
             for (auto item : items) {
                 auto ids = FileLabelModel::getGlobalModel()->getFileLabelIds(uri);
                 bool checked = ids.contains(item->id());
-                auto a = menu->addAction(item->name(), [=](){
+                auto a = menu->addAction(item->name(), [=]() {
                     if (!checked) {
                         FileLabelModel::getGlobalModel()->addLabelToFile(uri, item->id());
                     } else {
@@ -163,7 +163,7 @@ QList<QAction *> FileLabelInternalMenuPlugin::menuActions(MenuPluginInterface::T
                 a->setChecked(checked);
             }
             menu->addSeparator();
-            menu->addAction(tr("Delete All Label"), [=](){
+            menu->addAction(tr("Delete All Label"), [=]() {
                 FileLabelModel::getGlobalModel()->removeFileLabel(uri);
             });
             action->setMenu(menu);

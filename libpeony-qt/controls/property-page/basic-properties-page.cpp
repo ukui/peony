@@ -103,7 +103,7 @@ BasicPropertiesPage::BasicPropertiesPage(const QStringList &uris, QWidget *paren
     //edit->setContentsMargins(10, 10, 10, 5);
     //l1->addWidget(edit, 0, 1);
 
-    connect(edit, &QLineEdit::returnPressed, [=](){
+    connect(edit, &QLineEdit::returnPressed, [=]() {
         if (!edit->isReadOnly() && !edit->text().isEmpty()) {
             FileOperationUtils::rename(m_info->uri(), edit->text(), true);
         }
@@ -158,7 +158,7 @@ BasicPropertiesPage::BasicPropertiesPage(const QStringList &uris, QWidget *paren
     layout->addWidget(f3);
     f3->setVisible(uris.count() == 1);
     updateInfo(uris.first());
-    connect(m_watcher.get(), &FileWatcher::locationChanged, [=](const QString&, const QString &uri){
+    connect(m_watcher.get(), &FileWatcher::locationChanged, [=](const QString&, const QString &uri) {
         this->updateInfo(uri);
     });
 
@@ -187,7 +187,7 @@ void BasicPropertiesPage::onSingleFileChanged(const QString &oldUri, const QStri
     m_info = FileInfo::fromUri(newUri, false);
     FileInfoJob *j = new FileInfoJob(m_info);
     j->setAutoDelete();
-    this->connect(j, &FileInfoJob::infoUpdated, [=](){
+    this->connect(j, &FileInfoJob::infoUpdated, [=]() {
         auto icon = QIcon::fromTheme(m_info->iconName(), QIcon::fromTheme("text-x-generic"));
         auto thumbnail = ThumbnailManager::getInstance()->tryGetThumbnail(m_info->uri());
         m_icon->setIcon(thumbnail.isNull()? icon: thumbnail);
@@ -215,7 +215,7 @@ void BasicPropertiesPage::countFilesAsync(const QStringList &uris)
     m_count_op = new FileCountOperation(uris);
     m_count_op->setAutoDelete(true);
     connect(m_count_op, &FileOperation::operationPreparedOne, this, &BasicPropertiesPage::onFileCountOne, Qt::BlockingQueuedConnection);
-    connect(m_count_op, &FileCountOperation::countDone, [=](quint64 file_count, quint64 hidden_file_count, quint64 total_size){
+    connect(m_count_op, &FileCountOperation::countDone, [=](quint64 file_count, quint64 hidden_file_count, quint64 total_size) {
         m_count_op = nullptr;
         m_file_count = file_count;
         m_hidden_file_count = hidden_file_count;
@@ -263,7 +263,7 @@ void BasicPropertiesPage::updateInfo(const QString &uri)
     g_object_unref(file);
 
     m_time_created = g_file_info_get_attribute_uint64(info,
-                                                      G_FILE_ATTRIBUTE_TIME_CREATED);
+                     G_FILE_ATTRIBUTE_TIME_CREATED);
     QDateTime date1 = QDateTime::fromMSecsSinceEpoch(m_time_created*1000);
     QString time1 = date1.toString(Qt::SystemLocaleShortDate);
     m_time_created_label->setText(time1);
@@ -278,13 +278,13 @@ void BasicPropertiesPage::updateInfo(const QString &uri)
     }
 
     m_time_modified = g_file_info_get_attribute_uint64(info,
-                                                       "time::modified");
+                      "time::modified");
     QDateTime date2 = QDateTime::fromMSecsSinceEpoch(m_time_modified*1000);
     QString time2 = date2.toString(Qt::SystemLocaleShortDate);
     m_time_modified_label->setText(time2);
 
     m_time_access = g_file_info_get_attribute_uint64(info,
-                                                     "time::access");
+                    "time::access");
     QDateTime date3 = QDateTime::fromMSecsSinceEpoch(m_time_access*1000);
     QString time3 = date3.toString(Qt::SystemLocaleShortDate);
     m_time_access_label->setText(time3);

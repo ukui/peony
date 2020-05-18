@@ -34,7 +34,9 @@ class PEONYCORESHARED_EXPORT FileTrashOperation : public FileOperation
 public:
     explicit FileTrashOperation(QStringList srcUris, QObject *parent = nullptr);
 
-    std::shared_ptr<FileOperationInfo> getOperationInfo() override {return m_info;}
+    std::shared_ptr<FileOperationInfo> getOperationInfo() override {
+        return m_info;
+    }
     void run() override;
 
 private:

@@ -75,16 +75,36 @@ public:
     void findChildrenRecursively();
     void computeTotalSize(goffset *offset);
 
-    QString uri() {return m_uri;}
-    QString destUri() {return m_dest_uri;}
-    State state() {return m_state;}
-    FileOperation::ResponseType responseType() {return m_err_response;}
-    QString baseName() {return m_basename;}
-    const QString destBaseName() {return m_dest_basename;}
-    FileNode *parent() {return m_parent;}
-    QList<FileNode*> *children() {return m_children;}
-    qint64 size() {return m_size;}
-    bool isFolder() {return m_is_folder;}
+    QString uri() {
+        return m_uri;
+    }
+    QString destUri() {
+        return m_dest_uri;
+    }
+    State state() {
+        return m_state;
+    }
+    FileOperation::ResponseType responseType() {
+        return m_err_response;
+    }
+    QString baseName() {
+        return m_basename;
+    }
+    const QString destBaseName() {
+        return m_dest_basename;
+    }
+    FileNode *parent() {
+        return m_parent;
+    }
+    QList<FileNode*> *children() {
+        return m_children;
+    }
+    qint64 size() {
+        return m_size;
+    }
+    bool isFolder() {
+        return m_is_folder;
+    }
 
     /*!
      * \brief getRelativePath
@@ -111,7 +131,9 @@ public:
      * </br>
      * \see setState().
      */
-    void setDestUri(QString uri) {m_dest_uri = uri;}
+    void setDestUri(QString uri) {
+        m_dest_uri = uri;
+    }
     /*!
      * \brief setState
      * \param state
@@ -126,7 +148,9 @@ public:
      * or deleted. That will guide the application how to roll back if the operation
      * was cancelled.
      */
-    void setState(State state) {m_state = state;}
+    void setState(State state) {
+        m_state = state;
+    }
     /*!
      * \brief setErrorResponse
      * \param type
@@ -136,9 +160,13 @@ public:
      * will guide them how to do that.
      * For example, if a g_file move operation is ignored, it will not be cleared when clearing.
      */
-    void setErrorResponse(FileOperation::ResponseType type) {m_err_response = type;}
+    void setErrorResponse(FileOperation::ResponseType type) {
+        m_err_response = type;
+    }
 
-    void setDestFileName(const QString &name) {m_dest_basename = name;}
+    void setDestFileName(const QString &name) {
+        m_dest_basename = name;
+    }
     const QString resoveDestFileUri(const QString &destRootDir);
 
 private:

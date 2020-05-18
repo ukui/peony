@@ -54,7 +54,7 @@ FileLaunchAction::FileLaunchAction(const QString &uri, GAppInfo *app_info, bool 
     setText(m_info_name);
     m_info_display_name = g_app_info_get_display_name(m_app_info);
 
-    connect(this, &QAction::triggered, [=](){
+    connect(this, &QAction::triggered, [=]() {
         this->lauchFileAsync(m_force_with_arg);
     });
 }
@@ -136,14 +136,14 @@ void FileLaunchAction::lauchFileSync(bool forceWithArg)
     if (isDesktopFileAction() && !forceWithArg) {
         auto desktop_info = G_DESKTOP_APP_INFO(m_app_info);
         g_desktop_app_info_launch_uris_as_manager (desktop_info,
-                                                   nullptr,
-                                                   nullptr,
-                                                   G_SPAWN_DEFAULT,
-                                                   nullptr,
-                                                   nullptr,
-                                                   nullptr,
-                                                   nullptr,
-                                                   nullptr);
+                nullptr,
+                nullptr,
+                G_SPAWN_DEFAULT,
+                nullptr,
+                nullptr,
+                nullptr,
+                nullptr,
+                nullptr);
     } else {
         g_app_info_launch_default_for_uri(m_uri.toUtf8().constData(),
                                           nullptr,
@@ -206,14 +206,14 @@ void FileLaunchAction::lauchFileAsync(bool forceWithArg)
     if (isDesktopFileAction() && !forceWithArg) {
         auto desktop_info = G_DESKTOP_APP_INFO(m_app_info);
         g_desktop_app_info_launch_uris_as_manager (desktop_info,
-                                                   nullptr,
-                                                   nullptr,
-                                                   G_SPAWN_DEFAULT,
-                                                   nullptr,
-                                                   nullptr,
-                                                   nullptr,
-                                                   nullptr,
-                                                   nullptr);
+                nullptr,
+                nullptr,
+                G_SPAWN_DEFAULT,
+                nullptr,
+                nullptr,
+                nullptr,
+                nullptr,
+                nullptr);
     } else {
 #if GLIB_CHECK_VERSION(2, 50, 0)
         g_app_info_launch_default_for_uri_async(m_uri.toUtf8().constData(),

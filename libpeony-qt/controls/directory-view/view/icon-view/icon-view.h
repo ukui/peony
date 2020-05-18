@@ -58,7 +58,9 @@ public:
     explicit IconView(DirectoryViewProxyIface *proxy, QWidget *parent = nullptr);
     ~IconView() override;
 
-    const QString viewId() override {return tr("Icon View");}
+    const QString viewId() override {
+        return tr("Icon View");
+    }
 
     void bindModel(FileItemModel *sourceModel, FileItemProxyFilterSortModel *proxyModel) override;
     void setProxy(DirectoryViewProxyIface *proxy) override;
@@ -68,7 +70,9 @@ public:
      * \param use
      * \deprecated
      */
-    void setUsePeonyQtDirectoryMenu(bool use) {m_use_peony_qt_directory_menu = use;}
+    void setUsePeonyQtDirectoryMenu(bool use) {
+        m_use_peony_qt_directory_menu = use;
+    }
 
     /*!
      * \brief getProxy
@@ -177,50 +181,94 @@ public:
     explicit IconView2(QWidget *parent = nullptr);
     ~IconView2();
 
-    const QString viewId() {return "Icon View";}
+    const QString viewId() {
+        return "Icon View";
+    }
 
     //location
-    const QString getDirectoryUri() {return m_view->getDirectoryUri();}
+    const QString getDirectoryUri() {
+        return m_view->getDirectoryUri();
+    }
 
     //selections
-    const QStringList getSelections() {return m_view->getSelections();}
+    const QStringList getSelections() {
+        return m_view->getSelections();
+    }
 
     //children
-    const QStringList getAllFileUris() {return m_view->getAllFileUris();}
+    const QStringList getAllFileUris() {
+        return m_view->getAllFileUris();
+    }
 
-    int getSortType() {return m_view->getSortType();}
-    Qt::SortOrder getSortOrder() {return Qt::SortOrder(m_view->getSortOrder());}
+    int getSortType() {
+        return m_view->getSortType();
+    }
+    Qt::SortOrder getSortOrder() {
+        return Qt::SortOrder(m_view->getSortOrder());
+    }
 
-    int currentZoomLevel() {return m_zoom_level;}
-    int minimumZoomLevel() {return 21;}
-    int maximumZoomLevel() {return 100;}
-    bool supportZoom() {return true;}
+    int currentZoomLevel() {
+        return m_zoom_level;
+    }
+    int minimumZoomLevel() {
+        return 21;
+    }
+    int maximumZoomLevel() {
+        return 100;
+    }
+    bool supportZoom() {
+        return true;
+    }
 
 public Q_SLOTS:
     void bindModel(FileItemModel *model, FileItemProxyFilterSortModel *proxyModel);
 
     //location
     //void open(const QStringList &uris, bool newWindow);
-    void setDirectoryUri(const QString &uri) {m_view->setDirectoryUri(uri);}
-    void beginLocationChange() {m_view->beginLocationChange();}
-    void stopLocationChange() {m_view->stopLocationChange();}
+    void setDirectoryUri(const QString &uri) {
+        m_view->setDirectoryUri(uri);
+    }
+    void beginLocationChange() {
+        m_view->beginLocationChange();
+    }
+    void stopLocationChange() {
+        m_view->stopLocationChange();
+    }
 
-    void closeDirectoryView() {m_view->closeView();}
+    void closeDirectoryView() {
+        m_view->closeView();
+    }
 
     //selections
-    void setSelections(const QStringList &uris) {m_view->setSelections(uris);}
-    void invertSelections() {m_view->invertSelections();}
-    void scrollToSelection(const QString &uri) {m_view->scrollToSelection(uri);}
+    void setSelections(const QStringList &uris) {
+        m_view->setSelections(uris);
+    }
+    void invertSelections() {
+        m_view->invertSelections();
+    }
+    void scrollToSelection(const QString &uri) {
+        m_view->scrollToSelection(uri);
+    }
 
     //clipboard
     //cut items should be drawn differently.
-    void setCutFiles(const QStringList &uris) {m_view->setCutFiles(uris);}
+    void setCutFiles(const QStringList &uris) {
+        m_view->setCutFiles(uris);
+    }
 
-    void setSortType(int sortType) {m_view->setSortType(sortType);}
-    void setSortOrder(int sortOrder) {m_view->setSortOrder(sortOrder);}
+    void setSortType(int sortType) {
+        m_view->setSortType(sortType);
+    }
+    void setSortOrder(int sortOrder) {
+        m_view->setSortOrder(sortOrder);
+    }
 
-    void editUri(const QString &uri) {m_view->editUri(uri);}
-    void editUris(const QStringList uris) {m_view->editUris(uris);}
+    void editUri(const QString &uri) {
+        m_view->editUri(uri);
+    }
+    void editUris(const QStringList uris) {
+        m_view->editUris(uris);
+    }
 
     void repaintView();
 

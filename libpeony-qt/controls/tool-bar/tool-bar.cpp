@@ -103,14 +103,14 @@ void ToolBar::init()
                                 m_top_window->getCurrentPageViewType(), this);
     m_view_menu = new QMenu(this);
     m_view_action->setMenu(m_view_menu);
-    connect(m_view_action, &QAction::triggered, [=](){
+    connect(m_view_action, &QAction::triggered, [=]() {
         auto point = this->widgetForAction(m_view_action)->geometry().bottomLeft();
         auto global_point = mapToGlobal(point);
         m_view_menu->exec(global_point);
     });
-    connect(m_view_menu, &QMenu::aboutToShow, [=](){
+    connect(m_view_menu, &QMenu::aboutToShow, [=]() {
         for (auto id : m_view_factory_model->supportViewIds()) {
-            auto action = m_view_menu->addAction(m_view_factory_model->iconFromViewId(id), id, [=](){
+            auto action = m_view_menu->addAction(m_view_factory_model->iconFromViewId(id), id, [=]() {
                 m_top_window->getCurrentPage()->switchViewType(id);
             });
             if (id == m_top_window->getCurrentPageViewType()) {
@@ -119,7 +119,7 @@ void ToolBar::init()
             }
         }
     });
-    connect(m_view_menu, &QMenu::aboutToHide, [=](){
+    connect(m_view_menu, &QMenu::aboutToHide, [=]() {
         for (auto action : m_view_menu->actions()) {
             action->deleteLater();
         }
@@ -135,26 +135,26 @@ void ToolBar::init()
       */
     m_sort_action = new QAction(QIcon::fromTheme("view-sort-ascending-symbolic"), tr("Sort Type"), this);
     QMenu *sortMenu = new QMenu(this);
-    sortMenu->addAction(tr("File Name"), [=](){
+    sortMenu->addAction(tr("File Name"), [=]() {
         m_top_window->setCurrentSortColumn(0);
     });
-    sortMenu->addAction(tr("File Type"), [=](){
+    sortMenu->addAction(tr("File Type"), [=]() {
         m_top_window->setCurrentSortColumn(1);
     });
-    sortMenu->addAction(tr("File Size"), [=](){
+    sortMenu->addAction(tr("File Size"), [=]() {
         m_top_window->setCurrentSortColumn(2);
     });
-    sortMenu->addAction(tr("Modified Date"), [=](){
+    sortMenu->addAction(tr("Modified Date"), [=]() {
         m_top_window->setCurrentSortColumn(3);
     });
 
     sortMenu->addSeparator();
 
-    sortMenu->addAction(tr("Ascending"), [=](){
+    sortMenu->addAction(tr("Ascending"), [=]() {
         m_top_window->setCurrentSortOrder(Qt::AscendingOrder);
         m_sort_action->setIcon(QIcon::fromTheme("view-sort-ascending-symbolic"));
     });
-    sortMenu->addAction(tr("Descending"), [=]{
+    sortMenu->addAction(tr("Descending"), [=] {
         m_top_window->setCurrentSortOrder(Qt::DescendingOrder);
         m_sort_action->setIcon(QIcon::fromTheme("view-sort-descending-symbolic"));
     });
@@ -162,13 +162,13 @@ void ToolBar::init()
     m_sort_action->setMenu(sortMenu);
     addAction(m_sort_action);
 
-    connect(m_sort_action, &QAction::triggered, [=](){
+    connect(m_sort_action, &QAction::triggered, [=]() {
         auto point = this->widgetForAction(m_sort_action)->geometry().bottomLeft();
         auto global_point = mapToGlobal(point);
         sortMenu->exec(global_point);
     });
 
-    connect(sortMenu, &QMenu::aboutToShow, [=](){
+    connect(sortMenu, &QMenu::aboutToShow, [=]() {
         for (auto action : sortMenu->actions()) {
             action->setCheckable(false);
             action->setChecked(false);
@@ -209,10 +209,10 @@ void ToolBar::init()
     //other options?
 
     //trash
-    m_clean_trash_action = addAction(QIcon::fromTheme("edit-clear-symbolic"), tr("Clean Trash"), [=](){
+    m_clean_trash_action = addAction(QIcon::fromTheme("edit-clear-symbolic"), tr("Clean Trash"), [=]() {
         auto result = QMessageBox::question(nullptr, tr("Delete Permanently"), tr("Are you sure that you want to delete these files? "
-                                                                                  "Once you start a deletion, the files deleting will never be "
-                                                                                  "restored again."));
+                                            "Once you start a deletion, the files deleting will never be "
+                                            "restored again."));
         if (result == QMessageBox::Yes) {
             auto uris = m_top_window->getCurrentAllFileUris();
             qDebug()<<uris;
@@ -220,20 +220,20 @@ void ToolBar::init()
         }
     });
 
-    m_restore_action = addAction(QIcon::fromTheme("view-refresh-symbolic"), tr("Restore"), [=](){
+    m_restore_action = addAction(QIcon::fromTheme("view-refresh-symbolic"), tr("Restore"), [=]() {
         FileOperationUtils::restore(m_top_window->getCurrentSelections());
     });
 
     m_trash_actions_sperator = addSeparator();
 
     //connect signal
-    connect(newWindowAction, &QAction::triggered, [=](){
+    connect(newWindowAction, &QAction::triggered, [=]() {
         FMWindow *newWindow = new FMWindow(m_top_window->getLastNonSearchUri());
         newWindow->show();
         //FIXME: show when prepared
     });
 
-    connect(newTabActon, &QAction::triggered, [=](){
+    connect(newTabActon, &QAction::triggered, [=]() {
         QStringList l;
         l<<m_top_window->getLastNonSearchUri();
         m_top_window->addNewTabs(l);
@@ -246,39 +246,39 @@ void ToolBar::init()
     });
     */
 
-    connect(copyAction, &QAction::triggered, [=](){
+    connect(copyAction, &QAction::triggered, [=]() {
         if (!m_top_window->getCurrentSelections().isEmpty())
             ClipboardUtils::setClipboardFiles(m_top_window->getCurrentSelections(), false);
     });
 
-    connect(pasteAction, &QAction::triggered, [=](){
+    connect(pasteAction, &QAction::triggered, [=]() {
         if (ClipboardUtils::isClipboardHasFiles()) {
             //FIXME: how about duplicated copy?
             //FIXME: how to deal with a failed move?
             ClipboardUtils::pasteClipboardFiles(m_top_window->getCurrentUri());
         }
     });
-    connect(cutAction, &QAction::triggered, [=](){
+    connect(cutAction, &QAction::triggered, [=]() {
         if (!m_top_window->getCurrentSelections().isEmpty()) {
             ClipboardUtils::setClipboardFiles(m_top_window->getCurrentSelections(), true);
         }
     });
-    connect(trashAction, &QAction::triggered, [=](){
+    connect(trashAction, &QAction::triggered, [=]() {
         if (!m_top_window->getCurrentSelections().isEmpty()) {
             FileOperationUtils::trash(m_top_window->getCurrentSelections(), true);
         }
     });
 
     QAction *optionAction = new QAction(QIcon::fromTheme("ukui-settings-app-symbolic", QIcon::fromTheme("settings-app-symbolic")), tr("Options"), nullptr);
-    connect(optionAction, &QAction::triggered, this, [=](){
+    connect(optionAction, &QAction::triggered, this, [=]() {
         QMenu optionMenu;
-        auto forbidThumbnail = optionMenu.addAction(tr("Forbid Thumbnail"), this, [=](bool checked){
+        auto forbidThumbnail = optionMenu.addAction(tr("Forbid Thumbnail"), this, [=](bool checked) {
             GlobalSettings::getInstance()->setValue("do-not-thumbnail", checked);
         });
         forbidThumbnail->setCheckable(true);
         forbidThumbnail->setChecked(GlobalSettings::getInstance()->isExist("do-not-thumbnail")? GlobalSettings::getInstance()->getValue("do-not-thumbnail").toBool(): false);
 
-        auto showHidden = optionMenu.addAction(tr("Show Hidden"), this, [=](){
+        auto showHidden = optionMenu.addAction(tr("Show Hidden"), this, [=]() {
             m_top_window->setShowHidden();
         });
         showHidden->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_H));
@@ -289,7 +289,7 @@ void ToolBar::init()
         resident->setToolTip(tr("Let the program still run after closing the last window. "
                                 "This will reduce the time for the next launch, but it will "
                                 "also consume resources in backend."));
-        connect(resident, &QAction::triggered, this, [=](bool checked){
+        connect(resident, &QAction::triggered, this, [=](bool checked) {
             GlobalSettings::getInstance()->setValue("resident", checked);
             qApp->setQuitOnLastWindowClosed(!checked);
         });
@@ -298,13 +298,13 @@ void ToolBar::init()
 
         optionMenu.addSeparator();
 
-        auto help = optionMenu.addAction(QIcon::fromTheme("help-symbolic"), tr("&Help"), this, [=](){
+        auto help = optionMenu.addAction(QIcon::fromTheme("help-symbolic"), tr("&Help"), this, [=]() {
             QUrl url = QUrl("help:ubuntu-kylin-help/files", QUrl::TolerantMode);
             QDesktopServices::openUrl(url);
         });
         help->setShortcut(Qt::Key_F1);
 
-        auto about = optionMenu.addAction(tr("&About..."), this, [=](){
+        auto about = optionMenu.addAction(tr("&About..."), this, [=]() {
             QMessageBox::about(m_top_window,
                                tr("Peony Qt"),
                                tr("Author:\n"
@@ -333,7 +333,7 @@ void ToolBar::updateLocation(const QString &uri)
         return;
 
     bool isFileOpDisable = uri.startsWith("trash://") || uri.startsWith("search://")
-            || uri.startsWith("computer:///");
+                           || uri.startsWith("computer:///");
     for (auto action : m_file_op_actions) {
         action->setEnabled(!isFileOpDisable);
         if (uri.startsWith("search://")) {

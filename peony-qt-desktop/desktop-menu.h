@@ -34,7 +34,9 @@ class DesktopMenu : public QMenu
     Q_OBJECT
 public:
     explicit DesktopMenu(DirectoryViewIface *view, QWidget *parent = nullptr);
-    const QStringList urisToEdit() {return m_uris_to_edit;}
+    const QStringList urisToEdit() {
+        return m_uris_to_edit;
+    }
 
 protected:
     void fillActions();

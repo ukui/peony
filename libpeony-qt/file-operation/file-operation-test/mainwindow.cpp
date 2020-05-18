@@ -75,9 +75,9 @@ MainWindow::MainWindow(QWidget *parent)
     QAction *startAction = new QAction("start", t);
     t->addAction(startAction);
 
-    connect(startAction, &QAction::triggered, [=]{
+    connect(startAction, &QAction::triggered, [=] {
         QMessageBox::question(nullptr, tr("source files"), tr("choose source files，"
-                                                              "use cancel to finish the choices."));
+                              "use cancel to finish the choices."));
         QFileDialog srcdlg;
         srcdlg.setFileMode(QFileDialog::ExistingFiles);
         srcdlg.setAcceptMode(QFileDialog::AcceptSave);
@@ -90,7 +90,7 @@ MainWindow::MainWindow(QWidget *parent)
         }
 
         QMessageBox::question(nullptr, tr("dest dir"), tr("choose dest dir,"
-                                                          "use cancel to finish the choices."));
+                              "use cancel to finish the choices."));
         QFileDialog destdlg;
         destdlg.setAcceptMode(QFileDialog::AcceptSave);
         destdlg.setFileMode(QFileDialog::Directory);
@@ -126,7 +126,7 @@ MainWindow::MainWindow(QWidget *parent)
             uris<<info->uri();
         }
         Peony::FileUntrashOperation *moveOp = new Peony::FileUntrashOperation(uris);
-*/
+        */
 
         //rename
         //Peony::FileRenameOperation *moveOp = new Peony::FileRenameOperation(srcUris.isEmpty()? nullptr: srcUris.at(0), "RenameSample");
@@ -139,7 +139,7 @@ MainWindow::MainWindow(QWidget *parent)
         moveOp->connect(moveOp, &Peony::FileOperation::invalidOperation, [=](const QString &message){
             QMessageBox::critical(nullptr, "Error", message);
         });
-*/
+        */
 
         Peony::FileOperationProgressWizard *wizard = new Peony::FileOperationProgressWizard;
         wizard->connect(moveOp, &Peony::FileOperation::operationStarted,

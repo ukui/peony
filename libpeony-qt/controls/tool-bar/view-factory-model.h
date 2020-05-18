@@ -40,7 +40,9 @@ public:
     const QModelIndex getIndexFromViewId(const QString &viewId);
 
     const QString getViewId(int index);
-    const QStringList supportViewIds() {return m_support_views_id;}
+    const QStringList supportViewIds() {
+        return m_support_views_id;
+    }
     const QString getHighestPriorityViewId(int zoom_level_hint);
 
     // Basic functionality:

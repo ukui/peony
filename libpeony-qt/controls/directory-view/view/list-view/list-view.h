@@ -50,7 +50,9 @@ class PEONYCORESHARED_EXPORT ListView : public QTreeView, public DirectoryViewIf
 public:
     explicit ListView(QWidget *parent = nullptr);
 
-    const QString viewId() override {return tr("List View");}
+    const QString viewId() override {
+        return tr("List View");
+    }
 
     void bindModel(FileItemModel *sourceModel, FileItemProxyFilterSortModel *proxyModel) override;
     void setProxy(DirectoryViewProxyIface *proxy) override;
@@ -145,51 +147,95 @@ public:
     explicit ListView2(QWidget *parent = nullptr);
     ~ListView2();
 
-    const QString viewId() {return "List View";}
+    const QString viewId() {
+        return "List View";
+    }
 
     //location
-    const QString getDirectoryUri() {return m_view->getDirectoryUri();}
+    const QString getDirectoryUri() {
+        return m_view->getDirectoryUri();
+    }
 
     //selections
-    const QStringList getSelections() {return m_view->getSelections();}
+    const QStringList getSelections() {
+        return m_view->getSelections();
+    }
 
     //children
-    const QStringList getAllFileUris() {return m_view->getAllFileUris();}
+    const QStringList getAllFileUris() {
+        return m_view->getAllFileUris();
+    }
 
-    int getSortType() {return m_view->getSortType();}
-    Qt::SortOrder getSortOrder() {return Qt::SortOrder(m_view->getSortOrder());}
+    int getSortType() {
+        return m_view->getSortType();
+    }
+    Qt::SortOrder getSortOrder() {
+        return Qt::SortOrder(m_view->getSortOrder());
+    }
 
-    int currentZoomLevel() {return m_zoom_level;}
-    int minimumZoomLevel() {return 0;}
-    int maximumZoomLevel() {return 20;}
+    int currentZoomLevel() {
+        return m_zoom_level;
+    }
+    int minimumZoomLevel() {
+        return 0;
+    }
+    int maximumZoomLevel() {
+        return 20;
+    }
 
-    bool supportZoom() {return true;}
+    bool supportZoom() {
+        return true;
+    }
 
 public Q_SLOTS:
     void bindModel(FileItemModel *model, FileItemProxyFilterSortModel *proxyModel);
 
     //location
     //void open(const QStringList &uris, bool newWindow);
-    void setDirectoryUri(const QString &uri) {m_view->setDirectoryUri(uri);}
-    void beginLocationChange() {m_view->beginLocationChange();}
-    void stopLocationChange() {m_view->stopLocationChange();}
+    void setDirectoryUri(const QString &uri) {
+        m_view->setDirectoryUri(uri);
+    }
+    void beginLocationChange() {
+        m_view->beginLocationChange();
+    }
+    void stopLocationChange() {
+        m_view->stopLocationChange();
+    }
 
-    void closeDirectoryView() {m_view->closeView();}
+    void closeDirectoryView() {
+        m_view->closeView();
+    }
 
     //selections
-    void setSelections(const QStringList &uris) {m_view->setSelections(uris);}
-    void invertSelections() {m_view->invertSelections();}
-    void scrollToSelection(const QString &uri) {m_view->scrollToSelection(uri);}
+    void setSelections(const QStringList &uris) {
+        m_view->setSelections(uris);
+    }
+    void invertSelections() {
+        m_view->invertSelections();
+    }
+    void scrollToSelection(const QString &uri) {
+        m_view->scrollToSelection(uri);
+    }
 
     //clipboard
     //cut items should be drawn differently.
-    void setCutFiles(const QStringList &uris) {m_view->setCutFiles(uris);}
+    void setCutFiles(const QStringList &uris) {
+        m_view->setCutFiles(uris);
+    }
 
-    void setSortType(int sortType) {m_view->setSortType(sortType);}
-    void setSortOrder(int sortOrder) {m_view->setSortOrder(sortOrder);}
+    void setSortType(int sortType) {
+        m_view->setSortType(sortType);
+    }
+    void setSortOrder(int sortOrder) {
+        m_view->setSortOrder(sortOrder);
+    }
 
-    void editUri(const QString &uri) {m_view->editUri(uri);}
-    void editUris(const QStringList uris) {m_view->editUris(uris);}
+    void editUri(const QString &uri) {
+        m_view->editUri(uri);
+    }
+    void editUris(const QStringList uris) {
+        m_view->editUris(uris);
+    }
 
     void setCurrentZoomLevel(int zoomLevel);
 

@@ -35,11 +35,18 @@ public:
     explicit ContentPreviewPage(QWidget *parent = nullptr);
     ~ContentPreviewPage() override;
 
-    void prepare(const QString &uri, PreviewType type) override {m_current_uri = uri; m_current_type = type;}
-    void prepare(const QString &uri) override {m_current_uri = uri;}
+    void prepare(const QString &uri, PreviewType type) override {
+        m_current_uri = uri;
+        m_current_type = type;
+    }
+    void prepare(const QString &uri) override {
+        m_current_uri = uri;
+    }
     void startPreview() override;
     void cancel() override;
-    void closePreviewPage() override {deleteLater();}
+    void closePreviewPage() override {
+        deleteLater();
+    }
 
 signals:
 

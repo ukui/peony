@@ -72,7 +72,7 @@ NavigationBar::NavigationBar(QWidget *parent) : QToolBar(parent)
         auto factory = manager->getPlugin(id);
         auto action = group->addAction(factory->icon(), factory->name());
         action->setCheckable(true);
-        connect(action, &QAction::triggered, [=](){
+        connect(action, &QAction::triggered, [=]() {
             if (m_checked_preview_action == action) {
                 action->setChecked(false);
                 m_checked_preview_action = nullptr;

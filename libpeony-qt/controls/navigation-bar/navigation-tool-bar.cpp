@@ -32,11 +32,11 @@ using namespace Peony;
 
 NavigationToolBar::NavigationToolBar(QWidget *parent) : QToolBar(parent)
 {
-    m_back_action = addAction(QIcon::fromTheme("go-previous"), tr("Go Back"), [=](){
+    m_back_action = addAction(QIcon::fromTheme("go-previous"), tr("Go Back"), [=]() {
         this->onGoBack();
     });
 
-    m_forward_action = addAction(QIcon::fromTheme("go-next"), tr("Go Forward"), [=](){
+    m_forward_action = addAction(QIcon::fromTheme("go-next"), tr("Go Forward"), [=]() {
         this->onGoForward();
     });
 
@@ -48,7 +48,7 @@ NavigationToolBar::NavigationToolBar(QWidget *parent) : QToolBar(parent)
     //historyButton->setArrowType(Qt::NoArrow);
     //historyButton->setPopupMode(QToolButton::DelayedPopup);
 
-    connect(m_history_action, &QAction::triggered, [=](){
+    connect(m_history_action, &QAction::triggered, [=]() {
         QMenu historyMenu;
         //historyButton->setMenu(&historyMenu);
         auto back_list = m_current_container->getBackList();
@@ -85,13 +85,13 @@ NavigationToolBar::NavigationToolBar(QWidget *parent) : QToolBar(parent)
         //historyButton->setMenu(nullptr);
     });
 
-    m_cd_up_action = addAction(QIcon::fromTheme("go-up"), tr("Cd Up"), [=](){
+    m_cd_up_action = addAction(QIcon::fromTheme("go-up"), tr("Cd Up"), [=]() {
         if (m_current_container) {
             m_current_container->cdUp();
         }
     });
 
-    m_refresh_action = addAction(QIcon::fromTheme("gtk-refresh"), tr("Refresh"), [=](){
+    m_refresh_action = addAction(QIcon::fromTheme("gtk-refresh"), tr("Refresh"), [=]() {
         Q_EMIT refreshRequest();
     });
 

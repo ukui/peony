@@ -44,7 +44,7 @@ FileLabelBox::FileLabelBox(QWidget *parent) : QListView(parent)
 
     setContextMenuPolicy(Qt::CustomContextMenu);
 
-    connect(this, &QWidget::customContextMenuRequested, this, [=](const QPoint &pos){
+    connect(this, &QWidget::customContextMenuRequested, this, [=](const QPoint &pos) {
         auto index = indexAt(pos);
         bool labelRemovable = false;
         QMenu menu;
@@ -54,12 +54,12 @@ FileLabelBox::FileLabelBox(QWidget *parent) : QListView(parent)
             if (id > TOTAL_DEFAULT_COLOR)
                 labelRemovable = true;
 
-            menu.addAction(tr("Rename"), [=](){
+            menu.addAction(tr("Rename"), [=]() {
                 //FIXME: edit
                 edit(index);
             });
 
-            menu.addAction(tr("Edit Color"), [=](){
+            menu.addAction(tr("Edit Color"), [=]() {
                 QColorDialog d;
                 if (d.exec()) {
                     auto color = d.selectedColor();
@@ -67,12 +67,12 @@ FileLabelBox::FileLabelBox(QWidget *parent) : QListView(parent)
                 }
             });
 
-            auto a = menu.addAction(tr("Delete"), [=](){
+            auto a = menu.addAction(tr("Delete"), [=]() {
                 FileLabelModel::getGlobalModel()->removeLabel(id);
             });
             a->setEnabled(labelRemovable);
         } else {
-            menu.addAction(tr("Create New Label"), [=](){
+            menu.addAction(tr("Create New Label"), [=]() {
                 QColorDialog dialog;
                 if (dialog.exec()) {
                     auto color = dialog.selectedColor();

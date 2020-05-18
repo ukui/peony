@@ -41,7 +41,7 @@ BookMarkManager *BookMarkManager::getInstance()
 
 BookMarkManager::BookMarkManager(QObject *parent) : QObject(parent)
 {
-    QtConcurrent::run([=](){
+    QtConcurrent::run([=]() {
         m_book_mark = new QSettings(QSettings::UserScope, "org.ukui", "peony-qt");
         m_uris = m_book_mark->value("uris").toStringList();
         m_is_loaded = true;
@@ -60,7 +60,7 @@ BookMarkManager::~BookMarkManager()
 
 void BookMarkManager::addBookMark(const QString &uri)
 {
-    QtConcurrent::run([=](){
+    QtConcurrent::run([=]() {
         while (!this->isLoaded()) {
             g_usleep(100);
         }
@@ -85,7 +85,7 @@ void BookMarkManager::addBookMark(const QString &uri)
 
 void BookMarkManager::removeBookMark(const QString &uri)
 {
-    QtConcurrent::run([=](){
+    QtConcurrent::run([=]() {
         while (!this->isLoaded()) {
             g_usleep(100);
         }

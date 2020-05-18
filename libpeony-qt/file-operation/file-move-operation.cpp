@@ -101,8 +101,8 @@ FileMoveOperation::~FileMoveOperation()
 }
 
 void FileMoveOperation::progress_callback(goffset current_num_bytes,
-                                          goffset total_num_bytes,
-                                          FileMoveOperation *p_this)
+        goffset total_num_bytes,
+        FileMoveOperation *p_this)
 {
     auto currnet = p_this->m_current_offset + current_num_bytes;
     auto total = p_this->m_total_szie;
@@ -150,7 +150,7 @@ void FileMoveOperation::move()
         auto srcFile = wrapGFile(g_file_new_for_uri(srcUri.toUtf8().constData()));
         char *base_name = g_file_get_basename(srcFile.get()->get());
         auto destFile = wrapGFile(g_file_resolve_relative_path(destDir.get()->get(),
-                                                               base_name));
+                                  base_name));
 
         char *dest_uri = g_file_get_uri(destFile.get()->get());
         file->setDestUri(dest_uri);
@@ -480,7 +480,7 @@ void FileMoveOperation::copyRecursively(FileNode *node)
     //FIXME: the smart pointers' deconstruction spends too much time.
     GFileWrapperPtr destRoot = wrapGFile(g_file_new_for_uri(m_dest_dir_uri.toUtf8().constData()));
     GFileWrapperPtr destFile = wrapGFile(g_file_resolve_relative_path(destRoot.get()->get(),
-                                                                      relativePath.toUtf8().constData()));
+                                         relativePath.toUtf8().constData()));
 
     char *dest_file_uri = g_file_get_uri(destFile.get()->get());
     node->setDestUri(dest_file_uri);
@@ -803,9 +803,9 @@ start:
         auto response = errored(nullptr,
                                 nullptr,
                                 GErrorWrapper::wrapFrom(g_error_new(G_IO_ERROR,
-                                                                    G_IO_ERROR_INVAL,
-                                                                    tr("Invalid Operation").toUtf8().constData(),
-                                                                    nullptr)),
+                                        G_IO_ERROR_INVAL,
+                                        tr("Invalid Operation").toUtf8().constData(),
+                                        nullptr)),
                                 true);
         switch (response.value<ResponseType>()) {
         case Retry:

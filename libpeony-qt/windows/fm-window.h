@@ -90,7 +90,9 @@ public:
     FMWindowIface * create(const QString &uri) override;
     FMWindowIface * create(const QStringList &uris) override;
 
-    const QString getLastNonSearchUri() override {return m_last_non_search_location;}
+    const QString getLastNonSearchUri() override {
+        return m_last_non_search_location;
+    }
     const QString getCurrentUri() override;
     const QStringList getCurrentSelections() override;
     const QStringList getCurrentAllFileUris() override;
@@ -100,13 +102,21 @@ public:
     Qt::SortOrder getCurrentSortOrder() override;
     int getCurrentSortColumn() override;
 
-    bool getWindowShowHidden() override {return m_show_hidden_file;}
-    bool getWindowUseDefaultNameSortOrder() override {return m_use_default_name_sort_order;}
-    bool getWindowSortFolderFirst() override {return m_folder_first;}
+    bool getWindowShowHidden() override {
+        return m_show_hidden_file;
+    }
+    bool getWindowUseDefaultNameSortOrder() override {
+        return m_use_default_name_sort_order;
+    }
+    bool getWindowSortFolderFirst() override {
+        return m_folder_first;
+    }
 
     const QString getCurrentPageViewType() override;
 
-    QSize sizeHint() const override {return QSize(800, 600);}
+    QSize sizeHint() const override {
+        return QSize(800, 600);
+    }
 
 Q_SIGNALS:
     void activeViewChanged(const DirectoryViewProxyIface *view);
@@ -203,7 +213,9 @@ class PreviewPageContainer : public QStackedWidget
     void setCurrentPage(PreviewPageIface *page);
     void removePage(PreviewPageIface *page);
     PreviewPageIface *getCurrentPage();
-    bool isHidden() {return isVisible();}
+    bool isHidden() {
+        return isVisible();
+    }
 };
 
 class ToolBarContainer : public QToolBar

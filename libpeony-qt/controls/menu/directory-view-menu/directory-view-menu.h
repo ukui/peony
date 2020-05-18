@@ -51,7 +51,9 @@ public:
     explicit DirectoryViewMenu(DirectoryViewWidget *directoryView, QWidget *parent = nullptr);
     explicit DirectoryViewMenu(FMWindowIface *window, QWidget *parent = nullptr);
 
-    const QStringList &urisToEdit() {return m_uris_to_edit;}
+    const QStringList &urisToEdit() {
+        return m_uris_to_edit;
+    }
 
 protected:
     void fillActions();

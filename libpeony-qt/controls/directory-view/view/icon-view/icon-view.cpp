@@ -268,7 +268,7 @@ void IconView::paintEvent(QPaintEvent *e)
     p.fillRect(this->geometry(), this->palette().base());
     if (m_repaint_timer.isActive()) {
         m_repaint_timer.stop();
-        QTimer::singleShot(100, [this](){
+        QTimer::singleShot(100, [this]() {
             this->repaint();
         });
     }
@@ -309,7 +309,7 @@ void IconView::slotRename()
 {
     //delay edit action to avoid doubleClick or dragEvent
     qDebug()<<"slotRename"<<m_editValid;
-    QTimer::singleShot(300, m_renameTimer, [&](){
+    QTimer::singleShot(300, m_renameTimer, [&]() {
         qDebug()<<"singleshot"<<m_editValid;
         if(m_editValid) {
             m_renameTimer->stop();
@@ -329,7 +329,7 @@ void IconView::bindModel(FileItemModel *sourceModel, FileItemProxyFilterSortMode
     setModel(m_sort_filter_proxy_model);
 
     //edit trigger
-    connect(this->selectionModel(), &QItemSelectionModel::selectionChanged, [=](const QItemSelection &selection, const QItemSelection &deselection){
+    connect(this->selectionModel(), &QItemSelectionModel::selectionChanged, [=](const QItemSelection &selection, const QItemSelection &deselection) {
         qDebug()<<"selection changed";
         auto currentSelections = selection.indexes();
 
@@ -373,7 +373,7 @@ void IconView::setProxy(DirectoryViewProxyIface *proxy)
     connect(m_model, &FileItemModel::findChildrenFinished,
             this, &IconView::reportViewDirectoryChanged);
 
-    connect(this, &IconView::doubleClicked, [=](const QModelIndex &index){
+    connect(this, &IconView::doubleClicked, [=](const QModelIndex &index) {
         qDebug()<<"double click"<<index.data(FileItemModel::UriRole);
         Q_EMIT m_proxy->viewDoubleClicked(index.data(FileItemModel::UriRole).toString());
     });
@@ -503,25 +503,25 @@ void IconView2::bindModel(FileItemModel *model, FileItemProxyFilterSortModel *pr
     connect(m_view->selectionModel(), &QItemSelectionModel::selectionChanged,
             this, &DirectoryViewWidget::viewSelectionChanged);
 
-    connect(m_view, &IconView::doubleClicked, this, [=](const QModelIndex &index){
+    connect(m_view, &IconView::doubleClicked, this, [=](const QModelIndex &index) {
         Q_EMIT this->viewDoubleClicked(index.data(Qt::UserRole).toString());
     });
 
-    connect(m_view, &IconView::customContextMenuRequested, this, [=](const QPoint &pos){
+    connect(m_view, &IconView::customContextMenuRequested, this, [=](const QPoint &pos) {
         if (!m_view->indexAt(pos).isValid())
             m_view->clearSelection();
 
         //NOTE: we have to ensure that we have cleared the
         //selection if menu request at blank pos.
-        QTimer::singleShot(1, [=](){
+        QTimer::singleShot(1, [=]() {
             Q_EMIT this->menuRequest(QCursor::pos());
         });
     });
 
-    connect(m_proxy_model, &FileItemProxyFilterSortModel::layoutChanged, this, [=](){
+    connect(m_proxy_model, &FileItemProxyFilterSortModel::layoutChanged, this, [=]() {
         Q_EMIT this->sortOrderChanged(Qt::SortOrder(getSortOrder()));
     });
-    connect(m_proxy_model, &FileItemProxyFilterSortModel::layoutChanged, this, [=](){
+    connect(m_proxy_model, &FileItemProxyFilterSortModel::layoutChanged, this, [=]() {
         Q_EMIT this->sortTypeChanged(getSortType());
     });
 }

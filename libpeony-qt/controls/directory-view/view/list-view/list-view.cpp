@@ -82,7 +82,7 @@ void ListView::bindModel(FileItemModel *sourceModel, FileItemProxyFilterSortMode
     adjustColumnsSize();
 
     //edit trigger
-    connect(this->selectionModel(), &QItemSelectionModel::selectionChanged, [=](const QItemSelection &selection, const QItemSelection &deselection){
+    connect(this->selectionModel(), &QItemSelectionModel::selectionChanged, [=](const QItemSelection &selection, const QItemSelection &deselection) {
         qDebug()<<"selection changed";
         auto currentSelections = selection.indexes();
 
@@ -232,7 +232,7 @@ void ListView::slotRename()
 {
     //delay edit action to avoid doubleClick or dragEvent
     qDebug()<<"slotRename"<<m_editValid;
-    QTimer::singleShot(300, m_renameTimer, [&](){
+    QTimer::singleShot(300, m_renameTimer, [&]() {
         qDebug()<<"singleshot"<<m_editValid;
         if(m_editValid) {
             m_renameTimer->stop();
@@ -436,14 +436,14 @@ void ListView2::bindModel(FileItemModel *model, FileItemProxyFilterSortModel *pr
     connect(m_view->selectionModel(), &QItemSelectionModel::selectionChanged,
             this, &DirectoryViewWidget::viewSelectionChanged);
 
-    connect(m_view, &ListView::doubleClicked, this, [=](const QModelIndex &index){
+    connect(m_view, &ListView::doubleClicked, this, [=](const QModelIndex &index) {
         qDebug()<<index.data(Qt::UserRole).toString();
         Q_EMIT this->viewDoubleClicked(index.data(Qt::UserRole).toString());
     });
 
     //FIXME: how about multi-selection?
     //menu
-    connect(m_view, &ListView::customContextMenuRequested, this, [=](const QPoint &pos){
+    connect(m_view, &ListView::customContextMenuRequested, this, [=](const QPoint &pos) {
         qDebug()<<"menu request";
         if (!m_view->indexAt(pos).isValid())
         {
@@ -470,21 +470,21 @@ void ListView2::bindModel(FileItemModel *model, FileItemProxyFilterSortModel *pr
 
         //NOTE: we have to ensure that we have cleared the
         //selection if menu request at blank pos.
-        QTimer::singleShot(1, [=](){
+        QTimer::singleShot(1, [=]() {
             Q_EMIT this->menuRequest(QCursor::pos());
         });
     });
 
-    connect(m_proxy_model, &FileItemProxyFilterSortModel::layoutChanged, this, [=](){
+    connect(m_proxy_model, &FileItemProxyFilterSortModel::layoutChanged, this, [=]() {
         Q_EMIT this->sortOrderChanged(Qt::SortOrder(getSortOrder()));
     });
-    connect(m_proxy_model, &FileItemProxyFilterSortModel::layoutChanged, this, [=](){
+    connect(m_proxy_model, &FileItemProxyFilterSortModel::layoutChanged, this, [=]() {
         Q_EMIT this->sortTypeChanged(getSortType());
     });
 
-    connect(m_model, &FileItemModel::findChildrenFinished, this, [=](){
+    connect(m_model, &FileItemModel::findChildrenFinished, this, [=]() {
         //delay a while for proxy model sorting.
-        QTimer::singleShot(100, this, [=](){
+        QTimer::singleShot(100, this, [=]() {
             //m_view->setModel(m_proxy_model);
             //adjust columns layout.
             m_view->adjustColumnsSize();

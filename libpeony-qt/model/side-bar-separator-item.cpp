@@ -26,9 +26,9 @@
 using namespace Peony;
 
 SideBarSeparatorItem::SideBarSeparatorItem(Details type,
-                                           SideBarAbstractItem *parentItem,
-                                           SideBarModel *model,
-                                           QObject *parent) : SideBarAbstractItem(model, parent)
+        SideBarAbstractItem *parentItem,
+        SideBarModel *model,
+        QObject *parent) : SideBarAbstractItem(model, parent)
 {
     m_type = type;
     m_parent = parentItem;

@@ -57,7 +57,9 @@ public:
     virtual bool isEjectable() = 0;
     virtual bool isMountable() = 0;
 
-    virtual bool isMounted() {return false;}
+    virtual bool isMounted() {
+        return false;
+    }
 
     virtual QModelIndex firstColumnIndex() = 0;
     virtual QModelIndex lastColumnIndex() = 0;
