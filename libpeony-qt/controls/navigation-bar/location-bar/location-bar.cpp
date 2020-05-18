@@ -175,7 +175,8 @@ void LocationBar::paintEvent(QPaintEvent *e)
 
     QStyleOptionFrame fopt;
     fopt.initFrom(this);
-    fopt.state.setFlag(QStyle::State_HasFocus);
+    fopt.state |= QStyle::State_HasFocus;
+    //fopt.state.setFlag(QStyle::State_HasFocus);
     fopt.rect.adjust(-2, 0, 0, 0);
     if (!(opt.state & QStyle::State_MouseOver))
         fopt.palette.setColor(QPalette::Highlight, fopt.palette.dark().color());

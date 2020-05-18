@@ -269,7 +269,7 @@ void ToolBar::init()
         }
     });
 
-    QAction *optionAction = new QAction(QIcon::fromTheme("ukui-settings-app-symbolic", QIcon::fromTheme("settings-app-symbolic")), tr("Options"));
+    QAction *optionAction = new QAction(QIcon::fromTheme("ukui-settings-app-symbolic", QIcon::fromTheme("settings-app-symbolic")), tr("Options"), nullptr);
     connect(optionAction, &QAction::triggered, this, [=](){
         QMenu optionMenu;
         auto forbidThumbnail = optionMenu.addAction(tr("Forbid Thumbnail"), this, [=](bool checked){

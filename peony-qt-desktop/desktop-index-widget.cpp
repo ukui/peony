@@ -222,7 +222,8 @@ void DesktopIndexWidget::updateItem()
 
     m_option.text = m_index.data().toString();
     //qDebug()<<m_option.text;
-    m_option.features.setFlag(QStyleOptionViewItem::WrapText);
+    //m_option.features.setFlag(QStyleOptionViewItem::WrapText);
+    m_option.features |= QStyleOptionViewItem::WrapText;
     m_option.textElideMode = Qt::ElideNone;
 
     //m_option.rect.setHeight(9999);

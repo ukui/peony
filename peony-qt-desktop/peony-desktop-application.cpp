@@ -405,8 +405,8 @@ void PeonyDesktopApplication::screenAddedProcess(QScreen *screen)
 
 void PeonyDesktopApplication::screenRemovedProcess(QScreen *screen)
 {
-    if (screen != nullptr)
-        qDebug()<<"screenRemoved"<<screen->name()<<screen->serialNumber();
+    //if (screen != nullptr)
+        //qDebug()<<"screenRemoved"<<screen->name()<<screen->serialNumber();
 
     //window manage
     for(auto win :m_window_list)

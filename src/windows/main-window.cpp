@@ -106,7 +106,10 @@ MainWindow::MainWindow(const QString &uri, QWidget *parent) : QMainWindow(parent
     setAttribute(Qt::WA_DeleteOnClose);
     setAttribute(Qt::WA_TranslucentBackground);
     //setAttribute(Qt::WA_OpaquePaintEvent);
-    setWindowFlag(Qt::FramelessWindowHint);
+    //fix double window base buttons issue, not effect MinMax button hints
+    auto flags = windowFlags() &~Qt::WindowMinMaxButtonsHint;
+    setWindowFlags(flags |Qt::FramelessWindowHint);
+    //setWindowFlags(windowFlags()|Qt::FramelessWindowHint);
     setContentsMargins(4, 4, 4, 4);
 
     //bind resize handler

@@ -37,6 +37,9 @@
 #include "file-label-model.h"
 #include <QMenu>
 
+#include <QAction>
+#include <QIcon>
+
 #include <QDebug>
 
 using namespace Peony;
@@ -97,7 +100,7 @@ QList<QAction *> CreateLinkInternalPlugin::menuActions(MenuPluginInterface::Type
     QList<QAction *> l;
     if (types == MenuPluginInterface::DesktopWindow || types == MenuPluginInterface::DirectoryView) {
         if (selectionUris.count() == 1) {
-            auto createLinkToDesktop = new QAction(QIcon::fromTheme("emblem-symbolic-link"), tr("Create Link to Desktop"));
+            auto createLinkToDesktop = new QAction(QIcon::fromTheme("emblem-symbolic-link"), tr("Create Link to Desktop"), nullptr);
             auto info = FileInfo::fromUri(selectionUris.first(), false);
             //special type mountable, or isVirtual then return
             if (selectionUris.first().startsWith("computer:///") || info->isVirtual())
@@ -112,7 +115,7 @@ QList<QAction *> CreateLinkInternalPlugin::menuActions(MenuPluginInterface::Type
             });
             l<<createLinkToDesktop;
 
-            auto createLinkTo = new QAction(tr("Create Link to..."));
+            auto createLinkTo = new QAction(tr("Create Link to..."), nullptr);
             connect(createLinkTo, &QAction::triggered, [=](){
                 QUrl targetDir = QFileDialog::getExistingDirectoryUrl(nullptr,
                                                                       tr("Choose a Directory to Create Link"),
@@ -142,7 +145,7 @@ QList<QAction *> FileLabelInternalMenuPlugin::menuActions(MenuPluginInterface::T
     QList<QAction *> l;
     if (types == DirectoryView) {
         if (selectionUris.count() == 1) {
-            auto action = new QAction(tr("Add File Label..."));
+            auto action = new QAction(tr("Add File Label..."), nullptr);
             auto uri = selectionUris.first();
             auto menu = new QMenu();
             auto items = FileLabelModel::getGlobalModel()->getAllFileLabelItems();

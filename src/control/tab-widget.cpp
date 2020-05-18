@@ -429,7 +429,7 @@ void TabWidget::addNewConditionBar()
     else
         inputBox->hide();
 
-    connect(conditionCombox, QOverload<int>::of(&QComboBox::currentIndexChanged), [=]()
+    connect(conditionCombox, &QComboBox::currentTextChanged, [=]()
     {
         auto cur = conditionCombox->currentIndex();
         if (cur == 0)
@@ -452,7 +452,7 @@ void TabWidget::addNewConditionBar()
         }
     });
 
-    connect(classifyCombox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &TabWidget::updateAdvanceConditions);
+    connect(classifyCombox, &QComboBox::currentTextChanged, this, &TabWidget::updateAdvanceConditions);
     connect(inputBox, &QLineEdit::textChanged, this, &TabWidget::searchKeyUpdate);
     //connect(inputBox, &QLineEdit::returnPressed, this, &TabWidget::searchKeyUpdate);
 

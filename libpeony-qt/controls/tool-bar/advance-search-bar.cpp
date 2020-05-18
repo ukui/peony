@@ -144,9 +144,9 @@ void AdvanceSearchBar::init()
     connect(m_filter_button, &QPushButton::clicked, this, &AdvanceSearchBar::searchFilter);
     connect(m_show_hidden_button, &QPushButton::clicked, this, &AdvanceSearchBar::setShowHidden);
     connect(m_search_path, &QLineEdit::textChanged, this, &AdvanceSearchBar::pathChanged);
-    connect(typeViewCombox, QOverload<int>::of(&QComboBox::currentIndexChanged),this, &AdvanceSearchBar::filterUpdate);
-    connect(timeViewCombox, QOverload<int>::of(&QComboBox::currentIndexChanged),this, &AdvanceSearchBar::filterUpdate);
-    connect(sizeViewCombox, QOverload<int>::of(&QComboBox::currentIndexChanged),this, &AdvanceSearchBar::filterUpdate);
+    connect(typeViewCombox, &QComboBox::currentTextChanged,this, &AdvanceSearchBar::filterUpdate);
+    connect(timeViewCombox, &QComboBox::currentTextChanged,this, &AdvanceSearchBar::filterUpdate);
+    connect(sizeViewCombox, &QComboBox::currentTextChanged,this, &AdvanceSearchBar::filterUpdate);
     connect(file_name, &QCheckBox::clicked, this, [=](){
         m_search_name = file_name->isChecked();
         qDebug()<<"search name"<<m_search_name;

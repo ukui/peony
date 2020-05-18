@@ -29,6 +29,7 @@
 #include "gerror-wrapper.h"
 
 #include "file-utils.h"
+#include "peony-search-vfs-file.h"
 
 #include <QList>
 #include <QMessageBox>
@@ -91,7 +92,19 @@ void FileEnumerator::setEnumerateDirectory(QString uri)
     if (m_root_file) {
         g_object_unref(m_root_file);
     }
+
+    //handle search can not use before glib 2.50
+#if GLIB_CHECK_VERSION(2, 50, 0)
     m_root_file = g_file_new_for_uri(uri.toUtf8());
+#else
+    if (uri.startsWith("search:///"))
+    {
+        m_root_file = peony_search_vfs_file_new_for_uri(uri.toUtf8());
+    }
+    else
+        m_root_file = g_file_new_for_uri(uri.toUtf8());
+#endif
+
 }
 
 void FileEnumerator::setEnumerateDirectory(GFile *file)

@@ -80,7 +80,7 @@ SearchBarContainer::SearchBarContainer(QWidget *parent): QWidget(parent)
          }
          Q_EMIT this->returnPressed();
      });
-     connect(m_filter_box, QOverload<int>::of(&QComboBox::currentIndexChanged), [=]()
+     connect(m_filter_box, &QComboBox::currentTextChanged, [=]()
      {
          Q_EMIT this->filterUpdate(m_filter_box->currentIndex());
      });
