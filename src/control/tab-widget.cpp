@@ -136,6 +136,8 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
         button->setFixedSize(26, 26);
         button->setIconSize(QSize(16, 16));
         button->setProperty("useIconHighlightEffect", true);
+        button->setProperty("iconHighlightEffectMode", 1);
+        button->setProperty("fillIconSymbolicColor", true);
     }
     t->addWidget(previewButtons);
 

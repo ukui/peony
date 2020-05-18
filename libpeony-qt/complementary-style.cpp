@@ -55,6 +55,23 @@ ComplementaryStyle *ComplementaryStyle::getStyle()
     return global_instance;
 }
 
+void ComplementaryStyle::polish(QWidget *widget)
+{
+    QProxyStyle::polish(widget);
+    if (auto button = qobject_cast<QAbstractButton *>(widget)) {
+        button->setProperty("useIconHighlightEffect", true);
+        button->setProperty("iconHighlightEffectMode", 1);
+        button->setProperty("fillIconSymbolicColor", true);
+        return;
+    }
+    if (auto menu = qobject_cast<QMenu *>(widget)) {
+        menu->setProperty("useIconHighlightEffect", true);
+        menu->setProperty("iconHighlightEffectMode", 1);
+        menu->setProperty("fillIconSymbolicColor", true);
+        return;
+    }
+}
+
 int ComplementaryStyle::styleHint(QStyle::StyleHint hint, const QStyleOption *option, const QWidget *widget, QStyleHintReturn *returnData) const
 {
     switch (hint) {
@@ -68,7 +85,7 @@ int ComplementaryStyle::styleHint(QStyle::StyleHint hint, const QStyleOption *op
 
 void ComplementaryStyle::drawPrimitive(QStyle::PrimitiveElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget) const
 {
-    if (widget->inherits("QMenu")) {
+    if (widget && widget->inherits("QMenu")) {
         return QProxyStyle::drawPrimitive(element, option, painter, widget);
     }
 

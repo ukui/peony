@@ -225,6 +225,8 @@ void NavigationSideBarContainer::addSideBar(NavigationSideBar *sidebar)
 
     m_label_button = new QPushButton(QIcon::fromTheme("emblem-important-symbolic"), tr("All tags..."), this);
     m_label_button->setProperty("useIconHighlightEffect", true);
+    m_label_button->setProperty("iconHighlightEffectMode", 1);
+    m_label_button->setProperty("fillIconSymbolicColor", true);
     m_label_button->setCheckable(true);
 
     l->addWidget(m_label_button);

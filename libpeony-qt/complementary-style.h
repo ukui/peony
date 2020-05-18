@@ -53,6 +53,8 @@ class ComplementaryStyle : public QProxyStyle
 public:
     static ComplementaryStyle *getStyle();
 
+    void polish(QWidget *widget);
+
     int styleHint(QStyle::StyleHint hint,
                   const QStyleOption *option = nullptr,
                   const QWidget *widget = nullptr,

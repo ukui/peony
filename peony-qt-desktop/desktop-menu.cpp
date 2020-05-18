@@ -52,6 +52,10 @@ using namespace Peony;
 
 DesktopMenu::DesktopMenu(DirectoryViewIface *view, QWidget *parent) : QMenu(parent)
 {
+    setProperty("useIconHighlightEffect", true);
+    setProperty("iconHighlightEffectMode", 1);
+    setProperty("fillIconSymbolicColor", true);
+
     m_view = view;
     m_directory = view->getDirectoryUri();
     m_selections = view->getSelections();

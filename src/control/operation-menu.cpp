@@ -189,9 +189,17 @@ OperationMenuEditWidget::OperationMenuEditWidget(MainWindow *window, QWidget *pa
     });
 
     copy->setProperty("useIconHighlightEffect", true);
+    copy->setProperty("iconHighlightEffectMode", 1);
+    copy->setProperty("fillIconSymbolicColor", true);
     paste->setProperty("useIconHighlightEffect", true);
+    paste->setProperty("iconHighlightEffectMode", 1);
+    paste->setProperty("fillIconSymbolicColor", true);
     cut->setProperty("useIconHighlightEffect", true);
+    cut->setProperty("iconHighlightEffectMode", 1);
+    cut->setProperty("fillIconSymbolicColor", true);
     trash->setProperty("useIconHighlightEffect", true);
+    trash->setProperty("iconHighlightEffectMode", 1);
+    trash->setProperty("fillIconSymbolicColor", true);
 }
 
 void OperationMenuEditWidget::updateActions(const QString &currentDirUri, const QStringList &selections)
