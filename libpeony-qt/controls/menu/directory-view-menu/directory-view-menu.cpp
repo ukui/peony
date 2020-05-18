@@ -332,7 +332,11 @@ const QList<QAction *> DirectoryViewMenu::constructViewOpActions()
     if (m_selections.isEmpty()) {
         ViewFactorySortFilterModel2 model;
         model.setDirectoryUri(m_directory);
-        auto viewNames = model.supportViewIds();
+        //auto viewNames = model.supportViewIds();
+        // need translate, use QStringList
+        QStringList viewNames;
+        viewNames.append(tr("Icon View"));
+        viewNames.append(tr("List View"));
 
         auto viewFactorysManager = DirectoryViewFactoryManager2::getInstance();
 
