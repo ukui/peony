@@ -302,6 +302,13 @@ void IconView::wheelEvent(QWheelEvent *e)
 void IconView::updateGeometries()
 {
     QListView::updateGeometries();
+
+    if (!model())
+        return;
+
+    if (model()->columnCount() == 0 || model()->rowCount() == 0)
+        return;
+
     verticalScrollBar()->setMaximum(verticalScrollBar()->maximum() + 200);
 }
 

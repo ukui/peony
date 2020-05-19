@@ -213,6 +213,12 @@ void ListView::updateGeometries()
 #if (QT_VERSION < QT_VERSION_CHECK(5, 12, 0))
     return;
 #endif
+    if (!model())
+        return;
+
+    if (model()->columnCount() == 0 || model()->rowCount() == 0)
+        return;
+
     QStyleOptionViewItem opt = viewOptions();
     int height = itemDelegate()->sizeHint(opt, QModelIndex()).height();
     setViewportMargins(0, header()->height(), 0, height);
