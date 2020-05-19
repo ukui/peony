@@ -207,7 +207,7 @@ void FileLaunchAction::lauchFileAsync(bool forceWithArg, bool skipDialog)
         QMessageBox msg;
         auto exec = msg.addButton(tr("Execute Directly"), QMessageBox::ButtonRole::ActionRole);
         auto execTerm = msg.addButton(tr("Execute in Terminal"), QMessageBox::ButtonRole::ActionRole);
-        auto defaultAction = msg.addButton("By Default App", QMessageBox::ButtonRole::ActionRole);
+        auto defaultAction = msg.addButton(tr("By Default App"), QMessageBox::ButtonRole::ActionRole);
         msg.addButton(QMessageBox::Cancel);
 
         msg.setWindowTitle(tr("Launch Options"));

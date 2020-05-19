@@ -973,6 +973,11 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
         <translation>不能打开%1</translation>
     </message>
     <message>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="210"/>
+        <source>By Default App</source>
+        <translation>使用默认打开方式</translation>
+    </message>
+    <message>
         <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="213"/>
         <source>Launch Options</source>
         <translation>执行选项</translation>
