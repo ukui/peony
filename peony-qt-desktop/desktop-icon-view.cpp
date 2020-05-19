@@ -324,6 +324,7 @@ void DesktopIconView::initShoutCut()
     connect(trashAction, &QAction::triggered, [=]() {
         auto selectedUris = this->getSelections();
         if (!selectedUris.isEmpty()) {
+            clearAllIndexWidgets();
             auto op = new FileTrashOperation(selectedUris);
             FileOperationManager::getInstance()->startOperation(op, true);
         }
@@ -374,6 +375,7 @@ void DesktopIconView::initShoutCut()
     removeAction->setShortcut(QKeySequence(Qt::SHIFT + Qt::Key_Delete));
     connect(removeAction, &QAction::triggered, [=]() {
         qDebug() << "delete" << this->getSelections();
+        clearAllIndexWidgets();
         FileOperationUtils::executeRemoveActionWithDialog(this->getSelections());
     });
     addAction(removeAction);
