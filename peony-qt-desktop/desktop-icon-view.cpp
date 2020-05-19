@@ -801,6 +801,12 @@ void DesktopIconView::keyReleaseEvent(QKeyEvent *e)
     m_ctrl_or_shift_pressed = false;
 }
 
+void DesktopIconView::focusOutEvent(QFocusEvent *e)
+{
+    QListView::focusOutEvent(e);
+    m_ctrl_or_shift_pressed = false;
+}
+
 void DesktopIconView::resizeEvent(QResizeEvent *e)
 {
     QListView::resizeEvent(e);

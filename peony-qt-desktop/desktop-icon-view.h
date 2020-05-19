@@ -151,6 +151,8 @@ protected:
     void keyPressEvent(QKeyEvent *e);
     void keyReleaseEvent(QKeyEvent *e);
 
+    void focusOutEvent(QFocusEvent *e);
+
     void resizeEvent(QResizeEvent *e);
 
     bool isItemsOverlapped();
