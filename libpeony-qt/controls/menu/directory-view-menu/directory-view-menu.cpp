@@ -332,12 +332,7 @@ const QList<QAction *> DirectoryViewMenu::constructViewOpActions()
     if (m_selections.isEmpty()) {
         ViewFactorySortFilterModel2 model;
         model.setDirectoryUri(m_directory);
-        //auto viewNames = model.supportViewIds();
-        // need translate, use QStringList
-        QStringList viewNames;
-        viewNames.append(tr("Icon View"));
-        viewNames.append(tr("List View"));
-
+        auto viewNames = model.supportViewIds();
         auto viewFactorysManager = DirectoryViewFactoryManager2::getInstance();
 
         if (!viewNames.isEmpty()) {
@@ -346,13 +341,14 @@ const QList<QAction *> DirectoryViewMenu::constructViewOpActions()
             l<<viewTypeAction;
             QMenu *viewTypeSubMenu = new QMenu(this);
             for (auto viewId : viewNames) {
-                auto viewType = viewTypeSubMenu->addAction(viewFactorysManager->getFactory(viewId)->viewIcon(), viewId);
+                auto viewType = viewTypeSubMenu->addAction(viewFactorysManager->getFactory(viewId)->viewIcon(), viewFactorysManager->getFactory(viewId)->viewName());
+                viewType->setData(viewId);
                 if (m_view->viewId() == viewId) {
                     viewType->setCheckable(true);
                     viewType->setChecked(true);
                 } else {
                     connect(viewType, &QAction::triggered, [=]() {
-                        m_top_window->beginSwitchView(viewType->text());
+                        m_top_window->beginSwitchView(viewType->data().toString());
                     });
                 }
             }
