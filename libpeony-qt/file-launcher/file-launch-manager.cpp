@@ -142,7 +142,7 @@ const QList<FileLaunchAction*> FileLaunchManager::getAllActions(const QString &u
     return actions;
 }
 
-void FileLaunchManager::openSync(const QString &uri)
+void FileLaunchManager::openSync(const QString &uri, bool forceWithArg, bool skipDialog)
 {
     QString tmp = uri;
     auto targetUri = FileUtils::getTargetUri(uri);
@@ -150,11 +150,11 @@ void FileLaunchManager::openSync(const QString &uri)
         tmp = targetUri;
     }
     auto action = getDefaultAction(tmp);
-    action->lauchFileSync();
+    action->lauchFileSync(forceWithArg, skipDialog);
     action->deleteLater();
 }
 
-void FileLaunchManager::openAsync(const QString &uri)
+void FileLaunchManager::openAsync(const QString &uri, bool forceWithArg, bool skipDialog)
 {
     QString tmp = uri;
     auto targetUri = FileUtils::getTargetUri(uri);
@@ -163,7 +163,7 @@ void FileLaunchManager::openAsync(const QString &uri)
         qDebug()<<"open async"<<targetUri;
     }
     auto action = getDefaultAction(tmp);
-    action->lauchFileAsync();
+    action->lauchFileAsync(forceWithArg, skipDialog);
     action->deleteLater();
 }
 

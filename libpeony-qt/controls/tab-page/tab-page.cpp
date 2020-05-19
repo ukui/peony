@@ -109,7 +109,7 @@ void TabPage::rebindContainer()
         if (info->isDir() || info->isVolume() || info->isVirtual()) {
             Q_EMIT this->updateWindowLocationRequest(uri);
         } else {
-            FileLaunchManager::openAsync(uri);
+            FileLaunchManager::openAsync(uri, false, false);
         }
     });
 

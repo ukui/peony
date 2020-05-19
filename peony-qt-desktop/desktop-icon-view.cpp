@@ -507,7 +507,7 @@ void DesktopIconView::initDoubleClick()
                 p.startDetached("peony", QStringList()<<uri);
 #endif
             } else {
-                FileLaunchManager::openAsync(uri);
+                FileLaunchManager::openAsync(uri, false, false);
             }
             this->clearSelection();
         });

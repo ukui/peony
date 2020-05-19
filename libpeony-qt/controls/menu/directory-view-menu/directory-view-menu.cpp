@@ -206,7 +206,7 @@ const QList<QAction *> DirectoryViewMenu::constructOpenOpActions()
                 l<<addAction(QIcon::fromTheme("document-open-symbolic"), tr("&Open \"%1\"").arg(displayName));
                 connect(l.last(), &QAction::triggered, [=]() {
                     auto uri = m_selections.first();
-                    FileLaunchManager::openAsync(uri);
+                    FileLaunchManager::openAsync(uri, false, false);
                 });
                 auto openWithAction = addAction(tr("Open \"%1\" with...").arg(displayName));
                 //FIXME: add sub menu for open with action.

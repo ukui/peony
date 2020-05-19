@@ -56,10 +56,12 @@ public:
 
 protected:
     bool isValid();
+    void execFile();
+    void execFileInterm();
 
 public Q_SLOTS:
-    void lauchFileSync(bool forceWithArg = false);
-    void lauchFileAsync(bool forceWithArg = false);
+    void lauchFileSync(bool forceWithArg = false, bool skipDialog = true);
+    void lauchFileAsync(bool forceWithArg = false, bool skipDialog = true);
 
 private:
     QString m_uri;

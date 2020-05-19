@@ -928,7 +928,7 @@ void TabWidget::onViewDoubleClicked(const QString &uri)
     if (info->isDir() || info->isVolume() || info->isVirtual()) {
         Q_EMIT this->updateWindowLocationRequest(uri, true);
     } else {
-        Peony::FileLaunchManager::openAsync(uri);
+        Peony::FileLaunchManager::openAsync(uri, false, false);
     }
 }
 

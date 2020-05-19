@@ -27,6 +27,7 @@
 #include "file-info-job.h"
 
 #include <QMessageBox>
+#include <QPushButton>
 
 #include <QUrl>
 #include <QProcess>
@@ -55,7 +56,7 @@ FileLaunchAction::FileLaunchAction(const QString &uri, GAppInfo *app_info, bool 
     m_info_display_name = g_app_info_get_display_name(m_app_info);
 
     connect(this, &QAction::triggered, [=]() {
-        this->lauchFileAsync(m_force_with_arg);
+        this->lauchFileAsync(m_force_with_arg, true);
     });
 }
 
@@ -90,16 +91,18 @@ const QString FileLaunchAction::getAppInfoDisplayName()
     return m_info_display_name;
 }
 
-void FileLaunchAction::lauchFileSync(bool forceWithArg)
+void FileLaunchAction::lauchFileSync(bool forceWithArg, bool skipDialog)
 {
     auto fileInfo = FileInfo::fromUri(m_uri, false);
     if (fileInfo->isEmptyInfo()) {
         FileInfoJob j(fileInfo);
         j.querySync();
     }
+
+    bool executable = fileInfo->canExecute();
     bool isAppImage = fileInfo->type() == "application/vnd.appimage";
     if (isAppImage) {
-        if (FileInfo::fromUri(m_uri)->canExecute()) {
+        if (executable) {
             QUrl url = m_uri;
             auto path = url.path();
 
@@ -110,6 +113,29 @@ void FileLaunchAction::lauchFileSync(bool forceWithArg)
 #else
             p.startDetached(path);
 #endif
+            return;
+        }
+    }
+
+    if (executable && !isDesktopFileAction() && !skipDialog) {
+        QMessageBox msg;
+        auto exec = msg.addButton(tr("Execute Directly"), QMessageBox::ButtonRole::ActionRole);
+        auto execTerm = msg.addButton(tr("Execute in Terminal"), QMessageBox::ButtonRole::ActionRole);
+        auto defaultAction = msg.addButton("By Default App", QMessageBox::ButtonRole::ActionRole);
+        msg.addButton(QMessageBox::Cancel);
+
+        msg.setText(tr("Detected launching an executable file %1, you want?").arg(fileInfo->displayName()));
+        msg.exec();
+        auto button = msg.clickedButton();
+        if (button == exec) {
+            execFile();
+            return;
+        } else if (button == execTerm) {
+            execFileInterm();
+            return;
+        } else if (button == defaultAction) {
+            //skip
+        } else {
             return;
         }
     }
@@ -151,16 +177,18 @@ void FileLaunchAction::lauchFileSync(bool forceWithArg)
     }
 }
 
-void FileLaunchAction::lauchFileAsync(bool forceWithArg)
+void FileLaunchAction::lauchFileAsync(bool forceWithArg, bool skipDialog)
 {
     auto fileInfo = FileInfo::fromUri(m_uri, false);
     if (fileInfo->isEmptyInfo()) {
         FileInfoJob j(fileInfo);
         j.querySync();
     }
+
+    bool executable = fileInfo->canExecute();
     bool isAppImage = fileInfo->type() == "application/vnd.appimage";
     if (isAppImage) {
-        if (FileInfo::fromUri(m_uri)->canExecute()) {
+        if (executable) {
             QUrl url = m_uri;
             auto path = url.path();
 
@@ -171,6 +199,30 @@ void FileLaunchAction::lauchFileAsync(bool forceWithArg)
 #else
             p.startDetached(path);
 #endif
+            return;
+        }
+    }
+
+    if (executable && !isDesktopFileAction() && !skipDialog) {
+        QMessageBox msg;
+        auto exec = msg.addButton(tr("Execute Directly"), QMessageBox::ButtonRole::ActionRole);
+        auto execTerm = msg.addButton(tr("Execute in Terminal"), QMessageBox::ButtonRole::ActionRole);
+        auto defaultAction = msg.addButton("By Default App", QMessageBox::ButtonRole::ActionRole);
+        msg.addButton(QMessageBox::Cancel);
+
+        msg.setWindowTitle(tr("Launch Options"));
+        msg.setText(tr("Detected launching an executable file %1, you want?").arg(fileInfo->displayName()));
+        msg.exec();
+        auto button = msg.clickedButton();
+        if (button == exec) {
+            execFile();
+            return;
+        } else if (button == execTerm) {
+            execFileInterm();
+            return;
+        } else if (button == defaultAction) {
+            //skip
+        } else {
             return;
         }
     }
@@ -232,4 +284,24 @@ void FileLaunchAction::lauchFileAsync(bool forceWithArg)
 bool FileLaunchAction::isValid()
 {
     return G_IS_APP_INFO(m_app_info);
+}
+
+void FileLaunchAction::execFile()
+{
+    QUrl url = m_uri;
+    char *quote = g_shell_quote(url.path().toUtf8());
+    GAppInfo *app_info = g_app_info_create_from_commandline(quote, nullptr, G_APP_INFO_CREATE_NONE, nullptr);
+    g_app_info_launch(app_info, nullptr, nullptr, nullptr);
+    g_object_unref(app_info);
+    g_free(quote);
+}
+
+void FileLaunchAction::execFileInterm()
+{
+    QUrl url = m_uri;
+    char *quote = g_shell_quote(url.path().toUtf8());
+    GAppInfo *app_info = g_app_info_create_from_commandline(quote, nullptr, G_APP_INFO_CREATE_NEEDS_TERMINAL, nullptr);
+    g_app_info_launch(app_info, nullptr, nullptr, nullptr);
+    g_object_unref(app_info);
+    g_free(quote);
 }

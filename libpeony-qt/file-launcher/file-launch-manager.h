@@ -57,8 +57,8 @@ public:
      */
     static void setDefaultLauchAction(const QString &uri, FileLaunchAction *action);
 
-    static void openSync(const QString &uri);
-    static void openAsync(const QString &uri);
+    static void openSync(const QString &uri, bool forceWithArg = false, bool skipDialog = true);
+    static void openAsync(const QString &uri, bool forceWithArg = false, bool skipDialog = true);
 
 private:
     explicit FileLaunchManager(QObject *parent = nullptr);
