@@ -1,7 +1,9 @@
 [Desktop Entry]
 Name=Peony Computer
 GenericName=Computer
+GenericName[tr]=Bilgisayar
 GenericName[zh_CN]=打开计算机
+Name[tr]=Bilgisayar
 Name[zh_CN]=计算机
 Exec=/usr/bin/peony computer:///
 Icon=computer
