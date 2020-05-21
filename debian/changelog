@@ -1,3 +1,45 @@
+peony (2.2.0) unstable; urgency=medium
+
+  * New upstream release.
+    - Refactor extensible directory view frameworks. Support view
+      zooming and auto switching.
+    - Location tab bar can drag tab label by long pressing the label,
+      and can drop into other places.
+    - The symbol icon in buttons, menus, and sidebar, etc, will auto
+      change color by its current state in ukui platform theme.
+    - Fix some file operations problems (link, copy, undo/redo).
+    - Fix the abnormal search memory usage.
+    - Support building and running in qt5.6 and glib2.48.
+  * debian/libpeony2.symbols:
+    - update symbols file.
+
+ -- Yue Lan <lanyue@kylinos.cn>  Thu, 21 May 2020 11:03:35 +0800
+
+peony (2.1.2-1build1) focal; urgency=medium
+
+  * No-change rebuild against qtbase-abi-5-12-8.
+
+ -- Rik Mills <rikmills@kde.org>  Fri, 10 Apr 2020 20:04:03 +0100
+
+peony (2.1.2-1) unstable; urgency=medium
+
+  * New upstream bugfix release.
+    - Fix enter key as shortcut issues such as open selected file.
+    - Fix that file in drag state not show file name.
+    - Fix that file rename as empty and rename file change current sort.
+    - Fix that desktop app link show incorrect icon.
+    - Fix generate file thumbnail issue and ensure thread safety.
+    - Fix that screen mirror not show view.
+    - Fix file handle error.
+
+ -- handsome_feng <jianfengli@ubuntukylin.com>  Mon, 06 Apr 2020 19:57:13 +0800
+
+peony (2.1.1-1) unstable; urgency=medium
+
+  * New upstream bugfix release.
+
+ -- handsome_feng <jianfengli@ubuntukylin.com>  Mon, 30 Mar 2020 21:42:00 +0800
+
 peony (2.1.0-1) unstable; urgency=medium
 
   * New upstream release.
