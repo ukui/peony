@@ -9,17 +9,15 @@ peony (2.2.0) unstable; urgency=medium
       change color by its current state in ukui platform theme.
     - Fix some file operations problems (link, copy, undo/redo).
     - Fix the abnormal search memory usage.
+    - Fix right menu file name too long issue.
+    - Fix untranslated issues (window title, close button tips, right menu
+      view type).
     - Support building and running in qt5.6 and glib2.48.
+    - Suport advance search with mutiple conditions.
   * debian/libpeony2.symbols:
     - update symbols file.
 
  -- Yue Lan <lanyue@kylinos.cn>  Thu, 21 May 2020 11:03:35 +0800
-
-peony (2.1.2-1build1) focal; urgency=medium
-
-  * No-change rebuild against qtbase-abi-5-12-8.
-
- -- Rik Mills <rikmills@kde.org>  Fri, 10 Apr 2020 20:04:03 +0100
 
 peony (2.1.2-1) unstable; urgency=medium
 
