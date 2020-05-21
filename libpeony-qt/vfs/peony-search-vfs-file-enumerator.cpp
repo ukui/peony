@@ -40,6 +40,37 @@ static void peony_search_vfs_file_enumerator_parse_uri(PeonySearchVFSFileEnumera
 
 static gboolean peony_search_vfs_file_enumerator_is_file_match(PeonySearchVFSFileEnumerator *enumerator, const QString &uri);
 
+static void peony_search_vfs_file_enumerator_add_directory_to_queue(PeonySearchVFSFileEnumerator *enumerator, const QString &directory_uri) {
+    auto queue = enumerator->priv->enumerate_queue;
+
+    GError *err = nullptr;
+    GFile *top = g_file_new_for_uri(directory_uri.toUtf8().constData());
+    GFileEnumerator *e = g_file_enumerate_children(top, G_FILE_ATTRIBUTE_STANDARD_NAME, G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
+                                                   nullptr, &err);
+
+    if (err) {
+        QString errMsg = err->message;
+        g_error_free(err);
+    }
+    g_object_unref(top);
+    if (!e)
+        return;
+
+    auto child_info = g_file_enumerator_next_file(e, nullptr, nullptr);
+    while (child_info) {
+        auto child = g_file_enumerator_get_child(e, child_info);
+        auto uri = g_file_get_uri(child);
+        *queue<<uri;
+        g_free(uri);
+        g_object_unref(child);
+        g_object_unref(child_info);
+        child_info = g_file_enumerator_next_file(e, nullptr, nullptr);
+    }
+
+    g_file_enumerator_close(e, nullptr, nullptr);
+    g_object_unref(e);
+}
+
 /* -- init -- */
 
 static void peony_search_vfs_file_enumerator_init(PeonySearchVFSFileEnumerator *self)
@@ -155,16 +186,10 @@ static GFileInfo *enumerate_next_file(GFileEnumerator *enumerator,
         if (isDir && search_enumerator->priv->recursive) {
             if (!search_enumerator->priv->search_hidden) {
                 if (!uri.contains("/.")) {
-                    Peony::FileEnumerator e;
-                    e.setEnumerateDirectory(uri);
-                    e.enumerateSync();
-                    enumerate_queue->append(e.getChildrenUris());
+                    peony_search_vfs_file_enumerator_add_directory_to_queue(search_enumerator, uri);
                 }
             } else {
-                Peony::FileEnumerator e;
-                e.setEnumerateDirectory(uri);
-                e.enumerateSync();
-                enumerate_queue->append(e.getChildrenUris());
+                peony_search_vfs_file_enumerator_add_directory_to_queue(search_enumerator, uri);
             }
         }
         //match
