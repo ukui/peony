@@ -194,7 +194,7 @@ void peony_search_vfs_file_enumerator_parse_uri(PeonySearchVFSFileEnumerator *en
     if (manager->hasHistory(uri)) {
         auto uris = manager->getHistroyResults(uri);
         for (auto uri: uris) {
-            details->enumerate_queue->enqueue(Peony::FileInfo::fromUri(uri));
+            details->enumerate_queue->enqueue(uri);
         }
         //do not parse uri, not neccersary
         return;
@@ -289,9 +289,9 @@ void peony_search_vfs_file_enumerator_parse_uri(PeonySearchVFSFileEnumerator *en
                 Peony::FileEnumerator e;
                 e.setEnumerateDirectory(uri);
                 e.enumerateSync();
-                auto infos = e.getChildren();
-                for (auto info : infos) {
-                    details->enumerate_queue->enqueue(info);
+                auto uris1 = e.getChildrenUris();
+                for (auto uri1 : uris1) {
+                    details->enumerate_queue->enqueue(uri1);
                 }
             }
         }

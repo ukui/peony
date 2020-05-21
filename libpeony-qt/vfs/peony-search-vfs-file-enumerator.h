@@ -53,7 +53,7 @@ typedef struct {
     QRegExp *content_regexp;
     QList<QRegExp*> *name_regexp_extend_list;
     gboolean match_name_or_content;
-    QQueue<std::shared_ptr<Peony::FileInfo>> *enumerate_queue;
+    QQueue<QString> *enumerate_queue;
 } PeonySearchVFSFileEnumeratorPrivate;
 
 struct _PeonySearchVFSFileEnumerator

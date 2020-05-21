@@ -38,7 +38,7 @@ G_DEFINE_TYPE_WITH_PRIVATE(PeonySearchVFSFileEnumerator,
 static void peony_search_vfs_file_enumerator_parse_uri(PeonySearchVFSFileEnumerator *enumerator,
         const char *uri);
 
-static gboolean peony_search_vfs_file_enumerator_is_file_match(PeonySearchVFSFileEnumerator *enumerator, std::shared_ptr<Peony::FileInfo> info);
+static gboolean peony_search_vfs_file_enumerator_is_file_match(PeonySearchVFSFileEnumerator *enumerator, const QString &uri);
 
 /* -- init -- */
 
@@ -48,7 +48,7 @@ static void peony_search_vfs_file_enumerator_init(PeonySearchVFSFileEnumerator *
     self->priv = priv;
 
     self->priv->search_vfs_directory_uri = new QString;
-    self->priv->enumerate_queue = new QQueue<std::shared_ptr<Peony::FileInfo>>;
+    self->priv->enumerate_queue = new QQueue<QString>;
     self->priv->name_regexp_extend_list = new QList<QRegExp*>;
     self->priv->recursive = false;
     self->priv->save_result = false;
@@ -136,9 +136,9 @@ static GFileInfo *enumerate_next_file(GFileEnumerator *enumerator,
 
     if (manager->hasHistory(*search_enumerator->priv->search_vfs_directory_uri)) {
         while (!enumerate_queue->isEmpty()) {
-            auto info = enumerate_queue->dequeue();
+            auto uri = enumerate_queue->dequeue();
             auto search_vfs_info = g_file_info_new();
-            QString realUriSuffix = "real-uri:" + info->uri();
+            QString realUriSuffix = "real-uri:" + uri;
             g_file_info_set_name(search_vfs_info, realUriSuffix.toUtf8().constData());
             return search_vfs_info;
         }
@@ -147,35 +147,39 @@ static GFileInfo *enumerate_next_file(GFileEnumerator *enumerator,
 
     while (!enumerate_queue->isEmpty()) {
         //BFS enumeration
-        auto info = enumerate_queue->dequeue();
-        if (info->isDir() && search_enumerator->priv->recursive) {
+        auto uri = enumerate_queue->dequeue();
+        GFile *tmp = g_file_new_for_uri(uri.toUtf8().constData());
+        GFileType type = g_file_query_file_type(tmp, G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, nullptr);
+        g_object_unref(tmp);
+        bool isDir = type == G_FILE_TYPE_DIRECTORY;
+        if (isDir && search_enumerator->priv->recursive) {
             if (!search_enumerator->priv->search_hidden) {
-                if (!info->uri().contains("/.")) {
+                if (!uri.contains("/.")) {
                     Peony::FileEnumerator e;
-                    e.setEnumerateDirectory(info->uri());
+                    e.setEnumerateDirectory(uri);
                     e.enumerateSync();
-                    enumerate_queue->append(e.getChildren());
+                    enumerate_queue->append(e.getChildrenUris());
                 }
             } else {
                 Peony::FileEnumerator e;
-                e.setEnumerateDirectory(info->uri());
+                e.setEnumerateDirectory(uri);
                 e.enumerateSync();
-                enumerate_queue->append(e.getChildren());
+                enumerate_queue->append(e.getChildrenUris());
             }
         }
         //match
-        if (peony_search_vfs_file_enumerator_is_file_match(search_enumerator, info)) {
+        if (peony_search_vfs_file_enumerator_is_file_match(search_enumerator, uri)) {
             //return this info, and the enumerate get child will return the
             //file crosponding the real uri, due to it would be handled in
             //vfs looking up method callback in registed vfs.
             if (!search_enumerator->priv->search_hidden) {
-                if (!info->uri().contains("/.")) {
+                if (uri.contains("/.")) {
                     goto return_info;
                 }
             } else {
 return_info:
                 auto search_vfs_info = g_file_info_new();
-                QString realUriSuffix = "real-uri:" + info->uri();
+                QString realUriSuffix = "real-uri:" + uri;
                 g_file_info_set_name(search_vfs_info, realUriSuffix.toUtf8().constData());
 
                 if (search_enumerator->priv->save_result) {
@@ -270,14 +274,14 @@ static gboolean enumerator_close(GFileEnumerator *enumerator,
     return true;
 }
 
-gboolean peony_search_vfs_file_enumerator_is_file_match(PeonySearchVFSFileEnumerator *enumerator, std::shared_ptr<Peony::FileInfo> file_info)
+gboolean peony_search_vfs_file_enumerator_is_file_match(PeonySearchVFSFileEnumerator *enumerator, const QString &uri)
 {
     PeonySearchVFSFileEnumeratorPrivate *details = enumerator->priv;
     if (!details->name_regexp && !details->content_regexp
             && details->name_regexp_extend_list->count() == 0)
         return false;
 
-    GFile *file = g_file_new_for_uri(file_info->uri().toUtf8().constData());
+    GFile *file = g_file_new_for_uri(uri.toUtf8().constData());
     GFileInfo *info = g_file_query_info(file,
                                         G_FILE_ATTRIBUTE_STANDARD_DISPLAY_NAME,
                                         G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
@@ -326,7 +330,7 @@ gboolean peony_search_vfs_file_enumerator_is_file_match(PeonySearchVFSFileEnumer
 
     if (details->content_regexp) {
         //read file stream
-        QUrl url = file_info->uri();
+        QUrl url = uri;
         QFile file(url.path());
         file.open(QIODevice::Text | QIODevice::ReadOnly);
         QTextStream stream(&file);
