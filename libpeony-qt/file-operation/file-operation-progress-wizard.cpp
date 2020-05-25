@@ -259,6 +259,18 @@ void FileOperationProgressWizard::updateProgress(const QString &srcUri, const QS
     m_second_page->m_progress_bar->setValue(int(progress*100));
 }
 
+void FileOperationProgressWizard::onStartSync()
+{
+    switchToAfterProgressPage();
+    m_third_page->setTitle(tr("Syncing..."));
+    m_third_page->m_src_line->hide();
+    // set a busy progress bar
+    m_third_page->m_progress_bar->setMaximum(0);
+    m_third_page->m_progress_bar->setMinimum(0);
+
+    //QMessageBox::information(0, 0, "syncing");
+}
+
 //FileOperationPreparePage
 FileOperationPreparePage::FileOperationPreparePage(QWidget *parent) : QWizardPage (parent)
 {

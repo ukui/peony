@@ -28,6 +28,8 @@
 
 #include "file-operation-manager.h"
 
+#include <QProcess>
+
 using namespace Peony;
 
 static void handleDuplicate(FileNode *node) {
@@ -830,6 +832,10 @@ start:
     //ensure again
     if (m_force_use_fallback) {
         moveForceUseFallback();
+        operationStartSnyc();
+        QProcess p;
+        p.start("sync");
+        p.waitForFinished();
     }
     qDebug()<<"finished";
 end:

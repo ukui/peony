@@ -31,6 +31,7 @@
 
 #include "file-operation-manager.h"
 
+#include <QProcess>
 #include <QDebug>
 
 using namespace Peony;
@@ -434,6 +435,37 @@ void FileCopyOperation::run()
     }
 
     nodes.clear();
+
+    // judge if the operation should sync.
+    bool needSync = false;
+    GFile *src_first_file = g_file_new_for_uri(m_source_uris.first().toUtf8().constData());
+    GMount *src_first_mount = g_file_find_enclosing_mount(src_first_file, nullptr, nullptr);
+    if (src_first_mount) {
+        needSync = g_mount_can_unmount(src_first_mount);
+        g_object_unref(src_first_mount);
+    } else {
+        // maybe a vfs file.
+        needSync = true;
+    }
+    g_object_unref(src_first_file);
+
+    GFile *dest_dir_file = g_file_new_for_uri(m_dest_dir_uri.toUtf8().constData());
+    GMount *dest_dir_mount = g_file_find_enclosing_mount(dest_dir_file, nullptr, nullptr);
+    if (src_first_mount) {
+        needSync = g_mount_can_unmount(dest_dir_mount);
+        g_object_unref(dest_dir_mount);
+    } else {
+        needSync = true;
+    }
+
+    //needSync = true;
+
+    if (needSync) {
+        operationStartSnyc();
+        QProcess p;
+        p.start("sync");
+        p.waitForFinished();
+    }
 
     Q_EMIT operationFinished();
 }

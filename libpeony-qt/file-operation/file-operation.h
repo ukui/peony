@@ -147,6 +147,7 @@ Q_SIGNALS:
      * </br>
      */
     void operationStarted();
+
     /*!
      * \brief errored
      * <br>
@@ -175,6 +176,7 @@ Q_SIGNALS:
      * only fallback-move, copy and delete send this signal.
      */
     void operationRequestShowWizard();
+
     /*!
      * \brief operationFallbackRetried
      * \details
@@ -184,6 +186,7 @@ Q_SIGNALS:
      * retry with copy/delete function as fallback, it might cost much more time.
      */
     void operationFallbackRetried();
+
     /*!
      * \brief operationPreparedOne
      * \param srcUri
@@ -195,6 +198,7 @@ Q_SIGNALS:
      * The total size should also be accumulated.
      */
     void operationPreparedOne(const QString &srcUri, const qint64 &size);
+
     /*!
      * \brief operationPrepared
      * <br>
@@ -205,6 +209,7 @@ Q_SIGNALS:
      * </br>
      */
     void operationPrepared();
+
     /*!
      * \brief operationProgressedOne
      * \param srcUri
@@ -216,6 +221,7 @@ Q_SIGNALS:
      * to compute the current progress for most of operations.
      */
     void operationProgressedOne(const QString& srcUri, const QString &destUri, const qint64 &size);
+
     /*!
      * \brief operationProgressed
      * <br>
@@ -229,6 +235,7 @@ Q_SIGNALS:
      * </br>
      */
     void operationProgressed();
+
     /*!
      * \brief operationRollbackedOne
      * \param destUri
@@ -252,6 +259,7 @@ Q_SIGNALS:
      * for tell others the progress of the move operation's clearing progress.
      */
     void operationAfterProgressedOne(const QString &srcUri);
+
     /*!
      * \brief operationAfterProgressed
      * \details
@@ -259,6 +267,7 @@ Q_SIGNALS:
      * If a multi-step operation finished the last operation, it should be sent.
      */
     void operationAfterProgressed();
+
     /*!
      * \brief operationRollbackedOne
      * \param destUri
@@ -269,6 +278,7 @@ Q_SIGNALS:
      * back to previous state. This signal should be sent when a file which had been handled rollbacked.
      */
     void operationRollbackedOne(const QString &destUri, const QString &srcUri);
+
     /*!
      * \brief operationStartRollbacked
      * <br>
@@ -278,10 +288,20 @@ Q_SIGNALS:
      * </br>
      */
     void operationStartRollbacked();
+
+    /*!
+     * \brief operationStartSnyc
+     * <br>
+     * This signal is used to tell other object that file operation has finished and start a sync
+     * operation.
+     * <br>
+     */
+    void operationStartSnyc();
+
     /*!
      * \brief operationFinished
      * <br>
-     * This signal is used to tell other object that the file operation has finished.
+     * This signal is used to tell other object that the file operation has finished with data synced.
      * Usually, a progress dialog can connect this signal and close itself when the signal triggered.
      * </br>
      */

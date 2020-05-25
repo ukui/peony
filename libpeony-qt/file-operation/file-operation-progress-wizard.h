@@ -92,6 +92,8 @@ public Q_SLOTS:
 
     virtual void updateProgress(const QString &srcUri, const QString &destUri, quint64 current, quint64 total);
 
+    virtual void onStartSync();
+
 protected:
     void closeEvent(QCloseEvent *e) override;
 
