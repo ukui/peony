@@ -457,6 +457,7 @@ void FileCopyOperation::run()
     } else {
         needSync = true;
     }
+    g_object_unref(dest_dir_file);
 
     //needSync = true;
 
