@@ -36,6 +36,7 @@
 #include <QScrollBar>
 
 #include <QWheelEvent>
+#include <QDropEvent>
 
 #include <QDebug>
 
@@ -195,6 +196,21 @@ void ListView::dragEnterEvent(QDragEnterEvent *e)
     m_editValid = false;
     qDebug()<<"dragEnterEvent()";
     QTreeView::dragEnterEvent(e);
+}
+
+void ListView::dropEvent(QDropEvent *e)
+{
+    if (e->source() == this) {
+        // only handle the drop event on item.
+        switch (dropIndicatorPosition()) {
+        case QAbstractItemView::DropIndicatorPosition::OnItem: {
+            break;
+        }
+        default:
+            return;
+        }
+    }
+    QTreeView::dropEvent(e);
 }
 
 void ListView::resizeEvent(QResizeEvent *e)

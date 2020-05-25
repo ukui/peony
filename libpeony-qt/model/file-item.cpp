@@ -193,7 +193,7 @@ void FileItem::findChildrenAsync()
                         //whatever info was updated, we need decrease the async count.
                         m_async_count--;
                         if (m_async_count == 0) {
-                            m_model->insertRows(0, m_children->count(), this->firstColumnIndex());
+                            m_model->insertRows(0, m_children->count() - 1, this->firstColumnIndex());
                             Q_EMIT this->m_model->findChildrenFinished();
                             Q_EMIT m_model->updated();
                             for (auto info : infos) {
@@ -394,8 +394,9 @@ void FileItem::onChildAdded(const QString &uri)
         return;
     }
     FileItem *newChild = new FileItem(FileInfo::fromUri(uri), this, m_model);
+    m_model->beginInsertRows(this->firstColumnIndex(), m_children->count(), m_children->count());
     m_children->append(newChild);
-    m_model->insertRow(m_children->count() - 1, this->firstColumnIndex());
+    m_model->endInsertRows();
     //use sync update here.
     newChild->updateInfoSync();
     m_model->updated();
@@ -405,10 +406,12 @@ void FileItem::onChildRemoved(const QString &uri)
 {
     FileItem *child = getChildFromUri(uri);
     if (child) {
-        m_model->removeRow(m_children->indexOf(child), this->firstColumnIndex());
+        int index = m_children->indexOf(child);
+        m_model->beginRemoveRows(this->firstColumnIndex(), index, index);
         m_children->removeOne(child);
+        delete child;
+        m_model->endRemoveRows();
     }
-    delete child;
     m_model->updated();
 }
 

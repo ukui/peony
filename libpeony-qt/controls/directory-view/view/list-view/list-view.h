@@ -113,6 +113,7 @@ protected:
     void mouseDoubleClickEvent(QMouseEvent *event) override;
 
     void dragEnterEvent(QDragEnterEvent *e) override;
+    void dropEvent(QDropEvent *e) override;
 
     void resizeEvent(QResizeEvent *e) override;
 
