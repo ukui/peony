@@ -26,6 +26,7 @@
 
 #include "file-watcher.h"
 
+#include <QApplication>
 #include <QDebug>
 
 static int runCount = 0;
@@ -53,6 +54,12 @@ void Peony::ThumbnailJob::run()
 {
     if (!parent())
         return;
+
+    // if all window closed, should not do a thumbnail job.
+    if (qApp->topLevelWindows().count() == 0) {
+        return;
+    }
+
     runCount++;
 
     qDebug()<<"job start, current end:"<<endCount<<"current start request:"<<runCount;
