@@ -89,6 +89,8 @@ private Q_SLOTS:
     void searchButtonClicked();
     void openDefaultTerminal();
     void findDefaultTerminal();
+    void setSearchMode(bool mode);
+    void closeSearch();
 
 private:
     const QString m_uri;

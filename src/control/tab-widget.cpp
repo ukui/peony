@@ -584,6 +584,7 @@ void TabWidget::updateSearchBar(bool showSearch)
         m_search_bar->hide();
         m_search_child->hide();
         m_search_more->hide();
+        Q_EMIT this->closeSearch();
         m_search_bar_layout->setContentsMargins(10, 0, 10, 0);
     }
 

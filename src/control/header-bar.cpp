@@ -286,11 +286,22 @@ void HeaderBar::searchButtonClicked()
 {
     m_search_mode = ! m_search_mode;
     //qDebug() << "searchButtonClicked" <<m_search_mode;
-    m_search_button->setCheckable(m_search_mode);
-    m_search_button->setChecked(m_search_mode);
-    m_search_button->setDown(m_search_mode);
-    m_location_bar->switchEditMode(m_search_mode);
+    setSearchMode(m_search_mode);
     Q_EMIT this->updateSearchRequest(m_search_mode);
+}
+
+void HeaderBar::setSearchMode(bool mode)
+{
+    m_search_button->setCheckable(mode);
+    m_search_button->setChecked(mode);
+    m_search_button->setDown(mode);
+    m_location_bar->switchEditMode(mode);
+}
+
+void HeaderBar::closeSearch()
+{
+    m_search_mode = false;
+    setSearchMode(false);
 }
 
 void HeaderBar::addSpacing(int pixel)

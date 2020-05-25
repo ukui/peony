@@ -111,6 +111,7 @@ Q_SIGNALS:
     void closeWindowRequest();
 
     void clearTrash();
+    void closeSearch();
     void recoverFromTrash();
     void currentSelectionChanged();
 
