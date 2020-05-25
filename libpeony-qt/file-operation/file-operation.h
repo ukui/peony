@@ -103,6 +103,7 @@ public:
     }
 
     /*!
+     * \deprecated
      * \brief setShouldReversible
      * \param reversible
      * \details
