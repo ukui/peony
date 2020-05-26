@@ -107,7 +107,7 @@ DesktopWindow::DesktopWindow(QScreen *screen, bool is_primary, QWidget *parent)
     qDebug() << "DesktopWindow is_primary:" << is_primary << screen->objectName()
              << screen->name();
     auto flags = windowFlags() &~Qt::WindowMinMaxButtonsHint;
-    setWindowFlags(flags |Qt::FramelessWindowHint | Qt::X11BypassWindowManagerHint);
+    setWindowFlags(flags |Qt::FramelessWindowHint);
     setAttribute(Qt::WA_X11NetWmWindowTypeDesktop);
     setAttribute(Qt::WA_TranslucentBackground);
 
@@ -382,7 +382,7 @@ void DesktopWindow::scaleBg(const QRect &geometry) {
      */
     //setWindowFlag(Qt::FramelessWindowHint, false);
     auto flags = windowFlags() &~Qt::WindowMinMaxButtonsHint;
-    setWindowFlags(flags |Qt::FramelessWindowHint | Qt::X11BypassWindowManagerHint);
+    setWindowFlags(flags |Qt::FramelessWindowHint);
     show();
 
     m_bg_back_cache_pixmap = m_bg_back_pixmap.scaled(geometry.size(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
