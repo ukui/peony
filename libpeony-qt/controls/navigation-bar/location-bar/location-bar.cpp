@@ -27,6 +27,8 @@
 
 #include "search-vfs-uri-parser.h"
 
+#include "fm-window.h"
+
 #include <QUrl>
 #include <QMenu>
 
@@ -37,6 +39,8 @@
 #include <QLineEdit>
 
 #include <QStandardPaths>
+#include <QApplication>
+#include <QClipboard>
 
 using namespace Peony;
 
@@ -153,6 +157,33 @@ void LocationBar::addButton(const QString &uri, bool setIcon, bool setMenu)
     }
 
     addAction(action);
+
+    // button context menu interaction
+    QWidget *bt = widgetForAction(action);
+    bt->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(bt, &QWidget::customContextMenuRequested, this, [=](){
+        QMenu menu;
+        FMWindowIface *windowIface = dynamic_cast<FMWindowIface *>(this->topLevelWidget());
+        auto copy = menu.addAction(QIcon::fromTheme("edit-copy-symbolic"), tr("&Copy Directory"));
+
+        menu.addAction(QIcon::fromTheme("tab-new-symbolic"), tr("Open In New &Tab"), [=](){
+            windowIface->addNewTabs(QStringList()<<uri);
+        });
+
+        menu.addAction(QIcon::fromTheme("window-new-symbolic"), tr("Open In &New Window"), [=](){
+            auto newWindow = windowIface->create(uri);
+            dynamic_cast<QWidget *>(newWindow)->show();
+        });
+
+        if (copy == menu.exec(QCursor::pos())) {
+            if (uri.startsWith("file://")) {
+                QUrl url = uri;
+                QApplication::clipboard()->setText(url.path());
+            } else {
+                QApplication::clipboard()->setText(uri);
+            }
+        }
+    });
 }
 
 void LocationBar::mousePressEvent(QMouseEvent *e)
@@ -178,8 +209,7 @@ void LocationBar::paintEvent(QPaintEvent *e)
     fopt.state |= QStyle::State_HasFocus;
     //fopt.state.setFlag(QStyle::State_HasFocus);
     fopt.rect.adjust(-2, 0, 0, 0);
-    if (!(opt.state & QStyle::State_MouseOver))
-        fopt.palette.setColor(QPalette::Highlight, fopt.palette.dark().color());
+    fopt.palette.setColor(QPalette::Highlight, fopt.palette.base().color());
 
     style()->drawPrimitive(QStyle::PE_PanelLineEdit, &fopt, &p, this);
 

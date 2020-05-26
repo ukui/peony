@@ -995,17 +995,17 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</translation
 <context>
     <name>Peony::FileMoveOperation</name>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="781"/>
+        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="783"/>
         <source>Invalid move operation, cannot move a file itself.</source>
         <translation>Geçersiz taşıma işlemi, bir dosyanın kendisini taşıyamaz.</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="794"/>
+        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="796"/>
         <source>Invalid Operation.</source>
         <translation>Geçersiz İşlem.</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="807"/>
+        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="809"/>
         <source>Invalid Operation</source>
         <translation>Geçersiz İşlem.</translation>
     </message>
@@ -1013,7 +1013,7 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</translation
 <context>
     <name>Peony::FileOperationAfterProgressPage</name>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="337"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="349"/>
         <source>&amp;More Details</source>
         <translation>Daha Fazla Ayrıntı</translation>
     </message>
@@ -1114,12 +1114,12 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</translation
         <translation>Dosya başka bir işlem yaparken dosyayı silemezsiniz</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="184"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="185"/>
         <source>File Operation is Busy</source>
         <translation>Dosya İşlemi Meşgul</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="185"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="186"/>
         <source>There have been one or more fileoperation(s) executing before. Youroperation will wait for executinguntil it/them done.</source>
         <translation>Daha önce bir veya daha fazla dosya işlemi yürütüldü. Operasyonunuz tamamlanana kadar yürütmeyi bekleyecektir.</translation>
     </message>
@@ -1127,12 +1127,12 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</translation
 <context>
     <name>Peony::FileOperationPreparePage</name>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="273"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="285"/>
         <source>counting:</source>
         <translation>hesaplama：</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="274"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="286"/>
         <source>state:</source>
         <translation>durum：</translation>
     </message>
@@ -1140,17 +1140,17 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</translation
 <context>
     <name>Peony::FileOperationProgressPage</name>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="296"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="308"/>
         <source>&amp;More Details</source>
         <translation>Daha Fazla Ayrıntı</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="307"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="319"/>
         <source>From:</source>
         <translation>Den：</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="308"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="320"/>
         <source>To:</source>
         <translation>-e：</translation>
     </message>
@@ -1219,6 +1219,11 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</translation
         <source>copying...</source>
         <translation>kopyalanıyor...</translation>
     </message>
+    <message>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="265"/>
+        <source>Syncing...</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Peony::FilePreviewPage</name>
@@ -1284,19 +1289,34 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</translation
 <context>
     <name>Peony::LocationBar</name>
     <message>
-        <location filename="../../libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp" line="48"/>
+        <location filename="../../libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp" line="52"/>
         <source>click the blank area for edit</source>
         <translation>düzenlemek için boş alanı tıklayın</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp" line="75"/>
+        <location filename="../../libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp" line="79"/>
         <source>Search &quot;%1&quot; in &quot;%2&quot;</source>
         <translation>%2 de %1 ara</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp" line="118"/>
+        <location filename="../../libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp" line="122"/>
         <source>File System</source>
         <translation>Dosya Sistemi</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp" line="167"/>
+        <source>&amp;Copy Directory</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp" line="169"/>
+        <source>Open In New &amp;Tab</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp" line="173"/>
+        <source>Open In &amp;New Window</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1859,7 +1879,7 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</translation
     <message>
         <location filename="../../libpeony-qt/convenient-utils/file-operation-utils.cpp" line="176"/>
         <source>Are you sure that you want to delete %1? Once you start a deletion, the files deleting will never be restored again.</source>
-        <translation>%1'i silmek istediğinizden emin misiniz? Bir silme işlemini başlattığınızda, silinen dosyalar bir daha geri yüklenmeyecektir.</translation>
+        <translation>%1&apos;i silmek istediğinizden emin misiniz? Bir silme işlemini başlattığınızda, silinen dosyalar bir daha geri yüklenmeyecektir.</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/convenient-utils/file-operation-utils.cpp" line="180"/>

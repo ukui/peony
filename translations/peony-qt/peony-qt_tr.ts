@@ -88,12 +88,12 @@
 <context>
     <name>HeaderBarContainer</name>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="517"/>
+        <location filename="../../src/control/header-bar.cpp" line="528"/>
         <source>Minimize</source>
         <translation>Küçült</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="529"/>
+        <location filename="../../src/control/header-bar.cpp" line="540"/>
         <source>Maximize/Restore</source>
         <translation>Büyüt/Onar</translation>
     </message>
@@ -106,7 +106,7 @@
         <translation type="vanished">Büyüt</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="550"/>
+        <location filename="../../src/control/header-bar.cpp" line="561"/>
         <source>Close</source>
         <translation>Kapat</translation>
     </message>
@@ -129,12 +129,12 @@
         <translation>İleri</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="948"/>
+        <location filename="../../src/windows/main-window.cpp" line="949"/>
         <source>Delete Permanently</source>
         <translation>Kalıcı Olarak Sil</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="949"/>
+        <location filename="../../src/windows/main-window.cpp" line="950"/>
         <source>Are you sure that you want to delete these files? Once you start a deletion, the files deleting will never be restored again.</source>
         <translation>Bu dosyaları silmek istediğinizden emin misiniz? Bir silme işlemini başlattığınızda, silinen dosyalar bir daha geri yüklenmeyecektir.</translation>
     </message>
@@ -466,109 +466,109 @@ Telif (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</translatio
         <translation>içeren</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="252"/>
+        <location filename="../../src/control/tab-widget.h" line="253"/>
         <source>name</source>
         <translation>isim</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="252"/>
+        <location filename="../../src/control/tab-widget.h" line="253"/>
         <source>type</source>
         <translation>tür</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="252"/>
+        <location filename="../../src/control/tab-widget.h" line="253"/>
         <source>modify time</source>
         <translation>değiştirme zamanı</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="252"/>
+        <location filename="../../src/control/tab-widget.h" line="253"/>
         <source>file size</source>
         <translation>dosya boyutu</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="253"/>
         <location filename="../../src/control/tab-widget.h" line="254"/>
         <location filename="../../src/control/tab-widget.h" line="255"/>
+        <location filename="../../src/control/tab-widget.h" line="256"/>
         <source>all</source>
         <translation>tümü</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="253"/>
+        <location filename="../../src/control/tab-widget.h" line="254"/>
         <source>file folder</source>
         <translation>dosya klasör</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="253"/>
+        <location filename="../../src/control/tab-widget.h" line="254"/>
         <source>image</source>
         <translation>resim</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="253"/>
+        <location filename="../../src/control/tab-widget.h" line="254"/>
         <source>video</source>
         <translation>video</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="253"/>
+        <location filename="../../src/control/tab-widget.h" line="254"/>
         <source>text file</source>
         <translation>metin dosyası</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="253"/>
+        <location filename="../../src/control/tab-widget.h" line="254"/>
         <source>audio</source>
         <translation>ses</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="253"/>
+        <location filename="../../src/control/tab-widget.h" line="254"/>
         <source>others</source>
         <translation>diğer</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="254"/>
+        <location filename="../../src/control/tab-widget.h" line="255"/>
         <source>today</source>
         <translation>bugün</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="254"/>
+        <location filename="../../src/control/tab-widget.h" line="255"/>
         <source>this week</source>
         <translation>bu hafta</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="254"/>
+        <location filename="../../src/control/tab-widget.h" line="255"/>
         <source>this month</source>
         <translation>bu ay</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="254"/>
+        <location filename="../../src/control/tab-widget.h" line="255"/>
         <source>this year</source>
         <translation>bu yıl</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="254"/>
+        <location filename="../../src/control/tab-widget.h" line="255"/>
         <source>year ago</source>
         <translation>geçen yıl</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="255"/>
+        <location filename="../../src/control/tab-widget.h" line="256"/>
         <source>tiny(0-16K)</source>
         <translation>çok küçük(0-16K)</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="255"/>
+        <location filename="../../src/control/tab-widget.h" line="256"/>
         <source>small(16k-1M)</source>
         <translation>küçük(16k-1M)</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="255"/>
+        <location filename="../../src/control/tab-widget.h" line="256"/>
         <source>medium(1M-100M)</source>
         <translation>orta(1M-100M)</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="255"/>
+        <location filename="../../src/control/tab-widget.h" line="256"/>
         <source>big(100M-1G)</source>
         <translation>büyük(100M-1G)</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="255"/>
+        <location filename="../../src/control/tab-widget.h" line="256"/>
         <source>large(&gt;1G)</source>
         <translation>daha büyük(&gt;1G)</translation>
     </message>

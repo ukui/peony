@@ -1289,19 +1289,38 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
 <context>
     <name>Peony::LocationBar</name>
     <message>
-        <location filename="../../libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp" line="48"/>
+        <location filename="../../libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp" line="52"/>
         <source>click the blank area for edit</source>
         <translation>点击空白区域编辑路径</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp" line="75"/>
+        <location filename="../../libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp" line="79"/>
         <source>Search &quot;%1&quot; in &quot;%2&quot;</source>
         <translation>在%2中搜索%1</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp" line="118"/>
+        <location filename="../../libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp" line="122"/>
         <source>File System</source>
         <translation>文件系统</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp" line="167"/>
+        <source>&amp;Copy Directory</source>
+        <translation>拷贝路径(&amp;C)</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp" line="169"/>
+        <source>Open In New &amp;Tab</source>
+        <translation>在新标签页中打开(&amp;T)</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp" line="173"/>
+        <source>Open In &amp;New Window</source>
+        <translation>在新窗口中打开(&amp;N)</translation>
+    </message>
+    <message>
+        <source>Copy Directory</source>
+        <translation type="vanished">拷贝路径</translation>
     </message>
 </context>
 <context>
