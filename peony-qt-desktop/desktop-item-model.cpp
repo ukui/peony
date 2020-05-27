@@ -248,7 +248,7 @@ void DesktopItemModel::onEnumerateFinished()
 
         auto job = new FileInfoJob(info);
 
-        connect(job, &FileInfoJob::infoUpdated, [=]() {
+        connect(job, &FileInfoJob::queryAsyncFinished, [=]() {
             //qDebug()<<"info updated"<<info->uri();
 
             this->dataChanged(this->index(m_files.indexOf(info)), this->index(m_files.indexOf(info)));
@@ -261,6 +261,12 @@ void DesktopItemModel::onEnumerateFinished()
                 Q_EMIT this->refreshed();
             }
         });
+
+        connect(job, &FileInfoJob::infoUpdated, [=](){
+            auto index = indexFromUri(info->uri());
+            this->dataChanged(index, index);
+        });
+
         job->setAutoDelete();
         job->queryAsync();
     }

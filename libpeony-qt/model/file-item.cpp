@@ -188,7 +188,7 @@ void FileItem::findChildrenAsync()
                         qDebug()<<shared_info->iconName()<<row;
                     });
                     */
-                    connect(job, &FileInfoJob::infoUpdated, this, [=]() {
+                    connect(job, &FileInfoJob::queryAsyncFinished, this, [=]() {
                         //the query job is finished and will be deleted soon,
                         //whatever info was updated, we need decrease the async count.
                         m_async_count--;
@@ -201,6 +201,11 @@ void FileItem::findChildrenAsync()
                             }
                         }
                     });
+
+                    connect(job, &FileInfoJob::infoUpdated, this, [=](){
+                        m_model->dataChanged(child->firstColumnIndex(), child->lastColumnIndex());
+                    });
+
                     job->queryAsync();
                 }
             } else {
