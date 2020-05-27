@@ -40,7 +40,7 @@ void messageOutput(QtMsgType type, const QMessageLogContext &context, const QStr
     QByteArray currentTime = QTime::currentTime().toString().toLocal8Bit();
 
     bool showDebug = true;
-    QString logFilePath = QStandardPaths::writableLocation(QStandardPaths::ConfigLocation) + "/ukui/peony-qt.log";
+    QString logFilePath = QStandardPaths::writableLocation(QStandardPaths::TempLocation) + "/peony-qt.log";
     if (!QFile::exists(logFilePath)) {
         showDebug = false;
     }
