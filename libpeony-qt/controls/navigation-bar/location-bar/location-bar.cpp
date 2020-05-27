@@ -42,9 +42,35 @@
 #include <QApplication>
 #include <QClipboard>
 
+#include <QHBoxLayout>
+#include <QToolButton>
+
+#include <QProxyStyle>
+#include <QStyleOptionToolButton>
+
 using namespace Peony;
 
-LocationBar::LocationBar(QWidget *parent) : QToolBar(parent)
+class LocationBarButtonStyle;
+
+static LocationBarButtonStyle *buttonStyle = nullptr;
+
+class LocationBarButtonStyle : public QProxyStyle
+{
+public:
+    explicit LocationBarButtonStyle() : QProxyStyle() {}
+    static LocationBarButtonStyle *getStyle() {
+        if (!buttonStyle) {
+            buttonStyle = new LocationBarButtonStyle;
+        }
+        return buttonStyle;
+    }
+
+    void polish(QWidget *widget) override;
+    void unpolish(QWidget *widget) override;
+    void drawComplexControl(ComplexControl control, const QStyleOptionComplex *option, QPainter *painter, const QWidget *widget = nullptr) const override;
+};
+
+LocationBar::LocationBar(QWidget *parent) : QWidget(parent)
 {
     setAttribute(Qt::WA_Hover);
     setMouseTracking(true);
@@ -54,10 +80,31 @@ LocationBar::LocationBar(QWidget *parent) : QToolBar(parent)
     setStyleSheet("padding-right: 15;"
                   "margin-left: 2");
     m_styled_edit = new QLineEdit;
-    setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-    setIconSize(QSize(16, 16));
     qDebug()<<sizePolicy();
     //connect(this, &LocationBar::groupChangedRequest, this, &LocationBar::setRootUri);
+
+    m_layout = new QHBoxLayout;
+    setLayout(m_layout);
+
+    m_indicator = new QToolButton(this);
+    m_indicator->setAutoRaise(true);
+    m_indicator->setStyle(LocationBarButtonStyle::getStyle());
+    m_indicator->setPopupMode(QToolButton::InstantPopup);
+    m_indicator->setArrowType(Qt::RightArrow);
+    m_indicator->setCheckable(true);
+    m_indicator->setFixedSize(this->height() - 2, this->height() - 2);
+    m_indicator->move(-2, 1);
+
+    m_indicator_menu = new QMenu(m_indicator);
+    m_indicator->setMenu(m_indicator_menu);
+
+    connect(m_indicator_menu, &QMenu::aboutToShow, this, [=](){
+        m_indicator->setArrowType(Qt::DownArrow);
+    });
+
+    connect(m_indicator_menu, &QMenu::aboutToHide, this, [=](){
+        m_indicator->setArrowType(Qt::RightArrow);
+    });
 }
 
 LocationBar::~LocationBar()
@@ -67,16 +114,19 @@ LocationBar::~LocationBar()
 
 void LocationBar::setRootUri(const QString &uri)
 {
+    if (m_current_uri == uri)
+        return;
+
     m_current_uri = uri;
 
-    for (auto action : actions()) {
-        removeAction(action);
-    }
+    //clear buttons
+    clearButtons();
 
     if (m_current_uri.startsWith("search://")) {
-        QString nameRegexp = SearchVFSUriParser::getSearchUriNameRegexp(m_current_uri);
-        QString targetDirectory = SearchVFSUriParser::getSearchUriTargetDirectory(m_current_uri);
-        addAction(QIcon::fromTheme("edit-find-symbolic"), tr("Search \"%1\" in \"%2\"").arg(nameRegexp).arg(targetDirectory));
+        //QString nameRegexp = SearchVFSUriParser::getSearchUriNameRegexp(m_current_uri);
+        //QString targetDirectory = SearchVFSUriParser::getSearchUriTargetDirectory(m_current_uri);
+        addButton(m_current_uri, true, false);
+        //addAction(QIcon::fromTheme("edit-find-symbolic"), tr("Search \"%1\" in \"%2\"").arg(nameRegexp).arg(targetDirectory));
         return;
     }
 
@@ -98,36 +148,69 @@ void LocationBar::setRootUri(const QString &uri)
         //addButton(uri, uri != uris.last());
         addButton(uri, uris.first() == uri);
     }
+
+    doLayout();
+}
+
+void LocationBar::clearButtons()
+{
+    for (auto button : m_buttons) {
+        button->hide();
+        button->deleteLater();
+    }
+
+    m_buttons.clear();
 }
 
 void LocationBar::addButton(const QString &uri, bool setIcon, bool setMenu)
 {
-    QAction *action = new QAction(this);
+    QToolButton *button = new QToolButton(this);
+    button->setAutoRaise(true);
+    button->setStyle(LocationBarButtonStyle::getStyle());
+    button->setProperty("uri", uri);
+    button->setFixedHeight(this->height());
+    button->setIconSize(QSize(16, 16));
+    button->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+    button->setPopupMode(QToolButton::MenuButtonPopup);
+
+    if (m_current_uri.startsWith("search://")) {
+        QString nameRegexp = SearchVFSUriParser::getSearchUriNameRegexp(m_current_uri);
+        QString targetDirectory = SearchVFSUriParser::getSearchUriTargetDirectory(m_current_uri);
+        button->setIcon(QIcon::fromTheme("edit-find-symbolic"));
+        button->setText(tr("Search \"%1\" in \"%2\"").arg(nameRegexp).arg(targetDirectory));
+        button->setFixedWidth(button->sizeHint().width());
+        //addAction(QIcon::fromTheme("edit-find-symbolic"), tr("Search \"%1\" in \"%2\"").arg(nameRegexp).arg(targetDirectory));
+        return;
+    }
+
     QUrl url = uri;
+
+    m_buttons.insert(uri, button);
+
     auto parent = FileUtils::getParentUri(uri);
     if (setIcon) {
         QIcon icon = QIcon::fromTheme(Peony::FileUtils::getFileIconName(uri), QIcon::fromTheme("folder"));
-        action->setIcon(icon);
+        button->setIcon(icon);
     }
 
     if (!url.fileName().isEmpty()) {
         if (FileUtils::getParentUri(uri).isNull()) {
             setMenu = false;
         }
-        action->setText(url.fileName());
+        button->setText(url.fileName());
     } else {
         if (uri == "file:///") {
             auto text = FileUtils::getFileDisplayName("computer:///root.link");
             if (text.isNull()) {
                 text = tr("File System");
             }
-            action->setText(text);
+            button->setText(text);
         } else {
-            action->setText(FileUtils::getFileDisplayName(uri));
+            button->setText(FileUtils::getFileDisplayName(uri));
         }
     }
 
-    connect(action, &QAction::triggered, [=]() {
+    connect(button, &QToolButton::clicked, [=]() {
         //this->setRootUri(uri);
         Q_EMIT this->groupChangedRequest(uri);
     });
@@ -152,16 +235,15 @@ void LocationBar::addButton(const QString &uri, bool setIcon, bool setMenu)
             }
             menu->addActions(actions);
 
-            action->setMenu(menu);
+            button->setMenu(menu);
+        } else {
+            // no subdir directory should not display an indicator arrow.
+            button->setPopupMode(QToolButton::InstantPopup);
         }
     }
 
-    addAction(action);
-
-    // button context menu interaction
-    QWidget *bt = widgetForAction(action);
-    bt->setContextMenuPolicy(Qt::CustomContextMenu);
-    connect(bt, &QWidget::customContextMenuRequested, this, [=](){
+    button->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(button, &QWidget::customContextMenuRequested, this, [=](){
         QMenu menu;
         FMWindowIface *windowIface = dynamic_cast<FMWindowIface *>(this->topLevelWidget());
         auto copy = menu.addAction(QIcon::fromTheme("edit-copy-symbolic"), tr("&Copy Directory"));
@@ -214,4 +296,110 @@ void LocationBar::paintEvent(QPaintEvent *e)
     style()->drawPrimitive(QStyle::PE_PanelLineEdit, &fopt, &p, this);
 
     style()->drawControl(QStyle::CE_ToolBar, &opt, &p, this);
+}
+
+void LocationBar::resizeEvent(QResizeEvent *event)
+{
+    QWidget::resizeEvent(event);
+
+    doLayout();
+}
+
+void LocationBar::doLayout()
+{
+    m_indicator->setVisible(false);
+
+    QList<int> sizeHints;
+
+    m_indicator_menu->clear();
+
+    for (auto button : m_buttons) {
+        button->setVisible(true);
+        button->resize(button->sizeHint().width(), button->height());
+        sizeHints<<button->sizeHint().width();
+        button->setVisible(false);
+    }
+
+    int totalWidth = this->width();
+    int currentWidth = 0;
+    int visibleButtonCount = 0;
+    for (int index = sizeHints.count() - 1; index >= 0; index--) {
+        int tmp = currentWidth + sizeHints.at(index);
+        if (tmp <= totalWidth) {
+            visibleButtonCount++;
+            currentWidth = tmp;
+        } else {
+            break;
+        }
+    }
+
+    int offset = 0;
+
+    bool indicatorVisible = visibleButtonCount < sizeHints.count();
+    if (indicatorVisible) {
+        m_indicator->setVisible(true);
+        offset += m_indicator->width();
+    } else {
+        m_indicator->setVisible(false);
+    }
+
+    for (int index = sizeHints.count() - visibleButtonCount; index < sizeHints.count(); index++) {
+        auto button = m_buttons.values().at(index);
+        button->setVisible(true);
+        button->move(offset, 0);
+        offset += button->width();
+    }
+
+    int spaceCount = 0;
+    QList<QAction *> actions;
+    for (auto button : m_buttons) {
+        if (button->isVisible()) {
+            break;
+        }
+        auto uri = button->property("uri").toString();
+        QString space;
+        int i = 0;
+        while (i < spaceCount) {
+            space.append(' ');
+            i++;
+        }
+        auto action = new QAction(space + button->text());
+        actions.append(action);
+
+        connect(action, &QAction::triggered, this, [=](){
+            Q_EMIT groupChangedRequest(uri);
+        });
+        spaceCount++;
+    }
+    m_indicator_menu->addActions(actions);
+}
+
+void LocationBarButtonStyle::polish(QWidget *widget)
+{
+    QProxyStyle::polish(widget);
+
+    widget->setProperty("useIconHighlightEffect", true);
+    widget->setProperty("iconHighLightEffectMode", 1);
+}
+
+void LocationBarButtonStyle::unpolish(QWidget *widget)
+{
+    QProxyStyle::unpolish(widget);
+
+    widget->setProperty("useIconHighlightEffect", QVariant());
+    widget->setProperty("iconHighLightEffectMode", QVariant());
+}
+
+void LocationBarButtonStyle::drawComplexControl(QStyle::ComplexControl control, const QStyleOptionComplex *option, QPainter *painter, const QWidget *widget) const
+{
+    if (control == QStyle::CC_ToolButton) {
+        auto toolButton = qstyleoption_cast<const QStyleOptionToolButton *>(option);
+        auto opt = *toolButton;
+        if (toolButton->arrowType == Qt::NoArrow)
+            opt.rect.adjust(0, 1, 0, -1);
+        else
+            opt.rect.adjust(-2, 1, 2, -1);
+        return QProxyStyle::drawComplexControl(control, &opt, painter, widget);
+    }
+    return QProxyStyle::drawComplexControl(control, option, painter, widget);
 }

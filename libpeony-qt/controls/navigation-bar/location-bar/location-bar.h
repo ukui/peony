@@ -27,10 +27,13 @@
 #include "peony-core_global.h"
 
 class QLineEdit;
+class QHBoxLayout;
+class QToolButton;
+class QMenu;
 
 namespace Peony {
 
-class PEONYCORESHARED_EXPORT LocationBar : public QToolBar
+class PEONYCORESHARED_EXPORT LocationBar : public QWidget
 {
     Q_OBJECT
 public:
@@ -48,14 +51,23 @@ public Q_SLOTS:
     void setRootUri(const QString &uri);
 
 protected:
+    void clearButtons();
     void addButton(const QString &uri, bool setIcon = false, bool setMenu = true);
 
     void mousePressEvent(QMouseEvent *e) override;
     void paintEvent(QPaintEvent *e) override;
+    void resizeEvent(QResizeEvent *event) override;
+
+    void doLayout();
 
 private:
     QString m_current_uri;
     QLineEdit *m_styled_edit;
+    QHBoxLayout *m_layout;
+
+    QMap<QString, QToolButton *> m_buttons;
+    QToolButton *m_indicator;
+    QMenu *m_indicator_menu;
 };
 
 }
