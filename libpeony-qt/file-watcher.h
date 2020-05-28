@@ -78,7 +78,7 @@ public:
      * code.
      */
     bool supportMonitor() {
-        return m_supprot_monitor;
+        return m_support_monitor;
     }
 
 Q_SIGNALS:
@@ -136,7 +136,7 @@ private:
     gulong m_file_handle = 0;
     gulong m_dir_handle = 0;
 
-    bool m_supprot_monitor = true;
+    bool m_support_monitor = true;
 };
 
 }
