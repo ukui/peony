@@ -155,7 +155,7 @@ void FileLaunchAction::lauchFileSync(bool forceWithArg, bool skipDialog)
                                l,
                                nullptr,
                                nullptr);
-        g_list_free(l);
+        g_list_free_full(l, g_free);
     }
 
     return;
@@ -228,7 +228,27 @@ void FileLaunchAction::lauchFileAsync(bool forceWithArg, bool skipDialog)
     }
 
     if (!isValid()) {
-        QMessageBox::critical(nullptr, tr("Open Failed"), tr("Can not open %1").arg(m_uri));
+        bool isReadable = fileInfo->canRead();
+        if (!isReadable)
+            QMessageBox::critical(nullptr, tr("Open Failed"), tr("Can not open %1").arg(m_uri));
+        else {
+            auto result = QMessageBox::question(nullptr, tr("Error"), tr("Can not get a default application for openning %1, do you want open it with text format?").arg(m_uri));
+            if (result == QMessageBox::Yes) {
+                GAppInfo *text_info = g_app_info_get_default_for_type("text/plain", false);
+                GList *l = nullptr;
+                char *uri = g_strdup(m_uri.toUtf8().constData());
+                l = g_list_prepend(l, uri);
+#if GLIB_CHECK_VERSION(2, 60, 0)
+                g_app_info_launch_uris_async(text_info, l,
+                                             nullptr, nullptr,
+                                             nullptr, nullptr);
+#else
+                g_app_info_launch_uris(text_info, l, nullptr, nullptr);
+#endif
+                g_list_free_full(l, g_free);
+                g_object_unref(text_info);
+            }
+        }
         return;
     }
 
@@ -251,7 +271,7 @@ void FileLaunchAction::lauchFileAsync(bool forceWithArg, bool skipDialog)
 #else
         g_app_info_launch_uris(m_app_info, l, nullptr, nullptr);
 #endif
-        g_list_free(l);
+        g_list_free_full(l, g_free);
     }
 
     return;

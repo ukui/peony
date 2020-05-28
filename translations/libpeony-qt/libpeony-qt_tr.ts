@@ -962,13 +962,13 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</translation
     </message>
     <message>
         <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="144"/>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="231"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="233"/>
         <source>Open Failed</source>
         <translation>Açma Hatası</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="144"/>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="231"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="233"/>
         <source>Can not open %1</source>
         <translation>%1 açılamadı</translation>
     </message>
@@ -981,6 +981,16 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</translation
         <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="213"/>
         <source>Launch Options</source>
         <translation>Başlatma Ayarları</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="235"/>
+        <source>Error</source>
+        <translation type="unfinished">Hata</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="235"/>
+        <source>Can not get a default application for openning %1, do you want open it with text format?</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

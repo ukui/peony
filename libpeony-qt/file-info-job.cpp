@@ -191,7 +191,12 @@ void FileInfoJob::refreshInfoContents(GFileInfo *new_info)
     }
 
     info->m_is_symbol_link = g_file_info_get_attribute_boolean(new_info, G_FILE_ATTRIBUTE_STANDARD_IS_SYMLINK);
-    info->m_can_read = g_file_info_get_attribute_boolean(new_info, G_FILE_ATTRIBUTE_ACCESS_CAN_READ);
+    if (g_file_info_has_attribute(new_info, G_FILE_ATTRIBUTE_ACCESS_CAN_READ)) {
+        info->m_can_read = g_file_info_get_attribute_boolean(new_info, G_FILE_ATTRIBUTE_ACCESS_CAN_READ);
+    } else {
+        // we assume an unknow access file is readable.
+        info->m_can_read = true;
+    }
     info->m_can_write = g_file_info_get_attribute_boolean(new_info, G_FILE_ATTRIBUTE_ACCESS_CAN_WRITE);
     info->m_can_excute = g_file_info_get_attribute_boolean(new_info, G_FILE_ATTRIBUTE_ACCESS_CAN_EXECUTE);
     info->m_can_delete = g_file_info_get_attribute_boolean(new_info, G_FILE_ATTRIBUTE_ACCESS_CAN_DELETE);
@@ -237,14 +242,19 @@ void FileInfoJob::refreshInfoContents(GFileInfo *new_info)
     info->m_file_id = g_file_info_get_attribute_string(new_info, G_FILE_ATTRIBUTE_ID_FILE);
 
     info->m_content_type = g_file_info_get_content_type (new_info);
+    if (info->m_content_type == nullptr) {
+        if (g_file_info_has_attribute(new_info, "standard::fast-content-type")) {
+            info->m_content_type = g_file_info_get_attribute_string(new_info, "standard::fast-content-type");
+        }
+    }
+
     info->m_size = g_file_info_get_attribute_uint64(new_info, G_FILE_ATTRIBUTE_STANDARD_SIZE);
     info->m_modified_time = g_file_info_get_attribute_uint64(new_info, G_FILE_ATTRIBUTE_TIME_MODIFIED);
     info->m_access_time = g_file_info_get_attribute_uint64(new_info, G_FILE_ATTRIBUTE_TIME_ACCESS);
 
-    const char *content_type_str = g_file_info_get_content_type (new_info);
-    info->m_mime_type_string = content_type_str;
-    if (content_type_str) {
-        char *content_type = g_content_type_get_description (content_type_str);
+    info->m_mime_type_string = info->m_content_type;
+    if (!info->m_mime_type_string.isEmpty()) {
+        char *content_type = g_content_type_get_description (info->m_mime_type_string.toUtf8().constData());
         info->m_file_type = content_type;
         g_free (content_type);
         content_type = nullptr;

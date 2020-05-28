@@ -962,13 +962,13 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
     </message>
     <message>
         <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="144"/>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="231"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="233"/>
         <source>Open Failed</source>
         <translation>无法打开</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="144"/>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="231"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="233"/>
         <source>Can not open %1</source>
         <translation>不能打开%1</translation>
     </message>
@@ -981,6 +981,16 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
         <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="213"/>
         <source>Launch Options</source>
         <translation>执行选项</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="235"/>
+        <source>Error</source>
+        <translation>错误</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="235"/>
+        <source>Can not get a default application for openning %1, do you want open it with text format?</source>
+        <translation>没有找到默认打开%1的应用, 是否用文本编辑器打开？</translation>
     </message>
 </context>
 <context>

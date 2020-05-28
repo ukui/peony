@@ -232,6 +232,11 @@ private:
     guint64 m_modified_time = 0;
     guint64 m_access_time = 0;
 
+    /*!
+     * \deprecated
+     * \brief m_mime_type_string
+     * \see m_content_type
+     */
     QString m_mime_type_string = nullptr;
     QString m_file_type = nullptr;
     QString m_file_size = nullptr;
