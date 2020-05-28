@@ -34,6 +34,8 @@ FileTrashOperation::FileTrashOperation(QStringList srcUris, QObject *parent) : F
 void FileTrashOperation::run()
 {
     Q_EMIT operationStarted();
+
+    ResponseType response = Invalid;
     for (auto src : m_src_uris) {
         if (isCancelled())
             break;
@@ -44,12 +46,19 @@ retry:
                      getCancellable().get()->get(),
                      &err);
         if (err) {
+            if (response == IgnoreAll) {
+                g_error_free(err);
+                continue;
+            }
             auto responseData = Q_EMIT errored(src, tr("trash:///"), GErrorWrapper::wrapFrom(err), true);
             switch (responseData.value<ResponseType>()) {
             case Retry:
                 goto retry;
             case Cancel:
                 cancel();
+                break;
+            case IgnoreAll:
+                response = IgnoreAll;
                 break;
             default:
                 break;

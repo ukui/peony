@@ -60,12 +60,19 @@ void FileDeleteOperation::deleteRecursively(FileNode *node)
                       getCancellable().get()->get(),
                       &err);
         if (err) {
+            if (!m_prehandle_hash.isEmpty()) {
+                g_error_free(err);
+                return;
+            }
             //if delete a file get into error, it might be a critical error.
             auto response = errored(node->uri(), nullptr, GErrorWrapper::wrapFrom(err), true);
             qDebug()<<response;
             auto responseType = response.value<ResponseType>();
             if (responseType == Cancel) {
                 cancel();
+            }
+            if (responseType == IgnoreAll) {
+                m_prehandle_hash.insert(err->code, IgnoreAll);
             }
         }
     } else {
@@ -74,12 +81,19 @@ void FileDeleteOperation::deleteRecursively(FileNode *node)
                       getCancellable().get()->get(),
                       &err);
         if (err) {
+            if (!m_prehandle_hash.isEmpty()) {
+                g_error_free(err);
+                return;
+            }
             //if delete a file get into error, it might be a critical error.
             auto response = errored(node->uri(), nullptr, GErrorWrapper::wrapFrom(err), true);
             qDebug()<<response;
             auto responseType = response.value<ResponseType>();
             if (responseType == Cancel) {
                 cancel();
+            }
+            if (responseType == IgnoreAll) {
+                m_prehandle_hash.insert(err->code, IgnoreAll);
             }
         }
     }
