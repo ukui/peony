@@ -39,6 +39,7 @@
 namespace Peony {
 
 class FileOperationInfo;
+class FileWatcher;
 
 /*!
  * \brief The FileOperationManager class
@@ -85,6 +86,41 @@ public Q_SLOTS:
 
     QVariant handleError(const QString &srcUri, const QString &destUri, const GErrorWrapperPtr &err, bool critical);
 
+    /*!
+     * \brief registerFileWatcher
+     * \param watcher
+     * \details
+     * For some limitation of gvfs/gio, some directory doesn't
+     * support monitor yet. So we have to handle the data changed
+     * by ourselves.
+     *
+     * The main idea is, every view will hold a watcher, and watcher
+     * will be register to operation manager instance.
+     *
+     * everytime the file operation finished, watcher which not support
+     * monitor will recived a signal from operation manager. And the view
+     * will response the signal as same as other directories which allow monitor
+     * action.
+     */
+    void registerFileWatcher(FileWatcher *watcher);
+
+    /*!
+     * \brief unregisterFileWatcher
+     * \param watcher
+     * \details
+     * when a file watcher deconstructed, it should be unregistered.
+     * \see registerFileWatcher()
+     */
+    void unregisterFileWatcher(FileWatcher *watcher);
+
+    /*!
+     * \brief manuallyNotifyDirectoryChanged
+     * \param info
+     * \details
+     * real action to notify directory changed for directory
+     * not support monitoring.
+     */
+    void manuallyNotifyDirectoryChanged(FileOperationInfo *info);
 private:
     explicit FileOperationManager(QObject *parent = nullptr);
     ~FileOperationManager();
@@ -94,12 +130,15 @@ private:
 
     QThreadPool *m_thread_pool;
     bool m_is_current_operation_errored = false;
+
+    QVector<FileWatcher *> m_watchers;
 };
 
 class FileOperationInfo : public QObject
 {
     Q_OBJECT
     friend class FileOperationManager;
+    friend class FileOperation;
 public:
     QMap<QString, QString> m_node_map;
 

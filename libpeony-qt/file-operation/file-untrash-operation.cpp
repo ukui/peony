@@ -220,4 +220,7 @@ retry:
             }
         }
     }
+
+    operationFinished();
+    notifyFileWatcherOperationFinished();
 }

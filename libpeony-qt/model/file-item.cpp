@@ -48,6 +48,8 @@ FileItem::FileItem(std::shared_ptr<Peony::FileInfo> info, FileItem *parentItem, 
     m_children = new QVector<FileItem*>();
 
     m_model = model;
+
+    m_backend_enumerator = new FileEnumerator(this);
 }
 
 FileItem::~FileItem()
@@ -265,6 +267,8 @@ void FileItem::findChildrenAsync()
                 m_model->setRootUri("computer:///");
             });
             //qDebug()<<"startMonitor";
+
+            connect(m_watcher.get(), &FileWatcher::requestUpdateDirectory, this, &FileItem::onUpdateDirectoryRequest);
             m_watcher->startMonitor();
         });
     } else {
@@ -353,6 +357,7 @@ void FileItem::findChildrenAsync()
                 m_model->setRootUri("computer:///");
             });
             //qDebug()<<"startMonitor";
+            connect(m_watcher.get(), &FileWatcher::requestUpdateDirectory, this, &FileItem::onUpdateDirectoryRequest);
             m_watcher->startMonitor();
         });
     }
@@ -467,6 +472,41 @@ void FileItem::onRenamed(const QString &oldUri, const QString &newUri)
         FileItem *newRootItem = new FileItem(FileInfo::fromUri(newUri), nullptr, m_model);
         m_model->setRootItem(newRootItem);
     }
+}
+
+void FileItem::onUpdateDirectoryRequest()
+{
+    m_backend_enumerator->disconnect();
+    m_backend_enumerator->cancel();
+
+    m_backend_enumerator->setEnumerateDirectory(m_model->getRootUri());
+    m_backend_enumerator->connect(m_backend_enumerator, &FileEnumerator::enumerateFinished, this, [=](){
+        auto currentUris = m_backend_enumerator->getChildrenUris();
+        QStringList rawUris;
+        QStringList removedUris;
+        QStringList addedUris;
+        for (auto child : *m_model->m_root_item->m_children) {
+            if (!currentUris.contains(child->uri())) {
+                removedUris<<child->uri();
+                m_model->m_root_item->onChildRemoved(child->uri());
+            }
+            rawUris<<child->uri();
+        }
+
+        for (auto uri : currentUris) {
+            if (!rawUris.contains(uri)) {
+                addedUris<<uri;
+                m_model->m_root_item->onChildAdded(uri);
+            }
+        }
+
+        for (auto uri : currentUris) {
+            if (!addedUris.contains(uri) && !removedUris.contains(uri))
+                m_model->m_root_item->getChildFromUri(uri)->updateInfoAsync();
+        }
+    });
+
+    m_backend_enumerator->enumerateAsync();
 }
 
 void FileItem::updateInfoSync()

@@ -840,6 +840,7 @@ start:
     qDebug()<<"finished";
 end:
     Q_EMIT operationFinished();
+    notifyFileWatcherOperationFinished();
 }
 
 void FileMoveOperation::cancel()

@@ -469,6 +469,7 @@ void FileCopyOperation::run()
     }
 
     Q_EMIT operationFinished();
+    notifyFileWatcherOperationFinished();
 }
 
 void FileCopyOperation::cancel()

@@ -138,6 +138,8 @@ void FileEnumerator::cancel()
     g_object_unref(m_cancellable);
     m_cancellable = g_cancellable_new();
 
+    m_children_uris->clear();
+
     Q_EMIT enumerateFinished(false);
 }
 

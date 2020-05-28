@@ -21,6 +21,8 @@
  */
 
 #include "file-operation.h"
+#include "file-operation-manager.h"
+#include <QApplication>
 
 using namespace Peony;
 
@@ -44,4 +46,15 @@ void FileOperation::cancel()
 {
     g_cancellable_cancel(m_cancellable_wrapper.get()->get());
     m_is_cancelled = true;
+}
+
+void FileOperation::notifyFileWatcherOperationFinished()
+{
+    if (!qApp->allWidgets().isEmpty()) {
+        // notify operation for file watchers.
+        auto info = this->getOperationInfo();
+        qDebug()<<info->m_src_dir_uri;
+        if (info)
+            FileOperationManager::getInstance()->manuallyNotifyDirectoryChanged(info.get());
+    }
 }

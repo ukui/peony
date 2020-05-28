@@ -27,6 +27,7 @@
 
 #include <QUrl>
 #include "file-utils.h"
+#include "file-operation-manager.h"
 
 #include <QDebug>
 
@@ -58,6 +59,7 @@ FileWatcher::FileWatcher(QString uri, QObject *parent) : QObject(parent)
     if (err1) {
         qDebug()<<err1->code<<err1->message;
         g_error_free(err1);
+        m_support_monitor = false;
     }
 
     GError *err2 = nullptr;
@@ -68,11 +70,16 @@ FileWatcher::FileWatcher(QString uri, QObject *parent) : QObject(parent)
     if (err2) {
         qDebug()<<err2->code<<err2->message;
         g_error_free(err2);
+        m_support_monitor = false;
     }
+
+    FileOperationManager::getInstance()->registerFileWatcher(this);
 }
 
 FileWatcher::~FileWatcher()
 {
+    FileOperationManager::getInstance()->unregisterFileWatcher(this);
+
     disconnect();
     //qDebug()<<"~FileWatcher"<<m_uri;
     stopMonitor();
@@ -166,7 +173,7 @@ void FileWatcher::changeMonitorUri(QString uri)
                                     m_cancellable,
                                     &err1);
     if (err1) {
-        m_support_monitor = true;
+        m_support_monitor = false;
         qDebug()<<err1->code<<err1->message;
         g_error_free(err1);
     }
@@ -177,7 +184,7 @@ void FileWatcher::changeMonitorUri(QString uri)
                     m_cancellable,
                     &err2);
     if (err2) {
-        m_support_monitor = true;
+        m_support_monitor = false;
         qDebug()<<err2->code<<err2->message;
         g_error_free(err2);
     }

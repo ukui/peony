@@ -41,6 +41,10 @@
 #include "file-operation-error-dialog.h"
 #include "file-operation-progress-wizard.h"
 
+#include "file-watcher.h"
+
+#include <QDebug>
+
 using namespace Peony;
 
 static FileOperationManager *global_instance = nullptr;
@@ -318,4 +322,39 @@ QVariant FileOperationManager::handleError(const QString &srcUri,
 {
     FileOperationErrorDialog dlg;
     return dlg.handleError(srcUri, destUri, err, critical);
+}
+
+void FileOperationManager::registerFileWatcher(FileWatcher *watcher)
+{
+    m_watchers<<watcher;
+}
+
+void FileOperationManager::unregisterFileWatcher(FileWatcher *watcher)
+{
+    m_watchers.removeOne(watcher);
+}
+
+void FileOperationManager::manuallyNotifyDirectoryChanged(FileOperationInfo *info)
+{
+    if (!info)
+        return;
+
+    // skip create template opeartion, it will be handled by operation itself.
+    if (info->m_src_dir_uri == QStandardPaths::writableLocation(QStandardPaths::TempLocation))
+        return;
+
+    for (auto watcher : m_watchers) {
+        if (!watcher->supportMonitor()) {
+            auto srcDir = info->m_src_dir_uri;
+            auto destDir = info->m_dest_dir_uri;
+            if (info->operationType() == FileOperationInfo::Link || info->operationType() == FileOperationInfo::Rename) {
+                srcDir = FileUtils::getParentUri(info->m_src_uris.first());
+            }
+            // check watcher directory
+            if (watcher->currentUri() == srcDir || watcher->currentUri() == destDir) {
+                // tell the view/model the directory should be updated
+                watcher->requestUpdateDirectory();
+            }
+        }
+    }
 }

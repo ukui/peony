@@ -36,6 +36,7 @@ class FileInfoManager;
 class FileItemModel;
 class FileWatcher;
 class FileItemProxyFilterSortModel;
+class FileEnumerator;
 
 /*!
  * \brief The FileItem class
@@ -104,6 +105,8 @@ public Q_SLOTS:
     void onDeleted(const QString &thisUri);
     void onRenamed(const QString &oldUri, const QString &newUri);
 
+    void onUpdateDirectoryRequest();
+
     void clearChildren();
 
 protected:
@@ -157,6 +160,13 @@ private:
      * </br>
      */
     int m_async_count = 0;
+
+    /*!
+     * \brief m_backend_enumerator
+     * \note
+     * only used in directory not support monitor.
+     */
+    FileEnumerator *m_backend_enumerator;
 };
 
 }

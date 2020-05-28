@@ -316,6 +316,12 @@ protected:
         return m_cancellable_wrapper;
     }
 
+    /*!
+     * \brief notifyFileWatcherOperationFinished
+     * tell views operation finished.
+     */
+    void notifyFileWatcherOperationFinished();
+
 private:
     GCancellableWrapperPtr m_cancellable_wrapper = nullptr;
     bool m_is_cancelled = false;

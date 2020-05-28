@@ -68,6 +68,8 @@ public:
     void startMonitor();
     void stopMonitor();
 
+    const QString currentUri() {return m_uri;}
+
     /*!
      * \brief supportMonitor
      * \return
@@ -88,6 +90,13 @@ Q_SIGNALS:
     void fileCreated(const QString &uri);
     void fileDeleted(const QString &uri);
     void fileChanged(const QString &uri);
+
+    /*!
+     * \brief requestUpdateDirectory
+     * \note
+     * only used in directory not support monitor
+     */
+    void requestUpdateDirectory();
 
     void thumbnailUpdated(const QString &uri);
 
