@@ -363,7 +363,7 @@ void LocationBar::doLayout()
             space.append(' ');
             i++;
         }
-        auto action = new QAction(space + button->text());
+        auto action = new QAction(space + button->text(), nullptr);
         actions.append(action);
 
         connect(action, &QAction::triggered, this, [=](){
