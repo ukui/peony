@@ -68,7 +68,7 @@ QString SideBarFileSystemItem::displayName()
 {
     QString displayName;
     if (!m_volume_name.isEmpty()) {
-        displayName = m_volume_name;
+        displayName += m_volume_name;
     }
     if (!m_unix_device.isEmpty()) {
         displayName += QString(" (%1)").arg(m_unix_device);

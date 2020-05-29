@@ -298,6 +298,8 @@ bool FileUtils::queryVolumeInfo(const QString &volumeUri, QString &volumeName, Q
         if (last.startsWith(" "))
             last.remove(0, 1);
         volumeName = last;
+    } else {
+        volumeName = displayName;
     }
     return true;
 }
