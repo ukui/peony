@@ -346,7 +346,7 @@ void IconView::bindModel(FileItemModel *sourceModel, FileItemProxyFilterSortMode
 
         //Q_EMIT m_proxy->viewSelectionChanged();
         if (currentSelections.count() == 1) {
-            qDebug()<<"m_last_index  "<<(m_last_index == currentSelections.first());
+            qDebug()<<"m_last_index  "<<(m_last_index == currentSelections.first())<<currentSelections.first();
             if(m_last_index != currentSelections.first())
             {
                 m_editValid = false;
@@ -405,6 +405,8 @@ void IconView::setProxy(DirectoryViewProxyIface *proxy)
 // So, do not set any index widget when the resorting.
 void IconView::resort()
 {
+    //fix uncompress selected file will cover file before it issue
+    clearIndexWidget();
     if (m_last_index.isValid()) {
         this->setIndexWidget(m_last_index, nullptr);
     }

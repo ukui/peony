@@ -84,7 +84,7 @@ void ListView::bindModel(FileItemModel *sourceModel, FileItemProxyFilterSortMode
 
     //edit trigger
     connect(this->selectionModel(), &QItemSelectionModel::selectionChanged, [=](const QItemSelection &selection, const QItemSelection &deselection) {
-        qDebug()<<"selection changed";
+        qDebug()<<"list view selection changed";
         auto currentSelections = selection.indexes();
 
         for (auto index : deselection.indexes()) {
