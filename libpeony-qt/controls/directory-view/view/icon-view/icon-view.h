@@ -58,6 +58,10 @@ public:
     explicit IconView(DirectoryViewProxyIface *proxy, QWidget *parent = nullptr);
     ~IconView() override;
 
+    bool isDraggingState() {
+        return this->state() == QListView::DraggingState || this->state() == QListView::DragSelectingState;
+    }
+
     const QString viewId() override {
         return tr("Icon View");
     }

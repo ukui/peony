@@ -71,6 +71,8 @@ IconViewIndexWidget::IconViewIndexWidget(const IconViewDelegate *delegate, const
     m_delegate->getView()->m_editValid = false;
     m_delegate->getView()->m_renameTimer->start();
 
+    m_is_dragging = m_delegate->getView()->isDraggingState();
+
     QSize size = delegate->sizeHint(option, index);
     setMinimumSize(size);
 
@@ -201,6 +203,13 @@ void IconViewIndexWidget::mousePressEvent(QMouseEvent *e)
 {
     if (e->button() == Qt::LeftButton) {
         IconView *view = m_delegate->getView();
+
+        if (view->isDraggingState() || m_is_dragging) {
+            view->m_renameTimer->stop();
+            view->m_editValid = false;
+            return QWidget::mousePressEvent(e);
+        }
+
         view->m_editValid = true;
         if (view->m_renameTimer->isActive()) {
             if (view->m_renameTimer->remainingTime() < 2250 && view->m_renameTimer->remainingTime() > 0) {
@@ -223,6 +232,18 @@ void IconViewIndexWidget::mousePressEvent(QMouseEvent *e)
 //        }
     }
     QWidget::mousePressEvent(e);
+}
+
+void IconViewIndexWidget::mouseMoveEvent(QMouseEvent *e)
+{
+    QWidget::mouseMoveEvent(e);
+    m_is_dragging = true;
+}
+
+void IconViewIndexWidget::mouseReleaseEvent(QMouseEvent *e)
+{
+    QWidget::mouseReleaseEvent(e);
+    m_is_dragging = false;
 }
 
 void IconViewIndexWidget::mouseDoubleClickEvent(QMouseEvent *event)

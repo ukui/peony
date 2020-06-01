@@ -54,6 +54,8 @@ public:
 protected:
     void paintEvent(QPaintEvent *e) override;
     void mousePressEvent(QMouseEvent *e) override;
+    void mouseMoveEvent(QMouseEvent *e) override;
+    void mouseReleaseEvent(QMouseEvent *e) override;
     void mouseDoubleClickEvent(QMouseEvent *event) override;
 
     void adjustPos();
@@ -67,6 +69,8 @@ private:
     std::weak_ptr<FileInfo> m_info;
 
     QTimer m_edit_trigger;
+
+    bool m_is_dragging = false;
 };
 
 }
