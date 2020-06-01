@@ -473,6 +473,9 @@ bool FileItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action, i
         return false;
     }
 
+    if (!FileUtils::getFileIsFolder(destDirUri))
+        return false;
+
     //NOTE:
     //do not allow drop on it self.
     auto urls = data->urls();
