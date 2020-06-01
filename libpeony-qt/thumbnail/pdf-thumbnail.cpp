@@ -42,7 +42,7 @@ PdfThumbnail::~PdfThumbnail() {
 
 QPixmap PdfThumbnail::generateThumbnail(unsigned int pageNum) {
     try {
-        if (this->documentPrivate == nullptr)
+        if (this->documentPrivate == nullptr || this->documentPrivate->isLocked())
             //throw "pdf document not existed";
             //fix crash issue, change throw to return
             return QPixmap();
