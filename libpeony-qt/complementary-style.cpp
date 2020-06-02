@@ -90,8 +90,9 @@ void ComplementaryStyle::drawPrimitive(QStyle::PrimitiveElement element, const Q
     }
 
     switch (element) {
+    case QStyle::PE_FrameFocusRect:
     case QStyle::PE_IndicatorToolBarSeparator: {
-        //do not draw toolbar separator
+        //do not draw toolbar separator and focus rect
         return;
     }
     case PE_IndicatorArrowDown: {
