@@ -69,6 +69,12 @@
 // backup settings
 #include <QSettings>
 
+#include <X11/Xlib.h>
+#include <QX11Info>
+#include <X11/Xatom.h>
+#include <X11/Xproto.h>
+//#include <QXcbAtom.h>
+
 #include <QDebug>
 
 #define BACKGROUND_SETTINGS "org.mate.background"
@@ -110,6 +116,14 @@ DesktopWindow::DesktopWindow(QScreen *screen, bool is_primary, QWidget *parent)
     setWindowFlags(flags |Qt::FramelessWindowHint);
     setAttribute(Qt::WA_X11NetWmWindowTypeDesktop);
     setAttribute(Qt::WA_TranslucentBackground);
+
+    //fix qt5.6 setAttribute as desktop has no effect issue
+#if QT_VERSION_CHECK(5, 6, 0)
+    Atom m_WindowType = XInternAtom(QX11Info::display(), "_NET_WM_WINDOW_TYPE", true);
+    Atom m_DesktopType = XInternAtom(QX11Info::display(), "_NET_WM_WINDOW_TYPE_DESKTOP", true);
+    XChangeProperty(QX11Info::display(), winId(), m_WindowType,
+                    XA_ATOM, 32, 0, (unsigned char *)&m_DesktopType, sizeof(m_DesktopType));
+#endif
 
     setGeometry(screen->geometry());
 
@@ -383,6 +397,15 @@ void DesktopWindow::scaleBg(const QRect &geometry) {
     //setWindowFlag(Qt::FramelessWindowHint, false);
     auto flags = windowFlags() &~Qt::WindowMinMaxButtonsHint;
     setWindowFlags(flags |Qt::FramelessWindowHint);
+
+    //fix qt5.6 setAttribute as desktop has no effect issue
+#if QT_VERSION_CHECK(5, 6, 0)
+    Atom m_WindowType = XInternAtom(QX11Info::display(), "_NET_WM_WINDOW_TYPE", true);
+    Atom m_DesktopType = XInternAtom(QX11Info::display(), "_NET_WM_WINDOW_TYPE_DESKTOP", true);
+    XChangeProperty(QX11Info::display(), winId(), m_WindowType,
+                    XA_ATOM, 32, 0, (unsigned char *)&m_DesktopType, sizeof(m_DesktopType));
+#endif
+
     show();
 
     m_bg_back_cache_pixmap = m_bg_back_pixmap.scaled(geometry.size(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
