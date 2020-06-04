@@ -73,7 +73,6 @@
 #include <QX11Info>
 #include <X11/Xatom.h>
 #include <X11/Xproto.h>
-//#include <QXcbAtom.h>
 
 #include <QDebug>
 
@@ -121,8 +120,9 @@ DesktopWindow::DesktopWindow(QScreen *screen, bool is_primary, QWidget *parent)
 #if QT_VERSION_CHECK(5, 6, 0)
     Atom m_WindowType = XInternAtom(QX11Info::display(), "_NET_WM_WINDOW_TYPE", true);
     Atom m_DesktopType = XInternAtom(QX11Info::display(), "_NET_WM_WINDOW_TYPE_DESKTOP", true);
+    XDeleteProperty(QX11Info::display(), winId(), m_WindowType);
     XChangeProperty(QX11Info::display(), winId(), m_WindowType,
-                    XA_ATOM, 32, 0, (unsigned char *)&m_DesktopType, sizeof(m_DesktopType));
+                    XA_ATOM, 32, 1, (unsigned char *)&m_DesktopType, 1);
 #endif
 
     setGeometry(screen->geometry());
@@ -402,8 +402,9 @@ void DesktopWindow::scaleBg(const QRect &geometry) {
 #if QT_VERSION_CHECK(5, 6, 0)
     Atom m_WindowType = XInternAtom(QX11Info::display(), "_NET_WM_WINDOW_TYPE", true);
     Atom m_DesktopType = XInternAtom(QX11Info::display(), "_NET_WM_WINDOW_TYPE_DESKTOP", true);
+    XDeleteProperty(QX11Info::display(), winId(), m_WindowType);
     XChangeProperty(QX11Info::display(), winId(), m_WindowType,
-                    XA_ATOM, 32, 0, (unsigned char *)&m_DesktopType, sizeof(m_DesktopType));
+                    XA_ATOM, 32, 1, (unsigned char *)&m_DesktopType, 1);
 #endif
 
     show();
