@@ -251,14 +251,15 @@ bool FileItemProxyFilterSortModel::checkFileTypeFilter(QString type) const
 {
     //qDebug()<<"m_show_file_type: "<<m_show_file_type<<" "<<item->info()->type();
     //mutiple condition, advance search and default search
-    if (m_show_file_type == ALL_FILE || m_file_type_list.contains(ALL_FILE))
+    if (m_show_file_type == ALL_FILE && m_file_type_list.count() == 0
+        || m_file_type_list.contains(ALL_FILE))
         return true;
 
     //suport mutiple file type choose
     QList<int> totalTypeList;
     if (m_file_type_list.count() > 0)
         totalTypeList.append(m_file_type_list);
-    if (! totalTypeList.contains(m_show_file_type))
+    if (! totalTypeList.contains(m_show_file_type) && m_show_file_type != ALL_FILE)
         totalTypeList.append(m_show_file_type);
 
     for(int i=0; i<totalTypeList.count(); i++)

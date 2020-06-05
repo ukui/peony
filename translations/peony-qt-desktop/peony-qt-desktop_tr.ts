@@ -207,17 +207,17 @@
 <context>
     <name>Peony::DesktopWindow</name>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-window.cpp" line="84"/>
+        <location filename="../../peony-qt-desktop/desktop-window.cpp" line="89"/>
         <source>Desktop</source>
         <translation>Masaüstü</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-window.cpp" line="138"/>
+        <location filename="../../peony-qt-desktop/desktop-window.cpp" line="152"/>
         <source>set background</source>
         <translation>arkaplan ayarla</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-window.cpp" line="498"/>
+        <location filename="../../peony-qt-desktop/desktop-window.cpp" line="522"/>
         <source>New Folder</source>
         <translation>Yeni Klasör</translation>
     </message>

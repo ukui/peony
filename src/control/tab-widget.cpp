@@ -388,7 +388,7 @@ void TabWidget::addNewConditionBar()
     m_input_list.append(inputBox);
     inputBox->setFixedHeight(TRASH_BUTTON_HEIGHT);
     inputBox->setFixedWidth(TRASH_BUTTON_WIDTH *4);
-    inputBox->setPlaceholderText(tr("Please input kay words..."));
+    inputBox->setPlaceholderText(tr("Please input key words..."));
 
     QPushButton *addButton = new QPushButton(QIcon::fromTheme("add"), "", optionBar);
     m_add_button_list.append(addButton);

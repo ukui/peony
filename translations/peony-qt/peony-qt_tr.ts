@@ -406,7 +406,7 @@ Telif (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</translatio
     <message>
         <location filename="../../src/control/tab-widget.cpp" line="150"/>
         <source>Trash</source>
-        <translation>Çöp</translation>
+        <translation>Çöp&apos;i</translation>
     </message>
     <message>
         <location filename="../../src/control/tab-widget.cpp" line="154"/>
@@ -456,8 +456,12 @@ Telif (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</translatio
     </message>
     <message>
         <location filename="../../src/control/tab-widget.cpp" line="391"/>
-        <source>Please input kay words...</source>
+        <source>Please input key words...</source>
         <translation>Lütfen anahtar kelimeler girin ...</translation>
+    </message>
+    <message>
+        <source>Please input kay words...</source>
+        <translation type="vanished">Lütfen anahtar kelimeler girin ...</translation>
     </message>
     <message>
         <location filename="../../src/control/tab-widget.cpp" line="427"/>

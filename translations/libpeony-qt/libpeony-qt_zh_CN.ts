@@ -493,7 +493,7 @@
 <context>
     <name>Peony::DirectoryView::IconView</name>
     <message>
-        <location filename="../../libpeony-qt/controls/directory-view/view/icon-view/icon-view.h" line="62"/>
+        <location filename="../../libpeony-qt/controls/directory-view/view/icon-view/icon-view.h" line="66"/>
         <source>Icon View</source>
         <translation>图标视图</translation>
     </message>
@@ -840,9 +840,9 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
 <context>
     <name>Peony::FileEnumerator</name>
     <message>
-        <location filename="../../libpeony-qt/file-enumerator.cpp" line="278"/>
-        <location filename="../../libpeony-qt/file-enumerator.cpp" line="282"/>
-        <location filename="../../libpeony-qt/file-enumerator.cpp" line="397"/>
+        <location filename="../../libpeony-qt/file-enumerator.cpp" line="280"/>
+        <location filename="../../libpeony-qt/file-enumerator.cpp" line="284"/>
+        <location filename="../../libpeony-qt/file-enumerator.cpp" line="399"/>
         <source>Error</source>
         <translation>错误</translation>
     </message>
@@ -850,8 +850,8 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
 <context>
     <name>Peony::FileItem</name>
     <message>
-        <location filename="../../libpeony-qt/model/file-item.cpp" line="119"/>
-        <location filename="../../libpeony-qt/model/file-item.cpp" line="161"/>
+        <location filename="../../libpeony-qt/model/file-item.cpp" line="121"/>
+        <location filename="../../libpeony-qt/model/file-item.cpp" line="163"/>
         <source>Error</source>
         <translation>错误</translation>
     </message>
@@ -1105,8 +1105,8 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
 <context>
     <name>Peony::FileOperationInfo</name>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-manager.h" line="145"/>
-        <location filename="../../libpeony-qt/file-operation/file-operation-manager.h" line="148"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-manager.h" line="184"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-manager.h" line="187"/>
         <source> - Symbolic Link</source>
         <translation> - 快捷方式</translation>
     </message>
@@ -1114,22 +1114,22 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
 <context>
     <name>Peony::FileOperationManager</name>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="122"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="126"/>
         <source>Can&apos;t delete.</source>
         <translation>不能删除</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="123"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="127"/>
         <source>You can&apos;t delete a file whenthe file is doing another operation</source>
         <translation>不能删除一个正在进行其它操作的文件</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="185"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="189"/>
         <source>File Operation is Busy</source>
         <translation>操作正忙</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="186"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="190"/>
         <source>There have been one or more fileoperation(s) executing before. Youroperation will wait for executinguntil it/them done.</source>
         <translation>在执行该操作之前有操作未完成，它需要等待上一个操作完成后再执行。</translation>
     </message>
@@ -1291,7 +1291,7 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
 <context>
     <name>Peony::FileTrashOperation</name>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-trash-operation.cpp" line="47"/>
+        <location filename="../../libpeony-qt/file-operation/file-trash-operation.cpp" line="53"/>
         <source>trash:///</source>
         <translation>trash:///</translation>
     </message>

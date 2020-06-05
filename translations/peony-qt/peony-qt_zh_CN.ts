@@ -456,8 +456,12 @@ Copyright (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</source
     </message>
     <message>
         <location filename="../../src/control/tab-widget.cpp" line="391"/>
-        <source>Please input kay words...</source>
+        <source>Please input key words...</source>
         <translation>请输入关键词...</translation>
+    </message>
+    <message>
+        <source>Please input kay words...</source>
+        <translation type="vanished">请输入关键词...</translation>
     </message>
     <message>
         <location filename="../../src/control/tab-widget.cpp" line="427"/>
