@@ -11,3 +11,4 @@ Terminal=false
 Type=Application
 Keywords=file;desktop;
 OnlyShowIn=UKUI;
+NoDisplay = true;

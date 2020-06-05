@@ -919,7 +919,7 @@ void TabWidget::editUris(const QStringList &uris)
 
 void TabWidget::onViewDoubleClicked(const QString &uri)
 {
-    qDebug()<<"double clicked"<<uri;
+    qDebug()<<"tab widget double clicked"<<uri;
     auto info = Peony::FileInfo::fromUri(uri, false);
     if (info->uri().startsWith("trash://")) {
         auto w = new Peony::PropertiesWindow(QStringList()<<uri);

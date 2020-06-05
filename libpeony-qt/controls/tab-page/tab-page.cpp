@@ -99,7 +99,7 @@ void TabPage::rebindContainer()
 
         m_double_click_limiter.start(500);
 
-        qDebug()<<"double clicked"<<uri;
+        qDebug()<<"tab page double clicked"<<uri;
         auto info = Peony::FileInfo::fromUri(uri, false);
         if (info->uri().startsWith("trash://")) {
             auto w = new PropertiesWindow(QStringList()<<uri);

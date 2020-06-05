@@ -299,7 +299,7 @@ PeonyApplication::PeonyApplication(int &argc, char *argv[], const char *applicat
             //proxy->invertSelections();
         });
         connect(proxy, &Peony::DirectoryViewProxyIface::viewDoubleClicked, [=](const QString &uri) {
-            qDebug()<<"double clicked"<<uri;
+            qDebug()<<"app double clicked"<<uri;
             auto info = Peony::FileInfo::fromUri(uri);
             if (info->isDir() || info->isVolume() || uri.startsWith("network:")) {
                 proxy->setDirectoryUri(uri);
