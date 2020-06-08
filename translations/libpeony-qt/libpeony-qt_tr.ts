@@ -1105,8 +1105,8 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</translation
 <context>
     <name>Peony::FileOperationInfo</name>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-manager.h" line="184"/>
-        <location filename="../../libpeony-qt/file-operation/file-operation-manager.h" line="187"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-manager.h" line="189"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-manager.h" line="192"/>
         <source> - Symbolic Link</source>
         <translation> Sembolik Bağ</translation>
     </message>
@@ -1114,24 +1114,28 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</translation
 <context>
     <name>Peony::FileOperationManager</name>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="126"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="147"/>
         <source>Can&apos;t delete.</source>
         <translation>Silinmedi</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="127"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="148"/>
         <source>You can&apos;t delete a file whenthe file is doing another operation</source>
         <translation>Dosya başka bir işlem yaparken dosyayı silemezsiniz</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="189"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="210"/>
         <source>File Operation is Busy</source>
         <translation>Dosya İşlemi Meşgul</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="190"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="211"/>
+        <source>There have been one or more fileoperation(s) executing before. Youroperation will wait for executinguntil it/them done. If you really want to execute file operations parallelly anyway, you can change the default option &quot;Allow Parallel&quot; in option menu.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>There have been one or more fileoperation(s) executing before. Youroperation will wait for executinguntil it/them done.</source>
-        <translation>Daha önce bir veya daha fazla dosya işlemi yürütüldü. Operasyonunuz tamamlanana kadar yürütmeyi bekleyecektir.</translation>
+        <translation type="vanished">Daha önce bir veya daha fazla dosya işlemi yürütüldü. Operasyonunuz tamamlanana kadar yürütmeyi bekleyecektir.</translation>
     </message>
 </context>
 <context>

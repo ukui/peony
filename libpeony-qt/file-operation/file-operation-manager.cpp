@@ -215,7 +215,7 @@ void FileOperationManager::startOperation(FileOperation *operation, bool addToHi
                                     "want to execute file operations "
                                     "parallelly anyway, you can change "
                                     "the default option \"Allow Parallel\" "
-                                    "in operation menu."));
+                                    "in option menu."));
         }
         operation->setParent(m_thread_pool);
         m_thread_pool->start(operation);

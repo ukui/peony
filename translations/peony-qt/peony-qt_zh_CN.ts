@@ -178,32 +178,37 @@
         <translation type="vanished">高级搜索</translation>
     </message>
     <message>
-        <location filename="../../src/control/operation-menu.cpp" line="63"/>
+        <location filename="../../src/control/operation-menu.cpp" line="64"/>
         <source>Keep Allow</source>
         <translation>置顶窗口</translation>
     </message>
     <message>
-        <location filename="../../src/control/operation-menu.cpp" line="69"/>
+        <location filename="../../src/control/operation-menu.cpp" line="70"/>
         <source>Show Hidden</source>
         <translation>显示隐藏文件</translation>
     </message>
     <message>
-        <location filename="../../src/control/operation-menu.cpp" line="76"/>
+        <location filename="../../src/control/operation-menu.cpp" line="77"/>
         <source>Forbid thumbnailing</source>
         <translation>禁用缩略图</translation>
     </message>
     <message>
-        <location filename="../../src/control/operation-menu.cpp" line="84"/>
+        <location filename="../../src/control/operation-menu.cpp" line="85"/>
         <source>Resident in Backend</source>
         <translation>常驻后台</translation>
     </message>
     <message>
-        <location filename="../../src/control/operation-menu.cpp" line="95"/>
+        <location filename="../../src/control/operation-menu.cpp" line="94"/>
+        <source>Parallel Operations</source>
+        <translation>允许操作并行</translation>
+    </message>
+    <message>
+        <location filename="../../src/control/operation-menu.cpp" line="102"/>
         <source>Help</source>
         <translation>帮助</translation>
     </message>
     <message>
-        <location filename="../../src/control/operation-menu.cpp" line="99"/>
+        <location filename="../../src/control/operation-menu.cpp" line="106"/>
         <source>About</source>
         <translation>关于</translation>
     </message>
@@ -211,7 +216,7 @@
 <context>
     <name>OperationMenuEditWidget</name>
     <message>
-        <location filename="../../src/control/operation-menu.cpp" line="128"/>
+        <location filename="../../src/control/operation-menu.cpp" line="135"/>
         <source>Edit</source>
         <translation>编辑</translation>
     </message>

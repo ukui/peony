@@ -178,32 +178,37 @@
         <translation type="vanished">Gelişmiş Arama</translation>
     </message>
     <message>
-        <location filename="../../src/control/operation-menu.cpp" line="63"/>
+        <location filename="../../src/control/operation-menu.cpp" line="64"/>
         <source>Keep Allow</source>
         <translation>İzin Ver</translation>
     </message>
     <message>
-        <location filename="../../src/control/operation-menu.cpp" line="69"/>
+        <location filename="../../src/control/operation-menu.cpp" line="70"/>
         <source>Show Hidden</source>
         <translation>Gizlileri Göster</translation>
     </message>
     <message>
-        <location filename="../../src/control/operation-menu.cpp" line="76"/>
+        <location filename="../../src/control/operation-menu.cpp" line="77"/>
         <source>Forbid thumbnailing</source>
         <translation>Küçük resimleri yasakla</translation>
     </message>
     <message>
-        <location filename="../../src/control/operation-menu.cpp" line="84"/>
+        <location filename="../../src/control/operation-menu.cpp" line="85"/>
         <source>Resident in Backend</source>
         <translation>Arka Uçta Yerleşik</translation>
     </message>
     <message>
-        <location filename="../../src/control/operation-menu.cpp" line="95"/>
+        <location filename="../../src/control/operation-menu.cpp" line="94"/>
+        <source>Parallel Operations</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/control/operation-menu.cpp" line="102"/>
         <source>Help</source>
         <translation>Yardım</translation>
     </message>
     <message>
-        <location filename="../../src/control/operation-menu.cpp" line="99"/>
+        <location filename="../../src/control/operation-menu.cpp" line="106"/>
         <source>About</source>
         <translation>Hakkında</translation>
     </message>
@@ -211,7 +216,7 @@
 <context>
     <name>OperationMenuEditWidget</name>
     <message>
-        <location filename="../../src/control/operation-menu.cpp" line="128"/>
+        <location filename="../../src/control/operation-menu.cpp" line="135"/>
         <source>Edit</source>
         <translation>Düzenle</translation>
     </message>
