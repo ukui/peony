@@ -139,6 +139,7 @@ void DirectoryViewFactoryManager2::setDefaultViewId(const QString &viewId)
 
     if (getFactoryNames().contains(viewId)) {
         m_default_view_id_cache = viewId;
+        saveDefaultViewOption();
     }
 }
 
