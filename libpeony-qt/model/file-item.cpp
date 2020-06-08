@@ -50,6 +50,9 @@ FileItem::FileItem(std::shared_ptr<Peony::FileInfo> info, FileItem *parentItem, 
     m_model = model;
 
     m_backend_enumerator = new FileEnumerator(this);
+
+    // avoid call any method when model is deleted.
+    setParent(m_model);
 }
 
 FileItem::~FileItem()
