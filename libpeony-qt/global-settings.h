@@ -35,6 +35,7 @@
 #define SORT_FOLDER_FIRST "folder-first"
 #define RESIDENT_IN_BACKEND "resident"
 #define LAST_DESKTOP_SORT_ORDER "last-desktop-sort-order"
+#define ALLOW_FILE_OP_PARALLEL "allow-file-op-parallel"
 
 //gsettings
 #define SIDEBAR_BG_OPACITY "sidebar-bg-opacity"

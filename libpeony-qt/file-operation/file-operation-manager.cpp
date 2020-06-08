@@ -51,11 +51,16 @@ static FileOperationManager *global_instance = nullptr;
 
 FileOperationManager::FileOperationManager(QObject *parent) : QObject(parent)
 {
+    m_allow_parallel = GlobalSettings::getInstance()->getValue(ALLOW_FILE_OP_PARALLEL).toBool();
+
     qRegisterMetaType<Peony::GErrorWrapperPtr>("Peony::GErrorWrapperPtr");
     qRegisterMetaType<Peony::GErrorWrapperPtr>("Peony::GErrorWrapperPtr&");
     m_thread_pool = new QThreadPool(this);
-    //Imitating queue execution.
-    m_thread_pool->setMaxThreadCount(1);
+
+    if (!m_allow_parallel) {
+        //Imitating queue execution.
+        m_thread_pool->setMaxThreadCount(1);
+    }
 }
 
 FileOperationManager::~FileOperationManager()
@@ -77,6 +82,22 @@ void FileOperationManager::close()
     deleteLater();
     global_instance = nullptr;
     Q_EMIT closed();
+}
+
+void FileOperationManager::setAllowParallel(bool allow)
+{
+    m_allow_parallel = allow;
+    if (allow) {
+        m_thread_pool->setMaxThreadCount(9999);
+    } else {
+        m_thread_pool->setMaxThreadCount(1);
+    }
+    GlobalSettings::getInstance()->setValue(ALLOW_FILE_OP_PARALLEL, allow);
+}
+
+bool FileOperationManager::isAllowParallel()
+{
+    return m_allow_parallel;
 }
 
 void FileOperationManager::startOperation(FileOperation *operation, bool addToHistory)
@@ -105,7 +126,7 @@ void FileOperationManager::startOperation(FileOperation *operation, bool addToHi
 
     auto operationInfo = operation->getOperationInfo();
 
-    bool allowParallel = false;
+    bool allowParallel = m_allow_parallel;
 
     auto opType = operationInfo->operationType();
     switch (opType) {
@@ -190,7 +211,11 @@ void FileOperationManager::startOperation(FileOperation *operation, bool addToHi
                                  tr("There have been one or more file"
                                     "operation(s) executing before. Your"
                                     "operation will wait for executing"
-                                    "until it/them done."));
+                                    "until it/them done. If you really "
+                                    "want to execute file operations "
+                                    "parallelly anyway, you can change "
+                                    "the default option \"Allow Parallel\" "
+                                    "in operation menu."));
         }
         operation->setParent(m_thread_pool);
         m_thread_pool->start(operation);

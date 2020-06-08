@@ -33,6 +33,7 @@
 #include "global-settings.h"
 #include "clipboard-utils.h"
 #include "file-operation-utils.h"
+#include "file-operation-manager.h"
 
 OperationMenu::OperationMenu(MainWindow *window, QWidget *parent) : QMenu(parent)
 {
@@ -89,6 +90,12 @@ OperationMenu::OperationMenu(MainWindow *window, QWidget *parent) : QMenu(parent
     m_resident_in_backend = residentInBackend;
     residentInBackend->setCheckable(true);
     residentInBackend->setChecked(Peony::GlobalSettings::getInstance()->getValue("resident").toBool());
+
+    auto allowFileOpParallel = addAction(tr("Parallel Operations"), this, [=](bool checked){
+        Peony::FileOperationManager::getInstance()->setAllowParallel(checked);
+    });
+    allowFileOpParallel->setCheckable(true);
+    allowFileOpParallel->setChecked(Peony::FileOperationManager::getInstance()->isAllowParallel());
 
     addSeparator();
 

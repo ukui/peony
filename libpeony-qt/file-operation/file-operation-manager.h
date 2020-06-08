@@ -68,6 +68,9 @@ public:
     static FileOperationManager *getInstance();
     void close();
 
+    void setAllowParallel(bool allow = true);
+    bool isAllowParallel();
+
 Q_SIGNALS:
     void closed();
 
@@ -130,6 +133,8 @@ private:
 
     QThreadPool *m_thread_pool;
     bool m_is_current_operation_errored = false;
+
+    bool m_allow_parallel = false;
 
     QVector<FileWatcher *> m_watchers;
 };
