@@ -214,6 +214,9 @@ update:
         zoomLevel = getView()->currentZoomLevel();
 
     setZoomLevelRequest(zoomLevel);
+    //qDebug() << "setZoomLevelRequest:" <<zoomLevel;
+    if (m_view)
+        m_view->setCurrentZoomLevel(zoomLevel);
 
     m_current_uri = uri;
 
