@@ -50,6 +50,8 @@ class PEONYCORESHARED_EXPORT ListView : public QTreeView, public DirectoryViewIf
 public:
     explicit ListView(QWidget *parent = nullptr);
 
+    void scrollTo(const QModelIndex &index, ScrollHint hint = EnsureVisible) override;
+
     const QString viewId() override {
         return tr("List View");
     }

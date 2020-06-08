@@ -71,6 +71,18 @@ ListView::ListView(QWidget *parent) : QTreeView(parent)
     m_editValid = false;
 }
 
+void ListView::scrollTo(const QModelIndex &index, QAbstractItemView::ScrollHint hint)
+{
+    // NOTE:
+    // scrollTo() is confilcted with updateGeometry(), where it will
+    // leave a space for view. So I override this method. However,
+    // the fast keyboard locating of default tree view will be disabled
+    // due to the function is overrided, too.
+
+    //QTreeView::scrollTo(index, hint);
+    //updateGeometries();
+}
+
 void ListView::bindModel(FileItemModel *sourceModel, FileItemProxyFilterSortModel *proxyModel)
 {
     if (!sourceModel || !proxyModel)
@@ -383,7 +395,7 @@ void ListView::invertSelections()
 void ListView::scrollToSelection(const QString &uri)
 {
     auto index = m_proxy_model->indexFromUri(uri);
-    scrollTo(index);
+    QTreeView::scrollTo(index);
 }
 
 void ListView::setCutFiles(const QStringList &uris)
