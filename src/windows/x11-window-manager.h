@@ -24,6 +24,7 @@
 #define X11WINDOWMANAGER_H
 
 #include <QObject>
+#include <QPoint>
 
 class X11WindowManager : public QObject
 {
@@ -40,6 +41,9 @@ private:
 
     bool m_is_draging = false;
     QWidget *m_current_widget = nullptr;
+
+    QPoint m_press_pos;
+    QPoint m_toplevel_offset;
 };
 
 #endif // X11WINDOWMANAGER_H

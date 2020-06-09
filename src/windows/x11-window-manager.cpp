@@ -36,6 +36,8 @@
 #include <QX11Info>
 #include <X11/Xlib.h>
 
+#include <KWindowSystem>
+
 static X11WindowManager *global_instance = nullptr;
 
 X11WindowManager *X11WindowManager::getInstance()
@@ -55,6 +57,7 @@ bool X11WindowManager::eventFilter(QObject *watched, QEvent *event)
 {
     switch (event->type()) {
     case QEvent::MouseButtonPress: {
+
         //Make tabbar blank area dragable and do not effect tablabel.
         if (qobject_cast<QTabBar *>(watched)) {
             QMouseEvent *e = static_cast<QMouseEvent *>(event);
@@ -66,8 +69,10 @@ bool X11WindowManager::eventFilter(QObject *watched, QEvent *event)
         if (QObject::eventFilter(watched, event))
             return true;
         if (e->button() == Qt::LeftButton) {
+            m_press_pos = QCursor::pos();
             m_is_draging = true;
             m_current_widget = static_cast<QWidget *>(watched);
+            m_toplevel_offset = m_current_widget->topLevelWidget()->mapFromGlobal(m_press_pos);
         }
 
         //qDebug()<<event->type();
@@ -76,42 +81,52 @@ bool X11WindowManager::eventFilter(QObject *watched, QEvent *event)
     }
     case QEvent::MouseMove: {
         if (m_is_draging) {
-            Display *display = QX11Info::display();
-            Atom netMoveResize = XInternAtom(display, "_NET_WM_MOVERESIZE", False);
-            XEvent xEvent;
-            const auto pos = QCursor::pos();
+            if (KWindowSystem::isPlatformX11()) {
+                Display *display = QX11Info::display();
+                Atom netMoveResize = XInternAtom(display, "_NET_WM_MOVERESIZE", False);
+                XEvent xEvent;
+                const auto pos = QCursor::pos();
 
-            memset(&xEvent, 0, sizeof(XEvent));
-            xEvent.xclient.type = ClientMessage;
-            xEvent.xclient.message_type = netMoveResize;
-            xEvent.xclient.display = display;
-            xEvent.xclient.window = m_current_widget->topLevelWidget()->winId();
-            xEvent.xclient.format = 32;
-            xEvent.xclient.data.l[0] = pos.x() * qApp->devicePixelRatio();
-            xEvent.xclient.data.l[1] = pos.y() * qApp->devicePixelRatio();
-            xEvent.xclient.data.l[2] = 8;
-            xEvent.xclient.data.l[3] = Button1;
-            xEvent.xclient.data.l[4] = 0;
+                memset(&xEvent, 0, sizeof(XEvent));
+                xEvent.xclient.type = ClientMessage;
+                xEvent.xclient.message_type = netMoveResize;
+                xEvent.xclient.display = display;
+                xEvent.xclient.window = m_current_widget->topLevelWidget()->winId();
+                xEvent.xclient.format = 32;
+                xEvent.xclient.data.l[0] = pos.x() * qApp->devicePixelRatio();
+                xEvent.xclient.data.l[1] = pos.y() * qApp->devicePixelRatio();
+                xEvent.xclient.data.l[2] = 8;
+                xEvent.xclient.data.l[3] = Button1;
+                xEvent.xclient.data.l[4] = 0;
 
-            XUngrabPointer(display, CurrentTime);
-            XSendEvent(display, QX11Info::appRootWindow(QX11Info::appScreen()),
-                       False, SubstructureNotifyMask | SubstructureRedirectMask,
-                       &xEvent);
-            XFlush(display);
+                XUngrabPointer(display, CurrentTime);
+                XSendEvent(display, QX11Info::appRootWindow(QX11Info::appScreen()),
+                           False, SubstructureNotifyMask | SubstructureRedirectMask,
+                           &xEvent);
+                XFlush(display);
 
-            m_is_draging = false;
+                m_is_draging = false;
 
-            //NOTE: use x11 move will ungrab the window focus
-            //hide and show will restore the focus and it seems
-            //there is no bad effect for peony main window.
-            if (!m_current_widget->isTopLevel()) {
-                m_current_widget->hide();
-                m_current_widget->show();
+                //NOTE: use x11 move will ungrab the window focus
+                //hide and show will restore the focus and it seems
+                //there is no bad effect for peony main window.
+                if (!m_current_widget->isTopLevel()) {
+                    m_current_widget->hide();
+                    m_current_widget->show();
+                }
+            } else {
+                //auto me = static_cast<QMouseEvent *>(event);
+                auto widget = qobject_cast<QWidget *>(watched);
+                auto topLevel = widget->topLevelWidget();
+                auto globalPos = QCursor::pos();
+                //auto offset = globalPos - m_press_pos;
+                topLevel->move(globalPos - m_toplevel_offset);
             }
         }
         break;
     }
     case QEvent::MouseButtonRelease: {
+        m_press_pos = QPoint();
         m_is_draging = false;
         m_current_widget = nullptr;
         break;
