@@ -54,6 +54,8 @@ static QString terminal_cmd = nullptr;
 
 HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
 {
+    setAttribute(Qt::WA_AcceptTouchEvents);
+
     setMouseTracking(true);
     setStyle(HeaderBarStyle::getStyle());
 

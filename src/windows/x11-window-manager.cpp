@@ -55,7 +55,17 @@ X11WindowManager::X11WindowManager(QObject *parent) : QObject(parent)
 
 bool X11WindowManager::eventFilter(QObject *watched, QEvent *event)
 {
+    //qDebug()<<event->type();
+
     switch (event->type()) {
+    case QEvent::TouchBegin:
+    case QEvent::TouchUpdate:
+    case QEvent::TouchCancel:
+    case QEvent::TouchEnd: {
+        qDebug()<<event->type();
+        break;
+    }
+
     case QEvent::MouseButtonPress: {
 
         //Make tabbar blank area dragable and do not effect tablabel.
@@ -66,6 +76,7 @@ bool X11WindowManager::eventFilter(QObject *watched, QEvent *event)
                 return false;
         }
         QMouseEvent *e = static_cast<QMouseEvent *>(event);
+
         if (QObject::eventFilter(watched, event))
             return true;
         if (e->button() == Qt::LeftButton) {
@@ -80,8 +91,14 @@ bool X11WindowManager::eventFilter(QObject *watched, QEvent *event)
         break;
     }
     case QEvent::MouseMove: {
+        QMouseEvent *e = static_cast<QMouseEvent *>(event);
+
+        qDebug()<<e->type()<<e->pos();
+
+        bool isTouchMove = e->source() == Qt::MouseEventSynthesizedByQt;
+
         if (m_is_draging) {
-            if (KWindowSystem::isPlatformX11()) {
+            if (KWindowSystem::isPlatformX11() && !isTouchMove) {
                 Display *display = QX11Info::display();
                 Atom netMoveResize = XInternAtom(display, "_NET_WM_MOVERESIZE", False);
                 XEvent xEvent;
@@ -114,6 +131,12 @@ bool X11WindowManager::eventFilter(QObject *watched, QEvent *event)
                     m_current_widget->hide();
                     m_current_widget->show();
                 }
+
+                //balance mouse release event
+                QMouseEvent me(QMouseEvent::MouseButtonRelease, e->pos(), e->windowPos(), e->screenPos(), e->button(), e->buttons(), e->modifiers(), Qt::MouseEventSynthesizedByApplication);
+                qApp->sendEvent(watched, &me);
+
+                return true;
             } else {
                 //auto me = static_cast<QMouseEvent *>(event);
                 auto widget = qobject_cast<QWidget *>(watched);
@@ -126,6 +149,11 @@ bool X11WindowManager::eventFilter(QObject *watched, QEvent *event)
         break;
     }
     case QEvent::MouseButtonRelease: {
+        auto me = static_cast<QMouseEvent *>(event);
+
+        if (me->source() == Qt::MouseEventSynthesizedByApplication)
+            break;
+
         m_press_pos = QPoint();
         m_is_draging = false;
         m_current_widget = nullptr;
