@@ -490,6 +490,24 @@ const QList<QAction *> DirectoryViewMenu::constructFileOpActions()
         }
     }
 
+    //select all and reverse select
+    if (m_selections.isEmpty())
+    {
+        l<<addAction(tr("Select &All"));
+        connect(l.last(), &QAction::triggered, [=]() {
+            //qDebug() << "select all";
+            m_view->invertSelections();
+        });
+    }
+    else
+    {
+        l<<addAction(tr("Reverse Select"));
+        connect(l.last(), &QAction::triggered, [=]() {
+            //qDebug() << "Reverse select";
+            m_view->invertSelections();
+        });
+    }
+
     return l;
 }
 

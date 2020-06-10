@@ -107,6 +107,12 @@ const QList<QAction *> DesktopMenu::constructOpenOpActions()
         connect(l.last(), &QAction::triggered, [=]() {
             this->openWindow(m_directory);
         });
+
+        l<<addAction(tr("Select &All"));
+        connect(l.last(), &QAction::triggered, [=]() {
+            //qDebug() << "select all";
+            m_view->invertSelections();
+        });
     } else {
         if (m_selections.count() == 1) {
             auto info = FileInfo::fromUri(m_selections.first());
@@ -199,6 +205,12 @@ const QList<QAction *> DesktopMenu::constructOpenOpActions()
                 }
             });
         }
+
+        l<<addAction(tr("Reverse Select"));
+        connect(l.last(), &QAction::triggered, [=]() {
+            //qDebug() << "Reverse select";
+            m_view->invertSelections();
+        });
     }
 
     return l;
