@@ -783,7 +783,7 @@ void TabWidget::addPage(const QString &uri, bool jumpTo)
 
 void TabWidget::goToUri(const QString &uri, bool addHistory, bool forceUpdate)
 {
-    //qDebug() << "goToUri:" <<uri;
+    qDebug() << "goToUri:" <<uri;
     if (! uri.startsWith("search://"))
         m_last_non_search_path = uri;
     currentPage()->goToUri(uri, addHistory, forceUpdate);
@@ -793,6 +793,7 @@ void TabWidget::goToUri(const QString &uri, bool addHistory, bool forceUpdate)
 
 void TabWidget::updateTabPageTitle()
 {
+    qDebug() << "updateTabPageTitle:" <<getCurrentUri();
     m_tab_bar->updateLocation(m_tab_bar->currentIndex(), getCurrentUri());
     updateTrashBarVisible(getCurrentUri());
 }

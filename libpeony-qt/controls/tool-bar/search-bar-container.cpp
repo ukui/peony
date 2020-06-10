@@ -65,7 +65,9 @@ SearchBarContainer::SearchBarContainer(QWidget *parent): QWidget(parent)
     m_list_view = new QListView(m_search_box);
     m_list_view->setModel(m_model);
     completer->setPopup(m_list_view);
-    completer->setCompletionMode(QCompleter::UnfilteredPopupCompletion);
+    //change QCompleter Mode form UnfilteredPopupCompletion to PopupCompletion
+    //to fix can not input chinese continuous issue
+    completer->setCompletionMode(QCompleter::PopupCompletion);
     m_search_box->setCompleter(completer);
 
     connect(m_search_box, &QLineEdit::returnPressed, [=]()

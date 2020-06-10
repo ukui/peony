@@ -62,10 +62,11 @@ const QString SearchVFSUriParser::getSearchUriNameRegexp(const QString &searchUr
     auto string = searchUri;
     string.remove("search:///");
     auto list = string.split("&");
+    qDebug() << "list length:" <<list.length();
     QString ret = "";
     for (auto arg : list) {
         if (arg.startsWith("name_regexp=")) {
-            qDebug()<<arg;
+            qDebug()<<"name_regexp: "<<arg;
             auto tmp = arg.remove("name_regexp=");
             if (ret == "")
                 ret = tmp;
@@ -75,7 +76,7 @@ const QString SearchVFSUriParser::getSearchUriNameRegexp(const QString &searchUr
 
         if (arg.startsWith("extend_regexp"))
         {
-            qDebug()<<arg;
+            qDebug()<<"extend_regexp: "<<arg;
             auto tmp = arg.remove("extend_regexp=");
             if (ret == "")
                 ret = tmp;
