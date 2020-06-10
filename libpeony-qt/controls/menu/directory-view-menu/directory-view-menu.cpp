@@ -39,6 +39,7 @@
 #include "file-operation-manager.h" //FileOpInfo
 
 #include "file-utils.h"
+#include "bookmark-manager.h"
 
 #include "volume-manager.h"
 
@@ -182,6 +183,16 @@ const QList<QAction *> DirectoryViewMenu::constructOpenOpActions()
                 displayName = fontMetrics().elidedText(displayName, Qt::ElideRight, ELIDE_TEXT_LENGTH * charWidth);
             }
             if (info->isDir()) {
+                //add to bookmark option
+                l<<addAction(QIcon::fromTheme("bookmark-add-symbolic"), tr("Add to bookmark"));
+                connect(l.last(), &QAction::triggered, [=]() {
+                     //qDebug() <<"add to bookmark:" <<info->uri();
+                     auto bookmark = BookMarkManager::getInstance();
+                     if (bookmark->isLoaded()) {
+                         bookmark->addBookMark(info->uri());
+                     }
+                });
+
                 l<<addAction(QIcon::fromTheme("document-open-symbolic"), tr("&Open \"%1\"").arg(displayName));
                 connect(l.last(), &QAction::triggered, [=]() {
                     if (!m_top_window)
