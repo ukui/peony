@@ -129,6 +129,16 @@
         <translation>Düzenleme Tarihi</translation>
     </message>
     <message>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="408"/>
+        <source>&amp;Delete to trash</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="413"/>
+        <source>Delete forever</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Sort Order...</source>
         <translation type="vanished">Sıralama Düzeni...</translation>
     </message>
@@ -179,27 +189,26 @@
         <translation>Kes</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="408"/>
         <source>&amp;Delete</source>
-        <translation>Sil</translation>
+        <translation type="vanished">Sil</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="415"/>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="420"/>
         <source>&amp;Rename</source>
         <translation>Yeniden Adlandır</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="422"/>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="427"/>
         <source>&amp;Paste</source>
         <translation>Yapıştır</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="428"/>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="433"/>
         <source>&amp;Refresh</source>
         <translation>Yenile</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="442"/>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="447"/>
         <source>&amp;Properties</source>
         <translation>Özellikler</translation>
     </message>

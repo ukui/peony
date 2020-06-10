@@ -405,9 +405,14 @@ const QList<QAction *> DesktopMenu::constructFileOpActions()
             });
 
             if (!m_selections.contains("trash:///")) {
-                l<<addAction(QIcon::fromTheme("edit-delete-symbolic"), tr("&Delete"));
+                l<<addAction(QIcon::fromTheme("edit-clear-symbolic"), tr("&Delete to trash"));
                 connect(l.last(), &QAction::triggered, [=]() {
                     FileOperationUtils::trash(m_selections, true);
+                });
+                //add delete forever option
+                l<<addAction(QIcon::fromTheme("edit-delete-symbolic"), tr("Delete forever"));
+                connect(l.last(), &QAction::triggered, [=]() {
+                    FileOperationUtils::executeRemoveActionWithDialog(m_selections);
                 });
             }
 

@@ -129,6 +129,16 @@
         <translation>修改日期</translation>
     </message>
     <message>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="408"/>
+        <source>&amp;Delete to trash</source>
+        <translation>删除到回收站(&amp;D)</translation>
+    </message>
+    <message>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="413"/>
+        <source>Delete forever</source>
+        <translation>永久删除</translation>
+    </message>
+    <message>
         <source>Sort Order...</source>
         <translation type="vanished">排列顺序...</translation>
     </message>
@@ -179,27 +189,26 @@
         <translation>剪切(&amp;T)</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="408"/>
         <source>&amp;Delete</source>
-        <translation>删除(&amp;D)</translation>
+        <translation type="vanished">删除(&amp;D)</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="415"/>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="420"/>
         <source>&amp;Rename</source>
         <translation>重命名(&amp;R)</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="422"/>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="427"/>
         <source>&amp;Paste</source>
         <translation>粘贴(&amp;P)</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="428"/>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="433"/>
         <source>&amp;Refresh</source>
         <translation>刷新(&amp;R)</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="442"/>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="447"/>
         <source>&amp;Properties</source>
         <translation>属性(&amp;P)</translation>
     </message>
