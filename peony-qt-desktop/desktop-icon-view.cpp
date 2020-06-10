@@ -646,7 +646,10 @@ void DesktopIconView::setSelections(const QStringList &uris)
 
 void DesktopIconView::invertSelections()
 {
-
+    QItemSelectionModel *selectionModel = this->selectionModel();
+    const QItemSelection currentSelection = selectionModel->selection();
+    this->selectAll();
+    selectionModel->select(currentSelection, QItemSelectionModel::Deselect);
 }
 
 void DesktopIconView::scrollToSelection(const QString &uri)
