@@ -28,6 +28,7 @@
 
 #include <QLabel>
 #include <QPainter>
+#include <QPainterPath>
 #include <QApplication>
 #include <QStyle>
 
