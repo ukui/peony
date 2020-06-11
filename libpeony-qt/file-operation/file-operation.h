@@ -156,7 +156,7 @@ Q_SIGNALS:
      * The return value is needed by the instance for the error handling.
      * </br>
      * \param err, the shared_ptr wrapper of GError.
-     * \param isCritical, the error is critical and operation should be interupted now.
+     * \param isCritical, the error is critical and operation should be interrupted now.
      * \return \retval response type for error handling.
      * \note Qt's signal/slot provide a blocking flag to ensure get return value of signal.
      * If you want to get response value rightly, you must connect this signal with
