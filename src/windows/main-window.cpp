@@ -130,8 +130,11 @@ MainWindow::MainWindow(const QString &uri, QWidget *parent) : QMainWindow(parent
 QSize MainWindow::sizeHint() const
 {
     auto screenSize = QApplication::primaryScreen()->size();
+    auto width = screenSize.width()/2;
+    int height = width*0.618;
+    //return screenSize*2/3;
     //qreal dpr = qApp->devicePixelRatio();
-    return QSize((screenSize*2/3));
+    return QSize(qMin(width, screenSize.width()), qMin(height, screenSize.height()));
 }
 
 Peony::FMWindowIface *MainWindow::create(const QString &uri)
