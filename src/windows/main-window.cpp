@@ -403,6 +403,10 @@ void MainWindow::setShortCuts()
 void MainWindow::updateTabPageTitle()
 {
     m_tab->updateTabPageTitle();
+    auto show = Peony::FileUtils::getFileDisplayName(getCurrentUri());
+    QString title = show + "-" + tr("File Manager");
+    //qDebug() << "updateTabPageTitle:" <<title;
+    setWindowTitle(title);
 }
 
 void MainWindow::createFolderOperation()
