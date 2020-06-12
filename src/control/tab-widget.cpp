@@ -985,6 +985,7 @@ void TabWidget::bindContainerSignal(Peony::DirectoryViewContainer *container)
     connect(container, &Peony::DirectoryViewContainer::updateStatusBarSliderStateRequest, this, [=]() {
         bool enable = currentPage()->getView()->supportZoom();
         m_status_bar->m_slider->setEnabled(enable);
+        m_status_bar->m_slider->setVisible(enable);
     });
 }
 
