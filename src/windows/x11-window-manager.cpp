@@ -98,7 +98,11 @@ bool X11WindowManager::eventFilter(QObject *watched, QEvent *event)
         bool isTouchMove = e->source() == Qt::MouseEventSynthesizedByQt;
 
         if (m_is_draging) {
+#if QT_VERSION >= QT_VERSION_CHECK(5, 12, 0)
             if (KWindowSystem::isPlatformX11() && !isTouchMove) {
+#else
+            if(! isTouchMove) {
+#endif
                 Display *display = QX11Info::display();
                 Atom netMoveResize = XInternAtom(display, "_NET_WM_MOVERESIZE", False);
                 XEvent xEvent;
