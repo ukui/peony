@@ -198,7 +198,7 @@ void FileItem::findChildrenAsync()
                         //whatever info was updated, we need decrease the async count.
                         m_async_count--;
                         if (m_async_count == 0) {
-                            m_model->insertRows(0, m_children->count() - 1, this->firstColumnIndex());
+                            m_model->insertRows(0, m_children->count(), this->firstColumnIndex());
                             Q_EMIT this->m_model->findChildrenFinished();
                             Q_EMIT m_model->updated();
                             for (auto info : infos) {
