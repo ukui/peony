@@ -125,7 +125,7 @@ void LocationBar::setRootUri(const QString &uri)
     if (m_current_uri.startsWith("search://")) {
         //QString nameRegexp = SearchVFSUriParser::getSearchUriNameRegexp(m_current_uri);
         //QString targetDirectory = SearchVFSUriParser::getSearchUriTargetDirectory(m_current_uri);
-        addButton(m_current_uri, true, false);
+        addButton(m_current_uri, false, false);
         //addAction(QIcon::fromTheme("edit-find-symbolic"), tr("Search \"%1\" in \"%2\"").arg(nameRegexp).arg(targetDirectory));
         return;
     }
@@ -173,6 +173,7 @@ void LocationBar::addButton(const QString &uri, bool setIcon, bool setMenu)
     button->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
     button->setPopupMode(QToolButton::MenuButtonPopup);
 
+    m_buttons.insert(uri, button);
     if (m_current_uri.startsWith("search://")) {
         QString nameRegexp = SearchVFSUriParser::getSearchUriNameRegexp(m_current_uri);
         QString targetDirectory = SearchVFSUriParser::getSearchUriTargetDirectory(m_current_uri);
@@ -184,8 +185,6 @@ void LocationBar::addButton(const QString &uri, bool setIcon, bool setMenu)
     }
 
     QUrl url = uri;
-
-    m_buttons.insert(uri, button);
 
     auto parent = FileUtils::getParentUri(uri);
     if (setIcon) {
