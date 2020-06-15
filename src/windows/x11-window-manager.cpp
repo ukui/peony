@@ -36,8 +36,6 @@
 #include <QX11Info>
 #include <X11/Xlib.h>
 
-#include <KWindowSystem>
-
 static X11WindowManager *global_instance = nullptr;
 
 X11WindowManager *X11WindowManager::getInstance()
@@ -98,11 +96,7 @@ bool X11WindowManager::eventFilter(QObject *watched, QEvent *event)
         bool isTouchMove = e->source() == Qt::MouseEventSynthesizedByQt;
 
         if (m_is_draging) {
-#if QT_VERSION >= QT_VERSION_CHECK(5, 12, 0)
-            if (KWindowSystem::isPlatformX11() && !isTouchMove) {
-#else
-            if(! isTouchMove) {
-#endif
+            if (QX11Info::isPlatformX11() && !isTouchMove) {
                 Display *display = QX11Info::display();
                 Atom netMoveResize = XInternAtom(display, "_NET_WM_MOVERESIZE", False);
                 XEvent xEvent;
