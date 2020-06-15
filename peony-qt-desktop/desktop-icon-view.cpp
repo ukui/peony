@@ -237,6 +237,7 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
                 m_new_files_to_be_selected<<uri;
             }
         }
+        refresh();
     });
 
     connect(m_proxy_model, &QSortFilterProxyModel::layoutChanged, this, [=]() {
