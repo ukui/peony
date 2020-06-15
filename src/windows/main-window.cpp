@@ -731,8 +731,10 @@ void MainWindow::mousePressEvent(QMouseEvent *e)
 {
     //qDebug()<<"mouse pressed"<<e;
     QMainWindow::mousePressEvent(e);
-    if (e->button() == Qt::LeftButton && !e->isAccepted())
+    if (e->button() == Qt::LeftButton && !e->isAccepted()) {
         m_is_draging = true;
+        m_offset = mapFromGlobal(QCursor::pos());
+    }
 }
 
 void MainWindow::mouseMoveEvent(QMouseEvent *e)
@@ -744,35 +746,40 @@ void MainWindow::mouseMoveEvent(QMouseEvent *e)
     QMainWindow::mouseMoveEvent(e);
     if (!m_is_draging)
         return;
-    Display *display = QX11Info::display();
-    Atom netMoveResize = XInternAtom(display, "_NET_WM_MOVERESIZE", False);
-    XEvent xEvent;
-    const auto pos = QCursor::pos();
 
-    memset(&xEvent, 0, sizeof(XEvent));
-    xEvent.xclient.type = ClientMessage;
-    xEvent.xclient.message_type = netMoveResize;
-    xEvent.xclient.display = display;
-    xEvent.xclient.window = this->winId();
-    xEvent.xclient.format = 32;
-    xEvent.xclient.data.l[0] = pos.x();
-    xEvent.xclient.data.l[1] = pos.y();
-    xEvent.xclient.data.l[2] = 8;
-    xEvent.xclient.data.l[3] = Button1;
-    xEvent.xclient.data.l[4] = 0;
+    if (QX11Info::isPlatformX11() && false) {
+        Display *display = QX11Info::display();
+        Atom netMoveResize = XInternAtom(display, "_NET_WM_MOVERESIZE", False);
+        XEvent xEvent;
+        const auto pos = QCursor::pos();
 
-    XUngrabPointer(display, CurrentTime);
-    XSendEvent(display, QX11Info::appRootWindow(QX11Info::appScreen()),
-               False, SubstructureNotifyMask | SubstructureRedirectMask,
-               &xEvent);
-    XFlush(display);
+        memset(&xEvent, 0, sizeof(XEvent));
+        xEvent.xclient.type = ClientMessage;
+        xEvent.xclient.message_type = netMoveResize;
+        xEvent.xclient.display = display;
+        xEvent.xclient.window = this->winId();
+        xEvent.xclient.format = 32;
+        xEvent.xclient.data.l[0] = pos.x();
+        xEvent.xclient.data.l[1] = pos.y();
+        xEvent.xclient.data.l[2] = 8;
+        xEvent.xclient.data.l[3] = Button1;
+        xEvent.xclient.data.l[4] = 0;
 
-    if (!this->mouseGrabber()) {
-        this->grabMouse();
-        this->releaseMouse();
+        XUngrabPointer(display, CurrentTime);
+        XSendEvent(display, QX11Info::appRootWindow(QX11Info::appScreen()),
+                   False, SubstructureNotifyMask | SubstructureRedirectMask,
+                   &xEvent);
+        XFlush(display);
+
+        if (!this->mouseGrabber()) {
+            this->grabMouse();
+            this->releaseMouse();
+        }
+
+        m_is_draging = false;
+    } else {
+        this->move(QCursor::pos() - m_offset);
     }
-
-    m_is_draging = false;
 }
 
 void MainWindow::mouseReleaseEvent(QMouseEvent *e)

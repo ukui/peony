@@ -172,6 +172,8 @@ private:
     bool m_show_hidden_file;
     bool m_use_default_name_sort_order;
     bool m_folder_first;
+
+    QPoint m_offset;
 };
 
 #endif // MAINWINDOW_H
