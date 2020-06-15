@@ -96,7 +96,7 @@ bool X11WindowManager::eventFilter(QObject *watched, QEvent *event)
         bool isTouchMove = e->source() == Qt::MouseEventSynthesizedByQt;
 
         if (m_is_draging) {
-            if (QX11Info::isPlatformX11() && !isTouchMove) {
+            if (QX11Info::isPlatformX11()) {
                 Display *display = QX11Info::display();
                 Atom netMoveResize = XInternAtom(display, "_NET_WM_MOVERESIZE", False);
                 XEvent xEvent;
@@ -125,9 +125,9 @@ bool X11WindowManager::eventFilter(QObject *watched, QEvent *event)
                 //NOTE: use x11 move will ungrab the window focus
                 //hide and show will restore the focus and it seems
                 //there is no bad effect for peony main window.
-                if (!m_current_widget->isTopLevel()) {
-                    m_current_widget->hide();
-                    m_current_widget->show();
+                if (!m_current_widget->mouseGrabber()) {
+                    m_current_widget->grabMouse();
+                    m_current_widget->releaseMouse();
                 }
 
                 //balance mouse release event

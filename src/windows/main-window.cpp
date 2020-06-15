@@ -767,6 +767,11 @@ void MainWindow::mouseMoveEvent(QMouseEvent *e)
                &xEvent);
     XFlush(display);
 
+    if (!this->mouseGrabber()) {
+        this->grabMouse();
+        this->releaseMouse();
+    }
+
     m_is_draging = false;
 }
 
