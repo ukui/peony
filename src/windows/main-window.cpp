@@ -86,6 +86,8 @@
 
 #include <X11/Xlib.h>
 
+static MainWindow *last_resize_window = nullptr;
+
 MainWindow::MainWindow(const QString &uri, QWidget *parent) : QMainWindow(parent)
 {
     installEventFilter(this);
@@ -129,17 +131,35 @@ MainWindow::MainWindow(const QString &uri, QWidget *parent) : QMainWindow(parent
     initUI(uri);
 }
 
+MainWindow::~MainWindow()
+{
+    if (last_resize_window == this) {
+        auto settings = Peony::GlobalSettings::getInstance();
+        settings->setValue(DEFAULT_WINDOW_SIZE, this->size());
+        last_resize_window = nullptr;
+    }
+}
+
 bool MainWindow::eventFilter(QObject *watched, QEvent *event)
 {
     if (event->type() == QEvent::MouseMove) {
         auto me = static_cast<QMouseEvent *>(event);
         auto widget = this->childAt(me->pos());
         if (!widget) {
-            // set default sidebar width
+            // set default sidebar width flag
+            m_should_save_side_bar_width = true;
+        }
+    }
+
+    if (event->type() == QEvent::MouseButtonRelease) {
+        if (m_should_save_side_bar_width) {
+            // real set default side bar width
             auto settings = Peony::GlobalSettings::getInstance();
             settings->setValue(DEFAULT_SIDEBAR_WIDTH, m_side_bar->width());
         }
+        m_should_save_side_bar_width = false;
     }
+
     return false;
 }
 
@@ -683,8 +703,8 @@ void MainWindow::resizeEvent(QResizeEvent *e)
     update();
 
     if (m_resize_handler->isButtonDown()) {
-        auto settings = Peony::GlobalSettings::getInstance();
-        settings->setValue(DEFAULT_WINDOW_SIZE, this->size());
+        // set save window size flag
+        last_resize_window = this;
     }
 }
 
@@ -944,6 +964,16 @@ void MainWindow::initUI(const QString &uri)
     } else {
         m_tab->addPage(uri, true);
     }
+    QTimer::singleShot(1, this, [=]() {
+        // FIXME:
+        // it is strange that if we set size hint by qsettings,
+        // the tab bar will "shrink" until we update geometry
+        // after a while (may resize window or move splitter).
+        // we should find out the reason and remove this dirty
+        // code.
+        m_tab->updateTabBarGeometry();
+        m_tab->updateStatusBarGeometry();
+    });
 
     connect(views->tabBar(), &QTabBar::tabBarDoubleClicked, this, [=](int index) {
         if (index == -1)
