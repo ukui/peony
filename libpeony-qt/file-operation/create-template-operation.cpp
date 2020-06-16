@@ -26,6 +26,8 @@
 #include "file-operation-utils.h"
 #include <gio/gio.h>
 
+#include <utime.h>
+
 #include <QMessageBox>
 
 using namespace Peony;
@@ -163,6 +165,16 @@ retry_create_template:
                 Q_EMIT errored(m_src_uri, m_dest_dir_uri, GErrorWrapper::wrapFrom(err), true);
             }
         }
+        // change file's modify time and access time after copy templete file;
+        time_t now_time = time(NULL);
+        struct utimbuf tm = {now_time, now_time};
+
+        if (m_target_uri.startsWith("file://")) {
+            utime (m_target_uri.toStdString().c_str() + 6, &tm);
+        } else if (m_target_uri.startsWith("/")) {
+            utime (m_target_uri.toStdString().c_str(), &tm);
+        }
+
         break;
     }
     }
