@@ -130,7 +130,8 @@ MainWindow::MainWindow(const QString &uri, QWidget *parent) : QMainWindow(parent
 QSize MainWindow::sizeHint() const
 {
     auto screenSize = QApplication::primaryScreen()->size();
-    auto width = screenSize.width()/2;
+    int width = 850;
+    width = qMin(width, screenSize.width());
     int height = width*0.618;
     //return screenSize*2/3;
     //qreal dpr = qApp->devicePixelRatio();
