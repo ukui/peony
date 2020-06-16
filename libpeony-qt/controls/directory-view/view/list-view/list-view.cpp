@@ -27,6 +27,7 @@
 #include "list-view-delegate.h"
 
 #include "file-item.h"
+#include "list-view-style.h"
 
 #include <QHeaderView>
 
@@ -45,6 +46,8 @@ using namespace Peony::DirectoryView;
 
 ListView::ListView(QWidget *parent) : QTreeView(parent)
 {
+    setStyle(Peony::DirectoryView::ListViewStyle::getStyle());
+
     setAlternatingRowColors(true);
     setAutoFillBackground(true);
     setBackgroundRole(QPalette::Base);

@@ -21,6 +21,7 @@
  */
 
 #include "x11-window-manager.h"
+#include "navigation-tab-bar.h"
 
 #include <QWidget>
 #include <QMouseEvent>
@@ -128,6 +129,11 @@ bool X11WindowManager::eventFilter(QObject *watched, QEvent *event)
                 if (!m_current_widget->mouseGrabber()) {
                     m_current_widget->grabMouse();
                     m_current_widget->releaseMouse();
+                }
+
+                if (qobject_cast<NavigationTabBar *>(m_current_widget)) {
+                    m_current_widget->hide();
+                    m_current_widget->show();
                 }
 
                 //balance mouse release event

@@ -268,7 +268,7 @@ void IconView::paintEvent(QPaintEvent *e)
     p.fillRect(this->geometry(), this->palette().base());
     if (m_repaint_timer.isActive()) {
         m_repaint_timer.stop();
-        QTimer::singleShot(100, [this]() {
+        QTimer::singleShot(100, this, [this]() {
             this->repaint();
         });
     }
