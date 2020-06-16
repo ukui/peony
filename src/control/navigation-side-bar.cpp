@@ -28,6 +28,8 @@
 #include "side-bar-menu.h"
 #include "side-bar-abstract-item.h"
 
+#include "global-settings.h"
+
 #include <QHeaderView>
 #include <QPushButton>
 
@@ -171,10 +173,7 @@ void NavigationSideBar::resizeEvent(QResizeEvent *e)
 
 QSize NavigationSideBar::sizeHint() const
 {
-    auto w = this->topLevelWidget()->width();
-    auto size = QTreeView::sizeHint();
-    size.setWidth(w/5);
-    return size;
+    return QTreeView::sizeHint();
 }
 
 void NavigationSideBar::keyPressEvent(QKeyEvent *event)
@@ -243,7 +242,7 @@ void NavigationSideBarContainer::addSideBar(NavigationSideBar *sidebar)
 QSize NavigationSideBarContainer::sizeHint() const
 {
     auto size = QWidget::sizeHint();
-    auto width = this->topLevelWidget()->width();
-    size.setWidth(width/5);
+    auto width = Peony::GlobalSettings::getInstance()->getValue(DEFAULT_SIDEBAR_WIDTH).toInt();
+    size.setWidth(width);
     return size;
 }

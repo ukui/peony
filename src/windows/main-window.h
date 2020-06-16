@@ -46,6 +46,8 @@ class MainWindow : public QMainWindow, public Peony::FMWindowIface
 public:
     explicit MainWindow(const QString &uri = nullptr, QWidget *parent = nullptr);
 
+    bool eventFilter(QObject *watched, QEvent *event);
+
     QSize sizeHint() const;
 
     Peony::FMWindowIface *create(const QString &uri);

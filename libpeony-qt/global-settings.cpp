@@ -60,6 +60,11 @@ GlobalSettings::GlobalSettings(QObject *parent) : QObject(parent)
         m_cache.remove(SIDEBAR_BG_OPACITY);
         m_cache.insert(SIDEBAR_BG_OPACITY, m_gsettings->get("peonySideBarTransparency").toString());
     }
+
+    if (m_cache.value(DEFAULT_WINDOW_SIZE).isNull()) {
+        setValue(DEFAULT_WINDOW_SIZE, QSize(850, 850*0.618));
+        setValue(DEFAULT_SIDEBAR_WIDTH, 180);
+    }
 }
 
 GlobalSettings::~GlobalSettings()

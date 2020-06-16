@@ -88,6 +88,8 @@
 
 MainWindow::MainWindow(const QString &uri, QWidget *parent) : QMainWindow(parent)
 {
+    installEventFilter(this);
+
     setWindowIcon(QIcon::fromTheme("system-file-manager"));
     setWindowTitle(tr("File Manager"));
 
@@ -127,15 +129,29 @@ MainWindow::MainWindow(const QString &uri, QWidget *parent) : QMainWindow(parent
     initUI(uri);
 }
 
+bool MainWindow::eventFilter(QObject *watched, QEvent *event)
+{
+    if (event->type() == QEvent::MouseMove) {
+        auto me = static_cast<QMouseEvent *>(event);
+        auto widget = this->childAt(me->pos());
+        if (!widget) {
+            // set default sidebar width
+            auto settings = Peony::GlobalSettings::getInstance();
+            settings->setValue(DEFAULT_SIDEBAR_WIDTH, m_side_bar->width());
+        }
+    }
+    return false;
+}
+
 QSize MainWindow::sizeHint() const
 {
     auto screenSize = QApplication::primaryScreen()->size();
-    int width = 850;
-    width = qMin(width, screenSize.width());
-    int height = width*0.618;
+    QSize defaultSize = (Peony::GlobalSettings::getInstance()->getValue(DEFAULT_WINDOW_SIZE)).toSize();
+    int width = qMin(defaultSize.width(), screenSize.width());
+    int height = qMin(defaultSize.height(), screenSize.height());
     //return screenSize*2/3;
     //qreal dpr = qApp->devicePixelRatio();
-    return QSize(qMin(width, screenSize.width()), qMin(height, screenSize.height()));
+    return QSize(width, height);
 }
 
 Peony::FMWindowIface *MainWindow::create(const QString &uri)
@@ -665,6 +681,11 @@ void MainWindow::resizeEvent(QResizeEvent *e)
     m_header_bar->updateMaximizeState();
     validBorder();
     update();
+
+    if (m_resize_handler->isButtonDown()) {
+        auto settings = Peony::GlobalSettings::getInstance();
+        settings->setValue(DEFAULT_WINDOW_SIZE, this->size());
+    }
 }
 
 /*!
