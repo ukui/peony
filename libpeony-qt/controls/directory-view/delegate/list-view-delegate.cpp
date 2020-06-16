@@ -115,6 +115,9 @@ void ListViewDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, 
         return;
     if (text == index.data(Qt::DisplayRole).toString())
         return;
+    //process special name . or .. or only space
+    if (text == "." || text == ".." || text.trimmed() == "")
+        return;
 
     FileOperationUtils::rename(index.data(FileItemModel::UriRole).toString(), text, true);
 }
