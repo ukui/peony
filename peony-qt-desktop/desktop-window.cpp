@@ -69,6 +69,8 @@
 // backup settings
 #include <QSettings>
 
+#include <QX11Info>
+
 #include <X11/Xlib.h>
 #include <QX11Info>
 #include <X11/Xatom.h>
@@ -117,12 +119,14 @@ DesktopWindow::DesktopWindow(QScreen *screen, bool is_primary, QWidget *parent)
     setAttribute(Qt::WA_TranslucentBackground);
 
     //fix qt5.6 setAttribute as desktop has no effect issue
-#if QT_VERSION_CHECK(5, 6, 0)
-    Atom m_WindowType = XInternAtom(QX11Info::display(), "_NET_WM_WINDOW_TYPE", true);
-    Atom m_DesktopType = XInternAtom(QX11Info::display(), "_NET_WM_WINDOW_TYPE_DESKTOP", true);
-    XDeleteProperty(QX11Info::display(), winId(), m_WindowType);
-    XChangeProperty(QX11Info::display(), winId(), m_WindowType,
-                    XA_ATOM, 32, 1, (unsigned char *)&m_DesktopType, 1);
+#if (QT_VERSION < QT_VERSION_CHECK(5, 7, 0))
+    if (QX11Info::isPlatformX11()) {
+        Atom m_WindowType = XInternAtom(QX11Info::display(), "_NET_WM_WINDOW_TYPE", true);
+        Atom m_DesktopType = XInternAtom(QX11Info::display(), "_NET_WM_WINDOW_TYPE_DESKTOP", true);
+        XDeleteProperty(QX11Info::display(), winId(), m_WindowType);
+        XChangeProperty(QX11Info::display(), winId(), m_WindowType,
+                        XA_ATOM, 32, 1, (unsigned char *)&m_DesktopType, 1);
+    }
 #endif
 
     setGeometry(screen->geometry());
