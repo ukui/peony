@@ -44,6 +44,8 @@
 #include <QStyleOptionToolButton>
 
 #include <QEvent>
+#include <QApplication>
+#include <QTimer>
 
 #include <KWindowSystem>
 
@@ -567,6 +569,17 @@ void HeaderBarContainer::addWindowButtons()
     connect(close, &QToolButton::clicked, this, [=]() {
         m_header_bar->m_window->close();
     });
+
+    connect(qApp, &QApplication::paletteChanged, close, [=](){
+        QTimer::singleShot(100, this, [=](){
+            auto palette = qApp->palette();
+            palette.setColor(QPalette::Highlight, QColor("#E54A50"));
+            close->setPalette(palette);
+        });
+    });
+    auto palette = qApp->palette();
+    palette.setColor(QPalette::Highlight, QColor("#E54A50"));
+    close->setPalette(palette);
 
     layout->addWidget(minimize);
     layout->addWidget(maximizeAndRestore);
