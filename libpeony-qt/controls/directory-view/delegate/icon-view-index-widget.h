@@ -71,6 +71,9 @@ private:
     QTimer m_edit_trigger;
 
     bool m_is_dragging = false;
+
+    bool b_elide_text = false;
+    const int ELIDE_TEXT_LENGTH = 32;
 };
 
 }

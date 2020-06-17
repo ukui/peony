@@ -253,7 +253,7 @@ void ListView::updateGeometries()
     QStyleOptionViewItem opt = viewOptions();
     int height = itemDelegate()->sizeHint(opt, QModelIndex()).height();
     setViewportMargins(0, header()->height(), 0, height);
-    verticalScrollBar()->setMaximum(verticalScrollBar()->maximum() + 5);
+    verticalScrollBar()->setMaximum(verticalScrollBar()->maximum() + 1);
 }
 
 void ListView::wheelEvent(QWheelEvent *e)
@@ -313,7 +313,7 @@ void ListView::adjustColumnsSize()
         rightPartsSize += columnSize;
     }
 
-    if (this->width() - rightPartsSize < 150)
+    if (this->width() - rightPartsSize < BOTTOM_STATUS_MARGIN)
         return;
 
     //resizeColumnToContents(0);

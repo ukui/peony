@@ -106,8 +106,21 @@ IconViewIndexWidget::IconViewIndexWidget(const IconViewDelegate *delegate, const
     adjustPos();
 
     auto textSize = IconViewTextHelper::getTextSizeForIndex(opt, index, 2);
-
     int fixedHeight = 5 + iconExpectedSize.height() + 5 + textSize.height() + 5;
+
+    int y_bottom = option.rect.y() + fixedHeight + 20;
+    //qDebug() << "Y:" <<option.rect.y() <<fixedHeight <<m_delegate->getView()->height();
+    b_elide_text = false;
+    if ( y_bottom > m_delegate->getView()->height() && opt.text.length() > ELIDE_TEXT_LENGTH)
+    {
+        b_elide_text = true;
+        int  charWidth = opt.fontMetrics.averageCharWidth();
+        opt.text = opt.fontMetrics.elidedText(opt.text, Qt::ElideRight, ELIDE_TEXT_LENGTH * charWidth);
+        //recount size
+        textSize = IconViewTextHelper::getTextSizeForIndex(opt, index, 2);
+        fixedHeight = 5 + iconExpectedSize.height() + 5 + textSize.height() + 5;
+    }
+
     if (fixedHeight >= option.rect.height())
         setFixedHeight(fixedHeight);
     else
@@ -153,6 +166,11 @@ void IconViewIndexWidget::paintEvent(QPaintEvent *e)
     auto tmp = opt.text;
     opt.text = nullptr;
     QApplication::style()->drawControl(QStyle::CE_ItemViewItem, &opt, &p, opt.widget);
+    if (b_elide_text)
+    {
+        int  charWidth = opt.fontMetrics.averageCharWidth();
+        tmp = opt.fontMetrics.elidedText(tmp, Qt::ElideRight, ELIDE_TEXT_LENGTH * charWidth);
+    }
     opt.text = std::move(tmp);
 
     //auto textRectF = QRectF(0, m_delegate->getView()->iconSize().height(), this->width(), this->height());
@@ -160,7 +178,7 @@ void IconViewIndexWidget::paintEvent(QPaintEvent *e)
 
     p.setPen(opt.palette.highlightedText().color());
     p.translate(0, m_delegate->getView()->iconSize().height() + 5);
-    IconViewTextHelper::paintText(&p, m_option, m_index, 9999, 2, 0);
+    IconViewTextHelper::paintText(&p, opt, m_index, 9999, 2, 0);
 
 //    p.translate(-1, m_delegate->getView()->iconSize().height() + 13);
 //    //m_edit->document()->drawContents(&p);
