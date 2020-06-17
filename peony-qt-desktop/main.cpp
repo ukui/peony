@@ -78,6 +78,8 @@ int main(int argc, char *argv[])
 {
     qInstallMessageHandler(messageOutput);
     //PeonyDesktopApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+    QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+    QGuiApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
     PeonyDesktopApplication a(argc, argv);
     if (a.isSecondary())
         return 0;
