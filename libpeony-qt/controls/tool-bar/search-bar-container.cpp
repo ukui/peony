@@ -70,17 +70,15 @@ SearchBarContainer::SearchBarContainer(QWidget *parent): QWidget(parent)
     completer->setCompletionMode(QCompleter::PopupCompletion);
     m_search_box->setCompleter(completer);
 
-    connect(m_search_box, &QLineEdit::returnPressed, [=]()
+    m_search_trigger.setInterval(500);
+    connect(&m_search_trigger, SIGNAL(timeout()), this, SLOT(startSearch()));
+    connect(m_search_box, &QLineEdit::textChanged, [=]()
     {
-        if (! m_search_box->text().isEmpty())
+        if (m_search_trigger.isActive())
         {
-            auto l = m_model->stringList();
-            if (! l.contains(m_search_box->text()))
-                l.prepend(m_search_box->text());
-
-            m_model->setStringList(l);
+            m_search_trigger.stop();
         }
-        Q_EMIT this->returnPressed();
+        m_search_trigger.start();
     });
     connect(m_filter_box, &QComboBox::currentTextChanged, [=]()
     {
@@ -115,4 +113,18 @@ void SearchBarContainer::onTableClicked(const QModelIndex &index)
     l.prepend(tr("Clear"));
     m_model->setStringList(l);
     m_search_box->setText("");
+}
+
+void SearchBarContainer::startSearch()
+{
+    if (! m_search_box->text().isEmpty())
+    {
+        auto l = m_model->stringList();
+        if (! l.contains(m_search_box->text()))
+            l.prepend(m_search_box->text());
+
+        m_model->setStringList(l);
+
+        Q_EMIT this->returnPressed();
+    }
 }

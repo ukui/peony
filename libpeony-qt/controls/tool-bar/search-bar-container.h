@@ -8,6 +8,7 @@
 #include <QStringListModel>
 #include <QListView>
 #include <QStringList>
+#include <QTimer>
 
 namespace Peony {
 
@@ -46,6 +47,7 @@ Q_SIGNALS:
 
 public Q_SLOTS:
     void onTableClicked(const QModelIndex &index);
+    void startSearch();
 
 private:
     QHBoxLayout *m_layout = nullptr;
@@ -55,6 +57,8 @@ private:
 
     QStringListModel *m_model = nullptr;
     QListView *m_list_view = nullptr;
+
+    QTimer m_search_trigger;
 
     QStringList m_file_type_list = {tr("all"), tr("file folder"), tr("image"),
                                     tr("video"), tr("text file"), tr("audio"), tr("others")
