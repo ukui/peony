@@ -53,6 +53,8 @@ public:
 
     Peony::FMWindowIface *create(const QString &uri);
     Peony::FMWindowIface *create(const QStringList &uris);
+    Peony::FMWindowIface *createWithZoomLevel(const QString &uri, int zoomLevel);
+    Peony::FMWindowIface *createWithZoomLevel(const QStringList &uris, int zoomLevel);
 
     Peony::FMWindowFactory *getFactory();
 

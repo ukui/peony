@@ -39,6 +39,9 @@
 #define DEFAULT_WINDOW_SIZE "default-window-size"
 #define DEFAULT_SIDEBAR_WIDTH "default-sidebar-width"
 
+#define DEFAULT_VIEW_ID "directory-view/default-view-id"
+#define DEFAULT_VIEW_ZOOM_LEVEL "directory-view/default-view-zoom-level"
+
 //gsettings
 #define SIDEBAR_BG_OPACITY "sidebar-bg-opacity"
 

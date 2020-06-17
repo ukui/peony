@@ -26,6 +26,9 @@
 #include "search-vfs-uri-parser.h"
 #include "tab-widget.h"
 
+#include "global-settings.h"
+#include "main-window.h"
+
 #include <QLabel>
 #include <QPainter>
 #include <QPainterPath>
@@ -53,7 +56,14 @@ TabStatusBar::TabStatusBar(TabWidget *tab, QWidget *parent) : QStatusBar(parent)
 
     m_slider = new QSlider(Qt::Horizontal, this);
     m_slider->setRange(0, 100);
-    m_slider->setValue(25);
+
+    auto mainWindow = qobject_cast<MainWindow *>(this->topLevelWidget());
+    auto settings = Peony::GlobalSettings::getInstance();
+    int defaultZoomLevel = settings->getValue(DEFAULT_VIEW_ID).toInt();
+    if (mainWindow) {
+        defaultZoomLevel = mainWindow->currentViewZoomLevel();
+    }
+    m_slider->setValue(defaultZoomLevel);
 
     connect(m_slider, &QSlider::valueChanged, this, &TabStatusBar::zoomLevelChangedRequest);
 }

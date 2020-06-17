@@ -245,6 +245,11 @@ void DirectoryViewContainer::switchViewType(const QString &viewId)
     }
     */
 
+    if (getView()) {
+        if (getView()->viewId() == viewId)
+            return;
+    }
+
     auto viewManager = DirectoryViewFactoryManager2::getInstance();
     auto factory = viewManager->getFactory(viewId);
     if (!factory)

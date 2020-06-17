@@ -176,17 +176,52 @@ QSize MainWindow::sizeHint() const
 
 Peony::FMWindowIface *MainWindow::create(const QString &uri)
 {
-    return new MainWindow(uri);
+    auto window = new MainWindow(uri);
+    if (currentViewSupportZoom())
+        window->setCurrentViewZoomLevel(this->currentViewZoomLevel());
+    return window;
 }
 
 Peony::FMWindowIface *MainWindow::create(const QStringList &uris)
 {
-    if (uris.isEmpty())
-        return new MainWindow;
+    if (uris.isEmpty()) {
+        auto window = new MainWindow;
+        if (currentViewSupportZoom())
+            window->setCurrentViewZoomLevel(this->currentViewZoomLevel());
+        return window;
+    }
     auto uri = uris.first();
     auto l = uris;
     l.removeAt(0);
     auto window = new MainWindow(uri);
+    if (currentViewSupportZoom())
+        window->setCurrentViewZoomLevel(this->currentViewZoomLevel());
+    window->addNewTabs(l);
+    return window;
+}
+
+Peony::FMWindowIface *MainWindow::createWithZoomLevel(const QString &uri, int zoomLevel)
+{
+    auto window = new MainWindow(uri);
+    if (currentViewSupportZoom())
+        window->setCurrentViewZoomLevel(zoomLevel);
+    return window;
+}
+
+Peony::FMWindowIface *MainWindow::createWithZoomLevel(const QStringList &uris, int zoomLevel)
+{
+    if (uris.isEmpty()) {
+        auto window = new MainWindow;
+        if (currentViewSupportZoom())
+            window->setCurrentViewZoomLevel(zoomLevel);
+        return window;
+    }
+    auto uri = uris.first();
+    auto l = uris;
+    l.removeAt(0);
+    auto window = new MainWindow(uri);
+    if (currentViewSupportZoom())
+        window->setCurrentViewZoomLevel(zoomLevel);
     window->addNewTabs(l);
     return window;
 }
@@ -530,11 +565,28 @@ int MainWindow::getCurrentSortColumn()
 
 int MainWindow::currentViewZoomLevel()
 {
+    if (getCurrentPage()) {
+        if (auto view = getCurrentPage()->getView()) {
+            return view->currentZoomLevel();
+        }
+    }
+
+    int defaultZoomLevel = Peony::GlobalSettings::getInstance()->getValue(DEFAULT_VIEW_ZOOM_LEVEL).toInt();
+
+    if (defaultZoomLevel >= 0 && defaultZoomLevel <= 100) {
+        return defaultZoomLevel;
+    }
+
     return m_tab->m_status_bar->m_slider->value();
 }
 
 bool MainWindow::currentViewSupportZoom()
 {
+    if (getCurrentPage()) {
+        if (auto view = getCurrentPage()->getView()) {
+            return view->supportZoom();
+        }
+    }
     return m_tab->m_status_bar->m_slider->isEnabled();
 }
 
@@ -600,6 +652,8 @@ void MainWindow::beginSwitchView(const QString &viewId)
 //    int sortType = getCurrentSortColumn();
 //    Qt::SortOrder sortOrder = getCurrentSortOrder();
     m_tab->switchViewType(viewId);
+    // save zoom level
+    Peony::GlobalSettings::getInstance()->setValue(DEFAULT_VIEW_ZOOM_LEVEL, currentViewZoomLevel());
     m_tab->setCurrentSelections(selection);
     m_tab->m_status_bar->m_slider->setEnabled(m_tab->currentPage()->getView()->supportZoom());
 }
@@ -960,7 +1014,7 @@ void MainWindow::initUI(const QString &uri)
     m_tab = views;
     if (uri.isNull()) {
         auto home = "file://" + QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
-        m_tab->addPage(home);
+        m_tab->addPage(home, true);
     } else {
         m_tab->addPage(uri, true);
     }
@@ -987,6 +1041,10 @@ void MainWindow::initUI(const QString &uri)
 
     setCentralWidget(views);
 
+    // check slider zoom level
+    if (currentViewSupportZoom())
+        setCurrentViewZoomLevel(currentViewZoomLevel());
+
     //bind signals
     connect(m_tab, &TabWidget::closeSearch, headerBar, &HeaderBar::closeSearch);
     connect(m_tab, &TabWidget::clearTrash, this, &MainWindow::cleanTrash);
@@ -995,6 +1053,10 @@ void MainWindow::initUI(const QString &uri)
     connect(m_tab, &TabWidget::activePageLocationChanged, this, &MainWindow::locationChangeEnd);
     connect(m_tab, &TabWidget::activePageViewTypeChanged, this, &MainWindow::updateHeaderBar);
     connect(m_tab, &TabWidget::activePageChanged, this, &MainWindow::updateHeaderBar);
+    connect(m_tab, &TabWidget::activePageChanged, this, [=](){
+        // check slider zoom level
+        setCurrentViewZoomLevel(currentViewZoomLevel());
+    });
     connect(m_tab, &TabWidget::menuRequest, this, [=]() {
         Peony::DirectoryViewMenu menu(this);
         menu.exec(QCursor::pos());
