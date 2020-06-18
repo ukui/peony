@@ -33,6 +33,7 @@
 #include <QDateTime>
 #include <QIcon>
 #include <QUrl>
+#include <QLocale>
 
 using namespace Peony;
 
@@ -284,7 +285,10 @@ void FileInfoJob::refreshInfoContents(GFileInfo *new_info)
         auto string = g_desktop_app_info_get_locale_string(desktop_info, "Name");
 #else
         //FIXME: should handle locale?
-        auto string = g_desktop_app_info_get_string(desktop_info, "Name");
+        //change "Name" to QLocale::system().name(),
+        //try to fix Qt5.6 untranslated desktop file issue
+        qDebug() << "nativeLanguageName:" <<QLocale::system().nativeLanguageName()
+        auto string = g_desktop_app_info_get_string(desktop_info, QLocale::system().name());
 #endif
         if (string) {
             info->m_display_name = string;
