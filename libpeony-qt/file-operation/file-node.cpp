@@ -21,7 +21,7 @@
  */
 
 #include "file-node.h"
-#include "file-enumerator.h"
+#include "file-utils.h"
 #include "file-info.h"
 #include "file-node-reporter.h"
 
@@ -79,12 +79,9 @@ void FileNode::findChildrenRecursively()
     if (!m_is_folder)
         return;
     else {
-        FileEnumerator e;
-        e.setEnumerateDirectory(m_uri);
-        e.enumerateSync();
-        auto infos = e.getChildren();
-        for (auto info: infos) {
-            FileNode *node = new FileNode(info->uri(), this, m_reporter);
+        auto uris = FileUtils::getChildrenUris(m_uri);
+        for (auto uri: uris) {
+            FileNode *node = new FileNode(uri, this, m_reporter);
             m_children->append(node);
             node->findChildrenRecursively();
         }
