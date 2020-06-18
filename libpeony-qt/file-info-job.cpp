@@ -287,9 +287,10 @@ void FileInfoJob::refreshInfoContents(GFileInfo *new_info)
         //FIXME: should handle locale?
         //change "Name" to QLocale::system().name(),
         //try to fix Qt5.6 untranslated desktop file issue
-        qDebug() << "nativeLanguageName:" <<QLocale::system().nativeLanguageName()
-        auto string = g_desktop_app_info_get_string(desktop_info, QLocale::system().name());
+        auto key = "Name[" +  QLocale::system().name() + "]";
+        auto string = g_desktop_app_info_get_string(desktop_info, key.toUtf8().constData());
 #endif
+        qDebug() << "get name string:"<<string <<info->uri();
         if (string) {
             info->m_display_name = string;
             g_free(string);
