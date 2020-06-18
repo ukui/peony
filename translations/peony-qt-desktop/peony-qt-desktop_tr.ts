@@ -9,12 +9,12 @@
         <translation>Masaüstü Simgelerini Göster</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="405"/>
+        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="445"/>
         <source>New Folder</source>
         <translation>Yeni Klasör</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="462"/>
+        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="502"/>
         <source>set background</source>
         <translation>arkaplan ayarla</translation>
     </message>
@@ -226,17 +226,17 @@
 <context>
     <name>Peony::DesktopWindow</name>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-window.cpp" line="89"/>
+        <location filename="../../peony-qt-desktop/desktop-window.cpp" line="91"/>
         <source>Desktop</source>
         <translation>Masaüstü</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-window.cpp" line="152"/>
+        <location filename="../../peony-qt-desktop/desktop-window.cpp" line="156"/>
         <source>set background</source>
         <translation>arkaplan ayarla</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-window.cpp" line="522"/>
+        <location filename="../../peony-qt-desktop/desktop-window.cpp" line="526"/>
         <source>New Folder</source>
         <translation>Yeni Klasör</translation>
     </message>

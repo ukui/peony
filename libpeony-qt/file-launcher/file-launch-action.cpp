@@ -141,7 +141,7 @@ void FileLaunchAction::lauchFileSync(bool forceWithArg, bool skipDialog)
     }
 
     if (!isValid()) {
-        QMessageBox::critical(nullptr, tr("Open Failed"), tr("Can not open %1").arg(m_uri));
+        QMessageBox::critical(nullptr, tr("Open Failed"), tr("Can not open %1, file not exist, is it deleted?").arg(m_uri));
         return;
     }
 
@@ -230,7 +230,7 @@ void FileLaunchAction::lauchFileAsync(bool forceWithArg, bool skipDialog)
     if (!isValid()) {
         bool isReadable = fileInfo->canRead();
         if (!isReadable)
-            QMessageBox::critical(nullptr, tr("Open Failed"), tr("Can not open %1").arg(m_uri));
+            QMessageBox::critical(nullptr, tr("Open Failed"), tr("Can not open %1, Please confirm you have the right authority.").arg(m_uri));
         else {
             auto result = QMessageBox::question(nullptr, tr("Error"), tr("Can not get a default application for openning %1, do you want open it with text format?").arg(m_uri));
             if (result == QMessageBox::Yes) {

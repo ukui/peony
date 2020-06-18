@@ -449,12 +449,12 @@
 <context>
     <name>Peony::CreateTemplateOperation</name>
     <message>
-        <location filename="../../libpeony-qt/file-operation/create-template-operation.cpp" line="110"/>
+        <location filename="../../libpeony-qt/file-operation/create-template-operation.cpp" line="112"/>
         <source>NewFile</source>
         <translation>新建文件</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/create-template-operation.cpp" line="129"/>
+        <location filename="../../libpeony-qt/file-operation/create-template-operation.cpp" line="131"/>
         <source>NewFolder</source>
         <translation>新建文件夹</translation>
     </message>
@@ -992,9 +992,12 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
     </message>
     <message>
         <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="144"/>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="233"/>
+        <source>Can not open %1, file not exist, is it deleted?</source>
+        <translation>无法打开%1，文件不存在，请确认是否已被删除？</translation>
+    </message>
+    <message>
         <source>Can not open %1</source>
-        <translation>不能打开%1</translation>
+        <translation type="vanished">不能打开%1</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="210"/>
@@ -1005,6 +1008,11 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
         <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="213"/>
         <source>Launch Options</source>
         <translation>执行选项</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="233"/>
+        <source>Can not open %1, Please confirm you have the right authority.</source>
+        <translation>无法打开%1，请确认您有正确的打开权限。</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="235"/>
@@ -1332,27 +1340,27 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
         <translation>点击空白区域编辑路径</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp" line="180"/>
+        <location filename="../../libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp" line="181"/>
         <source>Search &quot;%1&quot; in &quot;%2&quot;</source>
         <translation>在%2中搜索%1</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp" line="205"/>
+        <location filename="../../libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp" line="204"/>
         <source>File System</source>
         <translation>文件系统</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp" line="249"/>
+        <location filename="../../libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp" line="248"/>
         <source>&amp;Copy Directory</source>
         <translation>拷贝路径(&amp;C)</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp" line="251"/>
+        <location filename="../../libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp" line="250"/>
         <source>Open In New &amp;Tab</source>
         <translation>在新标签页中打开(&amp;T)</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp" line="255"/>
+        <location filename="../../libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp" line="254"/>
         <source>Open In &amp;New Window</source>
         <translation>在新窗口中打开(&amp;N)</translation>
     </message>
@@ -1552,42 +1560,42 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/tool-bar/search-bar-container.cpp" line="63"/>
-        <location filename="../../libpeony-qt/controls/tool-bar/search-bar-container.cpp" line="115"/>
+        <location filename="../../libpeony-qt/controls/tool-bar/search-bar-container.cpp" line="113"/>
         <source>Clear</source>
         <translation>清空</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/search-bar-container.h" line="59"/>
+        <location filename="../../libpeony-qt/controls/tool-bar/search-bar-container.h" line="63"/>
         <source>all</source>
         <translation>全部</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/search-bar-container.h" line="59"/>
+        <location filename="../../libpeony-qt/controls/tool-bar/search-bar-container.h" line="63"/>
         <source>file folder</source>
         <translation>文件夹</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/search-bar-container.h" line="59"/>
+        <location filename="../../libpeony-qt/controls/tool-bar/search-bar-container.h" line="63"/>
         <source>image</source>
         <translation>图片</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/search-bar-container.h" line="60"/>
+        <location filename="../../libpeony-qt/controls/tool-bar/search-bar-container.h" line="64"/>
         <source>video</source>
         <translation>视频</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/search-bar-container.h" line="60"/>
+        <location filename="../../libpeony-qt/controls/tool-bar/search-bar-container.h" line="64"/>
         <source>text file</source>
         <translation>文本</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/search-bar-container.h" line="60"/>
+        <location filename="../../libpeony-qt/controls/tool-bar/search-bar-container.h" line="64"/>
         <source>audio</source>
         <translation>音频</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/search-bar-container.h" line="60"/>
+        <location filename="../../libpeony-qt/controls/tool-bar/search-bar-container.h" line="64"/>
         <source>others</source>
         <translation>其它</translation>
     </message>
