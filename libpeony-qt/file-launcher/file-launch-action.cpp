@@ -230,7 +230,14 @@ void FileLaunchAction::lauchFileAsync(bool forceWithArg, bool skipDialog)
     if (!isValid()) {
         bool isReadable = fileInfo->canRead();
         if (!isReadable)
-            QMessageBox::critical(nullptr, tr("Open Failed"), tr("Can not open %1, Please confirm you have the right authority.").arg(m_uri));
+        {
+            if (fileInfo->isSymbolLink())
+                QMessageBox::critical(nullptr, tr("Open Link failed"),
+                                      tr("File not exist, is it deleted or moved to other path?"));
+            else
+                QMessageBox::critical(nullptr, tr("Open Failed"),
+                                  tr("Can not open %1, Please confirm you have the right authority.").arg(m_uri));
+        }
         else {
             auto result = QMessageBox::question(nullptr, tr("Error"), tr("Can not get a default application for openning %1, do you want open it with text format?").arg(m_uri));
             if (result == QMessageBox::Yes) {
