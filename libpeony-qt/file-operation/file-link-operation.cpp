@@ -76,5 +76,5 @@ retry:
         }
     }
     operationFinished();
-    notifyFileWatcherOperationFinished();
+    //notifyFileWatcherOperationFinished();
 }

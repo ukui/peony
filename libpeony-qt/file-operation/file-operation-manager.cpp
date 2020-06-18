@@ -105,6 +105,7 @@ void FileOperationManager::startOperation(FileOperation *operation, bool addToHi
     QApplication::setQuitOnLastWindowClosed(false);
 
     connect(operation, &FileOperation::operationFinished, this, [=]() {
+        operation->notifyFileWatcherOperationFinished();
         auto settings = GlobalSettings::getInstance();
         bool runbackend = settings->getInstance()->getValue(RESIDENT_IN_BACKEND).toBool();
         QApplication::setQuitOnLastWindowClosed(!runbackend);
