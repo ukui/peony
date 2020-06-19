@@ -843,7 +843,7 @@ void MainWindow::mouseMoveEvent(QMouseEvent *e)
     if (!m_is_draging)
         return;
 
-    if (QX11Info::isPlatformX11() && false) {
+    if (QX11Info::isPlatformX11()) {
         Display *display = QX11Info::display();
         Atom netMoveResize = XInternAtom(display, "_NET_WM_MOVERESIZE", False);
         XEvent xEvent;
@@ -865,6 +865,21 @@ void MainWindow::mouseMoveEvent(QMouseEvent *e)
         XSendEvent(display, QX11Info::appRootWindow(QX11Info::appScreen()),
                    False, SubstructureNotifyMask | SubstructureRedirectMask,
                    &xEvent);
+        //XFlush(display);
+
+        XEvent xevent;
+        memset(&xevent, 0, sizeof(XEvent));
+
+        xevent.type = ButtonRelease;
+        xevent.xbutton.button = Button1;
+        xevent.xbutton.window = this->winId();
+        xevent.xbutton.x = e->pos().x();
+        xevent.xbutton.y = e->pos().y();
+        xevent.xbutton.x_root = pos.x();
+        xevent.xbutton.y_root = pos.y();
+        xevent.xbutton.display = display;
+
+        XSendEvent(display, this->effectiveWinId(), False, ButtonReleaseMask, &xevent);
         XFlush(display);
 
         if (!this->mouseGrabber()) {
