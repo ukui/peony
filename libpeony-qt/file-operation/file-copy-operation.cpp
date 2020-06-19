@@ -127,6 +127,9 @@ void FileCopyOperation::progress_callback(goffset current_num_bytes,
         goffset total_num_bytes,
         FileCopyOperation *p_this)
 {
+    if (total_num_bytes < current_num_bytes)
+        return;
+
     auto currnet = p_this->m_current_offset + current_num_bytes;
     auto total = p_this->m_total_szie;
     qDebug()<<currnet*1.0/total;
@@ -465,7 +468,7 @@ void FileCopyOperation::run()
         operationStartSnyc();
         QProcess p;
         p.start("sync");
-        p.waitForFinished();
+        p.waitForFinished(-1);
     }
 
     Q_EMIT operationFinished();
