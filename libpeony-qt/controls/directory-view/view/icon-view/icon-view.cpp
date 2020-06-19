@@ -29,6 +29,8 @@
 #include "directory-view-menu.h"
 #include "file-info.h"
 
+#include "global-settings.h"
+
 #include <QMouseEvent>
 
 #include <QDragEnterEvent>
@@ -484,6 +486,10 @@ IconView2::IconView2(QWidget *parent) : DirectoryViewWidget(parent)
     layout->setMargin(0);
     layout->setSpacing(0);
     m_view = new IconView(this);
+
+    int defaultZoomLevel = GlobalSettings::getInstance()->getValue(DEFAULT_VIEW_ZOOM_LEVEL).toInt();
+    if (defaultZoomLevel >= minimumZoomLevel() && defaultZoomLevel <= maximumZoomLevel())
+        m_zoom_level = defaultZoomLevel;
 
     connect(m_view, &IconView::zoomLevelChangedRequest, this, &IconView2::zoomRequest);
 

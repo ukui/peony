@@ -29,6 +29,8 @@
 #include "file-item.h"
 #include "list-view-style.h"
 
+#include "global-settings.h"
+
 #include <QHeaderView>
 
 #include <QVBoxLayout>
@@ -446,6 +448,11 @@ ListView2::ListView2(QWidget *parent) : DirectoryViewWidget(parent)
     layout->setMargin(0);
     layout->setSpacing(0);
     m_view = new ListView(this);
+
+    int defaultZoomLevel = GlobalSettings::getInstance()->getValue(DEFAULT_VIEW_ZOOM_LEVEL).toInt();
+    if (defaultZoomLevel >= minimumZoomLevel() && defaultZoomLevel <= maximumZoomLevel())
+        m_zoom_level = defaultZoomLevel;
+
     connect(m_view, &ListView::zoomLevelChangedRequest, this, &ListView2::zoomRequest);
     layout->addWidget(m_view);
 
