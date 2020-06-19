@@ -21,8 +21,11 @@
  */
 
 #include "list-view-delegate.h"
-#include "file-operation-utils.h"
+#include "file-operation-manager.h"
+#include "file-rename-operation.h"
 #include "file-item-model.h"
+
+#include "list-view.h"
 
 #include <QTimer>
 #include <QPushButton>
@@ -119,7 +122,21 @@ void ListViewDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, 
     if (text == "." || text == ".." || text.trimmed() == "")
         return;
 
-    FileOperationUtils::rename(index.data(FileItemModel::UriRole).toString(), text, true);
+    auto view = qobject_cast<DirectoryView::ListView *>(parent());
+
+    auto fileOpMgr = FileOperationManager::getInstance();
+    auto renameOp = new FileRenameOperation(index.data(FileItemModel::UriRole).toString(), text);
+
+    connect(renameOp, &FileRenameOperation::operationFinished, view, [=](){
+        auto info = renameOp->getOperationInfo().get();
+        auto uri = info->target();
+        QTimer::singleShot(100, view, [=](){
+            view->setSelections(QStringList()<<uri);
+            view->scrollToSelection(uri);
+        });
+    });
+
+    fileOpMgr->startOperation(renameOp, true);
 }
 
 //TextEdit

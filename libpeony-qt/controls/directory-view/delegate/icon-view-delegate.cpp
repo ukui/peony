@@ -298,6 +298,16 @@ void IconViewDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, 
     if (newName.length() >0 && newName != oldName && newName != suffix) {
         auto fileOpMgr = FileOperationManager::getInstance();
         auto renameOp = new FileRenameOperation(index.data(FileItemModel::UriRole).toString(), newName);
+
+        connect(renameOp, &FileRenameOperation::operationFinished, getView(), [=](){
+            auto info = renameOp->getOperationInfo().get();
+            auto uri = info->target();
+            QTimer::singleShot(100, getView(), [=](){
+                getView()->setSelections(QStringList()<<uri);
+                getView()->scrollToSelection(uri);
+            });
+        });
+
         fileOpMgr->startOperation(renameOp, true);
     }
 }
