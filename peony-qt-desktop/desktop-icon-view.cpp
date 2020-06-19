@@ -540,11 +540,11 @@ void DesktopIconView::initDoubleClick()
                 QProcess p;
                 QUrl url = uri;
                 p.setProgram("peony");
-                p.setArguments(QStringList() << url.toEncoded());
+                p.setArguments(QStringList() << url.toEncoded() <<"%U&");
                 p.startDetached();
 #else
                 QProcess p;
-                p.startDetached("peony", QStringList()<<uri);
+                p.startDetached("peony", QStringList()<<uri<<"%U&");
 #endif
             } else {
                 FileLaunchManager::openAsync(uri, false, false);
