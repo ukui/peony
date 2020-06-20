@@ -128,3 +128,8 @@ void SearchBarContainer::startSearch()
         Q_EMIT this->returnPressed();
     }
 }
+
+void SearchBarContainer::clearSearchBox()
+{
+    m_search_box->setText("");
+}

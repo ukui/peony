@@ -142,3 +142,8 @@ void AdvancedLocationBar::switchEditMode(bool bSearchMode)
         m_layout->setCurrentWidget(m_bar);
     }
 }
+
+void AdvancedLocationBar::clearSearchBox()
+{
+    m_search_bar->clearSearchBox();
+}
