@@ -643,38 +643,6 @@ line-height:30px;</string>
     <string>取消</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="help_pb">
-   <property name="geometry">
-    <rect>
-     <x>32</x>
-     <y>471</y>
-     <width>100</width>
-     <height>30</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <family>Noto Sans CJK SC</family>
-     <pointsize>-1</pointsize>
-     <weight>50</weight>
-     <bold>false</bold>
-    </font>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">width:26px;
-height:13px;
-font-size:14px;
-font-family:Noto Sans CJK SC;
-font-weight:400;
-color:rgba(0,0,0,1);
-line-height:30px;
-border:1px solid rgba(62, 108, 229, 0.3);
-</string>
-   </property>
-   <property name="text">
-    <string>帮助</string>
-   </property>
-  </widget>
  </widget>
  <tabstops>
   <tabstop>ip_edit</tabstop>
@@ -684,7 +652,6 @@ border:1px solid rgba(62, 108, 229, 0.3);
   <tabstop>user_lineEdit</tabstop>
   <tabstop>pwd_lineEdit</tabstop>
   <tabstop>add_lineEdit</tabstop>
-  <tabstop>help_pb</tabstop>
   <tabstop>cancel_pb</tabstop>
   <tabstop>ok_pb</tabstop>
  </tabstops>
@@ -718,22 +685,6 @@ border:1px solid rgba(62, 108, 229, 0.3);
     </hint>
     <hint type="destinationlabel">
      <x>412</x>
-     <y>443</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>help_pb</sender>
-   <signal>clicked()</signal>
-   <receiver>ConnectServerDialog</receiver>
-   <slot>help()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>74</x>
-     <y>472</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>13</x>
      <y>443</y>
     </hint>
    </hints>

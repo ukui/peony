@@ -105,22 +105,17 @@ GAsyncReadyCallback MountOperation::mount_enclosing_volume_callback(GFile *volum
         GAsyncResult *res,
         MountOperation *p_this)
 {
-    bool    flag = false;
     GError *err = nullptr;
     g_file_mount_enclosing_volume_finish (volume, res, &err);
 
-    if (err) {
+    if ((nullptr == err) || (g_error_matches (err, G_IO_ERROR, G_IO_ERROR_ALREADY_MOUNTED))) {
+        Q_EMIT p_this->mountSuccess(p_this->remoteUri);
+    } else {
         qDebug()<<err->code<<err->message<<err->domain;
         auto errWarpper = GErrorWrapper::wrapFrom(err);
         p_this->finished(errWarpper);
-    } else if (g_error_matches (err, G_IO_ERROR, G_IO_ERROR_ALREADY_MOUNTED)) {
-        flag = true;
-    } else {
-        flag = true;
     }
-    if (flag) {
-        Q_EMIT p_this->mountSuccess(p_this->remoteUri);
-    }
+
     p_this->finished(nullptr);
     if (p_this->m_auto_delete) {
         p_this->disconnect();

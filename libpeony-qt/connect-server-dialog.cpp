@@ -29,6 +29,16 @@ ConnectServerDialog::ConnectServerDialog(QWidget *parent) :
 {
     ui->setupUi(this);
     ui->pwd_lineEdit->setEchoMode(QLineEdit::Password);
+
+    ui->port_comboBox->setEditText("445");
+
+//    connect(ui->type_comboBox, &QComboBox::currentTextChanged, [=](QString& tp) {
+//        if ("SAMBA" == tp) {
+//            ui->port_comboBox->setEditText("445");
+//        } else if ("FTP" == tp) {
+//            ui->port_comboBox->setEditText("21");
+//        }
+//    });
 }
 
 ConnectServerDialog::~ConnectServerDialog()
@@ -56,7 +66,6 @@ QString ConnectServerDialog::uri()
 {
     QString uuri = "";
 
-    // generate the URI according to the protocol
     if (ui->type_comboBox->currentText() == "SAMBA") {
         uuri = "smb://" + ui->ip_edit->text() + ":" + ui->port_comboBox->currentText() + "/" + ui->file_lineEdit->text();
     } else if (ui->type_comboBox->currentText() == "FTP") {
@@ -65,3 +74,4 @@ QString ConnectServerDialog::uri()
 
     return uuri;
 }
+
