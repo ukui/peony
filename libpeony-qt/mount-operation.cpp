@@ -73,6 +73,7 @@ void MountOperation::start()
         if (nullptr != m_volume) {
             g_object_unref(m_volume);
         }
+        remoteUri = dlg->uri();
         m_volume = g_file_new_for_uri(dlg->uri().toUtf8().constData());
         //TODO: when FileEnumerator::prepare(), trying mount volume without password dialog first.
         g_mount_operation_set_password_save(m_op, G_PASSWORD_SAVE_FOR_SESSION);
@@ -104,6 +105,7 @@ GAsyncReadyCallback MountOperation::mount_enclosing_volume_callback(GFile *volum
         GAsyncResult *res,
         MountOperation *p_this)
 {
+    bool    flag = false;
     GError *err = nullptr;
     g_file_mount_enclosing_volume_finish (volume, res, &err);
 
@@ -111,6 +113,13 @@ GAsyncReadyCallback MountOperation::mount_enclosing_volume_callback(GFile *volum
         qDebug()<<err->code<<err->message<<err->domain;
         auto errWarpper = GErrorWrapper::wrapFrom(err);
         p_this->finished(errWarpper);
+    } else if (g_error_matches (err, G_IO_ERROR, G_IO_ERROR_ALREADY_MOUNTED)) {
+        flag = true;
+    } else {
+        flag = true;
+    }
+    if (flag) {
+        Q_EMIT p_this->mountSuccess(p_this->remoteUri);
     }
     p_this->finished(nullptr);
     if (p_this->m_auto_delete) {

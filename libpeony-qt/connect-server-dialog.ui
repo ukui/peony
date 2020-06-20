@@ -677,9 +677,13 @@ border:1px solid rgba(62, 108, 229, 0.3);
   </widget>
  </widget>
  <tabstops>
+  <tabstop>ip_edit</tabstop>
   <tabstop>port_comboBox</tabstop>
+  <tabstop>type_comboBox</tabstop>
+  <tabstop>file_lineEdit</tabstop>
   <tabstop>user_lineEdit</tabstop>
   <tabstop>pwd_lineEdit</tabstop>
+  <tabstop>add_lineEdit</tabstop>
   <tabstop>help_pb</tabstop>
   <tabstop>cancel_pb</tabstop>
   <tabstop>ok_pb</tabstop>

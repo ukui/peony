@@ -391,6 +391,11 @@ GAsyncReadyCallback FileEnumerator::mount_enclosing_volume_callback(GFile *file,
             p_this->connect(op, &MountOperation::cancelled, p_this, [p_this]() {
                 Q_EMIT p_this->enumerateFinished(false);
             });
+
+            p_this->connect(op, &MountOperation::mountSuccess, p_this, [=] (QString uri) {
+                Q_EMIT p_this->mountSuccess(uri);
+            });
+
             p_this->connect(op, &MountOperation::finished, p_this, [=](const std::shared_ptr<GErrorWrapper> &finished_err) {
                 if (finished_err) {
                     qDebug()<<"finished err:"<<finished_err->code()<<finished_err->message();

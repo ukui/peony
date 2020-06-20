@@ -58,6 +58,7 @@ public:
 Q_SIGNALS:
     void finished(const std::shared_ptr<GErrorWrapper> &err = nullptr);
     void cancelled();
+    void mountSuccess(QString uri);
 
 public Q_SLOTS:
     void start();
@@ -89,6 +90,7 @@ protected:
 private:
     bool m_auto_delete = false;
     GFile *m_volume = nullptr;
+    QString remoteUri = "";
     GMountOperation *m_op = nullptr;
     GCancellable *m_cancellable = nullptr;
     /*!
