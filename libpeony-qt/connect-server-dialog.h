@@ -40,8 +40,7 @@ public:
     QString user();
     QString password();
     QString domain();
-    bool savePassword();
-    bool anonymous();
+    QString uri();
 
 private:
     Ui::ConnectServerDialog *ui;

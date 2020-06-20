@@ -29,6 +29,7 @@
 #include <QLabel>
 #include <QToolButton>
 #include <QWidgetAction>
+#include <mount-operation.h>
 
 #include "global-settings.h"
 #include "clipboard-utils.h"

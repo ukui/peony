@@ -68,12 +68,16 @@ void MountOperation::start()
     connect(dlg, &QDialog::accepted, [=]() {
         g_mount_operation_set_username(m_op, dlg->user().toUtf8().constData());
         g_mount_operation_set_password(m_op, dlg->password().toUtf8().constData());
-        g_mount_operation_set_domain(m_op, dlg->domain().toUtf8().constData());
-        g_mount_operation_set_anonymous(m_op, dlg->anonymous());
+//        g_mount_operation_set_domain(m_op, dlg->domain().toUtf8().constData());
+//        g_mount_operation_set_anonymous(m_op, false);
+        if (nullptr != m_volume) {
+            g_object_unref(m_volume);
+        }
+        m_volume = g_file_new_for_uri(dlg->uri().toUtf8().constData());
         //TODO: when FileEnumerator::prepare(), trying mount volume without password dialog first.
-        g_mount_operation_set_password_save(m_op,
-                                            dlg->savePassword()? G_PASSWORD_SAVE_NEVER: G_PASSWORD_SAVE_FOR_SESSION);
+        g_mount_operation_set_password_save(m_op, G_PASSWORD_SAVE_FOR_SESSION);
     });
+
     //block ui
     auto code = dlg->exec();
     if (code == QDialog::Rejected) {

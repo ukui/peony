@@ -28,31 +28,7 @@ ConnectServerDialog::ConnectServerDialog(QWidget *parent) :
     ui(new Ui::ConnectServerDialog)
 {
     ui->setupUi(this);
-    ui->passwd_edit->setEchoMode(QLineEdit::Password);
-
-    connect(ui->anonymous_checkbox, &QCheckBox::toggled, [=](bool checked) {
-        if (checked) {
-            this->ui->usr_edit->clear();
-            this->ui->usr_edit->setEnabled(false);
-            this->ui->passwd_edit->clear();
-            this->ui->passwd_edit->setEnabled(false);
-            this->ui->domain_edit->clear();
-            this->ui->domain_edit->setEnabled(false);
-            this->ui->save_passwd_checkbox->setChecked(false);
-            this->ui->save_passwd_checkbox->setEnabled(true);
-        } else {
-            this->ui->usr_edit->clear();
-            this->ui->usr_edit->setEnabled(true);
-            this->ui->passwd_edit->clear();
-            this->ui->passwd_edit->setEnabled(true);
-            this->ui->domain_edit->clear();
-            this->ui->domain_edit->setEnabled(true);
-            this->ui->save_passwd_checkbox->setChecked(false);
-            this->ui->save_passwd_checkbox->setEnabled(true);
-        }
-    });
-    ui->passwd_edit->setEnabled(false);
-    ui->anonymous_checkbox->setChecked(true);
+    ui->pwd_lineEdit->setEchoMode(QLineEdit::Password);
 }
 
 ConnectServerDialog::~ConnectServerDialog()
@@ -63,25 +39,29 @@ ConnectServerDialog::~ConnectServerDialog()
 
 QString ConnectServerDialog::user()
 {
-    return ui->usr_edit->text();
+    return ui->user_lineEdit->text();
 }
 
 QString ConnectServerDialog::password()
 {
-    return ui->passwd_edit->text();
+    return ui->pwd_lineEdit->text();
 }
 
 QString ConnectServerDialog::domain()
 {
-    return ui->domain_edit->text();
+    return ui->ip_edit->text() + ":" + ui->port_comboBox->currentText();
 }
 
-bool ConnectServerDialog::savePassword()
+QString ConnectServerDialog::uri()
 {
-    return ui->save_passwd_checkbox->isChecked();
-}
+    QString uuri = "";
 
-bool ConnectServerDialog::anonymous()
-{
-    return ui->anonymous_checkbox->isChecked();
+    // generate the URI according to the protocol
+    if (ui->type_comboBox->currentText() == "SAMBA") {
+        uuri = "smb://" + ui->ip_edit->text() + ":" + ui->port_comboBox->currentText() + "/" + ui->file_lineEdit->text();
+    } else if (ui->type_comboBox->currentText() == "FTP") {
+        uuri = "ftp://" + ui->ip_edit->text() + ":" + ui->port_comboBox->currentText() + "/" + ui->file_lineEdit->text();
+    }
+
+    return uuri;
 }
