@@ -48,6 +48,7 @@ Q_SIGNALS:
 public Q_SLOTS:
     void onTableClicked(const QModelIndex &index);
     void startSearch();
+    void clearSearchBox();
 
 private:
     QHBoxLayout *m_layout = nullptr;
