@@ -81,7 +81,7 @@ public:
     void setFolderFirst(bool folderFirst);
     void setFilterConditions(int fileType=0, int modifyTime=0, int fileSize=0);
 
-    //mutiple filter conditions for new advance search
+    //multiple filter conditions for new advance search
     void addFilterCondition(int option, int classify, bool updateNow = false);
     void removeFilterCondition(int option, int classify, bool updateNow = false);
     void clearConditions();
@@ -89,7 +89,7 @@ public:
     //set file label filter conditions, default value mean all files are accepted
     //use it without any paras can clear the filter conditions
     void setFilterLabelConditions(QString name = "", QColor color=Qt::transparent);
-    //select mutiple labels to filter files, file has any one of these label is accepted
+    //select multiple labels to filter files, file has any one of these label is accepted
     void setMutipleLabelConditions(QStringList names, QList<QColor> colors);
     //give blur name to search color labels, can set CaseSensitive or not
     void setLabelBlurName(QString blurName = "", bool CaseSensitive = false);

@@ -13,7 +13,7 @@ peony (2.2.0) unstable; urgency=medium
     - Fix untranslated issues (window title, close button tips, right menu
       view type).
     - Support building and running in qt5.6 and glib2.48.
-    - Suport advance search with mutiple conditions.
+    - Support advance search with multiple conditions.
   * debian/libpeony2.symbols:
     - update symbols file.
 

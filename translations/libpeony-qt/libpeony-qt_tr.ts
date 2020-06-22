@@ -1031,7 +1031,7 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</translation
     </message>
     <message>
         <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="242"/>
-        <source>Can not get a default application for openning %1, do you want open it with text format?</source>
+        <source>Can not get a default application for opening %1, do you want open it with text format?</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1047,17 +1047,17 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</translation
 <context>
     <name>Peony::FileMoveOperation</name>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="783"/>
+        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="786"/>
         <source>Invalid move operation, cannot move a file itself.</source>
         <translation>Geçersiz taşıma işlemi, bir dosyanın kendisini taşıyamaz.</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="796"/>
+        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="799"/>
         <source>Invalid Operation.</source>
         <translation>Geçersiz İşlem.</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="809"/>
+        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="812"/>
         <source>Invalid Operation</source>
         <translation>Geçersiz İşlem.</translation>
     </message>
@@ -1065,7 +1065,7 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</translation
 <context>
     <name>Peony::FileOperationAfterProgressPage</name>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="349"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="339"/>
         <source>&amp;More Details</source>
         <translation>Daha Fazla Ayrıntı</translation>
     </message>
@@ -1156,22 +1156,22 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</translation
 <context>
     <name>Peony::FileOperationManager</name>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="147"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="148"/>
         <source>Can&apos;t delete.</source>
         <translation>Silinmedi</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="148"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="149"/>
         <source>You can&apos;t delete a file whenthe file is doing another operation</source>
         <translation>Dosya başka bir işlem yaparken dosyayı silemezsiniz</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="210"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="211"/>
         <source>File Operation is Busy</source>
         <translation>Dosya İşlemi Meşgul</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="211"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="212"/>
         <source>There have been one or more fileoperation(s) executing before. Youroperation will wait for executinguntil it/them done. If you really want to execute file operations parallelly anyway, you can change the default option &quot;Allow Parallel&quot; in option menu.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1183,12 +1183,12 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</translation
 <context>
     <name>Peony::FileOperationPreparePage</name>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="285"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="275"/>
         <source>counting:</source>
         <translation>hesaplama：</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="286"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="276"/>
         <source>state:</source>
         <translation>durum：</translation>
     </message>
@@ -1196,17 +1196,17 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</translation
 <context>
     <name>Peony::FileOperationProgressPage</name>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="308"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="298"/>
         <source>&amp;More Details</source>
         <translation>Daha Fazla Ayrıntı</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="319"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="309"/>
         <source>From:</source>
         <translation>Den：</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="320"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="310"/>
         <source>To:</source>
         <translation>-e：</translation>
     </message>
@@ -1260,23 +1260,22 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</translation
         <translation>%1 dosya，%2</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="169"/>
-        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="247"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="237"/>
         <source>%1 done, %2 total, %3 of %4.</source>
         <translation>bitti %1，toplam %2，%4 de %3。</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="199"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="185"/>
         <source>clearing: %1, %2 of %3</source>
         <translation>temizleniyor：%1，%3 de %2</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="240"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="230"/>
         <source>copying...</source>
         <translation>kopyalanıyor...</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="265"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-wizard.cpp" line="255"/>
         <source>Syncing...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1571,37 +1570,37 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</translation
         <translation>Temizle</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/search-bar-container.h" line="63"/>
+        <location filename="../../libpeony-qt/controls/tool-bar/search-bar-container.h" line="64"/>
         <source>all</source>
         <translation>tümü</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/search-bar-container.h" line="63"/>
+        <location filename="../../libpeony-qt/controls/tool-bar/search-bar-container.h" line="64"/>
         <source>file folder</source>
         <translation>dosya klasörü</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/search-bar-container.h" line="63"/>
+        <location filename="../../libpeony-qt/controls/tool-bar/search-bar-container.h" line="64"/>
         <source>image</source>
         <translation>resim</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/search-bar-container.h" line="64"/>
+        <location filename="../../libpeony-qt/controls/tool-bar/search-bar-container.h" line="65"/>
         <source>video</source>
         <translation>video</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/search-bar-container.h" line="64"/>
+        <location filename="../../libpeony-qt/controls/tool-bar/search-bar-container.h" line="65"/>
         <source>text file</source>
         <translation>metin dosyası</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/search-bar-container.h" line="64"/>
+        <location filename="../../libpeony-qt/controls/tool-bar/search-bar-container.h" line="65"/>
         <source>audio</source>
         <translation>ses</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/search-bar-container.h" line="64"/>
+        <location filename="../../libpeony-qt/controls/tool-bar/search-bar-container.h" line="65"/>
         <source>others</source>
         <translation>diğerleri</translation>
     </message>
