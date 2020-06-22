@@ -58,6 +58,9 @@ private:
     QFont m_current_font;
 
     QRect m_text_rect;
+
+    bool b_elide_text = false;
+    const int ELIDE_TEXT_LENGTH = 40;
 };
 
 }
