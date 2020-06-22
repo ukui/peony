@@ -142,7 +142,7 @@ public Q_SLOTS:
     void setUseDefaultNameSortOrder(bool use);
     void setSortFolderFirst(bool folderFirst);
 
-    //mutiple filter conditions for new advance search
+    //multiple filter conditions for new advance search
     void addFilterCondition(int option, int classify, bool updateNow = false);
     void removeFilterCondition(int option, int classify, bool updateNow = false);
     void clearConditions();

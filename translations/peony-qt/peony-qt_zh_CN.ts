@@ -42,37 +42,37 @@
         <translation>后退</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="114"/>
+        <location filename="../../src/control/header-bar.cpp" line="111"/>
         <source>Go Forward</source>
         <translation>前进</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="139"/>
+        <location filename="../../src/control/header-bar.cpp" line="141"/>
         <source>Search</source>
         <translation>搜索</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="149"/>
+        <location filename="../../src/control/header-bar.cpp" line="151"/>
         <source>View Type</source>
         <translation>视图类型</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="176"/>
+        <location filename="../../src/control/header-bar.cpp" line="178"/>
         <source>Sort Type</source>
         <translation>排序类型</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="202"/>
+        <location filename="../../src/control/header-bar.cpp" line="204"/>
         <source>Option</source>
         <translation>选项</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="244"/>
+        <location filename="../../src/control/header-bar.cpp" line="246"/>
         <source>Operate Tips</source>
         <translation>操作提示</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="245"/>
+        <location filename="../../src/control/header-bar.cpp" line="247"/>
         <source>Don&apos;t find any terminal, please install at least one terminal!</source>
         <translation>没有找到任何终端插件，请确认您至少安装了一个！</translation>
     </message>
@@ -88,12 +88,12 @@
 <context>
     <name>HeaderBarContainer</name>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="532"/>
+        <location filename="../../src/control/header-bar.cpp" line="534"/>
         <source>Minimize</source>
         <translation>最小化</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="544"/>
+        <location filename="../../src/control/header-bar.cpp" line="546"/>
         <source>Maximize/Restore</source>
         <translation>最大化/还原</translation>
     </message>
@@ -106,7 +106,7 @@
         <translation type="vanished">最大化</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="565"/>
+        <location filename="../../src/control/header-bar.cpp" line="567"/>
         <source>Close</source>
         <translation>关闭</translation>
     </message>
@@ -130,12 +130,12 @@
         <translation>重做</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1082"/>
+        <location filename="../../src/windows/main-window.cpp" line="1097"/>
         <source>Delete Permanently</source>
         <translation>永久删除</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1083"/>
+        <location filename="../../src/windows/main-window.cpp" line="1098"/>
         <source>Are you sure that you want to delete these files? Once you start a deletion, the files deleting will never be restored again.</source>
         <translation>您确定要删除这些文件吗？一旦开始删除，这些文件将不可再恢复。</translation>
     </message>

@@ -41,7 +41,7 @@ const QString SearchVFSUriParser:: parseSearchKey(const QString &uri, const QStr
         search_str += "&name_regexp="+key;
     if (search_content)
         search_str += "&content_regexp="+key;
-    //mutiple name key search
+    //multiple name key search
     if (extend_key != "")
         search_str += "&extend_regexp="+extend_key;
     else if (! search_file_name && ! search_content && extend_key=="")
