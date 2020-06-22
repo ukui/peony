@@ -106,6 +106,11 @@ void DesktopIndexWidget::paintEvent(QPaintEvent *e)
     p.save();
     p.translate(0, 5 + m_delegate->getView()->iconSize().height() + 5);
 
+    if (b_elide_text)
+    {
+        int  charWidth = opt.fontMetrics.averageCharWidth();
+        m_option.text = opt.fontMetrics.elidedText(m_option.text, Qt::ElideRight, ELIDE_TEXT_LENGTH * charWidth);
+    }
     // draw text shadow
     p.save();
     p.translate(1, 1);
@@ -209,6 +214,7 @@ void DesktopIndexWidget::updateItem()
     m_delegate->initStyleOption(&m_option, m_index);
     QSize size = m_delegate->sizeHint(m_option, m_index);
     auto visualRect = m_delegate->getView()->visualRect(m_index);
+    auto rectCopy = visualRect;
     move(visualRect.topLeft());
     setFixedWidth(visualRect.width());
 
@@ -216,7 +222,22 @@ void DesktopIndexWidget::updateItem()
 
     int rawHeight = size.height();
     auto textSize = Peony::DirectoryView::IconViewTextHelper::getTextSizeForIndex(m_option, m_index, 2);
-    int fixedHeight = 5 + m_delegate->getView()->iconSize().height() + 5 + textSize.height() + 5;
+    int fixedHeight = 5 + m_delegate->getView()->iconSize().height() + 5 + textSize.height() + 10;
+
+    int y_bottom = rectCopy.y() + fixedHeight;
+    qDebug() << "Y:" <<rectCopy.y() <<fixedHeight <<m_delegate->getView()->height();
+    b_elide_text = false;
+    if ( y_bottom > m_delegate->getView()->height() && m_option.text.length() > ELIDE_TEXT_LENGTH)
+    {
+        b_elide_text = true;
+        int  charWidth = m_option.fontMetrics.averageCharWidth();
+        m_option.text = m_option.fontMetrics.elidedText(m_option.text, Qt::ElideRight, ELIDE_TEXT_LENGTH * charWidth);
+        //recount size
+        textSize = Peony::DirectoryView::IconViewTextHelper::getTextSizeForIndex(m_option, m_index, 2);
+        fixedHeight = 5 + m_delegate->getView()->iconSize().height() + 5 + textSize.height() + 10;
+    }
+
+    qDebug() << "updateItem fixedHeight:" <<fixedHeight <<rawHeight <<m_option.text;
     if (fixedHeight < rawHeight)
         fixedHeight = rawHeight;
 
@@ -252,7 +273,7 @@ void DesktopIndexWidget::updateItem()
     m_text_rect = textRect;
 
     //m_option.font = font;
-    auto opt = m_option;
+    //auto opt = m_option;
 
     qDebug()<<textRect;
 //    setFixedHeight(textRect.bottom() + 10);
