@@ -50,10 +50,6 @@ void FileOperation::cancel()
 
 void FileOperation::notifyFileWatcherOperationFinished()
 {
-    //fix qt5.6 copy and paste file crash issue
-    if (isCancelled())
-        return;
-
     if (!qApp->allWidgets().isEmpty()) {
         // notify operation for file watchers.
         auto info = this->getOperationInfo();

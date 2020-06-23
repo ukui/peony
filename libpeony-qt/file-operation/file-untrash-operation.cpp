@@ -222,5 +222,5 @@ retry:
     }
 
     operationFinished();
-    //notifyFileWatcherOperationFinished();
+    notifyFileWatcherOperationFinished();
 }

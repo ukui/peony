@@ -843,7 +843,7 @@ start:
     qDebug()<<"finished";
 end:
     Q_EMIT operationFinished();
-    //notifyFileWatcherOperationFinished();
+    notifyFileWatcherOperationFinished();
 }
 
 void FileMoveOperation::cancel()
