@@ -23,7 +23,7 @@ DEFINES += QAPPLICATION_CLASS=QApplication
 
 PKGCONFIG +=gio-2.0 glib-2.0 gio-unix-2.0
 LIBS +=-lgio-2.0 -lglib-2.0 -lX11
-CONFIG += c++11 link_pkgconfig no_keywords
+CONFIG += c++11 link_pkgconfig no_keywords lrelease
 
 LIBS += -L$$PWD/../libpeony-qt/ -lpeony
 
@@ -55,10 +55,7 @@ INCLUDEPATH    += ../plugin-iface
 target.path = /usr/bin
 INSTALLS += target
 
-translation.path = /usr/share/peony-qt
-translation.files += ../translations/peony-qt/*.ts
-translation.files += ../translations/peony-qt/*.qm
-INSTALLS += translation
+QM_FILES_INSTALL_PATH = /usr/share/peony-qt
 
 data.path = /usr/share/applications
 data.files += ../data/peony.desktop

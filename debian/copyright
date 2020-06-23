@@ -359,7 +359,6 @@ Files: CONTRIBUTING.md
        plugin/menuplugintest1.json
        plugin/plugin.pro
        translations/clean-translated-resources.sh
-       translations/update-translations.sh
        peony-qt-desktop/desktop-icon-view-delegate.cpp
        peony-qt-desktop/desktop-icon-view-delegate.h
        peony-qt-desktop/desktop-icon-view.cpp
