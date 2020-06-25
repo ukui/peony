@@ -134,7 +134,7 @@ void ListViewDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, 
             view->setSelections(QStringList()<<uri);
             view->scrollToSelection(uri);
         });
-    });
+    }, Qt::BlockingQueuedConnection);
 
     fileOpMgr->startOperation(renameOp, true);
 }

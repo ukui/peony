@@ -306,7 +306,7 @@ void IconViewDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, 
                 getView()->setSelections(QStringList()<<uri);
                 getView()->scrollToSelection(uri);
             });
-        });
+        }, Qt::BlockingQueuedConnection);
 
         fileOpMgr->startOperation(renameOp, true);
     }
