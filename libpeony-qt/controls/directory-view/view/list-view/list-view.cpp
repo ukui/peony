@@ -254,8 +254,8 @@ void ListView::updateGeometries()
 
     QStyleOptionViewItem opt = viewOptions();
     int height = itemDelegate()->sizeHint(opt, QModelIndex()).height();
-    setViewportMargins(0, header()->height(), 0, height);
     verticalScrollBar()->setMaximum(verticalScrollBar()->maximum() + 1);
+    setViewportMargins(0, header()->height(), 0, height);
 }
 
 void ListView::wheelEvent(QWheelEvent *e)
