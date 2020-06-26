@@ -276,6 +276,11 @@ void IconViewIndexWidget::adjustPos()
     if (m_index.model() != view->model())
         return;
 
+    if (!view->selectionModel()->selectedIndexes().contains(m_index)) {
+        this->close();
+        return;
+    }
+
     auto visualRect = view->visualRect(m_index);
     if (this->mapToParent(QPoint()) != visualRect.topLeft())
         this->move(visualRect.topLeft());

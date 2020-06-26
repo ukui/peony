@@ -74,6 +74,14 @@ DesktopIndexWidget::~DesktopIndexWidget()
 
 void DesktopIndexWidget::paintEvent(QPaintEvent *e)
 {
+    auto view = m_delegate->getView();
+    if (!view->selectionModel()->selectedIndexes().contains(m_index)) {
+        view->m_real_do_edit = false;
+        view->m_edit_trigger_timer.stop();
+        this->close();
+        return;
+    }
+
     //qDebug()<<"paint";
     auto visualRect = m_delegate->getView()->visualRect(m_index);
     move(visualRect.topLeft());
@@ -88,7 +96,6 @@ void DesktopIndexWidget::paintEvent(QPaintEvent *e)
     p.drawRoundedRect(this->rect(), 6, 6);
     p.restore();
 
-    auto view = m_delegate->getView();
     //auto font = view->getViewItemFont(&m_option);
 
     auto opt = m_option;
@@ -176,6 +183,13 @@ void DesktopIndexWidget::mousePressEvent(QMouseEvent *event)
                         if (special_index)
                             return ;
 
+                        if (!view->selectionModel()->selectedIndexes().contains(m_index)) {
+                            view->m_real_do_edit = false;
+                            view->m_edit_trigger_timer.stop();
+                            this->close();
+                            return;
+                        }
+
                         view->setIndexWidget(m_index, nullptr);
                         view->edit(m_index);
                     }
@@ -202,6 +216,14 @@ void DesktopIndexWidget::mousePressEvent(QMouseEvent *event)
 
 void DesktopIndexWidget::mouseDoubleClickEvent(QMouseEvent *event)
 {
+    auto view = m_delegate->getView();
+    if (!view->selectionModel()->selectedIndexes().contains(m_index)) {
+        view->m_real_do_edit = false;
+        view->m_edit_trigger_timer.stop();
+        this->close();
+        return;
+    }
+
     m_delegate->getView()->doubleClicked(m_index);
     m_delegate->getView()->setIndexWidget(m_index, nullptr);
     return;

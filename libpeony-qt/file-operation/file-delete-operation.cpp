@@ -133,7 +133,7 @@ void FileDeleteOperation::run()
     }
 
     Q_EMIT operationFinished();
-    notifyFileWatcherOperationFinished();
+    //notifyFileWatcherOperationFinished();
 }
 
 void FileDeleteOperation::cancel()

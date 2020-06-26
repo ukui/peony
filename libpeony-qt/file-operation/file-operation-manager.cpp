@@ -105,7 +105,7 @@ void FileOperationManager::startOperation(FileOperation *operation, bool addToHi
     QApplication::setQuitOnLastWindowClosed(false);
 
     connect(operation, &FileOperation::operationFinished, this, [=]() {
-        //operation->notifyFileWatcherOperationFinished();
+        operation->notifyFileWatcherOperationFinished();
         auto settings = GlobalSettings::getInstance();
         bool runbackend = settings->getInstance()->getValue(RESIDENT_IN_BACKEND).toBool();
         QApplication::setQuitOnLastWindowClosed(!runbackend);
@@ -123,7 +123,7 @@ void FileOperationManager::startOperation(FileOperation *operation, bool addToHi
                 }
             }
         });
-    });
+    }, Qt::BlockingQueuedConnection);
 
     auto operationInfo = operation->getOperationInfo();
 
@@ -186,7 +186,7 @@ void FileOperationManager::startOperation(FileOperation *operation, bool addToHi
                        this, &FileOperationManager::handleError,
                        Qt::BlockingQueuedConnection);
 
-    operation->connect(operation, &FileOperation::operationFinished, [=]() {
+    operation->connect(operation, &FileOperation::operationFinished, this, [=](){
         if (operation->hasError()) {
             this->clearHistory();
             return ;
@@ -203,7 +203,7 @@ void FileOperationManager::startOperation(FileOperation *operation, bool addToHi
                 this->clearHistory();
             }
         }
-    });
+    }, Qt::BlockingQueuedConnection);
 
     if (!allowParallel) {
         if (m_thread_pool->activeThreadCount() > 0) {
@@ -221,13 +221,8 @@ void FileOperationManager::startOperation(FileOperation *operation, bool addToHi
         operation->setParent(m_thread_pool);
         m_thread_pool->start(operation);
     } else {
-        QtConcurrent::run([=] {
-            operation->setParent(m_thread_pool);
-            operation->setAutoDelete(false);
-            operation->run();
-            operation->setParent(nullptr);
-            operation->deleteLater();
-        });
+        operation->setParent(m_thread_pool);
+        m_thread_pool->start(operation);
     }
 }
 
