@@ -56,5 +56,6 @@ unix {
     pcfile.files = development-files/peony.pc
     INSTALLS += pcfile
 
+    QM_FILES_RESOURCE_PREFIX = ../translations/libpeony-qt
     QM_FILES_INSTALL_PATH = /usr/share/libpeony-qt
 }

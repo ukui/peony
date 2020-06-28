@@ -64,6 +64,7 @@ HEADERS += \
 target.path = /usr/bin
 !isEmpty(target.path): INSTALLS += target
 
+QM_FILES_RESOURCE_PREFIX = ../translations/peony-qt-desktop
 QM_FILES_INSTALL_PATH = /usr/share/peony-qt-desktop
 
 data.path = /etc/xdg/autostart
