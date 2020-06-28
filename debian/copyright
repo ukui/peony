@@ -424,6 +424,7 @@ Files: CONTRIBUTING.md
        translations/peony-qt-desktop/peony-qt-desktop_tr.ts
        translations/peony-qt/peony-qt_tr.ts
        peony-qt-plugin-test/peony-qt-menu-plugin-mate-terminal/translations/peony-qt-mate-terminal-extension_zh_CN.ts
+       peony-qt-plugin-test/peony-qt-menu-plugin-mate-terminal/translations/peony-qt-mate-terminal-extension_tr.ts
        debian/*
        data/*
        doxygen/*
