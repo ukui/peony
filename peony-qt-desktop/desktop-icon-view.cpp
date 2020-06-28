@@ -690,6 +690,7 @@ void DesktopIconView::invertSelections()
     const QItemSelection currentSelection = selectionModel->selection();
     this->selectAll();
     selectionModel->select(currentSelection, QItemSelectionModel::Deselect);
+    clearAllIndexWidgets();
 }
 
 void DesktopIconView::scrollToSelection(const QString &uri)
