@@ -249,3 +249,81 @@ std::shared_ptr<Volume> VolumeManager::getVolumeFromMount(const std::shared_ptr<
     tmp = std::make_shared<Volume>(volume, true);
     return tmp;
 }
+
+QString Drive::name()
+{
+    if (!m_drive)
+        return nullptr;
+    char *name = g_drive_get_name(m_drive);
+    QString value = name;
+    g_free(name);
+    return value;
+}
+
+QString Drive::iconName()
+{
+    if (!m_drive)
+        return nullptr;
+    GThemedIcon *g_icon = G_THEMED_ICON(g_drive_get_icon(m_drive));
+    const gchar* const* icon_names = g_themed_icon_get_names(G_THEMED_ICON (g_icon));
+    g_object_unref(g_icon);
+    return *icon_names;
+}
+
+QString Drive::symbolicIconName()
+{
+    if (!m_drive)
+        return nullptr;
+    GThemedIcon *g_icon = G_THEMED_ICON(g_drive_get_symbolic_icon(m_drive));
+    const gchar* const* icon_names = g_themed_icon_get_names(G_THEMED_ICON (g_icon));
+    g_object_unref(g_icon);
+    return *icon_names;
+}
+
+QString Volume::name()
+{
+    char *name = g_volume_get_name(m_volume);
+    QString value = name;
+    g_free(name);
+    return value;
+}
+
+QString Volume::iconName()
+{
+    GThemedIcon *g_icon = G_THEMED_ICON(g_volume_get_icon(m_volume));
+    const gchar* const* icon_names = g_themed_icon_get_names(G_THEMED_ICON (g_icon));
+    g_object_unref(g_icon);
+    return *icon_names;
+}
+
+QString Volume::symbolicIconName()
+{
+    GThemedIcon *g_icon = G_THEMED_ICON(g_volume_get_symbolic_icon(m_volume));
+    const gchar* const* icon_names = g_themed_icon_get_names(G_THEMED_ICON (g_icon));
+    g_object_unref(g_icon);
+    return *icon_names;
+}
+
+QString Mount::name()
+{
+    char *name = g_mount_get_name(m_mount);
+    QString value = name;
+    g_free(name);
+    return value;
+}
+
+QString Mount::iconName()
+{
+    GThemedIcon *g_icon = G_THEMED_ICON(g_mount_get_icon(m_mount));
+    const gchar* const* icon_names = g_themed_icon_get_names(G_THEMED_ICON (g_icon));
+    g_object_unref(g_icon);
+    return *icon_names;
+}
+
+QString Mount::symbolicIconName()
+{
+    GThemedIcon *g_icon = G_THEMED_ICON(g_mount_get_symbolic_icon(m_mount));
+    const gchar* const* icon_names = g_themed_icon_get_names(G_THEMED_ICON (g_icon));
+    g_object_unref(g_icon);
+    return *icon_names;
+}
