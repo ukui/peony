@@ -268,7 +268,7 @@ QString Drive::iconName()
     const gchar* const* icon_names = g_themed_icon_get_names(G_THEMED_ICON (g_icon));
     g_object_unref(g_icon);
     if (! icon_names)
-        return "harddisk";
+        return "drive-harddisk";
     return *icon_names;
 }
 
@@ -280,7 +280,7 @@ QString Drive::symbolicIconName()
     const gchar* const* icon_names = g_themed_icon_get_names(G_THEMED_ICON (g_icon));
     g_object_unref(g_icon);
     if (! icon_names)
-        return "harddisk";
+        return "drive-harddisk";
     return *icon_names;
 }
 
@@ -298,7 +298,7 @@ QString Volume::iconName()
     const gchar* const* icon_names = g_themed_icon_get_names(G_THEMED_ICON (g_icon));
     g_object_unref(g_icon);
     if (! icon_names)
-        return "harddisk";
+        return "drive-harddisk";
     return *icon_names;
 }
 
@@ -308,7 +308,7 @@ QString Volume::symbolicIconName()
     const gchar* const* icon_names = g_themed_icon_get_names(G_THEMED_ICON (g_icon));
     g_object_unref(g_icon);
     if (! icon_names)
-        return "harddisk";
+        return "drive-harddisk";
     return *icon_names;
 }
 
@@ -326,7 +326,7 @@ QString Mount::iconName()
     const gchar* const* icon_names = g_themed_icon_get_names(G_THEMED_ICON (g_icon));
     g_object_unref(g_icon);
     if (! icon_names)
-        return "harddisk";
+        return "drive-harddisk";
     return *icon_names;
 }
 
@@ -336,6 +336,6 @@ QString Mount::symbolicIconName()
     const gchar* const* icon_names = g_themed_icon_get_names(G_THEMED_ICON (g_icon));
     g_object_unref(g_icon);
     if (! icon_names)
-        return "harddisk";
+        return "drive-harddisk";
     return *icon_names;
 }
