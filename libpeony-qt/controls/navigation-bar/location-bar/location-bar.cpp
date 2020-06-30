@@ -138,9 +138,9 @@ void LocationBar::setRootUri(const QString &uri)
         if (FileUtils::isMountRoot(tmp))
             break;
 
-        if (url.path() == QStandardPaths::writableLocation(QStandardPaths::HomeLocation)) {
-            break;
-        }
+//        if (url.path() == QStandardPaths::writableLocation(QStandardPaths::HomeLocation)) {
+//            break;
+//        }
         tmp = Peony::FileUtils::getParentUri(tmp);
     }
 
