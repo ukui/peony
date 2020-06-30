@@ -126,9 +126,11 @@ bool X11WindowManager::eventFilter(QObject *watched, QEvent *event)
                 //NOTE: use x11 move will ungrab the window focus
                 //hide and show will restore the focus and it seems
                 //there is no bad effect for peony main window.
-                if (!m_current_widget->mouseGrabber()) {
-                    m_current_widget->grabMouse();
-                    m_current_widget->releaseMouse();
+                if (isTouchMove) {
+                    if (!m_current_widget->mouseGrabber()) {
+                        m_current_widget->grabMouse();
+                        m_current_widget->releaseMouse();
+                    }
                 }
 
                 if (qobject_cast<NavigationTabBar *>(m_current_widget)) {

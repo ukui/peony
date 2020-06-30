@@ -882,9 +882,11 @@ void MainWindow::mouseMoveEvent(QMouseEvent *e)
         XSendEvent(display, this->effectiveWinId(), False, ButtonReleaseMask, &xevent);
         XFlush(display);
 
-        if (!this->mouseGrabber()) {
-            this->grabMouse();
-            this->releaseMouse();
+        if (e->source() == Qt::MouseEventSynthesizedByQt) {
+            if (!this->mouseGrabber()) {
+                this->grabMouse();
+                this->releaseMouse();
+            }
         }
 
         m_is_draging = false;
