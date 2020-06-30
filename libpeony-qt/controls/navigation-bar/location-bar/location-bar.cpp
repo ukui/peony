@@ -164,6 +164,7 @@ void LocationBar::clearButtons()
 
 void LocationBar::addButton(const QString &uri, bool setIcon, bool setMenu)
 {
+    setIcon = true;
     QToolButton *button = new QToolButton(this);
     button->setAutoRaise(true);
     button->setStyle(LocationBarButtonStyle::getStyle());
@@ -315,6 +316,8 @@ void LocationBar::doLayout()
     for (auto button : m_buttons) {
         button->setVisible(true);
         button->resize(button->sizeHint().width(), button->height());
+        button->setToolButtonStyle(Qt::ToolButtonTextOnly);
+        button->adjustSize();
         sizeHints<<button->sizeHint().width();
         button->setVisible(false);
     }
@@ -346,7 +349,18 @@ void LocationBar::doLayout()
         auto button = m_buttons.values().at(index);
         button->setVisible(true);
         button->move(offset, 0);
+        if (index == sizeHints.count() - visibleButtonCount) {
+            button->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+            button->adjustSize();
+        }
         offset += button->width();
+    }
+
+    if (visibleButtonCount == 0 && !m_buttons.isEmpty()) {
+        auto button = m_buttons.values().at(sizeHints.count() - 1);
+        button->setVisible(true);
+        button->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+        button->resize(totalWidth - 20, button->height());
     }
 
     int spaceCount = 0;
