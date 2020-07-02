@@ -4,3 +4,7 @@ data/peony-computer.desktop usr/share/applications
 data/peony-home.desktop usr/share/applications
 data/peony-trash.desktop usr/share/applications
 data/peony-desktop.desktop etc/xdg/autostart
+
+libpeony-qt/.qm/*.qm usr/share/libpeony-qt
+peony-qt-desktop/.qm/*.qm usr/share/peony-qt-desktop
+src/.qm/*.qm usr/share/peony-qt
