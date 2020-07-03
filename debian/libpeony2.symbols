@@ -34,6 +34,22 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZN13FileLabelItemD0Ev@Base 2.1.0
  _ZN13FileLabelItemD1Ev@Base 2.1.0
  _ZN13FileLabelItemD2Ev@Base 2.1.0
+ _ZN13Format_Dialog11colseFormatEb@Base 2.2.0
+ _ZN13Format_Dialog11qt_metacallEN11QMetaObject4CallEiPPv@Base 2.2.0
+ _ZN13Format_Dialog11qt_metacastEPKc@Base 2.2.0
+ _ZN13Format_Dialog12acceptFormatEb@Base 2.2.0
+ _ZN13Format_Dialog12kdisk_formatEPKcS1_S1_S1_Pi@Base 2.2.0
+ _ZN13Format_Dialog13cancel_formatEPKc@Base 2.2.0
+ _ZN13Format_Dialog16ensure_format_cbEP16CreateformatData@Base 2.2.0
+ _ZN13Format_Dialog16ensure_unused_cbEP16CreateformatData@Base 2.2.0
+ _ZN13Format_Dialog16staticMetaObjectE@Base 2.2.0
+ _ZN13Format_Dialog28get_object_from_block_deviceEP13_UDisksClientPKc@Base 2.2.0
+ _ZN13Format_Dialog6is_isoEPKc@Base 2.2.0
+ _ZN13Format_DialogC1ERK7QStringPN5Peony19SideBarAbstractItemEP7QWidget@Base 2.2.0
+ _ZN13Format_DialogC2ERK7QStringPN5Peony19SideBarAbstractItemEP7QWidget@Base 2.2.0
+ _ZN13Format_DialogD0Ev@Base 2.2.0
+ _ZN13Format_DialogD1Ev@Base 2.2.0
+ _ZN13Format_DialogD2Ev@Base 2.2.0
  _ZN14FileLabelModel10insertRowsEiiRK11QModelIndex@Base 2.1.0
  _ZN14FileLabelModel10itemFromIdEi@Base 2.1.0
  _ZN14FileLabelModel10removeRowsEiiRK11QModelIndex@Base 2.1.0
@@ -73,6 +89,7 @@ libpeony.so.2 libpeony2 #MINVER#
  (optional=templinst)_ZN16QFutureInterfaceIvED0Ev@Base 2.0.0
  (optional=templinst)_ZN16QFutureInterfaceIvED1Ev@Base 2.0.0
  (optional=templinst)_ZN16QFutureInterfaceIvED2Ev@Base 2.0.0
+ _ZN16Ui_Format_Dialog7setupUiEP7QDialog@Base 2.2.0
  (optional=templinst)_ZN17QtMetaTypePrivate19IteratorOwnerCommonIN5QListI11QModelIndexE14const_iteratorEE5equalEPKPvS8_@Base 2.0.0
  (optional=templinst)_ZN17QtMetaTypePrivate19IteratorOwnerCommonIN5QListI11QModelIndexE14const_iteratorEE6assignEPPvPKS6_@Base 2.0.0
  (optional=templinst)_ZN17QtMetaTypePrivate19IteratorOwnerCommonIN5QListI11QModelIndexE14const_iteratorEE7advanceEPPvi@Base 2.0.0
@@ -149,12 +166,11 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZN18QStyleOptionButtonD2Ev@Base 2.1.0
  _ZN19ConnectServerDialog11qt_metacallEN11QMetaObject4CallEiPPv@Base 2.0.0
  _ZN19ConnectServerDialog11qt_metacastEPKc@Base 2.0.0
- _ZN19ConnectServerDialog12savePasswordEv@Base 2.0.0
  _ZN19ConnectServerDialog16staticMetaObjectE@Base 2.0.0
+ _ZN19ConnectServerDialog3uriEv@Base 2.2.0
  _ZN19ConnectServerDialog4userEv@Base 2.0.0
  _ZN19ConnectServerDialog6domainEv@Base 2.0.0
  _ZN19ConnectServerDialog8passwordEv@Base 2.0.0
- _ZN19ConnectServerDialog9anonymousEv@Base 2.0.0
  _ZN19ConnectServerDialogC1EP7QWidget@Base 2.0.0
  _ZN19ConnectServerDialogC2EP7QWidget@Base 2.0.0
  _ZN19ConnectServerDialogD0Ev@Base 2.0.0
@@ -169,6 +185,7 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZN22LocationBarButtonStyleD2Ev@Base 2.2.0
  _ZN22QStyleOptionToolButtonD1Ev@Base 2.0.0
  _ZN22QStyleOptionToolButtonD2Ev@Base 2.0.0
+ _ZN22Ui_ConnectServerDialog13retranslateUiEP7QDialog@Base 2.2.0
  (arch= !s390x)_ZN22Ui_ConnectServerDialog7setupUiEP7QDialog@Base 2.0.0
  (optional=templinst|arch= !s390x !ppc64el)_ZN4QMapI7QString8QVariantE13detach_helperEv@Base 2.0.0
  (optional=templinst)_ZN4QMapI7QString8QVariantE6removeERKS0_@Base 2.0.0
@@ -183,6 +200,7 @@ libpeony.so.2 libpeony2 #MINVER#
  (optional=templinst|arch= !s390x !ppc64el)_ZN4QMapIi7QStringE13detach_helperEv@Base 2.0.0
  _ZN5Peony10wrapGDriveEP7_GDrive@Base 2.0.0
  _ZN5Peony10wrapGMountEP7_GMount@Base 2.0.0
+ _ZN5Peony11FileInfoJob10getAppNameE7QString@Base 2.2.0
  _ZN5Peony11FileInfoJob10queryAsyncEv@Base 2.0.0
  _ZN5Peony11FileInfoJob11infoUpdatedEv@Base 2.0.0
  _ZN5Peony11FileInfoJob11qt_metacallEN11QMetaObject4CallEiPPv@Base 2.0.0
@@ -731,6 +749,7 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZN5Peony14FileEnumerator11handleErrorEP7_GError@Base 2.0.0
  _ZN5Peony14FileEnumerator11qt_metacallEN11QMetaObject4CallEiPPv@Base 2.0.0
  _ZN5Peony14FileEnumerator11qt_metacastEPKc@Base 2.0.0
+ _ZN5Peony14FileEnumerator12mountSuccessE7QString@Base 2.2.0
  _ZN5Peony14FileEnumerator13enumerateSyncEv@Base 2.0.0
  _ZN5Peony14FileEnumerator14enumerateAsyncEv@Base 2.0.0
  _ZN5Peony14FileEnumerator15childrenUpdatedERK11QStringList@Base 2.0.0
@@ -772,6 +791,7 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZN5Peony14MountOperation10aborted_cbEP16_GMountOperationPS0_@Base 2.0.0
  _ZN5Peony14MountOperation11qt_metacallEN11QMetaObject4CallEiPPv@Base 2.0.0
  _ZN5Peony14MountOperation11qt_metacastEPKc@Base 2.0.0
+ _ZN5Peony14MountOperation12mountSuccessE7QString@Base 2.2.0
  _ZN5Peony14MountOperation15ask_password_cbEP16_GMountOperationPKcS4_S4_17GAskPasswordFlagsPS0_@Base 2.0.0
  _ZN5Peony14MountOperation15ask_question_cbEP16_GMountOperationPcPS3_PS0_@Base 2.0.0
  _ZN5Peony14MountOperation16staticMetaObjectE@Base 2.0.0
@@ -1992,6 +2012,15 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZN5Peony35RecentAndTrashPropertiesPageFactoryD0Ev@Base 2.0.0
  _ZN5Peony35RecentAndTrashPropertiesPageFactoryD1Ev@Base 2.0.0
  _ZN5Peony35RecentAndTrashPropertiesPageFactoryD2Ev@Base 2.0.0
+ _ZN5Peony5Drive16symbolicIconNameEv@Base 2.2.0
+ _ZN5Peony5Drive4nameEv@Base 2.2.0
+ _ZN5Peony5Drive8iconNameEv@Base 2.2.0
+ _ZN5Peony5Mount16symbolicIconNameEv@Base 2.2.0
+ _ZN5Peony5Mount4nameEv@Base 2.2.0
+ _ZN5Peony5Mount8iconNameEv@Base 2.2.0
+ _ZN5Peony6Volume16symbolicIconNameEv@Base 2.2.0
+ _ZN5Peony6Volume4nameEv@Base 2.2.0
+ _ZN5Peony6Volume8iconNameEv@Base 2.2.0
  _ZN5Peony7SideBar10paintEventEP11QPaintEvent@Base 2.0.0
  _ZN5Peony7SideBar11qt_metacallEN11QMetaObject4CallEiPPv@Base 2.0.0
  _ZN5Peony7SideBar11qt_metacastEPKc@Base 2.0.0
@@ -2467,6 +2496,7 @@ libpeony.so.2 libpeony2 #MINVER#
  (arch=armel)_ZN9__gnu_cxx26__concurrence_unlock_errorD1Ev@Base 2.0.1
  (arch=armel)_ZN9__gnu_cxx26__concurrence_unlock_errorD2Ev@Base 2.0.1
  _ZNK13FileLabelItem10metaObjectEv@Base 2.1.0
+ _ZNK13Format_Dialog10metaObjectEv@Base 2.2.0
  _ZNK14FileLabelModel10metaObjectEv@Base 2.1.0
  _ZNK14FileLabelModel4dataERK11QModelIndexi@Base 2.1.0
  _ZNK14FileLabelModel5flagsERK11QModelIndex@Base 2.1.0
@@ -2948,6 +2978,7 @@ libpeony.so.2 libpeony2 #MINVER#
  (optional=templinst|arch=amd64)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony8FileInfoESaIS1_ELN9__gnu_cxx12_Lock_policyE2EED2Ev@Base 2.0.0
  (optional=templinst|arch= !s390x)_ZSt9__find_ifIPK7QStringN9__gnu_cxx5__ops16_Iter_equals_valIS1_EEET_S7_S7_T0_St26random_access_iterator_tag@Base 2.0.0
  _ZTI13FileLabelItem@Base 2.1.0
+ _ZTI13Format_Dialog@Base 2.2.0
  _ZTI14FileLabelModel@Base 2.1.0
  _ZTI16QFutureInterfaceIvE@Base 2.0.0
  _ZTI18BorderShadowEffect@Base 2.1.0
@@ -3130,6 +3161,7 @@ libpeony.so.2 libpeony2 #MINVER#
  (arch=armel)_ZTISt23_Sp_counted_ptr_inplaceIN5Peony8FileInfoESaIS1_ELN9__gnu_cxx12_Lock_policyE1EE@Base 2.0.1
  (arch=amd64)_ZTISt23_Sp_counted_ptr_inplaceIN5Peony8FileInfoESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE@Base 2.0.1
  _ZTS13FileLabelItem@Base 2.1.0
+ _ZTS13Format_Dialog@Base 2.2.0
  _ZTS14FileLabelModel@Base 2.1.0
  _ZTS16QFutureInterfaceIvE@Base 2.0.0
  _ZTS18BorderShadowEffect@Base 2.1.0
@@ -3312,6 +3344,7 @@ libpeony.so.2 libpeony2 #MINVER#
  (arch=armel)_ZTSSt23_Sp_counted_ptr_inplaceIN5Peony8FileInfoESaIS1_ELN9__gnu_cxx12_Lock_policyE1EE@Base 2.0.1
  (arch=amd64)_ZTSSt23_Sp_counted_ptr_inplaceIN5Peony8FileInfoESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE@Base 2.0.1
  _ZTV13FileLabelItem@Base 2.1.0
+ _ZTV13Format_Dialog@Base 2.2.0
  _ZTV14FileLabelModel@Base 2.1.0
  _ZTV16QFutureInterfaceIvE@Base 2.0.0
  _ZTV18BorderShadowEffect@Base 2.1.0
@@ -3498,6 +3531,7 @@ libpeony.so.2 libpeony2 #MINVER#
  is_registed@Base 2.0.0
  locale@Base 2.0.0
  (c++)"non-virtual thunk to ConnectServerDialog::~ConnectServerDialog()@Base" 2.0.0
+ (c++)"non-virtual thunk to Format_Dialog::~Format_Dialog()@Base" 2.2.0
  (c++)"non-virtual thunk to Peony::AdvanceSearchBar::~AdvanceSearchBar()@Base" 2.0.0
  (c++)"non-virtual thunk to Peony::AdvancedLocationBar::~AdvancedLocationBar()@Base" 2.0.0
  (c++)"non-virtual thunk to Peony::BasicPropertiesPage::~BasicPropertiesPage()@Base" 2.0.0
