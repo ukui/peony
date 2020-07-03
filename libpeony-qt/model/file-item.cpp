@@ -116,6 +116,9 @@ void FileItem::findChildrenAsync()
     m_expanded = true;
     Peony::FileEnumerator *enumerator = new Peony::FileEnumerator;
     enumerator->setEnumerateDirectory(m_info->uri());
+    enumerator->connect(enumerator, &FileEnumerator::mountSuccess, this, [=] (QString str) {
+        m_model->setRootUri(str);
+    });
     //NOTE: entry a new root might destroyed the current enumeration work.
     //the root item will be delete, so we should cancel the previous enumeration.
     enumerator->connect(this, &FileItem::cancelFindChildren, enumerator, &FileEnumerator::cancel);

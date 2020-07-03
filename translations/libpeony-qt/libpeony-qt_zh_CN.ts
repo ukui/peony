@@ -4,34 +4,129 @@
 <context>
     <name>ConnectServerDialog</name>
     <message>
-        <location filename="../../libpeony-qt/connect-server-dialog.ui" line="14"/>
+        <location filename="../../libpeony-qt/connect-server-dialog.ui" line="41"/>
         <source>Connect to Sever</source>
         <translation>连接到服务器</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/connect-server-dialog.ui" line="32"/>
-        <source>Domain</source>
-        <translation>域名</translation>
+        <location filename="../../libpeony-qt/connect-server-dialog.ui" line="89"/>
+        <source>server information</source>
+        <translation>服务器信息</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/connect-server-dialog.ui" line="39"/>
-        <source>Password</source>
+        <location filename="../../libpeony-qt/connect-server-dialog.ui" line="111"/>
+        <source>user information</source>
+        <translation>用户信息</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/connect-server-dialog.ui" line="141"/>
+        <source>tag</source>
+        <translation>标签</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/connect-server-dialog.ui" line="196"/>
+        <source>user</source>
+        <translation>用户</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/connect-server-dialog.ui" line="252"/>
+        <source>password</source>
         <translation>密码</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/connect-server-dialog.ui" line="55"/>
+        <location filename="../../libpeony-qt/connect-server-dialog.ui" line="308"/>
+        <source>protocol</source>
+        <translation>协议</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/connect-server-dialog.ui" line="351"/>
+        <source>server</source>
+        <translation>服务器</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/connect-server-dialog.ui" line="382"/>
+        <source>directory</source>
+        <translation>文件夹</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/connect-server-dialog.ui" line="411"/>
+        <source>SAMBA</source>
+        <translation>SAMBA</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/connect-server-dialog.ui" line="416"/>
+        <source>FTP</source>
+        <translation>FTP</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/connect-server-dialog.ui" line="445"/>
+        <source>/</source>
+        <translation>/</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/connect-server-dialog.ui" line="476"/>
+        <source>port</source>
+        <translation>端口</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/connect-server-dialog.ui" line="508"/>
+        <source>20</source>
+        <translation>20</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/connect-server-dialog.ui" line="513"/>
+        <source>21</source>
+        <translation>21</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/connect-server-dialog.ui" line="518"/>
+        <source>137</source>
+        <translation>137</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/connect-server-dialog.ui" line="523"/>
+        <source>138</source>
+        <translation>138</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/connect-server-dialog.ui" line="528"/>
+        <source>139</source>
+        <translation>139</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/connect-server-dialog.ui" line="533"/>
+        <source>445</source>
+        <translation>445</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/connect-server-dialog.ui" line="592"/>
+        <source>ok</source>
+        <translation>确定</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/connect-server-dialog.ui" line="623"/>
+        <source>cancel</source>
+        <translation>取消</translation>
+    </message>
+    <message>
+        <source>Domain</source>
+        <translation type="vanished">域名</translation>
+    </message>
+    <message>
+        <source>Password</source>
+        <translation type="vanished">密码</translation>
+    </message>
+    <message>
         <source>Save Password</source>
-        <translation>记住密码</translation>
+        <translation type="vanished">记住密码</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/connect-server-dialog.ui" line="62"/>
         <source>User</source>
-        <translation>用户名</translation>
+        <translation type="vanished">用户名</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/connect-server-dialog.ui" line="82"/>
         <source>Anonymous</source>
-        <translation>匿名登录</translation>
+        <translation type="vanished">匿名登录</translation>
     </message>
 </context>
 <context>
@@ -866,7 +961,7 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
     <message>
         <location filename="../../libpeony-qt/file-enumerator.cpp" line="280"/>
         <location filename="../../libpeony-qt/file-enumerator.cpp" line="284"/>
-        <location filename="../../libpeony-qt/file-enumerator.cpp" line="399"/>
+        <location filename="../../libpeony-qt/file-enumerator.cpp" line="404"/>
         <source>Error</source>
         <translation>错误</translation>
     </message>
@@ -874,8 +969,8 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
 <context>
     <name>Peony::FileItem</name>
     <message>
-        <location filename="../../libpeony-qt/model/file-item.cpp" line="124"/>
-        <location filename="../../libpeony-qt/model/file-item.cpp" line="166"/>
+        <location filename="../../libpeony-qt/model/file-item.cpp" line="127"/>
+        <location filename="../../libpeony-qt/model/file-item.cpp" line="169"/>
         <source>Error</source>
         <translation>错误</translation>
     </message>
@@ -1349,27 +1444,27 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
         <translation>点击空白区域编辑路径</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp" line="181"/>
+        <location filename="../../libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp" line="182"/>
         <source>Search &quot;%1&quot; in &quot;%2&quot;</source>
         <translation>在%2中搜索%1</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp" line="204"/>
+        <location filename="../../libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp" line="205"/>
         <source>File System</source>
         <translation>文件系统</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp" line="248"/>
+        <location filename="../../libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp" line="249"/>
         <source>&amp;Copy Directory</source>
         <translation>拷贝路径(&amp;C)</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp" line="250"/>
+        <location filename="../../libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp" line="251"/>
         <source>Open In New &amp;Tab</source>
         <translation>在新标签页中打开(&amp;T)</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp" line="254"/>
+        <location filename="../../libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp" line="255"/>
         <source>Open In &amp;New Window</source>
         <translation>在新窗口中打开(&amp;N)</translation>
     </message>
@@ -1381,7 +1476,7 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
 <context>
     <name>Peony::MountOperation</name>
     <message>
-        <location filename="../../libpeony-qt/mount-operation.cpp" line="82"/>
+        <location filename="../../libpeony-qt/mount-operation.cpp" line="87"/>
         <source>Operation Cancelled</source>
         <translation>操作被取消</translation>
     </message>
@@ -1574,37 +1669,37 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
         <translation>清空</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/search-bar-container.h" line="64"/>
+        <location filename="../../libpeony-qt/controls/tool-bar/search-bar-container.h" line="86"/>
         <source>all</source>
         <translation>全部</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/search-bar-container.h" line="64"/>
+        <location filename="../../libpeony-qt/controls/tool-bar/search-bar-container.h" line="86"/>
         <source>file folder</source>
         <translation>文件夹</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/search-bar-container.h" line="64"/>
+        <location filename="../../libpeony-qt/controls/tool-bar/search-bar-container.h" line="86"/>
         <source>image</source>
         <translation>图片</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/search-bar-container.h" line="65"/>
+        <location filename="../../libpeony-qt/controls/tool-bar/search-bar-container.h" line="87"/>
         <source>video</source>
         <translation>视频</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/search-bar-container.h" line="65"/>
+        <location filename="../../libpeony-qt/controls/tool-bar/search-bar-container.h" line="87"/>
         <source>text file</source>
         <translation>文本</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/search-bar-container.h" line="65"/>
+        <location filename="../../libpeony-qt/controls/tool-bar/search-bar-container.h" line="87"/>
         <source>audio</source>
         <translation>音频</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/search-bar-container.h" line="65"/>
+        <location filename="../../libpeony-qt/controls/tool-bar/search-bar-container.h" line="87"/>
         <source>others</source>
         <translation>其它</translation>
     </message>

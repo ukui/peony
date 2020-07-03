@@ -132,6 +132,8 @@ Q_SIGNALS:
      */
     void enumerateFinished(bool successed = false);
 
+    void mountSuccess (QString);
+
 public Q_SLOTS:
     void enumerateAsync();
     /*!
