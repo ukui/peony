@@ -28,11 +28,13 @@
 
 #include "menu-plugin-manager.h"
 
+#include "file-utils.h"
 #include "file-info.h"
 #include "file-info-job.h"
 
 #include <QAction>
 #include <QModelIndex>
+#include <format_dialog.h>
 
 #include <QDebug>
 
@@ -140,6 +142,28 @@ const QList<QAction *> SideBarMenu::constructFileSystemItemActions()
         w->show();
     });
 
+
+    /*
+     *  add format function
+     *  check device-iconname is  or not
+     *  if iconname is drive-harddisk-usb ,then add format funcion
+     */
+
+      QString  icon_name  = FileUtils::getFileIconName(m_uri);
+      auto flag = strstr(icon_name.toUtf8().constData(),"drive-harddisk-usb") == NULL?0:1;
+
+      if(flag){
+
+          l<<addAction(QIcon::fromTheme("preview-file"), tr("format"), [=]() {
+
+          Format_Dialog *fd  = new Format_Dialog(m_uri,m_item);
+
+          fd->show();
+
+
+      });
+
+    }
     return l;
 }
 

@@ -1,4 +1,4 @@
-peony (2.2.0) unstable; urgency=medium
+peony (2.2.0-0703) unstable; urgency=medium
 
   * New upstream release.
     - Refactor extensible directory view frameworks. Support view

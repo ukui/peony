@@ -1,0 +1,385 @@
+#include "format_dialog.h"
+#include "ui_format_dialog.h"
+#include <syslog.h>
+
+#include <QObject>
+
+using namespace  Peony;
+
+Format_Dialog::Format_Dialog(const QString &m_uris,SideBarAbstractItem *m_item,QWidget *parent) :
+    QDialog(parent),
+    ui(new Ui::Format_Dialog)
+{
+       ui->setupUi(this);
+
+       fm_uris = m_uris;
+       fm_item = m_item;
+
+
+       //from uris get the rom size
+       auto targetUri = FileUtils::getTargetUri(fm_uris);
+       GFile *fm_file = g_file_new_for_uri(targetUri .toUtf8().constData());
+
+       GFileInfo *fm_info = g_file_query_filesystem_info(fm_file, "*", nullptr, nullptr);
+       quint64 total = g_file_info_get_attribute_uint64(fm_info, G_FILE_ATTRIBUTE_FILESYSTEM_SIZE);
+
+       //get the rom size
+       char *total_format = g_format_size(total);
+       syslog(LOG_ERR,"total_format is  %s ,in format.cpp ",total_format);
+
+
+       //add the rom size value into  rom_size combox
+       ui->comboBox_rom_size->addItem(total_format);
+
+
+       connect(ui->pushButton_ok, SIGNAL(clicked(bool)), this, SLOT(acceptFormat(bool)));
+
+       connect(ui->pushButton_close, SIGNAL(clicked(bool)), this, SLOT(colseFormat(bool)));
+}
+
+void Format_Dialog::colseFormat(bool)
+{
+    syslog(LOG_ERR,"enter close format ...");
+
+    char dev_name[256] ={0};
+    //get device name
+    QString volname, devName, voldisplayname;
+
+    FileUtils::queryVolumeInfo(fm_uris, volname, devName, voldisplayname);
+    strncpy(dev_name,devName.toUtf8().constData(),sizeof(devName.toUtf8().constData()-1));
+
+    //cancel format function
+    cancel_format(dev_name);
+}
+
+void Format_Dialog::acceptFormat(bool)
+{
+    syslog (LOG_ERR, "click ok");
+
+    ui->pushButton_ok->setDisabled(TRUE);
+    ui->pushButton_close->setDisabled(TRUE);
+
+    //init the value
+    char rom_size[1024] ={0},rom_type[1024]={0},rom_name[1024]={0},dev_name[1024]={0};
+    int quick_clean = 0;
+
+
+    //get values from ui
+    strncpy(rom_size,ui->comboBox_rom_size->itemText(0).toUtf8().constData(),sizeof(ui->comboBox_rom_size->itemText(0).toUtf8().constData())-1);
+    strncpy(rom_type,ui->comboBox_system->currentText().toUtf8().constData(),sizeof(ui->comboBox_system->currentText().toUtf8().constData())-1);
+    strncpy(rom_name,ui->lineEdit_device_name->text().toUtf8().constData(),sizeof(ui->lineEdit_device_name->text().toUtf8().constData())-1);
+
+    quick_clean = ui->checkBox_clean_or_not->isChecked();
+
+    // umount device
+    fm_item ->unmount();
+
+    //get device name
+    QString volname, devName, voldisplayname;
+
+    FileUtils::queryVolumeInfo(fm_uris, volname, devName, voldisplayname);
+    strcpy(dev_name,devName.toUtf8().constData());
+
+    //debug
+    syslog(LOG_ERR,"rom_size is %s,rom_type is %s,rom_name is %s, devName is %s",
+           rom_size,rom_type,rom_name,dev_name);
+
+    //do format
+    //enter kdisk_format function
+
+    //init format_finish value
+    int format_value = 0;
+
+    //begin format
+    kdisk_format(dev_name,rom_type,quick_clean?"zero":NULL,rom_name,&format_value);
+
+}
+
+void Format_Dialog::cancel_format(const gchar* device_name){
+
+      this->close();
+
+//    UDisksObject *object ;
+//    UDisksBlock *block;
+//    UDisksClient *client =udisks_client_new_sync (NULL,NULL);
+//    object = get_object_from_block_device(client,device_name);
+//    block = udisks_object_get_block (object);
+//    GList *jobs;
+
+//    jobs = udisks_client_get_jobs_for_object (client,object);
+
+//    if(jobs != NULL){
+//                udisks_job_call_cancel_sync ((UDisksJob *)jobs->data,
+//                           g_variant_new ("a{sv}", NULL),
+//                           NULL,
+//                           NULL);
+//    }
+
+//    g_list_foreach (jobs, (GFunc) g_object_unref, NULL);
+//    g_list_free (jobs);
+//    g_clear_object(&client);
+//    g_object_unref(object);
+//    g_object_unref(block);
+
+
+};
+
+
+/*  is_iso  function to  check is iso or not
+ *
+ *  args : const gchar *device_path
+ *
+ *  device_path: device path
+ */
+gboolean Format_Dialog::is_iso(const gchar *device_path){
+    UDisksObject *object;
+    UDisksClient *client;
+    UDisksBlock *block;
+    client = udisks_client_new_sync(NULL,NULL);
+    object = get_object_from_block_device(client,device_path);
+    block = udisks_object_get_block(object);
+
+    syslog(LOG_ERR," enter is_iso ....");
+    syslog(LOG_ERR," block type=%s ",udisks_block_get_id_type(block));
+
+    if(g_strcmp0(udisks_block_get_id_type(block),"iso9660")==0)
+    {
+        syslog(LOG_ERR," enter is_iso  true....");
+        g_object_unref(object);
+        g_object_unref(block);
+        g_clear_object(&client);
+        return TRUE;
+    }
+
+    syslog(LOG_ERR," enter is_iso  false ....");
+    g_object_unref(object);
+    g_object_unref(block);
+    g_clear_object(&client);
+
+    return FALSE;
+
+};
+
+
+/*
+ * ensure_unused_cb   ensure to unused this
+ *
+ * args:
+ *
+ * CreateformatData *data: the data info device
+ *
+ * if is not iso , do ensure_format_cb.
+ *
+ * if is do format_disk
+ *
+ */
+void Format_Dialog::ensure_unused_cb(CreateformatData *data)
+{
+
+    syslog(LOG_ERR,"enter ensure_unused_cb.... ");
+    syslog(LOG_ERR,"device_name is %s ",data->device_name);
+
+    if(is_iso(data->device_name)==FALSE) {
+        syslog(LOG_ERR,"is_iso - > false");
+
+        ensure_format_cb (data);
+    }
+    else {
+
+        syslog(LOG_ERR,"is_iso - > true");
+        //ensure_format_disk(data);
+    }
+}
+
+static void createformatfree(CreateformatData *data)
+{
+
+    syslog(LOG_ERR,"enter  createformatfree  ....");
+
+    g_object_unref(data->object);
+    g_object_unref(data->block);
+    if(data->drive_object!=NULL)
+    {
+        g_object_unref(data->drive_object);
+    }
+    if(data->drive_block!=NULL)
+    {
+        g_object_unref(data->drive_block);
+    }
+    g_clear_object(&(data->client));
+
+    g_free(data);
+
+    syslog(LOG_ERR,"end  createformatfree  ....");
+
+}
+
+
+// format
+static void format_cb (GObject *source_object, GAsyncResult *res ,gpointer user_data){
+
+    static   int end_flag = -1;
+
+    syslog(LOG_ERR,"enter  format_cb ....");
+
+    CreateformatData *data = (CreateformatData *)user_data;
+    GError *error = NULL;
+    if (!udisks_block_call_format_finish (UDISKS_BLOCK (source_object), res,&error))
+    {
+        char *p = NULL;
+        if(NULL!=error&&NULL!=(p=strstr(error->message, "wipefs:"))){
+            notify_init("Peony");
+            NotifyNotification *notify;
+            QString title = QObject::tr("File Manager");
+            notify = notify_notification_new (title.toUtf8().constData(),
+                                              p,
+                                              "drive-removable-media-usb"
+                                              );
+            notify_notification_show(notify,NULL);
+            g_object_unref(G_OBJECT(notify));
+            notify_uninit();
+            g_clear_error(&error);
+        }
+        end_flag = -1;
+        *(data->format_finish) =  -1; //格式化失败
+
+    }
+    else
+        end_flag = 1;
+        *(data->format_finish) =  1; //格式化完成
+
+
+    if(end_flag == 1){
+        data->dl->hide();
+    }
+
+    createformatfree(data);
+
+};
+
+/* ensure_format_cb ,function ensure to do format
+ *
+ * args: CreateformatData *data
+ *
+ */
+void Format_Dialog::ensure_format_cb (CreateformatData *data){
+
+    syslog(LOG_ERR,"enter ensure_format_cb ...");
+
+    GVariantBuilder options_builder;
+
+    g_variant_builder_init(&options_builder,G_VARIANT_TYPE_VARDICT);
+
+    if (g_strcmp0 (data->format_type, "empty") != 0){
+        g_variant_builder_add (&options_builder, "{sv}", "label",
+                               g_variant_new_string (data->filesystem_name));
+    };
+
+
+
+    if (g_strcmp0 (data->format_type, "vfat") != 0 &&
+            g_strcmp0 (data->format_type, "ntfs") != 0 &&
+            g_strcmp0 (data->format_type, "exfat") != 0){
+        g_variant_builder_add (&options_builder, "{sv}", "take-ownership",
+                               g_variant_new_boolean (TRUE));
+    }
+
+
+    if (data->erase_type != NULL){
+        g_variant_builder_add (&options_builder, "{sv}", "erase",
+                               g_variant_new_string (data->erase_type));
+    }
+
+    g_variant_builder_add (&options_builder, "{sv}", "update-partition-type",
+                           g_variant_new_boolean (TRUE));
+
+
+    udisks_block_call_format (data->block,
+                              data->format_type,
+                              g_variant_builder_end (&options_builder),
+                              NULL,
+                              format_cb,
+                              data);
+
+
+};
+
+
+UDisksObject *Format_Dialog::get_object_from_block_device (UDisksClient *client,const gchar *block_device)
+{
+    struct stat statbuf;
+    const gchar *crypto_backing_device;
+    UDisksObject *object, *crypto_backing_object;
+    UDisksBlock *block;
+
+    object = NULL;
+
+    if (stat (block_device, &statbuf) != 0)
+    {
+        return object;
+    }
+
+    block = udisks_client_get_block_for_dev (client, statbuf.st_rdev);
+    if (block == NULL)
+    {
+        return object;
+    }
+
+    object = UDISKS_OBJECT (g_dbus_interface_dup_object (G_DBUS_INTERFACE (block)));
+    g_object_unref (block);
+
+    crypto_backing_device = udisks_block_get_crypto_backing_device ((udisks_object_peek_block (object)));
+    crypto_backing_object = udisks_client_get_object (client, crypto_backing_device);
+    if (crypto_backing_object != NULL)
+    {
+        g_object_unref (object);
+        object = crypto_backing_object;
+    }
+    return object;
+}
+
+/*  kdisk_format  function to format device
+ *
+ *  args:
+ *  kdisk_format format the disk and  get_object_from_device
+ *  device_name: device name
+ *  format_type: device type to format
+ *  erase_type:  clean it quick or not ,if zero not NULL
+ *  filesystem_name: the device name display in filesystem
+ *  format_finish: format finish is 1 ,not 0
+ */
+void Format_Dialog::kdisk_format(const gchar * device_name,const gchar *format_type,const gchar * erase_type,
+                                const gchar * filesystem_name,int *format_finish){
+
+    syslog(LOG_ERR,"ENTER kdisk_format ...");
+
+    CreateformatData *data;
+    data = g_new(CreateformatData,1);
+
+    data->format_finish = 0;
+    data->device_name = device_name;
+    data->format_type = format_type;
+    data->erase_type = erase_type;
+    data->filesystem_name = filesystem_name;
+    data->format_finish = format_finish;
+
+    data->drive_object = NULL;
+    data->drive_block = NULL;
+    data->dl = this;
+
+    data->client = udisks_client_new_sync(NULL,NULL);
+
+    data->object = get_object_from_block_device(data->client,data->device_name);
+    data->block = udisks_object_get_block(data->object);
+
+
+
+    ensure_unused_cb(data);
+
+}
+
+
+Format_Dialog::~Format_Dialog()
+{
+    delete ui;
+}

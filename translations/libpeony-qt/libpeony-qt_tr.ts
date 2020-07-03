@@ -185,6 +185,59 @@
     </message>
 </context>
 <context>
+    <name>Format_Dialog</name>
+    <message>
+        <location filename="../../libpeony-qt/windows/format_dialog.ui" line="14"/>
+        <source>Dialog</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/windows/format_dialog.ui" line="26"/>
+        <source>rom_size</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/windows/format_dialog.ui" line="39"/>
+        <source>system</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/windows/format_dialog.ui" line="53"/>
+        <source>ntfs</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/windows/format_dialog.ui" line="58"/>
+        <source>vfat</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/windows/format_dialog.ui" line="63"/>
+        <source>ext4</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/windows/format_dialog.ui" line="77"/>
+        <source>device_name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/windows/format_dialog.ui" line="100"/>
+        <source>clean it total</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/windows/format_dialog.ui" line="113"/>
+        <source>ok</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/windows/format_dialog.ui" line="126"/>
+        <source>close</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>Peony::AdvanceSearchBar</name>
     <message>
         <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.cpp" line="55"/>
@@ -1719,23 +1772,28 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</translation
 <context>
     <name>Peony::SideBarMenu</name>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/side-bar-menu/side-bar-menu.cpp" line="48"/>
-        <location filename="../../libpeony-qt/controls/menu/side-bar-menu/side-bar-menu.cpp" line="67"/>
-        <location filename="../../libpeony-qt/controls/menu/side-bar-menu/side-bar-menu.cpp" line="86"/>
-        <location filename="../../libpeony-qt/controls/menu/side-bar-menu/side-bar-menu.cpp" line="101"/>
-        <location filename="../../libpeony-qt/controls/menu/side-bar-menu/side-bar-menu.cpp" line="138"/>
+        <location filename="../../libpeony-qt/controls/menu/side-bar-menu/side-bar-menu.cpp" line="50"/>
+        <location filename="../../libpeony-qt/controls/menu/side-bar-menu/side-bar-menu.cpp" line="69"/>
+        <location filename="../../libpeony-qt/controls/menu/side-bar-menu/side-bar-menu.cpp" line="88"/>
+        <location filename="../../libpeony-qt/controls/menu/side-bar-menu/side-bar-menu.cpp" line="103"/>
+        <location filename="../../libpeony-qt/controls/menu/side-bar-menu/side-bar-menu.cpp" line="140"/>
         <source>&amp;Properties</source>
         <translation>Özellikler</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/side-bar-menu/side-bar-menu.cpp" line="77"/>
+        <location filename="../../libpeony-qt/controls/menu/side-bar-menu/side-bar-menu.cpp" line="79"/>
         <source>&amp;Delete Symbolic</source>
         <translation>Sembolik Sil</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/side-bar-menu/side-bar-menu.cpp" line="119"/>
+        <location filename="../../libpeony-qt/controls/menu/side-bar-menu/side-bar-menu.cpp" line="121"/>
         <source>&amp;Unmount</source>
         <translation>Bağı Kaldır</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/controls/menu/side-bar-menu/side-bar-menu.cpp" line="157"/>
+        <source>format</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2055,6 +2113,11 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</translation
         <location filename="../../libpeony-qt/controls/property-page/recent-and-trash-properties-page-factory.h" line="46"/>
         <source>Show the file properties or items in trash or recent.</source>
         <translation>Dosya özelliklerini veya öğelerini çöp kutusunda veya son zamanlarda gösterin.</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="233"/>
+        <source>File Manager</source>
+        <translation type="unfinished">Dosya Yöneticisi</translation>
     </message>
 </context>
 </TS>

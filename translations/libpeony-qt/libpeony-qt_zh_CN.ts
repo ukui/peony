@@ -185,6 +185,59 @@
     </message>
 </context>
 <context>
+    <name>Format_Dialog</name>
+    <message>
+        <location filename="../../libpeony-qt/windows/format_dialog.ui" line="14"/>
+        <source>Dialog</source>
+        <translation>格式化</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/windows/format_dialog.ui" line="26"/>
+        <source>rom_size</source>
+        <translation>容量大小</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/windows/format_dialog.ui" line="39"/>
+        <source>system</source>
+        <translation>文件系统</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/windows/format_dialog.ui" line="53"/>
+        <source>ntfs</source>
+        <translation>NTFS</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/windows/format_dialog.ui" line="58"/>
+        <source>vfat</source>
+        <translation>VFAT</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/windows/format_dialog.ui" line="63"/>
+        <source>ext4</source>
+        <translation>Ext4</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/windows/format_dialog.ui" line="77"/>
+        <source>device_name</source>
+        <translation>设备名称</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/windows/format_dialog.ui" line="100"/>
+        <source>clean it total</source>
+        <translation>完全擦除(时间较长,请确认!)</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/windows/format_dialog.ui" line="113"/>
+        <source>ok</source>
+        <translation>确定</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/windows/format_dialog.ui" line="126"/>
+        <source>close</source>
+        <translation>关闭</translation>
+    </message>
+</context>
+<context>
     <name>Peony::AdvanceSearchBar</name>
     <message>
         <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.cpp" line="55"/>
@@ -1723,23 +1776,28 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
 <context>
     <name>Peony::SideBarMenu</name>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/side-bar-menu/side-bar-menu.cpp" line="48"/>
-        <location filename="../../libpeony-qt/controls/menu/side-bar-menu/side-bar-menu.cpp" line="67"/>
-        <location filename="../../libpeony-qt/controls/menu/side-bar-menu/side-bar-menu.cpp" line="86"/>
-        <location filename="../../libpeony-qt/controls/menu/side-bar-menu/side-bar-menu.cpp" line="101"/>
-        <location filename="../../libpeony-qt/controls/menu/side-bar-menu/side-bar-menu.cpp" line="138"/>
+        <location filename="../../libpeony-qt/controls/menu/side-bar-menu/side-bar-menu.cpp" line="50"/>
+        <location filename="../../libpeony-qt/controls/menu/side-bar-menu/side-bar-menu.cpp" line="69"/>
+        <location filename="../../libpeony-qt/controls/menu/side-bar-menu/side-bar-menu.cpp" line="88"/>
+        <location filename="../../libpeony-qt/controls/menu/side-bar-menu/side-bar-menu.cpp" line="103"/>
+        <location filename="../../libpeony-qt/controls/menu/side-bar-menu/side-bar-menu.cpp" line="140"/>
         <source>&amp;Properties</source>
         <translation>属性(&amp;P)</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/side-bar-menu/side-bar-menu.cpp" line="77"/>
+        <location filename="../../libpeony-qt/controls/menu/side-bar-menu/side-bar-menu.cpp" line="79"/>
         <source>&amp;Delete Symbolic</source>
         <translation>删除(&amp;D)</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/side-bar-menu/side-bar-menu.cpp" line="119"/>
+        <location filename="../../libpeony-qt/controls/menu/side-bar-menu/side-bar-menu.cpp" line="121"/>
         <source>&amp;Unmount</source>
         <translation>卸载(&amp;U)</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/controls/menu/side-bar-menu/side-bar-menu.cpp" line="157"/>
+        <source>format</source>
+        <translation>格式化</translation>
     </message>
 </context>
 <context>
@@ -2059,6 +2117,11 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
         <location filename="../../libpeony-qt/controls/property-page/recent-and-trash-properties-page-factory.h" line="46"/>
         <source>Show the file properties or items in trash or recent.</source>
         <translation>显示“回收站”或“最近”中的文件属性或项目。</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="233"/>
+        <source>File Manager</source>
+        <translation>文件管理器</translation>
     </message>
 </context>
 </TS>
