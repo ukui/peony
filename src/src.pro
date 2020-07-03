@@ -55,7 +55,7 @@ INCLUDEPATH    += ../plugin-iface
 target.path = /usr/bin
 INSTALLS += target
 
-QM_FILES_RESOURCE_PREFIX = ../translations/peony-qt
+#QM_FILES_RESOURCE_PREFIX = ../translations/peony-qt
 QM_FILES_INSTALL_PATH = /usr/share/peony-qt
 
 data.path = /usr/share/applications

@@ -53,33 +53,9 @@ public:
         }
     }
 
-    QString name()
-    {
-        if (!m_drive)
-            return nullptr;
-        char *name = g_drive_get_name(m_drive);
-        QString value = name;
-        g_free(name);
-        return value;
-    }
-    QString iconName()
-    {
-        if (!m_drive)
-            return nullptr;
-        GThemedIcon *g_icon = G_THEMED_ICON(g_drive_get_icon(m_drive));
-        const gchar* const* icon_names = g_themed_icon_get_names(G_THEMED_ICON (g_icon));
-        g_object_unref(g_icon);
-        return *icon_names;
-    }
-    QString symbolicIconName()
-    {
-        if (!m_drive)
-            return nullptr;
-        GThemedIcon *g_icon = G_THEMED_ICON(g_drive_get_symbolic_icon(m_drive));
-        const gchar* const* icon_names = g_themed_icon_get_names(G_THEMED_ICON (g_icon));
-        g_object_unref(g_icon);
-        return *icon_names;
-    }
+    QString name();
+    QString iconName();
+    QString symbolicIconName();
 
     bool removable()
     {
@@ -125,29 +101,9 @@ public:
             g_object_unref(m_volume);
     }
 
-    QString name()
-    {
-        char *name = g_volume_get_name(m_volume);
-        QString value = name;
-        g_free(name);
-        return value;
-    }
-
-    QString iconName()
-    {
-        GThemedIcon *g_icon = G_THEMED_ICON(g_volume_get_icon(m_volume));
-        const gchar* const* icon_names = g_themed_icon_get_names(G_THEMED_ICON (g_icon));
-        g_object_unref(g_icon);
-        return *icon_names;
-    }
-
-    QString symbolicIconName()
-    {
-        GThemedIcon *g_icon = G_THEMED_ICON(g_volume_get_symbolic_icon(m_volume));
-        const gchar* const* icon_names = g_themed_icon_get_names(G_THEMED_ICON (g_icon));
-        g_object_unref(g_icon);
-        return *icon_names;
-    }
+    QString name();
+    QString iconName();
+    QString symbolicIconName();
 
     /*!
      * \brief uuid
@@ -213,29 +169,9 @@ public:
             g_object_unref(m_mount);
     }
 
-    QString name()
-    {
-        char *name = g_mount_get_name(m_mount);
-        QString value = name;
-        g_free(name);
-        return value;
-    }
-
-    QString iconName()
-    {
-        GThemedIcon *g_icon = G_THEMED_ICON(g_mount_get_icon(m_mount));
-        const gchar* const* icon_names = g_themed_icon_get_names(G_THEMED_ICON (g_icon));
-        g_object_unref(g_icon);
-        return *icon_names;
-    }
-
-    QString symbolicIconName()
-    {
-        GThemedIcon *g_icon = G_THEMED_ICON(g_mount_get_symbolic_icon(m_mount));
-        const gchar* const* icon_names = g_themed_icon_get_names(G_THEMED_ICON (g_icon));
-        g_object_unref(g_icon);
-        return *icon_names;
-    }
+    QString name();
+    QString iconName();
+    QString symbolicIconName();
 
     /*!
      * \brief uuid
