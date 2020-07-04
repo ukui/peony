@@ -129,8 +129,16 @@ QStringList FileUtils::getChildrenUris(const QString &directoryUri)
     auto child_info = g_file_enumerator_next_file(e, nullptr, nullptr);
     while (child_info) {
         auto child = g_file_enumerator_get_child(e, child_info);
+        QUrl url;
         auto uri = g_file_get_uri(child);
-        QUrl url = QString(uri);
+        auto path = g_file_get_path(child);
+        if (path) {
+            url = QString("file://%1").arg(path);
+            g_free(path);
+        } else {
+            url = uri;
+        }
+
         uris<<url.toDisplayString();
         g_free(uri);
         g_object_unref(child);
