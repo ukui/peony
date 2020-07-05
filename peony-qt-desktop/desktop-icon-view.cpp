@@ -643,7 +643,8 @@ void DesktopIconView::updateItemPosistions(const QString &uri)
         if (list.count() == 2) {
             int top = list.first().toInt();
             int left = list.at(1).toInt();
-            if (top >= 0 && left >= 0) {
+            qDebug() << "index:" << index << "uri:" << uri << " top:" << top << " left:" << left;
+            if (top > 0 && left >= 0) {
 //                auto rect = visualRect(index);
 //                auto grid = gridSize();
 //                if (abs(rect.top() - top) < grid.width() && abs(rect.left() - left))
