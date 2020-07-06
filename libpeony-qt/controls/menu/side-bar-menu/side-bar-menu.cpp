@@ -112,7 +112,7 @@ const QList<QAction *> SideBarMenu::constructFileSystemItemActions()
 {
     QList<QAction *> l;
 
-    auto info = FileInfo::fromUri(m_uri);
+    auto info = FileInfo::fromUri(m_uri, false);
     if (info->displayName().isEmpty()) {
         FileInfoJob j(info);
         j.querySync();
@@ -145,22 +145,14 @@ const QList<QAction *> SideBarMenu::constructFileSystemItemActions()
 
     /*
      *  add format function
-     *  check device-iconname is  or not
-     *  if iconname is drive-harddisk-usb ,then add format funcion
+     *  provide option for all mountable device
+     *  if can not format, will have prompt
      */
 
-      QString  icon_name  = FileUtils::getFileIconName(m_uri);
-      auto flag = strstr(icon_name.toUtf8().constData(),"drive-harddisk-usb") == NULL?0:1;
-
-      if(flag){
-
+      if(info->isVolume()){
           l<<addAction(QIcon::fromTheme("preview-file"), tr("format"), [=]() {
-
           Format_Dialog *fd  = new Format_Dialog(m_uri,m_item);
-
           fd->show();
-
-
       });
 
     }
