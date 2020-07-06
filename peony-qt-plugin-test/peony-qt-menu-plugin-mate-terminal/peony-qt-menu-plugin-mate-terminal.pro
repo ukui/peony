@@ -37,7 +37,8 @@ HEADERS += \
 
 DESTDIR = ../../testdir
 
-TRANSLATIONS += translations/peony-qt-mate-terminal-extension_zh_CN.ts
+TRANSLATIONS += translations/peony-qt-mate-terminal-extension_zh_CN.ts \
+                translations/peony-qt-mate-terminal-extension_tr.ts
 
 unix {
     target.path = /usr/lib/peony-qt-extensions
