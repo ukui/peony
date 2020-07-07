@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="tr">
+<TS version="2.1" language="tr_TR">
 <context>
     <name>FileLabelBox</name>
     <message>
@@ -191,7 +191,7 @@
     <message>
         <location filename="../../src/control/operation-menu.cpp" line="77"/>
         <source>Forbid thumbnailing</source>
-        <translation>Küçük resimleri yasakla</translation>
+        <translation>Küçük Resimleri Yasakla</translation>
     </message>
     <message>
         <location filename="../../src/control/operation-menu.cpp" line="85"/>
@@ -201,7 +201,7 @@
     <message>
         <location filename="../../src/control/operation-menu.cpp" line="94"/>
         <source>Parallel Operations</source>
-        <translation type="unfinished"></translation>
+        <translation>Paralel İşlemler</translation>
     </message>
     <message>
         <location filename="../../src/control/operation-menu.cpp" line="102"/>
@@ -226,11 +226,11 @@
     <name>PeonyApplication</name>
     <message>
         <source>Peony-Qt</source>
-        <translation type="vanished">Peony-Qt</translation>
+        <translation type="vanished">Dosya Yöneticisi</translation>
     </message>
     <message>
         <source>peony-qt</source>
-        <translation type="vanished">peony-qt</translation>
+        <translation type="vanished">Dosya Yöneticisi</translation>
     </message>
     <message>
         <location filename="../../src/peony-application.cpp" line="137"/>
@@ -254,7 +254,7 @@
 1. Peony-Qt might be running as root, that means you have the higher permission and can do some things which normally forbidden. But, you should learn that if you were in a root, the virtual file system will lose some featrue such as you can not use &quot;My Computer&quot;, the theme and icons might also went wrong. So, run peony-qt in a root is not recommended.
 
 2. You are using a non-qt theme for your system but you didn&apos;t install the platform theme plugin for qt&apos;s applications. If you are using gtk-theme, try installing the qt5-gtk2-platformtheme package to resolve this problem.</source>
-        <translation>Peony-Qt sistemleri simgesi teması alınamıyor. Bu soruna yol açabilecek 2 neden vardır:
+        <translation>Peony-Qt sistem simgesi teması alınamıyor. Bu soruna yol açabilecek 2 neden vardır:
 
 1. Peony-Qt root olarak çalışıyor olabilir, bu da daha yüksek izne sahip olduğunuz ve normalde yasak olan bazı şeyleri yapabileceğiniz anlamına gelir. Ancak, eğer root iseniz, sanal dosya sisteminin Bilgisayarımı kullanamayacağınız gibi bazı özellikleri kaybedeceğini, temanın ve simgelerin de yanlış gidebileceğini öğrenmelisiniz. Yani, bir root olarak Peony-qt çalıştırmak önerilmez.
 
@@ -263,7 +263,7 @@
     <message>
         <location filename="../../src/peony-application.cpp" line="576"/>
         <source>Peony Qt</source>
-        <translation>Peony Qt</translation>
+        <translation>Dosya Yöneticisi</translation>
     </message>
     <message>
         <location filename="../../src/peony-application.cpp" line="577"/>
@@ -364,7 +364,7 @@ Telif (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</translatio
     <message>
         <location filename="../../src/control/sort-type-menu.cpp" line="60"/>
         <source>Ascending</source>
-        <translation>Yükselen</translation>
+        <translation>Artan</translation>
     </message>
     <message>
         <location filename="../../src/control/sort-type-menu.cpp" line="64"/>
@@ -412,7 +412,7 @@ Telif (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</translatio
     <message>
         <location filename="../../src/control/tab-widget.cpp" line="154"/>
         <source>Trash</source>
-        <translation>Çöp&apos;i</translation>
+        <translation>Çöp</translation>
     </message>
     <message>
         <location filename="../../src/control/tab-widget.cpp" line="158"/>
@@ -422,7 +422,7 @@ Telif (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</translatio
     <message>
         <location filename="../../src/control/tab-widget.cpp" line="162"/>
         <source>Recover</source>
-        <translation>Kurtar</translation>
+        <translation>Geri Yükle</translation>
     </message>
     <message>
         <location filename="../../src/control/tab-widget.cpp" line="240"/>
@@ -473,114 +473,114 @@ Telif (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</translatio
         <location filename="../../src/control/tab-widget.cpp" line="431"/>
         <location filename="../../src/control/tab-widget.cpp" line="444"/>
         <source>contains</source>
-        <translation>içeren</translation>
+        <translation>İçerik</translation>
     </message>
     <message>
         <location filename="../../src/control/tab-widget.h" line="253"/>
         <source>name</source>
-        <translation>isim</translation>
+        <translation>İsim</translation>
     </message>
     <message>
         <location filename="../../src/control/tab-widget.h" line="253"/>
         <source>type</source>
-        <translation>tür</translation>
+        <translation>Tür</translation>
     </message>
     <message>
         <location filename="../../src/control/tab-widget.h" line="253"/>
         <source>modify time</source>
-        <translation>değiştirme zamanı</translation>
+        <translation>Değiştirme Zamanı</translation>
     </message>
     <message>
         <location filename="../../src/control/tab-widget.h" line="253"/>
         <source>file size</source>
-        <translation>dosya boyutu</translation>
+        <translation>Dosya Boyutu</translation>
     </message>
     <message>
         <location filename="../../src/control/tab-widget.h" line="254"/>
         <location filename="../../src/control/tab-widget.h" line="255"/>
         <location filename="../../src/control/tab-widget.h" line="256"/>
         <source>all</source>
-        <translation>tümü</translation>
+        <translation>Tümü</translation>
     </message>
     <message>
         <location filename="../../src/control/tab-widget.h" line="254"/>
         <source>file folder</source>
-        <translation>dosya klasör</translation>
+        <translation>Dosya klasör</translation>
     </message>
     <message>
         <location filename="../../src/control/tab-widget.h" line="254"/>
         <source>image</source>
-        <translation>resim</translation>
+        <translation>Resim</translation>
     </message>
     <message>
         <location filename="../../src/control/tab-widget.h" line="254"/>
         <source>video</source>
-        <translation>video</translation>
+        <translation>Video</translation>
     </message>
     <message>
         <location filename="../../src/control/tab-widget.h" line="254"/>
         <source>text file</source>
-        <translation>metin dosyası</translation>
+        <translation>Mtin dosyası</translation>
     </message>
     <message>
         <location filename="../../src/control/tab-widget.h" line="254"/>
         <source>audio</source>
-        <translation>ses</translation>
+        <translation>Ses</translation>
     </message>
     <message>
         <location filename="../../src/control/tab-widget.h" line="254"/>
         <source>others</source>
-        <translation>diğer</translation>
+        <translation>Diğer</translation>
     </message>
     <message>
         <location filename="../../src/control/tab-widget.h" line="255"/>
         <source>today</source>
-        <translation>bugün</translation>
+        <translation>Bugün</translation>
     </message>
     <message>
         <location filename="../../src/control/tab-widget.h" line="255"/>
         <source>this week</source>
-        <translation>bu hafta</translation>
+        <translation>Bu hafta</translation>
     </message>
     <message>
         <location filename="../../src/control/tab-widget.h" line="255"/>
         <source>this month</source>
-        <translation>bu ay</translation>
+        <translation>Bu ay</translation>
     </message>
     <message>
         <location filename="../../src/control/tab-widget.h" line="255"/>
         <source>this year</source>
-        <translation>bu yıl</translation>
+        <translation>Bu yıl</translation>
     </message>
     <message>
         <location filename="../../src/control/tab-widget.h" line="255"/>
         <source>year ago</source>
-        <translation>geçen yıl</translation>
+        <translation>Geçen yıl</translation>
     </message>
     <message>
         <location filename="../../src/control/tab-widget.h" line="256"/>
         <source>tiny(0-16K)</source>
-        <translation>çok küçük(0-16K)</translation>
+        <translation>Çok küçük(0-16K)</translation>
     </message>
     <message>
         <location filename="../../src/control/tab-widget.h" line="256"/>
         <source>small(16k-1M)</source>
-        <translation>küçük(16k-1M)</translation>
+        <translation>Küçük(16k-1M)</translation>
     </message>
     <message>
         <location filename="../../src/control/tab-widget.h" line="256"/>
         <source>medium(1M-100M)</source>
-        <translation>orta(1M-100M)</translation>
+        <translation>Orta(1M-100M)</translation>
     </message>
     <message>
         <location filename="../../src/control/tab-widget.h" line="256"/>
         <source>big(100M-1G)</source>
-        <translation>büyük(100M-1G)</translation>
+        <translation>Büyük(100M-1G)</translation>
     </message>
     <message>
         <location filename="../../src/control/tab-widget.h" line="256"/>
         <source>large(&gt;1G)</source>
-        <translation>daha büyük(&gt;1G)</translation>
+        <translation>Daha büyük(&gt;1G)</translation>
     </message>
 </context>
 </TS>
