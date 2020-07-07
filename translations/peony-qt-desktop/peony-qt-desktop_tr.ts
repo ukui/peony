@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="tr">
+<TS version="2.1" language="tr_TR">
 <context>
     <name>Peony::DesktopIconView</name>
     <message>
@@ -16,7 +16,7 @@
     <message>
         <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="502"/>
         <source>set background</source>
-        <translation>arkaplan ayarla</translation>
+        <translation>Arkaplanı Değiştir</translation>
     </message>
 </context>
 <context>
@@ -29,13 +29,13 @@
     <message>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="111"/>
         <source>Select &amp;All</source>
-        <translation type="unfinished"></translation>
+        <translation>Tümünü Seç</translation>
     </message>
     <message>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="130"/>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="154"/>
         <source>&amp;Open &quot;%1&quot;</source>
-        <translation>打开 &quot;%1&quot;(&amp;O)</translation>
+        <translation>&quot;%1&quot; Aç</translation>
     </message>
     <message>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="135"/>
@@ -61,12 +61,12 @@
     <message>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="186"/>
         <source>&amp;Open %1 selected files</source>
-        <translation>%1 seçilen dosyayı aç</translation>
+        <translation>Seçilen %1 dosyasını aç</translation>
     </message>
     <message>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="209"/>
         <source>Reverse Select</source>
-        <translation type="unfinished"></translation>
+        <translation>Seçimi Ters Çevir</translation>
     </message>
     <message>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="223"/>
@@ -141,12 +141,12 @@
     <message>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="420"/>
         <source>&amp;Delete to trash</source>
-        <translation type="unfinished"></translation>
+        <translation>Çöp Kutusuna Taşı</translation>
     </message>
     <message>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="425"/>
         <source>Delete forever</source>
-        <translation type="unfinished"></translation>
+        <translation>Kalıcı olarak sil</translation>
     </message>
     <message>
         <source>Sort Order...</source>
@@ -171,12 +171,12 @@
     <message>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="393"/>
         <source>&amp;Restore all</source>
-        <translation>Tümünü onar</translation>
+        <translation>Tümünü Onar</translation>
     </message>
     <message>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="397"/>
         <source>&amp;Clean the trash</source>
-        <translation>Çöpü temizle</translation>
+        <translation>Çöpü Temizle</translation>
     </message>
     <message>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="398"/>
@@ -233,7 +233,7 @@
     <message>
         <location filename="../../peony-qt-desktop/desktop-window.cpp" line="156"/>
         <source>set background</source>
-        <translation>arkaplan ayarla</translation>
+        <translation>Arkaplanı Değiştir</translation>
     </message>
     <message>
         <location filename="../../peony-qt-desktop/desktop-window.cpp" line="526"/>
@@ -262,7 +262,7 @@
     <message>
         <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="206"/>
         <source>Close the peony desktop window</source>
-        <translation>Peony masaüstü penceresini kapatın</translation>
+        <translation>Peony masaüstü penceresini kapat</translation>
     </message>
     <message>
         <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="209"/>
