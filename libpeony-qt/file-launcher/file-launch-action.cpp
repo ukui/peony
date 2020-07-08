@@ -25,6 +25,7 @@
 
 #include "file-info.h"
 #include "file-info-job.h"
+#include "file-operation-utils.h"
 
 #include <QMessageBox>
 #include <QPushButton>
@@ -232,8 +233,16 @@ void FileLaunchAction::lauchFileAsync(bool forceWithArg, bool skipDialog)
         if (!isReadable)
         {
             if (fileInfo->isSymbolLink())
-                QMessageBox::critical(nullptr, tr("Open Link failed"),
-                                      tr("File not exist, is it deleted or moved to other path?"));
+            {
+                auto result = QMessageBox::question(nullptr, tr("Open Link failed"),
+                                      tr("File not exist, do you want to delete the link file?"));
+                if (result == QMessageBox::Yes) {
+                    qDebug() << "Delete unused symbollink.";
+                    QStringList selections;
+                    selections.push_back(m_uri);
+                    FileOperationUtils::trash(selections, true);
+                }
+            }
             else
                 QMessageBox::critical(nullptr, tr("Open Failed"),
                                   tr("Can not open %1, Please confirm you have the right authority.").arg(m_uri));

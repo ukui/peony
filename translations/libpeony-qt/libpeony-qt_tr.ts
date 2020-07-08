@@ -967,70 +967,74 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</translation
 <context>
     <name>Peony::FileLaunchAction</name>
     <message>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="122"/>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="208"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="123"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="209"/>
         <source>Execute Directly</source>
         <translation>Doğrudan Çalıştır</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="123"/>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="209"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="124"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="210"/>
         <source>Execute in Terminal</source>
         <translation>Terminalde Çalıştır</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="127"/>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="214"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="128"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="215"/>
         <source>Detected launching an executable file %1, you want?</source>
         <translation>%1 çalıştırılabilir bir dosyayı başlatmayı mı istediniz?</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="144"/>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="238"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="145"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="247"/>
         <source>Open Failed</source>
         <translation>Açma Hatası</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="144"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="145"/>
         <source>Can not open %1, file not exist, is it deleted?</source>
         <translation>%1 açılamıyor, dosya mevcut değil, silinmiş olabilir</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="236"/>
         <source>File not exist, is it deleted or moved to other path?</source>
-        <translation>Dosya mevcut değil, silinmiş veya başka bir yere taşınmış olabilir</translation>
+        <translation type="vanished">Dosya mevcut değil, silinmiş veya başka bir yere taşınmış olabilir</translation>
     </message>
     <message>
         <source>Can not open %1</source>
         <translation type="vanished">%1 açılamadı</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="210"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="211"/>
         <source>By Default App</source>
         <translation>Varsayılan Uygulamaya Göre</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="213"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="214"/>
         <source>Launch Options</source>
         <translation>Başlatma Ayarları</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="235"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="237"/>
         <source>Open Link failed</source>
         <translation>Açık Bağlantı başarısız</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="239"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="238"/>
+        <source>File not exist, do you want to delete the link file?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="248"/>
         <source>Can not open %1, Please confirm you have the right authority.</source>
         <translation>% 1 açılamıyor, lütfen yetkilerinizi kontrol edin.</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="242"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="251"/>
         <source>Error</source>
         <translation>Hata</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="242"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="251"/>
         <source>Can not get a default application for opening %1, do you want open it with text format?</source>
         <translation>%1 dosyasını açmak için varsayılan bir uygulama alınamıyor, metin biçiminde açmak istiyor musunuz?</translation>
     </message>
@@ -1173,7 +1177,7 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</translation
     <message>
         <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="212"/>
         <source>There have been one or more fileoperation(s) executing before. Youroperation will wait for executinguntil it/them done. If you really want to execute file operations parallelly anyway, you can change the default option &quot;Allow Parallel&quot; in option menu.</source>
-        <translation>Daha önce bir veya daha fazla dosya işlemi yürütülüyor. İşleminiz gerçekleşene kadar yürütülmesini bekleyecektir. Gerçekten de dosya işlemlerini paralel olarak yürütmek istiyorsanız, seçenek menüsünde varsayılan "Paralele İzin Ver" seçeneğini değiştirebilirsiniz.</translation>
+        <translation>Daha önce bir veya daha fazla dosya işlemi yürütülüyor. İşleminiz gerçekleşene kadar yürütülmesini bekleyecektir. Gerçekten de dosya işlemlerini paralel olarak yürütmek istiyorsanız, seçenek menüsünde varsayılan &quot;Paralele İzin Ver&quot; seçeneğini değiştirebilirsiniz.</translation>
     </message>
     <message>
         <source>There have been one or more fileoperation(s) executing before. Youroperation will wait for executinguntil it/them done.</source>
@@ -1349,33 +1353,33 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</translation
         <translation>Düzenlemek için boş alanı tıklayın</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp" line="181"/>
+        <location filename="../../libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp" line="182"/>
         <source>Search &quot;%1&quot; in &quot;%2&quot;</source>
         <translation>%2 de %1 ara</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp" line="204"/>
+        <location filename="../../libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp" line="205"/>
         <source>File System</source>
         <translation>Dosya Sistemi</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp" line="248"/>
+        <location filename="../../libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp" line="249"/>
         <source>&amp;Copy Directory</source>
         <translation>Dizini Kopyala</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp" line="250"/>
+        <location filename="../../libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp" line="251"/>
         <source>Open In New &amp;Tab</source>
         <translation>Yeni Sekmede Aç</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp" line="254"/>
+        <location filename="../../libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp" line="255"/>
         <source>Open In &amp;New Window</source>
         <translation>Yeni Pencerede Aç</translation>
     </message>
     <message>
         <source>Copy Directory</source>
-        <translation>">Dizini Kopyala</translation>
+        <translation type="vanished">&quot;&gt;Dizini Kopyala</translation>
     </message>
 </context>
 <context>
@@ -1574,37 +1578,37 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</translation
         <translation>Temizle</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/search-bar-container.h" line="64"/>
+        <location filename="../../libpeony-qt/controls/tool-bar/search-bar-container.h" line="86"/>
         <source>all</source>
         <translation>Tümü</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/search-bar-container.h" line="64"/>
+        <location filename="../../libpeony-qt/controls/tool-bar/search-bar-container.h" line="86"/>
         <source>file folder</source>
         <translation>Dosya klasörü</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/search-bar-container.h" line="64"/>
+        <location filename="../../libpeony-qt/controls/tool-bar/search-bar-container.h" line="86"/>
         <source>image</source>
         <translation>Resim</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/search-bar-container.h" line="65"/>
+        <location filename="../../libpeony-qt/controls/tool-bar/search-bar-container.h" line="87"/>
         <source>video</source>
         <translation>Video</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/search-bar-container.h" line="65"/>
+        <location filename="../../libpeony-qt/controls/tool-bar/search-bar-container.h" line="87"/>
         <source>text file</source>
         <translation>Metin dosyası</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/search-bar-container.h" line="65"/>
+        <location filename="../../libpeony-qt/controls/tool-bar/search-bar-container.h" line="87"/>
         <source>audio</source>
         <translation>Ses</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/search-bar-container.h" line="65"/>
+        <location filename="../../libpeony-qt/controls/tool-bar/search-bar-container.h" line="87"/>
         <source>others</source>
         <translation>Diğerleri</translation>
     </message>
