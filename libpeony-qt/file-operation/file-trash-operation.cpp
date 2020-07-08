@@ -66,5 +66,5 @@ retry:
         }
     }
     Q_EMIT operationFinished();
-    notifyFileWatcherOperationFinished();
+    //notifyFileWatcherOperationFinished();
 }

@@ -1,3 +1,25 @@
+/*
+ * Peony-Qt
+ *
+ * Copyright (C) 2020, Tianjin KYLIN Information Technology Co., Ltd.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * Authors: MeihongHe <hemeihong@kylinos.cn>
+ *
+ */
+
 #ifndef SEARCH_BAR_CONTAINER_H
 #define SEARCH_BAR_CONTAINER_H
 
@@ -8,6 +30,7 @@
 #include <QStringListModel>
 #include <QListView>
 #include <QStringList>
+#include <QTimer>
 
 namespace Peony {
 
@@ -46,6 +69,8 @@ Q_SIGNALS:
 
 public Q_SLOTS:
     void onTableClicked(const QModelIndex &index);
+    void startSearch();
+    void clearSearchBox();
 
 private:
     QHBoxLayout *m_layout = nullptr;
@@ -55,6 +80,8 @@ private:
 
     QStringListModel *m_model = nullptr;
     QListView *m_list_view = nullptr;
+
+    QTimer m_search_trigger;
 
     QStringList m_file_type_list = {tr("all"), tr("file folder"), tr("image"),
                                     tr("video"), tr("text file"), tr("audio"), tr("others")

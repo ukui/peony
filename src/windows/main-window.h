@@ -45,11 +45,16 @@ class MainWindow : public QMainWindow, public Peony::FMWindowIface
     Q_OBJECT
 public:
     explicit MainWindow(const QString &uri = nullptr, QWidget *parent = nullptr);
+    ~MainWindow();
+
+    bool eventFilter(QObject *watched, QEvent *event);
 
     QSize sizeHint() const;
 
     Peony::FMWindowIface *create(const QString &uri);
     Peony::FMWindowIface *create(const QStringList &uris);
+    Peony::FMWindowIface *createWithZoomLevel(const QString &uri, int zoomLevel);
+    Peony::FMWindowIface *createWithZoomLevel(const QStringList &uris, int zoomLevel);
 
     Peony::FMWindowFactory *getFactory();
 
@@ -172,6 +177,9 @@ private:
     bool m_show_hidden_file;
     bool m_use_default_name_sort_order;
     bool m_folder_first;
+
+    bool m_should_save_side_bar_width = false;
+    bool m_should_save_window_size = false;
 
     QPoint m_offset;
 };

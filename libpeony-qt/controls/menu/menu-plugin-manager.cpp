@@ -100,7 +100,7 @@ QList<QAction *> CreateLinkInternalPlugin::menuActions(MenuPluginInterface::Type
     QList<QAction *> l;
     if (types == MenuPluginInterface::DesktopWindow || types == MenuPluginInterface::DirectoryView) {
         if (selectionUris.count() == 1) {
-            auto createLinkToDesktop = new QAction(QIcon::fromTheme("emblem-symbolic-link"), tr("Create Link to Desktop"), nullptr);
+            auto createLinkToDesktop = new QAction(QIcon::fromTheme("emblem-link-symbolic"), tr("Create Link to Desktop"), nullptr);
             auto info = FileInfo::fromUri(selectionUris.first(), false);
             //special type mountable, or isVirtual then return
             if (selectionUris.first().startsWith("computer:///") || info->isVirtual())

@@ -47,7 +47,7 @@ AdvanceSearchBar::AdvanceSearchBar(FMWindowIface *window, QWidget *parent) : QSc
 
 void AdvanceSearchBar::init()
 {
-    //add mutiple filter page
+    //add multiple filter page
     //this->setBackgroundRole(QPalette::Light);
     m_filter = new QWidget(this);
     m_filter->setContentsMargins(0, 0, 0, 0);
@@ -135,7 +135,7 @@ void AdvanceSearchBar::init()
 
     m_filter->setLayout(mainLayout);
     this->setWidget(m_filter);
-    //end mutiple filter
+    //end multiple filter
 
     //don't show HorizontalScroll
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);

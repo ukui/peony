@@ -25,6 +25,7 @@
 
 #include "file-info.h"
 #include "file-info-job.h"
+#include "file-operation-utils.h"
 
 #include <QMessageBox>
 #include <QPushButton>
@@ -141,7 +142,7 @@ void FileLaunchAction::lauchFileSync(bool forceWithArg, bool skipDialog)
     }
 
     if (!isValid()) {
-        QMessageBox::critical(nullptr, tr("Open Failed"), tr("Can not open %1").arg(m_uri));
+        QMessageBox::critical(nullptr, tr("Open Failed"), tr("Can not open %1, file not exist, is it deleted?").arg(m_uri));
         return;
     }
 
@@ -230,9 +231,24 @@ void FileLaunchAction::lauchFileAsync(bool forceWithArg, bool skipDialog)
     if (!isValid()) {
         bool isReadable = fileInfo->canRead();
         if (!isReadable)
-            QMessageBox::critical(nullptr, tr("Open Failed"), tr("Can not open %1").arg(m_uri));
+        {
+            if (fileInfo->isSymbolLink())
+            {
+                auto result = QMessageBox::question(nullptr, tr("Open Link failed"),
+                                      tr("File not exist, do you want to delete the link file?"));
+                if (result == QMessageBox::Yes) {
+                    qDebug() << "Delete unused symbollink.";
+                    QStringList selections;
+                    selections.push_back(m_uri);
+                    FileOperationUtils::trash(selections, true);
+                }
+            }
+            else
+                QMessageBox::critical(nullptr, tr("Open Failed"),
+                                  tr("Can not open %1, Please confirm you have the right authority.").arg(m_uri));
+        }
         else {
-            auto result = QMessageBox::question(nullptr, tr("Error"), tr("Can not get a default application for openning %1, do you want open it with text format?").arg(m_uri));
+            auto result = QMessageBox::question(nullptr, tr("Error"), tr("Can not get a default application for opening %1, do you want open it with text format?").arg(m_uri));
             if (result == QMessageBox::Yes) {
                 GAppInfo *text_info = g_app_info_get_default_for_type("text/plain", false);
                 GList *l = nullptr;

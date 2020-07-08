@@ -157,20 +157,59 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
         this->updateItemPosistions(nullptr);
         this->m_is_refreshing = false;
         if (isItemsOverlapped()) {
-            // try handling the problem items overlapped.
-            QTimer::singleShot(500, this, [=]() {
-                if (m_is_refreshing)
-                    return;
+            QHash<QModelIndex, QRect> currentIndexesRects;
+            for (int i = 0; i < m_proxy_model->rowCount(); i++) {
+                auto tmp = m_proxy_model->index(i, 0);
+                currentIndexesRects.insert(tmp, visualRect(tmp));
+            }
 
-                setSortType(GlobalSettings::getInstance()->getValue(LAST_DESKTOP_SORT_ORDER).toInt());
-#if QT_VERSION > QT_VERSION_CHECK(5, 12, 0)
-                QTimer::singleShot(100, this, [=]() {
-#else
-                QTimer::singleShot(100, [=]() {
-#endif
-                    this->saveAllItemPosistionInfos();
-                });
-            });
+            QModelIndexList overlappedIndexes;
+            for (auto value : currentIndexesRects.values()) {
+                auto keys = currentIndexesRects.keys(value);
+                if (keys.count() > 1) {
+                    keys.removeFirst();
+                    overlappedIndexes<<keys;
+                }
+            }
+
+            auto grid = this->gridSize();
+            auto viewRect = this->rect();
+
+            QRegion notEmptyRegion;
+            for (auto rect : currentIndexesRects) {
+                notEmptyRegion += rect;
+            }
+
+            for (auto overrlappedIndex : overlappedIndexes) {
+                auto indexRect = QListView::visualRect(overrlappedIndex);
+                if (notEmptyRegion.contains(indexRect.center())) {
+                    // move index to closest empty grid.
+                    auto next = indexRect;
+                    bool isEmptyPos = false;
+                    while (!isEmptyPos) {
+                        next.translate(0, grid.height());
+                        if (next.bottom() > viewRect.bottom()) {
+                            int top = next.y();
+                            while (true) {
+                                if (top < gridSize().height()) {
+                                    break;
+                                }
+                                top-=gridSize().height();
+                            }
+                            //put item to next column first column
+                            next.moveTo(next.x() + grid.width(), top);
+                        }
+                        if (notEmptyRegion.contains(next.center()))
+                            continue;
+
+                        isEmptyPos = true;
+                        setPositionForIndex(next.topLeft(), overrlappedIndex);
+                        notEmptyRegion += next;
+                    }
+                }
+            }
+
+            saveAllItemPosistionInfos();
         }
     });
 
@@ -501,11 +540,11 @@ void DesktopIconView::initDoubleClick()
                 QProcess p;
                 QUrl url = uri;
                 p.setProgram("peony");
-                p.setArguments(QStringList() << url.toEncoded());
+                p.setArguments(QStringList() << url.toEncoded() <<"%U&");
                 p.startDetached();
 #else
                 QProcess p;
-                p.startDetached("peony", QStringList()<<uri);
+                p.startDetached("peony", QStringList()<<uri<<"%U&");
 #endif
             } else {
                 FileLaunchManager::openAsync(uri, false, false);
@@ -604,7 +643,8 @@ void DesktopIconView::updateItemPosistions(const QString &uri)
         if (list.count() == 2) {
             int top = list.first().toInt();
             int left = list.at(1).toInt();
-            if (top >= 0 && left >= 0) {
+            qDebug() << "index:" << index << "uri:" << uri << " top:" << top << " left:" << left;
+            if (top > 0 && left >= 0) {
 //                auto rect = visualRect(index);
 //                auto grid = gridSize();
 //                if (abs(rect.top() - top) < grid.width() && abs(rect.left() - left))
@@ -651,6 +691,7 @@ void DesktopIconView::invertSelections()
     const QItemSelection currentSelection = selectionModel->selection();
     this->selectAll();
     selectionModel->select(currentSelection, QItemSelectionModel::Deselect);
+    clearAllIndexWidgets();
 }
 
 void DesktopIconView::scrollToSelection(const QString &uri)
@@ -992,6 +1033,10 @@ void DesktopIconView::dragEnterEvent(QDragEnterEvent *e)
         e->setDropAction(Qt::MoveAction);
         e->acceptProposedAction();
     }
+
+    if (e->source() == this) {
+        m_drag_indexes = selectedIndexes();
+    }
 }
 
 void DesktopIconView::dragMoveEvent(QDragMoveEvent *e)
@@ -1040,8 +1085,65 @@ void DesktopIconView::dropEvent(QDropEvent *e)
 
         QListView::dropEvent(e);
 
-        //fixme: handle overlapping.
+        QHash<QModelIndex, QRect> currentIndexesRects;
+        for (int i = 0; i < m_proxy_model->rowCount(); i++) {
+            auto tmp = m_proxy_model->index(i, 0);
+            currentIndexesRects.insert(tmp, visualRect(tmp));
+        }
 
+        //fixme: handle overlapping.
+        if (!m_drag_indexes.isEmpty()) {
+            QModelIndexList overlappedIndexes;
+            for (auto value : currentIndexesRects.values()) {
+                auto keys = currentIndexesRects.keys(value);
+                if (keys.count() > 1) {
+                    for (auto key : keys) {
+                        if (m_drag_indexes.contains(key) && !overlappedIndexes.contains(key)) {
+                            overlappedIndexes<<key;
+                        }
+                    }
+                }
+            }
+
+            auto grid = this->gridSize();
+            auto viewRect = this->rect();
+
+            QRegion notEmptyRegion;
+            for (auto rect : currentIndexesRects) {
+                notEmptyRegion += rect;
+            }
+
+            for (auto dragedIndex : overlappedIndexes) {
+                auto indexRect = QListView::visualRect(dragedIndex);
+                if (notEmptyRegion.contains(indexRect.center())) {
+                    // move index to closest empty grid.
+                    auto next = indexRect;
+                    bool isEmptyPos = false;
+                    while (!isEmptyPos) {
+                        next.translate(0, grid.height());
+                        if (next.bottom() > viewRect.bottom()) {
+                            int top = next.y();
+                            while (true) {
+                                if (top < gridSize().height()) {
+                                    break;
+                                }
+                                top-=gridSize().height();
+                            }
+                            //put item to next column first column
+                            next.moveTo(next.x() + grid.width(), top);
+                        }
+                        if (notEmptyRegion.contains(next.center()))
+                            continue;
+
+                        isEmptyPos = true;
+                        setPositionForIndex(next.topLeft(), dragedIndex);
+                        notEmptyRegion += next;
+                    }
+                }
+            }
+        }
+
+        m_drag_indexes.clear();
 
         auto urls = e->mimeData()->urls();
         for (auto url : urls) {

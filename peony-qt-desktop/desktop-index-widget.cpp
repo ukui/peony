@@ -74,6 +74,14 @@ DesktopIndexWidget::~DesktopIndexWidget()
 
 void DesktopIndexWidget::paintEvent(QPaintEvent *e)
 {
+    auto view = m_delegate->getView();
+    if (!view->selectionModel()->selectedIndexes().contains(m_index)) {
+        view->m_real_do_edit = false;
+        view->m_edit_trigger_timer.stop();
+        this->close();
+        return;
+    }
+
     //qDebug()<<"paint";
     auto visualRect = m_delegate->getView()->visualRect(m_index);
     move(visualRect.topLeft());
@@ -88,7 +96,6 @@ void DesktopIndexWidget::paintEvent(QPaintEvent *e)
     p.drawRoundedRect(this->rect(), 6, 6);
     p.restore();
 
-    auto view = m_delegate->getView();
     //auto font = view->getViewItemFont(&m_option);
 
     auto opt = m_option;
@@ -106,6 +113,11 @@ void DesktopIndexWidget::paintEvent(QPaintEvent *e)
     p.save();
     p.translate(0, 5 + m_delegate->getView()->iconSize().height() + 5);
 
+    if (b_elide_text)
+    {
+        int  charWidth = opt.fontMetrics.averageCharWidth();
+        m_option.text = opt.fontMetrics.elidedText(m_option.text, Qt::ElideRight, ELIDE_TEXT_LENGTH * charWidth);
+    }
     // draw text shadow
     p.save();
     p.translate(1, 1);
@@ -171,6 +183,13 @@ void DesktopIndexWidget::mousePressEvent(QMouseEvent *event)
                         if (special_index)
                             return ;
 
+                        if (!view->selectionModel()->selectedIndexes().contains(m_index)) {
+                            view->m_real_do_edit = false;
+                            view->m_edit_trigger_timer.stop();
+                            this->close();
+                            return;
+                        }
+
                         view->setIndexWidget(m_index, nullptr);
                         view->edit(m_index);
                     }
@@ -197,6 +216,14 @@ void DesktopIndexWidget::mousePressEvent(QMouseEvent *event)
 
 void DesktopIndexWidget::mouseDoubleClickEvent(QMouseEvent *event)
 {
+    auto view = m_delegate->getView();
+    if (!view->selectionModel()->selectedIndexes().contains(m_index)) {
+        view->m_real_do_edit = false;
+        view->m_edit_trigger_timer.stop();
+        this->close();
+        return;
+    }
+
     m_delegate->getView()->doubleClicked(m_index);
     m_delegate->getView()->setIndexWidget(m_index, nullptr);
     return;
@@ -209,6 +236,7 @@ void DesktopIndexWidget::updateItem()
     m_delegate->initStyleOption(&m_option, m_index);
     QSize size = m_delegate->sizeHint(m_option, m_index);
     auto visualRect = m_delegate->getView()->visualRect(m_index);
+    auto rectCopy = visualRect;
     move(visualRect.topLeft());
     setFixedWidth(visualRect.width());
 
@@ -216,7 +244,22 @@ void DesktopIndexWidget::updateItem()
 
     int rawHeight = size.height();
     auto textSize = Peony::DirectoryView::IconViewTextHelper::getTextSizeForIndex(m_option, m_index, 2);
-    int fixedHeight = 5 + m_delegate->getView()->iconSize().height() + 5 + textSize.height() + 5;
+    int fixedHeight = 5 + m_delegate->getView()->iconSize().height() + 5 + textSize.height() + 10;
+
+    int y_bottom = rectCopy.y() + fixedHeight;
+    qDebug() << "Y:" <<rectCopy.y() <<fixedHeight <<m_delegate->getView()->height();
+    b_elide_text = false;
+    if ( y_bottom > m_delegate->getView()->height() && m_option.text.length() > ELIDE_TEXT_LENGTH)
+    {
+        b_elide_text = true;
+        int  charWidth = m_option.fontMetrics.averageCharWidth();
+        m_option.text = m_option.fontMetrics.elidedText(m_option.text, Qt::ElideRight, ELIDE_TEXT_LENGTH * charWidth);
+        //recount size
+        textSize = Peony::DirectoryView::IconViewTextHelper::getTextSizeForIndex(m_option, m_index, 2);
+        fixedHeight = 5 + m_delegate->getView()->iconSize().height() + 5 + textSize.height() + 10;
+    }
+
+    qDebug() << "updateItem fixedHeight:" <<fixedHeight <<rawHeight <<m_option.text;
     if (fixedHeight < rawHeight)
         fixedHeight = rawHeight;
 
@@ -252,7 +295,7 @@ void DesktopIndexWidget::updateItem()
     m_text_rect = textRect;
 
     //m_option.font = font;
-    auto opt = m_option;
+    //auto opt = m_option;
 
     qDebug()<<textRect;
 //    setFixedHeight(textRect.bottom() + 10);

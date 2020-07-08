@@ -106,6 +106,9 @@ void FileMoveOperation::progress_callback(goffset current_num_bytes,
         goffset total_num_bytes,
         FileMoveOperation *p_this)
 {
+    if (total_num_bytes < current_num_bytes)
+        return;
+
     auto currnet = p_this->m_current_offset + current_num_bytes;
     auto total = p_this->m_total_szie;
     Q_EMIT p_this->FileProgressCallback(p_this->m_current_src_uri,
@@ -835,12 +838,12 @@ start:
         operationStartSnyc();
         QProcess p;
         p.start("sync");
-        p.waitForFinished();
+        p.waitForFinished(-1);
     }
     qDebug()<<"finished";
 end:
     Q_EMIT operationFinished();
-    notifyFileWatcherOperationFinished();
+    //notifyFileWatcherOperationFinished();
 }
 
 void FileMoveOperation::cancel()

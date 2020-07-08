@@ -461,12 +461,12 @@ const QList<QAction *> DirectoryViewMenu::constructFileOpActions()
             connect(l.last(), &QAction::triggered, [=]() {
                 ClipboardUtils::setClipboardFiles(m_selections, true);
             });
-            l<<addAction(QIcon::fromTheme("edit-clear-symbolic"), tr("&Delete to trash"));
+            l<<addAction(QIcon::fromTheme("edit-delete-symbolic"), tr("&Delete to trash"));
             connect(l.last(), &QAction::triggered, [=]() {
                 FileOperationUtils::trash(m_selections, true);
             });
             //add delete forever option
-            l<<addAction(QIcon::fromTheme("edit-delete-symbolic"), tr("Delete forever"));
+            l<<addAction(QIcon::fromTheme("edit-clear-symbolic"), tr("Delete forever"));
             connect(l.last(), &QAction::triggered, [=]() {
                 FileOperationUtils::executeRemoveActionWithDialog(m_selections);
             });

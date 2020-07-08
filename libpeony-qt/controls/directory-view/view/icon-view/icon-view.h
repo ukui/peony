@@ -174,6 +174,8 @@ private:
      * \deprecated
      */
     bool m_use_peony_qt_directory_menu = false;
+
+    const int BOTTOM_STATUS_MARGIN = 36;
 };
 
 //IconView2

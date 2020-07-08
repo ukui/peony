@@ -277,7 +277,7 @@ void IconViewDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptionV
     //auto iconRect = opt.widget->style()->subElementRect(QStyle::SE_ItemViewItemDecoration, &opt, opt.widget);
     //auto y_delta = iconExpectedSize.height() - iconRect.height();
     //edit->move(opt.rect.x(), opt.rect.y() + y_delta + 10);
-    edit->move(opt.rect.x(), opt.rect.y() + iconExpectedSize.height() + 10);
+    edit->move(opt.rect.x(), opt.rect.y() + iconExpectedSize.height() + 5);
 
     edit->resize(edit->document()->size().width(), edit->document()->size().height() + 10);
 }
@@ -299,6 +299,16 @@ void IconViewDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, 
     if (newName.length() >0 && newName != oldName && newName != suffix) {
         auto fileOpMgr = FileOperationManager::getInstance();
         auto renameOp = new FileRenameOperation(index.data(FileItemModel::UriRole).toString(), newName);
+
+        connect(renameOp, &FileRenameOperation::operationFinished, getView(), [=](){
+            auto info = renameOp->getOperationInfo().get();
+            auto uri = info->target();
+            QTimer::singleShot(100, getView(), [=](){
+                getView()->setSelections(QStringList()<<uri);
+                getView()->scrollToSelection(uri);
+            });
+        }, Qt::BlockingQueuedConnection);
+
         fileOpMgr->startOperation(renameOp, true);
     }
 }

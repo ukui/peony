@@ -34,6 +34,8 @@ class DirectoryViewPluginIface;
 class DirectoryViewPluginIface2;
 class DirectoryViewWidget;
 
+class GlobalSettings;
+
 class DirectoryViewFactoryManager2 : public QObject
 {
     Q_OBJECT
@@ -47,6 +49,8 @@ public:
     const QString getDefaultViewId(const QString &uri = nullptr);
     const QString getDefaultViewId(int zoomLevel, const QString &uri = nullptr);
 
+    const QStringList internalViews() {return m_internal_views;}
+
 public Q_SLOTS:
     void setDefaultViewId(const QString &viewId);
     void saveDefaultViewOption();
@@ -56,7 +60,7 @@ private:
     explicit DirectoryViewFactoryManager2(QObject *parent = nullptr);
     ~DirectoryViewFactoryManager2();
 
-    QSettings *m_settings;
+    GlobalSettings *m_settings;
     QString m_default_view_id_cache;
 
     QStringList m_internal_views;

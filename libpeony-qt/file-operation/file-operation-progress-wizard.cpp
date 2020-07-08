@@ -160,22 +160,8 @@ void FileOperationProgressWizard::switchToProgressPage()
 
 void FileOperationProgressWizard::onFileOperationProgressedOne(const QString &uri, const QString &destUri, const qint64 &size)
 {
-    qDebug()<<"onFileOperationFinishedOne"<<uri<<size;
     m_current_count++;
-    m_current_size += size;
-
-    char *current_format_size = g_format_size (quint64(m_current_size));
-    char *total_format_size = g_format_size(quint64(m_total_size));
-    m_second_page->m_state_line->setText(tr("%1 done, %2 total, %3 of %4.").
-                                         arg(current_format_size).arg(total_format_size)
-                                         .arg(m_current_count).arg(m_total_count));
-
-    g_free(current_format_size);
-    g_free(total_format_size);
-    m_second_page->m_src_line->setText(uri);
-    m_second_page->m_dest_line->setText(destUri);
-    double test = (m_current_size*1.0/m_total_size)*100;
-    m_second_page->m_progress_bar->setValue(int(test));
+    return;
 }
 
 void FileOperationProgressWizard::onFileOperationProgressedAll()
@@ -234,6 +220,10 @@ void FileOperationProgressWizard::updateProgress(const QString &srcUri, const QS
     if (m_delayer->isActive()) {
         return;
     }
+
+    if (current > m_total_size)
+        return;
+
     m_delayer->start();
 
     if (m_second_page->m_state_line->text() == "unknown") {

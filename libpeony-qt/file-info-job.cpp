@@ -33,6 +33,7 @@
 #include <QDateTime>
 #include <QIcon>
 #include <QUrl>
+#include <QLocale>
 
 using namespace Peony;
 
@@ -284,16 +285,27 @@ void FileInfoJob::refreshInfoContents(GFileInfo *new_info)
         auto string = g_desktop_app_info_get_locale_string(desktop_info, "Name");
 #else
         //FIXME: should handle locale?
-        auto string = g_desktop_app_info_get_string(desktop_info, "Name");
+        //change "Name" to QLocale::system().name(),
+        //try to fix Qt5.6 untranslated desktop file issue
+        auto key = "Name[" +  QLocale::system().name() + "]";
+        auto string = g_desktop_app_info_get_string(desktop_info, key.toUtf8().constData());
 #endif
+        qDebug() << "get name string:"<<string <<info->uri()<<info->displayName();
         if (string) {
             info->m_display_name = string;
             g_free(string);
         } else {
-            string = g_desktop_app_info_get_string(desktop_info, "Name");
-            if (string) {
-                info->m_display_name = string;
-                g_free(string);
+            QString path = "/usr/share/applications/" + info->displayName();
+            auto name = getAppName(path);
+            if (name.length() > 0)
+                info->m_display_name = name;
+            else
+            {
+                string = g_desktop_app_info_get_string(desktop_info, "Name");
+                if (string) {
+                    info->m_display_name = string;
+                    g_free(string);
+                }
             }
         }
         g_object_unref(desktop_info);
@@ -301,4 +313,21 @@ void FileInfoJob::refreshInfoContents(GFileInfo *new_info)
 
     Q_EMIT info->updated();
     m_info->m_mutex.unlock();
+}
+
+QString FileInfoJob::getAppName(QString desktopfp)
+{
+    GError** error=nullptr;
+    GKeyFileFlags flags=G_KEY_FILE_NONE;
+    GKeyFile* keyfile=g_key_file_new ();
+
+    QByteArray fpbyte=desktopfp.toLocal8Bit();
+    char* filepath=fpbyte.data();
+    g_key_file_load_from_file(keyfile,filepath,flags,error);
+
+    char* name=g_key_file_get_locale_string(keyfile,"Desktop Entry","Name", nullptr, nullptr);
+    QString namestr=QString::fromLocal8Bit(name);
+
+    g_key_file_free(keyfile);
+    return namestr;
 }

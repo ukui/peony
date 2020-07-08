@@ -44,6 +44,8 @@
 #include <QStyleOptionToolButton>
 
 #include <QEvent>
+#include <QApplication>
+#include <QTimer>
 
 #include <KWindowSystem>
 
@@ -102,9 +104,6 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
     goBack->setFixedSize(QSize(36, 28));
     goBack->setIcon(QIcon::fromTheme("go-previous-symbolic"));
     addWidget(goBack);
-    connect(goBack, &QPushButton::clicked, m_window, [=]() {
-        m_window->getCurrentPage()->goBack();
-    });
 
     auto goForward = new HeadBarPushButton(this);
     m_go_forward = goForward;
@@ -122,6 +121,11 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
     auto locationBar = new Peony::AdvancedLocationBar(this);
     m_location_bar = locationBar;
     addWidget(locationBar);
+
+    connect(goBack, &QPushButton::clicked, m_window, [=]() {
+        m_window->getCurrentPage()->goBack();
+        m_location_bar->clearSearchBox();
+    });
 
     connect(m_location_bar, &Peony::AdvancedLocationBar::refreshRequest, [=]()
     {
@@ -567,6 +571,17 @@ void HeaderBarContainer::addWindowButtons()
     connect(close, &QToolButton::clicked, this, [=]() {
         m_header_bar->m_window->close();
     });
+
+    connect(qApp, &QApplication::paletteChanged, close, [=](){
+        QTimer::singleShot(100, this, [=](){
+            auto palette = qApp->palette();
+            palette.setColor(QPalette::Highlight, QColor("#E54A50"));
+            close->setPalette(palette);
+        });
+    });
+    auto palette = qApp->palette();
+    palette.setColor(QPalette::Highlight, QColor("#E54A50"));
+    close->setPalette(palette);
 
     layout->addWidget(minimize);
     layout->addWidget(maximizeAndRestore);

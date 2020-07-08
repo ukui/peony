@@ -27,6 +27,9 @@
 #include "list-view-delegate.h"
 
 #include "file-item.h"
+#include "list-view-style.h"
+
+#include "global-settings.h"
 
 #include <QHeaderView>
 
@@ -45,6 +48,8 @@ using namespace Peony::DirectoryView;
 
 ListView::ListView(QWidget *parent) : QTreeView(parent)
 {
+    setStyle(Peony::DirectoryView::ListViewStyle::getStyle());
+
     setAlternatingRowColors(true);
     setAutoFillBackground(true);
     setBackgroundRole(QPalette::Base);
@@ -249,8 +254,8 @@ void ListView::updateGeometries()
 
     QStyleOptionViewItem opt = viewOptions();
     int height = itemDelegate()->sizeHint(opt, QModelIndex()).height();
+    verticalScrollBar()->setMaximum(verticalScrollBar()->maximum() + 1);
     setViewportMargins(0, header()->height(), 0, height);
-    verticalScrollBar()->setMaximum(verticalScrollBar()->maximum() + 5);
 }
 
 void ListView::wheelEvent(QWheelEvent *e)
@@ -310,7 +315,7 @@ void ListView::adjustColumnsSize()
         rightPartsSize += columnSize;
     }
 
-    if (this->width() - rightPartsSize < 150)
+    if (this->width() - rightPartsSize < BOTTOM_STATUS_MARGIN)
         return;
 
     //resizeColumnToContents(0);
@@ -443,6 +448,11 @@ ListView2::ListView2(QWidget *parent) : DirectoryViewWidget(parent)
     layout->setMargin(0);
     layout->setSpacing(0);
     m_view = new ListView(this);
+
+    int defaultZoomLevel = GlobalSettings::getInstance()->getValue(DEFAULT_VIEW_ZOOM_LEVEL).toInt();
+    if (defaultZoomLevel >= minimumZoomLevel() && defaultZoomLevel <= maximumZoomLevel())
+        m_zoom_level = defaultZoomLevel;
+
     connect(m_view, &ListView::zoomLevelChangedRequest, this, &ListView2::zoomRequest);
     layout->addWidget(m_view);
 

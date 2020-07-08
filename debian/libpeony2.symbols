@@ -317,6 +317,15 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZN5Peony13DirectoryView13IconViewStyleD0Ev@Base 2.0.0
  _ZN5Peony13DirectoryView13IconViewStyleD1Ev@Base 2.0.0
  _ZN5Peony13DirectoryView13IconViewStyleD2Ev@Base 2.0.0
+ _ZN5Peony13DirectoryView13ListViewStyle11qt_metacallEN11QMetaObject4CallEiPPv@Base 2.2.0
+ _ZN5Peony13DirectoryView13ListViewStyle11qt_metacastEPKc@Base 2.2.0
+ _ZN5Peony13DirectoryView13ListViewStyle16staticMetaObjectE@Base 2.2.0
+ _ZN5Peony13DirectoryView13ListViewStyle8getStyleEv@Base 2.2.0
+ _ZN5Peony13DirectoryView13ListViewStyleC1EP7QObject@Base 2.2.0
+ _ZN5Peony13DirectoryView13ListViewStyleC2EP7QObject@Base 2.2.0
+ _ZN5Peony13DirectoryView13ListViewStyleD0Ev@Base 2.2.0
+ _ZN5Peony13DirectoryView13ListViewStyleD1Ev@Base 2.2.0
+ _ZN5Peony13DirectoryView13ListViewStyleD2Ev@Base 2.2.0
  _ZN5Peony13DirectoryView14IconViewEditor10paintEventEP11QPaintEvent@Base 2.0.0
  _ZN5Peony13DirectoryView14IconViewEditor11qt_metacallEN11QMetaObject4CallEiPPv@Base 2.0.0
  _ZN5Peony13DirectoryView14IconViewEditor11qt_metacastEPKc@Base 2.0.0
@@ -1267,8 +1276,10 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZN5Peony18IconContainerStyleD2Ev@Base 2.1.0
  _ZN5Peony18SearchBarContainer11qt_metacallEN11QMetaObject4CallEiPPv@Base 2.1.0
  _ZN5Peony18SearchBarContainer11qt_metacastEPKc@Base 2.1.0
+ _ZN5Peony18SearchBarContainer11startSearchEv@Base 2.2.0
  _ZN5Peony18SearchBarContainer12filterUpdateERKi@Base 2.1.0
  _ZN5Peony18SearchBarContainer13returnPressedEv@Base 2.1.0
+ _ZN5Peony18SearchBarContainer14clearSearchBoxEv@Base 2.2.0
  _ZN5Peony18SearchBarContainer14onTableClickedERK11QModelIndex@Base 2.1.0
  _ZN5Peony18SearchBarContainer16staticMetaObjectE@Base 2.1.0
  _ZN5Peony18SearchBarContainerC1EP7QWidget@Base 2.1.0
@@ -1287,6 +1298,7 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZN5Peony19AdvancedLocationBar11qt_metacallEN11QMetaObject4CallEiPPv@Base 2.0.0
  _ZN5Peony19AdvancedLocationBar11qt_metacastEPKc@Base 2.0.0
  _ZN5Peony19AdvancedLocationBar13searchRequestERK7QString@Base 2.1.0
+ _ZN5Peony19AdvancedLocationBar14clearSearchBoxEv@Base 2.2.0
  _ZN5Peony19AdvancedLocationBar14refreshRequestEv@Base 2.0.0
  _ZN5Peony19AdvancedLocationBar14switchEditModeEb@Base 2.1.0
  _ZN5Peony19AdvancedLocationBar14updateLocationERK7QString@Base 2.0.0
@@ -2160,6 +2172,7 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZN5Peony9FileUtils13getFileParentERKSt10shared_ptrINS_15GObjectTemplateI6_GFileEEE@Base 2.0.0
  _ZN5Peony9FileUtils13toDisplayUrisERK11QStringList@Base 2.0.0
  _ZN5Peony9FileUtils14getUriBaseNameERK7QString@Base 2.0.0
+ _ZN5Peony9FileUtils15getChildrenUrisERK7QString@Base 2.2.0
  _ZN5Peony9FileUtils15getFileBaseNameERKSt10shared_ptrINS_15GObjectTemplateI6_GFileEEE@Base 2.0.0
  _ZN5Peony9FileUtils15getFileIconNameERK7QString@Base 2.0.0
  _ZN5Peony9FileUtils15getFileIsFolderERK7QString@Base 2.0.0
@@ -2486,6 +2499,8 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZNK5Peony13DirectoryView13IconViewStyle12drawItemTextEP8QPainterRK5QRectiRK8QPalettebRK7QStringNS7_9ColorRoleE@Base 2.0.0
  _ZNK5Peony13DirectoryView13IconViewStyle13drawPrimitiveEN6QStyle16PrimitiveElementEPK12QStyleOptionP8QPainterPK7QWidget@Base 2.1.0
  _ZNK5Peony13DirectoryView13IconViewStyle14drawItemPixmapEP8QPainterRK5QRectiRK7QPixmap@Base 2.0.0
+ _ZNK5Peony13DirectoryView13ListViewStyle10metaObjectEv@Base 2.2.0
+ _ZNK5Peony13DirectoryView13ListViewStyle13drawPrimitiveEN6QStyle16PrimitiveElementEPK12QStyleOptionP8QPainterPK7QWidget@Base 2.2.0
  _ZNK5Peony13DirectoryView14IconViewEditor10metaObjectEv@Base 2.0.0
  _ZNK5Peony13DirectoryView16IconViewDelegate10metaObjectEv@Base 2.0.0
  _ZNK5Peony13DirectoryView16IconViewDelegate12createEditorEP7QWidgetRK20QStyleOptionViewItemRK11QModelIndex@Base 2.0.0
@@ -2949,6 +2964,7 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZTIN5Peony12SideBarModelE@Base 2.0.0
  _ZTIN5Peony12ThumbnailJobE@Base 2.1.0
  _ZTIN5Peony13DirectoryView13IconViewStyleE@Base 2.0.0
+ _ZTIN5Peony13DirectoryView13ListViewStyleE@Base 2.2.0
  _ZTIN5Peony13DirectoryView14IconViewEditorE@Base 2.0.0
  _ZTIN5Peony13DirectoryView16IconViewDelegateE@Base 2.0.0
 #MISSING: 2.1.0# _ZTIN5Peony13DirectoryView17StandardViewProxyE@Base 2.0.0
@@ -3130,6 +3146,7 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZTSN5Peony12SideBarModelE@Base 2.0.0
  _ZTSN5Peony12ThumbnailJobE@Base 2.1.0
  _ZTSN5Peony13DirectoryView13IconViewStyleE@Base 2.0.0
+ _ZTSN5Peony13DirectoryView13ListViewStyleE@Base 2.2.0
  _ZTSN5Peony13DirectoryView14IconViewEditorE@Base 2.0.0
  _ZTSN5Peony13DirectoryView16IconViewDelegateE@Base 2.0.0
 #MISSING: 2.1.0# _ZTSN5Peony13DirectoryView17StandardViewProxyE@Base 2.0.0
@@ -3310,6 +3327,7 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZTVN5Peony12SideBarModelE@Base 2.0.0
  _ZTVN5Peony12ThumbnailJobE@Base 2.1.0
  _ZTVN5Peony13DirectoryView13IconViewStyleE@Base 2.0.0
+ _ZTVN5Peony13DirectoryView13ListViewStyleE@Base 2.2.0
  _ZTVN5Peony13DirectoryView14IconViewEditorE@Base 2.0.0
  _ZTVN5Peony13DirectoryView16IconViewDelegateE@Base 2.0.0
 #MISSING: 2.1.0# _ZTVN5Peony13DirectoryView17StandardViewProxyE@Base 2.0.0

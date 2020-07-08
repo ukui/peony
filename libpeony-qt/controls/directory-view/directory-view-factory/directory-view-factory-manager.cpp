@@ -26,7 +26,7 @@
 #include "icon-view-factory.h"
 #include "list-view-factory.h"
 
-#include <QSettings>
+#include "global-settings.h"
 
 #include <QDebug>
 
@@ -46,7 +46,7 @@ DirectoryViewFactoryManager2* DirectoryViewFactoryManager2::getInstance()
 
 DirectoryViewFactoryManager2::DirectoryViewFactoryManager2(QObject *parent) : QObject(parent)
 {
-    m_settings = new QSettings("UbuntuKylin Team", "Peony Qt", this);
+    m_settings = GlobalSettings::getInstance();
     m_hash = new QHash<QString, DirectoryViewPluginIface2*>();
 
     //register icon view and list view
@@ -85,7 +85,7 @@ DirectoryViewPluginIface2 *DirectoryViewFactoryManager2::getFactory(const QStrin
 const QString DirectoryViewFactoryManager2::getDefaultViewId(const QString &uri)
 {
     if (m_default_view_id_cache.isNull()) {
-        auto string = m_settings->value("directory-view/default-view-id").toString();
+        auto string = m_settings->getValue(DEFAULT_VIEW_ID).toString();
         if (string.isEmpty()) {
             string = "Icon View";
         } else {
@@ -145,5 +145,5 @@ void DirectoryViewFactoryManager2::setDefaultViewId(const QString &viewId)
 
 void DirectoryViewFactoryManager2::saveDefaultViewOption()
 {
-    m_settings->setValue("directory-view/default-view-id", m_default_view_id_cache);
+    m_settings->setValue(DEFAULT_VIEW_ID, m_default_view_id_cache);
 }

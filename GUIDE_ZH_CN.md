@@ -1,5 +1,7 @@
 # 项目指南
 
+## [Wiki](https://github.com/ukui/peony/wiki)
+
 ## 项目之外的相关资源（重要）
 
 - [贡献准则](https://github.com/Yue-Lan/peony-qt_development_document/blob/master/contribution-criteria.md)

@@ -83,6 +83,19 @@ const QModelIndex FileItemProxyFilterSortModel::indexFromUri(const QString &uri)
 
 bool FileItemProxyFilterSortModel::lessThan(const QModelIndex &left, const QModelIndex &right) const
 {
+    //comment these improve code to fix disorder issue
+    //and chinese first or folder first has not effect issue
+    //Fix me with better solutions
+//    if (left.data().isNull())
+//        return sortOrder() == Qt::AscendingOrder? false: true;
+
+//    if (right.data().isNull())
+//        return sortOrder() == Qt::AscendingOrder? true: false;
+
+//    if (left.column() != 0 || right.column() != 0) {
+//        return true;
+//    }
+
     //qDebug()<<left<<right;
     if (left.isValid() && right.isValid()) {
         FileItemModel *model = static_cast<FileItemModel*>(sourceModel());
@@ -190,7 +203,7 @@ bool FileItemProxyFilterSortModel::filterAcceptsRow(int sourceRow, const QModelI
             }
         }
 
-        //check mutiple label filter conditions, file has any one of these label is accepted
+        //check multiple label filter conditions, file has any one of these label is accepted
         if(m_show_label_names.size() >0 || m_show_label_colors.size() >0)
         {
             bool bfind = false;
@@ -250,12 +263,12 @@ bool FileItemProxyFilterSortModel::filterAcceptsRow(int sourceRow, const QModelI
 bool FileItemProxyFilterSortModel::checkFileTypeFilter(QString type) const
 {
     //qDebug()<<"m_show_file_type: "<<m_show_file_type<<" "<<item->info()->type();
-    //mutiple condition, advance search and default search
+    //multiple condition, advance search and default search
     if (m_show_file_type == ALL_FILE && m_file_type_list.count() == 0
         || m_file_type_list.contains(ALL_FILE))
         return true;
 
-    //suport mutiple file type choose
+    //support multiple file type choose
     QList<int> totalTypeList;
     if (m_file_type_list.count() > 0)
         totalTypeList.append(m_file_type_list);

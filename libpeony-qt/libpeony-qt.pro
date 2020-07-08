@@ -13,7 +13,7 @@ VERSION = 2.1.0
 TARGET = peony
 TEMPLATE = lib
 
-CONFIG += link_pkgconfig no_keywords c++11
+CONFIG += link_pkgconfig no_keywords c++11 lrelease
 PKGCONFIG += glib-2.0 gio-2.0 gio-unix-2.0 poppler-qt5 gsettings-qt
 
 DEFINES += PEONYCORE_LIBRARY
@@ -56,9 +56,6 @@ unix {
     pcfile.files = development-files/peony.pc
     INSTALLS += pcfile
 
-    translation.path = /usr/share/libpeony-qt
-    translation.commands = sh $$PWD/../translations/update-translations.sh
-    translation.files += ../translations/libpeony-qt/*.ts
-    translation.files += ../translations/libpeony-qt/*.qm
-    INSTALLS += translation
+    #QM_FILES_RESOURCE_PREFIX = ../translations/libpeony-qt
+    QM_FILES_INSTALL_PATH = /usr/share/libpeony-qt
 }

@@ -110,6 +110,48 @@ bool FileUtils::getFileIsFolder(const QString &uri)
     return type == G_FILE_TYPE_DIRECTORY;
 }
 
+QStringList FileUtils::getChildrenUris(const QString &directoryUri)
+{
+    QStringList uris;
+
+    GError *err = nullptr;
+    GFile *top = g_file_new_for_uri(directoryUri.toUtf8().constData());
+    GFileEnumerator *e = g_file_enumerate_children(top, G_FILE_ATTRIBUTE_STANDARD_NAME, G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
+                                                   nullptr, &err);
+
+    if (err) {
+        g_error_free(err);
+    }
+    g_object_unref(top);
+    if (!e)
+        return uris;
+
+    auto child_info = g_file_enumerator_next_file(e, nullptr, nullptr);
+    while (child_info) {
+        auto child = g_file_enumerator_get_child(e, child_info);
+        QUrl url;
+        auto uri = g_file_get_uri(child);
+        auto path = g_file_get_path(child);
+        if (path) {
+            url = QString("file://%1").arg(path);
+            g_free(path);
+        } else {
+            url = uri;
+        }
+
+        uris<<url.toDisplayString();
+        g_free(uri);
+        g_object_unref(child);
+        g_object_unref(child_info);
+        child_info = g_file_enumerator_next_file(e, nullptr, nullptr);
+    }
+
+    g_file_enumerator_close(e, nullptr, nullptr);
+    g_object_unref(e);
+
+    return uris;
+}
+
 QString FileUtils::getNonSuffixedBaseNameFromUri(const QString &uri)
 {
     QUrl url = uri;

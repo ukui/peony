@@ -50,9 +50,13 @@
 #include "peony-main-window-style.h"
 
 #include "directory-view-factory-manager.h"
+#include "global-settings.h"
+#include "main-window.h"
 
 #include <QApplication>
 #include <QStandardPaths>
+
+#include <QMessageBox>
 
 #include <QDebug>
 
@@ -550,6 +554,10 @@ void TabWidget::handleZoomLevel(int zoomLevel)
     if (zoomLevel == currentViewZoomLevel) {
         return;
     }
+
+    // save default zoom level
+    Peony::GlobalSettings::getInstance()->setValue(DEFAULT_VIEW_ZOOM_LEVEL, zoomLevel);
+
     if (zoomLevel <= currentViewMaxZoomLevel && zoomLevel >= currentViewMimZoomLevel) {
         currentPage()->getView()->setCurrentZoomLevel(zoomLevel);
     } else {
@@ -754,13 +762,22 @@ void TabWidget::setPreviewPage(Peony::PreviewPageIface *previewPage)
 
 void TabWidget::addPage(const QString &uri, bool jumpTo)
 {
+    auto info = Peony::FileInfo::fromUri(uri, false);
+    qDebug() << "addPage:" <<uri <<info->isDir();
+    if (! info->isDir())
+        return;
+
     QCursor c;
     c.setShape(Qt::WaitCursor);
     this->setCursor(c);
 
     m_tab_bar->addPage(uri, jumpTo);
     int zoomLevel = -1;
+
+    bool hasCurrentPage = false;
+
     if (currentPage()) {
+        hasCurrentPage = true;
         zoomLevel = currentPage()->getView()->currentZoomLevel();
     }
 
@@ -777,8 +794,17 @@ void TabWidget::addPage(const QString &uri, bool jumpTo)
     bindContainerSignal(viewContainer);
     updateTrashBarVisible(uri);
 
+    if (hasCurrentPage) {
+        // perfer to use current page view type
+        auto internalViews = Peony::DirectoryViewFactoryManager2::getInstance()->internalViews();
+        if (internalViews.contains(currentPage()->getView()->viewId()))
+            viewContainer->switchViewType(currentPage()->getView()->viewId());
+    }
+
     if (zoomLevel > 0)
         viewContainer->getView()->setCurrentZoomLevel(zoomLevel);
+    else
+        viewContainer->getView()->setCurrentZoomLevel(Peony::GlobalSettings::getInstance()->getValue(DEFAULT_VIEW_ZOOM_LEVEL).toInt());
 }
 
 void TabWidget::goToUri(const QString &uri, bool addHistory, bool forceUpdate)
@@ -804,6 +830,13 @@ void TabWidget::switchViewType(const QString &viewId)
         return;
 
     currentPage()->switchViewType(viewId);
+
+    // change default view id
+    auto factoryManager = Peony::DirectoryViewFactoryManager2::getInstance();
+    auto internalViews = factoryManager->internalViews();
+    if (internalViews.contains(viewId))
+        Peony::GlobalSettings::getInstance()->setValue(DEFAULT_VIEW_ID, viewId);
+
     bool supportZoom = this->currentPage()->getView()->supportZoom();
     this->m_status_bar->m_slider->setEnabled(this->currentPage()->getView()->supportZoom());
 }

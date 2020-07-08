@@ -35,8 +35,6 @@ Files: libpeony-qt/bookmark-manager.cpp
        libpeony-qt/controls/directory-view/view/icon-view/icon-view.h
        libpeony-qt/controls/directory-view/view/list-view/list-view.cpp
        libpeony-qt/controls/directory-view/view/list-view/list-view.h
-       libpeony-qt/controls/directory-view/view/standard-view-proxy.cpp
-       libpeony-qt/controls/directory-view/view/standard-view-proxy.h
        libpeony-qt/controls/icon-container.cpp
        libpeony-qt/controls/icon-container.h
        libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp
@@ -95,6 +93,8 @@ Files: libpeony-qt/bookmark-manager.cpp
        libpeony-qt/controls/tool-bar/view-factory-model.h
        libpeony-qt/controls/tool-bar/view-factory-sort-filter-model.cpp
        libpeony-qt/controls/tool-bar/view-factory-sort-filter-model.h
+       libpeony-qt/controls/directory-view/view/list-view/list-view-style.cpp
+       libpeony-qt/controls/directory-view/view/list-view/list-view-style.h
        libpeony-qt/convenient-utils/clipboard-utils.cpp
        libpeony-qt/convenient-utils/clipboard-utils.h
        libpeony-qt/convenient-utils/file-operation-utils.cpp
@@ -257,6 +257,8 @@ Files: libpeony-qt/bookmark-manager.cpp
        plugin-iface/tool-bar-action-plugin-iface.h
        plugin/menuplugin.cpp
        plugin/menuplugin.h
+       src/control/tab-status-bar.cpp
+       src/control/tab-status-bar.h
 Copyright: 2019, Tianjin KYLIN Information Technology Co., Ltd.
 License: LGPL-3.0+
 
@@ -289,6 +291,8 @@ Files: CONTRIBUTING.md
        libpeony-qt/controls/status-bar/status-bar.pri
        libpeony-qt/controls/tab-page/tab-page.pri
        libpeony-qt/controls/tool-bar/tool-bar.pri
+       libpeony-qt/controls/tool-bar/search-bar-container.cpp
+       libpeony-qt/controls/tool-bar/search-bar-container.h
        libpeony-qt/convenient-utils/convenient-utils.pri
        libpeony-qt/copy-headers.sh
        libpeony-qt/data/libpeony-qt-dark.qss
@@ -355,7 +359,6 @@ Files: CONTRIBUTING.md
        plugin/menuplugintest1.json
        plugin/plugin.pro
        translations/clean-translated-resources.sh
-       translations/update-translations.sh
        peony-qt-desktop/desktop-icon-view-delegate.cpp
        peony-qt-desktop/desktop-icon-view-delegate.h
        peony-qt-desktop/desktop-icon-view.cpp
@@ -393,6 +396,8 @@ Files: CONTRIBUTING.md
        src/control/tab-widget.h
        src/control/view-type-menu.cpp
        src/control/view-type-menu.h
+       src/control/label-box-delegate.cpp
+       src/control/label-box-delegate.h
        src/peony-application.cpp
        src/peony-application.h
        src/peony-main-window-style.cpp
@@ -408,10 +413,18 @@ Files: CONTRIBUTING.md
        src/man/peony.1
        src/src.pro
        src/windows/windows.pri
+       src/customIcons.qrc
+       src/custome.qrc
+       src/icons/child-folder.png
+       src/icons/child-folder2.png
        translations/peony-qt/peony-qt_zh_CN.ts
        translations/libpeony-qt/libpeony-qt_zh_CN.ts
        translations/peony-qt-desktop/peony-qt-desktop_zh_CN.ts
+       translations/libpeony-qt/libpeony-qt_tr.ts
+       translations/peony-qt-desktop/peony-qt-desktop_tr.ts
+       translations/peony-qt/peony-qt_tr.ts
        peony-qt-plugin-test/peony-qt-menu-plugin-mate-terminal/translations/peony-qt-mate-terminal-extension_zh_CN.ts
+       peony-qt-plugin-test/peony-qt-menu-plugin-mate-terminal/translations/peony-qt-mate-terminal-extension_tr.ts
        debian/*
        data/*
        doxygen/*
@@ -419,6 +432,7 @@ Files: CONTRIBUTING.md
        GUIDE_ZH_CN.md
        NEWS
        README.md
+       .gitignore
 Copyright: 2019, Tianjin KYLIN Information Technology Co., Ltd.
 License: GPL-3.0+
 

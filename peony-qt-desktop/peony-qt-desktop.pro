@@ -29,7 +29,7 @@ include(../3rd-parties/SingleApplication/singleapplication.pri)
 DEFINES += QAPPLICATION_CLASS=QApplication
 
 PKGCONFIG +=gio-2.0 glib-2.0 gio-unix-2.0 gsettings-qt
-CONFIG += c++11 link_pkgconfig no_keywords
+CONFIG += c++11 link_pkgconfig no_keywords lrelease
 
 LIBS += -L$$PWD/../libpeony-qt/ -lpeony -lX11
 
@@ -64,9 +64,8 @@ HEADERS += \
 target.path = /usr/bin
 !isEmpty(target.path): INSTALLS += target
 
-translation.path = /usr/share/peony-qt-desktop
-translation.files += ../translations/peony-qt-desktop/*
-INSTALLS += translation
+#QM_FILES_RESOURCE_PREFIX = ../translations/peony-qt-desktop
+QM_FILES_INSTALL_PATH = /usr/share/peony-qt-desktop
 
 data.path = /etc/xdg/autostart
 data.files += ../data/peony-desktop.desktop

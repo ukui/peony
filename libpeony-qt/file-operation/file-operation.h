@@ -60,6 +60,7 @@ class FileOperationInfo;
  */
 class PEONYCORESHARED_EXPORT FileOperation : public QObject, public QRunnable
 {
+    friend class FileOperationManager;
     Q_OBJECT
 
 public:
