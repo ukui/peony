@@ -68,10 +68,10 @@ jobs:
       - run: 
           command: apt-get install -yq debhelper-compat pkg-kde-tools pkg-config libglib2.0-dev libqt5x11extras5-dev  libgsettings-qt-dev libpoppler-dev libpoppler-qt5-dev libkf5windowsystem-dev qtbase5-private-dev
       - run: |
-          mkdir -p build
-          cd build 
-          qmake .. 
-          make -j$(nproc)
+          mkdir -p build;
+          cd build;
+          qmake ..;
+          make -j$(nproc);
 
 workflows:
   version: 2
@@ -79,12 +79,19 @@ workflows:
   build:
     jobs:
       - build-on-archlinux:
+            requires:
+              - build-on-ubuntu
+
             filters:
               branches:
                 only:
                   - master
 
       - build-on-fedora:
+          requires:
+            - build-on-ubuntu
+            - build-on-archlinux
+
           filters:
             branches:
               only:
