@@ -1,4 +1,7 @@
 # peony
+
+![build](https://github.com/ukui/peony/workflows/build/badge.svg?branch=master)
+
 peony is the filemanager application of UKUI3.0.
 
 # About this project
