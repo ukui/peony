@@ -5,6 +5,10 @@ executors:
     docker:
       - image: docker.io/library/archlinux:latest
 
+  debian-sid:
+    docker:
+      - image: docker.io/library/debian:sid
+
   fedora-32:
     docker:
       - image: docker.io/library/fedora:32
@@ -30,6 +34,29 @@ jobs:
           cd build;
           qmake ..;
           make -j$(nproc);
+
+  build-on-debian:
+    executor: debian-sid
+
+    environment:
+      DEBIAN_FRONTEND: noninteractive
+    
+    steps:
+      - run: 
+          command: apt-get update -y
+      - run:
+          command: apt-get install -yq git openssh-client
+      - checkout
+      - run: 
+          command: apt-get install -yq build-essential qt5-default qttools5-dev-tools
+      - run: 
+          command: apt-get install -yq debhelper-compat pkg-kde-tools pkg-config libglib2.0-dev libqt5x11extras5-dev  libgsettings-qt-dev libpoppler-dev libpoppler-qt5-dev libkf5windowsystem-dev qtbase5-private-dev
+      - run: |
+          mkdir -p build;
+          cd build;
+          qmake ..;
+          make -j$(nproc);
+
 
   build-on-fedora:
     executor: fedora-32
@@ -80,6 +107,7 @@ workflows:
     jobs:
       - build-on-archlinux:
             requires:
+              - build-on-debian
               - build-on-ubuntu
 
             filters:
@@ -87,10 +115,20 @@ workflows:
                 only:
                   - master
 
-      - build-on-fedora:
+      - build-on-debian:
           requires:
-            - build-on-ubuntu
+              - build-on-ubuntu
+
+          filters:
+            branches:
+              only:
+                - master
+
+      - build-on-fedora:
+          requires: 
             - build-on-archlinux
+            - build-on-debian
+            - build-on-ubuntu
 
           filters:
             branches:
