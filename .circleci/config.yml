@@ -106,18 +106,18 @@ workflows:
   build:
     jobs:
       - build-on-archlinux:
-            requires:
-              - build-on-debian
-              - build-on-ubuntu
+          requires:
+            - build-on-debian
+            - build-on-ubuntu
 
-            filters:
-              branches:
-                only:
-                  - master
+          filters:
+            branches:
+              only:
+                - master
 
       - build-on-debian:
           requires:
-              - build-on-ubuntu
+            - build-on-ubuntu
 
           filters:
             branches:
