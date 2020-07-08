@@ -1,0 +1,97 @@
+version: 2.1
+
+executors:
+  archlinux:
+    docker:
+      - image: docker.io/library/archlinux:latest
+
+  fedora-32:
+    docker:
+      - image: docker.io/library/fedora:32
+
+  ubuntu-focal:
+    docker:
+      - image: docker.io/library/ubuntu:focal
+
+jobs:
+  build-on-archlinux:
+    executor: archlinux
+
+    steps:
+      - run:
+          command: pacman -Sy
+      - run:
+          command: pacman -S --noconfirm git openssh
+      - checkout
+      - run:
+          command: pacman -S --noconfirm base-devel qt5-base gsettings-qt kwindowsystem poppler-qt5 qt5-x11extras glib2 qt5-tools
+      - run: |
+          mkdir build;
+          cd build;
+          qmake ..;
+          make -j$(nproc);
+
+  build-on-fedora:
+    executor: fedora-32
+
+    steps:
+      - run:
+          command:  dnf install --refresh -y git openssh-clients
+      - checkout
+      - run:
+          command: dnf install -y patch make gcc gcc-c++ which cmake cmake-rpm-macros autoconf automake intltool rpm-build qt5-devel curl
+      - run:
+          command:  dnf install -y qt5-rpm-macros qt5-qtbase-devel qt5-qttools-devel glib2-devel qt5-qtbase-devel gsettings-qt-devel kf5-kwindowsystem-devel poppler-qt5-devel qt5-qtx11extras-devel qt5-qtbase-private-devel
+      - run: |
+          curl -O https://raw.githubusercontent.com/jenningsloy318/ukui-rpm-packaging/master/peony/peony-libdir.patch;
+          patch -s -p0 < peony-libdir.patch;
+      - run: |
+          mkdir build;
+          cd build;
+          qmake-qt5 ..;
+          make -j$(nproc);
+  
+  build-on-ubuntu:
+    executor: ubuntu-focal
+
+    environment:
+      DEBIAN_FRONTEND: noninteractive
+    
+    steps:
+      - run: 
+          command: apt-get update -y
+      - run:
+          command: apt-get install -yq git openssh-client
+      - checkout
+      - run: 
+          command: apt-get install -yq build-essential qt5-default qttools5-dev-tools
+      - run: 
+          command: apt-get install -yq debhelper-compat pkg-kde-tools pkg-config libglib2.0-dev libqt5x11extras5-dev  libgsettings-qt-dev libpoppler-dev libpoppler-qt5-dev libkf5windowsystem-dev qtbase5-private-dev
+      - run: |
+          mkdir -p build
+          cd build 
+          qmake .. 
+          make -j$(nproc)
+
+workflows:
+  version: 2
+  
+  build:
+    jobs:
+      - build-on-archlinux:
+            filters:
+              branches:
+                only:
+                  - master
+
+      - build-on-fedora:
+          filters:
+            branches:
+              only:
+                - master
+
+      - build-on-ubuntu:
+          filters:
+            branches:
+              only:
+                - master
