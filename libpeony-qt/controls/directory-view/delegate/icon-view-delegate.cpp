@@ -257,7 +257,8 @@ void IconViewDelegate::setEditorData(QWidget *editor, const QModelIndex &index) 
     cursor.movePosition(QTextCursor::End, QTextCursor::KeepAnchor);
     //qDebug()<<cursor.position();
     if (edit->toPlainText().contains(".") && !edit->toPlainText().startsWith(".")) {
-        cursor.movePosition(QTextCursor::WordLeft, QTextCursor::KeepAnchor, 2);
+        cursor.movePosition(QTextCursor::WordLeft, QTextCursor::KeepAnchor, 1);
+        cursor.movePosition(QTextCursor::Left, QTextCursor::KeepAnchor, 1);
         //qDebug()<<cursor.position();
     }
     //qDebug()<<cursor.anchor();
