@@ -526,11 +526,8 @@ void DesktopWindow::initShortcut() {
         CreateTemplateOperation op(PeonyDesktopApplication::getIconView()->getDirectoryUri(), CreateTemplateOperation::EmptyFolder, tr("New Folder"));
         op.run();
         auto targetUri = op.target();
-#if QT_VERSION > QT_VERSION_CHECK(5, 12, 0)
+
         QTimer::singleShot(500, this, [=]() {
-#else
-        QTimer::singleShot(500, [=]() {
-#endif
             PeonyDesktopApplication::getIconView()->scrollToSelection(targetUri);
         });
     });

@@ -261,11 +261,8 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
     connect(m_model, &DesktopItemModel::fileCreated, this, [=](const QString &uri) {
         if (m_new_files_to_be_selected.isEmpty()) {
             m_new_files_to_be_selected<<uri;
-#if QT_VERSION > QT_VERSION_CHECK(5, 12, 0)
+
             QTimer::singleShot(500, this, [=]() {
-#else
-            QTimer::singleShot(500, [=]() {
-#endif
                 if (this->state() & QAbstractItemView::EditingState)
                     return;
                 this->setSelections(m_new_files_to_be_selected);
@@ -288,11 +285,8 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
             return;
         }
         //qDebug()<<"save====================================";
-#if QT_VERSION > QT_VERSION_CHECK(5, 12, 0)
+
         QTimer::singleShot(100, this, [=]() {
-#else
-        QTimer::singleShot(100, [=]() {
-#endif
             this->saveAllItemPosistionInfos();
         });
     });
@@ -300,11 +294,8 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
     connect(this, &QListView::iconSizeChanged, this, [=]() {
         //qDebug()<<"save=============";
         this->setSortType(GlobalSettings::getInstance()->getValue(LAST_DESKTOP_SORT_ORDER).toInt());
-#if QT_VERSION > QT_VERSION_CHECK(5, 12, 0)
+
         QTimer::singleShot(100, this, [=]() {
-#else
-        QTimer::singleShot(100, [=]() {
-#endif
             this->saveAllItemPosistionInfos();
         });
     });
@@ -445,11 +436,8 @@ void DesktopIconView::initShoutCut()
         CreateTemplateOperation op(this->getDirectoryUri(), CreateTemplateOperation::EmptyFolder, tr("New Folder"));
         op.run();
         auto targetUri = op.target();
-#if QT_VERSION > QT_VERSION_CHECK(5, 12, 0)
+
         QTimer::singleShot(500, this, [=]() {
-#else
-        QTimer::singleShot(500, [=]() {
-#endif
             this->scrollToSelection(targetUri);
         });
     });
@@ -725,11 +713,7 @@ void DesktopIconView::setSortOrder(int sortOrder)
 void DesktopIconView::editUri(const QString &uri)
 {
     clearAllIndexWidgets();
-#if QT_VERSION > QT_VERSION_CHECK(5, 12, 0)
     QTimer::singleShot(100, this, [=]() {
-#else
-    QTimer::singleShot(100, [=]() {
-#endif
         edit(m_proxy_model->mapFromSource(m_model->indexFromUri(uri)));
     });
 }

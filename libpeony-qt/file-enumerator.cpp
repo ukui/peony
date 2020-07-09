@@ -162,11 +162,8 @@ void FileEnumerator::prepare()
         //connect prepared signal before prepared() method to confirm that.
         //Q_EMIT prepared(nullptr);
         g_object_unref(enumerator);
-#if QT_VERSION > QT_VERSION_CHECK(5, 12, 0)
+
         QTimer::singleShot(100, this, [=]() {
-#else
-        QTimer::singleShot(100, [=]() {
-#endif
             Q_EMIT prepared(nullptr);
         });
     }
