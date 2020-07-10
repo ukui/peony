@@ -2,6 +2,7 @@
 #include "ui_format_dialog.h"
 #include <syslog.h>
 
+#include <QMessageBox>
 #include <QObject>
 
 using namespace  Peony;
@@ -32,6 +33,13 @@ Format_Dialog::Format_Dialog(const QString &m_uris,SideBarAbstractItem *m_item,Q
        ui->comboBox_rom_size->addItem(total_format);
 
 
+       auto mount = VolumeManager::getMountFromUri(targetUri);
+       syslog(LOG_ERR,"mount name is %s",(mount->name()).toUtf8().constData());
+       ui->lineEdit_device_name->setText(mount->name());
+
+       ui->progressBar_process->setValue(0);
+
+
        connect(ui->pushButton_ok, SIGNAL(clicked(bool)), this, SLOT(acceptFormat(bool)));
 
        connect(ui->pushButton_close, SIGNAL(clicked(bool)), this, SLOT(colseFormat(bool)));
@@ -58,6 +66,8 @@ void Format_Dialog::acceptFormat(bool)
 
     ui->pushButton_ok->setDisabled(TRUE);
     ui->pushButton_close->setDisabled(TRUE);
+    ui->lineEdit_device_name->setDisabled(TRUE);
+    ui->checkBox_clean_or_not->setDisabled(TRUE);
 
     //init the value
     char rom_size[1024] ={0},rom_type[1024]={0},rom_name[1024]={0},dev_name[1024]={0};
@@ -93,7 +103,95 @@ void Format_Dialog::acceptFormat(bool)
     //begin format
     kdisk_format(dev_name,rom_type,quick_clean?"zero":NULL,rom_name,&format_value);
 
+    //begin start my_timer, processbar
+    my_time  = new QTimer(this);
+
+    if(quick_clean){
+        my_time->setInterval(100);
+    }else{
+        my_time->setInterval(1000);
+    }
+
+    //begin loop
+    connect(my_time,SIGNAL(timeout()),this,SLOT(formatloop()));
+
+    my_time->start();
+
 }
+
+
+double Format_Dialog::get_format_bytes_done(const gchar * device_name)
+{
+
+
+        UDisksObject *object ;
+        UDisksClient *client =udisks_client_new_sync (NULL,NULL);
+        object = get_object_from_block_device(client,device_name);
+        GList *jobs;
+        jobs = udisks_client_get_jobs_for_object (client,object);
+        g_clear_object(&client);
+        g_object_unref(object);
+        if(jobs!=NULL)
+        {
+
+            syslog(LOG_ERR,"jobs!=NULL ...");
+            UDisksJob *job =(UDisksJob *)jobs->data;
+            if(udisks_job_get_progress_valid (job))
+            {
+            double res = udisks_job_get_progress(job);
+            syslog(LOG_ERR,"res is %lf",res);
+                    g_list_foreach (jobs, (GFunc) g_object_unref, NULL);
+                    g_list_free (jobs);
+
+
+                    return res;
+            }
+             syslog(LOG_ERR,"jobs == NULL ...");
+
+        g_list_foreach (jobs, (GFunc) g_object_unref, NULL);
+            g_list_free (jobs);
+    }
+        return 0;
+
+}
+
+
+void Format_Dialog::formatloop(){
+
+    QString volname, devName, voldisplayname;
+    static char name_dev[256] ={0};
+    char prestr[10] = {0};
+
+
+    FileUtils::queryVolumeInfo(fm_uris, volname, devName, voldisplayname);
+
+    if(nullptr != devName)
+    strcpy(name_dev,devName.toUtf8().constData());
+
+    double pre = (get_format_bytes_done(name_dev) * 100);
+
+
+    sprintf(prestr,"%.2f",pre);
+    strcat(prestr,"%");
+
+
+    if(pre>=100){
+
+        syslog(LOG_ERR,"ENTER  PRE 100..");
+        ui->progressBar_process->setValue(100);
+
+        ui->label_process->setText("100%");
+
+        my_time->stop();
+
+    }else{
+
+          ui->progressBar_process->setValue(pre);
+          ui->label_process->setText(prestr);
+    }
+
+}
+
 
 void Format_Dialog::cancel_format(const gchar* device_name){
 
@@ -250,12 +348,40 @@ static void format_cb (GObject *source_object, GAsyncResult *res ,gpointer user_
 
 
     if(end_flag == 1){
-        data->dl->hide();
+
+        data->dl->ui->progressBar_process->setValue(100);
+        data->dl->ui->label_process->setText("100%");
+        data->dl->my_time->stop();
+
+        data->dl->format_ok_dialog();
+
+        data->dl->close();
+
+    }else{
+
+        data->dl->format_err_dialog();
+
+        data->dl->my_time->stop();
+
+        data->dl->close();
     }
 
     createformatfree(data);
 
 };
+
+
+void Format_Dialog::format_ok_dialog(){
+
+    QMessageBox::about(parentWidget(),tr("qmesg_notify"),tr("format_success"));
+};
+
+
+void Format_Dialog::format_err_dialog(){
+
+      QMessageBox::warning(parentWidget(),tr("qmesg_notify"),tr("format_err"));
+};
+
 
 /* ensure_format_cb ,function ensure to do format
  *

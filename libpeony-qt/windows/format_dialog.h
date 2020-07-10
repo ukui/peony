@@ -6,9 +6,11 @@
 #include <udisks/udisks.h>
 #include <libnotify/notify.h>
 #include <glib/gi18n.h>
+#include <QTimer>
 #include <errno.h>
 
 #include "side-bar-menu.h"
+#include "volume-manager.h"
 #include "file-utils.h"
 #include "side-bar-abstract-item.h"
 namespace Ui {
@@ -60,8 +62,19 @@ public:
 
     void cancel_format(const gchar* device_name);
 
+    double get_format_bytes_done(const gchar * device_name);
+
+    void format_ok_dialog();
+
+
+    void format_err_dialog();
 
     ~Format_Dialog();
+
+
+    Ui::Format_Dialog *ui;
+
+    QTimer *my_time;
 
 public Q_SLOTS:
 
@@ -69,9 +82,12 @@ public Q_SLOTS:
     void colseFormat(bool);
 
 
+    void formatloop();
+
+
 
 private:
-    Ui::Format_Dialog *ui;
+
     QString fm_uris;
     SideBarAbstractItem *fm_item;
 
