@@ -1,0 +1,92 @@
+name: Check build
+
+on:
+  push:
+    branches:
+      - master
+    
+  pull_request:
+    branches:
+      - master
+
+  schedule:
+    - cron: '0 0 * * *'
+  
+jobs:
+  archlinux:
+    name: on Archlinux
+    runs-on: ubuntu-20.04
+    container: docker.io/library/archlinux:latest
+    steps:
+      - name: Checkout peony source code
+        uses: actions/checkout@v2
+      - name: Refresh pacman repository
+        run: pacman -Sy
+      - name: Install build dependencies
+        run: pacman -S --noconfirm base-devel qt5-base gsettings-qt kwindowsystem poppler-qt5 qt5-x11extras glib2 qt5-tools
+      - name: QMake configure & Make
+        run: |
+          mkdir build;
+          cd build;
+          qmake-qt5 ..;
+          make -j$(nproc);
+  debian:
+    name: on Debian Sid
+    runs-on: ubuntu-20.04
+    container: docker.io/library/debian:sid
+    env:
+      DEBIAN_FRONTEND: noninteractive
+    steps:
+      - name: Checkout peony source code
+        uses: actions/checkout@v2
+      - name: Update apt repository
+        run: apt-get update -y
+      - name: Install build dependcies
+        run: apt-get install -y build-essential qt5-default qttools5-dev-tools debhelper-compat pkg-kde-tools pkg-config libglib2.0-dev libqt5x11extras5-dev  libgsettings-qt-dev libpoppler-dev libpoppler-qt5-dev libkf5windowsystem-dev qtbase5-private-dev
+      - name: QMake configure & Make
+        run: |
+          mkdir build;
+          cd build;
+          qmake ..;
+          make -j$(nproc);
+  
+  fedora:
+    name: on Fedora 32
+    runs-on: ubuntu-20.04
+    container: docker.io/library/fedora:32
+    steps:
+      - name: Checkout peony source code
+        uses: actions/checkout@v2
+      - name: Install curl and patch
+        run: dnf install --refresh -y curl patch
+      - name: Download and apply patch for Fedora
+        run: |
+          curl -O https://raw.githubusercontent.com/jenningsloy318/ukui-rpm-packaging/master/peony/peony-libdir.patch;
+          patch -s -p0 < peony-libdir.patch;
+      - name: Install build dependencies
+        run: dnf install -y make gcc gcc-c++ which cmake cmake-rpm-macros autoconf automake intltool rpm-build qt5-devel qt5-rpm-macros qt5-qtbase-devel qt5-qttools-devel glib2-devel qt5-qtbase-devel gsettings-qt-devel kf5-kwindowsystem-devel poppler-qt5-devel qt5-qtx11extras-devel qt5-qtbase-private-devel
+      - name: QMake configure & Make
+        run: |
+          mkdir build;
+          cd build;
+          qmake-qt5 ..;
+          make -j$(nproc);
+  ubuntu:
+    name: on Ubuntu 20.04
+    runs-on: ubuntu-20.04
+    container: docker.io/library/ubuntu:focal
+    env:
+      DEBIAN_FRONTEND: noninteractive
+    steps:
+      - name: Checkout peony source code
+        uses: actions/checkout@v2
+      - name: Update apt repository
+        run: apt-get update -y
+      - name: Install build dependcies
+        run: apt-get install -y build-essential qt5-default qttools5-dev-tools debhelper-compat pkg-kde-tools pkg-config libglib2.0-dev libqt5x11extras5-dev  libgsettings-qt-dev libpoppler-dev libpoppler-qt5-dev libkf5windowsystem-dev qtbase5-private-dev
+      - name: QMake configure & Make
+        run: |
+          mkdir build;
+          cd build;
+          qmake ..;
+          make -j$(nproc);
