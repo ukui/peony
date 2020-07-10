@@ -74,6 +74,7 @@ private:
     QString m_directory;
     QStringList m_selections;
 
+    bool m_is_cd = false;
     bool m_is_computer = false;
     bool m_is_trash = false;
     bool m_is_search = false;
