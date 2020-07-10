@@ -109,7 +109,7 @@ void CreateTemplateOperation::run()
     Q_EMIT operationPrepared();
     switch (m_type) {
     case EmptyFile: {
-        m_target_uri = m_dest_dir_uri + "/" + tr("NewFile");
+        m_target_uri = m_dest_dir_uri + "/" + tr("NewFile") + ".txt";
 retry_create_empty_file:
         GError *err = nullptr;
         g_file_create(wrapGFile(g_file_new_for_uri(m_target_uri.toUtf8())).get()->get(),
