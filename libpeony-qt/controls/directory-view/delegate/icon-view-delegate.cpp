@@ -226,7 +226,11 @@ QWidget *IconViewDelegate::createEditor(QWidget *parent, const QStyleOptionViewI
         // NOTE: resort view after edit closed.
         // it's because if we not, the viewport might
         // not be updated in some cases.
+#if QT_VERSION > QT_VERSION_CHECK(5, 12, 0)
         QTimer::singleShot(100, this, [=]() {
+#else
+        QTimer::singleShot(100, [=]() {
+#endif
             auto model = qobject_cast<QSortFilterProxyModel*>(getView()->model());
             //fix rename file back to default sort order
             //model->sort(-1, Qt::SortOrder(getView()->getSortOrder()));
