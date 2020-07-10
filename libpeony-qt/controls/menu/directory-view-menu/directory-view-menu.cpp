@@ -101,6 +101,9 @@ void DirectoryViewMenu::fillActions()
     if (m_directory.startsWith("search://"))
         m_is_search = true;
 
+    if (m_directory.startsWith("burn://"))
+        m_is_cd = true;
+
     //add open actions
     auto openActions = constructOpenOpActions();
     if (!openActions.isEmpty())
@@ -279,6 +282,9 @@ const QList<QAction *> DirectoryViewMenu::constructCreateTemplateActions()
     QList<QAction *> l;
     if (m_selections.isEmpty()) {
         auto createAction = new QAction(tr("&New..."), this);
+        if (m_is_cd) {
+            createAction->setEnabled(false);
+        }
         l<<createAction;
         QMenu *subMenu = new QMenu(this);
         createAction->setMenu(subMenu);
