@@ -153,6 +153,62 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
             }
         }
     });
+
+    //when system app uninstalled, delete link in desktop if exist
+    QString system_app_path = "file:///usr/share/applications/";
+    m_system_app_watcher = std::make_shared<FileWatcher>(system_app_path, this);
+    m_system_app_watcher->setMonitorChildrenChange(true);
+    auto mInfo = FileInfo::fromUri(system_app_path);
+    qDebug() <<"system_app_path:" <<mInfo->isDir();
+    this->connect(m_system_app_watcher.get(), &FileWatcher::fileDeleted, [=](const QString &uri) {
+        qDebug() << "m_system_app_watcher:" <<uri;
+        if (uri.endsWith(".desktop"))
+        {
+            QString fileName = uri;
+            fileName = fileName.replace(system_app_path, "");
+            qDebug() << "m_system_app_watcher:" <<fileName <<uri;
+            for (auto info : m_files) {
+                if (info->uri().endsWith(fileName)) {
+                    //this->beginResetModel();
+                    this->beginRemoveRows(QModelIndex(), m_files.indexOf(info), m_files.indexOf(info));
+                    m_files.removeOne(info);
+                    this->endRemoveRows();
+                    //this->endResetModel();
+                    Q_EMIT this->requestClearIndexWidget();
+                    Q_EMIT this->requestUpdateItemPositions();
+                    FileInfoManager::getInstance()->remove(info);
+                }
+            }
+        }
+    });
+
+    //when andriod app uninstalled, delete link in desktop if exist
+    QString homePath = "file://" + QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
+    auto andriod_app_path = homePath + "/.local/share/applications/";
+    auto app_info = FileInfo::fromUri(andriod_app_path);
+    qDebug() <<"andriod_app_path:" <<app_info->isDir();
+    m_andriod_app_watcher = std::make_shared<FileWatcher>(andriod_app_path, this);
+    m_andriod_app_watcher->setMonitorChildrenChange(true);
+    this->connect(m_andriod_app_watcher.get(), &FileWatcher::fileDeleted, [=](const QString &uri) {
+        if (uri.endsWith(".desktop"))
+        {
+            QString fileName = uri;
+            fileName = fileName.replace(andriod_app_path, "");
+            qDebug() << "andriod_app_path:" <<fileName <<uri;
+            for (auto info : m_files) {
+                if (info->uri().endsWith(fileName)) {
+                    //this->beginResetModel();
+                    this->beginRemoveRows(QModelIndex(), m_files.indexOf(info), m_files.indexOf(info));
+                    m_files.removeOne(info);
+                    this->endRemoveRows();
+                    //this->endResetModel();
+                    Q_EMIT this->requestClearIndexWidget();
+                    Q_EMIT this->requestUpdateItemPositions();
+                    FileInfoManager::getInstance()->remove(info);
+                }
+            }
+        }
+    });
 }
 
 DesktopItemModel::~DesktopItemModel()
@@ -275,6 +331,8 @@ void DesktopItemModel::onEnumerateFinished()
     //qDebug()<<"startMornitor";
     m_trash_watcher->startMonitor();
     m_desktop_watcher->startMonitor();
+    m_system_app_watcher->startMonitor();
+    m_andriod_app_watcher->startMonitor();
 }
 
 const QModelIndex DesktopItemModel::indexFromUri(const QString &uri)

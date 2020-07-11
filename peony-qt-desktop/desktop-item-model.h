@@ -92,6 +92,9 @@ private:
     std::shared_ptr<FileWatcher> m_desktop_watcher;
     std::shared_ptr<FileWatcher> m_thumbnail_watcher; //just handle the thumbnail created.
 
+    std::shared_ptr<FileWatcher> m_system_app_watcher;
+    std::shared_ptr<FileWatcher> m_andriod_app_watcher;
+
     QQueue<QString> m_info_query_queue;
 };
 
