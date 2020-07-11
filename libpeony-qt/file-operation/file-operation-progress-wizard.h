@@ -110,6 +110,7 @@ protected:
 private:
     QSystemTrayIcon *m_tray_icon = nullptr;
     QTimer *m_delayer;
+    QTimer *m_tip_delayer;
 };
 
 class PEONYCORESHARED_EXPORT FileOperationPreparePage : public QWizardPage
