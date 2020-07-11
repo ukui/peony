@@ -30,7 +30,7 @@
    <property name="geometry">
     <rect>
      <x>30</x>
-     <y>100</y>
+     <y>80</y>
      <width>151</width>
      <height>18</height>
     </rect>
@@ -42,8 +42,8 @@
   <widget class="QComboBox" name="comboBox_system">
    <property name="geometry">
     <rect>
-     <x>30</x>
-     <y>130</y>
+     <x>120</x>
+     <y>80</y>
      <width>291</width>
      <height>26</height>
     </rect>
@@ -68,7 +68,7 @@
    <property name="geometry">
     <rect>
      <x>30</x>
-     <y>180</y>
+     <y>140</y>
      <width>151</width>
      <height>18</height>
     </rect>
@@ -80,8 +80,8 @@
   <widget class="QLineEdit" name="lineEdit_device_name">
    <property name="geometry">
     <rect>
-     <x>30</x>
-     <y>210</y>
+     <x>120</x>
+     <y>140</y>
      <width>291</width>
      <height>26</height>
     </rect>
@@ -91,7 +91,7 @@
    <property name="geometry">
     <rect>
      <x>30</x>
-     <y>260</y>
+     <y>200</y>
      <width>291</width>
      <height>24</height>
     </rect>
@@ -129,11 +129,37 @@
   <widget class="QComboBox" name="comboBox_rom_size">
    <property name="geometry">
     <rect>
-     <x>30</x>
-     <y>50</y>
+     <x>120</x>
+     <y>20</y>
      <width>291</width>
      <height>26</height>
     </rect>
+   </property>
+  </widget>
+  <widget class="QProgressBar" name="progressBar_process">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>250</y>
+     <width>381</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="value">
+    <number>24</number>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_process">
+   <property name="geometry">
+    <rect>
+     <x>420</x>
+     <y>250</y>
+     <width>51</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
    </property>
   </widget>
  </widget>

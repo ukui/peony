@@ -236,6 +236,22 @@
         <source>close</source>
         <translation>关闭</translation>
     </message>
+    <message>
+        <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="376"/>
+        <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="382"/>
+        <source>qmesg_notify</source>
+        <translation>通知</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="376"/>
+        <source>format_success</source>
+        <translation>格式化成功!</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="382"/>
+        <source>format_err</source>
+        <translation>格式化失败!</translation>
+    </message>
 </context>
 <context>
     <name>Peony::AdvanceSearchBar</name>
@@ -1795,7 +1811,7 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
         <translation>卸载(&amp;U)</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/side-bar-menu/side-bar-menu.cpp" line="157"/>
+        <location filename="../../libpeony-qt/controls/menu/side-bar-menu/side-bar-menu.cpp" line="153"/>
         <source>format</source>
         <translation>格式化</translation>
     </message>
@@ -2119,7 +2135,7 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
         <translation>显示“回收站”或“最近”中的文件属性或项目。</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="233"/>
+        <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="331"/>
         <source>File Manager</source>
         <translation>文件管理器</translation>
     </message>
