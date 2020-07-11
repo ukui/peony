@@ -158,6 +158,7 @@ private:
     QTimer m_repaint_timer;
 
     bool  m_editValid;
+    bool  m_ctrl_key_pressed;
     QTimer* m_renameTimer;
 
     QModelIndex m_last_index;

@@ -174,6 +174,8 @@ private:
 
     bool m_ctrl_or_shift_pressed = false;
 
+    bool  m_ctrl_key_pressed = false;
+
     QTimer m_refresh_timer;
 
     QModelIndexList m_drag_indexes;

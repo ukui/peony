@@ -30,6 +30,7 @@
 #include "file-operation-manager.h"
 #include "file-move-operation.h"
 #include "file-trash-operation.h"
+#include "file-copy-operation.h"
 
 #include "thumbnail-manager.h"
 
@@ -395,10 +396,23 @@ bool DesktopItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action
     if (destDirUri == "trash:///") {
         FileTrashOperation *trashOp = new FileTrashOperation(srcUris);
         fileOpMgr->startOperation(trashOp, addHistory);
-    } else {
-        FileMoveOperation *moveOp = new FileMoveOperation(srcUris, destDirUri);
-        moveOp->setCopyMove(true);
-        fileOpMgr->startOperation(moveOp, addHistory);
+    } else { 
+        qDebug() << "dropMimeData:" <<action;
+        switch (action) {
+        case Qt::MoveAction: {
+            FileMoveOperation *moveOp = new FileMoveOperation(srcUris, destDirUri);
+            moveOp->setCopyMove(true);
+            fileOpMgr->startOperation(moveOp, addHistory);
+            break;
+        }
+        case Qt::CopyAction: {
+            FileCopyOperation *copyOp = new FileCopyOperation(srcUris, destDirUri);
+            fileOpMgr->startOperation(copyOp);
+            break;
+        }
+        default:
+            break;
+        }
     }
 
     //NOTE:

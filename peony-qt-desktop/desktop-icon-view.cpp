@@ -1012,9 +1012,15 @@ void DesktopIconView::mouseDoubleClickEvent(QMouseEvent *event)
 void DesktopIconView::dragEnterEvent(QDragEnterEvent *e)
 {
     m_real_do_edit = false;
-    //qDebug()<<"drag enter event";
+    if (e->keyboardModifiers() && Qt::ControlModifier)
+        m_ctrl_key_pressed = true;
+    else
+        m_ctrl_key_pressed = false;
+
+    auto action = m_ctrl_key_pressed ? Qt::CopyAction : Qt::MoveAction;
+    qDebug()<<"drag enter event" <<action;
     if (e->mimeData()->hasUrls()) {
-        e->setDropAction(Qt::MoveAction);
+        e->setDropAction(action);
         e->acceptProposedAction();
     }
 
@@ -1026,6 +1032,12 @@ void DesktopIconView::dragEnterEvent(QDragEnterEvent *e)
 void DesktopIconView::dragMoveEvent(QDragMoveEvent *e)
 {
     m_real_do_edit = false;
+    if (e->keyboardModifiers() && Qt::ControlModifier)
+        m_ctrl_key_pressed = true;
+    else
+        m_ctrl_key_pressed = false;
+
+    auto action = m_ctrl_key_pressed ? Qt::CopyAction : Qt::MoveAction;
     auto index = indexAt(e->pos());
     if (index.isValid() && index != m_last_index) {
         QHoverEvent he(QHoverEvent::HoverMove, e->posF(), e->posF());
@@ -1036,12 +1048,12 @@ void DesktopIconView::dragMoveEvent(QDragMoveEvent *e)
     }
     if (e->isAccepted())
         return;
-    //qDebug()<<"drag move event";
+    qDebug()<<"drag move event" <<action;
     if (this == e->source()) {
         e->accept();
         return QListView::dragMoveEvent(e);
     }
-    e->setDropAction(Qt::CopyAction);
+    e->setDropAction(action);
     e->accept();
 }
 
@@ -1058,7 +1070,14 @@ void DesktopIconView::dropEvent(QDropEvent *e)
       is incorrect.
       */
     m_edit_trigger_timer.stop();
-    if (this == e->source()) {
+    if (e->keyboardModifiers() && Qt::ControlModifier)
+        m_ctrl_key_pressed = true;
+    else
+        m_ctrl_key_pressed = false;
+
+    auto action = m_ctrl_key_pressed ? Qt::CopyAction : Qt::MoveAction;
+    qDebug() << "dropEvent" <<action;
+    if (this == e->source() && !m_ctrl_key_pressed) {
 
         auto index = indexAt(e->pos());
         if (index.isValid()) {
@@ -1137,7 +1156,7 @@ void DesktopIconView::dropEvent(QDropEvent *e)
         }
         return;
     }
-    m_model->dropMimeData(e->mimeData(), Qt::MoveAction, -1, -1, this->indexAt(e->pos()));
+    m_model->dropMimeData(e->mimeData(), action, -1, -1, this->indexAt(e->pos()));
     //FIXME: save item position
 }
 
