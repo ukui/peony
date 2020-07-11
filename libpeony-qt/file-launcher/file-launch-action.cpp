@@ -247,6 +247,18 @@ void FileLaunchAction::lauchFileAsync(bool forceWithArg, bool skipDialog)
                 QMessageBox::critical(nullptr, tr("Open Failed"),
                                   tr("Can not open %1, Please confirm you have the right authority.").arg(m_uri));
         }
+        else if (fileInfo->isDesktopFile())
+        {
+            auto result = QMessageBox::question(nullptr, tr("Open App failed"),
+                                  tr("The linked app is changed or uninstalled, so it can not work correctly. \n"
+                                     "Do you want to delete the link file?"));
+            if (result == QMessageBox::Yes) {
+                qDebug() << "Delete unused desktop file";
+                QStringList selections;
+                selections.push_back(m_uri);
+                FileOperationUtils::trash(selections, true);
+            }
+        }
         else {
             auto result = QMessageBox::question(nullptr, tr("Error"), tr("Can not get a default application for opening %1, do you want open it with text format?").arg(m_uri));
             if (result == QMessageBox::Yes) {
