@@ -86,8 +86,21 @@ FileOperationProgressWizard::FileOperationProgressWizard(QWidget *parent) : QWiz
     });
 
     m_delayer = new QTimer(this);
+    m_tip_delayer = new QTimer(this);
     m_delayer->setSingleShot(true);
     m_delayer->setInterval(100);
+
+    connect(m_tip_delayer, &QTimer::timeout, [=]() {
+    m_tray_icon->showMessage(tr("File Operation"),
+                                 tr("A file operation is running backend..."),
+    #if (QT_VERSION >= QT_VERSION_CHECK(5, 9, 0))
+                                 QIcon::fromTheme("system-file-manager"),
+    #else
+                                 QSystemTrayIcon::MessageIcon::Information,
+    #endif
+                                 5000);
+    m_tip_delayer->stop();
+    });
 }
 
 FileOperationProgressWizard::~FileOperationProgressWizard()
@@ -111,7 +124,10 @@ void FileOperationProgressWizard::closeEvent(QCloseEvent *e)
 #else
                              QSystemTrayIcon::MessageIcon::Information,
 #endif
-                             5000);
+                             1);
+
+    m_tip_delayer->start(800);
+
     hide();
 }
 
