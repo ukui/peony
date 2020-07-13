@@ -113,9 +113,27 @@ QVariant FileOperationErrorDialog::handleError(const QString &srcUri,
         btGroup->button(i)->setVisible(!isCritical);
     }
 
-    m_src_line->setText(srcUri);
-    m_dest_line->setText(destDirUri);
-    m_err_line->setText(err.get()->message());
+    pfontMetrics = new QFontMetrics(m_src_line->font());
+    int charWidth = pfontMetrics->averageCharWidth();
+    QString edit_srcUri = pfontMetrics->elidedText(srcUri, Qt::ElideRight, ELIDE_ERROR_TEXT_LENGTH * charWidth);
+    delete pfontMetrics;
+
+    pfontMetrics = new QFontMetrics(m_dest_line->font());
+    charWidth = pfontMetrics->averageCharWidth();
+    QString edit_destDirUri = pfontMetrics->elidedText(destDirUri, Qt::ElideRight, ELIDE_ERROR_TEXT_LENGTH * charWidth);
+    delete pfontMetrics;
+
+    pfontMetrics = new QFontMetrics(m_err_line->font());
+    charWidth = pfontMetrics->averageCharWidth();
+    QString edit_err_text = pfontMetrics->elidedText(err.get()->message(), Qt::ElideRight, ELIDE_ERROR_TEXT_LENGTH * charWidth);
+    delete pfontMetrics;
+
+    pfontMetrics = nullptr;
+
+
+    m_src_line->setText(edit_srcUri);
+    m_dest_line->setText(edit_destDirUri);
+    m_err_line->setText(edit_err_text);
 
     //FIXME: how to uniform the button with dynamically?
     //the default size won't change before the dialog has shown.
