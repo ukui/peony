@@ -1,7 +1,7 @@
 /*
  * Peony-Qt
  *
- * Copyright (C) 2019, Tianjin KYLIN Information Technology Co., Ltd.
+ * Copyright (C) 2020, KylinSoft Co., Ltd.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -578,7 +578,7 @@ void PeonyApplication::about()
                           "\tYue Lan <lanyue@kylinos.cn>\n"
                           "\tMeihong He <hemeihong@kylinos.cn>\n"
                           "\n"
-                          "Copyright (C): 2019-2020, KYLIN Software Co., Ltd."));
+                          "Copyright (C): 2020, KylinSoft Co., Ltd."));
 }
 
 void PeonyApplication::help()

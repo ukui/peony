@@ -1,7 +1,7 @@
 /*
  * Peony-Qt's Library
  *
- * Copyright (C) 2019, Tianjin KYLIN Information Technology Co., Ltd.
+ * Copyright (C) 2020, KylinSoft Co., Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
