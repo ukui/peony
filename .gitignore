@@ -1,1 +1,13 @@
 *.pro.user
+*.o
+moc_*.cpp
+moc_*.h
+Makefile
+ui_*.h
+ui_*.cpp
+*.so
+*.so.*
+qrc_*.cpp
+src/peony
+peony-qt-desktop/peony-qt-desktop
+*.deb

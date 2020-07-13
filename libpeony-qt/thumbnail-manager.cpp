@@ -135,6 +135,7 @@ void ThumbnailManager::createThumbnailInternal(const QString &uri, std::shared_p
                 //info->setThumbnail(thumbnail);
                 //m_mutex.unlock();
             }
+            qApp->processEvents();
         } else if (info->mimeType().contains("pdf")) {
             QUrl url = uri;
             qDebug()<<url;
