@@ -562,7 +562,7 @@ void IconView2::bindModel(FileItemModel *model, FileItemProxyFilterSortModel *pr
 
     connect(m_view, &IconView::customContextMenuRequested, this, [=](const QPoint &pos) {
         // we should clear the dirty rubber band due to call context menu.
-        bool isDragSelecting = m_view->state() == m_view->isDraggingState();
+        bool isDragSelecting = m_view->isDraggingState();
         if (isDragSelecting) {
             // send a fake mouse release event for clear the rubber band.
             // note that we should pass mouse move event durring delaying requesting
