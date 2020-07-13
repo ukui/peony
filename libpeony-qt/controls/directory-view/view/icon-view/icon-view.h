@@ -139,6 +139,7 @@ protected:
     void dragMoveEvent(QDragMoveEvent *e) override;
     void dropEvent(QDropEvent *e) override;
 
+    void mouseMoveEvent(QMouseEvent *e) override;
     void mousePressEvent(QMouseEvent *e) override;
     void mouseReleaseEvent(QMouseEvent *e) override;
 
@@ -150,6 +151,9 @@ protected:
     void wheelEvent(QWheelEvent *e) override;
 
     void updateGeometries() override;
+
+    bool getIgnore_mouse_move_event() const;
+    void setIgnore_mouse_move_event(bool ignore_mouse_move_event);
 
 private Q_SLOTS:
     void slotRename();
@@ -177,6 +181,8 @@ private:
     bool m_use_peony_qt_directory_menu = false;
 
     const int BOTTOM_STATUS_MARGIN = 36;
+
+    bool m_ignore_mouse_move_event = false;
 };
 
 //IconView2

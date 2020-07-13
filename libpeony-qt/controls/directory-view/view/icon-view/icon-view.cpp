@@ -49,6 +49,9 @@
 
 #include <QScrollBar>
 
+#include <QMouseEvent>
+#include <QApplication>
+
 #include <QDebug>
 
 using namespace Peony;
@@ -235,6 +238,14 @@ void IconView::dropEvent(QDropEvent *e)
     m_model->dropMimeData(e->mimeData(), action, 0, 0, index);
 }
 
+void IconView::mouseMoveEvent(QMouseEvent *e)
+{
+    if (m_ignore_mouse_move_event) {
+        return;
+    }
+    QListView::mouseMoveEvent(e);
+}
+
 void IconView::mousePressEvent(QMouseEvent *e)
 {
     qDebug()<<"moursePressEvent";
@@ -345,6 +356,16 @@ void IconView::slotRename()
         }
     });
 
+}
+
+bool IconView::getIgnore_mouse_move_event() const
+{
+    return m_ignore_mouse_move_event;
+}
+
+void IconView::setIgnore_mouse_move_event(bool ignore_mouse_move_event)
+{
+    m_ignore_mouse_move_event = ignore_mouse_move_event;
 }
 
 void IconView::bindModel(FileItemModel *sourceModel, FileItemProxyFilterSortModel *proxyModel)
@@ -540,12 +561,25 @@ void IconView2::bindModel(FileItemModel *model, FileItemProxyFilterSortModel *pr
     });
 
     connect(m_view, &IconView::customContextMenuRequested, this, [=](const QPoint &pos) {
+        // we should clear the dirty rubber band due to call context menu.
+        bool isDragSelecting = m_view->state() == QAbstractItemView::DragSelectingState;
+        if (isDragSelecting) {
+            // send a fake mouse release event for clear the rubber band.
+            // note that we should pass mouse move event durring delaying requesting
+            // directory view menu, otherwize both dnd and menu action will be triggered.
+            m_view->setIgnore_mouse_move_event(true);
+            QMouseEvent fakeEvent(QMouseEvent::MouseButtonRelease, pos, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+            qApp->sendEvent(m_view, &fakeEvent);
+            m_view->viewport()->repaint();
+        }
+
         if (!m_view->indexAt(pos).isValid())
             m_view->clearSelection();
 
         //NOTE: we have to ensure that we have cleared the
         //selection if menu request at blank pos.
-        QTimer::singleShot(1, [=]() {
+        QTimer::singleShot(isDragSelecting? 300: 1, this, [=]() {
+            m_view->setIgnore_mouse_move_event(false);
             Q_EMIT this->menuRequest(QCursor::pos());
         });
     });
