@@ -18,6 +18,8 @@ PKGCONFIG += glib-2.0 gio-2.0 gio-unix-2.0 poppler-qt5 gsettings-qt
 
 DEFINES += PEONYCORE_LIBRARY
 
+QMAKE_CXXFLAGS += -execution-charset:utf-8
+
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which has been marked as deprecated (the exact warnings
 # depend on your compiler). Please consult the documentation of the
