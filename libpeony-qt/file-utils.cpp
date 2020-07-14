@@ -235,6 +235,45 @@ QString FileUtils::getTargetUri(const QString &uri)
                                             G_FILE_ATTRIBUTE_STANDARD_TARGET_URI);
 }
 
+bool FileUtils::isMountPoint(const QString &uri)
+{
+    bool flag = false;                      // The uri is a mount point
+
+    GFile* file = g_file_new_for_uri(getTargetUri(uri).toUtf8().constData());
+
+    GList* mounts = nullptr;
+    GVolumeMonitor* vm = g_volume_monitor_get();
+    if (nullptr != vm) {
+        mounts = g_volume_monitor_get_mounts(vm);
+        if (nullptr != mounts) {
+            for (GList* l = mounts; nullptr != l; l = l->next) {
+                GMount* m = (GMount*)l->data;
+                GFile* f = g_mount_get_root(m);
+                if (g_file_equal(file, f)) {
+                    flag = true;
+                    g_object_unref(f);
+                    break;
+                }
+                g_object_unref(f);
+            }
+        }
+    }
+
+    if (nullptr != vm) {
+        g_object_unref(vm);
+    }
+
+    if (nullptr != mounts) {
+        g_list_free(mounts);
+    }
+
+    if (nullptr != file) {
+        g_object_unref(file);
+    }
+
+    return flag;
+}
+
 bool FileUtils::stringStartWithChinese(const QString &string)
 {
     if (string.isEmpty())
