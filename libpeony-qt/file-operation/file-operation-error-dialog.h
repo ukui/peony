@@ -1,7 +1,7 @@
 /*
  * Peony-Qt's Library
  *
- * Copyright (C) 2020, KylinSoft Co., Ltd.
+ * Copyright (C) 2019, Tianjin KYLIN Information Technology Co., Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -31,6 +31,8 @@ class QLabel;
 class QDialogButtonBox;
 class QButtonGroup;
 
+class QFontMetrics;
+
 namespace Peony {
 
 class PEONYCORESHARED_EXPORT FileOperationErrorDialog : public QDialog, public FileOperationErrorHandler
@@ -38,6 +40,7 @@ class PEONYCORESHARED_EXPORT FileOperationErrorDialog : public QDialog, public F
     Q_OBJECT
     Q_INTERFACES(Peony::FileOperationErrorHandler)
 public:
+    QFontMetrics *pfontMetrics;
     explicit FileOperationErrorDialog(QWidget *parent = nullptr);
     ~FileOperationErrorDialog() override;
 
@@ -56,6 +59,7 @@ private:
     QDialogButtonBox *m_button_box2 = nullptr;
 
     QButtonGroup *btGroup = nullptr;
+    const int ELIDE_ERROR_TEXT_LENGTH = 32;
 };
 
 }
