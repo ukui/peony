@@ -21,21 +21,20 @@
  */
 
 #include "side-bar-file-system-item.h"
-#include "side-bar-model.h"
-#include "file-utils.h"
-#include "file-enumerator.h"
-#include "file-info-job.h"
-#include "file-info.h"
-#include "gobject-template.h"
-#include "file-watcher.h"
 
+#include "file-info.h"
+#include "file-utils.h"
+#include "file-watcher.h"
+#include "file-info-job.h"
+#include "volume-manager.h"
+#include "side-bar-model.h"
+#include "file-enumerator.h"
+#include "gobject-template.h"
+#include "linux-pwd-helper.h"
 #include "side-bar-separator-item.h"
 
-#include "linux-pwd-helper.h"
-
-#include "volume-manager.h"
-
 #include <QIcon>
+#include <QMessageBox>
 
 using namespace Peony;
 
@@ -313,6 +312,16 @@ void SideBarFileSystemItem::eject()
                                           this);
 }
 
+static void unmount_finished(GObject*, GAsyncResult*, gpointer udata)
+{
+    SideBarFileSystemItem* th = (SideBarFileSystemItem*)udata;
+    if (FileUtils::isMountPoint(th->uri())) {
+        QMessageBox::warning(nullptr, QObject::tr("eject device failed"),
+                             QObject::tr("Please check whether the device is occupied and then eject the device again"),
+                             QMessageBox::Ok);
+    }
+}
+
 void SideBarFileSystemItem::unmount()
 {
     auto file = wrapGFile(g_file_new_for_uri(this->uri().toUtf8().constData()));
@@ -320,8 +329,8 @@ void SideBarFileSystemItem::unmount()
                                             G_MOUNT_UNMOUNT_NONE,
                                             nullptr,
                                             nullptr,
-                                            nullptr,
-                                            nullptr);
+                                            unmount_finished,
+                                            this);
 }
 
 void SideBarFileSystemItem::initWatcher()

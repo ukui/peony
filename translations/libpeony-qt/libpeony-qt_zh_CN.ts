@@ -1638,7 +1638,7 @@ Do you want to delete the link file?</source>
 <context>
     <name>Peony::SideBarFileSystemItem</name>
     <message>
-        <location filename="../../libpeony-qt/model/side-bar-file-system-item.cpp" line="52"/>
+        <location filename="../../libpeony-qt/model/side-bar-file-system-item.cpp" line="51"/>
         <source>Computer</source>
         <translation>计算机</translation>
     </message>
@@ -1982,6 +1982,16 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
         <location filename="../../libpeony-qt/controls/property-page/recent-and-trash-properties-page-factory.h" line="46"/>
         <source>Show the file properties or items in trash or recent.</source>
         <translation>显示“回收站”或“最近”中的文件属性或项目。</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/model/side-bar-file-system-item.cpp" line="319"/>
+        <source>eject device failed</source>
+        <translation>弹出设备失败</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/model/side-bar-file-system-item.cpp" line="320"/>
+        <source>Please check whether the device is occupied and then eject the device again</source>
+        <translation>请检查设备是否正在使用,确认没有使用后再次弹出</translation>
     </message>
 </context>
 </TS>
