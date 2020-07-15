@@ -338,7 +338,11 @@ QVariant FileOperationManager::handleError(const QString &srcUri,
         const GErrorWrapperPtr &err,
         bool critical)
 {
+    if (srcUri.startsWith("trash://") && err.get()->code() == 14) {
+        return QVariant(FileOperation::IgnoreOne);
+    }
     FileOperationErrorDialog dlg;
+
     return dlg.handleError(srcUri, destUri, err, critical);
 }
 
