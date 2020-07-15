@@ -338,7 +338,7 @@ QVariant FileOperationManager::handleError(const QString &srcUri,
         const GErrorWrapperPtr &err,
         bool critical)
 {
-    if (srcUri.startsWith("trash://") && err.get()->code() == 14) {
+    if (srcUri.startsWith("trash://") && err.get()->code() == G_IO_ERROR_PERMISSION_DENIED) {
         return QVariant(FileOperation::IgnoreOne);
     }
     FileOperationErrorDialog dlg;
