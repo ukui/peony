@@ -239,7 +239,7 @@ bool FileUtils::isMountPoint(const QString &uri)
 {
     bool flag = false;                      // The uri is a mount point
 
-    GFile* file = g_file_new_for_uri(getTargetUri(uri).toUtf8().constData());
+    GFile* file = g_file_new_for_uri(uri.toUtf8().constData());
 
     GList* mounts = nullptr;
     GVolumeMonitor* vm = g_volume_monitor_get();

@@ -315,7 +315,7 @@ void SideBarFileSystemItem::eject()
 static void unmount_finished(GObject*, GAsyncResult*, gpointer udata)
 {
     SideBarFileSystemItem* th = (SideBarFileSystemItem*)udata;
-    if (FileUtils::isMountPoint(th->uri())) {
+    if (FileUtils::isMountPoint(FileUtils::getTargetUri(th->uri()))) {
         QMessageBox::warning(nullptr, QObject::tr("eject device failed"),
                              QObject::tr("Please check whether the device is occupied and then eject the device again"),
                              QMessageBox::Ok);
