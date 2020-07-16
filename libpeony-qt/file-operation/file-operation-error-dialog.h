@@ -31,6 +31,8 @@ class QLabel;
 class QDialogButtonBox;
 class QButtonGroup;
 
+class QFontMetrics;
+
 namespace Peony {
 
 class PEONYCORESHARED_EXPORT FileOperationErrorDialog : public QDialog, public FileOperationErrorHandler
@@ -38,6 +40,7 @@ class PEONYCORESHARED_EXPORT FileOperationErrorDialog : public QDialog, public F
     Q_OBJECT
     Q_INTERFACES(Peony::FileOperationErrorHandler)
 public:
+    QFontMetrics *pfontMetrics;
     explicit FileOperationErrorDialog(QWidget *parent = nullptr);
     ~FileOperationErrorDialog() override;
 
@@ -56,6 +59,7 @@ private:
     QDialogButtonBox *m_button_box2 = nullptr;
 
     QButtonGroup *btGroup = nullptr;
+    const int ELIDE_ERROR_TEXT_LENGTH = 32;
 };
 
 }
