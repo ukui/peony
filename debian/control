@@ -45,6 +45,8 @@ Package: peony-common
 Architecture: all
 Multi-Arch: foreign
 Depends: ${misc:Depends},
+Breaks: peony (<< 2.2.0-1)
+Replaces: peony (<< 2.2.0-1)
 Description: file manager for the UKUI desktop (common files)
  Peony is the official file manager for the UKUI desktop. It allows one
  to browse directories, preview files and launch applications associated
@@ -63,6 +65,8 @@ Depends: ${misc:Depends},
          libqt5widgets5,
          libpoppler-qt5-1
 Provides: libpeony,
+Breaks: peony (<< 2.2.0-1)
+Replaces: peony (<< 2.2.0-1)
 Recommends: gvfs-backends,
             qt5-gtk2-platformtheme,
             qt5-gtk-platformtheme

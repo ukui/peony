@@ -1,4 +1,4 @@
-peony (2.2.0) unstable; urgency=medium
+peony (2.2.0-1) unstable; urgency=medium
 
   * New upstream release.
     - Refactor extensible directory view frameworks. Support view
@@ -17,7 +17,7 @@ peony (2.2.0) unstable; urgency=medium
   * debian/libpeony2.symbols:
     - update symbols file.
 
- -- Yue Lan <lanyue@kylinos.cn>  Thu, 21 May 2020 11:03:35 +0800
+ -- handsome_feng <jianfengli@ubuntukylin.com>  Wed, 15 Jul 2020 19:56:55 +0800
 
 peony (2.1.2-1) unstable; urgency=medium
 

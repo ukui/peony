@@ -1,2 +1,4 @@
 peony-qt-desktop/freedesktop-dbus-interfaces.xml usr/share/dbus-1/interfaces
 peony-qt-desktop/org.ukui.freedesktop.FileManager1.service usr/share/dbus-1/services
+peony-qt-desktop/.qm/*.qm usr/share/peony-qt-desktop
+src/.qm/*.qm usr/share/peony-qt
