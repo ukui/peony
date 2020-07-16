@@ -492,6 +492,19 @@ bool FileItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action, i
         return false;
     }
 
+    bool b_trash_item = false;
+    for(auto path : srcUris)
+    {
+        if (path.contains("trash:///"))
+        {
+            b_trash_item = true;
+            break;
+        }
+    }
+    //drag from trash to another place, return false
+    if (b_trash_item && destDirUri != "trash///")
+        return false;
+
     auto fileOpMgr = FileOperationManager::getInstance();
     bool addHistory = true;
     switch (action) {
