@@ -99,6 +99,29 @@ void ListView::bindModel(FileItemModel *sourceModel, FileItemProxyFilterSortMode
     //adjust columns layout.
     adjustColumnsSize();
 
+    //fix diffcult to unselect all item issue
+    connect(this->selectionModel(), &QItemSelectionModel::currentColumnChanged, [=]
+            (const QModelIndex &current, const QModelIndex &previous) {
+        qDebug()<<"list view currentColumnChanged changed";
+        if (getSelections().count() > 1)
+        {
+            this->clearSelection();
+            if (current.isValid())
+                setCurrentIndex(current);
+        }
+    });
+
+    connect(this->selectionModel(), &QItemSelectionModel::currentRowChanged, [=]
+            (const QModelIndex &current, const QModelIndex &previous) {
+        qDebug()<<"list view currentRowChanged changed";
+        if (getSelections().count() > 1)
+        {
+            this->clearSelection();
+            if (current.isValid())
+                setCurrentIndex(current);
+        }
+    });
+
     //edit trigger
     connect(this->selectionModel(), &QItemSelectionModel::selectionChanged, [=](const QItemSelection &selection, const QItemSelection &deselection) {
         qDebug()<<"list view selection changed";
@@ -151,6 +174,7 @@ void ListView::mousePressEvent(QMouseEvent *e)
     }
 
     //if click left button at blank space, it should select nothing
+    //qDebug() << "indexAt(e->pos()):" <<indexAt(e->pos()).column() << indexAt(e->pos()).row();
     if(e->button() == Qt::LeftButton && (!indexAt(e->pos()).isValid()) )
     {
         this->clearSelection();
