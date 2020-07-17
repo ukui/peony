@@ -23,7 +23,7 @@ jobs:
       - name: Refresh pacman repository
         run: pacman -Sy
       - name: Install build dependencies
-        run: pacman -S --noconfirm base-devel qt5-base gsettings-qt kwindowsystem poppler-qt5 qt5-x11extras glib2 qt5-tools udisks2 gdk-2.0 libnotify
+        run: pacman -S --noconfirm base-devel qt5-base gsettings-qt kwindowsystem poppler-qt5 qt5-x11extras glib2 qt5-tools udisks2 gtk2 libnotify
       - name: QMake configure & Make
         run: |
           mkdir build;
@@ -64,7 +64,7 @@ jobs:
           curl -O https://raw.githubusercontent.com/jenningsloy318/ukui-rpm-packaging/master/peony/peony-libdir.patch;
           patch -s -p0 < peony-libdir.patch;
       - name: Install build dependencies
-        run: dnf install -y make gcc gcc-c++ which cmake cmake-rpm-macros autoconf automake intltool rpm-build qt5-devel qt5-rpm-macros qt5-qtbase-devel qt5-qttools-devel glib2-devel qt5-qtbase-devel gsettings-qt-devel kf5-kwindowsystem-devel poppler-qt5-devel qt5-qtx11extras-devel qt5-qtbase-private-devel libudisks2-devel  libgtk2.0-devel libnotify-devel
+        run: dnf install -y make gcc gcc-c++ which cmake cmake-rpm-macros autoconf automake intltool rpm-build qt5-devel qt5-rpm-macros qt5-qtbase-devel qt5-qttools-devel glib2-devel qt5-qtbase-devel gsettings-qt-devel kf5-kwindowsystem-devel poppler-qt5-devel qt5-qtx11extras-devel qt5-qtbase-private-devel libudisks2-devel  gtk2-devel libnotify-devel
       - name: QMake configure & Make
         run: |
           mkdir build;
