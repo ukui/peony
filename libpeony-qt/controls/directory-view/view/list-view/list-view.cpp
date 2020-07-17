@@ -241,11 +241,7 @@ void ListView::resizeEvent(QResizeEvent *e)
 
 void ListView::updateGeometries()
 {
-    //add return to fix list view stuck before qt 5.12
     QTreeView::updateGeometries();
-#if (QT_VERSION < QT_VERSION_CHECK(5, 12, 0))
-    return;
-#endif
     if (!model())
         return;
 
