@@ -79,9 +79,9 @@ void FileMetaInfo::setMetaInfoStringList(const QString &key, const QStringList &
 
 void FileMetaInfo::setMetaInfoVariant(const QString &key, const QVariant &value)
 {
-    if (!m_mutex.tryLock(300)) {
-        return;
-    }
+//    if (!m_mutex.tryLock(300)) {
+//        return;
+//    }
 
     QString realKey = key;
     if (!key.startsWith("metadata::"))
@@ -113,7 +113,7 @@ void FileMetaInfo::setMetaInfoVariant(const QString &key, const QVariant &value)
     }
     g_object_unref(info);
     g_object_unref(file);
-    m_mutex.unlock();
+//    m_mutex.unlock();
 }
 
 const QVariant FileMetaInfo::getMetaInfoVariant(const QString &key)
@@ -144,9 +144,9 @@ int FileMetaInfo::getMetaInfoInt(const QString &key)
 
 void FileMetaInfo::removeMetaInfo(const QString &key)
 {
-    if (!m_mutex.tryLock(300)) {
-        return;
-    }
+//    if (!m_mutex.tryLock(300)) {
+//        return;
+//    }
 
     QString realKey = key;
     if (!key.startsWith("metadata::"))
@@ -174,5 +174,5 @@ void FileMetaInfo::removeMetaInfo(const QString &key)
 //                                nullptr);
 //    g_object_unref(info);
     g_object_unref(file);
-    m_mutex.unlock();
+//    m_mutex.unlock();
 }

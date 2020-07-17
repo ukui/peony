@@ -132,11 +132,42 @@ public Q_SLOTS:
     void refresh();
 
     void saveAllItemPosistionInfos();
+    /*!
+     * \brief saveItemPositionInfo
+     * \param uri
+     * \deprecated
+     */
     void saveItemPositionInfo(const QString &uri);
+
     void resetAllItemPositionInfos();
+    /*!
+     * \brief resetItemPosistionInfo
+     * \param uri
+     * \deprecated
+     */
     void resetItemPosistionInfo(const QString &uri);
 
+    /*!
+     * \brief updateItemPosistions
+     * \param uri
+     * \deprecated
+     */
     void updateItemPosistions(const QString &uri = nullptr);
+
+    QPoint getFileMetaInfoPos(const QString &uri);
+    void setFileMetaInfoPos(const QString &uri, const QPoint &pos);
+
+    /*!
+     * \brief getCurrentItemRects
+     * \return
+     * \details used in both view and model. before we add/remove an item to
+     * model, we should know current items layout.
+     */
+    QHash<QString, QRect> getCurrentItemRects();
+    void removeItemRect(const QString &uri);
+
+    void updateItemPosByUri(const QString &uri, const QPoint &pos);
+    void ensureItemPosByUri(const QString &uri);
 
 protected:
     void mousePressEvent(QMouseEvent *e);
@@ -164,7 +195,7 @@ private:
     QTimer m_edit_trigger_timer;
 
     DesktopItemModel *m_model = nullptr;
-    DesktopItemProxyModel *m_proxy_model;
+    DesktopItemProxyModel *m_proxy_model = nullptr;
 
     QStringList m_new_files_to_be_selected;
 
@@ -179,6 +210,8 @@ private:
     QTimer m_refresh_timer;
 
     QModelIndexList m_drag_indexes;
+
+    QHash<QString, QRect> m_item_rect_hash;
 };
 
 }

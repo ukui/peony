@@ -154,6 +154,81 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
     //connect(m_model, &DesktopItemModel::dataChanged, this, &DesktopIconView::clearAllIndexWidgets);
 
     connect(m_model, &DesktopItemModel::refreshed, this, [=]() {
+        m_is_refreshing = false;
+        return;
+        QTimer::singleShot(1, this, [=](){
+            QModelIndexList unlocatedIndexes;
+
+            for (int i = 0; i < m_proxy_model->rowCount(); i++) {
+                auto index = m_proxy_model->index(i, 0, QModelIndex());
+                auto pos = getFileMetaInfoPos(index.data(Qt::UserRole).toString());
+                if (pos.x() >= 0) {
+                    setPositionForIndex(pos, index);
+                } else {
+                    unlocatedIndexes<<index;
+                }
+            }
+
+//            QTimer::singleShot(1, this, [=](){
+//                if (isItemsOverlapped()) {
+//                    // handle overrlaped unhandled item
+//                    auto uriRectHash = getCurrentItemRects();
+//                    QRegion notEmptyRegion;
+//                    for (auto rect : uriRectHash.values()) {
+//                        notEmptyRegion += rect;
+//                    }
+
+//                    for (auto index : unlocatedIndexes) {
+//                        auto indexRect = QListView::visualRect(index);
+//                        if (uriRectHash.keys(indexRect).count() > 1) {
+//                            // overrlapped, relayout.
+
+//                            // remove current index-rect from hash
+//                            // it should be added into not empty region
+//                            // after it relocated.
+//                            uriRectHash.remove(index.data(Qt::UserRole).toString());
+//                            auto grid = this->gridSize();
+
+//                            if (notEmptyRegion.contains(indexRect.center())) {
+//                                // move index to closest empty grid.
+//                                auto next = indexRect;
+//                                bool isEmptyPos = false;
+//                                while (!isEmptyPos) {
+//                                    next.translate(0, grid.height());
+//                                    if (next.bottom() > indexRect.bottom()) {
+//                                        int top = next.y();
+//                                        while (true) {
+//                                            if (top < gridSize().height()) {
+//                                                break;
+//                                            }
+//                                            top-=gridSize().height();
+//                                        }
+//                                        //put item to next column first column
+//                                        next.moveTo(next.x() + grid.width(), top);
+//                                    }
+//                                    if (notEmptyRegion.contains(next.center()))
+//                                        continue;
+
+//                                    isEmptyPos = true;
+//                                    setPositionForIndex(next.topLeft(), index);
+//                                    setFileMetaInfoPos(index.data(Qt::UserRole).toString(), next.topLeft());
+//                                    notEmptyRegion += next;
+//                                }
+//                            }
+//                        }
+//                    }
+//                } else {
+//                    for (auto index : unlocatedIndexes) {
+//                        setFileMetaInfoPos(index.data(Qt::UserRole).toString(), QListView::visualRect(index).topLeft());
+//                    }
+//                }
+
+//                m_is_refreshing = false;
+//            });
+            m_is_refreshing = false;
+        });
+
+        return;
         this->updateItemPosistions(nullptr);
         this->m_is_refreshing = false;
         if (isItemsOverlapped()) {
@@ -215,49 +290,6 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
 
     connect(m_model, &DesktopItemModel::requestClearIndexWidget, this, &DesktopIconView::clearAllIndexWidgets);
 
-    connect(m_model, &DesktopItemModel::requestLayoutNewItem, this, [=](const QString &uri) {
-        auto index = m_proxy_model->mapFromSource(m_model->indexFromUri(uri));
-        //qDebug()<<"=====================layout new item"<<index.data();
-
-        //qDebug()<<"=====================find a new empty place put new item";
-        auto rect = QRect(QPoint(0, 0), gridSize());
-        rect.moveTo(this->contentsMargins().left(), this->contentsMargins().top());
-
-        auto grid = this->gridSize();
-        auto viewRect = this->rect();
-        auto next = rect;
-        while (true) {
-            if (this->indexAt(next.center()).data(Qt::UserRole).toString() == uri) {
-                this->setPositionForIndex(next.topLeft(), index);
-                this->saveItemPositionInfo(uri);
-                return;
-            }
-            if (!this->indexAt(next.center()).isValid()) {
-                //put it into empty
-                qDebug()<<"put"<<index.data()<<next.topLeft();
-                this->setPositionForIndex(next.topLeft(), index);
-                this->saveItemPositionInfo(uri);
-                break;
-            }
-            //aligin.
-            next = QListView::visualRect(this->indexAt(next.center()));
-            next.translate(0, grid.height());
-            if (next.bottom() > viewRect.bottom()) {
-                int top = next.y();
-                while (true) {
-                    if (top < gridSize().height()) {
-                        break;
-                    }
-                    top-=gridSize().height();
-                }
-                //put item to next column first column
-                next.moveTo(next.x() + grid.width(), top);
-            }
-        }
-    });
-
-    connect(m_model, &DesktopItemModel::requestUpdateItemPositions, this, &DesktopIconView::updateItemPosistions);
-
     connect(m_model, &DesktopItemModel::fileCreated, this, [=](const QString &uri) {
         if (m_new_files_to_be_selected.isEmpty()) {
             m_new_files_to_be_selected<<uri;
@@ -273,7 +305,7 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
                 m_new_files_to_be_selected<<uri;
             }
         }
-        refresh();
+        //refresh();
     });
 
     connect(m_proxy_model, &QSortFilterProxyModel::layoutChanged, this, [=]() {
@@ -287,7 +319,7 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
         //qDebug()<<"save====================================";
 
         QTimer::singleShot(100, this, [=]() {
-            this->saveAllItemPosistionInfos();
+            //this->saveAllItemPosistionInfos();
         });
     });
 
@@ -297,6 +329,11 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
 
         QTimer::singleShot(100, this, [=]() {
             this->saveAllItemPosistionInfos();
+            for (int i = 0; i < m_proxy_model->rowCount(); i++) {
+                auto index = m_proxy_model->index(i, 0);
+                m_item_rect_hash.insert(index.data(Qt::UserRole).toString(), QListView::visualRect(index));
+                updateItemPosByUri(index.data(Qt::UserRole).toString(), QListView::visualRect(index).topLeft());
+            }
         });
     });
 
@@ -313,6 +350,7 @@ DesktopIconView::~DesktopIconView()
 
 bool DesktopIconView::eventFilter(QObject *obj, QEvent *e)
 {
+    //fixme:
     if (e->type() == QEvent::StyleChange) {
         if (m_model)
             updateItemPosistions();
@@ -564,6 +602,7 @@ void DesktopIconView::saveAllItemPosistionInfos()
 
 void DesktopIconView::saveItemPositionInfo(const QString &uri)
 {
+    return;
     auto index = m_proxy_model->mapFromSource(m_model->indexFromUri(uri));
     auto indexRect = QListView::visualRect(index);
     QStringList topLeft;
@@ -578,6 +617,10 @@ void DesktopIconView::saveItemPositionInfo(const QString &uri)
 
 void DesktopIconView::resetAllItemPositionInfos()
 {
+    if (!m_proxy_model)
+        return;
+
+    m_item_rect_hash.clear();
     for (int i = 0; i < m_proxy_model->rowCount(); i++) {
         auto index = m_proxy_model->index(i, 0);
         auto indexRect = QListView::visualRect(index);
@@ -595,6 +638,7 @@ void DesktopIconView::resetAllItemPositionInfos()
 
 void DesktopIconView::resetItemPosistionInfo(const QString &uri)
 {
+    return;
     auto metaInfo = FileMetaInfo::fromUri(uri);
     if (metaInfo)
         metaInfo->removeMetaInfo(ITEM_POS_ATTRIBUTE);
@@ -602,6 +646,7 @@ void DesktopIconView::resetItemPosistionInfo(const QString &uri)
 
 void DesktopIconView::updateItemPosistions(const QString &uri)
 {
+    return;
     if (uri.isNull()) {
         for (int i = 0; i < m_proxy_model->rowCount(); i++) {
             auto index = m_proxy_model->index(i, 0);
@@ -644,6 +689,78 @@ void DesktopIconView::updateItemPosistions(const QString &uri)
                 saveItemPositionInfo(uri);
             }
         }
+    }
+}
+
+QPoint DesktopIconView::getFileMetaInfoPos(const QString &uri)
+{
+    auto value = m_item_rect_hash.value(uri);
+    if (!value.isEmpty())
+        return value.topLeft();
+
+    auto metaInfo = FileMetaInfo::fromUri(uri);
+    if (metaInfo) {
+        auto list = metaInfo->getMetaInfoStringList(ITEM_POS_ATTRIBUTE);
+        if (!list.isEmpty()) {
+            if (list.count() == 2) {
+                int top = list.first().toInt();
+                int left = list.at(1).toInt();
+                if (top > 0 && left >= 0) {
+                    QPoint p(left, top);
+                    return p;
+                }
+            }
+        }
+    }
+    return QPoint(-1, -1);
+}
+
+void DesktopIconView::setFileMetaInfoPos(const QString &uri, const QPoint &pos)
+{
+    auto srcIndex = m_model->indexFromUri("computer:///");
+    auto index = m_proxy_model->mapFromSource(srcIndex);
+    m_item_rect_hash.remove(uri);
+    m_item_rect_hash.insert(uri, QRect(pos, QListView::visualRect(index).size()));
+
+    auto metaInfo = FileMetaInfo::fromUri(uri);
+    if (metaInfo) {
+        QStringList topLeft;
+        topLeft<<QString::number(pos.y());
+        topLeft<<QString::number(pos.x());
+        metaInfo->setMetaInfoStringList(ITEM_POS_ATTRIBUTE, topLeft);
+    }
+}
+
+QHash<QString, QRect> DesktopIconView::getCurrentItemRects()
+{
+    return m_item_rect_hash;
+}
+
+void DesktopIconView::removeItemRect(const QString &uri)
+{
+    m_item_rect_hash.remove(uri);
+}
+
+void DesktopIconView::updateItemPosByUri(const QString &uri, const QPoint &pos)
+{
+    auto srcIndex = m_model->indexFromUri(uri);
+    auto index = m_proxy_model->mapFromSource(srcIndex);
+    if (index.isValid()) {
+        setPositionForIndex(pos, index);
+        m_item_rect_hash.remove(uri);
+        m_item_rect_hash.insert(uri, QRect(pos, visualRect(index).size()));
+    }
+}
+
+void DesktopIconView::ensureItemPosByUri(const QString &uri)
+{
+    auto srcIndex = m_model->indexFromUri(uri);
+    auto index = m_proxy_model->mapFromSource(srcIndex);
+    auto rect = QListView::visualRect(index);
+    if (index.isValid()) {
+        m_item_rect_hash.remove(uri);
+        m_item_rect_hash.insert(uri, rect);
+        setFileMetaInfoPos(uri, rect.topLeft());
     }
 }
 
@@ -742,7 +859,6 @@ void DesktopIconView::wheelEvent(QWheelEvent *e)
         } else {
             zoomOut();
         }
-        resetAllItemPositionInfos();
     }
 }
 
@@ -874,7 +990,7 @@ void DesktopIconView::zoomOut()
         setDefaultZoomLevel(Small);
         break;
     default:
-        setDefaultZoomLevel(zoomLevel());
+        //setDefaultZoomLevel(zoomLevel());
         break;
     }
 }
@@ -893,7 +1009,7 @@ void DesktopIconView::zoomIn()
         setDefaultZoomLevel(Huge);
         break;
     default:
-        setDefaultZoomLevel(zoomLevel());
+        //setDefaultZoomLevel(zoomLevel());
         break;
     }
 }
@@ -935,6 +1051,8 @@ void DesktopIconView::setDefaultZoomLevel(ZoomLevel level)
     } else {
 
     }
+
+    resetAllItemPositionInfos();
 }
 
 DesktopIconView::ZoomLevel DesktopIconView::zoomLevel() const
@@ -1097,15 +1215,24 @@ void DesktopIconView::dropEvent(QDropEvent *e)
         //fixme: handle overlapping.
         if (!m_drag_indexes.isEmpty()) {
             QModelIndexList overlappedIndexes;
+            QModelIndexList unoverlappedIndexes = m_drag_indexes;
             for (auto value : currentIndexesRects.values()) {
                 auto keys = currentIndexesRects.keys(value);
                 if (keys.count() > 1) {
                     for (auto key : keys) {
                         if (m_drag_indexes.contains(key) && !overlappedIndexes.contains(key)) {
                             overlappedIndexes<<key;
+                            unoverlappedIndexes.removeOne(key);
                         }
                     }
                 }
+            }
+
+            for (auto index : unoverlappedIndexes) {
+                // save pos
+                QTimer::singleShot(1, this, [=](){
+                    setFileMetaInfoPos(index.data(Qt::UserRole).toString(), QListView::visualRect(index).topLeft());
+                });
             }
 
             auto grid = this->gridSize();
@@ -1140,6 +1267,7 @@ void DesktopIconView::dropEvent(QDropEvent *e)
 
                         isEmptyPos = true;
                         setPositionForIndex(next.topLeft(), dragedIndex);
+                        setFileMetaInfoPos(dragedIndex.data(Qt::UserRole).toString(), next.topLeft());
                         notEmptyRegion += next;
                     }
                 }

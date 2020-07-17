@@ -36,6 +36,9 @@
 
 #include "file-meta-info.h"
 
+#include "peony-desktop-application.h"
+#include "desktop-icon-view.h"
+
 #include <QStandardPaths>
 #include <QIcon>
 
@@ -107,12 +110,62 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
             auto job = new FileInfoJob(info);
             job->setAutoDelete();
             connect(job, &FileInfoJob::infoUpdated, [=]() {
+                // locate new item
+
+                auto view = PeonyDesktopApplication::getIconView();
+                auto itemRectHash = view->getCurrentItemRects();
+                auto grid = view->gridSize();
+                auto viewRect = view->rect();
+
+                QRegion notEmptyRegion;
+                for (auto rect : itemRectHash.values()) {
+                    notEmptyRegion += rect;
+                }
+
+                auto indexRect = QRect(QPoint(0, 0), itemRectHash.isEmpty()? QSize(): itemRectHash.values().first().size());
+                if (notEmptyRegion.contains(indexRect.center())) {
+                    // move index to closest empty grid.
+                    auto next = indexRect;
+                    bool isEmptyPos = false;
+                    while (!isEmptyPos) {
+                        next.translate(0, grid.height());
+                        if (next.bottom() > viewRect.bottom()) {
+                            int top = next.y();
+                            while (true) {
+                                if (top < grid.height()) {
+                                    break;
+                                }
+                                top-=grid.height();
+                            }
+                            //put item to next column first row
+                            next.moveTo(next.x() + grid.width(), top);
+                        }
+                        if (notEmptyRegion.contains(next.center()))
+                            continue;
+
+                        isEmptyPos = true;
+                        itemRectHash.insert(info->uri(), next);
+                        notEmptyRegion += next;
+
+                        view->setFileMetaInfoPos(info->uri(), next.topLeft());
+                    }
+                } else {
+                    view->ensureItemPosByUri(uri);
+                }
+
                 //this->beginResetModel();
                 this->beginInsertRows(QModelIndex(), m_files.count(), m_files.count());
-                ThumbnailManager::getInstance()->createThumbnail(info->uri(), m_desktop_watcher);
+                ThumbnailManager::getInstance()->createThumbnail(info->uri(), m_thumbnail_watcher);
                 m_files<<info;
                 //this->insertRows(m_files.indexOf(info), 1);
                 this->endInsertRows();
+
+                QTimer::singleShot(1, this, [=](){
+                    for (auto key : itemRectHash.keys()) {
+                        view->updateItemPosByUri(key, itemRectHash.value(key).topLeft());
+                    }
+                });
+
                 //this->endResetModel();
                 Q_EMIT this->requestUpdateItemPositions();
                 Q_EMIT this->requestLayoutNewItem(info->uri());
@@ -123,6 +176,11 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
     });
 
     this->connect(m_desktop_watcher.get(), &FileWatcher::fileDeleted, [=](const QString &uri) {
+        auto view = PeonyDesktopApplication::getIconView();
+        view->removeItemRect(uri);
+
+        auto itemRectHash = view->getCurrentItemRects();
+
         for (auto info : m_files) {
             if (info->uri() == uri) {
                 //this->beginResetModel();
@@ -135,17 +193,27 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
                 FileInfoManager::getInstance()->remove(info);
             }
         }
+
+        QTimer::singleShot(1, this, [=](){
+            for (auto key : itemRectHash.keys()) {
+                view->updateItemPosByUri(key, itemRectHash.value(key).topLeft());
+            }
+        });
     });
 
     this->connect(m_desktop_watcher.get(), &FileWatcher::fileChanged, [=](const QString &uri) {
+        auto view = PeonyDesktopApplication::getIconView();
+        auto itemRectHash = view->getCurrentItemRects();
+
         for (auto info : m_files) {
             if (info->uri() == uri) {
                 auto job = new FileInfoJob(info);
                 job->setAutoDelete();
-                connect(job, &FileInfoJob::queryAsyncFinished, this, [=]() {
+                connect(job, &FileInfoJob::infoUpdated, this, [=]() {
                     ThumbnailManager::getInstance()->createThumbnail(uri, m_thumbnail_watcher);
                     this->dataChanged(indexFromUri(uri), indexFromUri(uri));
                     Q_EMIT this->requestClearIndexWidget();
+
                 });
                 job->queryAsync();
                 this->dataChanged(indexFromUri(uri), indexFromUri(uri));
@@ -282,7 +350,9 @@ void DesktopItemModel::onEnumerateFinished()
 {
     //beginResetModel();
     FileInfoManager::getInstance()->clear();
+    beginRemoveRows(QModelIndex(), 0, m_files.count() - 1);
     m_files.clear();
+    endRemoveRows();
 
     auto computer = FileInfo::fromUri("computer:///", true);
     auto personal = FileInfo::fromPath(QStandardPaths::writableLocation(QStandardPaths::HomeLocation), true);
@@ -300,21 +370,22 @@ void DesktopItemModel::onEnumerateFinished()
     //this->endResetModel();
     for (auto info : infos) {
         m_info_query_queue<<info->uri();
+        beginInsertRows(QModelIndex(), m_files.count(), m_files.count());
         m_files<<info;
+        endInsertRows();
         //this->insertRow(m_files.indexOf(info));
 
         auto job = new FileInfoJob(info);
 
         connect(job, &FileInfoJob::queryAsyncFinished, [=]() {
             //qDebug()<<"info updated"<<info->uri();
-
-            this->dataChanged(this->index(m_files.indexOf(info)), this->index(m_files.indexOf(info)));
-            ThumbnailManager::getInstance()->createThumbnail(info->uri(), m_desktop_watcher);
+            //this->dataChanged(this->index(m_files.indexOf(info)), this->index(m_files.indexOf(info)));
+            ThumbnailManager::getInstance()->createThumbnail(info->uri(), m_thumbnail_watcher);
 
             m_info_query_queue.removeOne(info->uri());
             if (m_info_query_queue.isEmpty()) {
-                this->beginResetModel();
-                this->endResetModel();
+                //this->beginResetModel();
+                //this->endResetModel();
                 Q_EMIT this->refreshed();
             }
         });
@@ -322,6 +393,13 @@ void DesktopItemModel::onEnumerateFinished()
         connect(job, &FileInfoJob::infoUpdated, [=](){
             auto index = indexFromUri(info->uri());
             this->dataChanged(index, index);
+
+            QTimer::singleShot(100, this, [=](){
+                auto uri = info->uri();
+                auto view = PeonyDesktopApplication::getIconView();
+                auto pos = view->getFileMetaInfoPos(info->uri());
+                view->updateItemPosByUri(info->uri(), pos);
+            });
         });
 
         job->setAutoDelete();

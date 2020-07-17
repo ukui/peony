@@ -55,7 +55,7 @@ bool DesktopItemProxyModel::filterAcceptsRow(int source_row, const QModelIndex &
     auto info = FileInfo::fromUri(uri);
     //qDebug()<<"fiter"<<uri<<info->displayName();
     if (info->displayName().isNull()) {
-        return false;
+        //return false;
     }
     if (info->displayName().startsWith(".")) {
         return false;
