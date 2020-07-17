@@ -114,6 +114,9 @@ protected:
     void mouseReleaseEvent(QMouseEvent *e) override;
     void mouseDoubleClickEvent(QMouseEvent *event) override;
 
+    void keyPressEvent(QKeyEvent *e) override;
+    void keyReleaseEvent(QKeyEvent *e) override;
+
     void dragEnterEvent(QDragEnterEvent *e) override;
     void dropEvent(QDropEvent *e) override;
 
@@ -131,6 +134,7 @@ private:
 
     QTimer* m_renameTimer;
     bool  m_editValid;
+    bool  m_ctrl_key_pressed;
 
     QModelIndex m_last_index;
 

@@ -103,7 +103,7 @@ void ListView::bindModel(FileItemModel *sourceModel, FileItemProxyFilterSortMode
     connect(this->selectionModel(), &QItemSelectionModel::currentColumnChanged, [=]
             (const QModelIndex &current, const QModelIndex &previous) {
         qDebug()<<"list view currentColumnChanged changed";
-        if (getSelections().count() > 1)
+        if (getSelections().count() > 1 && !m_ctrl_key_pressed)
         {
             this->clearSelection();
             if (current.isValid())
@@ -114,7 +114,7 @@ void ListView::bindModel(FileItemModel *sourceModel, FileItemProxyFilterSortMode
     connect(this->selectionModel(), &QItemSelectionModel::currentRowChanged, [=]
             (const QModelIndex &current, const QModelIndex &previous) {
         qDebug()<<"list view currentRowChanged changed";
-        if (getSelections().count() > 1)
+        if (getSelections().count() > 1 && !m_ctrl_key_pressed)
         {
             this->clearSelection();
             if (current.isValid())
@@ -153,6 +153,20 @@ void ListView::bindModel(FileItemModel *sourceModel, FileItemProxyFilterSortMode
             m_editValid = false;
         }
     });
+}
+
+void ListView::keyPressEvent(QKeyEvent *e)
+{
+    QTreeView::keyPressEvent(e);
+    if (e->key() == Qt::Key_Control)
+        m_ctrl_key_pressed = true;
+}
+
+void ListView::keyReleaseEvent(QKeyEvent *e)
+{
+    QTreeView::keyReleaseEvent(e);
+    if (e->key() == Qt::Key_Control)
+        m_ctrl_key_pressed = false;
 }
 
 void ListView::mousePressEvent(QMouseEvent *e)
