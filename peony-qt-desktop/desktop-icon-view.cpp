@@ -625,10 +625,17 @@ int DesktopIconView::getSortType()
 
 void DesktopIconView::setSortType(int sortType)
 {
+    m_item_rect_hash.clear();
     //resetAllItemPositionInfos();
     m_proxy_model->setSortType(sortType);
     m_proxy_model->sort(1);
     m_proxy_model->sort(0, m_proxy_model->sortOrder());
+    saveAllItemPosistionInfos();
+    for (int i = 0; i < m_proxy_model->rowCount(); i++) {
+        auto index = m_proxy_model->index(i, 0);
+        m_item_rect_hash.insert(index.data(Qt::UserRole).toString(), QListView::visualRect(index));
+        updateItemPosByUri(index.data(Qt::UserRole).toString(), QListView::visualRect(index).topLeft());
+    }
 }
 
 int DesktopIconView::getSortOrder()
