@@ -110,7 +110,7 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
             auto job = new FileInfoJob(info);
             job->setAutoDelete();
             connect(job, &FileInfoJob::infoUpdated, [=]() {
-                // locate new item
+                // locate new item =====
 
                 auto view = PeonyDesktopApplication::getIconView();
                 auto itemRectHash = view->getCurrentItemRects();
@@ -122,8 +122,20 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
                     notEmptyRegion += rect;
                 }
 
-                auto indexRect = QRect(QPoint(0, 0), itemRectHash.isEmpty()? QSize(): itemRectHash.values().first().size());
+                // aligin exsited rect
+                int marginTop = notEmptyRegion.boundingRect().top();
+                while (marginTop - grid.height() > 0) {
+                    marginTop -= grid.height();
+                }
+
+                int marginLeft = notEmptyRegion.boundingRect().left();
+                while (marginLeft - grid.width() > 0) {
+                    marginLeft -= grid.width();
+                }
+
+                auto indexRect = QRect(QPoint(marginLeft, marginTop), itemRectHash.isEmpty()? QSize(): itemRectHash.values().first().size());
                 if (notEmptyRegion.contains(indexRect.center())) {
+
                     // move index to closest empty grid.
                     auto next = indexRect;
                     bool isEmptyPos = false;
@@ -165,6 +177,8 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
                         view->updateItemPosByUri(key, itemRectHash.value(key).topLeft());
                     }
                 });
+
+                // end locate new item=======
 
                 //this->endResetModel();
                 Q_EMIT this->requestUpdateItemPositions();
@@ -545,7 +559,7 @@ bool DesktopItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action
     if (destDirUri == "trash:///") {
         FileTrashOperation *trashOp = new FileTrashOperation(srcUris);
         fileOpMgr->startOperation(trashOp, addHistory);
-    } else { 
+    } else {
         qDebug() << "dropMimeData:" <<action;
         switch (action) {
         case Qt::MoveAction: {

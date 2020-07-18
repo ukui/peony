@@ -156,136 +156,6 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
     connect(m_model, &DesktopItemModel::refreshed, this, [=]() {
         m_is_refreshing = false;
         return;
-        QTimer::singleShot(1, this, [=](){
-            QModelIndexList unlocatedIndexes;
-
-            for (int i = 0; i < m_proxy_model->rowCount(); i++) {
-                auto index = m_proxy_model->index(i, 0, QModelIndex());
-                auto pos = getFileMetaInfoPos(index.data(Qt::UserRole).toString());
-                if (pos.x() >= 0) {
-                    setPositionForIndex(pos, index);
-                } else {
-                    unlocatedIndexes<<index;
-                }
-            }
-
-//            QTimer::singleShot(1, this, [=](){
-//                if (isItemsOverlapped()) {
-//                    // handle overrlaped unhandled item
-//                    auto uriRectHash = getCurrentItemRects();
-//                    QRegion notEmptyRegion;
-//                    for (auto rect : uriRectHash.values()) {
-//                        notEmptyRegion += rect;
-//                    }
-
-//                    for (auto index : unlocatedIndexes) {
-//                        auto indexRect = QListView::visualRect(index);
-//                        if (uriRectHash.keys(indexRect).count() > 1) {
-//                            // overrlapped, relayout.
-
-//                            // remove current index-rect from hash
-//                            // it should be added into not empty region
-//                            // after it relocated.
-//                            uriRectHash.remove(index.data(Qt::UserRole).toString());
-//                            auto grid = this->gridSize();
-
-//                            if (notEmptyRegion.contains(indexRect.center())) {
-//                                // move index to closest empty grid.
-//                                auto next = indexRect;
-//                                bool isEmptyPos = false;
-//                                while (!isEmptyPos) {
-//                                    next.translate(0, grid.height());
-//                                    if (next.bottom() > indexRect.bottom()) {
-//                                        int top = next.y();
-//                                        while (true) {
-//                                            if (top < gridSize().height()) {
-//                                                break;
-//                                            }
-//                                            top-=gridSize().height();
-//                                        }
-//                                        //put item to next column first column
-//                                        next.moveTo(next.x() + grid.width(), top);
-//                                    }
-//                                    if (notEmptyRegion.contains(next.center()))
-//                                        continue;
-
-//                                    isEmptyPos = true;
-//                                    setPositionForIndex(next.topLeft(), index);
-//                                    setFileMetaInfoPos(index.data(Qt::UserRole).toString(), next.topLeft());
-//                                    notEmptyRegion += next;
-//                                }
-//                            }
-//                        }
-//                    }
-//                } else {
-//                    for (auto index : unlocatedIndexes) {
-//                        setFileMetaInfoPos(index.data(Qt::UserRole).toString(), QListView::visualRect(index).topLeft());
-//                    }
-//                }
-
-//                m_is_refreshing = false;
-//            });
-            m_is_refreshing = false;
-        });
-
-        return;
-        this->updateItemPosistions(nullptr);
-        this->m_is_refreshing = false;
-        if (isItemsOverlapped()) {
-            QHash<QModelIndex, QRect> currentIndexesRects;
-            for (int i = 0; i < m_proxy_model->rowCount(); i++) {
-                auto tmp = m_proxy_model->index(i, 0);
-                currentIndexesRects.insert(tmp, visualRect(tmp));
-            }
-
-            QModelIndexList overlappedIndexes;
-            for (auto value : currentIndexesRects.values()) {
-                auto keys = currentIndexesRects.keys(value);
-                if (keys.count() > 1) {
-                    keys.removeFirst();
-                    overlappedIndexes<<keys;
-                }
-            }
-
-            auto grid = this->gridSize();
-            auto viewRect = this->rect();
-
-            QRegion notEmptyRegion;
-            for (auto rect : currentIndexesRects) {
-                notEmptyRegion += rect;
-            }
-
-            for (auto overrlappedIndex : overlappedIndexes) {
-                auto indexRect = QListView::visualRect(overrlappedIndex);
-                if (notEmptyRegion.contains(indexRect.center())) {
-                    // move index to closest empty grid.
-                    auto next = indexRect;
-                    bool isEmptyPos = false;
-                    while (!isEmptyPos) {
-                        next.translate(0, grid.height());
-                        if (next.bottom() > viewRect.bottom()) {
-                            int top = next.y();
-                            while (true) {
-                                if (top < gridSize().height()) {
-                                    break;
-                                }
-                                top-=gridSize().height();
-                            }
-                            //put item to next column first column
-                            next.moveTo(next.x() + grid.width(), top);
-                        }
-                        if (notEmptyRegion.contains(next.center()))
-                            continue;
-
-                        isEmptyPos = true;
-                        setPositionForIndex(next.topLeft(), overrlappedIndex);
-                        notEmptyRegion += next;
-                    }
-                }
-            }
-
-            saveAllItemPosistionInfos();
-        }
     });
 
     connect(m_model, &DesktopItemModel::requestClearIndexWidget, this, &DesktopIconView::clearAllIndexWidgets);
@@ -603,16 +473,6 @@ void DesktopIconView::saveAllItemPosistionInfos()
 void DesktopIconView::saveItemPositionInfo(const QString &uri)
 {
     return;
-    auto index = m_proxy_model->mapFromSource(m_model->indexFromUri(uri));
-    auto indexRect = QListView::visualRect(index);
-    QStringList topLeft;
-    topLeft<<QString::number(indexRect.top());
-    topLeft<<QString::number(indexRect.left());
-    auto metaInfo = FileMetaInfo::fromUri(index.data(Qt::UserRole).toString());
-    if (metaInfo) {
-        //qDebug()<<"save"<<uri<<topLeft;
-        metaInfo->setMetaInfoStringList(ITEM_POS_ATTRIBUTE, topLeft);
-    }
 }
 
 void DesktopIconView::resetAllItemPositionInfos()
@@ -639,57 +499,11 @@ void DesktopIconView::resetAllItemPositionInfos()
 void DesktopIconView::resetItemPosistionInfo(const QString &uri)
 {
     return;
-    auto metaInfo = FileMetaInfo::fromUri(uri);
-    if (metaInfo)
-        metaInfo->removeMetaInfo(ITEM_POS_ATTRIBUTE);
 }
 
 void DesktopIconView::updateItemPosistions(const QString &uri)
 {
     return;
-    if (uri.isNull()) {
-        for (int i = 0; i < m_proxy_model->rowCount(); i++) {
-            auto index = m_proxy_model->index(i, 0);
-            auto metaInfo = FileMetaInfo::fromUri(index.data(Qt::UserRole).toString());
-            if (metaInfo) {
-                updateItemPosistions(index.data(Qt::UserRole).toString());
-            }
-        }
-        return;
-    }
-
-    auto index = m_proxy_model->mapFromSource(m_model->indexFromUri(uri));
-    //qDebug()<<"update"<<uri<<index.data();
-
-    if (!index.isValid()) {
-        //qDebug()<<"err: index invalid";
-        return;
-    }
-    auto metaInfo = FileMetaInfo::fromUri(uri);
-    if (!metaInfo) {
-        //qDebug()<<"err: no meta data";
-        return;
-    }
-
-    auto list = metaInfo->getMetaInfoStringList(ITEM_POS_ATTRIBUTE);
-    if (!list.isEmpty()) {
-        if (list.count() == 2) {
-            int top = list.first().toInt();
-            int left = list.at(1).toInt();
-            qDebug() << "index:" << index << "uri:" << uri << " top:" << top << " left:" << left;
-            if (top > 0 && left >= 0) {
-//                auto rect = visualRect(index);
-//                auto grid = gridSize();
-//                if (abs(rect.top() - top) < grid.width() && abs(rect.left() - left))
-//                    return;
-                QPoint p(left, top);
-                //qDebug()<<"set"<<index.data()<<p;
-                setPositionForIndex(QPoint(left, top), index);
-            } else {
-                saveItemPositionInfo(uri);
-            }
-        }
-    }
 }
 
 QPoint DesktopIconView::getFileMetaInfoPos(const QString &uri)
@@ -748,7 +562,7 @@ void DesktopIconView::updateItemPosByUri(const QString &uri, const QPoint &pos)
     if (index.isValid()) {
         setPositionForIndex(pos, index);
         m_item_rect_hash.remove(uri);
-        m_item_rect_hash.insert(uri, QRect(pos, visualRect(index).size()));
+        m_item_rect_hash.insert(uri, QRect(pos, QListView::visualRect(index).size()));
     }
 }
 
@@ -966,10 +780,10 @@ bool DesktopIconView::isItemsOverlapped()
     if (model()) {
         for (int i = 0; i < model()->rowCount(); i++) {
             auto index = model()->index(i, 0);
-            auto rect = visualRect(index);
+            auto rect = QListView::visualRect(index);
             if (itemRects.contains(rect))
                 return true;
-            itemRects<<visualRect(index);
+            itemRects<<QListView::visualRect(index);
         }
     }
 
@@ -1209,7 +1023,7 @@ void DesktopIconView::dropEvent(QDropEvent *e)
         QHash<QModelIndex, QRect> currentIndexesRects;
         for (int i = 0; i < m_proxy_model->rowCount(); i++) {
             auto tmp = m_proxy_model->index(i, 0);
-            currentIndexesRects.insert(tmp, visualRect(tmp));
+            currentIndexesRects.insert(tmp, QListView::visualRect(tmp));
         }
 
         //fixme: handle overlapping.
