@@ -162,7 +162,10 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
                         view->setFileMetaInfoPos(info->uri(), next.topLeft());
                     }
                 } else {
-                    view->ensureItemPosByUri(uri);
+                    view->setFileMetaInfoPos(info->uri(), indexRect.topLeft());
+                    QTimer::singleShot(1, view, [=](){
+                        view->updateItemPosByUri(uri, indexRect.topLeft());
+                    });
                 }
 
                 //this->beginResetModel();
