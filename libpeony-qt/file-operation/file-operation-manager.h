@@ -30,6 +30,7 @@
 #include "gerror-wrapper.h"
 #include "file-utils.h"
 #include "file-operation.h"
+#include "file-operation-progress-bar.h"
 #include <QMutex>
 #include <QStack>
 #include <QThreadPool>
@@ -128,15 +129,14 @@ private:
     explicit FileOperationManager(QObject *parent = nullptr);
     ~FileOperationManager();
 
+private:
+    QThreadPool *m_thread_pool;
+    bool m_allow_parallel = false;
+    QVector<FileWatcher *> m_watchers;
+    bool m_is_current_operation_errored = false;
+    FileOperationProgressBar *m_progressbar = nullptr;
     QStack<std::shared_ptr<FileOperationInfo>> m_undo_stack;
     QStack<std::shared_ptr<FileOperationInfo>> m_redo_stack;
-
-    QThreadPool *m_thread_pool;
-    bool m_is_current_operation_errored = false;
-
-    bool m_allow_parallel = false;
-
-    QVector<FileWatcher *> m_watchers;
 };
 
 class FileOperationInfo : public QObject
