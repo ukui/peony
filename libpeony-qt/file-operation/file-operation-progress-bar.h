@@ -2,12 +2,12 @@
 #define FILEOPERATIONPROGRESS_H
 
 #include <QMap>
+#include <QLabel>
+#include <QMutex>
 #include <QWidget>
 #include <QHBoxLayout>
-#include <QLabel>
 #include <QScrollArea>
 #include <QMainWindow>
-#include <QMutex>
 
 class CloseButton;
 class ProgressBar;
@@ -29,11 +29,11 @@ public:
         FREE,
     };
 public:
-    static FileOperationProgressBar &getInstance();
+    static FileOperationProgressBar* getInstance();
 
     FileOperationProgress* addFileOperation ();
     void showProcess(FileOperationProgress& proc);
-    void removeFileOperation(FileOperationProgress** fileOperation);
+    void removeFileOperation(FileOperationProgress& fileOperation);
 
 private:
     explicit FileOperationProgressBar(QWidget *parent = nullptr);
@@ -50,7 +50,6 @@ private:
     float m_height = 150;
     float m_margin = 20;
     float m_max_height = 300;
-    const int m_max_progressbar = 1;                               // reserved one for undo or redo
 
     QFrame* m_spline = nullptr;
     QLabel* m_detail_label = nullptr;
@@ -65,6 +64,7 @@ private:
     QVBoxLayout* m_process_layout = nullptr;
 
     int m_inuse_process = 0;
+    const int m_max_progressbar = 20;                               // reserved one for undo or redo
     QMutex *m_process_locker = nullptr;                             // maybe not need
     QMap<FileOperationProgress*, Status>* m_process = nullptr;      // all of processbar, fixme
 };
@@ -82,6 +82,7 @@ private:
 
 Q_SIGNALS:
     void cancelled();
+    void finished(FileOperationProgress& fop);
 
 public Q_SLOTS:
     virtual void delayShow();
@@ -103,9 +104,16 @@ public Q_SLOTS:
     virtual void updateProgress(const QString &srcUri, const QString &destUri, quint64 current, quint64 total);
 
     virtual void onStartSync();
-
+    void onFinished ();
 
 private:
+    int m_total_count = 0;
+    int m_current_count = 1;
+    qint64 m_total_size = 0;
+    qint32 m_current_size = 0;
+    QString m_src_uri;
+    QString m_dest_uri;
+
     CloseButton* m_close = nullptr;
     QLabel* m_process_name = nullptr;
     QLabel* m_process_file = nullptr;

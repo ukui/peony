@@ -56,6 +56,7 @@ FileOperationManager::FileOperationManager(QObject *parent) : QObject(parent)
     qRegisterMetaType<Peony::GErrorWrapperPtr>("Peony::GErrorWrapperPtr");
     qRegisterMetaType<Peony::GErrorWrapperPtr>("Peony::GErrorWrapperPtr&");
     m_thread_pool = new QThreadPool(this);
+    m_progressbar = FileOperationProgressBar::getInstance();
 
     if (!m_allow_parallel) {
         //Imitating queue execution.
@@ -156,71 +157,133 @@ void FileOperationManager::startOperation(FileOperation *operation, bool addToHi
         break;
     }
 
-    FileOperationProgressWizard *wizard = new FileOperationProgressWizard;
-    wizard->setAttribute(Qt::WA_DeleteOnClose);
-    wizard->connect(operation, &FileOperation::operationRequestShowWizard, wizard, &FileOperationProgressWizard::delayShow);
-    wizard->connect(operation, &FileOperation::operationRequestShowWizard, wizard, &FileOperationProgressWizard::switchToPreparedPage);
-    wizard->connect(operation, &FileOperation::operationPreparedOne, wizard, &FileOperationProgressWizard::onElementFoundOne);
-    wizard->connect(operation, &FileOperation::operationPrepared, wizard, &FileOperationProgressWizard::onElementFoundAll);
-    wizard->connect(operation, &FileOperation::operationProgressedOne, wizard, &FileOperationProgressWizard::onFileOperationProgressedOne);
-    wizard->connect(operation, &FileOperation::FileProgressCallback, wizard, &FileOperationProgressWizard::updateProgress);
-    wizard->connect(operation, &FileOperation::operationProgressed, wizard, &FileOperationProgressWizard::onFileOperationProgressedAll);
-    wizard->connect(operation, &FileOperation::operationAfterProgressedOne, wizard, &FileOperationProgressWizard::onElementClearOne);
-    wizard->connect(operation, &FileOperation::operationAfterProgressed, wizard, &FileOperationProgressWizard::switchToRollbackPage);
-    wizard->connect(operation, &FileOperation::operationStartRollbacked, wizard, &FileOperationProgressWizard::switchToRollbackPage);
-    wizard->connect(operation, &FileOperation::operationRollbackedOne, wizard, &FileOperationProgressWizard::onFileRollbacked);
-    wizard->connect(operation, &FileOperation::operationStartSnyc, wizard, &FileOperationProgressWizard::onStartSync);
-    wizard->connect(operation, &FileOperation::operationFinished, wizard, &FileOperationProgressWizard::deleteLater);
+    // progress bar
+   FileOperationProgress* proc = m_progressbar->addFileOperation();
+   if (nullptr == proc) {
+       // FIXME:// add more process bar
+       QMessageBox::warning(nullptr,
+                            tr("File Operation is Busy^^^"),
+                            tr("There have been one or more file"
+                               "operation(s) executing before. Your"
+                               "operation will wait for executing"
+                               "until it/them done. If you really "
+                               "want to execute file operations "
+                               "parallelly anyway, you can change "
+                               "the default option \"Allow Parallel\" "
+                               "in option menu."));
+       return;
+   }
 
-    connect(wizard, &Peony::FileOperationProgressWizard::cancelled,
-            operation, &Peony::FileOperation::cancel);
+   proc->connect(operation, &FileOperation::operationPreparedOne, proc, &FileOperationProgress::onElementFoundOne);
+   proc->connect(operation, &FileOperation::operationPrepared, proc, &FileOperationProgress::onElementFoundAll);
+   proc->connect(operation, &FileOperation::operationProgressedOne, proc, &FileOperationProgress::onFileOperationProgressedOne);
+   proc->connect(operation, &FileOperation::FileProgressCallback, proc, &FileOperationProgress::updateProgress);
+   proc->connect(operation, &FileOperation::operationProgressed, proc, &FileOperationProgress::onFileOperationProgressedAll);
+   proc->connect(operation, &FileOperation::operationAfterProgressedOne, proc, &FileOperationProgress::onElementClearOne);
+   proc->connect(operation, &FileOperation::operationAfterProgressed, proc, &FileOperationProgress::switchToRollbackPage);
+   proc->connect(operation, &FileOperation::operationStartRollbacked, proc, &FileOperationProgress::switchToRollbackPage);
+   proc->connect(operation, &FileOperation::operationRollbackedOne, proc, &FileOperationProgress::onFileRollbacked);
+   proc->connect(operation, &FileOperation::operationStartSnyc, proc, &FileOperationProgress::onStartSync);
 
-    operation->connect(operation, &FileOperation::errored, [=]() {
-        operation->setHasError(true);
-    });
+   proc->connect(operation, &FileOperation::operationFinished, proc, &FileOperationProgress::onFinished);
 
-    operation->connect(operation, &FileOperation::errored,
-                       this, &FileOperationManager::handleError,
-                       Qt::BlockingQueuedConnection);
+   proc->connect(proc, &FileOperationProgress::cancelled, operation, &Peony::FileOperation::cancel);
 
-    operation->connect(operation, &FileOperation::operationFinished, this, [=](){
-        if (operation->hasError()) {
-            this->clearHistory();
-            return ;
-        }
+   operation->connect(operation, &FileOperation::errored, [=]() {
+       operation->setHasError(true);
+   });
 
-        if (addToHistory) {
-            auto info = operation->getOperationInfo();
-            if (!info)
-                return;
-            if (info->operationType() != FileOperationInfo::Delete) {
-                m_undo_stack.push(info);
-                m_redo_stack.clear();
-            } else {
-                this->clearHistory();
-            }
-        }
-    }, Qt::BlockingQueuedConnection);
+   operation->connect(operation, &FileOperation::errored,
+                      this, &FileOperationManager::handleError,
+                      Qt::BlockingQueuedConnection);
 
-    if (!allowParallel) {
-        if (m_thread_pool->activeThreadCount() > 0) {
-            QMessageBox::warning(nullptr,
-                                 tr("File Operation is Busy"),
-                                 tr("There have been one or more file"
-                                    "operation(s) executing before. Your"
-                                    "operation will wait for executing"
-                                    "until it/them done. If you really "
-                                    "want to execute file operations "
-                                    "parallelly anyway, you can change "
-                                    "the default option \"Allow Parallel\" "
-                                    "in option menu."));
-        }
+   operation->connect(operation, &FileOperation::operationFinished, this, [=](){
+       if (operation->hasError()) {
+           this->clearHistory();
+           return ;
+       }
+
+       if (addToHistory) {
+           auto info = operation->getOperationInfo();
+           if (!info)
+               return;
+           if (info->operationType() != FileOperationInfo::Delete) {
+               m_undo_stack.push(info);
+               m_redo_stack.clear();
+           } else {
+               this->clearHistory();
+           }
+       }
+   }, Qt::BlockingQueuedConnection);
+
+
+   m_progressbar->showProcess(*proc);
+
+//    FileOperationProgressWizard *wizard = new FileOperationProgressWizard;
+//    wizard->setAttribute(Qt::WA_DeleteOnClose);
+//    wizard->connect(operation, &FileOperation::operationRequestShowWizard, wizard, &FileOperationProgressWizard::delayShow);
+//    wizard->connect(operation, &FileOperation::operationRequestShowWizard, wizard, &FileOperationProgressWizard::switchToPreparedPage);
+//    wizard->connect(operation, &FileOperation::operationPreparedOne, wizard, &FileOperationProgressWizard::onElementFoundOne);
+//    wizard->connect(operation, &FileOperation::operationPrepared, wizard, &FileOperationProgressWizard::onElementFoundAll);
+//    wizard->connect(operation, &FileOperation::operationProgressedOne, wizard, &FileOperationProgressWizard::onFileOperationProgressedOne);
+//    wizard->connect(operation, &FileOperation::FileProgressCallback, wizard, &FileOperationProgressWizard::updateProgress);
+//    wizard->connect(operation, &FileOperation::operationProgressed, wizard, &FileOperationProgressWizard::onFileOperationProgressedAll);
+//    wizard->connect(operation, &FileOperation::operationAfterProgressedOne, wizard, &FileOperationProgressWizard::onElementClearOne);
+//    wizard->connect(operation, &FileOperation::operationAfterProgressed, wizard, &FileOperationProgressWizard::switchToRollbackPage);
+//    wizard->connect(operation, &FileOperation::operationStartRollbacked, wizard, &FileOperationProgressWizard::switchToRollbackPage);
+//    wizard->connect(operation, &FileOperation::operationRollbackedOne, wizard, &FileOperationProgressWizard::onFileRollbacked);
+//    wizard->connect(operation, &FileOperation::operationStartSnyc, wizard, &FileOperationProgressWizard::onStartSync);
+//    wizard->connect(operation, &FileOperation::operationFinished, wizard, &FileOperationProgressWizard::deleteLater);
+
+//    connect(wizard, &Peony::FileOperationProgressWizard::cancelled,
+//            operation, &Peony::FileOperation::cancel);
+
+//    operation->connect(operation, &FileOperation::errored, [=]() {
+//        operation->setHasError(true);
+//    });
+
+//    operation->connect(operation, &FileOperation::errored,
+//                       this, &FileOperationManager::handleError,
+//                       Qt::BlockingQueuedConnection);
+
+//    operation->connect(operation, &FileOperation::operationFinished, this, [=](){
+//        if (operation->hasError()) {
+//            this->clearHistory();
+//            return ;
+//        }
+
+//        if (addToHistory) {
+//            auto info = operation->getOperationInfo();
+//            if (!info)
+//                return;
+//            if (info->operationType() != FileOperationInfo::Delete) {
+//                m_undo_stack.push(info);
+//                m_redo_stack.clear();
+//            } else {
+//                this->clearHistory();
+//            }
+//        }
+//    }, Qt::BlockingQueuedConnection);
+
+//    if (!allowParallel) {
+//        if (m_thread_pool->activeThreadCount() > 0) {
+//            QMessageBox::warning(nullptr,
+//                                 tr("File Operation is Busy"),
+//                                 tr("There have been one or more file"
+//                                    "operation(s) executing before. Your"
+//                                    "operation will wait for executing"
+//                                    "until it/them done. If you really "
+//                                    "want to execute file operations "
+//                                    "parallelly anyway, you can change "
+//                                    "the default option \"Allow Parallel\" "
+//                                    "in option menu."));
+//        }
+//        operation->setParent(m_thread_pool);
+//        m_thread_pool->start(operation);
+//    } else {
         operation->setParent(m_thread_pool);
         m_thread_pool->start(operation);
-    } else {
-        operation->setParent(m_thread_pool);
-        m_thread_pool->start(operation);
-    }
+//    }
 }
 
 void FileOperationManager::startUndoOrRedo(std::shared_ptr<FileOperationInfo> info)
