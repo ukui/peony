@@ -439,7 +439,11 @@ void DesktopItemModel::onEnumerateFinished()
                 auto uri = info->uri();
                 auto view = PeonyDesktopApplication::getIconView();
                 auto pos = view->getFileMetaInfoPos(info->uri());
-                view->updateItemPosByUri(info->uri(), pos);
+                if (pos.x() >= 0) {
+                    view->updateItemPosByUri(info->uri(), pos);
+                } else {
+                    view->ensureItemPosByUri(uri);
+                }
             });
         });
 
