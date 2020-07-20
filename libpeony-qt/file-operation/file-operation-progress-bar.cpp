@@ -1,11 +1,14 @@
 #include "file-operation-progress-bar.h"
 
 #include <gio/gio.h>
+#include "complementary-style.h"
 
 #include <QDebug>
 #include <QtMath>
 #include <QStyle>
 #include <QPainter>
+#include <QMessageBox>
+#include <QCloseEvent>
 
 FileOperationProgressBar* FileOperationProgressBar::getInstance()
 {
@@ -17,16 +20,17 @@ FileOperationProgressBar* FileOperationProgressBar::getInstance()
 FileOperationProgress* FileOperationProgressBar::addFileOperation()
 {
     FileOperationProgress* proc = nullptr;
-    if (m_inuse_process < m_max_progressbar) {
-        for (auto it = m_process->begin(); it != m_process->end(); ++ it) {
-            if (FREE == it.value()) {
-                it.value() = PREPARE;
-                ++ m_inuse_process;
-                it.key()->initParam();
-                proc = it.key();
-                break;
-            }
-        }
+    if (m_inuse_progress < m_max_progressbar) {
+        proc = new FileOperationProgress();
+        QListWidgetItem* li = new QListWidgetItem(m_progress_widgets);
+        m_progress_widgets->addItem(li);
+        m_progress_widgets->setItemWidget(li, proc);
+        ++ m_inuse_progress;
+        (*m_progress)[proc] = li;
+
+        li->setSizeHint(QSize(100, 100));
+
+        connect(proc, &FileOperationProgress::finished, this, &FileOperationProgressBar::removeFileOperation);
     }
 
     return proc;
@@ -34,77 +38,65 @@ FileOperationProgress* FileOperationProgressBar::addFileOperation()
 
 void FileOperationProgressBar::showProcess(FileOperationProgress &proc)
 {
-    if (m_inuse_process > 0) {
+    if (m_inuse_progress > 0) {
         proc.show();
         show();
     }
 }
 
-void FileOperationProgressBar::removeFileOperation(FileOperationProgress& fileOperation)
+void FileOperationProgressBar::removeFileOperation(FileOperationProgress* fileOperation)
 {
-    fileOperation.hide();
-    fileOperation.disconnect();
+    QListWidgetItem* item = (*m_progress)[fileOperation];
 
-    -- m_inuse_process;
+    item->setHidden(true);
+    m_progress_widgets->removeItemWidget(item);
+    m_progress->remove(fileOperation);
+    delete fileOperation;
+    delete item;
 
-    if (m_inuse_process <= 0) {
-        m_inuse_process = 0;
-        qDebug() << "in use:" << m_inuse_process << " all: " << m_max_progressbar;
+    -- m_inuse_progress;
+
+    if (m_inuse_progress <= 0) {
+        m_inuse_progress = 0;
         hide();
     }
 
-    (*m_process)[&fileOperation] = FREE;
 }
 
 FileOperationProgressBar::FileOperationProgressBar(QWidget *parent) : QWidget(parent)
 {
-    setStyleSheet("*{margin:0;padding:0;}");
-    setFixedSize(m_width, m_height);
+    setStyleSheet("*{"
+                  "     margin:0;"
+                  "     padding:0;"
+                  "}"
+                  "QListWidget::Item {"
+                  "     minHeight:200;"
+                  "}"
+                  "QListWidget::Item:hover, "
+                  "QListWidget::Item:selected {"
+                  "     background-color:transparent;"
+                  "}"
+                  );
 
+    setStyle(Peony::ComplementaryStyle::getStyle());
+
+    setFixedSize(m_width, m_height);
     setContentsMargins(0, 0, 0, 0);
 
     m_detail_label = new QLabel(nullptr);
     m_detail_widget = new QWidget(nullptr);
-    m_scroll_widget = new QWidget(nullptr);
     m_main_layout = new QVBoxLayout(nullptr);
-    m_scroll_area = new QScrollArea(nullptr);
     m_show_detail = new DetailButton(nullptr);
     m_detail_layout = new QHBoxLayout(nullptr);
-    m_process_layout = new QVBoxLayout(nullptr);
-    m_process_widget = new QMainWindow(nullptr);
-    m_process = new QMap<FileOperationProgress*, Status> ();
+    m_progress_widgets = new QListWidget(nullptr);
+    m_progress_widgets->setFrameShape(QListWidget::NoFrame);
+    m_progress = new QMap<FileOperationProgress*, QListWidgetItem*>;
 
-    m_main_layout->setContentsMargins(0, 0, 0, 0);
+    m_main_layout->setContentsMargins(8, 8, 8, 8);
     m_detail_widget->setContentsMargins(0, 0, 0, 0);
-    m_process_widget->setContentsMargins(0, 0, 0, 0);
-
-    m_scroll_widget->setLayout(m_process_layout);
-
-    for (int i = 0; i < m_max_progressbar; ++i) {
-        FileOperationProgress* fpb = new FileOperationProgress(m_width - m_margin, m_height - m_margin, nullptr);
-        m_scroll_widget->layout()->addWidget(fpb);
-        fpb->hide();
-        m_process->insert(fpb, FREE);
-        connect(fpb, &FileOperationProgress::finished, [=](FileOperationProgress& fileOperation) {
-            qDebug() << "finished";
-            -- m_inuse_process;
-            qDebug() << "in use:" << m_inuse_process << " all: " << m_max_progressbar;
-            if (m_inuse_process <= 0) {
-                m_inuse_process = 0;
-                qDebug() << "in use:" << m_inuse_process << " all: " << m_max_progressbar;
-                hide();
-            }
-
-            (*m_process)[&fileOperation] = FREE;
-        });
-    }
 
     detailInfo(true);
 
-    m_scroll_widget->setFixedSize(m_width - m_margin, m_height - 60);
-    m_scroll_area->setWidget(m_scroll_widget);
-    m_scroll_area->setFrameShape(QFrame::NoFrame);
-    m_process_widget->setCentralWidget(m_scroll_area);
     // add detail button
     m_spline = new QFrame(this);
     m_spline->setFrameShape(QFrame::HLine);
@@ -125,7 +117,7 @@ FileOperationProgressBar::FileOperationProgressBar(QWidget *parent) : QWidget(pa
     m_detail_widget->setLayout(m_detail_layout);
 
     // main layout
-    m_main_layout->addWidget(m_process_widget);
+    m_main_layout->addWidget(m_progress_widgets);
     m_main_layout->addSpacing(1);
     m_main_layout->addWidget(m_spline);
     m_main_layout->addWidget(m_detail_widget);
@@ -133,30 +125,35 @@ FileOperationProgressBar::FileOperationProgressBar(QWidget *parent) : QWidget(pa
     setLayout(m_main_layout);
 
     connect (m_show_detail, &DetailButton::valueChanged, this, &FileOperationProgressBar::detailInfo);
+    connect (this, &FileOperationProgressBar::cancelAll, [=] () {
+        m_status = CANCEL_ALL;
+
+        for (auto it = m_progress->constBegin(); it != m_progress->constEnd(); ++it) {
+            Q_EMIT it.key()->cancelled();
+        }
+
+        m_status = READY;
+    });
 }
 
 FileOperationProgressBar::~FileOperationProgressBar()
 {
-    for (auto it = m_process->begin(); it != m_process->end(); ++ it) {
+    for (auto it = m_progress->begin(); it != m_progress->end(); ++ it) {
         delete it.key();
+        delete it.value();
     }
-    delete m_process;
+    delete m_progress;
 
     delete m_spline;
     delete m_show_detail;
     delete m_detail_label;
     delete m_detail_widget;
     delete m_detail_layout;
-
-    delete m_scroll_area;
-    delete m_scroll_widget;
-    delete m_process_layout;
-    delete m_process_widget;
 }
 
 void FileOperationProgressBar::detailInfo(bool open)
 {
-    for (auto it = m_process->constBegin(); it != m_process->constEnd(); ++it) {
+    for (auto it = m_progress->constBegin(); it != m_progress->constEnd(); ++it) {
         if (open) {
             it.key()->m_process_file->hide();
             it.key()->m_process_left_item->hide();
@@ -174,7 +171,9 @@ void FileOperationProgressBar::detailInfo(bool open)
 
 void FileOperationProgressBar::closeEvent(QCloseEvent *e)
 {
-
+    QMessageBox::information(nullptr, "title", "text", QMessageBox::Ok);
+    Q_EMIT cancelAll();
+    e->ignore();
 }
 
 DetailButton::DetailButton(QWidget *parent) : QWidget(parent)
@@ -281,9 +280,6 @@ void StartStopButton::paintEvent(QPaintEvent *)
         painter.drawLine(line3);
         painter.restore();
     }
-
-
-
 }
 
 void StartStopButton::mouseReleaseEvent(QMouseEvent *event)
@@ -319,14 +315,15 @@ void CloseButton::paintEvent(QPaintEvent *)
 
 void CloseButton::mouseReleaseEvent(QMouseEvent *event)
 {
-    qDebug() << "click";
+    Q_EMIT clicked();
 
     Q_UNUSED(event);
 }
 
-FileOperationProgress::FileOperationProgress(float width, float height, QWidget *parent) : QWidget(parent)
+FileOperationProgress::FileOperationProgress(QWidget *parent) : QWidget(parent)
 {
     setContentsMargins(0, 0, 0, 0);
+    setMinimumHeight(60);
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     m_close = new CloseButton(nullptr);
     m_process_name = new QLabel(nullptr);
@@ -341,11 +338,6 @@ FileOperationProgress::FileOperationProgress(float width, float height, QWidget 
     m_main_layout->setAlignment(this, Qt::AlignLeft | Qt::AlignTop);
     m_main_layout->setContentsMargins(0, 0, 5, 0);
 
-    m_process_name->setText("zheng zai yi dong wenjian ");
-    m_process_file->setText("file name");
-    m_process_left_item->setText("left item");
-    m_process_percent->setText("process percentage");
-
     m_vbox_layout->addWidget(m_process_percent);
     m_vbox_layout->addWidget(m_start_stop);
     m_vbox_layout->addWidget(m_close);
@@ -357,6 +349,11 @@ FileOperationProgress::FileOperationProgress(float width, float height, QWidget 
     m_main_layout->addWidget(m_process_left_item);
 
     setLayout(m_main_layout);
+
+    // close this process
+    connect(m_close, &CloseButton::clicked, [=] () {
+        Q_EMIT cancelled();
+    });
 }
 
 FileOperationProgress::~FileOperationProgress()
@@ -392,14 +389,8 @@ void FileOperationProgress::delayShow()
 
 }
 
-void FileOperationProgress::switchToPreparedPage()
-{
-
-}
-
 void FileOperationProgress::onElementFoundOne(const QString &uri, const qint64 &size)
 {
-    // prepare status
     ++ m_total_count;
     m_total_size += size;
     m_src_uri = uri;
@@ -413,7 +404,7 @@ void FileOperationProgress::onElementFoundOne(const QString &uri, const qint64 &
 
 void FileOperationProgress::onElementFoundAll()
 {
-
+    qDebug() << "--------------> onElementFoundAll";
 }
 
 void FileOperationProgress::switchToProgressPage()
@@ -438,40 +429,67 @@ void FileOperationProgress::switchToAfterProgressPage()
 
 void FileOperationProgress::onElementClearOne(const QString &uri)
 {
-
+    qDebug() << "----------> onElementClearOne ...";
 }
 
 void FileOperationProgress::switchToRollbackPage()
 {
-
+    qDebug() << "----------> switchToRollbackPage ...";
 }
 
 void FileOperationProgress::onFileRollbacked(const QString &destUri, const QString &srcUri)
 {
-
+    qDebug() << "----------> onFileRollbacked ...";
 }
 
 void FileOperationProgress::updateProgress(const QString &srcUri, const QString &destUri, quint64 current, quint64 total)
 {
-    qDebug() << "update progress bar";
-    m_progress->updateValue(double(current) / double(total));
+    if (current >= m_total_size) {
+        return;
+    }
+
+    // update value
+    m_src_uri = srcUri;
+    m_dest_uri = destUri;
+
+    double currentPercent = current * 1.0 / total;
+    int leftItem = m_total_count - m_current_count;
+    /*
+    m_process_name->setText("zheng zai yi dong wenjian ");
+    m_process_file->setText("file name");
+    m_process_left_item->setText("left item");
+    m_process_percent->setText("process percentage");
+*/
+
+    m_process_percent->setText(QString("transferred %1 %").arg(QString::number(currentPercent * 100, 'f', 3)));
+    m_progress->updateValue(currentPercent);
+    if (leftItem > 1) {
+        m_process_left_item->setText(QString("remain %1 items").arg(leftItem));
+    } else {
+        m_process_left_item->setText(QString("remain %1 item").arg(leftItem < 0 ? 0 : leftItem));
+    }
+
+
+    Q_UNUSED(srcUri);
+    Q_UNUSED(destUri);
 }
 
 void FileOperationProgress::onStartSync()
 {
-
+    qDebug() << "----------> on start sync";
 }
 
 void FileOperationProgress::onFinished()
 {
     hide();
-    qDebug() << "finished";
-    Q_EMIT finished(*this);
+    qDebug() << "----------> on finished";
+    Q_EMIT finished(this);
 }
 
 ProgressBar::ProgressBar(QWidget *parent) : QWidget(parent)
 {
-    setMinimumHeight(10);
+    setMinimumHeight(20);
+    setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Ignored));
     if (m_detail) {
         m_area = QRectF(0, 0, width(), 60);
     } else {
@@ -491,7 +509,7 @@ void ProgressBar::paintEvent(QPaintEvent *event)
 
         // draw border
         painter.save();
-        QPen pen(QColor(192,192,192), 1);
+        QPen pen(QColor(192, 192, 192), 1);
         pen.setStyle(Qt::SolidLine);
         painter.setBrush(Qt::NoBrush);
         painter.setPen(pen);
@@ -502,8 +520,8 @@ void ProgressBar::paintEvent(QPaintEvent *event)
         // draw background
         painter.save();
         QLinearGradient progressBarBgGradient (QPointF(0, 0), QPointF(0, height()));
-        progressBarBgGradient.setColorAt(0.0, QColor(220,220,220));
-        progressBarBgGradient.setColorAt(1.0, QColor(211,211,211));
+        progressBarBgGradient.setColorAt(0.0, QColor(220, 220, 220));
+        progressBarBgGradient.setColorAt(1.0, QColor(211, 211, 211));
 
         float margin = 1;
 
@@ -518,8 +536,8 @@ void ProgressBar::paintEvent(QPaintEvent *event)
         painter.save();
         double value = m_current_value * (m_area.width() - m_area.x() - margin);
         QLinearGradient progressBarfgGradient (QPointF(0, 0), QPointF(0, height()));
-        progressBarfgGradient.setColorAt(0.0, QColor(124,252,0));
-        progressBarfgGradient.setColorAt(1.0, QColor(127,255,0));
+        progressBarfgGradient.setColorAt(0.0, QColor(124, 252, 0));
+        progressBarfgGradient.setColorAt(1.0, QColor(127, 255, 0));
         painter.setPen(Qt::NoPen);
         painter.setBrush(progressBarfgGradient);
         painter.drawRoundedRect(m_area.x() + margin, m_area.y() + margin,
@@ -528,12 +546,12 @@ void ProgressBar::paintEvent(QPaintEvent *event)
         painter.restore();
 
         // draw text
-        QRectF textArea = m_area;
-        textArea.setWidth(textArea.width() - 2 * margin);
-        QFont font = painter.font();
-        font.setPixelSize(10);
-        painter.setFont(font);
-        painter.drawText(textArea, Qt::AlignVCenter | Qt::AlignRight, tr("sudu 200MB/S"));
+//        QRectF textArea = m_area;
+//        textArea.setWidth(textArea.width() - 2 * margin);
+//        QFont font = painter.font();
+//        font.setPixelSize(10);
+//        painter.setFont(font);
+//        painter.drawText(textArea, Qt::AlignVCenter | Qt::AlignRight, tr("sudu 200MB/S"));
 
         Q_UNUSED(event);
 }

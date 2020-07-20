@@ -174,6 +174,7 @@ void FileOperationManager::startOperation(FileOperation *operation, bool addToHi
        return;
    }
 
+   // begin
    proc->connect(operation, &FileOperation::operationPreparedOne, proc, &FileOperationProgress::onElementFoundOne);
    proc->connect(operation, &FileOperation::operationPrepared, proc, &FileOperationProgress::onElementFoundAll);
    proc->connect(operation, &FileOperation::operationProgressedOne, proc, &FileOperationProgress::onFileOperationProgressedOne);
@@ -184,18 +185,14 @@ void FileOperationManager::startOperation(FileOperation *operation, bool addToHi
    proc->connect(operation, &FileOperation::operationStartRollbacked, proc, &FileOperationProgress::switchToRollbackPage);
    proc->connect(operation, &FileOperation::operationRollbackedOne, proc, &FileOperationProgress::onFileRollbacked);
    proc->connect(operation, &FileOperation::operationStartSnyc, proc, &FileOperationProgress::onStartSync);
-
    proc->connect(operation, &FileOperation::operationFinished, proc, &FileOperationProgress::onFinished);
-
    proc->connect(proc, &FileOperationProgress::cancelled, operation, &Peony::FileOperation::cancel);
 
    operation->connect(operation, &FileOperation::errored, [=]() {
        operation->setHasError(true);
    });
 
-   operation->connect(operation, &FileOperation::errored,
-                      this, &FileOperationManager::handleError,
-                      Qt::BlockingQueuedConnection);
+   operation->connect(operation, &FileOperation::errored, this, &FileOperationManager::handleError, Qt::BlockingQueuedConnection);
 
    operation->connect(operation, &FileOperation::operationFinished, this, [=](){
        if (operation->hasError()) {
