@@ -117,6 +117,30 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
                 auto grid = view->gridSize();
                 auto viewRect = view->rect();
 
+                auto metaInfoPos = view->getFileMetaInfoPos(uri);
+                if (metaInfoPos.x() >= 0) {
+                    this->beginInsertRows(QModelIndex(), m_files.count(), m_files.count());
+                    ThumbnailManager::getInstance()->createThumbnail(info->uri(), m_thumbnail_watcher);
+                    m_files<<info;
+                    //this->insertRows(m_files.indexOf(info), 1);
+                    this->endInsertRows();
+
+                    QTimer::singleShot(1, this, [=](){
+                        view->updateItemPosByUri(uri, metaInfoPos);
+                        for (auto key : itemRectHash.keys()) {
+                            view->updateItemPosByUri(key, itemRectHash.value(key).topLeft());
+                        }
+                    });
+
+                    // end locate new item=======
+
+                    //this->endResetModel();
+                    Q_EMIT this->requestUpdateItemPositions();
+                    Q_EMIT this->requestLayoutNewItem(info->uri());
+                    Q_EMIT this->fileCreated(uri);
+                    return;
+                }
+
                 QRegion notEmptyRegion;
                 for (auto rect : itemRectHash.values()) {
                     notEmptyRegion += rect;
