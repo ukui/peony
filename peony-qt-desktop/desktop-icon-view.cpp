@@ -155,6 +155,14 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
 
     connect(m_model, &DesktopItemModel::refreshed, this, [=]() {
         m_is_refreshing = false;
+
+        // check if there are items overlapped.
+        QTimer::singleShot(150, this, [=](){
+            if (isItemsOverlapped()) {
+                // refresh again?
+                this->refresh();
+            }
+        });
         return;
     });
 
