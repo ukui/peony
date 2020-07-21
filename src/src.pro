@@ -45,10 +45,12 @@ SOURCES += \
     peony-application.cpp \
     peony-main-window-style.cpp \
     peony-main.cpp \
+    peony-screen.cpp
 
 HEADERS += \
-    peony-application.h \ \
-    peony-main-window-style.h
+    peony-application.h \
+    peony-main-window-style.h \
+    peony-screen.h
 
 INCLUDEPATH    += ../plugin-iface
 

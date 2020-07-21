@@ -37,6 +37,7 @@ TRANSLATIONS += ../translations/peony-qt-desktop/peony-qt-desktop_zh_CN.ts \
                 ../translations/peony-qt-desktop/peony-qt-desktop_tr.ts
 
 SOURCES += \
+    desktop-screen.cpp \
     main.cpp \
     desktop-window.cpp \
     peony-desktop-application.cpp \
@@ -50,6 +51,7 @@ SOURCES += \
     desktop-item-proxy-model.cpp
 
 HEADERS += \
+    desktop-screen.h \
     desktop-window.h \
     peony-desktop-application.h \
     fm-dbus-service.h \
