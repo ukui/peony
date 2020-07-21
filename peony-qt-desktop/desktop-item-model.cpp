@@ -97,6 +97,12 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
     m_desktop_watcher->setMonitorChildrenChange(true);
     this->connect(m_desktop_watcher.get(), &FileWatcher::fileCreated, [=](const QString &uri) {
         qDebug()<<"desktop file created"<<uri;
+        if (m_new_file_info_query_queue.contains(uri)) {
+            return;
+        } else {
+            m_new_file_info_query_queue<<uri;
+        }
+
         auto info = FileInfo::fromUri(uri, true);
         bool exsited = false;
         for (auto file : m_files) {
@@ -107,11 +113,6 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
         }
 
         if (!exsited) {
-            if (m_new_file_info_query_queue.contains(uri)) {
-                return;
-            } else {
-                m_new_file_info_query_queue<<uri;
-            }
             auto job = new FileInfoJob(info);
             job->setAutoDelete();
             connect(job, &FileInfoJob::infoUpdated, [=]() {
@@ -204,6 +205,7 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
                 m_files<<info;
                 //this->insertRows(m_files.indexOf(info), 1);
                 this->endInsertRows();
+                m_new_file_info_query_queue.removeOne(uri);
 
                 QTimer::singleShot(1, this, [=](){
                     for (auto key : itemRectHash.keys()) {
