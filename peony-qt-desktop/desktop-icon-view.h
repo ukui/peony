@@ -186,6 +186,9 @@ protected:
 
     void resizeEvent(QResizeEvent *e);
 
+    void rowsInserted(const QModelIndex &parent, int start, int end) override;
+    void rowsAboutToBeRemoved(const QModelIndex &parent, int start, int end) override;
+
     bool isItemsOverlapped();
 
 private:

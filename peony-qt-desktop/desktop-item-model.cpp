@@ -188,7 +188,7 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
                 } else {
                     view->setFileMetaInfoPos(info->uri(), indexRect.topLeft());
                     QTimer::singleShot(1, view, [=](){
-                        view->updateItemPosByUri(uri, indexRect.topLeft());
+                        //view->updateItemPosByUri(uri, indexRect.topLeft());
                     });
                 }
 
@@ -412,30 +412,16 @@ void DesktopItemModel::onEnumerateFinished()
     for (auto info : infos) {
         m_info_query_queue<<info->uri();
         beginInsertRows(QModelIndex(), m_files.count(), m_files.count());
+        auto syncJob = new FileInfoJob(info);
+        syncJob->querySync();
+        syncJob->deleteLater();
         m_files<<info;
         endInsertRows();
-        //this->insertRow(m_files.indexOf(info));
+        ThumbnailManager::getInstance()->createThumbnail(info->uri(), m_thumbnail_watcher);
 
-        auto job = new FileInfoJob(info);
+        if (m_files.last() == info) {
 
-        connect(job, &FileInfoJob::queryAsyncFinished, [=]() {
-            //qDebug()<<"info updated"<<info->uri();
-            //this->dataChanged(this->index(m_files.indexOf(info)), this->index(m_files.indexOf(info)));
-            ThumbnailManager::getInstance()->createThumbnail(info->uri(), m_thumbnail_watcher);
-
-            m_info_query_queue.removeOne(info->uri());
-            if (m_info_query_queue.isEmpty()) {
-                //this->beginResetModel();
-                //this->endResetModel();
-                Q_EMIT this->refreshed();
-            }
-        });
-
-        connect(job, &FileInfoJob::infoUpdated, [=](){
-            auto index = indexFromUri(info->uri());
-            this->dataChanged(index, index);
-
-            QTimer::singleShot(100, this, [=](){
+            for (auto info : m_files) {
                 auto uri = info->uri();
                 auto view = PeonyDesktopApplication::getIconView();
                 auto pos = view->getFileMetaInfoPos(info->uri());
@@ -444,11 +430,11 @@ void DesktopItemModel::onEnumerateFinished()
                 } else {
                     view->ensureItemPosByUri(uri);
                 }
-            });
-        });
+            }
 
-        job->setAutoDelete();
-        job->queryAsync();
+            Q_EMIT refreshed();
+        }
+        continue;
     }
 
     //qDebug()<<"startMornitor";
