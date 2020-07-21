@@ -107,6 +107,11 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
         }
 
         if (!exsited) {
+            if (m_new_file_info_query_queue.contains(uri)) {
+                return;
+            } else {
+                m_new_file_info_query_queue<<uri;
+            }
             auto job = new FileInfoJob(info);
             job->setAutoDelete();
             connect(job, &FileInfoJob::infoUpdated, [=]() {
@@ -124,6 +129,7 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
                     m_files<<info;
                     //this->insertRows(m_files.indexOf(info), 1);
                     this->endInsertRows();
+                    m_new_file_info_query_queue.removeOne(uri);
 
                     QTimer::singleShot(1, this, [=](){
                         view->updateItemPosByUri(uri, metaInfoPos);

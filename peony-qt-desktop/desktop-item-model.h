@@ -96,6 +96,7 @@ private:
     std::shared_ptr<FileWatcher> m_andriod_app_watcher;
 
     QQueue<QString> m_info_query_queue;
+    QQueue<QString> m_new_file_info_query_queue;
 };
 
 }
