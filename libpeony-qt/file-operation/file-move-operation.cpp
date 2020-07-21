@@ -776,14 +776,15 @@ void FileMoveOperation::moveForceUseFallback()
 
 bool FileMoveOperation::isValid()
 {
+    int index = 0;
     bool isInvalid = false;
     for (auto srcUri : m_source_uris) {
         auto srcFile = wrapGFile(g_file_new_for_uri(srcUri.toUtf8().constData()));
         auto destFile = wrapGFile(g_file_new_for_uri(m_dest_dir_uri.toUtf8().constData()));
         auto parentFile = wrapGFile(g_file_get_parent(srcFile.get()->get()));
         if (g_file_equal(destFile.get()->get(), parentFile.get()->get())) {
-            isInvalid = true;
-            invalidOperation(tr("Invalid move operation, cannot move a file itself."));
+            m_source_uris.removeAt(index);
+            --index;
         }
         //BUG: some special basename like test and test2, will lead the operation invalid.
         /*
@@ -794,6 +795,7 @@ bool FileMoveOperation::isValid()
         */
         //FIXME: find if destUriDirFile is srcFile's child.
         //it will call G_IO_ERROR_INVALID_FILENAME
+        ++index;
     }
     if (isInvalid)
         invalidExited(tr("Invalid Operation."));
