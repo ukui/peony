@@ -30,6 +30,7 @@
 #include <QFile>
 
 #include <QStandardPaths>
+#include <X11/Xlib.h>
 
 #include "navigation-tab-bar.h"
 #include "tab-widget.h"
@@ -77,10 +78,26 @@ void messageOutput(QtMsgType type, const QMessageLogContext &context, const QStr
         fclose(log_file);
 }
 
+int getScreenWidth() {
+    Display *disp = XOpenDisplay(NULL);
+    Screen *scrn = DefaultScreenOfDisplay(disp);
+    if (NULL == scrn) {
+        return 0;
+    }
+    int width = scrn->width;
+
+    if (NULL != disp) {
+        XCloseDisplay(disp);
+    }
+    return width;
+}
+
 int main(int argc, char *argv[]) {
     qInstallMessageHandler(messageOutput);
-    QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
-    QGuiApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
+    if (getScreenWidth() > 2560) {
+        QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+        QGuiApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
+    }
 
     PeonyApplication app(argc, argv, "peony-qt");
     if (app.isSecondary())
