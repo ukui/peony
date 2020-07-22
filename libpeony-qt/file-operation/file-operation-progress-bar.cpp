@@ -1,9 +1,32 @@
+/*
+ * Peony-Qt's Library
+ *
+ * Copyright (C) 2019, Tianjin KYLIN Information Technology Co., Ltd.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this library.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * Authors: Jing Ding <dingjing@kylinos.cn>
+ *
+ */
+
 #include "file-operation-progress-bar.h"
 
 #include <gio/gio.h>
 #include <QDebug>
 #include <QPainter>
 #include <QMouseEvent>
+#include <QPushButton>
 
 FileOperationProgressBar *FileOperationProgressBar::instance = nullptr;
 
@@ -31,7 +54,9 @@ ProgressBar *FileOperationProgressBar::addFileOperation()
     connect(proc, &ProgressBar::finished, this, &FileOperationProgressBar::removeFileOperation);
     ++m_progress_size;
 
-    mainProgressChange(li);
+    if (nullptr == m_current_main) {
+        mainProgressChange(li);
+    }
 
     showMore();
 
@@ -82,6 +107,7 @@ void FileOperationProgressBar::removeFileOperation(ProgressBar *progress)
 
 FileOperationProgressBar::FileOperationProgressBar(QWidget *parent) : QWidget(parent)
 {
+    m_current_main = nullptr;
     setWindowFlag(Qt::FramelessWindowHint);
     setContentsMargins(0, 0, 0, 0);
 
@@ -268,11 +294,15 @@ void MainProgressBar::paintFoot(QPainter &painter)
     painter.save();
 
     double value = m_current_value * m_fix_width;
-    QLinearGradient progressBarBgGradient (QPointF(0, 0), QPointF(0, height()));
-    progressBarBgGradient.setColorAt(0.0, QColor(75,0,130));
-    progressBarBgGradient.setColorAt(1.0, QColor(75,0,130));
+    QPushButton btn;
+
+//    QLinearGradient progressBarBgGradient (QPointF(0, 0), QPointF(0, height()));
+//    progressBarBgGradient.setColorAt(0.0, QColor(75,0,130));
+//    progressBarBgGradient.setColorAt(1.0, QColor(75,0,130));
+//    painter.setBrush(progressBarBgGradient);
     painter.setPen(Qt::NoPen);
-    painter.setBrush(progressBarBgGradient);
+    painter.setBrush(QBrush(btn.palette().color(QPalette::Highlight)));
+
 
     if (m_show) {
 
@@ -351,7 +381,8 @@ void MainProgressBar::paintProgress(QPainter &painter)
     double value = m_current_value * m_fix_width;
 
     painter.setPen(Qt::NoPen);
-    painter.setBrush(QBrush(QColor(175,238,238)));
+    QPushButton btn;
+    painter.setBrush(QBrush(btn.palette().color(QPalette::Highlight).lighter(125)));
     painter.drawRoundedRect(0, 0, value, m_fix_height, 1, 1);
 
 //    QLinearGradient progressBarBgGradient (QPointF(0, 0), QPointF(0, height()));
@@ -495,13 +526,18 @@ void ProgressBar::paintEvent(QPaintEvent *event)
     pen.setStyle(Qt::SolidLine);
     painter.setBrush(Qt::NoBrush);
     painter.setPen(pen);
-    painter.drawRect(x, y, m_progress_width, m_progress_height);
 
-    QLinearGradient progressBarBgGradient (QPointF(0, 0), QPointF(0, height()));
-    progressBarBgGradient.setColorAt(0.0, QColor(175,238,238));
-    progressBarBgGradient.setColorAt(1.0, QColor(175,238,238));
+//    QLinearGradient progressBarBgGradient (QPointF(0, 0), QPointF(0, height()));
+//    progressBarBgGradient.setColorAt(0.0, QColor(175,238,238));
+//    progressBarBgGradient.setColorAt(1.0, QColor(175,238,238));
+//    painter.setPen(Qt::NoPen);
+//    painter.setBrush(progressBarBgGradient);
+
+    QPushButton btn;
     painter.setPen(Qt::NoPen);
-    painter.setBrush(progressBarBgGradient);
+    painter.setBrush(QBrush(btn.palette().color(QPalette::Highlight).light(125)));
+    painter.drawRect(x, y, m_progress_width, m_progress_height);
+    painter.setBrush(QBrush(btn.palette().color(QPalette::Highlight)));
     painter.drawRoundedRect(x, y, value, m_progress_height, 1, 1);
 
     // paint close
@@ -572,6 +608,36 @@ void ProgressBar::updateProgress(const QString &srcUri, const QString &destUri, 
 
     m_src_uri = srcUri;
     m_dest_uri = destUri;
+
+    // maybe you don't need to show every file icon,just default.
+//    QIcon ficon;
+//    GIcon* fileIcon = nullptr;
+//    char* iconName = nullptr;
+//    GFileInfo* fileInfo = nullptr;
+//    GFile* file = g_file_new_for_uri(srcUri.toUtf8().constData());
+//    if (nullptr != file) {
+//        fileInfo = g_file_query_info(file, "*", G_FILE_QUERY_INFO_NONE, nullptr, nullptr);
+//        if (nullptr != fileInfo) {
+//            fileIcon = g_file_info_get_icon(fileInfo);
+//            if (nullptr != fileIcon) {
+//                iconName = g_icon_to_string(fileIcon);
+//                if (nullptr != iconName) {
+//                    ficon = QIcon(QString(iconName).split(" ").last());
+//                    qDebug() << "-------------->" << iconName;
+//                    setIcon(ficon);
+//                }
+//                if (nullptr != iconName) {
+//                    g_free(iconName);
+//                }
+//            }
+//        }
+//        if (nullptr != fileInfo) {
+//            g_object_unref(fileInfo);
+//        }
+//    }
+//    if (nullptr != file) {
+//        g_object_unref(file);
+//    }
 
     double currentPercent = current * 1.0 / total;
     updateValue(currentPercent);
