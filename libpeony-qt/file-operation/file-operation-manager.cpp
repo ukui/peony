@@ -161,35 +161,21 @@ void FileOperationManager::startOperation(FileOperation *operation, bool addToHi
     }
 
     // progress bar
-   FileOperationProgress* proc = m_progressbar->addFileOperation();
-   if (nullptr == proc) {
-       // FIXME:// add more process bar
-       QMessageBox::warning(nullptr,
-                            tr("File Operation is Busy^^^"),
-                            tr("There have been one or more file"
-                               "operation(s) executing before. Your"
-                               "operation will wait for executing"
-                               "until it/them done. If you really "
-                               "want to execute file operations "
-                               "parallelly anyway, you can change "
-                               "the default option \"Allow Parallel\" "
-                               "in option menu."));
-       return;
-   }
+   ProgressBar* proc = m_progressbar->addFileOperation();
 
    // begin
-   proc->connect(operation, &FileOperation::operationPreparedOne, proc, &FileOperationProgress::onElementFoundOne);
-   proc->connect(operation, &FileOperation::operationPrepared, proc, &FileOperationProgress::onElementFoundAll);
-   proc->connect(operation, &FileOperation::operationProgressedOne, proc, &FileOperationProgress::onFileOperationProgressedOne);
-   proc->connect(operation, &FileOperation::FileProgressCallback, proc, &FileOperationProgress::updateProgress);
-   proc->connect(operation, &FileOperation::operationProgressed, proc, &FileOperationProgress::onFileOperationProgressedAll);
-   proc->connect(operation, &FileOperation::operationAfterProgressedOne, proc, &FileOperationProgress::onElementClearOne);
-   proc->connect(operation, &FileOperation::operationAfterProgressed, proc, &FileOperationProgress::switchToRollbackPage);
-   proc->connect(operation, &FileOperation::operationStartRollbacked, proc, &FileOperationProgress::switchToRollbackPage);
-   proc->connect(operation, &FileOperation::operationRollbackedOne, proc, &FileOperationProgress::onFileRollbacked);
-   proc->connect(operation, &FileOperation::operationStartSnyc, proc, &FileOperationProgress::onStartSync);
-   proc->connect(operation, &FileOperation::operationFinished, proc, &FileOperationProgress::onFinished);
-   proc->connect(proc, &FileOperationProgress::cancelled, operation, &Peony::FileOperation::cancel);
+   proc->connect(operation, &FileOperation::operationPreparedOne, proc, &ProgressBar::onElementFoundOne);
+   proc->connect(operation, &FileOperation::operationPrepared, proc, &ProgressBar::onElementFoundAll);
+   proc->connect(operation, &FileOperation::operationProgressedOne, proc, &ProgressBar::onFileOperationProgressedOne);
+   proc->connect(operation, &FileOperation::FileProgressCallback, proc, &ProgressBar::updateProgress);
+   proc->connect(operation, &FileOperation::operationProgressed, proc, &ProgressBar::onFileOperationProgressedAll);
+   proc->connect(operation, &FileOperation::operationAfterProgressedOne, proc, &ProgressBar::onElementClearOne);
+   proc->connect(operation, &FileOperation::operationAfterProgressed, proc, &ProgressBar::switchToRollbackPage);
+   proc->connect(operation, &FileOperation::operationStartRollbacked, proc, &ProgressBar::switchToRollbackPage);
+   proc->connect(operation, &FileOperation::operationRollbackedOne, proc, &ProgressBar::onFileRollbacked);
+   proc->connect(operation, &FileOperation::operationStartSnyc, proc, &ProgressBar::onStartSync);
+   proc->connect(operation, &FileOperation::operationFinished, proc, &ProgressBar::onFinished);
+   proc->connect(proc, &ProgressBar::cancelled, operation, &Peony::FileOperation::cancel);
 
    operation->connect(operation, &FileOperation::errored, [=]() {
        operation->setHasError(true);
@@ -217,7 +203,7 @@ void FileOperationManager::startOperation(FileOperation *operation, bool addToHi
    }, Qt::BlockingQueuedConnection);
 
 
-   m_progressbar->showProcess(*proc);
+   m_progressbar->showProgress(*proc);
 
 //    FileOperationProgressWizard *wizard = new FileOperationProgressWizard;
 //    wizard->setAttribute(Qt::WA_DeleteOnClose);

@@ -1,205 +1,210 @@
 #ifndef FILEOPERATIONPROGRESS_H
 #define FILEOPERATIONPROGRESS_H
-
-#include <QMap>
-#include <QLabel>
-#include <QMutex>
 #include <QWidget>
 #include <QHBoxLayout>
-#include <QScrollArea>
-#include <QMainWindow>
 #include <QListWidget>
 
-class CloseButton;
 class ProgressBar;
-class DetailButton;
-class StartStopButton;
-class FileOperationProgress;
+class OtherButton;
+class MainProgressBar;
 
 class FileOperationProgressBar : public QWidget
 {
     Q_OBJECT
 public:
-    enum Status
-    {
-        CANCEL_ALL,
-        READY,
-    };
-public:
     static FileOperationProgressBar* getInstance();
 
-    FileOperationProgress* addFileOperation ();
-    void showProcess(FileOperationProgress& proc);
-    void removeFileOperation(FileOperationProgress* fileOperation);
+    ProgressBar* addFileOperation();
+    void showProgress (ProgressBar& progress);
+    void removeFileOperation(ProgressBar* progress);
 
 private:
     explicit FileOperationProgressBar(QWidget *parent = nullptr);
-    ~FileOperationProgressBar();
-
-public Q_SLOTS:
-    void detailInfo (bool open);
-
-Q_SIGNALS:
-    void cancelAll();
+    void showMore ();
 
 protected:
-    void closeEvent(QCloseEvent *e) override;
-
-private:
-    float m_width = 500;
-    float m_height = 300;
-    float m_margin = 20;
-    float m_max_height = 300;
-
-    Status m_status = READY;
-
-    QFrame* m_spline = nullptr;
-    QLabel* m_detail_label = nullptr;
-    QWidget* m_detail_widget = nullptr;
-    QVBoxLayout* m_main_layout = nullptr;
-    DetailButton* m_show_detail = nullptr;
-    QHBoxLayout* m_detail_layout = nullptr;
-    QListWidget* m_progress_widgets = nullptr;
-
-    int m_inuse_progress = 0;
-    const int m_max_progressbar = 100;
-    QMutex *m_process_locker = nullptr;
-    QMap<FileOperationProgress*, QListWidgetItem*>* m_progress = nullptr;
-};
-
-class FileOperationProgress : public QWidget
-{
-    friend FileOperationProgressBar;
-    Q_OBJECT
-public:
-    explicit FileOperationProgress(QWidget *parent = nullptr);
-
-private:
-    ~FileOperationProgress();
-    void initParam ();
-
-Q_SIGNALS:
-    void cancelled();
-    void finished(FileOperationProgress* fop);
+    void mouseMoveEvent(QMouseEvent *event) override;
+    void mousePressEvent(QMouseEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent *event) override;
+    void showWidgetList(bool show);
 
 public Q_SLOTS:
-    void delayShow();
-
-    virtual void onElementFoundOne(const QString &uri, const qint64 &size);
-    virtual void onElementFoundAll();
-
-    virtual void switchToProgressPage();
-    virtual void onFileOperationProgressedOne(const QString &uri, const QString &destUri, const qint64 &size);
-    virtual void onFileOperationProgressedAll();
-
-    virtual void switchToAfterProgressPage();
-    virtual void onElementClearOne(const QString &uri);
-
-    virtual void switchToRollbackPage();
-    virtual void onFileRollbacked(const QString &destUri, const QString &srcUri);
-
-    virtual void updateProgress(const QString &srcUri, const QString &destUri, quint64 current, quint64 total);
-
-    virtual void onStartSync();
-    void onFinished ();
+    void mainProgressChange(QListWidgetItem *item);
 
 private:
-    int m_total_count = 0;
-    int m_current_count = 1;
-    quint64 m_total_size = 0;
-    qint32 m_current_size = 0;
-    QString m_src_uri;
-    QString m_dest_uri;
-
-    CloseButton* m_close = nullptr;
-    QLabel* m_process_name = nullptr;
-    QLabel* m_process_file = nullptr;               //
-    ProgressBar* m_progress = nullptr;
-    QLabel* m_process_percent = nullptr;
-    QHBoxLayout* m_vbox_layout = nullptr;
+    // layout
     QVBoxLayout* m_main_layout = nullptr;
-    QLabel* m_process_left_item = nullptr;
-    StartStopButton* m_start_stop = nullptr;
+
+    // widget
+    MainProgressBar* m_main_progressbar = nullptr;
+    OtherButton* m_other_progressbar = nullptr;
+    QListWidget* m_list_widget = nullptr;
+
+    ProgressBar* m_current_main = nullptr;
+    QMap<ProgressBar*, QListWidgetItem*>* m_progress_list = nullptr;
+    QMap<QListWidgetItem*, ProgressBar*>* m_widget_list = nullptr;
+
+    int m_show_items = 3;
+    bool m_show_more = false;
+    int m_progress_item_height = 40;
+    int m_progress_list_heigth = 200;
+
+    // ui
+    int m_progress_size = 0;
+    bool m_is_press = false;
+    QPoint m_position;
+
+    static FileOperationProgressBar* instance;
 };
 
 class ProgressBar : public QWidget
 {
-    friend FileOperationProgress;
+    friend FileOperationProgressBar;
     Q_OBJECT
 public:
-    explicit ProgressBar(QWidget *parent = nullptr);
+    explicit ProgressBar (QWidget* parent = nullptr);
+    void setIcon (QIcon icon);
+    QIcon getIcon();
+
+private:
     ~ProgressBar();
 
-protected:
-    void paintEvent(QPaintEvent *event) override;
-
-public Q_SLOTS:
-    void updateValue(double value);
-
-public:
-
-private:
-    QRectF m_area;
-    bool m_detail = false;
-    double m_current_value = 1.0;
-};
-
-class DetailButton : public QWidget
-{
-    Q_OBJECT
-public:
-    explicit DetailButton(QWidget *parent = nullptr);
-
 Q_SIGNALS:
-    void valueChanged (bool open);
-
-public Q_SLOTS:
+    void cancelled();
+    void sendValue(QString&, double);
+    void finished(ProgressBar* fop);
 
 protected:
     void paintEvent(QPaintEvent *event) override;
-    void mouseReleaseEvent(QMouseEvent *event)override;
+    void mouseReleaseEvent(QMouseEvent *event) override;
+
+public Q_SLOTS:
+    void updateValue(double);
+    void onElementFoundOne (const QString &uri, const qint64 &size);
+    void onElementFoundAll ();
+    void onFileOperationProgressedOne(const QString &uri, const QString &destUri, const qint64 &size);
+    void updateProgress(const QString &srcUri, const QString &destUri, quint64 current, quint64 total);
+    void onFileOperationProgressedAll();
+    void onElementClearOne(const QString &uri);
+    void switchToRollbackPage();
+    void onStartSync();
+    void onFinished();
+    void onFileRollbacked(const QString &destUri, const QString &srcUri);
 
 private:
-    float m_size = 18;
-    bool m_open = true;
+    int m_min_width = 400;
+    int m_fix_height = 40;
+
+    int m_btn_size = 16;
+    int m_margin_ud = 2;
+    int m_margin_lr = 8;
+    int m_icon_size = 24;
+    int m_text_height = 20;
+
+    int m_progress_width = 80;
+    int m_progress_height = 5;
+
+    int m_percent_width = 20;
+
+    // value
+    QIcon m_icon;
+    double m_current_value = 0.8;
+
+    QString m_src_uri;
+    QString m_dest_uri;
+    int m_total_count = 0;
+    int m_current_count = 1;
+    quint64 m_total_size = 0;
+    qint32 m_current_size = 0;
 };
 
-/**
- * @brief
- *
- */
-class StartStopButton : public QWidget
+class MainProgressBar : public QWidget
 {
     Q_OBJECT
 public:
-    explicit StartStopButton(QWidget *parent = nullptr);
+    explicit MainProgressBar(QWidget *parent = nullptr);
+    void setFileIcon (QIcon icon);
+    void setTitle (QString title);
 
-Q_SIGNALS:
-    void startStopClicked (bool start);
 protected:
-    void paintEvent(QPaintEvent *) override;
-    void mouseReleaseEvent(QMouseEvent *event)override;
+    void paintEvent(QPaintEvent *event) override;
+    void mouseMoveEvent(QMouseEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent *event) override;
 
 private:
-    float m_size = 12;
-    bool m_start = true;
+    void paintFoot (QPainter& painter);
+    void paintHeader (QPainter& painter);
+    void paintContent (QPainter& painter);
+    void paintProgress (QPainter& painter);
+
+Q_SIGNALS:
+    void minimized();
+    void closeWindow();
+
+public Q_SLOTS:
+    void updateValue (QString&, double);
+
+private:
+    // header
+    QString m_title;
+    int m_fix_width = 400;
+    int m_fix_height = 160;
+    int m_title_width = 320;
+    int m_header_height = 30;
+
+    // btn
+    int m_btn_margin_top = 8;
+    int m_btn_margin = 10;
+    int m_btn_size = 16;
+
+    // icon
+    int m_icon_margin = 20;
+    int m_icon_size = 64;
+
+    // file name
+    int m_file_name_height = 20;
+    int m_file_name_margin = 10;
+
+    // percent
+    int m_percent_margin = 15;
+    int m_percent_height = 20;
+
+    // foot
+    float m_foot_margin = 3;
+
+    // progress
+    bool m_show = false;
+    QString m_file_name;
+    float m_move_x = 0.5;
+    float m_current_value = 0.0;
+    QIcon m_icon = QIcon::fromTheme("window-close-symbolic");
 };
 
-class CloseButton : public QWidget
+class OtherButton : public QWidget
 {
     Q_OBJECT
 public:
-    explicit CloseButton(QWidget *parent = nullptr);
+    explicit OtherButton(QWidget *parent = nullptr);
 
 protected:
-    void paintEvent(QPaintEvent *) override;
-    void mouseReleaseEvent(QMouseEvent *event)override;
+    void paintEvent(QPaintEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent *event) override;
 
 Q_SIGNALS:
-    void clicked ();
+    void clicked (bool show);
 
 private:
-    float m_size = 12;
+    // button height
+    int m_icon_margin = 6;
+    int m_icon_size = 10;
+    int m_button_heigth = 20;
+
+    // text width
+    int m_text_length = 100;
+    QString m_text = "";
+
+    // show
+    bool m_show = false;
 };
 
 #endif // FILEOPERATIONPROGRESS_H
