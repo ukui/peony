@@ -50,10 +50,11 @@ private:
     int m_progress_list_heigth = 200;
 
     // ui
+    QPoint m_position;
     int m_progress_size = 0;
     bool m_is_press = false;
-    QPoint m_position;
 
+    bool m_more = false;
     static FileOperationProgressBar* instance;
 };
 

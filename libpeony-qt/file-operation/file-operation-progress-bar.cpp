@@ -128,15 +128,19 @@ void FileOperationProgressBar::showMore()
         }
 
         if (m_show_more) {
+            m_list_widget->show();
+            m_other_progressbar->show();
             setFixedSize(m_main_progressbar->width(), m_main_progressbar->height() + m_other_progressbar->height() + m_list_widget->height());
         } else {
+            m_list_widget->hide();
             setFixedSize(m_main_progressbar->width(), m_main_progressbar->height() + m_other_progressbar->height());
         }
     } else {
-        m_other_progressbar->hide();
         m_list_widget->hide();
+        m_other_progressbar->hide();
         setFixedSize(m_main_progressbar->width(), m_main_progressbar->height());
     }
+    update();
 }
 
 void FileOperationProgressBar::mouseMoveEvent(QMouseEvent *event)
