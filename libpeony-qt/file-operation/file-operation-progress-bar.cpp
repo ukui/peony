@@ -73,6 +73,7 @@ void FileOperationProgressBar::removeFileOperation(ProgressBar *progress)
 
     if (m_progress_size <= 0) {
         m_progress_size = 0;
+        m_current_main = nullptr;
         hide();
     }
 
@@ -175,7 +176,9 @@ void FileOperationProgressBar::showWidgetList(bool show)
 void FileOperationProgressBar::mainProgressChange(QListWidgetItem *item)
 {
     // disconnect
-    m_main_progressbar->disconnect(m_current_main, &ProgressBar::sendValue, 0, 0);
+    if (nullptr != m_main_progressbar && m_current_main != nullptr) {
+        m_main_progressbar->disconnect(m_current_main, &ProgressBar::sendValue, 0, 0);
+    }
 
     ProgressBar* pb = (*m_widget_list)[item];
     m_current_main = pb;

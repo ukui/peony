@@ -159,6 +159,10 @@ void FileOperationManager::startOperation(FileOperation *operation, bool addToHi
 
     // progress bar
    ProgressBar* proc = m_progressbar->addFileOperation();
+   if (nullptr == proc) {
+       qDebug() << "malloc error!";
+       return;
+   }
 
    // begin
    proc->connect(operation, &FileOperation::operationPreparedOne, proc, &ProgressBar::onElementFoundOne);
