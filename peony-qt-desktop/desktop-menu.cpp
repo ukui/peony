@@ -90,7 +90,7 @@ void DesktopMenu::fillActions()
         addSeparator();
 
     //add propertries actions
-    //if this is a backgroud menu, then it should not add propertries actions
+    //if this is a background menu, then it should not add propertries actions
     bool isBackgroundMenu = m_selections.isEmpty();
     if(!isBackgroundMenu) {
         auto propertiesAction = constructFilePropertiesActions();
