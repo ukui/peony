@@ -80,9 +80,15 @@ AdvancedLocationBar::AdvancedLocationBar(QWidget *parent) : QWidget(parent)
     m_search_bar->connect(m_search_bar, &Peony::SearchBarContainer::returnPressed, [=]() {
         //qDebug() << "start search" << m_search_bar->text();
         auto key = m_search_bar->text();
-        auto targetUri = Peony::SearchVFSUriParser::parseSearchKey(m_last_non_search_path, key);
-        Q_EMIT this->updateWindowLocationRequest(targetUri);
-
+        if (key.isEmpty())
+        {
+            Q_EMIT this->updateWindowLocationRequest(m_last_non_search_path);
+        }
+        else
+        {
+            auto targetUri = Peony::SearchVFSUriParser::parseSearchKey(m_last_non_search_path, key);
+            Q_EMIT this->updateWindowLocationRequest(targetUri);
+        }
     });
 
     m_search_bar->connect(m_search_bar, &Peony::SearchBarContainer::filterUpdate, [=](const int &index)

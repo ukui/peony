@@ -320,6 +320,8 @@ void TabWidget::searchUpdate()
         Q_EMIT this->updateWindowLocationRequest(targetUri, true);
         qDebug() << "searchUpdate" <<m_search_child_flag <<targetUri;;
     }
+    else
+        Q_EMIT this->updateWindowLocationRequest(m_last_non_search_path, false);
 }
 
 void TabWidget::searchKeyUpdate()

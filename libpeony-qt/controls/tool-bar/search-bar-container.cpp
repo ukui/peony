@@ -117,16 +117,12 @@ void SearchBarContainer::onTableClicked(const QModelIndex &index)
 
 void SearchBarContainer::startSearch()
 {
-    if (! m_search_box->text().isEmpty())
-    {
-        auto l = m_model->stringList();
-        if (! l.contains(m_search_box->text()))
-            l.prepend(m_search_box->text());
+    auto l = m_model->stringList();
+    if (! l.contains(m_search_box->text()))
+        l.prepend(m_search_box->text());
 
-        m_model->setStringList(l);
-
-        Q_EMIT this->returnPressed();
-    }
+    m_model->setStringList(l);
+    Q_EMIT this->returnPressed();
 }
 
 void SearchBarContainer::clearSearchBox()

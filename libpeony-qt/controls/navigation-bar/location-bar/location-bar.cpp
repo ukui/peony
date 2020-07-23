@@ -123,8 +123,10 @@ void LocationBar::setRootUri(const QString &uri)
     clearButtons();
 
     if (m_current_uri.startsWith("search://")) {
+        //qDebug() <<"location-bar setRootUri:" <<uri;
         //QString nameRegexp = SearchVFSUriParser::getSearchUriNameRegexp(m_current_uri);
         //QString targetDirectory = SearchVFSUriParser::getSearchUriTargetDirectory(m_current_uri);
+        m_indicator->setArrowType(Qt::NoArrow);
         addButton(m_current_uri, false, false);
         //addAction(QIcon::fromTheme("edit-find-symbolic"), tr("Search \"%1\" in \"%2\"").arg(nameRegexp).arg(targetDirectory));
         return;
@@ -144,6 +146,7 @@ void LocationBar::setRootUri(const QString &uri)
         tmp = Peony::FileUtils::getParentUri(tmp);
     }
 
+    m_indicator->setArrowType(Qt::RightArrow);
     for (auto uri : uris) {
         //addButton(uri, uri != uris.last());
         addButton(uri, uris.first() == uri);
@@ -181,7 +184,6 @@ void LocationBar::addButton(const QString &uri, bool setIcon, bool setMenu)
         button->setIcon(QIcon::fromTheme("edit-find-symbolic"));
         button->setText(tr("Search \"%1\" in \"%2\"").arg(nameRegexp).arg(targetDirectory));
         button->setFixedWidth(button->sizeHint().width());
-        //addAction(QIcon::fromTheme("edit-find-symbolic"), tr("Search \"%1\" in \"%2\"").arg(nameRegexp).arg(targetDirectory));
         return;
     }
 
