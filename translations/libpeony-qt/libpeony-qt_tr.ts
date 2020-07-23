@@ -236,6 +236,38 @@
         <source>close</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="376"/>
+        <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="382"/>
+        <source>qmesg_notify</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="376"/>
+        <source>format_success</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="382"/>
+        <source>format_err</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>MainProgressBar</name>
+    <message>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-bar.cpp" line="235"/>
+        <source>File operation</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>OtherButton</name>
+    <message>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-bar.h" line="228"/>
+        <source>Other queue</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Peony::AdvanceSearchBar</name>
@@ -1304,22 +1336,22 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</translation
 <context>
     <name>Peony::FileOperationManager</name>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="148"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="149"/>
         <source>Can&apos;t delete.</source>
         <translation>Silinmedi</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="149"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="150"/>
         <source>You can&apos;t delete a file whenthe file is doing another operation</source>
         <translation>Dosya başka bir işlem yaparken dosyayı silemezsiniz</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="211"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="212"/>
         <source>File Operation is Busy</source>
         <translation>Dosya İşlemi Meşgul</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="212"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="213"/>
         <source>There have been one or more fileoperation(s) executing before. Youroperation will wait for executinguntil it/them done. If you really want to execute file operations parallelly anyway, you can change the default option &quot;Allow Parallel&quot; in option menu.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1791,7 +1823,7 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</translation
         <translation>Bağı Kaldır</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/side-bar-menu/side-bar-menu.cpp" line="157"/>
+        <location filename="../../libpeony-qt/controls/menu/side-bar-menu/side-bar-menu.cpp" line="153"/>
         <source>format</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2115,7 +2147,7 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</translation
         <translation>Dosya özelliklerini veya öğelerini çöp kutusunda veya son zamanlarda gösterin.</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="233"/>
+        <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="331"/>
         <source>File Manager</source>
         <translation type="unfinished">Dosya Yöneticisi</translation>
     </message>
