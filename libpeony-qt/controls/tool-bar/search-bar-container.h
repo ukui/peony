@@ -84,7 +84,7 @@ private:
     QTimer m_search_trigger;
 
     QStringList m_file_type_list = {tr("all"), tr("file folder"), tr("image"),
-                                    tr("video"), tr("text file"), tr("audio"), tr("others")
+                                    tr("video"), tr("text file"), tr("audio"), tr("wps file"), tr("others")
                                    };
 };
 

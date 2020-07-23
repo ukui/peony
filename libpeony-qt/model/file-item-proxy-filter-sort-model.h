@@ -46,6 +46,7 @@ public:
         VIDEO,
         TXT_FILE,
         AUDIO,
+        WPS_FILE,
         OTHERS
     };
     Q_ENUM(FilterFileType)
@@ -72,6 +73,7 @@ public:
     const QString Image_Type = "image/";
     const QString Video_Type = "video/";
     const QString Text_Type = "text/";
+    const QString Wps_Type = "application/wps-office";
     const QString Audio_Type = "audio/";
 
     explicit FileItemProxyFilterSortModel(QObject *parent = nullptr);

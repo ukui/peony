@@ -9,12 +9,12 @@
         <translation>Masaüstü Simgelerini Göster</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="436"/>
+        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="352"/>
         <source>New Folder</source>
         <translation>Yeni Klasör</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="490"/>
+        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="406"/>
         <source>set background</source>
         <translation>Arkaplanı Değiştir</translation>
     </message>

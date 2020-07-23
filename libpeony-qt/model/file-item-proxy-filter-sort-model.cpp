@@ -176,7 +176,7 @@ bool FileItemProxyFilterSortModel::filterAcceptsRow(int sourceRow, const QModelI
         //regExp
 
         //check the file info filter conditions
-        //qDebug()<<"start filter conditions check";
+        //qDebug()<<"start filter conditions check"<<item->m_info->displayName()<<item->m_info->type();
         if (! checkFileTypeFilter(item->m_info->type()))
             return false;
         if (! checkFileModifyTimeFilter(item->m_info->modifiedTime()))
@@ -262,7 +262,7 @@ bool FileItemProxyFilterSortModel::filterAcceptsRow(int sourceRow, const QModelI
 
 bool FileItemProxyFilterSortModel::checkFileTypeFilter(QString type) const
 {
-    //qDebug()<<"m_show_file_type: "<<m_show_file_type<<" "<<item->info()->type();
+    //qDebug()<<"m_show_file_type: "<<m_show_file_type<<" "<<type;
     //multiple condition, advance search and default search
     if (m_show_file_type == ALL_FILE && m_file_type_list.count() == 0
         || m_file_type_list.contains(ALL_FILE))
@@ -304,6 +304,12 @@ bool FileItemProxyFilterSortModel::checkFileTypeFilter(QString type) const
                 return true;
             break;
         }
+        case WPS_FILE:
+        {
+            if (type.contains(Wps_Type))
+                return true;
+            break;
+        }
         case AUDIO:
         {
             if (type.contains(Audio_Type))
@@ -314,7 +320,7 @@ bool FileItemProxyFilterSortModel::checkFileTypeFilter(QString type) const
         {
             //exclude classfied types, show the rest other types
             if (type != Folder_Type && ! type.contains(Image_Type) && ! type.contains(Video_Type)
-                    && ! type.contains(Text_Type) && ! type.contains(Audio_Type))
+                    && ! type.contains(Text_Type) && !type.contains(Wps_Type) && ! type.contains(Audio_Type))
                 return true;
             break;
         }

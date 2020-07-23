@@ -9,12 +9,12 @@
         <translation>桌面图标视图</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="436"/>
+        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="352"/>
         <source>New Folder</source>
         <translation>新建文件夹</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="490"/>
+        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="406"/>
         <source>set background</source>
         <translation>设置壁纸</translation>
     </message>
