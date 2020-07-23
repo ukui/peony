@@ -505,6 +505,7 @@ bool FileItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action, i
     if (b_trash_item && destDirUri != "trash///")
         return false;
 
+    qDebug() << "dropMimeData:" <<action;
     auto fileOpMgr = FileOperationManager::getInstance();
     bool addHistory = true;
     switch (action) {

@@ -40,6 +40,9 @@
 
 #include <QWheelEvent>
 #include <QDropEvent>
+#include <QDragEnterEvent>
+#include <QMimeData>
+#include <QDragMoveEvent>
 
 #include <QDebug>
 
@@ -250,22 +253,79 @@ void ListView::dragEnterEvent(QDragEnterEvent *e)
 {
     m_editValid = false;
     qDebug()<<"dragEnterEvent()";
-    QTreeView::dragEnterEvent(e);
+    //QTreeView::dragEnterEvent(e);
+    if (e->keyboardModifiers() && Qt::ControlModifier)
+        m_ctrl_key_pressed = true;
+    else
+        m_ctrl_key_pressed = false;
+
+    auto action = m_ctrl_key_pressed ? Qt::CopyAction : Qt::MoveAction;
+    qDebug()<<"dragEnterEvent()" <<action <<m_ctrl_key_pressed;
+    if (e->mimeData()->hasUrls()) {
+        e->setDropAction(action);
+        e->accept();
+    }
+}
+
+void ListView::dragMoveEvent(QDragMoveEvent *e)
+{
+    if (e->keyboardModifiers() && Qt::ControlModifier)
+        m_ctrl_key_pressed = true;
+    else
+        m_ctrl_key_pressed = false;
+
+    auto action = m_ctrl_key_pressed ? Qt::CopyAction : Qt::MoveAction;
+    qDebug()<<"list view dragMoveEvent()" <<action <<m_ctrl_key_pressed;
+    auto index = indexAt(e->pos());
+    if (index.isValid() && index != m_last_index) {
+        QHoverEvent he(QHoverEvent::HoverMove, e->posF(), e->posF());
+        viewportEvent(&he);
+    } else {
+        QHoverEvent he(QHoverEvent::HoverLeave, e->posF(), e->posF());
+        viewportEvent(&he);
+    }
+    if (this == e->source()) {
+        return QTreeView::dragMoveEvent(e);
+    }
+    e->setDropAction(action);
+    e->accept();
 }
 
 void ListView::dropEvent(QDropEvent *e)
 {
-    if (e->source() == this) {
-        // only handle the drop event on item.
-        switch (dropIndicatorPosition()) {
-        case QAbstractItemView::DropIndicatorPosition::OnItem: {
-            break;
-        }
-        default:
-            return;
-        }
+//    if (e->source() == this) {
+//        // only handle the drop event on item.
+//        switch (dropIndicatorPosition()) {
+//        case QAbstractItemView::DropIndicatorPosition::OnItem: {
+//            break;
+//        }
+//        default:
+//            return;
+//        }
+//    }
+//    QTreeView::dropEvent(e);
+
+    m_last_index = QModelIndex();
+    //m_edit_trigger_timer.stop();
+    if (e->keyboardModifiers() && Qt::ControlModifier)
+        m_ctrl_key_pressed = true;
+    else
+        m_ctrl_key_pressed = false;
+
+    auto action = m_ctrl_key_pressed ? Qt::CopyAction : Qt::MoveAction;
+    e->setDropAction(action);
+    auto proxy_index = indexAt(e->pos());
+    auto index = m_proxy_model->mapToSource(proxy_index);
+    qDebug()<<"dropEvent" <<action <<m_ctrl_key_pressed <<indexAt(e->pos()).isValid();
+    //move in current path, do nothing
+    if (e->source() == this)
+    {
+        if (indexAt(e->pos()).isValid())
+            m_model->dropMimeData(e->mimeData(), action, 0, 0, index);
+        return;
     }
-    QTreeView::dropEvent(e);
+
+    m_model->dropMimeData(e->mimeData(), action, 0, 0, index);
 }
 
 void ListView::resizeEvent(QResizeEvent *e)
