@@ -62,7 +62,11 @@ OperationMenu::OperationMenu(MainWindow *window, QWidget *parent) : QMenu(parent
 //    addSeparator();
 
     auto keepAllow = addAction(tr("Keep Allow"), this, [=](bool checked) {
-        m_window->setWindowFlags(Qt::WindowStaysOnTopHint|m_window->windowFlags());
+        if (checked)
+            m_window->setWindowFlags(Qt::WindowStaysOnTopHint|m_window->windowFlags());
+        else
+            m_window->setWindowFlags(m_window->windowFlags() & ~Qt::WindowStaysOnTopHint);
+
         m_window->show();
     });
     keepAllow->setCheckable(true);
