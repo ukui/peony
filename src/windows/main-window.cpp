@@ -85,6 +85,7 @@
 #include <QDebug>
 
 #include <X11/Xlib.h>
+#include <KWindowEffects>
 
 static MainWindow *last_resize_window = nullptr;
 
@@ -918,6 +919,8 @@ void MainWindow::validBorder()
         rect.adjust(4, 4, -4, -4);
         path.addRoundedRect(rect, 6, 6);
         setProperty("blurRegion", QRegion(path.toFillPolygon().toPolygon()));
+        //use KWindowEffects
+        KWindowEffects::enableBlurBehind(this->winId(), true, QRegion(path.toFillPolygon().toPolygon()));
     }
 }
 
