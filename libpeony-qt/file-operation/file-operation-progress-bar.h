@@ -89,20 +89,22 @@ public:
     explicit ProgressBar (QWidget* parent = nullptr);
     void setIcon (QIcon icon);
     QIcon getIcon();
+    bool getStatus();
 
 private:
     ~ProgressBar();
 
 Q_SIGNALS:
     void cancelled();
-    void sendValue(QString&, double);
     void finished(ProgressBar* fop);
+    void sendValue(QString&, double);
 
 protected:
     void paintEvent(QPaintEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
 
 public Q_SLOTS:
+    void onCancelled();
     void updateValue(double);
     void onElementFoundOne (const QString &uri, const qint64 &size);
     void onElementFoundAll ();
@@ -140,6 +142,8 @@ private:
     int m_current_count = 1;
     quint64 m_total_size = 0;
     qint32 m_current_size = 0;
+
+    bool m_is_stopping = false;
 };
 
 class MainProgressBar : public QWidget
@@ -147,6 +151,7 @@ class MainProgressBar : public QWidget
     Q_OBJECT
 public:
     explicit MainProgressBar(QWidget *parent = nullptr);
+    void initPrarm();
     void setFileIcon (QIcon icon);
     void setTitle (QString title);
 
@@ -166,6 +171,7 @@ Q_SIGNALS:
     void closeWindow();
 
 public Q_SLOTS:
+    void cancelld();
     void updateValue (QString&, double);
 
 private:
@@ -198,9 +204,10 @@ private:
 
     // progress
     bool m_show = false;
-    QString m_file_name;
     float m_move_x = 0.5;
+    bool m_stopping = false;
     float m_current_value = 0.0;
+    QString m_file_name = tr("starting ...");
     QIcon m_icon = QIcon::fromTheme("window-close-symbolic");
 };
 
@@ -212,6 +219,7 @@ public:
 
 protected:
     void paintEvent(QPaintEvent *event) override;
+    void mousePressEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
 
 Q_SIGNALS:
@@ -229,6 +237,8 @@ private:
 
     // show
     bool m_show = false;
+
+    bool m_is_press = true;
 };
 
 #endif // FILEOPERATIONPROGRESS_H
