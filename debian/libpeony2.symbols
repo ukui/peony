@@ -473,6 +473,7 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZN5Peony13DirectoryView8ListView11setSortTypeEi@Base 2.0.0
  _ZN5Peony13DirectoryView8ListView12getSortOrderEv@Base 2.0.0
  _ZN5Peony13DirectoryView8ListView12setSortOrderEi@Base 2.0.0
+ _ZN5Peony13DirectoryView8ListView13dragMoveEventEP14QDragMoveEvent@Base 2.2.0
  _ZN5Peony13DirectoryView8ListView13getSelectionsEv@Base 2.0.0
  _ZN5Peony13DirectoryView8ListView13keyPressEventEP9QKeyEvent@Base 2.2.0
  _ZN5Peony13DirectoryView8ListView13setSelectionsERK11QStringList@Base 2.0.0
