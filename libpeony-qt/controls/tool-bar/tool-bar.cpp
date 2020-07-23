@@ -274,6 +274,7 @@ void ToolBar::init()
         QMenu optionMenu;
         auto forbidThumbnail = optionMenu.addAction(tr("Forbid Thumbnail"), this, [=](bool checked) {
             GlobalSettings::getInstance()->setValue("do-not-thumbnail", checked);
+            m_top_window->refresh();
         });
         forbidThumbnail->setCheckable(true);
         forbidThumbnail->setChecked(GlobalSettings::getInstance()->isExist("do-not-thumbnail")? GlobalSettings::getInstance()->getValue("do-not-thumbnail").toBool(): false);

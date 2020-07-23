@@ -77,6 +77,7 @@ OperationMenu::OperationMenu(MainWindow *window, QWidget *parent) : QMenu(parent
     auto forbidThumbnailing = addAction(tr("Forbid thumbnailing"), this, [=](bool checked) {
         //FIXME:
         Peony::GlobalSettings::getInstance()->setValue("do-not-thumbnail", checked);
+        m_window->refresh();
     });
     m_forbid_thumbnailing = forbidThumbnailing;
     forbidThumbnailing->setCheckable(true);
