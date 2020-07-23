@@ -30,3 +30,6 @@ SOURCES += \
     $$PWD/plugin-manager.cpp \
     $$PWD/complementary-style.cpp \
     $$PWD/global-settings.cpp
+
+FORMS += \
+    $$PWD/connect-server-dialog.ui

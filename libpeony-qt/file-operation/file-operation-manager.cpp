@@ -56,6 +56,7 @@ FileOperationManager::FileOperationManager(QObject *parent) : QObject(parent)
     qRegisterMetaType<Peony::GErrorWrapperPtr>("Peony::GErrorWrapperPtr");
     qRegisterMetaType<Peony::GErrorWrapperPtr>("Peony::GErrorWrapperPtr&");
     m_thread_pool = new QThreadPool(this);
+    m_progressbar = FileOperationProgressBar::getInstance();
 
     if (!m_allow_parallel) {
         //Imitating queue execution.
@@ -159,51 +160,51 @@ void FileOperationManager::startOperation(FileOperation *operation, bool addToHi
         break;
     }
 
-    FileOperationProgressWizard *wizard = new FileOperationProgressWizard;
-    wizard->setAttribute(Qt::WA_DeleteOnClose);
-    wizard->connect(operation, &FileOperation::operationRequestShowWizard, wizard, &FileOperationProgressWizard::delayShow);
-    wizard->connect(operation, &FileOperation::operationRequestShowWizard, wizard, &FileOperationProgressWizard::switchToPreparedPage);
-    wizard->connect(operation, &FileOperation::operationPreparedOne, wizard, &FileOperationProgressWizard::onElementFoundOne);
-    wizard->connect(operation, &FileOperation::operationPrepared, wizard, &FileOperationProgressWizard::onElementFoundAll);
-    wizard->connect(operation, &FileOperation::operationProgressedOne, wizard, &FileOperationProgressWizard::onFileOperationProgressedOne);
-    wizard->connect(operation, &FileOperation::FileProgressCallback, wizard, &FileOperationProgressWizard::updateProgress);
-    wizard->connect(operation, &FileOperation::operationProgressed, wizard, &FileOperationProgressWizard::onFileOperationProgressedAll);
-    wizard->connect(operation, &FileOperation::operationAfterProgressedOne, wizard, &FileOperationProgressWizard::onElementClearOne);
-    wizard->connect(operation, &FileOperation::operationAfterProgressed, wizard, &FileOperationProgressWizard::switchToRollbackPage);
-    wizard->connect(operation, &FileOperation::operationStartRollbacked, wizard, &FileOperationProgressWizard::switchToRollbackPage);
-    wizard->connect(operation, &FileOperation::operationRollbackedOne, wizard, &FileOperationProgressWizard::onFileRollbacked);
-    wizard->connect(operation, &FileOperation::operationStartSnyc, wizard, &FileOperationProgressWizard::onStartSync);
-    wizard->connect(operation, &FileOperation::operationFinished, wizard, &FileOperationProgressWizard::deleteLater);
+    // progress bar
+   ProgressBar* proc = m_progressbar->addFileOperation();
+   if (nullptr == proc) {
+       qDebug() << "malloc error!";
+       return;
+   }
 
-    connect(wizard, &Peony::FileOperationProgressWizard::cancelled,
-            operation, &Peony::FileOperation::cancel);
+   // begin
+   proc->connect(operation, &FileOperation::operationPreparedOne, proc, &ProgressBar::onElementFoundOne);
+   proc->connect(operation, &FileOperation::operationPrepared, proc, &ProgressBar::onElementFoundAll);
+   proc->connect(operation, &FileOperation::operationProgressedOne, proc, &ProgressBar::onFileOperationProgressedOne);
+   proc->connect(operation, &FileOperation::FileProgressCallback, proc, &ProgressBar::updateProgress);
+   proc->connect(operation, &FileOperation::operationProgressed, proc, &ProgressBar::onFileOperationProgressedAll);
+   proc->connect(operation, &FileOperation::operationAfterProgressedOne, proc, &ProgressBar::onElementClearOne);
+   proc->connect(operation, &FileOperation::operationAfterProgressed, proc, &ProgressBar::switchToRollbackPage);
+   proc->connect(operation, &FileOperation::operationStartRollbacked, proc, &ProgressBar::switchToRollbackPage);
+   proc->connect(operation, &FileOperation::operationRollbackedOne, proc, &ProgressBar::onFileRollbacked);
+   proc->connect(operation, &FileOperation::operationStartSnyc, proc, &ProgressBar::onStartSync);
+   proc->connect(operation, &FileOperation::operationFinished, proc, &ProgressBar::onFinished);
+   proc->connect(proc, &ProgressBar::cancelled, operation, &Peony::FileOperation::cancel);
 
-    operation->connect(operation, &FileOperation::errored, [=]() {
-        operation->setHasError(true);
-    });
+   operation->connect(operation, &FileOperation::errored, [=]() {
+       operation->setHasError(true);
+   });
 
-    operation->connect(operation, &FileOperation::errored,
-                       this, &FileOperationManager::handleError,
-                       Qt::BlockingQueuedConnection);
+   operation->connect(operation, &FileOperation::errored, this, &FileOperationManager::handleError, Qt::BlockingQueuedConnection);
 
-    operation->connect(operation, &FileOperation::operationFinished, this, [=](){
-        if (operation->hasError()) {
-            this->clearHistory();
-            return ;
-        }
+   operation->connect(operation, &FileOperation::operationFinished, this, [=](){
+       if (operation->hasError()) {
+           this->clearHistory();
+           return ;
+       }
 
-        if (addToHistory) {
-            auto info = operation->getOperationInfo();
-            if (!info)
-                return;
-            if (info->operationType() != FileOperationInfo::Delete) {
-                m_undo_stack.push(info);
-                m_redo_stack.clear();
-            } else {
-                this->clearHistory();
-            }
-        }
-    }, Qt::BlockingQueuedConnection);
+       if (addToHistory) {
+           auto info = operation->getOperationInfo();
+           if (!info)
+               return;
+           if (info->operationType() != FileOperationInfo::Delete) {
+               m_undo_stack.push(info);
+               m_redo_stack.clear();
+           } else {
+               this->clearHistory();
+           }
+       }
+   }, Qt::BlockingQueuedConnection);
 
     if (!allowParallel) {
         if (m_thread_pool->activeThreadCount() > 0) {
@@ -224,6 +225,7 @@ void FileOperationManager::startOperation(FileOperation *operation, bool addToHi
         operation->setParent(m_thread_pool);
         m_thread_pool->start(operation);
     }
+    m_progressbar->showProgress(*proc);
 }
 
 void FileOperationManager::startUndoOrRedo(std::shared_ptr<FileOperationInfo> info)
