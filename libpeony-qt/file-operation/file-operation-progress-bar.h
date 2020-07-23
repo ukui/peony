@@ -42,6 +42,7 @@ public:
 
 private:
     explicit FileOperationProgressBar(QWidget *parent = nullptr);
+    ~FileOperationProgressBar();
     void showMore ();
 
 protected:
@@ -224,7 +225,7 @@ private:
 
     // text width
     int m_text_length = 100;
-    QString m_text = "";
+    QString m_text = tr("Other queue");
 
     // show
     bool m_show = false;

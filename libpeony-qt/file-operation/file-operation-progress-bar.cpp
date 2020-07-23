@@ -28,6 +28,10 @@
 #include <QMouseEvent>
 #include <QPushButton>
 
+QPushButton* btn;
+
+static QPixmap drawSymbolicColoredPixmap (const QPixmap&);
+
 FileOperationProgressBar *FileOperationProgressBar::instance = nullptr;
 
 FileOperationProgressBar *FileOperationProgressBar::getInstance()
@@ -111,6 +115,7 @@ FileOperationProgressBar::FileOperationProgressBar(QWidget *parent) : QWidget(pa
     setWindowFlag(Qt::FramelessWindowHint);
     setContentsMargins(0, 0, 0, 0);
 
+    btn = new QPushButton(nullptr);
     m_main_layout = new QVBoxLayout(this);
     m_main_layout->setContentsMargins(0, 0, 0, 0);
 
@@ -141,6 +146,11 @@ FileOperationProgressBar::FileOperationProgressBar(QWidget *parent) : QWidget(pa
     connect(m_list_widget, &QListWidget::itemClicked, this, &FileOperationProgressBar::mainProgressChange);
 
     showMore();
+}
+
+FileOperationProgressBar::~FileOperationProgressBar()
+{
+    delete btn;
 }
 
 void FileOperationProgressBar::showMore()
@@ -301,12 +311,9 @@ void MainProgressBar::paintFoot(QPainter &painter)
 //    progressBarBgGradient.setColorAt(1.0, QColor(75,0,130));
 //    painter.setBrush(progressBarBgGradient);
     painter.setPen(Qt::NoPen);
+    painter.setBrush(QBrush(btn.palette().color(QPalette::Button)));
+    painter.drawRoundedRect(0, m_fix_height - m_foot_margin, m_fix_width, m_foot_margin, 1, 1);
     painter.setBrush(QBrush(btn.palette().color(QPalette::Highlight)));
-
-
-    if (m_show) {
-
-    }
     painter.drawRoundedRect(0, m_fix_height - m_foot_margin, value, m_foot_margin, 1, 1);
 
     painter.restore();
@@ -325,11 +332,11 @@ void MainProgressBar::paintHeader(QPainter &painter)
 
     // paint minilize button
     painter.drawPixmap(m_fix_width - m_btn_margin * 2 - m_btn_size * 2, m_btn_margin_top, m_btn_size, m_btn_size,
-                       QIcon::fromTheme("window-minimize-symbolic").pixmap(m_btn_size, m_btn_size));
+                       drawSymbolicColoredPixmap(QIcon::fromTheme("window-minimize-symbolic").pixmap(m_btn_size, m_btn_size)));
 
     // paint close button
     painter.drawPixmap(m_fix_width - m_btn_margin - m_btn_size, m_btn_margin_top, m_btn_size, m_btn_size,
-                       QIcon::fromTheme("window-close-symbolic").pixmap(m_btn_size, m_btn_size));
+                       drawSymbolicColoredPixmap(QIcon::fromTheme("window-close-symbolic").pixmap(m_btn_size, m_btn_size)));
 
     painter.restore();
 }
@@ -367,6 +374,7 @@ void MainProgressBar::paintContent(QPainter &painter)
     w = m_percent_margin * 2;
     font.setPixelSize(8);
     painter.setFont(font);
+    painter.setBrush(QBrush(btn->palette().color(QPalette::Highlight)));
     painter.drawText(x, y, w, m_percent_height, Qt::AlignVCenter | Qt::AlignHCenter,
                      QString(" %1 %").arg(QString::number(m_current_value * 100, 'f', 1)));
 
@@ -381,8 +389,7 @@ void MainProgressBar::paintProgress(QPainter &painter)
     double value = m_current_value * m_fix_width;
 
     painter.setPen(Qt::NoPen);
-    QPushButton btn;
-    painter.setBrush(QBrush(btn.palette().color(QPalette::Highlight).lighter(125)));
+    painter.setBrush(QBrush(btn->palette().color(QPalette::Highlight).lighter(150)));
     painter.drawRoundedRect(0, 0, value, m_fix_height, 1, 1);
 
 //    QLinearGradient progressBarBgGradient (QPointF(0, 0), QPointF(0, height()));
@@ -421,9 +428,9 @@ void OtherButton::paintEvent(QPaintEvent *event)
 
     QPainter painter(this);
     painter.save();
-    QPen pen(QColor(192,192,192), 1);
+
+    QPen pen;
     pen.setStyle(Qt::SolidLine);
-    painter.setBrush(Qt::NoBrush);
     painter.setPen(pen);
 
     // paint icon
@@ -431,11 +438,9 @@ void OtherButton::paintEvent(QPaintEvent *event)
     y = (height() - m_icon_size) / 2;
     QRect iconArea (x, y, m_icon_size, m_icon_size);
     if (m_show) {
-        m_text = tr("show more");
-        painter.drawPixmap(iconArea, QIcon::fromTheme("pan-up-symbolic").pixmap(m_icon_size, m_icon_size));
+        painter.drawPixmap(iconArea, drawSymbolicColoredPixmap(QIcon::fromTheme("pan-up-symbolic").pixmap(m_icon_size, m_icon_size)));
     } else {
-        m_text = tr("show more");
-        painter.drawPixmap(iconArea, QIcon::fromTheme("pan-down-symbolic").pixmap(m_icon_size, m_icon_size));
+        painter.drawPixmap(iconArea, drawSymbolicColoredPixmap(QIcon::fromTheme("pan-down-symbolic").pixmap(m_icon_size, m_icon_size)));
     }
 
     // paint text
@@ -444,6 +449,8 @@ void OtherButton::paintEvent(QPaintEvent *event)
     QFont font = painter.font();
     font.setPixelSize(10);
     painter.setFont(font);
+    pen.setBrush(QBrush(btn->palette().color(QPalette::WindowText)));
+    painter.setPen(pen);
     painter.drawText(textArea, Qt::AlignLeft | Qt::AlignVCenter, m_text);
 
     painter.restore();
@@ -491,7 +498,6 @@ void ProgressBar::paintEvent(QPaintEvent *event)
 
     QPainter painter(this);
     painter.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing);
-
     painter.save();
 
     // paint icon
@@ -510,8 +516,8 @@ void ProgressBar::paintEvent(QPaintEvent *event)
     y = (height() - m_margin_ud * 2 - m_text_height) / 2 + m_margin_ud;
     w = width() - m_margin_lr * 5 - m_icon_size - m_btn_size - m_progress_width - m_percent_width;
     QPen pen;
+    pen.setBrush(QBrush(btn->palette().color(QPalette::WindowText)));
     pen.setStyle(Qt::SolidLine);
-    painter.setBrush(Qt::NoBrush);
     painter.setPen(pen);
     QFont font = painter.font();
     font.setPixelSize(10);
@@ -533,18 +539,17 @@ void ProgressBar::paintEvent(QPaintEvent *event)
 //    painter.setPen(Qt::NoPen);
 //    painter.setBrush(progressBarBgGradient);
 
-    QPushButton btn;
     painter.setPen(Qt::NoPen);
-    painter.setBrush(QBrush(btn.palette().color(QPalette::Highlight).light(125)));
+    painter.setBrush(QBrush(btn->palette().color(QPalette::Button)));
     painter.drawRect(x, y, m_progress_width, m_progress_height);
-    painter.setBrush(QBrush(btn.palette().color(QPalette::Highlight)));
+    painter.setBrush(QBrush(btn->palette().color(QPalette::Highlight)));
     painter.drawRoundedRect(x, y, value, m_progress_height, 1, 1);
 
     // paint close
     x =  m_margin_lr * 5 + m_icon_size + w + m_progress_width;
     y = (height() - m_margin_ud * 2 - m_btn_size) / 2 + m_margin_ud;
     painter.drawPixmap(x, y, m_btn_size, m_btn_size,
-                       QIcon::fromTheme("window-close-symbolic").pixmap(m_btn_size, m_btn_size));
+                       drawSymbolicColoredPixmap(QIcon::fromTheme("window-close-symbolic").pixmap(m_btn_size, m_btn_size)));
 
     painter.restore();
 
@@ -677,4 +682,23 @@ void ProgressBar::onFileRollbacked(const QString &destUri, const QString &srcUri
 {
     Q_UNUSED(srcUri);
     Q_UNUSED(destUri);
+}
+
+QPixmap drawSymbolicColoredPixmap (const QPixmap& source)
+{
+    // 18, 32, 69
+    QColor baseColor = btn->palette().color(QPalette::Text).light(150);
+    QImage img = source.toImage();
+
+    for (int x = 0; x < img.width(); ++x) {
+        for (int y = 0; y < img.height(); ++y) {
+            auto color = img.pixelColor(x, y);
+            color.setRed(baseColor.red());
+            color.setGreen(baseColor.green());
+            color.setBlue(baseColor.blue());
+            img.setPixelColor(x, y, color);
+        }
+    }
+
+    return QPixmap::fromImage(img);
 }
