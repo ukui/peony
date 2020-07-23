@@ -161,15 +161,46 @@
 <context>
     <name>MainProgressBar</name>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-progress-bar.cpp" line="235"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-bar.cpp" line="241"/>
         <source>File operation</source>
         <translation>文件操作</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-bar.cpp" line="250"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-bar.h" line="210"/>
+        <source>starting ...</source>
+        <translation>正在开始 ...</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-bar.cpp" line="309"/>
+        <source>cancel all file operations</source>
+        <translation>取消所有文件操作</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-bar.cpp" line="310"/>
+        <source>Are you sure want to cancel all file operations</source>
+        <translation>你确定要取消所有文件操作?</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-bar.cpp" line="312"/>
+        <source>OK</source>
+        <translation>确定</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-bar.cpp" line="313"/>
+        <source>Cancel</source>
+        <translation>取消</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-bar.cpp" line="390"/>
+        <source>canceling ...</source>
+        <translation>取消中 ...</translation>
     </message>
 </context>
 <context>
     <name>OtherButton</name>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-progress-bar.h" line="228"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-bar.h" line="236"/>
         <source>Other queue</source>
         <translation>其它队列</translation>
     </message>
@@ -1986,6 +2017,34 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
         <location filename="../../libpeony-qt/volume-manager.cpp" line="146"/>
         <source>Error</source>
         <translation>错误</translation>
+    </message>
+</context>
+<context>
+    <name>ProgressBar</name>
+    <message>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-bar.cpp" line="573"/>
+        <source>canceling ...</source>
+        <translation>取消中 ...</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-bar.cpp" line="621"/>
+        <source>cancel file operation</source>
+        <translation>取消文件操作</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-bar.cpp" line="622"/>
+        <source>Are you sure want to cancel the current selected file operation</source>
+        <translation>你确定要取消当前选中的文件操作</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-bar.cpp" line="624"/>
+        <source>OK</source>
+        <translation>确定</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-bar.cpp" line="625"/>
+        <source>Cancel</source>
+        <translation>取消</translation>
     </message>
 </context>
 <context>
