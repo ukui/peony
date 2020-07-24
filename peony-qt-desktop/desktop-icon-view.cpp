@@ -1149,6 +1149,49 @@ void DesktopIconView::dropEvent(QDropEvent *e)
                     }
                 }
             }
+
+            // check if there is any item out of view
+            for (auto index : m_drag_indexes) {
+                auto indexRect = QListView::visualRect(index);
+                if (this->viewport()->rect().contains(indexRect.center())) {
+                    continue;
+                }
+
+                // try relocating invisible item
+
+                QRect next;
+                for (auto existedRect : notEmptyRegion.rects()) {
+                    if (this->viewport()->rect().contains(existedRect)) {
+                        next = existedRect;
+                        break;
+                    }
+                }
+                while (next.translated(-grid.width(), 0).x() > 0) {
+                    next.translate(-grid.width(), 0);
+                }
+                while (next.translated(0, -grid.height()).top() > 0) {
+                    next.translate(0, -grid.height());
+                }
+
+                while (notEmptyRegion.contains(next.center())) {
+                    next.translate(0, grid.height());
+                    if (next.bottom() > viewRect.bottom()) {
+                        int top = next.y();
+                        while (true) {
+                            if (top < gridSize().height()) {
+                                break;
+                            }
+                            top-=gridSize().height();
+                        }
+                        //put item to next column first column
+                        next.moveTo(next.x() + grid.width(), top);
+                    }
+                }
+
+                setPositionForIndex(next.topLeft(), index);
+                setFileMetaInfoPos(index.data(Qt::UserRole).toString(), next.topLeft());
+                notEmptyRegion += next;
+            }
         }
 
         m_drag_indexes.clear();
