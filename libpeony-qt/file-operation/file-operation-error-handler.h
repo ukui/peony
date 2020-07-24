@@ -36,7 +36,7 @@ namespace Peony {
 class PEONYCORESHARED_EXPORT FileOperationErrorHandler {
 public:
     virtual ~FileOperationErrorHandler();
-    virtual QVariant handleError(const QString &srcUri,
+    virtual int handleError(const QString &srcUri,
                                  const QString &destDirUri,
                                  const GErrorWrapperPtr &err,
                                  bool isCritical = false) = 0;

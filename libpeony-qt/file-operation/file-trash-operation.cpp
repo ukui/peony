@@ -52,7 +52,7 @@ retry:
             }
 
             auto responseData = Q_EMIT errored(src, tr("trash:///"), GErrorWrapper::wrapFrom(err), true);
-            switch (responseData.value<ResponseType>()) {
+            switch (responseData) {
             case Retry:
                 goto retry;
             case Cancel:

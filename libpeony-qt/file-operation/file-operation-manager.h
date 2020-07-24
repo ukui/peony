@@ -88,7 +88,7 @@ public Q_SLOTS:
     void clearHistory();
     void onFilesDeleted(const QStringList &uris);
 
-    QVariant handleError(const QString &srcUri, const QString &destUri, const GErrorWrapperPtr &err, bool critical);
+    int handleError(const QString &srcUri, const QString &destUri, const GErrorWrapperPtr &err, bool critical);
 
     /*!
      * \brief registerFileWatcher

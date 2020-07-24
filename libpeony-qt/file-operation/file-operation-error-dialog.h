@@ -45,7 +45,7 @@ public:
     ~FileOperationErrorDialog() override;
 
 public Q_SLOTS:
-    QVariant handleError(const QString &srcUri,
+    int handleError(const QString &srcUri,
                          const QString &destDirUri,
                          const GErrorWrapperPtr &err,
                          bool isCritical = false) override;
