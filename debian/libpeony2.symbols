@@ -12,6 +12,46 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZGVZN9QtPrivate19ValueTypeIsMetaTypeI5QListI21QPersistentModelIndexELb1EE17registerConverterEiE1f@Base 2.0.0
  _ZN10QByteArrayD1Ev@Base 2.0.0
  _ZN10QByteArrayD2Ev@Base 2.0.0
+ _ZN11OtherButton10paintEventEP11QPaintEvent@Base 2.2.0
+ _ZN11OtherButton11qt_metacallEN11QMetaObject4CallEiPPv@Base 2.2.0
+ _ZN11OtherButton11qt_metacastEPKc@Base 2.2.0
+ _ZN11OtherButton15mousePressEventEP11QMouseEvent@Base 2.2.0
+ _ZN11OtherButton16staticMetaObjectE@Base 2.2.0
+ _ZN11OtherButton17mouseReleaseEventEP11QMouseEvent@Base 2.2.0
+ _ZN11OtherButton7clickedEb@Base 2.2.0
+ _ZN11OtherButtonC1EP7QWidget@Base 2.2.0
+ _ZN11OtherButtonC2EP7QWidget@Base 2.2.0
+ _ZN11OtherButtonD0Ev@Base 2.2.0
+ _ZN11OtherButtonD1Ev@Base 2.2.0
+ _ZN11OtherButtonD2Ev@Base 2.2.0
+ _ZN11ProgressBar10onFinishedEv@Base 2.2.0
+ _ZN11ProgressBar10paintEventEP11QPaintEvent@Base 2.2.0
+ _ZN11ProgressBar11onCancelledEv@Base 2.2.0
+ _ZN11ProgressBar11onStartSyncEv@Base 2.2.0
+ _ZN11ProgressBar11qt_metacallEN11QMetaObject4CallEiPPv@Base 2.2.0
+ _ZN11ProgressBar11qt_metacastEPKc@Base 2.2.0
+ _ZN11ProgressBar11updateValueEd@Base 2.2.0
+ _ZN11ProgressBar14updateProgressERK7QStringS2_yy@Base 2.2.0
+ _ZN11ProgressBar16onFileRollbackedERK7QStringS2_@Base 2.2.0
+ _ZN11ProgressBar16staticMetaObjectE@Base 2.2.0
+ _ZN11ProgressBar17mouseReleaseEventEP11QMouseEvent@Base 2.2.0
+ _ZN11ProgressBar17onElementClearOneERK7QString@Base 2.2.0
+ _ZN11ProgressBar17onElementFoundAllEv@Base 2.2.0
+ _ZN11ProgressBar17onElementFoundOneERK7QStringRKx@Base 2.2.0
+ _ZN11ProgressBar20switchToRollbackPageEv@Base 2.2.0
+ _ZN11ProgressBar28onFileOperationProgressedAllEv@Base 2.2.0
+ _ZN11ProgressBar28onFileOperationProgressedOneERK7QStringS2_RKx@Base 2.2.0
+ _ZN11ProgressBar7getIconEv@Base 2.2.0
+ _ZN11ProgressBar7setIconE5QIcon@Base 2.2.0
+ _ZN11ProgressBar8finishedEPS_@Base 2.2.0
+ _ZN11ProgressBar9cancelledEv@Base 2.2.0
+ _ZN11ProgressBar9getStatusEv@Base 2.2.0
+ _ZN11ProgressBar9sendValueER7QStringd@Base 2.2.0
+ _ZN11ProgressBarC1EP7QWidget@Base 2.2.0
+ _ZN11ProgressBarC2EP7QWidget@Base 2.2.0
+ _ZN11ProgressBarD0Ev@Base 2.2.0
+ _ZN11ProgressBarD1Ev@Base 2.2.0
+ _ZN11ProgressBarD2Ev@Base 2.2.0
  _ZN12PdfThumbnail17generateThumbnailEj@Base 2.0.0
  _ZN12PdfThumbnailC1ERK7QStringj@Base 2.0.0
  _ZN12PdfThumbnailC2ERK7QStringj@Base 2.0.0
@@ -90,6 +130,28 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZN14LinuxPWDHelper15getAllUserInfosEv@Base 2.0.0
  _ZN14LinuxPWDHelperC1Ev@Base 2.0.0
  _ZN14LinuxPWDHelperC2Ev@Base 2.0.0
+ _ZN15MainProgressBar10paintEventEP11QPaintEvent@Base 2.2.0
+ _ZN15MainProgressBar11closeWindowEv@Base 2.2.0
+ _ZN15MainProgressBar11paintHeaderER8QPainter@Base 2.2.0
+ _ZN15MainProgressBar11qt_metacallEN11QMetaObject4CallEiPPv@Base 2.2.0
+ _ZN15MainProgressBar11qt_metacastEPKc@Base 2.2.0
+ _ZN15MainProgressBar11setFileIconE5QIcon@Base 2.2.0
+ _ZN15MainProgressBar11updateValueER7QStringd@Base 2.2.0
+ _ZN15MainProgressBar12paintContentER8QPainter@Base 2.2.0
+ _ZN15MainProgressBar13paintProgressER8QPainter@Base 2.2.0
+ _ZN15MainProgressBar14mouseMoveEventEP11QMouseEvent@Base 2.2.0
+ _ZN15MainProgressBar16staticMetaObjectE@Base 2.2.0
+ _ZN15MainProgressBar17mouseReleaseEventEP11QMouseEvent@Base 2.2.0
+ _ZN15MainProgressBar8cancelldEv@Base 2.2.0
+ _ZN15MainProgressBar8setTitleE7QString@Base 2.2.0
+ _ZN15MainProgressBar9initPrarmEv@Base 2.2.0
+ _ZN15MainProgressBar9minimizedEv@Base 2.2.0
+ _ZN15MainProgressBar9paintFootER8QPainter@Base 2.2.0
+ _ZN15MainProgressBarC1EP7QWidget@Base 2.2.0
+ _ZN15MainProgressBarC2EP7QWidget@Base 2.2.0
+ _ZN15MainProgressBarD0Ev@Base 2.2.0
+ _ZN15MainProgressBarD1Ev@Base 2.2.0
+ _ZN15MainProgressBarD2Ev@Base 2.2.0
  (optional=templinst)_ZN16QFutureInterfaceIvED0Ev@Base 2.0.0
  (optional=templinst)_ZN16QFutureInterfaceIvED1Ev@Base 2.0.0
  (optional=templinst)_ZN16QFutureInterfaceIvED2Ev@Base 2.0.0
@@ -114,6 +176,8 @@ libpeony.so.2 libpeony2 #MINVER#
  (optional=templinst)_ZN17QtMetaTypePrivate23QMetaTypeFunctionHelperIN5Peony13FileOperation12ResponseTypeELb1EE9ConstructEPvPKv@Base 2.0.0
  (optional=templinst)_ZN17QtMetaTypePrivate23QMetaTypeFunctionHelperINS_23QSequentialIterableImplELb1EE8DestructEPv@Base 2.0.0
  (optional=templinst)_ZN17QtMetaTypePrivate23QMetaTypeFunctionHelperINS_23QSequentialIterableImplELb1EE9ConstructEPvPKv@Base 2.0.0
+ (optional=templinst)_ZN17QtMetaTypePrivate23QMetaTypeFunctionHelperIP11ProgressBarLb1EE8DestructEPv@Base 2.2.0
+ (optional=templinst)_ZN17QtMetaTypePrivate23QMetaTypeFunctionHelperIP11ProgressBarLb1EE9ConstructEPvPKv@Base 2.2.0
  (optional=templinst)_ZN17QtMetaTypePrivate23QMetaTypeFunctionHelperIP13FileLabelItemLb1EE8DestructEPv@Base 2.1.0
  (optional=templinst)_ZN17QtMetaTypePrivate23QMetaTypeFunctionHelperIP13FileLabelItemLb1EE9ConstructEPvPKv@Base 2.1.0
  (optional=templinst)_ZN17QtMetaTypePrivate23QMetaTypeFunctionHelperIPN5Peony13FileItemModelELb1EE8DestructEPv@Base 2.0.0
@@ -191,6 +255,25 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZN22QStyleOptionToolButtonD1Ev@Base 2.0.0
  _ZN22QStyleOptionToolButtonD2Ev@Base 2.0.0
  (arch= !s390x)_ZN22Ui_ConnectServerDialog7setupUiEP7QDialog@Base 2.0.0
+ _ZN24FileOperationProgressBar11getInstanceEv@Base 2.2.0
+ _ZN24FileOperationProgressBar11qt_metacallEN11QMetaObject4CallEiPPv@Base 2.2.0
+ _ZN24FileOperationProgressBar11qt_metacastEPKc@Base 2.2.0
+ _ZN24FileOperationProgressBar12showProgressER11ProgressBar@Base 2.2.0
+ _ZN24FileOperationProgressBar14mouseMoveEventEP11QMouseEvent@Base 2.2.0
+ _ZN24FileOperationProgressBar14showWidgetListEb@Base 2.2.0
+ _ZN24FileOperationProgressBar15mousePressEventEP11QMouseEvent@Base 2.2.0
+ _ZN24FileOperationProgressBar16addFileOperationEv@Base 2.2.0
+ _ZN24FileOperationProgressBar16staticMetaObjectE@Base 2.2.0
+ _ZN24FileOperationProgressBar17mouseReleaseEventEP11QMouseEvent@Base 2.2.0
+ _ZN24FileOperationProgressBar18mainProgressChangeEP15QListWidgetItem@Base 2.2.0
+ _ZN24FileOperationProgressBar19removeFileOperationEP11ProgressBar@Base 2.2.0
+ _ZN24FileOperationProgressBar8instanceE@Base 2.2.0
+ _ZN24FileOperationProgressBar8showMoreEv@Base 2.2.0
+ _ZN24FileOperationProgressBarC1EP7QWidget@Base 2.2.0
+ _ZN24FileOperationProgressBarC2EP7QWidget@Base 2.2.0
+ _ZN24FileOperationProgressBarD0Ev@Base 2.2.0
+ _ZN24FileOperationProgressBarD1Ev@Base 2.2.0
+ _ZN24FileOperationProgressBarD2Ev@Base 2.2.0
  (optional=templinst|arch= !s390x !ppc64el)_ZN4QMapI7QString8QVariantE13detach_helperEv@Base 2.0.0
  (optional=templinst)_ZN4QMapI7QString8QVariantE6removeERKS0_@Base 2.0.0
  (optional=templinst)_ZN4QMapI7QString8QVariantED1Ev@Base 2.0.0
@@ -201,6 +284,8 @@ libpeony.so.2 libpeony2 #MINVER#
  (optional=templinst)_ZN4QMapI7QStringS0_EC2ERKS1_@Base 2.1.0
  (optional=templinst)_ZN4QMapI7QStringS0_ED1Ev@Base 2.1.0
  (optional=templinst)_ZN4QMapI7QStringS0_ED2Ev@Base 2.1.0
+ (optional=templinst)_ZN4QMapIP11ProgressBarP15QListWidgetItemE13detach_helperEv@Base 2.2.0
+ (optional=templinst)_ZN4QMapIP15QListWidgetItemP11ProgressBarE13detach_helperEv@Base 2.2.0
  (optional=templinst|arch= !s390x !ppc64el)_ZN4QMapIi7QStringE13detach_helperEv@Base 2.0.0
  _ZN5Peony10wrapGDriveEP7_GDrive@Base 2.0.0
  _ZN5Peony10wrapGMountEP7_GMount@Base 2.0.0
@@ -2442,6 +2527,17 @@ libpeony.so.2 libpeony2 #MINVER#
  (optional=templinst)_ZN8QMapNodeI7QStringPN5Peony22PreviewPagePluginIfaceEE14destroySubTreeEv@Base 2.0.0
  (optional=templinst)_ZN8QMapNodeI7QStringS0_E14destroySubTreeEv@Base 2.1.0
  (optional=templinst)_ZN8QMapNodeIi7QStringE14destroySubTreeEv@Base 2.0.0
+ (optional=templinst)_ZN9QtPrivate11QSlotObjectIM11ProgressBarFvRK7QStringENS_4ListIJS4_EEEvE4implEiPNS_15QSlotObjectBaseEP7QObjectPPvPb@Base 2.2.0
+ (optional=templinst)_ZN9QtPrivate11QSlotObjectIM11ProgressBarFvRK7QStringRKxENS_4ListIJS4_S6_EEEvE4implEiPNS_15QSlotObjectBaseEP7QObjectPPvPb@Base 2.2.0
+ (optional=templinst)_ZN9QtPrivate11QSlotObjectIM11ProgressBarFvRK7QStringS4_ENS_4ListIJS4_S4_EEEvE4implEiPNS_15QSlotObjectBaseEP7QObjectPPvPb@Base 2.2.0
+ (optional=templinst)_ZN9QtPrivate11QSlotObjectIM11ProgressBarFvRK7QStringS4_RKxENS_4ListIJS4_S4_S6_EEEvE4implEiPNS_15QSlotObjectBaseEP7QObjectPPvPb@Base 2.2.0
+ (optional=templinst)_ZN9QtPrivate11QSlotObjectIM11ProgressBarFvRK7QStringS4_yyENS_4ListIJS4_S4_RKxS9_EEEvE4implEiPNS_15QSlotObjectBaseEP7QObjectPPvPb@Base 2.2.0
+ (optional=templinst)_ZN9QtPrivate11QSlotObjectIM11ProgressBarFvvENS_4ListIJEEEvE4implEiPNS_15QSlotObjectBaseEP7QObjectPPvPb@Base 2.2.0
+ (optional=templinst)_ZN9QtPrivate11QSlotObjectIM15MainProgressBarFvR7QStringdENS_4ListIJS3_dEEEvE4implEiPNS_15QSlotObjectBaseEP7QObjectPPvPb@Base 2.2.0
+ (optional=templinst)_ZN9QtPrivate11QSlotObjectIM15MainProgressBarFvvENS_4ListIJEEEvE4implEiPNS_15QSlotObjectBaseEP7QObjectPPvPb@Base 2.2.0
+ (optional=templinst)_ZN9QtPrivate11QSlotObjectIM24FileOperationProgressBarFvP11ProgressBarENS_4ListIJS3_EEEvE4implEiPNS_15QSlotObjectBaseEP7QObjectPPvPb@Base 2.2.0
+ (optional=templinst)_ZN9QtPrivate11QSlotObjectIM24FileOperationProgressBarFvP15QListWidgetItemENS_4ListIJS3_EEEvE4implEiPNS_15QSlotObjectBaseEP7QObjectPPvPb@Base 2.2.0
+ (optional=templinst)_ZN9QtPrivate11QSlotObjectIM24FileOperationProgressBarFvbENS_4ListIJbEEEvE4implEiPNS_15QSlotObjectBaseEP7QObjectPPvPb@Base 2.2.0
  (optional=templinst)_ZN9QtPrivate11QSlotObjectIM7QActionFvvENS_4ListIJEEEvE4implEiPNS_15QSlotObjectBaseEP7QObjectPPvPb@Base 2.0.0
  (optional=templinst)_ZN9QtPrivate11QSlotObjectIM7QDialogFvvENS_4ListIJEEEvE4implEiPNS_15QSlotObjectBaseEP7QObjectPPvPb@Base 2.0.0
  (optional=templinst)_ZN9QtPrivate11QSlotObjectIM7QObjectFvvENS_4ListIJEEEvE4implEiPNS_15QSlotObjectBaseEPS1_PPvPb@Base 2.0.0
@@ -2474,12 +2570,12 @@ libpeony.so.2 libpeony2 #MINVER#
  (optional=templinst)_ZN9QtPrivate11QSlotObjectIMN5Peony24FileOperationErrorDialogEF8QVariantRK7QStringS6_RKSt10shared_ptrINS1_13GErrorWrapperEEbENS_4ListIJS6_S6_SB_bEEES3_E4implEiPNS_15QSlotObjectBaseEP7QObjectPPvPb@Base 2.1.0
  (optional=templinst)_ZN9QtPrivate11QSlotObjectIMN5Peony25PermissionsPropertiesPageEFvRK7QStringS5_ENS_4ListIJS5_S5_EEEvE4implEiPNS_15QSlotObjectBaseEP7QObjectPPvPb@Base 2.0.0
  (optional=templinst)_ZN9QtPrivate11QSlotObjectIMN5Peony25PermissionsPropertiesPageEFviibENS_4ListIJiibEEEvE4implEiPNS_15QSlotObjectBaseEP7QObjectPPvPb@Base 2.0.0
- (optional=templinst)_ZN9QtPrivate11QSlotObjectIMN5Peony27FileOperationProgressWizardEFvRK7QStringENS_4ListIJS5_EEEvE4implEiPNS_15QSlotObjectBaseEP7QObjectPPvPb@Base 2.0.0
- (optional=templinst)_ZN9QtPrivate11QSlotObjectIMN5Peony27FileOperationProgressWizardEFvRK7QStringRKxENS_4ListIJS5_S7_EEEvE4implEiPNS_15QSlotObjectBaseEP7QObjectPPvPb@Base 2.0.0
- (optional=templinst)_ZN9QtPrivate11QSlotObjectIMN5Peony27FileOperationProgressWizardEFvRK7QStringS5_ENS_4ListIJS5_S5_EEEvE4implEiPNS_15QSlotObjectBaseEP7QObjectPPvPb@Base 2.0.0
- (optional=templinst)_ZN9QtPrivate11QSlotObjectIMN5Peony27FileOperationProgressWizardEFvRK7QStringS5_RKxENS_4ListIJS5_S5_S7_EEEvE4implEiPNS_15QSlotObjectBaseEP7QObjectPPvPb@Base 2.0.0
- (optional=templinst)_ZN9QtPrivate11QSlotObjectIMN5Peony27FileOperationProgressWizardEFvRK7QStringS5_yyENS_4ListIJS5_S5_RKxSA_EEEvE4implEiPNS_15QSlotObjectBaseEP7QObjectPPvPb@Base 2.0.0
- (optional=templinst)_ZN9QtPrivate11QSlotObjectIMN5Peony27FileOperationProgressWizardEFvvENS_4ListIJEEEvE4implEiPNS_15QSlotObjectBaseEP7QObjectPPvPb@Base 2.0.0
+#MISSING: 2.2.0# (optional=templinst)_ZN9QtPrivate11QSlotObjectIMN5Peony27FileOperationProgressWizardEFvRK7QStringENS_4ListIJS5_EEEvE4implEiPNS_15QSlotObjectBaseEP7QObjectPPvPb@Base 2.0.0
+#MISSING: 2.2.0# (optional=templinst)_ZN9QtPrivate11QSlotObjectIMN5Peony27FileOperationProgressWizardEFvRK7QStringRKxENS_4ListIJS5_S7_EEEvE4implEiPNS_15QSlotObjectBaseEP7QObjectPPvPb@Base 2.0.0
+#MISSING: 2.2.0# (optional=templinst)_ZN9QtPrivate11QSlotObjectIMN5Peony27FileOperationProgressWizardEFvRK7QStringS5_ENS_4ListIJS5_S5_EEEvE4implEiPNS_15QSlotObjectBaseEP7QObjectPPvPb@Base 2.0.0
+#MISSING: 2.2.0# (optional=templinst)_ZN9QtPrivate11QSlotObjectIMN5Peony27FileOperationProgressWizardEFvRK7QStringS5_RKxENS_4ListIJS5_S5_S7_EEEvE4implEiPNS_15QSlotObjectBaseEP7QObjectPPvPb@Base 2.0.0
+#MISSING: 2.2.0# (optional=templinst)_ZN9QtPrivate11QSlotObjectIMN5Peony27FileOperationProgressWizardEFvRK7QStringS5_yyENS_4ListIJS5_S5_RKxSA_EEEvE4implEiPNS_15QSlotObjectBaseEP7QObjectPPvPb@Base 2.0.0
+#MISSING: 2.2.0# (optional=templinst)_ZN9QtPrivate11QSlotObjectIMN5Peony27FileOperationProgressWizardEFvvENS_4ListIJEEEvE4implEiPNS_15QSlotObjectBaseEP7QObjectPPvPb@Base 2.0.0
  (optional=templinst)_ZN9QtPrivate11QSlotObjectIMN5Peony28FileItemProxyFilterSortModelEFvvENS_4ListIJEEEvE4implEiPNS_15QSlotObjectBaseEP7QObjectPPvPb@Base 2.0.0
  (optional=templinst)_ZN9QtPrivate11QSlotObjectIMN5Peony7TabPageEFvRK6QPointENS_4ListIJS5_EEEvE4implEiPNS_15QSlotObjectBaseEP7QObjectPPvPb@Base 2.0.0
  (optional=templinst)_ZN9QtPrivate11QSlotObjectIMN5Peony7TabPageEFvRK7QStringbbENS_4ListIJS5_bbEEEvE4implEiPNS_15QSlotObjectBaseEP7QObjectPPvPb@Base 2.0.0
@@ -2503,16 +2599,20 @@ libpeony.so.2 libpeony2 #MINVER#
  (arch=armel)_ZN9__gnu_cxx26__concurrence_unlock_errorD0Ev@Base 2.0.1
  (arch=armel)_ZN9__gnu_cxx26__concurrence_unlock_errorD1Ev@Base 2.0.1
  (arch=armel)_ZN9__gnu_cxx26__concurrence_unlock_errorD2Ev@Base 2.0.1
+ _ZNK11OtherButton10metaObjectEv@Base 2.2.0
+ _ZNK11ProgressBar10metaObjectEv@Base 2.2.0
  _ZNK13FileLabelItem10metaObjectEv@Base 2.1.0
  _ZNK13Format_Dialog10metaObjectEv@Base 2.2.0
  _ZNK14FileLabelModel10metaObjectEv@Base 2.1.0
  _ZNK14FileLabelModel4dataERK11QModelIndexi@Base 2.1.0
  _ZNK14FileLabelModel5flagsERK11QModelIndex@Base 2.1.0
  _ZNK14FileLabelModel8rowCountERK11QModelIndex@Base 2.1.0
+ _ZNK15MainProgressBar10metaObjectEv@Base 2.2.0
  _ZNK18BorderShadowEffect10metaObjectEv@Base 2.1.0
  _ZNK18GenericThumbnailer10metaObjectEv@Base 2.1.0
  _ZNK19ConnectServerDialog10metaObjectEv@Base 2.0.0
  _ZNK22LocationBarButtonStyle18drawComplexControlEN6QStyle14ComplexControlEPK19QStyleOptionComplexP8QPainterPK7QWidget@Base 2.2.0
+ _ZNK24FileOperationProgressBar10metaObjectEv@Base 2.2.0
  (optional=templinst)_ZNK4QMapI7QStringP11QToolButtonE6valuesEv@Base 2.2.0
  (optional=templinst)_ZNK4QMapI7QStringS0_E4keysEv@Base 2.1.0
  _ZNK5Peony11FileInfoJob10metaObjectEv@Base 2.0.0
@@ -2736,6 +2836,8 @@ libpeony.so.2 libpeony2 #MINVER#
  (optional=templinst)_ZNK8QMapNodeI7QStringP11QToolButtonE4copyEP8QMapDataIS0_S2_E@Base 2.2.0
  (optional=templinst)_ZNK8QMapNodeI7QStringPN5Peony22PreviewPagePluginIfaceEE4copyEP8QMapDataIS0_S3_E@Base 2.0.0
  (optional=templinst)_ZNK8QMapNodeI7QStringS0_E4copyEP8QMapDataIS0_S0_E@Base 2.1.0
+ (optional=templinst)_ZNK8QMapNodeIP11ProgressBarP15QListWidgetItemE4copyEP8QMapDataIS1_S3_E@Base 2.2.0
+ (optional=templinst)_ZNK8QMapNodeIP15QListWidgetItemP11ProgressBarE4copyEP8QMapDataIS1_S3_E@Base 2.2.0
  (optional=templinst)_ZNK8QMapNodeIi7QStringE4copyEP8QMapDataIiS0_E@Base 2.0.0
  (arch=armel)_ZNK9__gnu_cxx24__concurrence_lock_error4whatEv@Base 2.0.1
  (arch=armel)_ZNK9__gnu_cxx26__concurrence_unlock_error4whatEv@Base 2.0.1
@@ -2986,14 +3088,18 @@ libpeony.so.2 libpeony2 #MINVER#
  (optional=templinst|arch=amd64)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony8FileInfoESaIS1_ELN9__gnu_cxx12_Lock_policyE2EED1Ev@Base 2.0.0
  (optional=templinst|arch=amd64)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony8FileInfoESaIS1_ELN9__gnu_cxx12_Lock_policyE2EED2Ev@Base 2.0.0
  (optional=templinst|arch= !s390x)_ZSt9__find_ifIPK7QStringN9__gnu_cxx5__ops16_Iter_equals_valIS1_EEET_S7_S7_T0_St26random_access_iterator_tag@Base 2.0.0
+ _ZTI11OtherButton@Base 2.2.0
+ _ZTI11ProgressBar@Base 2.2.0
  _ZTI13FileLabelItem@Base 2.1.0
  _ZTI13Format_Dialog@Base 2.2.0
  _ZTI14FileLabelModel@Base 2.1.0
+ _ZTI15MainProgressBar@Base 2.2.0
  _ZTI16QFutureInterfaceIvE@Base 2.0.0
  _ZTI18BorderShadowEffect@Base 2.1.0
  _ZTI18GenericThumbnailer@Base 2.1.0
  _ZTI19ConnectServerDialog@Base 2.0.0
  _ZTI22LocationBarButtonStyle@Base 2.2.0
+ _ZTI24FileOperationProgressBar@Base 2.2.0
  _ZTIN12QtConcurrent15RunFunctionTaskIvEE@Base 2.0.0
  _ZTIN12QtConcurrent19RunFunctionTaskBaseIvEE@Base 2.0.0
  _ZTIN5Peony11FileInfoJobE@Base 2.0.0
@@ -3169,14 +3275,18 @@ libpeony.so.2 libpeony2 #MINVER#
  (arch=amd64)_ZTISt23_Sp_counted_ptr_inplaceIN5Peony6VolumeESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE@Base 2.0.1
  (arch=armel)_ZTISt23_Sp_counted_ptr_inplaceIN5Peony8FileInfoESaIS1_ELN9__gnu_cxx12_Lock_policyE1EE@Base 2.0.1
  (arch=amd64)_ZTISt23_Sp_counted_ptr_inplaceIN5Peony8FileInfoESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE@Base 2.0.1
+ _ZTS11OtherButton@Base 2.2.0
+ _ZTS11ProgressBar@Base 2.2.0
  _ZTS13FileLabelItem@Base 2.1.0
  _ZTS13Format_Dialog@Base 2.2.0
  _ZTS14FileLabelModel@Base 2.1.0
+ _ZTS15MainProgressBar@Base 2.2.0
  _ZTS16QFutureInterfaceIvE@Base 2.0.0
  _ZTS18BorderShadowEffect@Base 2.1.0
  _ZTS18GenericThumbnailer@Base 2.1.0
  _ZTS19ConnectServerDialog@Base 2.0.0
  _ZTS22LocationBarButtonStyle@Base 2.2.0
+ _ZTS24FileOperationProgressBar@Base 2.2.0
  _ZTSN12QtConcurrent15RunFunctionTaskIvEE@Base 2.0.0
  _ZTSN12QtConcurrent19RunFunctionTaskBaseIvEE@Base 2.0.0
  _ZTSN5Peony11FileInfoJobE@Base 2.0.0
@@ -3352,14 +3462,18 @@ libpeony.so.2 libpeony2 #MINVER#
  (arch=amd64)_ZTSSt23_Sp_counted_ptr_inplaceIN5Peony6VolumeESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE@Base 2.0.1
  (arch=armel)_ZTSSt23_Sp_counted_ptr_inplaceIN5Peony8FileInfoESaIS1_ELN9__gnu_cxx12_Lock_policyE1EE@Base 2.0.1
  (arch=amd64)_ZTSSt23_Sp_counted_ptr_inplaceIN5Peony8FileInfoESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE@Base 2.0.1
+ _ZTV11OtherButton@Base 2.2.0
+ _ZTV11ProgressBar@Base 2.2.0
  _ZTV13FileLabelItem@Base 2.1.0
  _ZTV13Format_Dialog@Base 2.2.0
  _ZTV14FileLabelModel@Base 2.1.0
+ _ZTV15MainProgressBar@Base 2.2.0
  _ZTV16QFutureInterfaceIvE@Base 2.0.0
  _ZTV18BorderShadowEffect@Base 2.1.0
  _ZTV18GenericThumbnailer@Base 2.1.0
  _ZTV19ConnectServerDialog@Base 2.0.0
  _ZTV22LocationBarButtonStyle@Base 2.2.0
+ _ZTV24FileOperationProgressBar@Base 2.2.0
  _ZTVN12QtConcurrent19RunFunctionTaskBaseIvEE@Base 2.0.0
  _ZTVN5Peony11FileInfoJobE@Base 2.0.0
  _ZTVN5Peony11FileWatcherE@Base 2.0.0
@@ -3523,6 +3637,7 @@ libpeony.so.2 libpeony2 #MINVER#
  (optional=templinst)_ZZN11QMetaTypeIdIN17QtMetaTypePrivate23QSequentialIterableImplEE14qt_metatype_idEvE11metatype_id@Base 2.0.0
  (optional=templinst)_ZZN11QMetaTypeIdIN5Peony13FileOperation12ResponseTypeEE14qt_metatype_idEvE11metatype_id@Base 2.0.0
  (optional=templinst)_ZZN11QMetaTypeIdISt10shared_ptrIN5Peony13GErrorWrapperEEE14qt_metatype_idEvE11metatype_id@Base 2.0.0
+ (optional=templinst)_ZZN18QMetaTypeIdQObjectIP11ProgressBarLi8EE14qt_metatype_idEvE11metatype_id@Base 2.2.0
  (optional=templinst)_ZZN18QMetaTypeIdQObjectIP13FileLabelItemLi8EE14qt_metatype_idEvE11metatype_id@Base 2.1.0
  (optional=templinst)_ZZN18QMetaTypeIdQObjectIPN5Peony13FileItemModelELi8EE14qt_metatype_idEvE11metatype_id@Base 2.0.0
  (optional=templinst)_ZZN18QMetaTypeIdQObjectIPN5Peony13FileOperationELi8EE14qt_metatype_idEvE11metatype_id@Base 2.0.0
@@ -3535,12 +3650,16 @@ libpeony.so.2 libpeony2 #MINVER#
  (optional=templinst)_ZZN9QtPrivate19ValueTypeIsMetaTypeI5QListI11QModelIndexELb1EE17registerConverterEiE1f@Base 2.0.0
  (optional=templinst)_ZZN9QtPrivate19ValueTypeIsMetaTypeI5QListI21QPersistentModelIndexELb1EE17registerConverterEiE1f@Base 2.0.0
  _ZZNSt19_Sp_make_shared_tag5_S_tiEvE5__tag@Base 2.0.0
+ btn@Base 2.2.0
  comparer@Base 2.0.0
  global_instance@Base 2.1.0
  is_registed@Base 2.0.0
  locale@Base 2.0.0
  (c++)"non-virtual thunk to ConnectServerDialog::~ConnectServerDialog()@Base" 2.0.0
+ (c++)"non-virtual thunk to FileOperationProgressBar::~FileOperationProgressBar()@Base" 2.2.0
  (c++)"non-virtual thunk to Format_Dialog::~Format_Dialog()@Base" 2.2.0
+ (c++)"non-virtual thunk to MainProgressBar::~MainProgressBar()@Base" 2.2.0
+ (c++)"non-virtual thunk to OtherButton::~OtherButton()@Base" 2.2.0
  (c++)"non-virtual thunk to Peony::AdvanceSearchBar::~AdvanceSearchBar()@Base" 2.0.0
  (c++)"non-virtual thunk to Peony::AdvancedLocationBar::~AdvancedLocationBar()@Base" 2.0.0
  (c++)"non-virtual thunk to Peony::BasicPropertiesPage::~BasicPropertiesPage()@Base" 2.0.0
@@ -3819,6 +3938,7 @@ libpeony.so.2 libpeony2 #MINVER#
  (c++)"non-virtual thunk to Peony::ThumbnailJob::~ThumbnailJob()@Base" 2.1.0
  (c++)"non-virtual thunk to Peony::ToolBar::~ToolBar()@Base" 2.0.0
  (c++)"non-virtual thunk to Peony::ToolBarContainer::~ToolBarContainer()@Base" 2.0.0
+ (c++)"non-virtual thunk to ProgressBar::~ProgressBar()@Base" 2.2.0
  (c++)"non-virtual thunk to QtConcurrent::RunFunctionTask<void>::run()@Base" 2.0.0
  (c++)"non-virtual thunk to QtConcurrent::RunFunctionTaskBase<void>::run()@Base" 2.0.0
  peony_search_vfs_file_enumerator_get_type@Base 2.0.0
