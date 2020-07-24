@@ -78,6 +78,8 @@
 #include <QTimer>
 #include <QDesktopServices>
 
+#include <QProcess>
+
 #if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
 #include <QPainterPath>
 #endif
@@ -435,6 +437,71 @@ void MainWindow::setShortCuts()
         m_tab->setTriggeredPreviewPage(! triggered);
     });
     addAction(previewPageAction);
+
+    auto refreshWindowAction = new QAction(this);
+    refreshWindowAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_R));
+    connect(refreshWindowAction, &QAction::triggered, this, [=]() {
+        this->refresh();
+    });
+    addAction(refreshWindowAction);
+
+    auto listToIconViewAction = new QAction(this);
+    listToIconViewAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_1));
+    connect(listToIconViewAction, &QAction::triggered, this, [=]() {
+        this->beginSwitchView(QString("Icon View"));
+    });
+    addAction(listToIconViewAction);
+
+    auto iconToListViewAction = new QAction(this);
+    iconToListViewAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_2));
+    connect(iconToListViewAction, &QAction::triggered, this, [=]() {
+        this->beginSwitchView(QString("List View"));
+    });
+    addAction(iconToListViewAction);
+
+    auto reverseSelectAction = new QAction(this);
+    reverseSelectAction->setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_L));
+    connect(reverseSelectAction, &QAction::triggered, this, [=]() {
+        this->getCurrentPage()->getView()->invertSelections();
+    });
+    addAction(reverseSelectAction);
+
+    auto remodelViewAction = new QAction(this);
+    remodelViewAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_0));
+    connect(remodelViewAction, &QAction::triggered, this, [=]() {
+        this->getCurrentPage()->getView()->setCurrentZoomLevel(21);
+    });
+    addAction(remodelViewAction);
+
+    auto enlargViewAction = new QAction(this);
+    enlargViewAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Plus));
+    connect(enlargViewAction, &QAction::triggered, this, [=]() {
+        int defaultZoomLevel = this->currentViewZoomLevel();
+        if(defaultZoomLevel <= 95){ defaultZoomLevel+=5; }
+        this->getCurrentPage()->getView()->setCurrentZoomLevel(defaultZoomLevel);
+
+    });
+    addAction(enlargViewAction);
+
+    auto shrinkViewAction = new QAction(this);
+    shrinkViewAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Minus));
+    connect(shrinkViewAction, &QAction::triggered, this, [=]() {
+        int defaultZoomLevel = this->currentViewZoomLevel();
+        if(defaultZoomLevel > 6){ defaultZoomLevel-=5; }
+        this->getCurrentPage()->getView()->setCurrentZoomLevel(defaultZoomLevel);
+
+    });
+    addAction(shrinkViewAction);
+
+    auto quitAllAction = new QAction(this);
+    quitAllAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Q));
+    connect(quitAllAction, &QAction::triggered, this, [=]() {
+        QProcess p(0);
+        p.start("peony", QStringList()<<"-q");
+        p.waitForStarted();
+        p.waitForFinished();
+    });
+    addAction(quitAllAction);
 
     auto refreshAction = new QAction(this);
     refreshAction->setShortcut(Qt::Key_F5);
