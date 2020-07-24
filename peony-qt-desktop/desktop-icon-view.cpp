@@ -359,6 +359,27 @@ void DesktopIconView::initShoutCut()
     });
     addAction(newFolderAction);
 
+    QAction *refreshWinAction = new QAction(this);
+    refreshWinAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_R));
+    connect(refreshWinAction, &QAction::triggered, [=]() {
+        this->refresh();
+    });
+    addAction(refreshWinAction);
+
+    QAction *reverseSelectAction = new QAction(this);
+    reverseSelectAction->setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_L));
+    connect(reverseSelectAction, &QAction::triggered, [=]() {
+        this->invertSelections();
+    });
+    addAction(reverseSelectAction);
+
+    QAction *normalIconAction = new QAction(this);
+    normalIconAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_0));
+    connect(normalIconAction, &QAction::triggered, [=]() {
+        this->setDefaultZoomLevel(DesktopIconView::Normal);
+    });
+    addAction(normalIconAction);
+
     auto refreshAction = new QAction(this);
     refreshAction->setShortcut(Qt::Key_F5);
     connect(refreshAction, &QAction::triggered, this, [=]() {
