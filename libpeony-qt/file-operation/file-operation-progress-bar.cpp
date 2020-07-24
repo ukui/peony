@@ -113,7 +113,7 @@ void FileOperationProgressBar::removeFileOperation(ProgressBar *progress)
 FileOperationProgressBar::FileOperationProgressBar(QWidget *parent) : QWidget(parent)
 {
     m_current_main = nullptr;
-    setWindowFlag(Qt::FramelessWindowHint);
+    setWindowFlags(Qt::FramelessWindowHint);
     setContentsMargins(0, 0, 0, 0);
 
     btn = new QPushButton(nullptr);
@@ -235,7 +235,7 @@ void FileOperationProgressBar::mainProgressChange(QListWidgetItem *item)
 
 MainProgressBar::MainProgressBar(QWidget *parent) : QWidget(parent)
 {
-    setWindowFlag(Qt::FramelessWindowHint);
+    setWindowFlags(Qt::FramelessWindowHint);
     setMouseTracking(true);
 
     m_title = tr("File operation");
@@ -443,7 +443,7 @@ void MainProgressBar::updateValue(QString& name, double value)
 
 OtherButton::OtherButton(QWidget *parent) : QWidget(parent)
 {
-    setWindowFlag(Qt::FramelessWindowHint);
+    setWindowFlags(Qt::FramelessWindowHint);
     setMouseTracking(true);
     setMinimumWidth(180);
     setFixedHeight(m_button_heigth);
