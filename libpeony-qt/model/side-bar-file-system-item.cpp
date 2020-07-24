@@ -35,6 +35,8 @@
 
 #include <QIcon>
 #include <QMessageBox>
+#include <udisks/udisks.h>
+#include <sys/stat.h>
 
 using namespace Peony;
 
@@ -322,8 +324,55 @@ static void unmount_finished(GObject*, GAsyncResult*, gpointer udata)
     }
 }
 
+static UDisksObject *get_object_from_block_device (UDisksClient *client,const gchar *block_device)
+{
+    struct stat statbuf;
+    const gchar *crypto_backing_device;
+    UDisksObject *object, *crypto_backing_object;
+    UDisksBlock *block;
+
+    object = NULL;
+
+    if (stat (block_device, &statbuf) != 0)
+    {
+        return object;
+    }
+
+    block = udisks_client_get_block_for_dev (client, statbuf.st_rdev);
+    if (block == NULL)
+    {
+        return object;
+    }
+
+    object = UDISKS_OBJECT (g_dbus_interface_dup_object (G_DBUS_INTERFACE (block)));
+    g_object_unref (block);
+
+    crypto_backing_device = udisks_block_get_crypto_backing_device ((udisks_object_peek_block (object)));
+    crypto_backing_object = udisks_client_get_object (client, crypto_backing_device);
+    if (crypto_backing_object != NULL)
+    {
+        g_object_unref (object);
+        object = crypto_backing_object;
+    }
+    return object;
+}
+
+
 void SideBarFileSystemItem::unmount()
 {
+    UDisksObject *object;
+    UDisksClient *client;
+    UDisksBlock *block;
+    client = udisks_client_new_sync(NULL,NULL);
+
+    object = get_object_from_block_device(client,m_unix_device.toUtf8().constData());
+    block = udisks_object_get_block(object);
+
+    // if device type is disc , Eject optical drive 
+    if(g_strcmp0(udisks_block_get_id_type(block),"iso9660")==0){
+        system("eject");
+    }
+
     auto file = wrapGFile(g_file_new_for_uri(this->uri().toUtf8().constData()));
     g_file_unmount_mountable_with_operation(file.get()->get(),
                                             G_MOUNT_UNMOUNT_NONE,
