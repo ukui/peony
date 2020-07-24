@@ -123,21 +123,51 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
                 auto grid = view->gridSize();
                 auto viewRect = view->rect();
 
+                QRegion notEmptyRegion;
+                for (auto rect : itemRectHash.values()) {
+                    notEmptyRegion += rect;
+                }
+
                 auto metaInfoPos = view->getFileMetaInfoPos(uri);
                 if (metaInfoPos.x() >= 0) {
+                    // check if overlapped, it might happend whild drag out and in desktop view.
+                    auto indexRect = QRect(metaInfoPos, itemRectHash.values().first().size());
+                    if (notEmptyRegion.contains(indexRect.center())) {
+
+                        // move index to closest empty grid.
+                        auto next = indexRect;
+                        bool isEmptyPos = false;
+                        while (!isEmptyPos) {
+                            next.translate(0, grid.height());
+                            if (next.bottom() > viewRect.bottom()) {
+                                int top = next.y();
+                                while (true) {
+                                    if (top < grid.height()) {
+                                        break;
+                                    }
+                                    top-=grid.height();
+                                }
+                                //put item to next column first row
+                                next.moveTo(next.x() + grid.width(), top);
+                            }
+                            if (notEmptyRegion.contains(next.center()))
+                                continue;
+
+                            isEmptyPos = true;
+                            itemRectHash.insert(info->uri(), next);
+                            notEmptyRegion += next;
+
+                            // handle position locate in DesktopIconView::itemInserted().
+                            view->setFileMetaInfoPos(info->uri(), next.topLeft());
+                        }
+                    }
+
                     this->beginInsertRows(QModelIndex(), m_files.count(), m_files.count());
                     ThumbnailManager::getInstance()->createThumbnail(info->uri(), m_thumbnail_watcher);
                     m_files<<info;
                     //this->insertRows(m_files.indexOf(info), 1);
                     this->endInsertRows();
                     m_new_file_info_query_queue.removeOne(uri);
-
-                    QTimer::singleShot(1, this, [=](){
-                        view->updateItemPosByUri(uri, metaInfoPos);
-                        for (auto key : itemRectHash.keys()) {
-                            view->updateItemPosByUri(key, itemRectHash.value(key).topLeft());
-                        }
-                    });
 
                     // end locate new item=======
 
@@ -146,11 +176,6 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
                     Q_EMIT this->requestLayoutNewItem(info->uri());
                     Q_EMIT this->fileCreated(uri);
                     return;
-                }
-
-                QRegion notEmptyRegion;
-                for (auto rect : itemRectHash.values()) {
-                    notEmptyRegion += rect;
                 }
 
                 // aligin exsited rect
