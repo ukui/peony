@@ -27,6 +27,7 @@
 #include <QPainter>
 #include <QMouseEvent>
 #include <QPushButton>
+#include <QMessageBox>
 
 QPushButton* btn;
 
@@ -222,7 +223,12 @@ void FileOperationProgressBar::mainProgressChange(QListWidgetItem *item)
 
     ProgressBar* pb = (*m_widget_list)[item];
     m_current_main = pb;
+    m_main_progressbar->initPrarm();
+    if (m_current_main->getStatus()) {
+        m_main_progressbar->cancelld();
+    }
     m_main_progressbar->setFileIcon(m_current_main->getIcon());
+    m_main_progressbar->connect(m_current_main, &ProgressBar::cancelled, m_main_progressbar, &MainProgressBar::cancelld);
     m_main_progressbar->connect(m_current_main, &ProgressBar::sendValue, m_main_progressbar, &MainProgressBar::updateValue);
     update();
 }
@@ -235,6 +241,13 @@ MainProgressBar::MainProgressBar(QWidget *parent) : QWidget(parent)
     m_title = tr("File operation");
 
     setFixedSize(m_fix_width, m_fix_height);
+}
+
+void MainProgressBar::initPrarm()
+{
+    m_stopping = false;
+    m_current_value = 0.0;
+    m_file_name = tr("starting ...");
 }
 
 void MainProgressBar::setFileIcon(QIcon icon)
@@ -293,7 +306,14 @@ void MainProgressBar::mouseReleaseEvent(QMouseEvent *event)
                && (pos.x() <= (m_fix_width - m_btn_margin))
                && (pos.y() >= m_btn_margin_top)
                && (pos.y() <= m_btn_margin_top + m_btn_size)) {
-        Q_EMIT closeWindow();
+        QMessageBox msgBox(QMessageBox::Warning, tr("cancel all file operations"),
+                           tr("Are you sure want to cancel all file operations"),
+                           QMessageBox::Ok | QMessageBox::Cancel);
+        msgBox.button(QMessageBox::Ok)->setText(tr("OK"));
+        msgBox.button(QMessageBox::Cancel)->setText(tr("Cancel"));
+        if (QMessageBox::Ok == msgBox.exec()) {
+            Q_EMIT closeWindow();
+        }
     }
 
     QWidget::mouseReleaseEvent(event);
@@ -324,7 +344,7 @@ void MainProgressBar::paintHeader(QPainter &painter)
     painter.save();
 
     // paint title
-    QRect textArea (0, 0, m_title_width, m_header_height);
+    QRect textArea (60, 0, m_title_width - 60, m_header_height);
     QFont font = painter.font();
     font.setPixelSize(10);
     painter.setFont(font);
@@ -366,7 +386,11 @@ void MainProgressBar::paintContent(QPainter &painter)
     QFont font = painter.font();
     font.setPixelSize(12);
     painter.setFont(font);
-    painter.drawText(x, y, w, m_file_name_height, Qt::AlignLeft | Qt::AlignVCenter, m_file_name);
+    if (m_stopping) {
+        painter.drawText(x, y, w, m_file_name_height, Qt::AlignLeft | Qt::AlignVCenter, tr("canceling ..."));
+    } else {
+        painter.drawText(x, y, w, m_file_name_height, Qt::AlignLeft | Qt::AlignVCenter, m_file_name);
+    }
 
     // paint percentage
     x = m_fix_width - m_percent_margin * 3;
@@ -377,7 +401,6 @@ void MainProgressBar::paintContent(QPainter &painter)
     painter.setBrush(QBrush(btn->palette().color(QPalette::Highlight)));
     painter.drawText(x, y, w, m_percent_height, Qt::AlignVCenter | Qt::AlignHCenter,
                      QString(" %1 %").arg(QString::number(m_current_value * 100, 'f', 1)));
-
 
     painter.restore();
 }
@@ -399,6 +422,12 @@ void MainProgressBar::paintProgress(QPainter &painter)
 
 
     painter.restore();
+}
+
+void MainProgressBar::cancelld()
+{
+    m_stopping = true;
+    update();
 }
 
 void MainProgressBar::updateValue(QString& name, double value)
@@ -434,13 +463,13 @@ void OtherButton::paintEvent(QPaintEvent *event)
     painter.setPen(pen);
 
     // paint icon
-    x = width() / 2 - m_icon_size - m_icon_margin - 20;
+    x = width() / 2 - m_icon_size - m_icon_margin -20;
     y = (height() - m_icon_size) / 2;
     QRect iconArea (x, y, m_icon_size, m_icon_size);
     if (m_show) {
-        painter.drawPixmap(iconArea, drawSymbolicColoredPixmap(QIcon::fromTheme("pan-up-symbolic").pixmap(m_icon_size, m_icon_size)));
+        painter.drawPixmap(iconArea, drawSymbolicColoredPixmap(QIcon::fromTheme("kylin-fold").pixmap(m_icon_size, m_icon_size)));
     } else {
-        painter.drawPixmap(iconArea, drawSymbolicColoredPixmap(QIcon::fromTheme("pan-down-symbolic").pixmap(m_icon_size, m_icon_size)));
+        painter.drawPixmap(iconArea, drawSymbolicColoredPixmap(QIcon::fromTheme("kylin-open").pixmap(m_icon_size, m_icon_size)));
     }
 
     // paint text
@@ -458,11 +487,22 @@ void OtherButton::paintEvent(QPaintEvent *event)
     Q_UNUSED(event);
 }
 
+void OtherButton::mousePressEvent(QMouseEvent *event)
+{
+    if (!m_is_press) {
+        m_is_press = true;
+    }
+    Q_UNUSED(event);
+}
+
 void OtherButton::mouseReleaseEvent(QMouseEvent *event)
 {
-    m_show = !m_show;
+    if (m_is_press) {
+        m_show = !m_show;
+        Q_EMIT clicked(m_show);
+    }
 
-    Q_EMIT clicked(m_show);
+    m_is_press = false;
 
     Q_UNUSED(event);
 }
@@ -472,7 +512,9 @@ ProgressBar::ProgressBar(QWidget *parent) : QWidget(parent)
     setContentsMargins(0, 0, 0, 0);
     setFixedHeight(m_fix_height);
     setMouseTracking(true);
+    m_is_stopping = false;
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    connect(this, &ProgressBar::cancelled, this, &ProgressBar::onCancelled);
 }
 
 void ProgressBar::setIcon(QIcon icon)
@@ -483,6 +525,11 @@ void ProgressBar::setIcon(QIcon icon)
 QIcon ProgressBar::getIcon()
 {
     return m_icon;
+}
+
+bool ProgressBar::getStatus()
+{
+    return m_is_stopping;
 }
 
 ProgressBar::~ProgressBar()
@@ -522,7 +569,11 @@ void ProgressBar::paintEvent(QPaintEvent *event)
     QFont font = painter.font();
     font.setPixelSize(10);
     painter.setFont(font);
-    painter.drawText(x, y, w, m_text_height, Qt::AlignLeft | Qt::AlignVCenter, m_dest_uri);
+    if (m_is_stopping) {
+        painter.drawText(x, y, w, m_text_height, Qt::AlignLeft | Qt::AlignVCenter, tr("canceling ..."));
+    } else {
+        painter.drawText(x, y, w, m_text_height, Qt::AlignLeft | Qt::AlignVCenter, m_dest_uri);
+    }
 
     // paint progress
     x = m_margin_lr * 3 + m_icon_size + w;
@@ -551,6 +602,8 @@ void ProgressBar::paintEvent(QPaintEvent *event)
     painter.drawPixmap(x, y, m_btn_size, m_btn_size,
                        drawSymbolicColoredPixmap(QIcon::fromTheme("window-close-symbolic").pixmap(m_btn_size, m_btn_size)));
 
+    // paint stopping
+
     painter.restore();
 
     Q_UNUSED(event);
@@ -565,10 +618,25 @@ void ProgressBar::mouseReleaseEvent(QMouseEvent *event)
     QPoint pos = event->pos();
     if ((pos.x() >= x) && (pos.x() <= (x + m_btn_size))
             && (pos.y() >= y) && (pos.y() <= y + m_btn_size)) {
-        Q_EMIT cancelled();
+        QMessageBox msgBox(QMessageBox::Warning, tr("cancel file operation"),
+                           tr("Are you sure want to cancel the current selected file operation"),
+                           QMessageBox::Ok | QMessageBox::Cancel);
+        msgBox.button(QMessageBox::Ok)->setText(tr("OK"));
+        msgBox.button(QMessageBox::Cancel)->setText(tr("Cancel"));
+        if (QMessageBox::Ok == msgBox.exec()) {
+            m_is_stopping = true;
+            Q_EMIT cancelled();
+        }
     }
 
     QWidget::mouseReleaseEvent(event);
+    update();
+}
+
+void ProgressBar::onCancelled()
+{
+    m_is_stopping = true;
+    update();
 }
 
 void ProgressBar::updateValue(double value)
