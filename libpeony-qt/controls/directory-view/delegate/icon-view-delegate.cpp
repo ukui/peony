@@ -291,6 +291,9 @@ void IconViewDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, 
     //process special name . or .. or only space
     if (newName == "." || newName == ".." || newName.trimmed() == "")
         newName = "";
+    //process new has special character, set as old name
+    if (newName.contains("#"))
+        newName = oldName;
     if (newName.length() >0 && newName != oldName && newName != suffix) {
         auto fileOpMgr = FileOperationManager::getInstance();
         auto renameOp = new FileRenameOperation(index.data(FileItemModel::UriRole).toString(), newName);
