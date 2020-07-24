@@ -164,12 +164,12 @@ retry:
         if (err) {
             this->setHasError(true);
             qDebug()<<"untrash err"<<uri<<originUri<<err->message;
-            ResponseType type = Invalid;
+            int type = Invalid;
             if (m_pre_handler != Invalid) {
                 type = m_pre_handler;
             } else {
                 auto responseData = Q_EMIT errored(uri, originUri, GErrorWrapper::wrapFrom(err), false);
-                type = responseData.value<ResponseType>();
+                type = responseData;
             }
 
             switch (type) {

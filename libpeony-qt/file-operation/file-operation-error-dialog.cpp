@@ -104,7 +104,7 @@ FileOperationErrorHandler::~FileOperationErrorHandler()
 
 }
 
-QVariant FileOperationErrorDialog::handleError(const QString &srcUri,
+int FileOperationErrorDialog::handleError(const QString &srcUri,
         const QString &destDirUri,
         const GErrorWrapperPtr &err,
         bool isCritical)
@@ -135,31 +135,31 @@ QVariant FileOperationErrorDialog::handleError(const QString &srcUri,
     int val = exec();
     switch (val) {
     case 1: {
-        return QVariant(FileOperation::IgnoreOne);
+        return FileOperation::IgnoreOne;
     }
     case 2: {
-        return QVariant(FileOperation::IgnoreAll);
+        return FileOperation::IgnoreAll;
     }
     case 3: {
-        return QVariant(FileOperation::OverWriteOne);
+        return FileOperation::OverWriteOne;
     }
     case 4: {
-        return QVariant(FileOperation::OverWriteAll);
+        return FileOperation::OverWriteAll;
     }
     case 5: {
-        return QVariant(FileOperation::BackupOne);
+        return FileOperation::BackupOne;
     }
     case 6: {
-        return QVariant(FileOperation::BackupAll);
+        return FileOperation::BackupAll;
     }
     case 7: {
-        return QVariant(FileOperation::Retry);
+        return FileOperation::Retry;
     }
     case 8: {
-        return QVariant(FileOperation::Cancel);
+        return FileOperation::Cancel;
     }
     default: {
-        return QVariant(FileOperation::IgnoreAll);
+        return FileOperation::IgnoreAll;
     }
     }
 }

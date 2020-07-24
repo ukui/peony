@@ -168,12 +168,12 @@ fallback_retry:
                 return;
             }
             auto errWrapperPtr = GErrorWrapper::wrapFrom(err);
-            ResponseType handle_type = prehandle(err);
+            int handle_type = prehandle(err);
             if (handle_type == Other) {
                 qDebug()<<"send error";
                 auto typeData = errored(m_current_src_uri, m_current_dest_dir_uri, errWrapperPtr);
                 qDebug()<<"get return";
-                handle_type = typeData.value<ResponseType>();
+                handle_type = typeData;
             }
             //handle.
             switch (handle_type) {
@@ -254,12 +254,12 @@ fallback_retry:
                 return;
             }
             auto errWrapperPtr = GErrorWrapper::wrapFrom(err);
-            ResponseType handle_type = prehandle(err);
+            int handle_type = prehandle(err);
             if (handle_type == Other) {
                 qDebug()<<"send error";
                 auto typeData = errored(m_current_src_uri, m_current_dest_dir_uri, errWrapperPtr);
                 qDebug()<<"get return";
-                handle_type = typeData.value<ResponseType>();
+                handle_type = typeData;
             }
             //handle.
             switch (handle_type) {

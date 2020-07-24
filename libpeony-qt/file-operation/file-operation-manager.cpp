@@ -335,13 +335,13 @@ void FileOperationManager::onFilesDeleted(const QStringList &uris)
     clearHistory();
 }
 
-QVariant FileOperationManager::handleError(const QString &srcUri,
+int FileOperationManager::handleError(const QString &srcUri,
         const QString &destUri,
         const GErrorWrapperPtr &err,
         bool critical)
 {
     if (srcUri.startsWith("trash://") && err.get()->code() == G_IO_ERROR_PERMISSION_DENIED) {
-        return QVariant(FileOperation::IgnoreOne);
+        return FileOperation::IgnoreOne;
     }
     FileOperationErrorDialog dlg;
 

@@ -192,12 +192,12 @@ retry:
             default:
                 break;
             }
-            ResponseType handle_type = prehandle(err);
+            int handle_type = prehandle(err);
             if (handle_type == Other) {
                 qDebug()<<"send error";
                 auto responseTypeWrapper = Q_EMIT errored(srcUri, m_dest_dir_uri, errWrapper);
                 qDebug()<<"get return";
-                handle_type = responseTypeWrapper.value<ResponseType>();
+                handle_type = responseTypeWrapper;
                 //block until error has been handled.
             }
 
@@ -514,12 +514,12 @@ fallback_retry:
                 return;
             }
             auto errWrapperPtr = GErrorWrapper::wrapFrom(err);
-            ResponseType handle_type = prehandle(err);
+            int handle_type = prehandle(err);
             if (handle_type == Other) {
                 qDebug()<<"send error";
                 auto typeData = errored(m_current_src_uri, m_current_dest_dir_uri, errWrapperPtr);
                 qDebug()<<"get return";
-                handle_type = typeData.value<ResponseType>();
+                handle_type = typeData;
             }
             //handle.
             switch (handle_type) {
@@ -599,12 +599,12 @@ fallback_retry:
                 return;
             }
             auto errWrapperPtr = GErrorWrapper::wrapFrom(err);
-            ResponseType handle_type = prehandle(err);
+            int handle_type = prehandle(err);
             if (handle_type == Other) {
                 qDebug()<<"send error";
                 auto typeData = errored(m_current_src_uri, m_current_dest_dir_uri, errWrapperPtr);
                 qDebug()<<"get return";
-                handle_type = typeData.value<ResponseType>();
+                handle_type = typeData;
             }
             //handle.
             switch (handle_type) {
@@ -814,7 +814,7 @@ start:
                                         tr("Invalid Operation").toUtf8().constData(),
                                         nullptr)),
                                 true);
-        switch (response.value<ResponseType>()) {
+        switch (response) {
         case Retry:
             goto start;
         case Cancel:

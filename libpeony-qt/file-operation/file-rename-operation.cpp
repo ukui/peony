@@ -135,7 +135,7 @@ fallback_retry:
                                         FileUtils::getFileUri(newFile),
                                         GErrorWrapper::wrapFrom(err),
                                         true);
-            switch (responseType.value<ResponseType>()) {
+            switch (responseType) {
             case Retry:
                 goto fallback_retry;
             case Cancel:
@@ -160,7 +160,7 @@ retry:
                                         FileUtils::getFileUri(newFile),
                                         GErrorWrapper::wrapFrom(err),
                                         true);
-            switch (responseType.value<ResponseType>()) {
+            switch (responseType) {
             case Retry:
                 goto retry;
             case Cancel:

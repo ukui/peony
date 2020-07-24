@@ -164,7 +164,7 @@ Q_SIGNALS:
      * Qt::BlockingQueuedConnection flag set. That also limit you use fileoperation and its
      * derived class in main thread.
      */
-    QVariant errored(const QString &srcUri, const QString &destUri, const Peony::GErrorWrapperPtr &err, bool isCritical = false);
+    int errored(const QString &srcUri, const QString &destUri, const Peony::GErrorWrapperPtr &err, bool isCritical = false);
 
     void FileProgressCallback(const QString &srcUri, const QString &destUri,
                               const qint64 &current_file_offset, const qint64 &current_file_size);
