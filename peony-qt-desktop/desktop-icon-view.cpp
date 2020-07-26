@@ -469,7 +469,16 @@ void DesktopIconView::initDoubleClick()
                 p.startDetached();
 #else
                 QProcess p;
-                p.startDetached("peony", QStringList()<<uri<<"%U&");
+                QString strq;
+                for (int i = 0;i < uri.length();++i) {
+                    if(uri[i] == ' '){
+                        strq += "%20";
+                    }else{
+                        strq += uri[i];
+                    }
+                }
+
+                p.startDetached("peony", QStringList()<<strq<<"%U&");
 #endif
             } else {
                 FileLaunchManager::openAsync(uri, false, false);
