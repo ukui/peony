@@ -212,8 +212,8 @@ void FileWatcher::file_changed_callback(GFileMonitor *monitor,
     case G_FILE_MONITOR_EVENT_RENAMED: {
         char *new_uri = g_file_get_uri(other_file);
         QString uri = new_uri;
-        QUrl url =  uri;
-        uri = url.toDisplayString();
+        //QUrl url =  uri;
+        //uri = url.toDisplayString();
         g_free(new_uri);
         p_this->changeMonitorUri(uri);
         break;
@@ -253,8 +253,8 @@ void FileWatcher::dir_changed_callback(GFileMonitor *monitor,
             char *uri = g_file_get_uri(file);
             QString changedFileUri = uri;
             //qDebug()<<uri;
-            QUrl url = changedFileUri;
-            changedFileUri = url.toDisplayString();
+            //QUrl url = changedFileUri;
+            //changedFileUri = url.toDisplayString();
             g_free(uri);
             Q_EMIT p_this->fileChanged(changedFileUri);
         }
@@ -263,8 +263,8 @@ void FileWatcher::dir_changed_callback(GFileMonitor *monitor,
     case G_FILE_MONITOR_EVENT_CREATED: {
         char *uri = g_file_get_uri(file);
         QString createdFileUri = uri;
-        QUrl url = createdFileUri;
-        createdFileUri = url.toDisplayString();
+        //QUrl url = createdFileUri;
+        //createdFileUri = url.toDisplayString();
         g_free(uri);
         Q_EMIT p_this->fileCreated(createdFileUri);
         break;
@@ -272,8 +272,8 @@ void FileWatcher::dir_changed_callback(GFileMonitor *monitor,
     case G_FILE_MONITOR_EVENT_DELETED: {
         char *uri = g_file_get_uri(file);
         QString deletedFileUri = uri;
-        QUrl url = deletedFileUri;
-        deletedFileUri = url.toDisplayString();
+        //QUrl url = deletedFileUri;
+        //deletedFileUri = url.toDisplayString();
         g_free(uri);
         Q_EMIT p_this->fileDeleted(deletedFileUri);
         break;
@@ -281,8 +281,8 @@ void FileWatcher::dir_changed_callback(GFileMonitor *monitor,
     case G_FILE_MONITOR_EVENT_UNMOUNTED: {
         char *uri = g_file_get_uri(file);
         QString deletedFileUri = uri;
-        QUrl url = deletedFileUri;
-        deletedFileUri = url.toDisplayString();
+        //QUrl url = deletedFileUri;
+        //deletedFileUri = url.toDisplayString();
         g_free(uri);
         Q_EMIT p_this->directoryUnmounted(deletedFileUri);
         break;

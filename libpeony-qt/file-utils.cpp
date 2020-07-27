@@ -44,16 +44,18 @@ QString FileUtils::getQStringFromCString(char *c_string, bool free)
 
 QString FileUtils::getFileUri(const GFileWrapperPtr &file)
 {
-    char *path = g_file_get_path(file.get()->get());
-    if (path) {
-        QUrl url = QString("file://%1").arg(path);
-        g_free(path);
-        return url.toDisplayString();
-    }
     char *uri = g_file_get_uri(file.get()->get());
-    QUrl url = QString(uri);
+    QString urlString = QString(uri);
+    QUrl url = urlString;
     g_free(uri);
-    return url.toDisplayString();
+    char *path = g_file_get_path(file.get()->get());
+    if (path && !url.isLocalFile()) {
+        QString urlString = QString("file://%1").arg(path);
+        g_free(path);
+        return urlString;
+    }
+
+    return urlString;
 }
 
 QString FileUtils::getFileBaseName(const GFileWrapperPtr &file)
@@ -129,17 +131,19 @@ QStringList FileUtils::getChildrenUris(const QString &directoryUri)
     auto child_info = g_file_enumerator_next_file(e, nullptr, nullptr);
     while (child_info) {
         auto child = g_file_enumerator_get_child(e, child_info);
-        QUrl url;
+
         auto uri = g_file_get_uri(child);
         auto path = g_file_get_path(child);
-        if (path) {
-            url = QString("file://%1").arg(path);
+        QString urlString = uri;
+        QUrl url = urlString;
+        if (path && !url.isLocalFile()) {
+            urlString = QString("file://%1").arg(path);
             g_free(path);
         } else {
-            url = uri;
+            urlString = uri;
         }
 
-        uris<<url.toDisplayString();
+        uris<<urlString;
         g_free(uri);
         g_object_unref(child);
         g_object_unref(child_info);

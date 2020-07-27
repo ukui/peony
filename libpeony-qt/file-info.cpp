@@ -50,11 +50,8 @@ FileInfo::FileInfo(const QString &uri, QObject *parent) : QObject (parent)
      * this would help me avoid some problem, such as the uri path completion
      * bug in PathBarModel enumeration.
      */
-    QUrl url(uri.toUtf8());
-    m_uri = url.toDisplayString();
-    auto encoded = url.toEncoded();
-    encoded.replace("#", "%23");
-    m_file = g_file_new_for_uri(encoded.data());
+    m_uri = uri;
+    m_file = g_file_new_for_uri(uri.toUtf8().data());
     m_parent = g_file_get_parent(m_file);
     m_is_remote = !g_file_is_native(m_file);
     GFileType type = g_file_query_file_type(m_file,
@@ -100,11 +97,8 @@ std::shared_ptr<FileInfo> FileInfo::fromUri(QString uri, bool addToHash)
         return info;
     } else {
         std::shared_ptr<FileInfo> newly_info = std::make_shared<FileInfo>();
-        QUrl url(uri.toUtf8());
-        newly_info->m_uri = url.toDisplayString();
-        auto encoded = url.toEncoded();
-        encoded.replace("#", "%23");
-        newly_info->m_file = g_file_new_for_uri(encoded.data());
+        newly_info->m_uri = uri;
+        newly_info->m_file = g_file_new_for_uri(uri.toUtf8().data());
         newly_info->m_parent = g_file_get_parent(newly_info->m_file);
         newly_info->m_is_remote = !g_file_is_native(newly_info->m_file);
         GFileType type = g_file_query_file_type(newly_info->m_file,

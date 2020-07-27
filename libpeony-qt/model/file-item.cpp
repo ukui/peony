@@ -131,8 +131,9 @@ void FileItem::findChildrenAsync()
                 this->m_info = FileInfo::fromUri(targetUri);
 
                 GFile *targetFile = g_file_new_for_uri(targetUri.toUtf8().constData());
+                QUrl targetUrl = targetUri;
                 auto path = g_file_get_path(targetFile);
-                if (path) {
+                if (path && !targetUrl.isLocalFile()) {
                     QString localUri = QString("file://%1").arg(path);
                     this->m_info = FileInfo::fromUri(localUri);
                     enumerator->setEnumerateDirectory(localUri);
@@ -387,9 +388,10 @@ bool FileItem::hasChildren()
 FileItem *FileItem::getChildFromUri(QString uri)
 {
     for (auto item : *m_children) {
+        QUrl itemUrl = item->uri();
         QUrl url = uri;
         QString decodedUri = url.toDisplayString();
-        if (decodedUri == item->uri())
+        if (decodedUri == itemUrl.toDisplayString())
             return item;
     }
     return nullptr;
