@@ -32,6 +32,7 @@ using namespace Peony;
 FileRenameOperation::FileRenameOperation(QString uri, QString newName)
 {
     m_uri = uri;
+    m_uri.replace("#", "%23");
     m_new_name = newName;
     QStringList srcUris;
     srcUris<<uri;
