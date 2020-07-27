@@ -345,10 +345,7 @@ int FileOperationManager::handleError(const QString &srcUri,
     }
     FileOperationErrorDialog dlg;
 
-    QUrl srcUrl = srcUri;
-    QUrl destUrl = destUri;
-
-    return dlg.handleError(srcUrl.toDisplayString(), destUrl.toDisplayString(), err, critical);
+    return dlg.handleError(srcUri, destUri, err, critical);
 }
 
 void FileOperationManager::registerFileWatcher(FileWatcher *watcher)

@@ -36,8 +36,6 @@ using namespace Peony;
 RecentAndTrashPropertiesPage::RecentAndTrashPropertiesPage(const QStringList &uris, QWidget *parent) : QWidget(parent)
 {
     m_uri = uris.first();
-    auto encoded = m_uri;
-    encoded.replace("#", "%23");
     bool startWithTrash = m_uri.startsWith("trash:///");
 
     auto info = FileInfo::fromUri(m_uri);
@@ -65,7 +63,7 @@ RecentAndTrashPropertiesPage::RecentAndTrashPropertiesPage(const QStringList &ur
         if (m_uri == "trash:///") {
 
         } else {
-            GFile *file = g_file_new_for_uri(encoded.toUtf8().constData());
+            GFile *file = g_file_new_for_uri(m_uri.toUtf8().constData());
             GFileInfo *info = g_file_query_info(file,
                                                 G_FILE_ATTRIBUTE_TRASH_ORIG_PATH,
                                                 G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,

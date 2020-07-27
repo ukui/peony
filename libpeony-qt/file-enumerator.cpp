@@ -83,7 +83,6 @@ FileEnumerator::~FileEnumerator()
 
 void FileEnumerator::setEnumerateDirectory(QString uri)
 {
-    uri.replace("#", "%23");
     if (m_cancellable) {
         g_cancellable_cancel(m_cancellable);
         g_object_unref(m_cancellable);

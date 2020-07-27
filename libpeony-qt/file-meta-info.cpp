@@ -87,12 +87,9 @@ void FileMetaInfo::setMetaInfoVariant(const QString &key, const QVariant &value)
     if (!key.startsWith("metadata::"))
         realKey = "metadata::" + key;
 
-    auto encoded = m_uri;
-    encoded.replace("#", "%23");
-
     m_meta_hash.remove(realKey);
     m_meta_hash.insert(realKey, value);
-    GFile *file = g_file_new_for_uri(encoded.toUtf8().constData());
+    GFile *file = g_file_new_for_uri(m_uri.toUtf8().constData());
     GFileInfo *info = g_file_info_new();
     std::string tmp = realKey.toStdString();
     auto data = value.toString().toUtf8().data();
@@ -155,11 +152,7 @@ void FileMetaInfo::removeMetaInfo(const QString &key)
     if (!key.startsWith("metadata::"))
         realKey = "metadata::" + key;
     m_meta_hash.remove(realKey);
-
-    auto encoded = m_uri;
-    encoded.replace("#", "%23");
-
-    GFile *file = g_file_new_for_uri(encoded.toUtf8().constData());
+    GFile *file = g_file_new_for_uri(m_uri.toUtf8().constData());
     g_file_set_attribute(file,
                          realKey.toUtf8().constData(),
                          G_FILE_ATTRIBUTE_TYPE_INVALID,

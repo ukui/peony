@@ -29,7 +29,6 @@ using namespace Peony;
 
 FileNode::FileNode(QString uri, FileNode *parent, FileNodeReporter *reporter)
 {
-    uri.replace("#", "%23");
     m_uri = uri;
     m_parent = parent;
     m_reporter = reporter;

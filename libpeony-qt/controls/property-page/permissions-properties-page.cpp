@@ -99,10 +99,7 @@ void PermissionsPropertiesPage::queryPermissionsAsync(const QString &, const QSt
     m_label->setText(m_uri);
     m_table->setEnabled(false);
 
-    auto encoded = uri;
-    encoded.replace("#", "%23");
-
-    GFile *file = g_file_new_for_uri(encoded.toUtf8().constData());
+    GFile *file = g_file_new_for_uri(m_uri.toUtf8().constData());
     g_file_query_info_async(file,
                             "owner::*," "access::*," "unix::mode",
                             G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
