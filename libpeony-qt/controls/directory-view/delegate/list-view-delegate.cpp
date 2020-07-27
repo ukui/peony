@@ -122,9 +122,6 @@ void ListViewDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, 
     //process special name . or .. or only space
     if (text == "." || text == ".." || text.trimmed() == "")
         return;
-    //process new has special character, set as old name
-    if (text.contains("#"))
-        return;
 
     auto view = qobject_cast<DirectoryView::ListView *>(parent());
 
