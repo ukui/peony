@@ -37,6 +37,8 @@
 #include <QDebug>
 #include <QTimer>
 
+#include <QUrl>
+
 #ifndef PEONY_FIND_NEXT_FILES_BATCH_SIZE
 #define PEONY_FIND_NEXT_FILES_BATCH_SIZE 100
 #endif
