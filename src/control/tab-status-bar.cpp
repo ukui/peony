@@ -134,8 +134,10 @@ void TabStatusBar::update()
             displayName = tr("Search \"%1\" in \"%2\"").arg(nameRegexp).arg(targetDirectory);
             m_label->setText(displayName);
         }
-        else
-            m_label->setText(m_tab->getCurrentUri());
+        else {
+            QUrl url = m_tab->getCurrentUri();
+            m_label->setText(url.toDisplayString());
+        }
     }
 }
 
