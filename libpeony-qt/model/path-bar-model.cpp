@@ -25,6 +25,8 @@
 #include "file-info.h"
 #include "file-utils.h"
 
+#include <QUrl>
+
 using namespace Peony;
 
 PathBarModel::PathBarModel(QObject *parent) : QStringListModel (parent)
@@ -87,9 +89,8 @@ void PathBarModel::setRootUri(const QString &uri, bool force)
         if (display_name.startsWith("."))
             continue;
 
-        //NOTE: uri encode can not support chinese correctly.
-        //I have fixed it in FileInfo class constructor.
-        l<<info->uri();
+        QUrl url = info->uri();
+        l<<url.toDisplayString();
         m_uri_display_name_hash.insert(info->uri(), display_name);
     }
     setStringList(l);
@@ -100,9 +101,10 @@ void PathBarModel::setRootUri(const QString &uri, bool force)
 
 QString PathBarModel::findDisplayName(const QString &uri)
 {
-    if (m_uri_display_name_hash.find(uri)->isNull()) {
+    QUrl url = uri;
+    if (m_uri_display_name_hash.find(url.toDisplayString())->isNull()) {
         return FileUtils::getFileDisplayName(uri);
     } else {
-        return m_uri_display_name_hash.value(uri);
+        return m_uri_display_name_hash.value(url.toDisplayString());
     }
 }
