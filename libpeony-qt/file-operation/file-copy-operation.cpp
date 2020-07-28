@@ -95,7 +95,9 @@ static void handleDuplicate(FileNode *node) {
 
 FileCopyOperation::FileCopyOperation(QStringList sourceUris, QString destDirUri, QObject *parent) : FileOperation (parent)
 {
-    if (sourceUris.first().contains(destDirUri)) {
+    QUrl destDirUrl = destDirUri;
+    QUrl firstSrcUrl = sourceUris.first();
+    if (destDirUrl.isParentOf(firstSrcUrl)) {
         m_is_duplicated_copy = true;
     }
     m_source_uris = sourceUris;
@@ -147,7 +149,8 @@ void FileCopyOperation::copyRecursively(FileNode *node)
     node->setState(FileNode::Handling);
 
 fallback_retry:
-    QString destFileUri = node->resoveDestFileUri(m_dest_dir_uri);
+    QString destFileUri = node->resolveDestFileUri(m_dest_dir_uri);
+    QUrl destFileUrl = destFileUri;
     node->setDestUri(destFileUri);
     qDebug()<<"dest file uri:"<<destFileUri;
 
@@ -203,7 +206,7 @@ fallback_retry:
             case BackupOne: {
                 node->setState(FileNode::Handled);
                 node->setErrorResponse(BackupOne);
-                while (FileUtils::isFileExsit(node->resoveDestFileUri(m_dest_dir_uri))) {
+                while (FileUtils::isFileExsit(node->resolveDestFileUri(m_dest_dir_uri))) {
                     handleDuplicate(node);
                 }
                 goto fallback_retry;
@@ -211,7 +214,7 @@ fallback_retry:
             case BackupAll: {
                 node->setState(FileNode::Handled);
                 node->setErrorResponse(BackupOne);
-                while (FileUtils::isFileExsit(node->resoveDestFileUri(m_dest_dir_uri))) {
+                while (FileUtils::isFileExsit(node->resolveDestFileUri(m_dest_dir_uri))) {
                     handleDuplicate(node);
                 }
                 //make dir has no backup
@@ -302,7 +305,7 @@ fallback_retry:
             case BackupOne: {
                 node->setState(FileNode::Handled);
                 node->setErrorResponse(BackupOne);
-                while (FileUtils::isFileExsit(node->resoveDestFileUri(m_dest_dir_uri))) {
+                while (FileUtils::isFileExsit(node->resolveDestFileUri(m_dest_dir_uri))) {
                     handleDuplicate(node);
                 }
                 goto fallback_retry;
@@ -310,7 +313,7 @@ fallback_retry:
             case BackupAll: {
                 node->setState(FileNode::Handled);
                 node->setErrorResponse(BackupOne);
-                while (FileUtils::isFileExsit(node->resoveDestFileUri(m_dest_dir_uri))) {
+                while (FileUtils::isFileExsit(node->resolveDestFileUri(m_dest_dir_uri))) {
                     handleDuplicate(node);
                 }
                 m_prehandle_hash.insert(err->code, BackupOne);

@@ -248,7 +248,7 @@ retry:
                 file->setState(FileNode::Handled);
                 file->setErrorResponse(FileOperation::BackupOne);
                 handleDuplicate(file);
-                auto handledDestFileUri = file->resoveDestFileUri(m_dest_dir_uri);
+                auto handledDestFileUri = file->resolveDestFileUri(m_dest_dir_uri);
                 auto handledDestFile = wrapGFile(g_file_new_for_uri(handledDestFileUri.toUtf8()));
                 g_file_copy(srcFile.get()->get(),
                             handledDestFile.get()->get(),
@@ -262,7 +262,7 @@ retry:
             case BackupAll: {
                 file->setState(FileNode::Handled);
                 file->setErrorResponse(FileOperation::BackupOne);
-                auto handledDestFileUri = file->resoveDestFileUri(m_dest_dir_uri);
+                auto handledDestFileUri = file->resolveDestFileUri(m_dest_dir_uri);
                 auto handledDestFile = wrapGFile(g_file_new_for_uri(handledDestFileUri.toUtf8()));
                 g_file_copy(srcFile.get()->get(),
                             handledDestFile.get()->get(),
@@ -646,7 +646,7 @@ fallback_retry:
             }
             case BackupOne: {
                 handleDuplicate(node);
-                auto handledDestFileUri = node->resoveDestFileUri(m_dest_dir_uri);
+                auto handledDestFileUri = node->resolveDestFileUri(m_dest_dir_uri);
                 auto handledDestFile = wrapGFile(g_file_new_for_uri(handledDestFileUri.toUtf8()));
                 g_file_copy(sourceFile.get()->get(),
                             handledDestFile.get()->get(),
@@ -661,7 +661,7 @@ fallback_retry:
             }
             case BackupAll: {
                 handleDuplicate(node);
-                auto handledDestFileUri = node->resoveDestFileUri(m_dest_dir_uri);
+                auto handledDestFileUri = node->resolveDestFileUri(m_dest_dir_uri);
                 auto handledDestFile = wrapGFile(g_file_new_for_uri(handledDestFileUri.toUtf8()));
                 g_file_copy(sourceFile.get()->get(),
                             handledDestFile.get()->get(),

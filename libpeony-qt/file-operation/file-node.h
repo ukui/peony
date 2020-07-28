@@ -167,7 +167,7 @@ public:
     void setDestFileName(const QString &name) {
         m_dest_basename = name;
     }
-    const QString resoveDestFileUri(const QString &destRootDir);
+    const QString resolveDestFileUri(const QString &destRootDir);
 
 private:
     QString m_uri = nullptr;

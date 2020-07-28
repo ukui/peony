@@ -36,6 +36,8 @@ FileNode::FileNode(QString uri, FileNode *parent, FileNodeReporter *reporter)
     char *basename = g_file_get_basename(file);
     m_basename = basename;
     m_dest_basename = basename;
+    m_basename = m_uri.split("/").last();
+    m_dest_basename = m_basename;
     g_free(basename);
 
     //use G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS to avoid unnecessary recursion.
@@ -117,7 +119,7 @@ QString FileNode::getRelativePath()
     return relativePath;
 }
 
-const QString FileNode::resoveDestFileUri(const QString &destRootDir)
+const QString FileNode::resolveDestFileUri(const QString &destRootDir)
 {
     QStringList relativePathList;
     relativePathList.prepend(m_dest_basename);
@@ -130,5 +132,6 @@ const QString FileNode::resoveDestFileUri(const QString &destRootDir)
     if (relativePath.endsWith("/")) {
         relativePath.chop(1);
     }
-    return destRootDir + "/" + relativePath;
+    QUrl url = destRootDir + "/" + relativePath;
+    return url.toEncoded();
 }
