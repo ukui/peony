@@ -35,6 +35,8 @@
 #include <QApplication>
 #include <QStyle>
 
+#include <QUrl>
+
 #include <QToolBar>
 #include <QSlider>
 #include <QDebug>
