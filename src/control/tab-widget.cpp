@@ -242,6 +242,7 @@ void TabWidget::initAdvanceSearch()
     connect(closeButton, &QPushButton::clicked, [=]()
     {
         updateSearchBar(false);
+        Q_EMIT this->closeSearch();
     });
 
     QLabel *title = new QLabel(tr("Search"), searchButtons);
@@ -317,7 +318,7 @@ void TabWidget::searchUpdate()
         if (m_last_non_search_path == "")
             m_last_non_search_path = getCurrentUri();
         auto targetUri = Peony::SearchVFSUriParser::parseSearchKey(m_last_non_search_path, "", true, false, keyList, m_search_child_flag);
-        Q_EMIT this->updateWindowLocationRequest(targetUri, true);
+        Q_EMIT this->updateWindowLocationRequest(targetUri, false);
         qDebug() << "searchUpdate" <<m_search_child_flag <<targetUri;;
     }
     else
@@ -573,6 +574,7 @@ void TabWidget::handleZoomLevel(int zoomLevel)
 
 void TabWidget::updateSearchBar(bool showSearch)
 {
+    qDebug() << "updateSearchBar:" <<showSearch;
     m_show_search_bar = showSearch;
     if (showSearch)
     {
@@ -594,7 +596,6 @@ void TabWidget::updateSearchBar(bool showSearch)
         m_search_bar->hide();
         m_search_child->hide();
         m_search_more->hide();
-        Q_EMIT this->closeSearch();
         m_search_bar_layout->setContentsMargins(10, 0, 10, 0);
     }
 
@@ -661,6 +662,7 @@ void TabWidget::updateSearchList()
             m_link_label_list[i]->hide();
             m_classify_list[i]->hide();
             m_input_list[i]->hide();
+            m_input_list[i]->setText("");
             m_search_bar_list[i]->hide();
             m_add_button_list[i]->hide();
             m_remove_button_list[i]->hide();

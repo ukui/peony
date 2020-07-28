@@ -82,7 +82,7 @@ AdvancedLocationBar::AdvancedLocationBar(QWidget *parent) : QWidget(parent)
         auto key = m_search_bar->text();
         if (key.isEmpty())
         {
-            Q_EMIT this->updateWindowLocationRequest(m_last_non_search_path);
+            Q_EMIT this->updateWindowLocationRequest(m_last_non_search_path, false);
         }
         else
         {
@@ -145,6 +145,9 @@ void AdvancedLocationBar::switchEditMode(bool bSearchMode)
     }
     else
     {
+        //quit search mode, show non search contents
+        m_search_bar->setText("");
+        Q_EMIT this->updateWindowLocationRequest(m_last_non_search_path, false);
         m_layout->setCurrentWidget(m_bar);
     }
 }

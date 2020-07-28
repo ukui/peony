@@ -100,7 +100,10 @@ void DirectoryViewContainer::goBack()
         return;
 
     auto uri = m_back_list.takeLast();
-    m_forward_list.prepend(getCurrentUri());
+    //avoid same uri add twice
+    int count = m_forward_list.count();
+    if (count <= 0 || m_forward_list.at(0) != getCurrentUri())
+        m_forward_list.prepend(getCurrentUri());
     Q_EMIT updateWindowLocationRequest(uri, false);
 }
 
@@ -115,7 +118,11 @@ void DirectoryViewContainer::goForward()
         return;
 
     auto uri = m_forward_list.takeFirst();
-    m_back_list.append(getCurrentUri());
+    //avoid same uri add twice
+    int count = m_back_list.count();
+    if (! getCurrentUri().contains("search://") &&
+        (count <= 0 || m_back_list.at(count-1) != getCurrentUri()))
+        m_back_list.append(getCurrentUri());
 
     Q_EMIT updateWindowLocationRequest(uri, false);
 }
@@ -203,7 +210,10 @@ void DirectoryViewContainer::goToUri(const QString &uri, bool addHistory, bool f
 update:
     if (addHistory) {
         m_forward_list.clear();
-        m_back_list.append(getCurrentUri());
+        //avoid same uri add twice
+        int count = m_back_list.count();
+        if (! uri.contains("search://") && (count <= 0 || m_back_list.at(count-1) != getCurrentUri()))
+            m_back_list.append(getCurrentUri());
     }
 
     auto viewId = DirectoryViewFactoryManager2::getInstance()->getDefaultViewId(zoomLevel, uri);

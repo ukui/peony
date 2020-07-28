@@ -291,9 +291,9 @@ void HeaderBar::openDefaultTerminal()
 void HeaderBar::searchButtonClicked()
 {
     m_search_mode = ! m_search_mode;
-    //qDebug() << "searchButtonClicked" <<m_search_mode;
-    setSearchMode(m_search_mode);
+    qDebug() << "searchButtonClicked" <<m_search_mode;
     Q_EMIT this->updateSearchRequest(m_search_mode);
+    setSearchMode(m_search_mode);
 }
 
 void HeaderBar::setSearchMode(bool mode)
