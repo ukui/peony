@@ -25,6 +25,8 @@
 #include "file-info.h"
 #include "file-node-reporter.h"
 
+#include <QUrl>
+
 using namespace Peony;
 
 FileNode::FileNode(QString uri, FileNode *parent, FileNodeReporter *reporter)

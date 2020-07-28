@@ -52,6 +52,8 @@
 #include <QMouseEvent>
 #include <QApplication>
 
+#include <QStringList>
+
 #include <QDebug>
 
 using namespace Peony;
@@ -116,6 +118,7 @@ const QStringList IconView::getSelections()
         auto item = m_sort_filter_proxy_model->itemFromIndex(index);
         uris<<item->uri();
     }
+    uris.removeDuplicates();
     return uris;
 }
 

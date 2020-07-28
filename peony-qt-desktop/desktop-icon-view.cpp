@@ -67,6 +67,8 @@
 #include <QWheelEvent>
 #include <QApplication>
 
+#include <QStringList>
+
 #include <QDebug>
 
 using namespace Peony;
@@ -623,6 +625,7 @@ const QStringList DesktopIconView::getSelections()
     for (auto index : indexes) {
         uris<<index.data(Qt::UserRole).toString();
     }
+    uris.removeDuplicates();
     return uris;
 }
 
