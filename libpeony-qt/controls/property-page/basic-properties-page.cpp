@@ -43,6 +43,8 @@
 #include <QThreadPool>
 #include <QFileInfo>
 
+#include <QUrl>
+
 using namespace Peony;
 
 BasicPropertiesPage::BasicPropertiesPage(const QStringList &uris, QWidget *parent) : QWidget(parent)
@@ -110,7 +112,8 @@ BasicPropertiesPage::BasicPropertiesPage(const QStringList &uris, QWidget *paren
     });
 
     location->setTextInteractionFlags(Qt::TextSelectableByMouse);
-    location->setText(FileUtils::getParentUri(uris.first()));
+    QUrl url = FileUtils::getParentUri(uris.first());
+    location->setText(url.toDisplayString());
     //location->setContentsMargins(15, 5, 10, 10);
     //l1->addWidget(location, 1, 1);
 
@@ -198,7 +201,8 @@ void BasicPropertiesPage::onSingleFileChanged(const QString &oldUri, const QStri
     auto icon = QIcon::fromTheme(m_info->iconName(), QIcon::fromTheme("text-x-generic"));
     auto thumbnail = ThumbnailManager::getInstance()->tryGetThumbnail(m_info->uri());
     m_icon->setIcon(thumbnail.isNull()? icon: thumbnail);
-    m_location->setText(FileUtils::getParentUri(m_info->uri()));
+    QUrl url = FileUtils::getParentUri(m_info->uri());
+    m_location->setText(url.toDisplayString());
 }
 
 void BasicPropertiesPage::countFilesAsync(const QStringList &uris)

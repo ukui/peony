@@ -96,7 +96,8 @@ PermissionsPropertiesPage::~PermissionsPropertiesPage()
 void PermissionsPropertiesPage::queryPermissionsAsync(const QString &, const QString &uri)
 {
     m_uri = uri;
-    m_label->setText(m_uri);
+    QUrl url = uri;
+    m_label->setText(url.toDisplayString());
     m_table->setEnabled(false);
 
     GFile *file = g_file_new_for_uri(m_uri.toUtf8().constData());
