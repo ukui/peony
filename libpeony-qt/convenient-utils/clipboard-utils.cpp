@@ -87,14 +87,20 @@ void ClipboardUtils::setClipboardFiles(const QStringList &uris, bool isCut)
 
     m_clipboard_parent_uri = FileUtils::getParentUri(uris.first());
 
+    // we should remain the encoded uri for file operation
     auto data = new QMimeData;
     QVariant isCutData = QVariant(isCut);
     data->setData("peony-qt/is-cut", isCutData.toByteArray());
     QList<QUrl> urls;
+    QStringList encodedUris;
     for (auto uri : uris) {
         urls<<uri;
+        encodedUris<<uri;
     }
     data->setUrls(urls);
+    QString string = encodedUris.join(" ");
+    data->setData("peony-qt/encoded-uris", string.toUtf8());
+    data->setText(string);
     QApplication::clipboard()->setMimeData(data);
 }
 
@@ -122,10 +128,23 @@ QStringList ClipboardUtils::getClipboardFilesUris()
     if (!isClipboardHasFiles()) {
         return l;
     }
-    auto urls = QApplication::clipboard()->mimeData()->urls();
-    for (auto url : urls) {
-        l<<url.toString();
+
+    auto mimeData = QApplication::clipboard()->mimeData();
+    //auto text = mimeData->text();
+    auto peonyText = mimeData->data("peony-qt/encoded-uris");
+
+    if (!peonyText.isEmpty()) {
+        auto byteArrays = peonyText.split(' ');
+        for (auto byteArray : byteArrays) {
+            l<<byteArray;
+        }
+    } else {
+        auto urls = mimeData->urls();
+        for (auto url : urls) {
+            l<<url.toString();
+        }
     }
+
     return l;
 }
 

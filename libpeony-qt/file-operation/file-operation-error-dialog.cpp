@@ -31,6 +31,8 @@
 #include <QDesktopWidget>
 #include <QApplication>
 
+#include <QUrl>
+
 using namespace Peony;
 
 FileOperationErrorDialog::FileOperationErrorDialog(QWidget *parent) : QDialog(parent)
@@ -109,14 +111,16 @@ int FileOperationErrorDialog::handleError(const QString &srcUri,
         const GErrorWrapperPtr &err,
         bool isCritical)
 {
+    QUrl srcUrl = srcUri;
+    QUrl destDirUrl = destDirUri;
     for (int i = 3; i < 8; i++) {
         btGroup->button(i)->setVisible(!isCritical);
     }
 
     pfontMetrics = new QFontMetrics(m_src_line->font());
     int charWidth = pfontMetrics->averageCharWidth();
-    QString edit_srcUri = pfontMetrics->elidedText(srcUri, Qt::ElideRight, ELIDE_ERROR_TEXT_LENGTH * charWidth);
-    QString edit_destDirUri = pfontMetrics->elidedText(destDirUri, Qt::ElideRight, ELIDE_ERROR_TEXT_LENGTH * charWidth);
+    QString edit_srcUri = pfontMetrics->elidedText(srcUrl.toDisplayString(), Qt::ElideRight, ELIDE_ERROR_TEXT_LENGTH * charWidth);
+    QString edit_destDirUri = pfontMetrics->elidedText(destDirUrl.toDisplayString(), Qt::ElideRight, ELIDE_ERROR_TEXT_LENGTH * charWidth);
     QString edit_err_text = pfontMetrics->elidedText(err.get()->message(), Qt::ElideRight, ELIDE_ERROR_TEXT_LENGTH * charWidth);
     delete pfontMetrics;
     pfontMetrics = nullptr;
