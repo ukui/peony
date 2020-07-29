@@ -43,6 +43,7 @@ bool startWithChinese(const QString &displayName)
 DesktopItemProxyModel::DesktopItemProxyModel(QObject *parent) : QSortFilterProxyModel(parent)
 {
     setSortCaseSensitivity(Qt::CaseInsensitive);
+    setDynamicSortFilter(false);
 }
 
 bool DesktopItemProxyModel::filterAcceptsRow(int source_row, const QModelIndex &source_parent) const
