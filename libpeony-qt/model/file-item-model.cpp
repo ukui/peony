@@ -424,7 +424,8 @@ QMimeData *FileItemModel::mimeData(const QModelIndexList &indexes) const
     for (auto index : indexes) {
         auto item = itemFromIndex(index);
         QUrl url = item->m_info->uri();
-        urls<<url;
+        if (!urls.contains(url))
+            urls<<url;
     }
     data->setUrls(urls);
     return data;
@@ -487,6 +488,7 @@ bool FileItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action, i
     for (auto url : urls) {
         srcUris<<url.url();
     }
+    srcUris.removeDuplicates();
 
     if (srcUris.contains(destDirUri)) {
         return false;

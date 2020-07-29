@@ -547,7 +547,8 @@ QMimeData *DesktopItemModel::mimeData(const QModelIndexList &indexes) const
     QList<QUrl> urls;
     for (auto index : indexes) {
         QUrl url = index.data(UriRole).toString();
-        urls<<url;
+        if (!urls.contains(url))
+            urls<<url;
     }
     data->setUrls(urls);
     return data;
@@ -567,7 +568,7 @@ bool DesktopItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action
 
     //if destDirUri was not set, do not execute a drop.
     if (destDirUri.isNull()) {
-        return QAbstractItemModel::dropMimeData(data, action, row, column, parent);
+        return false;
     }
 
     auto info = FileInfo::fromUri(destDirUri);
@@ -586,6 +587,7 @@ bool DesktopItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action
     for (auto url : urls) {
         srcUris<<url.url();
     }
+    srcUris.removeDuplicates();
 
     if (srcUris.contains(destDirUri)) {
         return true;
@@ -631,7 +633,7 @@ bool DesktopItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action
     //NOTE:
     //we have to handle the dnd with file operation, so do not
     //use QAbstractModel::dropMimeData() here;
-    return QAbstractItemModel::dropMimeData(data, action, row, column, parent);
+    return false;
 }
 
 Qt::DropActions DesktopItemModel::supportedDropActions() const
