@@ -99,7 +99,9 @@ void FileDeleteOperation::deleteRecursively(FileNode *node)
     }
     g_object_unref(file);
     qDebug()<<"deleted";
-    operationAfterProgressedOne(node->uri());
+    //operationAfterProgressedOne(node->uri());
+    m_current_offset += node->size();
+    FileProgressCallback(node->uri(), node->uri(), m_current_offset, m_total_szie);
 }
 
 void FileDeleteOperation::run()
@@ -123,10 +125,11 @@ void FileDeleteOperation::run()
     operationPrepared();
 
     m_total_szie = *total_size;
+    m_current_offset = 0;
     delete total_size;
 
     //jump to the clearing stage.
-    operationProgressed();
+    //operationProgressed();
 
     for (auto node : nodes) {
         deleteRecursively(node);

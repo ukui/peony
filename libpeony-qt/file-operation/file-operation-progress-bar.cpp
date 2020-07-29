@@ -29,6 +29,8 @@
 #include <QPushButton>
 #include <QMessageBox>
 
+#include <QUrl>
+
 QPushButton* btn;
 
 static QPixmap drawSymbolicColoredPixmap (const QPixmap&);
@@ -653,7 +655,8 @@ void ProgressBar::onElementFoundOne(const QString &uri, const qint64 &size)
 {
     ++m_total_count;
     m_total_size += size;
-    m_src_uri = uri;
+    QUrl url = uri;
+    m_src_uri = url.toDisplayString();
     char* format_size = g_format_size (quint64(m_total_size));
 
     g_free(format_size);
@@ -679,8 +682,10 @@ void ProgressBar::updateProgress(const QString &srcUri, const QString &destUri, 
         return;
     }
 
-    m_src_uri = srcUri;
-    m_dest_uri = destUri;
+    QUrl srcUrl = srcUri;
+    m_src_uri = srcUrl.toDisplayString();
+    QUrl destUrl = destUri;
+    m_dest_uri = destUrl.toDisplayString();
 
     // maybe you don't need to show every file icon,just default.
 //    QIcon ficon;
