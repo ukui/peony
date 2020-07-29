@@ -53,6 +53,7 @@ protected:
 
 public Q_SLOTS:
     void mainProgressChange(QListWidgetItem *item);
+    void showDelay(int msec = 2000);
 
 private:
     // layout

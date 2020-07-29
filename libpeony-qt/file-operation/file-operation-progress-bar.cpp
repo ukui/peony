@@ -30,6 +30,7 @@
 #include <QMessageBox>
 
 #include <QUrl>
+#include <QTimer>
 
 QPushButton* btn;
 
@@ -233,6 +234,15 @@ void FileOperationProgressBar::mainProgressChange(QListWidgetItem *item)
     m_main_progressbar->connect(m_current_main, &ProgressBar::cancelled, m_main_progressbar, &MainProgressBar::cancelld);
     m_main_progressbar->connect(m_current_main, &ProgressBar::sendValue, m_main_progressbar, &MainProgressBar::updateValue);
     update();
+}
+
+void FileOperationProgressBar::showDelay(int msec)
+{
+    QTimer::singleShot(msec, this, [=](){
+        if (m_list_widget->count() > 0) {
+            show();
+        }
+    });
 }
 
 MainProgressBar::MainProgressBar(QWidget *parent) : QWidget(parent)
