@@ -38,6 +38,7 @@
 #include <QCheckBox>
 
 #include <QUrl>
+#include <QStandardPaths>
 
 #include <QDebug>
 
@@ -223,6 +224,13 @@ GAsyncReadyCallback PermissionsPropertiesPage::async_query_permisson_callback(GO
                         table->setCellWidget(i, j + 2, w);
 
                         checkbox->setChecked(p_this->m_permissions[i][j]);
+
+                        //disable home path
+                        QString homeUri = "file://" +  QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
+                        if (p_this->m_uri == homeUri)
+                            checkbox->setDisabled(true);
+                        else
+                            checkbox->setDisabled(false);
 
                         connect(checkbox, &QCheckBox::clicked, p_this, [=]() {
                             qDebug()<<"clicked"<<i<<j<<checkbox->isChecked();
