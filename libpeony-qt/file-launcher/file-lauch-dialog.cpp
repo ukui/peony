@@ -85,7 +85,7 @@ FileLauchDialog::FileLauchDialog(const QString &uri, QWidget *parent) : QDialog(
     connect(m_button_box, &QDialogButtonBox::rejected, this, &QDialog::reject);
 
     auto info = FileInfo::fromUri(uri);
-    if (info->isDir()) {
+    if (info->isDir() || info->isDesktopFile()) {
         m_check_box->setEnabled(false);
     }
 }
