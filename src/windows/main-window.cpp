@@ -978,6 +978,7 @@ void MainWindow::validBorder()
         setContentsMargins(0, 0, 0, 0);
         m_effect->setPadding(0);
         setProperty("blurRegion", QVariant());
+        KWindowEffects::enableBlurBehind(this->winId(), true);
     } else {
         setContentsMargins(4, 4, 4, 4);
         m_effect->setPadding(4);
