@@ -42,7 +42,7 @@ class ClipboardUtils : public QObject
 {
     Q_OBJECT
 public:
-    ClipboardUtils *getInstance();
+    static ClipboardUtils *getInstance();
     void release();
 
     /*!
@@ -68,6 +68,8 @@ public:
     static void pasteClipboardFiles(const QString &targetDirUri);
     static void clearClipboard();
     static const QString getClipedFilesParentUri();
+
+    const QString getLastTargetDirectoryUri();
 
 Q_SIGNALS:
     void clipboardChanged();

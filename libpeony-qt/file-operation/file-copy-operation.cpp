@@ -31,6 +31,8 @@
 
 #include "file-operation-manager.h"
 
+#include "clipboard-utils.h"
+
 #include <QProcess>
 #include <QDebug>
 
@@ -99,7 +101,14 @@ FileCopyOperation::FileCopyOperation(QStringList sourceUris, QString destDirUri,
     QUrl firstSrcUrl = sourceUris.first();
     if (destDirUrl.isParentOf(firstSrcUrl)) {
         m_is_duplicated_copy = true;
+    } else {
+        auto lastPasteDirectoryUri = ClipboardUtils::getInstance()->getLastTargetDirectoryUri();
+        QUrl lastPasteDirectoryUrl = lastPasteDirectoryUri;
+        if (destDirUrl == lastPasteDirectoryUrl) {
+            m_is_duplicated_copy = true;
+        }
     }
+
     m_source_uris = sourceUris;
     m_dest_dir_uri = destDirUri;
     m_reporter = new FileNodeReporter;
