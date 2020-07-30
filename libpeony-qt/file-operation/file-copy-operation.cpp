@@ -353,11 +353,6 @@ void FileCopyOperation::rollbackNodeRecursively(FileNode *node)
     switch (node->state()) {
     case FileNode::Handling:
     case FileNode::Handled: {
-        //do not clear the dest file if ignored or overwrite or backuped.
-        //FIXME: should i put it after recusion?
-        if (node->responseType() != Other)
-            break;
-
         if (node->isFolder()) {
             auto children = node->children();
             for (auto child : *children) {
@@ -431,7 +426,7 @@ void FileCopyOperation::run()
     }
     Q_EMIT operationProgressed();
 
-    if (isCancelled() && !hasError()) {
+    if (isCancelled()) {
         Q_EMIT operationStartRollbacked();
         for (auto file : nodes) {
             qDebug()<<file->uri();
