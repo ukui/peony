@@ -68,9 +68,9 @@ private:
     QMap<ProgressBar*, QListWidgetItem*>* m_progress_list = nullptr;
     QMap<QListWidgetItem*, ProgressBar*>* m_widget_list = nullptr;
 
-    int m_show_items = 3;
+    int m_show_items = 2;
     bool m_show_more = false;
-    int m_progress_item_height = 40;
+    int m_progress_item_height = 62;
     int m_progress_list_heigth = 200;
 
     // ui
@@ -120,16 +120,16 @@ public Q_SLOTS:
 
 private:
     int m_min_width = 400;
-    int m_fix_height = 40;
+    int m_fix_height = 62;
 
-    int m_btn_size = 16;
+    int m_btn_size = 18;
     int m_margin_ud = 2;
     int m_margin_lr = 8;
-    int m_icon_size = 24;
+    int m_icon_size = 32;
     int m_text_height = 20;
 
     int m_progress_width = 80;
-    int m_progress_height = 5;
+    int m_progress_height = 6;
 
     int m_percent_width = 20;
 
@@ -178,9 +178,9 @@ public Q_SLOTS:
 private:
     // header
     QString m_title;
-    int m_fix_width = 400;
-    int m_fix_height = 160;
-    int m_title_width = 320;
+    int m_fix_width = 550;
+    int m_fix_height = 200;
+    int m_title_width = 480;
     int m_header_height = 30;
 
     // btn
@@ -198,7 +198,7 @@ private:
 
     // percent
     int m_percent_margin = 15;
-    int m_percent_height = 20;
+    int m_percent_height = 50;
 
     // foot
     float m_foot_margin = 3;
@@ -230,7 +230,7 @@ private:
     // button height
     int m_icon_margin = 6;
     int m_icon_size = 10;
-    int m_button_heigth = 20;
+    int m_button_heigth = 24;
 
     // text width
     int m_text_length = 100;

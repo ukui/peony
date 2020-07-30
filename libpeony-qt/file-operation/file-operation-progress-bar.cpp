@@ -163,8 +163,8 @@ void FileOperationProgressBar::showMore()
         m_other_progressbar->show();
         if (m_progress_size > 1 && m_progress_size <= m_show_items) {
             m_list_widget->setFixedHeight(m_progress_size * m_progress_item_height);
-        } else if (m_progress_size > 3) {
-            m_list_widget->setFixedHeight(3 * m_progress_item_height);
+        } else if (m_progress_size > m_show_items) {
+            m_list_widget->setFixedHeight(m_show_items * m_progress_item_height);
         }
 
         if (m_show_more) {
@@ -356,9 +356,9 @@ void MainProgressBar::paintHeader(QPainter &painter)
     painter.save();
 
     // paint title
-    QRect textArea (60, 0, m_title_width - 60, m_header_height);
+    QRect textArea (width() / 2 - m_title_width / 2, 0, m_title_width, m_header_height);
     QFont font = painter.font();
-    font.setPixelSize(10);
+    font.setPixelSize(14);
     painter.setFont(font);
     painter.drawText(textArea, Qt::AlignVCenter | Qt::AlignHCenter, m_title);
 
@@ -396,7 +396,7 @@ void MainProgressBar::paintContent(QPainter &painter)
     y = m_fix_height / 2 - m_file_name_height / 2;
     w = m_fix_width - m_icon_size - m_icon_margin - m_file_name_margin * 3;
     QFont font = painter.font();
-    font.setPixelSize(12);
+    font.setPixelSize(14);
     painter.setFont(font);
     if (m_stopping) {
         painter.drawText(x, y, w, m_file_name_height, Qt::AlignLeft | Qt::AlignVCenter, tr("canceling ..."));
@@ -405,13 +405,12 @@ void MainProgressBar::paintContent(QPainter &painter)
     }
 
     // paint percentage
-    x = m_fix_width - m_percent_margin * 3;
-    y = m_fix_height - m_foot_margin - m_percent_height;
-    w = m_percent_margin * 2;
-    font.setPixelSize(8);
+    x = m_fix_width - m_percent_margin - m_percent_height;
+    y = m_fix_height - m_foot_margin - m_percent_height - m_percent_margin / 5;
+    font.setPixelSize(12);
     painter.setFont(font);
     painter.setBrush(QBrush(btn->palette().color(QPalette::Highlight)));
-    painter.drawText(x, y, w, m_percent_height, Qt::AlignVCenter | Qt::AlignHCenter,
+    painter.drawText(x, y, m_percent_height, m_percent_height, Qt::AlignRight | Qt::AlignBottom,
                      QString(" %1 %").arg(QString::number(m_current_value * 100, 'f', 1)));
 
     painter.restore();
@@ -579,7 +578,7 @@ void ProgressBar::paintEvent(QPaintEvent *event)
     pen.setStyle(Qt::SolidLine);
     painter.setPen(pen);
     QFont font = painter.font();
-    font.setPixelSize(10);
+    font.setPixelSize(12);
     painter.setFont(font);
     if (m_is_stopping) {
         painter.drawText(x, y, w, m_text_height, Qt::AlignLeft | Qt::AlignVCenter, tr("canceling ..."));
