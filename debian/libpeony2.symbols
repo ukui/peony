@@ -172,8 +172,6 @@ libpeony.so.2 libpeony2 #MINVER#
  (optional=templinst)_ZN17QtMetaTypePrivate23QMetaTypeFunctionHelperI5QListI21QPersistentModelIndexELb1EE9ConstructEPvPKv@Base 2.0.0
  (optional=templinst)_ZN17QtMetaTypePrivate23QMetaTypeFunctionHelperIN18QAbstractItemModel16LayoutChangeHintELb1EE8DestructEPv@Base 2.0.0
  (optional=templinst)_ZN17QtMetaTypePrivate23QMetaTypeFunctionHelperIN18QAbstractItemModel16LayoutChangeHintELb1EE9ConstructEPvPKv@Base 2.0.0
-#MISSING: 2.2.0# (optional=templinst)_ZN17QtMetaTypePrivate23QMetaTypeFunctionHelperIN5Peony13FileOperation12ResponseTypeELb1EE8DestructEPv@Base 2.0.0
-#MISSING: 2.2.0# (optional=templinst)_ZN17QtMetaTypePrivate23QMetaTypeFunctionHelperIN5Peony13FileOperation12ResponseTypeELb1EE9ConstructEPvPKv@Base 2.0.0
  (optional=templinst)_ZN17QtMetaTypePrivate23QMetaTypeFunctionHelperINS_23QSequentialIterableImplELb1EE8DestructEPv@Base 2.0.0
  (optional=templinst)_ZN17QtMetaTypePrivate23QMetaTypeFunctionHelperINS_23QSequentialIterableImplELb1EE9ConstructEPvPKv@Base 2.0.0
  (optional=templinst)_ZN17QtMetaTypePrivate23QMetaTypeFunctionHelperIP11ProgressBarLb1EE8DestructEPv@Base 2.2.0
@@ -269,6 +267,7 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZN24FileOperationProgressBar19removeFileOperationEP11ProgressBar@Base 2.2.0
  _ZN24FileOperationProgressBar8instanceE@Base 2.2.0
  _ZN24FileOperationProgressBar8showMoreEv@Base 2.2.0
+ _ZN24FileOperationProgressBar9showDelayEi@Base 2.2.0
  _ZN24FileOperationProgressBarC1EP7QWidget@Base 2.2.0
  _ZN24FileOperationProgressBarC2EP7QWidget@Base 2.2.0
  _ZN24FileOperationProgressBarD0Ev@Base 2.2.0
@@ -454,36 +453,6 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZN5Peony13DirectoryView16IconViewDelegateD0Ev@Base 2.0.0
  _ZN5Peony13DirectoryView16IconViewDelegateD1Ev@Base 2.0.0
  _ZN5Peony13DirectoryView16IconViewDelegateD2Ev@Base 2.0.0
-#MISSING: 2.1.0# _ZN5Peony13DirectoryView17StandardViewProxy10closeProxyEv@Base 2.0.0
-#MISSING: 2.1.0# _ZN5Peony13DirectoryView17StandardViewProxy10switchViewEPNS_18DirectoryViewIfaceE@Base 2.0.0
-#MISSING: 2.1.0# _ZN5Peony13DirectoryView17StandardViewProxy11getSortTypeEv@Base 2.0.0
-#MISSING: 2.1.0# _ZN5Peony13DirectoryView17StandardViewProxy11qt_metacallEN11QMetaObject4CallEiPPv@Base 2.0.0
-#MISSING: 2.1.0# _ZN5Peony13DirectoryView17StandardViewProxy11qt_metacastEPKc@Base 2.0.0
-#MISSING: 2.1.0# _ZN5Peony13DirectoryView17StandardViewProxy11setCutFilesERK11QStringList@Base 2.0.0
-#MISSING: 2.1.0# _ZN5Peony13DirectoryView17StandardViewProxy11setSortTypeEi@Base 2.0.0
-#MISSING: 2.1.0# _ZN5Peony13DirectoryView17StandardViewProxy12getSortOrderEv@Base 2.0.0
-#MISSING: 2.1.0# _ZN5Peony13DirectoryView17StandardViewProxy12setSortOrderEi@Base 2.0.0
-#MISSING: 2.1.0# _ZN5Peony13DirectoryView17StandardViewProxy13getSelectionsEv@Base 2.0.0
-#MISSING: 2.1.0# _ZN5Peony13DirectoryView17StandardViewProxy13setSelectionsERK11QStringList@Base 2.0.0
-#MISSING: 2.1.0# _ZN5Peony13DirectoryView17StandardViewProxy14getAllFileUrisEv@Base 2.0.0
-#MISSING: 2.1.0# _ZN5Peony13DirectoryView17StandardViewProxy15getDirectoryUriEv@Base 2.0.0
-#MISSING: 2.1.0# _ZN5Peony13DirectoryView17StandardViewProxy15setDirectoryUriERK7QString@Base 2.0.0
-#MISSING: 2.1.0# _ZN5Peony13DirectoryView17StandardViewProxy16invertSelectionsEv@Base 2.0.0
-#MISSING: 2.1.0# _ZN5Peony13DirectoryView17StandardViewProxy16staticMetaObjectE@Base 2.0.0
-#MISSING: 2.1.0# _ZN5Peony13DirectoryView17StandardViewProxy17scrollToSelectionERK7QString@Base 2.0.0
-#MISSING: 2.1.0# _ZN5Peony13DirectoryView17StandardViewProxy18stopLocationChangeEv@Base 2.0.0
-#MISSING: 2.1.0# _ZN5Peony13DirectoryView17StandardViewProxy19beginLocationChangeEv@Base 2.0.0
-#MISSING: 2.1.0# _ZN5Peony13DirectoryView17StandardViewProxy4openERK11QStringListb@Base 2.0.0
-#MISSING: 2.1.0# _ZN5Peony13DirectoryView17StandardViewProxy7editUriERK7QString@Base 2.0.0
-#MISSING: 2.1.0# _ZN5Peony13DirectoryView17StandardViewProxy7getViewEv@Base 2.0.0
-#MISSING: 2.1.0# _ZN5Peony13DirectoryView17StandardViewProxy8editUrisE11QStringList@Base 2.0.0
-#MISSING: 2.1.0# _ZN5Peony13DirectoryView17StandardViewProxyC1EP7QObject@Base 2.0.0
-#MISSING: 2.1.0# _ZN5Peony13DirectoryView17StandardViewProxyC1EPNS_18DirectoryViewIfaceEP7QObject@Base 2.0.0
-#MISSING: 2.1.0# _ZN5Peony13DirectoryView17StandardViewProxyC2EP7QObject@Base 2.0.0
-#MISSING: 2.1.0# _ZN5Peony13DirectoryView17StandardViewProxyC2EPNS_18DirectoryViewIfaceEP7QObject@Base 2.0.0
-#MISSING: 2.1.0# _ZN5Peony13DirectoryView17StandardViewProxyD0Ev@Base 2.0.0
-#MISSING: 2.1.0# _ZN5Peony13DirectoryView17StandardViewProxyD1Ev@Base 2.0.0
-#MISSING: 2.1.0# _ZN5Peony13DirectoryView17StandardViewProxyD2Ev@Base 2.0.0
  _ZN5Peony13DirectoryView18IconViewTextHelper19getTextSizeForIndexERK20QStyleOptionViewItemRK11QModelIndexii@Base 2.1.0
  _ZN5Peony13DirectoryView18IconViewTextHelper9paintTextEP8QPainterRK20QStyleOptionViewItemRK11QModelIndexiiib@Base 2.1.0
  _ZN5Peony13DirectoryView19IconViewIndexWidget10paintEventEP11QPaintEvent@Base 2.0.0
@@ -529,7 +498,6 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZN5Peony13DirectoryView8IconView18stopLocationChangeEv@Base 2.0.0
  _ZN5Peony13DirectoryView8IconView19beginLocationChangeEv@Base 2.0.0
  _ZN5Peony13DirectoryView8IconView21mouseDoubleClickEventEP11QMouseEvent@Base 2.1.0
-#MISSING: 2.1.0# _ZN5Peony13DirectoryView8IconView21resetEditTriggerTimerEv@Base 2.0.0
  _ZN5Peony13DirectoryView8IconView23zoomLevelChangedRequestEb@Base 2.1.0
  _ZN5Peony13DirectoryView8IconView26reportViewDirectoryChangedEv@Base 2.0.0
  _ZN5Peony13DirectoryView8IconView26setIgnore_mouse_move_eventEb@Base 2.2.0
@@ -577,7 +545,6 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZN5Peony13DirectoryView8ListView18stopLocationChangeEv@Base 2.0.0
  _ZN5Peony13DirectoryView8ListView19beginLocationChangeEv@Base 2.0.0
  _ZN5Peony13DirectoryView8ListView21mouseDoubleClickEventEP11QMouseEvent@Base 2.1.0
-#MISSING: 2.1.0# _ZN5Peony13DirectoryView8ListView21resetEditTriggerTimerEv@Base 2.0.0
  _ZN5Peony13DirectoryView8ListView23zoomLevelChangedRequestEb@Base 2.1.0
  _ZN5Peony13DirectoryView8ListView26reportViewDirectoryChangedEv@Base 2.0.0
  _ZN5Peony13DirectoryView8ListView4openERK11QStringListb@Base 2.0.0
@@ -858,7 +825,6 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZN5Peony14FileEnumerator42enumerator_next_files_async_ready_callbackEP16_GFileEnumeratorP13_GAsyncResultPS0_@Base 2.0.0
  _ZN5Peony14FileEnumerator6cancelEv@Base 2.0.0
  _ZN5Peony14FileEnumerator7prepareEv@Base 2.0.0
-#MISSING: 2.1.0# _ZN5Peony14FileEnumerator8preparedERKSt10shared_ptrINS_13GErrorWrapperEE@Base 2.0.0
  _ZN5Peony14FileEnumerator8preparedERKSt10shared_ptrINS_13GErrorWrapperEERK7QStringb@Base 2.1.0
  _ZN5Peony14FileEnumeratorC1EP7QObject@Base 2.0.0
  _ZN5Peony14FileEnumeratorC2EP7QObject@Base 2.0.0
@@ -1022,19 +988,15 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZN5Peony16AdvanceSearchBar4initEv@Base 2.0.0
  _ZN5Peony16AdvanceSearchBar9clearDataEv@Base 2.0.0
  _ZN5Peony16AdvanceSearchBarC1EPNS_13FMWindowIfaceEP7QWidget@Base 2.1.0
-#MISSING: 2.1.0# _ZN5Peony16AdvanceSearchBarC1EPNS_8FMWindowEP7QWidget@Base 2.0.0
  _ZN5Peony16AdvanceSearchBarC2EPNS_13FMWindowIfaceEP7QWidget@Base 2.1.0
-#MISSING: 2.1.0# _ZN5Peony16AdvanceSearchBarC2EPNS_8FMWindowEP7QWidget@Base 2.0.0
  _ZN5Peony16AdvanceSearchBarD0Ev@Base 2.0.0
  _ZN5Peony16AdvanceSearchBarD1Ev@Base 2.0.0
  _ZN5Peony16AdvanceSearchBarD2Ev@Base 2.0.0
  _ZN5Peony16FileLaunchAction11qt_metacallEN11QMetaObject4CallEiPPv@Base 2.0.0
  _ZN5Peony16FileLaunchAction11qt_metacastEPKc@Base 2.0.0
-#MISSING: 2.2.0# _ZN5Peony16FileLaunchAction13lauchFileSyncEb@Base 2.0.0
  _ZN5Peony16FileLaunchAction13lauchFileSyncEbb@Base 2.2.0
  _ZN5Peony16FileLaunchAction14execFileIntermEv@Base 2.2.0
  _ZN5Peony16FileLaunchAction14getAppInfoNameEv@Base 2.0.0
-#MISSING: 2.2.0# _ZN5Peony16FileLaunchAction14lauchFileAsyncEb@Base 2.0.0
  _ZN5Peony16FileLaunchAction14lauchFileAsyncEbb@Base 2.2.0
  _ZN5Peony16FileLaunchAction16staticMetaObjectE@Base 2.0.0
  _ZN5Peony16FileLaunchAction19isDesktopFileActionEv@Base 2.0.0
@@ -2254,7 +2216,7 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZN5Peony8FileNode15getRelativePathEv@Base 2.0.0
  (arch= !armel !armhf !i386 !mipsel !hppa !m68k !sh4 !x32 !ppc64el)_ZN5Peony8FileNode16computeTotalSizeEPl@Base 2.0.0
  (arch=armel)_ZN5Peony8FileNode16computeTotalSizeEPx@Base 2.0.1
- _ZN5Peony8FileNode17resoveDestFileUriERK7QString@Base 2.0.0
+ _ZN5Peony8FileNode18resolveDestFileUriERK7QString@Base 2.2.0
  _ZN5Peony8FileNode23findChildrenRecursivelyEv@Base 2.0.0
  _ZN5Peony8FileNodeC1E7QStringPS0_PNS_16FileNodeReporterE@Base 2.0.0
  _ZN5Peony8FileNodeC2E7QStringPS0_PNS_16FileNodeReporterE@Base 2.0.0
@@ -3089,6 +3051,7 @@ libpeony.so.2 libpeony2 #MINVER#
  (optional=templinst|arch=amd64)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony8FileInfoESaIS1_ELN9__gnu_cxx12_Lock_policyE2EED0Ev@Base 2.0.0
  (optional=templinst|arch=amd64)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony8FileInfoESaIS1_ELN9__gnu_cxx12_Lock_policyE2EED1Ev@Base 2.0.0
  (optional=templinst|arch=amd64)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony8FileInfoESaIS1_ELN9__gnu_cxx12_Lock_policyE2EED2Ev@Base 2.0.0
+ (optional=templinst)_ZSt9__find_ifIPK4QUrlN9__gnu_cxx5__ops16_Iter_equals_valIS1_EEET_S7_S7_T0_St26random_access_iterator_tag@Base 2.2.0
  (optional=templinst|arch= !s390x)_ZSt9__find_ifIPK7QStringN9__gnu_cxx5__ops16_Iter_equals_valIS1_EEET_S7_S7_T0_St26random_access_iterator_tag@Base 2.0.0
  _ZTI11OtherButton@Base 2.2.0
  _ZTI11ProgressBar@Base 2.2.0
