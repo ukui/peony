@@ -194,6 +194,21 @@ void IconViewIndexWidget::paintEvent(QPaintEvent *e)
         return;
     }
     auto info = m_info.lock();
+
+    // draw color symbols
+    auto colors = info->getColors();
+    int offset = 0;
+    for (auto color : colors) {
+        p.save();
+        p.setRenderHint(QPainter::Antialiasing);
+        p.translate(2, 2);
+        p.setPen(opt.palette.highlightedText().color());
+        p.setBrush(color);
+        p.drawEllipse(QRectF(offset, 0, 10, 10));
+        p.restore();
+        offset += 10;
+    }
+
     //paint symbolic link emblems
     if (info->isSymbolLink()) {
         QIcon icon = QIcon::fromTheme("emblem-symbolic-link");

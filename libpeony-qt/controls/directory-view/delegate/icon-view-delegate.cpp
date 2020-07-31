@@ -94,8 +94,10 @@ void IconViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
     //FIXME: how to deal with word wrap correctly?
     painter->save();
 
+    bool isDragging = false;
     auto view = qobject_cast<IconView*>(this->parent());
     if (view->state() == IconView::DraggingState) {
+        isDragging = true;
         if (view->selectionModel()->selection().contains(index)) {
             painter->setOpacity(0.8);
         }
@@ -163,6 +165,23 @@ void IconViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
         } else if (! view->isDraggingState()) {
             IconViewIndexWidget *indexWidget = new IconViewIndexWidget(this, option, index, getView());
             view->setIndexWidget(index, indexWidget);
+        }
+    }
+
+    // draw color symbols
+    if (!isDragging || !view->selectedIndexes().contains(index)) {
+        auto colors = info->getColors();
+        int offset = 0;
+        for (auto color : colors) {
+            painter->save();
+            painter->setRenderHint(QPainter::Antialiasing);
+            painter->translate(option.rect.topLeft());
+            painter->translate(2, 2);
+            painter->setPen(opt.palette.highlightedText().color());
+            painter->setBrush(color);
+            painter->drawEllipse(QRectF(offset, 0, 10, 10));
+            painter->restore();
+            offset += 10;
         }
     }
 

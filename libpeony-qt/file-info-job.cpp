@@ -26,6 +26,7 @@
 #include "file-meta-info.h"
 
 #include "file-info-manager.h"
+#include "file-label-model.h"
 
 #include <gio/gdesktopappinfo.h>
 
@@ -272,6 +273,8 @@ void FileInfoJob::refreshInfoContents(GFileInfo *new_info)
     info->m_access_date = date.toString(Qt::SystemLocaleShortDate);
 
     m_info->m_meta_info = FileMetaInfo::fromGFileInfo(m_info->uri(), new_info);
+    // update peony qt color list after meta info updated.
+    m_info->m_colors = FileLabelModel::getGlobalModel()->getFileColors(m_info->uri());
 
     if (info->isDesktopFile()) {
         QUrl url = info->uri();

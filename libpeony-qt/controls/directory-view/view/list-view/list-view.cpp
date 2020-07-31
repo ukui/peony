@@ -91,6 +91,11 @@ void ListView::scrollTo(const QModelIndex &index, QAbstractItemView::ScrollHint 
     //updateGeometries();
 }
 
+bool ListView::isDragging()
+{
+    return state() == QAbstractItemView::DraggingState;
+}
+
 void ListView::bindModel(FileItemModel *sourceModel, FileItemProxyFilterSortModel *proxyModel)
 {
     if (!sourceModel || !proxyModel)

@@ -27,6 +27,8 @@
 
 #include "list-view.h"
 
+#include "file-info.h"
+
 #include <QTimer>
 #include <QPushButton>
 
@@ -53,7 +55,28 @@ void ListViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
     QStyleOptionViewItem opt = option;
     initStyleOption(&opt, index);
     opt.displayAlignment = Qt::Alignment(Qt::AlignLeft|Qt::AlignVCenter);
-    return QApplication::style()->drawControl(QStyle::CE_ItemViewItem, &opt, painter);
+
+    QApplication::style()->drawControl(QStyle::CE_ItemViewItem, &opt, painter);
+
+    if (index.column() == 0) {
+        auto view = qobject_cast<DirectoryView::ListView *>(parent());
+        if (!view->isDragging() || !view->selectionModel()->selectedIndexes().contains(index)) {
+            auto info = FileInfo::fromUri(index.data(Qt::UserRole).toString());
+            auto colors = info->getColors();
+            int offset = 0;
+            for (auto color : colors) {
+                painter->save();
+                painter->setRenderHint(QPainter::Antialiasing);
+                painter->translate(0, opt.rect.topLeft().y());
+                painter->translate(2, 2);
+                painter->setPen(opt.palette.highlightedText().color());
+                painter->setBrush(color);
+                painter->drawEllipse(QRectF(offset, 0, 10, 10));
+                painter->restore();
+                offset += 10;
+            }
+        }
+    }
 }
 
 QWidget *ListViewDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const
