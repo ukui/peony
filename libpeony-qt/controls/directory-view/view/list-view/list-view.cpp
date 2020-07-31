@@ -191,10 +191,9 @@ void ListView::mousePressEvent(QMouseEvent *e)
     m_editValid = true;
     QTreeView::mousePressEvent(e);
 
-    //comment to fix only select when drag file name issue
-//    if (indexAt(e->pos()).column() != 0) {
-//        this->setState(QAbstractItemView::DragSelectingState);
-//    }
+    if (indexAt(e->pos()).column() != 0) {
+        this->setState(QAbstractItemView::DragSelectingState);
+    }
 
     //if click left button at blank space, it should select nothing
     //qDebug() << "indexAt(e->pos()):" <<indexAt(e->pos()).column() << indexAt(e->pos()).row();
