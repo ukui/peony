@@ -44,6 +44,7 @@ public:
         PropertiesWindowPlugin,
         ColumnProviderPlugin,
         StylePlugin,
+        VFSPlugin,
         Other
     };
 
