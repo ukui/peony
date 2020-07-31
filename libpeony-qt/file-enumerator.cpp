@@ -95,6 +95,8 @@ void FileEnumerator::setEnumerateDirectory(QString uri)
         g_object_unref(m_root_file);
     }
 
+    // TODO: implement a check for vfs extensions.
+
     //handle search can not use before glib 2.50
 #if GLIB_CHECK_VERSION(2, 50, 0)
     m_root_file = g_file_new_for_uri(uri.toUtf8());
