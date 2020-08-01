@@ -30,6 +30,7 @@
 #include "directory-view-plugin-iface2.h"
 #include "preview-page-plugin-iface.h"
 #include "style-plugin-iface.h"
+#include "vfs-plugin-manager.h"
 
 #include "properties-window.h" //properties factory manager define is in this header
 #include "properties-window-tab-page-plugin-iface.h"
@@ -53,6 +54,7 @@ PluginManager::PluginManager(QObject *parent) : QObject(parent)
     MenuPluginManager::getInstance();
     DirectoryViewFactoryManager2::getInstance();
     PreviewPageFactoryManager::getInstance();
+    VFSPluginManager::getInstance();
 
     QDir pluginsDir("/usr/lib/peony-qt-extensions");
     pluginsDir.setFilter(QDir::Files);
@@ -104,6 +106,11 @@ PluginManager::PluginManager(QObject *parent) : QObject(parent)
         case PluginInterface::DirectoryViewPlugin2: {
             auto p = dynamic_cast<DirectoryViewPluginIface2*>(plugin);
             DirectoryViewFactoryManager2::getInstance()->registerFactory(p->viewIdentity(), p);
+            break;
+        }
+        case PluginInterface::VFSPlugin: {
+            auto p = dynamic_cast<VFSPluginIface *>(plugin);
+            VFSPluginManager::getInstance()->registerPlugin(p);
             break;
         }
         default:

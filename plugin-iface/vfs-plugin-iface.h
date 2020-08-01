@@ -48,7 +48,7 @@ public:
      * glib, register a vfs into system is asynchronous, those means it might not be
      * registered and can not use GVfsFileLookupFunc to get file handler.
      */
-    virtual void* parseUriToVFSFile(const QString &uri);
+    virtual void* parseUriToVFSFile(const QString &uri) = 0;
 };
 }
 

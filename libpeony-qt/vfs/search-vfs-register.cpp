@@ -87,3 +87,13 @@ SearchVFSRegister::SearchVFSRegister()
 {
 
 }
+
+void SearchVFSInternalPlugin::initVFS()
+{
+    SearchVFSRegister::registSearchVFS();
+}
+
+void *SearchVFSInternalPlugin::parseUriToVFSFile(const QString &uri)
+{
+    return peony_search_vfs_file_new_for_uri(uri.toUtf8().constData());
+}
