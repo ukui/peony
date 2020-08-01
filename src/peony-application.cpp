@@ -183,7 +183,7 @@ PeonyApplication::PeonyApplication(int &argc, char *argv[], const char *applicat
                              "applications. If you are using gtk-theme, try installing "
                              "the qt5-gtk2-platformtheme package to resolve this problem."));
     }
-    Peony::SearchVFSRegister::registSearchVFS();
+    //Peony::SearchVFSRegister::registSearchVFS();
     //QIcon::setThemeName("ukui-icon-theme-one");
     //setAttribute(Qt::AA_UseHighDpiPixmaps);
     //setAttribute(Qt::AA_EnableHighDpiScaling);
