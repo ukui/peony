@@ -1,4 +1,4 @@
-# SymbolsHelper-Confirmed: 2.2.0 amd64
+# SymbolsHelper-Confirmed: 3.0.0 amd64
 libpeony.so.2 libpeony2 #MINVER#
 * Build-Depends-Package: libpeony-dev
  (optional=templinst)_Z17qRegisterMetaTypeISt10shared_ptrIN5Peony13GErrorWrapperEEEiPKcPT_N9QtPrivate21MetaTypeDefinedHelperIS6_Xaasr12QMetaTypeId2IS6_E7DefinedntsrSB_9IsBuiltInEE11DefinedTypeE@Base 2.0.0
@@ -516,6 +516,7 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZN5Peony13DirectoryView8IconViewD0Ev@Base 2.0.0
  _ZN5Peony13DirectoryView8IconViewD1Ev@Base 2.0.0
  _ZN5Peony13DirectoryView8IconViewD2Ev@Base 2.0.0
+ _ZN5Peony13DirectoryView8ListView10isDraggingEv@Base 2.2.0
  _ZN5Peony13DirectoryView8ListView10slotRenameEv@Base 2.1.0
  _ZN5Peony13DirectoryView8ListView10wheelEventEP11QWheelEvent@Base 2.1.0
  _ZN5Peony13DirectoryView8ListView11getSortTypeEv@Base 2.0.0
@@ -800,6 +801,7 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZN5Peony14ClipboardUtils21getClipboardFilesUrisEv@Base 2.0.0
  _ZN5Peony14ClipboardUtils21isClipboardFilesBeCutEv@Base 2.0.0
  _ZN5Peony14ClipboardUtils23getClipedFilesParentUriEv@Base 2.0.0
+ _ZN5Peony14ClipboardUtils25getLastTargetDirectoryUriEv@Base 2.2.0
  _ZN5Peony14ClipboardUtils7releaseEv@Base 2.0.0
  _ZN5Peony14ClipboardUtilsC1EP7QObject@Base 2.0.0
  _ZN5Peony14ClipboardUtilsC2EP7QObject@Base 2.0.0
@@ -1125,6 +1127,16 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZN5Peony16ToolBarContainerD0Ev@Base 2.0.0
  _ZN5Peony16ToolBarContainerD1Ev@Base 2.0.0
  _ZN5Peony16ToolBarContainerD2Ev@Base 2.0.0
+ _ZN5Peony16VFSPluginManager11getInstanceEv@Base 2.2.0
+ _ZN5Peony16VFSPluginManager11qt_metacallEN11QMetaObject4CallEiPPv@Base 2.2.0
+ _ZN5Peony16VFSPluginManager11qt_metacastEPKc@Base 2.2.0
+ _ZN5Peony16VFSPluginManager14registerPluginEPNS_14VFSPluginIfaceE@Base 2.2.0
+ _ZN5Peony16VFSPluginManager16staticMetaObjectE@Base 2.2.0
+ _ZN5Peony16VFSPluginManagerC1EP7QObject@Base 2.2.0
+ _ZN5Peony16VFSPluginManagerC2EP7QObject@Base 2.2.0
+ _ZN5Peony16VFSPluginManagerD0Ev@Base 2.2.0
+ _ZN5Peony16VFSPluginManagerD1Ev@Base 2.2.0
+ _ZN5Peony16VFSPluginManagerD2Ev@Base 2.2.0
 #MISSING: 2.1.0# _ZN5Peony16ViewFactoryModel11qt_metacallEN11QMetaObject4CallEiPPv@Base 2.0.0
 #MISSING: 2.1.0# _ZN5Peony16ViewFactoryModel11qt_metacastEPKc@Base 2.0.0
 #MISSING: 2.1.0# _ZN5Peony16ViewFactoryModel15setDirectoryUriERK7QString@Base 2.0.0
@@ -1730,6 +1742,19 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZN5Peony23PropertiesWindowPrivateD0Ev@Base 2.0.0
  _ZN5Peony23PropertiesWindowPrivateD1Ev@Base 2.0.0
  _ZN5Peony23PropertiesWindowPrivateD2Ev@Base 2.0.0
+ _ZN5Peony23SearchVFSInternalPlugin10pluginTypeEv@Base 2.2.0
+ _ZN5Peony23SearchVFSInternalPlugin11descriptionEv@Base 2.2.0
+ _ZN5Peony23SearchVFSInternalPlugin13holdInSideBarEv@Base 2.2.0
+ _ZN5Peony23SearchVFSInternalPlugin17parseUriToVFSFileERK7QString@Base 2.2.0
+ _ZN5Peony23SearchVFSInternalPlugin4iconEv@Base 2.2.0
+ _ZN5Peony23SearchVFSInternalPlugin4nameEv@Base 2.2.0
+ _ZN5Peony23SearchVFSInternalPlugin7initVFSEv@Base 2.2.0
+ _ZN5Peony23SearchVFSInternalPlugin8isEnableEv@Base 2.2.0
+ _ZN5Peony23SearchVFSInternalPlugin9setEnableEb@Base 2.2.0
+ _ZN5Peony23SearchVFSInternalPlugin9uriSchemeEv@Base 2.2.0
+ _ZN5Peony23SearchVFSInternalPluginD0Ev@Base 2.2.0
+ _ZN5Peony23SearchVFSInternalPluginD1Ev@Base 2.2.0
+ _ZN5Peony23SearchVFSInternalPluginD2Ev@Base 2.2.0
  _ZN5Peony24CreateLinkInternalPlugin10pluginTypeEv@Base 2.0.0
  _ZN5Peony24CreateLinkInternalPlugin10testPluginEv@Base 2.0.0
  _ZN5Peony24CreateLinkInternalPlugin11descriptionEv@Base 2.0.0
@@ -2372,6 +2397,8 @@ libpeony.so.2 libpeony2 #MINVER#
  (optional=templinst)_ZN5QListI6QColorE13detach_helperEi@Base 2.1.0
  (optional=templinst)_ZN5QListI6QColorE18detach_helper_growEii@Base 2.1.0
  (optional=templinst)_ZN5QListI6QColorE6appendERKS0_@Base 2.1.0
+ (optional=templinst)_ZN5QListI6QColorEC1ERKS1_@Base 2.2.0
+ (optional=templinst)_ZN5QListI6QColorEC2ERKS1_@Base 2.2.0
  (optional=templinst)_ZN5QListI6QColorED1Ev@Base 2.1.0
  (optional=templinst)_ZN5QListI6QColorED2Ev@Base 2.1.0
  (optional=templinst)_ZN5QListI7PWDItemE18detach_helper_growEii@Base 2.0.0
@@ -2424,6 +2451,8 @@ libpeony.so.2 libpeony2 #MINVER#
  (optional=templinst)_ZN5QListIP7QRegExpE6appendERKS1_@Base 2.1.0
  (optional=templinst)_ZN5QListIPN5Peony13FileOperationEED1Ev@Base 2.1.0
  (optional=templinst)_ZN5QListIPN5Peony13FileOperationEED2Ev@Base 2.1.0
+ (optional=templinst)_ZN5QListIPN5Peony14VFSPluginIfaceEE18detach_helper_growEii@Base 2.2.0
+ (optional=templinst)_ZN5QListIPN5Peony14VFSPluginIfaceEE6appendERKS2_@Base 2.2.0
  (optional=templinst|arch= !ppc64el)_ZN5QListIPN5Peony16FileLaunchActionEE13detach_helperEi@Base 2.0.0
  (optional=templinst)_ZN5QListIPN5Peony16FileLaunchActionEE18detach_helper_growEii@Base 2.0.0
  (optional=templinst)_ZN5QListIPN5Peony16FileLaunchActionEE6appendERKS2_@Base 2.0.0
@@ -2671,6 +2700,7 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZNK5Peony16PropertiesWindow10metaObjectEv@Base 2.0.0
  _ZNK5Peony16SearchVFSManager10metaObjectEv@Base 2.0.0
  _ZNK5Peony16ThumbnailManager10metaObjectEv@Base 2.0.0
+ _ZNK5Peony16VFSPluginManager10metaObjectEv@Base 2.2.0
 #MISSING: 2.1.0# _ZNK5Peony16ViewFactoryModel10metaObjectEv@Base 2.0.0
 #MISSING: 2.1.0# _ZNK5Peony16ViewFactoryModel4dataERK11QModelIndexi@Base 2.0.0
 #MISSING: 2.1.0# _ZNK5Peony16ViewFactoryModel8rowCountERK11QModelIndex@Base 2.0.0
@@ -3096,6 +3126,7 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZTIN5Peony14FileEnumeratorE@Base 2.0.0
  _ZTIN5Peony14GlobalSettingsE@Base 2.0.0
  _ZTIN5Peony14MountOperationE@Base 2.0.0
+ _ZTIN5Peony14VFSPluginIfaceE@Base 2.2.0
  _ZTIN5Peony15BookMarkManagerE@Base 2.0.0
  _ZTIN5Peony15FMWindowFactoryE@Base 2.1.0
  _ZTIN5Peony15FileLauchDialogE@Base 2.0.0
@@ -3116,6 +3147,7 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZTIN5Peony16StylePluginIfaceE@Base 2.0.0
  _ZTIN5Peony16ThumbnailManagerE@Base 2.0.0
  _ZTIN5Peony16ToolBarContainerE@Base 2.0.0
+ _ZTIN5Peony16VFSPluginManagerE@Base 2.2.0
 #MISSING: 2.1.0# _ZTIN5Peony16ViewFactoryModelE@Base 2.0.0
  _ZTIN5Peony17DirectoryViewMenuE@Base 2.0.0
  _ZTIN5Peony17FileCopyOperationE@Base 2.0.0
@@ -3154,6 +3186,7 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZTIN5Peony23CreateTemplateOperationE@Base 2.0.0
  _ZTIN5Peony23DirectoryViewProxyIfaceE@Base 2.0.0
  _ZTIN5Peony23PropertiesWindowPrivateE@Base 2.0.0
+ _ZTIN5Peony23SearchVFSInternalPluginE@Base 2.2.0
  _ZTIN5Peony24CreateLinkInternalPluginE@Base 2.0.0
  _ZTIN5Peony24DirectoryViewPluginIfaceE@Base 2.0.0
  _ZTIN5Peony24FileOperationErrorDialogE@Base 2.0.0
@@ -3283,6 +3316,7 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZTSN5Peony14FileEnumeratorE@Base 2.0.0
  _ZTSN5Peony14GlobalSettingsE@Base 2.0.0
  _ZTSN5Peony14MountOperationE@Base 2.0.0
+ _ZTSN5Peony14VFSPluginIfaceE@Base 2.2.0
  _ZTSN5Peony15BookMarkManagerE@Base 2.0.0
  _ZTSN5Peony15FMWindowFactoryE@Base 2.1.0
  _ZTSN5Peony15FileLauchDialogE@Base 2.0.0
@@ -3303,6 +3337,7 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZTSN5Peony16StylePluginIfaceE@Base 2.0.0
  _ZTSN5Peony16ThumbnailManagerE@Base 2.0.0
  _ZTSN5Peony16ToolBarContainerE@Base 2.0.0
+ _ZTSN5Peony16VFSPluginManagerE@Base 2.2.0
 #MISSING: 2.1.0# _ZTSN5Peony16ViewFactoryModelE@Base 2.0.0
  _ZTSN5Peony17DirectoryViewMenuE@Base 2.0.0
  _ZTSN5Peony17FileCopyOperationE@Base 2.0.0
@@ -3341,6 +3376,7 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZTSN5Peony23CreateTemplateOperationE@Base 2.0.0
  _ZTSN5Peony23DirectoryViewProxyIfaceE@Base 2.0.0
  _ZTSN5Peony23PropertiesWindowPrivateE@Base 2.0.0
+ _ZTSN5Peony23SearchVFSInternalPluginE@Base 2.2.0
  _ZTSN5Peony24CreateLinkInternalPluginE@Base 2.0.0
  _ZTSN5Peony24DirectoryViewPluginIfaceE@Base 2.0.0
  _ZTSN5Peony24FileOperationErrorDialogE@Base 2.0.0
@@ -3485,6 +3521,7 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZTVN5Peony16SearchVFSManagerE@Base 2.0.0
  _ZTVN5Peony16ThumbnailManagerE@Base 2.0.0
  _ZTVN5Peony16ToolBarContainerE@Base 2.0.0
+ _ZTVN5Peony16VFSPluginManagerE@Base 2.2.0
 #MISSING: 2.1.0# _ZTVN5Peony16ViewFactoryModelE@Base 2.0.0
  _ZTVN5Peony17DirectoryViewMenuE@Base 2.0.0
  _ZTVN5Peony17FileCopyOperationE@Base 2.0.0
@@ -3520,6 +3557,7 @@ libpeony.so.2 libpeony2 #MINVER#
  _ZTVN5Peony23CreateTemplateOperationE@Base 2.0.0
  _ZTVN5Peony23DirectoryViewProxyIfaceE@Base 2.0.0
  _ZTVN5Peony23PropertiesWindowPrivateE@Base 2.0.0
+ _ZTVN5Peony23SearchVFSInternalPluginE@Base 2.2.0
  _ZTVN5Peony24CreateLinkInternalPluginE@Base 2.0.0
  _ZTVN5Peony24FileOperationErrorDialogE@Base 2.0.0
  _ZTVN5Peony24FileOperationPreparePageE@Base 2.0.0
