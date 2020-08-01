@@ -22,6 +22,10 @@
 
 #include "list-view-style.h"
 
+#include <QStyleOption>
+#include <QPainterPath>
+#include <QPainter>
+
 using namespace Peony;
 using namespace Peony::DirectoryView;
 
@@ -41,11 +45,24 @@ ListViewStyle *ListViewStyle::getStyle()
 
 void ListViewStyle::drawPrimitive(QStyle::PrimitiveElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget) const
 {
-    if (element == PE_Frame)
+    if (element == PE_Frame) {
+        painter->save();
+        bool isActive = option->state & State_Active;
+        bool isEnable = option->state & State_Enabled;
+        auto baseColor = option->palette.color(isEnable? (isActive? QPalette::Active: QPalette::Inactive): QPalette::Disabled, QPalette::Window);
+        QPainterPath path;
+        path.setFillRule(Qt::WindingFill);
+        path.addRoundedRect(option->rect, 6, 6);
+        path.addRect(QRect(0, 0, 6, option->rect.height()));
+        path.addRect(QRect(0, 0, option->rect.width(), 6));
+        painter->fillPath(path, baseColor);
+        painter->restore();
         return;
+    }
 
-    if (element == PE_FrameWindow)
+    if (element == PE_FrameWindow) {
         return;
+    }
 
     return QProxyStyle::drawPrimitive(element, option, painter, widget);
 }
