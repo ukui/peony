@@ -45,6 +45,8 @@ static ClipboardUtils *global_instance = nullptr;
  */
 static QString m_clipboard_parent_uri = nullptr;
 
+static QString m_last_target_directory_uri = nullptr;
+
 ClipboardUtils *ClipboardUtils::getInstance()
 {
     if (!global_instance) {
@@ -77,6 +79,11 @@ void ClipboardUtils::release()
 const QString ClipboardUtils::getClipedFilesParentUri()
 {
     return m_clipboard_parent_uri;
+}
+
+const QString ClipboardUtils::getLastTargetDirectoryUri()
+{
+    return m_last_target_directory_uri;
 }
 
 void ClipboardUtils::setClipboardFiles(const QStringList &uris, bool isCut)
@@ -175,6 +182,8 @@ void ClipboardUtils::pasteClipboardFiles(const QString &targetDirUri)
         auto copyOp = new FileCopyOperation(uris, targetDirUri);
         fileOpMgr->startOperation(copyOp, true);
     }
+
+    m_last_target_directory_uri = targetDirUri;
 }
 
 void ClipboardUtils::clearClipboard()

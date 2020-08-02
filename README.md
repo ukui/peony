@@ -80,12 +80,12 @@ If there are some problems during porting peony to other distros, commit an issu
 
 > /usr/bin/peony
 
-NOTE: Peony & peony-qt-desktop is based on libpeony2, so you should put the libpeony2.so to the directory which is included in ld's config file.
+NOTE: Peony & peony-qt-desktop is based on libpeony3, so you should put the libpeony3.so to the directory which is included in ld's config file.
 
 # Examples
 Another way to get familiar with the project is through [some examples which I provided](https://github.com/Yue-Lan/libpeony-qt-development-examples).
 
-These examples are based on libpeony2 and display some basic usage of the Peony's api. It is simpler than the project but can help us understand how to use the libpeony2 for development.
+These examples are based on libpeony3 and display some basic usage of the Peony's api. It is simpler than the project but can help us understand how to use the libpeony3 for development.
 
 # Contribution
 I really welcome you to participate in this project. Before that, you'd better read the [contribution manual](CONTRIBUTING.md).

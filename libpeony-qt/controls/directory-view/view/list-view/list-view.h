@@ -56,6 +56,8 @@ public:
         return tr("List View");
     }
 
+    bool isDragging();
+
     void bindModel(FileItemModel *sourceModel, FileItemProxyFilterSortModel *proxyModel) override;
     void setProxy(DirectoryViewProxyIface *proxy) override;
 

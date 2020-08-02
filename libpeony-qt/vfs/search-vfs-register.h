@@ -25,7 +25,28 @@
 
 #include "peony-core_global.h"
 
+#include "vfs-plugin-iface.h"
+
 namespace Peony {
+
+class SearchVFSInternalPlugin : public VFSPluginIface
+{
+public:
+    SearchVFSInternalPlugin() {}
+
+    virtual PluginType pluginType() override {return VFSPlugin;}
+
+    virtual const QString name() override {return "search vfs";}
+    virtual const QString description() override {return QObject::tr("Default search vfs of peony");}
+    virtual const QIcon icon() override {return QIcon();}
+    virtual void setEnable(bool enable) {}
+    virtual bool isEnable() {return true;}
+
+    void initVFS() override;
+    QString uriScheme() override {return "search://";}
+    bool holdInSideBar() override {return false;}
+    void *parseUriToVFSFile(const QString &uri) override;
+};
 
 class PEONYCORESHARED_EXPORT SearchVFSRegister
 {

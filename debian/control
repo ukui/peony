@@ -33,7 +33,7 @@ Architecture: any
 Multi-Arch: foreign
 Depends: ${misc:Depends},
          ${shlibs:Depends},
-         libpeony2 (= ${binary:Version}),
+         libpeony3 (= ${binary:Version}),
          peony-common (= ${source:Version}),
          libkf5windowsystem5
 Recommends: gvfs-backends,
@@ -58,7 +58,7 @@ Description: file manager for the UKUI desktop (common files)
  .
  This package contains the architecture independent files.
 
-Package: libpeony2
+Package: libpeony3
 Section: libs
 Architecture: any
 Pre-Depends: ${misc:Pre-Depends}
@@ -69,7 +69,8 @@ Depends: ${misc:Depends},
          libpoppler-qt5-1
 Provides: libpeony,
 Breaks: peony (<< 2.2.0-1)
-Replaces: peony (<< 2.2.0-1)
+Replaces: peony (<< 2.2.0-1),
+          libpeony2
 Recommends: gvfs-backends,
             qt5-gtk2-platformtheme,
             qt5-gtk-platformtheme
@@ -87,7 +88,7 @@ Section: libdevel
 Architecture: any
 Depends: ${misc:Depends},
          ${shlibs:Depends},
-         libpeony2 (= ${binary:Version})
+         libpeony3 (= ${binary:Version})
 Description: libraries for Peony components (development files)
  Peony is the official file manager for the UKUI desktop. It allows one
  to browse directories, preview files and launch applications associated

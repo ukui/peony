@@ -34,6 +34,7 @@
 #include <QMutex>
 
 #include <QIcon>
+#include <QColor>
 
 namespace Peony {
 
@@ -130,6 +131,10 @@ public:
     }
     quint64 accessTime() {
         return m_access_time;
+    }
+
+    QList<QColor> getColors() {
+        return m_colors;
     }
 
     bool canRead() {
@@ -272,6 +277,8 @@ private:
 
     //QIcon m_thumbnail;
     std::shared_ptr<FileMetaInfo> m_meta_info = nullptr;
+
+    QList<QColor> m_colors;
 
     QMutex m_mutex;
 };

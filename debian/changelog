@@ -1,4 +1,4 @@
-peony (2.2.0-1) unstable; urgency=medium
+peony (3.0.0) unstable; urgency=medium
 
   * New upstream release.
     - Refactor extensible directory view frameworks. Support view
@@ -14,7 +14,7 @@ peony (2.2.0-1) unstable; urgency=medium
       view type).
     - Support building and running in qt5.6 and glib2.48.
     - Support advance search with multiple conditions.
-  * debian/libpeony2.symbols:
+  * debian/libpeony3.symbols:
     - update symbols file.
 
  -- handsome_feng <jianfengli@ubuntukylin.com>  Wed, 15 Jul 2020 19:56:55 +0800
@@ -49,14 +49,14 @@ peony (2.1.0-1) unstable; urgency=medium
     - Allow unrelated trash or delete file operation executed when a
       file operation is running.
     - Refactor the desktop window background displaying process.
-  * debian/libpeony2.symbols:
+  * debian/libpeony3.symbols:
     - update symbols file.
 
  -- handsome_feng <jianfengli@ubuntukylin.com>  Mon, 23 Mar 2020 17:56:24 +0800
 
 peony (2.0.1-2) unstable; urgency=medium
 
-  * debian/libpeony2.symbols:
+  * debian/libpeony3.symbols:
     - fixed symbols for armel.
 
  -- handsome_feng <jianfengli@ubuntukylin.com>  Thu, 20 Feb 2020 11:00:36 +0800
@@ -68,7 +68,7 @@ peony (2.0.1-1) unstable; urgency=medium
     - Add build-depends pkg-kde-tools.
   * debian/rule:
     - using pkgkde_symbolshelper.
-  * debian/libpeony2.symbols.
+  * debian/libpeony3.symbols.
     - Using pkg-kde-tools update the symbols file. (Closes: #951607)
 
  -- handsome_feng <jianfengli@ubuntukylin.com>  Wed, 19 Feb 2020 14:15:38 +0800

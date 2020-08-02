@@ -8,7 +8,7 @@ QT       += core gui gui-private x11extras dbus KWindowSystem
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets widgets-private
 
-VERSION = 2.0.0
+VERSION = 3.0.0
 
 TARGET = peony
 

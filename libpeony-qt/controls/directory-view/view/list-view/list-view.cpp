@@ -51,6 +51,7 @@ using namespace Peony::DirectoryView;
 
 ListView::ListView(QWidget *parent) : QTreeView(parent)
 {
+    setAttribute(Qt::WA_TranslucentBackground);
     setStyle(Peony::DirectoryView::ListViewStyle::getStyle());
 
     setAlternatingRowColors(true);
@@ -91,6 +92,11 @@ void ListView::scrollTo(const QModelIndex &index, QAbstractItemView::ScrollHint 
     //updateGeometries();
 }
 
+bool ListView::isDragging()
+{
+    return state() == QAbstractItemView::DraggingState;
+}
+
 void ListView::bindModel(FileItemModel *sourceModel, FileItemProxyFilterSortModel *proxyModel)
 {
     if (!sourceModel || !proxyModel)
@@ -103,27 +109,27 @@ void ListView::bindModel(FileItemModel *sourceModel, FileItemProxyFilterSortMode
     adjustColumnsSize();
 
     //fix diffcult to unselect all item issue
-    connect(this->selectionModel(), &QItemSelectionModel::currentColumnChanged, [=]
-            (const QModelIndex &current, const QModelIndex &previous) {
-        qDebug()<<"list view currentColumnChanged changed";
-        if (getSelections().count() > 1 && !m_ctrl_key_pressed)
-        {
-            this->clearSelection();
-            if (current.isValid())
-                setCurrentIndex(current);
-        }
-    });
+//    connect(this->selectionModel(), &QItemSelectionModel::currentColumnChanged, [=]
+//            (const QModelIndex &current, const QModelIndex &previous) {
+//        qDebug()<<"list view currentColumnChanged changed";
+//        if (getSelections().count() > 1 && !m_ctrl_key_pressed)
+//        {
+//            this->clearSelection();
+//            if (current.isValid())
+//                setCurrentIndex(current);
+//        }
+//    });
 
-    connect(this->selectionModel(), &QItemSelectionModel::currentRowChanged, [=]
-            (const QModelIndex &current, const QModelIndex &previous) {
-        qDebug()<<"list view currentRowChanged changed";
-        if (getSelections().count() > 1 && !m_ctrl_key_pressed)
-        {
-            this->clearSelection();
-            if (current.isValid())
-                setCurrentIndex(current);
-        }
-    });
+//    connect(this->selectionModel(), &QItemSelectionModel::currentRowChanged, [=]
+//            (const QModelIndex &current, const QModelIndex &previous) {
+//        qDebug()<<"list view currentRowChanged changed";
+//        if (getSelections().count() > 1 && !m_ctrl_key_pressed)
+//        {
+//            this->clearSelection();
+//            if (current.isValid())
+//                setCurrentIndex(current);
+//        }
+//    });
 
     //edit trigger
     connect(this->selectionModel(), &QItemSelectionModel::selectionChanged, [=](const QItemSelection &selection, const QItemSelection &deselection) {
@@ -183,13 +189,24 @@ void ListView::mousePressEvent(QMouseEvent *e)
         return;
     }
 
+    auto index = indexAt(e->pos());
+    bool isIndexSelected = selectedIndexes().contains(index);
+
     m_editValid = true;
     QTreeView::mousePressEvent(e);
 
-    //comment to fix only select when drag file name issue
-//    if (indexAt(e->pos()).column() != 0) {
-//        this->setState(QAbstractItemView::DragSelectingState);
-//    }
+    auto visualRect = this->visualRect(index);
+    auto sizeHint = itemDelegate()->sizeHint(viewOptions(), index);
+    auto validRect = QRect(visualRect.topLeft(), sizeHint);
+    if (!validRect.contains(e->pos())) {
+        if (isIndexSelected) {
+            clearSelection();
+            setCurrentIndex(index);
+        }
+        this->setState(QAbstractItemView::DragSelectingState);
+    } else if (isIndexSelected) {
+        return;
+    }
 
     //if click left button at blank space, it should select nothing
     //qDebug() << "indexAt(e->pos()):" <<indexAt(e->pos()).column() << indexAt(e->pos()).row();
@@ -230,8 +247,6 @@ void ListView::mousePressEvent(QMouseEvent *e)
             m_editValid = false;
         }
     }
-
-
 }
 
 void ListView::mouseReleaseEvent(QMouseEvent *e)
@@ -349,8 +364,8 @@ void ListView::updateGeometries()
 
     QStyleOptionViewItem opt = viewOptions();
     int height = itemDelegate()->sizeHint(opt, QModelIndex()).height();
-    verticalScrollBar()->setMaximum(verticalScrollBar()->maximum() + 1);
-    setViewportMargins(0, header()->height(), 0, height);
+    verticalScrollBar()->setMaximum(verticalScrollBar()->maximum() + 2);
+    //setViewportMargins(0, header()->height(), 0, height);
 }
 
 void ListView::wheelEvent(QWheelEvent *e)

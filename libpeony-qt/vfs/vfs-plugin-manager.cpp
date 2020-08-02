@@ -20,45 +20,33 @@
  *
  */
 
-#ifndef PLUGINIFACE_H
-#define PLUGINIFACE_H
+#include "vfs-plugin-manager.h"
 
-#include <QString>
-#include <QIcon>
+#include "search-vfs-register.h"
 
-//#define PluginInterface_iid "org.ukui.peony-qt.PluginInterface"
+using namespace Peony;
 
-namespace Peony {
+static VFSPluginManager *global_instance = nullptr;
 
-class PluginInterface
+VFSPluginManager *VFSPluginManager::getInstance()
 {
-public:
-    enum PluginType
-    {
-        Invalid,
-        MenuPlugin,
-        PreviewPagePlugin,
-        DirectoryViewPlugin,
-        DirectoryViewPlugin2,
-        ToolBarPlugin,
-        PropertiesWindowPlugin,
-        ColumnProviderPlugin,
-        StylePlugin,
-        VFSPlugin,
-        Other
-    };
-
-    virtual ~PluginInterface() {}
-
-    virtual PluginType pluginType() = 0;
-
-    virtual const QString name() = 0;
-    virtual const QString description() = 0;
-    virtual const QIcon icon() = 0;
-    virtual void setEnable(bool enable) = 0;
-    virtual bool isEnable() = 0;
-};
-
+    if (!global_instance)
+        global_instance = new VFSPluginManager;
+    return global_instance;
 }
 
-#endif // PLUGINIFACE_H
+void VFSPluginManager::registerPlugin(VFSPluginIface *plugin)
+{
+    if (m_support_schemes.contains(plugin->uriScheme()))
+        return;
+
+    plugin->initVFS();
+    m_plugins<<plugin;
+    m_support_schemes<<plugin->uriScheme();
+}
+
+VFSPluginManager::VFSPluginManager(QObject *parent) : QObject(parent)
+{
+    auto searchVFSPlugin = new SearchVFSInternalPlugin;
+    registerPlugin(searchVFSPlugin);
+}

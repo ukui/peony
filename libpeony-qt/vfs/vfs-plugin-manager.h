@@ -20,45 +20,36 @@
  *
  */
 
-#ifndef PLUGINIFACE_H
-#define PLUGINIFACE_H
+#ifndef VFSPLUGINMANAGER_H
+#define VFSPLUGINMANAGER_H
 
-#include <QString>
-#include <QIcon>
+#include "vfs-plugin-iface.h"
 
-//#define PluginInterface_iid "org.ukui.peony-qt.PluginInterface"
+#include <QObject>
 
 namespace Peony {
 
-class PluginInterface
+class VFSPluginManager : public QObject
 {
+    Q_OBJECT
 public:
-    enum PluginType
-    {
-        Invalid,
-        MenuPlugin,
-        PreviewPagePlugin,
-        DirectoryViewPlugin,
-        DirectoryViewPlugin2,
-        ToolBarPlugin,
-        PropertiesWindowPlugin,
-        ColumnProviderPlugin,
-        StylePlugin,
-        VFSPlugin,
-        Other
-    };
+    static VFSPluginManager *getInstance();
 
-    virtual ~PluginInterface() {}
+    void registerPlugin(VFSPluginIface *plugin);
 
-    virtual PluginType pluginType() = 0;
+    /*!
+     * \brief supportExtraSchemes
+     * \return the registered plugins schemes, like "search://".
+     */
+    const QStringList supportExtraSchemes();
 
-    virtual const QString name() = 0;
-    virtual const QString description() = 0;
-    virtual const QIcon icon() = 0;
-    virtual void setEnable(bool enable) = 0;
-    virtual bool isEnable() = 0;
+private:
+    explicit VFSPluginManager(QObject *parent = nullptr);
+
+    QList<VFSPluginIface *> m_plugins;
+    QStringList m_support_schemes;
 };
 
 }
 
-#endif // PLUGINIFACE_H
+#endif // VFSPLUGINMANAGER_H
