@@ -108,7 +108,7 @@
 
 PeonyApplication::PeonyApplication(int &argc, char *argv[], const char *applicationName) : SingleApplication (argc, argv, applicationName, true)
 {
-    setApplicationVersion("v2.1.0");
+    setApplicationVersion("v3.0.0");
     setApplicationName("peony-qt");
     //setApplicationDisplayName(tr("Peony-Qt"));
 

@@ -102,7 +102,7 @@ void trySetDefaultFolderUrlHandler() {
 
 PeonyDesktopApplication::PeonyDesktopApplication(int &argc, char *argv[], const char *applicationName) : SingleApplication (argc, argv, applicationName, true)
 {
-    setApplicationVersion("v2.1.0");
+    setApplicationVersion("v3.0.0");
     setApplicationName("peony-qt-desktop");
     //setApplicationDisplayName(tr("Peony-Qt Desktop"));
 
