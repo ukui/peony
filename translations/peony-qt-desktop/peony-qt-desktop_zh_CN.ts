@@ -220,7 +220,7 @@
     <message>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="459"/>
         <source>&amp;Properties</source>
-        <translation>属性(&amp;P)</translation>
+        <translation>属性(&amp;A)</translation>
     </message>
 </context>
 <context>
