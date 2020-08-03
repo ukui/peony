@@ -309,16 +309,17 @@ void ListView::dragMoveEvent(QDragMoveEvent *e)
 
 void ListView::dropEvent(QDropEvent *e)
 {
-//    if (e->source() == this) {
-//        // only handle the drop event on item.
-//        switch (dropIndicatorPosition()) {
-//        case QAbstractItemView::DropIndicatorPosition::OnItem: {
-//            break;
-//        }
-//        default:
-//            return;
-//        }
-//    }
+    // do not comment this code.
+    if (e->source() == this) {
+        // only handle the drop event on item.
+        switch (dropIndicatorPosition()) {
+        case QAbstractItemView::DropIndicatorPosition::OnItem: {
+            break;
+        }
+        default:
+            return;
+        }
+    }
 //    QTreeView::dropEvent(e);
 
     m_last_index = QModelIndex();
