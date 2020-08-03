@@ -522,7 +522,7 @@ const QList<QAction *> DirectoryViewMenu::constructFilePropertiesActions()
     QList<QAction *> l;
 
     if (!m_is_search) {
-        l<<addAction(QIcon::fromTheme("preview-file"), tr("&Properties"));
+        l<<addAction(QIcon::fromTheme("preview-file"), tr("&Attribute"));
         connect(l.last(), &QAction::triggered, [=]() {
             //FIXME:
             if (m_selections.isEmpty()) {
@@ -538,7 +538,7 @@ const QList<QAction *> DirectoryViewMenu::constructFilePropertiesActions()
             }
         });
     } else if (m_selections.count() == 1) {
-        l<<addAction(QIcon::fromTheme("preview-file"), tr("&Properties"));
+        l<<addAction(QIcon::fromTheme("preview-file"), tr("&Attribute"));
         connect(l.last(), &QAction::triggered, [=]() {
             PropertiesWindow *p = new PropertiesWindow(m_selections);
             p->setAttribute(Qt::WA_DeleteOnClose);

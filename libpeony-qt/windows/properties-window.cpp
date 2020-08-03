@@ -109,7 +109,7 @@ PropertiesWindow::PropertiesWindow(const QStringList &uris, QWidget *parent) : Q
     else
     {
         setWindowIcon(QIcon::fromTheme("system-file-manager"));
-        setWindowTitle(tr("Properties"));
+        setWindowTitle(tr("Attribute"));
 
         setAttribute(Qt::WA_DeleteOnClose);
         setContentsMargins(0, 15, 0, 0);

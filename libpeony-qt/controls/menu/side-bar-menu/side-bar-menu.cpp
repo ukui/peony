@@ -47,7 +47,7 @@ SideBarMenu::SideBarMenu(SideBarAbstractItem *item, SideBar *sideBar, QWidget *p
     m_side_bar = sideBar;
 
     if (!item) {
-        auto action = addAction(QIcon::fromTheme("preview-file"), tr("&Properties"));
+        auto action = addAction(QIcon::fromTheme("preview-file"), tr("&Attribute"));
         action->setEnabled(false);
         return;
     }
@@ -66,7 +66,7 @@ SideBarMenu::SideBarMenu(SideBarAbstractItem *item, SideBar *sideBar, QWidget *p
         break;
     }
     default: {
-        auto action = addAction(QIcon::fromTheme("preview-file"), tr("&Properties"));
+        auto action = addAction(QIcon::fromTheme("preview-file"), tr("&Attribute"));
         action->setEnabled(false);
         break;
     }
@@ -85,7 +85,7 @@ const QList<QAction *> SideBarMenu::constructFavoriteActions()
         l.last()->setEnabled(false);
     }
 
-    l<<addAction(QIcon::fromTheme("preview-file"), tr("&Properties"), [=]() {
+    l<<addAction(QIcon::fromTheme("preview-file"), tr("&Attribute"), [=]() {
         PropertiesWindow *w = new PropertiesWindow(QStringList()<<m_uri);
         w->show();
     });
@@ -100,7 +100,7 @@ const QList<QAction *> SideBarMenu::constructPersonalActions()
 {
     QList<QAction *> l;
 
-    l<<addAction(QIcon::fromTheme("preview-file"), tr("&Properties"), [=]() {
+    l<<addAction(QIcon::fromTheme("preview-file"), tr("&Attribute"), [=]() {
         PropertiesWindow *w = new PropertiesWindow(QStringList()<<m_uri);
         w->show();
     });
@@ -137,7 +137,7 @@ const QList<QAction *> SideBarMenu::constructFileSystemItemActions()
         l<<tmp;
     }
 
-    l<<addAction(QIcon::fromTheme("preview-file"), tr("&Properties"), [=]() {
+    l<<addAction(QIcon::fromTheme("preview-file"), tr("&Attribute"), [=]() {
         PropertiesWindow *w = new PropertiesWindow(QStringList()<<m_uri);
         w->show();
     });

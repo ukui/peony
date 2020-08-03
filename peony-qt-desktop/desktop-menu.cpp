@@ -456,7 +456,7 @@ const QList<QAction *> DesktopMenu::constructFilePropertiesActions()
 {
     QList<QAction *> l;
 
-    l<<addAction(QIcon::fromTheme("preview-file"), tr("&Properties"));
+    l<<addAction(QIcon::fromTheme("preview-file"), tr("&Attribute"));
     connect(l.last(), &QAction::triggered, [=]() {
         //FIXME:
         if (m_selections.isEmpty()) {
