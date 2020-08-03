@@ -13,7 +13,7 @@ on:
     - cron: '0 0 * * *'
   
 jobs:
-  archlinux:
+  archlinux-latest:
     name: on Archlinux
     runs-on: ubuntu-20.04
     container: docker.io/library/archlinux:latest
@@ -30,7 +30,8 @@ jobs:
           cd build;
           qmake-qt5 ..;
           make -j$(nproc);
-  debian:
+
+  debian-sid:
     name: on Debian Sid
     runs-on: ubuntu-20.04
     container: docker.io/library/debian:sid
@@ -50,31 +51,42 @@ jobs:
           qmake ..;
           make -j$(nproc);
   
-  fedora:
-    name: on Fedora 32
+  fedora-latest:
+    name: on Fedora Latest
     runs-on: ubuntu-20.04
-    container: docker.io/library/fedora:32
+    container: docker.io/library/fedora:latest
     steps:
       - name: Checkout peony source code
         uses: actions/checkout@v2
-      - name: Install curl and patch
-        run: dnf install --refresh -y curl patch
-      - name: Download and apply patch for Fedora
-        run: |
-          curl -O https://raw.githubusercontent.com/jenningsloy318/ukui-rpm-packaging/master/peony/peony-libdir.patch;
-          patch -s -p0 < peony-libdir.patch;
       - name: Install build dependencies
-        run: dnf install -y make gcc gcc-c++ which cmake cmake-rpm-macros autoconf automake intltool rpm-build qt5-devel qt5-rpm-macros qt5-qtbase-devel qt5-qttools-devel glib2-devel qt5-qtbase-devel gsettings-qt-devel kf5-kwindowsystem-devel poppler-qt5-devel qt5-qtx11extras-devel qt5-qtbase-private-devel libudisks2-devel  gtk2-devel libnotify-devel
+        run: dnf install --refresh -y make gcc gcc-c++ which cmake cmake-rpm-macros autoconf automake intltool rpm-build qt5-devel qt5-rpm-macros qt5-qtbase-devel qt5-qttools-devel glib2-devel qt5-qtbase-devel gsettings-qt-devel kf5-kwindowsystem-devel poppler-qt5-devel qt5-qtx11extras-devel qt5-qtbase-private-devel libudisks2-devel  gtk2-devel libnotify-devel
       - name: QMake configure & Make
         run: |
           mkdir build;
           cd build;
           qmake-qt5 ..;
           make -j$(nproc);
-  ubuntu:
-    name: on Ubuntu 20.04
+
+  fedora-rawhide:
+    name: on Fedora Rawhide
     runs-on: ubuntu-20.04
-    container: docker.io/library/ubuntu:focal
+    container: docker.io/library/fedora:rawhide
+    steps: 
+      - name: Checkout peony source code
+        uses: actions/checkout@v2
+      - name: Install build dependencies
+        run: dnf install --refresh -y make gcc gcc-c++ which cmake cmake-rpm-macros autoconf automake intltool rpm-build qt5-devel qt5-rpm-macros qt5-qtbase-devel qt5-qttools-devel glib2-devel qt5-qtbase-devel gsettings-qt-devel kf5-kwindowsystem-devel poppler-qt5-devel qt5-qtx11extras-devel qt5-qtbase-private-devel libudisks2-devel  gtk2-devel libnotify-devel
+      - name: QMake configure & Make
+        run: |
+          mkdir build;
+          cd build;
+          qmake-qt5 ..;
+          make -j$(nproc);
+
+  ubuntu-latest:
+    name: on Ubuntu Latest
+    runs-on: ubuntu-20.04
+    container: docker.io/library/ubuntu:latest
     env:
       DEBIAN_FRONTEND: noninteractive
     steps:
