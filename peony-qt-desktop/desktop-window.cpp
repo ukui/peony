@@ -214,6 +214,7 @@ void DesktopWindow::initGSettings() {
                 auto color = QColor(colorString);
                 qDebug() << colorString;
                 this->setBg(color);
+                m_current_bg_path = "";
             } else {
                 if (m_current_bg_path == bg_path)
                     return;
