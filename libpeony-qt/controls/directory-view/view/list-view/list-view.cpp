@@ -638,12 +638,15 @@ void ListView2::bindModel(FileItemModel *model, FileItemProxyFilterSortModel *pr
     });
 
     connect(m_model, &FileItemModel::findChildrenFinished, this, [=]() {
-        //delay a while for proxy model sorting.
-        QTimer::singleShot(100, this, [=]() {
-            //m_view->setModel(m_proxy_model);
-            //adjust columns layout.
-            m_view->adjustColumnsSize();
-        });
+        if (m_need_resize_header) {
+            //delay a while for proxy model sorting.
+            QTimer::singleShot(100, this, [=]() {
+                //m_view->setModel(m_proxy_model);
+                //adjust columns layout.
+                m_view->adjustColumnsSize();
+            });
+        }
+        m_need_resize_header = false;
     });
 }
 

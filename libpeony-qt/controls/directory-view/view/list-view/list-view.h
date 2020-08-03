@@ -205,6 +205,7 @@ public Q_SLOTS:
     //location
     //void open(const QStringList &uris, bool newWindow);
     void setDirectoryUri(const QString &uri) {
+        m_need_resize_header = true;
         m_view->setDirectoryUri(uri);
     }
     void beginLocationChange() {
@@ -259,6 +260,7 @@ private:
     FileItemProxyFilterSortModel *m_proxy_model = nullptr;
 
     int m_zoom_level = 0;
+    bool m_need_resize_header;
 };
 
 }

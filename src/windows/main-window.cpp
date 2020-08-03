@@ -725,7 +725,9 @@ void MainWindow::beginSwitchView(const QString &viewId)
 
 void MainWindow::refresh()
 {
-    goToUri(getCurrentUri(), false, true);
+    locationChangeStart();
+    m_tab->refresh();
+    //goToUri(getCurrentUri(), false, true);
 }
 
 void MainWindow::advanceSearch()
