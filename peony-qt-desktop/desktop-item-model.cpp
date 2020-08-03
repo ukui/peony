@@ -31,6 +31,7 @@
 #include "file-move-operation.h"
 #include "file-trash-operation.h"
 #include "file-copy-operation.h"
+#include "file-operation-utils.h"
 
 #include "thumbnail-manager.h"
 
@@ -319,6 +320,9 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
                     Q_EMIT this->requestClearIndexWidget();
                     Q_EMIT this->requestUpdateItemPositions();
                     FileInfoManager::getInstance()->remove(info);
+                    QStringList list;
+                    list.append(info->uri());
+                    FileOperationUtils::trash(list, false);
                 }
             }
         }
@@ -347,6 +351,9 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
                     Q_EMIT this->requestClearIndexWidget();
                     Q_EMIT this->requestUpdateItemPositions();
                     FileInfoManager::getInstance()->remove(info);
+                    QStringList list;
+                    list.append(info->uri());
+                    FileOperationUtils::trash(list, false);
                 }
             }
         }
