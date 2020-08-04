@@ -9,12 +9,12 @@
         <translation>桌面图标视图</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="352"/>
+        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="354"/>
         <source>New Folder</source>
         <translation>新建文件夹</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="406"/>
+        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="429"/>
         <source>set background</source>
         <translation>设置壁纸</translation>
     </message>
@@ -149,6 +149,11 @@
         <translation>永久删除</translation>
     </message>
     <message>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="459"/>
+        <source>P&amp;roperties</source>
+        <translation>属性(&amp;R)</translation>
+    </message>
+    <message>
         <source>Sort Order...</source>
         <translation type="vanished">排列顺序...</translation>
     </message>
@@ -218,9 +223,8 @@
         <translation>刷新(&amp;R)</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="459"/>
         <source>&amp;Properties</source>
-        <translation>属性(&amp;P)</translation>
+        <translation type="vanished">属性(&amp;P)</translation>
     </message>
 </context>
 <context>
@@ -236,7 +240,7 @@
         <translation>设置壁纸</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-window.cpp" line="526"/>
+        <location filename="../../peony-qt-desktop/desktop-window.cpp" line="527"/>
         <source>New Folder</source>
         <translation>新建文件夹</translation>
     </message>
