@@ -623,7 +623,7 @@ bool DesktopItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action
         switch (action) {
         case Qt::MoveAction: {
             FileMoveOperation *moveOp = new FileMoveOperation(srcUris, destDirUri);
-            moveOp->setCopyMove(true);
+            //moveOp->setCopyMove(true);
             fileOpMgr->startOperation(moveOp, addHistory);
             break;
         }
@@ -645,6 +645,6 @@ bool DesktopItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action
 
 Qt::DropActions DesktopItemModel::supportedDropActions() const
 {
-    //return Qt::MoveAction;
-    return QAbstractItemModel::supportedDropActions();
+    return Qt::MoveAction|Qt::CopyAction;
+    //return QAbstractItemModel::supportedDropActions();
 }
