@@ -9,12 +9,12 @@
         <translation>Masaüstü Simgelerini Göster</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="352"/>
+        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="354"/>
         <source>New Folder</source>
         <translation>Yeni Klasör</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="406"/>
+        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="429"/>
         <source>set background</source>
         <translation>Arkaplanı Değiştir</translation>
     </message>
@@ -149,6 +149,11 @@
         <translation>Kalıcı olarak sil</translation>
     </message>
     <message>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="459"/>
+        <source>P&amp;roperties</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Sort Order...</source>
         <translation type="vanished">Sıralama Düzeni...</translation>
     </message>
@@ -218,9 +223,8 @@
         <translation>Yenile</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="459"/>
         <source>&amp;Properties</source>
-        <translation>Özellikler</translation>
+        <translation type="vanished">Özellikler</translation>
     </message>
 </context>
 <context>
@@ -236,7 +240,7 @@
         <translation>Arkaplanı Değiştir</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-window.cpp" line="526"/>
+        <location filename="../../peony-qt-desktop/desktop-window.cpp" line="527"/>
         <source>New Folder</source>
         <translation>Yeni Klasör</translation>
     </message>
