@@ -20,6 +20,10 @@
  *
  */
 
+#include <sys/stat.h>
+#include <QMessageBox>
+#include <unistd.h>
+
 #include "file-trash-operation.h"
 #include "file-operation-manager.h"
 
@@ -42,9 +46,21 @@ void FileTrashOperation::run()
 retry:
         auto srcFile = wrapGFile(g_file_new_for_uri(src.toUtf8().constData()));
         GError *err = nullptr;
-        g_file_trash(srcFile.get()->get(),
-                     getCancellable().get()->get(),
-                     &err);
+        // check file is readonly
+        auto fileInfo = g_file_query_info(srcFile.get()->get(), "*", G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, nullptr, nullptr);
+        if (nullptr != fileInfo) {
+            guint32 uid = g_file_info_get_attribute_uint32(fileInfo, G_FILE_ATTRIBUTE_UNIX_UID);
+            if (uid == getuid()) {
+                guint mode = g_file_info_get_attribute_uint32(fileInfo, G_FILE_ATTRIBUTE_UNIX_MODE);
+                if (((S_IWUSR & mode) == 0) && (S_IRUSR & mode) && ((S_IXUSR & mode) == 0)) {
+                    int ret = QMessageBox::warning(nullptr, tr("File delete warning"), tr("Whether to delete normal files with write protection"), QMessageBox::Ok, QMessageBox::Cancel);
+                    if (ret == QMessageBox::Cancel) {
+                        break;
+                    }
+                }
+            }
+        }
+        g_file_trash(srcFile.get()->get(), getCancellable().get()->get(), &err);
         if (err) {
             if (response == IgnoreAll) {
                 g_error_free(err);
