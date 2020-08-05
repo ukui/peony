@@ -726,6 +726,9 @@ void MainWindow::beginSwitchView(const QString &viewId)
 void MainWindow::refresh()
 {
     locationChangeStart();
+    //update page uri before refresh, fix go to root path issue after refresh
+    //qDebug() << "refresh:" <<getCurrentUri() <<m_tab->currentPage()->getView();
+    m_tab->currentPage()->getView()->setDirectoryUri(getCurrentUri());
     m_tab->refresh();
     //goToUri(getCurrentUri(), false, true);
 }
