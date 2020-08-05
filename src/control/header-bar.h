@@ -89,6 +89,7 @@ private Q_SLOTS:
     void searchButtonClicked();
     void openDefaultTerminal();
     void findDefaultTerminal();
+    void tryOpenAgain();
     void setSearchMode(bool mode);
     void closeSearch();
 
