@@ -93,6 +93,7 @@ static MainWindow *last_resize_window = nullptr;
 
 MainWindow::MainWindow(const QString &uri, QWidget *parent) : QMainWindow(parent)
 {
+    setContextMenuPolicy(Qt::CustomContextMenu);
     installEventFilter(this);
 
     setWindowIcon(QIcon::fromTheme("system-file-manager"));
