@@ -77,8 +77,8 @@ using namespace Peony;
 
 DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
 {
-    m_refresh_timer.setInterval(500);
-    m_refresh_timer.setSingleShot(true);
+    //m_refresh_timer.setInterval(500);
+    //m_refresh_timer.setSingleShot(true);
 
     installEventFilter(this);
 
@@ -156,13 +156,14 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
     //connect(m_model, &DesktopItemModel::dataChanged, this, &DesktopIconView::clearAllIndexWidgets);
 
     connect(m_model, &DesktopItemModel::refreshed, this, [=]() {
+        this->setCursor(QCursor(Qt::ArrowCursor));
         m_is_refreshing = false;
 
         // check if there are items overlapped.
         QTimer::singleShot(150, this, [=](){
             if (isItemsOverlapped()) {
                 // refresh again?
-                this->refresh();
+                //this->refresh();
             }
         });
         return;
@@ -1259,8 +1260,9 @@ void DesktopIconView::clearAllIndexWidgets()
 
 void DesktopIconView::refresh()
 {
-    if (m_refresh_timer.isActive())
-        return;
+    this->setCursor(QCursor(Qt::WaitCursor));
+//    if (m_refresh_timer.isActive())
+//        return;
 
     if (!m_model)
         return;
@@ -1270,7 +1272,7 @@ void DesktopIconView::refresh()
     m_is_refreshing = true;
     m_model->refresh();
 
-    m_refresh_timer.start();
+    //m_refresh_timer.start();
 }
 
 QRect DesktopIconView::visualRect(const QModelIndex &index) const
