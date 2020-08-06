@@ -33,15 +33,30 @@
 
 namespace Peony {
 
+enum ErrorType
+{
+    ET_GIO,
+    ET_CUSTOM,
+};
+
+typedef struct _FileOperationError
+{
+    int                         errorCode;
+    ErrorType                   errorType;
+    QMap<QString, QVariant>     respStr;
+} FileOperationError;
+
 class PEONYCORESHARED_EXPORT FileOperationErrorHandler {
 public:
-    virtual ~FileOperationErrorHandler();
+    virtual ~FileOperationErrorHandler() = 0;
+
+    virtual bool handle (FileOperationError&) = 0;
+
     virtual int handleError(const QString &srcUri,
                                  const QString &destDirUri,
                                  const GErrorWrapperPtr &err,
                                  bool isCritical = false) = 0;
 };
-
 }
 
 Q_DECLARE_INTERFACE(Peony::FileOperationErrorHandler, ErrorHandlerIID)
