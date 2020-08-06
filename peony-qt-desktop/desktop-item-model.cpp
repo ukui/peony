@@ -492,6 +492,11 @@ void DesktopItemModel::onEnumerateFinished()
 
     //qDebug()<<"startMornitor";
     m_trash_watcher->startMonitor();
+    if (m_desktop_watcher->currentUri() != "file://" + QStandardPaths::writableLocation(QStandardPaths::DesktopLocation)) {
+        m_desktop_watcher->stopMonitor();
+        m_desktop_watcher = std::make_shared<FileWatcher>("file://" + QStandardPaths::writableLocation(QStandardPaths::DesktopLocation), this);
+        m_desktop_watcher->setMonitorChildrenChange(true);
+    }
     m_desktop_watcher->startMonitor();
     m_system_app_watcher->startMonitor();
     m_andriod_app_watcher->startMonitor();
