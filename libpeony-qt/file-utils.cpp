@@ -305,6 +305,13 @@ const QString FileUtils::getParentUri(const QString &uri)
     return parentUri == uri? nullptr: parentUri;
 }
 
+const QString FileUtils::getOriginalUri(const QString &uri)
+{
+    auto file = wrapGFile(g_file_new_for_uri(uri.toUtf8().constData()));
+    auto originalUri = getFileUri(file);
+    return originalUri;
+}
+
 bool FileUtils::isFileExsit(const QString &uri)
 {
     bool exist = false;

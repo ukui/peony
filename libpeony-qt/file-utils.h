@@ -58,6 +58,7 @@ public:
     static bool stringLesserThan(const QString &left, const QString &right);
 
     static const QString getParentUri(const QString &uri);
+    static const QString getOriginalUri(const QString &uri);
 
     static bool isFileExsit(const QString &uri);
 

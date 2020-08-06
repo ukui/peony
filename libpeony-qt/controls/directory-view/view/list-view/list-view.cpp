@@ -27,6 +27,7 @@
 #include "list-view-delegate.h"
 
 #include "file-item.h"
+#include "file-utils.h"
 #include "list-view-style.h"
 
 #include "global-settings.h"
@@ -542,8 +543,9 @@ void ListView::setSortOrder(int sortOrder)
 
 void ListView::editUri(const QString &uri)
 {
-    setIndexWidget(m_proxy_model->indexFromUri(uri), nullptr);
-    edit(m_proxy_model->indexFromUri(uri));
+    auto origin = FileUtils::getOriginalUri(uri);
+    setIndexWidget(m_proxy_model->indexFromUri(origin), nullptr);
+    edit(m_proxy_model->indexFromUri(origin));
 }
 
 void ListView::editUris(const QStringList uris)

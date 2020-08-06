@@ -698,8 +698,9 @@ void DesktopIconView::setSortOrder(int sortOrder)
 void DesktopIconView::editUri(const QString &uri)
 {
     clearAllIndexWidgets();
+    auto origin = FileUtils::getOriginalUri(uri);
     QTimer::singleShot(100, this, [=]() {
-        edit(m_proxy_model->mapFromSource(m_model->indexFromUri(uri)));
+        edit(m_proxy_model->mapFromSource(m_model->indexFromUri(origin)));
     });
 }
 

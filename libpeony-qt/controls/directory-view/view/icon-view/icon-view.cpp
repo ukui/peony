@@ -28,6 +28,7 @@
 
 #include "directory-view-menu.h"
 #include "file-info.h"
+#include "file-utils.h"
 
 #include "global-settings.h"
 
@@ -502,8 +503,10 @@ const QStringList IconView::getAllFileUris()
 
 void IconView::editUri(const QString &uri)
 {
-    setIndexWidget(m_sort_filter_proxy_model->indexFromUri(uri), nullptr);
-    edit(m_sort_filter_proxy_model->indexFromUri(uri));
+    auto origin = FileUtils::getOriginalUri(uri);
+    setIndexWidget(m_sort_filter_proxy_model->indexFromUri(origin), nullptr);
+    qDebug() <<"editUri:" <<uri <<origin;
+    edit(m_sort_filter_proxy_model->indexFromUri(origin));
 }
 
 void IconView::editUris(const QStringList uris)
