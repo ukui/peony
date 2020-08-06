@@ -285,6 +285,10 @@ const QList<QAction *> DirectoryViewMenu::constructCreateTemplateActions()
         if (m_is_cd) {
             createAction->setEnabled(false);
         }
+        if(m_directory.compare(QString::fromLocal8Bit("trash:///")) == 0)
+        {
+            createAction->setEnabled(false);
+        }
         l<<createAction;
         QMenu *subMenu = new QMenu(this);
         createAction->setMenu(subMenu);
