@@ -603,6 +603,13 @@ void TabWidget::updateSearchBar(bool showSearch)
 
     if (m_search_bar_count >0)
         updateSearchList();
+
+    if (! showSearch)
+    {
+        //exit advance search, clear search conditions
+        clearConditions();
+        updateFilter();
+    }
 }
 
 void TabWidget::updateButtons()
@@ -670,8 +677,10 @@ void TabWidget::updateSearchList()
         for(int i=0; i<m_search_bar_list.count(); i++)
         {
             m_conditions_list[i]->hide();
+            m_conditions_list[i]->setCurrentIndex(0);
             m_link_label_list[i]->hide();
             m_classify_list[i]->hide();
+            m_classify_list[i]->setCurrentIndex(0);
             m_input_list[i]->hide();
             m_input_list[i]->setText("");
             m_search_bar_list[i]->hide();
