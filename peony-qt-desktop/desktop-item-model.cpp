@@ -48,6 +48,8 @@
 
 #include <QTimer>
 
+#include <QMessageBox>
+
 #include <QDebug>
 
 using namespace Peony;
@@ -378,9 +380,20 @@ void DesktopItemModel::refresh()
     }
     m_files.clear();
 
+    auto desktopUri = "file://" + QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
+    if (!FileUtils::isFileExsit(desktopUri)) {
+        Q_EMIT refreshed();
+        QMessageBox box;
+        box.setModal(false);
+        box.warning(0, 0, tr("Detected no standard desktop path in your session. "
+                             "To let the desktop application works, you should create "
+                             "\"%1\" folder manually.").arg(QStandardPaths::writableLocation(QStandardPaths::DesktopLocation)));
+        return;
+    }
+
     m_enumerator = new FileEnumerator(this);
     m_enumerator->setAutoDelete();
-    m_enumerator->setEnumerateDirectory("file://" + QStandardPaths::writableLocation(QStandardPaths::DesktopLocation));
+    m_enumerator->setEnumerateDirectory(desktopUri);
     m_enumerator->connect(m_enumerator, &FileEnumerator::enumerateFinished, this, &DesktopItemModel::onEnumerateFinished);
     m_enumerator->enumerateAsync();
     endResetModel();
