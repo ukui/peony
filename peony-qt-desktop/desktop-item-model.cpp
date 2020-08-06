@@ -382,6 +382,7 @@ void DesktopItemModel::refresh()
 
     auto desktopUri = "file://" + QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
     if (!FileUtils::isFileExsit(desktopUri)) {
+        endResetModel();
         Q_EMIT refreshed();
         QMessageBox box;
         box.setModal(false);
@@ -471,24 +472,19 @@ void DesktopItemModel::onEnumerateFinished()
         m_files<<info;
         endInsertRows();
         ThumbnailManager::getInstance()->createThumbnail(info->uri(), m_thumbnail_watcher);
-
-        if (m_files.last() == info) {
-
-            for (auto info : m_files) {
-                auto uri = info->uri();
-                auto view = PeonyDesktopApplication::getIconView();
-                auto pos = view->getFileMetaInfoPos(info->uri());
-                if (pos.x() >= 0) {
-                    view->updateItemPosByUri(info->uri(), pos);
-                } else {
-                    view->ensureItemPosByUri(uri);
-                }
-            }
-
-            Q_EMIT refreshed();
-        }
-        continue;
     }
+    for (auto info : m_files) {
+        auto uri = info->uri();
+        auto view = PeonyDesktopApplication::getIconView();
+        auto pos = view->getFileMetaInfoPos(info->uri());
+        if (pos.x() >= 0) {
+            view->updateItemPosByUri(info->uri(), pos);
+        } else {
+            view->ensureItemPosByUri(uri);
+        }
+    }
+
+    Q_EMIT refreshed();
 
     //qDebug()<<"startMornitor";
     m_trash_watcher->startMonitor();
