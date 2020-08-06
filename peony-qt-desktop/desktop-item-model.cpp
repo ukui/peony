@@ -382,13 +382,21 @@ void DesktopItemModel::refresh()
 
     auto desktopUri = "file://" + QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
     if (!FileUtils::isFileExsit(desktopUri)) {
-        endResetModel();
-        Q_EMIT refreshed();
-        QMessageBox box;
-        box.setModal(false);
-        box.warning(0, 0, tr("Detected no standard desktop path in your session. "
-                             "To let the desktop application works, you should create "
-                             "\"%1\" folder manually.").arg(QStandardPaths::writableLocation(QStandardPaths::DesktopLocation)));
+        // try get correct desktop path delay.
+        QTimer::singleShot(1000, this, [=](){
+            if (!FileUtils::isFileExsit(desktopUri)) {
+                endResetModel();
+                Q_EMIT refreshed();
+                refresh();
+            } else {
+                m_enumerator = new FileEnumerator(this);
+                m_enumerator->setAutoDelete();
+                m_enumerator->setEnumerateDirectory(desktopUri);
+                m_enumerator->connect(m_enumerator, &FileEnumerator::enumerateFinished, this, &DesktopItemModel::onEnumerateFinished);
+                m_enumerator->enumerateAsync();
+                endResetModel();
+            }
+        });
         return;
     }
 
