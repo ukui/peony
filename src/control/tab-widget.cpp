@@ -466,6 +466,7 @@ void TabWidget::addNewConditionBar()
     m_top_layout->insertLayout(m_top_layout->count()-1, layout);
     m_search_bar_count++;
     updateAdvanceConditions();
+    updateButtons();
 }
 
 void TabWidget::removeConditionBar(int index)
@@ -510,6 +511,7 @@ void TabWidget::removeConditionBar(int index)
     }
     m_search_bar_count--;
     updateAdvanceConditions();
+    updateButtons();
 }
 
 QStringList TabWidget::getCurrentClassify(int rowCount)
@@ -601,6 +603,15 @@ void TabWidget::updateSearchBar(bool showSearch)
 
     if (m_search_bar_count >0)
         updateSearchList();
+}
+
+void TabWidget::updateButtons()
+{
+    //only one condition, set disabled
+    if (m_search_bar_count ==1)
+        m_remove_button_list[0]->setDisabled(true);
+    else
+        m_remove_button_list[0]->setDisabled(false);
 }
 
 void TabWidget::updateSearchPathButton(const QString &uri)

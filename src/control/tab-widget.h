@@ -170,6 +170,7 @@ public Q_SLOTS:
     void updateSearchPathButton(const QString &uri = "");
     void updateSearchBar(bool showSearch);
     void updateSearchList();
+    void updateButtons();
     void addNewConditionBar();
     void removeConditionBar(int index);
     void searchUpdate();
