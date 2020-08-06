@@ -430,8 +430,13 @@ void TabWidget::addNewConditionBar()
     if (index == 0)
     {
         classifyCombox->hide();
-        linkLabel->setFixedWidth(TRASH_BUTTON_WIDTH);
         linkLabel->setText(tr("contains"));
+        //adjust label width to language
+        QLocale locale;
+        if (locale.language() == QLocale::Chinese)
+            linkLabel->setFixedWidth(TRASH_BUTTON_HEIGHT);
+        else
+            linkLabel->setFixedWidth(TRASH_BUTTON_WIDTH);
     }
     else
         inputBox->hide();
@@ -443,8 +448,13 @@ void TabWidget::addNewConditionBar()
         {
             classifyCombox->hide();
             inputBox->show();
-            linkLabel->setFixedWidth(TRASH_BUTTON_WIDTH);
             linkLabel->setText(tr("contains"));
+            //adjust label width to language
+            QLocale locale;
+            if (locale.language() == QLocale::Chinese)
+                linkLabel->setFixedWidth(TRASH_BUTTON_HEIGHT);
+            else
+                linkLabel->setFixedWidth(TRASH_BUTTON_WIDTH);
         }
         else
         {
