@@ -1,23 +1,11 @@
-peony (3.0.0) unstable; urgency=medium
+peony (3.0.0-1) unstable; urgency=medium
 
-  * New upstream release.
-    - Refactor extensible directory view frameworks. Support view
-      zooming and auto switching.
-    - Location tab bar can drag tab label by long pressing the label,
-      and can drop into other places.
-    - The symbol icon in buttons, menus, and sidebar, etc, will auto
-      change color by its current state in ukui platform theme.
-    - Fix some file operations problems (link, copy, undo/redo).
-    - Fix the abnormal search memory usage.
-    - Fix right menu file name too long issue.
-    - Fix untranslated issues (window title, close button tips, right menu
-      view type).
-    - Support building and running in qt5.6 and glib2.48.
-    - Support advance search with multiple conditions.
-  * debian/libpeony3.symbols:
-    - update symbols file.
+  * New upstream release. (Closes: #957676)
+  * debian:
+    - libpeony2 -> libpeony3.
+    - Update watch file.
 
- -- handsome_feng <jianfengli@ubuntukylin.com>  Wed, 15 Jul 2020 19:56:55 +0800
+ -- handsome_feng <jianfengli@ubuntukylin.com>  Sat, 08 Aug 2020 14:22:20 +0800
 
 peony (2.1.2-1) unstable; urgency=medium
 
