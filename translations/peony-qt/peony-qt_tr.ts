@@ -272,7 +272,11 @@
 	Meihong He &lt;hemeihong@kylinos.cn&gt;
 
 Copyright (C): 2020, KylinSoft Co., Ltd.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Yazar:
+	Yue Lan &lt;lanyue@kylinos.cn&gt;
+	Meihong He &lt;hemeihong@kylinos.cn&gt;
+
+Telif Hakkı (C): 2020, KylinSoft Co., Ltd.</translation>
     </message>
     <message>
         <source>Author:
@@ -284,7 +288,7 @@ Copyright (C): 2019-2020, KYLIN Software Co., Ltd.</source>
 	Yue Lan &lt;lanyue@kylinos.cn&gt;
 	Meihong He &lt;hemeihong@kylinos.cn&gt;
 
-Telif (C): 2019-2020, KYLIN Software Co., Ltd.</translation>
+Telif Hakkı(C): 2019-2020, KYLIN Software Co., Ltd.</translation>
     </message>
     <message>
         <source>Author: 
@@ -528,7 +532,7 @@ Telif (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</translatio
     <message>
         <location filename="../../src/control/tab-widget.h" line="255"/>
         <source>text file</source>
-        <translation>Mtin dosyası</translation>
+        <translation>Metin dosyası</translation>
     </message>
     <message>
         <location filename="../../src/control/tab-widget.h" line="255"/>
@@ -543,7 +547,7 @@ Telif (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</translatio
     <message>
         <location filename="../../src/control/tab-widget.h" line="255"/>
         <source>wps file</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Wps Dosyası</translation>
     </message>
     <message>
         <location filename="../../src/control/tab-widget.h" line="256"/>
