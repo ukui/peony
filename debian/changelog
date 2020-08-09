@@ -1,7 +1,9 @@
-peony (3.0.0-1) unstable; urgency=medium
+peony (3.0.1-1) unstable; urgency=medium
 
   * New upstream release. (Closes: #957676)
   * debian:
+    - drop libgtk2.0-dev and qt5-gtk2-platformtheme.
+    - update the install files.
     - libpeony2 -> libpeony3.
     - Update watch file.
 

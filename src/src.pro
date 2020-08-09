@@ -61,7 +61,11 @@ INSTALLS += target
 QM_FILES_INSTALL_PATH = /usr/share/peony-qt
 
 data.path = /usr/share/applications
-data.files += ../data/peony.desktop
+data.files += ../data/peony.desktop \
+              ../data/peony-computer.desktop \
+              ../data/peony-home.desktop \
+              ../data/peony-trash.desktop \
+              ../data/peony-desktop.desktop
 INSTALLS += data
 
 RESOURCES += \
