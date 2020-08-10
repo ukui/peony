@@ -23,10 +23,9 @@
 #ifndef FILEOPERATIONERRORHANDLER_H
 #define FILEOPERATIONERRORHANDLER_H
 
+#include <QMetaType>
 #include "file-operation.h"
 #include "gerror-wrapper.h"
-#include <QMetaType>
-
 #include "peony-core_global.h"
 
 #define ErrorHandlerIID "org.ukui.peony-qt.FileOperationErrorHandler"
@@ -43,6 +42,11 @@ typedef struct _FileOperationError
 {
     int                         errorCode;
     ErrorType                   errorType;
+    QString                     title;
+    QString                     srcUri;
+    QString                     destDirUri;
+    bool                        isCritical;
+
     QMap<QString, QVariant>     respStr;
 } FileOperationError;
 
@@ -50,7 +54,7 @@ class PEONYCORESHARED_EXPORT FileOperationErrorHandler {
 public:
     virtual ~FileOperationErrorHandler() = 0;
 
-    virtual bool handle (FileOperationError&) = 0;
+//    virtual bool handle () = 0;
 
     virtual int handleError(const QString &srcUri,
                                  const QString &destDirUri,

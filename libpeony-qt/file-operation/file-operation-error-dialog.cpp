@@ -101,10 +101,10 @@ FileOperationErrorDialog::~FileOperationErrorDialog()
 
 }
 
-bool FileOperationErrorDialog::handle(FileOperationError &)
-{
+//bool FileOperationErrorDialog::handle()
+//{
 
-}
+//}
 
 FileOperationErrorHandler::~FileOperationErrorHandler()
 {

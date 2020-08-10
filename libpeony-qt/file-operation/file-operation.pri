@@ -6,7 +6,6 @@ PKGCONFIG += gio-unix-2.0
 
 HEADERS += \
     $$PWD/file-node.h                           \
-    $$PWD/file-operation-error-dialog-regular.h \
     $$PWD/file-operation.h                      \
     $$PWD/file-node-reporter.h                  \
     $$PWD/file-link-operation.h                 \
@@ -22,11 +21,12 @@ HEADERS += \
     $$PWD/file-operation-progress-bar.h         \
     $$PWD/file-operation-error-dialog.h         \
     $$PWD/file-operation-error-handler.h        \
+    $$PWD/file-operation-error-dialogs.h        \
     $$PWD/file-operation-progress-wizard.h      \
+    $$PWD/file-operation-error-dialog-base.h    \
 
 SOURCES += \
     $$PWD/file-node.cpp                         \
-    $$PWD/file-operation-error-dialog-regular.cpp \
     $$PWD/file-operation.cpp                    \
     $$PWD/file-node-reporter.cpp                \
     $$PWD/file-link-operation.cpp               \
@@ -41,4 +41,6 @@ SOURCES += \
     $$PWD/create-template-operation.cpp         \
     $$PWD/file-operation-progress-bar.cpp       \
     $$PWD/file-operation-error-dialog.cpp       \
+    $$PWD/file-operation-error-dialogs.cpp      \
     $$PWD/file-operation-progress-wizard.cpp    \
+    $$PWD/file-operation-error-dialog-base.cpp  \
