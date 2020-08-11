@@ -641,15 +641,17 @@ bool DesktopItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action
         FileTrashOperation *trashOp = new FileTrashOperation(srcUris);
         fileOpMgr->startOperation(trashOp, addHistory);
     } else {
-        qDebug() << "dropMimeData:" <<action;
+        qDebug() << "DesktopItemModel dropMimeData:" <<action;
         switch (action) {
         case Qt::MoveAction: {
+            qDebug() << "DesktopItemModel moveOp";
             FileMoveOperation *moveOp = new FileMoveOperation(srcUris, destDirUri);
-            //moveOp->setCopyMove(true);
+            moveOp->setCopyMove(true);
             fileOpMgr->startOperation(moveOp, addHistory);
             break;
         }
         case Qt::CopyAction: {
+            qDebug() << "DesktopItemModel copyOp";
             FileCopyOperation *copyOp = new FileCopyOperation(srcUris, destDirUri);
             fileOpMgr->startOperation(copyOp);
             break;
