@@ -290,7 +290,7 @@ bool SideBarModel::dropMimeData(const QMimeData *data, Qt::DropAction action, in
         return false;
 
     auto item = this->itemFromIndex(parent);
-    qDebug()<<action<<row<<column<<parent.data();
+    qDebug()<<"SideBarModel::dropMimeData:" <<action<<row<<column<<parent.data();
     if (!parent.isValid()) {
 
         auto bookmark = BookMarkManager::getInstance();
@@ -311,22 +311,24 @@ bool SideBarModel::dropMimeData(const QMimeData *data, Qt::DropAction action, in
 
     switch (item->type()) {
     case SideBarAbstractItem::SeparatorItem:
-    case SideBarAbstractItem::FavoriteItem: {
-        auto bookmark = BookMarkManager::getInstance();
-        if (bookmark->isLoaded()) {
-            for (auto url : data->urls()) {
-                auto info = FileInfo::fromUri(url.toDisplayString(), false);
-                if (info->displayName().isNull()) {
-                    FileInfoJob j(info);
-                    j.querySync();
-                }
-                if (info->isDir()) {
-                    bookmark->addBookMark(url.url());
-                }
-            }
-        }
-        break;
-    }
+    case SideBarAbstractItem::FavoriteItem:
+    //drag to sider bar all as file move operation
+//    {
+//        auto bookmark = BookMarkManager::getInstance();
+//        if (bookmark->isLoaded()) {
+//            for (auto url : data->urls()) {
+//                auto info = FileInfo::fromUri(url.toDisplayString(), false);
+//                if (info->displayName().isNull()) {
+//                    FileInfoJob j(info);
+//                    j.querySync();
+//                }
+//                if (info->isDir()) {
+//                    bookmark->addBookMark(url.url());
+//                }
+//            }
+//        }
+//        break;
+//    }
     case SideBarAbstractItem::PersonalItem:
     case SideBarAbstractItem::FileSystemItem: {
         QStringList uris;
