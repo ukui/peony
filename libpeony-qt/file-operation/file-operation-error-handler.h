@@ -34,7 +34,7 @@
 
 namespace Peony {
 
-enum ErrorType
+enum ExceptionType
 {
     ET_GIO,
     ET_CUSTOM,
@@ -43,42 +43,50 @@ enum ErrorType
 /*!
  * \brief Type of error handling
  * \li ED_CONFLICT: General conflict handling for file operations
- *
  */
 typedef enum {
     ED_CONFLICT,
-} ERROR_DIALOG;
+} EXCEPTION_DIALOG;
 
-enum ErrorResponse {
+
+/*!
+ * \brief
+ */
+enum ExceptionResponse {
+    Other,
+    Retry,
+    Cancel,
+    Rename,
     Invalid,
     IgnoreOne,
     IgnoreAll,
-    OverWriteOne,
-    OverWriteAll,
     BackupOne,
     BackupAll,
-    Rename,
-    Retry,
-    Cancel,
-    Other
+    OverWriteOne,
+    OverWriteAll,
 };
 
 /*!
  * \brief The format of the data that needs to be transferred for error handling operations
- * \li errorCode: Error types, gio errors and custom errors
- *
+ * \li errorCode: Error code
+ * \li isCritical: is critical
+ * \li title: The title that appears in the error handling window, indicating what operation went wrong
+ * \li srcUri: The file/folder being operated on
+ * \li destDirUri: The target folder
+ * \li errorType: Error types, gio errors and custom errors
+ * \li respCode: The action selected by the user
+ * \li respValue: Data entered by the user
  */
 typedef struct _FileOperationError
 {
-    ErrorType                   errorType;
-
     int                         errorCode;
-    ErrorResponse               respCode;
+    bool                        isCritical;
     QString                     title;
     QString                     srcUri;
     QString                     destDirUri;
-    bool                        isCritical;
+    ExceptionType               errorType;
 
+    ExceptionResponse           respCode;
     QMap<QString, QVariant>     respValue;
 } FileOperationError;
 
@@ -87,7 +95,7 @@ public:
     virtual ~FileOperationErrorHandler() = 0;
 
 #if HANDLE_ERR_NEW
-    virtual bool handle () = 0;
+    virtual bool handle (FileOperationError& errorInfo) = 0;
 #else
     virtual int handleError(const QString &srcUri,
                                  const QString &destDirUri,

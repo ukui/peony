@@ -108,7 +108,7 @@ void FileOperationManager::startOperation(FileOperation *operation, bool addToHi
     // DJ-
     QMap<QString, QVariant>     respStr;
     FileOperationError err = {
-        ET_CUSTOM, 0, IgnoreOne, "title", "src", "dest", false, respStr
+        0, false, "title", "src", "dest",  ET_CUSTOM, IgnoreOne, respStr
     };
     FileOperationErrorDialogConflict d(&err);
     d.exec();

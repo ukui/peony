@@ -65,7 +65,7 @@ Peony::FileOperationErrorDialogConflict::~FileOperationErrorDialogConflict()
 
 
 #if HANDLE_ERR_NEW
-bool Peony::FileOperationErrorDialogConflict::handle()
+bool Peony::FileOperationErrorDialogConflict::handle (FileOperationError& errorInfo)
 {
 
 }
@@ -162,7 +162,7 @@ void Peony::FileInformationLabel::mouseDoubleClickEvent(QMouseEvent *event)
     Q_UNUSED(event);
 }
 
-Peony::FileOperationErrorHandler *Peony::FileOperationErrorDialogFactory::getFileOperationErrorDialog(Peony::FileOperationError& errInfo, Peony::ERROR_DIALOG errType)
+Peony::FileOperationErrorHandler *Peony::FileOperationErrorDialogFactory::getFileOperationErrorDialog(Peony::FileOperationError& errInfo, Peony::EXCEPTION_DIALOG errType)
 {
     switch (errType) {
     case ED_CONFLICT:

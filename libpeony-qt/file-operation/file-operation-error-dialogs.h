@@ -18,7 +18,7 @@ class FileOperationErrorDialogConflict;
 class PEONYCORESHARED_EXPORT FileOperationErrorDialogFactory
 {
 public:
-    static FileOperationErrorHandler* getFileOperationErrorDialog (FileOperationError& errInfo, ERROR_DIALOG errType);
+    static FileOperationErrorHandler* getFileOperationErrorDialog (FileOperationError& errInfo, EXCEPTION_DIALOG errType);
 };
 
 /**!
@@ -34,7 +34,7 @@ public:
     ~FileOperationErrorDialogConflict() override;
 
 #if HANDLE_ERR_NEW
-    virtual bool handle () override;
+    virtual bool handle (FileOperationError& errorInfo) override;
 #else
     // FIXME://DELETE
     virtual int handleError(const QString &srcUri,

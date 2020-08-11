@@ -21,20 +21,20 @@ Peony::FileOperationErrorDialogBase::~FileOperationErrorDialogBase()
 
 }
 
-#if HANDLE_ERR_NEW
-bool Peony::FileOperationErrorDialogBase::handle()
-{
+//#if HANDLE_ERR_NEW
+//bool Peony::FileOperationErrorDialogBase::handle(FileOperationError& errorInfo)
+//{
 
-}
+//}
 
-#else
+//#else
 
-int Peony::FileOperationErrorDialogBase::handleError(const QString &srcUri, const QString &destDirUri, const Peony::GErrorWrapperPtr &err, bool isCritical)
-{
+//int Peony::FileOperationErrorDialogBase::handleError(const QString &srcUri, const QString &destDirUri, const Peony::GErrorWrapperPtr &err, bool isCritical)
+//{
 
-}
+//}
 
-#endif
+//#endif
 
 void Peony::FileOperationErrorDialogBase::paintEvent(QPaintEvent *)
 {

@@ -14,12 +14,12 @@ public:
     ~FileOperationErrorDialogBase() override;
 
 #if HANDLE_ERR_NEW
-    virtual bool handle () override;
+    virtual bool handle (FileOperationError& errorInfo) = 0;
 #else
     virtual int handleError(const QString &srcUri,
                                  const QString &destDirUri,
                                  const GErrorWrapperPtr &err,
-                                 bool isCritical = false) override;
+                                 bool isCritical = false) = 0;
 #endif
 
 protected:
