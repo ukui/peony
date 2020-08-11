@@ -1181,8 +1181,8 @@ Do you want to delete the link file?</source>
     <message>
         <location filename="../../libpeony-qt/file-operation/file-link-operation.cpp" line="37"/>
         <location filename="../../libpeony-qt/file-operation/file-link-operation.cpp" line="44"/>
-        <source> - Symbolic Link</source>
-        <translation> - 快捷方式</translation>
+        <source>Symbolic Link</source>
+        <translation>快捷方式</translation>
     </message>
 </context>
 <context>
@@ -1289,8 +1289,8 @@ Do you want to delete the link file?</source>
     <message>
         <location filename="../../libpeony-qt/file-operation/file-operation-manager.h" line="189"/>
         <location filename="../../libpeony-qt/file-operation/file-operation-manager.h" line="192"/>
-        <source> - Symbolic Link</source>
-        <translation> - 快捷方式</translation>
+        <source>Symbolic Link</source>
+        <translation>快捷方式</translation>
     </message>
 </context>
 <context>

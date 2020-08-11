@@ -33,17 +33,12 @@ FileLinkOperation::FileLinkOperation(QString srcUri, QString destDirUri, QObject
 {
     m_src_uri = srcUri;
     QUrl url = srcUri;
-    if (!url.fileName().contains(".")) {
-        m_dest_uri = destDirUri + "/" + url.fileName() + tr(" - Symbolic Link");
-    } else {
-        QString tmp = url.fileName();
-
-        while (tmp.contains(".")) {
-            tmp.chop(1);
-        }
-        auto destFileName = url.fileName().insert(tmp.count(), tr(" - Symbolic Link"));
-
-        m_dest_uri = m_dest_uri = destDirUri + "/" + destFileName;
+    //If it starts with a ".", add it directly to the end
+    if(url.fileName().startsWith('.')){
+        m_dest_uri = destDirUri + "/" + url.fileName() + " - " + tr("Symbolic Link");
+    }else{
+        // Otherwise, add it directly to the front
+        m_dest_uri = destDirUri + "/" + tr("Symbolic Link") + " - " + url.fileName();
     }
 
     QStringList fake_uris;

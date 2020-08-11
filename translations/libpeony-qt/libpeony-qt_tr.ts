@@ -1181,8 +1181,8 @@ Bağlantı dosyasını silmek istiyor musunuz?</translation>
     <message>
         <location filename="../../libpeony-qt/file-operation/file-link-operation.cpp" line="37"/>
         <location filename="../../libpeony-qt/file-operation/file-link-operation.cpp" line="44"/>
-        <source> - Symbolic Link</source>
-        <translation> - Sembolik Bağlantı</translation>
+        <source>Symbolic Link</source>
+        <translation>Sembolik Bağlantı</translation>
     </message>
 </context>
 <context>
@@ -1289,8 +1289,8 @@ Bağlantı dosyasını silmek istiyor musunuz?</translation>
     <message>
         <location filename="../../libpeony-qt/file-operation/file-operation-manager.h" line="189"/>
         <location filename="../../libpeony-qt/file-operation/file-operation-manager.h" line="192"/>
-        <source> - Symbolic Link</source>
-        <translation> Sembolik Bağ</translation>
+        <source>Symbolic Link</source>
+        <translation>Sembolik Bağ</translation>
     </message>
 </context>
 <context>
