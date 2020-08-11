@@ -93,6 +93,7 @@ public Q_SLOTS:
     void clearHistory();
     void onFilesDeleted(const QStringList &uris);
 
+    int handleError(FileOperationError& error);
     int handleError(const QString &srcUri, const QString &destUri, const GErrorWrapperPtr &err, bool critical);
 
     /*!

@@ -183,7 +183,11 @@ fallback_retry:
             int handle_type = prehandle(err);
             if (handle_type == Other) {
                 qDebug()<<"send error";
+#if HANDLE_ERR_NEW
+                auto typeData = FileOperation::IgnoreOne;
+#else
                 auto typeData = errored(m_current_src_uri, m_current_dest_dir_uri, errWrapperPtr);
+#endif
                 qDebug()<<"get return";
                 handle_type = typeData;
             }
@@ -268,8 +272,13 @@ fallback_retry:
             auto errWrapperPtr = GErrorWrapper::wrapFrom(err);
             int handle_type = prehandle(err);
             if (handle_type == Other) {
+
+#if HANDLE_ERR_NEW
+                auto typeData = FileOperation::IgnoreOne;
+#else
                 qDebug()<<"send error";
                 auto typeData = errored(m_current_src_uri, m_current_dest_dir_uri, errWrapperPtr);
+#endif
                 qDebug()<<"get return";
                 handle_type = typeData;
             }

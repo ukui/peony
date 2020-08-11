@@ -13,11 +13,14 @@ public:
     FileOperationErrorDialogBase(Peony::FileOperationError* error, QDialog *parent);
     ~FileOperationErrorDialogBase() override;
 
+#if HANDLE_ERR_NEW
     virtual bool handle () override;
+#else
     virtual int handleError(const QString &srcUri,
                                  const QString &destDirUri,
                                  const GErrorWrapperPtr &err,
                                  bool isCritical = false) override;
+#endif
 
 protected:
     void paintEvent(QPaintEvent*) override;

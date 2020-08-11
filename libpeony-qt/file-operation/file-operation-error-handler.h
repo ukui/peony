@@ -28,6 +28,8 @@
 #include "gerror-wrapper.h"
 #include "peony-core_global.h"
 
+#define HANDLE_ERR_NEW 1
+
 #define ErrorHandlerIID "org.ukui.peony-qt.FileOperationErrorHandler"
 
 namespace Peony {
@@ -38,28 +40,60 @@ enum ErrorType
     ET_CUSTOM,
 };
 
+/*!
+ * \brief Type of error handling
+ * \li ED_CONFLICT: General conflict handling for file operations
+ *
+ */
+typedef enum {
+    ED_CONFLICT,
+} ERROR_DIALOG;
+
+enum ErrorResponse {
+    Invalid,
+    IgnoreOne,
+    IgnoreAll,
+    OverWriteOne,
+    OverWriteAll,
+    BackupOne,
+    BackupAll,
+    Rename,
+    Retry,
+    Cancel,
+    Other
+};
+
+/*!
+ * \brief The format of the data that needs to be transferred for error handling operations
+ * \li errorCode: Error types, gio errors and custom errors
+ *
+ */
 typedef struct _FileOperationError
 {
-    int                         errorCode;
     ErrorType                   errorType;
+
+    int                         errorCode;
+    ErrorResponse               respCode;
     QString                     title;
     QString                     srcUri;
     QString                     destDirUri;
     bool                        isCritical;
 
-    QMap<QString, QVariant>     respStr;
+    QMap<QString, QVariant>     respValue;
 } FileOperationError;
 
 class PEONYCORESHARED_EXPORT FileOperationErrorHandler {
 public:
     virtual ~FileOperationErrorHandler() = 0;
 
+#if HANDLE_ERR_NEW
     virtual bool handle () = 0;
-
+#else
     virtual int handleError(const QString &srcUri,
                                  const QString &destDirUri,
                                  const GErrorWrapperPtr &err,
                                  bool isCritical = false) = 0;
+#endif
 };
 }
 

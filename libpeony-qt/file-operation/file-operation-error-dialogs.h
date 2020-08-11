@@ -8,10 +8,6 @@
 
 namespace Peony {
 
-typedef enum {
-    ED_CONFLICT,
-} ERROR_DIALOG ;
-
 class FileInformationLabel;
 class FileOperationErrorDialogConflict;
 
@@ -37,13 +33,16 @@ public:
     FileOperationErrorDialogConflict(FileOperationError* error, FileOperationErrorDialogBase *parent = nullptr);
     ~FileOperationErrorDialogConflict() override;
 
-//    virtual bool handle () override;
-
+#if HANDLE_ERR_NEW
+    virtual bool handle () override;
+#else
     // FIXME://DELETE
     virtual int handleError(const QString &srcUri,
                                  const QString &destDirUri,
                                  const GErrorWrapperPtr &err,
                                  bool isCritical = false) override;
+#endif
+
 private:
     float m_margin = 9;
     float m_margin_lr = 26;

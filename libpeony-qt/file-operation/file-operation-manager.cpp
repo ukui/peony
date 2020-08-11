@@ -108,7 +108,7 @@ void FileOperationManager::startOperation(FileOperation *operation, bool addToHi
     // DJ-
     QMap<QString, QVariant>     respStr;
     FileOperationError err = {
-        0, ET_CUSTOM, "title", "src", "dest", false, respStr
+        ET_CUSTOM, 0, IgnoreOne, "title", "src", "dest", false, respStr
     };
     FileOperationErrorDialogConflict d(&err);
     d.exec();
@@ -187,11 +187,11 @@ void FileOperationManager::startOperation(FileOperation *operation, bool addToHi
    proc->connect(operation, &FileOperation::operationFinished, proc, &ProgressBar::onFinished);
    proc->connect(proc, &ProgressBar::cancelled, operation, &Peony::FileOperation::cancel);
 
-   operation->connect(operation, &FileOperation::errored, [=]() {
-       operation->setHasError(true);
-   });
+//   operation->connect(operation, &FileOperation::errored, [=]() {
+//       operation->setHasError(true);
+//   });
 
-   operation->connect(operation, &FileOperation::errored, this, &FileOperationManager::handleError, Qt::BlockingQueuedConnection);
+//   operation->connect(operation, &FileOperation::errored, this, &FileOperationManager::handleError, Qt::BlockingQueuedConnection);
 
    operation->connect(operation, &FileOperation::operationFinished, this, [=](){
        if (operation->hasError()) {
@@ -345,6 +345,13 @@ void FileOperationManager::onFilesDeleted(const QStringList &uris)
     clearHistory();
 }
 
+int FileOperationManager::handleError(FileOperationError &error)
+{
+    if (error.srcUri.startsWith("trash://") && error.errorType == ET_GIO && error.errorCode == G_IO_ERROR_PERMISSION_DENIED) {
+        return FileOperation::IgnoreOne;
+    }
+}
+
 int FileOperationManager::handleError(const QString &srcUri,
         const QString &destUri,
         const GErrorWrapperPtr &err,
@@ -355,7 +362,11 @@ int FileOperationManager::handleError(const QString &srcUri,
     }
     FileOperationErrorDialog dlg;
 
+#if HANDLE_ERR_NEW
+    return FileOperation::IgnoreAll;
+#else
     return dlg.handleError(srcUri, destUri, err, critical);
+#endif
 }
 
 void FileOperationManager::registerFileWatcher(FileWatcher *watcher)

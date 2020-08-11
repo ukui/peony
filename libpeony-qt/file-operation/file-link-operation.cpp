@@ -70,7 +70,12 @@ retry:
     if (err) {
         setHasError(true);
         //forbid response actions except retry and cancel.
+
+#if HANDLE_ERR_NEW
+                auto responseType = FileOperation::IgnoreOne;
+#else
         auto responseType = errored(m_src_uri, m_dest_uri, GErrorWrapper::wrapFrom(err), true);
+#endif
         if (responseType == FileOperation::Retry) {
             goto retry;
         }

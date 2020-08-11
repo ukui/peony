@@ -63,11 +63,19 @@ Peony::FileOperationErrorDialogConflict::~FileOperationErrorDialogConflict()
 
 //}
 
+
+#if HANDLE_ERR_NEW
+bool Peony::FileOperationErrorDialogConflict::handle()
+{
+
+}
+#else
 // FIXME://DELETE
 int Peony::FileOperationErrorDialogConflict::handleError(const QString &srcUri, const QString &destDirUri, const Peony::GErrorWrapperPtr &err, bool isCritical)
 {
 
 }
+#endif
 
 Peony::FileInformationLabel::FileInformationLabel(QWidget *parent) : QFrame(parent)
 {

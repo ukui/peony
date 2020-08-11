@@ -195,7 +195,11 @@ retry:
             int handle_type = prehandle(err);
             if (handle_type == Other) {
                 qDebug()<<"send error";
+#if HANDLE_ERR_NEW
+                auto responseTypeWrapper = FileOperation::IgnoreOne;
+#else
                 auto responseTypeWrapper = Q_EMIT errored(srcUri, m_dest_dir_uri, errWrapper);
+#endif
                 qDebug()<<"get return";
                 handle_type = responseTypeWrapper;
                 //block until error has been handled.
@@ -288,7 +292,12 @@ retry:
 
             if (handled_err) {
                 auto handledErr = GErrorWrapper::wrapFrom(handled_err);
+
+#if HANDLE_ERR_NEW
+                auto response = FileOperation::IgnoreOne;
+#else
                 this->errored(srcUri, m_dest_dir_uri, handledErr, true);
+#endif
             }
         } else {
             file->setState(FileNode::Handled);
@@ -517,7 +526,12 @@ fallback_retry:
             int handle_type = prehandle(err);
             if (handle_type == Other) {
                 qDebug()<<"send error";
+
+#if HANDLE_ERR_NEW
+                auto typeData = FileOperation::IgnoreOne;
+#else
                 auto typeData = errored(m_current_src_uri, m_current_dest_dir_uri, errWrapperPtr);
+#endif
                 qDebug()<<"get return";
                 handle_type = typeData;
             }
@@ -602,7 +616,11 @@ fallback_retry:
             int handle_type = prehandle(err);
             if (handle_type == Other) {
                 qDebug()<<"send error";
+#if HANDLE_ERR_NEW
+                auto typeData = FileOperation::IgnoreOne;
+#else
                 auto typeData = errored(m_current_src_uri, m_current_dest_dir_uri, errWrapperPtr);
+#endif
                 qDebug()<<"get return";
                 handle_type = typeData;
             }
@@ -807,6 +825,9 @@ void FileMoveOperation::run()
     Q_EMIT operationStarted();
 start:
     if (!isValid()) {
+#if HANDLE_ERR_NEW
+                auto response = FileOperation::IgnoreOne;
+#else
         auto response = errored(nullptr,
                                 nullptr,
                                 GErrorWrapper::wrapFrom(g_error_new(G_IO_ERROR,
@@ -814,6 +835,7 @@ start:
                                         tr("Invalid Operation").toUtf8().constData(),
                                         nullptr)),
                                 true);
+#endif
         switch (response) {
         case Retry:
             goto start;

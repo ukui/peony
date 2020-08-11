@@ -111,6 +111,9 @@ FileOperationErrorHandler::~FileOperationErrorHandler()
 
 }
 
+#if HANDLE_ERR_NEW
+;
+#else
 int FileOperationErrorDialog::handleError(const QString &srcUri,
         const QString &destDirUri,
         const GErrorWrapperPtr &err,
@@ -172,3 +175,4 @@ int FileOperationErrorDialog::handleError(const QString &srcUri,
     }
     }
 }
+#endif

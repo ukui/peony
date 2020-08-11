@@ -168,8 +168,12 @@ retry:
             if (m_pre_handler != Invalid) {
                 type = m_pre_handler;
             } else {
+#if HANDLE_ERR_NEW
+                type = FileOperation::IgnoreOne;
+#else
                 auto responseData = Q_EMIT errored(uri, originUri, GErrorWrapper::wrapFrom(err), false);
                 type = responseData;
+#endif
             }
 
             switch (type) {

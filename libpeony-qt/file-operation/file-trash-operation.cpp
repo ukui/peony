@@ -50,8 +50,11 @@ retry:
                 g_error_free(err);
                 continue;
             }
-
+#if HANDLE_ERR_NEW
+                auto responseData = FileOperation::IgnoreOne;
+#else
             auto responseData = Q_EMIT errored(src, tr("trash:///"), GErrorWrapper::wrapFrom(err), true);
+#endif
             switch (responseData) {
             case Retry:
                 goto retry;

@@ -117,12 +117,18 @@ retry_create_empty_file:
                       nullptr,
                       &err);
         if (err) {
+            // todo: Allow user naming
             if (err->code == G_IO_ERROR_EXISTS) {
                 g_error_free(err);
                 handleDuplicate(m_target_uri);
                 goto retry_create_empty_file;
             } else {
+#if HANDLE_ERR_NEW
+                ;
+//                Q_EMIT errored(m_src_uri, m_dest_dir_uri, GErrorWrapper::wrapFrom(err), true);
+#else
                 Q_EMIT errored(m_src_uri, m_dest_dir_uri, GErrorWrapper::wrapFrom(err), true);
+#endif
             }
         }
         break;
@@ -140,7 +146,12 @@ retry_create_empty_folder:
                 handleDuplicate(m_target_uri);
                 goto retry_create_empty_folder;
             } else {
+
+#if HANDLE_ERR_NEW
+                ;
+#else
                 Q_EMIT errored(m_src_uri, m_dest_dir_uri, GErrorWrapper::wrapFrom(err), true);
+#endif
             }
         }
         break;
@@ -162,7 +173,11 @@ retry_create_template:
                 handleDuplicate(m_target_uri);
                 goto retry_create_template;
             } else {
+#if HANDLE_ERR_NEW
+                ;
+#else
                 Q_EMIT errored(m_src_uri, m_dest_dir_uri, GErrorWrapper::wrapFrom(err), true);
+#endif
             }
         }
         // change file's modify time and access time after copy templete file;

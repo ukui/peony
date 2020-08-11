@@ -131,10 +131,14 @@ fallback_retry:
                     &err);
         if (err) {
             qDebug()<<err->message;
+#if HANDLE_ERR_NEW
+                auto responseType = FileOperation::IgnoreOne;
+#else
             auto responseType = errored(m_uri,
                                         FileUtils::getFileUri(newFile),
                                         GErrorWrapper::wrapFrom(err),
                                         true);
+#endif
             switch (responseType) {
             case Retry:
                 goto fallback_retry;
@@ -156,10 +160,15 @@ retry:
                     nullptr,
                     &err);
         if (err) {
+
+#if HANDLE_ERR_NEW
+                auto responseType = FileOperation::IgnoreOne;
+#else
             auto responseType = errored(m_uri,
                                         FileUtils::getFileUri(newFile),
                                         GErrorWrapper::wrapFrom(err),
                                         true);
+#endif
             switch (responseType) {
             case Retry:
                 goto retry;

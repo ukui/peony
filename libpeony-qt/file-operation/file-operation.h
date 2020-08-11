@@ -33,6 +33,7 @@
 #include <QHash>
 
 #include "peony-core_global.h"
+#include "file-operation-error-handler.h"
 
 namespace Peony {
 
@@ -164,8 +165,11 @@ Q_SIGNALS:
      * Qt::BlockingQueuedConnection flag set. That also limit you use fileoperation and its
      * derived class in main thread.
      */
+#if HANDLE_ERR_NEW
+    void errored(FileOperationError& error);
+#else
     int errored(const QString &srcUri, const QString &destUri, const Peony::GErrorWrapperPtr &err, bool isCritical = false);
-
+#endif
     void FileProgressCallback(const QString &srcUri, const QString &destUri,
                               const qint64 &current_file_offset, const qint64 &current_file_size);
 
