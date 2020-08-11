@@ -40,7 +40,7 @@ void Peony::FileOperationErrorDialogBase::paintEvent(QPaintEvent *)
     // paint title
     QRect textArea (m_margin_lr, m_margin_tp, width() - m_margin_lr * 2 - 2 * m_btn_size, m_header_height);
     QFont font = painter.font();
-    font.setPixelSize(10);
+    font.setPixelSize(12);
     painter.setFont(font);
     painter.drawText(textArea, Qt::AlignVCenter | Qt::AlignHCenter, m_error->title);
 

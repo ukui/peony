@@ -37,6 +37,11 @@
 
 #include <QUrl>
 
+// DJ-
+#include "file-operation-error-dialogs.h"
+// DJ-
+
+
 namespace Peony {
 
 class FileOperationInfo;

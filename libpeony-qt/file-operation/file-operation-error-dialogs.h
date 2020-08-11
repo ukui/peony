@@ -55,6 +55,7 @@ private:
     FileInformationLabel* m_file_label1 = nullptr;
     FileInformationLabel* m_file_label2 = nullptr;
 
+    QLabel* m_ck_label = nullptr;
     QCheckBox* m_ck_box = nullptr;
 
     QPushButton* m_ok = nullptr;
@@ -68,17 +69,39 @@ class FileInformationLabel : public QWidget
 
 public:
     explicit FileInformationLabel(QWidget* parent = nullptr);
+    ~FileInformationLabel();
+
+protected:
+    void paintEvent(QPaintEvent *event) override;
 
 private:
     float m_fix_width = 528;
     float m_fix_heigth = 116;
 
+    //
+    float m_pic_x = 16;
+    float m_pic_y = 21;
+    float m_pic_size = 56;
+
+    // pic name
+    float m_pic_name_x = 26;
+    float m_pic_name_y = 79;
+    float m_pic_name_w = 38;
+    float m_pic_name_h = 24;
+
+    // file information
+    QLabel* m_file_information = nullptr;
+    float m_file_name_x = 92;
+    float m_file_name_y = 12;
+    float m_file_name_w = 420;
+    float m_file_name_h = 92;
+
     QIcon m_icon;
-    QString m_op_name;
-    QString m_file_name;
-    QString m_file_size;
-    QString m_modify_time;
-    QString m_file_position;
+    QString m_op_name = "replace";
+    QString m_file_name = "wen jian ming";
+    QString m_file_size = "asdasd zi jie";
+    QString m_modify_time = "2020-08-19";
+    QString m_file_location = "file:///home/xxx/xxx/xxx/xxx/xxx/xx/ss/ss/ss/ss/ss/ss/ss/ss/ss/ss/ss/ss/ss/ss/ss/ss/ss";
 };
 };
 

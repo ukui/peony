@@ -105,6 +105,15 @@ void FileOperationManager::startOperation(FileOperation *operation, bool addToHi
 {
     QApplication::setQuitOnLastWindowClosed(false);
 
+    // DJ-
+    QMap<QString, QVariant>     respStr;
+    FileOperationError err = {
+        0, ET_CUSTOM, "title", "src", "dest", false, respStr
+    };
+    FileOperationErrorDialogConflict d(&err);
+    d.exec();
+    // DJ-
+
     connect(operation, &FileOperation::operationFinished, this, [=]() {
         operation->notifyFileWatcherOperationFinished();
         auto settings = GlobalSettings::getInstance();
