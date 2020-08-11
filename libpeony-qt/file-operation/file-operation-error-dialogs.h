@@ -8,8 +8,27 @@
 
 namespace Peony {
 
-class FileInformationLabel;
+typedef enum {
+    ED_CONFLICT,
+} ERROR_DIALOG ;
 
+class FileInformationLabel;
+class FileOperationErrorDialogConflict;
+
+/**!
+ * @brief Factory class for error handling pop-up boxes
+ *
+ */
+class PEONYCORESHARED_EXPORT FileOperationErrorDialogFactory
+{
+public:
+    static FileOperationErrorHandler* getFileOperationErrorDialog (FileOperationError& errInfo, ERROR_DIALOG errType);
+};
+
+/**!
+ * @brief Dialog box for handling file conflicts
+ *
+ */
 class PEONYCORESHARED_EXPORT FileOperationErrorDialogConflict : public FileOperationErrorDialogBase
 {
     Q_OBJECT
@@ -26,10 +45,10 @@ public:
                                  const GErrorWrapperPtr &err,
                                  bool isCritical = false) override;
 private:
-    float m_fix_width = 580;
-    float m_fix_height = 498;
     float m_margin = 9;
     float m_margin_lr = 26;
+    float m_fix_width = 580;
+    float m_fix_height = 498;
 
     float m_tip_y = 55;
     float m_tip_height = 50;
@@ -59,11 +78,15 @@ private:
     QCheckBox* m_ck_box = nullptr;
 
     QPushButton* m_ok = nullptr;
-    QPushButton* m_rename = nullptr;
+    QPushButton* m_rename = nullptr;    // The renaming feature also needs some grooming, such as how to rename after selecting "Do something similar later"
     QPushButton* m_cancel = nullptr;
 };
 
-class FileInformationLabel : public QWidget
+
+/**!
+ * @brief Some of the widgets in the error pop-up box
+ */
+class FileInformationLabel : public QFrame
 {
     Q_OBJECT
 
@@ -71,8 +94,16 @@ public:
     explicit FileInformationLabel(QWidget* parent = nullptr);
     ~FileInformationLabel();
 
+Q_SIGNALS:
+    void active ();
+
+public:
+    void setActive (bool active);
+    void setOpName (QString name);
+
 protected:
     void paintEvent(QPaintEvent *event) override;
+    virtual void mouseDoubleClickEvent(QMouseEvent *event) override;
 
 private:
     float m_fix_width = 528;
@@ -84,9 +115,9 @@ private:
     float m_pic_size = 56;
 
     // pic name
-    float m_pic_name_x = 26;
+    float m_pic_name_x = 24;
     float m_pic_name_y = 79;
-    float m_pic_name_w = 38;
+    float m_pic_name_w = 40;
     float m_pic_name_h = 24;
 
     // file information
@@ -97,6 +128,8 @@ private:
     float m_file_name_h = 92;
 
     QIcon m_icon;
+    bool m_active = false;
+    bool m_clicked = false;
     QString m_op_name = "replace";
     QString m_file_name = "wen jian ming";
     QString m_file_size = "asdasd zi jie";

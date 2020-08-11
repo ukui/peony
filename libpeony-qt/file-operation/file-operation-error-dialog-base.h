@@ -13,7 +13,7 @@ public:
     FileOperationErrorDialogBase(Peony::FileOperationError* error, QDialog *parent);
     ~FileOperationErrorDialogBase() override;
 
-//    virtual bool handle () override;
+    virtual bool handle () override;
     virtual int handleError(const QString &srcUri,
                                  const QString &destDirUri,
                                  const GErrorWrapperPtr &err,

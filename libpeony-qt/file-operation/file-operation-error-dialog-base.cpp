@@ -21,10 +21,10 @@ Peony::FileOperationErrorDialogBase::~FileOperationErrorDialogBase()
 
 }
 
-//bool Peony::FileOperationErrorDialogBase::handle()
-//{
+bool Peony::FileOperationErrorDialogBase::handle()
+{
 
-//}
+}
 
 int Peony::FileOperationErrorDialogBase::handleError(const QString &srcUri, const QString &destDirUri, const Peony::GErrorWrapperPtr &err, bool isCritical)
 {

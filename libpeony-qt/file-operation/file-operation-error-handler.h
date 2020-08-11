@@ -54,7 +54,7 @@ class PEONYCORESHARED_EXPORT FileOperationErrorHandler {
 public:
     virtual ~FileOperationErrorHandler() = 0;
 
-//    virtual bool handle () = 0;
+    virtual bool handle () = 0;
 
     virtual int handleError(const QString &srcUri,
                                  const QString &destDirUri,
