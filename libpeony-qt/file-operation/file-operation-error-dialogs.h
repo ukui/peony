@@ -18,7 +18,7 @@ class FileOperationErrorDialogConflict;
 class PEONYCORESHARED_EXPORT FileOperationErrorDialogFactory
 {
 public:
-    static FileOperationErrorHandler* getFileOperationErrorDialog (FileOperationError& errInfo, EXCEPTION_DIALOG errType);
+    static FileOperationErrorHandler* getDialog (FileOperationError& errInfo, EXCEPTION_DIALOG errType);
 };
 
 /**!
@@ -34,7 +34,7 @@ public:
     ~FileOperationErrorDialogConflict() override;
 
 #if HANDLE_ERR_NEW
-    virtual bool handle (FileOperationError& errorInfo) override;
+    virtual void handle () override;
 #else
     // FIXME://DELETE
     virtual int handleError(const QString &srcUri,
@@ -99,6 +99,8 @@ Q_SIGNALS:
 public:
     void setActive (bool active);
     void setOpName (QString name);
+    void setPixmap (QString pixmap);
+    void setFileName (QString fileName);
 
 protected:
     void paintEvent(QPaintEvent *event) override;
@@ -126,11 +128,11 @@ private:
     float m_file_name_w = 420;
     float m_file_name_h = 92;
 
-    QIcon m_icon;
+    QPixmap m_icon;
     bool m_active = false;
     bool m_clicked = false;
-    QString m_op_name = "replace";
-    QString m_file_name = "wen jian ming";
+    QString m_op_name = "";
+    QString m_file_name = "";
     QString m_file_size = "asdasd zi jie";
     QString m_modify_time = "2020-08-19";
     QString m_file_location = "file:///home/xxx/xxx/xxx/xxx/xxx/xx/ss/ss/ss/ss/ss/ss/ss/ss/ss/ss/ss/ss/ss/ss/ss/ss/ss";

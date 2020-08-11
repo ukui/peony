@@ -44,7 +44,7 @@ public:
     explicit FileOperationErrorDialog(QWidget *parent = nullptr);
     ~FileOperationErrorDialog() override;
 
-    virtual bool handle (FileOperationError& errorInfo) override;
+    virtual void handle () override;
 
 public Q_SLOTS:
 

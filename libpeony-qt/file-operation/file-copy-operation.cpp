@@ -184,7 +184,14 @@ fallback_retry:
             if (handle_type == Other) {
                 qDebug()<<"send error";
 #if HANDLE_ERR_NEW
-                auto typeData = FileOperation::IgnoreOne;
+                FileOperationError except;
+                except.errorType = ET_GIO;
+                except.srcUri = m_current_src_uri;
+                except.destDirUri = m_current_dest_dir_uri;
+                except.title = tr("File copy");
+                except.errorCode = err->code;
+                Q_EMIT errored(except, ED_CONFLICT);
+                auto typeData = except.respCode;
 #else
                 auto typeData = errored(m_current_src_uri, m_current_dest_dir_uri, errWrapperPtr);
 #endif
@@ -274,7 +281,18 @@ fallback_retry:
             if (handle_type == Other) {
 
 #if HANDLE_ERR_NEW
-                auto typeData = FileOperation::IgnoreOne;
+                FileOperationError except;
+                except.errorType = ET_GIO;
+                except.srcUri = m_current_src_uri;
+                except.destDirUri = m_current_dest_dir_uri;
+                except.title = tr("File copy");
+                except.errorCode = err->code;
+                Q_EMIT errored(except, ED_CONFLICT);
+
+                return;
+
+                auto typeData = except.respCode;
+
 #else
                 qDebug()<<"send error";
                 auto typeData = errored(m_current_src_uri, m_current_dest_dir_uri, errWrapperPtr);
@@ -423,7 +441,7 @@ void FileCopyOperation::run()
         FileNode *node = new FileNode(uri, nullptr, m_reporter);
         node->findChildrenRecursively();
         node->computeTotalSize(total_size);
-        nodes<<node;
+        nodes << node;
     }
     Q_EMIT operationPrepared();
 

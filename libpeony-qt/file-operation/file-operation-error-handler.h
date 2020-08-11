@@ -44,10 +44,9 @@ enum ExceptionType
  * \brief Type of error handling
  * \li ED_CONFLICT: General conflict handling for file operations
  */
-typedef enum {
+enum EXCEPTION_DIALOG {
     ED_CONFLICT,
-} EXCEPTION_DIALOG;
-
+};
 
 /*!
  * \brief
@@ -58,6 +57,7 @@ enum ExceptionResponse {
     Cancel,
     Rename,
     Invalid,
+    NOTFOUND,
     IgnoreOne,
     IgnoreAll,
     BackupOne,
@@ -95,7 +95,7 @@ public:
     virtual ~FileOperationErrorHandler() = 0;
 
 #if HANDLE_ERR_NEW
-    virtual bool handle (FileOperationError& errorInfo) = 0;
+    virtual void handle () = 0;
 #else
     virtual int handleError(const QString &srcUri,
                                  const QString &destDirUri,

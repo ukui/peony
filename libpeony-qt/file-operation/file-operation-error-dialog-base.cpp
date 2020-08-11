@@ -21,32 +21,20 @@ Peony::FileOperationErrorDialogBase::~FileOperationErrorDialogBase()
 
 }
 
-//#if HANDLE_ERR_NEW
-//bool Peony::FileOperationErrorDialogBase::handle(FileOperationError& errorInfo)
-//{
-
-//}
-
-//#else
-
-//int Peony::FileOperationErrorDialogBase::handleError(const QString &srcUri, const QString &destDirUri, const Peony::GErrorWrapperPtr &err, bool isCritical)
-//{
-
-//}
-
-//#endif
-
 void Peony::FileOperationErrorDialogBase::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
 
     painter.save();
 
+    QPushButton btn;
     // paint title
-    QRect textArea (m_margin_lr, m_margin_tp, width() - m_margin_lr * 2 - 2 * m_btn_size, m_header_height);
+    QRect textArea (m_margin_lr, 0, width() - m_margin_lr * 2 - 2 * m_btn_size, m_header_height);
     QFont font = painter.font();
     font.setPixelSize(12);
     painter.setFont(font);
+    painter.setBrush(QBrush(btn.palette().color(QPalette::Highlight).lighter(150)));
+//    painter.drawRect(textArea);
     painter.drawText(textArea, Qt::AlignVCenter | Qt::AlignHCenter, m_error->title);
 
     // paint minilize button

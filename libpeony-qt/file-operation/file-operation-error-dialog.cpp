@@ -101,7 +101,7 @@ FileOperationErrorDialog::~FileOperationErrorDialog()
 
 }
 
-bool FileOperationErrorDialog::handle (FileOperationError& errorInfo)
+void FileOperationErrorDialog::handle ()
 {
 
 }

@@ -124,8 +124,14 @@ retry_create_empty_file:
                 goto retry_create_empty_file;
             } else {
 #if HANDLE_ERR_NEW
-                ;
-//                Q_EMIT errored(m_src_uri, m_dest_dir_uri, GErrorWrapper::wrapFrom(err), true);
+                FileOperationError except;
+                except.srcUri = m_src_uri;
+                except.destDirUri = m_dest_dir_uri;
+                except.isCritical = true;
+                except.title = tr("Create file");
+                except.errorCode = err->code;
+                except.errorType = ET_GIO;
+                Q_EMIT errored(except, ED_CONFLICT);
 #else
                 Q_EMIT errored(m_src_uri, m_dest_dir_uri, GErrorWrapper::wrapFrom(err), true);
 #endif

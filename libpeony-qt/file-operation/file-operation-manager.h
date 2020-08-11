@@ -93,8 +93,11 @@ public Q_SLOTS:
     void clearHistory();
     void onFilesDeleted(const QStringList &uris);
 
-    int handleError(FileOperationError& error);
+#if HANDLE_ERR_NEW
+    void handleError(FileOperationError& error, EXCEPTION_DIALOG);
+#else
     int handleError(const QString &srcUri, const QString &destUri, const GErrorWrapperPtr &err, bool critical);
+#endif
 
     /*!
      * \brief registerFileWatcher
