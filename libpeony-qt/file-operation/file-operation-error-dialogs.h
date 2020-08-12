@@ -100,7 +100,9 @@ public:
     void setActive (bool active);
     void setOpName (QString name);
     void setPixmap (QString pixmap);
+    void setFileSize (QString fileSize);
     void setFileName (QString fileName);
+    void setFileLocation (QString path);
 
 protected:
     void paintEvent(QPaintEvent *event) override;

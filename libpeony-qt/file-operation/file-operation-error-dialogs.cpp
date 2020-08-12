@@ -2,6 +2,7 @@
 
 #include <QPainter>
 #include <QPushButton>
+#include <file-info.h>
 
 Peony::FileOperationErrorDialogConflict::FileOperationErrorDialogConflict(Peony::FileOperationError *error, FileOperationErrorDialogBase *parent)
     : FileOperationErrorDialogBase(error, parent)
@@ -18,12 +19,17 @@ Peony::FileOperationErrorDialogConflict::FileOperationErrorDialogConflict(Peony:
     m_file_label1 = new FileInformationLabel(this);
     m_file_label1->setOpName(tr("Replace"));
     m_file_label1->setPixmap(":/data/file-replace.png");
-    m_file_label1->setFileName( QFile::(error->srcUri );
+    m_file_label1->setFileSize(FileInfo::fromUri(error->srcUri)->fileSize());
+    m_file_label1->setFileName(FileInfo::fromUri(error->srcUri)->getFileName());
+    m_file_label1->setFileLocation(FileInfo::fromUri(error->srcUri)->displayName());
     m_file_label1->setGeometry(m_margin_lr, m_file_info1_top, width() - 2 * m_margin_lr, m_file_info_height);
 
     m_file_label2 = new FileInformationLabel(this);
     m_file_label2->setOpName(tr("Ignore"));
     m_file_label2->setPixmap(":/data/file-ignore.png");
+    m_file_label2->setFileSize(FileInfo::fromUri(error->srcUri)->fileSize());
+    m_file_label2->setFileName(FileInfo::fromUri(error->srcUri)->getFileName());
+    m_file_label2->setFileLocation(FileInfo::fromUri(error->srcUri)->displayName());
     m_file_label2->setGeometry(m_margin_lr, m_file_info2_top, width() - 2 * m_margin_lr, m_file_info_height);
 
     m_ck_box = new QCheckBox(this);
@@ -87,19 +93,6 @@ Peony::FileInformationLabel::FileInformationLabel(QWidget *parent) : QFrame(pare
     m_file_information->setAlignment(Qt::AlignTop | Qt::AlignLeft);
     m_file_information->setTextFormat(Qt::RichText);
     m_file_information->setGeometry(m_file_name_x, m_file_name_y, m_file_name_w, m_file_name_h);
-
-    // file info
-    QString htmlString = QString("<style>"
-                                 "  p{font-size:10px;line-height:60%;}"
-                                 "  .bold{text-align: left;font-size:13px;font-wight:500;}"
-                                 "</style>"
-                                 "<p class='bold'>%1</p>"
-                                 "<p>%2 %3</p>"
-                                 "<p>%4 %5</p>"
-                                 "<p>%6 %7</p>")
-            .arg(m_file_name).arg(tr("File location:")).arg(m_file_location)
-            .arg(tr("File size:")).arg(m_file_size).arg(tr("Modify time:")).arg(m_modify_time);
-    m_file_information->setText(htmlString);
 }
 
 Peony::FileInformationLabel::~FileInformationLabel()
@@ -116,6 +109,7 @@ void Peony::FileInformationLabel::setActive(bool active)
 void Peony::FileInformationLabel::setOpName(QString name)
 {
     m_op_name = name;
+    update();
 }
 
 void Peony::FileInformationLabel::setPixmap(QString pixmap)
@@ -123,9 +117,21 @@ void Peony::FileInformationLabel::setPixmap(QString pixmap)
     m_icon.load(pixmap);
 }
 
+void Peony::FileInformationLabel::setFileSize(QString fileSize)
+{
+    m_file_size = fileSize;
+}
+
 void Peony::FileInformationLabel::setFileName(QString fileName)
 {
     m_file_name = fileName;
+    update();
+}
+
+void Peony::FileInformationLabel::setFileLocation(QString path)
+{
+    m_file_location = path;
+    update();
 }
 
 
@@ -160,6 +166,19 @@ void Peony::FileInformationLabel::paintEvent(QPaintEvent *event)
     painter.drawText(picNameArea, Qt::AlignVCenter | Qt::AlignHCenter, m_op_name);
 
     painter.restore();
+
+    // draw info
+    QString htmlString = QString("<style>"
+                                 "  p{font-size:10px;line-height:60%;}"
+                                 "  .bold{text-align: left;font-size:13px;font-wight:500;}"
+                                 "</style>"
+                                 "<p class='bold'>%1</p>"
+                                 "<p>%2 %3</p>"
+                                 "<p>%4 %5</p>"
+                                 "<p>%6 %7</p>")
+            .arg(m_file_name).arg(tr("File location:")).arg(m_file_location)
+            .arg(tr("File size:")).arg(m_file_size).arg(tr("Modify time:")).arg(m_modify_time);
+    m_file_information->setText(htmlString);
 
     Q_UNUSED(event);
 }
