@@ -1086,16 +1086,26 @@ void DesktopIconView::dropEvent(QDropEvent *e)
 
     auto action = m_ctrl_key_pressed ? Qt::CopyAction : Qt::MoveAction;
     qDebug() << "DesktopIconView dropEvent" <<action;
-    if (this == e->source() && !m_ctrl_key_pressed) {
-
+    if (this == e->source() && !m_ctrl_key_pressed)
+    {
         auto index = indexAt(e->pos());
+        qDebug() <<"DesktopIconView index:" <<index <<index.isValid();
+        bool bmoved = false;
         if (index.isValid()) {
             auto info = FileInfo::fromUri(index.data(Qt::UserRole).toString());
             if (!info->isDir())
                 return;
+            bmoved = true;
         }
 
-        QListView::dropEvent(e);
+        if (bmoved)
+        {
+            //move file to desktop folder
+            qDebug() << "DesktopIconView move file to folder";
+            m_model->dropMimeData(e->mimeData(), action, -1, -1, this->indexAt(e->pos()));
+        }
+        else
+            QListView::dropEvent(e);
 
         QHash<QModelIndex, QRect> currentIndexesRects;
         for (int i = 0; i < m_proxy_model->rowCount(); i++) {
