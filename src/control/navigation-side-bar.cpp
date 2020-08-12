@@ -135,6 +135,10 @@ NavigationSideBar::NavigationSideBar(QWidget *parent) : QTreeView(parent)
         }
     });
 
+    connect(m_model, &QAbstractItemModel::dataChanged, this, [=](){
+        this->viewport()->update();
+    });
+
     expandAll();
 }
 

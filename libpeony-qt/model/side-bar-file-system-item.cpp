@@ -220,7 +220,7 @@ end:
 
                     //why it would failed when send changed signal for newly mounted item?
                     //m_model->dataChanged(changedItem->firstColumnIndex(), changedItem->firstColumnIndex());
-                    m_model->dataChanged(changedItem->firstColumnIndex(), changedItem->firstColumnIndex());
+                    m_model->dataChanged(changedItem->firstColumnIndex(), changedItem->lastColumnIndex());
                     break;
                 }
             }
