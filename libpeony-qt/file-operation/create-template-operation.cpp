@@ -112,8 +112,7 @@ void CreateTemplateOperation::run()
         m_target_uri = m_dest_dir_uri + "/" + tr("NewFile") + ".txt";
 retry_create_empty_file:
         GError *err = nullptr;
-        g_file_create(wrapGFile(g_file_new_for_uri(m_target_uri.toUtf8())).get()->get(),
-                      G_FILE_CREATE_NONE, nullptr, &err);
+        g_file_create(wrapGFile(g_file_new_for_uri(m_target_uri.toUtf8())).get()->get(), G_FILE_CREATE_NONE, nullptr, &err);
         if (err) {
             // todo: Allow user naming
             if (err->code == G_IO_ERROR_EXISTS) {

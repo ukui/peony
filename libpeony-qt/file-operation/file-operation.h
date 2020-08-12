@@ -65,19 +65,19 @@ class PEONYCORESHARED_EXPORT FileOperation : public QObject, public QRunnable
     Q_OBJECT
 
 public:
-    enum ResponseType {
-        Invalid,
-        IgnoreOne,
-        IgnoreAll,
-        OverWriteOne,
-        OverWriteAll,
-        BackupOne,
-        BackupAll,
-        Rename,
-        Retry,
-        Cancel,
-        Other
-    };
+//    enum ResponseType {
+//        Invalid,
+//        IgnoreOne,
+//        IgnoreAll,
+//        OverWriteOne,
+//        OverWriteAll,
+//        BackupOne,
+//        BackupAll,
+//        Rename,
+//        Retry,
+//        Cancel,
+//        Other
+//    };
 
     explicit FileOperation(QObject *parent = nullptr);
     ~FileOperation();
@@ -336,6 +336,6 @@ private:
 
 }
 
-Q_DECLARE_METATYPE(Peony::FileOperation::ResponseType)
+//Q_DECLARE_METATYPE(Peony::FileOperation::ResponseType)
 
 #endif // FILEOPERATION_H

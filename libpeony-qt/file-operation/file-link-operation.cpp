@@ -85,7 +85,7 @@ retry:
 #else
         auto responseType = errored(m_src_uri, m_dest_uri, GErrorWrapper::wrapFrom(err), true);
 #endif
-        if (responseType == ExceptionResponse::Retry) {
+        if (responseType == Peony::Retry) {
             goto retry;
         }
     }

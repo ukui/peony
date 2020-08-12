@@ -43,12 +43,27 @@ public:
                                  bool isCritical = false) override;
 #endif
 
+protected:
+//    void paintEvent(QPaintEvent *event) override;
+
 private:
     float m_margin = 9;
+    float m_pic_top = 63;
     float m_margin_lr = 26;
+    float m_pic_size = 48;
     float m_fix_width = 550;
     float m_fix_height = 188;
 
+    float m_text_y = 65;
+    float m_text_heigth = 44;
+
+    float m_ok_x = 410;
+    float m_ok_y = 132;
+    float m_ok_w = 120;
+    float m_ok_h = 36;
+
+    QLabel* m_icon = nullptr;
+    QLabel* m_text = nullptr;
     QPushButton* m_ok = nullptr;
 };
 

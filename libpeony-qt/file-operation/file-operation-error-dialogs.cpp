@@ -260,16 +260,53 @@ Peony::FileOperationErrorDialogWarning::FileOperationErrorDialogWarning(Peony::F
 {
     setFixedSize(m_fix_width, m_fix_height);
     setContentsMargins(9, 9, 9, 9);
+
+    m_icon = new QLabel(this);
+    m_icon->setGeometry(m_margin_lr, m_pic_top, m_pic_size, m_pic_size);
+    m_icon->setPixmap(QIcon::fromTheme("dialog-error").pixmap(m_pic_size, m_pic_size));
+
+    m_text = new QLabel(this);
+    m_text->setGeometry(m_margin + m_margin_lr + m_pic_size, m_text_y, width() - m_margin - m_margin_lr - m_pic_size, m_text_heigth);
+
+    m_ok = new QPushButton(this);
+    m_ok->setText(tr("OK"));
+    m_ok->setGeometry(m_ok_x, m_ok_y, m_ok_w, m_ok_h);
+
+    connect(m_ok, &QPushButton::pressed, [=](){
+        done(QDialog::Accepted);
+    });
 }
 
 Peony::FileOperationErrorDialogWarning::~FileOperationErrorDialogWarning()
 {
-
+    delete m_ok;
+    delete m_icon;
+    delete m_text;
 }
 
 void Peony::FileOperationErrorDialogWarning::handle(Peony::FileOperationError &error)
 {
     m_error = &error;
+
+    if (nullptr != m_error->errorStr) {
+        QString htmlString = QString("<style>"
+                                     "  p{font-size:10px;line-height:60%;}"
+                                     "  .bold{text-align: left;font-size:13px;font-wight:500;}"
+                                     "</style>"
+                                     "<p class='bold'>%1</p>"
+                                     "<p>%2</p>")
+                .arg(m_error->errorStr)
+                .arg(tr("Please make sure the disk is not full or not is write protected, or file is not being used."));
+        m_text->setText(htmlString);
+    } else {
+        QString htmlString = QString("<style>"
+                                     "  p{font-size:10px;line-height:60%;}"
+                                     "  .bold{text-align: left;font-size:13px;font-wight:500;}"
+                                     "</style>"
+                                     "<p>%1</p>")
+                .arg(tr("Please make sure the disk is not full or not is write protected, or file is not being used."));
+        m_text->setText(htmlString);
+    }
 
     exec();
 
