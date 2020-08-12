@@ -66,17 +66,25 @@ void FileDeleteOperation::deleteRecursively(FileNode *node)
             }
             //if delete a file get into error, it might be a critical error.
 #if HANDLE_ERR_NEW
-            // ???
-                auto response = FileOperation::IgnoreOne;
+            FileOperationError except;
+            except.errorType = ET_GIO;
+            except.dlgType = ED_WARNING;
+            except.srcUri = node->uri();
+            except.destDirUri = nullptr;
+            except.title = tr("File delete");
+            except.errorCode = err->code;
+            except.errorStr = err->message;
+            Q_EMIT errored(except);
+            auto response = except.respCode;
 #else
             auto response = errored(node->uri(), nullptr, GErrorWrapper::wrapFrom(err), true);
 #endif
             qDebug()<<response;
             auto responseType = response;
-            if (responseType == Cancel) {
+            if (responseType == Peony::Cancel) {
                 cancel();
             }
-            if (responseType == IgnoreAll) {
+            if (responseType == Peony::IgnoreAll) {
                 m_prehandle_hash.insert(err->code, IgnoreAll);
             }
         }
@@ -92,17 +100,25 @@ void FileDeleteOperation::deleteRecursively(FileNode *node)
             }
             //if delete a file get into error, it might be a critical error.
 #if HANDLE_ERR_NEW
-            // ???
-                auto response = FileOperation::IgnoreOne;
+            FileOperationError except;
+            except.errorType = ET_GIO;
+            except.dlgType = ED_WARNING;
+            except.srcUri = node->uri();
+            except.destDirUri = nullptr;
+            except.title = tr("File delete");
+            except.errorCode = err->code;
+            except.errorStr = err->message;
+            Q_EMIT errored(except);
+            auto response = except.respCode;
 #else
             auto response = errored(node->uri(), nullptr, GErrorWrapper::wrapFrom(err), true);
 #endif
             qDebug()<<response;
             auto responseType = response;
-            if (responseType == Cancel) {
+            if (responseType == Peony::Cancel) {
                 cancel();
             }
-            if (responseType == IgnoreAll) {
+            if (responseType == Peony::IgnoreAll) {
                 m_prehandle_hash.insert(err->code, IgnoreAll);
             }
         }

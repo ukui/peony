@@ -247,6 +247,31 @@ Peony::FileOperationErrorHandler *Peony::FileOperationErrorDialogFactory::getDia
     switch (errInfo.dlgType) {
     case ED_CONFLICT:
         return new FileOperationErrorDialogConflict();
+    case ED_WARNING:
+        return new FileOperationErrorDialogWarning();
     }
     return nullptr;
+}
+
+
+
+Peony::FileOperationErrorDialogWarning::FileOperationErrorDialogWarning(Peony::FileOperationErrorDialogBase *parent)
+    : FileOperationErrorDialogBase(parent)
+{
+    setFixedSize(m_fix_width, m_fix_height);
+    setContentsMargins(9, 9, 9, 9);
+}
+
+Peony::FileOperationErrorDialogWarning::~FileOperationErrorDialogWarning()
+{
+
+}
+
+void Peony::FileOperationErrorDialogWarning::handle(Peony::FileOperationError &error)
+{
+    m_error = &error;
+
+    exec();
+
+    error.respCode = IgnoreOne;
 }

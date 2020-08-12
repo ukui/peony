@@ -21,8 +21,39 @@ public:
     static FileOperationErrorHandler* getDialog (FileOperationError& errInfo);
 };
 
-/**!
- * @brief Dialog box for handling file conflicts
+/*!
+ * \brief Error warning pop-up box
+ * ED_WARNING
+ */
+class PEONYCORESHARED_EXPORT FileOperationErrorDialogWarning : public FileOperationErrorDialogBase
+{
+    Q_OBJECT
+    Q_INTERFACES(Peony::FileOperationErrorHandler)
+public:
+    explicit FileOperationErrorDialogWarning(FileOperationErrorDialogBase *parent = nullptr);
+    ~FileOperationErrorDialogWarning()override;
+
+#if HANDLE_ERR_NEW
+    virtual void handle (FileOperationError& error) override;
+#else
+    // FIXME://DELETE
+    virtual int handleError(const QString &srcUri,
+                                 const QString &destDirUri,
+                                 const GErrorWrapperPtr &err,
+                                 bool isCritical = false) override;
+#endif
+
+private:
+    float m_margin = 9;
+    float m_margin_lr = 26;
+    float m_fix_width = 550;
+    float m_fix_height = 188;
+
+    QPushButton* m_ok = nullptr;
+};
+
+/*!
+ * \brief Dialog box for handling file conflicts
  *
  */
 class PEONYCORESHARED_EXPORT FileOperationErrorDialogConflict : public FileOperationErrorDialogBase
@@ -30,7 +61,7 @@ class PEONYCORESHARED_EXPORT FileOperationErrorDialogConflict : public FileOpera
     Q_OBJECT
     Q_INTERFACES(Peony::FileOperationErrorHandler)
 public:
-    FileOperationErrorDialogConflict(FileOperationErrorDialogBase *parent = nullptr);
+    explicit FileOperationErrorDialogConflict(FileOperationErrorDialogBase *parent = nullptr);
     ~FileOperationErrorDialogConflict() override;
 
 #if HANDLE_ERR_NEW

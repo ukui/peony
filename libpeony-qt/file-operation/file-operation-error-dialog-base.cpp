@@ -38,17 +38,21 @@ void Peony::FileOperationErrorDialogBase::paintEvent(QPaintEvent *)
     font.setPixelSize(12);
     painter.setFont(font);
     painter.setBrush(QBrush(btn.palette().color(QPalette::Highlight).lighter(150)));
-    painter.drawText(textArea, Qt::AlignVCenter | Qt::AlignHCenter, m_error->title);
+    if (nullptr != m_error && nullptr != m_error->title) {
+        painter.drawText(textArea, Qt::AlignVCenter | Qt::AlignHCenter, m_error->title);
+    }
 
     // paint minilize button
-    QPen pen(QColor(192,192,192), 1);
+    /*QPen pen(QColor(192,192,192), 1);
     pen.setStyle(Qt::SolidLine);
     painter.setBrush(Qt::NoBrush);
     painter.setPen(pen);
     painter.drawPixmap(width() - m_margin_lr * 2 - m_btn_size * 2, m_margin_tp, m_btn_size, m_btn_size,
                            drawSymbolicColoredPixmap(QIcon::fromTheme("window-minimize-symbolic").pixmap(m_btn_size, m_btn_size)));
+     */
 
     // paint close button
+    QPen pen;
     pen.setStyle(Qt::SolidLine);
     painter.setBrush(Qt::NoBrush);
     painter.setPen(pen);
@@ -62,12 +66,12 @@ void Peony::FileOperationErrorDialogBase::mouseMoveEvent(QMouseEvent *event)
 {
     // minilize button
     QPoint pos = event->pos();
-    if ((pos.x() >= width() - m_margin_lr * 2 - m_btn_size * 2)
+    /*if ((pos.x() >= width() - m_margin_lr * 2 - m_btn_size * 2)
             && (pos.x() <= width() - m_margin_lr * 2 - m_btn_size)
             && (pos.y() >= m_margin_tp)
             && (pos.y() <= m_margin_tp + m_btn_size)) {
         setCursor(Qt::PointingHandCursor);
-    } else if ((pos.x() >= width() - m_margin_lr - m_btn_size)
+    } else */if ((pos.x() >= width() - m_margin_lr - m_btn_size)
                && (pos.x() <= width() - m_margin_lr)
                && (pos.y() >= m_margin_tp)
                && (pos.y() <= m_margin_tp + m_btn_size)) {
@@ -78,16 +82,16 @@ void Peony::FileOperationErrorDialogBase::mouseMoveEvent(QMouseEvent *event)
     }
 }
 
-void Peony::FileOperationErrorDialogBase::mouseReleaseEvent(QMouseEvent *event)
+void Peony::FileOperationErrorDialogBase::mousePressEvent(QMouseEvent *event)
 {
     // minilize button
     QPoint pos = event->pos();
-    if ((pos.x() >= width() - m_margin_lr * 2 - m_btn_size * 2)
+    /*if ((pos.x() >= width() - m_margin_lr * 2 - m_btn_size * 2)
             && (pos.x() <= width() - m_margin_lr * 2 - m_btn_size)
             && (pos.y() >= m_margin_tp)
             && (pos.y() <= m_margin_tp + m_btn_size)) {
-        Q_EMIT showMinimized();
-    } else if ((pos.x() >= width() - m_margin_lr - m_btn_size)
+        showMinimized();
+    } else */if ((pos.x() >= width() - m_margin_lr - m_btn_size)
                && (pos.x() <= width() - m_margin_lr)
                && (pos.y() >= m_margin_tp)
                && (pos.y() <= m_margin_tp + m_btn_size)) {

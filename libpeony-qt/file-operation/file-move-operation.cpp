@@ -862,8 +862,16 @@ void FileMoveOperation::run()
 start:
     if (!isValid()) {
 #if HANDLE_ERR_NEW
-// ???
-                auto response = FileOperation::IgnoreOne;
+        FileOperationError except;
+        except.errorType = ET_GIO;
+        except.dlgType = ED_WARNING;
+        except.srcUri = nullptr;
+        except.destDirUri = nullptr;
+        except.title = tr("File delete");
+        except.errorCode = G_IO_ERROR_INVAL;
+        except.errorStr = "Invalid Operation";
+        Q_EMIT errored(except);
+        auto response = except.respCode;
 #else
         auto response = errored(nullptr,
                                 nullptr,

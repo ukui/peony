@@ -45,6 +45,7 @@ enum ExceptionType
  * \li ED_CONFLICT: General conflict handling for file operations
  */
 enum ExceptionDialogType {
+    ED_WARNING,
     ED_CONFLICT,
 };
 
@@ -83,6 +84,7 @@ typedef struct _FileOperationError
     QString                     title;
     QString                     srcUri;
     QString                     destDirUri;
+    QString                     errorStr;
     ExceptionType               errorType;
     ExceptionDialogType         dlgType;
 
