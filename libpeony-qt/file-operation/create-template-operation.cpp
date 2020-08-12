@@ -124,12 +124,13 @@ retry_create_empty_file:
 #if HANDLE_ERR_NEW
                 FileOperationError except;
                 except.srcUri = m_src_uri;
+                except.dlgType = ED_CONFLICT;
                 except.destDirUri = m_dest_dir_uri;
                 except.isCritical = true;
                 except.title = tr("Create file");
                 except.errorCode = err->code;
                 except.errorType = ET_GIO;
-                Q_EMIT errored(except, ED_CONFLICT);
+                Q_EMIT errored(except);
 #else
                 Q_EMIT errored(m_src_uri, m_dest_dir_uri, GErrorWrapper::wrapFrom(err), true);
 #endif
@@ -154,12 +155,13 @@ retry_create_empty_folder:
 #if HANDLE_ERR_NEW
                 FileOperationError except;
                 except.srcUri = m_src_uri;
+                except.dlgType = ED_CONFLICT;
                 except.destDirUri = m_dest_dir_uri;
                 except.isCritical = true;
                 except.title = tr("Create file");
                 except.errorCode = err->code;
                 except.errorType = ET_GIO;
-                Q_EMIT errored(except, ED_CONFLICT);
+                Q_EMIT errored(except);
 #else
                 Q_EMIT errored(m_src_uri, m_dest_dir_uri, GErrorWrapper::wrapFrom(err), true);
 #endif
@@ -187,12 +189,13 @@ retry_create_template:
 #if HANDLE_ERR_NEW
                 FileOperationError except;
                 except.srcUri = m_src_uri;
+                except.dlgType = ED_CONFLICT;
                 except.destDirUri = m_dest_dir_uri;
                 except.isCritical = true;
                 except.title = tr("Create file");
                 except.errorCode = err->code;
                 except.errorType = ET_GIO;
-                Q_EMIT errored(except, ED_CONFLICT);
+                Q_EMIT errored(except);
 #else
                 Q_EMIT errored(m_src_uri, m_dest_dir_uri, GErrorWrapper::wrapFrom(err), true);
 #endif

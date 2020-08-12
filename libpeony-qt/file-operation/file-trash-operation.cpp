@@ -58,6 +58,8 @@ retry:
             except.title = tr("Trash file");
             except.errorCode = err->code;
             except.errorType = ET_GIO;
+            except.dlgType = ED_CONFLICT;
+            Q_EMIT errored(except);
             auto responseType = except.respCode;
             auto responseData = responseType;
 #else

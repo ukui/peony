@@ -166,7 +166,7 @@ Q_SIGNALS:
      * derived class in main thread.
      */
 #if HANDLE_ERR_NEW
-    void errored(FileOperationError& error, EXCEPTION_DIALOG dialgType);
+    void errored(FileOperationError& error);
 #else
     int errored(const QString &srcUri, const QString &destUri, const Peony::GErrorWrapperPtr &err, bool isCritical = false);
 #endif

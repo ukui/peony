@@ -9,7 +9,7 @@
 
 static QPixmap drawSymbolicColoredPixmap (const QPixmap& source);
 
-Peony::FileOperationErrorDialogBase::FileOperationErrorDialogBase(Peony::FileOperationError* error, QDialog *parent) : QDialog(parent), m_error(error)
+Peony::FileOperationErrorDialogBase::FileOperationErrorDialogBase(QDialog *parent) : QDialog(parent)
 {
     setMouseTracking(true);
     setContentsMargins(0, 0, 0, 0);

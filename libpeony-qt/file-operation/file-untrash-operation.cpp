@@ -176,6 +176,8 @@ retry:
                 except.title = tr("Untrash file");
                 except.errorCode = err->code;
                 except.errorType = ET_GIO;
+                except.dlgType = ED_CONFLICT;
+                Q_EMIT errored(except);
                 type = except.respCode;
 #else
                 auto responseData = Q_EMIT errored(uri, originUri, GErrorWrapper::wrapFrom(err), false);

@@ -300,10 +300,11 @@ const QList<QAction *> DirectoryViewMenu::constructCreateTemplateActions()
                 QAction *action = new QAction(p.icon(info), info.baseName(), this);
                 connect(action, &QAction::triggered, [=]() {
                     CreateTemplateOperation op(m_directory, CreateTemplateOperation::Template, t);
-                    FileOperationErrorDialog dlg;
 #if HANDLE_ERR_NEW
-                    ;
+                    Peony::FileOperationErrorDialogConflict dlg;
+                    connect(&op, &Peony::FileOperation::errored, &dlg, &Peony::FileOperationErrorDialogConflict::handle);
 #else
+                    FileOperationErrorDialog dlg;
                     connect(&op, &CreateTemplateOperation::errored, &dlg, &FileOperationErrorDialog::handleError);
 #endif
                     op.run();
@@ -321,10 +322,11 @@ const QList<QAction *> DirectoryViewMenu::constructCreateTemplateActions()
         connect(actions.last(), &QAction::triggered, [=]() {
             //FileOperationUtils::create(m_directory);
             CreateTemplateOperation op(m_directory);
-            FileOperationErrorDialog dlg;
 #if HANDLE_ERR_NEW
-            ;
+            Peony::FileOperationErrorDialogConflict dlg;
+            connect(&op, &Peony::FileOperation::errored, &dlg, &Peony::FileOperationErrorDialogConflict::handle);
 #else
+            FileOperationErrorDialog dlg;
             connect(&op, &CreateTemplateOperation::errored, &dlg, &FileOperationErrorDialog::handleError);
 #endif
             op.run();
@@ -338,7 +340,8 @@ const QList<QAction *> DirectoryViewMenu::constructCreateTemplateActions()
             //FileOperationUtils::create(m_directory, nullptr, CreateTemplateOperation::EmptyFolder);
             CreateTemplateOperation op(m_directory, CreateTemplateOperation::EmptyFolder, tr("New Folder"));
 #if HANDLE_ERR_NEW
-            ;
+            Peony::FileOperationErrorDialogConflict dlg;
+            connect(&op, &Peony::FileOperation::errored, &dlg, &Peony::FileOperationErrorDialogConflict::handle);
 #else
             FileOperationErrorDialog dlg;
             connect(&op, &CreateTemplateOperation::errored, &dlg, &FileOperationErrorDialog::handleError);

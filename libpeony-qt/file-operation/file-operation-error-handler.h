@@ -44,7 +44,7 @@ enum ExceptionType
  * \brief Type of error handling
  * \li ED_CONFLICT: General conflict handling for file operations
  */
-enum EXCEPTION_DIALOG {
+enum ExceptionDialogType {
     ED_CONFLICT,
 };
 
@@ -84,6 +84,7 @@ typedef struct _FileOperationError
     QString                     srcUri;
     QString                     destDirUri;
     ExceptionType               errorType;
+    ExceptionDialogType         dlgType;
 
     ExceptionResponse           respCode;
     QMap<QString, QVariant>     respValue;
@@ -94,7 +95,7 @@ public:
     virtual ~FileOperationErrorHandler() = 0;
 
 #if HANDLE_ERR_NEW
-    virtual void handle () = 0;
+    virtual void handle (FileOperationError& error) = 0;
 #else
     virtual int handleError(const QString &srcUri,
                                  const QString &destDirUri,

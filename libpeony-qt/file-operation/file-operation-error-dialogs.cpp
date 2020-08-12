@@ -4,8 +4,8 @@
 #include <QPushButton>
 #include <file-info.h>
 
-Peony::FileOperationErrorDialogConflict::FileOperationErrorDialogConflict(Peony::FileOperationError *error, FileOperationErrorDialogBase *parent)
-    : FileOperationErrorDialogBase(error, parent)
+Peony::FileOperationErrorDialogConflict::FileOperationErrorDialogConflict(FileOperationErrorDialogBase *parent)
+    : FileOperationErrorDialogBase(parent)
 {
     setFixedSize(m_fix_width, m_fix_height);
     setContentsMargins(9, 9, 9, 9);
@@ -19,20 +19,19 @@ Peony::FileOperationErrorDialogConflict::FileOperationErrorDialogConflict(Peony:
     m_file_label1 = new FileInformationLabel(this);
     m_file_label1->setOpName(tr("Replace"));
     m_file_label1->setPixmap(":/data/file-replace.png");
-    m_file_label1->setFileSize(FileInfo::fromUri(error->srcUri)->fileSize());
-    m_file_label1->setFileName(FileInfo::fromUri(error->srcUri)->getFileName());
-    m_file_label1->setFileLocation(FileInfo::fromUri(error->srcUri)->displayName());
-    m_file_label1->setFileModifyTime (FileInfo::fromUri(error->srcUri)->modifiedDate());
+
+
     m_file_label1->setGeometry(m_margin_lr, m_file_info1_top, width() - 2 * m_margin_lr, m_file_info_height);
 
     m_file_label2 = new FileInformationLabel(this);
     m_file_label2->setOpName(tr("Ignore"));
     m_file_label2->setPixmap(":/data/file-ignore.png");
-    m_file_label2->setFileSize(FileInfo::fromUri(error->srcUri)->fileSize());
-    m_file_label2->setFileName(FileInfo::fromUri(error->srcUri)->getFileName());
-    m_file_label2->setFileLocation(FileInfo::fromUri(error->srcUri)->displayName());
-    m_file_label2->setFileModifyTime (FileInfo::fromUri(error->srcUri)->modifiedDate());
+
     m_file_label2->setGeometry(m_margin_lr, m_file_info2_top, width() - 2 * m_margin_lr, m_file_info_height);
+
+    m_is_replace = false;
+    m_file_label2->setActive(true);
+    m_file_label1->setActive(false);
 
     m_ck_box = new QCheckBox(this);
     m_ck_box->setChecked(m_do_same_operation);
@@ -88,26 +87,37 @@ Peony::FileOperationErrorDialogConflict::~FileOperationErrorDialogConflict()
 }
 
 #if HANDLE_ERR_NEW
-void Peony::FileOperationErrorDialogConflict::handle ()
+void Peony::FileOperationErrorDialogConflict::handle (FileOperationError& error)
 {
-    m_error->respCode = Retry;
+    m_error = &error;
+    m_file_label1->setFileSize(FileInfo::fromUri(error.srcUri)->fileSize());
+    m_file_label1->setFileName(FileInfo::fromUri(error.srcUri)->getFileName());
+    m_file_label1->setFileLocation(FileInfo::fromUri(error.srcUri)->displayName());
+    m_file_label1->setFileModifyTime (FileInfo::fromUri(error.srcUri)->modifiedDate());
+
+    m_file_label2->setFileSize(FileInfo::fromUri(error.srcUri)->fileSize());
+    m_file_label2->setFileName(FileInfo::fromUri(error.srcUri)->getFileName());
+    m_file_label2->setFileLocation(FileInfo::fromUri(error.srcUri)->displayName());
+    m_file_label2->setFileModifyTime (FileInfo::fromUri(error.srcUri)->modifiedDate());
+
+    error.respCode = Retry;
     int ret = exec();
     if (QDialog::Accepted == ret) {
         if (m_do_same_operation) {
             if (m_is_replace) {
-                m_error->respCode = OverWriteAll;
+                error.respCode = OverWriteAll;
             } else {
-                m_error->respCode = IgnoreAll;
+                error.respCode = IgnoreAll;
             }
         } else {
             if (m_is_replace) {
-                m_error->respCode = OverWriteOne;
+                error.respCode = OverWriteOne;
             } else {
-                m_error->respCode = IgnoreOne;
+                error.respCode = IgnoreOne;
             }
         }
     } else if (QDialog::Rejected == ret) {
-        m_error->respCode = Cancel;
+        error.respCode = Cancel;
     }
 }
 #else
@@ -232,11 +242,11 @@ void Peony::FileInformationLabel::mousePressEvent(QMouseEvent *event)
     Q_UNUSED(event);
 }
 
-Peony::FileOperationErrorHandler *Peony::FileOperationErrorDialogFactory::getDialog(Peony::FileOperationError &errInfo, Peony::EXCEPTION_DIALOG errType)
+Peony::FileOperationErrorHandler *Peony::FileOperationErrorDialogFactory::getDialog(Peony::FileOperationError &errInfo)
 {
-    switch (errType) {
+    switch (errInfo.dlgType) {
     case ED_CONFLICT:
-        return new FileOperationErrorDialogConflict(&errInfo);
+        return new FileOperationErrorDialogConflict();
     }
     return nullptr;
 }

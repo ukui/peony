@@ -94,7 +94,7 @@ public Q_SLOTS:
     void onFilesDeleted(const QStringList &uris);
 
 #if HANDLE_ERR_NEW
-    void handleError(FileOperationError& error, EXCEPTION_DIALOG);
+    void handleError(FileOperationError& error);
 #else
     int handleError(const QString &srcUri, const QString &destUri, const GErrorWrapperPtr &err, bool critical);
 #endif

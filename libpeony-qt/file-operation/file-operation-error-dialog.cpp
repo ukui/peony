@@ -101,18 +101,16 @@ FileOperationErrorDialog::~FileOperationErrorDialog()
 
 }
 
-void FileOperationErrorDialog::handle ()
-{
-
-}
-
 FileOperationErrorHandler::~FileOperationErrorHandler()
 {
 
 }
 
 #if HANDLE_ERR_NEW
-;
+void FileOperationErrorDialog::handle (FileOperationError& error)
+{
+    Q_UNUSED(error);
+}
 #else
 int FileOperationErrorDialog::handleError(const QString &srcUri,
         const QString &destDirUri,

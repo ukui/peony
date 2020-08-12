@@ -176,6 +176,8 @@ retry:
             except.title = tr("Rename file");
             except.errorCode = err->code;
             except.errorType = ET_GIO;
+            except.dlgType = ED_CONFLICT;
+            Q_EMIT errored(except);
             auto responseType = except.respCode;
 #else
             auto responseType = errored(m_uri,

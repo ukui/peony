@@ -10,7 +10,7 @@ class PEONYCORESHARED_EXPORT FileOperationErrorDialogBase : public QDialog, publ
     Q_OBJECT
     Q_INTERFACES(Peony::FileOperationErrorHandler)
 public:
-    FileOperationErrorDialogBase(Peony::FileOperationError* error, QDialog *parent);
+    FileOperationErrorDialogBase(QDialog *parent);
     ~FileOperationErrorDialogBase() override;
 
 Q_SIGNALS:

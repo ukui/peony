@@ -203,6 +203,8 @@ retry:
                 except.title = tr("Move file");
                 except.errorCode = err->code;
                 except.errorType = ET_GIO;
+                except.dlgType = ED_CONFLICT;
+                Q_EMIT errored(except);
                 auto responseTypeWrapper = except.respCode;
 #else
                 auto responseTypeWrapper = Q_EMIT errored(srcUri, m_dest_dir_uri, errWrapper);
@@ -308,6 +310,8 @@ retry:
                 except.title = tr("Move file");
                 except.errorCode = err->code;
                 except.errorType = ET_GIO;
+                except.dlgType = ED_CONFLICT;
+                Q_EMIT errored(except);
                 auto response = except.respCode;
 #else
                 this->errored(srcUri, m_dest_dir_uri, handledErr, true);
@@ -549,6 +553,8 @@ fallback_retry:
                 except.title = tr("Move file");
                 except.errorCode = err->code;
                 except.errorType = ET_GIO;
+                except.dlgType = ED_CONFLICT;
+                Q_EMIT errored(except);
                 auto typeData = except.respCode;
 #else
                 auto typeData = errored(m_current_src_uri, m_current_dest_dir_uri, errWrapperPtr);
@@ -645,6 +651,8 @@ fallback_retry:
                 except.title = tr("Create file");
                 except.errorCode = err->code;
                 except.errorType = ET_GIO;
+                except.dlgType = ED_CONFLICT;
+                Q_EMIT errored(except);
                 auto typeData = except.respCode;
 #else
                 auto typeData = errored(m_current_src_uri, m_current_dest_dir_uri, errWrapperPtr);

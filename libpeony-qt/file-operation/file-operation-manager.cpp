@@ -353,7 +353,7 @@ void FileOperationManager::onFilesDeleted(const QStringList &uris)
 
 #if HANDLE_ERR_NEW
 // optimize: Gets Windows should be created conditionally and errors handled so that memory is allocated in the stack space
-void FileOperationManager::handleError(FileOperationError &error, EXCEPTION_DIALOG dlgType)
+void FileOperationManager::handleError(FileOperationError &error)
 {
     if (error.srcUri.startsWith("trash://") &&
             error.errorType == ET_GIO && error.errorCode == G_IO_ERROR_PERMISSION_DENIED) {
@@ -362,12 +362,11 @@ void FileOperationManager::handleError(FileOperationError &error, EXCEPTION_DIAL
     }
 
     // Handle errors according to the error type
-    FileOperationErrorHandler* handle = FileOperationErrorDialogFactory::getDialog(error, dlgType);
-    handle->handle();
+    FileOperationErrorHandler* handle = FileOperationErrorDialogFactory::getDialog(error);
+    handle->handle(error);
     delete handle;
 }
 #else
-
 int FileOperationManager::handleError(const QString &srcUri,
         const QString &destUri,
         const GErrorWrapperPtr &err,
