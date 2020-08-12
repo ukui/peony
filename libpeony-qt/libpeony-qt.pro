@@ -18,6 +18,9 @@ PKGCONFIG += glib-2.0 gio-2.0 gio-unix-2.0 poppler-qt5 gsettings-qt udisks2 libn
 
 DEFINES += PEONYCORE_LIBRARY
 
+PLUGIN_INSTALL_DIRS = $$[QT_INSTALL_LIBS]/peony-extensions
+DEFINES += PLUGIN_INSTALL_DIRS='\\"$${PLUGIN_INSTALL_DIRS}\\"'
+
 QMAKE_CXXFLAGS += -execution-charset:utf-8
 
 # The following define makes your compiler emit warnings if you use
@@ -40,7 +43,6 @@ DESTDIR += $$PWD
 
 unix {
     target.path = $$[QT_INSTALL_LIBS]
-    #target.path = /usr/lib
     INSTALLS += target
 
     header.path = /usr/include/peony-qt

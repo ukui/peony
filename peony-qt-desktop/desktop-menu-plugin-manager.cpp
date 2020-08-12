@@ -54,7 +54,7 @@ DesktopMenuPluginManager::~DesktopMenuPluginManager()
 void DesktopMenuPluginManager::loadAsync()
 {
     qDebug()<<"test start";
-    QDir pluginsDir("/usr/lib/peony-qt-extensions");
+    QDir pluginsDir(PLUGIN_INSTALL_DIRS);
     pluginsDir.setFilter(QDir::Files);
     Q_FOREACH(QString fileName, pluginsDir.entryList(QDir::Files)) {
         QPluginLoader pluginLoader(pluginsDir.absoluteFilePath(fileName));

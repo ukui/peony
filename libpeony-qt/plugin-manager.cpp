@@ -56,7 +56,7 @@ PluginManager::PluginManager(QObject *parent) : QObject(parent)
     PreviewPageFactoryManager::getInstance();
     VFSPluginManager::getInstance();
 
-    QDir pluginsDir("/usr/lib/peony-qt-extensions");
+    QDir pluginsDir(PLUGIN_INSTALL_DIRS);
     pluginsDir.setFilter(QDir::Files);
 
     qDebug()<<pluginsDir.entryList().count();
