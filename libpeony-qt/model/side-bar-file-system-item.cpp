@@ -370,7 +370,12 @@ void SideBarFileSystemItem::unmount()
 
     // if device type is disc , Eject optical drive 
     if(g_strcmp0(udisks_block_get_id_type(block),"iso9660")==0){
-        system("eject");
+
+        char cmd[1024] ={0} ;
+        strcpy(cmd,"eject ");
+        strcat(cmd,m_unix_device.toUtf8().constData());
+
+        system(cmd);
     }
 
     auto file = wrapGFile(g_file_new_for_uri(this->uri().toUtf8().constData()));
