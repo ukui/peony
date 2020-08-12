@@ -22,6 +22,7 @@ Peony::FileOperationErrorDialogConflict::FileOperationErrorDialogConflict(Peony:
     m_file_label1->setFileSize(FileInfo::fromUri(error->srcUri)->fileSize());
     m_file_label1->setFileName(FileInfo::fromUri(error->srcUri)->getFileName());
     m_file_label1->setFileLocation(FileInfo::fromUri(error->srcUri)->displayName());
+    m_file_label1->setFileModifyTime (FileInfo::fromUri(error->srcUri)->modifiedDate());
     m_file_label1->setGeometry(m_margin_lr, m_file_info1_top, width() - 2 * m_margin_lr, m_file_info_height);
 
     m_file_label2 = new FileInformationLabel(this);
@@ -30,9 +31,11 @@ Peony::FileOperationErrorDialogConflict::FileOperationErrorDialogConflict(Peony:
     m_file_label2->setFileSize(FileInfo::fromUri(error->srcUri)->fileSize());
     m_file_label2->setFileName(FileInfo::fromUri(error->srcUri)->getFileName());
     m_file_label2->setFileLocation(FileInfo::fromUri(error->srcUri)->displayName());
+    m_file_label2->setFileModifyTime (FileInfo::fromUri(error->srcUri)->modifiedDate());
     m_file_label2->setGeometry(m_margin_lr, m_file_info2_top, width() - 2 * m_margin_lr, m_file_info_height);
 
     m_ck_box = new QCheckBox(this);
+    m_ck_box->setChecked(m_do_same_operation);
     m_ck_box->setGeometry(m_margin_lr, m_ck_btn_top, m_ck_btn_heigth, m_ck_btn_heigth);
 
     m_ck_label = new QLabel(this);
@@ -52,25 +55,60 @@ Peony::FileOperationErrorDialogConflict::FileOperationErrorDialogConflict(Peony:
     m_ok->setText("OK");
     m_ok->setGeometry(m_btn_ok_margin_left, m_btn_top, m_btn_width, m_btn_heigth);
 
-    connect(m_file_label1, &FileInformationLabel::active, [=](){
+    connect(m_file_label1, &FileInformationLabel::active, [=]() {
+        m_is_replace = true;
         m_file_label1->setActive(true);
         m_file_label2->setActive(false);
     });
-    connect(m_file_label2, &FileInformationLabel::active, [=](){
+    connect(m_file_label2, &FileInformationLabel::active, [=]() {
+        m_is_replace = false;
         m_file_label2->setActive(true);
         m_file_label1->setActive(false);
+    });
+    connect(m_ck_box, &QCheckBox::clicked, [=](bool chose) {
+        m_do_same_operation = chose;
+    });
+    connect(m_cancel, &QPushButton::clicked, [=] () {
+        done(QDialog::Rejected);
+    });
+    connect(m_ok, &QPushButton::clicked, [=] () {
+        done(QDialog::Accepted);
     });
 }
 
 Peony::FileOperationErrorDialogConflict::~FileOperationErrorDialogConflict()
 {
-
+    delete m_ok;
+    delete m_tip;
+    delete m_ck_box;
+    delete m_rename;
+    delete m_cancel;
+    delete m_file_label1;
+    delete m_file_label2;
 }
 
 #if HANDLE_ERR_NEW
 void Peony::FileOperationErrorDialogConflict::handle ()
 {
-    exec();
+    m_error->respCode = Retry;
+    int ret = exec();
+    if (QDialog::Accepted == ret) {
+        if (m_do_same_operation) {
+            if (m_is_replace) {
+                m_error->respCode = OverWriteAll;
+            } else {
+                m_error->respCode = IgnoreAll;
+            }
+        } else {
+            if (m_is_replace) {
+                m_error->respCode = OverWriteOne;
+            } else {
+                m_error->respCode = IgnoreOne;
+            }
+        }
+    } else if (QDialog::Rejected == ret) {
+        m_error->respCode = Cancel;
+    }
 }
 #else
 // FIXME://DELETE
@@ -134,6 +172,12 @@ void Peony::FileInformationLabel::setFileLocation(QString path)
     update();
 }
 
+void Peony::FileInformationLabel::setFileModifyTime(QString modify)
+{
+    m_modify_time = modify;
+    update();
+}
+
 
 void Peony::FileInformationLabel::paintEvent(QPaintEvent *event)
 {
@@ -156,13 +200,12 @@ void Peony::FileInformationLabel::paintEvent(QPaintEvent *event)
     painter.save();
     QRect pictureArea (m_pic_x, m_pic_y, m_pic_size, m_pic_size);
     painter.drawPixmap(pictureArea, m_icon);
-//    painter.drawRect(pictureArea);
 
     QRect picNameArea (m_pic_name_x, m_pic_name_y, m_pic_name_w, m_pic_name_h);
     QFont font = painter.font();
     font.setPixelSize(10);
     painter.setFont(font);
-    painter.setPen(QPalette::Base);
+    painter.setPen(QPen(btn.palette().color(QPalette::WindowText)));
     painter.drawText(picNameArea, Qt::AlignVCenter | Qt::AlignHCenter, m_op_name);
 
     painter.restore();
@@ -183,7 +226,7 @@ void Peony::FileInformationLabel::paintEvent(QPaintEvent *event)
     Q_UNUSED(event);
 }
 
-void Peony::FileInformationLabel::mouseDoubleClickEvent(QMouseEvent *event)
+void Peony::FileInformationLabel::mousePressEvent(QMouseEvent *event)
 {
     Q_EMIT active();
     Q_UNUSED(event);

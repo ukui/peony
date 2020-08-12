@@ -14,6 +14,10 @@ Peony::FileOperationErrorDialogBase::FileOperationErrorDialogBase(Peony::FileOpe
     setMouseTracking(true);
     setContentsMargins(0, 0, 0, 0);
     setWindowFlags(Qt::FramelessWindowHint);
+
+    connect(this, &FileOperationErrorDialogBase::cancel, this, [=](){
+        done(QDialog::Rejected);
+    });
 }
 
 Peony::FileOperationErrorDialogBase::~FileOperationErrorDialogBase()
@@ -34,7 +38,6 @@ void Peony::FileOperationErrorDialogBase::paintEvent(QPaintEvent *)
     font.setPixelSize(12);
     painter.setFont(font);
     painter.setBrush(QBrush(btn.palette().color(QPalette::Highlight).lighter(150)));
-//    painter.drawRect(textArea);
     painter.drawText(textArea, Qt::AlignVCenter | Qt::AlignHCenter, m_error->title);
 
     // paint minilize button
@@ -88,7 +91,7 @@ void Peony::FileOperationErrorDialogBase::mouseReleaseEvent(QMouseEvent *event)
                && (pos.x() <= width() - m_margin_lr)
                && (pos.y() >= m_margin_tp)
                && (pos.y() <= m_margin_tp + m_btn_size)) {
-        close();
+        Q_EMIT cancel();
     }
 
     QWidget::mouseReleaseEvent(event);

@@ -49,21 +49,20 @@ enum EXCEPTION_DIALOG {
 };
 
 /*!
- * \brief
+ * \brief All possible results of error handling
  */
 enum ExceptionResponse {
     Other,
-    Retry,
+    Retry,          // ok
     Cancel,
     Rename,
     Invalid,
-    NOTFOUND,
-    IgnoreOne,
-    IgnoreAll,
+    IgnoreOne,      // ok
+    IgnoreAll,      // ok
     BackupOne,
     BackupAll,
-    OverWriteOne,
-    OverWriteAll,
+    OverWriteOne,   // ok
+    OverWriteAll,   // ok
 };
 
 /*!

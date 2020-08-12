@@ -196,7 +196,14 @@ retry:
             if (handle_type == Other) {
                 qDebug()<<"send error";
 #if HANDLE_ERR_NEW
-                auto responseTypeWrapper = FileOperation::IgnoreOne;
+                FileOperationError except;
+                except.srcUri = srcUri;
+                except.destDirUri = m_dest_dir_uri;
+                except.isCritical = false;
+                except.title = tr("Move file");
+                except.errorCode = err->code;
+                except.errorType = ET_GIO;
+                auto responseTypeWrapper = except.respCode;
 #else
                 auto responseTypeWrapper = Q_EMIT errored(srcUri, m_dest_dir_uri, errWrapper);
 #endif
@@ -294,7 +301,14 @@ retry:
                 auto handledErr = GErrorWrapper::wrapFrom(handled_err);
 
 #if HANDLE_ERR_NEW
-                auto response = FileOperation::IgnoreOne;
+                FileOperationError except;
+                except.srcUri = srcUri;
+                except.destDirUri = m_dest_dir_uri;
+                except.isCritical = true;
+                except.title = tr("Move file");
+                except.errorCode = err->code;
+                except.errorType = ET_GIO;
+                auto response = except.respCode;
 #else
                 this->errored(srcUri, m_dest_dir_uri, handledErr, true);
 #endif
@@ -528,7 +542,14 @@ fallback_retry:
                 qDebug()<<"send error";
 
 #if HANDLE_ERR_NEW
-                auto typeData = FileOperation::IgnoreOne;
+                FileOperationError except;
+                except.srcUri = m_current_src_uri;
+                except.destDirUri = m_current_dest_dir_uri;
+                except.isCritical = false;
+                except.title = tr("Move file");
+                except.errorCode = err->code;
+                except.errorType = ET_GIO;
+                auto typeData = except.respCode;
 #else
                 auto typeData = errored(m_current_src_uri, m_current_dest_dir_uri, errWrapperPtr);
 #endif
@@ -617,7 +638,14 @@ fallback_retry:
             if (handle_type == Other) {
                 qDebug()<<"send error";
 #if HANDLE_ERR_NEW
-                auto typeData = FileOperation::IgnoreOne;
+                FileOperationError except;
+                except.srcUri = m_current_src_uri;
+                except.destDirUri = m_current_dest_dir_uri;
+                except.isCritical = true;
+                except.title = tr("Create file");
+                except.errorCode = err->code;
+                except.errorType = ET_GIO;
+                auto typeData = except.respCode;
 #else
                 auto typeData = errored(m_current_src_uri, m_current_dest_dir_uri, errWrapperPtr);
 #endif
@@ -826,6 +854,7 @@ void FileMoveOperation::run()
 start:
     if (!isValid()) {
 #if HANDLE_ERR_NEW
+// ???
                 auto response = FileOperation::IgnoreOne;
 #else
         auto response = errored(nullptr,

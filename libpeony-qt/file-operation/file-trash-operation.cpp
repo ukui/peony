@@ -51,7 +51,15 @@ retry:
                 continue;
             }
 #if HANDLE_ERR_NEW
-                auto responseData = FileOperation::IgnoreOne;
+            FileOperationError except;
+            except.srcUri = src;
+            except.destDirUri = tr("trash:///");
+            except.isCritical = true;
+            except.title = tr("Trash file");
+            except.errorCode = err->code;
+            except.errorType = ET_GIO;
+            auto responseType = except.respCode;
+            auto responseData = responseType;
 #else
             auto responseData = Q_EMIT errored(src, tr("trash:///"), GErrorWrapper::wrapFrom(err), true);
 #endif

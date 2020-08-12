@@ -203,6 +203,7 @@ fallback_retry:
             case IgnoreOne: {
                 node->setState(FileNode::Unhandled);
                 node->setErrorResponse(IgnoreOne);
+
                 break;
             }
             case IgnoreAll: {
@@ -288,9 +289,6 @@ fallback_retry:
                 except.title = tr("File copy");
                 except.errorCode = err->code;
                 Q_EMIT errored(except, ED_CONFLICT);
-
-                return;
-
                 auto typeData = except.respCode;
 
 #else

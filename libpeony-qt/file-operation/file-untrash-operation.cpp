@@ -169,7 +169,14 @@ retry:
                 type = m_pre_handler;
             } else {
 #if HANDLE_ERR_NEW
-                type = FileOperation::IgnoreOne;
+                FileOperationError except;
+                except.srcUri = uri;
+                except.destDirUri = originUri;
+                except.isCritical = false;
+                except.title = tr("Untrash file");
+                except.errorCode = err->code;
+                except.errorType = ET_GIO;
+                type = except.respCode;
 #else
                 auto responseData = Q_EMIT errored(uri, originUri, GErrorWrapper::wrapFrom(err), false);
                 type = responseData;

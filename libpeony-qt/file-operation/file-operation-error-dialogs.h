@@ -79,10 +79,12 @@ private:
     QPushButton* m_ok = nullptr;
     QPushButton* m_rename = nullptr;    // The renaming feature also needs some grooming, such as how to rename after selecting "Do something similar later"
     QPushButton* m_cancel = nullptr;
+
+    bool m_is_replace = false;          // replace or ignore, true is replace
+    bool m_do_same_operation = false;   // Then do the same thing with the same error
 };
 
-
-/**!
+/*!
  * @brief Some of the widgets in the error pop-up box
  */
 class FileInformationLabel : public QFrame
@@ -103,10 +105,11 @@ public:
     void setFileSize (QString fileSize);
     void setFileName (QString fileName);
     void setFileLocation (QString path);
+    void setFileModifyTime (QString modify);
 
 protected:
     void paintEvent(QPaintEvent *event) override;
-    virtual void mouseDoubleClickEvent(QMouseEvent *event) override;
+    virtual void mousePressEvent(QMouseEvent *event)override;
 
 private:
     float m_fix_width = 528;
@@ -132,12 +135,11 @@ private:
 
     QPixmap m_icon;
     bool m_active = false;
-    bool m_clicked = false;
-    QString m_op_name = "";
-    QString m_file_name = "";
-    QString m_file_size = "asdasd zi jie";
-    QString m_modify_time = "2020-08-19";
-    QString m_file_location = "file:///home/xxx/xxx/xxx/xxx/xxx/xx/ss/ss/ss/ss/ss/ss/ss/ss/ss/ss/ss/ss/ss/ss/ss/ss/ss";
+    QString m_op_name = nullptr;
+    QString m_file_name = nullptr;
+    QString m_file_size = nullptr;
+    QString m_modify_time = nullptr;
+    QString m_file_location = nullptr;
 };
 };
 

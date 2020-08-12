@@ -96,8 +96,8 @@ CreateTemplateOperation::CreateTemplateOperation(const QString &destDirUri, Type
 {
     m_target_uri = destDirUri + "/" + templateName;
     QStringList srcUris;
-    m_src_uri = TEMPLATE_DIR +templateName;
-    srcUris<<m_src_uri;
+    m_src_uri = TEMPLATE_DIR + templateName;
+    srcUris << m_src_uri;
     m_dest_dir_uri = destDirUri;
     m_type = type;
     m_info = std::make_shared<FileOperationInfo>(srcUris, destDirUri, FileOperationInfo::Type::Copy);
@@ -113,9 +113,7 @@ void CreateTemplateOperation::run()
 retry_create_empty_file:
         GError *err = nullptr;
         g_file_create(wrapGFile(g_file_new_for_uri(m_target_uri.toUtf8())).get()->get(),
-                      G_FILE_CREATE_NONE,
-                      nullptr,
-                      &err);
+                      G_FILE_CREATE_NONE, nullptr, &err);
         if (err) {
             // todo: Allow user naming
             if (err->code == G_IO_ERROR_EXISTS) {
@@ -154,7 +152,14 @@ retry_create_empty_folder:
             } else {
 
 #if HANDLE_ERR_NEW
-                ;
+                FileOperationError except;
+                except.srcUri = m_src_uri;
+                except.destDirUri = m_dest_dir_uri;
+                except.isCritical = true;
+                except.title = tr("Create file");
+                except.errorCode = err->code;
+                except.errorType = ET_GIO;
+                Q_EMIT errored(except, ED_CONFLICT);
 #else
                 Q_EMIT errored(m_src_uri, m_dest_dir_uri, GErrorWrapper::wrapFrom(err), true);
 #endif
@@ -180,7 +185,14 @@ retry_create_template:
                 goto retry_create_template;
             } else {
 #if HANDLE_ERR_NEW
-                ;
+                FileOperationError except;
+                except.srcUri = m_src_uri;
+                except.destDirUri = m_dest_dir_uri;
+                except.isCritical = true;
+                except.title = tr("Create file");
+                except.errorCode = err->code;
+                except.errorType = ET_GIO;
+                Q_EMIT errored(except, ED_CONFLICT);
 #else
                 Q_EMIT errored(m_src_uri, m_dest_dir_uri, GErrorWrapper::wrapFrom(err), true);
 #endif

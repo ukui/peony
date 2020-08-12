@@ -72,11 +72,18 @@ retry:
         //forbid response actions except retry and cancel.
 
 #if HANDLE_ERR_NEW
-                auto responseType = FileOperation::IgnoreOne;
+        FileOperationError except;
+        except.srcUri = m_src_uri;
+        except.destDirUri = m_dest_uri;
+        except.isCritical = true;
+        except.title = tr("Create file");
+        except.errorCode = err->code;
+        except.errorType = ET_GIO;
+        auto responseType = except.respCode;
 #else
         auto responseType = errored(m_src_uri, m_dest_uri, GErrorWrapper::wrapFrom(err), true);
 #endif
-        if (responseType == FileOperation::Retry) {
+        if (responseType == ExceptionResponse::Retry) {
             goto retry;
         }
     }

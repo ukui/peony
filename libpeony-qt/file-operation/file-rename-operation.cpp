@@ -132,7 +132,14 @@ fallback_retry:
         if (err) {
             qDebug()<<err->message;
 #if HANDLE_ERR_NEW
-                auto responseType = FileOperation::IgnoreOne;
+            FileOperationError except;
+            except.srcUri = m_uri;
+            except.destDirUri = FileUtils::getFileUri(newFile);
+            except.isCritical = true;
+            except.title = tr("Rename file");
+            except.errorCode = err->code;
+            except.errorType = ET_GIO;
+            auto responseType = except.respCode;
 #else
             auto responseType = errored(m_uri,
                                         FileUtils::getFileUri(newFile),
@@ -162,7 +169,14 @@ retry:
         if (err) {
 
 #if HANDLE_ERR_NEW
-                auto responseType = FileOperation::IgnoreOne;
+            FileOperationError except;
+            except.srcUri = m_uri;
+            except.destDirUri = FileUtils::getFileUri(newFile);
+            except.isCritical = true;
+            except.title = tr("Rename file");
+            except.errorCode = err->code;
+            except.errorType = ET_GIO;
+            auto responseType = except.respCode;
 #else
             auto responseType = errored(m_uri,
                                         FileUtils::getFileUri(newFile),

@@ -66,6 +66,7 @@ void FileDeleteOperation::deleteRecursively(FileNode *node)
             }
             //if delete a file get into error, it might be a critical error.
 #if HANDLE_ERR_NEW
+            // ???
                 auto response = FileOperation::IgnoreOne;
 #else
             auto response = errored(node->uri(), nullptr, GErrorWrapper::wrapFrom(err), true);
@@ -91,6 +92,7 @@ void FileDeleteOperation::deleteRecursively(FileNode *node)
             }
             //if delete a file get into error, it might be a critical error.
 #if HANDLE_ERR_NEW
+            // ???
                 auto response = FileOperation::IgnoreOne;
 #else
             auto response = errored(node->uri(), nullptr, GErrorWrapper::wrapFrom(err), true);

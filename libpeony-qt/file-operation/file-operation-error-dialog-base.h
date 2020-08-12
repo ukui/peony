@@ -13,6 +13,9 @@ public:
     FileOperationErrorDialogBase(Peony::FileOperationError* error, QDialog *parent);
     ~FileOperationErrorDialogBase() override;
 
+Q_SIGNALS:
+    void cancel();
+
 protected:
     void paintEvent(QPaintEvent*) override;
     void mouseMoveEvent(QMouseEvent *event)override;
