@@ -193,10 +193,10 @@ retry:
                 break;
             }
             int handle_type = prehandle(err);
+            FileOperationError except;
             if (handle_type == Other) {
                 qDebug()<<"send error";
 #if HANDLE_ERR_NEW
-                FileOperationError except;
                 except.srcUri = srcUri;
                 except.destDirUri = m_dest_dir_uri;
                 except.isCritical = false;
@@ -260,7 +260,24 @@ retry:
             case Peony::BackupOne: {
                 file->setState(FileNode::Handled);
                 file->setErrorResponse(Peony::BackupOne);
-                handleDuplicate(file);
+                // use custom name
+                QString name = "";
+                QStringList extendStr = file->destBaseName().split(".");
+                if (extendStr.length() > 0) {
+                    extendStr.removeAt(0);
+                }
+                QString endStr = extendStr.join(".");
+                if (except.respValue.contains("name")) {
+                    name = except.respValue["name"].toString();
+                    if (endStr != "" && name.endsWith(endStr)) {
+                        file->setDestFileName(name);
+                    } else if ("" != endStr && "" != name) {
+                        file->setDestFileName(name + "." + endStr);
+                    }
+                }
+                if (FileUtils::isFileExsit(file->destUri())) {
+                    handleDuplicate(file);
+                }
                 auto handledDestFileUri = file->resolveDestFileUri(m_dest_dir_uri);
                 auto handledDestFile = wrapGFile(g_file_new_for_uri(handledDestFileUri.toUtf8()));
                 g_file_copy(srcFile.get()->get(),
@@ -537,6 +554,7 @@ fallback_retry:
                               getCancellable().get()->get(),
                               &err);
         if (err) {
+            FileOperationError except;
             if (err->code == G_IO_ERROR_CANCELLED) {
                 return;
             }
@@ -546,7 +564,6 @@ fallback_retry:
                 qDebug()<<"send error";
 
 #if HANDLE_ERR_NEW
-                FileOperationError except;
                 except.srcUri = m_current_src_uri;
                 except.destDirUri = m_current_dest_dir_uri;
                 except.isCritical = false;
@@ -590,6 +607,24 @@ fallback_retry:
             case BackupOne: {
                 node->setState(FileNode::Handled);
                 node->setErrorResponse(BackupOne);
+                // use custom name
+                QString name = "";
+                QStringList extendStr = node->destBaseName().split(".");
+                if (extendStr.length() > 0) {
+                    extendStr.removeAt(0);
+                }
+                QString endStr = extendStr.join(".");
+                if (except.respValue.contains("name")) {
+                    name = except.respValue["name"].toString();
+                    if (endStr != "" && name.endsWith(endStr)) {
+                        node->setDestFileName(name);
+                    } else if ("" != endStr && "" != name) {
+                        node->setDestFileName(name + "." + endStr);
+                    }
+                }
+                if (FileUtils::isFileExsit(node->destUri())) {
+                    handleDuplicate(node);
+                }
                 //make dir has no backup
                 break;
             }
@@ -636,6 +671,7 @@ fallback_retry:
                     &err);
 
         if (err) {
+            FileOperationError except;
             if (err->code == G_IO_ERROR_CANCELLED) {
                 return;
             }
@@ -644,7 +680,6 @@ fallback_retry:
             if (handle_type == Other) {
                 qDebug()<<"send error";
 #if HANDLE_ERR_NEW
-                FileOperationError except;
                 except.srcUri = m_current_src_uri;
                 except.destDirUri = m_current_dest_dir_uri;
                 except.isCritical = true;
@@ -699,7 +734,24 @@ fallback_retry:
                 break;
             }
             case BackupOne: {
-                handleDuplicate(node);
+                // use custom name
+                QString name = "";
+                QStringList extendStr = node->destBaseName().split(".");
+                if (extendStr.length() > 0) {
+                    extendStr.removeAt(0);
+                }
+                QString endStr = extendStr.join(".");
+                if (except.respValue.contains("name")) {
+                    name = except.respValue["name"].toString();
+                    if (endStr != "" && name.endsWith(endStr)) {
+                        node->setDestFileName(name);
+                    } else if ("" != endStr && "" != name) {
+                        node->setDestFileName(name + "." + endStr);
+                    }
+                }
+                if (FileUtils::isFileExsit(node->destUri())) {
+                    handleDuplicate(node);
+                }
                 auto handledDestFileUri = node->resolveDestFileUri(m_dest_dir_uri);
                 auto handledDestFile = wrapGFile(g_file_new_for_uri(handledDestFileUri.toUtf8()));
                 g_file_copy(sourceFile.get()->get(),

@@ -307,7 +307,7 @@ void SideBarFileSystemItem::eject()
     auto target = FileUtils::getTargetUri(m_uri);
     auto drive = VolumeManager::getDriveFromUri(target);
     g_file_eject_mountable_with_operation(file.get()->get(),
-                                          G_MOUNT_UNMOUNT_NONE,
+                                          G_MOUNT_UNMOUNT_FORCE,
                                           nullptr,
                                           nullptr,
                                           GAsyncReadyCallback(eject_cb),
@@ -369,7 +369,7 @@ void SideBarFileSystemItem::unmount()
     block = udisks_object_get_block(object);
 
     // if device type is disc , Eject optical drive 
-    if(g_strcmp0(udisks_block_get_id_type(block),"iso9660")==0){
+    if(g_strcmp0(udisks_block_get_id_type(block),"iso9660") ==0){
         system("eject");
     }
 

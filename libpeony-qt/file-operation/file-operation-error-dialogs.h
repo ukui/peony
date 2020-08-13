@@ -4,15 +4,18 @@
 #include <QLabel>
 #include <QDialog>
 #include <QCheckBox>
+#include <QLineEdit>
 #include "file-operation-error-dialog-base.h"
 
 namespace Peony {
 
+class FileRenameDialog;
 class FileInformationLabel;
 class FileOperationErrorDialogConflict;
 
-/**!
- * @brief Factory class for error handling pop-up boxes
+
+/*!
+ * \brief Factory class for error handling pop-up boxes
  *
  */
 class PEONYCORESHARED_EXPORT FileOperationErrorDialogFactory
@@ -126,17 +129,25 @@ private:
     QPushButton* m_rename = nullptr;    // The renaming feature also needs some grooming, such as how to rename after selecting "Do something similar later"
     QPushButton* m_cancel = nullptr;
 
+    FileRenameDialog* m_rename_dialog = nullptr;
+
+    bool m_is_backup = false;
+    bool m_is_backup_all = false;
+
     bool m_is_replace = false;          // replace or ignore, true is replace
     bool m_do_same_operation = false;   // Then do the same thing with the same error
 };
 
+/**
+ * Some of the widgets in the error pop-up box
+ */
+
 /*!
- * @brief Some of the widgets in the error pop-up box
+ * \brief file information label
  */
 class FileInformationLabel : public QFrame
 {
     Q_OBJECT
-
 public:
     explicit FileInformationLabel(QWidget* parent = nullptr);
     ~FileInformationLabel();
@@ -186,6 +197,46 @@ private:
     QString m_file_size = nullptr;
     QString m_modify_time = nullptr;
     QString m_file_location = nullptr;
+};
+
+/*!
+ * \brief rename dialog
+ */
+class FileRenameDialog : public QDialog
+{
+    Q_OBJECT
+public:
+    enum RenameType
+    {
+        USER_INPUT,
+        AUTO_INSCREASE,
+    };
+    explicit FileRenameDialog(QWidget* parent = nullptr);
+    ~FileRenameDialog();
+
+Q_SIGNALS:
+    void customRename (RenameType nameType, QString name);
+
+protected:
+    void paintEvent(QPaintEvent *event) override;
+    void mouseMoveEvent(QMouseEvent *event)override;
+    void mousePressEvent(QMouseEvent *event)override;
+
+private:
+    float m_margin = 9;
+    float m_fix_width = 550;
+    float m_fix_heigth = 188;
+    float m_fix_heigth_2 = 228;
+
+    float m_header_btn_size = 26;
+
+    QLabel* m_tip = nullptr;
+    QLineEdit* m_name = nullptr;
+    QPushButton* m_ok = nullptr;
+    QLabel* m_name_label = nullptr;
+    QPushButton* m_cancel = nullptr;
+    QCheckBox* m_if_custom = nullptr;
+
 };
 };
 

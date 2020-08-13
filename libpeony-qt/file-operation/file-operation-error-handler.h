@@ -60,8 +60,8 @@ enum ExceptionResponse {
     Invalid,
     IgnoreOne,      // ok
     IgnoreAll,      // ok
-    BackupOne,
-    BackupAll,
+    BackupOne,      // ok
+    BackupAll,      // ok
     OverWriteOne,   // ok
     OverWriteAll,   // ok
 };

@@ -1,8 +1,11 @@
 #include "file-operation-error-dialogs.h"
 
 #include <QPainter>
+#include <QMouseEvent>
 #include <QPushButton>
 #include <file-info.h>
+
+static QPixmap drawSymbolicColoredPixmap (const QPixmap& source);
 
 Peony::FileOperationErrorDialogConflict::FileOperationErrorDialogConflict(FileOperationErrorDialogBase *parent)
     : FileOperationErrorDialogBase(parent)
@@ -42,8 +45,7 @@ Peony::FileOperationErrorDialogConflict::FileOperationErrorDialogConflict(FileOp
     m_ck_label->setGeometry(m_margin_lr + m_ck_btn_heigth + 6, m_ck_btn_top, width() - m_margin_lr * 2 - m_ck_btn_heigth, m_ck_btn_heigth);
 
     m_rename = new QPushButton(this);
-    m_rename->setText(tr("Rename"));
-    m_rename->setHidden(true);
+    m_rename->setText(tr("Backup"));
     m_rename->setGeometry(m_margin_lr, m_btn_top, m_btn_width, m_btn_heigth);
 
     m_cancel = new QPushButton(this);
@@ -53,6 +55,9 @@ Peony::FileOperationErrorDialogConflict::FileOperationErrorDialogConflict(FileOp
     m_ok = new QPushButton(this);
     m_ok->setText("OK");
     m_ok->setGeometry(m_btn_ok_margin_left, m_btn_top, m_btn_width, m_btn_heigth);
+
+    // rename dialog
+    m_rename_dialog = new FileRenameDialog();
 
     connect(m_file_label1, &FileInformationLabel::active, [=]() {
         m_is_replace = true;
@@ -67,12 +72,38 @@ Peony::FileOperationErrorDialogConflict::FileOperationErrorDialogConflict(FileOp
     connect(m_ck_box, &QCheckBox::clicked, [=](bool chose) {
         m_do_same_operation = chose;
     });
-    connect(m_cancel, &QPushButton::clicked, [=] () {
+    connect(m_cancel, &QPushButton::clicked, [=] (bool) {
         done(QDialog::Rejected);
     });
-    connect(m_ok, &QPushButton::clicked, [=] () {
+    connect(m_ok, &QPushButton::clicked, [=] (bool) {
         done(QDialog::Accepted);
     });
+
+    connect(m_rename, &QPushButton::clicked, [=] (bool) {
+        if (QDialog::Accepted == m_rename_dialog->exec()) {
+            if (m_is_backup) {
+                if (!m_error->respValue.contains("name")) {
+                    m_is_backup_all = true;
+                }
+            }
+        }
+        done (QDialog::Accepted);
+    });
+
+    connect(m_rename_dialog, &FileRenameDialog::customRename, [=](FileRenameDialog::RenameType nameType, QString name) {
+        m_is_backup = true;
+        switch (nameType) {
+        case FileRenameDialog::USER_INPUT:
+            m_error->respValue["name"] = QVariant(name);
+            break;
+        case FileRenameDialog::AUTO_INSCREASE:
+            if (m_error->respValue.contains("name")) {
+                m_error->respValue.remove("name");
+            }
+            break;
+        }
+    });
+
 }
 
 Peony::FileOperationErrorDialogConflict::~FileOperationErrorDialogConflict()
@@ -84,6 +115,7 @@ Peony::FileOperationErrorDialogConflict::~FileOperationErrorDialogConflict()
     delete m_cancel;
     delete m_file_label1;
     delete m_file_label2;
+    delete m_rename_dialog;
 }
 
 #if HANDLE_ERR_NEW
@@ -116,9 +148,21 @@ void Peony::FileOperationErrorDialogConflict::handle (FileOperationError& error)
                 error.respCode = IgnoreOne;
             }
         }
+
+        if (m_is_backup) {
+            if (m_is_backup_all) {
+                error.respCode = BackupAll;
+            } else {
+                error.respCode = BackupOne;
+            }
+        }
     } else if (QDialog::Rejected == ret) {
         error.respCode = Cancel;
     }
+
+
+
+    qDebug() << "||||||||||||||||||||| return response code: " << error.respCode;
 }
 #else
 // FIXME://DELETE
@@ -311,4 +355,159 @@ void Peony::FileOperationErrorDialogWarning::handle(Peony::FileOperationError &e
     exec();
 
     error.respCode = IgnoreOne;
+}
+
+Peony::FileRenameDialog::FileRenameDialog(QWidget *parent) : QDialog(parent)
+{
+    setMouseTracking(true);
+    setContentsMargins(0, 0, 0, 0);
+    setWindowFlags(Qt::FramelessWindowHint);
+
+    m_tip = new QLabel(this);
+    m_name = new QLineEdit(this);
+    m_ok = new QPushButton(this);
+    m_name_label = new QLabel(this);
+    m_cancel = new QPushButton(this);
+    m_if_custom = new QCheckBox(this);
+
+    setFixedSize(m_fix_width, m_fix_heigth);
+
+    m_if_custom->setChecked(true);
+    m_if_custom->setGeometry(m_margin + 16, 65, 24, 24);
+
+    m_tip->setText(tr("Names automatically add serial Numbers (e.g., 1,2,3...)"));
+    m_tip->setGeometry(m_margin * 2 + 16 + 24, 65, width() - m_margin * 3 - 16 - 24, 26);
+
+    m_cancel->setText(tr("Cancel"));
+    m_cancel->setGeometry(274, 132, 120, 36);
+
+    m_name_label->setHidden(true);
+    m_name_label->setGeometry(26, 113, 98, 20);
+    m_name_label->setText(tr("New file name"));
+
+    m_name->setHidden(true);
+    m_name->setGeometry(130, 107, 400, 32);
+    m_name->setPlaceholderText(tr("Please enter the file name"));
+
+    m_ok->setText(tr("OK"));
+    m_ok->setGeometry(410, 132, 120, 36);
+
+    connect(m_if_custom, &QCheckBox::toggled, [=](bool status) {
+        if (!status) {
+            m_name->setHidden(false);
+            m_name_label->setHidden(false);
+            setFixedSize(m_fix_width, m_fix_heigth_2);
+            m_ok->setGeometry(410, 132 + 40, 120, 36);
+            m_cancel->setGeometry(274, 132 + 40, 120, 36);
+        } else {
+            m_name->setHidden(true);
+            m_name_label->setHidden(true);
+            setFixedSize(m_fix_width, m_fix_heigth);
+            m_ok->setGeometry(410, 132, 120, 36);
+            m_cancel->setGeometry(274, 132, 120, 36);
+        }
+        update();
+    });
+
+    connect(m_cancel, &QPushButton::clicked, [=](bool) {
+        done(QDialog::Rejected);
+    });
+    connect(m_ok, &QPushButton::clicked, [=](bool) {
+        if (true == m_if_custom->isChecked() || "" == m_name->text()) {
+            qDebug () << " ++++++ is not custom";
+            Q_EMIT customRename (AUTO_INSCREASE, "");
+        } else {
+            qDebug() << "++++++++ is custom";
+            Q_EMIT customRename (USER_INPUT, m_name->text());
+        }
+        done(QDialog::Accepted);
+        qDebug() << "+++ ok +++";
+    });
+}
+
+Peony::FileRenameDialog::~FileRenameDialog()
+{
+    delete m_ok;
+    delete m_tip;
+    delete m_name;
+    delete m_cancel;
+    delete m_if_custom;
+}
+
+void Peony::FileRenameDialog::paintEvent(QPaintEvent *event)
+{
+    QPainter painter(this);
+
+    painter.save();
+
+    QPushButton btn;
+    // paint title
+//    QRect textArea (m_margin_lr, 0, width() - m_margin_lr * 2 - 2 * m_btn_size, m_header_height);
+//    QFont font = painter.font();
+//    font.setPixelSize(12);
+//    painter.setFont(font);
+//    painter.setBrush(QBrush(btn.palette().color(QPalette::Highlight).lighter(150)));
+//    if (nullptr != m_error && nullptr != m_error->title) {
+//        painter.drawText(textArea, Qt::AlignVCenter | Qt::AlignHCenter, m_error->title);
+//    }
+
+    // paint close button
+    QPen pen;
+    pen.setStyle(Qt::SolidLine);
+    painter.setBrush(Qt::NoBrush);
+    painter.setPen(pen);
+    painter.drawPixmap(width() - m_margin - m_header_btn_size, m_margin, m_header_btn_size, m_header_btn_size,
+                           drawSymbolicColoredPixmap(QIcon::fromTheme("window-close-symbolic").pixmap(m_header_btn_size, m_header_btn_size)));
+
+    painter.restore();
+}
+
+void Peony::FileRenameDialog::mouseMoveEvent(QMouseEvent *event)
+{
+    // minilize button
+    QPoint pos = event->pos();
+    if ((pos.x() >= width() - m_margin - m_header_btn_size)
+               && (pos.x() <= width() - m_margin)
+               && (pos.y() >= m_margin)
+               && (pos.y() <= m_margin + m_header_btn_size)) {
+        setCursor(Qt::PointingHandCursor);
+    } else {
+        setCursor(Qt::ArrowCursor);
+        QWidget::mouseMoveEvent(event);
+    }
+}
+
+void Peony::FileRenameDialog::mousePressEvent(QMouseEvent *event)
+{
+    // minilize button
+    QPoint pos = event->pos();
+    if ((pos.x() >= width() - m_margin - m_header_btn_size)
+               && (pos.x() <= width() - m_margin)
+               && (pos.y() >= m_margin)
+               && (pos.y() <= m_margin + m_header_btn_size)) {
+        Q_EMIT customRename (AUTO_INSCREASE, "");
+        done(QDialog::Rejected);
+    }
+
+    QWidget::mouseReleaseEvent(event);
+}
+
+static QPixmap drawSymbolicColoredPixmap (const QPixmap& source)
+{
+    // 18, 32, 69
+    QPushButton      m_btn;
+    QColor baseColor = m_btn.palette().color(QPalette::Text).light(150);
+    QImage img = source.toImage();
+
+    for (int x = 0; x < img.width(); ++x) {
+        for (int y = 0; y < img.height(); ++y) {
+            auto color = img.pixelColor(x, y);
+            color.setRed(baseColor.red());
+            color.setGreen(baseColor.green());
+            color.setBlue(baseColor.blue());
+            img.setPixelColor(x, y, color);
+        }
+    }
+
+    return QPixmap::fromImage(img);
 }

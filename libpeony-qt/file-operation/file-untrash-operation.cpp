@@ -162,6 +162,7 @@ retry:
         }
 
         if (err) {
+            FileOperationError except;
             this->setHasError(true);
             qDebug()<<"untrash err"<<uri<<originUri<<err->message;
             int type = Invalid;
@@ -169,7 +170,6 @@ retry:
                 type = m_pre_handler;
             } else {
 #if HANDLE_ERR_NEW
-                FileOperationError except;
                 except.srcUri = uri;
                 except.destDirUri = originUri;
                 except.isCritical = false;
@@ -211,7 +211,24 @@ retry:
                 m_pre_handler = OverWriteOne;
                 break;
             case BackupOne: {
-                originUri = handleDuplicate(originUri);
+                // use custom name
+                QString name = "";
+                QStringList extendStr = originUri.split(".");
+                if (extendStr.length() > 0) {
+                    extendStr.removeAt(0);
+                }
+                QString endStr = extendStr.join(".");
+                if (except.respValue.contains("name")) {
+                    name = except.respValue["name"].toString();
+                    if (endStr != "" && name.endsWith(endStr)) {
+                        originUri = name;
+                    } else if ("" != endStr && "" != name) {
+                        originUri = name + "." + endStr;
+                    }
+                }
+                if (FileUtils::isFileExsit(originUri)) {
+                    originUri = handleDuplicate(originUri);
+                }
                 destFile = wrapGFile(g_file_new_for_uri(originUri.toUtf8().constData()));
                 goto retry;
             }
