@@ -108,6 +108,7 @@ FileCopyOperation::FileCopyOperation(QStringList sourceUris, QString destDirUri,
         }
     }
 
+    m_conflict_files.clear();
     m_source_uris = sourceUris;
     m_dest_dir_uri = destDirUri;
     m_reporter = new FileNodeReporter;
@@ -119,6 +120,7 @@ FileCopyOperation::FileCopyOperation(QStringList sourceUris, QString destDirUri,
 FileCopyOperation::~FileCopyOperation()
 {
     delete m_reporter;
+    m_conflict_files.clear();
 }
 
 Peony::ExceptionResponse FileCopyOperation::prehandle(GError *err)
@@ -197,7 +199,6 @@ fallback_retry:
             case Peony::IgnoreOne: {
                 node->setState(FileNode::Unhandled);
                 node->setErrorResponse(IgnoreOne);
-
                 break;
             }
             case Peony::IgnoreAll: {
@@ -236,7 +237,6 @@ fallback_retry:
                         node->setDestFileName(name + "." + endStr);
                     }
                 }
-
                 while (FileUtils::isFileExsit(node->resolveDestFileUri(m_dest_dir_uri))) {
                     handleDuplicate(node);
                 }
@@ -287,6 +287,11 @@ fallback_retry:
             FileOperationError except;
             if (err->code == G_IO_ERROR_CANCELLED) {
                 return;
+            }
+            if (err->code == G_IO_ERROR_EXISTS) {
+                char* destFileName = g_file_get_uri(destFile.get()->get());
+                m_conflict_files << destFileName;
+                g_free(destFileName);
             }
             auto errWrapperPtr = GErrorWrapper::wrapFrom(err);
             int handle_type = prehandle(err);
@@ -423,9 +428,11 @@ void FileCopyOperation::rollbackNodeRecursively(FileNode *node)
             }
             g_object_unref(dest_file);
         } else {
-            GFile *dest_file = g_file_new_for_uri(node->destUri().toUtf8().constData());
-            g_file_delete(dest_file, nullptr, nullptr);
-            g_object_unref(dest_file);
+            if (!m_conflict_files.contains(node->destUri())) {
+                GFile *dest_file = g_file_new_for_uri(node->destUri().toUtf8().constData());
+                g_file_delete(dest_file, nullptr, nullptr);
+                g_object_unref(dest_file);
+            }
         }
         operationRollbackedOne(node->destUri(), node->uri());
         break;

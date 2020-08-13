@@ -221,7 +221,6 @@ void FileOperationManager::startOperation(FileOperation *operation, bool addToHi
         operation->setParent(m_thread_pool);
         m_thread_pool->start(operation);
     }
-    //m_progressbar->showProgress(*proc);
     m_progressbar->showDelay();
 }
 

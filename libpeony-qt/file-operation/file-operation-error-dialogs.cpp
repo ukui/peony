@@ -76,7 +76,7 @@ Peony::FileOperationErrorDialogConflict::FileOperationErrorDialogConflict(FileOp
     m_cancel->setGeometry(m_btn_cancel_margin_left, m_btn_top, m_btn_width, m_btn_heigth);
 
     m_ok = new QPushButton(this);
-    m_ok->setText("OK");
+    m_ok->setText(tr("OK"));
     m_ok->setGeometry(m_btn_ok_margin_left, m_btn_top, m_btn_width, m_btn_heigth);
 
     // rename dialog

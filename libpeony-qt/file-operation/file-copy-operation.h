@@ -87,12 +87,12 @@ private:
      * use FileDuplicateOperation instead.
      */
     bool m_is_duplicated_copy = false;
-
     QStringList m_source_uris;
     QString m_dest_dir_uri = nullptr;
 
     int m_current_count = 0;
     int m_total_count = 0;
+    QSet<QString> m_conflict_files;
     QString m_current_src_uri = nullptr;
     QString m_current_dest_dir_uri = nullptr;
 
