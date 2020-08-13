@@ -47,15 +47,10 @@ public:
     virtual void handle (FileOperationError& error) override;
 
 public Q_SLOTS:
-
-#if HANDLE_ERR_NEW
-    ;
-#else
     int handleError(const QString &srcUri,
                          const QString &destDirUri,
                          const GErrorWrapperPtr &err,
-                         bool isCritical = false) override;
-#endif
+                         bool isCritical = false);
 
 private:
     QFormLayout *m_layout = nullptr;

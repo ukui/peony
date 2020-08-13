@@ -552,13 +552,8 @@ void MainWindow::updateTabPageTitle()
 void MainWindow::createFolderOperation()
 {
     Peony::CreateTemplateOperation op(getCurrentUri(), Peony::CreateTemplateOperation::EmptyFolder, tr("New Folder"));
-#if HANDLE_ERR_NEW
     Peony::FileOperationErrorDialogConflict dlg;
     connect(&op, &Peony::FileOperation::errored, &dlg, &Peony::FileOperationErrorDialogConflict::handle);
-#else
-    Peony::FileOperationErrorDialog dlg;
-    connect(&op, &Peony::FileOperation::errored, &dlg, &Peony::FileOperationErrorDialog::handleError);
-#endif
     op.run();
     auto targetUri = op.target();
 

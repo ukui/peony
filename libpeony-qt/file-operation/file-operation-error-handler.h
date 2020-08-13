@@ -23,8 +23,10 @@
 #ifndef FILEOPERATIONERRORHANDLER_H
 #define FILEOPERATIONERRORHANDLER_H
 
+#include <QMap>
+#include <QString>
+#include <QVariant>
 #include <QMetaType>
-#include "file-operation.h"
 #include "gerror-wrapper.h"
 #include "peony-core_global.h"
 

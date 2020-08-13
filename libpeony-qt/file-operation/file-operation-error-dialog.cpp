@@ -106,12 +106,11 @@ FileOperationErrorHandler::~FileOperationErrorHandler()
 
 }
 
-#if HANDLE_ERR_NEW
 void FileOperationErrorDialog::handle (FileOperationError& error)
 {
     Q_UNUSED(error);
 }
-#else
+
 int FileOperationErrorDialog::handleError(const QString &srcUri,
         const QString &destDirUri,
         const GErrorWrapperPtr &err,
@@ -145,32 +144,31 @@ int FileOperationErrorDialog::handleError(const QString &srcUri,
     int val = exec();
     switch (val) {
     case 1: {
-        return FileOperation::IgnoreOne;
+        return ExceptionResponse::IgnoreOne;
     }
     case 2: {
-        return FileOperation::IgnoreAll;
+        return ExceptionResponse::IgnoreAll;
     }
     case 3: {
-        return FileOperation::OverWriteOne;
+        return ExceptionResponse::OverWriteOne;
     }
     case 4: {
-        return FileOperation::OverWriteAll;
+        return ExceptionResponse::OverWriteAll;
     }
     case 5: {
-        return FileOperation::BackupOne;
+        return ExceptionResponse::BackupOne;
     }
     case 6: {
-        return FileOperation::BackupAll;
+        return ExceptionResponse::BackupAll;
     }
     case 7: {
-        return FileOperation::Retry;
+        return ExceptionResponse::Retry;
     }
     case 8: {
-        return FileOperation::Cancel;
+        return ExceptionResponse::Cancel;
     }
     default: {
-        return FileOperation::IgnoreAll;
+        return ExceptionResponse::IgnoreAll;
     }
     }
 }
-#endif

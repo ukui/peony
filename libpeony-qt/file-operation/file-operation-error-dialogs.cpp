@@ -44,14 +44,14 @@ Peony::FileOperationErrorDialogConflict::FileOperationErrorDialogConflict(FileOp
 
     m_file_label1 = new FileInformationLabel(this);
     m_file_label1->setOpName(tr("Replace"));
-    m_file_label1->setPixmap(":/data/file-replace.png");
+    m_file_label1->setPixmap(QIcon::fromTheme("ukui_replace_doc").pixmap(m_file_label1->getIconSize(), m_file_label1->getIconSize()));
 
 
     m_file_label1->setGeometry(m_margin_lr, m_file_info1_top, width() - 2 * m_margin_lr, m_file_info_height);
 
     m_file_label2 = new FileInformationLabel(this);
     m_file_label2->setOpName(tr("Ignore"));
-    m_file_label2->setPixmap(":/data/file-ignore.png");
+    m_file_label2->setPixmap(QIcon::fromTheme("ukui_ellipsis_doc").pixmap(m_file_label1->getIconSize(), m_file_label1->getIconSize()));
 
     m_file_label2->setGeometry(m_margin_lr, m_file_info2_top, width() - 2 * m_margin_lr, m_file_info_height);
 
@@ -126,7 +126,6 @@ Peony::FileOperationErrorDialogConflict::FileOperationErrorDialogConflict(FileOp
             break;
         }
     });
-
 }
 
 Peony::FileOperationErrorDialogConflict::~FileOperationErrorDialogConflict()
@@ -203,6 +202,11 @@ Peony::FileInformationLabel::~FileInformationLabel()
     delete m_file_information;
 }
 
+float Peony::FileInformationLabel::getIconSize()
+{
+    return m_pic_size;
+}
+
 void Peony::FileInformationLabel::setActive(bool active)
 {
     m_active = active;
@@ -215,9 +219,9 @@ void Peony::FileInformationLabel::setOpName(QString name)
     update();
 }
 
-void Peony::FileInformationLabel::setPixmap(QString pixmap)
+void Peony::FileInformationLabel::setPixmap(QPixmap pixmap)
 {
-    m_icon.load(pixmap);
+    m_icon = pixmap;
 }
 
 void Peony::FileInformationLabel::setFileSize(QString fileSize)
@@ -307,8 +311,6 @@ Peony::FileOperationErrorHandler *Peony::FileOperationErrorDialogFactory::getDia
     }
     return nullptr;
 }
-
-
 
 Peony::FileOperationErrorDialogWarning::FileOperationErrorDialogWarning(Peony::FileOperationErrorDialogBase *parent)
     : FileOperationErrorDialogBase(parent)
@@ -425,14 +427,11 @@ Peony::FileRenameDialog::FileRenameDialog(QWidget *parent) : QDialog(parent)
     });
     connect(m_ok, &QPushButton::clicked, [=](bool) {
         if (true == m_if_custom->isChecked() || "" == m_name->text()) {
-            qDebug () << " ++++++ is not custom";
             Q_EMIT customRename (AUTO_INSCREASE, "");
         } else {
-            qDebug() << "++++++++ is custom";
             Q_EMIT customRename (USER_INPUT, m_name->text());
         }
         done(QDialog::Accepted);
-        qDebug() << "+++ ok +++";
     });
 }
 
@@ -471,6 +470,7 @@ void Peony::FileRenameDialog::paintEvent(QPaintEvent *event)
                            drawSymbolicColoredPixmap(QIcon::fromTheme("window-close-symbolic").pixmap(m_header_btn_size, m_header_btn_size)));
 
     painter.restore();
+    Q_UNUSED(event);
 }
 
 void Peony::FileRenameDialog::mouseMoveEvent(QMouseEvent *event)

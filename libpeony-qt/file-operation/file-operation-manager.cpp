@@ -179,17 +179,10 @@ void FileOperationManager::startOperation(FileOperation *operation, bool addToHi
    proc->connect(operation, &FileOperation::operationFinished, proc, &ProgressBar::onFinished);
    proc->connect(proc, &ProgressBar::cancelled, operation, &Peony::FileOperation::cancel);
 
-#if HANDLE_ERR_NEW
    operation->connect(operation, &FileOperation::errored, [=]() {
        operation->setHasError(true);
    });
    operation->connect(operation, &FileOperation::errored, this, &FileOperationManager::handleError, Qt::BlockingQueuedConnection);
-#else
-   operation->connect(operation, &FileOperation::errored, [=]() {
-       operation->setHasError(true);
-   });
-   operation->connect(operation, &FileOperation::errored, this, &FileOperationManager::handleError, Qt::BlockingQueuedConnection);
-#endif
    operation->connect(operation, &FileOperation::operationFinished, this, [=](){
        if (operation->hasError()) {
            this->clearHistory();
@@ -342,7 +335,6 @@ void FileOperationManager::onFilesDeleted(const QStringList &uris)
     clearHistory();
 }
 
-#if HANDLE_ERR_NEW
 // optimize: Gets Windows should be created conditionally and errors handled so that memory is allocated in the stack space
 void FileOperationManager::handleError(FileOperationError &error)
 {
@@ -357,20 +349,6 @@ void FileOperationManager::handleError(FileOperationError &error)
     handle->handle(error);
     delete handle;
 }
-#else
-int FileOperationManager::handleError(const QString &srcUri,
-        const QString &destUri,
-        const GErrorWrapperPtr &err,
-        bool critical)
-{
-    if (srcUri.startsWith("trash://") && err.get()->code() == G_IO_ERROR_PERMISSION_DENIED) {
-        return FileOperation::IgnoreOne;
-    }
-
-    FileOperationErrorDialog dlg;
-    return dlg.handleError(srcUri, destUri, err, critical);
-}
-#endif
 
 void FileOperationManager::registerFileWatcher(FileWatcher *watcher)
 {
