@@ -100,6 +100,10 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
     m_desktop_watcher->setMonitorChildrenChange(true);
     this->connect(m_desktop_watcher.get(), &FileWatcher::fileCreated, [=](const QString &uri) {
         qDebug()<<"desktop file created"<<uri;
+        
+        //refresh the desktop ,let file can be see at once
+        Q_EMIT this->refresh();
+
         if (m_new_file_info_query_queue.contains(uri)) {
             return;
         } else {
