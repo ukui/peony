@@ -118,7 +118,7 @@ void FileMoveOperation::progress_callback(goffset current_num_bytes,
     //format: move srcUri to destDirUri: curent_bytes(count) of total_bytes(count).
 }
 
-FileOperation::ResponseType FileMoveOperation::prehandle(GError *err)
+Peony::ExceptionResponse FileMoveOperation::prehandle(GError *err)
 {
     setHasError(true);
     if (m_prehandle_hash.contains(err->code))
@@ -193,9 +193,18 @@ retry:
                 break;
             }
             int handle_type = prehandle(err);
+            FileOperationError except;
             if (handle_type == Other) {
                 qDebug()<<"send error";
-                auto responseTypeWrapper = Q_EMIT errored(srcUri, m_dest_dir_uri, errWrapper);
+                except.srcUri = srcUri;
+                except.destDirUri = m_dest_dir_uri;
+                except.isCritical = false;
+                except.title = tr("Move file");
+                except.errorCode = err->code;
+                except.errorType = ET_GIO;
+                except.dlgType = ED_CONFLICT;
+                Q_EMIT errored(except);
+                auto responseTypeWrapper = except.respCode;
                 qDebug()<<"get return";
                 handle_type = responseTypeWrapper;
                 //block until error has been handled.
@@ -203,21 +212,21 @@ retry:
 
             GError *handled_err = nullptr;
             switch (handle_type) {
-            case IgnoreOne: {
+            case Peony::IgnoreOne: {
                 file->setState(FileNode::Unhandled);
-                file->setErrorResponse(FileOperation::IgnoreOne);
+                file->setErrorResponse(Peony::IgnoreOne);
                 //skip to next loop.
                 break;
             }
-            case IgnoreAll: {
+            case Peony::IgnoreAll: {
                 file->setState(FileNode::Unhandled);
-                file->setErrorResponse(FileOperation::IgnoreOne);
+                file->setErrorResponse(Peony::IgnoreOne);
                 m_prehandle_hash.insert(err->code, IgnoreOne);
                 break;
             }
-            case OverWriteOne: {
+            case Peony::OverWriteOne: {
                 file->setState(FileNode::Handled);
-                file->setErrorResponse(FileOperation::OverWriteOne);
+                file->setErrorResponse(Peony::OverWriteOne);
                 g_file_move(srcFile.get()->get(),
                             destFile.get()->get(),
                             GFileCopyFlags(G_FILE_COPY_NOFOLLOW_SYMLINKS|
@@ -229,9 +238,9 @@ retry:
                             &handled_err);
                 break;
             }
-            case OverWriteAll: {
+            case Peony::OverWriteAll: {
                 file->setState(FileNode::Handled);
-                file->setErrorResponse(FileOperation::OverWriteOne);
+                file->setErrorResponse(Peony::OverWriteOne);
                 g_file_move(srcFile.get()->get(),
                             destFile.get()->get(),
                             GFileCopyFlags(G_FILE_COPY_NOFOLLOW_SYMLINKS|
@@ -244,10 +253,27 @@ retry:
                 m_prehandle_hash.insert(err->code, OverWriteOne);
                 break;
             }
-            case BackupOne: {
+            case Peony::BackupOne: {
                 file->setState(FileNode::Handled);
-                file->setErrorResponse(FileOperation::BackupOne);
-                handleDuplicate(file);
+                file->setErrorResponse(Peony::BackupOne);
+                // use custom name
+                QString name = "";
+                QStringList extendStr = file->destBaseName().split(".");
+                if (extendStr.length() > 0) {
+                    extendStr.removeAt(0);
+                }
+                QString endStr = extendStr.join(".");
+                if (except.respValue.contains("name")) {
+                    name = except.respValue["name"].toString();
+                    if (endStr != "" && name.endsWith(endStr)) {
+                        file->setDestFileName(name);
+                    } else if ("" != endStr && "" != name) {
+                        file->setDestFileName(name + "." + endStr);
+                    }
+                }
+                if (FileUtils::isFileExsit(file->destUri())) {
+                    handleDuplicate(file);
+                }
                 auto handledDestFileUri = file->resolveDestFileUri(m_dest_dir_uri);
                 auto handledDestFile = wrapGFile(g_file_new_for_uri(handledDestFileUri.toUtf8()));
                 g_file_copy(srcFile.get()->get(),
@@ -259,9 +285,9 @@ retry:
                             &handled_err);
                 break;
             }
-            case BackupAll: {
+            case Peony::BackupAll: {
                 file->setState(FileNode::Handled);
-                file->setErrorResponse(FileOperation::BackupOne);
+                file->setErrorResponse(Peony::BackupOne);
                 auto handledDestFileUri = file->resolveDestFileUri(m_dest_dir_uri);
                 auto handledDestFile = wrapGFile(g_file_new_for_uri(handledDestFileUri.toUtf8()));
                 g_file_copy(srcFile.get()->get(),
@@ -274,10 +300,10 @@ retry:
                 m_prehandle_hash.insert(err->code, BackupOne);
                 break;
             }
-            case Retry: {
+            case Peony::Retry: {
                 goto retry;
             }
-            case Cancel: {
+            case Peony::Cancel: {
                 file->setState(FileNode::Handled);
                 cancel();
                 break;
@@ -288,7 +314,16 @@ retry:
 
             if (handled_err) {
                 auto handledErr = GErrorWrapper::wrapFrom(handled_err);
-                this->errored(srcUri, m_dest_dir_uri, handledErr, true);
+                FileOperationError except;
+                except.srcUri = srcUri;
+                except.destDirUri = m_dest_dir_uri;
+                except.isCritical = true;
+                except.title = tr("Move file");
+                except.errorCode = err->code;
+                except.errorType = ET_GIO;
+                except.dlgType = ED_CONFLICT;
+                Q_EMIT errored(except);
+                auto response = except.respCode;
             }
         } else {
             file->setState(FileNode::Handled);
@@ -310,7 +345,7 @@ retry:
                 GFileWrapperPtr srcFile = wrapGFile(g_file_new_for_uri(file->uri().toUtf8().constData()));
                 //try rollbacking
                 switch (file->responseType()) {
-                case Other: {
+                case Peony::Other: {
                     //no error, move dest back to src
                     g_file_move(destFile.get()->get(),
                                 srcFile.get()->get(),
@@ -321,10 +356,10 @@ retry:
                                 nullptr);
                     break;
                 }
-                case IgnoreOne: {
+                case Peony::IgnoreOne: {
                     break;
                 }
-                case OverWriteOne: {
+                case Peony::OverWriteOne: {
                     g_file_copy(destFile.get()->get(),
                                 srcFile.get()->get(),
                                 m_default_copy_flag,
@@ -334,7 +369,7 @@ retry:
                                 nullptr);
                     break;
                 }
-                case BackupOne: {
+                case Peony::BackupOne: {
                     g_file_copy(destFile.get()->get(),
                                 srcFile.get()->get(),
                                 m_default_copy_flag,
@@ -510,14 +545,22 @@ fallback_retry:
                               getCancellable().get()->get(),
                               &err);
         if (err) {
+            FileOperationError except;
             if (err->code == G_IO_ERROR_CANCELLED) {
                 return;
             }
             auto errWrapperPtr = GErrorWrapper::wrapFrom(err);
             int handle_type = prehandle(err);
             if (handle_type == Other) {
-                qDebug()<<"send error";
-                auto typeData = errored(m_current_src_uri, m_current_dest_dir_uri, errWrapperPtr);
+                except.srcUri = m_current_src_uri;
+                except.destDirUri = m_current_dest_dir_uri;
+                except.isCritical = false;
+                except.title = tr("Move file");
+                except.errorCode = err->code;
+                except.errorType = ET_GIO;
+                except.dlgType = ED_CONFLICT;
+                Q_EMIT errored(except);
+                auto typeData = except.respCode;
                 qDebug()<<"get return";
                 handle_type = typeData;
             }
@@ -549,6 +592,24 @@ fallback_retry:
             case BackupOne: {
                 node->setState(FileNode::Handled);
                 node->setErrorResponse(BackupOne);
+                // use custom name
+                QString name = "";
+                QStringList extendStr = node->destBaseName().split(".");
+                if (extendStr.length() > 0) {
+                    extendStr.removeAt(0);
+                }
+                QString endStr = extendStr.join(".");
+                if (except.respValue.contains("name")) {
+                    name = except.respValue["name"].toString();
+                    if (endStr != "" && name.endsWith(endStr)) {
+                        node->setDestFileName(name);
+                    } else if ("" != endStr && "" != name) {
+                        node->setDestFileName(name + "." + endStr);
+                    }
+                }
+                if (FileUtils::isFileExsit(node->destUri())) {
+                    handleDuplicate(node);
+                }
                 //make dir has no backup
                 break;
             }
@@ -595,6 +656,7 @@ fallback_retry:
                     &err);
 
         if (err) {
+            FileOperationError except;
             if (err->code == G_IO_ERROR_CANCELLED) {
                 return;
             }
@@ -602,7 +664,15 @@ fallback_retry:
             int handle_type = prehandle(err);
             if (handle_type == Other) {
                 qDebug()<<"send error";
-                auto typeData = errored(m_current_src_uri, m_current_dest_dir_uri, errWrapperPtr);
+                except.srcUri = m_current_src_uri;
+                except.destDirUri = m_current_dest_dir_uri;
+                except.isCritical = true;
+                except.title = tr("Create file");
+                except.errorCode = err->code;
+                except.errorType = ET_GIO;
+                except.dlgType = ED_CONFLICT;
+                Q_EMIT errored(except);
+                auto typeData = except.respCode;
                 qDebug()<<"get return";
                 handle_type = typeData;
             }
@@ -645,7 +715,24 @@ fallback_retry:
                 break;
             }
             case BackupOne: {
-                handleDuplicate(node);
+                // use custom name
+                QString name = "";
+                QStringList extendStr = node->destBaseName().split(".");
+                if (extendStr.length() > 0) {
+                    extendStr.removeAt(0);
+                }
+                QString endStr = extendStr.join(".");
+                if (except.respValue.contains("name")) {
+                    name = except.respValue["name"].toString();
+                    if (endStr != "" && name.endsWith(endStr)) {
+                        node->setDestFileName(name);
+                    } else if ("" != endStr && "" != name) {
+                        node->setDestFileName(name + "." + endStr);
+                    }
+                }
+                if (FileUtils::isFileExsit(node->destUri())) {
+                    handleDuplicate(node);
+                }
                 auto handledDestFileUri = node->resolveDestFileUri(m_dest_dir_uri);
                 auto handledDestFile = wrapGFile(g_file_new_for_uri(handledDestFileUri.toUtf8()));
                 g_file_copy(sourceFile.get()->get(),
@@ -807,13 +894,16 @@ void FileMoveOperation::run()
     Q_EMIT operationStarted();
 start:
     if (!isValid()) {
-        auto response = errored(nullptr,
-                                nullptr,
-                                GErrorWrapper::wrapFrom(g_error_new(G_IO_ERROR,
-                                        G_IO_ERROR_INVAL,
-                                        tr("Invalid Operation").toUtf8().constData(),
-                                        nullptr)),
-                                true);
+        FileOperationError except;
+        except.errorType = ET_GIO;
+        except.dlgType = ED_WARNING;
+        except.srcUri = nullptr;
+        except.destDirUri = nullptr;
+        except.title = tr("File delete");
+        except.errorCode = G_IO_ERROR_INVAL;
+        except.errorStr = "Invalid Operation";
+        Q_EMIT errored(except);
+        auto response = except.respCode;
         switch (response) {
         case Retry:
             goto start;

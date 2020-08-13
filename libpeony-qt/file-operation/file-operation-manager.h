@@ -37,6 +37,11 @@
 
 #include <QUrl>
 
+// DJ-
+#include "file-operation-error-dialogs.h"
+// DJ-
+
+
 namespace Peony {
 
 class FileOperationInfo;
@@ -88,7 +93,7 @@ public Q_SLOTS:
     void clearHistory();
     void onFilesDeleted(const QStringList &uris);
 
-    int handleError(const QString &srcUri, const QString &destUri, const GErrorWrapperPtr &err, bool critical);
+    void handleError(FileOperationError& error);
 
     /*!
      * \brief registerFileWatcher

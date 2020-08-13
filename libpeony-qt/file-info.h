@@ -91,6 +91,10 @@ public:
         return m_is_virtual;
     }
 
+    QString getFileName() {
+        return m_file_name;
+    }
+
     QString displayName() {
         return m_display_name;
     }
@@ -227,6 +231,7 @@ private:
 
     bool m_is_loaded = false;
 
+    QString m_file_name = nullptr;
     QString m_display_name = nullptr;
     QString m_icon_name = nullptr;
     QString m_symbolic_icon_name = nullptr;

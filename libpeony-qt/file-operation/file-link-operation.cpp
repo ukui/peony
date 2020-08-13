@@ -65,8 +65,17 @@ retry:
     if (err) {
         setHasError(true);
         //forbid response actions except retry and cancel.
-        auto responseType = errored(m_src_uri, m_dest_uri, GErrorWrapper::wrapFrom(err), true);
-        if (responseType == FileOperation::Retry) {
+        FileOperationError except;
+        except.srcUri = m_src_uri;
+        except.destDirUri = m_dest_uri;
+        except.isCritical = true;
+        except.title = tr("Link file");
+        except.errorCode = err->code;
+        except.errorType = ET_GIO;
+        except.dlgType = ED_CONFLICT;
+        Q_EMIT errored(except);
+        auto responseType = except.respCode;
+        if (responseType == Peony::Retry) {
             goto retry;
         }
     }

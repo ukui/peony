@@ -131,10 +131,14 @@ fallback_retry:
                     &err);
         if (err) {
             qDebug()<<err->message;
-            auto responseType = errored(m_uri,
-                                        FileUtils::getFileUri(newFile),
-                                        GErrorWrapper::wrapFrom(err),
-                                        true);
+            FileOperationError except;
+            except.srcUri = m_uri;
+            except.destDirUri = FileUtils::getFileUri(newFile);
+            except.isCritical = true;
+            except.title = tr("Rename file");
+            except.errorCode = err->code;
+            except.errorType = ET_GIO;
+            auto responseType = except.respCode;
             switch (responseType) {
             case Retry:
                 goto fallback_retry;
@@ -156,10 +160,16 @@ retry:
                     nullptr,
                     &err);
         if (err) {
-            auto responseType = errored(m_uri,
-                                        FileUtils::getFileUri(newFile),
-                                        GErrorWrapper::wrapFrom(err),
-                                        true);
+            FileOperationError except;
+            except.srcUri = m_uri;
+            except.destDirUri = FileUtils::getFileUri(newFile);
+            except.isCritical = true;
+            except.title = tr("Rename file");
+            except.errorCode = err->code;
+            except.errorType = ET_GIO;
+            except.dlgType = ED_CONFLICT;
+            Q_EMIT errored(except);
+            auto responseType = except.respCode;
             switch (responseType) {
             case Retry:
                 goto retry;

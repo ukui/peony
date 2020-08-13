@@ -307,7 +307,7 @@ void SideBarFileSystemItem::eject()
     auto target = FileUtils::getTargetUri(m_uri);
     auto drive = VolumeManager::getDriveFromUri(target);
     g_file_eject_mountable_with_operation(file.get()->get(),
-                                          G_MOUNT_UNMOUNT_NONE,
+                                          G_MOUNT_UNMOUNT_FORCE,
                                           nullptr,
                                           nullptr,
                                           GAsyncReadyCallback(eject_cb),

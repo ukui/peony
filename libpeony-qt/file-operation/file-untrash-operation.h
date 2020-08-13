@@ -56,7 +56,7 @@ private:
     QHash<QString, QString> m_restore_hash;
     std::shared_ptr<FileOperationInfo> m_info = nullptr;
 
-    ResponseType m_pre_handler = Invalid;
+    Peony::ExceptionResponse m_pre_handler = Invalid;
 };
 
 }

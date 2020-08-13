@@ -35,7 +35,7 @@ void FileTrashOperation::run()
 {
     Q_EMIT operationStarted();
 
-    ResponseType response = Invalid;
+    Peony::ExceptionResponse response = Invalid;
     for (auto src : m_src_uris) {
         if (isCancelled())
             break;
@@ -46,20 +46,29 @@ retry:
                      getCancellable().get()->get(),
                      &err);
         if (err) {
-            if (response == IgnoreAll) {
+            if (response == Peony::IgnoreAll) {
                 g_error_free(err);
                 continue;
             }
-
-            auto responseData = Q_EMIT errored(src, tr("trash:///"), GErrorWrapper::wrapFrom(err), true);
+            FileOperationError except;
+            except.srcUri = src;
+            except.destDirUri = tr("trash:///");
+            except.isCritical = true;
+            except.title = tr("Trash file");
+            except.errorCode = err->code;
+            except.errorType = ET_GIO;
+            except.dlgType = ED_CONFLICT;
+            Q_EMIT errored(except);
+            auto responseType = except.respCode;
+            auto responseData = responseType;
             switch (responseData) {
-            case Retry:
+            case Peony::Retry:
                 goto retry;
-            case Cancel:
+            case Peony::Cancel:
                 cancel();
                 break;
-            case IgnoreAll:
-                response = IgnoreAll;
+            case Peony::IgnoreAll:
+                response = Peony::IgnoreAll;
                 break;
             default:
                 break;

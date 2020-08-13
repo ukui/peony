@@ -333,8 +333,8 @@ const QList<QAction *> DirectoryViewMenu::constructCreateTemplateActions()
                 QAction *action = new QAction(tmpIcon, qinfo.baseName(), this);
                 connect(action, &QAction::triggered, [=]() {
                     CreateTemplateOperation op(m_directory, CreateTemplateOperation::Template, t);
-                    FileOperationErrorDialog dlg;
-                    connect(&op, &CreateTemplateOperation::errored, &dlg, &FileOperationErrorDialog::handleError);
+                    Peony::FileOperationErrorDialogConflict dlg;
+                    connect(&op, &Peony::FileOperation::errored, &dlg, &Peony::FileOperationErrorDialogConflict::handle);
                     op.run();
                     auto target = op.target();
                     m_uris_to_edit<<target;
@@ -352,8 +352,8 @@ const QList<QAction *> DirectoryViewMenu::constructCreateTemplateActions()
         connect(actions.last(), &QAction::triggered, [=]() {
             //FileOperationUtils::create(m_directory);
             CreateTemplateOperation op(m_directory);
-            FileOperationErrorDialog dlg;
-            connect(&op, &CreateTemplateOperation::errored, &dlg, &FileOperationErrorDialog::handleError);
+            Peony::FileOperationErrorDialogConflict dlg;
+            connect(&op, &Peony::FileOperation::errored, &dlg, &Peony::FileOperationErrorDialogConflict::handle);
             op.run();
             auto targetUri = op.target();
             qDebug()<<"target:"<<targetUri;
@@ -364,8 +364,8 @@ const QList<QAction *> DirectoryViewMenu::constructCreateTemplateActions()
         connect(actions.last(), &QAction::triggered, [=]() {
             //FileOperationUtils::create(m_directory, nullptr, CreateTemplateOperation::EmptyFolder);
             CreateTemplateOperation op(m_directory, CreateTemplateOperation::EmptyFolder, tr("New Folder"));
-            FileOperationErrorDialog dlg;
-            connect(&op, &CreateTemplateOperation::errored, &dlg, &FileOperationErrorDialog::handleError);
+            Peony::FileOperationErrorDialogConflict dlg;
+            connect(&op, &Peony::FileOperation::errored, &dlg, &Peony::FileOperationErrorDialogConflict::handle);
             op.run();
             auto targetUri = op.target();
             qDebug()<<"target:"<<targetUri;
