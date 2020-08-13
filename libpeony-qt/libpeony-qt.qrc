@@ -3,7 +3,5 @@
         <file>data/libpeony-qt-light.qss</file>
         <file>data/libpeony-qt-dark.qss</file>
         <file>data/libpeony-qt-styled.qss</file>
-        <file>data/file-replace.png</file>
-        <file>data/file-ignore.png</file>
     </qresource>
 </RCC>
