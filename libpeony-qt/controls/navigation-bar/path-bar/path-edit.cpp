@@ -26,6 +26,7 @@
 
 #include <QKeyEvent>
 #include <QAction>
+#include <QUrl>
 
 #include <QDebug>
 
@@ -67,7 +68,7 @@ PathEdit::PathEdit(QWidget *parent) : QLineEdit(parent)
 void PathEdit::setUri(const QString &uri)
 {
     m_last_uri = uri;
-    setText(uri);
+    setText(QUrl(m_last_uri).toString());
 }
 
 void PathEdit::focusOutEvent(QFocusEvent *e)
