@@ -167,6 +167,19 @@ void FileLaunchManager::openAsync(const QString &uri, bool forceWithArg, bool sk
     action->deleteLater();
 }
 
+void FileLaunchManager::openAsync(const QStringList &files, bool forceWithArg, bool skipDialog)
+{
+    QString tmp = files.at(0);
+    auto targetUri = FileUtils::getTargetUri(tmp);
+    if (!targetUri.isNull()) {
+        tmp = targetUri;
+        qDebug()<<"open async"<<targetUri;
+    }
+    auto action = getDefaultAction(tmp);
+    action->lauchFilesAsync(files, forceWithArg, skipDialog);
+    action->deleteLater();
+}
+
 void FileLaunchManager::setDefaultLauchAction(const QString &uri, FileLaunchAction *action)
 {
     auto info = FileInfo::fromUri(uri, false);
