@@ -169,7 +169,6 @@ retry:
             if (m_pre_handler != Invalid) {
                 type = m_pre_handler;
             } else {
-#if HANDLE_ERR_NEW
                 except.srcUri = uri;
                 except.destDirUri = originUri;
                 except.isCritical = false;
@@ -179,10 +178,6 @@ retry:
                 except.dlgType = ED_CONFLICT;
                 Q_EMIT errored(except);
                 type = except.respCode;
-#else
-                auto responseData = Q_EMIT errored(uri, originUri, GErrorWrapper::wrapFrom(err), false);
-                type = responseData;
-#endif
             }
 
             switch (type) {

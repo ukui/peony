@@ -1,3 +1,24 @@
+/*
+ * Peony-Qt's Library
+ *
+ * Copyright (C) 2019, Tianjin KYLIN Information Technology Co., Ltd.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this library.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * Authors: Jing Ding <dingjing@kylinos.cn>
+ *
+ */
 #include "file-operation-error-dialogs.h"
 
 #include <QPainter>
@@ -118,7 +139,6 @@ Peony::FileOperationErrorDialogConflict::~FileOperationErrorDialogConflict()
     delete m_rename_dialog;
 }
 
-#if HANDLE_ERR_NEW
 void Peony::FileOperationErrorDialogConflict::handle (FileOperationError& error)
 {
     m_error = &error;
@@ -159,18 +179,7 @@ void Peony::FileOperationErrorDialogConflict::handle (FileOperationError& error)
     } else if (QDialog::Rejected == ret) {
         error.respCode = Cancel;
     }
-
-
-
-    qDebug() << "||||||||||||||||||||| return response code: " << error.respCode;
 }
-#else
-// FIXME://DELETE
-int Peony::FileOperationErrorDialogConflict::handleError(const QString &srcUri, const QString &destDirUri, const Peony::GErrorWrapperPtr &err, bool isCritical)
-{
-
-}
-#endif
 
 Peony::FileInformationLabel::FileInformationLabel(QWidget *parent) : QFrame(parent)
 {

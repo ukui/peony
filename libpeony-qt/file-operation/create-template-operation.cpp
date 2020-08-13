@@ -120,7 +120,6 @@ retry_create_empty_file:
                 handleDuplicate(m_target_uri);
                 goto retry_create_empty_file;
             } else {
-#if HANDLE_ERR_NEW
                 FileOperationError except;
                 except.srcUri = m_src_uri;
                 except.dlgType = ED_CONFLICT;
@@ -130,9 +129,6 @@ retry_create_empty_file:
                 except.errorCode = err->code;
                 except.errorType = ET_GIO;
                 Q_EMIT errored(except);
-#else
-                Q_EMIT errored(m_src_uri, m_dest_dir_uri, GErrorWrapper::wrapFrom(err), true);
-#endif
             }
         }
         break;
@@ -150,8 +146,6 @@ retry_create_empty_folder:
                 handleDuplicate(m_target_uri);
                 goto retry_create_empty_folder;
             } else {
-
-#if HANDLE_ERR_NEW
                 FileOperationError except;
                 except.srcUri = m_src_uri;
                 except.dlgType = ED_CONFLICT;
@@ -161,9 +155,6 @@ retry_create_empty_folder:
                 except.errorCode = err->code;
                 except.errorType = ET_GIO;
                 Q_EMIT errored(except);
-#else
-                Q_EMIT errored(m_src_uri, m_dest_dir_uri, GErrorWrapper::wrapFrom(err), true);
-#endif
             }
         }
         break;
@@ -185,7 +176,6 @@ retry_create_template:
                 handleDuplicate(m_target_uri);
                 goto retry_create_template;
             } else {
-#if HANDLE_ERR_NEW
                 FileOperationError except;
                 except.srcUri = m_src_uri;
                 except.dlgType = ED_CONFLICT;
@@ -195,9 +185,6 @@ retry_create_template:
                 except.errorCode = err->code;
                 except.errorType = ET_GIO;
                 Q_EMIT errored(except);
-#else
-                Q_EMIT errored(m_src_uri, m_dest_dir_uri, GErrorWrapper::wrapFrom(err), true);
-#endif
             }
         }
         // change file's modify time and access time after copy templete file;

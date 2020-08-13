@@ -32,8 +32,6 @@
 #include "file-operation-manager.h"
 
 #include "clipboard-utils.h"
-
-#include <syslog.h>
 #include <QProcess>
 #include <QDebug>
 
@@ -184,8 +182,6 @@ fallback_retry:
             auto errWrapperPtr = GErrorWrapper::wrapFrom(err);
             int handle_type = prehandle(err);
             if (handle_type == Other) {
-                qDebug()<<"send error";
-#if HANDLE_ERR_NEW
                 except.errorType = ET_GIO;
                 except.dlgType = ED_CONFLICT;
                 except.srcUri = m_current_src_uri;
@@ -194,11 +190,6 @@ fallback_retry:
                 except.errorCode = err->code;
                 Q_EMIT errored(except);
                 auto typeData = except.respCode;
-                syslog (LOG_ERR, "COPY ret: %d", typeData);
-#else
-                auto typeData = errored(m_current_src_uri, m_current_dest_dir_uri, errWrapperPtr);
-#endif
-                qDebug()<<"get return";
                 handle_type = typeData;
             }
             //handle.
@@ -300,8 +291,6 @@ fallback_retry:
             auto errWrapperPtr = GErrorWrapper::wrapFrom(err);
             int handle_type = prehandle(err);
             if (handle_type == Other) {
-
-#if HANDLE_ERR_NEW
                 except.errorType = ET_GIO;
                 except.dlgType = ED_CONFLICT;
                 except.srcUri = m_current_src_uri;
@@ -310,12 +299,6 @@ fallback_retry:
                 except.errorCode = err->code;
                 Q_EMIT errored(except);
                 auto typeData = except.respCode;
-                syslog (LOG_ERR, "COPY ret: %d", typeData);
-
-#else
-                qDebug()<<"send error";
-                auto typeData = errored(m_current_src_uri, m_current_dest_dir_uri, errWrapperPtr);
-#endif
                 qDebug()<<"get return";
                 handle_type = typeData;
             }

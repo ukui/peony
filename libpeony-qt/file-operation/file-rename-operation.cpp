@@ -131,7 +131,6 @@ fallback_retry:
                     &err);
         if (err) {
             qDebug()<<err->message;
-#if HANDLE_ERR_NEW
             FileOperationError except;
             except.srcUri = m_uri;
             except.destDirUri = FileUtils::getFileUri(newFile);
@@ -140,12 +139,6 @@ fallback_retry:
             except.errorCode = err->code;
             except.errorType = ET_GIO;
             auto responseType = except.respCode;
-#else
-            auto responseType = errored(m_uri,
-                                        FileUtils::getFileUri(newFile),
-                                        GErrorWrapper::wrapFrom(err),
-                                        true);
-#endif
             switch (responseType) {
             case Retry:
                 goto fallback_retry;
@@ -167,8 +160,6 @@ retry:
                     nullptr,
                     &err);
         if (err) {
-
-#if HANDLE_ERR_NEW
             FileOperationError except;
             except.srcUri = m_uri;
             except.destDirUri = FileUtils::getFileUri(newFile);
@@ -179,12 +170,6 @@ retry:
             except.dlgType = ED_CONFLICT;
             Q_EMIT errored(except);
             auto responseType = except.respCode;
-#else
-            auto responseType = errored(m_uri,
-                                        FileUtils::getFileUri(newFile),
-                                        GErrorWrapper::wrapFrom(err),
-                                        true);
-#endif
             switch (responseType) {
             case Retry:
                 goto retry;

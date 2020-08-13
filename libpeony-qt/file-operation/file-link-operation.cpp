@@ -70,8 +70,6 @@ retry:
     if (err) {
         setHasError(true);
         //forbid response actions except retry and cancel.
-
-#if HANDLE_ERR_NEW
         FileOperationError except;
         except.srcUri = m_src_uri;
         except.destDirUri = m_dest_uri;
@@ -82,9 +80,6 @@ retry:
         except.dlgType = ED_CONFLICT;
         Q_EMIT errored(except);
         auto responseType = except.respCode;
-#else
-        auto responseType = errored(m_src_uri, m_dest_uri, GErrorWrapper::wrapFrom(err), true);
-#endif
         if (responseType == Peony::Retry) {
             goto retry;
         }

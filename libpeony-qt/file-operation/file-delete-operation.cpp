@@ -65,7 +65,6 @@ void FileDeleteOperation::deleteRecursively(FileNode *node)
                 return;
             }
             //if delete a file get into error, it might be a critical error.
-#if HANDLE_ERR_NEW
             FileOperationError except;
             except.errorType = ET_GIO;
             except.dlgType = ED_WARNING;
@@ -76,10 +75,6 @@ void FileDeleteOperation::deleteRecursively(FileNode *node)
             except.errorStr = err->message;
             Q_EMIT errored(except);
             auto response = except.respCode;
-#else
-            auto response = errored(node->uri(), nullptr, GErrorWrapper::wrapFrom(err), true);
-#endif
-            qDebug()<<response;
             auto responseType = response;
             if (responseType == Peony::Cancel) {
                 cancel();
@@ -99,7 +94,6 @@ void FileDeleteOperation::deleteRecursively(FileNode *node)
                 return;
             }
             //if delete a file get into error, it might be a critical error.
-#if HANDLE_ERR_NEW
             FileOperationError except;
             except.errorType = ET_GIO;
             except.dlgType = ED_WARNING;
@@ -110,9 +104,6 @@ void FileDeleteOperation::deleteRecursively(FileNode *node)
             except.errorStr = err->message;
             Q_EMIT errored(except);
             auto response = except.respCode;
-#else
-            auto response = errored(node->uri(), nullptr, GErrorWrapper::wrapFrom(err), true);
-#endif
             qDebug()<<response;
             auto responseType = response;
             if (responseType == Peony::Cancel) {

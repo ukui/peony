@@ -50,7 +50,6 @@ retry:
                 g_error_free(err);
                 continue;
             }
-#if HANDLE_ERR_NEW
             FileOperationError except;
             except.srcUri = src;
             except.destDirUri = tr("trash:///");
@@ -62,9 +61,6 @@ retry:
             Q_EMIT errored(except);
             auto responseType = except.respCode;
             auto responseData = responseType;
-#else
-            auto responseData = Q_EMIT errored(src, tr("trash:///"), GErrorWrapper::wrapFrom(err), true);
-#endif
             switch (responseData) {
             case Peony::Retry:
                 goto retry;

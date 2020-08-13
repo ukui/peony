@@ -196,7 +196,6 @@ retry:
             FileOperationError except;
             if (handle_type == Other) {
                 qDebug()<<"send error";
-#if HANDLE_ERR_NEW
                 except.srcUri = srcUri;
                 except.destDirUri = m_dest_dir_uri;
                 except.isCritical = false;
@@ -206,9 +205,6 @@ retry:
                 except.dlgType = ED_CONFLICT;
                 Q_EMIT errored(except);
                 auto responseTypeWrapper = except.respCode;
-#else
-                auto responseTypeWrapper = Q_EMIT errored(srcUri, m_dest_dir_uri, errWrapper);
-#endif
                 qDebug()<<"get return";
                 handle_type = responseTypeWrapper;
                 //block until error has been handled.
@@ -318,8 +314,6 @@ retry:
 
             if (handled_err) {
                 auto handledErr = GErrorWrapper::wrapFrom(handled_err);
-
-#if HANDLE_ERR_NEW
                 FileOperationError except;
                 except.srcUri = srcUri;
                 except.destDirUri = m_dest_dir_uri;
@@ -330,9 +324,6 @@ retry:
                 except.dlgType = ED_CONFLICT;
                 Q_EMIT errored(except);
                 auto response = except.respCode;
-#else
-                this->errored(srcUri, m_dest_dir_uri, handledErr, true);
-#endif
             }
         } else {
             file->setState(FileNode::Handled);
@@ -561,9 +552,6 @@ fallback_retry:
             auto errWrapperPtr = GErrorWrapper::wrapFrom(err);
             int handle_type = prehandle(err);
             if (handle_type == Other) {
-                qDebug()<<"send error";
-
-#if HANDLE_ERR_NEW
                 except.srcUri = m_current_src_uri;
                 except.destDirUri = m_current_dest_dir_uri;
                 except.isCritical = false;
@@ -573,9 +561,6 @@ fallback_retry:
                 except.dlgType = ED_CONFLICT;
                 Q_EMIT errored(except);
                 auto typeData = except.respCode;
-#else
-                auto typeData = errored(m_current_src_uri, m_current_dest_dir_uri, errWrapperPtr);
-#endif
                 qDebug()<<"get return";
                 handle_type = typeData;
             }
@@ -679,7 +664,6 @@ fallback_retry:
             int handle_type = prehandle(err);
             if (handle_type == Other) {
                 qDebug()<<"send error";
-#if HANDLE_ERR_NEW
                 except.srcUri = m_current_src_uri;
                 except.destDirUri = m_current_dest_dir_uri;
                 except.isCritical = true;
@@ -689,9 +673,6 @@ fallback_retry:
                 except.dlgType = ED_CONFLICT;
                 Q_EMIT errored(except);
                 auto typeData = except.respCode;
-#else
-                auto typeData = errored(m_current_src_uri, m_current_dest_dir_uri, errWrapperPtr);
-#endif
                 qDebug()<<"get return";
                 handle_type = typeData;
             }
@@ -913,7 +894,6 @@ void FileMoveOperation::run()
     Q_EMIT operationStarted();
 start:
     if (!isValid()) {
-#if HANDLE_ERR_NEW
         FileOperationError except;
         except.errorType = ET_GIO;
         except.dlgType = ED_WARNING;
@@ -924,15 +904,6 @@ start:
         except.errorStr = "Invalid Operation";
         Q_EMIT errored(except);
         auto response = except.respCode;
-#else
-        auto response = errored(nullptr,
-                                nullptr,
-                                GErrorWrapper::wrapFrom(g_error_new(G_IO_ERROR,
-                                        G_IO_ERROR_INVAL,
-                                        tr("Invalid Operation").toUtf8().constData(),
-                                        nullptr)),
-                                true);
-#endif
         switch (response) {
         case Retry:
             goto start;
