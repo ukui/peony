@@ -68,6 +68,8 @@ private:
     QMap<QString, QToolButton *> m_buttons;
     QToolButton *m_indicator;
     QMenu *m_indicator_menu;
+
+    const int ELIDE_TEXT_LENGTH = 16;
 };
 
 }

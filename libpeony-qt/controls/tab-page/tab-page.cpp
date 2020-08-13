@@ -78,10 +78,16 @@ void TabPage::addPage(const QString &uri)
     container->switchViewType(DirectoryViewFactoryManager2::getInstance()->getDefaultViewId());
     container->getView()->setDirectoryUri(uri);
     container->getView()->beginLocationChange();
+    auto displayName = FileUtils::getFileDisplayName(uri);
+    if (displayName.length() > ELIDE_TEXT_LENGTH)
+    {
+        int  charWidth = fontMetrics().averageCharWidth();
+        displayName = fontMetrics().elidedText(displayName, Qt::ElideRight, ELIDE_TEXT_LENGTH * charWidth);
+    }
 
     addTab(container,
            QIcon::fromTheme(FileUtils::getFileIconName(uri), QIcon::fromTheme("folder")),
-           FileUtils::getFileDisplayName(uri));
+           displayName);
 
     rebindContainer();
 }

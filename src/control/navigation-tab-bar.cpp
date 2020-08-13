@@ -116,6 +116,14 @@ void NavigationTabBar::updateLocation(int index, const QString &uri)
         QString targetDirectory = Peony::SearchVFSUriParser::getSearchUriTargetDirectory(uri);
         displayName = tr("Search \"%1\" in \"%2\"").arg(nameRegexp).arg(targetDirectory);
     }
+
+    //elide text if it is too long
+    if (displayName.length() > ELIDE_TEXT_LENGTH)
+    {
+        int  charWidth = fontMetrics().averageCharWidth();
+        displayName = fontMetrics().elidedText(displayName, Qt::ElideRight, ELIDE_TEXT_LENGTH * charWidth);
+    }
+
     setTabText(index, displayName);
     setTabIcon(index, QIcon::fromTheme(iconName));
     setTabData(index, uri);

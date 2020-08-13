@@ -177,12 +177,14 @@ void LocationBar::addButton(const QString &uri, bool setIcon, bool setMenu)
     button->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
     button->setPopupMode(QToolButton::MenuButtonPopup);
 
+    auto displayName = FileUtils::getFileDisplayName(uri);
     m_buttons.insert(uri, button);
     if (m_current_uri.startsWith("search://")) {
         QString nameRegexp = SearchVFSUriParser::getSearchUriNameRegexp(m_current_uri);
         QString targetDirectory = SearchVFSUriParser::getSearchUriTargetDirectory(m_current_uri);
         button->setIcon(QIcon::fromTheme("edit-find-symbolic"));
-        button->setText(tr("Search \"%1\" in \"%2\"").arg(nameRegexp).arg(targetDirectory));
+        displayName = tr("Search \"%1\" in \"%2\"").arg(nameRegexp).arg(targetDirectory);
+        button->setText(displayName);
         button->setFixedWidth(button->sizeHint().width());
         return;
     }
@@ -208,9 +210,18 @@ void LocationBar::addButton(const QString &uri, bool setIcon, bool setMenu)
             }
             button->setText(text);
         } else {
-            button->setText(FileUtils::getFileDisplayName(uri));
+            button->setText(displayName);
         }
     }
+
+    //if button text is too long, elide it
+    displayName = button->text();
+    if (displayName.length() > ELIDE_TEXT_LENGTH)
+    {
+        int  charWidth = fontMetrics().averageCharWidth();
+        displayName = fontMetrics().elidedText(displayName, Qt::ElideRight, ELIDE_TEXT_LENGTH * charWidth);
+    }
+    button->setText(displayName);
 
     connect(button, &QToolButton::clicked, [=]() {
         //this->setRootUri(uri);
@@ -229,7 +240,13 @@ void LocationBar::addButton(const QString &uri, bool setIcon, bool setMenu)
             for (auto uri : suburis) {
                 QUrl url = uri;
                 QString tmp = uri;
-                QAction *action = new QAction(url.fileName(), this);
+                displayName = url.fileName();
+                if (displayName.length() > ELIDE_TEXT_LENGTH)
+                {
+                    int  charWidth = fontMetrics().averageCharWidth();
+                    displayName = fontMetrics().elidedText(displayName, Qt::ElideRight, ELIDE_TEXT_LENGTH * charWidth);
+                }
+                QAction *action = new QAction(displayName, this);
                 actions<<action;
                 connect(action, &QAction::triggered, [=]() {
                     Q_EMIT groupChangedRequest(tmp);
