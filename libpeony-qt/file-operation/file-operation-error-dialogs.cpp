@@ -109,8 +109,11 @@ Peony::FileOperationErrorDialogConflict::FileOperationErrorDialogConflict(FileOp
                     m_is_backup_all = true;
                 }
             }
+            done (QDialog::Accepted);
+        } else {
+            m_is_backup = false;
+            m_is_backup_all = false;
         }
-        done (QDialog::Accepted);
     });
 
     connect(m_rename_dialog, &FileRenameDialog::customRename, [=](FileRenameDialog::RenameType nameType, QString name) {
