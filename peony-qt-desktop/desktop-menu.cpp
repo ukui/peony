@@ -23,7 +23,7 @@
 #include "desktop-menu.h"
 
 #include "directory-view-plugin-iface.h"
-
+#include "file-info-job.h"
 #include "file-info.h"
 #include "file-utils.h"
 #include "file-launch-action.h"
@@ -46,7 +46,6 @@
 
 #include <QUrl>
 #include <QDir>
-#include <QFileIconProvider>
 
 using namespace Peony;
 
@@ -230,10 +229,39 @@ const QList<QAction *> DesktopMenu::constructCreateTemplateActions()
         QDir templateDir(g_get_user_special_dir(G_USER_DIRECTORY_TEMPLATES));
         auto templates = templateDir.entryList(QDir::AllEntries|QDir::NoDotAndDotDot);
         if (!templates.isEmpty()) {
-            QFileIconProvider p;
             for (auto t : templates) {
-                QFileInfo info(t);
-                QAction *action = new QAction(p.icon(info), info.baseName(), this);
+                QFileInfo qinfo(templateDir, t);
+                GFile *gtk_file = g_file_new_for_path(qinfo.filePath().toUtf8().data());
+                char *uri_str = g_file_get_uri(gtk_file);
+                std::shared_ptr<FileInfo> info = FileInfo::fromUri(uri_str);
+
+                QString mimeType = info->mimeType();
+                if (mimeType.isEmpty()) {
+                    FileInfoJob job(info);
+                    job.querySync();
+                    mimeType = info->mimeType();
+                }
+
+                QIcon tmpIcon;
+                GList *app_infos = g_app_info_get_recommended_for_type(mimeType.toUtf8().constData());
+                GList *l = app_infos;
+                QList<FileLaunchAction *> actions;
+                bool isOnlyUnref = false;
+                while (l) {
+                    auto app_info = static_cast<GAppInfo*>(l->data);
+                    if (!isOnlyUnref) {
+                        GThemedIcon *icon = G_THEMED_ICON(g_app_info_get_icon(app_info));
+                        const char * const * icon_names = g_themed_icon_get_names(icon);
+                        if (icon_names)
+                            tmpIcon = QIcon::fromTheme(*icon_names);
+                        if(!tmpIcon.isNull())
+                            isOnlyUnref = true;
+                    }
+                    g_object_unref(app_infos);
+                    l = l->next;
+                }
+
+                QAction *action = new QAction(tmpIcon, qinfo.baseName(), this);
                 connect(action, &QAction::triggered, [=]() {
                     CreateTemplateOperation op(m_directory, CreateTemplateOperation::Template, t);
                     op.run();
@@ -241,6 +269,8 @@ const QList<QAction *> DesktopMenu::constructCreateTemplateActions()
                     m_uris_to_edit<<target;
                 });
                 subMenu->addAction(action);
+                g_free(uri_str);
+                g_object_unref(gtk_file);
             }
             subMenu->addSeparator();
         }
