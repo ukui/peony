@@ -575,14 +575,14 @@
         <translation>Yeni Dosyaı</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/create-template-operation.cpp" line="129"/>
-        <location filename="../../libpeony-qt/file-operation/create-template-operation.cpp" line="160"/>
-        <location filename="../../libpeony-qt/file-operation/create-template-operation.cpp" line="194"/>
+        <location filename="../../libpeony-qt/file-operation/create-template-operation.cpp" line="128"/>
+        <location filename="../../libpeony-qt/file-operation/create-template-operation.cpp" line="154"/>
+        <location filename="../../libpeony-qt/file-operation/create-template-operation.cpp" line="184"/>
         <source>Create file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/create-template-operation.cpp" line="141"/>
+        <location filename="../../libpeony-qt/file-operation/create-template-operation.cpp" line="137"/>
         <source>NewFolder</source>
         <translation>Yeni Klasör</translation>
     </message>
@@ -996,8 +996,8 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</translation
 <context>
     <name>Peony::FileCopyOperation</name>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-copy-operation.cpp" line="193"/>
-        <location filename="../../libpeony-qt/file-operation/file-copy-operation.cpp" line="309"/>
+        <location filename="../../libpeony-qt/file-operation/file-copy-operation.cpp" line="189"/>
+        <location filename="../../libpeony-qt/file-operation/file-copy-operation.cpp" line="298"/>
         <source>File copy</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1005,8 +1005,8 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</translation
 <context>
     <name>Peony::FileDeleteOperation</name>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-delete-operation.cpp" line="74"/>
-        <location filename="../../libpeony-qt/file-operation/file-delete-operation.cpp" line="108"/>
+        <location filename="../../libpeony-qt/file-operation/file-delete-operation.cpp" line="73"/>
+        <location filename="../../libpeony-qt/file-operation/file-delete-operation.cpp" line="102"/>
         <source>File delete</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1024,17 +1024,17 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</translation
 <context>
     <name>Peony::FileInformationLabel</name>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="276"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="287"/>
         <source>File location:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="277"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="288"/>
         <source>File size:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="277"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="288"/>
         <source>Modify time:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1227,7 +1227,7 @@ Do you want to delete the link file?</source>
         <translation> - Sembolik Bağlantı</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-link-operation.cpp" line="79"/>
+        <location filename="../../libpeony-qt/file-operation/file-link-operation.cpp" line="77"/>
         <source>Link file</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1239,31 +1239,30 @@ Do you want to delete the link file?</source>
         <translation type="vanished">Geçersiz taşıma işlemi, bir dosyanın kendisini taşıyamaz.</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="203"/>
-        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="327"/>
-        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="570"/>
+        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="202"/>
+        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="321"/>
+        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="558"/>
         <source>Move file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="686"/>
+        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="670"/>
         <source>Create file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="907"/>
+        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="888"/>
         <source>Invalid Operation.</source>
         <translation>Geçersiz İşlem.</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="922"/>
+        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="902"/>
         <source>File delete</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="932"/>
         <source>Invalid Operation</source>
-        <translation>Geçersiz İşlem.</translation>
+        <translation type="vanished">Geçersiz İşlem.</translation>
     </message>
 </context>
 <context>
@@ -1351,27 +1350,37 @@ Do you want to delete the link file?</source>
 <context>
     <name>Peony::FileOperationErrorDialogConflict</name>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="23"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="41"/>
+        <source>This location already contains a file with the same name.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="42"/>
+        <source>Please select the file to keep</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="46"/>
         <source>Replace</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="30"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="53"/>
         <source>Ignore</source>
         <translation type="unfinished">Görmezden Gel</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="44"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="67"/>
         <source>Then do the same thing in a similar situation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="48"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="71"/>
         <source>Backup</source>
         <translation type="unfinished">Yedekle</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="52"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="75"/>
         <source>Cancel</source>
         <translation type="unfinished">İptal</translation>
     </message>
@@ -1379,13 +1388,13 @@ Do you want to delete the link file?</source>
 <context>
     <name>Peony::FileOperationErrorDialogWarning</name>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="316"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="327"/>
         <source>OK</source>
         <translation type="unfinished">Tamam</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="343"/>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="351"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="354"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="362"/>
         <source>Please make sure the disk is not full or not is write protected, or file is not being used.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1584,27 +1593,27 @@ Do you want to delete the link file?</source>
 <context>
     <name>Peony::FileRenameDialog</name>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="378"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="389"/>
         <source>Names automatically add serial Numbers (e.g., 1,2,3...)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="381"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="392"/>
         <source>Cancel</source>
         <translation type="unfinished">İptal</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="386"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="397"/>
         <source>New file name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="390"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="401"/>
         <source>Please enter the file name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="392"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="403"/>
         <source>OK</source>
         <translation type="unfinished">Tamam</translation>
     </message>
@@ -1612,8 +1621,8 @@ Do you want to delete the link file?</source>
 <context>
     <name>Peony::FileRenameOperation</name>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-rename-operation.cpp" line="139"/>
-        <location filename="../../libpeony-qt/file-operation/file-rename-operation.cpp" line="176"/>
+        <location filename="../../libpeony-qt/file-operation/file-rename-operation.cpp" line="138"/>
+        <location filename="../../libpeony-qt/file-operation/file-rename-operation.cpp" line="167"/>
         <source>Rename file</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1621,13 +1630,12 @@ Do you want to delete the link file?</source>
 <context>
     <name>Peony::FileTrashOperation</name>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-trash-operation.cpp" line="56"/>
-        <location filename="../../libpeony-qt/file-operation/file-trash-operation.cpp" line="66"/>
+        <location filename="../../libpeony-qt/file-operation/file-trash-operation.cpp" line="55"/>
         <source>trash:///</source>
         <translation>Çöp:///</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-trash-operation.cpp" line="58"/>
+        <location filename="../../libpeony-qt/file-operation/file-trash-operation.cpp" line="57"/>
         <source>Trash file</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1635,7 +1643,7 @@ Do you want to delete the link file?</source>
 <context>
     <name>Peony::FileUntrashOperation</name>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-untrash-operation.cpp" line="176"/>
+        <location filename="../../libpeony-qt/file-operation/file-untrash-operation.cpp" line="175"/>
         <source>Untrash file</source>
         <translation type="unfinished"></translation>
     </message>

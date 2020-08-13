@@ -37,7 +37,9 @@ Peony::FileOperationErrorDialogConflict::FileOperationErrorDialogConflict(FileOp
     m_tip = new QLabel(this);
     m_tip->setTextFormat(Qt::RichText);
     m_tip->setBackgroundRole(QPalette::Link);
-    m_tip->setText("<p>This location already contains a file with the same name.<br/><small>Please select the file to keep</small></p>");
+    m_tip->setText(QString("<p>%1</p><br/><small>%2</small>")
+                   .arg(tr("This location already contains a file with the same name."))
+                   .arg(tr("Please select the file to keep")));
     m_tip->setGeometry(m_margin_lr, m_tip_y, width() - 2 * m_margin_lr, m_tip_height);
 
     m_file_label1 = new FileInformationLabel(this);
