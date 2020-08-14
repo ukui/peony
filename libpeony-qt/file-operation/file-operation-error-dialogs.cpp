@@ -25,6 +25,7 @@
 #include <QMouseEvent>
 #include <QPushButton>
 #include <file-info.h>
+#include <file-info-job.h>
 
 static QPixmap drawSymbolicColoredPixmap (const QPixmap& source);
 
@@ -146,15 +147,18 @@ Peony::FileOperationErrorDialogConflict::~FileOperationErrorDialogConflict()
 void Peony::FileOperationErrorDialogConflict::handle (FileOperationError& error)
 {
     m_error = &error;
-    m_file_label1->setFileSize(FileInfo::fromUri(error.srcUri)->fileSize());
-    m_file_label1->setFileName(FileInfo::fromUri(error.srcUri)->getFileName());
-    m_file_label1->setFileLocation(FileInfo::fromUri(error.srcUri)->displayName());
-    m_file_label1->setFileModifyTime (FileInfo::fromUri(error.srcUri)->modifiedDate());
+    FileInfoJob file(error.srcUri, nullptr);
+    file.querySync();
 
-    m_file_label2->setFileSize(FileInfo::fromUri(error.srcUri)->fileSize());
-    m_file_label2->setFileName(FileInfo::fromUri(error.srcUri)->getFileName());
-    m_file_label2->setFileLocation(FileInfo::fromUri(error.srcUri)->displayName());
-    m_file_label2->setFileModifyTime (FileInfo::fromUri(error.srcUri)->modifiedDate());
+    m_file_label1->setFileSize(file.getInfo()->fileSize());
+    m_file_label1->setFileName(file.getInfo()->displayName());
+    m_file_label1->setFileLocation(file.getInfo()->filePath());
+    m_file_label1->setFileModifyTime (file.getInfo()->modifiedDate());
+
+    m_file_label2->setFileSize(file.getInfo()->fileSize());
+    m_file_label2->setFileName(file.getInfo()->displayName());
+    m_file_label2->setFileLocation(file.getInfo()->filePath());
+    m_file_label2->setFileModifyTime (file.getInfo()->modifiedDate());
 
     error.respCode = Retry;
     int ret = exec();

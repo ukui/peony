@@ -28,9 +28,6 @@
 
 #include "thumbnail-manager.h"
 
-#include <glib.h>
-#include <glib/gprintf.h>
-
 #include <QUrl>
 
 #include <QDebug>
@@ -53,24 +50,10 @@ FileInfo::FileInfo(const QString &uri, QObject *parent) : QObject (parent)
      * this would help me avoid some problem, such as the uri path completion
      * bug in PathBarModel enumeration.
      */
-    GFileInfo* fileInfo = nullptr;
-    GDateTime* modifyTime = nullptr;
-
     m_uri = uri;
     m_file = g_file_new_for_uri(uri.toUtf8().data());
-    fileInfo = g_file_query_info (m_file, "*", G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, nullptr, nullptr);
-
     m_parent = g_file_get_parent(m_file);
-    m_file_name = g_file_get_path(m_file);
     m_is_remote = !g_file_is_native(m_file);
-    m_size = g_file_info_get_size(fileInfo);
-
-    m_modified_time = g_file_info_get_attribute_uint64 (fileInfo, G_FILE_ATTRIBUTE_TIME_MODIFIED);
-    modifyTime = g_date_time_new_from_unix_local (m_modified_time);
-    m_modified_date = g_date_time_format (modifyTime, "%F %H:%M:%S");
-
-    m_file_size = g_format_size(m_size);
-    m_file_name = g_file_get_basename(m_file);
     GFileType type = g_file_query_file_type(m_file, G_FILE_QUERY_INFO_NONE, nullptr);
     switch (type) {
     case G_FILE_TYPE_DIRECTORY:
@@ -84,8 +67,6 @@ FileInfo::FileInfo(const QString &uri, QObject *parent) : QObject (parent)
     default:
         break;
     }
-    g_object_unref(fileInfo);
-    g_date_time_unref(modifyTime);
 }
 
 FileInfo::~FileInfo()
@@ -114,25 +95,12 @@ std::shared_ptr<FileInfo> FileInfo::fromUri(QString uri, bool addToHash)
         return info;
     } else {
         std::shared_ptr<FileInfo> newly_info = std::make_shared<FileInfo>();
-        GFileInfo* fileInfo = nullptr;
-        GDateTime* modifyTime = nullptr;
 
         newly_info->m_uri = uri;
         newly_info->m_file = g_file_new_for_uri(uri.toUtf8().data());
-        fileInfo = g_file_query_info (newly_info->m_file, "*", G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, nullptr, nullptr);
 
         newly_info->m_parent = g_file_get_parent(newly_info->m_file);
-        newly_info->m_display_name = g_file_get_path(newly_info->m_file);
-        newly_info->m_file_name = g_file_get_basename(newly_info->m_file);
         newly_info->m_is_remote = !g_file_is_native(newly_info->m_file);
-        newly_info->m_size = g_file_info_get_size(fileInfo);
-        newly_info->m_file_size = g_format_size(newly_info->m_size);
-
-        newly_info->m_modified_time = g_file_info_get_attribute_uint64 (fileInfo, G_FILE_ATTRIBUTE_TIME_MODIFIED);
-        modifyTime = g_date_time_new_from_unix_local (newly_info->m_modified_time);
-        newly_info->m_modified_date = g_date_time_format (modifyTime, "%F %H:%M:%S");
-
-
         GFileType type = g_file_query_file_type(newly_info->m_file, G_FILE_QUERY_INFO_NONE, nullptr);
         switch (type) {
         case G_FILE_TYPE_DIRECTORY:
@@ -150,9 +118,6 @@ std::shared_ptr<FileInfo> FileInfo::fromUri(QString uri, bool addToHash)
             newly_info = info_manager->insertFileInfo(newly_info);
         }
         info_manager->unlock();
-
-        g_object_unref(fileInfo);
-        g_date_time_unref(modifyTime);
         return newly_info;
     }
 }

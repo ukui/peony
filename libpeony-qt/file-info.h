@@ -91,10 +91,6 @@ public:
         return m_is_virtual;
     }
 
-    QString getFileName() {
-        return m_file_name;
-    }
-
     QString displayName() {
         return m_display_name;
     }
@@ -112,6 +108,10 @@ public:
     }
     QString fileType() {
         return m_file_type;
+    }
+
+    QString filePath() {
+        return m_path;
     }
 
     QString fileSize() {
@@ -231,12 +231,11 @@ private:
 
     bool m_is_loaded = false;
 
-    QString m_file_name = nullptr;
     QString m_display_name = nullptr;
     QString m_icon_name = nullptr;
     QString m_symbolic_icon_name = nullptr;
     QString m_file_id = nullptr;
-
+    QString m_path = nullptr;
     QString m_content_type = nullptr;
     guint64 m_size = 0;
     guint64 m_modified_time = 0;
