@@ -254,20 +254,42 @@ const QList<QAction *> DirectoryViewMenu::constructOpenOpActions()
             connect(l.last(), &QAction::triggered, [=]() {
                 qDebug()<<"triggered";
                 QStringList dirs;
-                QStringList files;
+                QMap<QString, QStringList> fileMap;
+                /**step 1: Categorize files according to type.
+                 * step 2: Open files in batches to avoid loss of asynchronous messages due to program startup.
+                **/
                 for (auto uri : m_selections) {
                     auto info = FileInfo::fromUri(uri);
                     if (info->isDir() || info->isVolume()) {
                         dirs<<uri;
                     } else {
-                        files<<uri;
+                        QString mimeType = info->mimeType();
+                        if (mimeType.isEmpty()) {
+                            FileInfoJob job(info);
+                            job.querySync();
+                            mimeType = info->mimeType();
+                        }
+
+                        QStringList list;
+                        if (fileMap.contains(mimeType)) {
+                            list = fileMap[mimeType];
+                            list << uri;
+                            fileMap.insert(mimeType, list);
+                        } else {
+                            list << uri;
+                            fileMap.insert(mimeType, list);
+                        }
                     }
                 }
                 if (!dirs.isEmpty())
                     m_top_window->addNewTabs(dirs);
-                if (!files.isEmpty()) {
-                    for (auto uri : files) {
-                        FileLaunchManager::openAsync(uri);
+
+                if(!fileMap.empty()) {
+                    QMap<QString, QStringList>::iterator iter = fileMap.begin();
+                    while (iter != fileMap.end())
+                    {
+                        FileLaunchManager::openAsync(iter.value());
+                        iter++;
                     }
                 }
             });

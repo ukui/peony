@@ -329,6 +329,163 @@ void FileLaunchAction::lauchFileAsync(bool forceWithArg, bool skipDialog)
     }
 }
 
+void FileLaunchAction::lauchFilesAsync(const QStringList files, bool forceWithArg, bool skipDialog)
+{
+    if(files.isEmpty())
+        return;
+
+    auto fileInfo = FileInfo::fromUri(m_uri, false);
+    if (fileInfo->isEmptyInfo()) {
+        FileInfoJob j(fileInfo);
+        j.querySync();
+    }
+
+    bool executable = fileInfo->canExecute();
+    bool isAppImage = fileInfo->type() == "application/vnd.appimage";
+    if (isAppImage) {
+        if (executable) {
+            QProcess p;
+            for (auto uri:files) {
+                auto path = ((QUrl) uri).path();
+                QProcess p;
+                p.setProgram(path);
+#if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
+                p.startDetached();
+#else
+                p.startDetached(path);
+#endif
+            }
+            return;
+        }
+    }
+
+    if (executable && !isDesktopFileAction() && !skipDialog) {
+        QMessageBox msg;
+        auto exec = msg.addButton(tr("Execute Directly"), QMessageBox::ButtonRole::ActionRole);
+        auto execTerm = msg.addButton(tr("Execute in Terminal"), QMessageBox::ButtonRole::ActionRole);
+        auto defaultAction = msg.addButton(tr("By Default App"), QMessageBox::ButtonRole::ActionRole);
+        msg.addButton(QMessageBox::Cancel);
+
+        msg.setWindowTitle(tr("Launch Options"));
+        msg.setText(tr("Detected launching an executable file %1, you want?").arg(fileInfo->displayName()));
+        msg.exec();
+        auto button = msg.clickedButton();
+        if (button == exec) {
+            execFile();
+            return;
+        } else if (button == execTerm) {
+            execFileInterm();
+            return;
+        } else if (button == defaultAction) {
+            //skip
+        } else {
+            return;
+        }
+    }
+
+    if (!isValid()) {
+        bool isReadable = fileInfo->canRead();
+        if (!isReadable)
+        {
+            if (fileInfo->isSymbolLink())
+            {
+                auto result = QMessageBox::question(nullptr, tr("Open Link failed"),
+                                      tr("File not exist, do you want to delete the link file?"));
+                if (result == QMessageBox::Yes) {
+                    qDebug() << "Delete unused symbollink.";
+                    QStringList selections;
+                    selections.push_back(m_uri);
+                    FileOperationUtils::trash(selections, true);
+                }
+            }
+            else
+                QMessageBox::critical(nullptr, tr("Open Failed"),
+                                  tr("Can not open %1, Please confirm you have the right authority.").arg(m_uri));
+        }
+        else if (fileInfo->isDesktopFile())
+        {
+            auto result = QMessageBox::question(nullptr, tr("Open App failed"),
+                                  tr("The linked app is changed or uninstalled, so it can not work correctly. \n"
+                                     "Do you want to delete the link file?"));
+            if (result == QMessageBox::Yes) {
+                qDebug() << "Delete unused desktop file";
+                QStringList selections;
+                selections.push_back(m_uri);
+                FileOperationUtils::trash(selections, true);
+            }
+        }
+        else {
+            auto result = QMessageBox::question(nullptr, tr("Error"), tr("Can not get a default application for opening %1, do you want open it with text format?").arg(m_uri));
+            if (result == QMessageBox::Yes) {
+                GAppInfo *text_info = g_app_info_get_default_for_type("text/plain", false);
+                GList *l = nullptr;
+                for (auto uri : files) {
+                    l = g_list_prepend(l, g_strdup(uri.toUtf8().constData()));
+                }
+#if GLIB_CHECK_VERSION(2, 60, 0)
+                g_app_info_launch_uris_async(text_info, l,
+                                             nullptr, nullptr,
+                                             nullptr, nullptr);
+#else
+                g_app_info_launch_uris(text_info, l, nullptr, nullptr);
+#endif
+                g_list_free_full(l, g_free);
+                g_object_unref(text_info);
+            }
+        }
+        return;
+    }
+
+    if (isDesktopFileAction() && !forceWithArg) {
+#if GLIB_CHECK_VERSION(2, 60, 0)
+        g_app_info_launch_uris_async(m_app_info, nullptr,
+                                     nullptr, nullptr,
+                                     nullptr, nullptr);
+#else
+        g_app_info_launch_uris(m_app_info, nullptr, nullptr, nullptr);
+#endif
+    } else {
+        GList *l = nullptr;
+        for (auto uri : files) {
+            l = g_list_prepend(l, g_strdup(uri.toUtf8().constData()));
+        }
+#if GLIB_CHECK_VERSION(2, 60, 0)
+        g_app_info_launch_uris_async(m_app_info, l,
+                                     nullptr, nullptr,
+                                     nullptr, nullptr);
+#else
+        g_app_info_launch_uris(m_app_info, l, nullptr, nullptr);
+#endif
+        g_list_free_full(l, g_free);
+    }
+
+    return;
+    if (isDesktopFileAction() && !forceWithArg) {
+        auto desktop_info = G_DESKTOP_APP_INFO(m_app_info);
+        g_desktop_app_info_launch_uris_as_manager (desktop_info,
+                nullptr,
+                nullptr,
+                G_SPAWN_DEFAULT,
+                nullptr,
+                nullptr,
+                nullptr,
+                nullptr,
+                nullptr);
+    } else {
+#if GLIB_CHECK_VERSION(2, 50, 0)
+        g_app_info_launch_default_for_uri_async(m_uri.toUtf8().constData(),
+                                                nullptr,
+                                                nullptr,
+                                                nullptr,
+                                                nullptr);
+#else
+        g_app_info_launch_default_for_uri(m_uri.toUtf8().constData(),
+                                          nullptr,
+                                          nullptr);
+#endif
+    }
+}
+
 bool FileLaunchAction::isValid()
 {
     return G_IS_APP_INFO(m_app_info);
