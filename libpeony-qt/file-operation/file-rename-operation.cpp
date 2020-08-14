@@ -53,8 +53,7 @@ void FileRenameOperation::run()
     QString destUri;
     Q_EMIT operationStarted();
     auto file = wrapGFile(g_file_new_for_uri(m_uri.toUtf8().constData()));
-    auto info = wrapGFileInfo(g_file_query_info(file.get()->get(),
-                              "*",
+    auto info = wrapGFileInfo(g_file_query_info(file.get()->get(), "*",
                               G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
                               getCancellable().get()->get(),
                               nullptr));
@@ -136,22 +135,78 @@ fallback_retry:
             except.destDirUri = FileUtils::getFileUri(newFile);
             except.isCritical = true;
             except.title = tr("Rename file");
-            except.errorCode = err->code;
             except.errorType = ET_GIO;
-            auto responseType = except.respCode;
-            switch (responseType) {
-            case Retry:
-                goto fallback_retry;
+            except.errorCode = err->code;
+            if (G_IO_ERROR_EXISTS == err->code) {
+                except.dlgType = ED_CONFLICT;
+                auto responseType = except.respCode;
+                switch (responseType) {
+                case Retry:
+                    goto fallback_retry;
+                case Cancel:
+                    cancel();
+                    break;
+                default:
+                    break;
+                }
+            } else {
+                except.dlgType = ED_WARNING;
+                auto responseType = except.respCode;
+                switch (responseType) {
+                case Retry:
+                    goto fallback_retry;
+                case Cancel:
+                    cancel();
+                    break;
+                default:
+                    break;
+                }
+            }
+
+        }
+    } else {
+retry:
+        FileOperationError except;
+        except.srcUri = m_uri;
+        except.destDirUri = FileUtils::getFileUri(newFile);
+        except.isCritical = true;
+        except.errorType = ET_GIO;
+        except.title = tr("Rename file");
+        GError *err = nullptr;
+        if (FileUtils::isFileExsit(g_file_get_uri(newFile.get()->get()))) {
+            except.dlgType = ED_CONFLICT;
+            except.errorCode = G_IO_ERROR_EXISTS;
+            Q_EMIT errored(except);
+            switch (except.respCode) {
+            case BackupOne: {
+                // use custom name
+                QString srcName = FileUtils::getFileBaseName(newFile);
+                QString name = "";
+                QStringList extendStr = srcName.split(".");
+                if (extendStr.length() > 0) {
+                    extendStr.removeAt(0);
+                }
+                QString endStr = extendStr.join(".");
+                if (except.respValue.contains("name")) {
+                    name = except.respValue["name"].toString();
+                    if (endStr != "" && name.endsWith(endStr)) {
+                        newFile = FileUtils::resolveRelativePath(parent, name);
+                    } else if ("" != endStr && "" != name) {
+                        newFile = FileUtils::resolveRelativePath(parent, name + "." + endStr);
+                    }
+                }
+            }
+            case OverWriteOne:
+            case OverWriteAll:
+                g_file_delete(newFile.get()->get(), nullptr, nullptr);
+                break;
             case Cancel:
                 cancel();
-                break;
+                goto cancel;
             default:
                 break;
             }
         }
-    } else {
-retry:
-        GError *err = nullptr;
         g_file_move(file.get()->get(),
                     newFile.get()->get(),
                     m_default_copy_flag,
@@ -160,16 +215,14 @@ retry:
                     nullptr,
                     &err);
         if (err) {
-            FileOperationError except;
-            except.srcUri = m_uri;
-            except.destDirUri = FileUtils::getFileUri(newFile);
-            except.isCritical = true;
-            except.title = tr("Rename file");
-            except.errorCode = err->code;
             except.errorType = ET_GIO;
-            except.dlgType = ED_CONFLICT;
-            Q_EMIT errored(except);
-            auto responseType = except.respCode;
+            except.errorCode = err->code;
+            auto responseType = Invalid;
+            if (G_IO_ERROR_EXISTS != err->code) {
+                except.dlgType = ED_WARNING;
+                Q_EMIT errored(except);
+                responseType = except.respCode;
+            }
             switch (responseType) {
             case Retry:
                 goto retry;
@@ -182,6 +235,7 @@ retry:
         }
     }
 
+cancel:
     if (!isCancelled()) {
         setHasError(false);
         auto string = g_file_get_uri(newFile.get()->get());
@@ -194,3 +248,5 @@ retry:
     Q_EMIT operationFinished();
     //notifyFileWatcherOperationFinished();
 }
+
+

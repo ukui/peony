@@ -169,17 +169,28 @@ retry:
             if (m_pre_handler != Invalid) {
                 type = m_pre_handler;
             } else {
-                except.srcUri = uri;
-                except.destDirUri = originUri;
-                except.isCritical = false;
-                except.title = tr("Untrash file");
-                except.errorCode = err->code;
-                except.errorType = ET_GIO;
-                except.dlgType = ED_CONFLICT;
-                Q_EMIT errored(except);
-                type = except.respCode;
+                if (G_IO_ERROR_EXISTS == err->code) {
+                    except.srcUri = uri;
+                    except.destDirUri = originUri;
+                    except.isCritical = false;
+                    except.title = tr("Untrash file");
+                    except.errorCode = err->code;
+                    except.errorType = ET_GIO;
+                    except.dlgType = ED_CONFLICT;
+                    Q_EMIT errored(except);
+                    type = except.respCode;
+                } else {
+                    except.srcUri = uri;
+                    except.destDirUri = originUri;
+                    except.isCritical = false;
+                    except.title = tr("Untrash file");
+                    except.errorCode = err->code;
+                    except.errorType = ET_GIO;
+                    except.dlgType = ED_WARNING;
+                    Q_EMIT errored(except);
+                    type = except.respCode;
+                }
             }
-
             switch (type) {
             case Retry:
                 goto retry;

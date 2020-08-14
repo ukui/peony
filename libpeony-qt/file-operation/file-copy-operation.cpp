@@ -184,15 +184,27 @@ fallback_retry:
             auto errWrapperPtr = GErrorWrapper::wrapFrom(err);
             int handle_type = prehandle(err);
             if (handle_type == Other) {
-                except.errorType = ET_GIO;
-                except.dlgType = ED_CONFLICT;
-                except.srcUri = m_current_src_uri;
-                except.destDirUri = m_current_dest_dir_uri;
-                except.title = tr("File copy");
-                except.errorCode = err->code;
-                Q_EMIT errored(except);
-                auto typeData = except.respCode;
-                handle_type = typeData;
+                if (G_IO_ERROR_EXISTS == err->code) {
+                    except.errorType = ET_GIO;
+                    except.dlgType = ED_CONFLICT;
+                    except.srcUri = m_current_src_uri;
+                    except.destDirUri = m_current_dest_dir_uri;
+                    except.title = tr("File copy");
+                    except.errorCode = err->code;
+                    Q_EMIT errored(except);
+                    auto typeData = except.respCode;
+                    handle_type = typeData;
+                } else {
+                    except.errorType = ET_GIO;
+                    except.dlgType = ED_WARNING;
+                    except.srcUri = m_current_src_uri;
+                    except.destDirUri = m_current_dest_dir_uri;
+                    except.title = tr("File copy");
+                    except.errorCode = err->code;
+                    Q_EMIT errored(except);
+                    auto typeData = except.respCode;
+                    handle_type = typeData;
+                }
             }
             //handle.
             switch (handle_type) {
@@ -295,17 +307,26 @@ fallback_retry:
             }
             auto errWrapperPtr = GErrorWrapper::wrapFrom(err);
             int handle_type = prehandle(err);
+            except.errorType = ET_GIO;
+            except.title = tr("File copy");
+            except.srcUri = m_current_src_uri;
+            except.errorCode = err->code;
+            except.errorStr = err->message;
+            except.destDirUri = m_current_dest_dir_uri;
             if (handle_type == Other) {
-                except.errorType = ET_GIO;
-                except.dlgType = ED_CONFLICT;
-                except.srcUri = m_current_src_uri;
-                except.destDirUri = m_current_dest_dir_uri;
-                except.title = tr("File copy");
-                except.errorCode = err->code;
-                Q_EMIT errored(except);
-                auto typeData = except.respCode;
-                qDebug()<<"get return";
-                handle_type = typeData;
+                if (G_IO_ERROR_EXISTS == err->code) {
+                    except.dlgType = ED_CONFLICT;
+                    Q_EMIT errored(except);
+                    auto typeData = except.respCode;
+                    qDebug()<<"get return";
+                    handle_type = typeData;
+                } else {
+                    except.dlgType = ED_WARNING;
+                    Q_EMIT errored(except);
+                    auto typeData = except.respCode;
+                    qDebug()<<"get return";
+                    handle_type = typeData;
+                }
             }
             //handle.
             switch (handle_type) {

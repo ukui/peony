@@ -65,23 +65,14 @@ class PEONYCORESHARED_EXPORT FileOperation : public QObject, public QRunnable
     Q_OBJECT
 
 public:
-//    enum ResponseType {
-//        Invalid,
-//        IgnoreOne,
-//        IgnoreAll,
-//        OverWriteOne,
-//        OverWriteAll,
-//        BackupOne,
-//        BackupAll,
-//        Rename,
-//        Retry,
-//        Cancel,
-//        Other
-//    };
-
     explicit FileOperation(QObject *parent = nullptr);
     ~FileOperation();
     virtual void run();
+
+    /*!
+     * \brief An action performed before a file operation, such as detecting if a file is in conflict
+     */
+    virtual void prepare ();
 
     void setHasError(bool hasError = true) {
         m_has_error = hasError;

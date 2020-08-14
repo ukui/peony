@@ -114,15 +114,15 @@ retry_create_empty_file:
         GError *err = nullptr;
         g_file_create(wrapGFile(g_file_new_for_uri(m_target_uri.toUtf8())).get()->get(), G_FILE_CREATE_NONE, nullptr, &err);
         if (err) {
+            FileOperationError except;
             // todo: Allow user naming
             if (err->code == G_IO_ERROR_EXISTS) {
                 g_error_free(err);
                 handleDuplicate(m_target_uri);
                 goto retry_create_empty_file;
             } else {
-                FileOperationError except;
                 except.srcUri = m_src_uri;
-                except.dlgType = ED_CONFLICT;
+                except.dlgType = ED_WARNING;
                 except.destDirUri = m_dest_dir_uri;
                 except.isCritical = true;
                 except.title = tr("Create file");
@@ -141,6 +141,7 @@ retry_create_empty_folder:
                               nullptr,
                               &err);
         if (err) {
+            // todo: Allow user naming
             if (err->code == G_IO_ERROR_EXISTS) {
                 g_error_free(err);
                 handleDuplicate(m_target_uri);
@@ -148,7 +149,7 @@ retry_create_empty_folder:
             } else {
                 FileOperationError except;
                 except.srcUri = m_src_uri;
-                except.dlgType = ED_CONFLICT;
+                except.dlgType = ED_WARNING;
                 except.destDirUri = m_dest_dir_uri;
                 except.isCritical = true;
                 except.title = tr("Create file");
@@ -178,7 +179,7 @@ retry_create_template:
             } else {
                 FileOperationError except;
                 except.srcUri = m_src_uri;
-                except.dlgType = ED_CONFLICT;
+                except.dlgType = ED_WARNING;
                 except.destDirUri = m_dest_dir_uri;
                 except.isCritical = true;
                 except.title = tr("Create file");

@@ -42,6 +42,11 @@ void FileOperation::run()
 
 }
 
+void FileOperation::prepare()
+{
+
+}
+
 void FileOperation::cancel()
 {
     g_cancellable_cancel(m_cancellable_wrapper.get()->get());

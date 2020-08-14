@@ -51,27 +51,52 @@ retry:
                 continue;
             }
             FileOperationError except;
-            except.srcUri = src;
-            except.destDirUri = tr("trash:///");
-            except.isCritical = true;
-            except.title = tr("Trash file");
-            except.errorCode = err->code;
-            except.errorType = ET_GIO;
-            except.dlgType = ED_CONFLICT;
-            Q_EMIT errored(except);
-            auto responseType = except.respCode;
-            auto responseData = responseType;
-            switch (responseData) {
-            case Peony::Retry:
-                goto retry;
-            case Peony::Cancel:
-                cancel();
-                break;
-            case Peony::IgnoreAll:
-                response = Peony::IgnoreAll;
-                break;
-            default:
-                break;
+            if (G_IO_ERROR_EXISTS == err->code) {
+                except.srcUri = src;
+                except.destDirUri = tr("trash:///");
+                except.isCritical = true;
+                except.title = tr("Trash file");
+                except.errorCode = err->code;
+                except.errorType = ET_GIO;
+                except.dlgType = ED_CONFLICT;
+                Q_EMIT errored(except);
+                auto responseType = except.respCode;
+                auto responseData = responseType;
+                switch (responseData) {
+                case Peony::Retry:
+                    goto retry;
+                case Peony::Cancel:
+                    cancel();
+                    break;
+                case Peony::IgnoreAll:
+                    response = Peony::IgnoreAll;
+                    break;
+                default:
+                    break;
+                }
+            } else {
+                except.srcUri = src;
+                except.destDirUri = tr("trash:///");
+                except.isCritical = true;
+                except.title = tr("Trash file");
+                except.errorCode = err->code;
+                except.errorType = ET_GIO;
+                except.dlgType = ED_WARNING;
+                Q_EMIT errored(except);
+                auto responseType = except.respCode;
+                auto responseData = responseType;
+                switch (responseData) {
+                case Peony::Retry:
+                    goto retry;
+                case Peony::Cancel:
+                    cancel();
+                    break;
+                case Peony::IgnoreAll:
+                    response = Peony::IgnoreAll;
+                    break;
+                default:
+                    break;
+                }
             }
         }
     }

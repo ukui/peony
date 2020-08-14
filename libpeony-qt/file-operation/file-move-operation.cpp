@@ -195,17 +195,28 @@ retry:
             int handle_type = prehandle(err);
             FileOperationError except;
             if (handle_type == Other) {
-                qDebug()<<"send error";
-                except.srcUri = srcUri;
-                except.destDirUri = m_dest_dir_uri;
-                except.isCritical = false;
-                except.title = tr("Move file");
-                except.errorCode = err->code;
-                except.errorType = ET_GIO;
-                except.dlgType = ED_CONFLICT;
-                Q_EMIT errored(except);
-                auto responseTypeWrapper = except.respCode;
-                qDebug()<<"get return";
+                auto responseTypeWrapper = Invalid;
+                if (G_IO_ERROR_EXISTS == err->code) {
+                    except.srcUri = srcUri;
+                    except.destDirUri = m_dest_dir_uri;
+                    except.isCritical = false;
+                    except.title = tr("Move file");
+                    except.errorCode = err->code;
+                    except.errorType = ET_GIO;
+                    except.dlgType = ED_CONFLICT;
+                    Q_EMIT errored(except);
+                    responseTypeWrapper = except.respCode;
+                } else {
+                    except.srcUri = srcUri;
+                    except.destDirUri = m_dest_dir_uri;
+                    except.isCritical = false;
+                    except.title = tr("Move file");
+                    except.errorCode = err->code;
+                    except.errorType = ET_GIO;
+                    except.dlgType = ED_WARNING;
+                    Q_EMIT errored(except);
+                    responseTypeWrapper = except.respCode;
+                }
                 handle_type = responseTypeWrapper;
                 //block until error has been handled.
             }
@@ -315,14 +326,26 @@ retry:
             if (handled_err) {
                 auto handledErr = GErrorWrapper::wrapFrom(handled_err);
                 FileOperationError except;
-                except.srcUri = srcUri;
-                except.destDirUri = m_dest_dir_uri;
-                except.isCritical = true;
-                except.title = tr("Move file");
-                except.errorCode = err->code;
-                except.errorType = ET_GIO;
-                except.dlgType = ED_CONFLICT;
-                Q_EMIT errored(except);
+                if (G_IO_ERROR_EXISTS == handled_err->code) {
+                    except.srcUri = srcUri;
+                    except.destDirUri = m_dest_dir_uri;
+                    except.isCritical = true;
+                    except.title = tr("Move file");
+                    except.errorCode = err->code;
+                    except.errorType = ET_GIO;
+                    except.dlgType = ED_CONFLICT;
+                    Q_EMIT errored(except);
+                } else {
+                    except.srcUri = srcUri;
+                    except.destDirUri = m_dest_dir_uri;
+                    except.isCritical = true;
+                    except.title = tr("Move file");
+                    except.errorCode = err->code;
+                    except.errorType = ET_GIO;
+                    except.dlgType = ED_WARNING;
+                    Q_EMIT errored(except);
+                }
+
                 auto response = except.respCode;
             }
         } else {
@@ -552,16 +575,28 @@ fallback_retry:
             auto errWrapperPtr = GErrorWrapper::wrapFrom(err);
             int handle_type = prehandle(err);
             if (handle_type == Other) {
-                except.srcUri = m_current_src_uri;
-                except.destDirUri = m_current_dest_dir_uri;
-                except.isCritical = false;
-                except.title = tr("Move file");
-                except.errorCode = err->code;
-                except.errorType = ET_GIO;
-                except.dlgType = ED_CONFLICT;
-                Q_EMIT errored(except);
-                auto typeData = except.respCode;
-                qDebug()<<"get return";
+                auto typeData = Invalid;
+                if (G_IO_ERROR_EXISTS == err->code) {
+                    except.srcUri = m_current_src_uri;
+                    except.destDirUri = m_current_dest_dir_uri;
+                    except.isCritical = false;
+                    except.title = tr("Move file");
+                    except.errorCode = err->code;
+                    except.errorType = ET_GIO;
+                    except.dlgType = ED_CONFLICT;
+                    Q_EMIT errored(except);
+                    typeData = except.respCode;
+                } else {
+                    except.srcUri = m_current_src_uri;
+                    except.destDirUri = m_current_dest_dir_uri;
+                    except.isCritical = false;
+                    except.title = tr("Move file");
+                    except.errorCode = err->code;
+                    except.errorType = ET_GIO;
+                    except.dlgType = ED_WARNING;
+                    Q_EMIT errored(except);
+                    typeData = except.respCode;
+                }
                 handle_type = typeData;
             }
             //handle.
@@ -662,18 +697,24 @@ fallback_retry:
             }
             auto errWrapperPtr = GErrorWrapper::wrapFrom(err);
             int handle_type = prehandle(err);
+            except.isCritical = true;
+            except.errorType = ET_GIO;
+            except.errorCode = err->code;
+            except.errorStr = err->message;
+            except.title = tr("Create file");
+            except.srcUri = m_current_src_uri;
+            except.destDirUri = m_current_dest_dir_uri;
             if (handle_type == Other) {
-                qDebug()<<"send error";
-                except.srcUri = m_current_src_uri;
-                except.destDirUri = m_current_dest_dir_uri;
-                except.isCritical = true;
-                except.title = tr("Create file");
-                except.errorCode = err->code;
-                except.errorType = ET_GIO;
-                except.dlgType = ED_CONFLICT;
-                Q_EMIT errored(except);
-                auto typeData = except.respCode;
-                qDebug()<<"get return";
+                auto typeData = Invalid;
+                if (G_IO_ERROR_EXISTS == err->code) {
+                    except.dlgType = ED_CONFLICT;
+                    Q_EMIT errored(except);
+                    typeData = except.respCode;
+                } else {
+                    except.dlgType = ED_WARNING;
+                    Q_EMIT errored(except);
+                    typeData = except.respCode;
+                }
                 handle_type = typeData;
             }
             //handle.
@@ -901,7 +942,7 @@ start:
         except.destDirUri = nullptr;
         except.title = tr("File delete");
         except.errorCode = G_IO_ERROR_INVAL;
-        except.errorStr = "Invalid Operation";
+        except.errorStr = tr("Invalid Operation");
         Q_EMIT errored(except);
         auto response = except.respCode;
         switch (response) {

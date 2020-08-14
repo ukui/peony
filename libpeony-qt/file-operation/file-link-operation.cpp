@@ -67,14 +67,23 @@ retry:
         //forbid response actions except retry and cancel.
         FileOperationError except;
         except.srcUri = m_src_uri;
-        except.destDirUri = m_dest_uri;
-        except.isCritical = true;
-        except.title = tr("Link file");
-        except.errorCode = err->code;
         except.errorType = ET_GIO;
-        except.dlgType = ED_CONFLICT;
-        Q_EMIT errored(except);
-        auto responseType = except.respCode;
+        except.isCritical = true;
+        except.errorStr = err->message;
+        except.errorCode = err->code;
+        except.title = tr("Link file");
+        except.destDirUri = m_dest_uri;
+        auto responseType = Invalid;
+        if (G_IO_ERROR_EXISTS == err->code) {
+            except.dlgType = ED_CONFLICT;
+            Q_EMIT errored(except);
+            responseType = except.respCode;
+        } else {
+            except.dlgType = ED_WARNING;
+            Q_EMIT errored(except);
+            responseType = except.respCode;
+        }
+
         if (responseType == Peony::Retry) {
             goto retry;
         }
