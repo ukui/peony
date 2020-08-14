@@ -68,7 +68,7 @@ PathEdit::PathEdit(QWidget *parent) : QLineEdit(parent)
 void PathEdit::setUri(const QString &uri)
 {
     m_last_uri = uri;
-    setText(QUrl(m_last_uri).toString());
+    setText(QUrl::fromPercentEncoding(m_last_uri.toLocal8Bit()));
 }
 
 void PathEdit::focusOutEvent(QFocusEvent *e)
