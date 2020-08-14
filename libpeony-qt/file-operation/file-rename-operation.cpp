@@ -29,6 +29,62 @@
 
 using namespace Peony;
 
+static QString handleDuplicate(QString name) {
+    QRegExp regExp("\\(\\d+\\)");
+    if (name.contains(regExp)) {
+        int pos = 0;
+        int num = 0;
+        QString tmp;
+        while ((pos = regExp.indexIn(name, pos)) != -1) {
+            tmp = regExp.cap(0).toUtf8();
+            pos += regExp.matchedLength();
+            qDebug()<<"pos"<<pos;
+        }
+        tmp.remove(0,1);
+        tmp.chop(1);
+        num = tmp.toInt();
+
+        num++;
+        name = name.replace(regExp, QString("(%1)").arg(num));
+        return name;
+    } else {
+        if (name.contains(".")) {
+            auto list = name.split(".");
+            if (list.count() <= 1) {
+                return name + "(1)";
+            } else {
+                int pos = list.count() - 1;
+                if (list.last() == "gz" |
+                        list.last() == "xz" |
+                        list.last() == "Z" |
+                        list.last() == "sit" |
+                        list.last() == "bz" |
+                        list.last() == "bz2") {
+                    pos--;
+                }
+                if (pos < 0)
+                    pos = 0;
+                //list.insert(pos, "(1)");
+                auto tmp = list;
+                QStringList suffixList;
+                for (int i = 0; i < list.count() - pos; i++) {
+                    suffixList.prepend(tmp.takeLast());
+                }
+                auto suffix = suffixList.join(".");
+
+                auto basename = tmp.join(".");
+                name = basename + "(1)" + "." + suffix;
+                if (name.endsWith("."))
+                    name.chop(1);
+                return name;
+            }
+        } else {
+            name = name + "(1)";
+            return name;
+        }
+    }
+}
+
 FileRenameOperation::FileRenameOperation(QString uri, QString newName)
 {
     m_uri = uri;
@@ -182,19 +238,29 @@ retry:
                 // use custom name
                 QString srcName = FileUtils::getFileBaseName(newFile);
                 QString name = "";
+                QString endStr = "";
                 QStringList extendStr = srcName.split(".");
                 if (extendStr.length() > 0) {
                     extendStr.removeAt(0);
                 }
-                QString endStr = extendStr.join(".");
+                endStr = extendStr.join(".");
+
                 if (except.respValue.contains("name")) {
                     name = except.respValue["name"].toString();
                     if (endStr != "" && name.endsWith(endStr)) {
                         newFile = FileUtils::resolveRelativePath(parent, name);
                     } else if ("" != endStr && "" != name) {
                         newFile = FileUtils::resolveRelativePath(parent, name + "." + endStr);
+                    } else if ("" == endStr) {
+                        newFile = FileUtils::resolveRelativePath(parent, name);
                     }
                 }
+            }
+                break;
+            case BackupAll: {
+                QString fileUri = handleDuplicate(FileUtils::getFileUri(newFile));
+                newFile = FileUtils::resolveRelativePath(parent, FileUtils::getUriBaseName(fileUri));
+                break;
             }
             case OverWriteOne:
             case OverWriteAll:
@@ -247,6 +313,24 @@ cancel:
 
     Q_EMIT operationFinished();
     //notifyFileWatcherOperationFinished();
+}
+
+void FileRenameOperation::prepare()
+{
+    FileOperationError except;
+    except.errorType = ET_GIO;
+    except.errorCode = G_IO_ERROR_EXISTS;
+    except.title = tr("Rename file");
+    auto file = wrapGFile(g_file_new_for_uri(m_uri.toUtf8().constData()));
+    auto parent = FileUtils::getFileParent(file);
+    auto newFile = FileUtils::resolveRelativePath(parent, m_new_name);
+
+//    while (FileUtils::isFileExsit(FileUtils::getFileUri(newFile))) {
+//        except.srcUri = m_uri;
+//        except.destDirUri = FileUtils::getFileUri(file);
+//        except.isCritical = true;
+//    }
+    Q_EMIT errored(except);
 }
 
 

@@ -162,7 +162,7 @@ retry_create_empty_folder:
     }
     case Template: {
 retry_create_template:
-        qDebug()<<"create tmp";
+        qDebug() << "create tmp";
         GError *err = nullptr;
         g_file_copy(wrapGFile(g_file_new_for_uri(m_src_uri.toUtf8())).get()->get(),
                     wrapGFile(g_file_new_for_uri(m_target_uri.toUtf8())).get()->get(),
