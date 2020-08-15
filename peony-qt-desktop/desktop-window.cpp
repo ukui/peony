@@ -209,13 +209,21 @@ void DesktopWindow::initGSettings() {
         if (key == "pictureFilename") {
             auto bg_path = m_bg_settings->get("pictureFilename").toString();
             if (!QFile::exists(bg_path)) {
-                // use pure color;
-                auto colorString = m_bg_settings->get("primary-color").toString();
-                auto color = QColor(colorString);
-                qDebug() << colorString;
-                this->setBg(color);
-                m_current_bg_path = "";
-            } else {
+                QString path = "/usr/share/backgrounds/default.jpg";
+                bool success = m_bg_settings->trySet("pictureFilename", path);
+                if (! success)
+                {
+                    // use pure color;
+                    auto colorString = m_bg_settings->get("primary-color").toString();
+                    auto color = QColor(colorString);
+                    qDebug() << colorString;
+                    this->setBg(color);
+                    m_current_bg_path = "";
+                }
+                else
+                    m_current_bg_path = "file://" + path;
+            }
+            else {
                 if (m_current_bg_path == bg_path)
                     return;
                 this->setBg(bg_path);

@@ -36,6 +36,6 @@ HEADERS += \
         directory-view-extensions-plugin-test_global.h 
 
 unix {
-    target.path = /usr/lib/peony-qt-extensions
+    target.path = $$[QT_INSTALL_LIBS]/peony-extensions
     INSTALLS += target
 }

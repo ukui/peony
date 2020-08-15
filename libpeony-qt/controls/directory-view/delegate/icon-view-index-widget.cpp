@@ -270,13 +270,14 @@ void IconViewIndexWidget::mousePressEvent(QMouseEvent *e)
 void IconViewIndexWidget::mouseMoveEvent(QMouseEvent *e)
 {
     QWidget::mouseMoveEvent(e);
-    m_is_dragging = true;
+    //comment to fix click selected file name unselect file, when file has long name
+    //m_is_dragging = true;
 }
 
 void IconViewIndexWidget::mouseReleaseEvent(QMouseEvent *e)
 {
     QWidget::mouseReleaseEvent(e);
-    m_is_dragging = false;
+    //m_is_dragging = false;
 }
 
 void IconViewIndexWidget::mouseDoubleClickEvent(QMouseEvent *event)

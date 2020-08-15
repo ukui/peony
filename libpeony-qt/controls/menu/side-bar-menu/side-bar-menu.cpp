@@ -149,7 +149,7 @@ const QList<QAction *> SideBarMenu::constructFileSystemItemActions()
      *  if can not format, will have prompt
      */
 
-      if(info->isVolume()){
+      if(info->isVolume() && info->canUnmount()){
           l<<addAction(QIcon::fromTheme("preview-file"), tr("format"), [=]() {
           Format_Dialog *fd  = new Format_Dialog(m_uri,m_item);
           fd->show();

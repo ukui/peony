@@ -93,6 +93,7 @@ static MainWindow *last_resize_window = nullptr;
 
 MainWindow::MainWindow(const QString &uri, QWidget *parent) : QMainWindow(parent)
 {
+    setContextMenuPolicy(Qt::CustomContextMenu);
     installEventFilter(this);
 
     setWindowIcon(QIcon::fromTheme("system-file-manager"));
@@ -552,8 +553,8 @@ void MainWindow::updateTabPageTitle()
 void MainWindow::createFolderOperation()
 {
     Peony::CreateTemplateOperation op(getCurrentUri(), Peony::CreateTemplateOperation::EmptyFolder, tr("New Folder"));
-    Peony::FileOperationErrorDialog dlg;
-    connect(&op, &Peony::FileOperation::errored, &dlg, &Peony::FileOperationErrorDialog::handleError);
+    Peony::FileOperationErrorDialogConflict dlg;
+    connect(&op, &Peony::FileOperation::errored, &dlg, &Peony::FileOperationErrorDialogConflict::handle);
     op.run();
     auto targetUri = op.target();
 

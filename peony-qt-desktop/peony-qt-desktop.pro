@@ -13,6 +13,9 @@ VERSION = 3.0.0
 TARGET = peony-qt-desktop
 TEMPLATE = app
 
+PLUGIN_INSTALL_DIRS = $$[QT_INSTALL_LIBS]/peony-extensions
+DEFINES += PLUGIN_INSTALL_DIRS='\\"$${PLUGIN_INSTALL_DIRS}\\"'
+
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which has been marked as deprecated (the exact warnings
 # depend on your compiler). Please consult the documentation of the

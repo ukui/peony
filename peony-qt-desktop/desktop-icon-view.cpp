@@ -698,8 +698,9 @@ void DesktopIconView::setSortOrder(int sortOrder)
 void DesktopIconView::editUri(const QString &uri)
 {
     clearAllIndexWidgets();
+    auto origin = FileUtils::getOriginalUri(uri);
     QTimer::singleShot(100, this, [=]() {
-        edit(m_proxy_model->mapFromSource(m_model->indexFromUri(uri)));
+        edit(m_proxy_model->mapFromSource(m_model->indexFromUri(origin)));
     });
 }
 
@@ -1084,17 +1085,27 @@ void DesktopIconView::dropEvent(QDropEvent *e)
         m_ctrl_key_pressed = false;
 
     auto action = m_ctrl_key_pressed ? Qt::CopyAction : Qt::MoveAction;
-    qDebug() << "dropEvent" <<action;
-    if (this == e->source() && !m_ctrl_key_pressed) {
-
+    qDebug() << "DesktopIconView dropEvent" <<action;
+    if (this == e->source() && !m_ctrl_key_pressed)
+    {
         auto index = indexAt(e->pos());
+        qDebug() <<"DesktopIconView index:" <<index <<index.isValid();
+        bool bmoved = false;
         if (index.isValid()) {
             auto info = FileInfo::fromUri(index.data(Qt::UserRole).toString());
             if (!info->isDir())
                 return;
+            bmoved = true;
         }
 
-        QListView::dropEvent(e);
+        if (bmoved)
+        {
+            //move file to desktop folder
+            qDebug() << "DesktopIconView move file to folder";
+            m_model->dropMimeData(e->mimeData(), action, -1, -1, this->indexAt(e->pos()));
+        }
+        else
+            QListView::dropEvent(e);
 
         QHash<QModelIndex, QRect> currentIndexesRects;
         for (int i = 0; i < m_proxy_model->rowCount(); i++) {

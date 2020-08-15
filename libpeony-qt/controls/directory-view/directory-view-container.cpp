@@ -284,6 +284,9 @@ void DirectoryViewContainer::switchViewType(const QString &viewId)
     view->bindModel(m_model, m_proxy_model);
     //view->setProxy(m_proxy);
 
+    //fix go to root path issue after refresh
+    view->setDirectoryUri(getCurrentUri());
+
     view->setSortType(sortType);
     view->setSortOrder(sortOrder);
 

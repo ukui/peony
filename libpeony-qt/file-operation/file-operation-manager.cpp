@@ -25,6 +25,7 @@
 
 #include "global-settings.h"
 
+#include <syslog.h>
 #include <QMessageBox>
 #include <QApplication>
 #include <QTimer>
@@ -181,9 +182,7 @@ void FileOperationManager::startOperation(FileOperation *operation, bool addToHi
    operation->connect(operation, &FileOperation::errored, [=]() {
        operation->setHasError(true);
    });
-
    operation->connect(operation, &FileOperation::errored, this, &FileOperationManager::handleError, Qt::BlockingQueuedConnection);
-
    operation->connect(operation, &FileOperation::operationFinished, this, [=](){
        if (operation->hasError()) {
            this->clearHistory();
@@ -222,7 +221,6 @@ void FileOperationManager::startOperation(FileOperation *operation, bool addToHi
         operation->setParent(m_thread_pool);
         m_thread_pool->start(operation);
     }
-    //m_progressbar->showProgress(*proc);
     m_progressbar->showDelay();
 }
 
@@ -336,17 +334,19 @@ void FileOperationManager::onFilesDeleted(const QStringList &uris)
     clearHistory();
 }
 
-int FileOperationManager::handleError(const QString &srcUri,
-        const QString &destUri,
-        const GErrorWrapperPtr &err,
-        bool critical)
+// optimize: Gets Windows should be created conditionally and errors handled so that memory is allocated in the stack space
+void FileOperationManager::handleError(FileOperationError &error)
 {
-    if (srcUri.startsWith("trash://") && err.get()->code() == G_IO_ERROR_PERMISSION_DENIED) {
-        return FileOperation::IgnoreOne;
+    if (error.srcUri.startsWith("trash://") &&
+            error.errorType == ET_GIO && error.errorCode == G_IO_ERROR_PERMISSION_DENIED) {
+        error.respCode = IgnoreOne;
+        return;
     }
-    FileOperationErrorDialog dlg;
 
-    return dlg.handleError(srcUri, destUri, err, critical);
+    // Handle errors according to the error type
+    FileOperationErrorHandler* handle = FileOperationErrorDialogFactory::getDialog(error);
+    handle->handle(error);
+    delete handle;
 }
 
 void FileOperationManager::registerFileWatcher(FileWatcher *watcher)

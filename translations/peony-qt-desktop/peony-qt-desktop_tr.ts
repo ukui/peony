@@ -24,7 +24,7 @@
     <message>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="106"/>
         <source>&amp;Open in new Window</source>
-        <translation>Yeni Pencerede Aç(&amp;N)</translation>
+        <translation>Yeni Pencerede Aç</translation>
     </message>
     <message>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="111"/>
@@ -151,7 +151,7 @@
     <message>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="459"/>
         <source>P&amp;roperties</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Özellikler</translation>
     </message>
     <message>
         <source>Sort Order...</source>

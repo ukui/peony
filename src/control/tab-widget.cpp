@@ -430,8 +430,13 @@ void TabWidget::addNewConditionBar()
     if (index == 0)
     {
         classifyCombox->hide();
-        linkLabel->setFixedWidth(TRASH_BUTTON_WIDTH);
         linkLabel->setText(tr("contains"));
+        //adjust label width to language
+        QLocale locale;
+        if (locale.language() == QLocale::Chinese)
+            linkLabel->setFixedWidth(TRASH_BUTTON_HEIGHT);
+        else
+            linkLabel->setFixedWidth(TRASH_BUTTON_WIDTH);
     }
     else
         inputBox->hide();
@@ -443,8 +448,13 @@ void TabWidget::addNewConditionBar()
         {
             classifyCombox->hide();
             inputBox->show();
-            linkLabel->setFixedWidth(TRASH_BUTTON_WIDTH);
             linkLabel->setText(tr("contains"));
+            //adjust label width to language
+            QLocale locale;
+            if (locale.language() == QLocale::Chinese)
+                linkLabel->setFixedWidth(TRASH_BUTTON_HEIGHT);
+            else
+                linkLabel->setFixedWidth(TRASH_BUTTON_WIDTH);
         }
         else
         {
@@ -466,6 +476,7 @@ void TabWidget::addNewConditionBar()
     m_top_layout->insertLayout(m_top_layout->count()-1, layout);
     m_search_bar_count++;
     updateAdvanceConditions();
+    updateButtons();
 }
 
 void TabWidget::removeConditionBar(int index)
@@ -510,6 +521,7 @@ void TabWidget::removeConditionBar(int index)
     }
     m_search_bar_count--;
     updateAdvanceConditions();
+    updateButtons();
 }
 
 QStringList TabWidget::getCurrentClassify(int rowCount)
@@ -601,6 +613,22 @@ void TabWidget::updateSearchBar(bool showSearch)
 
     if (m_search_bar_count >0)
         updateSearchList();
+
+    if (! showSearch)
+    {
+        //exit advance search, clear search conditions
+        clearConditions();
+        updateFilter();
+    }
+}
+
+void TabWidget::updateButtons()
+{
+    //only one condition, set disabled
+    if (m_search_bar_count ==1)
+        m_remove_button_list[0]->setDisabled(true);
+    else
+        m_remove_button_list[0]->setDisabled(false);
 }
 
 void TabWidget::updateSearchPathButton(const QString &uri)
@@ -659,8 +687,10 @@ void TabWidget::updateSearchList()
         for(int i=0; i<m_search_bar_list.count(); i++)
         {
             m_conditions_list[i]->hide();
+            m_conditions_list[i]->setCurrentIndex(0);
             m_link_label_list[i]->hide();
             m_classify_list[i]->hide();
+            m_classify_list[i]->setCurrentIndex(0);
             m_input_list[i]->hide();
             m_input_list[i]->setText("");
             m_search_bar_list[i]->hide();

@@ -28,6 +28,7 @@
 #include "directory-view-container.h"
 
 #include "menu-plugin-manager.h"
+#include "file-info-job.h"
 #include "file-info.h"
 
 #include "directory-view-factory-manager.h"
@@ -58,7 +59,6 @@
 #include <QFileInfo>
 #include <QDir>
 #include <QStandardPaths>
-#include <QFileIconProvider>
 
 #include <QLocale>
 #include <QStandardPaths>
@@ -189,11 +189,11 @@ const QList<QAction *> DirectoryViewMenu::constructOpenOpActions()
                 //add to bookmark option
                 l<<addAction(QIcon::fromTheme("bookmark-add-symbolic"), tr("Add to bookmark"));
                 connect(l.last(), &QAction::triggered, [=]() {
-                     //qDebug() <<"add to bookmark:" <<info->uri();
-                     auto bookmark = BookMarkManager::getInstance();
-                     if (bookmark->isLoaded()) {
-                         bookmark->addBookMark(info->uri());
-                     }
+                    //qDebug() <<"add to bookmark:" <<info->uri();
+                    auto bookmark = BookMarkManager::getInstance();
+                    if (bookmark->isLoaded()) {
+                        bookmark->addBookMark(info->uri());
+                    }
                 });
 
                 l<<addAction(QIcon::fromTheme("document-open-symbolic"), tr("&Open \"%1\"").arg(displayName));
@@ -285,6 +285,10 @@ const QList<QAction *> DirectoryViewMenu::constructCreateTemplateActions()
         if (m_is_cd) {
             createAction->setEnabled(false);
         }
+        if(m_directory.compare(QString::fromLocal8Bit("trash:///")) == 0)
+        {
+            createAction->setEnabled(false);
+        }
         l<<createAction;
         QMenu *subMenu = new QMenu(this);
         createAction->setMenu(subMenu);
@@ -294,19 +298,50 @@ const QList<QAction *> DirectoryViewMenu::constructCreateTemplateActions()
         QDir templateDir(g_get_user_special_dir(G_USER_DIRECTORY_TEMPLATES));
         auto templates = templateDir.entryList(QDir::AllEntries|QDir::NoDotAndDotDot);
         if (!templates.isEmpty()) {
-            QFileIconProvider p;
             for (auto t : templates) {
-                QFileInfo info(t);
-                QAction *action = new QAction(p.icon(info), info.baseName(), this);
+                QFileInfo qinfo(templateDir, t);
+                GFile *gtk_file = g_file_new_for_path(qinfo.filePath().toUtf8().data());
+                char *uri_str = g_file_get_uri(gtk_file);
+                std::shared_ptr<FileInfo> info = FileInfo::fromUri(uri_str);
+
+                QString mimeType = info->mimeType();
+                if (mimeType.isEmpty()) {
+                    FileInfoJob job(info);
+                    job.querySync();
+                    mimeType = info->mimeType();
+                }
+
+                QIcon tmpIcon;
+                GList *app_infos = g_app_info_get_recommended_for_type(mimeType.toUtf8().constData());
+                GList *l = app_infos;
+                QList<FileLaunchAction *> actions;
+                bool isOnlyUnref = false;
+                while (l) {
+                    auto app_info = static_cast<GAppInfo*>(l->data);
+                    if (!isOnlyUnref) {
+                        GThemedIcon *icon = G_THEMED_ICON(g_app_info_get_icon(app_info));
+                        const char * const * icon_names = g_themed_icon_get_names(icon);
+                        if (icon_names)
+                            tmpIcon = QIcon::fromTheme(*icon_names);
+                        if(!tmpIcon.isNull())
+                            isOnlyUnref = true;
+                    }
+                    g_object_unref(app_infos);
+                    l = l->next;
+                }
+
+                QAction *action = new QAction(tmpIcon, qinfo.baseName(), this);
                 connect(action, &QAction::triggered, [=]() {
                     CreateTemplateOperation op(m_directory, CreateTemplateOperation::Template, t);
-                    FileOperationErrorDialog dlg;
-                    connect(&op, &CreateTemplateOperation::errored, &dlg, &FileOperationErrorDialog::handleError);
+                    Peony::FileOperationErrorDialogConflict dlg;
+                    connect(&op, &Peony::FileOperation::errored, &dlg, &Peony::FileOperationErrorDialogConflict::handle);
                     op.run();
                     auto target = op.target();
                     m_uris_to_edit<<target;
                 });
                 subMenu->addAction(action);
+                g_free(uri_str);
+                g_object_unref(gtk_file);
             }
             subMenu->addSeparator();
         }
@@ -317,8 +352,8 @@ const QList<QAction *> DirectoryViewMenu::constructCreateTemplateActions()
         connect(actions.last(), &QAction::triggered, [=]() {
             //FileOperationUtils::create(m_directory);
             CreateTemplateOperation op(m_directory);
-            FileOperationErrorDialog dlg;
-            connect(&op, &CreateTemplateOperation::errored, &dlg, &FileOperationErrorDialog::handleError);
+            Peony::FileOperationErrorDialogConflict dlg;
+            connect(&op, &Peony::FileOperation::errored, &dlg, &Peony::FileOperationErrorDialogConflict::handle);
             op.run();
             auto targetUri = op.target();
             qDebug()<<"target:"<<targetUri;
@@ -329,8 +364,8 @@ const QList<QAction *> DirectoryViewMenu::constructCreateTemplateActions()
         connect(actions.last(), &QAction::triggered, [=]() {
             //FileOperationUtils::create(m_directory, nullptr, CreateTemplateOperation::EmptyFolder);
             CreateTemplateOperation op(m_directory, CreateTemplateOperation::EmptyFolder, tr("New Folder"));
-            FileOperationErrorDialog dlg;
-            connect(&op, &CreateTemplateOperation::errored, &dlg, &FileOperationErrorDialog::handleError);
+            Peony::FileOperationErrorDialogConflict dlg;
+            connect(&op, &Peony::FileOperation::errored, &dlg, &Peony::FileOperationErrorDialogConflict::handle);
             op.run();
             auto targetUri = op.target();
             qDebug()<<"target:"<<targetUri;
@@ -586,8 +621,8 @@ const QList<QAction *> DirectoryViewMenu::constructTrashActions()
             l.last()->setEnabled(!isTrashEmpty);
             connect(l.last(), &QAction::triggered, [=]() {
                 auto result = QMessageBox::question(nullptr, tr("Delete Permanently"), tr("Are you sure that you want to delete these files? "
-                                                    "Once you start a deletion, the files deleting will never be "
-                                                    "restored again."));
+                                                                                          "Once you start a deletion, the files deleting will never be "
+                                                                                          "restored again."));
                 if (result == QMessageBox::Yes) {
                     auto uris = m_top_window->getCurrentAllFileUris();
                     FileOperationUtils::remove(uris);
@@ -605,8 +640,8 @@ const QList<QAction *> DirectoryViewMenu::constructTrashActions()
             l<<addAction(QIcon::fromTheme("window-close-symbolic"), tr("&Delete"));
             connect(l.last(), &QAction::triggered, [=]() {
                 auto result = QMessageBox::question(nullptr, tr("Delete Permanently"), tr("Are you sure that you want to delete these files? "
-                                                    "Once you start a deletion, the files deleting will never be "
-                                                    "restored again."));
+                                                                                          "Once you start a deletion, the files deleting will never be "
+                                                                                          "restored again."));
                 if (result == QMessageBox::Yes) {
                     FileOperationUtils::remove(m_selections);
                 }

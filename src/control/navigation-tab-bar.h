@@ -65,6 +65,8 @@ private:
 
     QTimer m_drag_timer;
     bool m_start_drag = false;
+
+    const int ELIDE_TEXT_LENGTH = 16;
 };
 
 class TabBarStyle : public QProxyStyle

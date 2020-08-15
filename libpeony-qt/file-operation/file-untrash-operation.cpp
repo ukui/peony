@@ -162,16 +162,35 @@ retry:
         }
 
         if (err) {
+            FileOperationError except;
             this->setHasError(true);
             qDebug()<<"untrash err"<<uri<<originUri<<err->message;
             int type = Invalid;
             if (m_pre_handler != Invalid) {
                 type = m_pre_handler;
             } else {
-                auto responseData = Q_EMIT errored(uri, originUri, GErrorWrapper::wrapFrom(err), false);
-                type = responseData;
+                if (G_IO_ERROR_EXISTS == err->code) {
+                    except.srcUri = uri;
+                    except.destDirUri = originUri;
+                    except.isCritical = false;
+                    except.title = tr("Untrash file");
+                    except.errorCode = err->code;
+                    except.errorType = ET_GIO;
+                    except.dlgType = ED_CONFLICT;
+                    Q_EMIT errored(except);
+                    type = except.respCode;
+                } else {
+                    except.srcUri = uri;
+                    except.destDirUri = originUri;
+                    except.isCritical = false;
+                    except.title = tr("Untrash file");
+                    except.errorCode = err->code;
+                    except.errorType = ET_GIO;
+                    except.dlgType = ED_WARNING;
+                    Q_EMIT errored(except);
+                    type = except.respCode;
+                }
             }
-
             switch (type) {
             case Retry:
                 goto retry;
@@ -198,7 +217,24 @@ retry:
                 m_pre_handler = OverWriteOne;
                 break;
             case BackupOne: {
-                originUri = handleDuplicate(originUri);
+                // use custom name
+                QString name = "";
+                QStringList extendStr = originUri.split(".");
+                if (extendStr.length() > 0) {
+                    extendStr.removeAt(0);
+                }
+                QString endStr = extendStr.join(".");
+                if (except.respValue.contains("name")) {
+                    name = except.respValue["name"].toString();
+                    if (endStr != "" && name.endsWith(endStr)) {
+                        originUri = name;
+                    } else if ("" != endStr && "" != name) {
+                        originUri = name + "." + endStr;
+                    }
+                }
+                if (FileUtils::isFileExsit(originUri)) {
+                    originUri = handleDuplicate(originUri);
+                }
                 destFile = wrapGFile(g_file_new_for_uri(originUri.toUtf8().constData()));
                 goto retry;
             }

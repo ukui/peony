@@ -68,6 +68,8 @@ public:
     void startMonitor();
     void stopMonitor();
 
+    void forceChangeMonitorDirectory(const QString &uri);
+
     const QString currentUri() {return m_uri;}
 
     /*!

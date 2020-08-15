@@ -16,7 +16,6 @@ Build-Depends: debhelper-compat (=12),
                libglib2.0-dev,
                libudisks2-dev,
                libnotify-dev,
-               libgtk2.0-dev,
                libqt5x11extras5-dev,
                libgsettings-qt-dev,
                libpoppler-dev,
@@ -72,7 +71,6 @@ Breaks: peony (<< 2.2.0-1)
 Replaces: peony (<< 2.2.0-1),
           libpeony2
 Recommends: gvfs-backends,
-            qt5-gtk2-platformtheme,
             qt5-gtk-platformtheme
 Description: libraries for Peony components
  Peony is the official file manager for the UKUI desktop. It allows one

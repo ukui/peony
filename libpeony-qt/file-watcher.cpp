@@ -150,6 +150,11 @@ void FileWatcher::stopMonitor()
     }
 }
 
+void FileWatcher::forceChangeMonitorDirectory(const QString &uri)
+{
+    changeMonitorUri(uri);
+}
+
 void FileWatcher::changeMonitorUri(QString uri)
 {
     QString oldUri = m_uri;

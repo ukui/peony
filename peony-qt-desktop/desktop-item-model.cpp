@@ -48,6 +48,8 @@
 
 #include <QTimer>
 
+#include <QMessageBox>
+
 #include <QDebug>
 
 using namespace Peony;
@@ -98,6 +100,10 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
     m_desktop_watcher->setMonitorChildrenChange(true);
     this->connect(m_desktop_watcher.get(), &FileWatcher::fileCreated, [=](const QString &uri) {
         qDebug()<<"desktop file created"<<uri;
+        
+        //refresh the desktop ,let file can be see at once
+        Q_EMIT this->refresh();
+
         if (m_new_file_info_query_queue.contains(uri)) {
             return;
         } else {
@@ -378,9 +384,29 @@ void DesktopItemModel::refresh()
     }
     m_files.clear();
 
+    auto desktopUri = "file://" + QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
+    if (!FileUtils::isFileExsit(desktopUri)) {
+        // try get correct desktop path delay.
+        QTimer::singleShot(1000, this, [=](){
+            if (!FileUtils::isFileExsit(desktopUri)) {
+                endResetModel();
+                Q_EMIT refreshed();
+                refresh();
+            } else {
+                m_enumerator = new FileEnumerator(this);
+                m_enumerator->setAutoDelete();
+                m_enumerator->setEnumerateDirectory(desktopUri);
+                m_enumerator->connect(m_enumerator, &FileEnumerator::enumerateFinished, this, &DesktopItemModel::onEnumerateFinished);
+                m_enumerator->enumerateAsync();
+                endResetModel();
+            }
+        });
+        return;
+    }
+
     m_enumerator = new FileEnumerator(this);
     m_enumerator->setAutoDelete();
-    m_enumerator->setEnumerateDirectory("file://" + QStandardPaths::writableLocation(QStandardPaths::DesktopLocation));
+    m_enumerator->setEnumerateDirectory(desktopUri);
     m_enumerator->connect(m_enumerator, &FileEnumerator::enumerateFinished, this, &DesktopItemModel::onEnumerateFinished);
     m_enumerator->enumerateAsync();
     endResetModel();
@@ -458,27 +484,27 @@ void DesktopItemModel::onEnumerateFinished()
         m_files<<info;
         endInsertRows();
         ThumbnailManager::getInstance()->createThumbnail(info->uri(), m_thumbnail_watcher);
-
-        if (m_files.last() == info) {
-
-            for (auto info : m_files) {
-                auto uri = info->uri();
-                auto view = PeonyDesktopApplication::getIconView();
-                auto pos = view->getFileMetaInfoPos(info->uri());
-                if (pos.x() >= 0) {
-                    view->updateItemPosByUri(info->uri(), pos);
-                } else {
-                    view->ensureItemPosByUri(uri);
-                }
-            }
-
-            Q_EMIT refreshed();
-        }
-        continue;
     }
+    for (auto info : m_files) {
+        auto uri = info->uri();
+        auto view = PeonyDesktopApplication::getIconView();
+        auto pos = view->getFileMetaInfoPos(info->uri());
+        if (pos.x() >= 0) {
+            view->updateItemPosByUri(info->uri(), pos);
+        } else {
+            view->ensureItemPosByUri(uri);
+        }
+    }
+
+    Q_EMIT refreshed();
 
     //qDebug()<<"startMornitor";
     m_trash_watcher->startMonitor();
+    if (m_desktop_watcher->currentUri() != "file://" + QStandardPaths::writableLocation(QStandardPaths::DesktopLocation)) {
+        m_desktop_watcher->stopMonitor();
+        m_desktop_watcher->forceChangeMonitorDirectory("file://" + QStandardPaths::writableLocation(QStandardPaths::DesktopLocation));
+        m_desktop_watcher->setMonitorChildrenChange(true);
+    }
     m_desktop_watcher->startMonitor();
     m_system_app_watcher->startMonitor();
     m_andriod_app_watcher->startMonitor();
@@ -619,15 +645,17 @@ bool DesktopItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action
         FileTrashOperation *trashOp = new FileTrashOperation(srcUris);
         fileOpMgr->startOperation(trashOp, addHistory);
     } else {
-        qDebug() << "dropMimeData:" <<action;
+        qDebug() << "DesktopItemModel dropMimeData:" <<action;
         switch (action) {
         case Qt::MoveAction: {
+            qDebug() << "DesktopItemModel moveOp";
             FileMoveOperation *moveOp = new FileMoveOperation(srcUris, destDirUri);
-            //moveOp->setCopyMove(true);
+            moveOp->setCopyMove(true);
             fileOpMgr->startOperation(moveOp, addHistory);
             break;
         }
         case Qt::CopyAction: {
+            qDebug() << "DesktopItemModel copyOp";
             FileCopyOperation *copyOp = new FileCopyOperation(srcUris, destDirUri);
             fileOpMgr->startOperation(copyOp);
             break;
@@ -645,6 +673,6 @@ bool DesktopItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action
 
 Qt::DropActions DesktopItemModel::supportedDropActions() const
 {
-    return Qt::MoveAction|Qt::CopyAction;
-    //return QAbstractItemModel::supportedDropActions();
+    //return Qt::MoveAction|Qt::CopyAction;
+    return QAbstractItemModel::supportedDropActions();
 }

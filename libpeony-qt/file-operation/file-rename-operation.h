@@ -48,14 +48,13 @@ public:
     explicit FileRenameOperation(QString uri, QString newName);
 
     void run() override;
+    virtual void prepare ()override;
     std::shared_ptr<FileOperationInfo> getOperationInfo() override {
         return m_info;
     }
 
 private:
-    GFileCopyFlags m_default_copy_flag = GFileCopyFlags(G_FILE_COPY_NOFOLLOW_SYMLINKS|
-                                         G_FILE_COPY_ALL_METADATA);
-
+    GFileCopyFlags m_default_copy_flag = GFileCopyFlags(G_FILE_COPY_NOFOLLOW_SYMLINKS | G_FILE_COPY_ALL_METADATA);
     QString m_uri = nullptr;
     QString m_new_name = nullptr;
 

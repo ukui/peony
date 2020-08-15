@@ -14,9 +14,12 @@ TARGET = peony
 TEMPLATE = lib
 
 CONFIG += link_pkgconfig no_keywords c++11 lrelease
-PKGCONFIG += glib-2.0 gio-2.0 gio-unix-2.0 poppler-qt5 gsettings-qt udisks2 gdk-2.0 libnotify
+PKGCONFIG += glib-2.0 gio-2.0 gio-unix-2.0 poppler-qt5 gsettings-qt udisks2 libnotify
 
 DEFINES += PEONYCORE_LIBRARY
+
+PLUGIN_INSTALL_DIRS = $$[QT_INSTALL_LIBS]/peony-extensions
+DEFINES += PLUGIN_INSTALL_DIRS='\\"$${PLUGIN_INSTALL_DIRS}\\"'
 
 QMAKE_CXXFLAGS += -execution-charset:utf-8
 
@@ -40,11 +43,10 @@ DESTDIR += $$PWD
 
 unix {
     target.path = $$[QT_INSTALL_LIBS]
-    #target.path = /usr/lib
     INSTALLS += target
 
     header.path = /usr/include/peony-qt
-    header.files += *.h model/*.h file-operation/*.h vfs/*.h controls/ ../plugin-iface/*.h
+    header.files += *.h model/*.h file-operation/*.h vfs/*.h controls/ ../plugin-iface/*.h convenient-utils/*.h
 #    header.depends = header2
     header.files += development-files/header-files/*
     INSTALLS += header

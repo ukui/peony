@@ -273,8 +273,8 @@ void HeaderBar::openDefaultTerminal()
 
 void HeaderBar::tryOpenAgain()
 {
-    auto url = m_window->getCurrentUri();
-    auto absPath = url.replace("file://", "");
+    QUrl url = m_window->getCurrentUri();
+    auto absPath = url.path();
     qDebug() << "tryOpenAgain url" <<url<<absPath<<terminal_cmd;
     QProcess p;
     p.setProgram(terminal_cmd);

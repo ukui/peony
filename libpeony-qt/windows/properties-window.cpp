@@ -101,6 +101,7 @@ PropertiesWindowTabPagePluginIface *PropertiesWindowPluginManager::getFactory(co
 
 PropertiesWindow::PropertiesWindow(const QStringList &uris, QWidget *parent) : QMainWindow (parent)
 {
+    setContextMenuPolicy(Qt::CustomContextMenu);
     m_uris = uris;
     if (uris.contains("computer:///"))
     {

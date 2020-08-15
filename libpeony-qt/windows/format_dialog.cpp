@@ -48,7 +48,7 @@ Format_Dialog::Format_Dialog(const QString &m_uris,SideBarAbstractItem *m_item,Q
 
        //get the rom size
        char *total_format = g_format_size(total);
-       syslog(LOG_ERR,"total_format is  %s ,in format.cpp ",total_format);
+
 
 
        //add the rom size value into  rom_size combox
@@ -56,7 +56,6 @@ Format_Dialog::Format_Dialog(const QString &m_uris,SideBarAbstractItem *m_item,Q
 
 
        auto mount = VolumeManager::getMountFromUri(targetUri);
-       syslog(LOG_ERR,"mount name is %s",(mount->name()).toUtf8().constData());
        ui->lineEdit_device_name->setText(mount->name());
 
        ui->progressBar_process->setValue(0);
@@ -69,7 +68,6 @@ Format_Dialog::Format_Dialog(const QString &m_uris,SideBarAbstractItem *m_item,Q
 
 void Format_Dialog::colseFormat(bool)
 {
-    syslog(LOG_ERR,"enter close format ...");
 
     char dev_name[256] ={0};
     //get device name
@@ -84,7 +82,6 @@ void Format_Dialog::colseFormat(bool)
 
 void Format_Dialog::acceptFormat(bool)
 {
-    syslog (LOG_ERR, "click ok");
 
     ui->pushButton_ok->setDisabled(TRUE);
     ui->pushButton_close->setDisabled(TRUE);
@@ -107,14 +104,12 @@ void Format_Dialog::acceptFormat(bool)
     fm_item ->unmount();
 
     //get device name
-    QString volname, devName, voldisplayname;
+    QString volname, devName, voldisplayname ,devtype;
 
     FileUtils::queryVolumeInfo(fm_uris, volname, devName, voldisplayname);
     strcpy(dev_name,devName.toUtf8().constData());
 
-    //debug
-    syslog(LOG_ERR,"rom_size is %s,rom_type is %s,rom_name is %s, devName is %s",
-           rom_size,rom_type,rom_name,dev_name);
+    devtype = rom_type;
 
     //do format
     //enter kdisk_format function
@@ -123,7 +118,7 @@ void Format_Dialog::acceptFormat(bool)
     int format_value = 0;
 
     //begin format
-    kdisk_format(dev_name,rom_type,quick_clean?"zero":NULL,rom_name,&format_value);
+    kdisk_format(dev_name,devtype.toLower().toUtf8().constData(),quick_clean?"zero":NULL,rom_name,&format_value);
 
     //begin start my_timer, processbar
     my_time  = new QTimer(this);
@@ -156,19 +151,18 @@ double Format_Dialog::get_format_bytes_done(const gchar * device_name)
         if(jobs!=NULL)
         {
 
-            syslog(LOG_ERR,"jobs!=NULL ...");
             UDisksJob *job =(UDisksJob *)jobs->data;
             if(udisks_job_get_progress_valid (job))
             {
-            double res = udisks_job_get_progress(job);
-            syslog(LOG_ERR,"res is %lf",res);
+                    double res = udisks_job_get_progress(job);
+
                     g_list_foreach (jobs, (GFunc) g_object_unref, NULL);
                     g_list_free (jobs);
 
 
                     return res;
             }
-             syslog(LOG_ERR,"jobs == NULL ...");
+
 
         g_list_foreach (jobs, (GFunc) g_object_unref, NULL);
             g_list_free (jobs);
@@ -199,7 +193,6 @@ void Format_Dialog::formatloop(){
 
     if(pre>=100){
 
-        syslog(LOG_ERR,"ENTER  PRE 100..");
         ui->progressBar_process->setValue(100);
 
         ui->label_process->setText("100%");
@@ -259,19 +252,17 @@ gboolean Format_Dialog::is_iso(const gchar *device_path){
     object = get_object_from_block_device(client,device_path);
     block = udisks_object_get_block(object);
 
-    syslog(LOG_ERR," enter is_iso ....");
-    syslog(LOG_ERR," block type=%s ",udisks_block_get_id_type(block));
 
     if(g_strcmp0(udisks_block_get_id_type(block),"iso9660")==0)
     {
-        syslog(LOG_ERR," enter is_iso  true....");
+
         g_object_unref(object);
         g_object_unref(block);
         g_clear_object(&client);
         return TRUE;
     }
 
-    syslog(LOG_ERR," enter is_iso  false ....");
+
     g_object_unref(object);
     g_object_unref(block);
     g_clear_object(&client);
@@ -296,17 +287,12 @@ gboolean Format_Dialog::is_iso(const gchar *device_path){
 void Format_Dialog::ensure_unused_cb(CreateformatData *data)
 {
 
-    syslog(LOG_ERR,"enter ensure_unused_cb.... ");
-    syslog(LOG_ERR,"device_name is %s ",data->device_name);
-
-    if(is_iso(data->device_name)==FALSE) {
-        syslog(LOG_ERR,"is_iso - > false");
+    if(is_iso(data->device_name)==FALSE) {     
 
         ensure_format_cb (data);
     }
     else {
 
-        syslog(LOG_ERR,"is_iso - > true");
         //ensure_format_disk(data);
     }
 }
@@ -314,7 +300,6 @@ void Format_Dialog::ensure_unused_cb(CreateformatData *data)
 static void createformatfree(CreateformatData *data)
 {
 
-    syslog(LOG_ERR,"enter  createformatfree  ....");
 
     g_object_unref(data->object);
     g_object_unref(data->block);
@@ -330,7 +315,6 @@ static void createformatfree(CreateformatData *data)
 
     g_free(data);
 
-    syslog(LOG_ERR,"end  createformatfree  ....");
 
 }
 
@@ -340,7 +324,6 @@ static void format_cb (GObject *source_object, GAsyncResult *res ,gpointer user_
 
     static   int end_flag = -1;
 
-    syslog(LOG_ERR,"enter  format_cb ....");
 
     CreateformatData *data = (CreateformatData *)user_data;
     GError *error = NULL;
@@ -376,15 +359,12 @@ static void format_cb (GObject *source_object, GAsyncResult *res ,gpointer user_
         data->dl->my_time->stop();
 
         data->dl->format_ok_dialog();
-
         data->dl->close();
 
     }else{
-
-        data->dl->format_err_dialog();
-
         data->dl->my_time->stop();
 
+        data->dl->format_err_dialog();  
         data->dl->close();
     }
 
@@ -412,7 +392,6 @@ void Format_Dialog::format_err_dialog(){
  */
 void Format_Dialog::ensure_format_cb (CreateformatData *data){
 
-    syslog(LOG_ERR,"enter ensure_format_cb ...");
 
     GVariantBuilder options_builder;
 
@@ -499,7 +478,6 @@ UDisksObject *Format_Dialog::get_object_from_block_device (UDisksClient *client,
 void Format_Dialog::kdisk_format(const gchar * device_name,const gchar *format_type,const gchar * erase_type,
                                 const gchar * filesystem_name,int *format_finish){
 
-    syslog(LOG_ERR,"ENTER kdisk_format ...");
 
     CreateformatData *data;
     data = g_new(CreateformatData,1);
