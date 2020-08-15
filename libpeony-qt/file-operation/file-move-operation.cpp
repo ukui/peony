@@ -323,25 +323,19 @@ retry:
                 break;
             }
 
+            except.srcUri = srcUri;
+            except.errorType = ET_GIO;
+            except.errorCode = err->code;
+            except.title = tr("Move file");
+            except.destDirUri = m_dest_dir_uri;
+            except.isCritical = true;
             if (handled_err) {
                 auto handledErr = GErrorWrapper::wrapFrom(handled_err);
                 FileOperationError except;
                 if (G_IO_ERROR_EXISTS == handled_err->code) {
-                    except.srcUri = srcUri;
-                    except.destDirUri = m_dest_dir_uri;
-                    except.isCritical = true;
-                    except.title = tr("Move file");
-                    except.errorCode = err->code;
-                    except.errorType = ET_GIO;
                     except.dlgType = ED_CONFLICT;
                     Q_EMIT errored(except);
                 } else {
-                    except.srcUri = srcUri;
-                    except.destDirUri = m_dest_dir_uri;
-                    except.isCritical = true;
-                    except.title = tr("Move file");
-                    except.errorCode = err->code;
-                    except.errorType = ET_GIO;
                     except.dlgType = ED_WARNING;
                     Q_EMIT errored(except);
                 }
@@ -368,7 +362,7 @@ retry:
                 GFileWrapperPtr srcFile = wrapGFile(g_file_new_for_uri(file->uri().toUtf8().constData()));
                 //try rollbacking
                 switch (file->responseType()) {
-                case Peony::Other: {
+                case Other: {
                     //no error, move dest back to src
                     g_file_move(destFile.get()->get(),
                                 srcFile.get()->get(),
@@ -379,10 +373,10 @@ retry:
                                 nullptr);
                     break;
                 }
-                case Peony::IgnoreOne: {
+                case IgnoreOne: {
                     break;
                 }
-                case Peony::OverWriteOne: {
+                case OverWriteOne: {
                     g_file_copy(destFile.get()->get(),
                                 srcFile.get()->get(),
                                 m_default_copy_flag,
@@ -392,7 +386,7 @@ retry:
                                 nullptr);
                     break;
                 }
-                case Peony::BackupOne: {
+                case BackupOne: {
                     g_file_copy(destFile.get()->get(),
                                 srcFile.get()->get(),
                                 m_default_copy_flag,
@@ -574,25 +568,19 @@ fallback_retry:
             }
             auto errWrapperPtr = GErrorWrapper::wrapFrom(err);
             int handle_type = prehandle(err);
+            except.errorType = ET_GIO;
+            except.title = tr("Move file");
+            except.errorCode = err->code;
+            except.srcUri = m_current_src_uri;
+            except.destDirUri = m_current_dest_dir_uri;
+            except.isCritical = false;
             if (handle_type == Other) {
                 auto typeData = Invalid;
                 if (G_IO_ERROR_EXISTS == err->code) {
-                    except.srcUri = m_current_src_uri;
-                    except.destDirUri = m_current_dest_dir_uri;
-                    except.isCritical = false;
-                    except.title = tr("Move file");
-                    except.errorCode = err->code;
-                    except.errorType = ET_GIO;
                     except.dlgType = ED_CONFLICT;
                     Q_EMIT errored(except);
                     typeData = except.respCode;
                 } else {
-                    except.srcUri = m_current_src_uri;
-                    except.destDirUri = m_current_dest_dir_uri;
-                    except.isCritical = false;
-                    except.title = tr("Move file");
-                    except.errorCode = err->code;
-                    except.errorType = ET_GIO;
                     except.dlgType = ED_WARNING;
                     Q_EMIT errored(except);
                     typeData = except.respCode;

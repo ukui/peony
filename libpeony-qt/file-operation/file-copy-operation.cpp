@@ -183,24 +183,19 @@ fallback_retry:
             }
             auto errWrapperPtr = GErrorWrapper::wrapFrom(err);
             int handle_type = prehandle(err);
+            except.errorType = ET_GIO;
+            except.srcUri = m_current_src_uri;
+            except.destDirUri = m_current_dest_dir_uri;
+            except.title = tr("File copy");
+            except.errorCode = err->code;
             if (handle_type == Other) {
                 if (G_IO_ERROR_EXISTS == err->code) {
-                    except.errorType = ET_GIO;
                     except.dlgType = ED_CONFLICT;
-                    except.srcUri = m_current_src_uri;
-                    except.destDirUri = m_current_dest_dir_uri;
-                    except.title = tr("File copy");
-                    except.errorCode = err->code;
                     Q_EMIT errored(except);
                     auto typeData = except.respCode;
                     handle_type = typeData;
                 } else {
-                    except.errorType = ET_GIO;
                     except.dlgType = ED_WARNING;
-                    except.srcUri = m_current_src_uri;
-                    except.destDirUri = m_current_dest_dir_uri;
-                    except.title = tr("File copy");
-                    except.errorCode = err->code;
                     Q_EMIT errored(except);
                     auto typeData = except.respCode;
                     handle_type = typeData;
@@ -208,30 +203,30 @@ fallback_retry:
             }
             //handle.
             switch (handle_type) {
-            case Peony::IgnoreOne: {
+            case IgnoreOne: {
                 node->setState(FileNode::Unhandled);
                 node->setErrorResponse(IgnoreOne);
                 break;
             }
-            case Peony::IgnoreAll: {
+            case IgnoreAll: {
                 node->setState(FileNode::Unhandled);
                 node->setErrorResponse(IgnoreOne);
                 m_prehandle_hash.insert(err->code, IgnoreOne);
                 break;
             }
-            case Peony::OverWriteOne: {
+            case OverWriteOne: {
                 node->setState(FileNode::Handled);
                 node->setErrorResponse(OverWriteOne);
                 //make dir has no overwrite
                 break;
             }
-            case Peony::OverWriteAll: {
+            case OverWriteAll: {
                 node->setState(FileNode::Handled);
                 node->setErrorResponse(OverWriteOne);
                 m_prehandle_hash.insert(err->code, OverWriteOne);
                 break;
             }
-            case Peony::BackupOne: {
+            case BackupOne: {
                 node->setState(FileNode::Handled);
                 node->setErrorResponse(BackupOne);
                 // use custom name
@@ -254,7 +249,7 @@ fallback_retry:
                 }
                 goto fallback_retry;
             }
-            case Peony::BackupAll: {
+            case BackupAll: {
                 node->setState(FileNode::Handled);
                 node->setErrorResponse(BackupOne);
                 while (FileUtils::isFileExsit(node->resolveDestFileUri(m_dest_dir_uri))) {
@@ -264,10 +259,10 @@ fallback_retry:
                 m_prehandle_hash.insert(err->code, BackupOne);
                 goto fallback_retry;
             }
-            case Peony::Retry: {
+            case Retry: {
                 goto fallback_retry;
             }
-            case Peony::Cancel: {
+            case Cancel: {
                 node->setState(FileNode::Handled);
                 cancel();
                 break;
@@ -330,18 +325,18 @@ fallback_retry:
             }
             //handle.
             switch (handle_type) {
-            case Peony::IgnoreOne: {
+            case IgnoreOne: {
                 node->setState(FileNode::Unhandled);
                 node->setErrorResponse(IgnoreOne);
                 break;
             }
-            case Peony::IgnoreAll: {
+            case IgnoreAll: {
                 node->setState(FileNode::Unhandled);
                 node->setErrorResponse(IgnoreOne);
                 m_prehandle_hash.insert(err->code, IgnoreOne);
                 break;
             }
-            case Peony::OverWriteOne: {
+            case OverWriteOne: {
                 g_file_copy(sourceFile.get()->get(),
                             destFile.get()->get(),
                             GFileCopyFlags(m_default_copy_flag | G_FILE_COPY_OVERWRITE),
@@ -353,7 +348,7 @@ fallback_retry:
                 node->setErrorResponse(OverWriteOne);
                 break;
             }
-            case Peony::OverWriteAll: {
+            case OverWriteAll: {
                 g_file_copy(sourceFile.get()->get(),
                             destFile.get()->get(),
                             GFileCopyFlags(m_default_copy_flag | G_FILE_COPY_OVERWRITE),
@@ -366,7 +361,7 @@ fallback_retry:
                 m_prehandle_hash.insert(err->code, OverWriteOne);
                 break;
             }
-            case Peony::BackupOne: {
+            case BackupOne: {
                 node->setState(FileNode::Handled);
                 node->setErrorResponse(BackupOne);
                 // use custom name
@@ -390,7 +385,7 @@ fallback_retry:
                 }
                 goto fallback_retry;
             }
-            case Peony::BackupAll: {
+            case BackupAll: {
                 node->setState(FileNode::Handled);
                 node->setErrorResponse(BackupOne);
                 while (FileUtils::isFileExsit(node->resolveDestFileUri(m_dest_dir_uri))) {
@@ -399,10 +394,10 @@ fallback_retry:
                 m_prehandle_hash.insert(err->code, BackupOne);
                 goto fallback_retry;
             }
-            case Peony::Retry: {
+            case Retry: {
                 goto fallback_retry;
             }
-            case Peony::Cancel: {
+            case Cancel: {
                 node->setState(FileNode::Handled);
                 cancel();
                 break;
