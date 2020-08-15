@@ -59,6 +59,7 @@ public:
 
     static void openSync(const QString &uri, bool forceWithArg = false, bool skipDialog = true);
     static void openAsync(const QString &uri, bool forceWithArg = false, bool skipDialog = true);
+    static void openAsync(const QStringList &files, bool forceWithArg = false, bool skipDialog = true);
 
 private:
     explicit FileLaunchManager(QObject *parent = nullptr);

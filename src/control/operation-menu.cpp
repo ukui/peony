@@ -29,6 +29,7 @@
 #include <QLabel>
 #include <QToolButton>
 #include <QWidgetAction>
+#include <KWindowSystem>
 
 #include "global-settings.h"
 #include "clipboard-utils.h"
@@ -62,12 +63,18 @@ OperationMenu::OperationMenu(MainWindow *window, QWidget *parent) : QMenu(parent
 //    addSeparator();
 
     auto keepAllow = addAction(tr("Keep Allow"), this, [=](bool checked) {
-        if (checked)
-            m_window->setWindowFlags(Qt::WindowStaysOnTopHint|m_window->windowFlags());
-        else
-            m_window->setWindowFlags(m_window->windowFlags() & ~Qt::WindowStaysOnTopHint);
+//        if (checked)
+//            m_window->setWindowFlags(Qt::WindowStaysOnTopHint|m_window->windowFlags());
+//        else
+//            m_window->setWindowFlags(m_window->windowFlags() & ~Qt::WindowStaysOnTopHint);
 
-        m_window->show();
+//        m_window->show();
+
+        //use kf5 interface to fix set on top has no effect issue
+        if (checked)
+            KWindowSystem::setState(m_window->winId(), KWindowSystem::KeepAbove);
+        else
+            KWindowSystem::clearState(m_window->winId(), KWindowSystem::KeepAbove);
     });
     keepAllow->setCheckable(true);
 

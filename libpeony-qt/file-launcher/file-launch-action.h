@@ -45,6 +45,7 @@ public:
                               GAppInfo *app_info,
                               bool forceWithArg = false,
                               QObject *parent = nullptr);
+
     ~FileLaunchAction() override;
     const QString getUri();
     bool isDesktopFileAction();
@@ -62,6 +63,7 @@ protected:
 public Q_SLOTS:
     void lauchFileSync(bool forceWithArg = false, bool skipDialog = true);
     void lauchFileAsync(bool forceWithArg = false, bool skipDialog = true);
+    void lauchFilesAsync(const QStringList files, bool forceWithArg = false, bool skipDialog = true);
 
 private:
     QString m_uri;

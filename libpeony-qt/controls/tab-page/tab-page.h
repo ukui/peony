@@ -62,6 +62,8 @@ protected:
 
 private:
     QTimer m_double_click_limiter;
+
+    const int ELIDE_TEXT_LENGTH = 16;
 };
 
 }
