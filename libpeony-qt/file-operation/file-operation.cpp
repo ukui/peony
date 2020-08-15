@@ -20,9 +20,10 @@
  *
  */
 
+#include <QApplication>
+
 #include "file-operation.h"
 #include "file-operation-manager.h"
-#include <QApplication>
 
 using namespace Peony;
 
@@ -38,11 +39,6 @@ FileOperation::~FileOperation()
 }
 
 void FileOperation::run()
-{
-
-}
-
-void FileOperation::prepare()
 {
 
 }

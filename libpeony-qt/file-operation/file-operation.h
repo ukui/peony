@@ -23,15 +23,13 @@
 #ifndef FILEOPERATION_H
 #define FILEOPERATION_H
 
+#include <QHash>
 #include <QObject>
+#include <QMetaType>
 #include <QRunnable>
 
 #include "gerror-wrapper.h"
 #include "gobject-template.h"
-
-#include <QMetaType>
-#include <QHash>
-
 #include "peony-core_global.h"
 #include "file-operation-error-handler.h"
 
@@ -68,11 +66,6 @@ public:
     explicit FileOperation(QObject *parent = nullptr);
     ~FileOperation();
     virtual void run();
-
-    /*!
-     * \brief An action performed before a file operation, such as detecting if a file is in conflict
-     */
-    virtual void prepare ();
 
     void setHasError(bool hasError = true) {
         m_has_error = hasError;

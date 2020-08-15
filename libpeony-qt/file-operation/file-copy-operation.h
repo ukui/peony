@@ -53,7 +53,7 @@ public Q_SLOTS:
     void cancel() override;
 
 protected:
-    Peony::ExceptionResponse prehandle(GError *err);
+    ExceptionResponse prehandle(GError *err);
     static void progress_callback(goffset current_num_bytes,
                                   goffset total_num_bytes,
                                   FileCopyOperation *p_this);
@@ -110,7 +110,7 @@ private:
      * Once a move operation get into error, this class might cache the specific response
      * for next prehandleing.
      */
-    QHash<int, Peony::ExceptionResponse> m_prehandle_hash;
+    QHash<int, ExceptionResponse> m_prehandle_hash;
 
     std::shared_ptr<FileOperationInfo> m_info = nullptr;
 };

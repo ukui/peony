@@ -42,57 +42,49 @@ void FileTrashOperation::run()
 retry:
         auto srcFile = wrapGFile(g_file_new_for_uri(src.toUtf8().constData()));
         GError *err = nullptr;
-        g_file_trash(srcFile.get()->get(),
-                     getCancellable().get()->get(),
-                     &err);
+        g_file_trash(srcFile.get()->get(), getCancellable().get()->get(), &err);
         if (err) {
-            if (response == Peony::IgnoreAll) {
+            if (response == IgnoreAll) {
                 g_error_free(err);
                 continue;
             }
             FileOperationError except;
+            except.srcUri = src;
+            except.destDirUri = tr("trash:///");
+            except.isCritical = true;
+            except.title = tr("Trash file");
+            except.errorCode = err->code;
+            except.errorType = ET_GIO;
             if (G_IO_ERROR_EXISTS == err->code) {
-                except.srcUri = src;
-                except.destDirUri = tr("trash:///");
-                except.isCritical = true;
-                except.title = tr("Trash file");
-                except.errorCode = err->code;
-                except.errorType = ET_GIO;
                 except.dlgType = ED_CONFLICT;
                 Q_EMIT errored(except);
                 auto responseType = except.respCode;
                 auto responseData = responseType;
                 switch (responseData) {
-                case Peony::Retry:
+                case Retry:
                     goto retry;
-                case Peony::Cancel:
+                case Cancel:
                     cancel();
                     break;
-                case Peony::IgnoreAll:
-                    response = Peony::IgnoreAll;
+                case IgnoreAll:
+                    response = IgnoreAll;
                     break;
                 default:
                     break;
                 }
             } else {
-                except.srcUri = src;
-                except.destDirUri = tr("trash:///");
-                except.isCritical = true;
-                except.title = tr("Trash file");
-                except.errorCode = err->code;
-                except.errorType = ET_GIO;
                 except.dlgType = ED_WARNING;
                 Q_EMIT errored(except);
                 auto responseType = except.respCode;
                 auto responseData = responseType;
                 switch (responseData) {
-                case Peony::Retry:
+                case Retry:
                     goto retry;
-                case Peony::Cancel:
+                case Cancel:
                     cancel();
                     break;
-                case Peony::IgnoreAll:
-                    response = Peony::IgnoreAll;
+                case IgnoreAll:
+                    response = IgnoreAll;
                     break;
                 default:
                     break;

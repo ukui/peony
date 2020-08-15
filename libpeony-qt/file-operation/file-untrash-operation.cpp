@@ -20,8 +20,8 @@
  *
  */
 
-#include "file-untrash-operation.h"
 #include "file-utils.h"
+#include "file-untrash-operation.h"
 #include "file-operation-manager.h"
 
 #include <QUrl>
@@ -163,6 +163,12 @@ retry:
 
         if (err) {
             FileOperationError except;
+            except.srcUri = uri;
+            except.destDirUri = originUri;
+            except.isCritical = false;
+            except.title = tr("Untrash file");
+            except.errorCode = err->code;
+            except.errorType = ET_GIO;
             this->setHasError(true);
             qDebug()<<"untrash err"<<uri<<originUri<<err->message;
             int type = Invalid;
@@ -170,22 +176,10 @@ retry:
                 type = m_pre_handler;
             } else {
                 if (G_IO_ERROR_EXISTS == err->code) {
-                    except.srcUri = uri;
-                    except.destDirUri = originUri;
-                    except.isCritical = false;
-                    except.title = tr("Untrash file");
-                    except.errorCode = err->code;
-                    except.errorType = ET_GIO;
                     except.dlgType = ED_CONFLICT;
                     Q_EMIT errored(except);
                     type = except.respCode;
                 } else {
-                    except.srcUri = uri;
-                    except.destDirUri = originUri;
-                    except.isCritical = false;
-                    except.title = tr("Untrash file");
-                    except.errorCode = err->code;
-                    except.errorType = ET_GIO;
                     except.dlgType = ED_WARNING;
                     Q_EMIT errored(except);
                     type = except.respCode;

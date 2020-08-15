@@ -48,7 +48,6 @@ public:
     explicit FileRenameOperation(QString uri, QString newName);
 
     void run() override;
-    virtual void prepare ()override;
     std::shared_ptr<FileOperationInfo> getOperationInfo() override {
         return m_info;
     }

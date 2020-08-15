@@ -25,7 +25,6 @@
 
 #include "global-settings.h"
 
-#include <syslog.h>
 #include <QMessageBox>
 #include <QApplication>
 #include <QTimer>

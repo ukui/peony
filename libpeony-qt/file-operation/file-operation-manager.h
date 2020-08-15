@@ -23,23 +23,19 @@
 #ifndef FILEOPERATIONMANAGER_H
 #define FILEOPERATIONMANAGER_H
 
-#include <QObject>
-
-#include "peony-core_global.h"
-#include "gobject-template.h"
-#include "gerror-wrapper.h"
-#include "file-utils.h"
-#include "file-operation.h"
-#include "file-operation-progress-bar.h"
+#include <QUrl>
 #include <QMutex>
 #include <QStack>
+#include <QObject>
 #include <QThreadPool>
 
-#include <QUrl>
-
-// DJ-
+#include "file-utils.h"
+#include "file-operation.h"
+#include "gerror-wrapper.h"
+#include "gobject-template.h"
+#include "peony-core_global.h"
+#include "file-operation-progress-bar.h"
 #include "file-operation-error-dialogs.h"
-// DJ-
 
 
 namespace Peony {

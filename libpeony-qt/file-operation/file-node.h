@@ -160,7 +160,7 @@ public:
      * will guide them how to do that.
      * For example, if a g_file move operation is ignored, it will not be cleared when clearing.
      */
-    void setErrorResponse(Peony::ExceptionResponse type) {
+    void setErrorResponse(ExceptionResponse type) {
         m_err_response = type;
     }
 
@@ -181,7 +181,7 @@ private:
 
     QString m_dest_uri = nullptr;
     State m_state = Unhandled;
-    Peony::ExceptionResponse m_err_response = Peony::Other;
+    ExceptionResponse m_err_response = Other;
 
     FileNodeReporter *m_reporter = nullptr;
 };

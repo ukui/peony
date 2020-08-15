@@ -74,10 +74,10 @@ void FileDeleteOperation::deleteRecursively(FileNode *node)
             Q_EMIT errored(except);
             auto response = except.respCode;
             auto responseType = response;
-            if (responseType == Peony::Cancel) {
+            if (responseType == Cancel) {
                 cancel();
             }
-            if (responseType == Peony::IgnoreAll) {
+            if (responseType == IgnoreAll) {
                 m_prehandle_hash.insert(err->code, IgnoreAll);
             }
         }
@@ -102,10 +102,10 @@ void FileDeleteOperation::deleteRecursively(FileNode *node)
             auto response = except.respCode;
             qDebug()<<response;
             auto responseType = response;
-            if (responseType == Peony::Cancel) {
+            if (responseType == Cancel) {
                 cancel();
             }
-            if (responseType == Peony::IgnoreAll) {
+            if (responseType == IgnoreAll) {
                 m_prehandle_hash.insert(err->code, IgnoreAll);
             }
         }

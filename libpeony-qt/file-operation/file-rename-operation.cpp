@@ -315,22 +315,4 @@ cancel:
     //notifyFileWatcherOperationFinished();
 }
 
-void FileRenameOperation::prepare()
-{
-    FileOperationError except;
-    except.errorType = ET_GIO;
-    except.errorCode = G_IO_ERROR_EXISTS;
-    except.title = tr("Rename file");
-    auto file = wrapGFile(g_file_new_for_uri(m_uri.toUtf8().constData()));
-    auto parent = FileUtils::getFileParent(file);
-    auto newFile = FileUtils::resolveRelativePath(parent, m_new_name);
-
-//    while (FileUtils::isFileExsit(FileUtils::getFileUri(newFile))) {
-//        except.srcUri = m_uri;
-//        except.destDirUri = FileUtils::getFileUri(file);
-//        except.isCritical = true;
-//    }
-    Q_EMIT errored(except);
-}
-
 
