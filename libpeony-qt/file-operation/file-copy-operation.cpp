@@ -183,24 +183,19 @@ fallback_retry:
             }
             auto errWrapperPtr = GErrorWrapper::wrapFrom(err);
             int handle_type = prehandle(err);
+            except.errorType = ET_GIO;
+            except.srcUri = m_current_src_uri;
+            except.destDirUri = m_current_dest_dir_uri;
+            except.title = tr("File copy");
+            except.errorCode = err->code;
             if (handle_type == Other) {
                 if (G_IO_ERROR_EXISTS == err->code) {
-                    except.errorType = ET_GIO;
                     except.dlgType = ED_CONFLICT;
-                    except.srcUri = m_current_src_uri;
-                    except.destDirUri = m_current_dest_dir_uri;
-                    except.title = tr("File copy");
-                    except.errorCode = err->code;
                     Q_EMIT errored(except);
                     auto typeData = except.respCode;
                     handle_type = typeData;
                 } else {
-                    except.errorType = ET_GIO;
                     except.dlgType = ED_WARNING;
-                    except.srcUri = m_current_src_uri;
-                    except.destDirUri = m_current_dest_dir_uri;
-                    except.title = tr("File copy");
-                    except.errorCode = err->code;
                     Q_EMIT errored(except);
                     auto typeData = except.respCode;
                     handle_type = typeData;

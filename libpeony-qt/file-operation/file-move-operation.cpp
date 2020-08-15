@@ -323,25 +323,19 @@ retry:
                 break;
             }
 
+            except.srcUri = srcUri;
+            except.errorType = ET_GIO;
+            except.errorCode = err->code;
+            except.title = tr("Move file");
+            except.destDirUri = m_dest_dir_uri;
+            except.isCritical = true;
             if (handled_err) {
                 auto handledErr = GErrorWrapper::wrapFrom(handled_err);
                 FileOperationError except;
                 if (G_IO_ERROR_EXISTS == handled_err->code) {
-                    except.srcUri = srcUri;
-                    except.destDirUri = m_dest_dir_uri;
-                    except.isCritical = true;
-                    except.title = tr("Move file");
-                    except.errorCode = err->code;
-                    except.errorType = ET_GIO;
                     except.dlgType = ED_CONFLICT;
                     Q_EMIT errored(except);
                 } else {
-                    except.srcUri = srcUri;
-                    except.destDirUri = m_dest_dir_uri;
-                    except.isCritical = true;
-                    except.title = tr("Move file");
-                    except.errorCode = err->code;
-                    except.errorType = ET_GIO;
                     except.dlgType = ED_WARNING;
                     Q_EMIT errored(except);
                 }
@@ -574,25 +568,19 @@ fallback_retry:
             }
             auto errWrapperPtr = GErrorWrapper::wrapFrom(err);
             int handle_type = prehandle(err);
+            except.errorType = ET_GIO;
+            except.title = tr("Move file");
+            except.errorCode = err->code;
+            except.srcUri = m_current_src_uri;
+            except.destDirUri = m_current_dest_dir_uri;
+            except.isCritical = false;
             if (handle_type == Other) {
                 auto typeData = Invalid;
                 if (G_IO_ERROR_EXISTS == err->code) {
-                    except.srcUri = m_current_src_uri;
-                    except.destDirUri = m_current_dest_dir_uri;
-                    except.isCritical = false;
-                    except.title = tr("Move file");
-                    except.errorCode = err->code;
-                    except.errorType = ET_GIO;
                     except.dlgType = ED_CONFLICT;
                     Q_EMIT errored(except);
                     typeData = except.respCode;
                 } else {
-                    except.srcUri = m_current_src_uri;
-                    except.destDirUri = m_current_dest_dir_uri;
-                    except.isCritical = false;
-                    except.title = tr("Move file");
-                    except.errorCode = err->code;
-                    except.errorType = ET_GIO;
                     except.dlgType = ED_WARNING;
                     Q_EMIT errored(except);
                     typeData = except.respCode;
