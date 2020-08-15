@@ -65,8 +65,14 @@ void FileDeleteOperation::deleteRecursively(FileNode *node)
                 return;
             }
             //if delete a file get into error, it might be a critical error.
-            auto response = errored(node->uri(), nullptr, GErrorWrapper::wrapFrom(err), true);
-            qDebug()<<response;
+            FileOperationError except;
+            except.errorType = ET_GIO;
+            except.dlgType = ED_WARNING;
+            except.title = tr("File delete");
+            except.errorStr = err->message;
+            except.errorCode = err->code;
+            Q_EMIT errored(except);
+            auto response = except.respCode;
             auto responseType = response;
             if (responseType == Cancel) {
                 cancel();
@@ -86,7 +92,14 @@ void FileDeleteOperation::deleteRecursively(FileNode *node)
                 return;
             }
             //if delete a file get into error, it might be a critical error.
-            auto response = errored(node->uri(), nullptr, GErrorWrapper::wrapFrom(err), true);
+            FileOperationError except;
+            except.errorType = ET_GIO;
+            except.dlgType = ED_WARNING;
+            except.title = tr("File delete");
+            except.errorCode = err->code;
+            except.errorStr = err->message;
+            Q_EMIT errored(except);
+            auto response = except.respCode;
             qDebug()<<response;
             auto responseType = response;
             if (responseType == Cancel) {

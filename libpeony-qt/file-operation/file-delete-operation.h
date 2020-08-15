@@ -64,7 +64,7 @@ private:
      * Once a move operation get into error, this class might cache the specific response
      * for next prehandleing.
      */
-    QHash<int, ResponseType> m_prehandle_hash;
+    QHash<int, ExceptionResponse> m_prehandle_hash;
 
     std::shared_ptr<FileOperationInfo> m_info = nullptr;
 };

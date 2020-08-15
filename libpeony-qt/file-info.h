@@ -110,6 +110,10 @@ public:
         return m_file_type;
     }
 
+    QString filePath() {
+        return m_path;
+    }
+
     QString fileSize() {
         return m_file_size;
     }
@@ -231,7 +235,7 @@ private:
     QString m_icon_name = nullptr;
     QString m_symbolic_icon_name = nullptr;
     QString m_file_id = nullptr;
-
+    QString m_path = nullptr;
     QString m_content_type = nullptr;
     guint64 m_size = 0;
     guint64 m_modified_time = 0;

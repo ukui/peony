@@ -241,6 +241,11 @@ void FileInfoJob::refreshInfoContents(GFileInfo *new_info)
         //g_object_unref(g_symbolic_icon);
     }
 
+    char* name = g_file_get_path(info->m_file);
+    info->m_path = name;
+    if (NULL != name) {
+        g_free(name);
+    }
     info->m_file_id = g_file_info_get_attribute_string(new_info, G_FILE_ATTRIBUTE_ID_FILE);
 
     info->m_content_type = g_file_info_get_content_type (new_info);

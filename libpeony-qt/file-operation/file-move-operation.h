@@ -137,7 +137,7 @@ protected:
      * choose IgnoreAll, BackupAll or OverWriteAll option when a
      * specific type error occured.
      */
-    ResponseType prehandle(GError *err);
+    ExceptionResponse prehandle(GError *err);
 
 private:
     QStringList m_source_uris;
@@ -191,7 +191,7 @@ private:
      * Once a move operation get into error, this class might cache the specific response
      * for next prehandleing.
      */
-    QHash<int, ResponseType> m_prehandle_hash;
+    QHash<int, ExceptionResponse> m_prehandle_hash;
 
     std::shared_ptr<FileOperationInfo> m_info = nullptr;
 };

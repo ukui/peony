@@ -44,11 +44,13 @@ public:
     explicit FileOperationErrorDialog(QWidget *parent = nullptr);
     ~FileOperationErrorDialog() override;
 
+    virtual void handle (FileOperationError& error) override;
+
 public Q_SLOTS:
     int handleError(const QString &srcUri,
                          const QString &destDirUri,
                          const GErrorWrapperPtr &err,
-                         bool isCritical = false) override;
+                         bool isCritical = false);
 
 private:
     QFormLayout *m_layout = nullptr;

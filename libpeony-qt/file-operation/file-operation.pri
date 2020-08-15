@@ -21,7 +21,9 @@ HEADERS += \
     $$PWD/file-operation-progress-bar.h         \
     $$PWD/file-operation-error-dialog.h         \
     $$PWD/file-operation-error-handler.h        \
+    $$PWD/file-operation-error-dialogs.h        \
     $$PWD/file-operation-progress-wizard.h      \
+    $$PWD/file-operation-error-dialog-base.h    \
 
 SOURCES += \
     $$PWD/file-node.cpp                         \
@@ -39,4 +41,6 @@ SOURCES += \
     $$PWD/create-template-operation.cpp         \
     $$PWD/file-operation-progress-bar.cpp       \
     $$PWD/file-operation-error-dialog.cpp       \
+    $$PWD/file-operation-error-dialogs.cpp      \
     $$PWD/file-operation-progress-wizard.cpp    \
+    $$PWD/file-operation-error-dialog-base.cpp  \
