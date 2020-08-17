@@ -506,6 +506,7 @@ void IconView::editUri(const QString &uri)
     auto origin = FileUtils::getOriginalUri(uri);
     setIndexWidget(m_sort_filter_proxy_model->indexFromUri(origin), nullptr);
     qDebug() <<"editUri:" <<uri <<origin;
+    QListView::scrollTo(m_sort_filter_proxy_model->indexFromUri(origin));
     edit(m_sort_filter_proxy_model->indexFromUri(origin));
 }
 
