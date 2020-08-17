@@ -8,7 +8,7 @@ libpeony.so.3 libpeony3 #MINVER#
  _Z29qCleanupResources_libpeony_qtv@Base 2.0.0
  _Z40peony_search_vfs_file_enumerate_childrenP6_GFilePKc19GFileQueryInfoFlagsP13_GCancellablePP7_GError@Base 2.0.0
  _Z42peony_search_vfs_file_enumerator_parse_uriP29_PeonySearchVFSFileEnumeratorPKc@Base 2.0.0
- _ZGVZN9QtPrivate15ConnectionTypesINS_4ListIJRK7QStringS4_RKSt10shared_ptrIN5Peony13GErrorWrapperEEbEEELb1EE5typesEvE1t@Base 2.0.0
+ (arch=!amd64)_ZGVZN9QtPrivate15ConnectionTypesINS_4ListIJRK7QStringS4_RKSt10shared_ptrIN5Peony13GErrorWrapperEEbEEELb1EE5typesEvE1t@Base 3.0.0
  _ZGVZN9QtPrivate19ValueTypeIsMetaTypeI5QListI11QModelIndexELb1EE17registerConverterEiE1f@Base 2.0.0
  (arch=amd64)_ZGVZN9QtPrivate19ValueTypeIsMetaTypeI5QListI21QPersistentModelIndexELb1EE17registerConverterEiE1f@Base 3.0.0
  _ZN10QByteArrayD1Ev@Base 2.0.0
@@ -297,6 +297,7 @@ libpeony.so.3 libpeony3 #MINVER#
  (optional=templinst|arch=amd64)_ZN4QMapI7QString8QVariantE6removeERKS0_@Base 3.0.0
  (optional=templinst)_ZN4QMapI7QString8QVariantED1Ev@Base 2.0.0
  (optional=templinst)_ZN4QMapI7QString8QVariantED2Ev@Base 2.0.0
+ (optional=templinst|arch=amd64)_ZN4QMapI7QString8QVariantEixERKS0_@Base 3.0.0
  (optional=templinst|arch=amd64 armhf)_ZN4QMapI7QStringP11QToolButtonE13detach_helperEv@Base 2.2.0
  (optional=templinst)_ZN4QMapI7QStringS0_E13detach_helperEv@Base 2.1.0
  (optional=templinst)_ZN4QMapI7QStringS0_EC1ERKS1_@Base 2.1.0
@@ -713,7 +714,8 @@ libpeony.so.3 libpeony3 #MINVER#
  _ZN5Peony13FileOperation34notifyFileWatcherOperationFinishedEv@Base 2.2.0
  _ZN5Peony13FileOperation3runEv@Base 2.0.0
  _ZN5Peony13FileOperation6cancelEv@Base 2.0.0
- _ZN5Peony13FileOperation7erroredERK7QStringS3_RKSt10shared_ptrINS_13GErrorWrapperEEb@Base 2.0.0
+ (arch=!amd64)_ZN5Peony13FileOperation7erroredERK7QStringS3_RKSt10shared_ptrINS_13GErrorWrapperEEb@Base 3.0.0
+ (arch=amd64)_ZN5Peony13FileOperation7erroredERNS_19_FileOperationErrorE@Base 3.0.0
  _ZN5Peony13FileOperationC1EP7QObject@Base 2.0.0
  _ZN5Peony13FileOperationC2EP7QObject@Base 2.0.0
  _ZN5Peony13FileOperationD0Ev@Base 2.0.0
@@ -1044,6 +1046,18 @@ libpeony.so.3 libpeony3 #MINVER#
  _ZN5Peony16FileNodeReporterD0Ev@Base 2.0.0
  _ZN5Peony16FileNodeReporterD1Ev@Base 2.0.0
  _ZN5Peony16FileNodeReporterD2Ev@Base 2.0.0
+ (arch=amd64)_ZN5Peony16FileRenameDialog10paintEventEP11QPaintEvent@Base 3.0.0
+ (arch=amd64)_ZN5Peony16FileRenameDialog11qt_metacallEN11QMetaObject4CallEiPPv@Base 3.0.0
+ (arch=amd64)_ZN5Peony16FileRenameDialog11qt_metacastEPKc@Base 3.0.0
+ (arch=amd64)_ZN5Peony16FileRenameDialog12customRenameENS0_10RenameTypeE7QString@Base 3.0.0
+ (arch=amd64)_ZN5Peony16FileRenameDialog14mouseMoveEventEP11QMouseEvent@Base 3.0.0
+ (arch=amd64)_ZN5Peony16FileRenameDialog15mousePressEventEP11QMouseEvent@Base 3.0.0
+ (arch=amd64)_ZN5Peony16FileRenameDialog16staticMetaObjectE@Base 3.0.0
+ (arch=amd64)_ZN5Peony16FileRenameDialogC1EP7QWidget@Base 3.0.0
+ (arch=amd64)_ZN5Peony16FileRenameDialogC2EP7QWidget@Base 3.0.0
+ (arch=amd64)_ZN5Peony16FileRenameDialogD0Ev@Base 3.0.0
+ (arch=amd64)_ZN5Peony16FileRenameDialogD1Ev@Base 3.0.0
+ (arch=amd64)_ZN5Peony16FileRenameDialogD2Ev@Base 3.0.0
  _ZN5Peony16IconViewFactory210pluginTypeEv@Base 2.0.0
  _ZN5Peony16IconViewFactory210supportUriERK7QString@Base 2.0.0
  _ZN5Peony16IconViewFactory211descriptionEv@Base 2.0.0
@@ -1565,11 +1579,33 @@ libpeony.so.3 libpeony3 #MINVER#
  _ZN5Peony19SideBarPersonalItemD0Ev@Base 2.0.0
  _ZN5Peony19SideBarPersonalItemD1Ev@Base 2.0.0
  _ZN5Peony19SideBarPersonalItemD2Ev@Base 2.0.0
+ (arch=amd64)_ZN5Peony19_FileOperationErrorD1Ev@Base 3.0.0
+ (arch=amd64)_ZN5Peony19_FileOperationErrorD2Ev@Base 3.0.0
  _ZN5Peony19wrapGFileEnumeratorEP16_GFileEnumerator@Base 2.0.0
+ (arch=amd64)_ZN5Peony20FileInformationLabel10paintEventEP11QPaintEvent@Base 3.0.0
+ (arch=amd64)_ZN5Peony20FileInformationLabel11getIconSizeEv@Base 3.0.0
+ (arch=amd64)_ZN5Peony20FileInformationLabel11qt_metacallEN11QMetaObject4CallEiPPv@Base 3.0.0
+ (arch=amd64)_ZN5Peony20FileInformationLabel11qt_metacastEPKc@Base 3.0.0
+ (arch=amd64)_ZN5Peony20FileInformationLabel11setFileNameE7QString@Base 3.0.0
+ (arch=amd64)_ZN5Peony20FileInformationLabel11setFileSizeE7QString@Base 3.0.0
+ (arch=amd64)_ZN5Peony20FileInformationLabel15mousePressEventEP11QMouseEvent@Base 3.0.0
+ (arch=amd64)_ZN5Peony20FileInformationLabel15setFileLocationE7QString@Base 3.0.0
+ (arch=amd64)_ZN5Peony20FileInformationLabel16staticMetaObjectE@Base 3.0.0
+ (arch=amd64)_ZN5Peony20FileInformationLabel17setFileModifyTimeE7QString@Base 3.0.0
+ (arch=amd64)_ZN5Peony20FileInformationLabel6activeEv@Base 3.0.0
+ (arch=amd64)_ZN5Peony20FileInformationLabel9setActiveEb@Base 3.0.0
+ (arch=amd64)_ZN5Peony20FileInformationLabel9setOpNameE7QString@Base 3.0.0
+ (arch=amd64)_ZN5Peony20FileInformationLabel9setPixmapE7QPixmap@Base 3.0.0
+ (arch=amd64)_ZN5Peony20FileInformationLabelC1EP7QWidget@Base 3.0.0
+ (arch=amd64)_ZN5Peony20FileInformationLabelC2EP7QWidget@Base 3.0.0
+ (arch=amd64)_ZN5Peony20FileInformationLabelD0Ev@Base 3.0.0
+ (arch=amd64)_ZN5Peony20FileInformationLabelD1Ev@Base 3.0.0
+ (arch=amd64)_ZN5Peony20FileInformationLabelD2Ev@Base 3.0.0
  _ZN5Peony20FileOperationManager11getInstanceEv@Base 2.0.0
  _ZN5Peony20FileOperationManager11getRedoInfoEv@Base 2.0.0
  _ZN5Peony20FileOperationManager11getUndoInfoEv@Base 2.0.0
- _ZN5Peony20FileOperationManager11handleErrorERK7QStringS3_RKSt10shared_ptrINS_13GErrorWrapperEEb@Base 2.0.0
+ (arch=!amd64)_ZN5Peony20FileOperationManager11handleErrorERK7QStringS3_RKSt10shared_ptrINS_13GErrorWrapperEEb@Base 3.0.0
+ (arch=amd64)_ZN5Peony20FileOperationManager11handleErrorERNS_19_FileOperationErrorE@Base 3.0.0
  _ZN5Peony20FileOperationManager11qt_metacallEN11QMetaObject4CallEiPPv@Base 2.0.0
  _ZN5Peony20FileOperationManager11qt_metacastEPKc@Base 2.0.0
  _ZN5Peony20FileOperationManager12clearHistoryEv@Base 2.0.0
@@ -1798,6 +1834,7 @@ libpeony.so.3 libpeony3 #MINVER#
  _ZN5Peony24FileOperationErrorDialog11qt_metacallEN11QMetaObject4CallEiPPv@Base 2.0.0
  _ZN5Peony24FileOperationErrorDialog11qt_metacastEPKc@Base 2.0.0
  _ZN5Peony24FileOperationErrorDialog16staticMetaObjectE@Base 2.0.0
+ (arch=amd64)_ZN5Peony24FileOperationErrorDialog6handleERNS_19_FileOperationErrorE@Base 3.0.0
  _ZN5Peony24FileOperationErrorDialogC1EP7QWidget@Base 2.0.0
  _ZN5Peony24FileOperationErrorDialogC2EP7QWidget@Base 2.0.0
  _ZN5Peony24FileOperationErrorDialogD0Ev@Base 2.0.0
@@ -2027,6 +2064,18 @@ libpeony.so.3 libpeony3 #MINVER#
  _ZN5Peony28FileItemProxyFilterSortModelD0Ev@Base 2.0.0
  _ZN5Peony28FileItemProxyFilterSortModelD1Ev@Base 2.0.0
  _ZN5Peony28FileItemProxyFilterSortModelD2Ev@Base 2.0.0
+ (arch=amd64)_ZN5Peony28FileOperationErrorDialogBase10paintEventEP11QPaintEvent@Base 3.0.0
+ (arch=amd64)_ZN5Peony28FileOperationErrorDialogBase11qt_metacallEN11QMetaObject4CallEiPPv@Base 3.0.0
+ (arch=amd64)_ZN5Peony28FileOperationErrorDialogBase11qt_metacastEPKc@Base 3.0.0
+ (arch=amd64)_ZN5Peony28FileOperationErrorDialogBase14mouseMoveEventEP11QMouseEvent@Base 3.0.0
+ (arch=amd64)_ZN5Peony28FileOperationErrorDialogBase15mousePressEventEP11QMouseEvent@Base 3.0.0
+ (arch=amd64)_ZN5Peony28FileOperationErrorDialogBase16staticMetaObjectE@Base 3.0.0
+ (arch=amd64)_ZN5Peony28FileOperationErrorDialogBase6cancelEv@Base 3.0.0
+ (arch=amd64)_ZN5Peony28FileOperationErrorDialogBaseC1EP7QDialog@Base 3.0.0
+ (arch=amd64)_ZN5Peony28FileOperationErrorDialogBaseC2EP7QDialog@Base 3.0.0
+ (arch=amd64)_ZN5Peony28FileOperationErrorDialogBaseD0Ev@Base 3.0.0
+ (arch=amd64)_ZN5Peony28FileOperationErrorDialogBaseD1Ev@Base 3.0.0
+ (arch=amd64)_ZN5Peony28FileOperationErrorDialogBaseD2Ev@Base 3.0.0
  _ZN5Peony28RecentAndTrashPropertiesPage11qt_metacallEN11QMetaObject4CallEiPPv@Base 2.0.0
  _ZN5Peony28RecentAndTrashPropertiesPage11qt_metacastEPKc@Base 2.0.0
  _ZN5Peony28RecentAndTrashPropertiesPage12addSeparatorEv@Base 2.0.0
@@ -2076,6 +2125,25 @@ libpeony.so.3 libpeony3 #MINVER#
  _ZN5Peony30FileOperationAfterProgressPageD0Ev@Base 2.0.0
  _ZN5Peony30FileOperationAfterProgressPageD1Ev@Base 2.0.0
  _ZN5Peony30FileOperationAfterProgressPageD2Ev@Base 2.0.0
+ (arch=amd64)_ZN5Peony31FileOperationErrorDialogFactory9getDialogERNS_19_FileOperationErrorE@Base 3.0.0
+ (arch=amd64)_ZN5Peony31FileOperationErrorDialogWarning11qt_metacallEN11QMetaObject4CallEiPPv@Base 3.0.0
+ (arch=amd64)_ZN5Peony31FileOperationErrorDialogWarning11qt_metacastEPKc@Base 3.0.0
+ (arch=amd64)_ZN5Peony31FileOperationErrorDialogWarning16staticMetaObjectE@Base 3.0.0
+ (arch=amd64)_ZN5Peony31FileOperationErrorDialogWarning6handleERNS_19_FileOperationErrorE@Base 3.0.0
+ (arch=amd64)_ZN5Peony31FileOperationErrorDialogWarningC1EPNS_28FileOperationErrorDialogBaseE@Base 3.0.0
+ (arch=amd64)_ZN5Peony31FileOperationErrorDialogWarningC2EPNS_28FileOperationErrorDialogBaseE@Base 3.0.0
+ (arch=amd64)_ZN5Peony31FileOperationErrorDialogWarningD0Ev@Base 3.0.0
+ (arch=amd64)_ZN5Peony31FileOperationErrorDialogWarningD1Ev@Base 3.0.0
+ (arch=amd64)_ZN5Peony31FileOperationErrorDialogWarningD2Ev@Base 3.0.0
+ (arch=amd64)_ZN5Peony32FileOperationErrorDialogConflict11qt_metacallEN11QMetaObject4CallEiPPv@Base 3.0.0
+ (arch=amd64)_ZN5Peony32FileOperationErrorDialogConflict11qt_metacastEPKc@Base 3.0.0
+ (arch=amd64)_ZN5Peony32FileOperationErrorDialogConflict16staticMetaObjectE@Base 3.0.0
+ (arch=amd64)_ZN5Peony32FileOperationErrorDialogConflict6handleERNS_19_FileOperationErrorE@Base 3.0.0
+ (arch=amd64)_ZN5Peony32FileOperationErrorDialogConflictC1EPNS_28FileOperationErrorDialogBaseE@Base 3.0.0
+ (arch=amd64)_ZN5Peony32FileOperationErrorDialogConflictC2EPNS_28FileOperationErrorDialogBaseE@Base 3.0.0
+ (arch=amd64)_ZN5Peony32FileOperationErrorDialogConflictD0Ev@Base 3.0.0
+ (arch=amd64)_ZN5Peony32FileOperationErrorDialogConflictD1Ev@Base 3.0.0
+ (arch=amd64)_ZN5Peony32FileOperationErrorDialogConflictD2Ev@Base 3.0.0
  _ZN5Peony32PermissionsPropertiesPageFactory10pluginTypeEv@Base 2.0.0
  _ZN5Peony32PermissionsPropertiesPageFactory11descriptionEv@Base 2.0.0
  _ZN5Peony32PermissionsPropertiesPageFactory11getInstanceEv@Base 2.0.0
@@ -2363,6 +2431,8 @@ libpeony.so.3 libpeony3 #MINVER#
  (optional=templinst|arch= !s390x)_ZN5QHashI7QString11QStringListE6removeERKS0_@Base 3.0.0
 #MISSING: 3.0.0# (optional=templinst|arch=amd64)_ZN5QHashI7QString11QStringListED1Ev@Base 3.0.0
 #MISSING: 3.0.0# (optional=templinst|arch=amd64)_ZN5QHashI7QString11QStringListED2Ev@Base 3.0.0
+ (optional=templinst|arch=amd64)_ZN5QHashI7QString15QHashDummyValueE11deleteNode2EPN9QHashData4NodeE@Base 3.0.0
+ (optional=templinst|arch=amd64)_ZN5QHashI7QString15QHashDummyValueE13duplicateNodeEPN9QHashData4NodeEPv@Base 3.0.0
  (optional=templinst)_ZN5QHashI7QString5QIconE11deleteNode2EPN9QHashData4NodeE@Base 2.0.0
  (optional=templinst|arch=armhf)_ZN5QHashI7QString5QIconE13detach_helperEv@Base 3.0.0
  (optional=templinst)_ZN5QHashI7QString5QIconE13duplicateNodeEPN9QHashData4NodeEPv@Base 2.0.0
@@ -2411,11 +2481,14 @@ libpeony.so.3 libpeony3 #MINVER#
  (optional=templinst)_ZN5QHashIi5QPairIi7QStringEE13duplicateNodeEPN9QHashData4NodeEPv@Base 2.0.0
 #MISSING: 3.0.0# (optional=templinst|arch=amd64)_ZN5QHashIi5QPairIi7QStringEED1Ev@Base 3.0.0
 #MISSING: 3.0.0# (optional=templinst|arch=amd64)_ZN5QHashIi5QPairIi7QStringEED2Ev@Base 3.0.0
- (optional=templinst)_ZN5QHashIiN5Peony13FileOperation12ResponseTypeEE11deleteNode2EPN9QHashData4NodeE@Base 2.0.0
- (optional=templinst)_ZN5QHashIiN5Peony13FileOperation12ResponseTypeEE13duplicateNodeEPN9QHashData4NodeEPv@Base 2.0.0
- (optional=templinst)_ZN5QHashIiN5Peony13FileOperation12ResponseTypeEE6insertERKiRKS2_@Base 2.1.0
+ (optional=templinst|arch=!amd64)_ZN5QHashIiN5Peony13FileOperation12ResponseTypeEE11deleteNode2EPN9QHashData4NodeE@Base 2.0.0
+ (optional=templinst|arch=!amd64)_ZN5QHashIiN5Peony13FileOperation12ResponseTypeEE13duplicateNodeEPN9QHashData4NodeEPv@Base 2.0.0
+ (optional=templinst|arch=!amd64)_ZN5QHashIiN5Peony13FileOperation12ResponseTypeEE6insertERKiRKS2_@Base 2.1.0
 #MISSING: 3.0.0# (optional=templinst|arch=amd64)_ZN5QHashIiN5Peony13FileOperation12ResponseTypeEED1Ev@Base 3.0.0
 #MISSING: 3.0.0# (optional=templinst|arch=amd64)_ZN5QHashIiN5Peony13FileOperation12ResponseTypeEED2Ev@Base 3.0.0
+ (optional=templinst|arch=amd64)_ZN5QHashIiN5Peony17ExceptionResponseEE11deleteNode2EPN9QHashData4NodeE@Base 3.0.0
+ (optional=templinst|arch=amd64)_ZN5QHashIiN5Peony17ExceptionResponseEE13duplicateNodeEPN9QHashData4NodeEPv@Base 3.0.0
+ (optional=templinst|arch=amd64)_ZN5QHashIiN5Peony17ExceptionResponseEE6insertERKiRKS1_@Base 3.0.0
  (optional=templinst|arch=amd64 ppc64el)_ZN5QListI10QByteArrayE13detach_helperEi@Base 3.0.0
  (optional=templinst)_ZN5QListI10QByteArrayED1Ev@Base 2.0.0
  (optional=templinst)_ZN5QListI10QByteArrayED2Ev@Base 2.0.0
@@ -2589,6 +2662,7 @@ libpeony.so.3 libpeony3 #MINVER#
  (optional=templinst)_ZN7QVectorIiED1Ev@Base 2.0.0
  (optional=templinst)_ZN7QVectorIiED2Ev@Base 2.0.0
  (optional=templinst|arch=amd64)_ZN8QMapDataI7QString11QStringListE7destroyEv@Base 3.0.0
+ (optional=templinst|arch=amd64)_ZN8QMapDataI7QString8QVariantE10createNodeERKS0_RKS1_P8QMapNodeIS0_S1_Eb@Base 3.0.0
  (optional=templinst)_ZN8QMapDataI7QStringP11QToolButtonE7destroyEv@Base 2.2.0
  (optional=templinst)_ZN8QMapDataI7QStringPN5Peony22PreviewPagePluginIfaceEE7destroyEv@Base 2.0.0
  (optional=templinst|arch=amd64 armhf)_ZN8QMapDataI7QStringS0_E7destroyEv@Base 2.1.0
@@ -2635,13 +2709,14 @@ libpeony.so.3 libpeony3 #MINVER#
  (optional=templinst)_ZN9QtPrivate11QSlotObjectIMN5Peony19DirectoryViewWidgetEFvbENS_4ListIJbEEEvE4implEiPNS_15QSlotObjectBaseEP7QObjectPPvPb@Base 2.1.0
  (optional=templinst)_ZN9QtPrivate11QSlotObjectIMN5Peony19DirectoryViewWidgetEFvvENS_4ListIJEEEvE4implEiPNS_15QSlotObjectBaseEP7QObjectPPvPb@Base 2.0.0
 #MISSING: 2.2.0# (optional=templinst)_ZN9QtPrivate11QSlotObjectIMN5Peony20FileOperationManagerEF8QVariantRK7QStringS6_RKSt10shared_ptrINS1_13GErrorWrapperEEbENS_4ListIJS6_S6_SB_bEEES3_E4implEiPNS_15QSlotObjectBaseEP7QObjectPPvPb@Base 2.0.0
- (optional=templinst)_ZN9QtPrivate11QSlotObjectIMN5Peony20FileOperationManagerEFiRK7QStringS5_RKSt10shared_ptrINS1_13GErrorWrapperEEbENS_4ListIJS5_S5_SA_bEEEiE4implEiPNS_15QSlotObjectBaseEP7QObjectPPvPb@Base 2.2.0
+ (optional=templinst|arch=!amd64)_ZN9QtPrivate11QSlotObjectIMN5Peony20FileOperationManagerEFiRK7QStringS5_RKSt10shared_ptrINS1_13GErrorWrapperEEbENS_4ListIJS5_S5_SA_bEEEiE4implEiPNS_15QSlotObjectBaseEP7QObjectPPvPb@Base 2.2.0
+ (optional=templinst|arch=amd64)_ZN9QtPrivate11QSlotObjectIMN5Peony20FileOperationManagerEFvRNS1_19_FileOperationErrorEENS_4ListIJS4_EEEvE4implEiPNS_15QSlotObjectBaseEP7QObjectPPvPb@Base 3.0.0
  (optional=templinst)_ZN9QtPrivate11QSlotObjectIMN5Peony22DirectoryViewContainerEFvRK6QPointENS_4ListIJS5_EEEvE4implEiPNS_15QSlotObjectBaseEP7QObjectPPvPb@Base 2.0.0
  (optional=templinst)_ZN9QtPrivate11QSlotObjectIMN5Peony22DirectoryViewContainerEFvRK7QStringENS_4ListIJS5_EEEvE4implEiPNS_15QSlotObjectBaseEP7QObjectPPvPb@Base 2.0.0
  (optional=templinst)_ZN9QtPrivate11QSlotObjectIMN5Peony22DirectoryViewContainerEFvbENS_4ListIJbEEEvE4implEiPNS_15QSlotObjectBaseEP7QObjectPPvPb@Base 2.1.0
  (optional=templinst)_ZN9QtPrivate11QSlotObjectIMN5Peony22DirectoryViewContainerEFvvENS_4ListIJEEEvE4implEiPNS_15QSlotObjectBaseEP7QObjectPPvPb@Base 2.0.0
 #MISSING: 2.2.0# (optional=templinst)_ZN9QtPrivate11QSlotObjectIMN5Peony24FileOperationErrorDialogEF8QVariantRK7QStringS6_RKSt10shared_ptrINS1_13GErrorWrapperEEbENS_4ListIJS6_S6_SB_bEEES3_E4implEiPNS_15QSlotObjectBaseEP7QObjectPPvPb@Base 2.1.0
- (optional=templinst)_ZN9QtPrivate11QSlotObjectIMN5Peony24FileOperationErrorDialogEFiRK7QStringS5_RKSt10shared_ptrINS1_13GErrorWrapperEEbENS_4ListIJS5_S5_SA_bEEEiE4implEiPNS_15QSlotObjectBaseEP7QObjectPPvPb@Base 2.2.0
+ (optional=templinst|arch=!amd64)_ZN9QtPrivate11QSlotObjectIMN5Peony24FileOperationErrorDialogEFiRK7QStringS5_RKSt10shared_ptrINS1_13GErrorWrapperEEbENS_4ListIJS5_S5_SA_bEEEiE4implEiPNS_15QSlotObjectBaseEP7QObjectPPvPb@Base 2.2.0
  (optional=templinst)_ZN9QtPrivate11QSlotObjectIMN5Peony25PermissionsPropertiesPageEFvRK7QStringS5_ENS_4ListIJS5_S5_EEEvE4implEiPNS_15QSlotObjectBaseEP7QObjectPPvPb@Base 2.0.0
  (optional=templinst)_ZN9QtPrivate11QSlotObjectIMN5Peony25PermissionsPropertiesPageEFviibENS_4ListIJiibEEEvE4implEiPNS_15QSlotObjectBaseEP7QObjectPPvPb@Base 2.0.0
 #MISSING: 2.2.0# (optional=templinst)_ZN9QtPrivate11QSlotObjectIMN5Peony27FileOperationProgressWizardEFvRK7QStringENS_4ListIJS5_EEEvE4implEiPNS_15QSlotObjectBaseEP7QObjectPPvPb@Base 2.0.0
@@ -2651,6 +2726,7 @@ libpeony.so.3 libpeony3 #MINVER#
 #MISSING: 2.2.0# (optional=templinst)_ZN9QtPrivate11QSlotObjectIMN5Peony27FileOperationProgressWizardEFvRK7QStringS5_yyENS_4ListIJS5_S5_RKxSA_EEEvE4implEiPNS_15QSlotObjectBaseEP7QObjectPPvPb@Base 2.0.0
 #MISSING: 2.2.0# (optional=templinst)_ZN9QtPrivate11QSlotObjectIMN5Peony27FileOperationProgressWizardEFvvENS_4ListIJEEEvE4implEiPNS_15QSlotObjectBaseEP7QObjectPPvPb@Base 2.0.0
  (optional=templinst)_ZN9QtPrivate11QSlotObjectIMN5Peony28FileItemProxyFilterSortModelEFvvENS_4ListIJEEEvE4implEiPNS_15QSlotObjectBaseEP7QObjectPPvPb@Base 2.0.0
+ (optional=templinst|arch=amd64)_ZN9QtPrivate11QSlotObjectIMN5Peony32FileOperationErrorDialogConflictEFvRNS1_19_FileOperationErrorEENS_4ListIJS4_EEEvE4implEiPNS_15QSlotObjectBaseEP7QObjectPPvPb@Base 3.0.0
  (optional=templinst)_ZN9QtPrivate11QSlotObjectIMN5Peony7TabPageEFvRK6QPointENS_4ListIJS5_EEEvE4implEiPNS_15QSlotObjectBaseEP7QObjectPPvPb@Base 2.0.0
  (optional=templinst)_ZN9QtPrivate11QSlotObjectIMN5Peony7TabPageEFvRK7QStringbbENS_4ListIJS5_bbEEEvE4implEiPNS_15QSlotObjectBaseEP7QObjectPPvPb@Base 2.0.0
  (optional=templinst)_ZN9QtPrivate11QSlotObjectIMN5Peony7TabPageEFvvENS_4ListIJEEEvE4implEiPNS_15QSlotObjectBaseEP7QObjectPPvPb@Base 2.0.0
@@ -2669,7 +2745,7 @@ libpeony.so.3 libpeony3 #MINVER#
  (optional=templinst|arch=armhf)_ZN9QtPrivate7indexOfIP13FileLabelItemS2_EEiRK5QListIT_ERKT0_i@Base 3.0.0
  (optional=templinst|arch=armhf)_ZN9QtPrivate7indexOfIP7QActionS2_EEiRK5QListIT_ERKT0_i@Base 3.0.0
  (arch=amd64)_ZN9QtPrivate8RefCount3refEv@Base 3.0.0
- (arch=amd64)_ZN9QtPrivate8RefCount5derefEv@Base 3.0.0
+#MISSING: 3.0.0# (arch=amd64)_ZN9QtPrivate8RefCount5derefEv@Base 3.0.0
  (arch=armel)_ZN9__gnu_cxx24__concurrence_lock_errorD0Ev@Base 2.0.1
  (arch=armel)_ZN9__gnu_cxx24__concurrence_lock_errorD1Ev@Base 2.0.1
  (arch=armel)_ZN9__gnu_cxx24__concurrence_lock_errorD2Ev@Base 2.0.1
@@ -2774,6 +2850,7 @@ libpeony.so.3 libpeony3 #MINVER#
  _ZNK5Peony16AdvanceSearchBar10metaObjectEv@Base 2.0.0
  _ZNK5Peony16FileLaunchAction10metaObjectEv@Base 2.0.0
  _ZNK5Peony16FileNodeReporter10metaObjectEv@Base 2.0.0
+ (arch=amd64)_ZNK5Peony16FileRenameDialog10metaObjectEv@Base 3.0.0
  _ZNK5Peony16IconViewFactory210metaObjectEv@Base 2.0.0
  _ZNK5Peony16ListViewDelegate10metaObjectEv@Base 2.0.0
  _ZNK5Peony16ListViewDelegate12createEditorEP7QWidgetRK20QStyleOptionViewItemRK11QModelIndex@Base 2.0.0
@@ -2818,6 +2895,7 @@ libpeony.so.3 libpeony3 #MINVER#
  _ZNK5Peony19SideBarAbstractItem10metaObjectEv@Base 2.0.0
  _ZNK5Peony19SideBarFavoriteItem10metaObjectEv@Base 2.0.0
  _ZNK5Peony19SideBarPersonalItem10metaObjectEv@Base 2.0.0
+ (arch=amd64)_ZNK5Peony20FileInformationLabel10metaObjectEv@Base 3.0.0
  _ZNK5Peony20FileOperationManager10metaObjectEv@Base 2.0.0
  _ZNK5Peony20FileUntrashOperation10metaObjectEv@Base 2.0.0
  _ZNK5Peony20PreviewOptionToolBar10metaObjectEv@Base 2.0.0
@@ -2860,10 +2938,13 @@ libpeony.so.3 libpeony3 #MINVER#
 #MISSING: 2.1.0# _ZNK5Peony28FileItemProxyFilterSortModel25checkFileModifyTimeFilterE7QString@Base 2.0.0
  _ZNK5Peony28FileItemProxyFilterSortModel25checkFileModifyTimeFilterEy@Base 2.1.0
  _ZNK5Peony28FileItemProxyFilterSortModel8lessThanERK11QModelIndexS3_@Base 2.0.0
+ (arch=amd64)_ZNK5Peony28FileOperationErrorDialogBase10metaObjectEv@Base 3.0.0
  _ZNK5Peony28RecentAndTrashPropertiesPage10metaObjectEv@Base 2.0.0
  _ZNK5Peony29ComputerPropertiesPageFactory10metaObjectEv@Base 2.0.0
  _ZNK5Peony29PropertiesWindowPluginManager10metaObjectEv@Base 2.0.0
  _ZNK5Peony30FileOperationAfterProgressPage10metaObjectEv@Base 2.0.0
+ (arch=amd64)_ZNK5Peony31FileOperationErrorDialogWarning10metaObjectEv@Base 3.0.0
+ (arch=amd64)_ZNK5Peony32FileOperationErrorDialogConflict10metaObjectEv@Base 3.0.0
  _ZNK5Peony32PermissionsPropertiesPageFactory10metaObjectEv@Base 2.0.0
  _ZNK5Peony35RecentAndTrashPropertiesPageFactory10metaObjectEv@Base 2.0.0
  _ZNK5Peony7SideBar10metaObjectEv@Base 2.0.0
@@ -2881,6 +2962,7 @@ libpeony.so.3 libpeony3 #MINVER#
  _ZNK5Peony9StatusBar10metaObjectEv@Base 2.0.0
  (optional=templinst|arch=amd64)_ZNK5QHashI7QString11QStringListE8findNodeERKS0_Pj@Base 3.0.0
  (optional=templinst|arch=amd64 armhf)_ZNK5QHashI7QString11QStringListE8findNodeERKS0_j@Base 2.0.0
+ (optional=templinst|arch=amd64)_ZNK5QHashI7QString15QHashDummyValueE8findNodeERKS0_j@Base 3.0.0
  (optional=templinst|arch=amd64)_ZNK5QHashI7QString5QIconE8findNodeERKS0_Pj@Base 3.0.0
  (optional=templinst|arch=amd64 armhf)_ZNK5QHashI7QString5QIconE8findNodeERKS0_j@Base 2.0.0
  (optional=templinst|arch=amd64)_ZNK5QHashI7QString8QVariantE8findNodeERKS0_Pj@Base 3.0.0
@@ -2903,7 +2985,8 @@ libpeony.so.3 libpeony3 #MINVER#
  (optional=templinst|arch=amd64)_ZNK5QHashIP15QListWidgetItemPN5Peony16FileLaunchActionEE8findNodeERKS1_Pj@Base 3.0.0
 #MISSING: 2.1.0# (optional=templinst)_ZNK5QHashIi5QPairIi7QStringEE6valuesERKi@Base 2.0.0
  (optional=templinst|arch=amd64)_ZNK5QHashIi5QPairIi7QStringEE8findNodeERKiPj@Base 3.0.0
- (optional=templinst|arch=amd64)_ZNK5QHashIiN5Peony13FileOperation12ResponseTypeEE8findNodeERKiPj@Base 3.0.0
+#MISSING: 3.0.0# (optional=templinst|arch=amd64)_ZNK5QHashIiN5Peony13FileOperation12ResponseTypeEE8findNodeERKiPj@Base 3.0.0
+ (optional=templinst|arch=amd64)_ZNK5QHashIiN5Peony17ExceptionResponseEE8findNodeERKiPj@Base 3.0.0
 #MISSING: 2.1.0# (optional=templinst)_ZNK5QListI7QStringE7indexOfERKS0_i@Base 2.0.0
  (optional=templinst|arch=amd64)_ZNK5QListIP13FileLabelItemE7indexOfERKS1_i@Base 3.0.0
  (optional=templinst|arch=amd64)_ZNK5QListIP7QActionE7indexOfERKS1_i@Base 3.0.0
@@ -2922,6 +3005,8 @@ libpeony.so.3 libpeony3 #MINVER#
  (optional=templinst)_ZNK8QMapNodeIi7QStringE4copyEP8QMapDataIiS0_E@Base 2.0.0
  (arch=armel)_ZNK9__gnu_cxx24__concurrence_lock_error4whatEv@Base 2.0.1
  (arch=armel)_ZNK9__gnu_cxx26__concurrence_unlock_error4whatEv@Base 2.0.1
+ (optional=templinst|arch=amd64)_ZNSt12__shared_ptrIN5Peony15GObjectTemplateI13_GCancellableEELN9__gnu_cxx12_Lock_policyE2EEC1ERKS6_@Base 3.0.0
+ (optional=templinst|arch=amd64)_ZNSt12__shared_ptrIN5Peony15GObjectTemplateI13_GCancellableEELN9__gnu_cxx12_Lock_policyE2EEC2ERKS6_@Base 3.0.0
  (optional=templinst|arch=armel)_ZNSt15_Sp_counted_ptrIDnLN9__gnu_cxx12_Lock_policyE1EE10_M_disposeEv@Base 2.0.1
  (optional=templinst)_ZNSt15_Sp_counted_ptrIDnLN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv@Base 2.0.0
  (optional=templinst|arch=armel)_ZNSt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE1EE10_M_destroyEv@Base 2.0.1
@@ -3225,6 +3310,7 @@ libpeony.so.3 libpeony3 #MINVER#
  _ZTIN5Peony16AdvanceSearchBarE@Base 2.0.0
  _ZTIN5Peony16FileLaunchActionE@Base 2.0.0
  _ZTIN5Peony16FileNodeReporterE@Base 2.0.0
+ (arch=amd64)_ZTIN5Peony16FileRenameDialogE@Base 3.0.0
  _ZTIN5Peony16IconViewFactory2E@Base 2.0.0
  _ZTIN5Peony16ListViewDelegateE@Base 2.0.0
  _ZTIN5Peony16ListViewFactory2E@Base 2.0.0
@@ -3261,6 +3347,7 @@ libpeony.so.3 libpeony3 #MINVER#
  _ZTIN5Peony19SideBarAbstractItemE@Base 2.0.0
  _ZTIN5Peony19SideBarFavoriteItemE@Base 2.0.0
  _ZTIN5Peony19SideBarPersonalItemE@Base 2.0.0
+ (arch=amd64)_ZTIN5Peony20FileInformationLabelE@Base 3.0.0
  _ZTIN5Peony20FileOperationManagerE@Base 2.0.0
  _ZTIN5Peony20FileUntrashOperationE@Base 2.0.0
  _ZTIN5Peony20PreviewOptionToolBarE@Base 2.0.0
@@ -3295,10 +3382,13 @@ libpeony.so.3 libpeony3 #MINVER#
  _ZTIN5Peony27ViewFactorySortFilterModel2E@Base 2.0.0
  _ZTIN5Peony28DirectoryViewFactoryManager2E@Base 2.0.0
  _ZTIN5Peony28FileItemProxyFilterSortModelE@Base 2.0.0
+ (arch=amd64)_ZTIN5Peony28FileOperationErrorDialogBaseE@Base 3.0.0
  _ZTIN5Peony28RecentAndTrashPropertiesPageE@Base 2.0.0
  _ZTIN5Peony29ComputerPropertiesPageFactoryE@Base 2.0.0
  _ZTIN5Peony29PropertiesWindowPluginManagerE@Base 2.0.0
  _ZTIN5Peony30FileOperationAfterProgressPageE@Base 2.0.0
+ (arch=amd64)_ZTIN5Peony31FileOperationErrorDialogWarningE@Base 3.0.0
+ (arch=amd64)_ZTIN5Peony32FileOperationErrorDialogConflictE@Base 3.0.0
  _ZTIN5Peony32PermissionsPropertiesPageFactoryE@Base 2.0.0
  _ZTIN5Peony34PropertiesWindowTabPagePluginIfaceE@Base 2.0.0
  _ZTIN5Peony35RecentAndTrashPropertiesPageFactoryE@Base 2.0.0
@@ -3415,6 +3505,7 @@ libpeony.so.3 libpeony3 #MINVER#
  _ZTSN5Peony16AdvanceSearchBarE@Base 2.0.0
  _ZTSN5Peony16FileLaunchActionE@Base 2.0.0
  _ZTSN5Peony16FileNodeReporterE@Base 2.0.0
+ (arch=amd64)_ZTSN5Peony16FileRenameDialogE@Base 3.0.0
  _ZTSN5Peony16IconViewFactory2E@Base 2.0.0
  _ZTSN5Peony16ListViewDelegateE@Base 2.0.0
  _ZTSN5Peony16ListViewFactory2E@Base 2.0.0
@@ -3451,6 +3542,7 @@ libpeony.so.3 libpeony3 #MINVER#
  _ZTSN5Peony19SideBarAbstractItemE@Base 2.0.0
  _ZTSN5Peony19SideBarFavoriteItemE@Base 2.0.0
  _ZTSN5Peony19SideBarPersonalItemE@Base 2.0.0
+ (arch=amd64)_ZTSN5Peony20FileInformationLabelE@Base 3.0.0
  _ZTSN5Peony20FileOperationManagerE@Base 2.0.0
  _ZTSN5Peony20FileUntrashOperationE@Base 2.0.0
  _ZTSN5Peony20PreviewOptionToolBarE@Base 2.0.0
@@ -3485,10 +3577,13 @@ libpeony.so.3 libpeony3 #MINVER#
  _ZTSN5Peony27ViewFactorySortFilterModel2E@Base 2.0.0
  _ZTSN5Peony28DirectoryViewFactoryManager2E@Base 2.0.0
  _ZTSN5Peony28FileItemProxyFilterSortModelE@Base 2.0.0
+ (arch=amd64)_ZTSN5Peony28FileOperationErrorDialogBaseE@Base 3.0.0
  _ZTSN5Peony28RecentAndTrashPropertiesPageE@Base 2.0.0
  _ZTSN5Peony29ComputerPropertiesPageFactoryE@Base 2.0.0
  _ZTSN5Peony29PropertiesWindowPluginManagerE@Base 2.0.0
  _ZTSN5Peony30FileOperationAfterProgressPageE@Base 2.0.0
+ (arch=amd64)_ZTSN5Peony31FileOperationErrorDialogWarningE@Base 3.0.0
+ (arch=amd64)_ZTSN5Peony32FileOperationErrorDialogConflictE@Base 3.0.0
  _ZTSN5Peony32PermissionsPropertiesPageFactoryE@Base 2.0.0
  _ZTSN5Peony34PropertiesWindowTabPagePluginIfaceE@Base 2.0.0
  _ZTSN5Peony35RecentAndTrashPropertiesPageFactoryE@Base 2.0.0
@@ -3601,6 +3696,7 @@ libpeony.so.3 libpeony3 #MINVER#
  _ZTVN5Peony16AdvanceSearchBarE@Base 2.0.0
  _ZTVN5Peony16FileLaunchActionE@Base 2.0.0
  _ZTVN5Peony16FileNodeReporterE@Base 2.0.0
+ (arch=amd64)_ZTVN5Peony16FileRenameDialogE@Base 3.0.0
  _ZTVN5Peony16IconViewFactory2E@Base 2.0.0
  _ZTVN5Peony16ListViewDelegateE@Base 2.0.0
  _ZTVN5Peony16ListViewFactory2E@Base 2.0.0
@@ -3633,6 +3729,7 @@ libpeony.so.3 libpeony3 #MINVER#
  _ZTVN5Peony19SideBarAbstractItemE@Base 2.0.0
  _ZTVN5Peony19SideBarFavoriteItemE@Base 2.0.0
  _ZTVN5Peony19SideBarPersonalItemE@Base 2.0.0
+ (arch=amd64)_ZTVN5Peony20FileInformationLabelE@Base 3.0.0
  _ZTVN5Peony20FileOperationManagerE@Base 2.0.0
  _ZTVN5Peony20FileUntrashOperationE@Base 2.0.0
  _ZTVN5Peony20PreviewOptionToolBarE@Base 2.0.0
@@ -3649,7 +3746,7 @@ libpeony.so.3 libpeony3 #MINVER#
  _ZTVN5Peony24FileOperationErrorDialogE@Base 2.0.0
  _ZTVN5Peony24FileOperationPreparePageE@Base 2.0.0
  _ZTVN5Peony25DefaultPreviewPageFactoryE@Base 2.0.0
- _ZTVN5Peony25FileOperationErrorHandlerE@Base 2.0.0
+ (arch=!amd64)_ZTVN5Peony25FileOperationErrorHandlerE@Base 3.0.0
  _ZTVN5Peony25FileOperationProgressPageE@Base 2.0.0
  _ZTVN5Peony25FileOperationRollbackPageE@Base 2.0.0
  _ZTVN5Peony25PermissionsPropertiesPageE@Base 2.0.0
@@ -3664,10 +3761,13 @@ libpeony.so.3 libpeony3 #MINVER#
  _ZTVN5Peony27ViewFactorySortFilterModel2E@Base 2.0.0
  _ZTVN5Peony28DirectoryViewFactoryManager2E@Base 2.0.0
  _ZTVN5Peony28FileItemProxyFilterSortModelE@Base 2.0.0
+ (arch=amd64)_ZTVN5Peony28FileOperationErrorDialogBaseE@Base 3.0.0
  _ZTVN5Peony28RecentAndTrashPropertiesPageE@Base 2.0.0
  _ZTVN5Peony29ComputerPropertiesPageFactoryE@Base 2.0.0
  _ZTVN5Peony29PropertiesWindowPluginManagerE@Base 2.0.0
  _ZTVN5Peony30FileOperationAfterProgressPageE@Base 2.0.0
+ (arch=amd64)_ZTVN5Peony31FileOperationErrorDialogWarningE@Base 3.0.0
+ (arch=amd64)_ZTVN5Peony32FileOperationErrorDialogConflictE@Base 3.0.0
  _ZTVN5Peony32PermissionsPropertiesPageFactoryE@Base 2.0.0
  _ZTVN5Peony35RecentAndTrashPropertiesPageFactoryE@Base 2.0.0
  _ZTVN5Peony7SideBarE@Base 2.0.0
@@ -3734,12 +3834,13 @@ libpeony.so.3 libpeony3 #MINVER#
  (optional=templinst)_ZZN18QMetaTypeIdQObjectIPN5Peony17FileOperationInfoELi8EE14qt_metatype_idEvE11metatype_id@Base 2.2.0
  (optional=templinst)_ZZN18QMetaTypeIdQObjectIPN5Peony28FileItemProxyFilterSortModelELi8EE14qt_metatype_idEvE11metatype_id@Base 2.0.0
  (optional=templinst)_ZZN9QtPrivate15ConnectionTypesINS_4ListIJRK7QStringRKxEEELb1EE5typesEvE1t@Base 2.0.0
- (optional=templinst)_ZZN9QtPrivate15ConnectionTypesINS_4ListIJRK7QStringS4_RKSt10shared_ptrIN5Peony13GErrorWrapperEEbEEELb1EE5typesEvE1t@Base 2.0.0
+ (optional=templinst|arch=!amd64)_ZZN9QtPrivate15ConnectionTypesINS_4ListIJRK7QStringS4_RKSt10shared_ptrIN5Peony13GErrorWrapperEEbEEELb1EE5typesEvE1t@Base 2.0.0
  (optional=templinst)_ZZN9QtPrivate15ConnectionTypesINS_4ListIJbEEELb1EE5typesEvE1t@Base 2.0.0
  (optional=templinst)_ZZN9QtPrivate15ConnectionTypesINS_4ListIJyyyEEELb1EE5typesEvE1t@Base 2.0.0
  (optional=templinst)_ZZN9QtPrivate19ValueTypeIsMetaTypeI5QListI11QModelIndexELb1EE17registerConverterEiE1f@Base 2.0.0
  (optional=templinst|arch=amd64)_ZZN9QtPrivate19ValueTypeIsMetaTypeI5QListI21QPersistentModelIndexELb1EE17registerConverterEiE1f@Base 3.0.0
  _ZZNSt19_Sp_make_shared_tag5_S_tiEvE5__tag@Base 2.0.0
+ (arch=amd64)_ZnePKcRK7QString@Base 3.0.0
  btn@Base 2.2.0
  comparer@Base 2.0.0
  global_instance@Base 2.1.0
@@ -3894,6 +3995,7 @@ libpeony.so.3 libpeony3 #MINVER#
  (c++)"non-virtual thunk to Peony::FileCountOperation::~FileCountOperation()@Base" 2.0.0
  (c++)"non-virtual thunk to Peony::FileDeleteOperation::run()@Base" 2.0.0
  (c++)"non-virtual thunk to Peony::FileDeleteOperation::~FileDeleteOperation()@Base" 2.0.0
+ (c++|arch=amd64)"non-virtual thunk to Peony::FileInformationLabel::~FileInformationLabel()@Base" 3.0.0
  (c++)"non-virtual thunk to Peony::FileLabelInternalMenuPlugin::description()@Base" 2.1.0
  (c++)"non-virtual thunk to Peony::FileLabelInternalMenuPlugin::icon()@Base" 2.1.0
  (c++)"non-virtual thunk to Peony::FileLabelInternalMenuPlugin::isEnable()@Base" 2.1.0
@@ -3911,13 +4013,20 @@ libpeony.so.3 libpeony3 #MINVER#
  (c++)"non-virtual thunk to Peony::FileOperation::run()@Base" 2.0.0
  (c++)"non-virtual thunk to Peony::FileOperation::~FileOperation()@Base" 2.0.0
  (c++)"non-virtual thunk to Peony::FileOperationAfterProgressPage::~FileOperationAfterProgressPage()@Base" 2.0.0
- (c++)"non-virtual thunk to Peony::FileOperationErrorDialog::handleError(QString const&, QString const&, std::shared_ptr<Peony::GErrorWrapper> const&, bool)@Base" 2.0.0
+ (c++|arch=amd64)"non-virtual thunk to Peony::FileOperationErrorDialog::handle(Peony::_FileOperationError&)@Base" 3.0.0
+ (c++|arch=!amd64)"non-virtual thunk to Peony::FileOperationErrorDialog::handleError(QString const&, QString const&, std::shared_ptr<Peony::GErrorWrapper> const&, bool)@Base" 3.0.0
  (c++)"non-virtual thunk to Peony::FileOperationErrorDialog::~FileOperationErrorDialog()@Base" 2.0.0
+ (c++|arch=amd64)"non-virtual thunk to Peony::FileOperationErrorDialogBase::~FileOperationErrorDialogBase()@Base" 3.0.0
+ (c++|arch=amd64)"non-virtual thunk to Peony::FileOperationErrorDialogConflict::handle(Peony::_FileOperationError&)@Base" 3.0.0
+ (c++|arch=amd64)"non-virtual thunk to Peony::FileOperationErrorDialogConflict::~FileOperationErrorDialogConflict()@Base" 3.0.0
+ (c++|arch=amd64)"non-virtual thunk to Peony::FileOperationErrorDialogWarning::handle(Peony::_FileOperationError&)@Base" 3.0.0
+ (c++|arch=amd64)"non-virtual thunk to Peony::FileOperationErrorDialogWarning::~FileOperationErrorDialogWarning()@Base" 3.0.0
  (c++)"non-virtual thunk to Peony::FileOperationPreparePage::~FileOperationPreparePage()@Base" 2.0.0
  (c++)"non-virtual thunk to Peony::FileOperationProgressPage::~FileOperationProgressPage()@Base" 2.0.0
  (c++)"non-virtual thunk to Peony::FileOperationProgressWizard::~FileOperationProgressWizard()@Base" 2.0.0
  (c++)"non-virtual thunk to Peony::FileOperationRollbackPage::~FileOperationRollbackPage()@Base" 2.0.0
  (c++)"non-virtual thunk to Peony::FilePreviewPage::~FilePreviewPage()@Base" 2.0.0
+ (c++|arch=amd64)"non-virtual thunk to Peony::FileRenameDialog::~FileRenameDialog()@Base" 3.0.0
  (c++)"non-virtual thunk to Peony::FileRenameOperation::run()@Base" 2.0.0
  (c++)"non-virtual thunk to Peony::FileRenameOperation::~FileRenameOperation()@Base" 2.0.0
  (c++)"non-virtual thunk to Peony::FileTrashOperation::run()@Base" 2.0.0
