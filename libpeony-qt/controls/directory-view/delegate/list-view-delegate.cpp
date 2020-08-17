@@ -82,6 +82,7 @@ void ListViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
 QWidget *ListViewDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
     TextEdit *edit = new TextEdit(parent);
+    edit->setAcceptRichText(false);
     edit->setContextMenuPolicy(Qt::CustomContextMenu);
     edit->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     edit->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
