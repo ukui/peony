@@ -51,6 +51,16 @@ FileItem::FileItem(std::shared_ptr<Peony::FileInfo> info, FileItem *parentItem, 
 
     m_backend_enumerator = new FileEnumerator(this);
 
+    m_thumbnail_watcher = std::make_shared<Peony::FileWatcher>("thumbnail://");
+    connect(m_thumbnail_watcher.get(), &FileWatcher::fileChanged, this, [=](const QString &uri){
+        auto index = m_model->indexFromUri(uri);
+        if (index.isValid()) {
+            auto item = m_model->itemFromIndex(index);
+            if (item)
+                m_model->dataChanged(item->firstColumnIndex(), item->lastColumnIndex());
+        }
+    });
+
     // avoid call any method when model is deleted.
     setParent(m_model);
 }
@@ -203,7 +213,7 @@ void FileItem::findChildrenAsync()
                             Q_EMIT this->m_model->findChildrenFinished();
                             Q_EMIT m_model->updated();
                             for (auto info : infos) {
-                                ThumbnailManager::getInstance()->createThumbnail(info->uri(), m_watcher);
+                                ThumbnailManager::getInstance()->createThumbnail(info->uri(), m_thumbnail_watcher);
                             }
                         }
                     });
@@ -404,8 +414,8 @@ void FileItem::onChildAdded(const QString &uri)
     if (child) {
         qDebug()<<"has added";
         //child info maybe changed, so need sync update again
-        child->updateInfoSync();
-        m_model->updated();
+        child->updateInfoAsync();
+        //m_model->updated();
         return;
     }
     FileItem *newChild = new FileItem(FileInfo::fromUri(uri), this, m_model);
@@ -413,8 +423,8 @@ void FileItem::onChildAdded(const QString &uri)
     m_children->append(newChild);
     m_model->endInsertRows();
     //use sync update here.
-    newChild->updateInfoSync();
-    m_model->updated();
+    newChild->updateInfoAsync();
+    //m_model->updated();
 }
 
 void FileItem::onChildRemoved(const QString &uri)
@@ -519,6 +529,7 @@ void FileItem::updateInfoSync()
     FileInfoJob *job = new FileInfoJob(m_info);
     if (job->querySync()) {
         m_model->dataChanged(this->firstColumnIndex(), this->lastColumnIndex());
+        ThumbnailManager::getInstance()->createThumbnail(this->uri(), m_thumbnail_watcher);
     }
     job->deleteLater();
 }
@@ -529,6 +540,7 @@ void FileItem::updateInfoAsync()
     job->setAutoDelete();
     job->connect(job, &FileInfoJob::infoUpdated, this, [=]() {
         m_model->dataChanged(this->firstColumnIndex(), this->lastColumnIndex());
+        ThumbnailManager::getInstance()->createThumbnail(this->uri(), m_thumbnail_watcher);
     });
     job->queryAsync();
 }

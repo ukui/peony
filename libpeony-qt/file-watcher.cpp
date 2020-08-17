@@ -35,6 +35,9 @@ using namespace Peony;
 
 FileWatcher::FileWatcher(QString uri, QObject *parent) : QObject(parent)
 {
+    if (uri.startsWith("thumbnail://"))
+        return;
+
     m_uri = uri;
     m_target_uri = uri;
     m_file = g_file_new_for_uri(uri.toUtf8().constData());
