@@ -34,6 +34,7 @@
 #include <QTextOption>
 
 #include <QMouseEvent>
+#include <QStyleHints>
 
 #include <QDebug>
 
@@ -171,7 +172,7 @@ void DesktopIndexWidget::mousePressEvent(QMouseEvent *event)
         auto view = m_delegate->getView();
         view->m_real_do_edit = true;
         if (view->m_edit_trigger_timer.isActive()) {
-            if (view->m_edit_trigger_timer.remainingTime() < 2250 && view->m_edit_trigger_timer.remainingTime() > 0) {
+            if (view->m_edit_trigger_timer.remainingTime() < 3000 - qApp->styleHints()->mouseDoubleClickInterval() && view->m_edit_trigger_timer.remainingTime() > 0) {
                 QTimer::singleShot(300, view, [=]() {
                     if (view->m_real_do_edit) {
                         //not allow to edit special items:computer,trash and personal home path folder name

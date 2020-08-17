@@ -34,6 +34,7 @@
 #include <QScrollBar>
 
 #include <QMouseEvent>
+#include <QStyleHints>
 
 #include "file-info.h"
 #include "file-item-proxy-filter-sort-model.h"
@@ -245,7 +246,7 @@ void IconViewIndexWidget::mousePressEvent(QMouseEvent *e)
 
         view->m_editValid = true;
         if (view->m_renameTimer->isActive()) {
-            if (view->m_renameTimer->remainingTime() < 2250 && view->m_renameTimer->remainingTime() > 0) {
+            if (view->m_renameTimer->remainingTime() < 3000 - qApp->styleHints()->mouseDoubleClickInterval() && view->m_renameTimer->remainingTime() > 0) {
                 view->slotRename();
             } else {
                 view->m_editValid = false;

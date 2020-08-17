@@ -45,6 +45,9 @@
 #include <QMimeData>
 #include <QDragMoveEvent>
 
+#include <QApplication>
+#include <QStyleHints>
+
 #include <QDebug>
 
 using namespace Peony;
@@ -239,7 +242,7 @@ void ListView::mousePressEvent(QMouseEvent *e)
             }
         }
         //qDebug()<<m_renameTimer->remainingTime()<<m_editValid<<all_index_in_same_row;
-        if(m_renameTimer->remainingTime()>=0 && m_renameTimer->remainingTime() <= 2250
+        if(m_renameTimer->remainingTime()>=0 && m_renameTimer->remainingTime() <= 3000 - qApp->styleHints()->mouseDoubleClickInterval()
                 && indexAt(e->pos()) == m_last_index && m_last_index.isValid() && m_editValid == true && all_index_in_same_row)
         {
             slotRename();
