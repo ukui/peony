@@ -1,16 +1,16 @@
-# SymbolsHelper-Confirmed: 3.0.0 amd64 armhf ppc64el
+# SymbolsHelper-Confirmed: 3.0.2 amd64 arm64 armhf ppc64el s390x
 libpeony.so.3 libpeony3 #MINVER#
 * Build-Depends-Package: libpeony-dev
- (optional=templinst)_Z17qRegisterMetaTypeISt10shared_ptrIN5Peony13GErrorWrapperEEEiPKcPT_N9QtPrivate21MetaTypeDefinedHelperIS6_Xaasr12QMetaTypeId2IS6_E7DefinedntsrSB_9IsBuiltInEE11DefinedTypeE@Base 2.0.0
+ (optional=templinst|arch=!s390x)_Z17qRegisterMetaTypeISt10shared_ptrIN5Peony13GErrorWrapperEEEiPKcPT_N9QtPrivate21MetaTypeDefinedHelperIS6_Xaasr12QMetaTypeId2IS6_E7DefinedntsrSB_9IsBuiltInEE11DefinedTypeE@Base 2.0.0
  _Z26qInitResources_libpeony_qtv@Base 2.0.0
- (optional=templinst|arch=armhf)_Z27qRegisterNormalizedMetaTypeI5QListI11QModelIndexEEiRK10QByteArrayPT_N9QtPrivate21MetaTypeDefinedHelperIS6_Xaasr12QMetaTypeId2IS6_E7DefinedntsrSB_9IsBuiltInEE11DefinedTypeE@Base 3.0.0
- (optional=templinst|arch=amd64)_Z27qRegisterNormalizedMetaTypeI5QListI21QPersistentModelIndexEEiRK10QByteArrayPT_N9QtPrivate21MetaTypeDefinedHelperIS6_Xaasr12QMetaTypeId2IS6_E7DefinedntsrSB_9IsBuiltInEE11DefinedTypeE@Base 3.0.0
+ (optional=templinst|arch=amd64 arm64 armhf)_Z27qRegisterNormalizedMetaTypeI5QListI11QModelIndexEEiRK10QByteArrayPT_N9QtPrivate21MetaTypeDefinedHelperIS6_Xaasr12QMetaTypeId2IS6_E7DefinedntsrSB_9IsBuiltInEE11DefinedTypeE@Base 3.0.0
+#MISSING: 3.0.2# (optional=templinst|arch=amd64)_Z27qRegisterNormalizedMetaTypeI5QListI21QPersistentModelIndexEEiRK10QByteArrayPT_N9QtPrivate21MetaTypeDefinedHelperIS6_Xaasr12QMetaTypeId2IS6_E7DefinedntsrSB_9IsBuiltInEE11DefinedTypeE@Base 3.0.0
  _Z29qCleanupResources_libpeony_qtv@Base 2.0.0
  _Z40peony_search_vfs_file_enumerate_childrenP6_GFilePKc19GFileQueryInfoFlagsP13_GCancellablePP7_GError@Base 2.0.0
  _Z42peony_search_vfs_file_enumerator_parse_uriP29_PeonySearchVFSFileEnumeratorPKc@Base 2.0.0
- (arch=!amd64)_ZGVZN9QtPrivate15ConnectionTypesINS_4ListIJRK7QStringS4_RKSt10shared_ptrIN5Peony13GErrorWrapperEEbEEELb1EE5typesEvE1t@Base 3.0.0
+#MISSING: 3.0.2# (arch=!amd64)_ZGVZN9QtPrivate15ConnectionTypesINS_4ListIJRK7QStringS4_RKSt10shared_ptrIN5Peony13GErrorWrapperEEbEEELb1EE5typesEvE1t@Base 3.0.0
  _ZGVZN9QtPrivate19ValueTypeIsMetaTypeI5QListI11QModelIndexELb1EE17registerConverterEiE1f@Base 2.0.0
- (arch=amd64)_ZGVZN9QtPrivate19ValueTypeIsMetaTypeI5QListI21QPersistentModelIndexELb1EE17registerConverterEiE1f@Base 3.0.0
+#MISSING: 3.0.2# (arch=amd64)_ZGVZN9QtPrivate19ValueTypeIsMetaTypeI5QListI21QPersistentModelIndexELb1EE17registerConverterEiE1f@Base 3.0.0
  _ZN10QByteArrayD1Ev@Base 2.0.0
  _ZN10QByteArrayD2Ev@Base 2.0.0
  _ZN11OtherButton10paintEventEP11QPaintEvent@Base 2.2.0
@@ -53,6 +53,7 @@ libpeony.so.3 libpeony3 #MINVER#
  _ZN11ProgressBarD0Ev@Base 2.2.0
  _ZN11ProgressBarD1Ev@Base 2.2.0
  _ZN11ProgressBarD2Ev@Base 2.2.0
+ (optional=templinst|arch=s390x)_ZN11QMetaTypeIdI5QListI11QModelIndexEE14qt_metatype_idEv@Base 3.0.2
  _ZN12PdfThumbnail17generateThumbnailEj@Base 2.0.0
  _ZN12PdfThumbnailC1ERK7QStringj@Base 2.0.0
  _ZN12PdfThumbnailC2ERK7QStringj@Base 2.0.0
@@ -156,24 +157,24 @@ libpeony.so.3 libpeony3 #MINVER#
  (optional=templinst)_ZN16QFutureInterfaceIvED0Ev@Base 2.0.0
  (optional=templinst)_ZN16QFutureInterfaceIvED1Ev@Base 2.0.0
  (optional=templinst)_ZN16QFutureInterfaceIvED2Ev@Base 2.0.0
- (arch=armhf)_ZN16Ui_Format_Dialog13retranslateUiEP7QDialog@Base 3.0.0
+ (arch=amd64 arm64 armhf s390x)_ZN16Ui_Format_Dialog13retranslateUiEP7QDialog@Base 3.0.2
  _ZN16Ui_Format_Dialog7setupUiEP7QDialog@Base 2.2.0
  (optional=templinst)_ZN17QtMetaTypePrivate19IteratorOwnerCommonIN5QListI11QModelIndexE14const_iteratorEE5equalEPKPvS8_@Base 2.0.0
  (optional=templinst)_ZN17QtMetaTypePrivate19IteratorOwnerCommonIN5QListI11QModelIndexE14const_iteratorEE6assignEPPvPKS6_@Base 2.0.0
  (optional=templinst)_ZN17QtMetaTypePrivate19IteratorOwnerCommonIN5QListI11QModelIndexE14const_iteratorEE7advanceEPPvi@Base 2.0.0
  (optional=templinst)_ZN17QtMetaTypePrivate19IteratorOwnerCommonIN5QListI11QModelIndexE14const_iteratorEE7destroyEPPv@Base 2.0.0
- (optional=templinst|arch=amd64)_ZN17QtMetaTypePrivate19IteratorOwnerCommonIN5QListI21QPersistentModelIndexE14const_iteratorEE5equalEPKPvS8_@Base 3.0.0
- (optional=templinst|arch=amd64)_ZN17QtMetaTypePrivate19IteratorOwnerCommonIN5QListI21QPersistentModelIndexE14const_iteratorEE6assignEPPvPKS6_@Base 3.0.0
- (optional=templinst|arch=amd64)_ZN17QtMetaTypePrivate19IteratorOwnerCommonIN5QListI21QPersistentModelIndexE14const_iteratorEE7advanceEPPvi@Base 3.0.0
- (optional=templinst|arch=amd64)_ZN17QtMetaTypePrivate19IteratorOwnerCommonIN5QListI21QPersistentModelIndexE14const_iteratorEE7destroyEPPv@Base 3.0.0
- (optional=templinst|arch=amd64)_ZN17QtMetaTypePrivate23QMetaTypeFunctionHelperI14QItemSelectionLb1EE8DestructEPv@Base 3.0.0
- (optional=templinst|arch=amd64)_ZN17QtMetaTypePrivate23QMetaTypeFunctionHelperI14QItemSelectionLb1EE9ConstructEPvPKv@Base 3.0.0
+#MISSING: 3.0.2# (optional=templinst|arch=amd64)_ZN17QtMetaTypePrivate19IteratorOwnerCommonIN5QListI21QPersistentModelIndexE14const_iteratorEE5equalEPKPvS8_@Base 3.0.0
+#MISSING: 3.0.2# (optional=templinst|arch=amd64)_ZN17QtMetaTypePrivate19IteratorOwnerCommonIN5QListI21QPersistentModelIndexE14const_iteratorEE6assignEPPvPKS6_@Base 3.0.0
+#MISSING: 3.0.2# (optional=templinst|arch=amd64)_ZN17QtMetaTypePrivate19IteratorOwnerCommonIN5QListI21QPersistentModelIndexE14const_iteratorEE7advanceEPPvi@Base 3.0.0
+#MISSING: 3.0.2# (optional=templinst|arch=amd64)_ZN17QtMetaTypePrivate19IteratorOwnerCommonIN5QListI21QPersistentModelIndexE14const_iteratorEE7destroyEPPv@Base 3.0.0
+#MISSING: 3.0.2# (optional=templinst|arch=amd64)_ZN17QtMetaTypePrivate23QMetaTypeFunctionHelperI14QItemSelectionLb1EE8DestructEPv@Base 3.0.0
+#MISSING: 3.0.2# (optional=templinst|arch=amd64)_ZN17QtMetaTypePrivate23QMetaTypeFunctionHelperI14QItemSelectionLb1EE9ConstructEPvPKv@Base 3.0.0
  (optional=templinst)_ZN17QtMetaTypePrivate23QMetaTypeFunctionHelperI5QListI11QModelIndexELb1EE8DestructEPv@Base 2.0.0
  (optional=templinst)_ZN17QtMetaTypePrivate23QMetaTypeFunctionHelperI5QListI11QModelIndexELb1EE9ConstructEPvPKv@Base 2.0.0
- (optional=templinst|arch=amd64)_ZN17QtMetaTypePrivate23QMetaTypeFunctionHelperI5QListI21QPersistentModelIndexELb1EE8DestructEPv@Base 3.0.0
- (optional=templinst|arch=amd64)_ZN17QtMetaTypePrivate23QMetaTypeFunctionHelperI5QListI21QPersistentModelIndexELb1EE9ConstructEPvPKv@Base 3.0.0
- (optional=templinst|arch=amd64)_ZN17QtMetaTypePrivate23QMetaTypeFunctionHelperIN18QAbstractItemModel16LayoutChangeHintELb1EE8DestructEPv@Base 3.0.0
- (optional=templinst|arch=amd64)_ZN17QtMetaTypePrivate23QMetaTypeFunctionHelperIN18QAbstractItemModel16LayoutChangeHintELb1EE9ConstructEPvPKv@Base 3.0.0
+#MISSING: 3.0.2# (optional=templinst|arch=amd64)_ZN17QtMetaTypePrivate23QMetaTypeFunctionHelperI5QListI21QPersistentModelIndexELb1EE8DestructEPv@Base 3.0.0
+#MISSING: 3.0.2# (optional=templinst|arch=amd64)_ZN17QtMetaTypePrivate23QMetaTypeFunctionHelperI5QListI21QPersistentModelIndexELb1EE9ConstructEPvPKv@Base 3.0.0
+#MISSING: 3.0.2# (optional=templinst|arch=amd64)_ZN17QtMetaTypePrivate23QMetaTypeFunctionHelperIN18QAbstractItemModel16LayoutChangeHintELb1EE8DestructEPv@Base 3.0.0
+#MISSING: 3.0.2# (optional=templinst|arch=amd64)_ZN17QtMetaTypePrivate23QMetaTypeFunctionHelperIN18QAbstractItemModel16LayoutChangeHintELb1EE9ConstructEPvPKv@Base 3.0.0
  (optional=templinst)_ZN17QtMetaTypePrivate23QMetaTypeFunctionHelperINS_23QSequentialIterableImplELb1EE8DestructEPv@Base 2.0.0
  (optional=templinst)_ZN17QtMetaTypePrivate23QMetaTypeFunctionHelperINS_23QSequentialIterableImplELb1EE9ConstructEPvPKv@Base 2.0.0
  (optional=templinst)_ZN17QtMetaTypePrivate23QMetaTypeFunctionHelperIP11ProgressBarLb1EE8DestructEPv@Base 2.2.0
@@ -190,19 +191,19 @@ libpeony.so.3 libpeony3 #MINVER#
  (optional=templinst)_ZN17QtMetaTypePrivate23QMetaTypeFunctionHelperIPN5Peony28FileItemProxyFilterSortModelELb1EE9ConstructEPvPKv@Base 2.0.0
  (optional=templinst)_ZN17QtMetaTypePrivate23QMetaTypeFunctionHelperISt10shared_ptrIN5Peony13GErrorWrapperEELb1EE8DestructEPv@Base 2.0.0
  (optional=templinst)_ZN17QtMetaTypePrivate23QMetaTypeFunctionHelperISt10shared_ptrIN5Peony13GErrorWrapperEELb1EE9ConstructEPvPKv@Base 2.0.0
- (optional=templinst|arch=!amd64)_ZN17QtMetaTypePrivate23QSequentialIterableImpl10moveToImplI5QListI11QModelIndexEEEvPKvPPvNS0_8PositionE@Base 3.0.0
+ (optional=templinst)_ZN17QtMetaTypePrivate23QSequentialIterableImpl10moveToImplI5QListI11QModelIndexEEEvPKvPPvNS0_8PositionE@Base 3.0.0
 #MISSING: 3.0.0# (optional=templinst)_ZN17QtMetaTypePrivate23QSequentialIterableImpl10moveToImplI5QListI21QPersistentModelIndexEEEvPKvPPvNS0_8PositionE@Base 3.0.0
- (optional=templinst|arch=amd64)_ZN17QtMetaTypePrivate23QSequentialIterableImpl13moveToEndImplI5QListI11QModelIndexEEEvPKvPPv@Base 3.0.0
- (optional=templinst|arch=amd64)_ZN17QtMetaTypePrivate23QSequentialIterableImpl13moveToEndImplI5QListI21QPersistentModelIndexEEEvPKvPPv@Base 3.0.0
- (optional=templinst|arch=amd64)_ZN17QtMetaTypePrivate23QSequentialIterableImpl15moveToBeginImplI5QListI11QModelIndexEEEvPKvPPv@Base 3.0.0
- (optional=templinst|arch=amd64)_ZN17QtMetaTypePrivate23QSequentialIterableImpl15moveToBeginImplI5QListI21QPersistentModelIndexEEEvPKvPPv@Base 3.0.0
+#MISSING: 3.0.2# (optional=templinst|arch=amd64)_ZN17QtMetaTypePrivate23QSequentialIterableImpl13moveToEndImplI5QListI11QModelIndexEEEvPKvPPv@Base 3.0.0
+#MISSING: 3.0.2# (optional=templinst|arch=amd64)_ZN17QtMetaTypePrivate23QSequentialIterableImpl13moveToEndImplI5QListI21QPersistentModelIndexEEEvPKvPPv@Base 3.0.0
+#MISSING: 3.0.2# (optional=templinst|arch=amd64)_ZN17QtMetaTypePrivate23QSequentialIterableImpl15moveToBeginImplI5QListI11QModelIndexEEEvPKvPPv@Base 3.0.0
+#MISSING: 3.0.2# (optional=templinst|arch=amd64)_ZN17QtMetaTypePrivate23QSequentialIterableImpl15moveToBeginImplI5QListI21QPersistentModelIndexEEEvPKvPPv@Base 3.0.0
  (optional=templinst)_ZN17QtMetaTypePrivate23QSequentialIterableImpl6atImplI5QListI11QModelIndexEEEPKvS6_i@Base 2.0.0
- (optional=templinst|arch=amd64)_ZN17QtMetaTypePrivate23QSequentialIterableImpl6atImplI5QListI21QPersistentModelIndexEEEPKvS6_i@Base 3.0.0
+#MISSING: 3.0.2# (optional=templinst|arch=amd64)_ZN17QtMetaTypePrivate23QSequentialIterableImpl6atImplI5QListI21QPersistentModelIndexEEEPKvS6_i@Base 3.0.0
  (optional=templinst)_ZN17QtMetaTypePrivate23QSequentialIterableImpl7getImplI5QListI11QModelIndexEEENS_11VariantDataEPKPvij@Base 2.0.0
- (optional=templinst|arch=amd64)_ZN17QtMetaTypePrivate23QSequentialIterableImpl7getImplI5QListI21QPersistentModelIndexEEENS_11VariantDataEPKPvij@Base 3.0.0
+#MISSING: 3.0.2# (optional=templinst|arch=amd64)_ZN17QtMetaTypePrivate23QSequentialIterableImpl7getImplI5QListI21QPersistentModelIndexEEENS_11VariantDataEPKPvij@Base 3.0.0
  (optional=templinst)_ZN17QtMetaTypePrivate23QSequentialIterableImpl8sizeImplI5QListI11QModelIndexEEEiPKv@Base 2.0.0
- (optional=templinst|arch=amd64)_ZN17QtMetaTypePrivate23QSequentialIterableImpl8sizeImplI5QListI21QPersistentModelIndexEEEiPKv@Base 3.0.0
- (optional=templinst|arch=!amd64)_ZN17QtMetaTypePrivate25ContainerCapabilitiesImplI5QListI11QModelIndexEvE10appendImplEPKvS6_@Base 3.0.0
+#MISSING: 3.0.2# (optional=templinst|arch=amd64)_ZN17QtMetaTypePrivate23QSequentialIterableImpl8sizeImplI5QListI21QPersistentModelIndexEEEiPKv@Base 3.0.0
+ (optional=templinst)_ZN17QtMetaTypePrivate25ContainerCapabilitiesImplI5QListI11QModelIndexEvE10appendImplEPKvS6_@Base 3.0.0
 #MISSING: 3.0.0# (optional=templinst)_ZN17QtMetaTypePrivate25ContainerCapabilitiesImplI5QListI21QPersistentModelIndexEvE10appendImplEPKvS6_@Base 3.0.0
  _ZN18BorderShadowEffect10setPaddingEi@Base 2.1.0
  _ZN18BorderShadowEffect11qt_metacallEN11QMetaObject4CallEiPPv@Base 2.1.0
@@ -233,15 +234,15 @@ libpeony.so.3 libpeony3 #MINVER#
  _ZN18GenericThumbnailerD0Ev@Base 2.1.0
  _ZN18GenericThumbnailerD1Ev@Base 2.1.0
  _ZN18GenericThumbnailerD2Ev@Base 2.1.0
- (optional=templinst|arch=amd64)_ZN18QAlgorithmsPrivate11qSortHelperIN5QListI7QStringE8iteratorES2_5qLessIS2_EEEvT_S7_RKT0_T1_@Base 3.0.0
- (optional=templinst|arch=!amd64)_ZN18QMetaTypeIdQObjectIP11ProgressBarLi8EE14qt_metatype_idEv@Base 3.0.0
- (optional=templinst|arch=armhf ppc64el)_ZN18QMetaTypeIdQObjectIP13FileLabelItemLi8EE14qt_metatype_idEv@Base 3.0.0
+#MISSING: 3.0.2# (optional=templinst|arch=amd64)_ZN18QAlgorithmsPrivate11qSortHelperIN5QListI7QStringE8iteratorES2_5qLessIS2_EEEvT_S7_RKT0_T1_@Base 3.0.0
+ (optional=templinst)_ZN18QMetaTypeIdQObjectIP11ProgressBarLi8EE14qt_metatype_idEv@Base 3.0.0
+ (optional=templinst|arch=armhf ppc64el s390x)_ZN18QMetaTypeIdQObjectIP13FileLabelItemLi8EE14qt_metatype_idEv@Base 3.0.0
  (optional=templinst|arch=armhf)_ZN18QMetaTypeIdQObjectIPN5Peony13FileItemModelELi8EE14qt_metatype_idEv@Base 3.0.0
- (optional=templinst|arch=armhf)_ZN18QMetaTypeIdQObjectIPN5Peony13FileOperationELi8EE14qt_metatype_idEv@Base 3.0.0
- (optional=templinst|arch=armhf)_ZN18QMetaTypeIdQObjectIPN5Peony17FileOperationInfoELi8EE14qt_metatype_idEv@Base 3.0.0
+ (optional=templinst|arch=armhf s390x)_ZN18QMetaTypeIdQObjectIPN5Peony13FileOperationELi8EE14qt_metatype_idEv@Base 3.0.0
+ (optional=templinst|arch=armhf s390x)_ZN18QMetaTypeIdQObjectIPN5Peony17FileOperationInfoELi8EE14qt_metatype_idEv@Base 3.0.0
  (optional=templinst|arch=armhf)_ZN18QMetaTypeIdQObjectIPN5Peony28FileItemProxyFilterSortModelELi8EE14qt_metatype_idEv@Base 3.0.0
- _ZN18QStyleOptionButtonD1Ev@Base 3.0.0
- _ZN18QStyleOptionButtonD2Ev@Base 3.0.0
+ (arch=armhf ppc64el)_ZN18QStyleOptionButtonD1Ev@Base 3.0.2
+ (arch=armhf ppc64el)_ZN18QStyleOptionButtonD2Ev@Base 3.0.2
  _ZN19ConnectServerDialog11qt_metacallEN11QMetaObject4CallEiPPv@Base 2.0.0
  _ZN19ConnectServerDialog11qt_metacastEPKc@Base 2.0.0
  _ZN19ConnectServerDialog12savePasswordEv@Base 2.0.0
@@ -255,8 +256,8 @@ libpeony.so.3 libpeony3 #MINVER#
  _ZN19ConnectServerDialogD0Ev@Base 2.0.0
  _ZN19ConnectServerDialogD1Ev@Base 2.0.0
  _ZN19ConnectServerDialogD2Ev@Base 2.0.0
- (arch=armhf)_ZN20QStyleOptionViewItemC1ERKS_@Base 3.0.0
- (arch=armhf)_ZN20QStyleOptionViewItemC2ERKS_@Base 3.0.0
+ (arch=armhf s390x)_ZN20QStyleOptionViewItemC1ERKS_@Base 3.0.2
+ (arch=armhf s390x)_ZN20QStyleOptionViewItemC2ERKS_@Base 3.0.2
  _ZN20QStyleOptionViewItemD1Ev@Base 2.0.0
  _ZN20QStyleOptionViewItemD2Ev@Base 2.0.0
  _ZN22LocationBarButtonStyle6polishEP7QWidget@Base 2.2.0
@@ -266,8 +267,8 @@ libpeony.so.3 libpeony3 #MINVER#
  _ZN22LocationBarButtonStyleD2Ev@Base 2.2.0
  _ZN22QStyleOptionToolButtonD1Ev@Base 2.0.0
  _ZN22QStyleOptionToolButtonD2Ev@Base 2.0.0
- (arch=armhf)_ZN22Ui_ConnectServerDialog13retranslateUiEP7QDialog@Base 3.0.0
- (arch= !s390x)_ZN22Ui_ConnectServerDialog7setupUiEP7QDialog@Base 2.0.0
+ (arch=amd64 arm64 armhf s390x)_ZN22Ui_ConnectServerDialog13retranslateUiEP7QDialog@Base 3.0.2
+ _ZN22Ui_ConnectServerDialog7setupUiEP7QDialog@Base 3.0.2
  _ZN24FileOperationProgressBar11getInstanceEv@Base 2.2.0
  _ZN24FileOperationProgressBar11qt_metacallEN11QMetaObject4CallEiPPv@Base 2.2.0
  _ZN24FileOperationProgressBar11qt_metacastEPKc@Base 2.2.0
@@ -288,25 +289,30 @@ libpeony.so.3 libpeony3 #MINVER#
  _ZN24FileOperationProgressBarD0Ev@Base 2.2.0
  _ZN24FileOperationProgressBarD1Ev@Base 2.2.0
  _ZN24FileOperationProgressBarD2Ev@Base 2.2.0
- (optional=templinst|arch=amd64)_ZN4QMapI7QString11QStringListE13detach_helperEv@Base 3.0.0
- (optional=templinst|arch=amd64)_ZN4QMapI7QString11QStringListE6insertERKS0_RKS1_@Base 3.0.0
- (optional=templinst|arch=amd64)_ZN4QMapI7QString11QStringListED1Ev@Base 3.0.0
- (optional=templinst|arch=amd64)_ZN4QMapI7QString11QStringListED2Ev@Base 3.0.0
+ (optional=templinst|arch=amd64 arm64 armhf ppc64el)_ZN4QMapI7QString11QStringListE13detach_helperEv@Base 3.0.0
+ (optional=templinst|arch=amd64 arm64 armhf s390x)_ZN4QMapI7QString11QStringListE6insertERKS0_RKS1_@Base 3.0.0
+ (optional=templinst)_ZN4QMapI7QString11QStringListED1Ev@Base 3.0.0
+ (optional=templinst)_ZN4QMapI7QString11QStringListED2Ev@Base 3.0.0
  (optional=templinst|arch= !s390x !ppc64el)_ZN4QMapI7QString8QVariantE13detach_helperEv@Base 2.0.0
- (optional=templinst|arch=!amd64)_ZN4QMapI7QString8QVariantE6insertERKS0_RKS1_@Base 3.0.0
- (optional=templinst|arch=amd64)_ZN4QMapI7QString8QVariantE6removeERKS0_@Base 3.0.0
+ (optional=templinst)_ZN4QMapI7QString8QVariantE6insertERKS0_RKS1_@Base 3.0.0
+#MISSING: 3.0.2# (optional=templinst|arch=amd64)_ZN4QMapI7QString8QVariantE6removeERKS0_@Base 3.0.0
  (optional=templinst)_ZN4QMapI7QString8QVariantED1Ev@Base 2.0.0
  (optional=templinst)_ZN4QMapI7QString8QVariantED2Ev@Base 2.0.0
- (optional=templinst|arch=amd64)_ZN4QMapI7QString8QVariantEixERKS0_@Base 3.0.0
- (optional=templinst|arch=amd64 armhf)_ZN4QMapI7QStringP11QToolButtonE13detach_helperEv@Base 2.2.0
- (optional=templinst)_ZN4QMapI7QStringS0_E13detach_helperEv@Base 2.1.0
+ (optional=templinst)_ZN4QMapI7QString8QVariantEixERKS0_@Base 3.0.0
+ (optional=templinst|arch=amd64 arm64 armhf s390x)_ZN4QMapI7QStringP11QToolButtonE13detach_helperEv@Base 2.2.0
+ (optional=templinst|arch=s390x)_ZN4QMapI7QStringP11QToolButtonED1Ev@Base 3.0.2
+ (optional=templinst|arch=s390x)_ZN4QMapI7QStringP11QToolButtonED2Ev@Base 3.0.2
+ (optional=templinst|arch=!s390x)_ZN4QMapI7QStringS0_E13detach_helperEv@Base 2.1.0
  (optional=templinst)_ZN4QMapI7QStringS0_EC1ERKS1_@Base 2.1.0
  (optional=templinst)_ZN4QMapI7QStringS0_EC2ERKS1_@Base 2.1.0
  (optional=templinst)_ZN4QMapI7QStringS0_ED1Ev@Base 2.1.0
  (optional=templinst)_ZN4QMapI7QStringS0_ED2Ev@Base 2.1.0
- (optional=templinst)_ZN4QMapIP11ProgressBarP15QListWidgetItemE13detach_helperEv@Base 2.2.0
- (optional=templinst)_ZN4QMapIP15QListWidgetItemP11ProgressBarE13detach_helperEv@Base 2.2.0
+ (optional=templinst|arch=!s390x)_ZN4QMapIP11ProgressBarP15QListWidgetItemE13detach_helperEv@Base 2.2.0
+ (optional=templinst|arch=!s390x)_ZN4QMapIP15QListWidgetItemP11ProgressBarE13detach_helperEv@Base 2.2.0
+ (optional=templinst|arch=s390x)_ZN4QMapIP15QListWidgetItemP11ProgressBarEixERKS1_@Base 3.0.2
  (optional=templinst|arch= !s390x !ppc64el)_ZN4QMapIi7QStringE13detach_helperEv@Base 2.0.0
+ (optional=templinst|arch=s390x)_ZN4QMapIi7QStringED1Ev@Base 3.0.2
+ (optional=templinst|arch=s390x)_ZN4QMapIi7QStringED2Ev@Base 3.0.2
  _ZN5Peony10wrapGDriveEP7_GDrive@Base 2.0.0
  _ZN5Peony10wrapGMountEP7_GMount@Base 2.0.0
  _ZN5Peony11FileInfoJob10getAppNameE7QString@Base 2.2.0
@@ -714,8 +720,8 @@ libpeony.so.3 libpeony3 #MINVER#
  _ZN5Peony13FileOperation34notifyFileWatcherOperationFinishedEv@Base 2.2.0
  _ZN5Peony13FileOperation3runEv@Base 2.0.0
  _ZN5Peony13FileOperation6cancelEv@Base 2.0.0
- (arch=!amd64)_ZN5Peony13FileOperation7erroredERK7QStringS3_RKSt10shared_ptrINS_13GErrorWrapperEEb@Base 3.0.0
- (arch=amd64)_ZN5Peony13FileOperation7erroredERNS_19_FileOperationErrorE@Base 3.0.0
+#MISSING: 3.0.2# (arch=!amd64)_ZN5Peony13FileOperation7erroredERK7QStringS3_RKSt10shared_ptrINS_13GErrorWrapperEEb@Base 3.0.0
+ _ZN5Peony13FileOperation7erroredERNS_19_FileOperationErrorE@Base 3.0.2
  _ZN5Peony13FileOperationC1EP7QObject@Base 2.0.0
  _ZN5Peony13FileOperationC2EP7QObject@Base 2.0.0
  _ZN5Peony13FileOperationD0Ev@Base 2.0.0
@@ -1023,7 +1029,7 @@ libpeony.so.3 libpeony3 #MINVER#
  _ZN5Peony16FileLaunchAction14execFileIntermEv@Base 2.2.0
  _ZN5Peony16FileLaunchAction14getAppInfoNameEv@Base 2.0.0
  _ZN5Peony16FileLaunchAction14lauchFileAsyncEbb@Base 2.2.0
- (arch=amd64)_ZN5Peony16FileLaunchAction15lauchFilesAsyncE11QStringListbb@Base 3.0.0
+ _ZN5Peony16FileLaunchAction15lauchFilesAsyncE11QStringListbb@Base 3.0.2
  _ZN5Peony16FileLaunchAction16staticMetaObjectE@Base 2.0.0
  _ZN5Peony16FileLaunchAction19isDesktopFileActionEv@Base 2.0.0
  _ZN5Peony16FileLaunchAction21getAppInfoDisplayNameEv@Base 2.0.0
@@ -1046,18 +1052,18 @@ libpeony.so.3 libpeony3 #MINVER#
  _ZN5Peony16FileNodeReporterD0Ev@Base 2.0.0
  _ZN5Peony16FileNodeReporterD1Ev@Base 2.0.0
  _ZN5Peony16FileNodeReporterD2Ev@Base 2.0.0
- (arch=amd64)_ZN5Peony16FileRenameDialog10paintEventEP11QPaintEvent@Base 3.0.0
- (arch=amd64)_ZN5Peony16FileRenameDialog11qt_metacallEN11QMetaObject4CallEiPPv@Base 3.0.0
- (arch=amd64)_ZN5Peony16FileRenameDialog11qt_metacastEPKc@Base 3.0.0
- (arch=amd64)_ZN5Peony16FileRenameDialog12customRenameENS0_10RenameTypeE7QString@Base 3.0.0
- (arch=amd64)_ZN5Peony16FileRenameDialog14mouseMoveEventEP11QMouseEvent@Base 3.0.0
- (arch=amd64)_ZN5Peony16FileRenameDialog15mousePressEventEP11QMouseEvent@Base 3.0.0
- (arch=amd64)_ZN5Peony16FileRenameDialog16staticMetaObjectE@Base 3.0.0
- (arch=amd64)_ZN5Peony16FileRenameDialogC1EP7QWidget@Base 3.0.0
- (arch=amd64)_ZN5Peony16FileRenameDialogC2EP7QWidget@Base 3.0.0
- (arch=amd64)_ZN5Peony16FileRenameDialogD0Ev@Base 3.0.0
- (arch=amd64)_ZN5Peony16FileRenameDialogD1Ev@Base 3.0.0
- (arch=amd64)_ZN5Peony16FileRenameDialogD2Ev@Base 3.0.0
+ _ZN5Peony16FileRenameDialog10paintEventEP11QPaintEvent@Base 3.0.2
+ _ZN5Peony16FileRenameDialog11qt_metacallEN11QMetaObject4CallEiPPv@Base 3.0.2
+ _ZN5Peony16FileRenameDialog11qt_metacastEPKc@Base 3.0.2
+ _ZN5Peony16FileRenameDialog12customRenameENS0_10RenameTypeE7QString@Base 3.0.2
+ _ZN5Peony16FileRenameDialog14mouseMoveEventEP11QMouseEvent@Base 3.0.2
+ _ZN5Peony16FileRenameDialog15mousePressEventEP11QMouseEvent@Base 3.0.2
+ _ZN5Peony16FileRenameDialog16staticMetaObjectE@Base 3.0.2
+ _ZN5Peony16FileRenameDialogC1EP7QWidget@Base 3.0.2
+ _ZN5Peony16FileRenameDialogC2EP7QWidget@Base 3.0.2
+ _ZN5Peony16FileRenameDialogD0Ev@Base 3.0.2
+ _ZN5Peony16FileRenameDialogD1Ev@Base 3.0.2
+ _ZN5Peony16FileRenameDialogD2Ev@Base 3.0.2
  _ZN5Peony16IconViewFactory210pluginTypeEv@Base 2.0.0
  _ZN5Peony16IconViewFactory210supportUriERK7QString@Base 2.0.0
  _ZN5Peony16IconViewFactory211descriptionEv@Base 2.0.0
@@ -1236,7 +1242,7 @@ libpeony.so.3 libpeony3 #MINVER#
  _ZN5Peony17FileLaunchManager21setDefaultLauchActionERK7QStringPNS_16FileLaunchActionE@Base 2.0.0
 #MISSING: 2.2.0# _ZN5Peony17FileLaunchManager8openSyncERK7QString@Base 2.0.0
  _ZN5Peony17FileLaunchManager8openSyncERK7QStringbb@Base 2.2.0
- (arch=amd64)_ZN5Peony17FileLaunchManager9openAsyncERK11QStringListbb@Base 3.0.0
+ _ZN5Peony17FileLaunchManager9openAsyncERK11QStringListbb@Base 3.0.2
 #MISSING: 2.2.0# _ZN5Peony17FileLaunchManager9openAsyncERK7QString@Base 2.0.0
  _ZN5Peony17FileLaunchManager9openAsyncERK7QStringbb@Base 2.2.0
  _ZN5Peony17FileLaunchManagerC1EP7QObject@Base 2.0.0
@@ -1579,33 +1585,33 @@ libpeony.so.3 libpeony3 #MINVER#
  _ZN5Peony19SideBarPersonalItemD0Ev@Base 2.0.0
  _ZN5Peony19SideBarPersonalItemD1Ev@Base 2.0.0
  _ZN5Peony19SideBarPersonalItemD2Ev@Base 2.0.0
- (arch=amd64)_ZN5Peony19_FileOperationErrorD1Ev@Base 3.0.0
- (arch=amd64)_ZN5Peony19_FileOperationErrorD2Ev@Base 3.0.0
+ _ZN5Peony19_FileOperationErrorD1Ev@Base 3.0.2
+ _ZN5Peony19_FileOperationErrorD2Ev@Base 3.0.2
  _ZN5Peony19wrapGFileEnumeratorEP16_GFileEnumerator@Base 2.0.0
- (arch=amd64)_ZN5Peony20FileInformationLabel10paintEventEP11QPaintEvent@Base 3.0.0
- (arch=amd64)_ZN5Peony20FileInformationLabel11getIconSizeEv@Base 3.0.0
- (arch=amd64)_ZN5Peony20FileInformationLabel11qt_metacallEN11QMetaObject4CallEiPPv@Base 3.0.0
- (arch=amd64)_ZN5Peony20FileInformationLabel11qt_metacastEPKc@Base 3.0.0
- (arch=amd64)_ZN5Peony20FileInformationLabel11setFileNameE7QString@Base 3.0.0
- (arch=amd64)_ZN5Peony20FileInformationLabel11setFileSizeE7QString@Base 3.0.0
- (arch=amd64)_ZN5Peony20FileInformationLabel15mousePressEventEP11QMouseEvent@Base 3.0.0
- (arch=amd64)_ZN5Peony20FileInformationLabel15setFileLocationE7QString@Base 3.0.0
- (arch=amd64)_ZN5Peony20FileInformationLabel16staticMetaObjectE@Base 3.0.0
- (arch=amd64)_ZN5Peony20FileInformationLabel17setFileModifyTimeE7QString@Base 3.0.0
- (arch=amd64)_ZN5Peony20FileInformationLabel6activeEv@Base 3.0.0
- (arch=amd64)_ZN5Peony20FileInformationLabel9setActiveEb@Base 3.0.0
- (arch=amd64)_ZN5Peony20FileInformationLabel9setOpNameE7QString@Base 3.0.0
- (arch=amd64)_ZN5Peony20FileInformationLabel9setPixmapE7QPixmap@Base 3.0.0
- (arch=amd64)_ZN5Peony20FileInformationLabelC1EP7QWidget@Base 3.0.0
- (arch=amd64)_ZN5Peony20FileInformationLabelC2EP7QWidget@Base 3.0.0
- (arch=amd64)_ZN5Peony20FileInformationLabelD0Ev@Base 3.0.0
- (arch=amd64)_ZN5Peony20FileInformationLabelD1Ev@Base 3.0.0
- (arch=amd64)_ZN5Peony20FileInformationLabelD2Ev@Base 3.0.0
+ _ZN5Peony20FileInformationLabel10paintEventEP11QPaintEvent@Base 3.0.2
+ _ZN5Peony20FileInformationLabel11getIconSizeEv@Base 3.0.2
+ _ZN5Peony20FileInformationLabel11qt_metacallEN11QMetaObject4CallEiPPv@Base 3.0.2
+ _ZN5Peony20FileInformationLabel11qt_metacastEPKc@Base 3.0.2
+ _ZN5Peony20FileInformationLabel11setFileNameE7QString@Base 3.0.2
+ _ZN5Peony20FileInformationLabel11setFileSizeE7QString@Base 3.0.2
+ _ZN5Peony20FileInformationLabel15mousePressEventEP11QMouseEvent@Base 3.0.2
+ _ZN5Peony20FileInformationLabel15setFileLocationE7QString@Base 3.0.2
+ _ZN5Peony20FileInformationLabel16staticMetaObjectE@Base 3.0.2
+ _ZN5Peony20FileInformationLabel17setFileModifyTimeE7QString@Base 3.0.2
+ _ZN5Peony20FileInformationLabel6activeEv@Base 3.0.2
+ _ZN5Peony20FileInformationLabel9setActiveEb@Base 3.0.2
+ _ZN5Peony20FileInformationLabel9setOpNameE7QString@Base 3.0.2
+ _ZN5Peony20FileInformationLabel9setPixmapE7QPixmap@Base 3.0.2
+ _ZN5Peony20FileInformationLabelC1EP7QWidget@Base 3.0.2
+ _ZN5Peony20FileInformationLabelC2EP7QWidget@Base 3.0.2
+ _ZN5Peony20FileInformationLabelD0Ev@Base 3.0.2
+ _ZN5Peony20FileInformationLabelD1Ev@Base 3.0.2
+ _ZN5Peony20FileInformationLabelD2Ev@Base 3.0.2
  _ZN5Peony20FileOperationManager11getInstanceEv@Base 2.0.0
  _ZN5Peony20FileOperationManager11getRedoInfoEv@Base 2.0.0
  _ZN5Peony20FileOperationManager11getUndoInfoEv@Base 2.0.0
- (arch=!amd64)_ZN5Peony20FileOperationManager11handleErrorERK7QStringS3_RKSt10shared_ptrINS_13GErrorWrapperEEb@Base 3.0.0
- (arch=amd64)_ZN5Peony20FileOperationManager11handleErrorERNS_19_FileOperationErrorE@Base 3.0.0
+#MISSING: 3.0.2# (arch=!amd64)_ZN5Peony20FileOperationManager11handleErrorERK7QStringS3_RKSt10shared_ptrINS_13GErrorWrapperEEb@Base 3.0.0
+ _ZN5Peony20FileOperationManager11handleErrorERNS_19_FileOperationErrorE@Base 3.0.2
  _ZN5Peony20FileOperationManager11qt_metacallEN11QMetaObject4CallEiPPv@Base 2.0.0
  _ZN5Peony20FileOperationManager11qt_metacastEPKc@Base 2.0.0
  _ZN5Peony20FileOperationManager12clearHistoryEv@Base 2.0.0
@@ -1834,7 +1840,7 @@ libpeony.so.3 libpeony3 #MINVER#
  _ZN5Peony24FileOperationErrorDialog11qt_metacallEN11QMetaObject4CallEiPPv@Base 2.0.0
  _ZN5Peony24FileOperationErrorDialog11qt_metacastEPKc@Base 2.0.0
  _ZN5Peony24FileOperationErrorDialog16staticMetaObjectE@Base 2.0.0
- (arch=amd64)_ZN5Peony24FileOperationErrorDialog6handleERNS_19_FileOperationErrorE@Base 3.0.0
+ _ZN5Peony24FileOperationErrorDialog6handleERNS_19_FileOperationErrorE@Base 3.0.2
  _ZN5Peony24FileOperationErrorDialogC1EP7QWidget@Base 2.0.0
  _ZN5Peony24FileOperationErrorDialogC2EP7QWidget@Base 2.0.0
  _ZN5Peony24FileOperationErrorDialogD0Ev@Base 2.0.0
@@ -2064,18 +2070,18 @@ libpeony.so.3 libpeony3 #MINVER#
  _ZN5Peony28FileItemProxyFilterSortModelD0Ev@Base 2.0.0
  _ZN5Peony28FileItemProxyFilterSortModelD1Ev@Base 2.0.0
  _ZN5Peony28FileItemProxyFilterSortModelD2Ev@Base 2.0.0
- (arch=amd64)_ZN5Peony28FileOperationErrorDialogBase10paintEventEP11QPaintEvent@Base 3.0.0
- (arch=amd64)_ZN5Peony28FileOperationErrorDialogBase11qt_metacallEN11QMetaObject4CallEiPPv@Base 3.0.0
- (arch=amd64)_ZN5Peony28FileOperationErrorDialogBase11qt_metacastEPKc@Base 3.0.0
- (arch=amd64)_ZN5Peony28FileOperationErrorDialogBase14mouseMoveEventEP11QMouseEvent@Base 3.0.0
- (arch=amd64)_ZN5Peony28FileOperationErrorDialogBase15mousePressEventEP11QMouseEvent@Base 3.0.0
- (arch=amd64)_ZN5Peony28FileOperationErrorDialogBase16staticMetaObjectE@Base 3.0.0
- (arch=amd64)_ZN5Peony28FileOperationErrorDialogBase6cancelEv@Base 3.0.0
- (arch=amd64)_ZN5Peony28FileOperationErrorDialogBaseC1EP7QDialog@Base 3.0.0
- (arch=amd64)_ZN5Peony28FileOperationErrorDialogBaseC2EP7QDialog@Base 3.0.0
- (arch=amd64)_ZN5Peony28FileOperationErrorDialogBaseD0Ev@Base 3.0.0
- (arch=amd64)_ZN5Peony28FileOperationErrorDialogBaseD1Ev@Base 3.0.0
- (arch=amd64)_ZN5Peony28FileOperationErrorDialogBaseD2Ev@Base 3.0.0
+ _ZN5Peony28FileOperationErrorDialogBase10paintEventEP11QPaintEvent@Base 3.0.2
+ _ZN5Peony28FileOperationErrorDialogBase11qt_metacallEN11QMetaObject4CallEiPPv@Base 3.0.2
+ _ZN5Peony28FileOperationErrorDialogBase11qt_metacastEPKc@Base 3.0.2
+ _ZN5Peony28FileOperationErrorDialogBase14mouseMoveEventEP11QMouseEvent@Base 3.0.2
+ _ZN5Peony28FileOperationErrorDialogBase15mousePressEventEP11QMouseEvent@Base 3.0.2
+ _ZN5Peony28FileOperationErrorDialogBase16staticMetaObjectE@Base 3.0.2
+ _ZN5Peony28FileOperationErrorDialogBase6cancelEv@Base 3.0.2
+ _ZN5Peony28FileOperationErrorDialogBaseC1EP7QDialog@Base 3.0.2
+ _ZN5Peony28FileOperationErrorDialogBaseC2EP7QDialog@Base 3.0.2
+ _ZN5Peony28FileOperationErrorDialogBaseD0Ev@Base 3.0.2
+ _ZN5Peony28FileOperationErrorDialogBaseD1Ev@Base 3.0.2
+ _ZN5Peony28FileOperationErrorDialogBaseD2Ev@Base 3.0.2
  _ZN5Peony28RecentAndTrashPropertiesPage11qt_metacallEN11QMetaObject4CallEiPPv@Base 2.0.0
  _ZN5Peony28RecentAndTrashPropertiesPage11qt_metacastEPKc@Base 2.0.0
  _ZN5Peony28RecentAndTrashPropertiesPage12addSeparatorEv@Base 2.0.0
@@ -2125,25 +2131,25 @@ libpeony.so.3 libpeony3 #MINVER#
  _ZN5Peony30FileOperationAfterProgressPageD0Ev@Base 2.0.0
  _ZN5Peony30FileOperationAfterProgressPageD1Ev@Base 2.0.0
  _ZN5Peony30FileOperationAfterProgressPageD2Ev@Base 2.0.0
- (arch=amd64)_ZN5Peony31FileOperationErrorDialogFactory9getDialogERNS_19_FileOperationErrorE@Base 3.0.0
- (arch=amd64)_ZN5Peony31FileOperationErrorDialogWarning11qt_metacallEN11QMetaObject4CallEiPPv@Base 3.0.0
- (arch=amd64)_ZN5Peony31FileOperationErrorDialogWarning11qt_metacastEPKc@Base 3.0.0
- (arch=amd64)_ZN5Peony31FileOperationErrorDialogWarning16staticMetaObjectE@Base 3.0.0
- (arch=amd64)_ZN5Peony31FileOperationErrorDialogWarning6handleERNS_19_FileOperationErrorE@Base 3.0.0
- (arch=amd64)_ZN5Peony31FileOperationErrorDialogWarningC1EPNS_28FileOperationErrorDialogBaseE@Base 3.0.0
- (arch=amd64)_ZN5Peony31FileOperationErrorDialogWarningC2EPNS_28FileOperationErrorDialogBaseE@Base 3.0.0
- (arch=amd64)_ZN5Peony31FileOperationErrorDialogWarningD0Ev@Base 3.0.0
- (arch=amd64)_ZN5Peony31FileOperationErrorDialogWarningD1Ev@Base 3.0.0
- (arch=amd64)_ZN5Peony31FileOperationErrorDialogWarningD2Ev@Base 3.0.0
- (arch=amd64)_ZN5Peony32FileOperationErrorDialogConflict11qt_metacallEN11QMetaObject4CallEiPPv@Base 3.0.0
- (arch=amd64)_ZN5Peony32FileOperationErrorDialogConflict11qt_metacastEPKc@Base 3.0.0
- (arch=amd64)_ZN5Peony32FileOperationErrorDialogConflict16staticMetaObjectE@Base 3.0.0
- (arch=amd64)_ZN5Peony32FileOperationErrorDialogConflict6handleERNS_19_FileOperationErrorE@Base 3.0.0
- (arch=amd64)_ZN5Peony32FileOperationErrorDialogConflictC1EPNS_28FileOperationErrorDialogBaseE@Base 3.0.0
- (arch=amd64)_ZN5Peony32FileOperationErrorDialogConflictC2EPNS_28FileOperationErrorDialogBaseE@Base 3.0.0
- (arch=amd64)_ZN5Peony32FileOperationErrorDialogConflictD0Ev@Base 3.0.0
- (arch=amd64)_ZN5Peony32FileOperationErrorDialogConflictD1Ev@Base 3.0.0
- (arch=amd64)_ZN5Peony32FileOperationErrorDialogConflictD2Ev@Base 3.0.0
+ _ZN5Peony31FileOperationErrorDialogFactory9getDialogERNS_19_FileOperationErrorE@Base 3.0.2
+ _ZN5Peony31FileOperationErrorDialogWarning11qt_metacallEN11QMetaObject4CallEiPPv@Base 3.0.2
+ _ZN5Peony31FileOperationErrorDialogWarning11qt_metacastEPKc@Base 3.0.2
+ _ZN5Peony31FileOperationErrorDialogWarning16staticMetaObjectE@Base 3.0.2
+ _ZN5Peony31FileOperationErrorDialogWarning6handleERNS_19_FileOperationErrorE@Base 3.0.2
+ _ZN5Peony31FileOperationErrorDialogWarningC1EPNS_28FileOperationErrorDialogBaseE@Base 3.0.2
+ _ZN5Peony31FileOperationErrorDialogWarningC2EPNS_28FileOperationErrorDialogBaseE@Base 3.0.2
+ _ZN5Peony31FileOperationErrorDialogWarningD0Ev@Base 3.0.2
+ _ZN5Peony31FileOperationErrorDialogWarningD1Ev@Base 3.0.2
+ _ZN5Peony31FileOperationErrorDialogWarningD2Ev@Base 3.0.2
+ _ZN5Peony32FileOperationErrorDialogConflict11qt_metacallEN11QMetaObject4CallEiPPv@Base 3.0.2
+ _ZN5Peony32FileOperationErrorDialogConflict11qt_metacastEPKc@Base 3.0.2
+ _ZN5Peony32FileOperationErrorDialogConflict16staticMetaObjectE@Base 3.0.2
+ _ZN5Peony32FileOperationErrorDialogConflict6handleERNS_19_FileOperationErrorE@Base 3.0.2
+ _ZN5Peony32FileOperationErrorDialogConflictC1EPNS_28FileOperationErrorDialogBaseE@Base 3.0.2
+ _ZN5Peony32FileOperationErrorDialogConflictC2EPNS_28FileOperationErrorDialogBaseE@Base 3.0.2
+ _ZN5Peony32FileOperationErrorDialogConflictD0Ev@Base 3.0.2
+ _ZN5Peony32FileOperationErrorDialogConflictD1Ev@Base 3.0.2
+ _ZN5Peony32FileOperationErrorDialogConflictD2Ev@Base 3.0.2
  _ZN5Peony32PermissionsPropertiesPageFactory10pluginTypeEv@Base 2.0.0
  _ZN5Peony32PermissionsPropertiesPageFactory11descriptionEv@Base 2.0.0
  _ZN5Peony32PermissionsPropertiesPageFactory11getInstanceEv@Base 2.0.0
@@ -2426,248 +2432,261 @@ libpeony.so.3 libpeony3 #MINVER#
  _ZN5Peony9wrapGFileEP6_GFile@Base 2.0.0
  _ZN5Peony9wrapGIconEP6_GIcon@Base 2.0.0
  (optional=templinst)_ZN5QHashI7QString11QStringListE11deleteNode2EPN9QHashData4NodeE@Base 2.0.0
- (optional=templinst|arch=armhf)_ZN5QHashI7QString11QStringListE13detach_helperEv@Base 3.0.0
+ (optional=templinst|arch=amd64 arm64 armhf)_ZN5QHashI7QString11QStringListE13detach_helperEv@Base 3.0.0
  (optional=templinst)_ZN5QHashI7QString11QStringListE13duplicateNodeEPN9QHashData4NodeEPv@Base 2.0.0
- (optional=templinst|arch= !s390x)_ZN5QHashI7QString11QStringListE6removeERKS0_@Base 3.0.0
-#MISSING: 3.0.0# (optional=templinst|arch=amd64)_ZN5QHashI7QString11QStringListED1Ev@Base 3.0.0
-#MISSING: 3.0.0# (optional=templinst|arch=amd64)_ZN5QHashI7QString11QStringListED2Ev@Base 3.0.0
- (optional=templinst|arch=amd64)_ZN5QHashI7QString15QHashDummyValueE11deleteNode2EPN9QHashData4NodeE@Base 3.0.0
- (optional=templinst|arch=amd64)_ZN5QHashI7QString15QHashDummyValueE13duplicateNodeEPN9QHashData4NodeEPv@Base 3.0.0
+#MISSING: 3.0.2# (optional=templinst|arch= !s390x)_ZN5QHashI7QString11QStringListE6removeERKS0_@Base 3.0.0
+ (optional=templinst|arch=amd64 arm64 s390x)_ZN5QHashI7QString11QStringListED1Ev@Base 3.0.2
+ (optional=templinst|arch=amd64 arm64 s390x)_ZN5QHashI7QString11QStringListED2Ev@Base 3.0.2
+ (optional=templinst)_ZN5QHashI7QString15QHashDummyValueE11deleteNode2EPN9QHashData4NodeE@Base 3.0.0
+ (optional=templinst)_ZN5QHashI7QString15QHashDummyValueE13duplicateNodeEPN9QHashData4NodeEPv@Base 3.0.0
+ (optional=templinst|arch=!armhf !ppc64el)_ZN5QHashI7QString15QHashDummyValueED1Ev@Base 3.0.2
+ (optional=templinst|arch=!armhf !ppc64el)_ZN5QHashI7QString15QHashDummyValueED2Ev@Base 3.0.2
  (optional=templinst)_ZN5QHashI7QString5QIconE11deleteNode2EPN9QHashData4NodeE@Base 2.0.0
- (optional=templinst|arch=armhf)_ZN5QHashI7QString5QIconE13detach_helperEv@Base 3.0.0
+ (optional=templinst|arch=amd64 arm64 armhf)_ZN5QHashI7QString5QIconE13detach_helperEv@Base 3.0.0
  (optional=templinst)_ZN5QHashI7QString5QIconE13duplicateNodeEPN9QHashData4NodeEPv@Base 2.0.0
- (optional=templinst|arch= !s390x)_ZN5QHashI7QString5QIconE6removeERKS0_@Base 3.0.0
-#MISSING: 3.0.0# (optional=templinst|arch=amd64)_ZN5QHashI7QString5QIconED1Ev@Base 3.0.0
-#MISSING: 3.0.0# (optional=templinst|arch=amd64)_ZN5QHashI7QString5QIconED2Ev@Base 3.0.0
+#MISSING: 3.0.2# (optional=templinst|arch= !s390x)_ZN5QHashI7QString5QIconE6removeERKS0_@Base 3.0.0
+ (optional=templinst|arch=amd64 arm64 s390x)_ZN5QHashI7QString5QIconED1Ev@Base 3.0.2
+ (optional=templinst|arch=amd64 arm64 s390x)_ZN5QHashI7QString5QIconED2Ev@Base 3.0.2
  (optional=templinst)_ZN5QHashI7QString8QVariantE11deleteNode2EPN9QHashData4NodeE@Base 2.0.0
- (optional=templinst|arch=armhf)_ZN5QHashI7QString8QVariantE13detach_helperEv@Base 3.0.0
+ (optional=templinst|arch=amd64 arm64 armhf)_ZN5QHashI7QString8QVariantE13detach_helperEv@Base 3.0.0
  (optional=templinst)_ZN5QHashI7QString8QVariantE13duplicateNodeEPN9QHashData4NodeEPv@Base 2.0.0
- (optional=templinst|arch= !s390x)_ZN5QHashI7QString8QVariantE6removeERKS0_@Base 3.0.0
-#MISSING: 3.0.0# (optional=templinst|arch=amd64)_ZN5QHashI7QString8QVariantED1Ev@Base 3.0.0
-#MISSING: 3.0.0# (optional=templinst|arch=amd64)_ZN5QHashI7QString8QVariantED2Ev@Base 3.0.0
+#MISSING: 3.0.2# (optional=templinst|arch= !s390x)_ZN5QHashI7QString8QVariantE6removeERKS0_@Base 3.0.0
+ (optional=templinst|arch=amd64 arm64 s390x)_ZN5QHashI7QString8QVariantED1Ev@Base 3.0.2
+ (optional=templinst|arch=amd64 arm64 s390x)_ZN5QHashI7QString8QVariantED2Ev@Base 3.0.2
  (optional=templinst)_ZN5QHashI7QStringPN5Peony15PluginInterfaceEE11deleteNode2EPN9QHashData4NodeE@Base 2.0.0
  (optional=templinst)_ZN5QHashI7QStringPN5Peony15PluginInterfaceEE13duplicateNodeEPN9QHashData4NodeEPv@Base 2.0.0
-#MISSING: 3.0.0# (optional=templinst|arch=amd64)_ZN5QHashI7QStringPN5Peony15PluginInterfaceEED1Ev@Base 3.0.0
-#MISSING: 3.0.0# (optional=templinst|arch=amd64)_ZN5QHashI7QStringPN5Peony15PluginInterfaceEED2Ev@Base 3.0.0
+ (optional=templinst|arch=amd64 arm64 s390x)_ZN5QHashI7QStringPN5Peony15PluginInterfaceEED1Ev@Base 3.0.2
+ (optional=templinst|arch=amd64 arm64 s390x)_ZN5QHashI7QStringPN5Peony15PluginInterfaceEED2Ev@Base 3.0.2
  (optional=templinst)_ZN5QHashI7QStringPN5Peony19MenuPluginInterfaceEE11deleteNode2EPN9QHashData4NodeE@Base 2.0.0
  (optional=templinst)_ZN5QHashI7QStringPN5Peony19MenuPluginInterfaceEE13duplicateNodeEPN9QHashData4NodeEPv@Base 2.0.0
-#MISSING: 3.0.0# (optional=templinst|arch=amd64)_ZN5QHashI7QStringPN5Peony19MenuPluginInterfaceEED1Ev@Base 3.0.0
-#MISSING: 3.0.0# (optional=templinst|arch=amd64)_ZN5QHashI7QStringPN5Peony19MenuPluginInterfaceEED2Ev@Base 3.0.0
+ (optional=templinst|arch=amd64 arm64 s390x)_ZN5QHashI7QStringPN5Peony19MenuPluginInterfaceEED1Ev@Base 3.0.2
+ (optional=templinst|arch=amd64 arm64 s390x)_ZN5QHashI7QStringPN5Peony19MenuPluginInterfaceEED2Ev@Base 3.0.2
 #MISSING: 2.1.0# (optional=templinst)_ZN5QHashI7QStringPN5Peony24DirectoryViewPluginIfaceEE11deleteNode2EPN9QHashData4NodeE@Base 2.0.0
 #MISSING: 2.1.0# (optional=templinst)_ZN5QHashI7QStringPN5Peony24DirectoryViewPluginIfaceEE13duplicateNodeEPN9QHashData4NodeEPv@Base 2.0.0
  (optional=templinst)_ZN5QHashI7QStringPN5Peony25DirectoryViewPluginIface2EE11deleteNode2EPN9QHashData4NodeE@Base 2.0.0
  (optional=templinst)_ZN5QHashI7QStringPN5Peony25DirectoryViewPluginIface2EE13duplicateNodeEPN9QHashData4NodeEPv@Base 2.0.0
  (optional=templinst)_ZN5QHashI7QStringPN5Peony34PropertiesWindowTabPagePluginIfaceEE11deleteNode2EPN9QHashData4NodeE@Base 2.0.0
- (optional=templinst|arch=armhf)_ZN5QHashI7QStringPN5Peony34PropertiesWindowTabPagePluginIfaceEE13detach_helperEv@Base 3.0.0
+ (optional=templinst|arch=amd64 arm64 armhf)_ZN5QHashI7QStringPN5Peony34PropertiesWindowTabPagePluginIfaceEE13detach_helperEv@Base 3.0.0
  (optional=templinst)_ZN5QHashI7QStringPN5Peony34PropertiesWindowTabPagePluginIfaceEE13duplicateNodeEPN9QHashData4NodeEPv@Base 2.0.0
-#MISSING: 3.0.0# (optional=templinst|arch=amd64)_ZN5QHashI7QStringPN5Peony34PropertiesWindowTabPagePluginIfaceEED1Ev@Base 3.0.0
-#MISSING: 3.0.0# (optional=templinst|arch=amd64)_ZN5QHashI7QStringPN5Peony34PropertiesWindowTabPagePluginIfaceEED2Ev@Base 3.0.0
+ (optional=templinst|arch=amd64 arm64 s390x)_ZN5QHashI7QStringPN5Peony34PropertiesWindowTabPagePluginIfaceEED1Ev@Base 3.0.2
+ (optional=templinst|arch=amd64 arm64 s390x)_ZN5QHashI7QStringPN5Peony34PropertiesWindowTabPagePluginIfaceEED2Ev@Base 3.0.2
  (optional=templinst)_ZN5QHashI7QStringS0_E11deleteNode2EPN9QHashData4NodeE@Base 2.0.0
- (optional=templinst|arch=armhf)_ZN5QHashI7QStringS0_E13detach_helperEv@Base 3.0.0
+ (optional=templinst|arch=amd64 arm64 armhf)_ZN5QHashI7QStringS0_E13detach_helperEv@Base 3.0.0
  (optional=templinst)_ZN5QHashI7QStringS0_E13duplicateNodeEPN9QHashData4NodeEPv@Base 2.0.0
-#MISSING: 3.0.0# (optional=templinst|arch=amd64)_ZN5QHashI7QStringS0_ED1Ev@Base 3.0.0
-#MISSING: 3.0.0# (optional=templinst|arch=amd64)_ZN5QHashI7QStringS0_ED2Ev@Base 3.0.0
+ (optional=templinst|arch=amd64 arm64 s390x)_ZN5QHashI7QStringS0_ED1Ev@Base 3.0.2
+ (optional=templinst|arch=amd64 arm64 s390x)_ZN5QHashI7QStringS0_ED2Ev@Base 3.0.2
  (optional=templinst)_ZN5QHashI7QStringSt10shared_ptrIN5Peony8FileInfoEEE11deleteNode2EPN9QHashData4NodeE@Base 2.0.0
- (optional=templinst|arch=armhf)_ZN5QHashI7QStringSt10shared_ptrIN5Peony8FileInfoEEE13detach_helperEv@Base 3.0.0
+ (optional=templinst|arch=amd64 arm64 armhf)_ZN5QHashI7QStringSt10shared_ptrIN5Peony8FileInfoEEE13detach_helperEv@Base 3.0.0
  (optional=templinst)_ZN5QHashI7QStringSt10shared_ptrIN5Peony8FileInfoEEE13duplicateNodeEPN9QHashData4NodeEPv@Base 2.0.0
- (optional=templinst|arch= !s390x)_ZN5QHashI7QStringSt10shared_ptrIN5Peony8FileInfoEEE6removeERKS0_@Base 3.0.0
-#MISSING: 3.0.0# (optional=templinst|arch=amd64)_ZN5QHashI7QStringSt10shared_ptrIN5Peony8FileInfoEEED1Ev@Base 3.0.0
-#MISSING: 3.0.0# (optional=templinst|arch=amd64)_ZN5QHashI7QStringSt10shared_ptrIN5Peony8FileInfoEEED2Ev@Base 3.0.0
+#MISSING: 3.0.2# (optional=templinst|arch= !s390x)_ZN5QHashI7QStringSt10shared_ptrIN5Peony8FileInfoEEE6removeERKS0_@Base 3.0.0
+ (optional=templinst|arch=amd64 arm64 s390x)_ZN5QHashI7QStringSt10shared_ptrIN5Peony8FileInfoEEED1Ev@Base 3.0.2
+ (optional=templinst|arch=amd64 arm64 s390x)_ZN5QHashI7QStringSt10shared_ptrIN5Peony8FileInfoEEED2Ev@Base 3.0.2
  (optional=templinst)_ZN5QHashIP15QListWidgetItemPN5Peony16FileLaunchActionEE11deleteNode2EPN9QHashData4NodeE@Base 2.0.0
  (optional=templinst)_ZN5QHashIP15QListWidgetItemPN5Peony16FileLaunchActionEE13duplicateNodeEPN9QHashData4NodeEPv@Base 2.0.0
-#MISSING: 3.0.0# (optional=templinst|arch=amd64)_ZN5QHashIP15QListWidgetItemPN5Peony16FileLaunchActionEED1Ev@Base 3.0.0
-#MISSING: 3.0.0# (optional=templinst|arch=amd64)_ZN5QHashIP15QListWidgetItemPN5Peony16FileLaunchActionEED2Ev@Base 3.0.0
+ (optional=templinst|arch=amd64 arm64 s390x)_ZN5QHashIP15QListWidgetItemPN5Peony16FileLaunchActionEED1Ev@Base 3.0.2
+ (optional=templinst|arch=amd64 arm64 s390x)_ZN5QHashIP15QListWidgetItemPN5Peony16FileLaunchActionEED2Ev@Base 3.0.2
  (optional=templinst)_ZN5QHashIi5QPairIi7QStringEE11deleteNode2EPN9QHashData4NodeE@Base 2.0.0
  (optional=templinst)_ZN5QHashIi5QPairIi7QStringEE13duplicateNodeEPN9QHashData4NodeEPv@Base 2.0.0
-#MISSING: 3.0.0# (optional=templinst|arch=amd64)_ZN5QHashIi5QPairIi7QStringEED1Ev@Base 3.0.0
-#MISSING: 3.0.0# (optional=templinst|arch=amd64)_ZN5QHashIi5QPairIi7QStringEED2Ev@Base 3.0.0
- (optional=templinst|arch=!amd64)_ZN5QHashIiN5Peony13FileOperation12ResponseTypeEE11deleteNode2EPN9QHashData4NodeE@Base 2.0.0
- (optional=templinst|arch=!amd64)_ZN5QHashIiN5Peony13FileOperation12ResponseTypeEE13duplicateNodeEPN9QHashData4NodeEPv@Base 2.0.0
- (optional=templinst|arch=!amd64)_ZN5QHashIiN5Peony13FileOperation12ResponseTypeEE6insertERKiRKS2_@Base 2.1.0
+ (optional=templinst|arch=amd64 arm64 s390x)_ZN5QHashIi5QPairIi7QStringEED1Ev@Base 3.0.2
+ (optional=templinst|arch=amd64 arm64 s390x)_ZN5QHashIi5QPairIi7QStringEED2Ev@Base 3.0.2
+#MISSING: 3.0.2# (optional=templinst|arch=!amd64)_ZN5QHashIiN5Peony13FileOperation12ResponseTypeEE11deleteNode2EPN9QHashData4NodeE@Base 2.0.0
+#MISSING: 3.0.2# (optional=templinst|arch=!amd64)_ZN5QHashIiN5Peony13FileOperation12ResponseTypeEE13duplicateNodeEPN9QHashData4NodeEPv@Base 2.0.0
+#MISSING: 3.0.2# (optional=templinst|arch=!amd64)_ZN5QHashIiN5Peony13FileOperation12ResponseTypeEE6insertERKiRKS2_@Base 2.1.0
 #MISSING: 3.0.0# (optional=templinst|arch=amd64)_ZN5QHashIiN5Peony13FileOperation12ResponseTypeEED1Ev@Base 3.0.0
 #MISSING: 3.0.0# (optional=templinst|arch=amd64)_ZN5QHashIiN5Peony13FileOperation12ResponseTypeEED2Ev@Base 3.0.0
- (optional=templinst|arch=amd64)_ZN5QHashIiN5Peony17ExceptionResponseEE11deleteNode2EPN9QHashData4NodeE@Base 3.0.0
- (optional=templinst|arch=amd64)_ZN5QHashIiN5Peony17ExceptionResponseEE13duplicateNodeEPN9QHashData4NodeEPv@Base 3.0.0
- (optional=templinst|arch=amd64)_ZN5QHashIiN5Peony17ExceptionResponseEE6insertERKiRKS1_@Base 3.0.0
- (optional=templinst|arch=amd64 ppc64el)_ZN5QListI10QByteArrayE13detach_helperEi@Base 3.0.0
+ (optional=templinst)_ZN5QHashIiN5Peony17ExceptionResponseEE11deleteNode2EPN9QHashData4NodeE@Base 3.0.0
+ (optional=templinst)_ZN5QHashIiN5Peony17ExceptionResponseEE13duplicateNodeEPN9QHashData4NodeEPv@Base 3.0.0
+ (optional=templinst)_ZN5QHashIiN5Peony17ExceptionResponseEE6insertERKiRKS1_@Base 3.0.0
+ (optional=templinst|arch=!armhf !ppc64el)_ZN5QHashIiN5Peony17ExceptionResponseEED1Ev@Base 3.0.2
+ (optional=templinst|arch=!armhf !ppc64el)_ZN5QHashIiN5Peony17ExceptionResponseEED2Ev@Base 3.0.2
+ (optional=templinst|arch=ppc64el)_ZN5QListI10QByteArrayE13detach_helperEi@Base 3.0.0
  (optional=templinst)_ZN5QListI10QByteArrayED1Ev@Base 2.0.0
  (optional=templinst)_ZN5QListI10QByteArrayED2Ev@Base 2.0.0
  (optional=templinst)_ZN5QListI11QModelIndexE13detach_helperEi@Base 2.0.0
  (optional=templinst)_ZN5QListI11QModelIndexE18detach_helper_growEii@Base 2.0.0
- (optional=templinst)_ZN5QListI11QModelIndexE6appendERKS0_@Base 2.0.0
- (optional=templinst|arch=amd64 armhf)_ZN5QListI11QModelIndexEC1ERKS1_@Base 2.0.0
- (optional=templinst|arch=amd64 armhf)_ZN5QListI11QModelIndexEC2ERKS1_@Base 2.0.0
+ (optional=templinst|arch=!s390x)_ZN5QListI11QModelIndexE6appendERKS0_@Base 2.0.0
+ (optional=templinst|arch=s390x)_ZN5QListI11QModelIndexE6detachEv@Base 3.0.2
+ (optional=templinst|arch=amd64 arm64 armhf)_ZN5QListI11QModelIndexEC1ERKS1_@Base 2.0.0
+ (optional=templinst|arch=amd64 arm64 armhf)_ZN5QListI11QModelIndexEC2ERKS1_@Base 2.0.0
  (optional=templinst)_ZN5QListI11QModelIndexED1Ev@Base 2.0.0
  (optional=templinst)_ZN5QListI11QModelIndexED2Ev@Base 2.0.0
  (optional=templinst)_ZN5QListI12QKeySequenceE18detach_helper_growEii@Base 2.0.0
- (optional=templinst)_ZN5QListI12QKeySequenceE6appendERKS0_@Base 2.0.0
+ (optional=templinst|arch=!s390x)_ZN5QListI12QKeySequenceE6appendERKS0_@Base 2.0.0
  (optional=templinst)_ZN5QListI12QKeySequenceED1Ev@Base 2.0.0
  (optional=templinst)_ZN5QListI12QKeySequenceED2Ev@Base 2.0.0
- (optional=templinst|arch=amd64)_ZN5QListI19QItemSelectionRangeEC1ERKS1_@Base 3.0.0
- (optional=templinst|arch=amd64)_ZN5QListI19QItemSelectionRangeEC2ERKS1_@Base 3.0.0
+#MISSING: 3.0.2# (optional=templinst|arch=amd64)_ZN5QListI19QItemSelectionRangeEC1ERKS1_@Base 3.0.0
+#MISSING: 3.0.2# (optional=templinst|arch=amd64)_ZN5QListI19QItemSelectionRangeEC2ERKS1_@Base 3.0.0
  (optional=templinst)_ZN5QListI19QItemSelectionRangeED1Ev@Base 2.0.0
  (optional=templinst)_ZN5QListI19QItemSelectionRangeED2Ev@Base 2.0.0
 #MISSING: 3.0.0# (optional=templinst)_ZN5QListI21QPersistentModelIndexE18detach_helper_growEii@Base 3.0.0
 #MISSING: 3.0.0# (optional=templinst)_ZN5QListI21QPersistentModelIndexE6appendERKS0_@Base 3.0.0
- (optional=templinst|arch= !ppc64el)_ZN5QListI21QPersistentModelIndexEC1ERKS1_@Base 3.0.0
- (optional=templinst|arch= !ppc64el)_ZN5QListI21QPersistentModelIndexEC2ERKS1_@Base 3.0.0
+#MISSING: 3.0.2# (optional=templinst|arch= !ppc64el)_ZN5QListI21QPersistentModelIndexEC1ERKS1_@Base 3.0.0
+#MISSING: 3.0.2# (optional=templinst|arch= !ppc64el)_ZN5QListI21QPersistentModelIndexEC2ERKS1_@Base 3.0.0
  (optional=templinst)_ZN5QListI4QUrlE13detach_helperEi@Base 2.0.0
  (optional=templinst)_ZN5QListI4QUrlE18detach_helper_growEii@Base 2.0.0
- (optional=templinst)_ZN5QListI4QUrlE6appendERKS0_@Base 2.0.0
+ (optional=templinst|arch=!s390x)_ZN5QListI4QUrlE6appendERKS0_@Base 2.0.0
+ (optional=templinst|arch=s390x)_ZN5QListI4QUrlE6detachEv@Base 3.0.2
  (optional=templinst)_ZN5QListI4QUrlED1Ev@Base 2.0.0
  (optional=templinst)_ZN5QListI4QUrlED2Ev@Base 2.0.0
- (optional=templinst)_ZN5QListI5QPairIi7QStringEE13detach_helperEi@Base 2.0.0
- (optional=templinst)_ZN5QListI5QPairIi7QStringEE18detach_helper_growEii@Base 2.0.0
- (optional=templinst)_ZN5QListI5QPairIi7QStringEE6appendERKS2_@Base 2.0.0
+ (optional=templinst|arch=!s390x)_ZN5QListI5QPairIi7QStringEE13detach_helperEi@Base 2.0.0
+ (optional=templinst|arch=!s390x)_ZN5QListI5QPairIi7QStringEE18detach_helper_growEii@Base 2.0.0
+ (optional=templinst|arch=!s390x)_ZN5QListI5QPairIi7QStringEE6appendERKS2_@Base 2.0.0
  (optional=templinst)_ZN5QListI5QPairIi7QStringEED1Ev@Base 2.0.0
  (optional=templinst)_ZN5QListI5QPairIi7QStringEED2Ev@Base 2.0.0
  (optional=templinst)_ZN5QListI6QColorE13detach_helperEi@Base 2.1.0
  (optional=templinst)_ZN5QListI6QColorE18detach_helper_growEii@Base 2.1.0
- (optional=templinst)_ZN5QListI6QColorE6appendERKS0_@Base 2.1.0
- (optional=templinst)_ZN5QListI6QColorEC1ERKS1_@Base 2.2.0
- (optional=templinst)_ZN5QListI6QColorEC2ERKS1_@Base 2.2.0
+ (optional=templinst|arch=!s390x)_ZN5QListI6QColorE6appendERKS0_@Base 2.1.0
+ (optional=templinst|arch=!s390x)_ZN5QListI6QColorEC1ERKS1_@Base 2.2.0
+ (optional=templinst|arch=!s390x)_ZN5QListI6QColorEC2ERKS1_@Base 2.2.0
  (optional=templinst)_ZN5QListI6QColorED1Ev@Base 2.1.0
  (optional=templinst)_ZN5QListI6QColorED2Ev@Base 2.1.0
- (optional=templinst)_ZN5QListI7PWDItemE18detach_helper_growEii@Base 2.0.0
- (optional=templinst)_ZN5QListI7PWDItemE6appendERKS0_@Base 2.0.0
- (optional=templinst|arch=!amd64)_ZN5QListI7PWDItemED1Ev@Base 3.0.0
- (optional=templinst|arch=!amd64)_ZN5QListI7PWDItemED2Ev@Base 3.0.0
- (optional=templinst|arch=armhf)_ZN5QListI7QStringE10removeLastEv@Base 3.0.0
- (optional=templinst)_ZN5QListI7QStringE13detach_helperEi@Base 2.0.0
+ (optional=templinst|arch=!s390x)_ZN5QListI7PWDItemE18detach_helper_growEii@Base 2.0.0
+ (optional=templinst|arch=!s390x)_ZN5QListI7PWDItemE6appendERKS0_@Base 2.0.0
+ (optional=templinst)_ZN5QListI7PWDItemED1Ev@Base 3.0.0
+ (optional=templinst)_ZN5QListI7PWDItemED2Ev@Base 3.0.0
+ (optional=templinst|arch=amd64 arm64 armhf s390x)_ZN5QListI7QStringE10removeLastEv@Base 3.0.0
+ (optional=templinst|arch=!s390x)_ZN5QListI7QStringE13detach_helperEi@Base 2.0.0
  (optional=templinst)_ZN5QListI7QStringE18detach_helper_growEii@Base 2.0.0
- (optional=templinst|arch=armhf)_ZN5QListI7QStringE4lastEv@Base 3.0.0
- (optional=templinst|arch=amd64 armhf)_ZN5QListI7QStringE5clearEv@Base 3.0.0
+ (optional=templinst|arch=amd64 arm64 armhf s390x)_ZN5QListI7QStringE4lastEv@Base 3.0.0
+ (optional=templinst|arch=armhf)_ZN5QListI7QStringE5clearEv@Base 3.0.0
  (optional=templinst)_ZN5QListI7QStringE6appendERKS0_@Base 2.0.0
- (optional=templinst|arch=amd64 armhf)_ZN5QListI7QStringE6detachEv@Base 3.0.0
+ (optional=templinst|arch=armhf ppc64el s390x)_ZN5QListI7QStringE6detachEv@Base 3.0.0
+ (optional=templinst|arch=s390x)_ZN5QListI7QStringE7prependERKS0_@Base 3.0.2
 #MISSING: 2.1.0# (optional=templinst)_ZN5QListI7QStringE7reserveEi@Base 2.0.0
- (optional=templinst|arch=amd64)_ZN5QListI7QStringE9removeAllERKS0_@Base 3.0.0
- (optional=templinst|arch=amd64)_ZN5QListI7QStringE9removeOneERKS0_@Base 3.0.0
- (optional=templinst|arch=armhf)_ZN5QListI7QStringE9takeFirstEv@Base 3.0.0
+ (optional=templinst|arch=!ppc64el)_ZN5QListI7QStringE8removeAtEi@Base 3.0.2
+#MISSING: 3.0.2# (optional=templinst|arch=amd64)_ZN5QListI7QStringE9removeAllERKS0_@Base 3.0.0
+#MISSING: 3.0.2# (optional=templinst|arch=amd64)_ZN5QListI7QStringE9removeOneERKS0_@Base 3.0.0
+ (optional=templinst|arch=amd64 arm64 armhf s390x)_ZN5QListI7QStringE9takeFirstEv@Base 3.0.0
  (optional=templinst)_ZN5QListI7QStringEC1ERKS1_@Base 2.0.0
- (optional=templinst|arch=armhf)_ZN5QListI7QStringEC1IPKS0_Lb1EEET_S5_@Base 3.0.0
+ (optional=templinst|arch=amd64 arm64 armhf s390x)_ZN5QListI7QStringEC1IPKS0_Lb1EEET_S5_@Base 3.0.0
  (optional=templinst)_ZN5QListI7QStringEC2ERKS1_@Base 2.0.0
- (optional=templinst|arch=armhf)_ZN5QListI7QStringEC2IPKS0_Lb1EEET_S5_@Base 3.0.0
+ (optional=templinst|arch=amd64 arm64 armhf s390x)_ZN5QListI7QStringEC2IPKS0_Lb1EEET_S5_@Base 3.0.0
  (optional=templinst)_ZN5QListI7QStringED1Ev@Base 2.0.0
  (optional=templinst)_ZN5QListI7QStringED2Ev@Base 2.0.0
- (optional=templinst|arch=amd64)_ZN5QListI7QStringEpLERKS1_@Base 3.0.0
+#MISSING: 3.0.2# (optional=templinst|arch=amd64)_ZN5QListI7QStringEpLERKS1_@Base 3.0.0
  (optional=templinst)_ZN5QListIN7QWizard12WizardButtonEE18detach_helper_growEii@Base 2.0.0
- (optional=templinst)_ZN5QListIN7QWizard12WizardButtonEE6appendERKS1_@Base 2.0.0
+ (optional=templinst|arch=!s390x)_ZN5QListIN7QWizard12WizardButtonEE6appendERKS1_@Base 2.0.0
  (optional=templinst)_ZN5QListIN7QWizard12WizardButtonEED1Ev@Base 2.0.0
  (optional=templinst)_ZN5QListIN7QWizard12WizardButtonEED2Ev@Base 2.0.0
- (optional=templinst)_ZN5QListIP11QToolButtonE18detach_helper_growEii@Base 2.2.0
- (optional=templinst|arch=armhf)_ZN5QListIP11QToolButtonE6appendERKS1_@Base 3.0.0
- (optional=templinst|arch=amd64 armhf)_ZN5QListIP11QToolButtonED1Ev@Base 2.2.0
- (optional=templinst|arch=amd64 armhf)_ZN5QListIP11QToolButtonED2Ev@Base 2.2.0
- (optional=templinst|arch=amd64 ppc64el)_ZN5QListIP13FileLabelItemE13detach_helperEi@Base 3.0.0
- (optional=templinst)_ZN5QListIP13FileLabelItemE18detach_helper_growEii@Base 2.1.0
+ (optional=templinst|arch=!s390x)_ZN5QListIP11QToolButtonE18detach_helper_growEii@Base 2.2.0
+ (optional=templinst|arch=amd64 arm64 armhf)_ZN5QListIP11QToolButtonE6appendERKS1_@Base 3.0.0
+ (optional=templinst|arch=amd64 arm64 armhf)_ZN5QListIP11QToolButtonED1Ev@Base 2.2.0
+ (optional=templinst|arch=amd64 arm64 armhf)_ZN5QListIP11QToolButtonED2Ev@Base 2.2.0
+ (optional=templinst|arch=ppc64el)_ZN5QListIP13FileLabelItemE13detach_helperEi@Base 3.0.0
+ (optional=templinst|arch=!s390x)_ZN5QListIP13FileLabelItemE18detach_helper_growEii@Base 2.1.0
  (optional=templinst)_ZN5QListIP13FileLabelItemE6appendERKS1_@Base 2.1.0
  (optional=templinst)_ZN5QListIP13FileLabelItemEC1ERKS2_@Base 2.1.0
  (optional=templinst)_ZN5QListIP13FileLabelItemEC2ERKS2_@Base 2.1.0
- (optional=templinst|arch=amd64)_ZN5QListIP13FileLabelItemED1Ev@Base 3.0.0
- (optional=templinst|arch=amd64)_ZN5QListIP13FileLabelItemED2Ev@Base 3.0.0
- (optional=templinst)_ZN5QListIP13QStandardItemE18detach_helper_growEii@Base 2.0.0
+#MISSING: 3.0.2# (optional=templinst|arch=amd64)_ZN5QListIP13FileLabelItemED1Ev@Base 3.0.0
+#MISSING: 3.0.2# (optional=templinst|arch=amd64)_ZN5QListIP13FileLabelItemED2Ev@Base 3.0.0
+ (optional=templinst|arch=!s390x)_ZN5QListIP13QStandardItemE18detach_helper_growEii@Base 2.0.0
  (optional=templinst)_ZN5QListIP13QStandardItemE6appendERKS1_@Base 2.0.0
  (optional=templinst)_ZN5QListIP13QStandardItemED1Ev@Base 2.0.0
  (optional=templinst)_ZN5QListIP13QStandardItemED2Ev@Base 2.0.0
- (optional=templinst|arch=amd64 ppc64el)_ZN5QListIP7QActionE13detach_helperEi@Base 3.0.0
- (optional=templinst)_ZN5QListIP7QActionE18detach_helper_growEii@Base 2.0.0
+ (optional=templinst|arch=ppc64el)_ZN5QListIP7QActionE13detach_helperEi@Base 3.0.0
+ (optional=templinst|arch=!s390x)_ZN5QListIP7QActionE18detach_helper_growEii@Base 2.0.0
+ (optional=templinst|arch=armhf s390x)_ZN5QListIP7QActionE4lastEv@Base 3.0.2
  (optional=templinst)_ZN5QListIP7QActionE6appendERKS1_@Base 2.0.0
- (optional=templinst|arch=amd64)_ZN5QListIP7QActionE6detachEv@Base 3.0.0
+ (optional=templinst|arch=ppc64el)_ZN5QListIP7QActionE6detachEv@Base 3.0.0
  (optional=templinst)_ZN5QListIP7QActionEC1ERKS2_@Base 2.0.0
  (optional=templinst)_ZN5QListIP7QActionEC2ERKS2_@Base 2.0.0
  (optional=templinst)_ZN5QListIP7QActionED1Ev@Base 2.0.0
  (optional=templinst)_ZN5QListIP7QActionED2Ev@Base 2.0.0
- (optional=templinst|arch=amd64)_ZN5QListIP7QActionEpLERKS2_@Base 3.0.0
+#MISSING: 3.0.2# (optional=templinst|arch=amd64)_ZN5QListIP7QActionEpLERKS2_@Base 3.0.0
  (optional=templinst)_ZN5QListIP7QObjectEC1ERKS2_@Base 2.1.0
  (optional=templinst)_ZN5QListIP7QObjectEC2ERKS2_@Base 2.1.0
- (optional=templinst|arch=amd64 armhf)_ZN5QListIP7QObjectED1Ev@Base 2.1.0
- (optional=templinst|arch=amd64 armhf)_ZN5QListIP7QObjectED2Ev@Base 2.1.0
- (optional=templinst)_ZN5QListIP7QRegExpE18detach_helper_growEii@Base 2.1.0
+ (optional=templinst|arch=amd64 arm64 armhf)_ZN5QListIP7QObjectED1Ev@Base 2.1.0
+ (optional=templinst|arch=amd64 arm64 armhf)_ZN5QListIP7QObjectED2Ev@Base 2.1.0
+ (optional=templinst|arch=!s390x)_ZN5QListIP7QRegExpE18detach_helper_growEii@Base 2.1.0
  (optional=templinst)_ZN5QListIP7QRegExpE6appendERKS1_@Base 2.1.0
- (optional=templinst|arch=amd64 armhf)_ZN5QListIPN5Peony13FileOperationEED1Ev@Base 2.1.0
- (optional=templinst|arch=amd64 armhf)_ZN5QListIPN5Peony13FileOperationEED2Ev@Base 2.1.0
- (optional=templinst)_ZN5QListIPN5Peony14VFSPluginIfaceEE18detach_helper_growEii@Base 2.2.0
- (optional=templinst)_ZN5QListIPN5Peony14VFSPluginIfaceEE6appendERKS2_@Base 2.2.0
- (optional=templinst|arch= !ppc64el)_ZN5QListIPN5Peony16FileLaunchActionEE13detach_helperEi@Base 3.0.0
- (optional=templinst)_ZN5QListIPN5Peony16FileLaunchActionEE18detach_helper_growEii@Base 2.0.0
- (optional=templinst)_ZN5QListIPN5Peony16FileLaunchActionEE6appendERKS2_@Base 2.0.0
- (optional=templinst|arch=amd64)_ZN5QListIPN5Peony16FileLaunchActionEE6detachEv@Base 3.0.0
+ (optional=templinst|arch=amd64 arm64 armhf)_ZN5QListIPN5Peony13FileOperationEED1Ev@Base 2.1.0
+ (optional=templinst|arch=amd64 arm64 armhf)_ZN5QListIPN5Peony13FileOperationEED2Ev@Base 2.1.0
+ (optional=templinst|arch=!s390x)_ZN5QListIPN5Peony14VFSPluginIfaceEE18detach_helper_growEii@Base 2.2.0
+ (optional=templinst|arch=!s390x)_ZN5QListIPN5Peony14VFSPluginIfaceEE6appendERKS2_@Base 2.2.0
+#MISSING: 3.0.2# (optional=templinst|arch= !ppc64el)_ZN5QListIPN5Peony16FileLaunchActionEE13detach_helperEi@Base 3.0.0
+ (optional=templinst|arch=!s390x)_ZN5QListIPN5Peony16FileLaunchActionEE18detach_helper_growEii@Base 2.0.0
+ (optional=templinst|arch=!s390x)_ZN5QListIPN5Peony16FileLaunchActionEE6appendERKS2_@Base 2.0.0
+#MISSING: 3.0.2# (optional=templinst|arch=amd64)_ZN5QListIPN5Peony16FileLaunchActionEE6detachEv@Base 3.0.0
  (optional=templinst)_ZN5QListIPN5Peony16FileLaunchActionEED1Ev@Base 2.0.0
  (optional=templinst)_ZN5QListIPN5Peony16FileLaunchActionEED2Ev@Base 2.0.0
- (optional=templinst)_ZN5QListIPN5Peony25DirectoryViewPluginIface2EE13detach_helperEi@Base 2.1.0
- (optional=templinst)_ZN5QListIPN5Peony25DirectoryViewPluginIface2EE18detach_helper_growEii@Base 2.1.0
- (optional=templinst|arch=armhf)_ZN5QListIPN5Peony25DirectoryViewPluginIface2EE6appendERKS2_@Base 3.0.0
+ (optional=templinst|arch=!s390x)_ZN5QListIPN5Peony25DirectoryViewPluginIface2EE13detach_helperEi@Base 2.1.0
+ (optional=templinst|arch=!s390x)_ZN5QListIPN5Peony25DirectoryViewPluginIface2EE18detach_helper_growEii@Base 2.1.0
+ (optional=templinst|arch=amd64 arm64 armhf)_ZN5QListIPN5Peony25DirectoryViewPluginIface2EE6appendERKS2_@Base 3.0.0
  (optional=templinst)_ZN5QListIPN5Peony25DirectoryViewPluginIface2EED1Ev@Base 2.1.0
  (optional=templinst)_ZN5QListIPN5Peony25DirectoryViewPluginIface2EED2Ev@Base 2.1.0
- (optional=templinst|arch=amd64 ppc64el)_ZN5QListIPN5Peony8FileNodeEE13detach_helperEi@Base 3.0.0
- (optional=templinst)_ZN5QListIPN5Peony8FileNodeEE18detach_helper_growEii@Base 2.0.0
- (optional=templinst)_ZN5QListIPN5Peony8FileNodeEE5clearEv@Base 2.0.0
- (optional=templinst)_ZN5QListIPN5Peony8FileNodeEE6appendERKS2_@Base 2.0.0
- (optional=templinst|arch=amd64 armhf)_ZN5QListIPN5Peony8FileNodeEE6detachEv@Base 3.0.0
+ (optional=templinst|arch=ppc64el)_ZN5QListIPN5Peony8FileNodeEE13detach_helperEi@Base 3.0.0
+ (optional=templinst|arch=!s390x)_ZN5QListIPN5Peony8FileNodeEE18detach_helper_growEii@Base 2.0.0
+ (optional=templinst|arch=!s390x)_ZN5QListIPN5Peony8FileNodeEE5clearEv@Base 2.0.0
+ (optional=templinst|arch=!s390x)_ZN5QListIPN5Peony8FileNodeEE6appendERKS2_@Base 2.0.0
+ (optional=templinst|arch=armhf ppc64el s390x)_ZN5QListIPN5Peony8FileNodeEE6detachEv@Base 3.0.0
  (optional=templinst)_ZN5QListIPN5Peony8FileNodeEED1Ev@Base 2.0.0
  (optional=templinst)_ZN5QListIPN5Peony8FileNodeEED2Ev@Base 2.0.0
  (optional=templinst)_ZN5QListISt10shared_ptrIN5Peony8FileInfoEEE13detach_helperEi@Base 2.0.0
  (optional=templinst)_ZN5QListISt10shared_ptrIN5Peony8FileInfoEEE18detach_helper_growEii@Base 2.0.0
- (optional=templinst)_ZN5QListISt10shared_ptrIN5Peony8FileInfoEEE6appendERKS3_@Base 2.0.0
- (optional=templinst)_ZN5QListISt10shared_ptrIN5Peony8FileInfoEEEC1ERKS4_@Base 2.0.0
- (optional=templinst)_ZN5QListISt10shared_ptrIN5Peony8FileInfoEEEC2ERKS4_@Base 2.0.0
+ (optional=templinst|arch=!s390x)_ZN5QListISt10shared_ptrIN5Peony8FileInfoEEE6appendERKS3_@Base 2.0.0
+ (optional=templinst|arch=s390x)_ZN5QListISt10shared_ptrIN5Peony8FileInfoEEE6detachEv@Base 3.0.2
+ (optional=templinst|arch=!s390x)_ZN5QListISt10shared_ptrIN5Peony8FileInfoEEEC1ERKS4_@Base 2.0.0
+ (optional=templinst|arch=!s390x)_ZN5QListISt10shared_ptrIN5Peony8FileInfoEEEC2ERKS4_@Base 2.0.0
  (optional=templinst)_ZN5QListISt10shared_ptrIN5Peony8FileInfoEEED1Ev@Base 2.0.0
  (optional=templinst)_ZN5QListISt10shared_ptrIN5Peony8FileInfoEEED2Ev@Base 2.0.0
 #MISSING: 2.2.0# (optional=templinst)_ZN5QListISt10shared_ptrIN5Peony8FileInfoEEEpLERKS4_@Base 2.0.0
- (optional=templinst|arch=amd64 armhf)_ZN5QListIiE13detach_helperEi@Base 2.1.0
- (optional=templinst)_ZN5QListIiE18detach_helper_growEii@Base 2.1.0
- (optional=templinst|arch=amd64)_ZN5QListIiE5clearEv@Base 3.0.0
+ (optional=templinst|arch=amd64 arm64 armhf)_ZN5QListIiE13detach_helperEi@Base 2.1.0
+ (optional=templinst|arch=!s390x)_ZN5QListIiE18detach_helper_growEii@Base 2.1.0
+#MISSING: 3.0.2# (optional=templinst|arch=amd64)_ZN5QListIiE5clearEv@Base 3.0.0
  (optional=templinst)_ZN5QListIiE6appendERKi@Base 2.1.0
- (optional=templinst|arch=amd64)_ZN5QListIiE9removeOneERKi@Base 3.0.0
+#MISSING: 3.0.2# (optional=templinst|arch=amd64)_ZN5QListIiE9removeOneERKi@Base 3.0.0
  (optional=templinst)_ZN5QListIiEC1ERKS0_@Base 2.1.0
  (optional=templinst)_ZN5QListIiEC2ERKS0_@Base 2.1.0
  (optional=templinst)_ZN5QListIiED1Ev@Base 2.1.0
  (optional=templinst)_ZN5QListIiED2Ev@Base 2.1.0
- (optional=templinst|arch=amd64)_ZN5QListIiEpLERKS0_@Base 3.0.0
- (arch=amd64)_ZN6QDebuglsEPKc@Base 3.0.0
+#MISSING: 3.0.2# (optional=templinst|arch=amd64)_ZN5QListIiEpLERKS0_@Base 3.0.0
+#MISSING: 3.0.2# (arch=amd64)_ZN6QDebuglsEPKc@Base 3.0.0
+ (optional=templinst|arch=s390x)_ZN6QStackISt10shared_ptrIN5Peony17FileOperationInfoEEE3popEv@Base 3.0.2
  _ZN7PWDItemC1EP6passwd@Base 2.0.0
  _ZN7PWDItemC2EP6passwd@Base 2.0.0
  _ZN7PWDItemD1Ev@Base 2.0.0
  _ZN7PWDItemD2Ev@Base 2.0.0
  _ZN7QAction7triggerEv@Base 2.0.0
- (arch=amd64)_ZN7QStringC1EPKc@Base 3.0.0
- (arch=amd64)_ZN7QStringC2EPKc@Base 3.0.0
+#MISSING: 3.0.2# (arch=amd64)_ZN7QStringC1EPKc@Base 3.0.0
+#MISSING: 3.0.2# (arch=amd64)_ZN7QStringC2EPKc@Base 3.0.0
  _ZN7QStringD1Ev@Base 2.0.0
  _ZN7QStringD2Ev@Base 2.0.0
-#MISSING: 3.0.0# (optional=templinst|arch=amd64)_ZN7QVectorI6QPointED1Ev@Base 3.0.0
-#MISSING: 3.0.0# (optional=templinst|arch=amd64)_ZN7QVectorI6QPointED2Ev@Base 3.0.0
- (optional=templinst|arch=amd64)_ZN7QVectorIPN5Peony11FileWatcherEE11reallocDataEii6QFlagsIN10QArrayData16AllocationOptionEE@Base 3.0.0
- (optional=templinst|arch=!amd64)_ZN7QVectorIPN5Peony11FileWatcherEE7reallocEi6QFlagsIN10QArrayData16AllocationOptionEE@Base 3.0.0
-#MISSING: 3.0.0# (optional=templinst|arch=amd64)_ZN7QVectorIPN5Peony11FileWatcherEED1Ev@Base 3.0.0
-#MISSING: 3.0.0# (optional=templinst|arch=amd64)_ZN7QVectorIPN5Peony11FileWatcherEED2Ev@Base 3.0.0
- (optional=templinst|arch=amd64)_ZN7QVectorIPN5Peony19SideBarAbstractItemEE11reallocDataEii6QFlagsIN10QArrayData16AllocationOptionEE@Base 3.0.0
+ (optional=templinst|arch=amd64 arm64 s390x)_ZN7QVectorI6QPointED1Ev@Base 3.0.2
+ (optional=templinst|arch=amd64 arm64 s390x)_ZN7QVectorI6QPointED2Ev@Base 3.0.2
+#MISSING: 3.0.2# (optional=templinst|arch=amd64)_ZN7QVectorIPN5Peony11FileWatcherEE11reallocDataEii6QFlagsIN10QArrayData16AllocationOptionEE@Base 3.0.0
+ (optional=templinst|arch=!s390x)_ZN7QVectorIPN5Peony11FileWatcherEE7reallocEi6QFlagsIN10QArrayData16AllocationOptionEE@Base 3.0.0
+ (optional=templinst|arch=amd64 arm64 s390x)_ZN7QVectorIPN5Peony11FileWatcherEED1Ev@Base 3.0.2
+ (optional=templinst|arch=amd64 arm64 s390x)_ZN7QVectorIPN5Peony11FileWatcherEED2Ev@Base 3.0.2
+#MISSING: 3.0.2# (optional=templinst|arch=amd64)_ZN7QVectorIPN5Peony19SideBarAbstractItemEE11reallocDataEii6QFlagsIN10QArrayData16AllocationOptionEE@Base 3.0.0
  (optional=templinst)_ZN7QVectorIPN5Peony19SideBarAbstractItemEE6appendEOS2_@Base 2.0.0
- (optional=templinst|arch=!amd64)_ZN7QVectorIPN5Peony19SideBarAbstractItemEE7reallocEi6QFlagsIN10QArrayData16AllocationOptionEE@Base 3.0.0
-#MISSING: 3.0.0# (optional=templinst|arch=amd64)_ZN7QVectorIPN5Peony19SideBarAbstractItemEED1Ev@Base 3.0.0
-#MISSING: 3.0.0# (optional=templinst|arch=amd64)_ZN7QVectorIPN5Peony19SideBarAbstractItemEED2Ev@Base 3.0.0
- (optional=templinst|arch=amd64)_ZN7QVectorIPN5Peony8FileItemEE11reallocDataEii6QFlagsIN10QArrayData16AllocationOptionEE@Base 3.0.0
- (optional=templinst)_ZN7QVectorIPN5Peony8FileItemEE6appendERKS2_@Base 2.0.0
- (optional=templinst|arch= !ppc64el)_ZN7QVectorIPN5Peony8FileItemEE6resizeEi@Base 3.0.0
- (optional=templinst|arch=!amd64)_ZN7QVectorIPN5Peony8FileItemEE7reallocEi6QFlagsIN10QArrayData16AllocationOptionEE@Base 3.0.0
-#MISSING: 3.0.0# (optional=templinst|arch=amd64)_ZN7QVectorIPN5Peony8FileItemEED1Ev@Base 3.0.0
-#MISSING: 3.0.0# (optional=templinst|arch=amd64)_ZN7QVectorIPN5Peony8FileItemEED2Ev@Base 3.0.0
- (optional=templinst|arch=amd64)_ZN7QVectorISt10shared_ptrIN5Peony17FileOperationInfoEEE11reallocDataEii6QFlagsIN10QArrayData16AllocationOptionEE@Base 3.0.0
+ (optional=templinst|arch=s390x)_ZN7QVectorIPN5Peony19SideBarAbstractItemEE6detachEv@Base 3.0.2
+ (optional=templinst|arch=!s390x)_ZN7QVectorIPN5Peony19SideBarAbstractItemEE7reallocEi6QFlagsIN10QArrayData16AllocationOptionEE@Base 3.0.0
+ (optional=templinst|arch=amd64 arm64 s390x)_ZN7QVectorIPN5Peony19SideBarAbstractItemEED1Ev@Base 3.0.2
+ (optional=templinst|arch=amd64 arm64 s390x)_ZN7QVectorIPN5Peony19SideBarAbstractItemEED2Ev@Base 3.0.2
+#MISSING: 3.0.2# (optional=templinst|arch=amd64)_ZN7QVectorIPN5Peony8FileItemEE11reallocDataEii6QFlagsIN10QArrayData16AllocationOptionEE@Base 3.0.0
+ (optional=templinst|arch=!s390x)_ZN7QVectorIPN5Peony8FileItemEE6appendERKS2_@Base 2.0.0
+#MISSING: 3.0.2# (optional=templinst|arch= !ppc64el)_ZN7QVectorIPN5Peony8FileItemEE6resizeEi@Base 3.0.0
+ (optional=templinst|arch=!s390x)_ZN7QVectorIPN5Peony8FileItemEE7reallocEi6QFlagsIN10QArrayData16AllocationOptionEE@Base 3.0.0
+ (optional=templinst|arch=amd64 arm64 s390x)_ZN7QVectorIPN5Peony8FileItemEED1Ev@Base 3.0.2
+ (optional=templinst|arch=amd64 arm64 s390x)_ZN7QVectorIPN5Peony8FileItemEED2Ev@Base 3.0.2
+#MISSING: 3.0.2# (optional=templinst|arch=amd64)_ZN7QVectorISt10shared_ptrIN5Peony17FileOperationInfoEEE11reallocDataEii6QFlagsIN10QArrayData16AllocationOptionEE@Base 3.0.0
  (optional=templinst)_ZN7QVectorISt10shared_ptrIN5Peony17FileOperationInfoEEE6appendERKS3_@Base 2.0.0
- (optional=templinst)_ZN7QVectorISt10shared_ptrIN5Peony17FileOperationInfoEEE6resizeEi@Base 2.0.0
- (optional=templinst|arch=!amd64)_ZN7QVectorISt10shared_ptrIN5Peony17FileOperationInfoEEE7reallocEi6QFlagsIN10QArrayData16AllocationOptionEE@Base 3.0.0
+ (optional=templinst|arch=!s390x)_ZN7QVectorISt10shared_ptrIN5Peony17FileOperationInfoEEE6resizeEi@Base 2.0.0
+ (optional=templinst)_ZN7QVectorISt10shared_ptrIN5Peony17FileOperationInfoEEE7reallocEi6QFlagsIN10QArrayData16AllocationOptionEE@Base 3.0.0
  (optional=templinst)_ZN7QVectorISt10shared_ptrIN5Peony17FileOperationInfoEEED1Ev@Base 2.0.0
  (optional=templinst)_ZN7QVectorISt10shared_ptrIN5Peony17FileOperationInfoEEED2Ev@Base 2.0.0
- (optional=templinst|arch=amd64)_ZN7QVectorIiE11reallocDataEii6QFlagsIN10QArrayData16AllocationOptionEE@Base 3.0.0
- (optional=templinst|arch=!amd64)_ZN7QVectorIiE7reallocEi6QFlagsIN10QArrayData16AllocationOptionEE@Base 3.0.0
+#MISSING: 3.0.2# (optional=templinst|arch=amd64)_ZN7QVectorIiE11reallocDataEii6QFlagsIN10QArrayData16AllocationOptionEE@Base 3.0.0
+ (optional=templinst|arch=!s390x)_ZN7QVectorIiE7reallocEi6QFlagsIN10QArrayData16AllocationOptionEE@Base 3.0.0
  (optional=templinst)_ZN7QVectorIiED1Ev@Base 2.0.0
  (optional=templinst)_ZN7QVectorIiED2Ev@Base 2.0.0
- (optional=templinst|arch=amd64)_ZN8QMapDataI7QString11QStringListE7destroyEv@Base 3.0.0
- (optional=templinst|arch=amd64)_ZN8QMapDataI7QString8QVariantE10createNodeERKS0_RKS1_P8QMapNodeIS0_S1_Eb@Base 3.0.0
+ (optional=templinst|arch=amd64 arm64 armhf s390x)_ZN8QMapDataI7QString11QStringListE7destroyEv@Base 3.0.0
+#MISSING: 3.0.2# (optional=templinst|arch=amd64)_ZN8QMapDataI7QString8QVariantE10createNodeERKS0_RKS1_P8QMapNodeIS0_S1_Eb@Base 3.0.0
+ (optional=templinst|arch=ppc64el s390x)_ZN8QMapDataI7QString8QVariantE7destroyEv@Base 3.0.2
  (optional=templinst)_ZN8QMapDataI7QStringP11QToolButtonE7destroyEv@Base 2.2.0
  (optional=templinst)_ZN8QMapDataI7QStringPN5Peony22PreviewPagePluginIfaceEE7destroyEv@Base 2.0.0
- (optional=templinst|arch=amd64 armhf)_ZN8QMapDataI7QStringS0_E7destroyEv@Base 2.1.0
+ (optional=templinst|arch=amd64 arm64 armhf s390x)_ZN8QMapDataI7QStringS0_E7destroyEv@Base 2.1.0
  (optional=templinst)_ZN8QMapDataIi7QStringE7destroyEv@Base 2.0.0
- (optional=templinst|arch=amd64)_ZN8QMapNodeI7QString11QStringListE14destroySubTreeEv@Base 3.0.0
+ (optional=templinst)_ZN8QMapNodeI7QString11QStringListE14destroySubTreeEv@Base 3.0.0
  (optional=templinst)_ZN8QMapNodeI7QString8QVariantE14destroySubTreeEv@Base 2.0.0
  (optional=templinst)_ZN8QMapNodeI7QStringP11QToolButtonE14destroySubTreeEv@Base 2.2.0
  (optional=templinst)_ZN8QMapNodeI7QStringPN5Peony22PreviewPagePluginIfaceEE14destroySubTreeEv@Base 2.0.0
@@ -2709,14 +2728,14 @@ libpeony.so.3 libpeony3 #MINVER#
  (optional=templinst)_ZN9QtPrivate11QSlotObjectIMN5Peony19DirectoryViewWidgetEFvbENS_4ListIJbEEEvE4implEiPNS_15QSlotObjectBaseEP7QObjectPPvPb@Base 2.1.0
  (optional=templinst)_ZN9QtPrivate11QSlotObjectIMN5Peony19DirectoryViewWidgetEFvvENS_4ListIJEEEvE4implEiPNS_15QSlotObjectBaseEP7QObjectPPvPb@Base 2.0.0
 #MISSING: 2.2.0# (optional=templinst)_ZN9QtPrivate11QSlotObjectIMN5Peony20FileOperationManagerEF8QVariantRK7QStringS6_RKSt10shared_ptrINS1_13GErrorWrapperEEbENS_4ListIJS6_S6_SB_bEEES3_E4implEiPNS_15QSlotObjectBaseEP7QObjectPPvPb@Base 2.0.0
- (optional=templinst|arch=!amd64)_ZN9QtPrivate11QSlotObjectIMN5Peony20FileOperationManagerEFiRK7QStringS5_RKSt10shared_ptrINS1_13GErrorWrapperEEbENS_4ListIJS5_S5_SA_bEEEiE4implEiPNS_15QSlotObjectBaseEP7QObjectPPvPb@Base 2.2.0
- (optional=templinst|arch=amd64)_ZN9QtPrivate11QSlotObjectIMN5Peony20FileOperationManagerEFvRNS1_19_FileOperationErrorEENS_4ListIJS4_EEEvE4implEiPNS_15QSlotObjectBaseEP7QObjectPPvPb@Base 3.0.0
+#MISSING: 3.0.2# (optional=templinst|arch=!amd64)_ZN9QtPrivate11QSlotObjectIMN5Peony20FileOperationManagerEFiRK7QStringS5_RKSt10shared_ptrINS1_13GErrorWrapperEEbENS_4ListIJS5_S5_SA_bEEEiE4implEiPNS_15QSlotObjectBaseEP7QObjectPPvPb@Base 2.2.0
+ (optional=templinst)_ZN9QtPrivate11QSlotObjectIMN5Peony20FileOperationManagerEFvRNS1_19_FileOperationErrorEENS_4ListIJS4_EEEvE4implEiPNS_15QSlotObjectBaseEP7QObjectPPvPb@Base 3.0.0
  (optional=templinst)_ZN9QtPrivate11QSlotObjectIMN5Peony22DirectoryViewContainerEFvRK6QPointENS_4ListIJS5_EEEvE4implEiPNS_15QSlotObjectBaseEP7QObjectPPvPb@Base 2.0.0
  (optional=templinst)_ZN9QtPrivate11QSlotObjectIMN5Peony22DirectoryViewContainerEFvRK7QStringENS_4ListIJS5_EEEvE4implEiPNS_15QSlotObjectBaseEP7QObjectPPvPb@Base 2.0.0
  (optional=templinst)_ZN9QtPrivate11QSlotObjectIMN5Peony22DirectoryViewContainerEFvbENS_4ListIJbEEEvE4implEiPNS_15QSlotObjectBaseEP7QObjectPPvPb@Base 2.1.0
  (optional=templinst)_ZN9QtPrivate11QSlotObjectIMN5Peony22DirectoryViewContainerEFvvENS_4ListIJEEEvE4implEiPNS_15QSlotObjectBaseEP7QObjectPPvPb@Base 2.0.0
 #MISSING: 2.2.0# (optional=templinst)_ZN9QtPrivate11QSlotObjectIMN5Peony24FileOperationErrorDialogEF8QVariantRK7QStringS6_RKSt10shared_ptrINS1_13GErrorWrapperEEbENS_4ListIJS6_S6_SB_bEEES3_E4implEiPNS_15QSlotObjectBaseEP7QObjectPPvPb@Base 2.1.0
- (optional=templinst|arch=!amd64)_ZN9QtPrivate11QSlotObjectIMN5Peony24FileOperationErrorDialogEFiRK7QStringS5_RKSt10shared_ptrINS1_13GErrorWrapperEEbENS_4ListIJS5_S5_SA_bEEEiE4implEiPNS_15QSlotObjectBaseEP7QObjectPPvPb@Base 2.2.0
+#MISSING: 3.0.2# (optional=templinst|arch=!amd64)_ZN9QtPrivate11QSlotObjectIMN5Peony24FileOperationErrorDialogEFiRK7QStringS5_RKSt10shared_ptrINS1_13GErrorWrapperEEbENS_4ListIJS5_S5_SA_bEEEiE4implEiPNS_15QSlotObjectBaseEP7QObjectPPvPb@Base 2.2.0
  (optional=templinst)_ZN9QtPrivate11QSlotObjectIMN5Peony25PermissionsPropertiesPageEFvRK7QStringS5_ENS_4ListIJS5_S5_EEEvE4implEiPNS_15QSlotObjectBaseEP7QObjectPPvPb@Base 2.0.0
  (optional=templinst)_ZN9QtPrivate11QSlotObjectIMN5Peony25PermissionsPropertiesPageEFviibENS_4ListIJiibEEEvE4implEiPNS_15QSlotObjectBaseEP7QObjectPPvPb@Base 2.0.0
 #MISSING: 2.2.0# (optional=templinst)_ZN9QtPrivate11QSlotObjectIMN5Peony27FileOperationProgressWizardEFvRK7QStringENS_4ListIJS5_EEEvE4implEiPNS_15QSlotObjectBaseEP7QObjectPPvPb@Base 2.0.0
@@ -2726,7 +2745,7 @@ libpeony.so.3 libpeony3 #MINVER#
 #MISSING: 2.2.0# (optional=templinst)_ZN9QtPrivate11QSlotObjectIMN5Peony27FileOperationProgressWizardEFvRK7QStringS5_yyENS_4ListIJS5_S5_RKxSA_EEEvE4implEiPNS_15QSlotObjectBaseEP7QObjectPPvPb@Base 2.0.0
 #MISSING: 2.2.0# (optional=templinst)_ZN9QtPrivate11QSlotObjectIMN5Peony27FileOperationProgressWizardEFvvENS_4ListIJEEEvE4implEiPNS_15QSlotObjectBaseEP7QObjectPPvPb@Base 2.0.0
  (optional=templinst)_ZN9QtPrivate11QSlotObjectIMN5Peony28FileItemProxyFilterSortModelEFvvENS_4ListIJEEEvE4implEiPNS_15QSlotObjectBaseEP7QObjectPPvPb@Base 2.0.0
- (optional=templinst|arch=amd64)_ZN9QtPrivate11QSlotObjectIMN5Peony32FileOperationErrorDialogConflictEFvRNS1_19_FileOperationErrorEENS_4ListIJS4_EEEvE4implEiPNS_15QSlotObjectBaseEP7QObjectPPvPb@Base 3.0.0
+ (optional=templinst)_ZN9QtPrivate11QSlotObjectIMN5Peony32FileOperationErrorDialogConflictEFvRNS1_19_FileOperationErrorEENS_4ListIJS4_EEEvE4implEiPNS_15QSlotObjectBaseEP7QObjectPPvPb@Base 3.0.0
  (optional=templinst)_ZN9QtPrivate11QSlotObjectIMN5Peony7TabPageEFvRK6QPointENS_4ListIJS5_EEEvE4implEiPNS_15QSlotObjectBaseEP7QObjectPPvPb@Base 2.0.0
  (optional=templinst)_ZN9QtPrivate11QSlotObjectIMN5Peony7TabPageEFvRK7QStringbbENS_4ListIJS5_bbEEEvE4implEiPNS_15QSlotObjectBaseEP7QObjectPPvPb@Base 2.0.0
  (optional=templinst)_ZN9QtPrivate11QSlotObjectIMN5Peony7TabPageEFvvENS_4ListIJEEEvE4implEiPNS_15QSlotObjectBaseEP7QObjectPPvPb@Base 2.0.0
@@ -2739,12 +2758,12 @@ libpeony.so.3 libpeony3 #MINVER#
  (optional=templinst)_ZN9QtPrivate16ConverterFunctorI5QListI11QModelIndexEN17QtMetaTypePrivate23QSequentialIterableImplENS4_33QSequentialIterableConvertFunctorIS3_EEE7convertEPKNS_25AbstractConverterFunctionEPKvPv@Base 2.0.0
  (optional=templinst)_ZN9QtPrivate16ConverterFunctorI5QListI11QModelIndexEN17QtMetaTypePrivate23QSequentialIterableImplENS4_33QSequentialIterableConvertFunctorIS3_EEED1Ev@Base 2.0.0
  (optional=templinst)_ZN9QtPrivate16ConverterFunctorI5QListI11QModelIndexEN17QtMetaTypePrivate23QSequentialIterableImplENS4_33QSequentialIterableConvertFunctorIS3_EEED2Ev@Base 2.0.0
- (optional=templinst|arch=amd64)_ZN9QtPrivate16ConverterFunctorI5QListI21QPersistentModelIndexEN17QtMetaTypePrivate23QSequentialIterableImplENS4_33QSequentialIterableConvertFunctorIS3_EEE7convertEPKNS_25AbstractConverterFunctionEPKvPv@Base 3.0.0
- (optional=templinst|arch=amd64)_ZN9QtPrivate16ConverterFunctorI5QListI21QPersistentModelIndexEN17QtMetaTypePrivate23QSequentialIterableImplENS4_33QSequentialIterableConvertFunctorIS3_EEED1Ev@Base 3.0.0
- (optional=templinst|arch=amd64)_ZN9QtPrivate16ConverterFunctorI5QListI21QPersistentModelIndexEN17QtMetaTypePrivate23QSequentialIterableImplENS4_33QSequentialIterableConvertFunctorIS3_EEED2Ev@Base 3.0.0
- (optional=templinst|arch=armhf)_ZN9QtPrivate7indexOfIP13FileLabelItemS2_EEiRK5QListIT_ERKT0_i@Base 3.0.0
- (optional=templinst|arch=armhf)_ZN9QtPrivate7indexOfIP7QActionS2_EEiRK5QListIT_ERKT0_i@Base 3.0.0
- (arch=amd64)_ZN9QtPrivate8RefCount3refEv@Base 3.0.0
+#MISSING: 3.0.2# (optional=templinst|arch=amd64)_ZN9QtPrivate16ConverterFunctorI5QListI21QPersistentModelIndexEN17QtMetaTypePrivate23QSequentialIterableImplENS4_33QSequentialIterableConvertFunctorIS3_EEE7convertEPKNS_25AbstractConverterFunctionEPKvPv@Base 3.0.0
+#MISSING: 3.0.2# (optional=templinst|arch=amd64)_ZN9QtPrivate16ConverterFunctorI5QListI21QPersistentModelIndexEN17QtMetaTypePrivate23QSequentialIterableImplENS4_33QSequentialIterableConvertFunctorIS3_EEED1Ev@Base 3.0.0
+#MISSING: 3.0.2# (optional=templinst|arch=amd64)_ZN9QtPrivate16ConverterFunctorI5QListI21QPersistentModelIndexEN17QtMetaTypePrivate23QSequentialIterableImplENS4_33QSequentialIterableConvertFunctorIS3_EEED2Ev@Base 3.0.0
+ (optional=templinst|arch=amd64 arm64 armhf)_ZN9QtPrivate7indexOfIP13FileLabelItemS2_EEiRK5QListIT_ERKT0_i@Base 3.0.0
+ (optional=templinst|arch=amd64 arm64 armhf)_ZN9QtPrivate7indexOfIP7QActionS2_EEiRK5QListIT_ERKT0_i@Base 3.0.0
+ (arch=armhf ppc64el)_ZN9QtPrivate8RefCount3refEv@Base 3.0.2
 #MISSING: 3.0.0# (arch=amd64)_ZN9QtPrivate8RefCount5derefEv@Base 3.0.0
  (arch=armel)_ZN9__gnu_cxx24__concurrence_lock_errorD0Ev@Base 2.0.1
  (arch=armel)_ZN9__gnu_cxx24__concurrence_lock_errorD1Ev@Base 2.0.1
@@ -2850,7 +2869,7 @@ libpeony.so.3 libpeony3 #MINVER#
  _ZNK5Peony16AdvanceSearchBar10metaObjectEv@Base 2.0.0
  _ZNK5Peony16FileLaunchAction10metaObjectEv@Base 2.0.0
  _ZNK5Peony16FileNodeReporter10metaObjectEv@Base 2.0.0
- (arch=amd64)_ZNK5Peony16FileRenameDialog10metaObjectEv@Base 3.0.0
+ _ZNK5Peony16FileRenameDialog10metaObjectEv@Base 3.0.2
  _ZNK5Peony16IconViewFactory210metaObjectEv@Base 2.0.0
  _ZNK5Peony16ListViewDelegate10metaObjectEv@Base 2.0.0
  _ZNK5Peony16ListViewDelegate12createEditorEP7QWidgetRK20QStyleOptionViewItemRK11QModelIndex@Base 2.0.0
@@ -2895,7 +2914,7 @@ libpeony.so.3 libpeony3 #MINVER#
  _ZNK5Peony19SideBarAbstractItem10metaObjectEv@Base 2.0.0
  _ZNK5Peony19SideBarFavoriteItem10metaObjectEv@Base 2.0.0
  _ZNK5Peony19SideBarPersonalItem10metaObjectEv@Base 2.0.0
- (arch=amd64)_ZNK5Peony20FileInformationLabel10metaObjectEv@Base 3.0.0
+ _ZNK5Peony20FileInformationLabel10metaObjectEv@Base 3.0.2
  _ZNK5Peony20FileOperationManager10metaObjectEv@Base 2.0.0
  _ZNK5Peony20FileUntrashOperation10metaObjectEv@Base 2.0.0
  _ZNK5Peony20PreviewOptionToolBar10metaObjectEv@Base 2.0.0
@@ -2938,13 +2957,13 @@ libpeony.so.3 libpeony3 #MINVER#
 #MISSING: 2.1.0# _ZNK5Peony28FileItemProxyFilterSortModel25checkFileModifyTimeFilterE7QString@Base 2.0.0
  _ZNK5Peony28FileItemProxyFilterSortModel25checkFileModifyTimeFilterEy@Base 2.1.0
  _ZNK5Peony28FileItemProxyFilterSortModel8lessThanERK11QModelIndexS3_@Base 2.0.0
- (arch=amd64)_ZNK5Peony28FileOperationErrorDialogBase10metaObjectEv@Base 3.0.0
+ _ZNK5Peony28FileOperationErrorDialogBase10metaObjectEv@Base 3.0.2
  _ZNK5Peony28RecentAndTrashPropertiesPage10metaObjectEv@Base 2.0.0
  _ZNK5Peony29ComputerPropertiesPageFactory10metaObjectEv@Base 2.0.0
  _ZNK5Peony29PropertiesWindowPluginManager10metaObjectEv@Base 2.0.0
  _ZNK5Peony30FileOperationAfterProgressPage10metaObjectEv@Base 2.0.0
- (arch=amd64)_ZNK5Peony31FileOperationErrorDialogWarning10metaObjectEv@Base 3.0.0
- (arch=amd64)_ZNK5Peony32FileOperationErrorDialogConflict10metaObjectEv@Base 3.0.0
+ _ZNK5Peony31FileOperationErrorDialogWarning10metaObjectEv@Base 3.0.2
+ _ZNK5Peony32FileOperationErrorDialogConflict10metaObjectEv@Base 3.0.2
  _ZNK5Peony32PermissionsPropertiesPageFactory10metaObjectEv@Base 2.0.0
  _ZNK5Peony35RecentAndTrashPropertiesPageFactory10metaObjectEv@Base 2.0.0
  _ZNK5Peony7SideBar10metaObjectEv@Base 2.0.0
@@ -2960,42 +2979,42 @@ libpeony.so.3 libpeony3 #MINVER#
  _ZNK5Peony8TextEdit10metaObjectEv@Base 2.0.0
  _ZNK5Peony9SearchBar10metaObjectEv@Base 2.0.0
  _ZNK5Peony9StatusBar10metaObjectEv@Base 2.0.0
- (optional=templinst|arch=amd64)_ZNK5QHashI7QString11QStringListE8findNodeERKS0_Pj@Base 3.0.0
- (optional=templinst|arch=amd64 armhf)_ZNK5QHashI7QString11QStringListE8findNodeERKS0_j@Base 2.0.0
- (optional=templinst|arch=amd64)_ZNK5QHashI7QString15QHashDummyValueE8findNodeERKS0_j@Base 3.0.0
- (optional=templinst|arch=amd64)_ZNK5QHashI7QString5QIconE8findNodeERKS0_Pj@Base 3.0.0
- (optional=templinst|arch=amd64 armhf)_ZNK5QHashI7QString5QIconE8findNodeERKS0_j@Base 2.0.0
- (optional=templinst|arch=amd64)_ZNK5QHashI7QString8QVariantE8findNodeERKS0_Pj@Base 3.0.0
- (optional=templinst|arch=amd64 armhf)_ZNK5QHashI7QString8QVariantE8findNodeERKS0_j@Base 2.0.0
- (optional=templinst|arch=amd64 armhf)_ZNK5QHashI7QStringPN5Peony15PluginInterfaceEE8findNodeERKS0_j@Base 2.0.0
- (optional=templinst)_ZNK5QHashI7QStringPN5Peony19MenuPluginInterfaceEE4keysEv@Base 2.0.0
- (optional=templinst|arch=amd64 armhf)_ZNK5QHashI7QStringPN5Peony19MenuPluginInterfaceEE8findNodeERKS0_j@Base 2.0.0
+#MISSING: 3.0.2# (optional=templinst|arch=amd64)_ZNK5QHashI7QString11QStringListE8findNodeERKS0_Pj@Base 3.0.0
+ (optional=templinst|arch=amd64 arm64 armhf)_ZNK5QHashI7QString11QStringListE8findNodeERKS0_j@Base 2.0.0
+ (optional=templinst|arch=amd64 arm64 armhf)_ZNK5QHashI7QString15QHashDummyValueE8findNodeERKS0_j@Base 3.0.0
+#MISSING: 3.0.2# (optional=templinst|arch=amd64)_ZNK5QHashI7QString5QIconE8findNodeERKS0_Pj@Base 3.0.0
+ (optional=templinst|arch=amd64 arm64 armhf)_ZNK5QHashI7QString5QIconE8findNodeERKS0_j@Base 2.0.0
+#MISSING: 3.0.2# (optional=templinst|arch=amd64)_ZNK5QHashI7QString8QVariantE8findNodeERKS0_Pj@Base 3.0.0
+ (optional=templinst|arch=amd64 arm64 armhf)_ZNK5QHashI7QString8QVariantE8findNodeERKS0_j@Base 2.0.0
+ (optional=templinst|arch=amd64 arm64 armhf)_ZNK5QHashI7QStringPN5Peony15PluginInterfaceEE8findNodeERKS0_j@Base 2.0.0
+ (optional=templinst|arch=!s390x)_ZNK5QHashI7QStringPN5Peony19MenuPluginInterfaceEE4keysEv@Base 2.0.0
+ (optional=templinst|arch=amd64 arm64 armhf)_ZNK5QHashI7QStringPN5Peony19MenuPluginInterfaceEE8findNodeERKS0_j@Base 2.0.0
 #MISSING: 2.1.0# (optional=templinst)_ZNK5QHashI7QStringPN5Peony24DirectoryViewPluginIfaceEE8findNodeERKS0_j@Base 2.0.0
- (optional=templinst|arch=amd64 ppc64el)_ZNK5QHashI7QStringPN5Peony25DirectoryViewPluginIface2EE4keysEv@Base 3.0.0
+ (optional=templinst|arch=ppc64el)_ZNK5QHashI7QStringPN5Peony25DirectoryViewPluginIface2EE4keysEv@Base 3.0.0
  (optional=templinst)_ZNK5QHashI7QStringPN5Peony25DirectoryViewPluginIface2EE6valuesEv@Base 2.1.0
- (optional=templinst|arch=amd64)_ZNK5QHashI7QStringPN5Peony25DirectoryViewPluginIface2EE8findNodeERKS0_Pj@Base 3.0.0
- (optional=templinst|arch=amd64 armhf)_ZNK5QHashI7QStringPN5Peony25DirectoryViewPluginIface2EE8findNodeERKS0_j@Base 2.0.0
- (optional=templinst|arch=amd64 armhf)_ZNK5QHashI7QStringPN5Peony34PropertiesWindowTabPagePluginIfaceEE8findNodeERKS0_j@Base 2.0.0
- (optional=templinst|arch=amd64)_ZNK5QHashI7QStringS0_E8findNodeERKS0_Pj@Base 3.0.0
- (optional=templinst|arch=amd64 armhf)_ZNK5QHashI7QStringS0_E8findNodeERKS0_j@Base 2.0.0
- (optional=templinst)_ZNK5QHashI7QStringSt10shared_ptrIN5Peony8FileInfoEEE4keysEv@Base 2.0.0
- (optional=templinst)_ZNK5QHashI7QStringSt10shared_ptrIN5Peony8FileInfoEEE6valuesEv@Base 2.0.0
- (optional=templinst|arch=amd64)_ZNK5QHashI7QStringSt10shared_ptrIN5Peony8FileInfoEEE8findNodeERKS0_Pj@Base 3.0.0
- (optional=templinst|arch=amd64 armhf)_ZNK5QHashI7QStringSt10shared_ptrIN5Peony8FileInfoEEE8findNodeERKS0_j@Base 2.0.0
- (optional=templinst|arch=amd64)_ZNK5QHashIP15QListWidgetItemPN5Peony16FileLaunchActionEE8findNodeERKS1_Pj@Base 3.0.0
+#MISSING: 3.0.2# (optional=templinst|arch=amd64)_ZNK5QHashI7QStringPN5Peony25DirectoryViewPluginIface2EE8findNodeERKS0_Pj@Base 3.0.0
+ (optional=templinst|arch=amd64 arm64 armhf)_ZNK5QHashI7QStringPN5Peony25DirectoryViewPluginIface2EE8findNodeERKS0_j@Base 2.0.0
+ (optional=templinst|arch=amd64 arm64 armhf)_ZNK5QHashI7QStringPN5Peony34PropertiesWindowTabPagePluginIfaceEE8findNodeERKS0_j@Base 2.0.0
+#MISSING: 3.0.2# (optional=templinst|arch=amd64)_ZNK5QHashI7QStringS0_E8findNodeERKS0_Pj@Base 3.0.0
+ (optional=templinst|arch=amd64 arm64 armhf)_ZNK5QHashI7QStringS0_E8findNodeERKS0_j@Base 2.0.0
+ (optional=templinst|arch=!s390x)_ZNK5QHashI7QStringSt10shared_ptrIN5Peony8FileInfoEEE4keysEv@Base 2.0.0
+ (optional=templinst|arch=!s390x)_ZNK5QHashI7QStringSt10shared_ptrIN5Peony8FileInfoEEE6valuesEv@Base 2.0.0
+#MISSING: 3.0.2# (optional=templinst|arch=amd64)_ZNK5QHashI7QStringSt10shared_ptrIN5Peony8FileInfoEEE8findNodeERKS0_Pj@Base 3.0.0
+ (optional=templinst|arch=amd64 arm64 armhf)_ZNK5QHashI7QStringSt10shared_ptrIN5Peony8FileInfoEEE8findNodeERKS0_j@Base 2.0.0
+#MISSING: 3.0.2# (optional=templinst|arch=amd64)_ZNK5QHashIP15QListWidgetItemPN5Peony16FileLaunchActionEE8findNodeERKS1_Pj@Base 3.0.0
 #MISSING: 2.1.0# (optional=templinst)_ZNK5QHashIi5QPairIi7QStringEE6valuesERKi@Base 2.0.0
- (optional=templinst|arch=amd64)_ZNK5QHashIi5QPairIi7QStringEE8findNodeERKiPj@Base 3.0.0
+#MISSING: 3.0.2# (optional=templinst|arch=amd64)_ZNK5QHashIi5QPairIi7QStringEE8findNodeERKiPj@Base 3.0.0
 #MISSING: 3.0.0# (optional=templinst|arch=amd64)_ZNK5QHashIiN5Peony13FileOperation12ResponseTypeEE8findNodeERKiPj@Base 3.0.0
- (optional=templinst|arch=amd64)_ZNK5QHashIiN5Peony17ExceptionResponseEE8findNodeERKiPj@Base 3.0.0
+#MISSING: 3.0.2# (optional=templinst|arch=amd64)_ZNK5QHashIiN5Peony17ExceptionResponseEE8findNodeERKiPj@Base 3.0.0
 #MISSING: 2.1.0# (optional=templinst)_ZNK5QListI7QStringE7indexOfERKS0_i@Base 2.0.0
- (optional=templinst|arch=amd64)_ZNK5QListIP13FileLabelItemE7indexOfERKS1_i@Base 3.0.0
- (optional=templinst|arch=amd64)_ZNK5QListIP7QActionE7indexOfERKS1_i@Base 3.0.0
- (optional=templinst|arch= !s390x)_ZNK7QVectorIPN5Peony19SideBarAbstractItemEE7indexOfERKS2_i@Base 3.0.0
- (optional=templinst|arch= !s390x)_ZNK7QVectorIPN5Peony8FileItemEE7indexOfERKS2_i@Base 3.0.0
- (optional=templinst|arch=amd64)_ZNK8QMapDataI7QString11QStringListE8findNodeERKS0_@Base 3.0.0
- (optional=templinst|arch=amd64)_ZNK8QMapDataI7QString8QVariantE8findNodeERKS0_@Base 3.0.0
- (optional=templinst|arch=amd64)_ZNK8QMapDataI7QStringPN5Peony22PreviewPagePluginIfaceEE8findNodeERKS0_@Base 3.0.0
- (optional=templinst|arch=amd64)_ZNK8QMapNodeI7QString11QStringListE4copyEP8QMapDataIS0_S1_E@Base 3.0.0
+#MISSING: 3.0.2# (optional=templinst|arch=amd64)_ZNK5QListIP13FileLabelItemE7indexOfERKS1_i@Base 3.0.0
+#MISSING: 3.0.2# (optional=templinst|arch=amd64)_ZNK5QListIP7QActionE7indexOfERKS1_i@Base 3.0.0
+#MISSING: 3.0.2# (optional=templinst|arch= !s390x)_ZNK7QVectorIPN5Peony19SideBarAbstractItemEE7indexOfERKS2_i@Base 3.0.0
+#MISSING: 3.0.2# (optional=templinst|arch= !s390x)_ZNK7QVectorIPN5Peony8FileItemEE7indexOfERKS2_i@Base 3.0.0
+#MISSING: 3.0.2# (optional=templinst|arch=amd64)_ZNK8QMapDataI7QString11QStringListE8findNodeERKS0_@Base 3.0.0
+ (optional=templinst|arch=amd64 arm64 armhf)_ZNK8QMapDataI7QString8QVariantE8findNodeERKS0_@Base 3.0.0
+#MISSING: 3.0.2# (optional=templinst|arch=amd64)_ZNK8QMapDataI7QStringPN5Peony22PreviewPagePluginIfaceEE8findNodeERKS0_@Base 3.0.0
+ (optional=templinst)_ZNK8QMapNodeI7QString11QStringListE4copyEP8QMapDataIS0_S1_E@Base 3.0.0
  (optional=templinst)_ZNK8QMapNodeI7QString8QVariantE4copyEP8QMapDataIS0_S1_E@Base 2.0.0
  (optional=templinst)_ZNK8QMapNodeI7QStringP11QToolButtonE4copyEP8QMapDataIS0_S2_E@Base 2.2.0
  (optional=templinst)_ZNK8QMapNodeI7QStringPN5Peony22PreviewPagePluginIfaceEE4copyEP8QMapDataIS0_S3_E@Base 2.0.0
@@ -3005,8 +3024,8 @@ libpeony.so.3 libpeony3 #MINVER#
  (optional=templinst)_ZNK8QMapNodeIi7QStringE4copyEP8QMapDataIiS0_E@Base 2.0.0
  (arch=armel)_ZNK9__gnu_cxx24__concurrence_lock_error4whatEv@Base 2.0.1
  (arch=armel)_ZNK9__gnu_cxx26__concurrence_unlock_error4whatEv@Base 2.0.1
- (optional=templinst|arch=amd64)_ZNSt12__shared_ptrIN5Peony15GObjectTemplateI13_GCancellableEELN9__gnu_cxx12_Lock_policyE2EEC1ERKS6_@Base 3.0.0
- (optional=templinst|arch=amd64)_ZNSt12__shared_ptrIN5Peony15GObjectTemplateI13_GCancellableEELN9__gnu_cxx12_Lock_policyE2EEC2ERKS6_@Base 3.0.0
+#MISSING: 3.0.2# (optional=templinst|arch=amd64)_ZNSt12__shared_ptrIN5Peony15GObjectTemplateI13_GCancellableEELN9__gnu_cxx12_Lock_policyE2EEC1ERKS6_@Base 3.0.0
+#MISSING: 3.0.2# (optional=templinst|arch=amd64)_ZNSt12__shared_ptrIN5Peony15GObjectTemplateI13_GCancellableEELN9__gnu_cxx12_Lock_policyE2EEC2ERKS6_@Base 3.0.0
  (optional=templinst|arch=armel)_ZNSt15_Sp_counted_ptrIDnLN9__gnu_cxx12_Lock_policyE1EE10_M_disposeEv@Base 2.0.1
  (optional=templinst)_ZNSt15_Sp_counted_ptrIDnLN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv@Base 2.0.0
  (optional=templinst|arch=armel)_ZNSt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE1EE10_M_destroyEv@Base 2.0.1
@@ -3024,7 +3043,7 @@ libpeony.so.3 libpeony3 #MINVER#
  (optional=templinst)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony11FileWatcherESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE14_M_get_deleterERKSt9type_info@Base 2.0.0
  (optional=templinst)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony11FileWatcherESaIS1_ELN9__gnu_cxx12_Lock_policyE2EED0Ev@Base 2.0.0
  (optional=templinst)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony11FileWatcherESaIS1_ELN9__gnu_cxx12_Lock_policyE2EED1Ev@Base 2.0.0
- (optional=templinst|arch=amd64)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony11FileWatcherESaIS1_ELN9__gnu_cxx12_Lock_policyE2EED2Ev@Base 3.0.0
+#MISSING: 3.0.2# (optional=templinst|arch=amd64)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony11FileWatcherESaIS1_ELN9__gnu_cxx12_Lock_policyE2EED2Ev@Base 3.0.0
  (optional=templinst|arch=armel)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony12FileMetaInfoESaIS1_ELN9__gnu_cxx12_Lock_policyE1EE10_M_destroyEv@Base 2.0.1
  (optional=templinst|arch=armel)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony12FileMetaInfoESaIS1_ELN9__gnu_cxx12_Lock_policyE1EE10_M_disposeEv@Base 2.0.1
  (optional=templinst|arch=armel)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony12FileMetaInfoESaIS1_ELN9__gnu_cxx12_Lock_policyE1EE14_M_get_deleterERKSt9type_info@Base 2.0.1
@@ -3036,7 +3055,7 @@ libpeony.so.3 libpeony3 #MINVER#
  (optional=templinst)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony12FileMetaInfoESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE14_M_get_deleterERKSt9type_info@Base 2.0.0
  (optional=templinst)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony12FileMetaInfoESaIS1_ELN9__gnu_cxx12_Lock_policyE2EED0Ev@Base 2.0.0
  (optional=templinst)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony12FileMetaInfoESaIS1_ELN9__gnu_cxx12_Lock_policyE2EED1Ev@Base 2.0.0
- (optional=templinst|arch=amd64)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony12FileMetaInfoESaIS1_ELN9__gnu_cxx12_Lock_policyE2EED2Ev@Base 3.0.0
+#MISSING: 3.0.2# (optional=templinst|arch=amd64)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony12FileMetaInfoESaIS1_ELN9__gnu_cxx12_Lock_policyE2EED2Ev@Base 3.0.0
  (optional=templinst|arch=armel)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony13GErrorWrapperESaIS1_ELN9__gnu_cxx12_Lock_policyE1EE10_M_destroyEv@Base 2.0.1
  (optional=templinst|arch=armel)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony13GErrorWrapperESaIS1_ELN9__gnu_cxx12_Lock_policyE1EE10_M_disposeEv@Base 2.0.1
  (optional=templinst|arch=armel)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony13GErrorWrapperESaIS1_ELN9__gnu_cxx12_Lock_policyE1EE14_M_get_deleterERKSt9type_info@Base 2.0.1
@@ -3048,7 +3067,7 @@ libpeony.so.3 libpeony3 #MINVER#
  (optional=templinst)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony13GErrorWrapperESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE14_M_get_deleterERKSt9type_info@Base 2.0.0
  (optional=templinst)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony13GErrorWrapperESaIS1_ELN9__gnu_cxx12_Lock_policyE2EED0Ev@Base 2.0.0
  (optional=templinst)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony13GErrorWrapperESaIS1_ELN9__gnu_cxx12_Lock_policyE2EED1Ev@Base 2.0.0
- (optional=templinst|arch=amd64)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony13GErrorWrapperESaIS1_ELN9__gnu_cxx12_Lock_policyE2EED2Ev@Base 3.0.0
+#MISSING: 3.0.2# (optional=templinst|arch=amd64)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony13GErrorWrapperESaIS1_ELN9__gnu_cxx12_Lock_policyE2EED2Ev@Base 3.0.0
  (optional=templinst|arch=armel)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony14FileEnumeratorESaIS1_ELN9__gnu_cxx12_Lock_policyE1EE10_M_destroyEv@Base 2.0.1
  (optional=templinst|arch=armel)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony14FileEnumeratorESaIS1_ELN9__gnu_cxx12_Lock_policyE1EE10_M_disposeEv@Base 2.0.1
  (optional=templinst|arch=armel)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony14FileEnumeratorESaIS1_ELN9__gnu_cxx12_Lock_policyE1EE14_M_get_deleterERKSt9type_info@Base 2.0.1
@@ -3060,7 +3079,7 @@ libpeony.so.3 libpeony3 #MINVER#
  (optional=templinst)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony14FileEnumeratorESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE14_M_get_deleterERKSt9type_info@Base 2.0.0
  (optional=templinst)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony14FileEnumeratorESaIS1_ELN9__gnu_cxx12_Lock_policyE2EED0Ev@Base 2.0.0
  (optional=templinst)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony14FileEnumeratorESaIS1_ELN9__gnu_cxx12_Lock_policyE2EED1Ev@Base 2.0.0
- (optional=templinst|arch=amd64)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony14FileEnumeratorESaIS1_ELN9__gnu_cxx12_Lock_policyE2EED2Ev@Base 3.0.0
+#MISSING: 3.0.2# (optional=templinst|arch=amd64)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony14FileEnumeratorESaIS1_ELN9__gnu_cxx12_Lock_policyE2EED2Ev@Base 3.0.0
  (optional=templinst|arch=armel)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony15GObjectTemplateI10_GFileInfoEESaIS3_ELN9__gnu_cxx12_Lock_policyE1EE10_M_destroyEv@Base 2.0.1
  (optional=templinst|arch=armel)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony15GObjectTemplateI10_GFileInfoEESaIS3_ELN9__gnu_cxx12_Lock_policyE1EE10_M_disposeEv@Base 2.0.1
  (optional=templinst|arch=armel)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony15GObjectTemplateI10_GFileInfoEESaIS3_ELN9__gnu_cxx12_Lock_policyE1EE14_M_get_deleterERKSt9type_info@Base 2.0.1
@@ -3072,7 +3091,7 @@ libpeony.so.3 libpeony3 #MINVER#
  (optional=templinst)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony15GObjectTemplateI10_GFileInfoEESaIS3_ELN9__gnu_cxx12_Lock_policyE2EE14_M_get_deleterERKSt9type_info@Base 2.0.0
  (optional=templinst)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony15GObjectTemplateI10_GFileInfoEESaIS3_ELN9__gnu_cxx12_Lock_policyE2EED0Ev@Base 2.0.0
  (optional=templinst)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony15GObjectTemplateI10_GFileInfoEESaIS3_ELN9__gnu_cxx12_Lock_policyE2EED1Ev@Base 2.0.0
- (optional=templinst|arch=amd64)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony15GObjectTemplateI10_GFileInfoEESaIS3_ELN9__gnu_cxx12_Lock_policyE2EED2Ev@Base 3.0.0
+#MISSING: 3.0.2# (optional=templinst|arch=amd64)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony15GObjectTemplateI10_GFileInfoEESaIS3_ELN9__gnu_cxx12_Lock_policyE2EED2Ev@Base 3.0.0
  (optional=templinst|arch=armel)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony15GObjectTemplateI12_GThemedIconEESaIS3_ELN9__gnu_cxx12_Lock_policyE1EE10_M_destroyEv@Base 2.0.1
  (optional=templinst|arch=armel)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony15GObjectTemplateI12_GThemedIconEESaIS3_ELN9__gnu_cxx12_Lock_policyE1EE10_M_disposeEv@Base 2.0.1
  (optional=templinst|arch=armel)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony15GObjectTemplateI12_GThemedIconEESaIS3_ELN9__gnu_cxx12_Lock_policyE1EE14_M_get_deleterERKSt9type_info@Base 2.0.1
@@ -3084,7 +3103,7 @@ libpeony.so.3 libpeony3 #MINVER#
  (optional=templinst)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony15GObjectTemplateI12_GThemedIconEESaIS3_ELN9__gnu_cxx12_Lock_policyE2EE14_M_get_deleterERKSt9type_info@Base 2.0.0
  (optional=templinst)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony15GObjectTemplateI12_GThemedIconEESaIS3_ELN9__gnu_cxx12_Lock_policyE2EED0Ev@Base 2.0.0
  (optional=templinst)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony15GObjectTemplateI12_GThemedIconEESaIS3_ELN9__gnu_cxx12_Lock_policyE2EED1Ev@Base 2.0.0
- (optional=templinst|arch=amd64)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony15GObjectTemplateI12_GThemedIconEESaIS3_ELN9__gnu_cxx12_Lock_policyE2EED2Ev@Base 3.0.0
+#MISSING: 3.0.2# (optional=templinst|arch=amd64)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony15GObjectTemplateI12_GThemedIconEESaIS3_ELN9__gnu_cxx12_Lock_policyE2EED2Ev@Base 3.0.0
  (optional=templinst|arch=armel)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony15GObjectTemplateI13_GCancellableEESaIS3_ELN9__gnu_cxx12_Lock_policyE1EE10_M_destroyEv@Base 2.0.1
  (optional=templinst|arch=armel)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony15GObjectTemplateI13_GCancellableEESaIS3_ELN9__gnu_cxx12_Lock_policyE1EE10_M_disposeEv@Base 2.0.1
  (optional=templinst|arch=armel)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony15GObjectTemplateI13_GCancellableEESaIS3_ELN9__gnu_cxx12_Lock_policyE1EE14_M_get_deleterERKSt9type_info@Base 2.0.1
@@ -3096,7 +3115,7 @@ libpeony.so.3 libpeony3 #MINVER#
  (optional=templinst)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony15GObjectTemplateI13_GCancellableEESaIS3_ELN9__gnu_cxx12_Lock_policyE2EE14_M_get_deleterERKSt9type_info@Base 2.0.0
  (optional=templinst)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony15GObjectTemplateI13_GCancellableEESaIS3_ELN9__gnu_cxx12_Lock_policyE2EED0Ev@Base 2.0.0
  (optional=templinst)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony15GObjectTemplateI13_GCancellableEESaIS3_ELN9__gnu_cxx12_Lock_policyE2EED1Ev@Base 2.0.0
- (optional=templinst|arch=amd64)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony15GObjectTemplateI13_GCancellableEESaIS3_ELN9__gnu_cxx12_Lock_policyE2EED2Ev@Base 3.0.0
+#MISSING: 3.0.2# (optional=templinst|arch=amd64)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony15GObjectTemplateI13_GCancellableEESaIS3_ELN9__gnu_cxx12_Lock_policyE2EED2Ev@Base 3.0.0
  (optional=templinst|arch=armel)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony15GObjectTemplateI13_GFileMonitorEESaIS3_ELN9__gnu_cxx12_Lock_policyE1EE10_M_destroyEv@Base 2.0.1
  (optional=templinst|arch=armel)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony15GObjectTemplateI13_GFileMonitorEESaIS3_ELN9__gnu_cxx12_Lock_policyE1EE10_M_disposeEv@Base 2.0.1
  (optional=templinst|arch=armel)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony15GObjectTemplateI13_GFileMonitorEESaIS3_ELN9__gnu_cxx12_Lock_policyE1EE14_M_get_deleterERKSt9type_info@Base 2.0.1
@@ -3108,7 +3127,7 @@ libpeony.so.3 libpeony3 #MINVER#
  (optional=templinst)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony15GObjectTemplateI13_GFileMonitorEESaIS3_ELN9__gnu_cxx12_Lock_policyE2EE14_M_get_deleterERKSt9type_info@Base 2.0.0
  (optional=templinst)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony15GObjectTemplateI13_GFileMonitorEESaIS3_ELN9__gnu_cxx12_Lock_policyE2EED0Ev@Base 2.0.0
  (optional=templinst)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony15GObjectTemplateI13_GFileMonitorEESaIS3_ELN9__gnu_cxx12_Lock_policyE2EED1Ev@Base 2.0.0
- (optional=templinst|arch=amd64)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony15GObjectTemplateI13_GFileMonitorEESaIS3_ELN9__gnu_cxx12_Lock_policyE2EED2Ev@Base 3.0.0
+#MISSING: 3.0.2# (optional=templinst|arch=amd64)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony15GObjectTemplateI13_GFileMonitorEESaIS3_ELN9__gnu_cxx12_Lock_policyE2EED2Ev@Base 3.0.0
  (optional=templinst|arch=armel)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony15GObjectTemplateI15_GVolumeMonitorEESaIS3_ELN9__gnu_cxx12_Lock_policyE1EE10_M_destroyEv@Base 2.0.1
  (optional=templinst|arch=armel)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony15GObjectTemplateI15_GVolumeMonitorEESaIS3_ELN9__gnu_cxx12_Lock_policyE1EE10_M_disposeEv@Base 2.0.1
  (optional=templinst|arch=armel)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony15GObjectTemplateI15_GVolumeMonitorEESaIS3_ELN9__gnu_cxx12_Lock_policyE1EE14_M_get_deleterERKSt9type_info@Base 2.0.1
@@ -3120,7 +3139,7 @@ libpeony.so.3 libpeony3 #MINVER#
  (optional=templinst)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony15GObjectTemplateI15_GVolumeMonitorEESaIS3_ELN9__gnu_cxx12_Lock_policyE2EE14_M_get_deleterERKSt9type_info@Base 2.0.0
  (optional=templinst)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony15GObjectTemplateI15_GVolumeMonitorEESaIS3_ELN9__gnu_cxx12_Lock_policyE2EED0Ev@Base 2.0.0
  (optional=templinst)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony15GObjectTemplateI15_GVolumeMonitorEESaIS3_ELN9__gnu_cxx12_Lock_policyE2EED1Ev@Base 2.0.0
- (optional=templinst|arch=amd64)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony15GObjectTemplateI15_GVolumeMonitorEESaIS3_ELN9__gnu_cxx12_Lock_policyE2EED2Ev@Base 3.0.0
+#MISSING: 3.0.2# (optional=templinst|arch=amd64)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony15GObjectTemplateI15_GVolumeMonitorEESaIS3_ELN9__gnu_cxx12_Lock_policyE2EED2Ev@Base 3.0.0
  (optional=templinst|arch=armel)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony15GObjectTemplateI16_GFileEnumeratorEESaIS3_ELN9__gnu_cxx12_Lock_policyE1EE10_M_destroyEv@Base 2.0.1
  (optional=templinst|arch=armel)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony15GObjectTemplateI16_GFileEnumeratorEESaIS3_ELN9__gnu_cxx12_Lock_policyE1EE10_M_disposeEv@Base 2.0.1
  (optional=templinst|arch=armel)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony15GObjectTemplateI16_GFileEnumeratorEESaIS3_ELN9__gnu_cxx12_Lock_policyE1EE14_M_get_deleterERKSt9type_info@Base 2.0.1
@@ -3132,7 +3151,7 @@ libpeony.so.3 libpeony3 #MINVER#
  (optional=templinst)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony15GObjectTemplateI16_GFileEnumeratorEESaIS3_ELN9__gnu_cxx12_Lock_policyE2EE14_M_get_deleterERKSt9type_info@Base 2.0.0
  (optional=templinst)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony15GObjectTemplateI16_GFileEnumeratorEESaIS3_ELN9__gnu_cxx12_Lock_policyE2EED0Ev@Base 2.0.0
  (optional=templinst)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony15GObjectTemplateI16_GFileEnumeratorEESaIS3_ELN9__gnu_cxx12_Lock_policyE2EED1Ev@Base 2.0.0
- (optional=templinst|arch=amd64)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony15GObjectTemplateI16_GFileEnumeratorEESaIS3_ELN9__gnu_cxx12_Lock_policyE2EED2Ev@Base 3.0.0
+#MISSING: 3.0.2# (optional=templinst|arch=amd64)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony15GObjectTemplateI16_GFileEnumeratorEESaIS3_ELN9__gnu_cxx12_Lock_policyE2EED2Ev@Base 3.0.0
  (optional=templinst|arch=armel)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony15GObjectTemplateI6_GFileEESaIS3_ELN9__gnu_cxx12_Lock_policyE1EE10_M_destroyEv@Base 2.0.1
  (optional=templinst|arch=armel)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony15GObjectTemplateI6_GFileEESaIS3_ELN9__gnu_cxx12_Lock_policyE1EE10_M_disposeEv@Base 2.0.1
  (optional=templinst|arch=armel)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony15GObjectTemplateI6_GFileEESaIS3_ELN9__gnu_cxx12_Lock_policyE1EE14_M_get_deleterERKSt9type_info@Base 2.0.1
@@ -3144,7 +3163,7 @@ libpeony.so.3 libpeony3 #MINVER#
  (optional=templinst)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony15GObjectTemplateI6_GFileEESaIS3_ELN9__gnu_cxx12_Lock_policyE2EE14_M_get_deleterERKSt9type_info@Base 2.0.0
  (optional=templinst)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony15GObjectTemplateI6_GFileEESaIS3_ELN9__gnu_cxx12_Lock_policyE2EED0Ev@Base 2.0.0
  (optional=templinst)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony15GObjectTemplateI6_GFileEESaIS3_ELN9__gnu_cxx12_Lock_policyE2EED1Ev@Base 2.0.0
- (optional=templinst|arch=amd64)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony15GObjectTemplateI6_GFileEESaIS3_ELN9__gnu_cxx12_Lock_policyE2EED2Ev@Base 3.0.0
+#MISSING: 3.0.2# (optional=templinst|arch=amd64)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony15GObjectTemplateI6_GFileEESaIS3_ELN9__gnu_cxx12_Lock_policyE2EED2Ev@Base 3.0.0
  (optional=templinst|arch=armel)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony15GObjectTemplateI6_GIconEESaIS3_ELN9__gnu_cxx12_Lock_policyE1EE10_M_destroyEv@Base 2.0.1
  (optional=templinst|arch=armel)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony15GObjectTemplateI6_GIconEESaIS3_ELN9__gnu_cxx12_Lock_policyE1EE10_M_disposeEv@Base 2.0.1
  (optional=templinst|arch=armel)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony15GObjectTemplateI6_GIconEESaIS3_ELN9__gnu_cxx12_Lock_policyE1EE14_M_get_deleterERKSt9type_info@Base 2.0.1
@@ -3156,7 +3175,7 @@ libpeony.so.3 libpeony3 #MINVER#
  (optional=templinst)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony15GObjectTemplateI6_GIconEESaIS3_ELN9__gnu_cxx12_Lock_policyE2EE14_M_get_deleterERKSt9type_info@Base 2.0.0
  (optional=templinst)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony15GObjectTemplateI6_GIconEESaIS3_ELN9__gnu_cxx12_Lock_policyE2EED0Ev@Base 2.0.0
  (optional=templinst)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony15GObjectTemplateI6_GIconEESaIS3_ELN9__gnu_cxx12_Lock_policyE2EED1Ev@Base 2.0.0
- (optional=templinst|arch=amd64)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony15GObjectTemplateI6_GIconEESaIS3_ELN9__gnu_cxx12_Lock_policyE2EED2Ev@Base 3.0.0
+#MISSING: 3.0.2# (optional=templinst|arch=amd64)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony15GObjectTemplateI6_GIconEESaIS3_ELN9__gnu_cxx12_Lock_policyE2EED2Ev@Base 3.0.0
  (optional=templinst|arch=armel)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony15GObjectTemplateI7_GDriveEESaIS3_ELN9__gnu_cxx12_Lock_policyE1EE10_M_destroyEv@Base 2.0.1
  (optional=templinst|arch=armel)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony15GObjectTemplateI7_GDriveEESaIS3_ELN9__gnu_cxx12_Lock_policyE1EE10_M_disposeEv@Base 2.0.1
  (optional=templinst|arch=armel)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony15GObjectTemplateI7_GDriveEESaIS3_ELN9__gnu_cxx12_Lock_policyE1EE14_M_get_deleterERKSt9type_info@Base 2.0.1
@@ -3168,7 +3187,7 @@ libpeony.so.3 libpeony3 #MINVER#
  (optional=templinst)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony15GObjectTemplateI7_GDriveEESaIS3_ELN9__gnu_cxx12_Lock_policyE2EE14_M_get_deleterERKSt9type_info@Base 2.0.0
  (optional=templinst)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony15GObjectTemplateI7_GDriveEESaIS3_ELN9__gnu_cxx12_Lock_policyE2EED0Ev@Base 2.0.0
  (optional=templinst)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony15GObjectTemplateI7_GDriveEESaIS3_ELN9__gnu_cxx12_Lock_policyE2EED1Ev@Base 2.0.0
- (optional=templinst|arch=amd64)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony15GObjectTemplateI7_GDriveEESaIS3_ELN9__gnu_cxx12_Lock_policyE2EED2Ev@Base 3.0.0
+#MISSING: 3.0.2# (optional=templinst|arch=amd64)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony15GObjectTemplateI7_GDriveEESaIS3_ELN9__gnu_cxx12_Lock_policyE2EED2Ev@Base 3.0.0
  (optional=templinst|arch=armel)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony15GObjectTemplateI7_GMountEESaIS3_ELN9__gnu_cxx12_Lock_policyE1EE10_M_destroyEv@Base 2.0.1
  (optional=templinst|arch=armel)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony15GObjectTemplateI7_GMountEESaIS3_ELN9__gnu_cxx12_Lock_policyE1EE10_M_disposeEv@Base 2.0.1
  (optional=templinst|arch=armel)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony15GObjectTemplateI7_GMountEESaIS3_ELN9__gnu_cxx12_Lock_policyE1EE14_M_get_deleterERKSt9type_info@Base 2.0.1
@@ -3180,7 +3199,7 @@ libpeony.so.3 libpeony3 #MINVER#
  (optional=templinst)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony15GObjectTemplateI7_GMountEESaIS3_ELN9__gnu_cxx12_Lock_policyE2EE14_M_get_deleterERKSt9type_info@Base 2.0.0
  (optional=templinst)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony15GObjectTemplateI7_GMountEESaIS3_ELN9__gnu_cxx12_Lock_policyE2EED0Ev@Base 2.0.0
  (optional=templinst)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony15GObjectTemplateI7_GMountEESaIS3_ELN9__gnu_cxx12_Lock_policyE2EED1Ev@Base 2.0.0
- (optional=templinst|arch=amd64)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony15GObjectTemplateI7_GMountEESaIS3_ELN9__gnu_cxx12_Lock_policyE2EED2Ev@Base 3.0.0
+#MISSING: 3.0.2# (optional=templinst|arch=amd64)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony15GObjectTemplateI7_GMountEESaIS3_ELN9__gnu_cxx12_Lock_policyE2EED2Ev@Base 3.0.0
  (optional=templinst|arch=armel)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony15GObjectTemplateI8_GVolumeEESaIS3_ELN9__gnu_cxx12_Lock_policyE1EE10_M_destroyEv@Base 2.0.1
  (optional=templinst|arch=armel)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony15GObjectTemplateI8_GVolumeEESaIS3_ELN9__gnu_cxx12_Lock_policyE1EE10_M_disposeEv@Base 2.0.1
  (optional=templinst|arch=armel)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony15GObjectTemplateI8_GVolumeEESaIS3_ELN9__gnu_cxx12_Lock_policyE1EE14_M_get_deleterERKSt9type_info@Base 2.0.1
@@ -3192,7 +3211,7 @@ libpeony.so.3 libpeony3 #MINVER#
  (optional=templinst)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony15GObjectTemplateI8_GVolumeEESaIS3_ELN9__gnu_cxx12_Lock_policyE2EE14_M_get_deleterERKSt9type_info@Base 2.0.0
  (optional=templinst)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony15GObjectTemplateI8_GVolumeEESaIS3_ELN9__gnu_cxx12_Lock_policyE2EED0Ev@Base 2.0.0
  (optional=templinst)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony15GObjectTemplateI8_GVolumeEESaIS3_ELN9__gnu_cxx12_Lock_policyE2EED1Ev@Base 2.0.0
- (optional=templinst|arch=amd64)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony15GObjectTemplateI8_GVolumeEESaIS3_ELN9__gnu_cxx12_Lock_policyE2EED2Ev@Base 3.0.0
+#MISSING: 3.0.2# (optional=templinst|arch=amd64)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony15GObjectTemplateI8_GVolumeEESaIS3_ELN9__gnu_cxx12_Lock_policyE2EED2Ev@Base 3.0.0
  (optional=templinst|arch=armel)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony17FileOperationInfoESaIS1_ELN9__gnu_cxx12_Lock_policyE1EE10_M_destroyEv@Base 2.0.1
  (optional=templinst|arch=armel)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony17FileOperationInfoESaIS1_ELN9__gnu_cxx12_Lock_policyE1EE10_M_disposeEv@Base 2.0.1
  (optional=templinst|arch=armel)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony17FileOperationInfoESaIS1_ELN9__gnu_cxx12_Lock_policyE1EE14_M_get_deleterERKSt9type_info@Base 2.0.1
@@ -3204,7 +3223,7 @@ libpeony.so.3 libpeony3 #MINVER#
  (optional=templinst)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony17FileOperationInfoESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE14_M_get_deleterERKSt9type_info@Base 2.0.0
  (optional=templinst)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony17FileOperationInfoESaIS1_ELN9__gnu_cxx12_Lock_policyE2EED0Ev@Base 2.0.0
  (optional=templinst)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony17FileOperationInfoESaIS1_ELN9__gnu_cxx12_Lock_policyE2EED1Ev@Base 2.0.0
- (optional=templinst|arch=amd64)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony17FileOperationInfoESaIS1_ELN9__gnu_cxx12_Lock_policyE2EED2Ev@Base 3.0.0
+#MISSING: 3.0.2# (optional=templinst|arch=amd64)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony17FileOperationInfoESaIS1_ELN9__gnu_cxx12_Lock_policyE2EED2Ev@Base 3.0.0
  (optional=templinst|arch=armel)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony5DriveESaIS1_ELN9__gnu_cxx12_Lock_policyE1EE10_M_destroyEv@Base 2.0.1
  (optional=templinst|arch=armel)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony5DriveESaIS1_ELN9__gnu_cxx12_Lock_policyE1EE10_M_disposeEv@Base 2.0.1
  (optional=templinst|arch=armel)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony5DriveESaIS1_ELN9__gnu_cxx12_Lock_policyE1EE14_M_get_deleterERKSt9type_info@Base 2.0.1
@@ -3216,7 +3235,7 @@ libpeony.so.3 libpeony3 #MINVER#
  (optional=templinst)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony5DriveESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE14_M_get_deleterERKSt9type_info@Base 2.0.0
  (optional=templinst)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony5DriveESaIS1_ELN9__gnu_cxx12_Lock_policyE2EED0Ev@Base 2.0.0
  (optional=templinst)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony5DriveESaIS1_ELN9__gnu_cxx12_Lock_policyE2EED1Ev@Base 2.0.0
- (optional=templinst|arch=amd64)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony5DriveESaIS1_ELN9__gnu_cxx12_Lock_policyE2EED2Ev@Base 3.0.0
+#MISSING: 3.0.2# (optional=templinst|arch=amd64)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony5DriveESaIS1_ELN9__gnu_cxx12_Lock_policyE2EED2Ev@Base 3.0.0
  (optional=templinst|arch=armel)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony5MountESaIS1_ELN9__gnu_cxx12_Lock_policyE1EE10_M_destroyEv@Base 2.0.1
  (optional=templinst|arch=armel)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony5MountESaIS1_ELN9__gnu_cxx12_Lock_policyE1EE10_M_disposeEv@Base 2.0.1
  (optional=templinst|arch=armel)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony5MountESaIS1_ELN9__gnu_cxx12_Lock_policyE1EE14_M_get_deleterERKSt9type_info@Base 2.0.1
@@ -3228,7 +3247,7 @@ libpeony.so.3 libpeony3 #MINVER#
  (optional=templinst)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony5MountESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE14_M_get_deleterERKSt9type_info@Base 2.0.0
  (optional=templinst)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony5MountESaIS1_ELN9__gnu_cxx12_Lock_policyE2EED0Ev@Base 2.0.0
  (optional=templinst)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony5MountESaIS1_ELN9__gnu_cxx12_Lock_policyE2EED1Ev@Base 2.0.0
- (optional=templinst|arch=amd64)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony5MountESaIS1_ELN9__gnu_cxx12_Lock_policyE2EED2Ev@Base 3.0.0
+#MISSING: 3.0.2# (optional=templinst|arch=amd64)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony5MountESaIS1_ELN9__gnu_cxx12_Lock_policyE2EED2Ev@Base 3.0.0
  (optional=templinst|arch=armel)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony6VolumeESaIS1_ELN9__gnu_cxx12_Lock_policyE1EE10_M_destroyEv@Base 2.0.1
  (optional=templinst|arch=armel)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony6VolumeESaIS1_ELN9__gnu_cxx12_Lock_policyE1EE10_M_disposeEv@Base 2.0.1
  (optional=templinst|arch=armel)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony6VolumeESaIS1_ELN9__gnu_cxx12_Lock_policyE1EE14_M_get_deleterERKSt9type_info@Base 2.0.1
@@ -3240,7 +3259,7 @@ libpeony.so.3 libpeony3 #MINVER#
  (optional=templinst)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony6VolumeESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE14_M_get_deleterERKSt9type_info@Base 2.0.0
  (optional=templinst)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony6VolumeESaIS1_ELN9__gnu_cxx12_Lock_policyE2EED0Ev@Base 2.0.0
  (optional=templinst)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony6VolumeESaIS1_ELN9__gnu_cxx12_Lock_policyE2EED1Ev@Base 2.0.0
- (optional=templinst|arch=amd64)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony6VolumeESaIS1_ELN9__gnu_cxx12_Lock_policyE2EED2Ev@Base 3.0.0
+#MISSING: 3.0.2# (optional=templinst|arch=amd64)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony6VolumeESaIS1_ELN9__gnu_cxx12_Lock_policyE2EED2Ev@Base 3.0.0
  (optional=templinst|arch=armel)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony8FileInfoESaIS1_ELN9__gnu_cxx12_Lock_policyE1EE10_M_destroyEv@Base 2.0.1
  (optional=templinst|arch=armel)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony8FileInfoESaIS1_ELN9__gnu_cxx12_Lock_policyE1EE10_M_disposeEv@Base 2.0.1
  (optional=templinst|arch=armel)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony8FileInfoESaIS1_ELN9__gnu_cxx12_Lock_policyE1EE14_M_get_deleterERKSt9type_info@Base 2.0.1
@@ -3252,9 +3271,9 @@ libpeony.so.3 libpeony3 #MINVER#
  (optional=templinst)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony8FileInfoESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE14_M_get_deleterERKSt9type_info@Base 2.0.0
  (optional=templinst)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony8FileInfoESaIS1_ELN9__gnu_cxx12_Lock_policyE2EED0Ev@Base 2.0.0
  (optional=templinst)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony8FileInfoESaIS1_ELN9__gnu_cxx12_Lock_policyE2EED1Ev@Base 2.0.0
- (optional=templinst|arch=amd64)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony8FileInfoESaIS1_ELN9__gnu_cxx12_Lock_policyE2EED2Ev@Base 3.0.0
- (optional=templinst|arch=amd64)_ZSt9__find_ifIPK4QUrlN9__gnu_cxx5__ops16_Iter_equals_valIS1_EEET_S7_S7_T0_St26random_access_iterator_tag@Base 3.0.0
- (optional=templinst|arch= !s390x)_ZSt9__find_ifIPK7QStringN9__gnu_cxx5__ops16_Iter_equals_valIS1_EEET_S7_S7_T0_St26random_access_iterator_tag@Base 3.0.0
+#MISSING: 3.0.2# (optional=templinst|arch=amd64)_ZNSt23_Sp_counted_ptr_inplaceIN5Peony8FileInfoESaIS1_ELN9__gnu_cxx12_Lock_policyE2EED2Ev@Base 3.0.0
+#MISSING: 3.0.2# (optional=templinst|arch=amd64)_ZSt9__find_ifIPK4QUrlN9__gnu_cxx5__ops16_Iter_equals_valIS1_EEET_S7_S7_T0_St26random_access_iterator_tag@Base 3.0.0
+#MISSING: 3.0.2# (optional=templinst|arch= !s390x)_ZSt9__find_ifIPK7QStringN9__gnu_cxx5__ops16_Iter_equals_valIS1_EEET_S7_S7_T0_St26random_access_iterator_tag@Base 3.0.0
  _ZTI11OtherButton@Base 2.2.0
  _ZTI11ProgressBar@Base 2.2.0
  _ZTI13FileLabelItem@Base 2.1.0
@@ -3310,7 +3329,7 @@ libpeony.so.3 libpeony3 #MINVER#
  _ZTIN5Peony16AdvanceSearchBarE@Base 2.0.0
  _ZTIN5Peony16FileLaunchActionE@Base 2.0.0
  _ZTIN5Peony16FileNodeReporterE@Base 2.0.0
- (arch=amd64)_ZTIN5Peony16FileRenameDialogE@Base 3.0.0
+ _ZTIN5Peony16FileRenameDialogE@Base 3.0.2
  _ZTIN5Peony16IconViewFactory2E@Base 2.0.0
  _ZTIN5Peony16ListViewDelegateE@Base 2.0.0
  _ZTIN5Peony16ListViewFactory2E@Base 2.0.0
@@ -3347,7 +3366,7 @@ libpeony.so.3 libpeony3 #MINVER#
  _ZTIN5Peony19SideBarAbstractItemE@Base 2.0.0
  _ZTIN5Peony19SideBarFavoriteItemE@Base 2.0.0
  _ZTIN5Peony19SideBarPersonalItemE@Base 2.0.0
- (arch=amd64)_ZTIN5Peony20FileInformationLabelE@Base 3.0.0
+ _ZTIN5Peony20FileInformationLabelE@Base 3.0.2
  _ZTIN5Peony20FileOperationManagerE@Base 2.0.0
  _ZTIN5Peony20FileUntrashOperationE@Base 2.0.0
  _ZTIN5Peony20PreviewOptionToolBarE@Base 2.0.0
@@ -3382,13 +3401,13 @@ libpeony.so.3 libpeony3 #MINVER#
  _ZTIN5Peony27ViewFactorySortFilterModel2E@Base 2.0.0
  _ZTIN5Peony28DirectoryViewFactoryManager2E@Base 2.0.0
  _ZTIN5Peony28FileItemProxyFilterSortModelE@Base 2.0.0
- (arch=amd64)_ZTIN5Peony28FileOperationErrorDialogBaseE@Base 3.0.0
+ _ZTIN5Peony28FileOperationErrorDialogBaseE@Base 3.0.2
  _ZTIN5Peony28RecentAndTrashPropertiesPageE@Base 2.0.0
  _ZTIN5Peony29ComputerPropertiesPageFactoryE@Base 2.0.0
  _ZTIN5Peony29PropertiesWindowPluginManagerE@Base 2.0.0
  _ZTIN5Peony30FileOperationAfterProgressPageE@Base 2.0.0
- (arch=amd64)_ZTIN5Peony31FileOperationErrorDialogWarningE@Base 3.0.0
- (arch=amd64)_ZTIN5Peony32FileOperationErrorDialogConflictE@Base 3.0.0
+ _ZTIN5Peony31FileOperationErrorDialogWarningE@Base 3.0.2
+ _ZTIN5Peony32FileOperationErrorDialogConflictE@Base 3.0.2
  _ZTIN5Peony32PermissionsPropertiesPageFactoryE@Base 2.0.0
  _ZTIN5Peony34PropertiesWindowTabPagePluginIfaceE@Base 2.0.0
  _ZTIN5Peony35RecentAndTrashPropertiesPageFactoryE@Base 2.0.0
@@ -3505,7 +3524,7 @@ libpeony.so.3 libpeony3 #MINVER#
  _ZTSN5Peony16AdvanceSearchBarE@Base 2.0.0
  _ZTSN5Peony16FileLaunchActionE@Base 2.0.0
  _ZTSN5Peony16FileNodeReporterE@Base 2.0.0
- (arch=amd64)_ZTSN5Peony16FileRenameDialogE@Base 3.0.0
+ _ZTSN5Peony16FileRenameDialogE@Base 3.0.2
  _ZTSN5Peony16IconViewFactory2E@Base 2.0.0
  _ZTSN5Peony16ListViewDelegateE@Base 2.0.0
  _ZTSN5Peony16ListViewFactory2E@Base 2.0.0
@@ -3542,7 +3561,7 @@ libpeony.so.3 libpeony3 #MINVER#
  _ZTSN5Peony19SideBarAbstractItemE@Base 2.0.0
  _ZTSN5Peony19SideBarFavoriteItemE@Base 2.0.0
  _ZTSN5Peony19SideBarPersonalItemE@Base 2.0.0
- (arch=amd64)_ZTSN5Peony20FileInformationLabelE@Base 3.0.0
+ _ZTSN5Peony20FileInformationLabelE@Base 3.0.2
  _ZTSN5Peony20FileOperationManagerE@Base 2.0.0
  _ZTSN5Peony20FileUntrashOperationE@Base 2.0.0
  _ZTSN5Peony20PreviewOptionToolBarE@Base 2.0.0
@@ -3577,13 +3596,13 @@ libpeony.so.3 libpeony3 #MINVER#
  _ZTSN5Peony27ViewFactorySortFilterModel2E@Base 2.0.0
  _ZTSN5Peony28DirectoryViewFactoryManager2E@Base 2.0.0
  _ZTSN5Peony28FileItemProxyFilterSortModelE@Base 2.0.0
- (arch=amd64)_ZTSN5Peony28FileOperationErrorDialogBaseE@Base 3.0.0
+ _ZTSN5Peony28FileOperationErrorDialogBaseE@Base 3.0.2
  _ZTSN5Peony28RecentAndTrashPropertiesPageE@Base 2.0.0
  _ZTSN5Peony29ComputerPropertiesPageFactoryE@Base 2.0.0
  _ZTSN5Peony29PropertiesWindowPluginManagerE@Base 2.0.0
  _ZTSN5Peony30FileOperationAfterProgressPageE@Base 2.0.0
- (arch=amd64)_ZTSN5Peony31FileOperationErrorDialogWarningE@Base 3.0.0
- (arch=amd64)_ZTSN5Peony32FileOperationErrorDialogConflictE@Base 3.0.0
+ _ZTSN5Peony31FileOperationErrorDialogWarningE@Base 3.0.2
+ _ZTSN5Peony32FileOperationErrorDialogConflictE@Base 3.0.2
  _ZTSN5Peony32PermissionsPropertiesPageFactoryE@Base 2.0.0
  _ZTSN5Peony34PropertiesWindowTabPagePluginIfaceE@Base 2.0.0
  _ZTSN5Peony35RecentAndTrashPropertiesPageFactoryE@Base 2.0.0
@@ -3696,7 +3715,7 @@ libpeony.so.3 libpeony3 #MINVER#
  _ZTVN5Peony16AdvanceSearchBarE@Base 2.0.0
  _ZTVN5Peony16FileLaunchActionE@Base 2.0.0
  _ZTVN5Peony16FileNodeReporterE@Base 2.0.0
- (arch=amd64)_ZTVN5Peony16FileRenameDialogE@Base 3.0.0
+ _ZTVN5Peony16FileRenameDialogE@Base 3.0.2
  _ZTVN5Peony16IconViewFactory2E@Base 2.0.0
  _ZTVN5Peony16ListViewDelegateE@Base 2.0.0
  _ZTVN5Peony16ListViewFactory2E@Base 2.0.0
@@ -3729,7 +3748,7 @@ libpeony.so.3 libpeony3 #MINVER#
  _ZTVN5Peony19SideBarAbstractItemE@Base 2.0.0
  _ZTVN5Peony19SideBarFavoriteItemE@Base 2.0.0
  _ZTVN5Peony19SideBarPersonalItemE@Base 2.0.0
- (arch=amd64)_ZTVN5Peony20FileInformationLabelE@Base 3.0.0
+ _ZTVN5Peony20FileInformationLabelE@Base 3.0.2
  _ZTVN5Peony20FileOperationManagerE@Base 2.0.0
  _ZTVN5Peony20FileUntrashOperationE@Base 2.0.0
  _ZTVN5Peony20PreviewOptionToolBarE@Base 2.0.0
@@ -3746,7 +3765,7 @@ libpeony.so.3 libpeony3 #MINVER#
  _ZTVN5Peony24FileOperationErrorDialogE@Base 2.0.0
  _ZTVN5Peony24FileOperationPreparePageE@Base 2.0.0
  _ZTVN5Peony25DefaultPreviewPageFactoryE@Base 2.0.0
- (arch=!amd64)_ZTVN5Peony25FileOperationErrorHandlerE@Base 3.0.0
+#MISSING: 3.0.2# (arch=!amd64)_ZTVN5Peony25FileOperationErrorHandlerE@Base 3.0.0
  _ZTVN5Peony25FileOperationProgressPageE@Base 2.0.0
  _ZTVN5Peony25FileOperationRollbackPageE@Base 2.0.0
  _ZTVN5Peony25PermissionsPropertiesPageE@Base 2.0.0
@@ -3761,13 +3780,13 @@ libpeony.so.3 libpeony3 #MINVER#
  _ZTVN5Peony27ViewFactorySortFilterModel2E@Base 2.0.0
  _ZTVN5Peony28DirectoryViewFactoryManager2E@Base 2.0.0
  _ZTVN5Peony28FileItemProxyFilterSortModelE@Base 2.0.0
- (arch=amd64)_ZTVN5Peony28FileOperationErrorDialogBaseE@Base 3.0.0
+ _ZTVN5Peony28FileOperationErrorDialogBaseE@Base 3.0.2
  _ZTVN5Peony28RecentAndTrashPropertiesPageE@Base 2.0.0
  _ZTVN5Peony29ComputerPropertiesPageFactoryE@Base 2.0.0
  _ZTVN5Peony29PropertiesWindowPluginManagerE@Base 2.0.0
  _ZTVN5Peony30FileOperationAfterProgressPageE@Base 2.0.0
- (arch=amd64)_ZTVN5Peony31FileOperationErrorDialogWarningE@Base 3.0.0
- (arch=amd64)_ZTVN5Peony32FileOperationErrorDialogConflictE@Base 3.0.0
+ _ZTVN5Peony31FileOperationErrorDialogWarningE@Base 3.0.2
+ _ZTVN5Peony32FileOperationErrorDialogConflictE@Base 3.0.2
  _ZTVN5Peony32PermissionsPropertiesPageFactoryE@Base 2.0.0
  _ZTVN5Peony35RecentAndTrashPropertiesPageFactoryE@Base 2.0.0
  _ZTVN5Peony7SideBarE@Base 2.0.0
@@ -3823,7 +3842,7 @@ libpeony.so.3 libpeony3 #MINVER#
  (arch=armel)_ZTVSt23_Sp_counted_ptr_inplaceIN5Peony8FileInfoESaIS1_ELN9__gnu_cxx12_Lock_policyE1EE@Base 2.0.1
  _ZTVSt23_Sp_counted_ptr_inplaceIN5Peony8FileInfoESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE@Base 3.0.0
  (optional=templinst)_ZZN11QMetaTypeIdI5QListI11QModelIndexEE14qt_metatype_idEvE11metatype_id@Base 2.0.0
- (optional=templinst|arch=amd64)_ZZN11QMetaTypeIdI5QListI21QPersistentModelIndexEE14qt_metatype_idEvE11metatype_id@Base 3.0.0
+#MISSING: 3.0.2# (optional=templinst|arch=amd64)_ZZN11QMetaTypeIdI5QListI21QPersistentModelIndexEE14qt_metatype_idEvE11metatype_id@Base 3.0.0
  (optional=templinst)_ZZN11QMetaTypeIdIN17QtMetaTypePrivate23QSequentialIterableImplEE14qt_metatype_idEvE11metatype_id@Base 2.0.0
 #MISSING: 2.2.0# (optional=templinst)_ZZN11QMetaTypeIdIN5Peony13FileOperation12ResponseTypeEE14qt_metatype_idEvE11metatype_id@Base 2.0.0
  (optional=templinst)_ZZN11QMetaTypeIdISt10shared_ptrIN5Peony13GErrorWrapperEEE14qt_metatype_idEvE11metatype_id@Base 2.0.0
@@ -3834,13 +3853,14 @@ libpeony.so.3 libpeony3 #MINVER#
  (optional=templinst)_ZZN18QMetaTypeIdQObjectIPN5Peony17FileOperationInfoELi8EE14qt_metatype_idEvE11metatype_id@Base 2.2.0
  (optional=templinst)_ZZN18QMetaTypeIdQObjectIPN5Peony28FileItemProxyFilterSortModelELi8EE14qt_metatype_idEvE11metatype_id@Base 2.0.0
  (optional=templinst)_ZZN9QtPrivate15ConnectionTypesINS_4ListIJRK7QStringRKxEEELb1EE5typesEvE1t@Base 2.0.0
- (optional=templinst|arch=!amd64)_ZZN9QtPrivate15ConnectionTypesINS_4ListIJRK7QStringS4_RKSt10shared_ptrIN5Peony13GErrorWrapperEEbEEELb1EE5typesEvE1t@Base 2.0.0
+#MISSING: 3.0.2# (optional=templinst|arch=!amd64)_ZZN9QtPrivate15ConnectionTypesINS_4ListIJRK7QStringS4_RKSt10shared_ptrIN5Peony13GErrorWrapperEEbEEELb1EE5typesEvE1t@Base 2.0.0
  (optional=templinst)_ZZN9QtPrivate15ConnectionTypesINS_4ListIJbEEELb1EE5typesEvE1t@Base 2.0.0
  (optional=templinst)_ZZN9QtPrivate15ConnectionTypesINS_4ListIJyyyEEELb1EE5typesEvE1t@Base 2.0.0
  (optional=templinst)_ZZN9QtPrivate19ValueTypeIsMetaTypeI5QListI11QModelIndexELb1EE17registerConverterEiE1f@Base 2.0.0
- (optional=templinst|arch=amd64)_ZZN9QtPrivate19ValueTypeIsMetaTypeI5QListI21QPersistentModelIndexELb1EE17registerConverterEiE1f@Base 3.0.0
+#MISSING: 3.0.2# (optional=templinst|arch=amd64)_ZZN9QtPrivate19ValueTypeIsMetaTypeI5QListI21QPersistentModelIndexELb1EE17registerConverterEiE1f@Base 3.0.0
  _ZZNSt19_Sp_make_shared_tag5_S_tiEvE5__tag@Base 2.0.0
- (arch=amd64)_ZnePKcRK7QString@Base 3.0.0
+#MISSING: 3.0.2# (arch=amd64)_ZnePKcRK7QString@Base 3.0.0
+ (arch=ppc64el)_ZplRK7QStringPKc@Base 3.0.2
  btn@Base 2.2.0
  comparer@Base 2.0.0
  global_instance@Base 2.1.0
@@ -3995,7 +4015,7 @@ libpeony.so.3 libpeony3 #MINVER#
  (c++)"non-virtual thunk to Peony::FileCountOperation::~FileCountOperation()@Base" 2.0.0
  (c++)"non-virtual thunk to Peony::FileDeleteOperation::run()@Base" 2.0.0
  (c++)"non-virtual thunk to Peony::FileDeleteOperation::~FileDeleteOperation()@Base" 2.0.0
- (c++|arch=amd64)"non-virtual thunk to Peony::FileInformationLabel::~FileInformationLabel()@Base" 3.0.0
+ (c++)"non-virtual thunk to Peony::FileInformationLabel::~FileInformationLabel()@Base" 3.0.2
  (c++)"non-virtual thunk to Peony::FileLabelInternalMenuPlugin::description()@Base" 2.1.0
  (c++)"non-virtual thunk to Peony::FileLabelInternalMenuPlugin::icon()@Base" 2.1.0
  (c++)"non-virtual thunk to Peony::FileLabelInternalMenuPlugin::isEnable()@Base" 2.1.0
@@ -4013,20 +4033,20 @@ libpeony.so.3 libpeony3 #MINVER#
  (c++)"non-virtual thunk to Peony::FileOperation::run()@Base" 2.0.0
  (c++)"non-virtual thunk to Peony::FileOperation::~FileOperation()@Base" 2.0.0
  (c++)"non-virtual thunk to Peony::FileOperationAfterProgressPage::~FileOperationAfterProgressPage()@Base" 2.0.0
- (c++|arch=amd64)"non-virtual thunk to Peony::FileOperationErrorDialog::handle(Peony::_FileOperationError&)@Base" 3.0.0
- (c++|arch=!amd64)"non-virtual thunk to Peony::FileOperationErrorDialog::handleError(QString const&, QString const&, std::shared_ptr<Peony::GErrorWrapper> const&, bool)@Base" 3.0.0
+ (c++)"non-virtual thunk to Peony::FileOperationErrorDialog::handle(Peony::_FileOperationError&)@Base" 3.0.2
+#MISSING: 3.0.2# (c++|arch=!amd64)"non-virtual thunk to Peony::FileOperationErrorDialog::handleError(QString const&, QString const&, std::shared_ptr<Peony::GErrorWrapper> const&, bool)@Base" 3.0.0
  (c++)"non-virtual thunk to Peony::FileOperationErrorDialog::~FileOperationErrorDialog()@Base" 2.0.0
- (c++|arch=amd64)"non-virtual thunk to Peony::FileOperationErrorDialogBase::~FileOperationErrorDialogBase()@Base" 3.0.0
- (c++|arch=amd64)"non-virtual thunk to Peony::FileOperationErrorDialogConflict::handle(Peony::_FileOperationError&)@Base" 3.0.0
- (c++|arch=amd64)"non-virtual thunk to Peony::FileOperationErrorDialogConflict::~FileOperationErrorDialogConflict()@Base" 3.0.0
- (c++|arch=amd64)"non-virtual thunk to Peony::FileOperationErrorDialogWarning::handle(Peony::_FileOperationError&)@Base" 3.0.0
- (c++|arch=amd64)"non-virtual thunk to Peony::FileOperationErrorDialogWarning::~FileOperationErrorDialogWarning()@Base" 3.0.0
+ (c++)"non-virtual thunk to Peony::FileOperationErrorDialogBase::~FileOperationErrorDialogBase()@Base" 3.0.2
+ (c++)"non-virtual thunk to Peony::FileOperationErrorDialogConflict::handle(Peony::_FileOperationError&)@Base" 3.0.2
+ (c++)"non-virtual thunk to Peony::FileOperationErrorDialogConflict::~FileOperationErrorDialogConflict()@Base" 3.0.2
+ (c++)"non-virtual thunk to Peony::FileOperationErrorDialogWarning::handle(Peony::_FileOperationError&)@Base" 3.0.2
+ (c++)"non-virtual thunk to Peony::FileOperationErrorDialogWarning::~FileOperationErrorDialogWarning()@Base" 3.0.2
  (c++)"non-virtual thunk to Peony::FileOperationPreparePage::~FileOperationPreparePage()@Base" 2.0.0
  (c++)"non-virtual thunk to Peony::FileOperationProgressPage::~FileOperationProgressPage()@Base" 2.0.0
  (c++)"non-virtual thunk to Peony::FileOperationProgressWizard::~FileOperationProgressWizard()@Base" 2.0.0
  (c++)"non-virtual thunk to Peony::FileOperationRollbackPage::~FileOperationRollbackPage()@Base" 2.0.0
  (c++)"non-virtual thunk to Peony::FilePreviewPage::~FilePreviewPage()@Base" 2.0.0
- (c++|arch=amd64)"non-virtual thunk to Peony::FileRenameDialog::~FileRenameDialog()@Base" 3.0.0
+ (c++)"non-virtual thunk to Peony::FileRenameDialog::~FileRenameDialog()@Base" 3.0.2
  (c++)"non-virtual thunk to Peony::FileRenameOperation::run()@Base" 2.0.0
  (c++)"non-virtual thunk to Peony::FileRenameOperation::~FileRenameOperation()@Base" 2.0.0
  (c++)"non-virtual thunk to Peony::FileTrashOperation::run()@Base" 2.0.0
