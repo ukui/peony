@@ -125,6 +125,14 @@ private:
     void refreshInfoContents(GFileInfo *new_info);
     std::shared_ptr<FileInfo> m_info;
 
+    quint64 m_file_size_uint = 0;
+    quint64 m_file_modify_uint = 0;
+
+    QString m_file_name = nullptr;
+    QString m_file_size = nullptr;
+    QString m_file_modify = nullptr;
+    QString m_file_location = nullptr;
+
     bool m_auto_delete = false;
 };
 

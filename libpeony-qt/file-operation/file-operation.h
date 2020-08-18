@@ -23,16 +23,15 @@
 #ifndef FILEOPERATION_H
 #define FILEOPERATION_H
 
+#include <QHash>
 #include <QObject>
+#include <QMetaType>
 #include <QRunnable>
 
 #include "gerror-wrapper.h"
 #include "gobject-template.h"
-
-#include <QMetaType>
-#include <QHash>
-
 #include "peony-core_global.h"
+#include "file-operation-error-handler.h"
 
 namespace Peony {
 
@@ -64,20 +63,6 @@ class PEONYCORESHARED_EXPORT FileOperation : public QObject, public QRunnable
     Q_OBJECT
 
 public:
-    enum ResponseType {
-        Invalid,
-        IgnoreOne,
-        IgnoreAll,
-        OverWriteOne,
-        OverWriteAll,
-        BackupOne,
-        BackupAll,
-        Rename,
-        Retry,
-        Cancel,
-        Other
-    };
-
     explicit FileOperation(QObject *parent = nullptr);
     ~FileOperation();
     virtual void run();
@@ -164,8 +149,8 @@ Q_SIGNALS:
      * Qt::BlockingQueuedConnection flag set. That also limit you use fileoperation and its
      * derived class in main thread.
      */
-    int errored(const QString &srcUri, const QString &destUri, const Peony::GErrorWrapperPtr &err, bool isCritical = false);
-
+    void errored(FileOperationError& error);
+    //int errored(const QString &srcUri, const QString &destUri, const Peony::GErrorWrapperPtr &err, bool isCritical = false);
     void FileProgressCallback(const QString &srcUri, const QString &destUri,
                               const qint64 &current_file_offset, const qint64 &current_file_size);
 
@@ -332,6 +317,6 @@ private:
 
 }
 
-Q_DECLARE_METATYPE(Peony::FileOperation::ResponseType)
+//Q_DECLARE_METATYPE(Peony::FileOperation::ResponseType)
 
 #endif // FILEOPERATION_H

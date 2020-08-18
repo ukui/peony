@@ -29,6 +29,62 @@
 
 using namespace Peony;
 
+static QString handleDuplicate(QString name) {
+    QRegExp regExp("\\(\\d+\\)");
+    if (name.contains(regExp)) {
+        int pos = 0;
+        int num = 0;
+        QString tmp;
+        while ((pos = regExp.indexIn(name, pos)) != -1) {
+            tmp = regExp.cap(0).toUtf8();
+            pos += regExp.matchedLength();
+            qDebug()<<"pos"<<pos;
+        }
+        tmp.remove(0,1);
+        tmp.chop(1);
+        num = tmp.toInt();
+
+        num++;
+        name = name.replace(regExp, QString("(%1)").arg(num));
+        return name;
+    } else {
+        if (name.contains(".")) {
+            auto list = name.split(".");
+            if (list.count() <= 1) {
+                return name + "(1)";
+            } else {
+                int pos = list.count() - 1;
+                if (list.last() == "gz" |
+                        list.last() == "xz" |
+                        list.last() == "Z" |
+                        list.last() == "sit" |
+                        list.last() == "bz" |
+                        list.last() == "bz2") {
+                    pos--;
+                }
+                if (pos < 0)
+                    pos = 0;
+                //list.insert(pos, "(1)");
+                auto tmp = list;
+                QStringList suffixList;
+                for (int i = 0; i < list.count() - pos; i++) {
+                    suffixList.prepend(tmp.takeLast());
+                }
+                auto suffix = suffixList.join(".");
+
+                auto basename = tmp.join(".");
+                name = basename + "(1)" + "." + suffix;
+                if (name.endsWith("."))
+                    name.chop(1);
+                return name;
+            }
+        } else {
+            name = name + "(1)";
+            return name;
+        }
+    }
+}
+
 FileRenameOperation::FileRenameOperation(QString uri, QString newName)
 {
     m_uri = uri;
@@ -53,8 +109,7 @@ void FileRenameOperation::run()
     QString destUri;
     Q_EMIT operationStarted();
     auto file = wrapGFile(g_file_new_for_uri(m_uri.toUtf8().constData()));
-    auto info = wrapGFileInfo(g_file_query_info(file.get()->get(),
-                              "*",
+    auto info = wrapGFileInfo(g_file_query_info(file.get()->get(), "*",
                               G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
                               getCancellable().get()->get(),
                               nullptr));
@@ -131,23 +186,93 @@ fallback_retry:
                     &err);
         if (err) {
             qDebug()<<err->message;
-            auto responseType = errored(m_uri,
-                                        FileUtils::getFileUri(newFile),
-                                        GErrorWrapper::wrapFrom(err),
-                                        true);
-            switch (responseType) {
-            case Retry:
-                goto fallback_retry;
+            FileOperationError except;
+            except.srcUri = m_uri;
+            except.destDirUri = FileUtils::getFileUri(newFile);
+            except.isCritical = true;
+            except.title = tr("Rename file");
+            except.errorType = ET_GIO;
+            except.errorCode = err->code;
+            if (G_IO_ERROR_EXISTS == err->code) {
+                except.dlgType = ED_CONFLICT;
+                auto responseType = except.respCode;
+                switch (responseType) {
+                case Retry:
+                    goto fallback_retry;
+                case Cancel:
+                    cancel();
+                    break;
+                default:
+                    break;
+                }
+            } else {
+                except.dlgType = ED_WARNING;
+                auto responseType = except.respCode;
+                switch (responseType) {
+                case Retry:
+                    goto fallback_retry;
+                case Cancel:
+                    cancel();
+                    break;
+                default:
+                    break;
+                }
+            }
+
+        }
+    } else {
+retry:
+        FileOperationError except;
+        except.srcUri = m_uri;
+        except.destDirUri = FileUtils::getFileUri(newFile);
+        except.isCritical = true;
+        except.errorType = ET_GIO;
+        except.title = tr("Rename file");
+        GError *err = nullptr;
+        if (FileUtils::isFileExsit(g_file_get_uri(newFile.get()->get()))) {
+            except.dlgType = ED_CONFLICT;
+            except.errorCode = G_IO_ERROR_EXISTS;
+            Q_EMIT errored(except);
+            switch (except.respCode) {
+            case BackupOne: {
+                // use custom name
+                QString srcName = FileUtils::getFileBaseName(newFile);
+                QString name = "";
+                QString endStr = "";
+                QStringList extendStr = srcName.split(".");
+                if (extendStr.length() > 0) {
+                    extendStr.removeAt(0);
+                }
+                endStr = extendStr.join(".");
+
+                if (except.respValue.contains("name")) {
+                    name = except.respValue["name"].toString();
+                    if (endStr != "" && name.endsWith(endStr)) {
+                        newFile = FileUtils::resolveRelativePath(parent, name);
+                    } else if ("" != endStr && "" != name) {
+                        newFile = FileUtils::resolveRelativePath(parent, name + "." + endStr);
+                    } else if ("" == endStr) {
+                        newFile = FileUtils::resolveRelativePath(parent, name);
+                    }
+                }
+            }
+                break;
+            case BackupAll: {
+                QString fileUri = handleDuplicate(FileUtils::getFileUri(newFile));
+                newFile = FileUtils::resolveRelativePath(parent, FileUtils::getUriBaseName(fileUri));
+                break;
+            }
+            case OverWriteOne:
+            case OverWriteAll:
+                g_file_delete(newFile.get()->get(), nullptr, nullptr);
+                break;
             case Cancel:
                 cancel();
-                break;
+                goto cancel;
             default:
                 break;
             }
         }
-    } else {
-retry:
-        GError *err = nullptr;
         g_file_move(file.get()->get(),
                     newFile.get()->get(),
                     m_default_copy_flag,
@@ -156,10 +281,14 @@ retry:
                     nullptr,
                     &err);
         if (err) {
-            auto responseType = errored(m_uri,
-                                        FileUtils::getFileUri(newFile),
-                                        GErrorWrapper::wrapFrom(err),
-                                        true);
+            except.errorType = ET_GIO;
+            except.errorCode = err->code;
+            auto responseType = Invalid;
+            if (G_IO_ERROR_EXISTS != err->code) {
+                except.dlgType = ED_WARNING;
+                Q_EMIT errored(except);
+                responseType = except.respCode;
+            }
             switch (responseType) {
             case Retry:
                 goto retry;
@@ -172,6 +301,7 @@ retry:
         }
     }
 
+cancel:
     if (!isCancelled()) {
         setHasError(false);
         auto string = g_file_get_uri(newFile.get()->get());
@@ -184,3 +314,5 @@ retry:
     Q_EMIT operationFinished();
     //notifyFileWatcherOperationFinished();
 }
+
+

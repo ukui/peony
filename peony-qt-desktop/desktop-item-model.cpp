@@ -102,7 +102,7 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
         qDebug()<<"desktop file created"<<uri;
         
         //refresh the desktop ,let file can be see at once
-        Q_EMIT this->refresh();
+        //Q_EMIT this->refresh();
 
         if (m_new_file_info_query_queue.contains(uri)) {
             return;

@@ -49,14 +49,12 @@ protected:
     const QString handleDuplicate(const QString &uri);
 
 private:
-    GFileCopyFlags m_default_copy_flag = GFileCopyFlags(G_FILE_COPY_NOFOLLOW_SYMLINKS|
-                                         G_FILE_COPY_ALL_METADATA);
+    GFileCopyFlags m_default_copy_flag = GFileCopyFlags(G_FILE_COPY_NOFOLLOW_SYMLINKS | G_FILE_COPY_ALL_METADATA);
 
     QStringList m_uris;
     QHash<QString, QString> m_restore_hash;
+    ExceptionResponse m_pre_handler = Invalid;
     std::shared_ptr<FileOperationInfo> m_info = nullptr;
-
-    ResponseType m_pre_handler = Invalid;
 };
 
 }

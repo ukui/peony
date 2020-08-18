@@ -23,19 +23,20 @@
 #ifndef FILEOPERATIONMANAGER_H
 #define FILEOPERATIONMANAGER_H
 
-#include <QObject>
-
-#include "peony-core_global.h"
-#include "gobject-template.h"
-#include "gerror-wrapper.h"
-#include "file-utils.h"
-#include "file-operation.h"
-#include "file-operation-progress-bar.h"
+#include <QUrl>
 #include <QMutex>
 #include <QStack>
+#include <QObject>
 #include <QThreadPool>
 
-#include <QUrl>
+#include "file-utils.h"
+#include "file-operation.h"
+#include "gerror-wrapper.h"
+#include "gobject-template.h"
+#include "peony-core_global.h"
+#include "file-operation-progress-bar.h"
+#include "file-operation-error-dialogs.h"
+
 
 namespace Peony {
 
@@ -88,7 +89,7 @@ public Q_SLOTS:
     void clearHistory();
     void onFilesDeleted(const QStringList &uris);
 
-    int handleError(const QString &srcUri, const QString &destUri, const GErrorWrapperPtr &err, bool critical);
+    void handleError(FileOperationError& error);
 
     /*!
      * \brief registerFileWatcher

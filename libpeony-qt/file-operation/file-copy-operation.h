@@ -53,7 +53,7 @@ public Q_SLOTS:
     void cancel() override;
 
 protected:
-    ResponseType prehandle(GError *err);
+    ExceptionResponse prehandle(GError *err);
     static void progress_callback(goffset current_num_bytes,
                                   goffset total_num_bytes,
                                   FileCopyOperation *p_this);
@@ -87,12 +87,12 @@ private:
      * use FileDuplicateOperation instead.
      */
     bool m_is_duplicated_copy = false;
-
     QStringList m_source_uris;
     QString m_dest_dir_uri = nullptr;
 
     int m_current_count = 0;
     int m_total_count = 0;
+    QSet<QString> m_conflict_files;
     QString m_current_src_uri = nullptr;
     QString m_current_dest_dir_uri = nullptr;
 
@@ -110,7 +110,7 @@ private:
      * Once a move operation get into error, this class might cache the specific response
      * for next prehandleing.
      */
-    QHash<int, ResponseType> m_prehandle_hash;
+    QHash<int, ExceptionResponse> m_prehandle_hash;
 
     std::shared_ptr<FileOperationInfo> m_info = nullptr;
 };
