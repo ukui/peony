@@ -60,6 +60,8 @@ protected:
     void mouseMoveEvent(QMouseEvent *e) override;
     void mouseReleaseEvent(QMouseEvent *e) override;
 
+    void resizeEvent(QResizeEvent *e) override;
+
 private:
     QToolButton *m_float_button;
 

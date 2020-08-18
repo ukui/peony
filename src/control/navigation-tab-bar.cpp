@@ -301,6 +301,12 @@ void NavigationTabBar::mouseReleaseEvent(QMouseEvent *e)
     m_start_drag = false;
 }
 
+void NavigationTabBar::resizeEvent(QResizeEvent *e)
+{
+    QTabBar::resizeEvent(e);
+    relayoutFloatButton(false);
+}
+
 TabBarStyle *TabBarStyle::getStyle()
 {
     if (!global_instance) {
