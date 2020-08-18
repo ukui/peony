@@ -219,7 +219,7 @@ const QList<QAction *> DesktopMenu::constructCreateTemplateActions()
 {
     QList<QAction *> l;
     if (m_selections.isEmpty()) {
-        auto createAction = new QAction(tr("&New..."), this);
+        auto createAction = new QAction(tr("Ne&w..."), this);
         l<<createAction;
         QMenu *subMenu = new QMenu(this);
         createAction->setMenu(subMenu);
@@ -316,7 +316,7 @@ const QList<QAction *> DesktopMenu::constructViewOpActions()
         auto smallAction = viewTypeSubMenu->addAction(tr("&Small"), [=]() {
             desktopView->setDefaultZoomLevel(DesktopIconView::Small);
         });
-        auto normalAction = viewTypeSubMenu->addAction(tr("&Normal"), [=]() {
+        auto normalAction = viewTypeSubMenu->addAction(tr("N&ormal"), [=]() {
             desktopView->setDefaultZoomLevel(DesktopIconView::Normal);
         });
         auto largeAction = viewTypeSubMenu->addAction(tr("&Large"), [=]() {
@@ -441,7 +441,7 @@ const QList<QAction *> DesktopMenu::constructFileOpActions()
             connect(l.last(), &QAction::triggered, [=]() {
                 ClipboardUtils::setClipboardFiles(m_selections, false);
             });
-            l<<addAction(QIcon::fromTheme("edit-cut-symbolic"), tr("Cu&t"));
+            l<<addAction(QIcon::fromTheme("edit-cut-symbolic"), tr("C&ut"));
             connect(l.last(), &QAction::triggered, [=]() {
                 ClipboardUtils::setClipboardFiles(m_selections, true);
             });
@@ -459,7 +459,7 @@ const QList<QAction *> DesktopMenu::constructFileOpActions()
             }
 
             if (m_selections.count() == 1) {
-                l<<addAction(QIcon::fromTheme("document-edit-symbolic"), tr("&Rename"));
+                l<<addAction(QIcon::fromTheme("document-edit-symbolic"), tr("Rena&me"));
                 connect(l.last(), &QAction::triggered, [=]() {
                     m_view->editUri(m_selections.first());
                 });
@@ -472,7 +472,7 @@ const QList<QAction *> DesktopMenu::constructFileOpActions()
         connect(l.last(), &QAction::triggered, [=]() {
             ClipboardUtils::pasteClipboardFiles(m_directory);
         });
-        l<<addAction(QIcon::fromTheme("view-refresh-symbolic"), tr("&Refresh"));
+        l<<addAction(QIcon::fromTheme("view-refresh-symbolic"), tr("Refres&h"));
         connect(l.last(), &QAction::triggered, [=]() {
             auto desktopView = dynamic_cast<DesktopIconView*>(m_view);
             desktopView->refresh();

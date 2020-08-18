@@ -576,8 +576,8 @@
     </message>
     <message>
         <location filename="../../libpeony-qt/file-operation/create-template-operation.cpp" line="128"/>
-        <location filename="../../libpeony-qt/file-operation/create-template-operation.cpp" line="154"/>
-        <location filename="../../libpeony-qt/file-operation/create-template-operation.cpp" line="184"/>
+        <location filename="../../libpeony-qt/file-operation/create-template-operation.cpp" line="155"/>
+        <location filename="../../libpeony-qt/file-operation/create-template-operation.cpp" line="185"/>
         <source>Create file</source>
         <translation>文件创建</translation>
     </message>
@@ -709,22 +709,22 @@
         <translation>打开%1个选中文件(&amp;O)</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="284"/>
-        <source>&amp;New...</source>
-        <translation>新建...(&amp;N)</translation>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="306"/>
+        <source>Ne&amp;w...</source>
+        <translation>新建...(&amp;W)</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="350"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="372"/>
         <source>Empty &amp;File</source>
         <translation>空文件(&amp;E)</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="362"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="384"/>
         <source>&amp;Folder</source>
         <translation>文件夹(&amp;F)</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="366"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="388"/>
         <source>New Folder</source>
         <translation>新建文件夹</translation>
     </message>
@@ -737,154 +737,154 @@
         <translation type="vanished">列表视图</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="392"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="414"/>
         <source>View Type...</source>
         <translation>视图类型...</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="411"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="433"/>
         <source>Sort By...</source>
         <translation>排序类型...</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="416"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="438"/>
         <source>Name</source>
         <translation>文件名称</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="418"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="440"/>
         <source>File Type</source>
         <translation>文件类型</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="417"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="439"/>
         <source>File Size</source>
         <translation>文件大小</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="419"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="441"/>
         <source>Modified Date</source>
         <translation>修改日期</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="435"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="457"/>
         <source>Sort Order...</source>
         <translation>排序顺序...</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="439"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="461"/>
         <source>Ascending Order</source>
         <translation>升序</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="440"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="462"/>
         <source>Descending Order</source>
         <translation>降序</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="453"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="475"/>
         <source>Sort Preferences...</source>
         <translation>排序偏好...</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="457"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="479"/>
         <source>Folder First</source>
         <translation>文件夹优先</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="466"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="488"/>
         <source>Chinese First</source>
         <translation>中文优先</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="476"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="498"/>
         <source>Show Hidden</source>
         <translation>显示隐藏文件</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="497"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="519"/>
         <source>&amp;Copy</source>
         <translation>复制(&amp;C)</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="501"/>
-        <source>Cu&amp;t</source>
-        <translation>剪切(&amp;T)</translation>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="523"/>
+        <source>C&amp;ut</source>
+        <translation>剪切(&amp;U)</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="505"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="527"/>
         <source>&amp;Delete to trash</source>
         <translation>删除到回收站(&amp;D)</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="510"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="532"/>
         <source>Delete forever</source>
         <translation>永久删除</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="537"/>
+        <source>Rena&amp;me</source>
+        <translation type="unfinished">重命名(&amp;M)</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="549"/>
+        <source>Refres&amp;h</source>
+        <translation type="unfinished">刷新(&amp;H)</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="559"/>
         <source>Select &amp;All</source>
         <translation>全选(&amp;A)</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="545"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="567"/>
         <source>Reverse Select</source>
         <translation>反选</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="560"/>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="576"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="582"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="598"/>
         <source>P&amp;roperties</source>
         <translation>属性(&amp;R)</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="640"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="654"/>
+        <source>R&amp;estore</source>
+        <translation type="unfinished">还原(&amp;E)</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="662"/>
         <source>&amp;Delete</source>
         <translation>删除(&amp;D)</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="515"/>
-        <source>&amp;Rename</source>
-        <translation>重命名(&amp;R)</translation>
-    </message>
-    <message>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="521"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="543"/>
         <source>&amp;Paste</source>
         <translation>粘贴(&amp;P)</translation>
-    </message>
-    <message>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="527"/>
-        <source>&amp;Refresh</source>
-        <translation>刷新(&amp;R)</translation>
     </message>
     <message>
         <source>&amp;Properties</source>
         <translation type="vanished">属性(&amp;P)</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="620"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="642"/>
         <source>&amp;Clean the Trash</source>
         <translation>清空回收站(&amp;C)</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="623"/>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="642"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="645"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="664"/>
         <source>Delete Permanently</source>
         <translation>永久删除</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="623"/>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="642"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="645"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="664"/>
         <source>Are you sure that you want to delete these files? Once you start a deletion, the files deleting will never be restored again.</source>
         <translation>确定永久删除这些文件？一旦确定，这些文件将无法被恢复。</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="632"/>
-        <source>&amp;Restore</source>
-        <translation>还原(&amp;R)</translation>
-    </message>
-    <message>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="662"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="684"/>
         <source>Open Parent Folder in New Window</source>
         <translation>在新窗口中打开文件所在目录</translation>
     </message>
@@ -996,8 +996,8 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
 <context>
     <name>Peony::FileCopyOperation</name>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-copy-operation.cpp" line="191"/>
-        <location filename="../../libpeony-qt/file-operation/file-copy-operation.cpp" line="303"/>
+        <location filename="../../libpeony-qt/file-operation/file-copy-operation.cpp" line="189"/>
+        <location filename="../../libpeony-qt/file-operation/file-copy-operation.cpp" line="308"/>
         <source>File copy</source>
         <translation>文件复制</translation>
     </message>
@@ -1005,8 +1005,8 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
 <context>
     <name>Peony::FileDeleteOperation</name>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-delete-operation.cpp" line="73"/>
-        <location filename="../../libpeony-qt/file-operation/file-delete-operation.cpp" line="102"/>
+        <location filename="../../libpeony-qt/file-operation/file-delete-operation.cpp" line="71"/>
+        <location filename="../../libpeony-qt/file-operation/file-delete-operation.cpp" line="98"/>
         <source>File delete</source>
         <translation>文件删除</translation>
     </message>
@@ -1024,17 +1024,17 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
 <context>
     <name>Peony::FileInformationLabel</name>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="294"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="298"/>
         <source>File location:</source>
         <translation>文件位置：</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="295"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="299"/>
         <source>File size:</source>
         <translation>文件大小：</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="295"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="299"/>
         <source>Modify time:</source>
         <translation>修改时间：</translation>
     </message>
@@ -1042,8 +1042,8 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
 <context>
     <name>Peony::FileItem</name>
     <message>
-        <location filename="../../libpeony-qt/model/file-item.cpp" line="124"/>
-        <location filename="../../libpeony-qt/model/file-item.cpp" line="167"/>
+        <location filename="../../libpeony-qt/model/file-item.cpp" line="134"/>
+        <location filename="../../libpeony-qt/model/file-item.cpp" line="177"/>
         <source>Error</source>
         <translation>错误</translation>
     </message>
@@ -1137,24 +1137,28 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
     <message>
         <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="123"/>
         <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="209"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="364"/>
         <source>Execute Directly</source>
         <translation>直接运行</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="124"/>
         <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="210"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="365"/>
         <source>Execute in Terminal</source>
         <translation>在终端在运行</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="128"/>
         <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="215"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="370"/>
         <source>Detected launching an executable file %1, you want?</source>
         <translation>正在打开一个可执行文件%1, 你希望?</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="145"/>
         <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="247"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="402"/>
         <source>Open Failed</source>
         <translation>无法打开</translation>
     </message>
@@ -1173,36 +1177,43 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
     </message>
     <message>
         <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="211"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="366"/>
         <source>By Default App</source>
         <translation>使用默认打开方式</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="214"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="369"/>
         <source>Launch Options</source>
         <translation>执行选项</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="237"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="392"/>
         <source>Open Link failed</source>
         <translation>打开链接失败</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="238"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="393"/>
         <source>File not exist, do you want to delete the link file?</source>
         <translation>目标文件不存在，您需要删除该链接吗？</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="248"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="403"/>
         <source>Can not open %1, Please confirm you have the right authority.</source>
         <translation>无法打开%1，请确认您有正确的打开权限。</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="252"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="407"/>
         <source>Open App failed</source>
         <translation>快捷方式存在问题</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="253"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="408"/>
         <source>The linked app is changed or uninstalled, so it can not work correctly. 
 Do you want to delete the link file?</source>
         <translation>该链接指向的应用已经被修改或者卸载，因此该快捷方式无法正常工作。
@@ -1210,11 +1221,13 @@ Do you want to delete the link file?</source>
     </message>
     <message>
         <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="263"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="418"/>
         <source>Error</source>
         <translation>错误</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="263"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="418"/>
         <source>Can not get a default application for opening %1, do you want open it with text format?</source>
         <translation>没有找到默认打开%1的应用, 是否用文本编辑器打开？</translation>
     </message>
@@ -1228,7 +1241,7 @@ Do you want to delete the link file?</source>
         <translation>快捷方式</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-link-operation.cpp" line="72"/>
+        <location filename="../../libpeony-qt/file-operation/file-link-operation.cpp" line="74"/>
         <source>Link file</source>
         <translation>创建文件链接</translation>
     </message>
@@ -1240,30 +1253,31 @@ Do you want to delete the link file?</source>
         <translation type="vanished">非法的移动操作，不能自移动到自身。</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="202"/>
-        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="321"/>
-        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="558"/>
+        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="200"/>
+        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="323"/>
+        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="566"/>
         <source>Move file</source>
         <translation>文件移动</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="670"/>
+        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="687"/>
         <source>Create file</source>
         <translation>文件创建</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="888"/>
+        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="912"/>
         <source>Invalid Operation.</source>
         <translation>非法的操作.</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="902"/>
+        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="926"/>
         <source>File delete</source>
         <translation>文件删除</translation>
     </message>
     <message>
+        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="928"/>
         <source>Invalid Operation</source>
-        <translation type="vanished">非法的操作</translation>
+        <translation>非法的操作</translation>
     </message>
 </context>
 <context>
@@ -1351,42 +1365,42 @@ Do you want to delete the link file?</source>
 <context>
     <name>Peony::FileOperationErrorDialogConflict</name>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="41"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="42"/>
         <source>This location already contains a file with the same name.</source>
         <translation>目标文件夹里已经包含有同名文件</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="42"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="43"/>
         <source>Please select the file to keep</source>
         <translation>请选择要保留的文件</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="46"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="47"/>
         <source>Replace</source>
         <translation>替换</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="53"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="54"/>
         <source>Ignore</source>
         <translation>忽略</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="67"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="68"/>
         <source>Then do the same thing in a similar situation</source>
         <translation>之后类似情况执行相同操作</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="71"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="72"/>
         <source>Backup</source>
         <translation>备份</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="75"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="76"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="79"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="80"/>
         <source>OK</source>
         <translation>确定</translation>
     </message>
@@ -1394,13 +1408,13 @@ Do you want to delete the link file?</source>
 <context>
     <name>Peony::FileOperationErrorDialogWarning</name>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="332"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="336"/>
         <source>OK</source>
         <translation>确定</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="359"/>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="367"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="363"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="371"/>
         <source>Please make sure the disk is not full or not is write protected, or file is not being used.</source>
         <translation>请确保磁盘未满或未被写保护或未被使用。</translation>
     </message>
@@ -1412,8 +1426,8 @@ Do you want to delete the link file?</source>
         <translation type="vanished">快捷方式</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-manager.h" line="194"/>
-        <location filename="../../libpeony-qt/file-operation/file-operation-manager.h" line="197"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-manager.h" line="190"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-manager.h" line="193"/>
         <source> - Symbolic Link</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1421,22 +1435,22 @@ Do you want to delete the link file?</source>
 <context>
     <name>Peony::FileOperationManager</name>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="147"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="146"/>
         <source>Can&apos;t delete.</source>
         <translation>不能删除</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="148"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="147"/>
         <source>You can&apos;t delete a file whenthe file is doing another operation</source>
         <translation>不能删除一个正在进行其它操作的文件</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="208"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="207"/>
         <source>File Operation is Busy</source>
         <translation>操作正忙</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="209"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="208"/>
         <source>There have been one or more fileoperation(s) executing before. Youroperation will wait for executinguntil it/them done. If you really want to execute file operations parallelly anyway, you can change the default option &quot;Allow Parallel&quot; in option menu.</source>
         <translation>在执行该操作之前有操作未完成, 它需要等待上一个操作完成后再执行. 如果你希望文件操作并行, 你可以更改选项菜单中的&quot;允许操作并行&quot;配置.</translation>
     </message>
@@ -1603,27 +1617,27 @@ Do you want to delete the link file?</source>
 <context>
     <name>Peony::FileRenameDialog</name>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="394"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="398"/>
         <source>Names automatically add serial Numbers (e.g., 1,2,3...)</source>
         <translation>名称后自动添加序号（如:1,2,3...）</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="397"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="401"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="402"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="406"/>
         <source>New file name</source>
         <translation>文件名</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="406"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="410"/>
         <source>Please enter the file name</source>
         <translation>请输入文件名</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="408"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="412"/>
         <source>OK</source>
         <translation>确定</translation>
     </message>
@@ -1631,8 +1645,8 @@ Do you want to delete the link file?</source>
 <context>
     <name>Peony::FileRenameOperation</name>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-rename-operation.cpp" line="138"/>
-        <location filename="../../libpeony-qt/file-operation/file-rename-operation.cpp" line="167"/>
+        <location filename="../../libpeony-qt/file-operation/file-rename-operation.cpp" line="193"/>
+        <location filename="../../libpeony-qt/file-operation/file-rename-operation.cpp" line="230"/>
         <source>Rename file</source>
         <translation>文件重命名</translation>
     </message>
@@ -1640,12 +1654,12 @@ Do you want to delete the link file?</source>
 <context>
     <name>Peony::FileTrashOperation</name>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-trash-operation.cpp" line="55"/>
+        <location filename="../../libpeony-qt/file-operation/file-trash-operation.cpp" line="53"/>
         <source>trash:///</source>
         <translation>trash:///</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-trash-operation.cpp" line="57"/>
+        <location filename="../../libpeony-qt/file-operation/file-trash-operation.cpp" line="55"/>
         <source>Trash file</source>
         <translation>删除文件到回收站</translation>
     </message>
@@ -1653,7 +1667,7 @@ Do you want to delete the link file?</source>
 <context>
     <name>Peony::FileUntrashOperation</name>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-untrash-operation.cpp" line="175"/>
+        <location filename="../../libpeony-qt/file-operation/file-untrash-operation.cpp" line="169"/>
         <source>Untrash file</source>
         <translation>撤销删除的文件</translation>
     </message>
@@ -1682,8 +1696,12 @@ Do you want to delete the link file?</source>
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp" line="270"/>
+        <source>Open In New Ta&amp;b</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Open In New &amp;Tab</source>
-        <translation>在新标签页中打开(&amp;T)</translation>
+        <translation type="vanished">在新标签页中打开(&amp;T)</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp" line="274"/>

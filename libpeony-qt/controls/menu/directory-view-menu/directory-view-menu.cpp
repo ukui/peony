@@ -303,7 +303,7 @@ const QList<QAction *> DirectoryViewMenu::constructCreateTemplateActions()
 {
     QList<QAction *> l;
     if (m_selections.isEmpty()) {
-        auto createAction = new QAction(tr("&New..."), this);
+        auto createAction = new QAction(tr("Ne&w..."), this);
         if (m_is_cd) {
             createAction->setEnabled(false);
         }
@@ -520,7 +520,7 @@ const QList<QAction *> DirectoryViewMenu::constructFileOpActions()
             connect(l.last(), &QAction::triggered, [=]() {
                 ClipboardUtils::setClipboardFiles(m_selections, false);
             });
-            l<<addAction(QIcon::fromTheme("edit-cut-symbolic"), tr("Cu&t"));
+            l<<addAction(QIcon::fromTheme("edit-cut-symbolic"), tr("C&ut"));
             connect(l.last(), &QAction::triggered, [=]() {
                 ClipboardUtils::setClipboardFiles(m_selections, true);
             });
@@ -534,7 +534,7 @@ const QList<QAction *> DirectoryViewMenu::constructFileOpActions()
                 FileOperationUtils::executeRemoveActionWithDialog(m_selections);
             });
             if (m_selections.count() == 1) {
-                l<<addAction(QIcon::fromTheme("document-edit-symbolic"), tr("&Rename"));
+                l<<addAction(QIcon::fromTheme("document-edit-symbolic"), tr("Rena&me"));
                 connect(l.last(), &QAction::triggered, [=]() {
                     m_view->editUri(m_selections.first());
                 });
@@ -546,7 +546,7 @@ const QList<QAction *> DirectoryViewMenu::constructFileOpActions()
             connect(l.last(), &QAction::triggered, [=]() {
                 ClipboardUtils::pasteClipboardFiles(m_directory);
             });
-            l<<addAction(QIcon::fromTheme("view-refresh-symbolic"), tr("&Refresh"));
+            l<<addAction(QIcon::fromTheme("view-refresh-symbolic"), tr("Refres&h"));
             connect(l.last(), &QAction::triggered, [=]() {
                 m_top_window->refresh();
             });
@@ -651,7 +651,7 @@ const QList<QAction *> DirectoryViewMenu::constructTrashActions()
                 }
             });
         } else {
-            l<<addAction(tr("&Restore"));
+            l<<addAction(tr("R&estore"));
             connect(l.last(), &QAction::triggered, [=]() {
                 if (m_selections.count() == 1) {
                     FileOperationUtils::restore(m_selections.first());
