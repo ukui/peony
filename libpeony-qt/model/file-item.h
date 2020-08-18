@@ -150,6 +150,7 @@ private:
     bool m_expanded = false;
 
     std::shared_ptr<FileWatcher> m_watcher = nullptr;
+    std::shared_ptr<FileWatcher> m_thumbnail_watcher = nullptr;
 
     /*!
      * \brief m_async_count

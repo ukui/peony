@@ -179,8 +179,13 @@ void NavigationTabBar::relayoutFloatButton(bool insterted)
     //qDebug()<<"relayout";
     auto lastTabRect = tabRect(count() - 1);
     fixedY = lastTabRect.center().y() - m_float_button->height()/2;
-    m_float_button->move(lastTabRect.right(), fixedY);
+    int fixedX = qMin(this->width() - qApp->style()->pixelMetric(QStyle::PM_TabBarScrollButtonWidth)*2 - m_float_button->width(), lastTabRect.right());
+    if (count() == 1) {
+        fixedX = lastTabRect.right();
+    }
+    m_float_button->move(fixedX, fixedY);
     setFixedHeight(lastTabRect.height());
+    m_float_button->raise();
 }
 
 void NavigationTabBar::dragEnterEvent(QDragEnterEvent *e)
@@ -294,6 +299,12 @@ void NavigationTabBar::mouseReleaseEvent(QMouseEvent *e)
 {
     QTabBar::mouseReleaseEvent(e);
     m_start_drag = false;
+}
+
+void NavigationTabBar::resizeEvent(QResizeEvent *e)
+{
+    QTabBar::resizeEvent(e);
+    relayoutFloatButton(false);
 }
 
 TabBarStyle *TabBarStyle::getStyle()

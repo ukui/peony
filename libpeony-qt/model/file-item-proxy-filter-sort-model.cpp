@@ -123,18 +123,7 @@ default_sort:
             if (m_use_default_name_sort_order) {
                 QString leftDisplayName = leftItem->m_info->displayName();
                 QString rightDisplayName = rightItem->m_info->displayName();
-                bool leftStartWithChinese = startWithChinese(leftDisplayName);
-                bool rightStartWithChinese = startWithChinese(rightDisplayName);
-                //all start with Chinese, use the default compare directly
-                if (leftStartWithChinese && rightStartWithChinese)
-                    return comparer.compare(leftDisplayName, rightDisplayName) < 0;
-                //simplify the logic
-                if (leftStartWithChinese || rightStartWithChinese) {
-                    if (sortOrder() == Qt::AscendingOrder) {
-                        return leftStartWithChinese;
-                    }
-                    return rightStartWithChinese;
-                }
+                return comparer.compare(leftDisplayName, rightDisplayName) < 0;
             }
             return leftItem->m_info->displayName().toLower() < rightItem->m_info->displayName().toLower();
         }

@@ -54,6 +54,7 @@
 #include <QApplication>
 
 #include <QStringList>
+#include <QStyleHints>
 
 #include <QDebug>
 
@@ -269,7 +270,7 @@ void IconView::mousePressEvent(QMouseEvent *e)
     else
     {
         //if remain time is between[0.75, 3000],then trigger rename event;
-        if(m_renameTimer->remainingTime()>=0 && m_renameTimer->remainingTime() <= 2250
+        if(m_renameTimer->remainingTime()>=0 && m_renameTimer->remainingTime() <= 3000 - qApp->styleHints()->mouseDoubleClickInterval()
                 && indexAt(e->pos()) == m_last_index && m_last_index.isValid() && m_editValid == true)
         {
             slotRename();
@@ -506,6 +507,7 @@ void IconView::editUri(const QString &uri)
     auto origin = FileUtils::getOriginalUri(uri);
     setIndexWidget(m_sort_filter_proxy_model->indexFromUri(origin), nullptr);
     qDebug() <<"editUri:" <<uri <<origin;
+    QListView::scrollTo(m_sort_filter_proxy_model->indexFromUri(origin));
     edit(m_sort_filter_proxy_model->indexFromUri(origin));
 }
 
