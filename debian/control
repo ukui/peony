@@ -67,7 +67,8 @@ Depends: ${misc:Depends},
          libqt5widgets5,
          libpoppler-qt5-1
 Provides: libpeony,
-Breaks: peony (<< 2.2.0-1)
+Breaks: peony (<< 2.2.0-1),
+        libpeony2
 Replaces: peony (<< 2.2.0-1),
           libpeony2
 Recommends: gvfs-backends,
