@@ -245,6 +245,7 @@ QWidget *IconViewDelegate::createEditor(QWidget *parent, const QStyleOptionViewI
         // NOTE: resort view after edit closed.
         // it's because if we not, the viewport might
         // not be updated in some cases.
+        Q_EMIT isEditing(false);
 #if QT_VERSION > QT_VERSION_CHECK(5, 12, 0)
         QTimer::singleShot(100, this, [=]() {
 #else
@@ -266,6 +267,7 @@ void IconViewDelegate::setEditorData(QWidget *editor, const QModelIndex &index) 
     if (!edit)
         return;
 
+    Q_EMIT isEditing(true);
     auto cursor = edit->textCursor();
     cursor.setPosition(0, QTextCursor::MoveAnchor);
     cursor.movePosition(QTextCursor::End, QTextCursor::KeepAnchor);
