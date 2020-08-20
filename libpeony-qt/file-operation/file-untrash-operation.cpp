@@ -170,7 +170,6 @@ retry:
             except.errorCode = err->code;
             except.errorType = ET_GIO;
             this->setHasError(true);
-            qDebug()<<"untrash err"<<uri<<originUri<<err->message;
             int type = Invalid;
             if (m_pre_handler != Invalid) {
                 type = m_pre_handler;
