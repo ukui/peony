@@ -344,8 +344,10 @@ void FileOperationManager::handleError(FileOperationError &error)
 
     // Handle errors according to the error type
     FileOperationErrorHandler* handle = FileOperationErrorDialogFactory::getDialog(error);
-    handle->handle(error);
-    delete handle;
+    if (nullptr != handle) {
+        handle->handle(error);
+        delete handle;
+    }
 }
 
 void FileOperationManager::registerFileWatcher(FileWatcher *watcher)

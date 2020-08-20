@@ -565,6 +565,7 @@ fallback_retry:
             except.errorType = ET_GIO;
             except.title = tr("Move file");
             except.errorCode = err->code;
+            except.errorStr = err->message;
             except.srcUri = m_current_src_uri;
             except.destDirUri = m_current_dest_dir_uri;
             except.isCritical = false;
@@ -578,6 +579,10 @@ fallback_retry:
                     except.dlgType = ED_WARNING;
                     Q_EMIT errored(except);
                     typeData = except.respCode;
+                }
+                // ignore multiple bounces
+                if (except.errorCode == G_IO_ERROR_NOT_SUPPORTED) {
+                    m_prehandle_hash.insert(err->code, IgnoreOne);
                 }
                 handle_type = typeData;
             }
