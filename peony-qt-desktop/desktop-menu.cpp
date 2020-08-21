@@ -359,14 +359,19 @@ const QList<QAction *> DesktopMenu::constructViewOpActions()
         tmp<<sortTypeMenu->addAction(tr("File Type"));
         tmp<<sortTypeMenu->addAction(tr("File Size"));
         tmp<<sortTypeMenu->addAction(tr("Modified Date"));
-//        int sortType = m_view->getSortType();
-//        if (sortType >= 0) {
-//            tmp.at(sortType)->setCheckable(true);
-//            tmp.at(sortType)->setChecked(true);
-//        }
+
+        int sortType = m_view->getSortType();
+        qDebug() << "sortType:" <<sortType <<tmp.count();
+        if (sortType < 0 || sortType >= tmp.count()) {
+            sortType = GlobalSettings::getInstance()->getValue(LAST_DESKTOP_SORT_ORDER).toInt();
+        }
+        tmp.at(sortType)->setCheckable(true);
+        tmp.at(sortType)->setChecked(true);
+
 
         for (int i = 0; i < tmp.count(); i++) {
             connect(tmp.at(i), &QAction::triggered, [=]() {
+                qDebug() << "setSortType in menu:" <<i;
                 m_view->setSortType(i);
                 GlobalSettings::getInstance()->setValue(LAST_DESKTOP_SORT_ORDER, i);
             });
