@@ -50,6 +50,8 @@ public:
 
     void setMaxLineCount(int count = 0);
     const QBrush selectedBrush() const;
+Q_SIGNALS:
+    void isEditing(bool editing) const;
 
 public Q_SLOTS:
     void setCutFiles(const QModelIndexList &indexes);

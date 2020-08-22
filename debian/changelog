@@ -1,3 +1,10 @@
+peony (3.0.2-2) unstable; urgency=medium
+
+  * debian/control:
+    - libpeony3: add breaks with libpeony2. (Closes: #968595)
+
+ -- handsome_feng <jianfengli@ubuntukylin.com>  Tue, 18 Aug 2020 13:11:28 +0000
+
 peony (3.0.2-1) unstable; urgency=medium
 
   * New upstream release.

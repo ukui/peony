@@ -183,6 +183,8 @@ private:
     const int BOTTOM_STATUS_MARGIN = 36;
 
     bool m_ignore_mouse_move_event = false;
+
+    bool m_delegate_editing = false;
 };
 
 //IconView2
