@@ -371,11 +371,10 @@ void SideBarFileSystemItem::unmount()
     // if device type is disc , Eject optical drive 
     if(g_strcmp0(udisks_block_get_id_type(block),"iso9660")==0 || strlen(udisks_block_get_id_type(block))==0){
 
-        char cmd[1024] ={0} ;
-        strcpy(cmd,"eject ");
-        strcat(cmd,m_unix_device.toUtf8().constData());
-
-        system(cmd);
+        // if can eject ,eject it 
+        if(isEjectable()){
+            this->eject();
+        }    
         
         return;
     }
