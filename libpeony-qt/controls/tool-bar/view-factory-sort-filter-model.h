@@ -30,7 +30,7 @@
 
 namespace Peony {
 
-class ViewFactorySortFilterModel2 : public QSortFilterProxyModel
+class PEONYCORESHARED_EXPORT ViewFactorySortFilterModel2 : public QSortFilterProxyModel
 {
     Q_OBJECT
 public:

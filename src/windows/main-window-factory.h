@@ -30,7 +30,7 @@
  * \brief The MainWindowFactory class
  * \deprecated
  */
-class MainWindowFactory : public Peony::FMWindowFactory
+class PEONYCORESHARED_EXPORT MainWindowFactory : public Peony::FMWindowFactory
 {
     Q_OBJECT
 public:
