@@ -193,6 +193,7 @@ DesktopWindow::DesktopWindow(QScreen *screen, bool is_primary, QWidget *parent)
 DesktopWindow::~DesktopWindow() {}
 
 void DesktopWindow::initGSettings() {
+    qDebug() <<"DesktopWindow initGSettings";
     if (!QGSettings::isSchemaInstalled(BACKGROUND_SETTINGS)) {
         m_backup_setttings = new QSettings("org.ukui", "peony-qt-desktop", this);
         if (m_backup_setttings->value("color").isNull()) {
@@ -208,37 +209,50 @@ void DesktopWindow::initGSettings() {
         qDebug() << "bg settings changed:" << key;
         if (key == "pictureFilename") {
             auto bg_path = m_bg_settings->get("pictureFilename").toString();
+            //control center set color bg
+            if (bg_path == "")
+            {
+                qDebug() << "bg_path == """;
+                // use pure color;
+                auto colorString = m_bg_settings->get("primary-color").toString();
+                auto color = QColor(colorString);
+                qDebug() <<"pure color bg"<< colorString;
+                this->setBg(color);
+                m_current_bg_path = "";
+                return;
+            }
+
+            //can not find bg file, usually the file is moved, use default bg
             if (!QFile::exists(bg_path)) {
                 QString path = "/usr/share/backgrounds/default.jpg";
+#if (QT_VERSION < QT_VERSION_CHECK(5, 7, 0))
+                path = "/usr/share/backgrounds/kylin/kylin-background.png";
+#endif
                 bool success = m_bg_settings->trySet("pictureFilename", path);
-                if (! success)
+                if (success)
                 {
-                    // use pure color;
-                    auto colorString = m_bg_settings->get("primary-color").toString();
-                    auto color = QColor(colorString);
-                    qDebug() << colorString;
-                    this->setBg(color);
-                    m_current_bg_path = "";
+                    m_current_bg_path = "file://" + path;
                 }
                 else
-                    m_current_bg_path = "file://" + path;
+                {
+                    qDebug() << "use default bg picture fail, reset";
+                    m_bg_settings->reset("pictureFilename");
+                }
             }
             else {
+                qDebug() << "bg_path:" <<bg_path << m_current_bg_path;
                 if (m_current_bg_path == bg_path)
                     return;
+                qDebug() << "set a new bg picture:" <<bg_path;
                 this->setBg(bg_path);
             }
         }
-        if (key == "primaryColor") {
-            auto bg_path = m_bg_settings->get("pictureFilename").toString();
-            if (!bg_path.startsWith("/")) {
-                auto colorString = m_bg_settings->get("primary-color").toString();
-                auto color = QColor(colorString);
-                qDebug() << colorString;
-                this->setBg(color);
-            } else {
-                // do nothing
-            }
+        if (key == "primaryColor")
+        {
+            auto colorString = m_bg_settings->get("primary-color").toString();
+            auto color = QColor(colorString);
+            qDebug() <<"set color bg"<< colorString;
+            this->setBg(color);
         }
     });
 }
@@ -312,7 +326,7 @@ const QColor DesktopWindow::getCurrentColor()
 }
 
 void DesktopWindow::setBg(const QString &path) {
-    qDebug() << path;
+    qDebug() << "DesktopWindow::setBg:"<<path;
     if (path.isNull()) {
         setBg(getCurrentColor());
         return;
