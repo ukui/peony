@@ -33,7 +33,7 @@ namespace Peony {
 
 class FMWindowIface;
 
-class PEONYCORESHARED_EXPORT StatusBar : public QStatusBar
+class StatusBar : public QStatusBar
 {
     Q_OBJECT
 public:

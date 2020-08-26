@@ -30,7 +30,7 @@ namespace Peony {
 
 class SideBarDelegate;
 
-class PEONYCORESHARED_EXPORT SideBar : public QTreeView
+class SideBar : public QTreeView
 {
     friend class SideBarDelegate;
     Q_OBJECT
