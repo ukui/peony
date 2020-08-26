@@ -185,9 +185,11 @@ end:
             SideBarFileSystemItem *item = new SideBarFileSystemItem(uri,
                     this,
                     m_model);
+            m_model->beginInsertRows(this->firstColumnIndex(), m_children->count(), m_children->count());
             m_children->append(item);
-            m_model->insertRows(m_children->count() - 1, 1, firstColumnIndex());
+            m_model->endInsertRows();
             m_model->indexUpdated(this->firstColumnIndex());
+            m_model->dataChanged(item->firstColumnIndex(), item->lastColumnIndex());
         });
 
         connect(m_watcher.get(), &FileWatcher::fileDeleted, this, [=](const QString &uri) {
@@ -195,8 +197,9 @@ end:
             for (auto child : *m_children) {
                 if (child->uri() == uri) {
                     int index = m_children->indexOf(child);
-                    m_model->removeRows(index, 1, firstColumnIndex());
+                    m_model->beginRemoveRows(firstColumnIndex(), index, index);
                     m_children->removeOne(child);
+                    m_model->endRemoveRows();
                     child->deleteLater();
                     break;
                 }
@@ -287,20 +290,6 @@ bool SideBarFileSystemItem::isMounted()
     return m_is_mounted;
 }
 
-static GAsyncReadyCallback eject_cb(GFile *file,
-                                    GAsyncResult *res,
-                                    SideBarFileSystemItem *p_this)
-{
-    GError *err = nullptr;
-    bool successed = g_file_eject_mountable_with_operation_finish(file, res, &err);
-    qDebug()<<successed;
-    if (err) {
-        qDebug()<<err->message;
-        g_error_free(err);
-    }
-    return nullptr;
-}
-
 void SideBarFileSystemItem::eject()
 {
     auto file = wrapGFile(g_file_new_for_uri(this->uri().toUtf8().constData()));
@@ -314,14 +303,53 @@ void SideBarFileSystemItem::eject()
                                           this);
 }
 
-static void unmount_finished(GObject*, GAsyncResult*, gpointer udata)
-{
-    SideBarFileSystemItem* th = (SideBarFileSystemItem*)udata;
-    if (FileUtils::isMountPoint(FileUtils::getTargetUri(th->uri()))) {
-        QMessageBox::warning(nullptr, QObject::tr("eject device failed"),
-                             QObject::tr("Please check whether the device is occupied and then eject the device again"),
-                             QMessageBox::Ok);
+static void unmount_force_cb(GFile* file, GAsyncResult* result, gpointer udata) {
+    GError *err = nullptr;
+    g_file_unmount_mountable_with_operation_finish (file, result, &err);
+    if (err) {
+        QMessageBox::warning(nullptr, QObject::tr("Force unmount failed"), QObject::tr("Error: %1\n").arg(err->message));
+        g_error_free(err);
     }
+}
+
+static void unmount_finished(GFile* file, GAsyncResult* result, gpointer udata)
+{
+    GError *err = nullptr;
+    g_file_unmount_mountable_with_operation_finish (file, result, &err);
+    if (err) {
+        auto button = QMessageBox::warning(nullptr, QObject::tr("Unmount failed"), QObject::tr("Error: %1\n"
+                                                                                               "Do you want to unmount forcely?").arg(err->message),
+                                           QMessageBox::Yes, QMessageBox::No);
+        if (button == QMessageBox::Yes) {
+            g_file_unmount_mountable_with_operation(file,
+                                                    G_MOUNT_UNMOUNT_FORCE,
+                                                    nullptr,
+                                                    nullptr,
+                                                    GAsyncReadyCallback(unmount_force_cb),
+                                                    udata);
+        }
+        g_error_free(err);
+    } else {
+        // do nothing.
+    }
+
+    /*!
+      \note
+
+      the user data repesent current sidebar item in callback function here is unsafe.
+      because once the item unmounted, the item itself will be deleted automaticly, too.
+      so, never try using it, especially when unmount operation successed.
+
+      */
+    // dangerous data, it might be delete while unmounting, do not use it.
+
+    //SideBarFileSystemItem* th = (SideBarFileSystemItem*)udata;
+
+//    if (FileUtils::isMountPoint(FileUtils::getTargetUri(th->uri()))) {
+//        QMessageBox::warning(nullptr, QObject::tr("eject device failed"),
+//                             QObject::tr("Please check whether the device is occupied and then eject the device again"),
+//                             QMessageBox::Ok);
+//    }
 }
 
 static UDisksObject *get_object_from_block_device (UDisksClient *client,const gchar *block_device)
@@ -360,32 +388,50 @@ static UDisksObject *get_object_from_block_device (UDisksClient *client,const gc
 
 void SideBarFileSystemItem::unmount()
 {
-    UDisksObject *object;
-    UDisksClient *client;
-    UDisksBlock *block;
-    client = udisks_client_new_sync(NULL,NULL);
+    /*!
+      \note
 
-    object = get_object_from_block_device(client,m_unix_device.toUtf8().constData());
-    block = udisks_object_get_block(object);
+      unmount operation of gio will handle both native and remote mount point.
+      so we must not use udisk's api directly, because it will lead to crash while
+      unmounting a remote directory.
 
-    // if device type is disc , Eject optical drive 
-    if(g_strcmp0(udisks_block_get_id_type(block),"iso9660")==0 || strlen(udisks_block_get_id_type(block))==0){
+      */
 
-        // if can eject ,eject it 
-        if(isEjectable()){
-            this->eject();
-        }    
-        
-        return;
-    }
+//    UDisksObject *object;
+//    UDisksClient *client;
+//    UDisksBlock *block;
+//    client = udisks_client_new_sync(NULL,NULL);
+
+//    object = get_object_from_block_device(client,m_unix_device.toUtf8().constData());
+//    block = udisks_object_get_block(object);
+
+//    // if device type is disc , Eject optical drive
+//    if(g_strcmp0(udisks_block_get_id_type(block),"iso9660")==0 || strlen(udisks_block_get_id_type(block))==0){
+
+//        // if can eject ,eject it
+//        if(isEjectable()){
+//            this->eject();
+//        }
+
+//        return;
+//    }
 
     auto file = wrapGFile(g_file_new_for_uri(this->uri().toUtf8().constData()));
     g_file_unmount_mountable_with_operation(file.get()->get(),
                                             G_MOUNT_UNMOUNT_NONE,
                                             nullptr,
                                             nullptr,
-                                            unmount_finished,
+                                            GAsyncReadyCallback(unmount_finished),
                                             this);
+}
+
+void SideBarFileSystemItem::ejectOrUnmount()
+{
+    if (isEjectable())
+        eject();
+
+    else if (isMountable())
+        unmount();
 }
 
 void SideBarFileSystemItem::initWatcher()
@@ -405,4 +451,23 @@ void SideBarFileSystemItem::stopWatcher()
 {
     initWatcher();
     m_watcher->stopMonitor();
+}
+
+GAsyncReadyCallback SideBarFileSystemItem::eject_cb(GFile *file, GAsyncResult *res, SideBarFileSystemItem *p_this)
+{
+    GError *err = nullptr;
+    bool successed = g_file_eject_mountable_with_operation_finish(file, res, &err);
+    qDebug()<<successed;
+    if (err) {
+        qDebug()<<err->message;
+        g_error_free(err);
+    } else {
+        // remove item anyway
+        int index = p_this->parent()->m_children->indexOf(p_this);
+        p_this->m_model->beginRemoveRows(p_this->parent()->firstColumnIndex(), index, index);
+        p_this->parent()->m_children->removeOne(p_this);
+        p_this->m_model->endRemoveRows();
+        p_this->deleteLater();
+    }
+    return nullptr;
 }

@@ -112,10 +112,10 @@ NavigationSideBar::NavigationSideBar(QWidget *parent) : QTreeView(parent)
         }
         case 1: {
             auto item = m_proxy_model->itemFromIndex(index);
-            if (item->isMounted()) {
+            if (item->isMounted() || item->isEjectable()) {
                 auto leftIndex = m_proxy_model->index(index.row(), 0, index.parent());
                 this->collapse(leftIndex);
-                item->unmount();
+                item->ejectOrUnmount();
             }
             break;
         }
