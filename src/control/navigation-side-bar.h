@@ -47,6 +47,8 @@ public:
     void paintEvent(QPaintEvent *event);
     void resizeEvent(QResizeEvent *e);
 
+    void dropEvent(QDropEvent *e);
+
     QSize sizeHint() const;
 
 Q_SIGNALS:
