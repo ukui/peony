@@ -159,7 +159,7 @@
 <context>
     <name>NavigationSideBarContainer</name>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="229"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="262"/>
         <source>All tags...</source>
         <translation>所有标记...</translation>
     </message>
