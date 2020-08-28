@@ -470,27 +470,28 @@ void MainWindow::setShortCuts()
     auto remodelViewAction = new QAction(this);
     remodelViewAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_0));
     connect(remodelViewAction, &QAction::triggered, this, [=]() {
-        this->getCurrentPage()->getView()->setCurrentZoomLevel(21);
+        this->getCurrentPage()->setZoomLevelRequest(25);
     });
     addAction(remodelViewAction);
 
     auto enlargViewAction = new QAction(this);
-    enlargViewAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Plus));
+    enlargViewAction->setShortcut(QKeySequence::ZoomIn);
     connect(enlargViewAction, &QAction::triggered, this, [=]() {
         int defaultZoomLevel = this->currentViewZoomLevel();
         if(defaultZoomLevel <= 95){ defaultZoomLevel+=5; }
-        this->getCurrentPage()->getView()->setCurrentZoomLevel(defaultZoomLevel);
+        for (int i = 0; i < 5; i++) {
+            this->getCurrentPage()->setZoomLevelRequest(defaultZoomLevel);
+        }
 
     });
     addAction(enlargViewAction);
 
     auto shrinkViewAction = new QAction(this);
-    shrinkViewAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Minus));
+    shrinkViewAction->setShortcut(QKeySequence::ZoomOut);
     connect(shrinkViewAction, &QAction::triggered, this, [=]() {
         int defaultZoomLevel = this->currentViewZoomLevel();
         if(defaultZoomLevel > 6){ defaultZoomLevel-=5; }
-        this->getCurrentPage()->getView()->setCurrentZoomLevel(defaultZoomLevel);
-
+        this->getCurrentPage()->setZoomLevelRequest(defaultZoomLevel);
     });
     addAction(shrinkViewAction);
 

@@ -51,7 +51,7 @@ class ComplementaryStyle : public QProxyStyle
 {
     Q_OBJECT
 public:
-    static ComplementaryStyle *getStyle();
+    static PEONYCORESHARED_EXPORT ComplementaryStyle *getStyle();
 
     void polish(QWidget *widget);
 

@@ -28,7 +28,7 @@
 
 namespace Peony {
 
-class PEONYCORESHARED_EXPORT PreviewOptionToolBar : public QToolBar
+class PreviewOptionToolBar : public QToolBar
 {
     Q_OBJECT
 public:

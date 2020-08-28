@@ -38,7 +38,7 @@ namespace Peony {
  * \todo
  * add gui.
  */
-class PluginManager : public QObject
+class PEONYCORESHARED_EXPORT PluginManager : public QObject
 {
     Q_OBJECT
 public:

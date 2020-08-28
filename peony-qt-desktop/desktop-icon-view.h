@@ -61,6 +61,8 @@ public:
     void initMenu();
     void initDoubleClick();
 
+    void openFileByUri(QString uri);
+
     void bindModel(FileItemModel *sourceModel, FileItemProxyFilterSortModel *proxyModel) {
         Q_UNUSED(sourceModel) Q_UNUSED(proxyModel)
     }

@@ -32,7 +32,7 @@ namespace Peony {
  * \brief The FMWindowFactory class
  * \deprecated
  */
-class FMWindowFactory : public QObject
+class PEONYCORESHARED_EXPORT FMWindowFactory : public QObject
 {
     Q_OBJECT
 public:

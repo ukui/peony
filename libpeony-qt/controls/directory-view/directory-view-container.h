@@ -54,7 +54,7 @@ class DirectoryViewWidget;
  * in higher level.
  * You can interpret it as the middleware of window and directory view.
  */
-class DirectoryViewContainer : public QWidget
+class PEONYCORESHARED_EXPORT DirectoryViewContainer : public QWidget
 {
     Q_OBJECT
 public:

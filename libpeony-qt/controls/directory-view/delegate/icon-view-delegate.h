@@ -24,6 +24,7 @@
 #define ICONVIEWDELEGATE_H
 
 #include <QStyledItemDelegate>
+#include <peony-core_global.h>
 
 class QPushButton;
 
@@ -50,6 +51,8 @@ public:
 
     void setMaxLineCount(int count = 0);
     const QBrush selectedBrush() const;
+Q_SIGNALS:
+    void isEditing(bool editing) const;
 
 public Q_SLOTS:
     void setCutFiles(const QModelIndexList &indexes);
@@ -76,7 +79,7 @@ private:
     QPushButton *m_styled_button;
 };
 
-class IconViewTextHelper
+class PEONYCORESHARED_EXPORT IconViewTextHelper
 {
     friend class IconViewDelegate;
     friend class IconViewIndexWidget;

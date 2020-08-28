@@ -30,7 +30,7 @@
 
 namespace Peony {
 
-class CreateTemplateOperation : public FileOperation
+class PEONYCORESHARED_EXPORT CreateTemplateOperation : public FileOperation
 {
     Q_OBJECT
 public:

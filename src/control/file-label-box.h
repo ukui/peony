@@ -25,8 +25,9 @@
 
 #include <QListView>
 #include <QProxyStyle>
+#include <peony-core_global.h>
 
-class FileLabelBox : public QListView
+class PEONYCORESHARED_EXPORT FileLabelBox : public QListView
 {
     Q_OBJECT
 public:

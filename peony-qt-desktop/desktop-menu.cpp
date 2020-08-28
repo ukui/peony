@@ -219,7 +219,7 @@ const QList<QAction *> DesktopMenu::constructCreateTemplateActions()
 {
     QList<QAction *> l;
     if (m_selections.isEmpty()) {
-        auto createAction = new QAction(tr("&New..."), this);
+        auto createAction = new QAction(tr("New..."), this);
         l<<createAction;
         QMenu *subMenu = new QMenu(this);
         createAction->setMenu(subMenu);
@@ -359,14 +359,19 @@ const QList<QAction *> DesktopMenu::constructViewOpActions()
         tmp<<sortTypeMenu->addAction(tr("File Type"));
         tmp<<sortTypeMenu->addAction(tr("File Size"));
         tmp<<sortTypeMenu->addAction(tr("Modified Date"));
-//        int sortType = m_view->getSortType();
-//        if (sortType >= 0) {
-//            tmp.at(sortType)->setCheckable(true);
-//            tmp.at(sortType)->setChecked(true);
-//        }
+
+        int sortType = m_view->getSortType();
+        qDebug() << "sortType:" <<sortType <<tmp.count();
+        if (sortType < 0 || sortType >= tmp.count()) {
+            sortType = GlobalSettings::getInstance()->getValue(LAST_DESKTOP_SORT_ORDER).toInt();
+        }
+        tmp.at(sortType)->setCheckable(true);
+        tmp.at(sortType)->setChecked(true);
+
 
         for (int i = 0; i < tmp.count(); i++) {
             connect(tmp.at(i), &QAction::triggered, [=]() {
+                qDebug() << "setSortType in menu:" <<i;
                 m_view->setSortType(i);
                 GlobalSettings::getInstance()->setValue(LAST_DESKTOP_SORT_ORDER, i);
             });
@@ -441,7 +446,7 @@ const QList<QAction *> DesktopMenu::constructFileOpActions()
             connect(l.last(), &QAction::triggered, [=]() {
                 ClipboardUtils::setClipboardFiles(m_selections, false);
             });
-            l<<addAction(QIcon::fromTheme("edit-cut-symbolic"), tr("Cu&t"));
+            l<<addAction(QIcon::fromTheme("edit-cut-symbolic"), tr("Cut"));
             connect(l.last(), &QAction::triggered, [=]() {
                 ClipboardUtils::setClipboardFiles(m_selections, true);
             });
@@ -459,7 +464,7 @@ const QList<QAction *> DesktopMenu::constructFileOpActions()
             }
 
             if (m_selections.count() == 1) {
-                l<<addAction(QIcon::fromTheme("document-edit-symbolic"), tr("&Rename"));
+                l<<addAction(QIcon::fromTheme("document-edit-symbolic"), tr("Rename"));
                 connect(l.last(), &QAction::triggered, [=]() {
                     m_view->editUri(m_selections.first());
                 });
@@ -486,7 +491,7 @@ const QList<QAction *> DesktopMenu::constructFilePropertiesActions()
 {
     QList<QAction *> l;
 
-    l<<addAction(QIcon::fromTheme("preview-file"), tr("P&roperties"));
+    l<<addAction(QIcon::fromTheme("preview-file"), tr("Properties"));
     connect(l.last(), &QAction::triggered, [=]() {
         //FIXME:
         if (m_selections.isEmpty()) {
