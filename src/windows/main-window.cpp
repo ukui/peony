@@ -863,7 +863,7 @@ void MainWindow::paintEvent(QPaintEvent *e)
 
     auto sidebarOpacity = Peony::GlobalSettings::getInstance()->getValue(SIDEBAR_BG_OPACITY).toInt();
 
-    colorBase.setAlphaF(sidebarOpacity/100.0);
+    colorBase.setAlphaF(sidebarOpacity/200.0);
 
     if (qApp->property("blurEnable").isValid()) {
         bool blurEnable = qApp->property("blurEnable").toBool();
@@ -880,6 +880,15 @@ void MainWindow::paintEvent(QPaintEvent *e)
     sidebarPath.addRoundedRect(adjustedRect, 6, 6);
     sidebarPath.addRect(adjustedRect.adjusted(0, 0, 0, -6));
     sidebarPath.addRect(adjustedRect.adjusted(6, 0, 0, 0));
+
+    auto pos = m_tab->mapTo(this, QPoint());
+    auto tmpRect = QRect(pos, m_tab->size());
+    QPainterPath deletePath;
+    QPainterPath tmpPath;
+    tmpPath.addRoundedRect(rect().adjusted(4, 4, -4, -4), 6, 6);
+    deletePath.addRoundedRect(tmpRect.adjusted(0, 48, 0, 0), 16, 16);
+    sidebarPath = tmpPath - deletePath;
+
     m_effect->setTransParentPath(sidebarPath);
     m_effect->setTransParentAreaBg(colorBase);
 
