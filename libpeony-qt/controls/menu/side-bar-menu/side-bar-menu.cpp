@@ -123,6 +123,11 @@ const QList<QAction *> SideBarMenu::constructFileSystemItemActions()
         });
         l.last()->setEnabled(m_item->isMounted());
     }
+    if (info->canEject()) {
+        l<<addAction(QIcon::fromTheme("media-eject"), tr("&Eject"), [=](){
+            m_item->eject();
+        });
+    }
 
     auto mgr = MenuPluginManager::getInstance();
     auto ids = mgr->getPluginIds();

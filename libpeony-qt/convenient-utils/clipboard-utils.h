@@ -38,7 +38,7 @@ namespace Peony {
  * \todo
  * Automatically detect the duplicated copy/paste and handle in backend.
  */
-class ClipboardUtils : public QObject
+class PEONYCORESHARED_EXPORT ClipboardUtils : public QObject
 {
     Q_OBJECT
 public:

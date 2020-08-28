@@ -115,7 +115,7 @@
     <name>MainWindow</name>
     <message>
         <location filename="../../src/windows/main-window.cpp" line="100"/>
-        <location filename="../../src/windows/main-window.cpp" line="548"/>
+        <location filename="../../src/windows/main-window.cpp" line="549"/>
         <source>File Manager</source>
         <translation>文件管理器</translation>
     </message>
@@ -130,12 +130,12 @@
         <translation>重做</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1167"/>
+        <location filename="../../src/windows/main-window.cpp" line="1168"/>
         <source>Delete Permanently</source>
         <translation>永久删除</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1168"/>
+        <location filename="../../src/windows/main-window.cpp" line="1169"/>
         <source>Are you sure that you want to delete these files? Once you start a deletion, the files deleting will never be restored again.</source>
         <translation>您确定要删除这些文件吗？一旦开始删除，这些文件将不可再恢复。</translation>
     </message>
@@ -144,7 +144,7 @@
         <translation type="vanished">文件管理器</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="555"/>
+        <location filename="../../src/windows/main-window.cpp" line="556"/>
         <source>New Folder</source>
         <translation>新建文件夹</translation>
     </message>
