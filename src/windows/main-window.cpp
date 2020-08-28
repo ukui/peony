@@ -1021,11 +1021,16 @@ void MainWindow::initUI(const QString &uri)
     });
 
     //HeaderBar
+    auto views = new TabWidget;
+    TopMenuBar *top = new TopMenuBar(this);
+
+    views->setMenuBar(top);
+
     auto headerBar = new HeaderBar(this);
     m_header_bar = headerBar;
     auto headerBarContainer = new HeaderBarContainer(this);
     headerBarContainer->addHeaderBar(headerBar);
-    addToolBar(headerBarContainer);
+    views->addToolBar(headerBarContainer);
     //m_header_bar->setVisible(false);
 
     connect(m_header_bar, &HeaderBar::updateLocationRequest, this, &MainWindow::goToUri);
@@ -1098,7 +1103,7 @@ void MainWindow::initUI(const QString &uri)
 //    m_status_bar = new Peony::StatusBar(this, this);
 //    setStatusBar(m_status_bar);
 
-    auto views = new TabWidget;
+//    auto views = new TabWidget;
     m_tab = views;
     if (uri.isNull()) {
         auto home = "file://" + QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
