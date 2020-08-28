@@ -1039,7 +1039,8 @@ void MainWindow::initUI(const QString &uri)
     m_header_bar = headerBar;
     auto headerBarContainer = new HeaderBarContainer(this);
     headerBarContainer->addHeaderBar(headerBar);
-    views->addToolBar(headerBarContainer);
+    views->m_header_bar_layout->insertWidget(0,headerBarContainer);
+    //views->addToolBar(headerBarContainer);
     //m_header_bar->setVisible(false);
 
     connect(m_header_bar, &HeaderBar::updateLocationRequest, this, &MainWindow::goToUri);
@@ -1079,32 +1080,35 @@ void MainWindow::initUI(const QString &uri)
 
     connect(m_side_bar, &NavigationSideBar::updateWindowLocationRequest, this, &MainWindow::goToUri);
 
-    auto labelDialog = new FileLabelBox(this);
-    labelDialog->hide();
+//    auto labelDialog = new FileLabelBox(this);
+//    labelDialog->hide();
+    TitleLabel *t = new TitleLabel(this);
 
     auto splitter = new QSplitter(this);
     splitter->setChildrenCollapsible(false);
     splitter->setHandleWidth(0);
+    splitter->setOrientation(Qt::Vertical);
+    splitter->addWidget(t);
     splitter->addWidget(navigationSidebarContainer);
-    splitter->addWidget(labelDialog);
+    //splitter->addWidget(labelDialog);
 
-    connect(labelDialog->selectionModel(), &QItemSelectionModel::selectionChanged, [=]()
-    {
-        auto selected = labelDialog->selectionModel()->selectedIndexes();
-        //qDebug() << "FileLabelBox selectionChanged:" <<selected.count();
-        if (selected.count() > 0)
-        {
-            auto name = selected.first().data().toString();
-            setLabelNameFilter(name);
-        }
-    });
+//    connect(labelDialog->selectionModel(), &QItemSelectionModel::selectionChanged, [=]()
+//    {
+//        auto selected = labelDialog->selectionModel()->selectedIndexes();
+//        //qDebug() << "FileLabelBox selectionChanged:" <<selected.count();
+//        if (selected.count() > 0)
+//        {
+//            auto name = selected.first().data().toString();
+//            setLabelNameFilter(name);
+//        }
+//    });
     //when clicked in blank, currentChanged may not triggered
-    connect(labelDialog, &FileLabelBox::leftClickOnBlank, [=]()
-    {
-        setLabelNameFilter("");
-    });
+//    connect(labelDialog, &FileLabelBox::leftClickOnBlank, [=]()
+//    {
+//        setLabelNameFilter("");
+//    });
 
-    connect(sidebar, &NavigationSideBar::labelButtonClicked, labelDialog, &QWidget::setVisible);
+//    connect(sidebar, &NavigationSideBar::labelButtonClicked, labelDialog, &QWidget::setVisible);
 
     sidebarContainer->setWidget(splitter);
     addDockWidget(Qt::LeftDockWidgetArea, sidebarContainer);

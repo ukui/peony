@@ -157,6 +157,14 @@
     </message>
 </context>
 <context>
+    <name>TitleLabel</name>
+    <message>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="259"/>
+        <source>Files</source>
+        <translation>文档</translation>
+    </message>
+</context>
+<context>
     <name>NavigationSideBarContainer</name>
     <message>
         <location filename="../../src/control/navigation-side-bar.cpp" line="225"/>

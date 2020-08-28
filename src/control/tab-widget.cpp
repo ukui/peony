@@ -98,15 +98,16 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
 
     connect(m_tab_bar, &NavigationTabBar::closeWindowRequest, this, &TabWidget::closeWindowRequest);
 
-    QHBoxLayout *t = new QHBoxLayout(this);
+    m_header_bar_layout = new QHBoxLayout(this);
     QActionGroup *group = new QActionGroup(this);
     group->setExclusive(true);
-    m_tab_bar_bg = new QWidget(this);
-    m_tab_bar_bg->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+//    m_header_bar_bg = new QWidget(this);
+//    m_header_bar_bg->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+//    m_header_bar_bg->setFixedHeight(50);
     QToolBar *previewButtons = new QToolBar(this);
     //previewButtons->setFixedHeight(m_tab_bar->height());
-    t->setContentsMargins(0, 0, 5, 0);
-    t->addWidget(m_tab_bar_bg);
+    //m_header_bar_layout->setContentsMargins(0, 0, 5, 0);
+    //t->addWidget(m_header_bar_bg);
 
     updateTabBarGeometry();
 
@@ -143,7 +144,7 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
         button->setProperty("iconHighlightEffectMode", 1);
         button->setProperty("fillIconSymbolicColor", true);
     }
-    t->addWidget(previewButtons);
+    m_header_bar_layout->addWidget(previewButtons);
 
     //trash quick operate buttons
     QHBoxLayout *trash = new QHBoxLayout(this);
@@ -191,7 +192,7 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
     m_top_layout = vbox;
     vbox->setSpacing(0);
     vbox->setContentsMargins(0, 0, 0, 0);
-    vbox->addLayout(t);
+    vbox->addLayout(m_header_bar_layout);
     vbox->addLayout(trash);
     vbox->addLayout(m_search_bar_layout);
     QSplitter *s = new QSplitter(this);
@@ -1052,7 +1053,7 @@ void TabWidget::bindContainerSignal(Peony::DirectoryViewContainer *container)
     connect(container, &Peony::DirectoryViewContainer::updateStatusBarSliderStateRequest, this, [=]() {
         bool enable = currentPage()->getView()->supportZoom();
         m_status_bar->m_slider->setEnabled(enable);
-        m_status_bar->m_slider->setVisible(enable);
+        //m_status_bar->m_slider->setVisible(enable);
     });
 }
 
@@ -1077,8 +1078,8 @@ void TabWidget::resizeEvent(QResizeEvent *e)
 
 void TabWidget::updateTabBarGeometry()
 {
-    m_tab_bar->setGeometry(0, 4, m_tab_bar_bg->width()- 136, m_tab_bar->height());
-    m_tab_bar_bg->setFixedHeight(m_tab_bar->height());
+    m_tab_bar->setGeometry(0, 0, this->width()-136,48);
+//    m_tab_bar_bg->setFixedHeight(m_tab_bar->height());
     m_tab_bar->raise();
 }
 
