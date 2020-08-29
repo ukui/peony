@@ -73,29 +73,29 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
 
     setMovable(false);
 
-    auto a = addAction(QIcon::fromTheme("folder-new-symbolic"), tr("Create Folder"), [=]() {
-        //use the same function
-        m_window->createFolderOperation();
-    });
-    auto createFolder = qobject_cast<QToolButton *>(widgetForAction(a));
-    createFolder->setAutoRaise(false);
-    createFolder->setFixedSize(QSize(40, 40));
-    createFolder->setIconSize(QSize(16, 16));
+//    auto a = addAction(QIcon::fromTheme("folder-new-symbolic"), tr("Create Folder"), [=]() {
+//        //use the same function
+//        m_window->createFolderOperation();
+//    });
+//    auto createFolder = qobject_cast<QToolButton *>(widgetForAction(a));
+//    createFolder->setAutoRaise(false);
+//    createFolder->setFixedSize(QSize(40, 40));
+//    createFolder->setIconSize(QSize(16, 16));
 
-    addSpacing(2);
+//    addSpacing(2);
 
-    //find a terminal when init
-    findDefaultTerminal();
-    a = addAction(QIcon::fromTheme("terminal-app-symbolic"), tr("Open Terminal"), [=]() {
-        //open the default terminal
-        openDefaultTerminal();
-    });
-    auto openTerminal = qobject_cast<QToolButton *>(widgetForAction(a));
-    openTerminal->setAutoRaise(false);
-    openTerminal->setFixedSize(QSize(40, 40));
-    openTerminal->setIconSize(QSize(16, 16));
+//    //find a terminal when init
+//    findDefaultTerminal();
+//    a = addAction(QIcon::fromTheme("terminal-app-symbolic"), tr("Open Terminal"), [=]() {
+//        //open the default terminal
+//        openDefaultTerminal();
+//    });
+//    auto openTerminal = qobject_cast<QToolButton *>(widgetForAction(a));
+//    openTerminal->setAutoRaise(false);
+//    openTerminal->setFixedSize(QSize(40, 40));
+//    openTerminal->setIconSize(QSize(16, 16));
 
-    addSpacing(9);
+//    addSpacing(9);
 
     auto goBack = new HeadBarPushButton(this);
     m_go_back = goBack;
@@ -138,7 +138,7 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
     connect(m_location_bar, &Peony::AdvancedLocationBar::updateWindowLocationRequest, this, &HeaderBar::updateLocationRequest);
 
     addSpacing(9);
-    a = addAction(QIcon::fromTheme("edit-find-symbolic"), tr("Search"));
+    auto a = addAction(QIcon::fromTheme("edit-find-symbolic"), tr("Search"));
     connect(a, &QAction::triggered, this, &HeaderBar::searchButtonClicked);
     auto search = qobject_cast<QToolButton *>(widgetForAction(a));
     search->setAutoRaise(false);
@@ -468,20 +468,128 @@ HeaderBarContainer::HeaderBarContainer(QWidget *parent) : QToolBar(parent)
     m_internal_widget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 }
 
+TopMenuBar::TopMenuBar(MainWindow *parent) : QMenuBar(parent)
+{
+    m_window = parent;
+    setContextMenuPolicy(Qt::CustomContextMenu);
+
+    setStyleSheet(".TopMenuBar"
+                  "{"
+                  "background-color: transparent;"
+                  "border: 0px solid transparent"
+                  "}");
+
+    setFixedHeight(48);
+
+    m_top_menu_layout = new QHBoxLayout(this);
+    m_top_menu_layout->setSpacing(0);
+    m_top_menu_layout->setContentsMargins(0, 0, 0, 0);
+
+    m_top_menu_internal_widget = new QWidget(this);
+    m_top_menu_internal_widget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    addWindowButtons();
+}
+
+void TopMenuBar::addWindowButtons()
+{
+    m_window->installEventFilter(this);
+    auto layout = new QHBoxLayout;
+
+    layout->setContentsMargins(0, 0, 4, 0);
+    layout->setSpacing(4);
+
+    //minimize, maximize and close
+    auto minimize = new QToolButton(m_top_menu_internal_widget);
+    minimize->setIcon(QIcon::fromTheme("window-minimize-symbolic"));
+    minimize->setToolTip(tr("Minimize"));
+    minimize->setAutoRaise(false);
+    minimize->setFixedSize(QSize(40, 40));
+    minimize->setIconSize(QSize(16, 16));
+    connect(minimize, &QToolButton::clicked, this, [=]() {
+        KWindowSystem::minimizeWindow(m_window->winId());
+        m_window->showMinimized();
+    });
+
+    //window-maximize-symbolic
+    //window-restore-symbolic
+    auto maximizeAndRestore = new QToolButton(m_top_menu_internal_widget);
+    maximizeAndRestore->setToolTip(tr("Maximize/Restore"));
+    maximizeAndRestore->setIcon(QIcon::fromTheme("window-maximize-symbolic"));
+    maximizeAndRestore->setAutoRaise(false);
+    maximizeAndRestore->setFixedSize(QSize(40, 40));
+    maximizeAndRestore->setIconSize(QSize(16, 16));
+    connect(maximizeAndRestore, &QToolButton::clicked, this, [=]() {
+        m_window->maximizeOrRestore();
+
+        bool maximized = m_window->isMaximized();
+        if (maximized) {
+            maximizeAndRestore->setIcon(QIcon::fromTheme("window-restore-symbolic"));
+            //maximizeAndRestore->setToolTip(tr("Restore"));
+        } else {
+            maximizeAndRestore->setIcon(QIcon::fromTheme("window-maximize-symbolic"));
+            //maximizeAndRestore->setToolTip(tr("Maximize"));
+        }
+    });
+    m_max_or_restore = maximizeAndRestore;
+
+    auto close = new QToolButton(m_top_menu_internal_widget);
+    close->setIcon(QIcon::fromTheme("window-close-symbolic"));
+    close->setToolTip(tr("Close"));
+    close->setAutoRaise(false);
+    close->setFixedSize(QSize(40, 40));
+    close->setIconSize(QSize(16, 16));
+    connect(close, &QToolButton::clicked, this, [=]() {
+        m_window->close();
+    });
+
+    connect(qApp, &QApplication::paletteChanged, close, [=](){
+        QTimer::singleShot(100, this, [=](){
+            auto palette = qApp->palette();
+            palette.setColor(QPalette::Highlight, QColor("#E54A50"));
+            close->setPalette(palette);
+        });
+    });
+    auto palette = qApp->palette();
+    palette.setColor(QPalette::Highlight, QColor("#E54A50"));
+    close->setPalette(palette);
+
+    layout->addWidget(minimize);
+    layout->addWidget(maximizeAndRestore);
+    layout->addWidget(close);
+
+    m_top_menu_internal_widget->setLayout(layout);
+    QSpacerItem *spacer = new QSpacerItem(2000, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+    m_top_menu_layout->addSpacerItem(spacer);
+    m_top_menu_layout->addWidget(m_top_menu_internal_widget);
+
+    minimize->setMouseTracking(true);
+    minimize->installEventFilter(this);
+    maximizeAndRestore->setMouseTracking(true);
+    maximizeAndRestore->installEventFilter(this);
+    close->setMouseTracking(true);
+    close->installEventFilter(this);
+
+    for (int i = 0; i < 3; i++) {
+        auto w = layout->itemAt(i)->widget();
+        w->setProperty("useIconHighlightEffect", true);
+        w->setProperty("iconHighlightEffectMode", 1);
+    }
+}
+
 bool HeaderBarContainer::eventFilter(QObject *obj, QEvent *e)
 {
     Q_UNUSED(obj)
     auto window = qobject_cast<MainWindow *>(obj);
     if (window) {
-        if (e->type() == QEvent::Resize) {
-            if (window->isMaximized()) {
-                m_max_or_restore->setIcon(QIcon::fromTheme("window-restore-symbolic"));
-                //m_max_or_restore->setToolTip(tr("Restore"));
-            } else {
-                m_max_or_restore->setIcon(QIcon::fromTheme("window-maximize-symbolic"));
-                //m_max_or_restore->setToolTip(tr("Maximize"));
-            }
-        }
+//        if (e->type() == QEvent::Resize) {
+//            if (window->isMaximized()) {
+//                m_max_or_restore->setIcon(QIcon::fromTheme("window-restore-symbolic"));
+//                //m_max_or_restore->setToolTip(tr("Restore"));
+//            } else {
+//                m_max_or_restore->setIcon(QIcon::fromTheme("window-maximize-symbolic"));
+//                //m_max_or_restore->setToolTip(tr("Maximize"));
+//            }
+//        }
         return false;
     } else {
         if (e->type() == QEvent::MouseMove) {
@@ -507,7 +615,7 @@ void HeaderBarContainer::addHeaderBar(HeaderBar *headerBar)
     headerBar->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     m_layout->addWidget(headerBar);
 
-    addWindowButtons();
+    //addWindowButtons();
 
     m_internal_widget->setLayout(m_layout);
     addWidget(m_internal_widget);

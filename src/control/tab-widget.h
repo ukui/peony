@@ -198,7 +198,8 @@ protected:
 private:
     NavigationTabBar *m_tab_bar;
 
-    QWidget *m_tab_bar_bg;
+    //QWidget *m_tab_bar_bg;
+    QWidget *m_header_bar_bg;
 
     QStackedWidget *m_stack;
 
@@ -212,6 +213,7 @@ private:
     QToolBar *m_trash_bar;
     QToolBar *m_search_bar;
     QVBoxLayout *m_top_layout;
+    QHBoxLayout *m_header_bar_layout;
     QHBoxLayout *m_trash_bar_layout;
     QHBoxLayout *m_search_bar_layout;
     QLabel *m_trash_label;

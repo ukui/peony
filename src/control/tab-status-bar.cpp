@@ -58,6 +58,7 @@ TabStatusBar::TabStatusBar(TabWidget *tab, QWidget *parent) : QStatusBar(parent)
 
     m_slider = new QSlider(Qt::Horizontal, this);
     m_slider->setRange(0, 100);
+    m_slider->hide();
 
     auto mainWindow = qobject_cast<MainWindow *>(this->topLevelWidget());
     auto settings = Peony::GlobalSettings::getInstance();

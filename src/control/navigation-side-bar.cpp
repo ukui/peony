@@ -45,6 +45,7 @@
 #include <QScrollBar>
 
 #include <QKeyEvent>
+#include <QLabel>
 
 #include <QUrl>
 #include <QDropEvent>
@@ -255,23 +256,23 @@ void NavigationSideBarContainer::addSideBar(NavigationSideBar *sidebar)
     m_sidebar = sidebar;
     m_layout->addWidget(sidebar);
 
-    QWidget *w = new QWidget(this);
-    QVBoxLayout *l = new QVBoxLayout;
-    l->setContentsMargins(4, 4, 2, 4);
+//    QWidget *w = new QWidget(this);
+//    QVBoxLayout *l = new QVBoxLayout;
+//    l->setContentsMargins(4, 4, 2, 4);
 
-    m_label_button = new QPushButton(QIcon::fromTheme("emblem-important-symbolic"), tr("All tags..."), this);
-    m_label_button->setProperty("useIconHighlightEffect", true);
-    m_label_button->setProperty("iconHighlightEffectMode", 1);
-    m_label_button->setProperty("fillIconSymbolicColor", true);
-    m_label_button->setCheckable(true);
+//    m_label_button = new QPushButton(QIcon::fromTheme("emblem-important-symbolic"), tr("All tags..."), this);
+//    m_label_button->setProperty("useIconHighlightEffect", true);
+//    m_label_button->setProperty("iconHighlightEffectMode", 1);
+//    m_label_button->setProperty("fillIconSymbolicColor", true);
+//    m_label_button->setCheckable(true);
 
-    l->addWidget(m_label_button);
+//    l->addWidget(m_label_button);
 
-    connect(m_label_button, &QPushButton::clicked, m_sidebar, &NavigationSideBar::labelButtonClicked);
+//    connect(m_label_button, &QPushButton::clicked, m_sidebar, &NavigationSideBar::labelButtonClicked);
 
-    w->setLayout(l);
+//    w->setLayout(l);
 
-    m_layout->addWidget(w);
+//    m_layout->addWidget(w);
 
     setLayout(m_layout);
 }
@@ -282,4 +283,16 @@ QSize NavigationSideBarContainer::sizeHint() const
     auto width = Peony::GlobalSettings::getInstance()->getValue(DEFAULT_SIDEBAR_WIDTH).toInt();
     size.setWidth(width);
     return size;
+}
+TitleLabel::TitleLabel(QWidget *parent):QWidget(parent)
+{
+    this->setFixedHeight(50);
+    m_pix_label = new QLabel(this);
+    m_pix_label->setPixmap(QPixmap(":/custom/icons/child-folder.png"));
+    m_text_label = new QLabel(tr("Files"),this);
+    QHBoxLayout *l = new QHBoxLayout(this);
+    l->setMargin(9);
+    l->addWidget(m_pix_label);
+    l->addWidget(m_text_label);
+    l->addStretch();
 }

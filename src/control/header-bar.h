@@ -27,6 +27,7 @@
 #include <QToolButton>
 #include <QPushButton>
 #include <QProxyStyle>
+#include <QMenuBar>
 
 class MainWindow;
 class ViewTypeMenu;
@@ -139,6 +140,24 @@ class HeaderBarStyle : public QProxyStyle
 
     void drawComplexControl(ComplexControl control, const QStyleOptionComplex *option, QPainter *painter, const QWidget *widget = nullptr) const override;
     void drawPrimitive(PrimitiveElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget = nullptr) const override;
+};
+
+class TopMenuBar : public QMenuBar
+{
+    Q_OBJECT
+public:
+    explicit TopMenuBar(MainWindow *parent = nullptr);
+
+//    bool eventFilter(QObject *obj, QEvent *e);
+
+protected:
+    void addWindowButtons();
+
+private:
+    QWidget *m_top_menu_internal_widget;
+    QHBoxLayout *m_top_menu_layout;
+    MainWindow *m_window;
+    QToolButton *m_max_or_restore = nullptr;
 };
 
 #endif // HEADERBAR_H

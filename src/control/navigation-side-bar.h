@@ -25,6 +25,7 @@
 
 #include <QTreeView>
 #include <QStyledItemDelegate>
+#include <QLabel>
 
 namespace Peony {
 class SideBarModel;
@@ -85,6 +86,17 @@ class NavigationSideBarItemDelegate : public QStyledItemDelegate
     explicit NavigationSideBarItemDelegate(QObject *parent = nullptr);
 
     QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const override;
+};
+class TitleLabel : public QWidget
+{
+public:
+    explicit TitleLabel(QWidget *parent);
+
+private:
+    QLabel *m_pix_label;
+    QLabel *m_text_label;
+
+
 };
 
 #endif // NAVIGATIONSIDEBAR_H

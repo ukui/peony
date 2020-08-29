@@ -864,7 +864,7 @@ void MainWindow::paintEvent(QPaintEvent *e)
 
     auto sidebarOpacity = Peony::GlobalSettings::getInstance()->getValue(SIDEBAR_BG_OPACITY).toInt();
 
-    colorBase.setAlphaF(sidebarOpacity/100.0);
+    colorBase.setAlphaF(sidebarOpacity/200.0);
 
     if (qApp->property("blurEnable").isValid()) {
         bool blurEnable = qApp->property("blurEnable").toBool();
@@ -881,6 +881,15 @@ void MainWindow::paintEvent(QPaintEvent *e)
     sidebarPath.addRoundedRect(adjustedRect, 6, 6);
     sidebarPath.addRect(adjustedRect.adjusted(0, 0, 0, -6));
     sidebarPath.addRect(adjustedRect.adjusted(6, 0, 0, 0));
+
+    auto pos = m_tab->mapTo(this, QPoint());
+    auto tmpRect = QRect(pos, m_tab->size());
+    QPainterPath deletePath;
+    QPainterPath tmpPath;
+    tmpPath.addRoundedRect(rect().adjusted(4, 4, -4, -4), 6, 6);
+    deletePath.addRoundedRect(tmpRect.adjusted(0, 48, 0, 0), 16, 16);
+    sidebarPath = tmpPath - deletePath;
+
     m_effect->setTransParentPath(sidebarPath);
     m_effect->setTransParentAreaBg(colorBase);
 
@@ -1022,11 +1031,17 @@ void MainWindow::initUI(const QString &uri)
     });
 
     //HeaderBar
+    auto views = new TabWidget;
+    TopMenuBar *top = new TopMenuBar(this);
+
+    views->setMenuBar(top);
+
     auto headerBar = new HeaderBar(this);
     m_header_bar = headerBar;
     auto headerBarContainer = new HeaderBarContainer(this);
     headerBarContainer->addHeaderBar(headerBar);
-    addToolBar(headerBarContainer);
+    views->m_header_bar_layout->insertWidget(0,headerBarContainer);
+    //views->addToolBar(headerBarContainer);
     //m_header_bar->setVisible(false);
 
     connect(m_header_bar, &HeaderBar::updateLocationRequest, this, &MainWindow::goToUri);
@@ -1066,32 +1081,35 @@ void MainWindow::initUI(const QString &uri)
 
     connect(m_side_bar, &NavigationSideBar::updateWindowLocationRequest, this, &MainWindow::goToUri);
 
-    auto labelDialog = new FileLabelBox(this);
-    labelDialog->hide();
+//    auto labelDialog = new FileLabelBox(this);
+//    labelDialog->hide();
+    TitleLabel *t = new TitleLabel(this);
 
     auto splitter = new QSplitter(this);
     splitter->setChildrenCollapsible(false);
     splitter->setHandleWidth(0);
+    splitter->setOrientation(Qt::Vertical);
+    splitter->addWidget(t);
     splitter->addWidget(navigationSidebarContainer);
-    splitter->addWidget(labelDialog);
+    //splitter->addWidget(labelDialog);
 
-    connect(labelDialog->selectionModel(), &QItemSelectionModel::selectionChanged, [=]()
-    {
-        auto selected = labelDialog->selectionModel()->selectedIndexes();
-        //qDebug() << "FileLabelBox selectionChanged:" <<selected.count();
-        if (selected.count() > 0)
-        {
-            auto name = selected.first().data().toString();
-            setLabelNameFilter(name);
-        }
-    });
+//    connect(labelDialog->selectionModel(), &QItemSelectionModel::selectionChanged, [=]()
+//    {
+//        auto selected = labelDialog->selectionModel()->selectedIndexes();
+//        //qDebug() << "FileLabelBox selectionChanged:" <<selected.count();
+//        if (selected.count() > 0)
+//        {
+//            auto name = selected.first().data().toString();
+//            setLabelNameFilter(name);
+//        }
+//    });
     //when clicked in blank, currentChanged may not triggered
-    connect(labelDialog, &FileLabelBox::leftClickOnBlank, [=]()
-    {
-        setLabelNameFilter("");
-    });
+//    connect(labelDialog, &FileLabelBox::leftClickOnBlank, [=]()
+//    {
+//        setLabelNameFilter("");
+//    });
 
-    connect(sidebar, &NavigationSideBar::labelButtonClicked, labelDialog, &QWidget::setVisible);
+//    connect(sidebar, &NavigationSideBar::labelButtonClicked, labelDialog, &QWidget::setVisible);
 
     sidebarContainer->setWidget(splitter);
     addDockWidget(Qt::LeftDockWidgetArea, sidebarContainer);
@@ -1099,7 +1117,7 @@ void MainWindow::initUI(const QString &uri)
 //    m_status_bar = new Peony::StatusBar(this, this);
 //    setStatusBar(m_status_bar);
 
-    auto views = new TabWidget;
+//    auto views = new TabWidget;
     m_tab = views;
     if (uri.isNull()) {
         auto home = "file://" + QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
