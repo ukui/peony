@@ -64,7 +64,7 @@ void FileDeleteOperation::deleteRecursively(FileNode *node)
                 g_error_free(err);
                 return;
             }
-            //if delete a file get into error, it might be a critical error.
+            // if delete a file get into error, it might be a critical error.
             FileOperationError except;
             except.errorType = ET_GIO;
             except.dlgType = ED_WARNING;
@@ -77,21 +77,18 @@ void FileDeleteOperation::deleteRecursively(FileNode *node)
             if (responseType == Cancel) {
                 cancel();
             }
-            if (responseType == IgnoreAll) {
-                m_prehandle_hash.insert(err->code, IgnoreAll);
-            }
+            // Similar errors only remind the user once
+            m_prehandle_hash.insert(err->code, IgnoreAll);
         }
     } else {
         GError *err = nullptr;
-        g_file_delete(file,
-                      getCancellable().get()->get(),
-                      &err);
+        g_file_delete(file,getCancellable().get()->get(),&err);
         if (err) {
             if (!m_prehandle_hash.isEmpty()) {
                 g_error_free(err);
                 return;
             }
-            //if delete a file get into error, it might be a critical error.
+            // if delete a file get into error, it might be a critical error.
             FileOperationError except;
             except.errorType = ET_GIO;
             except.dlgType = ED_WARNING;
@@ -105,9 +102,8 @@ void FileDeleteOperation::deleteRecursively(FileNode *node)
             if (responseType == Cancel) {
                 cancel();
             }
-            if (responseType == IgnoreAll) {
-                m_prehandle_hash.insert(err->code, IgnoreAll);
-            }
+            // Similar errors only remind the user once
+            m_prehandle_hash.insert(err->code, IgnoreAll);
         }
     }
     g_object_unref(file);
