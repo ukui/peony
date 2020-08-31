@@ -350,6 +350,12 @@ Peony::FileOperationErrorDialogWarning::~FileOperationErrorDialogWarning()
 
 void Peony::FileOperationErrorDialogWarning::handle(Peony::FileOperationError &error)
 {
+    // Empty files in the recycle bin without reminding
+    if (error.srcUri.startsWith("trash://")) {
+        error.respCode = IgnoreAll;
+        return;
+    }
+
     m_error = &error;
 
     if (nullptr != m_error->errorStr) {

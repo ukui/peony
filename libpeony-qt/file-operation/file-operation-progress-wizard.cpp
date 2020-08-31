@@ -22,27 +22,20 @@
 
 #include "file-operation-progress-wizard.h"
 
-#include <QFormLayout>
-#include <QGridLayout>
-
-#include <QLabel>
-#include <QProgressBar>
-
-#include <QPushButton>
-
-#include <QCloseEvent>
-#include <QMessageBox>
-
-#include <QSystemTrayIcon>
-
-#include <QTimer>
-
 #include <gio/gio.h>
 
 #include <QDebug>
-
-#include <QDesktopWidget>
+#include <QLabel>
+#include <QTimer>
+#include <QFormLayout>
+#include <QGridLayout>
+#include <QPushButton>
+#include <QCloseEvent>
+#include <QMessageBox>
+#include <QProgressBar>
 #include <QApplication>
+#include <QDesktopWidget>
+#include <QSystemTrayIcon>
 
 using namespace Peony;
 

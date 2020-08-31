@@ -220,7 +220,7 @@ void FileOperationProgressBar::showWidgetList(bool show)
 void FileOperationProgressBar::mainProgressChange(QListWidgetItem *item)
 {
     // disconnect
-    if (nullptr != m_main_progressbar && m_current_main != nullptr) {
+    if (nullptr != m_main_progressbar && nullptr != m_current_main) {
         m_main_progressbar->disconnect(m_current_main, &ProgressBar::sendValue, 0, 0);
     }
 

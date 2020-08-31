@@ -60,13 +60,13 @@ private:
     QVBoxLayout* m_main_layout = nullptr;
 
     // widget
-    MainProgressBar* m_main_progressbar = nullptr;
-    OtherButton* m_other_progressbar = nullptr;
     QListWidget* m_list_widget = nullptr;
-
     ProgressBar* m_current_main = nullptr;
-    QMap<ProgressBar*, QListWidgetItem*>* m_progress_list = nullptr;
+    OtherButton* m_other_progressbar = nullptr;
+    MainProgressBar* m_main_progressbar = nullptr;
+
     QMap<QListWidgetItem*, ProgressBar*>* m_widget_list = nullptr;
+    QMap<ProgressBar*, QListWidgetItem*>* m_progress_list = nullptr;
 
     int m_show_items = 2;
     bool m_show_more = false;
