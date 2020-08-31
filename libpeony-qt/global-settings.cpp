@@ -73,6 +73,16 @@ GlobalSettings::GlobalSettings(QObject *parent) : QObject(parent)
     if (m_cache.value(DEFAULT_VIEW_ZOOM_LEVEL).isNull()) {
         setValue(DEFAULT_VIEW_ZOOM_LEVEL, 25);
     }
+    if (QGSettings::isSchemaInstalled("org.ukui.SettingsDaemon.plugins.tablet-mode")) {
+        m_gsettings_tablet_mode = new QGSettings("org.ukui.SettingsDaemon.plugins.tablet-mode", QByteArray(), this);
+        m_cache.insert(TABLET_MODE, m_gsettings_tablet_mode->get("tablet-mode").toString());
+        connect(m_gsettings_tablet_mode, &QGSettings::changed, this, [=](const QString &key) {
+            if (key == "tabletMode") {
+                m_cache.insert(TABLET_MODE, m_gsettings_tablet_mode->get(key).toString());
+                qApp->paletteChanged(qApp->palette());
+            }
+        });
+    }
 }
 
 GlobalSettings::~GlobalSettings()

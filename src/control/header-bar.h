@@ -28,7 +28,6 @@
 #include <QPushButton>
 #include <QProxyStyle>
 #include <QMenuBar>
-#include <QGSettings/QGSettings>
 
 class MainWindow;
 class ViewTypeMenu;
@@ -51,9 +50,6 @@ public:
     bool eventFilter(QObject *obj, QEvent *e);
 
     void addHeaderBar(HeaderBar *headerBar);
-
-protected:
-    void addWindowButtons();
 
 private:
     QWidget *m_internal_widget;
@@ -159,7 +155,7 @@ private:
     QHBoxLayout *m_top_menu_layout;
     MainWindow *m_window;
     QToolButton *m_max_or_restore = nullptr;
-    QGSettings *m_tablet_mode;
+    bool m_tablet_mode;
 };
 
 #endif // HEADERBAR_H
