@@ -62,6 +62,13 @@ FileOperationManager::FileOperationManager(QObject *parent) : QObject(parent)
         //Imitating queue execution.
         m_thread_pool->setMaxThreadCount(1);
     }
+
+    //
+    connect(m_progressbar, &FileOperationProgressBar::canceled, [=] () {
+        if (!m_allow_parallel) {
+            m_progressbar->removeAllProgressbar();
+        }
+    });
 }
 
 FileOperationManager::~FileOperationManager()
@@ -336,9 +343,9 @@ void FileOperationManager::onFilesDeleted(const QStringList &uris)
 // optimize: Gets Windows should be created conditionally and errors handled so that memory is allocated in the stack space
 void FileOperationManager::handleError(FileOperationError &error)
 {
-    if (error.srcUri.startsWith("trash://") &&
-            error.errorType == ET_GIO && error.errorCode == G_IO_ERROR_PERMISSION_DENIED) {
-        error.respCode = IgnoreOne;
+    // Empty files in the recycle bin without reminding
+    if (error.srcUri.startsWith("trash://") && error.errorType == ET_GIO) {
+        error.respCode = IgnoreAll;
         return;
     }
 
