@@ -68,6 +68,7 @@ void FileDeleteOperation::deleteRecursively(FileNode *node)
             FileOperationError except;
             except.errorType = ET_GIO;
             except.dlgType = ED_WARNING;
+            except.srcUri = node->uri();
             except.title = tr("File delete");
             except.errorStr = err->message;
             except.errorCode = err->code;
@@ -92,6 +93,7 @@ void FileDeleteOperation::deleteRecursively(FileNode *node)
             FileOperationError except;
             except.errorType = ET_GIO;
             except.dlgType = ED_WARNING;
+            except.srcUri = node->uri();
             except.title = tr("File delete");
             except.errorCode = err->code;
             except.errorStr = err->message;
