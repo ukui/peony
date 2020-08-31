@@ -62,6 +62,13 @@ FileOperationManager::FileOperationManager(QObject *parent) : QObject(parent)
         //Imitating queue execution.
         m_thread_pool->setMaxThreadCount(1);
     }
+
+    //
+    connect(m_progressbar, &FileOperationProgressBar::canceled, [=] () {
+        if (!m_allow_parallel) {
+            m_progressbar->removeAllProgressbar();
+        }
+    });
 }
 
 FileOperationManager::~FileOperationManager()

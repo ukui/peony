@@ -36,6 +36,7 @@ class FileOperationProgressBar : public QWidget
 public:
     static FileOperationProgressBar* getInstance();
 
+    void removeAllProgressbar ();
     ProgressBar* addFileOperation();
     void showProgress (ProgressBar& progress);
     void removeFileOperation(ProgressBar* progress);
@@ -46,10 +47,13 @@ private:
     void showMore ();
 
 protected:
+    void showWidgetList(bool show);
     void mouseMoveEvent(QMouseEvent *event) override;
     void mousePressEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
-    void showWidgetList(bool show);
+
+Q_SIGNALS:
+    void canceled();
 
 public Q_SLOTS:
     void mainProgressChange(QListWidgetItem *item);

@@ -47,6 +47,19 @@ FileOperationProgressBar *FileOperationProgressBar::getInstance()
     return instance;
 }
 
+void FileOperationProgressBar::removeAllProgressbar()
+{
+    for (auto pg = m_widget_list->constBegin(); pg != m_widget_list->constEnd(); ++pg) {
+        if (nullptr != pg.key()) delete pg.key();
+        if (nullptr != pg.value()) delete pg.value();
+    }
+    m_widget_list->clear();
+    m_list_widget->clear();
+    m_progress_list->clear();
+    m_progress_size = 0;
+    hide();
+}
+
 ProgressBar *FileOperationProgressBar::addFileOperation()
 {
     ProgressBar* proc = new ProgressBar;
@@ -145,7 +158,9 @@ FileOperationProgressBar::FileOperationProgressBar(QWidget *parent) : QWidget(pa
         for (auto pg = m_widget_list->constBegin(); pg != m_widget_list->constEnd(); ++pg) {
             Q_EMIT pg.value()->cancelled();
         }
+        Q_EMIT canceled();
     });
+
     connect(m_other_progressbar, &OtherButton::clicked, this, &FileOperationProgressBar::showWidgetList);
     connect(m_list_widget, &QListWidget::itemClicked, this, &FileOperationProgressBar::mainProgressChange);
 
