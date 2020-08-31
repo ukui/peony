@@ -34,6 +34,7 @@ class SideBarModel;
 
 class PEONYCORESHARED_EXPORT SideBarAbstractItem : public QObject
 {
+    friend class SideBarFileSystemItem;
     friend class SideBarModel;
     Q_OBJECT
 public:
@@ -80,6 +81,8 @@ public Q_SLOTS:
     virtual void eject() = 0;
     virtual void unmount() = 0;
     virtual void format() = 0;
+
+    virtual void ejectOrUnmount() {}
 
     virtual void findChildren() = 0;
     virtual void findChildrenAsync() = 0;

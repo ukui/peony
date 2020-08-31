@@ -45,10 +45,14 @@
 
 #include <QUrl>
 
+#include "generic-thumbnailer.h"
+#include <gio/gdesktopappinfo.h>
+
 using namespace Peony;
 
 BasicPropertiesPage::BasicPropertiesPage(const QStringList &uris, QWidget *parent) : QWidget(parent)
 {
+    //qDebug() << "BasicPropertiesPage:" <<uris.count() <<uris.first();
     if (uris.count() == 1) {
         m_watcher = std::make_shared<FileWatcher>(uris.first());
         m_watcher->connect(m_watcher.get(), &FileWatcher::locationChanged, this, &BasicPropertiesPage::onSingleFileChanged);
@@ -184,15 +188,40 @@ void BasicPropertiesPage::addSeparator()
     m_layout->addWidget(separator);
 }
 
+QIcon generateThumbnail(const QString &uri)
+{
+    QUrl url = uri;
+    if (! uri.startsWith("file:///")) {
+        url = FileUtils::getTargetUri(uri);
+    }
+
+    auto _desktop_file = g_desktop_app_info_new_from_filename(url.path().toUtf8().constData());
+    auto _icon_string = g_desktop_app_info_get_string(_desktop_file, "Icon");
+    QIcon thumbnail = QIcon::fromTheme(_icon_string);
+    QString string = _icon_string;
+    if (thumbnail.isNull() && string.startsWith("/")) {
+        thumbnail = GenericThumbnailer::generateThumbnail(_icon_string, true);
+    }
+    qDebug() <<"BasicPropertiesPage generateThumbnail thumbnail:" <<thumbnail <<_icon_string;
+    g_free(_icon_string);
+    g_object_unref(_desktop_file);
+
+    return thumbnail;
+}
+
 void BasicPropertiesPage::onSingleFileChanged(const QString &oldUri, const QString &newUri)
 {
-    qDebug()<<oldUri<<newUri;
+    qDebug()<<"onSingleFileChanged:"<<oldUri<<newUri;
     m_info = FileInfo::fromUri(newUri, false);
     FileInfoJob *j = new FileInfoJob(m_info);
     j->setAutoDelete();
     this->connect(j, &FileInfoJob::infoUpdated, [=]() {
         auto icon = QIcon::fromTheme(m_info->iconName(), QIcon::fromTheme("text-x-generic"));
         auto thumbnail = ThumbnailManager::getInstance()->tryGetThumbnail(m_info->uri());
+        if (thumbnail.isNull())
+            thumbnail = generateThumbnail(m_info->uri());
+
+        //qDebug() << "infoupdate set Icon:" <<thumbnail.isNull() <<thumbnail;
         m_icon->setIcon(thumbnail.isNull()? icon: thumbnail);
         m_display_name->setText(m_info->displayName());
         m_type->setText(m_info->fileType());
@@ -200,6 +229,11 @@ void BasicPropertiesPage::onSingleFileChanged(const QString &oldUri, const QStri
     j->queryAsync();
     auto icon = QIcon::fromTheme(m_info->iconName(), QIcon::fromTheme("text-x-generic"));
     auto thumbnail = ThumbnailManager::getInstance()->tryGetThumbnail(m_info->uri());
+    if (thumbnail.isNull())
+    {
+        thumbnail = generateThumbnail(m_info->uri());
+    }
+    //qDebug() << "set Icon:" <<thumbnail.isNull() <<thumbnail;
     m_icon->setIcon(thumbnail.isNull()? icon: thumbnail);
     QUrl url = FileUtils::getParentUri(m_info->uri());
     m_location->setText(url.toDisplayString());

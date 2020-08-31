@@ -27,6 +27,8 @@
 #include <QHash>
 #include <QSettings>
 
+#include <peony-core_global.h>
+
 namespace Peony {
 
 class DirectoryViewIface;
@@ -36,7 +38,7 @@ class DirectoryViewWidget;
 
 class GlobalSettings;
 
-class DirectoryViewFactoryManager2 : public QObject
+class PEONYCORESHARED_EXPORT DirectoryViewFactoryManager2 : public QObject
 {
     Q_OBJECT
 public:

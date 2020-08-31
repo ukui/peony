@@ -37,7 +37,7 @@ class FileLaunchAction;
  * \todo
  * support open multi-files.
  */
-class FileLaunchManager : public QObject
+class PEONYCORESHARED_EXPORT FileLaunchManager : public QObject
 {
     Q_OBJECT
 public:

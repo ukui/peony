@@ -33,7 +33,7 @@ class QMenu;
 
 namespace Peony {
 
-class PEONYCORESHARED_EXPORT LocationBar : public QWidget
+class LocationBar : public QWidget
 {
     Q_OBJECT
 public:

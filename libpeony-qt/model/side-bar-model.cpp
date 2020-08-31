@@ -193,7 +193,7 @@ QVariant SideBarModel::data(const QModelIndex &index, int role) const
 
     SideBarAbstractItem *item = static_cast<SideBarAbstractItem*>(index.internalPointer());
     if (index.column() == 1) {
-        if (role == Qt::DecorationRole && item->isMounted())
+        if (role == Qt::DecorationRole && (item->isMounted()||item->isEjectable()))
             return QVariant(QIcon::fromTheme("media-eject"));
         else {
             return QVariant();

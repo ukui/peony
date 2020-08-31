@@ -70,6 +70,10 @@ IconView::IconView(QWidget *parent) : QListView(parent)
     //FIXME: do not create proxy in view itself.
     IconViewDelegate *delegate = new IconViewDelegate(this);
     setItemDelegate(delegate);
+    connect(delegate, &IconViewDelegate::isEditing, this, [=](const bool &editing)
+    {
+        m_delegate_editing = editing;
+    });
 
     setSelectionMode(QListView::ExtendedSelection);
     setEditTriggers(QListView::NoEditTriggers);
@@ -508,7 +512,8 @@ void IconView::editUri(const QString &uri)
     setIndexWidget(m_sort_filter_proxy_model->indexFromUri(origin), nullptr);
     qDebug() <<"editUri:" <<uri <<origin;
     QListView::scrollTo(m_sort_filter_proxy_model->indexFromUri(origin));
-    edit(m_sort_filter_proxy_model->indexFromUri(origin));
+    if (! m_delegate_editing)
+        edit(m_sort_filter_proxy_model->indexFromUri(origin));
 }
 
 void IconView::editUris(const QStringList uris)

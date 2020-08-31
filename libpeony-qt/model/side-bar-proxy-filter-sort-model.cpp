@@ -24,6 +24,8 @@
 #include "side-bar-abstract-item.h"
 #include "side-bar-model.h"
 
+#include "file-utils.h"
+
 #include <QDebug>
 
 using namespace Peony;
@@ -51,11 +53,14 @@ bool SideBarProxyFilterSortModel::filterAcceptsRow(int sourceRow, const QModelIn
     if (item->type() == SideBarAbstractItem::FileSystemItem) {
         if (sourceParent.data(Qt::UserRole).toString() == "computer:///") {
             if (item->uri() != "computer:///root.link") {
+                if (item->isMounted())
+                    return true;
+                if (item->isRemoveable() && item->isMountable()) {
+                    return true;
+                }
                 if (!item->isRemoveable() && !item->isEjectable())
                     return true;
-                if (/*!item->isMountable() || */!item->isMounted()) {
-                    return false;
-                }
+                return false;
             }
         }
     }

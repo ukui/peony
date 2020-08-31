@@ -32,6 +32,7 @@
 #include "thumbnail-manager.h"
 
 #include "gerror-wrapper.h"
+#include "bookmark-manager.h"
 
 #include <QDebug>
 #include <QStandardPaths>
@@ -241,6 +242,12 @@ void FileItem::findChildrenAsync()
                 Q_EMIT this->childAdded(uri);
             });
             connect(m_watcher.get(), &FileWatcher::fileDeleted, this, [=](QString uri) {
+                //check bookmark and delete
+                auto info = FileInfo::fromUri(uri, false);
+                if (info->isDir())
+                {
+                    BookMarkManager::getInstance()->removeBookMark(uri);
+                }
                 //remove the crosponding child
                 //tell the model update
                 this->onChildRemoved(uri);
@@ -332,6 +339,12 @@ void FileItem::findChildrenAsync()
                 ThumbnailManager::getInstance()->createThumbnail(uri, m_watcher);
             });
             connect(m_watcher.get(), &FileWatcher::fileDeleted, this, [=](QString uri) {
+                //check bookmark and delete
+                auto info = FileInfo::fromUri(uri, false);
+                if (info->isDir())
+                {
+                    BookMarkManager::getInstance()->removeBookMark(uri);
+                }
                 //remove the crosponding child
                 //tell the model update
                 this->onChildRemoved(uri);
