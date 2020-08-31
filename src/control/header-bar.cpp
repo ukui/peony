@@ -48,6 +48,7 @@
 #include <QTimer>
 
 #include <KWindowSystem>
+#include <QGSettings/QGSettings>
 
 #include <QDebug>
 
@@ -573,6 +574,30 @@ void TopMenuBar::addWindowButtons()
         auto w = layout->itemAt(i)->widget();
         w->setProperty("useIconHighlightEffect", true);
         w->setProperty("iconHighlightEffectMode", 1);
+    }
+    if(QGSettings::isSchemaInstalled("org.ukui.SettingsDaemon.plugins.tablet-mode"))
+    {
+        m_tablet_mode = new QGSettings("org.ukui.SettingsDaemon.plugins.tablet-mode");
+        if(m_tablet_mode->get("tablet-mode").toBool())
+        {
+           minimize->hide();
+           maximizeAndRestore->hide();
+           close->hide();
+        }
+        connect(m_tablet_mode,&QGSettings::changed,[=](){
+        if(m_tablet_mode->get("tablet-mode").toBool())
+        {
+           minimize->hide();
+           maximizeAndRestore->hide();
+           close->hide();
+        }
+        else
+        {
+            minimize->setVisible(true);
+            maximizeAndRestore->setVisible(true);
+            close->setVisible(true);
+        }
+    });
     }
 }
 

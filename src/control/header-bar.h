@@ -28,6 +28,7 @@
 #include <QPushButton>
 #include <QProxyStyle>
 #include <QMenuBar>
+#include <QGSettings/QGSettings>
 
 class MainWindow;
 class ViewTypeMenu;
@@ -158,6 +159,7 @@ private:
     QHBoxLayout *m_top_menu_layout;
     MainWindow *m_window;
     QToolButton *m_max_or_restore = nullptr;
+    QGSettings *m_tablet_mode;
 };
 
 #endif // HEADERBAR_H
