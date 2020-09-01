@@ -33,6 +33,7 @@ class NavigationSideBar;
 class TabWidget;
 class QWidgetResizeHandler;
 class QStackedWidget;
+class QGSettins;
 
 namespace Peony {
 class DirectoryViewContainer;

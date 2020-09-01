@@ -81,6 +81,7 @@
 #define BACKGROUND_SETTINGS "org.mate.background"
 #define PICTRUE "picture-filename"
 #define FALLBACK_COLOR "primary-color"
+#define FONT_SETTINGS "org.ukui.style"
 
 using namespace Peony;
 
@@ -202,6 +203,18 @@ void DesktopWindow::initGSettings() {
         }
         return;
     }
+
+    //font monitor
+    QGSettings *fontSetting = new QGSettings(FONT_SETTINGS, QByteArray(), this);
+    connect(fontSetting, &QGSettings::changed, this, [=](const QString &key){
+        qDebug() << "fontSetting changed:" << key;
+        if (key == "systemFont" || key == "systemFontSize")
+        {
+            QFont font = this->font();
+            for(auto widget : qApp->allWidgets())
+                widget->setFont(font);
+        }
+    });
 
     m_bg_settings = new QGSettings(BACKGROUND_SETTINGS, QByteArray(), this);
 

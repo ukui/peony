@@ -89,6 +89,12 @@
 #include <X11/Xlib.h>
 #include <KWindowEffects>
 
+// NOTE build failed on Archlinux. Can't detect `QGSettings/QGSettings' header
+// fixed by replaced `QGSettings/QGSettings' with `QGSettings'
+#include <QGSettings>
+
+#define FONT_SETTINGS "org.ukui.style"
+
 static MainWindow *last_resize_window = nullptr;
 
 MainWindow::MainWindow(const QString &uri, QWidget *parent) : QMainWindow(parent)
@@ -246,6 +252,18 @@ void MainWindow::checkSettings()
     m_show_hidden_file = settings->isExist("show-hidden")? settings->getValue("show-hidden").toBool(): false;
     m_use_default_name_sort_order = settings->isExist("chinese-first")? settings->getValue("chinese-first").toBool(): false;
     m_folder_first = settings->isExist("folder-first")? settings->getValue("folder-first").toBool(): true;
+
+    //font monitor
+    QGSettings *fontSetting = new QGSettings(FONT_SETTINGS, QByteArray(), this);
+    connect(fontSetting, &QGSettings::changed, this, [=](const QString &key){
+        qDebug() << "fontSetting changed:" << key;
+        if (key == "systemFont" || key == "systemFontSize")
+        {
+            QFont font = this->font();
+            for(auto widget : qApp->allWidgets())
+                widget->setFont(font);
+        }
+    });
 }
 
 void MainWindow::setShortCuts()
