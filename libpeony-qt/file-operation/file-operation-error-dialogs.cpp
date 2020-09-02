@@ -45,14 +45,14 @@ Peony::FileOperationErrorDialogConflict::FileOperationErrorDialogConflict(FileOp
 
     m_file_label1 = new FileInformationLabel(this);
     m_file_label1->setOpName(tr("Replace"));
-    m_file_label1->setPixmap(QIcon::fromTheme("ukui_replace_doc").pixmap(m_file_label1->getIconSize(), m_file_label1->getIconSize()));
+    m_file_label1->setPixmap(QIcon::fromTheme("ukui-replace-doc").pixmap(m_file_label1->getIconSize(), m_file_label1->getIconSize()));
 
 
     m_file_label1->setGeometry(m_margin_lr, m_file_info1_top, width() - 2 * m_margin_lr, m_file_info_height);
 
     m_file_label2 = new FileInformationLabel(this);
     m_file_label2->setOpName(tr("Ignore"));
-    m_file_label2->setPixmap(QIcon::fromTheme("ukui_ellipsis_doc").pixmap(m_file_label1->getIconSize(), m_file_label1->getIconSize()));
+    m_file_label2->setPixmap(QIcon::fromTheme("ukui-ellipsis-doc").pixmap(m_file_label1->getIconSize(), m_file_label1->getIconSize()));
 
     m_file_label2->setGeometry(m_margin_lr, m_file_info2_top, width() - 2 * m_margin_lr, m_file_info_height);
 
@@ -92,6 +92,12 @@ Peony::FileOperationErrorDialogConflict::FileOperationErrorDialogConflict(FileOp
         m_is_replace = false;
         m_file_label2->setActive(true);
         m_file_label1->setActive(false);
+    });
+    connect(m_file_label1, &FileInformationLabel::choosed, [=]() {
+        done (QDialog::Accepted);
+    });
+    connect(m_file_label2, &FileInformationLabel::choosed, [=]() {
+        done (QDialog::Accepted);
     });
     connect(m_ck_box, &QCheckBox::clicked, [=](bool chose) {
         m_do_same_operation = chose;
@@ -306,6 +312,12 @@ void Peony::FileInformationLabel::mousePressEvent(QMouseEvent *event)
 {
     Q_EMIT active();
     Q_UNUSED(event);
+}
+
+void Peony::FileInformationLabel::mouseDoubleClickEvent(QMouseEvent *event)
+{
+    Q_EMIT active();
+    Q_EMIT choosed();
 }
 
 Peony::FileOperationErrorHandler *Peony::FileOperationErrorDialogFactory::getDialog(Peony::FileOperationError &errInfo)
