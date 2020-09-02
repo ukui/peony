@@ -262,7 +262,7 @@ void FileItem::findChildrenAsync()
                         m_model->dataChanged(m_model->indexFromUri(uri), m_model->indexFromUri(uri));
                         auto info = FileInfo::fromUri(uri);
                         if (info->isDesktopFile()) {
-                            ThumbnailManager::getInstance()->updateDesktopFileThumbnail(info->uri(), m_watcher);
+                            ThumbnailManager::getInstance()->updateDesktopFileThumbnail(info->uri(), m_thumbnail_watcher);
                         }
                     });
                     infoJob->queryAsync();
@@ -315,7 +315,7 @@ void FileItem::findChildrenAsync()
                 infoJob->connect(infoJob, &FileInfoJob::infoUpdated, this, [=]() {
                     Q_EMIT m_model->dataChanged(item->firstColumnIndex(), item->lastColumnIndex());
                     //Q_EMIT m_model->updated();
-                    ThumbnailManager::getInstance()->createThumbnail(info->uri(), m_watcher);
+                    ThumbnailManager::getInstance()->createThumbnail(info->uri(), m_thumbnail_watcher);
                 });
                 infoJob->queryAsync();
             }
@@ -336,7 +336,7 @@ void FileItem::findChildrenAsync()
                 //tell the model update
                 this->onChildAdded(uri);
                 Q_EMIT this->childAdded(uri);
-                ThumbnailManager::getInstance()->createThumbnail(uri, m_watcher);
+                ThumbnailManager::getInstance()->createThumbnail(uri, m_thumbnail_watcher);
             });
             connect(m_watcher.get(), &FileWatcher::fileDeleted, this, [=](QString uri) {
                 //check bookmark and delete
