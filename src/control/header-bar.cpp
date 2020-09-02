@@ -480,7 +480,7 @@ TopMenuBar::TopMenuBar(MainWindow *parent) : QMenuBar(parent)
                   "border: 0px solid transparent"
                   "}");
 
-    setFixedHeight(48);
+    setFixedHeight(42);
 
     m_top_menu_layout = new QHBoxLayout(this);
     m_top_menu_layout->setSpacing(0);
@@ -506,6 +506,11 @@ void TopMenuBar::addWindowButtons()
     minimize->setAutoRaise(false);
     minimize->setFixedSize(QSize(40, 40));
     minimize->setIconSize(QSize(16, 16));
+    minimize->setStyleSheet(".QToolButton"
+                  "{"
+                  "background-color: transparent;"
+                  "border: 0px solid transparent"
+                  "}");
     connect(minimize, &QToolButton::clicked, this, [=]() {
         KWindowSystem::minimizeWindow(m_window->winId());
         m_window->showMinimized();
@@ -519,6 +524,11 @@ void TopMenuBar::addWindowButtons()
     maximizeAndRestore->setAutoRaise(false);
     maximizeAndRestore->setFixedSize(QSize(40, 40));
     maximizeAndRestore->setIconSize(QSize(16, 16));
+    maximizeAndRestore->setStyleSheet(".QToolButton"
+                  "{"
+                  "background-color: transparent;"
+                  "border: 0px solid transparent"
+                  "}");
     connect(maximizeAndRestore, &QToolButton::clicked, this, [=]() {
         m_window->maximizeOrRestore();
 
@@ -539,6 +549,11 @@ void TopMenuBar::addWindowButtons()
     close->setAutoRaise(false);
     close->setFixedSize(QSize(40, 40));
     close->setIconSize(QSize(16, 16));
+    close->setStyleSheet(".QToolButton"
+                  "{"
+                  "background-color: transparent;"
+                  "border: 0px solid transparent"
+                  "}");
     connect(close, &QToolButton::clicked, this, [=]() {
         m_window->close();
     });
@@ -553,12 +568,6 @@ void TopMenuBar::addWindowButtons()
         minimize->hide();
         maximizeAndRestore->hide();
         close->hide();
-    }
-    else
-    {
-        minimize->setVisible(true);
-        maximizeAndRestore->setVisible(true);
-        close->setVisible(true);
     }
     connect(qApp, &QApplication::paletteChanged, close, [=](){
         m_tablet_mode = Peony::GlobalSettings::getInstance()->getValue(TABLET_MODE).toBool();

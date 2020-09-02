@@ -1078,7 +1078,7 @@ void TabWidget::resizeEvent(QResizeEvent *e)
 
 void TabWidget::updateTabBarGeometry()
 {
-    m_tab_bar->setGeometry(0, 0, this->width()-136,48);
+    m_tab_bar->setGeometry(0, 1, this->width()-136,48);
 //    m_tab_bar_bg->setFixedHeight(m_tab_bar->height());
     m_tab_bar->raise();
 }
