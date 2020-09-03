@@ -265,8 +265,11 @@ void TabWidget::initAdvanceSearch()
     childButton->setIcon(QIcon(":/custom/icons/child-folder"));
     childButton->setToolTip(tr("Search recursively"));
     connect(childButton, &QPushButton::clicked, this, &TabWidget::searchChildUpdate);
-    //default select recursive
-    searchChildUpdate();
+    //set default select recursive
+    m_search_child_flag = true;
+    m_search_child->setCheckable(m_search_child_flag);
+    m_search_child->setChecked(m_search_child_flag);
+    m_search_child->setDown(m_search_child_flag);;
 
     QPushButton *moreButton = new QPushButton(tr("more options"),searchButtons);
     m_search_more = moreButton;
@@ -299,36 +302,30 @@ void TabWidget::initAdvanceSearch()
 //search conditions changed, update filter
 void TabWidget::searchUpdate()
 {
-    QString keyList = "";
-    for(int i=0; i<m_layout_list.count(); i++)
+    qDebug() <<"searchUpdate:" <<m_search_child_flag;
+    auto currentUri = getCurrentUri();
+    if (! currentUri.startsWith("search:///"))
     {
-        //find name search bar
-        if (m_conditions_list[i]->currentIndex() == 0 && m_input_list[i]->text() != "")
-        {
-            if (keyList == "")
-                keyList = m_input_list[i]->text();
-            else
-                keyList += "," + m_input_list[i]->text();
-        }
+        qDebug() << "searchUpdate is not in search path";
+        return;
     }
 
-    qDebug() <<"keyList:" <<keyList <<m_last_non_search_path;
-    if (keyList != "")
+    QString targetUri = currentUri;
+    if (m_search_child_flag)
     {
-        if (m_last_non_search_path == "")
-            m_last_non_search_path = getCurrentUri();
-        auto targetUri = Peony::SearchVFSUriParser::parseSearchKey(m_last_non_search_path, "", true, false, keyList, m_search_child_flag);
-        Q_EMIT this->updateWindowLocationRequest(targetUri, false);
-        qDebug() << "searchUpdate" <<m_search_child_flag <<targetUri;;
+        targetUri = currentUri.replace("&recursive=0", "&recursive=1");
     }
     else
-        Q_EMIT this->updateWindowLocationRequest(m_last_non_search_path, false);
+        targetUri = currentUri.replace("&recursive=1", "&recursive=0");
+
+    qDebug() <<"searchUpdate targetUri:" <<targetUri;
+    goToUri(targetUri, false, true);
 }
 
 void TabWidget::searchKeyUpdate()
 {
     qDebug() << "searchKeyUpdate";
-    searchUpdate();
+    //searchUpdate();
 }
 
 void TabWidget::searchChildUpdate()
@@ -470,7 +467,7 @@ void TabWidget::addNewConditionBar()
     });
 
     connect(classifyCombox, &QComboBox::currentTextChanged, this, &TabWidget::updateAdvanceConditions);
-    connect(inputBox, &QLineEdit::textChanged, this, &TabWidget::searchKeyUpdate);
+    connect(inputBox, &QLineEdit::textChanged, this, &TabWidget::updateAdvanceConditions);
     //connect(inputBox, &QLineEdit::returnPressed, this, &TabWidget::searchKeyUpdate);
 
     m_top_layout->insertLayout(m_top_layout->count()-1, layout);
@@ -844,8 +841,6 @@ void TabWidget::addPage(const QString &uri, bool jumpTo)
 void TabWidget::goToUri(const QString &uri, bool addHistory, bool forceUpdate)
 {
     qDebug() << "goToUri:" <<uri;
-    if (! uri.startsWith("search://"))
-        m_last_non_search_path = uri;
     currentPage()->goToUri(uri, addHistory, forceUpdate);
     m_tab_bar->updateLocation(m_tab_bar->currentIndex(), uri);
     updateTrashBarVisible(uri);
@@ -963,10 +958,28 @@ void TabWidget::updateFilter()
 void TabWidget::updateAdvanceConditions()
 {
     clearConditions();
+
+    //get key list for proxy-filter
+    QStringList keyList;
     for(int i=0; i<m_layout_list.count(); i++)
     {
-        addFilterCondition(m_conditions_list[i]->currentIndex(), m_classify_list[i]->currentIndex());
+        QString input = m_input_list[i]->text();
+        if (m_conditions_list[i]->currentIndex() > 0)
+        {
+            addFilterCondition(m_conditions_list[i]->currentIndex(), m_classify_list[i]->currentIndex());
+        }
+        else if(input != "" && ! keyList.contains(input))
+        {
+            keyList.append(input);
+        }
     }
+
+    //update file name filter
+    for(auto key : keyList)
+    {
+       currentPage()->addFileNameFilter(key);
+    }
+
     updateFilter();
 }
 

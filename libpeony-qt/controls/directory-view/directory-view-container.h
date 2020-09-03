@@ -121,6 +121,7 @@ public Q_SLOTS:
     void setFilterLabelConditions(QString name);
 
     //mutiple filter conditions for new advance search
+    void addFileNameFilter(QString key, bool updateNow = false);
     void addFilterCondition(int option, int classify, bool updateNow = false);
     void removeFilterCondition(int option, int classify, bool updateNow = false);
     void clearConditions();

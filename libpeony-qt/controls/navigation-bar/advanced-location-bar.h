@@ -63,6 +63,7 @@ private:
 
     QString m_text;
     QString m_last_non_search_path;
+    QString m_last_key = "";
 };
 
 }
