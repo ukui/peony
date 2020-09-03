@@ -267,6 +267,7 @@ void TabWidget::initAdvanceSearch()
     connect(childButton, &QPushButton::clicked, this, &TabWidget::searchChildUpdate);
     //set default select recursive
     m_search_child_flag = true;
+    Q_EMIT this->searchRecursiveChanged(m_search_child_flag);
     m_search_child->setCheckable(m_search_child_flag);
     m_search_child->setChecked(m_search_child_flag);
     m_search_child->setDown(m_search_child_flag);;
@@ -322,12 +323,6 @@ void TabWidget::searchUpdate()
     goToUri(targetUri, false, true);
 }
 
-void TabWidget::searchKeyUpdate()
-{
-    qDebug() << "searchKeyUpdate";
-    //searchUpdate();
-}
-
 void TabWidget::searchChildUpdate()
 {
     m_search_child_flag = ! m_search_child_flag;
@@ -335,6 +330,8 @@ void TabWidget::searchChildUpdate()
     m_search_child->setChecked(m_search_child_flag);
     m_search_child->setDown(m_search_child_flag);
     searchUpdate();
+
+    Q_EMIT this->searchRecursiveChanged(m_search_child_flag);
 }
 
 void TabWidget::browsePath()
@@ -468,7 +465,6 @@ void TabWidget::addNewConditionBar()
 
     connect(classifyCombox, &QComboBox::currentTextChanged, this, &TabWidget::updateAdvanceConditions);
     connect(inputBox, &QLineEdit::textChanged, this, &TabWidget::updateAdvanceConditions);
-    //connect(inputBox, &QLineEdit::returnPressed, this, &TabWidget::searchKeyUpdate);
 
     m_top_layout->insertLayout(m_top_layout->count()-1, layout);
     m_search_bar_count++;

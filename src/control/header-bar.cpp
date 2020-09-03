@@ -34,6 +34,7 @@
 
 #include "directory-view-factory-manager.h"
 #include "directory-view-plugin-iface2.h"
+#include "search-vfs-uri-parser.h"
 
 #include <QHBoxLayout>
 #include <QUrl>
@@ -133,6 +134,16 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
     });
     connect(m_location_bar, &Peony::AdvancedLocationBar::updateFileTypeFilter, [=](const int &index) {
         m_window->getCurrentPage()->setSortFilter(index);
+    });
+    connect(m_location_bar, &Peony::AdvancedLocationBar::searchRequest, [=](const QString &path, const QString &key){
+        //key is null, clean search content, show all files
+        if (key == "" || key.isNull())
+            Q_EMIT this->updateLocationRequest(path, false);
+        else
+        {
+            auto targetUri = Peony::SearchVFSUriParser::parseSearchKey(path, key, true, false, "", m_search_recursive);
+            Q_EMIT this->updateLocationRequest(targetUri, false);
+        }
     });
 
     connect(m_location_bar, &Peony::AdvancedLocationBar::updateWindowLocationRequest, this, &HeaderBar::updateLocationRequest);
@@ -303,6 +314,11 @@ void HeaderBar::closeSearch()
 {
     m_search_mode = false;
     setSearchMode(false);
+}
+
+void HeaderBar::updateSearchRecursive(bool recursive)
+{
+    m_search_recursive = recursive;
 }
 
 void HeaderBar::addSpacing(int pixel)

@@ -95,6 +95,7 @@ Q_SIGNALS:
     void tabMoved(int from, int to);
     void tabInserted(int index);
     void tabRemoved(int index);
+    void searchRecursiveChanged(bool recursive);
 
     void activePageSelectionChanged();
     void activePageChanged();
@@ -174,7 +175,6 @@ public Q_SLOTS:
     void addNewConditionBar();
     void removeConditionBar(int index);
     void searchUpdate();
-    void searchKeyUpdate();
     void searchChildUpdate();
     void browsePath();
 
