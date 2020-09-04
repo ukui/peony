@@ -51,6 +51,7 @@ RecentAndTrashPropertiesPage::RecentAndTrashPropertiesPage(const QStringList &ur
 
     auto icon = new QPushButton(QIcon::fromTheme(info->iconName()), nullptr, this);
     icon->setIconSize(QSize(48, 48));
+    icon->setProperty("isIcon", true);
     auto name = new QLineEdit(this);
     name->setReadOnly(true);
     name->setText(info->displayName());
