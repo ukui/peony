@@ -169,7 +169,7 @@ void FileItem::findChildrenAsync()
         }
         if (err) {
             qDebug()<<err->message();
-            if (err.get()->code() == G_IO_ERROR_NOT_FOUND) {
+            if (err.get()->code() == G_IO_ERROR_NOT_FOUND || err.get()->code() == G_IO_ERROR_PERMISSION_DENIED) {
                 enumerator->cancel();
                 //enumerator->deleteLater();
                 m_model->setRootUri(FileUtils::getParentUri(this->uri()));
