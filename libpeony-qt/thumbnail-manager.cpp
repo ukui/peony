@@ -29,7 +29,8 @@
 #include "file-utils.h"
 
 #include "thumbnail/pdf-thumbnail.h"
-
+#include "thumbnail/video-thumbnail.h"
+#include "thumbnail/office-thumbnail.h"
 #include "generic-thumbnailer.h"
 #include "thumbnail-job.h"
 
@@ -99,112 +100,176 @@ void ThumbnailManager::setForbidThumbnailInView(bool forbid)
     GlobalSettings::getInstance()->setValue("do-not-thumbnail", forbid);
 }
 
+void ThumbnailManager::createVideFileThumbnail(const QString &uri, std::shared_ptr<FileWatcher> watcher)
+{
+    QIcon thumbnail;
+
+    VideoThumbnail videoThumbnail(uri);
+    thumbnail = videoThumbnail.generateThumbnail();
+    if (!thumbnail.isNull())
+    {
+        insertOrUpdateThumbnail(uri, thumbnail);
+        if (watcher)
+        {
+            watcher->fileChanged(uri);
+        }
+    }
+
+    return;
+}
+void ThumbnailManager::createPdfFileThumbnail(const QString &uri, std::shared_ptr<FileWatcher> watcher)
+{
+    QIcon thumbnail;
+    QUrl url = uri;
+
+    if (!uri.startsWith("file:///")) {
+        url = FileUtils::getTargetUri(uri);
+        qDebug()<<url;
+    }
+
+    PdfThumbnail pdfThumbnail(url.path());
+    QPixmap pix = pdfThumbnail.generateThumbnail();
+
+    thumbnail = GenericThumbnailer::generateThumbnail(pix, true);
+    if (!thumbnail.isNull())
+    {
+        insertOrUpdateThumbnail(uri, thumbnail);
+        if (watcher)
+        {
+            watcher->fileChanged(uri);
+        }
+    }
+
+    return;
+}
+void ThumbnailManager::createImageFileThumbnail(const QString &uri, std::shared_ptr<FileWatcher> watcher)
+{
+    QUrl url = uri;
+
+    if (!uri.startsWith("file:///")) {
+        url = FileUtils::getTargetUri(uri);
+        qDebug()<<url;
+    }
+
+    QIcon thumbnail = GenericThumbnailer::generateThumbnail(url.path(), true);
+    if (!thumbnail.isNull())
+    {
+        insertOrUpdateThumbnail(uri, thumbnail);
+        if (watcher)
+        {
+            watcher->fileChanged(uri);
+        }
+    }
+
+    qApp->processEvents();
+    return;
+}
+
+void ThumbnailManager::createOfficeFileThumbnail(const QString &uri, std::shared_ptr<FileWatcher> watcher)
+{
+    QIcon thumbnail;
+
+    OfficeThumbnail officeThumbnail(uri);
+    thumbnail = officeThumbnail.generateThumbnail();;
+    if (!thumbnail.isNull())
+    {
+        insertOrUpdateThumbnail(uri, thumbnail);
+        if (watcher)
+        {
+            watcher->fileChanged(uri);
+        }
+    }
+
+    return;
+}
+
+void ThumbnailManager::createDesktopFileThumbnail(const QString &uri, std::shared_ptr<FileWatcher> watcher)
+{
+    QIcon thumbnail;
+    QUrl url = uri;
+
+    if (!uri.startsWith("file:///"))
+    {
+        url = FileUtils::getTargetUri(uri);
+        qDebug()<<url;
+    }
+
+    auto _desktop_file = g_desktop_app_info_new_from_filename(url.path().toUtf8().constData());
+    if (!_desktop_file)
+    {
+        return;
+    }
+
+    auto _icon_string = g_desktop_app_info_get_string(_desktop_file, "Icon");
+    thumbnail = QIcon::fromTheme(_icon_string);
+    qDebug()<<_icon_string;
+    QString string = _icon_string;
+
+    if (thumbnail.isNull() && string.startsWith("/"))
+    {
+        qDebug()<<"add file";
+        QIcon thumbnail = GenericThumbnailer::generateThumbnail(_icon_string, true);
+    }
+    g_free(_icon_string);
+    g_object_unref(_desktop_file);
+
+    if (!thumbnail.isNull())
+    {
+        insertOrUpdateThumbnail(uri, thumbnail);
+        if (watcher)
+        {
+            watcher->fileChanged(uri);
+        }
+    }
+
+    return;
+}
+
 void ThumbnailManager::createThumbnailInternal(const QString &uri, std::shared_ptr<FileWatcher> watcher, bool force)
 {
     auto settings = GlobalSettings::getInstance();
-    if (settings->isExist("do-not-thumbnail")) {
+    if (settings->isExist("do-not-thumbnail"))
+    {
         bool do_not_thumbnail = settings->getValue("do-not-thumbnail").toBool();
-        if (do_not_thumbnail && !force) {
+        if (do_not_thumbnail && !force)
+        {
+            qDebug()<<"setting is not thumbnail";
             return;
         }
     }
-    //qDebug()<<"create thumbnail"<<uri;
+
     //NOTE: we should do createThumbnail() after we have queried the file's info.
     auto info = FileInfo::fromUri(uri);
-    if (!info->mimeType().isEmpty()) {
-        if (info->mimeType().startsWith("image/")) {
-            QUrl url = uri;
-            qDebug()<<url;
-            if (!info->uri().startsWith("file:///")) {
-                url = FileUtils::getTargetUri(info->uri());
-                qDebug()<<url;
-            }
-            QIcon thumbnail = GenericThumbnailer::generateThumbnail(url.path(), true);
-            //thumbnail.addFile(url.path());
-            if (!thumbnail.isNull()) {
-                //add lock
-                //m_mutex.lock();
-                //m_hash.remove(uri);
-                //m_hash.insert(uri, thumbnail);
-                insertOrUpdateThumbnail(uri, thumbnail);
-                auto info = FileInfo::fromUri(uri);
-                //Q_EMIT info->updated();
-                if (watcher) {
-                    watcher->fileChanged(uri);
-                }
-                //info->setThumbnail(thumbnail);
-                //m_mutex.unlock();
-            }
-            qApp->processEvents();
-        } else if (info->mimeType().contains("pdf")) {
-            QUrl url = uri;
-            qDebug()<<url;
-            if (!info->uri().startsWith("file:///")) {
-                url = FileUtils::getTargetUri(info->uri());
-                qDebug()<<url;
-            }
-            PdfThumbnail pdfThumbnail(info->uri());
-            QIcon thumbnail;
-            QPixmap pix = pdfThumbnail.generateThumbnail();
-            thumbnail = GenericThumbnailer::generateThumbnail(pix, true);
-            //thumbnail.addFile(url.path());
-            if (!thumbnail.isNull()) {
-                //add lock
-                //m_mutex.lock();
-                //m_hash.remove(uri);
-                //m_hash.insert(uri, thumbnail);
-                insertOrUpdateThumbnail(uri, thumbnail);
-                auto info = FileInfo::fromUri(uri);
-                //Q_EMIT info->updated();
-                if (watcher) {
-                    watcher->fileChanged(uri);
-                }
-                //info->setThumbnail(thumbnail);
-                //m_mutex.unlock();
-            }
-        } else if (info->isDesktopFile()) {
-            qDebug()<<"is desktop file"<<uri;
-            //get desktop file icon.
-            //async
-            qDebug()<<"desktop file"<<uri;
-            QIcon thumbnail;
-            QUrl url = uri;
-            qDebug()<<url;
-            if (!info->uri().startsWith("file:///")) {
-                url = FileUtils::getTargetUri(info->uri());
-                qDebug()<<url;
-            }
+    qDebug()<<"file uri:"<< uri << " mime type:" << info->mimeType();
+    qDebug()<<"file path:" << info->filePath();
+    qDebug()<<"file modify time:" << info->modifiedTime();
 
-            auto _desktop_file = g_desktop_app_info_new_from_filename(url.path().toUtf8().constData());
-            if (!_desktop_file) {
-                return;
-            }
-            auto _icon_string = g_desktop_app_info_get_string(_desktop_file, "Icon");
-            thumbnail = QIcon::fromTheme(_icon_string);
-            qDebug()<<_icon_string;
-            QString string = _icon_string;
-            if (thumbnail.isNull() && string.startsWith("/")) {
-                qDebug()<<"add file";
-                QIcon thumbnail = GenericThumbnailer::generateThumbnail(_icon_string, true);
-                //thumbnail.addFile(_icon_string);
-            }
-            g_free(_icon_string);
-            g_object_unref(_desktop_file);
-
-            if (!thumbnail.isNull()) {
-                //add lock
-                //m_mutex.lock();
-                //m_hash.remove(uri);
-                //m_hash.insert(uri, thumbnail);
-                insertOrUpdateThumbnail(uri, thumbnail);
-                auto info = FileInfo::fromUri(uri);
-                //Q_EMIT info->updated();
-                if (watcher) {
-                    watcher->fileChanged(uri);
-                }
-                //info->setThumbnail(thumbnail);
-                //m_mutex.unlock();
-            }
+    if (!info->mimeType().isEmpty())
+    {
+        if (info->isImageFile())
+        {
+            createImageFileThumbnail(uri, watcher);
+        }
+        else if (info->mimeType().contains("pdf"))
+        {
+            createPdfFileThumbnail(uri, watcher);
+        }
+        else if(info->isVideoFile())
+        {
+            createVideFileThumbnail(uri, watcher);
+        }
+        else if (info->isOfficeFile())
+        {
+            createOfficeFileThumbnail(uri, watcher);
+        }
+        else if (info->isDesktopFile())
+        {
+            createDesktopFileThumbnail(uri, watcher);
+        }
+        else
+        {
+            qDebug()<<"the file type: " << info->mimeType();
+            qDebug()<<"the mime type can not generate thumbnail.";
         }
     }
 }
@@ -257,41 +322,7 @@ void ThumbnailManager::updateDesktopFileThumbnail(const QString &uri, std::share
         //async
         qDebug()<<"desktop file"<<uri;
         QtConcurrent::run([=]() {
-            QIcon thumbnail;
-            QUrl url = uri;
-            qDebug()<<url;
-            if (!info->uri().startsWith("file:///")) {
-                url = FileUtils::getTargetUri(info->uri());
-                qDebug()<<url;
-            }
-
-            auto _desktop_file = g_desktop_app_info_new_from_filename(url.path().toUtf8().constData());
-            auto _icon_string = g_desktop_app_info_get_string(_desktop_file, "Icon");
-            thumbnail = QIcon::fromTheme(_icon_string);
-            qDebug()<<_icon_string;
-            QString string = _icon_string;
-            if (thumbnail.isNull() && string.startsWith("/")) {
-                qDebug()<<"add file";
-                QIcon thumbnail = GenericThumbnailer::generateThumbnail(_icon_string, true);
-                //thumbnail.addFile(_icon_string);
-            }
-            g_free(_icon_string);
-            g_object_unref(_desktop_file);
-
-            if (!thumbnail.isNull()) {
-                //add lock
-                //m_mutex.lock();
-                //m_hash.remove(uri);
-                //m_hash.insert(uri, thumbnail);
-                insertOrUpdateThumbnail(uri, thumbnail);
-                auto info = FileInfo::fromUri(uri);
-                //Q_EMIT info->updated();
-                if (watcher) {
-                    watcher->thumbnailUpdated(uri);
-                }
-                //info->setThumbnail(thumbnail);
-                //m_mutex.unlock();
-            }
+            createDesktopFileThumbnail(uri, watcher);
         });
     } else {
         releaseThumbnail(uri);
@@ -303,19 +334,15 @@ void ThumbnailManager::updateDesktopFileThumbnail(const QString &uri, std::share
 
 void ThumbnailManager::releaseThumbnail(const QString &uri)
 {
-    //m_mutex.lock();
     m_semaphore->acquire();
     m_hash.remove(uri);
     m_semaphore->release();
-    //m_mutex.unlock();
 }
 
 const QIcon ThumbnailManager::tryGetThumbnail(const QString &uri)
 {
-    //m_mutex.lock();
     m_semaphore->acquire();
     auto icon = m_hash.value(uri);
     m_semaphore->release();
-    //m_mutex.unlock();
     return icon;
 }
