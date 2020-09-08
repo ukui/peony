@@ -356,9 +356,9 @@ const QList<QAction *> DesktopMenu::constructViewOpActions()
 
         QList<QAction *> tmp;
         tmp<<sortTypeMenu->addAction(tr("Name"));
+        tmp<<sortTypeMenu->addAction(tr("Modified Date"));
         tmp<<sortTypeMenu->addAction(tr("File Type"));
         tmp<<sortTypeMenu->addAction(tr("File Size"));
-        tmp<<sortTypeMenu->addAction(tr("Modified Date"));
 
         int sortType = m_view->getSortType();
         qDebug() << "sortType:" <<sortType <<tmp.count();
