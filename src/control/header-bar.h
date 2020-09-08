@@ -51,9 +51,6 @@ public:
 
     void addHeaderBar(HeaderBar *headerBar);
 
-protected:
-    void addWindowButtons();
-
 private:
     QWidget *m_internal_widget;
     QHBoxLayout *m_layout;
@@ -158,6 +155,7 @@ private:
     QHBoxLayout *m_top_menu_layout;
     MainWindow *m_window;
     QToolButton *m_max_or_restore = nullptr;
+    bool m_tablet_mode;
 };
 
 #endif // HEADERBAR_H

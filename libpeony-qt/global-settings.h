@@ -38,6 +38,7 @@
 #define ALLOW_FILE_OP_PARALLEL "allow-file-op-parallel"
 #define DEFAULT_WINDOW_SIZE "default-window-size"
 #define DEFAULT_SIDEBAR_WIDTH "default-sidebar-width"
+#define TABLET_MODE "tablet-mode"
 
 #define DEFAULT_VIEW_ID "directory-view/default-view-id"
 #define DEFAULT_VIEW_ZOOM_LEVEL "directory-view/default-view-zoom-level"
@@ -92,6 +93,7 @@ private:
     QMap<QString, QVariant> m_cache;
 
     QGSettings *m_gsettings = nullptr;
+    QGSettings *m_gsettings_tablet_mode;
 
     QMutex m_mutex;
 };
