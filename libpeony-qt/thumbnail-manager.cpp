@@ -106,11 +106,9 @@ void ThumbnailManager::createVideFileThumbnail(const QString &uri, std::shared_p
 
     VideoThumbnail videoThumbnail(uri);
     thumbnail = videoThumbnail.generateThumbnail();
-    if (!thumbnail.isNull())
-    {
+    if (!thumbnail.isNull()) {
         insertOrUpdateThumbnail(uri, thumbnail);
-        if (watcher)
-        {
+        if (watcher) {
             watcher->fileChanged(uri);
         }
     }
@@ -131,11 +129,9 @@ void ThumbnailManager::createPdfFileThumbnail(const QString &uri, std::shared_pt
     QPixmap pix = pdfThumbnail.generateThumbnail();
 
     thumbnail = GenericThumbnailer::generateThumbnail(pix, true);
-    if (!thumbnail.isNull())
-    {
+    if (!thumbnail.isNull()) {
         insertOrUpdateThumbnail(uri, thumbnail);
-        if (watcher)
-        {
+        if (watcher) {
             watcher->fileChanged(uri);
         }
     }
@@ -152,11 +148,9 @@ void ThumbnailManager::createImageFileThumbnail(const QString &uri, std::shared_
     }
 
     QIcon thumbnail = GenericThumbnailer::generateThumbnail(url.path(), true);
-    if (!thumbnail.isNull())
-    {
+    if (!thumbnail.isNull()) {
         insertOrUpdateThumbnail(uri, thumbnail);
-        if (watcher)
-        {
+        if (watcher) {
             watcher->fileChanged(uri);
         }
     }
@@ -171,11 +165,9 @@ void ThumbnailManager::createOfficeFileThumbnail(const QString &uri, std::shared
 
     OfficeThumbnail officeThumbnail(uri);
     thumbnail = officeThumbnail.generateThumbnail();;
-    if (!thumbnail.isNull())
-    {
+    if (!thumbnail.isNull()) {
         insertOrUpdateThumbnail(uri, thumbnail);
-        if (watcher)
-        {
+        if (watcher) {
             watcher->fileChanged(uri);
         }
     }
@@ -188,15 +180,13 @@ void ThumbnailManager::createDesktopFileThumbnail(const QString &uri, std::share
     QIcon thumbnail;
     QUrl url = uri;
 
-    if (!uri.startsWith("file:///"))
-    {
+    if (!uri.startsWith("file:///")) {
         url = FileUtils::getTargetUri(uri);
         qDebug()<<url;
     }
 
     auto _desktop_file = g_desktop_app_info_new_from_filename(url.path().toUtf8().constData());
-    if (!_desktop_file)
-    {
+    if (!_desktop_file) {
         return;
     }
 
@@ -205,19 +195,16 @@ void ThumbnailManager::createDesktopFileThumbnail(const QString &uri, std::share
     qDebug()<<_icon_string;
     QString string = _icon_string;
 
-    if (thumbnail.isNull() && string.startsWith("/"))
-    {
+    if (thumbnail.isNull() && string.startsWith("/")) {
         qDebug()<<"add file";
         QIcon thumbnail = GenericThumbnailer::generateThumbnail(_icon_string, true);
     }
     g_free(_icon_string);
     g_object_unref(_desktop_file);
 
-    if (!thumbnail.isNull())
-    {
+    if (!thumbnail.isNull()) {
         insertOrUpdateThumbnail(uri, thumbnail);
-        if (watcher)
-        {
+        if (watcher) {
             watcher->fileChanged(uri);
         }
     }
@@ -228,11 +215,9 @@ void ThumbnailManager::createDesktopFileThumbnail(const QString &uri, std::share
 void ThumbnailManager::createThumbnailInternal(const QString &uri, std::shared_ptr<FileWatcher> watcher, bool force)
 {
     auto settings = GlobalSettings::getInstance();
-    if (settings->isExist("do-not-thumbnail"))
-    {
+    if (settings->isExist("do-not-thumbnail")) {
         bool do_not_thumbnail = settings->getValue("do-not-thumbnail").toBool();
-        if (do_not_thumbnail && !force)
-        {
+        if (do_not_thumbnail && !force) {
             qDebug()<<"setting is not thumbnail";
             return;
         }
@@ -244,30 +229,23 @@ void ThumbnailManager::createThumbnailInternal(const QString &uri, std::shared_p
     qDebug()<<"file path:" << info->filePath();
     qDebug()<<"file modify time:" << info->modifiedTime();
 
-    if (!info->mimeType().isEmpty())
-    {
-        if (info->isImageFile())
-        {
+    if (!info->mimeType().isEmpty()) {
+        if (info->isImageFile()) {
             createImageFileThumbnail(uri, watcher);
         }
-        else if (info->mimeType().contains("pdf"))
-        {
+        else if (info->mimeType().contains("pdf")) {
             createPdfFileThumbnail(uri, watcher);
         }
-        else if(info->isVideoFile())
-        {
+        else if(info->isVideoFile()) {
             createVideFileThumbnail(uri, watcher);
         }
-        else if (info->isOfficeFile())
-        {
+        else if (info->isOfficeFile()) {
             createOfficeFileThumbnail(uri, watcher);
         }
-        else if (info->isDesktopFile())
-        {
+        else if (info->isDesktopFile()) {
             createDesktopFileThumbnail(uri, watcher);
         }
-        else
-        {
+        else {
             qDebug()<<"the file type: " << info->mimeType();
             qDebug()<<"the mime type can not generate thumbnail.";
         }

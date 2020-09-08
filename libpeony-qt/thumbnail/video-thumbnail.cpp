@@ -1,3 +1,25 @@
+/*
+ * Peony-Qt's Library
+ *
+ * Copyright (C) 2020, KylinSoft Co., Ltd.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this library.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * Authors: renpeijia <renpeijia@kylinos.cn>
+ *
+ */
+
 #include "generic-thumbnailer.h"
 #include "video-thumbnail.h"
 #include <QFileInfo>
@@ -34,13 +56,11 @@ QMap<QString, QString> VideoThumbnail::videoInfo()
     QProcess p;
 
     p.start("ffmpeg",list2);
-    if (!p.waitForStarted())
-    {
+    if (!p.waitForStarted()) {
         return map ;
     }
 
-    if (!p.waitForFinished())
-    {
+    if (!p.waitForFinished()) {
         return map;
     }
 
@@ -51,42 +71,33 @@ QMap<QString, QString> VideoThumbnail::videoInfo()
 
     QStringList list=error.split("\n");
 
-    for (QString s:list)
-    {
-        if(s.trimmed().startsWith("Duration"))
-        {
+    for (QString s:list) {
+        if (s.trimmed().startsWith("Duration")) {
             s=s.remove("Duration:");
             QString name=s.section(",",0,0);
 
             QStringList listtime=name.trimmed().split(":");
-            if(listtime.count()>=3)
-            {
+            if (listtime.count()>=3) {
                 QString h=listtime.at(0);
                 QString m=listtime.at(1);
                 QString s=listtime.at(2);
 
-                if (h.toFloat()>0  )
-                {
+                if (h.toFloat()>0) {
                     ret= "15.0"; time+=h+":";
                 }
-                else if(m.toFloat()>0  )
-                {
+                else if (m.toFloat()>0) {
                     ret=  "7.0";
                 }
-                else if(s.toFloat()<=1 )
-                {
+                else if (s.toFloat()<=1) {
                     ret=  "0.1";
                 }
-                else if(s.toFloat()<=5 )
-                {
+                else if (s.toFloat()<=5) {
                     ret=  "1.0";
                 }
-                else if(s.toFloat()<=10)
-                {
+                else if (s.toFloat()<=10) {
                     ret=  "3.0";
                 }
-                else if(s.toFloat()>10 )
-                {
+                else if (s.toFloat()>10 ) {
                     ret=    ret;
                 }
 
@@ -124,8 +135,7 @@ QIcon VideoThumbnail::generateThumbnail()
     QString md5Name=GenericThumbnailer::codeMd5(m_url.path());
     QString fileThumbnail=thumbnail+"/"+md5Name;
 
-    if(!QFile::exists(fileThumbnail))
-    {
+    if (!QFile::exists(fileThumbnail)) {
         QMap<QString, QString> map=  videoInfo();
         QString pos=map.value("Pos");
 
@@ -143,20 +153,17 @@ QIcon VideoThumbnail::generateThumbnail()
         QProcess p;
         p.start("ffmpeg",list);
 
-        if (!p.waitForStarted())
-        {
+        if (!p.waitForStarted()) {
             return thumbnailImage;
         }
 
-        if (!p.waitForFinished())
-        {
+        if (!p.waitForFinished()) {
             return thumbnailImage;
         }
 
         QString err=p.readAllStandardError();
         QString read=p.readAll();
-        if(err.contains("not contain any stream"))
-        {
+        if (err.contains("not contain any stream")) {
             qWarning()<<"get video image failed.";
             return thumbnailImage;
         }
