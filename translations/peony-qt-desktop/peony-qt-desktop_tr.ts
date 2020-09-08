@@ -75,7 +75,7 @@
     <message>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="222"/>
         <source>New...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Yeni...</translation>
     </message>
     <message>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="279"/>
@@ -145,7 +145,7 @@
     <message>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="449"/>
         <source>Cut</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Kes</translation>
     </message>
     <message>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="455"/>
@@ -160,12 +160,12 @@
     <message>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="467"/>
         <source>Rename</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Yeniden Adlandır</translation>
     </message>
     <message>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="494"/>
         <source>Properties</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Özellikler</translation>
     </message>
     <message>
         <source>P&amp;roperties</source>
