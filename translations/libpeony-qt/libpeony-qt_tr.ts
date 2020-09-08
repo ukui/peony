@@ -2383,24 +2383,26 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</translation
     <message>
         <location filename="../../libpeony-qt/model/side-bar-file-system-item.cpp" line="310"/>
         <source>Force unmount failed</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Zorla ayrılma başarısız oldu</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/model/side-bar-file-system-item.cpp" line="310"/>
         <source>Error: %1
 </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Hata: %1
+	    </translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/model/side-bar-file-system-item.cpp" line="320"/>
         <source>Unmount failed</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ayrılma Hatası</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/model/side-bar-file-system-item.cpp" line="320"/>
         <source>Error: %1
 Do you want to unmount forcely?</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Hata: %1
+Zorla ayrılmak ister misin?</translation>
     </message>
 </context>
 </TS>
