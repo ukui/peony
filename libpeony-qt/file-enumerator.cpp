@@ -147,6 +147,8 @@ void FileEnumerator::setEnumerateDirectory(GFile *file)
 
 const QList<std::shared_ptr<FileInfo>> FileEnumerator::getChildren(bool addToHash)
 {
+    m_children_uris->removeDuplicates();
+
     //qDebug()<<"FileEnumerator::getChildren():";
     QList<std::shared_ptr<FileInfo>> children;
     for (auto uri : *m_children_uris) {
