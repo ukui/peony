@@ -197,7 +197,7 @@ void ThumbnailManager::createDesktopFileThumbnail(const QString &uri, std::share
 
     if (thumbnail.isNull() && string.startsWith("/")) {
         qDebug()<<"add file";
-        QIcon thumbnail = GenericThumbnailer::generateThumbnail(_icon_string, true);
+        thumbnail = GenericThumbnailer::generateThumbnail(_icon_string, true);
     }
     g_free(_icon_string);
     g_object_unref(_desktop_file);
