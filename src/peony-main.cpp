@@ -82,10 +82,10 @@ void messageOutput(QtMsgType type, const QMessageLogContext &context, const QStr
 int main(int argc, char *argv[]) {
     qInstallMessageHandler(messageOutput);
     PeonyScreen *screen = new PeonyScreen();
-    if (screen->getScreenWidth() >2560) {
-        QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
-        QGuiApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
-    }
+
+    QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+    QGuiApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
+
     delete screen;
 
     PeonyApplication app(argc, argv, "peony-qt");
