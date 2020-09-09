@@ -147,7 +147,7 @@ void FileEnumerator::setEnumerateDirectory(GFile *file)
 
 const QList<std::shared_ptr<FileInfo>> FileEnumerator::getChildren(bool addToHash)
 {
-    m_children_uris->removeDuplicates();
+    //m_children_uris->removeDuplicates();
 
     //qDebug()<<"FileEnumerator::getChildren():";
     QList<std::shared_ptr<FileInfo>> children;
@@ -518,11 +518,11 @@ GAsyncReadyCallback FileEnumerator::enumerator_next_files_async_ready_callback(G
         if (path && !url.isLocalFile()) {
             QString localUri = QString("file://%1").arg(path);
             uriList<<localUri;
-            *(p_this->m_children_uris)<<localUri;
+            *(p_this->m_cache_uris)<<localUri;
             g_free(path);
         } else {
             uriList<<uri;
-            *(p_this->m_children_uris)<<uri;
+            *(p_this->m_cache_uris)<<uri;
         }
 
         g_free(uri);
@@ -531,8 +531,6 @@ GAsyncReadyCallback FileEnumerator::enumerator_next_files_async_ready_callback(G
     }
     g_list_free_full(files, g_object_unref);
     //Q_EMIT p_this->childrenUpdated(uriList);
-
-    *p_this->m_cache_uris<<uriList;
 
     if (files_count == PEONY_FIND_NEXT_FILES_BATCH_SIZE) {
         //have next files, countinue.
