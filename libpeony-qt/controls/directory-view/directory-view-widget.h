@@ -23,6 +23,8 @@
 #ifndef DIRECTORYVIEWWIDGET_H
 #define DIRECTORYVIEWWIDGET_H
 
+#include "peony-core_global.h"
+
 #include <QWidget>
 
 namespace Peony {
@@ -47,7 +49,7 @@ class FileItemProxyFilterSortModel;
  * If you want to make a directory view plugin, you should also create a libraries project and
  * derive both DirectoryViewPluginIface2 and DirectoryViewWidget.
  */
-class DirectoryViewWidget : public QWidget
+class PEONYCORESHARED_EXPORT DirectoryViewWidget : public QWidget
 {
     Q_OBJECT
 public:
