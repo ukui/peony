@@ -80,10 +80,10 @@ int main(int argc, char *argv[])
     qInstallMessageHandler(messageOutput);
     //PeonyDesktopApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     DesktopScreen *screen = new DesktopScreen();
-    if (screen->getScreenWidth() >2560) {
-        QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
-        QGuiApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
-    }
+
+    QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+    QGuiApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
+
     delete screen;
 
     PeonyDesktopApplication a(argc, argv);
