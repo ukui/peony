@@ -461,9 +461,7 @@ void DesktopIconView::openFileByUri(QString uri)
     auto job = new FileInfoJob(info);
     job->setAutoDelete();
     job->connect(job, &FileInfoJob::queryAsyncFinished, [=]() {
-        if (info->isDir() || info->isVolume() || info->isVirtual()) {
-            if (info->isValid())
-            {
+        if ((info->isDir() || info->isVolume() || info->isVirtual())) {
 #if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
             QProcess p;
             QUrl url = uri;
@@ -483,18 +481,6 @@ void DesktopIconView::openFileByUri(QString uri)
 
             p.startDetached("peony", QStringList()<<strq<<"%U&");
 #endif
-            }
-            else
-            {
-                auto result = QMessageBox::question(nullptr, tr("Open Link failed"),
-                                      tr("File not exist, do you want to delete the link file?"));
-                if (result == QMessageBox::Yes) {
-                    qDebug() << "Delete unused symbollink.";
-                    QStringList selections;
-                    selections.push_back(uri);
-                    FileOperationUtils::trash(selections, true);
-                }
-            }
         } else {
             FileLaunchManager::openAsync(uri, false, false);
         }
