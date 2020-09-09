@@ -306,14 +306,14 @@ void FileItem::findChildrenAsync()
 
             for (auto uri : uris) {
                 auto info = FileInfo::fromUri(uri);
-                auto item = new FileItem(info, this, m_model);
-                m_model->beginInsertRows(firstColumnIndex(), m_children->count(), m_children->count());
-                m_children->append(item);
-                m_model->endInsertRows();
                 auto infoJob = new FileInfoJob(info);
                 infoJob->setAutoDelete();
                 infoJob->connect(infoJob, &FileInfoJob::infoUpdated, this, [=]() {
-                    Q_EMIT m_model->dataChanged(item->firstColumnIndex(), item->lastColumnIndex());
+                    auto item = new FileItem(info, this, m_model);
+                    m_model->beginInsertRows(firstColumnIndex(), m_children->count(), m_children->count());
+                    m_children->append(item);
+                    m_model->endInsertRows();
+                    //Q_EMIT m_model->dataChanged(item->firstColumnIndex(), item->lastColumnIndex());
                     //Q_EMIT m_model->updated();
                     ThumbnailManager::getInstance()->createThumbnail(info->uri(), m_thumbnail_watcher);
                 });
@@ -431,13 +431,28 @@ void FileItem::onChildAdded(const QString &uri)
         //m_model->updated();
         return;
     }
-    FileItem *newChild = new FileItem(FileInfo::fromUri(uri), this, m_model);
-    m_model->beginInsertRows(this->firstColumnIndex(), m_children->count(), m_children->count());
-    m_children->append(newChild);
-    m_model->endInsertRows();
-    //use sync update here.
-    newChild->updateInfoAsync();
-    //m_model->updated();
+
+    auto info = FileInfo::fromUri(uri);
+    auto infoJob = new FileInfoJob(info);
+    infoJob->setAutoDelete();
+    infoJob->connect(infoJob, &FileInfoJob::infoUpdated, this, [=]() {
+        auto item = new FileItem(info, this, m_model);
+        m_model->beginInsertRows(firstColumnIndex(), m_children->count(), m_children->count());
+        m_children->append(item);
+        m_model->endInsertRows();
+        //Q_EMIT m_model->dataChanged(item->firstColumnIndex(), item->lastColumnIndex());
+        //Q_EMIT m_model->updated();
+        ThumbnailManager::getInstance()->createThumbnail(info->uri(), m_thumbnail_watcher);
+    });
+    infoJob->queryAsync();
+
+//    FileItem *newChild = new FileItem(FileInfo::fromUri(uri), this, m_model);
+//    m_model->beginInsertRows(this->firstColumnIndex(), m_children->count(), m_children->count());
+//    m_children->append(newChild);
+//    m_model->endInsertRows();
+//    //use sync update here.
+//    newChild->updateInfoAsync();
+//    //m_model->updated();
 }
 
 void FileItem::onChildRemoved(const QString &uri)
