@@ -90,6 +90,10 @@ public:
     bool isVirtual() {
         return m_is_virtual;
     }
+    bool isValid()
+    {
+        return m_is_valid;
+    }
 
     QString displayName() {
         return m_display_name;

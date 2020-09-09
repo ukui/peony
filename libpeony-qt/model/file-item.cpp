@@ -26,6 +26,7 @@
 #include "file-info-manager.h"
 #include "file-watcher.h"
 #include "file-utils.h"
+#include "file-operation-utils.h"
 
 #include "file-item-model.h"
 
@@ -173,6 +174,18 @@ void FileItem::findChildrenAsync()
                 enumerator->cancel();
                 //enumerator->deleteLater();
                 m_model->setRootUri(FileUtils::getParentUri(this->uri()));
+                auto fileInfo = FileInfo::fromUri(this->uri(), false);
+                if (err.get()->code() == G_IO_ERROR_NOT_FOUND && fileInfo->isSymbolLink())
+                {
+                    auto result = QMessageBox::question(nullptr, tr("Open Link failed"),
+                                          tr("File not exist, do you want to delete the link file?"));
+                    if (result == QMessageBox::Yes) {
+                        qDebug() << "Delete unused symbollink.";
+                        QStringList selections;
+                        selections.push_back(this->uri());
+                        FileOperationUtils::trash(selections, true);
+                    }
+                }
                 return;
             } else {
                 QMessageBox::critical(nullptr, tr("Error"), err->message());
