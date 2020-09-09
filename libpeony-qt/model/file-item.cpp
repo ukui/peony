@@ -295,7 +295,7 @@ void FileItem::findChildrenAsync()
     } else {
         enumerator->connect(enumerator, &Peony::FileEnumerator::childrenUpdated, this, [=](const QStringList &uris) {
             if (uris.isEmpty()) {
-                Q_EMIT m_model->findChildrenFinished();
+                //Q_EMIT m_model->findChildrenFinished();
             }
 
             if (!m_children) {
