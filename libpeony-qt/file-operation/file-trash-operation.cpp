@@ -52,8 +52,9 @@ retry:
             except.srcUri = src;
             except.destDirUri = tr("trash:///");
             except.isCritical = true;
-            except.title = tr("Trash file");
+            except.title = tr("Trash file error");
             except.errorCode = err->code;
+            except.errorStr = err->message;
             except.errorType = ET_GIO;
             if (G_IO_ERROR_EXISTS == err->code) {
                 except.dlgType = ED_CONFLICT;

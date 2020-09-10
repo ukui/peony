@@ -166,7 +166,7 @@ retry:
             except.srcUri = uri;
             except.destDirUri = originUri;
             except.isCritical = false;
-            except.title = tr("Untrash file");
+            except.title = tr("Untrash file error");
             except.errorCode = err->code;
             except.errorType = ET_GIO;
             this->setHasError(true);
