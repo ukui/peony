@@ -186,7 +186,7 @@ fallback_retry:
             except.errorType = ET_GIO;
             except.srcUri = m_current_src_uri;
             except.destDirUri = m_current_dest_dir_uri;
-            except.title = tr("File copy");
+            except.title = tr("File copy error");
             except.errorCode = err->code;
             if (handle_type == Other) {
                 if (G_IO_ERROR_EXISTS == err->code) {
@@ -305,7 +305,7 @@ fallback_retry:
             auto errWrapperPtr = GErrorWrapper::wrapFrom(err);
             int handle_type = prehandle(err);
             except.errorType = ET_GIO;
-            except.title = tr("File copy");
+            except.title = tr("File copy error");
             except.srcUri = m_current_src_uri;
             except.errorCode = err->code;
             except.errorStr = err->message;

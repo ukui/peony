@@ -71,7 +71,7 @@ retry:
         except.isCritical = true;
         except.errorStr = err->message;
         except.errorCode = err->code;
-        except.title = tr("Link file");
+        except.title = tr("Link file error");
         except.destDirUri = m_dest_uri;
         auto responseType = Invalid;
         if (G_IO_ERROR_EXISTS == err->code) {

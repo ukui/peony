@@ -197,7 +197,7 @@ retry:
             except.srcUri = srcUri;
             except.destDirUri = m_dest_dir_uri;
             except.isCritical = false;
-            except.title = tr("Move file");
+            except.title = tr("Move file error");
             except.errorCode = err->code;
             except.errorType = ET_GIO;
             if (handle_type == Other) {
@@ -320,7 +320,7 @@ retry:
             except.srcUri = srcUri;
             except.errorType = ET_GIO;
             except.errorCode = err->code;
-            except.title = tr("Move file");
+            except.title = tr("Move file error");
             except.destDirUri = m_dest_dir_uri;
             except.isCritical = true;
             if (handled_err) {
@@ -563,7 +563,7 @@ fallback_retry:
             auto errWrapperPtr = GErrorWrapper::wrapFrom(err);
             int handle_type = prehandle(err);
             except.errorType = ET_GIO;
-            except.title = tr("Move file");
+            except.title = tr("Move file error");
             except.errorCode = err->code;
             except.errorStr = err->message;
             except.srcUri = m_current_src_uri;
@@ -689,7 +689,7 @@ fallback_retry:
             except.errorType = ET_GIO;
             except.errorCode = err->code;
             except.errorStr = err->message;
-            except.title = tr("Create file");
+            except.title = tr("Create file error");
             except.srcUri = m_current_src_uri;
             except.destDirUri = m_current_dest_dir_uri;
             if (handle_type == Other) {
@@ -928,7 +928,7 @@ start:
         except.dlgType = ED_WARNING;
         except.srcUri = nullptr;
         except.destDirUri = nullptr;
-        except.title = tr("File delete");
+        except.title = tr("File delete error");
         except.errorCode = G_IO_ERROR_INVAL;
         except.errorStr = tr("Invalid Operation");
         Q_EMIT errored(except);

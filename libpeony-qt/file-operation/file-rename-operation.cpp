@@ -190,9 +190,10 @@ fallback_retry:
             except.srcUri = m_uri;
             except.destDirUri = FileUtils::getFileUri(newFile);
             except.isCritical = true;
-            except.title = tr("Rename file");
+            except.title = tr("Rename file error");
             except.errorType = ET_GIO;
             except.errorCode = err->code;
+            except.errorStr = err->message;
             if (G_IO_ERROR_EXISTS == err->code) {
                 except.dlgType = ED_CONFLICT;
                 auto responseType = except.respCode;
@@ -227,7 +228,7 @@ retry:
         except.destDirUri = FileUtils::getFileUri(newFile);
         except.isCritical = true;
         except.errorType = ET_GIO;
-        except.title = tr("Rename file");
+        except.title = tr("Rename file error");
         GError *err = nullptr;
         if (FileUtils::isFileExsit(g_file_get_uri(newFile.get()->get()))) {
             except.dlgType = ED_CONFLICT;
@@ -273,6 +274,13 @@ retry:
                 break;
             }
         }
+
+        char* newName = g_file_get_basename(newFile.get()->get());
+        g_file_set_display_name(file.get()->get(), newName, nullptr, &err);
+        if (nullptr != newName) {
+            g_free(newName);
+        }
+/*
         g_file_move(file.get()->get(),
                     newFile.get()->get(),
                     m_default_copy_flag,
@@ -280,9 +288,11 @@ retry:
                     nullptr,
                     nullptr,
                     &err);
+*/
         if (err) {
             except.errorType = ET_GIO;
             except.errorCode = err->code;
+            except.errorStr = err->message;
             auto responseType = Invalid;
             if (G_IO_ERROR_EXISTS != err->code) {
                 except.dlgType = ED_WARNING;

@@ -152,7 +152,7 @@ retry_create_empty_folder:
                 except.dlgType = ED_WARNING;
                 except.destDirUri = m_dest_dir_uri;
                 except.isCritical = true;
-                except.title = tr("Create file");
+                except.title = tr("Create file error");
                 except.errorCode = err->code;
                 except.errorType = ET_GIO;
                 Q_EMIT errored(except);
@@ -182,7 +182,7 @@ retry_create_template:
                 except.dlgType = ED_WARNING;
                 except.destDirUri = m_dest_dir_uri;
                 except.isCritical = true;
-                except.title = tr("Create file");
+                except.title = tr("Create file error");
                 except.errorCode = err->code;
                 except.errorType = ET_GIO;
                 Q_EMIT errored(except);
