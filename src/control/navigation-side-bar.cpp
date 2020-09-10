@@ -55,7 +55,6 @@
 
 #include <QDebug>
 
-int count = 0;
 
 NavigationSideBar::NavigationSideBar(QWidget *parent) : QTreeView(parent)
 {
@@ -157,7 +156,8 @@ NavigationSideBar::NavigationSideBar(QWidget *parent) : QTreeView(parent)
         this->viewport()->update();
     });
 
-    expandAll();
+    // del by wwn
+    // expandAll();
 }
 
 bool NavigationSideBar::eventFilter(QObject *obj, QEvent *e)
@@ -235,14 +235,6 @@ void NavigationSideBar::keyPressEvent(QKeyEvent *event)
     }
 }
 
-// add by wwn
-void NavigationSideBar::drawBranches(QPainter *painter, const QRect &rect, const QModelIndex &index) const
-{
-    QRect rec = rect;
-    // rec.setRect(rec.x(), rec.y(), 30, 30);
-
-    QTreeView::drawBranches(painter, rec, index);
-}
 
 // add by wwn
 void NavigationSideBar::mousePressEvent(QMouseEvent *event)
@@ -289,11 +281,13 @@ void NavigationSideBarItemDelegate::paint(QPainter *painter, const QStyleOptionV
 
     QStyledItemDelegate::paint(painter, option, index);
 
-    // QStyleOptionViewItem opt = option;
-
     NavigationSideBar* view = qobject_cast<NavigationSideBar*>(this->parent());
+
     if (view == nullptr)
         return;
+
+    if (!index.model()->hasChildren(index))
+            return;
 
     if (view->isExpanded(index)) {
         QRect rect = option.rect;
@@ -311,23 +305,6 @@ void NavigationSideBarItemDelegate::paint(QPainter *painter, const QStyleOptionV
         painter->drawPixmap(rect, QPixmap(":/img/branches1"));
         rect.setX(option.rect.x());
     }
-
-//    if (index.child(index.row(), index.column()).isValid()) {
-//        QRect rect = option.rect;
-//        rect.setTop(rect.top() + 7);
-//        rect.setX(rect.x() + 220);
-//        rect.setSize(QSize(24, 24));
-//        painter->drawPixmap(rect, QPixmap(":/img/branches2"));
-//        rect.setX(option.rect.x());
-//    }
-//    else {
-//        QRect rect = option.rect;
-//        rect.setTop(rect.top() + 7);
-//        rect.setX(rect.x() + 220);
-//        rect.setSize(QSize(24, 24));
-//        painter->drawPixmap(rect, QPixmap(":/img/branches"));
-//        rect.setX(option.rect.x());
-//    }
 }
 
 NavigationSideBarContainer::NavigationSideBarContainer(QWidget *parent)

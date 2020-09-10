@@ -149,7 +149,7 @@ void SideBar::dragEnterEvent(QDragEnterEvent *e)
 
 void SideBar::dragMoveEvent(QDragMoveEvent *e)
 {
-    //qDebug()<<"move";
+    qDebug()<<"move";
     auto widget = static_cast<QWidget*>(e->source());
     if (widget) {
         if (widget->topLevelWidget() == this->topLevelWidget()) {
