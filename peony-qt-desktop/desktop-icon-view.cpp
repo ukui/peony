@@ -68,6 +68,7 @@
 #include <QApplication>
 
 #include <QStringList>
+#include <QMessageBox>
 
 #include <QDebug>
 
@@ -454,41 +455,46 @@ void DesktopIconView::initMenu()
     }, Qt::UniqueConnection);
 }
 
+void DesktopIconView::openFileByUri(QString uri)
+{
+    auto info = FileInfo::fromUri(uri, false);
+    auto job = new FileInfoJob(info);
+    job->setAutoDelete();
+    job->connect(job, &FileInfoJob::queryAsyncFinished, [=]() {
+        if ((info->isDir() || info->isVolume() || info->isVirtual())) {
+#if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
+            QProcess p;
+            QUrl url = uri;
+            p.setProgram("peony");
+            p.setArguments(QStringList() << url.toEncoded() <<"%U&");
+            p.startDetached();
+#else
+            QProcess p;
+            QString strq;
+            for (int i = 0;i < uri.length();++i) {
+                if(uri[i] == ' '){
+                    strq += "%20";
+                }else{
+                    strq += uri[i];
+                }
+            }
+
+            p.startDetached("peony", QStringList()<<strq<<"%U&");
+#endif
+        } else {
+            FileLaunchManager::openAsync(uri, false, false);
+        }
+        this->clearSelection();
+    });
+    job->queryAsync();
+}
+
 void DesktopIconView::initDoubleClick()
 {
     connect(this, &QListView::doubleClicked, this, [=](const QModelIndex &index) {
         qDebug() << "double click" << index.data(FileItemModel::UriRole);
         auto uri = index.data(FileItemModel::UriRole).toString();
-        auto info = FileInfo::fromUri(uri, false);
-        auto job = new FileInfoJob(info);
-        job->setAutoDelete();
-        job->connect(job, &FileInfoJob::queryAsyncFinished, [=]() {
-            if (info->isDir() || info->isVolume() || info->isVirtual()) {
-#if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
-                QProcess p;
-                QUrl url = uri;
-                p.setProgram("peony");
-                p.setArguments(QStringList() << url.toEncoded() <<"%U&");
-                p.startDetached();
-#else
-                QProcess p;
-                QString strq;
-                for (int i = 0;i < uri.length();++i) {
-                    if(uri[i] == ' '){
-                        strq += "%20";
-                    }else{
-                        strq += uri[i];
-                    }
-                }
-
-                p.startDetached("peony", QStringList()<<strq<<"%U&");
-#endif
-            } else {
-                FileLaunchManager::openAsync(uri, false, false);
-            }
-            this->clearSelection();
-        });
-        job->queryAsync();
+        openFileByUri(uri);
     }, Qt::UniqueConnection);
 }
 
@@ -805,6 +811,16 @@ void DesktopIconView::keyPressEvent(QKeyEvent *e)
     case Qt::Key_Shift:
     case Qt::Key_Control:
         m_ctrl_or_shift_pressed = true;
+        break;
+    case Qt::Key_Enter:
+    case Qt::Key_Return:
+    {
+        auto selections = this->getSelections();
+        for (auto uri : selections)
+        {
+           openFileByUri(uri);
+        }
+    }
         break;
     default:
         return QListView::keyPressEvent(e);

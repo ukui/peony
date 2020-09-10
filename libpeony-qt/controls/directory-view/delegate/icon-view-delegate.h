@@ -24,6 +24,7 @@
 #define ICONVIEWDELEGATE_H
 
 #include <QStyledItemDelegate>
+#include <peony-core_global.h>
 
 class QPushButton;
 
@@ -78,7 +79,7 @@ private:
     QPushButton *m_styled_button;
 };
 
-class IconViewTextHelper
+class PEONYCORESHARED_EXPORT IconViewTextHelper
 {
     friend class IconViewDelegate;
     friend class IconViewIndexWidget;

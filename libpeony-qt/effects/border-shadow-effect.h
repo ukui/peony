@@ -24,6 +24,7 @@
 #define BORDERSHADOWEFFECT_H
 
 #include <QGraphicsEffect>
+#include <peony-core_global.h>
 
 #if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
 #include <QPainterPath>
@@ -48,7 +49,7 @@
  * If your window has a border radius, use setBorderRadius()
  * for matching your window border rendering.
  */
-class BorderShadowEffect : public QGraphicsEffect
+class PEONYCORESHARED_EXPORT BorderShadowEffect : public QGraphicsEffect
 {
     Q_OBJECT
 public:

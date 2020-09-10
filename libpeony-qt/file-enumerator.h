@@ -29,6 +29,8 @@
 #include <memory>
 #include <gio/gio.h>
 
+class QTimer;
+
 namespace Peony {
 
 class FileInfo;
@@ -219,6 +221,9 @@ private:
     GCancellable *m_cancellable = nullptr;
 
     QList<QString> *m_children_uris = nullptr;
+
+    QStringList *m_cache_uris;
+    QTimer *m_idle;
 
     bool m_auto_delete = false;
 };

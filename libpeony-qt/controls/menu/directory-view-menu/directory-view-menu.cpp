@@ -436,9 +436,9 @@ const QList<QAction *> DirectoryViewMenu::constructViewOpActions()
 
         QList<QAction *> tmp;
         tmp<<sortTypeMenu->addAction(tr("Name"));
-        tmp<<sortTypeMenu->addAction(tr("File Size"));
-        tmp<<sortTypeMenu->addAction(tr("File Type"));
         tmp<<sortTypeMenu->addAction(tr("Modified Date"));
+        tmp<<sortTypeMenu->addAction(tr("File Type"));
+        tmp<<sortTypeMenu->addAction(tr("File Size"));
         int sortType = m_view->getSortType();
         if (sortType >= 0) {
             tmp.at(sortType)->setCheckable(true);

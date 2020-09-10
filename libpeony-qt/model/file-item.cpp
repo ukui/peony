@@ -26,12 +26,14 @@
 #include "file-info-manager.h"
 #include "file-watcher.h"
 #include "file-utils.h"
+#include "file-operation-utils.h"
 
 #include "file-item-model.h"
 
 #include "thumbnail-manager.h"
 
 #include "gerror-wrapper.h"
+#include "bookmark-manager.h"
 
 #include <QDebug>
 #include <QStandardPaths>
@@ -168,10 +170,22 @@ void FileItem::findChildrenAsync()
         }
         if (err) {
             qDebug()<<err->message();
-            if (err.get()->code() == G_IO_ERROR_NOT_FOUND) {
+            if (err.get()->code() == G_IO_ERROR_NOT_FOUND || err.get()->code() == G_IO_ERROR_PERMISSION_DENIED) {
                 enumerator->cancel();
                 //enumerator->deleteLater();
                 m_model->setRootUri(FileUtils::getParentUri(this->uri()));
+                auto fileInfo = FileInfo::fromUri(this->uri(), false);
+                if (err.get()->code() == G_IO_ERROR_NOT_FOUND && fileInfo->isSymbolLink())
+                {
+                    auto result = QMessageBox::question(nullptr, tr("Open Link failed"),
+                                          tr("File not exist, do you want to delete the link file?"));
+                    if (result == QMessageBox::Yes) {
+                        qDebug() << "Delete unused symbollink.";
+                        QStringList selections;
+                        selections.push_back(this->uri());
+                        FileOperationUtils::trash(selections, true);
+                    }
+                }
                 return;
             } else {
                 QMessageBox::critical(nullptr, tr("Error"), err->message());
@@ -241,6 +255,12 @@ void FileItem::findChildrenAsync()
                 Q_EMIT this->childAdded(uri);
             });
             connect(m_watcher.get(), &FileWatcher::fileDeleted, this, [=](QString uri) {
+                //check bookmark and delete
+                auto info = FileInfo::fromUri(uri, false);
+                if (info->isDir())
+                {
+                    BookMarkManager::getInstance()->removeBookMark(uri);
+                }
                 //remove the crosponding child
                 //tell the model update
                 this->onChildRemoved(uri);
@@ -255,7 +275,7 @@ void FileItem::findChildrenAsync()
                         m_model->dataChanged(m_model->indexFromUri(uri), m_model->indexFromUri(uri));
                         auto info = FileInfo::fromUri(uri);
                         if (info->isDesktopFile()) {
-                            ThumbnailManager::getInstance()->updateDesktopFileThumbnail(info->uri(), m_watcher);
+                            ThumbnailManager::getInstance()->updateDesktopFileThumbnail(info->uri(), m_thumbnail_watcher);
                         }
                     });
                     infoJob->queryAsync();
@@ -288,7 +308,7 @@ void FileItem::findChildrenAsync()
     } else {
         enumerator->connect(enumerator, &Peony::FileEnumerator::childrenUpdated, this, [=](const QStringList &uris) {
             if (uris.isEmpty()) {
-                Q_EMIT m_model->findChildrenFinished();
+                //Q_EMIT m_model->findChildrenFinished();
             }
 
             if (!m_children) {
@@ -299,16 +319,16 @@ void FileItem::findChildrenAsync()
 
             for (auto uri : uris) {
                 auto info = FileInfo::fromUri(uri);
-                auto item = new FileItem(info, this, m_model);
-                m_model->beginInsertRows(firstColumnIndex(), m_children->count(), m_children->count());
-                m_children->append(item);
-                m_model->endInsertRows();
                 auto infoJob = new FileInfoJob(info);
                 infoJob->setAutoDelete();
                 infoJob->connect(infoJob, &FileInfoJob::infoUpdated, this, [=]() {
-                    Q_EMIT m_model->dataChanged(item->firstColumnIndex(), item->lastColumnIndex());
+                    auto item = new FileItem(info, this, m_model);
+                    m_model->beginInsertRows(firstColumnIndex(), m_children->count(), m_children->count());
+                    m_children->append(item);
+                    m_model->endInsertRows();
+                    //Q_EMIT m_model->dataChanged(item->firstColumnIndex(), item->lastColumnIndex());
                     //Q_EMIT m_model->updated();
-                    ThumbnailManager::getInstance()->createThumbnail(info->uri(), m_watcher);
+                    ThumbnailManager::getInstance()->createThumbnail(info->uri(), m_thumbnail_watcher);
                 });
                 infoJob->queryAsync();
             }
@@ -329,9 +349,15 @@ void FileItem::findChildrenAsync()
                 //tell the model update
                 this->onChildAdded(uri);
                 Q_EMIT this->childAdded(uri);
-                ThumbnailManager::getInstance()->createThumbnail(uri, m_watcher);
+                ThumbnailManager::getInstance()->createThumbnail(uri, m_thumbnail_watcher);
             });
             connect(m_watcher.get(), &FileWatcher::fileDeleted, this, [=](QString uri) {
+                //check bookmark and delete
+                auto info = FileInfo::fromUri(uri, false);
+                if (info->isDir())
+                {
+                    BookMarkManager::getInstance()->removeBookMark(uri);
+                }
                 //remove the crosponding child
                 //tell the model update
                 this->onChildRemoved(uri);
@@ -418,13 +444,28 @@ void FileItem::onChildAdded(const QString &uri)
         //m_model->updated();
         return;
     }
-    FileItem *newChild = new FileItem(FileInfo::fromUri(uri), this, m_model);
-    m_model->beginInsertRows(this->firstColumnIndex(), m_children->count(), m_children->count());
-    m_children->append(newChild);
-    m_model->endInsertRows();
-    //use sync update here.
-    newChild->updateInfoAsync();
-    //m_model->updated();
+
+    auto info = FileInfo::fromUri(uri);
+    auto infoJob = new FileInfoJob(info);
+    infoJob->setAutoDelete();
+    infoJob->connect(infoJob, &FileInfoJob::infoUpdated, this, [=]() {
+        auto item = new FileItem(info, this, m_model);
+        m_model->beginInsertRows(firstColumnIndex(), m_children->count(), m_children->count());
+        m_children->append(item);
+        m_model->endInsertRows();
+        //Q_EMIT m_model->dataChanged(item->firstColumnIndex(), item->lastColumnIndex());
+        //Q_EMIT m_model->updated();
+        ThumbnailManager::getInstance()->createThumbnail(info->uri(), m_thumbnail_watcher);
+    });
+    infoJob->queryAsync();
+
+//    FileItem *newChild = new FileItem(FileInfo::fromUri(uri), this, m_model);
+//    m_model->beginInsertRows(this->firstColumnIndex(), m_children->count(), m_children->count());
+//    m_children->append(newChild);
+//    m_model->endInsertRows();
+//    //use sync update here.
+//    newChild->updateInfoAsync();
+//    //m_model->updated();
 }
 
 void FileItem::onChildRemoved(const QString &uri)

@@ -54,9 +54,9 @@ class PEONYCORESHARED_EXPORT FileItemModel : public QAbstractItemModel
 public:
     enum ColumnType {
         FileName,
-        FileSize,
-        FileType,
         ModifiedDate,
+        FileType,
+        FileSize,
         Owner,
         Other
     };

@@ -33,6 +33,10 @@ public:
     static QIcon generateThumbnail(const QUrl &url, bool shadow = false, const QSize &size = QSize());
     static QIcon generateThumbnail(const QString &path, bool shadow = false, const QSize &size = QSize());
     static QIcon generateThumbnail(const QPixmap &pixmap, bool shadow = true, const QSize &size = QSize());
+    static QString codeMd5(QString fileName);
+    static QString codeMd5WithModifyTime(QString fileName, quint64 &modifyTime);
+    static QString cachDir();
+    static QString thumbnaileCachDir();
 private:
     explicit GenericThumbnailer(QObject *parent = nullptr);
 };

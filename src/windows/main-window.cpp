@@ -89,6 +89,12 @@
 #include <X11/Xlib.h>
 #include <KWindowEffects>
 
+// NOTE build failed on Archlinux. Can't detect `QGSettings/QGSettings' header
+// fixed by replaced `QGSettings/QGSettings' with `QGSettings'
+#include <QGSettings>
+
+#define FONT_SETTINGS "org.ukui.style"
+
 static MainWindow *last_resize_window = nullptr;
 
 MainWindow::MainWindow(const QString &uri, QWidget *parent) : QMainWindow(parent)
@@ -246,6 +252,18 @@ void MainWindow::checkSettings()
     m_show_hidden_file = settings->isExist("show-hidden")? settings->getValue("show-hidden").toBool(): false;
     m_use_default_name_sort_order = settings->isExist("chinese-first")? settings->getValue("chinese-first").toBool(): false;
     m_folder_first = settings->isExist("folder-first")? settings->getValue("folder-first").toBool(): true;
+
+    //font monitor
+    QGSettings *fontSetting = new QGSettings(FONT_SETTINGS, QByteArray(), this);
+    connect(fontSetting, &QGSettings::changed, this, [=](const QString &key){
+        qDebug() << "fontSetting changed:" << key;
+        if (key == "systemFont" || key == "systemFontSize")
+        {
+            QFont font = this->font();
+            for(auto widget : qApp->allWidgets())
+                widget->setFont(font);
+        }
+    });
 }
 
 void MainWindow::setShortCuts()
@@ -470,27 +488,28 @@ void MainWindow::setShortCuts()
     auto remodelViewAction = new QAction(this);
     remodelViewAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_0));
     connect(remodelViewAction, &QAction::triggered, this, [=]() {
-        this->getCurrentPage()->getView()->setCurrentZoomLevel(21);
+        this->getCurrentPage()->setZoomLevelRequest(25);
     });
     addAction(remodelViewAction);
 
     auto enlargViewAction = new QAction(this);
-    enlargViewAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Plus));
+    enlargViewAction->setShortcut(QKeySequence::ZoomIn);
     connect(enlargViewAction, &QAction::triggered, this, [=]() {
         int defaultZoomLevel = this->currentViewZoomLevel();
         if(defaultZoomLevel <= 95){ defaultZoomLevel+=5; }
-        this->getCurrentPage()->getView()->setCurrentZoomLevel(defaultZoomLevel);
+        for (int i = 0; i < 5; i++) {
+            this->getCurrentPage()->setZoomLevelRequest(defaultZoomLevel);
+        }
 
     });
     addAction(enlargViewAction);
 
     auto shrinkViewAction = new QAction(this);
-    shrinkViewAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Minus));
+    shrinkViewAction->setShortcut(QKeySequence::ZoomOut);
     connect(shrinkViewAction, &QAction::triggered, this, [=]() {
         int defaultZoomLevel = this->currentViewZoomLevel();
         if(defaultZoomLevel > 6){ defaultZoomLevel-=5; }
-        this->getCurrentPage()->getView()->setCurrentZoomLevel(defaultZoomLevel);
-
+        this->getCurrentPage()->setZoomLevelRequest(defaultZoomLevel);
     });
     addAction(shrinkViewAction);
 
@@ -1134,6 +1153,7 @@ void MainWindow::initUI(const QString &uri)
         setCurrentViewZoomLevel(currentViewZoomLevel());
 
     //bind signals
+    connect(m_tab, &TabWidget::searchRecursiveChanged, headerBar, &HeaderBar::updateSearchRecursive);
     connect(m_tab, &TabWidget::closeSearch, headerBar, &HeaderBar::closeSearch);
     connect(m_tab, &TabWidget::clearTrash, this, &MainWindow::cleanTrash);
     connect(m_tab, &TabWidget::recoverFromTrash, this, &MainWindow::recoverFromTrash);

@@ -44,6 +44,9 @@ QString FileUtils::getQStringFromCString(char *c_string, bool free)
 
 QString FileUtils::getFileUri(const GFileWrapperPtr &file)
 {
+    if (!G_IS_FILE (file.get()->get())) {
+        return nullptr;
+    }
     char *uri = g_file_get_uri(file.get()->get());
     QString urlString = QString(uri);
     QUrl url = urlString;
@@ -110,6 +113,15 @@ bool FileUtils::getFileIsFolder(const QString &uri)
                                             G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
                                             nullptr);
     return type == G_FILE_TYPE_DIRECTORY;
+}
+
+bool FileUtils::getFileIsSymbolicLink(const QString &uri)
+{
+    auto file = wrapGFile(g_file_new_for_uri(uri.toUtf8().constData()));
+    GFileType type = g_file_query_file_type(file.get()->get(),
+                                            G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
+                                            nullptr);
+    return type == G_FILE_TYPE_SYMBOLIC_LINK;
 }
 
 QStringList FileUtils::getChildrenUris(const QString &directoryUri)

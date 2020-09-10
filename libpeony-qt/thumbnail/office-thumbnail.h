@@ -16,29 +16,38 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <https://www.gnu.org/licenses/>.
  *
- * Authors: Yue Lan <lanyue@kylinos.cn>
+ * Authors: renpeijia <renpeijia@kylinos.cn>
  *
  */
+#ifndef OFFICETHUMBNAIL_H
+#define OFFICETHUMBNAIL_H
 
-#ifndef SEARCHVFSURIPARSER_H
-#define SEARCHVFSURIPARSER_H
+#include "file-info.h"
+#include <QHash>
+#include <QIcon>
+#include <QMutex>
+#include <QUrl>
 
-#include <QString>
-#include <peony-core_global.h>
+using namespace Peony;
 
-namespace Peony {
-
-class PEONYCORESHARED_EXPORT SearchVFSUriParser
-{
+class OfficeThumbnail{
 public:
-    const static QString parseSearchKey(const QString &uri, const QString &key, const bool &search_file_name=true,
-                                        const bool &search_content=false, const QString &extend_key="", const bool &recursive = true);
-    const static QString getSearchUriNameRegexp(const QString &searchUri);
-    const static QString getSearchUriTargetDirectory(const QString &searchUri);
+    explicit OfficeThumbnail(const QString &uri);
+    ~OfficeThumbnail();
+    QIcon generateThumbnail();
+
 private:
-    SearchVFSUriParser();
+    /*
+    * 提供office文件首页转换为图片的存储路径
+    */
+    void thumbnaileCachDir();
+
+    QUrl m_url;
+    /*
+    * 获取文件的修改时间，如果被修改，将重新生成缩略图，
+    * 主要是为了处理修改文件首页的情况
+    */
+    quint64 m_modifyTime = 0;
 };
 
-}
-
-#endif // SEARCHVFSURIPARSER_H
+#endif // OFFICETHUMBNAIL_H

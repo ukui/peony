@@ -64,21 +64,23 @@ void BookMarkManager::addBookMark(const QString &uri)
         while (!this->isLoaded()) {
             g_usleep(100);
         }
+        QUrl url = uri;
+        QString origin_path = "file://" + url.path();
         if (m_mutex.tryLock(1000)) {
-            bool successed = !m_uris.contains(uri);
+            bool successed = !m_uris.contains(origin_path);
             if (successed) {
-                m_uris<<uri;
+                m_uris<<origin_path;
                 m_uris.removeDuplicates();
                 m_book_mark->setValue("uris", m_uris);
                 m_book_mark->sync();
-                qDebug()<<"add"<<uri;
-                Q_EMIT this->bookMarkAdded(uri, true);
+                qDebug()<<"addBookMark"<<origin_path;
+                Q_EMIT this->bookMarkAdded(origin_path, true);
             } else {
-                Q_EMIT this->bookMarkAdded(uri, false);
+                Q_EMIT this->bookMarkAdded(origin_path, false);
             }
             m_mutex.unlock();
         } else {
-            Q_EMIT this->bookMarkAdded(uri, false);
+            Q_EMIT this->bookMarkAdded(origin_path, false);
         }
     });
 }
@@ -89,21 +91,23 @@ void BookMarkManager::removeBookMark(const QString &uri)
         while (!this->isLoaded()) {
             g_usleep(100);
         }
+        QUrl url = uri;
+        QString origin_path = "file://" + url.path();
         if (m_mutex.tryLock(1000)) {
-            bool successed = m_uris.contains(uri);
+            bool successed = m_uris.contains(origin_path);
             if (successed) {
-                m_uris.removeOne(uri);
+                m_uris.removeOne(origin_path);
                 m_uris.removeDuplicates();
                 m_book_mark->setValue("uris", m_uris);
                 m_book_mark->sync();
-                qDebug()<<"remove"<<uri;
-                Q_EMIT this->bookMarkRemoved(uri, true);
+                qDebug()<<"removeBookMark"<<origin_path;
+                Q_EMIT this->bookMarkRemoved(origin_path, true);
             } else {
-                Q_EMIT this->bookMarkRemoved(uri, false);
+                Q_EMIT this->bookMarkRemoved(origin_path, false);
             }
             m_mutex.unlock();
         } else {
-            Q_EMIT this->bookMarkRemoved(uri, false);
+            Q_EMIT this->bookMarkRemoved(origin_path, false);
         }
     });
 }

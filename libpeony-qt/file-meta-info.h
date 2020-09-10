@@ -31,6 +31,7 @@
 
 #include <memory>
 #include <gio/gio.h>
+#include <peony-core_global.h>
 
 namespace Peony {
 
@@ -47,7 +48,7 @@ namespace Peony {
  * You can use FileInfoMeta::fromUri(uri) to get a file's meta data in global, but you should make
  * sure that file's FileInfo is queryed yet.
  */
-class FileMetaInfo
+class PEONYCORESHARED_EXPORT FileMetaInfo
 {
     friend class FileInfo;
     friend class FileInfoJob;

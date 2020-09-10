@@ -52,10 +52,28 @@ FileEnumerator::FileEnumerator(QObject *parent) : QObject(parent)
 
     m_children_uris = new QList<QString>();
 
+    m_cache_uris = new QStringList();
+
+    m_idle = new QTimer(this);
+    m_idle->setSingleShot(false);
+
     connect(this, &FileEnumerator::enumerateFinished, this, [=]() {
         if (m_auto_delete) {
             this->deleteLater();
         }
+    });
+
+    connect(this, &FileEnumerator::enumerateFinished, this, [=](){
+        *m_children_uris<<*m_cache_uris;
+        childrenUpdated(*m_cache_uris);
+        m_cache_uris->clear();
+        m_idle->stop();
+    });
+
+    connect(m_idle, &QTimer::timeout, this, [=](){
+        *m_children_uris<<*m_cache_uris;
+        childrenUpdated(*m_cache_uris);
+        m_cache_uris->clear();
     });
 }
 
@@ -81,6 +99,8 @@ FileEnumerator::~FileEnumerator()
     g_object_unref(m_cancellable);
 
     delete m_children_uris;
+
+    delete m_cache_uris;
 }
 
 void FileEnumerator::setEnumerateDirectory(QString uri)
@@ -127,6 +147,8 @@ void FileEnumerator::setEnumerateDirectory(GFile *file)
 
 const QList<std::shared_ptr<FileInfo>> FileEnumerator::getChildren(bool addToHash)
 {
+    //m_children_uris->removeDuplicates();
+
     //qDebug()<<"FileEnumerator::getChildren():";
     QList<std::shared_ptr<FileInfo>> children;
     for (auto uri : *m_children_uris) {
@@ -198,6 +220,8 @@ GFile *FileEnumerator::enumerateTargetFile()
 
 void FileEnumerator::enumerateSync()
 {
+    m_idle->start(1000);
+
     GFile *target = enumerateTargetFile();
 
     GFileEnumerator *enumerator = g_file_enumerate_children(target,
@@ -283,9 +307,8 @@ void FileEnumerator::handleError(GError *err)
     case G_IO_ERROR_PERMISSION_DENIED:
         //FIXME: do i need add an auth function for this kind of errors?
         QMessageBox::critical(nullptr, tr("Error"), err->message);
-        //send enumerateFinished SIGNALS,solve the mouse WaitCursor
-        enumerateFinished(true);
-
+        //emit error message to upper levels to process
+        Q_EMIT prepared(GErrorWrapper::wrapFrom(g_error_new(G_IO_ERROR, G_IO_ERROR_PERMISSION_DENIED, "permission denied")));
         break;
     case G_IO_ERROR_NOT_FOUND:
         Q_EMIT prepared(GErrorWrapper::wrapFrom(g_error_new(G_IO_ERROR, G_IO_ERROR_NOT_FOUND, "file not found")));
@@ -298,6 +321,8 @@ void FileEnumerator::handleError(GError *err)
 
 void FileEnumerator::enumerateAsync()
 {
+    m_idle->start(1000);
+
     //auto uri = g_file_get_uri(m_root_file);
     //auto path = g_file_get_path(m_root_file);
     g_file_enumerate_children_async(m_root_file,
@@ -493,11 +518,11 @@ GAsyncReadyCallback FileEnumerator::enumerator_next_files_async_ready_callback(G
         if (path && !url.isLocalFile()) {
             QString localUri = QString("file://%1").arg(path);
             uriList<<localUri;
-            *(p_this->m_children_uris)<<localUri;
+            *(p_this->m_cache_uris)<<localUri;
             g_free(path);
         } else {
             uriList<<uri;
-            *(p_this->m_children_uris)<<uri;
+            *(p_this->m_cache_uris)<<uri;
         }
 
         g_free(uri);
@@ -505,7 +530,8 @@ GAsyncReadyCallback FileEnumerator::enumerator_next_files_async_ready_callback(G
         l = l->next;
     }
     g_list_free_full(files, g_object_unref);
-    Q_EMIT p_this->childrenUpdated(uriList);
+    //Q_EMIT p_this->childrenUpdated(uriList);
+
     if (files_count == PEONY_FIND_NEXT_FILES_BATCH_SIZE) {
         //have next files, countinue.
         g_file_enumerator_next_files_async(enumerator,

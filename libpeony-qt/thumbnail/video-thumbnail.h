@@ -1,7 +1,7 @@
 /*
  * Peony-Qt's Library
  *
- * Copyright (C) 2020, Tianjin KYLIN Information Technology Co., Ltd.
+ * Copyright (C) 2020, KylinSoft Co., Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -16,33 +16,30 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <https://www.gnu.org/licenses/>.
  *
- * Authors: Yue Lan <lanyue@kylinos.cn>
+ * Authors: renpeijia <renpeijia@kylinos.cn>
  *
  */
 
-#ifndef FMWINDOWFACTORY_H
-#define FMWINDOWFACTORY_H
+#ifndef VIDEOTHUMBNAIL_H
+#define VIDEOTHUMBNAIL_H
 
-#include <QObject>
-#include "FMWindowIface.h"
+#include "file-info.h"
+#include <QHash>
+#include <QIcon>
+#include <QMutex>
+#include <QUrl>
 
-namespace Peony {
+using namespace Peony;
 
-/*!
- * \brief The FMWindowFactory class
- * \deprecated
- */
-class PEONYCORESHARED_EXPORT FMWindowFactory : public QObject
-{
-    Q_OBJECT
+class VideoThumbnail{
 public:
-    static FMWindowFactory *getInstance();
-    explicit FMWindowFactory(QObject *parent = nullptr);
+    explicit VideoThumbnail(const QString &uri);
+    ~VideoThumbnail();
+    QIcon generateThumbnail();
 
-    virtual FMWindowIface *create(const QString &uri = nullptr);
-    virtual FMWindowIface *create(const QStringList &uris);
+private:
+    QMap<QString, QString> videoInfo();
+    QUrl m_url;
 };
 
-}
-
-#endif // FMWINDOWFACTORY_H
+#endif // VIDEOTHUMBNAIL_H

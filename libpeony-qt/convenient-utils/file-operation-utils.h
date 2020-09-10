@@ -35,7 +35,7 @@ class FileInfo;
  * \brief The FileOperationUtils class
  * This is a class only provide static method for file operation.
  */
-class FileOperationUtils
+class PEONYCORESHARED_EXPORT FileOperationUtils
 {
 public:
     static void move(const QStringList &srcUris, const QString &destUri, bool addHistory, bool copyMove = false);

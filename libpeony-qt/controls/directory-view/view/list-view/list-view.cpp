@@ -208,12 +208,14 @@ void ListView::mousePressEvent(QMouseEvent *e)
             setCurrentIndex(index);
         }
         this->setState(QAbstractItemView::DragSelectingState);
-    } else if (isIndexSelected) {
-        return;
     }
+    //comment to fix can not enter rename issue
+//    else if (isIndexSelected) {
+//        return;
+//    }
 
     //if click left button at blank space, it should select nothing
-    //qDebug() << "indexAt(e->pos()):" <<indexAt(e->pos()).column() << indexAt(e->pos()).row();
+    //qDebug() << "indexAt(e->pos()):" <<indexAt(e->pos()).column() << indexAt(e->pos()).row() <<indexAt(e->pos()).isValid();
     if(e->button() == Qt::LeftButton && (!indexAt(e->pos()).isValid()) )
     {
         this->clearSelection();
@@ -241,7 +243,7 @@ void ListView::mousePressEvent(QMouseEvent *e)
                 }
             }
         }
-        //qDebug()<<m_renameTimer->remainingTime()<<m_editValid<<all_index_in_same_row;
+        //qDebug()<<m_renameTimer->remainingTime()<<m_editValid<<all_index_in_same_row<<qApp->styleHints()->mouseDoubleClickInterval();
         if(m_renameTimer->remainingTime()>=0 && m_renameTimer->remainingTime() <= 3000 - qApp->styleHints()->mouseDoubleClickInterval()
                 && indexAt(e->pos()) == m_last_index && m_last_index.isValid() && m_editValid == true && all_index_in_same_row)
         {

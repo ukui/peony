@@ -39,6 +39,7 @@ class SideBarAbstractItem;
  */
 class PEONYCORESHARED_EXPORT SideBarModel : public QAbstractItemModel
 {
+    friend class SideBarFileSystemItem;
     friend class SideBarAbstractItem;
     Q_OBJECT
 

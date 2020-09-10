@@ -80,6 +80,7 @@ BasicPropertiesPage::BasicPropertiesPage(const QStringList &uris, QWidget *paren
 
     icon->setFixedSize(QSize(72, 72));
     icon->setIconSize(QSize(64, 64));
+    icon->setProperty("isIcon", true);
     bool singleUri = uris.count() == 1;
     if (singleUri) {
         this->onSingleFileChanged(nullptr, uris.first());
