@@ -27,6 +27,10 @@
 #include <QStyledItemDelegate>
 #include <QLabel>
 
+// add by wwn
+#include <valarray>
+#include <QPainter>
+
 namespace Peony {
 class SideBarModel;
 class SideBarProxyFilterSortModel;
@@ -51,6 +55,10 @@ public:
     void dropEvent(QDropEvent *e);
 
     QSize sizeHint() const;
+
+    // add by wwn
+    void drawBranches(QPainter *painter, const QRect &rect, const QModelIndex &index) const;
+    void mousePressEvent(QMouseEvent *event);
 
 Q_SIGNALS:
     void updateWindowLocationRequest(const QString &uri, bool addHistory = true, bool force = false);
@@ -82,10 +90,14 @@ private:
 
 class NavigationSideBarItemDelegate : public QStyledItemDelegate
 {
+    Q_OBJECT
     friend class NavigationSideBar;
     explicit NavigationSideBarItemDelegate(QObject *parent = nullptr);
 
     QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const override;
+
+    // add by wwn
+    void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const override;
 };
 class TitleLabel : public QWidget
 {
@@ -96,8 +108,6 @@ public:
 private:
     QLabel *m_pix_label;
     QLabel *m_text_label;
-
-
 };
 
 #endif // NAVIGATIONSIDEBAR_H

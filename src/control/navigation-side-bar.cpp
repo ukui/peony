@@ -55,6 +55,8 @@
 
 #include <QDebug>
 
+int count = 0;
+
 NavigationSideBar::NavigationSideBar(QWidget *parent) : QTreeView(parent)
 {
     setIconSize(QSize(16, 16));
@@ -95,6 +97,12 @@ NavigationSideBar::NavigationSideBar(QWidget *parent) : QTreeView(parent)
     m_proxy_model->setSourceModel(m_model);
 
     this->setModel(m_proxy_model);
+
+    // add by wwn
+    this->setIndentation(0);
+    // this->setRootIsDecorated(false);
+    // this->setLayoutDirection(Qt::RightToLeft);
+    // this->resetIndentation();
 
     connect(this, &QTreeView::expanded, [=](const QModelIndex &index) {
         auto item = m_proxy_model->itemFromIndex(index);
@@ -227,7 +235,34 @@ void NavigationSideBar::keyPressEvent(QKeyEvent *event)
     }
 }
 
-NavigationSideBarItemDelegate::NavigationSideBarItemDelegate(QObject *parent)
+// add by wwn
+void NavigationSideBar::drawBranches(QPainter *painter, const QRect &rect, const QModelIndex &index) const
+{
+    QRect rec = rect;
+    // rec.setRect(rec.x(), rec.y(), 30, 30);
+
+    QTreeView::drawBranches(painter, rec, index);
+}
+
+// add by wwn
+void NavigationSideBar::mousePressEvent(QMouseEvent *event)
+{
+    // x坐标:190-225
+    uint a = event->x();
+    // 如果不在展开按钮的范围内就调用以前的
+    if (event->x() > 250 || event->x() < 195)
+        QTreeView::mousePressEvent(event);
+    else {
+        // 展开children
+        QPoint point(event->x(), event->y());
+        if (!isExpanded(indexAt(point)))
+            expand(indexAt(point));
+        else
+            collapse(indexAt(QPoint(event->x(), event->y())));
+    }
+}
+
+NavigationSideBarItemDelegate::NavigationSideBarItemDelegate(QObject *parent) : QStyledItemDelegate(parent)
 {
 
 }
@@ -237,6 +272,62 @@ QSize NavigationSideBarItemDelegate::sizeHint(const QStyleOptionViewItem &option
     auto size = QStyledItemDelegate::sizeHint(option, index);
     size.setHeight(36);
     return size;
+}
+
+// add by wwn
+void NavigationSideBarItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
+                                          const QModelIndex &index) const
+{
+    if (!index.isValid() || option.state == QStyle::State_None)
+            return;
+    painter->setRenderHint(QPainter::Antialiasing, true);
+
+    // for test
+    // inter->setPen(QColor(0, 160, 230));
+    // painter->drawRect(opt.rect);
+    // painter->drawText(rect, QString::number(count++));
+
+    QStyledItemDelegate::paint(painter, option, index);
+
+    // QStyleOptionViewItem opt = option;
+
+    NavigationSideBar* view = qobject_cast<NavigationSideBar*>(this->parent());
+    if (view == nullptr)
+        return;
+
+    if (view->isExpanded(index)) {
+        QRect rect = option.rect;
+        rect.setTop(rect.top() + 7);
+        rect.setX(rect.x() + 220);
+        rect.setSize(QSize(15, 15));
+        painter->drawPixmap(rect, QPixmap(":/img/branches2"));
+        rect.setX(option.rect.x());
+    }
+    else {
+        QRect rect = option.rect;
+        rect.setTop(rect.top() + 7);
+        rect.setX(rect.x() + 220);
+        rect.setSize(QSize(15, 15));
+        painter->drawPixmap(rect, QPixmap(":/img/branches1"));
+        rect.setX(option.rect.x());
+    }
+
+//    if (index.child(index.row(), index.column()).isValid()) {
+//        QRect rect = option.rect;
+//        rect.setTop(rect.top() + 7);
+//        rect.setX(rect.x() + 220);
+//        rect.setSize(QSize(24, 24));
+//        painter->drawPixmap(rect, QPixmap(":/img/branches2"));
+//        rect.setX(option.rect.x());
+//    }
+//    else {
+//        QRect rect = option.rect;
+//        rect.setTop(rect.top() + 7);
+//        rect.setX(rect.x() + 220);
+//        rect.setSize(QSize(24, 24));
+//        painter->drawPixmap(rect, QPixmap(":/img/branches"));
+//        rect.setX(option.rect.x());
+//    }
 }
 
 NavigationSideBarContainer::NavigationSideBarContainer(QWidget *parent)
@@ -284,6 +375,7 @@ QSize NavigationSideBarContainer::sizeHint() const
     size.setWidth(width);
     return size;
 }
+
 TitleLabel::TitleLabel(QWidget *parent):QWidget(parent)
 {
     this->setFixedHeight(50);
