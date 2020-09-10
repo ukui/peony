@@ -57,7 +57,6 @@ public:
     QSize sizeHint() const;
 
     // add by wwn
-    void drawBranches(QPainter *painter, const QRect &rect, const QModelIndex &index) const;
     void mousePressEvent(QMouseEvent *event);
 
 Q_SIGNALS:
