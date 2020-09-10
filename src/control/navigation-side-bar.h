@@ -101,6 +101,7 @@ class NavigationSideBarItemDelegate : public QStyledItemDelegate
 };
 class TitleLabel : public QWidget
 {
+    Q_OBJECT
 public:
     explicit TitleLabel(QWidget *parent);
 

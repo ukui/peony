@@ -37,6 +37,9 @@ IconContainer::IconContainer(QWidget *parent) : QPushButton(parent)
 
     m_style = new IconContainerStyle;
     setStyle(m_style);
+
+    //fix push button use as icon caused color issues
+    this->setProperty("isIcon", true);
 }
 
 IconContainer::~IconContainer()

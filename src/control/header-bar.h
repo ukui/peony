@@ -51,9 +51,6 @@ public:
 
     void addHeaderBar(HeaderBar *headerBar);
 
-protected:
-    void addWindowButtons();
-
 private:
     QWidget *m_internal_widget;
     QHBoxLayout *m_layout;
@@ -84,6 +81,7 @@ protected:
 private Q_SLOTS:
     void setLocation(const QString &uri);
     void updateIcons();
+    void updateSearchRecursive(bool recursive);
     void updateMaximizeState();
     void startEdit(bool bSearch = false);
     void finishEdit();
@@ -110,6 +108,7 @@ private:
     QToolButton *m_search_button;
 
     bool m_search_mode = false;
+    bool m_search_recursive = true;
 };
 
 class HeaderBarToolButton : public QToolButton
@@ -158,6 +157,7 @@ private:
     QHBoxLayout *m_top_menu_layout;
     MainWindow *m_window;
     QToolButton *m_max_or_restore = nullptr;
+    bool m_tablet_mode;
 };
 
 #endif // HEADERBAR_H

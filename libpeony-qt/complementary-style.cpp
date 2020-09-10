@@ -59,9 +59,13 @@ void ComplementaryStyle::polish(QWidget *widget)
 {
     QProxyStyle::polish(widget);
     if (auto button = qobject_cast<QAbstractButton *>(widget)) {
-        button->setProperty("useIconHighlightEffect", true);
-        button->setProperty("iconHighlightEffectMode", 1);
-        button->setProperty("fillIconSymbolicColor", true);
+        //fix push button use as icon caused color issues
+        if (! button->property("isIcon").toBool())
+        {
+            button->setProperty("useIconHighlightEffect", true);
+            button->setProperty("iconHighlightEffectMode", 1);
+            button->setProperty("fillIconSymbolicColor", true);
+        }
         return;
     }
     if (auto menu = qobject_cast<QMenu *>(widget)) {

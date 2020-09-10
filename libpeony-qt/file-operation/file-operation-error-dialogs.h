@@ -156,6 +156,7 @@ public:
 
 Q_SIGNALS:
     void active ();
+    void choosed ();
 
 public:
     float getIconSize();
@@ -168,8 +169,9 @@ public:
     void setFileModifyTime (QString modify);
 
 protected:
-    void paintEvent(QPaintEvent *event) override;
+    virtual void paintEvent(QPaintEvent *event) override;
     virtual void mousePressEvent(QMouseEvent *event)override;
+    virtual void mouseDoubleClickEvent (QMouseEvent* event) override;
 
 private:
     float m_fix_width = 528;

@@ -357,11 +357,12 @@ TitleLabel::TitleLabel(QWidget *parent):QWidget(parent)
 {
     this->setFixedHeight(50);
     m_pix_label = new QLabel(this);
-    m_pix_label->setPixmap(QPixmap(":/custom/icons/child-folder.png"));
+    m_pix_label->setPixmap(QIcon::fromTheme("folder").pixmap(32,32));
     m_text_label = new QLabel(tr("Files"),this);
     QHBoxLayout *l = new QHBoxLayout(this);
     l->setMargin(9);
     l->addWidget(m_pix_label);
+    l->addSpacing(8);
     l->addWidget(m_text_label);
     l->addStretch();
 }

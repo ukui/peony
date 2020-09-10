@@ -34,6 +34,7 @@
 
 #include "directory-view-factory-manager.h"
 #include "directory-view-plugin-iface2.h"
+#include "search-vfs-uri-parser.h"
 
 #include <QHBoxLayout>
 #include <QUrl>
@@ -48,6 +49,7 @@
 #include <QTimer>
 
 #include <KWindowSystem>
+#include "global-settings.h"
 
 #include <QDebug>
 
@@ -133,6 +135,16 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
     });
     connect(m_location_bar, &Peony::AdvancedLocationBar::updateFileTypeFilter, [=](const int &index) {
         m_window->getCurrentPage()->setSortFilter(index);
+    });
+    connect(m_location_bar, &Peony::AdvancedLocationBar::searchRequest, [=](const QString &path, const QString &key){
+        //key is null, clean search content, show all files
+        if (key == "" || key.isNull())
+            Q_EMIT this->updateLocationRequest(path, false);
+        else
+        {
+            auto targetUri = Peony::SearchVFSUriParser::parseSearchKey(path, key, true, false, "", m_search_recursive);
+            Q_EMIT this->updateLocationRequest(targetUri, false);
+        }
     });
 
     connect(m_location_bar, &Peony::AdvancedLocationBar::updateWindowLocationRequest, this, &HeaderBar::updateLocationRequest);
@@ -305,6 +317,11 @@ void HeaderBar::closeSearch()
     setSearchMode(false);
 }
 
+void HeaderBar::updateSearchRecursive(bool recursive)
+{
+    m_search_recursive = recursive;
+}
+
 void HeaderBar::addSpacing(int pixel)
 {
     for (int i = 0; i < pixel; i++) {
@@ -350,11 +367,11 @@ void HeaderBar::finishEdit()
 
 void HeaderBar::updateIcons()
 {
-    qDebug()<<m_window->getCurrentUri();
-    qDebug()<<m_window->getCurrentSortColumn();
-    qDebug()<<m_window->getCurrentSortOrder();
+    qDebug()<<"updateIcons:" <<m_window->getCurrentUri();
+    qDebug()<<"updateIcons:" <<m_window->getCurrentSortColumn();
+    qDebug()<<"updateIcons:" <<m_window->getCurrentSortOrder();
     m_view_type_menu->setCurrentDirectory(m_window->getCurrentUri());
-    m_view_type_menu->setCurrentView(m_window->getCurrentPage()->getView()->viewId(), true);
+    m_view_type_menu->setCurrentView(m_window->getCurrentPage()->getView()->viewId());
     m_sort_type_menu->switchSortTypeRequest(m_window->getCurrentSortColumn());
     m_sort_type_menu->switchSortOrderRequest(m_window->getCurrentSortOrder());
 
@@ -479,7 +496,7 @@ TopMenuBar::TopMenuBar(MainWindow *parent) : QMenuBar(parent)
                   "border: 0px solid transparent"
                   "}");
 
-    setFixedHeight(48);
+    setFixedHeight(42);
 
     m_top_menu_layout = new QHBoxLayout(this);
     m_top_menu_layout->setSpacing(0);
@@ -505,6 +522,11 @@ void TopMenuBar::addWindowButtons()
     minimize->setAutoRaise(false);
     minimize->setFixedSize(QSize(40, 40));
     minimize->setIconSize(QSize(16, 16));
+    minimize->setStyleSheet(".QToolButton"
+                  "{"
+                  "background-color: transparent;"
+                  "border: 0px solid transparent"
+                  "}");
     connect(minimize, &QToolButton::clicked, this, [=]() {
         KWindowSystem::minimizeWindow(m_window->winId());
         m_window->showMinimized();
@@ -518,6 +540,11 @@ void TopMenuBar::addWindowButtons()
     maximizeAndRestore->setAutoRaise(false);
     maximizeAndRestore->setFixedSize(QSize(40, 40));
     maximizeAndRestore->setIconSize(QSize(16, 16));
+    maximizeAndRestore->setStyleSheet(".QToolButton"
+                  "{"
+                  "background-color: transparent;"
+                  "border: 0px solid transparent"
+                  "}");
     connect(maximizeAndRestore, &QToolButton::clicked, this, [=]() {
         m_window->maximizeOrRestore();
 
@@ -538,20 +565,46 @@ void TopMenuBar::addWindowButtons()
     close->setAutoRaise(false);
     close->setFixedSize(QSize(40, 40));
     close->setIconSize(QSize(16, 16));
+    close->setStyleSheet(".QToolButton"
+                  "{"
+                  "background-color: transparent;"
+                  "border: 0px solid transparent"
+                  "}");
     connect(close, &QToolButton::clicked, this, [=]() {
         m_window->close();
     });
 
+    auto palette = qApp->palette();
+    palette.setColor(QPalette::Highlight, QColor("#E54A50"));
+    close->setPalette(palette);
+
+    m_tablet_mode = Peony::GlobalSettings::getInstance()->getValue(TABLET_MODE).toBool();
+    if(m_tablet_mode)
+    {
+        minimize->hide();
+        maximizeAndRestore->hide();
+        close->hide();
+    }
     connect(qApp, &QApplication::paletteChanged, close, [=](){
+        m_tablet_mode = Peony::GlobalSettings::getInstance()->getValue(TABLET_MODE).toBool();
+        if(m_tablet_mode)
+        {
+            minimize->hide();
+            maximizeAndRestore->hide();
+            close->hide();
+        }
+        else
+        {
+            minimize->setVisible(true);
+            maximizeAndRestore->setVisible(true);
+            close->setVisible(true);
+        }
         QTimer::singleShot(100, this, [=](){
             auto palette = qApp->palette();
             palette.setColor(QPalette::Highlight, QColor("#E54A50"));
             close->setPalette(palette);
         });
     });
-    auto palette = qApp->palette();
-    palette.setColor(QPalette::Highlight, QColor("#E54A50"));
-    close->setPalette(palette);
 
     layout->addWidget(minimize);
     layout->addWidget(maximizeAndRestore);
@@ -615,93 +668,10 @@ void HeaderBarContainer::addHeaderBar(HeaderBar *headerBar)
     headerBar->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     m_layout->addWidget(headerBar);
 
-    //addWindowButtons();
-
     m_internal_widget->setLayout(m_layout);
     addWidget(m_internal_widget);
 
     m_header_bar->m_window->installEventFilter(this);
 }
 
-void HeaderBarContainer::addWindowButtons()
-{
-    //m_window_buttons = new QWidget(this);
-    auto layout = new QHBoxLayout;
 
-    layout->setContentsMargins(0, 0, 4, 0);
-    layout->setSpacing(4);
-
-    //minimize, maximize and close
-    auto minimize = new QToolButton(m_internal_widget);
-    minimize->setIcon(QIcon::fromTheme("window-minimize-symbolic"));
-    minimize->setToolTip(tr("Minimize"));
-    minimize->setAutoRaise(false);
-    minimize->setFixedSize(QSize(40, 40));
-    minimize->setIconSize(QSize(16, 16));
-    connect(minimize, &QToolButton::clicked, this, [=]() {
-        KWindowSystem::minimizeWindow(m_header_bar->m_window->winId());
-        //m_header_bar->m_window->showMinimized();
-    });
-
-    //window-maximize-symbolic
-    //window-restore-symbolic
-    auto maximizeAndRestore = new QToolButton(m_internal_widget);
-    maximizeAndRestore->setToolTip(tr("Maximize/Restore"));
-    maximizeAndRestore->setIcon(QIcon::fromTheme("window-maximize-symbolic"));
-    maximizeAndRestore->setAutoRaise(false);
-    maximizeAndRestore->setFixedSize(QSize(40, 40));
-    maximizeAndRestore->setIconSize(QSize(16, 16));
-    connect(maximizeAndRestore, &QToolButton::clicked, this, [=]() {
-        m_header_bar->m_window->maximizeOrRestore();
-
-        bool maximized = m_header_bar->m_window->isMaximized();
-        if (maximized) {
-            maximizeAndRestore->setIcon(QIcon::fromTheme("window-restore-symbolic"));
-            //maximizeAndRestore->setToolTip(tr("Restore"));
-        } else {
-            maximizeAndRestore->setIcon(QIcon::fromTheme("window-maximize-symbolic"));
-            //maximizeAndRestore->setToolTip(tr("Maximize"));
-        }
-    });
-    m_max_or_restore = maximizeAndRestore;
-
-    auto close = new QToolButton(m_internal_widget);
-    close->setIcon(QIcon::fromTheme("window-close-symbolic"));
-    close->setToolTip(tr("Close"));
-    close->setAutoRaise(false);
-    close->setFixedSize(QSize(40, 40));
-    close->setIconSize(QSize(16, 16));
-    connect(close, &QToolButton::clicked, this, [=]() {
-        m_header_bar->m_window->close();
-    });
-
-    connect(qApp, &QApplication::paletteChanged, close, [=](){
-        QTimer::singleShot(100, this, [=](){
-            auto palette = qApp->palette();
-            palette.setColor(QPalette::Highlight, QColor("#E54A50"));
-            close->setPalette(palette);
-        });
-    });
-    auto palette = qApp->palette();
-    palette.setColor(QPalette::Highlight, QColor("#E54A50"));
-    close->setPalette(palette);
-
-    layout->addWidget(minimize);
-    layout->addWidget(maximizeAndRestore);
-    layout->addWidget(close);
-
-    m_layout->addLayout(layout);
-
-    minimize->setMouseTracking(true);
-    minimize->installEventFilter(this);
-    maximizeAndRestore->setMouseTracking(true);
-    maximizeAndRestore->installEventFilter(this);
-    close->setMouseTracking(true);
-    close->installEventFilter(this);
-
-    for (int i = 0; i < 3; i++) {
-        auto w = layout->itemAt(i)->widget();
-        w->setProperty("useIconHighlightEffect", true);
-        w->setProperty("iconHighlightEffectMode", 1);
-    }
-}
