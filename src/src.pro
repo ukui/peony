@@ -69,4 +69,5 @@ data.files += ../data/peony.desktop \
 INSTALLS += data
 
 RESOURCES += \
-    custome.qrc
+    custome.qrc \
+    img.qrc
