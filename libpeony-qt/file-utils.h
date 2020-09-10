@@ -44,6 +44,7 @@ public:
     static bool getFileHasChildren(const GFileWrapperPtr &file);
     static bool getFileIsFolder(const GFileWrapperPtr &file);
     static bool getFileIsFolder(const QString &uri);
+    static bool getFileIsSymbolicLink(const QString &uri);
     static QStringList getChildrenUris(const QString &directoryUri);
 
     static QString getNonSuffixedBaseNameFromUri(const QString &uri);

@@ -88,10 +88,14 @@ FileWatcher::~FileWatcher()
     stopMonitor();
     cancel();
 
-    g_object_unref(m_cancellable);
-    g_object_unref(m_dir_monitor);
-    g_object_unref(m_monitor);
-    g_object_unref(m_file);
+    if (m_cancellable)
+        g_object_unref(m_cancellable);
+    if (m_dir_monitor)
+        g_object_unref(m_dir_monitor);
+    if (m_monitor)
+        g_object_unref(m_monitor);
+    if (m_file)
+        g_object_unref(m_file);
 }
 
 /*!
@@ -128,6 +132,8 @@ void FileWatcher::prepare()
 
 void FileWatcher::cancel()
 {
+    if (!m_cancellable)
+        return;
     g_cancellable_cancel(m_cancellable);
     g_object_unref(m_cancellable);
     m_cancellable = g_cancellable_new();
@@ -167,9 +173,12 @@ void FileWatcher::changeMonitorUri(QString uri)
 
     m_uri = uri;
     m_target_uri = uri;
-    g_object_unref(m_file);
-    g_object_unref(m_monitor);
-    g_object_unref(m_dir_monitor);
+    if (m_file)
+        g_object_unref(m_file);
+    if (m_monitor)
+        g_object_unref(m_monitor);
+    if (m_dir_monitor)
+        g_object_unref(m_dir_monitor);
 
     m_file = g_file_new_for_uri(uri.toUtf8().constData());
 

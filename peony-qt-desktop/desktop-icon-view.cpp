@@ -68,6 +68,7 @@
 #include <QApplication>
 
 #include <QStringList>
+#include <QMessageBox>
 
 #include <QDebug>
 
@@ -460,7 +461,7 @@ void DesktopIconView::openFileByUri(QString uri)
     auto job = new FileInfoJob(info);
     job->setAutoDelete();
     job->connect(job, &FileInfoJob::queryAsyncFinished, [=]() {
-        if (info->isDir() || info->isVolume() || info->isVirtual()) {
+        if ((info->isDir() || info->isVolume() || info->isVirtual())) {
 #if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
             QProcess p;
             QUrl url = uri;

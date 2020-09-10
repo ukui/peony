@@ -177,6 +177,11 @@ void DirectoryViewContainer::addFilterCondition(int option, int classify, bool u
     m_proxy_model->addFilterCondition(option, classify, updateNow);
 }
 
+void DirectoryViewContainer::addFileNameFilter(QString key, bool updateNow)
+{
+    m_proxy_model->addFileNameFilter(key, updateNow);
+}
+
 void DirectoryViewContainer::removeFilterCondition(int option, int classify, bool updateNow)
 {
     m_proxy_model->removeFilterCondition(option, classify, updateNow);

@@ -69,6 +69,12 @@ private:
     ~ThumbnailManager();
     void createThumbnailInternal(const QString &uri, std::shared_ptr<FileWatcher> watcher = nullptr, bool force = false);
 
+    void createVideFileThumbnail(const QString &uri, std::shared_ptr<FileWatcher> watcher);
+    void createPdfFileThumbnail(const QString &uri, std::shared_ptr<FileWatcher> watcher);
+    void createImageFileThumbnail(const QString &uri, std::shared_ptr<FileWatcher> watcher);
+    void createOfficeFileThumbnail(const QString &uri, std::shared_ptr<FileWatcher> watcher);
+    void createDesktopFileThumbnail(const QString &uri, std::shared_ptr<FileWatcher> watcher);
+
     QHash<QString, QIcon> m_hash;
     //QMutex m_mutex;
 
