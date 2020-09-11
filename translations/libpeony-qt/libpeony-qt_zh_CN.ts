@@ -1023,7 +1023,7 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
         <location filename="../../libpeony-qt/file-operation/file-copy-operation.cpp" line="189"/>
         <location filename="../../libpeony-qt/file-operation/file-copy-operation.cpp" line="308"/>
         <source>File copy error</source>
-        <translation type="unfinished"></translation>
+        <translation>文件复制错误</translation>
     </message>
 </context>
 <context>
@@ -1036,7 +1036,7 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
         <location filename="../../libpeony-qt/file-operation/file-delete-operation.cpp" line="72"/>
         <location filename="../../libpeony-qt/file-operation/file-delete-operation.cpp" line="97"/>
         <source>File delete error</source>
-        <translation type="unfinished"></translation>
+        <translation>文件删除错误</translation>
     </message>
 </context>
 <context>
@@ -1322,7 +1322,7 @@ Do you want to delete the link file?</source>
     <message>
         <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="931"/>
         <source>File delete error</source>
-        <translation type="unfinished"></translation>
+        <translation>文件删除错误</translation>
     </message>
     <message>
         <source>File delete</source>
