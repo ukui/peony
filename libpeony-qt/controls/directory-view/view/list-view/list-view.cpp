@@ -590,7 +590,7 @@ void ListView2::bindModel(FileItemModel *model, FileItemProxyFilterSortModel *pr
     m_model = model;
     m_proxy_model = proxyModel;
 
-    m_model->setPositiveResponse(false);
+    //m_model->setPositiveResponse(false);
 
     m_view->bindModel(model, proxyModel);
     connect(model, &FileItemModel::findChildrenFinished, this, &DirectoryViewWidget::viewDirectoryChanged);
@@ -648,7 +648,7 @@ void ListView2::bindModel(FileItemModel *model, FileItemProxyFilterSortModel *pr
     connect(m_model, &FileItemModel::findChildrenFinished, this, [=]() {
         if (m_need_resize_header) {
             //delay a while for proxy model sorting.
-            QTimer::singleShot(100, this, [=]() {
+            QTimer::singleShot(500, this, [=]() {
                 //m_view->setModel(m_proxy_model);
                 //adjust columns layout.
                 m_view->adjustColumnsSize();

@@ -134,6 +134,8 @@ private:
     QString m_file_location = nullptr;
 
     bool m_auto_delete = false;
+
+    GCancellable *m_cancellable = nullptr;
 };
 
 }
