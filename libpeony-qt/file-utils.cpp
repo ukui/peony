@@ -202,6 +202,8 @@ QString FileUtils::getFileDisplayName(const QString &uri)
                               G_FILE_QUERY_INFO_NONE,
                               nullptr,
                               nullptr));
+    if (!info.get()->get())
+        return nullptr;
     return g_file_info_get_display_name(info.get()->get());
 }
 
