@@ -49,6 +49,10 @@ FileOperationProgressBar *FileOperationProgressBar::getInstance()
 
 void FileOperationProgressBar::removeAllProgressbar()
 {
+    if (nullptr != m_main_progressbar && nullptr != m_current_main) {
+        m_main_progressbar->disconnect(m_current_main, &ProgressBar::sendValue, 0, 0);
+        m_current_main = nullptr;
+    }
     for (auto pg = m_widget_list->constBegin(); pg != m_widget_list->constEnd(); ++pg) {
         if (nullptr != pg.key()) delete pg.key();
         if (nullptr != pg.value()) delete pg.value();
@@ -234,7 +238,6 @@ void FileOperationProgressBar::showWidgetList(bool show)
 
 void FileOperationProgressBar::mainProgressChange(QListWidgetItem *item)
 {
-    // disconnect
     if (nullptr != m_main_progressbar && nullptr != m_current_main) {
         m_main_progressbar->disconnect(m_current_main, &ProgressBar::sendValue, 0, 0);
     }
