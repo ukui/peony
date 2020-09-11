@@ -42,6 +42,8 @@ Peony::ThumbnailJob::ThumbnailJob(const QString &uri, const std::shared_ptr<Peon
             setParent(watcher->parent());
         }
     }
+
+    setAutoDelete(true);
 }
 
 Peony::ThumbnailJob::~ThumbnailJob()
