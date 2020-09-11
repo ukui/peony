@@ -66,5 +66,6 @@ void Peony::ThumbnailJob::run()
 
     setParent(nullptr);
     auto strongPtr = m_watcher.lock();
-    ThumbnailManager::getInstance()->createThumbnailInternal(m_uri, strongPtr);
+    if (strongPtr.get())
+        ThumbnailManager::getInstance()->createThumbnailInternal(m_uri, strongPtr);
 }

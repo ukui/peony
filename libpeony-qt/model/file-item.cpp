@@ -274,9 +274,12 @@ void FileItem::findChildrenAsync()
                     connect(infoJob, &FileInfoJob::queryAsyncFinished, this, [=]() {
                         m_model->dataChanged(m_model->indexFromUri(uri), m_model->indexFromUri(uri));
                         auto info = FileInfo::fromUri(uri);
+                        ThumbnailManager::getInstance()->createThumbnail(uri, m_thumbnail_watcher, true);
+                        /*
                         if (info->isDesktopFile()) {
                             ThumbnailManager::getInstance()->updateDesktopFileThumbnail(info->uri(), m_thumbnail_watcher);
                         }
+                        */
                     });
                     infoJob->queryAsync();
                 }
@@ -570,7 +573,7 @@ void FileItem::updateInfoSync()
     FileInfoJob *job = new FileInfoJob(m_info);
     if (job->querySync()) {
         m_model->dataChanged(this->firstColumnIndex(), this->lastColumnIndex());
-        ThumbnailManager::getInstance()->createThumbnail(this->uri(), m_thumbnail_watcher);
+        ThumbnailManager::getInstance()->createThumbnail(this->uri(), m_thumbnail_watcher, true);
     }
     job->deleteLater();
 }
@@ -581,7 +584,7 @@ void FileItem::updateInfoAsync()
     job->setAutoDelete();
     job->connect(job, &FileInfoJob::infoUpdated, this, [=]() {
         m_model->dataChanged(this->firstColumnIndex(), this->lastColumnIndex());
-        ThumbnailManager::getInstance()->createThumbnail(this->uri(), m_thumbnail_watcher);
+        ThumbnailManager::getInstance()->createThumbnail(this->uri(), m_thumbnail_watcher, true);
     });
     job->queryAsync();
 }

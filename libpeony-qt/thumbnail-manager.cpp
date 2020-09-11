@@ -254,6 +254,14 @@ void ThumbnailManager::createThumbnailInternal(const QString &uri, std::shared_p
 
 void ThumbnailManager::createThumbnail(const QString &uri, std::shared_ptr<FileWatcher> watcher, bool force)
 {
+    auto thumbnail = tryGetThumbnail(uri);
+    if (!thumbnail.isNull()) {
+        if (!force) {
+            watcher->thumbnailUpdated(uri);
+            return;
+        }
+    }
+
     auto thumbnailJob = new ThumbnailJob(uri, watcher, this);
     m_thumbnail_thread_pool->start(thumbnailJob);
 }
