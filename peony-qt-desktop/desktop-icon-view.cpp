@@ -400,6 +400,17 @@ void DesktopIconView::initShoutCut()
         }
     });
     addAction(editAction);
+
+    auto settings = GlobalSettings::getInstance();
+    m_show_hidden = settings->isExist("show-hidden")? settings->getValue("show-hidden").toBool(): false;
+    //show hidden action
+    QAction *showHiddenAction = new QAction(this);
+    showHiddenAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_H));
+    addAction(showHiddenAction);
+    connect(showHiddenAction, &QAction::triggered, this, [=]() {
+        //qDebug() << "show hidden";
+        this->setShowHidden();
+    });
 }
 
 void DesktopIconView::initMenu()
@@ -453,6 +464,13 @@ void DesktopIconView::initMenu()
             }
         });
     }, Qt::UniqueConnection);
+}
+
+void DesktopIconView::setShowHidden()
+{
+    m_show_hidden = ! m_show_hidden;
+    qDebug() << "DesktopIconView::setShowHidden:" <<m_show_hidden;
+    m_proxy_model->setShowHidden(m_show_hidden);
 }
 
 void DesktopIconView::openFileByUri(QString uri)

@@ -171,6 +171,8 @@ public Q_SLOTS:
     void updateItemPosByUri(const QString &uri, const QPoint &pos);
     void ensureItemPosByUri(const QString &uri);
 
+    void setShowHidden();
+
 protected:
     void mousePressEvent(QMouseEvent *e);
     void mouseReleaseEvent(QMouseEvent *e);
@@ -211,6 +213,8 @@ private:
     bool m_ctrl_or_shift_pressed = false;
 
     bool  m_ctrl_key_pressed = false;
+
+    bool m_show_hidden;
 
     QTimer m_refresh_timer;
 
