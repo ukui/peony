@@ -49,10 +49,17 @@ FileOperationProgressBar *FileOperationProgressBar::getInstance()
 
 void FileOperationProgressBar::removeAllProgressbar()
 {
-    for (auto pg = m_widget_list->constBegin(); pg != m_widget_list->constEnd(); ++pg) {
-        if (nullptr != pg.key()) delete pg.key();
-        if (nullptr != pg.value()) delete pg.value();
+    if (nullptr != m_main_progressbar && nullptr != m_current_main) {
+        m_main_progressbar->disconnect(m_current_main, &ProgressBar::sendValue, 0, 0);
+        m_current_main = nullptr;
     }
+
+    for (auto pg = m_widget_list->constBegin(); pg != m_widget_list->constEnd(); ++pg) {
+        if (pg.value()->m_current_size > 0) continue;
+        if (nullptr != pg.value()) pg.value()->deleteLater();
+        if (nullptr != pg.key()) delete pg.key();
+    }
+
     m_widget_list->clear();
     m_list_widget->clear();
     m_progress_list->clear();
@@ -97,13 +104,11 @@ void FileOperationProgressBar::removeFileOperation(ProgressBar *progress)
     progress->hide();
     QListWidgetItem* li = (*m_progress_list)[progress];
 
-    // delete from map
     m_list_widget->removeItemWidget(li);
     m_progress_list->remove(progress);
     m_widget_list->remove(li);
 
-    // free progress
-    delete progress;
+    progress->deleteLater();
     delete li;
     --m_progress_size;
 
@@ -151,7 +156,7 @@ FileOperationProgressBar::FileOperationProgressBar(QWidget *parent) : QWidget(pa
 
     showWidgetList(false);
 
-    connect(m_main_progressbar, &MainProgressBar::minimized, [=](){
+    connect(m_main_progressbar, &MainProgressBar::minimized, [=]() {
         this->showMinimized();
     });
     connect(m_main_progressbar, &MainProgressBar::closeWindow, [=](){
@@ -234,7 +239,6 @@ void FileOperationProgressBar::showWidgetList(bool show)
 
 void FileOperationProgressBar::mainProgressChange(QListWidgetItem *item)
 {
-    // disconnect
     if (nullptr != m_main_progressbar && nullptr != m_current_main) {
         m_main_progressbar->disconnect(m_current_main, &ProgressBar::sendValue, 0, 0);
     }
@@ -652,6 +656,9 @@ void ProgressBar::mouseReleaseEvent(QMouseEvent *event)
         if (QMessageBox::Ok == msgBox.exec()) {
             m_is_stopping = true;
             Q_EMIT cancelled();
+            if (m_current_value <= 0) {
+                Q_EMIT finished(this);
+            }
         }
     }
 
