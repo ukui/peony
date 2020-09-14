@@ -51,6 +51,8 @@ FileLinkOperation::~FileLinkOperation()
 
 }
 
+#include <syslog.h>
+
 void FileLinkOperation::run()
 {
     operationStarted();
@@ -60,8 +62,7 @@ retry:
     QUrl url = m_src_uri;
     g_file_make_symbolic_link(destFile.get()->get(),
                               url.path().toUtf8().constData(),
-                              nullptr,
-                              &err);
+                              nullptr, &err);
     if (err) {
         setHasError(true);
         //forbid response actions except retry and cancel.
@@ -86,8 +87,15 @@ retry:
 
         if (responseType == Peony::Retry) {
             goto retry;
+        } else if (responseType == Peony::Cancel) {
+            goto end;
         }
     }
+
+    g_file_set_display_name(destFile.get()->get(),
+                            QUrl::fromPercentEncoding(m_dest_uri.split("/").last().toUtf8()).toUtf8().constData(),
+                            nullptr, nullptr);
+end:
     operationFinished();
     //notifyFileWatcherOperationFinished();
 }
