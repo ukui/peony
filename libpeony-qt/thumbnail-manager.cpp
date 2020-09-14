@@ -155,7 +155,7 @@ void ThumbnailManager::createImageFileThumbnail(const QString &uri, std::shared_
         }
     }
 
-    qApp->processEvents();
+    //qApp->processEvents();
     return;
 }
 

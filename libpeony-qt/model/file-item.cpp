@@ -58,8 +58,20 @@ FileItem::FileItem(std::shared_ptr<Peony::FileInfo> info, FileItem *parentItem, 
         auto index = m_model->indexFromUri(uri);
         if (index.isValid()) {
             auto item = m_model->itemFromIndex(index);
-            if (item)
-                m_model->dataChanged(item->firstColumnIndex(), item->lastColumnIndex());
+            if (item) {
+                /*!
+                  \note
+                  fix the probabilistic jamming while thumbnailing with list view.
+
+                  we have to only trigger first column index dataChanged signal,
+                  otherwise there will be probility stucked whole program.
+
+                  i'm not sure if it is a bug of qtreeview.
+                  */
+
+                //m_model->dataChanged(item->firstColumnIndex(), item->lastColumnIndex());
+                m_model->dataChanged(item->firstColumnIndex(), item->firstColumnIndex());
+            }
         }
     });
 
