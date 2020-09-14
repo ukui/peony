@@ -386,7 +386,11 @@ void Peony::FileOperationErrorDialogWarning::handle(Peony::FileOperationError &e
 
     exec();
 
-    error.respCode = IgnoreOne;
+    if (m_error->errorCode == G_IO_ERROR_NOT_SUPPORTED) {
+        error.respCode = Cancel;
+    } else {
+        error.respCode = IgnoreOne;
+    }
 }
 
 Peony::FileRenameDialog::FileRenameDialog(QWidget *parent) : QDialog(parent)
