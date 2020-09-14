@@ -60,8 +60,10 @@ retry:
     QUrl url = m_src_uri;
     g_file_make_symbolic_link(destFile.get()->get(),
                               url.path().toUtf8().constData(),
-                              nullptr,
-                              &err);
+                              nullptr, &err);
+    g_file_set_display_name(destFile.get()->get(),
+                            QUrl::fromPercentEncoding(m_dest_uri.split("/").last().toUtf8()).toUtf8().constData(),
+                            nullptr, nullptr);
     if (err) {
         setHasError(true);
         //forbid response actions except retry and cancel.
