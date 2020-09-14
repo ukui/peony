@@ -215,6 +215,8 @@ QString FileUtils::getFileIconName(const QString &uri)
                               G_FILE_QUERY_INFO_NONE,
                               nullptr,
                               nullptr));
+    if (!G_IS_FILE_INFO (info.get()->get()))
+        return nullptr;
     GIcon *g_icon = g_file_info_get_icon (info.get()->get());
     QString icon_name;
     //do not unref the GIcon from info.
