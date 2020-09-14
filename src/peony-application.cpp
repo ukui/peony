@@ -130,9 +130,10 @@ PeonyApplication::PeonyApplication(int &argc, char *argv[], const char *applicat
     t3->load("/usr/share/qt5/translations/qt_"+QLocale::system().name());
     QApplication::installTranslator(t3);
 
-    QTranslator *t4 = new QTranslator(this);
-    t4->load("/home/weinan1/prj/source/build-peony-qt-unknown-Debug/libpeony-qt/.qm/libpeony-qt_zh_CN");
-    QApplication::installTranslator(t4);
+    // for test
+    // QTranslator *t4 = new QTranslator(this);
+    // t4->load("/home/weinan1/prj/source/build-peony-qt-unknown-Debug/libpeony-qt/.qm/libpeony-qt_zh_CN");
+    // QApplication::installTranslator(t4);
 
     setStyle(Peony::ComplementaryStyle::getStyle());
 
