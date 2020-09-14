@@ -336,7 +336,7 @@ void TabWidget::searchChildUpdate()
 
 void TabWidget::browsePath()
 {
-    QString target_path = QFileDialog::getExistingDirectory(this, "caption", getCurrentUri(), QFileDialog::ShowDirsOnly);
+    QString target_path = QFileDialog::getExistingDirectory(this, tr("Select path"), getCurrentUri(), QFileDialog::ShowDirsOnly);
     qDebug()<<"browsePath Opened:"<<target_path;
     //add root prefix
     if (! target_path.contains("file://") && target_path != "")

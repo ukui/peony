@@ -170,7 +170,7 @@ void AdvanceSearchBar::setdefaultpath(QString path)
 
 void AdvanceSearchBar::browsePath()
 {
-    QString target_path = QFileDialog::getExistingDirectory(this, "caption", m_top_window->getCurrentUri(), QFileDialog::ShowDirsOnly);
+    QString target_path = QFileDialog::getExistingDirectory(this, tr("Select path"), m_top_window->getCurrentUri(), QFileDialog::ShowDirsOnly);
     //qDebug()<<"browsePath Opened:"<<target_path;
     //add root prefix
     if (! target_path.contains("file://"))

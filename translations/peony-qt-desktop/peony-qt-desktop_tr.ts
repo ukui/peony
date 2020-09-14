@@ -14,19 +14,9 @@
         <translation>Yeni Klasör</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="431"/>
+        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="442"/>
         <source>set background</source>
         <translation>Arkaplanı Değiştir</translation>
-    </message>
-    <message>
-        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="489"/>
-        <source>Open Link failed</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="490"/>
-        <source>File not exist, do you want to delete the link file?</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
