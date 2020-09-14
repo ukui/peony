@@ -307,7 +307,10 @@ const QList<QAction *> DirectoryViewMenu::constructCreateTemplateActions()
         if (m_is_cd) {
             createAction->setEnabled(false);
         }
-        if(m_directory.compare(QString::fromLocal8Bit("trash:///")) == 0)
+        //fix create folder fail issue in special path
+        QString homeUri = "file://" +  QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
+        QString media = "file:///media/";
+        if (! m_directory.contains(homeUri) && ! m_directory.contains(media))
         {
             createAction->setEnabled(false);
         }

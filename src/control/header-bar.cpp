@@ -47,6 +47,7 @@
 #include <QEvent>
 #include <QApplication>
 #include <QTimer>
+#include <QStandardPaths>
 
 #include <KWindowSystem>
 
@@ -82,6 +83,7 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
     createFolder->setAutoRaise(false);
     createFolder->setFixedSize(QSize(40, 40));
     createFolder->setIconSize(QSize(16, 16));
+    m_create_folder = createFolder;
 
     addSpacing(2);
 
@@ -377,6 +379,15 @@ void HeaderBar::updateIcons()
     //go back & go forward
     m_go_back->setEnabled(m_window->getCurrentPage()->canGoBack());
     m_go_forward->setEnabled(m_window->getCurrentPage()->canGoForward());
+
+    //fix create folder fail issue in special path
+    QString homeUri = "file://" +  QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
+    QString media = "file:///media/";
+    auto curUri = m_window->getCurrentUri();
+    if (curUri.contains(homeUri) || curUri.contains(media))
+        m_create_folder->setEnabled(true);
+    else
+        m_create_folder->setEnabled(false);
 
     m_go_back->setProperty("useIconHighlightEffect", true);
     m_go_back->setProperty("iconHighlightEffectMode", 1);
