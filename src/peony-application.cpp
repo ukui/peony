@@ -121,12 +121,19 @@ PeonyApplication::PeonyApplication(int &argc, char *argv[], const char *applicat
     QTranslator *t = new QTranslator(this);
     qDebug()<<"\n\n\n\n\n\n\ntranslate:"<<t->load("/usr/share/libpeony-qt/libpeony-qt_"+QLocale::system().name());
     QApplication::installTranslator(t);
+
     QTranslator *t2 = new QTranslator(this);
     t2->load("/usr/share/peony-qt/peony-qt_"+QLocale::system().name());
     QApplication::installTranslator(t2);
+
     QTranslator *t3 = new QTranslator(this);
     t3->load("/usr/share/qt5/translations/qt_"+QLocale::system().name());
     QApplication::installTranslator(t3);
+
+    QTranslator *t4 = new QTranslator(this);
+    t4->load("/home/weinan1/prj/source/build-peony-qt-unknown-Debug/libpeony-qt/.qm/libpeony-qt_zh_CN");
+    QApplication::installTranslator(t4);
+
     setStyle(Peony::ComplementaryStyle::getStyle());
 
     parser.addOption(quitOption);

@@ -43,6 +43,7 @@ SideBarFavoriteItem::SideBarFavoriteItem(QString uri,
         //m_icon_name = "emblem-favorite";
         //top dir don't show icon
         m_icon_name = "";
+        m_uri = "computer:///";
 
         SideBarFavoriteItem *recentItem = new SideBarFavoriteItem("recent:///", this, m_model);
         QString desktopUri = "file://" + QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);

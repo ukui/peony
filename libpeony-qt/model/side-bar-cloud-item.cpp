@@ -1,4 +1,4 @@
-#include "side-bar-cloud-item.h"
+        #include "side-bar-cloud-item.h"
 
 
 #include "side-bar-model.h"
@@ -17,7 +17,7 @@ SideBarCloudItem::SideBarCloudItem(QString uri,
     if (m_is_root_child) {
         QString homeUri = "mockup:///";
         m_uri = homeUri;
-        m_display_name = tr("云存储");
+        m_display_name = tr("CloudStorage");
         //m_icon_name = "emblem-personal";
         //top dir don't show icon
         m_icon_name = "";
@@ -32,8 +32,8 @@ SideBarCloudItem::SideBarCloudItem(QString uri,
         return;
     }
     m_uri = uri;
-    m_display_name = "云存储文件";
-    m_icon_name = FileUtils::getFileIconName(uri);
+    m_display_name = tr("CloudFile");
+    m_icon_name = "cloud-device";// FileUtils::getFileIconName(uri);
 }
 
 QModelIndex SideBarCloudItem::firstColumnIndex()

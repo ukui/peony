@@ -19,14 +19,12 @@
         <translation>设置壁纸</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="489"/>
         <source>Open Link failed</source>
-        <translation>打开快捷方式失败</translation>
+        <translation type="vanished">打开快捷方式失败</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="490"/>
         <source>File not exist, do you want to delete the link file?</source>
-        <translation>目标文件夹不存在，是否删除该无效快捷方式？</translation>
+        <translation type="vanished">目标文件夹不存在，是否删除该无效快捷方式？</translation>
     </message>
 </context>
 <context>
