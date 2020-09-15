@@ -35,6 +35,8 @@
 #include "directory-view-factory-manager.h"
 #include "directory-view-plugin-iface2.h"
 #include "search-vfs-uri-parser.h"
+#include "file-info.h"
+#include "file-info-job.h"
 
 #include <QHBoxLayout>
 #include <QUrl>
@@ -381,10 +383,11 @@ void HeaderBar::updateIcons()
     m_go_forward->setEnabled(m_window->getCurrentPage()->canGoForward());
 
     //fix create folder fail issue in special path
-    QString homeUri = "file://" +  QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
-    QString media = "file:///media/";
     auto curUri = m_window->getCurrentUri();
-    if (curUri.contains(homeUri) || curUri.contains(media))
+    auto info = Peony::FileInfo::fromUri(curUri, false);
+    Peony::FileInfoJob job(info);
+    job.querySync();
+    if (info->canWrite())
         m_create_folder->setEnabled(true);
     else
         m_create_folder->setEnabled(false);

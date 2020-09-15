@@ -308,9 +308,10 @@ const QList<QAction *> DirectoryViewMenu::constructCreateTemplateActions()
             createAction->setEnabled(false);
         }
         //fix create folder fail issue in special path
-        QString homeUri = "file://" +  QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
-        QString media = "file:///media/";
-        if (! m_directory.contains(homeUri) && ! m_directory.contains(media))
+        auto info = FileInfo::fromUri(m_directory, false);
+        FileInfoJob job(info);
+        job.querySync();
+        if (! info->canWrite())
         {
             createAction->setEnabled(false);
         }
