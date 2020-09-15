@@ -535,6 +535,9 @@ void MainWindow::setShortCuts()
     copyAction->setShortcut(QKeySequence::Copy);
     connect(copyAction, &QAction::triggered, [=]() {
         if (!this->getCurrentSelections().isEmpty())
+            if (this->getCurrentSelections().first().startsWith("trash://", Qt::CaseInsensitive)) {
+                return ;
+            }
             Peony::ClipboardUtils::setClipboardFiles(this->getCurrentSelections(), false);
     });
     addAction(copyAction);
@@ -554,6 +557,9 @@ void MainWindow::setShortCuts()
     cutAction->setShortcut(QKeySequence::Cut);
     connect(cutAction, &QAction::triggered, [=]() {
         if (!this->getCurrentSelections().isEmpty()) {
+            if (this->getCurrentSelections().first().startsWith("trash://", Qt::CaseInsensitive)) {
+                return ;
+            }
             Peony::ClipboardUtils::setClipboardFiles(this->getCurrentSelections(), true);
         }
     });
