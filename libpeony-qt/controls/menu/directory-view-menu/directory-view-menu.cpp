@@ -358,9 +358,10 @@ const QList<QAction *> DirectoryViewMenu::constructCreateTemplateActions()
 
                 QAction *action = new QAction(tmpIcon, qinfo.baseName(), this);
                 connect(action, &QAction::triggered, [=]() {
+                    // automatically check for conficts
                     CreateTemplateOperation op(m_directory, CreateTemplateOperation::Template, t);
-                    Peony::FileOperationErrorDialogConflict dlg;
-                    connect(&op, &Peony::FileOperation::errored, &dlg, &Peony::FileOperationErrorDialogConflict::handle);
+                    Peony::FileOperationErrorDialogWarning dlg;
+                    connect(&op, &Peony::FileOperation::errored, &dlg, &Peony::FileOperationErrorDialogWarning::handle);
                     op.run();
                     auto target = op.target();
                     m_uris_to_edit<<target;

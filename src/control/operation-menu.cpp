@@ -184,13 +184,24 @@ OperationMenuEditWidget::OperationMenuEditWidget(MainWindow *window, QWidget *pa
     vbox->addLayout(hbox);
 
     connect(m_copy, &QToolButton::clicked, this, [=]() {
-        Peony::ClipboardUtils::setClipboardFiles(window->getCurrentSelections(), false);
-        Q_EMIT operationAccepted();
+        if (!window->getCurrentSelections().isEmpty()) {
+            if (window->getCurrentSelections().first().startsWith("trash://", Qt::CaseInsensitive)) {
+                return ;
+            }
+
+            Peony::ClipboardUtils::setClipboardFiles(window->getCurrentSelections(), false);
+            Q_EMIT operationAccepted();
+        }
     });
 
     connect(m_cut, &QToolButton::clicked, this, [=]() {
-        Peony::ClipboardUtils::setClipboardFiles(window->getCurrentSelections(), true);
-        Q_EMIT operationAccepted();
+        if (!window->getCurrentSelections().isEmpty()) {
+            if (window->getCurrentSelections().first().startsWith("trash://", Qt::CaseInsensitive)) {
+                return ;
+            }
+            Peony::ClipboardUtils::setClipboardFiles(window->getCurrentSelections(), true);
+            Q_EMIT operationAccepted();
+        }
     });
 
     connect(m_paste, &QToolButton::clicked, this, [=]() {
