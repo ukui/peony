@@ -35,6 +35,8 @@
 #include "directory-view-factory-manager.h"
 #include "directory-view-plugin-iface2.h"
 #include "search-vfs-uri-parser.h"
+#include "file-info.h"
+#include "file-info-job.h"
 
 #include <QHBoxLayout>
 #include <QUrl>
@@ -377,6 +379,16 @@ void HeaderBar::updateIcons()
     //go back & go forward
     m_go_back->setEnabled(m_window->getCurrentPage()->canGoBack());
     m_go_forward->setEnabled(m_window->getCurrentPage()->canGoForward());
+
+    //fix create folder fail issue in special path
+    auto curUri = m_window->getCurrentUri();
+    auto info = Peony::FileInfo::fromUri(curUri, false);
+    Peony::FileInfoJob job(info);
+    job.querySync();
+    if (info->canWrite())
+        m_create_folder->setEnabled(true);
+    else
+        m_create_folder->setEnabled(false);
 
     m_go_back->setProperty("useIconHighlightEffect", true);
     m_go_back->setProperty("iconHighlightEffectMode", 1);

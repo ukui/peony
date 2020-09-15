@@ -307,7 +307,12 @@ const QList<QAction *> DirectoryViewMenu::constructCreateTemplateActions()
         if (m_is_cd) {
             createAction->setEnabled(false);
         }
-        if(m_directory.compare(QString::fromLocal8Bit("trash:///")) == 0)
+
+        //fix create folder fail issue in special path
+        auto info = FileInfo::fromUri(m_directory, false);
+        FileInfoJob job(info);
+        job.querySync();
+        if (! info->canWrite())
         {
             createAction->setEnabled(false);
         }
