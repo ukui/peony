@@ -127,6 +127,7 @@ retry_create_empty_file:
                 except.isCritical = true;
                 except.title = tr("Create file");
                 except.errorCode = err->code;
+                except.errorStr = err->message;
                 except.errorType = ET_GIO;
                 Q_EMIT errored(except);
             }
@@ -154,6 +155,7 @@ retry_create_empty_folder:
                 except.isCritical = true;
                 except.title = tr("Create file error");
                 except.errorCode = err->code;
+                except.errorStr = err->message;
                 except.errorType = ET_GIO;
                 Q_EMIT errored(except);
             }
@@ -184,6 +186,7 @@ retry_create_template:
                 except.isCritical = true;
                 except.title = tr("Create file error");
                 except.errorCode = err->code;
+                except.errorStr = err->message;
                 except.errorType = ET_GIO;
                 Q_EMIT errored(except);
             }

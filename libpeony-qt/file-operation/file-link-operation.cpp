@@ -51,8 +51,6 @@ FileLinkOperation::~FileLinkOperation()
 
 }
 
-#include <syslog.h>
-
 void FileLinkOperation::run()
 {
     operationStarted();
