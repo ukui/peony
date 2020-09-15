@@ -258,6 +258,7 @@ void ThumbnailManager::createThumbnail(const QString &uri, std::shared_ptr<FileW
     if (!thumbnail.isNull()) {
         if (!force) {
             watcher->thumbnailUpdated(uri);
+            watcher->fileChanged(uri);
             return;
         }
     }
