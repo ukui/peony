@@ -112,7 +112,8 @@ void FileDeleteOperation::deleteRecursively(FileNode *node)
     qDebug()<<"deleted";
     //operationAfterProgressedOne(node->uri());
     m_current_offset += node->size();
-    FileProgressCallback(node->uri(), node->uri(), m_current_offset, m_total_szie);
+    auto fileIconName = FileUtils::getFileIconName(m_current_src_uri);
+    FileProgressCallback(node->uri(), node->uri(), fileIconName, m_current_offset, m_total_szie);
 }
 
 void FileDeleteOperation::run()
