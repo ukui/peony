@@ -104,11 +104,11 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
         //refresh the desktop ,let file can be see at once
         //Q_EMIT this->refresh();
 
-        if (m_new_file_info_query_queue.contains(uri)) {
-            return;
-        } else {
-            m_new_file_info_query_queue<<uri;
-        }
+//        if (m_new_file_info_query_queue.contains(uri)) {
+//            return;
+//        } else {
+//            m_new_file_info_query_queue<<uri;
+//        }
 
         auto info = FileInfo::fromUri(uri, true);
         bool exsited = false;
@@ -134,6 +134,8 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
                 for (auto rect : itemRectHash.values()) {
                     notEmptyRegion += rect;
                 }
+
+                view->setFileMetaInfoPos(uri, QPoint(-1, -1));
 
                 auto metaInfoPos = view->getFileMetaInfoPos(uri);
                 if (metaInfoPos.x() >= 0) {
@@ -174,7 +176,7 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
                     m_files<<info;
                     //this->insertRows(m_files.indexOf(info), 1);
                     this->endInsertRows();
-                    m_new_file_info_query_queue.removeOne(uri);
+                    //m_new_file_info_query_queue.removeOne(uri);
 
                     // end locate new item=======
 
@@ -237,7 +239,7 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
                 m_files<<info;
                 //this->insertRows(m_files.indexOf(info), 1);
                 this->endInsertRows();
-                m_new_file_info_query_queue.removeOne(uri);
+                //m_new_file_info_query_queue.removeOne(uri);
 
 //                QTimer::singleShot(1, this, [=](){
 //                    for (auto key : itemRectHash.keys()) {
