@@ -199,6 +199,7 @@ retry:
             except.isCritical = false;
             except.title = tr("Move file error");
             except.errorCode = err->code;
+            except.errorStr = err->message;
             except.errorType = ET_GIO;
             if (handle_type == Other) {
                 auto responseTypeWrapper = Invalid;
@@ -320,6 +321,7 @@ retry:
             except.srcUri = srcUri;
             except.errorType = ET_GIO;
             except.errorCode = err->code;
+            except.errorStr = err->message;
             except.title = tr("Move file error");
             except.destDirUri = m_dest_dir_uri;
             except.isCritical = true;

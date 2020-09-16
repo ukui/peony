@@ -381,25 +381,26 @@ void Peony::FileOperationErrorDialogWarning::handle(Peony::FileOperationError &e
 
     if (nullptr != m_error->errorStr) {
         QString htmlString = QString("<style>"
-                                     "  p{font-size:10px;line-height:100%;}"
+                                     "  p{font-size:14px;line-height:100%;}"
                                      "  .bold{text-align: left;font-size:13px;font-wight:500;}"
                                      "</style>"
                                      "<p class='bold'>%1</p>"
                                      "<p>%2</p>")
                 .arg(m_error->errorStr)
-                .arg(tr("Please make sure the disk is not full or not is write protected, or file is not being used."));
+                .arg(tr("Make sure the disk is not full or write protected and that the file is not protected"));
         m_text->setText(htmlString);
     } else {
         QString htmlString = QString("<style>"
-                                     "  p{font-size:10px;line-height:100%;}"
+                                     "  p{font-size:14px;line-height:100%;}"
                                      "  .bold{text-align: left;font-size:13px;font-wight:500;}"
                                      "</style>"
                                      "<p>%1</p>")
-                .arg(tr("Please make sure the disk is not full or not is write protected, or file is not being used."));
+                .arg(tr("Make sure the disk is not full or write protected and that the file is not protected"));
         m_text->setText(htmlString);
     }
 
     m_text->adjustSize();
+    m_text->setAlignment(Qt::AlignLeft | Qt::AlignBottom);
 
     exec();
 
