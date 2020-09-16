@@ -113,7 +113,7 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
     setViewMode(QListView::IconMode);
     setMovement(QListView::Snap);
     setFlow(QListView::TopToBottom);
-    setResizeMode(QListView::Adjust);
+    setResizeMode(QListView::Fixed);
     setWordWrap(true);
 
     setDragDropMode(QListView::DragDrop);
