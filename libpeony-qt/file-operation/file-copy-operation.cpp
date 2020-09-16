@@ -144,11 +144,11 @@ void FileCopyOperation::progress_callback(goffset current_num_bytes,
 
     auto currnet = p_this->m_current_offset + current_num_bytes;
     auto total = p_this->m_total_szie;
+    auto fileIconName = FileUtils::getFileIconName(p_this->m_current_src_uri);
     qDebug()<<currnet*1.0/total;
     Q_EMIT p_this->FileProgressCallback(p_this->m_current_src_uri,
                                         p_this->m_current_dest_dir_uri,
-                                        currnet,
-                                        total);
+                                        fileIconName, currnet, total);
 }
 
 void FileCopyOperation::copyRecursively(FileNode *node)

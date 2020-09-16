@@ -26,6 +26,7 @@
 
 #include <QStandardPaths>
 #include <QDir>
+#include <QIcon>
 
 using namespace Peony;
 
@@ -222,8 +223,18 @@ QString FileUtils::getFileIconName(const QString &uri)
     //do not unref the GIcon from info.
     if (G_IS_ICON(g_icon)) {
         const gchar* const* icon_names = g_themed_icon_get_names(G_THEMED_ICON (g_icon));
-        if (icon_names)
-            icon_name = QString (*icon_names);
+        if (icon_names) {
+            auto p = icon_names;
+            while (*p) {
+                QIcon icon = QIcon::fromTheme(*p);
+                if (!icon.isNull()) {
+                    icon_name = QString (*p);
+                    break;
+                } else {
+                    p++;
+                }
+            }
+        }
     }
     return icon_name;
 }

@@ -111,10 +111,10 @@ void FileMoveOperation::progress_callback(goffset current_num_bytes,
 
     auto currnet = p_this->m_current_offset + current_num_bytes;
     auto total = p_this->m_total_szie;
+    auto fileIconName = FileUtils::getFileIconName(p_this->m_current_src_uri);
     Q_EMIT p_this->FileProgressCallback(p_this->m_current_src_uri,
                                         p_this->m_current_dest_dir_uri,
-                                        currnet,
-                                        total);
+                                        fileIconName, currnet, total);
     //format: move srcUri to destDirUri: curent_bytes(count) of total_bytes(count).
 }
 
@@ -548,12 +548,11 @@ void FileMoveOperation::copyRecursively(FileNode *node)
 fallback_retry:
     if (node->isFolder()) {
         GError *err = nullptr;
-
+        auto fileIconName = FileUtils::getFileIconName(m_current_src_uri);
         //NOTE: mkdir doesn't have a progress callback.
         Q_EMIT FileProgressCallback(m_current_src_uri,
                                     m_current_dest_dir_uri,
-                                    node->size(),
-                                    node->size());
+                                    fileIconName, node->size(), node->size());
         g_file_make_directory(destFile.get()->get(),
                               getCancellable().get()->get(),
                               &err);
@@ -659,12 +658,13 @@ fallback_retry:
         } else {
             node->setState(FileNode::Handled);
         }
+
+        fileIconName = FileUtils::getFileIconName(m_current_src_uri);
         //assume that make dir finished anyway
         m_current_offset += node->size();
         Q_EMIT FileProgressCallback(m_current_src_uri,
                                     m_current_dest_dir_uri,
-                                    m_current_offset,
-                                    m_total_szie);
+                                    fileIconName, m_current_offset, m_total_szie);
         Q_EMIT operationProgressedOne(node->uri(), node->destUri(), node->size());
         for (auto child : *(node->children())) {
             copyRecursively(child);
@@ -808,7 +808,8 @@ fallback_retry:
             node->setState(FileNode::Handled);
         }
         m_current_offset += node->size();
-        Q_EMIT FileProgressCallback(node->uri(), node->destUri(), m_current_offset, m_total_szie);
+        auto fileIconName = FileUtils::getFileIconName(m_current_src_uri);
+        Q_EMIT FileProgressCallback(node->uri(), node->destUri(), fileIconName, m_current_offset, m_total_szie);
         Q_EMIT operationProgressedOne(node->uri(), node->destUri(), node->size());
     }
     destFile.reset();
