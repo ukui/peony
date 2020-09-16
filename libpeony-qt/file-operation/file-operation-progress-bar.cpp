@@ -31,6 +31,8 @@
 
 #include <QUrl>
 #include <QTimer>
+#include <file-info.h>
+#include <file-info-job.h>
 
 QPushButton* btn;
 
@@ -460,13 +462,14 @@ void MainProgressBar::cancelld()
     update();
 }
 
-void MainProgressBar::updateValue(QString& name, double value)
+void MainProgressBar::updateValue(QString& name, QIcon& icon, double value)
 {
     if (value >= 0 && value <= 1) {
         m_current_value = value;
     }
 
     m_file_name = name;
+    setFileIcon(icon);
 
     update();
 }
@@ -547,12 +550,16 @@ ProgressBar::ProgressBar(QWidget *parent) : QWidget(parent)
     connect(this, &ProgressBar::cancelled, this, &ProgressBar::onCancelled);
 }
 
-void ProgressBar::setIcon(QIcon icon)
+void ProgressBar::setIcon(QString icon)
 {
-    m_icon = icon;
+    if (nullptr != icon) {
+        m_icon = QIcon::fromTheme(icon);
+    } else {
+        m_icon = QIcon::fromTheme("text");
+    }
 }
 
-QIcon ProgressBar::getIcon()
+QIcon& ProgressBar::getIcon()
 {
     return m_icon;
 }
@@ -678,7 +685,14 @@ void ProgressBar::updateValue(double value)
         m_current_value = value;
     }
 
-    Q_EMIT sendValue(m_dest_uri, m_current_value);
+    Peony::FileInfoJob file(m_src_uri);
+    if (m_update_icon) {
+        file.querySync();
+        m_update_icon = false;
+        setIcon(file.getInfo()->iconName());
+    }
+
+    Q_EMIT sendValue(m_dest_uri, getIcon(), m_current_value);
     update();
 }
 
@@ -714,39 +728,13 @@ void ProgressBar::updateProgress(const QString &srcUri, const QString &destUri, 
     }
 
     QUrl srcUrl = srcUri;
+    if (srcUrl.toDisplayString() != m_src_uri) {
+        m_update_icon = true;
+    }
+
     m_src_uri = srcUrl.toDisplayString();
     QUrl destUrl = destUri;
     m_dest_uri = destUrl.toDisplayString();
-
-    // maybe you don't need to show every file icon,just default.
-//    QIcon ficon;
-//    GIcon* fileIcon = nullptr;
-//    char* iconName = nullptr;
-//    GFileInfo* fileInfo = nullptr;
-//    GFile* file = g_file_new_for_uri(srcUri.toUtf8().constData());
-//    if (nullptr != file) {
-//        fileInfo = g_file_query_info(file, "*", G_FILE_QUERY_INFO_NONE, nullptr, nullptr);
-//        if (nullptr != fileInfo) {
-//            fileIcon = g_file_info_get_icon(fileInfo);
-//            if (nullptr != fileIcon) {
-//                iconName = g_icon_to_string(fileIcon);
-//                if (nullptr != iconName) {
-//                    ficon = QIcon(QString(iconName).split(" ").last());
-//                    qDebug() << "-------------->" << iconName;
-//                    setIcon(ficon);
-//                }
-//                if (nullptr != iconName) {
-//                    g_free(iconName);
-//                }
-//            }
-//        }
-//        if (nullptr != fileInfo) {
-//            g_object_unref(fileInfo);
-//        }
-//    }
-//    if (nullptr != file) {
-//        g_object_unref(file);
-//    }
 
     double currentPercent = current * 1.0 / total;
     updateValue(currentPercent);

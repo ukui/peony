@@ -92,8 +92,8 @@ class ProgressBar : public QWidget
     Q_OBJECT
 public:
     explicit ProgressBar (QWidget* parent = nullptr);
-    void setIcon (QIcon icon);
-    QIcon getIcon();
+    void setIcon (QString icon);
+    QIcon& getIcon();
     bool getStatus();
 
 private:
@@ -102,7 +102,7 @@ private:
 Q_SIGNALS:
     void cancelled();
     void finished(ProgressBar* fop);
-    void sendValue(QString&, double);
+    void sendValue(QString &, QIcon &, double);
 
 protected:
     void paintEvent(QPaintEvent *event) override;
@@ -148,6 +148,7 @@ private:
     quint64 m_total_size = 0;
     qint32 m_current_size = 0;
 
+    bool m_update_icon = true;
     bool m_is_stopping = false;
 };
 
@@ -177,7 +178,7 @@ Q_SIGNALS:
 
 public Q_SLOTS:
     void cancelld();
-    void updateValue (QString&, double);
+    void updateValue (QString&, QIcon&, double);
 
 private:
     // header
@@ -213,7 +214,7 @@ private:
     bool m_stopping = false;
     float m_current_value = 0.0;
     QString m_file_name = tr("starting ...");
-    QIcon m_icon = QIcon::fromTheme("window-close-symbolic");
+    QIcon m_icon = QIcon::fromTheme("text");
 };
 
 class OtherButton : public QWidget
