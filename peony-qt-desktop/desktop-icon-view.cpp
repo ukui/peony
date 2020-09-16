@@ -154,6 +154,14 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
 
     m_proxy_model->setSourceModel(m_model);
 
+    connect(m_model, &QAbstractItemModel::rowsRemoved, this, [=](){
+        for (auto uri : getAllFileUris()) {
+            auto pos = getFileMetaInfoPos(uri);
+            if (pos.x() >= 0)
+                updateItemPosByUri(uri, pos);
+        }
+    });
+
     //connect(m_model, &DesktopItemModel::dataChanged, this, &DesktopIconView::clearAllIndexWidgets);
 
     connect(m_model, &DesktopItemModel::refreshed, this, [=]() {
@@ -876,13 +884,13 @@ void DesktopIconView::rowsInserted(const QModelIndex &parent, int start, int end
 void DesktopIconView::rowsAboutToBeRemoved(const QModelIndex &parent, int start, int end)
 {
     QListView::rowsAboutToBeRemoved(parent, start, end);
-    QTimer::singleShot(1, this, [=](){
-        for (auto uri : getAllFileUris()) {
-            auto pos = getFileMetaInfoPos(uri);
-            if (pos.x() >= 0)
-                updateItemPosByUri(uri, pos);
-        }
-    });
+//    QTimer::singleShot(1, this, [=](){
+//        for (auto uri : getAllFileUris()) {
+//            auto pos = getFileMetaInfoPos(uri);
+//            if (pos.x() >= 0)
+//                updateItemPosByUri(uri, pos);
+//        }
+//    });
 }
 
 bool DesktopIconView::isItemsOverlapped()

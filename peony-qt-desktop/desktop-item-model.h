@@ -35,6 +35,7 @@ class FileWatcher;
 
 class DesktopItemModel : public QAbstractListModel
 {
+    friend class DesktopIconView;
     Q_OBJECT
 public:
     enum Role {

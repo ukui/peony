@@ -239,11 +239,11 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
                 this->endInsertRows();
                 m_new_file_info_query_queue.removeOne(uri);
 
-                QTimer::singleShot(1, this, [=](){
-                    for (auto key : itemRectHash.keys()) {
-                        view->updateItemPosByUri(key, itemRectHash.value(key).topLeft());
-                    }
-                });
+//                QTimer::singleShot(1, this, [=](){
+//                    for (auto key : itemRectHash.keys()) {
+//                        view->updateItemPosByUri(key, itemRectHash.value(key).topLeft());
+//                    }
+//                });
 
                 // end locate new item=======
 
@@ -275,11 +275,11 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
             }
         }
 
-        QTimer::singleShot(1, this, [=](){
-            for (auto key : itemRectHash.keys()) {
-                view->updateItemPosByUri(key, itemRectHash.value(key).topLeft());
-            }
-        });
+//        QTimer::singleShot(1, this, [=](){
+//            for (auto key : itemRectHash.keys()) {
+//                view->updateItemPosByUri(key, itemRectHash.value(key).topLeft());
+//            }
+//        });
     });
 
     this->connect(m_desktop_watcher.get(), &FileWatcher::fileChanged, [=](const QString &uri) {
