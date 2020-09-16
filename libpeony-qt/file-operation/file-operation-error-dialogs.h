@@ -68,8 +68,8 @@ private:
     float m_fix_width = 550;
     float m_fix_height = 188;
 
-    float m_text_y = 40;
-    float m_text_heigth = 75;
+    float m_text_y = 65;
+    float m_text_heigth = 50;
 
     float m_ok_x = 410;
     float m_ok_y = 132;
