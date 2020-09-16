@@ -100,15 +100,6 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
     m_desktop_watcher->setMonitorChildrenChange(true);
     this->connect(m_desktop_watcher.get(), &FileWatcher::fileCreated, [=](const QString &uri) {
         qDebug()<<"desktop file created"<<uri;
-        
-        //refresh the desktop ,let file can be see at once
-        //Q_EMIT this->refresh();
-
-//        if (m_new_file_info_query_queue.contains(uri)) {
-//            return;
-//        } else {
-//            m_new_file_info_query_queue<<uri;
-//        }
 
         auto info = FileInfo::fromUri(uri, true);
         bool exsited = false;
@@ -176,7 +167,6 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
                     m_files<<info;
                     //this->insertRows(m_files.indexOf(info), 1);
                     this->endInsertRows();
-                    //m_new_file_info_query_queue.removeOne(uri);
 
                     // end locate new item=======
 
@@ -228,9 +218,6 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
                     }
                 } else {
                     view->setFileMetaInfoPos(info->uri(), indexRect.topLeft());
-                    QTimer::singleShot(1, view, [=](){
-                        //view->updateItemPosByUri(uri, indexRect.topLeft());
-                    });
                 }
 
                 //this->beginResetModel();
@@ -239,13 +226,6 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
                 m_files<<info;
                 //this->insertRows(m_files.indexOf(info), 1);
                 this->endInsertRows();
-                //m_new_file_info_query_queue.removeOne(uri);
-
-//                QTimer::singleShot(1, this, [=](){
-//                    for (auto key : itemRectHash.keys()) {
-//                        view->updateItemPosByUri(key, itemRectHash.value(key).topLeft());
-//                    }
-//                });
 
                 // end locate new item=======
 
@@ -276,12 +256,6 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
                 FileInfoManager::getInstance()->remove(info);
             }
         }
-
-//        QTimer::singleShot(1, this, [=](){
-//            for (auto key : itemRectHash.keys()) {
-//                view->updateItemPosByUri(key, itemRectHash.value(key).topLeft());
-//            }
-//        });
     });
 
     this->connect(m_desktop_watcher.get(), &FileWatcher::fileChanged, [=](const QString &uri) {
