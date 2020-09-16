@@ -173,7 +173,7 @@ void DesktopIndexWidget::mousePressEvent(QMouseEvent *event)
         view->m_real_do_edit = true;
         if (view->m_edit_trigger_timer.isActive()) {
             if (view->m_edit_trigger_timer.remainingTime() < 3000 - qApp->styleHints()->mouseDoubleClickInterval() && view->m_edit_trigger_timer.remainingTime() > 0) {
-                QTimer::singleShot(300, view, [=]() {
+                QTimer::singleShot(300, this, [=]() {
                     if (view->m_real_do_edit) {
                         //not allow to edit special items:computer,trash and personal home path folder name
                         bool special_index = false;
