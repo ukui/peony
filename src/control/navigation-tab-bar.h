@@ -79,6 +79,10 @@ class TabBarStyle : public QProxyStyle
     TabBarStyle() {}
 
     int pixelMetric(PixelMetric metric, const QStyleOption *option = nullptr, const QWidget *widget = nullptr) const override;
+    void drawControl(QStyle::ControlElement element,
+                     const QStyleOption *option,
+                     QPainter *painter,
+                     const QWidget *widget = nullptr) const;
 };
 
 #endif // NAVIGATIONTABBAR_H

@@ -70,3 +70,7 @@ INSTALLS += data
 
 RESOURCES += \
     custome.qrc
+
+DISTFILES += \
+    icons/app／control setting.png \
+    icons/app／control setting@2x.png

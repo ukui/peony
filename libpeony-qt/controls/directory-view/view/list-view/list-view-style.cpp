@@ -52,10 +52,11 @@ void ListViewStyle::drawPrimitive(QStyle::PrimitiveElement element, const QStyle
         auto baseColor = option->palette.color(isEnable? (isActive? QPalette::Active: QPalette::Inactive): QPalette::Disabled, QPalette::Window);
         QPainterPath path;
         path.setFillRule(Qt::WindingFill);
-        path.addRoundedRect(option->rect, 6, 6);
-        path.addRect(QRect(0, 0, 6, option->rect.height()));
-        path.addRect(QRect(0, 0, option->rect.width(), 6));
-        painter->fillPath(path, baseColor);
+        path.addRoundedRect(option->rect, 16, 16);
+        path.addRect(QRect(0, 0, 16, 16));
+        path.addRect(QRect(option->rect.width()-16,0, 16, 16));
+        path.addRect(0,option->rect.height()-16,16,16);
+        painter->fillPath(path, option->palette.base().color());
         painter->restore();
         return;
     }
