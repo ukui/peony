@@ -22,7 +22,6 @@
 
 #include "format_dialog.h"
 #include "ui_format_dialog.h"
-#include <syslog.h>
 
 #include <QMessageBox>
 #include <QObject>

@@ -112,7 +112,7 @@ MainWindow::MainWindow(const QString &uri, QWidget *parent) : QMainWindow(parent
 
     m_effect = new BorderShadowEffect(this);
     m_effect->setPadding(4);
-    m_effect->setBorderRadius(6);
+    m_effect->setBorderRadius(16);
     m_effect->setBlurRadius(4);
     //setGraphicsEffect(m_effect);
 
@@ -535,6 +535,9 @@ void MainWindow::setShortCuts()
     copyAction->setShortcut(QKeySequence::Copy);
     connect(copyAction, &QAction::triggered, [=]() {
         if (!this->getCurrentSelections().isEmpty())
+            if (this->getCurrentSelections().first().startsWith("trash://", Qt::CaseInsensitive)) {
+                return ;
+            }
             Peony::ClipboardUtils::setClipboardFiles(this->getCurrentSelections(), false);
     });
     addAction(copyAction);
@@ -554,6 +557,9 @@ void MainWindow::setShortCuts()
     cutAction->setShortcut(QKeySequence::Cut);
     connect(cutAction, &QAction::triggered, [=]() {
         if (!this->getCurrentSelections().isEmpty()) {
+            if (this->getCurrentSelections().first().startsWith("trash://", Qt::CaseInsensitive)) {
+                return ;
+            }
             Peony::ClipboardUtils::setClipboardFiles(this->getCurrentSelections(), true);
         }
     });
@@ -741,6 +747,8 @@ void MainWindow::beginSwitchView(const QString &viewId)
     Peony::GlobalSettings::getInstance()->setValue(DEFAULT_VIEW_ZOOM_LEVEL, currentViewZoomLevel());
     m_tab->setCurrentSelections(selection);
     m_tab->m_status_bar->m_slider->setEnabled(m_tab->currentPage()->getView()->supportZoom());
+    //fix slider value not update issue
+    m_tab->m_status_bar->m_slider->setValue(currentViewZoomLevel());
 }
 
 void MainWindow::refresh()
@@ -896,7 +904,7 @@ void MainWindow::paintEvent(QPaintEvent *e)
     QPainterPath sidebarPath;
     sidebarPath.setFillRule(Qt::FillRule::WindingFill);
     auto adjustedRect = sideBarRect().adjusted(0, 1, 0, 0);
-    sidebarPath.addRoundedRect(adjustedRect, 6, 6);
+    sidebarPath.addRoundedRect(adjustedRect, 16, 16);
     sidebarPath.addRect(adjustedRect.adjusted(0, 0, 0, -6));
     sidebarPath.addRect(adjustedRect.adjusted(6, 0, 0, 0));
 
@@ -904,8 +912,8 @@ void MainWindow::paintEvent(QPaintEvent *e)
     auto tmpRect = QRect(pos, m_tab->size());
     QPainterPath deletePath;
     QPainterPath tmpPath;
-    tmpPath.addRoundedRect(rect().adjusted(4, 4, -4, -4), 6, 6);
-    deletePath.addRoundedRect(tmpRect.adjusted(0, 41, 0, 0), 16, 16);
+    tmpPath.addRoundedRect(rect().adjusted(4, 4, -4, -4), 16, 16);
+    deletePath.addRoundedRect(tmpRect.adjusted(0, 40, 0, 0), 16, 16);
     sidebarPath = tmpPath - deletePath;
 
     m_effect->setTransParentPath(sidebarPath);
@@ -916,7 +924,13 @@ void MainWindow::paintEvent(QPaintEvent *e)
     QPainter p(this);
     p.setRenderHint(QPainter::Antialiasing); // 抗锯齿
 
-    m_effect->drawWindowShadowManually(&p, this->rect(), m_resize_handler->isButtonDown());
+    m_effect->drawWindowShadowManually(&p, this->rect().adjusted(0,0,0,0), m_resize_handler->isButtonDown());
+    QPainter painter(this);
+    deletePath.addRect(m_tab->x(),height()-16,18,12);
+    if(m_is_first_tab)
+        deletePath.addRect(m_tab->x(),40,16,16);
+    deletePath.setFillRule(Qt::FillRule::WindingFill);
+    painter.fillPath(deletePath,this->palette().base());
     QMainWindow::paintEvent(e);
 }
 
@@ -1017,7 +1031,7 @@ void MainWindow::validBorder()
         QPainterPath path;
         auto rect = this->rect();
         rect.adjust(4, 4, -4, -4);
-        path.addRoundedRect(rect, 6, 6);
+        path.addRoundedRect(rect, 16, 16);
         setProperty("blurRegion", QRegion(path.toFillPolygon().toPolygon()));
         //use KWindowEffects
         KWindowEffects::enableBlurBehind(this->winId(), true, QRegion(path.toFillPolygon().toPolygon()));
@@ -1158,6 +1172,14 @@ void MainWindow::initUI(const QString &uri)
     connect(views->tabBar(), &QTabBar::tabBarDoubleClicked, this, [=](int index) {
         if (index == -1)
             maximizeOrRestore();
+    });
+    connect(m_tab,&TabWidget::tabBarIndexUpdate,this,[=](int index){
+        if(index == 0)
+            m_is_first_tab = true;
+        else
+           m_is_first_tab = false;
+        update();
+
     });
     connect(views, &TabWidget::closeWindowRequest, this, &QWidget::close);
     connect(m_header_bar, &HeaderBar::updateSearchRequest, m_tab, &TabWidget::updateSearchBar);

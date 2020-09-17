@@ -102,6 +102,7 @@ private:
     SortTypeMenu *m_sort_type_menu;
     OperationMenu *m_operation_menu;
 
+    QToolButton *m_create_folder;
     QPushButton *m_go_back;
     QPushButton *m_go_forward;
     //QToolButton *m_maximize_restore_button;

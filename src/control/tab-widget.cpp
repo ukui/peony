@@ -97,6 +97,9 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
     connect(m_tab_bar, &NavigationTabBar::locationUpdated, this, &TabWidget::updateSearchPathButton);
 
     connect(m_tab_bar, &NavigationTabBar::closeWindowRequest, this, &TabWidget::closeWindowRequest);
+    connect(m_tab_bar, &QTabBar::currentChanged, [=](int index){
+        Q_EMIT tabBarIndexUpdate(index);
+    });
 
     m_header_bar_layout = new QHBoxLayout(this);
     QActionGroup *group = new QActionGroup(this);
@@ -188,6 +191,12 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
 
     QWidget *w = new QWidget();
     w->setAttribute(Qt::WA_TranslucentBackground);
+    w->setStyleSheet(
+                  "QWidget#w {background-color: transparent;"
+                  "border: 0px solid transparent;}");
+
+
+
     auto vbox = new QVBoxLayout();
     m_top_layout = vbox;
     vbox->setSpacing(0);
@@ -337,7 +346,7 @@ void TabWidget::searchChildUpdate()
 
 void TabWidget::browsePath()
 {
-    QString target_path = QFileDialog::getExistingDirectory(this, "caption", getCurrentUri(), QFileDialog::ShowDirsOnly);
+    QString target_path = QFileDialog::getExistingDirectory(this, tr("Select path"), getCurrentUri(), QFileDialog::ShowDirsOnly);
     qDebug()<<"browsePath Opened:"<<target_path;
     //add root prefix
     if (! target_path.contains("file://") && target_path != "")

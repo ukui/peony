@@ -27,6 +27,8 @@
 #include <glib/gprintf.h>
 #include <QUrl>
 
+#include <QProcess>
+
 using namespace Peony;
 
 static QString handleDuplicate(QString name) {
@@ -190,9 +192,10 @@ fallback_retry:
             except.srcUri = m_uri;
             except.destDirUri = FileUtils::getFileUri(newFile);
             except.isCritical = true;
-            except.title = tr("Rename file");
+            except.title = tr("Rename file error");
             except.errorType = ET_GIO;
             except.errorCode = err->code;
+            except.errorStr = err->message;
             if (G_IO_ERROR_EXISTS == err->code) {
                 except.dlgType = ED_CONFLICT;
                 auto responseType = except.respCode;
@@ -227,7 +230,7 @@ retry:
         except.destDirUri = FileUtils::getFileUri(newFile);
         except.isCritical = true;
         except.errorType = ET_GIO;
-        except.title = tr("Rename file");
+        except.title = tr("Rename file error");
         GError *err = nullptr;
         if (FileUtils::isFileExsit(g_file_get_uri(newFile.get()->get()))) {
             except.dlgType = ED_CONFLICT;
@@ -273,6 +276,13 @@ retry:
                 break;
             }
         }
+
+        char* newName = g_file_get_basename(newFile.get()->get());
+        g_file_set_display_name(file.get()->get(), newName, nullptr, &err);
+        if (nullptr != newName) {
+            g_free(newName);
+        }
+/*
         g_file_move(file.get()->get(),
                     newFile.get()->get(),
                     m_default_copy_flag,
@@ -280,9 +290,11 @@ retry:
                     nullptr,
                     nullptr,
                     &err);
+*/
         if (err) {
             except.errorType = ET_GIO;
             except.errorCode = err->code;
+            except.errorStr = err->message;
             auto responseType = Invalid;
             if (G_IO_ERROR_EXISTS != err->code) {
                 except.dlgType = ED_WARNING;
@@ -309,6 +321,38 @@ cancel:
         if (string)
             g_free(string);
         m_info->m_node_map.insert(m_uri, destUri);
+    }
+
+    // judge if the operation should sync.
+    bool needSync = false;
+    GFile *src_first_file = g_file_new_for_uri(m_uri.toUtf8().constData());
+    GMount *src_first_mount = g_file_find_enclosing_mount(src_first_file, nullptr, nullptr);
+    if (src_first_mount) {
+        needSync = g_mount_can_unmount(src_first_mount);
+        g_object_unref(src_first_mount);
+    } else {
+        // maybe a vfs file.
+        needSync = true;
+    }
+    g_object_unref(src_first_file);
+
+    GFile *dest_dir_file = g_file_new_for_uri(destUri.toUtf8().constData());
+    GMount *dest_dir_mount = g_file_find_enclosing_mount(dest_dir_file, nullptr, nullptr);
+    if (src_first_mount) {
+        needSync = g_mount_can_unmount(dest_dir_mount);
+        g_object_unref(dest_dir_mount);
+    } else {
+        needSync = true;
+    }
+    g_object_unref(dest_dir_file);
+
+    //needSync = true;
+
+    if (needSync) {
+        operationStartSnyc();
+        QProcess p;
+        p.start("sync");
+        p.waitForFinished(-1);
     }
 
     Q_EMIT operationFinished();

@@ -181,6 +181,7 @@ private:
 
     bool m_should_save_side_bar_width = false;
     bool m_should_save_window_size = false;
+    bool m_is_first_tab =true;
 
     QPoint m_offset;
 };

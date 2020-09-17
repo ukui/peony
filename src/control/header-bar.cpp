@@ -35,6 +35,8 @@
 #include "directory-view-factory-manager.h"
 #include "directory-view-plugin-iface2.h"
 #include "search-vfs-uri-parser.h"
+#include "file-info.h"
+#include "file-info-job.h"
 
 #include <QHBoxLayout>
 #include <QUrl>
@@ -47,6 +49,7 @@
 #include <QEvent>
 #include <QApplication>
 #include <QTimer>
+#include <QStandardPaths>
 
 #include <KWindowSystem>
 #include "global-settings.h"
@@ -70,7 +73,6 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
     setStyleSheet(".HeaderBar{"
                   "background-color: transparent;"
                   "border: 0px solid transparent;"
-                  "margin: 4px 5px 4px 5px;"
                   "};");
 
     setMovable(false);
@@ -98,6 +100,7 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
 //    openTerminal->setIconSize(QSize(16, 16));
 
 //    addSpacing(9);
+//    m_create_folder = createFolder;
 
     auto goBack = new HeadBarPushButton(this);
     m_go_back = goBack;
@@ -105,7 +108,12 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
     goBack->setToolTip(tr("Go Back"));
     goBack->setFixedSize(QSize(36, 28));
     goBack->setIcon(QIcon::fromTheme("go-previous-symbolic"));
+//    goBack->setFlat(true);
+    setStyleSheet("HeadBarPushButton{"
+                  "background-color: transparent;"
+                  "};");
     addWidget(goBack);
+
 
     auto goForward = new HeadBarPushButton(this);
     m_go_forward = goForward;
@@ -114,6 +122,7 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
     goForward->setFixedSize(QSize(36, 28));
     goForward->setIcon(QIcon::fromTheme("go-next-symbolic"));
     addWidget(goForward);
+//    goForward->setFlat(true);
     connect(goForward, &QPushButton::clicked, m_window, [=]() {
         m_window->getCurrentPage()->goForward();
     });
@@ -371,13 +380,23 @@ void HeaderBar::updateIcons()
     qDebug()<<"updateIcons:" <<m_window->getCurrentSortColumn();
     qDebug()<<"updateIcons:" <<m_window->getCurrentSortOrder();
     m_view_type_menu->setCurrentDirectory(m_window->getCurrentUri());
-    m_view_type_menu->setCurrentView(m_window->getCurrentPage()->getView()->viewId());
+    m_view_type_menu->setCurrentView(m_window->getCurrentPage()->getView()->viewId(), true);
     m_sort_type_menu->switchSortTypeRequest(m_window->getCurrentSortColumn());
     m_sort_type_menu->switchSortOrderRequest(m_window->getCurrentSortOrder());
 
     //go back & go forward
     m_go_back->setEnabled(m_window->getCurrentPage()->canGoBack());
     m_go_forward->setEnabled(m_window->getCurrentPage()->canGoForward());
+
+    //fix create folder fail issue in special path
+//    auto curUri = m_window->getCurrentUri();
+//    auto info = Peony::FileInfo::fromUri(curUri, false);
+//    Peony::FileInfoJob job(info);
+//    job.querySync();
+//    if (info->canWrite())
+//        m_create_folder->setEnabled(true);
+//    else
+//        m_create_folder->setEnabled(false);
 
     m_go_back->setProperty("useIconHighlightEffect", true);
     m_go_back->setProperty("iconHighlightEffectMode", 1);

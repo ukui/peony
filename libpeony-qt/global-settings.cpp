@@ -43,6 +43,8 @@ GlobalSettings *GlobalSettings::getInstance()
 GlobalSettings::GlobalSettings(QObject *parent) : QObject(parent)
 {
     m_settings = new QSettings("org.ukui", "peony-qt-preferences", this);
+    //set default allow parallel
+    setValue(ALLOW_FILE_OP_PARALLEL, true);
     for (auto key : m_settings->allKeys()) {
         m_cache.insert(key, m_settings->value(key));
     }

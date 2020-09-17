@@ -115,6 +115,7 @@ Q_SIGNALS:
     void closeSearch();
     void recoverFromTrash();
     void currentSelectionChanged();
+    void tabBarIndexUpdate(int index);
 
 public Q_SLOTS:
     void setCurrentIndex(int index);

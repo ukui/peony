@@ -63,6 +63,8 @@ using namespace Peony::DirectoryView;
 
 IconView::IconView(QWidget *parent) : QListView(parent)
 {
+    this->verticalScrollBar()->setProperty("drawScrollBarGroove", false);
+
     setAttribute(Qt::WA_TranslucentBackground);
     viewport()->setAttribute(Qt::WA_TranslucentBackground);
 
@@ -304,13 +306,21 @@ void IconView::mouseDoubleClickEvent(QMouseEvent *event)
 void IconView::paintEvent(QPaintEvent *e)
 {
     QPainter p(this->viewport());
-    p.fillRect(this->geometry(), this->palette().base());
-    if (m_repaint_timer.isActive()) {
-        m_repaint_timer.stop();
-        QTimer::singleShot(100, this, [this]() {
-            this->repaint();
-        });
-    }
+    p.setRenderHint(QPainter::Antialiasing);
+    p.setPen(Qt::transparent);
+    p.setBrush(this->palette().base());
+    p.drawRoundedRect(this->rect(),24,24, Qt::AbsoluteSize);
+    p.drawRect(0, 0, 24, 24);
+    p.drawRect(0, rect().height() - 24, 24, 24);
+    p.drawRect(rect().width() - 24, 0, 24, 24);
+//    p.fillRect(this->geometry(), this->palette().base());
+//    if (m_repaint_timer.isActive()) {
+//        m_repaint_timer.stop();
+//        QTimer::singleShot(100, this, [this]() {
+//            this->repaint();
+//        });
+//    }
+
     QListView::paintEvent(e);
 }
 

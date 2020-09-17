@@ -151,8 +151,8 @@ Q_SIGNALS:
      */
     void errored(FileOperationError& error);
     //int errored(const QString &srcUri, const QString &destUri, const Peony::GErrorWrapperPtr &err, bool isCritical = false);
-    void FileProgressCallback(const QString &srcUri, const QString &destUri,
-                              const qint64 &current_file_offset, const qint64 &current_file_size);
+    void FileProgressCallback(const QString &srcUri, const QString &destUri, const QString& icon,
+                              const qint64& current_file_offset, const qint64& current_file_size);
 
     /*!
      * \brief operationRequestShowWizard

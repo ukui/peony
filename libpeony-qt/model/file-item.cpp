@@ -58,8 +58,20 @@ FileItem::FileItem(std::shared_ptr<Peony::FileInfo> info, FileItem *parentItem, 
         auto index = m_model->indexFromUri(uri);
         if (index.isValid()) {
             auto item = m_model->itemFromIndex(index);
-            if (item)
-                m_model->dataChanged(item->firstColumnIndex(), item->lastColumnIndex());
+            if (item) {
+                /*!
+                  \note
+                  fix the probabilistic jamming while thumbnailing with list view.
+
+                  we have to only trigger first column index dataChanged signal,
+                  otherwise there will be probility stucked whole program.
+
+                  i'm not sure if it is a bug of qtreeview.
+                  */
+
+                //m_model->dataChanged(item->firstColumnIndex(), item->lastColumnIndex());
+                m_model->dataChanged(item->firstColumnIndex(), item->firstColumnIndex());
+            }
         }
     });
 
@@ -274,9 +286,12 @@ void FileItem::findChildrenAsync()
                     connect(infoJob, &FileInfoJob::queryAsyncFinished, this, [=]() {
                         m_model->dataChanged(m_model->indexFromUri(uri), m_model->indexFromUri(uri));
                         auto info = FileInfo::fromUri(uri);
+                        ThumbnailManager::getInstance()->createThumbnail(uri, m_thumbnail_watcher, true);
+                        /*
                         if (info->isDesktopFile()) {
                             ThumbnailManager::getInstance()->updateDesktopFileThumbnail(info->uri(), m_thumbnail_watcher);
                         }
+                        */
                     });
                     infoJob->queryAsync();
                 }
@@ -570,7 +585,7 @@ void FileItem::updateInfoSync()
     FileInfoJob *job = new FileInfoJob(m_info);
     if (job->querySync()) {
         m_model->dataChanged(this->firstColumnIndex(), this->lastColumnIndex());
-        ThumbnailManager::getInstance()->createThumbnail(this->uri(), m_thumbnail_watcher);
+        ThumbnailManager::getInstance()->createThumbnail(this->uri(), m_thumbnail_watcher, true);
     }
     job->deleteLater();
 }
@@ -581,7 +596,7 @@ void FileItem::updateInfoAsync()
     job->setAutoDelete();
     job->connect(job, &FileInfoJob::infoUpdated, this, [=]() {
         m_model->dataChanged(this->firstColumnIndex(), this->lastColumnIndex());
-        ThumbnailManager::getInstance()->createThumbnail(this->uri(), m_thumbnail_watcher);
+        ThumbnailManager::getInstance()->createThumbnail(this->uri(), m_thumbnail_watcher, true);
     });
     job->queryAsync();
 }

@@ -14,7 +14,7 @@
         <translation>新建文件夹</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="431"/>
+        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="442"/>
         <source>set background</source>
         <translation>设置壁纸</translation>
     </message>

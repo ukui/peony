@@ -2,5 +2,7 @@
     <qresource prefix="/custom">
         <file>icons/child-folder.png</file>
         <file>icons/child-folder2.png</file>
+        <file>icons/app-controlsetting2.png</file>
+        <file>icons/app-controlsetting.png</file>
     </qresource>
 </RCC>

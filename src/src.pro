@@ -1,4 +1,5 @@
 #-------------------------------------------------
+
 #
 # Project created by QtCreator 2019-06-20T09:45:20
 #
@@ -71,3 +72,7 @@ INSTALLS += data
 RESOURCES += \
     custome.qrc \
     img.qrc
+
+DISTFILES += \
+    icons/app／control setting.png \
+    icons/app／control setting@2x.png

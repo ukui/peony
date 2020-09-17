@@ -41,6 +41,8 @@ using namespace Peony;
 
 DirectoryViewContainer::DirectoryViewContainer(QWidget *parent) : QWidget(parent)
 {
+    setAttribute(Qt::WA_TranslucentBackground);
+
     m_model = new FileItemModel(this);
     m_proxy_model = new FileItemProxyFilterSortModel(this);
     m_proxy_model->setSourceModel(m_model);
