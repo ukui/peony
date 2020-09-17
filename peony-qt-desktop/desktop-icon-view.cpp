@@ -68,6 +68,7 @@
 #include <QApplication>
 
 #include <QStringList>
+#include <QMessageBox>
 
 #include <QDebug>
 
@@ -112,7 +113,7 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
     setViewMode(QListView::IconMode);
     setMovement(QListView::Snap);
     setFlow(QListView::TopToBottom);
-    setResizeMode(QListView::Adjust);
+    setResizeMode(QListView::Fixed);
     setWordWrap(true);
 
     setDragDropMode(QListView::DragDrop);
@@ -152,6 +153,14 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
     m_proxy_model = new DesktopItemProxyModel(m_model);
 
     m_proxy_model->setSourceModel(m_model);
+
+    connect(m_model, &QAbstractItemModel::rowsRemoved, this, [=](){
+        for (auto uri : getAllFileUris()) {
+            auto pos = getFileMetaInfoPos(uri);
+            if (pos.x() >= 0)
+                updateItemPosByUri(uri, pos);
+        }
+    });
 
     //connect(m_model, &DesktopItemModel::dataChanged, this, &DesktopIconView::clearAllIndexWidgets);
 
@@ -399,6 +408,17 @@ void DesktopIconView::initShoutCut()
         }
     });
     addAction(editAction);
+
+    auto settings = GlobalSettings::getInstance();
+    m_show_hidden = settings->isExist("show-hidden")? settings->getValue("show-hidden").toBool(): false;
+    //show hidden action
+    QAction *showHiddenAction = new QAction(this);
+    showHiddenAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_H));
+    addAction(showHiddenAction);
+    connect(showHiddenAction, &QAction::triggered, this, [=]() {
+        //qDebug() << "show hidden";
+        this->setShowHidden();
+    });
 }
 
 void DesktopIconView::initMenu()
@@ -454,13 +474,20 @@ void DesktopIconView::initMenu()
     }, Qt::UniqueConnection);
 }
 
+void DesktopIconView::setShowHidden()
+{
+    m_show_hidden = ! m_show_hidden;
+    qDebug() << "DesktopIconView::setShowHidden:" <<m_show_hidden;
+    m_proxy_model->setShowHidden(m_show_hidden);
+}
+
 void DesktopIconView::openFileByUri(QString uri)
 {
     auto info = FileInfo::fromUri(uri, false);
     auto job = new FileInfoJob(info);
     job->setAutoDelete();
     job->connect(job, &FileInfoJob::queryAsyncFinished, [=]() {
-        if (info->isDir() || info->isVolume() || info->isVirtual()) {
+        if ((info->isDir() || info->isVolume() || info->isVirtual())) {
 #if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
             QProcess p;
             QUrl url = uri;
@@ -857,13 +884,13 @@ void DesktopIconView::rowsInserted(const QModelIndex &parent, int start, int end
 void DesktopIconView::rowsAboutToBeRemoved(const QModelIndex &parent, int start, int end)
 {
     QListView::rowsAboutToBeRemoved(parent, start, end);
-    QTimer::singleShot(1, this, [=](){
-        for (auto uri : getAllFileUris()) {
-            auto pos = getFileMetaInfoPos(uri);
-            if (pos.x() >= 0)
-                updateItemPosByUri(uri, pos);
-        }
-    });
+//    QTimer::singleShot(1, this, [=](){
+//        for (auto uri : getAllFileUris()) {
+//            auto pos = getFileMetaInfoPos(uri);
+//            if (pos.x() >= 0)
+//                updateItemPosByUri(uri, pos);
+//        }
+//    });
 }
 
 bool DesktopIconView::isItemsOverlapped()

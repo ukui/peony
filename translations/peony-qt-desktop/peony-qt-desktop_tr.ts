@@ -9,12 +9,12 @@
         <translation>Masaüstü Simgelerini Göster</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="355"/>
+        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="356"/>
         <source>New Folder</source>
         <translation>Yeni Klasör</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="430"/>
+        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="442"/>
         <source>set background</source>
         <translation>Arkaplanı Değiştir</translation>
     </message>
@@ -75,7 +75,7 @@
     <message>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="222"/>
         <source>New...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Yeni...</translation>
     </message>
     <message>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="279"/>
@@ -128,24 +128,24 @@
         <translation>İsim</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="359"/>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="360"/>
         <source>File Type</source>
         <translation>Dosya Türü</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="360"/>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="361"/>
         <source>File Size</source>
         <translation>Dosya Boyutu</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="361"/>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="359"/>
         <source>Modified Date</source>
         <translation>Düzenleme Tarihi</translation>
     </message>
     <message>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="449"/>
         <source>Cut</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Kes</translation>
     </message>
     <message>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="455"/>
@@ -160,12 +160,12 @@
     <message>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="467"/>
         <source>Rename</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Yeniden Adlandır</translation>
     </message>
     <message>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="494"/>
         <source>Properties</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Özellikler</translation>
     </message>
     <message>
         <source>P&amp;roperties</source>
@@ -246,17 +246,17 @@
 <context>
     <name>Peony::DesktopWindow</name>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-window.cpp" line="91"/>
+        <location filename="../../peony-qt-desktop/desktop-window.cpp" line="92"/>
         <source>Desktop</source>
         <translation>Masaüstü</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-window.cpp" line="156"/>
+        <location filename="../../peony-qt-desktop/desktop-window.cpp" line="157"/>
         <source>set background</source>
         <translation>Arkaplanı Değiştir</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-window.cpp" line="549"/>
+        <location filename="../../peony-qt-desktop/desktop-window.cpp" line="562"/>
         <source>New Folder</source>
         <translation>Yeni Klasör</translation>
     </message>

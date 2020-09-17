@@ -138,13 +138,13 @@ void ToolBar::init()
     sortMenu->addAction(tr("File Name"), [=]() {
         m_top_window->setCurrentSortColumn(0);
     });
-    sortMenu->addAction(tr("File Type"), [=]() {
+    sortMenu->addAction(tr("Modified Date"), [=]() {
         m_top_window->setCurrentSortColumn(1);
     });
-    sortMenu->addAction(tr("File Size"), [=]() {
+    sortMenu->addAction(tr("File Type"), [=]() {
         m_top_window->setCurrentSortColumn(2);
     });
-    sortMenu->addAction(tr("Modified Date"), [=]() {
+    sortMenu->addAction(tr("File Size"), [=]() {
         m_top_window->setCurrentSortColumn(3);
     });
 

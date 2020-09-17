@@ -25,6 +25,7 @@
 #include "file-meta-info.h"
 
 #include "file-operation-utils.h"
+#include "global-settings.h"
 
 #include <QDebug>
 
@@ -44,6 +45,9 @@ DesktopItemProxyModel::DesktopItemProxyModel(QObject *parent) : QSortFilterProxy
 {
     setSortCaseSensitivity(Qt::CaseInsensitive);
     setDynamicSortFilter(false);
+    auto settings = GlobalSettings::getInstance();
+    m_show_hidden = settings->isExist("show-hidden")? settings->getValue("show-hidden").toBool(): false;
+    //qDebug() <<"DesktopItemProxyModel:" <<settings->isExist("show-hidden")<<m_show_hidden;
 }
 
 bool DesktopItemProxyModel::filterAcceptsRow(int source_row, const QModelIndex &source_parent) const
@@ -58,7 +62,7 @@ bool DesktopItemProxyModel::filterAcceptsRow(int source_row, const QModelIndex &
     if (info->displayName().isNull()) {
         //return false;
     }
-    if (info->displayName().startsWith(".")) {
+    if (! m_show_hidden && info->displayName().startsWith(".")) {
         return false;
     }
     return true;
@@ -138,4 +142,11 @@ bool DesktopItemProxyModel::lessThan(const QModelIndex &source_left, const QMode
     }
 
     return QSortFilterProxyModel::lessThan(source_left, source_right);
+}
+
+void DesktopItemProxyModel::setShowHidden(bool showHidden)
+{
+    GlobalSettings::getInstance()->setValue("show-hidden", showHidden);
+    m_show_hidden = showHidden;
+    invalidateFilter();
 }

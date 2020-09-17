@@ -307,7 +307,11 @@ const QList<QAction *> DirectoryViewMenu::constructCreateTemplateActions()
         if (m_is_cd) {
             createAction->setEnabled(false);
         }
-        if(m_directory.compare(QString::fromLocal8Bit("trash:///")) == 0)
+        //fix create folder fail issue in special path
+        auto info = FileInfo::fromUri(m_directory, false);
+        FileInfoJob job(info);
+        job.querySync();
+        if (! info->canWrite())
         {
             createAction->setEnabled(false);
         }
@@ -354,9 +358,10 @@ const QList<QAction *> DirectoryViewMenu::constructCreateTemplateActions()
 
                 QAction *action = new QAction(tmpIcon, qinfo.baseName(), this);
                 connect(action, &QAction::triggered, [=]() {
+                    // automatically check for conficts
                     CreateTemplateOperation op(m_directory, CreateTemplateOperation::Template, t);
-                    Peony::FileOperationErrorDialogConflict dlg;
-                    connect(&op, &Peony::FileOperation::errored, &dlg, &Peony::FileOperationErrorDialogConflict::handle);
+                    Peony::FileOperationErrorDialogWarning dlg;
+                    connect(&op, &Peony::FileOperation::errored, &dlg, &Peony::FileOperationErrorDialogWarning::handle);
                     op.run();
                     auto target = op.target();
                     m_uris_to_edit<<target;
@@ -436,9 +441,9 @@ const QList<QAction *> DirectoryViewMenu::constructViewOpActions()
 
         QList<QAction *> tmp;
         tmp<<sortTypeMenu->addAction(tr("Name"));
-        tmp<<sortTypeMenu->addAction(tr("File Size"));
-        tmp<<sortTypeMenu->addAction(tr("File Type"));
         tmp<<sortTypeMenu->addAction(tr("Modified Date"));
+        tmp<<sortTypeMenu->addAction(tr("File Type"));
+        tmp<<sortTypeMenu->addAction(tr("File Size"));
         int sortType = m_view->getSortType();
         if (sortType >= 0) {
             tmp.at(sortType)->setCheckable(true);

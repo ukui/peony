@@ -81,6 +81,7 @@ protected:
 private Q_SLOTS:
     void setLocation(const QString &uri);
     void updateIcons();
+    void updateSearchRecursive(bool recursive);
     void updateMaximizeState();
     void startEdit(bool bSearch = false);
     void finishEdit();
@@ -101,12 +102,14 @@ private:
     SortTypeMenu *m_sort_type_menu;
     OperationMenu *m_operation_menu;
 
+    QToolButton *m_create_folder;
     QPushButton *m_go_back;
     QPushButton *m_go_forward;
     //QToolButton *m_maximize_restore_button;
     QToolButton *m_search_button;
 
     bool m_search_mode = false;
+    bool m_search_recursive = true;
 };
 
 class HeaderBarToolButton : public QToolButton

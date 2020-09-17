@@ -535,6 +535,9 @@ void MainWindow::setShortCuts()
     copyAction->setShortcut(QKeySequence::Copy);
     connect(copyAction, &QAction::triggered, [=]() {
         if (!this->getCurrentSelections().isEmpty())
+            if (this->getCurrentSelections().first().startsWith("trash://", Qt::CaseInsensitive)) {
+                return ;
+            }
             Peony::ClipboardUtils::setClipboardFiles(this->getCurrentSelections(), false);
     });
     addAction(copyAction);
@@ -554,6 +557,9 @@ void MainWindow::setShortCuts()
     cutAction->setShortcut(QKeySequence::Cut);
     connect(cutAction, &QAction::triggered, [=]() {
         if (!this->getCurrentSelections().isEmpty()) {
+            if (this->getCurrentSelections().first().startsWith("trash://", Qt::CaseInsensitive)) {
+                return ;
+            }
             Peony::ClipboardUtils::setClipboardFiles(this->getCurrentSelections(), true);
         }
     });
@@ -741,6 +747,8 @@ void MainWindow::beginSwitchView(const QString &viewId)
     Peony::GlobalSettings::getInstance()->setValue(DEFAULT_VIEW_ZOOM_LEVEL, currentViewZoomLevel());
     m_tab->setCurrentSelections(selection);
     m_tab->m_status_bar->m_slider->setEnabled(m_tab->currentPage()->getView()->supportZoom());
+    //fix slider value not update issue
+    m_tab->m_status_bar->m_slider->setValue(currentViewZoomLevel());
 }
 
 void MainWindow::refresh()
@@ -1172,6 +1180,7 @@ void MainWindow::initUI(const QString &uri)
         setCurrentViewZoomLevel(currentViewZoomLevel());
 
     //bind signals
+    connect(m_tab, &TabWidget::searchRecursiveChanged, headerBar, &HeaderBar::updateSearchRecursive);
     connect(m_tab, &TabWidget::closeSearch, headerBar, &HeaderBar::closeSearch);
     connect(m_tab, &TabWidget::clearTrash, this, &MainWindow::cleanTrash);
     connect(m_tab, &TabWidget::recoverFromTrash, this, &MainWindow::recoverFromTrash);

@@ -111,10 +111,10 @@ void FileMoveOperation::progress_callback(goffset current_num_bytes,
 
     auto currnet = p_this->m_current_offset + current_num_bytes;
     auto total = p_this->m_total_szie;
+    auto fileIconName = FileUtils::getFileIconName(p_this->m_current_src_uri);
     Q_EMIT p_this->FileProgressCallback(p_this->m_current_src_uri,
                                         p_this->m_current_dest_dir_uri,
-                                        currnet,
-                                        total);
+                                        fileIconName, currnet, total);
     //format: move srcUri to destDirUri: curent_bytes(count) of total_bytes(count).
 }
 
@@ -197,8 +197,9 @@ retry:
             except.srcUri = srcUri;
             except.destDirUri = m_dest_dir_uri;
             except.isCritical = false;
-            except.title = tr("Move file");
+            except.title = tr("Move file error");
             except.errorCode = err->code;
+            except.errorStr = err->message;
             except.errorType = ET_GIO;
             if (handle_type == Other) {
                 auto responseTypeWrapper = Invalid;
@@ -320,7 +321,8 @@ retry:
             except.srcUri = srcUri;
             except.errorType = ET_GIO;
             except.errorCode = err->code;
-            except.title = tr("Move file");
+            except.errorStr = err->message;
+            except.title = tr("Move file error");
             except.destDirUri = m_dest_dir_uri;
             except.isCritical = true;
             if (handled_err) {
@@ -546,12 +548,11 @@ void FileMoveOperation::copyRecursively(FileNode *node)
 fallback_retry:
     if (node->isFolder()) {
         GError *err = nullptr;
-
+        auto fileIconName = FileUtils::getFileIconName(m_current_src_uri);
         //NOTE: mkdir doesn't have a progress callback.
         Q_EMIT FileProgressCallback(m_current_src_uri,
                                     m_current_dest_dir_uri,
-                                    node->size(),
-                                    node->size());
+                                    fileIconName, node->size(), node->size());
         g_file_make_directory(destFile.get()->get(),
                               getCancellable().get()->get(),
                               &err);
@@ -563,7 +564,7 @@ fallback_retry:
             auto errWrapperPtr = GErrorWrapper::wrapFrom(err);
             int handle_type = prehandle(err);
             except.errorType = ET_GIO;
-            except.title = tr("Move file");
+            except.title = tr("Move file error");
             except.errorCode = err->code;
             except.errorStr = err->message;
             except.srcUri = m_current_src_uri;
@@ -657,12 +658,13 @@ fallback_retry:
         } else {
             node->setState(FileNode::Handled);
         }
+
+        fileIconName = FileUtils::getFileIconName(m_current_src_uri);
         //assume that make dir finished anyway
         m_current_offset += node->size();
         Q_EMIT FileProgressCallback(m_current_src_uri,
                                     m_current_dest_dir_uri,
-                                    m_current_offset,
-                                    m_total_szie);
+                                    fileIconName, m_current_offset, m_total_szie);
         Q_EMIT operationProgressedOne(node->uri(), node->destUri(), node->size());
         for (auto child : *(node->children())) {
             copyRecursively(child);
@@ -689,7 +691,7 @@ fallback_retry:
             except.errorType = ET_GIO;
             except.errorCode = err->code;
             except.errorStr = err->message;
-            except.title = tr("Create file");
+            except.title = tr("Create file error");
             except.srcUri = m_current_src_uri;
             except.destDirUri = m_current_dest_dir_uri;
             if (handle_type == Other) {
@@ -806,7 +808,8 @@ fallback_retry:
             node->setState(FileNode::Handled);
         }
         m_current_offset += node->size();
-        Q_EMIT FileProgressCallback(node->uri(), node->destUri(), m_current_offset, m_total_szie);
+        auto fileIconName = FileUtils::getFileIconName(m_current_src_uri);
+        Q_EMIT FileProgressCallback(node->uri(), node->destUri(), fileIconName, m_current_offset, m_total_szie);
         Q_EMIT operationProgressedOne(node->uri(), node->destUri(), node->size());
     }
     destFile.reset();
@@ -928,7 +931,7 @@ start:
         except.dlgType = ED_WARNING;
         except.srcUri = nullptr;
         except.destDirUri = nullptr;
-        except.title = tr("File delete");
+        except.title = tr("File delete error");
         except.errorCode = G_IO_ERROR_INVAL;
         except.errorStr = tr("Invalid Operation");
         Q_EMIT errored(except);

@@ -23,6 +23,8 @@
 #include "file-trash-operation.h"
 #include "file-operation-manager.h"
 
+#include <QProcess>
+
 using namespace Peony;
 
 FileTrashOperation::FileTrashOperation(QStringList srcUris, QObject *parent) : FileOperation (parent)
@@ -52,8 +54,9 @@ retry:
             except.srcUri = src;
             except.destDirUri = tr("trash:///");
             except.isCritical = true;
-            except.title = tr("Trash file");
+            except.title = tr("Trash file error");
             except.errorCode = err->code;
+            except.errorStr = err->message;
             except.errorType = ET_GIO;
             if (G_IO_ERROR_EXISTS == err->code) {
                 except.dlgType = ED_CONFLICT;
@@ -92,6 +95,27 @@ retry:
             }
         }
     }
+
+    // judge if the operation should sync.
+    bool needSync = false;
+    GFile *src_first_file = g_file_new_for_uri(m_src_uris.first().toUtf8().constData());
+    GMount *src_first_mount = g_file_find_enclosing_mount(src_first_file, nullptr, nullptr);
+    if (src_first_mount) {
+        needSync = g_mount_can_unmount(src_first_mount);
+        g_object_unref(src_first_mount);
+    } else {
+        // maybe a vfs file.
+        needSync = true;
+    }
+    g_object_unref(src_first_file);
+
+    if (needSync) {
+        operationStartSnyc();
+        QProcess p;
+        p.start("sync");
+        p.waitForFinished(-1);
+    }
+
     Q_EMIT operationFinished();
     //notifyFileWatcherOperationFinished();
 }

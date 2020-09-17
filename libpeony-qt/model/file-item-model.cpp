@@ -170,7 +170,7 @@ QModelIndex FileItemModel::parent(const QModelIndex &child) const
 int FileItemModel::columnCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent);
-    return ModifiedDate+1;
+    return FileSize+1;
 }
 
 int FileItemModel::rowCount(const QModelIndex &parent) const
@@ -198,7 +198,7 @@ QVariant FileItemModel::data(const QModelIndex &index, int role) const
     if (role == FileItemModel::UriRole)
         return QVariant(item->uri());
 
-    //qDebug()<<item->m_info->uri();
+    //qDebug()<<"data:" <<item->m_info->uri() << index.column();
     switch (index.column()) {
     case FileName: {
         switch (role) {
@@ -232,17 +232,10 @@ QVariant FileItemModel::data(const QModelIndex &index, int role) const
             return QVariant();
         }
     }
-    case FileSize: {
+    case ModifiedDate: {
         switch (role) {
-        case Qt::DisplayRole: {
-            if (item->hasChildren()) {
-                if (item->m_expanded) {
-                    return QVariant(QString::number(item->m_children->count()) + tr("child(ren)"));
-                }
-                return QVariant();
-            }
-            return QVariant(item->m_info->fileSize());
-        }
+        case Qt::DisplayRole:
+            return QVariant(item->m_info->modifiedDate());
         default:
             return QVariant();
         }
@@ -258,10 +251,17 @@ QVariant FileItemModel::data(const QModelIndex &index, int role) const
         default:
             return QVariant();
         }
-    case ModifiedDate: {
+    case FileSize: {
         switch (role) {
-        case Qt::DisplayRole:
-            return QVariant(item->m_info->modifiedDate());
+        case Qt::DisplayRole: {
+            if (item->hasChildren()) {
+                if (item->m_expanded) {
+                    return QVariant(QString::number(item->m_children->count()) + tr("child(ren)"));
+                }
+                return QVariant();
+            }
+            return QVariant(item->m_info->fileSize());
+        }
         default:
             return QVariant();
         }
@@ -276,15 +276,16 @@ QVariant FileItemModel::headerData(int section, Qt::Orientation orientation, int
     if (orientation == Qt::Vertical)
         return QVariant();
     if (role == Qt::DisplayRole) {
+        //qDebug() <<"headerData:" <<section;
         switch (section) {
         case FileName:
             return tr("File Name");
-        case FileSize:
-            return tr("File Size");
-        case FileType:
-            return tr("File Type");
         case ModifiedDate:
             return tr("Modified Date");
+        case FileType:
+            return tr("File Type");
+        case FileSize:
+            return tr("File Size");
         default:
             return QVariant();
         }
@@ -474,13 +475,18 @@ bool FileItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action, i
         return false;
     }
 
-    if (!FileUtils::getFileIsFolder(destDirUri))
+    auto info = Peony::FileInfo::fromUri(destDirUri, false);
+    //qDebug() << "FileItemModel::dropMimeData:" <<info->isDir() <<info->type();
+    //if (!FileUtils::getFileIsFolder(destDirUri))
+    //fix drag file to folder symbolic fail issue
+    if (! info->isDir())
         return false;
 
     //NOTE:
     //do not allow drop on it self.
     auto urls = data->urls();
     if (urls.isEmpty()) {
+        qDebug() << "urls isEmpty return" <<urls;
         return false;
     }
 

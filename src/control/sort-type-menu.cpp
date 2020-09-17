@@ -34,17 +34,17 @@ SortTypeMenu::SortTypeMenu(QWidget *parent) : QMenu(parent)
     fileName->setCheckable(true);
     sortTypeGroup->addAction(fileName);
 
-    auto fileSize = addAction(tr("File Size"));
-    fileSize->setCheckable(true);
-    sortTypeGroup->addAction(fileSize);
+    auto modifiedDate = addAction(tr("Modified Date"));
+    modifiedDate->setCheckable(true);
+    sortTypeGroup->addAction(modifiedDate);
 
     auto fileType = addAction(tr("File Type"));
     fileType->setCheckable(true);
     sortTypeGroup->addAction(fileType);
 
-    auto modifiedDate = addAction(tr("Modified Date"));
-    modifiedDate->setCheckable(true);
-    sortTypeGroup->addAction(modifiedDate);
+    auto fileSize = addAction(tr("File Size"));
+    fileSize->setCheckable(true);
+    sortTypeGroup->addAction(fileSize);
 
     connect(sortTypeGroup, &QActionGroup::triggered, this, [=](QAction *action) {
         int index = sortTypeGroup->actions().indexOf(action);

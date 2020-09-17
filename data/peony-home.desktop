@@ -10,3 +10,4 @@ Icon=user-home
 Terminal=false
 Type=Application
 Keywords=file;home;folder;browser;disk;computer;
+NoDisplay=true;
