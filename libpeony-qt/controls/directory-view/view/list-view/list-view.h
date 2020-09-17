@@ -129,6 +129,8 @@ protected:
 
     void wheelEvent (QWheelEvent *e) override;
 
+    void paintEvent(QPaintEvent *e) override;
+
 private Q_SLOTS:
     void slotRename();
 private:

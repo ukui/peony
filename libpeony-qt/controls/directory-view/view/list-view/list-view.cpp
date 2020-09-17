@@ -47,6 +47,7 @@
 
 #include <QApplication>
 #include <QStyleHints>
+#include <QPainter>
 
 #include <QDebug>
 
@@ -55,6 +56,7 @@ using namespace Peony::DirectoryView;
 
 ListView::ListView(QWidget *parent) : QTreeView(parent)
 {
+    this->verticalScrollBar()->setProperty("drawScrollBarGroove", false);
     setAttribute(Qt::WA_TranslucentBackground);
     setStyle(Peony::DirectoryView::ListViewStyle::getStyle());
 
@@ -382,6 +384,18 @@ void ListView::wheelEvent(QWheelEvent *e)
         return;
     }
     QTreeView::wheelEvent(e);
+}
+
+void ListView::paintEvent(QPaintEvent *e)
+{
+    auto palette = qApp->palette();
+    palette.setColor(QPalette::Active, QPalette::Base, Qt::transparent);
+    palette.setColor(QPalette::Inactive, QPalette::Base, Qt::transparent);
+    palette.setColor(QPalette::Disabled, QPalette::Base, Qt::transparent);
+    //this->setPalette(palette);
+    viewport()->setPalette(palette);
+
+    QTreeView::paintEvent(e);
 }
 
 void ListView::slotRename()

@@ -73,7 +73,6 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
     setStyleSheet(".HeaderBar{"
                   "background-color: transparent;"
                   "border: 0px solid transparent;"
-                  "margin: 4px 5px 4px 5px;"
                   "};");
 
     setMovable(false);
@@ -101,7 +100,7 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
 //    openTerminal->setIconSize(QSize(16, 16));
 
 //    addSpacing(9);
-    m_create_folder = createFolder;
+//    m_create_folder = createFolder;
 
     auto goBack = new HeadBarPushButton(this);
     m_go_back = goBack;
@@ -109,7 +108,12 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
     goBack->setToolTip(tr("Go Back"));
     goBack->setFixedSize(QSize(36, 28));
     goBack->setIcon(QIcon::fromTheme("go-previous-symbolic"));
+//    goBack->setFlat(true);
+    setStyleSheet("HeadBarPushButton{"
+                  "background-color: transparent;"
+                  "};");
     addWidget(goBack);
+
 
     auto goForward = new HeadBarPushButton(this);
     m_go_forward = goForward;
@@ -118,6 +122,7 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
     goForward->setFixedSize(QSize(36, 28));
     goForward->setIcon(QIcon::fromTheme("go-next-symbolic"));
     addWidget(goForward);
+//    goForward->setFlat(true);
     connect(goForward, &QPushButton::clicked, m_window, [=]() {
         m_window->getCurrentPage()->goForward();
     });
@@ -384,14 +389,14 @@ void HeaderBar::updateIcons()
     m_go_forward->setEnabled(m_window->getCurrentPage()->canGoForward());
 
     //fix create folder fail issue in special path
-    auto curUri = m_window->getCurrentUri();
-    auto info = Peony::FileInfo::fromUri(curUri, false);
-    Peony::FileInfoJob job(info);
-    job.querySync();
-    if (info->canWrite())
-        m_create_folder->setEnabled(true);
-    else
-        m_create_folder->setEnabled(false);
+//    auto curUri = m_window->getCurrentUri();
+//    auto info = Peony::FileInfo::fromUri(curUri, false);
+//    Peony::FileInfoJob job(info);
+//    job.querySync();
+//    if (info->canWrite())
+//        m_create_folder->setEnabled(true);
+//    else
+//        m_create_folder->setEnabled(false);
 
     m_go_back->setProperty("useIconHighlightEffect", true);
     m_go_back->setProperty("iconHighlightEffectMode", 1);

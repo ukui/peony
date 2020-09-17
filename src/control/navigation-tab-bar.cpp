@@ -41,6 +41,9 @@
 
 #include <QApplication>
 #include <QWindow>
+#include <QStyleOptionTab>
+#include <QStyle>
+#include <QPainter>
 
 #include "FMWindowIface.h"
 #include "main-window.h"
@@ -326,4 +329,133 @@ int TabBarStyle::pixelMetric(QStyle::PixelMetric metric, const QStyleOption *opt
     default:
         return QProxyStyle::pixelMetric(metric, option, widget);
     }
+}
+
+void TabBarStyle::drawControl(QStyle::ControlElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget) const
+{
+    if(element == CE_TabBarTab)
+    {
+        QRect rect = option->rect;
+        QColor outline =option->palette.window().color();
+
+        painter->save();
+        if (const QStyleOptionTab *tab = qstyleoption_cast<const QStyleOptionTab *>(option)) {
+
+            bool rtlHorTabs = (tab->direction == Qt::RightToLeft
+                               && (tab->shape == QTabBar::RoundedNorth
+                                   || tab->shape == QTabBar::RoundedSouth));
+            bool selected = tab->state & State_Selected;
+            bool lastTab = ((!rtlHorTabs && tab->position == QStyleOptionTab::End)
+                            || (rtlHorTabs
+                                && tab->position == QStyleOptionTab::Beginning));
+            bool onlyOne = tab->position == QStyleOptionTab::OnlyOneTab;
+            int tabOverlap = pixelMetric(PM_TabBarTabOverlap, option, widget);
+            rect = option->rect.adjusted(0, 0, (onlyOne || lastTab) ? 0 : tabOverlap, 0);
+
+            QRect r2(rect);
+            int x1 = r2.left();
+            int x2 = r2.right();
+            int y1 = r2.top();
+            int y2 = r2.bottom();
+
+            //painter->setPen(d->innerContrastLine());
+            painter->setPen( Qt::NoPen);
+
+            QTransform rotMatrix;
+            bool flip = false;
+            //painter->setPen(shadow);
+            painter->setPen( Qt::NoPen);
+            switch (tab->shape) {
+            case QTabBar::RoundedNorth:
+                break;
+            default:
+                painter->restore();
+                QCommonStyle::drawControl(element, tab, painter, widget);
+                return;
+            }
+
+            if (flip) {
+                QRect tmp = rect;
+                rect = QRect(tmp.y(), tmp.x(), tmp.height(), tmp.width());
+                int temp = x1;
+                x1 = y1;
+                y1 = temp;
+                temp = x2;
+                x2 = y2;
+                y2 = temp;
+            }
+
+            painter->setRenderHint(QPainter::Antialiasing, true);
+//            painter->translate(0.5, 0.5);
+
+            /*
+             * The following colors are the check box background
+             *  colors of the outer box tab or the small pop-up box tab
+             */
+            QColor tabFrameColor = tab->features & QStyleOptionTab::HasFrame ?
+                        option->palette.base().color() :
+                        option->palette.base().color();
+
+            QLinearGradient fillGradient(rect.topLeft(), rect.bottomLeft());
+            QLinearGradient outlineGradient(rect.topLeft(), rect.bottomLeft());
+            QPen outlinePen =  Qt::NoPen;
+            if (selected) {
+                fillGradient.setColorAt(0, tabFrameColor.lighter(104));
+                fillGradient.setColorAt(1, tabFrameColor);
+                outlineGradient.setColorAt(1, outline);
+                outlinePen =  Qt::NoPen;
+            } else {
+                fillGradient.setColorAt(0, option->palette.window().color());
+                fillGradient.setColorAt(0.85,option->palette.window().color());
+                fillGradient.setColorAt(1, option->palette.window().color());
+            }
+
+//            No special height handling when selected
+//            QRect drawRect = rect.adjusted(0, selected ? 0 : 2, 0, 3);
+            QRect drawRect = rect.adjusted(0, 0, 0, 3);
+            painter->setPen( Qt::NoPen);
+            painter->save();
+//            painter->setClipRect(rect.adjusted(+1, -1, +0, selected ? -2 : -3));
+            painter->setBrush(Qt::transparent);
+            painter->drawRoundedRect(drawRect.adjusted(+1, 0, +0, 5), 10.0, 10.0);
+            painter->restore();
+
+            if (selected) {
+                painter->save();
+                painter->setRenderHint(QPainter::Antialiasing);
+                painter->setBrush(option->palette.base().color());
+                painter->drawRoundedRect(option->rect.adjusted(0,-1,0,0),12,12);
+                if(option->rect.left()-15<0){
+                    painter->drawRect(option->rect.left(),option->rect.bottom()-12,25,option->rect.bottom()+25);
+                    painter->drawRect(option->rect.right()-12,option->rect.bottom()-12,12,12);
+                    QPainterPath path1;
+                    QPainterPath path2;
+                    QPainterPath path;
+                    path1.addRect(option->rect.right(),option->rect.bottom()-12,12,12);
+                    path2.addEllipse(option->rect.right(),option->rect.bottom()-24,24,24);
+                    path=path1-path2;
+                    painter->drawPath(path);
+                }
+                else
+                {
+                    QPainterPath path1;
+                    QPainterPath path2;
+                    QPainterPath path;
+                    path1.addRect(option->rect.left()-12,option->rect.bottom()-12,option->rect.width()+24,12);
+                    path2.addEllipse(option->rect.right(),option->rect.bottom()-24,24,24);
+                    path2.addEllipse(option->rect.left()-24,option->rect.bottom()-24,24,24);
+                    path=path1-path2;
+                    painter->drawPath(path);
+                }
+                painter->restore();
+            }
+            painter->restore();
+            proxy()->drawControl(CE_TabBarTabLabel, tab, painter, widget);
+
+        }
+
+        return;
+    }
+
+    return QProxyStyle::drawControl(element, option, painter, widget);
 }
