@@ -104,6 +104,9 @@ void DirectoryViewMenu::fillActions()
     if (m_directory.startsWith("burn://"))
         m_is_cd = true;
 
+    if (m_directory.startsWith("recent://"))
+        m_is_recent = true;
+
     //add open actions
     auto openActions = constructOpenOpActions();
     if (!openActions.isEmpty())
@@ -682,13 +685,15 @@ const QList<QAction *> DirectoryViewMenu::constructTrashActions()
 const QList<QAction *> DirectoryViewMenu::constructSearchActions()
 {
     QList<QAction *> l;
-    if (m_is_search) {
+    if (m_is_search || m_is_recent) {
         if (m_selections.isEmpty())
             return l;
 
         l<<addAction(QIcon::fromTheme("new-window-symbolc"), tr("Open Parent Folder in New Window"));
         connect(l.last(), &QAction::triggered, [=]() {
             for (auto uri : m_selections) {
+                if (m_is_recent)
+                    uri = FileUtils::getTargetUri(uri);
                 auto parentUri = FileUtils::getParentUri(uri);
                 if (!parentUri.isNull()) {
                     auto *windowIface = m_top_window->create(parentUri);
