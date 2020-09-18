@@ -92,6 +92,11 @@ void ClipboardUtils::setClipboardFiles(const QStringList &uris, bool isCut)
         global_instance = new ClipboardUtils;
     }
 
+    if (uris.isEmpty()) {
+        clearClipboard();
+        return;
+    }
+
     m_clipboard_parent_uri = FileUtils::getParentUri(uris.first());
 
     // we should remain the encoded uri for file operation
