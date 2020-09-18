@@ -105,6 +105,8 @@ FileEnumerator::~FileEnumerator()
 
 void FileEnumerator::setEnumerateDirectory(QString uri)
 {
+    m_uri = uri;
+
     if (m_cancellable) {
         g_cancellable_cancel(m_cancellable);
         g_object_unref(m_cancellable);
@@ -143,6 +145,17 @@ void FileEnumerator::setEnumerateDirectory(GFile *file)
         g_object_unref(m_root_file);
     }
     m_root_file = g_file_dup(file);
+
+    char *uri = g_file_get_uri(m_root_file);
+    if (uri) {
+        m_uri = uri;
+        g_free(uri);
+    }
+}
+
+QString FileEnumerator::getEnumerateUri()
+{
+    return m_uri;
 }
 
 const QList<std::shared_ptr<FileInfo>> FileEnumerator::getChildren(bool addToHash)

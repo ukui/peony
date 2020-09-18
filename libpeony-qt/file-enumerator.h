@@ -54,6 +54,9 @@ public:
     ~FileEnumerator();
     void setEnumerateDirectory(QString uri);
     void setEnumerateDirectory(GFile *file);
+
+    QString getEnumerateUri();
+
     /*!
      * \brief prepare
      * <br>
@@ -215,6 +218,8 @@ protected:
             FileEnumerator *p_this);
 
 private:
+    QString m_uri;
+
     GFile *m_root_file = nullptr;
     GCancellable *m_cancellable = nullptr;
 
