@@ -547,21 +547,23 @@ void FileItem::onRenamed(const QString &oldUri, const QString &newUri)
 
 void FileItem::onUpdateDirectoryRequest()
 {
-    m_backend_enumerator->disconnect();
-    m_backend_enumerator->cancel();
+    auto enumerator = new FileEnumerator(this);
+    enumerator->setEnumerateDirectory(m_model->getRootUri());
+    connect(enumerator, &FileEnumerator::enumerateFinished, m_model, [=](){
+        if (m_model->getRootUri() != enumerator->getEnumerateUri())
+            return;
 
-    m_backend_enumerator->setEnumerateDirectory(m_model->getRootUri());
-    m_backend_enumerator->connect(m_backend_enumerator, &FileEnumerator::enumerateFinished, this, [=](){
-        auto currentUris = m_backend_enumerator->getChildrenUris();
+        auto currentUris = enumerator->getChildrenUris();
         QStringList rawUris;
         QStringList removedUris;
         QStringList addedUris;
+
         for (auto child : *m_model->m_root_item->m_children) {
+            rawUris<<child->uri();
             if (!currentUris.contains(child->uri())) {
                 removedUris<<child->uri();
                 m_model->m_root_item->onChildRemoved(child->uri());
             }
-            rawUris<<child->uri();
         }
 
         for (auto uri : currentUris) {
@@ -572,12 +574,15 @@ void FileItem::onUpdateDirectoryRequest()
         }
 
         for (auto uri : currentUris) {
-            if (!addedUris.contains(uri) && !removedUris.contains(uri))
-                m_model->m_root_item->getChildFromUri(uri)->updateInfoAsync();
+            if (!addedUris.contains(uri) && !removedUris.contains(uri)) {
+                //m_model->m_root_item->getChildFromUri(uri)->updateInfoAsync();
+            }
         }
+
+        enumerator->deleteLater();
     });
 
-    m_backend_enumerator->enumerateAsync();
+    enumerator->enumerateAsync();
 }
 
 void FileItem::updateInfoSync()
