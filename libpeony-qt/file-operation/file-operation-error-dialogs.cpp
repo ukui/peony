@@ -386,7 +386,7 @@ void Peony::FileOperationErrorDialogWarning::handle(Peony::FileOperationError &e
 
     exec();
 
-    if (m_error->errorCode == G_IO_ERROR_NOT_SUPPORTED) {
+    if (G_IO_ERROR_NOT_SUPPORTED == m_error->errorCode || G_IO_ERROR_NO_SPACE == m_error->errorCode) {
         error.respCode = Cancel;
     } else {
         error.respCode = IgnoreOne;
