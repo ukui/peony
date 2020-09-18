@@ -1185,6 +1185,9 @@ void MainWindow::initUI(const QString &uri)
             });
         }
     });
+    connect(m_tab, &TabWidget::updateWindowSelectionRequest, this, [=](const QStringList &uris){
+        setCurrentSelectionUris(uris);
+    });
 //    connect(m_tab, &TabWidget::currentSelectionChanged, this, [=](){
 //        m_status_bar->update();
 //    });

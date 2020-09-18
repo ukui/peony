@@ -38,6 +38,8 @@
 #include <QMimeData>
 #include <QUrl>
 
+#include <QTimer>
+
 #include <QDebug>
 
 using namespace Peony;
@@ -518,11 +520,39 @@ bool FileItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action, i
     bool addHistory = true;
     switch (action) {
     case Qt::MoveAction: {
-        FileOperationUtils::move(srcUris, destDirUri, addHistory, true);
+        auto op = FileOperationUtils::move(srcUris, destDirUri, addHistory, true);
+        connect(op, &FileOperation::operationFinished, this, [=](){
+            auto opInfo = op->getOperationInfo();
+            auto targetUris = opInfo.get()->dests();
+            Q_EMIT this->selectRequest(targetUris);
+//            auto selectionModel = new QItemSelectionModel(this);
+//            selectionModel->clearSelection();
+//            QTimer::singleShot(1000, selectionModel, [=](){
+//                for (auto destUri : targetUris) {
+//                    auto index = indexFromUri(destUri);
+//                    selectionModel->select(index, QItemSelectionModel::Select);
+//                }
+//                selectionModel->deleteLater();
+//            });
+        }, Qt::BlockingQueuedConnection);
         break;
     }
     case Qt::CopyAction: {
         FileCopyOperation *copyOp = new FileCopyOperation(srcUris, destDirUri);
+        connect(copyOp, &FileOperation::operationFinished, this, [=](){
+            auto opInfo = copyOp->getOperationInfo();
+            auto targetUris = opInfo.get()->dests();
+            Q_EMIT this->selectRequest(targetUris);
+//            auto selectionModel = new QItemSelectionModel(this);
+//            selectionModel->clearSelection();
+//            QTimer::singleShot(1000, selectionModel, [=](){
+//                for (auto destUri : targetUris) {
+//                    auto index = indexFromUri(destUri);
+//                    selectionModel->select(index, QItemSelectionModel::Select);
+//                }
+//                selectionModel->deleteLater();
+//            });
+        }, Qt::BlockingQueuedConnection);
         fileOpMgr->startOperation(copyOp);
         break;
     }
