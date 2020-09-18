@@ -554,7 +554,6 @@ void MainWindow::setShortCuts()
                     auto opInfo = op->getOperationInfo();
                     auto targetUirs = opInfo->dests();
                     setCurrentSelectionUris(targetUirs);
-                    getCurrentPage()->getView()->scrollToSelection(targetUirs.first());
                 }, Qt::BlockingQueuedConnection);
             }
         }
@@ -824,6 +823,7 @@ void MainWindow::forceStopLoading()
 void MainWindow::setCurrentSelectionUris(const QStringList &uris)
 {
     m_tab->setCurrentSelections(uris);
+    getCurrentPage()->getView()->scrollToSelection(uris.first());
 }
 
 void MainWindow::setCurrentSortOrder(Qt::SortOrder order)
