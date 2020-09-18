@@ -278,15 +278,13 @@ void DesktopIconView::initShoutCut()
     });
     addAction(pasteAction);
 
-    QAction *trashAction = new QAction(this);
-    trashAction->setShortcut(QKeySequence::Delete);
+    //add CTRL+D for delete operation
+    auto trashAction = new QAction(this);
+    trashAction->setShortcuts(QList<QKeySequence>()<<Qt::Key_Delete<<QKeySequence(Qt::CTRL + Qt::Key_D));
     connect(trashAction, &QAction::triggered, [=]() {
-        auto selectedUris = this->getSelections();
-        if (!selectedUris.isEmpty()) {
-            clearAllIndexWidgets();
-            auto op = new FileTrashOperation(selectedUris);
-            FileOperationManager::getInstance()->startOperation(op, true);
-        }
+        auto selectedUris = getSelections();
+        if (! selectedUris.isEmpty())
+           FileOperationUtils::trash(selectedUris, true);
     });
     addAction(trashAction);
 
