@@ -514,6 +514,8 @@ void FileCopyOperation::run()
         delete node;
     }
 
+    m_info->m_dest_uris = m_info->m_node_map.values();
+
     nodes.clear();
 
     // judge if the operation should sync.

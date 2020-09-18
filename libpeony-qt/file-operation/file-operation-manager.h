@@ -275,7 +275,7 @@ public:
         return m_dest_dir_uri;
     }
 
-private:
+//private:
     QStringList m_src_uris;
     QString m_dest_dir_uri;
 
