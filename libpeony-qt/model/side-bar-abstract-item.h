@@ -27,6 +27,7 @@
 #include <QVector>
 
 #include "peony-core_global.h"
+#include <gio/gio.h>
 
 namespace Peony {
 
@@ -78,7 +79,7 @@ Q_SIGNALS:
 public Q_SLOTS:
     virtual void onUpdated() = 0;
 
-    virtual void eject() = 0;
+    virtual void eject(GMountUnmountFlags ejectFlag) = 0;
     virtual void unmount() = 0;
     virtual void format() = 0;
 

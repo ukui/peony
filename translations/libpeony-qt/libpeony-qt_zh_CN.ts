@@ -2463,5 +2463,20 @@ Do you want to unmount forcely?</source>
         <translation>错误: %1
 是否强制卸载?</translation>
     </message>
+    <message>
+        <location filename="../../libpeony-qt/model/side-bar-file-system-item.cpp" line="476"/>
+        <source>Cancel</source>
+        <translation>取消</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/model/side-bar-file-system-item.cpp" line="477"/>
+        <source>Eject Anyway</source>
+        <translation>无论如何弹出</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/model/side-bar-file-system-item.cpp" line="475"/>
+        <source>Eject failed</source>
+        <translation>弹出失败</translation>
+    </message>
 </context>
 </TS>

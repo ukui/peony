@@ -125,7 +125,7 @@ const QList<QAction *> SideBarMenu::constructFileSystemItemActions()
     }
     if (info->canEject()) {
         l<<addAction(QIcon::fromTheme("media-eject"), tr("&Eject"), [=](){
-            m_item->eject();
+            m_item->eject(G_MOUNT_UNMOUNT_NONE);
         });
     }
 

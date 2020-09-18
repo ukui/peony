@@ -35,6 +35,7 @@
 
 #include <QIcon>
 #include <QMessageBox>
+#include <QPushButton>
 #include <udisks/udisks.h>
 #include <sys/stat.h>
 
@@ -290,13 +291,13 @@ bool SideBarFileSystemItem::isMounted()
     return m_is_mounted;
 }
 
-void SideBarFileSystemItem::eject()
+void SideBarFileSystemItem::eject(GMountUnmountFlags ejectFlag)
 {
     auto file = wrapGFile(g_file_new_for_uri(this->uri().toUtf8().constData()));
     auto target = FileUtils::getTargetUri(m_uri);
     auto drive = VolumeManager::getDriveFromUri(target);
     g_file_eject_mountable_with_operation(file.get()->get(),
-                                          G_MOUNT_UNMOUNT_NONE,
+                                          ejectFlag,
                                           nullptr,
                                           nullptr,
                                           GAsyncReadyCallback(eject_cb),
@@ -428,7 +429,7 @@ void SideBarFileSystemItem::unmount()
 void SideBarFileSystemItem::ejectOrUnmount()
 {
     if (isEjectable())
-        eject();
+        eject(G_MOUNT_UNMOUNT_NONE);
 
     else if (isMountable())
         unmount();
@@ -460,6 +461,14 @@ GAsyncReadyCallback SideBarFileSystemItem::eject_cb(GFile *file, GAsyncResult *r
     qDebug()<<successed;
     if (err) {
         qDebug()<<err->message;
+	/*fix #18957*/
+	QMessageBox warningBox(QMessageBox::Warning,QObject::tr("Eject failed"),QString(err->message));
+        QPushButton *cancelBtn = (warningBox.addButton(QObject::tr("Cancel"),QMessageBox::RejectRole));
+        QPushButton *ensureBtn = (warningBox.addButton(QObject::tr("Eject Anyway"),QMessageBox::YesRole));
+        warningBox.exec();
+        if(warningBox.clickedButton() == ensureBtn)
+            p_this->eject(G_MOUNT_UNMOUNT_FORCE);
+
         g_error_free(err);
     } else {
         // remove item anyway
