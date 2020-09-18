@@ -548,7 +548,15 @@ void MainWindow::setShortCuts()
         if (Peony::ClipboardUtils::isClipboardHasFiles()) {
             //FIXME: how about duplicated copy?
             //FIXME: how to deal with a failed move?
-            Peony::ClipboardUtils::pasteClipboardFiles(this->getCurrentUri());
+            auto op = Peony::ClipboardUtils::pasteClipboardFiles(this->getCurrentUri());
+            if (op) {
+                connect(op, &Peony::FileOperation::operationFinished, this, [=](){
+                    auto opInfo = op->getOperationInfo();
+                    auto targetUirs = opInfo->dests();
+                    setCurrentSelectionUris(targetUirs);
+                    getCurrentPage()->getView()->scrollToSelection(targetUirs.first());
+                }, Qt::BlockingQueuedConnection);
+            }
         }
     });
     addAction(pasteAction);
