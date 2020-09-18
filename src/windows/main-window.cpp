@@ -584,16 +584,28 @@ void MainWindow::updateTabPageTitle()
 
 void MainWindow::createFolderOperation()
 {
-    Peony::CreateTemplateOperation op(getCurrentUri(), Peony::CreateTemplateOperation::EmptyFolder, tr("New Folder"));
-    Peony::FileOperationErrorDialogConflict dlg;
-    connect(&op, &Peony::FileOperation::errored, &dlg, &Peony::FileOperationErrorDialogConflict::handle);
-    op.run();
-    auto targetUri = op.target();
+//    Peony::CreateTemplateOperation op(getCurrentUri(), Peony::CreateTemplateOperation::EmptyFolder, tr("New Folder"));
+//    Peony::FileOperationErrorDialogConflict dlg;
+//    connect(&op, &Peony::FileOperation::errored, &dlg, &Peony::FileOperationErrorDialogConflict::handle);
+//    op.run();
+//    auto targetUri = op.target();
 
-    QTimer::singleShot(500, this, [=]() {
-        this->getCurrentPage()->getView()->scrollToSelection(targetUri);
-        this->editUri(targetUri);
-    });
+    auto op = Peony::FileOperationUtils::create(getCurrentUri(), tr("New Folder"), Peony::CreateTemplateOperation::EmptyFolder);
+    connect(op, &Peony::FileOperation::operationFinished, this, [=](){
+        if (op->hasError())
+            return;
+        auto opInfo = op->getOperationInfo();
+        auto targetUri = opInfo->target();
+        this->getCurrentPage()->getView()->clearIndexWidget();
+        QTimer::singleShot(500, this, [=](){
+            this->editUri(opInfo->target());
+        });
+    }, Qt::BlockingQueuedConnection);
+
+//    QTimer::singleShot(500, this, [=]() {
+//        this->getCurrentPage()->getView()->scrollToSelection(targetUri);
+//        this->editUri(targetUri);
+//    });
 }
 
 void MainWindow::keyPressEvent(QKeyEvent *e)
