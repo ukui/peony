@@ -1,0 +1,13 @@
+[Desktop Entry]
+Name=Peony
+GenericName=UKUI File Manager
+GenericName[tr]=UKUI Dosya Yöneticisi
+GenericName[zh_CN]=文件管理器
+Name[tr]=Peony
+Name[zh_CN]=文件管理器
+Exec=/usr/bin/peony %U
+MimeType=inode/directory
+Icon=system-file-manager
+Terminal=false
+Type=Application
+Keywords=file;home;folder;browser;disk;computer;

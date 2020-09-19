@@ -239,10 +239,8 @@ void NavigationSideBar::keyPressEvent(QKeyEvent *event)
 // add by wwn
 void NavigationSideBar::mousePressEvent(QMouseEvent *event)
 {
-    // x坐标:190-225
-    uint a = event->x();
     // 如果不在展开按钮的范围内就调用以前的
-    if (event->x() > 250 || event->x() < 195)
+    if (event->x() > this->rect().right() - 20 || event->x() < this->rect().right() - 60)
         QTreeView::mousePressEvent(event);
     else {
         // 展开children
@@ -250,7 +248,7 @@ void NavigationSideBar::mousePressEvent(QMouseEvent *event)
         if (!isExpanded(indexAt(point)))
             expand(indexAt(point));
         else
-            collapse(indexAt(QPoint(event->x(), event->y())));
+            collapse(indexAt(point));
     }
 }
 
@@ -286,13 +284,16 @@ void NavigationSideBarItemDelegate::paint(QPainter *painter, const QStyleOptionV
     if (view == nullptr)
         return;
 
+    int w = view->width();
+    qDebug() << w;
+
     if (!index.model()->hasChildren(index))
             return;
 
     if (view->isExpanded(index)) {
         QRect rect = option.rect;
         rect.setTop(rect.top() + 7);
-        rect.setX(rect.x() + 220);
+        rect.setX(rect.right() - 20);
         rect.setSize(QSize(15, 15));
         painter->drawPixmap(rect, QPixmap(":/img/branches2"));
         rect.setX(option.rect.x());
@@ -300,7 +301,7 @@ void NavigationSideBarItemDelegate::paint(QPainter *painter, const QStyleOptionV
     else {
         QRect rect = option.rect;
         rect.setTop(rect.top() + 7);
-        rect.setX(rect.x() + 220);
+        rect.setX(rect.right() - 20);
         rect.setSize(QSize(15, 15));
         painter->drawPixmap(rect, QPixmap(":/img/branches1"));
         rect.setX(option.rect.x());

@@ -1,0 +1,13 @@
+[Desktop Entry]
+Name=Peony Home
+GenericName=Home
+GenericName[tr]=Giriş
+GenericName[zh_CN]=打开个人目录
+Name[tr]=Giriş
+Name[zh_CN]=个人目录
+Exec=/usr/bin/peony
+Icon=user-home
+Terminal=false
+Type=Application
+Keywords=file;home;folder;browser;disk;computer;
+NoDisplay=true;

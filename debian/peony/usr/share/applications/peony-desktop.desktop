@@ -1,0 +1,14 @@
+[Desktop Entry]
+Name=Peony Desktop
+GenericName=Desktop Manager
+GenericName[tr]=UKUI Masaüstü Yöneticisi
+GenericName[zh_CN]=UKUI桌面
+Name[tr]=UKUI Masaüstü Yöneticisi
+Name[zh_CN]=UKUI桌面
+Exec=/usr/bin/peony-qt-desktop -w -d
+Icon=user-desktop
+Terminal=false
+Type=Application
+Keywords=file;desktop;
+OnlyShowIn=UKUI;
+NoDisplay=true;
