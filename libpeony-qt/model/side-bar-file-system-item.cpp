@@ -227,6 +227,7 @@ end:
 
                     //why it would failed when send changed signal for newly mounted item?
                     //m_model->dataChanged(changedItem->firstColumnIndex(), changedItem->firstColumnIndex());
+                    updateFileInfo(changedItem);
                     m_model->dataChanged(changedItem->firstColumnIndex(), changedItem->lastColumnIndex());
                     break;
                 }
@@ -483,4 +484,18 @@ GAsyncReadyCallback SideBarFileSystemItem::eject_cb(GFile *file, GAsyncResult *r
         p_this->deleteLater();
     }
     return nullptr;
+}
+
+//update udisk file info
+void SideBarFileSystemItem::updateFileInfo(SideBarFileSystemItem *pThis){
+        QString tmpName = FileUtils::getFileDisplayName(pThis->m_uri);
+
+        //old's drive name -> now's volume name. fix #17968
+        FileUtils::queryVolumeInfo(pThis->m_uri,pThis->m_volume_name,pThis->m_unix_device,tmpName);
+        //icon name.
+        pThis->m_icon_name = FileUtils::getFileIconName(pThis->m_uri);
+        //mountable state. fix #19172
+        auto fileInfo = FileInfo::fromUri(pThis->m_uri,false);
+        FileInfoJob fileJob(fileInfo);
+        fileJob.querySync();
 }
