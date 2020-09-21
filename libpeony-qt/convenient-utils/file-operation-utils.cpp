@@ -50,9 +50,23 @@ FileOperationUtils::FileOperationUtils()
 
 void FileOperationUtils::move(const QStringList &srcUris, const QString &destUri, bool addHistory, bool copyMove)
 {
+    FileOperation *op;
+    QString destDir = nullptr;
     auto fileOpMgr = FileOperationManager::getInstance();
     if (destUri != "trash:///") {
-        auto moveOp = new FileMoveOperation(srcUris, destUri);
+        if (true == destUri.startsWith("computer:///")) {
+            destDir = FileUtils::getTargetUri(destUri);
+            if (nullptr == destDir){
+                qWarning()<<"get target uri failed, from uri:"
+                          <<destUri;
+                destDir = destUri;
+            }
+        }
+        else {
+            destDir = destUri;
+        }
+
+        auto moveOp = new FileMoveOperation(srcUris, destDir);
         moveOp->setCopyMove(copyMove);
         fileOpMgr->startOperation(moveOp, addHistory);
     } else {
