@@ -459,10 +459,14 @@ void ListView::setDirectoryUri(const QString &uri)
 const QStringList ListView::getSelections()
 {
     QStringList uris;
+    QString uri;
     QModelIndexList selections = selectedIndexes();
     for (auto index : selections) {
         if (index.column() == 0)
-            uris<<index.data(FileItemModel::UriRole).toString();
+            //fix Chinese url show as abnormal code
+            uri = "file://" + QUrl(index.data(FileItemModel::UriRole).toString()).path();
+            if (! uris.contains(uri))
+               uris<<uri;
     }
     return uris;
 }
