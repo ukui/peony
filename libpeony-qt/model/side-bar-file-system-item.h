@@ -91,6 +91,7 @@ protected:
     static GAsyncReadyCallback eject_cb(GFile *file,
                                         GAsyncResult *res,
                                         SideBarFileSystemItem *p_this);
+    void updateFileInfo(SideBarFileSystemItem *pThis);
 
 private:
     SideBarFileSystemItem *m_parent = nullptr;
