@@ -1063,6 +1063,12 @@ void TabWidget::bindContainerSignal(Peony::DirectoryViewContainer *container)
         m_status_bar->m_slider->setEnabled(enable);
         m_status_bar->m_slider->setVisible(enable);
     });
+
+    connect(container, &Peony::DirectoryViewContainer::updateWindowSelectionRequest, this, [=](const QStringList &uris){
+        if (container == currentPage()) {
+            Q_EMIT this->updateWindowSelectionRequest(uris);
+        }
+    });
 }
 
 void TabWidget::updatePreviewPage()

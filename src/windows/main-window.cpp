@@ -548,7 +548,14 @@ void MainWindow::setShortCuts()
         if (Peony::ClipboardUtils::isClipboardHasFiles()) {
             //FIXME: how about duplicated copy?
             //FIXME: how to deal with a failed move?
-            Peony::ClipboardUtils::pasteClipboardFiles(this->getCurrentUri());
+            auto op = Peony::ClipboardUtils::pasteClipboardFiles(this->getCurrentUri());
+            if (op) {
+                connect(op, &Peony::FileOperation::operationFinished, this, [=](){
+                    auto opInfo = op->getOperationInfo();
+                    auto targetUirs = opInfo->dests();
+                    setCurrentSelectionUris(targetUirs);
+                }, Qt::BlockingQueuedConnection);
+            }
         }
     });
     addAction(pasteAction);
@@ -577,16 +584,28 @@ void MainWindow::updateTabPageTitle()
 
 void MainWindow::createFolderOperation()
 {
-    Peony::CreateTemplateOperation op(getCurrentUri(), Peony::CreateTemplateOperation::EmptyFolder, tr("New Folder"));
-    Peony::FileOperationErrorDialogConflict dlg;
-    connect(&op, &Peony::FileOperation::errored, &dlg, &Peony::FileOperationErrorDialogConflict::handle);
-    op.run();
-    auto targetUri = op.target();
+//    Peony::CreateTemplateOperation op(getCurrentUri(), Peony::CreateTemplateOperation::EmptyFolder, tr("New Folder"));
+//    Peony::FileOperationErrorDialogConflict dlg;
+//    connect(&op, &Peony::FileOperation::errored, &dlg, &Peony::FileOperationErrorDialogConflict::handle);
+//    op.run();
+//    auto targetUri = op.target();
 
-    QTimer::singleShot(500, this, [=]() {
-        this->getCurrentPage()->getView()->scrollToSelection(targetUri);
-        this->editUri(targetUri);
-    });
+    auto op = Peony::FileOperationUtils::create(getCurrentUri(), tr("New Folder"), Peony::CreateTemplateOperation::EmptyFolder);
+    connect(op, &Peony::FileOperation::operationFinished, this, [=](){
+        if (op->hasError())
+            return;
+        auto opInfo = op->getOperationInfo();
+        auto targetUri = opInfo->target();
+        this->getCurrentPage()->getView()->clearIndexWidget();
+        QTimer::singleShot(500, this, [=](){
+            this->editUri(opInfo->target());
+        });
+    }, Qt::BlockingQueuedConnection);
+
+//    QTimer::singleShot(500, this, [=]() {
+//        this->getCurrentPage()->getView()->scrollToSelection(targetUri);
+//        this->editUri(targetUri);
+//    });
 }
 
 void MainWindow::keyPressEvent(QKeyEvent *e)
@@ -816,6 +835,7 @@ void MainWindow::forceStopLoading()
 void MainWindow::setCurrentSelectionUris(const QStringList &uris)
 {
     m_tab->setCurrentSelections(uris);
+    getCurrentPage()->getView()->scrollToSelection(uris.first());
 }
 
 void MainWindow::setCurrentSortOrder(Qt::SortOrder order)
@@ -1184,6 +1204,9 @@ void MainWindow::initUI(const QString &uri)
                 this->editUri(urisToEdit.first());
             });
         }
+    });
+    connect(m_tab, &TabWidget::updateWindowSelectionRequest, this, [=](const QStringList &uris){
+        setCurrentSelectionUris(uris);
     });
 //    connect(m_tab, &TabWidget::currentSelectionChanged, this, [=](){
 //        m_status_bar->update();

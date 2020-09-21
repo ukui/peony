@@ -508,12 +508,14 @@ const QStringList IconView::getAllFileUris()
 
 void IconView::editUri(const QString &uri)
 {
+    setState(QListView::NoState);
     auto origin = FileUtils::getOriginalUri(uri);
     setIndexWidget(m_sort_filter_proxy_model->indexFromUri(origin), nullptr);
     qDebug() <<"editUri:" <<uri <<origin;
     QListView::scrollTo(m_sort_filter_proxy_model->indexFromUri(origin));
-    if (! m_delegate_editing)
-        edit(m_sort_filter_proxy_model->indexFromUri(origin));
+    edit(m_sort_filter_proxy_model->indexFromUri(origin));
+//    if (! m_delegate_editing)
+//        edit(m_sort_filter_proxy_model->indexFromUri(origin));
 }
 
 void IconView::editUris(const QStringList uris)
@@ -527,6 +529,7 @@ void IconView::clearIndexWidget()
     for (int i = 0; i < m_sort_filter_proxy_model->rowCount(); i++) {
         auto index = m_sort_filter_proxy_model->index(i, 0);
         setIndexWidget(index, nullptr);
+        closePersistentEditor(index);
     }
 }
 
@@ -562,6 +565,8 @@ void IconView2::bindModel(FileItemModel *model, FileItemProxyFilterSortModel *pr
     m_proxy_model = proxyModel;
 
     m_view->bindModel(model, proxyModel);
+    connect(m_model, &FileItemModel::selectRequest, this, &DirectoryViewWidget::updateWindowSelectionRequest);
+
     connect(model, &FileItemModel::findChildrenFinished, this, &DirectoryViewWidget::viewDirectoryChanged);
     //connect(m_model, &FileItemModel::dataChanged, m_view, &IconView::clearIndexWidget);
     connect(m_model, &FileItemModel::updated, m_view, &IconView::resort);
@@ -625,7 +630,8 @@ void IconView2::setCurrentZoomLevel(int zoomLevel)
 
 void IconView2::clearIndexWidget()
 {
-    for (auto index : m_view->selectedIndexes()) {
+    for (auto index : m_proxy_model->getAllFileIndexes()) {
+        m_view->closePersistentEditor(index);
         m_view->setIndexWidget(index, nullptr);
     }
 }

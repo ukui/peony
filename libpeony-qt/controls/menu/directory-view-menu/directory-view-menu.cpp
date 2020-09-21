@@ -552,7 +552,16 @@ const QList<QAction *> DirectoryViewMenu::constructFileOpActions()
             l<<pasteAction;
             pasteAction->setEnabled(ClipboardUtils::isClipboardHasFiles());
             connect(l.last(), &QAction::triggered, [=]() {
-                ClipboardUtils::pasteClipboardFiles(m_directory);
+                auto op = ClipboardUtils::pasteClipboardFiles(m_directory);
+                if (op) {
+                    auto window = dynamic_cast<QWidget *>(m_top_window);
+                    auto iface = m_top_window;
+                    connect(op, &Peony::FileOperation::operationFinished, window, [=](){
+                        auto opInfo = op->getOperationInfo();
+                        auto targetUirs = opInfo->dests();
+                        iface->setCurrentSelectionUris(targetUirs);
+                    }, Qt::BlockingQueuedConnection);
+                }
             });
             l<<addAction(QIcon::fromTheme("view-refresh-symbolic"), tr("&Refresh"));
             connect(l.last(), &QAction::triggered, [=]() {
