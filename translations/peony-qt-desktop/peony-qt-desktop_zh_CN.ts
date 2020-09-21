@@ -9,14 +9,24 @@
         <translation>桌面图标视图</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="356"/>
+        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="362"/>
         <source>New Folder</source>
         <translation>新建文件夹</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="442"/>
+        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="448"/>
         <source>set background</source>
         <translation>设置壁纸</translation>
+    </message>
+    <message>
+        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="491"/>
+        <source>Open failed</source>
+        <translation>打开失败</translation>
+    </message>
+    <message>
+        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="492"/>
+        <source>Open directory failed, you have no permission!</source>
+        <translation>打开文件夹失败，您没有该目录的权限！</translation>
     </message>
     <message>
         <source>Open Link failed</source>

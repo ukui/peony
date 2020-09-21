@@ -486,6 +486,12 @@ void DesktopIconView::openFileByUri(QString uri)
     job->setAutoDelete();
     job->connect(job, &FileInfoJob::queryAsyncFinished, [=]() {
         if ((info->isDir() || info->isVolume() || info->isVirtual())) {
+            if (! info->canExecute())
+            {
+                QMessageBox::critical(nullptr, tr("Open failed"),
+                                      tr("Open directory failed, you have no permission!"));
+                return;
+            }
 #if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
             QProcess p;
             QUrl url = uri;
