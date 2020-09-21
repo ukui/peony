@@ -39,6 +39,7 @@ Format_Dialog::Format_Dialog(const QString &m_uris,SideBarAbstractItem *m_item,Q
 
 
        //from uris get the rom size
+       //FIXME: replace BLOCKING api in ui thread.
        auto targetUri = FileUtils::getTargetUri(fm_uris);
        GFile *fm_file = g_file_new_for_uri(targetUri .toUtf8().constData());
 
@@ -72,6 +73,7 @@ void Format_Dialog::colseFormat(bool)
     //get device name
     QString volname, devName, voldisplayname;
 
+    //FIXME: replace BLOCKING api in ui thread.
     FileUtils::queryVolumeInfo(fm_uris, volname, devName, voldisplayname);
     strncpy(dev_name,devName.toUtf8().constData(),sizeof(devName.toUtf8().constData()-1));
 
@@ -105,6 +107,7 @@ void Format_Dialog::acceptFormat(bool)
     //get device name
     QString volname, devName, voldisplayname ,devtype;
 
+    //FIXME: replace BLOCKING api in ui thread.
     FileUtils::queryVolumeInfo(fm_uris, volname, devName, voldisplayname);
     strcpy(dev_name,devName.toUtf8().constData());
 
@@ -177,7 +180,7 @@ void Format_Dialog::formatloop(){
     static char name_dev[256] ={0};
     char prestr[10] = {0};
 
-
+    //FIXME: replace BLOCKING api in ui thread.
     FileUtils::queryVolumeInfo(fm_uris, volname, devName, voldisplayname);
 
     if(nullptr != devName)

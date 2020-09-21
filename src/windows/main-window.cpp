@@ -576,6 +576,7 @@ void MainWindow::setShortCuts()
 void MainWindow::updateTabPageTitle()
 {
     m_tab->updateTabPageTitle();
+    //FIXME: replace BLOCKING api in ui thread.
     auto show = Peony::FileUtils::getFileDisplayName(getCurrentUri());
     QString title = show + "-" + tr("File Manager");
     //qDebug() << "updateTabPageTitle:" <<title;

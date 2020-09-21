@@ -78,6 +78,7 @@ void TabPage::addPage(const QString &uri)
     container->switchViewType(DirectoryViewFactoryManager2::getInstance()->getDefaultViewId());
     container->getView()->setDirectoryUri(uri);
     container->getView()->beginLocationChange();
+    //FIXME: replace BLOCKING api in ui thread.
     auto displayName = FileUtils::getFileDisplayName(uri);
     if (displayName.length() > ELIDE_TEXT_LENGTH)
     {
@@ -85,6 +86,7 @@ void TabPage::addPage(const QString &uri)
         displayName = fontMetrics().elidedText(displayName, Qt::ElideRight, ELIDE_TEXT_LENGTH * charWidth);
     }
 
+    //FIXME: replace BLOCKING api in ui thread.
     addTab(container,
            QIcon::fromTheme(FileUtils::getFileIconName(uri), QIcon::fromTheme("folder")),
            displayName);
@@ -135,7 +137,9 @@ void TabPage::rebindContainer()
 void TabPage::refreshCurrentTabText()
 {
     auto uri = getActivePage()->getCurrentUri();
+    //FIXME: replace BLOCKING api in ui thread.
     setTabText(currentIndex(), FileUtils::getFileDisplayName(uri));
+    //FIXME: replace BLOCKING api in ui thread.
     setTabIcon(currentIndex(),
                QIcon::fromTheme(FileUtils::getFileIconName(uri),
                                 QIcon::fromTheme("folder")));

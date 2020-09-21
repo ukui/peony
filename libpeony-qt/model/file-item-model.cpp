@@ -466,6 +466,7 @@ bool FileItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action, i
         //we have to set the dest dir uri as its mount point.
         //maybe i should do this when set model root item.
         destDirUri = m_root_item->m_info->uri();
+        //FIXME: replace BLOCKING api in ui thread.
         auto targetUri = FileUtils::getTargetUri(destDirUri);
         if (!targetUri.isEmpty()) {
             destDirUri = targetUri;

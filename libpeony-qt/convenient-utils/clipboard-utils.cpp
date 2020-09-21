@@ -169,6 +169,7 @@ FileOperation *ClipboardUtils::pasteClipboardFiles(const QString &targetDirUri)
     //check existed
     auto uris = getClipboardFilesUris();
     for (auto uri : getClipboardFilesUris()) {
+        //FIXME: replace BLOCKING api in ui thread.
         if (!FileUtils::isFileExsit(uri)) {
             uris.removeAll(uri);
         }

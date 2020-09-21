@@ -210,6 +210,7 @@ void FileEnumerator::prepare()
 
 GFile *FileEnumerator::enumerateTargetFile()
 {
+    //FIXME: replace BLOCKING api in ui thread.
     GFileInfo *info = g_file_query_info(m_root_file,
                                         G_FILE_ATTRIBUTE_STANDARD_TARGET_URI,
                                         G_FILE_QUERY_INFO_NONE,
@@ -269,6 +270,7 @@ void FileEnumerator::handleError(GError *err)
     switch (err->code) {
     case G_IO_ERROR_NOT_DIRECTORY: {
         auto uri = g_file_get_uri(m_root_file);
+        //FIXME: replace BLOCKING api in ui thread.
         auto targetUri = FileUtils::getTargetUri(uri);
         if (uri) {
             g_free(uri);
@@ -279,6 +281,7 @@ void FileEnumerator::handleError(GError *err)
         }
 
         bool isMountable = false;
+        //FIXME: replace BLOCKING api in ui thread.
         GFileInfo *file_mount_info = g_file_query_info(m_root_file, G_FILE_ATTRIBUTE_MOUNTABLE_CAN_MOUNT,
                                      G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, nullptr, nullptr);
 

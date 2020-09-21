@@ -136,6 +136,7 @@ void TabStatusBar::update()
         g_free(format_size);
     }
     else {
+        //FIXME: replace BLOCKING api in ui thread.
         auto displayName = Peony::FileUtils::getFileDisplayName(uri);
         //qDebug() << "status bar text:" <<displayName <<uri;
         if (uri.startsWith("search:///"))

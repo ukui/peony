@@ -60,6 +60,7 @@ SideBarFileSystemItem::SideBarFileSystemItem(QString uri,
         //connect(m_watcher.get(), &FileWatcher::fileChanged, [=]())
     } else {
         m_uri = uri;
+        //FIXME: replace BLOCKING api in ui thread.
         m_display_name = FileUtils::getFileDisplayName(uri);
         m_icon_name = FileUtils::getFileIconName(uri);
         FileUtils::queryVolumeInfo(m_uri, m_volume_name, m_unix_device, m_display_name);
@@ -146,6 +147,7 @@ void SideBarFileSystemItem::findChildren()
                     m_model,
                     this);
             //check is mounted.
+            //FIXME: replace BLOCKING api in ui thread.
             auto targetUri = FileUtils::getTargetUri(info->uri());
             bool isUmountable = FileUtils::isFileUnmountable(info->uri());
             item->m_is_mounted = (!targetUri.isEmpty() && (targetUri != "file:///")) || isUmountable;
@@ -215,6 +217,7 @@ end:
             for (auto child : *m_children) {
                 if (child->uri() == uri) {
                     SideBarFileSystemItem *changedItem = static_cast<SideBarFileSystemItem*>(child);
+                    //FIXME: replace BLOCKING api in ui thread.
                     if (FileUtils::getTargetUri(uri).isEmpty()) {
                         changedItem->m_is_mounted = false;
                         changedItem->clearChildren();
@@ -293,6 +296,7 @@ bool SideBarFileSystemItem::isMounted()
 
 void SideBarFileSystemItem::eject(GMountUnmountFlags ejectFlag)
 {
+    //FIXME: replace BLOCKING api in ui thread.
     auto file = wrapGFile(g_file_new_for_uri(this->uri().toUtf8().constData()));
     auto target = FileUtils::getTargetUri(m_uri);
     auto drive = VolumeManager::getDriveFromUri(target);

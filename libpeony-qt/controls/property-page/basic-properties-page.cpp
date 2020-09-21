@@ -110,6 +110,7 @@ BasicPropertiesPage::BasicPropertiesPage(const QStringList &uris, QWidget *paren
     } else {
         QStringList l;
         for (auto uri : uris) {
+            //FIXME: replace BLOCKING api in ui thread.
             l<<FileUtils::getFileDisplayName(uri);
         }
         auto text = l.join(",");

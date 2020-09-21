@@ -173,6 +173,7 @@ void FileItem::findChildrenAsync()
             return;
         }
 
+        //FIXME: replace BLOCKING api in ui thread.
         auto target = FileUtils::getTargetUri(m_info->uri());
         if (!target.isEmpty()) {
             enumerator->cancel();
