@@ -376,6 +376,9 @@ void FileEnumerator::enumerateChildren(GFileEnumerator *enumerator)
             *m_children_uris<<localUri;
             g_free(path);
         } else {
+            if (path) {
+                g_free(path);
+            }
             *m_children_uris<<uri;
         }
 
