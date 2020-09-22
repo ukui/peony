@@ -463,11 +463,9 @@ const QStringList ListView::getSelections()
     QModelIndexList selections = selectedIndexes();
     for (auto index : selections) {
         if (index.column() == 0)
-            //fix Chinese url show as abnormal code
-            uri = "file://" + QUrl(index.data(FileItemModel::UriRole).toString()).path();
-            if (! uris.contains(uri))
-               uris<<uri;
+            uris<<index.data(FileItemModel::UriRole).toString();
     }
+    uris.removeDuplicates();
     return uris;
 }
 

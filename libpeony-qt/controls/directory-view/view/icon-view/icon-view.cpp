@@ -122,9 +122,7 @@ const QStringList IconView::getSelections()
     QModelIndexList selections = selectedIndexes();
     for (auto index : selections) {
         auto item = m_sort_filter_proxy_model->itemFromIndex(index);
-        //fix Chinese url show as abnormal code
-        QString uri = "file://" + QUrl(item->uri()).path();
-        uris<<uri;
+        uris<<item->uri();
     }
     uris.removeDuplicates();
     return uris;
