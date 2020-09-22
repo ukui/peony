@@ -127,7 +127,7 @@ void LocationBar::setRootUri(const QString &uri)
         //QString nameRegexp = SearchVFSUriParser::getSearchUriNameRegexp(m_current_uri);
         //QString targetDirectory = SearchVFSUriParser::getSearchUriTargetDirectory(m_current_uri);
         m_indicator->setArrowType(Qt::NoArrow);
-        //addButton(m_current_uri, false, false);
+        addButton(m_current_uri, false, false);
         //addAction(QIcon::fromTheme("edit-find-symbolic"), tr("Search \"%1\" in \"%2\"").arg(nameRegexp).arg(targetDirectory));
         return;
     }

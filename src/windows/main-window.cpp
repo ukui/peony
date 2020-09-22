@@ -1153,6 +1153,7 @@ void MainWindow::initUI(const QString &uri)
         m_tab->addPage(home, true);
     } else {
         m_tab->addPage(uri, true);
+        m_header_bar->setLocation(uri);
     }
     QTimer::singleShot(1, this, [=]() {
         // FIXME:
