@@ -484,7 +484,8 @@ GAsyncReadyCallback FileEnumerator::find_children_async_ready_callback(GFile *fi
         g_error_free(err);
     }
     if (!enumerator) {
-        Q_EMIT p_this->enumerateFinished(false);
+        if (qobject_cast<QObject *>(p_this))
+            Q_EMIT p_this->enumerateFinished(false);
         return nullptr;
     }
     //
@@ -513,7 +514,8 @@ GAsyncReadyCallback FileEnumerator::enumerator_next_files_async_ready_callback(G
         //if a directory children count is same with BATCH_SIZE,
         //just send finished signal.
         qDebug()<<"no more files"<<endl<<endl<<endl;
-        Q_EMIT p_this->enumerateFinished(true);
+        if (qobject_cast<QObject *>(p_this))
+            Q_EMIT p_this->enumerateFinished(true);
         return nullptr;
     }
     if (!files && err) {
@@ -565,7 +567,8 @@ GAsyncReadyCallback FileEnumerator::enumerator_next_files_async_ready_callback(G
     } else {
         //no next files, emit finished.
         //qDebug()<<"async enumerateFinished";
-        Q_EMIT p_this->enumerateFinished(true);
+        if (qobject_cast<QObject *>(p_this))
+            Q_EMIT p_this->enumerateFinished(true);
     }
     return nullptr;
 }
