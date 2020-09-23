@@ -498,7 +498,9 @@ void DesktopIconView::openFileByUri(QString uri)
     job->setAutoDelete();
     job->connect(job, &FileInfoJob::queryAsyncFinished, [=]() {
         if ((info->isDir() || info->isVolume() || info->isVirtual())) {
-            if (! info->canExecute())
+            if (! info->uri().startsWith("trash://")
+                    && ! info->uri().startsWith("computer://")
+                    &&  ! info->canExecute())
             {
                 QMessageBox::critical(nullptr, tr("Open failed"),
                                       tr("Open directory failed, you have no permission!"));
