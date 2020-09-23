@@ -887,7 +887,7 @@ void DesktopIconView::focusOutEvent(QFocusEvent *e)
 void DesktopIconView::resizeEvent(QResizeEvent *e)
 {
     QListView::resizeEvent(e);
-    refresh();
+    //refresh();
 }
 
 void DesktopIconView::rowsInserted(const QModelIndex &parent, int start, int end)
