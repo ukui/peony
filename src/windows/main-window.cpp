@@ -778,7 +778,9 @@ void MainWindow::beginSwitchView(const QString &viewId)
     // save zoom level
     Peony::GlobalSettings::getInstance()->setValue(DEFAULT_VIEW_ZOOM_LEVEL, currentViewZoomLevel());
     m_tab->setCurrentSelections(selection);
-    m_tab->m_status_bar->m_slider->setEnabled(m_tab->currentPage()->getView()->supportZoom());
+    bool supportZoom = m_tab->currentPage()->getView()->supportZoom();
+    m_tab->m_status_bar->m_slider->setEnabled(supportZoom);
+    m_tab->m_status_bar->m_slider->setVisible(supportZoom);
     //fix slider value not update issue
     m_tab->m_status_bar->m_slider->setValue(currentViewZoomLevel());
 }
