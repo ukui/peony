@@ -40,6 +40,7 @@ class DesktopIconView : public QListView, public DirectoryViewIface
 {
     friend class DesktopIndexWidget;
     friend class DesktopIconViewDelegate;
+    friend class DesktopItemModel;
     Q_OBJECT
 public:
     enum ZoomLevel {
@@ -195,6 +196,9 @@ protected:
 
     bool isItemsOverlapped();
 
+    bool isRenaming();
+    void setRenaming(bool renaming);
+
 private:
     ZoomLevel m_zoom_level = Invalid;
 
@@ -215,6 +219,8 @@ private:
     bool  m_ctrl_key_pressed = false;
 
     bool m_show_hidden;
+
+    bool m_is_renaming = false;
 
     QTimer m_refresh_timer;
 

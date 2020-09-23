@@ -135,6 +135,12 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
                     notEmptyRegion += rect;
                 }
 
+                if (!view->isRenaming()) {
+                    view->setFileMetaInfoPos(uri, QPoint(-1, -1));
+                } else {
+                    view->setRenaming(false);
+                }
+
                 auto metaInfoPos = view->getFileMetaInfoPos(uri);
                 if (metaInfoPos.x() >= 0) {
                     // check if overlapped, it might happend whild drag out and in desktop view.

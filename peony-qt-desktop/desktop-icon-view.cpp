@@ -925,6 +925,16 @@ bool DesktopIconView::isItemsOverlapped()
     return false;
 }
 
+bool DesktopIconView::isRenaming()
+{
+    return m_is_renaming;
+}
+
+void DesktopIconView::setRenaming(bool renaming)
+{
+    m_is_renaming = renaming;
+}
+
 void DesktopIconView::zoomOut()
 {
     clearAllIndexWidgets();
