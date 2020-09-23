@@ -461,8 +461,14 @@ void DesktopWindow::initShortcut() {
     copyAction->setShortcut(QKeySequence::Copy);
     connect(copyAction, &QAction::triggered, [=]() {
         auto selectedUris = PeonyDesktopApplication::getIconView()->getSelections();
-        if (!selectedUris.isEmpty())
-            ClipboardUtils::setClipboardFiles(selectedUris, false);
+        //process m_selections for paste show, to fix Chinese show abnormal issue
+        QStringList uris;
+        for(auto uri:selectedUris)
+        {
+            uris << ("file://" + QUrl(uri).path());
+        }
+        if (! uris.isEmpty())
+            ClipboardUtils::setClipboardFiles(uris, false);
     });
     addAction(copyAction);
 
@@ -470,8 +476,14 @@ void DesktopWindow::initShortcut() {
     cutAction->setShortcut(QKeySequence::Cut);
     connect(cutAction, &QAction::triggered, [=]() {
         auto selectedUris = PeonyDesktopApplication::getIconView()->getSelections();
-        if (!selectedUris.isEmpty())
-            ClipboardUtils::setClipboardFiles(selectedUris, true);
+        //process m_selections for paste show, to fix Chinese show abnormal issue
+        QStringList uris;
+        for(auto uri:selectedUris)
+        {
+            uris << ("file://" + QUrl(uri).path());
+        }
+        if (! uris.isEmpty())
+            ClipboardUtils::setClipboardFiles(uris, true);
     });
     addAction(cutAction);
 

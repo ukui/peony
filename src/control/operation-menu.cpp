@@ -189,7 +189,13 @@ OperationMenuEditWidget::OperationMenuEditWidget(MainWindow *window, QWidget *pa
                 return ;
             }
 
-            Peony::ClipboardUtils::setClipboardFiles(window->getCurrentSelections(), false);
+            //process m_selections for paste show, to fix Chinese show abnormal issue
+            QStringList uris;
+            for(auto uri:window->getCurrentSelections())
+            {
+                uris << ("file://" + QUrl(uri).path());
+            }
+            Peony::ClipboardUtils::setClipboardFiles(uris, false);
             Q_EMIT operationAccepted();
         }
     });
@@ -199,7 +205,13 @@ OperationMenuEditWidget::OperationMenuEditWidget(MainWindow *window, QWidget *pa
             if (window->getCurrentSelections().first().startsWith("trash://", Qt::CaseInsensitive)) {
                 return ;
             }
-            Peony::ClipboardUtils::setClipboardFiles(window->getCurrentSelections(), true);
+            //process m_selections for paste show, to fix Chinese show abnormal issue
+            QStringList uris;
+            for(auto uri:window->getCurrentSelections())
+            {
+                uris << ("file://" + QUrl(uri).path());
+            }
+            Peony::ClipboardUtils::setClipboardFiles(uris, true);
             Q_EMIT operationAccepted();
         }
     });
