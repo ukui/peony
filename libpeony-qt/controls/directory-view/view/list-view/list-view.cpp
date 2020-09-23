@@ -386,6 +386,10 @@ void ListView::wheelEvent(QWheelEvent *e)
 
 void ListView::slotRename()
 {
+    //trash path not allow rename
+    if (getDirectoryUri().startsWith("trash://"))
+        return;
+
     //delay edit action to avoid doubleClick or dragEvent
     qDebug()<<"slotRename"<<m_editValid;
     QTimer::singleShot(300, m_renameTimer, [&]() {
