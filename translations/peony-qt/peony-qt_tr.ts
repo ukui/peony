@@ -27,52 +27,50 @@
 <context>
     <name>HeaderBar</name>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="78"/>
         <source>Create Folder</source>
-        <translation>Klasör Oluştur</translation>
+        <translation type="vanished">Klasör Oluştur</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="92"/>
         <source>Open Terminal</source>
-        <translation>Uçbirim Aç</translation>
+        <translation type="vanished">Uçbirim Aç</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="106"/>
+        <location filename="../../src/control/header-bar.cpp" line="108"/>
         <source>Go Back</source>
         <translation>Geri</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="114"/>
+        <location filename="../../src/control/header-bar.cpp" line="121"/>
         <source>Go Forward</source>
         <translation>İleri</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="154"/>
+        <location filename="../../src/control/header-bar.cpp" line="162"/>
         <source>Search</source>
         <translation>Ara</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="164"/>
+        <location filename="../../src/control/header-bar.cpp" line="172"/>
         <source>View Type</source>
         <translation>Görünüm Türü</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="191"/>
+        <location filename="../../src/control/header-bar.cpp" line="199"/>
         <source>Sort Type</source>
         <translation>Sıralama Türü</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="217"/>
+        <location filename="../../src/control/header-bar.cpp" line="225"/>
         <source>Option</source>
         <translation>Seçenek</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="259"/>
+        <location filename="../../src/control/header-bar.cpp" line="267"/>
         <source>Operate Tips</source>
         <translation>İşlet İpuçları</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="260"/>
+        <location filename="../../src/control/header-bar.cpp" line="268"/>
         <source>Don&apos;t find any terminal, please install at least one terminal!</source>
         <translation>Herhangi bir uçbirim bulunamadı, lütfen en az bir uçbirim kurun!</translation>
     </message>
@@ -88,14 +86,12 @@
 <context>
     <name>HeaderBarContainer</name>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="556"/>
         <source>Minimize</source>
-        <translation>Küçült</translation>
+        <translation type="vanished">Küçült</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="568"/>
         <source>Maximize/Restore</source>
-        <translation>Büyüt/Onar</translation>
+        <translation type="vanished">Büyüt/Onar</translation>
     </message>
     <message>
         <source>Restore</source>
@@ -106,16 +102,15 @@
         <translation type="vanished">Büyüt</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="589"/>
         <source>Close</source>
-        <translation>Kapat</translation>
+        <translation type="vanished">Kapat</translation>
     </message>
 </context>
 <context>
     <name>MainWindow</name>
     <message>
         <location filename="../../src/windows/main-window.cpp" line="106"/>
-        <location filename="../../src/windows/main-window.cpp" line="567"/>
+        <location filename="../../src/windows/main-window.cpp" line="573"/>
         <source>File Manager</source>
         <translation>Dosya Yöneticisi</translation>
     </message>
@@ -130,12 +125,12 @@
         <translation>İleri</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1187"/>
+        <location filename="../../src/windows/main-window.cpp" line="1230"/>
         <source>Delete Permanently</source>
         <translation>Kalıcı Olarak Sil</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1188"/>
+        <location filename="../../src/windows/main-window.cpp" line="1231"/>
         <source>Are you sure that you want to delete these files? Once you start a deletion, the files deleting will never be restored again.</source>
         <translation>Bu dosyaları silmek istediğinizden emin misiniz? Bir silme işlemini başlattığınızda, silinen dosyalar bir daha geri yüklenmeyecektir.</translation>
     </message>
@@ -144,7 +139,7 @@
         <translation type="vanished">Peony Qt</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="574"/>
+        <location filename="../../src/windows/main-window.cpp" line="580"/>
         <source>New Folder</source>
         <translation>Yeni Klasör</translation>
     </message>
@@ -159,15 +154,14 @@
 <context>
     <name>NavigationSideBarContainer</name>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="262"/>
         <source>All tags...</source>
-        <translation>Tüm etiketler...</translation>
+        <translation type="vanished">Tüm etiketler...</translation>
     </message>
 </context>
 <context>
     <name>NavigationTabBar</name>
     <message>
-        <location filename="../../src/control/navigation-tab-bar.cpp" line="117"/>
+        <location filename="../../src/control/navigation-tab-bar.cpp" line="120"/>
         <source>Search &quot;%1&quot; in &quot;%2&quot;</source>
         <translation>&quot;%2&quot; de &quot;%1&quot; ara</translation>
     </message>
@@ -387,34 +381,34 @@ Telif (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</translatio
 <context>
     <name>TabStatusBar</name>
     <message>
-        <location filename="../../src/control/tab-status-bar.cpp" line="113"/>
-        <location filename="../../src/control/tab-status-bar.cpp" line="119"/>
+        <location filename="../../src/control/tab-status-bar.cpp" line="114"/>
+        <location filename="../../src/control/tab-status-bar.cpp" line="120"/>
         <source>; %1 folders</source>
         <translation>; %1 klasör</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-status-bar.cpp" line="114"/>
-        <location filename="../../src/control/tab-status-bar.cpp" line="121"/>
+        <location filename="../../src/control/tab-status-bar.cpp" line="115"/>
+        <location filename="../../src/control/tab-status-bar.cpp" line="122"/>
         <source>; %1 files, %2 total</source>
         <translation>; %1 dosya, %2 toplam</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-status-bar.cpp" line="116"/>
+        <location filename="../../src/control/tab-status-bar.cpp" line="117"/>
         <source>; %1 folder</source>
         <translation>; %1 klasör</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-status-bar.cpp" line="117"/>
+        <location filename="../../src/control/tab-status-bar.cpp" line="118"/>
         <source>; %1 file, %2</source>
         <translation>; %1 dosya, %2</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-status-bar.cpp" line="124"/>
+        <location filename="../../src/control/tab-status-bar.cpp" line="125"/>
         <source>%1 selected</source>
         <translation>%1 seçildi</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-status-bar.cpp" line="136"/>
+        <location filename="../../src/control/tab-status-bar.cpp" line="137"/>
         <source>Search &quot;%1&quot; in &quot;%2&quot;</source>
         <translation>%1 de %1 bul</translation>
     </message>
@@ -422,63 +416,63 @@ Telif (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</translatio
 <context>
     <name>TabWidget</name>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="154"/>
+        <location filename="../../src/control/tab-widget.cpp" line="158"/>
         <source>Trash</source>
         <translation>Çöp</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="158"/>
+        <location filename="../../src/control/tab-widget.cpp" line="162"/>
         <source>Clear</source>
         <translation>Temizle</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="162"/>
+        <location filename="../../src/control/tab-widget.cpp" line="166"/>
         <source>Recover</source>
         <translation>Geri Yükle</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="240"/>
+        <location filename="../../src/control/tab-widget.cpp" line="250"/>
         <source>Close advance search.</source>
         <translation>Gelişmiş aramayı kapat.</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="248"/>
+        <location filename="../../src/control/tab-widget.cpp" line="258"/>
         <source>Search</source>
         <translation>Ara</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="257"/>
+        <location filename="../../src/control/tab-widget.cpp" line="267"/>
         <source>Choose other path to search.</source>
         <translation>Aramak için başka bir yol seçin.</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="266"/>
+        <location filename="../../src/control/tab-widget.cpp" line="276"/>
         <source>Search recursively</source>
         <translation>Yinelemeli olarak ara</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="275"/>
+        <location filename="../../src/control/tab-widget.cpp" line="285"/>
         <source>more options</source>
         <translation>Daha fazla seçenek</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="279"/>
+        <location filename="../../src/control/tab-widget.cpp" line="289"/>
         <source>Show/hide advance search</source>
         <translation>Gelişmiş aramayı göster/gizle</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="339"/>
+        <location filename="../../src/control/tab-widget.cpp" line="349"/>
         <source>Select path</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="374"/>
-        <location filename="../../src/control/tab-widget.cpp" line="458"/>
+        <location filename="../../src/control/tab-widget.cpp" line="384"/>
+        <location filename="../../src/control/tab-widget.cpp" line="468"/>
         <source>is</source>
         <translation>de</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="392"/>
+        <location filename="../../src/control/tab-widget.cpp" line="402"/>
         <source>Please input key words...</source>
         <translation>Lütfen anahtar kelimeler girin ...</translation>
     </message>
@@ -487,122 +481,148 @@ Telif (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</translatio
         <translation type="vanished">Lütfen anahtar kelimeler girin ...</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="427"/>
-        <location filename="../../src/control/tab-widget.cpp" line="445"/>
+        <location filename="../../src/control/tab-widget.cpp" line="437"/>
+        <location filename="../../src/control/tab-widget.cpp" line="455"/>
         <source>contains</source>
         <translation>İçerik</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="252"/>
+        <location filename="../../src/control/tab-widget.h" line="255"/>
         <source>name</source>
         <translation>İsim</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="252"/>
+        <location filename="../../src/control/tab-widget.h" line="255"/>
         <source>type</source>
         <translation>Tür</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="252"/>
+        <location filename="../../src/control/tab-widget.h" line="255"/>
         <source>modify time</source>
         <translation>Değiştirme Zamanı</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="252"/>
+        <location filename="../../src/control/tab-widget.h" line="255"/>
         <source>file size</source>
         <translation>Dosya Boyutu</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="253"/>
-        <location filename="../../src/control/tab-widget.h" line="255"/>
         <location filename="../../src/control/tab-widget.h" line="256"/>
+        <location filename="../../src/control/tab-widget.h" line="258"/>
+        <location filename="../../src/control/tab-widget.h" line="259"/>
         <source>all</source>
         <translation>Tümü</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="253"/>
+        <location filename="../../src/control/tab-widget.h" line="256"/>
         <source>file folder</source>
         <translation>Dosya klasör</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="253"/>
+        <location filename="../../src/control/tab-widget.h" line="256"/>
         <source>image</source>
         <translation>Resim</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="253"/>
+        <location filename="../../src/control/tab-widget.h" line="256"/>
         <source>video</source>
         <translation>Video</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="254"/>
+        <location filename="../../src/control/tab-widget.h" line="257"/>
         <source>text file</source>
         <translation>Metin dosyası</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="254"/>
+        <location filename="../../src/control/tab-widget.h" line="257"/>
         <source>audio</source>
         <translation>Ses</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="254"/>
+        <location filename="../../src/control/tab-widget.h" line="257"/>
         <source>others</source>
         <translation>Diğer</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="254"/>
+        <location filename="../../src/control/tab-widget.h" line="257"/>
         <source>wps file</source>
         <translation type="unfinished">Wps Dosyası</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="255"/>
+        <location filename="../../src/control/tab-widget.h" line="258"/>
         <source>today</source>
         <translation>Bugün</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="255"/>
+        <location filename="../../src/control/tab-widget.h" line="258"/>
         <source>this week</source>
         <translation>Bu hafta</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="255"/>
+        <location filename="../../src/control/tab-widget.h" line="258"/>
         <source>this month</source>
         <translation>Bu ay</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="255"/>
+        <location filename="../../src/control/tab-widget.h" line="258"/>
         <source>this year</source>
         <translation>Bu yıl</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="255"/>
+        <location filename="../../src/control/tab-widget.h" line="258"/>
         <source>year ago</source>
         <translation>Geçen yıl</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="256"/>
+        <location filename="../../src/control/tab-widget.h" line="259"/>
         <source>tiny(0-16K)</source>
         <translation>Çok küçük(0-16K)</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="256"/>
+        <location filename="../../src/control/tab-widget.h" line="259"/>
         <source>small(16k-1M)</source>
         <translation>Küçük(16k-1M)</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="256"/>
+        <location filename="../../src/control/tab-widget.h" line="259"/>
         <source>medium(1M-100M)</source>
         <translation>Orta(1M-100M)</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="256"/>
+        <location filename="../../src/control/tab-widget.h" line="259"/>
         <source>big(100M-1G)</source>
         <translation>Büyük(100M-1G)</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="256"/>
+        <location filename="../../src/control/tab-widget.h" line="259"/>
         <source>large(&gt;1G)</source>
         <translation>Daha büyük(&gt;1G)</translation>
+    </message>
+</context>
+<context>
+    <name>TitleLabel</name>
+    <message>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="292"/>
+        <source>Files</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>TopMenuBar</name>
+    <message>
+        <location filename="../../src/control/header-bar.cpp" line="572"/>
+        <source>Minimize</source>
+        <translation type="unfinished">Küçült</translation>
+    </message>
+    <message>
+        <location filename="../../src/control/header-bar.cpp" line="589"/>
+        <source>Maximize/Restore</source>
+        <translation type="unfinished">Büyüt/Onar</translation>
+    </message>
+    <message>
+        <location filename="../../src/control/header-bar.cpp" line="615"/>
+        <source>Close</source>
+        <translation type="unfinished">Kapat</translation>
     </message>
 </context>
 </TS>

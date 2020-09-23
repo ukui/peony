@@ -148,7 +148,7 @@ class TopMenuBar : public QMenuBar
 public:
     explicit TopMenuBar(MainWindow *parent = nullptr);
 
-//    bool eventFilter(QObject *obj, QEvent *e);
+    bool eventFilter(QObject *obj, QEvent *e);
 
 protected:
     void addWindowButtons();

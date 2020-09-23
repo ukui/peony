@@ -35,6 +35,7 @@
 #include <QPainter>
 
 #include <QKeyEvent>
+#include <QPainter>
 
 #include <QApplication>
 
@@ -52,6 +53,16 @@ ListViewDelegate::~ListViewDelegate()
 
 void ListViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
+    QPainterPath path;
+    path.setFillRule(Qt::FillRule::WindingFill);
+    auto view = qobject_cast<DirectoryView::ListView *>(parent());
+
+    path.addRoundedRect(view->rect(),60,60);
+    path.addRect(view->rect().width()-60,0,60,60);
+    path.addRect(0,0,60,60);
+
+    painter->setClipPath(path);
+
     QStyleOptionViewItem opt = option;
     initStyleOption(&opt, index);
     opt.displayAlignment = Qt::Alignment(Qt::AlignLeft|Qt::AlignVCenter);
@@ -59,7 +70,7 @@ void ListViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
     QApplication::style()->drawControl(QStyle::CE_ItemViewItem, &opt, painter);
 
     if (index.column() == 0) {
-        auto view = qobject_cast<DirectoryView::ListView *>(parent());
+//        auto view = qobject_cast<DirectoryView::ListView *>(parent());
         if (!view->isDragging() || !view->selectionModel()->selectedIndexes().contains(index)) {
             auto info = FileInfo::fromUri(index.data(Qt::UserRole).toString());
             auto colors = info->getColors();
@@ -167,7 +178,7 @@ void ListViewDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, 
 //TextEdit
 TextEdit::TextEdit(QWidget *parent) : QTextEdit (parent)
 {
-
+    this->setContentsMargins(0,0,0,0);
 }
 
 void TextEdit::keyPressEvent(QKeyEvent *e)

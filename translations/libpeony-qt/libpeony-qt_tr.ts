@@ -167,7 +167,6 @@
     </message>
     <message>
         <location filename="../../libpeony-qt/file-operation/file-operation-progress-bar.cpp" line="281"/>
-        <location filename="../../libpeony-qt/file-operation/file-operation-progress-bar.h" line="215"/>
         <source>starting ...</source>
         <translation type="unfinished">Başlatılıyor...</translation>
     </message>
@@ -200,9 +199,8 @@
 <context>
     <name>OtherButton</name>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-progress-bar.h" line="241"/>
         <source>Other queue</source>
-        <translation type="unfinished">Diğer sıra</translation>
+        <translation type="obsolete">Diğer sıra</translation>
     </message>
 </context>
 <context>
@@ -323,96 +321,76 @@
         <translation type="vanished">İçeriği veya dosya adını en az birini seçin!</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.h" line="57"/>
-        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.h" line="59"/>
-        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.h" line="60"/>
         <source>all</source>
-        <translation>Tümü</translation>
+        <translation type="vanished">Tümü</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.h" line="57"/>
         <source>file folder</source>
-        <translation>Dosya klasör</translation>
+        <translation type="vanished">Dosya klasör</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.h" line="57"/>
         <source>image</source>
-        <translation>Resim</translation>
+        <translation type="vanished">Resim</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.h" line="57"/>
         <source>video</source>
-        <translation>Video</translation>
+        <translation type="vanished">Video</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.h" line="58"/>
         <source>text file</source>
-        <translation>Metin dosyası</translation>
+        <translation type="vanished">Metin dosyası</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.h" line="58"/>
         <source>audio</source>
-        <translation>Ses</translation>
+        <translation type="vanished">Ses</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.h" line="58"/>
         <source>others</source>
-        <translation>Diğerleri</translation>
+        <translation type="vanished">Diğerleri</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.h" line="58"/>
         <source>wps file</source>
-        <translation type="unfinished">Wps Dosyası</translation>
+        <translation type="obsolete">Wps Dosyası</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.h" line="59"/>
         <source>today</source>
-        <translation>Bugün</translation>
+        <translation type="vanished">Bugün</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.h" line="59"/>
         <source>this week</source>
-        <translation>Bu hafta</translation>
+        <translation type="vanished">Bu hafta</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.h" line="59"/>
         <source>this month</source>
-        <translation>Bu ay</translation>
+        <translation type="vanished">Bu ay</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.h" line="59"/>
         <source>this year</source>
-        <translation>Bu yıl</translation>
+        <translation type="vanished">Bu yıl</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.h" line="59"/>
         <source>year ago</source>
-        <translation>Önceki yıl</translation>
+        <translation type="vanished">Önceki yıl</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.h" line="60"/>
         <source>tiny(0-16K)</source>
-        <translation>Çok küçük(0-16K)</translation>
+        <translation type="vanished">Çok küçük(0-16K)</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.h" line="60"/>
         <source>small(16k-1M)</source>
-        <translation>Küçük(16k-1M)</translation>
+        <translation type="vanished">Küçük(16k-1M)</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.h" line="60"/>
         <source>medium(1M-100M)</source>
-        <translation>Orta(1M-100M)</translation>
+        <translation type="vanished">Orta(1M-100M)</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.h" line="60"/>
         <source>big(100M-1G)</source>
-        <translation>Büyük(100M-1G)</translation>
+        <translation type="vanished">Büyük(100M-1G)</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.h" line="60"/>
         <source>large(&gt;1G)</source>
-        <translation>Çok büyük(&gt;1G)</translation>
+        <translation type="vanished">Çok büyük(&gt;1G)</translation>
     </message>
 </context>
 <context>
@@ -562,14 +540,12 @@
         <translation>Bağlantı Oluşturmak İçin Bir Dizin Seçin</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/menu-plugin-manager.h" line="61"/>
         <source>Peony-Qt Create Link Extension</source>
-        <translation>Dosya Yöneticisi Bağlantı Uzantısı Oluştur</translation>
+        <translation type="vanished">Dosya Yöneticisi Bağlantı Uzantısı Oluştur</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/menu-plugin-manager.h" line="64"/>
         <source>Create Link Menu Extension.</source>
-        <translation>Bağlantı Menüsü Uzantısı Oluştur.</translation>
+        <translation type="vanished">Bağlantı Menüsü Uzantısı Oluştur.</translation>
     </message>
 </context>
 <context>
@@ -630,9 +606,8 @@
 <context>
     <name>Peony::DirectoryView::IconView</name>
     <message>
-        <location filename="../../libpeony-qt/controls/directory-view/view/icon-view/icon-view.h" line="66"/>
         <source>Icon View</source>
-        <translation>Simge Görünümü</translation>
+        <translation type="vanished">Simge Görünümü</translation>
     </message>
 </context>
 <context>
@@ -645,9 +620,8 @@
 <context>
     <name>Peony::DirectoryView::ListView</name>
     <message>
-        <location filename="../../libpeony-qt/controls/directory-view/view/list-view/list-view.h" line="56"/>
         <source>List View</source>
-        <translation>Liste Görünümü</translation>
+        <translation type="vanished">Liste Görünümü</translation>
     </message>
 </context>
 <context>
@@ -1137,14 +1111,12 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</translation
         <translation>Tüm Etiketleri Sil</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/menu-plugin-manager.h" line="95"/>
         <source>Peony File Labels Menu Extension</source>
-        <translation>Peony Dosya Etiketleri Menü Uzantısı</translation>
+        <translation type="vanished">Peony Dosya Etiketleri Menü Uzantısı</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/menu-plugin-manager.h" line="98"/>
         <source>Tag a File with Menu.</source>
-        <translation>Dosyayı Menü ile etiketleyin.</translation>
+        <translation type="vanished">Dosyayı Menü ile etiketleyin.</translation>
     </message>
 </context>
 <context>
@@ -1310,7 +1282,7 @@ Bağlantı dosyasını silmek istiyor musunuz?</translation>
     <message>
         <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="200"/>
         <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="325"/>
-        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="568"/>
+        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="567"/>
         <source>Move file error</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1320,12 +1292,12 @@ Bağlantı dosyasını silmek istiyor musunuz?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="919"/>
+        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="920"/>
         <source>Invalid Operation.</source>
         <translation>Geçersiz İşlem.</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="933"/>
+        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="934"/>
         <source>File delete error</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1334,7 +1306,7 @@ Bağlantı dosyasını silmek istiyor musunuz?</translation>
         <translation type="obsolete">Dosya silme</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="935"/>
+        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="936"/>
         <source>Invalid Operation</source>
         <translation>Geçersiz İşlem.</translation>
     </message>
@@ -1489,10 +1461,8 @@ Bağlantı dosyasını silmek istiyor musunuz?</translation>
         <translation type="vanished">Sembolik Bağ</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-manager.h" line="190"/>
-        <location filename="../../libpeony-qt/file-operation/file-operation-manager.h" line="193"/>
         <source> - Symbolic Link</source>
-        <translation type="unfinished"> - Symbolik Link</translation>
+        <translation type="obsolete"> - Symbolik Link</translation>
     </message>
 </context>
 <context>
@@ -2302,27 +2272,27 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</translation
 <context>
     <name>ProgressBar</name>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-progress-bar.cpp" line="603"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-bar.cpp" line="608"/>
         <source>canceling ...</source>
         <translation type="unfinished">İptal ediliyor...</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-progress-bar.cpp" line="651"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-bar.cpp" line="656"/>
         <source>cancel file operation</source>
         <translation type="unfinished">Dosya işlemini iptal et</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-progress-bar.cpp" line="652"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-bar.cpp" line="657"/>
         <source>Are you sure want to cancel the current selected file operation</source>
         <translation type="unfinished">Mevcut seçili dosya işlemini iptal etmek istediğinizden emin misiniz?</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-progress-bar.cpp" line="654"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-bar.cpp" line="659"/>
         <source>OK</source>
         <translation type="unfinished">Tamam</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-progress-bar.cpp" line="655"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-bar.cpp" line="660"/>
         <source>Cancel</source>
         <translation type="unfinished">İptal</translation>
     </message>
@@ -2435,9 +2405,8 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</translation
         <translation type="unfinished">Dosya Yöneticisi</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/vfs/search-vfs-register.h" line="40"/>
         <source>Default search vfs of peony</source>
-        <translation type="unfinished">Peony için varsayılan arama vfs&apos;si</translation>
+        <translation type="obsolete">Peony için varsayılan arama vfs&apos;si</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/model/side-bar-file-system-item.cpp" line="310"/>
