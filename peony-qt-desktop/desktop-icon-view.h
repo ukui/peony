@@ -38,6 +38,7 @@ class DesktopItemProxyModel;
 
 class DesktopIconView : public QListView, public DirectoryViewIface
 {
+    friend class DesktopWindow;
     friend class DesktopIndexWidget;
     friend class DesktopIconViewDelegate;
     friend class DesktopItemModel;

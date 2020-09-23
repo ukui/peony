@@ -304,6 +304,8 @@ void DesktopIconView::initShoutCut()
     undoAction->setShortcut(QKeySequence::Undo);
     connect(undoAction, &QAction::triggered,
     [=]() {
+        // do not relayout item with undo.
+        setRenaming(true);
         FileOperationManager::getInstance()->undo();
     });
     addAction(undoAction);
@@ -312,6 +314,8 @@ void DesktopIconView::initShoutCut()
     redoAction->setShortcut(QKeySequence::Redo);
     connect(redoAction, &QAction::triggered,
     [=]() {
+        // do not relayout item with redo.
+        setRenaming(true);
         FileOperationManager::getInstance()->redo();
     });
     addAction(redoAction);
