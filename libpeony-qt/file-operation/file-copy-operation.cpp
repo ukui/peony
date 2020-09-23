@@ -126,6 +126,11 @@ FileCopyOperation::~FileCopyOperation()
 ExceptionResponse FileCopyOperation::prehandle(GError *err)
 {
     setHasError(true);
+
+    if (G_IO_ERROR_NO_SPACE == err->code) {
+        return Other;
+    }
+
     if (m_is_duplicated_copy)
         return BackupAll;
 
@@ -411,6 +416,7 @@ fallback_retry:
             node->setState(FileNode::Handled);
         }
         m_current_offset += node->size();
+
         Q_EMIT operationProgressedOne(node->uri(), node->destUri(), node->size());
     }
     destFile.reset();
@@ -486,6 +492,7 @@ void FileCopyOperation::run()
         node->computeTotalSize(total_size);
         nodes << node;
     }
+
     Q_EMIT operationPrepared();
 
     m_total_szie = *total_size;
@@ -513,6 +520,8 @@ void FileCopyOperation::run()
             m_info->m_node_map.insert(node->uri(), node->destUri());
         delete node;
     }
+
+    m_info->m_dest_uris = m_info->m_node_map.values();
 
     nodes.clear();
 

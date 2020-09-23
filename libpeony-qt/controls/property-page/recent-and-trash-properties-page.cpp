@@ -83,6 +83,7 @@ RecentAndTrashPropertiesPage::RecentAndTrashPropertiesPage(const QStringList &ur
         if (m_uri == "recent:///") {
 
         } else {
+            //FIXME: replace BLOCKING api in ui thread.
             auto targetUri = FileUtils::getTargetUri(m_uri);
             auto label = new QLabel(QUrl(targetUri).toDisplayString(), this);
             label->setWordWrap(true);

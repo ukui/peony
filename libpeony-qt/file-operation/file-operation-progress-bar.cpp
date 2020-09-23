@@ -108,8 +108,6 @@ void FileOperationProgressBar::removeFileOperation(ProgressBar *progress)
     m_progress_list->remove(progress);
     m_widget_list->remove(li);
 
-    progress->deleteLater();
-    delete li;
     --m_progress_size;
 
     // check main progress
@@ -121,6 +119,10 @@ void FileOperationProgressBar::removeFileOperation(ProgressBar *progress)
             mainProgressChange(pg);
         }
     }
+
+    // free progress
+    delete progress;
+    delete li;
 
     if (m_progress_size <= 0) {
         m_progress_size = 0;

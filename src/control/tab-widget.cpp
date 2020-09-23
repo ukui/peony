@@ -647,6 +647,7 @@ void TabWidget::updateSearchPathButton(const QString &uri)
         if (! getCurrentUri().isNull())
             curUri = getCurrentUri();
     }
+    //FIXME: replace BLOCKING api in ui thread.
     auto iconName = Peony::FileUtils::getFileIconName(curUri);
     auto displayName = Peony::FileUtils::getFileDisplayName(curUri);
     qDebug() << "iconName:" <<iconName <<displayName<<curUri;
@@ -1072,6 +1073,12 @@ void TabWidget::bindContainerSignal(Peony::DirectoryViewContainer *container)
         bool enable = currentPage()->getView()->supportZoom();
         m_status_bar->m_slider->setEnabled(enable);
         //m_status_bar->m_slider->setVisible(enable);
+    });
+
+    connect(container, &Peony::DirectoryViewContainer::updateWindowSelectionRequest, this, [=](const QStringList &uris){
+        if (container == currentPage()) {
+            Q_EMIT this->updateWindowSelectionRequest(uris);
+        }
     });
 }
 

@@ -126,7 +126,11 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
                     notEmptyRegion += rect;
                 }
 
-                view->setFileMetaInfoPos(uri, QPoint(-1, -1));
+                if (!view->isRenaming()) {
+                    view->setFileMetaInfoPos(uri, QPoint(-1, -1));
+                } else {
+                    view->setRenaming(false);
+                }
 
                 auto metaInfoPos = view->getFileMetaInfoPos(uri);
                 if (metaInfoPos.x() >= 0) {
@@ -361,8 +365,10 @@ void DesktopItemModel::refresh()
     m_files.clear();
 
     auto desktopUri = "file://" + QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
+    //FIXME: replace BLOCKING api in ui thread.
     if (!FileUtils::isFileExsit(desktopUri)) {
         // try get correct desktop path delay.
+        //FIXME: replace BLOCKING api in ui thread.
         QTimer::singleShot(1000, this, [=](){
             if (!FileUtils::isFileExsit(desktopUri)) {
                 endResetModel();

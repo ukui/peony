@@ -85,6 +85,7 @@ void PathBarModel::setRootUri(const QString &uri, bool force)
             continue;
 
         //skip the hidden file.
+        //FIXME: replace BLOCKING api in ui thread.
         QString display_name = FileUtils::getFileDisplayName(info->uri());
         if (display_name.startsWith("."))
             continue;
@@ -103,6 +104,7 @@ QString PathBarModel::findDisplayName(const QString &uri)
 {
     QUrl url = uri;
     if (m_uri_display_name_hash.find(url.toDisplayString())->isNull()) {
+        //FIXME: replace BLOCKING api in ui thread.
         return FileUtils::getFileDisplayName(uri);
     } else {
         return m_uri_display_name_hash.value(url.toDisplayString());

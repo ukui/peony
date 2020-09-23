@@ -321,6 +321,7 @@ void DesktopIconViewDelegate::setModelData(QWidget *editor, QAbstractItemModel *
     if (newName.length() >0 && newName != oldName && newName != suffix) {
         auto fileOpMgr = FileOperationManager::getInstance();
         auto renameOp = new FileRenameOperation(index.data(Qt::UserRole).toString(), newName);
+        getView()->setRenaming(true);
         fileOpMgr->startOperation(renameOp, true);
     }
 }

@@ -78,6 +78,7 @@ private:
     bool m_is_computer = false;
     bool m_is_trash = false;
     bool m_is_search = false;
+    bool m_is_recent = false;
 
     const int ELIDE_TEXT_LENGTH = 16;
 

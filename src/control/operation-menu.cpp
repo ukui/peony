@@ -189,7 +189,13 @@ OperationMenuEditWidget::OperationMenuEditWidget(MainWindow *window, QWidget *pa
                 return ;
             }
 
-            Peony::ClipboardUtils::setClipboardFiles(window->getCurrentSelections(), false);
+            //process m_selections for paste show, to fix Chinese show abnormal issue
+            QStringList uris;
+            for(auto uri:window->getCurrentSelections())
+            {
+                uris << ("file://" + QUrl(uri).path());
+            }
+            Peony::ClipboardUtils::setClipboardFiles(uris, false);
             Q_EMIT operationAccepted();
         }
     });
@@ -199,13 +205,26 @@ OperationMenuEditWidget::OperationMenuEditWidget(MainWindow *window, QWidget *pa
             if (window->getCurrentSelections().first().startsWith("trash://", Qt::CaseInsensitive)) {
                 return ;
             }
-            Peony::ClipboardUtils::setClipboardFiles(window->getCurrentSelections(), true);
+            //process m_selections for paste show, to fix Chinese show abnormal issue
+            QStringList uris;
+            for(auto uri:window->getCurrentSelections())
+            {
+                uris << ("file://" + QUrl(uri).path());
+            }
+            Peony::ClipboardUtils::setClipboardFiles(uris, true);
             Q_EMIT operationAccepted();
         }
     });
 
     connect(m_paste, &QToolButton::clicked, this, [=]() {
-        Peony::ClipboardUtils::pasteClipboardFiles(window->getCurrentUri());
+        auto op = Peony::ClipboardUtils::pasteClipboardFiles(window->getCurrentUri());
+        if (op) {
+            connect(op, &Peony::FileOperation::operationFinished, window, [=](){
+                auto opInfo = op->getOperationInfo();
+                auto targetUirs = opInfo->dests();
+                window->setCurrentSelectionUris(targetUirs);
+            }, Qt::BlockingQueuedConnection);
+        }
         Q_EMIT operationAccepted();
     });
 
@@ -240,10 +259,6 @@ void OperationMenuEditWidget::updateActions(const QString &currentDirUri, const 
     m_cut->setEnabled(!isSelectionEmpty);
     m_trash->setEnabled(!isSelectionEmpty);
 
-    if (isSelectionEmpty) {
-        bool isClipboradHasFile = Peony::ClipboardUtils::isClipboardHasFiles();
-        m_paste->setEnabled(isClipboradHasFile);
-    } else {
-        m_paste->setEnabled(false);
-    }
+    bool isClipboradHasFile = Peony::ClipboardUtils::isClipboardHasFiles();
+    m_paste->setEnabled(isClipboradHasFile);
 }

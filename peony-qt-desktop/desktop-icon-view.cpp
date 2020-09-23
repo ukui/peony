@@ -254,8 +254,14 @@ void DesktopIconView::initShoutCut()
     copyAction->setShortcut(QKeySequence::Copy);
     connect(copyAction, &QAction::triggered, [=]() {
         auto selectedUris = this->getSelections();
-        if (!selectedUris.isEmpty())
-            ClipboardUtils::setClipboardFiles(selectedUris, false);
+        //process m_selections for paste show, to fix Chinese show abnormal issue
+        QStringList uris;
+        for(auto uri:selectedUris)
+        {
+            uris << ("file://" + QUrl(uri).path());
+        }
+        if (! uris.isEmpty())
+            ClipboardUtils::setClipboardFiles(uris, false);
     });
     addAction(copyAction);
 
@@ -263,8 +269,14 @@ void DesktopIconView::initShoutCut()
     cutAction->setShortcut(QKeySequence::Cut);
     connect(cutAction, &QAction::triggered, [=]() {
         auto selectedUris = this->getSelections();
-        if (!selectedUris.isEmpty())
-            ClipboardUtils::setClipboardFiles(selectedUris, true);
+        //process m_selections for paste show, to fix Chinese show abnormal issue
+        QStringList uris;
+        for(auto uri:selectedUris)
+        {
+            uris << ("file://" + QUrl(uri).path());
+        }
+        if (! uris.isEmpty())
+            ClipboardUtils::setClipboardFiles(uris, true);
     });
     addAction(cutAction);
 
@@ -278,15 +290,13 @@ void DesktopIconView::initShoutCut()
     });
     addAction(pasteAction);
 
-    QAction *trashAction = new QAction(this);
-    trashAction->setShortcut(QKeySequence::Delete);
+    //add CTRL+D for delete operation
+    auto trashAction = new QAction(this);
+    trashAction->setShortcuts(QList<QKeySequence>()<<Qt::Key_Delete<<QKeySequence(Qt::CTRL + Qt::Key_D));
     connect(trashAction, &QAction::triggered, [=]() {
-        auto selectedUris = this->getSelections();
-        if (!selectedUris.isEmpty()) {
-            clearAllIndexWidgets();
-            auto op = new FileTrashOperation(selectedUris);
-            FileOperationManager::getInstance()->startOperation(op, true);
-        }
+        auto selectedUris = getSelections();
+        if (! selectedUris.isEmpty())
+           FileOperationUtils::trash(selectedUris, true);
     });
     addAction(trashAction);
 
@@ -294,6 +304,8 @@ void DesktopIconView::initShoutCut()
     undoAction->setShortcut(QKeySequence::Undo);
     connect(undoAction, &QAction::triggered,
     [=]() {
+        // do not relayout item with undo.
+        setRenaming(true);
         FileOperationManager::getInstance()->undo();
     });
     addAction(undoAction);
@@ -302,6 +314,8 @@ void DesktopIconView::initShoutCut()
     redoAction->setShortcut(QKeySequence::Redo);
     connect(redoAction, &QAction::triggered,
     [=]() {
+        // do not relayout item with redo.
+        setRenaming(true);
         FileOperationManager::getInstance()->redo();
     });
     addAction(redoAction);
@@ -488,6 +502,14 @@ void DesktopIconView::openFileByUri(QString uri)
     job->setAutoDelete();
     job->connect(job, &FileInfoJob::queryAsyncFinished, [=]() {
         if ((info->isDir() || info->isVolume() || info->isVirtual())) {
+            if (! info->uri().startsWith("trash://")
+                    && ! info->uri().startsWith("computer://")
+                    &&  ! info->canExecute())
+            {
+                QMessageBox::critical(nullptr, tr("Open failed"),
+                                      tr("Open directory failed, you have no permission!"));
+                return;
+            }
 #if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
             QProcess p;
             QUrl url = uri;
@@ -656,7 +678,8 @@ const QStringList DesktopIconView::getSelections()
     QStringList uris;
     auto indexes = selectionModel()->selection().indexes();
     for (auto index : indexes) {
-        uris<<index.data(Qt::UserRole).toString();
+        QString uri = "file://" + QUrl(index.data(Qt::UserRole).toString()).path();
+        uris<<uri;
     }
     uris.removeDuplicates();
     return uris;
@@ -868,7 +891,7 @@ void DesktopIconView::focusOutEvent(QFocusEvent *e)
 void DesktopIconView::resizeEvent(QResizeEvent *e)
 {
     QListView::resizeEvent(e);
-    refresh();
+    //refresh();
 }
 
 void DesktopIconView::rowsInserted(const QModelIndex &parent, int start, int end)
@@ -907,6 +930,16 @@ bool DesktopIconView::isItemsOverlapped()
     }
 
     return false;
+}
+
+bool DesktopIconView::isRenaming()
+{
+    return m_is_renaming;
+}
+
+void DesktopIconView::setRenaming(bool renaming)
+{
+    m_is_renaming = renaming;
 }
 
 void DesktopIconView::zoomOut()

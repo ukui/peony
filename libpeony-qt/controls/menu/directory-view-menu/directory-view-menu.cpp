@@ -104,6 +104,9 @@ void DirectoryViewMenu::fillActions()
     if (m_directory.startsWith("burn://"))
         m_is_cd = true;
 
+    if (m_directory.startsWith("recent://"))
+        m_is_recent = true;
+
     //add open actions
     auto openActions = constructOpenOpActions();
     if (!openActions.isEmpty())
@@ -176,6 +179,8 @@ const QList<QAction *> DirectoryViewMenu::constructOpenOpActions()
         if (m_selections.count() == 1) {
             auto info = FileInfo::fromUri(m_selections.first());
             auto displayName = info->displayName();
+
+            //FIXME: replace BLOCKING api in ui thread.
             if (displayName.isEmpty())
                 displayName = FileUtils::getFileDisplayName(info->uri());
             //when name is too long, show elideText
@@ -521,13 +526,19 @@ const QList<QAction *> DirectoryViewMenu::constructFileOpActions()
     if (!m_is_trash && !m_is_search && !m_is_computer) {
         QString homeUri = "file://" +  QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
         if (!m_selections.isEmpty() && !m_selections.contains(homeUri)) {
+            //process m_selections for paste show, to fix Chinese show abnormal issue
+            QStringList uris;
+            for(auto uri:m_selections)
+            {
+                uris << ("file://" + QUrl(uri).path());
+            }
             l<<addAction(QIcon::fromTheme("edit-copy-symbolic"), tr("&Copy"));
             connect(l.last(), &QAction::triggered, [=]() {
-                ClipboardUtils::setClipboardFiles(m_selections, false);
+                ClipboardUtils::setClipboardFiles(uris, false);
             });
             l<<addAction(QIcon::fromTheme("edit-cut-symbolic"), tr("Cut"));
             connect(l.last(), &QAction::triggered, [=]() {
-                ClipboardUtils::setClipboardFiles(m_selections, true);
+                ClipboardUtils::setClipboardFiles(uris, true);
             });
             l<<addAction(QIcon::fromTheme("edit-delete-symbolic"), tr("&Delete to trash"));
             connect(l.last(), &QAction::triggered, [=]() {
@@ -549,7 +560,16 @@ const QList<QAction *> DirectoryViewMenu::constructFileOpActions()
             l<<pasteAction;
             pasteAction->setEnabled(ClipboardUtils::isClipboardHasFiles());
             connect(l.last(), &QAction::triggered, [=]() {
-                ClipboardUtils::pasteClipboardFiles(m_directory);
+                auto op = ClipboardUtils::pasteClipboardFiles(m_directory);
+                if (op) {
+                    auto window = dynamic_cast<QWidget *>(m_top_window);
+                    auto iface = m_top_window;
+                    connect(op, &Peony::FileOperation::operationFinished, window, [=](){
+                        auto opInfo = op->getOperationInfo();
+                        auto targetUirs = opInfo->dests();
+                        iface->setCurrentSelectionUris(targetUirs);
+                    }, Qt::BlockingQueuedConnection);
+                }
             });
             l<<addAction(QIcon::fromTheme("view-refresh-symbolic"), tr("&Refresh"));
             connect(l.last(), &QAction::triggered, [=]() {
@@ -682,13 +702,16 @@ const QList<QAction *> DirectoryViewMenu::constructTrashActions()
 const QList<QAction *> DirectoryViewMenu::constructSearchActions()
 {
     QList<QAction *> l;
-    if (m_is_search) {
+    if (m_is_search || m_is_recent) {
         if (m_selections.isEmpty())
             return l;
 
         l<<addAction(QIcon::fromTheme("new-window-symbolc"), tr("Open Parent Folder in New Window"));
         connect(l.last(), &QAction::triggered, [=]() {
             for (auto uri : m_selections) {
+                //FIXME: replace BLOCKING api in ui thread.
+                if (m_is_recent)
+                    uri = FileUtils::getTargetUri(uri);
                 auto parentUri = FileUtils::getParentUri(uri);
                 if (!parentUri.isNull()) {
                     auto *windowIface = m_top_window->create(parentUri);

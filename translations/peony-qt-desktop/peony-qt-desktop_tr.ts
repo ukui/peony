@@ -9,14 +9,24 @@
         <translation>Masaüstü Simgelerini Göster</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="356"/>
+        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="362"/>
         <source>New Folder</source>
         <translation>Yeni Klasör</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="442"/>
+        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="448"/>
         <source>set background</source>
         <translation>Arkaplanı Değiştir</translation>
+    </message>
+    <message>
+        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="491"/>
+        <source>Open failed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="492"/>
+        <source>Open directory failed, you have no permission!</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
