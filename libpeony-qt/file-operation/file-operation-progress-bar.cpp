@@ -31,6 +31,7 @@
 
 #include <QUrl>
 #include <QTimer>
+#include <file-utils.h>
 
 QPushButton* btn;
 
@@ -280,7 +281,7 @@ void MainProgressBar::initPrarm()
 {
     m_stopping = false;
     m_current_value = 0.0;
-    m_file_name = tr("starting ...");
+//    m_file_name = tr("starting ...");
 }
 
 void MainProgressBar::setFileIcon(QIcon& icon)
@@ -723,7 +724,18 @@ void ProgressBar::updateProgress(const QString &srcUri, const QString &destUri, 
     QUrl srcUrl = srcUri;
     m_src_uri = srcUrl.toDisplayString();
     QUrl destUrl = destUri;
-    m_dest_uri = destUrl.toDisplayString();
+    QString destPath = destUrl.path();
+
+    if (Peony::FileUtils::isFileDirectory(destUri)) {
+        if (destUrl.path().endsWith("/")) {
+        m_dest_uri = destUrl.path() + srcUrl.fileName();
+        } else {
+            m_dest_uri = destUrl.path() + "/" + srcUrl.fileName();
+        }
+    } else {
+        m_dest_uri = destUrl.path();
+    }
+
     if (fIcon != getIcon().name()) {
         setIcon(fIcon);
     }
