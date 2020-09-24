@@ -417,6 +417,12 @@ QVariant DesktopItemModel::data(const QModelIndex &index, int role) const
             if (info->uri().endsWith(".desktop") && !info->canExecute()) {
                 return QIcon::fromTheme(info->iconName(), QIcon::fromTheme("text-x-generic"));
             }
+            if(info->canExecute()&&info->isExecDisable())
+            {
+
+                 QPixmap pixmap = thumbnail.pixmap((100,100),QIcon::Disabled,QIcon::Off);
+                 return QIcon(pixmap);
+            }
             return thumbnail;
         }
         return QIcon::fromTheme(info->iconName(), QIcon::fromTheme("text-x-generic"));

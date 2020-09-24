@@ -247,6 +247,8 @@ public:
     bool isEmptyInfo() {
         return m_display_name == nullptr;
     }
+    // 是否禁止执行程序
+    bool isExecDisable();
 
     AccessFlags accesses() {
         auto flags = AccessFlags();

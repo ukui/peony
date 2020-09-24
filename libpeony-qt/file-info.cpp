@@ -188,3 +188,9 @@ bool FileInfo::isOfficeFile()
 
     return false;
 }
+bool FileInfo::isExecDisable()
+{
+     int nRet = m_meta_info->getMetaInfoInt("exec_disable");
+     if(1==nRet) return true;
+     return false;
+}

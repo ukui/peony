@@ -288,6 +288,8 @@ void FileInfoJob::refreshInfoContents(GFileInfo *new_info)
     info->m_access_date = date.toString(Qt::SystemLocaleShortDate);
 
     m_info->m_meta_info = FileMetaInfo::fromGFileInfo(m_info->uri(), new_info);
+
+    //m_info->m_meta_info->setMetaInfoInt("exec_disable",1);  //add by nsg test
     // update peony qt color list after meta info updated.
     m_info->m_colors = FileLabelModel::getGlobalModel()->getFileColors(m_info->uri());
 
