@@ -903,17 +903,19 @@ void MainWindow::paintEvent(QPaintEvent *e)
 
     QPainterPath sidebarPath;
     sidebarPath.setFillRule(Qt::FillRule::WindingFill);
-    auto adjustedRect = sideBarRect().adjusted(0, 1, 0, 0);
-    sidebarPath.addRoundedRect(adjustedRect, 16, 16);
-    sidebarPath.addRect(adjustedRect.adjusted(0, 0, 0, -6));
-    sidebarPath.addRect(adjustedRect.adjusted(6, 0, 0, 0));
 
     auto pos = m_tab->mapTo(this, QPoint());
     auto tmpRect = QRect(pos, m_tab->size());
     QPainterPath deletePath;
     QPainterPath tmpPath;
-    tmpPath.addRoundedRect(rect().adjusted(4, 4, -4, -4), 16, 16);
-    deletePath.addRoundedRect(tmpRect.adjusted(0, 40, 0, 0), 16, 16);
+    if(window()->isMaximized()){
+        tmpPath.addRect(rect().adjusted(0,0,0,0));
+        deletePath.addRect(tmpRect.adjusted(0, 40, 0, 0));
+    }
+    else{
+        tmpPath.addRoundedRect(rect().adjusted(4,4,-4,-4), 16, 16);
+        deletePath.addRoundedRect(tmpRect.adjusted(0, 40, 0, 0), 16, 16);
+    }
     sidebarPath = tmpPath - deletePath;
 
     m_effect->setTransParentPath(sidebarPath);
@@ -924,7 +926,7 @@ void MainWindow::paintEvent(QPaintEvent *e)
     QPainter p(this);
     p.setRenderHint(QPainter::Antialiasing); // 抗锯齿
 
-    m_effect->drawWindowShadowManually(&p, this->rect().adjusted(0,0,0,0), m_resize_handler->isButtonDown());
+    m_effect->drawWindowShadowManually(&p, this->rect(), m_resize_handler->isButtonDown());
     QPainter painter(this);
     deletePath.addRect(m_tab->x(),height()-16,18,12);
     if(m_is_first_tab)

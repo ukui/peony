@@ -55,6 +55,7 @@
 
 #include <QStringList>
 #include <QStyleHints>
+#include <QPoint>
 
 #include <QDebug>
 
@@ -313,6 +314,12 @@ void IconView::paintEvent(QPaintEvent *e)
     p.drawRect(0, 0, 24, 24);
     p.drawRect(0, rect().height() - 24, 24, 24);
     p.drawRect(rect().width() - 24, 0, 24, 24);
+
+    auto w = window();
+    QPoint l = this->mapTo(w,QPoint(this->rect().right(),this->rect().height()));
+    if(w->rect().right()-l.x()>100||window()->isMaximized()){
+        p.drawRect(rect().width()-24,rect().height()-24,24,24);
+    }
 //    p.fillRect(this->geometry(), this->palette().base());
 //    if (m_repaint_timer.isActive()) {
 //        m_repaint_timer.stop();

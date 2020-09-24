@@ -26,6 +26,7 @@
 #include <QStyledItemDelegate>
 #include <QTextEdit>
 #include "peony-core_global.h"
+#include "list-view.h"
 
 class QPushButton;
 

@@ -524,6 +524,38 @@ TopMenuBar::TopMenuBar(MainWindow *parent) : QMenuBar(parent)
     m_top_menu_internal_widget = new QWidget(this);
     m_top_menu_internal_widget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     addWindowButtons();
+    m_window->installEventFilter(this);
+}
+
+bool TopMenuBar::eventFilter(QObject *obj, QEvent *e)
+{
+
+    Q_UNUSED(obj)
+    if (m_window) {
+        if (e->type() == QEvent::Resize) {
+            if (m_window->isMaximized()) {
+                m_max_or_restore->setIcon(QIcon::fromTheme("window-restore-symbolic"));
+                //m_max_or_restore->setToolTip(tr("Restore"));
+            } else {
+                m_max_or_restore->setIcon(QIcon::fromTheme("window-maximize-symbolic"));
+                //m_max_or_restore->setToolTip(tr("Maximize"));
+            }
+        }
+        return false;
+    } else {
+        if (e->type() == QEvent::MouseMove) {
+            //auto w = qobject_cast<QWidget *>(obj);
+            QCursor c;
+            c.setShape(Qt::ArrowCursor);
+            //this->setCursor(c);
+            //w->setCursor(c);
+            this->topLevelWidget()->setCursor(c);
+        }
+
+    }
+
+    return false;
+
 }
 
 void TopMenuBar::addWindowButtons()
@@ -690,7 +722,7 @@ void HeaderBarContainer::addHeaderBar(HeaderBar *headerBar)
     m_internal_widget->setLayout(m_layout);
     addWidget(m_internal_widget);
 
-    m_header_bar->m_window->installEventFilter(this);
+//    m_header_bar->m_window->installEventFilter(this);
 }
 
 

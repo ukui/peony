@@ -9,12 +9,12 @@
         <translation>桌面图标视图</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="356"/>
+        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="364"/>
         <source>New Folder</source>
         <translation>新建文件夹</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="442"/>
+        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="450"/>
         <source>set background</source>
         <translation>设置壁纸</translation>
     </message>
@@ -254,17 +254,17 @@
 <context>
     <name>Peony::DesktopWindow</name>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-window.cpp" line="92"/>
+        <location filename="../../peony-qt-desktop/desktop-window.cpp" line="93"/>
         <source>Desktop</source>
         <translation>桌面</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-window.cpp" line="157"/>
+        <location filename="../../peony-qt-desktop/desktop-window.cpp" line="170"/>
         <source>set background</source>
         <translation>设置壁纸</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-window.cpp" line="562"/>
+        <location filename="../../peony-qt-desktop/desktop-window.cpp" line="574"/>
         <source>New Folder</source>
         <translation>新建文件夹</translation>
     </message>

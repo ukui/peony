@@ -43,6 +43,7 @@
 
 #include "peony-desktop-application.h"
 #include "singleapplication.h"
+#include "global-settings.h"
 
 #include <QDesktopServices>
 
@@ -94,6 +95,18 @@ DesktopWindow::DesktopWindow(QScreen *screen, bool is_primary, QWidget *parent)
     m_opacity->setDuration(1000);
     m_opacity->setStartValue(double(0));
     m_opacity->setEndValue(double(1));
+
+    bool tabletMode = Peony::GlobalSettings::getInstance()->getValue(TABLET_MODE).toBool();
+    if(tabletMode)
+        this->hide();
+
+    connect(qApp, &QApplication::paletteChanged, this, [=](){
+        bool tabletMode = Peony::GlobalSettings::getInstance()->getValue(TABLET_MODE).toBool();
+        if(tabletMode)
+            this->hide();
+        else
+            this->setVisible(true);
+    });
     connect(m_opacity, &QVariantAnimation::valueChanged, this, [=]() {
         this->update();
     });
@@ -351,7 +364,6 @@ void DesktopWindow::setBg(const QString &path) {
 
     m_bg_font_pixmap = QPixmap(path);
     // FIXME: implement different pixmap clip algorithm.
-
     m_bg_back_cache_pixmap = m_bg_back_pixmap.scaled(m_screen->size(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
 
     m_bg_font_cache_pixmap = m_bg_font_pixmap.scaled(m_screen->size(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
