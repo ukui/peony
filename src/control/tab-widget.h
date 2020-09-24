@@ -206,6 +206,8 @@ private:
 
     PreviewPageButtonGroups *m_buttons;
 
+    QToolBar *m_tool_bar;
+
     Peony::PreviewPageIface *m_preview_page = nullptr;
     QStackedWidget *m_preview_page_container;
 

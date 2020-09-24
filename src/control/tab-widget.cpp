@@ -104,6 +104,7 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
     m_tab_bar_bg = new QWidget(this);
     m_tab_bar_bg->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     QToolBar *previewButtons = new QToolBar(this);
+    m_tool_bar = previewButtons;
     //previewButtons->setFixedHeight(m_tab_bar->height());
     t->setContentsMargins(0, 0, 5, 0);
     t->addWidget(m_tab_bar_bg);
@@ -550,6 +551,11 @@ void TabWidget::updateTrashBarVisible(const QString &uri)
     m_trash_label->setVisible(visible);
     m_clear_button->setVisible(visible);
     m_recover_button->setVisible(visible);
+
+    if (uri.startsWith("trash://") || uri.startsWith("recent://"))
+        m_tool_bar->setVisible(false);
+    else
+        m_tool_bar->setVisible(true);
 }
 
 void TabWidget::handleZoomLevel(int zoomLevel)
