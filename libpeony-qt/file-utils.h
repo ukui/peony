@@ -81,6 +81,7 @@ public:
 
 private:
     FileUtils();
+    static void handleVolumeLabelForFat32(QString &volumeName,const QString &unixDevcieName);
 };
 
 }
