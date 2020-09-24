@@ -443,19 +443,13 @@ const QList<QAction *> DesktopMenu::constructFileOpActions()
         } else if (m_selections.count() == 1 && m_selections.first() == "computer:///") {
 
         } else if (! m_selections.contains(homeUri)) {
-            //process m_selections for paste show, to fix Chinese show abnormal issue
-            QStringList uris;
-            for(auto uri:m_selections)
-            {
-                uris << ("file://" + QUrl(uri).path());
-            }
             l<<addAction(QIcon::fromTheme("edit-copy-symbolic"), tr("&Copy"));
             connect(l.last(), &QAction::triggered, [=]() {
-                ClipboardUtils::setClipboardFiles(uris, false);
+                ClipboardUtils::setClipboardFiles(m_selections, false);
             });
             l<<addAction(QIcon::fromTheme("edit-cut-symbolic"), tr("Cut"));
             connect(l.last(), &QAction::triggered, [=]() {
-                ClipboardUtils::setClipboardFiles(uris, true);
+                ClipboardUtils::setClipboardFiles(m_selections, true);
             });
 
             if (!m_selections.contains("trash:///")) {

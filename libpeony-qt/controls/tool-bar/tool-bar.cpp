@@ -246,14 +246,8 @@ void ToolBar::init()
     });
     */
 
-    //process m_selections for paste show, to fix Chinese show abnormal issue
-    QStringList uris;
-    for(auto uri:m_top_window->getCurrentSelections())
-    {
-        uris << ("file://" + QUrl(uri).path());
-    }
     connect(copyAction, &QAction::triggered, [=]() {
-        if (! uris.isEmpty())
+        if (!m_top_window->getCurrentSelections().isEmpty())
             ClipboardUtils::setClipboardFiles(m_top_window->getCurrentSelections(), false);
     });
 
@@ -265,7 +259,7 @@ void ToolBar::init()
         }
     });
     connect(cutAction, &QAction::triggered, [=]() {
-        if (! uris.isEmpty()) {
+        if (!m_top_window->getCurrentSelections().isEmpty()) {
             ClipboardUtils::setClipboardFiles(m_top_window->getCurrentSelections(), true);
         }
     });

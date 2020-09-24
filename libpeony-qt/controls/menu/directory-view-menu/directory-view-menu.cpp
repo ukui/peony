@@ -526,19 +526,13 @@ const QList<QAction *> DirectoryViewMenu::constructFileOpActions()
     if (!m_is_trash && !m_is_search && !m_is_computer) {
         QString homeUri = "file://" +  QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
         if (!m_selections.isEmpty() && !m_selections.contains(homeUri)) {
-            //process m_selections for paste show, to fix Chinese show abnormal issue
-            QStringList uris;
-            for(auto uri:m_selections)
-            {
-                uris << ("file://" + QUrl(uri).path());
-            }
             l<<addAction(QIcon::fromTheme("edit-copy-symbolic"), tr("&Copy"));
             connect(l.last(), &QAction::triggered, [=]() {
-                ClipboardUtils::setClipboardFiles(uris, false);
+                ClipboardUtils::setClipboardFiles(m_selections, false);
             });
             l<<addAction(QIcon::fromTheme("edit-cut-symbolic"), tr("Cut"));
             connect(l.last(), &QAction::triggered, [=]() {
-                ClipboardUtils::setClipboardFiles(uris, true);
+                ClipboardUtils::setClipboardFiles(m_selections, true);
             });
             l<<addAction(QIcon::fromTheme("edit-delete-symbolic"), tr("&Delete to trash"));
             connect(l.last(), &QAction::triggered, [=]() {

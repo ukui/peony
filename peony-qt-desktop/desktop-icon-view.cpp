@@ -254,14 +254,8 @@ void DesktopIconView::initShoutCut()
     copyAction->setShortcut(QKeySequence::Copy);
     connect(copyAction, &QAction::triggered, [=]() {
         auto selectedUris = this->getSelections();
-        //process m_selections for paste show, to fix Chinese show abnormal issue
-        QStringList uris;
-        for(auto uri:selectedUris)
-        {
-            uris << ("file://" + QUrl(uri).path());
-        }
-        if (! uris.isEmpty())
-            ClipboardUtils::setClipboardFiles(uris, false);
+        if (!selectedUris.isEmpty())
+            ClipboardUtils::setClipboardFiles(selectedUris, false);
     });
     addAction(copyAction);
 
@@ -269,14 +263,8 @@ void DesktopIconView::initShoutCut()
     cutAction->setShortcut(QKeySequence::Cut);
     connect(cutAction, &QAction::triggered, [=]() {
         auto selectedUris = this->getSelections();
-        //process m_selections for paste show, to fix Chinese show abnormal issue
-        QStringList uris;
-        for(auto uri:selectedUris)
-        {
-            uris << ("file://" + QUrl(uri).path());
-        }
-        if (! uris.isEmpty())
-            ClipboardUtils::setClipboardFiles(uris, true);
+        if (!selectedUris.isEmpty())
+            ClipboardUtils::setClipboardFiles(selectedUris, true);
     });
     addAction(cutAction);
 

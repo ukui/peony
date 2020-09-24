@@ -538,13 +538,7 @@ void MainWindow::setShortCuts()
             if (this->getCurrentSelections().first().startsWith("trash://", Qt::CaseInsensitive)) {
                 return ;
             }
-            //process m_selections for paste show, to fix Chinese show abnormal issue
-            QStringList uris;
-            for(auto uri:this->getCurrentSelections())
-            {
-                uris << ("file://" + QUrl(uri).path());
-            }
-            Peony::ClipboardUtils::setClipboardFiles(uris, false);
+            Peony::ClipboardUtils::setClipboardFiles(this->getCurrentSelections(), false);
     });
     addAction(copyAction);
 
@@ -573,13 +567,7 @@ void MainWindow::setShortCuts()
             if (this->getCurrentSelections().first().startsWith("trash://", Qt::CaseInsensitive)) {
                 return ;
             }
-            //process m_selections for paste show, to fix Chinese show abnormal issue
-            QStringList uris;
-            for(auto uri:this->getCurrentSelections())
-            {
-                uris << ("file://" + QUrl(uri).path());
-            }
-            Peony::ClipboardUtils::setClipboardFiles(uris, true);
+            Peony::ClipboardUtils::setClipboardFiles(this->getCurrentSelections(), true);
         }
     });
     addAction(cutAction);
