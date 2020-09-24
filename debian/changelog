@@ -1,3 +1,11 @@
+peony (3.0.3-1+0924) v101; urgency=medium
+
+  *Fixed bugs about roundcorner and shadow effect.
+  *Hide desktop when tablet mode is actived. 
+  *Make sidebar expand button resized with sidebar itself.
+
+ -- zhangpengfei <zhangpengfei@kylinos.cn>  Thu, 24 Sep 2020 09:44:46 +0800
+
 peony (3.0.3-1+0917) v101; urgency=medium
 
   * modified tabbar and window corner style.
