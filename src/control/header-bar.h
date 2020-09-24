@@ -108,6 +108,7 @@ private:
     QPushButton *m_go_forward;
     //QToolButton *m_maximize_restore_button;
     QToolButton *m_search_button;
+    QToolButton *m_create_folder;
 
     bool m_search_mode = false;
     bool m_search_recursive = true;

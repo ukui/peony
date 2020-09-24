@@ -84,6 +84,7 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
     createFolder->setAutoRaise(false);
     createFolder->setFixedSize(QSize(40, 40));
     createFolder->setIconSize(QSize(16, 16));
+    m_create_folder = createFolder;
 
     addSpacing(2);
 
