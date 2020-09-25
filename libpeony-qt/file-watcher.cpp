@@ -88,10 +88,14 @@ FileWatcher::~FileWatcher()
     stopMonitor();
     cancel();
 
-    g_object_unref(m_cancellable);
-    g_object_unref(m_dir_monitor);
-    g_object_unref(m_monitor);
-    g_object_unref(m_file);
+    if (m_cancellable)
+        g_object_unref(m_cancellable);
+    if (m_dir_monitor)
+        g_object_unref(m_dir_monitor);
+    if (m_monitor)
+        g_object_unref(m_monitor);
+    if (m_file)
+        g_object_unref(m_file);
 }
 
 /*!
@@ -107,6 +111,7 @@ FileWatcher::~FileWatcher()
  */
 void FileWatcher::prepare()
 {
+    //FIXME: replace BLOCKING api in ui thread.
     GFileInfo *info = g_file_query_info(m_file,
                                         G_FILE_ATTRIBUTE_STANDARD_TARGET_URI,
                                         G_FILE_QUERY_INFO_NONE,
@@ -128,6 +133,8 @@ void FileWatcher::prepare()
 
 void FileWatcher::cancel()
 {
+    if (!m_cancellable)
+        return;
     g_cancellable_cancel(m_cancellable);
     g_object_unref(m_cancellable);
     m_cancellable = g_cancellable_new();
@@ -167,9 +174,12 @@ void FileWatcher::changeMonitorUri(QString uri)
 
     m_uri = uri;
     m_target_uri = uri;
-    g_object_unref(m_file);
-    g_object_unref(m_monitor);
-    g_object_unref(m_dir_monitor);
+    if (m_file)
+        g_object_unref(m_file);
+    if (m_monitor)
+        g_object_unref(m_monitor);
+    if (m_dir_monitor)
+        g_object_unref(m_dir_monitor);
 
     m_file = g_file_new_for_uri(uri.toUtf8().constData());
 
@@ -218,6 +228,12 @@ void FileWatcher::file_changed_callback(GFileMonitor *monitor,
     case G_FILE_MONITOR_EVENT_MOVED_IN:
     case G_FILE_MONITOR_EVENT_MOVED_OUT:
     case G_FILE_MONITOR_EVENT_RENAMED: {
+        /*!
+         * \bug
+         * renaming a desktop file can not get new uri correctly.
+         *
+         * we have to consider trigger it by another way.
+         */
         char *new_uri = g_file_get_uri(other_file);
         QString uri = new_uri;
         //QUrl url =  uri;

@@ -39,7 +39,7 @@ public:
 
     static Peony::DesktopIconView *getIconView();
     static bool userGuideDaemonRunning();
-    static void showGuide(const QString &appName = "ukui");
+    static void showGuide(const QString &appName = "");
 
 protected Q_SLOTS:
     void parseCmd(quint32 id, QByteArray msg, bool isPrimary);

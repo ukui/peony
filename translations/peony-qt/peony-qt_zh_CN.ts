@@ -27,52 +27,52 @@
 <context>
     <name>HeaderBar</name>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="76"/>
+        <location filename="../../src/control/header-bar.cpp" line="82"/>
         <source>Create Folder</source>
         <translation>新建文件夹</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="89"/>
+        <location filename="../../src/control/header-bar.cpp" line="96"/>
         <source>Open Terminal</source>
         <translation>打开终端</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="103"/>
+        <location filename="../../src/control/header-bar.cpp" line="110"/>
         <source>Go Back</source>
         <translation>后退</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="111"/>
+        <location filename="../../src/control/header-bar.cpp" line="118"/>
         <source>Go Forward</source>
         <translation>前进</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="141"/>
+        <location filename="../../src/control/header-bar.cpp" line="158"/>
         <source>Search</source>
         <translation>搜索</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="151"/>
+        <location filename="../../src/control/header-bar.cpp" line="168"/>
         <source>View Type</source>
         <translation>视图类型</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="178"/>
+        <location filename="../../src/control/header-bar.cpp" line="195"/>
         <source>Sort Type</source>
         <translation>排序类型</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="204"/>
+        <location filename="../../src/control/header-bar.cpp" line="221"/>
         <source>Option</source>
         <translation>选项</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="246"/>
+        <location filename="../../src/control/header-bar.cpp" line="265"/>
         <source>Operate Tips</source>
         <translation>操作提示</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="247"/>
+        <location filename="../../src/control/header-bar.cpp" line="266"/>
         <source>Don&apos;t find any terminal, please install at least one terminal!</source>
         <translation>没有找到任何终端插件，请确认您至少安装了一个！</translation>
     </message>
@@ -88,12 +88,12 @@
 <context>
     <name>HeaderBarContainer</name>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="529"/>
+        <location filename="../../src/control/header-bar.cpp" line="563"/>
         <source>Minimize</source>
         <translation>最小化</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="541"/>
+        <location filename="../../src/control/header-bar.cpp" line="575"/>
         <source>Maximize/Restore</source>
         <translation>最大化/还原</translation>
     </message>
@@ -106,7 +106,7 @@
         <translation type="vanished">最大化</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="562"/>
+        <location filename="../../src/control/header-bar.cpp" line="596"/>
         <source>Close</source>
         <translation>关闭</translation>
     </message>
@@ -114,28 +114,28 @@
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="100"/>
-        <location filename="../../src/windows/main-window.cpp" line="549"/>
+        <location filename="../../src/windows/main-window.cpp" line="106"/>
+        <location filename="../../src/windows/main-window.cpp" line="581"/>
         <source>File Manager</source>
         <translation>文件管理器</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="268"/>
+        <location filename="../../src/windows/main-window.cpp" line="286"/>
         <source>Undo</source>
         <translation>撤销</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="275"/>
+        <location filename="../../src/windows/main-window.cpp" line="293"/>
         <source>Redo</source>
         <translation>重做</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1168"/>
+        <location filename="../../src/windows/main-window.cpp" line="1222"/>
         <source>Delete Permanently</source>
         <translation>永久删除</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1169"/>
+        <location filename="../../src/windows/main-window.cpp" line="1223"/>
         <source>Are you sure that you want to delete these files? Once you start a deletion, the files deleting will never be restored again.</source>
         <translation>您确定要删除这些文件吗？一旦开始删除，这些文件将不可再恢复。</translation>
     </message>
@@ -144,7 +144,7 @@
         <translation type="vanished">文件管理器</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="556"/>
+        <location filename="../../src/windows/main-window.cpp" line="594"/>
         <source>New Folder</source>
         <translation>新建文件夹</translation>
     </message>
@@ -167,7 +167,7 @@
 <context>
     <name>NavigationTabBar</name>
     <message>
-        <location filename="../../src/control/navigation-tab-bar.cpp" line="117"/>
+        <location filename="../../src/control/navigation-tab-bar.cpp" line="118"/>
         <source>Search &quot;%1&quot; in &quot;%2&quot;</source>
         <translation>在%2中搜索%1</translation>
     </message>
@@ -220,6 +220,26 @@
         <location filename="../../src/control/operation-menu.cpp" line="147"/>
         <source>Edit</source>
         <translation>编辑</translation>
+    </message>
+    <message>
+        <location filename="../../src/control/operation-menu.cpp" line="158"/>
+        <source>copy</source>
+        <translation>复制</translation>
+    </message>
+    <message>
+        <location filename="../../src/control/operation-menu.cpp" line="167"/>
+        <source>paste</source>
+        <translation>粘贴</translation>
+    </message>
+    <message>
+        <location filename="../../src/control/operation-menu.cpp" line="176"/>
+        <source>cut</source>
+        <translation>剪切</translation>
+    </message>
+    <message>
+        <location filename="../../src/control/operation-menu.cpp" line="185"/>
+        <source>trash</source>
+        <translation>删除</translation>
     </message>
 </context>
 <context>
@@ -355,7 +375,7 @@ Copyright (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</source
         <translation>文件名称</translation>
     </message>
     <message>
-        <location filename="../../src/control/sort-type-menu.cpp" line="37"/>
+        <location filename="../../src/control/sort-type-menu.cpp" line="45"/>
         <source>File Size</source>
         <translation>文件大小</translation>
     </message>
@@ -365,7 +385,7 @@ Copyright (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</source
         <translation>文件类型</translation>
     </message>
     <message>
-        <location filename="../../src/control/sort-type-menu.cpp" line="45"/>
+        <location filename="../../src/control/sort-type-menu.cpp" line="37"/>
         <source>Modified Date</source>
         <translation>修改日期</translation>
     </message>
@@ -387,34 +407,34 @@ Copyright (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</source
 <context>
     <name>TabStatusBar</name>
     <message>
-        <location filename="../../src/control/tab-status-bar.cpp" line="113"/>
         <location filename="../../src/control/tab-status-bar.cpp" line="119"/>
+        <location filename="../../src/control/tab-status-bar.cpp" line="127"/>
         <source>; %1 folders</source>
         <translation>; %1 个文件夹</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-status-bar.cpp" line="114"/>
         <location filename="../../src/control/tab-status-bar.cpp" line="121"/>
+        <location filename="../../src/control/tab-status-bar.cpp" line="129"/>
         <source>; %1 files, %2 total</source>
         <translation>; %1 个文件, 共%2</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-status-bar.cpp" line="116"/>
+        <location filename="../../src/control/tab-status-bar.cpp" line="123"/>
         <source>; %1 folder</source>
         <translation>; %1 个文件夹</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-status-bar.cpp" line="117"/>
+        <location filename="../../src/control/tab-status-bar.cpp" line="125"/>
         <source>; %1 file, %2</source>
         <translation>; %1 个文件, %2</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-status-bar.cpp" line="124"/>
+        <location filename="../../src/control/tab-status-bar.cpp" line="134"/>
         <source>%1 selected</source>
         <translation>选中%1个</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-status-bar.cpp" line="136"/>
+        <location filename="../../src/control/tab-status-bar.cpp" line="146"/>
         <source>Search &quot;%1&quot; in &quot;%2&quot;</source>
         <translation>在%2中搜索%1</translation>
     </message>
@@ -457,23 +477,28 @@ Copyright (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</source
         <translation>递归搜索</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="271"/>
+        <location filename="../../src/control/tab-widget.cpp" line="275"/>
         <source>more options</source>
         <translation>更多选项</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="275"/>
+        <location filename="../../src/control/tab-widget.cpp" line="279"/>
         <source>Show/hide advance search</source>
         <translation>显示/隐藏高级搜索</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="380"/>
-        <location filename="../../src/control/tab-widget.cpp" line="464"/>
+        <location filename="../../src/control/tab-widget.cpp" line="339"/>
+        <source>Select path</source>
+        <translation>选择路径</translation>
+    </message>
+    <message>
+        <location filename="../../src/control/tab-widget.cpp" line="374"/>
+        <location filename="../../src/control/tab-widget.cpp" line="458"/>
         <source>is</source>
         <translation>是</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="398"/>
+        <location filename="../../src/control/tab-widget.cpp" line="392"/>
         <source>Please input key words...</source>
         <translation>请输入关键词...</translation>
     </message>
@@ -482,8 +507,8 @@ Copyright (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</source
         <translation type="vanished">请输入关键词...</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="433"/>
-        <location filename="../../src/control/tab-widget.cpp" line="451"/>
+        <location filename="../../src/control/tab-widget.cpp" line="427"/>
+        <location filename="../../src/control/tab-widget.cpp" line="445"/>
         <source>contains</source>
         <translation>包含</translation>
     </message>

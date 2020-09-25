@@ -84,6 +84,7 @@ public:
     void setFilterConditions(int fileType=0, int modifyTime=0, int fileSize=0);
 
     //multiple filter conditions for new advance search
+    void addFileNameFilter(QString key, bool updateNow = false);
     void addFilterCondition(int option, int classify, bool updateNow = false);
     void removeFilterCondition(int option, int classify, bool updateNow = false);
     void clearConditions();
@@ -115,6 +116,7 @@ private:
     bool checkFileTypeFilter(QString type) const;
     bool checkFileModifyTimeFilter(quint64 modifiedTime) const;
     bool checkFileSizeFilter(quint64 size) const;
+    bool checkFileNameFilter(const QString &displayName) const;
 
 private:
     bool m_show_hidden;
@@ -128,6 +130,7 @@ private:
     const quint64 K_BASE = 1000;
     int m_show_file_type=ALL_FILE, m_show_modify_time=ALL_FILE, m_show_file_size=ALL_FILE;
     QList<int> m_file_type_list, m_modify_time_list, m_file_size_list;
+    QStringList m_file_name_list;
     QStringList m_show_label_names;
     QList<QColor> m_show_label_colors;
 };

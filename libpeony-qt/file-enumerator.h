@@ -29,6 +29,8 @@
 #include <memory>
 #include <gio/gio.h>
 
+class QTimer;
+
 namespace Peony {
 
 class FileInfo;
@@ -52,6 +54,9 @@ public:
     ~FileEnumerator();
     void setEnumerateDirectory(QString uri);
     void setEnumerateDirectory(GFile *file);
+
+    QString getEnumerateUri();
+
     /*!
      * \brief prepare
      * <br>
@@ -215,10 +220,15 @@ protected:
             FileEnumerator *p_this);
 
 private:
+    QString m_uri;
+
     GFile *m_root_file = nullptr;
     GCancellable *m_cancellable = nullptr;
 
     QList<QString> *m_children_uris = nullptr;
+
+    QStringList *m_cache_uris;
+    QTimer *m_idle;
 
     bool m_auto_delete = false;
 };

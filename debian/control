@@ -5,7 +5,6 @@ Maintainer: Kylin Team <team+kylin@tracker.debian.org>
 Uploaders: Aron Xu <aron@debian.org>,
            handsome_feng <jianfengli@ubuntukylin.com>
 Build-Depends: debhelper-compat (=12),
-               pkg-kde-tools,
                pkg-config,
                qt5-qmake,
                qtbase5-dev,
@@ -34,7 +33,6 @@ Depends: ${misc:Depends},
          ${shlibs:Depends},
          libpeony3 (= ${binary:Version}),
          peony-common (= ${source:Version}),
-         libkf5windowsystem5
 Recommends: gvfs-backends,
             peony-extensions
 Description: file Manager for the UKUI desktop
@@ -63,9 +61,6 @@ Architecture: any
 Pre-Depends: ${misc:Pre-Depends}
 Depends: ${misc:Depends},
          ${shlibs:Depends},
-         libglib2.0-0,
-         libqt5widgets5,
-         libpoppler-qt5-1
 Provides: libpeony,
 Breaks: peony (<< 2.2.0-1),
         libpeony2

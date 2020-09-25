@@ -83,7 +83,7 @@ QWidget *ListViewDelegate::createEditor(QWidget *parent, const QStyleOptionViewI
 {
     TextEdit *edit = new TextEdit(parent);
     edit->setAcceptRichText(false);
-    edit->setContextMenuPolicy(Qt::CustomContextMenu);
+    //edit->setContextMenuPolicy(Qt::CustomContextMenu);
     edit->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     edit->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     edit->setWordWrapMode(QTextOption::NoWrap);

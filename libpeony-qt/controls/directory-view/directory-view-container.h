@@ -88,6 +88,8 @@ Q_SIGNALS:
     void viewDoubleClicked(const QString &uri);
     void updateWindowLocationRequest(const QString &uri, bool addHistory, bool forceUpdate = false);
 
+    void updateWindowSelectionRequest(const QStringList &uris);
+
     void menuRequest(const QPoint &pos);
 
     void zoomRequest(bool zoomIn);
@@ -121,6 +123,7 @@ public Q_SLOTS:
     void setFilterLabelConditions(QString name);
 
     //mutiple filter conditions for new advance search
+    void addFileNameFilter(QString key, bool updateNow = false);
     void addFilterCondition(int option, int classify, bool updateNow = false);
     void removeFilterCondition(int option, int classify, bool updateNow = false);
     void clearConditions();

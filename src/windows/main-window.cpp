@@ -535,6 +535,9 @@ void MainWindow::setShortCuts()
     copyAction->setShortcut(QKeySequence::Copy);
     connect(copyAction, &QAction::triggered, [=]() {
         if (!this->getCurrentSelections().isEmpty())
+            if (this->getCurrentSelections().first().startsWith("trash://", Qt::CaseInsensitive)) {
+                return ;
+            }
             Peony::ClipboardUtils::setClipboardFiles(this->getCurrentSelections(), false);
     });
     addAction(copyAction);
@@ -545,7 +548,14 @@ void MainWindow::setShortCuts()
         if (Peony::ClipboardUtils::isClipboardHasFiles()) {
             //FIXME: how about duplicated copy?
             //FIXME: how to deal with a failed move?
-            Peony::ClipboardUtils::pasteClipboardFiles(this->getCurrentUri());
+            auto op = Peony::ClipboardUtils::pasteClipboardFiles(this->getCurrentUri());
+            if (op) {
+                connect(op, &Peony::FileOperation::operationFinished, this, [=](){
+                    auto opInfo = op->getOperationInfo();
+                    auto targetUirs = opInfo->dests();
+                    setCurrentSelectionUris(targetUirs);
+                }, Qt::BlockingQueuedConnection);
+            }
         }
     });
     addAction(pasteAction);
@@ -554,6 +564,9 @@ void MainWindow::setShortCuts()
     cutAction->setShortcut(QKeySequence::Cut);
     connect(cutAction, &QAction::triggered, [=]() {
         if (!this->getCurrentSelections().isEmpty()) {
+            if (this->getCurrentSelections().first().startsWith("trash://", Qt::CaseInsensitive)) {
+                return ;
+            }
             Peony::ClipboardUtils::setClipboardFiles(this->getCurrentSelections(), true);
         }
     });
@@ -563,6 +576,7 @@ void MainWindow::setShortCuts()
 void MainWindow::updateTabPageTitle()
 {
     m_tab->updateTabPageTitle();
+    //FIXME: replace BLOCKING api in ui thread.
     auto show = Peony::FileUtils::getFileDisplayName(getCurrentUri());
     QString title = show + "-" + tr("File Manager");
     //qDebug() << "updateTabPageTitle:" <<title;
@@ -571,16 +585,28 @@ void MainWindow::updateTabPageTitle()
 
 void MainWindow::createFolderOperation()
 {
-    Peony::CreateTemplateOperation op(getCurrentUri(), Peony::CreateTemplateOperation::EmptyFolder, tr("New Folder"));
-    Peony::FileOperationErrorDialogConflict dlg;
-    connect(&op, &Peony::FileOperation::errored, &dlg, &Peony::FileOperationErrorDialogConflict::handle);
-    op.run();
-    auto targetUri = op.target();
+//    Peony::CreateTemplateOperation op(getCurrentUri(), Peony::CreateTemplateOperation::EmptyFolder, tr("New Folder"));
+//    Peony::FileOperationErrorDialogConflict dlg;
+//    connect(&op, &Peony::FileOperation::errored, &dlg, &Peony::FileOperationErrorDialogConflict::handle);
+//    op.run();
+//    auto targetUri = op.target();
 
-    QTimer::singleShot(500, this, [=]() {
-        this->getCurrentPage()->getView()->scrollToSelection(targetUri);
-        this->editUri(targetUri);
-    });
+    auto op = Peony::FileOperationUtils::create(getCurrentUri(), tr("New Folder"), Peony::CreateTemplateOperation::EmptyFolder);
+    connect(op, &Peony::FileOperation::operationFinished, this, [=](){
+        if (op->hasError())
+            return;
+        auto opInfo = op->getOperationInfo();
+        auto targetUri = opInfo->target();
+        this->getCurrentPage()->getView()->clearIndexWidget();
+        QTimer::singleShot(500, this, [=](){
+            this->editUri(opInfo->target());
+        });
+    }, Qt::BlockingQueuedConnection);
+
+//    QTimer::singleShot(500, this, [=]() {
+//        this->getCurrentPage()->getView()->scrollToSelection(targetUri);
+//        this->editUri(targetUri);
+//    });
 }
 
 void MainWindow::keyPressEvent(QKeyEvent *e)
@@ -740,7 +766,11 @@ void MainWindow::beginSwitchView(const QString &viewId)
     // save zoom level
     Peony::GlobalSettings::getInstance()->setValue(DEFAULT_VIEW_ZOOM_LEVEL, currentViewZoomLevel());
     m_tab->setCurrentSelections(selection);
-    m_tab->m_status_bar->m_slider->setEnabled(m_tab->currentPage()->getView()->supportZoom());
+    bool supportZoom = m_tab->currentPage()->getView()->supportZoom();
+    m_tab->m_status_bar->m_slider->setEnabled(supportZoom);
+    m_tab->m_status_bar->m_slider->setVisible(supportZoom);
+    //fix slider value not update issue
+    m_tab->m_status_bar->m_slider->setValue(currentViewZoomLevel());
 }
 
 void MainWindow::refresh()
@@ -808,6 +838,7 @@ void MainWindow::forceStopLoading()
 void MainWindow::setCurrentSelectionUris(const QStringList &uris)
 {
     m_tab->setCurrentSelections(uris);
+    getCurrentPage()->getView()->scrollToSelection(uris.first());
 }
 
 void MainWindow::setCurrentSortOrder(Qt::SortOrder order)
@@ -1124,6 +1155,7 @@ void MainWindow::initUI(const QString &uri)
         m_tab->addPage(home, true);
     } else {
         m_tab->addPage(uri, true);
+        m_header_bar->setLocation(uri);
     }
     QTimer::singleShot(1, this, [=]() {
         // FIXME:
@@ -1153,6 +1185,7 @@ void MainWindow::initUI(const QString &uri)
         setCurrentViewZoomLevel(currentViewZoomLevel());
 
     //bind signals
+    connect(m_tab, &TabWidget::searchRecursiveChanged, headerBar, &HeaderBar::updateSearchRecursive);
     connect(m_tab, &TabWidget::closeSearch, headerBar, &HeaderBar::closeSearch);
     connect(m_tab, &TabWidget::clearTrash, this, &MainWindow::cleanTrash);
     connect(m_tab, &TabWidget::recoverFromTrash, this, &MainWindow::recoverFromTrash);
@@ -1175,6 +1208,9 @@ void MainWindow::initUI(const QString &uri)
                 this->editUri(urisToEdit.first());
             });
         }
+    });
+    connect(m_tab, &TabWidget::updateWindowSelectionRequest, this, [=](const QStringList &uris){
+        setCurrentSelectionUris(uris);
     });
 //    connect(m_tab, &TabWidget::currentSelectionChanged, this, [=](){
 //        m_status_bar->update();

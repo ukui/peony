@@ -25,7 +25,6 @@
 
 #include "file-info.h"
 
-#include <QHash>
 #include <QMutex>
 
 namespace Peony {

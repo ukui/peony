@@ -92,6 +92,11 @@ void ClipboardUtils::setClipboardFiles(const QStringList &uris, bool isCut)
         global_instance = new ClipboardUtils;
     }
 
+    if (uris.isEmpty()) {
+        clearClipboard();
+        return;
+    }
+
     m_clipboard_parent_uri = FileUtils::getParentUri(uris.first());
 
     // we should remain the encoded uri for file operation
@@ -155,20 +160,22 @@ QStringList ClipboardUtils::getClipboardFilesUris()
     return l;
 }
 
-void ClipboardUtils::pasteClipboardFiles(const QString &targetDirUri)
+FileOperation *ClipboardUtils::pasteClipboardFiles(const QString &targetDirUri)
 {
+    FileOperation *op = nullptr;
     if (!isClipboardHasFiles()) {
-        return;
+        return op;
     }
     //check existed
     auto uris = getClipboardFilesUris();
     for (auto uri : getClipboardFilesUris()) {
+        //FIXME: replace BLOCKING api in ui thread.
         if (!FileUtils::isFileExsit(uri)) {
             uris.removeAll(uri);
         }
     }
     if (uris.isEmpty()) {
-        return;
+        return op;
     }
 
     //auto uris = getClipboardFilesUris();
@@ -176,14 +183,18 @@ void ClipboardUtils::pasteClipboardFiles(const QString &targetDirUri)
     if (isClipboardFilesBeCut()) {
         qDebug()<<uris;
         auto moveOp = new FileMoveOperation(uris, targetDirUri);
+        op = moveOp;
         fileOpMgr->startOperation(moveOp, true);
         QApplication::clipboard()->clear();
     } else {
         auto copyOp = new FileCopyOperation(uris, targetDirUri);
+        op = copyOp;
         fileOpMgr->startOperation(copyOp, true);
     }
 
     m_last_target_directory_uri = targetDirUri;
+
+    return op;
 }
 
 void ClipboardUtils::clearClipboard()

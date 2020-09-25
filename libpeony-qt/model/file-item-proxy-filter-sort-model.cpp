@@ -47,6 +47,8 @@ QCollator comparer = QCollator(locale);
 
 FileItemProxyFilterSortModel::FileItemProxyFilterSortModel(QObject *parent) : QSortFilterProxyModel(parent)
 {
+    //enable number sort, like 100 is after 99
+    comparer.setNumericMode(true);
     auto settings = GlobalSettings::getInstance();
     m_show_hidden = settings->isExist("show-hidden")? settings->getValue("show-hidden").toBool(): false;
     m_use_default_name_sort_order = settings->isExist("chinese-first")? settings->getValue("chinese-first").toBool(): false;
@@ -172,6 +174,8 @@ bool FileItemProxyFilterSortModel::filterAcceptsRow(int sourceRow, const QModelI
             return false;
         if (! checkFileSizeFilter(item->m_info->size()))
             return false;
+        if (! checkFileNameFilter(item->m_info->displayName()))
+            return false;
 
         //check the file label filter conditions
         if (m_label_name != "" || m_label_color != Qt::transparent)
@@ -247,6 +251,20 @@ bool FileItemProxyFilterSortModel::filterAcceptsRow(int sourceRow, const QModelI
         }
     }
     return true;
+}
+
+bool FileItemProxyFilterSortModel::checkFileNameFilter(const QString &displayName) const
+{
+    if (m_file_name_list.size() == 0)
+        return true;
+
+    for(auto key:m_file_name_list)
+    {
+        if (displayName.contains(key))
+            return true;
+    }
+
+    return false;
 }
 
 bool FileItemProxyFilterSortModel::checkFileTypeFilter(QString type) const
@@ -468,6 +486,13 @@ void FileItemProxyFilterSortModel::setFolderFirst(bool folderFirst)
     endResetModel();
 }
 
+void FileItemProxyFilterSortModel::addFileNameFilter(QString key, bool updateNow)
+{
+    m_file_name_list.append(key);
+    if (updateNow)
+        invalidateFilter();
+}
+
 void FileItemProxyFilterSortModel::addFilterCondition(int option, int classify, bool updateNow)
 {
     switch (option) {
@@ -518,6 +543,7 @@ void FileItemProxyFilterSortModel::removeFilterCondition(int option, int classif
 
 void FileItemProxyFilterSortModel::clearConditions()
 {
+    m_file_name_list.clear();
     m_file_type_list.clear();
     m_file_size_list.clear();
     m_modify_time_list.clear();
@@ -584,6 +610,7 @@ QModelIndexList FileItemProxyFilterSortModel::getAllFileIndexes()
             auto disyplayName = index.data(Qt::DisplayRole).toString();
             if (disyplayName.isEmpty()) {
                 auto uri = this->index(i, 0, QModelIndex()).data(FileItemModel::UriRole).toString();
+                //FIXME: replace BLOCKING api in ui thread.
                 disyplayName = FileUtils::getFileDisplayName(uri);
             }
             if (!disyplayName.startsWith(".")) {

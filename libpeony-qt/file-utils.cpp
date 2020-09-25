@@ -26,6 +26,7 @@
 
 #include <QStandardPaths>
 #include <QDir>
+#include <QIcon>
 
 using namespace Peony;
 
@@ -44,6 +45,9 @@ QString FileUtils::getQStringFromCString(char *c_string, bool free)
 
 QString FileUtils::getFileUri(const GFileWrapperPtr &file)
 {
+    if (!G_IS_FILE (file.get()->get())) {
+        return nullptr;
+    }
     char *uri = g_file_get_uri(file.get()->get());
     QString urlString = QString(uri);
     QUrl url = urlString;
@@ -110,6 +114,15 @@ bool FileUtils::getFileIsFolder(const QString &uri)
                                             G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
                                             nullptr);
     return type == G_FILE_TYPE_DIRECTORY;
+}
+
+bool FileUtils::getFileIsSymbolicLink(const QString &uri)
+{
+    auto file = wrapGFile(g_file_new_for_uri(uri.toUtf8().constData()));
+    GFileType type = g_file_query_file_type(file.get()->get(),
+                                            G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
+                                            nullptr);
+    return type == G_FILE_TYPE_SYMBOLIC_LINK;
 }
 
 QStringList FileUtils::getChildrenUris(const QString &directoryUri)
@@ -190,6 +203,8 @@ QString FileUtils::getFileDisplayName(const QString &uri)
                               G_FILE_QUERY_INFO_NONE,
                               nullptr,
                               nullptr));
+    if (!info.get()->get())
+        return nullptr;
     return g_file_info_get_display_name(info.get()->get());
 }
 
@@ -201,13 +216,25 @@ QString FileUtils::getFileIconName(const QString &uri)
                               G_FILE_QUERY_INFO_NONE,
                               nullptr,
                               nullptr));
+    if (!G_IS_FILE_INFO (info.get()->get()))
+        return nullptr;
     GIcon *g_icon = g_file_info_get_icon (info.get()->get());
     QString icon_name;
     //do not unref the GIcon from info.
     if (G_IS_ICON(g_icon)) {
         const gchar* const* icon_names = g_themed_icon_get_names(G_THEMED_ICON (g_icon));
-        if (icon_names)
-            icon_name = QString (*icon_names);
+        if (icon_names) {
+            auto p = icon_names;
+            while (*p) {
+                QIcon icon = QIcon::fromTheme(*p);
+                if (!icon.isNull()) {
+                    icon_name = QString (*p);
+                    break;
+                } else {
+                    p++;
+                }
+            }
+        }
     }
     return icon_name;
 }

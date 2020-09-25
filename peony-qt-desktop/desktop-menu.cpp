@@ -116,6 +116,7 @@ const QList<QAction *> DesktopMenu::constructOpenOpActions()
         if (m_selections.count() == 1) {
             auto info = FileInfo::fromUri(m_selections.first());
             auto displayName = info->displayName();
+            //FIXME: replace BLOCKING api in ui thread.
             if (displayName.isEmpty())
                 displayName = FileUtils::getFileDisplayName(info->uri());
             //when name is too long, show elideText
@@ -356,9 +357,9 @@ const QList<QAction *> DesktopMenu::constructViewOpActions()
 
         QList<QAction *> tmp;
         tmp<<sortTypeMenu->addAction(tr("Name"));
+        tmp<<sortTypeMenu->addAction(tr("Modified Date"));
         tmp<<sortTypeMenu->addAction(tr("File Type"));
         tmp<<sortTypeMenu->addAction(tr("File Size"));
-        tmp<<sortTypeMenu->addAction(tr("Modified Date"));
 
         int sortType = m_view->getSortType();
         qDebug() << "sortType:" <<sortType <<tmp.count();
