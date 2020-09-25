@@ -159,8 +159,7 @@ public:
     bool isVirtual() {
         return m_is_virtual;
     }
-    bool isValid()
-    {
+    bool isValid() {
         return m_is_valid;
     }
 

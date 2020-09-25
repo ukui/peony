@@ -127,11 +127,17 @@ ExceptionResponse FileCopyOperation::prehandle(GError *err)
 {
     setHasError(true);
 
-    if (G_IO_ERROR_NO_SPACE == err->code) {
+    // some serious problem must be dealt
+    switch (err->code) {
+    case G_IO_ERROR_NO_SPACE:
+    case G_IO_ERROR_NOT_SUPPORTED:
+    case G_IO_ERROR_PERMISSION_DENIED:
+    case G_IO_ERROR_TOO_MANY_OPEN_FILES:
         return Other;
     }
 
-    if (m_is_duplicated_copy)
+    // FIXME:// It's easy to get stuck in a loop
+    if (G_IO_ERROR_EXISTS == err->code && m_is_duplicated_copy)
         return BackupAll;
 
     if (m_prehandle_hash.contains(err->code))
@@ -193,6 +199,7 @@ fallback_retry:
             except.destDirUri = m_current_dest_dir_uri;
             except.title = tr("File copy error");
             except.errorCode = err->code;
+            qDebug() << "------------------- gandle type is Other:" << (handle_type == Other);
             if (handle_type == Other) {
                 if (G_IO_ERROR_EXISTS == err->code) {
                     except.dlgType = ED_CONFLICT;
@@ -295,6 +302,7 @@ fallback_retry:
                     this,
                     &err);
 
+        qDebug() << "------------------- file!";
         if (err) {
             FileOperationError except;
             if (err->code == G_IO_ERROR_CANCELLED) {
@@ -315,6 +323,9 @@ fallback_retry:
             except.errorCode = err->code;
             except.errorStr = err->message;
             except.destDirUri = m_current_dest_dir_uri;
+            qDebug() << "------------------- file gandle type is BackupOne:" << (handle_type == BackupOne);
+            qDebug() << "------------------- file gandle type is BackupAll:" << (handle_type == BackupAll);
+            qDebug() << "------------------- file gandle type is Other:" << (handle_type == Other);
             if (handle_type == Other) {
                 if (G_IO_ERROR_EXISTS == err->code) {
                     except.dlgType = ED_CONFLICT;
