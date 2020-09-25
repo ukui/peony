@@ -839,6 +839,8 @@ void MainWindow::forceStopLoading()
 void MainWindow::setCurrentSelectionUris(const QStringList &uris)
 {
     m_tab->setCurrentSelections(uris);
+    if (uris.isEmpty())
+        return;
     getCurrentPage()->getView()->scrollToSelection(uris.first());
 }
 
