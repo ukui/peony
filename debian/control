@@ -3,7 +3,8 @@ Section: utils
 Priority: optional
 Maintainer: Kylin Team <team+kylin@tracker.debian.org>
 Uploaders: Aron Xu <aron@debian.org>,
-           handsome_feng <jianfengli@ubuntukylin.com>
+           handsome_feng <jianfengli@ubuntukylin.com>,
+           Yue Lan <lanyue@ubuntukylin.com>
 Build-Depends: debhelper-compat (=12),
                pkg-config,
                qt5-qmake,
