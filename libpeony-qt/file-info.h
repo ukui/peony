@@ -41,54 +41,6 @@ namespace Peony {
 class FileInfoJob;
 class FileMetaInfo;
 
-static char *office_mime_types[] = {
-    "application/wps-office.doc",
-    "application/msword",
-    "application/vnd.ms-word",
-    "application/x-msword",
-    "application/vnd.ms-word.document.macroenabled.12",
-    "application/wps-office.dot",
-    "application/msword-template",
-    "application/vnd.ms-word.template.macroenabled.12",
-    "application/wps-office.dotx",
-    "application/vnd.openxmlformats-officedocument.wordprocessingml.template",
-    "application/wps-office.docx",
-    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-    "application/wps-office.wps",
-    "application/vnd.ms-works",
-
-    "application/wps-office.wpt",
-    "application/wps-office.ppt",
-    "application/vnd.ms-powerpoint",
-    "application/powerpoint",
-    "application/mspowerpoint",
-    "application/x-mspowerpoint",
-    "application/vnd.ms-powerpoint.presentation.macroenabled.12",
-    "application/wps-office.pot",
-    "application/vnd.ms-powerpoint.template.macroenabled.12",
-    "application/wps-office.potx",
-    "application/vnd.openxmlformats-officedocument.presentationml.template",
-    "application/wps-office.pptx",
-    "application/vnd.openxmlformats-officedocument.presentationml.presentation",
-    "application/vnd.openxmlformats-officedocument.presentationml.slideshow",
-    "application/wps-office.dps",
-    "application/wps-office.dpt",
-
-    "application/wps-office.xls",
-    "application/vnd.ms-excel",
-    "application/msexcel",
-    "application/x-msexcel",
-    "application/vnd.ms-excel.sheet.macroenabled.12",
-    "application/vnd.ms-excel.template.macroenabled.12",
-    "application/wps-office.xlt",
-    "application/wps-office.xltx",
-    "application/vnd.openxmlformats-officedocument.spreadsheetml.template",
-    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-    "application/wps-office.et",
-    "application/wps-office.ett",
-    "end"
-};
-
 /*!
  * \brief The FileInfo class
  * <br>
@@ -231,19 +183,6 @@ public:
     bool isDesktopFile() {
         return m_can_excute && m_uri.endsWith(".desktop");
     }
-
-    bool isPdfFile(){
-        return m_mime_type_string.contains("pdf");
-
-    }
-
-    bool isImageFile(){
-        return m_mime_type_string.startsWith("image/");
-    }
-
-    bool isVideoFile();
-    bool isOfficeFile();
-
     bool isEmptyInfo() {
         return m_display_name == nullptr;
     }
