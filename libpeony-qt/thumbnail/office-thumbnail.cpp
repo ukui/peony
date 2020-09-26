@@ -1,25 +1,3 @@
-/*
- * Peony-Qt's Library
- *
- * Copyright (C) 2020, KylinSoft Co., Ltd.
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 3 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this library.  If not, see <https://www.gnu.org/licenses/>.
- *
- * Authors: renpeijia <renpeijia@kylinos.cn>
- *
- */
-
 #include "generic-thumbnailer.h"
 #include "office-thumbnail.h"
 #include "pdf-thumbnail.h"
@@ -78,7 +56,8 @@ QIcon OfficeThumbnail::generateThumbnail()
     QString fileThumbnail=thumbnail_dir + "/" + fileName.left(idx) + ".jpg";
 
     qDebug()<<"file thumbnail:"<<fileThumbnail;
-    if (!QFile::exists(fileThumbnail)) {
+    if(!QFile::exists(fileThumbnail))
+    {
         //libreoffice --convert-to jpg:writer_jpg_Export test1.doc --outdir ./
         QStringList list;
         list<<"--headless"  /*headless和invisible的方式可以避免出现界面以及无用的log信息，速度更快*/
@@ -93,25 +72,22 @@ QIcon OfficeThumbnail::generateThumbnail()
         QProcess p;
         p.start("libreoffice",list);
 
-        /*
-        * 等待30s超时，30s是默认时间，可以修改
-        */
-        if (!p.waitForStarted()) {
+        if (!p.waitForStarted())
+        {
             qWarning()<<"libreoffice start failed, or timeout";
             return thumbnailImage;
         }
 
-        /*
-        * 等待30s超时，30s是默认时间，可以修改
-        */
-        if (!p.waitForFinished()) {
+        if (!p.waitForFinished())
+        {
             qWarning()<<"libreoffice run failed, or timeout";
             return thumbnailImage;
         }
 
         QString err=p.readAllStandardError();
         QString read=p.readAll();
-        if (!err.isEmpty()) {
+        if(!err.isEmpty())
+        {
             qWarning()<<"office convert jpg error: " << err;
             return thumbnailImage;
         }
