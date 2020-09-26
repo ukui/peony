@@ -224,16 +224,10 @@ void ThumbnailManager::createThumbnail(const QString &uri, std::shared_ptr<FileW
 
     auto info = FileInfo::fromUri(uri);
     if (!info->mimeType().isEmpty()) {
-        if (info->isImageFile()) {
+        if (info->mimeType().contains("image")) {
             needThumbnail = true;
         }
         else if (info->mimeType().contains("pdf")) {
-            needThumbnail = true;
-        }
-        else if(info->isVideoFile()) {
-            needThumbnail = true;
-        }
-        else if (info->isOfficeFile()) {
             needThumbnail = true;
         }
         else if (info->isDesktopFile()) {
