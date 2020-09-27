@@ -771,6 +771,12 @@ void DesktopIconView::keyPressEvent(QKeyEvent *e)
                 selectionModel()->select(upIndex, QItemSelectionModel::SelectCurrent);
                 auto delegate = qobject_cast<DesktopIconViewDelegate *>(itemDelegate());
                 setIndexWidget(upIndex, new DesktopIndexWidget(delegate, viewOptions(), upIndex, this));
+
+                for (auto uri : getAllFileUris()) {
+                    auto pos = getFileMetaInfoPos(uri);
+                    if (pos.x() >= 0)
+                        updateItemPosByUri(uri, pos);
+                }
             }
         }
         return;
@@ -788,6 +794,12 @@ void DesktopIconView::keyPressEvent(QKeyEvent *e)
                 selectionModel()->select(downIndex, QItemSelectionModel::SelectCurrent);
                 auto delegate = qobject_cast<DesktopIconViewDelegate *>(itemDelegate());
                 setIndexWidget(downIndex, new DesktopIndexWidget(delegate, viewOptions(), downIndex, this));
+
+                for (auto uri : getAllFileUris()) {
+                    auto pos = getFileMetaInfoPos(uri);
+                    if (pos.x() >= 0)
+                        updateItemPosByUri(uri, pos);
+                }
             }
         }
         return;
@@ -805,6 +817,12 @@ void DesktopIconView::keyPressEvent(QKeyEvent *e)
                 selectionModel()->select(leftIndex, QItemSelectionModel::SelectCurrent);
                 auto delegate = qobject_cast<DesktopIconViewDelegate *>(itemDelegate());
                 setIndexWidget(leftIndex, new DesktopIndexWidget(delegate, viewOptions(), leftIndex, this));
+
+                for (auto uri : getAllFileUris()) {
+                    auto pos = getFileMetaInfoPos(uri);
+                    if (pos.x() >= 0)
+                        updateItemPosByUri(uri, pos);
+                }
             }
         }
         return;
@@ -822,6 +840,12 @@ void DesktopIconView::keyPressEvent(QKeyEvent *e)
                 selectionModel()->select(rightIndex, QItemSelectionModel::SelectCurrent);
                 auto delegate = qobject_cast<DesktopIconViewDelegate *>(itemDelegate());
                 setIndexWidget(rightIndex, new DesktopIndexWidget(delegate, viewOptions(), rightIndex, this));
+
+                for (auto uri : getAllFileUris()) {
+                    auto pos = getFileMetaInfoPos(uri);
+                    if (pos.x() >= 0)
+                        updateItemPosByUri(uri, pos);
+                }
             }
         }
         return;
@@ -1029,6 +1053,12 @@ void DesktopIconView::mousePressEvent(QMouseEvent *e)
             if (!indexWidget(m_last_index)) {
                 setIndexWidget(m_last_index,
                                new DesktopIndexWidget(qobject_cast<DesktopIconViewDelegate *>(itemDelegate()), viewOptions(), m_last_index));
+
+                for (auto uri : getAllFileUris()) {
+                    auto pos = getFileMetaInfoPos(uri);
+                    if (pos.x() >= 0)
+                        updateItemPosByUri(uri, pos);
+                }
             }
         }
     }
