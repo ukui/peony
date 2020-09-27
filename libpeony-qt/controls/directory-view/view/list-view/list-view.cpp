@@ -490,6 +490,15 @@ const QStringList ListView::getAllFileUris()
     return m_proxy_model->getAllFileUris();
 }
 
+QRect ListView::visualRect(const QModelIndex &index) const
+{
+    auto rect = QTreeView::visualRect(index);
+    if (index.column() == 0) {
+        rect.setX(0);
+    }
+    return rect;
+}
+
 void ListView::open(const QStringList &uris, bool newWindow)
 {
     return;
