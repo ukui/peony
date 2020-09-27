@@ -87,9 +87,7 @@ public:
      */
     const QList<std::shared_ptr<FileInfo>> getChildren(bool addToHash = false);
 
-    const QStringList getChildrenUris() {
-        return *m_children_uris;
-    }
+    const QStringList getChildrenUris();
 
     void setAutoDelete(bool autoDelete = true) {
         m_auto_delete = true;
