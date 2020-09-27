@@ -33,6 +33,16 @@
         <source>Anonymous</source>
         <translation>Misafir</translation>
     </message>
+    <message>
+        <location filename="../../libpeony-qt/connect-server-dialog.cpp" line="34"/>
+        <source>Ok</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/connect-server-dialog.cpp" line="35"/>
+        <source>Cancel</source>
+        <translation type="unfinished">İptal</translation>
+    </message>
 </context>
 <context>
     <name>FileLabelModel</name>
@@ -1038,8 +1048,8 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</translation
         <translation type="obsolete">Dosya silme</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-delete-operation.cpp" line="72"/>
-        <location filename="../../libpeony-qt/file-operation/file-delete-operation.cpp" line="97"/>
+        <location filename="../../libpeony-qt/file-operation/file-delete-operation.cpp" line="73"/>
+        <location filename="../../libpeony-qt/file-operation/file-delete-operation.cpp" line="98"/>
         <source>File delete error</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1127,12 +1137,12 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</translation
 <context>
     <name>Peony::FileLabelInternalMenuPlugin</name>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/menu-plugin-manager.cpp" line="149"/>
+        <location filename="../../libpeony-qt/controls/menu/menu-plugin-manager.cpp" line="152"/>
         <source>Add File Label...</source>
         <translation>Dosya Etiketi Ekle...</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/menu-plugin-manager.cpp" line="167"/>
+        <location filename="../../libpeony-qt/controls/menu/menu-plugin-manager.cpp" line="170"/>
         <source>Delete All Label</source>
         <translation>Tüm Etiketleri Sil</translation>
     </message>
