@@ -210,7 +210,7 @@ QString FileUtils::getFileDisplayName(const QString &uri)
     return g_file_info_get_display_name(info.get()->get());
 }
 
-QString FileUtils::getFileIconName(const QString &uri)
+QString FileUtils::getFileIconName(const QString &uri, bool checkValid)
 {
     auto file = wrapGFile(g_file_new_for_uri(uri.toUtf8().constData()));
     auto info = wrapGFileInfo(g_file_query_info(file.get()->get(),
@@ -227,13 +227,17 @@ QString FileUtils::getFileIconName(const QString &uri)
         const gchar* const* icon_names = g_themed_icon_get_names(G_THEMED_ICON (g_icon));
         if (icon_names) {
             auto p = icon_names;
-            while (*p) {
-                QIcon icon = QIcon::fromTheme(*p);
-                if (!icon.isNull()) {
-                    icon_name = QString (*p);
-                    break;
-                } else {
-                    p++;
+            if (*p)
+                icon_name = QString (*p);
+            if (checkValid) {
+                while (*p) {
+                    QIcon icon = QIcon::fromTheme(*p);
+                    if (!icon.isNull()) {
+                        icon_name = QString (*p);
+                        break;
+                    } else {
+                        p++;
+                    }
                 }
             }
         }
