@@ -722,8 +722,11 @@ void ProgressBar::updateProgress(const QString &srcUri, const QString &destUri, 
 
     QUrl srcUrl = srcUri;
     m_src_uri = srcUrl.toDisplayString();
-    QUrl destUrl = destUri;
-    m_dest_uri = destUrl.toDisplayString();
+    if (nullptr != destUri) {
+        QUrl destUrl = destUri;
+        m_dest_uri = destUrl.toDisplayString();
+    }
+
     if (fIcon != getIcon().name()) {
         setIcon(fIcon);
     }
