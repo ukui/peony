@@ -127,12 +127,22 @@ ExceptionResponse FileCopyOperation::prehandle(GError *err)
 {
     setHasError(true);
 
-    if (G_IO_ERROR_NO_SPACE == err->code) {
-        return Other;
+    switch (err->code) {
+        case G_IO_ERROR_BUSY:
+        case G_IO_ERROR_PENDING:
+        case G_IO_ERROR_NO_SPACE:
+        case G_IO_ERROR_CANCELLED:
+        case G_IO_ERROR_INVALID_DATA:
+        case G_IO_ERROR_NOT_SUPPORTED:
+        case G_IO_ERROR_PERMISSION_DENIED:
+        case G_IO_ERROR_CANT_CREATE_BACKUP:
+        case G_IO_ERROR_TOO_MANY_OPEN_FILES:
+            return Other;
     }
 
-    if (m_is_duplicated_copy)
+    if (G_IO_ERROR_EXISTS == err->code && m_is_duplicated_copy) {
         return BackupAll;
+    }
 
     if (m_prehandle_hash.contains(err->code))
         return m_prehandle_hash.value(err->code);
