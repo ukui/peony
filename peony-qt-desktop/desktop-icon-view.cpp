@@ -666,8 +666,7 @@ const QStringList DesktopIconView::getSelections()
     QStringList uris;
     auto indexes = selectionModel()->selection().indexes();
     for (auto index : indexes) {
-        QString uri = "file://" + QUrl(index.data(Qt::UserRole).toString()).path();
-        uris<<uri;
+        uris<<index.data(Qt::UserRole).toString();
     }
     uris.removeDuplicates();
     return uris;
