@@ -436,6 +436,10 @@ void ListView::adjustColumnsSize()
         rightPartsSize += columnSize;
     }
 
+    //set column 0 minimum width, fix header icon overlap with name issue
+    if(columnWidth(0) < columnWidth(1))
+        setColumnWidth(0, columnWidth(1));
+
     if (this->width() - rightPartsSize < BOTTOM_STATUS_MARGIN)
         return;
 
