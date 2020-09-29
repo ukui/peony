@@ -46,7 +46,7 @@
 #include "global-settings.h"
 
 #include <QDesktopServices>
-
+#include <QtDBus>
 #include <QLabel>
 #include <QStandardPaths>
 
@@ -78,6 +78,7 @@
 #include <X11/Xproto.h>
 
 #include <QDebug>
+#include <QObject>
 
 #define BACKGROUND_SETTINGS "org.mate.background"
 #define PICTRUE "picture-filename"

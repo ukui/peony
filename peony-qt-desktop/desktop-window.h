@@ -81,6 +81,9 @@ public Q_SLOTS:
     void connectSignal();
     void disconnectSignal();
 
+    void testSig() {
+        printf("1111");
+    }
 protected:
     void paintEvent(QPaintEvent *e);
 

@@ -270,7 +270,10 @@ void FileWatcher::dir_changed_callback(GFileMonitor *monitor,
     Q_UNUSED(monitor);
     Q_UNUSED(other_file);
     switch (event_type) {
-    case G_FILE_MONITOR_EVENT_ATTRIBUTE_CHANGED:
+    case G_FILE_MONITOR_EVENT_ATTRIBUTE_CHANGED: {
+        qDebug() << "11111111";
+        break;
+    }
     case G_FILE_MONITOR_EVENT_CHANGED: {
         if (p_this->m_montor_children_change) {
             char *uri = g_file_get_uri(file);

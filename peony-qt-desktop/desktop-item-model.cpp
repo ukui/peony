@@ -49,7 +49,7 @@
 #include <QTimer>
 
 #include <QMessageBox>
-
+#include <QtDBus>
 #include <QDebug>
 
 using namespace Peony;
@@ -58,6 +58,9 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
     : QAbstractListModel(parent)
 {
     m_thumbnail_watcher = std::make_shared<FileWatcher>("thumbnail:///, this");
+
+    QDBusConnection::systemBus().connect(QString(), QString("/com/ukui/desktop/software"), "com.ukui.desktop.software",
+                                         "send_to_client", this, SLOT(enabelChange(QString,bool)));
 
     connect(m_thumbnail_watcher.get(), &FileWatcher::fileChanged, this, [=](const QString &uri) {
         for (auto info : m_files) {
@@ -421,6 +424,7 @@ QVariant DesktopItemModel::data(const QModelIndex &index, int role) const
             {
 
                  QPixmap pixmap = thumbnail.pixmap((100,100),QIcon::Disabled,QIcon::Off);
+
                  return QIcon(pixmap);
             }
             return thumbnail;
@@ -657,4 +661,58 @@ Qt::DropActions DesktopItemModel::supportedDropActions() const
 {
     //return Qt::MoveAction|Qt::CopyAction;
     return QAbstractItemModel::supportedDropActions();
+}
+
+void DesktopItemModel::enabelChange(QString exec, bool execenable)
+{
+    /*!
+     * add by wwn
+     * \brief A functiom to set *.desktop file in desktop can not exec and grey
+     * \details Set the attribute "meta::exec_disable" 1 or 0 to control the
+     * application can exec or not
+    */
+    QString     desktop = QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
+    QDir        dir(desktop);
+    QStringList nameFilters;
+    nameFilters << "*.desktop";
+    QStringList files = dir.entryList(nameFilters, QDir::Files|QDir::Readable, QDir::Name);
+    QString     appid;
+
+    for (auto begin = files.begin(); begin != files.end(); ++begin) {
+        QString path = desktop + "/" + *begin;
+        QFile   f(path);
+        if (!f.open(QIODevice::ReadOnly|QIODevice::Text)) {
+            qDebug() << "DesktopItemModel::enabelChange(): open file error";
+            continue;
+        }
+        QTextStream txtInput(&f);
+        QString     lineStr;
+        while (!txtInput.atEnd())
+        {
+            lineStr = txtInput.readLine();
+            if (lineStr.indexOf(exec) != -1) {
+                lineStr = "1";
+                break;
+            }
+        }
+        if (lineStr == "1") {
+            appid = *begin;
+        }
+    }
+    if (appid == "") {
+        qDebug() << "without this desktop file please check out input";
+        return;
+    }
+    QString uri = "file://" + desktop + "/" + appid;
+    GFile*  file = g_file_new_for_uri(uri.toUtf8());
+    uri = g_file_get_uri(file);
+    auto metainfo = FileMetaInfo::fromUri(uri);
+
+    if (execenable)
+        metainfo->setMetaInfoInt("exec_disable",0);
+    else
+        metainfo->setMetaInfoInt("exec_disable",1);
+
+    g_object_unref(file);
+    // refresh();
 }

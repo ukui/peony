@@ -123,6 +123,9 @@ public:
     static std::shared_ptr<FileInfo> fromPath(QString path, bool addToHash = true);
     static std::shared_ptr<FileInfo> fromGFile(GFile *file, bool addToHash = true);
 
+    std::shared_ptr<FileMetaInfo> metainfo() {
+        return m_meta_info;
+    }
     QString uri() {
         return m_uri;
     }
@@ -286,7 +289,8 @@ public:
 
 Q_SIGNALS:
     void updated();
-
+//private Q_SLOTS:
+//    void getEnableSig(QString, bool);
 private:
     QString m_uri = nullptr;
     bool m_is_valid = false;

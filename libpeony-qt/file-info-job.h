@@ -116,6 +116,7 @@ public Q_SLOTS:
 
     QString getAppName(QString desktopfp);
 
+
 protected:
     static GAsyncReadyCallback query_info_async_callback(GFile *file,
             GAsyncResult *res,

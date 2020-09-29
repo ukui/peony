@@ -82,7 +82,7 @@ Q_SIGNALS:
 
 public Q_SLOTS:
     void refresh();
-
+    void enabelChange(QString, bool);
 protected Q_SLOTS:
     void onEnumerateFinished();
 

@@ -90,6 +90,7 @@ void FileMetaInfo::setMetaInfoVariant(const QString &key, const QVariant &value)
     m_meta_hash.remove(realKey);
     m_meta_hash.insert(realKey, value);
     GFile *file = g_file_new_for_uri(m_uri.toUtf8().constData());
+    const char* b = m_uri.toUtf8().constData();
     GFileInfo *info = g_file_info_new();
     std::string tmp = realKey.toStdString();
     auto data = value.toString().toUtf8().data();
@@ -102,10 +103,16 @@ void FileMetaInfo::setMetaInfoVariant(const QString &key, const QVariant &value)
 //                                nullptr,
 //                                nullptr,
 //                                nullptr);
-    //qDebug()<<tmp.c_str()<<value;
+    qDebug()<<tmp.c_str()<<value;
     GError *err = nullptr;
     g_file_set_attribute(file, tmp.c_str(), G_FILE_ATTRIBUTE_TYPE_STRING, (gpointer)data,
                          G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, nullptr, &err);
+//    if (key == "exec_disable") {
+//        GDateTime* currentTime = g_date_time_new_now_utc();
+//        gint64 unixTime = g_date_time_to_unix(currentTime);
+//        g_file_set_attribute(file, "time::modified", G_FILE_ATTRIBUTE_TYPE_UINT64, (gpointer)&unixTime,
+//                             G_FILE_QUERY_INFO_NONE, nullptr, &err);
+//    }
 
     if (err) {
         qDebug()<<err->message;

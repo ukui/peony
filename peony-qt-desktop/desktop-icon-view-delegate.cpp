@@ -85,7 +85,7 @@ void DesktopIconViewDelegate::paint(QPainter *painter, const QStyleOptionViewIte
             QColor color = m_styled_button->palette().highlight().color();
             color.setAlpha(255*0.3);//half transparent
             //painter->fillRect(opt.rect, color);
-            color.setAlpha(255*0.5);
+            color.setAlpha(255);
             painter->setPen(color.darker(100));
             painter->setBrush(color);
             painter->drawRoundedRect(opt.rect.adjusted(1, 1, -1, -1), 6, 6);

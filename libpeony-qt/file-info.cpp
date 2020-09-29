@@ -29,7 +29,8 @@
 #include "thumbnail-manager.h"
 
 #include <QUrl>
-
+#include <QtDBus/QDBusConnection>
+#include <QStandardPaths>
 #include <QDebug>
 
 using namespace Peony;
@@ -37,6 +38,9 @@ using namespace Peony;
 FileInfo::FileInfo(QObject *parent) : QObject (parent)
 {
     m_cancellable = g_cancellable_new();
+//    bool a = QDBusConnection::systemBus().connect(QString(), QString("/com/ukui/desktop/software"),
+//                                         "com.ukui.desktop.software", "send_to_client", this,
+//                                         SLOT(getEnableSig(QString, bool)));
 }
 
 FileInfo::FileInfo(const QString &uri, QObject *parent) : QObject (parent)
@@ -67,6 +71,10 @@ FileInfo::FileInfo(const QString &uri, QObject *parent) : QObject (parent)
     default:
         break;
     }
+//    QDBusConnection::systemBus().connect(QString(), QString("/com/ukui/desktop/software"),
+//                                         "com.ukui.desktop.software", "send_to_client", this,
+//                                         SLOT(getEnableSig(QString, bool)));
+
 }
 
 FileInfo::~FileInfo()
@@ -194,3 +202,15 @@ bool FileInfo::isExecDisable()
      if(1==nRet) return true;
      return false;
 }
+
+//void FileInfo::getEnableSig(QString appid, bool execenable)
+//{
+//    QString uri = "file://" + QStandardPaths::writableLocation(QStandardPaths::HomeLocation) + "/桌面/" + appid + ".desktop";
+//    if (m_uri == nullptr || m_uri != uri)
+//        return;
+//    if (execenable)
+//        m_meta_info->setMetaInfoString("exec_disable","1");
+//    else
+//        m_meta_info->setMetaInfoString("exec_disable","0");
+//    return;
+//}
