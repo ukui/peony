@@ -21,12 +21,12 @@
     <message>
         <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="497"/>
         <source>Open failed</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Açma hatalı</translation>
     </message>
     <message>
         <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="498"/>
         <source>Open directory failed, you have no permission!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Dizin açılamadı, izniniz yok!</translation>
     </message>
 </context>
 <context>
