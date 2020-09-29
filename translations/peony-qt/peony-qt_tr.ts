@@ -215,6 +215,26 @@
         <source>Edit</source>
         <translation>Düzenle</translation>
     </message>
+    <message>
+        <location filename="../../src/control/operation-menu.cpp" line="158"/>
+        <source>copy</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/control/operation-menu.cpp" line="167"/>
+        <source>paste</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/control/operation-menu.cpp" line="176"/>
+        <source>cut</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/control/operation-menu.cpp" line="185"/>
+        <source>trash</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>PeonyApplication</name>

@@ -930,7 +930,7 @@ void MainWindow::paintEvent(QPaintEvent *e)
     QPainter painter(this);
     deletePath.addRect(m_tab->x(),height()-16,18,12);
     if(m_is_first_tab)
-        deletePath.addRect(m_tab->x(),40,16,16);
+        deletePath.addRect(m_tab->x(),44,16,16);
     deletePath.setFillRule(Qt::FillRule::WindingFill);
     painter.fillPath(deletePath,this->palette().base());
     QMainWindow::paintEvent(e);

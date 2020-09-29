@@ -94,6 +94,7 @@ protected:
 
 private:
     QString m_current_bg_path;
+    QString m_picture_option;
 
     DesktopIconView *m_view;
 

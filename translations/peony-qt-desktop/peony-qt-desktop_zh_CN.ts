@@ -264,7 +264,7 @@
         <translation>设置壁纸</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-window.cpp" line="574"/>
+        <location filename="../../peony-qt-desktop/desktop-window.cpp" line="696"/>
         <source>New Folder</source>
         <translation>新建文件夹</translation>
     </message>
