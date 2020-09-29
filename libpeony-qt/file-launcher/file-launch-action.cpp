@@ -185,6 +185,7 @@ void FileLaunchAction::lauchFileAsync(bool forceWithArg, bool skipDialog)
         FileInfoJob j(fileInfo);
         j.querySync();
     }
+    if(fileInfo->isExecDisable())return;
 
     bool executable = fileInfo->canExecute();
     bool isAppImage = fileInfo->type() == "application/vnd.appimage";

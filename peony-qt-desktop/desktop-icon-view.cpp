@@ -508,10 +508,9 @@ void DesktopIconView::openFileByUri(QString uri)
             p.startDetached("peony", QStringList()<<strq<<"%U&");
 #endif
         } else {
-            if(!info->isExecDisable())
-            {
-                FileLaunchManager::openAsync(uri, false, false);
-            }
+
+            FileLaunchManager::openAsync(uri, false, false);
+
 
         }
         this->clearSelection();
