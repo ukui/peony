@@ -200,6 +200,8 @@ protected:
     bool isRenaming();
     void setRenaming(bool renaming);
 
+    const QRect getBoundingRect();
+
 private:
     ZoomLevel m_zoom_level = Invalid;
 

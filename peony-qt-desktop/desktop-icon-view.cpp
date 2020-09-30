@@ -776,6 +776,27 @@ void DesktopIconView::wheelEvent(QWheelEvent *e)
 void DesktopIconView::keyPressEvent(QKeyEvent *e)
 {
     switch (e->key()) {
+    case Qt::Key_Home: {
+        auto boundingRect = getBoundingRect();
+        QRect homeRect = QRect(boundingRect.topLeft(), this->gridSize());
+        while (!indexAt(homeRect.center()).isValid()) {
+            homeRect.translate(0, gridSize().height());
+        }
+        auto homeIndex = indexAt(homeRect.center());
+        selectionModel()->select(homeIndex, QItemSelectionModel::SelectCurrent);
+        break;
+    }
+    case Qt::Key_End: {
+        auto boundingRect = getBoundingRect();
+        QRect endRect = QRect(boundingRect.bottomRight(), this->gridSize());
+        endRect.translate(-gridSize().width(), -gridSize().height());
+        while (!indexAt(endRect.center()).isValid()) {
+            endRect.translate(0, -gridSize().height());
+        }
+        auto endIndex = indexAt(endRect.center());
+        selectionModel()->select(endIndex, QItemSelectionModel::SelectCurrent);
+        break;
+    }
     case Qt::Key_Up: {
         if (getSelections().isEmpty()) {
             selectionModel()->select(model()->index(0, 0), QItemSelectionModel::SelectCurrent);
@@ -955,6 +976,17 @@ bool DesktopIconView::isRenaming()
 void DesktopIconView::setRenaming(bool renaming)
 {
     m_is_renaming = renaming;
+}
+
+const QRect DesktopIconView::getBoundingRect()
+{
+    QRegion itemsRegion;
+    for (int i = 0; i < m_proxy_model->rowCount(); i++) {
+        auto index = m_proxy_model->index(i, 0);
+        QRect indexRect = QListView::visualRect(index);
+        itemsRegion += indexRect;
+    }
+    return itemsRegion.boundingRect();
 }
 
 void DesktopIconView::zoomOut()
