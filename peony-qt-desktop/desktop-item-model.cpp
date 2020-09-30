@@ -343,6 +343,16 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
             }
         }
     });
+
+    // add by wwn, to prevent someone change attribute befor desktop run
+    QString homepath = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
+    QString initfile = homepath + "/.cache/ukui-menu/ukui-menu.ini";
+    QSettings settings(initfile, QSettings::IniFormat);
+    QStringList keylist = settings.allKeys();
+    for (auto begin = keylist.begin(); begin != keylist.end(); ++begin) {
+        bool execable = settings.value(*begin).toBool();
+        enabelChange(*begin, execable);
+    }
 }
 
 DesktopItemModel::~DesktopItemModel()

@@ -134,7 +134,6 @@ private:
     QStringList m_show_label_names;
     QList<QColor> m_show_label_colors;
 };
-
 }
 
 #endif // FILEITEMPROXYFILTERSORTMODEL_H

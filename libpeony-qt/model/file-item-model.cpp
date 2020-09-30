@@ -220,8 +220,16 @@ QVariant FileItemModel::data(const QModelIndex &index, int role) const
                 if (item->m_info->uri().endsWith(".desktop") && !item->m_info->canExecute()) {
                     return QIcon::fromTheme(item->m_info->iconName(), QIcon::fromTheme("text-x-generic"));
                 }
+                // add by wwn
+                std::shared_ptr<FileInfo> info = item->info();
+                if(info->canExecute()&&info->isExecDisable()) {
+                    QSize size(100, 100);
+                    QPixmap pixmap = thumbnail.pixmap(size,QIcon::Disabled,QIcon::Off);
+                    return QIcon(pixmap);
+                }
                 return thumbnail;
             }
+
             QIcon icon = QIcon::fromTheme(item->m_info->iconName(), QIcon::fromTheme("text-x-generic"));
             return QVariant(icon);
         }
