@@ -1287,10 +1287,10 @@ void DesktopIconView::dropEvent(QDropEvent *e)
                         break;
                     }
                 }
-                while (next.translated(-grid.width(), 0).x() > 0) {
+                while (next.translated(-grid.width(), 0).x() >= 0) {
                     next.translate(-grid.width(), 0);
                 }
-                while (next.translated(0, -grid.height()).top() > 0) {
+                while (next.translated(0, -grid.height()).top() >= 0) {
                     next.translate(0, -grid.height());
                 }
 
