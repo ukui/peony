@@ -322,8 +322,9 @@ void DesktopWindow::paintEvent(QPaintEvent *e)
             p.fillRect(this->rect(), m_color_to_be_set);
             p.restore();
         } else {
+
             auto opacity = m_opacity->currentValue().toDouble();
-            if(m_picture_option == "center")//居中
+            if(m_picture_option == "centered")//居中
             {
                 p.drawPixmap((m_screen->size().width()-m_bg_back_cache_pixmap.rect().width())/2,
                               (m_screen->size().height()-m_bg_back_cache_pixmap.rect().height())/2,
@@ -344,15 +345,15 @@ void DesktopWindow::paintEvent(QPaintEvent *e)
                 p.drawPixmap(this->rect(), m_bg_font_cache_pixmap, m_bg_font_cache_pixmap.rect());
                 p.restore();
             }
-            if(m_picture_option == "padding")//填充
+            else if(m_picture_option == "scaled")//填充
             {
-                p.drawPixmap(0,0, m_bg_back_cache_pixmap);
+                p.drawPixmap(this->rect(), m_bg_back_cache_pixmap);
                 p.save();
                 p.setOpacity(opacity);
-                p.drawPixmap(0,0, m_bg_font_cache_pixmap);
+                p.drawPixmap(this->rect(), m_bg_font_cache_pixmap);
                 p.restore();
             }
-            if(m_picture_option == "tile")//平铺
+            else if(m_picture_option == "wallpaper")//平铺
             {
                 int drawedWidth = 0;
                 int drawedHeight = 0;
@@ -403,39 +404,37 @@ void DesktopWindow::paintEvent(QPaintEvent *e)
         //draw bg?
         if (m_use_pure_color) {
             p.fillRect(this->rect(), m_last_pure_color);
+            m_used_pure_color = true;
         } else {
 //            p.drawPixmap(this->rect(), m_bg_back_cache_pixmap, m_bg_back_cache_pixmap.rect());
-            if(m_picture_option == "center")
-                p.drawPixmap((m_screen->size().width()-m_bg_back_cache_pixmap.rect().width())/2,
-                             (m_screen->size().height()-m_bg_back_cache_pixmap.rect().height())/2,
-                              m_bg_back_cache_pixmap);
+            if(m_picture_option == "centered")
+                p.drawPixmap((m_screen->size().width()-m_bg_font_cache_pixmap.rect().width())/2,
+                             (m_screen->size().height()-m_bg_font_cache_pixmap.rect().height())/2,
+                              m_bg_font_cache_pixmap);
             else if(m_picture_option == "stretched")
-                p.drawPixmap(this->rect(), m_bg_back_cache_pixmap);
-            else if(m_picture_option == "padding")
-                p.drawPixmap(0,0, m_bg_back_cache_pixmap);
-            else if(m_picture_option == "tile")
+                p.drawPixmap(this->rect(), m_bg_font_cache_pixmap);
+            else if(m_picture_option == "scaled")
+                p.drawPixmap(this->rect(), m_bg_font_cache_pixmap);
+            else if(m_picture_option == "wallpaper")
             {
                  int drawedWidth = 0;
                  int drawedHeight = 0;
                 while (1) {
                     drawedWidth = 0;
                     while (1) {
-                        p.drawPixmap(drawedWidth, drawedHeight, m_bg_back_cache_pixmap);
-                        drawedWidth += m_bg_back_cache_pixmap.width();
+                        p.drawPixmap(drawedWidth, drawedHeight, m_bg_font_cache_pixmap);
+                        drawedWidth += m_bg_font_cache_pixmap.width();
                         if (drawedWidth >= m_screen->size().width()) {
                             break;
                         }
                     }
-                    drawedHeight += m_bg_back_cache_pixmap.height();
+                    drawedHeight += m_bg_font_cache_pixmap.height();
                     if (drawedHeight >= m_screen->size().height()) {
                         break;
                     }
                 }
             }
-            else
-            {
-               p.drawPixmap(this->rect(), m_bg_back_cache_pixmap);
-            }
+            m_used_pure_color = false;
         }
     }
     QMainWindow::paintEvent(e);
@@ -478,7 +477,7 @@ void DesktopWindow::setBg(const QString &path) {
 
     m_bg_font_pixmap = QPixmap(path);
     // FIXME: implement different pixmap clip algorithm.
-    if(m_picture_option == "spanned"){
+    if(m_picture_option == "scaled"){
         m_bg_back_cache_pixmap = m_bg_back_pixmap.scaled(m_screen->size(), Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation);
 
         m_bg_font_cache_pixmap = m_bg_font_pixmap.scaled(m_screen->size(), Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation);
@@ -493,12 +492,16 @@ void DesktopWindow::setBg(const QString &path) {
     m_current_bg_path = path;
     setBgPath(path);
 
-    if (m_opacity->state() == QVariantAnimation::Running) {
-        m_opacity->setCurrentTime(500);
-    } else {
-        m_opacity->stop();
-        m_opacity->start();
-    }
+    if(!m_used_pure_color)
+        if (m_opacity->state() == QVariantAnimation::Running) {
+            m_opacity->setCurrentTime(500);
+        } else {
+            m_opacity->stop();
+            m_opacity->start();
+        }
+    else
+        update();
+
 }
 
 void DesktopWindow::setBg(const QColor &color) {
@@ -506,12 +509,16 @@ void DesktopWindow::setBg(const QColor &color) {
 
     m_use_pure_color = true;
 
-    if (m_opacity->state() == QVariantAnimation::Running) {
-        m_opacity->setCurrentTime(500);
-    } else {
-        m_opacity->stop();
-        m_opacity->start();
-    }
+    if(m_used_pure_color)
+        if (m_opacity->state() == QVariantAnimation::Running) {
+            m_opacity->setCurrentTime(500);
+        } else {
+            m_opacity->stop();
+            m_opacity->start();
+        }
+    else
+        update();
+    m_last_pure_color = m_color_to_be_set;
 }
 
 void DesktopWindow::setBgPath(const QString &bgPath) {

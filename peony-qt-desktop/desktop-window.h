@@ -117,6 +117,7 @@ private:
     QColor m_color_to_be_set = Qt::transparent;
 
     bool m_use_pure_color = false;
+    bool m_used_pure_color = false;
 
     QVariantAnimation *m_opacity = nullptr;
 };
