@@ -74,6 +74,10 @@ protected:
     void rollbackNodeRecursively(FileNode *node);
 
 private:
+    void FileCopyOperationErrDlg(FileOperationError &except, GError *err);
+    void getBackupName(FileNode *nodePtr, FileOperationError &except);
+    ExceptionResponse copyFolder(FileNode *node, GFileWrapperPtr destFile);
+    ExceptionResponse copyFile(FileNode *node, GFileWrapperPtr destFile);
     /*!
      * \brief m_is_duplicated_copy
      * \details

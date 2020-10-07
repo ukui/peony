@@ -71,18 +71,20 @@ retry:
         except.isCritical = true;
         except.errorStr = err->message;
         except.errorCode = err->code;
+        except.op = FileOpLink;
         except.title = tr("Link file error");
         except.destDirUri = m_dest_uri;
         auto responseType = Invalid;
         if (G_IO_ERROR_EXISTS == err->code) {
             except.dlgType = ED_CONFLICT;
-            Q_EMIT errored(except);
-            responseType = except.respCode;
         } else {
             except.dlgType = ED_WARNING;
-            Q_EMIT errored(except);
-            responseType = except.respCode;
         }
+        Q_EMIT errored(except);
+        responseType = except.respCode;
+
+        g_error_free(err);
+        err = nullptr;
 
         if (responseType == Peony::Retry) {
             goto retry;

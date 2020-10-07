@@ -131,7 +131,7 @@ ExceptionResponse FileCopyOperation::prehandle(GError *err)
         return Other;
     }
 
-    if (m_is_duplicated_copy)
+    if (m_is_duplicated_copy && G_IO_ERROR_EXISTS == err->code)
         return BackupAll;
 
     if (m_prehandle_hash.contains(err->code))
@@ -156,14 +156,291 @@ void FileCopyOperation::progress_callback(goffset current_num_bytes,
                                         fileIconName, currnet, total);
 }
 
+void FileCopyOperation::FileCopyOperationErrDlg(
+                        FileOperationError &except,
+                        GError *err)
+{
+    except.errorType = ET_GIO;
+    except.srcUri = m_current_src_uri;
+    except.destDirUri = m_current_dest_dir_uri;
+    except.op = FileOpCopy;
+    except.title = tr("File copy error");
+    except.errorCode = err->code;
+    if (G_IO_ERROR_EXISTS == err->code) {
+        except.dlgType = ED_CONFLICT;
+    } else {
+        except.dlgType = ED_WARNING;
+    }
+
+    Q_EMIT errored(except);
+}
+
+void FileCopyOperation::getBackupName(
+                        FileNode *nodePtr,
+                        FileOperationError &except)
+{
+    QString name = "";
+    QStringList extendStr;
+
+    if (except.respValue.contains("name")) {
+        /*
+        * 这里应该检查名字的合法性：长度、特殊字符等。
+        * todo
+        */
+        name = except.respValue["name"].toString();
+        if (name.isEmpty()){
+            return;
+        }
+
+        extendStr = nodePtr->destBaseName().split(".");
+        if (extendStr.length() > 0) {
+            extendStr.removeAt(0);
+        }
+        
+        /*
+        * 如果文件名中有多个点，比如 111.297.345.txt，文件名后缀
+        * 是取txt，还是297.345.txt?
+        * todo
+        */
+        QString endStr = extendStr.join(".");
+        if ("" != endStr){
+            endStr = "." + endStr;
+            if (!name.endsWith(endStr)) {
+                nodePtr->setDestFileName(name + endStr);
+            }
+            else{
+                nodePtr->setDestFileName(name);
+            }
+        }
+        else{
+            nodePtr->setDestFileName(name);
+        } 
+    }
+
+    return;
+}
+
+ExceptionResponse FileCopyOperation::copyFolder(
+                               FileNode *node,
+                               GFileWrapperPtr destFile)
+{
+    GError *err = nullptr;
+
+    //NOTE: mkdir doesn't have a progress callback.
+    g_file_make_directory(destFile.get()->get(),
+                          getCancellable().get()->get(),
+                          &err);
+    if (err) {
+        if (err->code == G_IO_ERROR_CANCELLED) {
+            g_error_free(err);
+            err = nullptr;
+            return Other;
+        }
+
+        FileOperationError except;
+        int handle_type = prehandle(err);
+        if (handle_type == Other) {
+            FileCopyOperationErrDlg(except, err);
+            auto typeData = except.respCode;
+            handle_type = typeData;
+        }
+
+        g_error_free(err);
+        err = nullptr;
+
+        //handle.
+        switch (handle_type) {
+        case IgnoreOne: {
+            node->setState(FileNode::Unhandled);
+            node->setErrorResponse(IgnoreOne);
+            break;
+        }
+        case IgnoreAll: {
+            node->setState(FileNode::Unhandled);
+            node->setErrorResponse(IgnoreOne);
+            m_prehandle_hash.insert(except.errorCode, IgnoreOne);
+            break;
+        }
+        case OverWriteOne: {
+            node->setState(FileNode::Handled);
+            node->setErrorResponse(OverWriteOne);
+            //make dir has no overwrite
+            break;
+        }
+        case OverWriteAll: {
+            node->setState(FileNode::Handled);
+            node->setErrorResponse(OverWriteOne);
+            m_prehandle_hash.insert(except.errorCode, OverWriteOne);
+            break;
+        }
+        case BackupOne: {
+            node->setState(FileNode::Handled);
+            node->setErrorResponse(BackupOne);
+
+            // use custom name
+            getBackupName(node, except);
+            while (FileUtils::isFileExsit(node->resolveDestFileUri(m_dest_dir_uri))) {
+                handleDuplicate(node);
+            }
+
+            return Retry;
+        }
+        case BackupAll: {
+            node->setState(FileNode::Handled);
+            node->setErrorResponse(BackupOne);
+
+            while (FileUtils::isFileExsit(node->resolveDestFileUri(m_dest_dir_uri))) {
+                handleDuplicate(node);
+            }
+
+            //make dir has no backup
+            m_prehandle_hash.insert(except.errorCode, BackupOne);
+
+            return Retry;
+        }
+        case Retry: {
+            return Retry;
+        }
+        case Cancel: {
+            node->setState(FileNode::Handled);
+            cancel();
+            break;
+        }
+        default:
+            break;
+        }
+    } else {
+        node->setState(FileNode::Handled);
+    }
+
+    return Other;
+}
+
+ExceptionResponse FileCopyOperation::copyFile(
+                        FileNode *node,
+                        GFileWrapperPtr destFile)
+{
+    GError *err = nullptr;
+    GFileWrapperPtr sourceFile = wrapGFile(g_file_new_for_uri(node->uri().toUtf8().constData()));
+    g_file_copy(sourceFile.get()->get(),
+                destFile.get()->get(),
+                m_default_copy_flag,
+                getCancellable().get()->get(),
+                GFileProgressCallback(progress_callback),
+                this,
+                &err);
+
+    if (err) {
+        FileOperationError except;
+        if (err->code == G_IO_ERROR_CANCELLED) {
+            g_error_free(err);
+            err = nullptr;
+            return Other;
+        }
+
+        if (err->code == G_IO_ERROR_EXISTS) {
+            char* destFileName = g_file_get_uri(destFile.get()->get());
+            if (NULL != destFileName) {
+                m_conflict_files << destFileName;
+                g_free(destFileName);
+            }
+        }
+
+        int handle_type = prehandle(err);
+        if (handle_type == Other) {
+            FileCopyOperationErrDlg(except, err);
+            auto typeData = except.respCode;
+            handle_type = typeData;
+        }
+
+       // g_error_free(err);
+      //  err = nullptr;
+
+        //handle.
+        switch (handle_type) {
+        case IgnoreOne: {
+            node->setState(FileNode::Unhandled);
+            node->setErrorResponse(IgnoreOne);
+            break;
+        }
+        case IgnoreAll: {
+            node->setState(FileNode::Unhandled);
+            node->setErrorResponse(IgnoreOne);
+            m_prehandle_hash.insert(except.errorCode, IgnoreOne);
+            break;
+        }
+        case OverWriteOne: {
+            g_file_copy(sourceFile.get()->get(),
+                        destFile.get()->get(),
+                        GFileCopyFlags(m_default_copy_flag | G_FILE_COPY_OVERWRITE),
+                        getCancellable().get()->get(),
+                        GFileProgressCallback(progress_callback),
+                        this,
+                        nullptr);
+            node->setState(FileNode::Handled);
+            node->setErrorResponse(OverWriteOne);
+            break;
+        }
+        case OverWriteAll: {
+            g_file_copy(sourceFile.get()->get(),
+                        destFile.get()->get(),
+                        GFileCopyFlags(m_default_copy_flag | G_FILE_COPY_OVERWRITE),
+                        getCancellable().get()->get(),
+                        GFileProgressCallback(progress_callback),
+                        this,
+                        nullptr);
+            node->setState(FileNode::Handled);
+            node->setErrorResponse(OverWriteOne);
+            m_prehandle_hash.insert(except.errorCode, OverWriteOne);
+            break;
+        }
+        case BackupOne: {
+            node->setState(FileNode::Handled);
+            node->setErrorResponse(BackupOne);
+
+            // use custom name
+            getBackupName(node, except);
+            while (FileUtils::isFileExsit(node->resolveDestFileUri(m_dest_dir_uri))) {
+                handleDuplicate(node);
+            }
+
+            return Retry;
+        }
+        case BackupAll: {
+            node->setState(FileNode::Handled);
+            node->setErrorResponse(BackupOne);
+            while (FileUtils::isFileExsit(node->resolveDestFileUri(m_dest_dir_uri))) {
+                handleDuplicate(node);
+            }
+            m_prehandle_hash.insert(except.errorCode, BackupOne);
+            return Retry;
+        }
+        case Retry: {
+            return Retry;
+        }
+        case Cancel: {
+            node->setState(FileNode::Handled);
+            cancel();
+            break;
+        }
+        default:
+            break;
+        }
+    } else {
+        node->setState(FileNode::Handled);
+    }
+
+    return Other;
+}
+
 void FileCopyOperation::copyRecursively(FileNode *node)
 {
-    if (isCancelled())
-        return;
-
     node->setState(FileNode::Handling);
 
 fallback_retry:
+    if (isCancelled())
+        return;
+
     QString destFileUri = node->resolveDestFileUri(m_dest_dir_uri);
     QUrl destFileUrl = destFileUri;
     node->setDestUri(destFileUri);
@@ -175,109 +452,12 @@ fallback_retry:
     m_current_dest_dir_uri = destFileUri;
 
     if (node->isFolder()) {
-        GError *err = nullptr;
 
-        //NOTE: mkdir doesn't have a progress callback.
-        g_file_make_directory(destFile.get()->get(),
-                              getCancellable().get()->get(),
-                              &err);
-        if (err) {
-            FileOperationError except;
-            if (err->code == G_IO_ERROR_CANCELLED) {
-                return;
-            }
-            auto errWrapperPtr = GErrorWrapper::wrapFrom(err);
-            int handle_type = prehandle(err);
-            except.errorType = ET_GIO;
-            except.srcUri = m_current_src_uri;
-            except.destDirUri = m_current_dest_dir_uri;
-            except.title = tr("File copy error");
-            except.errorCode = err->code;
-            if (handle_type == Other) {
-                if (G_IO_ERROR_EXISTS == err->code) {
-                    except.dlgType = ED_CONFLICT;
-                    Q_EMIT errored(except);
-                    auto typeData = except.respCode;
-                    handle_type = typeData;
-                } else {
-                    except.dlgType = ED_WARNING;
-                    Q_EMIT errored(except);
-                    auto typeData = except.respCode;
-                    handle_type = typeData;
-                }
-            }
-            //handle.
-            switch (handle_type) {
-            case IgnoreOne: {
-                node->setState(FileNode::Unhandled);
-                node->setErrorResponse(IgnoreOne);
-                break;
-            }
-            case IgnoreAll: {
-                node->setState(FileNode::Unhandled);
-                node->setErrorResponse(IgnoreOne);
-                m_prehandle_hash.insert(err->code, IgnoreOne);
-                break;
-            }
-            case OverWriteOne: {
-                node->setState(FileNode::Handled);
-                node->setErrorResponse(OverWriteOne);
-                //make dir has no overwrite
-                break;
-            }
-            case OverWriteAll: {
-                node->setState(FileNode::Handled);
-                node->setErrorResponse(OverWriteOne);
-                m_prehandle_hash.insert(err->code, OverWriteOne);
-                break;
-            }
-            case BackupOne: {
-                node->setState(FileNode::Handled);
-                node->setErrorResponse(BackupOne);
-                // use custom name
-                QString name = "";
-                QStringList extendStr = node->destBaseName().split(".");
-                if (extendStr.length() > 0) {
-                    extendStr.removeAt(0);
-                }
-                QString endStr = extendStr.join(".");
-                if (except.respValue.contains("name")) {
-                    name = except.respValue["name"].toString();
-                    if (endStr != "" && name.endsWith(endStr)) {
-                        node->setDestFileName(name);
-                    } else if ("" != endStr && "" != name) {
-                        node->setDestFileName(name + "." + endStr);
-                    }
-                }
-                while (FileUtils::isFileExsit(node->resolveDestFileUri(m_dest_dir_uri))) {
-                    handleDuplicate(node);
-                }
-                goto fallback_retry;
-            }
-            case BackupAll: {
-                node->setState(FileNode::Handled);
-                node->setErrorResponse(BackupOne);
-                while (FileUtils::isFileExsit(node->resolveDestFileUri(m_dest_dir_uri))) {
-                    handleDuplicate(node);
-                }
-                //make dir has no backup
-                m_prehandle_hash.insert(err->code, BackupOne);
-                goto fallback_retry;
-            }
-            case Retry: {
-                goto fallback_retry;
-            }
-            case Cancel: {
-                node->setState(FileNode::Handled);
-                cancel();
-                break;
-            }
-            default:
-                break;
-            }
-        } else {
-            node->setState(FileNode::Handled);
+        if (Retry == copyFolder(node, destFile))
+        {
+            goto fallback_retry;
         }
+
         //assume that make dir finished anyway
         m_current_offset += node->size();
         Q_EMIT operationProgressedOne(node->uri(), node->destUri(), node->size());
@@ -285,136 +465,11 @@ fallback_retry:
             copyRecursively(child);
         }
     } else {
-        GError *err = nullptr;
-        GFileWrapperPtr sourceFile = wrapGFile(g_file_new_for_uri(node->uri().toUtf8().constData()));
-        g_file_copy(sourceFile.get()->get(),
-                    destFile.get()->get(),
-                    m_default_copy_flag,
-                    getCancellable().get()->get(),
-                    GFileProgressCallback(progress_callback),
-                    this,
-                    &err);
-
-        if (err) {
-            FileOperationError except;
-            if (err->code == G_IO_ERROR_CANCELLED) {
-                return;
-            }
-            if (err->code == G_IO_ERROR_EXISTS) {
-                char* destFileName = g_file_get_uri(destFile.get()->get());
-                if (NULL != destFileName) {
-                    m_conflict_files << destFileName;
-                    g_free(destFileName);
-                }
-            }
-            auto errWrapperPtr = GErrorWrapper::wrapFrom(err);
-            int handle_type = prehandle(err);
-            except.errorType = ET_GIO;
-            except.title = tr("File copy error");
-            except.srcUri = m_current_src_uri;
-            except.errorCode = err->code;
-            except.errorStr = err->message;
-            except.destDirUri = m_current_dest_dir_uri;
-            if (handle_type == Other) {
-                if (G_IO_ERROR_EXISTS == err->code) {
-                    except.dlgType = ED_CONFLICT;
-                    Q_EMIT errored(except);
-                    auto typeData = except.respCode;
-                    qDebug()<<"get return";
-                    handle_type = typeData;
-                } else {
-                    except.dlgType = ED_WARNING;
-                    Q_EMIT errored(except);
-                    auto typeData = except.respCode;
-                    qDebug()<<"get return";
-                    handle_type = typeData;
-                }
-            }
-            //handle.
-            switch (handle_type) {
-            case IgnoreOne: {
-                node->setState(FileNode::Unhandled);
-                node->setErrorResponse(IgnoreOne);
-                break;
-            }
-            case IgnoreAll: {
-                node->setState(FileNode::Unhandled);
-                node->setErrorResponse(IgnoreOne);
-                m_prehandle_hash.insert(err->code, IgnoreOne);
-                break;
-            }
-            case OverWriteOne: {
-                g_file_copy(sourceFile.get()->get(),
-                            destFile.get()->get(),
-                            GFileCopyFlags(m_default_copy_flag | G_FILE_COPY_OVERWRITE),
-                            getCancellable().get()->get(),
-                            GFileProgressCallback(progress_callback),
-                            this,
-                            nullptr);
-                node->setState(FileNode::Handled);
-                node->setErrorResponse(OverWriteOne);
-                break;
-            }
-            case OverWriteAll: {
-                g_file_copy(sourceFile.get()->get(),
-                            destFile.get()->get(),
-                            GFileCopyFlags(m_default_copy_flag | G_FILE_COPY_OVERWRITE),
-                            getCancellable().get()->get(),
-                            GFileProgressCallback(progress_callback),
-                            this,
-                            nullptr);
-                node->setState(FileNode::Handled);
-                node->setErrorResponse(OverWriteOne);
-                m_prehandle_hash.insert(err->code, OverWriteOne);
-                break;
-            }
-            case BackupOne: {
-                node->setState(FileNode::Handled);
-                node->setErrorResponse(BackupOne);
-                // use custom name
-                QString name = "";
-                QStringList extendStr = node->destBaseName().split(".");
-                if (extendStr.length() > 0) {
-                    extendStr.removeAt(0);
-                }
-                QString endStr = extendStr.join(".");
-                if (except.respValue.contains("name")) {
-                    name = except.respValue["name"].toString();
-                    if (endStr != "" && name.endsWith(endStr)) {
-                        node->setDestFileName(name);
-                    } else if ("" != endStr && "" != name) {
-                        node->setDestFileName(name + "." + endStr);
-                    }
-                }
-
-                while (FileUtils::isFileExsit(node->resolveDestFileUri(m_dest_dir_uri))) {
-                    handleDuplicate(node);
-                }
-                goto fallback_retry;
-            }
-            case BackupAll: {
-                node->setState(FileNode::Handled);
-                node->setErrorResponse(BackupOne);
-                while (FileUtils::isFileExsit(node->resolveDestFileUri(m_dest_dir_uri))) {
-                    handleDuplicate(node);
-                }
-                m_prehandle_hash.insert(err->code, BackupOne);
-                goto fallback_retry;
-            }
-            case Retry: {
-                goto fallback_retry;
-            }
-            case Cancel: {
-                node->setState(FileNode::Handled);
-                cancel();
-                break;
-            }
-            default:
-                break;
-            }
-        } else {
-            node->setState(FileNode::Handled);
+        if (Retry == copyFile(node, destFile))
+        {
+            goto fallback_retry;
         }
+
         m_current_offset += node->size();
 
         Q_EMIT operationProgressedOne(node->uri(), node->destUri(), node->size());
@@ -520,8 +575,6 @@ void FileCopyOperation::run()
             m_info->m_node_map.insert(node->uri(), node->destUri());
         delete node;
     }
-
-    m_info->m_dest_uris = m_info->m_node_map.values();
 
     nodes.clear();
 

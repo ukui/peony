@@ -343,7 +343,9 @@ void FileOperationManager::onFilesDeleted(const QStringList &uris)
 void FileOperationManager::handleError(FileOperationError &error)
 {
     // Empty files in the recycle bin without reminding
-    if (error.srcUri.startsWith("trash://") && error.errorType == ET_GIO) {
+    if (error.srcUri.startsWith("trash://")
+        && FileOpDelete == error.op)
+    {
         error.respCode = IgnoreAll;
         return;
     }
