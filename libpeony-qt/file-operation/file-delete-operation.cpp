@@ -88,6 +88,7 @@ void FileDeleteOperation::deleteRecursively(FileNode *node)
     if (isCancelled())
         return;
 
+    auto fileIconName = FileUtils::getFileIconName(node->uri(), false);
     GFile *file = g_file_new_for_uri(node->uri().toUtf8().constData());
 
     if (node->isFolder()) {
@@ -102,7 +103,7 @@ void FileDeleteOperation::deleteRecursively(FileNode *node)
     qDebug()<<"deleted";
 
     m_current_offset += node->size();
-    auto fileIconName = FileUtils::getFileIconName(m_current_src_uri);
+
     FileProgressCallback(node->uri(), node->uri(), fileIconName, m_current_offset, m_total_szie);
 }
 

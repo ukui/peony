@@ -52,7 +52,7 @@ public:
 
     NO_BLOCKING static QString getNonSuffixedBaseNameFromUri(const QString &uri);
     BLOCKING static QString getFileDisplayName(const QString &uri);
-    BLOCKING static QString getFileIconName(const QString &uri);
+    BLOCKING static QString getFileIconName(const QString &uri, bool checkValid = true);
 
     BLOCKING static GErrorWrapperPtr getEnumerateError(const QString &uri);
     BLOCKING static QString getTargetUri(const QString &uri);
@@ -81,6 +81,7 @@ public:
 
 private:
     FileUtils();
+    static void handleVolumeLabelForFat32(QString &volumeName,const QString &unixDevcieName);
 };
 
 }

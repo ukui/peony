@@ -404,10 +404,21 @@ void Peony::FileOperationErrorDialogWarning::handle(Peony::FileOperationError &e
 
     exec();
 
-    if (G_IO_ERROR_NOT_SUPPORTED == m_error->errorCode || G_IO_ERROR_NO_SPACE == m_error->errorCode) {
-        error.respCode = Cancel;
-    } else {
-        error.respCode = IgnoreOne;
+    switch (m_error->errorCode) {
+        case G_IO_ERROR_BUSY:
+        case G_IO_ERROR_PENDING:
+        case G_IO_ERROR_NO_SPACE:
+        case G_IO_ERROR_CANCELLED:
+        case G_IO_ERROR_INVALID_DATA:
+        case G_IO_ERROR_NOT_SUPPORTED:
+        case G_IO_ERROR_PERMISSION_DENIED:
+        case G_IO_ERROR_CANT_CREATE_BACKUP:
+        case G_IO_ERROR_TOO_MANY_OPEN_FILES:
+            error.respCode = Cancel;
+            break;
+        default:
+            error.respCode = IgnoreOne;
+            break;
     }
 }
 

@@ -224,22 +224,22 @@
     <message>
         <location filename="../../src/control/operation-menu.cpp" line="158"/>
         <source>copy</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Kopyala</translation>
     </message>
     <message>
         <location filename="../../src/control/operation-menu.cpp" line="167"/>
         <source>paste</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Yapıştır</translation>
     </message>
     <message>
         <location filename="../../src/control/operation-menu.cpp" line="176"/>
         <source>cut</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Kes</translation>
     </message>
     <message>
         <location filename="../../src/control/operation-menu.cpp" line="185"/>
         <source>trash</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Çöp</translation>
     </message>
 </context>
 <context>
@@ -489,7 +489,7 @@ Telif (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</translatio
     <message>
         <location filename="../../src/control/tab-widget.cpp" line="339"/>
         <source>Select path</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Yol seç</translation>
     </message>
     <message>
         <location filename="../../src/control/tab-widget.cpp" line="374"/>

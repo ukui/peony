@@ -436,6 +436,10 @@ void ListView::adjustColumnsSize()
         rightPartsSize += columnSize;
     }
 
+    //set column 0 minimum width, fix header icon overlap with name issue
+    if(columnWidth(0) < columnWidth(1))
+        setColumnWidth(0, columnWidth(1));
+
     if (this->width() - rightPartsSize < BOTTOM_STATUS_MARGIN)
         return;
 
@@ -488,6 +492,15 @@ void ListView::setSelections(const QStringList &uris)
 const QStringList ListView::getAllFileUris()
 {
     return m_proxy_model->getAllFileUris();
+}
+
+QRect ListView::visualRect(const QModelIndex &index) const
+{
+    auto rect = QTreeView::visualRect(index);
+    if (index.column() == 0) {
+        rect.setX(0);
+    }
+    return rect;
 }
 
 void ListView::open(const QStringList &uris, bool newWindow)

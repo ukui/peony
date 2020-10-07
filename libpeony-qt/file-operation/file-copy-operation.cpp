@@ -127,12 +127,22 @@ ExceptionResponse FileCopyOperation::prehandle(GError *err)
 {
     setHasError(true);
 
-    if (G_IO_ERROR_NO_SPACE == err->code) {
-        return Other;
+    switch (err->code) {
+        case G_IO_ERROR_BUSY:
+        case G_IO_ERROR_PENDING:
+        case G_IO_ERROR_NO_SPACE:
+        case G_IO_ERROR_CANCELLED:
+        case G_IO_ERROR_INVALID_DATA:
+        case G_IO_ERROR_NOT_SUPPORTED:
+        case G_IO_ERROR_PERMISSION_DENIED:
+        case G_IO_ERROR_CANT_CREATE_BACKUP:
+        case G_IO_ERROR_TOO_MANY_OPEN_FILES:
+            return Other;
     }
 
-    if (m_is_duplicated_copy && G_IO_ERROR_EXISTS == err->code)
+    if (G_IO_ERROR_EXISTS == err->code && m_is_duplicated_copy) {
         return BackupAll;
+    }
 
     if (m_prehandle_hash.contains(err->code))
         return m_prehandle_hash.value(err->code);
@@ -149,11 +159,10 @@ void FileCopyOperation::progress_callback(goffset current_num_bytes,
 
     auto currnet = p_this->m_current_offset + current_num_bytes;
     auto total = p_this->m_total_szie;
-    auto fileIconName = FileUtils::getFileIconName(p_this->m_current_src_uri);
+    auto fileIconName = FileUtils::getFileIconName(p_this->m_current_src_uri, false);
+    auto destFileName = FileUtils::isFileDirectory(p_this->m_current_dest_dir_uri) ? nullptr : p_this->m_current_dest_dir_uri;
     qDebug()<<currnet*1.0/total;
-    Q_EMIT p_this->FileProgressCallback(p_this->m_current_src_uri,
-                                        p_this->m_current_dest_dir_uri,
-                                        fileIconName, currnet, total);
+    Q_EMIT p_this->FileProgressCallback(p_this->m_current_src_uri, destFileName, fileIconName, currnet, total);
 }
 
 void FileCopyOperation::FileCopyOperationErrDlg(
@@ -189,6 +198,7 @@ void FileCopyOperation::getBackupName(
         */
         name = except.respValue["name"].toString();
         if (name.isEmpty()){
+            qWarning()<<"the backup name is empty.";
             return;
         }
 
@@ -353,8 +363,8 @@ ExceptionResponse FileCopyOperation::copyFile(
             handle_type = typeData;
         }
 
-       // g_error_free(err);
-      //  err = nullptr;
+        g_error_free(err);
+        err = nullptr;
 
         //handle.
         switch (handle_type) {
