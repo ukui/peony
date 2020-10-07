@@ -403,8 +403,9 @@ void DesktopWindow::paintEvent(QPaintEvent *e)
     } else {
         //draw bg?
         if (m_use_pure_color) {
-            p.fillRect(this->rect(), m_last_pure_color);
+            p.fillRect(this->rect(), m_color_to_be_set);
             m_used_pure_color = true;
+            m_last_pure_color = m_color_to_be_set;
         } else {
 //            p.drawPixmap(this->rect(), m_bg_back_cache_pixmap, m_bg_back_cache_pixmap.rect());
             if(m_picture_option == "centered")
@@ -518,7 +519,6 @@ void DesktopWindow::setBg(const QColor &color) {
         }
     else
         update();
-    m_last_pure_color = m_color_to_be_set;
 }
 
 void DesktopWindow::setBgPath(const QString &bgPath) {
