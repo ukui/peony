@@ -45,6 +45,44 @@ std::shared_ptr<FileOperationInfo> FileDeleteOperation::getOperationInfo()
     return m_info;
 }
 
+void FileDeleteOperation::deleteFile(GFile *file, const QString &uri)
+{
+    GError *err = nullptr;
+
+    g_file_delete(file, getCancellable().get()->get(), &err);
+    if (err) {
+        if (!m_prehandle_hash.isEmpty()) {
+            g_error_free(err);
+            err = nullptr;
+            return;
+        }
+
+        // if delete a file get into error, it might be a critical error.
+        FileOperationError except;
+        except.errorType = ET_GIO;
+        except.dlgType = ED_WARNING;
+        except.srcUri = uri;
+        except.op = FileOpDelete;
+        except.title = tr("File delete error");
+        except.errorCode = err->code;
+        except.errorStr = err->message;
+        Q_EMIT errored(except);
+        auto response = except.respCode;
+        auto responseType = response;
+        if (responseType == Cancel) {
+            cancel();
+        }
+
+        // Similar errors only remind the user once
+        m_prehandle_hash.insert(err->code, IgnoreAll);
+
+        g_error_free(err);
+        err = nullptr;
+    }
+
+    return;
+}
+
 void FileDeleteOperation::deleteRecursively(FileNode *node)
 {
     if (isCancelled())
@@ -52,66 +90,18 @@ void FileDeleteOperation::deleteRecursively(FileNode *node)
 
     auto fileIconName = FileUtils::getFileIconName(node->uri(), false);
     GFile *file = g_file_new_for_uri(node->uri().toUtf8().constData());
+
     if (node->isFolder()) {
         for (auto child : *(node->children())) {
             deleteRecursively(child);
         }
-        GError *err = nullptr;
-        g_file_delete(file,
-                      getCancellable().get()->get(),
-                      &err);
-        if (err) {
-            if (!m_prehandle_hash.isEmpty()) {
-                g_error_free(err);
-                return;
-            }
-            // if delete a file get into error, it might be a critical error.
-            FileOperationError except;
-            except.errorType = ET_GIO;
-            except.dlgType = ED_WARNING;
-            except.srcUri = node->uri();
-            except.title = tr("File delete error");
-            except.errorStr = err->message;
-            except.errorCode = err->code;
-            Q_EMIT errored(except);
-            auto response = except.respCode;
-            auto responseType = response;
-            if (responseType == Cancel) {
-                cancel();
-            }
-            // Similar errors only remind the user once
-            m_prehandle_hash.insert(err->code, IgnoreAll);
-        }
-    } else {
-        GError *err = nullptr;
-        g_file_delete(file,getCancellable().get()->get(),&err);
-        if (err) {
-            if (!m_prehandle_hash.isEmpty()) {
-                g_error_free(err);
-                return;
-            }
-            // if delete a file get into error, it might be a critical error.
-            FileOperationError except;
-            except.errorType = ET_GIO;
-            except.dlgType = ED_WARNING;
-            except.srcUri = node->uri();
-            except.title = tr("File delete error");
-            except.errorCode = err->code;
-            except.errorStr = err->message;
-            Q_EMIT errored(except);
-            auto response = except.respCode;
-            qDebug()<<response;
-            auto responseType = response;
-            if (responseType == Cancel) {
-                cancel();
-            }
-            // Similar errors only remind the user once
-            m_prehandle_hash.insert(err->code, IgnoreAll);
-        }
     }
+
+    deleteFile(file, node->uri());
+
     g_object_unref(file);
     qDebug()<<"deleted";
-    //operationAfterProgressedOne(node->uri());
+
     m_current_offset += node->size();
 
     FileProgressCallback(node->uri(), node->uri(), fileIconName, m_current_offset, m_total_szie);
