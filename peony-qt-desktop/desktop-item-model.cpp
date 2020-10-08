@@ -251,6 +251,7 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
     });
 
     this->connect(m_desktop_watcher.get(), &FileWatcher::fileDeleted, [=](const QString &uri) {
+        m_new_file_info_query_queue.removeOne(uri);
         auto view = PeonyDesktopApplication::getIconView();
         view->removeItemRect(uri);
 
@@ -466,7 +467,6 @@ void DesktopItemModel::onEnumerateFinished()
     //qDebug()<<m_files.count();
     //this->endResetModel();
     for (auto info : infos) {
-        m_info_query_queue<<info->uri();
         beginInsertRows(QModelIndex(), m_files.count(), m_files.count());
         auto syncJob = new FileInfoJob(info);
         syncJob->querySync();
