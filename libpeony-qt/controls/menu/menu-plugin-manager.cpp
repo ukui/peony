@@ -104,7 +104,8 @@ QList<QAction *> CreateLinkInternalPlugin::menuActions(MenuPluginInterface::Type
             auto info = FileInfo::fromUri(selectionUris.first(), false);
             //special type mountable, or isVirtual then return
             if (selectionUris.first().startsWith("computer:///") || info->isVirtual()
-                || selectionUris.first().startsWith("trash:///"))
+                || selectionUris.first().startsWith("trash:///")
+                || selectionUris.first().startsWith("recent:///"))
                 return l;
 
             connect(createLinkToDesktop, &QAction::triggered, [=]() {
