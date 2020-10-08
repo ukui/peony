@@ -48,10 +48,8 @@ retry:
         if (err) {
             if (response == IgnoreAll) {
                 g_error_free(err);
-                err = nullptr;
                 continue;
             }
-
             FileOperationError except;
             except.srcUri = src;
             except.destDirUri = tr("trash:///");
@@ -63,27 +61,38 @@ retry:
             except.errorType = ET_GIO;
             if (G_IO_ERROR_EXISTS == err->code) {
                 except.dlgType = ED_CONFLICT;
+                Q_EMIT errored(except);
+                auto responseType = except.respCode;
+                auto responseData = responseType;
+                switch (responseData) {
+                case Retry:
+                    goto retry;
+                case Cancel:
+                    cancel();
+                    break;
+                case IgnoreAll:
+                    response = IgnoreAll;
+                    break;
+                default:
+                    break;
+                }
             } else {
                 except.dlgType = ED_WARNING;
-            }
-            Q_EMIT errored(except);
-
-            g_error_free(err);
-            err = nullptr;
-
-            auto responseType = except.respCode;
-            auto responseData = responseType;
-            switch (responseData) {
-            case Retry:
-                goto retry;
-            case Cancel:
-                cancel();
-                break;
-            case IgnoreAll:
-                response = IgnoreAll;
-                break;
-            default:
-                break;
+                Q_EMIT errored(except);
+                auto responseType = except.respCode;
+                auto responseData = responseType;
+                switch (responseData) {
+                case Retry:
+                    goto retry;
+                case Cancel:
+                    cancel();
+                    break;
+                case IgnoreAll:
+                    response = IgnoreAll;
+                    break;
+                default:
+                    break;
+                }
             }
         }
     }

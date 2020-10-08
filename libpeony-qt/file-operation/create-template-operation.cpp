@@ -103,131 +103,116 @@ CreateTemplateOperation::CreateTemplateOperation(const QString &destDirUri, Type
     m_info = std::make_shared<FileOperationInfo>(srcUris, destDirUri, FileOperationInfo::Type::Copy);
 }
 
-void CreateTemplateOperation::createEmptyFile()
+void CreateTemplateOperation::run()
 {
-    m_target_uri = m_dest_dir_uri + "/" + tr("NewFile") + ".txt";
-
+    Q_EMIT operationStarted();
+    Q_EMIT operationPrepared();
+    switch (m_type) {
+    case EmptyFile: {
+        m_target_uri = m_dest_dir_uri + "/" + tr("NewFile") + ".txt";
 retry_create_empty_file:
-    GError *err = nullptr;
-    g_file_create(wrapGFile(g_file_new_for_uri(m_target_uri.toUtf8())).get()->get(), G_FILE_CREATE_NONE, nullptr, &err);
-    if (err) {
-        FileOperationError except;
-        // todo: Allow user naming
-        if (err->code == G_IO_ERROR_EXISTS) {
-            g_error_free(err);
-            handleDuplicate(m_target_uri);
-            goto retry_create_empty_file;
-        } else {
-            except.srcUri = m_src_uri;
-            except.dlgType = ED_WARNING;
-            except.destDirUri = m_dest_dir_uri;
-            except.isCritical = true;
-            except.op = FileOpCreateTemp;
-            except.title = tr("Create file");
-            except.errorCode = err->code;
-            except.errorStr = err->message;
-            except.errorType = ET_GIO;
-            Q_EMIT errored(except);
-            g_error_free(err);
-            err = nullptr;
-        }
-    }
-
-    return;
-}
-
-void CreateTemplateOperation::createEmptyFolder()
-{
-    m_target_uri = m_dest_dir_uri + "/" + tr("NewFolder");
-
-retry_create_empty_folder:
-    GError *err = nullptr;
-    g_file_make_directory(wrapGFile(g_file_new_for_uri(m_target_uri.toUtf8())).get()->get(),
-                          nullptr,
-                          &err);
-    if (err) {
-        // todo: Allow user naming
-        if (err->code == G_IO_ERROR_EXISTS) {
-            g_error_free(err);
-            err = nullptr;
-            handleDuplicate(m_target_uri);
-            goto retry_create_empty_folder;
-        } else {
+        GError *err = nullptr;
+        g_file_create(wrapGFile(g_file_new_for_uri(m_target_uri.toUtf8())).get()->get(), G_FILE_CREATE_NONE, nullptr, &err);
+        if (err) {
             FileOperationError except;
-            except.srcUri = m_src_uri;
-            except.dlgType = ED_WARNING;
-            except.destDirUri = m_dest_dir_uri;
-            except.isCritical = true;
-            except.op = FileOpCreateTemp;
-            except.title = tr("Create file error");
-            except.errorCode = err->code;
-            except.errorStr = err->message;
-            except.errorType = ET_GIO;
-            Q_EMIT errored(except);
-            g_error_free(err);
-            err = nullptr;
+            // todo: Allow user naming
+            if (err->code == G_IO_ERROR_EXISTS) {
+                g_error_free(err);
+                handleDuplicate(m_target_uri);
+                goto retry_create_empty_file;
+            } else {
+                except.srcUri = m_src_uri;
+                except.dlgType = ED_WARNING;
+                except.destDirUri = m_dest_dir_uri;
+                except.isCritical = true;
+                except.op = FileOpCreateTemp;
+                except.title = tr("Create file");
+                except.errorCode = err->code;
+                except.errorStr = err->message;
+                except.errorType = ET_GIO;
+                Q_EMIT errored(except);
+            }
         }
+        break;
     }
-
-    return;
-}
-
-void CreateTemplateOperation::createTemplete()
-{
-    qDebug() << "create tmp";
-    GError *err = nullptr;
-
+    case EmptyFolder: {
+        m_target_uri = m_dest_dir_uri + "/" + tr("NewFolder");
+retry_create_empty_folder:
+        GError *err = nullptr;
+        g_file_make_directory(wrapGFile(g_file_new_for_uri(m_target_uri.toUtf8())).get()->get(),
+                              nullptr,
+                              &err);
+        if (err) {
+            // todo: Allow user naming
+            if (err->code == G_IO_ERROR_EXISTS) {
+                g_error_free(err);
+                handleDuplicate(m_target_uri);
+                goto retry_create_empty_folder;
+            } else {
+                FileOperationError except;
+                except.srcUri = m_src_uri;
+                except.dlgType = ED_WARNING;
+                except.destDirUri = m_dest_dir_uri;
+                except.isCritical = true;
+                except.op = FileOpCreateTemp;
+                except.title = tr("Create file error");
+                except.errorCode = err->code;
+                except.errorStr = err->message;
+                except.errorType = ET_GIO;
+                Q_EMIT errored(except);
+            }
+        }
+        break;
+    }
+    case Template: {
 retry_create_template:
-    g_file_copy(wrapGFile(g_file_new_for_uri(m_src_uri.toUtf8())).get()->get(),
+        qDebug() << "create tmp";
+        GError *err = nullptr;
+        g_file_copy(wrapGFile(g_file_new_for_uri(m_src_uri.toUtf8())).get()->get(),
                     wrapGFile(g_file_new_for_uri(m_target_uri.toUtf8())).get()->get(),
                     GFileCopyFlags(G_FILE_COPY_NOFOLLOW_SYMLINKS),
                     nullptr,
                     nullptr,
                     nullptr,
                     &err);
-    if (err) {
-        setHasError(true);
-        if (err->code == G_IO_ERROR_EXISTS) {
-            g_error_free(err);
-            err = nullptr;
-            handleDuplicate(m_target_uri);
-            goto retry_create_template;
+        if (err) {
+            setHasError(true);
+            if (err->code == G_IO_ERROR_EXISTS) {
+                g_error_free(err);
+                handleDuplicate(m_target_uri);
+                goto retry_create_template;
+            } else {
+                FileOperationError except;
+                except.srcUri = m_src_uri;
+                except.dlgType = ED_WARNING;
+                except.destDirUri = m_dest_dir_uri;
+                except.isCritical = true;
+                except.op = FileOpCreateTemp;
+                except.title = tr("Create file error");
+                except.errorCode = err->code;
+                except.errorStr = err->message;
+                except.errorType = ET_GIO;
+                Q_EMIT errored(except);
+            }
         } else {
-            FileOperationError except;
-            except.srcUri = m_src_uri;
-            except.dlgType = ED_WARNING;
-            except.destDirUri = m_dest_dir_uri;
-            except.isCritical = true;
-            except.op = FileOpCreateTemp;
-            except.title = tr("Create file error");
-            except.errorCode = err->code;
-            except.errorStr = err->message;
-            except.errorType = ET_GIO;
-            Q_EMIT errored(except);
-            g_error_free(err);
-            err = nullptr;
+            setHasError(false);
         }
-    } else {
-        setHasError(false);
+        // change file's modify time and access time after copy templete file;
+        time_t now_time = time(NULL);
+        struct utimbuf tm = {now_time, now_time};
+
+        if (m_target_uri.startsWith("file://")) {
+            utime (m_target_uri.toStdString().c_str() + 6, &tm);
+        } else if (m_target_uri.startsWith("/")) {
+            utime (m_target_uri.toStdString().c_str(), &tm);
+        }
+
+        break;
+    }
     }
 
-    // change file's modify time and access time after copy templete file;
-    time_t now_time = time(NULL);
-    struct utimbuf tm = {now_time, now_time};
-
-    if (m_target_uri.startsWith("file://")) {
-        utime (m_target_uri.toStdString().c_str() + 6, &tm);
-    } else if (m_target_uri.startsWith("/")) {
-        utime (m_target_uri.toStdString().c_str(), &tm);
-    }
-
-    return;
-}
-
-void CreateTemplateOperation::tempOperationSync()
-{
+    // judge if the operation should sync.
     bool needSync = false;
-
     GFile *src_first_file = g_file_new_for_uri(m_src_uri.toUtf8().constData());
     GMount *src_first_mount = g_file_find_enclosing_mount(src_first_file, nullptr, nullptr);
     if (src_first_mount) {
@@ -249,6 +234,8 @@ void CreateTemplateOperation::tempOperationSync()
     }
     g_object_unref(dest_dir_file);
 
+    //needSync = true;
+
     if (needSync) {
         auto path = g_file_get_path(dest_dir_file);
         if (path) {
@@ -259,33 +246,6 @@ void CreateTemplateOperation::tempOperationSync()
             g_free(path);
         }
     }
-
-    return;
-}
-
-void CreateTemplateOperation::run()
-{
-    Q_EMIT operationStarted();
-    Q_EMIT operationPrepared();
-
-    switch (m_type) {
-        case EmptyFile: {
-            createEmptyFile();
-            break;
-        }
-        case EmptyFolder: {
-            createEmptyFolder();
-            break;
-        }
-        case Template: {
-            createTemplete();
-            break;
-        }
-    }
-
-    // judge if the operation should sync.
-
-    tempOperationSync();
 
     // as target()
     m_info.get()->m_dest_dir_uri = m_target_uri;

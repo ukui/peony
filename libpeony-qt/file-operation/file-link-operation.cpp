@@ -77,14 +77,13 @@ retry:
         auto responseType = Invalid;
         if (G_IO_ERROR_EXISTS == err->code) {
             except.dlgType = ED_CONFLICT;
+            Q_EMIT errored(except);
+            responseType = except.respCode;
         } else {
             except.dlgType = ED_WARNING;
+            Q_EMIT errored(except);
+            responseType = except.respCode;
         }
-        Q_EMIT errored(except);
-        responseType = except.respCode;
-
-        g_error_free(err);
-        err = nullptr;
 
         if (responseType == Peony::Retry) {
             goto retry;

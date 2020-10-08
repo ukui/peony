@@ -187,6 +187,7 @@ fallback_retry:
                     nullptr,
                     &err);
         if (err) {
+            qDebug()<<err->message;
             FileOperationError except;
             except.srcUri = m_uri;
             except.destDirUri = FileUtils::getFileUri(newFile);
@@ -198,29 +199,33 @@ fallback_retry:
             except.errorStr = err->message;
             if (G_IO_ERROR_EXISTS == err->code) {
                 except.dlgType = ED_CONFLICT;
+                auto responseType = except.respCode;
+                switch (responseType) {
+                case Retry:
+                    goto fallback_retry;
+                case Cancel:
+                    cancel();
+                    break;
+                default:
+                    break;
+                }
             } else {
                 except.dlgType = ED_WARNING;
-            }
-
-            g_error_free(err);
-            err = nullptr;
-
-            auto responseType = except.respCode;
-            switch (responseType) {
-            case Retry:
-                goto fallback_retry;
-            case Cancel:
-                cancel();
-                break;
-            default:
-                break;
+                auto responseType = except.respCode;
+                switch (responseType) {
+                case Retry:
+                    goto fallback_retry;
+                case Cancel:
+                    cancel();
+                    break;
+                default:
+                    break;
+                }
             }
 
         }
     } else {
 retry:
-        GError *err = nullptr;
-
         FileOperationError except;
         except.srcUri = m_uri;
         except.destDirUri = FileUtils::getFileUri(newFile);
@@ -228,7 +233,7 @@ retry:
         except.errorType = ET_GIO;
         except.op = FileOpRename;
         except.title = tr("Rename file error");
-
+        GError *err = nullptr;
         if (FileUtils::isFileExsit(g_file_get_uri(newFile.get()->get()))) {
             except.dlgType = ED_CONFLICT;
             except.errorCode = G_IO_ERROR_EXISTS;
@@ -264,9 +269,6 @@ retry:
             }
             case OverWriteOne:
             case OverWriteAll:
-                /*
-                * 覆盖非空的文件件的时候会失败，对这种情况做处理。
-                */
                 g_file_delete(newFile.get()->get(), nullptr, nullptr);
                 break;
             case Cancel:
@@ -282,7 +284,15 @@ retry:
         if (nullptr != newName) {
             g_free(newName);
         }
-
+/*
+        g_file_move(file.get()->get(),
+                    newFile.get()->get(),
+                    m_default_copy_flag,
+                    getCancellable().get()->get(),
+                    nullptr,
+                    nullptr,
+                    &err);
+*/
         if (err) {
             except.errorType = ET_GIO;
             except.errorCode = err->code;
@@ -293,10 +303,6 @@ retry:
                 Q_EMIT errored(except);
                 responseType = except.respCode;
             }
-
-            g_error_free(err);
-            err = nullptr;
-
             switch (responseType) {
             case Retry:
                 goto retry;

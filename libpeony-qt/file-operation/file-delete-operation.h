@@ -47,9 +47,6 @@ public:
     void cancel() override;
 
 private:
-
-    void deleteFile(GFile *file, const QString &uri);
-
     QStringList m_source_uris;
 
     int m_current_count = 0;

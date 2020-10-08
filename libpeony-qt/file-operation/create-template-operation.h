@@ -54,11 +54,6 @@ protected:
     void handleDuplicate(const QString &uri);
 
 private:
-    void createEmptyFile();
-    void createEmptyFolder();
-    void createTemplete();
-    void tempOperationSync();
-
     std::shared_ptr<FileOperationInfo> m_info;
 
     QString m_src_uri;
