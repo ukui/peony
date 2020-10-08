@@ -22,7 +22,7 @@
 
 #include "generic-thumbnailer.h"
 #include "office-thumbnail.h"
-#include "pdf-thumbnail.h"
+#include "file-utils.h"
 #include <QFileInfo>
 #include <QDebug>
 #include <QtConcurrent>
@@ -34,7 +34,14 @@
 
 OfficeThumbnail::OfficeThumbnail(const QString &uri)
 {
-    m_url = uri;
+    if (!uri.startsWith("file:///")) {
+        m_url = FileUtils::getTargetUri(uri);
+        qDebug()<<"target uri:"<< m_url.path();
+    }
+    else {
+        m_url = uri;
+    }
+
     auto fileInfo = FileInfo::fromUri(uri);
     m_modifyTime = fileInfo->modifiedTime();
 }

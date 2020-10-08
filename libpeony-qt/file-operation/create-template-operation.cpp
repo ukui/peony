@@ -125,6 +125,7 @@ retry_create_empty_file:
                 except.dlgType = ED_WARNING;
                 except.destDirUri = m_dest_dir_uri;
                 except.isCritical = true;
+                except.op = FileOpCreateTemp;
                 except.title = tr("Create file");
                 except.errorCode = err->code;
                 except.errorStr = err->message;
@@ -153,6 +154,7 @@ retry_create_empty_folder:
                 except.dlgType = ED_WARNING;
                 except.destDirUri = m_dest_dir_uri;
                 except.isCritical = true;
+                except.op = FileOpCreateTemp;
                 except.title = tr("Create file error");
                 except.errorCode = err->code;
                 except.errorStr = err->message;
@@ -185,6 +187,7 @@ retry_create_template:
                 except.dlgType = ED_WARNING;
                 except.destDirUri = m_dest_dir_uri;
                 except.isCritical = true;
+                except.op = FileOpCreateTemp;
                 except.title = tr("Create file error");
                 except.errorCode = err->code;
                 except.errorStr = err->message;
