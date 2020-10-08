@@ -648,6 +648,13 @@ void TabWidget::updateSearchPathButton(const QString &uri)
     auto displayName = Peony::FileUtils::getFileDisplayName(curUri);
     qDebug() << "iconName:" <<iconName <<displayName<<curUri;
     m_search_path->setIcon(QIcon::fromTheme(iconName));
+
+    //elide text if it is too long
+    if (displayName.length() > ELIDE_TEXT_LENGTH)
+    {
+        int  charWidth = fontMetrics().averageCharWidth();
+        displayName = fontMetrics().elidedText(displayName, Qt::ElideRight, ELIDE_TEXT_LENGTH * charWidth);
+    }
     m_search_path->setText(displayName);
 }
 
