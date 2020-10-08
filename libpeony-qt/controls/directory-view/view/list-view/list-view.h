@@ -77,7 +77,7 @@ public:
     //children
     const QStringList getAllFileUris() override;
 
-    //QRect visualRect(const QModelIndex &index) const override;
+    QRect visualRect(const QModelIndex &index) const override;
 
 Q_SIGNALS:
     void zoomLevelChangedRequest(bool zoomIn);

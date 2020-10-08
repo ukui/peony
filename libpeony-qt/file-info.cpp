@@ -71,6 +71,7 @@ FileInfo::FileInfo(const QString &uri, QObject *parent) : QObject (parent)
 
 FileInfo::~FileInfo()
 {
+    ThumbnailManager::getInstance()->releaseThumbnail(m_uri);
     //qDebug()<<"~FileInfo"<<m_uri;
     disconnect();
 
@@ -87,6 +88,7 @@ FileInfo::~FileInfo()
 
 std::shared_ptr<FileInfo> FileInfo::fromUri(QString uri, bool addToHash)
 {
+    addToHash = true;
     FileInfoManager *info_manager = FileInfoManager::getInstance();
     info_manager->lock();
     std::shared_ptr<FileInfo> info = info_manager->findFileInfoByUri(uri);

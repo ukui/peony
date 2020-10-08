@@ -386,6 +386,10 @@ void ListView::wheelEvent(QWheelEvent *e)
 
 void ListView::slotRename()
 {
+    //trash path not allow rename
+    if (getDirectoryUri().startsWith("trash://"))
+        return;
+
     //delay edit action to avoid doubleClick or dragEvent
     qDebug()<<"slotRename"<<m_editValid;
     QTimer::singleShot(300, m_renameTimer, [&]() {
@@ -432,6 +436,10 @@ void ListView::adjustColumnsSize()
         rightPartsSize += columnSize;
     }
 
+    //set column 0 minimum width, fix header icon overlap with name issue
+    if(columnWidth(0) < columnWidth(1))
+        setColumnWidth(0, columnWidth(1));
+
     if (this->width() - rightPartsSize < BOTTOM_STATUS_MARGIN)
         return;
 
@@ -459,11 +467,13 @@ void ListView::setDirectoryUri(const QString &uri)
 const QStringList ListView::getSelections()
 {
     QStringList uris;
+    QString uri;
     QModelIndexList selections = selectedIndexes();
     for (auto index : selections) {
         if (index.column() == 0)
             uris<<index.data(FileItemModel::UriRole).toString();
     }
+    uris.removeDuplicates();
     return uris;
 }
 
@@ -482,6 +492,15 @@ void ListView::setSelections(const QStringList &uris)
 const QStringList ListView::getAllFileUris()
 {
     return m_proxy_model->getAllFileUris();
+}
+
+QRect ListView::visualRect(const QModelIndex &index) const
+{
+    auto rect = QTreeView::visualRect(index);
+    if (index.column() == 0) {
+        rect.setX(0);
+    }
+    return rect;
 }
 
 void ListView::open(const QStringList &uris, bool newWindow)
@@ -548,6 +567,7 @@ void ListView::setSortOrder(int sortOrder)
 
 void ListView::editUri(const QString &uri)
 {
+    setState(QTreeView::NoState);
     auto origin = FileUtils::getOriginalUri(uri);
     setIndexWidget(m_proxy_model->indexFromUri(origin), nullptr);
     QTreeView::scrollTo(m_proxy_model->indexFromUri(origin));
@@ -590,9 +610,10 @@ void ListView2::bindModel(FileItemModel *model, FileItemProxyFilterSortModel *pr
     m_model = model;
     m_proxy_model = proxyModel;
 
-    m_model->setPositiveResponse(false);
+    //m_model->setPositiveResponse(false);
 
     m_view->bindModel(model, proxyModel);
+    connect(m_model, &FileItemModel::selectRequest, this, &DirectoryViewWidget::updateWindowSelectionRequest);
     connect(model, &FileItemModel::findChildrenFinished, this, &DirectoryViewWidget::viewDirectoryChanged);
     connect(m_model, &FileItemModel::updated, m_view, &ListView::resort);
 
@@ -648,7 +669,7 @@ void ListView2::bindModel(FileItemModel *model, FileItemProxyFilterSortModel *pr
     connect(m_model, &FileItemModel::findChildrenFinished, this, [=]() {
         if (m_need_resize_header) {
             //delay a while for proxy model sorting.
-            QTimer::singleShot(100, this, [=]() {
+            QTimer::singleShot(500, this, [=]() {
                 //m_view->setModel(m_proxy_model);
                 //adjust columns layout.
                 m_view->adjustColumnsSize();
@@ -668,7 +689,8 @@ void ListView2::setCurrentZoomLevel(int zoomLevel)
 
 void ListView2::clearIndexWidget()
 {
-    for (auto index : m_view->selectedIndexes()) {
+    for (auto index : m_proxy_model->getAllFileIndexes()) {
         m_view->setIndexWidget(index, nullptr);
+        m_view->closePersistentEditor(index);
     }
 }

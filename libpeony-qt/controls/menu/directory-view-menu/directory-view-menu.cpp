@@ -104,6 +104,9 @@ void DirectoryViewMenu::fillActions()
     if (m_directory.startsWith("burn://"))
         m_is_cd = true;
 
+    if (m_directory.startsWith("recent://"))
+        m_is_recent = true;
+
     //add open actions
     auto openActions = constructOpenOpActions();
     if (!openActions.isEmpty())
@@ -176,6 +179,8 @@ const QList<QAction *> DirectoryViewMenu::constructOpenOpActions()
         if (m_selections.count() == 1) {
             auto info = FileInfo::fromUri(m_selections.first());
             auto displayName = info->displayName();
+
+            //FIXME: replace BLOCKING api in ui thread.
             if (displayName.isEmpty())
                 displayName = FileUtils::getFileDisplayName(info->uri());
             //when name is too long, show elideText
@@ -307,7 +312,11 @@ const QList<QAction *> DirectoryViewMenu::constructCreateTemplateActions()
         if (m_is_cd) {
             createAction->setEnabled(false);
         }
-        if(m_directory.compare(QString::fromLocal8Bit("trash:///")) == 0)
+        //fix create folder fail issue in special path
+        auto info = FileInfo::fromUri(m_directory, false);
+        FileInfoJob job(info);
+        job.querySync();
+        if (! info->canWrite())
         {
             createAction->setEnabled(false);
         }
@@ -354,9 +363,10 @@ const QList<QAction *> DirectoryViewMenu::constructCreateTemplateActions()
 
                 QAction *action = new QAction(tmpIcon, qinfo.baseName(), this);
                 connect(action, &QAction::triggered, [=]() {
+                    // automatically check for conficts
                     CreateTemplateOperation op(m_directory, CreateTemplateOperation::Template, t);
-                    Peony::FileOperationErrorDialogConflict dlg;
-                    connect(&op, &Peony::FileOperation::errored, &dlg, &Peony::FileOperationErrorDialogConflict::handle);
+                    Peony::FileOperationErrorDialogWarning dlg;
+                    connect(&op, &Peony::FileOperation::errored, &dlg, &Peony::FileOperationErrorDialogWarning::handle);
                     op.run();
                     auto target = op.target();
                     m_uris_to_edit<<target;
@@ -544,7 +554,16 @@ const QList<QAction *> DirectoryViewMenu::constructFileOpActions()
             l<<pasteAction;
             pasteAction->setEnabled(ClipboardUtils::isClipboardHasFiles());
             connect(l.last(), &QAction::triggered, [=]() {
-                ClipboardUtils::pasteClipboardFiles(m_directory);
+                auto op = ClipboardUtils::pasteClipboardFiles(m_directory);
+                if (op) {
+                    auto window = dynamic_cast<QWidget *>(m_top_window);
+                    auto iface = m_top_window;
+                    connect(op, &Peony::FileOperation::operationFinished, window, [=](){
+                        auto opInfo = op->getOperationInfo();
+                        auto targetUirs = opInfo->dests();
+                        iface->setCurrentSelectionUris(targetUirs);
+                    }, Qt::BlockingQueuedConnection);
+                }
             });
             l<<addAction(QIcon::fromTheme("view-refresh-symbolic"), tr("&Refresh"));
             connect(l.last(), &QAction::triggered, [=]() {
@@ -677,13 +696,16 @@ const QList<QAction *> DirectoryViewMenu::constructTrashActions()
 const QList<QAction *> DirectoryViewMenu::constructSearchActions()
 {
     QList<QAction *> l;
-    if (m_is_search) {
+    if (m_is_search || m_is_recent) {
         if (m_selections.isEmpty())
             return l;
 
         l<<addAction(QIcon::fromTheme("new-window-symbolc"), tr("Open Parent Folder in New Window"));
         connect(l.last(), &QAction::triggered, [=]() {
             for (auto uri : m_selections) {
+                //FIXME: replace BLOCKING api in ui thread.
+                if (m_is_recent)
+                    uri = FileUtils::getTargetUri(uri);
                 auto parentUri = FileUtils::getParentUri(uri);
                 if (!parentUri.isNull()) {
                     auto *windowIface = m_top_window->create(parentUri);

@@ -41,14 +41,18 @@ using namespace Peony;
 FileInfoJob::FileInfoJob(std::shared_ptr<FileInfo> info, QObject *parent) : QObject(parent)
 {
     m_info = info;
-    connect(m_info.get(), &FileInfo::updated, this, &FileInfoJob::infoUpdated);
+    //connect(m_info.get(), &FileInfo::updated, this, &FileInfoJob::infoUpdated);
+
+    m_cancellable = g_cancellable_new();
 }
 
 FileInfoJob::FileInfoJob(const QString &uri, QObject *parent) : QObject (parent)
 {
     auto info = FileInfo::fromUri(uri);
     m_info = info;
-    connect(m_info.get(), &FileInfo::updated, this, &FileInfoJob::infoUpdated);
+    //connect(m_info.get(), &FileInfo::updated, this, &FileInfoJob::infoUpdated);
+
+    m_cancellable = g_cancellable_new();
 }
 
 /*!
@@ -72,6 +76,8 @@ FileInfoJob::FileInfoJob(const QString &uri, QObject *parent) : QObject (parent)
  */
 FileInfoJob::~FileInfoJob()
 {
+    g_object_unref(m_cancellable);
+
     //qDebug()<<"~Job"<<m_info.use_count();
     if (m_info.use_count() <= 2) {
         Peony::FileInfoManager *mgr = Peony::FileInfoManager::getInstance();
@@ -82,9 +88,9 @@ FileInfoJob::~FileInfoJob()
 void FileInfoJob::cancel()
 {
     //NOTE: do not use same cancellble for cancelling, otherwise all job might be cancelled.
-    g_cancellable_cancel(m_info->m_cancellable);
-    g_object_unref(m_info->m_cancellable);
-    m_info->m_cancellable = g_cancellable_new();
+    g_cancellable_cancel(m_cancellable);
+    g_object_unref(m_cancellable);
+    m_cancellable = g_cancellable_new();
 }
 
 bool FileInfoJob::querySync()
@@ -117,6 +123,9 @@ bool FileInfoJob::querySync()
     g_object_unref(_info);
     if (m_auto_delete)
         deleteLater();
+
+    infoUpdated();
+
     return true;
 }
 
@@ -134,6 +143,7 @@ GAsyncReadyCallback FileInfoJob::query_info_async_callback(GFile *file, GAsyncRe
         thisJob->refreshInfoContents(_info);
         g_object_unref(_info);
         Q_EMIT thisJob->queryAsyncFinished(true);
+        Q_EMIT thisJob->infoUpdated();
     }
     else {
         qDebug()<<err->code<<err->message;
@@ -159,7 +169,7 @@ void FileInfoJob::queryAsync()
                             "standard::*," "time::*," "access::*," "mountable::*," "metadata::*," G_FILE_ATTRIBUTE_ID_FILE,
                             G_FILE_QUERY_INFO_NONE,
                             G_PRIORITY_DEFAULT,
-                            info->m_cancellable,
+                            m_cancellable,
                             GAsyncReadyCallback(query_info_async_callback),
                             this);
 
@@ -169,8 +179,8 @@ void FileInfoJob::queryAsync()
 
 void FileInfoJob::refreshInfoContents(GFileInfo *new_info)
 {
-    if (!m_info->m_mutex.tryLock(300))
-        return;
+//    if (!m_info->m_mutex.tryLock(300))
+//        return;
 
     FileInfo *info = nullptr;
     if (auto data = m_info) {
@@ -320,7 +330,7 @@ void FileInfoJob::refreshInfoContents(GFileInfo *new_info)
     }
 
     Q_EMIT info->updated();
-    m_info->m_mutex.unlock();
+//    m_info->m_mutex.unlock();
 }
 
 QString FileInfoJob::getAppName(QString desktopfp)

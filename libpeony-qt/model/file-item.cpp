@@ -58,8 +58,20 @@ FileItem::FileItem(std::shared_ptr<Peony::FileInfo> info, FileItem *parentItem, 
         auto index = m_model->indexFromUri(uri);
         if (index.isValid()) {
             auto item = m_model->itemFromIndex(index);
-            if (item)
-                m_model->dataChanged(item->firstColumnIndex(), item->lastColumnIndex());
+            if (item) {
+                /*!
+                  \note
+                  fix the probabilistic jamming while thumbnailing with list view.
+
+                  we have to only trigger first column index dataChanged signal,
+                  otherwise there will be probility stucked whole program.
+
+                  i'm not sure if it is a bug of qtreeview.
+                  */
+
+                //m_model->dataChanged(item->firstColumnIndex(), item->lastColumnIndex());
+                m_model->dataChanged(item->firstColumnIndex(), item->firstColumnIndex());
+            }
         }
     });
 
@@ -161,6 +173,7 @@ void FileItem::findChildrenAsync()
             return;
         }
 
+        //FIXME: replace BLOCKING api in ui thread.
         auto target = FileUtils::getTargetUri(m_info->uri());
         if (!target.isEmpty()) {
             enumerator->cancel();
@@ -274,9 +287,12 @@ void FileItem::findChildrenAsync()
                     connect(infoJob, &FileInfoJob::queryAsyncFinished, this, [=]() {
                         m_model->dataChanged(m_model->indexFromUri(uri), m_model->indexFromUri(uri));
                         auto info = FileInfo::fromUri(uri);
+                        ThumbnailManager::getInstance()->createThumbnail(uri, m_thumbnail_watcher, true);
+                        /*
                         if (info->isDesktopFile()) {
                             ThumbnailManager::getInstance()->updateDesktopFileThumbnail(info->uri(), m_thumbnail_watcher);
                         }
+                        */
                     });
                     infoJob->queryAsync();
                 }
@@ -532,21 +548,23 @@ void FileItem::onRenamed(const QString &oldUri, const QString &newUri)
 
 void FileItem::onUpdateDirectoryRequest()
 {
-    m_backend_enumerator->disconnect();
-    m_backend_enumerator->cancel();
+    auto enumerator = new FileEnumerator(this);
+    enumerator->setEnumerateDirectory(m_model->getRootUri());
+    connect(enumerator, &FileEnumerator::enumerateFinished, m_model, [=](){
+        if (m_model->getRootUri() != enumerator->getEnumerateUri())
+            return;
 
-    m_backend_enumerator->setEnumerateDirectory(m_model->getRootUri());
-    m_backend_enumerator->connect(m_backend_enumerator, &FileEnumerator::enumerateFinished, this, [=](){
-        auto currentUris = m_backend_enumerator->getChildrenUris();
+        auto currentUris = enumerator->getChildrenUris();
         QStringList rawUris;
         QStringList removedUris;
         QStringList addedUris;
+
         for (auto child : *m_model->m_root_item->m_children) {
+            rawUris<<child->uri();
             if (!currentUris.contains(child->uri())) {
                 removedUris<<child->uri();
                 m_model->m_root_item->onChildRemoved(child->uri());
             }
-            rawUris<<child->uri();
         }
 
         for (auto uri : currentUris) {
@@ -557,12 +575,15 @@ void FileItem::onUpdateDirectoryRequest()
         }
 
         for (auto uri : currentUris) {
-            if (!addedUris.contains(uri) && !removedUris.contains(uri))
-                m_model->m_root_item->getChildFromUri(uri)->updateInfoAsync();
+            if (!addedUris.contains(uri) && !removedUris.contains(uri)) {
+                //m_model->m_root_item->getChildFromUri(uri)->updateInfoAsync();
+            }
         }
+
+        enumerator->deleteLater();
     });
 
-    m_backend_enumerator->enumerateAsync();
+    enumerator->enumerateAsync();
 }
 
 void FileItem::updateInfoSync()
@@ -570,7 +591,7 @@ void FileItem::updateInfoSync()
     FileInfoJob *job = new FileInfoJob(m_info);
     if (job->querySync()) {
         m_model->dataChanged(this->firstColumnIndex(), this->lastColumnIndex());
-        ThumbnailManager::getInstance()->createThumbnail(this->uri(), m_thumbnail_watcher);
+        ThumbnailManager::getInstance()->createThumbnail(this->uri(), m_thumbnail_watcher, true);
     }
     job->deleteLater();
 }
@@ -581,7 +602,7 @@ void FileItem::updateInfoAsync()
     job->setAutoDelete();
     job->connect(job, &FileInfoJob::infoUpdated, this, [=]() {
         m_model->dataChanged(this->firstColumnIndex(), this->lastColumnIndex());
-        ThumbnailManager::getInstance()->createThumbnail(this->uri(), m_thumbnail_watcher);
+        ThumbnailManager::getInstance()->createThumbnail(this->uri(), m_thumbnail_watcher, true);
     });
     job->queryAsync();
 }

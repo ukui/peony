@@ -32,6 +32,7 @@
 
 #include <QUrl>
 #include <QProcess>
+#include <recent-vfs-manager.h>
 
 #include <QDebug>
 
@@ -298,6 +299,8 @@ void FileLaunchAction::lauchFileAsync(bool forceWithArg, bool skipDialog)
         g_app_info_launch_uris_async(m_app_info, l,
                                      nullptr, nullptr,
                                      nullptr, nullptr);
+
+        RecentVFSManager::getInstance()->insert(fileInfo.get()->uri(), fileInfo.get()->mimeType(), fileInfo.get()->displayName(), g_app_info_get_name(m_app_info));
 #else
         g_app_info_launch_uris(m_app_info, l, nullptr, nullptr);
 #endif

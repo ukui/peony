@@ -155,7 +155,7 @@ void ThumbnailManager::createImageFileThumbnail(const QString &uri, std::shared_
         }
     }
 
-    qApp->processEvents();
+    //qApp->processEvents();
     return;
 }
 
@@ -254,6 +254,40 @@ void ThumbnailManager::createThumbnailInternal(const QString &uri, std::shared_p
 
 void ThumbnailManager::createThumbnail(const QString &uri, std::shared_ptr<FileWatcher> watcher, bool force)
 {
+    auto thumbnail = tryGetThumbnail(uri);
+    if (!thumbnail.isNull()) {
+        if (!force) {
+            watcher->thumbnailUpdated(uri);
+            watcher->fileChanged(uri);
+            return;
+        }
+    }
+
+    // check if need thumbnail
+    bool needThumbnail = false;
+
+    auto info = FileInfo::fromUri(uri);
+    if (!info->mimeType().isEmpty()) {
+        if (info->isImageFile()) {
+            needThumbnail = true;
+        }
+        else if (info->mimeType().contains("pdf")) {
+            needThumbnail = true;
+        }
+        else if(info->isVideoFile()) {
+            needThumbnail = true;
+        }
+        else if (info->isOfficeFile()) {
+            needThumbnail = true;
+        }
+        else if (info->isDesktopFile()) {
+            needThumbnail = true;
+        }
+    }
+
+    if (!needThumbnail)
+        return;
+
     auto thumbnailJob = new ThumbnailJob(uri, watcher, this);
     m_thumbnail_thread_pool->start(thumbnailJob);
 }

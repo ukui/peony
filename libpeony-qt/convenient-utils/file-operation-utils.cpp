@@ -48,27 +48,45 @@ FileOperationUtils::FileOperationUtils()
 
 }
 
-void FileOperationUtils::move(const QStringList &srcUris, const QString &destUri, bool addHistory, bool copyMove)
+FileOperation *FileOperationUtils::move(const QStringList &srcUris, const QString &destUri, bool addHistory, bool copyMove)
 {
+    FileOperation *op;
+    QString destDir = nullptr;
     auto fileOpMgr = FileOperationManager::getInstance();
     if (destUri != "trash:///") {
-        auto moveOp = new FileMoveOperation(srcUris, destUri);
+        if (true == destUri.startsWith("computer:///")) {
+            destDir = FileUtils::getTargetUri(destUri);
+            if (nullptr == destDir){
+                qWarning()<<"get target uri failed, from uri:"
+                          <<destUri;
+                destDir = destUri;
+            }
+        }
+        else {
+            destDir = destUri;
+        }
+
+        auto moveOp = new FileMoveOperation(srcUris, destDir);
         moveOp->setCopyMove(copyMove);
+        op = moveOp;
         fileOpMgr->startOperation(moveOp, addHistory);
     } else {
-        FileOperationUtils::trash(srcUris, true);
+        op = FileOperationUtils::trash(srcUris, true);
     }
+    return op;
 }
 
-void FileOperationUtils::copy(const QStringList &srcUris, const QString &destUri, bool addHistory)
+FileOperation *FileOperationUtils::copy(const QStringList &srcUris, const QString &destUri, bool addHistory)
 {
     auto fileOpMgr = FileOperationManager::getInstance();
     auto copyOp = new FileCopyOperation(srcUris, destUri);
     fileOpMgr->startOperation(copyOp, addHistory);
+    return copyOp;
 }
 
-void FileOperationUtils::trash(const QStringList &uris, bool addHistory)
+FileOperation *FileOperationUtils::trash(const QStringList &uris, bool addHistory)
 {
+    FileOperation *op = nullptr;
     bool canNotTrash = false;
     for (auto uri : uris) {
         if (!uri.startsWith("file:/")) {
@@ -102,35 +120,40 @@ void FileOperationUtils::trash(const QStringList &uris, bool addHistory)
                                             "Are you sure doing that?"));
 
         if (result == QMessageBox::Yes) {
-            FileOperationUtils::remove(uris);
+            op = FileOperationUtils::remove(uris);
         }
-        return;
+        return op;
     }
 
     auto fileOpMgr = FileOperationManager::getInstance();
     auto trashOp = new FileTrashOperation(uris);
     fileOpMgr->startOperation(trashOp, addHistory);
+
+    return trashOp;
 }
 
-void FileOperationUtils::rename(const QString &uri, const QString &newName, bool addHistory)
+FileOperation *FileOperationUtils::rename(const QString &uri, const QString &newName, bool addHistory)
 {
     auto fileOpMgr = FileOperationManager::getInstance();
     auto renameOp = new FileRenameOperation(uri, newName);
     fileOpMgr->startOperation(renameOp, addHistory);
+    return renameOp;
 }
 
-void FileOperationUtils::remove(const QStringList &uris)
+FileOperation *FileOperationUtils::remove(const QStringList &uris)
 {
     auto fileOpMgr = FileOperationManager::getInstance();
     auto removeOp = new FileDeleteOperation(uris);
     fileOpMgr->startOperation(removeOp);
+    return removeOp;
 }
 
-void FileOperationUtils::link(const QString &srcUri, const QString &destUri, bool addHistory)
+FileOperation *FileOperationUtils::link(const QString &srcUri, const QString &destUri, bool addHistory)
 {
     auto fileOpMgr = FileOperationManager::getInstance();
     auto linkOp = new FileLinkOperation(srcUri, destUri);
     fileOpMgr->startOperation(linkOp, addHistory);
+    return linkOp;
 }
 
 std::shared_ptr<FileInfo> FileOperationUtils::queryFileInfo(const QString &uri)
@@ -142,28 +165,31 @@ std::shared_ptr<FileInfo> FileOperationUtils::queryFileInfo(const QString &uri)
     return info;
 }
 
-void FileOperationUtils::restore(const QString &uriInTrash)
+FileOperation *FileOperationUtils::restore(const QString &uriInTrash)
 {
     QStringList uris;
     uris<<uriInTrash;
     auto fileOpMgr = FileOperationManager::getInstance();
     auto untrashOp = new FileUntrashOperation(uris);
     fileOpMgr->startOperation(untrashOp, true);
+    return untrashOp;
 }
 
-void FileOperationUtils::restore(const QStringList &urisInTrash)
+FileOperation *FileOperationUtils::restore(const QStringList &urisInTrash)
 {
     auto fileOpMgr = FileOperationManager::getInstance();
     auto untrashOp = new FileUntrashOperation(urisInTrash);
     //FIXME: support undo?
     fileOpMgr->startOperation(untrashOp, false);
+    return untrashOp;
 }
 
-void FileOperationUtils::create(const QString &destDirUri, const QString &name, CreateTemplateOperation::Type type)
+FileOperation *FileOperationUtils::create(const QString &destDirUri, const QString &name, CreateTemplateOperation::Type type)
 {
     auto fileOpMgr = FileOperationManager::getInstance();
     auto createOp = new CreateTemplateOperation(destDirUri, type, name);
     fileOpMgr->startOperation(createOp, true);
+    return createOp;
 }
 
 void FileOperationUtils::executeRemoveActionWithDialog(const QStringList &uris)

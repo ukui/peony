@@ -40,6 +40,7 @@ public:
 private:
     QMap<QString, QString> videoInfo();
     QUrl m_url;
+    quint64 m_modifyTime = 0;
 };
 
 #endif // VIDEOTHUMBNAIL_H

@@ -26,6 +26,7 @@
 #include <QPushButton>
 #include <file-info.h>
 #include <file-info-job.h>
+#include <QHBoxLayout>
 
 static QPixmap drawSymbolicColoredPixmap (const QPixmap& source);
 
@@ -318,6 +319,8 @@ void Peony::FileInformationLabel::mouseDoubleClickEvent(QMouseEvent *event)
 {
     Q_EMIT active();
     Q_EMIT choosed();
+
+    Q_UNUSED(event);
 }
 
 Peony::FileOperationErrorHandler *Peony::FileOperationErrorDialogFactory::getDialog(Peony::FileOperationError &errInfo)
@@ -341,8 +344,20 @@ Peony::FileOperationErrorDialogWarning::FileOperationErrorDialogWarning(Peony::F
     m_icon->setGeometry(m_margin_lr, m_pic_top, m_pic_size, m_pic_size);
     m_icon->setPixmap(QIcon::fromTheme("dialog-error").pixmap(m_pic_size, m_pic_size));
 
-    m_text = new QLabel(this);
-    m_text->setGeometry(m_margin + m_margin_lr + m_pic_size, m_text_y, width() - m_margin - m_margin_lr - m_pic_size, m_text_heigth);
+    m_text_scroll = new QScrollArea(this);
+    m_text_scroll->setFrameShape(QFrame::NoFrame);
+    m_text_scroll->setGeometry(m_margin + m_margin_lr + m_pic_size, m_text_y,
+                               width() - m_margin - m_margin_lr * 2 - m_pic_size, m_text_heigth);
+
+    m_text = new QLabel(m_text_scroll);
+
+    m_text->setText("");
+    m_text->setWordWrap(true);
+    m_text->setMinimumWidth(width() - m_margin - m_margin_lr * 2 - m_pic_size);
+
+    m_text_scroll->setWidget(m_text);
+    m_text_scroll->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    m_text_scroll->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
     m_ok = new QPushButton(this);
     m_ok->setText(tr("OK"));
@@ -366,27 +381,45 @@ void Peony::FileOperationErrorDialogWarning::handle(Peony::FileOperationError &e
 
     if (nullptr != m_error->errorStr) {
         QString htmlString = QString("<style>"
-                                     "  p{font-size:10px;line-height:60%;}"
+                                     "  p{font-size:14px;line-height:100%;}"
                                      "  .bold{text-align: left;font-size:13px;font-wight:500;}"
                                      "</style>"
                                      "<p class='bold'>%1</p>"
                                      "<p>%2</p>")
                 .arg(m_error->errorStr)
-                .arg(tr("Please make sure the disk is not full or not is write protected, or file is not being used."));
+                .arg(tr("Make sure the disk is not full or write protected and that the file is not protected"));
         m_text->setText(htmlString);
     } else {
         QString htmlString = QString("<style>"
-                                     "  p{font-size:10px;line-height:60%;}"
+                                     "  p{font-size:14px;line-height:100%;}"
                                      "  .bold{text-align: left;font-size:13px;font-wight:500;}"
                                      "</style>"
                                      "<p>%1</p>")
-                .arg(tr("Please make sure the disk is not full or not is write protected, or file is not being used."));
+                .arg(tr("Make sure the disk is not full or write protected and that the file is not protected"));
         m_text->setText(htmlString);
     }
 
+    m_text->adjustSize();
+    m_text->setAlignment(Qt::AlignLeft | Qt::AlignBottom);
+
     exec();
 
-    error.respCode = IgnoreOne;
+    switch (m_error->errorCode) {
+        case G_IO_ERROR_BUSY:
+        case G_IO_ERROR_PENDING:
+        case G_IO_ERROR_NO_SPACE:
+        case G_IO_ERROR_CANCELLED:
+        case G_IO_ERROR_INVALID_DATA:
+        case G_IO_ERROR_NOT_SUPPORTED:
+        case G_IO_ERROR_PERMISSION_DENIED:
+        case G_IO_ERROR_CANT_CREATE_BACKUP:
+        case G_IO_ERROR_TOO_MANY_OPEN_FILES:
+            error.respCode = Cancel;
+            break;
+        default:
+            error.respCode = IgnoreOne;
+            break;
+    }
 }
 
 Peony::FileRenameDialog::FileRenameDialog(QWidget *parent) : QDialog(parent)

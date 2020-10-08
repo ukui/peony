@@ -22,16 +22,17 @@
 
 #include "file-info-manager.h"
 #include "thumbnail-manager.h"
+#include <QMap>
 #include <QDebug>
 
 using namespace Peony;
 
 static FileInfoManager* global_file_info_manager = nullptr;
-static QHash<QString, std::shared_ptr<FileInfo>> *global_info_list = nullptr;
+static QMap<QString, std::weak_ptr<FileInfo>> *global_info_list = nullptr;
 
 FileInfoManager::FileInfoManager()
 {
-    global_info_list = new QHash<QString, std::shared_ptr<FileInfo>>();
+    global_info_list = new QMap<QString, std::weak_ptr<FileInfo>>();
 }
 
 FileInfoManager::~FileInfoManager()
@@ -49,16 +50,16 @@ FileInfoManager *FileInfoManager::getInstance()
 std::shared_ptr<FileInfo> FileInfoManager::findFileInfoByUri(QString uri)
 {
     Q_ASSERT(global_info_list);
-    return global_info_list->value(uri);//.lock();
+    return global_info_list->value(uri).lock();//.lock();
 }
 
 std::shared_ptr<FileInfo> FileInfoManager::insertFileInfo(std::shared_ptr<FileInfo> info)
 {
     Q_ASSERT(global_info_list);
 
-    if (global_info_list->value(info->uri())) {
+    if (global_info_list->value(info->uri()).lock()) {
         //qDebug()<<"has info yet"<<info->uri();
-        info = global_info_list->value(info->uri());
+        info = global_info_list->value(info->uri()).lock();
     } else {
         global_info_list->insert(info->uri(), info);
     }
@@ -68,18 +69,21 @@ std::shared_ptr<FileInfo> FileInfoManager::insertFileInfo(std::shared_ptr<FileIn
 
 void FileInfoManager::removeFileInfobyUri(QString uri)
 {
+    return;
     Q_ASSERT(global_info_list);
     global_info_list->remove(uri);
 }
 
 void FileInfoManager::clear()
 {
+    return;
     Q_ASSERT(global_info_list);
     global_info_list->clear();
 }
 
 void FileInfoManager::remove(QString uri)
 {
+    return;
     ThumbnailManager::getInstance()->releaseThumbnail(uri);
     Q_ASSERT(global_info_list);
     global_info_list->remove(uri);
@@ -87,6 +91,7 @@ void FileInfoManager::remove(QString uri)
 
 void FileInfoManager::remove(std::shared_ptr<FileInfo> info)
 {
+    return;
     Q_ASSERT(global_info_list);
     this->remove(info->uri());
 }

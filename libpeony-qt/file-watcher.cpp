@@ -111,6 +111,7 @@ FileWatcher::~FileWatcher()
  */
 void FileWatcher::prepare()
 {
+    //FIXME: replace BLOCKING api in ui thread.
     GFileInfo *info = g_file_query_info(m_file,
                                         G_FILE_ATTRIBUTE_STANDARD_TARGET_URI,
                                         G_FILE_QUERY_INFO_NONE,
@@ -227,6 +228,12 @@ void FileWatcher::file_changed_callback(GFileMonitor *monitor,
     case G_FILE_MONITOR_EVENT_MOVED_IN:
     case G_FILE_MONITOR_EVENT_MOVED_OUT:
     case G_FILE_MONITOR_EVENT_RENAMED: {
+        /*!
+         * \bug
+         * renaming a desktop file can not get new uri correctly.
+         *
+         * we have to consider trigger it by another way.
+         */
         char *new_uri = g_file_get_uri(other_file);
         QString uri = new_uri;
         //QUrl url =  uri;

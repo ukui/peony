@@ -89,10 +89,11 @@ void TabStatusBar::update()
         return;
 
     auto selections = m_tab->getCurrentSelectionFileInfos();
+    auto uri = m_tab->getCurrentUri();
     if (! selections.isEmpty()) {
-        QString directoriesString;
+        QString directoriesString = "";
         int directoryCount = 0;
-        QString filesString;
+        QString filesString="";
         int fileCount = 0;
         goffset size = 0;
         for (auto selection : selections) {
@@ -104,29 +105,38 @@ void TabStatusBar::update()
             }
         }
         auto format_size = g_format_size(size);
-        if (selections.count() == 1) {
-            if (directoryCount == 1)
-                directoriesString = QString(", %1").arg(selections.first()->displayName());
-            if (fileCount == 1)
-                filesString = QString(", %1, %2").arg(selections.first()->displayName()).arg(format_size);
-        } else if (directoryCount > 1 && (fileCount > 1)) {
-            directoriesString = tr("; %1 folders").arg(directoryCount);
-            filesString = tr("; %1 files, %2 total").arg(fileCount).arg(format_size);
-        } else if (directoryCount > 1 && (fileCount > 1)) {
-            directoriesString = tr("; %1 folder").arg(directoryCount);
-            filesString = tr("; %1 file, %2").arg(fileCount).arg(format_size);
-        } else if (fileCount == 0) {
-            directoriesString = tr("; %1 folders").arg(directoryCount);
-        } else {
-            filesString = tr("; %1 files, %2 total").arg(fileCount).arg(format_size);
+        //qDebug() << "directoryCount:" <<directoryCount <<",fileCount" <<fileCount <<format_size;
+
+        //in computer, only show selected count
+        if (uri != "computer:///")
+        {
+            if (selections.count() == 1) {
+                if (directoryCount == 1 && selections.first()->displayName() != "")
+                    directoriesString = QString(", %1").arg(selections.first()->displayName());
+                if (fileCount == 1 && size >0)
+                    filesString = QString(", %1, %2").arg(selections.first()->displayName()).arg(format_size);
+            } else if (directoryCount > 1 && (fileCount > 1)) {
+                directoriesString = tr("; %1 folders").arg(directoryCount);
+                if (size >0)
+                   filesString = tr("; %1 files, %2 total").arg(fileCount).arg(format_size);
+            } else if (directoryCount == 1 && (fileCount > 1)) {
+                directoriesString = tr("; %1 folder").arg(directoryCount);
+                if (size >0)
+                   filesString = tr("; %1 file, %2").arg(fileCount).arg(format_size);
+            } else if (fileCount == 0) {
+                directoriesString = tr("; %1 folders").arg(directoryCount);
+            } else if (size >0){
+                filesString = tr("; %1 files, %2 total").arg(fileCount).arg(format_size);
+            }
         }
 
+        //qDebug() << "directoriesString:" <<directoriesString <<filesString;
         m_label->setText(tr("%1 selected").arg(selections.count()) + directoriesString + filesString);
         //showMessage(tr("%1 files selected ").arg(selections.count()));
         g_free(format_size);
     }
     else {
-        auto uri = m_tab->getCurrentUri();
+        //FIXME: replace BLOCKING api in ui thread.
         auto displayName = Peony::FileUtils::getFileDisplayName(uri);
         //qDebug() << "status bar text:" <<displayName <<uri;
         if (uri.startsWith("search:///"))

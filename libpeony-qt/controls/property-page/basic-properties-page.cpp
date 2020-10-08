@@ -43,6 +43,8 @@
 #include <QThreadPool>
 #include <QFileInfo>
 
+//#include <QMessageBox>
+
 #include <QUrl>
 
 #include "generic-thumbnailer.h"
@@ -57,6 +59,13 @@ BasicPropertiesPage::BasicPropertiesPage(const QStringList &uris, QWidget *paren
         m_watcher = std::make_shared<FileWatcher>(uris.first());
         m_watcher->connect(m_watcher.get(), &FileWatcher::locationChanged, this, &BasicPropertiesPage::onSingleFileChanged);
         m_watcher->startMonitor();
+
+        m_thumbnail_watcher = std::make_shared<FileWatcher>("thumbnail:///");
+        connect(m_thumbnail_watcher.get(), &FileWatcher::fileChanged, this, [=](const QString &uri){
+            auto icon = ThumbnailManager::getInstance()->tryGetThumbnail(uri);
+            m_icon->setIcon(icon);
+            //QMessageBox::information(0, 0, "icon updated");
+        });
     }
 
     //FIXME: complete the content
@@ -101,6 +110,7 @@ BasicPropertiesPage::BasicPropertiesPage(const QStringList &uris, QWidget *paren
     } else {
         QStringList l;
         for (auto uri : uris) {
+            //FIXME: replace BLOCKING api in ui thread.
             l<<FileUtils::getFileDisplayName(uri);
         }
         auto text = l.join(",");
@@ -212,27 +222,26 @@ QIcon generateThumbnail(const QString &uri)
 
 void BasicPropertiesPage::onSingleFileChanged(const QString &oldUri, const QString &newUri)
 {
+    //QMessageBox::information(0, 0, "on single file changed");
     qDebug()<<"onSingleFileChanged:"<<oldUri<<newUri;
     m_info = FileInfo::fromUri(newUri, false);
     FileInfoJob *j = new FileInfoJob(m_info);
     j->setAutoDelete();
-    this->connect(j, &FileInfoJob::infoUpdated, [=]() {
-        auto icon = QIcon::fromTheme(m_info->iconName(), QIcon::fromTheme("text-x-generic"));
-        auto thumbnail = ThumbnailManager::getInstance()->tryGetThumbnail(m_info->uri());
-        if (thumbnail.isNull())
-            thumbnail = generateThumbnail(m_info->uri());
+    j->querySync();
+    ThumbnailManager::getInstance()->createThumbnail(m_info->uri(), m_thumbnail_watcher);
 
-        //qDebug() << "infoupdate set Icon:" <<thumbnail.isNull() <<thumbnail;
-        m_icon->setIcon(thumbnail.isNull()? icon: thumbnail);
-        m_display_name->setText(m_info->displayName());
-        m_type->setText(m_info->fileType());
-    });
-    j->queryAsync();
     auto icon = QIcon::fromTheme(m_info->iconName(), QIcon::fromTheme("text-x-generic"));
     auto thumbnail = ThumbnailManager::getInstance()->tryGetThumbnail(m_info->uri());
+
+    //qDebug() << "infoupdate set Icon:" <<thumbnail.isNull() <<thumbnail;
+    m_icon->setIcon(thumbnail.isNull()? icon: thumbnail);
+    m_display_name->setText(m_info->displayName());
+    m_type->setText(m_info->fileType());
+    //auto icon = QIcon::fromTheme(m_info->iconName(), QIcon::fromTheme("text-x-generic"));
+    //auto thumbnail = ThumbnailManager::getInstance()->tryGetThumbnail(m_info->uri());
     if (thumbnail.isNull())
     {
-        thumbnail = generateThumbnail(m_info->uri());
+        ThumbnailManager::getInstance()->createThumbnail(m_info->uri(), m_thumbnail_watcher);
     }
     //qDebug() << "set Icon:" <<thumbnail.isNull() <<thumbnail;
     m_icon->setIcon(thumbnail.isNull()? icon: thumbnail);
