@@ -55,6 +55,9 @@
 
 #include "global-settings.h"
 
+//play audio lib head file
+#include <canberra.h>
+
 #include <QAction>
 #include <QMouseEvent>
 #include <QDragEnterEvent>
@@ -494,6 +497,14 @@ void DesktopIconView::openFileByUri(QString uri)
                     && ! info->uri().startsWith("computer://")
                     &&  ! info->canExecute())
             {
+                ca_context *caContext;
+                ca_context_create(&caContext);
+                const gchar* eventId = "dialog-warning";
+                //eventid 是/usr/share/sounds音频文件名,不带后缀
+                ca_context_play (caContext, 0,
+                                 CA_PROP_EVENT_ID, eventId,
+                                 CA_PROP_EVENT_DESCRIPTION, tr("Delete file Warning"), NULL);
+
                 QMessageBox::critical(nullptr, tr("Open failed"),
                                       tr("Open directory failed, you have no permission!"));
                 return;

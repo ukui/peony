@@ -36,6 +36,9 @@
 #include "file-info.h"
 #include "file-enumerator.h"
 
+//play audio lib head file
+#include <canberra.h>
+
 #include <QUrl>
 #include <QFileInfo>
 
@@ -115,6 +118,14 @@ FileOperation *FileOperationUtils::trash(const QStringList &uris, bool addHistor
     }
 
     if (canNotTrash) {
+        ca_context *caContext;
+        ca_context_create(&caContext);
+        const gchar* eventId = "dialog-warning";
+        //eventid 是/usr/share/sounds音频文件名,不带后缀
+        ca_context_play (caContext, 0,
+                         CA_PROP_EVENT_ID, eventId,
+                         CA_PROP_EVENT_DESCRIPTION, "Delete file Warning", NULL);
+
         auto result = QMessageBox::question(nullptr, QObject::tr("Can not trash"), QObject::tr("Can not trash these files. "
                                             "You can delete them permanently. "
                                             "Are you sure doing that?"));
@@ -197,6 +208,14 @@ void FileOperationUtils::executeRemoveActionWithDialog(const QStringList &uris)
     if (uris.isEmpty())
         return;
 
+    ca_context *caContext;
+    ca_context_create(&caContext);
+    const gchar* eventId = "dialog-warning";
+    //eventid 是/usr/share/sounds音频文件名,不带后缀
+    ca_context_play (caContext, 0,
+                     CA_PROP_EVENT_ID, eventId,
+                     CA_PROP_EVENT_DESCRIPTION, "Delete file Warning", NULL);
+
     int result = 0;
     if (uris.count() == 1) {
         QUrl url = uris.first();
@@ -212,6 +231,7 @@ void FileOperationUtils::executeRemoveActionWithDialog(const QStringList &uris)
     if (result == QMessageBox::Yes) {
         FileOperationUtils::remove(uris);
     }
+    ca_context_destroy(caContext);
 }
 
 

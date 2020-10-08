@@ -40,6 +40,9 @@
 
 #include "global-settings.h"
 
+//play audio lib head file
+#include <canberra.h>
+
 #include <QProcess>
 #include <QStandardPaths>
 #include <QMessageBox>
@@ -431,6 +434,14 @@ const QList<QAction *> DesktopMenu::constructFileOpActions()
             });
             l.last()->setEnabled(!trashChildren.isEmpty());
             l<<addAction(QIcon::fromTheme("edit-clear-symbolic"), tr("&Clean the trash"), [=]() {
+                ca_context *caContext;
+                ca_context_create(&caContext);
+                const gchar* eventId = "dialog-warning";
+                //eventid 是/usr/share/sounds音频文件名,不带后缀
+                ca_context_play (caContext, 0,
+                                 CA_PROP_EVENT_ID, eventId,
+                                 CA_PROP_EVENT_DESCRIPTION, tr("Delete file Warning"), NULL);
+
                 auto result = QMessageBox::question(nullptr, tr("Delete Permanently"), tr("Are you sure that you want to delete these files? "
                                                     "Once you start a deletion, the files deleting will never be "
                                                     "restored again."));

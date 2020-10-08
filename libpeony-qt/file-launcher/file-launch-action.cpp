@@ -27,6 +27,9 @@
 #include "file-info-job.h"
 #include "file-operation-utils.h"
 
+//play audio lib head file
+#include <canberra.h>
+
 #include <QMessageBox>
 #include <QPushButton>
 
@@ -143,6 +146,14 @@ void FileLaunchAction::lauchFileSync(bool forceWithArg, bool skipDialog)
     }
 
     if (!isValid()) {
+        ca_context *caContext;
+        ca_context_create(&caContext);
+        const gchar* eventId = "dialog-warning";
+        //eventid 是/usr/share/sounds音频文件名,不带后缀
+        ca_context_play (caContext, 0,
+                         CA_PROP_EVENT_ID, eventId,
+                         CA_PROP_EVENT_DESCRIPTION, tr("Delete file Warning"), NULL);
+
         QMessageBox::critical(nullptr, tr("Open Failed"), tr("Can not open %1, file not exist, is it deleted?").arg(m_uri));
         return;
     }
@@ -232,9 +243,25 @@ void FileLaunchAction::lauchFileAsync(bool forceWithArg, bool skipDialog)
     }
 
     if (!isValid()) {
+        ca_context *caContext;
+        ca_context_create(&caContext);
+        const gchar* eventId = "dialog-warning";
+        //eventid 是/usr/share/sounds音频文件名,不带后缀
+        ca_context_play (caContext, 0,
+                         CA_PROP_EVENT_ID, eventId,
+                         CA_PROP_EVENT_DESCRIPTION, tr("Delete file Warning"), NULL);
+
         bool isReadable = fileInfo->canRead();
         if (!isReadable)
         {
+            ca_context *caContext;
+            ca_context_create(&caContext);
+            const gchar* eventId = "dialog-warning";
+            //eventid 是/usr/share/sounds音频文件名,不带后缀
+            ca_context_play (caContext, 0,
+                             CA_PROP_EVENT_ID, eventId,
+                             CA_PROP_EVENT_DESCRIPTION, tr("Delete file Warning"), NULL);
+
             if (fileInfo->isSymbolLink())
             {
                 auto result = QMessageBox::question(nullptr, tr("Open Link failed"),
@@ -390,6 +417,14 @@ void FileLaunchAction::lauchFilesAsync(const QStringList files, bool forceWithAr
     }
 
     if (!isValid()) {
+        ca_context *caContext;
+        ca_context_create(&caContext);
+        const gchar* eventId = "dialog-warning";
+        //eventid 是/usr/share/sounds音频文件名,不带后缀
+        ca_context_play (caContext, 0,
+                         CA_PROP_EVENT_ID, eventId,
+                         CA_PROP_EVENT_DESCRIPTION, tr("Delete file Warning"), NULL);
+
         bool isReadable = fileInfo->canRead();
         if (!isReadable)
         {
