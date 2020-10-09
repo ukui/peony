@@ -342,6 +342,7 @@ void PeonyDesktopApplication::primaryScreenChangedProcess(QScreen *screen)
         qDebug()<<"primaryScreenChangedProcess"<<screen->name()<<screen->geometry()<<screen->availableGeometry()<<screen->virtualGeometry();
     else {
         qWarning()<<"no primary screen!";
+        return;
     }
 
     bool need_exchange = false;
@@ -402,6 +403,9 @@ void PeonyDesktopApplication::screenAddedProcess(QScreen *screen)
 {
     if (screen != nullptr)
         qDebug()<<"screenAdded"<<screen->name()<<screen<<m_window_list.size()<<screen->availableSize();
+    else {
+        return;
+    }
 
     addWindow(screen, false);
 }
