@@ -90,7 +90,7 @@
         <location filename="../../libpeony-qt/model/file-label-model.cpp" line="120"/>
         <location filename="../../libpeony-qt/model/file-label-model.cpp" line="350"/>
         <source>Delete file Warning</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Dosyayı Sil Uyarısı</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/model/file-label-model.cpp" line="122"/>
@@ -911,7 +911,7 @@
         <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="673"/>
         <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="700"/>
         <source>Delete file Warning</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Dosyayı Sil Uyarısı</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="675"/>
@@ -1073,7 +1073,7 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</translation
         <location filename="../../libpeony-qt/file-enumerator.cpp" line="337"/>
         <location filename="../../libpeony-qt/file-enumerator.cpp" line="470"/>
         <source>Delete file Warning</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Dosyayı Sil Uyarısı</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/file-enumerator.cpp" line="332"/>
@@ -1107,7 +1107,7 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</translation
         <location filename="../../libpeony-qt/model/file-item.cpp" line="157"/>
         <location filename="../../libpeony-qt/model/file-item.cpp" line="203"/>
         <source>Delete file Warning</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Dosyayı Sil Uyarısı</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/model/file-item.cpp" line="159"/>
@@ -1239,7 +1239,7 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</translation
         <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="263"/>
         <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="426"/>
         <source>Delete file Warning</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Dosyayı Sil Uyarısı</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="157"/>
@@ -1543,7 +1543,7 @@ Bağlantı dosyasını silmek istiyor musunuz?</translation>
     <message>
         <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="160"/>
         <source>Delete file Warning</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Dosyayı Sil Uyarısı</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="164"/>
@@ -2249,7 +2249,7 @@ Bağlantı dosyasını silmek istiyor musunuz?</translation>
     <message>
         <location filename="../../libpeony-qt/controls/tool-bar/tool-bar.cpp" line="222"/>
         <source>Delete file Warning</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Dosyayı Sil Uyarısı</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/tool-bar/tool-bar.cpp" line="224"/>
