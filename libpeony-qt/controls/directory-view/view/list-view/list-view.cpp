@@ -57,7 +57,7 @@ using namespace Peony::DirectoryView;
 ListView::ListView(QWidget *parent) : QTreeView(parent)
 {
     this->verticalScrollBar()->setProperty("drawScrollBarGroove", false);
-    setAttribute(Qt::WA_TranslucentBackground);
+    this->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setStyle(Peony::DirectoryView::ListViewStyle::getStyle());
 
     setAlternatingRowColors(true);
@@ -355,11 +355,21 @@ void ListView::dropEvent(QDropEvent *e)
 
 void ListView::resizeEvent(QResizeEvent *e)
 {
+    auto w = window();
+    QPoint l = this->mapTo(w,QPoint(this->rect().right(),this->rect().height()));
+    if(w->rect().right()-l.x()<100&&!window()->isMaximized()){
+        setAttribute(Qt::WA_TranslucentBackground);
+    }
+    else{
+        setAttribute(Qt::WA_TranslucentBackground,false);
+        setAttribute(Qt::WA_NoSystemBackground,false);
+    }
     QTreeView::resizeEvent(e);
     if (m_last_size != size()) {
         m_last_size = size();
         adjustColumnsSize();
     }
+
 }
 
 void ListView::updateGeometries()
@@ -394,7 +404,6 @@ void ListView::paintEvent(QPaintEvent *e)
     palette.setColor(QPalette::Disabled, QPalette::Base, Qt::transparent);
     //this->setPalette(palette);
     viewport()->setPalette(palette);
-
     QTreeView::paintEvent(e);
 }
 
