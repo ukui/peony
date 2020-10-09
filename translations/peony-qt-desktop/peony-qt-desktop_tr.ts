@@ -22,17 +22,17 @@
         <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="506"/>
         <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="529"/>
         <source>Delete file Warning</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Dosyayı Sil Uyarısı</translation>
     </message>
     <message>
         <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="508"/>
         <source>Open Link failed</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Bağlantı Açılamadı</translation>
     </message>
     <message>
         <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="509"/>
         <source>File not exist, do you want to delete the link file?</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Dosya mevcut değil, bağlantı dosyasını silmek istiyor musunuz?</translation>
     </message>
     <message>
         <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="531"/>
@@ -171,7 +171,7 @@
     <message>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="443"/>
         <source>Delete file Warning</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Dosyayı Sil Uyarısı</translation>
     </message>
     <message>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="461"/>
