@@ -125,7 +125,7 @@ const QList<QAction *> SideBarMenu::constructFileSystemItemActions()
     }
     if (info->canEject()) {
         l<<addAction(QIcon::fromTheme("media-eject"), tr("&Eject"), [=](){
-            m_item->eject();
+            m_item->eject(G_MOUNT_UNMOUNT_NONE);
         });
     }
 
@@ -154,7 +154,7 @@ const QList<QAction *> SideBarMenu::constructFileSystemItemActions()
      *  if can not format, will have prompt
      */
 
-      if(info->isVolume() && info->canUnmount()){
+      if(!m_uri.endsWith(".mount") && info->isVolume() && info->canUnmount()){
           l<<addAction(QIcon::fromTheme("preview-file"), tr("format"), [=]() {
           Format_Dialog *fd  = new Format_Dialog(m_uri,m_item);
           fd->show();

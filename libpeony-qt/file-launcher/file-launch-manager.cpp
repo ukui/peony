@@ -157,6 +157,7 @@ void FileLaunchManager::openSync(const QString &uri, bool forceWithArg, bool ski
 void FileLaunchManager::openAsync(const QString &uri, bool forceWithArg, bool skipDialog)
 {
     QString tmp = uri;
+    //FIXME: replace BLOCKING api in ui thread.
     auto targetUri = FileUtils::getTargetUri(uri);
     if (!targetUri.isNull()) {
         tmp = targetUri;
@@ -170,6 +171,7 @@ void FileLaunchManager::openAsync(const QString &uri, bool forceWithArg, bool sk
 void FileLaunchManager::openAsync(const QStringList &files, bool forceWithArg, bool skipDialog)
 {
     QString tmp = files.at(0);
+    //FIXME: replace BLOCKING api in ui thread.
     auto targetUri = FileUtils::getTargetUri(tmp);
     if (!targetUri.isNull()) {
         tmp = targetUri;

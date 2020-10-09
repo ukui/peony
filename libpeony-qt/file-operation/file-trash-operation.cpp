@@ -54,6 +54,7 @@ retry:
             except.srcUri = src;
             except.destDirUri = tr("trash:///");
             except.isCritical = true;
+            except.op = FileOpTrash;
             except.title = tr("Trash file error");
             except.errorCode = err->code;
             except.errorStr = err->message;

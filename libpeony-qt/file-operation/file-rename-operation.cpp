@@ -192,6 +192,7 @@ fallback_retry:
             except.srcUri = m_uri;
             except.destDirUri = FileUtils::getFileUri(newFile);
             except.isCritical = true;
+            except.op = FileOpRename;
             except.title = tr("Rename file error");
             except.errorType = ET_GIO;
             except.errorCode = err->code;
@@ -230,6 +231,7 @@ retry:
         except.destDirUri = FileUtils::getFileUri(newFile);
         except.isCritical = true;
         except.errorType = ET_GIO;
+        except.op = FileOpRename;
         except.title = tr("Rename file error");
         GError *err = nullptr;
         if (FileUtils::isFileExsit(g_file_get_uri(newFile.get()->get()))) {

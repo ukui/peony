@@ -28,6 +28,8 @@
 
 namespace Peony {
 
+class FileOperation;
+
 /*!
  * \brief The ClipboardUtils class, a convinet class to access with QClipboard instance.
  * \details
@@ -65,7 +67,7 @@ public:
      */
     static bool isClipboardFilesBeCut();
     static QStringList getClipboardFilesUris();
-    static void pasteClipboardFiles(const QString &targetDirUri);
+    static FileOperation *pasteClipboardFiles(const QString &targetDirUri);
     static void clearClipboard();
     static const QString getClipedFilesParentUri();
 

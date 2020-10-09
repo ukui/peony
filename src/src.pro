@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui gui-private x11extras dbus KWindowSystem
+QT       += core gui gui-private x11extras dbus KWindowSystem concurrent
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets widgets-private
 
@@ -21,7 +21,7 @@ include(control/control.pri)
 #include(view/view.pri)
 DEFINES += QAPPLICATION_CLASS=QApplication
 
-PKGCONFIG +=gio-2.0 glib-2.0 gio-unix-2.0 gsettings-qt
+PKGCONFIG +=gio-2.0 glib-2.0 gio-unix-2.0 gsettings-qt libcanberra
 LIBS +=-lgio-2.0 -lglib-2.0 -lX11
 CONFIG += c++11 link_pkgconfig no_keywords lrelease
 

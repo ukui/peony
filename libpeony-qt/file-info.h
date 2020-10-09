@@ -119,8 +119,29 @@ public:
     explicit FileInfo(QObject *parent = nullptr);
     explicit FileInfo(const QString &uri, QObject *parent = nullptr);
     ~FileInfo();
+    /*!
+     * \brief fromUri
+     * \param uri
+     * \param addToHash
+     * \return
+     * \deprecated
+     */
     static std::shared_ptr<FileInfo> fromUri(QString uri, bool addToHash = true);
+    /*!
+     * \brief fromPath
+     * \param path
+     * \param addToHash
+     * \return
+     * \deprecated
+     */
     static std::shared_ptr<FileInfo> fromPath(QString path, bool addToHash = true);
+    /*!
+     * \brief fromGFile
+     * \param file
+     * \param addToHash
+     * \return
+     * \deprecated
+     */
     static std::shared_ptr<FileInfo> fromGFile(GFile *file, bool addToHash = true);
 
     QString uri() {

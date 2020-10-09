@@ -111,6 +111,7 @@ FileWatcher::~FileWatcher()
  */
 void FileWatcher::prepare()
 {
+    //FIXME: replace BLOCKING api in ui thread.
     GFileInfo *info = g_file_query_info(m_file,
                                         G_FILE_ATTRIBUTE_STANDARD_TARGET_URI,
                                         G_FILE_QUERY_INFO_NONE,

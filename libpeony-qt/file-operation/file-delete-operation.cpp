@@ -50,6 +50,7 @@ void FileDeleteOperation::deleteRecursively(FileNode *node)
     if (isCancelled())
         return;
 
+    auto fileIconName = FileUtils::getFileIconName(node->uri(), false);
     GFile *file = g_file_new_for_uri(node->uri().toUtf8().constData());
     if (node->isFolder()) {
         for (auto child : *(node->children())) {
@@ -69,6 +70,7 @@ void FileDeleteOperation::deleteRecursively(FileNode *node)
             except.errorType = ET_GIO;
             except.dlgType = ED_WARNING;
             except.srcUri = node->uri();
+            except.op = FileOpDelete;
             except.title = tr("File delete error");
             except.errorStr = err->message;
             except.errorCode = err->code;
@@ -94,6 +96,7 @@ void FileDeleteOperation::deleteRecursively(FileNode *node)
             except.errorType = ET_GIO;
             except.dlgType = ED_WARNING;
             except.srcUri = node->uri();
+            except.op = FileOpDelete;
             except.title = tr("File delete error");
             except.errorCode = err->code;
             except.errorStr = err->message;
@@ -112,7 +115,7 @@ void FileDeleteOperation::deleteRecursively(FileNode *node)
     qDebug()<<"deleted";
     //operationAfterProgressedOne(node->uri());
     m_current_offset += node->size();
-    auto fileIconName = FileUtils::getFileIconName(m_current_src_uri);
+
     FileProgressCallback(node->uri(), node->uri(), fileIconName, m_current_offset, m_total_szie);
 }
 

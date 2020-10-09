@@ -236,6 +236,8 @@ Q_SIGNALS:
      */
     void updated();
 
+    void selectRequest(const QStringList &uris);
+
 public Q_SLOTS:
     /*!
      * \brief onFoundChildren

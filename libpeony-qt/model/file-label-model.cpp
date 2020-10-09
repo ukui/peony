@@ -25,6 +25,9 @@
 #include "file-meta-info.h"
 #include "file-info.h"
 
+//play audio lib head file
+#include <canberra.h>
+
 #include <QMessageBox>
 
 static FileLabelModel *global_instance = nullptr;
@@ -108,6 +111,14 @@ void FileLabelModel::addLabel(const QString &label, const QColor &color)
     beginResetModel();
 
     if (getLabels().contains(label) || getColors().contains(color)) {
+        ca_context *caContext;
+        ca_context_create(&caContext);
+        const gchar* eventId = "dialog-warning";
+        //eventid 是/usr/share/sounds音频文件名,不带后缀
+        ca_context_play (caContext, 0,
+                         CA_PROP_EVENT_ID, eventId,
+                         CA_PROP_EVENT_DESCRIPTION, tr("Delete file Warning"), NULL);
+
         QMessageBox::critical(nullptr, tr("Error"), tr("Label or color is duplicated."));
         return;
     }
@@ -330,6 +341,14 @@ bool FileLabelModel::setData(const QModelIndex &index, const QVariant &value, in
             return false;
         }
         if (getLabels().contains(name)) {
+            ca_context *caContext;
+            ca_context_create(&caContext);
+            const gchar* eventId = "dialog-warning";
+            //eventid 是/usr/share/sounds音频文件名,不带后缀
+            ca_context_play (caContext, 0,
+                             CA_PROP_EVENT_ID, eventId,
+                             CA_PROP_EVENT_DESCRIPTION, tr("Delete file Warning"), NULL);
+
             QMessageBox::critical(nullptr, tr("Error"), tr("Label or color is duplicated."));
             return false;
         }

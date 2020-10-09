@@ -209,7 +209,14 @@ OperationMenuEditWidget::OperationMenuEditWidget(MainWindow *window, QWidget *pa
     });
 
     connect(m_paste, &QToolButton::clicked, this, [=]() {
-        Peony::ClipboardUtils::pasteClipboardFiles(window->getCurrentUri());
+        auto op = Peony::ClipboardUtils::pasteClipboardFiles(window->getCurrentUri());
+        if (op) {
+            connect(op, &Peony::FileOperation::operationFinished, window, [=](){
+                auto opInfo = op->getOperationInfo();
+                auto targetUirs = opInfo->dests();
+                window->setCurrentSelectionUris(targetUirs);
+            }, Qt::BlockingQueuedConnection);
+        }
         Q_EMIT operationAccepted();
     });
 
@@ -244,10 +251,6 @@ void OperationMenuEditWidget::updateActions(const QString &currentDirUri, const 
     m_cut->setEnabled(!isSelectionEmpty);
     m_trash->setEnabled(!isSelectionEmpty);
 
-    if (isSelectionEmpty) {
-        bool isClipboradHasFile = Peony::ClipboardUtils::isClipboardHasFiles();
-        m_paste->setEnabled(isClipboradHasFile);
-    } else {
-        m_paste->setEnabled(false);
-    }
+    bool isClipboradHasFile = Peony::ClipboardUtils::isClipboardHasFiles();
+    m_paste->setEnabled(isClipboradHasFile);
 }
