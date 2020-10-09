@@ -340,6 +340,9 @@ void PeonyDesktopApplication::primaryScreenChangedProcess(QScreen *screen)
 {
     if (screen != nullptr)
         qDebug()<<"primaryScreenChangedProcess"<<screen->name()<<screen->geometry()<<screen->availableGeometry()<<screen->virtualGeometry();
+    else {
+        qWarning()<<"no primary screen!";
+    }
 
     bool need_exchange = false;
     QScreen *preMainScreen = nullptr;
@@ -423,7 +426,7 @@ void PeonyDesktopApplication::screenRemovedProcess(QScreen *screen)
 
 bool PeonyDesktopApplication::isPrimaryScreen(QScreen *screen)
 {
-    if (screen == this->primaryScreen())
+    if (screen == this->primaryScreen() && screen)
         return true;
 
     return false;
