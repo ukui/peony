@@ -55,6 +55,9 @@
 
 #include "global-settings.h"
 
+//play audio lib head file
+#include <canberra.h>
+
 #include <QAction>
 #include <QMouseEvent>
 #include <QDragEnterEvent>
@@ -254,14 +257,8 @@ void DesktopIconView::initShoutCut()
     copyAction->setShortcut(QKeySequence::Copy);
     connect(copyAction, &QAction::triggered, [=]() {
         auto selectedUris = this->getSelections();
-        //process m_selections for paste show, to fix Chinese show abnormal issue
-        QStringList uris;
-        for(auto uri:selectedUris)
-        {
-            uris << ("file://" + QUrl(uri).path());
-        }
-        if (! uris.isEmpty())
-            ClipboardUtils::setClipboardFiles(uris, false);
+        if (!selectedUris.isEmpty())
+            ClipboardUtils::setClipboardFiles(selectedUris, false);
     });
     addAction(copyAction);
 
@@ -269,14 +266,8 @@ void DesktopIconView::initShoutCut()
     cutAction->setShortcut(QKeySequence::Cut);
     connect(cutAction, &QAction::triggered, [=]() {
         auto selectedUris = this->getSelections();
-        //process m_selections for paste show, to fix Chinese show abnormal issue
-        QStringList uris;
-        for(auto uri:selectedUris)
-        {
-            uris << ("file://" + QUrl(uri).path());
-        }
-        if (! uris.isEmpty())
-            ClipboardUtils::setClipboardFiles(uris, true);
+        if (!selectedUris.isEmpty())
+            ClipboardUtils::setClipboardFiles(selectedUris, true);
     });
     addAction(cutAction);
 
@@ -506,6 +497,14 @@ void DesktopIconView::openFileByUri(QString uri)
                     && ! info->uri().startsWith("computer://")
                     &&  ! info->canExecute())
             {
+                ca_context *caContext;
+                ca_context_create(&caContext);
+                const gchar* eventId = "dialog-warning";
+                //eventid 是/usr/share/sounds音频文件名,不带后缀
+                ca_context_play (caContext, 0,
+                                 CA_PROP_EVENT_ID, eventId,
+                                 CA_PROP_EVENT_DESCRIPTION, tr("Delete file Warning"), NULL);
+
                 QMessageBox::critical(nullptr, tr("Open failed"),
                                       tr("Open directory failed, you have no permission!"));
                 return;
@@ -678,8 +677,7 @@ const QStringList DesktopIconView::getSelections()
     QStringList uris;
     auto indexes = selectionModel()->selection().indexes();
     for (auto index : indexes) {
-        QString uri = "file://" + QUrl(index.data(Qt::UserRole).toString()).path();
-        uris<<uri;
+        uris<<index.data(Qt::UserRole).toString();
     }
     uris.removeDuplicates();
     return uris;
@@ -789,6 +787,27 @@ void DesktopIconView::wheelEvent(QWheelEvent *e)
 void DesktopIconView::keyPressEvent(QKeyEvent *e)
 {
     switch (e->key()) {
+    case Qt::Key_Home: {
+        auto boundingRect = getBoundingRect();
+        QRect homeRect = QRect(boundingRect.topLeft(), this->gridSize());
+        while (!indexAt(homeRect.center()).isValid()) {
+            homeRect.translate(0, gridSize().height());
+        }
+        auto homeIndex = indexAt(homeRect.center());
+        selectionModel()->select(homeIndex, QItemSelectionModel::SelectCurrent);
+        break;
+    }
+    case Qt::Key_End: {
+        auto boundingRect = getBoundingRect();
+        QRect endRect = QRect(boundingRect.bottomRight(), this->gridSize());
+        endRect.translate(-gridSize().width(), -gridSize().height());
+        while (!indexAt(endRect.center()).isValid()) {
+            endRect.translate(0, -gridSize().height());
+        }
+        auto endIndex = indexAt(endRect.center());
+        selectionModel()->select(endIndex, QItemSelectionModel::SelectCurrent);
+        break;
+    }
     case Qt::Key_Up: {
         if (getSelections().isEmpty()) {
             selectionModel()->select(model()->index(0, 0), QItemSelectionModel::SelectCurrent);
@@ -802,6 +821,13 @@ void DesktopIconView::keyPressEvent(QKeyEvent *e)
                 selectionModel()->select(upIndex, QItemSelectionModel::SelectCurrent);
                 auto delegate = qobject_cast<DesktopIconViewDelegate *>(itemDelegate());
                 setIndexWidget(upIndex, new DesktopIndexWidget(delegate, viewOptions(), upIndex, this));
+#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
+                for (auto uri : getAllFileUris()) {
+                    auto pos = getFileMetaInfoPos(uri);
+                    if (pos.x() >= 0)
+                        updateItemPosByUri(uri, pos);
+                }
+#endif
             }
         }
         return;
@@ -819,6 +845,13 @@ void DesktopIconView::keyPressEvent(QKeyEvent *e)
                 selectionModel()->select(downIndex, QItemSelectionModel::SelectCurrent);
                 auto delegate = qobject_cast<DesktopIconViewDelegate *>(itemDelegate());
                 setIndexWidget(downIndex, new DesktopIndexWidget(delegate, viewOptions(), downIndex, this));
+#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
+                for (auto uri : getAllFileUris()) {
+                    auto pos = getFileMetaInfoPos(uri);
+                    if (pos.x() >= 0)
+                        updateItemPosByUri(uri, pos);
+                }
+#endif
             }
         }
         return;
@@ -836,6 +869,13 @@ void DesktopIconView::keyPressEvent(QKeyEvent *e)
                 selectionModel()->select(leftIndex, QItemSelectionModel::SelectCurrent);
                 auto delegate = qobject_cast<DesktopIconViewDelegate *>(itemDelegate());
                 setIndexWidget(leftIndex, new DesktopIndexWidget(delegate, viewOptions(), leftIndex, this));
+#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
+                for (auto uri : getAllFileUris()) {
+                    auto pos = getFileMetaInfoPos(uri);
+                    if (pos.x() >= 0)
+                        updateItemPosByUri(uri, pos);
+                }
+#endif
             }
         }
         return;
@@ -853,6 +893,13 @@ void DesktopIconView::keyPressEvent(QKeyEvent *e)
                 selectionModel()->select(rightIndex, QItemSelectionModel::SelectCurrent);
                 auto delegate = qobject_cast<DesktopIconViewDelegate *>(itemDelegate());
                 setIndexWidget(rightIndex, new DesktopIndexWidget(delegate, viewOptions(), rightIndex, this));
+#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
+                for (auto uri : getAllFileUris()) {
+                    auto pos = getFileMetaInfoPos(uri);
+                    if (pos.x() >= 0)
+                        updateItemPosByUri(uri, pos);
+                }
+#endif
             }
         }
         return;
@@ -940,6 +987,17 @@ bool DesktopIconView::isRenaming()
 void DesktopIconView::setRenaming(bool renaming)
 {
     m_is_renaming = renaming;
+}
+
+const QRect DesktopIconView::getBoundingRect()
+{
+    QRegion itemsRegion;
+    for (int i = 0; i < m_proxy_model->rowCount(); i++) {
+        auto index = m_proxy_model->index(i, 0);
+        QRect indexRect = QListView::visualRect(index);
+        itemsRegion += indexRect;
+    }
+    return itemsRegion.boundingRect();
 }
 
 void DesktopIconView::zoomOut()
@@ -1070,6 +1128,13 @@ void DesktopIconView::mousePressEvent(QMouseEvent *e)
             if (!indexWidget(m_last_index)) {
                 setIndexWidget(m_last_index,
                                new DesktopIndexWidget(qobject_cast<DesktopIconViewDelegate *>(itemDelegate()), viewOptions(), m_last_index));
+#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
+                for (auto uri : getAllFileUris()) {
+                    auto pos = getFileMetaInfoPos(uri);
+                    if (pos.x() >= 0)
+                        updateItemPosByUri(uri, pos);
+                }
+#endif
             }
         }
     }
@@ -1265,10 +1330,10 @@ void DesktopIconView::dropEvent(QDropEvent *e)
                         break;
                     }
                 }
-                while (next.translated(-grid.width(), 0).x() > 0) {
+                while (next.translated(-grid.width(), 0).x() >= 0) {
                     next.translate(-grid.width(), 0);
                 }
-                while (next.translated(0, -grid.height()).top() > 0) {
+                while (next.translated(0, -grid.height()).top() >= 0) {
                     next.translate(0, -grid.height());
                 }
 

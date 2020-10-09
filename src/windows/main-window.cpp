@@ -68,6 +68,9 @@
 
 #include "global-settings.h"
 
+//play audio lib head file
+#include <canberra.h>
+
 #include <QSplitter>
 
 #include <QPainter>
@@ -430,10 +433,11 @@ void MainWindow::setShortCuts()
     auto maxAction = new QAction(this);
     maxAction->setShortcut(QKeySequence(Qt::Key_F11));
     connect(maxAction, &QAction::triggered, this, [=]() {
-        if (!this->isFullScreen()) {
-            this->showFullScreen();
-        } else {
+        //showFullScreen has some issue, change to showMaximized, fix #20043
+        if (!this->isMaximized()) {
             this->showMaximized();
+        } else {
+            this->showNormal();
         }
     });
     addAction(maxAction);
@@ -538,13 +542,7 @@ void MainWindow::setShortCuts()
             if (this->getCurrentSelections().first().startsWith("trash://", Qt::CaseInsensitive)) {
                 return ;
             }
-            //process m_selections for paste show, to fix Chinese show abnormal issue
-            QStringList uris;
-            for(auto uri:this->getCurrentSelections())
-            {
-                uris << ("file://" + QUrl(uri).path());
-            }
-            Peony::ClipboardUtils::setClipboardFiles(uris, false);
+            Peony::ClipboardUtils::setClipboardFiles(this->getCurrentSelections(), false);
     });
     addAction(copyAction);
 
@@ -573,13 +571,7 @@ void MainWindow::setShortCuts()
             if (this->getCurrentSelections().first().startsWith("trash://", Qt::CaseInsensitive)) {
                 return ;
             }
-            //process m_selections for paste show, to fix Chinese show abnormal issue
-            QStringList uris;
-            for(auto uri:this->getCurrentSelections())
-            {
-                uris << ("file://" + QUrl(uri).path());
-            }
-            Peony::ClipboardUtils::setClipboardFiles(uris, true);
+            Peony::ClipboardUtils::setClipboardFiles(this->getCurrentSelections(), true);
         }
     });
     addAction(cutAction);
@@ -850,6 +842,8 @@ void MainWindow::forceStopLoading()
 void MainWindow::setCurrentSelectionUris(const QStringList &uris)
 {
     m_tab->setCurrentSelections(uris);
+    if (uris.isEmpty())
+        return;
     getCurrentPage()->getView()->scrollToSelection(uris.first());
 }
 
@@ -1264,6 +1258,14 @@ void MainWindow::initUI(const QString &uri)
 
 void MainWindow::cleanTrash()
 {
+    ca_context *caContext;
+    ca_context_create(&caContext);
+    const gchar* eventId = "dialog-warning";
+    //eventid 是/usr/share/sounds音频文件名,不带后缀
+    ca_context_play (caContext, 0,
+                     CA_PROP_EVENT_ID, eventId,
+                     CA_PROP_EVENT_DESCRIPTION, tr("Delete file Warning"), NULL);
+
     auto result = QMessageBox::question(nullptr, tr("Delete Permanently"),
                                         tr("Are you sure that you want to delete these files? "
                                            "Once you start a deletion, the files deleting will never be "

@@ -35,6 +35,9 @@
 #include "directory-view-container.h"
 #include "global-settings.h"
 
+//play audio lib head file
+#include <canberra.h>
+
 #include <QAction>
 #include <QComboBox>
 #include <QPushButton>
@@ -210,6 +213,14 @@ void ToolBar::init()
 
     //trash
     m_clean_trash_action = addAction(QIcon::fromTheme("edit-clear-symbolic"), tr("Clean Trash"), [=]() {
+        ca_context *caContext;
+        ca_context_create(&caContext);
+        const gchar* eventId = "dialog-warning";
+        //eventid 是/usr/share/sounds音频文件名,不带后缀
+        ca_context_play (caContext, 0,
+                         CA_PROP_EVENT_ID, eventId,
+                         CA_PROP_EVENT_DESCRIPTION, tr("Delete file Warning"), NULL);
+
         auto result = QMessageBox::question(nullptr, tr("Delete Permanently"), tr("Are you sure that you want to delete these files? "
                                             "Once you start a deletion, the files deleting will never be "
                                             "restored again."));
@@ -246,14 +257,8 @@ void ToolBar::init()
     });
     */
 
-    //process m_selections for paste show, to fix Chinese show abnormal issue
-    QStringList uris;
-    for(auto uri:m_top_window->getCurrentSelections())
-    {
-        uris << ("file://" + QUrl(uri).path());
-    }
     connect(copyAction, &QAction::triggered, [=]() {
-        if (! uris.isEmpty())
+        if (!m_top_window->getCurrentSelections().isEmpty())
             ClipboardUtils::setClipboardFiles(m_top_window->getCurrentSelections(), false);
     });
 
@@ -265,7 +270,7 @@ void ToolBar::init()
         }
     });
     connect(cutAction, &QAction::triggered, [=]() {
-        if (! uris.isEmpty()) {
+        if (!m_top_window->getCurrentSelections().isEmpty()) {
             ClipboardUtils::setClipboardFiles(m_top_window->getCurrentSelections(), true);
         }
     });

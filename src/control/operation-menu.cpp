@@ -155,6 +155,7 @@ OperationMenuEditWidget::OperationMenuEditWidget(MainWindow *window, QWidget *pa
     copy->setIcon(QIcon::fromTheme("edit-copy-symbolic"));
     copy->setIconSize(QSize(16, 16));
     copy->setAutoRaise(false);
+    copy->setToolTip(tr("copy"));
     hbox->addWidget(copy);
 
     auto paste = new QToolButton(this);
@@ -163,6 +164,7 @@ OperationMenuEditWidget::OperationMenuEditWidget(MainWindow *window, QWidget *pa
     paste->setIcon(QIcon::fromTheme("edit-paste-symbolic"));
     paste->setIconSize(QSize(16, 16));
     paste->setAutoRaise(false);
+    paste->setToolTip(tr("paste"));
     hbox->addWidget(paste);
 
     auto cut = new QToolButton(this);
@@ -171,6 +173,7 @@ OperationMenuEditWidget::OperationMenuEditWidget(MainWindow *window, QWidget *pa
     cut->setIcon(QIcon::fromTheme("edit-cut-symbolic"));
     cut->setIconSize(QSize(16, 16));
     cut->setAutoRaise(false);
+    cut->setToolTip(tr("cut"));
     hbox->addWidget(cut);
 
     auto trash = new QToolButton(this);
@@ -179,6 +182,7 @@ OperationMenuEditWidget::OperationMenuEditWidget(MainWindow *window, QWidget *pa
     trash->setIcon(QIcon::fromTheme("ukui-user-trash"));
     trash->setIconSize(QSize(16, 16));
     trash->setAutoRaise(false);
+    trash->setToolTip(tr("trash"));
     hbox->addWidget(trash);
 
     vbox->addLayout(hbox);
@@ -189,13 +193,7 @@ OperationMenuEditWidget::OperationMenuEditWidget(MainWindow *window, QWidget *pa
                 return ;
             }
 
-            //process m_selections for paste show, to fix Chinese show abnormal issue
-            QStringList uris;
-            for(auto uri:window->getCurrentSelections())
-            {
-                uris << ("file://" + QUrl(uri).path());
-            }
-            Peony::ClipboardUtils::setClipboardFiles(uris, false);
+            Peony::ClipboardUtils::setClipboardFiles(window->getCurrentSelections(), false);
             Q_EMIT operationAccepted();
         }
     });
@@ -205,13 +203,7 @@ OperationMenuEditWidget::OperationMenuEditWidget(MainWindow *window, QWidget *pa
             if (window->getCurrentSelections().first().startsWith("trash://", Qt::CaseInsensitive)) {
                 return ;
             }
-            //process m_selections for paste show, to fix Chinese show abnormal issue
-            QStringList uris;
-            for(auto uri:window->getCurrentSelections())
-            {
-                uris << ("file://" + QUrl(uri).path());
-            }
-            Peony::ClipboardUtils::setClipboardFiles(uris, true);
+            Peony::ClipboardUtils::setClipboardFiles(window->getCurrentSelections(), true);
             Q_EMIT operationAccepted();
         }
     });

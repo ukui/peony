@@ -23,7 +23,9 @@
 #include "file-utils.h"
 #include <QUrl>
 #include <QFileInfo>
-
+#include <QFileInfoList>
+#include <QTextCodec>
+#include <QByteArray>
 #include <QStandardPaths>
 #include <QDir>
 #include <QIcon>
@@ -208,7 +210,7 @@ QString FileUtils::getFileDisplayName(const QString &uri)
     return g_file_info_get_display_name(info.get()->get());
 }
 
-QString FileUtils::getFileIconName(const QString &uri)
+QString FileUtils::getFileIconName(const QString &uri, bool checkValid)
 {
     auto file = wrapGFile(g_file_new_for_uri(uri.toUtf8().constData()));
     auto info = wrapGFileInfo(g_file_query_info(file.get()->get(),
@@ -225,13 +227,17 @@ QString FileUtils::getFileIconName(const QString &uri)
         const gchar* const* icon_names = g_themed_icon_get_names(G_THEMED_ICON (g_icon));
         if (icon_names) {
             auto p = icon_names;
-            while (*p) {
-                QIcon icon = QIcon::fromTheme(*p);
-                if (!icon.isNull()) {
-                    icon_name = QString (*p);
-                    break;
-                } else {
-                    p++;
+            if (*p)
+                icon_name = QString (*p);
+            if (checkValid) {
+                while (*p) {
+                    QIcon icon = QIcon::fromTheme(*p);
+                    if (!icon.isNull()) {
+                        icon_name = QString (*p);
+                        break;
+                    } else {
+                        p++;
+                    }
                 }
             }
         }
@@ -420,6 +426,8 @@ bool FileUtils::queryVolumeInfo(const QString &volumeUri, QString &volumeName, Q
     } else {
         volumeName = displayName;
     }
+
+    handleVolumeLabelForFat32(volumeName,unixDeviceName);
     return true;
 }
 
@@ -445,4 +453,92 @@ bool FileUtils::isFileUnmountable(const QString &uri)
         return unmountable;
     }
     return false;
+}
+
+/* @func:        convert a ascii string to unicode string. 将一个ascii字符串转换为unicode字符串
+ * @gbkName      a string that needs to be converted from ascii to  Unicode. eg:"\\xb8\\xfc\\xd0\\xc2CODE"
+ */
+QString transcodeForGbkCode(QByteArray gbkName){
+    int i;
+    QByteArray dest,tmp;
+    QString name;
+    int len = gbkName.size();
+
+    for(i = 0x0; i < len; ++i){
+        if(92 == gbkName.at(i)){
+            if(4 == tmp.size())
+                dest.append(QByteArray::fromHex(tmp));
+            else{
+                if(tmp.size() > 4){
+                    dest.append(QByteArray::fromHex(tmp.left(4)));
+                    dest.append(tmp.mid(4));
+                }else
+                    dest.append(tmp);
+            }
+            tmp.clear();
+            tmp.append(gbkName.at(i));
+            continue;
+        }else if(tmp.size() > 0){
+            tmp.append(gbkName.at(i));
+            continue;
+        }else
+            dest.append(gbkName.at(i));
+    }
+
+    if(4 == tmp.size())
+        dest.append(QByteArray::fromHex(tmp));
+    else{
+        if(tmp.size() > 4){
+            dest.append(QByteArray::fromHex(tmp.left(4)));
+            dest.append(tmp.mid(4));
+        }else
+            dest.append(tmp);
+    }
+
+    name = QTextCodec::codecForName("GBK")->toUnicode(dest);
+    return name;
+}
+
+/* @func:           determines whether the @volumeName needs to be transcoded. 判断字符串是否需要转码.
+ * @volumeName      a string that needs to be converted from ascii to  Unicode. eg:"\\xb8\\xfc\\xd0\\xc2CODE"
+ * @unixDeviceName  a device name. eg: /dev/sdb
+ */
+void FileUtils::handleVolumeLabelForFat32(QString &volumeName,const QString &unixDeviceName){
+    QFileInfoList diskList;
+    QFileInfo diskLabel;
+    QDir diskDir;
+    QString partitionName,linkTarget;
+    QString tmpName,finalName;
+    int i;
+
+    diskDir.setPath("/dev/disk/by-label");
+    if(!diskDir.exists())               //this means: volume has no name.
+        return;                         //            or there no mobile devices.
+
+    diskList = diskDir.entryInfoList(); //all file from dir.
+    /* eg: unixDeviceName == "/dev/sdb4"
+     *     partitionName == "sdb4"
+     */
+    partitionName = unixDeviceName.mid(unixDeviceName.lastIndexOf('/')+1);
+
+    for(i = 0; i < diskList.size(); ++i){
+        diskLabel = diskList.at(i);
+        linkTarget = diskLabel.symLinkTarget();
+        if(linkTarget.contains(partitionName))
+            break;
+        linkTarget.clear();
+    }
+
+    if(!linkTarget.isEmpty())
+        tmpName = diskLabel.fileName();//可能带有乱码的名字
+
+    if(!tmpName.isEmpty()){
+        if(tmpName == volumeName)      //ntfs、exfat格式或者非纯中文名的fat32设备,这个设备的名字不需要转码
+            return;
+        else{
+            finalName = transcodeForGbkCode(tmpName.toLocal8Bit());
+            if(!finalName.isEmpty())
+                volumeName = finalName;
+        }
+    }
 }
