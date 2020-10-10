@@ -96,6 +96,7 @@ FileEnumerator::FileEnumerator(QObject *parent) : QObject(parent)
  */
 FileEnumerator::~FileEnumerator()
 {
+    g_cancellable_cancel(m_cancellable);
     disconnect();
     //qDebug()<<"~FileEnumerator";
     g_object_unref(m_root_file);
@@ -408,6 +409,11 @@ GAsyncReadyCallback FileEnumerator::mount_mountable_callback(GFile *file,
     GError *err = nullptr;
     GFile *target = g_file_mount_mountable_finish(file, res, &err);
     if (err && err->code != 0) {
+        auto message = err->message;
+        if (err->code == G_IO_ERROR_CANCELLED) {
+            g_error_free(err);
+            return nullptr;
+        }
         qDebug()<<err->code<<err->message;
         if (!qobject_cast<QObject *>(p_this)) {
             g_error_free(err);
@@ -436,6 +442,10 @@ GAsyncReadyCallback FileEnumerator::mount_enclosing_volume_callback(GFile *file,
     GError *err = nullptr;
     if (g_file_mount_enclosing_volume_finish (file, res, &err)) {
         if (err) {
+            if (err->code == G_IO_ERROR_CANCELLED) {
+                g_error_free (err);
+                return nullptr;
+            }
             qDebug()<<"mount successed, err:"<<err->code<<err->message;
             Q_EMIT p_this->prepared(GErrorWrapper::wrapFrom(err), nullptr, true);
         } else {
@@ -496,6 +506,10 @@ GAsyncReadyCallback FileEnumerator::find_children_async_ready_callback(GFile *fi
     GError *err = nullptr;
     GFileEnumerator *enumerator = g_file_enumerate_children_finish(file, res, &err);
     if (err) {
+        if (err->code == G_IO_ERROR_CANCELLED) {
+            g_error_free(err);
+            return nullptr;
+        }
         qDebug()<<"find children async err:"<<err->code<<err->message;
         //NOTE: if the enumerator file has target uri, but target uri is not mounted,
         //it should be handled.
@@ -534,6 +548,13 @@ GAsyncReadyCallback FileEnumerator::enumerator_next_files_async_ready_callback(G
     GList *files = g_file_enumerator_next_files_finish(enumerator,
                    res,
                    &err);
+
+    if (err) {
+        if (err->code == G_IO_ERROR_CANCELLED) {
+            g_error_free(err);
+            return nullptr;
+        }
+    }
 
     auto errPtr = GErrorWrapper::wrapFrom(err);
     if (!files && !err) {
