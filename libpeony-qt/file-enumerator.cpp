@@ -409,15 +409,21 @@ GAsyncReadyCallback FileEnumerator::mount_mountable_callback(GFile *file,
     GFile *target = g_file_mount_mountable_finish(file, res, &err);
     if (err && err->code != 0) {
         qDebug()<<err->code<<err->message;
+        if (!qobject_cast<QObject *>(p_this)) {
+            g_error_free(err);
+            return nullptr;
+        }
         auto err_data = GErrorWrapper::wrapFrom(err);
         Q_EMIT p_this->prepared(err_data);
     } else {
         Q_EMIT p_this->prepared(nullptr);
+        if (err) {
+            g_error_free(err);
+        }
     }
     if (target) {
         g_object_unref(target);
     }
-
 
     return nullptr;
 }
