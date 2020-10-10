@@ -82,6 +82,7 @@
 #include <QDesktopServices>
 
 #include <QProcess>
+#include <QDateTime>
 
 #if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
 #include <QPainterPath>
@@ -142,6 +143,10 @@ MainWindow::MainWindow(const QString &uri, QWidget *parent) : QMainWindow(parent
 
     //init UI
     initUI(uri);
+
+    auto start_cost_time = QDateTime::currentMSecsSinceEpoch()- PeonyApplication::peony_start_time;
+    qDebug() << "peony start end in main-window time:" <<start_cost_time
+             <<"ms"<<QDateTime::currentMSecsSinceEpoch();
 }
 
 MainWindow::~MainWindow()

@@ -76,6 +76,7 @@
 #include <X11/Xatom.h>
 #include <X11/Xproto.h>
 
+#include <QDateTime>
 #include <QDebug>
 
 #define BACKGROUND_SETTINGS "org.mate.background"
@@ -189,6 +190,10 @@ DesktopWindow::DesktopWindow(QScreen *screen, bool is_primary, QWidget *parent)
         setBg(getCurrentBgPath());
         return;
     }
+
+    auto start_cost_time = QDateTime::currentMSecsSinceEpoch()- PeonyDesktopApplication::peony_desktop_start_time;
+    qDebug() << "desktop start end in desktop-window time:" <<start_cost_time
+             <<"ms"<<QDateTime::currentMSecsSinceEpoch();
 }
 
 DesktopWindow::~DesktopWindow() {}
