@@ -565,12 +565,12 @@
     <message>
         <location filename="../../libpeony-qt/controls/menu/menu-plugin-manager.cpp" line="103"/>
         <source>Create Link to Desktop</source>
-        <translation>链接到桌面</translation>
+        <translation>发送到桌面</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/menu/menu-plugin-manager.cpp" line="120"/>
         <source>Create Link to...</source>
-        <translation>链接到...</translation>
+        <translation>发送到...</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/menu/menu-plugin-manager.cpp" line="123"/>
