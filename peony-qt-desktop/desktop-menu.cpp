@@ -49,6 +49,7 @@
 
 #include <QUrl>
 #include <QDir>
+#include <QStandardPaths>
 
 using namespace Peony;
 
@@ -116,7 +117,10 @@ const QList<QAction *> DesktopMenu::constructOpenOpActions()
             m_view->invertSelections();
         });
     } else {
-        if (m_selections.count() == 1) {
+        if (m_selections.count() == 1
+                && !m_selections.first().startsWith("trash://")
+                && !m_selections.first().startsWith("computer://")
+                && (m_selections.first() != ("file://" + QStandardPaths::standardLocations(QStandardPaths::HomeLocation).first()))) {
             auto info = FileInfo::fromUri(m_selections.first());
             auto displayName = info->displayName();
             //FIXME: replace BLOCKING api in ui thread.
