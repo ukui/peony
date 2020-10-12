@@ -126,7 +126,7 @@ void Format_Dialog::acceptFormat(bool)
     my_time  = new QTimer(this);
 
     if(quick_clean){
-        my_time->setInterval(100);
+        my_time->setInterval(500);
     }else{
         my_time->setInterval(1000);
     }
@@ -295,7 +295,7 @@ void Format_Dialog::ensure_unused_cb(CreateformatData *data)
     }
     else {
 
-        //ensure_format_disk(data);
+        ensure_format_disk(data);
     }
 }
 
@@ -346,29 +346,28 @@ static void format_cb (GObject *source_object, GAsyncResult *res ,gpointer user_
             g_clear_error(&error);
         }
         end_flag = -1;
-        *(data->format_finish) =  -1; //格式化失败
+        *(data->format_finish) =  -1; //format success
 
     }
     else
         end_flag = 1;
-        *(data->format_finish) =  1; //格式化完成
+        *(data->format_finish) =  1; //format error
 
 
     if(end_flag == 1){
 
         data->dl->ui->progressBar_process->setValue(100);
         data->dl->ui->label_process->setText("100%");
-        data->dl->my_time->stop();
 
         data->dl->format_ok_dialog();
-        data->dl->close();
 
     }else{
-        data->dl->my_time->stop();
 
         data->dl->format_err_dialog();  
-        data->dl->close();
     }
+
+    data->dl->my_time->stop();
+    data->dl->close();
 
     createformatfree(data);
 
@@ -432,6 +431,60 @@ void Format_Dialog::ensure_format_cb (CreateformatData *data){
 
 
 };
+
+
+/*
+ * ensure format iso disk
+ *
+ *
+*/
+void Format_Dialog::ensure_format_disk(CreateformatData *data){
+
+        char ch[10]={0};
+        for(int i=0;i<=7;i++)
+            ch[i]=(data->device_name)[i];
+        data->drive_object = get_object_from_block_device(data->client,ch);
+        data->drive_block = udisks_object_get_block(data->drive_object);
+
+
+        GVariantBuilder options_builder;
+        g_variant_builder_init(&options_builder,G_VARIANT_TYPE_VARDICT);
+
+
+        if (g_strcmp0 (data->format_type, "empty") != 0){
+            g_variant_builder_add (&options_builder, "{sv}", "label",
+                                   g_variant_new_string (data->filesystem_name));
+        };
+
+
+        if (g_strcmp0 (data->format_type, "vfat") != 0 &&
+                g_strcmp0 (data->format_type, "ntfs") != 0 &&
+                g_strcmp0 (data->format_type, "exfat") != 0){
+            g_variant_builder_add (&options_builder, "{sv}", "take-ownership",
+                                   g_variant_new_boolean (TRUE));
+        }
+
+
+        if (data->erase_type != NULL){
+            g_variant_builder_add (&options_builder, "{sv}", "erase",
+                                   g_variant_new_string (data->erase_type));
+        }
+
+        g_variant_builder_add (&options_builder, "{sv}", "update-partition-type",
+                               g_variant_new_boolean (TRUE));
+
+
+        udisks_block_call_format(data->drive_block,
+                        data->format_type,
+                        g_variant_builder_end(&options_builder),
+                        NULL,
+                        format_cb,
+                        data);
+
+}
+
+
+
 
 
 UDisksObject *Format_Dialog::get_object_from_block_device (UDisksClient *client,const gchar *block_device)
