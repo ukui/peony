@@ -106,6 +106,8 @@ Q_SIGNALS:
     void viewDoubleClicked(const QString &uri);
     void updateWindowLocationRequest(const QString &uri, bool addHistory, bool forceUpdate = false);
 
+    void updateWindowSelectionRequest(const QStringList &uris);
+
     void menuRequest(const QPoint &pos);
     void zoomRequest(bool zoomIn);
 
@@ -206,6 +208,8 @@ private:
 
     PreviewPageButtonGroups *m_buttons;
 
+    QToolBar *m_tool_bar;
+
     Peony::PreviewPageIface *m_preview_page = nullptr;
     QStackedWidget *m_preview_page_container;
 
@@ -239,6 +243,7 @@ private:
     QList<QSignalMapper*> m_remove_mapper_list;
 
     int m_search_bar_count = 0;
+    const int ELIDE_TEXT_LENGTH = 10;
 
     TabStatusBar *m_status_bar = nullptr;
 

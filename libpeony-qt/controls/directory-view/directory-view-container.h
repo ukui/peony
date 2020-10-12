@@ -88,6 +88,8 @@ Q_SIGNALS:
     void viewDoubleClicked(const QString &uri);
     void updateWindowLocationRequest(const QString &uri, bool addHistory, bool forceUpdate = false);
 
+    void updateWindowSelectionRequest(const QStringList &uris);
+
     void menuRequest(const QPoint &pos);
 
     void zoomRequest(bool zoomIn);

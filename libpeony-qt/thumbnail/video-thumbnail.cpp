@@ -22,6 +22,7 @@
 
 #include "generic-thumbnailer.h"
 #include "video-thumbnail.h"
+#include "file-utils.h"
 #include <QFileInfo>
 #include <QDebug>
 #include <QtConcurrent>
@@ -33,7 +34,16 @@
 
 VideoThumbnail::VideoThumbnail(const QString &uri)
 {
-    m_url = uri;
+    if (!uri.startsWith("file:///")) {
+        m_url = FileUtils::getTargetUri(uri);
+        qDebug()<<"target uri:"<< m_url.path();
+    }
+    else {
+        m_url = uri;
+    }
+
+    auto fileInfo = FileInfo::fromUri(uri);
+    m_modifyTime = fileInfo->modifiedTime();
 }
 
 VideoThumbnail::~VideoThumbnail()
@@ -132,7 +142,7 @@ QIcon VideoThumbnail::generateThumbnail()
 {
     QIcon thumbnailImage;
     QString thumbnail= GenericThumbnailer::thumbnaileCachDir();
-    QString md5Name=GenericThumbnailer::codeMd5(m_url.path());
+    QString md5Name=GenericThumbnailer::codeMd5WithModifyTime(m_url.path(), m_modifyTime);
     QString fileThumbnail=thumbnail+"/"+md5Name;
 
     if (!QFile::exists(fileThumbnail)) {

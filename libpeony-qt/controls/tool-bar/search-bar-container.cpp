@@ -67,7 +67,7 @@ SearchBarContainer::SearchBarContainer(QWidget *parent): QWidget(parent)
     completer->setPopup(m_list_view);
     //change QCompleter Mode form UnfilteredPopupCompletion to PopupCompletion
     //to fix can not input chinese continuous issue
-    completer->setCompletionMode(QCompleter::PopupCompletion);
+    completer->setCompletionMode(QCompleter::InlineCompletion);
     m_search_box->setCompleter(completer);
 
     m_search_trigger.setInterval(500);
@@ -85,11 +85,11 @@ SearchBarContainer::SearchBarContainer(QWidget *parent): QWidget(parent)
         Q_EMIT this->filterUpdate(m_filter_box->currentIndex());
     });
 
-    QAction *searchAction = m_search_box->addAction(QIcon::fromTheme("go-down"), QLineEdit::TrailingPosition);
-    connect(searchAction, &QAction::triggered, this, [=]() {
-        //qDebug() << "triggered search history!";
-        m_search_box->completer()->complete();
-    });
+//    QAction *searchAction = m_search_box->addAction(QIcon::fromTheme("go-down"), QLineEdit::TrailingPosition);
+//    connect(searchAction, &QAction::triggered, this, [=]() {
+//        //qDebug() << "triggered search history!";
+//        m_search_box->completer()->complete();
+//    });
 
     connect(m_list_view, SIGNAL(clicked(const QModelIndex &)), this, SLOT(onTableClicked(const QModelIndex &)));
 }

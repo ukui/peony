@@ -155,6 +155,7 @@ OperationMenuEditWidget::OperationMenuEditWidget(MainWindow *window, QWidget *pa
     copy->setIcon(QIcon::fromTheme("edit-copy-symbolic"));
     copy->setIconSize(QSize(16, 16));
     copy->setAutoRaise(false);
+    copy->setToolTip(tr("copy"));
     hbox->addWidget(copy);
 
     auto paste = new QToolButton(this);
@@ -163,6 +164,7 @@ OperationMenuEditWidget::OperationMenuEditWidget(MainWindow *window, QWidget *pa
     paste->setIcon(QIcon::fromTheme("edit-paste-symbolic"));
     paste->setIconSize(QSize(16, 16));
     paste->setAutoRaise(false);
+    paste->setToolTip(tr("paste"));
     hbox->addWidget(paste);
 
     auto cut = new QToolButton(this);
@@ -171,6 +173,7 @@ OperationMenuEditWidget::OperationMenuEditWidget(MainWindow *window, QWidget *pa
     cut->setIcon(QIcon::fromTheme("edit-cut-symbolic"));
     cut->setIconSize(QSize(16, 16));
     cut->setAutoRaise(false);
+    cut->setToolTip(tr("cut"));
     hbox->addWidget(cut);
 
     auto trash = new QToolButton(this);
@@ -179,6 +182,7 @@ OperationMenuEditWidget::OperationMenuEditWidget(MainWindow *window, QWidget *pa
     trash->setIcon(QIcon::fromTheme("ukui-user-trash"));
     trash->setIconSize(QSize(16, 16));
     trash->setAutoRaise(false);
+    trash->setToolTip(tr("trash"));
     hbox->addWidget(trash);
 
     vbox->addLayout(hbox);
@@ -205,7 +209,14 @@ OperationMenuEditWidget::OperationMenuEditWidget(MainWindow *window, QWidget *pa
     });
 
     connect(m_paste, &QToolButton::clicked, this, [=]() {
-        Peony::ClipboardUtils::pasteClipboardFiles(window->getCurrentUri());
+        auto op = Peony::ClipboardUtils::pasteClipboardFiles(window->getCurrentUri());
+        if (op) {
+            connect(op, &Peony::FileOperation::operationFinished, window, [=](){
+                auto opInfo = op->getOperationInfo();
+                auto targetUirs = opInfo->dests();
+                window->setCurrentSelectionUris(targetUirs);
+            }, Qt::BlockingQueuedConnection);
+        }
         Q_EMIT operationAccepted();
     });
 
@@ -240,10 +251,6 @@ void OperationMenuEditWidget::updateActions(const QString &currentDirUri, const 
     m_cut->setEnabled(!isSelectionEmpty);
     m_trash->setEnabled(!isSelectionEmpty);
 
-    if (isSelectionEmpty) {
-        bool isClipboradHasFile = Peony::ClipboardUtils::isClipboardHasFiles();
-        m_paste->setEnabled(isClipboradHasFile);
-    } else {
-        m_paste->setEnabled(false);
-    }
+    bool isClipboradHasFile = Peony::ClipboardUtils::isClipboardHasFiles();
+    m_paste->setEnabled(isClipboradHasFile);
 }

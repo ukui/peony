@@ -97,6 +97,7 @@ protected:
 
 private:
     QString m_current_bg_path;
+    QString m_picture_option;
 
     DesktopIconView *m_view;
 
@@ -119,6 +120,7 @@ private:
     QColor m_color_to_be_set = Qt::transparent;
 
     bool m_use_pure_color = false;
+    bool m_used_pure_color = false;
 
     QVariantAnimation *m_opacity = nullptr;
 };

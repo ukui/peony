@@ -68,6 +68,9 @@
 
 #include "global-settings.h"
 
+//play audio lib head file
+#include <canberra.h>
+
 #include <QSplitter>
 
 #include <QPainter>
@@ -430,10 +433,11 @@ void MainWindow::setShortCuts()
     auto maxAction = new QAction(this);
     maxAction->setShortcut(QKeySequence(Qt::Key_F11));
     connect(maxAction, &QAction::triggered, this, [=]() {
-        if (!this->isFullScreen()) {
-            this->showFullScreen();
-        } else {
+        //showFullScreen has some issue, change to showMaximized, fix #20043
+        if (!this->isMaximized()) {
             this->showMaximized();
+        } else {
+            this->showNormal();
         }
     });
     addAction(maxAction);
@@ -548,7 +552,14 @@ void MainWindow::setShortCuts()
         if (Peony::ClipboardUtils::isClipboardHasFiles()) {
             //FIXME: how about duplicated copy?
             //FIXME: how to deal with a failed move?
-            Peony::ClipboardUtils::pasteClipboardFiles(this->getCurrentUri());
+            auto op = Peony::ClipboardUtils::pasteClipboardFiles(this->getCurrentUri());
+            if (op) {
+                connect(op, &Peony::FileOperation::operationFinished, this, [=](){
+                    auto opInfo = op->getOperationInfo();
+                    auto targetUirs = opInfo->dests();
+                    setCurrentSelectionUris(targetUirs);
+                }, Qt::BlockingQueuedConnection);
+            }
         }
     });
     addAction(pasteAction);
@@ -569,6 +580,7 @@ void MainWindow::setShortCuts()
 void MainWindow::updateTabPageTitle()
 {
     m_tab->updateTabPageTitle();
+    //FIXME: replace BLOCKING api in ui thread.
     auto show = Peony::FileUtils::getFileDisplayName(getCurrentUri());
     QString title = show + "-" + tr("File Manager");
     //qDebug() << "updateTabPageTitle:" <<title;
@@ -577,16 +589,28 @@ void MainWindow::updateTabPageTitle()
 
 void MainWindow::createFolderOperation()
 {
-    Peony::CreateTemplateOperation op(getCurrentUri(), Peony::CreateTemplateOperation::EmptyFolder, tr("New Folder"));
-    Peony::FileOperationErrorDialogConflict dlg;
-    connect(&op, &Peony::FileOperation::errored, &dlg, &Peony::FileOperationErrorDialogConflict::handle);
-    op.run();
-    auto targetUri = op.target();
+//    Peony::CreateTemplateOperation op(getCurrentUri(), Peony::CreateTemplateOperation::EmptyFolder, tr("New Folder"));
+//    Peony::FileOperationErrorDialogConflict dlg;
+//    connect(&op, &Peony::FileOperation::errored, &dlg, &Peony::FileOperationErrorDialogConflict::handle);
+//    op.run();
+//    auto targetUri = op.target();
 
-    QTimer::singleShot(500, this, [=]() {
-        this->getCurrentPage()->getView()->scrollToSelection(targetUri);
-        this->editUri(targetUri);
-    });
+    auto op = Peony::FileOperationUtils::create(getCurrentUri(), tr("New Folder"), Peony::CreateTemplateOperation::EmptyFolder);
+    connect(op, &Peony::FileOperation::operationFinished, this, [=](){
+        if (op->hasError())
+            return;
+        auto opInfo = op->getOperationInfo();
+        auto targetUri = opInfo->target();
+        this->getCurrentPage()->getView()->clearIndexWidget();
+        QTimer::singleShot(500, this, [=](){
+            this->editUri(opInfo->target());
+        });
+    }, Qt::BlockingQueuedConnection);
+
+//    QTimer::singleShot(500, this, [=]() {
+//        this->getCurrentPage()->getView()->scrollToSelection(targetUri);
+//        this->editUri(targetUri);
+//    });
 }
 
 void MainWindow::keyPressEvent(QKeyEvent *e)
@@ -746,7 +770,9 @@ void MainWindow::beginSwitchView(const QString &viewId)
     // save zoom level
     Peony::GlobalSettings::getInstance()->setValue(DEFAULT_VIEW_ZOOM_LEVEL, currentViewZoomLevel());
     m_tab->setCurrentSelections(selection);
-    m_tab->m_status_bar->m_slider->setEnabled(m_tab->currentPage()->getView()->supportZoom());
+    bool supportZoom = m_tab->currentPage()->getView()->supportZoom();
+    m_tab->m_status_bar->m_slider->setEnabled(supportZoom);
+//    m_tab->m_status_bar->m_slider->setVisible(supportZoom);
     //fix slider value not update issue
     m_tab->m_status_bar->m_slider->setValue(currentViewZoomLevel());
 }
@@ -816,6 +842,9 @@ void MainWindow::forceStopLoading()
 void MainWindow::setCurrentSelectionUris(const QStringList &uris)
 {
     m_tab->setCurrentSelections(uris);
+    if (uris.isEmpty())
+        return;
+    getCurrentPage()->getView()->scrollToSelection(uris.first());
 }
 
 void MainWindow::setCurrentSortOrder(Qt::SortOrder order)
@@ -930,7 +959,7 @@ void MainWindow::paintEvent(QPaintEvent *e)
     QPainter painter(this);
     deletePath.addRect(m_tab->x(),height()-16,18,12);
     if(m_is_first_tab)
-        deletePath.addRect(m_tab->x(),40,16,16);
+        deletePath.addRect(m_tab->x(),44,16,16);
     deletePath.setFillRule(Qt::FillRule::WindingFill);
     painter.fillPath(deletePath,this->palette().base());
     QMainWindow::paintEvent(e);
@@ -1159,6 +1188,7 @@ void MainWindow::initUI(const QString &uri)
         m_tab->addPage(home, true);
     } else {
         m_tab->addPage(uri, true);
+        m_header_bar->setLocation(uri);
     }
     QTimer::singleShot(1, this, [=]() {
         // FIXME:
@@ -1220,6 +1250,9 @@ void MainWindow::initUI(const QString &uri)
             });
         }
     });
+    connect(m_tab, &TabWidget::updateWindowSelectionRequest, this, [=](const QStringList &uris){
+        setCurrentSelectionUris(uris);
+    });
 //    connect(m_tab, &TabWidget::currentSelectionChanged, this, [=](){
 //        m_status_bar->update();
 //    });
@@ -1227,6 +1260,14 @@ void MainWindow::initUI(const QString &uri)
 
 void MainWindow::cleanTrash()
 {
+    ca_context *caContext;
+    ca_context_create(&caContext);
+    const gchar* eventId = "dialog-warning";
+    //eventid 是/usr/share/sounds音频文件名,不带后缀
+    ca_context_play (caContext, 0,
+                     CA_PROP_EVENT_ID, eventId,
+                     CA_PROP_EVENT_DESCRIPTION, tr("Delete file Warning"), NULL);
+
     auto result = QMessageBox::question(nullptr, tr("Delete Permanently"),
                                         tr("Are you sure that you want to delete these files? "
                                            "Once you start a deletion, the files deleting will never be "

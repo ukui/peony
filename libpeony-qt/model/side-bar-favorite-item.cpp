@@ -66,6 +66,7 @@ SideBarFavoriteItem::SideBarFavoriteItem(QString uri,
         return;
     }
     m_uri = uri;
+    //FIXME: replace BLOCKING api in ui thread.
     m_display_name = FileUtils::getFileDisplayName(uri);
     m_icon_name = FileUtils::getFileIconName(uri);
 }

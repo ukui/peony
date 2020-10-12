@@ -54,6 +54,8 @@
 #include <KWindowSystem>
 #include "global-settings.h"
 
+#include <QtConcurrent>
+
 #include <QDebug>
 
 static HeaderBarStyle *global_instance = nullptr;
@@ -242,20 +244,22 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
 
 void HeaderBar::findDefaultTerminal()
 {
-    GList *infos = g_app_info_get_all();
-    GList *l = infos;
-    while (l) {
-        const char *cmd = g_app_info_get_executable(static_cast<GAppInfo*>(l->data));
-        QString tmp = cmd;
-        if (tmp.contains("terminal")) {
-            terminal_cmd = tmp;
-            if (tmp == "mate-terminal") {
-                break;
+    QtConcurrent::run([](){
+        GList *infos = g_app_info_get_all();
+        GList *l = infos;
+        while (l) {
+            const char *cmd = g_app_info_get_executable(static_cast<GAppInfo*>(l->data));
+            QString tmp = cmd;
+            if (tmp.contains("terminal")) {
+                terminal_cmd = tmp;
+                if (tmp == "mate-terminal") {
+                    break;
+                }
             }
+            l = l->next;
         }
-        l = l->next;
-    }
-    g_list_free_full(infos, g_object_unref);
+        g_list_free_full(infos, g_object_unref);
+    });
 }
 
 void HeaderBar::openDefaultTerminal()

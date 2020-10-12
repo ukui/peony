@@ -16,31 +16,36 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <https://www.gnu.org/licenses/>.
  *
- * Authors: renpeijia <renpeijia@kylinos.cn>
+ * Authors: ding jing <dingjing@kylinos.cn>
  *
  */
 
-#ifndef VIDEOTHUMBNAIL_H
-#define VIDEOTHUMBNAIL_H
+#ifndef RECENTVFSMANAGER_H
+#define RECENTVFSMANAGER_H
 
-#include "file-info.h"
-#include <QHash>
-#include <QIcon>
-#include <QMutex>
-#include <QUrl>
+#include <QObject>
+#include <QDomDocument>
+#include <peony-core_global.h>
 
-using namespace Peony;
-
-class VideoThumbnail{
+namespace Peony {
+class PEONYCORESHARED_EXPORT RecentVFSManager : public QObject
+{
+    Q_OBJECT
 public:
-    explicit VideoThumbnail(const QString &uri);
-    ~VideoThumbnail();
-    QIcon generateThumbnail();
+    static RecentVFSManager* getInstance ();
+    void insert (QString uri, QString mimetype, QString name, QString exec);
 
 private:
-    QMap<QString, QString> videoInfo();
-    QUrl m_url;
-    quint64 m_modifyTime = 0;
-};
+    explicit RecentVFSManager(QObject *parent = nullptr);
+    bool read ();
+    bool write ();
+    bool exists (QString uri);
+    bool createNode (QString uri, QString mimetype, QString name, QString exec);
 
-#endif // VIDEOTHUMBNAIL_H
+private:
+    static RecentVFSManager* m_instance;
+    QString m_recent_path;
+    QDomDocument m_dom_document;
+};
+};
+#endif // RECENTVFSMANAGER_H

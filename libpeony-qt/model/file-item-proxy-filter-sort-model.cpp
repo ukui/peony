@@ -47,6 +47,8 @@ QCollator comparer = QCollator(locale);
 
 FileItemProxyFilterSortModel::FileItemProxyFilterSortModel(QObject *parent) : QSortFilterProxyModel(parent)
 {
+    //enable number sort, like 100 is after 99
+    comparer.setNumericMode(true);
     auto settings = GlobalSettings::getInstance();
     m_show_hidden = settings->isExist("show-hidden")? settings->getValue("show-hidden").toBool(): false;
     m_use_default_name_sort_order = settings->isExist("chinese-first")? settings->getValue("chinese-first").toBool(): false;
@@ -608,6 +610,7 @@ QModelIndexList FileItemProxyFilterSortModel::getAllFileIndexes()
             auto disyplayName = index.data(Qt::DisplayRole).toString();
             if (disyplayName.isEmpty()) {
                 auto uri = this->index(i, 0, QModelIndex()).data(FileItemModel::UriRole).toString();
+                //FIXME: replace BLOCKING api in ui thread.
                 disyplayName = FileUtils::getFileDisplayName(uri);
             }
             if (!disyplayName.startsWith(".")) {

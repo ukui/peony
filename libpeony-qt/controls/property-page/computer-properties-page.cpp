@@ -106,6 +106,7 @@ ComputerPropertiesPage::ComputerPropertiesPage(const QString &uri, QWidget *pare
     } else {
         //FIXME: get volume info correctly.
 
+        //FIXME: replace BLOCKING api in ui thread.
         auto targetUri = FileUtils::getTargetUri(uri);
         if (targetUri.isNull()) {
             m_layout->addRow(new QLabel(tr("You should mount this volume first"), nullptr));
