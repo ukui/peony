@@ -35,6 +35,9 @@
 #include "gerror-wrapper.h"
 #include "bookmark-manager.h"
 
+//play audio lib head file
+#include <canberra.h>
+
 #include <QDebug>
 #include <QStandardPaths>
 
@@ -145,6 +148,14 @@ void FileItem::findChildrenAsync()
     enumerator->connect(this, &FileItem::cancelFindChildren, enumerator, &FileEnumerator::cancel);
     enumerator->connect(enumerator, &FileEnumerator::prepared, this, [=](std::shared_ptr<GErrorWrapper> err, const QString &targetUri, bool critical) {
         if (critical) {
+            ca_context *caContext;
+            ca_context_create(&caContext);
+            const gchar* eventId = "dialog-warning";
+            //eventid 是/usr/share/sounds音频文件名,不带后缀
+            ca_context_play (caContext, 0,
+                             CA_PROP_EVENT_ID, eventId,
+                             CA_PROP_EVENT_DESCRIPTION, tr("Delete file Warning"), NULL);
+
             QMessageBox::critical(nullptr, tr("Error"), err->message());
             enumerator->cancel();
             return;
@@ -173,6 +184,7 @@ void FileItem::findChildrenAsync()
             return;
         }
 
+        //FIXME: replace BLOCKING api in ui thread.
         auto target = FileUtils::getTargetUri(m_info->uri());
         if (!target.isEmpty()) {
             enumerator->cancel();
@@ -182,6 +194,14 @@ void FileItem::findChildrenAsync()
         }
         if (err) {
             qDebug()<<err->message();
+            ca_context *caContext;
+            ca_context_create(&caContext);
+            const gchar* eventId = "dialog-warning";
+            //eventid 是/usr/share/sounds音频文件名,不带后缀
+            ca_context_play (caContext, 0,
+                             CA_PROP_EVENT_ID, eventId,
+                             CA_PROP_EVENT_DESCRIPTION, tr("Delete file Warning"), NULL);
+
             if (err.get()->code() == G_IO_ERROR_NOT_FOUND || err.get()->code() == G_IO_ERROR_PERMISSION_DENIED) {
                 enumerator->cancel();
                 //enumerator->deleteLater();
@@ -547,21 +567,23 @@ void FileItem::onRenamed(const QString &oldUri, const QString &newUri)
 
 void FileItem::onUpdateDirectoryRequest()
 {
-    m_backend_enumerator->disconnect();
-    m_backend_enumerator->cancel();
+    auto enumerator = new FileEnumerator(this);
+    enumerator->setEnumerateDirectory(m_model->getRootUri());
+    connect(enumerator, &FileEnumerator::enumerateFinished, m_model, [=](){
+        if (m_model->getRootUri() != enumerator->getEnumerateUri())
+            return;
 
-    m_backend_enumerator->setEnumerateDirectory(m_model->getRootUri());
-    m_backend_enumerator->connect(m_backend_enumerator, &FileEnumerator::enumerateFinished, this, [=](){
-        auto currentUris = m_backend_enumerator->getChildrenUris();
+        auto currentUris = enumerator->getChildrenUris();
         QStringList rawUris;
         QStringList removedUris;
         QStringList addedUris;
+
         for (auto child : *m_model->m_root_item->m_children) {
+            rawUris<<child->uri();
             if (!currentUris.contains(child->uri())) {
                 removedUris<<child->uri();
                 m_model->m_root_item->onChildRemoved(child->uri());
             }
-            rawUris<<child->uri();
         }
 
         for (auto uri : currentUris) {
@@ -572,12 +594,15 @@ void FileItem::onUpdateDirectoryRequest()
         }
 
         for (auto uri : currentUris) {
-            if (!addedUris.contains(uri) && !removedUris.contains(uri))
-                m_model->m_root_item->getChildFromUri(uri)->updateInfoAsync();
+            if (!addedUris.contains(uri) && !removedUris.contains(uri)) {
+                //m_model->m_root_item->getChildFromUri(uri)->updateInfoAsync();
+            }
         }
+
+        enumerator->deleteLater();
     });
 
-    m_backend_enumerator->enumerateAsync();
+    enumerator->enumerateAsync();
 }
 
 void FileItem::updateInfoSync()

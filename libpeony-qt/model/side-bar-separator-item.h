@@ -92,7 +92,7 @@ public:
     }
 
 public Q_SLOTS:
-    void eject() override {}
+    void eject(GMountUnmountFlags ejectFlag) override {}
     void unmount() override {}
     void format() override {}
 

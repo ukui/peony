@@ -23,6 +23,9 @@
 #ifndef FILEUTILS_H
 #define FILEUTILS_H
 
+#define NO_BLOCKING
+#define BLOCKING
+
 #include "peony-core_global.h"
 #include "gobject-template.h"
 #include "gerror-wrapper.h"
@@ -34,50 +37,51 @@ namespace Peony {
 class PEONYCORESHARED_EXPORT FileUtils
 {
 public:
-    static QString getQStringFromCString(char *c_string, bool free = true);
-    static QString getFileUri(const GFileWrapperPtr &file);
-    static QString getFileBaseName(const GFileWrapperPtr &file);
-    static QString getUriBaseName(const QString &uri);
-    static GFileWrapperPtr getFileParent(const GFileWrapperPtr &file);
-    static QString getRelativePath(const GFileWrapperPtr &dir, const GFileWrapperPtr &file);
-    static GFileWrapperPtr resolveRelativePath(const GFileWrapperPtr &dir, const QString &relativePath);
-    static bool getFileHasChildren(const GFileWrapperPtr &file);
-    static bool getFileIsFolder(const GFileWrapperPtr &file);
-    static bool getFileIsFolder(const QString &uri);
-    static bool getFileIsSymbolicLink(const QString &uri);
-    static QStringList getChildrenUris(const QString &directoryUri);
+    NO_BLOCKING static QString getQStringFromCString(char *c_string, bool free = true);
+    NO_BLOCKING static QString getFileUri(const GFileWrapperPtr &file);
+    NO_BLOCKING static QString getFileBaseName(const GFileWrapperPtr &file);
+    NO_BLOCKING static QString getUriBaseName(const QString &uri);
+    NO_BLOCKING static GFileWrapperPtr getFileParent(const GFileWrapperPtr &file);
+    NO_BLOCKING static QString getRelativePath(const GFileWrapperPtr &dir, const GFileWrapperPtr &file);
+    NO_BLOCKING static GFileWrapperPtr resolveRelativePath(const GFileWrapperPtr &dir, const QString &relativePath);
+    BLOCKING static bool getFileHasChildren(const GFileWrapperPtr &file);
+    BLOCKING static bool getFileIsFolder(const GFileWrapperPtr &file);
+    BLOCKING static bool getFileIsFolder(const QString &uri);
+    BLOCKING static bool getFileIsSymbolicLink(const QString &uri);
+    BLOCKING static QStringList getChildrenUris(const QString &directoryUri);
 
-    static QString getNonSuffixedBaseNameFromUri(const QString &uri);
-    static QString getFileDisplayName(const QString &uri);
-    static QString getFileIconName(const QString &uri);
+    NO_BLOCKING static QString getNonSuffixedBaseNameFromUri(const QString &uri);
+    BLOCKING static QString getFileDisplayName(const QString &uri);
+    BLOCKING static QString getFileIconName(const QString &uri, bool checkValid = true);
 
-    static GErrorWrapperPtr getEnumerateError(const QString &uri);
-    static QString getTargetUri(const QString &uri);
-    static bool isMountPoint(const QString& uri);
+    BLOCKING static GErrorWrapperPtr getEnumerateError(const QString &uri);
+    BLOCKING static QString getTargetUri(const QString &uri);
+    BLOCKING static bool isMountPoint(const QString& uri);
 
-    static bool stringStartWithChinese(const QString &string);
-    static bool stringLesserThan(const QString &left, const QString &right);
+    NO_BLOCKING static bool stringStartWithChinese(const QString &string);
+    NO_BLOCKING static bool stringLesserThan(const QString &left, const QString &right);
 
-    static const QString getParentUri(const QString &uri);
-    static const QString getOriginalUri(const QString &uri);
+    NO_BLOCKING static const QString getParentUri(const QString &uri);
+    NO_BLOCKING static const QString getOriginalUri(const QString &uri);
 
-    static bool isFileExsit(const QString &uri);
+    BLOCKING static bool isFileExsit(const QString &uri);
 
-    static const QStringList toDisplayUris(const QStringList &args);
+    NO_BLOCKING static const QStringList toDisplayUris(const QStringList &args);
 
-    static bool isMountRoot(const QString &uri);
+    BLOCKING static bool isMountRoot(const QString &uri);
 
-    static bool queryVolumeInfo(const QString &volumeUri,
+    BLOCKING static bool queryVolumeInfo(const QString &volumeUri,
                                 QString &volumeName,
                                 QString &unixDeviceName,
                                 const QString &volumeDisplayName = nullptr);
 
-    static bool isFileDirectory(const QString &uri);
+    BLOCKING static bool isFileDirectory(const QString &uri);
 
-    static bool isFileUnmountable(const QString &uri);
+    BLOCKING static bool isFileUnmountable(const QString &uri);
 
 private:
     FileUtils();
+    static void handleVolumeLabelForFat32(QString &volumeName,const QString &unixDevcieName);
 };
 
 }

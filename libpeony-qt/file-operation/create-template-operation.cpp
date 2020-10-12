@@ -36,7 +36,6 @@ using namespace Peony;
 #define TEMPLATE_DIR "file://" + QString(g_get_user_special_dir(G_USER_DIRECTORY_TEMPLATES)) + "/"
 
 void CreateTemplateOperation::handleDuplicate(const QString &uri) {
-    setHasError(true);
     QString name = uri.split("/").last();
     QRegExp regExp("\\(\\d+\\)");
     if (name.contains(regExp)) {
@@ -126,6 +125,7 @@ retry_create_empty_file:
                 except.dlgType = ED_WARNING;
                 except.destDirUri = m_dest_dir_uri;
                 except.isCritical = true;
+                except.op = FileOpCreateTemp;
                 except.title = tr("Create file");
                 except.errorCode = err->code;
                 except.errorStr = err->message;
@@ -154,6 +154,7 @@ retry_create_empty_folder:
                 except.dlgType = ED_WARNING;
                 except.destDirUri = m_dest_dir_uri;
                 except.isCritical = true;
+                except.op = FileOpCreateTemp;
                 except.title = tr("Create file error");
                 except.errorCode = err->code;
                 except.errorStr = err->message;
@@ -175,6 +176,7 @@ retry_create_template:
                     nullptr,
                     &err);
         if (err) {
+            setHasError(true);
             if (err->code == G_IO_ERROR_EXISTS) {
                 g_error_free(err);
                 handleDuplicate(m_target_uri);
@@ -185,12 +187,15 @@ retry_create_template:
                 except.dlgType = ED_WARNING;
                 except.destDirUri = m_dest_dir_uri;
                 except.isCritical = true;
+                except.op = FileOpCreateTemp;
                 except.title = tr("Create file error");
                 except.errorCode = err->code;
                 except.errorStr = err->message;
                 except.errorType = ET_GIO;
                 Q_EMIT errored(except);
             }
+        } else {
+            setHasError(false);
         }
         // change file's modify time and access time after copy templete file;
         time_t now_time = time(NULL);
@@ -241,6 +246,11 @@ retry_create_template:
             g_free(path);
         }
     }
+
+    // as target()
+    m_info.get()->m_dest_dir_uri = m_target_uri;
+    m_info.get()->m_dest_uris.clear();
+    m_info.get()->m_dest_uris<<m_target_uri;
 
     Q_EMIT operationFinished();
     notifyFileWatcherOperationFinished();

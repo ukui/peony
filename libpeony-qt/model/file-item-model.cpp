@@ -38,6 +38,8 @@
 #include <QMimeData>
 #include <QUrl>
 
+#include <QTimer>
+
 #include <QDebug>
 
 using namespace Peony;
@@ -151,7 +153,12 @@ const QModelIndex FileItemModel::indexFromUri(const QString &uri)
 {
     //FIXME: support recursively finding?
     for (auto child : *m_root_item->m_children) {
-        if (child->uri() == uri) {
+        GFile *left = g_file_new_for_uri(child->uri().toUtf8().constData());
+        GFile *right = g_file_new_for_uri(uri.toUtf8().constData());
+        bool equal = g_file_equal(left, right);
+        g_object_unref(left);
+        g_object_unref(right);
+        if (equal) {
             return child->firstColumnIndex();
         }
     }
@@ -472,6 +479,7 @@ bool FileItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action, i
         //we have to set the dest dir uri as its mount point.
         //maybe i should do this when set model root item.
         destDirUri = m_root_item->m_info->uri();
+        //FIXME: replace BLOCKING api in ui thread.
         auto targetUri = FileUtils::getTargetUri(destDirUri);
         if (!targetUri.isEmpty()) {
             destDirUri = targetUri;
@@ -526,11 +534,39 @@ bool FileItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action, i
     bool addHistory = true;
     switch (action) {
     case Qt::MoveAction: {
-        FileOperationUtils::move(srcUris, destDirUri, addHistory, true);
+        auto op = FileOperationUtils::move(srcUris, destDirUri, addHistory, true);
+        connect(op, &FileOperation::operationFinished, this, [=](){
+            auto opInfo = op->getOperationInfo();
+            auto targetUris = opInfo.get()->dests();
+            Q_EMIT this->selectRequest(targetUris);
+//            auto selectionModel = new QItemSelectionModel(this);
+//            selectionModel->clearSelection();
+//            QTimer::singleShot(1000, selectionModel, [=](){
+//                for (auto destUri : targetUris) {
+//                    auto index = indexFromUri(destUri);
+//                    selectionModel->select(index, QItemSelectionModel::Select);
+//                }
+//                selectionModel->deleteLater();
+//            });
+        }, Qt::BlockingQueuedConnection);
         break;
     }
     case Qt::CopyAction: {
         FileCopyOperation *copyOp = new FileCopyOperation(srcUris, destDirUri);
+        connect(copyOp, &FileOperation::operationFinished, this, [=](){
+            auto opInfo = copyOp->getOperationInfo();
+            auto targetUris = opInfo.get()->dests();
+            Q_EMIT this->selectRequest(targetUris);
+//            auto selectionModel = new QItemSelectionModel(this);
+//            selectionModel->clearSelection();
+//            QTimer::singleShot(1000, selectionModel, [=](){
+//                for (auto destUri : targetUris) {
+//                    auto index = indexFromUri(destUri);
+//                    selectionModel->select(index, QItemSelectionModel::Select);
+//                }
+//                selectionModel->deleteLater();
+//            });
+        }, Qt::BlockingQueuedConnection);
         fileOpMgr->startOperation(copyOp);
         break;
     }

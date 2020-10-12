@@ -108,6 +108,7 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
 //    m_header_bar_bg->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 //    m_header_bar_bg->setFixedHeight(50);
     QToolBar *previewButtons = new QToolBar(this);
+    m_tool_bar = previewButtons;
     //previewButtons->setFixedHeight(m_tab_bar->height());
     //m_header_bar_layout->setContentsMargins(0, 0, 5, 0);
     //t->addWidget(m_header_bar_bg);
@@ -560,6 +561,11 @@ void TabWidget::updateTrashBarVisible(const QString &uri)
     m_trash_label->setVisible(visible);
     m_clear_button->setVisible(visible);
     m_recover_button->setVisible(visible);
+
+    if (uri.startsWith("trash://") || uri.startsWith("recent://"))
+        m_tool_bar->setVisible(false);
+    else
+        m_tool_bar->setVisible(true);
 }
 
 void TabWidget::handleZoomLevel(int zoomLevel)
@@ -647,10 +653,18 @@ void TabWidget::updateSearchPathButton(const QString &uri)
         if (! getCurrentUri().isNull())
             curUri = getCurrentUri();
     }
+    //FIXME: replace BLOCKING api in ui thread.
     auto iconName = Peony::FileUtils::getFileIconName(curUri);
     auto displayName = Peony::FileUtils::getFileDisplayName(curUri);
     qDebug() << "iconName:" <<iconName <<displayName<<curUri;
     m_search_path->setIcon(QIcon::fromTheme(iconName));
+
+    //elide text if it is too long
+    if (displayName.length() > ELIDE_TEXT_LENGTH)
+    {
+        int  charWidth = fontMetrics().averageCharWidth();
+        displayName = fontMetrics().elidedText(displayName, Qt::ElideRight, ELIDE_TEXT_LENGTH * charWidth);
+    }
     m_search_path->setText(displayName);
 }
 
@@ -1072,6 +1086,12 @@ void TabWidget::bindContainerSignal(Peony::DirectoryViewContainer *container)
         bool enable = currentPage()->getView()->supportZoom();
         m_status_bar->m_slider->setEnabled(enable);
         //m_status_bar->m_slider->setVisible(enable);
+    });
+
+    connect(container, &Peony::DirectoryViewContainer::updateWindowSelectionRequest, this, [=](const QStringList &uris){
+        if (container == currentPage()) {
+            Q_EMIT this->updateWindowSelectionRequest(uris);
+        }
     });
 }
 

@@ -268,11 +268,14 @@ public:
     QStringList sources() {
         return m_src_uris;
     }
+    QStringList dests() {
+        return m_dest_uris;
+    }
     QString target() {
         return m_dest_dir_uri;
     }
 
-private:
+//private:
     QStringList m_src_uris;
     QString m_dest_dir_uri;
 

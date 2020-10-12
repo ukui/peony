@@ -108,8 +108,6 @@ void FileOperationProgressBar::removeFileOperation(ProgressBar *progress)
     m_progress_list->remove(progress);
     m_widget_list->remove(li);
 
-    progress->deleteLater();
-    delete li;
     --m_progress_size;
 
     // check main progress
@@ -121,6 +119,10 @@ void FileOperationProgressBar::removeFileOperation(ProgressBar *progress)
             mainProgressChange(pg);
         }
     }
+
+    // free progress
+    delete progress;
+    delete li;
 
     if (m_progress_size <= 0) {
         m_progress_size = 0;
@@ -720,8 +722,11 @@ void ProgressBar::updateProgress(const QString &srcUri, const QString &destUri, 
 
     QUrl srcUrl = srcUri;
     m_src_uri = srcUrl.toDisplayString();
-    QUrl destUrl = destUri;
-    m_dest_uri = destUrl.toDisplayString();
+    if (nullptr != destUri) {
+        QUrl destUrl = destUri;
+        m_dest_uri = destUrl.toDisplayString();
+    }
+
     if (fIcon != getIcon().name()) {
         setIcon(fIcon);
     }

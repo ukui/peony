@@ -66,6 +66,20 @@ enum ExceptionResponse {
     OverWriteAll,
 };
 
+typedef enum{
+    FileOpInvalid,  //invalid operation
+    FileOpMove,     //file or dir move
+    FileOpCopy,     //file or dir copy
+    FileOpLink,     //file or dir create link
+    FileOpRename,   //file or dir rename
+    FileOpTrash,    //file or dir delete to trash
+    FileOpUntrash,  //file or dir restore to origin from trash
+    FileOpDelete,   //file or dir delete forever
+    FileOpCount,    //file or dir file count
+    FileOpCreateTemp, //create file or dir
+    FileOpNum,
+}FileOpsType;
+
 /*!
  * \brief The format of the data that needs to be transferred for error handling operations
  * \li errorCode: Error code
@@ -81,6 +95,7 @@ typedef struct _FileOperationError
 {
     int                         errorCode;
     bool                        isCritical;
+    FileOpsType                 op;
     QString                     title;
     QString                     srcUri;
     QString                     destDirUri;

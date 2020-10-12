@@ -231,6 +231,10 @@ void DesktopWindow::initGSettings() {
     });
 
     m_bg_settings = new QGSettings(BACKGROUND_SETTINGS, QByteArray(), this);
+    m_picture_option = m_bg_settings->get("pictureOptions").toString();
+
+    if(m_picture_option == ""||m_picture_option == NULL)
+        m_picture_option = "stretched";
 
     connect(m_bg_settings, &QGSettings::changed, this, [=](const QString &key) {
         qDebug() << "bg settings changed:" << key;
@@ -281,6 +285,13 @@ void DesktopWindow::initGSettings() {
             qDebug() <<"set color bg"<< colorString;
             this->setBg(color);
         }
+        if(key == "pictureOptions")
+        {
+            m_picture_option = m_bg_settings->get("pictureOptions").toString();
+            if(m_picture_option == ""||m_picture_option == NULL)
+                m_picture_option = "stretched";
+            this->setBg(m_current_bg_path);
+        }
     });
 }
 
@@ -312,19 +323,120 @@ void DesktopWindow::paintEvent(QPaintEvent *e)
             p.fillRect(this->rect(), m_color_to_be_set);
             p.restore();
         } else {
+
             auto opacity = m_opacity->currentValue().toDouble();
-            p.drawPixmap(this->rect(), m_bg_back_cache_pixmap, m_bg_back_cache_pixmap.rect());
-            p.save();
-            p.setOpacity(opacity);
-            p.drawPixmap(this->rect(), m_bg_font_cache_pixmap, m_bg_font_cache_pixmap.rect());
-            p.restore();
+            if(m_picture_option == "centered")//居中
+            {
+                p.drawPixmap((m_screen->size().width()-m_bg_back_cache_pixmap.rect().width())/2,
+                              (m_screen->size().height()-m_bg_back_cache_pixmap.rect().height())/2,
+                             m_bg_back_cache_pixmap);
+                p.save();
+                p.setOpacity(opacity);
+                p.drawPixmap((m_screen->size().width()-m_bg_font_cache_pixmap.rect().width())/2,
+                              (m_screen->size().height()-m_bg_font_cache_pixmap.rect().height())/2,
+                             m_bg_font_cache_pixmap);
+//                p.drawPixmap(this->rect(), m_bg_font_cache_pixmap, m_bg_font_cache_pixmap.rect());
+                p.restore();
+            }
+            else if(m_picture_option == "stretched")//拉伸
+            {
+                p.drawPixmap(this->rect(), m_bg_back_cache_pixmap, m_bg_back_cache_pixmap.rect());
+                p.save();
+                p.setOpacity(opacity);
+                p.drawPixmap(this->rect(), m_bg_font_cache_pixmap, m_bg_font_cache_pixmap.rect());
+                p.restore();
+            }
+            else if(m_picture_option == "scaled")//填充
+            {
+                p.drawPixmap(this->rect(), m_bg_back_cache_pixmap);
+                p.save();
+                p.setOpacity(opacity);
+                p.drawPixmap(this->rect(), m_bg_font_cache_pixmap);
+                p.restore();
+            }
+            else if(m_picture_option == "wallpaper")//平铺
+            {
+                int drawedWidth = 0;
+                int drawedHeight = 0;
+                while (1) {
+                    drawedWidth = 0;
+                    while (1) {
+                        p.drawPixmap(drawedWidth, drawedHeight, m_bg_back_cache_pixmap);
+                        drawedWidth += m_bg_back_cache_pixmap.width();
+                        if (drawedWidth >= m_screen->size().width()) {
+                            break;
+                        }
+                    }
+                    drawedHeight += m_bg_back_cache_pixmap.height();
+                    if (drawedHeight >= m_screen->size().height()) {
+                        break;
+                    }
+                }
+                p.save();
+                p.setOpacity(opacity);
+                drawedWidth =0;
+                drawedHeight = 0;
+                while (1) {
+                    drawedWidth = 0;
+                    while (1) {
+                        p.drawPixmap(drawedWidth, drawedHeight, m_bg_font_cache_pixmap);
+                        drawedWidth += m_bg_font_cache_pixmap.width();
+                        if (drawedWidth >= m_screen->size().width()) {
+                            break;
+                        }
+                    }
+                    drawedHeight += m_bg_font_cache_pixmap.height();
+                    if (drawedHeight >= m_screen->size().height()) {
+                        break;
+                    }
+                }
+                p.restore();
+            }
+            else
+            {
+                p.drawPixmap(this->rect(), m_bg_back_cache_pixmap, m_bg_back_cache_pixmap.rect());
+                p.save();
+                p.setOpacity(opacity);
+                p.drawPixmap(this->rect(), m_bg_font_cache_pixmap, m_bg_font_cache_pixmap.rect());
+                p.restore();
+            }
         }
     } else {
         //draw bg?
         if (m_use_pure_color) {
-            p.fillRect(this->rect(), m_last_pure_color);
+            p.fillRect(this->rect(), m_color_to_be_set);
+            m_used_pure_color = true;
+            m_last_pure_color = m_color_to_be_set;
         } else {
-            p.drawPixmap(this->rect(), m_bg_back_cache_pixmap, m_bg_back_cache_pixmap.rect());
+//            p.drawPixmap(this->rect(), m_bg_back_cache_pixmap, m_bg_back_cache_pixmap.rect());
+            if(m_picture_option == "centered")
+                p.drawPixmap((m_screen->size().width()-m_bg_font_cache_pixmap.rect().width())/2,
+                             (m_screen->size().height()-m_bg_font_cache_pixmap.rect().height())/2,
+                              m_bg_font_cache_pixmap);
+            else if(m_picture_option == "stretched")
+                p.drawPixmap(this->rect(), m_bg_font_cache_pixmap);
+            else if(m_picture_option == "scaled")
+                p.drawPixmap(this->rect(), m_bg_font_cache_pixmap);
+            else if(m_picture_option == "wallpaper")
+            {
+                 int drawedWidth = 0;
+                 int drawedHeight = 0;
+                while (1) {
+                    drawedWidth = 0;
+                    while (1) {
+                        p.drawPixmap(drawedWidth, drawedHeight, m_bg_font_cache_pixmap);
+                        drawedWidth += m_bg_font_cache_pixmap.width();
+                        if (drawedWidth >= m_screen->size().width()) {
+                            break;
+                        }
+                    }
+                    drawedHeight += m_bg_font_cache_pixmap.height();
+                    if (drawedHeight >= m_screen->size().height()) {
+                        break;
+                    }
+                }
+            }
+            m_used_pure_color = false;
         }
     }
     QMainWindow::paintEvent(e);
@@ -362,22 +474,36 @@ void DesktopWindow::setBg(const QString &path) {
     m_use_pure_color = false;
 
     m_bg_back_pixmap = m_bg_font_pixmap;
+    if(m_bg_back_pixmap.isNull())
+        m_bg_back_pixmap = QPixmap(path);
 
     m_bg_font_pixmap = QPixmap(path);
     // FIXME: implement different pixmap clip algorithm.
-    m_bg_back_cache_pixmap = m_bg_back_pixmap.scaled(m_screen->size(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+    if(m_picture_option == "scaled"){
+        m_bg_back_cache_pixmap = m_bg_back_pixmap.scaled(m_screen->size(), Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation);
 
-    m_bg_font_cache_pixmap = m_bg_font_pixmap.scaled(m_screen->size(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+        m_bg_font_cache_pixmap = m_bg_font_pixmap.scaled(m_screen->size(), Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation);
+    }
+    else
+    {
+        m_bg_back_cache_pixmap = m_bg_back_pixmap;
+
+        m_bg_font_cache_pixmap = m_bg_font_pixmap;
+    }
 
     m_current_bg_path = path;
     setBgPath(path);
 
-    if (m_opacity->state() == QVariantAnimation::Running) {
-        m_opacity->setCurrentTime(500);
-    } else {
-        m_opacity->stop();
-        m_opacity->start();
-    }
+    if(!m_used_pure_color)
+        if (m_opacity->state() == QVariantAnimation::Running) {
+            m_opacity->setCurrentTime(500);
+        } else {
+            m_opacity->stop();
+            m_opacity->start();
+        }
+    else
+        update();
+
 }
 
 void DesktopWindow::setBg(const QColor &color) {
@@ -385,12 +511,15 @@ void DesktopWindow::setBg(const QColor &color) {
 
     m_use_pure_color = true;
 
-    if (m_opacity->state() == QVariantAnimation::Running) {
-        m_opacity->setCurrentTime(500);
-    } else {
-        m_opacity->stop();
-        m_opacity->start();
-    }
+    if(m_used_pure_color)
+        if (m_opacity->state() == QVariantAnimation::Running) {
+            m_opacity->setCurrentTime(500);
+        } else {
+            m_opacity->stop();
+            m_opacity->start();
+        }
+    else
+        update();
 }
 
 void DesktopWindow::setBgPath(const QString &bgPath) {
@@ -470,134 +599,6 @@ void DesktopWindow::scaleBg(const QRect &geometry) {
 void DesktopWindow::initShortcut() {
     // shotcut
     return;
-    QAction *copyAction = new QAction(this);
-    copyAction->setShortcut(QKeySequence::Copy);
-    connect(copyAction, &QAction::triggered, [=]() {
-        auto selectedUris = PeonyDesktopApplication::getIconView()->getSelections();
-        if (!selectedUris.isEmpty())
-            ClipboardUtils::setClipboardFiles(selectedUris, false);
-    });
-    addAction(copyAction);
-
-    QAction *cutAction = new QAction(this);
-    cutAction->setShortcut(QKeySequence::Cut);
-    connect(cutAction, &QAction::triggered, [=]() {
-        auto selectedUris = PeonyDesktopApplication::getIconView()->getSelections();
-        if (!selectedUris.isEmpty())
-            ClipboardUtils::setClipboardFiles(selectedUris, true);
-    });
-    addAction(cutAction);
-
-    QAction *pasteAction = new QAction(this);
-    pasteAction->setShortcut(QKeySequence::Paste);
-    connect(pasteAction, &QAction::triggered, [=]() {
-        auto clipUris = ClipboardUtils::getClipboardFilesUris();
-        if (ClipboardUtils::isClipboardHasFiles()) {
-            ClipboardUtils::pasteClipboardFiles(PeonyDesktopApplication::getIconView()->getDirectoryUri());
-        }
-    });
-    addAction(pasteAction);
-
-    QAction *trashAction = new QAction(this);
-    trashAction->setShortcut(QKeySequence::Delete);
-    connect(trashAction, &QAction::triggered, [=]() {
-        auto selectedUris = PeonyDesktopApplication::getIconView()->getSelections();
-        if (!selectedUris.isEmpty()) {
-            auto op = new FileTrashOperation(selectedUris);
-            FileOperationManager::getInstance()->startOperation(op, true);
-        }
-    });
-    addAction(trashAction);
-
-    QAction *undoAction = new QAction(this);
-    undoAction->setShortcut(QKeySequence::Undo);
-    connect(undoAction, &QAction::triggered,
-    [=]() {
-        FileOperationManager::getInstance()->undo();
-    });
-    addAction(undoAction);
-
-    QAction *redoAction = new QAction(this);
-    redoAction->setShortcut(QKeySequence::Redo);
-    connect(redoAction, &QAction::triggered,
-    [=]() {
-        FileOperationManager::getInstance()->redo();
-    });
-    addAction(redoAction);
-
-    QAction *zoomInAction = new QAction(this);
-    zoomInAction->setShortcut(QKeySequence::ZoomIn);
-    connect(zoomInAction, &QAction::triggered, [=]() {
-        PeonyDesktopApplication::getIconView()->zoomIn();
-    });
-    addAction(zoomInAction);
-
-    QAction *zoomOutAction = new QAction(this);
-    zoomOutAction->setShortcut(QKeySequence::ZoomOut);
-    connect(zoomOutAction, &QAction::triggered, [=]() {
-        PeonyDesktopApplication::getIconView()->zoomOut();
-    });
-    addAction(zoomOutAction);
-
-    QAction *renameAction = new QAction(this);
-    renameAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::ALT + Qt::Key_E)<<Qt::Key_F2);
-    connect(renameAction, &QAction::triggered, [=]() {
-        auto selections = PeonyDesktopApplication::getIconView()->getSelections();
-        if (selections.count() == 1) {
-            PeonyDesktopApplication::getIconView()->editUri(selections.first());
-        }
-    });
-    addAction(renameAction);
-
-    QAction *removeAction = new QAction(this);
-    removeAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::SHIFT + Qt::Key_Delete));
-    connect(removeAction, &QAction::triggered, [=]() {
-        qDebug() << "delete" << PeonyDesktopApplication::getIconView()->getSelections();
-        FileOperationUtils::executeRemoveActionWithDialog(PeonyDesktopApplication::getIconView()->getSelections());
-    });
-    addAction(removeAction);
-
-    auto propertiesWindowAction = new QAction(this);
-    propertiesWindowAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::ALT + Qt::Key_Return)
-                                         <<QKeySequence(Qt::ALT + Qt::Key_Enter));
-    connect(propertiesWindowAction, &QAction::triggered, this, [=]() {
-        if (PeonyDesktopApplication::getIconView()->getSelections().count() > 0)
-        {
-            PropertiesWindow *w = new PropertiesWindow(PeonyDesktopApplication::getIconView()->getSelections());
-            w->show();
-        }
-    });
-    addAction(propertiesWindowAction);
-
-    auto newFolderAction = new QAction(this);
-    newFolderAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_N));
-    connect(newFolderAction, &QAction::triggered, this, [=]() {
-        CreateTemplateOperation op(PeonyDesktopApplication::getIconView()->getDirectoryUri(), CreateTemplateOperation::EmptyFolder, tr("New Folder"));
-        op.run();
-        auto targetUri = op.target();
-
-        QTimer::singleShot(500, this, [=]() {
-            PeonyDesktopApplication::getIconView()->scrollToSelection(targetUri);
-        });
-    });
-    addAction(newFolderAction);
-
-    auto refreshAction = new QAction(this);
-    refreshAction->setShortcut(Qt::Key_F5);
-    connect(refreshAction, &QAction::triggered, this, [=]() {
-        PeonyDesktopApplication::getIconView()->refresh();
-    });
-    addAction(refreshAction);
-
-    QAction *editAction = new QAction(PeonyDesktopApplication::getIconView());
-    editAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::ALT + Qt::Key_E)<<Qt::Key_F2);
-    connect(editAction, &QAction::triggered, this, [=]() {
-        auto selections = PeonyDesktopApplication::getIconView()->getSelections();
-        if (selections.count() == 1) {
-            PeonyDesktopApplication::getIconView()->editUri(selections.first());
-        }
-    });
-    addAction(editAction);
 }
 
 void DesktopWindow::availableGeometryChangedProcess(const QRect &geometry) {

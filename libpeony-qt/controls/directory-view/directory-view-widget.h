@@ -114,6 +114,8 @@ Q_SIGNALS:
     //window
     void updateWindowLocationRequest(const QString &uri);
 
+    void updateWindowSelectionRequest(const QStringList &uris);
+
 public Q_SLOTS:
     virtual void bindModel(FileItemModel *model, FileItemProxyFilterSortModel *proxyModel) {}
 
