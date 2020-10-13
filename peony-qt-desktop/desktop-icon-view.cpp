@@ -1074,20 +1074,20 @@ void DesktopIconView::setDefaultZoomLevel(ZoomLevel level)
     switch (level) {
     case Small:
         setIconSize(QSize(24, 24));
-        setGridSize(QSize(64, 64));
+        setGridSize(QSize(64, 74));
         break;
     case Large:
         setIconSize(QSize(64, 64));
-        setGridSize(QSize(115, 135));
+        setGridSize(QSize(115, 145));
         break;
     case Huge:
         setIconSize(QSize(96, 96));
-        setGridSize(QSize(140, 170));
+        setGridSize(QSize(140, 180));
         break;
     default:
         m_zoom_level = Normal;
         setIconSize(QSize(48, 48));
-        setGridSize(QSize(96, 96));
+        setGridSize(QSize(96, 106));
         break;
     }
     clearAllIndexWidgets();
@@ -1452,7 +1452,7 @@ void DesktopIconView::refresh()
 QRect DesktopIconView::visualRect(const QModelIndex &index) const
 {
     auto rect = QListView::visualRect(index);
-    QPoint p(10, 5);
+    QPoint p(20, 5);
 
     switch (zoomLevel()) {
     case Small:
