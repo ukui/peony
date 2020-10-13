@@ -214,15 +214,15 @@ QSize DesktopIconViewDelegate::sizeHint(const QStyleOptionViewItem &option, cons
     auto zoomLevel = view->zoomLevel();
     switch (zoomLevel) {
     case DesktopIconView::Small:
-        return QSize(60, 60);
+        return QSize(60, 70);
     case DesktopIconView::Normal:
-        return QSize(90, 90);
+        return QSize(90, 100);
     case DesktopIconView::Large:
-        return QSize(105, 118);
+        return QSize(105, 128);
     case DesktopIconView::Huge:
-        return QSize(120, 140);
+        return QSize(120, 150);
     default:
-        return QSize(90, 90);
+        return QSize(90, 100);
     }
 }
 
