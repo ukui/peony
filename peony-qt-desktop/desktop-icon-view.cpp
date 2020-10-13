@@ -1340,7 +1340,7 @@ void DesktopIconView::dropEvent(QDropEvent *e)
             // check if there is any item out of view
             for (auto index : m_drag_indexes) {
                 auto indexRect = QListView::visualRect(index);
-                if (this->viewport()->rect().contains(indexRect.center())) {
+                if (this->viewport()->rect().contains(indexRect)) {
                     continue;
                 }
 

@@ -58,6 +58,8 @@ ListView::ListView(QWidget *parent) : QTreeView(parent)
     setAttribute(Qt::WA_TranslucentBackground);
     setStyle(Peony::DirectoryView::ListViewStyle::getStyle());
 
+    setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+
     setAlternatingRowColors(true);
     setAutoFillBackground(true);
     setBackgroundRole(QPalette::Base);
@@ -368,6 +370,8 @@ void ListView::updateGeometries()
 
     if (model()->columnCount() == 0 || model()->rowCount() == 0)
         return;
+
+    header()->setFixedWidth(this->width());
 
     QStyleOptionViewItem opt = viewOptions();
     int height = itemDelegate()->sizeHint(opt, QModelIndex()).height();
