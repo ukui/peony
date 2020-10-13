@@ -122,7 +122,7 @@ void ThumbnailManager::createPdfFileThumbnail(const QString &uri, std::shared_pt
 
     if (!uri.startsWith("file:///")) {
         url = FileUtils::getTargetUri(uri);
-        qDebug()<<url;
+        //qDebug()<<url;
     }
 
     PdfThumbnail pdfThumbnail(url.path());
@@ -144,7 +144,7 @@ void ThumbnailManager::createImageFileThumbnail(const QString &uri, std::shared_
 
     if (!uri.startsWith("file:///")) {
         url = FileUtils::getTargetUri(uri);
-        qDebug()<<url;
+        //qDebug()<<url;
     }
 
     QIcon thumbnail = GenericThumbnailer::generateThumbnail(url.path(), true);
@@ -182,7 +182,7 @@ void ThumbnailManager::createDesktopFileThumbnail(const QString &uri, std::share
 
     if (!uri.startsWith("file:///")) {
         url = FileUtils::getTargetUri(uri);
-        qDebug()<<url;
+        //qDebug()<<url;
     }
 
     auto _desktop_file = g_desktop_app_info_new_from_filename(url.path().toUtf8().constData());
@@ -192,12 +192,16 @@ void ThumbnailManager::createDesktopFileThumbnail(const QString &uri, std::share
 
     auto _icon_string = g_desktop_app_info_get_string(_desktop_file, "Icon");
     thumbnail = QIcon::fromTheme(_icon_string);
-    qDebug()<<_icon_string;
     QString string = _icon_string;
 
-    if (thumbnail.isNull() && string.startsWith("/")) {
-        qDebug()<<"add file";
-        thumbnail = GenericThumbnailer::generateThumbnail(_icon_string, true);
+    if (thumbnail.isNull()) {
+        if (string.startsWith("/")) {
+            thumbnail = GenericThumbnailer::generateThumbnail(_icon_string, true);
+        } else if (string.contains(".")) {
+            // try getting themed icon with image suffix.
+            string.chop(string.count() - string.lastIndexOf("."));
+            thumbnail = QIcon::fromTheme(string);
+        }
     }
     g_free(_icon_string);
     g_object_unref(_desktop_file);
@@ -225,9 +229,9 @@ void ThumbnailManager::createThumbnailInternal(const QString &uri, std::shared_p
 
     //NOTE: we should do createThumbnail() after we have queried the file's info.
     auto info = FileInfo::fromUri(uri);
-    qDebug()<<"file uri:"<< uri << " mime type:" << info->mimeType();
-    qDebug()<<"file path:" << info->filePath();
-    qDebug()<<"file modify time:" << info->modifiedTime();
+    //qDebug()<<"file uri:"<< uri << " mime type:" << info->mimeType();
+    //qDebug()<<"file path:" << info->filePath();
+    //qDebug()<<"file modify time:" << info->modifiedTime();
 
     if (!info->mimeType().isEmpty()) {
         if (info->isImageFile()) {
@@ -246,8 +250,8 @@ void ThumbnailManager::createThumbnailInternal(const QString &uri, std::shared_p
             createDesktopFileThumbnail(uri, watcher);
         }
         else {
-            qDebug()<<"the file type: " << info->mimeType();
-            qDebug()<<"the mime type can not generate thumbnail.";
+            //qDebug()<<"the file type: " << info->mimeType();
+            //qDebug()<<"the mime type can not generate thumbnail.";
         }
     }
 }
@@ -296,10 +300,10 @@ void ThumbnailManager::updateDesktopFileThumbnail(const QString &uri, std::share
 {
     auto info = FileInfo::fromUri(uri);
     if (info->isDesktopFile() && info->canExecute()) {
-        qDebug()<<"is desktop file"<<uri;
+        //qDebug()<<"is desktop file"<<uri;
         //get desktop file icon.
         //async
-        qDebug()<<"desktop file"<<uri;
+        //qDebug()<<"desktop file"<<uri;
         QtConcurrent::run([=]() {
             createDesktopFileThumbnail(uri, watcher);
         });
