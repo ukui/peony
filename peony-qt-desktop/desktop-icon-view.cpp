@@ -1227,7 +1227,7 @@ void DesktopIconView::dropEvent(QDropEvent *e)
     else
         m_ctrl_key_pressed = false;
 
-    auto action = m_ctrl_key_pressed ? Qt::CopyAction : Qt::MoveAction;
+    auto action = /*m_ctrl_key_pressed ? Qt::CopyAction : */Qt::MoveAction;
     qDebug() << "DesktopIconView dropEvent" <<action;
     if (this == e->source() && !m_ctrl_key_pressed)
     {
