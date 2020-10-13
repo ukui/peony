@@ -1,3 +1,25 @@
+/*
+ * Peony-Qt's Library
+ *
+ * Copyright (C) 2020, KylinSoft Co., Ltd.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this library.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * Authors: ding jing <dingjing@kylinos.cn>
+ *
+ */
+
 #include "recent-vfs-manager.h"
 
 #include <QFile>
@@ -19,6 +41,24 @@ RecentVFSManager* RecentVFSManager::getInstance()
     return m_instance;
 }
 
+void RecentVFSManager::clearAll()
+{
+    QFile file (m_recent_path);
+    QXmlStreamWriter xmlWritter;
+    xmlWritter.setAutoFormatting(true);
+    file.open(QIODevice::WriteOnly | QIODevice::Text);
+    xmlWritter.setDevice(&file);
+
+    xmlWritter.writeStartDocument();
+    xmlWritter.writeStartElement("xbel");
+    xmlWritter.writeAttribute("version", "1.0");
+    xmlWritter.writeAttribute("xmlns:bookmark", "http://www.freedesktop.org/standards/desktop-bookmarks");
+    xmlWritter.writeAttribute("xmlns:mime", "http://www.freedesktop.org/standards/shared-mime-info");
+    xmlWritter.writeEndElement();
+    xmlWritter.writeEndDocument();
+    file.close();
+}
+
 void RecentVFSManager::insert(QString uri, QString mimetype, QString name, QString exec)
 {
     if (!exists(uri)) {
@@ -33,21 +73,8 @@ RecentVFSManager::RecentVFSManager(QObject *parent) : QObject(parent)
 
     QFile file (m_recent_path);
     if (!file.exists()) {
-        QXmlStreamWriter xmlWritter;
-        xmlWritter.setAutoFormatting(true);
-        file.open(QIODevice::WriteOnly | QIODevice::Text);
-        xmlWritter.setDevice(&file);
-
-        xmlWritter.writeStartDocument();
-        xmlWritter.writeStartElement("xbel");
-        xmlWritter.writeAttribute("version", "1.0");
-        xmlWritter.writeAttribute("xmlns:bookmark", "http://www.freedesktop.org/standards/desktop-bookmarks");
-        xmlWritter.writeAttribute("xmlns:mime", "http://www.freedesktop.org/standards/shared-mime-info");
-        xmlWritter.writeEndElement();
-        xmlWritter.writeEndDocument();
+        clearAll();
     }
-
-    file.close();
 }
 
 bool RecentVFSManager::read()

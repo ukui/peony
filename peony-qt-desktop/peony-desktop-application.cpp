@@ -60,6 +60,9 @@ static bool has_desktop = false;
 static bool has_daemon = false;
 static Peony::DesktopIconView *desktop_icon_view = nullptr;
 
+//record of desktop start time
+qint64 PeonyDesktopApplication::peony_desktop_start_time = 0;
+
 void trySetDefaultFolderUrlHandler() {
     //NOTE:
     //There is a bug in qt concurrent. If we use QtConcurrent::run()
@@ -340,6 +343,10 @@ void PeonyDesktopApplication::primaryScreenChangedProcess(QScreen *screen)
 {
     if (screen != nullptr)
         qDebug()<<"primaryScreenChangedProcess"<<screen->name()<<screen->geometry()<<screen->availableGeometry()<<screen->virtualGeometry();
+    else {
+        qWarning()<<"no primary screen!";
+        return;
+    }
 
     bool need_exchange = false;
     QScreen *preMainScreen = nullptr;
@@ -399,6 +406,9 @@ void PeonyDesktopApplication::screenAddedProcess(QScreen *screen)
 {
     if (screen != nullptr)
         qDebug()<<"screenAdded"<<screen->name()<<screen<<m_window_list.size()<<screen->availableSize();
+    else {
+        return;
+    }
 
     addWindow(screen, false);
 }
@@ -423,7 +433,7 @@ void PeonyDesktopApplication::screenRemovedProcess(QScreen *screen)
 
 bool PeonyDesktopApplication::isPrimaryScreen(QScreen *screen)
 {
-    if (screen == this->primaryScreen())
+    if (screen == this->primaryScreen() && screen)
         return true;
 
     return false;

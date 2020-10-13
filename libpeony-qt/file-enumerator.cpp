@@ -31,6 +31,9 @@
 #include "file-utils.h"
 #include "peony-search-vfs-file.h"
 
+//play audio lib head file
+#include <canberra.h>
+
 #include <QList>
 #include <QMessageBox>
 
@@ -93,6 +96,7 @@ FileEnumerator::FileEnumerator(QObject *parent) : QObject(parent)
  */
 FileEnumerator::~FileEnumerator()
 {
+    g_cancellable_cancel(m_cancellable);
     disconnect();
     //qDebug()<<"~FileEnumerator";
     g_object_unref(m_root_file);
@@ -267,6 +271,10 @@ void FileEnumerator::enumerateSync()
 void FileEnumerator::handleError(GError *err)
 {
     qDebug()<<"handleError"<<err->code<<err->message;
+    ca_context *caContext;
+    ca_context_create(&caContext);
+    const gchar* eventId = "dialog-warning";
+    //eventid 是/usr/share/sounds音频文件名,不带后缀
     switch (err->code) {
     case G_IO_ERROR_NOT_DIRECTORY: {
         auto uri = g_file_get_uri(m_root_file);
@@ -318,9 +326,17 @@ void FileEnumerator::handleError(GError *err)
                                       this);
         break;
     case G_IO_ERROR_NOT_SUPPORTED:
+        ca_context_play (caContext, 0,
+                         CA_PROP_EVENT_ID, eventId,
+                         CA_PROP_EVENT_DESCRIPTION, tr("Delete file Warning"), NULL);
+
         QMessageBox::critical(nullptr, tr("Error"), err->message);
         break;
     case G_IO_ERROR_PERMISSION_DENIED:
+        ca_context_play (caContext, 0,
+                         CA_PROP_EVENT_ID, eventId,
+                         CA_PROP_EVENT_DESCRIPTION, tr("Delete file Warning"), NULL);
+
         //FIXME: do i need add an auth function for this kind of errors?
         QMessageBox::critical(nullptr, tr("Error"), err->message);
         //emit error message to upper levels to process
@@ -393,16 +409,27 @@ GAsyncReadyCallback FileEnumerator::mount_mountable_callback(GFile *file,
     GError *err = nullptr;
     GFile *target = g_file_mount_mountable_finish(file, res, &err);
     if (err && err->code != 0) {
+        auto message = err->message;
+        if (err->code == G_IO_ERROR_CANCELLED) {
+            g_error_free(err);
+            return nullptr;
+        }
         qDebug()<<err->code<<err->message;
+        if (!qobject_cast<QObject *>(p_this)) {
+            g_error_free(err);
+            return nullptr;
+        }
         auto err_data = GErrorWrapper::wrapFrom(err);
         Q_EMIT p_this->prepared(err_data);
     } else {
         Q_EMIT p_this->prepared(nullptr);
+        if (err) {
+            g_error_free(err);
+        }
     }
     if (target) {
         g_object_unref(target);
     }
-
 
     return nullptr;
 }
@@ -415,6 +442,10 @@ GAsyncReadyCallback FileEnumerator::mount_enclosing_volume_callback(GFile *file,
     GError *err = nullptr;
     if (g_file_mount_enclosing_volume_finish (file, res, &err)) {
         if (err) {
+            if (err->code == G_IO_ERROR_CANCELLED) {
+                g_error_free (err);
+                return nullptr;
+            }
             qDebug()<<"mount successed, err:"<<err->code<<err->message;
             Q_EMIT p_this->prepared(GErrorWrapper::wrapFrom(err), nullptr, true);
         } else {
@@ -446,6 +477,14 @@ GAsyncReadyCallback FileEnumerator::mount_enclosing_volume_callback(GFile *file,
                     qDebug()<<"finished err:"<<finished_err->code()<<finished_err->message();
                     if (finished_err->code() == G_IO_ERROR_PERMISSION_DENIED) {
                         p_this->enumerateFinished(false);
+                        ca_context *caContext;
+                        ca_context_create(&caContext);
+                        const gchar* eventId = "dialog-warning";
+                        //eventid 是/usr/share/sounds音频文件名,不带后缀
+                        ca_context_play (caContext, 0,
+                                         CA_PROP_EVENT_ID, eventId,
+                                         CA_PROP_EVENT_DESCRIPTION, tr("Delete file Warning"), NULL);
+
                         QMessageBox::critical(nullptr, tr("Error"), finished_err->message());
                         return;
                     }
@@ -467,6 +506,10 @@ GAsyncReadyCallback FileEnumerator::find_children_async_ready_callback(GFile *fi
     GError *err = nullptr;
     GFileEnumerator *enumerator = g_file_enumerate_children_finish(file, res, &err);
     if (err) {
+        if (err->code == G_IO_ERROR_CANCELLED) {
+            g_error_free(err);
+            return nullptr;
+        }
         qDebug()<<"find children async err:"<<err->code<<err->message;
         //NOTE: if the enumerator file has target uri, but target uri is not mounted,
         //it should be handled.
@@ -505,6 +548,13 @@ GAsyncReadyCallback FileEnumerator::enumerator_next_files_async_ready_callback(G
     GList *files = g_file_enumerator_next_files_finish(enumerator,
                    res,
                    &err);
+
+    if (err) {
+        if (err->code == G_IO_ERROR_CANCELLED) {
+            g_error_free(err);
+            return nullptr;
+        }
+    }
 
     auto errPtr = GErrorWrapper::wrapFrom(err);
     if (!files && !err) {

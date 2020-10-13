@@ -52,6 +52,9 @@
 
 #include "file-operation-error-dialog.h"
 
+//play audio lib head file
+#include <canberra.h>
+
 #include <QDesktopServices>
 #include <QUrl>
 #include <QMessageBox>
@@ -62,6 +65,7 @@
 
 #include <QLocale>
 #include <QStandardPaths>
+#include <recent-vfs-manager.h>
 
 #include <QDebug>
 
@@ -534,10 +538,12 @@ const QList<QAction *> DirectoryViewMenu::constructFileOpActions()
             connect(l.last(), &QAction::triggered, [=]() {
                 ClipboardUtils::setClipboardFiles(m_selections, true);
             });
-            l<<addAction(QIcon::fromTheme("edit-delete-symbolic"), tr("&Delete to trash"));
-            connect(l.last(), &QAction::triggered, [=]() {
-                FileOperationUtils::trash(m_selections, true);
-            });
+            if (!m_is_recent) {
+                l<<addAction(QIcon::fromTheme("edit-delete-symbolic"), tr("&Delete to trash"));
+                connect(l.last(), &QAction::triggered, [=]() {
+                    FileOperationUtils::trash(m_selections, true);
+                });
+            }
             //add delete forever option
             l<<addAction(QIcon::fromTheme("edit-clear-symbolic"), tr("Delete forever"));
             connect(l.last(), &QAction::triggered, [=]() {
@@ -661,6 +667,14 @@ const QList<QAction *> DirectoryViewMenu::constructTrashActions()
             l<<addAction(QIcon::fromTheme("window-close-symbolic"), tr("&Clean the Trash"));
             l.last()->setEnabled(!isTrashEmpty);
             connect(l.last(), &QAction::triggered, [=]() {
+                ca_context *caContext;
+                ca_context_create(&caContext);
+                const gchar* eventId = "dialog-warning";
+                //eventid 是/usr/share/sounds音频文件名,不带后缀
+                ca_context_play (caContext, 0,
+                                 CA_PROP_EVENT_ID, eventId,
+                                 CA_PROP_EVENT_DESCRIPTION, tr("Delete file Warning"), NULL);
+
                 auto result = QMessageBox::question(nullptr, tr("Delete Permanently"), tr("Are you sure that you want to delete these files? "
                                                                                           "Once you start a deletion, the files deleting will never be "
                                                                                           "restored again."));
@@ -680,6 +694,14 @@ const QList<QAction *> DirectoryViewMenu::constructTrashActions()
             });
             l<<addAction(QIcon::fromTheme("window-close-symbolic"), tr("&Delete"));
             connect(l.last(), &QAction::triggered, [=]() {
+                ca_context *caContext;
+                ca_context_create(&caContext);
+                const gchar* eventId = "dialog-warning";
+                //eventid 是/usr/share/sounds音频文件名,不带后缀
+                ca_context_play (caContext, 0,
+                                 CA_PROP_EVENT_ID, eventId,
+                                 CA_PROP_EVENT_DESCRIPTION, tr("Delete file Warning"), NULL);
+
                 auto result = QMessageBox::question(nullptr, tr("Delete Permanently"), tr("Are you sure that you want to delete these files? "
                                                                                           "Once you start a deletion, the files deleting will never be "
                                                                                           "restored again."));
@@ -688,6 +710,11 @@ const QList<QAction *> DirectoryViewMenu::constructTrashActions()
                 }
             });
         }
+    } else if (m_is_recent && m_selections.isEmpty()) {
+        l<<addAction(tr("Clean All"));
+        connect(l.last(), &QAction::triggered, [=]() {
+            RecentVFSManager::getInstance()->clearAll();
+        });
     }
 
     return l;

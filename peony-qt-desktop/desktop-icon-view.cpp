@@ -55,6 +55,9 @@
 
 #include "global-settings.h"
 
+//play audio lib head file
+#include <canberra.h>
+
 #include <QAction>
 #include <QMouseEvent>
 #include <QDragEnterEvent>
@@ -69,6 +72,7 @@
 
 #include <QStringList>
 #include <QMessageBox>
+#include <QDir>
 
 #include <QDebug>
 
@@ -490,10 +494,40 @@ void DesktopIconView::openFileByUri(QString uri)
     job->setAutoDelete();
     job->connect(job, &FileInfoJob::queryAsyncFinished, [=]() {
         if ((info->isDir() || info->isVolume() || info->isVirtual())) {
+            QDir dir(info->filePath());
+            if (! dir.exists())
+            {
+                ca_context *caContext;
+                ca_context_create(&caContext);
+                const gchar* eventId = "dialog-warning";
+                //eventid 是/usr/share/sounds音频文件名,不带后缀
+                ca_context_play (caContext, 0,
+                                 CA_PROP_EVENT_ID, eventId,
+                                 CA_PROP_EVENT_DESCRIPTION, tr("Delete file Warning"), NULL);
+
+                auto result = QMessageBox::question(nullptr, tr("Open Link failed"),
+                                      tr("File not exist, do you want to delete the link file?"));
+                if (result == QMessageBox::Yes) {
+                    qDebug() << "Delete unused symbollink in desktop.";
+                    QStringList selections;
+                    selections.push_back(uri);
+                    FileOperationUtils::trash(selections, true);
+                }
+                return;
+            }
+
             if (! info->uri().startsWith("trash://")
                     && ! info->uri().startsWith("computer://")
                     &&  ! info->canExecute())
             {
+                ca_context *caContext;
+                ca_context_create(&caContext);
+                const gchar* eventId = "dialog-warning";
+                //eventid 是/usr/share/sounds音频文件名,不带后缀
+                ca_context_play (caContext, 0,
+                                 CA_PROP_EVENT_ID, eventId,
+                                 CA_PROP_EVENT_DESCRIPTION, tr("Delete file Warning"), NULL);
+
                 QMessageBox::critical(nullptr, tr("Open failed"),
                                       tr("Open directory failed, you have no permission!"));
                 return;
@@ -1306,7 +1340,7 @@ void DesktopIconView::dropEvent(QDropEvent *e)
             // check if there is any item out of view
             for (auto index : m_drag_indexes) {
                 auto indexRect = QListView::visualRect(index);
-                if (this->viewport()->rect().contains(indexRect.center())) {
+                if (this->viewport()->rect().contains(indexRect)) {
                     continue;
                 }
 
