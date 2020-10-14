@@ -109,10 +109,12 @@ void FileMoveOperation::progress_callback(goffset current_num_bytes,
     if (total_num_bytes < current_num_bytes)
         return;
 
+    QUrl url(p_this->m_current_src_uri);
     auto currnet = p_this->m_current_offset + current_num_bytes;
     auto total = p_this->m_total_szie;
     auto fileIconName = FileUtils::getFileIconName(p_this->m_current_src_uri, false);
-    auto destFileName = FileUtils::isFileDirectory(p_this->m_current_dest_dir_uri) ? nullptr : p_this->m_current_dest_dir_uri;
+    auto destFileName = FileUtils::isFileDirectory(p_this->m_current_dest_dir_uri) ?
+                p_this->m_current_dest_dir_uri + "/" + url.fileName() : p_this->m_current_dest_dir_uri;
 
     Q_EMIT p_this->FileProgressCallback(p_this->m_current_src_uri, destFileName, fileIconName, currnet, total);
     //format: move srcUri to destDirUri: curent_bytes(count) of total_bytes(count).
@@ -554,9 +556,7 @@ fallback_retry:
         auto destFileName = FileUtils::isFileDirectory(m_current_dest_dir_uri) ? nullptr : m_current_dest_dir_uri;
         //NOTE: mkdir doesn't have a progress callback.
         Q_EMIT FileProgressCallback(m_current_src_uri, destFileName, fileIconName, node->size(), node->size());
-        g_file_make_directory(destFile.get()->get(),
-                              getCancellable().get()->get(),
-                              &err);
+        g_file_make_directory(destFile.get()->get(),getCancellable().get()->get(), &err);
         if (err) {
             FileOperationError except;
             if (err->code == G_IO_ERROR_CANCELLED) {
