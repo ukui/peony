@@ -15,7 +15,7 @@ SideBarCloudItem::SideBarCloudItem(QString uri,
     m_parent = parentItem;
     m_is_root_child = parentItem == nullptr;
     if (m_is_root_child) {
-        QString homeUri = "mockup:///";
+        QString homeUri = "cloud:///";
         m_uri = homeUri;
         m_display_name = tr("CloudStorage");
         //m_icon_name = "emblem-personal";
