@@ -660,7 +660,7 @@ void ProgressBar::mouseReleaseEvent(QMouseEvent *event)
                            QMessageBox::Ok | QMessageBox::Cancel);
         msgBox.button(QMessageBox::Ok)->setText(tr("OK"));
         msgBox.button(QMessageBox::Cancel)->setText(tr("Cancel"));
-        if (QMessageBox::Ok == msgBox.exec()) {
+        if (QMessageBox::Ok == msgBox.exec() && ! m_is_stopping) {
             m_is_stopping = true;
             Q_EMIT cancelled();
             if (m_current_value <= 0) {

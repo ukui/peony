@@ -17,8 +17,8 @@ jobs:
     steps:
       - name: Checkout peony source code
         uses: actions/checkout@v2
-      - name: Refresh pacman repository
-        run: pacman -Sy
+      - name: Refresh pacman repository and force upgrade
+        run: pacman -Syyu --noconfirm
       - name: Install build dependencies
         run: pacman -S --noconfirm base-devel qt5-base gsettings-qt kwindowsystem poppler-qt5 qt5-x11extras glib2 qt5-tools udisks2 gtk2 libnotify glibc
       - name: QMake configure & Make
@@ -40,7 +40,7 @@ jobs:
       - name: Update apt repository
         run: apt-get update -y
       - name: Install build dependcies
-        run: apt-get install -y build-essential qt5-default qttools5-dev-tools debhelper-compat pkg-kde-tools pkg-config libglib2.0-dev libqt5x11extras5-dev  libgsettings-qt-dev libpoppler-dev libpoppler-qt5-dev libkf5windowsystem-dev qtbase5-private-dev libudisks2-dev libgtk2.0-dev libnotify-dev
+        run: apt-get install -y build-essential qt5-default qttools5-dev-tools debhelper-compat pkg-kde-tools pkg-config libglib2.0-dev libqt5x11extras5-dev  libgsettings-qt-dev libpoppler-dev libpoppler-qt5-dev libkf5windowsystem-dev qtbase5-private-dev libudisks2-dev libgtk2.0-dev libnotify-dev libcanberra-dev
       - name: QMake configure & Make
         run: |
           mkdir build;

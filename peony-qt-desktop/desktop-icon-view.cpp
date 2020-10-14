@@ -72,6 +72,7 @@
 
 #include <QStringList>
 #include <QMessageBox>
+#include <QDir>
 
 #include <QDebug>
 
@@ -493,6 +494,28 @@ void DesktopIconView::openFileByUri(QString uri)
     job->setAutoDelete();
     job->connect(job, &FileInfoJob::queryAsyncFinished, [=]() {
         if ((info->isDir() || info->isVolume() || info->isVirtual())) {
+            QDir dir(info->filePath());
+            if (! dir.exists())
+            {
+                ca_context *caContext;
+                ca_context_create(&caContext);
+                const gchar* eventId = "dialog-warning";
+                //eventid 是/usr/share/sounds音频文件名,不带后缀
+                ca_context_play (caContext, 0,
+                                 CA_PROP_EVENT_ID, eventId,
+                                 CA_PROP_EVENT_DESCRIPTION, tr("Delete file Warning"), NULL);
+
+                auto result = QMessageBox::question(nullptr, tr("Open Link failed"),
+                                      tr("File not exist, do you want to delete the link file?"));
+                if (result == QMessageBox::Yes) {
+                    qDebug() << "Delete unused symbollink in desktop.";
+                    QStringList selections;
+                    selections.push_back(uri);
+                    FileOperationUtils::trash(selections, true);
+                }
+                return;
+            }
+
             if (! info->uri().startsWith("trash://")
                     && ! info->uri().startsWith("computer://")
                     &&  ! info->canExecute())
@@ -1051,20 +1074,20 @@ void DesktopIconView::setDefaultZoomLevel(ZoomLevel level)
     switch (level) {
     case Small:
         setIconSize(QSize(24, 24));
-        setGridSize(QSize(64, 64));
+        setGridSize(QSize(64, 74));
         break;
     case Large:
         setIconSize(QSize(64, 64));
-        setGridSize(QSize(115, 135));
+        setGridSize(QSize(115, 145));
         break;
     case Huge:
         setIconSize(QSize(96, 96));
-        setGridSize(QSize(140, 170));
+        setGridSize(QSize(140, 180));
         break;
     default:
         m_zoom_level = Normal;
         setIconSize(QSize(48, 48));
-        setGridSize(QSize(96, 96));
+        setGridSize(QSize(96, 106));
         break;
     }
     clearAllIndexWidgets();
@@ -1317,7 +1340,7 @@ void DesktopIconView::dropEvent(QDropEvent *e)
             // check if there is any item out of view
             for (auto index : m_drag_indexes) {
                 auto indexRect = QListView::visualRect(index);
-                if (this->viewport()->rect().contains(indexRect.center())) {
+                if (this->viewport()->rect().contains(indexRect)) {
                     continue;
                 }
 
