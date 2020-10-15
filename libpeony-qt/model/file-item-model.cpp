@@ -227,7 +227,7 @@ QVariant FileItemModel::data(const QModelIndex &index, int role) const
                 if (item->m_info->uri().endsWith(".desktop") && !item->m_info->canExecute()) {
                     return QIcon::fromTheme(item->m_info->iconName(), QIcon::fromTheme("text-x-generic"));
                 }
-                // add by wwn
+                // add by wwn, to make the applications disable
                 std::shared_ptr<FileInfo> info = item->info();
                 if(info->canExecute()&&info->isExecDisable()) {
                     QSize size(100, 100);
