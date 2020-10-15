@@ -43,6 +43,7 @@
 #include <QLocale>
 
 #include <QSystemTrayIcon>
+#include <QGSettings>
 
 #include <gio/gio.h>
 
@@ -62,6 +63,8 @@ static Peony::DesktopIconView *desktop_icon_view = nullptr;
 
 //record of desktop start time
 qint64 PeonyDesktopApplication::peony_desktop_start_time = 0;
+
+void guessContentTypeCallback(GObject* object,GAsyncResult *res,gpointer data);
 
 void trySetDefaultFolderUrlHandler() {
     //NOTE:
@@ -154,6 +157,13 @@ PeonyDesktopApplication::PeonyDesktopApplication(int &argc, char *argv[], const 
     //parse cmd
     auto message = this->arguments().join(' ').toUtf8();
     parseCmd(this->instanceId(), message, isPrimary());
+
+    auto volumeManager = Peony::VolumeManager::getInstance();
+    connect(volumeManager,&Peony::VolumeManager::mountAdded,this,[=](const std::shared_ptr<Peony::Mount> &mount){
+        //auto open dir for inserted udisk or dvd.
+        GMount *newMount = (GMount*)g_object_ref(mount->getGMount());
+        g_mount_guess_content_type(newMount,FALSE,NULL,guessContentTypeCallback,NULL);
+    });
 }
 
 Peony::DesktopIconView *PeonyDesktopApplication::getIconView()
@@ -466,4 +476,50 @@ void PeonyDesktopApplication::checkWindowProcess()
             }
         }
     }
+}
+
+void guessContentTypeCallback(GObject* object,GAsyncResult *res,gpointer data)
+{
+    char **guessType;
+    GError *error;
+    QString openFolderCmd;
+    GFile* root;
+    char *mountUri;
+    bool openFolder;
+
+    error = NULL;
+    openFolder = true;
+    root = g_mount_get_default_location(G_MOUNT(object));
+    mountUri = g_file_get_uri(root);
+    openFolderCmd = "peony " + QString(mountUri) + " &";
+    guessType = g_mount_guess_content_type_finish(G_MOUNT(object),res,&error);
+
+    if(error){
+        g_error_free(error);
+        error = NULL;
+    }else{
+        if(guessType && g_strv_length(guessType) > 0){
+            int n;
+            for(n = 0; guessType[n]; ++n){
+                if(g_content_type_is_a(guessType[n],"x-content/win32-software"))
+                    openFolder = false;
+                if(!strcmp(guessType[n],"x-content/blank-dvd"))
+                    openFolder = false;
+
+                if(openFolder)
+                    system(openFolderCmd.toLatin1().data());
+            }
+            g_strfreev(guessType);
+        }else{
+            QGSettings* autoMountSettings =  new QGSettings("org.gnome.desktop.media-handling");
+            if(autoMountSettings->get("automount-open").toBool())
+                system(openFolderCmd.toLatin1().data());
+
+            delete autoMountSettings;
+        }
+    }
+
+    g_free(mountUri);
+    g_object_unref(root);
+    g_object_unref(object);
 }
