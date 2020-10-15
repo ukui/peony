@@ -675,10 +675,14 @@ const QList<QAction *> DirectoryViewMenu::constructTrashActions()
                                  CA_PROP_EVENT_ID, eventId,
                                  CA_PROP_EVENT_DESCRIPTION, tr("Delete file Warning"), NULL);
 
-                auto result = QMessageBox::question(nullptr, tr("Delete Permanently"), tr("Are you sure that you want to delete these files? "
-                                                                                          "Once you start a deletion, the files deleting will never be "
-                                                                                          "restored again."));
-                if (result == QMessageBox::Yes) {
+                QMessageBox questionBox (QMessageBox::Question, QObject::tr("Delete Permanently"),
+                                         tr("Are you sure that you want to delete these files? "
+                                            "Once you start a deletion, the files deleting will never be "
+                                            "restored again."), QMessageBox::Yes | QMessageBox::No);
+                questionBox.button(QMessageBox::Yes)->setText(QObject::tr("Yes"));
+                questionBox.button(QMessageBox::No)->setText(QObject::tr("No"));
+
+                if (questionBox.exec() == QMessageBox::Yes) {
                     auto uris = m_top_window->getCurrentAllFileUris();
                     FileOperationUtils::remove(uris);
                 }
@@ -702,10 +706,14 @@ const QList<QAction *> DirectoryViewMenu::constructTrashActions()
                                  CA_PROP_EVENT_ID, eventId,
                                  CA_PROP_EVENT_DESCRIPTION, tr("Delete file Warning"), NULL);
 
-                auto result = QMessageBox::question(nullptr, tr("Delete Permanently"), tr("Are you sure that you want to delete these files? "
-                                                                                          "Once you start a deletion, the files deleting will never be "
-                                                                                          "restored again."));
-                if (result == QMessageBox::Yes) {
+                QMessageBox questionBox (QMessageBox::Question, QObject::tr("Delete Permanently"),
+                                         tr("Are you sure that you want to delete these files? "
+                                            "Once you start a deletion, the files deleting will never be "
+                                            "restored again."), QMessageBox::Yes | QMessageBox::No);
+                questionBox.button(QMessageBox::Yes)->setText(QObject::tr("Yes"));
+                questionBox.button(QMessageBox::No)->setText(QObject::tr("No"));
+
+                if (questionBox.exec() == QMessageBox::Yes) {
                     FileOperationUtils::remove(m_selections);
                 }
             });

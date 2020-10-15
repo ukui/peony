@@ -158,18 +158,18 @@
         <translation>关闭</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="380"/>
-        <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="386"/>
+        <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="379"/>
+        <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="385"/>
         <source>qmesg_notify</source>
         <translation>通知</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="380"/>
+        <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="379"/>
         <source>format_success</source>
         <translation>格式化成功!</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="386"/>
+        <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="385"/>
         <source>format_err</source>
         <translation>格式化失败!</translation>
     </message>
@@ -434,7 +434,7 @@
 <context>
     <name>Peony::AdvancedLocationBar</name>
     <message>
-        <location filename="../../libpeony-qt/controls/navigation-bar/advanced-location-bar.cpp" line="139"/>
+        <location filename="../../libpeony-qt/controls/navigation-bar/advanced-location-bar.cpp" line="143"/>
         <source>Search Content...</source>
         <translation>搜索内容</translation>
     </message>
@@ -880,7 +880,7 @@
         <translation type="vanished">属性(&amp;R)</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="695"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="699"/>
         <source>&amp;Delete</source>
         <translation>删除(&amp;D)</translation>
     </message>
@@ -909,34 +909,32 @@
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="676"/>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="703"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="707"/>
         <source>Delete file Warning</source>
         <translation>删除文件警告</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="678"/>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="705"/>
         <source>Delete Permanently</source>
-        <translation>永久删除</translation>
+        <translation type="vanished">永久删除</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="678"/>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="705"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="679"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="710"/>
         <source>Are you sure that you want to delete these files? Once you start a deletion, the files deleting will never be restored again.</source>
         <translation>确定永久删除这些文件？一旦确定，这些文件将无法被恢复。</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="687"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="691"/>
         <source>&amp;Restore</source>
         <translation>还原(&amp;R)</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="714"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="722"/>
         <source>Clean All</source>
         <translation>清空全部</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="730"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="738"/>
         <source>Open Parent Folder in New Window</source>
         <translation>在新窗口中打开文件所在目录</translation>
     </message>
@@ -1052,8 +1050,8 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
         <translation type="vanished">文件复制</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-copy-operation.cpp" line="204"/>
-        <location filename="../../libpeony-qt/file-operation/file-copy-operation.cpp" line="324"/>
+        <location filename="../../libpeony-qt/file-operation/file-copy-operation.cpp" line="206"/>
+        <location filename="../../libpeony-qt/file-operation/file-copy-operation.cpp" line="326"/>
         <source>File copy error</source>
         <translation>文件复制错误</translation>
     </message>
@@ -1356,8 +1354,8 @@ Do you want to delete the link file?</source>
         <translation type="vanished">文件创建</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="201"/>
-        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="327"/>
+        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="203"/>
+        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="329"/>
         <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="569"/>
         <source>Move file error</source>
         <translation>移动文件错误</translation>
@@ -1533,14 +1531,14 @@ Do you want to delete the link file?</source>
 <context>
     <name>Peony::FileOperationInfo</name>
     <message>
+        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="512"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="514"/>
         <source>Symbolic Link</source>
-        <translation type="vanished">快捷方式</translation>
+        <translation>快捷方式</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-manager.h" line="190"/>
-        <location filename="../../libpeony-qt/file-operation/file-operation-manager.h" line="193"/>
         <source> - Symbolic Link</source>
-        <translation>-快捷方式</translation>
+        <translation type="vanished">-快捷方式</translation>
     </message>
 </context>
 <context>
@@ -2227,7 +2225,7 @@ Do you want to delete the link file?</source>
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/tool-bar/tool-bar.cpp" line="189"/>
-        <location filename="../../libpeony-qt/controls/tool-bar/tool-bar.cpp" line="352"/>
+        <location filename="../../libpeony-qt/controls/tool-bar/tool-bar.cpp" line="356"/>
         <source>Copy</source>
         <translation>复制</translation>
     </message>
@@ -2257,62 +2255,61 @@ Do you want to delete the link file?</source>
         <translation>删除文件警告</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/tool-bar.cpp" line="224"/>
         <source>Delete Permanently</source>
-        <translation>永久删除</translation>
+        <translation type="vanished">永久删除</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/tool-bar.cpp" line="224"/>
+        <location filename="../../libpeony-qt/controls/tool-bar/tool-bar.cpp" line="225"/>
         <source>Are you sure that you want to delete these files? Once you start a deletion, the files deleting will never be restored again.</source>
         <translation>确定是否删除这些文件？一旦确定，这些文件将被永久删除并无法恢复。</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/tool-bar.cpp" line="234"/>
+        <location filename="../../libpeony-qt/controls/tool-bar/tool-bar.cpp" line="238"/>
         <source>Restore</source>
         <translation>还原</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/tool-bar.cpp" line="283"/>
+        <location filename="../../libpeony-qt/controls/tool-bar/tool-bar.cpp" line="287"/>
         <source>Options</source>
         <translation>选项</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/tool-bar.cpp" line="286"/>
+        <location filename="../../libpeony-qt/controls/tool-bar/tool-bar.cpp" line="290"/>
         <source>Forbid Thumbnail</source>
         <translation>禁用缩略图</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/tool-bar.cpp" line="293"/>
+        <location filename="../../libpeony-qt/controls/tool-bar/tool-bar.cpp" line="297"/>
         <source>Show Hidden</source>
         <translation>显示隐藏文件</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/tool-bar.cpp" line="300"/>
+        <location filename="../../libpeony-qt/controls/tool-bar/tool-bar.cpp" line="304"/>
         <source>Resident in Backend</source>
         <translation>常驻后台</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/tool-bar.cpp" line="301"/>
+        <location filename="../../libpeony-qt/controls/tool-bar/tool-bar.cpp" line="305"/>
         <source>Let the program still run after closing the last window. This will reduce the time for the next launch, but it will also consume resources in backend.</source>
         <translation>让文件管理器在关闭所有窗口后仍然运行，这将缩短下次启动所需要的时间，但是也会一直占用资源。</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/tool-bar.cpp" line="313"/>
+        <location filename="../../libpeony-qt/controls/tool-bar/tool-bar.cpp" line="317"/>
         <source>&amp;Help</source>
         <translation>帮助(&amp;H)</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/tool-bar.cpp" line="319"/>
+        <location filename="../../libpeony-qt/controls/tool-bar/tool-bar.cpp" line="323"/>
         <source>&amp;About...</source>
         <translation>关于...(&amp;A)</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/tool-bar.cpp" line="321"/>
+        <location filename="../../libpeony-qt/controls/tool-bar/tool-bar.cpp" line="325"/>
         <source>Peony Qt</source>
         <translation>文件管理器</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/tool-bar.cpp" line="322"/>
+        <location filename="../../libpeony-qt/controls/tool-bar/tool-bar.cpp" line="326"/>
         <source>Author:
 	Yue Lan &lt;lanyue@kylinos.cn&gt;
 	Meihong He &lt;hemeihong@kylinos.cn&gt;
@@ -2444,18 +2441,36 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
         <translation>不能将这些文件完全放入回收站，但可以选择以永久删除这些文件，确定这样做吗？</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/convenient-utils/file-operation-utils.cpp" line="222"/>
-        <location filename="../../libpeony-qt/convenient-utils/file-operation-utils.cpp" line="226"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="678"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="709"/>
+        <location filename="../../libpeony-qt/controls/tool-bar/tool-bar.cpp" line="224"/>
+        <location filename="../../libpeony-qt/convenient-utils/file-operation-utils.cpp" line="219"/>
         <source>Delete Permanently</source>
         <translation>永久删除</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/convenient-utils/file-operation-utils.cpp" line="222"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="682"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="713"/>
+        <location filename="../../libpeony-qt/controls/tool-bar/tool-bar.cpp" line="228"/>
+        <location filename="../../libpeony-qt/convenient-utils/file-operation-utils.cpp" line="220"/>
+        <source>Yes</source>
+        <translation>确定</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="683"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="714"/>
+        <location filename="../../libpeony-qt/controls/tool-bar/tool-bar.cpp" line="229"/>
+        <location filename="../../libpeony-qt/convenient-utils/file-operation-utils.cpp" line="221"/>
+        <source>No</source>
+        <translation>取消</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/convenient-utils/file-operation-utils.cpp" line="225"/>
         <source>Are you sure that you want to delete %1? Once you start a deletion, the files deleting will never be restored again.</source>
         <translation>确定删除%1？一旦确定，文件将被永久删除并且不可恢复。</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/convenient-utils/file-operation-utils.cpp" line="226"/>
+        <location filename="../../libpeony-qt/convenient-utils/file-operation-utils.cpp" line="229"/>
         <source>Are you sure that you want to delete these %1 files? Once you start a deletion, the files deleting will never be restored again.</source>
         <translation>确定删除这%1个文件？一旦确定，文件将被永久删除并且不可恢复。</translation>
     </message>

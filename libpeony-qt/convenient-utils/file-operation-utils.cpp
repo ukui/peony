@@ -216,19 +216,22 @@ void FileOperationUtils::executeRemoveActionWithDialog(const QStringList &uris)
                      CA_PROP_EVENT_ID, eventId,
                      CA_PROP_EVENT_DESCRIPTION, "Delete file Warning", NULL);
 
-    int result = 0;
+    QMessageBox questionBox (QMessageBox::Question, QObject::tr("Delete Permanently"), "", QMessageBox::Yes | QMessageBox::No);
+    questionBox.button(QMessageBox::Yes)->setText(QObject::tr("Yes"));
+    questionBox.button(QMessageBox::No)->setText(QObject::tr("No"));
+
     if (uris.count() == 1) {
         QUrl url = uris.first();
-        result = QMessageBox::question(nullptr, QObject::tr("Delete Permanently"), QObject::tr("Are you sure that you want to delete %1? "
-                                       "Once you start a deletion, the files deleting will never be "
-                                       "restored again.").arg(url.fileName()));
+        questionBox.setText(QObject::tr("Are you sure that you want to delete %1? "
+                                        "Once you start a deletion, the files deleting will never be "
+                                        "restored again.").arg(url.fileName()));
     } else {
-        result = QMessageBox::question(nullptr, QObject::tr("Delete Permanently"), QObject::tr("Are you sure that you want to delete these %1 files? "
-                                       "Once you start a deletion, the files deleting will never be "
-                                       "restored again.").arg(uris.count()));
+        questionBox.setText(QObject::tr("Are you sure that you want to delete these %1 files? "
+                                        "Once you start a deletion, the files deleting will never be "
+                                        "restored again.").arg(uris.count()));
     }
 
-    if (result == QMessageBox::Yes) {
+    if (questionBox.exec() == QMessageBox::Yes) {
         FileOperationUtils::remove(uris);
     }
     ca_context_destroy(caContext);
