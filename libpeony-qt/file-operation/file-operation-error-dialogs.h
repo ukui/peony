@@ -69,7 +69,7 @@ private:
     float m_fix_height = 188;
 
     float m_text_y = 65;
-    float m_text_heigth = 50;
+    float m_text_heigth = 60;
 
     float m_ok_x = 410;
     float m_ok_y = 132;
