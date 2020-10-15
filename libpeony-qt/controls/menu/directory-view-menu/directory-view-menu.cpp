@@ -195,7 +195,8 @@ const QList<QAction *> DirectoryViewMenu::constructOpenOpActions()
             }
             if (info->isDir()) {
                 //add to bookmark option
-                l<<addAction(QIcon::fromTheme("bookmark-add-symbolic"), tr("Add to bookmark"));
+                // TODO: Fix #19502
+                l << addAction(QIcon::fromTheme("bookmark-add-symbolic"), tr("Add to bookmark"));
                 connect(l.last(), &QAction::triggered, [=]() {
                     //qDebug() <<"add to bookmark:" <<info->uri();
                     auto bookmark = BookMarkManager::getInstance();

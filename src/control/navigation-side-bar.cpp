@@ -97,8 +97,10 @@ NavigationSideBar::NavigationSideBar(QWidget *parent) : QTreeView(parent)
 
     this->setModel(m_proxy_model);
 
-    // add by wwn
-    this->setIndentation(0);
+    // add by wwn, to hide the expend button of side bar
+    this->setRootIsDecorated(false);
+
+    // this->setIndentation(0);
     // this->setRootIsDecorated(false);
     // this->setLayoutDirection(Qt::RightToLeft);
     // this->resetIndentation();
@@ -236,7 +238,6 @@ void NavigationSideBar::keyPressEvent(QKeyEvent *event)
 }
 
 
-// add by wwn
 void NavigationSideBar::mousePressEvent(QMouseEvent *event)
 {
     // 如果不在展开按钮的范围内就调用以前的
@@ -264,7 +265,6 @@ QSize NavigationSideBarItemDelegate::sizeHint(const QStyleOptionViewItem &option
     return size;
 }
 
-// add by wwn
 void NavigationSideBarItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
                                           const QModelIndex &index) const
 {
