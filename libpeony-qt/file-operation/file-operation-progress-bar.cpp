@@ -259,8 +259,8 @@ void FileOperationProgressBar::mainProgressChange(QListWidgetItem *item)
 
 void FileOperationProgressBar::showDelay(int msec)
 {
-    QTimer::singleShot(msec, this, [=](){
-        if (m_list_widget->count() > 0) {
+    QTimer::singleShot(msec, this, [=] () {
+        if (m_list_widget->count() > 0 && !m_error) {
             show();
         }
     });

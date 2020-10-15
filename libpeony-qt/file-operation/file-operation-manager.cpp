@@ -364,8 +364,13 @@ void FileOperationManager::handleError(FileOperationError &error)
     // Handle errors according to the error type
     FileOperationErrorHandler* handle = FileOperationErrorDialogFactory::getDialog(error);
     if (nullptr != handle) {
+        if (m_progressbar->isHidden()) {
+            m_progressbar->m_error = true;
+        }
         handle->handle(error);
         delete handle;
+        m_progressbar->m_error = false;
+        m_progressbar->showDelay(300);
     }
 }
 
