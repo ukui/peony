@@ -97,7 +97,7 @@ void Format_Dialog::acceptFormat(bool)
     //get values from ui
     strncpy(rom_size,ui->comboBox_rom_size->itemText(0).toUtf8().constData(),sizeof(ui->comboBox_rom_size->itemText(0).toUtf8().constData())-1);
     strncpy(rom_type,ui->comboBox_system->currentText().toUtf8().constData(),sizeof(ui->comboBox_system->currentText().toUtf8().constData())-1);
-    strncpy(rom_name,ui->lineEdit_device_name->text().toUtf8().constData(),sizeof(ui->lineEdit_device_name->text().toUtf8().constData())-1);
+    strcpy(rom_name,ui->lineEdit_device_name->text().toUtf8().constData());
 
     quick_clean = ui->checkBox_clean_or_not->isChecked();
 
