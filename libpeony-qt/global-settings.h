@@ -45,6 +45,9 @@
 //gsettings
 #define SIDEBAR_BG_OPACITY "sidebar-bg-opacity"
 
+//difference between Community version and Commercial version
+#define COMMERCIAL_VERSION  false
+
 class QGSettings;
 
 namespace Peony {

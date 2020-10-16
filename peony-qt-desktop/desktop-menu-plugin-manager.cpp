@@ -24,6 +24,8 @@
 
 #include "style-plugin-iface.h"
 
+#include "global-settings.h"
+
 #include <QDir>
 #include <QPluginLoader>
 #include <QtConcurrent>
@@ -55,6 +57,8 @@ void DesktopMenuPluginManager::loadAsync()
 {
     qDebug()<<"test start";
     QDir pluginsDir(PLUGIN_INSTALL_DIRS);
+    if (COMMERCIAL_VERSION)
+        pluginsDir = QDir("/usr/lib/peony-qt-extensions");
     pluginsDir.setFilter(QDir::Files);
     Q_FOREACH(QString fileName, pluginsDir.entryList(QDir::Files)) {
         QPluginLoader pluginLoader(pluginsDir.absoluteFilePath(fileName));
