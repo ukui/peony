@@ -28,6 +28,7 @@
 
 #include <QStandardPaths>
 #include <QTimer>
+#include <file-watcher.h>
 
 class QLabel;
 
@@ -103,6 +104,12 @@ public Q_SLOTS:
     void beginLocationChange() {}
     void stopLocationChange() {}
     void closeView();
+
+    /**
+     * @brief Rearrange the desktop icon position
+     * @param screenSize: The value of the screen size is the resolution minus the height of the control panel
+     */
+    void relayoutPosition (QRect& screenSize);
 
     //selections
     void setSelections(const QStringList &uris);
@@ -203,6 +210,10 @@ protected:
     const QRect getBoundingRect();
 
 private:
+    void parseScreenConfigFile();
+
+private:
+    QMap<QString, QRect> m_screens;
     ZoomLevel m_zoom_level = Invalid;
 
     QModelIndex m_last_index;
@@ -212,6 +223,8 @@ private:
     DesktopItemProxyModel *m_proxy_model = nullptr;
 
     QStringList m_new_files_to_be_selected;
+
+    FileWatcher* m_screen_config = nullptr;
 
     bool m_is_refreshing = false;
 

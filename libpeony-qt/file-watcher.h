@@ -92,6 +92,7 @@ Q_SIGNALS:
     void fileCreated(const QString &uri);
     void fileDeleted(const QString &uri);
     void fileChanged(const QString &uri);
+    void fileContentChanged (const QString &uri);
 
     /*!
      * \brief requestUpdateDirectory

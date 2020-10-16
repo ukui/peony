@@ -256,6 +256,13 @@ void FileWatcher::file_changed_callback(GFileMonitor *monitor,
         g_free(uri);
         break;
     }
+    case G_FILE_MONITOR_EVENT_CHANGED: {
+        char *uri = g_file_get_uri(file);
+        qDebug()<<uri;
+        Q_EMIT p_this->fileContentChanged(uri);
+        g_free(uri);
+        break;
+    }
     default:
         break;
     }

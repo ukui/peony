@@ -73,12 +73,15 @@
 #include <QStringList>
 #include <QMessageBox>
 #include <QDir>
+#include <QXmlStreamWriter>
 
 #include <QDebug>
 
 using namespace Peony;
 
 #define ITEM_POS_ATTRIBUTE "metadata::peony-qt-desktop-item-position"
+
+static bool iconSizeLessThan (QPair<QRect, QString>& p1, QPair<QRect, QString>& p2);
 
 DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
 {
@@ -157,6 +160,32 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
     m_proxy_model = new DesktopItemProxyModel(m_model);
 
     m_proxy_model->setSourceModel(m_model);
+
+    QString screenConfigPathStr = QStandardPaths::writableLocation(QStandardPaths::ConfigLocation) + "/monitors.xml";
+
+    QFile screenConfigPath (screenConfigPathStr);
+    if (screenConfigPath.exists()) {
+        parseScreenConfigFile();
+        m_screen_config = new FileWatcher("file://" + screenConfigPathStr, this);
+        connect (m_screen_config, &FileWatcher::fileContentChanged, [=] (const QString &uri) {
+            qDebug() << uri;
+            QString screenConfigPathStr = QStandardPaths::writableLocation(QStandardPaths::ConfigLocation) + "/monitors.xml";
+            if (uri == "file://" + screenConfigPathStr) {
+                // parse file
+                qDebug() << "Screen configuration changes";
+                parseScreenConfigFile();
+
+                // primary screen
+                for (auto it = m_screens.constBegin(); m_screens.count() > 0 && it != m_screens.constEnd(); ++it) {
+                    QRect sc = it.value();
+                    if (it.key().contains("primary")) {
+                        relayoutPosition(sc);
+                    }
+                }
+            }
+        });
+        m_screen_config->startMonitor();
+    }
 
     connect(m_model, &QAbstractItemModel::rowsRemoved, this, [=](){
         for (auto uri : getAllFileUris()) {
@@ -240,6 +269,10 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
 DesktopIconView::~DesktopIconView()
 {
     //saveAllItemPosistionInfos();
+    if (nullptr != m_screen_config) {
+        m_screen_config->stopMonitor();
+        delete m_screen_config;
+    }
 }
 
 bool DesktopIconView::eventFilter(QObject *obj, QEvent *e)
@@ -795,6 +828,74 @@ void DesktopIconView::closeView()
     deleteLater();
 }
 
+static bool iconSizeLessThan (QPair<QRect, QString>& p1, QPair<QRect, QString>& p2)
+{
+    return (p1.first.x() < p2.first.x() && p1.first.y() < p2.first.y()) ? true : false;
+}
+
+void DesktopIconView::relayoutPosition(QRect &screenSize)
+{
+    int row = 0;
+    int column = 0;
+    float iconWidth = 0;
+    float iconHeigth = 0;
+
+    // icon size
+    QSize icon = gridSize();
+    iconWidth = icon.width();
+    iconHeigth = icon.height();
+
+    QList<QPair<QRect, QString>> newPosition;
+
+    for (auto i = m_item_rect_hash.constBegin(); i != m_item_rect_hash.constEnd(); ++i) {
+        // FIXME:// more than one screen
+//        if (i.value().x() >= screenSize.x() && i.value().y() >= screenSize.y()
+//                && i.value().x() <= screenSize.width() && i.value().y() <= screenSize.height()) {
+            newPosition << QPair<QRect, QString>(i.value(), i.key());
+//        }
+    }
+
+    // not get current size
+    if (iconWidth == 0 || iconHeigth == 0) {
+        qDebug() << "Unable to get icon size, need to get it another way!";
+        return;
+    }
+
+    qDebug() << "icon width: " << iconWidth << " icon heigth: " << iconHeigth;
+    qDebug() << "width:" << screenSize.width() << " height:" << screenSize.height();
+
+    std::sort(newPosition.begin(), newPosition.end(), iconSizeLessThan);
+
+    for (auto i = newPosition.constBegin(); i != newPosition.constEnd(); ++i) {
+        int posX = 0;
+        int posY = 0;
+        Q_FOREVER {
+            // icon pos x, y
+            posX = column * iconWidth;
+            posY = row * iconHeigth;
+            // Check to see if the screen size is exceeded
+            if (posY + iconHeigth <= screenSize.height()
+                    && posX + iconWidth <= screenSize.width()) {
+                ++row;
+                break;
+            } else if (posY + iconHeigth > screenSize.height()
+                       && posX + iconWidth < screenSize.width()) {
+                row = 0;
+                ++column;
+                continue;
+            } else {
+                // The desktop is full of ICONS
+                posX = 0;
+                posY = 0;
+                break;
+            }
+        }
+        setFileMetaInfoPos(i->second, QPoint(posX, posY));
+        updateItemPosByUri(i->second, QPoint(posX, posY));
+        qDebug() << "uri: " << i->second << " --- pos: " << QPoint(posX, posY);
+    }
+}
+
 void DesktopIconView::wheelEvent(QWheelEvent *e)
 {
     if (QApplication::keyboardModifiers() == Qt::ControlModifier)
@@ -1021,6 +1122,72 @@ const QRect DesktopIconView::getBoundingRect()
         itemsRegion += indexRect;
     }
     return itemsRegion.boundingRect();
+}
+
+void DesktopIconView::parseScreenConfigFile()
+{
+    QString screenConfigPathStr = QStandardPaths::writableLocation(QStandardPaths::ConfigLocation) + "/monitors.xml";
+
+    QFile screenConfigPath (screenConfigPathStr);
+    if (!screenConfigPath.exists()) {
+        return;
+    }
+
+    if (!screenConfigPath.open(QIODevice::ReadOnly)) {
+        qDebug() << "open <" << screenConfigPath << "> error!";
+        return ;
+    }
+
+    m_screens.clear();
+
+    QXmlStreamReader reader(&screenConfigPath);
+    float x = 0;
+    float y = 0;
+    float width = 0;
+    float heigth = 0;
+    bool primary = false;
+    QString name;
+
+    while (!reader.atEnd()) {
+        reader.readNext();
+        if (reader.name() == "output" && reader.isStartElement()) {
+            x = 0;
+            y = 0;
+            width = 0;
+            heigth = 0;
+            name = "";
+            primary = false;
+            name = reader.attributes().value("name").toString();
+        } else if (reader.name() == "output" && reader.isEndElement()) {
+            if ("" != name && !name.isEmpty() && width > 0 && heigth > 0) {
+                if (primary) {
+                    name += "{]primary";
+                }
+                m_screens[name] = QRect(x, y, width, heigth);
+                qDebug() << "name:" << name;
+            }
+        } else {
+            if ("width" == reader.name()) {
+                width = reader.readElementText().toFloat();
+                qDebug() << "width:" << width;
+            } else if ("height" == reader.name()) {
+                heigth = reader.readElementText().toFloat();
+                qDebug() << "height:" << heigth;
+            } else if ("x" == reader.name()) {
+                x = reader.readElementText().toFloat();
+                qDebug() << "x:" << x;
+            }else if ("y" == reader.name()) {
+                y = reader.readElementText().toFloat();
+                qDebug() << "y:" << y;
+            }else if ("primary" == reader.name()) {
+                if ("yes" == reader.readElementText().trimmed().toLower()) {
+                    primary = true;
+                }
+                qDebug() << "primary:" << (primary ? "true" : "false");
+            }
+        }
+    }
+    qDebug() << "++++++++++++++++" << m_screens;
 }
 
 void DesktopIconView::zoomOut()
