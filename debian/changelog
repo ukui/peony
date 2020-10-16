@@ -1,3 +1,10 @@
+peony (3.0.3-1+1016) v101; urgency=medium
+
+  *Fixed bugs cloud plugin.
+  *Make sidebar from a list structure to a tree structure.
+
+ -- wangweinan <wangweinan@kylinos.cn>  Fri, 16 Oct 2020 13:44:46 +0800
+
 peony (3.0.3-1+0924) v101; urgency=medium
 
   *Fixed bugs about roundcorner and shadow effect.
