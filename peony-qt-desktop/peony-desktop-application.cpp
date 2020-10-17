@@ -511,16 +511,28 @@ void guessContentTypeCallback(GObject* object,GAsyncResult *res,gpointer data)
 
                 if(openFolder)
                     process.startDetached(openFolderCmd);
+
+                openFolder = true;
             }
             g_strfreev(guessType);
         }else{
-            if(QGSettings::isSchemaInstalled(DESKTOP_MEDIA_HANDLE)){
+            GDrive *drive = g_mount_get_drive(G_MOUNT(object));
+            char *unixDevice = NULL;
+            if(drive){
+                unixDevice = g_drive_get_identifier(drive,G_DRIVE_IDENTIFIER_KIND_UNIX_DEVICE);
+                g_object_unref(drive);
+            }
+
+            //Only DvD devices are allowed to open folder automatically.
+            if(unixDevice && !strcmp(unixDevice,"/dev/sr") && QGSettings::isSchemaInstalled(DESKTOP_MEDIA_HANDLE)){
                 QGSettings* autoMountSettings =  new QGSettings(DESKTOP_MEDIA_HANDLE);
                 if(autoMountSettings->get("automount-open").toBool()){
                     process.startDetached(openFolderCmd);
                     delete autoMountSettings;
                 }
             }
+
+            g_free(unixDevice);
         }
     }
 
