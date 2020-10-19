@@ -175,6 +175,12 @@ public Q_SLOTS:
 
     void setShowHidden();
 
+    /**
+     * @brief Rearrange the desktop icon position
+     * @param screenSize: The value of the screen size is the resolution minus the height of the control panel
+     */
+    void resolutionChange(const QRect &screenSize);
+
 protected:
     void mousePressEvent(QMouseEvent *e);
     void mouseReleaseEvent(QMouseEvent *e);
@@ -203,6 +209,7 @@ protected:
     const QRect getBoundingRect();
 
 private:
+    QMap<QScreen*, bool> m_screens;
     ZoomLevel m_zoom_level = Invalid;
 
     QModelIndex m_last_index;
