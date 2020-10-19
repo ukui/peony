@@ -47,6 +47,26 @@ FileOperationProgressBar *FileOperationProgressBar::getInstance()
     return instance;
 }
 
+void FileOperationProgressBar::removeAllProgressbar()
+{
+    if (nullptr != m_main_progressbar && nullptr != m_current_main) {
+        m_main_progressbar->disconnect(m_current_main, &ProgressBar::sendValue, 0, 0);
+        m_current_main = nullptr;
+    }
+
+    for (auto pg = m_widget_list->constBegin(); pg != m_widget_list->constEnd(); ++pg) {
+        if (pg.value()->m_current_size > 0) continue;
+        if (nullptr != pg.value()) pg.value()->deleteLater();
+        if (nullptr != pg.key()) delete pg.key();
+    }
+
+    m_widget_list->clear();
+    m_list_widget->clear();
+    m_progress_list->clear();
+    m_progress_size = 0;
+    hide();
+}
+
 ProgressBar *FileOperationProgressBar::addFileOperation()
 {
     ProgressBar* proc = new ProgressBar;
@@ -84,14 +104,10 @@ void FileOperationProgressBar::removeFileOperation(ProgressBar *progress)
     progress->hide();
     QListWidgetItem* li = (*m_progress_list)[progress];
 
-    // delete from map
     m_list_widget->removeItemWidget(li);
     m_progress_list->remove(progress);
     m_widget_list->remove(li);
 
-    // free progress
-    delete progress;
-    delete li;
     --m_progress_size;
 
     // check main progress
@@ -103,6 +119,10 @@ void FileOperationProgressBar::removeFileOperation(ProgressBar *progress)
             mainProgressChange(pg);
         }
     }
+
+    // free progress
+    delete progress;
+    delete li;
 
     if (m_progress_size <= 0) {
         m_progress_size = 0;
@@ -138,14 +158,16 @@ FileOperationProgressBar::FileOperationProgressBar(QWidget *parent) : QWidget(pa
 
     showWidgetList(false);
 
-    connect(m_main_progressbar, &MainProgressBar::minimized, [=](){
+    connect(m_main_progressbar, &MainProgressBar::minimized, [=]() {
         this->showMinimized();
     });
     connect(m_main_progressbar, &MainProgressBar::closeWindow, [=](){
         for (auto pg = m_widget_list->constBegin(); pg != m_widget_list->constEnd(); ++pg) {
             Q_EMIT pg.value()->cancelled();
         }
+        Q_EMIT canceled();
     });
+
     connect(m_other_progressbar, &OtherButton::clicked, this, &FileOperationProgressBar::showWidgetList);
     connect(m_list_widget, &QListWidget::itemClicked, this, &FileOperationProgressBar::mainProgressChange);
 
@@ -219,8 +241,7 @@ void FileOperationProgressBar::showWidgetList(bool show)
 
 void FileOperationProgressBar::mainProgressChange(QListWidgetItem *item)
 {
-    // disconnect
-    if (nullptr != m_main_progressbar && m_current_main != nullptr) {
+    if (nullptr != m_main_progressbar && nullptr != m_current_main) {
         m_main_progressbar->disconnect(m_current_main, &ProgressBar::sendValue, 0, 0);
     }
 
@@ -262,7 +283,7 @@ void MainProgressBar::initPrarm()
     m_file_name = tr("starting ...");
 }
 
-void MainProgressBar::setFileIcon(QIcon icon)
+void MainProgressBar::setFileIcon(QIcon& icon)
 {
     m_icon = icon;
 }
@@ -441,13 +462,14 @@ void MainProgressBar::cancelld()
     update();
 }
 
-void MainProgressBar::updateValue(QString& name, double value)
+void MainProgressBar::updateValue(QString& name, QIcon& icon, double value)
 {
     if (value >= 0 && value <= 1) {
         m_current_value = value;
     }
 
     m_file_name = name;
+    m_icon = icon;
 
     update();
 }
@@ -528,12 +550,16 @@ ProgressBar::ProgressBar(QWidget *parent) : QWidget(parent)
     connect(this, &ProgressBar::cancelled, this, &ProgressBar::onCancelled);
 }
 
-void ProgressBar::setIcon(QIcon icon)
+void ProgressBar::setIcon(const QString& icon)
 {
-    m_icon = icon;
+    if (nullptr != icon && "" != icon) {
+        m_icon = QIcon::fromTheme(icon);
+    } else {
+        m_icon = QIcon::fromTheme("text");
+    }
 }
 
-QIcon ProgressBar::getIcon()
+QIcon& ProgressBar::getIcon()
 {
     return m_icon;
 }
@@ -634,9 +660,12 @@ void ProgressBar::mouseReleaseEvent(QMouseEvent *event)
                            QMessageBox::Ok | QMessageBox::Cancel);
         msgBox.button(QMessageBox::Ok)->setText(tr("OK"));
         msgBox.button(QMessageBox::Cancel)->setText(tr("Cancel"));
-        if (QMessageBox::Ok == msgBox.exec()) {
+        if (QMessageBox::Ok == msgBox.exec() && ! m_is_stopping) {
             m_is_stopping = true;
             Q_EMIT cancelled();
+            if (m_current_value <= 0) {
+                Q_EMIT finished(this);
+            }
         }
     }
 
@@ -656,7 +685,7 @@ void ProgressBar::updateValue(double value)
         m_current_value = value;
     }
 
-    Q_EMIT sendValue(m_dest_uri, m_current_value);
+    Q_EMIT sendValue(m_dest_uri, getIcon(), m_current_value);
     update();
 }
 
@@ -685,7 +714,7 @@ void ProgressBar::onFileOperationProgressedOne(const QString &uri, const QString
     Q_UNUSED(destUri);
 }
 
-void ProgressBar::updateProgress(const QString &srcUri, const QString &destUri, quint64 current, quint64 total)
+void ProgressBar::updateProgress(const QString &srcUri, const QString &destUri, const QString& fIcon, const quint64& current, const quint64& total)
 {
     if (current >= m_total_size) {
         return;
@@ -693,38 +722,14 @@ void ProgressBar::updateProgress(const QString &srcUri, const QString &destUri, 
 
     QUrl srcUrl = srcUri;
     m_src_uri = srcUrl.toDisplayString();
-    QUrl destUrl = destUri;
-    m_dest_uri = destUrl.toDisplayString();
+    if (nullptr != destUri) {
+        QUrl destUrl = destUri;
+        m_dest_uri = destUrl.toDisplayString();
+    }
 
-    // maybe you don't need to show every file icon,just default.
-//    QIcon ficon;
-//    GIcon* fileIcon = nullptr;
-//    char* iconName = nullptr;
-//    GFileInfo* fileInfo = nullptr;
-//    GFile* file = g_file_new_for_uri(srcUri.toUtf8().constData());
-//    if (nullptr != file) {
-//        fileInfo = g_file_query_info(file, "*", G_FILE_QUERY_INFO_NONE, nullptr, nullptr);
-//        if (nullptr != fileInfo) {
-//            fileIcon = g_file_info_get_icon(fileInfo);
-//            if (nullptr != fileIcon) {
-//                iconName = g_icon_to_string(fileIcon);
-//                if (nullptr != iconName) {
-//                    ficon = QIcon(QString(iconName).split(" ").last());
-//                    qDebug() << "-------------->" << iconName;
-//                    setIcon(ficon);
-//                }
-//                if (nullptr != iconName) {
-//                    g_free(iconName);
-//                }
-//            }
-//        }
-//        if (nullptr != fileInfo) {
-//            g_object_unref(fileInfo);
-//        }
-//    }
-//    if (nullptr != file) {
-//        g_object_unref(file);
-//    }
+    if (fIcon != getIcon().name()) {
+        setIcon(fIcon);
+    }
 
     double currentPercent = current * 1.0 / total;
     updateValue(currentPercent);

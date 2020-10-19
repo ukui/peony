@@ -95,6 +95,7 @@ Q_SIGNALS:
     void tabMoved(int from, int to);
     void tabInserted(int index);
     void tabRemoved(int index);
+    void searchRecursiveChanged(bool recursive);
 
     void activePageSelectionChanged();
     void activePageChanged();
@@ -104,6 +105,8 @@ Q_SIGNALS:
 
     void viewDoubleClicked(const QString &uri);
     void updateWindowLocationRequest(const QString &uri, bool addHistory, bool forceUpdate = false);
+
+    void updateWindowSelectionRequest(const QStringList &uris);
 
     void menuRequest(const QPoint &pos);
     void zoomRequest(bool zoomIn);
@@ -174,7 +177,6 @@ public Q_SLOTS:
     void addNewConditionBar();
     void removeConditionBar(int index);
     void searchUpdate();
-    void searchKeyUpdate();
     void searchChildUpdate();
     void browsePath();
 
@@ -203,6 +205,8 @@ private:
     QStackedWidget *m_stack;
 
     PreviewPageButtonGroups *m_buttons;
+
+    QToolBar *m_tool_bar;
 
     Peony::PreviewPageIface *m_preview_page = nullptr;
     QStackedWidget *m_preview_page_container;
@@ -236,6 +240,7 @@ private:
     QList<QSignalMapper*> m_remove_mapper_list;
 
     int m_search_bar_count = 0;
+    const int ELIDE_TEXT_LENGTH = 10;
 
     TabStatusBar *m_status_bar = nullptr;
 
@@ -247,8 +252,6 @@ private:
     //Button size macro definition
     const int TRASH_BUTTON_HEIGHT = 28;
     const int TRASH_BUTTON_WIDTH = 60;
-
-    QString m_last_non_search_path = "";
 
     //advance search filter options
     QStringList m_option_list = {tr("name"), tr("type"), tr("modify time"), tr("file size")};

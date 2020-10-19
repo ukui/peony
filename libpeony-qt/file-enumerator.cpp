@@ -31,6 +31,9 @@
 #include "file-utils.h"
 #include "peony-search-vfs-file.h"
 
+//play audio lib head file
+#include <canberra.h>
+
 #include <QList>
 #include <QMessageBox>
 
@@ -52,10 +55,28 @@ FileEnumerator::FileEnumerator(QObject *parent) : QObject(parent)
 
     m_children_uris = new QList<QString>();
 
+    m_cache_uris = new QStringList();
+
+    m_idle = new QTimer(this);
+    m_idle->setSingleShot(false);
+
     connect(this, &FileEnumerator::enumerateFinished, this, [=]() {
         if (m_auto_delete) {
             this->deleteLater();
         }
+    });
+
+    connect(this, &FileEnumerator::enumerateFinished, this, [=](){
+        *m_children_uris<<*m_cache_uris;
+        childrenUpdated(*m_cache_uris);
+        m_cache_uris->clear();
+        m_idle->stop();
+    });
+
+    connect(m_idle, &QTimer::timeout, this, [=](){
+        *m_children_uris<<*m_cache_uris;
+        childrenUpdated(*m_cache_uris);
+        m_cache_uris->clear();
     });
 }
 
@@ -75,16 +96,21 @@ FileEnumerator::FileEnumerator(QObject *parent) : QObject(parent)
  */
 FileEnumerator::~FileEnumerator()
 {
+    g_cancellable_cancel(m_cancellable);
     disconnect();
     //qDebug()<<"~FileEnumerator";
     g_object_unref(m_root_file);
     g_object_unref(m_cancellable);
 
     delete m_children_uris;
+
+    delete m_cache_uris;
 }
 
 void FileEnumerator::setEnumerateDirectory(QString uri)
 {
+    m_uri = uri;
+
     if (m_cancellable) {
         g_cancellable_cancel(m_cancellable);
         g_object_unref(m_cancellable);
@@ -123,10 +149,23 @@ void FileEnumerator::setEnumerateDirectory(GFile *file)
         g_object_unref(m_root_file);
     }
     m_root_file = g_file_dup(file);
+
+    char *uri = g_file_get_uri(m_root_file);
+    if (uri) {
+        m_uri = uri;
+        g_free(uri);
+    }
+}
+
+QString FileEnumerator::getEnumerateUri()
+{
+    return m_uri;
 }
 
 const QList<std::shared_ptr<FileInfo>> FileEnumerator::getChildren(bool addToHash)
 {
+    //m_children_uris->removeDuplicates();
+
     //qDebug()<<"FileEnumerator::getChildren():";
     QList<std::shared_ptr<FileInfo>> children;
     for (auto uri : *m_children_uris) {
@@ -175,6 +214,7 @@ void FileEnumerator::prepare()
 
 GFile *FileEnumerator::enumerateTargetFile()
 {
+    //FIXME: replace BLOCKING api in ui thread.
     GFileInfo *info = g_file_query_info(m_root_file,
                                         G_FILE_ATTRIBUTE_STANDARD_TARGET_URI,
                                         G_FILE_QUERY_INFO_NONE,
@@ -198,6 +238,8 @@ GFile *FileEnumerator::enumerateTargetFile()
 
 void FileEnumerator::enumerateSync()
 {
+    m_idle->start(1000);
+
     GFile *target = enumerateTargetFile();
 
     GFileEnumerator *enumerator = g_file_enumerate_children(target,
@@ -229,9 +271,14 @@ void FileEnumerator::enumerateSync()
 void FileEnumerator::handleError(GError *err)
 {
     qDebug()<<"handleError"<<err->code<<err->message;
+    ca_context *caContext;
+    ca_context_create(&caContext);
+    const gchar* eventId = "dialog-warning";
+    //eventid 是/usr/share/sounds音频文件名,不带后缀
     switch (err->code) {
     case G_IO_ERROR_NOT_DIRECTORY: {
         auto uri = g_file_get_uri(m_root_file);
+        //FIXME: replace BLOCKING api in ui thread.
         auto targetUri = FileUtils::getTargetUri(uri);
         if (uri) {
             g_free(uri);
@@ -242,6 +289,7 @@ void FileEnumerator::handleError(GError *err)
         }
 
         bool isMountable = false;
+        //FIXME: replace BLOCKING api in ui thread.
         GFileInfo *file_mount_info = g_file_query_info(m_root_file, G_FILE_ATTRIBUTE_MOUNTABLE_CAN_MOUNT,
                                      G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, nullptr, nullptr);
 
@@ -278,14 +326,21 @@ void FileEnumerator::handleError(GError *err)
                                       this);
         break;
     case G_IO_ERROR_NOT_SUPPORTED:
+        ca_context_play (caContext, 0,
+                         CA_PROP_EVENT_ID, eventId,
+                         CA_PROP_EVENT_DESCRIPTION, tr("Delete file Warning"), NULL);
+
         QMessageBox::critical(nullptr, tr("Error"), err->message);
         break;
     case G_IO_ERROR_PERMISSION_DENIED:
+        ca_context_play (caContext, 0,
+                         CA_PROP_EVENT_ID, eventId,
+                         CA_PROP_EVENT_DESCRIPTION, tr("Delete file Warning"), NULL);
+
         //FIXME: do i need add an auth function for this kind of errors?
         QMessageBox::critical(nullptr, tr("Error"), err->message);
-        //send enumerateFinished SIGNALS,solve the mouse WaitCursor
-        enumerateFinished(true);
-
+        //emit error message to upper levels to process
+        Q_EMIT prepared(GErrorWrapper::wrapFrom(g_error_new(G_IO_ERROR, G_IO_ERROR_PERMISSION_DENIED, "permission denied")));
         break;
     case G_IO_ERROR_NOT_FOUND:
         Q_EMIT prepared(GErrorWrapper::wrapFrom(g_error_new(G_IO_ERROR, G_IO_ERROR_NOT_FOUND, "file not found")));
@@ -298,6 +353,8 @@ void FileEnumerator::handleError(GError *err)
 
 void FileEnumerator::enumerateAsync()
 {
+    m_idle->start(1000);
+
     //auto uri = g_file_get_uri(m_root_file);
     //auto path = g_file_get_path(m_root_file);
     g_file_enumerate_children_async(m_root_file,
@@ -332,6 +389,9 @@ void FileEnumerator::enumerateChildren(GFileEnumerator *enumerator)
             *m_children_uris<<localUri;
             g_free(path);
         } else {
+            if (path) {
+                g_free(path);
+            }
             *m_children_uris<<uri;
         }
 
@@ -349,16 +409,27 @@ GAsyncReadyCallback FileEnumerator::mount_mountable_callback(GFile *file,
     GError *err = nullptr;
     GFile *target = g_file_mount_mountable_finish(file, res, &err);
     if (err && err->code != 0) {
+        auto message = err->message;
+        if (err->code == G_IO_ERROR_CANCELLED) {
+            g_error_free(err);
+            return nullptr;
+        }
         qDebug()<<err->code<<err->message;
+        if (!qobject_cast<QObject *>(p_this)) {
+            g_error_free(err);
+            return nullptr;
+        }
         auto err_data = GErrorWrapper::wrapFrom(err);
         Q_EMIT p_this->prepared(err_data);
     } else {
         Q_EMIT p_this->prepared(nullptr);
+        if (err) {
+            g_error_free(err);
+        }
     }
     if (target) {
         g_object_unref(target);
     }
-
 
     return nullptr;
 }
@@ -371,6 +442,10 @@ GAsyncReadyCallback FileEnumerator::mount_enclosing_volume_callback(GFile *file,
     GError *err = nullptr;
     if (g_file_mount_enclosing_volume_finish (file, res, &err)) {
         if (err) {
+            if (err->code == G_IO_ERROR_CANCELLED) {
+                g_error_free (err);
+                return nullptr;
+            }
             qDebug()<<"mount successed, err:"<<err->code<<err->message;
             Q_EMIT p_this->prepared(GErrorWrapper::wrapFrom(err), nullptr, true);
         } else {
@@ -402,6 +477,14 @@ GAsyncReadyCallback FileEnumerator::mount_enclosing_volume_callback(GFile *file,
                     qDebug()<<"finished err:"<<finished_err->code()<<finished_err->message();
                     if (finished_err->code() == G_IO_ERROR_PERMISSION_DENIED) {
                         p_this->enumerateFinished(false);
+                        ca_context *caContext;
+                        ca_context_create(&caContext);
+                        const gchar* eventId = "dialog-warning";
+                        //eventid 是/usr/share/sounds音频文件名,不带后缀
+                        ca_context_play (caContext, 0,
+                                         CA_PROP_EVENT_ID, eventId,
+                                         CA_PROP_EVENT_DESCRIPTION, tr("Delete file Warning"), NULL);
+
                         QMessageBox::critical(nullptr, tr("Error"), finished_err->message());
                         return;
                     }
@@ -423,6 +506,10 @@ GAsyncReadyCallback FileEnumerator::find_children_async_ready_callback(GFile *fi
     GError *err = nullptr;
     GFileEnumerator *enumerator = g_file_enumerate_children_finish(file, res, &err);
     if (err) {
+        if (err->code == G_IO_ERROR_CANCELLED) {
+            g_error_free(err);
+            return nullptr;
+        }
         qDebug()<<"find children async err:"<<err->code<<err->message;
         //NOTE: if the enumerator file has target uri, but target uri is not mounted,
         //it should be handled.
@@ -437,7 +524,8 @@ GAsyncReadyCallback FileEnumerator::find_children_async_ready_callback(GFile *fi
         g_error_free(err);
     }
     if (!enumerator) {
-        Q_EMIT p_this->enumerateFinished(false);
+        if (qobject_cast<QObject *>(p_this))
+            Q_EMIT p_this->enumerateFinished(false);
         return nullptr;
     }
     //
@@ -461,12 +549,20 @@ GAsyncReadyCallback FileEnumerator::enumerator_next_files_async_ready_callback(G
                    res,
                    &err);
 
+    if (err) {
+        if (err->code == G_IO_ERROR_CANCELLED) {
+            g_error_free(err);
+            return nullptr;
+        }
+    }
+
     auto errPtr = GErrorWrapper::wrapFrom(err);
     if (!files && !err) {
         //if a directory children count is same with BATCH_SIZE,
         //just send finished signal.
         qDebug()<<"no more files"<<endl<<endl<<endl;
-        Q_EMIT p_this->enumerateFinished(true);
+        if (qobject_cast<QObject *>(p_this))
+            Q_EMIT p_this->enumerateFinished(true);
         return nullptr;
     }
     if (!files && err) {
@@ -493,11 +589,11 @@ GAsyncReadyCallback FileEnumerator::enumerator_next_files_async_ready_callback(G
         if (path && !url.isLocalFile()) {
             QString localUri = QString("file://%1").arg(path);
             uriList<<localUri;
-            *(p_this->m_children_uris)<<localUri;
+            *(p_this->m_cache_uris)<<localUri;
             g_free(path);
         } else {
             uriList<<uri;
-            *(p_this->m_children_uris)<<uri;
+            *(p_this->m_cache_uris)<<uri;
         }
 
         g_free(uri);
@@ -505,7 +601,8 @@ GAsyncReadyCallback FileEnumerator::enumerator_next_files_async_ready_callback(G
         l = l->next;
     }
     g_list_free_full(files, g_object_unref);
-    Q_EMIT p_this->childrenUpdated(uriList);
+    //Q_EMIT p_this->childrenUpdated(uriList);
+
     if (files_count == PEONY_FIND_NEXT_FILES_BATCH_SIZE) {
         //have next files, countinue.
         g_file_enumerator_next_files_async(enumerator,
@@ -517,7 +614,8 @@ GAsyncReadyCallback FileEnumerator::enumerator_next_files_async_ready_callback(G
     } else {
         //no next files, emit finished.
         //qDebug()<<"async enumerateFinished";
-        Q_EMIT p_this->enumerateFinished(true);
+        if (qobject_cast<QObject *>(p_this))
+            Q_EMIT p_this->enumerateFinished(true);
     }
     return nullptr;
 }

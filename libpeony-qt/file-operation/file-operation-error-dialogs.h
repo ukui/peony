@@ -26,6 +26,7 @@
 #include <QDialog>
 #include <QCheckBox>
 #include <QLineEdit>
+#include <QScrollArea>
 #include "file-operation-error-dialog-base.h"
 
 namespace Peony {
@@ -68,7 +69,7 @@ private:
     float m_fix_height = 188;
 
     float m_text_y = 65;
-    float m_text_heigth = 44;
+    float m_text_heigth = 50;
 
     float m_ok_x = 410;
     float m_ok_y = 132;
@@ -77,6 +78,7 @@ private:
 
     QLabel* m_icon = nullptr;
     QLabel* m_text = nullptr;
+    QScrollArea* m_text_scroll = nullptr;
     QPushButton* m_ok = nullptr;
 };
 
@@ -156,6 +158,7 @@ public:
 
 Q_SIGNALS:
     void active ();
+    void choosed ();
 
 public:
     float getIconSize();
@@ -168,8 +171,9 @@ public:
     void setFileModifyTime (QString modify);
 
 protected:
-    void paintEvent(QPaintEvent *event) override;
+    virtual void paintEvent(QPaintEvent *event) override;
     virtual void mousePressEvent(QMouseEvent *event)override;
+    virtual void mouseDoubleClickEvent (QMouseEvent* event) override;
 
 private:
     float m_fix_width = 528;

@@ -24,6 +24,7 @@
 #define ICONVIEWSTYLE_H
 
 #include <QProxyStyle>
+#include <peony-core_global.h>
 
 namespace Peony {
 
@@ -39,7 +40,7 @@ namespace DirectoryView {
  * I mainly use this class control the internal layout of a item. It will
  * combine with delegate's paint() method.
  */
-class IconViewStyle : public QProxyStyle
+class PEONYCORESHARED_EXPORT IconViewStyle : public QProxyStyle
 {
     Q_OBJECT
 public:

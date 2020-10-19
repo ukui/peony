@@ -60,6 +60,7 @@ void AdvanceSearchBar::init()
     m_search_path = new QLineEdit(m_filter);
     m_search_path->setPlaceholderText(tr("choose search path..."));
     QString uri = m_top_window->getCurrentUri();
+    //FIXME: replace BLOCKING api in ui thread.
     m_search_path->setText(FileUtils::getFileDisplayName(uri));
     m_advance_target_path = uri;
     m_choosed_paths.push_back(uri);
@@ -170,7 +171,7 @@ void AdvanceSearchBar::setdefaultpath(QString path)
 
 void AdvanceSearchBar::browsePath()
 {
-    QString target_path = QFileDialog::getExistingDirectory(this, "caption", m_top_window->getCurrentUri(), QFileDialog::ShowDirsOnly);
+    QString target_path = QFileDialog::getExistingDirectory(this, tr("Select path"), m_top_window->getCurrentUri(), QFileDialog::ShowDirsOnly);
     //qDebug()<<"browsePath Opened:"<<target_path;
     //add root prefix
     if (! target_path.contains("file://"))
@@ -227,6 +228,7 @@ void AdvanceSearchBar::pathChanged()
     //check deleted path,remove from selected list
     for(auto path : m_choosed_paths)
     {
+        //FIXME: replace BLOCKING api in ui thread.
         QString show = FileUtils::getFileDisplayName(path);
         if (! names.contains(show))
         {
@@ -243,11 +245,13 @@ void AdvanceSearchBar::updateLocation()
     QString show = nullptr;
     for(auto path : m_choosed_paths) {
         if (show == nullptr) {
+            //FIXME: replace BLOCKING api in ui thread.
             show = FileUtils::getFileDisplayName(path);
             m_advance_target_path = path;
         }
 
         else {
+            //FIXME: replace BLOCKING api in ui thread.
             show += "," + FileUtils::getFileDisplayName(path);
             m_advance_target_path += "," + path;
         }

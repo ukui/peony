@@ -36,6 +36,7 @@ class FileOperationProgressBar : public QWidget
 public:
     static FileOperationProgressBar* getInstance();
 
+    void removeAllProgressbar ();
     ProgressBar* addFileOperation();
     void showProgress (ProgressBar& progress);
     void removeFileOperation(ProgressBar* progress);
@@ -46,10 +47,13 @@ private:
     void showMore ();
 
 protected:
+    void showWidgetList(bool show);
     void mouseMoveEvent(QMouseEvent *event) override;
     void mousePressEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
-    void showWidgetList(bool show);
+
+Q_SIGNALS:
+    void canceled();
 
 public Q_SLOTS:
     void mainProgressChange(QListWidgetItem *item);
@@ -60,13 +64,13 @@ private:
     QVBoxLayout* m_main_layout = nullptr;
 
     // widget
-    MainProgressBar* m_main_progressbar = nullptr;
-    OtherButton* m_other_progressbar = nullptr;
     QListWidget* m_list_widget = nullptr;
-
     ProgressBar* m_current_main = nullptr;
-    QMap<ProgressBar*, QListWidgetItem*>* m_progress_list = nullptr;
+    OtherButton* m_other_progressbar = nullptr;
+    MainProgressBar* m_main_progressbar = nullptr;
+
     QMap<QListWidgetItem*, ProgressBar*>* m_widget_list = nullptr;
+    QMap<ProgressBar*, QListWidgetItem*>* m_progress_list = nullptr;
 
     int m_show_items = 2;
     bool m_show_more = false;
@@ -88,8 +92,8 @@ class ProgressBar : public QWidget
     Q_OBJECT
 public:
     explicit ProgressBar (QWidget* parent = nullptr);
-    void setIcon (QIcon icon);
-    QIcon getIcon();
+    void setIcon (const QString& icon);
+    QIcon& getIcon();
     bool getStatus();
 
 private:
@@ -98,7 +102,7 @@ private:
 Q_SIGNALS:
     void cancelled();
     void finished(ProgressBar* fop);
-    void sendValue(QString&, double);
+    void sendValue(QString&, QIcon&, double);
 
 protected:
     void paintEvent(QPaintEvent *event) override;
@@ -110,7 +114,7 @@ public Q_SLOTS:
     void onElementFoundOne (const QString &uri, const qint64 &size);
     void onElementFoundAll ();
     void onFileOperationProgressedOne(const QString &uri, const QString &destUri, const qint64 &size);
-    void updateProgress(const QString &srcUri, const QString &destUri, quint64 current, quint64 total);
+    void updateProgress(const QString &srcUri, const QString &destUri, const QString& fIcon, const quint64& current, const quint64& total);
     void onFileOperationProgressedAll();
     void onElementClearOne(const QString &uri);
     void switchToRollbackPage();
@@ -153,7 +157,7 @@ class MainProgressBar : public QWidget
 public:
     explicit MainProgressBar(QWidget *parent = nullptr);
     void initPrarm();
-    void setFileIcon (QIcon icon);
+    void setFileIcon (QIcon& icon);
     void setTitle (QString title);
 
 protected:
@@ -173,7 +177,7 @@ Q_SIGNALS:
 
 public Q_SLOTS:
     void cancelld();
-    void updateValue (QString&, double);
+    void updateValue (QString&, QIcon&, double);
 
 private:
     // header
@@ -209,7 +213,7 @@ private:
     bool m_stopping = false;
     float m_current_value = 0.0;
     QString m_file_name = tr("starting ...");
-    QIcon m_icon = QIcon::fromTheme("window-close-symbolic");
+    QIcon m_icon = QIcon::fromTheme("text");
 };
 
 class OtherButton : public QWidget

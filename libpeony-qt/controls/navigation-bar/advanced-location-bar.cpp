@@ -44,9 +44,13 @@ AdvancedLocationBar::AdvancedLocationBar(QWidget *parent) : QWidget(parent)
     m_search_bar = new Peony::SearchBarContainer(this);
     //bar->connect(bar, &Peony::LocationBar::groupChangedRequest, bar, &Peony::LocationBar::setRootUri);
     m_bar->connect(m_bar, &Peony::LocationBar::blankClicked, [=]() {
-        layout->setCurrentWidget(m_edit);
-        m_edit->setFocus();
-        m_edit->setUri(m_bar->getCurentUri());
+        auto curUri = m_bar->getCurentUri();
+        if (! curUri.startsWith("trash:///"))
+        {
+            layout->setCurrentWidget(m_edit);
+            m_edit->setFocus();
+            m_edit->setUri(curUri);
+        }
     });
 
     m_edit->connect(m_edit, &Peony::PathEdit::uriChangeRequest, [=](const QString uri) {
@@ -78,16 +82,12 @@ AdvancedLocationBar::AdvancedLocationBar(QWidget *parent) : QWidget(parent)
     });
 
     m_search_bar->connect(m_search_bar, &Peony::SearchBarContainer::returnPressed, [=]() {
-        //qDebug() << "start search" << m_search_bar->text();
         auto key = m_search_bar->text();
-        if (key.isEmpty())
+        if (key != m_last_key)
         {
-            Q_EMIT this->updateWindowLocationRequest(m_last_non_search_path, false);
-        }
-        else
-        {
-            auto targetUri = Peony::SearchVFSUriParser::parseSearchKey(m_last_non_search_path, key);
-            Q_EMIT this->updateWindowLocationRequest(targetUri);
+            qDebug() << "start search" << key;
+            Q_EMIT searchRequest(m_last_non_search_path, key);
+            m_last_key = key;
         }
     });
 

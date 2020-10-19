@@ -77,13 +77,15 @@ void messageOutput(QtMsgType type, const QMessageLogContext &context, const QStr
 
 int main(int argc, char *argv[])
 {
+    PeonyDesktopApplication::peony_desktop_start_time = QDateTime::currentMSecsSinceEpoch();
     qInstallMessageHandler(messageOutput);
+    qDebug() << "desktop start time in main:" <<PeonyDesktopApplication::peony_desktop_start_time;
     //PeonyDesktopApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     DesktopScreen *screen = new DesktopScreen();
-    if (screen->getScreenWidth() >2560) {
-        QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
-        QGuiApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
-    }
+
+    QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+    QGuiApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
+
     delete screen;
 
     PeonyDesktopApplication a(argc, argv);

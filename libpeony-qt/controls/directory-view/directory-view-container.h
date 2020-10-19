@@ -54,7 +54,7 @@ class DirectoryViewWidget;
  * in higher level.
  * You can interpret it as the middleware of window and directory view.
  */
-class DirectoryViewContainer : public QWidget
+class PEONYCORESHARED_EXPORT DirectoryViewContainer : public QWidget
 {
     Q_OBJECT
 public:
@@ -87,6 +87,8 @@ Q_SIGNALS:
     void selectionChanged();
     void viewDoubleClicked(const QString &uri);
     void updateWindowLocationRequest(const QString &uri, bool addHistory, bool forceUpdate = false);
+
+    void updateWindowSelectionRequest(const QStringList &uris);
 
     void menuRequest(const QPoint &pos);
 
@@ -121,6 +123,7 @@ public Q_SLOTS:
     void setFilterLabelConditions(QString name);
 
     //mutiple filter conditions for new advance search
+    void addFileNameFilter(QString key, bool updateNow = false);
     void addFilterCondition(int option, int classify, bool updateNow = false);
     void removeFilterCondition(int option, int classify, bool updateNow = false);
     void clearConditions();

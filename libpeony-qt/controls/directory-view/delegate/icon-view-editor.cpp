@@ -34,13 +34,13 @@ using namespace DirectoryView;
 IconViewEditor::IconViewEditor(QWidget *parent) : QTextEdit(parent)
 {
     setAcceptRichText(false);
-    setContextMenuPolicy(Qt::CustomContextMenu);
+    //setContextMenuPolicy(Qt::CustomContextMenu);
     m_styled_edit = new QLineEdit;
     setContentsMargins(0, 0, 0, 0);
     setAlignment(Qt::AlignCenter);
 
-    setStyleSheet("padding: 0px;"
-                  "background-color: white;");
+//    setStyleSheet("padding: 0px;"
+//                  "background-color: white;");
 
     connect(this, &IconViewEditor::textChanged, this, &IconViewEditor::minimalAdjust);
 }

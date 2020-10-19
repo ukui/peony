@@ -98,11 +98,13 @@ const QString SearchVFSUriParser::getSearchUriTargetDirectory(const QString &sea
             auto tmp = arg.remove("search_uris=");
             auto uris = tmp.split(",");
             if (uris.count() == 1) {
+                //FIXME: replace BLOCKING api in ui thread.
                 return FileUtils::getFileDisplayName(tmp);
             }
             tmp = nullptr;
             QStringList names;
             for (auto uri : uris) {
+                //FIXME: replace BLOCKING api in ui thread.
                 auto displayName = FileUtils::getFileDisplayName(uri);
                 if (tmp == nullptr)
                     tmp = displayName;

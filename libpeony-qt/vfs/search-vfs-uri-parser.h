@@ -24,10 +24,11 @@
 #define SEARCHVFSURIPARSER_H
 
 #include <QString>
+#include <peony-core_global.h>
 
 namespace Peony {
 
-class SearchVFSUriParser
+class PEONYCORESHARED_EXPORT SearchVFSUriParser
 {
 public:
     const static QString parseSearchKey(const QString &uri, const QString &key, const bool &search_file_name=true,

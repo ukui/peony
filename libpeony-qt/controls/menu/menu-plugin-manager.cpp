@@ -103,7 +103,9 @@ QList<QAction *> CreateLinkInternalPlugin::menuActions(MenuPluginInterface::Type
             auto createLinkToDesktop = new QAction(QIcon::fromTheme("emblem-link-symbolic"), tr("Create Link to Desktop"), nullptr);
             auto info = FileInfo::fromUri(selectionUris.first(), false);
             //special type mountable, or isVirtual then return
-            if (selectionUris.first().startsWith("computer:///") || info->isVirtual())
+            if (selectionUris.first().startsWith("computer:///") || info->isVirtual()
+                || selectionUris.first().startsWith("trash:///")
+                || selectionUris.first().startsWith("recent:///"))
                 return l;
 
             connect(createLinkToDesktop, &QAction::triggered, [=]() {
@@ -145,6 +147,9 @@ QList<QAction *> FileLabelInternalMenuPlugin::menuActions(MenuPluginInterface::T
     QList<QAction *> l;
     if (types == DirectoryView) {
         if (selectionUris.count() == 1) {
+            //not allow in trash path
+            if (uri.startsWith("trash://"))
+                return l;
             auto action = new QAction(tr("Add File Label..."), nullptr);
             auto uri = selectionUris.first();
             auto menu = new QMenu();

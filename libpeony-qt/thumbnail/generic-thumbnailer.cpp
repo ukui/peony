@@ -26,8 +26,10 @@
 #include <QUrl>
 #include <QFile>
 #include <QFileInfo>
-
+#include<QDir>
 #include <QPainter>
+#include <QMessageAuthenticationCode>
+#include<QDesktopServices>
 
 extern void qt_blurImage(QImage &blurImage, qreal radius, bool quality, int transposed);
 
@@ -182,4 +184,48 @@ QIcon GenericThumbnailer::generateThumbnail(const QPixmap &pixmap, bool shadow, 
 GenericThumbnailer::GenericThumbnailer(QObject *parent) : QObject(parent)
 {
 
+}
+
+QString GenericThumbnailer::codeMd5(QString fileName)
+{
+    QMessageAuthenticationCode code(QCryptographicHash::Md5);
+    code.addData(fileName.toUtf8());
+    return code.result().toHex();
+}
+
+QString GenericThumbnailer::codeMd5WithModifyTime(QString fileName, quint64 &modifyTime)
+{
+    QString contentText = fileName + QString::number(modifyTime);
+    QMessageAuthenticationCode code(QCryptographicHash::Md5);
+    code.addData(contentText.toUtf8());
+    return code.result().toHex();
+}
+
+QString GenericThumbnailer::cachDir()
+{
+    QString location;
+#if QT_VERSION >= 0x050000
+    location=QStandardPaths::writableLocation(QStandardPaths::CacheLocation);
+#else
+    location=QDesktopServices::storageLocation(QDesktopServices::CacheLocation);
+#endif
+
+    QDir dir(location);
+    if(!dir.exists())
+        dir.mkpath(".");
+    return location;
+}
+
+QString GenericThumbnailer::thumbnaileCachDir()
+{
+    QString location="/tmp/.cache/peony";
+    location+="/thumbnails";
+
+    QDir dir(location);
+    if(!dir.exists())
+    {
+        dir.mkpath(".");
+    }
+
+    return location;
 }

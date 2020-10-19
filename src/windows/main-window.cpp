@@ -68,6 +68,9 @@
 
 #include "global-settings.h"
 
+//play audio lib head file
+#include <canberra.h>
+
 #include <QSplitter>
 
 #include <QPainter>
@@ -79,6 +82,7 @@
 #include <QDesktopServices>
 
 #include <QProcess>
+#include <QDateTime>
 
 #if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
 #include <QPainterPath>
@@ -88,6 +92,12 @@
 
 #include <X11/Xlib.h>
 #include <KWindowEffects>
+
+// NOTE build failed on Archlinux. Can't detect `QGSettings/QGSettings' header
+// fixed by replaced `QGSettings/QGSettings' with `QGSettings'
+#include <QGSettings>
+
+#define FONT_SETTINGS "org.ukui.style"
 
 static MainWindow *last_resize_window = nullptr;
 
@@ -133,6 +143,10 @@ MainWindow::MainWindow(const QString &uri, QWidget *parent) : QMainWindow(parent
 
     //init UI
     initUI(uri);
+
+    auto start_cost_time = QDateTime::currentMSecsSinceEpoch()- PeonyApplication::peony_start_time;
+    qDebug() << "peony start end in main-window time:" <<start_cost_time
+             <<"ms"<<QDateTime::currentMSecsSinceEpoch();
 }
 
 MainWindow::~MainWindow()
@@ -246,6 +260,18 @@ void MainWindow::checkSettings()
     m_show_hidden_file = settings->isExist("show-hidden")? settings->getValue("show-hidden").toBool(): false;
     m_use_default_name_sort_order = settings->isExist("chinese-first")? settings->getValue("chinese-first").toBool(): false;
     m_folder_first = settings->isExist("folder-first")? settings->getValue("folder-first").toBool(): true;
+
+    //font monitor
+    QGSettings *fontSetting = new QGSettings(FONT_SETTINGS, QByteArray(), this);
+    connect(fontSetting, &QGSettings::changed, this, [=](const QString &key){
+        qDebug() << "fontSetting changed:" << key;
+        if (key == "systemFont" || key == "systemFontSize")
+        {
+            QFont font = this->font();
+            for(auto widget : qApp->allWidgets())
+                widget->setFont(font);
+        }
+    });
 }
 
 void MainWindow::setShortCuts()
@@ -412,10 +438,11 @@ void MainWindow::setShortCuts()
     auto maxAction = new QAction(this);
     maxAction->setShortcut(QKeySequence(Qt::Key_F11));
     connect(maxAction, &QAction::triggered, this, [=]() {
-        if (!this->isFullScreen()) {
-            this->showFullScreen();
-        } else {
+        //showFullScreen has some issue, change to showMaximized, fix #20043
+        if (!this->isMaximized()) {
             this->showMaximized();
+        } else {
+            this->showNormal();
         }
     });
     addAction(maxAction);
@@ -470,27 +497,28 @@ void MainWindow::setShortCuts()
     auto remodelViewAction = new QAction(this);
     remodelViewAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_0));
     connect(remodelViewAction, &QAction::triggered, this, [=]() {
-        this->getCurrentPage()->getView()->setCurrentZoomLevel(21);
+        this->getCurrentPage()->setZoomLevelRequest(25);
     });
     addAction(remodelViewAction);
 
     auto enlargViewAction = new QAction(this);
-    enlargViewAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Plus));
+    enlargViewAction->setShortcut(QKeySequence::ZoomIn);
     connect(enlargViewAction, &QAction::triggered, this, [=]() {
         int defaultZoomLevel = this->currentViewZoomLevel();
         if(defaultZoomLevel <= 95){ defaultZoomLevel+=5; }
-        this->getCurrentPage()->getView()->setCurrentZoomLevel(defaultZoomLevel);
+        for (int i = 0; i < 5; i++) {
+            this->getCurrentPage()->setZoomLevelRequest(defaultZoomLevel);
+        }
 
     });
     addAction(enlargViewAction);
 
     auto shrinkViewAction = new QAction(this);
-    shrinkViewAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Minus));
+    shrinkViewAction->setShortcut(QKeySequence::ZoomOut);
     connect(shrinkViewAction, &QAction::triggered, this, [=]() {
         int defaultZoomLevel = this->currentViewZoomLevel();
         if(defaultZoomLevel > 6){ defaultZoomLevel-=5; }
-        this->getCurrentPage()->getView()->setCurrentZoomLevel(defaultZoomLevel);
-
+        this->getCurrentPage()->setZoomLevelRequest(defaultZoomLevel);
     });
     addAction(shrinkViewAction);
 
@@ -516,6 +544,9 @@ void MainWindow::setShortCuts()
     copyAction->setShortcut(QKeySequence::Copy);
     connect(copyAction, &QAction::triggered, [=]() {
         if (!this->getCurrentSelections().isEmpty())
+            if (this->getCurrentSelections().first().startsWith("trash://", Qt::CaseInsensitive)) {
+                return ;
+            }
             Peony::ClipboardUtils::setClipboardFiles(this->getCurrentSelections(), false);
     });
     addAction(copyAction);
@@ -526,7 +557,14 @@ void MainWindow::setShortCuts()
         if (Peony::ClipboardUtils::isClipboardHasFiles()) {
             //FIXME: how about duplicated copy?
             //FIXME: how to deal with a failed move?
-            Peony::ClipboardUtils::pasteClipboardFiles(this->getCurrentUri());
+            auto op = Peony::ClipboardUtils::pasteClipboardFiles(this->getCurrentUri());
+            if (op) {
+                connect(op, &Peony::FileOperation::operationFinished, this, [=](){
+                    auto opInfo = op->getOperationInfo();
+                    auto targetUirs = opInfo->dests();
+                    setCurrentSelectionUris(targetUirs);
+                }, Qt::BlockingQueuedConnection);
+            }
         }
     });
     addAction(pasteAction);
@@ -535,6 +573,9 @@ void MainWindow::setShortCuts()
     cutAction->setShortcut(QKeySequence::Cut);
     connect(cutAction, &QAction::triggered, [=]() {
         if (!this->getCurrentSelections().isEmpty()) {
+            if (this->getCurrentSelections().first().startsWith("trash://", Qt::CaseInsensitive)) {
+                return ;
+            }
             Peony::ClipboardUtils::setClipboardFiles(this->getCurrentSelections(), true);
         }
     });
@@ -544,6 +585,7 @@ void MainWindow::setShortCuts()
 void MainWindow::updateTabPageTitle()
 {
     m_tab->updateTabPageTitle();
+    //FIXME: replace BLOCKING api in ui thread.
     auto show = Peony::FileUtils::getFileDisplayName(getCurrentUri());
     QString title = show + "-" + tr("File Manager");
     //qDebug() << "updateTabPageTitle:" <<title;
@@ -552,16 +594,28 @@ void MainWindow::updateTabPageTitle()
 
 void MainWindow::createFolderOperation()
 {
-    Peony::CreateTemplateOperation op(getCurrentUri(), Peony::CreateTemplateOperation::EmptyFolder, tr("New Folder"));
-    Peony::FileOperationErrorDialogConflict dlg;
-    connect(&op, &Peony::FileOperation::errored, &dlg, &Peony::FileOperationErrorDialogConflict::handle);
-    op.run();
-    auto targetUri = op.target();
+//    Peony::CreateTemplateOperation op(getCurrentUri(), Peony::CreateTemplateOperation::EmptyFolder, tr("New Folder"));
+//    Peony::FileOperationErrorDialogConflict dlg;
+//    connect(&op, &Peony::FileOperation::errored, &dlg, &Peony::FileOperationErrorDialogConflict::handle);
+//    op.run();
+//    auto targetUri = op.target();
 
-    QTimer::singleShot(500, this, [=]() {
-        this->getCurrentPage()->getView()->scrollToSelection(targetUri);
-        this->editUri(targetUri);
-    });
+    auto op = Peony::FileOperationUtils::create(getCurrentUri(), tr("New Folder"), Peony::CreateTemplateOperation::EmptyFolder);
+    connect(op, &Peony::FileOperation::operationFinished, this, [=](){
+        if (op->hasError())
+            return;
+        auto opInfo = op->getOperationInfo();
+        auto targetUri = opInfo->target();
+        this->getCurrentPage()->getView()->clearIndexWidget();
+        QTimer::singleShot(500, this, [=](){
+            this->editUri(opInfo->target());
+        });
+    }, Qt::BlockingQueuedConnection);
+
+//    QTimer::singleShot(500, this, [=]() {
+//        this->getCurrentPage()->getView()->scrollToSelection(targetUri);
+//        this->editUri(targetUri);
+//    });
 }
 
 void MainWindow::keyPressEvent(QKeyEvent *e)
@@ -721,7 +775,11 @@ void MainWindow::beginSwitchView(const QString &viewId)
     // save zoom level
     Peony::GlobalSettings::getInstance()->setValue(DEFAULT_VIEW_ZOOM_LEVEL, currentViewZoomLevel());
     m_tab->setCurrentSelections(selection);
-    m_tab->m_status_bar->m_slider->setEnabled(m_tab->currentPage()->getView()->supportZoom());
+    bool supportZoom = m_tab->currentPage()->getView()->supportZoom();
+    m_tab->m_status_bar->m_slider->setEnabled(supportZoom);
+    m_tab->m_status_bar->m_slider->setVisible(supportZoom);
+    //fix slider value not update issue
+    m_tab->m_status_bar->m_slider->setValue(currentViewZoomLevel());
 }
 
 void MainWindow::refresh()
@@ -789,6 +847,9 @@ void MainWindow::forceStopLoading()
 void MainWindow::setCurrentSelectionUris(const QStringList &uris)
 {
     m_tab->setCurrentSelections(uris);
+    if (uris.isEmpty())
+        return;
+    getCurrentPage()->getView()->scrollToSelection(uris.first());
 }
 
 void MainWindow::setCurrentSortOrder(Qt::SortOrder order)
@@ -1105,6 +1166,7 @@ void MainWindow::initUI(const QString &uri)
         m_tab->addPage(home, true);
     } else {
         m_tab->addPage(uri, true);
+        m_header_bar->setLocation(uri);
     }
     QTimer::singleShot(1, this, [=]() {
         // FIXME:
@@ -1134,6 +1196,7 @@ void MainWindow::initUI(const QString &uri)
         setCurrentViewZoomLevel(currentViewZoomLevel());
 
     //bind signals
+    connect(m_tab, &TabWidget::searchRecursiveChanged, headerBar, &HeaderBar::updateSearchRecursive);
     connect(m_tab, &TabWidget::closeSearch, headerBar, &HeaderBar::closeSearch);
     connect(m_tab, &TabWidget::clearTrash, this, &MainWindow::cleanTrash);
     connect(m_tab, &TabWidget::recoverFromTrash, this, &MainWindow::recoverFromTrash);
@@ -1157,6 +1220,9 @@ void MainWindow::initUI(const QString &uri)
             });
         }
     });
+    connect(m_tab, &TabWidget::updateWindowSelectionRequest, this, [=](const QStringList &uris){
+        setCurrentSelectionUris(uris);
+    });
 //    connect(m_tab, &TabWidget::currentSelectionChanged, this, [=](){
 //        m_status_bar->update();
 //    });
@@ -1164,6 +1230,14 @@ void MainWindow::initUI(const QString &uri)
 
 void MainWindow::cleanTrash()
 {
+    ca_context *caContext;
+    ca_context_create(&caContext);
+    const gchar* eventId = "dialog-warning";
+    //eventid 是/usr/share/sounds音频文件名,不带后缀
+    ca_context_play (caContext, 0,
+                     CA_PROP_EVENT_ID, eventId,
+                     CA_PROP_EVENT_DESCRIPTION, tr("Delete file Warning"), NULL);
+
     auto result = QMessageBox::question(nullptr, tr("Delete Permanently"),
                                         tr("Are you sure that you want to delete these files? "
                                            "Once you start a deletion, the files deleting will never be "

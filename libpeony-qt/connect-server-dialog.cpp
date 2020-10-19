@@ -22,6 +22,7 @@
 
 #include "connect-server-dialog.h"
 #include "ui_connect-server-dialog.h"
+#include <QPushButton>
 
 ConnectServerDialog::ConnectServerDialog(QWidget *parent) :
     QDialog(parent),
@@ -29,6 +30,9 @@ ConnectServerDialog::ConnectServerDialog(QWidget *parent) :
 {
     ui->setupUi(this);
     ui->passwd_edit->setEchoMode(QLineEdit::Password);
+
+    ui->buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Ok"));
+    ui->buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
 
     connect(ui->anonymous_checkbox, &QCheckBox::toggled, [=](bool checked) {
         if (checked) {

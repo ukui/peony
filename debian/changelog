@@ -1,3 +1,9 @@
+peony (3.0.3-1) unstable; urgency=medium
+
+  * New upstream bugfix release.
+
+ -- handsome_feng <jianfengli@ubuntukylin.com>  Mon, 07 Sep 2020 16:16:47 +0800
+
 peony (3.0.2-2) unstable; urgency=medium
 
   * debian/control:

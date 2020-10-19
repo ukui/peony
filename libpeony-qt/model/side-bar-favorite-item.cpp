@@ -65,6 +65,7 @@ SideBarFavoriteItem::SideBarFavoriteItem(QString uri,
         return;
     }
     m_uri = uri;
+    //FIXME: replace BLOCKING api in ui thread.
     m_display_name = FileUtils::getFileDisplayName(uri);
     m_icon_name = FileUtils::getFileIconName(uri);
 }
@@ -102,7 +103,7 @@ QModelIndex SideBarFavoriteItem::firstColumnIndex()
 QModelIndex SideBarFavoriteItem::lastColumnIndex()
 {
     //TODO: bind with model
-    return m_model->firstCloumnIndex(this);
+    return m_model->lastCloumnIndex(this);
 }
 
 void SideBarFavoriteItem::syncBookMark()

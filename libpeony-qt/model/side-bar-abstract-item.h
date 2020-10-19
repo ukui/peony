@@ -27,6 +27,7 @@
 #include <QVector>
 
 #include "peony-core_global.h"
+#include <gio/gio.h>
 
 namespace Peony {
 
@@ -34,6 +35,7 @@ class SideBarModel;
 
 class PEONYCORESHARED_EXPORT SideBarAbstractItem : public QObject
 {
+    friend class SideBarFileSystemItem;
     friend class SideBarModel;
     Q_OBJECT
 public:
@@ -77,9 +79,11 @@ Q_SIGNALS:
 public Q_SLOTS:
     virtual void onUpdated() = 0;
 
-    virtual void eject() = 0;
+    virtual void eject(GMountUnmountFlags ejectFlag) = 0;
     virtual void unmount() = 0;
     virtual void format() = 0;
+
+    virtual void ejectOrUnmount() {}
 
     virtual void findChildren() = 0;
     virtual void findChildrenAsync() = 0;

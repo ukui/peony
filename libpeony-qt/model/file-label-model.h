@@ -27,12 +27,13 @@
 #include <QSettings>
 
 #include <QColor>
+#include <peony-core_global.h>
 
 #define PEONY_FILE_LABEL_IDS "peony-file-label-ids"
 
 class FileLabelItem;
 
-class FileLabelModel : public QAbstractListModel
+class PEONYCORESHARED_EXPORT FileLabelModel : public QAbstractListModel
 {
     Q_OBJECT
 
@@ -97,7 +98,7 @@ private:
     QList<FileLabelItem *> m_labels;
 };
 
-class FileLabelItem : public QObject
+class PEONYCORESHARED_EXPORT FileLabelItem : public QObject
 {
     friend class FileLabelModel;
     Q_OBJECT

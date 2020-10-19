@@ -39,7 +39,9 @@ public:
 
     static Peony::DesktopIconView *getIconView();
     static bool userGuideDaemonRunning();
-    static void showGuide(const QString &appName = "ukui");
+    static void showGuide(const QString &appName = "");
+
+    static qint64 peony_desktop_start_time;
 
 protected Q_SLOTS:
     void parseCmd(quint32 id, QByteArray msg, bool isPrimary);

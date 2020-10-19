@@ -34,6 +34,9 @@
 
 #include "directory-view-factory-manager.h"
 #include "directory-view-plugin-iface2.h"
+#include "search-vfs-uri-parser.h"
+#include "file-info.h"
+#include "file-info-job.h"
 
 #include <QHBoxLayout>
 #include <QUrl>
@@ -46,8 +49,11 @@
 #include <QEvent>
 #include <QApplication>
 #include <QTimer>
+#include <QStandardPaths>
 
 #include <KWindowSystem>
+
+#include <QtConcurrent>
 
 #include <QDebug>
 
@@ -81,6 +87,7 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
     createFolder->setAutoRaise(false);
     createFolder->setFixedSize(QSize(40, 40));
     createFolder->setIconSize(QSize(16, 16));
+    m_create_folder = createFolder;
 
     addSpacing(2);
 
@@ -133,6 +140,16 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
     });
     connect(m_location_bar, &Peony::AdvancedLocationBar::updateFileTypeFilter, [=](const int &index) {
         m_window->getCurrentPage()->setSortFilter(index);
+    });
+    connect(m_location_bar, &Peony::AdvancedLocationBar::searchRequest, [=](const QString &path, const QString &key){
+        //key is null, clean search content, show all files
+        if (key == "" || key.isNull())
+            Q_EMIT this->updateLocationRequest(path, false);
+        else
+        {
+            auto targetUri = Peony::SearchVFSUriParser::parseSearchKey(path, key, true, false, "", m_search_recursive);
+            Q_EMIT this->updateLocationRequest(targetUri, false);
+        }
     });
 
     connect(m_location_bar, &Peony::AdvancedLocationBar::updateWindowLocationRequest, this, &HeaderBar::updateLocationRequest);
@@ -221,20 +238,22 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
 
 void HeaderBar::findDefaultTerminal()
 {
-    GList *infos = g_app_info_get_all();
-    GList *l = infos;
-    while (l) {
-        const char *cmd = g_app_info_get_executable(static_cast<GAppInfo*>(l->data));
-        QString tmp = cmd;
-        if (tmp.contains("terminal")) {
-            terminal_cmd = tmp;
-            if (tmp == "mate-terminal") {
-                break;
+    QtConcurrent::run([](){
+        GList *infos = g_app_info_get_all();
+        GList *l = infos;
+        while (l) {
+            const char *cmd = g_app_info_get_executable(static_cast<GAppInfo*>(l->data));
+            QString tmp = cmd;
+            if (tmp.contains("terminal")) {
+                terminal_cmd = tmp;
+                if (tmp == "mate-terminal") {
+                    break;
+                }
             }
+            l = l->next;
         }
-        l = l->next;
-    }
-    g_list_free_full(infos, g_object_unref);
+        g_list_free_full(infos, g_object_unref);
+    });
 }
 
 void HeaderBar::openDefaultTerminal()
@@ -305,6 +324,11 @@ void HeaderBar::closeSearch()
     setSearchMode(false);
 }
 
+void HeaderBar::updateSearchRecursive(bool recursive)
+{
+    m_search_recursive = recursive;
+}
+
 void HeaderBar::addSpacing(int pixel)
 {
     for (int i = 0; i < pixel; i++) {
@@ -350,9 +374,9 @@ void HeaderBar::finishEdit()
 
 void HeaderBar::updateIcons()
 {
-    qDebug()<<m_window->getCurrentUri();
-    qDebug()<<m_window->getCurrentSortColumn();
-    qDebug()<<m_window->getCurrentSortOrder();
+    qDebug()<<"updateIcons:" <<m_window->getCurrentUri();
+    qDebug()<<"updateIcons:" <<m_window->getCurrentSortColumn();
+    qDebug()<<"updateIcons:" <<m_window->getCurrentSortOrder();
     m_view_type_menu->setCurrentDirectory(m_window->getCurrentUri());
     m_view_type_menu->setCurrentView(m_window->getCurrentPage()->getView()->viewId(), true);
     m_sort_type_menu->switchSortTypeRequest(m_window->getCurrentSortColumn());
@@ -361,6 +385,16 @@ void HeaderBar::updateIcons()
     //go back & go forward
     m_go_back->setEnabled(m_window->getCurrentPage()->canGoBack());
     m_go_forward->setEnabled(m_window->getCurrentPage()->canGoForward());
+
+    //fix create folder fail issue in special path
+    auto curUri = m_window->getCurrentUri();
+    auto info = Peony::FileInfo::fromUri(curUri, false);
+    Peony::FileInfoJob job(info);
+    job.querySync();
+    if (info->canWrite())
+        m_create_folder->setEnabled(true);
+    else
+        m_create_folder->setEnabled(false);
 
     m_go_back->setProperty("useIconHighlightEffect", true);
     m_go_back->setProperty("iconHighlightEffectMode", 1);

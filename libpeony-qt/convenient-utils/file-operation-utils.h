@@ -30,23 +30,24 @@
 namespace Peony {
 
 class FileInfo;
+class FileOperation;
 
 /*!
  * \brief The FileOperationUtils class
  * This is a class only provide static method for file operation.
  */
-class FileOperationUtils
+class PEONYCORESHARED_EXPORT FileOperationUtils
 {
 public:
-    static void move(const QStringList &srcUris, const QString &destUri, bool addHistory, bool copyMove = false);
-    static void copy(const QStringList &srcUris, const QString &destUri, bool addHistory);
-    static void trash(const QStringList &uris, bool addHistory);
-    static void remove(const QStringList &uris);
-    static void rename(const QString &uri, const QString &newName, bool addHistory);
-    static void link(const QString &srcUri, const QString &destUri, bool addHistory);
-    static void restore(const QString &uriInTrash);
-    static void restore(const QStringList &urisInTrash);
-    static void create(const QString &destDirUri, const QString &name = nullptr, CreateTemplateOperation::Type type = CreateTemplateOperation::EmptyFile);
+    static FileOperation *move(const QStringList &srcUris, const QString &destUri, bool addHistory, bool copyMove = false);
+    static FileOperation *copy(const QStringList &srcUris, const QString &destUri, bool addHistory);
+    static FileOperation *trash(const QStringList &uris, bool addHistory);
+    static FileOperation *remove(const QStringList &uris);
+    static FileOperation *rename(const QString &uri, const QString &newName, bool addHistory);
+    static FileOperation *link(const QString &srcUri, const QString &destUri, bool addHistory);
+    static FileOperation *restore(const QString &uriInTrash);
+    static FileOperation *restore(const QStringList &urisInTrash);
+    static FileOperation *create(const QString &destDirUri, const QString &name = nullptr, CreateTemplateOperation::Type type = CreateTemplateOperation::EmptyFile);
 
     static void executeRemoveActionWithDialog(const QStringList &uris);
 

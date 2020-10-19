@@ -52,6 +52,9 @@
 
 #include "file-operation-error-dialog.h"
 
+//play audio lib head file
+#include <canberra.h>
+
 #include <QDesktopServices>
 #include <QUrl>
 #include <QMessageBox>
@@ -62,6 +65,7 @@
 
 #include <QLocale>
 #include <QStandardPaths>
+#include <recent-vfs-manager.h>
 
 #include <QDebug>
 
@@ -103,6 +107,9 @@ void DirectoryViewMenu::fillActions()
 
     if (m_directory.startsWith("burn://"))
         m_is_cd = true;
+
+    if (m_directory.startsWith("recent://"))
+        m_is_recent = true;
 
     //add open actions
     auto openActions = constructOpenOpActions();
@@ -176,6 +183,8 @@ const QList<QAction *> DirectoryViewMenu::constructOpenOpActions()
         if (m_selections.count() == 1) {
             auto info = FileInfo::fromUri(m_selections.first());
             auto displayName = info->displayName();
+
+            //FIXME: replace BLOCKING api in ui thread.
             if (displayName.isEmpty())
                 displayName = FileUtils::getFileDisplayName(info->uri());
             //when name is too long, show elideText
@@ -307,7 +316,11 @@ const QList<QAction *> DirectoryViewMenu::constructCreateTemplateActions()
         if (m_is_cd) {
             createAction->setEnabled(false);
         }
-        if(m_directory.compare(QString::fromLocal8Bit("trash:///")) == 0)
+        //fix create folder fail issue in special path
+        auto info = FileInfo::fromUri(m_directory, false);
+        FileInfoJob job(info);
+        job.querySync();
+        if (! info->canWrite())
         {
             createAction->setEnabled(false);
         }
@@ -354,9 +367,10 @@ const QList<QAction *> DirectoryViewMenu::constructCreateTemplateActions()
 
                 QAction *action = new QAction(tmpIcon, qinfo.baseName(), this);
                 connect(action, &QAction::triggered, [=]() {
+                    // automatically check for conficts
                     CreateTemplateOperation op(m_directory, CreateTemplateOperation::Template, t);
-                    Peony::FileOperationErrorDialogConflict dlg;
-                    connect(&op, &Peony::FileOperation::errored, &dlg, &Peony::FileOperationErrorDialogConflict::handle);
+                    Peony::FileOperationErrorDialogWarning dlg;
+                    connect(&op, &Peony::FileOperation::errored, &dlg, &Peony::FileOperationErrorDialogWarning::handle);
                     op.run();
                     auto target = op.target();
                     m_uris_to_edit<<target;
@@ -436,9 +450,9 @@ const QList<QAction *> DirectoryViewMenu::constructViewOpActions()
 
         QList<QAction *> tmp;
         tmp<<sortTypeMenu->addAction(tr("Name"));
-        tmp<<sortTypeMenu->addAction(tr("File Size"));
-        tmp<<sortTypeMenu->addAction(tr("File Type"));
         tmp<<sortTypeMenu->addAction(tr("Modified Date"));
+        tmp<<sortTypeMenu->addAction(tr("File Type"));
+        tmp<<sortTypeMenu->addAction(tr("File Size"));
         int sortType = m_view->getSortType();
         if (sortType >= 0) {
             tmp.at(sortType)->setCheckable(true);
@@ -524,10 +538,12 @@ const QList<QAction *> DirectoryViewMenu::constructFileOpActions()
             connect(l.last(), &QAction::triggered, [=]() {
                 ClipboardUtils::setClipboardFiles(m_selections, true);
             });
-            l<<addAction(QIcon::fromTheme("edit-delete-symbolic"), tr("&Delete to trash"));
-            connect(l.last(), &QAction::triggered, [=]() {
-                FileOperationUtils::trash(m_selections, true);
-            });
+            if (!m_is_recent) {
+                l<<addAction(QIcon::fromTheme("edit-delete-symbolic"), tr("&Delete to trash"));
+                connect(l.last(), &QAction::triggered, [=]() {
+                    FileOperationUtils::trash(m_selections, true);
+                });
+            }
             //add delete forever option
             l<<addAction(QIcon::fromTheme("edit-clear-symbolic"), tr("Delete forever"));
             connect(l.last(), &QAction::triggered, [=]() {
@@ -544,7 +560,16 @@ const QList<QAction *> DirectoryViewMenu::constructFileOpActions()
             l<<pasteAction;
             pasteAction->setEnabled(ClipboardUtils::isClipboardHasFiles());
             connect(l.last(), &QAction::triggered, [=]() {
-                ClipboardUtils::pasteClipboardFiles(m_directory);
+                auto op = ClipboardUtils::pasteClipboardFiles(m_directory);
+                if (op) {
+                    auto window = dynamic_cast<QWidget *>(m_top_window);
+                    auto iface = m_top_window;
+                    connect(op, &Peony::FileOperation::operationFinished, window, [=](){
+                        auto opInfo = op->getOperationInfo();
+                        auto targetUirs = opInfo->dests();
+                        iface->setCurrentSelectionUris(targetUirs);
+                    }, Qt::BlockingQueuedConnection);
+                }
             });
             l<<addAction(QIcon::fromTheme("view-refresh-symbolic"), tr("&Refresh"));
             connect(l.last(), &QAction::triggered, [=]() {
@@ -642,6 +667,14 @@ const QList<QAction *> DirectoryViewMenu::constructTrashActions()
             l<<addAction(QIcon::fromTheme("window-close-symbolic"), tr("&Clean the Trash"));
             l.last()->setEnabled(!isTrashEmpty);
             connect(l.last(), &QAction::triggered, [=]() {
+                ca_context *caContext;
+                ca_context_create(&caContext);
+                const gchar* eventId = "dialog-warning";
+                //eventid 是/usr/share/sounds音频文件名,不带后缀
+                ca_context_play (caContext, 0,
+                                 CA_PROP_EVENT_ID, eventId,
+                                 CA_PROP_EVENT_DESCRIPTION, tr("Delete file Warning"), NULL);
+
                 auto result = QMessageBox::question(nullptr, tr("Delete Permanently"), tr("Are you sure that you want to delete these files? "
                                                                                           "Once you start a deletion, the files deleting will never be "
                                                                                           "restored again."));
@@ -661,6 +694,14 @@ const QList<QAction *> DirectoryViewMenu::constructTrashActions()
             });
             l<<addAction(QIcon::fromTheme("window-close-symbolic"), tr("&Delete"));
             connect(l.last(), &QAction::triggered, [=]() {
+                ca_context *caContext;
+                ca_context_create(&caContext);
+                const gchar* eventId = "dialog-warning";
+                //eventid 是/usr/share/sounds音频文件名,不带后缀
+                ca_context_play (caContext, 0,
+                                 CA_PROP_EVENT_ID, eventId,
+                                 CA_PROP_EVENT_DESCRIPTION, tr("Delete file Warning"), NULL);
+
                 auto result = QMessageBox::question(nullptr, tr("Delete Permanently"), tr("Are you sure that you want to delete these files? "
                                                                                           "Once you start a deletion, the files deleting will never be "
                                                                                           "restored again."));
@@ -669,6 +710,11 @@ const QList<QAction *> DirectoryViewMenu::constructTrashActions()
                 }
             });
         }
+    } else if (m_is_recent && m_selections.isEmpty()) {
+        l<<addAction(tr("Clean All"));
+        connect(l.last(), &QAction::triggered, [=]() {
+            RecentVFSManager::getInstance()->clearAll();
+        });
     }
 
     return l;
@@ -677,13 +723,16 @@ const QList<QAction *> DirectoryViewMenu::constructTrashActions()
 const QList<QAction *> DirectoryViewMenu::constructSearchActions()
 {
     QList<QAction *> l;
-    if (m_is_search) {
+    if (m_is_search || m_is_recent) {
         if (m_selections.isEmpty())
             return l;
 
         l<<addAction(QIcon::fromTheme("new-window-symbolc"), tr("Open Parent Folder in New Window"));
         connect(l.last(), &QAction::triggered, [=]() {
             for (auto uri : m_selections) {
+                //FIXME: replace BLOCKING api in ui thread.
+                if (m_is_recent)
+                    uri = FileUtils::getTargetUri(uri);
                 auto parentUri = FileUtils::getParentUri(uri);
                 if (!parentUri.isNull()) {
                     auto *windowIface = m_top_window->create(parentUri);

@@ -71,6 +71,7 @@ FileInfo::FileInfo(const QString &uri, QObject *parent) : QObject (parent)
 
 FileInfo::~FileInfo()
 {
+    ThumbnailManager::getInstance()->releaseThumbnail(m_uri);
     //qDebug()<<"~FileInfo"<<m_uri;
     disconnect();
 
@@ -87,6 +88,7 @@ FileInfo::~FileInfo()
 
 std::shared_ptr<FileInfo> FileInfo::fromUri(QString uri, bool addToHash)
 {
+    addToHash = true;
     FileInfoManager *info_manager = FileInfoManager::getInstance();
     info_manager->lock();
     std::shared_ptr<FileInfo> info = info_manager->findFileInfoByUri(uri);
@@ -134,4 +136,57 @@ std::shared_ptr<FileInfo> FileInfo::fromGFile(GFile *file, bool addToHash)
     QString uri = uri_str;
     g_free(uri_str);
     return fromUri(uri, addToHash);
+}
+
+/*******
+函数功能：判断文件是否是视频文件
+一般的视频文件都是 video/*,但是有些视频文件比较特殊
+比如：
+asf :   application/vnd.ms-asf
+rmvb:   application/vnd.rn-realmedia
+swf :   application/vnd.adobe.flash.movie
+ts  :   text/vnd.trolltech.linguist
+h264:   application/octet-stream
+目前上面这些是已经测试到的视频文件类型，如果有没有覆盖到的情况后面再补充
+**/
+bool FileInfo::isVideoFile()
+{
+    if (nullptr != m_mime_type_string)
+    {
+        if (m_mime_type_string.startsWith("video")
+            || m_mime_type_string.endsWith("vnd.trolltech.linguist")
+            || m_mime_type_string.endsWith("vnd.adobe.flash.movie")
+            || m_mime_type_string.endsWith("vnd.rn-realmedia")
+            || m_mime_type_string.endsWith("vnd.ms-asf")
+            || m_mime_type_string.endsWith("octet-stream"))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+    else
+    {
+        return false;
+    }
+}
+
+
+bool FileInfo::isOfficeFile()
+{
+    int idx = 0;
+    QString mtype = nullptr;
+
+    for (idx = 0; office_mime_types[idx] != "end"; idx++)
+    {
+        mtype = office_mime_types[idx];
+        if (m_mime_type_string.contains(mtype))
+        {
+            return true;
+        }
+    }
+
+    return false;
 }

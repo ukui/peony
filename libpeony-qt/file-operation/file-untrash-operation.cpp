@@ -33,11 +33,11 @@ FileUntrashOperation::FileUntrashOperation(QStringList uris, QObject *parent) : 
     m_uris = uris;
     //FIXME: should i put this into prepare process?
     cacheOriginalUri();
-    QStringList oppositeSrcUris;
+    QStringList destUris;
     for (auto value : m_restore_hash) {
-        oppositeSrcUris<<value;
+        destUris<<value;
     }
-    m_info = std::make_shared<FileOperationInfo>(oppositeSrcUris, "trash:///", FileOperationInfo::Trash);
+    m_info = std::make_shared<FileOperationInfo>(uris, destUris, FileOperationInfo::Untrash);
 }
 
 void FileUntrashOperation::cacheOriginalUri()
@@ -130,6 +130,76 @@ const QString FileUntrashOperation::handleDuplicate(const QString &uri)
     }
 }
 
+ExceptionResponse FileUntrashOperation::prehandle(GError *err)
+{
+    setHasError(true);
+
+    if (m_prehandle_hash.contains(err->code))
+        return m_prehandle_hash.value(err->code);
+
+    return Other;
+}
+
+void FileUntrashOperation::untrashFileErrDlg(
+                                FileOperationError &except,
+                                QString &srcUri,
+                                QString &originUri,
+                                GError *err)
+{
+    except.srcUri = srcUri;
+    except.destDirUri = originUri;
+    except.isCritical = false;
+    except.op = FileOpUntrash;
+    except.title = tr("Untrash file error");
+    except.errorCode = err->code;
+    except.errorType = ET_GIO;
+    if (G_IO_ERROR_EXISTS == err->code) {
+        except.dlgType = ED_CONFLICT;
+    } else {
+        except.dlgType = ED_WARNING;
+    }
+
+    Q_EMIT errored(except);
+}
+
+void FileUntrashOperation::getBackupName(
+                    QString &originUri,
+                    FileOperationError &except)
+{
+    QString name = "";
+    QStringList extendStr;
+
+    if (except.respValue.contains("name")) {
+        name = except.respValue["name"].toString();
+        if (name.isEmpty())
+        {
+            qDebug()<<"input file name is empty.";
+            return;
+        }
+
+        int endIndex = originUri.lastIndexOf('/');
+
+        extendStr = originUri.split(".");
+        if (extendStr.length() > 0) {
+            extendStr.removeAt(0);
+        }
+
+        QString endStr = extendStr.join(".");
+        if ("" != endStr) {
+            endStr = "." + endStr;
+            if (!name.endsWith(endStr)){
+                originUri = originUri.left(endIndex) + "/" + name + endStr;
+            } else {
+                originUri = originUri.left(endIndex) + "/" + name;
+            }
+        } else {
+            originUri = originUri.left(endIndex) + "/" + name;
+        }
+    }
+
+    return;
+}
+
 void FileUntrashOperation::run()
 {
     /*!
@@ -138,9 +208,6 @@ void FileUntrashOperation::run()
       it caused by the parent uri string has chinese.
       */
     for (auto uri : m_uris) {
-        if (isCancelled())
-            break;
-
         //cacheOriginalUri();
         auto originUri = m_restore_hash.value(uri);
 
@@ -148,6 +215,9 @@ void FileUntrashOperation::run()
         auto destFile = wrapGFile(g_file_new_for_uri(originUri.toUtf8().constData()));
 
 retry:
+        if (isCancelled())
+            break;
+
         GError *err = nullptr;
         if (FileUtils::isFileExsit(originUri)) {
             err = g_error_new(G_IO_ERROR, G_IO_ERROR_EXISTS, "");
@@ -162,28 +232,18 @@ retry:
         }
 
         if (err) {
+
             FileOperationError except;
-            except.srcUri = uri;
-            except.destDirUri = originUri;
-            except.isCritical = false;
-            except.title = tr("Untrash file");
-            except.errorCode = err->code;
-            except.errorType = ET_GIO;
-            this->setHasError(true);
-            int type = Invalid;
-            if (m_pre_handler != Invalid) {
-                type = m_pre_handler;
-            } else {
-                if (G_IO_ERROR_EXISTS == err->code) {
-                    except.dlgType = ED_CONFLICT;
-                    Q_EMIT errored(except);
-                    type = except.respCode;
-                } else {
-                    except.dlgType = ED_WARNING;
-                    Q_EMIT errored(except);
-                    type = except.respCode;
-                }
+            ExceptionResponse type = prehandle(err);
+            if (Other == type)
+            {
+                untrashFileErrDlg(except, uri, originUri, err);
+                type = except.respCode;
             }
+
+            g_error_free(err);
+            err = nullptr;
+
             switch (type) {
             case Retry:
                 goto retry;
@@ -197,7 +257,7 @@ retry:
                             getCancellable().get()->get(),
                             nullptr,
                             nullptr,
-                            &err);
+                            nullptr);
                 break;
             case OverWriteAll:
                 g_file_move(file.get()->get(),
@@ -206,25 +266,12 @@ retry:
                             getCancellable().get()->get(),
                             nullptr,
                             nullptr,
-                            &err);
-                m_pre_handler = OverWriteOne;
+                            nullptr);
+                m_prehandle_hash.insert(except.errorCode, OverWriteOne);
                 break;
             case BackupOne: {
                 // use custom name
-                QString name = "";
-                QStringList extendStr = originUri.split(".");
-                if (extendStr.length() > 0) {
-                    extendStr.removeAt(0);
-                }
-                QString endStr = extendStr.join(".");
-                if (except.respValue.contains("name")) {
-                    name = except.respValue["name"].toString();
-                    if (endStr != "" && name.endsWith(endStr)) {
-                        originUri = name;
-                    } else if ("" != endStr && "" != name) {
-                        originUri = name + "." + endStr;
-                    }
-                }
+                getBackupName(originUri, except);
                 if (FileUtils::isFileExsit(originUri)) {
                     originUri = handleDuplicate(originUri);
                 }
@@ -234,14 +281,14 @@ retry:
             case BackupAll: {
                 originUri = handleDuplicate(originUri);
                 destFile = wrapGFile(g_file_new_for_uri(originUri.toUtf8().constData()));
-                m_pre_handler = BackupOne;
-                break;
+                m_prehandle_hash.insert(except.errorCode, BackupOne);
+                goto retry;
             }
             case IgnoreOne: {
                 break;
             }
             case IgnoreAll: {
-                m_pre_handler = IgnoreOne;
+                m_prehandle_hash.insert(except.errorCode, IgnoreOne);
                 break;
             }
             default:
@@ -251,5 +298,4 @@ retry:
     }
 
     operationFinished();
-    //notifyFileWatcherOperationFinished();
 }

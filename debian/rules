@@ -3,4 +3,4 @@ export QT_SELECT=5
 export DEB_BUILD_MAINT_OPTIONS = hardening=+all
 
 %:
-	dh $@ --with pkgkde_symbolshelper
+	dh $@

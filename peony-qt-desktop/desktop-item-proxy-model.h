@@ -47,11 +47,14 @@ public:
         return m_sort_type;
     }
 
+    void setShowHidden(bool showHidden);
+
     bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const;
     bool lessThan(const QModelIndex &source_left, const QModelIndex &source_right) const;
 
 private:
     int m_sort_type = Other;
+    bool m_show_hidden;
 };
 
 }

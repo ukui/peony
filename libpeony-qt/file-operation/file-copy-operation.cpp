@@ -126,8 +126,23 @@ FileCopyOperation::~FileCopyOperation()
 ExceptionResponse FileCopyOperation::prehandle(GError *err)
 {
     setHasError(true);
-    if (m_is_duplicated_copy)
+
+    switch (err->code) {
+        case G_IO_ERROR_BUSY:
+        case G_IO_ERROR_PENDING:
+        case G_IO_ERROR_NO_SPACE:
+        case G_IO_ERROR_CANCELLED:
+        case G_IO_ERROR_INVALID_DATA:
+        case G_IO_ERROR_NOT_SUPPORTED:
+        case G_IO_ERROR_PERMISSION_DENIED:
+        case G_IO_ERROR_CANT_CREATE_BACKUP:
+        case G_IO_ERROR_TOO_MANY_OPEN_FILES:
+            return Other;
+    }
+
+    if (G_IO_ERROR_EXISTS == err->code && m_is_duplicated_copy) {
         return BackupAll;
+    }
 
     if (m_prehandle_hash.contains(err->code))
         return m_prehandle_hash.value(err->code);
@@ -142,13 +157,14 @@ void FileCopyOperation::progress_callback(goffset current_num_bytes,
     if (total_num_bytes < current_num_bytes)
         return;
 
+    QUrl url(p_this->m_current_src_uri);
     auto currnet = p_this->m_current_offset + current_num_bytes;
     auto total = p_this->m_total_szie;
+    auto fileIconName = FileUtils::getFileIconName(p_this->m_current_src_uri, false);
+    auto destFileName = FileUtils::isFileDirectory(p_this->m_current_dest_dir_uri) ?
+                p_this->m_current_dest_dir_uri + "/" + url.fileName() : p_this->m_current_dest_dir_uri;
     qDebug()<<currnet*1.0/total;
-    Q_EMIT p_this->FileProgressCallback(p_this->m_current_src_uri,
-                                        p_this->m_current_dest_dir_uri,
-                                        currnet,
-                                        total);
+    Q_EMIT p_this->FileProgressCallback(p_this->m_current_src_uri, destFileName, fileIconName, currnet, total);
 }
 
 void FileCopyOperation::copyRecursively(FileNode *node)
@@ -186,7 +202,8 @@ fallback_retry:
             except.errorType = ET_GIO;
             except.srcUri = m_current_src_uri;
             except.destDirUri = m_current_dest_dir_uri;
-            except.title = tr("File copy");
+            except.op = FileOpCopy;
+            except.title = tr("File copy error");
             except.errorCode = err->code;
             if (handle_type == Other) {
                 if (G_IO_ERROR_EXISTS == err->code) {
@@ -305,7 +322,8 @@ fallback_retry:
             auto errWrapperPtr = GErrorWrapper::wrapFrom(err);
             int handle_type = prehandle(err);
             except.errorType = ET_GIO;
-            except.title = tr("File copy");
+            except.op = FileOpCopy;
+            except.title = tr("File copy error");
             except.srcUri = m_current_src_uri;
             except.errorCode = err->code;
             except.errorStr = err->message;
@@ -411,6 +429,7 @@ fallback_retry:
             node->setState(FileNode::Handled);
         }
         m_current_offset += node->size();
+
         Q_EMIT operationProgressedOne(node->uri(), node->destUri(), node->size());
     }
     destFile.reset();
@@ -486,6 +505,7 @@ void FileCopyOperation::run()
         node->computeTotalSize(total_size);
         nodes << node;
     }
+
     Q_EMIT operationPrepared();
 
     m_total_szie = *total_size;
@@ -513,6 +533,8 @@ void FileCopyOperation::run()
             m_info->m_node_map.insert(node->uri(), node->destUri());
         delete node;
     }
+
+    m_info->m_dest_uris = m_info->m_node_map.values();
 
     nodes.clear();
 

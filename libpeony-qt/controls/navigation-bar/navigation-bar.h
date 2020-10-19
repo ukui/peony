@@ -36,7 +36,7 @@ class DirectoryViewContainer;
 class AdvancedLocationBar;
 class NavigationToolBar;
 
-class PEONYCORESHARED_EXPORT NavigationBar : public QToolBar
+class NavigationBar : public QToolBar
 {
     Q_OBJECT
 public:

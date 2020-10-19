@@ -54,9 +54,9 @@ class PEONYCORESHARED_EXPORT FileItemModel : public QAbstractItemModel
 public:
     enum ColumnType {
         FileName,
-        FileSize,
-        FileType,
         ModifiedDate,
+        FileType,
+        FileSize,
         Owner,
         Other
     };
@@ -235,6 +235,8 @@ Q_SIGNALS:
      * \note proxy model should connect this signal and start sort and filter again.
      */
     void updated();
+
+    void selectRequest(const QStringList &uris);
 
 public Q_SLOTS:
     /*!

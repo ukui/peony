@@ -40,12 +40,16 @@
 
 #include "global-settings.h"
 
+//play audio lib head file
+#include <canberra.h>
+
 #include <QProcess>
 #include <QStandardPaths>
 #include <QMessageBox>
 
 #include <QUrl>
 #include <QDir>
+#include <QStandardPaths>
 
 using namespace Peony;
 
@@ -113,9 +117,13 @@ const QList<QAction *> DesktopMenu::constructOpenOpActions()
             m_view->invertSelections();
         });
     } else {
-        if (m_selections.count() == 1) {
+        if (m_selections.count() == 1
+                && !m_selections.first().startsWith("trash://")
+                && !m_selections.first().startsWith("computer://")
+                && (m_selections.first() != ("file://" + QStandardPaths::standardLocations(QStandardPaths::HomeLocation).first()))) {
             auto info = FileInfo::fromUri(m_selections.first());
             auto displayName = info->displayName();
+            //FIXME: replace BLOCKING api in ui thread.
             if (displayName.isEmpty())
                 displayName = FileUtils::getFileDisplayName(info->uri());
             //when name is too long, show elideText
@@ -356,9 +364,9 @@ const QList<QAction *> DesktopMenu::constructViewOpActions()
 
         QList<QAction *> tmp;
         tmp<<sortTypeMenu->addAction(tr("Name"));
+        tmp<<sortTypeMenu->addAction(tr("Modified Date"));
         tmp<<sortTypeMenu->addAction(tr("File Type"));
         tmp<<sortTypeMenu->addAction(tr("File Size"));
-        tmp<<sortTypeMenu->addAction(tr("Modified Date"));
 
         int sortType = m_view->getSortType();
         qDebug() << "sortType:" <<sortType <<tmp.count();
@@ -430,6 +438,14 @@ const QList<QAction *> DesktopMenu::constructFileOpActions()
             });
             l.last()->setEnabled(!trashChildren.isEmpty());
             l<<addAction(QIcon::fromTheme("edit-clear-symbolic"), tr("&Clean the trash"), [=]() {
+                ca_context *caContext;
+                ca_context_create(&caContext);
+                const gchar* eventId = "dialog-warning";
+                //eventid 是/usr/share/sounds音频文件名,不带后缀
+                ca_context_play (caContext, 0,
+                                 CA_PROP_EVENT_ID, eventId,
+                                 CA_PROP_EVENT_DESCRIPTION, tr("Delete file Warning"), NULL);
+
                 auto result = QMessageBox::question(nullptr, tr("Delete Permanently"), tr("Are you sure that you want to delete these files? "
                                                     "Once you start a deletion, the files deleting will never be "
                                                     "restored again."));

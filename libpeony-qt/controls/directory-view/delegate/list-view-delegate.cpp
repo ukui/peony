@@ -35,6 +35,7 @@
 #include <QPainter>
 
 #include <QKeyEvent>
+#include <QItemDelegate>
 
 #include <QApplication>
 
@@ -83,7 +84,7 @@ QWidget *ListViewDelegate::createEditor(QWidget *parent, const QStyleOptionViewI
 {
     TextEdit *edit = new TextEdit(parent);
     edit->setAcceptRichText(false);
-    edit->setContextMenuPolicy(Qt::CustomContextMenu);
+    //edit->setContextMenuPolicy(Qt::CustomContextMenu);
     edit->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     edit->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     edit->setWordWrapMode(QTextOption::NoWrap);
@@ -162,6 +163,17 @@ void ListViewDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, 
     }, Qt::BlockingQueuedConnection);
 
     fileOpMgr->startOperation(renameOp, true);
+}
+
+QSize ListViewDelegate::sizeHint(const QStyleOptionViewItem & option, const QModelIndex & index ) const
+{
+    QSize size = QStyledItemDelegate::sizeHint(option, index);
+    auto info = FileInfo::fromUri(index.data(Qt::UserRole).toString());
+    auto colors = info->getColors();
+    //fix color labels over 2 will overlap with item issue
+    if (colors.count() >2)
+        size.setHeight( size.height() + 20);
+    return size;
 }
 
 //TextEdit

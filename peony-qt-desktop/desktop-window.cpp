@@ -76,11 +76,13 @@
 #include <X11/Xatom.h>
 #include <X11/Xproto.h>
 
+#include <QDateTime>
 #include <QDebug>
 
 #define BACKGROUND_SETTINGS "org.mate.background"
 #define PICTRUE "picture-filename"
 #define FALLBACK_COLOR "primary-color"
+#define FONT_SETTINGS "org.ukui.style"
 
 using namespace Peony;
 
@@ -188,11 +190,16 @@ DesktopWindow::DesktopWindow(QScreen *screen, bool is_primary, QWidget *parent)
         setBg(getCurrentBgPath());
         return;
     }
+
+    auto start_cost_time = QDateTime::currentMSecsSinceEpoch()- PeonyDesktopApplication::peony_desktop_start_time;
+    qDebug() << "desktop start end in desktop-window time:" <<start_cost_time
+             <<"ms"<<QDateTime::currentMSecsSinceEpoch();
 }
 
 DesktopWindow::~DesktopWindow() {}
 
 void DesktopWindow::initGSettings() {
+    qDebug() <<"DesktopWindow initGSettings";
     if (!QGSettings::isSchemaInstalled(BACKGROUND_SETTINGS)) {
         m_backup_setttings = new QSettings("org.ukui", "peony-qt-desktop", this);
         if (m_backup_setttings->value("color").isNull()) {
@@ -202,43 +209,68 @@ void DesktopWindow::initGSettings() {
         return;
     }
 
+    //font monitor
+    QGSettings *fontSetting = new QGSettings(FONT_SETTINGS, QByteArray(), this);
+    connect(fontSetting, &QGSettings::changed, this, [=](const QString &key){
+        qDebug() << "fontSetting changed:" << key;
+        if (key == "systemFont" || key == "systemFontSize")
+        {
+            QFont font = this->font();
+            for(auto widget : qApp->allWidgets())
+                widget->setFont(font);
+        }
+    });
+
     m_bg_settings = new QGSettings(BACKGROUND_SETTINGS, QByteArray(), this);
 
     connect(m_bg_settings, &QGSettings::changed, this, [=](const QString &key) {
         qDebug() << "bg settings changed:" << key;
         if (key == "pictureFilename") {
             auto bg_path = m_bg_settings->get("pictureFilename").toString();
+            //control center set color bg
+            if (bg_path == "")
+            {
+                qDebug() << "bg_path == """;
+                // use pure color;
+                auto colorString = m_bg_settings->get("primary-color").toString();
+                auto color = QColor(colorString);
+                qDebug() <<"pure color bg"<< colorString;
+                this->setBg(color);
+                m_current_bg_path = "";
+                return;
+            }
+
+            //can not find bg file, usually the file is moved, use default bg
             if (!QFile::exists(bg_path)) {
                 QString path = "/usr/share/backgrounds/default.jpg";
+#if (QT_VERSION < QT_VERSION_CHECK(5, 7, 0))
+                path = "/usr/share/backgrounds/kylin/kylin-background.png";
+#endif
                 bool success = m_bg_settings->trySet("pictureFilename", path);
-                if (! success)
+                if (success)
                 {
-                    // use pure color;
-                    auto colorString = m_bg_settings->get("primary-color").toString();
-                    auto color = QColor(colorString);
-                    qDebug() << colorString;
-                    this->setBg(color);
-                    m_current_bg_path = "";
+                    m_current_bg_path = "file://" + path;
                 }
                 else
-                    m_current_bg_path = "file://" + path;
+                {
+                    qDebug() << "use default bg picture fail, reset";
+                    m_bg_settings->reset("pictureFilename");
+                }
             }
             else {
+                qDebug() << "bg_path:" <<bg_path << m_current_bg_path;
                 if (m_current_bg_path == bg_path)
                     return;
+                qDebug() << "set a new bg picture:" <<bg_path;
                 this->setBg(bg_path);
             }
         }
-        if (key == "primaryColor") {
-            auto bg_path = m_bg_settings->get("pictureFilename").toString();
-            if (!bg_path.startsWith("/")) {
-                auto colorString = m_bg_settings->get("primary-color").toString();
-                auto color = QColor(colorString);
-                qDebug() << colorString;
-                this->setBg(color);
-            } else {
-                // do nothing
-            }
+        if (key == "primaryColor")
+        {
+            auto colorString = m_bg_settings->get("primary-color").toString();
+            auto color = QColor(colorString);
+            qDebug() <<"set color bg"<< colorString;
+            this->setBg(color);
         }
     });
 }
@@ -312,7 +344,7 @@ const QColor DesktopWindow::getCurrentColor()
 }
 
 void DesktopWindow::setBg(const QString &path) {
-    qDebug() << path;
+    qDebug() << "DesktopWindow::setBg:"<<path;
     if (path.isNull()) {
         setBg(getCurrentColor());
         return;
@@ -430,134 +462,6 @@ void DesktopWindow::scaleBg(const QRect &geometry) {
 void DesktopWindow::initShortcut() {
     // shotcut
     return;
-    QAction *copyAction = new QAction(this);
-    copyAction->setShortcut(QKeySequence::Copy);
-    connect(copyAction, &QAction::triggered, [=]() {
-        auto selectedUris = PeonyDesktopApplication::getIconView()->getSelections();
-        if (!selectedUris.isEmpty())
-            ClipboardUtils::setClipboardFiles(selectedUris, false);
-    });
-    addAction(copyAction);
-
-    QAction *cutAction = new QAction(this);
-    cutAction->setShortcut(QKeySequence::Cut);
-    connect(cutAction, &QAction::triggered, [=]() {
-        auto selectedUris = PeonyDesktopApplication::getIconView()->getSelections();
-        if (!selectedUris.isEmpty())
-            ClipboardUtils::setClipboardFiles(selectedUris, true);
-    });
-    addAction(cutAction);
-
-    QAction *pasteAction = new QAction(this);
-    pasteAction->setShortcut(QKeySequence::Paste);
-    connect(pasteAction, &QAction::triggered, [=]() {
-        auto clipUris = ClipboardUtils::getClipboardFilesUris();
-        if (ClipboardUtils::isClipboardHasFiles()) {
-            ClipboardUtils::pasteClipboardFiles(PeonyDesktopApplication::getIconView()->getDirectoryUri());
-        }
-    });
-    addAction(pasteAction);
-
-    QAction *trashAction = new QAction(this);
-    trashAction->setShortcut(QKeySequence::Delete);
-    connect(trashAction, &QAction::triggered, [=]() {
-        auto selectedUris = PeonyDesktopApplication::getIconView()->getSelections();
-        if (!selectedUris.isEmpty()) {
-            auto op = new FileTrashOperation(selectedUris);
-            FileOperationManager::getInstance()->startOperation(op, true);
-        }
-    });
-    addAction(trashAction);
-
-    QAction *undoAction = new QAction(this);
-    undoAction->setShortcut(QKeySequence::Undo);
-    connect(undoAction, &QAction::triggered,
-    [=]() {
-        FileOperationManager::getInstance()->undo();
-    });
-    addAction(undoAction);
-
-    QAction *redoAction = new QAction(this);
-    redoAction->setShortcut(QKeySequence::Redo);
-    connect(redoAction, &QAction::triggered,
-    [=]() {
-        FileOperationManager::getInstance()->redo();
-    });
-    addAction(redoAction);
-
-    QAction *zoomInAction = new QAction(this);
-    zoomInAction->setShortcut(QKeySequence::ZoomIn);
-    connect(zoomInAction, &QAction::triggered, [=]() {
-        PeonyDesktopApplication::getIconView()->zoomIn();
-    });
-    addAction(zoomInAction);
-
-    QAction *zoomOutAction = new QAction(this);
-    zoomOutAction->setShortcut(QKeySequence::ZoomOut);
-    connect(zoomOutAction, &QAction::triggered, [=]() {
-        PeonyDesktopApplication::getIconView()->zoomOut();
-    });
-    addAction(zoomOutAction);
-
-    QAction *renameAction = new QAction(this);
-    renameAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::ALT + Qt::Key_E)<<Qt::Key_F2);
-    connect(renameAction, &QAction::triggered, [=]() {
-        auto selections = PeonyDesktopApplication::getIconView()->getSelections();
-        if (selections.count() == 1) {
-            PeonyDesktopApplication::getIconView()->editUri(selections.first());
-        }
-    });
-    addAction(renameAction);
-
-    QAction *removeAction = new QAction(this);
-    removeAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::SHIFT + Qt::Key_Delete));
-    connect(removeAction, &QAction::triggered, [=]() {
-        qDebug() << "delete" << PeonyDesktopApplication::getIconView()->getSelections();
-        FileOperationUtils::executeRemoveActionWithDialog(PeonyDesktopApplication::getIconView()->getSelections());
-    });
-    addAction(removeAction);
-
-    auto propertiesWindowAction = new QAction(this);
-    propertiesWindowAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::ALT + Qt::Key_Return)
-                                         <<QKeySequence(Qt::ALT + Qt::Key_Enter));
-    connect(propertiesWindowAction, &QAction::triggered, this, [=]() {
-        if (PeonyDesktopApplication::getIconView()->getSelections().count() > 0)
-        {
-            PropertiesWindow *w = new PropertiesWindow(PeonyDesktopApplication::getIconView()->getSelections());
-            w->show();
-        }
-    });
-    addAction(propertiesWindowAction);
-
-    auto newFolderAction = new QAction(this);
-    newFolderAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_N));
-    connect(newFolderAction, &QAction::triggered, this, [=]() {
-        CreateTemplateOperation op(PeonyDesktopApplication::getIconView()->getDirectoryUri(), CreateTemplateOperation::EmptyFolder, tr("New Folder"));
-        op.run();
-        auto targetUri = op.target();
-
-        QTimer::singleShot(500, this, [=]() {
-            PeonyDesktopApplication::getIconView()->scrollToSelection(targetUri);
-        });
-    });
-    addAction(newFolderAction);
-
-    auto refreshAction = new QAction(this);
-    refreshAction->setShortcut(Qt::Key_F5);
-    connect(refreshAction, &QAction::triggered, this, [=]() {
-        PeonyDesktopApplication::getIconView()->refresh();
-    });
-    addAction(refreshAction);
-
-    QAction *editAction = new QAction(PeonyDesktopApplication::getIconView());
-    editAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::ALT + Qt::Key_E)<<Qt::Key_F2);
-    connect(editAction, &QAction::triggered, this, [=]() {
-        auto selections = PeonyDesktopApplication::getIconView()->getSelections();
-        if (selections.count() == 1) {
-            PeonyDesktopApplication::getIconView()->editUri(selections.first());
-        }
-    });
-    addAction(editAction);
 }
 
 void DesktopWindow::availableGeometryChangedProcess(const QRect &geometry) {

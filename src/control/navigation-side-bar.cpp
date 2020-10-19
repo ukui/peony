@@ -27,6 +27,9 @@
 
 #include "side-bar-menu.h"
 #include "side-bar-abstract-item.h"
+#include "bookmark-manager.h"
+#include "file-info.h"
+#include "file-info-job.h"
 
 #include "global-settings.h"
 
@@ -42,6 +45,12 @@
 #include <QScrollBar>
 
 #include <QKeyEvent>
+
+#include <QUrl>
+#include <QDropEvent>
+#include <QMimeData>
+
+#include <QTimer>
 
 #include <QDebug>
 
@@ -112,10 +121,10 @@ NavigationSideBar::NavigationSideBar(QWidget *parent) : QTreeView(parent)
         }
         case 1: {
             auto item = m_proxy_model->itemFromIndex(index);
-            if (item->isMounted()) {
+            if (item->isMounted() || item->isEjectable()) {
                 auto leftIndex = m_proxy_model->index(index.row(), 0, index.parent());
                 this->collapse(leftIndex);
-                item->unmount();
+                item->ejectOrUnmount();
             }
             break;
         }
@@ -173,6 +182,30 @@ void NavigationSideBar::resizeEvent(QResizeEvent *e)
     QTreeView::resizeEvent(e);
     if (header()->count() > 0)
         header()->resizeSection(0, this->viewport()->width() - 30);
+}
+
+void NavigationSideBar::dropEvent(QDropEvent *e)
+{
+    if (dropIndicatorPosition() == QAbstractItemView::AboveItem || dropIndicatorPosition() == QAbstractItemView::BelowItem) {
+        // add to bookmark
+        e->setAccepted(true);
+
+        auto data = e->mimeData();
+        auto bookmark = Peony::BookMarkManager::getInstance();
+        if (bookmark->isLoaded()) {
+            for (auto url : data->urls()) {
+                auto info = Peony::FileInfo::fromUri(url.toDisplayString(), false);
+                if (info->displayName().isNull()) {
+                    Peony::FileInfoJob j(info);
+                    j.querySync();
+                }
+                if (info->isDir()) {
+                    bookmark->addBookMark(url.url());
+                }
+            }
+        }
+    }
+    QTreeView::dropEvent(e);
 }
 
 QSize NavigationSideBar::sizeHint() const

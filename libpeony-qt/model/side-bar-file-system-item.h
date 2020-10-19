@@ -26,6 +26,7 @@
 #include "peony-core_global.h"
 #include "side-bar-abstract-item.h"
 #include <memory>
+#include <gio/gio.h>
 
 namespace Peony {
 
@@ -70,9 +71,11 @@ public:
     }
 
 public Q_SLOTS:
-    void eject() override;
+    void eject(GMountUnmountFlags ejectFlag) override;
     void unmount() override;
     void format() override {}
+
+    void ejectOrUnmount() override;
 
     void onUpdated() override {}
 
@@ -84,6 +87,11 @@ protected:
     void initWatcher();
     void startWatcher();
     void stopWatcher();
+
+    static GAsyncReadyCallback eject_cb(GFile *file,
+                                        GAsyncResult *res,
+                                        SideBarFileSystemItem *p_this);
+    void updateFileInfo(SideBarFileSystemItem *pThis);
 
 private:
     SideBarFileSystemItem *m_parent = nullptr;

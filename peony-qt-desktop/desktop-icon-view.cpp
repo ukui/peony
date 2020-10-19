@@ -55,6 +55,9 @@
 
 #include "global-settings.h"
 
+//play audio lib head file
+#include <canberra.h>
+
 #include <QAction>
 #include <QMouseEvent>
 #include <QDragEnterEvent>
@@ -68,6 +71,8 @@
 #include <QApplication>
 
 #include <QStringList>
+#include <QMessageBox>
+#include <QDir>
 
 #include <QDebug>
 
@@ -112,7 +117,7 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
     setViewMode(QListView::IconMode);
     setMovement(QListView::Snap);
     setFlow(QListView::TopToBottom);
-    setResizeMode(QListView::Adjust);
+    setResizeMode(QListView::Fixed);
     setWordWrap(true);
 
     setDragDropMode(QListView::DragDrop);
@@ -152,6 +157,14 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
     m_proxy_model = new DesktopItemProxyModel(m_model);
 
     m_proxy_model->setSourceModel(m_model);
+
+    connect(m_model, &QAbstractItemModel::rowsRemoved, this, [=](){
+        for (auto uri : getAllFileUris()) {
+            auto pos = getFileMetaInfoPos(uri);
+            if (pos.x() >= 0)
+                updateItemPosByUri(uri, pos);
+        }
+    });
 
     //connect(m_model, &DesktopItemModel::dataChanged, this, &DesktopIconView::clearAllIndexWidgets);
 
@@ -269,15 +282,13 @@ void DesktopIconView::initShoutCut()
     });
     addAction(pasteAction);
 
-    QAction *trashAction = new QAction(this);
-    trashAction->setShortcut(QKeySequence::Delete);
+    //add CTRL+D for delete operation
+    auto trashAction = new QAction(this);
+    trashAction->setShortcuts(QList<QKeySequence>()<<Qt::Key_Delete<<QKeySequence(Qt::CTRL + Qt::Key_D));
     connect(trashAction, &QAction::triggered, [=]() {
-        auto selectedUris = this->getSelections();
-        if (!selectedUris.isEmpty()) {
-            clearAllIndexWidgets();
-            auto op = new FileTrashOperation(selectedUris);
-            FileOperationManager::getInstance()->startOperation(op, true);
-        }
+        auto selectedUris = getSelections();
+        if (! selectedUris.isEmpty())
+           FileOperationUtils::trash(selectedUris, true);
     });
     addAction(trashAction);
 
@@ -285,6 +296,8 @@ void DesktopIconView::initShoutCut()
     undoAction->setShortcut(QKeySequence::Undo);
     connect(undoAction, &QAction::triggered,
     [=]() {
+        // do not relayout item with undo.
+        setRenaming(true);
         FileOperationManager::getInstance()->undo();
     });
     addAction(undoAction);
@@ -293,6 +306,8 @@ void DesktopIconView::initShoutCut()
     redoAction->setShortcut(QKeySequence::Redo);
     connect(redoAction, &QAction::triggered,
     [=]() {
+        // do not relayout item with redo.
+        setRenaming(true);
         FileOperationManager::getInstance()->redo();
     });
     addAction(redoAction);
@@ -399,6 +414,17 @@ void DesktopIconView::initShoutCut()
         }
     });
     addAction(editAction);
+
+    auto settings = GlobalSettings::getInstance();
+    m_show_hidden = settings->isExist("show-hidden")? settings->getValue("show-hidden").toBool(): false;
+    //show hidden action
+    QAction *showHiddenAction = new QAction(this);
+    showHiddenAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_H));
+    addAction(showHiddenAction);
+    connect(showHiddenAction, &QAction::triggered, this, [=]() {
+        //qDebug() << "show hidden";
+        this->setShowHidden();
+    });
 }
 
 void DesktopIconView::initMenu()
@@ -454,41 +480,91 @@ void DesktopIconView::initMenu()
     }, Qt::UniqueConnection);
 }
 
+void DesktopIconView::setShowHidden()
+{
+    m_show_hidden = ! m_show_hidden;
+    qDebug() << "DesktopIconView::setShowHidden:" <<m_show_hidden;
+    m_proxy_model->setShowHidden(m_show_hidden);
+}
+
+void DesktopIconView::openFileByUri(QString uri)
+{
+    auto info = FileInfo::fromUri(uri, false);
+    auto job = new FileInfoJob(info);
+    job->setAutoDelete();
+    job->connect(job, &FileInfoJob::queryAsyncFinished, [=]() {
+        if ((info->isDir() || info->isVolume() || info->isVirtual())) {
+            QDir dir(info->filePath());
+            if (! dir.exists())
+            {
+                ca_context *caContext;
+                ca_context_create(&caContext);
+                const gchar* eventId = "dialog-warning";
+                //eventid 是/usr/share/sounds音频文件名,不带后缀
+                ca_context_play (caContext, 0,
+                                 CA_PROP_EVENT_ID, eventId,
+                                 CA_PROP_EVENT_DESCRIPTION, tr("Delete file Warning"), NULL);
+
+                auto result = QMessageBox::question(nullptr, tr("Open Link failed"),
+                                      tr("File not exist, do you want to delete the link file?"));
+                if (result == QMessageBox::Yes) {
+                    qDebug() << "Delete unused symbollink in desktop.";
+                    QStringList selections;
+                    selections.push_back(uri);
+                    FileOperationUtils::trash(selections, true);
+                }
+                return;
+            }
+
+            if (! info->uri().startsWith("trash://")
+                    && ! info->uri().startsWith("computer://")
+                    &&  ! info->canExecute())
+            {
+                ca_context *caContext;
+                ca_context_create(&caContext);
+                const gchar* eventId = "dialog-warning";
+                //eventid 是/usr/share/sounds音频文件名,不带后缀
+                ca_context_play (caContext, 0,
+                                 CA_PROP_EVENT_ID, eventId,
+                                 CA_PROP_EVENT_DESCRIPTION, tr("Delete file Warning"), NULL);
+
+                QMessageBox::critical(nullptr, tr("Open failed"),
+                                      tr("Open directory failed, you have no permission!"));
+                return;
+            }
+#if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
+            QProcess p;
+            QUrl url = uri;
+            p.setProgram("peony");
+            p.setArguments(QStringList() << url.toEncoded() <<"%U&");
+            p.startDetached();
+#else
+            QProcess p;
+            QString strq;
+            for (int i = 0;i < uri.length();++i) {
+                if(uri[i] == ' '){
+                    strq += "%20";
+                }else{
+                    strq += uri[i];
+                }
+            }
+
+            p.startDetached("peony", QStringList()<<strq<<"%U&");
+#endif
+        } else {
+            FileLaunchManager::openAsync(uri, false, false);
+        }
+        this->clearSelection();
+    });
+    job->queryAsync();
+}
+
 void DesktopIconView::initDoubleClick()
 {
     connect(this, &QListView::doubleClicked, this, [=](const QModelIndex &index) {
         qDebug() << "double click" << index.data(FileItemModel::UriRole);
         auto uri = index.data(FileItemModel::UriRole).toString();
-        auto info = FileInfo::fromUri(uri, false);
-        auto job = new FileInfoJob(info);
-        job->setAutoDelete();
-        job->connect(job, &FileInfoJob::queryAsyncFinished, [=]() {
-            if (info->isDir() || info->isVolume() || info->isVirtual()) {
-#if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
-                QProcess p;
-                QUrl url = uri;
-                p.setProgram("peony");
-                p.setArguments(QStringList() << url.toEncoded() <<"%U&");
-                p.startDetached();
-#else
-                QProcess p;
-                QString strq;
-                for (int i = 0;i < uri.length();++i) {
-                    if(uri[i] == ' '){
-                        strq += "%20";
-                    }else{
-                        strq += uri[i];
-                    }
-                }
-
-                p.startDetached("peony", QStringList()<<strq<<"%U&");
-#endif
-            } else {
-                FileLaunchManager::openAsync(uri, false, false);
-            }
-            this->clearSelection();
-        });
-        job->queryAsync();
+        openFileByUri(uri);
     }, Qt::UniqueConnection);
 }
 
@@ -734,6 +810,27 @@ void DesktopIconView::wheelEvent(QWheelEvent *e)
 void DesktopIconView::keyPressEvent(QKeyEvent *e)
 {
     switch (e->key()) {
+    case Qt::Key_Home: {
+        auto boundingRect = getBoundingRect();
+        QRect homeRect = QRect(boundingRect.topLeft(), this->gridSize());
+        while (!indexAt(homeRect.center()).isValid()) {
+            homeRect.translate(0, gridSize().height());
+        }
+        auto homeIndex = indexAt(homeRect.center());
+        selectionModel()->select(homeIndex, QItemSelectionModel::SelectCurrent);
+        break;
+    }
+    case Qt::Key_End: {
+        auto boundingRect = getBoundingRect();
+        QRect endRect = QRect(boundingRect.bottomRight(), this->gridSize());
+        endRect.translate(-gridSize().width(), -gridSize().height());
+        while (!indexAt(endRect.center()).isValid()) {
+            endRect.translate(0, -gridSize().height());
+        }
+        auto endIndex = indexAt(endRect.center());
+        selectionModel()->select(endIndex, QItemSelectionModel::SelectCurrent);
+        break;
+    }
     case Qt::Key_Up: {
         if (getSelections().isEmpty()) {
             selectionModel()->select(model()->index(0, 0), QItemSelectionModel::SelectCurrent);
@@ -747,6 +844,13 @@ void DesktopIconView::keyPressEvent(QKeyEvent *e)
                 selectionModel()->select(upIndex, QItemSelectionModel::SelectCurrent);
                 auto delegate = qobject_cast<DesktopIconViewDelegate *>(itemDelegate());
                 setIndexWidget(upIndex, new DesktopIndexWidget(delegate, viewOptions(), upIndex, this));
+#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
+                for (auto uri : getAllFileUris()) {
+                    auto pos = getFileMetaInfoPos(uri);
+                    if (pos.x() >= 0)
+                        updateItemPosByUri(uri, pos);
+                }
+#endif
             }
         }
         return;
@@ -764,6 +868,13 @@ void DesktopIconView::keyPressEvent(QKeyEvent *e)
                 selectionModel()->select(downIndex, QItemSelectionModel::SelectCurrent);
                 auto delegate = qobject_cast<DesktopIconViewDelegate *>(itemDelegate());
                 setIndexWidget(downIndex, new DesktopIndexWidget(delegate, viewOptions(), downIndex, this));
+#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
+                for (auto uri : getAllFileUris()) {
+                    auto pos = getFileMetaInfoPos(uri);
+                    if (pos.x() >= 0)
+                        updateItemPosByUri(uri, pos);
+                }
+#endif
             }
         }
         return;
@@ -781,6 +892,13 @@ void DesktopIconView::keyPressEvent(QKeyEvent *e)
                 selectionModel()->select(leftIndex, QItemSelectionModel::SelectCurrent);
                 auto delegate = qobject_cast<DesktopIconViewDelegate *>(itemDelegate());
                 setIndexWidget(leftIndex, new DesktopIndexWidget(delegate, viewOptions(), leftIndex, this));
+#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
+                for (auto uri : getAllFileUris()) {
+                    auto pos = getFileMetaInfoPos(uri);
+                    if (pos.x() >= 0)
+                        updateItemPosByUri(uri, pos);
+                }
+#endif
             }
         }
         return;
@@ -798,6 +916,13 @@ void DesktopIconView::keyPressEvent(QKeyEvent *e)
                 selectionModel()->select(rightIndex, QItemSelectionModel::SelectCurrent);
                 auto delegate = qobject_cast<DesktopIconViewDelegate *>(itemDelegate());
                 setIndexWidget(rightIndex, new DesktopIndexWidget(delegate, viewOptions(), rightIndex, this));
+#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
+                for (auto uri : getAllFileUris()) {
+                    auto pos = getFileMetaInfoPos(uri);
+                    if (pos.x() >= 0)
+                        updateItemPosByUri(uri, pos);
+                }
+#endif
             }
         }
         return;
@@ -805,6 +930,16 @@ void DesktopIconView::keyPressEvent(QKeyEvent *e)
     case Qt::Key_Shift:
     case Qt::Key_Control:
         m_ctrl_or_shift_pressed = true;
+        break;
+    case Qt::Key_Enter:
+    case Qt::Key_Return:
+    {
+        auto selections = this->getSelections();
+        for (auto uri : selections)
+        {
+           openFileByUri(uri);
+        }
+    }
         break;
     default:
         return QListView::keyPressEvent(e);
@@ -826,7 +961,7 @@ void DesktopIconView::focusOutEvent(QFocusEvent *e)
 void DesktopIconView::resizeEvent(QResizeEvent *e)
 {
     QListView::resizeEvent(e);
-    refresh();
+    //refresh();
 }
 
 void DesktopIconView::rowsInserted(const QModelIndex &parent, int start, int end)
@@ -842,13 +977,13 @@ void DesktopIconView::rowsInserted(const QModelIndex &parent, int start, int end
 void DesktopIconView::rowsAboutToBeRemoved(const QModelIndex &parent, int start, int end)
 {
     QListView::rowsAboutToBeRemoved(parent, start, end);
-    QTimer::singleShot(1, this, [=](){
-        for (auto uri : getAllFileUris()) {
-            auto pos = getFileMetaInfoPos(uri);
-            if (pos.x() >= 0)
-                updateItemPosByUri(uri, pos);
-        }
-    });
+//    QTimer::singleShot(1, this, [=](){
+//        for (auto uri : getAllFileUris()) {
+//            auto pos = getFileMetaInfoPos(uri);
+//            if (pos.x() >= 0)
+//                updateItemPosByUri(uri, pos);
+//        }
+//    });
 }
 
 bool DesktopIconView::isItemsOverlapped()
@@ -865,6 +1000,27 @@ bool DesktopIconView::isItemsOverlapped()
     }
 
     return false;
+}
+
+bool DesktopIconView::isRenaming()
+{
+    return m_is_renaming;
+}
+
+void DesktopIconView::setRenaming(bool renaming)
+{
+    m_is_renaming = renaming;
+}
+
+const QRect DesktopIconView::getBoundingRect()
+{
+    QRegion itemsRegion;
+    for (int i = 0; i < m_proxy_model->rowCount(); i++) {
+        auto index = m_proxy_model->index(i, 0);
+        QRect indexRect = QListView::visualRect(index);
+        itemsRegion += indexRect;
+    }
+    return itemsRegion.boundingRect();
 }
 
 void DesktopIconView::zoomOut()
@@ -918,20 +1074,20 @@ void DesktopIconView::setDefaultZoomLevel(ZoomLevel level)
     switch (level) {
     case Small:
         setIconSize(QSize(24, 24));
-        setGridSize(QSize(64, 64));
+        setGridSize(QSize(64, 74));
         break;
     case Large:
         setIconSize(QSize(64, 64));
-        setGridSize(QSize(115, 135));
+        setGridSize(QSize(115, 145));
         break;
     case Huge:
         setIconSize(QSize(96, 96));
-        setGridSize(QSize(140, 170));
+        setGridSize(QSize(140, 180));
         break;
     default:
         m_zoom_level = Normal;
         setIconSize(QSize(48, 48));
-        setGridSize(QSize(96, 96));
+        setGridSize(QSize(96, 106));
         break;
     }
     clearAllIndexWidgets();
@@ -995,6 +1151,13 @@ void DesktopIconView::mousePressEvent(QMouseEvent *e)
             if (!indexWidget(m_last_index)) {
                 setIndexWidget(m_last_index,
                                new DesktopIndexWidget(qobject_cast<DesktopIconViewDelegate *>(itemDelegate()), viewOptions(), m_last_index));
+#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
+                for (auto uri : getAllFileUris()) {
+                    auto pos = getFileMetaInfoPos(uri);
+                    if (pos.x() >= 0)
+                        updateItemPosByUri(uri, pos);
+                }
+#endif
             }
         }
     }
@@ -1177,7 +1340,7 @@ void DesktopIconView::dropEvent(QDropEvent *e)
             // check if there is any item out of view
             for (auto index : m_drag_indexes) {
                 auto indexRect = QListView::visualRect(index);
-                if (this->viewport()->rect().contains(indexRect.center())) {
+                if (this->viewport()->rect().contains(indexRect)) {
                     continue;
                 }
 
@@ -1190,10 +1353,10 @@ void DesktopIconView::dropEvent(QDropEvent *e)
                         break;
                     }
                 }
-                while (next.translated(-grid.width(), 0).x() > 0) {
+                while (next.translated(-grid.width(), 0).x() >= 0) {
                     next.translate(-grid.width(), 0);
                 }
-                while (next.translated(0, -grid.height()).top() > 0) {
+                while (next.translated(0, -grid.height()).top() >= 0) {
                     next.translate(0, -grid.height());
                 }
 

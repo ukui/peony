@@ -67,6 +67,7 @@ private:
     QVBoxLayout *m_layout = nullptr;
     std::shared_ptr<FileInfo> m_info;
     std::shared_ptr<FileWatcher> m_watcher;
+    std::shared_ptr<FileWatcher> m_thumbnail_watcher;
 
     void updateCountInfo();
 
