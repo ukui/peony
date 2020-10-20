@@ -121,7 +121,9 @@ const QList<FileLaunchAction*> FileLaunchManager::getAllActionsForType(const QSt
     QList<FileLaunchAction *> actions;
     while (l) {
         auto app_info = static_cast<GAppInfo*>(l->data);
-        actions<<new FileLaunchAction(uri, app_info, true);
+        //only show available applications
+        if (g_app_info_should_show(app_info))
+           actions<<new FileLaunchAction(uri, app_info, true);
         g_object_unref(app_info);
         l = l->next;
     }
@@ -135,7 +137,9 @@ const QList<FileLaunchAction*> FileLaunchManager::getAllActions(const QString &u
     QList<FileLaunchAction *> actions;
     while (l) {
         auto app_info = static_cast<GAppInfo*>(l->data);
-        actions<<new FileLaunchAction(uri, app_info, true);
+        //only show available applications
+        if (g_app_info_should_show(app_info))
+           actions<<new FileLaunchAction(uri, app_info, true);
         g_object_unref(app_info);
         l = l->next;
     }
