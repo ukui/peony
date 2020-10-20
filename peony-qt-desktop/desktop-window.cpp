@@ -98,15 +98,25 @@ DesktopWindow::DesktopWindow(QScreen *screen, bool is_primary, QWidget *parent)
     m_opacity->setEndValue(double(1));
 
     bool tabletMode = Peony::GlobalSettings::getInstance()->getValue(TABLET_MODE).toBool();
-    if(tabletMode)
+    m_tabletmode = tabletMode;
+    if(tabletMode){
+        setAttribute(Qt::WA_X11NetWmWindowTypeDesktop,false);
         this->hide();
+    }
+    else
+        setAttribute(Qt::WA_X11NetWmWindowTypeDesktop);
 
     connect(qApp, &QApplication::paletteChanged, this, [=](){
         bool tabletMode = Peony::GlobalSettings::getInstance()->getValue(TABLET_MODE).toBool();
-        if(tabletMode)
+        m_tabletmode = tabletMode;
+        if(tabletMode){
             this->hide();
-        else
+            setAttribute(Qt::WA_X11NetWmWindowTypeDesktop,false);
+        }
+        else{
             this->setVisible(true);
+            setAttribute(Qt::WA_X11NetWmWindowTypeDesktop);
+        }
     });
     connect(m_opacity, &QVariantAnimation::valueChanged, this, [=]() {
         this->update();
@@ -130,7 +140,6 @@ DesktopWindow::DesktopWindow(QScreen *screen, bool is_primary, QWidget *parent)
              << screen->name();
     auto flags = windowFlags() &~Qt::WindowMinMaxButtonsHint;
     setWindowFlags(flags |Qt::FramelessWindowHint);
-    setAttribute(Qt::WA_X11NetWmWindowTypeDesktop);
     setAttribute(Qt::WA_TranslucentBackground);
 
     //fix qt5.6 setAttribute as desktop has no effect issue
@@ -593,11 +602,15 @@ void DesktopWindow::scaleBg(const QRect &geometry) {
                     XA_ATOM, 32, 1, (unsigned char *)&m_DesktopType, 1);
 #endif
 
-    show();
+//    show();
 
-    m_bg_back_cache_pixmap = m_bg_back_pixmap.scaled(geometry.size(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
-    m_bg_font_cache_pixmap = m_bg_font_pixmap.scaled(geometry.size(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
-    this->update();
+//    m_bg_back_cache_pixmap = m_bg_back_pixmap.scaled(geometry.size(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+//    m_bg_font_cache_pixmap = m_bg_font_pixmap.scaled(geometry.size(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+//    this->update();
+    if(m_used_pure_color)
+        setBg(m_color_to_be_set);
+    else
+        setBg(m_current_bg_path);
 }
 
 void DesktopWindow::initShortcut() {
@@ -655,12 +668,14 @@ void DesktopWindow::updateWinGeometry() {
     auto name = m_screen->name();
     if (m_screen == qApp->primaryScreen()) {
         if (auto view = qobject_cast<DesktopIconView *>(centralWidget())) {
+            if(!m_tabletmode)
             this->show();
         }
     } else {
         if (m_screen->geometry() == qApp->primaryScreen()->geometry())
             this->hide();
         else
+            if(!m_tabletmode)
             this->show();
     }
 
