@@ -544,11 +544,12 @@ const QList<QAction *> DirectoryViewMenu::constructFileOpActions()
                     FileOperationUtils::trash(m_selections, true);
                 });
             }
+            //comment delete forever right menu option,reference to mac and Windows
             //add delete forever option
-            l<<addAction(QIcon::fromTheme("edit-clear-symbolic"), tr("Delete forever"));
-            connect(l.last(), &QAction::triggered, [=]() {
-                FileOperationUtils::executeRemoveActionWithDialog(m_selections);
-            });
+//            l<<addAction(QIcon::fromTheme("edit-clear-symbolic"), tr("Delete forever"));
+//            connect(l.last(), &QAction::triggered, [=]() {
+//                FileOperationUtils::executeRemoveActionWithDialog(m_selections);
+//            });
             if (m_selections.count() == 1) {
                 l<<addAction(QIcon::fromTheme("document-edit-symbolic"), tr("Rename"));
                 connect(l.last(), &QAction::triggered, [=]() {

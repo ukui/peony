@@ -44,9 +44,13 @@ GlobalSettings::GlobalSettings(QObject *parent) : QObject(parent)
 {
     m_settings = new QSettings("org.ukui", "peony-qt-preferences", this);
     //set default allow parallel
-    setValue(ALLOW_FILE_OP_PARALLEL, true);
+    if (! m_settings->allKeys().contains(ALLOW_FILE_OP_PARALLEL))
+    {
+        qDebug() << "default ALLOW_FILE_OP_PARALLEL:true";
+        setValue(ALLOW_FILE_OP_PARALLEL, true);
+    }
     //if local languege is chinese, set chinese first as deafult
-    if (QLocale::system().name().contains("zh"))
+    if (QLocale::system().name().contains("zh") && !m_settings->allKeys().contains(SORT_CHINESE_FIRST))
         setValue(SORT_CHINESE_FIRST, true);
     for (auto key : m_settings->allKeys()) {
         m_cache.insert(key, m_settings->value(key));

@@ -269,9 +269,10 @@ void DesktopWindow::initGSettings() {
             //can not find bg file, usually the file is moved, use default bg
             if (!QFile::exists(bg_path)) {
                 QString path = "/usr/share/backgrounds/default.jpg";
-#if (QT_VERSION < QT_VERSION_CHECK(5, 7, 0))
-                path = "/usr/share/backgrounds/kylin/kylin-background.png";
-#endif
+                //commercial version use different default bg
+                if (COMMERCIAL_VERSION)
+                   path = "/usr/share/backgrounds/aurora.jpg";
+
                 bool success = m_bg_settings->trySet("pictureFilename", path);
                 if (success)
                 {

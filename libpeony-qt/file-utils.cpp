@@ -240,6 +240,13 @@ QString FileUtils::getFileIconName(const QString &uri, bool checkValid)
                     }
                 }
             }
+        }else {
+            //if it's a bootable-media,maybe we can get the icon from the mount directory.
+            char *bootableIcon = g_icon_to_string(g_icon);
+            if(bootableIcon){
+                icon_name = QString(bootableIcon);
+                g_free(bootableIcon);
+            }
         }
     }
     return icon_name;

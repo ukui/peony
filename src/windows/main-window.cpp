@@ -990,6 +990,7 @@ void MainWindow::mouseMoveEvent(QMouseEvent *e)
     if (!m_is_draging)
         return;
 
+    qreal  dpiRatio = qApp->devicePixelRatio();
     if (QX11Info::isPlatformX11()) {
         Display *display = QX11Info::display();
         Atom netMoveResize = XInternAtom(display, "_NET_WM_MOVERESIZE", False);
@@ -1002,8 +1003,8 @@ void MainWindow::mouseMoveEvent(QMouseEvent *e)
         xEvent.xclient.display = display;
         xEvent.xclient.window = this->winId();
         xEvent.xclient.format = 32;
-        xEvent.xclient.data.l[0] = pos.x();
-        xEvent.xclient.data.l[1] = pos.y();
+        xEvent.xclient.data.l[0] = pos.x() * dpiRatio;
+        xEvent.xclient.data.l[1] = pos.y() * dpiRatio;
         xEvent.xclient.data.l[2] = 8;
         xEvent.xclient.data.l[3] = Button1;
         xEvent.xclient.data.l[4] = 0;
@@ -1020,10 +1021,10 @@ void MainWindow::mouseMoveEvent(QMouseEvent *e)
         xevent.type = ButtonRelease;
         xevent.xbutton.button = Button1;
         xevent.xbutton.window = this->winId();
-        xevent.xbutton.x = e->pos().x();
-        xevent.xbutton.y = e->pos().y();
-        xevent.xbutton.x_root = pos.x();
-        xevent.xbutton.y_root = pos.y();
+        xevent.xbutton.x = e->pos().x() * dpiRatio;
+        xevent.xbutton.y = e->pos().y() * dpiRatio;
+        xevent.xbutton.x_root = pos.x() * dpiRatio;
+        xevent.xbutton.y_root = pos.y() * dpiRatio;
         xevent.xbutton.display = display;
 
         XSendEvent(display, this->effectiveWinId(), False, ButtonReleaseMask, &xevent);
@@ -1038,7 +1039,7 @@ void MainWindow::mouseMoveEvent(QMouseEvent *e)
 
         m_is_draging = false;
     } else {
-        this->move(QCursor::pos() - m_offset);
+        this->move((QCursor::pos() - m_offset) * dpiRatio);
     }
 }
 
