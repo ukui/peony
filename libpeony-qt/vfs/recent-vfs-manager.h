@@ -33,6 +33,7 @@ class PEONYCORESHARED_EXPORT RecentVFSManager : public QObject
     Q_OBJECT
 public:
     static RecentVFSManager* getInstance ();
+    void clearAll ();
     void insert (QString uri, QString mimetype, QString name, QString exec);
 
 private:

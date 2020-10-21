@@ -106,6 +106,9 @@
 #define KYLIN_USER_GUIDE_SERVICE QString("com.kylinUserGuide.hotel_%1").arg(getuid())
 #define KYLIN_USER_GUIDE_INTERFACE "com.guide.hotel"
 
+//record of peony start time
+qint64 PeonyApplication::peony_start_time = 0;
+
 PeonyApplication::PeonyApplication(int &argc, char *argv[], const char *applicationName) : SingleApplication (argc, argv, applicationName, true)
 {
     setApplicationVersion("v3.0.0");

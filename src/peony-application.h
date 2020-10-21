@@ -50,6 +50,8 @@ public:
     static bool userGuideDaemonRunning();
     static void showGuide(const QString &appName = "peony");
 
+    static qint64 peony_start_time;
+
 protected Q_SLOTS:
     void parseCmd(quint32 id, QByteArray msg);
 

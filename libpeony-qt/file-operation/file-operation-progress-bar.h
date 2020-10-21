@@ -59,6 +59,9 @@ public Q_SLOTS:
     void mainProgressChange(QListWidgetItem *item);
     void showDelay(int msec = 2000);
 
+public:
+    bool m_error = false;
+
 private:
     // layout
     QVBoxLayout* m_main_layout = nullptr;

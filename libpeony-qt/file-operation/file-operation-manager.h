@@ -163,104 +163,14 @@ public:
         Other//nothing to do
     };
 
-    //FIXME: get opposite info correcty.
-    explicit FileOperationInfo(QStringList srcUris, QString destDirUri, Type type, QObject *parent = nullptr): QObject(parent) {
-        m_src_uris = srcUris;
-        m_dest_dir_uri = destDirUri;
-        m_type = type;
-
-        //compute opposite.
-        if (type != Rename && type != Link) {
-            for (auto srcUri : srcUris) {
-                auto srcFile = wrapGFile(g_file_new_for_uri(srcUri.toUtf8().constData()));
-                if (m_src_dir_uri.isNull()) {
-                    auto srcParent = FileUtils::getFileParent(srcFile);
-                    m_src_dir_uri = FileUtils::getFileUri(srcParent);
-                }
-                QString relativePath = FileUtils::getFileBaseName(srcFile);
-                auto destDirFile = wrapGFile(g_file_new_for_uri(destDirUri.toUtf8().constData()));
-                auto destFile = FileUtils::resolveRelativePath(destDirFile, relativePath);
-                QString destUri = FileUtils::getFileUri(destFile);
-                m_dest_uris<<destUri;
-            }
-        } else {
-            if (type == Link) {
-                QUrl url = srcUris.first();
-                if (!url.fileName().contains(".")) {
-                    m_dest_uris<<destDirUri + "/" + url.fileName() + tr(" - Symbolic Link");
-                } else {
-                    auto dest_uri = destDirUri + "/" + url.fileName();
-                    dest_uri = dest_uri.insert(dest_uri.lastIndexOf('.'), tr(" - Symbolic Link"));
-                    m_dest_uris<<dest_uri;
-                }
-            } else {
-                //Rename also use the common args format.
-                QString src = srcUris.at(0);
-                QString dest = destDirUri;
-                m_dest_uris<<src;
-                m_src_dir_uri = dest;
-            }
-        }
-
-        switch (type) {
-        case Move: {
-            m_opposite_type = Move;
-            break;
-        }
-        case Trash: {
-            m_opposite_type = Untrash;
-            break;
-        }
-        case Untrash: {
-            m_opposite_type = Trash;
-            break;
-        }
-        case Delete: {
-            m_opposite_type = Other;
-            break;
-        }
-        case Copy: {
-            m_opposite_type = Delete;
-            break;
-        }
-        case Rename: {
-            m_opposite_type = Rename;
-            break;
-        }
-        case Link: {
-            m_opposite_type = Delete;
-            break;
-        }
-        case CreateTxt: {
-            m_opposite_type = Delete;
-            break;
-        }
-        case CreateFolder: {
-            m_opposite_type = Delete;
-            break;
-        }
-        case CreateTemplate: {
-            m_opposite_type = Delete;
-            break;
-        }
-        default: {
-            m_opposite_type = Other;
-        }
-        }
-    }
-
-    std::shared_ptr<FileOperationInfo> getOppositeInfo(FileOperationInfo *info) {
-        auto oppositeInfo = std::make_shared<FileOperationInfo>(info->m_dest_uris, info->m_src_dir_uri, m_opposite_type);
-        QMap<QString, QString> oppsiteMap;
-        for (auto key : m_node_map.keys()) {
-            auto value = m_node_map.value(key);
-            oppsiteMap.insert(value, key);
-        }
-        oppositeInfo->m_node_map = oppsiteMap;
-        oppositeInfo->m_newname = this->m_oldname;
-        oppositeInfo->m_oldname = this->m_newname;
-        return oppositeInfo;
-    }
+    explicit FileOperationInfo(QStringList srcUris, QString destDirUri, Type type, QObject *parent = nullptr);
+    explicit FileOperationInfo(QStringList srcUris, QStringList destDirUris, Type type, QObject *parent = nullptr);
+    std::shared_ptr<FileOperationInfo> getOppositeInfo(FileOperationInfo *info);
+    void oppositeInfoConstruct(Type type);
+    void commonOppositeInfoConstruct();
+    void LinkOppositeInfoConstruct();
+    void RenameOppositeInfoConstruct();
+    void UntrashOppositeInfoConstruct();
 
     Type operationType() {
         return m_type;
@@ -276,12 +186,15 @@ public:
     }
 
 //private:
+    //normal operation src uris and dest uris
     QStringList m_src_uris;
-    QString m_dest_dir_uri;
+    QStringList m_dest_dir_uris;
+    QString     m_dest_dir_uri;
 
     //FIXME: if files in different src dir, how to deal with it?
     QStringList m_dest_uris;
     QString m_src_dir_uri;
+
     //QMutex m_mutex;
 
     Type m_type;

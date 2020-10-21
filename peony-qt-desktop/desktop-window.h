@@ -121,6 +121,7 @@ private:
 
     bool m_use_pure_color = false;
     bool m_used_pure_color = false;
+    bool m_tabletmode = false;
 
     QVariantAnimation *m_opacity = nullptr;
 };
