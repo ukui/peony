@@ -33,11 +33,11 @@ FileUntrashOperation::FileUntrashOperation(QStringList uris, QObject *parent) : 
     m_uris = uris;
     //FIXME: should i put this into prepare process?
     cacheOriginalUri();
-    QStringList oppositeSrcUris;
+    QStringList destUris;
     for (auto value : m_restore_hash) {
-        oppositeSrcUris<<value;
+        destUris<<value;
     }
-    m_info = std::make_shared<FileOperationInfo>(oppositeSrcUris, "trash:///", FileOperationInfo::Trash);
+    m_info = std::make_shared<FileOperationInfo>(uris, destUris, FileOperationInfo::Untrash);
 }
 
 void FileUntrashOperation::cacheOriginalUri()

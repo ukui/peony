@@ -74,6 +74,7 @@ public:
 
     void ensure_format_cb (CreateformatData *data);
 
+    void ensure_format_disk(CreateformatData *data);
 
     UDisksObject *get_object_from_block_device 	(UDisksClient *client,
                                                  const gchar *block_device);

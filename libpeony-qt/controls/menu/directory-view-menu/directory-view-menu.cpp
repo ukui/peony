@@ -65,6 +65,7 @@
 
 #include <QLocale>
 #include <QStandardPaths>
+#include <recent-vfs-manager.h>
 
 #include <QDebug>
 
@@ -537,15 +538,18 @@ const QList<QAction *> DirectoryViewMenu::constructFileOpActions()
             connect(l.last(), &QAction::triggered, [=]() {
                 ClipboardUtils::setClipboardFiles(m_selections, true);
             });
-            l<<addAction(QIcon::fromTheme("edit-delete-symbolic"), tr("&Delete to trash"));
-            connect(l.last(), &QAction::triggered, [=]() {
-                FileOperationUtils::trash(m_selections, true);
-            });
+            if (!m_is_recent) {
+                l<<addAction(QIcon::fromTheme("edit-delete-symbolic"), tr("&Delete to trash"));
+                connect(l.last(), &QAction::triggered, [=]() {
+                    FileOperationUtils::trash(m_selections, true);
+                });
+            }
+            //comment delete forever right menu option,reference to mac and Windows
             //add delete forever option
-            l<<addAction(QIcon::fromTheme("edit-clear-symbolic"), tr("Delete forever"));
-            connect(l.last(), &QAction::triggered, [=]() {
-                FileOperationUtils::executeRemoveActionWithDialog(m_selections);
-            });
+//            l<<addAction(QIcon::fromTheme("edit-clear-symbolic"), tr("Delete forever"));
+//            connect(l.last(), &QAction::triggered, [=]() {
+//                FileOperationUtils::executeRemoveActionWithDialog(m_selections);
+//            });
             if (m_selections.count() == 1) {
                 l<<addAction(QIcon::fromTheme("document-edit-symbolic"), tr("Rename"));
                 connect(l.last(), &QAction::triggered, [=]() {
@@ -707,6 +711,11 @@ const QList<QAction *> DirectoryViewMenu::constructTrashActions()
                 }
             });
         }
+    } else if (m_is_recent && m_selections.isEmpty()) {
+        l<<addAction(tr("Clean All"));
+        connect(l.last(), &QAction::triggered, [=]() {
+            RecentVFSManager::getInstance()->clearAll();
+        });
     }
 
     return l;

@@ -41,6 +41,24 @@ RecentVFSManager* RecentVFSManager::getInstance()
     return m_instance;
 }
 
+void RecentVFSManager::clearAll()
+{
+    QFile file (m_recent_path);
+    QXmlStreamWriter xmlWritter;
+    xmlWritter.setAutoFormatting(true);
+    file.open(QIODevice::WriteOnly | QIODevice::Text);
+    xmlWritter.setDevice(&file);
+
+    xmlWritter.writeStartDocument();
+    xmlWritter.writeStartElement("xbel");
+    xmlWritter.writeAttribute("version", "1.0");
+    xmlWritter.writeAttribute("xmlns:bookmark", "http://www.freedesktop.org/standards/desktop-bookmarks");
+    xmlWritter.writeAttribute("xmlns:mime", "http://www.freedesktop.org/standards/shared-mime-info");
+    xmlWritter.writeEndElement();
+    xmlWritter.writeEndDocument();
+    file.close();
+}
+
 void RecentVFSManager::insert(QString uri, QString mimetype, QString name, QString exec)
 {
     if (!exists(uri)) {
@@ -55,21 +73,8 @@ RecentVFSManager::RecentVFSManager(QObject *parent) : QObject(parent)
 
     QFile file (m_recent_path);
     if (!file.exists()) {
-        QXmlStreamWriter xmlWritter;
-        xmlWritter.setAutoFormatting(true);
-        file.open(QIODevice::WriteOnly | QIODevice::Text);
-        xmlWritter.setDevice(&file);
-
-        xmlWritter.writeStartDocument();
-        xmlWritter.writeStartElement("xbel");
-        xmlWritter.writeAttribute("version", "1.0");
-        xmlWritter.writeAttribute("xmlns:bookmark", "http://www.freedesktop.org/standards/desktop-bookmarks");
-        xmlWritter.writeAttribute("xmlns:mime", "http://www.freedesktop.org/standards/shared-mime-info");
-        xmlWritter.writeEndElement();
-        xmlWritter.writeEndDocument();
+        clearAll();
     }
-
-    file.close();
 }
 
 bool RecentVFSManager::read()
