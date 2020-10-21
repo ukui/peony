@@ -59,6 +59,7 @@ protected:
     void mouseDoubleClickEvent(QMouseEvent *event) override;
 
     void adjustPos();
+    void moveEvent(QMoveEvent *e) override;
 
 private:
     QStyleOptionViewItem m_option;

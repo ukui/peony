@@ -48,6 +48,7 @@ using namespace Peony::DirectoryView;
 IconViewIndexWidget::IconViewIndexWidget(const IconViewDelegate *delegate, const QStyleOptionViewItem &option, const QModelIndex &index, QWidget *parent) : QWidget(parent)
 {
     setMouseTracking(true);
+    setUpdatesEnabled(true);
 
     m_edit_trigger.setInterval(3000);
     m_edit_trigger.setSingleShot(true);
@@ -99,7 +100,6 @@ IconViewIndexWidget::IconViewIndexWidget(const IconViewDelegate *delegate, const
     opt.rect.moveTo(opt.rect.x(), opt.rect.y() + y_delta);
 
     m_option = opt;
-
     adjustPos();
 
     auto textSize = IconViewTextHelper::getTextSizeForIndex(opt, index, 2);
@@ -141,14 +141,13 @@ IconViewIndexWidget::~IconViewIndexWidget()
 
 void IconViewIndexWidget::paintEvent(QPaintEvent *e)
 {
-    QWidget::paintEvent(e);
+//    QWidget::paintEvent(e);
     QPainter p(this);
-    //p.fillRect(0, 0, 999, 999, Qt::red);
-
+    //p.fillRect(0, 0, 999, 999, Qt::red););
     adjustPos();
 
     //qDebug()<<m_option.backgroundBrush;
-    //qDebug()<<this->size() << m_delegate->getView()->iconSize();
+//    qDebug()<<this->rect() << m_delegate->getView()->iconSize();
 
     auto opt = m_option;
     auto rawRect = m_option.rect;
@@ -293,8 +292,19 @@ void IconViewIndexWidget::adjustPos()
         this->close();
         return;
     }
-
     auto visualRect = view->visualRect(m_index);
     if (this->mapToParent(QPoint()) != visualRect.topLeft())
         this->move(visualRect.topLeft());
+}
+
+void IconViewIndexWidget::moveEvent(QMoveEvent *e)
+{
+
+    IconView *view = m_delegate->getView();
+    auto visualRect = view->visualRect(m_index);
+    if (this->mapToParent(QPoint()) != visualRect.topLeft())
+        setUpdatesEnabled(false);
+    else
+        setUpdatesEnabled(true);
+    QWidget::moveEvent(e);
 }
