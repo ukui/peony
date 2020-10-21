@@ -218,6 +218,11 @@ void FileItem::findChildrenAsync()
                         FileOperationUtils::trash(selections, true);
                     }
                 }
+                else
+                {
+                    QString errorInfo = tr("Can not find path \"%1\"，are you moved or renamed it?").arg(fileInfo->uri().unicode());
+                    QMessageBox::critical(nullptr, tr("Error"), errorInfo);
+                }
                 return;
             } else {
                 QMessageBox::critical(nullptr, tr("Error"), err->message());
