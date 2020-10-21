@@ -1074,15 +1074,13 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</translation
     <name>Peony::FileEnumerator</name>
     <message>
         <location filename="../../libpeony-qt/file-enumerator.cpp" line="331"/>
-        <location filename="../../libpeony-qt/file-enumerator.cpp" line="338"/>
-        <location filename="../../libpeony-qt/file-enumerator.cpp" line="486"/>
+        <location filename="../../libpeony-qt/file-enumerator.cpp" line="480"/>
         <source>Delete file Warning</source>
         <translation type="unfinished">Dosyayı Sil Uyarısı</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/file-enumerator.cpp" line="333"/>
-        <location filename="../../libpeony-qt/file-enumerator.cpp" line="341"/>
-        <location filename="../../libpeony-qt/file-enumerator.cpp" line="488"/>
+        <location filename="../../libpeony-qt/file-enumerator.cpp" line="482"/>
         <source>Error</source>
         <translation>Hata</translation>
     </message>
@@ -1116,7 +1114,8 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</translation
     <message>
         <location filename="../../libpeony-qt/model/file-item.cpp" line="159"/>
         <location filename="../../libpeony-qt/model/file-item.cpp" line="224"/>
-        <location filename="../../libpeony-qt/model/file-item.cpp" line="228"/>
+        <location filename="../../libpeony-qt/model/file-item.cpp" line="229"/>
+        <location filename="../../libpeony-qt/model/file-item.cpp" line="234"/>
         <source>Error</source>
         <translation>Hata</translation>
     </message>
@@ -1132,6 +1131,11 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</translation
     </message>
     <message>
         <location filename="../../libpeony-qt/model/file-item.cpp" line="223"/>
+        <source>Can not open path &quot;%1&quot;，permission denied.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/model/file-item.cpp" line="228"/>
         <source>Can not find path &quot;%1&quot;，are you moved or renamed it?</source>
         <translation type="unfinished"></translation>
     </message>

@@ -218,13 +218,19 @@ void FileItem::findChildrenAsync()
                         FileOperationUtils::trash(selections, true);
                     }
                 }
+                else if (err.get()->code() == G_IO_ERROR_PERMISSION_DENIED)
+                {
+                    QString errorInfo = tr("Can not open path \"%1\"，permission denied.").arg(this->uri().unicode());
+                    QMessageBox::critical(nullptr, tr("Error"), errorInfo);
+                }
                 else
                 {
                     QString errorInfo = tr("Can not find path \"%1\"，are you moved or renamed it?").arg(fileInfo->uri().unicode());
                     QMessageBox::critical(nullptr, tr("Error"), errorInfo);
                 }
                 return;
-            } else {
+            }
+            else {
                 QMessageBox::critical(nullptr, tr("Error"), err->message());
                 enumerator->cancel();
                 return;

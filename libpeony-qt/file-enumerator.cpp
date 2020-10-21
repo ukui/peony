@@ -333,12 +333,6 @@ void FileEnumerator::handleError(GError *err)
         QMessageBox::critical(nullptr, tr("Error"), err->message);
         break;
     case G_IO_ERROR_PERMISSION_DENIED:
-        ca_context_play (caContext, 0,
-                         CA_PROP_EVENT_ID, eventId,
-                         CA_PROP_EVENT_DESCRIPTION, tr("Delete file Warning"), NULL);
-
-        //FIXME: do i need add an auth function for this kind of errors?
-        QMessageBox::critical(nullptr, tr("Error"), err->message);
         //emit error message to upper levels to process
         Q_EMIT prepared(GErrorWrapper::wrapFrom(g_error_new(G_IO_ERROR, G_IO_ERROR_PERMISSION_DENIED, "permission denied")));
         break;
