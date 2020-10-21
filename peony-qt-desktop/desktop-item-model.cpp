@@ -496,7 +496,12 @@ void DesktopItemModel::onEnumerateFinished()
         syncJob->deleteLater();
         m_files<<info;
         endInsertRows();
-        ThumbnailManager::getInstance()->createThumbnail(info->uri(), m_thumbnail_watcher);
+
+        if (info->isDesktopFile()) {
+            ThumbnailManager::getInstance()->updateDesktopFileThumbnail(info->uri(), m_thumbnail_watcher);
+        } else {
+            ThumbnailManager::getInstance()->createThumbnail(info->uri(), m_thumbnail_watcher);
+        }
     }
     for (auto info : m_files) {
         auto uri = info->uri();

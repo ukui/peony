@@ -106,6 +106,7 @@ void FileLaunchAction::lauchFileSync(bool forceWithArg, bool skipDialog)
 
     bool executable = fileInfo->canExecute();
     bool isAppImage = fileInfo->type() == "application/vnd.appimage";
+    bool isShellScript = fileInfo->type() == "application/x-shellscript";
     if (isAppImage) {
         if (executable) {
             QUrl url = m_uri;
@@ -122,11 +123,11 @@ void FileLaunchAction::lauchFileSync(bool forceWithArg, bool skipDialog)
         }
     }
 
-    if (executable && !isDesktopFileAction() && !skipDialog) {
+    if (executable && !isDesktopFileAction() && !skipDialog && isShellScript) {
         QMessageBox msg;
+        auto defaultAction = msg.addButton("By Default App", QMessageBox::ButtonRole::ActionRole);
         auto exec = msg.addButton(tr("Execute Directly"), QMessageBox::ButtonRole::ActionRole);
         auto execTerm = msg.addButton(tr("Execute in Terminal"), QMessageBox::ButtonRole::ActionRole);
-        auto defaultAction = msg.addButton("By Default App", QMessageBox::ButtonRole::ActionRole);
         msg.addButton(QMessageBox::Cancel);
 
         msg.setText(tr("Detected launching an executable file %1, you want?").arg(fileInfo->displayName()));
@@ -221,9 +222,9 @@ void FileLaunchAction::lauchFileAsync(bool forceWithArg, bool skipDialog)
 
     if (executable && !isDesktopFileAction() && !skipDialog && isShellScript) {
         QMessageBox msg;
+        auto defaultAction = msg.addButton(tr("By Default App"), QMessageBox::ButtonRole::ActionRole);
         auto exec = msg.addButton(tr("Execute Directly"), QMessageBox::ButtonRole::ActionRole);
         auto execTerm = msg.addButton(tr("Execute in Terminal"), QMessageBox::ButtonRole::ActionRole);
-        auto defaultAction = msg.addButton(tr("By Default App"), QMessageBox::ButtonRole::ActionRole);
         msg.addButton(QMessageBox::Cancel);
 
         msg.setWindowTitle(tr("Launch Options"));
@@ -393,11 +394,11 @@ void FileLaunchAction::lauchFilesAsync(const QStringList files, bool forceWithAr
         }
     }
 
-    if (executable && !isDesktopFileAction() && !skipDialog &&isShellScript) {
+    if (executable && !isDesktopFileAction() && !skipDialog && isShellScript) {
         QMessageBox msg;
+        auto defaultAction = msg.addButton(tr("By Default App"), QMessageBox::ButtonRole::ActionRole);
         auto exec = msg.addButton(tr("Execute Directly"), QMessageBox::ButtonRole::ActionRole);
         auto execTerm = msg.addButton(tr("Execute in Terminal"), QMessageBox::ButtonRole::ActionRole);
-        auto defaultAction = msg.addButton(tr("By Default App"), QMessageBox::ButtonRole::ActionRole);
         msg.addButton(QMessageBox::Cancel);
 
         msg.setWindowTitle(tr("Launch Options"));

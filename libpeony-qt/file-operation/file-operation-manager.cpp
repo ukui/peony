@@ -256,7 +256,7 @@ void FileOperationManager::startUndoOrRedo(std::shared_ptr<FileOperationInfo> in
         break;
     }
     case FileOperationInfo::Link: {
-        op = new FileDeleteOperation(info->m_src_uris);
+        op = new FileLinkOperation(info->m_src_uris.at(0), info->m_dest_dir_uri);
         break;
     }
     case FileOperationInfo::Move: {
@@ -364,8 +364,13 @@ void FileOperationManager::handleError(FileOperationError &error)
     // Handle errors according to the error type
     FileOperationErrorHandler* handle = FileOperationErrorDialogFactory::getDialog(error);
     if (nullptr != handle) {
+        if (m_progressbar->isHidden()) {
+            m_progressbar->m_error = true;
+        }
         handle->handle(error);
         delete handle;
+        m_progressbar->m_error = false;
+        m_progressbar->showDelay(300);
     }
 }
 
@@ -402,4 +407,144 @@ void FileOperationManager::manuallyNotifyDirectoryChanged(FileOperationInfo *inf
             }
         }
     }
+}
+
+//FIXME: get opposite info correcty.
+FileOperationInfo::FileOperationInfo(QStringList srcUris,
+                                     QString destDirUri,
+                                     Type type,
+                                     QObject *parent): QObject(parent)
+{
+    m_src_uris = srcUris;
+    m_dest_dir_uri = destDirUri;
+
+    oppositeInfoConstruct(type);
+}
+
+//FIXME: get opposite info correcty.
+FileOperationInfo::FileOperationInfo(QStringList srcUris,
+                                     QStringList destDirUris,
+                                     Type type,
+                                     QObject *parent): QObject(parent)
+{
+    m_src_uris = srcUris;
+    m_dest_dir_uris = destDirUris;
+
+    oppositeInfoConstruct(type);
+}
+
+void FileOperationInfo::oppositeInfoConstruct(Type type)
+{
+    m_type = type;
+
+    switch (type) {
+        case Move: {
+            m_opposite_type = Move;
+            commonOppositeInfoConstruct();
+            break;
+        }
+        case Trash: {
+            m_opposite_type = Untrash;
+            commonOppositeInfoConstruct();
+            break;
+        }
+        case Untrash: {
+            m_opposite_type = Trash;
+            UntrashOppositeInfoConstruct();
+            break;
+        }
+        case Delete: {
+            m_opposite_type = Other;
+            break;
+        }
+        case Copy: {
+            m_opposite_type = Delete;
+            commonOppositeInfoConstruct();
+            break;
+        }
+        case Rename: {
+            m_opposite_type = Rename;
+            RenameOppositeInfoConstruct();
+            break;
+        }
+        case Link: {
+            m_opposite_type = Delete;
+            LinkOppositeInfoConstruct();
+            break;
+        }
+        case CreateTxt: {
+            m_opposite_type = Delete;
+            commonOppositeInfoConstruct();
+            break;
+        }
+        case CreateFolder: {
+            m_opposite_type = Delete;
+            commonOppositeInfoConstruct();
+            break;
+        }
+        case CreateTemplate: {
+            m_opposite_type = Delete;
+            commonOppositeInfoConstruct();
+            break;
+        }
+        default: {
+            m_opposite_type = Other;
+        }
+    }
+
+    return;
+}
+
+void FileOperationInfo::commonOppositeInfoConstruct()
+{
+    for (auto srcUri : m_src_uris) {
+        auto srcFile = wrapGFile(g_file_new_for_uri(srcUri.toUtf8().constData()));
+        if (m_src_dir_uri.isNull()) {
+            auto srcParent = FileUtils::getFileParent(srcFile);
+            m_src_dir_uri = FileUtils::getFileUri(srcParent);
+        }
+        QString relativePath = FileUtils::getFileBaseName(srcFile);
+        auto destDirFile = wrapGFile(g_file_new_for_uri(m_dest_dir_uri.toUtf8().constData()));
+        auto destFile = FileUtils::resolveRelativePath(destDirFile, relativePath);
+        QString destUri = FileUtils::getFileUri(destFile);
+        m_dest_uris<<destUri;
+    }
+}
+void FileOperationInfo::LinkOppositeInfoConstruct()
+{
+    QUrl url = m_src_uris.first();
+    if (url.fileName().startsWith(".")) {
+        m_dest_uris<<m_dest_dir_uri + "/" + url.fileName() + " - " + tr("Symbolic Link");
+    } else {
+        auto dest_uri = m_dest_dir_uri + "/" + tr("Symbolic Link") + " - " + url.fileName();
+        m_dest_uris<<dest_uri;
+    }
+}
+void FileOperationInfo::RenameOppositeInfoConstruct()
+{
+    //Rename also use the common args format.
+    QString src = m_src_uris.at(0);
+    m_dest_uris<<src;
+    m_src_dir_uri = m_dest_dir_uri;
+}
+void FileOperationInfo::UntrashOppositeInfoConstruct()
+{
+    m_dest_uris = m_dest_dir_uris;
+    m_src_dir_uri = "trash:///";
+    return;
+}
+
+std::shared_ptr<FileOperationInfo> FileOperationInfo::getOppositeInfo(FileOperationInfo *info) {
+
+    auto oppositeInfo = std::make_shared<FileOperationInfo>(info->m_dest_uris, info->m_src_dir_uri, m_opposite_type);
+    QMap<QString, QString> oppsiteMap;
+    for (auto key : m_node_map.keys()) {
+        auto value = m_node_map.value(key);
+        oppsiteMap.insert(value, key);
+    }
+    oppositeInfo->m_node_map = oppsiteMap;
+    oppositeInfo->m_newname = this->m_oldname;
+    oppositeInfo->m_oldname = this->m_newname;
+
+    return oppositeInfo;
 }

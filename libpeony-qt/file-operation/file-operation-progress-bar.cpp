@@ -259,8 +259,8 @@ void FileOperationProgressBar::mainProgressChange(QListWidgetItem *item)
 
 void FileOperationProgressBar::showDelay(int msec)
 {
-    QTimer::singleShot(msec, this, [=](){
-        if (m_list_widget->count() > 0) {
+    QTimer::singleShot(msec, this, [=] () {
+        if (m_list_widget->count() > 0 && !m_error) {
             show();
         }
     });
@@ -660,7 +660,7 @@ void ProgressBar::mouseReleaseEvent(QMouseEvent *event)
                            QMessageBox::Ok | QMessageBox::Cancel);
         msgBox.button(QMessageBox::Ok)->setText(tr("OK"));
         msgBox.button(QMessageBox::Cancel)->setText(tr("Cancel"));
-        if (QMessageBox::Ok == msgBox.exec()) {
+        if (QMessageBox::Ok == msgBox.exec() && ! m_is_stopping) {
             m_is_stopping = true;
             Q_EMIT cancelled();
             if (m_current_value <= 0) {

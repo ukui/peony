@@ -85,6 +85,9 @@
      <width>291</width>
      <height>26</height>
     </rect>
+</property>
+    <property name="maxLength">
+    <number>11</number>
    </property>
   </widget>
   <widget class="QCheckBox" name="checkBox_clean_or_not">
