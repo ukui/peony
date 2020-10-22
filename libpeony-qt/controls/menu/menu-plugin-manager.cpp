@@ -102,15 +102,18 @@ QList<QAction *> CreateLinkInternalPlugin::menuActions(MenuPluginInterface::Type
         if (selectionUris.count() == 1) {
             auto createLinkToDesktop = new QAction(QIcon::fromTheme("emblem-link-symbolic"), tr("Create Link to Desktop"), nullptr);
             auto info = FileInfo::fromUri(selectionUris.first(), false);
+            QString desktopPath = QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
+            QString originPath = QUrl(selectionUris.first()).path();
             //special type mountable, or isVirtual then return
             if (selectionUris.first().startsWith("computer:///") || info->isVirtual()
                 || selectionUris.first().startsWith("trash:///")
-                || selectionUris.first().startsWith("recent:///"))
+                || selectionUris.first().startsWith("recent:///")
+                || originPath.startsWith(desktopPath))
                 return l;
 
             connect(createLinkToDesktop, &QAction::triggered, [=]() {
-                QUrl src = selectionUris.first();
-                QString desktopUri = "file://" + QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
+                //QUrl src = selectionUris.first();
+                QString desktopUri = "file://" + desktopPath;
                 FileLinkOperation *op = new FileLinkOperation(selectionUris.first(), desktopUri);
                 op->setAutoDelete(true);
                 FileOperationManager::getInstance()->startOperation(op, true);
@@ -123,7 +126,7 @@ QList<QAction *> CreateLinkInternalPlugin::menuActions(MenuPluginInterface::Type
                                  tr("Choose a Directory to Create Link"),
                                  uri);
                 if (!targetDir.isEmpty()) {
-                    QUrl src = selectionUris.first();
+                    //QUrl src = selectionUris.first();
                     QString target = targetDir.url();
                     FileLinkOperation *op = new FileLinkOperation(selectionUris.first(), target);
                     op->setAutoDelete(true);
