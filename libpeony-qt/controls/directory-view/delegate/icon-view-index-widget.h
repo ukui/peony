@@ -42,6 +42,7 @@ class IconViewDelegate;
 
 class IconViewIndexWidget : public QWidget
 {
+    friend class IconViewDelegate;
     Q_OBJECT
 public:
     explicit IconViewIndexWidget(const IconViewDelegate *delegate,
