@@ -79,9 +79,9 @@ public:
 
     BLOCKING static bool isFileUnmountable(const QString &uri);
 
+    static void handleVolumeLabelForFat32(QString &volumeName,const QString &unixDevcieName);
 private:
     FileUtils();
-    static void handleVolumeLabelForFat32(QString &volumeName,const QString &unixDevcieName);
 };
 
 }
