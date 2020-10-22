@@ -761,6 +761,13 @@ void MainWindow::goToUri(const QString &uri, bool addHistory, bool force)
 
 void MainWindow::addNewTabs(const QStringList &uris)
 {
+    //fix search path add new tab,page title show abnormal issue
+    if (uris.count() == 1)
+    {
+        m_tab->addPage(uris.first(), true);
+        return;
+    }
+
     for (auto uri : uris) {
         m_tab->addPage(uri, false);
     }
