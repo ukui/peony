@@ -604,6 +604,10 @@ const QList<QAction *> DirectoryViewMenu::constructFilePropertiesActions()
 {
     QList<QAction *> l;
 
+    //fix select mutiple file in trash path show empty issue
+    if (m_selections.count() >1 && m_is_trash)
+        return l;
+
     if (!m_is_search) {
         l<<addAction(QIcon::fromTheme("preview-file"), tr("Properties"));
         connect(l.last(), &QAction::triggered, [=]() {
