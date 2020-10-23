@@ -261,17 +261,20 @@ void MainWindow::checkSettings()
     m_use_default_name_sort_order = settings->isExist("chinese-first")? settings->getValue("chinese-first").toBool(): false;
     m_folder_first = settings->isExist("folder-first")? settings->getValue("folder-first").toBool(): true;
 
-    //font monitor
-    QGSettings *fontSetting = new QGSettings(FONT_SETTINGS, QByteArray(), this);
-    connect(fontSetting, &QGSettings::changed, this, [=](const QString &key){
-        qDebug() << "fontSetting changed:" << key;
-        if (key == "systemFont" || key == "systemFontSize")
-        {
-            QFont font = this->font();
-            for(auto widget : qApp->allWidgets())
-                widget->setFont(font);
-        }
-    });
+    if (QGSettings::isSchemaInstalled("org.ukui.style"))
+    {
+        //font monitor
+        QGSettings *fontSetting = new QGSettings(FONT_SETTINGS, QByteArray(), this);
+        connect(fontSetting, &QGSettings::changed, this, [=](const QString &key){
+            qDebug() << "fontSetting changed:" << key;
+            if (key == "systemFont" || key == "systemFontSize")
+            {
+                QFont font = this->font();
+                for(auto widget : qApp->allWidgets())
+                    widget->setFont(font);
+            }
+        });
+    }
 }
 
 void MainWindow::setShortCuts()
