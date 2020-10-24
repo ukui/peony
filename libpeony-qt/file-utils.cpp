@@ -279,6 +279,23 @@ QString FileUtils::getTargetUri(const QString &uri)
                                             G_FILE_ATTRIBUTE_STANDARD_TARGET_URI);
 }
 
+QString FileUtils::getSymbolicTarget(const QString &uri)
+{
+    GFile *file = g_file_new_for_uri(uri.toUtf8().constData());
+    GFileInfo *info = g_file_query_info(file,
+                                        G_FILE_ATTRIBUTE_STANDARD_SYMLINK_TARGET,
+                                        G_FILE_QUERY_INFO_NONE,
+                                        nullptr,
+                                        nullptr);
+    g_object_unref(file);
+    if (info) {
+        return g_file_info_get_symlink_target(info);
+        g_object_unref(info);
+    }
+
+    return nullptr;
+}
+
 bool FileUtils::isMountPoint(const QString &uri)
 {
     bool flag = false;                      // The uri is a mount point

@@ -435,7 +435,12 @@ void IconView::setProxy(DirectoryViewProxyIface *proxy)
 
     connect(this, &IconView::doubleClicked, [=](const QModelIndex &index) {
         qDebug()<<"double click"<<index.data(FileItemModel::UriRole);
-        Q_EMIT m_proxy->viewDoubleClicked(index.data(FileItemModel::UriRole).toString());
+        auto uri = index.data(FileItemModel::UriRole).toString();
+        //process open symbolic link
+        auto info = FileInfo::fromUri(uri, false);
+        if (info->isSymbolLink())
+            uri = "file://" + FileUtils::getSymbolicTarget(uri);
+        Q_EMIT m_proxy->viewDoubleClicked(uri);
     });
 
 
@@ -579,7 +584,12 @@ void IconView2::bindModel(FileItemModel *model, FileItemProxyFilterSortModel *pr
             this, &DirectoryViewWidget::viewSelectionChanged);
 
     connect(m_view, &IconView::doubleClicked, this, [=](const QModelIndex &index) {
-        Q_EMIT this->viewDoubleClicked(index.data(Qt::UserRole).toString());
+        auto uri = index.data(Qt::UserRole).toString();
+        //process open symbolic link
+        auto info = FileInfo::fromUri(uri, false);
+        if (info->isSymbolLink())
+            uri = "file://" +  FileUtils::getSymbolicTarget(uri);
+        Q_EMIT this->viewDoubleClicked(uri);
     });
 
     connect(m_view, &IconView::customContextMenuRequested, this, [=](const QPoint &pos) {

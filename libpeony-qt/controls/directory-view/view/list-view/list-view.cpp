@@ -28,6 +28,7 @@
 
 #include "file-item.h"
 #include "file-utils.h"
+#include "file-info.h"
 #include "list-view-style.h"
 
 #include "global-settings.h"
@@ -626,7 +627,12 @@ void ListView2::bindModel(FileItemModel *model, FileItemProxyFilterSortModel *pr
 
     connect(m_view, &ListView::doubleClicked, this, [=](const QModelIndex &index) {
         qDebug()<<index.data(Qt::UserRole).toString();
-        Q_EMIT this->viewDoubleClicked(index.data(Qt::UserRole).toString());
+        auto uri = index.data(Qt::UserRole).toString();
+        //process open symbolic link
+        auto info = FileInfo::fromUri(uri, false);
+        if (info->isSymbolLink())
+            uri = "file://" + FileUtils::getSymbolicTarget(uri);
+        Q_EMIT this->viewDoubleClicked(uri);
     });
 
     //FIXME: how about multi-selection?

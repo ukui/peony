@@ -1018,7 +1018,12 @@ void TabWidget::onViewDoubleClicked(const QString &uri)
         return;
     }
     if (info->isDir() || info->isVolume() || info->isVirtual()) {
-        Q_EMIT this->updateWindowLocationRequest(uri, true);
+        //process open symbolic link
+        auto info = Peony::FileInfo::fromUri(uri, false);
+        QString targetUri = uri;
+        if (info->isSymbolLink())
+            targetUri = "file://" + Peony::FileUtils::getSymbolicTarget(uri);
+        Q_EMIT this->updateWindowLocationRequest(targetUri, true);
     } else {
         Peony::FileLaunchManager::openAsync(uri, false, false);
     }
