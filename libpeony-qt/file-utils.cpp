@@ -293,7 +293,7 @@ QString FileUtils::getSymbolicTarget(const QString &uri)
         g_object_unref(info);
     }
 
-    return nullptr;
+    return uri;
 }
 
 bool FileUtils::isMountPoint(const QString &uri)
