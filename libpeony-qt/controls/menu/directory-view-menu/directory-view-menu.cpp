@@ -609,21 +609,25 @@ const QList<QAction *> DirectoryViewMenu::constructFilePropertiesActions()
         return l;
 
     if (!m_is_search) {
-        l<<addAction(QIcon::fromTheme("preview-file"), tr("Properties"));
-        connect(l.last(), &QAction::triggered, [=]() {
-            //FIXME:
-            if (m_selections.isEmpty()) {
-                QStringList uris;
-                uris<<m_directory;
-                PropertiesWindow *p = new PropertiesWindow(uris);
-                p->setAttribute(Qt::WA_DeleteOnClose);
-                p->show();
-            } else {
-                PropertiesWindow *p = new PropertiesWindow(m_selections);
-                p->setAttribute(Qt::WA_DeleteOnClose);
-                p->show();
-            }
-        });
+        if (m_is_trash && m_selections.count() != 1){
+
+        }else{
+            l<<addAction(QIcon::fromTheme("preview-file"), tr("Properties"));
+            connect(l.last(), &QAction::triggered, [=]() {
+                //FIXME:
+                if (m_selections.isEmpty()) {
+                    QStringList uris;
+                    uris<<m_directory;
+                    PropertiesWindow *p = new PropertiesWindow(uris);
+                    p->setAttribute(Qt::WA_DeleteOnClose);
+                    p->show();
+                } else {
+                    PropertiesWindow *p = new PropertiesWindow(m_selections);
+                    p->setAttribute(Qt::WA_DeleteOnClose);
+                    p->show();
+                }
+            });
+        }
     } else if (m_selections.count() == 1) {
         l<<addAction(QIcon::fromTheme("preview-file"), tr("Properties"));
         connect(l.last(), &QAction::triggered, [=]() {
