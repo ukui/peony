@@ -45,7 +45,8 @@ FileWatcher::FileWatcher(QString uri, QObject *parent) : QObject(parent)
 
     connect(FileLabelModel::getGlobalModel(), &FileLabelModel::fileLabelChanged, this, [=](const QString &uri) {
         auto parentUri = FileUtils::getParentUri(uri);
-        if (parentUri == m_uri || parentUri == m_target_uri) {
+        QUrl parentUrl = parentUri;
+        if (parentUri == m_uri || parentUri == m_target_uri || parentUrl.toDisplayString() == m_uri || parentUrl.toDisplayString() == m_target_uri) {
             Q_EMIT fileChanged(uri);
             qDebug()<<"file label changed"<<uri;
         }
