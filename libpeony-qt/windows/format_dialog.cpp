@@ -125,10 +125,13 @@ void Format_Dialog::acceptFormat(bool)
     //begin start my_timer, processbar
     my_time  = new QTimer(this);
 
+    m_cost_seconds = 0;
     if(quick_clean){
         my_time->setInterval(500);
+        m_total_predict = 1200;
     }else{
         my_time->setInterval(1000);
+        m_total_predict = 3600;
     }
 
     //begin loop
@@ -141,36 +144,31 @@ void Format_Dialog::acceptFormat(bool)
 
 double Format_Dialog::get_format_bytes_done(const gchar * device_name)
 {
-
-
-        UDisksObject *object ;
-        UDisksClient *client =udisks_client_new_sync (NULL,NULL);
-        object = get_object_from_block_device(client,device_name);
-        GList *jobs;
-        jobs = udisks_client_get_jobs_for_object (client,object);
-        g_clear_object(&client);
-        g_object_unref(object);
-        if(jobs!=NULL)
+    UDisksObject *object ;
+    UDisksClient *client =udisks_client_new_sync (NULL,NULL);
+    object = get_object_from_block_device(client,device_name);
+    GList *jobs;
+    jobs = udisks_client_get_jobs_for_object(client,object);
+    g_clear_object(&client);
+    g_object_unref(object);
+    if(jobs!=NULL)
+    {
+        UDisksJob *job =(UDisksJob *)jobs->data;
+        if(udisks_job_get_progress_valid (job))
         {
+                double res = udisks_job_get_progress(job);
 
-            UDisksJob *job =(UDisksJob *)jobs->data;
-            if(udisks_job_get_progress_valid (job))
-            {
-                    double res = udisks_job_get_progress(job);
+                g_list_foreach (jobs, (GFunc) g_object_unref, NULL);
+                g_list_free (jobs);
 
-                    g_list_foreach (jobs, (GFunc) g_object_unref, NULL);
-                    g_list_free (jobs);
+                return res;
+        }
 
-
-                    return res;
-            }
-
-
-        g_list_foreach (jobs, (GFunc) g_object_unref, NULL);
-            g_list_free (jobs);
+    g_list_foreach (jobs, (GFunc) g_object_unref, NULL);
+        g_list_free (jobs);
     }
-        return 0;
 
+    return 0;
 }
 
 
@@ -180,6 +178,9 @@ void Format_Dialog::formatloop(){
     static char name_dev[256] ={0};
     char prestr[10] = {0};
 
+    //cost time count
+    m_cost_seconds++;
+
     //FIXME: replace BLOCKING api in ui thread.
     FileUtils::queryVolumeInfo(fm_uris, volname, devName, voldisplayname);
 
@@ -187,11 +188,13 @@ void Format_Dialog::formatloop(){
     strcpy(name_dev,devName.toUtf8().constData());
 
     double pre = (get_format_bytes_done(name_dev) * 100);
+    double cost = m_cost_seconds * 100/m_total_predict;
 
+    if ((pre < 1 && cost <= 99) || pre < cost)
+        pre = cost;
 
-    sprintf(prestr,"%.2f",pre);
+    sprintf(prestr,"%.1f",pre);
     strcat(prestr,"%");
-
 
     if(pre>=100){
 
