@@ -148,6 +148,11 @@ FileLabelInternalMenuPlugin::FileLabelInternalMenuPlugin(QObject *parent)
 QList<QAction *> FileLabelInternalMenuPlugin::menuActions(MenuPluginInterface::Types types, const QString &uri, const QStringList &selectionUris)
 {
     QList<QAction *> l;
+    //fix virtual path add label fail issue
+    auto info = FileInfo::fromUri(uri);
+    if (info->isVirtual())
+        return l;
+
     if (types == DirectoryView) {
         if (selectionUris.count() == 1) {
             //not allow in trash path
