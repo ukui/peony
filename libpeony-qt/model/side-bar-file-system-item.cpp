@@ -112,6 +112,14 @@ void SideBarFileSystemItem::findChildren()
     }
     clearChildren();
 
+    // add by wwn for test
+//    SideBarFileSystemItem* item = new SideBarFileSystemItem("file:///", this, m_model);
+//    m_children->append(item);
+//    m_model->beginInsertRows(this->firstColumnIndex(), m_children->count(), m_children->count());
+//    m_model->endInsertRows();
+//    m_model->indexUpdated(this->firstColumnIndex());
+//    m_model->dataChanged(item->firstColumnIndex(), item->lastColumnIndex());
+
     FileEnumerator *e = new FileEnumerator;
     e->setEnumerateDirectory(m_uri);
     connect(e, &FileEnumerator::prepared, this, [=](const GErrorWrapperPtr &err, const QString &targetUri) {
@@ -146,6 +154,14 @@ void SideBarFileSystemItem::findChildren()
                     this,
                     m_model,
                     this);
+
+            // add by wwn, to skip othen local device
+            if (!item->isEjectable() && !item->isEjectable() && item->displayName() != "文件系统") {
+                real_children_count--;
+                delete item;
+                continue;
+            }
+
             //check is mounted.
             //FIXME: replace BLOCKING api in ui thread.
             auto targetUri = FileUtils::getTargetUri(info->uri());

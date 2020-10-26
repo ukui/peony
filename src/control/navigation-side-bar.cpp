@@ -76,10 +76,10 @@ NavigationSideBar::NavigationSideBar(QWidget *parent) : QTreeView(parent)
 
     installEventFilter(this);
 
-    setStyleSheet(".NavigationSideBar"
-                  "{"
-                  "border: 0px solid transparent"
-                  "}");
+    // add by wwn, to delete side bar hover status color change
+    setStyleSheet("NavigationSideBar::branch::hover{background-color: transparent;}"
+                  "NavigationSideBar{border: 0px solid transparent}");
+
     setAttribute(Qt::WA_TranslucentBackground);
     viewport()->setAttribute(Qt::WA_TranslucentBackground);
     header()->setSectionResizeMode(QHeaderView::Custom);
@@ -269,30 +269,32 @@ void NavigationSideBarItemDelegate::paint(QPainter *painter, const QStyleOptionV
                                           const QModelIndex &index) const
 {
     if (!index.isValid() || option.state == QStyle::State_None)
-            return;
+        return;
+
+    // add by wwn, to delete hover status
+    QStyleOptionViewItem opt = option;
+    QColor current = opt.palette.color(QPalette::Base);
+    if (opt.state & QStyle::State_MouseOver) {
+        if (!(opt.state & QStyle::State_Selected))
+            opt.palette.setColor(QPalette::Highlight, current);
+    }
+
     painter->setRenderHint(QPainter::Antialiasing, true);
 
-    // for test
-    // inter->setPen(QColor(0, 160, 230));
-    // painter->drawRect(opt.rect);
-    // painter->drawText(rect, QString::number(count++));
+    QStyledItemDelegate::paint(painter, opt, index);
 
-    QStyledItemDelegate::paint(painter, option, index);
 
     NavigationSideBar* view = qobject_cast<NavigationSideBar*>(this->parent());
 
     if (view == nullptr)
         return;
 
-    int w = view->width();
-    qDebug() << w;
-
     if (!index.model()->hasChildren(index))
-            return;
+        return;
 
     if (view->isExpanded(index)) {
         QRect rect = option.rect;
-        rect.setTop(rect.top() + 7);
+        rect.setTop(rect.top() + 10);
         rect.setX(rect.right() - 20);
         rect.setSize(QSize(15, 15));
         painter->drawPixmap(rect, QPixmap(":/img/branches2"));
@@ -300,7 +302,7 @@ void NavigationSideBarItemDelegate::paint(QPainter *painter, const QStyleOptionV
     }
     else {
         QRect rect = option.rect;
-        rect.setTop(rect.top() + 7);
+        rect.setTop(rect.top() + 10);
         rect.setX(rect.right() - 20);
         rect.setSize(QSize(15, 15));
         painter->drawPixmap(rect, QPixmap(":/img/branches1"));
