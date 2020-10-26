@@ -121,7 +121,11 @@ const QList<QAction *> SideBarMenu::constructFileSystemItemActions()
         l<<addAction(QIcon::fromTheme("media-eject"), tr("&Unmount"), [=]() {
             m_item->unmount();
         });
-        l.last()->setEnabled(m_item->isMounted());
+        auto targetUri = FileUtils::getTargetUri(m_item->uri());
+        bool isUmountable = FileUtils::isFileUnmountable(m_item->uri());
+        bool isMounted = (!targetUri.isEmpty() && (targetUri != "file:///")) || isUmountable;
+
+        l.last()->setEnabled(isMounted);
     }
     if (info->canEject()) {
         l<<addAction(QIcon::fromTheme("media-eject"), tr("&Eject"), [=](){

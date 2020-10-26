@@ -181,8 +181,9 @@ end:
         connect(m_watcher.get(), &FileWatcher::fileCreated, this, [=](const QString &uri) {
             //qDebug()<<"created:"<<uri;
             for (auto item : *m_children) {
-                if (item->uri() == uri)
+                if (item->uri() == uri) {
                     return;
+                }
             }
 
             SideBarFileSystemItem *item = new SideBarFileSystemItem(uri,
