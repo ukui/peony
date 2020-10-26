@@ -1188,6 +1188,8 @@ void DesktopIconView::mousePressEvent(QMouseEvent *e)
 void DesktopIconView::mouseReleaseEvent(QMouseEvent *e)
 {
     QListView::mouseReleaseEvent(e);
+
+    this->viewport()->update(viewport()->rect());
 }
 
 void DesktopIconView::mouseDoubleClickEvent(QMouseEvent *event)
