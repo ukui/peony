@@ -132,7 +132,7 @@
     <message>
         <location filename="../../src/windows/main-window.cpp" line="1240"/>
         <source>Delete file Warning</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Dosya Silme Uyarısı</translation>
     </message>
     <message>
         <location filename="../../src/windows/main-window.cpp" line="1242"/>
