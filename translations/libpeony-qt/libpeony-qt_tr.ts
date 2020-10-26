@@ -1132,12 +1132,12 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</translation
     <message>
         <location filename="../../libpeony-qt/model/file-item.cpp" line="223"/>
         <source>Can not open path &quot;%1&quot;，permission denied.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">%1 yolu açılamıyor izni reddedildi.</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/model/file-item.cpp" line="228"/>
         <source>Can not find path &quot;%1&quot;，are you moved or renamed it?</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">%1 yolu bulunamıyor taşındınız mı yoksa yeniden adlandırdınız mı?</translation>
     </message>
 </context>
 <context>
@@ -1303,7 +1303,7 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</translation
         <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="279"/>
         <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="445"/>
         <source>Can not open %1, Please confirm you have the right authority.</source>
-        <translation>% 1 açılamıyor, lütfen yetkilerinizi kontrol edin.</translation>
+        <translation>%1 açılamıyor, lütfen yetkilerinizi kontrol edin.</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="283"/>
