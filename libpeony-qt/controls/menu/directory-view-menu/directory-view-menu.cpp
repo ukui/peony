@@ -196,7 +196,7 @@ const QList<QAction *> DirectoryViewMenu::constructOpenOpActions()
             }
             if (info->isDir()) {
                 //add to bookmark option
-                if (! info->isVirtual())
+                if (! info->isVirtual() &&  ! info->uri().startsWith("smb://"))
                 {
                     l<<addAction(QIcon::fromTheme("bookmark-add-symbolic"), tr("Add to bookmark"));
                     connect(l.last(), &QAction::triggered, [=]() {

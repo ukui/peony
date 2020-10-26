@@ -156,7 +156,7 @@ QList<QAction *> FileLabelInternalMenuPlugin::menuActions(MenuPluginInterface::T
     if (types == DirectoryView) {
         if (selectionUris.count() == 1) {
             //not allow in trash path
-            if (uri.startsWith("trash://"))
+            if (uri.startsWith("trash://") || uri.startsWith("smb://"))
                 return l;
             auto action = new QAction(tr("Add File Label..."), nullptr);
             auto uri = selectionUris.first();
