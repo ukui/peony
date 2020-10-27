@@ -532,16 +532,24 @@ const QList<QAction *> DirectoryViewMenu::constructFileOpActions()
 
     if (!m_is_trash && !m_is_search && !m_is_computer) {
         QString homeUri = "file://" +  QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
+        QString desktopPath = "file://" +  QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
+        QString desktopUri = FileUtils::getEncodedUri(desktopPath);
+        //qDebug() << "constructFileOpActions desktopUri:" <<desktopUri;
         if (!m_selections.isEmpty() && !m_selections.contains(homeUri)) {
             l<<addAction(QIcon::fromTheme("edit-copy-symbolic"), tr("&Copy"));
             connect(l.last(), &QAction::triggered, [=]() {
                 ClipboardUtils::setClipboardFiles(m_selections, false);
             });
-            l<<addAction(QIcon::fromTheme("edit-cut-symbolic"), tr("Cut"));
-            connect(l.last(), &QAction::triggered, [=]() {
-                ClipboardUtils::setClipboardFiles(m_selections, true);
-            });
-            if (!m_is_recent) {
+
+            if (! m_selections.contains(desktopUri))
+            {
+                l<<addAction(QIcon::fromTheme("edit-cut-symbolic"), tr("Cut"));
+                connect(l.last(), &QAction::triggered, [=]() {
+                    ClipboardUtils::setClipboardFiles(m_selections, true);
+                });
+            }
+
+            if (!m_is_recent && !m_selections.contains(desktopUri)) {
                 l<<addAction(QIcon::fromTheme("edit-delete-symbolic"), tr("&Delete to trash"));
                 connect(l.last(), &QAction::triggered, [=]() {
                     FileOperationUtils::trash(m_selections, true);
@@ -553,7 +561,7 @@ const QList<QAction *> DirectoryViewMenu::constructFileOpActions()
 //            connect(l.last(), &QAction::triggered, [=]() {
 //                FileOperationUtils::executeRemoveActionWithDialog(m_selections);
 //            });
-            if (m_selections.count() == 1) {
+            if (m_selections.count() == 1 && !m_selections.contains(desktopUri)) {
                 l<<addAction(QIcon::fromTheme("document-edit-symbolic"), tr("Rename"));
                 connect(l.last(), &QAction::triggered, [=]() {
                     m_view->editUri(m_selections.first());

@@ -313,7 +313,9 @@ void MainWindow::setShortCuts()
     trashAction->setShortcuts(QList<QKeySequence>()<<Qt::Key_Delete<<QKeySequence(Qt::CTRL + Qt::Key_D));
     connect(trashAction, &QAction::triggered, [=]() {
         auto uris = this->getCurrentSelections();
-        if (!uris.isEmpty()) {
+        QString desktopPath = "file://" +  QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
+        QString desktopUri = Peony::FileUtils::getEncodedUri(desktopPath);
+        if (!uris.isEmpty() && !uris.contains(desktopUri)) {
             bool isTrash = this->getCurrentUri() == "trash:///";
             if (!isTrash) {
                 Peony::FileOperationUtils::trash(uris, true);
@@ -329,7 +331,10 @@ void MainWindow::setShortCuts()
     addAction(deleteAction);
     connect(deleteAction, &QAction::triggered, [=]() {
         auto uris = this->getCurrentSelections();
-        Peony::FileOperationUtils::executeRemoveActionWithDialog(uris);
+        QString desktopPath = "file://" +  QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
+        QString desktopUri = Peony::FileUtils::getEncodedUri(desktopPath);
+        if (! uris.contains(desktopUri))
+           Peony::FileOperationUtils::executeRemoveActionWithDialog(uris);
     });
 
     auto searchAction = new QAction(this);

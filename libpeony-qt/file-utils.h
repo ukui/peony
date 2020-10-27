@@ -56,6 +56,7 @@ public:
 
     BLOCKING static GErrorWrapperPtr getEnumerateError(const QString &uri);
     BLOCKING static QString getTargetUri(const QString &uri);
+    BLOCKING static QString getEncodedUri(const QString &uri);
     BLOCKING static QString getSymbolicTarget(const QString &uri);
     BLOCKING static bool isMountPoint(const QString& uri);
 

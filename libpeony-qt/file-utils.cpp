@@ -279,6 +279,16 @@ QString FileUtils::getTargetUri(const QString &uri)
                                             G_FILE_ATTRIBUTE_STANDARD_TARGET_URI);
 }
 
+
+QString FileUtils::getEncodedUri(const QString &uri)
+{
+    GFile *file = g_file_new_for_uri(uri.toUtf8().constData());
+    QString encodedUri = g_file_get_uri(file);
+    g_object_unref(file);
+
+    return encodedUri;
+}
+
 QString FileUtils::getSymbolicTarget(const QString &uri)
 {
     GFile *file = g_file_new_for_uri(uri.toUtf8().constData());
