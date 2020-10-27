@@ -276,8 +276,10 @@ void NavigationSideBarItemDelegate::paint(QPainter *painter, const QStyleOptionV
     //! \brief QPalette::Backgruond have little different from background, why?
     QColor current = opt.palette.color(QPalette::AlternateBase);
     if (opt.state & QStyle::State_MouseOver) {
-        if (!(opt.state & QStyle::State_Selected))
+        if (!(opt.state & QStyle::State_Selected)) {
+            // qDebug() << current.name();
             opt.palette.setColor(QPalette::Highlight, current);
+        }
     }
 
     painter->setRenderHint(QPainter::Antialiasing, true);
