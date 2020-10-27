@@ -315,7 +315,8 @@ void MainWindow::setShortCuts()
         auto uris = this->getCurrentSelections();
         QString desktopPath = "file://" +  QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
         QString desktopUri = Peony::FileUtils::getEncodedUri(desktopPath);
-        if (!uris.isEmpty() && !uris.contains(desktopUri)) {
+        QString homeUri = "file://" +  QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
+        if (!uris.isEmpty() && !uris.contains(desktopUri) && !uris.contains(homeUri)) {
             bool isTrash = this->getCurrentUri() == "trash:///";
             if (!isTrash) {
                 Peony::FileOperationUtils::trash(uris, true);
@@ -333,7 +334,8 @@ void MainWindow::setShortCuts()
         auto uris = this->getCurrentSelections();
         QString desktopPath = "file://" +  QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
         QString desktopUri = Peony::FileUtils::getEncodedUri(desktopPath);
-        if (! uris.contains(desktopUri))
+        QString homeUri = "file://" +  QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
+        if (! uris.contains(desktopUri) && !uris.contains(homeUri))
            Peony::FileOperationUtils::executeRemoveActionWithDialog(uris);
     });
 
@@ -584,7 +586,12 @@ void MainWindow::setShortCuts()
             if (this->getCurrentSelections().first().startsWith("trash://", Qt::CaseInsensitive)) {
                 return ;
             }
-            Peony::ClipboardUtils::setClipboardFiles(this->getCurrentSelections(), true);
+
+            QString desktopPath = "file://" +  QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
+            QString desktopUri = Peony::FileUtils::getEncodedUri(desktopPath);
+            QString homeUri = "file://" +  QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
+            if (! this->getCurrentSelections().contains(desktopUri) && ! this->getCurrentSelections().contains(homeUri))
+                Peony::ClipboardUtils::setClipboardFiles(this->getCurrentSelections(), true);
         }
     });
     addAction(cutAction);
