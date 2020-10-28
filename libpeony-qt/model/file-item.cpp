@@ -364,7 +364,7 @@ void FileItem::findChildrenAsync()
             }
 
             for (auto uri : uris) {
-                auto info = FileInfo::fromUri(uri);
+                auto info = FileInfo::fromUri(uri, true, false);
                 auto infoJob = new FileInfoJob(info);
                 infoJob->setAutoDelete();
                 infoJob->connect(infoJob, &FileInfoJob::infoUpdated, this, [=]() {

@@ -86,7 +86,7 @@ FileInfo::~FileInfo()
     m_uri = nullptr;
 }
 
-std::shared_ptr<FileInfo> FileInfo::fromUri(QString uri, bool addToHash)
+std::shared_ptr<FileInfo> FileInfo::fromUri(QString uri, bool addToHash, bool typeCheck)
 {
     addToHash = true;
     FileInfoManager *info_manager = FileInfoManager::getInstance();
@@ -103,18 +103,20 @@ std::shared_ptr<FileInfo> FileInfo::fromUri(QString uri, bool addToHash)
 
         newly_info->m_parent = g_file_get_parent(newly_info->m_file);
         newly_info->m_is_remote = !g_file_is_native(newly_info->m_file);
-        GFileType type = g_file_query_file_type(newly_info->m_file, G_FILE_QUERY_INFO_NONE, nullptr);
-        switch (type) {
-        case G_FILE_TYPE_DIRECTORY:
-            //qDebug()<<"dir";
-            newly_info->m_is_dir = true;
-            break;
-        case G_FILE_TYPE_MOUNTABLE:
-            //qDebug()<<"mountable";
-            newly_info->m_is_volume = true;
-            break;
-        default:
-            break;
+        if (typeCheck) {
+            GFileType type = g_file_query_file_type(newly_info->m_file, G_FILE_QUERY_INFO_NONE, nullptr);
+            switch (type) {
+            case G_FILE_TYPE_DIRECTORY:
+                //qDebug()<<"dir";
+                newly_info->m_is_dir = true;
+                break;
+            case G_FILE_TYPE_MOUNTABLE:
+                //qDebug()<<"mountable";
+                newly_info->m_is_volume = true;
+                break;
+            default:
+                break;
+            }
         }
         if (addToHash) {
             newly_info = info_manager->insertFileInfo(newly_info);
@@ -124,18 +126,18 @@ std::shared_ptr<FileInfo> FileInfo::fromUri(QString uri, bool addToHash)
     }
 }
 
-std::shared_ptr<FileInfo> FileInfo::fromPath(QString path, bool addToHash)
+std::shared_ptr<FileInfo> FileInfo::fromPath(QString path, bool addToHash, bool typeCheck)
 {
     QString uri = "file://"+path;
-    return fromUri(uri, addToHash);
+    return fromUri(uri, addToHash, typeCheck);
 }
 
-std::shared_ptr<FileInfo> FileInfo::fromGFile(GFile *file, bool addToHash)
+std::shared_ptr<FileInfo> FileInfo::fromGFile(GFile *file, bool addToHash, bool typeCheck)
 {
     char *uri_str = g_file_get_uri(file);
     QString uri = uri_str;
     g_free(uri_str);
-    return fromUri(uri, addToHash);
+    return fromUri(uri, addToHash, typeCheck);
 }
 
 /*******
