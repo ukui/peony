@@ -49,8 +49,6 @@ Format_Dialog::Format_Dialog(const QString &m_uris,SideBarAbstractItem *m_item,Q
        //get the rom size
        char *total_format = g_format_size(total);
 
-
-
        //add the rom size value into  rom_size combox
        ui->comboBox_rom_size->addItem(total_format);
 
@@ -99,6 +97,10 @@ void Format_Dialog::acceptFormat(bool)
     strncpy(rom_type,ui->comboBox_system->currentText().toUtf8().constData(),sizeof(ui->comboBox_system->currentText().toUtf8().constData())-1);
     strcpy(rom_name,ui->lineEdit_device_name->text().toUtf8().constData());
 
+    //disable name and rom size list
+    ui->comboBox_rom_size->setDisabled(true);
+    ui->comboBox_system->setDisabled(true);
+
     quick_clean = ui->checkBox_clean_or_not->isChecked();
 
     // umount device
@@ -140,7 +142,6 @@ void Format_Dialog::acceptFormat(bool)
     my_time->start();
 
 }
-
 
 double Format_Dialog::get_format_bytes_done(const gchar * device_name)
 {
@@ -293,19 +294,15 @@ void Format_Dialog::ensure_unused_cb(CreateformatData *data)
 {
 
     if(is_iso(data->device_name)==FALSE) {     
-
         ensure_format_cb (data);
     }
     else {
-
         ensure_format_disk(data);
     }
 }
 
 static void createformatfree(CreateformatData *data)
 {
-
-
     g_object_unref(data->object);
     g_object_unref(data->block);
     if(data->drive_object!=NULL)
@@ -319,16 +316,13 @@ static void createformatfree(CreateformatData *data)
     g_clear_object(&(data->client));
 
     g_free(data);
-
-
 }
 
 
 // format
-static void format_cb (GObject *source_object, GAsyncResult *res ,gpointer user_data){
-
-    static   int end_flag = -1;
-
+static void format_cb (GObject *source_object, GAsyncResult *res ,gpointer user_data)
+{
+    static int end_flag = -1;
 
     CreateformatData *data = (CreateformatData *)user_data;
     GError *error = NULL;
@@ -536,7 +530,6 @@ UDisksObject *Format_Dialog::get_object_from_block_device (UDisksClient *client,
 void Format_Dialog::kdisk_format(const gchar * device_name,const gchar *format_type,const gchar * erase_type,
                                 const gchar * filesystem_name,int *format_finish){
 
-
     CreateformatData *data;
     data = g_new(CreateformatData,1);
 
@@ -556,10 +549,7 @@ void Format_Dialog::kdisk_format(const gchar * device_name,const gchar *format_t
     data->object = get_object_from_block_device(data->client,data->device_name);
     data->block = udisks_object_get_block(data->object);
 
-
-
     ensure_unused_cb(data);
-
 }
 
 
