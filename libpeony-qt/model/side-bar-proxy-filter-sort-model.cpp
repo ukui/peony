@@ -51,10 +51,6 @@ bool SideBarProxyFilterSortModel::filterAcceptsRow(int sourceRow, const QModelIn
         }
     }
     if (item->type() == SideBarAbstractItem::FileSystemItem) {
-        // do not show drive item, because it can't be mounted directly.
-        if (item->uri().endsWith("drive"))
-            return false;
-
         if (sourceParent.data(Qt::UserRole).toString() == "computer:///") {
             if (item->uri() != "computer:///root.link") {
                 if (item->isMounted())
