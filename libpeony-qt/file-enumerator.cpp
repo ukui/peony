@@ -188,28 +188,13 @@ void FileEnumerator::cancel()
 
 void FileEnumerator::prepare()
 {
-    GError *err = nullptr;
-    GFileEnumerator *enumerator = g_file_enumerate_children(m_root_file,
-                                  G_FILE_ATTRIBUTE_STANDARD_NAME,
-                                  G_FILE_QUERY_INFO_NONE,
-                                  m_cancellable,
-                                  &err);
-
-    if (err) {
-        //do not send prepared(err) here, wait handle err finished.
-        handleError(err);
-        g_error_free(err);
-    } else {
-        //even though there is no err, we still need to wait a little while
-        //for confirming other object will recieve this signal, you can aslo
-        //connect prepared signal before prepared() method to confirm that.
-        //Q_EMIT prepared(nullptr);
-        g_object_unref(enumerator);
-
-        QTimer::singleShot(100, this, [=]() {
-            Q_EMIT prepared(nullptr);
-        });
-    }
+    g_file_enumerate_children_async(m_root_file,
+                                    G_FILE_ATTRIBUTE_STANDARD_NAME,
+                                    G_FILE_QUERY_INFO_NONE,
+                                    0,
+                                    m_cancellable,
+                                    (GAsyncReadyCallback)prepare_aready_callback,
+                                    this);
 }
 
 GFile *FileEnumerator::enumerateTargetFile()
@@ -234,6 +219,33 @@ GFile *FileEnumerator::enumerateTargetFile()
         target = g_file_dup(m_root_file);
     }
     return target;
+}
+
+GAsyncReadyCallback FileEnumerator::prepare_aready_callback(GFile *file, GAsyncResult *res, FileEnumerator *p_this)
+{
+    GError *err = nullptr;
+    GFileEnumerator *enumerator = g_file_enumerate_children_finish(file, res, &err);
+
+    if (err) {
+        if (err->code == G_IO_ERROR_CANCELLED) {
+            g_error_free(err);
+            return nullptr;
+        }
+
+        //do not send prepared(err) here, wait handle err finished.
+        p_this->handleError(err);
+        g_error_free(err);
+    } else {
+        //even though there is no err, we still need to wait a little while
+        //for confirming other object will recieve this signal, you can aslo
+        //connect prepared signal before prepared() method to confirm that.
+        //Q_EMIT prepared(nullptr);
+        g_object_unref(enumerator);
+
+        QTimer::singleShot(100, p_this, [=]() {
+            Q_EMIT p_this->prepared(nullptr);
+        });
+    }
 }
 
 void FileEnumerator::enumerateSync()
