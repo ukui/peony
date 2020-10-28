@@ -63,6 +63,12 @@ SideBarFileSystemItem::SideBarFileSystemItem(QString uri,
         //FIXME: replace BLOCKING api in ui thread.
         m_display_name = FileUtils::getFileDisplayName(uri);
         m_icon_name = FileUtils::getFileIconName(uri);
+
+        // add by wwn, display name is a read only attribute， so i change it here
+        if (m_display_name == tr("文件系统")) {
+            m_display_name = tr("System Disk");
+        }
+
         FileUtils::queryVolumeInfo(m_uri, m_volume_name, m_unix_device, m_display_name);
     }
 }
@@ -146,6 +152,14 @@ void SideBarFileSystemItem::findChildren()
                     this,
                     m_model,
                     this);
+
+            // add by wwn, to skip local device
+            if (!item->isEjectable() && !item->isRemoveable() && item->uri() != "computer:///root.link") {
+                real_children_count--;
+                delete item;
+                continue;
+            }
+
             //check is mounted.
             //FIXME: replace BLOCKING api in ui thread.
             auto targetUri = FileUtils::getTargetUri(info->uri());

@@ -24,7 +24,6 @@ Peony--DirectoryView--IconView::Item::selected{
     background: #bfd6f7;
     color: black;
 }
-
 Peony--SideBar
 {
     border: 0;

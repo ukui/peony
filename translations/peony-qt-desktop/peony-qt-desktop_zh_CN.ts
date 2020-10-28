@@ -217,17 +217,16 @@
         <translation>删除到回收站(&amp;D)</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="476"/>
         <source>Delete forever</source>
-        <translation>永久删除</translation>
+        <translation type="vanished">永久删除</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="483"/>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="484"/>
         <source>Rename</source>
         <translation>重命名</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="510"/>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="511"/>
         <source>Properties</source>
         <translation>属性</translation>
     </message>
@@ -293,12 +292,12 @@
         <translation type="vanished">重命名(&amp;R)</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="490"/>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="491"/>
         <source>&amp;Paste</source>
         <translation>粘贴(&amp;P)</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="496"/>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="497"/>
         <source>&amp;Refresh</source>
         <translation>刷新(&amp;R)</translation>
     </message>
@@ -310,12 +309,12 @@
 <context>
     <name>Peony::DesktopWindow</name>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-window.cpp" line="94"/>
+        <location filename="../../peony-qt-desktop/desktop-window.cpp" line="95"/>
         <source>Desktop</source>
         <translation>桌面</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-window.cpp" line="171"/>
+        <location filename="../../peony-qt-desktop/desktop-window.cpp" line="181"/>
         <source>set background</source>
         <translation>设置壁纸</translation>
     </message>
@@ -555,17 +554,17 @@
         <translation type="vanished">桌面</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="209"/>
+        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="221"/>
         <source>Close the peony desktop window</source>
         <translation>关闭桌面程序</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="212"/>
+        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="224"/>
         <source>Take over the dbus service.</source>
         <translation>接管DBus服务。</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="215"/>
+        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="227"/>
         <source>Take over the desktop displaying</source>
         <translation>接管桌面</translation>
     </message>

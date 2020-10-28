@@ -103,7 +103,6 @@ void FileMetaInfo::setMetaInfoVariant(const QString &key, const QVariant &value)
 //                                nullptr,
 //                                nullptr,
 //                                nullptr);
-    qDebug()<<tmp.c_str()<<value;
     GError *err = nullptr;
     g_file_set_attribute(file, tmp.c_str(), G_FILE_ATTRIBUTE_TYPE_STRING, (gpointer)data,
                          G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, nullptr, &err);
