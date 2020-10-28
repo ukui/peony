@@ -996,6 +996,8 @@ void TabWidget::updateAdvanceConditions()
 void TabWidget::setCurrentSelections(const QStringList &uris)
 {
     currentPage()->getView()->setSelections(uris);
+    if (uris.count() >0)
+        currentPage()->getView()->scrollToSelection(uris.first());
 }
 
 void TabWidget::editUri(const QString &uri)
