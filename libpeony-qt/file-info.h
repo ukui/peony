@@ -126,7 +126,7 @@ public:
      * \return
      * \deprecated
      */
-    static std::shared_ptr<FileInfo> fromUri(QString uri, bool addToHash = true);
+    static std::shared_ptr<FileInfo> fromUri(QString uri, bool addToHash = true, bool typeCheck = true);
     /*!
      * \brief fromPath
      * \param path
@@ -134,7 +134,7 @@ public:
      * \return
      * \deprecated
      */
-    static std::shared_ptr<FileInfo> fromPath(QString path, bool addToHash = true);
+    static std::shared_ptr<FileInfo> fromPath(QString path, bool addToHash = true, bool typeCheck = true);
     /*!
      * \brief fromGFile
      * \param file
@@ -142,7 +142,7 @@ public:
      * \return
      * \deprecated
      */
-    static std::shared_ptr<FileInfo> fromGFile(GFile *file, bool addToHash = true);
+    static std::shared_ptr<FileInfo> fromGFile(GFile *file, bool addToHash = true, bool typeCheck = true);
 
     QString uri() {
         return m_uri;
