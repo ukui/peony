@@ -315,7 +315,7 @@
         <translation>Masaüstü</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-window.cpp" line="171"/>
+        <location filename="../../peony-qt-desktop/desktop-window.cpp" line="179"/>
         <source>set background</source>
         <translation>Arkaplanı Değiştir</translation>
     </message>

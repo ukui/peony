@@ -66,6 +66,7 @@ protected:
     const QList<QAction *> constructComputerActions();
     const QList<QAction *> constructTrashActions();
     const QList<QAction *> constructSearchActions();
+    const QList<QAction *> constructMultiSelectActions();
 
 private:
     FMWindowIface *m_top_window;

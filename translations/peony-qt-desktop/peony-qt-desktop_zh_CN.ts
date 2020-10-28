@@ -315,7 +315,7 @@
         <translation>桌面</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-window.cpp" line="171"/>
+        <location filename="../../peony-qt-desktop/desktop-window.cpp" line="179"/>
         <source>set background</source>
         <translation>设置壁纸</translation>
     </message>

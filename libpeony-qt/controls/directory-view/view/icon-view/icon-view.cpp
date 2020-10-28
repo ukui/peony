@@ -261,8 +261,12 @@ void IconView::mouseMoveEvent(QMouseEvent *e)
 void IconView::mousePressEvent(QMouseEvent *e)
 {
     qDebug()<<"moursePressEvent";
-    m_editValid = true;
+//    m_editValid = true;
     QListView::mousePressEvent(e);
+    if(!indexAt(e->pos()).isValid())
+    {
+        disableMultiSelect();
+    }
 
     if (e->button() != Qt::LeftButton) {
         return;
@@ -552,6 +556,19 @@ void IconView::clearIndexWidget()
         setIndexWidget(index, nullptr);
         closePersistentEditor(index);
     }
+}
+
+void IconView::multiSelect()
+{
+    m_multi_select = true;
+    setSelectionMode(MultiSelection);
+}
+
+void IconView::disableMultiSelect()
+{
+    m_multi_select = false;
+    setSelectionMode(ExtendedSelection);
+    viewport()->update(viewport()->rect());
 }
 
 //Icon View 2
