@@ -148,6 +148,8 @@ public Q_SLOTS:
 
     //zoom
     virtual void setCurrentZoomLevel(int zoomLevel) {}
+    virtual void multiSelect(){}
+    virtual void disableMultiSelect(){}
 };
 
 }

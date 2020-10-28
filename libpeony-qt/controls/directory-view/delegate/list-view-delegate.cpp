@@ -89,6 +89,21 @@ void ListViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
             }
         }
     }
+    auto rect = view->visualRect(index);
+    if(option.viewItemPosition == 3)
+    {
+        if(view->selectionModel()->selectedIndexes().contains(index))
+        {
+            QIcon icon = QIcon(":/icons/icon-selected.png");
+            icon.paint(painter, rect.x()+rect.width() - 64, rect.y()+rect.height()/2-8, 16, 16, Qt::AlignCenter);
+        }
+        else
+        {
+            QIcon icon = QIcon(":/icons/icon-select.png");
+            icon.paint(painter, rect.x()+rect.width() - 64, rect.y()+rect.height()/2-8, 16, 16, Qt::AlignCenter);
+        }
+    }
+
 }
 
 QWidget *ListViewDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const

@@ -65,9 +65,9 @@ IconViewIndexWidget::IconViewIndexWidget(const IconViewDelegate *delegate, const
 
     m_delegate = delegate;
 
-    m_delegate->getView()->m_renameTimer->stop();
-    m_delegate->getView()->m_editValid = false;
-    m_delegate->getView()->m_renameTimer->start();
+//    m_delegate->getView()->m_renameTimer->stop();
+//    m_delegate->getView()->m_editValid = false;
+//    m_delegate->getView()->m_renameTimer->start();
 
     m_is_dragging = m_delegate->getView()->isDraggingState();
 
@@ -211,6 +211,12 @@ void IconViewIndexWidget::paintEvent(QPaintEvent *e)
         //qDebug()<< "symbolic:" << info->symbolicIconName();
         icon.paint(&p, this->width() - 30, 10, 20, 20, Qt::AlignCenter);
     }
+    IconView *view = m_delegate->getView();
+    if(view->m_multi_select)
+    {
+        QIcon icon = QIcon(":/icons/icon-selected.png");
+        icon.paint(&p, this->width() - 20, 4, 16, 16, Qt::AlignCenter);
+    }
 
     //paint access emblems
     //NOTE: we can not query the file attribute in smb:///(samba) and network:///.
@@ -251,8 +257,7 @@ void IconViewIndexWidget::mousePressEvent(QMouseEvent *e)
             view->m_editValid = false;
             view->m_renameTimer->start();
         }
-        e->accept();
-        return;
+        e->ignore();
 //        if (m_edit_trigger.isActive()) {
 //            qDebug()<<"IconViewIndexWidget::mousePressEvent: edit"<<e->type();
 //            m_delegate->getView()->setIndexWidget(m_index, nullptr);
@@ -260,7 +265,7 @@ void IconViewIndexWidget::mousePressEvent(QMouseEvent *e)
 //            return;
 //        }
     }
-    QWidget::mousePressEvent(e);
+//    QWidget::mousePressEvent(e);
 }
 
 void IconViewIndexWidget::mouseMoveEvent(QMouseEvent *e)
