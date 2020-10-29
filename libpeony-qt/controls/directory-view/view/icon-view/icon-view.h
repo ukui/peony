@@ -127,6 +127,8 @@ public Q_SLOTS:
     void resort();
     void reportViewDirectoryChanged();
     void clearIndexWidget();
+    void multiSelect();
+    void disableMultiSelect();
 
 protected:
     /*!
@@ -185,6 +187,8 @@ private:
     bool m_ignore_mouse_move_event = false;
 
     bool m_delegate_editing = false;
+
+    bool m_multi_select =false;
 };
 
 //IconView2
@@ -290,6 +294,12 @@ public Q_SLOTS:
     void setCurrentZoomLevel(int zoomLevel);
 
     void clearIndexWidget();
+    void multiSelect(){
+        m_view->multiSelect();
+    }
+    void disableMultiSelect(){
+        m_view->disableMultiSelect();
+    }
 
 private:
     IconView *m_view = nullptr;

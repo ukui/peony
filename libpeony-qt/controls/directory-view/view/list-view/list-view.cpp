@@ -200,10 +200,21 @@ void ListView::mousePressEvent(QMouseEvent *e)
     auto index = indexAt(e->pos());
     bool isIndexSelected = selectedIndexes().contains(index);
 
+    QPoint p = e->pos();
+    auto visualRect = this->visualRect(index);
+    if (columnAt(p.x()) == 3&&p.x()>visualRect.x()+visualRect.width() - 60&&p.x()<visualRect.x()+visualRect.width() - 40)
+    {
+        if(!isIndexSelected)
+            this->selectionModel()->setCurrentIndex(index,QItemSelectionModel::Select|QItemSelectionModel::Rows);
+        else
+            this->selectionModel()->setCurrentIndex(index,QItemSelectionModel::Deselect|QItemSelectionModel::Rows);
+        return;
+    }
+
+
     m_editValid = true;
     QTreeView::mousePressEvent(e);
 
-    auto visualRect = this->visualRect(index);
     auto sizeHint = itemDelegate()->sizeHint(viewOptions(), index);
     auto validRect = QRect(visualRect.topLeft(), sizeHint);
     if (!validRect.contains(e->pos())) {
@@ -472,6 +483,16 @@ void ListView::adjustColumnsSize()
 
     //resizeColumnToContents(0);
     header()->resizeSection(0, this->viewport()->width() - rightPartsSize);
+}
+
+void ListView::multiSelect()
+{
+    return;
+}
+
+void ListView::disableMultiSelect()
+{
+    return;
 }
 
 DirectoryViewProxyIface *ListView::getProxy()

@@ -110,7 +110,6 @@ void DirectoryViewMenu::fillActions()
 
     if (m_directory.startsWith("recent://"))
         m_is_recent = true;
-
     //add open actions
     auto openActions = constructOpenOpActions();
     if (!openActions.isEmpty())
@@ -124,6 +123,11 @@ void DirectoryViewMenu::fillActions()
     //add view actions
     auto viewActions = constructViewOpActions();
     if (!viewActions.isEmpty())
+        addSeparator();
+
+    //add multiselect action
+    auto multiselectAction = constructMultiSelectActions();
+    if(!multiselectAction.isEmpty())
         addSeparator();
 
     //add operation actions
@@ -757,6 +761,20 @@ const QList<QAction *> DirectoryViewMenu::constructSearchActions()
         });
     }
     return l;
+}
+
+const QList<QAction *> DirectoryViewMenu::constructMultiSelectActions()
+{
+    QList<QAction *> l;
+    if(m_view->viewId() == "List View")
+        return l;
+    auto MultiSelectAction = addAction(tr("MultiSelect"));
+    l<<MultiSelectAction;
+    connect(l.last(), &QAction::triggered, [=]() {
+        m_view->multiSelect();
+    });
+    return l;
+
 }
 
 const QList<QAction *> DirectoryViewMenu::constructMenuPluginActions()

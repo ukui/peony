@@ -46,6 +46,7 @@ namespace DirectoryView {
 class PEONYCORESHARED_EXPORT ListView : public QTreeView, public DirectoryViewIface
 {
     friend class ListView2;
+    friend class ListViewDelegate;
     Q_OBJECT
 public:
     explicit ListView(QWidget *parent = nullptr);
@@ -110,6 +111,8 @@ public Q_SLOTS:
     void resort();
     void reportViewDirectoryChanged();
     void adjustColumnsSize();
+    void multiSelect();
+    void disableMultiSelect();
 
 protected:
     void mousePressEvent(QMouseEvent *e) override;
@@ -255,6 +258,12 @@ public Q_SLOTS:
     void setCurrentZoomLevel(int zoomLevel);
 
     void clearIndexWidget();
+    void multiSelect(){
+        m_view->multiSelect();
+    }
+    void disableMultiSelect(){
+        m_view->disableMultiSelect();
+    }
 
 private:
     ListView *m_view = nullptr;

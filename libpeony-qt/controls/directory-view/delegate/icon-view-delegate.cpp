@@ -192,6 +192,20 @@ void IconViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
         icon.paint(painter, rect.x() + rect.width() - 30, rect.y() + 10, 20, 20, Qt::AlignCenter);
     }
 
+    if(view->m_multi_select)
+        if(view->selectedIndexes().contains(index))
+        {
+            QIcon icon = QIcon(":/icons/icon-selected.png");
+            icon.paint(painter, rect.x()+rect.width() - 20, rect.y()+4, 16, 16, Qt::AlignCenter);
+        }
+        else
+        {
+            QIcon icon = QIcon(":/icons/icon-select.png");
+            icon.paint(painter, rect.x()+rect.width() - 20, rect.y()+4, 16, 16, Qt::AlignCenter);
+        }
+
+
+
     //paint access emblems
 
     //NOTE: we can not query the file attribute in smb:///(samba) and network:///.

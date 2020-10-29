@@ -125,17 +125,17 @@
         <translation>İleri</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1275"/>
+        <location filename="../../src/windows/main-window.cpp" line="1274"/>
         <source>Delete file Warning</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1277"/>
+        <location filename="../../src/windows/main-window.cpp" line="1276"/>
         <source>Delete Permanently</source>
         <translation>Kalıcı Olarak Sil</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1278"/>
+        <location filename="../../src/windows/main-window.cpp" line="1277"/>
         <source>Are you sure that you want to delete these files? Once you start a deletion, the files deleting will never be restored again.</source>
         <translation>Bu dosyaları silmek istediğinizden emin misiniz? Bir silme işlemini başlattığınızda, silinen dosyalar bir daha geri yüklenmeyecektir.</translation>
     </message>
@@ -589,22 +589,22 @@
         <translation type="vanished">Dosya Yöneticisi</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.cpp" line="148"/>
+        <location filename="../../src/peony-application.cpp" line="140"/>
         <source>Files or directories to open</source>
         <translation>Açılacak dosyalar veya dizinler</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.cpp" line="148"/>
+        <location filename="../../src/peony-application.cpp" line="140"/>
         <source>[FILE1, FILE2,...]</source>
         <translation>[DOSYA1, DOSYA2,...]</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.cpp" line="182"/>
+        <location filename="../../src/peony-application.cpp" line="174"/>
         <source>Warning</source>
         <translation>Uyarı</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.cpp" line="182"/>
+        <location filename="../../src/peony-application.cpp" line="174"/>
         <source>Peony-Qt can not get the system&apos;s icon theme. There are 2 reasons might lead to this problem:
 
 1. Peony-Qt might be running as root, that means you have the higher permission and can do some things which normally forbidden. But, you should learn that if you were in a root, the virtual file system will lose some featrue such as you can not use &quot;My Computer&quot;, the theme and icons might also went wrong. So, run peony-qt in a root is not recommended.
@@ -617,12 +617,12 @@
 2. Sisteminiz için qt olmayan bir tema kullanıyorsunuz ancak qt uygulamaları için platform tema eklentisini yüklemediniz. Gtk-theme kullanıyorsanız, bu sorunu çözmek için qt5-gtk2-platformtheme paketini yüklemeyi deneyin.</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.cpp" line="587"/>
+        <location filename="../../src/peony-application.cpp" line="579"/>
         <source>Peony Qt</source>
         <translation>Dosya Yöneticisi</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.cpp" line="588"/>
+        <location filename="../../src/peony-application.cpp" line="580"/>
         <source>Author:
 	Yue Lan &lt;lanyue@kylinos.cn&gt;
 	Meihong He &lt;hemeihong@kylinos.cn&gt;
@@ -975,7 +975,7 @@ Telif (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</translatio
 <context>
     <name>TitleLabel</name>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="367"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="292"/>
         <source>Files</source>
         <translation type="unfinished"></translation>
     </message>
