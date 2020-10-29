@@ -70,6 +70,7 @@ public:
 
     NO_BLOCKING static const QStringList toDisplayUris(const QStringList &args);
 
+    BLOCKING static bool isReadonly (const QString&);
     BLOCKING static bool isMountRoot(const QString &uri);
 
     BLOCKING static bool queryVolumeInfo(const QString &volumeUri,

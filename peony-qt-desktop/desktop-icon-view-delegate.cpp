@@ -34,10 +34,12 @@
 #include <QWidget>
 #include <QPainter>
 #include <QFileInfo>
+#include <file-info-job.h>
 
 #include <QApplication>
 
 #include <QDebug>
+#include <file-info.h>
 
 using namespace Peony;
 using namespace Peony::DirectoryView;
@@ -137,13 +139,7 @@ void DesktopIconViewDelegate::paint(QPainter *painter, const QStyleOptionViewIte
     QColor shadow = Qt::black;
     shadow.setAlpha(127);
     painter->setPen(shadow);
-    IconViewTextHelper::paintText(painter,
-                                  opt,
-                                  index,
-                                  maxTextHight,
-                                  0,
-                                  2,
-                                  false);
+    IconViewTextHelper::paintText(painter, opt, index, maxTextHight, 0, 2, false);
     painter->restore();
 
     //paint text
@@ -151,19 +147,47 @@ void DesktopIconViewDelegate::paint(QPainter *painter, const QStyleOptionViewIte
     painter->translate(0, 0 + iconSizeExpected.height() + 10);
     //painter->setFont(opt.font);
     painter->setPen(opt.palette.highlightedText().color());
-    IconViewTextHelper::paintText(painter,
-                                  opt,
-                                  index,
-                                  maxTextHight,
-                                  0,
-                                  2,
-                                  false);
+    IconViewTextHelper::paintText(painter, opt, index, maxTextHight, 0, 2, false);
     painter->restore();
 
+    // paint locker
     painter->restore();
+    FileInfoJob file(index.data(Qt::UserRole).toString(), nullptr);
+    file.querySync();
 
-    //paint link icon
-    if (index.data(Qt::UserRole + 1).toBool()) {
+    if (file.getInfo()->canRead() && !file.getInfo()->canWrite() && !file.getInfo()->canExecute()) {
+        QSize lockerIconSize = QSize(16, 16);
+        int offset = 8;
+        switch (view->zoomLevel()) {
+        case DesktopIconView::Small: {
+            lockerIconSize = QSize(8, 8);
+            offset = 10;
+            break;
+        }
+        case DesktopIconView::Normal: {
+            break;
+        }
+        case DesktopIconView::Large: {
+            offset = 4;
+            lockerIconSize = QSize(24, 24);
+            break;
+        }
+        case DesktopIconView::Huge: {
+            offset = 2;
+            lockerIconSize = QSize(32, 32);
+            break;
+        }
+        default: {
+            break;
+        }
+        }
+        auto topRight = opt.rect.topRight();
+        topRight.setX(topRight.x() - offset - lockerIconSize.width());
+        topRight.setY(topRight.y() + offset);
+        auto linkRect = QRect(topRight, lockerIconSize);
+        QIcon symbolicLinkIcon = QIcon::fromTheme("lock");
+        symbolicLinkIcon.paint(painter, linkRect, Qt::AlignCenter);
+    } else if (index.data(Qt::UserRole + 1).toBool()) {
         QSize symbolicIconSize = QSize(16, 16);
         int offset = 8;
         switch (view->zoomLevel()) {
