@@ -329,6 +329,9 @@ void FileInfoJob::refreshInfoContents(GFileInfo *new_info)
         g_object_unref(desktop_info);
     }
 
+    info->m_target_uri = g_file_info_get_attribute_string(new_info, G_FILE_ATTRIBUTE_STANDARD_TARGET_URI);
+    info->m_symlink_uri = g_file_info_get_attribute_string(new_info, G_FILE_ATTRIBUTE_STANDARD_SYMLINK_TARGET);
+
     Q_EMIT info->updated();
 //    m_info->m_mutex.unlock();
 }
