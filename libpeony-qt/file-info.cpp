@@ -86,6 +86,23 @@ FileInfo::~FileInfo()
     m_uri = nullptr;
 }
 
+void FileInfo::checkType()
+{
+    GFileType type = g_file_query_file_type(m_file, G_FILE_QUERY_INFO_NONE, nullptr);
+    switch (type) {
+    case G_FILE_TYPE_DIRECTORY:
+        //qDebug()<<"dir";
+        m_is_dir = true;
+        break;
+    case G_FILE_TYPE_MOUNTABLE:
+        //qDebug()<<"mountable";
+        m_is_volume = true;
+        break;
+    default:
+        break;
+    }
+}
+
 std::shared_ptr<FileInfo> FileInfo::fromUri(QString uri, bool addToHash, bool typeCheck)
 {
     addToHash = true;

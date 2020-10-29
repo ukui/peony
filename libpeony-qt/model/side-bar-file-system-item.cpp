@@ -133,6 +133,7 @@ void SideBarFileSystemItem::findChildren()
         }
 
         for (auto info: infos) {
+            info.get()->checkType();
             if (!info->displayName().startsWith(".") && (info->isDir() || info->isVolume())) {
                 isEmpty = false;
             }
