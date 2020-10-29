@@ -298,18 +298,16 @@ void NavigationSideBarItemDelegate::paint(QPainter *painter, const QStyleOptionV
     if (view->isExpanded(index)) {
         QRect rect = option.rect;
         rect.setTop(rect.top() + 10);
-        rect.setX(rect.right() - 20);
-        rect.setSize(QSize(15, 15));
+        rect.setX(rect.right() - 15);
+        rect.setSize(QSize(16, 16));
         painter->drawPixmap(rect, QPixmap(":/img/branches2"));
-        rect.setX(option.rect.x());
     }
     else {
         QRect rect = option.rect;
         rect.setTop(rect.top() + 10);
-        rect.setX(rect.right() - 20);
-        rect.setSize(QSize(15, 15));
+        rect.setX(rect.right() - 15);
+        rect.setSize(QSize(16, 16));
         painter->drawPixmap(rect, QPixmap(":/img/branches1"));
-        rect.setX(option.rect.x());
     }
 }
 
