@@ -169,7 +169,7 @@ const QList<std::shared_ptr<FileInfo>> FileEnumerator::getChildren(bool addToHas
     //qDebug()<<"FileEnumerator::getChildren():";
     QList<std::shared_ptr<FileInfo>> children;
     for (auto uri : *m_children_uris) {
-        auto file_info = FileInfo::fromUri(uri, addToHash);
+        auto file_info = FileInfo::fromUri(uri, addToHash, false);
         children<<file_info;
     }
     return children;
