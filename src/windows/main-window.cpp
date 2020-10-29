@@ -655,6 +655,7 @@ void MainWindow::keyPressEvent(QKeyEvent *e)
             QStringList dirs;
             for (auto uri : selections) {
                 auto info = Peony::FileInfo::fromUri(uri);
+                info.get()->checkType();
                 if (info->isDir() || info->isVolume()) {
                     dirs<<uri;
                 } else {

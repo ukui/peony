@@ -80,6 +80,8 @@ void PathBarModel::setRootUri(const QString &uri, bool force)
     m_uri_display_name_hash.clear();
     QStringList l;
     for (auto info : infos) {
+        info.get()->checkType();
+
         //skip the independent file.
         if (!(info->isDir() || info->isVolume()))
             continue;
