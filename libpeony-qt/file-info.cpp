@@ -103,9 +103,8 @@ void FileInfo::checkType()
     }
 }
 
-std::shared_ptr<FileInfo> FileInfo::fromUri(QString uri, bool addToHash, bool typeCheck)
+std::shared_ptr<FileInfo> FileInfo::fromUri(QString uri, bool typeCheck)
 {
-    addToHash = true;
     FileInfoManager *info_manager = FileInfoManager::getInstance();
     info_manager->lock();
     std::shared_ptr<FileInfo> info = info_manager->findFileInfoByUri(uri);
@@ -135,26 +134,24 @@ std::shared_ptr<FileInfo> FileInfo::fromUri(QString uri, bool addToHash, bool ty
                 break;
             }
         }
-        if (addToHash) {
-            newly_info = info_manager->insertFileInfo(newly_info);
-        }
+        newly_info = info_manager->insertFileInfo(newly_info);
         info_manager->unlock();
         return newly_info;
     }
 }
 
-std::shared_ptr<FileInfo> FileInfo::fromPath(QString path, bool addToHash, bool typeCheck)
+std::shared_ptr<FileInfo> FileInfo::fromPath(QString path, bool typeCheck)
 {
     QString uri = "file://"+path;
-    return fromUri(uri, addToHash, typeCheck);
+    return fromUri(uri, typeCheck);
 }
 
-std::shared_ptr<FileInfo> FileInfo::fromGFile(GFile *file, bool addToHash, bool typeCheck)
+std::shared_ptr<FileInfo> FileInfo::fromGFile(GFile *file, bool typeCheck)
 {
     char *uri_str = g_file_get_uri(file);
     QString uri = uri_str;
     g_free(uri_str);
-    return fromUri(uri, addToHash, typeCheck);
+    return fromUri(uri, typeCheck);
 }
 
 /*******

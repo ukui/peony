@@ -134,27 +134,27 @@ public:
     /*!
      * \brief fromUri
      * \param uri
-     * \param addToHash
+     * \param typeCheck
      * \return
      * \deprecated
      */
-    static std::shared_ptr<FileInfo> fromUri(QString uri, bool addToHash = true, bool typeCheck = false);
+    static std::shared_ptr<FileInfo> fromUri(QString uri, bool typeCheck = false);
     /*!
      * \brief fromPath
      * \param path
-     * \param addToHash
+     * \param typeCheck
      * \return
      * \deprecated
      */
-    static std::shared_ptr<FileInfo> fromPath(QString path, bool addToHash = true, bool typeCheck = false);
+    static std::shared_ptr<FileInfo> fromPath(QString path, bool typeCheck = false);
     /*!
      * \brief fromGFile
      * \param file
-     * \param addToHash
+     * \param typeCheck
      * \return
      * \deprecated
      */
-    static std::shared_ptr<FileInfo> fromGFile(GFile *file, bool addToHash = true, bool typeCheck = false);
+    static std::shared_ptr<FileInfo> fromGFile(GFile *file, bool typeCheck = false);
 
     QString uri() {
         return m_uri;
