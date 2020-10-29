@@ -844,6 +844,7 @@ void FMWindow::keyPressEvent(QKeyEvent *e)
                 QStringList dirs;
                 for (auto uri : selections) {
                     auto info = FileInfo::fromUri(uri);
+                    info.get()->checkType();
                     if (info->isDir() || info->isVolume()) {
                         dirs<<uri;
                     } else {
