@@ -119,6 +119,18 @@ public:
     explicit FileInfo(QObject *parent = nullptr);
     explicit FileInfo(const QString &uri, QObject *parent = nullptr);
     ~FileInfo();
+
+    /*!
+     * \brief checkType
+     * \details
+     * checking file type will block io, if we construct a file info instance without type checking,
+     * we can call this method to check it right now.
+     *
+     * note that is not recomended, the better way is use FileInfoJob query info async, and waiting
+     * it finished, durring the times we can do other operations without blocking io.
+     */
+    void checkType();
+
     /*!
      * \brief fromUri
      * \param uri
