@@ -162,14 +162,14 @@ QString FileEnumerator::getEnumerateUri()
     return m_uri;
 }
 
-const QList<std::shared_ptr<FileInfo>> FileEnumerator::getChildren(bool addToHash)
+const QList<std::shared_ptr<FileInfo>> FileEnumerator::getChildren()
 {
     //m_children_uris->removeDuplicates();
 
     //qDebug()<<"FileEnumerator::getChildren():";
     QList<std::shared_ptr<FileInfo>> children;
     for (auto uri : *m_children_uris) {
-        auto file_info = FileInfo::fromUri(uri, addToHash, false);
+        auto file_info = FileInfo::fromUri(uri);
         children<<file_info;
     }
     return children;

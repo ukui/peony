@@ -88,7 +88,7 @@ public:
      * \brief getChildren
      * \return
      */
-    const QList<std::shared_ptr<FileInfo>> getChildren(bool addToHash = false);
+    const QList<std::shared_ptr<FileInfo>> getChildren();
 
     const QStringList getChildrenUris() {
         return *m_children_uris;

@@ -48,7 +48,7 @@ FileInfoJob::FileInfoJob(std::shared_ptr<FileInfo> info, QObject *parent) : QObj
 
 FileInfoJob::FileInfoJob(const QString &uri, QObject *parent) : QObject (parent)
 {
-    auto info = FileInfo::fromUri(uri, true, false);
+    auto info = FileInfo::fromUri(uri);
     m_info = info;
     //connect(m_info.get(), &FileInfo::updated, this, &FileInfoJob::infoUpdated);
 
