@@ -81,7 +81,11 @@ void FileItemModel::setRootItem(FileItem *item)
     m_root_item->deleteLater();
 
     m_root_item = item;
-    m_root_item->findChildrenAsync();
+    connect(m_root_item, &FileItem::infoQueryFinished, this, [=](){
+        m_root_item->findChildrenAsync();
+    });
+
+    m_root_item->updateInfoAsync();
 
     endResetModel();
 }

@@ -518,8 +518,10 @@ void SideBarFileSystemItem::updateFileInfo(SideBarFileSystemItem *pThis){
         pThis->m_icon_name = FileUtils::getFileIconName(pThis->m_uri);
         //mountable state. fix #19172
         auto fileInfo = FileInfo::fromUri(pThis->m_uri,false);
-        FileInfoJob fileJob(fileInfo);
-        fileJob.querySync();
+        if (fileInfo.get()->isEmptyInfo()) {
+            FileInfoJob fileJob(fileInfo);
+            fileJob.querySync();
+        }
 }
 
 /* Eject some device by stop it's drive. Such as: mobile harddisk.

@@ -99,6 +99,8 @@ Q_SIGNALS:
     void deleted(const QString &thisUri);
     void renamed(const QString &oldUri, const QString &newUri);
 
+    void infoQueryFinished(const QString &uri);
+
 public Q_SLOTS:
     void onChildAdded(const QString &uri);
     void onChildRemoved(const QString &uri);

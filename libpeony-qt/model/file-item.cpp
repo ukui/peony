@@ -624,6 +624,8 @@ void FileItem::updateInfoSync()
         ThumbnailManager::getInstance()->createThumbnail(this->uri(), m_thumbnail_watcher, true);
     }
     job->deleteLater();
+
+    infoQueryFinished(this->uri());
 }
 
 void FileItem::updateInfoAsync()
@@ -633,6 +635,8 @@ void FileItem::updateInfoAsync()
     job->connect(job, &FileInfoJob::infoUpdated, this, [=]() {
         m_model->dataChanged(this->firstColumnIndex(), this->lastColumnIndex());
         ThumbnailManager::getInstance()->createThumbnail(this->uri(), m_thumbnail_watcher, true);
+
+        infoQueryFinished(this->uri());
     });
     job->queryAsync();
 }
