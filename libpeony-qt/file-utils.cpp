@@ -465,6 +465,24 @@ bool FileUtils::queryVolumeInfo(const QString &volumeUri, QString &volumeName, Q
     return true;
 }
 
+bool FileUtils::isReadonly(const QString& uri)
+{
+    GFile *file = g_file_new_for_uri(uri.toUtf8().constData());
+    GFileInfo *info = g_file_query_info(file, "access::*", G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, nullptr, nullptr);
+    g_object_unref(file);
+    if (info) {
+        bool read = g_file_info_get_attribute_boolean(info, G_FILE_ATTRIBUTE_ACCESS_CAN_READ);
+        bool write = g_file_info_get_attribute_boolean(info, G_FILE_ATTRIBUTE_ACCESS_CAN_WRITE);
+        bool execute = g_file_info_get_attribute_boolean(info, G_FILE_ATTRIBUTE_ACCESS_CAN_EXECUTE);
+
+        if (read && !write && !execute) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 bool FileUtils::isFileDirectory(const QString &uri)
 {
     bool isFolder = false;
