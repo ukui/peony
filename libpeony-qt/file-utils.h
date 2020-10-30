@@ -77,6 +77,7 @@ public:
                                 QString &unixDeviceName,
                                 const QString &volumeDisplayName = nullptr);
 
+    BLOCKING static bool isReadonly (const QString&);
     BLOCKING static bool isFileDirectory(const QString &uri);
 
     BLOCKING static bool isFileUnmountable(const QString &uri);
