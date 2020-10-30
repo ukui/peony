@@ -321,8 +321,11 @@ const QList<QAction *> DirectoryViewMenu::constructCreateTemplateActions()
         }
         //fix create folder fail issue in special path
         auto info = FileInfo::fromUri(m_directory, false);
-        FileInfoJob job(info);
-        job.querySync();
+        if (info.get()->isEmptyInfo()) {
+            FileInfoJob job(info);
+            job.querySync();
+        }
+
         if (! info->canWrite())
         {
             createAction->setEnabled(false);

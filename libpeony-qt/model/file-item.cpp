@@ -136,6 +136,11 @@ QVector<FileItem*> *FileItem::findChildrenSync()
 
 void FileItem::findChildrenAsync()
 {
+    auto info = FileInfo::fromUri(m_info.get()->uri());
+    auto infoJob = new FileInfoJob(info);
+    infoJob->setAutoDelete();
+    infoJob->queryAsync();
+
     if (m_expanded)
         return;
 
