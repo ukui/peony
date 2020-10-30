@@ -670,7 +670,8 @@ void ProgressBar::mouseReleaseEvent(QMouseEvent *event)
     }
 
     QWidget::mouseReleaseEvent(event);
-    update();
+    if (! m_is_stopping)
+       update();
 }
 
 void ProgressBar::onCancelled()
