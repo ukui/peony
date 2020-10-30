@@ -34,10 +34,12 @@
 #include <QWidget>
 #include <QPainter>
 #include <QFileInfo>
+#include <file-info-job.h>
 
 #include <QApplication>
 
 #include <QDebug>
+#include <file-info.h>
 
 using namespace Peony;
 using namespace Peony::DirectoryView;
@@ -162,8 +164,42 @@ void DesktopIconViewDelegate::paint(QPainter *painter, const QStyleOptionViewIte
 
     painter->restore();
 
-    //paint link icon
-    if (index.data(Qt::UserRole + 1).toBool()) {
+    //paint link icon and locker icon
+    FileInfo* file = FileInfo::fromUri(index.data(Qt::UserRole).toString(), true).get();
+    if ((index.data(Qt::UserRole).toString() != "computer:///") && (index.data(Qt::UserRole).toString() != "trash:///")
+            && file->canRead() && !file->canWrite() && !file->canExecute()) {
+        QSize lockerIconSize = QSize(16, 16);
+        int offset = 8;
+        switch (view->zoomLevel()) {
+        case DesktopIconView::Small: {
+            lockerIconSize = QSize(8, 8);
+            offset = 10;
+            break;
+        }
+        case DesktopIconView::Normal: {
+            break;
+        }
+        case DesktopIconView::Large: {
+            offset = 4;
+            lockerIconSize = QSize(24, 24);
+            break;
+        }
+        case DesktopIconView::Huge: {
+            offset = 2;
+            lockerIconSize = QSize(32, 32);
+            break;
+        }
+        default: {
+            break;
+        }
+        }
+        auto topRight = opt.rect.topRight();
+        topRight.setX(topRight.x() - offset - lockerIconSize.width());
+        topRight.setY(topRight.y() + offset);
+        auto linkRect = QRect(topRight, lockerIconSize);
+        QIcon symbolicLinkIcon = QIcon::fromTheme("lock");
+        symbolicLinkIcon.paint(painter, linkRect, Qt::AlignCenter);
+    } else if (index.data(Qt::UserRole + 1).toBool()) {
         QSize symbolicIconSize = QSize(16, 16);
         int offset = 8;
         switch (view->zoomLevel()) {
