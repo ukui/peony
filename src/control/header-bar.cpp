@@ -37,6 +37,7 @@
 #include "search-vfs-uri-parser.h"
 #include "file-info.h"
 #include "file-info-job.h"
+#include "file-utils.h"
 
 #include <QHBoxLayout>
 #include <QUrl>
@@ -130,6 +131,18 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
     });
 
     addSpacing(9);
+    //close search button,set current location icon
+    auto a = addAction(tr("what is my name?"));
+    connect(a, &QAction::triggered,this,&HeaderBar::searchButtonClicked);
+
+    auto closeSearch = qobject_cast<QToolButton *>(widgetForAction(a));
+    closeSearch->setAutoRaise(false);
+    closeSearch->setFixedSize(QSize(40, 40));
+    closeSearch->setIconSize(QSize(16, 16));
+    m_close_search_action = a;
+    m_close_search_action->setVisible(false);
+//    connect(m_close_search_action, &QAction::triggered,this,&HeaderBar::searchButtonClicked);
+    addSpacing(9);
 
     auto locationBar = new Peony::AdvancedLocationBar(this);
     m_location_bar = locationBar;
@@ -161,8 +174,11 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
     connect(m_location_bar, &Peony::AdvancedLocationBar::updateWindowLocationRequest, this, &HeaderBar::updateLocationRequest);
 
     addSpacing(9);
-    auto a = addAction(QIcon::fromTheme("edit-find-symbolic"), tr("Search"));
-    connect(a, &QAction::triggered, this, &HeaderBar::searchButtonClicked);
+    //search button
+    a = addAction(QIcon::fromTheme("edit-find-symbolic"), tr("Search"));
+    m_search_action = a;
+    connect(a, &QAction::triggered, this,&HeaderBar::searchButtonClicked);
+
     auto search = qobject_cast<QToolButton *>(widgetForAction(a));
     search->setAutoRaise(false);
     search->setFixedSize(QSize(40, 40));
@@ -224,16 +240,16 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
 
     addSpacing(2);
 
-    a = addAction(QIcon::fromTheme("open-menu-symbolic"), tr("Option"));
-    auto popMenu = qobject_cast<QToolButton *>(widgetForAction(a));
-    popMenu->setProperty("isOptionButton", true);
-    popMenu->setAutoRaise(false);
-    popMenu->setFixedSize(QSize(40, 40));
-    popMenu->setIconSize(QSize(16, 16));
-    popMenu->setPopupMode(QToolButton::InstantPopup);
+//    a = addAction(QIcon::fromTheme("open-menu-symbolic"), tr("Option"));
+//    auto popMenu = qobject_cast<QToolButton *>(widgetForAction(a));
+//    popMenu->setProperty("isOptionButton", true);
+//    popMenu->setAutoRaise(false);
+//    popMenu->setFixedSize(QSize(40, 40));
+//    popMenu->setIconSize(QSize(16, 16));
+//    popMenu->setPopupMode(QToolButton::InstantPopup);
 
-    m_operation_menu = new OperationMenu(m_window, this);
-    popMenu->setMenu(m_operation_menu);
+//    m_operation_menu = new OperationMenu(m_window, this);
+//    popMenu->setMenu(m_operation_menu);
 
     for (auto action : actions()) {
         auto w = widgetForAction(action);
@@ -311,6 +327,8 @@ void HeaderBar::tryOpenAgain()
 void HeaderBar::searchButtonClicked()
 {
     m_search_mode = ! m_search_mode;
+    m_search_action->setVisible(! m_search_mode);
+
     qDebug() << "searchButtonClicked" <<m_search_mode;
     Q_EMIT this->updateSearchRequest(m_search_mode);
     setSearchMode(m_search_mode);
@@ -321,12 +339,15 @@ void HeaderBar::setSearchMode(bool mode)
     m_search_button->setCheckable(mode);
     m_search_button->setChecked(mode);
     m_search_button->setDown(mode);
+    m_close_search_action->setVisible(mode);
     m_location_bar->switchEditMode(mode);
 }
 
 void HeaderBar::closeSearch()
 {
     m_search_mode = false;
+    m_search_action->setVisible(true);
+    m_close_search_action->setVisible(false);
     setSearchMode(false);
 }
 
@@ -387,6 +408,7 @@ void HeaderBar::updateIcons()
     m_view_type_menu->setCurrentView(m_window->getCurrentPage()->getView()->viewId(), true);
     m_sort_type_menu->switchSortTypeRequest(m_window->getCurrentSortColumn());
     m_sort_type_menu->switchSortOrderRequest(m_window->getCurrentSortOrder());
+    m_close_search_action->setIcon(QIcon::fromTheme(Peony::FileUtils::getFileIconName(m_window->getCurrentUri()), QIcon::fromTheme("folder")));
 
     //go back & go forward
     m_go_back->setEnabled(m_window->getCurrentPage()->canGoBack());
