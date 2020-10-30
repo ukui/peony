@@ -804,8 +804,14 @@ void TabWidget::setPreviewPage(Peony::PreviewPageIface *previewPage)
 void TabWidget::addPage(const QString &uri, bool jumpTo)
 {
     auto info = Peony::FileInfo::fromUri(uri, false);
+    bool isDir = false;
+    if (info.get()->isEmptyInfo()) {
+        isDir = Peony::FileUtils::getFileIsFolder(uri);
+    } else {
+        isDir = info.get()->isDir();
+    }
     qDebug() << "addPage:" <<uri <<info->isDir();
-    if (! info->isDir())
+    if (isDir)
         return;
 
     QCursor c;

@@ -55,34 +55,9 @@ FileInfoJob::FileInfoJob(const QString &uri, QObject *parent) : QObject (parent)
     m_cancellable = g_cancellable_new();
 }
 
-/*!
- * \brief FileInfoJob::~FileInfoJob
- * <br>
- * For FileInfo having a handle shared by all classes instance,
- * the shared data first is created in a global hash hold by
- * Peony::FileInfoManager instance. This makes shared_ptr
- * ref count always more than 1.
- * </br>
- * <br>
- * At this class we aslo hold a shared data from global hash
- * (though we aslo change its content here).
- * When info job instance in destructor, it means shared data
- * use count will reduce 1 soon. If current use count is 2,
- * that means there won't be another holder expect global hash.
- * So we can remove the last shared_ptr in the hash, then FileInfo
- * instance will be removed automaticly.
- * </br>
- * \see FileInfo::~FileInfo(), FileEnumerator::~FileEnumerator().
- */
 FileInfoJob::~FileInfoJob()
 {
     g_object_unref(m_cancellable);
-
-    //qDebug()<<"~Job"<<m_info.use_count();
-    if (m_info.use_count() <= 2) {
-        Peony::FileInfoManager *mgr = Peony::FileInfoManager::getInstance();
-        mgr->remove(m_info);
-    }
 }
 
 void FileInfoJob::cancel()

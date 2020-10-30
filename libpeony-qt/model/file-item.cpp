@@ -88,15 +88,6 @@ FileItem::~FileItem()
     Q_EMIT cancelFindChildren();
     //disconnect();
 
-    if (m_info.use_count() <= 2) {
-        auto info = FileInfoManager::getInstance()->findFileInfoByUri(m_info->uri()).get();
-        if (info == m_info.get()) {
-            Peony::FileInfoManager::getInstance()->lock();
-            Peony::FileInfoManager::getInstance()->remove(m_info);
-            Peony::FileInfoManager::getInstance()->unlock();
-        }
-    }
-
     for (auto child : *m_children) {
         delete child;
     }

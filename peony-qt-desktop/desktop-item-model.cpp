@@ -266,7 +266,6 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
                 //this->endResetModel();
                 Q_EMIT this->requestClearIndexWidget();
                 Q_EMIT this->requestUpdateItemPositions();
-                FileInfoManager::getInstance()->remove(info);
             }
         }
     });
@@ -314,7 +313,6 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
                     //this->endResetModel();
                     Q_EMIT this->requestClearIndexWidget();
                     Q_EMIT this->requestUpdateItemPositions();
-                    FileInfoManager::getInstance()->remove(info);
                     QStringList list;
                     list.append(info->uri());
                     FileOperationUtils::trash(list, false);
@@ -345,7 +343,6 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
                     //this->endResetModel();
                     Q_EMIT this->requestClearIndexWidget();
                     Q_EMIT this->requestUpdateItemPositions();
-                    FileInfoManager::getInstance()->remove(info);
                     QStringList list;
                     list.append(info->uri());
                     FileOperationUtils::trash(list, false);
@@ -357,7 +354,7 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
 
 DesktopItemModel::~DesktopItemModel()
 {
-    FileInfoManager::getInstance()->clear();
+
 }
 
 void DesktopItemModel::refresh()
@@ -365,7 +362,6 @@ void DesktopItemModel::refresh()
     ThumbnailManager::getInstance()->syncThumbnailPreferences();
     beginResetModel();
     //removeRows(0, m_files.count());
-    FileInfoManager::getInstance()->clear();
     //m_trash_watcher->stopMonitor();
     //m_desktop_watcher->stopMonitor();
     for (auto info : m_files) {
@@ -447,7 +443,6 @@ QVariant DesktopItemModel::data(const QModelIndex &index, int role) const
 void DesktopItemModel::onEnumerateFinished()
 {
     //beginResetModel();
-    FileInfoManager::getInstance()->clear();
     beginRemoveRows(QModelIndex(), 0, m_files.count() - 1);
     m_files.clear();
     endRemoveRows();
