@@ -21,6 +21,7 @@
  */
 
 #include "file-utils.h"
+#include "file-info.h"
 #include <QUrl>
 #include <QFileInfo>
 #include <QFileInfoList>
@@ -111,6 +112,11 @@ bool FileUtils::getFileIsFolder(const GFileWrapperPtr &file)
 
 bool FileUtils::getFileIsFolder(const QString &uri)
 {
+    auto info = FileInfo::fromUri(uri);
+    if (!info.get()->isEmptyInfo()) {
+        return info.get()->isDir();
+    }
+
     auto file = wrapGFile(g_file_new_for_uri(uri.toUtf8().constData()));
     GFileType type = g_file_query_file_type(file.get()->get(),
                                             G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
@@ -120,6 +126,11 @@ bool FileUtils::getFileIsFolder(const QString &uri)
 
 bool FileUtils::getFileIsSymbolicLink(const QString &uri)
 {
+    auto info = FileInfo::fromUri(uri);
+    if (!info.get()->isEmptyInfo()) {
+        return info.get()->isSymbolLink();
+    }
+
     auto file = wrapGFile(g_file_new_for_uri(uri.toUtf8().constData()));
     GFileType type = g_file_query_file_type(file.get()->get(),
                                             G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
@@ -199,6 +210,11 @@ QString FileUtils::getNonSuffixedBaseNameFromUri(const QString &uri)
 
 QString FileUtils::getFileDisplayName(const QString &uri)
 {
+    auto fileInfo = FileInfo::fromUri(uri);
+    if (!fileInfo.get()->isEmptyInfo()) {
+        return fileInfo.get()->displayName();
+    }
+
     auto file = wrapGFile(g_file_new_for_uri(uri.toUtf8().constData()));
     auto info = wrapGFileInfo(g_file_query_info(file.get()->get(),
                               G_FILE_ATTRIBUTE_STANDARD_DISPLAY_NAME,
@@ -212,6 +228,11 @@ QString FileUtils::getFileDisplayName(const QString &uri)
 
 QString FileUtils::getFileIconName(const QString &uri, bool checkValid)
 {
+    auto fileInfo = FileInfo::fromUri(uri);
+    if (!fileInfo.get()->isEmptyInfo()) {
+        return fileInfo.get()->iconName();
+    }
+
     auto file = wrapGFile(g_file_new_for_uri(uri.toUtf8().constData()));
     auto info = wrapGFileInfo(g_file_query_info(file.get()->get(),
                               G_FILE_ATTRIBUTE_STANDARD_ICON,
@@ -269,6 +290,11 @@ GErrorWrapperPtr FileUtils::getEnumerateError(const QString &uri)
 
 QString FileUtils::getTargetUri(const QString &uri)
 {
+    auto fileInfo = FileInfo::fromUri(uri);
+    if (!fileInfo.get()->isEmptyInfo()) {
+        return fileInfo.get()->targetUri();
+    }
+
     auto file = wrapGFile(g_file_new_for_uri(uri.toUtf8().constData()));
     auto info = wrapGFileInfo(g_file_query_info(file.get()->get(),
                               G_FILE_ATTRIBUTE_STANDARD_TARGET_URI,
@@ -291,6 +317,11 @@ QString FileUtils::getEncodedUri(const QString &uri)
 
 QString FileUtils::getSymbolicTarget(const QString &uri)
 {
+    auto fileInfo = FileInfo::fromUri(uri);
+    if (!fileInfo.get()->isEmptyInfo()) {
+        return fileInfo.get()->symlinkTarget();
+    }
+
     GFile *file = g_file_new_for_uri(uri.toUtf8().constData());
     GFileInfo *info = g_file_query_info(file,
                                         G_FILE_ATTRIBUTE_STANDARD_SYMLINK_TARGET,
