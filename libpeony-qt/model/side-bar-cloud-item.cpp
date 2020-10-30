@@ -33,7 +33,7 @@ SideBarCloudItem::SideBarCloudItem(QString uri,
     }
     m_uri = uri;
     m_display_name = tr("CloudFile");
-    m_icon_name = "cloud-file";// FileUtils::getFileIconName(uri);
+    m_icon_name = "ukui-cloud-file";// FileUtils::getFileIconName(uri);
 }
 
 QModelIndex SideBarCloudItem::firstColumnIndex()
