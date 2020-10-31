@@ -65,6 +65,20 @@ class HeaderBar : public QToolBar
     friend class HeaderBarContainer;
     friend class MainWindow;
     Q_OBJECT
+    enum HeaderBarAction {
+        GoBack,
+        GoForward,
+        LocationBar,
+        Search,
+        ViewType,
+        SortType,
+        Option,
+        Copy,
+        Cut,
+        SeletcAll,
+        Delete
+    };
+
 private:
     explicit HeaderBar(MainWindow *parent = nullptr);
 
@@ -91,6 +105,7 @@ private Q_SLOTS:
     void tryOpenAgain();
     void setSearchMode(bool mode);
     void closeSearch();
+    void switchModel(/*bool select*/);
 
 private:
     const QString m_uri;
@@ -110,6 +125,9 @@ private:
 
     bool m_search_mode = false;
     bool m_search_recursive = true;
+
+    // save the actions to show or hide
+    QHash<HeaderBarAction, QAction*> m_actions;
 };
 
 class HeaderBarToolButton : public QToolButton

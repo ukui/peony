@@ -114,7 +114,8 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
     setStyleSheet("HeadBarPushButton{"
                   "background-color: transparent;"
                   "};");
-    addWidget(goBack);
+    auto a = addWidget(goBack);
+    m_actions.insert(HeaderBarAction::GoBack, a);
 
 
     auto goForward = new HeadBarPushButton(this);
@@ -123,7 +124,8 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
     goForward->setToolTip(tr("Go Forward"));
     goForward->setFixedSize(QSize(36, 28));
     goForward->setIcon(QIcon::fromTheme("go-next-symbolic"));
-    addWidget(goForward);
+    a = addWidget(goForward);
+    m_actions.insert(HeaderBarAction::GoForward, a);
 //    goForward->setFlat(true);
     connect(goForward, &QPushButton::clicked, m_window, [=]() {
         m_window->getCurrentPage()->goForward();
@@ -133,7 +135,8 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
 
     auto locationBar = new Peony::AdvancedLocationBar(this);
     m_location_bar = locationBar;
-    addWidget(locationBar);
+    a = addWidget(locationBar);
+    m_actions.insert(HeaderBarAction::LocationBar, a);
 
     connect(goBack, &QPushButton::clicked, m_window, [=]() {
         m_window->getCurrentPage()->goBack();
@@ -161,7 +164,8 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
     connect(m_location_bar, &Peony::AdvancedLocationBar::updateWindowLocationRequest, this, &HeaderBar::updateLocationRequest);
 
     addSpacing(9);
-    auto a = addAction(QIcon::fromTheme("edit-find-symbolic"), tr("Search"));
+    a = addAction(QIcon::fromTheme("edit-find-symbolic"), tr("Search"));
+    m_actions.insert(HeaderBarAction::Search, a);
     connect(a, &QAction::triggered, this, &HeaderBar::searchButtonClicked);
     auto search = qobject_cast<QToolButton *>(widgetForAction(a));
     search->setAutoRaise(false);
@@ -172,6 +176,7 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
     addSpacing(9);
 
     a = addAction(QIcon::fromTheme("view-grid-symbolic"), tr("View Type"));
+    m_actions.insert(HeaderBarAction::ViewType, a);
     auto viewType = qobject_cast<QToolButton *>(widgetForAction(a));
     viewType->setAutoRaise(false);
     viewType->setFixedSize(QSize(57, 40));
@@ -199,6 +204,7 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
     addSpacing(2);
 
     a = addAction(QIcon::fromTheme("view-sort-ascending-symbolic"), tr("Sort Type"));
+    m_actions.insert(HeaderBarAction::SortType, a);
     auto sortType = qobject_cast<QToolButton *>(widgetForAction(a));
     sortType->setAutoRaise(false);
     sortType->setFixedSize(QSize(57, 40));
@@ -224,7 +230,8 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
 
     addSpacing(2);
 
-    a = addAction(QIcon::fromTheme("open-menu-symbolic"), tr("Option"));
+    a = addAction(QIcon::fromTheme("view-sort-descending-symbolic"), tr("Option"));
+    m_actions.insert(HeaderBarAction::Option, a);
     auto popMenu = qobject_cast<QToolButton *>(widgetForAction(a));
     popMenu->setProperty("isOptionButton", true);
     popMenu->setAutoRaise(false);
@@ -235,11 +242,37 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
     m_operation_menu = new OperationMenu(m_window, this);
     popMenu->setMenu(m_operation_menu);
 
+    // Add by wnn, add tool button when select item
+    a = addAction(QIcon::fromTheme("edit-copy-symbolic"), tr("&Copy"));
+    m_actions.insert(HeaderBarAction::Copy, a);
+    a->setVisible(false);
+
+    a = addAction(QIcon::fromTheme("edit-cut-symbolic"), tr("Cut"));
+    m_actions.insert(HeaderBarAction::Cut, a);
+    a->setVisible(false);
+
+    a = addAction(tr("Select &All"));
+    m_actions.insert(HeaderBarAction::SeletcAll, a);
+    a->setVisible(false);
+
+    a = addAction(QIcon::fromTheme("edit-delete-symbolic"), tr("&Delete to trash"));
+    m_actions.insert(HeaderBarAction::Delete, a);
+    a->setVisible(false);
+
     for (auto action : actions()) {
         auto w = widgetForAction(action);
         w->setProperty("useIconHighlightEffect", true);
         w->setProperty("iconHighlightEffectMode", 1);
     }
+
+    // add by wwn for test
+//    m_actions.find(HeaderBarAction::Option).value()->setVisible(false);
+//    m_actions.find(HeaderBarAction::SortType).value()->setVisible(false);
+//    m_actions.find(HeaderBarAction::ViewType).value()->setVisible(false);
+//    switchModel(true);
+//    switchModel(false);
+//    connect(m_window->getCurrentPage()->getView(), &Peony::DirectoryViewWidget::viewDoubleClicked,
+//            this, &HeaderBar::switchModel);
 }
 
 void HeaderBar::findDefaultTerminal()
@@ -328,6 +361,28 @@ void HeaderBar::closeSearch()
 {
     m_search_mode = false;
     setSearchMode(false);
+}
+
+void HeaderBar::switchModel(/*bool select*/)
+{
+//    if (select) {
+//        m_actions.find(HeaderBarAction::Option).value()->setVisible(false);
+//        m_actions.find(HeaderBarAction::SortType).value()->setVisible(false);
+//        m_actions.find(HeaderBarAction::ViewType).value()->setVisible(false);
+//        m_actions.find(HeaderBarAction::Copy).value()->setVisible(true);
+//        m_actions.find(HeaderBarAction::Cut).value()->setVisible(true);
+//        m_actions.find(HeaderBarAction::SeletcAll).value()->setVisible(true);
+//        m_actions.find(HeaderBarAction::Delete).value()->setVisible(true);
+//    }
+//    else {
+//        m_actions.find(HeaderBarAction::Option).value()->setVisible(true);
+//        m_actions.find(HeaderBarAction::SortType).value()->setVisible(true);
+//        m_actions.find(HeaderBarAction::ViewType).value()->setVisible(true);
+//        m_actions.find(HeaderBarAction::Copy).value()->setVisible(false);
+//        m_actions.find(HeaderBarAction::Cut).value()->setVisible(false);
+//        m_actions.find(HeaderBarAction::SeletcAll).value()->setVisible(false);
+//        m_actions.find(HeaderBarAction::Delete).value()->setVisible(false);
+//    }
 }
 
 void HeaderBar::updateSearchRecursive(bool recursive)
