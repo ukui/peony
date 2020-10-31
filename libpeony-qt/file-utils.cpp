@@ -541,7 +541,8 @@ bool FileUtils::isFileUnmountable(const QString &uri)
 /* @func:        convert a ascii string to unicode string. 将一个ascii字符串转换为unicode字符串
  * @gbkName      a string that needs to be converted from ascii to  Unicode. eg:"\\xb8\\xfc\\xd0\\xc2CODE"
  */
-QString transcodeForGbkCode(QByteArray gbkName){
+QString transcodeForGbkCode(QByteArray gbkName, QString &volumeName)
+{
     int i;
     QByteArray dest,tmp;
     QString name;
@@ -576,6 +577,18 @@ QString transcodeForGbkCode(QByteArray gbkName){
             dest.append(tmp.mid(4));
         }else
             dest.append(tmp);
+    }
+
+    /*
+    * gio的api获取的卷名和/dev/disk/by-label先的名字不一致，有可能是卷名
+    * 中含有特殊字符，导致/dev/disk/label下的卷名含有转义字符，导致二者的名字不一致
+    * 而不是编码格式的不一致导致的，比如卷名：“数据光盘(2020-08-22)”，在/dev/disk/by-label
+    * 写的名字:"数据光盘\x282020-08-22\x29",经过上述处理之后可以去除转义字符，在判断一次
+    * 是否相等。比较完美的解决方案是找到能够判断字符串的编码格式，目前还没有找到实现方式，需要进一步完善
+    */
+    name = QString(dest);
+    if (name == volumeName){
+        return name;
     }
 
     name = QTextCodec::codecForName("GBK")->toUnicode(dest);
@@ -619,7 +632,7 @@ void FileUtils::handleVolumeLabelForFat32(QString &volumeName,const QString &uni
         if(tmpName == volumeName)      //ntfs、exfat格式或者非纯中文名的fat32设备,这个设备的名字不需要转码
             return;
         else{
-            finalName = transcodeForGbkCode(tmpName.toLocal8Bit());
+            finalName = transcodeForGbkCode(tmpName.toLocal8Bit(), volumeName);
             if(!finalName.isEmpty())
                 volumeName = finalName;
         }
