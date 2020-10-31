@@ -113,7 +113,7 @@ QVector<FileItem*> *FileItem::findChildrenSync()
     std::shared_ptr<Peony::FileEnumerator> enumerator = std::make_shared<Peony::FileEnumerator>();
     enumerator->setEnumerateDirectory(m_info->uri());
     enumerator->enumerateSync();
-    auto infos = enumerator->getChildren(true);
+    auto infos = enumerator->getChildren();
     for (auto info : infos) {
         FileItem *child = new FileItem(info, this, m_model);
         m_children->append(child);
@@ -238,7 +238,7 @@ void FileItem::findChildrenAsync()
     if (!m_model->isPositiveResponse()) {
         enumerator->connect(enumerator, &Peony::FileEnumerator::enumerateFinished, this, [=](bool successed) {
             if (successed) {
-                auto infos = enumerator->getChildren(true);
+                auto infos = enumerator->getChildren();
                 m_async_count = infos.count();
                 if (infos.count() == 0) {
                     Q_EMIT m_model->findChildrenFinished();

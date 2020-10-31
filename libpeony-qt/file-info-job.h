@@ -52,6 +52,7 @@ class FileInfo;
 class PEONYCORESHARED_EXPORT FileInfoJob : public QObject
 {
     friend class FileInfo;
+    friend class FileEnumerator;
 
     Q_OBJECT
 public:

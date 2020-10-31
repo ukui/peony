@@ -457,7 +457,7 @@ void DesktopItemModel::onEnumerateFinished()
     infos<<trash;
     infos<<personal;
 
-    infos<<m_enumerator->getChildren(true);
+    infos<<m_enumerator->getChildren();
 
     //qDebug()<<m_files.count();
     //this->endResetModel();
