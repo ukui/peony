@@ -130,14 +130,13 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
     goForward->setIcon(QIcon::fromTheme("go-next-symbolic"));
     a = addWidget(goForward);
     m_actions.insert(HeaderBarAction::GoForward, a);
-//    goForward->setFlat(true);
     connect(goForward, &QPushButton::clicked, m_window, [=]() {
         m_window->getCurrentPage()->goForward();
     });
 
     addSpacing(9);
     //close search button,set current location icon
-    auto a = addAction(tr("what is my name?"));
+    a = addAction(tr("what is my name?"));
     connect(a, &QAction::triggered,this,&HeaderBar::searchButtonClicked);
 
     auto closeSearch = qobject_cast<QToolButton *>(widgetForAction(a));
@@ -146,7 +145,6 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
     closeSearch->setIconSize(QSize(16, 16));
     m_close_search_action = a;
     m_close_search_action->setVisible(false);
-//    connect(m_close_search_action, &QAction::triggered,this,&HeaderBar::searchButtonClicked);
     addSpacing(9);
 
     auto locationBar = new Peony::AdvancedLocationBar(this);
@@ -183,14 +181,15 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
 
     a = addAction(QIcon::fromTheme("edit-find-symbolic"), tr("Search"));
     m_actions.insert(HeaderBarAction::Search, a);
+    m_search_action = a;
     connect(a, &QAction::triggered, this, &HeaderBar::searchButtonClicked);
     auto search = qobject_cast<QToolButton *>(widgetForAction(a));
     search->setAutoRaise(false);
     search->setFixedSize(QSize(40, 40));
-    setIconSize(QSize(16, 16));
     m_search_button = search;
+    setIconSize(QSize(16, 16));
 
-    addSpacing(9);
+    addSpacing(2);
 
     a = addAction(QIcon::fromTheme("view-grid-symbolic"), tr("View Type"));
     m_actions.insert(HeaderBarAction::ViewType, a);
@@ -245,10 +244,7 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
         m_sort_type_menu->setSortOrder(m_window->getCurrentSortOrder());
     });
 
-    addSpacing(2);
-
-//    m_operation_menu = new OperationMenu(m_window, this);
-//    popMenu->setMenu(m_operation_menu);
+    addSpacing(3);
 
     // Add by wnn, add tool button when select item
     a = addAction(QIcon::fromTheme("edit-copy-symbolic"), tr("&Copy"));
@@ -256,7 +252,7 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
     a->setVisible(false);
     a->setToolTip(tr("Copy"));
     auto copy = qobject_cast<QToolButton *>(widgetForAction(a));
-    copy->setFixedSize(QSize(36, 28));
+    copy->setFixedSize(QSize(40, 40));
     connect(a, &QAction::triggered, [=]() {
         if (!m_window->getCurrentSelections().isEmpty()) {
             if (m_window->getCurrentSelections().first().startsWith("trash://", Qt::CaseInsensitive)) {
@@ -272,7 +268,7 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
     a->setVisible(false);
     a->setToolTip(tr("Cut"));
     auto cut = qobject_cast<QToolButton *>(widgetForAction(a));
-    cut->setFixedSize(QSize(36, 28));
+    cut->setFixedSize(QSize(40, 40));
     connect(a, &QAction::triggered, [=]() {
         Peony::ClipboardUtils::setClipboardFiles(m_window->getCurrentSelections(), true);
     });
@@ -283,7 +279,7 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
     a->setVisible(false);
     a->setToolTip(tr("Select All"));
     auto select = qobject_cast<QToolButton *>(widgetForAction(a));
-    select->setFixedSize(QSize(36, 28));
+    select->setFixedSize(QSize(40, 40));
     connect(a, &QAction::triggered, [=]() {
         m_window->getCurrentPage()->getView()->selectAll();
     });
@@ -293,7 +289,7 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
     a->setVisible(false);
     a->setToolTip(tr("Delete to trash"));
     auto trash = qobject_cast<QToolButton *>(widgetForAction(a));
-    trash->setFixedSize(QSize(36, 28));
+    trash->setFixedSize(QSize(40, 40));
     connect(a, &QAction::triggered, [=]() {
         if (m_window->getCurrentUri() == "trash:///") {
             Peony::FileOperationUtils::executeRemoveActionWithDialog(m_window->getCurrentSelections());
