@@ -1,6 +1,6 @@
 <RCC>
     <qresource prefix="/img">
-        <file alias="branches1">img/scrollbar_up.png</file>
-        <file alias="branches2">img/scrollbar_down.png</file>
+        <file alias="branches2">img/go-down-symbolic.png</file>
+        <file alias="branches1">img/go-previous-symbolic.png</file>
     </qresource>
 </RCC>

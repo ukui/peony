@@ -109,7 +109,7 @@ public Q_SLOTS:
 
     //selections
     void setSelections(const QStringList &uris) override;
-    void invertSelections() override;
+    void invertSelections(bool isInvert = true) override;
     void scrollToSelection(const QString &uri) override;
 
     //clipboard
@@ -127,6 +127,8 @@ public Q_SLOTS:
     void resort();
     void reportViewDirectoryChanged();
     void clearIndexWidget();
+    void multiSelect();
+    void disableMultiSelect();
 
 protected:
     /*!
@@ -185,6 +187,8 @@ private:
     bool m_ignore_mouse_move_event = false;
 
     bool m_delegate_editing = false;
+
+    bool m_multi_select =false;
 };
 
 //IconView2
@@ -261,6 +265,9 @@ public Q_SLOTS:
     void invertSelections() {
         m_view->invertSelections();
     }
+    void selectAll() {
+        m_view->invertSelections(false);
+    }
     void scrollToSelection(const QString &uri) {
         m_view->scrollToSelection(uri);
     }
@@ -290,6 +297,12 @@ public Q_SLOTS:
     void setCurrentZoomLevel(int zoomLevel);
 
     void clearIndexWidget();
+    void multiSelect(){
+        m_view->multiSelect();
+    }
+    void disableMultiSelect(){
+        m_view->disableMultiSelect();
+    }
 
 private:
     IconView *m_view = nullptr;

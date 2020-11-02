@@ -131,12 +131,13 @@ const QStringList IconView::getSelections()
     return uris;
 }
 
-void IconView::invertSelections()
+void IconView::invertSelections(bool isInvert)
 {
     QItemSelectionModel *selectionModel = this->selectionModel();
     const QItemSelection currentSelection = selectionModel->selection();
     this->selectAll();
-    selectionModel->select(currentSelection, QItemSelectionModel::Deselect);
+    if (isInvert)
+        selectionModel->select(currentSelection, QItemSelectionModel::Deselect);
 }
 
 void IconView::scrollToSelection(const QString &uri)
@@ -261,8 +262,12 @@ void IconView::mouseMoveEvent(QMouseEvent *e)
 void IconView::mousePressEvent(QMouseEvent *e)
 {
     qDebug()<<"moursePressEvent";
-    m_editValid = true;
+//    m_editValid = true;
     QListView::mousePressEvent(e);
+    if(!indexAt(e->pos()).isValid())
+    {
+        disableMultiSelect();
+    }
 
     if (e->button() != Qt::LeftButton) {
         return;
@@ -554,6 +559,19 @@ void IconView::clearIndexWidget()
     }
 }
 
+void IconView::multiSelect()
+{
+    m_multi_select = true;
+    setSelectionMode(MultiSelection);
+}
+
+void IconView::disableMultiSelect()
+{
+    m_multi_select = false;
+    setSelectionMode(ExtendedSelection);
+    viewport()->update(viewport()->rect());
+}
+
 //Icon View 2
 IconView2::IconView2(QWidget *parent) : DirectoryViewWidget(parent)
 {
@@ -592,8 +610,14 @@ void IconView2::bindModel(FileItemModel *model, FileItemProxyFilterSortModel *pr
     //connect(m_model, &FileItemModel::dataChanged, m_view, &IconView::clearIndexWidget);
     connect(m_model, &FileItemModel::updated, m_view, &IconView::resort);
 
-    connect(m_view->selectionModel(), &QItemSelectionModel::selectionChanged,
-            this, &DirectoryViewWidget::viewSelectionChanged);
+    connect(m_view->selectionModel(), &QItemSelectionModel::selectionChanged, this, [=]() {
+        Q_EMIT viewSelectionChanged();
+
+        if (m_view->selectionModel()->selection().isEmpty())
+            Q_EMIT viewSelectionStatus(false);
+        else
+            Q_EMIT viewSelectionStatus(true);
+    });
 
     connect(m_view, &IconView::doubleClicked, this, [=](const QModelIndex &index) {
         Q_EMIT this->viewDoubleClicked(index.data(Qt::UserRole).toString());

@@ -200,10 +200,21 @@ void ListView::mousePressEvent(QMouseEvent *e)
     auto index = indexAt(e->pos());
     bool isIndexSelected = selectedIndexes().contains(index);
 
+    QPoint p = e->pos();
+    auto visualRect = this->visualRect(index);
+    if (columnAt(p.x()) == 3&&p.x()>visualRect.x()+visualRect.width() - 60&&p.x()<visualRect.x()+visualRect.width() - 40)
+    {
+        if(!isIndexSelected)
+            this->selectionModel()->setCurrentIndex(index,QItemSelectionModel::Select|QItemSelectionModel::Rows);
+        else
+            this->selectionModel()->setCurrentIndex(index,QItemSelectionModel::Deselect|QItemSelectionModel::Rows);
+        return;
+    }
+
+
     m_editValid = true;
     QTreeView::mousePressEvent(e);
 
-    auto visualRect = this->visualRect(index);
     auto sizeHint = itemDelegate()->sizeHint(viewOptions(), index);
     auto validRect = QRect(visualRect.topLeft(), sizeHint);
     if (!validRect.contains(e->pos())) {
@@ -474,6 +485,16 @@ void ListView::adjustColumnsSize()
     header()->resizeSection(0, this->viewport()->width() - rightPartsSize);
 }
 
+void ListView::multiSelect()
+{
+    return;
+}
+
+void ListView::disableMultiSelect()
+{
+    return;
+}
+
 DirectoryViewProxyIface *ListView::getProxy()
 {
     return m_proxy;
@@ -552,12 +573,13 @@ void ListView::closeView()
     this->deleteLater();
 }
 
-void ListView::invertSelections()
+void ListView::invertSelections(bool isInvert)
 {
     QItemSelectionModel *selectionModel = this->selectionModel();
     const QItemSelection currentSelection = selectionModel->selection();
     this->selectAll();
-    selectionModel->select(currentSelection, QItemSelectionModel::Deselect);
+    if (isInvert)
+        selectionModel->select(currentSelection, QItemSelectionModel::Deselect);
 }
 
 void ListView::scrollToSelection(const QString &uri)
@@ -644,8 +666,13 @@ void ListView2::bindModel(FileItemModel *model, FileItemProxyFilterSortModel *pr
     connect(model, &FileItemModel::findChildrenFinished, this, &DirectoryViewWidget::viewDirectoryChanged);
     connect(m_model, &FileItemModel::updated, m_view, &ListView::resort);
 
-    connect(m_view->selectionModel(), &QItemSelectionModel::selectionChanged,
-            this, &DirectoryViewWidget::viewSelectionChanged);
+    connect(m_view->selectionModel(), &QItemSelectionModel::selectionChanged, this, [=]() {
+        Q_EMIT viewSelectionChanged();
+        if (m_view->selectionModel()->selection().isEmpty())
+            Q_EMIT viewSelectionStatus(false);
+        else
+            Q_EMIT viewSelectionStatus(true);
+    });
 
     connect(m_view, &ListView::doubleClicked, this, [=](const QModelIndex &index) {
         qDebug()<<index.data(Qt::UserRole).toString();

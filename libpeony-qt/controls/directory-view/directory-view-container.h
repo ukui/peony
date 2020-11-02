@@ -96,6 +96,8 @@ Q_SIGNALS:
     void setZoomLevelRequest(int zoomLevel);
     void updateStatusBarSliderStateRequest();
 
+    void viewSelectionStatus(bool isSelected);
+
 public Q_SLOTS:
     void goToUri(const QString &uri, bool addHistory, bool forceUpdate = false);
     void switchViewType(const QString &viewId);

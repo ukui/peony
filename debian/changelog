@@ -1,3 +1,21 @@
+peony (3.0.3-1+1028) v101; urgency=medium
+
+  *Modify side bar items list structure to tree structure.
+
+ -- wangweinan <wangweinan@kylinos.cn>  Wed, 28 Oct 2020 10:44:46 +0800
+
+peony (3.0.3-1+1021.2) v101; urgency=medium
+
+  *Modify side bar items list structure to tree structure.
+
+ -- wangweinan <wangweinan@kylinos.cn>  Wed, 21 Oct 2020 15:44:46 +0800
+
+peony (3.0.3-1+1021) v101; urgency=medium
+
+  *Modify side bar items list structure to tree structure
+
+ -- wangweinan <wangweinan@kylinos.cn>  Wed, 21 Oct 2020 13:44:46 +0800
+
 peony (3.0.3-1+1016) v101; urgency=medium
 
   *Fixed bugs cloud plugin.

@@ -307,6 +307,8 @@ void DirectoryViewContainer::switchViewType(const QString &viewId)
 
     connect(m_view, &DirectoryViewWidget::updateWindowSelectionRequest, this, &DirectoryViewContainer::updateWindowSelectionRequest);
 
+    connect(m_view, &DirectoryViewWidget::viewSelectionStatus, this, &DirectoryViewContainer::viewSelectionStatus);
+
     //similar to double clicked, but just jump directory only.
     //note that if view use double clicked signal, this signal should
     //not sended again.

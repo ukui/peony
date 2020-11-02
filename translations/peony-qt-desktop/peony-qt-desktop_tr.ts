@@ -217,16 +217,17 @@
         <translation>Çöp Kutusuna Taşı</translation>
     </message>
     <message>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="476"/>
         <source>Delete forever</source>
-        <translation type="vanished">Kalıcı olarak sil</translation>
+        <translation>Kalıcı olarak sil</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="484"/>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="483"/>
         <source>Rename</source>
         <translation type="unfinished">Yeniden Adlandır</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="511"/>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="510"/>
         <source>Properties</source>
         <translation type="unfinished">Özellikler</translation>
     </message>
@@ -292,12 +293,12 @@
         <translation type="vanished">Yeniden Adlandır</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="491"/>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="490"/>
         <source>&amp;Paste</source>
         <translation>Yapıştır</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="497"/>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="496"/>
         <source>&amp;Refresh</source>
         <translation>Yenile</translation>
     </message>
@@ -309,12 +310,12 @@
 <context>
     <name>Peony::DesktopWindow</name>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-window.cpp" line="95"/>
+        <location filename="../../peony-qt-desktop/desktop-window.cpp" line="94"/>
         <source>Desktop</source>
         <translation>Masaüstü</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-window.cpp" line="181"/>
+        <location filename="../../peony-qt-desktop/desktop-window.cpp" line="179"/>
         <source>set background</source>
         <translation>Arkaplanı Değiştir</translation>
     </message>
@@ -532,17 +533,17 @@
         <translation type="vanished">Masaüstü</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="221"/>
+        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="209"/>
         <source>Close the peony desktop window</source>
         <translation>Peony masaüstü penceresini kapat</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="224"/>
+        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="212"/>
         <source>Take over the dbus service.</source>
         <translation>Dbus servisini al</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="227"/>
+        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="215"/>
         <source>Take over the desktop displaying</source>
         <translation>Masaüstü görüntülemeyi al</translation>
     </message>

@@ -102,6 +102,7 @@ Q_SIGNALS:
     void viewDoubleClicked(const QString &uri);
     void viewDirectoryChanged();
     void viewSelectionChanged();
+    void viewSelectionStatus(bool isSelected);
     void sortTypeChanged(int type);
     void sortOrderChanged(Qt::SortOrder order);
 
@@ -130,6 +131,7 @@ public Q_SLOTS:
     //selections
     virtual void setSelections(const QStringList &uris) {}
     virtual void invertSelections() {}
+    virtual void selectAll() {}
     virtual void scrollToSelection(const QString &uri) {}
 
     //clipboard
@@ -148,6 +150,8 @@ public Q_SLOTS:
 
     //zoom
     virtual void setCurrentZoomLevel(int zoomLevel) {}
+    virtual void multiSelect(){}
+    virtual void disableMultiSelect(){}
 };
 
 }

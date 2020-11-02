@@ -1082,6 +1082,7 @@ void TabWidget::bindContainerSignal(Peony::DirectoryViewContainer *container)
     connect(container, &Peony::DirectoryViewContainer::menuRequest, this, &TabWidget::menuRequest);
     connect(container, &Peony::DirectoryViewContainer::zoomRequest, this, &TabWidget::zoomRequest);
     connect(container, &Peony::DirectoryViewContainer::setZoomLevelRequest, m_status_bar, &TabStatusBar::updateZoomLevelState);
+    connect(container, &Peony::DirectoryViewContainer::viewSelectionStatus, this, &TabWidget::viewSelectStatus);
     connect(container, &Peony::DirectoryViewContainer::updateStatusBarSliderStateRequest, this, [=]() {
         bool enable = currentPage()->getView()->supportZoom();
         m_status_bar->m_slider->setEnabled(enable);

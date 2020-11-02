@@ -240,16 +240,19 @@ void NavigationSideBar::keyPressEvent(QKeyEvent *event)
 
 void NavigationSideBar::mousePressEvent(QMouseEvent *event)
 {
-    // 如果不在展开按钮的范围内就调用以前的
-    if (event->x() > this->rect().right() - 20 || event->x() < this->rect().right() - 60)
-        QTreeView::mousePressEvent(event);
-    else {
-        // 展开children
-        QPoint point(event->x(), event->y());
-        if (!isExpanded(indexAt(point)))
-            expand(indexAt(point));
-        else
-            collapse(indexAt(point));
+    // Fixme: Right button can expand side bar
+    if (event->button() == Qt::LeftButton) {
+        // 如果不在展开按钮的范围内就调用以前的
+        if (event->x() > this->rect().right() - 20 || event->x() < this->rect().right() - 60)
+            QTreeView::mousePressEvent(event);
+        else {
+            // 展开children
+            QPoint point(event->x(), event->y());
+            if (!isExpanded(indexAt(point)))
+                expand(indexAt(point));
+            else
+                collapse(indexAt(point));
+        }
     }
 }
 
@@ -298,18 +301,16 @@ void NavigationSideBarItemDelegate::paint(QPainter *painter, const QStyleOptionV
     if (view->isExpanded(index)) {
         QRect rect = option.rect;
         rect.setTop(rect.top() + 10);
-        rect.setX(rect.right() - 20);
-        rect.setSize(QSize(15, 15));
+        rect.setX(rect.right() - 15);
+        rect.setSize(QSize(16, 16));
         painter->drawPixmap(rect, QPixmap(":/img/branches2"));
-        rect.setX(option.rect.x());
     }
     else {
         QRect rect = option.rect;
         rect.setTop(rect.top() + 10);
-        rect.setX(rect.right() - 20);
-        rect.setSize(QSize(15, 15));
+        rect.setX(rect.right() - 15);
+        rect.setSize(QSize(16, 16));
         painter->drawPixmap(rect, QPixmap(":/img/branches1"));
-        rect.setX(option.rect.x());
     }
 }
 
