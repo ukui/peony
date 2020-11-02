@@ -275,21 +275,15 @@ const QList<QAction *> DirectoryViewMenu::constructOpenOpActions()
                     if (info->isDir() || info->isVolume()) {
                         dirs<<uri;
                     } else {
-                        QString mimeType = info->mimeType();
-                        if (mimeType.isEmpty()) {
-                            FileInfoJob job(info);
-                            job.querySync();
-                            mimeType = info->mimeType();
-                        }
-
+                        QString defaultAppName = FileLaunchManager::getDefaultAction(uri)->getAppInfoName();
                         QStringList list;
-                        if (fileMap.contains(mimeType)) {
-                            list = fileMap[mimeType];
+                        if (fileMap.contains(defaultAppName)) {
+                            list = fileMap[defaultAppName];
                             list << uri;
-                            fileMap.insert(mimeType, list);
+                            fileMap.insert(defaultAppName, list);
                         } else {
                             list << uri;
-                            fileMap.insert(mimeType, list);
+                            fileMap.insert(defaultAppName, list);
                         }
                     }
                 }
