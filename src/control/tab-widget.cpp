@@ -803,6 +803,10 @@ void TabWidget::setPreviewPage(Peony::PreviewPageIface *previewPage)
 
 void TabWidget::addPage(const QString &uri, bool jumpTo)
 {
+    auto info = Peony::FileInfo::fromUri(uri, false);
+    if (! info->isDir())
+        return;
+
     QCursor c;
     c.setShape(Qt::WaitCursor);
     this->setCursor(c);
