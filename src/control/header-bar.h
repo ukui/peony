@@ -107,6 +107,8 @@ private:
     QPushButton *m_go_forward;
     //QToolButton *m_maximize_restore_button;
     QToolButton *m_search_button;
+    QAction *m_search_action;
+    QAction *m_close_search_action;
 
     bool m_search_mode = false;
     bool m_search_recursive = true;
@@ -116,7 +118,7 @@ class HeaderBarToolButton : public QToolButton
 {
     friend class HeaderBar;
     friend class MainWindow;
-    Q_OBJECT;
+    Q_OBJECT
     explicit HeaderBarToolButton(QWidget *parent = nullptr);
 };
 
