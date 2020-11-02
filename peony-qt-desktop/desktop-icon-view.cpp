@@ -566,7 +566,7 @@ void DesktopIconView::initDoubleClick()
         auto uri = index.data(FileItemModel::UriRole).toString();
         //process open symbolic link
         auto info = FileInfo::fromUri(uri, false);
-        if (info->isSymbolLink())
+        if (info->isSymbolLink() && uri.startsWith("file://"))
             uri = "file://" + FileUtils::getSymbolicTarget(uri);
         openFileByUri(uri);
     }, Qt::UniqueConnection);

@@ -219,7 +219,7 @@ void FileItem::findChildrenAsync()
                     QString errorInfo = tr("Can not open path \"%1\"，permission denied.").arg(this->uri().unicode());
                     QMessageBox::critical(nullptr, tr("Error"), errorInfo);
                 }
-                else
+                else if(err.get()->code() == G_IO_ERROR_NOT_FOUND)
                 {
                     QString errorInfo = tr("Can not find path \"%1\"，are you moved or renamed it?").arg(fileInfo->uri().unicode());
                     QMessageBox::critical(nullptr, tr("Error"), errorInfo);
