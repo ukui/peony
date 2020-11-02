@@ -338,6 +338,12 @@ bool SideBarModel::dropMimeData(const QMimeData *data, Qt::DropAction action, in
         for (auto url : data->urls()) {
             uris<<url.url();
         }
+
+        for(auto uri : uris)
+        {
+            if (uri.startsWith("trash://"))
+                return false;
+        }
         FileOperationUtils::move(uris, item->uri(), true, true);
         break;
     }
