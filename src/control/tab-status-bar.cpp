@@ -91,6 +91,7 @@ void TabStatusBar::update()
 
     auto selections = m_tab->getCurrentSelectionFileInfos();
     auto uri = m_tab->getCurrentUri();
+    auto count = m_tab->getCurrentRowcount();
     if (! selections.isEmpty()) {
         QString directoriesString = "";
         int directoryCount = 0;
@@ -99,9 +100,9 @@ void TabStatusBar::update()
         goffset size = 0;
         for (auto selection : selections) {
             if(selection->isDir()) {
-                directoryCount++;
+//                directoryCount++;
             } else if (!selection->isVolume()) {
-                fileCount++;
+//                fileCount++;
                 size += selection->size();
             }
         }
@@ -111,28 +112,21 @@ void TabStatusBar::update()
         //in computer, only show selected count
         if (uri != "computer:///")
         {
-            if (selections.count() == 1) {
-                if (directoryCount == 1 && selections.first()->displayName() != "")
-                    directoriesString = QString(", %1").arg(selections.first()->displayName());
-                if (fileCount == 1 && size >0)
-                    filesString = QString(", %1, %2").arg(selections.first()->displayName()).arg(format_size);
-            } else if (directoryCount > 1 && (fileCount > 1)) {
-                directoriesString = tr("; %1 folders").arg(directoryCount);
-                if (size >0)
-                   filesString = tr("; %1 files, %2 total").arg(fileCount).arg(format_size);
-            } else if (directoryCount == 1 && (fileCount > 1)) {
-                directoriesString = tr("; %1 folder").arg(directoryCount);
-                if (size >0)
-                   filesString = tr("; %1 file, %2").arg(fileCount).arg(format_size);
-            } else if (fileCount == 0) {
-                directoriesString = tr("; %1 folders").arg(directoryCount);
-            } else if (size >0){
-                filesString = tr("; %1 files, %2 total").arg(fileCount).arg(format_size);
-            }
+
+              if (selections.count() == 1) {
+                  if (selections.first()->displayName() != "")
+                      directoriesString = QString("1/%1").arg(count);
+                  if (size >0)
+                      filesString = QString(", %1").arg(format_size);
+              }
+              else
+              {
+                  directoriesString = QString("%1/%2").arg(selections.count()).arg(count);
+              }
         }
 
         //qDebug() << "directoriesString:" <<directoriesString <<filesString;
-        m_label->setText(tr("%1 selected").arg(selections.count()) + directoriesString + filesString);
+        m_label->setText(tr("selected%1%2").arg(directoriesString).arg(filesString));
         //showMessage(tr("%1 files selected ").arg(selections.count()));
         g_free(format_size);
     }
@@ -148,8 +142,9 @@ void TabStatusBar::update()
             m_label->setText(displayName);
         }
         else {
-            QUrl url = m_tab->getCurrentUri();
-            m_label->setText(url.toDisplayString());
+//            QUrl url = m_tab->getCurrentUri();
+//            m_label->setText(url.toDisplayString());
+            m_label->setText(nullptr);
         }
     }
 }

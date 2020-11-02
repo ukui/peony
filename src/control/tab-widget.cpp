@@ -148,7 +148,7 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
         button->setProperty("iconHighlightEffectMode", 1);
         button->setProperty("fillIconSymbolicColor", true);
     }
-    m_header_bar_layout->addWidget(previewButtons);
+//    m_header_bar_layout->addWidget(previewButtons);
 
     //trash quick operate buttons
     QHBoxLayout *trash = new QHBoxLayout(this);
@@ -731,6 +731,11 @@ const QString TabWidget::getCurrentUri()
 const QStringList TabWidget::getCurrentSelections()
 {
     return currentPage()->getCurrentSelections();
+}
+
+const int TabWidget::getCurrentRowcount()
+{
+    return currentPage()->getCurrentRowcount();
 }
 
 const QStringList TabWidget::getAllFileUris()
