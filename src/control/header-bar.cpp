@@ -38,6 +38,9 @@
 #include "file-info.h"
 #include "file-info-job.h"
 #include "file-utils.h"
+#include "tab-widget.h"
+#include "preview-page-factory-manager.h"
+#include "preview-page-plugin-iface.h"
 
 #include <QHBoxLayout>
 #include <QUrl>
@@ -56,6 +59,7 @@
 #include "global-settings.h"
 
 #include <QtConcurrent>
+#include <QAction>
 
 #include <QDebug>
 
@@ -195,7 +199,29 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
     viewType->setPopupMode(QToolButton::InstantPopup);
 
     m_view_type_menu = new ViewTypeMenu(viewType);
+    QAction * preview =new  QAction(tr("Details"));
+    m_view_type_menu->insertAction(0,preview);
+    preview->setCheckable(true);
+
     viewType->setMenu(m_view_type_menu);
+
+    auto manager = Peony::PreviewPageFactoryManager::getInstance();
+    auto pluginNames = manager->getPluginNames();
+
+    connect(preview,&QAction::triggered,[=](bool checked){
+        m_window->m_tab->setTriggeredPreviewPage(checked);
+        for (auto name : pluginNames) {
+            if (checked) {
+                auto plugin = Peony::PreviewPageFactoryManager::getInstance()->getPlugin(name);
+               m_window->m_tab->setPreviewPage(plugin->createPreviewPage());
+            } else {
+                m_window->m_tab->setPreviewPage(nullptr);
+            }
+
+        }
+
+    });
+
 
     connect(m_view_type_menu, &ViewTypeMenu::switchViewRequest, this, [=](const QString &id, const QIcon &icon, bool resetToZoomLevel) {
         viewType->setText(id);

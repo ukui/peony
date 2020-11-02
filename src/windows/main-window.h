@@ -25,6 +25,7 @@
 
 #include <QMainWindow>
 #include "FMWindowIface.h"
+#include "header-bar.h"
 
 class MainWindowPrivate;
 class BorderShadowEffect;
@@ -43,6 +44,7 @@ class StatusBar;
 
 class MainWindow : public QMainWindow, public Peony::FMWindowIface
 {
+    friend class HeaderBar;
     Q_OBJECT
 public:
     explicit MainWindow(const QString &uri = nullptr, QWidget *parent = nullptr);

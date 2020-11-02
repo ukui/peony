@@ -131,6 +131,11 @@ const QStringList IconView::getSelections()
     return uris;
 }
 
+const int IconView::getRowcount()
+{
+    return model()->rowCount();
+}
+
 void IconView::invertSelections()
 {
     QItemSelectionModel *selectionModel = this->selectionModel();

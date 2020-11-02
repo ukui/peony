@@ -525,6 +525,11 @@ const QStringList ListView::getSelections()
     return uris;
 }
 
+const int ListView::getRowcount()
+{
+    return model()->rowCount();
+}
+
 void ListView::setSelections(const QStringList &uris)
 {
     clearSelection();

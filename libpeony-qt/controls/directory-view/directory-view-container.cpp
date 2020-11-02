@@ -375,6 +375,11 @@ const QStringList DirectoryViewContainer::getCurrentSelections()
     return QStringList();
 }
 
+const int DirectoryViewContainer::getCurrentRowcount()
+{
+    return m_view->getRowcount();
+}
+
 const QString DirectoryViewContainer::getCurrentUri()
 {
     if (m_view) {
