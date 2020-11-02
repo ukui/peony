@@ -730,7 +730,7 @@ void DesktopIconView::setSelections(const QStringList &uris)
     }
 }
 
-void DesktopIconView::invertSelections()
+void DesktopIconView::invertSelections(bool isInvert)
 {
     QItemSelectionModel *selectionModel = this->selectionModel();
     const QItemSelection currentSelection = selectionModel->selection();

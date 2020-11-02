@@ -119,6 +119,7 @@ Q_SIGNALS:
     void currentSelectionChanged();
     void tabBarIndexUpdate(int index);
 
+    void viewSelectStatus(bool isSelected);
 public Q_SLOTS:
     void setCurrentIndex(int index);
     void setPreviewPage(Peony::PreviewPageIface *previewPage = nullptr);

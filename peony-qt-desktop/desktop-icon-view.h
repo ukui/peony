@@ -106,7 +106,7 @@ public Q_SLOTS:
 
     //selections
     void setSelections(const QStringList &uris);
-    void invertSelections();
+    void invertSelections(bool isInvert = true);
     void scrollToSelection(const QString &uri);
 
     //clipboard

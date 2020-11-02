@@ -38,6 +38,9 @@
 #include "file-info.h"
 #include "file-info-job.h"
 
+#include "clipboard-utils.h"
+#include "file-operation-utils.h"
+
 #include <QHBoxLayout>
 #include <QUrl>
 #include <QMessageBox>
@@ -246,33 +249,59 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
     a = addAction(QIcon::fromTheme("edit-copy-symbolic"), tr("&Copy"));
     m_actions.insert(HeaderBarAction::Copy, a);
     a->setVisible(false);
+    a->setToolTip(tr("Copy"));
+    auto copy = qobject_cast<QToolButton *>(widgetForAction(a));
+    copy->setFixedSize(QSize(36, 28));
+    connect(a, &QAction::triggered, [=]() {
+        if (!m_window->getCurrentSelections().isEmpty()) {
+            if (m_window->getCurrentSelections().first().startsWith("trash://", Qt::CaseInsensitive)) {
+                return ;
+            }
 
-    a = addAction(QIcon::fromTheme("edit-cut-symbolic"), tr("Cut"));
+            Peony::ClipboardUtils::setClipboardFiles(m_window->getCurrentSelections(), false);
+        }
+    });
+
+    a = addAction(QIcon::fromTheme("edit-cut-symbolic"), tr("&Cut"));
     m_actions.insert(HeaderBarAction::Cut, a);
     a->setVisible(false);
+    a->setToolTip(tr("Cut"));
+    auto cut = qobject_cast<QToolButton *>(widgetForAction(a));
+    cut->setFixedSize(QSize(36, 28));
+    connect(a, &QAction::triggered, [=]() {
+        Peony::ClipboardUtils::setClipboardFiles(m_window->getCurrentSelections(), true);
+    });
 
-    a = addAction(tr("Select &All"));
+    // TODO: add icon from theme
+    a = addAction(tr("&All"));
     m_actions.insert(HeaderBarAction::SeletcAll, a);
     a->setVisible(false);
+    a->setToolTip(tr("Select All"));
+    auto select = qobject_cast<QToolButton *>(widgetForAction(a));
+    select->setFixedSize(QSize(36, 28));
+    connect(a, &QAction::triggered, [=]() {
+        m_window->getCurrentPage()->getView()->selectAll();
+    });
 
     a = addAction(QIcon::fromTheme("edit-delete-symbolic"), tr("&Delete to trash"));
     m_actions.insert(HeaderBarAction::Delete, a);
     a->setVisible(false);
+    a->setToolTip(tr("Delete to trash"));
+    auto trash = qobject_cast<QToolButton *>(widgetForAction(a));
+    trash->setFixedSize(QSize(36, 28));
+    connect(a, &QAction::triggered, [=]() {
+        if (m_window->getCurrentUri() == "trash:///") {
+            Peony::FileOperationUtils::executeRemoveActionWithDialog(m_window->getCurrentSelections());
+        } else {
+            Peony::FileOperationUtils::trash(m_window->getCurrentSelections(), true);
+        }
+    });
 
     for (auto action : actions()) {
         auto w = widgetForAction(action);
         w->setProperty("useIconHighlightEffect", true);
         w->setProperty("iconHighlightEffectMode", 1);
     }
-
-    // add by wwn for test
-//    m_actions.find(HeaderBarAction::Option).value()->setVisible(false);
-//    m_actions.find(HeaderBarAction::SortType).value()->setVisible(false);
-//    m_actions.find(HeaderBarAction::ViewType).value()->setVisible(false);
-//    switchModel(true);
-//    switchModel(false);
-//    connect(m_window->getCurrentPage()->getView(), &Peony::DirectoryViewWidget::viewDoubleClicked,
-//            this, &HeaderBar::switchModel);
 }
 
 void HeaderBar::findDefaultTerminal()
@@ -363,26 +392,26 @@ void HeaderBar::closeSearch()
     setSearchMode(false);
 }
 
-void HeaderBar::switchModel(/*bool select*/)
+void HeaderBar::switchSelectStatus(bool select)
 {
-//    if (select) {
-//        m_actions.find(HeaderBarAction::Option).value()->setVisible(false);
-//        m_actions.find(HeaderBarAction::SortType).value()->setVisible(false);
-//        m_actions.find(HeaderBarAction::ViewType).value()->setVisible(false);
-//        m_actions.find(HeaderBarAction::Copy).value()->setVisible(true);
-//        m_actions.find(HeaderBarAction::Cut).value()->setVisible(true);
-//        m_actions.find(HeaderBarAction::SeletcAll).value()->setVisible(true);
-//        m_actions.find(HeaderBarAction::Delete).value()->setVisible(true);
-//    }
-//    else {
-//        m_actions.find(HeaderBarAction::Option).value()->setVisible(true);
-//        m_actions.find(HeaderBarAction::SortType).value()->setVisible(true);
-//        m_actions.find(HeaderBarAction::ViewType).value()->setVisible(true);
-//        m_actions.find(HeaderBarAction::Copy).value()->setVisible(false);
-//        m_actions.find(HeaderBarAction::Cut).value()->setVisible(false);
-//        m_actions.find(HeaderBarAction::SeletcAll).value()->setVisible(false);
-//        m_actions.find(HeaderBarAction::Delete).value()->setVisible(false);
-//    }
+    if (select) {
+        m_actions.find(HeaderBarAction::Option).value()->setVisible(false);
+        m_actions.find(HeaderBarAction::SortType).value()->setVisible(false);
+        m_actions.find(HeaderBarAction::ViewType).value()->setVisible(false);
+        m_actions.find(HeaderBarAction::Copy).value()->setVisible(true);
+        m_actions.find(HeaderBarAction::Cut).value()->setVisible(true);
+        m_actions.find(HeaderBarAction::SeletcAll).value()->setVisible(true);
+        m_actions.find(HeaderBarAction::Delete).value()->setVisible(true);
+    }
+    else {
+        m_actions.find(HeaderBarAction::Option).value()->setVisible(true);
+        m_actions.find(HeaderBarAction::SortType).value()->setVisible(true);
+        m_actions.find(HeaderBarAction::ViewType).value()->setVisible(true);
+        m_actions.find(HeaderBarAction::Copy).value()->setVisible(false);
+        m_actions.find(HeaderBarAction::Cut).value()->setVisible(false);
+        m_actions.find(HeaderBarAction::SeletcAll).value()->setVisible(false);
+        m_actions.find(HeaderBarAction::Delete).value()->setVisible(false);
+    }
 }
 
 void HeaderBar::updateSearchRecursive(bool recursive)

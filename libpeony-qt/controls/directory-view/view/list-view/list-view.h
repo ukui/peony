@@ -93,7 +93,7 @@ public Q_SLOTS:
 
     //selections
     void setSelections(const QStringList &uris) override;
-    void invertSelections() override;
+    void invertSelections(bool isInvert = true) override;
     void scrollToSelection(const QString &uri) override;
 
     //clipboard
@@ -230,6 +230,9 @@ public Q_SLOTS:
     }
     void invertSelections() {
         m_view->invertSelections();
+    }
+    void selectAll() {
+        m_view->invertSelections(false);
     }
     void scrollToSelection(const QString &uri) {
         m_view->scrollToSelection(uri);

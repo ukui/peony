@@ -105,7 +105,7 @@ private Q_SLOTS:
     void tryOpenAgain();
     void setSearchMode(bool mode);
     void closeSearch();
-    void switchModel(/*bool select*/);
+    void switchSelectStatus(bool select);
 
 private:
     const QString m_uri;

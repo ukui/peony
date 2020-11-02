@@ -184,7 +184,7 @@ public:
 
     //selections
     virtual void setSelections(const QStringList &uris) = 0;
-    virtual void invertSelections() = 0;
+    virtual void invertSelections(bool isInvert = true) = 0;
     virtual void scrollToSelection(const QString &uri) = 0;
 
     //clipboard

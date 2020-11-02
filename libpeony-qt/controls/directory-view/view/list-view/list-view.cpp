@@ -573,12 +573,13 @@ void ListView::closeView()
     this->deleteLater();
 }
 
-void ListView::invertSelections()
+void ListView::invertSelections(bool isInvert)
 {
     QItemSelectionModel *selectionModel = this->selectionModel();
     const QItemSelection currentSelection = selectionModel->selection();
     this->selectAll();
-    selectionModel->select(currentSelection, QItemSelectionModel::Deselect);
+    if (isInvert)
+        selectionModel->select(currentSelection, QItemSelectionModel::Deselect);
 }
 
 void ListView::scrollToSelection(const QString &uri)
@@ -665,8 +666,13 @@ void ListView2::bindModel(FileItemModel *model, FileItemProxyFilterSortModel *pr
     connect(model, &FileItemModel::findChildrenFinished, this, &DirectoryViewWidget::viewDirectoryChanged);
     connect(m_model, &FileItemModel::updated, m_view, &ListView::resort);
 
-    connect(m_view->selectionModel(), &QItemSelectionModel::selectionChanged,
-            this, &DirectoryViewWidget::viewSelectionChanged);
+    connect(m_view->selectionModel(), &QItemSelectionModel::selectionChanged, this, [=]() {
+        Q_EMIT viewSelectionChanged();
+        if (m_view->selectionModel()->selection().isEmpty())
+            Q_EMIT viewSelectionStatus(false);
+        else
+            Q_EMIT viewSelectionStatus(true);
+    });
 
     connect(m_view, &ListView::doubleClicked, this, [=](const QModelIndex &index) {
         qDebug()<<index.data(Qt::UserRole).toString();
