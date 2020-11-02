@@ -166,8 +166,7 @@ void DesktopIconViewDelegate::paint(QPainter *painter, const QStyleOptionViewIte
 
     //paint link icon and locker icon
     FileInfo* file = FileInfo::fromUri(index.data(Qt::UserRole).toString(), true).get();
-    if ((index.data(Qt::UserRole).toString() != "computer:///") && (index.data(Qt::UserRole).toString() != "trash:///")
-            && file->canRead() && !file->canWrite() && !file->canExecute()) {
+    if ((index.data(Qt::UserRole).toString() != "computer:///") && (index.data(Qt::UserRole).toString() != "trash:///")) {
         QSize lockerIconSize = QSize(16, 16);
         int offset = 8;
         switch (view->zoomLevel()) {
@@ -194,12 +193,20 @@ void DesktopIconViewDelegate::paint(QPainter *painter, const QStyleOptionViewIte
         }
         }
         auto topRight = opt.rect.topRight();
-        topRight.setX(topRight.x() - offset - lockerIconSize.width());
-        topRight.setY(topRight.y() + offset);
+        topRight.setX(topRight.x() - opt.rect.width() + 10);
+        topRight.setY(topRight.y() + 10);
         auto linkRect = QRect(topRight, lockerIconSize);
-        QIcon symbolicLinkIcon = QIcon::fromTheme("lock");
-        symbolicLinkIcon.paint(painter, linkRect, Qt::AlignCenter);
-    } else if (index.data(Qt::UserRole + 1).toBool()) {
+
+        if (file->canRead() && !file->canWrite() && !file->canExecute()) {
+            QIcon symbolicLinkIcon = QIcon::fromTheme("emblem-readonly");
+            symbolicLinkIcon.paint(painter, linkRect, Qt::AlignCenter);
+        } else if (!file->canRead() && !file->canWrite() && !file->canExecute()) {
+            QIcon symbolicLinkIcon = QIcon::fromTheme("emblem-unreadable");
+            symbolicLinkIcon.paint(painter, linkRect, Qt::AlignCenter);
+        }
+    }
+
+    if (index.data(Qt::UserRole + 1).toBool()) {
         QSize symbolicIconSize = QSize(16, 16);
         int offset = 8;
         switch (view->zoomLevel()) {
