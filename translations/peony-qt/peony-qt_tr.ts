@@ -119,32 +119,32 @@
     <name>MainWindow</name>
     <message>
         <location filename="../../src/windows/main-window.cpp" line="110"/>
-        <location filename="../../src/windows/main-window.cpp" line="590"/>
+        <location filename="../../src/windows/main-window.cpp" line="605"/>
         <source>File Manager</source>
         <translation>Dosya Yöneticisi</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="294"/>
+        <location filename="../../src/windows/main-window.cpp" line="297"/>
         <source>Undo</source>
         <translation>Geri</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="301"/>
+        <location filename="../../src/windows/main-window.cpp" line="304"/>
         <source>Redo</source>
         <translation>İleri</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1275"/>
+        <location filename="../../src/windows/main-window.cpp" line="1299"/>
         <source>Delete file Warning</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Dosya Silme Uyarısı</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1277"/>
+        <location filename="../../src/windows/main-window.cpp" line="1301"/>
         <source>Delete Permanently</source>
         <translation>Kalıcı Olarak Sil</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1278"/>
+        <location filename="../../src/windows/main-window.cpp" line="1302"/>
         <source>Are you sure that you want to delete these files? Once you start a deletion, the files deleting will never be restored again.</source>
         <translation>Bu dosyaları silmek istediğinizden emin misiniz? Bir silme işlemini başlattığınızda, silinen dosyalar bir daha geri yüklenmeyecektir.</translation>
     </message>
@@ -153,7 +153,7 @@
         <translation type="vanished">Peony Qt</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="603"/>
+        <location filename="../../src/windows/main-window.cpp" line="618"/>
         <source>New Folder</source>
         <translation>Yeni Klasör</translation>
     </message>
@@ -187,37 +187,37 @@
         <translation type="vanished">Gelişmiş Arama</translation>
     </message>
     <message>
-        <location filename="../../src/control/operation-menu.cpp" line="65"/>
+        <location filename="../../src/control/operation-menu.cpp" line="66"/>
         <source>Keep Allow</source>
         <translation>İzin Ver</translation>
     </message>
     <message>
-        <location filename="../../src/control/operation-menu.cpp" line="81"/>
+        <location filename="../../src/control/operation-menu.cpp" line="82"/>
         <source>Show Hidden</source>
         <translation>Gizlileri Göster</translation>
     </message>
     <message>
-        <location filename="../../src/control/operation-menu.cpp" line="88"/>
+        <location filename="../../src/control/operation-menu.cpp" line="89"/>
         <source>Forbid thumbnailing</source>
         <translation>Küçük Resimleri Yasakla</translation>
     </message>
     <message>
-        <location filename="../../src/control/operation-menu.cpp" line="97"/>
+        <location filename="../../src/control/operation-menu.cpp" line="98"/>
         <source>Resident in Backend</source>
         <translation>Arka Uçta Yerleşik</translation>
     </message>
     <message>
-        <location filename="../../src/control/operation-menu.cpp" line="106"/>
+        <location filename="../../src/control/operation-menu.cpp" line="107"/>
         <source>Parallel Operations</source>
         <translation>Paralel İşlemler</translation>
     </message>
     <message>
-        <location filename="../../src/control/operation-menu.cpp" line="114"/>
+        <location filename="../../src/control/operation-menu.cpp" line="115"/>
         <source>Help</source>
         <translation>Yardım</translation>
     </message>
     <message>
-        <location filename="../../src/control/operation-menu.cpp" line="118"/>
+        <location filename="../../src/control/operation-menu.cpp" line="119"/>
         <source>About</source>
         <translation>Hakkında</translation>
     </message>
@@ -225,27 +225,27 @@
 <context>
     <name>OperationMenuEditWidget</name>
     <message>
-        <location filename="../../src/control/operation-menu.cpp" line="147"/>
+        <location filename="../../src/control/operation-menu.cpp" line="148"/>
         <source>Edit</source>
         <translation>Düzenle</translation>
     </message>
     <message>
-        <location filename="../../src/control/operation-menu.cpp" line="158"/>
+        <location filename="../../src/control/operation-menu.cpp" line="159"/>
         <source>copy</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/operation-menu.cpp" line="167"/>
+        <location filename="../../src/control/operation-menu.cpp" line="168"/>
         <source>paste</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/operation-menu.cpp" line="176"/>
+        <location filename="../../src/control/operation-menu.cpp" line="177"/>
         <source>cut</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/operation-menu.cpp" line="185"/>
+        <location filename="../../src/control/operation-menu.cpp" line="186"/>
         <source>trash</source>
         <translation type="unfinished"></translation>
     </message>

@@ -181,8 +181,9 @@ end:
         connect(m_watcher.get(), &FileWatcher::fileCreated, this, [=](const QString &uri) {
             //qDebug()<<"created:"<<uri;
             for (auto item : *m_children) {
-                if (item->uri() == uri)
+                if (item->uri() == uri) {
                     return;
+                }
             }
 
             SideBarFileSystemItem *item = new SideBarFileSystemItem(uri,
@@ -298,15 +299,35 @@ bool SideBarFileSystemItem::isMounted()
 void SideBarFileSystemItem::eject(GMountUnmountFlags ejectFlag)
 {
     //FIXME: replace BLOCKING api in ui thread.
+    VolumeManager *volumeManager;
+    std::shared_ptr<Drive> drive;
+    GDrive *gdrive;
+
     auto file = wrapGFile(g_file_new_for_uri(this->uri().toUtf8().constData()));
     auto target = FileUtils::getTargetUri(m_uri);
-    auto drive = VolumeManager::getDriveFromUri(target);
-    g_file_eject_mountable_with_operation(file.get()->get(),
+
+    volumeManager = VolumeManager::getInstance();
+    drive = volumeManager->getDriveFromUri(target);
+    if(!drive)
+        drive = volumeManager->getDriveFromSystemByPath(m_unix_device);
+
+    if(!drive)
+        return;
+
+    gdrive = drive->getGDrive();
+
+    if(g_drive_can_eject(gdrive)){//for udisk or DVD.
+        g_file_eject_mountable_with_operation(file.get()->get(),
                                           ejectFlag,
                                           nullptr,
                                           nullptr,
                                           GAsyncReadyCallback(eject_cb),
                                           this);
+    }else if(g_drive_can_stop(gdrive)){//for mobile harddisk.
+        g_drive_stop(gdrive,ejectFlag,NULL,NULL,
+                     GAsyncReadyCallback(ejectDevicebyDrive),
+                     this);
+    }
 }
 
 static void unmount_force_cb(GFile* file, GAsyncResult* result, gpointer udata) {
@@ -433,7 +454,7 @@ void SideBarFileSystemItem::unmount()
 
 void SideBarFileSystemItem::ejectOrUnmount()
 {
-    if (isEjectable())
+    if (isRemoveable())
         eject(G_MOUNT_UNMOUNT_NONE);
 
     else if (isMountable())
@@ -498,4 +519,28 @@ void SideBarFileSystemItem::updateFileInfo(SideBarFileSystemItem *pThis){
         auto fileInfo = FileInfo::fromUri(pThis->m_uri,false);
         FileInfoJob fileJob(fileInfo);
         fileJob.querySync();
+}
+
+/* Eject some device by stop it's drive. Such as: mobile harddisk.
+ */
+void SideBarFileSystemItem::ejectDevicebyDrive(GObject* object,GAsyncResult* res,SideBarFileSystemItem *pThis)
+{
+    GError *error;
+    QString errorMsg;
+
+    error = NULL;
+    if(!g_drive_poll_for_media_finish(G_DRIVE(object),res,&error)){
+         if((NULL != error) && (G_IO_ERROR_FAILED_HANDLED != error->code)){
+             errorMsg = QObject::tr("Unable to eject %1").arg(pThis->m_display_name);
+
+             QMessageBox warningBox(QMessageBox::Warning,QObject::tr("Eject failed"),errorMsg);
+             QPushButton *cancelBtn = (warningBox.addButton(QObject::tr("Cancel"),QMessageBox::RejectRole));
+             QPushButton *ensureBtn = (warningBox.addButton(QObject::tr("Eject Anyway"),QMessageBox::YesRole));
+             warningBox.exec();
+             if(warningBox.clickedButton() == ensureBtn)
+                 pThis->eject(G_MOUNT_UNMOUNT_FORCE);
+
+             g_error_free(error);
+         }
+    }
 }

@@ -248,7 +248,7 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
     sortType->setPopupMode(QToolButton::InstantPopup);
 
     m_sort_type_menu = new SortTypeMenu(this);
-    sortType->setMenu(m_sort_type_menu);
+    a->setMenu(m_sort_type_menu);
 
     connect(m_sort_type_menu, &SortTypeMenu::switchSortTypeRequest, m_window, &MainWindow::setCurrentSortColumn);
     connect(m_sort_type_menu, &SortTypeMenu::switchSortOrderRequest, m_window, [=](Qt::SortOrder order) {

@@ -49,8 +49,6 @@ Format_Dialog::Format_Dialog(const QString &m_uris,SideBarAbstractItem *m_item,Q
        //get the rom size
        char *total_format = g_format_size(total);
 
-
-
        //add the rom size value into  rom_size combox
        ui->comboBox_rom_size->addItem(total_format);
 
@@ -99,6 +97,10 @@ void Format_Dialog::acceptFormat(bool)
     strncpy(rom_type,ui->comboBox_system->currentText().toUtf8().constData(),sizeof(ui->comboBox_system->currentText().toUtf8().constData())-1);
     strcpy(rom_name,ui->lineEdit_device_name->text().toUtf8().constData());
 
+    //disable name and rom size list
+    ui->comboBox_rom_size->setDisabled(true);
+    ui->comboBox_system->setDisabled(true);
+
     quick_clean = ui->checkBox_clean_or_not->isChecked();
 
     // umount device
@@ -125,10 +127,13 @@ void Format_Dialog::acceptFormat(bool)
     //begin start my_timer, processbar
     my_time  = new QTimer(this);
 
+    m_cost_seconds = 0;
     if(quick_clean){
         my_time->setInterval(500);
+        m_total_predict = 1200;
     }else{
         my_time->setInterval(1000);
+        m_total_predict = 3600;
     }
 
     //begin loop
@@ -138,39 +143,33 @@ void Format_Dialog::acceptFormat(bool)
 
 }
 
-
 double Format_Dialog::get_format_bytes_done(const gchar * device_name)
 {
-
-
-        UDisksObject *object ;
-        UDisksClient *client =udisks_client_new_sync (NULL,NULL);
-        object = get_object_from_block_device(client,device_name);
-        GList *jobs;
-        jobs = udisks_client_get_jobs_for_object (client,object);
-        g_clear_object(&client);
-        g_object_unref(object);
-        if(jobs!=NULL)
+    UDisksObject *object ;
+    UDisksClient *client =udisks_client_new_sync (NULL,NULL);
+    object = get_object_from_block_device(client,device_name);
+    GList *jobs;
+    jobs = udisks_client_get_jobs_for_object(client,object);
+    g_clear_object(&client);
+    g_object_unref(object);
+    if(jobs!=NULL)
+    {
+        UDisksJob *job =(UDisksJob *)jobs->data;
+        if(udisks_job_get_progress_valid (job))
         {
+                double res = udisks_job_get_progress(job);
 
-            UDisksJob *job =(UDisksJob *)jobs->data;
-            if(udisks_job_get_progress_valid (job))
-            {
-                    double res = udisks_job_get_progress(job);
+                g_list_foreach (jobs, (GFunc) g_object_unref, NULL);
+                g_list_free (jobs);
 
-                    g_list_foreach (jobs, (GFunc) g_object_unref, NULL);
-                    g_list_free (jobs);
+                return res;
+        }
 
-
-                    return res;
-            }
-
-
-        g_list_foreach (jobs, (GFunc) g_object_unref, NULL);
-            g_list_free (jobs);
+    g_list_foreach (jobs, (GFunc) g_object_unref, NULL);
+        g_list_free (jobs);
     }
-        return 0;
 
+    return 0;
 }
 
 
@@ -180,6 +179,9 @@ void Format_Dialog::formatloop(){
     static char name_dev[256] ={0};
     char prestr[10] = {0};
 
+    //cost time count
+    m_cost_seconds++;
+
     //FIXME: replace BLOCKING api in ui thread.
     FileUtils::queryVolumeInfo(fm_uris, volname, devName, voldisplayname);
 
@@ -187,11 +189,13 @@ void Format_Dialog::formatloop(){
     strcpy(name_dev,devName.toUtf8().constData());
 
     double pre = (get_format_bytes_done(name_dev) * 100);
+    double cost = m_cost_seconds * 100/m_total_predict;
 
+    if ((pre < 1 && cost <= 99) || pre < cost)
+        pre = cost;
 
-    sprintf(prestr,"%.2f",pre);
+    sprintf(prestr,"%.1f",pre);
     strcat(prestr,"%");
-
 
     if(pre>=100){
 
@@ -290,19 +294,15 @@ void Format_Dialog::ensure_unused_cb(CreateformatData *data)
 {
 
     if(is_iso(data->device_name)==FALSE) {     
-
         ensure_format_cb (data);
     }
     else {
-
         ensure_format_disk(data);
     }
 }
 
 static void createformatfree(CreateformatData *data)
 {
-
-
     g_object_unref(data->object);
     g_object_unref(data->block);
     if(data->drive_object!=NULL)
@@ -316,16 +316,13 @@ static void createformatfree(CreateformatData *data)
     g_clear_object(&(data->client));
 
     g_free(data);
-
-
 }
 
 
 // format
-static void format_cb (GObject *source_object, GAsyncResult *res ,gpointer user_data){
-
-    static   int end_flag = -1;
-
+static void format_cb (GObject *source_object, GAsyncResult *res ,gpointer user_data)
+{
+    static int end_flag = -1;
 
     CreateformatData *data = (CreateformatData *)user_data;
     GError *error = NULL;
@@ -533,7 +530,6 @@ UDisksObject *Format_Dialog::get_object_from_block_device (UDisksClient *client,
 void Format_Dialog::kdisk_format(const gchar * device_name,const gchar *format_type,const gchar * erase_type,
                                 const gchar * filesystem_name,int *format_finish){
 
-
     CreateformatData *data;
     data = g_new(CreateformatData,1);
 
@@ -553,10 +549,7 @@ void Format_Dialog::kdisk_format(const gchar * device_name,const gchar *format_t
     data->object = get_object_from_block_device(data->client,data->device_name);
     data->block = udisks_object_get_block(data->object);
 
-
-
     ensure_unused_cb(data);
-
 }
 
 

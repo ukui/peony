@@ -99,13 +99,13 @@
     <message>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="142"/>
         <source>Open &quot;%1&quot; &amp;with...</source>
-        <translation>打开方式...(&amp;W)</translation>
+        <translation>打开方式(&amp;W)...</translation>
     </message>
     <message>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="155"/>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="180"/>
         <source>&amp;More applications...</source>
-        <translation>更多应用(&amp;M)</translation>
+        <translation>更多应用(&amp;M)...</translation>
     </message>
     <message>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="166"/>

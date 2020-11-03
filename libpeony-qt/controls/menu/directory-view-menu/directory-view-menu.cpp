@@ -200,14 +200,17 @@ const QList<QAction *> DirectoryViewMenu::constructOpenOpActions()
             }
             if (info->isDir()) {
                 //add to bookmark option
-                l<<addAction(QIcon::fromTheme("bookmark-add-symbolic"), tr("Add to bookmark"));
-                connect(l.last(), &QAction::triggered, [=]() {
-                    //qDebug() <<"add to bookmark:" <<info->uri();
-                    auto bookmark = BookMarkManager::getInstance();
-                    if (bookmark->isLoaded()) {
-                        bookmark->addBookMark(info->uri());
-                    }
-                });
+                if (! info->isVirtual() &&  ! info->uri().startsWith("smb://"))
+                {
+                    l<<addAction(QIcon::fromTheme("bookmark-add-symbolic"), tr("Add to bookmark"));
+                    connect(l.last(), &QAction::triggered, [=]() {
+                        //qDebug() <<"add to bookmark:" <<info->uri();
+                        auto bookmark = BookMarkManager::getInstance();
+                        if (bookmark->isLoaded()) {
+                            bookmark->addBookMark(info->uri());
+                        }
+                    });
+                }
 
                 l<<addAction(QIcon::fromTheme("document-open-symbolic"), tr("&Open \"%1\"").arg(displayName));
                 connect(l.last(), &QAction::triggered, [=]() {
@@ -276,21 +279,15 @@ const QList<QAction *> DirectoryViewMenu::constructOpenOpActions()
                     if (info->isDir() || info->isVolume()) {
                         dirs<<uri;
                     } else {
-                        QString mimeType = info->mimeType();
-                        if (mimeType.isEmpty()) {
-                            FileInfoJob job(info);
-                            job.querySync();
-                            mimeType = info->mimeType();
-                        }
-
+                        QString defaultAppName = FileLaunchManager::getDefaultAction(uri)->getAppInfoName();
                         QStringList list;
-                        if (fileMap.contains(mimeType)) {
-                            list = fileMap[mimeType];
+                        if (fileMap.contains(defaultAppName)) {
+                            list = fileMap[defaultAppName];
                             list << uri;
-                            fileMap.insert(mimeType, list);
+                            fileMap.insert(defaultAppName, list);
                         } else {
                             list << uri;
-                            fileMap.insert(mimeType, list);
+                            fileMap.insert(defaultAppName, list);
                         }
                     }
                 }
@@ -322,8 +319,11 @@ const QList<QAction *> DirectoryViewMenu::constructCreateTemplateActions()
         }
         //fix create folder fail issue in special path
         auto info = FileInfo::fromUri(m_directory, false);
-        FileInfoJob job(info);
-        job.querySync();
+        if (info.get()->isEmptyInfo()) {
+            FileInfoJob job(info);
+            job.querySync();
+        }
+
         if (! info->canWrite())
         {
             createAction->setEnabled(false);
@@ -533,16 +533,24 @@ const QList<QAction *> DirectoryViewMenu::constructFileOpActions()
 
     if (!m_is_trash && !m_is_search && !m_is_computer) {
         QString homeUri = "file://" +  QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
+        QString desktopPath = "file://" +  QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
+        QString desktopUri = FileUtils::getEncodedUri(desktopPath);
+        //qDebug() << "constructFileOpActions desktopUri:" <<desktopUri;
         if (!m_selections.isEmpty() && !m_selections.contains(homeUri)) {
             l<<addAction(QIcon::fromTheme("edit-copy-symbolic"), tr("&Copy"));
             connect(l.last(), &QAction::triggered, [=]() {
                 ClipboardUtils::setClipboardFiles(m_selections, false);
             });
-            l<<addAction(QIcon::fromTheme("edit-cut-symbolic"), tr("Cut"));
-            connect(l.last(), &QAction::triggered, [=]() {
-                ClipboardUtils::setClipboardFiles(m_selections, true);
-            });
-            if (!m_is_recent) {
+
+            if (! m_selections.contains(desktopUri))
+            {
+                l<<addAction(QIcon::fromTheme("edit-cut-symbolic"), tr("Cut"));
+                connect(l.last(), &QAction::triggered, [=]() {
+                    ClipboardUtils::setClipboardFiles(m_selections, true);
+                });
+            }
+
+            if (!m_is_recent && !m_selections.contains(desktopUri)) {
                 l<<addAction(QIcon::fromTheme("edit-delete-symbolic"), tr("&Delete to trash"));
                 connect(l.last(), &QAction::triggered, [=]() {
                     FileOperationUtils::trash(m_selections, true);
@@ -554,7 +562,7 @@ const QList<QAction *> DirectoryViewMenu::constructFileOpActions()
 //            connect(l.last(), &QAction::triggered, [=]() {
 //                FileOperationUtils::executeRemoveActionWithDialog(m_selections);
 //            });
-            if (m_selections.count() == 1) {
+            if (m_selections.count() == 1 && !m_selections.contains(desktopUri)) {
                 l<<addAction(QIcon::fromTheme("document-edit-symbolic"), tr("Rename"));
                 connect(l.last(), &QAction::triggered, [=]() {
                     m_view->editUri(m_selections.first());
@@ -608,7 +616,11 @@ const QList<QAction *> DirectoryViewMenu::constructFilePropertiesActions()
 {
     QList<QAction *> l;
 
-    if (!m_is_search) {
+    //fix select mutiple file in trash path show empty issue
+    if (m_selections.count() >1 && m_is_trash)
+        return l;
+
+    if (! m_is_search) {
         l<<addAction(QIcon::fromTheme("preview-file"), tr("Properties"));
         connect(l.last(), &QAction::triggered, [=]() {
             //FIXME:

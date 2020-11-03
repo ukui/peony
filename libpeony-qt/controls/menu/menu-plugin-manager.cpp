@@ -102,15 +102,18 @@ QList<QAction *> CreateLinkInternalPlugin::menuActions(MenuPluginInterface::Type
         if (selectionUris.count() == 1) {
             auto createLinkToDesktop = new QAction(QIcon::fromTheme("emblem-link-symbolic"), tr("Create Link to Desktop"), nullptr);
             auto info = FileInfo::fromUri(selectionUris.first(), false);
+            QString desktopPath = QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
+            QString originPath = QUrl(selectionUris.first()).path();
             //special type mountable, or isVirtual then return
             if (selectionUris.first().startsWith("computer:///") || info->isVirtual()
                 || selectionUris.first().startsWith("trash:///")
-                || selectionUris.first().startsWith("recent:///"))
+                || selectionUris.first().startsWith("recent:///")
+                || originPath.startsWith(desktopPath))
                 return l;
 
             connect(createLinkToDesktop, &QAction::triggered, [=]() {
-                QUrl src = selectionUris.first();
-                QString desktopUri = "file://" + QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
+                //QUrl src = selectionUris.first();
+                QString desktopUri = "file://" + desktopPath;
                 FileLinkOperation *op = new FileLinkOperation(selectionUris.first(), desktopUri);
                 op->setAutoDelete(true);
                 FileOperationManager::getInstance()->startOperation(op, true);
@@ -123,7 +126,7 @@ QList<QAction *> CreateLinkInternalPlugin::menuActions(MenuPluginInterface::Type
                                  tr("Choose a Directory to Create Link"),
                                  uri);
                 if (!targetDir.isEmpty()) {
-                    QUrl src = selectionUris.first();
+                    //QUrl src = selectionUris.first();
                     QString target = targetDir.url();
                     FileLinkOperation *op = new FileLinkOperation(selectionUris.first(), target);
                     op->setAutoDelete(true);
@@ -145,10 +148,15 @@ FileLabelInternalMenuPlugin::FileLabelInternalMenuPlugin(QObject *parent)
 QList<QAction *> FileLabelInternalMenuPlugin::menuActions(MenuPluginInterface::Types types, const QString &uri, const QStringList &selectionUris)
 {
     QList<QAction *> l;
+    //fix virtual path add label fail issue
+    auto info = FileInfo::fromUri(uri);
+    if (info->isVirtual())
+        return l;
+
     if (types == DirectoryView) {
         if (selectionUris.count() == 1) {
             //not allow in trash path
-            if (uri.startsWith("trash://"))
+            if (uri.startsWith("trash://") || uri.startsWith("smb://"))
                 return l;
             auto action = new QAction(tr("Add File Label..."), nullptr);
             auto uri = selectionUris.first();

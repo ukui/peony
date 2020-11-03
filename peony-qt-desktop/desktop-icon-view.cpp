@@ -564,6 +564,10 @@ void DesktopIconView::initDoubleClick()
     connect(this, &QListView::doubleClicked, this, [=](const QModelIndex &index) {
         qDebug() << "double click" << index.data(FileItemModel::UriRole);
         auto uri = index.data(FileItemModel::UriRole).toString();
+        //process open symbolic link
+        auto info = FileInfo::fromUri(uri, false);
+        if (info->isSymbolLink() && uri.startsWith("file://"))
+            uri = "file://" + FileUtils::getSymbolicTarget(uri);
         openFileByUri(uri);
     }, Qt::UniqueConnection);
 }
@@ -843,7 +847,10 @@ void DesktopIconView::keyPressEvent(QKeyEvent *e)
                 clearAllIndexWidgets();
                 selectionModel()->select(upIndex, QItemSelectionModel::SelectCurrent);
                 auto delegate = qobject_cast<DesktopIconViewDelegate *>(itemDelegate());
-                setIndexWidget(upIndex, new DesktopIndexWidget(delegate, viewOptions(), upIndex, this));
+                auto indexWidget = new DesktopIndexWidget(delegate, viewOptions(), upIndex, this);
+                setIndexWidget(upIndex, indexWidget);
+                indexWidget->move(visualRect(upIndex).topLeft());
+
 #if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
                 for (auto uri : getAllFileUris()) {
                     auto pos = getFileMetaInfoPos(uri);
@@ -867,7 +874,10 @@ void DesktopIconView::keyPressEvent(QKeyEvent *e)
                 clearAllIndexWidgets();
                 selectionModel()->select(downIndex, QItemSelectionModel::SelectCurrent);
                 auto delegate = qobject_cast<DesktopIconViewDelegate *>(itemDelegate());
-                setIndexWidget(downIndex, new DesktopIndexWidget(delegate, viewOptions(), downIndex, this));
+                auto indexWidget = new DesktopIndexWidget(delegate, viewOptions(), downIndex, this);
+                setIndexWidget(downIndex, indexWidget);
+                indexWidget->move(visualRect(downIndex).topLeft());
+
 #if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
                 for (auto uri : getAllFileUris()) {
                     auto pos = getFileMetaInfoPos(uri);
@@ -891,7 +901,9 @@ void DesktopIconView::keyPressEvent(QKeyEvent *e)
                 clearAllIndexWidgets();
                 selectionModel()->select(leftIndex, QItemSelectionModel::SelectCurrent);
                 auto delegate = qobject_cast<DesktopIconViewDelegate *>(itemDelegate());
-                setIndexWidget(leftIndex, new DesktopIndexWidget(delegate, viewOptions(), leftIndex, this));
+                auto indexWidget = new DesktopIndexWidget(delegate, viewOptions(), leftIndex, this);
+                setIndexWidget(leftIndex, indexWidget);
+                indexWidget->move(visualRect(leftIndex).topLeft());
 #if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
                 for (auto uri : getAllFileUris()) {
                     auto pos = getFileMetaInfoPos(uri);
@@ -915,7 +927,8 @@ void DesktopIconView::keyPressEvent(QKeyEvent *e)
                 clearAllIndexWidgets();
                 selectionModel()->select(rightIndex, QItemSelectionModel::SelectCurrent);
                 auto delegate = qobject_cast<DesktopIconViewDelegate *>(itemDelegate());
-                setIndexWidget(rightIndex, new DesktopIndexWidget(delegate, viewOptions(), rightIndex, this));
+                auto indexWidget = new DesktopIndexWidget(delegate, viewOptions(), rightIndex, this);
+                setIndexWidget(rightIndex, indexWidget);
 #if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
                 for (auto uri : getAllFileUris()) {
                     auto pos = getFileMetaInfoPos(uri);
@@ -1149,8 +1162,10 @@ void DesktopIconView::mousePressEvent(QMouseEvent *e)
             clearAllIndexWidgets();
             m_last_index = index;
             if (!indexWidget(m_last_index)) {
+                auto indexWidget = new DesktopIndexWidget(qobject_cast<DesktopIconViewDelegate *>(itemDelegate()), viewOptions(), m_last_index);
                 setIndexWidget(m_last_index,
-                               new DesktopIndexWidget(qobject_cast<DesktopIconViewDelegate *>(itemDelegate()), viewOptions(), m_last_index));
+                               indexWidget);
+                indexWidget->move(visualRect(m_last_index).topLeft());
 #if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
                 for (auto uri : getAllFileUris()) {
                     auto pos = getFileMetaInfoPos(uri);
@@ -1173,6 +1188,8 @@ void DesktopIconView::mousePressEvent(QMouseEvent *e)
 void DesktopIconView::mouseReleaseEvent(QMouseEvent *e)
 {
     QListView::mouseReleaseEvent(e);
+
+    this->viewport()->update(viewport()->rect());
 }
 
 void DesktopIconView::mouseDoubleClickEvent(QMouseEvent *event)

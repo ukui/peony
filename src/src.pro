@@ -39,7 +39,8 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 TRANSLATIONS += ../translations/peony-qt/peony-qt_zh_CN.ts \
-                ../translations/peony-qt/peony-qt_tr.ts
+                ../translations/peony-qt/peony-qt_tr.ts \
+                ../translations/peony-qt/peony-qt_cs.ts
 
 SOURCES += \
     peony-application.cpp \

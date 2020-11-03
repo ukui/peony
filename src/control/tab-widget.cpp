@@ -819,7 +819,6 @@ void TabWidget::setPreviewPage(Peony::PreviewPageIface *previewPage)
 void TabWidget::addPage(const QString &uri, bool jumpTo)
 {
     auto info = Peony::FileInfo::fromUri(uri, false);
-    qDebug() << "addPage:" <<uri <<info->isDir();
     if (! info->isDir())
         return;
 
@@ -1011,6 +1010,8 @@ void TabWidget::updateAdvanceConditions()
 void TabWidget::setCurrentSelections(const QStringList &uris)
 {
     currentPage()->getView()->setSelections(uris);
+    if (uris.count() >0)
+        currentPage()->getView()->scrollToSelection(uris.first());
 }
 
 void TabWidget::editUri(const QString &uri)
@@ -1033,7 +1034,12 @@ void TabWidget::onViewDoubleClicked(const QString &uri)
         return;
     }
     if (info->isDir() || info->isVolume() || info->isVirtual()) {
-        Q_EMIT this->updateWindowLocationRequest(uri, true);
+        //process open symbolic link
+        auto info = Peony::FileInfo::fromUri(uri, false);
+        QString targetUri = uri;
+        if (info->isSymbolLink() && uri.startsWith("file://"))
+            targetUri = "file://" + Peony::FileUtils::getSymbolicTarget(uri);
+        Q_EMIT this->updateWindowLocationRequest(targetUri, true);
     } else {
         Peony::FileLaunchManager::openAsync(uri, false, false);
     }

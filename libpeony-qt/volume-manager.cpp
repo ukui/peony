@@ -24,7 +24,7 @@
 #include "file-utils.h"
 #include "gobject-template.h"
 #include <QMessageBox>
-
+#include <QFileInfo>
 #include <QDebug>
 
 using namespace Peony;
@@ -248,6 +248,46 @@ std::shared_ptr<Volume> VolumeManager::getVolumeFromMount(const std::shared_ptr<
     }
     tmp = std::make_shared<Volume>(volume, true);
     return tmp;
+}
+
+/* Lookup GDrive* from system volume monitor for @unixPath.
+ * @unixPath: eg: "/dev/sdb1"
+ */
+std::shared_ptr<Drive> VolumeManager::getDriveFromSystemByPath(const QString &unixPath)
+{
+    std::shared_ptr<Drive> tmp = nullptr;
+    QFileInfo deviceFile;
+    GList *allVolumes,*l;
+    GDrive *gdrive = NULL;
+    GVolume *gvolume = NULL;
+    char *tmpPath = NULL;
+
+    deviceFile.setFile(unixPath);
+    if(!deviceFile.exists())
+        return nullptr;
+
+    allVolumes = g_volume_monitor_get_volumes(m_volume_monitor);
+    for(l = allVolumes; l != NULL; l = l->next){
+       gvolume = (GVolume*)l->data;
+       tmpPath = g_volume_get_identifier(gvolume,G_VOLUME_IDENTIFIER_KIND_UNIX_DEVICE);
+       if(tmpPath){
+           if(!unixPath.compare(tmpPath)){
+               gdrive = g_volume_get_drive(gvolume);
+               g_free(tmpPath);
+               break;
+           }
+
+           g_free(tmpPath);
+       }
+   }
+
+   g_list_foreach(allVolumes,(GFunc)g_object_unref,NULL);
+   g_list_free(allVolumes);
+
+   if(gdrive)
+      tmp = std::make_shared<Drive>(gdrive,true);
+
+   return tmp;
 }
 
 QString Drive::name()

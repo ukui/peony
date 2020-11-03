@@ -88,15 +88,6 @@ FileItem::~FileItem()
     Q_EMIT cancelFindChildren();
     //disconnect();
 
-    if (m_info.use_count() <= 2) {
-        auto info = FileInfoManager::getInstance()->findFileInfoByUri(m_info->uri()).get();
-        if (info == m_info.get()) {
-            Peony::FileInfoManager::getInstance()->lock();
-            Peony::FileInfoManager::getInstance()->remove(m_info);
-            Peony::FileInfoManager::getInstance()->unlock();
-        }
-    }
-
     for (auto child : *m_children) {
         delete child;
     }
@@ -122,7 +113,7 @@ QVector<FileItem*> *FileItem::findChildrenSync()
     std::shared_ptr<Peony::FileEnumerator> enumerator = std::make_shared<Peony::FileEnumerator>();
     enumerator->setEnumerateDirectory(m_info->uri());
     enumerator->enumerateSync();
-    auto infos = enumerator->getChildren(true);
+    auto infos = enumerator->getChildren();
     for (auto info : infos) {
         FileItem *child = new FileItem(info, this, m_model);
         m_children->append(child);
@@ -136,6 +127,11 @@ QVector<FileItem*> *FileItem::findChildrenSync()
 
 void FileItem::findChildrenAsync()
 {
+    auto info = FileInfo::fromUri(m_info.get()->uri());
+    auto infoJob = new FileInfoJob(info);
+    infoJob->setAutoDelete();
+    infoJob->queryAsync();
+
     if (m_expanded)
         return;
 
@@ -218,8 +214,19 @@ void FileItem::findChildrenAsync()
                         FileOperationUtils::trash(selections, true);
                     }
                 }
+                else if (err.get()->code() == G_IO_ERROR_PERMISSION_DENIED)
+                {
+                    QString errorInfo = tr("Can not open path \"%1\"，permission denied.").arg(this->uri().unicode());
+                    QMessageBox::critical(nullptr, tr("Error"), errorInfo);
+                }
+                else if(err.get()->code() == G_IO_ERROR_NOT_FOUND)
+                {
+                    QString errorInfo = tr("Can not find path \"%1\"，are you moved or renamed it?").arg(fileInfo->uri().unicode());
+                    QMessageBox::critical(nullptr, tr("Error"), errorInfo);
+                }
                 return;
-            } else {
+            }
+            else {
                 QMessageBox::critical(nullptr, tr("Error"), err->message());
                 enumerator->cancel();
                 return;
@@ -231,7 +238,7 @@ void FileItem::findChildrenAsync()
     if (!m_model->isPositiveResponse()) {
         enumerator->connect(enumerator, &Peony::FileEnumerator::enumerateFinished, this, [=](bool successed) {
             if (successed) {
-                auto infos = enumerator->getChildren(true);
+                auto infos = enumerator->getChildren();
                 m_async_count = infos.count();
                 if (infos.count() == 0) {
                     Q_EMIT m_model->findChildrenFinished();
