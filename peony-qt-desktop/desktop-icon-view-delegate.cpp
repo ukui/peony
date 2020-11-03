@@ -41,6 +41,9 @@
 #include <QDebug>
 #include <file-info.h>
 
+//qt's global function
+extern void qt_blurImage(QImage &blurImage, qreal radius, bool quality, int transposed);
+
 using namespace Peony;
 using namespace Peony::DirectoryView;
 
@@ -135,24 +138,55 @@ void DesktopIconViewDelegate::paint(QPainter *painter, const QStyleOptionViewIte
     //paint text shadow
     painter->save();
     painter->translate(1, 1 + iconSizeExpected.height() + 10);
-    //painter->setFont(opt.font);
+
+    auto expectedSize = IconViewTextHelper::getTextSizeForIndex(opt, index, 2);
+    QPixmap pixmap(expectedSize);
+    pixmap.fill(Qt::transparent);
+    QPainter shadowPainter(&pixmap);
     QColor shadow = Qt::black;
-    shadow.setAlpha(127);
-    painter->setPen(shadow);
-    IconViewTextHelper::paintText(painter,
-                                  opt,
-                                  index,
-                                  maxTextHight,
-                                  0,
-                                  2,
-                                  false);
+    shadowPainter.setPen(shadow);
+    IconViewTextHelper::paintText(&shadowPainter, opt, index, maxTextHight, 2, 0, false, shadow);
+    shadowPainter.end();
+
+    QImage shadowImage(expectedSize + QSize(4, 4), QImage::Format_ARGB32_Premultiplied);
+    shadowImage.fill(Qt::transparent);
+    shadowPainter.begin(&shadowImage);
+    shadowPainter.drawPixmap(2, 2, pixmap);
+    qt_blurImage(shadowImage, 8, false, false);
+
+    for (int x = 0; x < shadowImage.width(); x++) {
+        for (int y = 0; y < shadowImage.height(); y++) {
+            auto color = shadowImage.pixelColor(x, y);
+            if (color.alpha() > 0) {
+                color.setAlphaF(qMin(color.alphaF() * 1.5, 1.0));
+                shadowImage.setPixelColor(x, y, color);
+            }
+        }
+    }
+
+    shadowPainter.end();
+
+    painter->translate(-4, -2);
+    painter->drawImage(0, 0, shadowImage);
+
+    //painter->setFont(opt.font);
+//    painter->setPen(shadow);
+//    IconViewTextHelper::paintText(painter,
+//                                  opt,
+//                                  index,
+//                                  maxTextHight,
+//                                  0,
+//                                  2,
+//                                  false);
     painter->restore();
 
     //paint text
     painter->save();
     painter->translate(0, 0 + iconSizeExpected.height() + 10);
     //painter->setFont(opt.font);
-    painter->setPen(opt.palette.highlightedText().color());
+    QColor textColor = Qt::white;
+    textColor.setAlphaF(0.9);
+    painter->setPen(textColor);
     IconViewTextHelper::paintText(painter,
                                   opt,
                                   index,
