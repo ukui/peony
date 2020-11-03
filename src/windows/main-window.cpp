@@ -1150,6 +1150,7 @@ void MainWindow::initUI(const QString &uri)
     m_transparent_area_widget = navigationSidebarContainer;
 
     connect(m_side_bar, &NavigationSideBar::updateWindowLocationRequest, this, &MainWindow::goToUri);
+    connect(m_side_bar, &NavigationSideBar::updateWindowLocationRequest, m_header_bar, &HeaderBar::cancleSelect);
 
 //    auto labelDialog = new FileLabelBox(this);
 //    labelDialog->hide();
@@ -1235,6 +1236,7 @@ void MainWindow::initUI(const QString &uri)
     connect(m_tab, &TabWidget::searchRecursiveChanged, headerBar, &HeaderBar::updateSearchRecursive);
     connect(m_tab, &TabWidget::closeSearch, headerBar, &HeaderBar::closeSearch);
     connect(m_tab, &TabWidget::viewSelectStatus, headerBar, &HeaderBar::switchSelectStatus);
+    connect(m_tab, &TabWidget::updateWindowLocationRequest, headerBar, &HeaderBar::cancleSelect);
     connect(m_tab, &TabWidget::clearTrash, this, &MainWindow::cleanTrash);
     connect(m_tab, &TabWidget::recoverFromTrash, this, &MainWindow::recoverFromTrash);
     connect(m_tab, &TabWidget::updateWindowLocationRequest, this, &MainWindow::goToUri);
