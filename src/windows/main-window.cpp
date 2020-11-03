@@ -447,24 +447,24 @@ void MainWindow::setShortCuts()
     });
     addAction(maxAction);
 
-    auto previewPageAction = new QAction(this);
-    previewPageAction->setShortcuts(QList<QKeySequence>()<<Qt::Key_F3<<QKeySequence(Qt::ALT + Qt::Key_P));
-    connect(previewPageAction, &QAction::triggered, this, [=]() {
-        auto triggered = m_tab->getTriggeredPreviewPage();
-        if (triggered)
-        {
-            m_tab->setPreviewPage(nullptr);
-        }
-        else
-        {
-            auto instance = Peony::PreviewPageFactoryManager::getInstance();
-            auto lastPreviewPageId  = instance->getLastPreviewPageId();
-            auto *page = instance->getPlugin(lastPreviewPageId)->createPreviewPage();
-            m_tab->setPreviewPage(page);
-        }
-        m_tab->setTriggeredPreviewPage(! triggered);
-    });
-    addAction(previewPageAction);
+//    auto previewPageAction = new QAction(this);
+//    previewPageAction->setShortcuts(QList<QKeySequence>()<<Qt::Key_F3<<QKeySequence(Qt::ALT + Qt::Key_P));
+//    connect(previewPageAction, &QAction::triggered, this, [=]() {
+//        auto triggered = m_tab->getTriggeredPreviewPage();
+//        if (triggered)
+//        {
+//            m_tab->setPreviewPage(nullptr);
+//        }
+//        else
+//        {
+//            auto instance = Peony::PreviewPageFactoryManager::getInstance();
+//            auto lastPreviewPageId  = instance->getLastPreviewPageId();
+//            auto *page = instance->getPlugin(lastPreviewPageId)->createPreviewPage();
+//            m_tab->setPreviewPage(page);
+//        }
+//        m_tab->setTriggeredPreviewPage(! triggered);
+//    });
+//    addAction(previewPageAction);
 
     auto refreshWindowAction = new QAction(this);
     refreshWindowAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_R));
@@ -944,7 +944,11 @@ void MainWindow::paintEvent(QPaintEvent *e)
     QPainterPath tmpPath;
     if(window()->isMaximized()){
         tmpPath.addRect(rect().adjusted(0,0,0,0));
-        deletePath.addRect(tmpRect.adjusted(0, 40, 0, 0));
+//        deletePath.addRect(tmpRect.adjusted(0, 40, 0, 0));
+        deletePath.addRoundedRect(tmpRect.adjusted(0, 40, 0, 0), 16, 16);
+        deletePath.addRect(rect().width()-18,rect().height()-18,18,18);
+        deletePath.addRect(tmpRect.x(),tmpRect.height()-18,18,18);
+
     }
     else{
         tmpPath.addRoundedRect(rect().adjusted(4,4,-4,-4), 16, 16);
