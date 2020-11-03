@@ -197,11 +197,14 @@ void DesktopIconViewDelegate::paint(QPainter *painter, const QStyleOptionViewIte
         topRight.setY(topRight.y() + 10);
         auto linkRect = QRect(topRight, lockerIconSize);
 
-        if (file->canRead() && !file->canWrite() && !file->canExecute()) {
-            QIcon symbolicLinkIcon = QIcon::fromTheme("emblem-readonly");
-            symbolicLinkIcon.paint(painter, linkRect, Qt::AlignCenter);
-        } else if (!file->canRead() && !file->canWrite() && !file->canExecute()) {
+        if (! file->canRead())
+        {
             QIcon symbolicLinkIcon = QIcon::fromTheme("emblem-unreadable");
+            symbolicLinkIcon.paint(painter, linkRect, Qt::AlignCenter);
+        }
+        else if(! file->canWrite() && ! file->canExecute())
+        {
+            QIcon symbolicLinkIcon = QIcon::fromTheme("emblem-readonly");
             symbolicLinkIcon.paint(painter, linkRect, Qt::AlignCenter);
         }
     }
