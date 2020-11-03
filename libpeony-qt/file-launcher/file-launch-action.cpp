@@ -35,6 +35,7 @@
 
 #include <QUrl>
 #include <QProcess>
+#include <QtDBus/QtDBus>
 #include <recent-vfs-manager.h>
 
 #include <QDebug>
@@ -102,6 +103,34 @@ void FileLaunchAction::lauchFileSync(bool forceWithArg, bool skipDialog)
     if (fileInfo->isEmptyInfo()) {
         FileInfoJob j(fileInfo);
         j.querySync();
+    }
+
+    if(fileInfo->isExecDisable())return;
+
+    if (fileInfo->type() == "application/x-desktop") {
+        auto tmp = g_desktop_app_info_get_locale_string((GDesktopAppInfo*)m_app_info, "Exec");
+        if (tmp == nullptr) {
+            qDebug() << "Get desktop file Exec value error";
+            return;
+        }
+        QString exe(tmp);
+        QStringList parameters;
+        if (exe.indexOf("%") != -1) {
+            exe = exe.left(exe.indexOf("%") - 1);
+        }
+        if (exe.indexOf("-") != -1) {
+            parameters = exe.split(" ");
+            exe = parameters[0];
+            parameters.removeAt(0);
+        }
+
+        QDBusInterface session("org.gnome.SessionManager", "/com/ukui/app", "com.ukui.app");
+        if (parameters.isEmpty())
+            session.call("app_open", exe, parameters);
+        else
+            session.call("app_open", exe, parameters);
+
+        return;
     }
 
     bool executable = fileInfo->canExecute();
@@ -194,11 +223,39 @@ void FileLaunchAction::lauchFileSync(bool forceWithArg, bool skipDialog)
 void FileLaunchAction::lauchFileAsync(bool forceWithArg, bool skipDialog)
 {
     auto fileInfo = FileInfo::fromUri(m_uri, false);
+
     if (fileInfo->isEmptyInfo()) {
         FileInfoJob j(fileInfo);
         j.querySync();
     }
+
     if(fileInfo->isExecDisable())return;
+
+    if (fileInfo->type() == "application/x-desktop") {
+        auto tmp = g_desktop_app_info_get_locale_string((GDesktopAppInfo*)m_app_info, "Exec");
+        if (tmp == nullptr) {
+            qDebug() << "Get desktop file Exec value error";
+            return;
+        }
+        QString exe(tmp);
+        QStringList parameters;
+        if (exe.indexOf("%") != -1) {
+            exe = exe.left(exe.indexOf("%") - 1);
+        }
+        if (exe.indexOf("-") != -1) {
+            parameters = exe.split(" ");
+            exe = parameters[0];
+            parameters.removeAt(0);
+        }
+
+        QDBusInterface session("org.gnome.SessionManager", "/com/ukui/app", "com.ukui.app");
+        if (parameters.isEmpty())
+            session.call("app_open", exe, parameters);
+        else
+            session.call("app_open", exe, parameters);
+
+        return;
+    }
 
     bool executable = fileInfo->canExecute();
     bool isAppImage = fileInfo->type() == "application/vnd.appimage";

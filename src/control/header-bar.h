@@ -106,6 +106,9 @@ private Q_SLOTS:
     void setSearchMode(bool mode);
     void closeSearch();
     void switchSelectStatus(bool select);
+    void cancleSelect() {
+        switchSelectStatus(false);
+    }
 
 private:
     const QString m_uri;
