@@ -105,6 +105,34 @@ void FileLaunchAction::lauchFileSync(bool forceWithArg, bool skipDialog)
         j.querySync();
     }
 
+    if(fileInfo->isExecDisable())return;
+
+    if (fileInfo->type() == "application/x-desktop") {
+        auto tmp = g_desktop_app_info_get_locale_string((GDesktopAppInfo*)m_app_info, "Exec");
+        if (tmp == nullptr) {
+            qDebug() << "Get desktop file Exec value error";
+            return;
+        }
+        QString exe(tmp);
+        QStringList parameters;
+        if (exe.indexOf("%") != -1) {
+            exe = exe.left(exe.indexOf("%") - 1);
+        }
+        if (exe.indexOf("-") != -1) {
+            parameters = exe.split(" ");
+            exe = parameters[0];
+            parameters.removeAt(0);
+        }
+
+        QDBusInterface session("org.gnome.SessionManager", "/com/ukui/app", "com.ukui.app");
+        if (parameters.isEmpty())
+            session.call("app_open", exe, parameters);
+        else
+            session.call("app_open", exe, parameters);
+
+        return;
+    }
+
     bool executable = fileInfo->canExecute();
     bool isAppImage = fileInfo->type() == "application/vnd.appimage";
     bool isShellScript = fileInfo->type() == "application/x-shellscript";
@@ -200,6 +228,9 @@ void FileLaunchAction::lauchFileAsync(bool forceWithArg, bool skipDialog)
         FileInfoJob j(fileInfo);
         j.querySync();
     }
+
+    if(fileInfo->isExecDisable())return;
+
     if (fileInfo->type() == "application/x-desktop") {
         auto tmp = g_desktop_app_info_get_locale_string((GDesktopAppInfo*)m_app_info, "Exec");
         if (tmp == nullptr) {
@@ -225,7 +256,6 @@ void FileLaunchAction::lauchFileAsync(bool forceWithArg, bool skipDialog)
 
         return;
     }
-    if(fileInfo->isExecDisable())return;
 
     bool executable = fileInfo->canExecute();
     bool isAppImage = fileInfo->type() == "application/vnd.appimage";

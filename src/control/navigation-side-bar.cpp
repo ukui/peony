@@ -274,21 +274,16 @@ void NavigationSideBarItemDelegate::paint(QPainter *painter, const QStyleOptionV
     if (!index.isValid() || option.state == QStyle::State_None)
         return;
 
-    // add by wwn, to delete hover status
     QStyleOptionViewItem opt = option;
-    //! \brief QPalette::Backgruond have little different from background, why?
-    QColor current = opt.palette.color(QPalette::Base);
-    if (opt.state & QStyle::State_MouseOver) {
-        if (!(opt.state & QStyle::State_Selected)) {
-            // qDebug() << current.name();
-            opt.palette.setColor(QPalette::Highlight, current);
-        }
+
+    //! \brief delete hover status
+    if (!(opt.state & QStyle::State_Selected)) {
+        opt.state = QStyle::State_Enabled;
     }
 
     painter->setRenderHint(QPainter::Antialiasing, true);
 
     QStyledItemDelegate::paint(painter, opt, index);
-
 
     NavigationSideBar* view = qobject_cast<NavigationSideBar*>(this->parent());
 
