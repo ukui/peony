@@ -75,6 +75,9 @@ public:
     //selections
     const QStringList getSelections() override;
 
+    //rowcount
+    const int getRowcount();
+
     //children
     const QStringList getAllFileUris() override;
 
@@ -176,6 +179,11 @@ public:
     //selections
     const QStringList getSelections() {
         return m_view->getSelections();
+    }
+
+    //rowcount
+    const int getRowcount(){
+         return m_view->getRowcount();
     }
 
     //children

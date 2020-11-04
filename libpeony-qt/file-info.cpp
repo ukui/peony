@@ -86,8 +86,6 @@ FileInfo::~FileInfo()
     g_object_unref(m_cancellable);
     g_object_unref(m_file);
 
-    if (m_target_file)
-        g_object_unref(m_target_file);
     if (m_parent)
         g_object_unref(m_parent);
 
@@ -198,6 +196,7 @@ bool FileInfo::isOfficeFile()
 
     return false;
 }
+
 bool FileInfo::isExecDisable()
 {
      int nRet = m_meta_info->getMetaInfoInt("exec_disable");
@@ -205,14 +204,12 @@ bool FileInfo::isExecDisable()
      return false;
 }
 
-//void FileInfo::getEnableSig(QString appid, bool execenable)
-//{
-//    QString uri = "file://" + QStandardPaths::writableLocation(QStandardPaths::HomeLocation) + "/桌面/" + appid + ".desktop";
-//    if (m_uri == nullptr || m_uri != uri)
-//        return;
-//    if (execenable)
-//        m_meta_info->setMetaInfoString("exec_disable","1");
-//    else
-//        m_meta_info->setMetaInfoString("exec_disable","0");
-//    return;
-//}
+const QString FileInfo::targetUri()
+{
+    return m_target_uri;
+}
+
+const QString FileInfo::symlinkTarget()
+{
+    return m_symlink_target;
+}

@@ -232,17 +232,20 @@ void DesktopWindow::initGSettings() {
         return;
     }
 
-    //font monitor
-    QGSettings *fontSetting = new QGSettings(FONT_SETTINGS, QByteArray(), this);
-    connect(fontSetting, &QGSettings::changed, this, [=](const QString &key){
-        qDebug() << "fontSetting changed:" << key;
-        if (key == "systemFont" || key == "systemFontSize")
-        {
-            QFont font = this->font();
-            for(auto widget : qApp->allWidgets())
-                widget->setFont(font);
-        }
-    });
+    if (QGSettings::isSchemaInstalled("org.ukui.style"))
+    {
+        //font monitor
+        QGSettings *fontSetting = new QGSettings(FONT_SETTINGS, QByteArray(), this);
+        connect(fontSetting, &QGSettings::changed, this, [=](const QString &key){
+            qDebug() << "fontSetting changed:" << key;
+            if (key == "systemFont" || key == "systemFontSize")
+            {
+                QFont font = this->font();
+                for(auto widget : qApp->allWidgets())
+                    widget->setFont(font);
+            }
+        });
+    }
 
     m_bg_settings = new QGSettings(BACKGROUND_SETTINGS, QByteArray(), this);
     m_picture_option = m_bg_settings->get("pictureOptions").toString();

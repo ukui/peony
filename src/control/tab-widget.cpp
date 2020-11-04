@@ -70,7 +70,7 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
     m_tab_bar->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     m_stack = new QStackedWidget(this);
     m_stack->setContentsMargins(0, 0, 0, 0);
-    m_buttons = new PreviewPageButtonGroups(this);
+//    m_buttons = new PreviewPageButtonGroups(this);
     m_preview_page_container = new QStackedWidget(this);
     m_preview_page_container->setMinimumWidth(200);
 
@@ -80,15 +80,15 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
     connect(m_status_bar, &TabStatusBar::zoomLevelChangedRequest, this, &TabWidget::handleZoomLevel);
     //setStatusBar(m_status_bar);
 
-    connect(m_buttons, &PreviewPageButtonGroups::previewPageButtonTrigger, [=](bool trigger, const QString &id) {
-        setTriggeredPreviewPage(trigger);
-        if (trigger) {
-            auto plugin = Peony::PreviewPageFactoryManager::getInstance()->getPlugin(id);
-            setPreviewPage(plugin->createPreviewPage());
-        } else {
-            setPreviewPage(nullptr);
-        }
-    });
+//    connect(m_buttons, &PreviewPageButtonGroups::previewPageButtonTrigger, [=](bool trigger, const QString &id) {
+//        setTriggeredPreviewPage(trigger);
+//        if (trigger) {
+//            auto plugin = Peony::PreviewPageFactoryManager::getInstance()->getPlugin(id);
+//            setPreviewPage(plugin->createPreviewPage());
+//        } else {
+//            setPreviewPage(nullptr);
+//        }
+//    });
 
     connect(m_tab_bar, &QTabBar::currentChanged, this, &TabWidget::changeCurrentIndex);
     connect(m_tab_bar, &QTabBar::tabMoved, this, &TabWidget::moveTab);
@@ -107,48 +107,48 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
 //    m_header_bar_bg = new QWidget(this);
 //    m_header_bar_bg->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 //    m_header_bar_bg->setFixedHeight(50);
-    QToolBar *previewButtons = new QToolBar(this);
-    m_tool_bar = previewButtons;
+//    QToolBar *previewButtons = new QToolBar(this);
+//    m_tool_bar = previewButtons;
     //previewButtons->setFixedHeight(m_tab_bar->height());
     //m_header_bar_layout->setContentsMargins(0, 0, 5, 0);
     //t->addWidget(m_header_bar_bg);
 
     updateTabBarGeometry();
 
-    auto manager = Peony::PreviewPageFactoryManager::getInstance();
-    auto pluginNames = manager->getPluginNames();
-    for (auto name : pluginNames) {
-        auto factory = manager->getPlugin(name);
-        auto action = group->addAction(factory->icon(), factory->name());
-        action->setCheckable(true);
-        connect(action, &QAction::triggered, [=](/*bool checked*/) {
-            if (!m_current_preview_action) {
-                m_current_preview_action = action;
-                action->setChecked(true);
-                Q_EMIT m_buttons->previewPageButtonTrigger(true, factory->name());
-            } else {
-                if (m_current_preview_action == action) {
-                    m_current_preview_action = nullptr;
-                    action->setChecked(false);
-                    Q_EMIT m_buttons->previewPageButtonTrigger(false, factory->name());
-                } else {
-                    m_current_preview_action = action;
-                    action->setChecked(true);
-                    Q_EMIT m_buttons->previewPageButtonTrigger(true, factory->name());
-                }
-            }
-        });
-    }
-    previewButtons->addActions(group->actions());
-    for (auto action : group->actions()) {
-        auto button = qobject_cast<QToolButton *>(previewButtons->widgetForAction(action));
-        button->setFixedSize(26, 26);
-        button->setIconSize(QSize(16, 16));
-        button->setProperty("useIconHighlightEffect", true);
-        button->setProperty("iconHighlightEffectMode", 1);
-        button->setProperty("fillIconSymbolicColor", true);
-    }
-    m_header_bar_layout->addWidget(previewButtons);
+//    auto manager = Peony::PreviewPageFactoryManager::getInstance();
+//    auto pluginNames = manager->getPluginNames();
+//    for (auto name : pluginNames) {
+//        auto factory = manager->getPlugin(name);
+//        auto action = group->addAction(factory->icon(), factory->name());
+//        action->setCheckable(true);
+//        connect(action, &QAction::triggered, [=](/*bool checked*/) {
+//            if (!m_current_preview_action) {
+//                m_current_preview_action = action;
+//                action->setChecked(true);
+//                Q_EMIT m_buttons->previewPageButtonTrigger(true, factory->name());
+//            } else {
+//                if (m_current_preview_action == action) {
+//                    m_current_preview_action = nullptr;
+//                    action->setChecked(false);
+//                    Q_EMIT m_buttons->previewPageButtonTrigger(false, factory->name());
+//                } else {
+//                    m_current_preview_action = action;
+//                    action->setChecked(true);
+//                    Q_EMIT m_buttons->previewPageButtonTrigger(true, factory->name());
+//                }
+//            }
+//        });
+//    }
+//    previewButtons->addActions(group->actions());
+//    for (auto action : group->actions()) {
+//        auto button = qobject_cast<QToolButton *>(previewButtons->widgetForAction(action));
+//        button->setFixedSize(26, 26);
+//        button->setIconSize(QSize(16, 16));
+//        button->setProperty("useIconHighlightEffect", true);
+//        button->setProperty("iconHighlightEffectMode", 1);
+//        button->setProperty("fillIconSymbolicColor", true);
+//    }
+//    m_header_bar_layout->addWidget(previewButtons);
 
     //trash quick operate buttons
     QHBoxLayout *trash = new QHBoxLayout(this);
@@ -562,10 +562,10 @@ void TabWidget::updateTrashBarVisible(const QString &uri)
     m_clear_button->setVisible(visible);
     m_recover_button->setVisible(visible);
 
-    if (uri.startsWith("trash://") || uri.startsWith("recent://"))
-        m_tool_bar->setVisible(false);
-    else
-        m_tool_bar->setVisible(true);
+//    if (uri.startsWith("trash://") || uri.startsWith("recent://"))
+//        m_tool_bar->setVisible(false);
+//    else
+//        m_tool_bar->setVisible(true);
 }
 
 void TabWidget::handleZoomLevel(int zoomLevel)
@@ -733,6 +733,11 @@ const QStringList TabWidget::getCurrentSelections()
     return currentPage()->getCurrentSelections();
 }
 
+const int TabWidget::getCurrentRowcount()
+{
+    return currentPage()->getCurrentRowcount();
+}
+
 const QStringList TabWidget::getAllFileUris()
 {
     return currentPage()->getAllFileUris();
@@ -814,7 +819,6 @@ void TabWidget::setPreviewPage(Peony::PreviewPageIface *previewPage)
 void TabWidget::addPage(const QString &uri, bool jumpTo)
 {
     auto info = Peony::FileInfo::fromUri(uri, false);
-    qDebug() << "addPage:" <<uri <<info->isDir();
     if (! info->isDir())
         return;
 
@@ -1006,6 +1010,8 @@ void TabWidget::updateAdvanceConditions()
 void TabWidget::setCurrentSelections(const QStringList &uris)
 {
     currentPage()->getView()->setSelections(uris);
+    if (uris.count() >0)
+        currentPage()->getView()->scrollToSelection(uris.first());
 }
 
 void TabWidget::editUri(const QString &uri)
@@ -1028,7 +1034,12 @@ void TabWidget::onViewDoubleClicked(const QString &uri)
         return;
     }
     if (info->isDir() || info->isVolume() || info->isVirtual()) {
-        Q_EMIT this->updateWindowLocationRequest(uri, true);
+        //process open symbolic link
+        auto info = Peony::FileInfo::fromUri(uri, false);
+        QString targetUri = uri;
+        if (info->isSymbolLink() && uri.startsWith("file://"))
+            targetUri = "file://" + Peony::FileUtils::getSymbolicTarget(uri);
+        Q_EMIT this->updateWindowLocationRequest(targetUri, true);
     } else {
         Peony::FileLaunchManager::openAsync(uri, false, false);
     }

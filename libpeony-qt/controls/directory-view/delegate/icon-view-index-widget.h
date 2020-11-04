@@ -42,6 +42,7 @@ class IconViewDelegate;
 
 class IconViewIndexWidget : public QWidget
 {
+    friend class IconViewDelegate;
     Q_OBJECT
 public:
     explicit IconViewIndexWidget(const IconViewDelegate *delegate,
@@ -59,7 +60,6 @@ protected:
     void mouseDoubleClickEvent(QMouseEvent *event) override;
 
     void adjustPos();
-    void moveEvent(QMoveEvent *e) override;
 
 private:
     QStyleOptionViewItem m_option;
