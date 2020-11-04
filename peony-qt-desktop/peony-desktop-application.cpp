@@ -384,6 +384,8 @@ void PeonyDesktopApplication::primaryScreenChangedProcess(QScreen *screen)
         currentPrimayWindow->setCentralWidget(getIconView());
         //desktop_icon_view->show();
         currentPrimayWindow->updateView();
+        currentPrimayWindow->hide();
+        currentPrimayWindow->show();
     }
     return;
 
