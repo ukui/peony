@@ -74,6 +74,7 @@ public:
 
     const QString getCurrentUri();
     const QStringList getCurrentSelections();
+    const int getCurrentRowcount();
 
     const QStringList getAllFileUris();
     const QList<std::shared_ptr<Peony::FileInfo>> getCurrentSelectionFileInfos();

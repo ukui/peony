@@ -24,6 +24,8 @@
 #include "file-info.h"
 #include "file-info-manager.h"
 
+#include "file-info-job.h"
+
 #include "mount-operation.h"
 
 #include "gerror-wrapper.h"
@@ -157,19 +159,24 @@ void FileEnumerator::setEnumerateDirectory(GFile *file)
     }
 }
 
+bool FileEnumerator::setEnumerateWithInfoJob(bool query)
+{
+    m_with_info_job = query;
+}
+
 QString FileEnumerator::getEnumerateUri()
 {
     return m_uri;
 }
 
-const QList<std::shared_ptr<FileInfo>> FileEnumerator::getChildren(bool addToHash)
+const QList<std::shared_ptr<FileInfo>> FileEnumerator::getChildren()
 {
     //m_children_uris->removeDuplicates();
 
     //qDebug()<<"FileEnumerator::getChildren():";
     QList<std::shared_ptr<FileInfo>> children;
     for (auto uri : *m_children_uris) {
-        auto file_info = FileInfo::fromUri(uri, addToHash);
+        auto file_info = FileInfo::fromUri(uri);
         children<<file_info;
     }
     return children;
@@ -333,12 +340,6 @@ void FileEnumerator::handleError(GError *err)
         QMessageBox::critical(nullptr, tr("Error"), err->message);
         break;
     case G_IO_ERROR_PERMISSION_DENIED:
-        ca_context_play (caContext, 0,
-                         CA_PROP_EVENT_ID, eventId,
-                         CA_PROP_EVENT_DESCRIPTION, tr("Delete file Warning"), NULL);
-
-        //FIXME: do i need add an auth function for this kind of errors?
-        QMessageBox::critical(nullptr, tr("Error"), err->message);
         //emit error message to upper levels to process
         Q_EMIT prepared(GErrorWrapper::wrapFrom(g_error_new(G_IO_ERROR, G_IO_ERROR_PERMISSION_DENIED, "permission denied")));
         break;
@@ -358,7 +359,7 @@ void FileEnumerator::enumerateAsync()
     //auto uri = g_file_get_uri(m_root_file);
     //auto path = g_file_get_path(m_root_file);
     g_file_enumerate_children_async(m_root_file,
-                                    G_FILE_ATTRIBUTE_STANDARD_NAME,
+                                    m_with_info_job? "*::*": G_FILE_ATTRIBUTE_STANDARD_NAME,
                                     G_FILE_QUERY_INFO_NONE,
                                     G_PRIORITY_DEFAULT,
                                     m_cancellable,
@@ -594,6 +595,13 @@ GAsyncReadyCallback FileEnumerator::enumerator_next_files_async_ready_callback(G
         } else {
             uriList<<uri;
             *(p_this->m_cache_uris)<<uri;
+        }
+
+        if (p_this->m_with_info_job) {
+            auto fileInfo = FileInfo::fromUri(uri);
+            FileInfoJob infoJob(fileInfo);
+            infoJob.refreshInfoContents(info);
+            p_this->m_cached_infos<<fileInfo;
         }
 
         g_free(uri);

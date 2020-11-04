@@ -38,6 +38,9 @@
 #include "file-info.h"
 #include "file-info-job.h"
 #include "file-utils.h"
+#include "tab-widget.h"
+#include "preview-page-factory-manager.h"
+#include "preview-page-plugin-iface.h"
 
 #include "clipboard-utils.h"
 #include "file-operation-utils.h"
@@ -59,6 +62,7 @@
 #include "global-settings.h"
 
 #include <QtConcurrent>
+#include <QAction>
 
 #include <QDebug>
 
@@ -136,7 +140,9 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
 
     addSpacing(9);
     //close search button,set current location icon
-    a = addAction(tr("what is my name?"));
+
+    a = addAction(tr(""));
+
     connect(a, &QAction::triggered,this,&HeaderBar::searchButtonClicked);
 
     auto closeSearch = qobject_cast<QToolButton *>(widgetForAction(a));
@@ -200,7 +206,29 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
     viewType->setPopupMode(QToolButton::InstantPopup);
 
     m_view_type_menu = new ViewTypeMenu(viewType);
+    QAction * preview =new  QAction(tr("Details"));
+    m_view_type_menu->insertAction(0,preview);
+    preview->setCheckable(true);
+
     viewType->setMenu(m_view_type_menu);
+
+    auto manager = Peony::PreviewPageFactoryManager::getInstance();
+    auto pluginNames = manager->getPluginNames();
+
+    connect(preview,&QAction::triggered,[=](bool checked){
+        m_window->m_tab->setTriggeredPreviewPage(checked);
+        for (auto name : pluginNames) {
+            if (checked) {
+                auto plugin = Peony::PreviewPageFactoryManager::getInstance()->getPlugin(name);
+               m_window->m_tab->setPreviewPage(plugin->createPreviewPage());
+            } else {
+                m_window->m_tab->setPreviewPage(nullptr);
+            }
+
+        }
+
+    });
+
 
     connect(m_view_type_menu, &ViewTypeMenu::switchViewRequest, this, [=](const QString &id, const QIcon &icon, bool resetToZoomLevel) {
         viewType->setText(id);
@@ -228,7 +256,7 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
     sortType->setPopupMode(QToolButton::InstantPopup);
 
     m_sort_type_menu = new SortTypeMenu(this);
-    sortType->setMenu(m_sort_type_menu);
+    a->setMenu(m_sort_type_menu);
 
     connect(m_sort_type_menu, &SortTypeMenu::switchSortTypeRequest, m_window, &MainWindow::setCurrentSortColumn);
     connect(m_sort_type_menu, &SortTypeMenu::switchSortOrderRequest, m_window, [=](Qt::SortOrder order) {
@@ -476,7 +504,7 @@ void HeaderBar::updateIcons()
     m_sort_type_menu->switchSortTypeRequest(m_window->getCurrentSortColumn());
     m_sort_type_menu->switchSortOrderRequest(m_window->getCurrentSortOrder());
     m_close_search_action->setIcon(QIcon::fromTheme(Peony::FileUtils::getFileIconName(m_window->getCurrentUri()), QIcon::fromTheme("folder")));
-
+    m_close_search_action->setToolTip(Peony::FileUtils::getFileDisplayName(m_window->getCurrentUri()));
     //go back & go forward
     m_go_back->setEnabled(m_window->getCurrentPage()->canGoBack());
     m_go_forward->setEnabled(m_window->getCurrentPage()->canGoForward());

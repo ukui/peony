@@ -29,6 +29,7 @@
 #include <QLabel>
 #include <QToolButton>
 #include <QWidgetAction>
+#include <QStandardPaths>
 #include <KWindowSystem>
 
 #include "global-settings.h"
@@ -247,9 +248,14 @@ void OperationMenuEditWidget::updateActions(const QString &currentDirUri, const 
 {
     //FIXME:
     bool isSelectionEmpty = selections.isEmpty();
+    QString desktopPath = "file://" +  QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
+    QString desktopUri = Peony::FileUtils::getEncodedUri(desktopPath);
+    QString homeUri = "file://" +  QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
+    bool isDesktop = selections.contains(desktopUri);
+    bool isHome = selections.contains(homeUri);
     m_copy->setEnabled(!isSelectionEmpty);
-    m_cut->setEnabled(!isSelectionEmpty);
-    m_trash->setEnabled(!isSelectionEmpty);
+    m_cut->setEnabled(!isSelectionEmpty && !isDesktop && !isHome);
+    m_trash->setEnabled(!isSelectionEmpty && !isDesktop && !isHome);
 
     bool isClipboradHasFile = Peony::ClipboardUtils::isClipboardHasFiles();
     m_paste->setEnabled(isClipboradHasFile);

@@ -201,7 +201,7 @@ QVariant SideBarModel::data(const QModelIndex &index, int role) const
 
     SideBarAbstractItem *item = static_cast<SideBarAbstractItem*>(index.internalPointer());
     if (index.column() == 1) {
-        if (role == Qt::DecorationRole && item->isEjectable())
+        if (role == Qt::DecorationRole && item->isRemoveable())
             if (item->isMounted())
                 return QVariant(QIcon::fromTheme("media-eject"));
             else//if volume has been unmounted,doesn't show icon.
@@ -345,6 +345,12 @@ bool SideBarModel::dropMimeData(const QMimeData *data, Qt::DropAction action, in
         QStringList uris;
         for (auto url : data->urls()) {
             uris<<url.url();
+        }
+
+        for(auto uri : uris)
+        {
+            if (uri.startsWith("trash://"))
+                return false;
         }
         FileOperationUtils::move(uris, item->uri(), true, true);
         break;

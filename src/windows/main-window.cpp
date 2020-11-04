@@ -261,17 +261,20 @@ void MainWindow::checkSettings()
     m_use_default_name_sort_order = settings->isExist("chinese-first")? settings->getValue("chinese-first").toBool(): false;
     m_folder_first = settings->isExist("folder-first")? settings->getValue("folder-first").toBool(): true;
 
-    //font monitor
-    QGSettings *fontSetting = new QGSettings(FONT_SETTINGS, QByteArray(), this);
-    connect(fontSetting, &QGSettings::changed, this, [=](const QString &key){
-        qDebug() << "fontSetting changed:" << key;
-        if (key == "systemFont" || key == "systemFontSize")
-        {
-            QFont font = this->font();
-            for(auto widget : qApp->allWidgets())
-                widget->setFont(font);
-        }
-    });
+    if (QGSettings::isSchemaInstalled("org.ukui.style"))
+    {
+        //font monitor
+        QGSettings *fontSetting = new QGSettings(FONT_SETTINGS, QByteArray(), this);
+        connect(fontSetting, &QGSettings::changed, this, [=](const QString &key){
+            qDebug() << "fontSetting changed:" << key;
+            if (key == "systemFont" || key == "systemFontSize")
+            {
+                QFont font = this->font();
+                for(auto widget : qApp->allWidgets())
+                    widget->setFont(font);
+            }
+        });
+    }
 }
 
 void MainWindow::setShortCuts()
@@ -310,7 +313,10 @@ void MainWindow::setShortCuts()
     trashAction->setShortcuts(QList<QKeySequence>()<<Qt::Key_Delete<<QKeySequence(Qt::CTRL + Qt::Key_D));
     connect(trashAction, &QAction::triggered, [=]() {
         auto uris = this->getCurrentSelections();
-        if (!uris.isEmpty()) {
+        QString desktopPath = "file://" +  QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
+        QString desktopUri = Peony::FileUtils::getEncodedUri(desktopPath);
+        QString homeUri = "file://" +  QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
+        if (!uris.isEmpty() && !uris.contains(desktopUri) && !uris.contains(homeUri)) {
             bool isTrash = this->getCurrentUri() == "trash:///";
             if (!isTrash) {
                 Peony::FileOperationUtils::trash(uris, true);
@@ -326,7 +332,11 @@ void MainWindow::setShortCuts()
     addAction(deleteAction);
     connect(deleteAction, &QAction::triggered, [=]() {
         auto uris = this->getCurrentSelections();
-        Peony::FileOperationUtils::executeRemoveActionWithDialog(uris);
+        QString desktopPath = "file://" +  QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
+        QString desktopUri = Peony::FileUtils::getEncodedUri(desktopPath);
+        QString homeUri = "file://" +  QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
+        if (! uris.contains(desktopUri) && !uris.contains(homeUri))
+           Peony::FileOperationUtils::executeRemoveActionWithDialog(uris);
     });
 
     auto searchAction = new QAction(this);
@@ -447,24 +457,24 @@ void MainWindow::setShortCuts()
     });
     addAction(maxAction);
 
-    auto previewPageAction = new QAction(this);
-    previewPageAction->setShortcuts(QList<QKeySequence>()<<Qt::Key_F3<<QKeySequence(Qt::ALT + Qt::Key_P));
-    connect(previewPageAction, &QAction::triggered, this, [=]() {
-        auto triggered = m_tab->getTriggeredPreviewPage();
-        if (triggered)
-        {
-            m_tab->setPreviewPage(nullptr);
-        }
-        else
-        {
-            auto instance = Peony::PreviewPageFactoryManager::getInstance();
-            auto lastPreviewPageId  = instance->getLastPreviewPageId();
-            auto *page = instance->getPlugin(lastPreviewPageId)->createPreviewPage();
-            m_tab->setPreviewPage(page);
-        }
-        m_tab->setTriggeredPreviewPage(! triggered);
-    });
-    addAction(previewPageAction);
+//    auto previewPageAction = new QAction(this);
+//    previewPageAction->setShortcuts(QList<QKeySequence>()<<Qt::Key_F3<<QKeySequence(Qt::ALT + Qt::Key_P));
+//    connect(previewPageAction, &QAction::triggered, this, [=]() {
+//        auto triggered = m_tab->getTriggeredPreviewPage();
+//        if (triggered)
+//        {
+//            m_tab->setPreviewPage(nullptr);
+//        }
+//        else
+//        {
+//            auto instance = Peony::PreviewPageFactoryManager::getInstance();
+//            auto lastPreviewPageId  = instance->getLastPreviewPageId();
+//            auto *page = instance->getPlugin(lastPreviewPageId)->createPreviewPage();
+//            m_tab->setPreviewPage(page);
+//        }
+//        m_tab->setTriggeredPreviewPage(! triggered);
+//    });
+//    addAction(previewPageAction);
 
     auto refreshWindowAction = new QAction(this);
     refreshWindowAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_R));
@@ -576,7 +586,12 @@ void MainWindow::setShortCuts()
             if (this->getCurrentSelections().first().startsWith("trash://", Qt::CaseInsensitive)) {
                 return ;
             }
-            Peony::ClipboardUtils::setClipboardFiles(this->getCurrentSelections(), true);
+
+            QString desktopPath = "file://" +  QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
+            QString desktopUri = Peony::FileUtils::getEncodedUri(desktopPath);
+            QString homeUri = "file://" +  QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
+            if (! this->getCurrentSelections().contains(desktopUri) && ! this->getCurrentSelections().contains(homeUri))
+                Peony::ClipboardUtils::setClipboardFiles(this->getCurrentSelections(), true);
         }
     });
     addAction(cutAction);
@@ -761,6 +776,13 @@ void MainWindow::goToUri(const QString &uri, bool addHistory, bool force)
 
 void MainWindow::addNewTabs(const QStringList &uris)
 {
+    //fix search path add new tab,page title show abnormal issue
+    if (uris.count() == 1)
+    {
+        m_tab->addPage(uris.first(), true);
+        return;
+    }
+
     for (auto uri : uris) {
         m_tab->addPage(uri, false);
     }
@@ -847,9 +869,11 @@ void MainWindow::forceStopLoading()
 void MainWindow::setCurrentSelectionUris(const QStringList &uris)
 {
     m_tab->setCurrentSelections(uris);
-    if (uris.isEmpty())
-        return;
-    getCurrentPage()->getView()->scrollToSelection(uris.first());
+    //move scrollToSelection to m_tab to try fix new unzip file show two same icon issue
+    //Fix me, unknow caused reason
+//    if (uris.isEmpty())
+//        return;
+//    getCurrentPage()->getView()->scrollToSelection(uris.first());
 }
 
 void MainWindow::setCurrentSortOrder(Qt::SortOrder order)
@@ -944,7 +968,11 @@ void MainWindow::paintEvent(QPaintEvent *e)
     QPainterPath tmpPath;
     if(window()->isMaximized()){
         tmpPath.addRect(rect().adjusted(0,0,0,0));
-        deletePath.addRect(tmpRect.adjusted(0, 40, 0, 0));
+//        deletePath.addRect(tmpRect.adjusted(0, 40, 0, 0));
+        deletePath.addRoundedRect(tmpRect.adjusted(0, 40, 0, 0), 16, 16);
+        deletePath.addRect(rect().width()-18,rect().height()-18,18,18);
+        deletePath.addRect(tmpRect.x(),tmpRect.height()-18,18,18);
+
     }
     else{
         tmpPath.addRoundedRect(rect().adjusted(4,4,-4,-4), 16, 16);

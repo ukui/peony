@@ -79,7 +79,7 @@ ProgressBar *FileOperationProgressBar::addFileOperation()
 
     li->setFlags(Qt::NoItemFlags);
 
-    connect(proc, &ProgressBar::finished, this, &FileOperationProgressBar::removeFileOperation);
+    proc->connect(proc, &ProgressBar::finished, this, &FileOperationProgressBar::removeFileOperation);
     ++m_progress_size;
 
     if (nullptr == m_current_main) {
@@ -121,7 +121,7 @@ void FileOperationProgressBar::removeFileOperation(ProgressBar *progress)
     }
 
     // free progress
-    delete progress;
+    progress->deleteLater();
     delete li;
 
     if (m_progress_size <= 0) {
@@ -670,7 +670,8 @@ void ProgressBar::mouseReleaseEvent(QMouseEvent *event)
     }
 
     QWidget::mouseReleaseEvent(event);
-    update();
+    if (! m_is_stopping)
+       update();
 }
 
 void ProgressBar::onCancelled()

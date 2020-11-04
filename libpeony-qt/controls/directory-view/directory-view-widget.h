@@ -69,6 +69,9 @@ public:
     const virtual QStringList getSelections() {
         return QStringList();
     }
+    const virtual int getRowcount(){
+        return -1;
+    }
 
     //children
     const virtual QStringList getAllFileUris() {

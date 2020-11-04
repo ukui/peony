@@ -57,10 +57,7 @@ class PEONYCORESHARED_EXPORT FileInfoManager
     friend class FileInfo;
 public:
     static FileInfoManager *getInstance();
-    std::shared_ptr<FileInfo> findFileInfoByUri(QString uri); //{return global_info_list->value(uri);}
-    void clear();
-    void remove(QString uri);
-    void remove(std::shared_ptr<FileInfo> info);
+    std::shared_ptr<FileInfo> findFileInfoByUri(const QString &uri); //{return global_info_list->value(uri);}
 
     void lock() {
         m_mutex.tryLock();
@@ -73,7 +70,6 @@ public:
 
 protected:
     std::shared_ptr<FileInfo> insertFileInfo(std::shared_ptr<FileInfo> info); //{global_info_list->insert(info->uri(), info);}
-    void removeFileInfobyUri(QString uri); //{global_info_list->remove(uri);}
 
 private:
     FileInfoManager();
