@@ -45,11 +45,6 @@
         <translation>前进</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="139"/>
-        <source>what is my name?</source>
-        <translation>我叫啥？</translation>
-    </message>
-    <message>
         <location filename="../../src/control/header-bar.cpp" line="182"/>
         <source>Search</source>
         <translation>搜索</translation>
@@ -134,17 +129,17 @@
         <translation>重做</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1299"/>
+        <location filename="../../src/windows/main-window.cpp" line="1303"/>
         <source>Delete file Warning</source>
         <translation>删除文件警告</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1301"/>
+        <location filename="../../src/windows/main-window.cpp" line="1305"/>
         <source>Delete Permanently</source>
         <translation>永久删除</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1302"/>
+        <location filename="../../src/windows/main-window.cpp" line="1306"/>
         <source>Are you sure that you want to delete these files? Once you start a deletion, the files deleting will never be restored again.</source>
         <translation>您确定要删除这些文件吗？一旦开始删除，这些文件将不可再恢复。</translation>
     </message>

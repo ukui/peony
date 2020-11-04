@@ -136,7 +136,7 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
 
     addSpacing(9);
     //close search button,set current location icon
-    auto a = addAction(tr("what is my name?"));
+    auto a = addAction(tr(""));
     connect(a, &QAction::triggered,this,&HeaderBar::searchButtonClicked);
 
     auto closeSearch = qobject_cast<QToolButton *>(widgetForAction(a));
@@ -435,7 +435,7 @@ void HeaderBar::updateIcons()
     m_sort_type_menu->switchSortTypeRequest(m_window->getCurrentSortColumn());
     m_sort_type_menu->switchSortOrderRequest(m_window->getCurrentSortOrder());
     m_close_search_action->setIcon(QIcon::fromTheme(Peony::FileUtils::getFileIconName(m_window->getCurrentUri()), QIcon::fromTheme("folder")));
-
+    m_close_search_action->setToolTip(Peony::FileUtils::getFileDisplayName(m_window->getCurrentUri()));
     //go back & go forward
     m_go_back->setEnabled(m_window->getCurrentPage()->canGoBack());
     m_go_forward->setEnabled(m_window->getCurrentPage()->canGoForward());

@@ -11,7 +11,7 @@
     <message>
         <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="370"/>
         <source>New Folder</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Yeni Klasör</translation>
     </message>
     <message>
         <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="456"/>
@@ -116,7 +116,7 @@
     <message>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="301"/>
         <source>New Folder</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Yeni Klasör</translation>
     </message>
     <message>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="318"/>
@@ -278,10 +278,10 @@
     <message>
         <location filename="../../peony-qt-desktop/desktop-window.cpp" line="94"/>
         <source>Desktop</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Masaüstü</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-window.cpp" line="159"/>
+        <location filename="../../peony-qt-desktop/desktop-window.cpp" line="180"/>
         <source>set background</source>
         <translation type="unfinished"></translation>
     </message>
