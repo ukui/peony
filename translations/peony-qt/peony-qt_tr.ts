@@ -45,11 +45,6 @@
         <translation>İleri</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="139"/>
-        <source>what is my name?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../../src/control/header-bar.cpp" line="182"/>
         <source>Search</source>
         <translation>Ara</translation>
@@ -134,17 +129,17 @@
         <translation>İleri</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1299"/>
+        <location filename="../../src/windows/main-window.cpp" line="1303"/>
         <source>Delete file Warning</source>
         <translation type="unfinished">Dosya Silme Uyarısı</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1301"/>
+        <location filename="../../src/windows/main-window.cpp" line="1305"/>
         <source>Delete Permanently</source>
         <translation>Kalıcı Olarak Sil</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1302"/>
+        <location filename="../../src/windows/main-window.cpp" line="1306"/>
         <source>Are you sure that you want to delete these files? Once you start a deletion, the files deleting will never be restored again.</source>
         <translation>Bu dosyaları silmek istediğinizden emin misiniz? Bir silme işlemini başlattığınızda, silinen dosyalar bir daha geri yüklenmeyecektir.</translation>
     </message>
