@@ -89,6 +89,8 @@ NavigationTabBar::NavigationTabBar(QWidget *parent) : QTabBar(parent)
     addPageButton->setProperty("fillIconSymbolicColor", true);
     addPageButton->setFixedSize(QSize(this->height() + 2, this->height() + 2));
     addPageButton->setIcon(QIcon::fromTheme("list-add-symbolic"));
+    addPageButton->setAutoRaise(true);
+
     connect(addPageButton, &QToolButton::clicked, this, [=]() {
         auto uri = tabData(currentIndex()).toString();
         Q_EMIT addPageRequest(uri, true);
