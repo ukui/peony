@@ -99,6 +99,8 @@ public:
 
     QTimer *my_time;
 
+    QWidget *m_parent;
+
     int m_cost_seconds = 0;
 
     int m_total_predict = 3600;
