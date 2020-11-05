@@ -67,9 +67,7 @@
 #include "peony-application.h"
 
 #include "global-settings.h"
-
-//play audio lib head file
-#include <canberra.h>
+#include "audio-play-manager.h"
 
 #include <QSplitter>
 
@@ -1255,14 +1253,7 @@ void MainWindow::initUI(const QString &uri)
 
 void MainWindow::cleanTrash()
 {
-    ca_context *caContext;
-    ca_context_create(&caContext);
-    const gchar* eventId = "dialog-warning";
-    //eventid 是/usr/share/sounds音频文件名,不带后缀
-    ca_context_play (caContext, 0,
-                     CA_PROP_EVENT_ID, eventId,
-                     CA_PROP_EVENT_DESCRIPTION, tr("Delete file Warning"), NULL);
-
+    Peony::AudioPlayManager::getInstance()->playWarningAudio();
     auto result = QMessageBox::question(nullptr, tr("Delete Permanently"),
                                         tr("Are you sure that you want to delete these files? "
                                            "Once you start a deletion, the files deleting will never be "

@@ -34,9 +34,7 @@
 
 #include "gerror-wrapper.h"
 #include "bookmark-manager.h"
-
-//play audio lib head file
-#include <canberra.h>
+#include "audio-play-manager.h"
 
 #include <QDebug>
 #include <QStandardPaths>
@@ -144,14 +142,7 @@ void FileItem::findChildrenAsync()
     enumerator->connect(this, &FileItem::cancelFindChildren, enumerator, &FileEnumerator::cancel);
     enumerator->connect(enumerator, &FileEnumerator::prepared, this, [=](std::shared_ptr<GErrorWrapper> err, const QString &targetUri, bool critical) {
         if (critical) {
-            ca_context *caContext;
-            ca_context_create(&caContext);
-            const gchar* eventId = "dialog-warning";
-            //eventid 是/usr/share/sounds音频文件名,不带后缀
-            ca_context_play (caContext, 0,
-                             CA_PROP_EVENT_ID, eventId,
-                             CA_PROP_EVENT_DESCRIPTION, tr("Delete file Warning"), NULL);
-
+            Peony::AudioPlayManager::getInstance()->playWarningAudio();
             QMessageBox::critical(nullptr, tr("Error"), err->message());
             enumerator->cancel();
             return;
@@ -190,14 +181,7 @@ void FileItem::findChildrenAsync()
         }
         if (err) {
             qDebug()<<err->message();
-            ca_context *caContext;
-            ca_context_create(&caContext);
-            const gchar* eventId = "dialog-warning";
-            //eventid 是/usr/share/sounds音频文件名,不带后缀
-            ca_context_play (caContext, 0,
-                             CA_PROP_EVENT_ID, eventId,
-                             CA_PROP_EVENT_DESCRIPTION, tr("Delete file Warning"), NULL);
-
+            Peony::AudioPlayManager::getInstance()->playWarningAudio();
             if (err.get()->code() == G_IO_ERROR_NOT_FOUND || err.get()->code() == G_IO_ERROR_PERMISSION_DENIED) {
                 enumerator->cancel();
                 //enumerator->deleteLater();
