@@ -354,10 +354,15 @@ void DesktopIconView::initShoutCut()
     propertiesWindowAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::ALT + Qt::Key_Return)
                                          <<QKeySequence(Qt::ALT + Qt::Key_Enter));
     connect(propertiesWindowAction, &QAction::triggered, this, [=]() {
+        DesktopMenu menu(this);
         if (this->getSelections().count() > 0)
         {
-            PropertiesWindow *w = new PropertiesWindow(this->getSelections());
-            w->show();
+            menu.showProperties(this->getSelections());
+        }
+        else
+        {
+            QString desktopPath = "file://" +  QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
+            menu.showProperties(desktopPath);
         }
     });
     addAction(propertiesWindowAction);

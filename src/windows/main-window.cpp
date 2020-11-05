@@ -428,11 +428,19 @@ void MainWindow::setShortCuts()
                                          <<QKeySequence(Qt::ALT + Qt::Key_Enter));
     connect(propertiesWindowAction, &QAction::triggered, this, [=]() {
         //Fixed issue:when use this shortcut without any selections, this will crash
+        QStringList uris;
         if (getCurrentSelections().count() > 0)
         {
-            Peony::PropertiesWindow *w = new Peony::PropertiesWindow(getCurrentSelections());
-            w->show();
+            uris<<getCurrentSelections();
         }
+        else
+        {
+            uris<<getCurrentUri();
+        }
+
+        Peony::PropertiesWindow *w = new Peony::PropertiesWindow(uris);
+        w->setAttribute(Qt::WA_DeleteOnClose);
+        w->show();
     });
     addAction(propertiesWindowAction);
 
