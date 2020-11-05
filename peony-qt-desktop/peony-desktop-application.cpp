@@ -162,10 +162,11 @@ PeonyDesktopApplication::PeonyDesktopApplication(int &argc, char *argv[], const 
 
     auto volumeManager = Peony::VolumeManager::getInstance();
     connect(volumeManager,&Peony::VolumeManager::mountAdded,this,[=](const std::shared_ptr<Peony::Mount> &mount){
-        //auto open dir for inserted udisk or dvd.
+        //auto open dir for inserted dvd.
         GMount *newMount = (GMount*)g_object_ref(mount->getGMount());
         g_mount_guess_content_type(newMount,FALSE,NULL,guessContentTypeCallback,NULL);
     });
+    connect(volumeManager,&Peony::VolumeManager::volumeRemoved,this,&PeonyDesktopApplication::volumeRemovedProcess);
 }
 
 Peony::DesktopIconView *PeonyDesktopApplication::getIconView()
@@ -542,3 +543,32 @@ void guessContentTypeCallback(GObject* object,GAsyncResult *res,gpointer data)
     g_object_unref(root);
     g_object_unref(object);
 }
+
+void PeonyDesktopApplication::volumeRemovedProcess(const std::shared_ptr<Peony::Volume> &volume)
+{
+    GVolume *gvolume = NULL;
+    GDrive *gdrive = NULL;
+    char *gdriveName = NULL;
+
+    if(volume)
+        gvolume = volume->getGVolume();
+    if(gvolume)
+        gdrive = g_volume_get_drive(gvolume);
+
+    //Do not stop the DVD/CD driver.
+    if(gdrive){
+        gdriveName = g_drive_get_name(gdrive);
+        if(gdriveName){
+            if(strstr(gdriveName,"DVD") || strstr(gdriveName,"CD")){
+                g_free(gdriveName);
+                g_object_unref(gdrive);
+                return;
+            }
+            g_free(gdriveName);
+        }
+    }
+
+    //if it is possible, we stop it's drive after eject successfully.
+    if(gdrive && g_drive_can_stop(gdrive))
+        g_drive_stop(gdrive,G_MOUNT_UNMOUNT_NONE,NULL,NULL,NULL,NULL);
+};
