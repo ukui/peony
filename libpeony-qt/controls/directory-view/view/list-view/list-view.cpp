@@ -57,7 +57,7 @@ using namespace Peony::DirectoryView;
 
 ListView::ListView(QWidget *parent) : QTreeView(parent)
 {
-    this->verticalScrollBar()->setProperty("drawScrollBarGroove", false);
+//    this->verticalScrollBar()->setProperty("drawScrollBarGroove", false);
     this->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setStyle(Peony::DirectoryView::ListViewStyle::getStyle());
 
