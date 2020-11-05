@@ -70,7 +70,7 @@ FileEnumerator::FileEnumerator(QObject *parent) : QObject(parent)
 
     connect(this, &FileEnumerator::enumerateFinished, this, [=](){
         *m_children_uris<<*m_cache_uris;
-        childrenUpdated(*m_cache_uris);
+        childrenUpdated(*m_cache_uris, true);
         m_cache_uris->clear();
         m_idle->stop();
     });
