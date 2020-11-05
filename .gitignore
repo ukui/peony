@@ -1,5 +1,0 @@
-# Compiled Dynamic libraries
-*.so
-*.so.*
-*.user
-build-*/
