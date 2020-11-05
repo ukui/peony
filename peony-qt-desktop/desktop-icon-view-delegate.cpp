@@ -145,7 +145,7 @@ void DesktopIconViewDelegate::paint(QPainter *painter, const QStyleOptionViewIte
     QPainter shadowPainter(&pixmap);
     QColor shadow = Qt::black;
     shadowPainter.setPen(shadow);
-    IconViewTextHelper::paintText(&shadowPainter, opt, index, maxTextHight, 2, 0, false, shadow);
+    IconViewTextHelper::paintText(&shadowPainter, opt, index, maxTextHight, 0, 2, false, shadow);
     shadowPainter.end();
 
     QImage shadowImage(expectedSize + QSize(4, 4), QImage::Format_ARGB32_Premultiplied);
@@ -166,7 +166,7 @@ void DesktopIconViewDelegate::paint(QPainter *painter, const QStyleOptionViewIte
 
     shadowPainter.end();
 
-    painter->translate(-4, -2);
+    painter->translate(-2, -2);
     painter->drawImage(0, 0, shadowImage);
 
     //painter->setFont(opt.font);
