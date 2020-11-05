@@ -87,6 +87,8 @@ static void handleDuplicate(FileNode *node) {
             node->setDestFileName(name);
         }
     }
+
+    qDebug() << "+++++++++" << node->destUri();
 }
 
 FileMoveOperation::FileMoveOperation(QStringList sourceUris, QString destDirUri, QObject *parent) : FileOperation (parent)
@@ -536,8 +538,7 @@ void FileMoveOperation::copyRecursively(FileNode *node)
     QString relativePath = node->getRelativePath();
     //FIXME: the smart pointers' deconstruction spends too much time.
     GFileWrapperPtr destRoot = wrapGFile(g_file_new_for_uri(m_dest_dir_uri.toUtf8().constData()));
-    GFileWrapperPtr destFile = wrapGFile(g_file_resolve_relative_path(destRoot.get()->get(),
-                                         relativePath.toUtf8().constData()));
+    GFileWrapperPtr destFile = wrapGFile(g_file_resolve_relative_path(destRoot.get()->get(), relativePath.toUtf8().constData()));
 
     char *dest_file_uri = g_file_get_uri(destFile.get()->get());
     node->setDestUri(dest_file_uri);
@@ -637,14 +638,20 @@ fallback_retry:
                 if (FileUtils::isFileExsit(node->destUri())) {
                     handleDuplicate(node);
                 }
-                break;
+                g_object_unref(destFile.get());
+                destFile = wrapGFile(g_file_new_for_uri(node->destUri().toUtf8().constData()));
+                goto fallback_retry;
             }
             case BackupAll: {
                 node->setState(FileNode::Handled);
                 node->setErrorResponse(BackupOne);
-                //make dir has no backup
+                if (FileUtils::isFileExsit(node->destUri())) {
+                    handleDuplicate(node);
+                }
                 m_prehandle_hash.insert(err->code, BackupOne);
-                break;
+                g_object_unref(destFile.get());
+                destFile = wrapGFile(g_file_new_for_uri(node->destUri().toUtf8().constData()));
+                goto fallback_retry;
             }
             case Retry: {
                 goto fallback_retry;
