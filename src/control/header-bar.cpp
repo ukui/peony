@@ -519,6 +519,7 @@ void HeaderBarStyle::drawComplexControl(QStyle::ComplexControl control, const QS
                 button.features |= QStyleOptionToolButton::MenuButtonPopup;
                 button.subControls |= QStyle::SC_ToolButtonMenu;
             }
+            button.palette.setColor(QPalette::Button,Qt::transparent);
             return QProxyStyle::drawComplexControl(control, &button, painter, widget);
         }
     }
@@ -622,14 +623,10 @@ void TopMenuBar::addWindowButtons()
     auto minimize = new QToolButton(m_top_menu_internal_widget);
     minimize->setIcon(QIcon::fromTheme("window-minimize-symbolic"));
     minimize->setToolTip(tr("Minimize"));
-    minimize->setAutoRaise(false);
-    minimize->setFixedSize(QSize(40, 40));
+    minimize->setAutoRaise(true);
+    minimize->setFixedSize(QSize(38, 38));
     minimize->setIconSize(QSize(16, 16));
-    minimize->setStyleSheet(".QToolButton"
-                  "{"
-                  "background-color: transparent;"
-                  "border: 0px solid transparent"
-                  "}");
+
     connect(minimize, &QToolButton::clicked, this, [=]() {
         KWindowSystem::minimizeWindow(m_window->winId());
         m_window->showMinimized();
@@ -640,14 +637,10 @@ void TopMenuBar::addWindowButtons()
     auto maximizeAndRestore = new QToolButton(m_top_menu_internal_widget);
     maximizeAndRestore->setToolTip(tr("Maximize/Restore"));
     maximizeAndRestore->setIcon(QIcon::fromTheme("window-maximize-symbolic"));
-    maximizeAndRestore->setAutoRaise(false);
-    maximizeAndRestore->setFixedSize(QSize(40, 40));
+    maximizeAndRestore->setAutoRaise(true);
+    maximizeAndRestore->setFixedSize(QSize(38, 38));
     maximizeAndRestore->setIconSize(QSize(16, 16));
-    maximizeAndRestore->setStyleSheet(".QToolButton"
-                  "{"
-                  "background-color: transparent;"
-                  "border: 0px solid transparent"
-                  "}");
+
     connect(maximizeAndRestore, &QToolButton::clicked, this, [=]() {
         m_window->maximizeOrRestore();
 
@@ -665,14 +658,10 @@ void TopMenuBar::addWindowButtons()
     auto close = new QToolButton(m_top_menu_internal_widget);
     close->setIcon(QIcon::fromTheme("window-close-symbolic"));
     close->setToolTip(tr("Close"));
-    close->setAutoRaise(false);
-    close->setFixedSize(QSize(40, 40));
+    close->setAutoRaise(true);
+    close->setFixedSize(QSize(38, 38));
     close->setIconSize(QSize(16, 16));
-    close->setStyleSheet(".QToolButton"
-                  "{"
-                  "background-color: transparent;"
-                  "border: 0px solid transparent"
-                  "}");
+
     connect(close, &QToolButton::clicked, this, [=]() {
         m_window->close();
     });

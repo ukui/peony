@@ -54,10 +54,7 @@ void ListViewStyle::drawPrimitive(QStyle::PrimitiveElement element, const QStyle
         auto baseColor = option->palette.color(isEnable? (isActive? QPalette::Active: QPalette::Inactive): QPalette::Disabled, QPalette::Window);
         QPainterPath path;
         path.setFillRule(Qt::WindingFill);
-        path.addRoundedRect(option->rect, 16, 16);
-        path.addRect(QRect(0, 0, 16, 16));
-        path.addRect(QRect(option->rect.width()-16,0, 16, 16));
-        path.addRect(0,option->rect.height()-16,16,16);
+        path.addRect(option->rect);
         if(widget){
             if(qobject_cast<const QTextEdit *>(widget)){
                 path.addRect(QRect(option->rect.width()-16,option->rect.height()-16,16,16));
