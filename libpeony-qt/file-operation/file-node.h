@@ -166,6 +166,13 @@ public:
 
     void setDestFileName(const QString &name) {
         m_dest_basename = name;
+
+        if (nullptr != m_dest_uri) {
+            QStringList ls = m_dest_uri.split("/");
+            ls.pop_back();
+            ls.push_back(name);
+            m_dest_uri = ls.join("/");
+        }
     }
     const QString resolveDestFileUri(const QString &destRootDir);
 
