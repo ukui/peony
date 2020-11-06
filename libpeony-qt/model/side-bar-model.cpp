@@ -175,7 +175,7 @@ bool SideBarModel::hasChildren(const QModelIndex &parent) const
 {
     if (!parent.isValid())
         return true;
-    // add by wwn, to make item in side bar can expand only one time
+    // to make item in side bar can expand only one time
     if (parent.parent().isValid())
         return false;
 

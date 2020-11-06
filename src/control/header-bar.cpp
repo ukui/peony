@@ -153,6 +153,7 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
     m_close_search_action->setVisible(false);
     addSpacing(9);
 
+    // ToDo: 在切换了搜索状态后，手动刷新一下locationBar的内容，当前问题是由于重新设置了递归属性之后导致的刷新，而由于编辑框没有改变因此真正的搜索路径没变
     auto locationBar = new Peony::AdvancedLocationBar(this);
     m_location_bar = locationBar;
     a = addWidget(locationBar);
@@ -172,12 +173,22 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
     });
     connect(m_location_bar, &Peony::AdvancedLocationBar::searchRequest, [=](const QString &path, const QString &key){
         //key is null, clean search content, show all files
-        if (key == "" || key.isNull())
+        if (key == "" || key.isNull()) {
             Q_EMIT this->updateLocationRequest(path, false);
+        }
         else
         {
-            auto targetUri = Peony::SearchVFSUriParser::parseSearchKey(path, key, true, false, "", m_search_recursive);
-            Q_EMIT this->updateLocationRequest(targetUri, false);
+            if (m_search_global) {
+                QString homePath = "file://" + QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
+                auto targetUri = Peony::SearchVFSUriParser::parseSearchKey(homePath, key, true, false, "", m_search_recursive);
+                targetUri = targetUri.replace("&recursive=0", "&recursive=1");
+                Q_EMIT this->updateLocationRequest(targetUri, false);
+            }
+            else {
+                auto targetUri = Peony::SearchVFSUriParser::parseSearchKey(path, key, true, false, "", m_search_recursive);
+                targetUri = targetUri.replace("&recursive=1", "&recursive=0");
+                Q_EMIT this->updateLocationRequest(targetUri, false);
+            }
         }
     });
 
@@ -301,8 +312,8 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
         Peony::ClipboardUtils::setClipboardFiles(m_window->getCurrentSelections(), true);
     });
 
-    // TODO: add icon from theme
-    a = addAction(tr("&All"));
+    a = addAction(tr("&Select All"));
+    a->setIcon(QIcon::fromTheme("edit-select-all-symbolic"));
     m_actions.insert(HeaderBarAction::SeletcAll, a);
     a->setVisible(false);
     a->setToolTip(tr("Select All"));
@@ -532,6 +543,14 @@ void HeaderBar::updateMaximizeState()
 {
     //maximize & restore
     //do it in container
+}
+
+void HeaderBar::cancleSelect() {
+    switchSelectStatus(false);
+}
+void HeaderBar::setGlobalFlag(bool isGlobal) {
+    m_search_global = isGlobal;
+    m_location_bar->deselectSearchBox();
 }
 
 //HeaderBarToolButton

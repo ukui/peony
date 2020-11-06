@@ -137,7 +137,7 @@ void SearchBar::updateTableModel()
         }
 
         m_table_view->setMinimumHeight(m_model->rowCount() * 25);
-        Q_EMIT this->searchRequest(this->text());
+
         this->clear();
         this->clearFocus();
     }

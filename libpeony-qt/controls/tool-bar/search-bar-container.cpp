@@ -49,7 +49,11 @@ SearchBarContainer::SearchBarContainer(QWidget *parent): QWidget(parent)
 
     QLineEdit *edit = new QLineEdit(this);
     m_search_box = edit;
-    edit->setFixedHeight(parent->height());
+    m_search_box->setFixedHeight(parent->height());
+    m_search_box->setClearButtonEnabled(true);
+    QAction *searchAction = new QAction(m_search_box);
+    searchAction->setIcon(QIcon::fromTheme("edit-find-symbolic"));
+    m_search_box->addAction(searchAction,QLineEdit::LeadingPosition);
 
 //    layout->addWidget(filter, Qt::AlignLeft);
     layout->addWidget(edit, Qt::AlignLeft);
@@ -131,6 +135,6 @@ void SearchBarContainer::startSearch()
 
 void SearchBarContainer::clearSearchBox()
 {
-    m_search_box->setText("");
+    m_search_box->deselect();
     m_clear_action = true;
 }
