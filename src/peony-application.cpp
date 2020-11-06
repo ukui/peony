@@ -541,6 +541,7 @@ void PeonyApplication::parseCmd(quint32 id, QByteArray msg)
             QStringList uris = Peony::FileUtils::toDisplayUris(parser.positionalArguments());
 
             Peony::PropertiesWindow *window = new Peony::PropertiesWindow(uris);
+            window->setAttribute(Qt::WA_DeleteOnClose);
             window->show();
             KWindowSystem::raiseWindow(window->winId());
         }

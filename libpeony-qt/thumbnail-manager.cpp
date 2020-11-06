@@ -258,11 +258,13 @@ void ThumbnailManager::createThumbnailInternal(const QString &uri, std::shared_p
 
 void ThumbnailManager::createThumbnail(const QString &uri, std::shared_ptr<FileWatcher> watcher, bool force)
 {
+    qDebug() <<"createThumbnail:" <<force<<uri;
     auto thumbnail = tryGetThumbnail(uri);
     if (!thumbnail.isNull()) {
         if (!force) {
             watcher->thumbnailUpdated(uri);
             watcher->fileChanged(uri);
+            qDebug() <<"createThumbnail return:" <<uri;
             return;
         }
     }
@@ -285,7 +287,8 @@ void ThumbnailManager::createThumbnail(const QString &uri, std::shared_ptr<FileW
             needThumbnail = true;
         }
         else if (info->isDesktopFile()) {
-            needThumbnail = true;
+            needThumbnail = false;
+            updateDesktopFileThumbnail(uri, watcher);
         }
     }
 
@@ -294,6 +297,7 @@ void ThumbnailManager::createThumbnail(const QString &uri, std::shared_ptr<FileW
 
     auto thumbnailJob = new ThumbnailJob(uri, watcher, this);
     m_thumbnail_thread_pool->start(thumbnailJob);
+    qDebug() <<"createThumbnail thumbnailJob start:" <<uri;
 }
 
 void ThumbnailManager::updateDesktopFileThumbnail(const QString &uri, std::shared_ptr<FileWatcher> watcher)
