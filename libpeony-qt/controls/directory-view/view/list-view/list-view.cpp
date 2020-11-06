@@ -625,7 +625,7 @@ void ListView2::bindModel(FileItemModel *model, FileItemProxyFilterSortModel *pr
     connect(m_view->selectionModel(), &QItemSelectionModel::selectionChanged,
             this, &DirectoryViewWidget::viewSelectionChanged);
 
-    connect(m_view, &ListView::doubleClicked, this, [=](const QModelIndex &index) {
+    connect(m_view, &ListView::activated, this, [=](const QModelIndex &index) {
         qDebug()<<index.data(Qt::UserRole).toString();
         auto uri = index.data(Qt::UserRole).toString();
         //process open symbolic link
