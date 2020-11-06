@@ -54,6 +54,10 @@ public:
     void setText(QString text) {
         m_search_box->setText(text);
     }
+    void deselectSearchBox() {
+        // Take action in the search bar to refresh search results
+        m_search_box->deselect();
+    }
 
     //get user selected index of file type
 //    int getFilterIndex() {

@@ -53,6 +53,7 @@ public Q_SLOTS:
     void finishEdit();
     void switchEditMode(bool bSearchMode);
     void clearSearchBox();
+    void deselectSearchBox();
 
 private:
     QStackedLayout *m_layout;

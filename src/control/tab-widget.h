@@ -182,7 +182,7 @@ public Q_SLOTS:
     void addNewConditionBar();
     void removeConditionBar(int index);
     void searchUpdate();
-    void searchChildUpdate(bool isRecursive);
+    void searchChildUpdate();
     void browsePath();
 
     void handleZoomLevel(int zoomLevel);

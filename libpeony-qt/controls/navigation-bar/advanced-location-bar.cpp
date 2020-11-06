@@ -158,3 +158,9 @@ void AdvancedLocationBar::clearSearchBox()
     m_last_key = "";
 }
 
+void AdvancedLocationBar::deselectSearchBox()
+{
+    m_search_bar->deselectSearchBox();
+    m_last_key = "";
+}
+

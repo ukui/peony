@@ -308,9 +308,9 @@ void TabWidget::searchUpdate()
     goToUri(targetUri, false, true);
 }
 
-void TabWidget::searchChildUpdate(bool isRecursive)
+void TabWidget::searchChildUpdate()
 {
-    m_search_child_flag = isRecursive;
+//    m_search_child_flag = isRecursive;
 //    m_search_child->setCheckable(m_search_child_flag);
 //    m_search_child->setChecked(m_search_child_flag);
 //    m_search_child->setDown(m_search_child_flag);
@@ -634,14 +634,14 @@ void TabWidget::switchSearchPath(bool isCurrent)
         m_current_search->setStyleSheet("border: 1px solid transparent;"
                                         "border-bottom: 1px solid gray;");
         Q_EMIT this->globalSearch(false);
-        searchChildUpdate(false);
+//        searchChildUpdate(false);
     }
     else {
         m_current_search->setStyleSheet("border: 1px solid transparent;");
         m_home_search->setStyleSheet("border: 1px solid transparent;"
                                      "border-bottom: 1px solid gray;");
         Q_EMIT this->globalSearch(true);
-        searchChildUpdate(true);
+//        searchChildUpdate(true);
     }
 }
 

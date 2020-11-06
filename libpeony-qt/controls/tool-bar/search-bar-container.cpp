@@ -135,6 +135,6 @@ void SearchBarContainer::startSearch()
 
 void SearchBarContainer::clearSearchBox()
 {
-    m_search_box->setText("");
+    m_search_box->deselect();
     m_clear_action = true;
 }

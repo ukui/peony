@@ -153,6 +153,7 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
     m_close_search_action->setVisible(false);
     addSpacing(9);
 
+    // ToDo: 在切换了搜索状态后，手动刷新一下locationBar的内容，当前问题是由于重新设置了递归属性之后导致的刷新，而由于编辑框没有改变因此真正的搜索路径没变
     auto locationBar = new Peony::AdvancedLocationBar(this);
     m_location_bar = locationBar;
     a = addWidget(locationBar);
@@ -180,10 +181,12 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
             if (m_search_global) {
                 QString homePath = "file://" + QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
                 auto targetUri = Peony::SearchVFSUriParser::parseSearchKey(homePath, key, true, false, "", m_search_recursive);
+                targetUri = targetUri.replace("&recursive=0", "&recursive=1");
                 Q_EMIT this->updateLocationRequest(targetUri, false);
             }
             else {
                 auto targetUri = Peony::SearchVFSUriParser::parseSearchKey(path, key, true, false, "", m_search_recursive);
+                targetUri = targetUri.replace("&recursive=1", "&recursive=0");
                 Q_EMIT this->updateLocationRequest(targetUri, false);
             }
         }
@@ -547,7 +550,7 @@ void HeaderBar::cancleSelect() {
 }
 void HeaderBar::setGlobalFlag(bool isGlobal) {
     m_search_global = isGlobal;
-//    m_location_bar->clearSearchBox();
+    m_location_bar->deselectSearchBox();
 }
 
 //HeaderBarToolButton
