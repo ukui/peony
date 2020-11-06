@@ -262,7 +262,7 @@ void DesktopIndexWidget::mouseDoubleClickEvent(QMouseEvent *event)
         return;
     }
 
-    m_delegate->getView()->doubleClicked(m_index);
+    m_delegate->getView()->activated(m_index);
     m_delegate->getView()->setIndexWidget(m_index, nullptr);
     return;
 }
