@@ -287,8 +287,13 @@ void ThumbnailManager::createThumbnail(const QString &uri, std::shared_ptr<FileW
             needThumbnail = true;
         }
         else if (info->isDesktopFile()) {
-            needThumbnail = false;
-            updateDesktopFileThumbnail(uri, watcher);
+            if (thumbnail.isNull())
+            {
+                needThumbnail = false;
+                updateDesktopFileThumbnail(uri, watcher);
+            }
+            else
+                needThumbnail = true;
         }
     }
 
