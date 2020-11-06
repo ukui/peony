@@ -76,7 +76,7 @@ NavigationSideBar::NavigationSideBar(QWidget *parent) : QTreeView(parent)
 
     installEventFilter(this);
 
-    // add by wwn, to delete side bar hover status color change
+    // To delete side bar hover status color change
     setStyleSheet("NavigationSideBar::branch::hover{background-color: transparent;}"
                   "NavigationSideBar{border: 0px solid transparent}");
 
@@ -97,7 +97,7 @@ NavigationSideBar::NavigationSideBar(QWidget *parent) : QTreeView(parent)
 
     this->setModel(m_proxy_model);
 
-    // add by wwn, to hide the expend button of side bar
+    // To hide the expend button of side bar
     this->setRootIsDecorated(false);
 
     // this->setIndentation(0);

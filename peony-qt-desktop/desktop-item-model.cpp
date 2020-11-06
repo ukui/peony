@@ -354,7 +354,7 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
         }
     });
 
-    // add by wwn, to prevent someone change attribute befor desktop run
+    //! \brief To prevent someone change attribute befor desktop run
     QString homepath = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
     QString initfile = homepath + "/.cache/ukui-menu/ukui-menu.ini";
     QSettings settings(initfile, QSettings::IniFormat);
@@ -693,7 +693,6 @@ Qt::DropActions DesktopItemModel::supportedDropActions() const
 void DesktopItemModel::enabelChange(QString exec, bool execenable)
 {
     /*!
-     * add by wwn
      * \brief A functiom to set *.desktop file in desktop can not exec and grey
      * \details Set the attribute "meta::exec_disable" 1 or 0 to control the
      * application can exec or not

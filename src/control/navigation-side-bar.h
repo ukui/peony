@@ -56,7 +56,6 @@ public:
     QSize sizeHint() const;
 
     /*!
-     * add by wwn
      * \brief function to expand item if click range of expand button
     */
     void mousePressEvent(QMouseEvent *event);
@@ -98,7 +97,6 @@ class NavigationSideBarItemDelegate : public QStyledItemDelegate
     QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const override;
 
     /*!
-     * add by wwn
      * \brief print a new expand button in right of side bar
     */
     void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const override;

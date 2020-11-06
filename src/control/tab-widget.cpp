@@ -242,73 +242,44 @@ void TabWidget::initAdvanceSearch()
     //advance search bar
     QHBoxLayout *search = new QHBoxLayout(this);
     m_search_bar_layout = search;
+    // Maybe it is unused
     QToolBar *searchButtons = new QToolBar(this);
     m_search_bar = searchButtons;
-    QPushButton *closeButton = new QPushButton(QIcon::fromTheme("tab-close"), "", searchButtons);
-    m_search_close = closeButton;
-    closeButton->setFixedHeight(20);
-    closeButton->setFixedWidth(20);
-    closeButton->setToolTip(tr("Close advance search."));
 
-    connect(closeButton, &QPushButton::clicked, [=]()
-    {
-        updateSearchBar(false);
-        Q_EMIT this->closeSearch();
-    });
-
-    QLabel *title = new QLabel(tr("Search"), searchButtons);
+    QLabel *title = new QLabel(tr("Search"), this);
     m_search_title = title;
     title->setFixedWidth(TRASH_BUTTON_WIDTH);
     title->setFixedHeight(TRASH_BUTTON_HEIGHT);
 
-    QPushButton *tabButton = new QPushButton(searchButtons);
-    m_search_path = tabButton;
-    tabButton->setFixedHeight(TRASH_BUTTON_HEIGHT);
-    tabButton->setFixedWidth(TRASH_BUTTON_WIDTH * 2);
-    tabButton->setToolTip(tr("Choose other path to search."));
-    connect(tabButton, &QPushButton::clicked, this, &TabWidget::browsePath);
+    m_current_search = new QPushButton(this);
+    m_current_search->setFixedWidth(TRASH_BUTTON_WIDTH + 100);
+    m_current_search->setFixedHeight(TRASH_BUTTON_HEIGHT + 20);
+    m_current_search->setStyleSheet("border: 1px solid transparent;");
 
-    QPushButton *childButton = new QPushButton(searchButtons);
-    m_search_child = childButton;
-    childButton->setFixedHeight(TRASH_BUTTON_HEIGHT);
-    childButton->setFixedWidth(TRASH_BUTTON_HEIGHT);
-    //qDebug() << QIcon(":/custom/icons/child-folder").name();
-    childButton->setIcon(QIcon(":/custom/icons/child-folder"));
-    childButton->setToolTip(tr("Search recursively"));
-    connect(childButton, &QPushButton::clicked, this, &TabWidget::searchChildUpdate);
-    //set default select recursive
-    m_search_child_flag = true;
-    Q_EMIT this->searchRecursiveChanged(m_search_child_flag);
-    m_search_child->setCheckable(m_search_child_flag);
-    m_search_child->setChecked(m_search_child_flag);
-    m_search_child->setDown(m_search_child_flag);;
+    m_home_search = new QPushButton(tr("Computer"), this);
+    m_home_search->setFixedWidth(TRASH_BUTTON_WIDTH + 50);
+    m_home_search->setFixedHeight(TRASH_BUTTON_HEIGHT + 20);
+    m_home_search->setStyleSheet("border: 1px solid transparent;");
 
-    QPushButton *moreButton = new QPushButton(tr("more options"),searchButtons);
-    m_search_more = moreButton;
-    moreButton->setFixedHeight(TRASH_BUTTON_HEIGHT);
-    moreButton->setFixedWidth(TRASH_BUTTON_WIDTH *2);
-    moreButton->setToolTip(tr("Show/hide advance search"));
+    connect(m_home_search, &QPushButton::clicked, m_home_search, [=]() {
+        switchSearchPath(false);
+    });
+    connect(m_current_search, &QPushButton::clicked, m_current_search, [=]() {
+        switchSearchPath(true);
+    });
 
-    connect(moreButton, &QPushButton::clicked, this, &TabWidget::updateSearchList);
-
-    search->addWidget(closeButton, Qt::AlignLeft);
     search->addSpacing(10);
     search->addWidget(title, Qt::AlignLeft);
     search->addSpacing(10);
-    search->addWidget(tabButton, Qt::AlignLeft);
+    search->addWidget(m_current_search, Qt::AlignLeft);
     search->addSpacing(10);
-    search->addWidget(childButton, Qt::AlignLeft);
-    search->addSpacing(10);
-    search->addWidget(moreButton, Qt::AlignLeft);
-    search->addSpacing(10);
+    search->addWidget(m_home_search, Qt::AlignLeft);
     search->addWidget(searchButtons);
     search->setContentsMargins(10, 0, 10, 0);
     searchButtons->setVisible(false);
-    tabButton->setVisible(false);
-    closeButton->setVisible(false);
     title->setVisible(false);
-    childButton->setVisible(false);
-    moreButton->setVisible(false);
+    m_current_search->setVisible(false);
+    m_home_search->setVisible(false);
 }
 
 //search conditions changed, update filter
@@ -316,6 +287,7 @@ void TabWidget::searchUpdate()
 {
     qDebug() <<"searchUpdate:" <<m_search_child_flag;
     auto currentUri = getCurrentUri();
+//    QString currentUri = "file:///home/weinan1/prj";
     if (! currentUri.startsWith("search:///"))
     {
         qDebug() << "searchUpdate is not in search path";
@@ -334,12 +306,12 @@ void TabWidget::searchUpdate()
     goToUri(targetUri, false, true);
 }
 
-void TabWidget::searchChildUpdate()
+void TabWidget::searchChildUpdate(bool isRecursive)
 {
-    m_search_child_flag = ! m_search_child_flag;
-    m_search_child->setCheckable(m_search_child_flag);
-    m_search_child->setChecked(m_search_child_flag);
-    m_search_child->setDown(m_search_child_flag);
+    m_search_child_flag = isRecursive;
+//    m_search_child->setCheckable(m_search_child_flag);
+//    m_search_child->setChecked(m_search_child_flag);
+//    m_search_child->setDown(m_search_child_flag);
     searchUpdate();
 
     Q_EMIT this->searchRecursiveChanged(m_search_child_flag);
@@ -599,24 +571,21 @@ void TabWidget::updateSearchBar(bool showSearch)
     m_show_search_bar = showSearch;
     if (showSearch)
     {
-        m_search_path->show();
-        m_search_close->show();
         m_search_title->show();
         m_search_bar->show();
-        m_search_child->show();
-        m_search_more->show();
+        m_current_search->show();
+        m_home_search->show();
         m_search_bar_layout->setContentsMargins(10, 5, 10, 5);
-        m_search_more->setIcon(QIcon::fromTheme("go-down"));
+        updateCurrentSearchPath();
         updateSearchPathButton();
+        switchSearchPath(true);
     }
     else
     {
-        m_search_path->hide();
-        m_search_close->hide();
         m_search_title->hide();
         m_search_bar->hide();
-        m_search_child->hide();
-        m_search_more->hide();
+        m_current_search->hide();
+        m_home_search->hide();
         m_search_bar_layout->setContentsMargins(10, 0, 10, 0);
     }
 
@@ -640,6 +609,35 @@ void TabWidget::updateButtons()
         m_remove_button_list[0]->setDisabled(false);
 }
 
+void TabWidget::updateCurrentSearchPath()
+{
+    // ToDo: Fix Chinese path garbled
+    QString currentUri = getCurrentUri();
+    GFile* file = g_file_new_for_uri(currentUri.toStdString().c_str());
+    currentUri = g_file_peek_path (file);
+    QString displayName = currentUri.right(currentUri.count() - currentUri.lastIndexOf("/") - 1);
+    m_current_search->setText(displayName);
+    g_object_unref(file);
+}
+
+void TabWidget::switchSearchPath(bool isCurrent)
+{
+    if (isCurrent) {
+        m_home_search->setStyleSheet("border: 1px solid transparent;");
+        m_current_search->setStyleSheet("border: 1px solid transparent;"
+                                        "border-bottom: 1px solid gray;");
+        Q_EMIT this->globalSearch(false);
+        searchChildUpdate(false);
+    }
+    else {
+        m_current_search->setStyleSheet("border: 1px solid transparent;");
+        m_home_search->setStyleSheet("border: 1px solid transparent;"
+                                     "border-bottom: 1px solid gray;");
+        Q_EMIT this->globalSearch(true);
+        searchChildUpdate(true);
+    }
+}
+
 void TabWidget::updateSearchPathButton(const QString &uri)
 {
     //search path not update
@@ -657,7 +655,7 @@ void TabWidget::updateSearchPathButton(const QString &uri)
     auto iconName = Peony::FileUtils::getFileIconName(curUri);
     auto displayName = Peony::FileUtils::getFileDisplayName(curUri);
     qDebug() << "iconName:" <<iconName <<displayName<<curUri;
-    m_search_path->setIcon(QIcon::fromTheme(iconName));
+//    m_search_path->setIcon(QIcon::fromTheme(iconName));
 
     //elide text if it is too long
     if (displayName.length() > ELIDE_TEXT_LENGTH)
@@ -665,7 +663,7 @@ void TabWidget::updateSearchPathButton(const QString &uri)
         int  charWidth = fontMetrics().averageCharWidth();
         displayName = fontMetrics().elidedText(displayName, Qt::ElideRight, ELIDE_TEXT_LENGTH * charWidth);
     }
-    m_search_path->setText(displayName);
+//    m_search_path->setText(displayName);
 }
 
 void TabWidget::updateSearchList()
@@ -674,7 +672,7 @@ void TabWidget::updateSearchList()
     //if not show search bar, then don't show search list
     if (m_show_search_list && m_show_search_bar)
     {
-        m_search_more->setIcon(QIcon::fromTheme("go-up"));
+//        m_search_more->setIcon(QIcon::fromTheme("go-up"));
         //first click to show advance serach
         if(m_search_bar_list.count() ==0)
         {
@@ -700,7 +698,7 @@ void TabWidget::updateSearchList()
     else
     {
         //hide search list
-        m_search_more->setIcon(QIcon::fromTheme("go-down"));
+//        m_search_more->setIcon(QIcon::fromTheme("go-down"));
         for(int i=0; i<m_search_bar_list.count(); i++)
         {
             m_conditions_list[i]->hide();
@@ -868,6 +866,9 @@ void TabWidget::goToUri(const QString &uri, bool addHistory, bool forceUpdate)
     currentPage()->goToUri(uri, addHistory, forceUpdate);
     m_tab_bar->updateLocation(m_tab_bar->currentIndex(), uri);
     updateTrashBarVisible(uri);
+    if (uri.indexOf("search:///") == -1) {
+        updateCurrentSearchPath();
+    }
 }
 
 void TabWidget::updateTabPageTitle()

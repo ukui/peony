@@ -121,6 +121,8 @@ Q_SIGNALS:
     void tabBarIndexUpdate(int index);
 
     void viewSelectStatus(bool isSelected);
+    void globalSearch(bool isGlobal);
+
 public Q_SLOTS:
     void setCurrentIndex(int index);
     void setPreviewPage(Peony::PreviewPageIface *previewPage = nullptr);
@@ -180,10 +182,13 @@ public Q_SLOTS:
     void addNewConditionBar();
     void removeConditionBar(int index);
     void searchUpdate();
-    void searchChildUpdate();
+    void searchChildUpdate(bool isRecursive);
     void browsePath();
 
     void handleZoomLevel(int zoomLevel);
+
+    void updateCurrentSearchPath();
+    void switchSearchPath (bool isCurrent);
 
 protected:
     void changeCurrentIndex(int index);
@@ -226,11 +231,14 @@ private:
     QLabel *m_trash_label;
     QPushButton *m_clear_button;
     QPushButton *m_recover_button;
-    QPushButton *m_search_path;
-    QPushButton *m_search_close;
-    QPushButton *m_search_child;
-    QPushButton *m_search_more;
+//    QPushButton *m_search_path;
+//    QPushButton *m_search_close;
+//    QPushButton *m_search_child;
+//    QPushButton *m_search_more;
     QLabel *m_search_title;
+//    QString m_current_uri;
+    QPushButton* m_current_search;
+    QPushButton* m_home_search;
 
     //use qlist for dynamic generated search conditions list
     QList<QHBoxLayout*> m_layout_list;
@@ -252,7 +260,7 @@ private:
     bool m_triggered_preview_page = false;
     bool m_show_search_list = false;
     bool m_show_search_bar = false;
-    bool m_search_child_flag = false;
+    bool m_search_child_flag = true;
 
     //Button size macro definition
     const int TRASH_BUTTON_HEIGHT = 28;

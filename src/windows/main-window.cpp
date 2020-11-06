@@ -1265,6 +1265,7 @@ void MainWindow::initUI(const QString &uri)
     connect(m_tab, &TabWidget::closeSearch, headerBar, &HeaderBar::closeSearch);
     connect(m_tab, &TabWidget::viewSelectStatus, headerBar, &HeaderBar::switchSelectStatus);
     connect(m_tab, &TabWidget::updateWindowLocationRequest, headerBar, &HeaderBar::cancleSelect);
+    connect(m_tab,&TabWidget::globalSearch, headerBar, &HeaderBar::setGlobalFlag);
     connect(m_tab, &TabWidget::clearTrash, this, &MainWindow::cleanTrash);
     connect(m_tab, &TabWidget::recoverFromTrash, this, &MainWindow::recoverFromTrash);
     connect(m_tab, &TabWidget::updateWindowLocationRequest, this, &MainWindow::goToUri);

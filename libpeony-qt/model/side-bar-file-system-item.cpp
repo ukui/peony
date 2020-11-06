@@ -64,7 +64,7 @@ SideBarFileSystemItem::SideBarFileSystemItem(QString uri,
         m_display_name = FileUtils::getFileDisplayName(uri);
         m_icon_name = FileUtils::getFileIconName(uri);
 
-        // add by wwn, display name is a read only attribute， so i change it here
+        // display name is a read only attribute， so i change it here
         if (m_display_name == tr("文件系统")) {
             m_display_name = tr("System Disk");
         }
@@ -153,7 +153,7 @@ void SideBarFileSystemItem::findChildren()
                     m_model,
                     this);
 
-            // add by wwn, to skip local device
+            // skip local device
             if (!item->isEjectable() && !item->isRemoveable() && item->uri() != "computer:///root.link") {
                 real_children_count--;
                 delete item;

@@ -106,9 +106,8 @@ private Q_SLOTS:
     void setSearchMode(bool mode);
     void closeSearch();
     void switchSelectStatus(bool select);
-    void cancleSelect() {
-        switchSelectStatus(false);
-    }
+    void cancleSelect();
+    void setGlobalFlag(bool isGlobal);
 
 private:
     const QString m_uri;
@@ -130,6 +129,7 @@ private:
 
     bool m_search_mode = false;
     bool m_search_recursive = true;
+    bool m_search_global = false;
 
     // save the actions to show or hide
     QHash<HeaderBarAction, QAction*> m_actions;
