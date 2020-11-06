@@ -550,7 +550,7 @@ void DesktopIconView::openFileByUri(QString uri)
 
 void DesktopIconView::initDoubleClick()
 {
-    connect(this, &QListView::doubleClicked, this, [=](const QModelIndex &index) {
+    connect(this, &QListView::activated, this, [=](const QModelIndex &index) {
         qDebug() << "double click" << index.data(FileItemModel::UriRole);
         auto uri = index.data(FileItemModel::UriRole).toString();
         //process open symbolic link
