@@ -252,12 +252,12 @@ void TabWidget::initAdvanceSearch()
     title->setFixedHeight(TRASH_BUTTON_HEIGHT);
 
     m_current_search = new QPushButton(this);
-    m_current_search->setFixedWidth(TRASH_BUTTON_WIDTH + 100);
+//    m_current_search->setFixedWidth(TRASH_BUTTON_WIDTH + 50);
     m_current_search->setFixedHeight(TRASH_BUTTON_HEIGHT + 20);
     m_current_search->setStyleSheet("border: 1px solid transparent;");
 
     m_home_search = new QPushButton(tr("Computer"), this);
-    m_home_search->setFixedWidth(TRASH_BUTTON_WIDTH + 50);
+//    m_home_search->setFixedWidth(TRASH_BUTTON_WIDTH + 50);
     m_home_search->setFixedHeight(TRASH_BUTTON_HEIGHT + 20);
     m_home_search->setStyleSheet("border: 1px solid transparent;");
 
@@ -268,12 +268,14 @@ void TabWidget::initAdvanceSearch()
         switchSearchPath(true);
     });
 
+
     search->addSpacing(10);
-    search->addWidget(title, Qt::AlignLeft);
+    search->addWidget(title, 0, Qt::AlignLeft);
     search->addSpacing(10);
-    search->addWidget(m_current_search, Qt::AlignLeft);
+    search->addWidget(m_current_search, 0, Qt::AlignLeft);
     search->addSpacing(10);
-    search->addWidget(m_home_search, Qt::AlignLeft);
+    search->addWidget(m_home_search, 0, Qt::AlignLeft);
+    search->addStretch(1);
     search->addWidget(searchButtons);
     search->setContentsMargins(10, 0, 10, 0);
     searchButtons->setVisible(false);
@@ -611,13 +613,18 @@ void TabWidget::updateButtons()
 
 void TabWidget::updateCurrentSearchPath()
 {
-    // ToDo: Fix Chinese path garbled
     QString currentUri = getCurrentUri();
-    GFile* file = g_file_new_for_uri(currentUri.toStdString().c_str());
-    currentUri = g_file_peek_path (file);
-    QString displayName = currentUri.right(currentUri.count() - currentUri.lastIndexOf("/") - 1);
-    m_current_search->setText(displayName);
-    g_object_unref(file);
+    if (!currentUri.endsWith("///")) {
+        GFile* file = g_file_new_for_uri(currentUri.toStdString().c_str());
+        currentUri = g_file_peek_path (file);
+        QString displayName = currentUri.right(currentUri.count() - currentUri.lastIndexOf("/") - 1);
+        m_current_search->setText(displayName);
+        g_object_unref(file);
+    }
+    else {
+        QString displayName = currentUri.left(currentUri.indexOf(":"));
+        m_current_search->setText(displayName);
+    }
 }
 
 void TabWidget::switchSearchPath(bool isCurrent)
