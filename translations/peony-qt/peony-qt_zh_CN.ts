@@ -113,33 +113,32 @@
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="110"/>
-        <location filename="../../src/windows/main-window.cpp" line="605"/>
+        <location filename="../../src/windows/main-window.cpp" line="108"/>
+        <location filename="../../src/windows/main-window.cpp" line="611"/>
         <source>File Manager</source>
         <translation>文件管理器</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="297"/>
+        <location filename="../../src/windows/main-window.cpp" line="295"/>
         <source>Undo</source>
         <translation>撤销</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="304"/>
+        <location filename="../../src/windows/main-window.cpp" line="302"/>
         <source>Redo</source>
         <translation>重做</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1303"/>
         <source>Delete file Warning</source>
-        <translation>删除文件警告</translation>
+        <translation type="vanished">删除文件警告</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1305"/>
+        <location filename="../../src/windows/main-window.cpp" line="1265"/>
         <source>Delete Permanently</source>
         <translation>永久删除</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1306"/>
+        <location filename="../../src/windows/main-window.cpp" line="1266"/>
         <source>Are you sure that you want to delete these files? Once you start a deletion, the files deleting will never be restored again.</source>
         <translation>您确定要删除这些文件吗？一旦开始删除，这些文件将不可再恢复。</translation>
     </message>
@@ -148,7 +147,7 @@
         <translation type="vanished">文件管理器</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="618"/>
+        <location filename="../../src/windows/main-window.cpp" line="624"/>
         <source>New Folder</source>
         <translation>新建文件夹</translation>
     </message>
@@ -163,6 +162,7 @@
 <context>
     <name>NavigationSideBarContainer</name>
     <message>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="273"/>
         <source>All tags...</source>
         <translation type="vanished">所有标记...</translation>
     </message>

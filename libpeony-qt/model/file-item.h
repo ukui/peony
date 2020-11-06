@@ -152,6 +152,8 @@ private:
     std::shared_ptr<FileWatcher> m_watcher = nullptr;
     std::shared_ptr<FileWatcher> m_thumbnail_watcher = nullptr;
 
+    QStringList m_ending_uris;
+
     /*!
      * \brief m_async_count
      * <br>

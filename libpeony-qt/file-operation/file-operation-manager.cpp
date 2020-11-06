@@ -42,9 +42,7 @@
 #include "file-operation-progress-wizard.h"
 
 #include "file-watcher.h"
-
-//play audio lib head file
-#include <canberra.h>
+#include "audio-play-manager.h"
 
 #include <QDebug>
 
@@ -151,14 +149,7 @@ void FileOperationManager::startOperation(FileOperation *operation, bool addToHi
             {
                 for (auto src : operationSrcs) {
                     if (opInfo->sources().contains(src)) {
-                        ca_context *caContext;
-                        ca_context_create(&caContext);
-                        const gchar* eventId = "dialog-warning";
-                        //eventid 是/usr/share/sounds音频文件名,不带后缀
-                        ca_context_play (caContext, 0,
-                                         CA_PROP_EVENT_ID, eventId,
-                                         CA_PROP_EVENT_DESCRIPTION, tr("Delete file Warning"), NULL);
-
+                        Peony::AudioPlayManager::getInstance()->playWarningAudio();
                         //do not allow operation.
                         QMessageBox::critical(nullptr,
                                               tr("Can't delete."),

@@ -38,6 +38,7 @@
 #include "clipboard-utils.h"
 #include "file-operation-utils.h"
 #include "file-operation-manager.h" //FileOpInfo
+#include "audio-play-manager.h"
 
 #include "file-utils.h"
 #include "bookmark-manager.h"
@@ -51,9 +52,6 @@
 #include "file-lauch-dialog.h"
 
 #include "file-operation-error-dialog.h"
-
-//play audio lib head file
-#include <canberra.h>
 
 #include <QDesktopServices>
 #include <QUrl>
@@ -684,14 +682,7 @@ const QList<QAction *> DirectoryViewMenu::constructTrashActions()
             l<<addAction(QIcon::fromTheme("window-close-symbolic"), tr("&Clean the Trash"));
             l.last()->setEnabled(!isTrashEmpty);
             connect(l.last(), &QAction::triggered, [=]() {
-                ca_context *caContext;
-                ca_context_create(&caContext);
-                const gchar* eventId = "dialog-warning";
-                //eventid 是/usr/share/sounds音频文件名,不带后缀
-                ca_context_play (caContext, 0,
-                                 CA_PROP_EVENT_ID, eventId,
-                                 CA_PROP_EVENT_DESCRIPTION, tr("Delete file Warning"), NULL);
-
+                AudioPlayManager::getInstance()->playWarningAudio();
                 auto result = QMessageBox::question(nullptr, tr("Delete Permanently"), tr("Are you sure that you want to delete these files? "
                                                                                           "Once you start a deletion, the files deleting will never be "
                                                                                           "restored again."));
@@ -711,14 +702,7 @@ const QList<QAction *> DirectoryViewMenu::constructTrashActions()
             });
             l<<addAction(QIcon::fromTheme("window-close-symbolic"), tr("&Delete"));
             connect(l.last(), &QAction::triggered, [=]() {
-                ca_context *caContext;
-                ca_context_create(&caContext);
-                const gchar* eventId = "dialog-warning";
-                //eventid 是/usr/share/sounds音频文件名,不带后缀
-                ca_context_play (caContext, 0,
-                                 CA_PROP_EVENT_ID, eventId,
-                                 CA_PROP_EVENT_DESCRIPTION, tr("Delete file Warning"), NULL);
-
+                AudioPlayManager::getInstance()->playWarningAudio();
                 auto result = QMessageBox::question(nullptr, tr("Delete Permanently"), tr("Are you sure that you want to delete these files? "
                                                                                           "Once you start a deletion, the files deleting will never be "
                                                                                           "restored again."));

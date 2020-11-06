@@ -85,7 +85,7 @@ static void peony_search_vfs_file_enumerator_init(PeonySearchVFSFileEnumerator *
     self->priv->save_result = false;
     self->priv->search_hidden = true;
     self->priv->use_regexp = true;
-    self->priv->case_sensitive = true;
+    self->priv->case_sensitive = false;
     self->priv->match_name_or_content = true;
 }
 

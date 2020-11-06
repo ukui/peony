@@ -24,6 +24,7 @@
 #include "side-bar-model.h"
 #include "side-bar-proxy-filter-sort-model.h"
 #include "side-bar-abstract-item.h"
+#include "volume-manager.h"
 
 #include "side-bar-menu.h"
 #include "side-bar-abstract-item.h"
@@ -54,6 +55,8 @@
 #include <QTimer>
 
 #include <QDebug>
+
+using namespace Peony;
 
 NavigationSideBar::NavigationSideBar(QWidget *parent) : QTreeView(parent)
 {
@@ -95,6 +98,14 @@ NavigationSideBar::NavigationSideBar(QWidget *parent) : QTreeView(parent)
     m_proxy_model->setSourceModel(m_model);
 
     this->setModel(m_proxy_model);
+
+    VolumeManager *volumeManager = VolumeManager::getInstance();
+    connect(volumeManager,&Peony::VolumeManager::volumeAdded,this,[=](const std::shared_ptr<Peony::Volume> &volume){
+        m_proxy_model->invalidate();//display DVD device in real time.
+    });
+    connect(volumeManager,&Peony::VolumeManager::volumeRemoved,this,[=](const std::shared_ptr<Peony::Volume> &volume){
+        m_proxy_model->invalidate();//The drive does not display when the DVD device is removed.
+    });
 
     connect(this, &QTreeView::expanded, [=](const QModelIndex &index) {
         auto item = m_proxy_model->itemFromIndex(index);

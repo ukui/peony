@@ -38,6 +38,9 @@ public:
         return m_uris_to_edit;
     }
 
+    void showProperties(const QString &uri);
+    void showProperties(const QStringList &uris);
+
 protected:
     void fillActions();
     const QList<QAction *> constructOpenOpActions();
@@ -49,8 +52,6 @@ protected:
 
     void openWindow(const QString &uri);
     void openWindow(const QStringList &uris);
-    void showProperties(const QString &uri);
-    void showProperties(const QStringList &uris);
     void gotoAboutComputer();
 
 private:

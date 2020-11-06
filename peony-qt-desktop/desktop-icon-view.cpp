@@ -54,9 +54,7 @@
 #include "file-meta-info.h"
 
 #include "global-settings.h"
-
-//play audio lib head file
-#include <canberra.h>
+#include "audio-play-manager.h"
 
 #include <QAction>
 #include <QMouseEvent>
@@ -356,10 +354,15 @@ void DesktopIconView::initShoutCut()
     propertiesWindowAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::ALT + Qt::Key_Return)
                                          <<QKeySequence(Qt::ALT + Qt::Key_Enter));
     connect(propertiesWindowAction, &QAction::triggered, this, [=]() {
+        DesktopMenu menu(this);
         if (this->getSelections().count() > 0)
         {
-            PropertiesWindow *w = new PropertiesWindow(this->getSelections());
-            w->show();
+            menu.showProperties(this->getSelections());
+        }
+        else
+        {
+            QString desktopPath = "file://" +  QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
+            menu.showProperties(desktopPath);
         }
     });
     addAction(propertiesWindowAction);
@@ -497,14 +500,7 @@ void DesktopIconView::openFileByUri(QString uri)
             QDir dir(info->filePath());
             if (! dir.exists())
             {
-                ca_context *caContext;
-                ca_context_create(&caContext);
-                const gchar* eventId = "dialog-warning";
-                //eventid 是/usr/share/sounds音频文件名,不带后缀
-                ca_context_play (caContext, 0,
-                                 CA_PROP_EVENT_ID, eventId,
-                                 CA_PROP_EVENT_DESCRIPTION, tr("Delete file Warning"), NULL);
-
+                Peony::AudioPlayManager::getInstance()->playWarningAudio();
                 auto result = QMessageBox::question(nullptr, tr("Open Link failed"),
                                       tr("File not exist, do you want to delete the link file?"));
                 if (result == QMessageBox::Yes) {
@@ -520,14 +516,7 @@ void DesktopIconView::openFileByUri(QString uri)
                     && ! info->uri().startsWith("computer://")
                     &&  ! info->canExecute())
             {
-                ca_context *caContext;
-                ca_context_create(&caContext);
-                const gchar* eventId = "dialog-warning";
-                //eventid 是/usr/share/sounds音频文件名,不带后缀
-                ca_context_play (caContext, 0,
-                                 CA_PROP_EVENT_ID, eventId,
-                                 CA_PROP_EVENT_DESCRIPTION, tr("Delete file Warning"), NULL);
-
+                Peony::AudioPlayManager::getInstance()->playWarningAudio();
                 QMessageBox::critical(nullptr, tr("Open failed"),
                                       tr("Open directory failed, you have no permission!"));
                 return;
@@ -561,7 +550,7 @@ void DesktopIconView::openFileByUri(QString uri)
 
 void DesktopIconView::initDoubleClick()
 {
-    connect(this, &QListView::doubleClicked, this, [=](const QModelIndex &index) {
+    connect(this, &QListView::activated, this, [=](const QModelIndex &index) {
         qDebug() << "double click" << index.data(FileItemModel::UriRole);
         auto uri = index.data(FileItemModel::UriRole).toString();
         //process open symbolic link

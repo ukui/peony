@@ -34,9 +34,7 @@
 
 #include "gerror-wrapper.h"
 #include "bookmark-manager.h"
-
-//play audio lib head file
-#include <canberra.h>
+#include "audio-play-manager.h"
 
 #include <QDebug>
 #include <QStandardPaths>
@@ -144,14 +142,7 @@ void FileItem::findChildrenAsync()
     enumerator->connect(this, &FileItem::cancelFindChildren, enumerator, &FileEnumerator::cancel);
     enumerator->connect(enumerator, &FileEnumerator::prepared, this, [=](std::shared_ptr<GErrorWrapper> err, const QString &targetUri, bool critical) {
         if (critical) {
-            ca_context *caContext;
-            ca_context_create(&caContext);
-            const gchar* eventId = "dialog-warning";
-            //eventid 是/usr/share/sounds音频文件名,不带后缀
-            ca_context_play (caContext, 0,
-                             CA_PROP_EVENT_ID, eventId,
-                             CA_PROP_EVENT_DESCRIPTION, tr("Delete file Warning"), NULL);
-
+            Peony::AudioPlayManager::getInstance()->playWarningAudio();
             QMessageBox::critical(nullptr, tr("Error"), err->message());
             enumerator->cancel();
             return;
@@ -190,14 +181,7 @@ void FileItem::findChildrenAsync()
         }
         if (err) {
             qDebug()<<err->message();
-            ca_context *caContext;
-            ca_context_create(&caContext);
-            const gchar* eventId = "dialog-warning";
-            //eventid 是/usr/share/sounds音频文件名,不带后缀
-            ca_context_play (caContext, 0,
-                             CA_PROP_EVENT_ID, eventId,
-                             CA_PROP_EVENT_DESCRIPTION, tr("Delete file Warning"), NULL);
-
+            Peony::AudioPlayManager::getInstance()->playWarningAudio();
             if (err.get()->code() == G_IO_ERROR_NOT_FOUND || err.get()->code() == G_IO_ERROR_PERMISSION_DENIED) {
                 enumerator->cancel();
                 //enumerator->deleteLater();
@@ -348,9 +332,12 @@ void FileItem::findChildrenAsync()
             m_watcher->startMonitor();
         });
     } else {
-        enumerator->connect(enumerator, &Peony::FileEnumerator::childrenUpdated, this, [=](const QStringList &uris) {
+        enumerator->connect(enumerator, &Peony::FileEnumerator::childrenUpdated, this, [=](const QStringList &uris, bool isEnding) {
             if (uris.isEmpty()) {
-                //Q_EMIT m_model->findChildrenFinished();
+                if (isEnding) {
+                    Q_EMIT m_model->findChildrenFinished();
+                    Q_EMIT m_model->updated();
+                }
             }
 
             if (!m_children) {
@@ -359,6 +346,10 @@ void FileItem::findChildrenAsync()
                 return ;
             }
 
+            if (isEnding) {
+                m_ending_uris.clear();
+                m_ending_uris = uris;
+            }
             for (auto uri : uris) {
                 auto info = FileInfo::fromUri(uri);
                 auto infoJob = new FileInfoJob(info);
@@ -371,6 +362,12 @@ void FileItem::findChildrenAsync()
                     //Q_EMIT m_model->dataChanged(item->firstColumnIndex(), item->lastColumnIndex());
                     //Q_EMIT m_model->updated();
                     ThumbnailManager::getInstance()->createThumbnail(info->uri(), m_thumbnail_watcher);
+
+                    m_ending_uris.removeOne(uri);
+                    if (isEnding && m_ending_uris.isEmpty()) {
+                        Q_EMIT m_model->findChildrenFinished();
+                        Q_EMIT m_model->updated();
+                    }
                 });
                 infoJob->queryAsync();
             }
@@ -380,9 +377,6 @@ void FileItem::findChildrenAsync()
             delete enumerator;
             if (!m_model||!m_children||!m_info)
                 return;
-
-            Q_EMIT m_model->findChildrenFinished();
-            Q_EMIT m_model->updated();
 
             m_watcher = std::make_shared<FileWatcher>(this->m_info->uri());
             m_watcher->setMonitorChildrenChange(true);

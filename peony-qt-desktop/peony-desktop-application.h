@@ -27,9 +27,12 @@
 
 #include "singleapplication.h"
 #include "desktop-window.h"
+#include "volume-manager.h"
 
 #include <QScreen>
 #include <QWindow>
+
+using namespace Peony;
 
 class PeonyDesktopApplication : public SingleApplication
 {
@@ -52,6 +55,7 @@ public Q_SLOTS:
     void primaryScreenChangedProcess(QScreen *screen);
     void screenAddedProcess(QScreen *screen);
     void screenRemovedProcess(QScreen *screen);
+    void volumeRemovedProcess(const std::shared_ptr<Peony::Volume> &volume);
 
     void addWindow(QScreen *screen, bool checkPrimay = true);
     void changeBgProcess(const QString& bgPath);

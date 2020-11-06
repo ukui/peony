@@ -67,9 +67,7 @@
 #include "peony-application.h"
 
 #include "global-settings.h"
-
-//play audio lib head file
-#include <canberra.h>
+#include "audio-play-manager.h"
 
 #include <QSplitter>
 
@@ -432,11 +430,19 @@ void MainWindow::setShortCuts()
                                          <<QKeySequence(Qt::ALT + Qt::Key_Enter));
     connect(propertiesWindowAction, &QAction::triggered, this, [=]() {
         //Fixed issue:when use this shortcut without any selections, this will crash
+        QStringList uris;
         if (getCurrentSelections().count() > 0)
         {
-            Peony::PropertiesWindow *w = new Peony::PropertiesWindow(getCurrentSelections());
-            w->show();
+            uris<<getCurrentSelections();
         }
+        else
+        {
+            uris<<getCurrentUri();
+        }
+
+        Peony::PropertiesWindow *w = new Peony::PropertiesWindow(uris);
+        w->setAttribute(Qt::WA_DeleteOnClose);
+        w->show();
     });
     addAction(propertiesWindowAction);
 
@@ -1276,14 +1282,7 @@ void MainWindow::initUI(const QString &uri)
 
 void MainWindow::cleanTrash()
 {
-    ca_context *caContext;
-    ca_context_create(&caContext);
-    const gchar* eventId = "dialog-warning";
-    //eventid 是/usr/share/sounds音频文件名,不带后缀
-    ca_context_play (caContext, 0,
-                     CA_PROP_EVENT_ID, eventId,
-                     CA_PROP_EVENT_DESCRIPTION, tr("Delete file Warning"), NULL);
-
+    Peony::AudioPlayManager::getInstance()->playWarningAudio();
     auto result = QMessageBox::question(nullptr, tr("Delete Permanently"),
                                         tr("Are you sure that you want to delete these files? "
                                            "Once you start a deletion, the files deleting will never be "

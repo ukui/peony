@@ -395,7 +395,7 @@ QSize IconViewTextHelper::getTextSizeForIndex(const QStyleOptionViewItem &option
     return QSize(fixedWidth, textHight);
 }
 
-void IconViewTextHelper::paintText(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index, int textMaxHeight, int horizalMargin, int maxLineCount, bool useSystemPalette)
+void IconViewTextHelper::paintText(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index, int textMaxHeight, int horizalMargin, int maxLineCount, bool useSystemPalette, const QColor &customColor)
 {
     painter->save();
     painter->translate(horizalMargin, 0);
@@ -405,6 +405,10 @@ void IconViewTextHelper::paintText(QPainter *painter, const QStyleOptionViewItem
             painter->setPen(option.palette.highlightedText().color());
         else
             painter->setPen(option.palette.text().color());
+    }
+
+    if (customColor != Qt::transparent) {
+        painter->setPen(customColor);
     }
 
     int lineCount = 0;

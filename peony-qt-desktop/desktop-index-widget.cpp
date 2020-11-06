@@ -38,6 +38,9 @@
 
 #include <QDebug>
 
+//qt's global function
+extern void qt_blurImage(QImage &blurImage, qreal radius, bool quality, int transposed);
+
 using namespace Peony;
 
 DesktopIndexWidget::DesktopIndexWidget(DesktopIconViewDelegate *delegate,
@@ -85,7 +88,10 @@ void DesktopIndexWidget::paintEvent(QPaintEvent *e)
 
     //qDebug()<<"paint";
     auto visualRect = m_delegate->getView()->visualRect(m_index);
-    move(visualRect.topLeft());
+    if (this->pos() != visualRect.topLeft()) {
+        move(visualRect.topLeft());
+        return;
+    }
 
     Q_UNUSED(e)
     QPainter p(this);
@@ -105,6 +111,8 @@ void DesktopIndexWidget::paintEvent(QPaintEvent *e)
     int y_delta = iconSizeExcepted.height() - iconRect.height();
     opt.rect.moveTo(opt.rect.x(), opt.rect.y() + y_delta);
 
+    int maxTextHight = this->height() - iconSizeExcepted.height() - 10;
+
     //setFixedHeight(opt.rect.height() + y_delta);
 
     // draw icon
@@ -121,17 +129,46 @@ void DesktopIndexWidget::paintEvent(QPaintEvent *e)
     }
     // draw text shadow
     p.save();
-    p.translate(1, 1);
-    QColor shadow = Qt::black;
-    shadow.setAlpha(127);
-    p.setPen(shadow);
-    Peony::DirectoryView::IconViewTextHelper::paintText(&p,
-            m_option,
-            m_index,
-            9999,
-            2,
-            0,
-            false);
+
+    auto expectedSize = Peony::DirectoryView::IconViewTextHelper::getTextSizeForIndex(m_option, m_index, 2);
+    QPixmap pixmap(expectedSize);
+    pixmap.fill(Qt::transparent);
+    QPainter shadowPainter(&pixmap);
+    shadowPainter.setPen(Qt::black);
+    Peony::DirectoryView::IconViewTextHelper::paintText(&shadowPainter, m_option, m_index, maxTextHight, 2, 0, false, Qt::black);
+    shadowPainter.end();
+
+    QImage shadowImage(expectedSize + QSize(4, 4), QImage::Format_ARGB32_Premultiplied);
+    shadowImage.fill(Qt::transparent);
+    shadowPainter.begin(&shadowImage);
+    shadowPainter.drawPixmap(2, 2, pixmap);
+    qt_blurImage(shadowImage, 8, false, false);
+
+    for (int x = 0; x < shadowImage.width(); x++) {
+        for (int y = 0; y < shadowImage.height(); y++) {
+            auto color = shadowImage.pixelColor(x, y);
+            if (color.alpha() > 0) {
+                color.setAlphaF(qMin(color.alphaF() * 1.5, 1.0));
+                shadowImage.setPixelColor(x, y, color);
+            }
+        }
+    }
+
+    shadowPainter.end();
+
+    p.translate(-3, -1);
+    p.drawImage(0, 0, shadowImage);
+
+//    QColor shadow = Qt::black;
+//    shadow.setAlpha(127);
+//    p.setPen(shadow);
+//    Peony::DirectoryView::IconViewTextHelper::paintText(&p,
+//            m_option,
+//            m_index,
+//            9999,
+//            2,
+//            0,
+//            false);
 //    QFontMetrics fm(m_current_font);
 
 //    style()->drawItemText(&p,

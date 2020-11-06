@@ -443,7 +443,7 @@ void IconView::setProxy(DirectoryViewProxyIface *proxy)
     connect(m_model, &FileItemModel::findChildrenFinished,
             this, &IconView::reportViewDirectoryChanged);
 
-    connect(this, &IconView::doubleClicked, [=](const QModelIndex &index) {
+    connect(this, &IconView::activated, [=](const QModelIndex &index) {
         qDebug()<<"double click"<<index.data(FileItemModel::UriRole);
         auto uri = index.data(FileItemModel::UriRole).toString();
         //process open symbolic link
@@ -606,7 +606,7 @@ void IconView2::bindModel(FileItemModel *model, FileItemProxyFilterSortModel *pr
     connect(m_view->selectionModel(), &QItemSelectionModel::selectionChanged,
             this, &DirectoryViewWidget::viewSelectionChanged);
 
-    connect(m_view, &IconView::doubleClicked, this, [=](const QModelIndex &index) {
+    connect(m_view, &IconView::activated, this, [=](const QModelIndex &index) {
         auto uri = index.data(Qt::UserRole).toString();
         //process open symbolic link
         auto info = FileInfo::fromUri(uri, false);
