@@ -433,6 +433,9 @@ void ListView::adjustColumnsSize()
         return;
 
     resizeColumnToContents(0);
+    int firstColumnSize = columnWidth(0);
+    firstColumnSize += this->indentation();
+    setColumnWidth(0, firstColumnSize);
 
     int rightPartsSize = 0;
     for (int column = 1; column < model()->columnCount(); column++) {
