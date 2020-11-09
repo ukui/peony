@@ -1232,6 +1232,7 @@ void DesktopIconView::dragMoveEvent(QDragMoveEvent *e)
 
 void DesktopIconView::dropEvent(QDropEvent *e)
 {
+    bool isOutsideScreen = false;
     m_real_do_edit = false;
     //qDebug()<<"drop event";
     /*!
@@ -1243,38 +1244,55 @@ void DesktopIconView::dropEvent(QDropEvent *e)
       is incorrect.
       */
     m_edit_trigger_timer.stop();
-    if (e->keyboardModifiers() && Qt::ControlModifier)
+    if (e->keyboardModifiers() & Qt::ControlModifier) {
         m_ctrl_key_pressed = true;
-    else
+    } else {
         m_ctrl_key_pressed = false;
+    }
 
     auto action = m_ctrl_key_pressed ? Qt::CopyAction : Qt::MoveAction;
     qDebug() << "DesktopIconView dropEvent" <<action;
-    if (this == e->source() && !m_ctrl_key_pressed)
-    {
+    if (this == e->source() && !m_ctrl_key_pressed) {
         auto index = indexAt(e->pos());
         qDebug() <<"DesktopIconView index:" <<index <<index.isValid();
         bool bmoved = false;
         if (index.isValid()) {
             auto info = FileInfo::fromUri(index.data(Qt::UserRole).toString());
-            if (!info->isDir())
+            if (!info->isDir()) {
                 return;
+            }
             bmoved = true;
         }
 
-        if (bmoved)
-        {
+        if (bmoved) {
             //move file to desktop folder
             qDebug() << "DesktopIconView move file to folder";
             m_model->dropMimeData(e->mimeData(), action, -1, -1, this->indexAt(e->pos()));
-        }
-        else
+        } else {
             QListView::dropEvent(e);
+        }
 
         QHash<QModelIndex, QRect> currentIndexesRects;
         for (int i = 0; i < m_proxy_model->rowCount(); i++) {
             auto tmp = m_proxy_model->index(i, 0);
-            currentIndexesRects.insert(tmp, QListView::visualRect(tmp));
+            QRect rect = QListView::visualRect(tmp);
+            currentIndexesRects.insert(tmp, rect);
+            if (rect.x() < 0 || rect.y() < 0
+                    || qApp->primaryScreen()->size().width() <= rect.x()
+                    || qApp->primaryScreen()->size().height() <= rect.y()) {
+                isOutsideScreen = true;
+            }
+        }
+
+        // If one of the selected ICONS is out of the screen, replace the icon in place
+        if (isOutsideScreen && !m_drag_indexes.isEmpty()) {
+            for (auto index : m_drag_indexes) {
+                if (m_drag_indexes.contains(index)
+                        && m_item_rect_hash.contains(index.data(Qt::UserRole).toString())) {
+                    setPositionForIndex(m_item_rect_hash[index.data(Qt::UserRole).toString()].topLeft(), index);
+                }
+            }
+            return;
         }
 
         //fixme: handle overlapping.
