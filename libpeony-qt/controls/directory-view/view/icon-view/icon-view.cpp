@@ -450,7 +450,8 @@ void IconView::setProxy(DirectoryViewProxyIface *proxy)
         auto info = FileInfo::fromUri(uri, false);
         if (info->isSymbolLink() && uri.startsWith("file://"))
             uri = "file://" + FileUtils::getSymbolicTarget(uri);
-        Q_EMIT m_proxy->viewDoubleClicked(uri);
+        if(!m_multi_select)
+            Q_EMIT m_proxy->viewDoubleClicked(uri);
     });
 
 
@@ -612,7 +613,8 @@ void IconView2::bindModel(FileItemModel *model, FileItemProxyFilterSortModel *pr
         auto info = FileInfo::fromUri(uri, false);
         if (info->isSymbolLink() && uri.startsWith("file://"))
             uri = "file://" +  FileUtils::getSymbolicTarget(uri);
-        Q_EMIT this->viewDoubleClicked(uri);
+        if(!m_view->m_multi_select)
+            Q_EMIT this->viewDoubleClicked(uri);
     });
 
     connect(m_view, &IconView::customContextMenuRequested, this, [=](const QPoint &pos) {
