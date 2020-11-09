@@ -188,9 +188,17 @@ const QList<QAction *> DesktopMenu::constructOpenOpActions()
                 });
             }
         } else {
-            l<<addAction(QIcon::fromTheme("document-open-symbolic"), tr("&Open %1 selected files").arg(m_selections.count()));
+            if (m_selections.count() == 1)
+            {
+                auto info = FileInfo::fromUri(m_selections.first());
+                auto displayName = info->displayName();
+                l<<addAction(QIcon::fromTheme("document-open-symbolic"), tr("&Open \"%1\"").arg(displayName));
+            }
+            else
+                l<<addAction(QIcon::fromTheme("document-open-symbolic"), tr("&Open %1 selected files").arg(m_selections.count()));
+
             connect(l.last(), &QAction::triggered, [=]() {
-                qDebug()<<"triggered";
+                qDebug()<<"triggered:"<<m_selections.count();
                 QStringList dirs;
                 QStringList files;
                 for (auto uri : m_selections) {
