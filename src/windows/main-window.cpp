@@ -958,14 +958,14 @@ void MainWindow::paintEvent(QPaintEvent *e)
 
     colorBase.setAlphaF(sidebarOpacity/100.0);
 
-    if (qApp->property("blurEnable").isValid()) {
-        bool blurEnable = qApp->property("blurEnable").toBool();
-        if (!blurEnable) {
-            colorBase.setAlphaF(1);
-        }
-    } else {
-        colorBase.setAlphaF(1);
-    }
+//    if (qApp->property("blurEnable").isValid()) {
+//        bool blurEnable = qApp->property("blurEnable").toBool();
+//        if (!blurEnable) {
+//            colorBase.setAlphaF(1);
+//        }
+//    } else {
+//        colorBase.setAlphaF(1);
+//    }
 
     QPainterPath sidebarPath;
     sidebarPath.setFillRule(Qt::FillRule::WindingFill);
