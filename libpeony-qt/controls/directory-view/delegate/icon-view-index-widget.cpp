@@ -284,7 +284,7 @@ void IconViewIndexWidget::mouseReleaseEvent(QMouseEvent *e)
 
 void IconViewIndexWidget::mouseDoubleClickEvent(QMouseEvent *event)
 {
-    m_delegate->getView()->doubleClicked(m_index);
+    m_delegate->getView()->activated(m_index);
     return;
 }
 

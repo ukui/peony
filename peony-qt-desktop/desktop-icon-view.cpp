@@ -243,10 +243,10 @@ DesktopIconView::~DesktopIconView()
 bool DesktopIconView::eventFilter(QObject *obj, QEvent *e)
 {
     //fixme:
-    if (e->type() == QEvent::StyleChange) {
-        if (m_model)
-            refresh();
-    }
+//    if (e->type() == QEvent::StyleChange) {
+//        if (m_model)
+//            refresh();
+//    }
     return false;
 }
 
