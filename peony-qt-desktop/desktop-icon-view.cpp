@@ -1243,33 +1243,33 @@ void DesktopIconView::dropEvent(QDropEvent *e)
       is incorrect.
       */
     m_edit_trigger_timer.stop();
-    if (e->keyboardModifiers() && Qt::ControlModifier)
+    if (e->keyboardModifiers() & Qt::ControlModifier) {
         m_ctrl_key_pressed = true;
-    else
+    } else {
         m_ctrl_key_pressed = false;
+    }
 
     auto action = m_ctrl_key_pressed ? Qt::CopyAction : Qt::MoveAction;
     qDebug() << "DesktopIconView dropEvent" <<action;
-    if (this == e->source() && !m_ctrl_key_pressed)
-    {
+    if (this == e->source() && !m_ctrl_key_pressed) {
         auto index = indexAt(e->pos());
         qDebug() <<"DesktopIconView index:" <<index <<index.isValid();
         bool bmoved = false;
         if (index.isValid()) {
             auto info = FileInfo::fromUri(index.data(Qt::UserRole).toString());
-            if (!info->isDir())
+            if (!info->isDir()) {
                 return;
+            }
             bmoved = true;
         }
 
-        if (bmoved)
-        {
+        if (bmoved) {
             //move file to desktop folder
             qDebug() << "DesktopIconView move file to folder";
             m_model->dropMimeData(e->mimeData(), action, -1, -1, this->indexAt(e->pos()));
-        }
-        else
+        } else {
             QListView::dropEvent(e);
+        }
 
         QHash<QModelIndex, QRect> currentIndexesRects;
         for (int i = 0; i < m_proxy_model->rowCount(); i++) {
@@ -1295,7 +1295,7 @@ void DesktopIconView::dropEvent(QDropEvent *e)
 
             for (auto index : unoverlappedIndexes) {
                 // save pos
-                QTimer::singleShot(1, this, [=](){
+                QTimer::singleShot(1, this, [=]() {
                     setFileMetaInfoPos(index.data(Qt::UserRole).toString(), QListView::visualRect(index).topLeft());
                 });
             }
@@ -1327,10 +1327,12 @@ void DesktopIconView::dropEvent(QDropEvent *e)
                             //put item to next column first column
                             next.moveTo(next.x() + grid.width(), top);
                         }
-                        if (notEmptyRegion.contains(next.center()))
+                        if (notEmptyRegion.contains(next.center())) {
                             continue;
+                        }
 
                         isEmptyPos = true;
+
                         setPositionForIndex(next.topLeft(), dragedIndex);
                         setFileMetaInfoPos(dragedIndex.data(Qt::UserRole).toString(), next.topLeft());
                         notEmptyRegion += next;
@@ -1346,14 +1348,18 @@ void DesktopIconView::dropEvent(QDropEvent *e)
                 }
 
                 // try relocating invisible item
-
-                QRect next;
-                for (auto existedRect : notEmptyRegion.rects()) {
-                    if (this->viewport()->rect().contains(existedRect)) {
-                        next = existedRect;
+                QRect next(0, 0, 0, 0);
+                for (auto existedRect = notEmptyRegion.begin(); existedRect != notEmptyRegion.end(); ++existedRect) {
+                    if (this->viewport()->rect().contains(*existedRect)) {
+                        next = *existedRect;
                         break;
+                    } else if (existedRect == notEmptyRegion.end() - 1
+                               && next == QRect(0, 0, 0, 0)) {
+                        next = *existedRect;
+                        next.moveTo(0, 0);
                     }
                 }
+
                 while (next.translated(-grid.width(), 0).x() >= 0) {
                     next.translate(-grid.width(), 0);
                 }
