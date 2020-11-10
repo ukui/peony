@@ -959,10 +959,10 @@ void MainWindow::paintEvent(QPaintEvent *e)
     if (qApp->property("blurEnable").isValid()) {
         bool blurEnable = qApp->property("blurEnable").toBool();
         if (!blurEnable) {
-            colorBase.setAlphaF(1);
+            colorBase.setAlphaF(0.9);
         }
     } else {
-        colorBase.setAlphaF(1);
+        colorBase.setAlphaF(0.9);
     }
 
     QPainterPath sidebarPath;
