@@ -24,15 +24,15 @@
 #include "file-info.h"
 #include "file-info-manager.h"
 
+#include "file-info-job.h"
+
 #include "mount-operation.h"
 
 #include "gerror-wrapper.h"
 
 #include "file-utils.h"
 #include "peony-search-vfs-file.h"
-
-//play audio lib head file
-#include <canberra.h>
+#include "audio-play-manager.h"
 
 #include <QList>
 #include <QMessageBox>
@@ -66,9 +66,11 @@ FileEnumerator::FileEnumerator(QObject *parent) : QObject(parent)
         }
     });
 
-    connect(this, &FileEnumerator::enumerateFinished, this, [=](){
-        *m_children_uris<<*m_cache_uris;
-        childrenUpdated(*m_cache_uris);
+    connect(this, &FileEnumerator::enumerateFinished, this, [=](bool successed){
+        if (successed) {
+            *m_children_uris<<*m_cache_uris;
+            childrenUpdated(*m_cache_uris, true);
+        }
         m_cache_uris->clear();
         m_idle->stop();
     });
@@ -157,19 +159,24 @@ void FileEnumerator::setEnumerateDirectory(GFile *file)
     }
 }
 
+bool FileEnumerator::setEnumerateWithInfoJob(bool query)
+{
+    m_with_info_job = query;
+}
+
 QString FileEnumerator::getEnumerateUri()
 {
     return m_uri;
 }
 
-const QList<std::shared_ptr<FileInfo>> FileEnumerator::getChildren(bool addToHash)
+const QList<std::shared_ptr<FileInfo>> FileEnumerator::getChildren()
 {
     //m_children_uris->removeDuplicates();
 
     //qDebug()<<"FileEnumerator::getChildren():";
     QList<std::shared_ptr<FileInfo>> children;
     for (auto uri : *m_children_uris) {
-        auto file_info = FileInfo::fromUri(uri, addToHash);
+        auto file_info = FileInfo::fromUri(uri);
         children<<file_info;
     }
     return children;
@@ -271,10 +278,6 @@ void FileEnumerator::enumerateSync()
 void FileEnumerator::handleError(GError *err)
 {
     qDebug()<<"handleError"<<err->code<<err->message;
-    ca_context *caContext;
-    ca_context_create(&caContext);
-    const gchar* eventId = "dialog-warning";
-    //eventid 是/usr/share/sounds音频文件名,不带后缀
     switch (err->code) {
     case G_IO_ERROR_NOT_DIRECTORY: {
         auto uri = g_file_get_uri(m_root_file);
@@ -326,19 +329,10 @@ void FileEnumerator::handleError(GError *err)
                                       this);
         break;
     case G_IO_ERROR_NOT_SUPPORTED:
-        ca_context_play (caContext, 0,
-                         CA_PROP_EVENT_ID, eventId,
-                         CA_PROP_EVENT_DESCRIPTION, tr("Delete file Warning"), NULL);
-
+        Peony::AudioPlayManager::getInstance()->playWarningAudio();
         QMessageBox::critical(nullptr, tr("Error"), err->message);
         break;
     case G_IO_ERROR_PERMISSION_DENIED:
-        ca_context_play (caContext, 0,
-                         CA_PROP_EVENT_ID, eventId,
-                         CA_PROP_EVENT_DESCRIPTION, tr("Delete file Warning"), NULL);
-
-        //FIXME: do i need add an auth function for this kind of errors?
-        QMessageBox::critical(nullptr, tr("Error"), err->message);
         //emit error message to upper levels to process
         Q_EMIT prepared(GErrorWrapper::wrapFrom(g_error_new(G_IO_ERROR, G_IO_ERROR_PERMISSION_DENIED, "permission denied")));
         break;
@@ -358,7 +352,7 @@ void FileEnumerator::enumerateAsync()
     //auto uri = g_file_get_uri(m_root_file);
     //auto path = g_file_get_path(m_root_file);
     g_file_enumerate_children_async(m_root_file,
-                                    G_FILE_ATTRIBUTE_STANDARD_NAME,
+                                    m_with_info_job? "*::*": G_FILE_ATTRIBUTE_STANDARD_NAME,
                                     G_FILE_QUERY_INFO_NONE,
                                     G_PRIORITY_DEFAULT,
                                     m_cancellable,
@@ -453,10 +447,14 @@ GAsyncReadyCallback FileEnumerator::mount_enclosing_volume_callback(GFile *file,
         }
     } else {
         if (err) {
+            if (err->code == G_IO_ERROR_CANCELLED) {
+                return nullptr;
+            }
             if (err->code == G_IO_ERROR_ALREADY_MOUNTED) {
                 Q_EMIT p_this->prepared(GErrorWrapper::wrapFrom(err));
                 return nullptr;
             }
+
             qDebug()<<"mount failed, err:"<<err->code<<err->message;
             //show the connect dialog
             if (!p_this->m_root_file) {
@@ -477,14 +475,7 @@ GAsyncReadyCallback FileEnumerator::mount_enclosing_volume_callback(GFile *file,
                     qDebug()<<"finished err:"<<finished_err->code()<<finished_err->message();
                     if (finished_err->code() == G_IO_ERROR_PERMISSION_DENIED) {
                         p_this->enumerateFinished(false);
-                        ca_context *caContext;
-                        ca_context_create(&caContext);
-                        const gchar* eventId = "dialog-warning";
-                        //eventid 是/usr/share/sounds音频文件名,不带后缀
-                        ca_context_play (caContext, 0,
-                                         CA_PROP_EVENT_ID, eventId,
-                                         CA_PROP_EVENT_DESCRIPTION, tr("Delete file Warning"), NULL);
-
+                        Peony::AudioPlayManager::getInstance()->playWarningAudio();
                         QMessageBox::critical(nullptr, tr("Error"), finished_err->message());
                         return;
                     }
@@ -594,6 +585,13 @@ GAsyncReadyCallback FileEnumerator::enumerator_next_files_async_ready_callback(G
         } else {
             uriList<<uri;
             *(p_this->m_cache_uris)<<uri;
+        }
+
+        if (p_this->m_with_info_job) {
+            auto fileInfo = FileInfo::fromUri(uri);
+            FileInfoJob infoJob(fileInfo);
+            infoJob.refreshInfoContents(info);
+            p_this->m_cached_infos<<fileInfo;
         }
 
         g_free(uri);

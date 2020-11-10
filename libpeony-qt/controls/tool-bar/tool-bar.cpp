@@ -34,9 +34,7 @@
 #include "view-factory-sort-filter-model.h"
 #include "directory-view-container.h"
 #include "global-settings.h"
-
-//play audio lib head file
-#include <canberra.h>
+#include "audio-play-manager.h"
 
 #include <QAction>
 #include <QComboBox>
@@ -213,14 +211,7 @@ void ToolBar::init()
 
     //trash
     m_clean_trash_action = addAction(QIcon::fromTheme("edit-clear-symbolic"), tr("Clean Trash"), [=]() {
-        ca_context *caContext;
-        ca_context_create(&caContext);
-        const gchar* eventId = "dialog-warning";
-        //eventid 是/usr/share/sounds音频文件名,不带后缀
-        ca_context_play (caContext, 0,
-                         CA_PROP_EVENT_ID, eventId,
-                         CA_PROP_EVENT_DESCRIPTION, tr("Delete file Warning"), NULL);
-
+        Peony::AudioPlayManager::getInstance()->playWarningAudio();
         auto result = QMessageBox::question(nullptr, tr("Delete Permanently"), tr("Are you sure that you want to delete these files? "
                                             "Once you start a deletion, the files deleting will never be "
                                             "restored again."));

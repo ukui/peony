@@ -62,6 +62,7 @@ Architecture: any
 Pre-Depends: ${misc:Pre-Depends}
 Depends: ${misc:Depends},
          ${shlibs:Depends},
+         gvfs
 Provides: libpeony,
 Breaks: peony (<< 2.2.0-1),
         libpeony2

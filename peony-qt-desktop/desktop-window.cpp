@@ -43,6 +43,7 @@
 
 #include "peony-desktop-application.h"
 #include "singleapplication.h"
+#include "global-settings.h"
 
 #include <QDesktopServices>
 
@@ -209,17 +210,20 @@ void DesktopWindow::initGSettings() {
         return;
     }
 
-    //font monitor
-    QGSettings *fontSetting = new QGSettings(FONT_SETTINGS, QByteArray(), this);
-    connect(fontSetting, &QGSettings::changed, this, [=](const QString &key){
-        qDebug() << "fontSetting changed:" << key;
-        if (key == "systemFont" || key == "systemFontSize")
-        {
-            QFont font = this->font();
-            for(auto widget : qApp->allWidgets())
-                widget->setFont(font);
-        }
-    });
+    if (QGSettings::isSchemaInstalled("org.ukui.style"))
+    {
+        //font monitor
+        QGSettings *fontSetting = new QGSettings(FONT_SETTINGS, QByteArray(), this);
+        connect(fontSetting, &QGSettings::changed, this, [=](const QString &key){
+            qDebug() << "fontSetting changed:" << key;
+            if (key == "systemFont" || key == "systemFontSize")
+            {
+                QFont font = this->font();
+                for(auto widget : qApp->allWidgets())
+                    widget->setFont(font);
+            }
+        });
+    }
 
     m_bg_settings = new QGSettings(BACKGROUND_SETTINGS, QByteArray(), this);
 
@@ -243,9 +247,10 @@ void DesktopWindow::initGSettings() {
             //can not find bg file, usually the file is moved, use default bg
             if (!QFile::exists(bg_path)) {
                 QString path = "/usr/share/backgrounds/default.jpg";
-#if (QT_VERSION < QT_VERSION_CHECK(5, 7, 0))
-                path = "/usr/share/backgrounds/kylin/kylin-background.png";
-#endif
+                //commercial version use different default bg
+                if (COMMERCIAL_VERSION)
+                   path = "/usr/share/backgrounds/aurora.jpg";
+
                 bool success = m_bg_settings->trySet("pictureFilename", path);
                 if (success)
                 {

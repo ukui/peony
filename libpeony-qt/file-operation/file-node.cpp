@@ -46,11 +46,13 @@ FileNode::FileNode(QString uri, FileNode *parent, FileNodeReporter *reporter)
     m_is_folder = g_file_query_file_type(file, G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, nullptr) == G_FILE_TYPE_DIRECTORY;
     GFileInfo *info = g_file_query_info(file,
                                         G_FILE_ATTRIBUTE_STANDARD_SIZE,
-                                        G_FILE_QUERY_INFO_NONE,
+                                        G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
                                         nullptr,
                                         nullptr);
     g_object_unref(file);
     m_size = g_file_info_get_size(info);
+    if (uri == "file:///proc/kcore")
+        m_size = 0;
     g_object_unref(info);
 
     if (m_reporter) {

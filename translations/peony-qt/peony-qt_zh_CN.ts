@@ -114,33 +114,32 @@
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="109"/>
-        <location filename="../../src/windows/main-window.cpp" line="585"/>
+        <location filename="../../src/windows/main-window.cpp" line="108"/>
+        <location filename="../../src/windows/main-window.cpp" line="611"/>
         <source>File Manager</source>
         <translation>文件管理器</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="289"/>
+        <location filename="../../src/windows/main-window.cpp" line="295"/>
         <source>Undo</source>
         <translation>撤销</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="296"/>
+        <location filename="../../src/windows/main-window.cpp" line="302"/>
         <source>Redo</source>
         <translation>重做</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1234"/>
         <source>Delete file Warning</source>
-        <translation>删除文件警告</translation>
+        <translation type="vanished">删除文件警告</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1236"/>
+        <location filename="../../src/windows/main-window.cpp" line="1265"/>
         <source>Delete Permanently</source>
         <translation>永久删除</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1237"/>
+        <location filename="../../src/windows/main-window.cpp" line="1266"/>
         <source>Are you sure that you want to delete these files? Once you start a deletion, the files deleting will never be restored again.</source>
         <translation>您确定要删除这些文件吗？一旦开始删除，这些文件将不可再恢复。</translation>
     </message>
@@ -149,7 +148,7 @@
         <translation type="vanished">文件管理器</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="598"/>
+        <location filename="../../src/windows/main-window.cpp" line="624"/>
         <source>New Folder</source>
         <translation>新建文件夹</translation>
     </message>
@@ -164,7 +163,7 @@
 <context>
     <name>NavigationSideBarContainer</name>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="262"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="273"/>
         <source>All tags...</source>
         <translation>所有标记...</translation>
     </message>
@@ -184,37 +183,37 @@
         <translation type="vanished">高级搜索</translation>
     </message>
     <message>
-        <location filename="../../src/control/operation-menu.cpp" line="65"/>
+        <location filename="../../src/control/operation-menu.cpp" line="66"/>
         <source>Keep Allow</source>
         <translation>置顶窗口</translation>
     </message>
     <message>
-        <location filename="../../src/control/operation-menu.cpp" line="81"/>
+        <location filename="../../src/control/operation-menu.cpp" line="82"/>
         <source>Show Hidden</source>
         <translation>显示隐藏文件</translation>
     </message>
     <message>
-        <location filename="../../src/control/operation-menu.cpp" line="88"/>
+        <location filename="../../src/control/operation-menu.cpp" line="89"/>
         <source>Forbid thumbnailing</source>
         <translation>禁用缩略图</translation>
     </message>
     <message>
-        <location filename="../../src/control/operation-menu.cpp" line="97"/>
+        <location filename="../../src/control/operation-menu.cpp" line="98"/>
         <source>Resident in Backend</source>
         <translation>常驻后台</translation>
     </message>
     <message>
-        <location filename="../../src/control/operation-menu.cpp" line="106"/>
+        <location filename="../../src/control/operation-menu.cpp" line="107"/>
         <source>Parallel Operations</source>
         <translation>允许操作并行</translation>
     </message>
     <message>
-        <location filename="../../src/control/operation-menu.cpp" line="114"/>
+        <location filename="../../src/control/operation-menu.cpp" line="115"/>
         <source>Help</source>
         <translation>帮助</translation>
     </message>
     <message>
-        <location filename="../../src/control/operation-menu.cpp" line="118"/>
+        <location filename="../../src/control/operation-menu.cpp" line="119"/>
         <source>About</source>
         <translation>关于</translation>
     </message>
@@ -222,27 +221,27 @@
 <context>
     <name>OperationMenuEditWidget</name>
     <message>
-        <location filename="../../src/control/operation-menu.cpp" line="147"/>
+        <location filename="../../src/control/operation-menu.cpp" line="148"/>
         <source>Edit</source>
         <translation>编辑</translation>
     </message>
     <message>
-        <location filename="../../src/control/operation-menu.cpp" line="158"/>
+        <location filename="../../src/control/operation-menu.cpp" line="159"/>
         <source>copy</source>
         <translation>复制</translation>
     </message>
     <message>
-        <location filename="../../src/control/operation-menu.cpp" line="167"/>
+        <location filename="../../src/control/operation-menu.cpp" line="168"/>
         <source>paste</source>
         <translation>粘贴</translation>
     </message>
     <message>
-        <location filename="../../src/control/operation-menu.cpp" line="176"/>
+        <location filename="../../src/control/operation-menu.cpp" line="177"/>
         <source>cut</source>
         <translation>剪切</translation>
     </message>
     <message>
-        <location filename="../../src/control/operation-menu.cpp" line="185"/>
+        <location filename="../../src/control/operation-menu.cpp" line="186"/>
         <source>trash</source>
         <translation>删除</translation>
     </message>
@@ -258,22 +257,22 @@
         <translation type="vanished">文件管理器</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.cpp" line="137"/>
+        <location filename="../../src/peony-application.cpp" line="140"/>
         <source>Files or directories to open</source>
         <translation>需要打开的文件或文件夹</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.cpp" line="137"/>
+        <location filename="../../src/peony-application.cpp" line="140"/>
         <source>[FILE1, FILE2,...]</source>
         <translation>[文件1，文件2...]</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.cpp" line="171"/>
+        <location filename="../../src/peony-application.cpp" line="174"/>
         <source>Warning</source>
         <translation>警告</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.cpp" line="171"/>
+        <location filename="../../src/peony-application.cpp" line="174"/>
         <source>Peony-Qt can not get the system&apos;s icon theme. There are 2 reasons might lead to this problem:
 
 1. Peony-Qt might be running as root, that means you have the higher permission and can do some things which normally forbidden. But, you should learn that if you were in a root, the virtual file system will lose some featrue such as you can not use &quot;My Computer&quot;, the theme and icons might also went wrong. So, run peony-qt in a root is not recommended.
@@ -286,12 +285,12 @@
 2.你使用的系统主题不是qt默认支持的主题，并且你没有安装相关的平台插件。如果你正在使用Gtk主题作为系统主题，尝试安装qt5-gtk2-platformtheme以解决此问题。</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.cpp" line="576"/>
+        <location filename="../../src/peony-application.cpp" line="579"/>
         <source>Peony Qt</source>
         <translation>文件管理器</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.cpp" line="577"/>
+        <location filename="../../src/peony-application.cpp" line="580"/>
         <source>Author:
 	Yue Lan &lt;lanyue@kylinos.cn&gt;
 	Meihong He &lt;hemeihong@kylinos.cn&gt;
@@ -352,22 +351,22 @@ Copyright (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</source
 版权所有(C): 2019-2020,天津麒麟信息技术有限公司.</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.h" line="58"/>
+        <location filename="../../src/peony-application.h" line="60"/>
         <source>Close all peony-qt windows and quit</source>
         <translation>关闭所有窗口并退出</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.h" line="59"/>
+        <location filename="../../src/peony-application.h" line="61"/>
         <source>Show items</source>
         <translation>打开文件所在目录并选中它们</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.h" line="60"/>
+        <location filename="../../src/peony-application.h" line="62"/>
         <source>Show folders</source>
         <translation>显示文件夹下的内容</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.h" line="61"/>
+        <location filename="../../src/peony-application.h" line="63"/>
         <source>Show properties</source>
         <translation>打开文件属性窗口</translation>
     </message>

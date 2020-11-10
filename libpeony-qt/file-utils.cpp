@@ -21,6 +21,7 @@
  */
 
 #include "file-utils.h"
+#include "file-info.h"
 #include <QUrl>
 #include <QFileInfo>
 #include <QFileInfoList>
@@ -111,6 +112,11 @@ bool FileUtils::getFileIsFolder(const GFileWrapperPtr &file)
 
 bool FileUtils::getFileIsFolder(const QString &uri)
 {
+    auto info = FileInfo::fromUri(uri);
+    if (!info.get()->isEmptyInfo()) {
+        return info.get()->isDir();
+    }
+
     auto file = wrapGFile(g_file_new_for_uri(uri.toUtf8().constData()));
     GFileType type = g_file_query_file_type(file.get()->get(),
                                             G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
@@ -120,6 +126,11 @@ bool FileUtils::getFileIsFolder(const QString &uri)
 
 bool FileUtils::getFileIsSymbolicLink(const QString &uri)
 {
+    auto info = FileInfo::fromUri(uri);
+    if (!info.get()->isEmptyInfo()) {
+        return info.get()->isSymbolLink();
+    }
+
     auto file = wrapGFile(g_file_new_for_uri(uri.toUtf8().constData()));
     GFileType type = g_file_query_file_type(file.get()->get(),
                                             G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
@@ -199,6 +210,11 @@ QString FileUtils::getNonSuffixedBaseNameFromUri(const QString &uri)
 
 QString FileUtils::getFileDisplayName(const QString &uri)
 {
+    auto fileInfo = FileInfo::fromUri(uri);
+    if (!fileInfo.get()->isEmptyInfo()) {
+        return fileInfo.get()->displayName();
+    }
+
     auto file = wrapGFile(g_file_new_for_uri(uri.toUtf8().constData()));
     auto info = wrapGFileInfo(g_file_query_info(file.get()->get(),
                               G_FILE_ATTRIBUTE_STANDARD_DISPLAY_NAME,
@@ -212,6 +228,11 @@ QString FileUtils::getFileDisplayName(const QString &uri)
 
 QString FileUtils::getFileIconName(const QString &uri, bool checkValid)
 {
+    auto fileInfo = FileInfo::fromUri(uri);
+    if (!fileInfo.get()->isEmptyInfo()) {
+        return fileInfo.get()->iconName();
+    }
+
     auto file = wrapGFile(g_file_new_for_uri(uri.toUtf8().constData()));
     auto info = wrapGFileInfo(g_file_query_info(file.get()->get(),
                               G_FILE_ATTRIBUTE_STANDARD_ICON,
@@ -240,6 +261,13 @@ QString FileUtils::getFileIconName(const QString &uri, bool checkValid)
                     }
                 }
             }
+        }else {
+            //if it's a bootable-media,maybe we can get the icon from the mount directory.
+            char *bootableIcon = g_icon_to_string(g_icon);
+            if(bootableIcon){
+                icon_name = QString(bootableIcon);
+                g_free(bootableIcon);
+            }
         }
     }
     return icon_name;
@@ -262,6 +290,11 @@ GErrorWrapperPtr FileUtils::getEnumerateError(const QString &uri)
 
 QString FileUtils::getTargetUri(const QString &uri)
 {
+    auto fileInfo = FileInfo::fromUri(uri);
+    if (!fileInfo.get()->isEmptyInfo()) {
+        return fileInfo.get()->targetUri();
+    }
+
     auto file = wrapGFile(g_file_new_for_uri(uri.toUtf8().constData()));
     auto info = wrapGFileInfo(g_file_query_info(file.get()->get(),
                               G_FILE_ATTRIBUTE_STANDARD_TARGET_URI,
@@ -270,6 +303,38 @@ QString FileUtils::getTargetUri(const QString &uri)
                               nullptr));
     return g_file_info_get_attribute_string(info.get()->get(),
                                             G_FILE_ATTRIBUTE_STANDARD_TARGET_URI);
+}
+
+
+QString FileUtils::getEncodedUri(const QString &uri)
+{
+    GFile *file = g_file_new_for_uri(uri.toUtf8().constData());
+    QString encodedUri = g_file_get_uri(file);
+    g_object_unref(file);
+
+    return encodedUri;
+}
+
+QString FileUtils::getSymbolicTarget(const QString &uri)
+{
+    auto fileInfo = FileInfo::fromUri(uri);
+    if (!fileInfo.get()->isEmptyInfo()) {
+        return fileInfo.get()->symlinkTarget();
+    }
+
+    GFile *file = g_file_new_for_uri(uri.toUtf8().constData());
+    GFileInfo *info = g_file_query_info(file,
+                                        G_FILE_ATTRIBUTE_STANDARD_SYMLINK_TARGET,
+                                        G_FILE_QUERY_INFO_NONE,
+                                        nullptr,
+                                        nullptr);
+    g_object_unref(file);
+    if (info) {
+        return g_file_info_get_symlink_target(info);
+        g_object_unref(info);
+    }
+
+    return uri;
 }
 
 bool FileUtils::isMountPoint(const QString &uri)
@@ -431,6 +496,24 @@ bool FileUtils::queryVolumeInfo(const QString &volumeUri, QString &volumeName, Q
     return true;
 }
 
+bool FileUtils::isReadonly(const QString& uri)
+{
+    GFile *file = g_file_new_for_uri(uri.toUtf8().constData());
+    GFileInfo *info = g_file_query_info(file, "access::*", G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, nullptr, nullptr);
+    g_object_unref(file);
+    if (info) {
+        bool read = g_file_info_get_attribute_boolean(info, G_FILE_ATTRIBUTE_ACCESS_CAN_READ);
+        bool write = g_file_info_get_attribute_boolean(info, G_FILE_ATTRIBUTE_ACCESS_CAN_WRITE);
+        bool execute = g_file_info_get_attribute_boolean(info, G_FILE_ATTRIBUTE_ACCESS_CAN_EXECUTE);
+
+        if (read && !write && !execute) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 bool FileUtils::isFileDirectory(const QString &uri)
 {
     bool isFolder = false;
@@ -458,7 +541,8 @@ bool FileUtils::isFileUnmountable(const QString &uri)
 /* @func:        convert a ascii string to unicode string. 将一个ascii字符串转换为unicode字符串
  * @gbkName      a string that needs to be converted from ascii to  Unicode. eg:"\\xb8\\xfc\\xd0\\xc2CODE"
  */
-QString transcodeForGbkCode(QByteArray gbkName){
+QString transcodeForGbkCode(QByteArray gbkName, QString &volumeName)
+{
     int i;
     QByteArray dest,tmp;
     QString name;
@@ -493,6 +577,18 @@ QString transcodeForGbkCode(QByteArray gbkName){
             dest.append(tmp.mid(4));
         }else
             dest.append(tmp);
+    }
+
+    /*
+    * gio的api获取的卷名和/dev/disk/by-label先的名字不一致，有可能是卷名
+    * 中含有特殊字符，导致/dev/disk/label下的卷名含有转义字符，导致二者的名字不一致
+    * 而不是编码格式的不一致导致的，比如卷名：“数据光盘(2020-08-22)”，在/dev/disk/by-label
+    * 写的名字:"数据光盘\x282020-08-22\x29",经过上述处理之后可以去除转义字符，在判断一次
+    * 是否相等。比较完美的解决方案是找到能够判断字符串的编码格式，目前还没有找到实现方式，需要进一步完善
+    */
+    name = QString(dest);
+    if (name == volumeName){
+        return name;
     }
 
     name = QTextCodec::codecForName("GBK")->toUnicode(dest);
@@ -536,7 +632,7 @@ void FileUtils::handleVolumeLabelForFat32(QString &volumeName,const QString &uni
         if(tmpName == volumeName)      //ntfs、exfat格式或者非纯中文名的fat32设备,这个设备的名字不需要转码
             return;
         else{
-            finalName = transcodeForGbkCode(tmpName.toLocal8Bit());
+            finalName = transcodeForGbkCode(tmpName.toLocal8Bit(), volumeName);
             if(!finalName.isEmpty())
                 volumeName = finalName;
         }

@@ -23,6 +23,7 @@
 #include "file-item-model.h"
 #include "file-item.h"
 #include "file-info.h"
+#include "file-info-job.h"
 
 #include "file-operation-manager.h"
 #include "file-move-operation.h"

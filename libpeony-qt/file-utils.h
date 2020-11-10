@@ -56,6 +56,8 @@ public:
 
     BLOCKING static GErrorWrapperPtr getEnumerateError(const QString &uri);
     BLOCKING static QString getTargetUri(const QString &uri);
+    BLOCKING static QString getEncodedUri(const QString &uri);
+    BLOCKING static QString getSymbolicTarget(const QString &uri);
     BLOCKING static bool isMountPoint(const QString& uri);
 
     NO_BLOCKING static bool stringStartWithChinese(const QString &string);
@@ -75,13 +77,14 @@ public:
                                 QString &unixDeviceName,
                                 const QString &volumeDisplayName = nullptr);
 
+    BLOCKING static bool isReadonly (const QString&);
     BLOCKING static bool isFileDirectory(const QString &uri);
 
     BLOCKING static bool isFileUnmountable(const QString &uri);
 
+    static void handleVolumeLabelForFat32(QString &volumeName,const QString &unixDevcieName);
 private:
     FileUtils();
-    static void handleVolumeLabelForFat32(QString &volumeName,const QString &unixDevcieName);
 };
 
 }

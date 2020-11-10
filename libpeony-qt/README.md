@@ -1,15 +1,6 @@
 # peony-qt-core
 Core part of Peony, providing a set of APIs for Peony and other projects for file manager development.
 
-# build-depends
-- glib-2.0 (development files)
-- gio-2.0 (develotment files)
-- qtbase5-dev
-- qtbase5-dev-tools
-- pkg-config
-- libgsettings-qt5-dev
-- libpoppler-qt5-dev
-
 # description
 Peony is the filemanager of ukui3.0，which refactoring Peony(UKUI 2.0) based on qt and glib/gio.
 
@@ -23,15 +14,10 @@ In simple terms, this project can be seem as the qt/c++ style wrapper of gio's a
 
 ## content
 ### FileInfo and FileInfoManager
-In Peony, a file can be abstracted to a FileInfo class. It contains some information about the file, such as uri, icon, size, etc. When the FileInfo was created, it should be managed by FileInfoManager. So that the file system will be mapped to a hash table.
-The FileInfoManager is desgined to a static single global instance, and the FileInfo instances are wrapped by a std::shared_ptr.
-The FileInfo instance life is not same as a regular smart pointer's instance life.
-Actually, FileInfo in FileInfoManager will destoryed by a third classed instance which hold this smart pointer. It will be destoryed when the last third classed instance holder deconstrunction.
-For example, class A's instance required a FileInfo instance from global manager.
-After a while. the instance of A was deleted. The instance of FileInfo is 'unused' now, so it must be removed from global manager, too.
-
-In order to achieve such a mechanism, the third class also also needs to pay some effort. When the third class in deconstruction, it must judge if there is only global manager and itself hold the reference cout of the FileInfo instance.
-If it is, the recources of FileInfo instance should be released.
+In Peony, a file can be abstracted to a FileInfo class. It contains some informations about the file, such as uri, icon, size, etc. When the FileInfo was created, it should be refered by FileInfoManager. So that the file system will be mapped into a string-info map.
+The FileInfoManager is desgined to a static single global instance, and the FileInfo instances are usually wrapped by a std::shared_ptr.
+The FileInfo instance, getting from FileInfo::fromUri().
+Actually, FileInfo in FileInfoManager only has a weak reference and it will be destoryed by the last third class instance deconstruction which hold this smart pointer.
 
 The FileInfo instance could be 'incomplete' and 'virtual'. It means the real file might not exsited. When requiring a FileInfo instance, the instance aslo have not gotten all details of the file. You should use FileInfoJob for a querying at first.
 

@@ -37,6 +37,8 @@
 
 #include "directory-view-widget.h"
 
+#include "global-settings.h"
+
 #include <QDebug>
 #include <QDir>
 #include <QPluginLoader>
@@ -57,6 +59,8 @@ PluginManager::PluginManager(QObject *parent) : QObject(parent)
     VFSPluginManager::getInstance();
 
     QDir pluginsDir(PLUGIN_INSTALL_DIRS);
+    if (COMMERCIAL_VERSION)
+        pluginsDir = QDir("/usr/lib/peony-qt-extensions");
     pluginsDir.setFilter(QDir::Files);
 
     qDebug()<<pluginsDir.entryList().count();

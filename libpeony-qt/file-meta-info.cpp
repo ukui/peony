@@ -51,7 +51,7 @@ FileMetaInfo::FileMetaInfo(const QString &uri, GFileInfo *g_info)
                 char *string = g_file_info_get_attribute_as_string(g_info, metainfo_attributes[i]);
                 if (string) {
                     auto var = QVariant(string);
-                    this->setMetaInfoVariant(metainfo_attributes[i], var);
+                    this->setMetaInfoVariant(metainfo_attributes[i], var, false);
                     //qDebug()<<"======"<<m_uri<<metainfo_attributes[i]<<var.toString();
                     g_free(string);
                 }
@@ -77,7 +77,7 @@ void FileMetaInfo::setMetaInfoStringList(const QString &key, const QStringList &
     setMetaInfoVariant(key, string);
 }
 
-void FileMetaInfo::setMetaInfoVariant(const QString &key, const QVariant &value)
+void FileMetaInfo::setMetaInfoVariant(const QString &key, const QVariant &value, bool syncToFile)
 {
 //    if (!m_mutex.tryLock(300)) {
 //        return;
@@ -90,10 +90,10 @@ void FileMetaInfo::setMetaInfoVariant(const QString &key, const QVariant &value)
     m_meta_hash.remove(realKey);
     m_meta_hash.insert(realKey, value);
     GFile *file = g_file_new_for_uri(m_uri.toUtf8().constData());
-    GFileInfo *info = g_file_info_new();
+//    GFileInfo *info = g_file_info_new();
     std::string tmp = realKey.toStdString();
     auto data = value.toString().toUtf8().data();
-    g_file_info_set_attribute(info, tmp.c_str(), G_FILE_ATTRIBUTE_TYPE_STRING, (gpointer)data);
+//    g_file_info_set_attribute(info, tmp.c_str(), G_FILE_ATTRIBUTE_TYPE_STRING, (gpointer)data);
     //FIXME: should i add callback?
 //    g_file_set_attributes_async(file,
 //                                info,
@@ -103,15 +103,18 @@ void FileMetaInfo::setMetaInfoVariant(const QString &key, const QVariant &value)
 //                                nullptr,
 //                                nullptr);
     //qDebug()<<tmp.c_str()<<value;
-    GError *err = nullptr;
-    g_file_set_attribute(file, tmp.c_str(), G_FILE_ATTRIBUTE_TYPE_STRING, (gpointer)data,
-                         G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, nullptr, &err);
+    if (syncToFile) {
+        GError *err = nullptr;
+        g_file_set_attribute(file, tmp.c_str(), G_FILE_ATTRIBUTE_TYPE_STRING, (gpointer)data,
+                             G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, nullptr, &err);
 
-    if (err) {
-        qDebug()<<err->message;
-        g_error_free(err);
+        if (err) {
+            qDebug()<<err->message;
+            g_error_free(err);
+        }
     }
-    g_object_unref(info);
+
+//    g_object_unref(info);
     g_object_unref(file);
 //    m_mutex.unlock();
 }

@@ -300,6 +300,9 @@ public:
         return m_file;
     }
 
+    const QString targetUri();
+    const QString symlinkTarget();
+
     //const QIcon thumbnail() {return m_thumbnail;}
     //void setThumbnail(const QIcon &thumbnail) {m_thumbnail = thumbnail;}
 
@@ -357,7 +360,8 @@ private:
     GFile *m_file = nullptr;
     GFile *m_parent = nullptr;
 
-    GFile *m_target_file = nullptr;
+    QString m_target_uri;
+    QString m_symlink_target;
 
     /*!
      * \brief m_cancellable

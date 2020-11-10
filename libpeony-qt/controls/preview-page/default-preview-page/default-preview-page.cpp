@@ -83,9 +83,6 @@ DefaultPreviewPage::DefaultPreviewPage(QWidget *parent) : QStackedWidget (parent
 
 DefaultPreviewPage::~DefaultPreviewPage()
 {
-    if (m_info && m_info.use_count() <= 2) {
-        FileInfoManager::getInstance()->remove(m_info);
-    }
     cancel();
 }
 

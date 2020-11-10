@@ -67,9 +67,7 @@
 #include "peony-application.h"
 
 #include "global-settings.h"
-
-//play audio lib head file
-#include <canberra.h>
+#include "audio-play-manager.h"
 
 #include <QSplitter>
 
@@ -261,17 +259,20 @@ void MainWindow::checkSettings()
     m_use_default_name_sort_order = settings->isExist("chinese-first")? settings->getValue("chinese-first").toBool(): false;
     m_folder_first = settings->isExist("folder-first")? settings->getValue("folder-first").toBool(): true;
 
-    //font monitor
-    QGSettings *fontSetting = new QGSettings(FONT_SETTINGS, QByteArray(), this);
-    connect(fontSetting, &QGSettings::changed, this, [=](const QString &key){
-        qDebug() << "fontSetting changed:" << key;
-        if (key == "systemFont" || key == "systemFontSize")
-        {
-            QFont font = this->font();
-            for(auto widget : qApp->allWidgets())
-                widget->setFont(font);
-        }
-    });
+    if (QGSettings::isSchemaInstalled("org.ukui.style"))
+    {
+        //font monitor
+        QGSettings *fontSetting = new QGSettings(FONT_SETTINGS, QByteArray(), this);
+        connect(fontSetting, &QGSettings::changed, this, [=](const QString &key){
+            qDebug() << "fontSetting changed:" << key;
+            if (key == "systemFont" || key == "systemFontSize")
+            {
+                QFont font = this->font();
+                for(auto widget : qApp->allWidgets())
+                    widget->setFont(font);
+            }
+        });
+    }
 }
 
 void MainWindow::setShortCuts()
@@ -310,7 +311,10 @@ void MainWindow::setShortCuts()
     trashAction->setShortcuts(QList<QKeySequence>()<<Qt::Key_Delete<<QKeySequence(Qt::CTRL + Qt::Key_D));
     connect(trashAction, &QAction::triggered, [=]() {
         auto uris = this->getCurrentSelections();
-        if (!uris.isEmpty()) {
+        QString desktopPath = "file://" +  QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
+        QString desktopUri = Peony::FileUtils::getEncodedUri(desktopPath);
+        QString homeUri = "file://" +  QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
+        if (!uris.isEmpty() && !uris.contains(desktopUri) && !uris.contains(homeUri)) {
             bool isTrash = this->getCurrentUri() == "trash:///";
             if (!isTrash) {
                 Peony::FileOperationUtils::trash(uris, true);
@@ -326,7 +330,11 @@ void MainWindow::setShortCuts()
     addAction(deleteAction);
     connect(deleteAction, &QAction::triggered, [=]() {
         auto uris = this->getCurrentSelections();
-        Peony::FileOperationUtils::executeRemoveActionWithDialog(uris);
+        QString desktopPath = "file://" +  QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
+        QString desktopUri = Peony::FileUtils::getEncodedUri(desktopPath);
+        QString homeUri = "file://" +  QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
+        if (! uris.contains(desktopUri) && !uris.contains(homeUri))
+           Peony::FileOperationUtils::executeRemoveActionWithDialog(uris);
     });
 
     auto searchAction = new QAction(this);
@@ -420,11 +428,19 @@ void MainWindow::setShortCuts()
                                          <<QKeySequence(Qt::ALT + Qt::Key_Enter));
     connect(propertiesWindowAction, &QAction::triggered, this, [=]() {
         //Fixed issue:when use this shortcut without any selections, this will crash
+        QStringList uris;
         if (getCurrentSelections().count() > 0)
         {
-            Peony::PropertiesWindow *w = new Peony::PropertiesWindow(getCurrentSelections());
-            w->show();
+            uris<<getCurrentSelections();
         }
+        else
+        {
+            uris<<getCurrentUri();
+        }
+
+        Peony::PropertiesWindow *w = new Peony::PropertiesWindow(uris);
+        w->setAttribute(Qt::WA_DeleteOnClose);
+        w->show();
     });
     addAction(propertiesWindowAction);
 
@@ -576,7 +592,12 @@ void MainWindow::setShortCuts()
             if (this->getCurrentSelections().first().startsWith("trash://", Qt::CaseInsensitive)) {
                 return ;
             }
-            Peony::ClipboardUtils::setClipboardFiles(this->getCurrentSelections(), true);
+
+            QString desktopPath = "file://" +  QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
+            QString desktopUri = Peony::FileUtils::getEncodedUri(desktopPath);
+            QString homeUri = "file://" +  QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
+            if (! this->getCurrentSelections().contains(desktopUri) && ! this->getCurrentSelections().contains(homeUri))
+                Peony::ClipboardUtils::setClipboardFiles(this->getCurrentSelections(), true);
         }
     });
     addAction(cutAction);
@@ -761,6 +782,13 @@ void MainWindow::goToUri(const QString &uri, bool addHistory, bool force)
 
 void MainWindow::addNewTabs(const QStringList &uris)
 {
+    //fix search path add new tab,page title show abnormal issue
+    if (uris.count() == 1)
+    {
+        m_tab->addPage(uris.first(), true);
+        return;
+    }
+
     for (auto uri : uris) {
         m_tab->addPage(uri, false);
     }
@@ -847,9 +875,11 @@ void MainWindow::forceStopLoading()
 void MainWindow::setCurrentSelectionUris(const QStringList &uris)
 {
     m_tab->setCurrentSelections(uris);
-    if (uris.isEmpty())
-        return;
-    getCurrentPage()->getView()->scrollToSelection(uris.first());
+    //move scrollToSelection to m_tab to try fix new unzip file show two same icon issue
+    //Fix me, unknow caused reason
+//    if (uris.isEmpty())
+//        return;
+//    getCurrentPage()->getView()->scrollToSelection(uris.first());
 }
 
 void MainWindow::setCurrentSortOrder(Qt::SortOrder order)
@@ -972,6 +1002,7 @@ void MainWindow::mouseMoveEvent(QMouseEvent *e)
     if (!m_is_draging)
         return;
 
+    qreal  dpiRatio = qApp->devicePixelRatio();
     if (QX11Info::isPlatformX11()) {
         Display *display = QX11Info::display();
         Atom netMoveResize = XInternAtom(display, "_NET_WM_MOVERESIZE", False);
@@ -984,8 +1015,8 @@ void MainWindow::mouseMoveEvent(QMouseEvent *e)
         xEvent.xclient.display = display;
         xEvent.xclient.window = this->winId();
         xEvent.xclient.format = 32;
-        xEvent.xclient.data.l[0] = pos.x();
-        xEvent.xclient.data.l[1] = pos.y();
+        xEvent.xclient.data.l[0] = pos.x() * dpiRatio;
+        xEvent.xclient.data.l[1] = pos.y() * dpiRatio;
         xEvent.xclient.data.l[2] = 8;
         xEvent.xclient.data.l[3] = Button1;
         xEvent.xclient.data.l[4] = 0;
@@ -1002,10 +1033,10 @@ void MainWindow::mouseMoveEvent(QMouseEvent *e)
         xevent.type = ButtonRelease;
         xevent.xbutton.button = Button1;
         xevent.xbutton.window = this->winId();
-        xevent.xbutton.x = e->pos().x();
-        xevent.xbutton.y = e->pos().y();
-        xevent.xbutton.x_root = pos.x();
-        xevent.xbutton.y_root = pos.y();
+        xevent.xbutton.x = e->pos().x() * dpiRatio;
+        xevent.xbutton.y = e->pos().y() * dpiRatio;
+        xevent.xbutton.x_root = pos.x() * dpiRatio;
+        xevent.xbutton.y_root = pos.y() * dpiRatio;
         xevent.xbutton.display = display;
 
         XSendEvent(display, this->effectiveWinId(), False, ButtonReleaseMask, &xevent);
@@ -1020,7 +1051,7 @@ void MainWindow::mouseMoveEvent(QMouseEvent *e)
 
         m_is_draging = false;
     } else {
-        this->move(QCursor::pos() - m_offset);
+        this->move((QCursor::pos() - m_offset) * dpiRatio);
     }
 }
 
@@ -1230,14 +1261,7 @@ void MainWindow::initUI(const QString &uri)
 
 void MainWindow::cleanTrash()
 {
-    ca_context *caContext;
-    ca_context_create(&caContext);
-    const gchar* eventId = "dialog-warning";
-    //eventid 是/usr/share/sounds音频文件名,不带后缀
-    ca_context_play (caContext, 0,
-                     CA_PROP_EVENT_ID, eventId,
-                     CA_PROP_EVENT_DESCRIPTION, tr("Delete file Warning"), NULL);
-
+    Peony::AudioPlayManager::getInstance()->playWarningAudio();
     auto result = QMessageBox::question(nullptr, tr("Delete Permanently"),
                                         tr("Are you sure that you want to delete these files? "
                                            "Once you start a deletion, the files deleting will never be "

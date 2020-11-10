@@ -155,4 +155,5 @@ void AdvancedLocationBar::switchEditMode(bool bSearchMode)
 void AdvancedLocationBar::clearSearchBox()
 {
     m_search_bar->clearSearchBox();
+    m_last_key = "";
 }

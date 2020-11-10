@@ -47,7 +47,7 @@ FileInfoManager *FileInfoManager::getInstance()
     return global_file_info_manager;
 }
 
-std::shared_ptr<FileInfo> FileInfoManager::findFileInfoByUri(QString uri)
+std::shared_ptr<FileInfo> FileInfoManager::findFileInfoByUri(const QString &uri)
 {
     Q_ASSERT(global_info_list);
     return global_info_list->value(uri).lock();//.lock();
@@ -65,35 +65,6 @@ std::shared_ptr<FileInfo> FileInfoManager::insertFileInfo(std::shared_ptr<FileIn
     }
 
     return info;
-}
-
-void FileInfoManager::removeFileInfobyUri(QString uri)
-{
-    return;
-    Q_ASSERT(global_info_list);
-    global_info_list->remove(uri);
-}
-
-void FileInfoManager::clear()
-{
-    return;
-    Q_ASSERT(global_info_list);
-    global_info_list->clear();
-}
-
-void FileInfoManager::remove(QString uri)
-{
-    return;
-    ThumbnailManager::getInstance()->releaseThumbnail(uri);
-    Q_ASSERT(global_info_list);
-    global_info_list->remove(uri);
-}
-
-void FileInfoManager::remove(std::shared_ptr<FileInfo> info)
-{
-    return;
-    Q_ASSERT(global_info_list);
-    this->remove(info->uri());
 }
 
 void FileInfoManager::showState()

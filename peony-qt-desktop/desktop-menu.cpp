@@ -39,9 +39,7 @@
 #include "desktop-menu-plugin-manager.h"
 
 #include "global-settings.h"
-
-//play audio lib head file
-#include <canberra.h>
+#include "audio-play-manager.h"
 
 #include <QProcess>
 #include <QStandardPaths>
@@ -190,9 +188,17 @@ const QList<QAction *> DesktopMenu::constructOpenOpActions()
                 });
             }
         } else {
-            l<<addAction(QIcon::fromTheme("document-open-symbolic"), tr("&Open %1 selected files").arg(m_selections.count()));
+            if (m_selections.count() == 1)
+            {
+                auto info = FileInfo::fromUri(m_selections.first());
+                auto displayName = info->displayName();
+                l<<addAction(QIcon::fromTheme("document-open-symbolic"), tr("&Open \"%1\"").arg(displayName));
+            }
+            else
+                l<<addAction(QIcon::fromTheme("document-open-symbolic"), tr("&Open %1 selected files").arg(m_selections.count()));
+
             connect(l.last(), &QAction::triggered, [=]() {
-                qDebug()<<"triggered";
+                qDebug()<<"triggered:"<<m_selections.count();
                 QStringList dirs;
                 QStringList files;
                 for (auto uri : m_selections) {
@@ -438,14 +444,7 @@ const QList<QAction *> DesktopMenu::constructFileOpActions()
             });
             l.last()->setEnabled(!trashChildren.isEmpty());
             l<<addAction(QIcon::fromTheme("edit-clear-symbolic"), tr("&Clean the trash"), [=]() {
-                ca_context *caContext;
-                ca_context_create(&caContext);
-                const gchar* eventId = "dialog-warning";
-                //eventid 是/usr/share/sounds音频文件名,不带后缀
-                ca_context_play (caContext, 0,
-                                 CA_PROP_EVENT_ID, eventId,
-                                 CA_PROP_EVENT_DESCRIPTION, tr("Delete file Warning"), NULL);
-
+                Peony::AudioPlayManager::getInstance()->playWarningAudio();
                 auto result = QMessageBox::question(nullptr, tr("Delete Permanently"), tr("Are you sure that you want to delete these files? "
                                                     "Once you start a deletion, the files deleting will never be "
                                                     "restored again."));
@@ -472,11 +471,12 @@ const QList<QAction *> DesktopMenu::constructFileOpActions()
                 connect(l.last(), &QAction::triggered, [=]() {
                     FileOperationUtils::trash(m_selections, true);
                 });
+                //comment delete forever right menu option,reference to mac and Windows
                 //add delete forever option
-                l<<addAction(QIcon::fromTheme("edit-clear-symbolic"), tr("Delete forever"));
-                connect(l.last(), &QAction::triggered, [=]() {
-                    FileOperationUtils::executeRemoveActionWithDialog(m_selections);
-                });
+//                l<<addAction(QIcon::fromTheme("edit-clear-symbolic"), tr("Delete forever"));
+//                connect(l.last(), &QAction::triggered, [=]() {
+//                    FileOperationUtils::executeRemoveActionWithDialog(m_selections);
+//                });
             }
 
             if (m_selections.count() == 1) {

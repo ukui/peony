@@ -26,9 +26,7 @@
 #include "file-info.h"
 #include "file-info-job.h"
 #include "file-operation-utils.h"
-
-//play audio lib head file
-#include <canberra.h>
+#include "audio-play-manager.h"
 
 #include <QMessageBox>
 #include <QPushButton>
@@ -106,6 +104,7 @@ void FileLaunchAction::lauchFileSync(bool forceWithArg, bool skipDialog)
 
     bool executable = fileInfo->canExecute();
     bool isAppImage = fileInfo->type() == "application/vnd.appimage";
+    bool isShellScript = fileInfo->type() == "application/x-shellscript";
     if (isAppImage) {
         if (executable) {
             QUrl url = m_uri;
@@ -122,11 +121,11 @@ void FileLaunchAction::lauchFileSync(bool forceWithArg, bool skipDialog)
         }
     }
 
-    if (executable && !isDesktopFileAction() && !skipDialog) {
+    if (executable && !isDesktopFileAction() && !skipDialog && isShellScript) {
         QMessageBox msg;
+        auto defaultAction = msg.addButton("By Default App", QMessageBox::ButtonRole::ActionRole);
         auto exec = msg.addButton(tr("Execute Directly"), QMessageBox::ButtonRole::ActionRole);
         auto execTerm = msg.addButton(tr("Execute in Terminal"), QMessageBox::ButtonRole::ActionRole);
-        auto defaultAction = msg.addButton("By Default App", QMessageBox::ButtonRole::ActionRole);
         msg.addButton(QMessageBox::Cancel);
 
         msg.setText(tr("Detected launching an executable file %1, you want?").arg(fileInfo->displayName()));
@@ -146,14 +145,7 @@ void FileLaunchAction::lauchFileSync(bool forceWithArg, bool skipDialog)
     }
 
     if (!isValid()) {
-        ca_context *caContext;
-        ca_context_create(&caContext);
-        const gchar* eventId = "dialog-warning";
-        //eventid 是/usr/share/sounds音频文件名,不带后缀
-        ca_context_play (caContext, 0,
-                         CA_PROP_EVENT_ID, eventId,
-                         CA_PROP_EVENT_DESCRIPTION, tr("Delete file Warning"), NULL);
-
+        Peony::AudioPlayManager::getInstance()->playWarningAudio();
         QMessageBox::critical(nullptr, tr("Open Failed"), tr("Can not open %1, file not exist, is it deleted?").arg(m_uri));
         return;
     }
@@ -220,9 +212,9 @@ void FileLaunchAction::lauchFileAsync(bool forceWithArg, bool skipDialog)
 
     if (executable && !isDesktopFileAction() && !skipDialog && isShellScript) {
         QMessageBox msg;
+        auto defaultAction = msg.addButton(tr("By Default App"), QMessageBox::ButtonRole::ActionRole);
         auto exec = msg.addButton(tr("Execute Directly"), QMessageBox::ButtonRole::ActionRole);
         auto execTerm = msg.addButton(tr("Execute in Terminal"), QMessageBox::ButtonRole::ActionRole);
-        auto defaultAction = msg.addButton(tr("By Default App"), QMessageBox::ButtonRole::ActionRole);
         msg.addButton(QMessageBox::Cancel);
 
         msg.setWindowTitle(tr("Launch Options"));
@@ -243,25 +235,11 @@ void FileLaunchAction::lauchFileAsync(bool forceWithArg, bool skipDialog)
     }
 
     if (!isValid()) {
-        ca_context *caContext;
-        ca_context_create(&caContext);
-        const gchar* eventId = "dialog-warning";
-        //eventid 是/usr/share/sounds音频文件名,不带后缀
-        ca_context_play (caContext, 0,
-                         CA_PROP_EVENT_ID, eventId,
-                         CA_PROP_EVENT_DESCRIPTION, tr("Delete file Warning"), NULL);
-
+        Peony::AudioPlayManager::getInstance()->playWarningAudio();
         bool isReadable = fileInfo->canRead();
         if (!isReadable)
         {
-            ca_context *caContext;
-            ca_context_create(&caContext);
-            const gchar* eventId = "dialog-warning";
-            //eventid 是/usr/share/sounds音频文件名,不带后缀
-            ca_context_play (caContext, 0,
-                             CA_PROP_EVENT_ID, eventId,
-                             CA_PROP_EVENT_DESCRIPTION, tr("Delete file Warning"), NULL);
-
+            Peony::AudioPlayManager::getInstance()->playWarningAudio();
             if (fileInfo->isSymbolLink())
             {
                 auto result = QMessageBox::question(nullptr, tr("Open Link failed"),
@@ -392,11 +370,11 @@ void FileLaunchAction::lauchFilesAsync(const QStringList files, bool forceWithAr
         }
     }
 
-    if (executable && !isDesktopFileAction() && !skipDialog &&isShellScript) {
+    if (executable && !isDesktopFileAction() && !skipDialog && isShellScript) {
         QMessageBox msg;
+        auto defaultAction = msg.addButton(tr("By Default App"), QMessageBox::ButtonRole::ActionRole);
         auto exec = msg.addButton(tr("Execute Directly"), QMessageBox::ButtonRole::ActionRole);
         auto execTerm = msg.addButton(tr("Execute in Terminal"), QMessageBox::ButtonRole::ActionRole);
-        auto defaultAction = msg.addButton(tr("By Default App"), QMessageBox::ButtonRole::ActionRole);
         msg.addButton(QMessageBox::Cancel);
 
         msg.setWindowTitle(tr("Launch Options"));
@@ -417,14 +395,7 @@ void FileLaunchAction::lauchFilesAsync(const QStringList files, bool forceWithAr
     }
 
     if (!isValid()) {
-        ca_context *caContext;
-        ca_context_create(&caContext);
-        const gchar* eventId = "dialog-warning";
-        //eventid 是/usr/share/sounds音频文件名,不带后缀
-        ca_context_play (caContext, 0,
-                         CA_PROP_EVENT_ID, eventId,
-                         CA_PROP_EVENT_DESCRIPTION, tr("Delete file Warning"), NULL);
-
+        Peony::AudioPlayManager::getInstance()->playWarningAudio();
         bool isReadable = fileInfo->canRead();
         if (!isReadable)
         {

@@ -173,7 +173,7 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
     viewType->setPopupMode(QToolButton::InstantPopup);
 
     m_view_type_menu = new ViewTypeMenu(viewType);
-    viewType->setMenu(m_view_type_menu);
+    a->setMenu(m_view_type_menu);
 
     connect(m_view_type_menu, &ViewTypeMenu::switchViewRequest, this, [=](const QString &id, const QIcon &icon, bool resetToZoomLevel) {
         viewType->setText(id);
@@ -200,7 +200,7 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
     sortType->setPopupMode(QToolButton::InstantPopup);
 
     m_sort_type_menu = new SortTypeMenu(this);
-    sortType->setMenu(m_sort_type_menu);
+    a->setMenu(m_sort_type_menu);
 
     connect(m_sort_type_menu, &SortTypeMenu::switchSortTypeRequest, m_window, &MainWindow::setCurrentSortColumn);
     connect(m_sort_type_menu, &SortTypeMenu::switchSortOrderRequest, m_window, [=](Qt::SortOrder order) {
@@ -227,7 +227,7 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
     popMenu->setPopupMode(QToolButton::InstantPopup);
 
     m_operation_menu = new OperationMenu(m_window, this);
-    popMenu->setMenu(m_operation_menu);
+    a->setMenu(m_operation_menu);
 
     for (auto action : actions()) {
         auto w = widgetForAction(action);

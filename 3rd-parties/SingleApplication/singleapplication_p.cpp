@@ -129,6 +129,8 @@ void SingleApplicationPrivate::genBlockServerName(const char* appName)
 #endif
     }
 
+    appData.addData(qgetenv("DISPLAY"));
+
     // Replace the backslash in RFC 2045 Base64 [a-zA-Z0-9+/=] to comply with
     // server naming requirements.
     blockServerName = appData.result().toBase64().replace("/", "_");

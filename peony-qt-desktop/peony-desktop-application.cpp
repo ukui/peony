@@ -43,6 +43,7 @@
 #include <QLocale>
 
 #include <QSystemTrayIcon>
+#include <QGSettings>
 
 #include <gio/gio.h>
 
@@ -56,12 +57,16 @@
 #define KYLIN_USER_GUIDE_SERVICE QString("com.kylinUserGuide.hotel_%1").arg(getuid())
 #define KYLIN_USER_GUIDE_INTERFACE "com.guide.hotel"
 
+#define DESKTOP_MEDIA_HANDLE "org.gnome.desktop.media-handling"
+
 static bool has_desktop = false;
 static bool has_daemon = false;
 static Peony::DesktopIconView *desktop_icon_view = nullptr;
 
 //record of desktop start time
 qint64 PeonyDesktopApplication::peony_desktop_start_time = 0;
+
+void guessContentTypeCallback(GObject* object,GAsyncResult *res,gpointer data);
 
 void trySetDefaultFolderUrlHandler() {
     //NOTE:
@@ -154,6 +159,14 @@ PeonyDesktopApplication::PeonyDesktopApplication(int &argc, char *argv[], const 
     //parse cmd
     auto message = this->arguments().join(' ').toUtf8();
     parseCmd(this->instanceId(), message, isPrimary());
+
+    auto volumeManager = Peony::VolumeManager::getInstance();
+    connect(volumeManager,&Peony::VolumeManager::mountAdded,this,[=](const std::shared_ptr<Peony::Mount> &mount){
+        //auto open dir for inserted dvd.
+        GMount *newMount = (GMount*)g_object_ref(mount->getGMount());
+        g_mount_guess_content_type(newMount,FALSE,NULL,guessContentTypeCallback,NULL);
+    });
+    connect(volumeManager,&Peony::VolumeManager::volumeRemoved,this,&PeonyDesktopApplication::volumeRemovedProcess);
 }
 
 Peony::DesktopIconView *PeonyDesktopApplication::getIconView()
@@ -372,6 +385,8 @@ void PeonyDesktopApplication::primaryScreenChangedProcess(QScreen *screen)
         currentPrimayWindow->setCentralWidget(getIconView());
         //desktop_icon_view->show();
         currentPrimayWindow->updateView();
+        currentPrimayWindow->hide();
+        currentPrimayWindow->show();
     }
     return;
 
@@ -467,3 +482,93 @@ void PeonyDesktopApplication::checkWindowProcess()
         }
     }
 }
+
+void guessContentTypeCallback(GObject* object,GAsyncResult *res,gpointer data)
+{
+    char **guessType;
+    GError *error;
+    QString openFolderCmd;
+    GFile* root;
+    char *mountUri;
+    bool openFolder;
+    QProcess process;
+
+    error = NULL;
+    openFolder = true;
+    root = g_mount_get_default_location(G_MOUNT(object));
+    mountUri = g_file_get_uri(root);
+    openFolderCmd = "peony " + QString(mountUri);
+    guessType = g_mount_guess_content_type_finish(G_MOUNT(object),res,&error);
+
+    if(error){
+        g_error_free(error);
+        error = NULL;
+    }else{
+        if(guessType && g_strv_length(guessType) > 0){
+            int n;
+            for(n = 0; guessType[n]; ++n){
+                if(g_content_type_is_a(guessType[n],"x-content/win32-software"))
+                    openFolder = false;
+                if(!strcmp(guessType[n],"x-content/blank-dvd"))
+                    openFolder = false;
+
+                if(openFolder)
+                    process.startDetached(openFolderCmd);
+
+                openFolder = true;
+            }
+            g_strfreev(guessType);
+        }else{
+            GDrive *drive = g_mount_get_drive(G_MOUNT(object));
+            char *unixDevice = NULL;
+            if(drive){
+                unixDevice = g_drive_get_identifier(drive,G_DRIVE_IDENTIFIER_KIND_UNIX_DEVICE);
+                g_object_unref(drive);
+            }
+
+            //Only DvD devices are allowed to open folder automatically.
+            if(unixDevice && !strcmp(unixDevice,"/dev/sr") && QGSettings::isSchemaInstalled(DESKTOP_MEDIA_HANDLE)){
+                QGSettings* autoMountSettings =  new QGSettings(DESKTOP_MEDIA_HANDLE);
+                if(autoMountSettings->get("automount-open").toBool()){
+                    process.startDetached(openFolderCmd);
+                    delete autoMountSettings;
+                }
+            }
+
+            g_free(unixDevice);
+        }
+    }
+
+    g_free(mountUri);
+    g_object_unref(root);
+    g_object_unref(object);
+}
+
+void PeonyDesktopApplication::volumeRemovedProcess(const std::shared_ptr<Peony::Volume> &volume)
+{
+    GVolume *gvolume = NULL;
+    GDrive *gdrive = NULL;
+    char *gdriveName = NULL;
+
+    if(volume)
+        gvolume = volume->getGVolume();
+    if(gvolume)
+        gdrive = g_volume_get_drive(gvolume);
+
+    //Do not stop the DVD/CD driver.
+    if(gdrive){
+        gdriveName = g_drive_get_name(gdrive);
+        if(gdriveName){
+            if(strstr(gdriveName,"DVD") || strstr(gdriveName,"CD")){
+                g_free(gdriveName);
+                g_object_unref(gdrive);
+                return;
+            }
+            g_free(gdriveName);
+        }
+    }
+
+    //if it is possible, we stop it's drive after eject successfully.
+    if(gdrive && g_drive_can_stop(gdrive))
+        g_drive_stop(gdrive,G_MOUNT_UNMOUNT_NONE,NULL,NULL,NULL,NULL);
+};

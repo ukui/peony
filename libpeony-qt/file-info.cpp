@@ -78,8 +78,6 @@ FileInfo::~FileInfo()
     g_object_unref(m_cancellable);
     g_object_unref(m_file);
 
-    if (m_target_file)
-        g_object_unref(m_target_file);
     if (m_parent)
         g_object_unref(m_parent);
 
@@ -189,4 +187,14 @@ bool FileInfo::isOfficeFile()
     }
 
     return false;
+}
+
+const QString FileInfo::targetUri()
+{
+    return m_target_uri;
+}
+
+const QString FileInfo::symlinkTarget()
+{
+    return m_symlink_target;
 }

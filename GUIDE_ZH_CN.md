@@ -42,12 +42,11 @@
 ### 条件
 1、系统要求：Ubuntu/UbuntuKylin 19.10
 
-2、编译依赖： libglib2.0-dev， qt5-default(>=5.12), libqt5x11extras5-dev, libgsettings-qt-dev
+2、编译依赖： 参考最新的debian/control文件的Build-Deps字段
 
 3、推荐： qt5-gtk2-platformtheme（针对gtk桌面环境，提供系统主题支持）
 
 ### 步骤(以优麒麟为例)
-> sudo apt install libglib2.0-dev libqt5x11extras5-dev qt5-default libgsettings-qt-dev
 
 > git clone https://github.com/ukui/peony.git
 
@@ -56,6 +55,8 @@
 > qmake ..
 
 > make
+
+如果此处报错，大部分情况是缺少依赖，可以通过mk-build-deps命令拉取debian/control中的依赖
 
 > sudo make install
 

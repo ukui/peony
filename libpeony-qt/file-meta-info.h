@@ -65,7 +65,7 @@ public:
     const QStringList getMetaInfoStringList(const QString &key);
     void setMetaInfoInt(const QString &key, int value);
     int getMetaInfoInt(const QString &key);
-    void setMetaInfoVariant(const QString &key, const QVariant &value);
+    void setMetaInfoVariant(const QString &key, const QVariant &value, bool syncToFile = true);
     const QVariant getMetaInfoVariant(const QString &key);
 
     void removeMetaInfo(const QString &key);

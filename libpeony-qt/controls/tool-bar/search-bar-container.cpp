@@ -78,7 +78,10 @@ SearchBarContainer::SearchBarContainer(QWidget *parent): QWidget(parent)
         {
             m_search_trigger.stop();
         }
-        m_search_trigger.start();
+        if (! m_clear_action)
+            m_search_trigger.start();
+        else
+            m_clear_action = false;
     });
     connect(m_filter_box, &QComboBox::currentTextChanged, [=]()
     {
@@ -128,4 +131,5 @@ void SearchBarContainer::startSearch()
 void SearchBarContainer::clearSearchBox()
 {
     m_search_box->setText("");
+    m_clear_action = true;
 }

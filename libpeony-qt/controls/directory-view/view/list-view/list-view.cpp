@@ -28,6 +28,7 @@
 
 #include "file-item.h"
 #include "file-utils.h"
+#include "file-info.h"
 #include "list-view-style.h"
 
 #include "global-settings.h"
@@ -432,6 +433,9 @@ void ListView::adjustColumnsSize()
         return;
 
     resizeColumnToContents(0);
+    int firstColumnSize = columnWidth(0);
+    firstColumnSize += this->indentation();
+    setColumnWidth(0, firstColumnSize);
 
     int rightPartsSize = 0;
     for (int column = 1; column < model()->columnCount(); column++) {
@@ -624,9 +628,14 @@ void ListView2::bindModel(FileItemModel *model, FileItemProxyFilterSortModel *pr
     connect(m_view->selectionModel(), &QItemSelectionModel::selectionChanged,
             this, &DirectoryViewWidget::viewSelectionChanged);
 
-    connect(m_view, &ListView::doubleClicked, this, [=](const QModelIndex &index) {
+    connect(m_view, &ListView::activated, this, [=](const QModelIndex &index) {
         qDebug()<<index.data(Qt::UserRole).toString();
-        Q_EMIT this->viewDoubleClicked(index.data(Qt::UserRole).toString());
+        auto uri = index.data(Qt::UserRole).toString();
+        //process open symbolic link
+        auto info = FileInfo::fromUri(uri, false);
+        if (info->isSymbolLink() && uri.startsWith("file://"))
+            uri = "file://" + FileUtils::getSymbolicTarget(uri);
+        Q_EMIT this->viewDoubleClicked(uri);
     });
 
     //FIXME: how about multi-selection?
@@ -672,12 +681,7 @@ void ListView2::bindModel(FileItemModel *model, FileItemProxyFilterSortModel *pr
 
     connect(m_model, &FileItemModel::findChildrenFinished, this, [=]() {
         if (m_need_resize_header) {
-            //delay a while for proxy model sorting.
-            QTimer::singleShot(500, this, [=]() {
-                //m_view->setModel(m_proxy_model);
-                //adjust columns layout.
-                m_view->adjustColumnsSize();
-            });
+            m_view->adjustColumnsSize();
         }
         m_need_resize_header = false;
     });

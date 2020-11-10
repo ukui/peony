@@ -34,10 +34,15 @@
 #include <QWidget>
 #include <QPainter>
 #include <QFileInfo>
+#include <file-info-job.h>
 
 #include <QApplication>
 
 #include <QDebug>
+#include <file-info.h>
+
+//qt's global function
+extern void qt_blurImage(QImage &blurImage, qreal radius, bool quality, int transposed);
 
 using namespace Peony;
 using namespace Peony::DirectoryView;
@@ -133,24 +138,55 @@ void DesktopIconViewDelegate::paint(QPainter *painter, const QStyleOptionViewIte
     //paint text shadow
     painter->save();
     painter->translate(1, 1 + iconSizeExpected.height() + 10);
-    //painter->setFont(opt.font);
+
+    auto expectedSize = IconViewTextHelper::getTextSizeForIndex(opt, index, 2);
+    QPixmap pixmap(expectedSize);
+    pixmap.fill(Qt::transparent);
+    QPainter shadowPainter(&pixmap);
     QColor shadow = Qt::black;
-    shadow.setAlpha(127);
-    painter->setPen(shadow);
-    IconViewTextHelper::paintText(painter,
-                                  opt,
-                                  index,
-                                  maxTextHight,
-                                  0,
-                                  2,
-                                  false);
+    shadowPainter.setPen(shadow);
+    IconViewTextHelper::paintText(&shadowPainter, opt, index, maxTextHight, 0, 2, false, shadow);
+    shadowPainter.end();
+
+    QImage shadowImage(expectedSize + QSize(4, 4), QImage::Format_ARGB32_Premultiplied);
+    shadowImage.fill(Qt::transparent);
+    shadowPainter.begin(&shadowImage);
+    shadowPainter.drawPixmap(2, 2, pixmap);
+    qt_blurImage(shadowImage, 8, false, false);
+
+    for (int x = 0; x < shadowImage.width(); x++) {
+        for (int y = 0; y < shadowImage.height(); y++) {
+            auto color = shadowImage.pixelColor(x, y);
+            if (color.alpha() > 0) {
+                color.setAlphaF(qMin(color.alphaF() * 1.5, 1.0));
+                shadowImage.setPixelColor(x, y, color);
+            }
+        }
+    }
+
+    shadowPainter.end();
+
+    painter->translate(-2, -2);
+    painter->drawImage(0, 0, shadowImage);
+
+    //painter->setFont(opt.font);
+//    painter->setPen(shadow);
+//    IconViewTextHelper::paintText(painter,
+//                                  opt,
+//                                  index,
+//                                  maxTextHight,
+//                                  0,
+//                                  2,
+//                                  false);
     painter->restore();
 
     //paint text
     painter->save();
     painter->translate(0, 0 + iconSizeExpected.height() + 10);
     //painter->setFont(opt.font);
-    painter->setPen(opt.palette.highlightedText().color());
+    QColor textColor = Qt::white;
+    textColor.setAlphaF(0.9);
+    painter->setPen(textColor);
     IconViewTextHelper::paintText(painter,
                                   opt,
                                   index,
@@ -162,7 +198,51 @@ void DesktopIconViewDelegate::paint(QPainter *painter, const QStyleOptionViewIte
 
     painter->restore();
 
-    //paint link icon
+    //paint link icon and locker icon
+    FileInfo* file = FileInfo::fromUri(index.data(Qt::UserRole).toString(), true).get();
+    if ((index.data(Qt::UserRole).toString() != "computer:///") && (index.data(Qt::UserRole).toString() != "trash:///")) {
+        QSize lockerIconSize = QSize(16, 16);
+        int offset = 8;
+        switch (view->zoomLevel()) {
+        case DesktopIconView::Small: {
+            lockerIconSize = QSize(8, 8);
+            offset = 10;
+            break;
+        }
+        case DesktopIconView::Normal: {
+            break;
+        }
+        case DesktopIconView::Large: {
+            offset = 4;
+            lockerIconSize = QSize(24, 24);
+            break;
+        }
+        case DesktopIconView::Huge: {
+            offset = 2;
+            lockerIconSize = QSize(32, 32);
+            break;
+        }
+        default: {
+            break;
+        }
+        }
+        auto topRight = opt.rect.topRight();
+        topRight.setX(topRight.x() - opt.rect.width() + 10);
+        topRight.setY(topRight.y() + 10);
+        auto linkRect = QRect(topRight, lockerIconSize);
+
+        if (! file->canRead())
+        {
+            QIcon symbolicLinkIcon = QIcon::fromTheme("emblem-unreadable");
+            symbolicLinkIcon.paint(painter, linkRect, Qt::AlignCenter);
+        }
+        else if(! file->canWrite() && ! file->canExecute())
+        {
+            QIcon symbolicLinkIcon = QIcon::fromTheme("emblem-readonly");
+            symbolicLinkIcon.paint(painter, linkRect, Qt::AlignCenter);
+        }
+    }
+
     if (index.data(Qt::UserRole + 1).toBool()) {
         QSize symbolicIconSize = QSize(16, 16);
         int offset = 8;

@@ -54,9 +54,7 @@
 #include "file-meta-info.h"
 
 #include "global-settings.h"
-
-//play audio lib head file
-#include <canberra.h>
+#include "audio-play-manager.h"
 
 #include <QAction>
 #include <QMouseEvent>
@@ -356,10 +354,15 @@ void DesktopIconView::initShoutCut()
     propertiesWindowAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::ALT + Qt::Key_Return)
                                          <<QKeySequence(Qt::ALT + Qt::Key_Enter));
     connect(propertiesWindowAction, &QAction::triggered, this, [=]() {
+        DesktopMenu menu(this);
         if (this->getSelections().count() > 0)
         {
-            PropertiesWindow *w = new PropertiesWindow(this->getSelections());
-            w->show();
+            menu.showProperties(this->getSelections());
+        }
+        else
+        {
+            QString desktopPath = "file://" +  QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
+            menu.showProperties(desktopPath);
         }
     });
     addAction(propertiesWindowAction);
@@ -497,14 +500,7 @@ void DesktopIconView::openFileByUri(QString uri)
             QDir dir(info->filePath());
             if (! dir.exists())
             {
-                ca_context *caContext;
-                ca_context_create(&caContext);
-                const gchar* eventId = "dialog-warning";
-                //eventid 是/usr/share/sounds音频文件名,不带后缀
-                ca_context_play (caContext, 0,
-                                 CA_PROP_EVENT_ID, eventId,
-                                 CA_PROP_EVENT_DESCRIPTION, tr("Delete file Warning"), NULL);
-
+                Peony::AudioPlayManager::getInstance()->playWarningAudio();
                 auto result = QMessageBox::question(nullptr, tr("Open Link failed"),
                                       tr("File not exist, do you want to delete the link file?"));
                 if (result == QMessageBox::Yes) {
@@ -520,14 +516,7 @@ void DesktopIconView::openFileByUri(QString uri)
                     && ! info->uri().startsWith("computer://")
                     &&  ! info->canExecute())
             {
-                ca_context *caContext;
-                ca_context_create(&caContext);
-                const gchar* eventId = "dialog-warning";
-                //eventid 是/usr/share/sounds音频文件名,不带后缀
-                ca_context_play (caContext, 0,
-                                 CA_PROP_EVENT_ID, eventId,
-                                 CA_PROP_EVENT_DESCRIPTION, tr("Delete file Warning"), NULL);
-
+                Peony::AudioPlayManager::getInstance()->playWarningAudio();
                 QMessageBox::critical(nullptr, tr("Open failed"),
                                       tr("Open directory failed, you have no permission!"));
                 return;
@@ -561,9 +550,13 @@ void DesktopIconView::openFileByUri(QString uri)
 
 void DesktopIconView::initDoubleClick()
 {
-    connect(this, &QListView::doubleClicked, this, [=](const QModelIndex &index) {
+    connect(this, &QListView::activated, this, [=](const QModelIndex &index) {
         qDebug() << "double click" << index.data(FileItemModel::UriRole);
         auto uri = index.data(FileItemModel::UriRole).toString();
+        //process open symbolic link
+        auto info = FileInfo::fromUri(uri, false);
+        if (info->isSymbolLink() && uri.startsWith("file://"))
+            uri = "file://" + FileUtils::getSymbolicTarget(uri);
         openFileByUri(uri);
     }, Qt::UniqueConnection);
 }
@@ -843,7 +836,10 @@ void DesktopIconView::keyPressEvent(QKeyEvent *e)
                 clearAllIndexWidgets();
                 selectionModel()->select(upIndex, QItemSelectionModel::SelectCurrent);
                 auto delegate = qobject_cast<DesktopIconViewDelegate *>(itemDelegate());
-                setIndexWidget(upIndex, new DesktopIndexWidget(delegate, viewOptions(), upIndex, this));
+                auto indexWidget = new DesktopIndexWidget(delegate, viewOptions(), upIndex, this);
+                setIndexWidget(upIndex, indexWidget);
+                indexWidget->move(visualRect(upIndex).topLeft());
+
 #if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
                 for (auto uri : getAllFileUris()) {
                     auto pos = getFileMetaInfoPos(uri);
@@ -867,7 +863,10 @@ void DesktopIconView::keyPressEvent(QKeyEvent *e)
                 clearAllIndexWidgets();
                 selectionModel()->select(downIndex, QItemSelectionModel::SelectCurrent);
                 auto delegate = qobject_cast<DesktopIconViewDelegate *>(itemDelegate());
-                setIndexWidget(downIndex, new DesktopIndexWidget(delegate, viewOptions(), downIndex, this));
+                auto indexWidget = new DesktopIndexWidget(delegate, viewOptions(), downIndex, this);
+                setIndexWidget(downIndex, indexWidget);
+                indexWidget->move(visualRect(downIndex).topLeft());
+
 #if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
                 for (auto uri : getAllFileUris()) {
                     auto pos = getFileMetaInfoPos(uri);
@@ -891,7 +890,9 @@ void DesktopIconView::keyPressEvent(QKeyEvent *e)
                 clearAllIndexWidgets();
                 selectionModel()->select(leftIndex, QItemSelectionModel::SelectCurrent);
                 auto delegate = qobject_cast<DesktopIconViewDelegate *>(itemDelegate());
-                setIndexWidget(leftIndex, new DesktopIndexWidget(delegate, viewOptions(), leftIndex, this));
+                auto indexWidget = new DesktopIndexWidget(delegate, viewOptions(), leftIndex, this);
+                setIndexWidget(leftIndex, indexWidget);
+                indexWidget->move(visualRect(leftIndex).topLeft());
 #if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
                 for (auto uri : getAllFileUris()) {
                     auto pos = getFileMetaInfoPos(uri);
@@ -915,7 +916,8 @@ void DesktopIconView::keyPressEvent(QKeyEvent *e)
                 clearAllIndexWidgets();
                 selectionModel()->select(rightIndex, QItemSelectionModel::SelectCurrent);
                 auto delegate = qobject_cast<DesktopIconViewDelegate *>(itemDelegate());
-                setIndexWidget(rightIndex, new DesktopIndexWidget(delegate, viewOptions(), rightIndex, this));
+                auto indexWidget = new DesktopIndexWidget(delegate, viewOptions(), rightIndex, this);
+                setIndexWidget(rightIndex, indexWidget);
 #if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
                 for (auto uri : getAllFileUris()) {
                     auto pos = getFileMetaInfoPos(uri);
@@ -1149,8 +1151,10 @@ void DesktopIconView::mousePressEvent(QMouseEvent *e)
             clearAllIndexWidgets();
             m_last_index = index;
             if (!indexWidget(m_last_index)) {
+                auto indexWidget = new DesktopIndexWidget(qobject_cast<DesktopIconViewDelegate *>(itemDelegate()), viewOptions(), m_last_index);
                 setIndexWidget(m_last_index,
-                               new DesktopIndexWidget(qobject_cast<DesktopIconViewDelegate *>(itemDelegate()), viewOptions(), m_last_index));
+                               indexWidget);
+                indexWidget->move(visualRect(m_last_index).topLeft());
 #if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
                 for (auto uri : getAllFileUris()) {
                     auto pos = getFileMetaInfoPos(uri);
@@ -1173,6 +1177,8 @@ void DesktopIconView::mousePressEvent(QMouseEvent *e)
 void DesktopIconView::mouseReleaseEvent(QMouseEvent *e)
 {
     QListView::mouseReleaseEvent(e);
+
+    this->viewport()->update(viewport()->rect());
 }
 
 void DesktopIconView::mouseDoubleClickEvent(QMouseEvent *event)
@@ -1242,33 +1248,33 @@ void DesktopIconView::dropEvent(QDropEvent *e)
       is incorrect.
       */
     m_edit_trigger_timer.stop();
-    if (e->keyboardModifiers() && Qt::ControlModifier)
+    if (e->keyboardModifiers() & Qt::ControlModifier) {
         m_ctrl_key_pressed = true;
-    else
+    } else {
         m_ctrl_key_pressed = false;
+    }
 
     auto action = m_ctrl_key_pressed ? Qt::CopyAction : Qt::MoveAction;
     qDebug() << "DesktopIconView dropEvent" <<action;
-    if (this == e->source() && !m_ctrl_key_pressed)
-    {
+    if (this == e->source() && !m_ctrl_key_pressed) {
         auto index = indexAt(e->pos());
         qDebug() <<"DesktopIconView index:" <<index <<index.isValid();
         bool bmoved = false;
         if (index.isValid()) {
             auto info = FileInfo::fromUri(index.data(Qt::UserRole).toString());
-            if (!info->isDir())
+            if (!info->isDir()) {
                 return;
+            }
             bmoved = true;
         }
 
-        if (bmoved)
-        {
+        if (bmoved) {
             //move file to desktop folder
             qDebug() << "DesktopIconView move file to folder";
             m_model->dropMimeData(e->mimeData(), action, -1, -1, this->indexAt(e->pos()));
-        }
-        else
+        } else {
             QListView::dropEvent(e);
+        }
 
         QHash<QModelIndex, QRect> currentIndexesRects;
         for (int i = 0; i < m_proxy_model->rowCount(); i++) {
@@ -1294,7 +1300,7 @@ void DesktopIconView::dropEvent(QDropEvent *e)
 
             for (auto index : unoverlappedIndexes) {
                 // save pos
-                QTimer::singleShot(1, this, [=](){
+                QTimer::singleShot(1, this, [=]() {
                     setFileMetaInfoPos(index.data(Qt::UserRole).toString(), QListView::visualRect(index).topLeft());
                 });
             }
@@ -1326,10 +1332,12 @@ void DesktopIconView::dropEvent(QDropEvent *e)
                             //put item to next column first column
                             next.moveTo(next.x() + grid.width(), top);
                         }
-                        if (notEmptyRegion.contains(next.center()))
+                        if (notEmptyRegion.contains(next.center())) {
                             continue;
+                        }
 
                         isEmptyPos = true;
+
                         setPositionForIndex(next.topLeft(), dragedIndex);
                         setFileMetaInfoPos(dragedIndex.data(Qt::UserRole).toString(), next.topLeft());
                         notEmptyRegion += next;
@@ -1345,14 +1353,18 @@ void DesktopIconView::dropEvent(QDropEvent *e)
                 }
 
                 // try relocating invisible item
-
-                QRect next;
-                for (auto existedRect : notEmptyRegion.rects()) {
-                    if (this->viewport()->rect().contains(existedRect)) {
-                        next = existedRect;
+                QRect next(0, 0, 0, 0);
+                for (auto existedRect = notEmptyRegion.begin(); existedRect != notEmptyRegion.end(); ++existedRect) {
+                    if (this->viewport()->rect().contains(*existedRect)) {
+                        next = *existedRect;
                         break;
+                    } else if (existedRect == notEmptyRegion.end() - 1
+                               && next == QRect(0, 0, 0, 0)) {
+                        next = *existedRect;
+                        next.moveTo(0, 0);
                     }
                 }
+
                 while (next.translated(-grid.width(), 0).x() >= 0) {
                     next.translate(-grid.width(), 0);
                 }

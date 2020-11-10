@@ -55,6 +55,8 @@ public:
     void setEnumerateDirectory(QString uri);
     void setEnumerateDirectory(GFile *file);
 
+    bool setEnumerateWithInfoJob(bool query = true);
+
     QString getEnumerateUri();
 
     /*!
@@ -88,7 +90,7 @@ public:
      * \brief getChildren
      * \return
      */
-    const QList<std::shared_ptr<FileInfo>> getChildren(bool addToHash = false);
+    const QList<std::shared_ptr<FileInfo>> getChildren();
 
     const QStringList getChildrenUris() {
         return *m_children_uris;
@@ -124,7 +126,7 @@ Q_SIGNALS:
      * </br>
      * \see enumerateAsync(), enumerator_next_files_async_ready_callback();
      */
-    void childrenUpdated(const QStringList &uriList);
+    void childrenUpdated(const QStringList &uriList, bool isEnding = false);
     /*!
      * \brief enumerateFinished
      * \param successed
@@ -231,6 +233,22 @@ private:
     QTimer *m_idle;
 
     bool m_auto_delete = false;
+
+    bool m_with_info_job = false;
+
+    /*!
+     * \brief m_cached_infos
+     * \note
+     * we could not get this cache directly. insteadly we can use
+     * FileInfo::fromUri() to get each of them while enumerating finished.
+     * this cache just hold the strong reference during enumerating.
+     * once we didn't hold a ref before it deleted, it will unref automaticly.
+     *
+     * \see
+     * setEnumerateWithInfoJob(),
+     * getChildren()
+     */
+    QList<std::shared_ptr<FileInfo>> m_cached_infos;
 };
 
 }
