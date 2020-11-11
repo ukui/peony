@@ -119,87 +119,30 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
         if (!exsited) {
             auto job = new FileInfoJob(info);
             job->setAutoDelete();
-            connect(job, &FileInfoJob::infoUpdated, [=]() {
-                // locate new item =====
+            job->querySync();
 
-                auto view = PeonyDesktopApplication::getIconView();
-                auto itemRectHash = view->getCurrentItemRects();
-                auto grid = view->gridSize();
-                auto viewRect = view->rect();
+            // locate new item =====
 
-                QRegion notEmptyRegion;
-                for (auto rect : itemRectHash.values()) {
-                    notEmptyRegion += rect;
-                }
+            auto view = PeonyDesktopApplication::getIconView();
+            auto itemRectHash = view->getCurrentItemRects();
+            auto grid = view->gridSize();
+            auto viewRect = view->rect();
 
-                if (!view->isRenaming()) {
-                    view->setFileMetaInfoPos(uri, QPoint(-1, -1));
-                } else {
-                    view->setRenaming(false);
-                }
+            QRegion notEmptyRegion;
+            for (auto rect : itemRectHash.values()) {
+                notEmptyRegion += rect;
+            }
 
-                auto metaInfoPos = view->getFileMetaInfoPos(uri);
-                if (metaInfoPos.x() >= 0) {
-                    // check if overlapped, it might happend whild drag out and in desktop view.
-                    auto indexRect = QRect(metaInfoPos, itemRectHash.values().first().size());
-                    if (notEmptyRegion.contains(indexRect.center())) {
+            if (!view->isRenaming()) {
+                view->setFileMetaInfoPos(uri, QPoint(-1, -1));
+            } else {
+                view->setRenaming(false);
+            }
 
-                        // move index to closest empty grid.
-                        auto next = indexRect;
-                        bool isEmptyPos = false;
-                        while (!isEmptyPos) {
-                            next.translate(0, grid.height());
-                            if (next.bottom() > viewRect.bottom()) {
-                                int top = next.y();
-                                while (true) {
-                                    if (top < grid.height()) {
-                                        break;
-                                    }
-                                    top-=grid.height();
-                                }
-                                //put item to next column first row
-                                next.moveTo(next.x() + grid.width(), top);
-                            }
-                            if (notEmptyRegion.contains(next.center()))
-                                continue;
-
-                            isEmptyPos = true;
-                            itemRectHash.insert(info->uri(), next);
-                            notEmptyRegion += next;
-
-                            // handle position locate in DesktopIconView::itemInserted().
-                            view->setFileMetaInfoPos(info->uri(), next.topLeft());
-                        }
-                    }
-
-                    this->beginInsertRows(QModelIndex(), m_files.count(), m_files.count());
-                    ThumbnailManager::getInstance()->createThumbnail(info->uri(), m_thumbnail_watcher);
-                    m_files<<info;
-                    m_new_file_info_query_queue.removeOne(uri);
-                    //this->insertRows(m_files.indexOf(info), 1);
-                    this->endInsertRows();
-
-                    // end locate new item=======
-
-                    //this->endResetModel();
-                    Q_EMIT this->requestUpdateItemPositions();
-                    Q_EMIT this->requestLayoutNewItem(info->uri());
-                    Q_EMIT this->fileCreated(uri);
-                    return;
-                }
-
-                // aligin exsited rect
-                int marginTop = notEmptyRegion.boundingRect().top();
-                while (marginTop - grid.height() > 0) {
-                    marginTop -= grid.height();
-                }
-
-                int marginLeft = notEmptyRegion.boundingRect().left();
-                while (marginLeft - grid.width() > 0) {
-                    marginLeft -= grid.width();
-                }
-
-                auto indexRect = QRect(QPoint(marginLeft, marginTop), itemRectHash.isEmpty()? QSize(): itemRectHash.values().first().size());
+            auto metaInfoPos = view->getFileMetaInfoPos(uri);
+            if (metaInfoPos.x() >= 0) {
+                // check if overlapped, it might happend whild drag out and in desktop view.
+                auto indexRect = QRect(metaInfoPos, itemRectHash.values().first().size());
                 if (notEmptyRegion.contains(indexRect.center())) {
 
                     // move index to closest empty grid.
@@ -225,13 +168,11 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
                         itemRectHash.insert(info->uri(), next);
                         notEmptyRegion += next;
 
+                        // handle position locate in DesktopIconView::itemInserted().
                         view->setFileMetaInfoPos(info->uri(), next.topLeft());
                     }
-                } else {
-                    view->setFileMetaInfoPos(info->uri(), indexRect.topLeft());
                 }
 
-                //this->beginResetModel();
                 this->beginInsertRows(QModelIndex(), m_files.count(), m_files.count());
                 ThumbnailManager::getInstance()->createThumbnail(info->uri(), m_thumbnail_watcher);
                 m_files<<info;
@@ -245,8 +186,66 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
                 Q_EMIT this->requestUpdateItemPositions();
                 Q_EMIT this->requestLayoutNewItem(info->uri());
                 Q_EMIT this->fileCreated(uri);
-            });
-            job->queryAsync();
+                return;
+            }
+
+            // aligin exsited rect
+            int marginTop = notEmptyRegion.boundingRect().top();
+            while (marginTop - grid.height() > 0) {
+                marginTop -= grid.height();
+            }
+
+            int marginLeft = notEmptyRegion.boundingRect().left();
+            while (marginLeft - grid.width() > 0) {
+                marginLeft -= grid.width();
+            }
+
+            auto indexRect = QRect(QPoint(marginLeft, marginTop), itemRectHash.isEmpty()? QSize(): itemRectHash.values().first().size());
+            if (notEmptyRegion.contains(indexRect.center())) {
+
+                // move index to closest empty grid.
+                auto next = indexRect;
+                bool isEmptyPos = false;
+                while (!isEmptyPos) {
+                    next.translate(0, grid.height());
+                    if (next.bottom() > viewRect.bottom()) {
+                        int top = next.y();
+                        while (true) {
+                            if (top < grid.height()) {
+                                break;
+                            }
+                            top-=grid.height();
+                        }
+                        //put item to next column first row
+                        next.moveTo(next.x() + grid.width(), top);
+                    }
+                    if (notEmptyRegion.contains(next.center()))
+                        continue;
+
+                    isEmptyPos = true;
+                    itemRectHash.insert(info->uri(), next);
+                    notEmptyRegion += next;
+
+                    view->setFileMetaInfoPos(info->uri(), next.topLeft());
+                }
+            } else {
+                view->setFileMetaInfoPos(info->uri(), indexRect.topLeft());
+            }
+
+            //this->beginResetModel();
+            this->beginInsertRows(QModelIndex(), m_files.count(), m_files.count());
+            ThumbnailManager::getInstance()->createThumbnail(info->uri(), m_thumbnail_watcher);
+            m_files<<info;
+            m_new_file_info_query_queue.removeOne(uri);
+            //this->insertRows(m_files.indexOf(info), 1);
+            this->endInsertRows();
+
+            // end locate new item=======
+
+            //this->endResetModel();
+            Q_EMIT this->requestUpdateItemPositions();
+            Q_EMIT this->requestLayoutNewItem(info->uri());
+            Q_EMIT this->fileCreated(uri);
         }
     });
 
