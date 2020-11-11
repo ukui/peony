@@ -113,18 +113,18 @@
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="108"/>
-        <location filename="../../src/windows/main-window.cpp" line="611"/>
+        <location filename="../../src/windows/main-window.cpp" line="109"/>
+        <location filename="../../src/windows/main-window.cpp" line="613"/>
         <source>File Manager</source>
         <translation>文件管理器</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="295"/>
+        <location filename="../../src/windows/main-window.cpp" line="297"/>
         <source>Undo</source>
         <translation>撤销</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="302"/>
+        <location filename="../../src/windows/main-window.cpp" line="304"/>
         <source>Redo</source>
         <translation>重做</translation>
     </message>
@@ -133,12 +133,12 @@
         <translation type="vanished">删除文件警告</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1265"/>
+        <location filename="../../src/windows/main-window.cpp" line="1286"/>
         <source>Delete Permanently</source>
         <translation>永久删除</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1266"/>
+        <location filename="../../src/windows/main-window.cpp" line="1287"/>
         <source>Are you sure that you want to delete these files? Once you start a deletion, the files deleting will never be restored again.</source>
         <translation>您确定要删除这些文件吗？一旦开始删除，这些文件将不可再恢复。</translation>
     </message>
@@ -147,7 +147,7 @@
         <translation type="vanished">文件管理器</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="624"/>
+        <location filename="../../src/windows/main-window.cpp" line="626"/>
         <source>New Folder</source>
         <translation>新建文件夹</translation>
     </message>
@@ -162,7 +162,6 @@
 <context>
     <name>NavigationSideBarContainer</name>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="273"/>
         <source>All tags...</source>
         <translation type="vanished">所有标记...</translation>
     </message>
@@ -170,7 +169,7 @@
 <context>
     <name>NavigationTabBar</name>
     <message>
-        <location filename="../../src/control/navigation-tab-bar.cpp" line="121"/>
+        <location filename="../../src/control/navigation-tab-bar.cpp" line="123"/>
         <source>Search &quot;%1&quot; in &quot;%2&quot;</source>
         <translation>在%2中搜索%1</translation>
     </message>
@@ -992,7 +991,7 @@ Copyright (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</source
 <context>
     <name>TitleLabel</name>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="292"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="303"/>
         <source>Files</source>
         <translation>文档</translation>
     </message>
@@ -1000,17 +999,17 @@ Copyright (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</source
 <context>
     <name>TopMenuBar</name>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="624"/>
+        <location filename="../../src/control/header-bar.cpp" line="625"/>
         <source>Minimize</source>
         <translation>最小化</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="641"/>
+        <location filename="../../src/control/header-bar.cpp" line="638"/>
         <source>Maximize/Restore</source>
         <translation>最大化/还原</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="667"/>
+        <location filename="../../src/control/header-bar.cpp" line="660"/>
         <source>Close</source>
         <translation>关闭</translation>
     </message>
