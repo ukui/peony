@@ -1137,6 +1137,11 @@ DesktopIconView::ZoomLevel DesktopIconView::zoomLevel() const
     return ZoomLevel(zoomLevel.toInt()) == Invalid? Normal: ZoomLevel(QString(zoomLevel).toInt());
 }
 
+void DesktopIconView::setEditFlag(bool edit)
+{
+    m_is_edit = edit;
+}
+
 void DesktopIconView::mousePressEvent(QMouseEvent *e)
 {
     // bug extend selection bug
@@ -1148,7 +1153,9 @@ void DesktopIconView::mousePressEvent(QMouseEvent *e)
             clearSelection();
         } else {
             auto index = indexAt(e->pos());
-            clearAllIndexWidgets();
+            //fix rename state has no menuRequest issue
+            if (! m_is_edit)
+               clearAllIndexWidgets();
             m_last_index = index;
             if (!indexWidget(m_last_index)) {
                 auto indexWidget = new DesktopIndexWidget(qobject_cast<DesktopIconViewDelegate *>(itemDelegate()), viewOptions(), m_last_index);

@@ -174,6 +174,7 @@ public Q_SLOTS:
     void ensureItemPosByUri(const QString &uri);
 
     void setShowHidden();
+    void setEditFlag(bool edit);
 
 protected:
     void mousePressEvent(QMouseEvent *e);
@@ -224,6 +225,8 @@ private:
     bool m_show_hidden;
 
     bool m_is_renaming = false;
+
+    bool m_is_edit = false;
 
     QTimer m_refresh_timer;
 
