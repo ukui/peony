@@ -140,7 +140,7 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
 
     addSpacing(9);
     //close search button,set current location icon
-    auto a = addAction(tr(""));
+    a = addAction(tr(""));
     connect(a, &QAction::triggered,this,&HeaderBar::searchButtonClicked);
 
     auto closeSearch = qobject_cast<QToolButton *>(widgetForAction(a));
