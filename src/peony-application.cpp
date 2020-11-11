@@ -576,13 +576,16 @@ void PeonyApplication::parseCmd(quint32 id, QByteArray msg)
 
 void PeonyApplication::about()
 {
-    QMessageBox::about(nullptr,
-                       tr("Peony Qt"),
-                       tr("Author:\n"
-                          "\tYue Lan <lanyue@kylinos.cn>\n"
-                          "\tMeihong He <hemeihong@kylinos.cn>\n"
-                          "\n"
-                          "Copyright (C): 2020, KylinSoft Co., Ltd."));
+    QMessageBox *msgBox = new QMessageBox();
+    msgBox->setWindowTitle(tr("Peony Qt"));
+    msgBox->setText(tr("Author:\n"
+                       "\tYue Lan <lanyue@kylinos.cn>\n"
+                       "\tMeihong He <hemeihong@kylinos.cn>\n"
+                       "\n"
+                       "Copyright (C): 2020, KylinSoft Co., Ltd."));
+    msgBox->setModal(false);
+    msgBox->setAttribute(Qt::WA_DeleteOnClose);
+    msgBox->show();
 }
 
 void PeonyApplication::help()
