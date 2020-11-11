@@ -36,7 +36,7 @@ Format_Dialog::Format_Dialog(const QString &m_uris,SideBarAbstractItem *m_item,Q
 
        fm_uris = m_uris;
        fm_item = m_item;
-
+       m_parent = parent;
 
        //from uris get the rom size
        //FIXME: replace BLOCKING api in ui thread.
@@ -371,15 +371,15 @@ static void format_cb (GObject *source_object, GAsyncResult *res ,gpointer user_
 };
 
 
-void Format_Dialog::format_ok_dialog(){
-
-    QMessageBox::about(parentWidget(),tr("qmesg_notify"),tr("format_success"));
+void Format_Dialog::format_ok_dialog()
+{
+    QMessageBox::about(m_parent,tr("qmesg_notify"),tr("Format operation has been finished successfully."));
 };
 
 
-void Format_Dialog::format_err_dialog(){
-
-      QMessageBox::warning(parentWidget(),tr("qmesg_notify"),tr("format_err"));
+void Format_Dialog::format_err_dialog()
+{
+      QMessageBox::warning(m_parent,tr("qmesg_notify"),tr("Sorry, the format operation is failed!"));
 };
 
 

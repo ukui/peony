@@ -57,7 +57,7 @@ using namespace Peony::DirectoryView;
 
 ListView::ListView(QWidget *parent) : QTreeView(parent)
 {
-    this->verticalScrollBar()->setProperty("drawScrollBarGroove", false);
+//    this->verticalScrollBar()->setProperty("drawScrollBarGroove", false);
     this->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setStyle(Peony::DirectoryView::ListViewStyle::getStyle());
 
@@ -680,7 +680,7 @@ void ListView2::bindModel(FileItemModel *model, FileItemProxyFilterSortModel *pr
             Q_EMIT viewSelectionStatus(true);
     });
 
-    connect(m_view, &ListView::doubleClicked, this, [=](const QModelIndex &index) {
+    connect(m_view, &ListView::activated, this, [=](const QModelIndex &index) {
         qDebug()<<index.data(Qt::UserRole).toString();
         auto uri = index.data(Qt::UserRole).toString();
         //process open symbolic link
@@ -733,12 +733,7 @@ void ListView2::bindModel(FileItemModel *model, FileItemProxyFilterSortModel *pr
 
     connect(m_model, &FileItemModel::findChildrenFinished, this, [=]() {
         if (m_need_resize_header) {
-            //delay a while for proxy model sorting.
-            QTimer::singleShot(500, this, [=]() {
-                //m_view->setModel(m_proxy_model);
-                //adjust columns layout.
-                m_view->adjustColumnsSize();
-            });
+            m_view->adjustColumnsSize();
         }
         m_need_resize_header = false;
     });

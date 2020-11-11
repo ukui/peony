@@ -67,9 +67,7 @@
 #include "peony-application.h"
 
 #include "global-settings.h"
-
-//play audio lib head file
-#include <canberra.h>
+#include "audio-play-manager.h"
 
 #include <QSplitter>
 
@@ -96,6 +94,7 @@
 // NOTE build failed on Archlinux. Can't detect `QGSettings/QGSettings' header
 // fixed by replaced `QGSettings/QGSettings' with `QGSettings'
 #include <QGSettings>
+#include "xatom-helper.h"
 
 #define FONT_SETTINGS "org.ukui.style"
 
@@ -114,11 +113,6 @@ MainWindow::MainWindow(const QString &uri, QWidget *parent) : QMainWindow(parent
 
     setStyle(PeonyMainWindowStyle::getStyle());
 
-    m_effect = new BorderShadowEffect(this);
-    m_effect->setPadding(4);
-    m_effect->setBorderRadius(16);
-    m_effect->setBlurRadius(4);
-    //setGraphicsEffect(m_effect);
 
     setAnimated(false);
     setAttribute(Qt::WA_DeleteOnClose);
@@ -126,9 +120,15 @@ MainWindow::MainWindow(const QString &uri, QWidget *parent) : QMainWindow(parent
     //setAttribute(Qt::WA_OpaquePaintEvent);
     //fix double window base buttons issue, not effect MinMax button hints
     auto flags = windowFlags() &~Qt::WindowMinMaxButtonsHint;
-    setWindowFlags(flags |Qt::FramelessWindowHint);
-    //setWindowFlags(windowFlags()|Qt::FramelessWindowHint);
-    setContentsMargins(4, 4, 4, 4);
+//    setWindowFlags(flags |Qt::FramelessWindowHint);
+
+    //use ukui-kwin to draw round corner and shadow.
+    MotifWmHints hints;
+    hints.flags = MWM_HINTS_FUNCTIONS|MWM_HINTS_DECORATIONS;
+    hints.functions = MWM_FUNC_ALL;
+    hints.decorations = MWM_DECOR_BORDER;
+    XAtomHelper::getInstance()->setWindowMotifHint(window()->winId(), hints);
+    setContentsMargins(0, 0, 0, 0);
 
     //bind resize handler
     auto handler = new QWidgetResizeHandler(this);
@@ -430,11 +430,19 @@ void MainWindow::setShortCuts()
                                          <<QKeySequence(Qt::ALT + Qt::Key_Enter));
     connect(propertiesWindowAction, &QAction::triggered, this, [=]() {
         //Fixed issue:when use this shortcut without any selections, this will crash
+        QStringList uris;
         if (getCurrentSelections().count() > 0)
         {
-            Peony::PropertiesWindow *w = new Peony::PropertiesWindow(getCurrentSelections());
-            w->show();
+            uris<<getCurrentSelections();
         }
+        else
+        {
+            uris<<getCurrentUri();
+        }
+
+        Peony::PropertiesWindow *w = new Peony::PropertiesWindow(uris);
+        w->setAttribute(Qt::WA_DeleteOnClose);
+        w->show();
     });
     addAction(propertiesWindowAction);
 
@@ -950,14 +958,14 @@ void MainWindow::paintEvent(QPaintEvent *e)
 
     colorBase.setAlphaF(sidebarOpacity/100.0);
 
-    if (qApp->property("blurEnable").isValid()) {
-        bool blurEnable = qApp->property("blurEnable").toBool();
-        if (!blurEnable) {
-            colorBase.setAlphaF(1);
-        }
-    } else {
-        colorBase.setAlphaF(1);
-    }
+//    if (qApp->property("blurEnable").isValid()) {
+//        bool blurEnable = qApp->property("blurEnable").toBool();
+//        if (!blurEnable) {
+//            colorBase.setAlphaF(1);
+//        }
+//    } else {
+//        colorBase.setAlphaF(1);
+//    }
 
     QPainterPath sidebarPath;
     sidebarPath.setFillRule(Qt::FillRule::WindingFill);
@@ -966,33 +974,23 @@ void MainWindow::paintEvent(QPaintEvent *e)
     auto tmpRect = QRect(pos, m_tab->size());
     QPainterPath deletePath;
     QPainterPath tmpPath;
-    if(window()->isMaximized()){
-        tmpPath.addRect(rect().adjusted(0,0,0,0));
-//        deletePath.addRect(tmpRect.adjusted(0, 40, 0, 0));
-        deletePath.addRoundedRect(tmpRect.adjusted(0, 40, 0, 0), 16, 16);
-        deletePath.addRect(rect().width()-18,rect().height()-18,18,18);
-        deletePath.addRect(tmpRect.x(),tmpRect.height()-18,18,18);
 
-    }
-    else{
-        tmpPath.addRoundedRect(rect().adjusted(4,4,-4,-4), 16, 16);
-        deletePath.addRoundedRect(tmpRect.adjusted(0, 40, 0, 0), 16, 16);
-    }
+    tmpPath.addRect(rect());
+
+    deletePath.addRoundedRect(tmpRect.adjusted(0, 40, 0, 0), 16, 16);
+    deletePath.addRect(rect().width()-18,rect().height()-18,18,18);
+    deletePath.addRect(tmpRect.x(),tmpRect.height()-18,18,18);
+
     sidebarPath = tmpPath - deletePath;
 
-    m_effect->setTransParentPath(sidebarPath);
-    m_effect->setTransParentAreaBg(colorBase);
 
-    //color.setAlphaF(0.5);
-    m_effect->setWindowBackground(color);
     QPainter p(this);
     p.setRenderHint(QPainter::Antialiasing); // 抗锯齿
+    p.fillPath(sidebarPath,colorBase);
 
-    m_effect->drawWindowShadowManually(&p, this->rect(), m_resize_handler->isButtonDown());
     QPainter painter(this);
-    deletePath.addRect(m_tab->x(),height()-16,18,12);
     if(m_is_first_tab)
-        deletePath.addRect(m_tab->x(),44,16,16);
+        deletePath.addRect(m_tab->x(),40,16,16);
     deletePath.setFillRule(Qt::FillRule::WindingFill);
     painter.fillPath(deletePath,this->palette().base());
     QMainWindow::paintEvent(e);
@@ -1085,22 +1083,12 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *e)
 
 void MainWindow::validBorder()
 {
-    if (this->isMaximized()) {
-        setContentsMargins(0, 0, 0, 0);
-        m_effect->setPadding(0);
-        setProperty("blurRegion", QVariant());
-        KWindowEffects::enableBlurBehind(this->winId(), true);
-    } else {
-        setContentsMargins(4, 4, 4, 4);
-        m_effect->setPadding(4);
-        QPainterPath path;
-        auto rect = this->rect();
-        rect.adjust(4, 4, -4, -4);
-        path.addRoundedRect(rect, 16, 16);
-        setProperty("blurRegion", QRegion(path.toFillPolygon().toPolygon()));
-        //use KWindowEffects
-        KWindowEffects::enableBlurBehind(this->winId(), true, QRegion(path.toFillPolygon().toPolygon()));
-    }
+    QPainterPath path;
+    auto rect = this->rect();
+    path.addRoundedRect(rect, 16, 16);
+    setProperty("blurRegion", QRegion(path.toFillPolygon().toPolygon()));
+    //use KWindowEffects
+    KWindowEffects::enableBlurBehind(this->winId(), true, QRegion(path.toFillPolygon().toPolygon()));
 }
 
 void MainWindow::initUI(const QString &uri)
@@ -1298,14 +1286,7 @@ void MainWindow::initUI(const QString &uri)
 
 void MainWindow::cleanTrash()
 {
-    ca_context *caContext;
-    ca_context_create(&caContext);
-    const gchar* eventId = "dialog-warning";
-    //eventid 是/usr/share/sounds音频文件名,不带后缀
-    ca_context_play (caContext, 0,
-                     CA_PROP_EVENT_ID, eventId,
-                     CA_PROP_EVENT_DESCRIPTION, tr("Delete file Warning"), NULL);
-
+    Peony::AudioPlayManager::getInstance()->playWarningAudio();
     auto result = QMessageBox::question(nullptr, tr("Delete Permanently"),
                                         tr("Are you sure that you want to delete these files? "
                                            "Once you start a deletion, the files deleting will never be "

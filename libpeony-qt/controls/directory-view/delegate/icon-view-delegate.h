@@ -98,7 +98,7 @@ class PEONYCORESHARED_EXPORT IconViewTextHelper
                           const QModelIndex &index,
                           int textMaxHeight,
                           int horizalMargin = 0,
-                          int maxLineCount = 0, bool useSystemPalette = true);
+                          int maxLineCount = 0, bool useSystemPalette = true, const QColor &customColor = Qt::transparent);
 };
 
 }

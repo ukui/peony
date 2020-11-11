@@ -78,6 +78,16 @@
 <context>
     <name>HeaderBarContainer</name>
     <message>
+        <location filename="../../src/control/header-bar.cpp" line="563"/>
+        <source>Minimize</source>
+        <translation type="unfinished">Küçült</translation>
+    </message>
+    <message>
+        <location filename="../../src/control/header-bar.cpp" line="575"/>
+        <source>Maximize/Restore</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Restore</source>
         <translation type="vanished">Onar</translation>
     </message>
@@ -85,37 +95,37 @@
         <source>Maximize</source>
         <translation type="vanished">Büyüt</translation>
     </message>
+    <message>
+        <location filename="../../src/control/header-bar.cpp" line="596"/>
+        <source>Close</source>
+        <translation type="unfinished">Kapat</translation>
+    </message>
 </context>
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="110"/>
-        <location filename="../../src/windows/main-window.cpp" line="605"/>
+        <location filename="../../src/windows/main-window.cpp" line="108"/>
+        <location filename="../../src/windows/main-window.cpp" line="611"/>
         <source>File Manager</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="297"/>
+        <location filename="../../src/windows/main-window.cpp" line="295"/>
         <source>Undo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="304"/>
+        <location filename="../../src/windows/main-window.cpp" line="302"/>
         <source>Redo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1303"/>
-        <source>Delete file Warning</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/windows/main-window.cpp" line="1305"/>
+        <location filename="../../src/windows/main-window.cpp" line="1265"/>
         <source>Delete Permanently</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1306"/>
+        <location filename="../../src/windows/main-window.cpp" line="1266"/>
         <source>Are you sure that you want to delete these files? Once you start a deletion, the files deleting will never be restored again.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -124,7 +134,7 @@
         <translation type="vanished">Peony Qt</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="618"/>
+        <location filename="../../src/windows/main-window.cpp" line="624"/>
         <source>New Folder</source>
         <translation type="unfinished"></translation>
     </message>
@@ -134,6 +144,14 @@
     <message>
         <source>All tags...</source>
         <translation type="vanished">Tüm etiketler...</translation>
+    </message>
+</context>
+<context>
+    <name>NavigationSideBarContainer</name>
+    <message>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="273"/>
+        <source>All tags...</source>
+        <translation type="unfinished">Tüm etiketler...</translation>
     </message>
 </context>
 <context>

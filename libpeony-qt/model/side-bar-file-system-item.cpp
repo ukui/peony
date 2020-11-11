@@ -512,11 +512,11 @@ GAsyncReadyCallback SideBarFileSystemItem::eject_cb(GFile *file, GAsyncResult *r
         g_error_free(err);
     } else {
         // remove item anyway
-        int index = p_this->parent()->m_children->indexOf(p_this);
+        /*int index = p_this->parent()->m_children->indexOf(p_this);
         p_this->m_model->beginRemoveRows(p_this->parent()->firstColumnIndex(), index, index);
         p_this->parent()->m_children->removeOne(p_this);
         p_this->m_model->endRemoveRows();
-        p_this->deleteLater();
+        p_this->deleteLater();*/
     }
     return nullptr;
 }

@@ -126,7 +126,7 @@ Q_SIGNALS:
      * </br>
      * \see enumerateAsync(), enumerator_next_files_async_ready_callback();
      */
-    void childrenUpdated(const QStringList &uriList);
+    void childrenUpdated(const QStringList &uriList, bool isEnding = false);
     /*!
      * \brief enumerateFinished
      * \param successed

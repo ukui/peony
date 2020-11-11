@@ -64,7 +64,7 @@ using namespace Peony::DirectoryView;
 
 IconView::IconView(QWidget *parent) : QListView(parent)
 {
-    this->verticalScrollBar()->setProperty("drawScrollBarGroove", false);
+//    this->verticalScrollBar()->setProperty("drawScrollBarGroove", false);
 
     setAttribute(Qt::WA_TranslucentBackground);
     viewport()->setAttribute(Qt::WA_TranslucentBackground);
@@ -320,23 +320,7 @@ void IconView::paintEvent(QPaintEvent *e)
     p.setRenderHint(QPainter::Antialiasing);
     p.setPen(Qt::transparent);
     p.setBrush(this->palette().base());
-    p.drawRoundedRect(this->rect(),24,24, Qt::AbsoluteSize);
-    p.drawRect(0, 0, 24, 24);
-    p.drawRect(0, rect().height() - 24, 24, 24);
-    p.drawRect(rect().width() - 24, 0, 24, 24);
-
-    auto w = window();
-    QPoint l = this->mapTo(w,QPoint(this->rect().right(),this->rect().height()));
-    if(w->rect().right()-l.x()>100||window()->isMaximized()){
-        p.drawRect(rect().width()-24,rect().height()-24,24,24);
-    }
-//    p.fillRect(this->geometry(), this->palette().base());
-//    if (m_repaint_timer.isActive()) {
-//        m_repaint_timer.stop();
-//        QTimer::singleShot(100, this, [this]() {
-//            this->repaint();
-//        });
-//    }
+    p.drawRect(this->rect());
 
     QListView::paintEvent(e);
 }
@@ -460,14 +444,15 @@ void IconView::setProxy(DirectoryViewProxyIface *proxy)
     connect(m_model, &FileItemModel::findChildrenFinished,
             this, &IconView::reportViewDirectoryChanged);
 
-    connect(this, &IconView::doubleClicked, [=](const QModelIndex &index) {
+    connect(this, &IconView::activated, [=](const QModelIndex &index) {
         qDebug()<<"double click"<<index.data(FileItemModel::UriRole);
         auto uri = index.data(FileItemModel::UriRole).toString();
         //process open symbolic link
         auto info = FileInfo::fromUri(uri, false);
         if (info->isSymbolLink() && uri.startsWith("file://"))
             uri = "file://" + FileUtils::getSymbolicTarget(uri);
-        Q_EMIT m_proxy->viewDoubleClicked(uri);
+        if(!m_multi_select)
+            Q_EMIT m_proxy->viewDoubleClicked(uri);
     });
 
 
@@ -629,13 +614,14 @@ void IconView2::bindModel(FileItemModel *model, FileItemProxyFilterSortModel *pr
             Q_EMIT viewSelectionStatus(true);
     });
 
-    connect(m_view, &IconView::doubleClicked, this, [=](const QModelIndex &index) {
+    connect(m_view, &IconView::activated, this, [=](const QModelIndex &index) {
         auto uri = index.data(Qt::UserRole).toString();
         //process open symbolic link
         auto info = FileInfo::fromUri(uri, false);
         if (info->isSymbolLink() && uri.startsWith("file://"))
             uri = "file://" +  FileUtils::getSymbolicTarget(uri);
-        Q_EMIT this->viewDoubleClicked(uri);
+        if(!m_view->m_multi_select)
+            Q_EMIT this->viewDoubleClicked(uri);
     });
 
     connect(m_view, &IconView::customContextMenuRequested, this, [=](const QPoint &pos) {
