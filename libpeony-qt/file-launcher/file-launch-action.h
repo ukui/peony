@@ -65,6 +65,8 @@ public Q_SLOTS:
     void lauchFileAsync(bool forceWithArg = false, bool skipDialog = true);
     void lauchFilesAsync(const QStringList files, bool forceWithArg = false, bool skipDialog = true);
 
+    bool isExcuteableFile(QString fileType);
+
 private:
     QString m_uri;
     bool m_is_desktop_file;
@@ -73,6 +75,8 @@ private:
     QIcon m_icon;
     QString m_info_name;
     QString m_info_display_name;
+
+    QStringList m_executable_type = {"application/x-shellscript", "application/x-executable", "application/x-perl"};
 
     /*!
      * \brief m_force_with_arg
