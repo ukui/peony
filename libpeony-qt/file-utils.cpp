@@ -22,6 +22,7 @@
 
 #include "file-utils.h"
 #include "file-info.h"
+#include "volume-manager.h"
 #include <QUrl>
 #include <QFileInfo>
 #include <QFileInfoList>
@@ -457,12 +458,14 @@ bool FileUtils::isMountRoot(const QString &uri)
 
 bool FileUtils::queryVolumeInfo(const QString &volumeUri, QString &volumeName, QString &unixDeviceName, const QString &volumeDisplayName)
 {
+    char *unix_dev_file = nullptr;
+
     if (!volumeUri.startsWith("computer:///"))
         return false;
 
     GFile *file = g_file_new_for_uri(volumeUri.toUtf8().constData());
     GFileInfo *info = g_file_query_info(file,
-                                        "mountable::*",
+                                        "*",
                                         G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
                                         nullptr,
                                         nullptr);
@@ -477,10 +480,20 @@ bool FileUtils::queryVolumeInfo(const QString &volumeUri, QString &volumeName, Q
         displayName = getFileDisplayName(volumeUri);
     }
 
-    char *unix_dev_file = g_file_info_get_attribute_as_string(info, G_FILE_ATTRIBUTE_MOUNTABLE_UNIX_DEVICE_FILE);
-    unixDeviceName = unix_dev_file;
-    if (unix_dev_file)
+    unix_dev_file = g_file_info_get_attribute_as_string(info, G_FILE_ATTRIBUTE_MOUNTABLE_UNIX_DEVICE_FILE);//for computer:///xxx.drive
+    if(!unix_dev_file){//for computer:///xxx.mount
+        char *targetUri = g_file_info_get_attribute_as_string(info, G_FILE_ATTRIBUTE_STANDARD_TARGET_URI);
+        if(targetUri){
+            char *realMountPoint = g_filename_from_uri(targetUri,NULL,NULL);
+            const char *unix_dev = Peony::VolumeManager::getUnixDeviceFileFromMountPoint(realMountPoint);
+            unixDeviceName = unix_dev;
+            g_free(targetUri);
+            g_free(realMountPoint);
+        }
+    }else{
+        unixDeviceName = unix_dev_file;
         g_free(unix_dev_file);
+    }
 
     auto list = displayName.split(":");
     if (list.count() > 1) {
