@@ -1,3 +1,11 @@
+peony (3.0.3-1+1111) v101; urgency=medium
+
+  *Modify search bar.
+  *Modify side bar and title change with conter center
+
+ -- wangweinan <wangweinan@kylinos.cn>  Wed, 11 Nov 2020 8:44:46 +0800
+
+
 peony (3.0.3-1+1028) v101; urgency=medium
 
   *Modify side bar items list structure to tree structure.
