@@ -87,6 +87,8 @@ ListView::ListView(QWidget *parent) : QTreeView(parent)
     m_renameTimer = new QTimer(this);
     m_renameTimer->setInterval(3000);
     m_editValid = false;
+
+    setIconSize(QSize(40, 40));
 }
 
 void ListView::scrollTo(const QModelIndex &index, QAbstractItemView::ScrollHint hint)
