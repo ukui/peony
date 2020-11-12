@@ -157,6 +157,11 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
     m_proxy_model->setSourceModel(m_model);
 
     connect(m_model, &QAbstractItemModel::rowsRemoved, this, [=](){
+        auto itemsNeedRelayout = m_model->m_items_need_relayout;
+        if (!itemsNeedRelayout.isEmpty()) {
+            this->relayoutExsitingItems(itemsNeedRelayout);
+        }
+
         for (auto uri : getAllFileUris()) {
             auto pos = getFileMetaInfoPos(uri);
             if (pos.x() >= 0)
@@ -655,7 +660,7 @@ void DesktopIconView::setFileMetaInfoPos(const QString &uri, const QPoint &pos)
     }
 }
 
-QHash<QString, QRect> DesktopIconView::getCurrentItemRects()
+QMap<QString, QRect> DesktopIconView::getCurrentItemRects()
 {
     return m_item_rect_hash;
 }
@@ -1023,6 +1028,67 @@ const QRect DesktopIconView::getBoundingRect()
         itemsRegion += indexRect;
     }
     return itemsRegion.boundingRect();
+}
+
+void DesktopIconView::relayoutExsitingItems(const QStringList &uris)
+{
+    auto ensuredItemRectHash = m_item_rect_hash;
+    for (auto uri : uris) {
+        ensuredItemRectHash.remove(uri);
+    }
+
+    QRegion notEmptyRegion;
+    for (auto rect : ensuredItemRectHash.values()) {
+        notEmptyRegion += rect;
+    }
+
+    auto grid = this->gridSize();
+    auto viewRect = this->viewport()->rect();
+
+    // aligin exsited rect
+    int marginTop = notEmptyRegion.boundingRect().top();
+    while (marginTop - grid.height() > 0) {
+        marginTop -= grid.height();
+    }
+
+    int marginLeft = notEmptyRegion.boundingRect().left();
+    while (marginLeft - grid.width() > 0) {
+        marginLeft -= grid.width();
+    }
+
+    for (auto uri : uris) {
+        auto indexRect = QRect(QPoint(marginLeft, marginTop), m_item_rect_hash.values().first().size());
+        if (notEmptyRegion.contains(indexRect.center())) {
+
+            // move index to closest empty grid.
+            auto next = indexRect;
+            bool isEmptyPos = false;
+            while (!isEmptyPos) {
+                next.translate(0, grid.height());
+                if (next.bottom() > viewRect.bottom()) {
+                    int top = next.y();
+                    while (true) {
+                        if (top < grid.height()) {
+                            break;
+                        }
+                        top-=grid.height();
+                    }
+                    //put item to next column first row
+                    next.moveTo(next.x() + grid.width(), top);
+                }
+                if (notEmptyRegion.contains(next.center()))
+                    continue;
+
+                isEmptyPos = true;
+                m_item_rect_hash.insert(uri, next);
+                notEmptyRegion += next;
+
+                setFileMetaInfoPos(uri, next.topLeft());
+            }
+        } else {
+            setFileMetaInfoPos(uri, indexRect.topLeft());
+        }
+    }
 }
 
 void DesktopIconView::zoomOut()

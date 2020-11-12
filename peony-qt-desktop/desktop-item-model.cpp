@@ -261,7 +261,6 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
             for (int i = 0; i <= index; i++) {
                 m_items_need_relayout.removeFirst();
             }
-            qWarning()<<m_items_need_relayout;
         } else {
             m_items_need_relayout.clear();
         }

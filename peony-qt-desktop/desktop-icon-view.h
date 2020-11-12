@@ -29,6 +29,8 @@
 #include <QStandardPaths>
 #include <QTimer>
 
+#include <QMap>
+
 class QLabel;
 
 namespace Peony {
@@ -167,7 +169,7 @@ public Q_SLOTS:
      * \details used in both view and model. before we add/remove an item to
      * model, we should know current items layout.
      */
-    QHash<QString, QRect> getCurrentItemRects();
+    QMap<QString, QRect> getCurrentItemRects();
     void removeItemRect(const QString &uri);
 
     void updateItemPosByUri(const QString &uri, const QPoint &pos);
@@ -203,6 +205,8 @@ protected:
 
     const QRect getBoundingRect();
 
+    void relayoutExsitingItems(const QStringList &uris);
+
 private:
     ZoomLevel m_zoom_level = Invalid;
 
@@ -232,7 +236,7 @@ private:
 
     QModelIndexList m_drag_indexes;
 
-    QHash<QString, QRect> m_item_rect_hash;
+    QMap<QString, QRect> m_item_rect_hash;
 };
 
 }
