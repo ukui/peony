@@ -250,7 +250,8 @@ void NavigationSideBar::keyPressEvent(QKeyEvent *event)
 void NavigationSideBar::mousePressEvent(QMouseEvent *event)
 {
     // Fixme: Right button can expand side bar
-    if (event->button() == Qt::LeftButton) {
+    QModelIndex index = this->indexAt(event->pos());
+    if (event->button() == Qt::LeftButton && !index.parent().isValid()) {
         // 如果不在展开按钮的范围内就调用以前的
         if (event->x() > this->rect().right() - 20 || event->x() < this->rect().right() - 60)
             QTreeView::mousePressEvent(event);
@@ -263,6 +264,7 @@ void NavigationSideBar::mousePressEvent(QMouseEvent *event)
                 collapse(indexAt(point));
         }
     }
+    QTreeView::mousePressEvent(event);
 }
 
 NavigationSideBarItemDelegate::NavigationSideBarItemDelegate(QObject *parent) : QStyledItemDelegate(parent)
