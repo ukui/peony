@@ -168,6 +168,10 @@ public:
     }
 
     QString displayName() {
+        // Fixme: #19703 rename in desktop
+        if (m_display_name == "回收站"){
+            return QString("回收箱");
+        }
         return m_display_name;
     }
     QString iconName() {

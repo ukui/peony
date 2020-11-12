@@ -97,12 +97,12 @@
     <message>
         <location filename="../../src/control/header-bar.cpp" line="324"/>
         <source>&amp;Delete to trash</source>
-        <translation>删除到回收站</translation>
+        <translation>删除到回收箱</translation>
     </message>
     <message>
         <location filename="../../src/control/header-bar.cpp" line="327"/>
         <source>Delete to trash</source>
-        <translation>删除到回收站</translation>
+        <translation>删除到回收箱</translation>
     </message>
     <message>
         <source>Option</source>
@@ -609,7 +609,7 @@
     </message>
     <message>
         <source>Trash</source>
-        <translation type="obsolete">回收站</translation>
+        <translation type="obsolete">回收箱</translation>
     </message>
     <message>
         <source>Delete Permanently</source>
@@ -847,7 +847,7 @@ Copyright (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</source
     <message>
         <location filename="../../src/control/tab-widget.cpp" line="159"/>
         <source>Trash</source>
-        <translation>回收站</translation>
+        <translation>回收箱</translation>
     </message>
     <message>
         <location filename="../../src/control/tab-widget.cpp" line="163"/>
