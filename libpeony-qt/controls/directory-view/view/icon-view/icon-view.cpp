@@ -87,8 +87,8 @@ IconView::IconView(QWidget *parent) : QListView(parent)
 
     setContextMenuPolicy(Qt::CustomContextMenu);
 
-    setGridSize(QSize(115, 135));
-    setIconSize(QSize(64, 64));
+    setGridSize(QSize(136, 136));
+    setIconSize(QSize(86, 86));
 
 
     m_renameTimer = new QTimer(this);
@@ -660,7 +660,7 @@ void IconView2::setCurrentZoomLevel(int zoomLevel)
     if (zoomLevel <= maximumZoomLevel() && zoomLevel >= minimumZoomLevel()) {
         m_zoom_level = zoomLevel;
         //FIXME: implement zoom
-        int base = 64 - 25; //50
+        int base = 16; //50
         int adjusted = base + zoomLevel;
         m_view->setIconSize(QSize(adjusted, adjusted));
         m_view->setGridSize(m_view->itemDelegate()->sizeHint(QStyleOptionViewItem(), QModelIndex()) + QSize(20, 20));

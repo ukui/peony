@@ -551,17 +551,17 @@
         <translation type="vanished">桌面</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="221"/>
+        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="222"/>
         <source>Close the peony desktop window</source>
         <translation>关闭桌面程序</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="224"/>
+        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="225"/>
         <source>Take over the dbus service.</source>
         <translation>接管DBus服务。</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="227"/>
+        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="228"/>
         <source>Take over the desktop displaying</source>
         <translation>接管桌面</translation>
     </message>

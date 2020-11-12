@@ -178,7 +178,7 @@ QModelIndex FileItemModel::parent(const QModelIndex &child) const
 int FileItemModel::columnCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent);
-    return FileSize+1;
+    return FileType+1;
 }
 
 int FileItemModel::rowCount(const QModelIndex &parent) const
@@ -248,17 +248,6 @@ QVariant FileItemModel::data(const QModelIndex &index, int role) const
             return QVariant();
         }
     }
-    case FileType:
-        switch (role) {
-        case Qt::DisplayRole: {
-            if (item->m_info->isSymbolLink()) {
-                return QVariant(tr("Symbol Link, ") + item->m_info->fileType());
-            }
-            return QVariant(item->m_info->fileType());
-        }
-        default:
-            return QVariant();
-        }
     case FileSize: {
         switch (role) {
         case Qt::DisplayRole: {
@@ -274,6 +263,18 @@ QVariant FileItemModel::data(const QModelIndex &index, int role) const
             return QVariant();
         }
     }
+    case FileType:
+        switch (role) {
+        case Qt::DisplayRole: {
+            if (item->m_info->isSymbolLink()) {
+                return QVariant(tr("Symbol Link, ") + item->m_info->fileType());
+            }
+            return QVariant(item->m_info->fileType());
+        }
+        default:
+            return QVariant();
+        }
+
     default:
         return QVariant();
     }
@@ -284,16 +285,16 @@ QVariant FileItemModel::headerData(int section, Qt::Orientation orientation, int
     if (orientation == Qt::Vertical)
         return QVariant();
     if (role == Qt::DisplayRole) {
-        //qDebug() <<"headerData:" <<section;
+//        QDebug() <<"headerData:" <<section;
         switch (section) {
         case FileName:
             return tr("File Name");
         case ModifiedDate:
             return tr("Modified Date");
-        case FileType:
-            return tr("File Type");
         case FileSize:
             return tr("File Size");
+        case FileType:
+            return tr("File Type");
         default:
             return QVariant();
         }
