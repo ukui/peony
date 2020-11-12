@@ -57,6 +57,11 @@ using namespace Peony;
 DesktopItemModel::DesktopItemModel(QObject *parent)
     : QAbstractListModel(parent)
 {
+    // do not redo layout new items while we start an operation with peony's api.
+    connect(FileOperationManager::getInstance(), &FileOperationManager::operationStarted, this, [=](){
+        m_new_file_info_query_queue.clear();
+    });
+
     m_thumbnail_watcher = std::make_shared<FileWatcher>("thumbnail:///, this");
 
     connect(m_thumbnail_watcher.get(), &FileWatcher::fileChanged, this, [=](const QString &uri) {
@@ -176,7 +181,6 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
                 this->beginInsertRows(QModelIndex(), m_files.count(), m_files.count());
                 ThumbnailManager::getInstance()->createThumbnail(info->uri(), m_thumbnail_watcher);
                 m_files<<info;
-                m_new_file_info_query_queue.removeOne(uri);
                 //this->insertRows(m_files.indexOf(info), 1);
                 this->endInsertRows();
 
@@ -236,7 +240,6 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
             this->beginInsertRows(QModelIndex(), m_files.count(), m_files.count());
             ThumbnailManager::getInstance()->createThumbnail(info->uri(), m_thumbnail_watcher);
             m_files<<info;
-            m_new_file_info_query_queue.removeOne(uri);
             //this->insertRows(m_files.indexOf(info), 1);
             this->endInsertRows();
 
@@ -250,6 +253,18 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
     });
 
     this->connect(m_desktop_watcher.get(), &FileWatcher::fileDeleted, [=](const QString &uri) {
+        // try relayout floating items, it's often occurred when unarchive a archive file, or modify a file with vim outside of peony.
+        m_last_deleted_item_uri = uri;
+        int index = m_new_file_info_query_queue.indexOf(uri);
+        if (index >= 0) {
+            m_items_need_relayout = m_new_file_info_query_queue;
+            for (int i = 0; i <= index; i++) {
+                m_items_need_relayout.removeFirst();
+            }
+            qWarning()<<m_items_need_relayout;
+        } else {
+            m_items_need_relayout.clear();
+        }
         m_new_file_info_query_queue.removeOne(uri);
         auto view = PeonyDesktopApplication::getIconView();
         view->removeItemRect(uri);
