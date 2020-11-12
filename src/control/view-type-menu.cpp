@@ -51,14 +51,15 @@ ViewTypeMenu::ViewTypeMenu(QWidget *parent) : QMenu(parent)
 
 void ViewTypeMenu::setCurrentView(const QString &viewId, bool blockSignal)
 {
-    if (m_current_view_id == "Cloud View")
-        return;
     if (viewId == m_current_view_id)
         return;
 
     if (isViewIdValid(viewId)) {
         m_current_view_id = viewId;
     }
+
+    if (m_current_view_id == "Cloud View")
+        return;
 
     for (auto action : m_view_actions->actions()) {
         if (action->text() == viewId) {
