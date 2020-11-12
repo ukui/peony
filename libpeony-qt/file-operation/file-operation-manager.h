@@ -76,6 +76,9 @@ public:
 Q_SIGNALS:
     void closed();
 
+    void operationStarted(std::shared_ptr<FileOperationInfo> info);
+    void operationFinished(std::shared_ptr<FileOperationInfo> info, bool successed);
+
 public Q_SLOTS:
     void startOperation(FileOperation *operation, bool addToHistory = true);
     void startUndoOrRedo(std::shared_ptr<FileOperationInfo> info);
