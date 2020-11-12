@@ -223,6 +223,8 @@ QString FileUtils::getFileDisplayName(const QString &uri)
                               nullptr));
     if (!info.get()->get())
         return nullptr;
+    if (uri == "trash:///")
+        return "回收箱";
     return g_file_info_get_display_name(info.get()->get());
 }
 

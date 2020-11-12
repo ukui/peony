@@ -68,6 +68,9 @@ SideBarFavoriteItem::SideBarFavoriteItem(QString uri,
     m_uri = uri;
     //FIXME: replace BLOCKING api in ui thread.
     m_display_name = FileUtils::getFileDisplayName(uri);
+    // FIXME: rename
+    if (m_display_name == "回收站")
+        m_display_name = "回收箱";
     m_icon_name = FileUtils::getFileIconName(uri);
 }
 
