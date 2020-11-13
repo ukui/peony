@@ -42,6 +42,8 @@
 #include <QMessageBox>
 #include <QUrl>
 
+#include <QApplication>
+
 using namespace Peony;
 
 FileItem::FileItem(std::shared_ptr<Peony::FileInfo> info, FileItem *parentItem, FileItemModel *model, QObject *parent) : QObject(parent)
@@ -365,6 +367,7 @@ void FileItem::findChildrenAsync()
 
                     m_ending_uris.removeOne(uri);
                     if (isEnding && m_ending_uris.isEmpty()) {
+                        qApp->processEvents();
                         Q_EMIT m_model->findChildrenFinished();
                         Q_EMIT m_model->updated();
                     }

@@ -95,7 +95,7 @@
     </message>
     <message>
         <source>Delete file Warning</source>
-        <translation type="obsolete">Dosyayı Sil Uyarısı</translation>
+        <translation type="obsolete">Dosya Silme Uyarısı</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/model/file-label-model.cpp" line="113"/>
@@ -171,12 +171,12 @@
     <message>
         <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="376"/>
         <source>Format operation has been finished successfully.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Biçimlendirme işlemi başarıyla tamamlandı.</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="382"/>
         <source>Sorry, the format operation is failed!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Üzgünüz, formatlama işlemi başarısız oldu!</translation>
     </message>
     <message>
         <source>format_success</source>
@@ -495,7 +495,7 @@
     <message>
         <location filename="../../libpeony-qt/convenient-utils/audio-play-manager.cpp" line="65"/>
         <source>Operation file Warning</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">İşlem dosyası Uyarısı</translation>
     </message>
 </context>
 <context>
@@ -1104,7 +1104,7 @@
     <message>
         <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="715"/>
         <source>Clean All</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Tümünü Temizle</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="731"/>
@@ -2709,7 +2709,7 @@ Zorla ayrılmak ister misin?</translation>
     <message>
         <location filename="../../libpeony-qt/model/side-bar-file-system-item.cpp" line="534"/>
         <source>Unable to eject %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">%1 çıkarılamıyor</translation>
     </message>
 </context>
 <context>

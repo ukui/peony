@@ -106,6 +106,9 @@ NavigationSideBar::NavigationSideBar(QWidget *parent) : QTreeView(parent)
     connect(volumeManager,&Peony::VolumeManager::volumeRemoved,this,[=](const std::shared_ptr<Peony::Volume> &volume){
         m_proxy_model->invalidate();//The drive does not display when the DVD device is removed.
     });
+    connect(volumeManager,&Peony::VolumeManager::driveDisconnected,this,[=](const std::shared_ptr<Peony::Drive> &drive){
+        m_proxy_model->invalidate();//Multiple udisk eject display problem
+    });
 
     connect(this, &QTreeView::expanded, [=](const QModelIndex &index) {
         auto item = m_proxy_model->itemFromIndex(index);

@@ -94,6 +94,14 @@ const QString FileLaunchAction::getAppInfoDisplayName()
     return m_info_display_name;
 }
 
+bool FileLaunchAction::isExcuteableFile(QString fileType)
+{
+    if (m_executable_type.contains(fileType))
+        return true;
+
+    return false;
+}
+
 void FileLaunchAction::lauchFileSync(bool forceWithArg, bool skipDialog)
 {
     auto fileInfo = FileInfo::fromUri(m_uri, false);
@@ -104,7 +112,7 @@ void FileLaunchAction::lauchFileSync(bool forceWithArg, bool skipDialog)
 
     bool executable = fileInfo->canExecute();
     bool isAppImage = fileInfo->type() == "application/vnd.appimage";
-    bool isShellScript = fileInfo->type() == "application/x-shellscript";
+    bool isExecutable = isExcuteableFile(fileInfo->type());
     if (isAppImage) {
         if (executable) {
             QUrl url = m_uri;
@@ -121,7 +129,7 @@ void FileLaunchAction::lauchFileSync(bool forceWithArg, bool skipDialog)
         }
     }
 
-    if (executable && !isDesktopFileAction() && !skipDialog && isShellScript) {
+    if (executable && !isDesktopFileAction() && !skipDialog && isExecutable) {
         QMessageBox msg;
         auto defaultAction = msg.addButton("By Default App", QMessageBox::ButtonRole::ActionRole);
         auto exec = msg.addButton(tr("Execute Directly"), QMessageBox::ButtonRole::ActionRole);
@@ -192,7 +200,7 @@ void FileLaunchAction::lauchFileAsync(bool forceWithArg, bool skipDialog)
 
     bool executable = fileInfo->canExecute();
     bool isAppImage = fileInfo->type() == "application/vnd.appimage";
-    bool isShellScript = fileInfo->type() == "application/x-shellscript";
+    bool isExecutable = isExcuteableFile(fileInfo->type());
     qDebug() <<"executable:" <<executable <<isAppImage <<fileInfo->type();
     if (isAppImage) {
         if (executable) {
@@ -210,7 +218,7 @@ void FileLaunchAction::lauchFileAsync(bool forceWithArg, bool skipDialog)
         }
     }
 
-    if (executable && !isDesktopFileAction() && !skipDialog && isShellScript) {
+    if (executable && !isDesktopFileAction() && !skipDialog && isExecutable) {
         QMessageBox msg;
         auto defaultAction = msg.addButton(tr("By Default App"), QMessageBox::ButtonRole::ActionRole);
         auto exec = msg.addButton(tr("Execute Directly"), QMessageBox::ButtonRole::ActionRole);
@@ -352,7 +360,7 @@ void FileLaunchAction::lauchFilesAsync(const QStringList files, bool forceWithAr
 
     bool executable = fileInfo->canExecute();
     bool isAppImage = fileInfo->type() == "application/vnd.appimage";
-    bool isShellScript = fileInfo->type() == "application/x-shellscript";
+    bool isExecutable = isExcuteableFile(fileInfo->type());
     if (isAppImage) {
         if (executable) {
             QProcess p;
@@ -370,7 +378,7 @@ void FileLaunchAction::lauchFilesAsync(const QStringList files, bool forceWithAr
         }
     }
 
-    if (executable && !isDesktopFileAction() && !skipDialog && isShellScript) {
+    if (executable && !isDesktopFileAction() && !skipDialog && isExecutable) {
         QMessageBox msg;
         auto defaultAction = msg.addButton(tr("By Default App"), QMessageBox::ButtonRole::ActionRole);
         auto exec = msg.addButton(tr("Execute Directly"), QMessageBox::ButtonRole::ActionRole);

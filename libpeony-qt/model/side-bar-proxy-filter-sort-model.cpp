@@ -25,6 +25,8 @@
 #include "side-bar-model.h"
 
 #include "file-utils.h"
+#include "file-info.h"
+#include "file-info-job.h"
 
 #include <QDebug>
 
@@ -53,6 +55,17 @@ bool SideBarProxyFilterSortModel::filterAcceptsRow(int sourceRow, const QModelIn
     if (item->type() == SideBarAbstractItem::FileSystemItem) {
         if (sourceParent.data(Qt::UserRole).toString() == "computer:///") {
             if (item->uri() != "computer:///root.link") {
+
+                auto gvfsFileInfo = FileInfo::fromUri(item->uri());
+                if (gvfsFileInfo->displayName().isEmpty()) {
+                        FileInfoJob j(gvfsFileInfo);
+                        j.querySync();
+                }
+                QString gvfsDisplayName = gvfsFileInfo->displayName();
+                QString gvfsUnixDevice = gvfsFileInfo->unixDeviceFile();
+                if(!gvfsUnixDevice.isNull() && !gvfsDisplayName.contains(":"))
+                    return false;//Filter some non-mountable drive items
+
                 if (item->isMounted())
                     return true;
                 if (item->isRemoveable() && item->isMountable()) {

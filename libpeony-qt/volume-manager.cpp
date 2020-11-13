@@ -27,6 +27,8 @@
 #include <QFileInfo>
 #include <QDebug>
 
+#include <gio/gunixmounts.h>
+
 using namespace Peony;
 
 static VolumeManager *m_global_manager = nullptr;
@@ -288,6 +290,23 @@ std::shared_ptr<Drive> VolumeManager::getDriveFromSystemByPath(const QString &un
       tmp = std::make_shared<Drive>(gdrive,true);
 
    return tmp;
+}
+
+/* Find the corresponding /dev device based on the mount point.
+ * @mountPoint: it should not start with "file:///". for example /media/user/aaa is correct.
+ * @return: return /dev device path or NULL
+ */
+const char* VolumeManager::getUnixDeviceFileFromMountPoint(const char* mountPoint)
+{
+    if(!mountPoint)
+        return NULL;
+
+    const char *deviceFilePath = NULL;
+    GUnixMountEntry* mountEntry = g_unix_mount_for(mountPoint,NULL);
+    if(mountEntry)
+        deviceFilePath = g_unix_mount_get_device_path(mountEntry);
+
+    return deviceFilePath;
 }
 
 QString Drive::name()
