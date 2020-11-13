@@ -255,6 +255,9 @@ public:
     bool canStop() {
         return m_can_stop;
     }
+    QString unixDeviceFile() {
+        return QString(m_unix_device_file);
+    }
 
     bool isDesktopFile() {
         return m_can_excute && m_uri.endsWith(".desktop");
@@ -365,6 +368,7 @@ private:
 
     bool m_can_start = false;
     bool m_can_stop = false;
+    const char *m_unix_device_file = nullptr;
 
     //FIXME: should i use smart pointer wrap these data?
     GFile *m_file = nullptr;

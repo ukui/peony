@@ -98,6 +98,9 @@ private:
 
     QQueue<QString> m_info_query_queue;
     QQueue<QString> m_new_file_info_query_queue;
+
+    QString m_last_deleted_item_uri;
+    QStringList m_items_need_relayout;
 };
 
 }

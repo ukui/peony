@@ -447,10 +447,14 @@ GAsyncReadyCallback FileEnumerator::mount_enclosing_volume_callback(GFile *file,
         }
     } else {
         if (err) {
+            if (err->code == G_IO_ERROR_CANCELLED) {
+                return nullptr;
+            }
             if (err->code == G_IO_ERROR_ALREADY_MOUNTED) {
                 Q_EMIT p_this->prepared(GErrorWrapper::wrapFrom(err));
                 return nullptr;
             }
+
             qDebug()<<"mount failed, err:"<<err->code<<err->message;
             //show the connect dialog
             if (!p_this->m_root_file) {

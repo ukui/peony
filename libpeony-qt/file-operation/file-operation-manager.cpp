@@ -191,6 +191,7 @@ void FileOperationManager::startOperation(FileOperation *operation, bool addToHi
    });
    operation->connect(operation, &FileOperation::errored, this, &FileOperationManager::handleError, Qt::BlockingQueuedConnection);
    operation->connect(operation, &FileOperation::operationFinished, this, [=](){
+       Q_EMIT this->operationFinished(operation->getOperationInfo(), !operation->hasError());
        if (operation->hasError()) {
            this->clearHistory();
            return ;
@@ -228,6 +229,9 @@ void FileOperationManager::startOperation(FileOperation *operation, bool addToHi
         operation->setParent(m_thread_pool);
         m_thread_pool->start(operation);
     }
+
+    Q_EMIT this->operationStarted(operation->getOperationInfo());
+
     m_progressbar->showDelay();
 }
 

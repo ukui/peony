@@ -197,6 +197,8 @@ void FileInfoJob::refreshInfoContents(GFileInfo *new_info)
     info->m_can_stop = g_file_info_get_attribute_boolean(new_info, G_FILE_ATTRIBUTE_MOUNTABLE_CAN_STOP);
 
     info->m_is_virtual = g_file_info_get_attribute_boolean(new_info, G_FILE_ATTRIBUTE_STANDARD_IS_VIRTUAL);
+    if(g_file_info_has_attribute(new_info,G_FILE_ATTRIBUTE_MOUNTABLE_UNIX_DEVICE_FILE))
+        info->m_unix_device_file = g_file_info_get_attribute_string(new_info,G_FILE_ATTRIBUTE_MOUNTABLE_UNIX_DEVICE_FILE);
 
     info->m_display_name = QString (g_file_info_get_display_name(new_info));
     GIcon *g_icon = g_file_info_get_icon (new_info);
