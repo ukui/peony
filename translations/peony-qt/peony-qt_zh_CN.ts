@@ -173,12 +173,12 @@
         <translation type="vanished">删除文件警告</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1290"/>
+        <location filename="../../src/windows/main-window.cpp" line="1286"/>
         <source>Delete Permanently</source>
         <translation>永久删除</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1291"/>
+        <location filename="../../src/windows/main-window.cpp" line="1287"/>
         <source>Are you sure that you want to delete these files? Once you start a deletion, the files deleting will never be restored again.</source>
         <translation>您确定要删除这些文件吗？一旦开始删除，这些文件将不可再恢复。</translation>
     </message>
@@ -1031,7 +1031,7 @@ Copyright (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</source
 <context>
     <name>TitleLabel</name>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="372"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="303"/>
         <source>Files</source>
         <translation>文档</translation>
     </message>
@@ -1039,17 +1039,17 @@ Copyright (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</source
 <context>
     <name>TopMenuBar</name>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="711"/>
+        <location filename="../../src/control/header-bar.cpp" line="625"/>
         <source>Minimize</source>
         <translation>最小化</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="724"/>
+        <location filename="../../src/control/header-bar.cpp" line="638"/>
         <source>Maximize/Restore</source>
         <translation>最大化/还原</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="746"/>
+        <location filename="../../src/control/header-bar.cpp" line="660"/>
         <source>Close</source>
         <translation>关闭</translation>
     </message>

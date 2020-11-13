@@ -71,8 +71,8 @@ GlobalSettings::GlobalSettings(QObject *parent) : QObject(parent)
     }
 
     if (m_cache.value(DEFAULT_WINDOW_SIZE).isNull()) {
-        setValue(DEFAULT_WINDOW_SIZE, QSize(850, 850*0.618));
-        setValue(DEFAULT_SIDEBAR_WIDTH, 180);
+        setValue(DEFAULT_WINDOW_SIZE, QSize(1200, 675));
+        setValue(DEFAULT_SIDEBAR_WIDTH, 292);
     }
 
     if (m_cache.value(DEFAULT_VIEW_ID).isNull()) {
@@ -80,7 +80,7 @@ GlobalSettings::GlobalSettings(QObject *parent) : QObject(parent)
     }
 
     if (m_cache.value(DEFAULT_VIEW_ZOOM_LEVEL).isNull()) {
-        setValue(DEFAULT_VIEW_ZOOM_LEVEL, 25);
+        setValue(DEFAULT_VIEW_ZOOM_LEVEL, 70);
     }
     if (QGSettings::isSchemaInstalled("org.ukui.SettingsDaemon.plugins.tablet-mode")) {
         m_gsettings_tablet_mode = new QGSettings("org.ukui.SettingsDaemon.plugins.tablet-mode", QByteArray(), this);

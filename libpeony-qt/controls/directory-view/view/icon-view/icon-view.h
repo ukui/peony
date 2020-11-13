@@ -238,7 +238,7 @@ public:
         return m_zoom_level;
     }
     int minimumZoomLevel() {
-        return 21;
+        return 41;
     }
     int maximumZoomLevel() {
         return 100;
@@ -317,7 +317,7 @@ private:
     FileItemModel *m_model = nullptr;
     FileItemProxyFilterSortModel *m_proxy_model = nullptr;
 
-    int m_zoom_level = 25;
+    int m_zoom_level = 70;
 };
 
 }

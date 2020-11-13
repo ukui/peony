@@ -54,15 +54,15 @@ ListViewDelegate::~ListViewDelegate()
 
 void ListViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
-    QPainterPath path;
-    path.setFillRule(Qt::FillRule::WindingFill);
+//    QPainterPath path;
+//    path.setFillRule(Qt::FillRule::WindingFill);
     auto view = qobject_cast<DirectoryView::ListView *>(parent());
 
-    path.addRoundedRect(view->rect(),60,60);
-    path.addRect(view->rect().width()-60,0,60,60);
-    path.addRect(0,0,60,60);
+//    path.addRoundedRect(view->rect(),60,60);
+//    path.addRect(view->rect().width()-60,0,60,60);
+//    path.addRect(0,0,60,60);
 
-    painter->setClipPath(path);
+//    painter->setClipPath(path);
 
     QStyleOptionViewItem opt = option;
     initStyleOption(&opt, index);

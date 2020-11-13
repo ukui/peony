@@ -248,6 +248,7 @@ public:
     static std::shared_ptr<Volume> getVolumeFromMount(const std::shared_ptr<Mount> &mount);
     static std::shared_ptr<Drive> getDriveFromMount(const std::shared_ptr<Mount> &mount);
     std::shared_ptr<Drive> getDriveFromSystemByPath(const QString &unixPath);
+    static const char* getUnixDeviceFileFromMountPoint(const char* mountPoint);
 
 Q_SIGNALS:
     /*!

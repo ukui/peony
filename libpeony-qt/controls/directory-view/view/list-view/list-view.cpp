@@ -71,7 +71,7 @@ ListView::ListView(QWidget *parent) : QTreeView(parent)
 
     header()->setSectionResizeMode(QHeaderView::Interactive);
     header()->setSectionsMovable(true);
-    header()->setStretchLastSection(true);
+    //header()->setStretchLastSection(true);
 
     setExpandsOnDoubleClick(false);
     setSortingEnabled(true);
@@ -87,6 +87,8 @@ ListView::ListView(QWidget *parent) : QTreeView(parent)
     m_renameTimer = new QTimer(this);
     m_renameTimer->setInterval(3000);
     m_editValid = false;
+
+    setIconSize(QSize(40, 40));
 }
 
 void ListView::scrollTo(const QModelIndex &index, QAbstractItemView::ScrollHint hint)
@@ -466,11 +468,10 @@ void ListView::adjustColumnsSize()
     if (model()->columnCount() == 0)
         return;
 
-    resizeColumnToContents(0);
+    header()->resizeSections(QHeaderView::ResizeToContents);
 
     int rightPartsSize = 0;
     for (int column = 1; column < model()->columnCount(); column++) {
-        resizeColumnToContents(column);
         int columnSize = header()->sectionSize(column);
         rightPartsSize += columnSize;
     }
@@ -482,7 +483,6 @@ void ListView::adjustColumnsSize()
     if (this->width() - rightPartsSize < BOTTOM_STATUS_MARGIN)
         return;
 
-    //resizeColumnToContents(0);
     header()->resizeSection(0, this->viewport()->width() - rightPartsSize);
 }
 

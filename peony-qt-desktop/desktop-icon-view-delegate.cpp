@@ -340,9 +340,11 @@ QWidget *DesktopIconViewDelegate::createEditor(QWidget *parent, const QStyleOpti
         edit->minimalAdjust();
     });
 
+    getView()->setEditFlag(true);
     connect(edit, &IconViewEditor::returnPressed, [=]() {
         this->setModelData(edit, nullptr, index);
         edit->deleteLater();
+        getView()->setEditFlag(false);
     });
 
     return edit;

@@ -205,7 +205,7 @@ public:
         return 0;
     }
     int maximumZoomLevel() {
-        return 20;
+        return 40;
     }
 
     bool supportZoom() {
@@ -281,7 +281,7 @@ private:
     FileItemModel *m_model = nullptr;
     FileItemProxyFilterSortModel *m_proxy_model = nullptr;
 
-    int m_zoom_level = 0;
+    int m_zoom_level = 24;
     bool m_need_resize_header;
 };
 
