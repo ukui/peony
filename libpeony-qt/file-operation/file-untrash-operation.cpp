@@ -70,7 +70,7 @@ const QString FileUntrashOperation::handleDuplicate(const QString &uri)
     QString name = l.last();
     l.removeLast();
 
-    QRegExp regExp("\\(\\d+\\)");
+    QRegExp regExp("\\(\\d+\\)(\\.[0-9a-zA-Z]+|)$");
     if (name.contains(regExp)) {
         int pos = 0;
         int num = 0;
