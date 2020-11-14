@@ -493,7 +493,7 @@
 <context>
     <name>Peony::AudioPlayManager</name>
     <message>
-        <location filename="../../libpeony-qt/convenient-utils/audio-play-manager.cpp" line="65"/>
+        <location filename="../../libpeony-qt/convenient-utils/audio-play-manager.cpp" line="64"/>
         <source>Operation file Warning</source>
         <translation>文件操作警告</translation>
     </message>
@@ -1246,7 +1246,7 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
     </message>
     <message>
         <location filename="../../libpeony-qt/file-enumerator.cpp" line="333"/>
-        <location filename="../../libpeony-qt/file-enumerator.cpp" line="475"/>
+        <location filename="../../libpeony-qt/file-enumerator.cpp" line="479"/>
         <source>Error</source>
         <translation>错误</translation>
     </message>
@@ -1276,30 +1276,30 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
         <translation type="vanished">删除文件警告</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/model/file-item.cpp" line="146"/>
-        <location filename="../../libpeony-qt/model/file-item.cpp" line="204"/>
-        <location filename="../../libpeony-qt/model/file-item.cpp" line="209"/>
-        <location filename="../../libpeony-qt/model/file-item.cpp" line="214"/>
+        <location filename="../../libpeony-qt/model/file-item.cpp" line="148"/>
+        <location filename="../../libpeony-qt/model/file-item.cpp" line="206"/>
+        <location filename="../../libpeony-qt/model/file-item.cpp" line="211"/>
+        <location filename="../../libpeony-qt/model/file-item.cpp" line="216"/>
         <source>Error</source>
         <translation>错误</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/model/file-item.cpp" line="192"/>
+        <location filename="../../libpeony-qt/model/file-item.cpp" line="194"/>
         <source>Open Link failed</source>
         <translation>打开链接失败</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/model/file-item.cpp" line="193"/>
+        <location filename="../../libpeony-qt/model/file-item.cpp" line="195"/>
         <source>File not exist, do you want to delete the link file?</source>
         <translation>目标文件夹不存在，是否删除该无效快捷方式？</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/model/file-item.cpp" line="203"/>
+        <location filename="../../libpeony-qt/model/file-item.cpp" line="205"/>
         <source>Can not open path &quot;%1&quot;，permission denied.</source>
         <translation>打开路径 &quot;%1&quot; 失败，权限被拒绝。</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/model/file-item.cpp" line="208"/>
+        <location filename="../../libpeony-qt/model/file-item.cpp" line="210"/>
         <source>Can not find path &quot;%1&quot;，are you moved or renamed it?</source>
         <translation>未找到路径：&quot;%1&quot;，您是否已经移动或者重命名？</translation>
     </message>
@@ -1311,32 +1311,32 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
 <context>
     <name>Peony::FileItemModel</name>
     <message>
-        <location filename="../../libpeony-qt/model/file-item-model.cpp" line="256"/>
+        <location filename="../../libpeony-qt/model/file-item-model.cpp" line="264"/>
         <source>child(ren)</source>
         <translation>个子项</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/model/file-item-model.cpp" line="270"/>
+        <location filename="../../libpeony-qt/model/file-item-model.cpp" line="278"/>
         <source>Symbol Link, </source>
         <translation>快捷方式，</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/model/file-item-model.cpp" line="291"/>
+        <location filename="../../libpeony-qt/model/file-item-model.cpp" line="299"/>
         <source>File Name</source>
         <translation>名称</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/model/file-item-model.cpp" line="295"/>
+        <location filename="../../libpeony-qt/model/file-item-model.cpp" line="303"/>
         <source>File Size</source>
         <translation>大小</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/model/file-item-model.cpp" line="297"/>
+        <location filename="../../libpeony-qt/model/file-item-model.cpp" line="305"/>
         <source>File Type</source>
         <translation>类型</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/model/file-item-model.cpp" line="293"/>
+        <location filename="../../libpeony-qt/model/file-item-model.cpp" line="301"/>
         <source>Modified Date</source>
         <translation>修改时间</translation>
     </message>
@@ -1393,23 +1393,23 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
 <context>
     <name>Peony::FileLaunchAction</name>
     <message>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="156"/>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="274"/>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="434"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="164"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="282"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="442"/>
         <source>Execute Directly</source>
         <translation>直接运行</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="157"/>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="275"/>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="435"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="165"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="283"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="443"/>
         <source>Execute in Terminal</source>
         <translation>在终端运行</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="160"/>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="279"/>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="439"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="168"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="287"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="447"/>
         <source>Detected launching an executable file %1, you want?</source>
         <translation>正在打开一个可执行文件%1, 你希望?</translation>
     </message>
@@ -1418,14 +1418,14 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
         <translation type="vanished">删除文件警告</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="178"/>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="313"/>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="472"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="186"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="321"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="480"/>
         <source>Open Failed</source>
         <translation>无法打开</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="178"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="186"/>
         <source>Can not open %1, file not exist, is it deleted?</source>
         <translation>无法打开%1，文件不存在，请确认是否已被删除？</translation>
     </message>
@@ -1438,58 +1438,58 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
         <translation type="vanished">不能打开%1</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="273"/>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="433"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="281"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="441"/>
         <source>By Default App</source>
         <translation>使用默认打开方式</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="278"/>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="438"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="286"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="446"/>
         <source>Launch Options</source>
         <translation>执行选项</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="303"/>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="462"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="311"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="470"/>
         <source>Open Link failed</source>
         <translation>打开链接失败</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="304"/>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="463"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="312"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="471"/>
         <source>File not exist, do you want to delete the link file?</source>
         <translation>目标文件不存在，您需要删除该链接吗？</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="314"/>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="473"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="322"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="481"/>
         <source>Can not open %1, Please confirm you have the right authority.</source>
         <translation>无法打开%1，请确认您有正确的打开权限。</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="318"/>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="477"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="326"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="485"/>
         <source>Open App failed</source>
         <translation>快捷方式存在问题</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="319"/>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="478"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="327"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="486"/>
         <source>The linked app is changed or uninstalled, so it can not work correctly. 
 Do you want to delete the link file?</source>
         <translation>该链接指向的应用已经被修改或者卸载，因此该快捷方式无法正常工作。
 是否删除该快捷方式？</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="329"/>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="488"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="337"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="496"/>
         <source>Error</source>
         <translation>错误</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="329"/>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="488"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="337"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="496"/>
         <source>Can not get a default application for opening %1, do you want open it with text format?</source>
         <translation>没有找到默认打开%1的应用, 是否用文本编辑器打开？</translation>
     </message>
@@ -1704,8 +1704,8 @@ Do you want to delete the link file?</source>
 <context>
     <name>Peony::FileOperationInfo</name>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="508"/>
-        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="510"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="512"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="514"/>
         <source>Symbolic Link</source>
         <translation>快捷方式</translation>
     </message>
@@ -1731,12 +1731,12 @@ Do you want to delete the link file?</source>
         <translation>不能删除一个正在进行其它操作的文件</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="215"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="216"/>
         <source>File Operation is Busy</source>
         <translation>操作正忙</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="216"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="217"/>
         <source>There have been one or more fileoperation(s) executing before. Youroperation will wait for executinguntil it/them done. If you really want to execute file operations parallelly anyway, you can change the default option &quot;Allow Parallel&quot; in option menu.</source>
         <translation>在执行该操作之前有操作未完成, 它需要等待上一个操作完成后再执行. 如果你希望文件操作并行, 你可以更改选项菜单中的&quot;允许操作并行&quot;配置.</translation>
     </message>
@@ -2272,12 +2272,12 @@ Do you want to delete the link file?</source>
     <message>
         <location filename="../../libpeony-qt/model/side-bar-file-system-item.cpp" line="68"/>
         <source>文件系统</source>
-        <translation type="unfinished"></translation>
+        <translation>文件系统</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/model/side-bar-file-system-item.cpp" line="69"/>
         <source>System Disk</source>
-        <translation type="unfinished"></translation>
+        <translation>系统盘</translation>
     </message>
 </context>
 <context>
@@ -2543,7 +2543,7 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
 <context>
     <name>Peony::VolumeManager</name>
     <message>
-        <location filename="../../libpeony-qt/volume-manager.cpp" line="146"/>
+        <location filename="../../libpeony-qt/volume-manager.cpp" line="148"/>
         <source>Error</source>
         <translation>错误</translation>
     </message>

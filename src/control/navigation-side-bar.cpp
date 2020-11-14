@@ -170,8 +170,8 @@ NavigationSideBar::NavigationSideBar(QWidget *parent) : QTreeView(parent)
         this->viewport()->update();
     });
 
-    // del by wwn
-    // expandAll();
+    //! \bug if annotated it, favorite in side bar will have a empty line, why?
+    expandAll();
 }
 
 bool NavigationSideBar::eventFilter(QObject *obj, QEvent *e)
