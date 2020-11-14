@@ -205,7 +205,9 @@ void ListView::mousePressEvent(QMouseEvent *e)
 
     QPoint p = e->pos();
     auto visualRect = this->visualRect(index);
-    if (columnAt(p.x()) == 3&&p.x()>visualRect.x()+visualRect.width() - 60&&p.x()<visualRect.x()+visualRect.width() - 40)
+    int checkboxColumn = getCurrentCheckboxColumn();
+
+    if (columnAt(p.x()) == checkboxColumn&&p.x()>visualRect.x()+visualRect.width() - 60&&p.x()<visualRect.x()+visualRect.width() - 40)
     {
         if(!isIndexSelected)
             this->selectionModel()->setCurrentIndex(index,QItemSelectionModel::Select|QItemSelectionModel::Rows);
@@ -371,15 +373,6 @@ void ListView::dropEvent(QDropEvent *e)
 
 void ListView::resizeEvent(QResizeEvent *e)
 {
-    auto w = window();
-    QPoint l = this->mapTo(w,QPoint(this->rect().right(),this->rect().height()));
-    if(w->rect().right()-l.x()<100&&!window()->isMaximized()){
-        setAttribute(Qt::WA_TranslucentBackground);
-    }
-    else{
-        setAttribute(Qt::WA_TranslucentBackground,false);
-        setAttribute(Qt::WA_NoSystemBackground,false);
-    }
     QTreeView::resizeEvent(e);
     if (m_last_size != size()) {
         m_last_size = size();
@@ -477,13 +470,13 @@ void ListView::adjustColumnsSize()
     }
 
     //set column 0 minimum width, fix header icon overlap with name issue
-    if(columnWidth(0) < columnWidth(1))
-        setColumnWidth(0, columnWidth(1));
+//    if(columnWidth(0) < columnWidth(1))
+//        setColumnWidth(0, columnWidth(1));
 
     if (this->width() - rightPartsSize < BOTTOM_STATUS_MARGIN)
         return;
 
-    header()->resizeSection(0, this->viewport()->width() - rightPartsSize);
+//    header()->resizeSection(0, this->viewport()->width() - rightPartsSize);
 }
 
 void ListView::multiSelect()
@@ -555,6 +548,28 @@ QRect ListView::visualRect(const QModelIndex &index) const
         rect.setX(0);
     }
     return rect;
+}
+
+int ListView::getCurrentCheckboxColumn()
+{
+    int sectionWidth =header()->sectionSize(0);
+    int viewportWidth =viewport()->width();
+    int selectBox = 3;
+
+    for(int i=0;i<model()->columnCount();i++)
+    {
+
+        if(sectionWidth>=viewportWidth)
+        {
+            selectBox = i;
+            break;
+        }
+        else
+        {
+            sectionWidth += header()->sectionSize(i+1);
+        }
+    }
+    return selectBox;
 }
 
 void ListView::open(const QStringList &uris, bool newWindow)

@@ -37,6 +37,7 @@
 #include <QKeyEvent>
 #include <QPainter>
 #include <QItemDelegate>
+#include <QHeaderView>
 
 #include <QApplication>
 
@@ -90,7 +91,11 @@ void ListViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
         }
     }
     auto rect = view->visualRect(index);
-    if(option.viewItemPosition == 3)
+
+    int selectBox = 3;
+    //get current checkbox positon and draw them.
+    selectBox = view->getCurrentCheckboxColumn();
+    if(index.column() == selectBox)
     {
         if(view->selectionModel()->selectedIndexes().contains(index))
         {
