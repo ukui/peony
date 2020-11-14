@@ -34,7 +34,7 @@ using namespace Peony;
 
 static void handleDuplicate(FileNode *node) {
     QString name = node->destBaseName();
-    QRegExp regExp("\\(\\d+\\)(\\.[0-9a-zA-Z]+|)$");
+    QRegExp regExp("\\(\\d+\\)");
     if (name.contains(regExp)) {
         int pos = 0;
         int num = 0;

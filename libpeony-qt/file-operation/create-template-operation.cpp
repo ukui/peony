@@ -37,7 +37,7 @@ using namespace Peony;
 
 void CreateTemplateOperation::handleDuplicate(const QString &uri) {
     QString name = uri.split("/").last();
-    QRegExp regExp("\\(\\d+\\)(\\.[0-9a-zA-Z]+|)$");
+    QRegExp regExp("\\(\\d+\\)");
     if (name.contains(regExp)) {
         int pos = 0;
         int num = 0;
