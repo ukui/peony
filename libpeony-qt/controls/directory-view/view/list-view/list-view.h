@@ -82,6 +82,8 @@ public:
     const QStringList getAllFileUris() override;
 
     QRect visualRect(const QModelIndex &index) const override;
+    int getCurrentCheckboxColumn();
+
 
 Q_SIGNALS:
     void zoomLevelChangedRequest(bool zoomIn);

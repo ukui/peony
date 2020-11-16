@@ -1085,7 +1085,7 @@ void MainWindow::validBorder()
 {
     QPainterPath path;
     auto rect = this->rect();
-    path.addRoundedRect(rect, 16, 16);
+    path.addRect(rect);
     setProperty("blurRegion", QRegion(path.toFillPolygon().toPolygon()));
     //use KWindowEffects
     KWindowEffects::enableBlurBehind(this->winId(), true, QRegion(path.toFillPolygon().toPolygon()));
