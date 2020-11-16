@@ -205,15 +205,16 @@ void ListView::mousePressEvent(QMouseEvent *e)
 
     QPoint p = e->pos();
     auto visualRect = this->visualRect(index);
-    int checkboxColumn = getCurrentCheckboxColumn();
+    int selectBoxColumn = getCurrentCheckboxColumn();
+    int selectBoxPosion = viewport()->width()+viewport()->x()-header()->sectionViewportPosition(selectBoxColumn)-48;
 
-    if (columnAt(p.x()) == checkboxColumn&&p.x()>visualRect.x()+visualRect.width() - 60&&p.x()<visualRect.x()+visualRect.width() - 40)
+    if (p.x()>visualRect.x()+selectBoxPosion-4&&p.x()<visualRect.x()+selectBoxPosion+24)
     {
         if(!isIndexSelected)
             this->selectionModel()->setCurrentIndex(index,QItemSelectionModel::Select|QItemSelectionModel::Rows);
         else
             this->selectionModel()->setCurrentIndex(index,QItemSelectionModel::Deselect|QItemSelectionModel::Rows);
-        return;
+//        return;
     }
 
 
@@ -552,21 +553,18 @@ QRect ListView::visualRect(const QModelIndex &index) const
 
 int ListView::getCurrentCheckboxColumn()
 {
-    int sectionWidth =header()->sectionSize(0);
-    int viewportWidth =viewport()->width();
+    int section =header()->sectionViewportPosition(3);
+    int viewportWidth =viewport()->width()+viewport()->x();
     int selectBox = 3;
 
-    for(int i=0;i<model()->columnCount();i++)
+    for(int i=1;i<=model()->columnCount()-1;i++)
     {
 
-        if(sectionWidth>=viewportWidth)
+        section =header()->sectionViewportPosition(i);
+        if(section+32>=viewportWidth)
         {
-            selectBox = i;
+            selectBox = i-1;
             break;
-        }
-        else
-        {
-            sectionWidth += header()->sectionSize(i+1);
         }
     }
     return selectBox;
