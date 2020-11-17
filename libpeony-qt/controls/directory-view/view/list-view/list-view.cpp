@@ -205,13 +205,16 @@ void ListView::mousePressEvent(QMouseEvent *e)
 
     QPoint p = e->pos();
     auto visualRect = this->visualRect(index);
-    if (columnAt(p.x()) == 3&&p.x()>visualRect.x()+visualRect.width() - 60&&p.x()<visualRect.x()+visualRect.width() - 40)
+    int selectBoxColumn = getCurrentCheckboxColumn();
+    int selectBoxPosion = viewport()->width()+viewport()->x()-header()->sectionViewportPosition(selectBoxColumn)-48;
+
+    if (p.x()>visualRect.x()+selectBoxPosion-4&&p.x()<visualRect.x()+selectBoxPosion+24)
     {
         if(!isIndexSelected)
             this->selectionModel()->setCurrentIndex(index,QItemSelectionModel::Select|QItemSelectionModel::Rows);
         else
             this->selectionModel()->setCurrentIndex(index,QItemSelectionModel::Deselect|QItemSelectionModel::Rows);
-        return;
+//        return;
     }
 
 
@@ -371,15 +374,6 @@ void ListView::dropEvent(QDropEvent *e)
 
 void ListView::resizeEvent(QResizeEvent *e)
 {
-    auto w = window();
-    QPoint l = this->mapTo(w,QPoint(this->rect().right(),this->rect().height()));
-    if(w->rect().right()-l.x()<100&&!window()->isMaximized()){
-        setAttribute(Qt::WA_TranslucentBackground);
-    }
-    else{
-        setAttribute(Qt::WA_TranslucentBackground,false);
-        setAttribute(Qt::WA_NoSystemBackground,false);
-    }
     QTreeView::resizeEvent(e);
     if (m_last_size != size()) {
         m_last_size = size();
@@ -477,13 +471,13 @@ void ListView::adjustColumnsSize()
     }
 
     //set column 0 minimum width, fix header icon overlap with name issue
-    if(columnWidth(0) < columnWidth(1))
-        setColumnWidth(0, columnWidth(1));
+//    if(columnWidth(0) < columnWidth(1))
+//        setColumnWidth(0, columnWidth(1));
 
     if (this->width() - rightPartsSize < BOTTOM_STATUS_MARGIN)
         return;
 
-    header()->resizeSection(0, this->viewport()->width() - rightPartsSize);
+//    header()->resizeSection(0, this->viewport()->width() - rightPartsSize);
 }
 
 void ListView::multiSelect()
@@ -555,6 +549,25 @@ QRect ListView::visualRect(const QModelIndex &index) const
         rect.setX(0);
     }
     return rect;
+}
+
+int ListView::getCurrentCheckboxColumn()
+{
+    int section =header()->sectionViewportPosition(3);
+    int viewportWidth =viewport()->width()+viewport()->x();
+    int selectBox = 3;
+
+    for(int i=1;i<=model()->columnCount()-1;i++)
+    {
+
+        section =header()->sectionViewportPosition(i);
+        if(section+32>=viewportWidth)
+        {
+            selectBox = i-1;
+            break;
+        }
+    }
+    return selectBox;
 }
 
 void ListView::open(const QStringList &uris, bool newWindow)

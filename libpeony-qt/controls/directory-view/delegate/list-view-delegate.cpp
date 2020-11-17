@@ -37,6 +37,7 @@
 #include <QKeyEvent>
 #include <QPainter>
 #include <QItemDelegate>
+#include <QHeaderView>
 
 #include <QApplication>
 
@@ -90,17 +91,22 @@ void ListViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
         }
     }
     auto rect = view->visualRect(index);
-    if(option.viewItemPosition == 3)
+
+    int selectBox = 3;
+    //get current checkbox positon and draw them.
+    selectBox = view->getCurrentCheckboxColumn();
+    int selectBoxPosion = view->viewport()->width()+view->viewport()->x()-view->header()->sectionViewportPosition(selectBox)-48;
+    if(index.column() == selectBox)
     {
         if(view->selectionModel()->selectedIndexes().contains(index))
         {
             QIcon icon = QIcon(":/icons/icon-selected.png");
-            icon.paint(painter, rect.x()+rect.width() - 64, rect.y()+rect.height()/2-8, 16, 16, Qt::AlignCenter);
+            icon.paint(painter, rect.x()+selectBoxPosion, rect.y()+rect.height()/2-8, 16, 16, Qt::AlignCenter);
         }
         else
         {
             QIcon icon = QIcon(":/icons/icon-select.png");
-            icon.paint(painter, rect.x()+rect.width() - 64, rect.y()+rect.height()/2-8, 16, 16, Qt::AlignCenter);
+            icon.paint(painter, rect.x()+selectBoxPosion, rect.y()+rect.height()/2-8, 16, 16, Qt::AlignCenter);
         }
     }
 
