@@ -248,6 +248,7 @@ DesktopIconView::~DesktopIconView()
 bool DesktopIconView::eventFilter(QObject *obj, QEvent *e)
 {
     //fixme:
+    //comment to fix change night style refresh desktop issue
 //    if (e->type() == QEvent::StyleChange) {
 //        if (m_model)
 //            refresh();
