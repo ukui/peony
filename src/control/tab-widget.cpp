@@ -65,7 +65,6 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
     setStyle(PeonyMainWindowStyle::getStyle());
 
     setAttribute(Qt::WA_TranslucentBackground);
-
     m_tab_bar = new NavigationTabBar(this);
     m_tab_bar->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     m_stack = new QStackedWidget(this);
@@ -101,7 +100,7 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
         Q_EMIT tabBarIndexUpdate(index);
     });
 
-    m_header_bar_layout = new QHBoxLayout(this);
+//    m_header_bar_layout = new QHBoxLayout(this);
     QActionGroup *group = new QActionGroup(this);
     group->setExclusive(true);
 //    m_header_bar_bg = new QWidget(this);
@@ -202,7 +201,7 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
     m_top_layout = vbox;
     vbox->setSpacing(0);
     vbox->setContentsMargins(0, 0, 0, 0);
-    vbox->addLayout(m_header_bar_layout);
+//    vbox->addLayout(m_header_bar_layout);
     vbox->addLayout(trash);
     vbox->addLayout(m_search_bar_layout);
     QSplitter *s = new QSplitter(this);
@@ -1128,7 +1127,7 @@ void TabWidget::resizeEvent(QResizeEvent *e)
 void TabWidget::updateTabBarGeometry()
 {
     m_tab_bar->setGeometry(0, 1, this->width()-136,48);
-//    m_tab_bar_bg->setFixedHeight(m_tab_bar->height());
+//    m_tab_bar->setFixedHeight(m_tab_bar->height());
     m_tab_bar->raise();
 }
 
