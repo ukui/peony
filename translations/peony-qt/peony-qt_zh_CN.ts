@@ -115,7 +115,7 @@
     <name>MainWindow</name>
     <message>
         <location filename="../../src/windows/main-window.cpp" line="108"/>
-        <location filename="../../src/windows/main-window.cpp" line="611"/>
+        <location filename="../../src/windows/main-window.cpp" line="619"/>
         <source>File Manager</source>
         <translation>文件管理器</translation>
     </message>
@@ -134,12 +134,12 @@
         <translation type="vanished">删除文件警告</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1265"/>
+        <location filename="../../src/windows/main-window.cpp" line="1273"/>
         <source>Delete Permanently</source>
         <translation>永久删除</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1266"/>
+        <location filename="../../src/windows/main-window.cpp" line="1274"/>
         <source>Are you sure that you want to delete these files? Once you start a deletion, the files deleting will never be restored again.</source>
         <translation>您确定要删除这些文件吗？一旦开始删除，这些文件将不可再恢复。</translation>
     </message>
@@ -148,7 +148,7 @@
         <translation type="vanished">文件管理器</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="624"/>
+        <location filename="../../src/windows/main-window.cpp" line="632"/>
         <source>New Folder</source>
         <translation>新建文件夹</translation>
     </message>
@@ -163,7 +163,7 @@
 <context>
     <name>NavigationSideBarContainer</name>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="273"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="276"/>
         <source>All tags...</source>
         <translation>所有标记...</translation>
     </message>
@@ -285,12 +285,27 @@
 2.你使用的系统主题不是qt默认支持的主题，并且你没有安装相关的平台插件。如果你正在使用Gtk主题作为系统主题，尝试安装qt5-gtk2-platformtheme以解决此问题。</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.cpp" line="579"/>
+        <location filename="../../src/peony-application.cpp" line="518"/>
+        <source>File opening failed</source>
+        <translation>文件打开失败</translation>
+    </message>
+    <message>
+        <location filename="../../src/peony-application.cpp" line="519"/>
+        <source>Folder &apos;%1&apos; does not exist</source>
+        <translation>文件夹 &apos;%1&apos; 不存在</translation>
+    </message>
+    <message>
+        <location filename="../../src/peony-application.cpp" line="520"/>
+        <source>OK</source>
+        <translation>确定</translation>
+    </message>
+    <message>
+        <location filename="../../src/peony-application.cpp" line="588"/>
         <source>Peony Qt</source>
         <translation>文件管理器</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.cpp" line="580"/>
+        <location filename="../../src/peony-application.cpp" line="589"/>
         <source>Author:
 	Yue Lan &lt;lanyue@kylinos.cn&gt;
 	Meihong He &lt;hemeihong@kylinos.cn&gt;

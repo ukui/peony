@@ -513,6 +513,14 @@ void PeonyApplication::parseCmd(quint32 id, QByteArray msg)
             auto parentUris = itemHash.keys();
 
             for (auto parentUri : parentUris) {
+                if (!Peony::FileUtils::isFileExsit(parentUri)) {
+                    QMessageBox msg;
+                    msg.setWindowTitle(tr("File opening failed"));
+                    msg.setText(tr("Folder '%1' does not exist").arg(parentUri).toUtf8().constData());
+                    QPushButton* btn = msg.addButton(tr("OK"), QMessageBox::AcceptRole);
+                    msg.exec();
+                    continue;
+                }
                 auto window = new MainWindow(parentUri);
                 //Peony::FMWindow *window = new Peony::FMWindow(parentUri);
                 connect(window, &MainWindow::locationChangeEnd, [=]() {

@@ -115,7 +115,7 @@
     <name>MainWindow</name>
     <message>
         <location filename="../../src/windows/main-window.cpp" line="108"/>
-        <location filename="../../src/windows/main-window.cpp" line="611"/>
+        <location filename="../../src/windows/main-window.cpp" line="619"/>
         <source>File Manager</source>
         <translation type="unfinished"></translation>
     </message>
@@ -130,12 +130,12 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1265"/>
+        <location filename="../../src/windows/main-window.cpp" line="1273"/>
         <source>Delete Permanently</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1266"/>
+        <location filename="../../src/windows/main-window.cpp" line="1274"/>
         <source>Are you sure that you want to delete these files? Once you start a deletion, the files deleting will never be restored again.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -144,7 +144,7 @@
         <translation type="vanished">Peony Qt</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="624"/>
+        <location filename="../../src/windows/main-window.cpp" line="632"/>
         <source>New Folder</source>
         <translation type="unfinished"></translation>
     </message>
@@ -159,7 +159,7 @@
 <context>
     <name>NavigationSideBarContainer</name>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="273"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="276"/>
         <source>All tags...</source>
         <translation type="unfinished">Tüm etiketler...</translation>
     </message>
@@ -277,12 +277,27 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.cpp" line="579"/>
+        <location filename="../../src/peony-application.cpp" line="518"/>
+        <source>File opening failed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/peony-application.cpp" line="519"/>
+        <source>Folder &apos;%1&apos; does not exist</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/peony-application.cpp" line="520"/>
+        <source>OK</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/peony-application.cpp" line="588"/>
         <source>Peony Qt</source>
         <translation type="unfinished">Peony Qt</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.cpp" line="580"/>
+        <location filename="../../src/peony-application.cpp" line="589"/>
         <source>Author:
 	Yue Lan &lt;lanyue@kylinos.cn&gt;
 	Meihong He &lt;hemeihong@kylinos.cn&gt;
