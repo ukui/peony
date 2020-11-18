@@ -54,8 +54,7 @@ DesktopItemProxyModel::DesktopItemProxyModel(QObject *parent) : QSortFilterProxy
     m_jsonOp = new PeonyJsonOperation();
     QString jsonPath=QDir::homePath()+"/.config/peony-security-config.json";
     m_jsonOp->setConfigFile(jsonPath);
-    m_jsonOp->loadConfigFile();
-    m_jsonOp->getBWListInfo(m_bwListInfo);
+    m_jsonOp->loadConfigFile(m_bwListInfo);
 }
 
 DesktopItemProxyModel::~DesktopItemProxyModel()
@@ -177,8 +176,7 @@ void DesktopItemProxyModel::setShowHidden(bool showHidden)
 int DesktopItemProxyModel::updateBlackAndWriteLists()
 {
     m_bwListInfo->clearBWlist();
-    m_jsonOp->loadConfigFile();
-    m_jsonOp->getBWListInfo(m_bwListInfo);
+    m_jsonOp->loadConfigFile(m_bwListInfo);
     //重新过滤显示
     invalidateFilter();
     return 0;

@@ -57,6 +57,8 @@ int BWListInfo::clearBWlist()
     {
         m_bwListInfo.clear();
     }
+
+    m_workModel = BW_LIST_NORMAL;
 }
 
 bool BWListInfo::desktopNameExist(QString desktop)

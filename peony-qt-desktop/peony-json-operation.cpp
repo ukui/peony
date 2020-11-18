@@ -43,7 +43,7 @@ void PeonyJsonOperation::setConfigFile(QString configFile)
     m_configFile = configFile;
 }
 
-int PeonyJsonOperation::loadConfigFile()
+int PeonyJsonOperation::loadConfigFile(BWListInfo *bwListInfo)
 {
     //1、judge file exsit?
     QFileInfo file(m_configFile);
@@ -68,11 +68,13 @@ int PeonyJsonOperation::loadConfigFile()
 
     //3、load json file
     QJsonParseError jsonerror;
-    m_jsonDoc = QJsonDocument::fromJson(jsonCtxt, &jsonerror);
-    if (m_jsonDoc.isNull() || jsonerror.error != QJsonParseError::NoError){
+    QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonCtxt, &jsonerror);
+    if (jsonDoc.isNull() || jsonerror.error != QJsonParseError::NoError){
         qWarning("json load file %s failed, errno[%d]", m_configFile, jsonerror.error);
         return -EINVAL;
     }
+
+    getBWListInfo(jsonDoc, bwListInfo);
 
     return 0;
 }
@@ -82,9 +84,9 @@ void PeonyJsonOperation::releaseConfigFile()
 
 }
 
-int PeonyJsonOperation::getBWListInfo(BWListInfo *bwListInfo)
+int PeonyJsonOperation::getBWListInfo(QJsonDocument &jsonDoc, BWListInfo *bwListInfo)
 {
-    QJsonObject jsonObj = m_jsonDoc.object();
+    QJsonObject jsonObj = jsonDoc.object();
     if (!jsonObj.contains("ukui-peony")) {
         qWarning("the json file is not ukui-peony");
         return -EINVAL;

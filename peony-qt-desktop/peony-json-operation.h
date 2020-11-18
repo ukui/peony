@@ -47,15 +47,14 @@ public:
 
 public:
     void setConfigFile(QString configFile);
-    int  loadConfigFile();
-    int  getBWListInfo(BWListInfo *bwListInfo);
+    int  loadConfigFile(BWListInfo *bwListInfo);
     void releaseConfigFile();
 
 private:
+    int getBWListInfo(QJsonDocument &jsonDoc, BWListInfo *bwListInfo);
     int bwPkgInfoParse(QJsonValue &bwPkgValue, BWListInfo *bwListInfo);
     int entryInfoParse(QJsonValue &entryInfoValue, BWListInfo *bwListInfo);
     QString   m_configFile;
-    QJsonDocument m_jsonDoc;
 };
 
 }
