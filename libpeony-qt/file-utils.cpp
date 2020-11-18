@@ -434,7 +434,10 @@ const QStringList FileUtils::toDisplayUris(const QStringList &args)
             path = absPath;
             url = QUrl::fromLocalFile(absPath);
         }
-        uris<<url.toDisplayString();
+
+        if (FileUtils::isFileExsit(path)) {
+            uris << url.toDisplayString();
+        }
     }
     return uris;
 }
