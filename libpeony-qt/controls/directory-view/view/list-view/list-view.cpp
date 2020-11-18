@@ -208,28 +208,28 @@ void ListView::mousePressEvent(QMouseEvent *e)
     int selectBoxColumn = getCurrentCheckboxColumn();
     int selectBoxPosion = viewport()->width()+viewport()->x()-header()->sectionViewportPosition(selectBoxColumn)-48;
 
-    if (p.x()>visualRect.x()+selectBoxPosion-4&&p.x()<visualRect.x()+selectBoxPosion+24)
+    if (index.column() == selectBoxColumn&&p.x()>visualRect.x()+selectBoxPosion-4&&p.x()<visualRect.x()+selectBoxPosion+24)
     {
         if(!isIndexSelected)
             this->selectionModel()->setCurrentIndex(index,QItemSelectionModel::Select|QItemSelectionModel::Rows);
         else
             this->selectionModel()->setCurrentIndex(index,QItemSelectionModel::Deselect|QItemSelectionModel::Rows);
-//        return;
+        return;
     }
 
 
     m_editValid = true;
     QTreeView::mousePressEvent(e);
-
-    auto sizeHint = itemDelegate()->sizeHint(viewOptions(), index);
-    auto validRect = QRect(visualRect.topLeft(), sizeHint);
-    if (!validRect.contains(e->pos())) {
-        if (isIndexSelected) {
-            clearSelection();
-            setCurrentIndex(index);
-        }
-        this->setState(QAbstractItemView::DragSelectingState);
-    }
+//what for???
+//    auto sizeHint = itemDelegate()->sizeHint(viewOptions(), index);
+//    auto validRect = QRect(visualRect.topLeft(), sizeHint);
+//    if (!validRect.contains(e->pos())) {
+//        if (isIndexSelected) {
+//            clearSelection();
+//            setCurrentIndex(index);
+//        }
+//        this->setState(QAbstractItemView::DragSelectingState);
+//    }
     //comment to fix can not enter rename issue
 //    else if (isIndexSelected) {
 //        return;

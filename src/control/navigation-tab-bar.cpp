@@ -58,8 +58,9 @@ NavigationTabBar::NavigationTabBar(QWidget *parent) : QTabBar(parent)
 
     setStyle(TabBarStyle::getStyle());
 
+
     setContentsMargins(0, 0, 0, 0);
-    //setFixedHeight(36);
+    setFixedHeight(48);
 
     setProperty("useStyleWindowManager", false);
     setMovable(true);
@@ -87,7 +88,7 @@ NavigationTabBar::NavigationTabBar(QWidget *parent) : QTabBar(parent)
     addPageButton->setProperty("useIconHighlightEffect", true);
     addPageButton->setProperty("iconHighlightEffectMode", 1);
     addPageButton->setProperty("fillIconSymbolicColor", true);
-    addPageButton->setFixedSize(QSize(this->height() + 2, this->height() + 2));
+    addPageButton->setFixedSize(QSize(32 ,32));
     addPageButton->setIcon(QIcon::fromTheme("list-add-symbolic"));
     addPageButton->setAutoRaise(true);
 
@@ -131,7 +132,7 @@ void NavigationTabBar::updateLocation(int index, const QString &uri)
     }
 
     setTabText(index, displayName);
-    setTabIcon(index, QIcon::fromTheme(iconName));
+//    setTabIcon(index, QIcon::fromTheme(iconName));
     setTabData(index, uri);
     relayoutFloatButton(false);
 
@@ -142,9 +143,10 @@ void NavigationTabBar::addPage(const QString &uri, bool jumpToNewTab)
 {
     if (!uri.isNull()) {
         //FIXME: replace BLOCKING api in ui thread.
-        auto iconName = Peony::FileUtils::getFileIconName(uri);
+//        auto iconName = Peony::FileUtils::getFileIconName(uri);
         auto displayName = Peony::FileUtils::getFileDisplayName(uri);
-        addTab(QIcon::fromTheme(iconName), displayName);
+//        addTab(QIcon::fromTheme(iconName), displayName);
+        addTab(displayName);
         setTabData(count() - 1, uri);
         if (jumpToNewTab)
             setCurrentIndex(count() - 1);
@@ -332,6 +334,10 @@ int TabBarStyle::pixelMetric(QStyle::PixelMetric metric, const QStyleOption *opt
         return 0;
     case PM_TabBarBaseOverlap:
         return 0;
+    case PM_TabBarTabVSpace:
+        return 25;
+    case PM_TabBarTabHSpace:
+        return 140 ;
     default:
         return QProxyStyle::pixelMetric(metric, option, widget);
     }
@@ -358,17 +364,11 @@ void TabBarStyle::drawControl(QStyle::ControlElement element, const QStyleOption
             int tabOverlap = pixelMetric(PM_TabBarTabOverlap, option, widget);
             rect = option->rect.adjusted(0, 0, (onlyOne || lastTab) ? 0 : tabOverlap, 0);
 
-            QRect r2(rect);
-            int x1 = r2.left();
-            int x2 = r2.right();
-            int y1 = r2.top();
-            int y2 = r2.bottom();
 
             //painter->setPen(d->innerContrastLine());
             painter->setPen( Qt::NoPen);
 
             QTransform rotMatrix;
-            bool flip = false;
             //painter->setPen(shadow);
             painter->setPen( Qt::NoPen);
             switch (tab->shape) {
@@ -380,58 +380,14 @@ void TabBarStyle::drawControl(QStyle::ControlElement element, const QStyleOption
                 return;
             }
 
-            if (flip) {
-                QRect tmp = rect;
-                rect = QRect(tmp.y(), tmp.x(), tmp.height(), tmp.width());
-                int temp = x1;
-                x1 = y1;
-                y1 = temp;
-                temp = x2;
-                x2 = y2;
-                y2 = temp;
-            }
 
-            painter->setRenderHint(QPainter::Antialiasing, true);
-//            painter->translate(0.5, 0.5);
-
-            /*
-             * The following colors are the check box background
-             *  colors of the outer box tab or the small pop-up box tab
-             */
-            QColor tabFrameColor = tab->features & QStyleOptionTab::HasFrame ?
-                        option->palette.base().color() :
-                        option->palette.base().color();
-
-            QLinearGradient fillGradient(rect.topLeft(), rect.bottomLeft());
-            QLinearGradient outlineGradient(rect.topLeft(), rect.bottomLeft());
-            QPen outlinePen =  Qt::NoPen;
-            if (selected) {
-                fillGradient.setColorAt(0, tabFrameColor.lighter(104));
-                fillGradient.setColorAt(1, tabFrameColor);
-                outlineGradient.setColorAt(1, outline);
-                outlinePen =  Qt::NoPen;
-            } else {
-                fillGradient.setColorAt(0, option->palette.window().color());
-                fillGradient.setColorAt(0.85,option->palette.window().color());
-                fillGradient.setColorAt(1, option->palette.window().color());
-            }
-
-//            No special height handling when selected
-//            QRect drawRect = rect.adjusted(0, selected ? 0 : 2, 0, 3);
-            QRect drawRect = rect.adjusted(0, 0, 0, 3);
-            painter->setPen( Qt::NoPen);
-            painter->save();
-//            painter->setClipRect(rect.adjusted(+1, -1, +0, selected ? -2 : -3));
-            painter->setBrush(Qt::transparent);
-            painter->drawRoundedRect(drawRect.adjusted(+1, 0, +0, 5), 10.0, 10.0);
-            painter->restore();
-
+            bool firstTab = tab->position == QStyleOptionTab::Beginning;
             if (selected) {
                 painter->save();
                 painter->setRenderHint(QPainter::Antialiasing);
                 painter->setBrush(option->palette.base().color());
                 painter->drawRoundedRect(option->rect.adjusted(0,-1,0,0),12,12);
-                if(option->rect.left()-15<0){
+                if(firstTab){
                     painter->drawRect(option->rect.left(),option->rect.bottom()-12,25,option->rect.bottom()+25);
                     painter->drawRect(option->rect.right()-12,option->rect.bottom()-12,12,12);
                     QPainterPath path1;
