@@ -209,11 +209,12 @@ GAsyncReadyCallback PermissionsPropertiesPage::async_query_permisson_callback(GO
             }
 
             if (enable) {
-                table->setRowCount(3);
+//                table->setRowCount(3);
+                table->setRowCount(1);
 
-                for (int i = 0; i < 3; i++) {
+//                for (int i = 0; i < 3; i++) {
                     for (int j = 0; j < 3; j++) {
-                        table->setCellWidget(i, j + 2, nullptr);
+                        table->setCellWidget(0, j + 2, nullptr);
                         QWidget *w = new QWidget(table);
                         QHBoxLayout *l = new QHBoxLayout(w);
                         l->setMargin(0);
@@ -221,9 +222,9 @@ GAsyncReadyCallback PermissionsPropertiesPage::async_query_permisson_callback(GO
                         l->setAlignment(Qt::AlignCenter);
                         auto checkbox = new QCheckBox(w);
                         l->addWidget(checkbox);
-                        table->setCellWidget(i, j + 2, w);
+                        table->setCellWidget(0, j + 2, w);
 
-                        checkbox->setChecked(p_this->m_permissions[i][j]);
+                        checkbox->setChecked(p_this->m_permissions[0][j]);
 
                         //disable home path
                         QString homeUri = "file://" +  QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
@@ -233,38 +234,38 @@ GAsyncReadyCallback PermissionsPropertiesPage::async_query_permisson_callback(GO
                             checkbox->setDisabled(false);
 
                         connect(checkbox, &QCheckBox::clicked, p_this, [=]() {
-                            qDebug()<<"clicked"<<i<<j<<checkbox->isChecked();
-                            p_this->checkBoxChanged(i, j, checkbox->isChecked());
+                            qDebug()<<"clicked"<<0<<j<<checkbox->isChecked();
+                            p_this->checkBoxChanged(0, j, checkbox->isChecked());
                         });
                     }
-                }
+//                }
 
                 QTableWidgetItem *itemR0C0 = new QTableWidgetItem(QIcon::fromTheme("emblem-personal"), userNameDisplayString);
                 table->setItem(0, 0, nullptr);
                 table->setItem(0, 0, itemR0C0);
 
-                QTableWidgetItem *itemR1C0 = new QTableWidgetItem(QIcon::fromTheme("emblem-people"), groupName);
-                table->setItem(1, 0, nullptr);
-                table->setItem(1, 0, itemR1C0);
+//                QTableWidgetItem *itemR1C0 = new QTableWidgetItem(QIcon::fromTheme("emblem-people"), groupName);
+//                table->setItem(1, 0, nullptr);
+//                table->setItem(1, 0, itemR1C0);
 
-                QTableWidgetItem *itemR2C0 = new QTableWidgetItem(QIcon::fromTheme("emblem-people"), tr("Others"));
-                table->setItem(2, 0, nullptr);
-                table->setItem(2, 0, itemR2C0);
+//                QTableWidgetItem *itemR2C0 = new QTableWidgetItem(QIcon::fromTheme("emblem-people"), tr("Others"));
+//                table->setItem(2, 0, nullptr);
+//                table->setItem(2, 0, itemR2C0);
 
                 auto itemR0C1 = new QTableWidgetItem(tr("Owner"));
                 itemR0C1->setTextAlignment(Qt::AlignCenter);
-                auto itemR1C1 = new QTableWidgetItem(tr("Group"));
-                itemR1C1->setTextAlignment(Qt::AlignCenter);
-                auto itemR2C1 = new QTableWidgetItem(tr("Other Users"));
-                itemR2C1->setTextAlignment(Qt::AlignCenter);
+//                auto itemR1C1 = new QTableWidgetItem(tr("Group"));
+//                itemR1C1->setTextAlignment(Qt::AlignCenter);
+//                auto itemR2C1 = new QTableWidgetItem(tr("Other Users"));
+//                itemR2C1->setTextAlignment(Qt::AlignCenter);
 
                 table->setItem(0, 1, itemR0C1);
-                table->setItem(1, 1, itemR1C1);
-                table->setItem(2, 1, itemR2C1);
+//                table->setItem(1, 1, itemR1C1);
+//                table->setItem(2, 1, itemR2C1);
 
                 table->showRow(0);
-                table->showRow(1);
-                table->showRow(2);
+//                table->showRow(1);
+//                table->showRow(2);
             } else {
                 p_this->m_message->setText(tr("You can not change the access of this file."));
                 p_this->m_message->show();
