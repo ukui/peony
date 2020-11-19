@@ -79,17 +79,17 @@ DesktopIndexWidget::~DesktopIndexWidget()
 void DesktopIndexWidget::paintEvent(QPaintEvent *e)
 {
     auto view = m_delegate->getView();
-    if (!view->selectionModel()->selectedIndexes().contains(m_index)) {
-        view->m_real_do_edit = false;
-        view->m_edit_trigger_timer.stop();
-        this->close();
-        return;
-    }
-
     //qDebug()<<"paint";
     auto visualRect = m_delegate->getView()->visualRect(m_index);
     if (this->pos() != visualRect.topLeft()) {
         move(visualRect.topLeft());
+        return;
+    }
+
+    if (!view->selectionModel()->selectedIndexes().contains(m_index)) {
+        view->m_real_do_edit = false;
+        view->m_edit_trigger_timer.stop();
+        this->close();
         return;
     }
 

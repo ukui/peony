@@ -76,7 +76,9 @@ private:
     QString m_info_name;
     QString m_info_display_name;
 
-    QStringList m_executable_type = {"application/x-shellscript", "application/x-executable", "application/x-perl"};
+    QStringList m_executable_type = {"application/x-shellscript", "application/x-executable", "application/x-perl",
+                                    "application/x-sharedlib", "text/x-python3", "application/javascript",
+                                    "application/x-ruby"};
 
     /*!
      * \brief m_force_with_arg

@@ -240,7 +240,7 @@ private:
     QList<QSignalMapper*> m_remove_mapper_list;
 
     int m_search_bar_count = 0;
-    const int ELIDE_TEXT_LENGTH = 10;
+    const int ELIDE_TEXT_LENGTH = 6;
 
     TabStatusBar *m_status_bar = nullptr;
 
