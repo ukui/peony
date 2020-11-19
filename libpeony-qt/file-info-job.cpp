@@ -269,7 +269,6 @@ void FileInfoJob::refreshInfoContents(GFileInfo *new_info)
     m_info->m_colors = FileLabelModel::getGlobalModel()->getFileColors(m_info->uri());
 
     if (info->isDesktopFile()) {
-        info->m_desktop_name = info->displayName();
         QUrl url = info->uri();
         GDesktopAppInfo *desktop_info = g_desktop_app_info_new_from_filename(url.path().toUtf8());
         if (!desktop_info) {

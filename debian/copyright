@@ -272,12 +272,6 @@ License: GPL-3+
 
 Files: peony-qt-desktop/desktop-icon-view.cpp
   peony-qt-desktop/desktop-index-widget.cpp
-  peony-qt-desktop/bw-list-info.cpp
-  peony-qt-desktop/bw-list-info.h
-  peony-qt-desktop/peony-dbus-service.cpp
-  peony-qt-desktop/peony-dbus-service.h
-  peony-qt-desktop/peony-json-operation.cpp
-  peony-qt-desktop/peony-json-operation.h
 Copyright: 2019, 2020, Tianjin KYLIN Information Technology Co., Ltd.
 License: GPL-3+
 
