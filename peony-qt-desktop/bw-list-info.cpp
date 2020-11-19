@@ -74,7 +74,7 @@ bool BWListInfo::isBlackListMode()
 
 bool BWListInfo::isWriteListMode()
 {
-    return m_workModel == BW_LIST_WRITE;
+    return m_workModel == BW_LIST_WHITE;
 }
 
 bool BWListInfo::isNormalMode()

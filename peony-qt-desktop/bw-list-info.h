@@ -31,7 +31,7 @@ namespace Peony {
 
 #define BW_LIST_NORMAL  "normal"
 #define BW_LIST_BLACK   "blacklist"
-#define BW_LIST_WRITE   "whitelist"
+#define BW_LIST_WHITE   "whitelist"
 
 class BWListInfo:public QObject
 {

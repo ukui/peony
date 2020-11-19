@@ -106,10 +106,10 @@ int PeonyJsonOperation::getBWListInfo(QJsonDocument &jsonDoc, BWListInfo *bwList
             QJsonValue bPkgValue = peonyObj.value(BW_LIST_BLACK);
             return bwPkgInfoParse(bPkgValue, bwListInfo);
         }
-    } else if (BW_LIST_WRITE == model){
+    } else if (BW_LIST_WHITE == model){
         bwListInfo->setBWListModel(model);
-        if (peonyObj.contains(BW_LIST_WRITE)) {
-            QJsonValue wPkgValue = peonyObj.value(BW_LIST_WRITE);
+        if (peonyObj.contains(BW_LIST_WHITE)) {
+            QJsonValue wPkgValue = peonyObj.value(BW_LIST_WHITE);
             return bwPkgInfoParse(wPkgValue, bwListInfo);
         }
     } else if (BW_LIST_NORMAL == model){
