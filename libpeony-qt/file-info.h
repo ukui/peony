@@ -167,6 +167,11 @@ public:
     QString displayName() {
         return m_display_name;
     }
+
+    QString desktopName(){
+        return m_desktop_name;
+    }
+
     QString iconName() {
         return m_icon_name;
     }
@@ -324,6 +329,7 @@ private:
     bool m_is_loaded = false;
 
     QString m_display_name = nullptr;
+    QString m_desktop_name = nullptr;
     QString m_icon_name = nullptr;
     QString m_symbolic_icon_name = nullptr;
     QString m_file_id = nullptr;
