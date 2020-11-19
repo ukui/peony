@@ -52,7 +52,10 @@ SOURCES += \
     desktop-index-widget.cpp \
     desktop-menu.cpp \
     desktop-menu-plugin-manager.cpp \
-    desktop-item-proxy-model.cpp
+    desktop-item-proxy-model.cpp \
+    peony-json-operation.cpp \
+    bw-list-info.cpp \
+    peony-dbus-service.cpp
 
 HEADERS += \
     desktop-screen.h \
@@ -65,7 +68,10 @@ HEADERS += \
     desktop-index-widget.h \
     desktop-menu.h \
     desktop-menu-plugin-manager.h \
-    desktop-item-proxy-model.h
+    desktop-item-proxy-model.h \
+    peony-json-operation.h \
+    bw-list-info.h \
+    peony-dbus-service.h
 
 target.path = /usr/bin
 !isEmpty(target.path): INSTALLS += target
