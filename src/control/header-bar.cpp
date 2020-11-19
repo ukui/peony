@@ -221,7 +221,9 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
         }
 
     });
-
+//    preview->setShortcuts(QList<QKeySequence>()<<Qt::Key_F3<<QKeySequence(Qt::ALT + Qt::Key_P));
+    preview->setShortcut(QKeySequence(Qt::ALT + Qt::Key_P));
+    preview->setShortcutVisibleInContextMenu(false);
 
     connect(m_view_type_menu, &ViewTypeMenu::switchViewRequest, this, [=](const QString &id, const QIcon &icon, bool resetToZoomLevel) {
         viewType->setText(id);

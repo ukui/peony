@@ -163,9 +163,10 @@ DesktopWindow::DesktopWindow(QScreen *screen, bool is_primary, QWidget *parent)
         // FIXME: use other menu
         qDebug() << "menu request";
         auto contentMargins = contentsMargins();
-        auto fixedPos = pos - QPoint(contentMargins.left(), contentMargins.top());
-        auto index = PeonyDesktopApplication::getIconView()->indexAt(fixedPos);
-        if (!index.isValid() || !centralWidget()) {
+//        auto fixedPos = pos - QPoint(contentMargins.left(), contentMargins.top());
+        auto index = PeonyDesktopApplication::getIconView()->indexAt(QCursor::pos());
+//        auto selectcount = PeonyDesktopApplication::getIconView()->getSelections().count();
+        if (!index.isValid()||!centralWidget()) {
             PeonyDesktopApplication::getIconView()->clearSelection();
         } else {
             if (!PeonyDesktopApplication::getIconView()->selectionModel()->selection().indexes().contains(index)) {
@@ -192,7 +193,7 @@ DesktopWindow::DesktopWindow(QScreen *screen, bool is_primary, QWidget *parent)
 //                    }
                 });
             }
-            menu.exec(mapToGlobal(pos));
+            menu.exec(QCursor::pos());
             auto urisToEdit = menu.urisToEdit();
             if (urisToEdit.count() == 1) {
                 QTimer::singleShot(
