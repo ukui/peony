@@ -438,7 +438,7 @@ void IconView::setProxy(DirectoryViewProxyIface *proxy)
         auto uri = index.data(FileItemModel::UriRole).toString();
         //process open symbolic link
         auto info = FileInfo::fromUri(uri, false);
-        if (info->isSymbolLink() && uri.startsWith("file://"))
+        if (info->isSymbolLink() && uri.startsWith("file://") && info->isValid())
             uri = "file://" + FileUtils::getSymbolicTarget(uri);
         Q_EMIT m_proxy->viewDoubleClicked(uri);
     });
@@ -587,7 +587,7 @@ void IconView2::bindModel(FileItemModel *model, FileItemProxyFilterSortModel *pr
         auto uri = index.data(Qt::UserRole).toString();
         //process open symbolic link
         auto info = FileInfo::fromUri(uri, false);
-        if (info->isSymbolLink() && uri.startsWith("file://"))
+        if (info->isSymbolLink() && uri.startsWith("file://") && info->isValid())
             uri = "file://" +  FileUtils::getSymbolicTarget(uri);
         Q_EMIT this->viewDoubleClicked(uri);
     });
