@@ -187,7 +187,12 @@ void FileItem::findChildrenAsync()
             if (err.get()->code() == G_IO_ERROR_NOT_FOUND || err.get()->code() == G_IO_ERROR_PERMISSION_DENIED) {
                 enumerator->cancel();
                 //enumerator->deleteLater();
-                m_model->setRootUri(FileUtils::getParentUri(this->uri()));
+                //fix goto removed path in case device is ejected
+                if (this->uri().startsWith("file:///media"))
+                    m_model->setRootUri("computer:///");
+                else
+                    m_model->setRootUri(FileUtils::getParentUri(this->uri()));
+
                 auto fileInfo = FileInfo::fromUri(this->uri(), false);
                 if (err.get()->code() == G_IO_ERROR_NOT_FOUND && fileInfo->isSymbolLink())
                 {
