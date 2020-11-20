@@ -977,7 +977,7 @@ void MainWindow::paintEvent(QPaintEvent *e)
 
     tmpPath.addRect(rect());
 
-    deletePath.addRoundedRect(tmpRect.adjusted(0, 40, 0, 0), 16, 16);
+    deletePath.addRoundedRect(tmpRect.adjusted(0, 48, 0, 0), 16, 16);
     deletePath.addRect(rect().width()-18,rect().height()-18,18,18);
     deletePath.addRect(tmpRect.x(),tmpRect.height()-18,18,18);
 
@@ -990,7 +990,7 @@ void MainWindow::paintEvent(QPaintEvent *e)
 
     QPainter painter(this);
     if(m_is_first_tab)
-        deletePath.addRect(m_tab->x(),40,16,16);
+        deletePath.addRect(m_tab->x(),48,16,16);
     deletePath.setFillRule(Qt::FillRule::WindingFill);
     painter.fillPath(deletePath,this->palette().base());
     QMainWindow::paintEvent(e);
@@ -1126,8 +1126,8 @@ void MainWindow::initUI(const QString &uri)
     m_header_bar = headerBar;
     auto headerBarContainer = new HeaderBarContainer(this);
     headerBarContainer->addHeaderBar(headerBar);
-    views->m_header_bar_layout->insertWidget(0,headerBarContainer);
-    //views->addToolBar(headerBarContainer);
+//    views->m_header_bar_layout->insertWidget(0,headerBarContainer);
+    views->addToolBar(headerBarContainer);
     //m_header_bar->setVisible(false);
 
     connect(m_header_bar, &HeaderBar::updateLocationRequest, this, &MainWindow::goToUri);

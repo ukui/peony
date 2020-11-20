@@ -54,8 +54,11 @@ void ViewTypeMenu::setCurrentView(const QString &viewId, bool blockSignal)
     if (viewId == m_current_view_id)
         return;
 
-    if (m_current_uri == "cloud:///")
+    // Fixme: switch view in cloud page
+    if (m_current_uri == "cloud:///") {
+        m_current_view_id = "Cloud View";
         return;
+    }
 
     if (isViewIdValid(viewId)) {
         m_current_view_id = viewId;

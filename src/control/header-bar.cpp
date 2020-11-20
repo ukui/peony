@@ -632,7 +632,7 @@ HeaderBarContainer::HeaderBarContainer(QWidget *parent) : QToolBar(parent)
                   "border: 0px solid transparent"
                   "}");
 
-    setFixedHeight(50);
+    setFixedHeight(80);
     setMovable(false);
 
     m_layout = new QHBoxLayout;
@@ -654,7 +654,7 @@ TopMenuBar::TopMenuBar(MainWindow *parent) : QMenuBar(parent)
                   "border: 0px solid transparent"
                   "}");
 
-    setFixedHeight(42);
+    setFixedHeight(48);
 
     m_top_menu_layout = new QHBoxLayout(this);
     m_top_menu_layout->setSpacing(0);
