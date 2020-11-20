@@ -189,7 +189,11 @@ void FileItem::findChildrenAsync()
                 //enumerator->deleteLater();
                 //fix goto removed path in case device is ejected
                 if (this->uri().startsWith("file:///media"))
+                {
+                    //check bookmark and delete
+                    BookMarkManager::getInstance()->removeBookMark(this->uri());
                     m_model->setRootUri("computer:///");
+                }
                 else
                     m_model->setRootUri(FileUtils::getParentUri(this->uri()));
 
