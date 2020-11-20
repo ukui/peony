@@ -350,7 +350,7 @@ void DesktopIconView::initShoutCut()
     addAction(removeAction);
 
     QAction *helpAction = new QAction(this);
-    helpAction->setShortcut(Qt::Key_F1);
+    helpAction->setShortcut(QKeySequence::HelpContents);
     connect(helpAction, &QAction::triggered, this, [=]() {
         PeonyDesktopApplication::showGuide();
     });
