@@ -25,6 +25,7 @@
 
 #include <QListView>
 #include "directory-view-plugin-iface.h"
+#include "peony-dbus-service.h"
 
 #include <QStandardPaths>
 #include <QTimer>
@@ -37,6 +38,7 @@ namespace Peony {
 
 class DesktopItemModel;
 class DesktopItemProxyModel;
+class PeonyDbusService;
 
 class DesktopIconView : public QListView, public DirectoryViewIface
 {
@@ -94,6 +96,7 @@ public:
 
     QRect visualRect(const QModelIndex &index) const;
     const QFont getViewItemFont(QStyleOptionViewItem *item);
+    int updateBWList();
 
 Q_SIGNALS:
     void zoomLevelChanged(ZoomLevel level);
@@ -236,6 +239,7 @@ private:
 
     QModelIndexList m_drag_indexes;
 
+    PeonyDbusService *m_peonyDbusSer;
     QMap<QString, QRect> m_item_rect_hash;
 };
 

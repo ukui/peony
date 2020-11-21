@@ -30,6 +30,8 @@ using namespace Peony;
 static FileInfoManager* global_file_info_manager = nullptr;
 static QMap<QString, std::weak_ptr<FileInfo>> *global_info_list = nullptr;
 
+static QMutex m_op_lock;
+
 FileInfoManager::FileInfoManager()
 {
     global_info_list = new QMap<QString, std::weak_ptr<FileInfo>>();
@@ -50,12 +52,17 @@ FileInfoManager *FileInfoManager::getInstance()
 std::shared_ptr<FileInfo> FileInfoManager::findFileInfoByUri(const QString &uri)
 {
     Q_ASSERT(global_info_list);
-    return global_info_list->value(uri).lock();//.lock();
+    m_op_lock.lock();
+    auto info = global_info_list->value(uri).lock();//.lock();
+    m_op_lock.unlock();
+    return info;
 }
 
 std::shared_ptr<FileInfo> FileInfoManager::insertFileInfo(std::shared_ptr<FileInfo> info)
 {
     Q_ASSERT(global_info_list);
+
+    m_op_lock.lock();
 
     if (global_info_list->value(info->uri()).lock()) {
         //qDebug()<<"has info yet"<<info->uri();
@@ -63,6 +70,8 @@ std::shared_ptr<FileInfo> FileInfoManager::insertFileInfo(std::shared_ptr<FileIn
     } else {
         global_info_list->insert(info->uri(), info);
     }
+
+    m_op_lock.unlock();
 
     return info;
 }

@@ -237,11 +237,15 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
     setModel(m_proxy_model);
     //m_proxy_model->sort(0);
 
+    m_peonyDbusSer = new PeonyDbusService(this);
+    m_peonyDbusSer->dbusServerRegister();
+
     this->refresh();
 }
 
 DesktopIconView::~DesktopIconView()
 {
+    delete m_peonyDbusSer;
     //saveAllItemPosistionInfos();
 }
 
@@ -249,10 +253,15 @@ bool DesktopIconView::eventFilter(QObject *obj, QEvent *e)
 {
     //fixme:
     //comment to fix change night style refresh desktop issue
-//    if (e->type() == QEvent::StyleChange) {
-//        if (m_model)
-//            refresh();
-//    }
+    if (e->type() == QEvent::StyleChange) {
+        if (m_model) {
+            for (auto uri : getAllFileUris()) {
+                auto pos = getFileMetaInfoPos(uri);
+                if (pos.x() >= 0)
+                    updateItemPosByUri(uri, pos);
+            }
+        }
+    }
     return false;
 }
 
@@ -561,7 +570,7 @@ void DesktopIconView::initDoubleClick()
         auto uri = index.data(FileItemModel::UriRole).toString();
         //process open symbolic link
         auto info = FileInfo::fromUri(uri, false);
-        if (info->isSymbolLink() && uri.startsWith("file://"))
+        if (info->isSymbolLink() && uri.startsWith("file://") && info->isValid())
             uri = "file://" + FileUtils::getSymbolicTarget(uri);
         openFileByUri(uri);
     }, Qt::UniqueConnection);
@@ -1555,4 +1564,15 @@ QRect DesktopIconView::visualRect(const QModelIndex &index) const
     }
     rect.moveTo(rect.topLeft() + p);
     return rect;
+}
+
+int DesktopIconView::updateBWList()
+{
+    m_proxy_model->updateBlackAndWriteLists();
+    /*
+    * 重新按照既定规则排序，这样可以避免出现空缺和图标重叠的情况
+    */
+    int sortType = GlobalSettings::getInstance()->getValue(LAST_DESKTOP_SORT_ORDER).toInt();
+    setSortType(sortType);
+    return 0;
 }

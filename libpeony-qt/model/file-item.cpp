@@ -41,6 +41,8 @@
 
 #include <QMessageBox>
 #include <QUrl>
+#include <QTimer>
+#include <KWindowSystem>
 
 #include <QApplication>
 
@@ -121,6 +123,7 @@ QVector<FileItem*> *FileItem::findChildrenSync()
         job->setAutoDelete();
         job->querySync();
     }
+    //qDebug() << "FileItem findChildrenSync";
     Q_EMIT m_model->findChildrenFinished();
     return m_children;
 }
@@ -182,12 +185,20 @@ void FileItem::findChildrenAsync()
             return;
         }
         if (err) {
-            qDebug()<<err->message();
+            qDebug()<<"file item error:" <<err->message()<<enumerator->getEnumerateUri();
             Peony::AudioPlayManager::getInstance()->playWarningAudio();
             if (err.get()->code() == G_IO_ERROR_NOT_FOUND || err.get()->code() == G_IO_ERROR_PERMISSION_DENIED) {
                 enumerator->cancel();
-                //enumerator->deleteLater();
-                m_model->setRootUri(FileUtils::getParentUri(this->uri()));
+                //fix goto removed path in case device is ejected
+                if (this->uri().startsWith("file:///media"))
+                {
+                    //check bookmark and delete
+                    BookMarkManager::getInstance()->removeBookMark(this->uri());
+                    m_model->setRootUri("computer:///");
+                }
+                else
+                    m_model->setRootUri(FileUtils::getParentUri(this->uri()));
+
                 auto fileInfo = FileInfo::fromUri(this->uri(), false);
                 if (err.get()->code() == G_IO_ERROR_NOT_FOUND && fileInfo->isSymbolLink())
                 {
@@ -202,8 +213,15 @@ void FileItem::findChildrenAsync()
                 }
                 else if (err.get()->code() == G_IO_ERROR_PERMISSION_DENIED)
                 {
+                    QMessageBox *msgBox = new QMessageBox();
+                    msgBox->setWindowTitle(tr("Error"));
                     QString errorInfo = tr("Can not open path \"%1\"，permission denied.").arg(this->uri().unicode());
-                    QMessageBox::critical(nullptr, tr("Error"), errorInfo);
+                    msgBox->setText(errorInfo);
+                    msgBox->setModal(false);
+                    msgBox->setAttribute(Qt::WA_DeleteOnClose);
+                    KWindowSystem::setState(msgBox->winId(), KWindowSystem::KeepAbove);
+                    msgBox->show();
+                   //QMessageBox::critical(nullptr, tr("Error"), errorInfo);
                 }
                 else if(err.get()->code() == G_IO_ERROR_NOT_FOUND)
                 {
@@ -264,6 +282,7 @@ void FileItem::findChildrenAsync()
                     job->queryAsync();
                 }
             } else {
+                //qDebug() << "enumerateFinished false" <<successed;
                 Q_EMIT m_model->findChildrenFinished();
                 return;
             }
@@ -337,6 +356,7 @@ void FileItem::findChildrenAsync()
         enumerator->connect(enumerator, &Peony::FileEnumerator::childrenUpdated, this, [=](const QStringList &uris, bool isEnding) {
             if (uris.isEmpty()) {
                 if (isEnding) {
+                    //qDebug() << "enumerateFinished childrenUpdated:" <<isEnding;
                     Q_EMIT m_model->findChildrenFinished();
                     Q_EMIT m_model->updated();
                 }
