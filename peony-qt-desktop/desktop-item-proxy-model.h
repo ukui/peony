@@ -24,6 +24,8 @@
 #define DESKTOPITEMPROXYMODEL_H
 
 #include <QSortFilterProxyModel>
+#include "bw-list-info.h"
+#include "peony-json-operation.h"
 
 namespace Peony {
 
@@ -39,6 +41,7 @@ public:
         Other
     };
     explicit DesktopItemProxyModel(QObject *parent = nullptr);
+    ~DesktopItemProxyModel();
 
     void setSortType(int type) {
         m_sort_type = type;
@@ -55,6 +58,7 @@ public:
 private:
     int m_sort_type = Other;
     bool m_show_hidden;
+
 };
 
 }

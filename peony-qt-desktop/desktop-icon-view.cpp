@@ -249,10 +249,15 @@ bool DesktopIconView::eventFilter(QObject *obj, QEvent *e)
 {
     //fixme:
     //comment to fix change night style refresh desktop issue
-//    if (e->type() == QEvent::StyleChange) {
-//        if (m_model)
-//            refresh();
-//    }
+    if (e->type() == QEvent::StyleChange) {
+        if (m_model) {
+            for (auto uri : getAllFileUris()) {
+                auto pos = getFileMetaInfoPos(uri);
+                if (pos.x() >= 0)
+                    updateItemPosByUri(uri, pos);
+            }
+        }
+    }
     return false;
 }
 
@@ -350,7 +355,7 @@ void DesktopIconView::initShoutCut()
     addAction(removeAction);
 
     QAction *helpAction = new QAction(this);
-    helpAction->setShortcut(Qt::Key_F1);
+    helpAction->setShortcut(QKeySequence::HelpContents);
     connect(helpAction, &QAction::triggered, this, [=]() {
         PeonyDesktopApplication::showGuide();
     });
@@ -564,7 +569,7 @@ void DesktopIconView::initDoubleClick()
         auto uri = index.data(FileItemModel::UriRole).toString();
         //process open symbolic link
         auto info = FileInfo::fromUri(uri, false);
-        if (info->isSymbolLink() && uri.startsWith("file://"))
+        if (info->isSymbolLink() && uri.startsWith("file://") && info->isValid())
             uri = "file://" + FileUtils::getSymbolicTarget(uri);
         openFileByUri(uri);
     }, Qt::UniqueConnection);
@@ -1559,3 +1564,4 @@ QRect DesktopIconView::visualRect(const QModelIndex &index) const
     rect.moveTo(rect.topLeft() + p);
     return rect;
 }
+

@@ -25,6 +25,7 @@
 
 #include <QListView>
 #include "directory-view-plugin-iface.h"
+#include "peony-dbus-service.h"
 
 #include <QStandardPaths>
 #include <QTimer>
@@ -37,6 +38,7 @@ namespace Peony {
 
 class DesktopItemModel;
 class DesktopItemProxyModel;
+class PeonyDbusService;
 
 class DesktopIconView : public QListView, public DirectoryViewIface
 {
