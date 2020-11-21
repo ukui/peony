@@ -388,7 +388,7 @@ void FileEnumerator::enumerateChildren(GFileEnumerator *enumerator)
 
         QUrl url = QUrl(QString(uri));
         //qDebug()<<uri;
-        if (path && !url.isLocalFile()) {
+        if (path && !url.isLocalFile() && false) {
             QString localUri = QString("file://%1").arg(path);
             *m_children_uris<<localUri;
             g_free(path);
@@ -587,7 +587,7 @@ GAsyncReadyCallback FileEnumerator::enumerator_next_files_async_ready_callback(G
 
         QUrl url = QUrl(QString(uri));
 
-        if (path && !url.isLocalFile()) {
+        if (path && !url.isLocalFile() && false) {
             QString localUri = QString("file://%1").arg(path);
             uriList<<localUri;
             *(p_this->m_cache_uris)<<localUri;
