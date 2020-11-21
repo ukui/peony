@@ -54,5 +54,5 @@ QString PeonyDbusService::getSecurityConfigPath()
 
 int PeonyDbusService::reloadSecurityConfig()
 {
-    m_desktopIconView->updateBWList();
+    //m_desktopIconView->updateBWList();
 }

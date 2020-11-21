@@ -50,17 +50,11 @@ DesktopItemProxyModel::DesktopItemProxyModel(QObject *parent) : QSortFilterProxy
     m_show_hidden = settings->isExist("show-hidden")? settings->getValue("show-hidden").toBool(): false;
     //qDebug() <<"DesktopItemProxyModel:" <<settings->isExist("show-hidden")<<m_show_hidden;
 
-    m_bwListInfo = new BWListInfo();
-    m_jsonOp = new PeonyJsonOperation();
-    QString jsonPath=QDir::homePath()+"/.config/peony-security-config.json";
-    m_jsonOp->setConfigFile(jsonPath);
-    m_jsonOp->loadConfigFile(m_bwListInfo);
 }
 
 DesktopItemProxyModel::~DesktopItemProxyModel()
 {
-    delete m_jsonOp;
-    delete m_bwListInfo;
+
 }
 
 bool DesktopItemProxyModel::filterAcceptsRow(int source_row, const QModelIndex &source_parent) const
@@ -77,14 +71,6 @@ bool DesktopItemProxyModel::filterAcceptsRow(int source_row, const QModelIndex &
     }
     if (! m_show_hidden && info->displayName().startsWith(".")) {
         return false;
-    }
-
-    if (info->isDesktopFile() && nullptr != info->desktopName()){
-        if (m_bwListInfo->isBlackListMode()){
-            return !m_bwListInfo->desktopNameExist(info->desktopName());
-        } else if (m_bwListInfo->isWriteListMode()){
-            return m_bwListInfo->desktopNameExist(info->desktopName());
-        }
     }
 
     return true;
@@ -173,11 +159,3 @@ void DesktopItemProxyModel::setShowHidden(bool showHidden)
     invalidateFilter();
 }
 
-int DesktopItemProxyModel::updateBlackAndWriteLists()
-{
-    m_bwListInfo->clearBWlist();
-    m_jsonOp->loadConfigFile(m_bwListInfo);
-    //重新过滤显示
-    invalidateFilter();
-    return 0;
-}

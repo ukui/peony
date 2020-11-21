@@ -96,7 +96,6 @@ public:
 
     QRect visualRect(const QModelIndex &index) const;
     const QFont getViewItemFont(QStyleOptionViewItem *item);
-    int updateBWList();
 
 Q_SIGNALS:
     void zoomLevelChanged(ZoomLevel level);
@@ -239,7 +238,6 @@ private:
 
     QModelIndexList m_drag_indexes;
 
-    PeonyDbusService *m_peonyDbusSer;
     QMap<QString, QRect> m_item_rect_hash;
 };
 
