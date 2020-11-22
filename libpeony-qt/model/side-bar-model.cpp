@@ -168,7 +168,7 @@ int SideBarModel::rowCount(const QModelIndex &parent) const
 int SideBarModel::columnCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent);
-    return 2;
+    return 1;
 }
 
 bool SideBarModel::hasChildren(const QModelIndex &parent) const
