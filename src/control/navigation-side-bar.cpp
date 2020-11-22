@@ -79,11 +79,12 @@ NavigationSideBar::NavigationSideBar(QWidget *parent) : QTreeView(parent)
     installEventFilter(this);
 
     // To delete side bar hover status color change
-    setStyleSheet("NavigationSideBar::branch::hover{background-color: transparent;}"
+    setStyleSheet(/*"NavigationSideBar::branch::hover{background-color: transparent;}"*/
                   "NavigationSideBar{border: 0px solid transparent}");
 
     setAttribute(Qt::WA_TranslucentBackground);
     viewport()->setAttribute(Qt::WA_TranslucentBackground);
+    viewport()->setAttribute(Qt::WA_Disabled, false);
     header()->setSectionResizeMode(QHeaderView::Custom);
     header()->hide();
 
@@ -172,6 +173,7 @@ NavigationSideBar::NavigationSideBar(QWidget *parent) : QTreeView(parent)
 
     //! \bug if annotated it, favorite in side bar will have a empty line, why?
     expandAll();
+
 }
 
 bool NavigationSideBar::eventFilter(QObject *obj, QEvent *e)
@@ -310,14 +312,14 @@ void NavigationSideBarItemDelegate::paint(QPainter *painter, const QStyleOptionV
     if (view->isExpanded(index)) {
         QRect rect = option.rect;
         rect.setTop(rect.top() + 10);
-        rect.setX(rect.right() - 15);
+        rect.setX(rect.right() - 45);
         rect.setSize(QSize(16, 16));
         painter->drawPixmap(rect, QPixmap(":/img/branches2"));
     }
     else {
         QRect rect = option.rect;
         rect.setTop(rect.top() + 10);
-        rect.setX(rect.right() - 15);
+        rect.setX(rect.right() - 45);
         rect.setSize(QSize(16, 16));
         painter->drawPixmap(rect, QPixmap(":/img/branches1"));
     }

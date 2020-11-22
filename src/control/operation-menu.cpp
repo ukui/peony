@@ -253,9 +253,10 @@ void OperationMenuEditWidget::updateActions(const QString &currentDirUri, const 
     QString homeUri = "file://" +  QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
     bool isDesktop = selections.contains(desktopUri);
     bool isHome = selections.contains(homeUri);
-    m_copy->setEnabled(!isSelectionEmpty);
-    m_cut->setEnabled(!isSelectionEmpty && !isDesktop && !isHome);
-    m_trash->setEnabled(!isSelectionEmpty && !isDesktop && !isHome);
+    bool isSearch = currentDirUri.startsWith("search://");
+    m_copy->setEnabled(!isSelectionEmpty && !isSearch);
+    m_cut->setEnabled(!isSelectionEmpty && !isDesktop && !isHome && !isSearch);
+    m_trash->setEnabled(!isSelectionEmpty && !isDesktop && !isHome && !isSearch);
 
     bool isClipboradHasFile = Peony::ClipboardUtils::isClipboardHasFiles();
     m_paste->setEnabled(isClipboradHasFile);

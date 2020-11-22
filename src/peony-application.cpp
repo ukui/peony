@@ -505,6 +505,9 @@ void PeonyApplication::parseCmd(quint32 id, QByteArray msg)
             //FIXME: show item parent folder and set selection for item.
             QHash<QString, QStringList> itemHash;
             auto uris = Peony::FileUtils::toDisplayUris(parser.positionalArguments());
+            if (uris.isEmpty()) {
+                return;
+            }
             for (auto uri : uris) {
                 auto parentUri = Peony::FileUtils::getParentUri(uri);
                 if (itemHash.value(parentUri).isEmpty()) {
@@ -536,6 +539,9 @@ void PeonyApplication::parseCmd(quint32 id, QByteArray msg)
 
         if (parser.isSet(showFoldersOption)) {
             QStringList uris = Peony::FileUtils::toDisplayUris(parser.positionalArguments());
+            if (uris.isEmpty()) {
+                return;
+            }
             auto window = new MainWindow(uris.first());
             //Peony::FMWindow *window = new Peony::FMWindow(uris.first());
             uris.removeAt(0);
@@ -547,6 +553,9 @@ void PeonyApplication::parseCmd(quint32 id, QByteArray msg)
         }
         if (parser.isSet(showPropertiesOption)) {
             QStringList uris = Peony::FileUtils::toDisplayUris(parser.positionalArguments());
+            if (uris.isEmpty()) {
+                return;
+            }
 
             Peony::PropertiesWindow *window = new Peony::PropertiesWindow(uris);
             window->setAttribute(Qt::WA_DeleteOnClose);
@@ -556,6 +565,9 @@ void PeonyApplication::parseCmd(quint32 id, QByteArray msg)
     } else {
         if (!parser.positionalArguments().isEmpty()) {
             QStringList uris = Peony::FileUtils::toDisplayUris(parser.positionalArguments());
+            if (uris.isEmpty()) {
+                return;
+            }
             //auto window = new Peony::FMWindow(uris.first());
             auto window = new MainWindow(uris.first());
             uris.removeAt(0);

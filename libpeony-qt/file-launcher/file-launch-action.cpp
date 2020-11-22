@@ -305,7 +305,6 @@ void FileLaunchAction::lauchFileAsync(bool forceWithArg, bool skipDialog)
         bool isReadable = fileInfo->canRead();
         if (!isReadable)
         {
-            Peony::AudioPlayManager::getInstance()->playWarningAudio();
             if (fileInfo->isSymbolLink())
             {
                 auto result = QMessageBox::question(nullptr, tr("Open Link failed"),

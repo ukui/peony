@@ -27,6 +27,7 @@
 #include "file-operation-utils.h"
 #include "global-settings.h"
 
+#include <QDir>
 #include <QDebug>
 
 using namespace Peony;
@@ -48,6 +49,12 @@ DesktopItemProxyModel::DesktopItemProxyModel(QObject *parent) : QSortFilterProxy
     auto settings = GlobalSettings::getInstance();
     m_show_hidden = settings->isExist("show-hidden")? settings->getValue("show-hidden").toBool(): false;
     //qDebug() <<"DesktopItemProxyModel:" <<settings->isExist("show-hidden")<<m_show_hidden;
+
+}
+
+DesktopItemProxyModel::~DesktopItemProxyModel()
+{
+
 }
 
 bool DesktopItemProxyModel::filterAcceptsRow(int source_row, const QModelIndex &source_parent) const
@@ -65,6 +72,7 @@ bool DesktopItemProxyModel::filterAcceptsRow(int source_row, const QModelIndex &
     if (! m_show_hidden && info->displayName().startsWith(".")) {
         return false;
     }
+
     return true;
 }
 
@@ -150,3 +158,4 @@ void DesktopItemProxyModel::setShowHidden(bool showHidden)
     m_show_hidden = showHidden;
     invalidateFilter();
 }
+
