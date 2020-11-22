@@ -78,8 +78,8 @@ NavigationSideBar::NavigationSideBar(QWidget *parent) : QTreeView(parent)
 
     installEventFilter(this);
 
-    // To delete side bar hover status color change
-    setStyleSheet(/*"NavigationSideBar::branch::hover{background-color: transparent;}"*/
+    //! \todo delete side bar hover status color change
+    setStyleSheet("NavigationSideBar::branch::hover{background-color: transparent;}"
                   "NavigationSideBar{border: 0px solid transparent}");
 
     setAttribute(Qt::WA_TranslucentBackground);
