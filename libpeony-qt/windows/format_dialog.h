@@ -105,6 +105,9 @@ public:
 
     int m_total_predict = 3600;
 
+Q_SIGNALS:
+     void ensure_format(bool flags);
+
 public Q_SLOTS:
 
     void acceptFormat (bool);
