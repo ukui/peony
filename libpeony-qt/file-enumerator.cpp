@@ -350,7 +350,7 @@ void FileEnumerator::handleError(GError *err)
         Q_EMIT prepared(GErrorWrapper::wrapFrom(g_error_new(G_IO_ERROR, G_IO_ERROR_NOT_FOUND, "file not found")));
         break;
     default:
-        Q_EMIT prepared(GErrorWrapper::wrapFrom(err), nullptr, true);
+        Q_EMIT prepared(GErrorWrapper::wrapFrom(g_error_copy(err)), nullptr, true);
         break;
     }
 }
