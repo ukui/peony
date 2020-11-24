@@ -38,7 +38,7 @@ PeonyDbusService::~PeonyDbusService()
     m_desktopIconView = nullptr;
 }
 
-int PeonyDbusService::dbusServerRegister()
+void PeonyDbusService::dbusServerRegister()
 {
     QDBusConnection::sessionBus().unregisterService("org.ukui.peony.service");
     QDBusConnection::sessionBus().registerService("org.ukui.peony.service");
