@@ -694,12 +694,7 @@ void ListView2::bindModel(FileItemModel *model, FileItemProxyFilterSortModel *pr
     });
 
     connect(m_view, &ListView::activated, this, [=](const QModelIndex &index) {
-        qDebug()<<index.data(Qt::UserRole).toString();
         auto uri = index.data(Qt::UserRole).toString();
-        //process open symbolic link
-        auto info = FileInfo::fromUri(uri, false);
-        if (info->isSymbolLink() && uri.startsWith("file://") && info->isValid())
-            uri = "file://" + FileUtils::getSymbolicTarget(uri);
         Q_EMIT this->viewDoubleClicked(uri);
     });
 

@@ -195,28 +195,13 @@ void FileEnumerator::cancel()
 
 void FileEnumerator::prepare()
 {
-    GError *err = nullptr;
-    GFileEnumerator *enumerator = g_file_enumerate_children(m_root_file,
-                                  G_FILE_ATTRIBUTE_STANDARD_NAME,
-                                  G_FILE_QUERY_INFO_NONE,
-                                  m_cancellable,
-                                  &err);
-
-    if (err) {
-        //do not send prepared(err) here, wait handle err finished.
-        handleError(err);
-        g_error_free(err);
-    } else {
-        //even though there is no err, we still need to wait a little while
-        //for confirming other object will recieve this signal, you can aslo
-        //connect prepared signal before prepared() method to confirm that.
-        //Q_EMIT prepared(nullptr);
-        g_object_unref(enumerator);
-
-        QTimer::singleShot(100, this, [=]() {
-            Q_EMIT prepared(nullptr);
-        });
-    }
+    g_file_enumerate_children_async(m_root_file,
+                                    G_FILE_ATTRIBUTE_STANDARD_NAME,
+                                    G_FILE_QUERY_INFO_NONE,
+                                    G_PRIORITY_DEFAULT,
+                                    m_cancellable,
+                                    GAsyncReadyCallback(prepare_enumerate_callback),
+                                    this);
 }
 
 GFile *FileEnumerator::enumerateTargetFile()
@@ -241,6 +226,33 @@ GFile *FileEnumerator::enumerateTargetFile()
         target = g_file_dup(m_root_file);
     }
     return target;
+}
+
+GAsyncReadyCallback FileEnumerator::prepare_enumerate_callback(GFile *file, GAsyncResult *res, FileEnumerator *p_this)
+{
+    GError *err = nullptr;
+    GFileEnumerator *enumerator = g_file_enumerate_children_finish(file, res, &err);
+
+    if (err && err->code == G_IO_ERROR_CANCELLED) {
+        g_error_free(err);
+        return nullptr;
+    }
+
+    if (err) {
+        //do not send prepared(err) here, wait handle err finished.
+        p_this->handleError(err);
+        g_error_free(err);
+    } else {
+        //even though there is no err, we still need to wait a little while
+        //for confirming other object will recieve this signal, you can aslo
+        //connect prepared signal before prepared() method to confirm that.
+        //Q_EMIT prepared(nullptr);
+        g_object_unref(enumerator);
+
+        Q_EMIT p_this->prepared(nullptr);
+    }
+
+    return nullptr;
 }
 
 void FileEnumerator::enumerateSync()
@@ -340,7 +352,7 @@ void FileEnumerator::handleError(GError *err)
         Q_EMIT prepared(GErrorWrapper::wrapFrom(g_error_new(G_IO_ERROR, G_IO_ERROR_NOT_FOUND, "file not found")));
         break;
     default:
-        Q_EMIT prepared(GErrorWrapper::wrapFrom(err), nullptr, true);
+        Q_EMIT prepared(GErrorWrapper::wrapFrom(g_error_copy(err)), nullptr, true);
         break;
     }
 }
@@ -378,7 +390,7 @@ void FileEnumerator::enumerateChildren(GFileEnumerator *enumerator)
 
         QUrl url = QUrl(QString(uri));
         //qDebug()<<uri;
-        if (path && !url.isLocalFile()) {
+        if (path && !url.isLocalFile() && false) {
             QString localUri = QString("file://%1").arg(path);
             *m_children_uris<<localUri;
             g_free(path);
@@ -577,7 +589,7 @@ GAsyncReadyCallback FileEnumerator::enumerator_next_files_async_ready_callback(G
 
         QUrl url = QUrl(QString(uri));
 
-        if (path && !url.isLocalFile()) {
+        if (path && !url.isLocalFile() && false) {
             QString localUri = QString("file://%1").arg(path);
             uriList<<localUri;
             *(p_this->m_cache_uris)<<localUri;
