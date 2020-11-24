@@ -251,6 +251,8 @@ GAsyncReadyCallback FileEnumerator::prepare_enumerate_callback(GFile *file, GAsy
 
         Q_EMIT p_this->prepared(nullptr);
     }
+
+    return nullptr;
 }
 
 void FileEnumerator::enumerateSync()
