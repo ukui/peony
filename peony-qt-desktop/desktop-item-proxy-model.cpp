@@ -30,7 +30,13 @@
 #include <QDir>
 #include <QDebug>
 
+#include <QLocale>
+#include <QCollator>
+
 using namespace Peony;
+
+QLocale locale = QLocale(QLocale::system().name());
+QCollator comparer = QCollator(locale);
 
 bool startWithChinese(const QString &displayName)
 {
@@ -44,6 +50,9 @@ bool startWithChinese(const QString &displayName)
 
 DesktopItemProxyModel::DesktopItemProxyModel(QObject *parent) : QSortFilterProxyModel(parent)
 {
+    //enable number sort, like 100 is after 99
+    comparer.setNumericMode(true);
+
     setSortCaseSensitivity(Qt::CaseInsensitive);
     setDynamicSortFilter(false);
     auto settings = GlobalSettings::getInstance();
@@ -132,7 +141,7 @@ bool DesktopItemProxyModel::lessThan(const QModelIndex &source_left, const QMode
         }
     }
 
-    //qDebug()<<"sort===================================="<<SortType(m_sort_type)<<m_sort_type;
+    //qDebug()<<"sort in desktop"<<SortType(m_sort_type)<<m_sort_type;
     switch (m_sort_type) {
     case FileName: {
         if (FileOperationUtils::leftNameIsDuplicatedFileOfRightName(leftInfo->displayName(), rightInfo->displayName())) {
@@ -150,16 +159,17 @@ bool DesktopItemProxyModel::lessThan(const QModelIndex &source_left, const QMode
                 return (sortOrder()==Qt::AscendingOrder)? false: true;
             }
         }
-        return QSortFilterProxyModel::lessThan(source_left, source_right);
+        return comparer.compare(leftInfo->displayName(), rightInfo->displayName()) < 0;
+        //return QSortFilterProxyModel::lessThan(source_left, source_right);
+    }
+    case ModifiedDate: {
+        return leftInfo->modifiedTime() < rightInfo->modifiedTime();
     }
     case FileType: {
         return leftInfo->type() < rightInfo->type();
     }
     case FileSize: {
         return leftInfo->size() < rightInfo->size();
-    }
-    case ModifiedDate: {
-        return leftInfo->modifiedTime() < rightInfo->modifiedTime();
     }
     }
 
