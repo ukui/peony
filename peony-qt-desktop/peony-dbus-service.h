@@ -55,7 +55,7 @@ public:
 
 public Q_SLOTS:
     QString getSecurityConfigPath();
-    int reloadSecurityConfig();
+    void reloadSecurityConfig();
 
 private:
     DesktopIconView *m_desktopIconView = nullptr;

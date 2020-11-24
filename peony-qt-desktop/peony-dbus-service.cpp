@@ -52,7 +52,7 @@ QString PeonyDbusService::getSecurityConfigPath()
     return jsonPath;
 }
 
-int PeonyDbusService::reloadSecurityConfig()
+void PeonyDbusService::reloadSecurityConfig()
 {
     m_desktopIconView->updateBWList();
 }
