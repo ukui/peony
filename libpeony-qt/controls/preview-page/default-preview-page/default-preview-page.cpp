@@ -105,7 +105,11 @@ void DefaultPreviewPage::prepare(const QString &uri, PreviewType type)
     m_current_uri = uri;
     m_info = FileInfo::fromUri(uri);
     m_current_type = type;
-    m_support = uri.contains("file:///");
+    //m_support = uri.contains("file:///");
+    if (uri.contains("file:///") || uri.contains("recent:///")){
+        m_support = true;
+    }
+
     m_watcher = std::make_shared<FileWatcher>(uri);
     connect(m_watcher.get(), &FileWatcher::locationChanged, [=](const QString &, const QString &newUri) {
         this->prepare(newUri);

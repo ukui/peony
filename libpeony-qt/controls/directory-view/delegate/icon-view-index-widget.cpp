@@ -154,10 +154,13 @@ void IconViewIndexWidget::paintEvent(QPaintEvent *e)
     auto rawRect = m_option.rect;
     opt.rect = this->rect();
     //p.fillRect(opt.rect, m_delegate->selectedBrush());
+    auto rawDecoSize = opt.decorationSize;
+    opt.decorationSize = m_delegate->getView()->iconSize();
     QApplication::style()->drawPrimitive(QStyle::PE_PanelItemViewItem,
                                          &opt,
                                          &p,
                                          nullptr);
+    opt.decorationSize = rawDecoSize;
 
     opt.rect = rawRect;
     auto tmp = opt.text;
