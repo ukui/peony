@@ -632,6 +632,7 @@ void FileUtils::handleVolumeLabelForFat32(QString &volumeName,const QString &uni
     QString partitionName,linkTarget;
     QString tmpName,finalName;
     int i;
+    QRegExp rx("[^\u4e00-\u9fa5]");		//non-chinese characters
 
     diskDir.setPath("/dev/disk/by-label");
     if(!diskDir.exists())               //this means: volume has no name.
@@ -646,7 +647,8 @@ void FileUtils::handleVolumeLabelForFat32(QString &volumeName,const QString &uni
     for(i = 0; i < diskList.size(); ++i){
         diskLabel = diskList.at(i);
         linkTarget = diskLabel.symLinkTarget();
-        if(linkTarget.contains(partitionName))
+        linkTarget = linkTarget.mid(linkTarget.lastIndexOf('/')+1);
+        if(linkTarget == partitionName)
             break;
         linkTarget.clear();
     }
@@ -655,9 +657,10 @@ void FileUtils::handleVolumeLabelForFat32(QString &volumeName,const QString &uni
         tmpName = diskLabel.fileName();//可能带有乱码的名字
 
     if(!tmpName.isEmpty()){
-        if(tmpName == volumeName)      //ntfs、exfat格式或者非纯中文名的fat32设备,这个设备的名字不需要转码
+        if(tmpName == volumeName || !tmpName.contains(rx)){      //ntfs、exfat格式或者非纯中文名的fat32设备,这个设备的名字不需要转码
+            volumeName = tmpName;
             return;
-        else{
+        }else{
             finalName = transcodeForGbkCode(tmpName.toLocal8Bit(), volumeName);
             if(!finalName.isEmpty())
                 volumeName = finalName;
