@@ -35,9 +35,9 @@ class DesktopItemProxyModel : public QSortFilterProxyModel
 public:
     enum SortType {
         FileName,
+        ModifiedDate,
         FileType,
         FileSize,
-        ModifiedDate,
         Other
     };
     explicit DesktopItemProxyModel(QObject *parent = nullptr);
