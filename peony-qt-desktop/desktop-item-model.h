@@ -71,6 +71,7 @@ public:
                       int row, int column, const QModelIndex &parent) override;
 
     Qt::DropActions supportedDropActions() const override;
+    void xdgUsrdirChanged();
 
 Q_SIGNALS:
     void requestLayoutNewItem(const QString &uri);

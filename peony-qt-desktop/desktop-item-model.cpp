@@ -32,7 +32,6 @@
 #include "file-trash-operation.h"
 #include "file-copy-operation.h"
 #include "file-operation-utils.h"
-
 #include "thumbnail-manager.h"
 
 #include "file-meta-info.h"
@@ -49,6 +48,10 @@
 #include <QTimer>
 
 #include <QMessageBox>
+#include <QFileSystemWatcher>
+#include <stdio.h>
+#include <pwd.h>
+#include <unistd.h>
 
 #include <QDebug>
 
@@ -103,6 +106,9 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
 
     m_desktop_watcher = std::make_shared<FileWatcher>("file://" + QStandardPaths::writableLocation(QStandardPaths::DesktopLocation), this);
     m_desktop_watcher->setMonitorChildrenChange(true);
+
+    xdgUsrdirChanged();
+
     this->connect(m_desktop_watcher.get(), &FileWatcher::fileCreated, [=](const QString &uri) {
         qDebug()<<"desktop file created"<<uri;
 
@@ -678,4 +684,22 @@ Qt::DropActions DesktopItemModel::supportedDropActions() const
 {
     //return Qt::MoveAction|Qt::CopyAction;
     return QAbstractItemModel::supportedDropActions();
+}
+
+void DesktopItemModel::xdgUsrdirChanged()
+{
+    //when system language changed
+    struct passwd *pwd;
+    pwd=getpwuid(getuid());
+    auto userName = pwd->pw_name;
+    auto usr_dir_watcher = new QFileSystemWatcher();
+    QString desktopPath = QString("/home/"+QString(userName)+"/.config/user-dirs.dirs");
+    usr_dir_watcher->addPath(desktopPath);
+
+    connect(usr_dir_watcher, &QFileSystemWatcher::fileChanged, [=](const QString &uri) {
+        this->refresh();
+        usr_dir_watcher->removePath(desktopPath);
+        usr_dir_watcher->addPath(desktopPath);
+    });
+
 }
