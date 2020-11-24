@@ -79,13 +79,33 @@ void Format_Dialog::colseFormat(bool)
     cancel_format(dev_name);
 }
 
+
+static void unmount_finished(GFile* file, GAsyncResult* result, gpointer udata)
+{
+    
+    int flags = 0;
+    GError *err = nullptr;
+    Format_Dialog *pthis = (Format_Dialog *)udata;
+
+    if (g_file_unmount_mountable_with_operation_finish (file, result, &err) == TRUE){
+        flags = 1;
+    }
+
+    g_error_free(err);
+    
+    if(flags){
+        Q_EMIT pthis->ensure_format(true);
+    }
+}
+
 void Format_Dialog::acceptFormat(bool)
 {
-
+   /*
     ui->pushButton_ok->setDisabled(TRUE);
     ui->pushButton_close->setDisabled(TRUE);
     ui->lineEdit_device_name->setDisabled(TRUE);
     ui->checkBox_clean_or_not->setDisabled(TRUE);
+    */
 
     //init the value
     char rom_size[1024] ={0},rom_type[1024]={0},rom_name[1024]={0},dev_name[1024]={0};
@@ -104,7 +124,16 @@ void Format_Dialog::acceptFormat(bool)
     quick_clean = ui->checkBox_clean_or_not->isChecked();
 
     // umount device
-    fm_item ->unmount();
+    //fm_item ->unmount();
+
+    auto files = wrapGFile(g_file_new_for_uri(this->fm_uris.toUtf8().constData()));
+    g_file_unmount_mountable_with_operation(files.get()->get(),
+                                            G_MOUNT_UNMOUNT_NONE,
+                                            nullptr,
+                                            nullptr,
+                                            GAsyncReadyCallback(unmount_finished),
+                                            this);
+
 
     //get device name
     QString volname, devName, voldisplayname ,devtype;
@@ -119,10 +148,10 @@ void Format_Dialog::acceptFormat(bool)
     //enter kdisk_format function
 
     //init format_finish value
-    int format_value = 0;
+    //int format_value = 0;
 
     //begin format
-    kdisk_format(dev_name,devtype.toLower().toUtf8().constData(),quick_clean?"zero":NULL,rom_name,&format_value);
+    //kdisk_format(dev_name,devtype.toLower().toUtf8().constData(),quick_clean?"zero":NULL,rom_name,&format_value);
 
     //begin start my_timer, processbar
     my_time  = new QTimer(this);
@@ -139,7 +168,26 @@ void Format_Dialog::acceptFormat(bool)
     //begin loop
     connect(my_time,SIGNAL(timeout()),this,SLOT(formatloop()));
 
-    my_time->start();
+   // my_time->start();
+
+    //while get ensure emit , do format 
+      connect(this,&Format_Dialog::ensure_format,[=](bool){
+
+        int format_value = 0;
+        //do format 
+        kdisk_format(dev_name,devtype.toLower().toUtf8().constData(),quick_clean?"zero":NULL,rom_name,&format_value);
+        
+        // time begin loop
+        my_time->start();
+
+        // set ui button disable
+        ui->pushButton_ok->setDisabled(TRUE);
+        ui->pushButton_close->setDisabled(TRUE);
+        ui->lineEdit_device_name->setDisabled(TRUE);
+        ui->checkBox_clean_or_not->setDisabled(TRUE);
+    });
+
+
 
 }
 

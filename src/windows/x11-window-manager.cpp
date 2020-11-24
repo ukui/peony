@@ -36,6 +36,8 @@
 
 #include <QX11Info>
 #include <X11/Xlib.h>
+#include <X11/X.h>
+#include <X11/Xatom.h>
 
 static X11WindowManager *global_instance = nullptr;
 
@@ -176,3 +178,4 @@ void X11WindowManager::registerWidget(QWidget *widget)
     widget->removeEventFilter(this);
     widget->installEventFilter(this);
 }
+

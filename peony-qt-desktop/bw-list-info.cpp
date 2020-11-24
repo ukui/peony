@@ -44,11 +44,14 @@ int BWListInfo::addBWListElement(QString desktopName)
     QStringList strList = desktopName.split("/");
    // qDebug()<<"add bw list element" << strList.last();
     m_bwListInfo.insert(strList.last());
+
+    return 0;
 }
 
 int BWListInfo::delBWListElement(QString desktopName)
 {
     m_bwListInfo.remove(desktopName);
+    return 0;
 }
 
 int BWListInfo::clearBWlist()
@@ -59,6 +62,8 @@ int BWListInfo::clearBWlist()
     }
 
     m_workModel = BW_LIST_NORMAL;
+    \
+    return 0;
 }
 
 bool BWListInfo::desktopNameExist(QString desktop)
