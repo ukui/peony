@@ -60,8 +60,14 @@
 static HeaderBarStyle *global_instance = nullptr;
 static QString terminal_cmd = nullptr;
 
+static QString gPlatform = nullptr;
+
 HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
 {
+    if (gPlatform.isNull()) {
+        gPlatform = qgetenv("XDG_SESSION_TYPE");
+    }
+
     setAttribute(Qt::WA_AcceptTouchEvents);
 
     setMouseTracking(true);
@@ -629,5 +635,12 @@ void HeaderBarContainer::addWindowButtons()
         auto w = layout->itemAt(i)->widget();
         w->setProperty("useIconHighlightEffect", true);
         w->setProperty("iconHighlightEffectMode", 1);
+    }
+
+    if (gPlatform == "wayland") {
+        minimize->setVisible(false);
+        maximizeAndRestore->setVisible(false);
+        close->setVisible(false);
+        m_layout->removeItem(layout);
     }
 }

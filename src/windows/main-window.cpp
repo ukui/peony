@@ -98,9 +98,14 @@
 #define FONT_SETTINGS "org.ukui.style"
 
 static MainWindow *last_resize_window = nullptr;
+static QString gPlatform = nullptr;
 
 MainWindow::MainWindow(const QString &uri, QWidget *parent) : QMainWindow(parent)
 {
+    if (gPlatform.isNull()) {
+        gPlatform = qgetenv("XDG_SESSION_TYPE");
+    }
+
     setContextMenuPolicy(Qt::CustomContextMenu);
     installEventFilter(this);
 
@@ -142,12 +147,14 @@ MainWindow::MainWindow(const QString &uri, QWidget *parent) : QMainWindow(parent
     //init UI
     initUI(uri);
 
-    XAtomHelper::getInstance()->setUKUIDecoraiontHint(this->winId(), true);
-    MotifWmHints hints;
-    hints.flags = MWM_HINTS_FUNCTIONS|MWM_HINTS_DECORATIONS;
-    hints.functions = MWM_FUNC_ALL;
-    hints.decorations = MWM_DECOR_BORDER;
-    XAtomHelper::getInstance()->setWindowMotifHint(this->winId(), hints);
+    if (gPlatform == "x11") {
+        XAtomHelper::getInstance()->setUKUIDecoraiontHint(this->winId(), true);
+        MotifWmHints hints;
+        hints.flags = MWM_HINTS_FUNCTIONS|MWM_HINTS_DECORATIONS;
+        hints.functions = MWM_FUNC_ALL;
+        hints.decorations = MWM_DECOR_BORDER;
+        XAtomHelper::getInstance()->setWindowMotifHint(this->winId(), hints);
+    }
 
     auto start_cost_time = QDateTime::currentMSecsSinceEpoch()- PeonyApplication::peony_start_time;
     qDebug() << "peony start end in main-window time:" <<start_cost_time
