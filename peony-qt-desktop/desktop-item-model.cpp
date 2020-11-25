@@ -32,8 +32,8 @@
 #include "file-trash-operation.h"
 #include "file-copy-operation.h"
 #include "file-operation-utils.h"
-
 #include "thumbnail-manager.h"
+#include "user-dir-manager.h"
 
 #include "file-meta-info.h"
 
@@ -49,6 +49,10 @@
 #include <QTimer>
 
 #include <QMessageBox>
+#include <QFileSystemWatcher>
+#include <stdio.h>
+#include <pwd.h>
+#include <unistd.h>
 
 #include <QDebug>
 
@@ -103,6 +107,7 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
 
     m_desktop_watcher = std::make_shared<FileWatcher>("file://" + QStandardPaths::writableLocation(QStandardPaths::DesktopLocation), this);
     m_desktop_watcher->setMonitorChildrenChange(true);
+
     this->connect(m_desktop_watcher.get(), &FileWatcher::fileCreated, [=](const QString &uri) {
         qDebug()<<"desktop file created"<<uri;
 
@@ -363,6 +368,14 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
             }
         }
     });
+
+    //handle standard dir changing.
+    m_dir_manager =new Peony::UserdirManager(this);
+    //refresh after standard dir changed.
+    connect(m_dir_manager,&UserdirManager::desktopDirChanged,[=](){
+        refresh();
+    });
+
 }
 
 DesktopItemModel::~DesktopItemModel()
