@@ -753,5 +753,7 @@ void DesktopItemModel::enabelChange(QString exec, bool execenable)
         metainfo->setMetaInfoInt("exec_disable",1);
 
     g_object_unref(file);
-    // refresh();
+
+    auto view = PeonyDesktopApplication::getIconView();
+    view->viewport()->update(view->viewport()->rect());
 }
