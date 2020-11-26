@@ -534,13 +534,13 @@ const QList<QAction *> DirectoryViewMenu::constructFileOpActions()
         QString desktopPath = "file://" +  QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
         QString desktopUri = FileUtils::getEncodedUri(desktopPath);
         //qDebug() << "constructFileOpActions desktopUri:" <<desktopUri;
-        if (!m_selections.isEmpty() && !m_selections.contains(homeUri)) {
+        if (!m_selections.isEmpty() && !m_selections.contains(homeUri) && !m_is_recent) {
             l<<addAction(QIcon::fromTheme("edit-copy-symbolic"), tr("&Copy"));
             connect(l.last(), &QAction::triggered, [=]() {
                 ClipboardUtils::setClipboardFiles(m_selections, false);
             });
 
-            if (! m_selections.contains(desktopUri))
+            if (! m_selections.contains(desktopUri) && !m_is_recent)
             {
                 l<<addAction(QIcon::fromTheme("edit-cut-symbolic"), tr("Cut"));
                 connect(l.last(), &QAction::triggered, [=]() {
@@ -560,28 +560,32 @@ const QList<QAction *> DirectoryViewMenu::constructFileOpActions()
 //            connect(l.last(), &QAction::triggered, [=]() {
 //                FileOperationUtils::executeRemoveActionWithDialog(m_selections);
 //            });
-            if (m_selections.count() == 1 && !m_selections.contains(desktopUri)) {
+            if (m_selections.count() == 1 && !m_selections.contains(desktopUri) && !m_is_recent) {
                 l<<addAction(QIcon::fromTheme("document-edit-symbolic"), tr("Rename"));
                 connect(l.last(), &QAction::triggered, [=]() {
                     m_view->editUri(m_selections.first());
                 });
             }
         } else {
-            auto pasteAction = addAction(QIcon::fromTheme("edit-paste-symbolic"), tr("&Paste"));
-            l<<pasteAction;
-            pasteAction->setEnabled(ClipboardUtils::isClipboardHasFiles());
-            connect(l.last(), &QAction::triggered, [=]() {
-                auto op = ClipboardUtils::pasteClipboardFiles(m_directory);
-                if (op) {
-                    auto window = dynamic_cast<QWidget *>(m_top_window);
-                    auto iface = m_top_window;
-                    connect(op, &Peony::FileOperation::operationFinished, window, [=](){
-                        auto opInfo = op->getOperationInfo();
-                        auto targetUirs = opInfo->dests();
-                        iface->setCurrentSelectionUris(targetUirs);
-                    }, Qt::BlockingQueuedConnection);
-                }
-            });
+            if (! m_is_recent)
+            {
+                auto pasteAction = addAction(QIcon::fromTheme("edit-paste-symbolic"), tr("&Paste"));
+                l<<pasteAction;
+                pasteAction->setEnabled(ClipboardUtils::isClipboardHasFiles());
+                connect(l.last(), &QAction::triggered, [=]() {
+                    auto op = ClipboardUtils::pasteClipboardFiles(m_directory);
+                    if (op) {
+                        auto window = dynamic_cast<QWidget *>(m_top_window);
+                        auto iface = m_top_window;
+                        connect(op, &Peony::FileOperation::operationFinished, window, [=](){
+                            auto opInfo = op->getOperationInfo();
+                            auto targetUirs = opInfo->dests();
+                            iface->setCurrentSelectionUris(targetUirs);
+                        }, Qt::BlockingQueuedConnection);
+                    }
+                });
+            }
+
             l<<addAction(QIcon::fromTheme("view-refresh-symbolic"), tr("&Refresh"));
             connect(l.last(), &QAction::triggered, [=]() {
                 m_top_window->refresh();
