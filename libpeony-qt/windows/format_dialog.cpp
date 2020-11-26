@@ -91,7 +91,29 @@ static void unmount_finished(GFile* file, GAsyncResult* result, gpointer udata)
         flags = 1;
     }
 
-    g_error_free(err);
+    //add QMessageBox error ,let user know the error messages
+    
+    if (err) {
+        flags = 0;
+        
+        QMessageBox message_error;
+          
+        message_error.setText(QObject::tr("Error: %1\n").arg(err->message));
+
+        message_error.setWindowTitle(QObject::tr("Format failed"));
+
+        QPushButton *okButton = message_error.addButton(QObject::tr("YES"),QMessageBox::YesRole);
+
+        message_error.exec();
+          
+        if(message_error.clickedButton() == okButton)
+        {    
+            pthis->close();
+        }    
+        
+        g_error_free(err);
+    }
+
     
     if(flags){
         Q_EMIT pthis->ensure_format(true);
@@ -100,12 +122,10 @@ static void unmount_finished(GFile* file, GAsyncResult* result, gpointer udata)
 
 void Format_Dialog::acceptFormat(bool)
 {
-   /*
-    ui->pushButton_ok->setDisabled(TRUE);
-    ui->pushButton_close->setDisabled(TRUE);
-    ui->lineEdit_device_name->setDisabled(TRUE);
-    ui->checkBox_clean_or_not->setDisabled(TRUE);
-    */
+    //check format or not 
+   if(!format_makesure_dialog()){
+        return;
+   };
 
     //init the value
     char rom_size[1024] ={0},rom_type[1024]={0},rom_name[1024]={0},dev_name[1024]={0};
@@ -429,6 +449,28 @@ void Format_Dialog::format_err_dialog()
 {
       QMessageBox::warning(m_parent,tr("qmesg_notify"),tr("Sorry, the format operation is failed!"));
 };
+
+bool Format_Dialog::format_makesure_dialog(){
+
+    QMessageBox message_format;
+
+    message_format.setText(tr("Formatting this volume will erase all data on it. Please backup all retained data before formatting. Do you want to continue ?"));
+
+    message_format.setWindowTitle(tr("format"));
+
+    QPushButton *okButton = message_format.addButton(tr("begin format"),QMessageBox::YesRole);
+
+    QPushButton *cancelButton = message_format.addButton(tr("close"),QMessageBox::NoRole);
+
+    message_format.exec();
+
+    if(message_format.clickedButton() == cancelButton)
+    {
+        return false;
+    }
+
+    return true;
+}
 
 
 /* ensure_format_cb ,function ensure to do format
