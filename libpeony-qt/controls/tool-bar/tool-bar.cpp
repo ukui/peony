@@ -301,11 +301,11 @@ void ToolBar::init()
 
         optionMenu.addSeparator();
 
-        auto help = optionMenu.addAction(QIcon::fromTheme("help-symbolic"), tr("&Help"), this, [=]() {
-            QUrl url = QUrl("help:ubuntu-kylin-help/files", QUrl::TolerantMode);
-            QDesktopServices::openUrl(url);
-        });
-        help->setShortcut(Qt::Key_F1);
+//        auto help = optionMenu.addAction(QIcon::fromTheme("help-symbolic"), tr("&Help"), this, [=]() {
+//            QUrl url = QUrl("help:ubuntu-kylin-help/files", QUrl::TolerantMode);
+//            QDesktopServices::openUrl(url);
+//        });
+//        help->setShortcut(Qt::Key_F1);
 
         auto about = optionMenu.addAction(tr("&About..."), this, [=]() {
             QMessageBox::about(m_top_window,
