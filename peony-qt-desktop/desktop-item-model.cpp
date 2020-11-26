@@ -32,8 +32,8 @@
 #include "file-trash-operation.h"
 #include "file-copy-operation.h"
 #include "file-operation-utils.h"
-
 #include "thumbnail-manager.h"
+#include "user-dir-manager.h"
 
 #include "file-meta-info.h"
 
@@ -50,6 +50,12 @@
 
 #include <QMessageBox>
 #include <QtDBus>
+
+#include <QFileSystemWatcher>
+#include <stdio.h>
+#include <pwd.h>
+#include <unistd.h>
+
 #include <QDebug>
 
 using namespace Peony;
@@ -106,6 +112,7 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
 
     m_desktop_watcher = std::make_shared<FileWatcher>("file://" + QStandardPaths::writableLocation(QStandardPaths::DesktopLocation), this);
     m_desktop_watcher->setMonitorChildrenChange(true);
+
     this->connect(m_desktop_watcher.get(), &FileWatcher::fileCreated, [=](const QString &uri) {
         qDebug()<<"desktop file created"<<uri;
 
@@ -367,7 +374,6 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
         }
     });
 
-    //! \brief To prevent someone change attribute befor desktop run
     QString homepath = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
     QString initfile = homepath + "/.cache/ukui-menu/ukui-menu.ini";
     QSettings settings(initfile, QSettings::IniFormat);
@@ -376,6 +382,12 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
         bool execable = settings.value(*begin).toBool();
         enabelChange(*begin, execable);
     }
+    //handle standard dir changing.
+    m_dir_manager =new Peony::UserdirManager(this);
+    //refresh after standard dir changed.
+    connect(m_dir_manager,&UserdirManager::desktopDirChanged,[=](){
+        refresh();
+    });
 }
 
 DesktopItemModel::~DesktopItemModel()

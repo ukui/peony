@@ -55,7 +55,8 @@ SOURCES += \
     desktop-item-proxy-model.cpp \
     peony-json-operation.cpp \
     bw-list-info.cpp \
-    peony-dbus-service.cpp
+    peony-dbus-service.cpp \
+    user-dir-manager.cpp
 
 HEADERS += \
     desktop-screen.h \
@@ -71,7 +72,8 @@ HEADERS += \
     desktop-item-proxy-model.h \
     peony-json-operation.h \
     bw-list-info.h \
-    peony-dbus-service.h
+    peony-dbus-service.h \
+    user-dir-manager.h
 
 target.path = /usr/bin
 !isEmpty(target.path): INSTALLS += target
