@@ -56,7 +56,7 @@ NavigationTabBar::NavigationTabBar(QWidget *parent) : QTabBar(parent)
     m_drag_timer.setInterval(750);
     m_drag_timer.setSingleShot(true);
 
-    setStyle(TabBarStyle::getStyle());
+//    setStyle(TabBarStyle::getStyle());
 
 
     setContentsMargins(0, 0, 0, 0);
