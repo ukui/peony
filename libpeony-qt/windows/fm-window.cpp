@@ -466,13 +466,13 @@ FMWindow::FMWindow(const QString &uri, QWidget *parent) : QMainWindow (parent)
     });
     addAction(propertiesWindowAction);
 
-    auto helpAction = new QAction(this);
-    helpAction->setShortcut(QKeySequence(Qt::Key_F1));
-    connect(helpAction, &QAction::triggered, this, [=]() {
-        QUrl url = QUrl("help:ubuntu-kylin-help/files", QUrl::TolerantMode);
-        QDesktopServices::openUrl(url);
-    });
-    addAction(helpAction);
+//    auto helpAction = new QAction(this);
+//    helpAction->setShortcut(QKeySequence(Qt::Key_F1));
+//    connect(helpAction, &QAction::triggered, this, [=]() {
+//        QUrl url = QUrl("help:ubuntu-kylin-help/files", QUrl::TolerantMode);
+//        QDesktopServices::openUrl(url);
+//    });
+//    addAction(helpAction);
 
     auto maxAction = new QAction(this);
     maxAction->setShortcut(QKeySequence(Qt::Key_F11));

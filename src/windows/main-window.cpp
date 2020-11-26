@@ -455,7 +455,7 @@ void MainWindow::setShortCuts()
     addAction(propertiesWindowAction);
 
     auto helpAction = new QAction(this);
-    helpAction->setShortcut(QKeySequence(Qt::Key_F1));
+    helpAction->setShortcut(QKeySequence(Qt::META+Qt::Key_F1));
     connect(helpAction, &QAction::triggered, this, [=]() {
         PeonyApplication::help();
     });
