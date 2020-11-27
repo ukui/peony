@@ -92,6 +92,8 @@ public:
 
     void format_err_dialog();
 
+    bool format_makesure_dialog();
+    
     ~Format_Dialog();
 
 
