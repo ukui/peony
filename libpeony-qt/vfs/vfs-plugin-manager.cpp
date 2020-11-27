@@ -23,6 +23,7 @@
 #include "vfs-plugin-manager.h"
 
 #include "search-vfs-register.h"
+#include "favorite-vfs-register.h"
 
 using namespace Peony;
 
@@ -30,15 +31,18 @@ static VFSPluginManager *global_instance = nullptr;
 
 VFSPluginManager *VFSPluginManager::getInstance()
 {
-    if (!global_instance)
+    if (!global_instance) {
         global_instance = new VFSPluginManager;
+    }
+
     return global_instance;
 }
 
 void VFSPluginManager::registerPlugin(VFSPluginIface *plugin)
 {
-    if (m_support_schemes.contains(plugin->uriScheme()))
+    if (m_support_schemes.contains(plugin->uriScheme())) {
         return;
+    }
 
     plugin->initVFS();
     m_plugins<<plugin;
@@ -49,4 +53,8 @@ VFSPluginManager::VFSPluginManager(QObject *parent) : QObject(parent)
 {
     auto searchVFSPlugin = new SearchVFSInternalPlugin;
     registerPlugin(searchVFSPlugin);
+
+    auto favoriteVFSPlugin = new FavoriteVFSInternalPlugin;
+    registerPlugin(favoriteVFSPlugin);
+
 }

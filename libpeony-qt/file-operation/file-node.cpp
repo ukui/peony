@@ -77,6 +77,10 @@ FileNode::~FileNode() {
 
 void FileNode::findChildrenRecursively()
 {
+    if (m_uri.startsWith("favorite://")) {
+        return;
+    }
+
     if (m_reporter) {
         if (m_reporter->isOperationCancelled())
             return;

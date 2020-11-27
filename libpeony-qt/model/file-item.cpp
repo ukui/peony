@@ -59,7 +59,7 @@ FileItem::FileItem(std::shared_ptr<Peony::FileInfo> info, FileItem *parentItem, 
     m_backend_enumerator = new FileEnumerator(this);
 
     m_thumbnail_watcher = std::make_shared<Peony::FileWatcher>("thumbnail://");
-    connect(m_thumbnail_watcher.get(), &FileWatcher::fileChanged, this, [=](const QString &uri){
+    connect(m_thumbnail_watcher.get(), &FileWatcher::fileChanged, this, [=](const QString &uri) {
         auto index = m_model->indexFromUri(uri);
         if (index.isValid()) {
             auto item = m_model->itemFromIndex(index);
@@ -301,8 +301,7 @@ void FileItem::findChildrenAsync()
             connect(m_watcher.get(), &FileWatcher::fileDeleted, this, [=](QString uri) {
                 //check bookmark and delete
                 auto info = FileInfo::fromUri(uri, false);
-                if (info->isDir())
-                {
+                if (info->isDir()) {
                     BookMarkManager::getInstance()->removeBookMark(uri);
                 }
                 //remove the crosponding child

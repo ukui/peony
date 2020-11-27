@@ -47,8 +47,9 @@ std::shared_ptr<FileOperationInfo> FileDeleteOperation::getOperationInfo()
 
 void FileDeleteOperation::deleteRecursively(FileNode *node)
 {
-    if (isCancelled())
+    if (isCancelled()) {
         return;
+    }
 
     auto fileIconName = FileUtils::getFileIconName(node->uri(), false);
     GFile *file = g_file_new_for_uri(node->uri().toUtf8().constData());

@@ -519,7 +519,7 @@ bool FileItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action, i
         }
     }
     //drag from trash to another place, return false
-    if (b_trash_item && destDirUri != "trash///")
+    if (b_trash_item && destDirUri != "trash:///")
         return false;
 
     qDebug() << "dropMimeData:" <<action;
