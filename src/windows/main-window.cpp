@@ -582,16 +582,27 @@ void MainWindow::setShortCuts()
     copyAction->setShortcut(QKeySequence::Copy);
     connect(copyAction, &QAction::triggered, [=]() {
         if (!this->getCurrentSelections().isEmpty())
+        {
             if (this->getCurrentSelections().first().startsWith("trash://", Qt::CaseInsensitive)) {
                 return ;
             }
-            Peony::ClipboardUtils::setClipboardFiles(this->getCurrentSelections(), false);
+            if (this->getCurrentSelections().first().startsWith("recent://", Qt::CaseInsensitive)) {
+                return ;
+            }
+        }
+        Peony::ClipboardUtils::setClipboardFiles(this->getCurrentSelections(), false);
     });
     addAction(copyAction);
 
     auto *pasteAction = new QAction(this);
     pasteAction->setShortcut(QKeySequence::Paste);
     connect(pasteAction, &QAction::triggered, [=]() {
+        auto currentUri = getCurrentUri();
+        if (currentUri.startsWith("trash://") || currentUri.startsWith("recent://")
+            || currentUri.startsWith("computer://") || currentUri.startsWith("favorite://"))
+        {
+            return;
+        }
         if (Peony::ClipboardUtils::isClipboardHasFiles()) {
             //FIXME: how about duplicated copy?
             //FIXME: how to deal with a failed move?
@@ -612,6 +623,9 @@ void MainWindow::setShortCuts()
     connect(cutAction, &QAction::triggered, [=]() {
         if (!this->getCurrentSelections().isEmpty()) {
             if (this->getCurrentSelections().first().startsWith("trash://", Qt::CaseInsensitive)) {
+                return ;
+            }
+            if (this->getCurrentSelections().first().startsWith("recent://", Qt::CaseInsensitive)) {
                 return ;
             }
 
