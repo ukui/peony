@@ -25,6 +25,7 @@
 
 #include "peony-core_global.h"
 #include "file-operation.h"
+#include "file-node.h"
 
 namespace Peony {
 
@@ -55,6 +56,11 @@ private:
                             QString &srcUri,
                             QString &originUri,
                             GError *err);
+    int untrashFileOverWrite(QString &uri);
+    int moveRecursively(FileNode *fileNode, QString &parentPath);
+    int copyFileProcess(QString &srcFile, QString &destFile);
+    int deleteFileProcess(FileNode *fileNode);
+
     GFileCopyFlags m_default_copy_flag = GFileCopyFlags(G_FILE_COPY_NOFOLLOW_SYMLINKS | G_FILE_COPY_ALL_METADATA);
 
     QStringList m_uris;
