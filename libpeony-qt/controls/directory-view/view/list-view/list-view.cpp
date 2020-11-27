@@ -500,9 +500,10 @@ const QStringList ListView::getAllFileUris()
 QRect ListView::visualRect(const QModelIndex &index) const
 {
     auto rect = QTreeView::visualRect(index);
-    if (index.column() == 0) {
-        rect.setX(0);
-    }
+    //comment to fix rename state not show icon issue
+//    if (index.column() == 0) {
+//        rect.setX(0);
+//    }
     return rect;
 }
 
