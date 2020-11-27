@@ -35,8 +35,9 @@ using namespace Peony;
 
 FileWatcher::FileWatcher(QString uri, QObject *parent) : QObject(parent)
 {
-    if (uri.startsWith("thumbnail://"))
+    if (uri.startsWith("thumbnail://")) {
         return;
+    }
 
     m_uri = uri;
     m_target_uri = uri;
@@ -52,7 +53,7 @@ FileWatcher::FileWatcher(QString uri, QObject *parent) : QObject(parent)
         }
     });
 
-    //monitor target file if existed.
+    // monitor target file if existed.
     prepare();
 
     GError *err1 = nullptr;
@@ -119,9 +120,7 @@ void FileWatcher::prepare()
                                         m_cancellable,
                                         nullptr);
 
-    char *uri = g_file_info_get_attribute_as_string(info,
-                G_FILE_ATTRIBUTE_STANDARD_TARGET_URI);
-
+    char *uri = g_file_info_get_attribute_as_string(info, G_FILE_ATTRIBUTE_STANDARD_TARGET_URI);
     if (uri) {
         g_object_unref(m_file);
         m_file = g_file_new_for_uri(uri);
@@ -145,8 +144,13 @@ void FileWatcher::startMonitor()
 {
     //make sure only connect once in a watcher.
     stopMonitor();
-    m_file_handle = g_signal_connect(m_monitor, "changed", G_CALLBACK(file_changed_callback), this);
-    m_dir_handle = g_signal_connect(m_dir_monitor, "changed", G_CALLBACK(dir_changed_callback), this);
+    if (nullptr != m_monitor) {
+        m_file_handle = g_signal_connect(m_monitor, "changed", G_CALLBACK(file_changed_callback), this);
+    }
+
+    if (nullptr != m_dir_monitor) {
+        m_dir_handle = g_signal_connect(m_dir_monitor, "changed", G_CALLBACK(dir_changed_callback), this);
+    }
 }
 
 void FileWatcher::stopMonitor()
@@ -187,6 +191,7 @@ void FileWatcher::changeMonitorUri(QString uri)
     prepare();
 
     GError *err1 = nullptr;
+
     m_monitor = g_file_monitor_file(m_file,
                                     G_FILE_MONITOR_WATCH_MOVES,
                                     m_cancellable,

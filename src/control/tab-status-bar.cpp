@@ -143,8 +143,7 @@ void TabStatusBar::update()
         m_label->setText(tr("%1 selected").arg(selections.count()) + directoriesString + filesString);
         //showMessage(tr("%1 files selected ").arg(selections.count()));
         g_free(format_size);
-    }
-    else {
+    } else {
         //FIXME: replace BLOCKING api in ui thread.
         auto displayName = Peony::FileUtils::getFileDisplayName(uri);
         //qDebug() << "status bar text:" <<displayName <<uri;
@@ -154,8 +153,7 @@ void TabStatusBar::update()
             QString targetDirectory = Peony::SearchVFSUriParser::getSearchUriTargetDirectory(uri);
             displayName = tr("Search \"%1\" in \"%2\"").arg(nameRegexp).arg(targetDirectory);
             m_label->setText(displayName);
-        }
-        else {
+        } else {
             QUrl url = m_tab->getCurrentUri();
             m_label->setText(url.toDisplayString());
         }

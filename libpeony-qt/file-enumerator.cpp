@@ -129,12 +129,13 @@ void FileEnumerator::setEnumerateDirectory(QString uri)
 #if GLIB_CHECK_VERSION(2, 50, 0)
     m_root_file = g_file_new_for_uri(uri.toUtf8());
 #else
-    if (uri.startsWith("search:///"))
-    {
+    if (uri.startsWith("search:///")) {
         m_root_file = peony_search_vfs_file_new_for_uri(uri.toUtf8());
-    }
-    else
+    } else if () {
+        m_root_file = vfs_favorites_file_new_for_uri (uri.toUtf8())
+    } else {
         m_root_file = g_file_new_for_uri(uri.toUtf8());
+    }
 #endif
 
 }

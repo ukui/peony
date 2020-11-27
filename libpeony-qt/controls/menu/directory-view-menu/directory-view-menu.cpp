@@ -94,29 +94,38 @@ DirectoryViewMenu::DirectoryViewMenu(FMWindowIface *window, QWidget *parent) : Q
 
 void DirectoryViewMenu::fillActions()
 {
-    if (m_directory == "computer:///")
+    if (m_directory == "computer:///") {
         m_is_computer = true;
+    }
 
-    if (m_directory == "trash:///")
+    if (m_directory == "trash:///") {
         m_is_trash = true;
+    }
 
-    if (m_directory.startsWith("search://"))
+    if (m_directory.startsWith("search://")) {
         m_is_search = true;
+    }
 
-    if (m_directory.startsWith("burn://"))
+    if (m_directory.startsWith("burn://")) {
         m_is_cd = true;
+    }
 
-    if (m_directory.startsWith("recent://"))
+    if (m_directory.startsWith("recent://")) {
         m_is_recent = true;
+    }
+
+    if (m_directory.startsWith("favorite://")) {
+        m_is_favorite = true;
+    }
 
     //add open actions
     auto openActions = constructOpenOpActions();
-    if (!openActions.isEmpty())
+    if (!m_is_favorite && !openActions.isEmpty())
         addSeparator();
 
     //create template actions
     auto templateActions = constructCreateTemplateActions();
-    if (!templateActions.isEmpty())
+    if (!m_is_favorite && !templateActions.isEmpty())
         addSeparator();
 
     //add view actions
@@ -126,12 +135,12 @@ void DirectoryViewMenu::fillActions()
 
     //add operation actions
     auto fileOpActions = constructFileOpActions();
-    if (!fileOpActions.isEmpty())
+    if (!m_is_favorite && !fileOpActions.isEmpty())
         addSeparator();
 
     //add plugin actions
     auto pluginActions = constructMenuPluginActions();
-    if (!pluginActions.isEmpty())
+    if (!m_is_favorite && !pluginActions.isEmpty())
         addSeparator();
 
     //add propertries actions
@@ -156,7 +165,7 @@ void DirectoryViewMenu::fillActions()
 const QList<QAction *> DirectoryViewMenu::constructOpenOpActions()
 {
     QList<QAction *> l;
-    if (m_is_trash)
+    if (m_is_trash || m_is_favorite)
         return l;
 
     bool isBackgroundMenu = m_selections.isEmpty();
@@ -306,7 +315,7 @@ const QList<QAction *> DirectoryViewMenu::constructOpenOpActions()
 const QList<QAction *> DirectoryViewMenu::constructCreateTemplateActions()
 {
     QList<QAction *> l;
-    if (m_selections.isEmpty()) {
+    if (!m_is_favorite && m_selections.isEmpty()) {
         auto createAction = new QAction(tr("New..."), this);
         if (m_is_cd) {
             createAction->setEnabled(false);
@@ -318,8 +327,7 @@ const QList<QAction *> DirectoryViewMenu::constructCreateTemplateActions()
             job.querySync();
         }
 
-        if (! info->canWrite())
-        {
+        if (! info->canWrite()) {
             createAction->setEnabled(false);
         }
         l<<createAction;
@@ -507,13 +515,15 @@ const QList<QAction *> DirectoryViewMenu::constructViewOpActions()
             });
         }
 
-        auto showHidden = sortPreferencesMenu->addAction(tr("Show Hidden"));
-        showHidden->setCheckable(true);
-        showHidden->setChecked(m_top_window->getWindowShowHidden());
-        connect(showHidden, &QAction::triggered, this, [=]() {
-            m_top_window->setShowHidden();
+        if (!m_is_favorite) {
+            auto showHidden = sortPreferencesMenu->addAction(tr("Show Hidden"));
+            showHidden->setCheckable(true);
             showHidden->setChecked(m_top_window->getWindowShowHidden());
-        });
+            connect(showHidden, &QAction::triggered, this, [=]() {
+                m_top_window->setShowHidden();
+                showHidden->setChecked(m_top_window->getWindowShowHidden());
+            });
+        }
 
         sortPreferencesAction->setMenu(sortPreferencesMenu);
     }
@@ -525,29 +535,47 @@ const QList<QAction *> DirectoryViewMenu::constructFileOpActions()
 {
     QList<QAction *> l;
 
+    // favorite file operation
+    if (m_is_favorite && m_selections.count() > 0) {
+        QStringList fsl = m_selections;
+        m_selections.clear();
+        for (int i = 0; i < fsl.count(); ++i) {
+            QUrl url = fsl.at(i);
+            m_selections << "favorite://" + url.path();
+            qDebug() << "favorite://" + url.path();
+        }
+    }
+
     if (!m_is_trash && !m_is_search && !m_is_computer) {
         QString homeUri = "file://" +  QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
         QString desktopPath = "file://" +  QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
         QString desktopUri = FileUtils::getEncodedUri(desktopPath);
         //qDebug() << "constructFileOpActions desktopUri:" <<desktopUri;
-        if (!m_selections.isEmpty() && !m_selections.contains(homeUri) && !m_is_recent) {
-            l<<addAction(QIcon::fromTheme("edit-copy-symbolic"), tr("&Copy"));
-            connect(l.last(), &QAction::triggered, [=]() {
-                ClipboardUtils::setClipboardFiles(m_selections, false);
-            });
+        if (!m_is_recent && !m_selections.isEmpty() && !m_selections.contains(homeUri)) {
+            if (!m_is_favorite) {
+                l<<addAction(QIcon::fromTheme("edit-copy-symbolic"), tr("&Copy"));
+                connect(l.last(), &QAction::triggered, [=]() {
+                    ClipboardUtils::setClipboardFiles(m_selections, false);
+                });
+            }
 
-            if (! m_selections.contains(desktopUri) && !m_is_recent)
-            {
+            if (!m_is_favorite && !m_selections.contains(desktopUri)) {
                 l<<addAction(QIcon::fromTheme("edit-cut-symbolic"), tr("Cut"));
                 connect(l.last(), &QAction::triggered, [=]() {
                     ClipboardUtils::setClipboardFiles(m_selections, true);
                 });
             }
 
-            if (!m_is_recent && !m_selections.contains(desktopUri)) {
+            if (!m_is_favorite && !m_is_recent && !m_selections.contains(desktopUri)) {
                 l<<addAction(QIcon::fromTheme("edit-delete-symbolic"), tr("&Delete to trash"));
                 connect(l.last(), &QAction::triggered, [=]() {
                     FileOperationUtils::trash(m_selections, true);
+                });
+            }
+            if (m_is_favorite) {
+                l<<addAction(QIcon::fromTheme("edit-delete-symbolic"), tr("&Delete"));
+                connect(l.last(), &QAction::triggered, [=]() {
+                    FileOperationUtils::remove(m_selections);
                 });
             }
             //comment delete forever right menu option,reference to mac and Windows
@@ -556,15 +584,14 @@ const QList<QAction *> DirectoryViewMenu::constructFileOpActions()
 //            connect(l.last(), &QAction::triggered, [=]() {
 //                FileOperationUtils::executeRemoveActionWithDialog(m_selections);
 //            });
-            if (m_selections.count() == 1 && !m_selections.contains(desktopUri) && !m_is_recent) {
+            if (!m_is_favorite && !m_is_recent && m_selections.count() == 1 && !m_selections.contains(desktopUri)) {
                 l<<addAction(QIcon::fromTheme("document-edit-symbolic"), tr("Rename"));
                 connect(l.last(), &QAction::triggered, [=]() {
                     m_view->editUri(m_selections.first());
                 });
             }
         } else {
-            if (! m_is_recent)
-            {
+            if (!m_is_favorite && !m_is_recent) {
                 auto pasteAction = addAction(QIcon::fromTheme("edit-paste-symbolic"), tr("&Paste"));
                 l<<pasteAction;
                 pasteAction->setEnabled(ClipboardUtils::isClipboardHasFiles());
@@ -590,16 +617,13 @@ const QList<QAction *> DirectoryViewMenu::constructFileOpActions()
     }
 
     //select all and reverse select
-    if (m_selections.isEmpty())
-    {
+    if (m_selections.isEmpty()) {
         l<<addAction(tr("Select &All"));
         connect(l.last(), &QAction::triggered, [=]() {
             //qDebug() << "select all";
             m_view->invertSelections();
         });
-    }
-    else
-    {
+    } else {
         l<<addAction(tr("Reverse Select"));
         connect(l.last(), &QAction::triggered, [=]() {
             //qDebug() << "Reverse select";
