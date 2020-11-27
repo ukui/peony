@@ -509,7 +509,7 @@ void guessContentTypeCallback(GObject* object,GAsyncResult *res,gpointer data)
             for(n = 0; guessType[n]; ++n){
                 if(g_content_type_is_a(guessType[n],"x-content/win32-software"))
                     openFolder = false;
-                if(!strcmp(guessType[n],"x-content/blank-dvd"))
+                if(!strcmp(guessType[n],"x-content/blank-dvd") || !strcmp(guessType[n],"x-content/blank-cd"))
                     openFolder = false;
 
                 if(openFolder)
