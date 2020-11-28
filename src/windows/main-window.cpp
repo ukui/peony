@@ -587,7 +587,10 @@ void MainWindow::setShortCuts()
                 connect(op, &Peony::FileOperation::operationFinished, this, [=](){
                     auto opInfo = op->getOperationInfo();
                     auto targetUirs = opInfo->dests();
-                    setCurrentSelectionUris(targetUirs);
+                    QTimer::singleShot(500,[=](){
+                        setCurrentSelectionUris(targetUirs);
+                    });
+//                    setCurrentSelectionUris(targetUirs);
                 }, Qt::BlockingQueuedConnection);
             }
         }

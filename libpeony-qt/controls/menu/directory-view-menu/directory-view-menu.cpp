@@ -64,6 +64,7 @@
 #include <QLocale>
 #include <QStandardPaths>
 #include <recent-vfs-manager.h>
+#include <QTimer>
 
 #include <QDebug>
 
@@ -580,7 +581,10 @@ const QList<QAction *> DirectoryViewMenu::constructFileOpActions()
                         connect(op, &Peony::FileOperation::operationFinished, window, [=](){
                             auto opInfo = op->getOperationInfo();
                             auto targetUirs = opInfo->dests();
-                            iface->setCurrentSelectionUris(targetUirs);
+                            QTimer::singleShot(500,[=](){
+                                iface->setCurrentSelectionUris(targetUirs);
+                            });
+//                            iface->setCurrentSelectionUris(targetUirs);
                         }, Qt::BlockingQueuedConnection);
                     }
                 });

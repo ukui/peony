@@ -532,7 +532,12 @@ bool FileItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action, i
         connect(op, &FileOperation::operationFinished, this, [=](){
             auto opInfo = op->getOperationInfo();
             auto targetUris = opInfo.get()->dests();
-            Q_EMIT this->selectRequest(targetUris);
+
+            //Fixme: If file operation is too fast so that model has no time to rect,the select request will fail.
+            QTimer::singleShot(500,this,[=](){
+                Q_EMIT this->selectRequest(targetUris);
+            });
+//            Q_EMIT this->selectRequest(targetUris);
 //            auto selectionModel = new QItemSelectionModel(this);
 //            selectionModel->clearSelection();
 //            QTimer::singleShot(1000, selectionModel, [=](){
@@ -550,7 +555,10 @@ bool FileItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action, i
         connect(copyOp, &FileOperation::operationFinished, this, [=](){
             auto opInfo = copyOp->getOperationInfo();
             auto targetUris = opInfo.get()->dests();
-            Q_EMIT this->selectRequest(targetUris);
+
+            QTimer::singleShot(500,this,[=](){
+                Q_EMIT this->selectRequest(targetUris);
+            });
 //            auto selectionModel = new QItemSelectionModel(this);
 //            selectionModel->clearSelection();
 //            QTimer::singleShot(1000, selectionModel, [=](){
