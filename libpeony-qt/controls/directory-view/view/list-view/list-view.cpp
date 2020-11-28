@@ -395,6 +395,12 @@ void ListView::slotRename()
     if (getDirectoryUri().startsWith("trash://"))
         return;
 
+    //standardPaths not allow rename
+    auto currentSelections = getSelections();
+    bool hasStandardPath = FileUtils::containsStandardPath(currentSelections);
+    if (hasStandardPath)
+        return;
+
     //delay edit action to avoid doubleClick or dragEvent
     qDebug()<<"slotRename"<<m_editValid;
     QTimer::singleShot(300, m_renameTimer, [&]() {

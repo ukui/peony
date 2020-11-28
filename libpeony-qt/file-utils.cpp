@@ -411,6 +411,38 @@ const QString FileUtils::getOriginalUri(const QString &uri)
     return originalUri;
 }
 
+bool FileUtils::isStandardPath(const QString &uri)
+{
+    QUrl url = uri;
+    QDir templateDir(g_get_user_special_dir(G_USER_DIRECTORY_TEMPLATES));
+    QString desktopPath = QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
+    QString documentPath = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
+    QString picturePath = QStandardPaths::writableLocation(QStandardPaths::PicturesLocation);
+    QString videoPath= QStandardPaths::writableLocation(QStandardPaths::MoviesLocation);
+    QString downloadPath = QStandardPaths::writableLocation(QStandardPaths::DownloadLocation);
+    QString musicPath = QStandardPaths::writableLocation(QStandardPaths::MusicLocation);
+    QStringList mStandardPaths;
+    //qDebug() << "isStandardPath :" <<templateDir.path();
+    mStandardPaths <<desktopPath <<documentPath <<picturePath <<videoPath
+                  <<downloadPath <<musicPath <<templateDir.path();
+
+    if (mStandardPaths.contains(url.path()))
+        return true;
+
+    return false;
+}
+
+bool FileUtils::containsStandardPath(const QStringList &list)
+{
+    for(auto uri:list)
+    {
+        if (isStandardPath(uri))
+            return true;
+    }
+
+    return false;
+}
+
 bool FileUtils::isFileExsit(const QString &uri)
 {
     bool exist = false;
