@@ -251,15 +251,24 @@ void DesktopWindow::initGSettings() {
                 if (COMMERCIAL_VERSION)
                    path = "/usr/share/backgrounds/aurora.jpg";
 
-                bool success = m_bg_settings->trySet("pictureFilename", path);
-                if (success)
+                if (QFile::exists(path))
                 {
-                    m_current_bg_path = "file://" + path;
+                    bool success = m_bg_settings->trySet("pictureFilename", path);
+                    if (success)
+                    {
+                        m_current_bg_path = "file://" + path;
+                    }
+                    else
+                    {
+                        qDebug() << "use default bg picture fail, reset";
+                        m_bg_settings->reset("pictureFilename");
+                    }
                 }
                 else
                 {
-                    qDebug() << "use default bg picture fail, reset";
-                    m_bg_settings->reset("pictureFilename");
+                    qCritical() << "Did not find system default background, use color bg instead!";
+                    m_bg_settings->trySet("pictureFilename", "");
+                    setBg(getCurrentColor());
                 }
             }
             else {
