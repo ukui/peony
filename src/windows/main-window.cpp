@@ -143,7 +143,6 @@ MainWindow::MainWindow(const QString &uri, QWidget *parent) : QMainWindow(parent
     //init UI
     initUI(uri);
 
-
     auto start_cost_time = QDateTime::currentMSecsSinceEpoch()- PeonyApplication::peony_start_time;
     qDebug() << "peony start end in main-window time:" <<start_cost_time
              <<"ms"<<QDateTime::currentMSecsSinceEpoch();
@@ -588,7 +587,10 @@ void MainWindow::setShortCuts()
                 connect(op, &Peony::FileOperation::operationFinished, this, [=](){
                     auto opInfo = op->getOperationInfo();
                     auto targetUirs = opInfo->dests();
-                    setCurrentSelectionUris(targetUirs);
+                    QTimer::singleShot(500,[=](){
+                        setCurrentSelectionUris(targetUirs);
+                    });
+//                    setCurrentSelectionUris(targetUirs);
                 }, Qt::BlockingQueuedConnection);
             }
         }
