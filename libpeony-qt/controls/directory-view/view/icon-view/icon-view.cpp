@@ -206,7 +206,7 @@ void IconView::dragMoveEvent(QDragMoveEvent *e)
         m_ctrl_key_pressed = false;
 
     auto action = m_ctrl_key_pressed ? Qt::CopyAction : Qt::MoveAction;
-    qDebug()<<"dragMoveEvent()" <<action <<m_ctrl_key_pressed;
+    //qDebug()<<"dragMoveEvent()" <<action <<m_ctrl_key_pressed;
     auto index = indexAt(e->pos());
     if (index.isValid() && index != m_last_index) {
         QHoverEvent he(QHoverEvent::HoverMove, e->posF(), e->posF());
