@@ -78,15 +78,15 @@ NavigationSideBar::NavigationSideBar(QWidget *parent) : QTreeView(parent)
 
     installEventFilter(this);
 
-    //! \todo delete side bar hover status color change
-    setStyleSheet("NavigationSideBar::branch::hover{background-color: transparent;}"
-                  "NavigationSideBar{border: 0px solid transparent}");
+    setStyleSheet("NavigationSideBar{border: 0px solid transparent}");
 
     setAttribute(Qt::WA_TranslucentBackground);
     viewport()->setAttribute(Qt::WA_TranslucentBackground);
     viewport()->setAttribute(Qt::WA_Disabled, false);
     header()->setSectionResizeMode(QHeaderView::Custom);
     header()->hide();
+
+    setStyle(NavigationSideBarStyle::getStyle());
 
     setContextMenuPolicy(Qt::CustomContextMenu);
 
@@ -292,11 +292,6 @@ void NavigationSideBarItemDelegate::paint(QPainter *painter, const QStyleOptionV
 
     QStyleOptionViewItem opt = option;
 
-    //! \brief delete hover status
-    if (!(opt.state & QStyle::State_Selected)) {
-        opt.state = QStyle::State_Enabled;
-    }
-
     painter->setRenderHint(QPainter::Antialiasing, true);
 
     QStyledItemDelegate::paint(painter, opt, index);
@@ -383,4 +378,21 @@ TitleLabel::TitleLabel(QWidget *parent):QWidget(parent)
     l->addSpacing(8);
     l->addWidget(m_text_label);
     l->addStretch();
+}
+
+NavigationSideBarStyle::NavigationSideBarStyle(QStyle *style) : QProxyStyle(style) {}
+
+static NavigationSideBarStyle *global_instance = nullptr;
+
+NavigationSideBarStyle* NavigationSideBarStyle::getStyle()
+{
+    if (!global_instance)
+        global_instance = new NavigationSideBarStyle;
+    return global_instance;
+}
+
+void NavigationSideBarStyle::polish(QWidget *widget)
+{
+    QStyle::polish(widget);
+    widget->setAttribute(Qt::WA_Hover, false);
 }
