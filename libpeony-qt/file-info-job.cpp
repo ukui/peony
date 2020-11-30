@@ -121,8 +121,10 @@ GAsyncReadyCallback FileInfoJob::query_info_async_callback(GFile *file, GAsyncRe
         Q_EMIT thisJob->infoUpdated();
     }
     else {
-        qDebug()<<err->code<<err->message;
-        g_error_free(err);
+        if (err) {
+            qDebug()<<err->code<<err->message;
+            g_error_free(err);
+        }
         Q_EMIT thisJob->queryAsyncFinished(false);
         return nullptr;
     }
