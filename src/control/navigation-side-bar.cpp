@@ -257,11 +257,9 @@ void NavigationSideBar::mousePressEvent(QMouseEvent *event)
     // Fixme: Right button can expand side bar
     QModelIndex index = this->indexAt(event->pos());
     if (event->button() == Qt::LeftButton && !index.parent().isValid()) {
-        // 如果不在展开按钮的范围内就调用以前的
         if (event->x() > this->rect().right() - 20 || event->x() < this->rect().right() - 60)
             QTreeView::mousePressEvent(event);
         else {
-            // 展开children
             QPoint point(event->x(), event->y());
             if (!isExpanded(indexAt(point)))
                 expand(indexAt(point));
@@ -279,9 +277,10 @@ NavigationSideBarItemDelegate::NavigationSideBarItemDelegate(QObject *parent) : 
 
 QSize NavigationSideBarItemDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
-    auto size = QStyledItemDelegate::sizeHint(option, index);
-    size.setHeight(36);
-    return size;
+//    auto size = QStyledItemDelegate::sizeHint(option, index);
+//    size.setHeight(36);
+//    return size;
+    return QStyledItemDelegate::sizeHint(option, index);
 }
 
 void NavigationSideBarItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
@@ -380,9 +379,9 @@ TitleLabel::TitleLabel(QWidget *parent):QWidget(parent)
     l->addStretch();
 }
 
-NavigationSideBarStyle::NavigationSideBarStyle(QStyle *style) : QProxyStyle(style) {}
-
 static NavigationSideBarStyle *global_instance = nullptr;
+
+NavigationSideBarStyle::NavigationSideBarStyle(QStyle *style) : QProxyStyle(style) {}
 
 NavigationSideBarStyle* NavigationSideBarStyle::getStyle()
 {
