@@ -55,19 +55,15 @@
 
 #include <QtConcurrent>
 
+#include <QX11Info>
+
 #include <QDebug>
 
 static HeaderBarStyle *global_instance = nullptr;
 static QString terminal_cmd = nullptr;
 
-static QString gPlatform = nullptr;
-
 HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
 {
-    if (gPlatform.isNull()) {
-        gPlatform = qgetenv("XDG_SESSION_TYPE");
-    }
-
     setAttribute(Qt::WA_AcceptTouchEvents);
 
     setMouseTracking(true);
@@ -637,7 +633,7 @@ void HeaderBarContainer::addWindowButtons()
         w->setProperty("iconHighlightEffectMode", 1);
     }
 
-    if (gPlatform == "wayland") {
+    if (!QX11Info::isPlatformX11()) {
         minimize->setVisible(false);
         maximizeAndRestore->setVisible(false);
         close->setVisible(false);

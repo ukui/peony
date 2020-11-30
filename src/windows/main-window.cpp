@@ -98,14 +98,9 @@
 #define FONT_SETTINGS "org.ukui.style"
 
 static MainWindow *last_resize_window = nullptr;
-static QString gPlatform = nullptr;
 
 MainWindow::MainWindow(const QString &uri, QWidget *parent) : QMainWindow(parent)
 {
-    if (gPlatform.isNull()) {
-        gPlatform = qgetenv("XDG_SESSION_TYPE");
-    }
-
     setContextMenuPolicy(Qt::CustomContextMenu);
     installEventFilter(this);
 
@@ -147,7 +142,7 @@ MainWindow::MainWindow(const QString &uri, QWidget *parent) : QMainWindow(parent
     //init UI
     initUI(uri);
 
-    if (gPlatform == "x11") {
+    if (QX11Info::isPlatformX11()) {
         XAtomHelper::getInstance()->setUKUIDecoraiontHint(this->winId(), true);
         MotifWmHints hints;
         hints.flags = MWM_HINTS_FUNCTIONS|MWM_HINTS_DECORATIONS;
