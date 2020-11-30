@@ -9,6 +9,7 @@
 #include <gio/gio.h>
 #include <QDir>
 #include <QStandardPaths>
+#include <QTimer>
 
 using namespace Peony;
 UserdirManager::UserdirManager(QObject *parent) : QObject(parent)
@@ -70,8 +71,13 @@ void UserdirManager::moveFile()
             auto operation = new Peony::FileRenameOperation("file://"+m_last_user_dir.value(i.key()),fileName);
             operation->setAutoDelete();
             fileOpMgr->startOperation(operation,false);
+            if(i.key() == "XDG_DESKTOP_DIR")
+            {
+                QTimer::singleShot(500,[=](){
+                    //refresh desktop
+                    Q_EMIT desktopDirChanged();
+                });
+            }
         }
     }
-    //refresh desktop
-    Q_EMIT desktopDirChanged();
 }
