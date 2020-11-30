@@ -72,6 +72,7 @@
 #include <QSizePolicy>
 #include <QStringListModel>
 #include <QFileDialog>
+#include <bookmark-manager.h>
 
 #include <QLayout>
 

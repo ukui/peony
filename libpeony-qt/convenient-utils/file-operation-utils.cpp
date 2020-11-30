@@ -90,7 +90,7 @@ FileOperation *FileOperationUtils::trash(const QStringList &uris, bool addHistor
     FileOperation *op = nullptr;
     bool canNotTrash = false;
     for (auto uri : uris) {
-        if (!uri.startsWith("file:/")) {
+        if (!uri.startsWith("file://")) {
             canNotTrash = true;
         }
     }

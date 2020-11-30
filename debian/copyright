@@ -244,6 +244,14 @@ Files: libpeony-qt/vfs/peony-search-vfs-file-enumerator.cpp
   libpeony-qt/vfs/peony-search-vfs-file-enumerator.h
   libpeony-qt/vfs/peony-search-vfs-file.cpp
   libpeony-qt/vfs/peony-search-vfs-file.h
+  libpeony-qt/vfs/favorite-vfs-file.h
+  libpeony-qt/vfs/favorite-vfs-file.cpp
+  libpeony-qt/vfs/favorite-vfs-file-monitor.h
+  libpeony-qt/vfs/favorite-vfs-file-monitor.cpp
+  libpeony-qt/vfs/favorite-vfs-file-register.h
+  libpeony-qt/vfs/favorite-vfs-file-register.cpp
+  libpeony-qt/vfs/favorite-vfs-file-enumerator.h
+  libpeony-qt/vfs/favorite-vfs-file-enumerator.cpp
   libpeony-qt/vfs/search-vfs-manager.cpp
   libpeony-qt/vfs/search-vfs-manager.h
   libpeony-qt/vfs/search-vfs-register.cpp
