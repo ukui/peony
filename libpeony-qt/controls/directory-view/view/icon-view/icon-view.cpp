@@ -205,6 +205,12 @@ void IconView::dragMoveEvent(QDragMoveEvent *e)
     else
         m_ctrl_key_pressed = false;
 
+    //fix can not drag in the second time issue
+    if (this->isDraggingState())
+    {
+        this->clearSelection();
+    }
+
     auto action = m_ctrl_key_pressed ? Qt::CopyAction : Qt::MoveAction;
     //qDebug()<<"dragMoveEvent()" <<action <<m_ctrl_key_pressed;
     auto index = indexAt(e->pos());
