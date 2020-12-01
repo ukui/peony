@@ -92,6 +92,8 @@ public:
 
     void format_err_dialog();
 
+    bool format_makesure_dialog();
+    
     ~Format_Dialog();
 
 
@@ -104,6 +106,9 @@ public:
     int m_cost_seconds = 0;
 
     int m_total_predict = 3600;
+
+Q_SIGNALS:
+     void ensure_format(bool flags);
 
 public Q_SLOTS:
 

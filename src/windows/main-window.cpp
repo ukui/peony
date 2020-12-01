@@ -113,9 +113,9 @@ MainWindow::MainWindow(const QString &uri, QWidget *parent) : QMainWindow(parent
     setStyle(PeonyMainWindowStyle::getStyle());
 
     m_effect = new BorderShadowEffect(this);
-    m_effect->setPadding(4);
-    m_effect->setBorderRadius(6);
-    m_effect->setBlurRadius(4);
+    m_effect->setPadding(0);
+    m_effect->setBorderRadius(0);
+    m_effect->setBlurRadius(0);
     //setGraphicsEffect(m_effect);
 
     setAnimated(false);
@@ -123,10 +123,10 @@ MainWindow::MainWindow(const QString &uri, QWidget *parent) : QMainWindow(parent
     setAttribute(Qt::WA_TranslucentBackground);
     //setAttribute(Qt::WA_OpaquePaintEvent);
     //fix double window base buttons issue, not effect MinMax button hints
-    auto flags = windowFlags() &~Qt::WindowMinMaxButtonsHint;
-    setWindowFlags(flags |Qt::FramelessWindowHint);
+    //auto flags = windowFlags() &~Qt::WindowMinMaxButtonsHint;
+    //setWindowFlags(flags |Qt::FramelessWindowHint);
     //setWindowFlags(windowFlags()|Qt::FramelessWindowHint);
-    setContentsMargins(4, 4, 4, 4);
+    //setContentsMargins(4, 4, 4, 4);
 
     //bind resize handler
     auto handler = new QWidgetResizeHandler(this);
@@ -141,6 +141,15 @@ MainWindow::MainWindow(const QString &uri, QWidget *parent) : QMainWindow(parent
 
     //init UI
     initUI(uri);
+
+    if (QX11Info::isPlatformX11()) {
+        XAtomHelper::getInstance()->setUKUIDecoraiontHint(this->winId(), true);
+        MotifWmHints hints;
+        hints.flags = MWM_HINTS_FUNCTIONS|MWM_HINTS_DECORATIONS;
+        hints.functions = MWM_FUNC_ALL;
+        hints.decorations = MWM_DECOR_BORDER;
+        XAtomHelper::getInstance()->setWindowMotifHint(this->winId(), hints);
+    }
 
     auto start_cost_time = QDateTime::currentMSecsSinceEpoch()- PeonyApplication::peony_start_time;
     qDebug() << "peony start end in main-window time:" <<start_cost_time
@@ -310,6 +319,10 @@ void MainWindow::setShortCuts()
     auto trashAction = new QAction(this);
     trashAction->setShortcuts(QList<QKeySequence>()<<Qt::Key_Delete<<QKeySequence(Qt::CTRL + Qt::Key_D));
     connect(trashAction, &QAction::triggered, [=]() {
+        auto currentUri = getCurrentUri();
+        if (currentUri.startsWith("search://"))
+            return;
+
         auto uris = this->getCurrentSelections();
         QString desktopPath = "file://" +  QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
         QString desktopUri = Peony::FileUtils::getEncodedUri(desktopPath);
@@ -329,6 +342,10 @@ void MainWindow::setShortCuts()
     deleteAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::SHIFT + Qt::Key_Delete));
     addAction(deleteAction);
     connect(deleteAction, &QAction::triggered, [=]() {
+        auto currentUri = getCurrentUri();
+        if (currentUri.startsWith("search://"))
+            return;
+
         auto uris = this->getCurrentSelections();
         QString desktopPath = "file://" +  QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
         QString desktopUri = Peony::FileUtils::getEncodedUri(desktopPath);
@@ -560,16 +577,27 @@ void MainWindow::setShortCuts()
     copyAction->setShortcut(QKeySequence::Copy);
     connect(copyAction, &QAction::triggered, [=]() {
         if (!this->getCurrentSelections().isEmpty())
+        {
             if (this->getCurrentSelections().first().startsWith("trash://", Qt::CaseInsensitive)) {
                 return ;
             }
-            Peony::ClipboardUtils::setClipboardFiles(this->getCurrentSelections(), false);
+            if (this->getCurrentSelections().first().startsWith("recent://", Qt::CaseInsensitive)) {
+                return ;
+            }
+        }
+        Peony::ClipboardUtils::setClipboardFiles(this->getCurrentSelections(), false);
     });
     addAction(copyAction);
 
     auto *pasteAction = new QAction(this);
     pasteAction->setShortcut(QKeySequence::Paste);
     connect(pasteAction, &QAction::triggered, [=]() {
+        auto currentUri = getCurrentUri();
+        if (currentUri.startsWith("trash://") || currentUri.startsWith("recent://")
+            || currentUri.startsWith("computer://") || currentUri.startsWith("favorite://"))
+        {
+            return;
+        }
         if (Peony::ClipboardUtils::isClipboardHasFiles()) {
             //FIXME: how about duplicated copy?
             //FIXME: how to deal with a failed move?
@@ -590,6 +618,9 @@ void MainWindow::setShortCuts()
     connect(cutAction, &QAction::triggered, [=]() {
         if (!this->getCurrentSelections().isEmpty()) {
             if (this->getCurrentSelections().first().startsWith("trash://", Qt::CaseInsensitive)) {
+                return ;
+            }
+            if (this->getCurrentSelections().first().startsWith("recent://", Qt::CaseInsensitive)) {
                 return ;
             }
 
@@ -959,10 +990,10 @@ void MainWindow::paintEvent(QPaintEvent *e)
     if (qApp->property("blurEnable").isValid()) {
         bool blurEnable = qApp->property("blurEnable").toBool();
         if (!blurEnable) {
-            colorBase.setAlphaF(1);
+            colorBase.setAlphaF(0.9);
         }
     } else {
-        colorBase.setAlphaF(1);
+        colorBase.setAlphaF(0.9);
     }
 
     QPainterPath sidebarPath;
@@ -1075,15 +1106,16 @@ void MainWindow::validBorder()
         setProperty("blurRegion", QVariant());
         KWindowEffects::enableBlurBehind(this->winId(), true);
     } else {
-        setContentsMargins(4, 4, 4, 4);
+        //setContentsMargins(4, 4, 4, 4);
         m_effect->setPadding(4);
         QPainterPath path;
         auto rect = this->rect();
         rect.adjust(4, 4, -4, -4);
         path.addRoundedRect(rect, 6, 6);
-        setProperty("blurRegion", QRegion(path.toFillPolygon().toPolygon()));
+        //setProperty("blurRegion", QRegion(path.toFillPolygon().toPolygon()));
         //use KWindowEffects
-        KWindowEffects::enableBlurBehind(this->winId(), true, QRegion(path.toFillPolygon().toPolygon()));
+        //KWindowEffects::enableBlurBehind(this->winId(), true, QRegion(path.toFillPolygon().toPolygon()));
+        KWindowEffects::enableBlurBehind(this->winId(), true);
     }
 }
 

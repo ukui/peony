@@ -157,6 +157,11 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
     m_proxy_model->setSourceModel(m_model);
 
     connect(m_model, &QAbstractItemModel::rowsRemoved, this, [=](){
+        auto itemsNeedRelayout = m_model->m_items_need_relayout;
+        if (!itemsNeedRelayout.isEmpty()) {
+            this->relayoutExsitingItems(itemsNeedRelayout);
+        }
+
         for (auto uri : getAllFileUris()) {
             auto pos = getFileMetaInfoPos(uri);
             if (pos.x() >= 0)
@@ -232,20 +237,30 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
     setModel(m_proxy_model);
     //m_proxy_model->sort(0);
 
+    m_peonyDbusSer = new PeonyDbusService(this);
+    m_peonyDbusSer->dbusServerRegister();
+
     this->refresh();
 }
 
 DesktopIconView::~DesktopIconView()
 {
+    delete m_peonyDbusSer;
     //saveAllItemPosistionInfos();
 }
 
 bool DesktopIconView::eventFilter(QObject *obj, QEvent *e)
 {
     //fixme:
+    //comment to fix change night style refresh desktop issue
     if (e->type() == QEvent::StyleChange) {
-        if (m_model)
-            refresh();
+        if (m_model) {
+            for (auto uri : getAllFileUris()) {
+                auto pos = getFileMetaInfoPos(uri);
+                if (pos.x() >= 0)
+                    updateItemPosByUri(uri, pos);
+            }
+        }
     }
     return false;
 }
@@ -488,6 +503,11 @@ void DesktopIconView::setShowHidden()
     m_show_hidden = ! m_show_hidden;
     qDebug() << "DesktopIconView::setShowHidden:" <<m_show_hidden;
     m_proxy_model->setShowHidden(m_show_hidden);
+    //fix show hidden file desktop icons overlapped issue
+    QTimer::singleShot(100, this, [=]() {
+        resetAllItemPositionInfos();
+        refresh();
+    });
 }
 
 void DesktopIconView::openFileByUri(QString uri)
@@ -555,7 +575,7 @@ void DesktopIconView::initDoubleClick()
         auto uri = index.data(FileItemModel::UriRole).toString();
         //process open symbolic link
         auto info = FileInfo::fromUri(uri, false);
-        if (info->isSymbolLink() && uri.startsWith("file://"))
+        if (info->isSymbolLink() && uri.startsWith("file://") && info->isValid())
             uri = "file://" + FileUtils::getSymbolicTarget(uri);
         openFileByUri(uri);
     }, Qt::UniqueConnection);
@@ -655,7 +675,7 @@ void DesktopIconView::setFileMetaInfoPos(const QString &uri, const QPoint &pos)
     }
 }
 
-QHash<QString, QRect> DesktopIconView::getCurrentItemRects()
+QMap<QString, QRect> DesktopIconView::getCurrentItemRects()
 {
     return m_item_rect_hash;
 }
@@ -1025,6 +1045,67 @@ const QRect DesktopIconView::getBoundingRect()
     return itemsRegion.boundingRect();
 }
 
+void DesktopIconView::relayoutExsitingItems(const QStringList &uris)
+{
+    auto ensuredItemRectHash = m_item_rect_hash;
+    for (auto uri : uris) {
+        ensuredItemRectHash.remove(uri);
+    }
+
+    QRegion notEmptyRegion;
+    for (auto rect : ensuredItemRectHash.values()) {
+        notEmptyRegion += rect;
+    }
+
+    auto grid = this->gridSize();
+    auto viewRect = this->viewport()->rect();
+
+    // aligin exsited rect
+    int marginTop = notEmptyRegion.boundingRect().top();
+    while (marginTop - grid.height() > 0) {
+        marginTop -= grid.height();
+    }
+
+    int marginLeft = notEmptyRegion.boundingRect().left();
+    while (marginLeft - grid.width() > 0) {
+        marginLeft -= grid.width();
+    }
+
+    for (auto uri : uris) {
+        auto indexRect = QRect(QPoint(marginLeft, marginTop), m_item_rect_hash.values().first().size());
+        if (notEmptyRegion.contains(indexRect.center())) {
+
+            // move index to closest empty grid.
+            auto next = indexRect;
+            bool isEmptyPos = false;
+            while (!isEmptyPos) {
+                next.translate(0, grid.height());
+                if (next.bottom() > viewRect.bottom()) {
+                    int top = next.y();
+                    while (true) {
+                        if (top < grid.height()) {
+                            break;
+                        }
+                        top-=grid.height();
+                    }
+                    //put item to next column first row
+                    next.moveTo(next.x() + grid.width(), top);
+                }
+                if (notEmptyRegion.contains(next.center()))
+                    continue;
+
+                isEmptyPos = true;
+                m_item_rect_hash.insert(uri, next);
+                notEmptyRegion += next;
+
+                setFileMetaInfoPos(uri, next.topLeft());
+            }
+        } else {
+            setFileMetaInfoPos(uri, indexRect.topLeft());
+        }
+    }
+}
+
 void DesktopIconView::zoomOut()
 {
     clearAllIndexWidgets();
@@ -1137,6 +1218,11 @@ DesktopIconView::ZoomLevel DesktopIconView::zoomLevel() const
     return ZoomLevel(zoomLevel.toInt()) == Invalid? Normal: ZoomLevel(QString(zoomLevel).toInt());
 }
 
+void DesktopIconView::setEditFlag(bool edit)
+{
+    m_is_edit = edit;
+}
+
 void DesktopIconView::mousePressEvent(QMouseEvent *e)
 {
     // bug extend selection bug
@@ -1148,7 +1234,9 @@ void DesktopIconView::mousePressEvent(QMouseEvent *e)
             clearSelection();
         } else {
             auto index = indexAt(e->pos());
-            clearAllIndexWidgets();
+            //fix rename state has no menuRequest issue
+            if (! m_is_edit)
+               clearAllIndexWidgets();
             m_last_index = index;
             if (!indexWidget(m_last_index)) {
                 auto indexWidget = new DesktopIndexWidget(qobject_cast<DesktopIconViewDelegate *>(itemDelegate()), viewOptions(), m_last_index);
@@ -1481,4 +1569,15 @@ QRect DesktopIconView::visualRect(const QModelIndex &index) const
     }
     rect.moveTo(rect.topLeft() + p);
     return rect;
+}
+
+int DesktopIconView::updateBWList()
+{
+    m_proxy_model->updateBlackAndWriteLists();
+    /*
+    * 重新按照既定规则排序，这样可以避免出现空缺和图标重叠的情况
+    */
+    int sortType = GlobalSettings::getInstance()->getValue(LAST_DESKTOP_SORT_ORDER).toInt();
+    setSortType(sortType);
+    return 0;
 }

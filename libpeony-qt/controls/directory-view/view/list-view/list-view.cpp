@@ -69,7 +69,7 @@ ListView::ListView(QWidget *parent) : QTreeView(parent)
 
     header()->setSectionResizeMode(QHeaderView::Interactive);
     header()->setSectionsMovable(true);
-    header()->setStretchLastSection(true);
+    //header()->setStretchLastSection(true);
 
     setExpandsOnDoubleClick(false);
     setSortingEnabled(true);
@@ -300,7 +300,7 @@ void ListView::dragMoveEvent(QDragMoveEvent *e)
         m_ctrl_key_pressed = false;
 
     auto action = m_ctrl_key_pressed ? Qt::CopyAction : Qt::MoveAction;
-    qDebug()<<"list view dragMoveEvent()" <<action <<m_ctrl_key_pressed;
+    //qDebug()<<"list view dragMoveEvent()" <<action <<m_ctrl_key_pressed;
     auto index = indexAt(e->pos());
     if (index.isValid() && index != m_last_index) {
         QHoverEvent he(QHoverEvent::HoverMove, e->posF(), e->posF());
@@ -395,6 +395,12 @@ void ListView::slotRename()
     if (getDirectoryUri().startsWith("trash://"))
         return;
 
+    //standardPaths not allow rename
+    auto currentSelections = getSelections();
+    bool hasStandardPath = FileUtils::containsStandardPath(currentSelections);
+    if (hasStandardPath)
+        return;
+
     //delay edit action to avoid doubleClick or dragEvent
     qDebug()<<"slotRename"<<m_editValid;
     QTimer::singleShot(300, m_renameTimer, [&]() {
@@ -432,14 +438,10 @@ void ListView::adjustColumnsSize()
     if (model()->columnCount() == 0)
         return;
 
-    resizeColumnToContents(0);
-    int firstColumnSize = columnWidth(0);
-    firstColumnSize += this->indentation();
-    setColumnWidth(0, firstColumnSize);
+    header()->resizeSections(QHeaderView::ResizeToContents);
 
     int rightPartsSize = 0;
     for (int column = 1; column < model()->columnCount(); column++) {
-        resizeColumnToContents(column);
         int columnSize = header()->sectionSize(column);
         rightPartsSize += columnSize;
     }
@@ -451,7 +453,6 @@ void ListView::adjustColumnsSize()
     if (this->width() - rightPartsSize < BOTTOM_STATUS_MARGIN)
         return;
 
-    //resizeColumnToContents(0);
     header()->resizeSection(0, this->viewport()->width() - rightPartsSize);
 }
 
@@ -505,9 +506,10 @@ const QStringList ListView::getAllFileUris()
 QRect ListView::visualRect(const QModelIndex &index) const
 {
     auto rect = QTreeView::visualRect(index);
-    if (index.column() == 0) {
-        rect.setX(0);
-    }
+    //comment to fix rename state not show icon issue
+//    if (index.column() == 0) {
+//        rect.setX(0);
+//    }
     return rect;
 }
 
@@ -629,12 +631,7 @@ void ListView2::bindModel(FileItemModel *model, FileItemProxyFilterSortModel *pr
             this, &DirectoryViewWidget::viewSelectionChanged);
 
     connect(m_view, &ListView::activated, this, [=](const QModelIndex &index) {
-        qDebug()<<index.data(Qt::UserRole).toString();
         auto uri = index.data(Qt::UserRole).toString();
-        //process open symbolic link
-        auto info = FileInfo::fromUri(uri, false);
-        if (info->isSymbolLink() && uri.startsWith("file://"))
-            uri = "file://" + FileUtils::getSymbolicTarget(uri);
         Q_EMIT this->viewDoubleClicked(uri);
     });
 

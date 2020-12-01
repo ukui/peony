@@ -73,7 +73,7 @@ QString SideBarFileSystemItem::displayName()
     if (!m_volume_name.isEmpty()) {
         displayName += m_volume_name;
     }
-    if (!m_unix_device.isEmpty()) {
+    if (!m_unix_device.isEmpty() && !m_uri.contains("root.link")) {
         displayName += QString(" (%1)").arg(m_unix_device);
     }
     if (!displayName.isEmpty())

@@ -34,22 +34,22 @@ using namespace Peony;
 
 static void handleDuplicate(FileNode *node) {
     QString name = node->destBaseName();
-    QRegExp regExp("\\(\\d+\\)");
+    QRegExp regExpNum("^\\(\\d+\\)");
+    QRegExp regExp("\\(\\d+\\)(\\.[0-9a-zA-Z]+|)$");
     if (name.contains(regExp)) {
-        int pos = 0;
         int num = 0;
-        QString tmp;
-        while ((pos = regExp.indexIn(name, pos)) != -1) {
-            tmp = regExp.cap(0).toUtf8();
-            pos += regExp.matchedLength();
-            qDebug()<<"pos"<<pos;
-        }
-        tmp.remove(0,1);
-        tmp.chop(1);
-        num = tmp.toInt();
+        QString numStr = "";
 
-        num++;
-        name = name.replace(regExp, QString("(%1)").arg(num));
+        QString ext = regExp.cap(0);
+        if (ext.contains(regExpNum)) {
+            numStr = regExpNum.cap(0);
+        }
+
+        numStr.remove(0, 1);
+        numStr.chop(1);
+        num = numStr.toInt();
+        ++num;
+        name = name.replace(regExp, ext.replace(regExpNum, QString("(%1)").arg(num)));
         node->setDestFileName(name);
     } else {
         if (name.contains(".")) {
@@ -280,10 +280,14 @@ retry:
                         file->setDestFileName(name + "." + endStr);
                     }
                 }
-                if (FileUtils::isFileExsit(file->destUri())) {
+                while (FileUtils::isFileExsit(file->destUri())) {
                     handleDuplicate(file);
                 }
                 auto handledDestFileUri = file->resolveDestFileUri(m_dest_dir_uri);
+                while (FileUtils::isFileExsit(handledDestFileUri))
+                {
+                    handledDestFileUri = file->resolveDestFileUri(m_dest_dir_uri);
+                }
                 auto handledDestFile = wrapGFile(g_file_new_for_uri(handledDestFileUri.toUtf8()));
                 g_file_copy(srcFile.get()->get(),
                             handledDestFile.get()->get(),
@@ -633,7 +637,7 @@ fallback_retry:
                         node->setDestFileName(name);
                     }
                 }
-                if (FileUtils::isFileExsit(node->destUri())) {
+                while (FileUtils::isFileExsit(node->destUri())) {
                     handleDuplicate(node);
                 }
                 g_object_unref(destFile.get());
@@ -643,7 +647,7 @@ fallback_retry:
             case BackupAll: {
                 node->setState(FileNode::Handled);
                 node->setErrorResponse(BackupOne);
-                if (FileUtils::isFileExsit(node->destUri())) {
+                while (FileUtils::isFileExsit(node->destUri())) {
                     handleDuplicate(node);
                 }
                 m_prehandle_hash.insert(err->code, BackupOne);
@@ -768,7 +772,7 @@ fallback_retry:
                         node->setDestFileName(name + "." + endStr);
                     }
                 }
-                if (FileUtils::isFileExsit(node->destUri())) {
+                while (FileUtils::isFileExsit(node->destUri())) {
                     handleDuplicate(node);
                 }
                 auto handledDestFileUri = node->resolveDestFileUri(m_dest_dir_uri);
@@ -785,7 +789,10 @@ fallback_retry:
                 break;
             }
             case BackupAll: {
-                handleDuplicate(node);
+                while (FileUtils::isFileExsit(node->destUri()))
+                {
+                    handleDuplicate(node);
+                }
                 auto handledDestFileUri = node->resolveDestFileUri(m_dest_dir_uri);
                 auto handledDestFile = wrapGFile(g_file_new_for_uri(handledDestFileUri.toUtf8()));
                 g_file_copy(sourceFile.get()->get(),

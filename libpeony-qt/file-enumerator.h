@@ -174,6 +174,18 @@ protected:
     GFile *enumerateTargetFile();
 
     /*!
+     * \brief prepare_enumerate_callback
+     * \param file
+     * \param res
+     * \param p_this
+     * \return
+     * \see prepare(), handleError()
+     */
+    static GAsyncReadyCallback prepare_enumerate_callback(GFile *file,
+                                                          GAsyncResult *res,
+                                                          FileEnumerator *p_this);
+
+    /*!
      * \brief mount_mountable_callback
      * \param file
      * \param res

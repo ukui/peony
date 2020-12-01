@@ -22,6 +22,7 @@
 
 #include "file-utils.h"
 #include "file-info.h"
+#include "volume-manager.h"
 #include <QUrl>
 #include <QFileInfo>
 #include <QFileInfoList>
@@ -410,6 +411,38 @@ const QString FileUtils::getOriginalUri(const QString &uri)
     return originalUri;
 }
 
+bool FileUtils::isStandardPath(const QString &uri)
+{
+    QUrl url = uri;
+    QDir templateDir(g_get_user_special_dir(G_USER_DIRECTORY_TEMPLATES));
+    QString desktopPath = QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
+    QString documentPath = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
+    QString picturePath = QStandardPaths::writableLocation(QStandardPaths::PicturesLocation);
+    QString videoPath= QStandardPaths::writableLocation(QStandardPaths::MoviesLocation);
+    QString downloadPath = QStandardPaths::writableLocation(QStandardPaths::DownloadLocation);
+    QString musicPath = QStandardPaths::writableLocation(QStandardPaths::MusicLocation);
+    QStringList mStandardPaths;
+    //qDebug() << "isStandardPath :" <<templateDir.path();
+    mStandardPaths <<desktopPath <<documentPath <<picturePath <<videoPath
+                  <<downloadPath <<musicPath <<templateDir.path();
+
+    if (mStandardPaths.contains(url.path()))
+        return true;
+
+    return false;
+}
+
+bool FileUtils::containsStandardPath(const QStringList &list)
+{
+    for(auto uri:list)
+    {
+        if (isStandardPath(uri))
+            return true;
+    }
+
+    return false;
+}
+
 bool FileUtils::isFileExsit(const QString &uri)
 {
     bool exist = false;
@@ -432,8 +465,21 @@ const QStringList FileUtils::toDisplayUris(const QStringList &args)
             auto absPath = currentDir.absoluteFilePath(path);
             path = absPath;
             url = QUrl::fromLocalFile(absPath);
+        } else if (path.startsWith ("computer:///") && path.endsWith(".link")) {
+            GFile* file = g_file_new_for_uri(url.toString().toUtf8().constData());
+            if (nullptr != file) {
+                GFileInfo* info = g_file_query_info(file, G_FILE_ATTRIBUTE_STANDARD_TARGET_URI, G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, NULL, NULL);
+                if (nullptr != info) {
+                    url = g_file_info_get_attribute_string(info, G_FILE_ATTRIBUTE_STANDARD_TARGET_URI);
+                    g_object_unref(info);
+                }
+                g_object_unref(file);
+            }
         }
-        uris<<url.toDisplayString();
+
+        if (FileUtils::isFileExsit(url.toString())) {
+            uris << url.toDisplayString();
+        }
     }
     return uris;
 }
@@ -457,12 +503,14 @@ bool FileUtils::isMountRoot(const QString &uri)
 
 bool FileUtils::queryVolumeInfo(const QString &volumeUri, QString &volumeName, QString &unixDeviceName, const QString &volumeDisplayName)
 {
+    char *unix_dev_file = nullptr;
+
     if (!volumeUri.startsWith("computer:///"))
         return false;
 
     GFile *file = g_file_new_for_uri(volumeUri.toUtf8().constData());
     GFileInfo *info = g_file_query_info(file,
-                                        "mountable::*",
+                                        "*",
                                         G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
                                         nullptr,
                                         nullptr);
@@ -477,10 +525,20 @@ bool FileUtils::queryVolumeInfo(const QString &volumeUri, QString &volumeName, Q
         displayName = getFileDisplayName(volumeUri);
     }
 
-    char *unix_dev_file = g_file_info_get_attribute_as_string(info, G_FILE_ATTRIBUTE_MOUNTABLE_UNIX_DEVICE_FILE);
-    unixDeviceName = unix_dev_file;
-    if (unix_dev_file)
+    unix_dev_file = g_file_info_get_attribute_as_string(info, G_FILE_ATTRIBUTE_MOUNTABLE_UNIX_DEVICE_FILE);//for computer:///xxx.drive
+    if(!unix_dev_file){//for computer:///xxx.mount
+        char *targetUri = g_file_info_get_attribute_as_string(info, G_FILE_ATTRIBUTE_STANDARD_TARGET_URI);
+        if(targetUri){
+            char *realMountPoint = g_filename_from_uri(targetUri,NULL,NULL);
+            const char *unix_dev = Peony::VolumeManager::getUnixDeviceFileFromMountPoint(realMountPoint);
+            unixDeviceName = unix_dev;
+            g_free(targetUri);
+            g_free(realMountPoint);
+        }
+    }else{
+        unixDeviceName = unix_dev_file;
         g_free(unix_dev_file);
+    }
 
     auto list = displayName.split(":");
     if (list.count() > 1) {
@@ -606,6 +664,7 @@ void FileUtils::handleVolumeLabelForFat32(QString &volumeName,const QString &uni
     QString partitionName,linkTarget;
     QString tmpName,finalName;
     int i;
+    QRegExp rx("[^\u4e00-\u9fa5]");		//non-chinese characters
 
     diskDir.setPath("/dev/disk/by-label");
     if(!diskDir.exists())               //this means: volume has no name.
@@ -620,7 +679,8 @@ void FileUtils::handleVolumeLabelForFat32(QString &volumeName,const QString &uni
     for(i = 0; i < diskList.size(); ++i){
         diskLabel = diskList.at(i);
         linkTarget = diskLabel.symLinkTarget();
-        if(linkTarget.contains(partitionName))
+        linkTarget = linkTarget.mid(linkTarget.lastIndexOf('/')+1);
+        if(linkTarget == partitionName)
             break;
         linkTarget.clear();
     }
@@ -629,9 +689,10 @@ void FileUtils::handleVolumeLabelForFat32(QString &volumeName,const QString &uni
         tmpName = diskLabel.fileName();//可能带有乱码的名字
 
     if(!tmpName.isEmpty()){
-        if(tmpName == volumeName)      //ntfs、exfat格式或者非纯中文名的fat32设备,这个设备的名字不需要转码
+        if(tmpName == volumeName || !tmpName.contains(rx)){      //ntfs、exfat格式或者非纯中文名的fat32设备,这个设备的名字不需要转码
+            volumeName = tmpName;
             return;
-        else{
+        }else{
             finalName = transcodeForGbkCode(tmpName.toLocal8Bit(), volumeName);
             if(!finalName.isEmpty())
                 volumeName = finalName;

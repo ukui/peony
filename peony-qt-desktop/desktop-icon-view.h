@@ -25,9 +25,12 @@
 
 #include <QListView>
 #include "directory-view-plugin-iface.h"
+#include "peony-dbus-service.h"
 
 #include <QStandardPaths>
 #include <QTimer>
+
+#include <QMap>
 
 class QLabel;
 
@@ -35,6 +38,7 @@ namespace Peony {
 
 class DesktopItemModel;
 class DesktopItemProxyModel;
+class PeonyDbusService;
 
 class DesktopIconView : public QListView, public DirectoryViewIface
 {
@@ -92,6 +96,7 @@ public:
 
     QRect visualRect(const QModelIndex &index) const;
     const QFont getViewItemFont(QStyleOptionViewItem *item);
+    int updateBWList();
 
 Q_SIGNALS:
     void zoomLevelChanged(ZoomLevel level);
@@ -167,13 +172,14 @@ public Q_SLOTS:
      * \details used in both view and model. before we add/remove an item to
      * model, we should know current items layout.
      */
-    QHash<QString, QRect> getCurrentItemRects();
+    QMap<QString, QRect> getCurrentItemRects();
     void removeItemRect(const QString &uri);
 
     void updateItemPosByUri(const QString &uri, const QPoint &pos);
     void ensureItemPosByUri(const QString &uri);
 
     void setShowHidden();
+    void setEditFlag(bool edit);
 
 protected:
     void mousePressEvent(QMouseEvent *e);
@@ -202,6 +208,8 @@ protected:
 
     const QRect getBoundingRect();
 
+    void relayoutExsitingItems(const QStringList &uris);
+
 private:
     ZoomLevel m_zoom_level = Invalid;
 
@@ -225,11 +233,14 @@ private:
 
     bool m_is_renaming = false;
 
+    bool m_is_edit = false;
+
     QTimer m_refresh_timer;
 
     QModelIndexList m_drag_indexes;
 
-    QHash<QString, QRect> m_item_rect_hash;
+    PeonyDbusService *m_peonyDbusSer;
+    QMap<QString, QRect> m_item_rect_hash;
 };
 
 }

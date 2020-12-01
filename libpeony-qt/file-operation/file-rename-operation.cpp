@@ -32,22 +32,22 @@
 using namespace Peony;
 
 static QString handleDuplicate(QString name) {
-    QRegExp regExp("\\(\\d+\\)");
+    QRegExp regExpNum("^\\(\\d+\\)");
+    QRegExp regExp("\\(\\d+\\)(\\.[\\.0-9a-zA-Z]+|)$");
     if (name.contains(regExp)) {
-        int pos = 0;
         int num = 0;
-        QString tmp;
-        while ((pos = regExp.indexIn(name, pos)) != -1) {
-            tmp = regExp.cap(0).toUtf8();
-            pos += regExp.matchedLength();
-            qDebug()<<"pos"<<pos;
-        }
-        tmp.remove(0,1);
-        tmp.chop(1);
-        num = tmp.toInt();
+        QString numStr = "";
 
-        num++;
-        name = name.replace(regExp, QString("(%1)").arg(num));
+        QString ext = regExp.cap(0);
+        if (ext.contains(regExpNum)) {
+            numStr = regExpNum.cap(0);
+        }
+
+        numStr.remove(0, 1);
+        numStr.chop(1);
+        num = numStr.toInt();
+        ++num;
+        name = name.replace(regExp, ext.replace(regExpNum, QString("(%1)").arg(num)));
         return name;
     } else {
         if (name.contains(".")) {

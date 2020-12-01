@@ -167,6 +167,11 @@ public:
     QString displayName() {
         return m_display_name;
     }
+
+    QString desktopName(){
+        return m_desktop_name;
+    }
+
     QString iconName() {
         return m_icon_name;
     }
@@ -248,6 +253,9 @@ public:
     bool canStop() {
         return m_can_stop;
     }
+    QString unixDeviceFile() {
+        return QString(m_unix_device_file);
+    }
 
     bool isDesktopFile() {
         return m_can_excute && m_uri.endsWith(".desktop");
@@ -321,6 +329,7 @@ private:
     bool m_is_loaded = false;
 
     QString m_display_name = nullptr;
+    QString m_desktop_name = nullptr;
     QString m_icon_name = nullptr;
     QString m_symbolic_icon_name = nullptr;
     QString m_file_id = nullptr;
@@ -355,6 +364,7 @@ private:
 
     bool m_can_start = false;
     bool m_can_stop = false;
+    const char *m_unix_device_file = nullptr;
 
     //FIXME: should i use smart pointer wrap these data?
     GFile *m_file = nullptr;

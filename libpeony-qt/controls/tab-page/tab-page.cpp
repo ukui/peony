@@ -118,7 +118,7 @@ void TabPage::rebindContainer()
             //process open symbolic link
             QString targetUri = uri;
             auto info = FileInfo::fromUri(uri, false);
-            if (info->isSymbolLink() && uri.startsWith("file://"))
+            if (info->isSymbolLink() && uri.startsWith("file://") && info->isValid())
                 targetUri = "file://" + FileUtils::getSymbolicTarget(uri);
             Q_EMIT this->updateWindowLocationRequest(targetUri);
         } else {

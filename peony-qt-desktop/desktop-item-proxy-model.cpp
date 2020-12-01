@@ -27,9 +27,16 @@
 #include "file-operation-utils.h"
 #include "global-settings.h"
 
+#include <QDir>
 #include <QDebug>
 
+#include <QLocale>
+#include <QCollator>
+
 using namespace Peony;
+
+QLocale locale = QLocale(QLocale::system().name());
+QCollator comparer = QCollator(locale);
 
 bool startWithChinese(const QString &displayName)
 {
@@ -43,11 +50,26 @@ bool startWithChinese(const QString &displayName)
 
 DesktopItemProxyModel::DesktopItemProxyModel(QObject *parent) : QSortFilterProxyModel(parent)
 {
+    //enable number sort, like 100 is after 99
+    comparer.setNumericMode(true);
+
     setSortCaseSensitivity(Qt::CaseInsensitive);
     setDynamicSortFilter(false);
     auto settings = GlobalSettings::getInstance();
     m_show_hidden = settings->isExist("show-hidden")? settings->getValue("show-hidden").toBool(): false;
     //qDebug() <<"DesktopItemProxyModel:" <<settings->isExist("show-hidden")<<m_show_hidden;
+
+    m_bwListInfo = new BWListInfo();
+    m_jsonOp = new PeonyJsonOperation();
+    QString jsonPath=QDir::homePath()+"/.config/peony-security-config.json";
+    m_jsonOp->setConfigFile(jsonPath);
+    m_jsonOp->loadConfigFile(m_bwListInfo);
+}
+
+DesktopItemProxyModel::~DesktopItemProxyModel()
+{
+    delete m_jsonOp;
+    delete m_bwListInfo;
 }
 
 bool DesktopItemProxyModel::filterAcceptsRow(int source_row, const QModelIndex &source_parent) const
@@ -65,6 +87,15 @@ bool DesktopItemProxyModel::filterAcceptsRow(int source_row, const QModelIndex &
     if (! m_show_hidden && info->displayName().startsWith(".")) {
         return false;
     }
+
+    if (info->isDesktopFile() && nullptr != info->desktopName()){
+        if (m_bwListInfo->isBlackListMode()){
+            return !m_bwListInfo->desktopNameExist(info->desktopName());
+        } else if (m_bwListInfo->isWriteListMode()){
+            return m_bwListInfo->desktopNameExist(info->desktopName());
+        }
+    }
+
     return true;
 }
 
@@ -110,7 +141,7 @@ bool DesktopItemProxyModel::lessThan(const QModelIndex &source_left, const QMode
         }
     }
 
-    //qDebug()<<"sort===================================="<<SortType(m_sort_type)<<m_sort_type;
+    //qDebug()<<"sort in desktop"<<SortType(m_sort_type)<<m_sort_type;
     switch (m_sort_type) {
     case FileName: {
         if (FileOperationUtils::leftNameIsDuplicatedFileOfRightName(leftInfo->displayName(), rightInfo->displayName())) {
@@ -128,16 +159,17 @@ bool DesktopItemProxyModel::lessThan(const QModelIndex &source_left, const QMode
                 return (sortOrder()==Qt::AscendingOrder)? false: true;
             }
         }
-        return QSortFilterProxyModel::lessThan(source_left, source_right);
+        return comparer.compare(leftInfo->displayName(), rightInfo->displayName()) < 0;
+        //return QSortFilterProxyModel::lessThan(source_left, source_right);
+    }
+    case ModifiedDate: {
+        return leftInfo->modifiedTime() < rightInfo->modifiedTime();
     }
     case FileType: {
         return leftInfo->type() < rightInfo->type();
     }
     case FileSize: {
         return leftInfo->size() < rightInfo->size();
-    }
-    case ModifiedDate: {
-        return leftInfo->modifiedTime() < rightInfo->modifiedTime();
     }
     }
 
@@ -149,4 +181,13 @@ void DesktopItemProxyModel::setShowHidden(bool showHidden)
     GlobalSettings::getInstance()->setValue("show-hidden", showHidden);
     m_show_hidden = showHidden;
     invalidateFilter();
+}
+
+int DesktopItemProxyModel::updateBlackAndWriteLists()
+{
+    m_bwListInfo->clearBWlist();
+    m_jsonOp->loadConfigFile(m_bwListInfo);
+    //重新过滤显示
+    invalidateFilter();
+    return 0;
 }

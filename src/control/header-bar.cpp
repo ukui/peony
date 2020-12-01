@@ -55,6 +55,8 @@
 
 #include <QtConcurrent>
 
+#include <QX11Info>
+
 #include <QDebug>
 
 static HeaderBarStyle *global_instance = nullptr;
@@ -629,5 +631,12 @@ void HeaderBarContainer::addWindowButtons()
         auto w = layout->itemAt(i)->widget();
         w->setProperty("useIconHighlightEffect", true);
         w->setProperty("iconHighlightEffectMode", 1);
+    }
+
+    if (!QX11Info::isPlatformX11()) {
+        minimize->setVisible(false);
+        maximizeAndRestore->setVisible(false);
+        close->setVisible(false);
+        m_layout->removeItem(layout);
     }
 }

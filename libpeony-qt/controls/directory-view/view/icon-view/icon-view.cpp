@@ -205,8 +205,14 @@ void IconView::dragMoveEvent(QDragMoveEvent *e)
     else
         m_ctrl_key_pressed = false;
 
+    //fix can not drag in the second time issue
+    if (this->isDraggingState())
+    {
+        this->clearSelection();
+    }
+
     auto action = m_ctrl_key_pressed ? Qt::CopyAction : Qt::MoveAction;
-    qDebug()<<"dragMoveEvent()" <<action <<m_ctrl_key_pressed;
+    //qDebug()<<"dragMoveEvent()" <<action <<m_ctrl_key_pressed;
     auto index = indexAt(e->pos());
     if (index.isValid() && index != m_last_index) {
         QHoverEvent he(QHoverEvent::HoverMove, e->posF(), e->posF());
@@ -357,6 +363,12 @@ void IconView::slotRename()
     if (getDirectoryUri().startsWith("trash://"))
         return;
 
+    //standardPaths not allow rename
+    auto currentSelections = getSelections();
+    bool hasStandardPath = FileUtils::containsStandardPath(currentSelections);
+    if (hasStandardPath)
+        return;
+
     //delay edit action to avoid doubleClick or dragEvent
     qDebug()<<"slotRename"<<m_editValid;
     QTimer::singleShot(300, m_renameTimer, [&]() {
@@ -438,7 +450,7 @@ void IconView::setProxy(DirectoryViewProxyIface *proxy)
         auto uri = index.data(FileItemModel::UriRole).toString();
         //process open symbolic link
         auto info = FileInfo::fromUri(uri, false);
-        if (info->isSymbolLink() && uri.startsWith("file://"))
+        if (info->isSymbolLink() && uri.startsWith("file://") && info->isValid())
             uri = "file://" + FileUtils::getSymbolicTarget(uri);
         Q_EMIT m_proxy->viewDoubleClicked(uri);
     });
@@ -585,10 +597,6 @@ void IconView2::bindModel(FileItemModel *model, FileItemProxyFilterSortModel *pr
 
     connect(m_view, &IconView::activated, this, [=](const QModelIndex &index) {
         auto uri = index.data(Qt::UserRole).toString();
-        //process open symbolic link
-        auto info = FileInfo::fromUri(uri, false);
-        if (info->isSymbolLink() && uri.startsWith("file://"))
-            uri = "file://" +  FileUtils::getSymbolicTarget(uri);
         Q_EMIT this->viewDoubleClicked(uri);
     });
 

@@ -35,24 +35,30 @@ BorderShadowEffect::BorderShadowEffect(QObject *parent) : QGraphicsEffect(parent
 
 void BorderShadowEffect::setBorderRadius(int radius)
 {
-    m_x_border_radius = radius;
-    m_y_border_radius = radius;
+    m_x_border_radius = 0;
+    m_y_border_radius = 0;
+    //m_x_border_radius = radius;
+    //m_y_border_radius = radius;
 }
 
 void BorderShadowEffect::setBorderRadius(int xradius, int yradius)
 {
-    m_x_border_radius = xradius;
-    m_y_border_radius = yradius;
+    m_x_border_radius = 0;
+    m_y_border_radius = 0;
+    //m_x_border_radius = xradius;
+    //m_y_border_radius = yradius;
 }
 
 void BorderShadowEffect::setBlurRadius(int radius)
 {
-    m_blur_radius = radius;
+    m_blur_radius = 0;
+    //m_blur_radius = radius;
 }
 
 void BorderShadowEffect::setPadding(int padding)
 {
-    m_padding = padding;
+    m_padding = 0;
+    //m_padding = padding;
 }
 
 void BorderShadowEffect::setShadowColor(const QColor &color)
@@ -93,6 +99,8 @@ void BorderShadowEffect::drawWindowShadowManually(QPainter *painter, const QRect
     auto bgPath = contentPath - m_transparent_path;
     painter->fillPath(bgPath, m_window_bg);
     painter->fillPath(m_transparent_path, m_transparent_bg);
+
+    return;
 
     if (fakeShadow) {
         painter->save();

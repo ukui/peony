@@ -79,13 +79,53 @@ void Format_Dialog::colseFormat(bool)
     cancel_format(dev_name);
 }
 
+
+static void unmount_finished(GFile* file, GAsyncResult* result, gpointer udata)
+{
+    
+    int flags = 0;
+    GError *err = nullptr;
+    Format_Dialog *pthis = (Format_Dialog *)udata;
+
+    if (g_file_unmount_mountable_with_operation_finish (file, result, &err) == TRUE){
+        flags = 1;
+    }
+
+    //add QMessageBox error ,let user know the error messages
+    
+    if (err) {
+        flags = 0;
+        
+        QMessageBox message_error;
+          
+        message_error.setText(QObject::tr("Error: %1\n").arg(err->message));
+
+        message_error.setWindowTitle(QObject::tr("Format failed"));
+
+        QPushButton *okButton = message_error.addButton(QObject::tr("YES"),QMessageBox::YesRole);
+
+        message_error.exec();
+          
+        if(message_error.clickedButton() == okButton)
+        {    
+            pthis->close();
+        }    
+        
+        g_error_free(err);
+    }
+
+    
+    if(flags){
+        Q_EMIT pthis->ensure_format(true);
+    }
+}
+
 void Format_Dialog::acceptFormat(bool)
 {
-
-    ui->pushButton_ok->setDisabled(TRUE);
-    ui->pushButton_close->setDisabled(TRUE);
-    ui->lineEdit_device_name->setDisabled(TRUE);
-    ui->checkBox_clean_or_not->setDisabled(TRUE);
+    //check format or not 
+   if(!format_makesure_dialog()){
+        return;
+   };
 
     //init the value
     char rom_size[1024] ={0},rom_type[1024]={0},rom_name[1024]={0},dev_name[1024]={0};
@@ -104,7 +144,16 @@ void Format_Dialog::acceptFormat(bool)
     quick_clean = ui->checkBox_clean_or_not->isChecked();
 
     // umount device
-    fm_item ->unmount();
+    //fm_item ->unmount();
+
+    auto files = wrapGFile(g_file_new_for_uri(this->fm_uris.toUtf8().constData()));
+    g_file_unmount_mountable_with_operation(files.get()->get(),
+                                            G_MOUNT_UNMOUNT_NONE,
+                                            nullptr,
+                                            nullptr,
+                                            GAsyncReadyCallback(unmount_finished),
+                                            this);
+
 
     //get device name
     QString volname, devName, voldisplayname ,devtype;
@@ -119,10 +168,10 @@ void Format_Dialog::acceptFormat(bool)
     //enter kdisk_format function
 
     //init format_finish value
-    int format_value = 0;
+    //int format_value = 0;
 
     //begin format
-    kdisk_format(dev_name,devtype.toLower().toUtf8().constData(),quick_clean?"zero":NULL,rom_name,&format_value);
+    //kdisk_format(dev_name,devtype.toLower().toUtf8().constData(),quick_clean?"zero":NULL,rom_name,&format_value);
 
     //begin start my_timer, processbar
     my_time  = new QTimer(this);
@@ -139,7 +188,26 @@ void Format_Dialog::acceptFormat(bool)
     //begin loop
     connect(my_time,SIGNAL(timeout()),this,SLOT(formatloop()));
 
-    my_time->start();
+   // my_time->start();
+
+    //while get ensure emit , do format 
+      connect(this,&Format_Dialog::ensure_format,[=](bool){
+
+        int format_value = 0;
+        //do format 
+        kdisk_format(dev_name,devtype.toLower().toUtf8().constData(),quick_clean?"zero":NULL,rom_name,&format_value);
+        
+        // time begin loop
+        my_time->start();
+
+        // set ui button disable
+        ui->pushButton_ok->setDisabled(TRUE);
+        ui->pushButton_close->setDisabled(TRUE);
+        ui->lineEdit_device_name->setDisabled(TRUE);
+        ui->checkBox_clean_or_not->setDisabled(TRUE);
+    });
+
+
 
 }
 
@@ -381,6 +449,28 @@ void Format_Dialog::format_err_dialog()
 {
       QMessageBox::warning(m_parent,tr("qmesg_notify"),tr("Sorry, the format operation is failed!"));
 };
+
+bool Format_Dialog::format_makesure_dialog(){
+
+    QMessageBox message_format;
+
+    message_format.setText(tr("Formatting this volume will erase all data on it. Please backup all retained data before formatting. Do you want to continue ?"));
+
+    message_format.setWindowTitle(tr("format"));
+
+    QPushButton *okButton = message_format.addButton(tr("begin format"),QMessageBox::YesRole);
+
+    QPushButton *cancelButton = message_format.addButton(tr("close"),QMessageBox::NoRole);
+
+    message_format.exec();
+
+    if(message_format.clickedButton() == cancelButton)
+    {
+        return false;
+    }
+
+    return true;
+}
 
 
 /* ensure_format_cb ,function ensure to do format

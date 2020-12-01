@@ -53,6 +53,8 @@
 #include <QTextLayout>
 #include <QFileInfo>
 
+#include <QStyleOptionViewItem>
+
 using namespace Peony;
 using namespace Peony::DirectoryView;
 
@@ -113,7 +115,10 @@ void IconViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
 
     auto style = QApplication::style();
 
+    auto rawDecoSize = opt.decorationSize;
+    opt.decorationSize = view->iconSize();
     style->drawPrimitive(QStyle::PE_PanelItemViewItem, &opt, painter, nullptr);
+    opt.decorationSize = rawDecoSize;
 
     if (ClipboardUtils::getClipedFilesParentUri() == view->getDirectoryUri()) {
         if (ClipboardUtils::isClipboardFilesBeCut()) {
