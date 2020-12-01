@@ -132,7 +132,7 @@ void NavigationTabBar::updateLocation(int index, const QString &uri)
     }
 
     setTabText(index, displayName);
-//    setTabIcon(index, QIcon::fromTheme(iconName));
+    setTabIcon(index, QIcon::fromTheme(iconName));
     setTabData(index, uri);
     relayoutFloatButton(false);
 
