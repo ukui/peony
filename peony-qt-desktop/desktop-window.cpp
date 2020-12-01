@@ -140,7 +140,7 @@ DesktopWindow::DesktopWindow(QScreen *screen, bool is_primary, QWidget *parent)
     connect(this, &QMainWindow::customContextMenuRequested,
     [=](const QPoint &pos) {
         // FIXME: use other menu
-        qDebug() << "menu request";
+        qDebug() << "menu request in desktop window";
         auto contentMargins = contentsMargins();
         auto fixedPos = pos - QPoint(contentMargins.left(), contentMargins.top());
         auto index = PeonyDesktopApplication::getIconView()->indexAt(fixedPos);

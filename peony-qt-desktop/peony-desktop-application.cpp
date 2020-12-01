@@ -133,7 +133,12 @@ PeonyDesktopApplication::PeonyDesktopApplication(int &argc, char *argv[], const 
         file.open(QFile::ReadOnly);
         setStyleSheet(QString::fromLatin1(file.readAll()));
         file.close();
-        Peony::DesktopMenuPluginManager::getInstance();
+
+        //add 3 seconds delay to load plugins
+        //try to fix first time enter desktop right menu not show open terminal issue
+        QTimer::singleShot(3000, [=]() {
+            Peony::DesktopMenuPluginManager::getInstance();
+        });
 
         /*
         QSystemTrayIcon *trayIcon = new QSystemTrayIcon(this);
