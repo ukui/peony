@@ -113,7 +113,12 @@ void TabStatusBar::update()
                 size += selection->size();
             }
         }
-        auto format_size = g_format_size(size);
+      
+        // auto format_size = g_format_size(size);
+    
+       //Calculated by 1024 bytes 
+        auto format_size  = g_format_size_full(size,G_FORMAT_SIZE_IEC_UNITS);
+      
         //qDebug() << "directoryCount:" <<directoryCount <<",fileCount" <<fileCount <<format_size;
 
         //in computer, only show selected count
