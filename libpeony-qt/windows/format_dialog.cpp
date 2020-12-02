@@ -47,7 +47,10 @@ Format_Dialog::Format_Dialog(const QString &m_uris,SideBarAbstractItem *m_item,Q
        quint64 total = g_file_info_get_attribute_uint64(fm_info, G_FILE_ATTRIBUTE_FILESYSTEM_SIZE);
 
        //get the rom size
-       char *total_format = g_format_size(total);
+       //char *total_format = g_format_size(total);
+
+       //Calculated by 1024 bytes
+       char *total_format = strtok(g_format_size_full(total,G_FORMAT_SIZE_IEC_UNITS),"iB");
 
        //add the rom size value into  rom_size combox
        ui->comboBox_rom_size->addItem(total_format);

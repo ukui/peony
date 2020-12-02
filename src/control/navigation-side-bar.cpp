@@ -31,6 +31,7 @@
 #include "bookmark-manager.h"
 #include "file-info.h"
 #include "file-info-job.h"
+#include "main-window.h"
 
 #include "global-settings.h"
 
@@ -153,6 +154,14 @@ NavigationSideBar::NavigationSideBar(QWidget *parent) : QTreeView(parent)
         if (item) {
             if (item->type() != Peony::SideBarAbstractItem::SeparatorItem) {
                 Peony::SideBarMenu menu(item, nullptr);
+                MainWindow *window = dynamic_cast<MainWindow *>(this->topLevelWidget());
+                menu.addAction(QIcon::fromTheme("window-new-symbolic"), tr("Open In &New Window"), [=](){
+                    auto newWindow = window->create(item->uri());
+                    dynamic_cast<QWidget *>(newWindow)->show();
+                });
+                menu.addAction(QIcon::fromTheme("tab-new-symbolic"), tr("Open In New &Tab"), [=](){
+                    window->addNewTabs(QStringList()<<item->uri());
+                });
                 menu.exec(QCursor::pos());
             }
         }

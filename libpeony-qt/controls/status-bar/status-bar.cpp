@@ -78,7 +78,10 @@ void StatusBar::update()
                 size += selection->size();
             }
         }
-        auto format_size = g_format_size(size);
+        //auto format_size = g_format_size(size);
+        //Calculated by 1024 bytes
+        auto format_size = g_format_size_full(size,G_FORMAT_SIZE_IEC_UNITS);
+
         if (selections.count() == 1) {
             if (directoryCount == 1)
                 directoriesString = QString(", %1").arg(selections.first()->displayName());

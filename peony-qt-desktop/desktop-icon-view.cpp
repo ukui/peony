@@ -460,7 +460,7 @@ void DesktopIconView::initMenu()
     connect(this, &QListView::customContextMenuRequested, this,
     [=](const QPoint &pos) {
         // FIXME: use other menu
-        qDebug() << "menu request";
+        qDebug() << "menu request  in desktop icon view";
         if (!this->indexAt(pos).isValid()) {
             this->clearSelection();
         } else {

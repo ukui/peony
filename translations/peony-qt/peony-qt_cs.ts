@@ -27,52 +27,52 @@
 <context>
     <name>HeaderBar</name>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="82"/>
+        <location filename="../../src/control/header-bar.cpp" line="84"/>
         <source>Create Folder</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="96"/>
+        <location filename="../../src/control/header-bar.cpp" line="98"/>
         <source>Open Terminal</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="110"/>
+        <location filename="../../src/control/header-bar.cpp" line="112"/>
         <source>Go Back</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="118"/>
+        <location filename="../../src/control/header-bar.cpp" line="120"/>
         <source>Go Forward</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="158"/>
+        <location filename="../../src/control/header-bar.cpp" line="160"/>
         <source>Search</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="168"/>
+        <location filename="../../src/control/header-bar.cpp" line="170"/>
         <source>View Type</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="195"/>
+        <location filename="../../src/control/header-bar.cpp" line="197"/>
         <source>Sort Type</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="221"/>
+        <location filename="../../src/control/header-bar.cpp" line="223"/>
         <source>Option</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="265"/>
+        <location filename="../../src/control/header-bar.cpp" line="267"/>
         <source>Operate Tips</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="266"/>
+        <location filename="../../src/control/header-bar.cpp" line="268"/>
         <source>Don&apos;t find any terminal, please install at least one terminal!</source>
         <translation type="unfinished"></translation>
     </message>
@@ -88,12 +88,12 @@
 <context>
     <name>HeaderBarContainer</name>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="563"/>
+        <location filename="../../src/control/header-bar.cpp" line="565"/>
         <source>Minimize</source>
         <translation type="unfinished">Küçült</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="575"/>
+        <location filename="../../src/control/header-bar.cpp" line="577"/>
         <source>Maximize/Restore</source>
         <translation type="unfinished"></translation>
     </message>
@@ -106,7 +106,7 @@
         <translation type="vanished">Büyüt</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="596"/>
+        <location filename="../../src/control/header-bar.cpp" line="598"/>
         <source>Close</source>
         <translation type="unfinished">Kapat</translation>
     </message>
@@ -114,28 +114,22 @@
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="108"/>
-        <location filename="../../src/windows/main-window.cpp" line="611"/>
-        <source>File Manager</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/windows/main-window.cpp" line="295"/>
+        <location filename="../../src/windows/main-window.cpp" line="304"/>
         <source>Undo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="302"/>
+        <location filename="../../src/windows/main-window.cpp" line="311"/>
         <source>Redo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1265"/>
+        <location filename="../../src/windows/main-window.cpp" line="1319"/>
         <source>Delete Permanently</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1266"/>
+        <location filename="../../src/windows/main-window.cpp" line="1320"/>
         <source>Are you sure that you want to delete these files? Once you start a deletion, the files deleting will never be restored again.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -144,7 +138,7 @@
         <translation type="vanished">Peony Qt</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="624"/>
+        <location filename="../../src/windows/main-window.cpp" line="655"/>
         <source>New Folder</source>
         <translation type="unfinished"></translation>
     </message>
@@ -155,11 +149,21 @@
         <source>All tags...</source>
         <translation type="vanished">Tüm etiketler...</translation>
     </message>
+    <message>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="158"/>
+        <source>Open In &amp;New Window</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="162"/>
+        <source>Open In New &amp;Tab</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>NavigationSideBarContainer</name>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="273"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="285"/>
         <source>All tags...</source>
         <translation type="unfinished">Tüm etiketler...</translation>
     </message>
@@ -277,12 +281,12 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.cpp" line="579"/>
+        <location filename="../../src/peony-application.cpp" line="592"/>
         <source>Peony Qt</source>
         <translation type="unfinished">Peony Qt</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.cpp" line="580"/>
+        <location filename="../../src/peony-application.cpp" line="593"/>
         <source>Author:
 	Yue Lan &lt;lanyue@kylinos.cn&gt;
 	Meihong He &lt;hemeihong@kylinos.cn&gt;
@@ -399,34 +403,34 @@ Telif (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</translatio
 <context>
     <name>TabStatusBar</name>
     <message>
-        <location filename="../../src/control/tab-status-bar.cpp" line="119"/>
-        <location filename="../../src/control/tab-status-bar.cpp" line="127"/>
+        <location filename="../../src/control/tab-status-bar.cpp" line="133"/>
+        <location filename="../../src/control/tab-status-bar.cpp" line="141"/>
         <source>; %1 folders</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-status-bar.cpp" line="121"/>
-        <location filename="../../src/control/tab-status-bar.cpp" line="129"/>
+        <location filename="../../src/control/tab-status-bar.cpp" line="135"/>
+        <location filename="../../src/control/tab-status-bar.cpp" line="143"/>
         <source>; %1 files, %2 total</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-status-bar.cpp" line="123"/>
+        <location filename="../../src/control/tab-status-bar.cpp" line="137"/>
         <source>; %1 folder</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-status-bar.cpp" line="125"/>
+        <location filename="../../src/control/tab-status-bar.cpp" line="139"/>
         <source>; %1 file, %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-status-bar.cpp" line="134"/>
+        <location filename="../../src/control/tab-status-bar.cpp" line="148"/>
         <source>%1 selected</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-status-bar.cpp" line="146"/>
+        <location filename="../../src/control/tab-status-bar.cpp" line="160"/>
         <source>Search &quot;%1&quot; in &quot;%2&quot;</source>
         <translation type="unfinished"></translation>
     </message>

@@ -540,11 +540,14 @@ const QList<QAction *> DesktopMenu::constructMenuPluginActions()
     //FIXME:
     auto mgr = DesktopMenuPluginManager::getInstance();
     if (mgr->isLoaded()) {
+        //add debug log to check open-terminal not show in first time issue
+        qDebug() << "DesktopMenu PluginManager is loaded";
         //sort plugiins by name, so the menu option orders is relatively fixed
         auto pluginIds = mgr->getPluginIds();
         qSort(pluginIds.begin(), pluginIds.end());
 
         for (auto id : pluginIds) {
+            qDebug() << "desktop luginIds:" <<id;
             auto plugin = mgr->getPlugin(id);
             auto actions = plugin->menuActions(MenuPluginInterface::DesktopWindow,
                                                m_directory,
