@@ -240,7 +240,8 @@ const QList<QAction *> DesktopMenu::constructCreateTemplateActions()
         addAction(createAction);
 
         //enumerate template dir
-        QDir templateDir(g_get_user_special_dir(G_USER_DIRECTORY_TEMPLATES));
+        QDir templateDir(GlobalSettings::getInstance()->getValue(TEMPLATES_DIR).toString());
+//        QDir templateDir(g_get_user_special_dir(G_USER_DIRECTORY_TEMPLATES));
         auto templates = templateDir.entryList(QDir::AllEntries|QDir::NoDotAndDotDot);
         if (!templates.isEmpty()) {
             for (auto t : templates) {
