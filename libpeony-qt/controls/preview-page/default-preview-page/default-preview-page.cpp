@@ -290,7 +290,9 @@ void FilePreviewPage::countAsync(const QString &uri)
 void FilePreviewPage::updateCount()
 {
     m_file_count_label->setText(tr("%1 total, %2 hidden").arg(m_file_count).arg(m_hidden_count));
-    auto format = g_format_size(m_total_size);
+    //auto format = g_format_size(m_total_size);
+    //Calculated by 1024 bytes
+    auto format = g_format_size_full(m_total_size,G_FORMAT_SIZE_IEC_UNITS);
     m_total_size_label->setText(format);
     g_free(format);
 }

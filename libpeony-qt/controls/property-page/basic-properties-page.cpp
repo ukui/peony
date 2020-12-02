@@ -293,7 +293,10 @@ void BasicPropertiesPage::cancelCount()
 void BasicPropertiesPage::updateCountInfo()
 {
     m_file_count_label->setText(tr("%1 files (include root files), %2 hidden").arg(m_file_count).arg(m_hidden_file_count));
-    auto format = g_format_size(m_total_size);
+   // auto format = g_format_size(m_total_size);
+   
+   //Calculated by 1024 bytes
+    auto format = g_format_size_full(m_total_size,G_FORMAT_SIZE_IEC_UNITS);
     m_total_size_label->setText(tr("%1 total").arg(format));
     g_free(format);
 }
