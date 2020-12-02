@@ -1,6 +1,7 @@
 #include "user-dir-manager.h"
 #include "file-operation-manager.h"
 #include "file-rename-operation.h"
+#include "global-settings.h"
 #include "file-info.h"
 #include "file-item.h"
 #include <stdio.h>
@@ -10,6 +11,8 @@
 #include <QDir>
 #include <QStandardPaths>
 #include <QTimer>
+#include <QSettings>
+#include <QTextCodec>
 
 using namespace Peony;
 UserdirManager::UserdirManager(QObject *parent) : QObject(parent)
@@ -42,15 +45,19 @@ void UserdirManager::getUserdir()
         m_last_user_dir = m_current_user_dir;
         m_current_user_dir.clear();
     }
-    m_current_user_dir.insert("XDG_DESKTOP_DIR",QStandardPaths::writableLocation(QStandardPaths::DesktopLocation) + "/");
-    m_current_user_dir.insert("XDG_DOWNLOAD_DIR",QStandardPaths::writableLocation(QStandardPaths::DownloadLocation) + "/");
-//    m_current_user_dir.insert("XDG_TEMPLATES_DIR","file://" + QString(g_get_user_special_dir(G_USER_DIRECTORY_TEMPLATES)) + "/");
-//    m_current_user_dir.insert("XDG_PUBLICSHARE_DIR","file://" + QString(g_get_user_special_dir(G_USER_DIRECTORY_PUBLIC_SHARE)) + "/");
-    m_current_user_dir.insert("XDG_DOCUMENTS_DIR",QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation) + "/");
-    m_current_user_dir.insert("XDG_MUSIC_DIR",QStandardPaths::writableLocation(QStandardPaths::MusicLocation)+"/");
-    m_current_user_dir.insert("XDG_PICTURES_DIR",QStandardPaths::writableLocation(QStandardPaths::PicturesLocation) + "/");
-    m_current_user_dir.insert("XDG_VIDEOS_DIR",QStandardPaths::writableLocation(QStandardPaths::MoviesLocation) + "/");
+    auto settings = new QSettings("/home/"+m_user_name+"/.config/user-dirs.dirs",QSettings::IniFormat);
+    settings->setIniCodec(QTextCodec::codecForName("UTF-8"));
 
+    m_current_user_dir.insert("XDG_DESKTOP_DIR",settings->value(QString("XDG_DESKTOP_DIR")).toString().replace("$HOME","/home/"+m_user_name) + "/");
+    m_current_user_dir.insert("XDG_DOWNLOAD_DIR",settings->value(QString("XDG_DOWNLOAD_DIR")).toString().replace("$HOME","/home/"+m_user_name) + "/");
+    m_current_user_dir.insert("XDG_TEMPLATES_DIR",settings->value(QString("XDG_TEMPLATES_DIR")).toString().replace("$HOME","/home/"+m_user_name) + "/");
+    m_current_user_dir.insert("XDG_PUBLICSHARE_DIR",settings->value(QString("XDG_PUBLICSHARE_DIR")).toString().replace("$HOME","/home/"+m_user_name) + "/");
+    m_current_user_dir.insert("XDG_DOCUMENTS_DIR",settings->value(QString("XDG_DOCUMENTS_DIR")).toString().replace("$HOME","/home/"+m_user_name) + "/");
+    m_current_user_dir.insert("XDG_MUSIC_DIR",settings->value(QString("XDG_MUSIC_DIR")).toString().replace("$HOME","/home/"+m_user_name)+"/");
+    m_current_user_dir.insert("XDG_PICTURES_DIR",settings->value(QString("XDG_PICTURES_DIR")).toString().replace("$HOME","/home/"+m_user_name) + "/");
+    m_current_user_dir.insert("XDG_VIDEOS_DIR",settings->value(QString("XDG_VIDEOS_DIR")).toString().replace("$HOME","/home/"+m_user_name) + "/");
+
+    GlobalSettings::getInstance()->setValue(TEMPLATES_DIR,m_current_user_dir.value("XDG_TEMPLATES_DIR"));
 }
 
 void UserdirManager::moveFile()
