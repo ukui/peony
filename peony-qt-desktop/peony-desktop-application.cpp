@@ -134,9 +134,9 @@ PeonyDesktopApplication::PeonyDesktopApplication(int &argc, char *argv[], const 
         setStyleSheet(QString::fromLatin1(file.readAll()));
         file.close();
 
-        //add 3 seconds delay to load plugins
+        //add 5 seconds delay to load plugins
         //try to fix first time enter desktop right menu not show open terminal issue
-        QTimer::singleShot(3000, [=]() {
+        QTimer::singleShot(5000, [=]() {
             Peony::DesktopMenuPluginManager::getInstance();
         });
 
