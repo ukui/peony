@@ -47,7 +47,7 @@ public:
      */
     explicit FileRenameOperation(QString uri, QString newName);
 
-    void setAutoDelete(){
+    void setAutoOverwrite(){
         m_auto_overwrite = true;
     }
 
