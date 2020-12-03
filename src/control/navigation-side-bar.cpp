@@ -394,5 +394,30 @@ NavigationSideBarStyle* NavigationSideBarStyle::getStyle()
 void NavigationSideBarStyle::polish(QWidget *widget)
 {
     QStyle::polish(widget);
-    widget->setAttribute(Qt::WA_Hover, false);
+//    widget->setAttribute(Qt::WA_Hover, false);
+}
+
+//! \brief replace polish, delete hover state
+void NavigationSideBarStyle::drawPrimitive(QStyle::PrimitiveElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget) const
+{
+    switch (element) {
+    case QStyle::PE_IndicatorBranch: {
+        if (option->state & QStyle::State_MouseOver) {
+            if (option->state & QStyle::State_Selected)
+                QProxyStyle::drawPrimitive(element, option, painter, widget);
+            else
+                return;
+        }
+    }
+    case QStyle::PE_PanelItemViewItem: {
+        if (option->state & QStyle::State_MouseOver) {
+            if (option->state & QStyle::State_Selected)
+                QProxyStyle::drawPrimitive(element, option, painter, widget);
+            else
+                return;
+        }
+    }
+
+    default: QProxyStyle::drawPrimitive(element, option, painter, widget);
+    }
 }
