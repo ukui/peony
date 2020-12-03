@@ -29,6 +29,7 @@
 
 #include <valarray>
 #include <QPainter>
+#include <QProxyStyle>
 
 namespace Peony {
 class SideBarModel;
@@ -110,6 +111,16 @@ public:
 private:
     QLabel *m_pix_label;
     QLabel *m_text_label;
+};
+
+class NavigationSideBarStyle : public QProxyStyle
+{
+public:
+    static NavigationSideBarStyle* getStyle();
+    void polish(QWidget *widget);
+private:
+    NavigationSideBarStyle(QStyle *style = nullptr);
+    ~NavigationSideBarStyle() override {}
 };
 
 #endif // NAVIGATIONSIDEBAR_H

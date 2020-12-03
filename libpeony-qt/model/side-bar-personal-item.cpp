@@ -23,6 +23,8 @@
 #include "side-bar-personal-item.h"
 #include "side-bar-model.h"
 #include "file-utils.h"
+#include "file-watcher.h"
+
 #include <QStandardPaths>
 
 using namespace Peony;
@@ -73,6 +75,34 @@ SideBarPersonalItem::SideBarPersonalItem(QString uri,
         m_children->append(musicItem);
 
         m_model->insertRows(0, 5, firstColumnIndex());
+
+        //! \todo Add monitor dir del or create
+//        this->initWatcher();
+//        m_watcher->startMonitor();
+//        connect(m_watcher.get(), &FileWatcher::fileDeleted, this, [=](const QString& uri) {
+//            GFile* file = g_file_new_for_uri(uri.toLatin1().constData());
+//            QString path = g_file_get_path(file);
+//            qDebug() << path;
+//            QString _uri = "file://" + path;
+//            if (_uri == documentUri) {
+//                m_model->removeRow(m_children->indexOf(documentItem), this->firstColumnIndex());
+//            }
+//            else if (_uri == pictureUri) {
+//                m_model->removeRow(m_children->indexOf(pictureItem), this->firstColumnIndex());
+//            }
+//            else if (_uri == mediaUri) {
+//                m_model->removeRow(m_children->indexOf(mediaItem), mediaItem->lastColumnIndex());
+//            }
+//            else if (_uri == downloadUri) {
+//                m_model->removeRow(m_children->indexOf(downloadItem), this->firstColumnIndex());
+//            }
+//            else if (_uri == musicUri) {
+//                m_model->removeRow(m_children->indexOf(musicItem), this->firstColumnIndex());
+//            }
+
+//            g_object_unref(file);
+//        });
+
         return;
     }
     m_uri = uri;
@@ -89,4 +119,11 @@ QModelIndex SideBarPersonalItem::firstColumnIndex()
 QModelIndex SideBarPersonalItem::lastColumnIndex()
 {
     return m_model->lastCloumnIndex(this);
+}
+
+void SideBarPersonalItem::initWatcher()
+{
+    if (!m_watcher) {
+        m_watcher = std::make_shared<FileWatcher>(m_uri);
+    }
 }
