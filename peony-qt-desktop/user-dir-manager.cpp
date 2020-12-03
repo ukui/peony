@@ -71,12 +71,13 @@ void UserdirManager::moveFile()
             //rename the old dir
             QDir *dir = new QDir(i.value());
             auto fileName = dir->dirName();
+            QDir *lastDir = new QDir(m_last_user_dir.value(i.key()));
 
-            if(!QDir(m_last_user_dir.value(i.key())).exists())
+            if(lastDir->dirName() == QString("/home/"+m_user_name)||lastDir->isEmpty()||!lastDir->exists())
                 continue;
 
             auto operation = new Peony::FileRenameOperation("file://"+m_last_user_dir.value(i.key()),fileName);
-            operation->setAutoDelete();
+            operation->setAutoOverwrite();
             fileOpMgr->startOperation(operation,false);
             if(i.key() == "XDG_DESKTOP_DIR")
             {
