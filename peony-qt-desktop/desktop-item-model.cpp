@@ -621,12 +621,20 @@ bool DesktopItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action
 
     QStringList srcUris;
     for (auto url : urls) {
+        //can not drag file from recent
+        if (url.url().startsWith("recent://"))
+            return false;
         srcUris<<url.url();
     }
     srcUris.removeDuplicates();
 
+    //can not drag file to recent
+    if (destDirUri.startsWith("recent://"))
+        return false;
+
+    //not allow drag file to itself
     if (srcUris.contains(destDirUri)) {
-        return true;
+        return false;
     }
 
     bool b_trash_item = false;
