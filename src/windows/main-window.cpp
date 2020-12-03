@@ -119,7 +119,7 @@ MainWindow::MainWindow(const QString &uri, QWidget *parent) : QMainWindow(parent
     //setAttribute(Qt::WA_OpaquePaintEvent);
     //fix double window base buttons issue, not effect MinMax button hints
     auto flags = windowFlags() &~Qt::WindowMinMaxButtonsHint;
-//    setWindowFlags(flags |Qt::FramelessWindowHint);
+    setWindowFlags(flags);
 
     //use ukui-kwin to draw round corner and shadow.
     MotifWmHints hints;
@@ -1235,7 +1235,8 @@ void MainWindow::initUI(const QString &uri)
     });
 
     connect(views->tabBar(), &QTabBar::tabBarDoubleClicked, this, [=](int index) {
-        if (index == -1)
+        bool tablet = Peony::GlobalSettings::getInstance()->getValue(TABLET_MODE).toBool();
+        if (index == -1&&!tablet)
             maximizeOrRestore();
     });
     connect(m_tab,&TabWidget::tabBarIndexUpdate,this,[=](int index){

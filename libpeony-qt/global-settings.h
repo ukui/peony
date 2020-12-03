@@ -39,6 +39,7 @@
 #define DEFAULT_WINDOW_SIZE "default-window-size"
 #define DEFAULT_SIDEBAR_WIDTH "default-sidebar-width"
 #define TABLET_MODE "tablet-mode"
+#define TEMPLATES_DIR "templates-dir"
 
 #define DEFAULT_VIEW_ID "directory-view/default-view-id"
 #define DEFAULT_VIEW_ZOOM_LEVEL "directory-view/default-view-zoom-level"

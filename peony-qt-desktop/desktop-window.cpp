@@ -69,6 +69,7 @@
 
 // backup settings
 #include <QSettings>
+#include <QFileInfo>
 
 #include <QX11Info>
 
@@ -293,6 +294,22 @@ void DesktopWindow::initGSettings() {
                 qDebug() << "bg_path:" <<bg_path << m_current_bg_path;
                 if (m_current_bg_path == bg_path)
                     return;
+                auto path = QDir::homePath() + "/.config/";
+                if(QFileInfo(bg_path).absolutePath() != path )
+                {
+                    auto pathName = path+QFileInfo(bg_path).fileName();
+                    QFile(bg_path).copy(pathName);
+                    bool success = m_bg_settings->trySet("pictureFilename", pathName);
+                    if (success)
+                    {
+                        bg_path = pathName;
+                    }
+                    else
+                    {
+                        qDebug() << "use default bg picture fail, reset";
+                        m_bg_settings->reset("pictureFilename");
+                    }
+                }
                 qDebug() << "set a new bg picture:" <<bg_path;
                 this->setBg(bg_path);
             }

@@ -372,7 +372,8 @@ TitleLabel::TitleLabel(QWidget *parent):QWidget(parent)
     m_pix_label->setPixmap(QIcon(":/custom/icons/app-controlsetting").pixmap(32,32));
     m_text_label = new QLabel(tr("Files"),this);
     QHBoxLayout *l = new QHBoxLayout(this);
-    l->setMargin(9);
+    l->setMargin(16);
+    l->addSpacing(16);
     l->addWidget(m_pix_label);
     l->addSpacing(8);
     l->addWidget(m_text_label);

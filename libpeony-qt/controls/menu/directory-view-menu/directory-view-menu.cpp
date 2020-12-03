@@ -52,6 +52,7 @@
 #include "file-lauch-dialog.h"
 
 #include "file-operation-error-dialog.h"
+#include "global-settings.h"
 
 #include <QDesktopServices>
 #include <QUrl>
@@ -333,7 +334,7 @@ const QList<QAction *> DirectoryViewMenu::constructCreateTemplateActions()
         addAction(createAction);
 
         //enumerate template dir
-        QDir templateDir(g_get_user_special_dir(G_USER_DIRECTORY_TEMPLATES));
+        QDir templateDir(GlobalSettings::getInstance()->getValue(TEMPLATES_DIR).toString());
         auto templates = templateDir.entryList(QDir::AllEntries|QDir::NoDotAndDotDot);
         if (!templates.isEmpty()) {
             for (auto t : templates) {
