@@ -91,6 +91,7 @@ FileRenameOperation::FileRenameOperation(QString uri, QString newName)
 {
     m_uri = uri;
     m_new_name = newName;
+    m_auto_overwrite = false;
     QStringList srcUris;
     srcUris<<uri;
     QString destUri = FileUtils::getParentUri(uri);
@@ -234,7 +235,7 @@ retry:
         except.op = FileOpRename;
         except.title = tr("Rename file error");
         GError *err = nullptr;
-        if (FileUtils::isFileExsit(g_file_get_uri(newFile.get()->get()))) {
+        if (FileUtils::isFileExsit(g_file_get_uri(newFile.get()->get()))&&!m_auto_overwrite) {
             except.dlgType = ED_CONFLICT;
             except.errorCode = G_IO_ERROR_EXISTS;
             Q_EMIT errored(except);
@@ -278,6 +279,8 @@ retry:
                 break;
             }
         }
+        else
+           g_file_delete(newFile.get()->get(), nullptr, nullptr);
 
         char* newName = g_file_get_basename(newFile.get()->get());
         g_file_set_display_name(file.get()->get(), newName, nullptr, &err);

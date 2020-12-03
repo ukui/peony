@@ -24,6 +24,7 @@
 
 #include "file-operation-manager.h"
 #include "file-operation-utils.h"
+#include "global-settings.h"
 #include <gio/gio.h>
 
 #include <utime.h>
@@ -33,7 +34,7 @@
 
 using namespace Peony;
 
-#define TEMPLATE_DIR "file://" + QString(g_get_user_special_dir(G_USER_DIRECTORY_TEMPLATES)) + "/"
+#define TEMPLATE_DIR "file://" + GlobalSettings::getInstance()->getValue(TEMPLATES_DIR).toString()
 
 void CreateTemplateOperation::handleDuplicate(const QString &uri) {
     QString name = uri.split("/").last();
