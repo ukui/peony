@@ -47,6 +47,10 @@ public:
      */
     explicit FileRenameOperation(QString uri, QString newName);
 
+    void setAutoDelete(){
+        m_auto_overwrite = true;
+    }
+
     void run() override;
     std::shared_ptr<FileOperationInfo> getOperationInfo() override {
         return m_info;
@@ -58,6 +62,7 @@ private:
     QString m_new_name = nullptr;
 
     std::shared_ptr<FileOperationInfo> m_info = nullptr;
+    bool m_auto_overwrite;
 };
 
 }
