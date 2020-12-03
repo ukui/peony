@@ -363,6 +363,13 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
             }
         }
     });
+
+    //handle standard dir changing.
+    m_dir_manager =new UserdirManager(this);
+    //refresh after standard dir changed.
+    connect(m_dir_manager,&UserdirManager::desktopDirChanged,[=](){
+        refresh();
+    });
 }
 
 DesktopItemModel::~DesktopItemModel()
