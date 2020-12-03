@@ -109,6 +109,9 @@ NavigationSideBar::NavigationSideBar(QWidget *parent) : QTreeView(parent)
     connect(volumeManager,&Peony::VolumeManager::driveDisconnected,this,[=](const std::shared_ptr<Peony::Drive> &drive){
         m_proxy_model->invalidate();//Multiple udisk eject display problem
     });
+        connect(volumeManager,&Peony::VolumeManager::mountAdded,this,[=](const std::shared_ptr<Peony::Mount> &mount){
+        m_proxy_model->invalidate();//display udisk in real time after format it.
+    });
 
     connect(this, &QTreeView::expanded, [=](const QModelIndex &index) {
         auto item = m_proxy_model->itemFromIndex(index);
