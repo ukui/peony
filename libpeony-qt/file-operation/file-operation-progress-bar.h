@@ -200,7 +200,7 @@ private:
     int m_icon_size = 64;
 
     // file name
-    int m_file_name_height = 20;
+    int m_file_name_height = 60;
     int m_file_name_margin = 10;
 
     // percent

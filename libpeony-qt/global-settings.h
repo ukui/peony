@@ -49,6 +49,8 @@
 
 //difference between Community version and Commercial version
 #define COMMERCIAL_VERSION  false
+//TEMPLATES standard path
+#define TEMPLATES_DIR "templates-dir"
 
 class QGSettings;
 

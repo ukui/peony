@@ -240,8 +240,8 @@ const QList<QAction *> DesktopMenu::constructCreateTemplateActions()
         addAction(createAction);
 
         //enumerate template dir
-        QDir templateDir(GlobalSettings::getInstance()->getValue(TEMPLATES_DIR).toString());
 //        QDir templateDir(g_get_user_special_dir(G_USER_DIRECTORY_TEMPLATES));
+        QDir templateDir(GlobalSettings::getInstance()->getValue(TEMPLATES_DIR).toString());
         auto templates = templateDir.entryList(QDir::AllEntries|QDir::NoDotAndDotDot);
         if (!templates.isEmpty()) {
             for (auto t : templates) {
@@ -440,10 +440,11 @@ const QList<QAction *> DesktopMenu::constructFileOpActions()
             e.setEnumerateDirectory("trash:///");
             e.enumerateSync();
             auto trashChildren = e.getChildrenUris();
-            l<<addAction(QIcon::fromTheme("view-refresh-symbolic"), tr("&Restore all"), [=]() {
-                FileOperationUtils::restore(trashChildren);
-            });
-            l.last()->setEnabled(!trashChildren.isEmpty());
+            //comment to avoid uncorrect operation in desktop, only in trash can do it
+//            l<<addAction(QIcon::fromTheme("view-refresh-symbolic"), tr("&Restore all"), [=]() {
+//                FileOperationUtils::restore(trashChildren);
+//            });
+//            l.last()->setEnabled(!trashChildren.isEmpty());
             l<<addAction(QIcon::fromTheme("edit-clear-symbolic"), tr("&Clean the trash"), [=]() {
                 Peony::AudioPlayManager::getInstance()->playWarningAudio();
                 auto result = QMessageBox::question(nullptr, tr("Delete Permanently"), tr("Are you sure that you want to delete these files? "
@@ -540,11 +541,14 @@ const QList<QAction *> DesktopMenu::constructMenuPluginActions()
     //FIXME:
     auto mgr = DesktopMenuPluginManager::getInstance();
     if (mgr->isLoaded()) {
+        //add debug log to check open-terminal not show in first time issue
+        qDebug() << "DesktopMenu PluginManager is loaded";
         //sort plugiins by name, so the menu option orders is relatively fixed
         auto pluginIds = mgr->getPluginIds();
         qSort(pluginIds.begin(), pluginIds.end());
 
         for (auto id : pluginIds) {
+            qDebug() << "desktop luginIds:" <<id;
             auto plugin = mgr->getPlugin(id);
             auto actions = plugin->menuActions(MenuPluginInterface::DesktopWindow,
                                                m_directory,

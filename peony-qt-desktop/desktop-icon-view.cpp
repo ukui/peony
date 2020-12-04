@@ -456,7 +456,7 @@ void DesktopIconView::initMenu()
     connect(this, &QListView::customContextMenuRequested, this,
     [=](const QPoint &pos) {
         // FIXME: use other menu
-        qDebug() << "menu request";
+        qDebug() << "menu request  in desktop icon view";
         if (!this->indexAt(pos).isValid()) {
             this->clearSelection();
         } else {
@@ -499,6 +499,11 @@ void DesktopIconView::setShowHidden()
     m_show_hidden = ! m_show_hidden;
     qDebug() << "DesktopIconView::setShowHidden:" <<m_show_hidden;
     m_proxy_model->setShowHidden(m_show_hidden);
+    //fix show hidden file desktop icons overlapped issue
+    QTimer::singleShot(100, this, [=]() {
+        resetAllItemPositionInfos();
+        refresh();
+    });
 }
 
 void DesktopIconView::openFileByUri(QString uri)

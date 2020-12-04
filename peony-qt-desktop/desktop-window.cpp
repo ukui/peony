@@ -162,7 +162,7 @@ DesktopWindow::DesktopWindow(QScreen *screen, bool is_primary, QWidget *parent)
     connect(this, &QMainWindow::customContextMenuRequested,
     [=](const QPoint &pos) {
         // FIXME: use other menu
-        qDebug() << "menu request";
+        qDebug() << "menu request in desktop window";
         auto contentMargins = contentsMargins();
 //        auto fixedPos = pos - QPoint(contentMargins.left(), contentMargins.top());
         auto index = PeonyDesktopApplication::getIconView()->indexAt(QCursor::pos());
@@ -271,25 +271,8 @@ void DesktopWindow::initGSettings() {
                 return;
             }
 
-            //can not find bg file, usually the file is moved, use default bg
-            if (!QFile::exists(bg_path)) {
-                QString path = "/usr/share/backgrounds/default.jpg";
-                //commercial version use different default bg
-                if (COMMERCIAL_VERSION)
-                   path = "/usr/share/backgrounds/aurora.jpg";
-
-                bool success = m_bg_settings->trySet("pictureFilename", path);
-                if (success)
-                {
-                    m_current_bg_path = "file://" + path;
-                }
-                else
-                {
-                    qDebug() << "use default bg picture fail, reset";
-                    m_bg_settings->reset("pictureFilename");
-                }
-            }
-            else {
+            if (QFile::exists(bg_path))
+            {
                 qDebug() << "bg_path:" <<bg_path << m_current_bg_path;
                 if (m_current_bg_path == bg_path)
                     return;
@@ -311,6 +294,33 @@ void DesktopWindow::initGSettings() {
                 }
                 qDebug() << "set a new bg picture:" <<bg_path;
                 this->setBg(bg_path);
+                return;
+            }
+
+            //can not find bg file, usually the file is moved, use default bg
+            QString path = "/usr/share/backgrounds/default.jpg";
+            //commercial version use different default bg
+            if (COMMERCIAL_VERSION)
+               path = "/usr/share/backgrounds/aurora.jpg";
+
+            //system default bg not exist, use pure color bg
+            if (! QFile::exists(path))
+            {
+                qCritical() << "Did not find system default background, use color bg instead!";
+                m_bg_settings->trySet("pictureFilename", "");
+                setBg(getCurrentColor());
+                return;
+            }
+
+            bool success = m_bg_settings->trySet("pictureFilename", path);
+            if (success)
+            {
+                m_current_bg_path = "file://" + path;
+            }
+            else
+            {
+                qDebug() << "use default bg picture fail, reset";
+                m_bg_settings->reset("pictureFilename");
             }
         }
         if (key == "primaryColor")

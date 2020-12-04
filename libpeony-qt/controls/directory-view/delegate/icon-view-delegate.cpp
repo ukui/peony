@@ -167,7 +167,7 @@ void IconViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
     if (view->selectedIndexes().count() == 1 && view->selectedIndexes().first() == index) {
         useIndexWidget = true;
         if (view->indexWidget(index)) {
-        } else if (! view->isDraggingState()) {
+        } else if (! view->isDraggingState() && view->m_allow_set_index_widget) {
             IconViewIndexWidget *indexWidget = new IconViewIndexWidget(this, option, index, getView());
             view->setIndexWidget(index, indexWidget);
             indexWidget->adjustPos();
