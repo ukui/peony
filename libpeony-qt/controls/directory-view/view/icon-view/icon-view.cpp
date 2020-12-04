@@ -208,7 +208,12 @@ void IconView::dragMoveEvent(QDragMoveEvent *e)
     //fix can not drag in the second time issue
     if (this->isDraggingState())
     {
-        this->clearSelection();
+        if (m_allow_set_index_widget) {
+            m_allow_set_index_widget = false;
+            for (auto index : selectedIndexes()) {
+                setIndexWidget(index, nullptr);
+            }
+        }
     }
 
     auto action = m_ctrl_key_pressed ? Qt::CopyAction : Qt::MoveAction;
@@ -263,6 +268,8 @@ void IconView::mouseMoveEvent(QMouseEvent *e)
 
 void IconView::mousePressEvent(QMouseEvent *e)
 {
+    m_allow_set_index_widget = true;
+
     qDebug()<<"moursePressEvent";
     m_editValid = true;
     QListView::mousePressEvent(e);
@@ -408,6 +415,9 @@ void IconView::bindModel(FileItemModel *sourceModel, FileItemProxyFilterSortMode
         for (auto index : deselection.indexes()) {
             this->setIndexWidget(index, nullptr);
         }
+
+        if (state() == QListView::DragSelectingState)
+            m_allow_set_index_widget = false;
 
         //Q_EMIT m_proxy->viewSelectionChanged();
         if (currentSelections.count() == 1) {

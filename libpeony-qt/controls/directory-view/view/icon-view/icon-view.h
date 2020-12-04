@@ -185,6 +185,8 @@ private:
     bool m_ignore_mouse_move_event = false;
 
     bool m_delegate_editing = false;
+
+    bool m_allow_set_index_widget = true;
 };
 
 //IconView2
