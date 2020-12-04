@@ -574,6 +574,6 @@ void PeonyDesktopApplication::volumeRemovedProcess(const std::shared_ptr<Peony::
     }
 
     //if it is possible, we stop it's drive after eject successfully.
-    if(gdrive && g_drive_can_stop(gdrive))
-        g_drive_stop(gdrive,G_MOUNT_UNMOUNT_NONE,NULL,NULL,NULL,NULL);
+   // if(gdrive && g_drive_can_stop(gdrive))
+   //     g_drive_stop(gdrive,G_MOUNT_UNMOUNT_NONE,NULL,NULL,NULL,NULL);
 };
