@@ -35,6 +35,9 @@
 
 #include "global-settings.h"
 
+#include "file-enumerator.h"
+#include "gerror-wrapper.h"
+
 #include <QHeaderView>
 #include <QPushButton>
 
@@ -159,11 +162,46 @@ NavigationSideBar::NavigationSideBar(QWidget *parent) : QTreeView(parent)
                 Peony::SideBarMenu menu(item, nullptr);
                 MainWindow *window = dynamic_cast<MainWindow *>(this->topLevelWidget());
                 menu.addAction(QIcon::fromTheme("window-new-symbolic"), tr("Open In &New Window"), [=](){
-                    auto newWindow = window->create(item->uri());
-                    dynamic_cast<QWidget *>(newWindow)->show();
+                    auto enumerator = new Peony::FileEnumerator;
+                    enumerator->setEnumerateDirectory(item->uri());
+                    enumerator->setAutoDelete();
+
+                    enumerator->connect(enumerator, &Peony::FileEnumerator::prepared, this, [=](const std::shared_ptr<Peony::GErrorWrapper> &err = nullptr, const QString &targetUri = nullptr, bool critical = false){
+                        if (!targetUri.isEmpty()) {
+                            auto newWindow = window->create(targetUri);
+                            dynamic_cast<QWidget *>(newWindow)->show();
+                        } else if (!err.get() && !critical) {
+                            auto newWindow = window->create(item->uri());
+                            dynamic_cast<QWidget *>(newWindow)->show();
+                        }
+                    });
+
+                    enumerator->connect(enumerator, &Peony::FileEnumerator::prepared, [=](){
+                        enumerator->deleteLater();
+                    });
+
+                    enumerator->prepare();
                 });
                 menu.addAction(QIcon::fromTheme("tab-new-symbolic"), tr("Open In New &Tab"), [=](){
-                    window->addNewTabs(QStringList()<<item->uri());
+                    auto enumerator = new Peony::FileEnumerator;
+                    enumerator->setEnumerateDirectory(item->uri());
+                    enumerator->setAutoDelete();
+
+                    enumerator->connect(enumerator, &Peony::FileEnumerator::prepared, this, [=](const std::shared_ptr<Peony::GErrorWrapper> &err = nullptr, const QString &targetUri = nullptr, bool critical = false){
+                        if (!targetUri.isEmpty()) {
+                            window->addNewTabs(QStringList()<<targetUri);
+                            dynamic_cast<QWidget *>(window)->show();
+                        } else if (!err.get() && !critical) {
+                            window->addNewTabs(QStringList()<<item->uri());
+                            dynamic_cast<QWidget *>(window)->show();
+                        }
+                    });
+
+                    enumerator->connect(enumerator, &Peony::FileEnumerator::prepared, [=](){
+                        enumerator->deleteLater();
+                    });
+
+                    enumerator->prepare();
                 });
                 menu.exec(QCursor::pos());
             }
