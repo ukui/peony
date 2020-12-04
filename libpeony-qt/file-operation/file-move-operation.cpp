@@ -976,9 +976,20 @@ start:
     if (m_force_use_fallback) {
         moveForceUseFallback();
         operationStartSnyc();
-        QProcess p;
-        p.start("sync");
-        p.waitForFinished(-1);
+
+        auto info = getOperationInfo();
+        auto destDirUri = info.get()->m_dest_dir_uri;
+        auto dest_file = g_file_new_for_uri(destDirUri.toUtf8().constData());
+        auto path = g_file_get_path(dest_file);
+        g_object_unref(dest_file);
+        if (path) {
+            QProcess p;
+            auto shell_path = g_shell_quote(path);
+            g_free(path);
+            p.start(QString("sync -d %1").arg(shell_path));
+            g_free(shell_path);
+            p.waitForFinished(-1);
+        }
     }
     qDebug()<<"finished";
 end:

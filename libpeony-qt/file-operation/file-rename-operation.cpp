@@ -354,10 +354,21 @@ cancel:
     //needSync = true;
 
     if (needSync) {
-        operationStartSnyc();
-        QProcess p;
-        p.start("sync");
-        p.waitForFinished(-1);
+        char *path = g_file_get_path(dest_dir_file);
+        if (path) {
+            operationStartSnyc();
+            QProcess p;
+            auto shell_path = g_shell_quote(path);
+            p.start(QString("sync -d %1").arg(shell_path));
+            g_free(shell_path);
+            g_free(path);
+            p.waitForFinished(-1);
+        } else {
+            operationStartSnyc();
+            QProcess p;
+            p.start("sync");
+            p.waitForFinished(-1);
+        }
     }
 
     Q_EMIT operationFinished();
