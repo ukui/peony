@@ -422,7 +422,7 @@ void MainProgressBar::paintContent(QPainter &painter)
     if (m_stopping) {
         painter.drawText(x, y, w, m_file_name_height, Qt::AlignLeft | Qt::AlignVCenter, tr("canceling ..."));
     } else {
-        painter.drawText(x, y, w, m_file_name_height, Qt::AlignLeft | Qt::AlignVCenter, m_file_name);
+        painter.drawText(x, y, w, m_file_name_height, Qt::AlignLeft | Qt::AlignVCenter | Qt::TextWordWrap | Qt::TextWrapAnywhere, m_file_name);
     }
 
     // paint percentage
