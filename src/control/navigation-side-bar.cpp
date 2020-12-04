@@ -305,14 +305,14 @@ void NavigationSideBarItemDelegate::paint(QPainter *painter, const QStyleOptionV
 
     if (view->isExpanded(index)) {
         QRect rect = option.rect;
-        rect.setTop(rect.top() + 10);
+        rect.setY(rect.top() + sizeHint(option, index).height()/3);
         rect.setX(rect.right() - 45);
         rect.setSize(QSize(16, 16));
         painter->drawPixmap(rect, QPixmap(":/img/branches2"));
     }
     else {
         QRect rect = option.rect;
-        rect.setTop(rect.top() + 10);
+        rect.setTop(rect.top() + sizeHint(option, index).height()/3);
         rect.setX(rect.right() - 45);
         rect.setSize(QSize(16, 16));
         painter->drawPixmap(rect, QPixmap(":/img/branches1"));
@@ -403,16 +403,20 @@ void NavigationSideBarStyle::drawPrimitive(QStyle::PrimitiveElement element, con
     switch (element) {
     case QStyle::PE_IndicatorBranch: {
         if (option->state & QStyle::State_MouseOver) {
-            if (option->state & QStyle::State_Selected)
+            if (option->state & QStyle::State_Selected) {
                 QProxyStyle::drawPrimitive(element, option, painter, widget);
+                break;
+            }
             else
                 return;
         }
     }
     case QStyle::PE_PanelItemViewItem: {
         if (option->state & QStyle::State_MouseOver) {
-            if (option->state & QStyle::State_Selected)
+            if (option->state & QStyle::State_Selected) {
                 QProxyStyle::drawPrimitive(element, option, painter, widget);
+                break;
+            }
             else
                 return;
         }
