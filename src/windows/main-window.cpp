@@ -106,7 +106,7 @@ MainWindow::MainWindow(const QString &uri, QWidget *parent) : QMainWindow(parent
     installEventFilter(this);
 
     setWindowIcon(QIcon::fromTheme("system-file-manager"));
-    setWindowTitle(tr("File Manager"));
+    //setWindowTitle(tr("File Manager"));
 
     //check all settings and init
     checkSettings();
@@ -569,16 +569,27 @@ void MainWindow::setShortCuts()
     copyAction->setShortcut(QKeySequence::Copy);
     connect(copyAction, &QAction::triggered, [=]() {
         if (!this->getCurrentSelections().isEmpty())
+        {
             if (this->getCurrentSelections().first().startsWith("trash://", Qt::CaseInsensitive)) {
                 return ;
             }
-            Peony::ClipboardUtils::setClipboardFiles(this->getCurrentSelections(), false);
+            if (this->getCurrentSelections().first().startsWith("recent://", Qt::CaseInsensitive)) {
+                return ;
+            }
+        }
+        Peony::ClipboardUtils::setClipboardFiles(this->getCurrentSelections(), false);
     });
     addAction(copyAction);
 
     auto *pasteAction = new QAction(this);
     pasteAction->setShortcut(QKeySequence::Paste);
     connect(pasteAction, &QAction::triggered, [=]() {
+        auto currentUri = getCurrentUri();
+        if (currentUri.startsWith("trash://") || currentUri.startsWith("recent://")
+            || currentUri.startsWith("computer://") || currentUri.startsWith("favorite://"))
+        {
+            return;
+        }
         if (Peony::ClipboardUtils::isClipboardHasFiles()) {
             //FIXME: how about duplicated copy?
             //FIXME: how to deal with a failed move?
@@ -604,6 +615,9 @@ void MainWindow::setShortCuts()
             if (this->getCurrentSelections().first().startsWith("trash://", Qt::CaseInsensitive)) {
                 return ;
             }
+            if (this->getCurrentSelections().first().startsWith("recent://", Qt::CaseInsensitive)) {
+                return ;
+            }
 
             QString desktopPath = "file://" +  QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
             QString desktopUri = Peony::FileUtils::getEncodedUri(desktopPath);
@@ -620,7 +634,7 @@ void MainWindow::updateTabPageTitle()
     m_tab->updateTabPageTitle();
     //FIXME: replace BLOCKING api in ui thread.
     auto show = Peony::FileUtils::getFileDisplayName(getCurrentUri());
-    QString title = show + "-" + tr("File Manager");
+    QString title = show;// + "-" + tr("File Manager");
     //qDebug() << "updateTabPageTitle:" <<title;
     setWindowTitle(title);
 }
@@ -763,6 +777,26 @@ void MainWindow::updateHeaderBar()
     m_header_bar->setLocation(getCurrentUri());
     m_header_bar->updateIcons();
     //m_status_bar->update();
+}
+
+void MainWindow::updateWindowIcon()
+{
+   auto currentUri = getCurrentUri();
+   if (currentUri.startsWith("trash://"))
+   {
+       QIcon icon = QIcon::fromTheme("user-trash");
+       setWindowIcon(icon);
+   }
+   else if (currentUri.startsWith("computer://"))
+   {
+       QIcon icon = QIcon::fromTheme("computer");
+       setWindowIcon(icon);
+   }
+   else
+   {
+       QIcon icon = QIcon::fromTheme("system-file-manager");
+       setWindowIcon(icon);
+   }
 }
 
 void MainWindow::goToUri(const QString &uri, bool addHistory, bool force)
@@ -1123,6 +1157,8 @@ void MainWindow::initUI(const QString &uri)
         m_tab->setCursor(c);
         m_side_bar->setCursor(c);
         updateHeaderBar();
+        //function for UKUI3.1, update window icon
+        //updateWindowIcon();
         //m_status_bar->update();
     });
 

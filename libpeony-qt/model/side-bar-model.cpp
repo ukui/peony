@@ -205,7 +205,7 @@ QVariant SideBarModel::data(const QModelIndex &index, int role) const
 
     switch (role) {
     case Qt::DecorationRole:
-        return QIcon::fromTheme("ukui-" + item->iconName(), QIcon::fromTheme(item->iconName()));
+        return QIcon::fromTheme(item->iconName() + "-symbolic", QIcon::fromTheme(item->iconName()));
     case Qt::DisplayRole:
         return item->displayName();
     case Qt::ToolTipRole:
@@ -339,9 +339,16 @@ bool SideBarModel::dropMimeData(const QMimeData *data, Qt::DropAction action, in
             uris<<url.url();
         }
 
+        //can not drag file to recent
+        if (item->uri().startsWith("recent://"))
+            return false;
+
         for(auto uri : uris)
         {
             if (uri.startsWith("trash://"))
+                return false;
+            //can not drag file from recent
+            if (uri.startsWith("recent://"))
                 return false;
         }
         FileOperationUtils::move(uris, item->uri(), true, true);

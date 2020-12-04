@@ -318,7 +318,7 @@ void ListView::dragMoveEvent(QDragMoveEvent *e)
         m_ctrl_key_pressed = false;
 
     auto action = m_ctrl_key_pressed ? Qt::CopyAction : Qt::MoveAction;
-    qDebug()<<"list view dragMoveEvent()" <<action <<m_ctrl_key_pressed;
+    //qDebug()<<"list view dragMoveEvent()" <<action <<m_ctrl_key_pressed;
     auto index = indexAt(e->pos());
     if (index.isValid() && index != m_last_index) {
         QHoverEvent he(QHoverEvent::HoverMove, e->posF(), e->posF());
@@ -423,6 +423,12 @@ void ListView::slotRename()
 {
     //trash path not allow rename
     if (getDirectoryUri().startsWith("trash://"))
+        return;
+
+    //standardPaths not allow rename
+    auto currentSelections = getSelections();
+    bool hasStandardPath = FileUtils::containsStandardPath(currentSelections);
+    if (hasStandardPath)
         return;
 
     //delay edit action to avoid doubleClick or dragEvent
@@ -545,9 +551,10 @@ const QStringList ListView::getAllFileUris()
 QRect ListView::visualRect(const QModelIndex &index) const
 {
     auto rect = QTreeView::visualRect(index);
-    if (index.column() == 0) {
-        rect.setX(0);
-    }
+    //comment to fix rename state not show icon issue
+//    if (index.column() == 0) {
+//        rect.setX(0);
+//    }
     return rect;
 }
 

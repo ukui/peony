@@ -110,6 +110,7 @@ public Q_SLOTS:
 
     void syncControlsLocation(const QString &uri);
     void updateHeaderBar();
+    void updateWindowIcon();
     void createFolderOperation();
     void goToUri(const QString &uri, bool addHistory = false, bool force = false);
 

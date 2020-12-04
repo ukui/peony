@@ -88,7 +88,7 @@ void DesktopMenuPluginManager::loadAsync()
             MenuPluginInterface *piface = dynamic_cast<MenuPluginInterface*>(plugin);
             if (!piface)
                 continue;
-            qDebug()<<"ok";
+            qDebug()<<"ok:" <<piface->name();
             if (!m_map.value(piface->name()))
                 m_map.insert(piface->name(), piface);
             m_is_loaded = true;

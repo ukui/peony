@@ -121,8 +121,10 @@ GAsyncReadyCallback FileInfoJob::query_info_async_callback(GFile *file, GAsyncRe
         Q_EMIT thisJob->infoUpdated();
     }
     else {
-        qDebug()<<err->code<<err->message;
-        g_error_free(err);
+        if (err) {
+            qDebug()<<err->code<<err->message;
+            g_error_free(err);
+        }
         Q_EMIT thisJob->queryAsyncFinished(false);
         return nullptr;
     }
@@ -254,7 +256,7 @@ void FileInfoJob::refreshInfoContents(GFileInfo *new_info)
         content_type = nullptr;
     }
 
-    char *size_full = g_format_size_full(info->m_size, G_FORMAT_SIZE_DEFAULT);
+    char *size_full = strtok(g_format_size_full(info->m_size, G_FORMAT_SIZE_IEC_UNITS),"iB");
     info->m_file_size = size_full;
     g_free(size_full);
 
