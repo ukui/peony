@@ -25,6 +25,7 @@
 
 #include "file-info.h"
 #include "file-info-job.h"
+#include "file-utils.h"
 #include "file-operation-utils.h"
 #include "audio-play-manager.h"
 
@@ -41,7 +42,11 @@ using namespace Peony;
 
 FileLaunchAction::FileLaunchAction(const QString &uri, GAppInfo *app_info, bool forceWithArg, QObject *parent) : QAction(parent)
 {
-    m_uri = uri;
+    if(uri.startsWith("recent:///"))
+        m_uri = FileUtils::getTargetUri(uri);
+    else
+        m_uri = uri;
+
     m_app_info = static_cast<GAppInfo*>(g_object_ref(app_info));
     m_force_with_arg = forceWithArg;
 
