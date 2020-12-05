@@ -573,9 +573,9 @@ void MainWindow::setShortCuts()
             if (this->getCurrentSelections().first().startsWith("trash://", Qt::CaseInsensitive)) {
                 return ;
             }
-            if (this->getCurrentSelections().first().startsWith("recent://", Qt::CaseInsensitive)) {
-                return ;
-            }
+//            if (this->getCurrentSelections().first().startsWith("recent://", Qt::CaseInsensitive)) {
+//                return ;
+//            }
         }
         Peony::ClipboardUtils::setClipboardFiles(this->getCurrentSelections(), false);
     });

@@ -538,12 +538,11 @@ const QList<QAction *> DirectoryViewMenu::constructFileOpActions()
         QString homeUri = "file://" +  QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
         bool hasStandardPath = FileUtils::containsStandardPath(m_selections);
         //qDebug() << "constructFileOpActions hasStandardPath:" <<hasStandardPath;
-        if (!m_selections.isEmpty() && !m_selections.contains(homeUri) && !m_is_recent) {
+        if (!m_selections.isEmpty() && !m_selections.contains(homeUri)) {
             l<<addAction(QIcon::fromTheme("edit-copy-symbolic"), tr("&Copy"));
             connect(l.last(), &QAction::triggered, [=]() {
                 ClipboardUtils::setClipboardFiles(m_selections, false);
             });
-
             if (! hasStandardPath && !m_is_recent)
             {
                 l<<addAction(QIcon::fromTheme("edit-cut-symbolic"), tr("Cut"));
