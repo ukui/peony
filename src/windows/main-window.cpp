@@ -98,6 +98,8 @@
 #define FONT_SETTINGS "org.ukui.style"
 
 static MainWindow *last_resize_window = nullptr;
+static bool m_resident = false;
+static bool m_has_no_window = true;
 
 MainWindow::MainWindow(const QString &uri, QWidget *parent) : QMainWindow(parent)
 {
@@ -1313,6 +1315,63 @@ void MainWindow::initUI(const QString &uri)
 //    connect(m_tab, &TabWidget::currentSelectionChanged, this, [=](){
 //        m_status_bar->update();
 //    });
+
+    m_has_no_window = false;
+    //unmount all ftp node when close all window
+    connect(qApp, &QApplication::lastWindowClosed, this, &MainWindow::unmountAllFtpLinks);
+}
+
+static void unmount_finished(GFile* file, GAsyncResult* result, gpointer udata)
+{
+
+    int flags = 0;
+    GError *err = nullptr;
+
+    if (g_file_unmount_mountable_with_operation_finish (file, result, &err) == TRUE){
+        flags = 1;
+    }
+
+    if (! m_resident)
+    {
+        qApp->setQuitOnLastWindowClosed(true);
+    }
+
+    if (err){
+        qCritical() << "main window unmount_finished error:"<<err->message<<flags;
+    }
+
+    //when has no new window, force quit peony
+    if (m_has_no_window){
+        qDebug() << "has no new window, exit";
+        qApp->exit();
+    }
+}
+
+void MainWindow::unmountAllFtpLinks()
+{
+    qDebug() << "lastWindowClosed unmountAllFtpLinks";
+    m_has_no_window = true;
+    auto allUris = Peony::FileUtils::getChildrenUris("computer:///");
+    for(auto uri : allUris)
+    {
+        auto targetUri = Peony::FileUtils::getTargetUri(uri);
+        qDebug() << "unmountAllFtpLinks targetUri:" <<targetUri;
+        if (! targetUri.startsWith("smb://") &&
+            ! targetUri.startsWith("sftp://") &&
+            ! targetUri.startsWith("ftp://"))
+            continue;
+
+        m_resident = Peony::GlobalSettings::getInstance()->getValue("resident").toBool();
+        qApp->setQuitOnLastWindowClosed(false);
+        GFile *file = g_file_new_for_uri(uri.toUtf8().constData());
+        g_file_unmount_mountable_with_operation(file,
+                                                G_MOUNT_UNMOUNT_NONE,
+                                                nullptr,
+                                                nullptr,
+                                                GAsyncReadyCallback(unmount_finished),
+                                                this);
+        g_object_unref(file);
+    }
 }
 
 void MainWindow::cleanTrash()

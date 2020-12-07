@@ -138,6 +138,9 @@ public Q_SLOTS:
     void cleanTrash();
     void recoverFromTrash();
 
+    //unmount all ftp links
+    void unmountAllFtpLinks();
+
     void setCurrentSelectionUris(const QStringList &uris);
     void setCurrentSortOrder (Qt::SortOrder order);
     void setCurrentSortColumn (int sortColumn);
