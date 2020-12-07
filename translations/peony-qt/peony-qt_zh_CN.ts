@@ -158,12 +158,12 @@
         <translation type="vanished">所有标记...</translation>
     </message>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="158"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="164"/>
         <source>Open In &amp;New Window</source>
         <translation>在新窗口中打开(&amp;N)</translation>
     </message>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="162"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="185"/>
         <source>Open In New &amp;Tab</source>
         <translation>在新标签页中打开(&amp;T)</translation>
     </message>
@@ -171,7 +171,7 @@
 <context>
     <name>NavigationSideBarContainer</name>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="285"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="326"/>
         <source>All tags...</source>
         <translation>所有标记...</translation>
     </message>

@@ -52,6 +52,8 @@
 #include "file-lauch-dialog.h"
 
 #include "file-operation-error-dialog.h"
+#include "file-enumerator.h"
+#include "gerror-wrapper.h"
 
 #include "global-settings.h"
 
@@ -735,25 +737,36 @@ const QList<QAction *> DirectoryViewMenu::constructSearchActions()
             for (auto uri : m_selections) {
                 //FIXME: replace BLOCKING api in ui thread.
                 if (m_is_recent)
+                {
                     uri = FileUtils::getTargetUri(uri);
-                auto parentUri = FileUtils::getParentUri(uri);
-                if (!parentUri.isNull()) {
-                    auto *windowIface = m_top_window->create(parentUri);
-                    auto newWindow = dynamic_cast<QWidget *>(windowIface);
-                    auto selection = m_selections;
-#if QT_VERSION > QT_VERSION_CHECK(5, 12, 0)
-                    QTimer::singleShot(1000, newWindow, [=]() {
-                        if (newWindow)
-                            windowIface->setCurrentSelectionUris(selection);
-                    });
-#else
-                    QTimer::singleShot(1000, [=]() {
-                        if (newWindow)
-                            windowIface->setCurrentSelectionUris(selection);
-                    });
-#endif
-                    newWindow->show();
                 }
+
+                auto parentUri = FileUtils::getParentUri(uri);
+                auto enumerator = new Peony::FileEnumerator;
+                enumerator->setEnumerateDirectory(parentUri);
+                enumerator->setAutoDelete();
+
+                enumerator->connect(enumerator, &Peony::FileEnumerator::prepared, this, [=](const std::shared_ptr<Peony::GErrorWrapper> &err = nullptr, const QString &targetUri = nullptr, bool critical = false){
+                    if (!targetUri.isEmpty()) {
+                        auto newWindow = m_top_window->create(targetUri);
+                        dynamic_cast<QWidget *>(newWindow)->show();
+                    } else if (!err.get() && !critical) {
+                        auto newWindow = m_top_window->create(parentUri);
+                        dynamic_cast<QWidget *>(newWindow)->show();
+                    }
+                    else
+                    {
+                        QMessageBox::warning(nullptr,
+                                             tr("Error"),
+                                             tr("File original path not exist, are you deleted or moved it?"));
+                    }
+                });
+
+                enumerator->connect(enumerator, &Peony::FileEnumerator::prepared, [=](){
+                    enumerator->deleteLater();
+                });
+
+                enumerator->prepare();
             }
         });
     }

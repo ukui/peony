@@ -350,6 +350,7 @@ void FileEnumerator::handleError(GError *err)
         break;
     case G_IO_ERROR_NOT_FOUND:
         Q_EMIT prepared(GErrorWrapper::wrapFrom(g_error_new(G_IO_ERROR, G_IO_ERROR_NOT_FOUND, "file not found")));
+        QMessageBox::critical(nullptr, tr("Error"), tr("Did not find target path, do you move or deleted it?"));
         break;
     default:
         Q_EMIT prepared(GErrorWrapper::wrapFrom(g_error_copy(err)), nullptr, true);
