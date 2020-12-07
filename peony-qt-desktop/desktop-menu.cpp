@@ -616,10 +616,8 @@ void DesktopMenu::showProperties(const QStringList &uris)
 
     if (uris.contains("trash:///") && uris.count() >1)
     {
-        QMessageBox::warning(nullptr,
-                             tr("Error"),
-                             tr("Can not show trash properties with other files together!"));
-        return;
+        args.clear();
+        args << "trash:///";
     }
 
     QProcess p;
