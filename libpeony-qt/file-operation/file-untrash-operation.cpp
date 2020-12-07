@@ -146,11 +146,14 @@ void FileUntrashOperation::untrashFileErrDlg(
                                 GError *err)
 {
     except.srcUri = srcUri;
-    except.destDirUri = originUri;
+    if ("nullptr" != originUri){
+        except.destDirUri = originUri;
+    }
     except.isCritical = false;
     except.op = FileOpUntrash;
     except.title = tr("Untrash file error");
     except.errorCode = err->code;
+    except.errorStr = err->message;
     except.errorType = ET_GIO;
     if (G_IO_ERROR_EXISTS == err->code) {
         except.dlgType = ED_CONFLICT;
@@ -219,9 +222,13 @@ int FileUntrashOperation::copyFileProcess(QString &srcFile, QString &destFile)
         qWarning()<< "copy file :" << srcFile
                   << " Error info:" << err->message
                   << " Error code:" << ret;
+        /*
+        * 由于指定了G_FILE_COPY_OVERWRITE标志，因此不会出现G_IO_ERROR_EXISTS错误值，
+        * 所以只会弹出错误提示对话框，给用户提示，结束还原操作流程，避免后续操作产生错误。
+        */
+        FileOperationError except;
+        untrashFileErrDlg(except, srcFile, destFile, err);
 
-        QMessageBox::critical(nullptr, tr("copy Error"),
-                         "copy file Error:" + QString::number(ret));
         g_error_free(err);
     }
 
@@ -238,6 +245,7 @@ int FileUntrashOperation::moveRecursively(FileNode *fileNode, QString &parentPat
         if (!FileUtils::isFileExsit(destPath)){
             //如果目录不存在，则创建
             GError *err = nullptr;
+
             auto originFile = wrapGFile(g_file_new_for_uri(destPath.toUtf8().constData()));
             g_file_make_directory(originFile.get()->get(),
                                   getCancellable().get()->get(),
@@ -248,8 +256,12 @@ int FileUntrashOperation::moveRecursively(FileNode *fileNode, QString &parentPat
                           << " Error info:" << err->message
                           << " Error code:" << ret;
 
-                QMessageBox::critical(nullptr, tr("mkdir Error"),
-                                 "create directory Error:" + QString::number(ret));
+                /*
+                * 这里是对不存在的目录进行创建，不会出现G_IO_ERROR_EXISTS错误值，
+                * 所以只会弹出错误提示对话框，给用户提示，结束还原操作流程, 避免后续操作产生错误。
+                */
+                FileOperationError except;
+                untrashFileErrDlg(except, srcFile, destPath, err);
 
                 g_error_free(err);
                 return ret;
@@ -276,6 +288,7 @@ int FileUntrashOperation::deleteFileProcess(FileNode *fileNode)
 {
     int ret = 0;
     GError *err = nullptr;
+    QString destFile = nullptr;
 
     QString srcFile = fileNode->uri();
     GFile *file = g_file_new_for_uri(srcFile.toUtf8().constData());
@@ -288,10 +301,8 @@ int FileUntrashOperation::deleteFileProcess(FileNode *fileNode)
         qWarning()<< "delete file:" << srcFile
                   << " Error info:" << err->message
                   << " Error code:" << ret;
-
-        QMessageBox::critical(nullptr, tr("delete Error"),
-                        "delete file Error:" + QString::number(ret));
-
+        FileOperationError except;
+        untrashFileErrDlg(except, srcFile, destFile, err);
         g_error_free(err);
     }
 
