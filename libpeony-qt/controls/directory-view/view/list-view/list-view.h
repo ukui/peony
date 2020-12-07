@@ -147,7 +147,7 @@ private:
 
     QSize m_last_size;
 
-    const int BOTTOM_STATUS_MARGIN = 36;
+    const int BOTTOM_STATUS_MARGIN = 200;
 };
 
 //ListView2

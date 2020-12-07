@@ -450,8 +450,15 @@ void ListView::adjustColumnsSize()
     if(columnWidth(0) < columnWidth(1))
         setColumnWidth(0, columnWidth(1));
 
-    if (this->width() - rightPartsSize < BOTTOM_STATUS_MARGIN)
+    if (this->width() - rightPartsSize < BOTTOM_STATUS_MARGIN) {
+        int size = width() - BOTTOM_STATUS_MARGIN;
+        size /= header()->count() - 1;
+        setColumnWidth(0, BOTTOM_STATUS_MARGIN);
+        for (int column = 1; column < model()->columnCount(); column++) {
+            setColumnWidth(column, size);
+        }
         return;
+    }
 
     header()->resizeSection(0, this->viewport()->width() - rightPartsSize);
 }
