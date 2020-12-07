@@ -40,8 +40,10 @@ ConnectServerDialog::ConnectServerDialog(QWidget *parent) :
             this->ui->usr_edit->setEnabled(false);
             this->ui->passwd_edit->clear();
             this->ui->passwd_edit->setEnabled(false);
+#ifdef COMMERCIAL_VERSION
             this->ui->domain_edit->clear();
             this->ui->domain_edit->setEnabled(false);
+#endif
             this->ui->save_passwd_checkbox->setChecked(false);
             this->ui->save_passwd_checkbox->setEnabled(true);
         } else {
@@ -49,14 +51,25 @@ ConnectServerDialog::ConnectServerDialog(QWidget *parent) :
             this->ui->usr_edit->setEnabled(true);
             this->ui->passwd_edit->clear();
             this->ui->passwd_edit->setEnabled(true);
+#ifdef COMMERCIAL_VERSION
             this->ui->domain_edit->clear();
             this->ui->domain_edit->setEnabled(true);
+#endif
             this->ui->save_passwd_checkbox->setChecked(false);
             this->ui->save_passwd_checkbox->setEnabled(true);
         }
     });
+
     ui->passwd_edit->setEnabled(false);
     ui->anonymous_checkbox->setChecked(true);
+
+#ifdef COMMERCIAL_VERSION
+    this->ui->domain_edit->setEnabled(false);
+    this->ui->domain_edit->setVisible(false);
+    this->ui->label_3->setVisible(false);
+    ui->passwd_edit->setEnabled(true);
+    ui->anonymous_checkbox->setChecked(false);
+#endif
 }
 
 ConnectServerDialog::~ConnectServerDialog()
