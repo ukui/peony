@@ -64,7 +64,7 @@ public:
         Unhandled,
         Handling,
         Handled,
-        Cleared,
+        Cleared, /*! \deprecated */
         Invalid
     };
 
