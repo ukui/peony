@@ -370,6 +370,9 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
     connect(m_dir_manager,&UserdirManager::desktopDirChanged,[=](){
         refresh();
     });
+    connect(m_dir_manager,&UserdirManager::thumbnailSetingChange,[=](){
+        refresh();
+    });
 }
 
 DesktopItemModel::~DesktopItemModel()
