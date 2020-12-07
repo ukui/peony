@@ -163,6 +163,16 @@
         <translation>文件大小</translation>
     </message>
     <message>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="620"/>
+        <source>Error</source>
+        <translation>错误</translation>
+    </message>
+    <message>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="621"/>
+        <source>Can not show trash properties with other files together!</source>
+        <translation>不能将回收站与其他文件一起查看属性!</translation>
+    </message>
+    <message>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="374"/>
         <source>Modified Date</source>
         <translation>修改日期</translation>

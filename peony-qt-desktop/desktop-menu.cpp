@@ -614,6 +614,14 @@ void DesktopMenu::showProperties(const QStringList &uris)
         return;
     }
 
+    if (uris.contains("trash:///") && uris.count() >1)
+    {
+        QMessageBox::warning(nullptr,
+                             tr("Error"),
+                             tr("Can not show trash properties with other files together!"));
+        return;
+    }
+
     QProcess p;
 #if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
     p.setProgram("peony");
