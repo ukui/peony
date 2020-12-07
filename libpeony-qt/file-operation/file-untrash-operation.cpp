@@ -23,7 +23,6 @@
 #include "file-utils.h"
 #include "file-untrash-operation.h"
 #include "file-operation-manager.h"
-#include <QMessageBox>
 #include <QUrl>
 
 using namespace Peony;
@@ -146,7 +145,7 @@ void FileUntrashOperation::untrashFileErrDlg(
                                 GError *err)
 {
     except.srcUri = srcUri;
-    if ("nullptr" != originUri){
+    if (nullptr != originUri){
         except.destDirUri = originUri;
     }
     except.isCritical = false;
