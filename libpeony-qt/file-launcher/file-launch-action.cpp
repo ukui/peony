@@ -33,6 +33,7 @@
 #include <QPushButton>
 
 #include <QUrl>
+#include <QFile>
 #include <QProcess>
 #include <recent-vfs-manager.h>
 
@@ -280,6 +281,13 @@ void FileLaunchAction::lauchFileAsync(bool forceWithArg, bool skipDialog)
             }
         }
         else {
+            if(!QFile(m_uri).exists())
+            {
+                QMessageBox::warning(nullptr,
+                                     tr("Error"),
+                                     tr("File original path not exist, are you deleted or moved it?"));
+                return;
+            }
             auto result = QMessageBox::question(nullptr, tr("Error"), tr("Can not get a default application for opening %1, do you want open it with text format?").arg(m_uri));
             if (result == QMessageBox::Yes) {
                 GAppInfo *text_info = g_app_info_get_default_for_type("text/plain", false);

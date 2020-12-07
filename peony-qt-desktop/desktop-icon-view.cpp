@@ -355,7 +355,7 @@ void DesktopIconView::initShoutCut()
     addAction(removeAction);
 
     QAction *helpAction = new QAction(this);
-    helpAction->setShortcut(QKeySequence(Qt::META+Qt::Key_F1));
+    helpAction->setShortcut(QKeySequence(Qt::Key_F1));
     connect(helpAction, &QAction::triggered, this, [=]() {
         PeonyDesktopApplication::showGuide();
     });
@@ -1234,7 +1234,8 @@ void DesktopIconView::mousePressEvent(QMouseEvent *e)
             if (! m_is_edit)
                clearAllIndexWidgets();
             m_last_index = index;
-            if (!indexWidget(m_last_index)) {
+//            if (!indexWidget(m_last_index)) {
+
                 auto indexWidget = new DesktopIndexWidget(qobject_cast<DesktopIconViewDelegate *>(itemDelegate()), viewOptions(), m_last_index);
                 setIndexWidget(m_last_index,
                                indexWidget);
@@ -1246,7 +1247,7 @@ void DesktopIconView::mousePressEvent(QMouseEvent *e)
                         updateItemPosByUri(uri, pos);
                 }
 #endif
-            }
+//            }
         }
     }
 
