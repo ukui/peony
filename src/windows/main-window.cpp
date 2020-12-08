@@ -99,7 +99,6 @@
 
 static MainWindow *last_resize_window = nullptr;
 static bool m_resident = false;
-static bool m_has_no_window = true;
 
 MainWindow::MainWindow(const QString &uri, QWidget *parent) : QMainWindow(parent)
 {
@@ -1316,7 +1315,6 @@ void MainWindow::initUI(const QString &uri)
 //        m_status_bar->update();
 //    });
 
-    m_has_no_window = false;
     //unmount all ftp node when close all window
     connect(qApp, &QApplication::lastWindowClosed, this, &MainWindow::unmountAllFtpLinks);
 }
@@ -1341,7 +1339,7 @@ static void unmount_finished(GFile* file, GAsyncResult* result, gpointer udata)
     }
 
     //when has no new window, force quit peony
-    if (m_has_no_window){
+    if (qApp->topLevelWindows().count() <= 0){
         qDebug() << "has no new window, exit";
         qApp->exit();
     }
@@ -1350,7 +1348,6 @@ static void unmount_finished(GFile* file, GAsyncResult* result, gpointer udata)
 void MainWindow::unmountAllFtpLinks()
 {
     qDebug() << "lastWindowClosed unmountAllFtpLinks";
-    m_has_no_window = true;
     auto allUris = Peony::FileUtils::getChildrenUris("computer:///");
     for(auto uri : allUris)
     {
