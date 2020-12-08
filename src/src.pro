@@ -13,7 +13,7 @@ VERSION = 3.0.0
 TARGET = peony
 
 TEMPLATE = app
-
+QMAKE_CXXFLAGS += -Werror=return-type -Werror=return-local-addr -Werror=uninitialized -Werror=unused-label
 include(../libpeony-qt/libpeony-qt-header.pri)
 include(../3rd-parties/SingleApplication/singleapplication.pri)
 include(windows/windows.pri)
