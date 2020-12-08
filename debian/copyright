@@ -204,6 +204,8 @@ Files: libpeony-qt/model/file-item-model.h
   libpeony-qt/model/side-bar-favorite-item.h
   libpeony-qt/model/side-bar-file-system-item.cpp
   libpeony-qt/model/side-bar-file-system-item.h
+  libpeony-qt/model/side-bar-vfs-item.cpp
+  libpeony-qt/model/side-bar-vfs-item.h
   libpeony-qt/model/side-bar-model.cpp
   libpeony-qt/model/side-bar-model.h
   libpeony-qt/model/side-bar-personal-item.cpp
