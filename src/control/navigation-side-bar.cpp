@@ -305,14 +305,14 @@ void NavigationSideBarItemDelegate::paint(QPainter *painter, const QStyleOptionV
 
     if (view->isExpanded(index)) {
         QRect rect = option.rect;
-        rect.setTop(rect.top() + 10);
+        rect.setY(rect.top() + sizeHint(option, index).height()/3);
         rect.setX(rect.right() - 45);
         rect.setSize(QSize(16, 16));
         painter->drawPixmap(rect, QPixmap(":/img/branches2"));
     }
     else {
         QRect rect = option.rect;
-        rect.setTop(rect.top() + 10);
+        rect.setTop(rect.top() + sizeHint(option, index).height()/3);
         rect.setX(rect.right() - 45);
         rect.setSize(QSize(16, 16));
         painter->drawPixmap(rect, QPixmap(":/img/branches1"));
@@ -391,33 +391,28 @@ NavigationSideBarStyle* NavigationSideBarStyle::getStyle()
     return global_instance;
 }
 
-void NavigationSideBarStyle::polish(QWidget *widget)
-{
-    QStyle::polish(widget);
-//    widget->setAttribute(Qt::WA_Hover, false);
-}
-
 //! \brief replace polish, delete hover state
 void NavigationSideBarStyle::drawPrimitive(QStyle::PrimitiveElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget) const
 {
     switch (element) {
-    case QStyle::PE_IndicatorBranch: {
-        if (option->state & QStyle::State_MouseOver) {
-            if (option->state & QStyle::State_Selected)
-                QProxyStyle::drawPrimitive(element, option, painter, widget);
-            else
-                return;
-        }
-    }
     case QStyle::PE_PanelItemViewItem: {
-        if (option->state & QStyle::State_MouseOver) {
-            if (option->state & QStyle::State_Selected)
-                QProxyStyle::drawPrimitive(element, option, painter, widget);
-            else
-                return;
+        if (option->state.testFlag(QStyle::State_MouseOver) && !option->state.testFlag(QStyle::State_Selected)) {
+            return;
+        }
+        else {
+            QProxyStyle::drawPrimitive(element, option, painter, widget);
+            return;
         }
     }
-
-    default: QProxyStyle::drawPrimitive(element, option, painter, widget);
+    case QStyle::PE_IndicatorBranch: {
+        if (option->state.testFlag(QStyle::State_MouseOver) && !option->state.testFlag(QStyle::State_Selected)) {
+            return;
+        }
+        else {
+            QProxyStyle::drawPrimitive(element, option, painter, widget);
+            return;
+        }
+    }
+//    default: QProxyStyle::drawPrimitive(element, option, painter, widget);
     }
 }

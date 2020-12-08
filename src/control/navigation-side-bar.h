@@ -117,7 +117,6 @@ class NavigationSideBarStyle : public QProxyStyle
 {
 public:
     static NavigationSideBarStyle* getStyle();
-    void polish(QWidget *widget);
     void drawPrimitive(QStyle::PrimitiveElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget) const;
 
 private:
