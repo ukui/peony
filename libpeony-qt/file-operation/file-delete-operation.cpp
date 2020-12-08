@@ -150,6 +150,10 @@ void FileDeleteOperation::run()
         deleteRecursively(node);
     }
 
+    for (auto node : nodes) {
+        delete node;
+    }
+
     Q_EMIT operationFinished();
     //notifyFileWatcherOperationFinished();
 }
