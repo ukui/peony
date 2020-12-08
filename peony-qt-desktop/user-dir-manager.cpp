@@ -14,6 +14,7 @@
 #include <QSettings>
 #include <QTextCodec>
 #include <QTimer>
+#include <QMessageBox>
 
 using namespace Peony;
 UserdirManager::UserdirManager(QObject *parent) : QObject(parent)
@@ -38,9 +39,9 @@ UserdirManager::UserdirManager(QObject *parent) : QObject(parent)
     }
     else
     {
+        GlobalSettings::getInstance()->setValue(TEMPLATES_DIR,g_get_user_special_dir(G_USER_DIRECTORY_TEMPLATES));
         QTimer *timer = new QTimer;
-        int i =0;
-        connect(timer,&QTimer::timeout,[&](){
+        connect(timer,&QTimer::timeout,[=](){
             if(QFile(path).exists())
             {
                 m_user_dir_watcher->addPath(path);
@@ -55,12 +56,12 @@ UserdirManager::UserdirManager(QObject *parent) : QObject(parent)
             }
             else
             {
-                if(++i>4)
+                if(--m_times==0)
                     timer->stop();
             }
 
         });
-        timer->start(500);
+        timer->start(1000);
     }
 
 }
