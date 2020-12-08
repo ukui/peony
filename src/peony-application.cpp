@@ -63,6 +63,7 @@
 
 #include "fm-window.h"
 #include "main-window.h"
+#include "global-settings.h"
 
 #include <QFile>
 
@@ -108,6 +109,7 @@
 
 //record of peony start time
 qint64 PeonyApplication::peony_start_time = 0;
+static bool m_resident = false;
 
 PeonyApplication::PeonyApplication(int &argc, char *argv[], const char *applicationName) : SingleApplication (argc, argv, applicationName, true)
 {
@@ -138,6 +140,9 @@ PeonyApplication::PeonyApplication(int &argc, char *argv[], const char *applicat
     parser.addOption(showPropertiesOption);
 
     parser.addPositionalArgument("files", tr("Files or directories to open"), tr("[FILE1, FILE2,...]"));
+
+    //unmount all ftp node when close all window
+    connect(qApp, &QApplication::lastWindowClosed, this, &PeonyApplication::unmountAllFtpLinks);
 
     if (this->isSecondary()) {
         parser.addHelpOption();
@@ -462,6 +467,59 @@ PeonyApplication::PeonyApplication(int &argc, char *argv[], const char *applicat
     window->setAttribute(Qt::WA_DeleteOnClose);
     window->show();
 #endif
+}
+
+static void unmount_finished(GFile* file, GAsyncResult* result, gpointer udata)
+{
+
+    int flags = 0;
+    GError *err = nullptr;
+
+    if (g_file_unmount_mountable_with_operation_finish (file, result, &err) == TRUE){
+        flags = 1;
+    }
+
+    if (! m_resident)
+    {
+        qApp->setQuitOnLastWindowClosed(true);
+    }
+
+    if (err){
+        qCritical() << "main window unmount_finished error:"<<err->message<<flags;
+        g_error_free(err);
+    }
+
+    //when has no new window, force quit peony
+    if (qApp->topLevelWindows().count() <= 0 && ! m_resident){
+        qDebug() << "has no new window, exit";
+        qApp->exit();
+    }
+}
+
+void PeonyApplication::unmountAllFtpLinks()
+{
+    qDebug() << "lastWindowClosed unmountAllFtpLinks";
+    auto allUris = Peony::FileUtils::getChildrenUris("computer:///");
+    for(auto uri : allUris)
+    {
+        auto targetUri = Peony::FileUtils::getTargetUri(uri);
+        qDebug() << "unmountAllFtpLinks targetUri:" <<targetUri;
+        if (! targetUri.startsWith("smb://") &&
+            ! targetUri.startsWith("sftp://") &&
+            ! targetUri.startsWith("ftp://"))
+            continue;
+
+        m_resident = Peony::GlobalSettings::getInstance()->getValue("resident").toBool();
+        qApp->setQuitOnLastWindowClosed(false);
+        GFile *file = g_file_new_for_uri(uri.toUtf8().constData());
+        g_file_unmount_mountable_with_operation(file,
+                                                G_MOUNT_UNMOUNT_NONE,
+                                                nullptr,
+                                                nullptr,
+                                                GAsyncReadyCallback(unmount_finished),
+                                                this);
+        g_object_unref(file);
+    }
 }
 
 void PeonyApplication::parseCmd(quint32 id, QByteArray msg)
