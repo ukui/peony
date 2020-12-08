@@ -66,9 +66,7 @@ public:
      * If a move operation is not native move, it will do a copy and delete operation
      * as a 'move'. setCopyMove will tell the operation do not delete the source files.
      */
-    void setCopyMove(bool copyMove = true) {
-        m_copy_move = copyMove;
-    }
+    void setCopyMove(bool copyMove = true);
 
     /*!
      * \brief setForceUseFallback

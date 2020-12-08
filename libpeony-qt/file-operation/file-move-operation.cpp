@@ -102,6 +102,12 @@ FileMoveOperation::~FileMoveOperation()
         delete m_reporter;
 }
 
+void FileMoveOperation::setCopyMove(bool copyMove)
+{
+    m_copy_move = copyMove;
+    m_info.get()->m_type = copyMove? FileOperationInfo::Copy: FileOperationInfo::Move;
+}
+
 void FileMoveOperation::progress_callback(goffset current_num_bytes,
         goffset total_num_bytes,
         FileMoveOperation *p_this)
@@ -303,21 +309,12 @@ retry:
                             GFileProgressCallback(progress_callback),
                             this,
                             &handled_err);
+                setHasError(false);
                 break;
             }
             case BackupAll: {
-                file->setState(FileNode::Handled);
-                file->setErrorResponse(BackupOne);
-                auto handledDestFileUri = file->resolveDestFileUri(m_dest_dir_uri);
-                auto handledDestFile = wrapGFile(g_file_new_for_uri(handledDestFileUri.toUtf8()));
-                g_file_copy(srcFile.get()->get(),
-                            handledDestFile.get()->get(),
-                            GFileCopyFlags(m_default_copy_flag|G_FILE_COPY_BACKUP),
-                            getCancellable().get()->get(),
-                            GFileProgressCallback(progress_callback),
-                            this,
-                            &handled_err);
                 m_prehandle_hash.insert(err->code, BackupOne);
+                goto retry;
                 break;
             }
             case Retry: {
@@ -422,7 +419,11 @@ retry:
 //    }
 
     //release node
+    m_info.get()->m_src_uris.clear();
+    m_info.get()->m_dest_uris.clear();
     for (auto file : nodes) {
+        m_info.get()->m_src_uris<<file->uri();
+        m_info.get()->m_dest_uris<<file->destUri();
         delete file;
     }
     nodes.clear();
@@ -705,18 +706,11 @@ fallback_retry:
                 }
                 g_object_unref(destFile.get());
                 destFile = wrapGFile(g_file_new_for_uri(node->destUri().toUtf8().constData()));
+                setHasError(false);
                 goto fallback_retry;
             }
             case BackupAll: {
-                //node->setState(FileNode::Handled);
-                node->setErrorResponse(BackupOne);
-                while (FileUtils::isFileExsit(node->destUri())) {
-                    handleDuplicate(node);
-                    node->resolveDestFileUri(m_dest_dir_uri);
-                }
                 m_prehandle_hash.insert(err->code, BackupOne);
-                g_object_unref(destFile.get());
-                destFile = wrapGFile(g_file_new_for_uri(node->destUri().toUtf8().constData()));
                 goto fallback_retry;
             }
             case Retry: {
@@ -854,26 +848,12 @@ fallback_retry:
                             nullptr);
                 //node->setState(FileNode::Handled);
                 node->setErrorResponse(BackupOne);
+                setHasError(false);
                 break;
             }
             case BackupAll: {
-                while (FileUtils::isFileExsit(node->destUri()))
-                {
-                    handleDuplicate(node);
-                    node->resolveDestFileUri(m_dest_dir_uri);
-                }
-                auto handledDestFileUri = node->resolveDestFileUri(m_dest_dir_uri);
-                auto handledDestFile = wrapGFile(g_file_new_for_uri(handledDestFileUri.toUtf8()));
-                g_file_copy(sourceFile.get()->get(),
-                            handledDestFile.get()->get(),
-                            GFileCopyFlags(m_default_copy_flag | G_FILE_COPY_BACKUP),
-                            getCancellable().get()->get(),
-                            GFileProgressCallback(progress_callback),
-                            this,
-                            nullptr);
-                //node->setState(FileNode::Handled);
-                node->setErrorResponse(BackupOne);
                 m_prehandle_hash.insert(err->code, BackupOne);
+                goto fallback_retry;
                 break;
             }
             case Retry: {
@@ -970,7 +950,11 @@ void FileMoveOperation::moveForceUseFallback()
         }
     }
 
+    m_info.get()->m_src_uris.clear();
+    m_info.get()->m_dest_uris.clear();
     for (auto node : nodes) {
+        m_info.get()->m_src_uris<<node->uri();
+        m_info.get()->m_dest_uris<<node->destUri();
         delete node;
     }
 
