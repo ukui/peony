@@ -31,8 +31,9 @@
 #include "gerror-wrapper.h"
 
 #include "file-utils.h"
-#include "peony-search-vfs-file.h"
 #include "audio-play-manager.h"
+
+#include "vfs-plugin-manager.h"
 
 #include <QList>
 #include <QMessageBox>
@@ -129,14 +130,9 @@ void FileEnumerator::setEnumerateDirectory(QString uri)
 #if GLIB_CHECK_VERSION(2, 50, 0)
     m_root_file = g_file_new_for_uri(uri.toUtf8());
 #else
-    if (uri.startsWith("search:///"))
-    {
-        m_root_file = peony_search_vfs_file_new_for_uri(uri.toUtf8());
-    }
-    else
-        m_root_file = g_file_new_for_uri(uri.toUtf8());
+    auto vfsMgr = VFSPluginManager::getInstance();
+    m_root_file = vfsMgr->newVFSFile(uri);
 #endif
-
 }
 
 void FileEnumerator::setEnumerateDirectory(GFile *file)
