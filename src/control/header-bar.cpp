@@ -64,6 +64,8 @@
 #include <QtConcurrent>
 #include <QAction>
 
+#include <QX11Info>
+
 #include <QDebug>
 
 static HeaderBarStyle *global_instance = nullptr;
@@ -833,7 +835,6 @@ bool HeaderBarContainer::eventFilter(QObject *obj, QEvent *e)
             //w->setCursor(c);
             this->topLevelWidget()->setCursor(c);
         }
-
     }
 
     return false;

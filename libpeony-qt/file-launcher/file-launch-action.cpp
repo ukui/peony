@@ -25,6 +25,7 @@
 
 #include "file-info.h"
 #include "file-info-job.h"
+#include "file-utils.h"
 #include "file-operation-utils.h"
 #include "audio-play-manager.h"
 
@@ -32,6 +33,7 @@
 #include <QPushButton>
 
 #include <QUrl>
+#include <QFile>
 #include <QProcess>
 #include <QtDBus/QtDBus>
 #include <recent-vfs-manager.h>
@@ -42,7 +44,11 @@ using namespace Peony;
 
 FileLaunchAction::FileLaunchAction(const QString &uri, GAppInfo *app_info, bool forceWithArg, QObject *parent) : QAction(parent)
 {
-    m_uri = uri;
+    if(uri.startsWith("recent:///"))
+        m_uri = FileUtils::getTargetUri(uri);
+    else
+        m_uri = uri;
+
     m_app_info = static_cast<GAppInfo*>(g_object_ref(app_info));
     m_force_with_arg = forceWithArg;
 
@@ -333,6 +339,13 @@ void FileLaunchAction::lauchFileAsync(bool forceWithArg, bool skipDialog)
             }
         }
         else {
+            if(!QFile(m_uri).exists())
+            {
+                QMessageBox::warning(nullptr,
+                                     tr("Error"),
+                                     tr("File original path not exist, are you deleted or moved it?"));
+                return;
+            }
             auto result = QMessageBox::question(nullptr, tr("Error"), tr("Can not get a default application for opening %1, do you want open it with text format?").arg(m_uri));
             if (result == QMessageBox::Yes) {
                 GAppInfo *text_info = g_app_info_get_default_for_type("text/plain", false);

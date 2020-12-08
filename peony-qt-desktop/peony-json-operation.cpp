@@ -169,14 +169,8 @@ int PeonyJsonOperation::entryInfoParse(QJsonValue &entryInfoValue, BWListInfo *b
         }
 
         QJsonObject appObj = appValue.toObject();
-        if (!appObj.contains("path") || !appObj.contains("visible")) {
-            qWarning("the config do not contain element path or visible");
-            return -EINVAL;
-        }
-
-        QJsonValue visibleValue = appObj.value("visible");
-        if (!visibleValue.isBool()){
-            qWarning("visible element is not bool");
+        if (!appObj.contains("path")) {
+            qWarning("the config do not contain element path");
             return -EINVAL;
         }
 
@@ -186,11 +180,8 @@ int PeonyJsonOperation::entryInfoParse(QJsonValue &entryInfoValue, BWListInfo *b
             return -EINVAL;
         }
 
-        bool appVisible = visibleValue.toBool();
-        if (appVisible) {
-            QString appPath = pathValue.toString();
-            bwListInfo->addBWListElement(appPath);
-        }
+        QString appPath = pathValue.toString();
+        bwListInfo->addBWListElement(appPath);
     }
 
     return 0;

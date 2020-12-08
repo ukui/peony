@@ -355,7 +355,7 @@ void DesktopIconView::initShoutCut()
     addAction(removeAction);
 
     QAction *helpAction = new QAction(this);
-    helpAction->setShortcut(QKeySequence(Qt::META+Qt::Key_F1));
+    helpAction->setShortcut(QKeySequence(Qt::Key_F1));
     connect(helpAction, &QAction::triggered, this, [=]() {
         PeonyDesktopApplication::showGuide();
     });
@@ -456,7 +456,7 @@ void DesktopIconView::initMenu()
     connect(this, &QListView::customContextMenuRequested, this,
     [=](const QPoint &pos) {
         // FIXME: use other menu
-        qDebug() << "menu request";
+        qDebug() << "menu request  in desktop icon view";
         if (!this->indexAt(pos).isValid()) {
             this->clearSelection();
         } else {
@@ -499,6 +499,11 @@ void DesktopIconView::setShowHidden()
     m_show_hidden = ! m_show_hidden;
     qDebug() << "DesktopIconView::setShowHidden:" <<m_show_hidden;
     m_proxy_model->setShowHidden(m_show_hidden);
+    //fix show hidden file desktop icons overlapped issue
+    QTimer::singleShot(100, this, [=]() {
+        resetAllItemPositionInfos();
+        refresh();
+    });
 }
 
 void DesktopIconView::openFileByUri(QString uri)
@@ -1232,7 +1237,8 @@ void DesktopIconView::mousePressEvent(QMouseEvent *e)
             if (! m_is_edit)
                clearAllIndexWidgets();
             m_last_index = index;
-            if (!indexWidget(m_last_index)) {
+//            if (!indexWidget(m_last_index)) {
+
                 auto indexWidget = new DesktopIndexWidget(qobject_cast<DesktopIconViewDelegate *>(itemDelegate()), viewOptions(), m_last_index);
                 setIndexWidget(m_last_index,
                                indexWidget);
@@ -1244,7 +1250,7 @@ void DesktopIconView::mousePressEvent(QMouseEvent *e)
                         updateItemPosByUri(uri, pos);
                 }
 #endif
-            }
+//            }
         }
     }
 

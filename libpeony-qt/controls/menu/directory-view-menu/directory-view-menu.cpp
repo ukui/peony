@@ -54,6 +54,8 @@
 #include "file-operation-error-dialog.h"
 #include "global-settings.h"
 
+#include "global-settings.h"
+
 #include <QDesktopServices>
 #include <QUrl>
 #include <QMessageBox>
@@ -334,6 +336,7 @@ const QList<QAction *> DirectoryViewMenu::constructCreateTemplateActions()
         addAction(createAction);
 
         //enumerate template dir
+//        QDir templateDir(g_get_user_special_dir(G_USER_DIRECTORY_TEMPLATES));
         QDir templateDir(GlobalSettings::getInstance()->getValue(TEMPLATES_DIR).toString());
         auto templates = templateDir.entryList(QDir::AllEntries|QDir::NoDotAndDotDot);
         if (!templates.isEmpty()) {
@@ -533,16 +536,14 @@ const QList<QAction *> DirectoryViewMenu::constructFileOpActions()
 
     if (!m_is_trash && !m_is_search && !m_is_computer) {
         QString homeUri = "file://" +  QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
-        QString desktopPath = "file://" +  QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
-        QString desktopUri = FileUtils::getEncodedUri(desktopPath);
-        //qDebug() << "constructFileOpActions desktopUri:" <<desktopUri;
-        if (!m_selections.isEmpty() && !m_selections.contains(homeUri) && !m_is_recent) {
+        bool hasStandardPath = FileUtils::containsStandardPath(m_selections);
+        //qDebug() << "constructFileOpActions hasStandardPath:" <<hasStandardPath;
+        if (!m_selections.isEmpty() && !m_selections.contains(homeUri)) {
             l<<addAction(QIcon::fromTheme("edit-copy-symbolic"), tr("&Copy"));
             connect(l.last(), &QAction::triggered, [=]() {
                 ClipboardUtils::setClipboardFiles(m_selections, false);
             });
-
-            if (! m_selections.contains(desktopUri) && !m_is_recent)
+            if (! hasStandardPath && !m_is_recent)
             {
                 l<<addAction(QIcon::fromTheme("edit-cut-symbolic"), tr("Cut"));
                 connect(l.last(), &QAction::triggered, [=]() {
@@ -550,7 +551,7 @@ const QList<QAction *> DirectoryViewMenu::constructFileOpActions()
                 });
             }
 
-            if (!m_is_recent && !m_selections.contains(desktopUri)) {
+            if (!m_is_recent && ! hasStandardPath) {
                 l<<addAction(QIcon::fromTheme("edit-delete-symbolic"), tr("&Delete to trash"));
                 connect(l.last(), &QAction::triggered, [=]() {
                     FileOperationUtils::trash(m_selections, true);
@@ -562,7 +563,7 @@ const QList<QAction *> DirectoryViewMenu::constructFileOpActions()
 //            connect(l.last(), &QAction::triggered, [=]() {
 //                FileOperationUtils::executeRemoveActionWithDialog(m_selections);
 //            });
-            if (m_selections.count() == 1 && !m_selections.contains(desktopUri) && !m_is_recent) {
+            if (m_selections.count() == 1 && ! hasStandardPath && !m_is_recent) {
                 l<<addAction(QIcon::fromTheme("document-edit-symbolic"), tr("Rename"));
                 connect(l.last(), &QAction::triggered, [=]() {
                     m_view->editUri(m_selections.first());

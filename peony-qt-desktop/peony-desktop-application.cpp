@@ -133,7 +133,12 @@ PeonyDesktopApplication::PeonyDesktopApplication(int &argc, char *argv[], const 
         file.open(QFile::ReadOnly);
         setStyleSheet(QString::fromLatin1(file.readAll()));
         file.close();
-        Peony::DesktopMenuPluginManager::getInstance();
+
+        //add 5 seconds delay to load plugins
+        //try to fix first time enter desktop right menu not show open terminal issue
+        QTimer::singleShot(5000, [=]() {
+            Peony::DesktopMenuPluginManager::getInstance();
+        });
 
         /*
         QSystemTrayIcon *trayIcon = new QSystemTrayIcon(this);
@@ -509,7 +514,7 @@ void guessContentTypeCallback(GObject* object,GAsyncResult *res,gpointer data)
             for(n = 0; guessType[n]; ++n){
                 if(g_content_type_is_a(guessType[n],"x-content/win32-software"))
                     openFolder = false;
-                if(!strcmp(guessType[n],"x-content/blank-dvd"))
+                if(!strcmp(guessType[n],"x-content/blank-dvd") || !strcmp(guessType[n],"x-content/blank-cd"))
                     openFolder = false;
 
                 if(openFolder)
@@ -569,6 +574,6 @@ void PeonyDesktopApplication::volumeRemovedProcess(const std::shared_ptr<Peony::
     }
 
     //if it is possible, we stop it's drive after eject successfully.
-    if(gdrive && g_drive_can_stop(gdrive))
-        g_drive_stop(gdrive,G_MOUNT_UNMOUNT_NONE,NULL,NULL,NULL,NULL);
+   // if(gdrive && g_drive_can_stop(gdrive))
+   //     g_drive_stop(gdrive,G_MOUNT_UNMOUNT_NONE,NULL,NULL,NULL,NULL);
 };

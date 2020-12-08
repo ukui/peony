@@ -152,7 +152,9 @@ void FileOperationProgressWizard::onElementFoundOne(const QString &uri, const qi
     m_total_count++;
     m_total_size += size;
 
-    char *format_size = g_format_size (quint64(m_total_size));
+    //char *format_size = g_format_size (quint64(m_total_size));
+    //Calculated by 1024 bytes
+    char *format_size = strtok(g_format_size_full(quint64(m_total_size),G_FORMAT_SIZE_IEC_UNITS),"iB");
 
     m_first_page->m_src_line->setText(uri);
     m_first_page->m_state_line->setText(tr("%1 files, %2").arg(m_total_count).arg(format_size));
@@ -248,8 +250,13 @@ void FileOperationProgressWizard::updateProgress(const QString &srcUri, const QS
     m_second_page->m_src_line->setText(srcUri);
     m_second_page->m_dest_line->setText(destUri);
 
-    char *current_format_size = g_format_size (quint64(current));
-    char *total_format_size = g_format_size(quint64(m_total_size));
+    //char *current_format_size = g_format_size (quint64(current));
+    //char *total_format_size = g_format_size(quint64(m_total_size));
+
+    //Calculated by 1024 bytes
+    char *current_format_size = strtok(g_format_size_full(quint64(current),G_FORMAT_SIZE_IEC_UNITS),"iB");
+    char *total_format_size = strtok(g_format_size_full(quint64(m_total_size),G_FORMAT_SIZE_IEC_UNITS),"iB");
+
     m_second_page->m_state_line->setText(tr("%1 done, %2 total, %3 of %4.").
                                          arg(current_format_size).arg(total_format_size)
                                          .arg(m_current_count).arg(m_total_count));

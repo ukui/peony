@@ -26,6 +26,7 @@ private:
     QFileSystemWatcher *m_user_dir_watcher;
     QDir *m_dir;
     QStringList m_file_list;
+    int m_times = 5;
 
 };
 

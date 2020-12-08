@@ -29,6 +29,7 @@
 #include "file-operation-manager.h"
 #include "file-move-operation.h"
 #include "file-copy-operation.h"
+#include "file-utils.h"
 
 using namespace Peony;
 
@@ -105,10 +106,20 @@ void ClipboardUtils::setClipboardFiles(const QStringList &uris, bool isCut)
     data->setData("peony-qt/is-cut", isCutData.toByteArray());
     QList<QUrl> urls;
     QStringList encodedUris;
-    for (auto uri : uris) {
-        urls<<uri;
-        encodedUris<<uri;
+    for (QString uri : uris) {
+        if(!uri.startsWith("recent:///"))
+        {
+            urls<<uri;
+            encodedUris<<uri;
+        }
+        else
+        {
+            auto targetUri = FileUtils::getTargetUri(uri);
+            urls<<targetUri;
+            encodedUris<<targetUri;
+        }
     }
+
     data->setUrls(urls);
     QString string = encodedUris.join(" ");
     data->setData("peony-qt/encoded-uris", string.toUtf8());

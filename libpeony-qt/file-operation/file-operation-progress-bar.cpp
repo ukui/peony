@@ -422,7 +422,7 @@ void MainProgressBar::paintContent(QPainter &painter)
     if (m_stopping) {
         painter.drawText(x, y, w, m_file_name_height, Qt::AlignLeft | Qt::AlignVCenter, tr("canceling ..."));
     } else {
-        painter.drawText(x, y, w, m_file_name_height, Qt::AlignLeft | Qt::AlignVCenter, m_file_name);
+        painter.drawText(x, y, w, m_file_name_height, Qt::AlignLeft | Qt::AlignVCenter | Qt::TextWordWrap | Qt::TextWrapAnywhere, m_file_name);
     }
 
     // paint percentage
@@ -696,7 +696,9 @@ void ProgressBar::onElementFoundOne(const QString &uri, const qint64 &size)
     m_total_size += size;
     QUrl url = uri;
     m_src_uri = url.toDisplayString();
-    char* format_size = g_format_size (quint64(m_total_size));
+    //char* format_size = g_format_size (quint64(m_total_size));
+    //Calculated by 1024 bytes
+    char* format_size = strtok(g_format_size_full(quint64(m_total_size),G_FORMAT_SIZE_IEC_UNITS),"iB");
 
     g_free(format_size);
 }

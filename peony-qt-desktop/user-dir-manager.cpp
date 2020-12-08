@@ -13,6 +13,8 @@
 #include <QTimer>
 #include <QSettings>
 #include <QTextCodec>
+#include <QTimer>
+#include <QMessageBox>
 
 using namespace Peony;
 UserdirManager::UserdirManager(QObject *parent) : QObject(parent)
@@ -24,16 +26,43 @@ UserdirManager::UserdirManager(QObject *parent) : QObject(parent)
     m_user_dir_watcher = new QFileSystemWatcher(this);
 
     QString path = QString("/home/"+m_user_name+"/.config/user-dirs.dirs");
-    m_user_dir_watcher->addPath(path);
-
-    getUserdir();
-
-    connect(m_user_dir_watcher, &QFileSystemWatcher::fileChanged, [=](const QString &uri){
-        getUserdir();
-        moveFile();
+    if(QFile(path).exists())
+    {
         m_user_dir_watcher->addPath(path);
+        getUserdir();
+        connect(m_user_dir_watcher, &QFileSystemWatcher::fileChanged, [=](const QString &uri){
+            getUserdir();
+            moveFile();
+            m_user_dir_watcher->addPath(path);
 
-    });
+        });
+    }
+    else
+    {
+        GlobalSettings::getInstance()->setValue(TEMPLATES_DIR,g_get_user_special_dir(G_USER_DIRECTORY_TEMPLATES));
+        QTimer *timer = new QTimer;
+        connect(timer,&QTimer::timeout,[=](){
+            if(QFile(path).exists())
+            {
+                m_user_dir_watcher->addPath(path);
+                getUserdir();
+                connect(m_user_dir_watcher, &QFileSystemWatcher::fileChanged, [=](const QString &uri){
+                    getUserdir();
+                    moveFile();
+                    m_user_dir_watcher->addPath(path);
+
+                });
+                timer->stop();
+            }
+            else
+            {
+                if(--m_times==0)
+                    timer->stop();
+            }
+
+        });
+        timer->start(1000);
+    }
 
 }
 
