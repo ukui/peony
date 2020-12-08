@@ -55,7 +55,7 @@ public:
     void setEnumerateDirectory(QString uri);
     void setEnumerateDirectory(GFile *file);
 
-    bool setEnumerateWithInfoJob(bool query = true);
+    void setEnumerateWithInfoJob(bool query = true);
 
     QString getEnumerateUri();
 

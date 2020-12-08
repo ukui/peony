@@ -159,9 +159,9 @@ void FileEnumerator::setEnumerateDirectory(GFile *file)
     }
 }
 
-bool FileEnumerator::setEnumerateWithInfoJob(bool query)
+void FileEnumerator::setEnumerateWithInfoJob(bool query)
 {
-    m_with_info_job = query;
+    m_with_info_job = query;   
 }
 
 QString FileEnumerator::getEnumerateUri()
