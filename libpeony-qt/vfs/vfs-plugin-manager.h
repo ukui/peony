@@ -39,6 +39,8 @@ public:
 
     void registerPlugin(VFSPluginIface *plugin);
 
+    QList<VFSPluginIface *> registeredPlugins();
+
     /*!
      * \brief supportExtraSchemes
      * \return the registered plugins schemes, like "search://".

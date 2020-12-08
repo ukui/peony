@@ -45,6 +45,11 @@ void VFSPluginManager::registerPlugin(VFSPluginIface *plugin)
     m_support_schemes<<plugin->uriScheme();
 }
 
+QList<VFSPluginIface *> VFSPluginManager::registeredPlugins()
+{
+    return m_plugins;
+}
+
 GFile *VFSPluginManager::newVFSFile(const QString &uri)
 {
     int index = -1;
