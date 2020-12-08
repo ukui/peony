@@ -291,6 +291,10 @@ void NavigationSideBarItemDelegate::paint(QPainter *painter, const QStyleOptionV
 
     QStyleOptionViewItem opt = option;
 
+    //! \brief Temporarily replace drawPrimitive
+    if (opt.state.testFlag(QStyle::State_MouseOver) && !opt.state.testFlag(QStyle::State_Selected))
+        opt.state = QStyle::State_Enabled;
+
     painter->setRenderHint(QPainter::Antialiasing, true);
 
     QStyledItemDelegate::paint(painter, opt, index);
@@ -396,6 +400,7 @@ void NavigationSideBarStyle::drawPrimitive(QStyle::PrimitiveElement element, con
 {
     switch (element) {
     case QStyle::PE_PanelItemViewItem: {
+        //! \bug never in here in qt5-ukui-platformtheme-tablet-1205
         if (option->state.testFlag(QStyle::State_MouseOver) && !option->state.testFlag(QStyle::State_Selected)) {
             return;
         }
