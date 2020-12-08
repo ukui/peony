@@ -13,6 +13,7 @@
 #include <QTimer>
 #include <QSettings>
 #include <QTextCodec>
+#include <QTimer>
 
 using namespace Peony;
 UserdirManager::UserdirManager(QObject *parent) : QObject(parent)
@@ -24,16 +25,43 @@ UserdirManager::UserdirManager(QObject *parent) : QObject(parent)
     m_user_dir_watcher = new QFileSystemWatcher(this);
 
     QString path = QString("/home/"+m_user_name+"/.config/user-dirs.dirs");
-    m_user_dir_watcher->addPath(path);
-
-    getUserdir();
-
-    connect(m_user_dir_watcher, &QFileSystemWatcher::fileChanged, [=](const QString &uri){
-        getUserdir();
-        moveFile();
+    if(QFile(path).exists())
+    {
         m_user_dir_watcher->addPath(path);
+        getUserdir();
+        connect(m_user_dir_watcher, &QFileSystemWatcher::fileChanged, [=](const QString &uri){
+            getUserdir();
+            moveFile();
+            m_user_dir_watcher->addPath(path);
 
-    });
+        });
+    }
+    else
+    {
+        QTimer *timer = new QTimer;
+        int i =0;
+        connect(timer,&QTimer::timeout,[&](){
+            if(QFile(path).exists())
+            {
+                m_user_dir_watcher->addPath(path);
+                getUserdir();
+                connect(m_user_dir_watcher, &QFileSystemWatcher::fileChanged, [=](const QString &uri){
+                    getUserdir();
+                    moveFile();
+                    m_user_dir_watcher->addPath(path);
+
+                });
+                timer->stop();
+            }
+            else
+            {
+                if(++i>4)
+                    timer->stop();
+            }
+
+        });
+        timer->start(500);
+    }
 
 }
 
