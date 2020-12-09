@@ -272,6 +272,9 @@ void IconView::mouseMoveEvent(QMouseEvent *e)
         return;
     }
     QListView::mouseMoveEvent(e);
+    if(getSelections().count()>1)
+        multiSelect();
+    viewport()->update(viewport()->rect());
 }
 
 void IconView::mousePressEvent(QMouseEvent *e)
@@ -281,6 +284,11 @@ void IconView::mousePressEvent(QMouseEvent *e)
     qDebug()<<"moursePressEvent";
 //    m_editValid = true;
     QListView::mousePressEvent(e);
+
+    if(getSelections().count()>1)
+        multiSelect();
+    viewport()->update(viewport()->rect());
+
     if(!indexAt(e->pos()).isValid())
     {
         disableMultiSelect();
