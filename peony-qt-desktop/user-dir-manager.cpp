@@ -13,6 +13,7 @@
 #include <QTimer>
 #include <QSettings>
 #include <QTextCodec>
+#include <QFile>
 
 using namespace Peony;
 UserdirManager::UserdirManager(QObject *parent) : QObject(parent)
@@ -29,10 +30,36 @@ UserdirManager::UserdirManager(QObject *parent) : QObject(parent)
     QString path0 = QString("/home/"+m_user_name+"/.config/user-dirs.dirs");
     QString path1 = QString("/home/"+m_user_name+"/.config/org.ukui/peony-qt-preferences.conf");
 
-    m_user_dir_watcher->addPath(path0);
-    m_user_dir_watcher->addPath(path1);
+    if(!QFile(path0).exists())
+    {
+        GlobalSettings::getInstance()->setValue(TEMPLATES_DIR,g_get_user_special_dir(G_USER_DIRECTORY_TEMPLATES));
+        QTimer *timer = new QTimer;
+        connect(timer,&QTimer::timeout,[=](){
+            if(QFile(path0).exists())
+            {
+                getUserdir();
+                m_user_dir_watcher->addPath(path0);
+                timer->stop();
+            }
+            else
+            {
+                if(--m_times==0)
+                    timer->stop();
+            }
+        });
+        timer->start(1000);
+    }
+    else
+    {
+        m_user_dir_watcher->addPath(path0);
+        getUserdir();
+    }
 
-    getUserdir();
+    if(!QFile(path1).exists())
+    {
+        GlobalSettings::getInstance();
+    }
+    m_user_dir_watcher->addPath(path1);
 
     connect(m_user_dir_watcher, &QFileSystemWatcher::fileChanged, [=](const QString &uri){
         //user-dirs.dirs
