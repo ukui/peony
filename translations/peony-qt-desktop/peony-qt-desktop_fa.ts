@@ -11,12 +11,12 @@
     <message>
         <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="388"/>
         <source>New Folder</source>
-        <translation type="unfinished"></translation>
+        <translation>پوشۀ جدید</translation>
     </message>
     <message>
         <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="474"/>
         <source>set background</source>
-        <translation type="unfinished"></translation>
+        <translation>انتخاب پس‌زمینه</translation>
     </message>
     <message>
         <source>Delete file Warning</source>
@@ -100,7 +100,7 @@
     <message>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="236"/>
         <source>New...</source>
-        <translation type="unfinished"></translation>
+        <translation>جدید...</translation>
     </message>
     <message>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="294"/>
@@ -150,17 +150,17 @@
     <message>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="373"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>نام</translation>
     </message>
     <message>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="375"/>
         <source>File Type</source>
-        <translation type="unfinished"></translation>
+        <translation>نوع فایل</translation>
     </message>
     <message>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="376"/>
         <source>File Size</source>
-        <translation type="unfinished"></translation>
+        <translation>حجم فایل</translation>
     </message>
     <message>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="374"/>
@@ -188,7 +188,7 @@
     <message>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="485"/>
         <source>Rename</source>
-        <translation type="unfinished"></translation>
+        <translation>نام‌گذاری</translation>
     </message>
     <message>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="512"/>
@@ -231,7 +231,7 @@
     <message>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="450"/>
         <source>Delete Permanently</source>
-        <translation type="unfinished"></translation>
+        <translation>حذف همیشگی</translation>
     </message>
     <message>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="450"/>
@@ -275,12 +275,12 @@
     <message>
         <location filename="../../peony-qt-desktop/desktop-window.cpp" line="94"/>
         <source>Desktop</source>
-        <translation type="unfinished"></translation>
+        <translation>میز کار</translation>
     </message>
     <message>
         <location filename="../../peony-qt-desktop/desktop-window.cpp" line="159"/>
         <source>set background</source>
-        <translation type="unfinished"></translation>
+        <translation>انتخاب پس‌زمینه</translation>
     </message>
     <message>
         <source>New Folder</source>
