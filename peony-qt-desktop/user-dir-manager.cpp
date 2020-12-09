@@ -32,7 +32,6 @@ UserdirManager::UserdirManager(QObject *parent) : QObject(parent)
 
     if(!QFile(path0).exists())
     {
-        GlobalSettings::getInstance()->setValue(TEMPLATES_DIR,g_get_user_special_dir(G_USER_DIRECTORY_TEMPLATES));
         QTimer *timer = new QTimer;
         connect(timer,&QTimer::timeout,[=](){
             if(QFile(path0).exists())
