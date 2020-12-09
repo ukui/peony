@@ -175,7 +175,7 @@
     <message>
         <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="460"/>
         <source>Formatting this volume will erase all data on it. Please backup all retained data before formatting. Do you want to continue ?</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Bu birimi biçimlendirmek, içindeki tüm verileri silecektir. Biçimlendirmeden önce lütfen saklanan tüm verileri yedekleyin. Devam etmek istiyor musun?</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="462"/>
@@ -185,7 +185,7 @@
     <message>
         <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="464"/>
         <source>begin format</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">biçimlendirmeye başla</translation>
     </message>
     <message>
         <source>format_success</source>
@@ -884,7 +884,7 @@
     <message>
         <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="764"/>
         <source>File:&quot;%1 is not exist, did you moved or deleted it?</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Dosya: &quot;%1 mevcut değil, onu taşıdınız yada sildiniz mi?</translation>
     </message>
     <message>
         <source>Cu&amp;t</source>
@@ -1124,7 +1124,7 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</translation
     <message>
         <location filename="../../libpeony-qt/file-enumerator.cpp" line="349"/>
         <source>Did not find target path, do you move or deleted it?</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Hedef yolu bulunamadı, taşıdınız yada sildiniz mi?</translation>
     </message>
 </context>
 <context>
@@ -2533,12 +2533,12 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</translation
     <message>
         <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="106"/>
         <source>Format failed</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Biçim hatalı</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="108"/>
         <source>YES</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">EVET</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="406"/>
