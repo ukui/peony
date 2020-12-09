@@ -739,7 +739,8 @@ const QList<QAction *> DirectoryViewMenu::constructSearchActions()
                 if (m_is_recent)
                     uri = FileUtils::getTargetUri(uri);
                 auto parentUri = FileUtils::getParentUri(uri);
-                if (!parentUri.isNull()) {
+                bool exist = FileUtils::isFileExsit(uri);
+                if (exist && ! parentUri.isNull()) {
                     auto *windowIface = m_top_window->create(parentUri);
                     auto newWindow = dynamic_cast<QWidget *>(windowIface);
                     auto selection = m_selections;
@@ -756,6 +757,12 @@ const QList<QAction *> DirectoryViewMenu::constructSearchActions()
 #endif
                     newWindow->show();
                  }
+                else
+                {
+                    QMessageBox::warning(nullptr,
+                                         tr("Error"),
+                                         tr("File:\"%1\ is not exist, did you moved or deleted it?").arg(QUrl(uri).path()));
+                }
             }
         });
     }

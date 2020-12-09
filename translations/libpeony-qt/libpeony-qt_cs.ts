@@ -34,12 +34,12 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/connect-server-dialog.cpp" line="34"/>
+        <location filename="../../libpeony-qt/connect-server-dialog.cpp" line="35"/>
         <source>Ok</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/connect-server-dialog.cpp" line="35"/>
+        <location filename="../../libpeony-qt/connect-server-dialog.cpp" line="36"/>
         <source>Cancel</source>
         <translation type="unfinished"></translation>
     </message>
@@ -444,7 +444,7 @@
 <context>
     <name>Peony::AdvancedLocationBar</name>
     <message>
-        <location filename="../../libpeony-qt/controls/navigation-bar/advanced-location-bar.cpp" line="143"/>
+        <location filename="../../libpeony-qt/controls/navigation-bar/advanced-location-bar.cpp" line="144"/>
         <source>Search Content...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -865,13 +865,13 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="760"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="763"/>
         <source>Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="761"/>
-        <source>File original path not exist, are you deleted or moved it?</source>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="764"/>
+        <source>File:&quot;%1 is not exist, did you moved or deleted it?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1091,14 +1091,14 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</translation
 <context>
     <name>Peony::FileEnumerator</name>
     <message>
-        <location filename="../../libpeony-qt/file-enumerator.cpp" line="345"/>
-        <location filename="../../libpeony-qt/file-enumerator.cpp" line="353"/>
-        <location filename="../../libpeony-qt/file-enumerator.cpp" line="492"/>
+        <location filename="../../libpeony-qt/file-enumerator.cpp" line="341"/>
+        <location filename="../../libpeony-qt/file-enumerator.cpp" line="349"/>
+        <location filename="../../libpeony-qt/file-enumerator.cpp" line="488"/>
         <source>Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-enumerator.cpp" line="353"/>
+        <location filename="../../libpeony-qt/file-enumerator.cpp" line="349"/>
         <source>Did not find target path, do you move or deleted it?</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1368,24 +1368,24 @@ Do you want to delete the link file?</source>
         <translation type="obsolete">Dosya oluştur</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="203"/>
-        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="333"/>
-        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="572"/>
+        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="215"/>
+        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="337"/>
+        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="634"/>
         <source>Move file error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="705"/>
+        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="766"/>
         <source>Create file error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="935"/>
+        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="988"/>
         <source>Invalid Operation.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="950"/>
+        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="1003"/>
         <source>File delete error</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1394,7 +1394,7 @@ Do you want to delete the link file?</source>
         <translation type="obsolete">Dosya silme</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="952"/>
+        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="1005"/>
         <source>Invalid Operation</source>
         <translation type="unfinished"></translation>
     </message>
