@@ -6,17 +6,17 @@
     <message>
         <location filename="../../src/control/file-label-box.cpp" line="57"/>
         <source>Rename</source>
-        <translation type="unfinished"></translation>
+        <translation>نام‌گذاری</translation>
     </message>
     <message>
         <location filename="../../src/control/file-label-box.cpp" line="62"/>
         <source>Edit Color</source>
-        <translation type="unfinished"></translation>
+        <translation>تغییر رنگ</translation>
     </message>
     <message>
         <location filename="../../src/control/file-label-box.cpp" line="70"/>
         <source>Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>حذف</translation>
     </message>
     <message>
         <location filename="../../src/control/file-label-box.cpp" line="75"/>
@@ -29,12 +29,12 @@
     <message>
         <location filename="../../src/control/header-bar.cpp" line="84"/>
         <source>Create Folder</source>
-        <translation type="unfinished"></translation>
+        <translation>ساخت پوشه</translation>
     </message>
     <message>
         <location filename="../../src/control/header-bar.cpp" line="98"/>
         <source>Open Terminal</source>
-        <translation type="unfinished"></translation>
+        <translation>باز‌کردن ترمینال</translation>
     </message>
     <message>
         <location filename="../../src/control/header-bar.cpp" line="112"/>
@@ -49,12 +49,12 @@
     <message>
         <location filename="../../src/control/header-bar.cpp" line="160"/>
         <source>Search</source>
-        <translation type="unfinished"></translation>
+        <translation>جستجو</translation>
     </message>
     <message>
         <location filename="../../src/control/header-bar.cpp" line="170"/>
         <source>View Type</source>
-        <translation type="unfinished"></translation>
+        <translation>نمایش نوع</translation>
     </message>
     <message>
         <location filename="../../src/control/header-bar.cpp" line="197"/>
@@ -108,7 +108,7 @@
     <message>
         <location filename="../../src/control/header-bar.cpp" line="598"/>
         <source>Close</source>
-        <translation type="unfinished"></translation>
+        <translation>بستن</translation>
     </message>
 </context>
 <context>
@@ -134,12 +134,12 @@
     <message>
         <location filename="../../src/windows/main-window.cpp" line="1321"/>
         <source>Delete Permanently</source>
-        <translation type="unfinished"></translation>
+        <translation>حذف همیشگی</translation>
     </message>
     <message>
         <location filename="../../src/windows/main-window.cpp" line="1322"/>
         <source>Are you sure that you want to delete these files? Once you start a deletion, the files deleting will never be restored again.</source>
-        <translation type="unfinished"></translation>
+        <translation>آیا از حذف این فایل‌ها اطمینان دارید؟ پس از حذف، امکان بازگرداندن فایل‌ها وجود ندارد.</translation>
     </message>
     <message>
         <source>Peony Qt</source>
@@ -148,7 +148,7 @@
     <message>
         <location filename="../../src/windows/main-window.cpp" line="655"/>
         <source>New Folder</source>
-        <translation type="unfinished"></translation>
+        <translation>پوشۀ جدید</translation>
     </message>
 </context>
 <context>
@@ -198,7 +198,7 @@
     <message>
         <location filename="../../src/control/operation-menu.cpp" line="82"/>
         <source>Show Hidden</source>
-        <translation type="unfinished"></translation>
+        <translation>نمایش موارد پنهان</translation>
     </message>
     <message>
         <location filename="../../src/control/operation-menu.cpp" line="89"/>
@@ -213,12 +213,12 @@
     <message>
         <location filename="../../src/control/operation-menu.cpp" line="107"/>
         <source>Parallel Operations</source>
-        <translation type="unfinished"></translation>
+        <translation>عملیات‌های موازی</translation>
     </message>
     <message>
         <location filename="../../src/control/operation-menu.cpp" line="115"/>
         <source>Help</source>
-        <translation type="unfinished"></translation>
+        <translation>راهنما</translation>
     </message>
     <message>
         <location filename="../../src/control/operation-menu.cpp" line="119"/>
@@ -231,7 +231,7 @@
     <message>
         <location filename="../../src/control/operation-menu.cpp" line="148"/>
         <source>Edit</source>
-        <translation type="unfinished"></translation>
+        <translation>تغییر</translation>
     </message>
     <message>
         <location filename="../../src/control/operation-menu.cpp" line="159"/>
@@ -277,7 +277,7 @@
     <message>
         <location filename="../../src/peony-application.cpp" line="179"/>
         <source>Warning</source>
-        <translation type="unfinished"></translation>
+        <translation>هشدار</translation>
     </message>
     <message>
         <location filename="../../src/peony-application.cpp" line="179"/>
@@ -358,12 +358,12 @@ Telif (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</translatio
     <message>
         <location filename="../../src/peony-application.h" line="65"/>
         <source>Show items</source>
-        <translation type="unfinished"></translation>
+        <translation>نمایش موارد</translation>
     </message>
     <message>
         <location filename="../../src/peony-application.h" line="66"/>
         <source>Show folders</source>
-        <translation type="unfinished"></translation>
+        <translation>نمایش پوشه‌ها</translation>
     </message>
     <message>
         <location filename="../../src/peony-application.h" line="67"/>
@@ -376,17 +376,17 @@ Telif (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</translatio
     <message>
         <location filename="../../src/control/sort-type-menu.cpp" line="33"/>
         <source>File Name</source>
-        <translation type="unfinished"></translation>
+        <translation>نام فایل</translation>
     </message>
     <message>
         <location filename="../../src/control/sort-type-menu.cpp" line="45"/>
         <source>File Size</source>
-        <translation type="unfinished"></translation>
+        <translation>حجم فایل</translation>
     </message>
     <message>
         <location filename="../../src/control/sort-type-menu.cpp" line="41"/>
         <source>File Type</source>
-        <translation type="unfinished"></translation>
+        <translation>نوع فایل</translation>
     </message>
     <message>
         <location filename="../../src/control/sort-type-menu.cpp" line="37"/>
@@ -468,7 +468,7 @@ Telif (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</translatio
     <message>
         <location filename="../../src/control/tab-widget.cpp" line="249"/>
         <source>Search</source>
-        <translation type="unfinished"></translation>
+        <translation>جستجو</translation>
     </message>
     <message>
         <location filename="../../src/control/tab-widget.cpp" line="258"/>
@@ -519,12 +519,12 @@ Telif (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</translatio
     <message>
         <location filename="../../src/control/tab-widget.h" line="257"/>
         <source>name</source>
-        <translation type="unfinished"></translation>
+        <translation>نام</translation>
     </message>
     <message>
         <location filename="../../src/control/tab-widget.h" line="257"/>
         <source>type</source>
-        <translation type="unfinished"></translation>
+        <translation>نوع</translation>
     </message>
     <message>
         <location filename="../../src/control/tab-widget.h" line="257"/>
@@ -534,14 +534,14 @@ Telif (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</translatio
     <message>
         <location filename="../../src/control/tab-widget.h" line="257"/>
         <source>file size</source>
-        <translation type="unfinished"></translation>
+        <translation>حجم فایل</translation>
     </message>
     <message>
         <location filename="../../src/control/tab-widget.h" line="258"/>
         <location filename="../../src/control/tab-widget.h" line="260"/>
         <location filename="../../src/control/tab-widget.h" line="261"/>
         <source>all</source>
-        <translation type="unfinished"></translation>
+        <translation>همه</translation>
     </message>
     <message>
         <location filename="../../src/control/tab-widget.h" line="258"/>
@@ -551,27 +551,27 @@ Telif (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</translatio
     <message>
         <location filename="../../src/control/tab-widget.h" line="258"/>
         <source>image</source>
-        <translation type="unfinished"></translation>
+        <translation>تصویر</translation>
     </message>
     <message>
         <location filename="../../src/control/tab-widget.h" line="258"/>
         <source>video</source>
-        <translation type="unfinished"></translation>
+        <translation>ویدیو</translation>
     </message>
     <message>
         <location filename="../../src/control/tab-widget.h" line="259"/>
         <source>text file</source>
-        <translation type="unfinished"></translation>
+        <translation>فایل متنی</translation>
     </message>
     <message>
         <location filename="../../src/control/tab-widget.h" line="259"/>
         <source>audio</source>
-        <translation type="unfinished"></translation>
+        <translation>صدا</translation>
     </message>
     <message>
         <location filename="../../src/control/tab-widget.h" line="259"/>
         <source>others</source>
-        <translation type="unfinished"></translation>
+        <translation>سایر</translation>
     </message>
     <message>
         <location filename="../../src/control/tab-widget.h" line="259"/>
@@ -581,22 +581,22 @@ Telif (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</translatio
     <message>
         <location filename="../../src/control/tab-widget.h" line="260"/>
         <source>today</source>
-        <translation type="unfinished"></translation>
+        <translation>امروز</translation>
     </message>
     <message>
         <location filename="../../src/control/tab-widget.h" line="260"/>
         <source>this week</source>
-        <translation type="unfinished"></translation>
+        <translation>این هفته</translation>
     </message>
     <message>
         <location filename="../../src/control/tab-widget.h" line="260"/>
         <source>this month</source>
-        <translation type="unfinished"></translation>
+        <translation>این ماه</translation>
     </message>
     <message>
         <location filename="../../src/control/tab-widget.h" line="260"/>
         <source>this year</source>
-        <translation type="unfinished"></translation>
+        <translation>امسال</translation>
     </message>
     <message>
         <location filename="../../src/control/tab-widget.h" line="260"/>
