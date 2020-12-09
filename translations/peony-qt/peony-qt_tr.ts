@@ -160,12 +160,12 @@
     <message>
         <location filename="../../src/control/navigation-side-bar.cpp" line="164"/>
         <source>Open In &amp;New Window</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Yeni Pencerede Aç</translation>
     </message>
     <message>
         <location filename="../../src/control/navigation-side-bar.cpp" line="185"/>
         <source>Open In New &amp;Tab</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Yeni Sekmede Aç</translation>
     </message>
 </context>
 <context>
