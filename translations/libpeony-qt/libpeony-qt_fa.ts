@@ -6,42 +6,42 @@
     <message>
         <location filename="../../libpeony-qt/connect-server-dialog.ui" line="14"/>
         <source>Connect to Sever</source>
-        <translation type="unfinished"></translation>
+        <translation>اتصال به سرور</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/connect-server-dialog.ui" line="32"/>
         <source>Domain</source>
-        <translation type="unfinished"></translation>
+        <translation>دامنه</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/connect-server-dialog.ui" line="39"/>
         <source>Password</source>
-        <translation type="unfinished"></translation>
+        <translation>گذرواژه</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/connect-server-dialog.ui" line="55"/>
         <source>Save Password</source>
-        <translation type="unfinished"></translation>
+        <translation>ذخیرۀ گذرواژه</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/connect-server-dialog.ui" line="62"/>
         <source>User</source>
-        <translation type="unfinished"></translation>
+        <translation>کاربر</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/connect-server-dialog.ui" line="82"/>
         <source>Anonymous</source>
-        <translation type="unfinished"></translation>
+        <translation>ناشناس</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/connect-server-dialog.cpp" line="35"/>
         <source>Ok</source>
-        <translation type="unfinished"></translation>
+        <translation>تأیید</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/connect-server-dialog.cpp" line="36"/>
         <source>Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>لغو</translation>
     </message>
 </context>
 <context>
@@ -49,42 +49,42 @@
     <message>
         <location filename="../../libpeony-qt/model/file-label-model.cpp" line="39"/>
         <source>Red</source>
-        <translation type="unfinished"></translation>
+        <translation>قرمز</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/model/file-label-model.cpp" line="40"/>
         <source>Orange</source>
-        <translation type="unfinished"></translation>
+        <translation>نارنجی</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/model/file-label-model.cpp" line="41"/>
         <source>Yellow</source>
-        <translation type="unfinished"></translation>
+        <translation>زرد</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/model/file-label-model.cpp" line="42"/>
         <source>Green</source>
-        <translation type="unfinished"></translation>
+        <translation>سبز</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/model/file-label-model.cpp" line="43"/>
         <source>Blue</source>
-        <translation type="unfinished"></translation>
+        <translation>آبی</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/model/file-label-model.cpp" line="44"/>
         <source>Purple</source>
-        <translation type="unfinished"></translation>
+        <translation>بنفش</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/model/file-label-model.cpp" line="45"/>
         <source>Gray</source>
-        <translation type="unfinished"></translation>
+        <translation>خاکستری</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/model/file-label-model.cpp" line="46"/>
         <source>Transparent</source>
-        <translation type="unfinished"></translation>
+        <translation>شفاف</translation>
     </message>
     <message>
         <source>Delete file Warning</source>
@@ -94,7 +94,7 @@
         <location filename="../../libpeony-qt/model/file-label-model.cpp" line="113"/>
         <location filename="../../libpeony-qt/model/file-label-model.cpp" line="336"/>
         <source>Error</source>
-        <translation type="unfinished"></translation>
+        <translation>خطا</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/model/file-label-model.cpp" line="113"/>
