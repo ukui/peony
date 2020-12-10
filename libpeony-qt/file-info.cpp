@@ -201,5 +201,7 @@ const QString FileInfo::symlinkTarget()
 
 const QString FileInfo::customIcon()
 {
+    if (!m_meta_info)
+        return nullptr;
     return m_meta_info.get()->getMetaInfoString("custom-icon");
 }
