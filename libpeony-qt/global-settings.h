@@ -29,26 +29,28 @@
 
 #include "peony-core_global.h"
 
-#define FORBID_THUMBNAIL_IN_VIEW "do-not-thumbnail"
-#define SHOW_HIDDEN_PREFERENCE "show-hidden"
-#define SORT_CHINESE_FIRST "chinese-first"
-#define SORT_FOLDER_FIRST "folder-first"
-#define RESIDENT_IN_BACKEND "resident"
-#define LAST_DESKTOP_SORT_ORDER "last-desktop-sort-order"
-#define ALLOW_FILE_OP_PARALLEL "allow-file-op-parallel"
-#define DEFAULT_WINDOW_SIZE "default-window-size"
-#define DEFAULT_SIDEBAR_WIDTH "default-sidebar-width"
+#define FORBID_THUMBNAIL_IN_VIEW    "do-not-thumbnail"
+#define SHOW_HIDDEN_PREFERENCE      "show-hidden"
+#define SORT_CHINESE_FIRST          "chinese-first"
+#define SORT_FOLDER_FIRST           "folder-first"
+#define RESIDENT_IN_BACKEND         "resident"
+#define LAST_DESKTOP_SORT_ORDER     "last-desktop-sort-order"
+#define ALLOW_FILE_OP_PARALLEL      "allow-file-op-parallel"
+#define DEFAULT_WINDOW_SIZE         "default-window-size"
+#define DEFAULT_SIDEBAR_WIDTH       "default-sidebar-width"
 
-#define DEFAULT_VIEW_ID "directory-view/default-view-id"
-#define DEFAULT_VIEW_ZOOM_LEVEL "directory-view/default-view-zoom-level"
+#define DEFAULT_VIEW_ID             "directory-view/default-view-id"
+#define DEFAULT_VIEW_ZOOM_LEVEL     "directory-view/default-view-zoom-level"
+
+#define REMOTE_SERVER_IP            "remote-server/favorite-ip"
 
 //gsettings
-#define SIDEBAR_BG_OPACITY "sidebar-bg-opacity"
+#define SIDEBAR_BG_OPACITY          "sidebar-bg-opacity"
 
 //difference between Community version and Commercial version
-#define COMMERCIAL_VERSION  false
+#define COMMERCIAL_VERSION          false
 //TEMPLATES standard path
-#define TEMPLATES_DIR "templates-dir"
+#define TEMPLATES_DIR               "templates-dir"
 
 class QGSettings;
 
