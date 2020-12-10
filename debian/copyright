@@ -59,6 +59,8 @@ Files: libpeony-qt/bookmark-manager.cpp
   libpeony-qt/complementary-style.h
   libpeony-qt/connect-server-dialog.cpp
   libpeony-qt/connect-server-dialog.h
+  libpeony-qt/connect-to-server-dialog.cpp
+  libpeony-qt/connect-to-server-dialog.h
   libpeony-qt/file-enumerator.cpp
   libpeony-qt/file-enumerator.h
   libpeony-qt/file-info-job.cpp

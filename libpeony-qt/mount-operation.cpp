@@ -21,11 +21,13 @@
  */
 
 #include "mount-operation.h"
-#include "connect-server-dialog.h"
+//#include "connect-server-dialog.h"
+#include "connect-to-server-dialog.h"
 #include "gerror-wrapper.h"
 
 #include <QMessageBox>
 #include <QPushButton>
+#include <QUrl>
 
 #include <QDebug>
 
@@ -64,15 +66,16 @@ void MountOperation::cancel()
 
 void MountOperation::start()
 {
-    ConnectServerDialog *dlg = new ConnectServerDialog;
+//    ConnectServerDialog *dlg = new ConnectServerDialog;
+    QUrl uri = QUrl(g_file_get_uri(m_volume));
+    ConnectServerLogin* dlg = new ConnectServerLogin(uri.host());
     connect(dlg, &QDialog::accepted, [=]() {
         g_mount_operation_set_username(m_op, dlg->user().toUtf8().constData());
         g_mount_operation_set_password(m_op, dlg->password().toUtf8().constData());
         g_mount_operation_set_domain(m_op, dlg->domain().toUtf8().constData());
         g_mount_operation_set_anonymous(m_op, dlg->anonymous());
         //TODO: when FileEnumerator::prepare(), trying mount volume without password dialog first.
-        g_mount_operation_set_password_save(m_op,
-                                            dlg->savePassword()? G_PASSWORD_SAVE_NEVER: G_PASSWORD_SAVE_FOR_SESSION);
+        g_mount_operation_set_password_save(m_op, dlg->savePassword()? G_PASSWORD_SAVE_NEVER: G_PASSWORD_SAVE_FOR_SESSION);
     });
     //block ui
     auto code = dlg->exec();
@@ -84,12 +87,7 @@ void MountOperation::start()
         return;
     }
     dlg->deleteLater();
-    g_file_mount_enclosing_volume(m_volume,
-                                  G_MOUNT_MOUNT_NONE,
-                                  m_op,
-                                  m_cancellable,
-                                  GAsyncReadyCallback(mount_enclosing_volume_callback),
-                                  this);
+    g_file_mount_enclosing_volume(m_volume, G_MOUNT_MOUNT_NONE, m_op, m_cancellable, GAsyncReadyCallback(mount_enclosing_volume_callback), this);
 
     g_signal_connect (m_op, "ask-question", G_CALLBACK(ask_question_cb), this);
     g_signal_connect (m_op, "ask-password", G_CALLBACK (ask_password_cb), this);
