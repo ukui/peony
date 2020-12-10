@@ -74,7 +74,7 @@ private:
     //floor1
     QPushButton *m_icon;
     QLabel *m_type;
-    QLineEdit *m_display_name;
+    QLabel *m_display_name;
     QLabel *m_location;
 
     //floor2
