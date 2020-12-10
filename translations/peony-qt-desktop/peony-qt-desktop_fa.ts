@@ -115,7 +115,7 @@
     <message>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="308"/>
         <source>New Folder</source>
-        <translation type="unfinished"></translation>
+        <translation>پوشهٔ جدید</translation>
     </message>
     <message>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="325"/>
@@ -188,12 +188,12 @@
     <message>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="485"/>
         <source>Rename</source>
-        <translation>نام‌گذاری</translation>
+        <translation>تغییر نام</translation>
     </message>
     <message>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="512"/>
         <source>Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>مشخصات</translation>
     </message>
     <message>
         <source>P&amp;roperties</source>
