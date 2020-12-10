@@ -6,7 +6,7 @@
     <message>
         <location filename="../../src/control/file-label-box.cpp" line="57"/>
         <source>Rename</source>
-        <translation>نام‌گذاری</translation>
+        <translation>تغییر نام</translation>
     </message>
     <message>
         <location filename="../../src/control/file-label-box.cpp" line="62"/>
@@ -39,12 +39,12 @@
     <message>
         <location filename="../../src/control/header-bar.cpp" line="112"/>
         <source>Go Back</source>
-        <translation type="unfinished"></translation>
+        <translation>بازگشت به عقب</translation>
     </message>
     <message>
         <location filename="../../src/control/header-bar.cpp" line="120"/>
         <source>Go Forward</source>
-        <translation type="unfinished"></translation>
+        <translation>رفتن به جلو</translation>
     </message>
     <message>
         <location filename="../../src/control/header-bar.cpp" line="160"/>
