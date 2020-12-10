@@ -1349,8 +1349,9 @@ void DesktopIconView::dropEvent(QDropEvent *e)
         qDebug() <<"DesktopIconView index:" <<index <<index.isValid();
         bool bmoved = false;
         if (index.isValid()) {
+            auto uri = m_model->indexUri(m_proxy_model->mapToSource(index));
             auto info = FileInfo::fromUri(index.data(Qt::UserRole).toString());
-            if (!info->isDir()) {
+            if (!info->isDir()||e->mimeData()->urls().contains(uri)) {
                 return;
             }
             bmoved = true;

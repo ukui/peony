@@ -347,7 +347,11 @@ void ListView::dropEvent(QDropEvent *e)
     if (e->source() == this)
     {
         if (indexAt(e->pos()).isValid())
-            m_model->dropMimeData(e->mimeData(), action, 0, 0, index);
+        {
+            auto uri = m_proxy_model->itemFromIndex(proxy_index)->uri();
+            if(!e->mimeData()->urls().contains(uri))
+                m_model->dropMimeData(e->mimeData(), action, 0, 0, index);
+        }
         return;
     }
 
