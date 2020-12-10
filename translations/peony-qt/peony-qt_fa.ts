@@ -368,7 +368,7 @@ Telif (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</translatio
     <message>
         <location filename="../../src/peony-application.h" line="67"/>
         <source>Show properties</source>
-        <translation type="unfinished"></translation>
+        <translation>نمایش مشخصات</translation>
     </message>
 </context>
 <context>
@@ -400,12 +400,12 @@ Telif (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</translatio
     <message>
         <location filename="../../src/control/sort-type-menu.cpp" line="60"/>
         <source>Ascending</source>
-        <translation type="unfinished"></translation>
+        <translation>افزایشی</translation>
     </message>
     <message>
         <location filename="../../src/control/sort-type-menu.cpp" line="64"/>
         <source>Descending</source>
-        <translation type="unfinished"></translation>
+        <translation>کاهشی</translation>
     </message>
 </context>
 <context>
@@ -458,12 +458,12 @@ Telif (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</translatio
     <message>
         <location filename="../../src/control/tab-widget.cpp" line="163"/>
         <source>Recover</source>
-        <translation type="unfinished"></translation>
+        <translation>بازگرداندن</translation>
     </message>
     <message>
         <location filename="../../src/control/tab-widget.cpp" line="241"/>
         <source>Close advance search.</source>
-        <translation type="unfinished"></translation>
+        <translation>بستن جستجوی پیشرفته</translation>
     </message>
     <message>
         <location filename="../../src/control/tab-widget.cpp" line="249"/>
@@ -473,7 +473,7 @@ Telif (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</translatio
     <message>
         <location filename="../../src/control/tab-widget.cpp" line="258"/>
         <source>Choose other path to search.</source>
-        <translation type="unfinished"></translation>
+        <translation>مسیر جستجوی دیگری را انتخاب کنید.</translation>
     </message>
     <message>
         <location filename="../../src/control/tab-widget.cpp" line="267"/>
@@ -483,12 +483,12 @@ Telif (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</translatio
     <message>
         <location filename="../../src/control/tab-widget.cpp" line="276"/>
         <source>more options</source>
-        <translation type="unfinished"></translation>
+        <translation>گزینه‌های بیشتر</translation>
     </message>
     <message>
         <location filename="../../src/control/tab-widget.cpp" line="280"/>
         <source>Show/hide advance search</source>
-        <translation type="unfinished"></translation>
+        <translation>نمایش/پنهان‌کردن جستجوی پیشرفته</translation>
     </message>
     <message>
         <location filename="../../src/control/tab-widget.cpp" line="340"/>
@@ -504,7 +504,7 @@ Telif (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</translatio
     <message>
         <location filename="../../src/control/tab-widget.cpp" line="393"/>
         <source>Please input key words...</source>
-        <translation type="unfinished"></translation>
+        <translation>لطفاً کلمات کلیدی را وارد نمایید...</translation>
     </message>
     <message>
         <source>Please input kay words...</source>
@@ -576,7 +576,7 @@ Telif (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</translatio
     <message>
         <location filename="../../src/control/tab-widget.h" line="259"/>
         <source>wps file</source>
-        <translation type="unfinished"></translation>
+        <translation>فایل WPS</translation>
     </message>
     <message>
         <location filename="../../src/control/tab-widget.h" line="260"/>
