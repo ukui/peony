@@ -62,10 +62,10 @@ QString SideBarVFSItem::iconName()
 
 QModelIndex SideBarVFSItem::firstColumnIndex()
 {
-    return m_model->firstCloumnIndex(this);
+    return m_model->firstColumnIndex(this);
 }
 
 QModelIndex SideBarVFSItem::lastColumnIndex()
 {
-    return m_model->lastCloumnIndex(this);
+    return m_model->lastColumnIndex(this);
 }

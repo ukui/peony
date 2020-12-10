@@ -388,8 +388,10 @@ void IconView::updateGeometries()
 
 void IconView::slotRename()
 {
-    //trash path not allow rename
-    if (getDirectoryUri().startsWith("trash://"))
+    //special path like trash path not allow rename
+    if (getDirectoryUri().startsWith("trash://")
+        || getDirectoryUri().startsWith("recent://")
+        || getDirectoryUri().startsWith("search://"))
         return;
 
     //standardPaths not allow rename

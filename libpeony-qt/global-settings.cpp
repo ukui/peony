@@ -92,6 +92,10 @@ GlobalSettings::GlobalSettings(QObject *parent) : QObject(parent)
             }
         });
     }
+
+    if (m_cache.value(REMOTE_SERVER_IP).isNull()) {
+        setValue(REMOTE_SERVER_IP, QVariant(QList<QString>()));
+    }
 }
 
 GlobalSettings::~GlobalSettings()
