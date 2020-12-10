@@ -47,6 +47,9 @@
 
 #include <QUrl>
 
+#include <QFileDialog>
+#include "file-meta-info.h"
+
 #include "generic-thumbnailer.h"
 #include <gio/gdesktopappinfo.h>
 
@@ -81,6 +84,23 @@ BasicPropertiesPage::BasicPropertiesPage(const QStringList &uris, QWidget *paren
     f1->setLayout(l1);
     QPushButton *icon = new QPushButton(f1);
     m_icon = icon;
+
+    if (uris.count() == 1) {
+        m_icon->connect(m_icon, &QPushButton::clicked, this, [=](){
+            QUrl iconPathUrl;
+            iconPathUrl.setPath("/usr/share/icons");
+            auto picture = QFileDialog::getOpenFileName(nullptr, tr("Choose a custom icon"), "/usr/share/icons", "*.png *.jpg *.jpeg *.svg");
+            auto metaInfo = FileMetaInfo::fromUri(uris.first());
+            QFileInfo fileInfo(picture);
+            if (!QIcon::fromTheme(fileInfo.baseName()).isNull())
+                metaInfo.get()->setMetaInfoString("custom-icon", fileInfo.baseName());
+            else
+                metaInfo.get()->setMetaInfoString("custom-icon", picture);
+
+            ThumbnailManager::getInstance()->createThumbnail(uris.first(), m_thumbnail_watcher, true);
+        });
+    }
+
     m_type = new QLabel(f1);
     QLineEdit *edit = new QLineEdit(f1);
     m_display_name = edit;
