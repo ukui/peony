@@ -13,7 +13,7 @@ VERSION = 3.0.0
 TARGET = peony
 
 TEMPLATE = app
-
+QMAKE_CXXFLAGS += -Werror=return-type -Werror=return-local-addr -Werror=uninitialized -Werror=unused-label
 include(../libpeony-qt/libpeony-qt-header.pri)
 include(../3rd-parties/SingleApplication/singleapplication.pri)
 include(windows/windows.pri)
@@ -45,13 +45,11 @@ TRANSLATIONS += ../translations/peony-qt/peony-qt_zh_CN.ts \
 SOURCES += \
     peony-application.cpp \
     peony-main-window-style.cpp \
-    peony-main.cpp \
-    peony-screen.cpp
+    peony-main.cpp
 
 HEADERS += \
     peony-application.h \
-    peony-main-window-style.h \
-    peony-screen.h
+    peony-main-window-style.h
 
 INCLUDEPATH    += ../plugin-iface
 

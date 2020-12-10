@@ -32,6 +32,9 @@
 #include "bookmark-manager.h"
 #include "file-operation-utils.h"
 
+#include "vfs-plugin-manager.h"
+#include "side-bar-vfs-item.h"
+
 #include <QIcon>
 #include <QMimeData>
 #include <QUrl>
@@ -46,6 +49,13 @@ SideBarModel::SideBarModel(QObject *parent)
     beginResetModel();
 
     m_root_children = new QVector<SideBarAbstractItem*>();
+
+    auto vfsMgr = VFSPluginManager::getInstance();
+    auto plugins = vfsMgr->registeredPlugins();
+    for (auto plugin : plugins) {
+        if (plugin->holdInSideBar())
+            m_root_children->append(new SideBarVFSItem(plugin, this));
+    }
 
 //    SideBarSeparatorItem *separator1 = new SideBarSeparatorItem(SideBarSeparatorItem::Large, nullptr, this, this);
 //    m_root_children->append(separator1);

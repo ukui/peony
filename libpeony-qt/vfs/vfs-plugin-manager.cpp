@@ -45,6 +45,28 @@ void VFSPluginManager::registerPlugin(VFSPluginIface *plugin)
     m_support_schemes<<plugin->uriScheme();
 }
 
+QList<VFSPluginIface *> VFSPluginManager::registeredPlugins()
+{
+    return m_plugins;
+}
+
+GFile *VFSPluginManager::newVFSFile(const QString &uri)
+{
+    int index = -1;
+    for (auto scheme : m_support_schemes) {
+        if (uri.startsWith(scheme)) {
+            index = m_support_schemes.indexOf(scheme);
+        }
+    }
+
+    if (index >= 0) {
+        auto plugin = m_plugins.at(index);
+        return G_FILE(plugin->parseUriToVFSFile(uri));
+    } else {
+        return g_file_new_for_uri(uri.toUtf8().constData());
+    }
+}
+
 VFSPluginManager::VFSPluginManager(QObject *parent) : QObject(parent)
 {
     auto searchVFSPlugin = new SearchVFSInternalPlugin;

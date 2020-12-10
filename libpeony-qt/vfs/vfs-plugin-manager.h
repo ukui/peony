@@ -25,6 +25,8 @@
 
 #include "vfs-plugin-iface.h"
 
+#include <gio/gio.h>
+
 #include <QObject>
 
 namespace Peony {
@@ -37,11 +39,22 @@ public:
 
     void registerPlugin(VFSPluginIface *plugin);
 
+    QList<VFSPluginIface *> registeredPlugins();
+
     /*!
      * \brief supportExtraSchemes
      * \return the registered plugins schemes, like "search://".
      */
     const QStringList supportExtraSchemes();
+
+    /*!
+     * \brief newVFSFile
+     * construct a vfs file implemented by plugin.
+     * \param uri
+     * \return
+     * \see supportExtraSchemes
+     */
+    GFile *newVFSFile(const QString &uri);
 
 private:
     explicit VFSPluginManager(QObject *parent = nullptr);

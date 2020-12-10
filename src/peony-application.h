@@ -52,6 +52,10 @@ public:
 
     static qint64 peony_start_time;
 
+public Q_SLOTS:
+    //unmount all ftp links
+    void unmountAllFtpLinks();
+
 protected Q_SLOTS:
     void parseCmd(quint32 id, QByteArray msg);
 

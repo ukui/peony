@@ -817,8 +817,10 @@ void MainWindow::goToUri(const QString &uri, bool addHistory, bool force)
     }
 
     if (getCurrentUri() == realUri) {
-        if (!force)
+        if (!force) {
+            refresh();
             return;
+        }
     }
 
     locationChangeStart();

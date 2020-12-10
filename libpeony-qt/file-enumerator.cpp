@@ -31,8 +31,9 @@
 #include "gerror-wrapper.h"
 
 #include "file-utils.h"
-#include "peony-search-vfs-file.h"
 #include "audio-play-manager.h"
+
+#include "vfs-plugin-manager.h"
 
 #include <QList>
 #include <QMessageBox>
@@ -129,14 +130,9 @@ void FileEnumerator::setEnumerateDirectory(QString uri)
 #if GLIB_CHECK_VERSION(2, 50, 0)
     m_root_file = g_file_new_for_uri(uri.toUtf8());
 #else
-    if (uri.startsWith("search:///"))
-    {
-        m_root_file = peony_search_vfs_file_new_for_uri(uri.toUtf8());
-    }
-    else
-        m_root_file = g_file_new_for_uri(uri.toUtf8());
+    auto vfsMgr = VFSPluginManager::getInstance();
+    m_root_file = vfsMgr->newVFSFile(uri);
 #endif
-
 }
 
 void FileEnumerator::setEnumerateDirectory(GFile *file)
@@ -159,9 +155,9 @@ void FileEnumerator::setEnumerateDirectory(GFile *file)
     }
 }
 
-bool FileEnumerator::setEnumerateWithInfoJob(bool query)
+void FileEnumerator::setEnumerateWithInfoJob(bool query)
 {
-    m_with_info_job = query;
+    m_with_info_job = query;   
 }
 
 QString FileEnumerator::getEnumerateUri()
@@ -350,6 +346,7 @@ void FileEnumerator::handleError(GError *err)
         break;
     case G_IO_ERROR_NOT_FOUND:
         Q_EMIT prepared(GErrorWrapper::wrapFrom(g_error_new(G_IO_ERROR, G_IO_ERROR_NOT_FOUND, "file not found")));
+        QMessageBox::critical(nullptr, tr("Error"), tr("Did not find target path, do you move or deleted it?"));
         break;
     default:
         Q_EMIT prepared(GErrorWrapper::wrapFrom(g_error_copy(err)), nullptr, true);
