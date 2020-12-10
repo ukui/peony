@@ -1218,7 +1218,7 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
     <message>
         <location filename="../../libpeony-qt/model/file-item-model.cpp" line="292"/>
         <source>Modified Date</source>
-        <translation>修改时间</translation>
+        <translation>修改日期</translation>
     </message>
 </context>
 <context>
