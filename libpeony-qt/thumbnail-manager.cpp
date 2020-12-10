@@ -234,7 +234,16 @@ void ThumbnailManager::createThumbnailInternal(const QString &uri, std::shared_p
     //qDebug()<<"file modify time:" << info->modifiedTime();
 
     if (!info->mimeType().isEmpty()) {
-        if (info->isImageFile()) {
+        if (!info->customIcon().isEmpty()) {
+            auto icon = GenericThumbnailer::generateThumbnail(info->customIcon());
+            if (!icon.isNull()) {
+                insertOrUpdateThumbnail(uri, icon);
+                if (watcher) {
+                    watcher->fileChanged(uri);
+                }
+            }
+        }
+        else if (info->isImageFile()) {
             createImageFileThumbnail(uri, watcher);
         }
         else if (info->mimeType().contains("pdf")) {
@@ -273,6 +282,10 @@ void ThumbnailManager::createThumbnail(const QString &uri, std::shared_ptr<FileW
     bool needThumbnail = false;
 
     auto info = FileInfo::fromUri(uri);
+
+    if (!info->customIcon().isEmpty() && info->customIcon().startsWith("/"))
+        needThumbnail = true;
+
     if (!info->mimeType().isEmpty()) {
         if (info->isImageFile()) {
             needThumbnail = true;

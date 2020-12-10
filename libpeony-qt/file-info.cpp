@@ -198,3 +198,8 @@ const QString FileInfo::symlinkTarget()
 {
     return m_symlink_target;
 }
+
+const QString FileInfo::customIcon()
+{
+    return m_meta_info.get()->getMetaInfoString("custom-icon");
+}
