@@ -97,13 +97,13 @@ bool SideBarFavoriteItem::hasChildren()
 QModelIndex SideBarFavoriteItem::firstColumnIndex()
 {
     //TODO: bind with model
-    return m_model->firstCloumnIndex(this);
+    return m_model->firstColumnIndex(this);
 }
 
 QModelIndex SideBarFavoriteItem::lastColumnIndex()
 {
     //TODO: bind with model
-    return m_model->lastCloumnIndex(this);
+    return m_model->lastColumnIndex(this);
 }
 
 void SideBarFavoriteItem::syncBookMark()
