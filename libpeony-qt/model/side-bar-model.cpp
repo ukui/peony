@@ -95,7 +95,7 @@ SideBarModel::~SideBarModel()
     delete m_root_children;
 }
 
-QModelIndex SideBarModel::firstCloumnIndex(SideBarAbstractItem *item)
+QModelIndex SideBarModel::firstColumnIndex(SideBarAbstractItem *item)
 {
     if (item->parent() != nullptr) {
         return createIndex(item->parent()->m_children->indexOf(item), 0, item);
@@ -104,7 +104,7 @@ QModelIndex SideBarModel::firstCloumnIndex(SideBarAbstractItem *item)
     }
 }
 
-QModelIndex SideBarModel::lastCloumnIndex(SideBarAbstractItem *item)
+QModelIndex SideBarModel::lastColumnIndex(SideBarAbstractItem *item)
 {
     if (item->parent() != nullptr) {
         createIndex(item->parent()->m_children->indexOf(item), 1, item);

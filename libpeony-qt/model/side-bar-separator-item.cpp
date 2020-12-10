@@ -36,10 +36,10 @@ SideBarSeparatorItem::SideBarSeparatorItem(Details type,
 
 QModelIndex SideBarSeparatorItem::firstColumnIndex()
 {
-    return m_model->firstCloumnIndex(this);
+    return m_model->firstColumnIndex(this);
 }
 
 QModelIndex SideBarSeparatorItem::lastColumnIndex()
 {
-    return m_model->lastCloumnIndex(this);
+    return m_model->lastColumnIndex(this);
 }
