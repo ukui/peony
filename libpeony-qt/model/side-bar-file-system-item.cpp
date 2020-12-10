@@ -90,12 +90,12 @@ QString SideBarFileSystemItem::displayName()
 
 QModelIndex SideBarFileSystemItem::firstColumnIndex()
 {
-    return m_model->firstCloumnIndex(this);
+    return m_model->firstColumnIndex(this);
 }
 
 QModelIndex SideBarFileSystemItem::lastColumnIndex()
 {
-    return m_model->lastCloumnIndex(this);
+    return m_model->lastColumnIndex(this);
 }
 
 void SideBarFileSystemItem::clearChildren()

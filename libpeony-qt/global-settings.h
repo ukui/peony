@@ -41,16 +41,17 @@
 #define TABLET_MODE "tablet-mode"
 #define TEMPLATES_DIR "templates-dir"
 
-#define DEFAULT_VIEW_ID "directory-view/default-view-id"
-#define DEFAULT_VIEW_ZOOM_LEVEL "directory-view/default-view-zoom-level"
+#define DEFAULT_VIEW_ID             "directory-view/default-view-id"
+#define DEFAULT_VIEW_ZOOM_LEVEL     "directory-view/default-view-zoom-level"
 
+#define REMOTE_SERVER_IP            "remote-server/favorite-ip"
 //gsettings
-#define SIDEBAR_BG_OPACITY "sidebar-bg-opacity"
+#define SIDEBAR_BG_OPACITY          "sidebar-bg-opacity"
 
 //difference between Community version and Commercial version
-#define COMMERCIAL_VERSION  false
+#define COMMERCIAL_VERSION          false
 //TEMPLATES standard path
-#define TEMPLATES_DIR "templates-dir"
+#define TEMPLATES_DIR               "templates-dir"
 
 class QGSettings;
 

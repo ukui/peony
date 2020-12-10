@@ -217,6 +217,16 @@ void ElidedLabel::setText(const QString &text)
 
 void ElidedLabel::paintEvent(QPaintEvent *event)
 {
+    /*!
+     * \note
+     * paint status bar background and text.
+     *
+     * designer want to layout status bar into the view, however the status bar belongs to main window now.
+     * that means status bar will be layout over the view. it is not possible to archive the ui desginer goals untils we
+     * destroy the current directory view frameworks.
+     *
+     * it is a complex problem, not an easy one. so do not think about changing the layout here to solve the problem easily.
+     */
     QStyleOption opt;
     opt.initFrom(this);
     bool active = opt.state &QStyle::State_Active;
@@ -246,9 +256,9 @@ void ElidedLabel::paintEvent(QPaintEvent *event)
 
     int radius = this->height();
     QPoint pos = QPoint(this->width() + adjustedY2 - this->height(), this->height());
-//    QRect targetRect = QRect(pos.x() - radius, pos.y() - radius, radius*2, radius*2);
+    QRect targetRect = QRect(pos.x() - radius, pos.y() - radius, radius*2, radius*2);
     path2.moveTo(pos);
-//    path2.arcTo(targetRect, 0, 90);
+    path2.arcTo(targetRect, 0, 90);
 
     QRadialGradient radialGradient;
     radialGradient.setCenter(pos);

@@ -213,3 +213,10 @@ const QString FileInfo::symlinkTarget()
 {
     return m_symlink_target;
 }
+
+const QString FileInfo::customIcon()
+{
+    if (!m_meta_info)
+        return nullptr;
+    return m_meta_info.get()->getMetaInfoString("custom-icon");
+}

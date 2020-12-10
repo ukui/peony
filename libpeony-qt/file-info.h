@@ -320,6 +320,8 @@ public:
     const QString targetUri();
     const QString symlinkTarget();
 
+    const QString customIcon();
+
     //const QIcon thumbnail() {return m_thumbnail;}
     //void setThumbnail(const QIcon &thumbnail) {m_thumbnail = thumbnail;}
 

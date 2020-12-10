@@ -113,12 +113,12 @@ SideBarPersonalItem::SideBarPersonalItem(QString uri,
 
 QModelIndex SideBarPersonalItem::firstColumnIndex()
 {
-    return m_model->firstCloumnIndex(this);
+    return m_model->firstColumnIndex(this);
 }
 
 QModelIndex SideBarPersonalItem::lastColumnIndex()
 {
-    return m_model->lastCloumnIndex(this);
+    return m_model->lastColumnIndex(this);
 }
 
 void SideBarPersonalItem::initWatcher()

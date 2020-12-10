@@ -59,6 +59,8 @@ Files: libpeony-qt/bookmark-manager.cpp
   libpeony-qt/complementary-style.h
   libpeony-qt/connect-server-dialog.cpp
   libpeony-qt/connect-server-dialog.h
+  libpeony-qt/connect-to-server-dialog.cpp
+  libpeony-qt/connect-to-server-dialog.h
   libpeony-qt/file-enumerator.cpp
   libpeony-qt/file-enumerator.h
   libpeony-qt/file-info-job.cpp
@@ -204,6 +206,8 @@ Files: libpeony-qt/model/file-item-model.h
   libpeony-qt/model/side-bar-favorite-item.h
   libpeony-qt/model/side-bar-file-system-item.cpp
   libpeony-qt/model/side-bar-file-system-item.h
+  libpeony-qt/model/side-bar-vfs-item.cpp
+  libpeony-qt/model/side-bar-vfs-item.h
   libpeony-qt/model/side-bar-model.cpp
   libpeony-qt/model/side-bar-model.h
   libpeony-qt/model/side-bar-personal-item.cpp

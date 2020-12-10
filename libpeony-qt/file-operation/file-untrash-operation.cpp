@@ -23,7 +23,6 @@
 #include "file-utils.h"
 #include "file-untrash-operation.h"
 #include "file-operation-manager.h"
-
 #include <QUrl>
 
 using namespace Peony;
@@ -53,7 +52,6 @@ void FileUntrashOperation::cacheOriginalUri()
                                   getCancellable().get()->get(),
                                   nullptr));
         auto origin_path = g_file_info_get_attribute_byte_string(info.get()->get(), G_FILE_ATTRIBUTE_TRASH_ORIG_PATH);
-        qDebug()<<"orig-path"<<origin_path;
 
         auto destFile = wrapGFile(g_file_new_for_path(origin_path));
         auto originUri = FileUtils::getFileUri(destFile);
@@ -147,11 +145,14 @@ void FileUntrashOperation::untrashFileErrDlg(
                                 GError *err)
 {
     except.srcUri = srcUri;
-    except.destDirUri = originUri;
+    if (nullptr != originUri){
+        except.destDirUri = originUri;
+    }
     except.isCritical = false;
     except.op = FileOpUntrash;
     except.title = tr("Untrash file error");
     except.errorCode = err->code;
+    except.errorStr = err->message;
     except.errorType = ET_GIO;
     if (G_IO_ERROR_EXISTS == err->code) {
         except.dlgType = ED_CONFLICT;
@@ -200,6 +201,142 @@ void FileUntrashOperation::getBackupName(
     return;
 }
 
+int FileUntrashOperation::copyFileProcess(QString &srcFile, QString &destFile)
+{
+    int ret = 0;
+    GError *err = nullptr;
+
+    auto file = wrapGFile(g_file_new_for_uri(srcFile.toUtf8().constData()));
+    auto originFile = wrapGFile(g_file_new_for_uri(destFile.toUtf8().constData()));
+
+    g_file_copy(file.get()->get(),
+                originFile.get()->get(),
+                GFileCopyFlags(m_default_copy_flag|G_FILE_COPY_OVERWRITE),
+                getCancellable().get()->get(),
+                nullptr,
+                nullptr,
+                &err);
+    if (err) {
+        ret = -err->code;
+        qWarning()<< "copy file :" << srcFile
+                  << " Error info:" << err->message
+                  << " Error code:" << ret;
+        /*
+        * 由于指定了G_FILE_COPY_OVERWRITE标志，因此不会出现G_IO_ERROR_EXISTS错误值，
+        * 所以只会弹出错误提示对话框，给用户提示，结束还原操作流程，避免后续操作产生错误。
+        */
+        FileOperationError except;
+        untrashFileErrDlg(except, srcFile, destFile, err);
+
+        g_error_free(err);
+    }
+
+    return ret;
+}
+
+int FileUntrashOperation::moveRecursively(FileNode *fileNode, QString &parentPath)
+{
+    int ret = 0;
+    QString srcFile = fileNode->uri();
+    QString destPath = parentPath + '/' + fileNode->baseName();
+
+    if (fileNode->isFolder()) {
+        if (!FileUtils::isFileExsit(destPath)){
+            //如果目录不存在，则创建
+            GError *err = nullptr;
+
+            auto originFile = wrapGFile(g_file_new_for_uri(destPath.toUtf8().constData()));
+            g_file_make_directory(originFile.get()->get(),
+                                  getCancellable().get()->get(),
+                                  &err);
+            if (err) {
+                ret = -err->code;
+                qWarning()<< "make dir:" << srcFile
+                          << " Error info:" << err->message
+                          << " Error code:" << ret;
+
+                /*
+                * 这里是对不存在的目录进行创建，不会出现G_IO_ERROR_EXISTS错误值，
+                * 所以只会弹出错误提示对话框，给用户提示，结束还原操作流程, 避免后续操作产生错误。
+                */
+                FileOperationError except;
+                untrashFileErrDlg(except, srcFile, destPath, err);
+
+                g_error_free(err);
+                return ret;
+            }
+        }
+
+        for (auto child : *(fileNode->children())) {
+            int ret = moveRecursively(child, destPath);
+            if (ret < 0) {
+                return ret;
+            }
+        }
+    } else {
+        int ret = copyFileProcess(srcFile, destPath);
+        if (ret < 0) {
+            return ret;
+        }
+    }
+
+    return 0;
+}
+
+int FileUntrashOperation::deleteFileProcess(FileNode *fileNode)
+{
+    int ret = 0;
+    GError *err = nullptr;
+    QString destFile = nullptr;
+
+    QString srcFile = fileNode->uri();
+    GFile *file = g_file_new_for_uri(srcFile.toUtf8().constData());
+
+    g_file_delete(file,
+                  getCancellable().get()->get(),
+                  &err);
+    if (err){
+        ret = -err->code;
+        qWarning()<< "delete file:" << srcFile
+                  << " Error info:" << err->message
+                  << " Error code:" << ret;
+        FileOperationError except;
+        untrashFileErrDlg(except, srcFile, destFile, err);
+        g_error_free(err);
+    }
+
+    return ret;
+}
+
+int FileUntrashOperation::untrashFileOverWrite(QString &uri)
+{
+    int ret = 0;
+
+    //1、通过树形结构，构建目录下的节点（文件和目录）
+    FileNode *node = new FileNode(uri, nullptr, nullptr);
+    node->findChildrenRecursively();
+
+    QString originParentPath = m_restore_hash.value(uri);
+
+    //2、对node的树形结构进行递归遍历处理
+    for (auto child : *(node->children())) {
+        ret = moveRecursively(child, originParentPath);
+        if (ret < 0)
+        {
+            goto l_free;
+        }
+    }
+
+    //3、删除回收站中的目录
+    ret = deleteFileProcess(node);
+
+    //4、释放filenode空间
+l_free:
+    delete node;
+
+    return ret;
+}
+
 void FileUntrashOperation::run()
 {
     /*!
@@ -207,6 +344,8 @@ void FileUntrashOperation::run()
       can not restore the files in desktop.
       it caused by the parent uri string has chinese.
       */
+    int ret = 0;
+
     for (auto uri : m_uris) {
         //cacheOriginalUri();
         auto originUri = m_restore_hash.value(uri);
@@ -251,22 +390,16 @@ retry:
                 cancel();
                 break;
             case OverWriteOne:
-                g_file_move(file.get()->get(),
-                            destFile.get()->get(),
-                            GFileCopyFlags(m_default_copy_flag|G_FILE_COPY_OVERWRITE),
-                            getCancellable().get()->get(),
-                            nullptr,
-                            nullptr,
-                            nullptr);
+                ret = untrashFileOverWrite(uri);
+                if (ret < 0){
+                    goto l_out;
+                }
                 break;
             case OverWriteAll:
-                g_file_move(file.get()->get(),
-                            destFile.get()->get(),
-                            GFileCopyFlags(m_default_copy_flag|G_FILE_COPY_OVERWRITE),
-                            getCancellable().get()->get(),
-                            nullptr,
-                            nullptr,
-                            nullptr);
+                ret = untrashFileOverWrite(uri);
+                if (ret < 0){
+                    goto l_out;
+                }
                 m_prehandle_hash.insert(except.errorCode, OverWriteOne);
                 break;
             case BackupOne: {
@@ -297,5 +430,6 @@ retry:
         }
     }
 
+l_out:
     operationFinished();
 }

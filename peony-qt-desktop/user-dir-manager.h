@@ -6,6 +6,7 @@
 #include <QFileSystemWatcher>
 #include <QMap>
 #include <QDir>
+#include <QSettings>
 
 namespace Peony {
 class UserdirManager : public QObject
@@ -18,6 +19,7 @@ public:
 
 Q_SIGNALS:
     void desktopDirChanged();
+    void thumbnailSetingChange();
 
 private:
     QString m_user_name;
@@ -26,6 +28,8 @@ private:
     QFileSystemWatcher *m_user_dir_watcher;
     QDir *m_dir;
     QStringList m_file_list;
+    QSettings *m_settings;
+    bool m_do_not_thumbnail;
     int m_times = 5;
 
 };

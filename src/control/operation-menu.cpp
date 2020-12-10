@@ -254,10 +254,13 @@ void OperationMenuEditWidget::updateActions(const QString &currentDirUri, const 
     bool isDesktop = selections.contains(desktopUri);
     bool isHome = selections.contains(homeUri);
     bool isSearch = currentDirUri.startsWith("search://");
-    m_copy->setEnabled(!isSelectionEmpty && !isSearch);
-    m_cut->setEnabled(!isSelectionEmpty && !isDesktop && !isHome && !isSearch);
+    bool isRecent = currentDirUri.startsWith("recent://");
+    bool isTrash = currentDirUri.startsWith("trash://");
+
+    m_copy->setEnabled(!isSelectionEmpty && !isSearch && !isRecent && !isTrash);
+    m_cut->setEnabled(!isSelectionEmpty && !isDesktop && !isHome && !isSearch && !isRecent && !isTrash);
     m_trash->setEnabled(!isSelectionEmpty && !isDesktop && !isHome && !isSearch);
 
     bool isClipboradHasFile = Peony::ClipboardUtils::isClipboardHasFiles();
-    m_paste->setEnabled(isClipboradHasFile);
+    m_paste->setEnabled(isClipboradHasFile && !isSearch && !isRecent && !isTrash);
 }

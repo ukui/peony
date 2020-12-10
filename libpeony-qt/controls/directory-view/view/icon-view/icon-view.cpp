@@ -260,7 +260,11 @@ void IconView::dropEvent(QDropEvent *e)
     if (e->source() == this)
     {
         if (indexAt(e->pos()).isValid())
-            m_model->dropMimeData(e->mimeData(), action, 0, 0, index);
+        {
+            auto uri = m_sort_filter_proxy_model->itemFromIndex(proxy_index)->uri();
+            if(!e->mimeData()->urls().contains(uri))
+                m_model->dropMimeData(e->mimeData(), action, 0, 0, index);
+        }
         return;
     }
 
@@ -273,6 +277,9 @@ void IconView::mouseMoveEvent(QMouseEvent *e)
         return;
     }
     QListView::mouseMoveEvent(e);
+    if(getSelections().count()>1)
+        multiSelect();
+    viewport()->update(viewport()->rect());
 }
 
 void IconView::mousePressEvent(QMouseEvent *e)
@@ -282,6 +289,11 @@ void IconView::mousePressEvent(QMouseEvent *e)
     qDebug()<<"moursePressEvent";
 //    m_editValid = true;
     QListView::mousePressEvent(e);
+
+    if(getSelections().count()>1)
+        multiSelect();
+    viewport()->update(viewport()->rect());
+
     if(!indexAt(e->pos()).isValid())
     {
         disableMultiSelect();
@@ -377,8 +389,10 @@ void IconView::updateGeometries()
 
 void IconView::slotRename()
 {
-    //trash path not allow rename
-    if (getDirectoryUri().startsWith("trash://"))
+    //special path like trash path not allow rename
+    if (getDirectoryUri().startsWith("trash://")
+        || getDirectoryUri().startsWith("recent://")
+        || getDirectoryUri().startsWith("search://"))
         return;
 
     //standardPaths not allow rename

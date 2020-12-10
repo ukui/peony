@@ -43,7 +43,8 @@ public:
         FavoriteItem,
         PersonalItem,
         FileSystemItem,
-        SeparatorItem
+        SeparatorItem,
+        VFSItem
     };
 
     explicit SideBarAbstractItem(SideBarModel* model, QObject *parent = nullptr);

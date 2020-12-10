@@ -53,6 +53,8 @@
 
 #include "file-operation-error-dialog.h"
 #include "global-settings.h"
+#include "file-enumerator.h"
+#include "gerror-wrapper.h"
 
 #include "global-settings.h"
 
@@ -337,56 +339,60 @@ const QList<QAction *> DirectoryViewMenu::constructCreateTemplateActions()
 
         //enumerate template dir
 //        QDir templateDir(g_get_user_special_dir(G_USER_DIRECTORY_TEMPLATES));
-        QDir templateDir(GlobalSettings::getInstance()->getValue(TEMPLATES_DIR).toString());
-        auto templates = templateDir.entryList(QDir::AllEntries|QDir::NoDotAndDotDot);
-        if (!templates.isEmpty()) {
-            for (auto t : templates) {
-                QFileInfo qinfo(templateDir, t);
-                GFile *gtk_file = g_file_new_for_path(qinfo.filePath().toUtf8().data());
-                char *uri_str = g_file_get_uri(gtk_file);
-                std::shared_ptr<FileInfo> info = FileInfo::fromUri(uri_str);
+        QString templatePath = GlobalSettings::getInstance()->getValue(TEMPLATES_DIR).toString();
+        if(!templatePath.isEmpty())
+        {
+            QDir templateDir(templatePath);
+            auto templates = templateDir.entryList(QDir::AllEntries|QDir::NoDotAndDotDot);
+            if (!templates.isEmpty()) {
+                for (auto t : templates) {
+                    QFileInfo qinfo(templateDir, t);
+                    GFile *gtk_file = g_file_new_for_path(qinfo.filePath().toUtf8().data());
+                    char *uri_str = g_file_get_uri(gtk_file);
+                    std::shared_ptr<FileInfo> info = FileInfo::fromUri(uri_str);
 
-                QString mimeType = info->mimeType();
-                if (mimeType.isEmpty()) {
-                    FileInfoJob job(info);
-                    job.querySync();
-                    mimeType = info->mimeType();
-                }
-
-                QIcon tmpIcon;
-                GList *app_infos = g_app_info_get_recommended_for_type(mimeType.toUtf8().constData());
-                GList *l = app_infos;
-                QList<FileLaunchAction *> actions;
-                bool isOnlyUnref = false;
-                while (l) {
-                    auto app_info = static_cast<GAppInfo*>(l->data);
-                    if (!isOnlyUnref) {
-                        GThemedIcon *icon = G_THEMED_ICON(g_app_info_get_icon(app_info));
-                        const char * const * icon_names = g_themed_icon_get_names(icon);
-                        if (icon_names)
-                            tmpIcon = QIcon::fromTheme(*icon_names);
-                        if(!tmpIcon.isNull())
-                            isOnlyUnref = true;
+                    QString mimeType = info->mimeType();
+                    if (mimeType.isEmpty()) {
+                        FileInfoJob job(info);
+                        job.querySync();
+                        mimeType = info->mimeType();
                     }
-                    g_object_unref(app_infos);
-                    l = l->next;
-                }
 
-                QAction *action = new QAction(tmpIcon, qinfo.baseName(), this);
-                connect(action, &QAction::triggered, [=]() {
-                    // automatically check for conficts
-                    CreateTemplateOperation op(m_directory, CreateTemplateOperation::Template, t);
-                    Peony::FileOperationErrorDialogWarning dlg;
-                    connect(&op, &Peony::FileOperation::errored, &dlg, &Peony::FileOperationErrorDialogWarning::handle);
-                    op.run();
-                    auto target = op.target();
-                    m_uris_to_edit<<target;
-                });
-                subMenu->addAction(action);
-                g_free(uri_str);
-                g_object_unref(gtk_file);
+                    QIcon tmpIcon;
+                    GList *app_infos = g_app_info_get_recommended_for_type(mimeType.toUtf8().constData());
+                    GList *l = app_infos;
+                    QList<FileLaunchAction *> actions;
+                    bool isOnlyUnref = false;
+                    while (l) {
+                        auto app_info = static_cast<GAppInfo*>(l->data);
+                        if (!isOnlyUnref) {
+                            GThemedIcon *icon = G_THEMED_ICON(g_app_info_get_icon(app_info));
+                            const char * const * icon_names = g_themed_icon_get_names(icon);
+                            if (icon_names)
+                                tmpIcon = QIcon::fromTheme(*icon_names);
+                            if(!tmpIcon.isNull())
+                                isOnlyUnref = true;
+                        }
+                        g_object_unref(app_infos);
+                        l = l->next;
+                    }
+
+                    QAction *action = new QAction(tmpIcon, qinfo.baseName(), this);
+                    connect(action, &QAction::triggered, [=]() {
+                        // automatically check for conficts
+                        CreateTemplateOperation op(m_directory, CreateTemplateOperation::Template, t);
+                        Peony::FileOperationErrorDialogWarning dlg;
+                        connect(&op, &Peony::FileOperation::errored, &dlg, &Peony::FileOperationErrorDialogWarning::handle);
+                        op.run();
+                        auto target = op.target();
+                        m_uris_to_edit<<target;
+                    });
+                    subMenu->addAction(action);
+                    g_free(uri_str);
+                    g_object_unref(gtk_file);
+                }
+                subMenu->addSeparator();
             }
-            subMenu->addSeparator();
         }
 
         QList<QAction *> actions;
@@ -745,7 +751,8 @@ const QList<QAction *> DirectoryViewMenu::constructSearchActions()
                 if (m_is_recent)
                     uri = FileUtils::getTargetUri(uri);
                 auto parentUri = FileUtils::getParentUri(uri);
-                if (!parentUri.isNull()) {
+                bool exist = FileUtils::isFileExsit(uri);
+                if (exist && ! parentUri.isNull()) {
                     auto *windowIface = m_top_window->create(parentUri);
                     auto newWindow = dynamic_cast<QWidget *>(windowIface);
                     auto selection = m_selections;
@@ -761,6 +768,12 @@ const QList<QAction *> DirectoryViewMenu::constructSearchActions()
                     });
 #endif
                     newWindow->show();
+                 }
+                else
+                {
+                    QMessageBox::warning(nullptr,
+                                         tr("Error"),
+                                         tr("File:\"%1\ is not exist, did you moved or deleted it?").arg(QUrl(uri).path()));
                 }
             }
         });

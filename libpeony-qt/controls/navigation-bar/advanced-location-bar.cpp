@@ -54,10 +54,11 @@ AdvancedLocationBar::AdvancedLocationBar(QWidget *parent) : QWidget(parent)
     });
 
     m_edit->connect(m_edit, &Peony::PathEdit::uriChangeRequest, [=](const QString uri) {
-        if (m_text == uri) {
-            Q_EMIT this->refreshRequest();
-            return;
-        }
+
+//        if (m_text == uri) {
+//            Q_EMIT this->refreshRequest();
+//            return;
+//        }
         m_bar->setRootUri(uri);
         layout->setCurrentWidget(m_bar);
         Q_EMIT this->updateWindowLocationRequest(uri);

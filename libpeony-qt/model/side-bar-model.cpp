@@ -33,6 +33,9 @@
 #include "bookmark-manager.h"
 #include "file-operation-utils.h"
 
+#include "vfs-plugin-manager.h"
+#include "side-bar-vfs-item.h"
+
 #include <QIcon>
 #include <QMimeData>
 #include <QUrl>
@@ -47,6 +50,13 @@ SideBarModel::SideBarModel(QObject *parent)
     beginResetModel();
 
     m_root_children = new QVector<SideBarAbstractItem*>();
+
+    auto vfsMgr = VFSPluginManager::getInstance();
+    auto plugins = vfsMgr->registeredPlugins();
+    for (auto plugin : plugins) {
+        if (plugin->holdInSideBar())
+            m_root_children->append(new SideBarVFSItem(plugin, this));
+    }
 
 //    SideBarSeparatorItem *separator1 = new SideBarSeparatorItem(SideBarSeparatorItem::Large, nullptr, this, this);
 //    m_root_children->append(separator1);
@@ -90,7 +100,7 @@ SideBarModel::~SideBarModel()
     delete m_root_children;
 }
 
-QModelIndex SideBarModel::firstCloumnIndex(SideBarAbstractItem *item)
+QModelIndex SideBarModel::firstColumnIndex(SideBarAbstractItem *item)
 {
     if (item->parent() != nullptr) {
         return createIndex(item->parent()->m_children->indexOf(item), 0, item);
@@ -99,7 +109,7 @@ QModelIndex SideBarModel::firstCloumnIndex(SideBarAbstractItem *item)
     }
 }
 
-QModelIndex SideBarModel::lastCloumnIndex(SideBarAbstractItem *item)
+QModelIndex SideBarModel::lastColumnIndex(SideBarAbstractItem *item)
 {
     if (item->parent() != nullptr) {
         createIndex(item->parent()->m_children->indexOf(item), 1, item);

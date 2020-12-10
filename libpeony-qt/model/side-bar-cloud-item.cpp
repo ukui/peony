@@ -38,10 +38,10 @@ SideBarCloudItem::SideBarCloudItem(QString uri,
 
 QModelIndex SideBarCloudItem::firstColumnIndex()
 {
-    return m_model->firstCloumnIndex(this);
+    return m_model->firstColumnIndex(this);
 }
 
 QModelIndex SideBarCloudItem::lastColumnIndex()
 {
-    return m_model->lastCloumnIndex(this);
+    return m_model->lastColumnIndex(this);
 }

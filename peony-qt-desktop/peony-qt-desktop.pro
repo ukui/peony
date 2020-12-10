@@ -12,7 +12,7 @@ VERSION = 3.0.0
 
 TARGET = peony-qt-desktop
 TEMPLATE = app
-
+QMAKE_CXXFLAGS += -Werror=return-type -Werror=return-local-addr -Werror=uninitialized -Werror=unused-label
 PLUGIN_INSTALL_DIRS = $$[QT_INSTALL_LIBS]/peony-extensions
 DEFINES += PLUGIN_INSTALL_DIRS='\\"$${PLUGIN_INSTALL_DIRS}\\"'
 

@@ -47,8 +47,8 @@ public:
     explicit SideBarModel(QObject *parent = nullptr);
     ~SideBarModel() override;
 
-    QModelIndex firstCloumnIndex(SideBarAbstractItem *item);
-    QModelIndex lastCloumnIndex(SideBarAbstractItem *item);
+    QModelIndex firstColumnIndex(SideBarAbstractItem *item);
+    QModelIndex lastColumnIndex(SideBarAbstractItem *item);
 
     SideBarAbstractItem *itemFromIndex(const QModelIndex &index);
 
