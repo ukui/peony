@@ -594,7 +594,8 @@ void MainWindow::setShortCuts()
     connect(pasteAction, &QAction::triggered, [=]() {
         auto currentUri = getCurrentUri();
         if (currentUri.startsWith("trash://") || currentUri.startsWith("recent://")
-            || currentUri.startsWith("computer://") || currentUri.startsWith("favorite://"))
+            || currentUri.startsWith("computer://") || currentUri.startsWith("favorite://")
+            || currentUri.startsWith("search://"))
         {
             return;
         }
@@ -623,6 +624,10 @@ void MainWindow::setShortCuts()
             if (this->getCurrentSelections().first().startsWith("recent://", Qt::CaseInsensitive)) {
                 return ;
             }
+
+            auto currentUri = getCurrentUri();
+            if (currentUri.startsWith("search://"))
+                return;
 
             QString desktopPath = "file://" +  QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
             QString desktopUri = Peony::FileUtils::getEncodedUri(desktopPath);
