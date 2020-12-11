@@ -689,9 +689,8 @@ void MainWindow::keyPressEvent(QKeyEvent *e)
     if (e->key() == Qt::Key_Enter || e->key() == Qt::Key_Return)
     {
         auto selections = this->getCurrentSelections();
-        if (selections.count() == 1)
-            Q_EMIT m_tab->currentPage()->viewDoubleClicked(selections.first());
-        else
+        //if select only one item, let view to process
+        if (selections.count() > 1)
         {
             QStringList files;
             QStringList dirs;

@@ -644,6 +644,9 @@ void ListView2::bindModel(FileItemModel *model, FileItemProxyFilterSortModel *pr
             this, &DirectoryViewWidget::viewSelectionChanged);
 
     connect(m_view, &ListView::activated, this, [=](const QModelIndex &index) {
+        //when selections is more than 1, let mainwindow to process
+        if (getSelections().count() != 1)
+            return;
         auto uri = index.data(Qt::UserRole).toString();
         Q_EMIT this->viewDoubleClicked(uri);
     });
