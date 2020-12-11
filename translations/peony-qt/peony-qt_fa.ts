@@ -21,7 +21,7 @@
     <message>
         <location filename="../../src/control/file-label-box.cpp" line="75"/>
         <source>Create New Label</source>
-        <translation type="unfinished"></translation>
+        <translation>ایجاد برچسب جدید</translation>
     </message>
 </context>
 <context>
@@ -29,7 +29,7 @@
     <message>
         <location filename="../../src/control/header-bar.cpp" line="84"/>
         <source>Create Folder</source>
-        <translation>ساخت پوشه</translation>
+        <translation>ایجاد پوشه</translation>
     </message>
     <message>
         <location filename="../../src/control/header-bar.cpp" line="98"/>
@@ -54,12 +54,12 @@
     <message>
         <location filename="../../src/control/header-bar.cpp" line="170"/>
         <source>View Type</source>
-        <translation>نمایش نوع</translation>
+        <translation>نحوۀ نمایش</translation>
     </message>
     <message>
         <location filename="../../src/control/header-bar.cpp" line="197"/>
         <source>Sort Type</source>
-        <translation type="unfinished"></translation>
+        <translation>نحوۀ مرتب‌سازی</translation>
     </message>
     <message>
         <location filename="../../src/control/header-bar.cpp" line="223"/>
@@ -120,12 +120,12 @@
     <message>
         <location filename="../../src/windows/main-window.cpp" line="304"/>
         <source>Undo</source>
-        <translation type="unfinished"></translation>
+        <translation>واگرد</translation>
     </message>
     <message>
         <location filename="../../src/windows/main-window.cpp" line="311"/>
         <source>Redo</source>
-        <translation type="unfinished"></translation>
+        <translation>از نو</translation>
     </message>
     <message>
         <source>Delete file Warning</source>
