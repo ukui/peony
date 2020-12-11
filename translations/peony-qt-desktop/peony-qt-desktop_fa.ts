@@ -25,22 +25,22 @@
     <message>
         <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="524"/>
         <source>Open Link failed</source>
-        <translation type="unfinished"></translation>
+        <translation>لینک باز نشد</translation>
     </message>
     <message>
         <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="525"/>
         <source>File not exist, do you want to delete the link file?</source>
-        <translation type="unfinished"></translation>
+        <translation>فایل موجود نیست، آیا تمایل دارید که لینک حذف شود؟</translation>
     </message>
     <message>
         <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="540"/>
         <source>Open failed</source>
-        <translation type="unfinished"></translation>
+        <translation>باز نشد</translation>
     </message>
     <message>
         <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="541"/>
         <source>Open directory failed, you have no permission!</source>
-        <translation type="unfinished"></translation>
+        <translation>پوشه باز نشد، اجازه‌ی دسترسی وجود ندارد!</translation>
     </message>
 </context>
 <context>
@@ -48,50 +48,50 @@
     <message>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="107"/>
         <source>&amp;Open in new Window</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;بازکردن در پنجرۀ جدید</translation>
     </message>
     <message>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="112"/>
         <source>Select &amp;All</source>
-        <translation type="unfinished"></translation>
+        <translation>انتخاب &amp;همه</translation>
     </message>
     <message>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="135"/>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="159"/>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="195"/>
         <source>&amp;Open &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;بازکردن &quot;%1&quot;</translation>
     </message>
     <message>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="140"/>
         <source>Open &quot;%1&quot; &amp;with...</source>
-        <translation type="unfinished"></translation>
+        <translation>بازکردن &quot;%1&quot; به &amp;وسیلۀ...</translation>
     </message>
     <message>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="153"/>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="178"/>
         <source>&amp;More applications...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;نرم‌افزارهای بیشتر...</translation>
     </message>
     <message>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="164"/>
         <source>Open &quot;%1&quot; with...</source>
-        <translation type="unfinished"></translation>
+        <translation>بازکردن &quot;%1&quot; به وسیلۀ...</translation>
     </message>
     <message>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="184"/>
         <source>&amp;Open</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;بازکردن</translation>
     </message>
     <message>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="198"/>
         <source>&amp;Open %1 selected files</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;بازکردن %1 فایل‌های انتخاب‌شده</translation>
     </message>
     <message>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="222"/>
         <source>Reverse Select</source>
-        <translation type="unfinished"></translation>
+        <translation>معکوس‌کردن انتخاب‌ها</translation>
     </message>
     <message>
         <source>&amp;New...</source>
@@ -105,12 +105,12 @@
     <message>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="294"/>
         <source>Empty &amp;File</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;فایل خالی</translation>
     </message>
     <message>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="304"/>
         <source>&amp;Folder</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;پوشه</translation>
     </message>
     <message>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="308"/>
@@ -120,32 +120,32 @@
     <message>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="325"/>
         <source>View Type...</source>
-        <translation type="unfinished"></translation>
+        <translation>نحوۀ نمایش...</translation>
     </message>
     <message>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="331"/>
         <source>&amp;Small</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;کوچک</translation>
     </message>
     <message>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="334"/>
         <source>&amp;Normal</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;متوسط</translation>
     </message>
     <message>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="337"/>
         <source>&amp;Large</source>
-        <translation type="unfinished"></translation>
+        <translation>ب&amp;زرگ</translation>
     </message>
     <message>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="340"/>
         <source>&amp;Huge</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;خیلی بزرگ</translation>
     </message>
     <message>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="368"/>
         <source>Sort By...</source>
-        <translation type="unfinished"></translation>
+        <translation>مرتب‌کردن بر اساس...</translation>
     </message>
     <message>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="373"/>
@@ -165,7 +165,7 @@
     <message>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="374"/>
         <source>Modified Date</source>
-        <translation type="unfinished"></translation>
+        <translation>تاریخ ایجاد تغییر</translation>
     </message>
     <message>
         <source>Delete file Warning</source>
@@ -174,12 +174,12 @@
     <message>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="466"/>
         <source>Cut</source>
-        <translation type="unfinished"></translation>
+        <translation>بریدن</translation>
     </message>
     <message>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="472"/>
         <source>&amp;Delete to trash</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;حذف (به سطل زباله)</translation>
     </message>
     <message>
         <source>Delete forever</source>
@@ -226,7 +226,7 @@
     <message>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="448"/>
         <source>&amp;Clean the trash</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;خالی‌کردن سطل زباله</translation>
     </message>
     <message>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="450"/>
@@ -236,12 +236,12 @@
     <message>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="450"/>
         <source>Are you sure that you want to delete these files? Once you start a deletion, the files deleting will never be restored again.</source>
-        <translation type="unfinished"></translation>
+        <translation>آیا از حذف این فایل‌ها اطمینان دارید؟ پس از حذف، امکان بازگرداندن آن‌ها وجود ندارد.</translation>
     </message>
     <message>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="462"/>
         <source>&amp;Copy</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;کپی‌کردن</translation>
     </message>
     <message>
         <source>Cu&amp;t</source>
@@ -258,12 +258,12 @@
     <message>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="492"/>
         <source>&amp;Paste</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;چسباندن</translation>
     </message>
     <message>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="498"/>
         <source>&amp;Refresh</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;تازه‌کردن</translation>
     </message>
     <message>
         <source>&amp;Properties</source>
@@ -308,12 +308,12 @@
     <message>
         <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="227"/>
         <source>Close the peony desktop window</source>
-        <translation type="unfinished"></translation>
+        <translation>بستن پنجرۀ میز کار پینی</translation>
     </message>
     <message>
         <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="230"/>
         <source>Take over the dbus service.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">به عهده‌گرفتن خدمات DBus.</translation>
     </message>
     <message>
         <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="233"/>
