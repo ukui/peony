@@ -102,8 +102,8 @@ BasicPropertiesPage::BasicPropertiesPage(const QStringList &uris, QWidget *paren
     }
 
     m_type = new QLabel(f1);
-    QLineEdit *edit = new QLineEdit(f1);
-    m_display_name = edit;
+    QLabel *name = new QLabel(f1);
+    m_display_name = name;
     QLabel *location = new QLabel(f1);
     m_location = location;
 
@@ -126,7 +126,7 @@ BasicPropertiesPage::BasicPropertiesPage(const QStringList &uris, QWidget *paren
     form->addRow(tr("Location:"), m_location);
 
     if (singleUri) {
-        edit->setText(m_info->displayName());
+        name->setText(m_info->displayName());
     } else {
         QStringList l;
         for (auto uri : uris) {
@@ -134,17 +134,17 @@ BasicPropertiesPage::BasicPropertiesPage(const QStringList &uris, QWidget *paren
             l<<FileUtils::getFileDisplayName(uri);
         }
         auto text = l.join(",");
-        edit->setText(text);
+        name->setText(text);
     }
-    edit->setReadOnly(!singleUri);
+//    edit->setReadOnly(true);
     //edit->setContentsMargins(10, 10, 10, 5);
     //l1->addWidget(edit, 0, 1);
 
-    connect(edit, &QLineEdit::returnPressed, [=]() {
-        if (!edit->isReadOnly() && !edit->text().isEmpty()) {
-            FileOperationUtils::rename(m_info->uri(), edit->text(), true);
-        }
-    });
+//    connect(edit, &QLineEdit::returnPressed, [=]() {
+//        if (!edit->isReadOnly() && !edit->text().isEmpty()) {
+//            FileOperationUtils::rename(m_info->uri(), edit->text(), true);
+//        }
+//    });
 
     location->setTextInteractionFlags(Qt::TextSelectableByMouse);
     QUrl url = FileUtils::getParentUri(uris.first());
