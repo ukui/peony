@@ -2574,7 +2574,7 @@ Do you want to unmount forcely?</source>
         <location filename="../../libpeony-qt/model/side-bar-file-system-item.cpp" line="492"/>
         <location filename="../../libpeony-qt/model/side-bar-file-system-item.cpp" line="537"/>
         <source>Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>لغو</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/model/side-bar-file-system-item.cpp" line="493"/>
