@@ -51,8 +51,8 @@ FileItemProxyFilterSortModel::FileItemProxyFilterSortModel(QObject *parent) : QS
     comparer.setNumericMode(true);
     auto settings = GlobalSettings::getInstance();
     m_show_hidden = settings->isExist(SHOW_HIDDEN_PREFERENCE)? settings->getValue(SHOW_HIDDEN_PREFERENCE).toBool(): false;
-    m_use_default_name_sort_order = settings->isExist("chinese-first")? settings->getValue("chinese-first").toBool(): false;
-    m_folder_first = settings->isExist("folder-first")? settings->getValue("folder-first").toBool(): true;
+    m_use_default_name_sort_order = settings->isExist(SORT_CHINESE_FIRST)? settings->getValue(SORT_CHINESE_FIRST).toBool(): false;
+    m_folder_first = settings->isExist(SORT_FOLDER_FIRST)? settings->getValue(SORT_FOLDER_FIRST).toBool(): true;
 }
 
 void FileItemProxyFilterSortModel::setSourceModel(QAbstractItemModel *model)
@@ -470,7 +470,7 @@ void FileItemProxyFilterSortModel::setShowHidden(bool showHidden)
 
 void FileItemProxyFilterSortModel::setUseDefaultNameSortOrder(bool use)
 {
-    GlobalSettings::getInstance()->setValue("chinese-first", use);
+    GlobalSettings::getInstance()->setValue(SORT_CHINESE_FIRST, use);
     m_use_default_name_sort_order = use;
     beginResetModel();
     sort(sortColumn()>0? sortColumn(): 0, sortOrder()==Qt::DescendingOrder? Qt::DescendingOrder: Qt::AscendingOrder);
@@ -479,7 +479,7 @@ void FileItemProxyFilterSortModel::setUseDefaultNameSortOrder(bool use)
 
 void FileItemProxyFilterSortModel::setFolderFirst(bool folderFirst)
 {
-    GlobalSettings::getInstance()->setValue("folder-first", folderFirst);
+    GlobalSettings::getInstance()->setValue(SORT_FOLDER_FIRST, folderFirst);
     m_folder_first = folderFirst;
     beginResetModel();
     sort(sortColumn()>0? sortColumn(): 0, sortOrder()==Qt::DescendingOrder? Qt::DescendingOrder: Qt::AscendingOrder);

@@ -293,11 +293,11 @@ void ToolBar::init()
                                 "This will reduce the time for the next launch, but it will "
                                 "also consume resources in backend."));
         connect(resident, &QAction::triggered, this, [=](bool checked) {
-            GlobalSettings::getInstance()->setValue("resident", checked);
+            GlobalSettings::getInstance()->setValue(RESIDENT_IN_BACKEND, checked);
             qApp->setQuitOnLastWindowClosed(!checked);
         });
         resident->setCheckable(true);
-        resident->setChecked(GlobalSettings::getInstance()->isExist("resident")? GlobalSettings::getInstance()->getValue("resident").toBool(): false);
+        resident->setChecked(GlobalSettings::getInstance()->isExist(RESIDENT_IN_BACKEND)? GlobalSettings::getInstance()->getValue(RESIDENT_IN_BACKEND).toBool(): false);
 
         optionMenu.addSeparator();
 

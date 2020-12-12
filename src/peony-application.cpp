@@ -509,7 +509,7 @@ void PeonyApplication::unmountAllFtpLinks()
             ! targetUri.startsWith("ftp://"))
             continue;
 
-        m_resident = Peony::GlobalSettings::getInstance()->getValue("resident").toBool();
+        m_resident = Peony::GlobalSettings::getInstance()->getValue(RESIDENT_IN_BACKEND).toBool();
         qApp->setQuitOnLastWindowClosed(false);
         GFile *file = g_file_new_for_uri(uri.toUtf8().constData());
         g_file_unmount_mountable_with_operation(file,

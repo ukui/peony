@@ -90,12 +90,12 @@ OperationMenu::OperationMenu(MainWindow *window, QWidget *parent) : QMenu(parent
 
     auto residentInBackend = addAction(tr("Resident in Backend"), this, [=](bool checked) {
         //FIXME:
-        Peony::GlobalSettings::getInstance()->setValue("resident", checked);
+        Peony::GlobalSettings::getInstance()->setValue(RESIDENT_IN_BACKEND, checked);
         qApp->setQuitOnLastWindowClosed(!checked);
     });
     m_resident_in_backend = residentInBackend;
     residentInBackend->setCheckable(true);
-    residentInBackend->setChecked(Peony::GlobalSettings::getInstance()->getValue("resident").toBool());
+    residentInBackend->setChecked(Peony::GlobalSettings::getInstance()->getValue(RESIDENT_IN_BACKEND).toBool());
 
     auto allowFileOpParallel = addAction(tr("Parallel Operations"), this, [=](bool checked){
         Peony::FileOperationManager::getInstance()->setAllowParallel(checked);
@@ -124,8 +124,8 @@ void OperationMenu::updateMenu()
                                       Peony::GlobalSettings::getInstance()->getValue(FORBID_THUMBNAIL_IN_VIEW).toBool():
                                       false);
 
-    m_resident_in_backend->setChecked(Peony::GlobalSettings::getInstance()->isExist("resident")?
-                                      Peony::GlobalSettings::getInstance()->getValue("resident").toBool():
+    m_resident_in_backend->setChecked(Peony::GlobalSettings::getInstance()->isExist(RESIDENT_IN_BACKEND)?
+                                      Peony::GlobalSettings::getInstance()->getValue(RESIDENT_IN_BACKEND).toBool():
                                       false);
 
     //get window current directory and selections, then update ohter actions.
