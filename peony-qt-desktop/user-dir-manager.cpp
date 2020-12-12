@@ -24,7 +24,8 @@ UserdirManager::UserdirManager(QObject *parent) : QObject(parent)
     m_user_name = QString(userName);
 
     m_settings = new QSettings("org.ukui", "peony-qt-preferences", this);
-    m_do_not_thumbnail = m_settings->value("do-not-thumbnail").toBool();
+    m_do_not_thumbnail = m_settings->value(FORBID_THUMBNAIL_IN_VIEW).toBool();
+    m_allow_parallel = m_settings->value(ALLOW_FILE_OP_PARALLEL).toBool();
     m_user_dir_watcher = new QFileSystemWatcher(this);
 
     QString path0 = QString("/home/"+m_user_name+"/.config/user-dirs.dirs");
@@ -71,14 +72,18 @@ UserdirManager::UserdirManager(QObject *parent) : QObject(parent)
         else if(uri == path1)
         {
             m_settings = new QSettings("org.ukui", "peony-qt-preferences", this);
-            if(m_do_not_thumbnail != m_settings->value("do-not-thumbnail").toBool())
+            if(m_do_not_thumbnail != m_settings->value(FORBID_THUMBNAIL_IN_VIEW).toBool())
             {
-                m_do_not_thumbnail = m_settings->value("do-not-thumbnail").toBool();
+                m_do_not_thumbnail = m_settings->value(FORBID_THUMBNAIL_IN_VIEW).toBool();
                 Q_EMIT thumbnailSetingChange();
+            }
+            if (m_allow_parallel != m_settings->value(ALLOW_FILE_OP_PARALLEL).toBool())
+            {
+                m_allow_parallel = m_settings->value(ALLOW_FILE_OP_PARALLEL).toBool();
+                FileOperationManager::getInstance()->setAllowParallel(m_allow_parallel);
             }
         }
         m_user_dir_watcher->addPath(uri);
-
     });
 
 }
