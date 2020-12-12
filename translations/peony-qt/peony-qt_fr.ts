@@ -74,7 +74,7 @@
     <message>
         <location filename="../../src/control/header-bar.cpp" line="268"/>
         <source>Don&apos;t find any terminal, please install at least one terminal!</source>
-        <translation>Ne trouvez aucun terminal, veuillez installer au moins un terminal !</translation>
+        <translation>Aucun terminal trouvé, veuillez installer au moins un terminal !</translation>
     </message>
     <message>
         <source>Minimize</source>
@@ -304,11 +304,11 @@
 	Meihong He &lt;hemeihong@kylinos.cn&gt;
 
 Copyright (C): 2020, KylinSoft Co., Ltd.</source>
-        <translation>Auteur :
+        <translation>Auteurs :
 	Yue Lan &lt;lanyue@kylinos.cn&gt;
 	Meihong He &lt;hemeihong@kylinos.cn&gt;
 
-Copyright (C): 2020, KylinSoft Co., Ltd.</translation>
+Copyright (C) : 2020, KylinSoft Co., Ltd.</translation>
     </message>
     <message>
         <source>Author:
