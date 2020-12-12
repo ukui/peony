@@ -237,8 +237,9 @@ const QList<QAction *> DirectoryViewMenu::constructOpenOpActions()
                     FileLaunchManager::openAsync(uri, false, false);
                 });
                 auto openWithAction = addAction(tr("Open \"%1\" with...").arg(displayName));
-                //FIXME: add sub menu for open with action.
                 QMenu *openWithMenu = new QMenu(this);
+                // do not highlight application icons.
+                openWithMenu->setProperty("skipHighlightIconEffect", true);
                 auto recommendActions = FileLaunchManager::getRecommendActions(m_selections.first());
                 for (auto action : recommendActions) {
                     action->setParent(openWithMenu);
