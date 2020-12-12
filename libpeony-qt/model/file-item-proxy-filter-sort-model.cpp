@@ -50,7 +50,7 @@ FileItemProxyFilterSortModel::FileItemProxyFilterSortModel(QObject *parent) : QS
     //enable number sort, like 100 is after 99
     comparer.setNumericMode(true);
     auto settings = GlobalSettings::getInstance();
-    m_show_hidden = settings->isExist("show-hidden")? settings->getValue("show-hidden").toBool(): false;
+    m_show_hidden = settings->isExist(SHOW_HIDDEN_PREFERENCE)? settings->getValue(SHOW_HIDDEN_PREFERENCE).toBool(): false;
     m_use_default_name_sort_order = settings->isExist("chinese-first")? settings->getValue("chinese-first").toBool(): false;
     m_folder_first = settings->isExist("folder-first")? settings->getValue("folder-first").toBool(): true;
 }
@@ -463,7 +463,7 @@ void FileItemProxyFilterSortModel::update()
 
 void FileItemProxyFilterSortModel::setShowHidden(bool showHidden)
 {
-    GlobalSettings::getInstance()->setValue("show-hidden", showHidden);
+    GlobalSettings::getInstance()->setValue(SHOW_HIDDEN_PREFERENCE, showHidden);
     m_show_hidden = showHidden;
     invalidateFilter();
 }

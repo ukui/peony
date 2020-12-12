@@ -84,7 +84,7 @@ using namespace Peony;
 FMWindow::FMWindow(const QString &uri, QWidget *parent) : QMainWindow (parent)
 {
     auto settings = GlobalSettings::getInstance();
-    m_show_hidden_file = settings->isExist("show-hidden")? settings->getValue("show-hidden").toBool(): false;
+    m_show_hidden_file = settings->isExist(SHOW_HIDDEN_PREFERENCE)? settings->getValue(SHOW_HIDDEN_PREFERENCE).toBool(): false;
     m_use_default_name_sort_order = settings->isExist("chinese-first")? settings->getValue("chinese-first").toBool(): false;
     m_folder_first = settings->isExist("folder-first")? settings->getValue("folder-first").toBool(): true;
 
