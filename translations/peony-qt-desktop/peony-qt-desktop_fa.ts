@@ -6,7 +6,7 @@
     <message>
         <location filename="../../peony-qt-desktop/desktop-icon-view.h" line="80"/>
         <source>Desktop Icon View</source>
-        <translation type="unfinished"></translation>
+        <translation>نمایش آیکون‌های میز کار</translation>
     </message>
     <message>
         <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="388"/>
@@ -318,7 +318,7 @@
     <message>
         <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="233"/>
         <source>Take over the desktop displaying</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">به عهده‌گرفتن نمایش میز کار</translation>
     </message>
 </context>
 </TS>
