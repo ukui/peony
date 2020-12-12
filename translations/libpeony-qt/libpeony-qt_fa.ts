@@ -100,7 +100,7 @@
         <location filename="../../libpeony-qt/model/file-label-model.cpp" line="113"/>
         <location filename="../../libpeony-qt/model/file-label-model.cpp" line="336"/>
         <source>Label or color is duplicated.</source>
-        <translation type="unfinished"></translation>
+        <translation>برچسب یا رنگ، تکراری است.</translation>
     </message>
 </context>
 <context>
@@ -118,22 +118,22 @@
     <message>
         <location filename="../../libpeony-qt/windows/format_dialog.ui" line="39"/>
         <source>system</source>
-        <translation type="unfinished"></translation>
+        <translation>سیستم</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/windows/format_dialog.ui" line="53"/>
         <source>ntfs</source>
-        <translation type="unfinished"></translation>
+        <translation>NTFS</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/windows/format_dialog.ui" line="58"/>
         <source>vfat</source>
-        <translation type="unfinished"></translation>
+        <translation>VFAT</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/windows/format_dialog.ui" line="63"/>
         <source>ext4</source>
-        <translation type="unfinished"></translation>
+        <translation>Ext4</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/windows/format_dialog.ui" line="77"/>
@@ -148,13 +148,13 @@
     <message>
         <location filename="../../libpeony-qt/windows/format_dialog.ui" line="116"/>
         <source>ok</source>
-        <translation type="unfinished"></translation>
+        <translation>تأیید</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/windows/format_dialog.ui" line="129"/>
         <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="466"/>
         <source>close</source>
-        <translation type="unfinished"></translation>
+        <translation>لغو</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="447"/>
@@ -165,12 +165,12 @@
     <message>
         <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="447"/>
         <source>Format operation has been finished successfully.</source>
-        <translation type="unfinished"></translation>
+        <translation>عملیات فرمت‌کردن با موفقیت به پایان رسید.</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="453"/>
         <source>Sorry, the format operation is failed!</source>
-        <translation type="unfinished"></translation>
+        <translation>متأسفانه عملیات فرمت‌کردن انجام نشد!</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="460"/>
@@ -180,12 +180,12 @@
     <message>
         <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="462"/>
         <source>format</source>
-        <translation type="unfinished"></translation>
+        <translation>فرمت</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="464"/>
         <source>begin format</source>
-        <translation type="unfinished"></translation>
+        <translation>آغاز فرمت‌کردن</translation>
     </message>
     <message>
         <source>format_success</source>
@@ -248,22 +248,22 @@
     <message>
         <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.cpp" line="55"/>
         <source>Key Words</source>
-        <translation type="unfinished"></translation>
+        <translation>کلمات کلیدی</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.cpp" line="58"/>
         <source>input key words...</source>
-        <translation type="unfinished"></translation>
+        <translation>کلمات کلیدی را وارد کنید...</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.cpp" line="59"/>
         <source>Search Location</source>
-        <translation type="unfinished"></translation>
+        <translation>محل جستجو</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.cpp" line="61"/>
         <source>choose search path...</source>
-        <translation type="unfinished"></translation>
+        <translation>محل جستجو را انتخاب کنید...</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.cpp" line="68"/>
@@ -2481,7 +2481,7 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</translation
         <location filename="../../libpeony-qt/convenient-utils/file-operation-utils.cpp" line="210"/>
         <location filename="../../libpeony-qt/convenient-utils/file-operation-utils.cpp" line="214"/>
         <source>Delete Permanently</source>
-        <translation type="unfinished"></translation>
+        <translation>حذف همیشگی</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/convenient-utils/file-operation-utils.cpp" line="210"/>
