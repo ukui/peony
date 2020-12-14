@@ -308,7 +308,7 @@
     <message>
         <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="227"/>
         <source>Close the peony desktop window</source>
-        <translation>Fermer la fenêtre du gestionnaire de fichiers</translation>
+        <translation>Fermer la fenêtre peony du bureau</translation>
     </message>
     <message>
         <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="230"/>
