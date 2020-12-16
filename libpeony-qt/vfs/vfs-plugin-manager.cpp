@@ -22,6 +22,7 @@
 
 #include "vfs-plugin-manager.h"
 
+#include "favorite-vfs-register.h"
 #include "search-vfs-register.h"
 
 using namespace Peony;
@@ -71,4 +72,8 @@ VFSPluginManager::VFSPluginManager(QObject *parent) : QObject(parent)
 {
     auto searchVFSPlugin = new SearchVFSInternalPlugin;
     registerPlugin(searchVFSPlugin);
+
+    auto favoriteVFSPlugin = new FavoriteVFSInternalPlugin;
+    registerPlugin(favoriteVFSPlugin);
+
 }

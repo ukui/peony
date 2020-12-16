@@ -256,6 +256,14 @@ Files: libpeony-qt/vfs/peony-search-vfs-file-enumerator.cpp
   libpeony-qt/vfs/search-vfs-uri-parser.h
   libpeony-qt/vfs/vfs-plugin-manager.cpp
   libpeony-qt/vfs/vfs-plugin-manager.h
+  libpeony-qt/vfs/favorite-vfs-file-enumerator.cpp
+  libpeony-qt/vfs/favorite-vfs-file-enumerator.h
+  libpeony-qt/vfs/favorite-vfs-file-monitor.cpp
+  libpeony-qt/vfs/favorite-vfs-file-monitor.h
+  libpeony-qt/vfs/favorite-vfs-file.cpp
+  libpeony-qt/vfs/favorite-vfs-file.h
+  libpeony-qt/vfs/favorite-vfs-register.cpp
+  libpeony-qt/vfs/favorite-vfs-register.h
 Copyright: 2020, KylinSoft Co., Ltd.
 License: LGPL-3+
 
