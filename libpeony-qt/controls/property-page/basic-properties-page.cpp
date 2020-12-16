@@ -266,6 +266,8 @@ void BasicPropertiesPage::onSingleFileChanged(const QString &oldUri, const QStri
     //qDebug() << "set Icon:" <<thumbnail.isNull() <<thumbnail;
     m_icon->setIcon(thumbnail.isNull()? icon: thumbnail);
     QUrl url = FileUtils::getParentUri(m_info->uri());
+
+    qDebug() << "=========================new uri:" << newUri << "  ---  " << oldUri << "  " << m_info->uri() << "  " << url.toDisplayString();
     m_location->setText(url.toDisplayString());
 }
 
