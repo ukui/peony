@@ -79,6 +79,8 @@ private:
     bool m_is_trash = false;
     bool m_is_search = false;
     bool m_is_recent = false;
+    bool m_is_favorite = false;
+    bool m_can_delete = true;           // if contains computer:/// trash:/// recent:/// and desktop path
 
     const int ELIDE_TEXT_LENGTH = 16;
 

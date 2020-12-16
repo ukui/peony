@@ -584,6 +584,9 @@ void MainWindow::setShortCuts()
             if (this->getCurrentSelections().first().startsWith("recent://", Qt::CaseInsensitive)) {
                 return ;
             }
+            if (this->getCurrentSelections().first().startsWith("favorite://", Qt::CaseInsensitive)) {
+                return ;
+            }
         }
         Peony::ClipboardUtils::setClipboardFiles(this->getCurrentSelections(), false);
     });
@@ -622,6 +625,9 @@ void MainWindow::setShortCuts()
                 return ;
             }
             if (this->getCurrentSelections().first().startsWith("recent://", Qt::CaseInsensitive)) {
+                return ;
+            }
+            if (this->getCurrentSelections().first().startsWith("favorite://", Qt::CaseInsensitive)) {
                 return ;
             }
 
