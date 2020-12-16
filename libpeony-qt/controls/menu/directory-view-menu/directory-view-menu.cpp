@@ -98,20 +98,41 @@ DirectoryViewMenu::DirectoryViewMenu(FMWindowIface *window, QWidget *parent) : Q
 
 void DirectoryViewMenu::fillActions()
 {
-    if (m_directory == "computer:///")
+    if (m_directory == "computer:///") {
         m_is_computer = true;
+    }
 
-    if (m_directory == "trash:///")
+    if (m_directory == "trash:///") {
         m_is_trash = true;
+    }
 
-    if (m_directory.startsWith("search://"))
+    if (m_directory.startsWith("search://")) {
         m_is_search = true;
+    }
 
-    if (m_directory.startsWith("burn://"))
+    if (m_directory.startsWith("burn://")) {
         m_is_cd = true;
+    }
 
-    if (m_directory.startsWith("recent://"))
+    if (m_directory.startsWith("recent://")) {
         m_is_recent = true;
+    }
+
+    if (m_directory.startsWith("favorite://")) {
+        m_is_favorite = true;
+    }
+
+    QString desktop = QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
+
+    for (auto uriIndex = 0; uriIndex < m_selections.count(); ++uriIndex) {
+        qDebug() << desktop;
+        if (m_selections.at(uriIndex) == "favorite:///?schema=trash"
+                || m_selections.at(uriIndex) == "favorite:///?schema=recent"
+                || m_selections.at(uriIndex) == "favorite://" + desktop + "?schema=file") {
+            m_can_delete = false;
+            break;
+        }
+    }
 
     //add open actions
     auto openActions = constructOpenOpActions();
@@ -198,7 +219,7 @@ const QList<QAction *> DirectoryViewMenu::constructOpenOpActions()
             }
             if (info->isDir()) {
                 //add to bookmark option
-                if (! info->isVirtual() &&  ! info->uri().startsWith("smb://"))
+                if (!info->isVirtual() &&  !info->uri().startsWith("smb://"))
                 {
                     l<<addAction(QIcon::fromTheme("bookmark-add-symbolic"), tr("Add to bookmark"));
                     connect(l.last(), &QAction::triggered, [=]() {
@@ -311,7 +332,7 @@ const QList<QAction *> DirectoryViewMenu::constructOpenOpActions()
 const QList<QAction *> DirectoryViewMenu::constructCreateTemplateActions()
 {
     QList<QAction *> l;
-    if (m_selections.isEmpty()) {
+    if (!m_is_favorite && m_selections.isEmpty()) {
         auto createAction = new QAction(tr("New..."), this);
         if (m_is_cd) {
             createAction->setEnabled(false);
@@ -540,12 +561,14 @@ const QList<QAction *> DirectoryViewMenu::constructFileOpActions()
         bool hasStandardPath = FileUtils::containsStandardPath(m_selections);
         //qDebug() << "constructFileOpActions hasStandardPath:" <<hasStandardPath;
         if (!m_selections.isEmpty() && !m_selections.contains(homeUri) && !m_is_recent) {
-            l<<addAction(QIcon::fromTheme("edit-copy-symbolic"), tr("&Copy"));
-            connect(l.last(), &QAction::triggered, [=]() {
-                ClipboardUtils::setClipboardFiles(m_selections, false);
-            });
+            if (!m_is_favorite) {
+                l<<addAction(QIcon::fromTheme("edit-copy-symbolic"), tr("&Copy"));
+                connect(l.last(), &QAction::triggered, [=]() {
+                    ClipboardUtils::setClipboardFiles(m_selections, false);
+                });
+            }
 
-            if (! hasStandardPath && !m_is_recent)
+            if (!hasStandardPath && !m_is_recent && !m_is_favorite)
             {
                 l<<addAction(QIcon::fromTheme("edit-cut-symbolic"), tr("Cut"));
                 connect(l.last(), &QAction::triggered, [=]() {
@@ -553,26 +576,28 @@ const QList<QAction *> DirectoryViewMenu::constructFileOpActions()
                 });
             }
 
-            if (!m_is_recent && ! hasStandardPath) {
+            if (!m_is_recent && !m_is_favorite && !hasStandardPath) {
                 l<<addAction(QIcon::fromTheme("edit-delete-symbolic"), tr("&Delete to trash"));
                 connect(l.last(), &QAction::triggered, [=]() {
                     FileOperationUtils::trash(m_selections, true);
                 });
             }
-            //comment delete forever right menu option,reference to mac and Windows
-            //add delete forever option
-//            l<<addAction(QIcon::fromTheme("edit-clear-symbolic"), tr("Delete forever"));
-//            connect(l.last(), &QAction::triggered, [=]() {
-//                FileOperationUtils::executeRemoveActionWithDialog(m_selections);
-//            });
-            if (m_selections.count() == 1 && ! hasStandardPath && !m_is_recent) {
+
+            if (m_is_favorite && m_can_delete) {
+                l<<addAction(QIcon::fromTheme("edit-clear-symbolic"), tr("Delete forever"));
+                connect(l.last(), &QAction::triggered, [=]() {
+                    FileOperationUtils::executeRemoveActionWithDialog(m_selections);
+                });
+            }
+
+            if (m_selections.count() == 1 && ! hasStandardPath && !m_is_recent && !m_is_favorite) {
                 l<<addAction(QIcon::fromTheme("document-edit-symbolic"), tr("Rename"));
                 connect(l.last(), &QAction::triggered, [=]() {
                     m_view->editUri(m_selections.first());
                 });
             }
         } else {
-            if (! m_is_recent)
+            if (!m_is_recent && !m_is_favorite)
             {
                 auto pasteAction = addAction(QIcon::fromTheme("edit-paste-symbolic"), tr("&Paste"));
                 l<<pasteAction;
@@ -777,17 +802,19 @@ const QList<QAction *> DirectoryViewMenu::constructSearchActions()
 const QList<QAction *> DirectoryViewMenu::constructMenuPluginActions()
 {
     QList<QAction *> l;
-    auto pluginIds = MenuPluginManager::getInstance()->getPluginIds();
-    //sort plugiins by name, so the menu option orders is relatively fixed
-    qSort(pluginIds.begin(), pluginIds.end());
+    if (!m_is_favorite) {
+        auto pluginIds = MenuPluginManager::getInstance()->getPluginIds();
+        //sort plugiins by name, so the menu option orders is relatively fixed
+        std::sort(pluginIds.begin(), pluginIds.end());
 
-    for (auto id : pluginIds) {
-        auto plugin = MenuPluginManager::getInstance()->getPlugin(id);
-        auto actions = plugin->menuActions(MenuPluginInterface::DirectoryView, m_directory, m_selections);
-        l<<actions;
-        for (auto action : actions) {
-            action->setParent(this);
-            addAction(action);
+        for (auto id : pluginIds) {
+            auto plugin = MenuPluginManager::getInstance()->getPlugin(id);
+            auto actions = plugin->menuActions(MenuPluginInterface::DirectoryView, m_directory, m_selections);
+            l<<actions;
+            for (auto action : actions) {
+                action->setParent(this);
+                addAction(action);
+            }
         }
     }
     return l;
