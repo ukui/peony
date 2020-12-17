@@ -155,7 +155,7 @@ void MountOperation::ask_password_cb(GMountOperation *op,
 
     if (g_mount_operation_get_anonymous(op)) {
         // need passwd, should restart a mount operation?
-        auto err = GErrorWrapper::wrapFrom(g_error_new(G_IO_ERROR, G_IO_ERROR_PERMISSION_DENIED, message));
+        auto err = GErrorWrapper::wrapFrom(g_error_new_literal(G_IO_ERROR, G_IO_ERROR_PERMISSION_DENIED, message));
         p_this->finished(err);
 
         g_mount_operation_reply (op, G_MOUNT_OPERATION_UNHANDLED);
