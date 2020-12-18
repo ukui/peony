@@ -30,6 +30,7 @@ private:
     QStringList m_file_list;
     QSettings *m_settings;
     bool m_do_not_thumbnail;
+    bool m_allow_parallel;
     int m_times = 5;
 
 };

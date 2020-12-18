@@ -44,6 +44,8 @@
 #include "file-watcher.h"
 #include "audio-play-manager.h"
 
+#include <QVector4D>
+
 #include <QDebug>
 
 using namespace Peony;
@@ -362,6 +364,15 @@ void FileOperationManager::handleError(FileOperationError &error)
         if (m_progressbar->isHidden()) {
             m_progressbar->m_error = true;
         }
+        auto dialog = dynamic_cast<QWidget *>(handle);
+        if (dialog) {
+            dialog->setProperty("useCustomShadow", true);
+            dialog->setProperty("customShadowDarkness", 0.5);
+            dialog->setProperty("customShadowWidth", 30);
+            dialog->setProperty("customShadowRadius", QVector4D(1, 1, 1, 1));
+            dialog->setProperty("customShadowMargins", QVector4D(30, 30, 30, 30));
+        }
+
         handle->handle(error);
         delete handle;
         m_progressbar->m_error = false;

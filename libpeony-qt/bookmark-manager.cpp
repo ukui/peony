@@ -45,6 +45,25 @@ BookMarkManager::BookMarkManager(QObject *parent) : QObject(parent)
         m_book_mark = new QSettings(QSettings::UserScope, "org.ukui", "peony-qt");
         m_uris = m_book_mark->value("uris").toStringList();
         m_is_loaded = true;
+        QStringList urist = m_uris;
+        m_uris.clear();
+
+        if (m_mutex.tryLock(1000)) {
+            for (int i = 0; i < urist.count(); ++i) {
+                QUrl url = urist.at(i);
+                if (url.toString().contains("?schema=")) {
+                    m_uris << url.toString();
+                } else {
+                    QString origin_path = "favorite://" + url.path() + "?schema=" + url.scheme();
+                    m_uris << origin_path;
+                }
+            }
+            m_uris.removeDuplicates();
+            m_book_mark->setValue("uris", m_uris);
+            m_book_mark->sync();
+            m_mutex.unlock();
+        }
+
         //m_uris<<"computer:///";
         //qDebug()<<"====================ok============\n\n\n\n"<<m_uris;
         Q_EMIT this->urisLoaded();
@@ -65,7 +84,7 @@ void BookMarkManager::addBookMark(const QString &uri)
             g_usleep(100);
         }
         QUrl url = uri;
-        QString origin_path = "file://" + url.path();
+        QString origin_path = "favorite://" + url.path() + "?schema=" + url.scheme();
         //desktop uri is fixed in favorite item
         QString desktopUri = "file://" + QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
         if (origin_path == desktopUri)
@@ -96,7 +115,7 @@ void BookMarkManager::removeBookMark(const QString &uri)
             g_usleep(100);
         }
         QUrl url = uri;
-        QString origin_path = "file://" + url.path();
+        QString origin_path = uri;
         if (m_mutex.tryLock(1000)) {
             bool successed = m_uris.contains(origin_path);
             if (successed) {

@@ -27,6 +27,7 @@
 #include <QIcon>
 #include <QWidget>
 #include <QHeaderView>
+#include <QVector4D>
 
 #include <QDebug>
 
@@ -52,6 +53,16 @@ void SearchBar::init(bool hasTopWindow)
 
     //add two button in the completer, use QTableView
     m_table_view= new QTableView(this);
+
+    m_table_view->setAttribute(Qt::WA_TranslucentBackground);
+    //m_table_view->viewport()->setAttribute(Qt::WA_TranslucentBackground);
+
+    m_table_view->setProperty("useCustomShadow", true);
+    m_table_view->setProperty("customShadowDarkness", 0.5);
+    m_table_view->setProperty("customShadowWidth", 20);
+    m_table_view->setProperty("customShadowRadius", QVector4D(6, 6, 6, 6));
+    m_table_view->setProperty("customShadowMargins", QVector4D(20, 20, 20, 20));
+
     m_table_view->setShowGrid(false);
     m_table_view->horizontalHeader()->setDefaultSectionSize(120);
     m_table_view->verticalHeader()->setDefaultSectionSize(6);

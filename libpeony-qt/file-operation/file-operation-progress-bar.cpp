@@ -32,6 +32,8 @@
 #include <QUrl>
 #include <QTimer>
 
+#include <QVector4D>
+
 QPushButton* btn;
 
 static QPixmap drawSymbolicColoredPixmap (const QPixmap&);
@@ -138,6 +140,12 @@ FileOperationProgressBar::FileOperationProgressBar(QWidget *parent) : QWidget(pa
     m_current_main = nullptr;
     setWindowFlags(Qt::FramelessWindowHint);
     setContentsMargins(0, 0, 0, 0);
+
+    setProperty("useCustomShadow", true);
+    setProperty("customShadowDarkness", 0.5);
+    setProperty("customShadowWidth", 30);
+    setProperty("customShadowRadius", QVector4D(1, 1, 1, 1));
+    setProperty("customShadowMargins", QVector4D(30, 30, 30, 30));
 
     btn = new QPushButton(nullptr);
     m_main_layout = new QVBoxLayout(this);

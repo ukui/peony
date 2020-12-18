@@ -481,6 +481,9 @@ void IconView::setProxy(DirectoryViewProxyIface *proxy)
 
     connect(this, &IconView::activated, [=](const QModelIndex &index) {
         qDebug()<<"double click"<<index.data(FileItemModel::UriRole);
+        //when selections is more than 1, let mainwindow to process
+        if (getSelections().count() != 1)
+            return;
         auto uri = index.data(FileItemModel::UriRole).toString();
         //process open symbolic link
         auto info = FileInfo::fromUri(uri, false);
@@ -644,6 +647,9 @@ void IconView2::bindModel(FileItemModel *model, FileItemProxyFilterSortModel *pr
             this, &DirectoryViewWidget::viewSelectionChanged);
 
     connect(m_view, &IconView::activated, this, [=](const QModelIndex &index) {
+        //when selections is more than 1, let mainwindow to process
+        if (getSelections().count() != 1)
+            return;
         auto uri = index.data(Qt::UserRole).toString();
         //process open symbolic link
         auto info = FileInfo::fromUri(uri, false);

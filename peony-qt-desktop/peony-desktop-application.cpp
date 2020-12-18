@@ -509,10 +509,19 @@ void guessContentTypeCallback(GObject* object,GAsyncResult *res,gpointer data)
         g_error_free(error);
         error = NULL;
     }else{
+        GDrive *drive = g_mount_get_drive(G_MOUNT(object));
+        char *unixDevice = NULL;
+        if(drive){
+            unixDevice = g_drive_get_identifier(drive,G_DRIVE_IDENTIFIER_KIND_UNIX_DEVICE);
+            g_object_unref(drive);
+        }
+
         if(guessType && g_strv_length(guessType) > 0){
             int n;
             for(n = 0; guessType[n]; ++n){
                 if(g_content_type_is_a(guessType[n],"x-content/win32-software"))
+                    openFolder = false;
+                if(!strcmp(guessType[n],"x-content/bootable-media") && !strstr(unixDevice,"/dev/sr"))
                     openFolder = false;
                 if(!strcmp(guessType[n],"x-content/blank-dvd") || !strcmp(guessType[n],"x-content/blank-cd"))
                     openFolder = false;
@@ -524,13 +533,6 @@ void guessContentTypeCallback(GObject* object,GAsyncResult *res,gpointer data)
             }
             g_strfreev(guessType);
         }else{
-            GDrive *drive = g_mount_get_drive(G_MOUNT(object));
-            char *unixDevice = NULL;
-            if(drive){
-                unixDevice = g_drive_get_identifier(drive,G_DRIVE_IDENTIFIER_KIND_UNIX_DEVICE);
-                g_object_unref(drive);
-            }
-
             //Only DvD devices are allowed to open folder automatically.
             if(unixDevice && !strcmp(unixDevice,"/dev/sr") && QGSettings::isSchemaInstalled(DESKTOP_MEDIA_HANDLE)){
                 QGSettings* autoMountSettings =  new QGSettings(DESKTOP_MEDIA_HANDLE);
@@ -540,8 +542,8 @@ void guessContentTypeCallback(GObject* object,GAsyncResult *res,gpointer data)
                 }
             }
 
-            g_free(unixDevice);
         }
+        g_free(unixDevice);
     }
 
     g_free(mountUri);
