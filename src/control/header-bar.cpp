@@ -57,6 +57,8 @@
 
 #include <QX11Info>
 
+#include <QPainter>
+
 #include <QDebug>
 
 static HeaderBarStyle *global_instance = nullptr;
@@ -104,7 +106,7 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
     openTerminal->setFixedSize(QSize(40, 40));
     openTerminal->setIconSize(QSize(16, 16));
 
-    addSpacing(9);
+    addSpacing(9 - 4);
 
     auto goBack = new HeadBarPushButton(this);
     m_go_back = goBack;
@@ -156,7 +158,7 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
 
     connect(m_location_bar, &Peony::AdvancedLocationBar::updateWindowLocationRequest, this, &HeaderBar::updateLocationRequest);
 
-    addSpacing(9);
+    addSpacing(9 - 7);
     a = addAction(QIcon::fromTheme("edit-find-symbolic"), tr("Search"));
     connect(a, &QAction::triggered, this, &HeaderBar::searchButtonClicked);
     auto search = qobject_cast<QToolButton *>(widgetForAction(a));
@@ -231,10 +233,29 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
     m_operation_menu = new OperationMenu(m_window, this);
     a->setMenu(m_operation_menu);
 
+    search->setAutoRaise(true);
+    search->setProperty("useIconHighlightEffect", true);
+    search->setProperty("iconHighlightEffectMode", 1);
+
+    goBack->setFlat(true);
+    goBack->setProperty("isWindowButton", 1);
+    goBack->setProperty("useIconHighlightEffect", 2);
+    goBack->setProperty("isIcon", true);
+    goForward->setFlat(true);
+    goForward->setProperty("isWindowButton", 1);
+    goForward->setProperty("useIconHighlightEffect", 2);
+    goForward->setProperty("isIcon", true);
+
     for (auto action : actions()) {
         auto w = widgetForAction(action);
-        w->setProperty("useIconHighlightEffect", true);
-        w->setProperty("iconHighlightEffectMode", 1);
+
+        if (w != search && qobject_cast<QToolButton *>(w)) {
+            w->setProperty("isWindowButton", 1);
+            if (auto toolButton = qobject_cast<QToolButton *>(w)) {
+                toolButton->setAutoRaise(true);
+            }
+            w->setProperty("useIconHighlightEffect", 2);
+        }
     }
 }
 
@@ -397,11 +418,6 @@ void HeaderBar::updateIcons()
         m_create_folder->setEnabled(true);
     else
         m_create_folder->setEnabled(false);
-
-    m_go_back->setProperty("useIconHighlightEffect", true);
-    m_go_back->setProperty("iconHighlightEffectMode", 1);
-    m_go_forward->setProperty("useIconHighlightEffect", true);
-    m_go_forward->setProperty("iconHighlightEffectMode", 1);
 
     //maximize & restore
     updateMaximizeState();
@@ -599,6 +615,19 @@ void HeaderBarContainer::addWindowButtons()
     close->setAutoRaise(false);
     close->setFixedSize(QSize(40, 40));
     close->setIconSize(QSize(16, 16));
+
+    minimize->setProperty("isWindowButton", 1);
+    minimize->setProperty("useIconHighlightEffectMode", 2);
+    minimize->setAutoRaise(true);
+
+    maximizeAndRestore->setProperty("isWindowButton", 1);
+    maximizeAndRestore->setProperty("useIconHighlightEffect", 2);
+    maximizeAndRestore->setAutoRaise(true);
+
+    close->setProperty("isWindowButton", 2);
+    close->setProperty("useIconHighlightEffect", 1);
+    close->setAutoRaise(true);
+
     connect(close, &QToolButton::clicked, this, [=]() {
         m_header_bar->m_window->close();
     });
@@ -627,16 +656,21 @@ void HeaderBarContainer::addWindowButtons()
     close->setMouseTracking(true);
     close->installEventFilter(this);
 
-    for (int i = 0; i < 3; i++) {
-        auto w = layout->itemAt(i)->widget();
-        w->setProperty("useIconHighlightEffect", true);
-        w->setProperty("iconHighlightEffectMode", 1);
-    }
-
     if (!QX11Info::isPlatformX11()) {
         minimize->setVisible(false);
         maximizeAndRestore->setVisible(false);
         close->setVisible(false);
         m_layout->removeItem(layout);
     }
+}
+
+void HeaderBarContainer::paintEvent(QPaintEvent *e)
+{
+    QPainter p(this);
+    QStyleOptionToolBar opt;
+    initStyleOption(&opt);
+    bool isEnable = opt.state & QStyle::State_Enabled;
+    bool isActive = opt.state & QStyle::State_Active;
+    auto color = qApp->palette().color(isEnable? isActive? QPalette::Active: QPalette::Inactive: QPalette::Disabled, QPalette::Base);
+    p.fillRect(this->rect(), color);
 }

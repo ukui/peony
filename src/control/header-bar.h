@@ -52,6 +52,7 @@ public:
 
 protected:
     void addWindowButtons();
+    void paintEvent(QPaintEvent *e);
 
 private:
     QWidget *m_internal_widget;
