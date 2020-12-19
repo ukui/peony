@@ -182,10 +182,10 @@ void Format_Dialog::acceptFormat(bool)
     m_cost_seconds = 0;
     if(quick_clean){
         my_time->setInterval(500);
-        m_total_predict = 1200;
+        m_total_predict = 60;
     }else{
         my_time->setInterval(1000);
-        m_total_predict = 3600;
+        m_total_predict = 1200;
     }
 
     //begin loop

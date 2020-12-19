@@ -105,7 +105,7 @@ public:
 
     int m_cost_seconds = 0;
 
-    int m_total_predict = 3600;
+    int m_total_predict = 1200;
 
 Q_SIGNALS:
      void ensure_format(bool flags);
