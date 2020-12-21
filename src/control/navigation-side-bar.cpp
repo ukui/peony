@@ -449,7 +449,7 @@ NavigationSideBarStyle* NavigationSideBarStyle::getStyle()
 void NavigationSideBarStyle::drawPrimitive(QStyle::PrimitiveElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget) const
 {
     switch (element) {
-    case QStyle::PE_PanelItemViewItem: {
+    case PE_PanelItemViewItem: {
         //! \bug never in here in qt5-ukui-platformtheme-tablet-1205
         if (option->state.testFlag(QStyle::State_MouseOver) && !option->state.testFlag(QStyle::State_Selected)) {
             return;
@@ -459,7 +459,7 @@ void NavigationSideBarStyle::drawPrimitive(QStyle::PrimitiveElement element, con
             return;
         }
     }
-    case QStyle::PE_IndicatorBranch: {
+    case PE_IndicatorBranch: {
         if (option->state.testFlag(QStyle::State_MouseOver) && !option->state.testFlag(QStyle::State_Selected)) {
             return;
         }
@@ -468,6 +468,6 @@ void NavigationSideBarStyle::drawPrimitive(QStyle::PrimitiveElement element, con
             return;
         }
     }
-//    default: QProxyStyle::drawPrimitive(element, option, painter, widget);
+    default: QProxyStyle::drawPrimitive(element, option, painter, widget);
     }
 }

@@ -224,9 +224,11 @@ QString FileUtils::getFileDisplayName(const QString &uri)
                               nullptr));
     if (!info.get()->get())
         return nullptr;
-    if (uri == "trash:///")
+
+    QString displayName(g_file_info_get_display_name(info.get()->get()));
+    if (displayName == "回收站")
         return "回收箱";
-    return g_file_info_get_display_name(info.get()->get());
+    return displayName;
 }
 
 QString FileUtils::getFileIconName(const QString &uri, bool checkValid)
