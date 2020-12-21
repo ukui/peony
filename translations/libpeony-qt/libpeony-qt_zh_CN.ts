@@ -84,7 +84,7 @@
     <message>
         <location filename="../../libpeony-qt/model/file-label-model.cpp" line="46"/>
         <source>Transparent</source>
-        <translation>透明</translation>
+        <translation>无颜色</translation>
     </message>
     <message>
         <source>Delete file Warning</source>
