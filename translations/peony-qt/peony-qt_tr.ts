@@ -27,52 +27,52 @@
 <context>
     <name>HeaderBar</name>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="84"/>
+        <location filename="../../src/control/header-bar.cpp" line="86"/>
         <source>Create Folder</source>
         <translation>Klasör Oluştur</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="98"/>
+        <location filename="../../src/control/header-bar.cpp" line="100"/>
         <source>Open Terminal</source>
         <translation>Uçbirim Aç</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="112"/>
+        <location filename="../../src/control/header-bar.cpp" line="114"/>
         <source>Go Back</source>
         <translation>Geri</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="120"/>
+        <location filename="../../src/control/header-bar.cpp" line="122"/>
         <source>Go Forward</source>
         <translation>İleri</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="160"/>
+        <location filename="../../src/control/header-bar.cpp" line="162"/>
         <source>Search</source>
         <translation>Ara</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="170"/>
+        <location filename="../../src/control/header-bar.cpp" line="172"/>
         <source>View Type</source>
         <translation>Görünüm Türü</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="197"/>
+        <location filename="../../src/control/header-bar.cpp" line="199"/>
         <source>Sort Type</source>
         <translation>Sıralama Türü</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="223"/>
+        <location filename="../../src/control/header-bar.cpp" line="225"/>
         <source>Option</source>
         <translation>Seçenek</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="267"/>
+        <location filename="../../src/control/header-bar.cpp" line="288"/>
         <source>Operate Tips</source>
         <translation>İşlet İpuçları</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="268"/>
+        <location filename="../../src/control/header-bar.cpp" line="289"/>
         <source>Don&apos;t find any terminal, please install at least one terminal!</source>
         <translation>Herhangi bir uçbirim bulunamadı, lütfen en az bir uçbirim kurun!</translation>
     </message>
@@ -88,12 +88,12 @@
 <context>
     <name>HeaderBarContainer</name>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="565"/>
+        <location filename="../../src/control/header-bar.cpp" line="581"/>
         <source>Minimize</source>
         <translation>Küçült</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="577"/>
+        <location filename="../../src/control/header-bar.cpp" line="593"/>
         <source>Maximize/Restore</source>
         <translation>Büyüt/Onar</translation>
     </message>
@@ -106,7 +106,7 @@
         <translation type="vanished">Büyüt</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="598"/>
+        <location filename="../../src/control/header-bar.cpp" line="614"/>
         <source>Close</source>
         <translation>Kapat</translation>
     </message>
@@ -132,12 +132,12 @@
         <translation type="obsolete">Dosya Silme Uyarısı</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1321"/>
+        <location filename="../../src/windows/main-window.cpp" line="1331"/>
         <source>Delete Permanently</source>
         <translation>Kalıcı Olarak Sil</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1322"/>
+        <location filename="../../src/windows/main-window.cpp" line="1332"/>
         <source>Are you sure that you want to delete these files? Once you start a deletion, the files deleting will never be restored again.</source>
         <translation>Bu dosyaları silmek istediğinizden emin misiniz? Bir silme işlemini başlattığınızda, silinen dosyalar bir daha geri yüklenmeyecektir.</translation>
     </message>
@@ -146,7 +146,7 @@
         <translation type="vanished">Peony Qt</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="655"/>
+        <location filename="../../src/windows/main-window.cpp" line="666"/>
         <source>New Folder</source>
         <translation>Yeni Klasör</translation>
     </message>
@@ -158,12 +158,12 @@
         <translation type="vanished">Tüm etiketler...</translation>
     </message>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="164"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="166"/>
         <source>Open In &amp;New Window</source>
         <translation type="unfinished">Yeni Pencerede Aç</translation>
     </message>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="185"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="189"/>
         <source>Open In New &amp;Tab</source>
         <translation type="unfinished">Yeni Sekmede Aç</translation>
     </message>
@@ -171,7 +171,7 @@
 <context>
     <name>NavigationSideBarContainer</name>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="326"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="331"/>
         <source>All tags...</source>
         <translation>Tüm etiketler...</translation>
     </message>
@@ -196,32 +196,32 @@
         <translation>İzin Ver</translation>
     </message>
     <message>
-        <location filename="../../src/control/operation-menu.cpp" line="82"/>
+        <location filename="../../src/control/operation-menu.cpp" line="75"/>
         <source>Show Hidden</source>
         <translation>Gizlileri Göster</translation>
     </message>
     <message>
-        <location filename="../../src/control/operation-menu.cpp" line="89"/>
+        <location filename="../../src/control/operation-menu.cpp" line="82"/>
         <source>Forbid thumbnailing</source>
         <translation>Küçük Resimleri Yasakla</translation>
     </message>
     <message>
-        <location filename="../../src/control/operation-menu.cpp" line="98"/>
+        <location filename="../../src/control/operation-menu.cpp" line="91"/>
         <source>Resident in Backend</source>
         <translation>Arka Uçta Yerleşik</translation>
     </message>
     <message>
-        <location filename="../../src/control/operation-menu.cpp" line="107"/>
+        <location filename="../../src/control/operation-menu.cpp" line="100"/>
         <source>Parallel Operations</source>
         <translation>Paralel İşlemler</translation>
     </message>
     <message>
-        <location filename="../../src/control/operation-menu.cpp" line="115"/>
+        <location filename="../../src/control/operation-menu.cpp" line="108"/>
         <source>Help</source>
         <translation>Yardım</translation>
     </message>
     <message>
-        <location filename="../../src/control/operation-menu.cpp" line="119"/>
+        <location filename="../../src/control/operation-menu.cpp" line="112"/>
         <source>About</source>
         <translation>Hakkında</translation>
     </message>
@@ -229,27 +229,27 @@
 <context>
     <name>OperationMenuEditWidget</name>
     <message>
-        <location filename="../../src/control/operation-menu.cpp" line="148"/>
+        <location filename="../../src/control/operation-menu.cpp" line="141"/>
         <source>Edit</source>
         <translation>Düzenle</translation>
     </message>
     <message>
-        <location filename="../../src/control/operation-menu.cpp" line="159"/>
+        <location filename="../../src/control/operation-menu.cpp" line="152"/>
         <source>copy</source>
         <translation type="unfinished">Kopyala</translation>
     </message>
     <message>
-        <location filename="../../src/control/operation-menu.cpp" line="168"/>
+        <location filename="../../src/control/operation-menu.cpp" line="161"/>
         <source>paste</source>
         <translation type="unfinished">Yapıştır</translation>
     </message>
     <message>
-        <location filename="../../src/control/operation-menu.cpp" line="177"/>
+        <location filename="../../src/control/operation-menu.cpp" line="170"/>
         <source>cut</source>
         <translation type="unfinished">Kes</translation>
     </message>
     <message>
-        <location filename="../../src/control/operation-menu.cpp" line="186"/>
+        <location filename="../../src/control/operation-menu.cpp" line="179"/>
         <source>trash</source>
         <translation type="unfinished">Çöp</translation>
     </message>
@@ -293,12 +293,12 @@
 2. Sisteminiz için qt olmayan bir tema kullanıyorsunuz ancak qt uygulamaları için platform tema eklentisini yüklemediniz. Gtk-theme kullanıyorsanız, bu sorunu çözmek için qt5-gtk2-platformtheme paketini yüklemeyi deneyin.</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.cpp" line="650"/>
+        <location filename="../../src/peony-application.cpp" line="387"/>
         <source>Peony Qt</source>
         <translation>Dosya Yöneticisi</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.cpp" line="651"/>
+        <location filename="../../src/peony-application.cpp" line="388"/>
         <source>Author:
 	Yue Lan &lt;lanyue@kylinos.cn&gt;
 	Meihong He &lt;hemeihong@kylinos.cn&gt;

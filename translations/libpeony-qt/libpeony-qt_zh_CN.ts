@@ -199,38 +199,38 @@
 <context>
     <name>MainProgressBar</name>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-progress-bar.cpp" line="274"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-bar.cpp" line="282"/>
         <source>File operation</source>
         <translation>文件操作</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-progress-bar.cpp" line="283"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-bar.cpp" line="291"/>
         <location filename="../../libpeony-qt/file-operation/file-operation-progress-bar.h" line="218"/>
         <source>starting ...</source>
         <translation>正在开始 ...</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-progress-bar.cpp" line="342"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-bar.cpp" line="350"/>
         <source>cancel all file operations</source>
         <translation>取消所有文件操作</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-progress-bar.cpp" line="343"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-bar.cpp" line="351"/>
         <source>Are you sure want to cancel all file operations</source>
         <translation>你确定要取消所有文件操作?</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-progress-bar.cpp" line="345"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-bar.cpp" line="353"/>
         <source>OK</source>
         <translation>确定</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-progress-bar.cpp" line="346"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-bar.cpp" line="354"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-progress-bar.cpp" line="423"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-bar.cpp" line="431"/>
         <source>canceling ...</source>
         <translation>取消中 ...</translation>
     </message>
@@ -474,7 +474,7 @@
     <message>
         <location filename="../../libpeony-qt/controls/property-page/basic-properties-page.cpp" line="92"/>
         <source>Choose a custom icon</source>
-        <translation type="unfinished"></translation>
+        <translation>选择自定义图标</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/property-page/basic-properties-page.cpp" line="124"/>
@@ -697,12 +697,12 @@
     <message>
         <location filename="../../libpeony-qt/controls/menu/menu-plugin-manager.cpp" line="103"/>
         <source>Create Link to Desktop</source>
-        <translation>发送到桌面</translation>
+        <translation>发送到桌面快捷方式</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/menu/menu-plugin-manager.cpp" line="123"/>
         <source>Create Link to...</source>
-        <translation>发送到...</translation>
+        <translation>发送快捷方式到...</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/menu/menu-plugin-manager.cpp" line="126"/>
@@ -1689,8 +1689,8 @@ Do you want to delete the link file?</source>
 <context>
     <name>Peony::FileOperationInfo</name>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="512"/>
-        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="514"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="523"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="525"/>
         <source>Symbolic Link</source>
         <translation>快捷方式</translation>
     </message>
@@ -1706,22 +1706,22 @@ Do you want to delete the link file?</source>
         <translation type="vanished">删除文件警告</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="155"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="157"/>
         <source>Can&apos;t delete.</source>
         <translation>不能删除</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="156"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="158"/>
         <source>You can&apos;t delete a file whenthe file is doing another operation</source>
         <translation>不能删除一个正在进行其它操作的文件</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="216"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="218"/>
         <source>File Operation is Busy</source>
         <translation>操作正忙</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="217"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="219"/>
         <source>There have been one or more fileoperation(s) executing before. Youroperation will wait for executinguntil it/them done. If you really want to execute file operations parallelly anyway, you can change the default option &quot;Allow Parallel&quot; in option menu.</source>
         <translation>在执行该操作之前有操作未完成, 它需要等待上一个操作完成后再执行. 如果你希望文件操作并行, 你可以更改选项菜单中的&quot;允许操作并行&quot;配置.</translation>
     </message>
@@ -2036,7 +2036,7 @@ Do you want to delete the link file?</source>
 <context>
     <name>Peony::PathEdit</name>
     <message>
-        <location filename="../../libpeony-qt/controls/navigation-bar/path-bar/path-edit.cpp" line="55"/>
+        <location filename="../../libpeony-qt/controls/navigation-bar/path-bar/path-edit.cpp" line="57"/>
         <source>Go To</source>
         <translation>跳转</translation>
     </message>
@@ -2158,17 +2158,17 @@ Do you want to delete the link file?</source>
         <translation>输入关键词以搜索你想搜索的文件.</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/search-bar.cpp" line="80"/>
+        <location filename="../../libpeony-qt/controls/tool-bar/search-bar.cpp" line="83"/>
         <source>Input search key...</source>
         <translation>输入关键词...</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/search-bar.cpp" line="118"/>
+        <location filename="../../libpeony-qt/controls/tool-bar/search-bar.cpp" line="121"/>
         <source>advance search</source>
         <translation>高级搜索</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/search-bar.cpp" line="119"/>
+        <location filename="../../libpeony-qt/controls/tool-bar/search-bar.cpp" line="122"/>
         <source>clear record</source>
         <translation>清空历史</translation>
     </message>
@@ -2182,7 +2182,7 @@ Do you want to delete the link file?</source>
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/tool-bar/search-bar-container.cpp" line="65"/>
-        <location filename="../../libpeony-qt/controls/tool-bar/search-bar-container.cpp" line="126"/>
+        <location filename="../../libpeony-qt/controls/tool-bar/search-bar-container.cpp" line="129"/>
         <source>Clear</source>
         <translation>清空</translation>
     </message>
@@ -2514,27 +2514,27 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
 <context>
     <name>ProgressBar</name>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-progress-bar.cpp" line="610"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-bar.cpp" line="618"/>
         <source>canceling ...</source>
         <translation>取消中 ...</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-progress-bar.cpp" line="658"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-bar.cpp" line="666"/>
         <source>cancel file operation</source>
         <translation>取消文件操作</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-progress-bar.cpp" line="659"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-bar.cpp" line="667"/>
         <source>Are you sure want to cancel the current selected file operation</source>
         <translation>你确定要取消当前选中的文件操作</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-progress-bar.cpp" line="661"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-bar.cpp" line="669"/>
         <source>OK</source>
         <translation>确定</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-progress-bar.cpp" line="662"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-bar.cpp" line="670"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
@@ -2710,34 +2710,39 @@ Do you want to unmount forcely?</source>
         <translation>弹出失败</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/vfs/favorite-vfs-file.cpp" line="220"/>
+        <location filename="../../libpeony-qt/vfs/favorite-vfs-file.cpp" line="237"/>
         <source>favorite</source>
-        <translation type="unfinished"></translation>
+        <translation>收藏夹</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/vfs/favorite-vfs-file.cpp" line="287"/>
+        <location filename="../../libpeony-qt/vfs/favorite-vfs-file.cpp" line="304"/>
         <source>Operation not supported</source>
-        <translation type="unfinished"></translation>
+        <translation>操作不支持</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/vfs/favorite-vfs-file.cpp" line="360"/>
+        <location filename="../../libpeony-qt/vfs/favorite-vfs-file.cpp" line="387"/>
         <source>The virtual file system does not support folder creation</source>
-        <translation type="unfinished"></translation>
+        <translation>虚拟文件系统下不支持创建新文件夹</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/vfs/favorite-vfs-file.cpp" line="375"/>
+        <location filename="../../libpeony-qt/vfs/favorite-vfs-file.cpp" line="472"/>
+        <location filename="../../libpeony-qt/vfs/favorite-vfs-file.cpp" line="480"/>
+        <source>The virtual file system cannot be opened</source>
+        <translation>虚拟文件系统无法打开</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/vfs/favorite-vfs-file.cpp" line="374"/>
+        <location filename="../../libpeony-qt/vfs/favorite-vfs-file.cpp" line="402"/>
+        <location filename="../../libpeony-qt/vfs/favorite-vfs-file.cpp" line="420"/>
+        <location filename="../../libpeony-qt/vfs/favorite-vfs-file.cpp" line="430"/>
+        <location filename="../../libpeony-qt/vfs/favorite-vfs-file.cpp" line="448"/>
         <source>Virtual file directories do not support move and copy operations</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../libpeony-qt/vfs/favorite-vfs-file.cpp" line="393"/>
-        <source>The virtual file system does not support soft links</source>
-        <translation type="unfinished"></translation>
+        <translation>虚拟文件路径不支持移动和复制操作</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/vfs/favorite-vfs-register.h" line="43"/>
         <source>Default favorite vfs of peony</source>
-        <translation type="unfinished"></translation>
+        <translation>文件管理器虚拟文件系统默认收藏夹</translation>
     </message>
 </context>
 </TS>
