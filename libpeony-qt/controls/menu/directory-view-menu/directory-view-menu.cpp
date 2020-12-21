@@ -237,6 +237,31 @@ const QList<QAction *> DirectoryViewMenu::constructOpenOpActions()
                         return;
                     m_top_window->goToUri(m_selections.first(), true);
                 });
+
+                auto recommendActions = FileLaunchManager::getRecommendActions(m_selections.first());
+                if (recommendActions.count() >1)
+                {
+                    auto openWithAction = addAction(tr("Open &with..."));
+                    QMenu *openWithMenu = new QMenu(this);
+                    // do not highlight application icons.
+                    openWithMenu->setProperty("skipHighlightIconEffect", true);
+                    for (auto action : recommendActions) {
+                        action->setParent(openWithMenu);
+                        openWithMenu->addAction(static_cast<QAction*>(action));
+                    }
+                    auto fallbackActions = FileLaunchManager::getFallbackActions(m_selections.first());
+                    for (auto action : fallbackActions) {
+                        action->setParent(openWithMenu);
+                        openWithMenu->addAction(static_cast<QAction*>(action));
+                    }
+                    openWithMenu->addSeparator();
+                    openWithMenu->addAction(tr("&More applications..."), [=]() {
+                        FileLauchDialog d(m_selections.first());
+                        d.exec();
+                    });
+                    openWithAction->setMenu(openWithMenu);
+                }
+
                 l<<addAction(QIcon::fromTheme("window-new-symbolic"), tr("Open in &New Window"));
                 connect(l.last(), &QAction::triggered, [=]() {
                     auto windowIface = m_top_window->create(m_selections.first());

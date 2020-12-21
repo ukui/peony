@@ -137,25 +137,28 @@ const QList<QAction *> DesktopMenu::constructOpenOpActions()
                     this->openWindow(m_selections);
                 });
 
-                //not show open with in folder
-//                auto openWithAction = addAction(tr("Open &with..."));
-//                QMenu *openWithMenu = new QMenu(this);
-//                auto recommendActions = FileLaunchManager::getRecommendActions(m_selections.first());
-//                for (auto action : recommendActions) {
-//                    action->setParent(openWithMenu);
-//                    openWithMenu->addAction(static_cast<QAction*>(action));
-//                }
-//                auto fallbackActions = FileLaunchManager::getFallbackActions(m_selections.first());
-//                for (auto action : fallbackActions) {
-//                    action->setParent(openWithMenu);
-//                    openWithMenu->addAction(static_cast<QAction*>(action));
-//                }
-//                openWithMenu->addSeparator();
-//                openWithMenu->addAction(tr("&More applications..."), [=]() {
-//                    FileLauchDialog d(m_selections.first());
-//                    d.exec();
-//                });
-//                openWithAction->setMenu(openWithMenu);
+                auto recommendActions = FileLaunchManager::getRecommendActions(m_selections.first());
+                if (recommendActions.count() > 1)
+                {
+                    auto openWithAction = addAction(tr("Open &with..."));
+                    QMenu *openWithMenu = new QMenu(this);
+
+                    for (auto action : recommendActions) {
+                        action->setParent(openWithMenu);
+                        openWithMenu->addAction(static_cast<QAction*>(action));
+                    }
+                    auto fallbackActions = FileLaunchManager::getFallbackActions(m_selections.first());
+                    for (auto action : fallbackActions) {
+                        action->setParent(openWithMenu);
+                        openWithMenu->addAction(static_cast<QAction*>(action));
+                    }
+                    openWithMenu->addSeparator();
+                    openWithMenu->addAction(tr("&More applications..."), [=]() {
+                        FileLauchDialog d(m_selections.first());
+                        d.exec();
+                    });
+                    openWithAction->setMenu(openWithMenu);
+                }
             } else if (!info->isVolume()) {
                 l<<addAction(QIcon::fromTheme("document-open-symbolic"), tr("&Open"));
                 connect(l.last(), &QAction::triggered, [=]() {
