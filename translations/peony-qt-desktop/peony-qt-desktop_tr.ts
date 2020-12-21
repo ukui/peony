@@ -9,12 +9,12 @@
         <translation>Masaüstü Simgelerini Göster</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="388"/>
+        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="424"/>
         <source>New Folder</source>
         <translation>Yeni Klasör</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="474"/>
+        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="510"/>
         <source>set background</source>
         <translation>Arkaplanı Değiştir</translation>
     </message>
@@ -23,22 +23,22 @@
         <translation type="obsolete">Dosyayı Sil Uyarısı</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="524"/>
+        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="628"/>
         <source>Open Link failed</source>
         <translation type="unfinished">Bağlantı Açılamadı</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="525"/>
+        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="629"/>
         <source>File not exist, do you want to delete the link file?</source>
         <translation type="unfinished">Dosya mevcut değil, bağlantı dosyasını silmek istiyor musunuz?</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="540"/>
+        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="644"/>
         <source>Open failed</source>
         <translation type="unfinished">Açma hatalı</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="541"/>
+        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="645"/>
         <source>Open directory failed, you have no permission!</source>
         <translation type="unfinished">Dizin açılamadı, izniniz yok!</translation>
     </message>
@@ -56,16 +56,12 @@
         <translation>Tümünü Seç</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="135"/>
-        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="159"/>
-        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="195"/>
         <source>&amp;Open &quot;%1&quot;</source>
-        <translation>&quot;%1&quot; Aç</translation>
+        <translation type="vanished">&quot;%1&quot; Aç</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="140"/>
         <source>Open &quot;%1&quot; &amp;with...</source>
-        <translation>&quot;%1&quot; &amp;ile aç...</translation>
+        <translation type="vanished">&quot;%1&quot; &amp;ile aç...</translation>
     </message>
     <message>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="153"/>
@@ -74,14 +70,22 @@
         <translation>&amp;Daha fazla uygulama...</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="164"/>
         <source>Open &quot;%1&quot; with...</source>
-        <translation>&quot;%1&quot; ile aç...</translation>
+        <translation type="vanished">&quot;%1&quot; ile aç...</translation>
     </message>
     <message>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="135"/>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="159"/>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="184"/>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="195"/>
         <source>&amp;Open</source>
         <translation>&amp;Aç</translation>
+    </message>
+    <message>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="140"/>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="164"/>
+        <source>Open &amp;with...</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="198"/>

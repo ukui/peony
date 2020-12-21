@@ -231,13 +231,13 @@ const QList<QAction *> DirectoryViewMenu::constructOpenOpActions()
                     });
                 }
 
-                l<<addAction(QIcon::fromTheme("document-open-symbolic"), tr("&Open \"%1\"").arg(displayName));
+                l<<addAction(QIcon::fromTheme("document-open-symbolic"), tr("&Open"));
                 connect(l.last(), &QAction::triggered, [=]() {
                     if (!m_top_window)
                         return;
                     m_top_window->goToUri(m_selections.first(), true);
                 });
-                l<<addAction(QIcon::fromTheme("window-new-symbolic"), tr("Open \"%1\" in &New Window").arg(displayName));
+                l<<addAction(QIcon::fromTheme("window-new-symbolic"), tr("Open in &New Window"));
                 connect(l.last(), &QAction::triggered, [=]() {
                     auto windowIface = m_top_window->create(m_selections.first());
                     auto newWindow = dynamic_cast<QWidget *>(windowIface);
@@ -245,19 +245,19 @@ const QList<QAction *> DirectoryViewMenu::constructOpenOpActions()
                     //FIXME: show when prepared?
                     newWindow->show();
                 });
-                l<<addAction(QIcon::fromTheme("tab-new-symbolic"), tr("Open \"%1\" in New &Tab").arg(displayName));
+                l<<addAction(QIcon::fromTheme("tab-new-symbolic"), tr("Open in New &Tab"));
                 connect(l.last(), &QAction::triggered, [=]() {
                     if (!m_top_window)
                         return;
                     m_top_window->addNewTabs(m_selections);
                 });
             } else if (!info->isVolume()) {
-                l<<addAction(QIcon::fromTheme("document-open-symbolic"), tr("&Open \"%1\"").arg(displayName));
+                l<<addAction(QIcon::fromTheme("document-open-symbolic"), tr("&Open"));
                 connect(l.last(), &QAction::triggered, [=]() {
                     auto uri = m_selections.first();
                     FileLaunchManager::openAsync(uri, false, false);
                 });
-                auto openWithAction = addAction(tr("Open \"%1\" with...").arg(displayName));
+                auto openWithAction = addAction(tr("Open &with..."));
                 QMenu *openWithMenu = new QMenu(this);
                 // do not highlight application icons.
                 openWithMenu->setProperty("skipHighlightIconEffect", true);

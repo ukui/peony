@@ -9,12 +9,12 @@
         <translation>桌面图标视图</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="388"/>
+        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="424"/>
         <source>New Folder</source>
         <translation>新建文件夹</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="474"/>
+        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="510"/>
         <source>set background</source>
         <translation>设置壁纸</translation>
     </message>
@@ -23,22 +23,22 @@
         <translation type="vanished">删除文件警告</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="540"/>
+        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="644"/>
         <source>Open failed</source>
         <translation>打开失败</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="541"/>
+        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="645"/>
         <source>Open directory failed, you have no permission!</source>
         <translation>打开文件夹失败，您没有该目录的权限！</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="524"/>
+        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="628"/>
         <source>Open Link failed</source>
         <translation>打开快捷方式失败</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="525"/>
+        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="629"/>
         <source>File not exist, do you want to delete the link file?</source>
         <translation>目标文件夹不存在，是否删除该无效快捷方式？</translation>
     </message>
@@ -56,16 +56,12 @@
         <translation>全选(&amp;A)</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="135"/>
-        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="159"/>
-        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="195"/>
         <source>&amp;Open &quot;%1&quot;</source>
-        <translation>打开 &quot;%1&quot;(&amp;O)</translation>
+        <translation type="vanished">打开 &quot;%1&quot;(&amp;O)</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="140"/>
         <source>Open &quot;%1&quot; &amp;with...</source>
-        <translation>打开方式(&amp;W)...</translation>
+        <translation type="vanished">打开方式(&amp;W)...</translation>
     </message>
     <message>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="153"/>
@@ -74,14 +70,22 @@
         <translation>更多应用(&amp;M)...</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="164"/>
         <source>Open &quot;%1&quot; with...</source>
-        <translation>打开方式...</translation>
+        <translation type="vanished">打开方式...</translation>
     </message>
     <message>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="135"/>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="159"/>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="184"/>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="195"/>
         <source>&amp;Open</source>
         <translation>打开(&amp;O)</translation>
+    </message>
+    <message>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="140"/>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="164"/>
+        <source>Open &amp;with...</source>
+        <translation>打开方式(&amp;W)...</translation>
     </message>
     <message>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="198"/>
