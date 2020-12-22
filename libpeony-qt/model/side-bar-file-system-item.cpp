@@ -347,6 +347,16 @@ static void unmount_finished(GFile* file, GAsyncResult* result, gpointer udata)
     GError *err = nullptr;
     g_file_unmount_mountable_with_operation_finish (file, result, &err);
     if (err) {
+        if(!strcmp(err->message,"Not authorized to perform operation")){//umount /data need permissions.
+            g_error_free(err);
+            return;
+        }
+        if(strstr(err->message,"umount: ")){
+            QMessageBox::warning(nullptr,QObject::tr("Unmount failed"),QObject::tr("Unable to unmount it, you may need to close some programs, such as: GParted etc."),QMessageBox::Yes);
+            g_error_free(err);
+            return;
+        }
+
         auto button = QMessageBox::warning(nullptr, QObject::tr("Unmount failed"), QObject::tr("Error: %1\n"
                                                                                                "Do you want to unmount forcely?").arg(err->message),
                                            QMessageBox::Yes, QMessageBox::No);
