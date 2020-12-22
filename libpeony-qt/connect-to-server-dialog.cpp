@@ -38,6 +38,10 @@ ConnectServerDialog::ConnectServerDialog(QWidget *parent) : QDialog(parent)
     setFixedSize(m_widget_size);
     setWindowIcon(QIcon::fromTheme("network-server"));
     setWindowTitle(tr("connect to server"));
+    QPalette palete;
+    QColor color = palete.color(QPalette::Base);
+    setStyleSheet(QString("background-color:%1;").arg(color.name()));
+
     m_main_layout = new QVBoxLayout(this);
 
     m_remote_type_edit      = new QComboBox;
@@ -225,6 +229,9 @@ ConnectServerLogin::ConnectServerLogin(QString remoteIP, QWidget *parent) : QDia
     setFixedSize(m_widget_size);
     setWindowIcon(QIcon::fromTheme("network-server"));
     setWindowTitle(tr("The login user"));
+    QPalette palete;
+    QColor color = palete.color(QPalette::Base);
+    setStyleSheet(QString("background-color:%1;").arg(color.name()));
     m_main_layout = new QVBoxLayout(this);
     m_main_layout->addSpacing(12);
     m_main_layout->setMargin(m_widget_margin);
