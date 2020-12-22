@@ -187,6 +187,8 @@ private:
     bool m_delegate_editing = false;
 
     bool m_allow_set_index_widget = true;
+
+    bool m_slider_bar_draging = false;
 };
 
 //IconView2
