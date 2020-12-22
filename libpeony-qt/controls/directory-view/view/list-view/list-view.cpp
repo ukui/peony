@@ -273,7 +273,7 @@ void ListView::mouseMoveEvent(QMouseEvent *e)
         m_logicRect = logicRect.normalized();
 
         int dx = -horizontalOffset();
-        int dy = -verticalOffset() + VERTICAL_ADJUST_DY;
+        int dy = -verticalOffset() + this->header()->height();
         auto realRect = m_logicRect.adjusted(dx, dy, dx ,dy);
 
         if (!m_rubberBand->isVisible())

@@ -38,8 +38,6 @@ class FileItemProxyFilterSortModel;
 
 namespace DirectoryView {
 
-#define VERTICAL_ADJUST_DY   25
-
 /*!
  * \brief The ListView class
  * \todo
