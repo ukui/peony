@@ -81,9 +81,6 @@ ListView::ListView(QWidget *parent) : QTreeView(parent)
     setDragDropMode(QTreeView::DragDrop);
     setSelectionMode(QTreeView::ExtendedSelection);
 
-    //setAlternatingRowColors(true);
-
-    //setContextMenuPolicy(Qt::CustomContextMenu);
     m_renameTimer = new QTimer(this);
     m_renameTimer->setInterval(3000);
     m_editValid = false;
@@ -112,35 +109,13 @@ void ListView::bindModel(FileItemModel *sourceModel, FileItemProxyFilterSortMode
 {
     if (!sourceModel || !proxyModel)
         return;
+
     m_model = sourceModel;
     m_proxy_model = proxyModel;
     m_proxy_model->setSourceModel(m_model);
     setModel(proxyModel);
     //adjust columns layout.
     adjustColumnsSize();
-
-    //fix diffcult to unselect all item issue
-//    connect(this->selectionModel(), &QItemSelectionModel::currentColumnChanged, [=]
-//            (const QModelIndex &current, const QModelIndex &previous) {
-//        qDebug()<<"list view currentColumnChanged changed";
-//        if (getSelections().count() > 1 && !m_ctrl_key_pressed)
-//        {
-//            this->clearSelection();
-//            if (current.isValid())
-//                setCurrentIndex(current);
-//        }
-//    });
-
-//    connect(this->selectionModel(), &QItemSelectionModel::currentRowChanged, [=]
-//            (const QModelIndex &current, const QModelIndex &previous) {
-//        qDebug()<<"list view currentRowChanged changed";
-//        if (getSelections().count() > 1 && !m_ctrl_key_pressed)
-//        {
-//            this->clearSelection();
-//            if (current.isValid())
-//                setCurrentIndex(current);
-//        }
-//    });
 
     //edit trigger
     connect(this->selectionModel(), &QItemSelectionModel::selectionChanged, [=](const QItemSelection &selection, const QItemSelection &deselection) {
@@ -207,44 +182,40 @@ void ListView::mousePressEvent(QMouseEvent *e)
     auto visualRect = this->visualRect(index);
     int selectBoxColumn = getCurrentCheckboxColumn();
     int selectBoxPosion = viewport()->width()+viewport()->x()-header()->sectionViewportPosition(selectBoxColumn)-48;
-
     if (index.column() == selectBoxColumn&&p.x()>visualRect.x()+selectBoxPosion-4&&p.x()<visualRect.x()+selectBoxPosion+24)
     {
         if(!isIndexSelected)
-            this->selectionModel()->setCurrentIndex(index,QItemSelectionModel::Select|QItemSelectionModel::Rows);
+        {
+            this->selectionModel()->setCurrentIndex(index, QItemSelectionModel::Select|QItemSelectionModel::Rows);
+        }
         else
-            this->selectionModel()->setCurrentIndex(index,QItemSelectionModel::Deselect|QItemSelectionModel::Rows);
-        return;
+        {
+            this->selectionModel()->setCurrentIndex(index, QItemSelectionModel::Deselect|QItemSelectionModel::Rows);
+        }
     }
 
-
-    m_editValid = true;
     QTreeView::mousePressEvent(e);
-//what for???
-//    auto sizeHint = itemDelegate()->sizeHint(viewOptions(), index);
-//    auto validRect = QRect(visualRect.topLeft(), sizeHint);
-//    if (!validRect.contains(e->pos())) {
-//        if (isIndexSelected) {
-//            clearSelection();
-//            setCurrentIndex(index);
-//        }
-//        this->setState(QAbstractItemView::DragSelectingState);
-//    }
-    //comment to fix can not enter rename issue
-//    else if (isIndexSelected) {
-//        return;
-//    }
+
+    auto sizeHint = itemDelegate()->sizeHint(viewOptions(), index);
+    auto validRect = QRect(visualRect.topLeft(), sizeHint);
+    if (!validRect.contains(e->pos())) {
+        if (isIndexSelected) {
+            clearSelection();
+            setCurrentIndex(index);
+        }
+        this->setState(QAbstractItemView::DragSelectingState);
+    }
 
     //if click left button at blank space, it should select nothing
     //qDebug() << "indexAt(e->pos()):" <<indexAt(e->pos()).column() << indexAt(e->pos()).row() <<indexAt(e->pos()).isValid();
     if(e->button() == Qt::LeftButton && (!indexAt(e->pos()).isValid()) )
     {
         this->clearSelection();
-        //this->clearFocus();
         return;
     }
 
     //m_renameTimer
+    m_editValid = true;
     if(!m_renameTimer->isActive())
     {
         m_renameTimer->start();
@@ -418,8 +389,8 @@ void ListView::paintEvent(QPaintEvent *e)
     palette.setColor(QPalette::Active, QPalette::Base, Qt::transparent);
     palette.setColor(QPalette::Inactive, QPalette::Base, Qt::transparent);
     palette.setColor(QPalette::Disabled, QPalette::Base, Qt::transparent);
-    //this->setPalette(palette);
     viewport()->setPalette(palette);
+
     QTreeView::paintEvent(e);
 }
 
