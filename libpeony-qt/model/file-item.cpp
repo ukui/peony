@@ -297,6 +297,7 @@ void FileItem::findChildrenAsync()
                 //tell the model update
                 this->onChildAdded(uri);
                 Q_EMIT this->childAdded(uri);
+                qDebug() << "inpositive Model onChildAdded:" <<uri;
             });
             connect(m_watcher.get(), &FileWatcher::fileDeleted, this, [=](QString uri) {
                 //check bookmark and delete
@@ -414,6 +415,7 @@ void FileItem::findChildrenAsync()
                 //tell the model update
                 this->onChildAdded(uri);
                 Q_EMIT this->childAdded(uri);
+                qDebug() << "positive onChildAdded:" <<uri;
                 ThumbnailManager::getInstance()->createThumbnail(uri, m_thumbnail_watcher);
             });
             connect(m_watcher.get(), &FileWatcher::fileDeleted, this, [=](QString uri) {
@@ -427,6 +429,7 @@ void FileItem::findChildrenAsync()
                 //tell the model update
                 this->onChildRemoved(uri);
                 Q_EMIT this->childRemoved(uri);
+                qDebug() << "childRemoved:" <<uri;
             });
             connect(m_watcher.get(), &FileWatcher::fileChanged, this, [=](const QString &uri) {
                 auto index = m_model->indexFromUri(uri);
@@ -503,21 +506,31 @@ void FileItem::onChildAdded(const QString &uri)
     qDebug()<<"add child:" << uri;
     FileItem *child = getChildFromUri(uri);
     if (child) {
-        qDebug()<<"has added";
+        qDebug()<<"has added, return";
         //child info maybe changed, so need sync update again
         child->updateInfoAsync();
         //m_model->updated();
         return;
     }
 
+    //add waiting queue to fix show item duplicated issue
+    if (m_waiting_add_queue.contains(uri))
+    {
+        qDebug()<<"is in m_waiting_add_queue, return";
+        return;
+    }
+
     auto info = FileInfo::fromUri(uri);
     auto infoJob = new FileInfoJob(info);
     infoJob->setAutoDelete();
+    m_waiting_add_queue.append(uri);
     infoJob->connect(infoJob, &FileInfoJob::infoUpdated, this, [=]() {
         auto item = new FileItem(info, this, m_model);
         m_model->beginInsertRows(firstColumnIndex(), m_children->count(), m_children->count());
         m_children->append(item);
         m_model->endInsertRows();
+        qDebug() <<"successfully added child:" <<uri;
+        m_waiting_add_queue.removeOne(uri);
         //Q_EMIT m_model->dataChanged(item->firstColumnIndex(), item->lastColumnIndex());
         //Q_EMIT m_model->updated();
         ThumbnailManager::getInstance()->createThumbnail(info->uri(), m_thumbnail_watcher);
@@ -540,6 +553,7 @@ void FileItem::onChildRemoved(const QString &uri)
         int index = m_children->indexOf(child);
         m_model->beginRemoveRows(this->firstColumnIndex(), index, index);
         m_children->removeOne(child);
+        qDebug() <<"successfully removed child:" <<uri;
         delete child;
         m_model->endRemoveRows();
     }
