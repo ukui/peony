@@ -86,6 +86,8 @@ ListView::ListView(QWidget *parent) : QTreeView(parent)
     m_editValid = false;
 
     setIconSize(QSize(40, 40));
+
+    m_rubberBand = new QRubberBand(QRubberBand::Shape::Rectangle, this);
 }
 
 void ListView::scrollTo(const QModelIndex &index, QAbstractItemView::ScrollHint hint)
@@ -172,8 +174,13 @@ void ListView::mousePressEvent(QMouseEvent *e)
                 return;
         }
         Q_EMIT customContextMenuRequested(e->pos());
+        m_rubberBand->hide();
         return;
     }
+
+    m_isLeftButtonPressed = true;
+    m_rubberBand->hide();
+    m_lastPressedLogicPoint = e->pos() + QPoint(horizontalOffset(), verticalOffset());
 
     auto index = indexAt(e->pos());
     bool isIndexSelected = selectedIndexes().contains(index);
@@ -250,9 +257,30 @@ void ListView::mousePressEvent(QMouseEvent *e)
 void ListView::mouseReleaseEvent(QMouseEvent *e)
 {
     QTreeView::mouseReleaseEvent(e);
+    m_rubberBand->hide();
+    m_isLeftButtonPressed = false;
+}
 
-    if (e->button() != Qt::LeftButton) {
-        return;
+void ListView::mouseMoveEvent(QMouseEvent *e)
+{
+    QTreeView::mouseMoveEvent(e);
+
+    if (m_isLeftButtonPressed) {
+        auto pos = e->pos();
+        auto offset = QPoint(horizontalOffset(), verticalOffset());
+        auto logicPos = pos + offset;
+        QRect logicRect = QRect(logicPos, m_lastPressedLogicPoint);
+        m_logicRect = logicRect.normalized();
+
+        int dx = -horizontalOffset();
+        int dy = -verticalOffset() + VERTICAL_ADJUST_DY;
+        auto realRect = m_logicRect.adjusted(dx, dy, dx ,dy);
+
+        if (!m_rubberBand->isVisible())
+            m_rubberBand->show();
+        m_rubberBand->setGeometry(realRect);
+    } else {
+        m_rubberBand->hide();
     }
 }
 
