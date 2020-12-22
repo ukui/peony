@@ -50,12 +50,7 @@ void ListViewStyle::drawPrimitive(QStyle::PrimitiveElement element, const QStyle
         bool isActive = option->state & State_Active;
         bool isEnable = option->state & State_Enabled;
         auto baseColor = option->palette.color(isEnable? (isActive? QPalette::Active: QPalette::Inactive): QPalette::Disabled, QPalette::Window);
-        QPainterPath path;
-        path.setFillRule(Qt::WindingFill);
-        path.addRoundedRect(option->rect, 6, 6);
-        path.addRect(QRect(0, 0, 6, option->rect.height()));
-        path.addRect(QRect(0, 0, option->rect.width(), 6));
-        painter->fillPath(path, baseColor);
+        painter->fillRect(widget->rect(), baseColor);
         painter->restore();
         return;
     }
