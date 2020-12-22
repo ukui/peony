@@ -122,6 +122,7 @@ public Q_SLOTS:
 protected:
     void mousePressEvent(QMouseEvent *e) override;
     void mouseReleaseEvent(QMouseEvent *e) override;
+    void mouseMoveEvent(QMouseEvent *e) override;
     void mouseDoubleClickEvent(QMouseEvent *event) override;
 
     void keyPressEvent(QKeyEvent *e) override;
@@ -148,6 +149,11 @@ private:
     QTimer* m_renameTimer;
     bool  m_editValid;
     bool  m_ctrl_key_pressed;
+
+    QRubberBand *m_rubberBand;
+    QPoint m_lastPressedLogicPoint;
+    QRect m_logicRect;
+    bool m_isLeftButtonPressed = false;
 
     QModelIndex m_last_index;
 
