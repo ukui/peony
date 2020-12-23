@@ -38,6 +38,8 @@
 #include "file-enumerator.h"
 #include "gerror-wrapper.h"
 
+#include "file-utils.h"
+
 #include <QHeaderView>
 #include <QPushButton>
 
@@ -175,7 +177,8 @@ NavigationSideBar::NavigationSideBar(QWidget *parent) : QTreeView(parent)
                     enumerator->setEnumerateDirectory(item->uri());
                     enumerator->setAutoDelete();
 
-                    enumerator->connect(enumerator, &Peony::FileEnumerator::prepared, this, [=](const std::shared_ptr<Peony::GErrorWrapper> &err = nullptr, const QString &targetUri = nullptr, bool critical = false){
+                    enumerator->connect(enumerator, &Peony::FileEnumerator::prepared, this, [=](const std::shared_ptr<Peony::GErrorWrapper> &err = nullptr, const QString &t = nullptr, bool critical = false){
+                        auto targetUri = Peony::FileUtils::getTargetUri(item->uri());
                         if (!targetUri.isEmpty()) {
                             auto newWindow = window->create(targetUri);
                             dynamic_cast<QWidget *>(newWindow)->show();
@@ -191,12 +194,14 @@ NavigationSideBar::NavigationSideBar(QWidget *parent) : QTreeView(parent)
 
                     enumerator->prepare();
                 });
+
                 menu.addAction(QIcon::fromTheme("tab-new-symbolic"), tr("Open In New &Tab"), [=](){
                     auto enumerator = new Peony::FileEnumerator;
                     enumerator->setEnumerateDirectory(item->uri());
                     enumerator->setAutoDelete();
 
-                    enumerator->connect(enumerator, &Peony::FileEnumerator::prepared, this, [=](const std::shared_ptr<Peony::GErrorWrapper> &err = nullptr, const QString &targetUri = nullptr, bool critical = false){
+                    enumerator->connect(enumerator, &Peony::FileEnumerator::prepared, this, [=](const std::shared_ptr<Peony::GErrorWrapper> &err = nullptr, const QString &t = nullptr, bool critical = false){
+                        auto targetUri = Peony::FileUtils::getTargetUri(item->uri());
                         if (!targetUri.isEmpty()) {
                             window->addNewTabs(QStringList()<<targetUri);
                             dynamic_cast<QWidget *>(window)->show();

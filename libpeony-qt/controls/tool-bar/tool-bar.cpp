@@ -275,29 +275,29 @@ void ToolBar::init()
     connect(optionAction, &QAction::triggered, this, [=]() {
         QMenu optionMenu;
         auto forbidThumbnail = optionMenu.addAction(tr("Forbid Thumbnail"), this, [=](bool checked) {
-            GlobalSettings::getInstance()->setValue("do-not-thumbnail", checked);
+            GlobalSettings::getInstance()->setValue(FORBID_THUMBNAIL_IN_VIEW, checked);
             m_top_window->refresh();
         });
         forbidThumbnail->setCheckable(true);
-        forbidThumbnail->setChecked(GlobalSettings::getInstance()->isExist("do-not-thumbnail")? GlobalSettings::getInstance()->getValue("do-not-thumbnail").toBool(): false);
+        forbidThumbnail->setChecked(GlobalSettings::getInstance()->isExist(FORBID_THUMBNAIL_IN_VIEW)? GlobalSettings::getInstance()->getValue(FORBID_THUMBNAIL_IN_VIEW).toBool(): false);
 
         auto showHidden = optionMenu.addAction(tr("Show Hidden"), this, [=]() {
             m_top_window->setShowHidden();
         });
         showHidden->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_H));
         showHidden->setCheckable(true);
-        showHidden->setChecked(GlobalSettings::getInstance()->isExist("show-hidden")? GlobalSettings::getInstance()->getValue("show-hidden").toBool(): false);
+        showHidden->setChecked(GlobalSettings::getInstance()->isExist(SHOW_HIDDEN_PREFERENCE)? GlobalSettings::getInstance()->getValue(SHOW_HIDDEN_PREFERENCE).toBool(): false);
 
         auto resident = optionMenu.addAction(tr("Resident in Backend"));
         resident->setToolTip(tr("Let the program still run after closing the last window. "
                                 "This will reduce the time for the next launch, but it will "
                                 "also consume resources in backend."));
         connect(resident, &QAction::triggered, this, [=](bool checked) {
-            GlobalSettings::getInstance()->setValue("resident", checked);
+            GlobalSettings::getInstance()->setValue(RESIDENT_IN_BACKEND, checked);
             qApp->setQuitOnLastWindowClosed(!checked);
         });
         resident->setCheckable(true);
-        resident->setChecked(GlobalSettings::getInstance()->isExist("resident")? GlobalSettings::getInstance()->getValue("resident").toBool(): false);
+        resident->setChecked(GlobalSettings::getInstance()->isExist(RESIDENT_IN_BACKEND)? GlobalSettings::getInstance()->getValue(RESIDENT_IN_BACKEND).toBool(): false);
 
         optionMenu.addSeparator();
 

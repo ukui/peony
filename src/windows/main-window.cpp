@@ -256,9 +256,9 @@ Peony::DirectoryViewContainer *MainWindow::getCurrentPage()
 void MainWindow::checkSettings()
 {
     auto settings = Peony::GlobalSettings::getInstance();
-    m_show_hidden_file = settings->isExist("show-hidden")? settings->getValue("show-hidden").toBool(): false;
-    m_use_default_name_sort_order = settings->isExist("chinese-first")? settings->getValue("chinese-first").toBool(): false;
-    m_folder_first = settings->isExist("folder-first")? settings->getValue("folder-first").toBool(): true;
+    m_show_hidden_file = settings->isExist(SHOW_HIDDEN_PREFERENCE)? settings->getValue(SHOW_HIDDEN_PREFERENCE).toBool(): false;
+    m_use_default_name_sort_order = settings->isExist(SORT_CHINESE_FIRST)? settings->getValue(SORT_CHINESE_FIRST).toBool(): false;
+    m_folder_first = settings->isExist(SORT_FOLDER_FIRST)? settings->getValue(SORT_FOLDER_FIRST).toBool(): true;
 
     if (QGSettings::isSchemaInstalled("org.ukui.style"))
     {
@@ -573,9 +573,12 @@ void MainWindow::setShortCuts()
             if (this->getCurrentSelections().first().startsWith("trash://", Qt::CaseInsensitive)) {
                 return ;
             }
-//            if (this->getCurrentSelections().first().startsWith("recent://", Qt::CaseInsensitive)) {
-//                return ;
-//            }
+            if (this->getCurrentSelections().first().startsWith("recent://", Qt::CaseInsensitive)) {
+                return ;
+            }
+            if (this->getCurrentSelections().first().startsWith("favorite://", Qt::CaseInsensitive)) {
+                return ;
+            }
         }
         Peony::ClipboardUtils::setClipboardFiles(this->getCurrentSelections(), false);
     });
@@ -617,6 +620,9 @@ void MainWindow::setShortCuts()
                 return ;
             }
             if (this->getCurrentSelections().first().startsWith("recent://", Qt::CaseInsensitive)) {
+                return ;
+            }
+            if (this->getCurrentSelections().first().startsWith("favorite://", Qt::CaseInsensitive)) {
                 return ;
             }
 
@@ -684,9 +690,8 @@ void MainWindow::keyPressEvent(QKeyEvent *e)
     if (e->key() == Qt::Key_Enter || e->key() == Qt::Key_Return)
     {
         auto selections = this->getCurrentSelections();
-        if (selections.count() == 1)
-            Q_EMIT m_tab->currentPage()->viewDoubleClicked(selections.first());
-        else
+        //if select only one item, let view to process
+        if (selections.count() > 1)
         {
             QStringList files;
             QStringList dirs;

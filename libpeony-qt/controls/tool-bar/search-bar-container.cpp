@@ -26,6 +26,8 @@
 
 #include <QAction>
 #include <QCompleter>
+#include <QVector4D>
+
 #include <QDebug>
 
 using namespace Peony;
@@ -68,8 +70,19 @@ SearchBarContainer::SearchBarContainer(QWidget *parent): QWidget(parent)
     m_list.prepend(tr("Clear"));
     m_model->setStringList(m_list);
     m_list_view = new QListView(m_search_box);
+
+    m_list_view->setAttribute(Qt::WA_TranslucentBackground);
+    //m_list_view->viewport()->setAttribute(Qt::WA_TranslucentBackground);
+
+    m_list_view->setProperty("useCustomShadow", true);
+    m_list_view->setProperty("customShadowDarkness", 0.5);
+    m_list_view->setProperty("customShadowWidth", 20);
+    m_list_view->setProperty("customShadowRadius", QVector4D(6, 6, 6, 6));
+    m_list_view->setProperty("customShadowMargins", QVector4D(20, 20, 20, 20));
+
     m_list_view->setModel(m_model);
     completer->setPopup(m_list_view);
+
     //change QCompleter Mode form UnfilteredPopupCompletion to PopupCompletion
     //to fix can not input chinese continuous issue
     completer->setCompletionMode(QCompleter::InlineCompletion);

@@ -55,15 +55,7 @@ ListViewDelegate::~ListViewDelegate()
 
 void ListViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
-//    QPainterPath path;
-//    path.setFillRule(Qt::FillRule::WindingFill);
     auto view = qobject_cast<DirectoryView::ListView *>(parent());
-
-//    path.addRoundedRect(view->rect(),60,60);
-//    path.addRect(view->rect().width()-60,0,60,60);
-//    path.addRect(0,0,60,60);
-
-//    painter->setClipPath(path);
 
     QStyleOptionViewItem opt = option;
     initStyleOption(&opt, index);
@@ -72,7 +64,6 @@ void ListViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
     QApplication::style()->drawControl(QStyle::CE_ItemViewItem, &opt, painter);
 
     if (index.column() == 0) {
-//        auto view = qobject_cast<DirectoryView::ListView *>(parent());
         if (!view->isDragging() || !view->selectionModel()->selectedIndexes().contains(index)) {
             auto info = FileInfo::fromUri(index.data(Qt::UserRole).toString());
             auto colors = info->getColors();
@@ -92,7 +83,7 @@ void ListViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
     }
     auto rect = view->visualRect(index);
 
-    int selectBox = 3;
+    int selectBox = 0;
     //get current checkbox positon and draw them.
     selectBox = view->getCurrentCheckboxColumn();
     int selectBoxPosion = view->viewport()->width()+view->viewport()->x()-view->header()->sectionViewportPosition(selectBox)-48;
@@ -109,7 +100,6 @@ void ListViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
             icon.paint(painter, rect.x()+selectBoxPosion, rect.y()+rect.height()/2-8, 16, 16, Qt::AlignCenter);
         }
     }
-
 }
 
 QWidget *ListViewDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const

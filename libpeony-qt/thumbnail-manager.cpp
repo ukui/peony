@@ -84,7 +84,7 @@ ThumbnailManager *ThumbnailManager::getInstance()
 
 void ThumbnailManager::syncThumbnailPreferences()
 {
-    GlobalSettings::getInstance()->forceSync("do-not-thumbnail");
+    GlobalSettings::getInstance()->forceSync(FORBID_THUMBNAIL_IN_VIEW);
 }
 
 void ThumbnailManager::insertOrUpdateThumbnail(const QString &uri, const QIcon &icon)
@@ -97,7 +97,7 @@ void ThumbnailManager::insertOrUpdateThumbnail(const QString &uri, const QIcon &
 
 void ThumbnailManager::setForbidThumbnailInView(bool forbid)
 {
-    GlobalSettings::getInstance()->setValue("do-not-thumbnail", forbid);
+    GlobalSettings::getInstance()->setValue(FORBID_THUMBNAIL_IN_VIEW, forbid);
 }
 
 void ThumbnailManager::createVideFileThumbnail(const QString &uri, std::shared_ptr<FileWatcher> watcher)
@@ -219,8 +219,8 @@ void ThumbnailManager::createDesktopFileThumbnail(const QString &uri, std::share
 void ThumbnailManager::createThumbnailInternal(const QString &uri, std::shared_ptr<FileWatcher> watcher, bool force)
 {
     auto settings = GlobalSettings::getInstance();
-    if (settings->isExist("do-not-thumbnail")) {
-        bool do_not_thumbnail = settings->getValue("do-not-thumbnail").toBool();
+    if (settings->isExist(FORBID_THUMBNAIL_IN_VIEW)) {
+        bool do_not_thumbnail = settings->getValue(FORBID_THUMBNAIL_IN_VIEW).toBool();
         if (do_not_thumbnail && !force) {
             qDebug()<<"setting is not thumbnail";
             return;

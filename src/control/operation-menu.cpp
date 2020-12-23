@@ -64,13 +64,6 @@ OperationMenu::OperationMenu(MainWindow *window, QWidget *parent) : QMenu(parent
 //    addSeparator();
 
     auto keepAllow = addAction(tr("Keep Allow"), this, [=](bool checked) {
-//        if (checked)
-//            m_window->setWindowFlags(Qt::WindowStaysOnTopHint|m_window->windowFlags());
-//        else
-//            m_window->setWindowFlags(m_window->windowFlags() & ~Qt::WindowStaysOnTopHint);
-
-//        m_window->show();
-
         //use kf5 interface to fix set on top has no effect issue
         if (checked)
             KWindowSystem::setState(m_window->winId(), KWindowSystem::KeepAbove);
@@ -88,21 +81,21 @@ OperationMenu::OperationMenu(MainWindow *window, QWidget *parent) : QMenu(parent
 
     auto forbidThumbnailing = addAction(tr("Forbid thumbnailing"), this, [=](bool checked) {
         //FIXME:
-        Peony::GlobalSettings::getInstance()->setValue("do-not-thumbnail", checked);
+        Peony::GlobalSettings::getInstance()->setValue(FORBID_THUMBNAIL_IN_VIEW, checked);
         m_window->refresh();
     });
     m_forbid_thumbnailing = forbidThumbnailing;
     forbidThumbnailing->setCheckable(true);
-    forbidThumbnailing->setChecked(Peony::GlobalSettings::getInstance()->getValue("do-not-thumbnail").toBool());
+    forbidThumbnailing->setChecked(Peony::GlobalSettings::getInstance()->getValue(FORBID_THUMBNAIL_IN_VIEW).toBool());
 
     auto residentInBackend = addAction(tr("Resident in Backend"), this, [=](bool checked) {
         //FIXME:
-        Peony::GlobalSettings::getInstance()->setValue("resident", checked);
+        Peony::GlobalSettings::getInstance()->setValue(RESIDENT_IN_BACKEND, checked);
         qApp->setQuitOnLastWindowClosed(!checked);
     });
     m_resident_in_backend = residentInBackend;
     residentInBackend->setCheckable(true);
-    residentInBackend->setChecked(Peony::GlobalSettings::getInstance()->getValue("resident").toBool());
+    residentInBackend->setChecked(Peony::GlobalSettings::getInstance()->getValue(RESIDENT_IN_BACKEND).toBool());
 
     auto allowFileOpParallel = addAction(tr("Parallel Operations"), this, [=](bool checked){
         Peony::FileOperationManager::getInstance()->setAllowParallel(checked);
@@ -123,16 +116,16 @@ OperationMenu::OperationMenu(MainWindow *window, QWidget *parent) : QMenu(parent
 
 void OperationMenu::updateMenu()
 {
-    m_show_hidden->setChecked(Peony::GlobalSettings::getInstance()->isExist("show-hidden")?
-                              Peony::GlobalSettings::getInstance()->getValue("show-hidden").toBool():
+    m_show_hidden->setChecked(Peony::GlobalSettings::getInstance()->isExist(SHOW_HIDDEN_PREFERENCE)?
+                              Peony::GlobalSettings::getInstance()->getValue(SHOW_HIDDEN_PREFERENCE).toBool():
                               false);
 
-    m_forbid_thumbnailing->setChecked(Peony::GlobalSettings::getInstance()->isExist("do-not-thumbnail")?
-                                      Peony::GlobalSettings::getInstance()->getValue("do-not-thumbnail").toBool():
+    m_forbid_thumbnailing->setChecked(Peony::GlobalSettings::getInstance()->isExist(FORBID_THUMBNAIL_IN_VIEW)?
+                                      Peony::GlobalSettings::getInstance()->getValue(FORBID_THUMBNAIL_IN_VIEW).toBool():
                                       false);
 
-    m_resident_in_backend->setChecked(Peony::GlobalSettings::getInstance()->isExist("resident")?
-                                      Peony::GlobalSettings::getInstance()->getValue("resident").toBool():
+    m_resident_in_backend->setChecked(Peony::GlobalSettings::getInstance()->isExist(RESIDENT_IN_BACKEND)?
+                                      Peony::GlobalSettings::getInstance()->getValue(RESIDENT_IN_BACKEND).toBool():
                                       false);
 
     //get window current directory and selections, then update ohter actions.

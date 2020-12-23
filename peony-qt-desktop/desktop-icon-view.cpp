@@ -430,7 +430,7 @@ void DesktopIconView::initShoutCut()
     addAction(editAction);
 
     auto settings = GlobalSettings::getInstance();
-    m_show_hidden = settings->isExist("show-hidden")? settings->getValue("show-hidden").toBool(): false;
+    m_show_hidden = settings->isExist(SHOW_HIDDEN_PREFERENCE)? settings->getValue(SHOW_HIDDEN_PREFERENCE).toBool(): false;
     //show hidden action
     QAction *showHiddenAction = new QAction(this);
     showHiddenAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_H));

@@ -27,6 +27,8 @@
 #include <QKeyEvent>
 #include <QAction>
 #include <QUrl>
+#include <QAbstractItemView>
+#include <QVector4D>
 
 #include <QDebug>
 
@@ -39,6 +41,15 @@ PathEdit::PathEdit(QWidget *parent) : QLineEdit(parent)
     m_model = new PathBarModel(this);
     m_completer = new PathCompleter(this);
     m_completer->setModel(m_model);
+
+    m_completer->popup()->setAttribute(Qt::WA_TranslucentBackground);
+
+    m_completer->popup()->setProperty("useCustomShadow", true);
+    m_completer->popup()->setProperty("customShadowDarkness", 0.5);
+    m_completer->popup()->setProperty("customShadowWidth", 20);
+    m_completer->popup()->setProperty("customShadowRadius", QVector4D(6, 6, 6, 6));
+    m_completer->popup()->setProperty("customShadowMargins", QVector4D(20, 20, 20, 20));
+
     m_completer->setCaseSensitivity(Qt::CaseInsensitive);
 
     setLayoutDirection(Qt::LeftToRight);
