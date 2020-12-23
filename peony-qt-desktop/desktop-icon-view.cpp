@@ -1343,19 +1343,22 @@ void DesktopIconView::mousePressEvent(QMouseEvent *e)
             if (! m_is_edit)
                clearAllIndexWidgets();
             m_last_index = index;
-            if (!indexWidget(m_last_index)) {
-                auto indexWidget = new DesktopIndexWidget(qobject_cast<DesktopIconViewDelegate *>(itemDelegate()), viewOptions(), m_last_index);
-                setIndexWidget(m_last_index,
-                               indexWidget);
-                indexWidget->move(visualRect(m_last_index).topLeft());
+            //force to recreate new DesktopIndexWidget, to fix not show name issue
+            if (indexWidget(m_last_index))
+                setIndexWidget(m_last_index, nullptr);
+            //if (!indexWidget(m_last_index)) {
+            auto indexWidget = new DesktopIndexWidget(qobject_cast<DesktopIconViewDelegate *>(itemDelegate()), viewOptions(), m_last_index);
+            setIndexWidget(m_last_index,
+                           indexWidget);
+            indexWidget->move(visualRect(m_last_index).topLeft());
 #if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
-                for (auto uri : getAllFileUris()) {
-                    auto pos = getFileMetaInfoPos(uri);
-                    if (pos.x() >= 0)
-                        updateItemPosByUri(uri, pos);
-                }
-#endif
+            for (auto uri : getAllFileUris()) {
+                auto pos = getFileMetaInfoPos(uri);
+                if (pos.x() >= 0)
+                    updateItemPosByUri(uri, pos);
             }
+#endif
+            //}
         }
     }
 
