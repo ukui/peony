@@ -229,7 +229,11 @@ GFileInfo* vfs_favorite_file_query_info(GFile *file, const char *attributes, GFi
         GFile* file = g_file_new_for_uri (trueUri.toUtf8().constData());
         if (nullptr != file) {
             info = g_file_query_info(file, "*", G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, nullptr, nullptr);
+            if (!info)
+                info = g_file_info_new();
             g_file_info_set_attribute_string(info, G_FILE_ATTRIBUTE_STANDARD_TARGET_URI, trueUri.toUtf8().constData());
+        } else {
+            info = g_file_info_new();
         }
         g_object_unref(file);
     } else {

@@ -79,7 +79,7 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
                   "background-color: transparent;"
                   "border: 0px solid transparent;"
                   "margin: 4px 5px 4px 5px;"
-                  "};");
+                  "}");
 
     setMovable(false);
 
