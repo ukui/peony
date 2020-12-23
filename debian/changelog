@@ -1,3 +1,9 @@
+peony (3.0.3-1+1223) v101; urgency=medium
+
+  *Fix The list view does not have a reserved box selection[26464]
+
+ -- wangweinan <wangweinan@kylinos.cn>  Thu, 23 Dec 2020 8:44:46 +0800
+
 peony (3.0.3-1+1216) v101; urgency=medium
 
   *Merge peony/dev-unity
