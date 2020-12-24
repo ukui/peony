@@ -141,29 +141,31 @@ NavigationSideBar::NavigationSideBar(QWidget *parent) : QTreeView(parent)
         item->clearChildren();
     });
 
-    connect(this, &QTreeView::clicked, [=](const QModelIndex &index) {
-        switch (index.column()) {
-        case 0: {
-            auto item = m_proxy_model->itemFromIndex(index);
-            //some side bar item doesn't have a uri.
-            //do not emit signal with a null uri to window.
-            if (!item->uri().isNull())
-                Q_EMIT this->updateWindowLocationRequest(item->uri());
-            break;
-        }
-        case 1: {
-            auto item = m_proxy_model->itemFromIndex(index);
-            if (item->isMounted() || item->isEjectable()) {
-                auto leftIndex = m_proxy_model->index(index.row(), 0, index.parent());
-                this->collapse(leftIndex);
-                item->ejectOrUnmount();
-            }
-            break;
-        }
-        default:
-            break;
-        }
-    });
+//    connect(this, &QTreeView::clicked, [=](const QModelIndex &index) {
+
+        //! Delete the second column to fit the topic
+//        switch (index.column()) {
+//        case 0: {
+//            auto item = m_proxy_model->itemFromIndex(index);
+//            //some side bar item doesn't have a uri.
+//            //do not emit signal with a null uri to window.
+//            if (!item->uri().isNull())
+//                Q_EMIT this->updateWindowLocationRequest(item->uri());
+//            break;
+//        }
+//        case 1: {
+//            auto item = m_proxy_model->itemFromIndex(index);
+//            if (item->isMounted() || item->isEjectable()) {
+//                auto leftIndex = m_proxy_model->index(index.row(), 0, index.parent());
+//                this->collapse(leftIndex);
+//                item->ejectOrUnmount();
+//            }
+//            break;
+//        }
+//        default:
+//            break;
+//        }
+//    });
 
     connect(this, &QTreeView::customContextMenuRequested, this, [=](const QPoint &pos) {
         auto index = indexAt(pos);
@@ -309,20 +311,54 @@ void NavigationSideBar::keyPressEvent(QKeyEvent *event)
 
 void NavigationSideBar::mousePressEvent(QMouseEvent *event)
 {
-    // Fixme: Right button can expand side bar
-    QModelIndex index = this->indexAt(event->pos());
-    if (event->button() == Qt::LeftButton && !index.parent().isValid()) {
-        if (event->x() > this->rect().right() - 20 || event->x() < this->rect().right() - 60)
-            QTreeView::mousePressEvent(event);
-        else {
-            QPoint point(event->x(), event->y());
-            if (!isExpanded(indexAt(point)))
-                expand(indexAt(point));
-            else
-                collapse(indexAt(point));
-        }
+    if (event->button() != Qt::LeftButton)
+        return;
+
+    QModelIndex index = indexAt(event->pos());
+    auto item = m_proxy_model->itemFromIndex(index);
+
+    if (!index.parent().isValid() &&
+        event->x() < rect().right() - 25 &&
+        event->x() > rect().right() - 60) {
+        // if click expend rect
+        QPoint point(event->x(), event->y());
+        if (!isExpanded(indexAt(point)))
+            expand(indexAt(point));
+        else
+            collapse(indexAt(point));
+
     }
-    QTreeView::mousePressEvent(event);
+    else if (event->x() < rect().right() - 15 &&
+             event->x() > rect().right() - 45 &&
+             (item->isEjectable() || item->isMountable())) {
+        // if click umount rect
+        auto leftIndex = m_proxy_model->index(index.row(), 0, index.parent());
+        this->collapse(leftIndex);
+        item->ejectOrUnmount();
+    }
+    else {
+        if (!item->uri().isNull())
+            Q_EMIT this->updateWindowLocationRequest(item->uri());
+        QTreeView::mousePressEvent(event);
+    }
+}
+
+bool NavigationSideBar::isRemoveable(const QModelIndex &index)
+{
+    auto item = m_proxy_model->itemFromIndex(index);
+    if (item != nullptr)
+        return item->isRemoveable();
+    else
+        return false;
+}
+
+bool NavigationSideBar::isMounted(const QModelIndex &index)
+{
+    auto item = m_proxy_model->itemFromIndex(index);
+    if (item != nullptr)
+        return item->isMounted();
+    else
+        return false;
 }
 
 NavigationSideBarItemDelegate::NavigationSideBarItemDelegate(QObject *parent) : QStyledItemDelegate(parent)
@@ -355,9 +391,17 @@ void NavigationSideBarItemDelegate::paint(QPainter *painter, const QStyleOptionV
     QStyledItemDelegate::paint(painter, opt, index);
 
     NavigationSideBar* view = qobject_cast<NavigationSideBar*>(this->parent());
-
     if (view == nullptr)
         return;
+
+    //! \brief print mount icon
+    if (view->isRemoveable(index) && view->isMounted(index)) {
+        QRect rect = option.rect;
+        rect.setY(rect.top() + sizeHint(option, index).height()/3);
+        rect.setX(rect.right() - 30);
+        rect.setSize(QSize(16, 16));
+        painter->drawPixmap(rect, QPixmap(":/img/media-eject"));
+    }
 
     if (!index.model()->hasChildren(index))
         return;

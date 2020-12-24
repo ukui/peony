@@ -56,10 +56,11 @@ public:
 
     QSize sizeHint() const;
 
-    /*!
-     * \brief function to expand item if click range of expand button
-    */
     void mousePressEvent(QMouseEvent *event);
+
+    //! \brief to determine if you need to draw a pop-up button
+    bool isRemoveable(const QModelIndex& index);
+    bool isMounted(const QModelIndex& index);
 
 Q_SIGNALS:
     void updateWindowLocationRequest(const QString &uri, bool addHistory = true, bool force = false);
