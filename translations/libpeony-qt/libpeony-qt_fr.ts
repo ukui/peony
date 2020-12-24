@@ -175,7 +175,7 @@
     <message>
         <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="460"/>
         <source>Formatting this volume will erase all data on it. Please backup all retained data before formatting. Do you want to continue ?</source>
-        <translation>Le formatage de ce volume effacera toutes les données qu&apos;il contient. Veuillez sauvegarder toutes les données conservées avant le formatage. Voulez-vous continuer  ?</translation>
+        <translation>Le formatage de ce volume effacera toutes les données qu&apos;il contient. Veuillez sauvegarder toutes les données conservées avant le formatage. Voulez-vous continuer ?</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="462"/>
