@@ -1693,6 +1693,9 @@ int DesktopIconView::updateBWList()
 
 static bool iconSizeLessThan (QPair<QRect, QString>& p1, QPair<QRect, QString>& p2)
 {
+    if (p1.first.x() < p2.first.x())
+        return true;
+
     if ((p1.first.x() == p2.first.x()) && (p1.first.y() <= p2.first.y())) {
         return true;
     } else if ((p1.first.y() == p2.first.y()) && (p1.first.x() <= p2.first.x())) {
