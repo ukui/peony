@@ -27,6 +27,7 @@
 #include <QObject>
 
 using namespace  Peony;
+static bool b_finished = false;
 
 Format_Dialog::Format_Dialog(const QString &m_uris,SideBarAbstractItem *m_item,QWidget *parent) :
     QDialog(parent),
@@ -125,6 +126,9 @@ static void unmount_finished(GFile* file, GAsyncResult* result, gpointer udata)
 
 void Format_Dialog::acceptFormat(bool)
 {
+    ui->pushButton_ok->setDisabled(true);
+    ui->pushButton_close->setDisabled(true);
+
     //check format or not 
    if(!format_makesure_dialog()){
         return;
@@ -132,8 +136,7 @@ void Format_Dialog::acceptFormat(bool)
 
     //init the value
     char rom_size[1024] ={0},rom_type[1024]={0},rom_name[1024]={0},dev_name[1024]={0};
-    int quick_clean = 0;
-
+    int full_clean = 0;
 
     //get values from ui
     strncpy(rom_size,ui->comboBox_rom_size->itemText(0).toUtf8().constData(),sizeof(ui->comboBox_rom_size->itemText(0).toUtf8().constData())-1);
@@ -144,7 +147,7 @@ void Format_Dialog::acceptFormat(bool)
     ui->comboBox_rom_size->setDisabled(true);
     ui->comboBox_system->setDisabled(true);
 
-    quick_clean = ui->checkBox_clean_or_not->isChecked();
+    full_clean = ui->checkBox_clean_or_not->isChecked();
 
     // umount device
     //fm_item ->unmount();
@@ -174,32 +177,27 @@ void Format_Dialog::acceptFormat(bool)
     //int format_value = 0;
 
     //begin format
-    //kdisk_format(dev_name,devtype.toLower().toUtf8().constData(),quick_clean?"zero":NULL,rom_name,&format_value);
+    //kdisk_format(dev_name,devtype.toLower().toUtf8().constData(),full_clean?"zero":NULL,rom_name,&format_value);
 
     //begin start my_timer, processbar
     my_time  = new QTimer(this);
 
     m_cost_seconds = 0;
-    if(quick_clean){
-        my_time->setInterval(500);
-        m_total_predict = 60;
-    }else{
+    m_simulate_progress = 0;
+    b_finished = false;
+    if(full_clean){
         my_time->setInterval(1000);
-        m_total_predict = 1200;
+        m_total_predict = 1800;
+    }else{
+        my_time->setInterval(500);
+        m_total_predict = 150;
     }
 
     //begin loop
-    connect(my_time,SIGNAL(timeout()),this,SLOT(formatloop()));
-
-   // my_time->start();
+    connect(my_time, SIGNAL(timeout()), this, SLOT(formatloop()));
 
     //while get ensure emit , do format 
-      connect(this,&Format_Dialog::ensure_format,[=](bool){
-
-        int format_value = 0;
-        //do format 
-        kdisk_format(dev_name,devtype.toLower().toUtf8().constData(),quick_clean?"zero":NULL,rom_name,&format_value);
-        
+    connect(this,&Format_Dialog::ensure_format,[=](bool){
         // time begin loop
         my_time->start();
 
@@ -208,10 +206,12 @@ void Format_Dialog::acceptFormat(bool)
         ui->pushButton_close->setDisabled(TRUE);
         ui->lineEdit_device_name->setDisabled(TRUE);
         ui->checkBox_clean_or_not->setDisabled(TRUE);
+
+        int format_value = 0;
+        //do format
+        kdisk_format(dev_name, devtype.toLower().toUtf8().constData(),
+                     full_clean?"zero":NULL, rom_name,&format_value);
     });
-
-
-
 }
 
 double Format_Dialog::get_format_bytes_done(const gchar * device_name)
@@ -246,6 +246,14 @@ double Format_Dialog::get_format_bytes_done(const gchar * device_name)
 
 void Format_Dialog::formatloop(){
 
+    if (b_finished)
+    {
+        ui->progressBar_process->setValue(100);
+        ui->label_process->setText("100%");
+        my_time->stop();
+        return;
+    }
+
     QString volname, devName, voldisplayname;
     static char name_dev[256] ={0};
     char prestr[10] = {0};
@@ -261,29 +269,33 @@ void Format_Dialog::formatloop(){
 
     double pre = (get_format_bytes_done(name_dev) * 100);
     double cost = m_cost_seconds * 100/m_total_predict;
+    if (cost > 100)
+        cost = 100;
 
-    if ((pre < 1 && cost <= 99) || pre < cost)
-        pre = cost;
-
-    sprintf(prestr,"%.1f",pre);
-    strcat(prestr,"%");
-
-    if(pre>=100){
-
-        ui->progressBar_process->setValue(100);
-
-        ui->label_process->setText("100%");
-
-        my_time->stop();
-
-    }else{
-
-          ui->progressBar_process->setValue(pre);
-          ui->label_process->setText(prestr);
+    if (m_simulate_progress >= pre){
+        m_simulate_progress += (cost - pre)/100;
+    }
+    else{
+        m_simulate_progress = pre;
     }
 
-}
+    qDebug() << "formatloop predict and cost:" <<pre <<cost
+             <<m_simulate_progress <<m_cost_seconds <<b_finished;
 
+    sprintf(prestr,"%.1f",m_simulate_progress);
+    strcat(prestr,"%");
+
+    if(m_simulate_progress>=100){
+        b_finished = true;
+        ui->progressBar_process->setValue(100);
+        ui->label_process->setText("100%");
+        my_time->stop();
+    }
+    else{
+          ui->progressBar_process->setValue(m_simulate_progress);
+          ui->label_process->setText(prestr);
+    }
+}
 
 void Format_Dialog::cancel_format(const gchar* device_name){
 
@@ -400,7 +412,7 @@ static void format_cb (GObject *source_object, GAsyncResult *res ,gpointer user_
     if (!udisks_block_call_format_finish (UDISKS_BLOCK (source_object), res,&error))
     {
         char *p = NULL;
-        if(NULL!=error&&NULL!=(p=strstr(error->message, "wipefs:"))){
+        if(NULL != error && NULL != (p=strstr(error->message, "wipefs:"))){
             notify_init("Peony");
             NotifyNotification *notify;
             QString title = QObject::tr("File Manager");
@@ -414,23 +426,21 @@ static void format_cb (GObject *source_object, GAsyncResult *res ,gpointer user_
             g_clear_error(&error);
         }
         end_flag = -1;
-        *(data->format_finish) =  -1; //format success
-
+        *(data->format_finish) =  -1; //format error
     }
     else
+    {
         end_flag = 1;
-        *(data->format_finish) =  1; //format error
-
+        *(data->format_finish) =  1; //format success
+    }
 
     if(end_flag == 1){
-
+        b_finished = true;
         data->dl->ui->progressBar_process->setValue(100);
         data->dl->ui->label_process->setText("100%");
-
         data->dl->format_ok_dialog();
-
-    }else{
-
+    }
+    else{
         data->dl->format_err_dialog();  
     }
 
@@ -438,7 +448,6 @@ static void format_cb (GObject *source_object, GAsyncResult *res ,gpointer user_
     data->dl->close();
 
     createformatfree(data);
-
 };
 
 
@@ -469,6 +478,8 @@ bool Format_Dialog::format_makesure_dialog(){
 
     if(message_format.clickedButton() == cancelButton)
     {
+        ui->pushButton_ok->setDisabled(false);
+        ui->pushButton_close->setDisabled(false);
         return false;
     }
 
@@ -501,7 +512,6 @@ void Format_Dialog::ensure_format_cb (CreateformatData *data){
         g_variant_builder_add (&options_builder, "{sv}", "take-ownership",
                                g_variant_new_boolean (TRUE));
     }
-
 
     if (data->erase_type != NULL){
         g_variant_builder_add (&options_builder, "{sv}", "erase",
