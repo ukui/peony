@@ -274,7 +274,7 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
     //m_proxy_model->sort(0);
 
     m_peonyDbusSer = new PeonyDbusService(this);
-    m_peonyDbusSer->dbusServerRegister();
+    m_peonyDbusSer->DbusServerRegister();
 
     this->refresh();
 }
