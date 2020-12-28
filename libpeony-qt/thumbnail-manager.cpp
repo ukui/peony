@@ -203,6 +203,21 @@ void ThumbnailManager::createDesktopFileThumbnail(const QString &uri, std::share
             thumbnail = QIcon::fromTheme(string);
         }
     }
+
+    //add special path search /use/share/pixmaps
+    if (thumbnail.isNull())
+    {
+        QString path = QString("/usr/share/pixmaps/%1.%2").arg(_icon_string).arg("png");
+        QString path_svg = QString("/usr/share/pixmaps/%1.%2").arg(_icon_string).arg("svg");
+        //qDebug() << "createDesktopFileThumbnail path:" <<path;
+        if(QFile::exists(path)){
+            thumbnail=QIcon(path);
+        }
+        else if(QFile::exists(path_svg)){
+            thumbnail=QIcon(path_svg);
+        }
+    }
+
     g_free(_icon_string);
     g_object_unref(_desktop_file);
 

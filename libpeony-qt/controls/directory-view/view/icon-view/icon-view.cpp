@@ -312,7 +312,6 @@ void IconView::mousePressEvent(QMouseEvent *e)
             m_editValid = false;
         }
     }
-
 }
 
 void IconView::mouseReleaseEvent(QMouseEvent *e)
