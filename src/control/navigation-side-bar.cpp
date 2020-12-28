@@ -315,6 +315,10 @@ void NavigationSideBar::mousePressEvent(QMouseEvent *event)
         return;
 
     QModelIndex index = indexAt(event->pos());
+
+    if (!index.isValid())
+        return;
+
     auto item = m_proxy_model->itemFromIndex(index);
 
     if (!index.parent().isValid() &&
