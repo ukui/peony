@@ -198,6 +198,7 @@ void ListView::mousePressEvent(QMouseEvent *e)
         else
         {
             this->selectionModel()->setCurrentIndex(index, QItemSelectionModel::Deselect|QItemSelectionModel::Rows);
+            return;
         }
     }
 
@@ -210,6 +211,7 @@ void ListView::mousePressEvent(QMouseEvent *e)
             clearSelection();
             setCurrentIndex(index);
         }
+
         this->setState(QAbstractItemView::DragSelectingState);
     }
 
