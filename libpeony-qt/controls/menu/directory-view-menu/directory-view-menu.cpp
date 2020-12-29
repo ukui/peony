@@ -122,6 +122,10 @@ void DirectoryViewMenu::fillActions()
         m_is_favorite = true;
     }
 
+    if (m_directory.startsWith("kydroid:///")) {
+        m_is_kydroid = true;
+    }
+
     QString desktop = QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
 
     for (auto uriIndex = 0; uriIndex < m_selections.count(); ++uriIndex) {
@@ -139,43 +143,49 @@ void DirectoryViewMenu::fillActions()
     if (!openActions.isEmpty())
         addSeparator();
 
-    //create template actions
-    auto templateActions = constructCreateTemplateActions();
-    if (!templateActions.isEmpty())
-        addSeparator();
+    if (! m_is_kydroid){
+        //create template actions
+        auto templateActions = constructCreateTemplateActions();
+        if (!templateActions.isEmpty())
+            addSeparator();
 
-    //add view actions
-    auto viewActions = constructViewOpActions();
-    if (!viewActions.isEmpty())
-        addSeparator();
+        //add view actions
+        auto viewActions = constructViewOpActions();
+        if (!viewActions.isEmpty())
+            addSeparator();
+    }
 
     //add operation actions
     auto fileOpActions = constructFileOpActions();
     if (!fileOpActions.isEmpty())
         addSeparator();
 
-    //add plugin actions
-    auto pluginActions = constructMenuPluginActions();
-    if (!pluginActions.isEmpty())
-        addSeparator();
+    if (! m_is_kydroid){
+        //add plugin actions
+        auto pluginActions = constructMenuPluginActions();
+        if (!pluginActions.isEmpty())
+            addSeparator();
+    }
 
     //add propertries actions
     auto propertiesAction = constructFilePropertiesActions();
     if (!propertiesAction.isEmpty())
         addSeparator();
 
-    //add actions in computer:///
-    auto computerActions = constructComputerActions();
-    if (!computerActions.isEmpty())
-        addSeparator();
+    if (! m_is_kydroid){
+        //add actions in computer:///
+        auto computerActions = constructComputerActions();
+        if (!computerActions.isEmpty())
+            addSeparator();
 
-    //add actions in trash:///
-    auto trashActions = constructTrashActions();
-    if (!trashActions.isEmpty())
-        addSeparator();
+        //add actions in trash:///
+        auto trashActions = constructTrashActions();
+        if (!trashActions.isEmpty())
+            addSeparator();
 
-    //add actions in search:///
-    auto searchActions = constructSearchActions();
+        //add actions in search:///
+        auto searchActions = constructSearchActions();
+    }
 }
 
 const QList<QAction *> DirectoryViewMenu::constructOpenOpActions()
@@ -219,7 +229,7 @@ const QList<QAction *> DirectoryViewMenu::constructOpenOpActions()
             }
             if (info->isDir()) {
                 //add to bookmark option
-                if (!info->isVirtual() &&  !info->uri().startsWith("smb://"))
+                if (!info->isVirtual() &&  !info->uri().startsWith("smb://") && !m_is_kydroid)
                 {
                     l<<addAction(QIcon::fromTheme("bookmark-add-symbolic"), tr("Add to bookmark"));
                     connect(l.last(), &QAction::triggered, [=]() {
@@ -587,11 +597,34 @@ const QList<QAction *> DirectoryViewMenu::constructFileOpActions()
         //qDebug() << "constructFileOpActions hasStandardPath:" <<hasStandardPath;
         if (!m_selections.isEmpty() && !m_selections.contains(homeUri) && !m_is_recent) {
             if (!m_is_favorite) {
-                l<<addAction(QIcon::fromTheme("edit-copy-symbolic"), tr("&Copy"));
-                connect(l.last(), &QAction::triggered, [=]() {
-                    ClipboardUtils::setClipboardFiles(m_selections, false);
-                });
+                //code from lixiang for kydroid menu
+                if (m_is_kydroid) {
+                    bool hasDir = false;
+                    for (auto uri : m_selections) {
+                        auto info = FileInfo::fromUri(uri);
+                        if (info->isDir()) {
+                            hasDir = true;
+                            break;
+                        }
+                    }
+                    if (!hasDir) {
+                        l<<addAction(QIcon::fromTheme("edit-copy-symbolic"), tr("&Copy"));
+                        connect(l.last(), &QAction::triggered, [=]() {
+                            ClipboardUtils::setClipboardFiles(m_selections, false);
+                        });
+                    }
+                }
+                else {
+                    l<<addAction(QIcon::fromTheme("edit-copy-symbolic"), tr("&Copy"));
+                    connect(l.last(), &QAction::triggered, [=]() {
+                        ClipboardUtils::setClipboardFiles(m_selections, false);
+                    });
+                }
             }
+
+            //kydroid has no cut,delete,rename option
+            if (m_is_kydroid)
+                return l;
 
             if (!hasStandardPath && !m_is_recent && !m_is_favorite)
             {
@@ -622,7 +655,7 @@ const QList<QAction *> DirectoryViewMenu::constructFileOpActions()
                 });
             }
         } else {
-            if (!m_is_recent && !m_is_favorite)
+            if (!m_is_recent && !m_is_favorite && !m_is_kydroid)
             {
                 auto pasteAction = addAction(QIcon::fromTheme("edit-paste-symbolic"), tr("&Paste"));
                 l<<pasteAction;
@@ -657,7 +690,7 @@ const QList<QAction *> DirectoryViewMenu::constructFileOpActions()
             m_view->invertSelections();
         });
     }
-    else
+    else if(! m_is_kydroid)
     {
         l<<addAction(tr("Reverse Select"));
         connect(l.last(), &QAction::triggered, [=]() {
