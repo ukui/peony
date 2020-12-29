@@ -90,6 +90,9 @@
 
 #include "complementary-style.h"
 
+#include "file-enumerator.h"
+#include "gerror-wrapper.h"
+
 #include <QTranslator>
 #include <QLocale>
 
@@ -352,18 +355,57 @@ void PeonyApplication::parseCmd(quint32 id, QByteArray msg)
     } else {
         if (!parser.positionalArguments().isEmpty()) {
             QStringList uris = Peony::FileUtils::toDisplayUris(parser.positionalArguments());
+            auto tmp = new QStringList;
+            *tmp = uris;
             if (uris.isEmpty()) {
                 return;
             }
             //auto window = new Peony::FMWindow(uris.first());
-            auto window = new MainWindow(uris.first());
-            uris.removeAt(0);
-            if (!uris.isEmpty()) {
-                window->addNewTabs(uris);
-            }
-            window->setAttribute(Qt::WA_DeleteOnClose);
-            window->show();
-            KWindowSystem::raiseWindow(window->winId());
+            qApp->setQuitOnLastWindowClosed(false);
+            auto enumerator = new Peony::FileEnumerator;
+            enumerator->setEnumerateDirectory(uris.first());
+            enumerator->setAutoDelete();
+            connect(enumerator, &Peony::FileEnumerator::prepared, enumerator, [tmp](std::shared_ptr<Peony::GErrorWrapper> err, const QString &targetUri, bool critical){
+                auto uris = *tmp;
+                delete tmp;
+                qApp->setQuitOnLastWindowClosed(Peony::GlobalSettings::getInstance()->getValue(RESIDENT_IN_BACKEND).toBool());
+                if (!targetUri.isEmpty()) {
+                    auto window = new MainWindow(targetUri);
+                    uris.removeAt(0);
+                    if (!uris.isEmpty()) {
+                        window->addNewTabs(uris);
+                    }
+                    window->setAttribute(Qt::WA_DeleteOnClose);
+                    window->show();
+                    KWindowSystem::raiseWindow(window->winId());
+                } else {
+                    if (Peony::FileUtils::isFileDirectory(uris.first())) {
+                        auto window = new MainWindow(uris.first());
+                        uris.removeAt(0);
+                        if (!uris.isEmpty()) {
+                            window->addNewTabs(uris);
+                        }
+                        window->setAttribute(Qt::WA_DeleteOnClose);
+                        window->show();
+                        KWindowSystem::raiseWindow(window->winId());
+                    } else {
+                        auto targetUri = Peony::FileUtils::getTargetUri(uris.first());
+                        if (!targetUri.isEmpty()) {
+                            auto window = new MainWindow(targetUri);
+                            uris.removeAt(0);
+                            if (!uris.isEmpty()) {
+                                window->addNewTabs(uris);
+                            }
+                            window->setAttribute(Qt::WA_DeleteOnClose);
+                            window->show();
+                            KWindowSystem::raiseWindow(window->winId());
+                        } else {
+                            QMessageBox::critical(nullptr, QObject::tr("Error"), QObject::tr("Can not open %1.").arg(uris.first()));
+                        }
+                    }
+                }
+            });
+            enumerator->prepare();
         } else {
             auto window = new MainWindow;
             //auto window = new Peony::FMWindow;
