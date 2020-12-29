@@ -132,36 +132,40 @@ const QList<QAction *> DesktopMenu::constructOpenOpActions()
                 displayName = fontMetrics().elidedText(displayName, Qt::ElideRight, ELIDE_TEXT_LENGTH * charWidth);
             }
             if (info->isDir()) {
-                l<<addAction(QIcon::fromTheme("document-open-symbolic"), tr("&Open \"%1\"").arg(displayName));
+                l<<addAction(QIcon::fromTheme("document-open-symbolic"), tr("&Open"));
                 connect(l.last(), &QAction::triggered, [=]() {
                     this->openWindow(m_selections);
                 });
 
-                auto openWithAction = addAction(tr("Open \"%1\" &with...").arg(displayName));
-                QMenu *openWithMenu = new QMenu(this);
                 auto recommendActions = FileLaunchManager::getRecommendActions(m_selections.first());
-                for (auto action : recommendActions) {
-                    action->setParent(openWithMenu);
-                    openWithMenu->addAction(static_cast<QAction*>(action));
+                if (recommendActions.count() > 1)
+                {
+                    auto openWithAction = addAction(tr("Open &with..."));
+                    QMenu *openWithMenu = new QMenu(this);
+
+                    for (auto action : recommendActions) {
+                        action->setParent(openWithMenu);
+                        openWithMenu->addAction(static_cast<QAction*>(action));
+                    }
+                    auto fallbackActions = FileLaunchManager::getFallbackActions(m_selections.first());
+                    for (auto action : fallbackActions) {
+                        action->setParent(openWithMenu);
+                        openWithMenu->addAction(static_cast<QAction*>(action));
+                    }
+                    openWithMenu->addSeparator();
+                    openWithMenu->addAction(tr("&More applications..."), [=]() {
+                        FileLauchDialog d(m_selections.first());
+                        d.exec();
+                    });
+                    openWithAction->setMenu(openWithMenu);
                 }
-                auto fallbackActions = FileLaunchManager::getFallbackActions(m_selections.first());
-                for (auto action : fallbackActions) {
-                    action->setParent(openWithMenu);
-                    openWithMenu->addAction(static_cast<QAction*>(action));
-                }
-                openWithMenu->addSeparator();
-                openWithMenu->addAction(tr("&More applications..."), [=]() {
-                    FileLauchDialog d(m_selections.first());
-                    d.exec();
-                });
-                openWithAction->setMenu(openWithMenu);
             } else if (!info->isVolume()) {
-                l<<addAction(QIcon::fromTheme("document-open-symbolic"), tr("&Open \"%1\"").arg(displayName));
+                l<<addAction(QIcon::fromTheme("document-open-symbolic"), tr("&Open"));
                 connect(l.last(), &QAction::triggered, [=]() {
                     auto uri = m_selections.first();
                     FileLaunchManager::openAsync(uri);
                 });
-                auto openWithAction = addAction(tr("Open \"%1\" with...").arg(displayName));
+                auto openWithAction = addAction(tr("Open &with..."));
                 //FIXME: add sub menu for open with action.
                 QMenu *openWithMenu = new QMenu(this);
                 auto recommendActions = FileLaunchManager::getRecommendActions(m_selections.first());
@@ -192,7 +196,7 @@ const QList<QAction *> DesktopMenu::constructOpenOpActions()
             {
                 auto info = FileInfo::fromUri(m_selections.first());
                 auto displayName = info->displayName();
-                l<<addAction(QIcon::fromTheme("document-open-symbolic"), tr("&Open \"%1\"").arg(displayName));
+                l<<addAction(QIcon::fromTheme("document-open-symbolic"), tr("&Open"));
             }
             else
                 l<<addAction(QIcon::fromTheme("document-open-symbolic"), tr("&Open %1 selected files").arg(m_selections.count()));

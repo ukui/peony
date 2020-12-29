@@ -193,6 +193,8 @@ private:
 
     bool m_multi_select =false;
     bool m_allow_set_index_widget = true;
+
+    bool m_slider_bar_draging = false;
 };
 
 //IconView2

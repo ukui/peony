@@ -105,11 +105,11 @@ OperationMenu::OperationMenu(MainWindow *window, QWidget *parent) : QMenu(parent
 
     addSeparator();
 
-    addAction(QIcon::fromTheme("help-app-symbolic"), tr("Help"), this, [=]() {
+    addAction(QIcon::fromTheme("gtk-help"), tr("Help"), this, [=]() {
         PeonyApplication::help();
     });
 
-    addAction(QIcon::fromTheme("help-about", QIcon::fromTheme("gtk-about-symbolic")), tr("About"), this, [=]() {
+    addAction(QIcon::fromTheme("gtk-about"), tr("About"), this, [=]() {
         PeonyApplication::about();
     });
 }

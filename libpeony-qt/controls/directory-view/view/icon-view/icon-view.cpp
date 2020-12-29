@@ -78,6 +78,19 @@ IconView::IconView(QWidget *parent) : QListView(parent)
         m_delegate_editing = editing;
     });
 
+    //fix long file name not fully painted issue when drag sliderbar
+    QScrollBar *verticalBar = verticalScrollBar();
+    connect(verticalBar, &QScrollBar::sliderPressed, [=](){
+        m_slider_bar_draging = true;
+    });
+    connect(verticalBar, &QScrollBar::sliderReleased, [=](){
+        m_slider_bar_draging = false;
+    });
+    connect(verticalBar, &QScrollBar::valueChanged, [=](){
+        if (m_slider_bar_draging)
+            viewport()->update(viewport()->rect());
+    });
+
     setSelectionMode(QListView::ExtendedSelection);
     setEditTriggers(QListView::NoEditTriggers);
     setViewMode(QListView::IconMode);
@@ -89,7 +102,6 @@ IconView::IconView(QWidget *parent) : QListView(parent)
 
     setGridSize(QSize(136, 136));
     setIconSize(QSize(86, 86));
-
 
     m_renameTimer = new QTimer(this);
     m_renameTimer->setInterval(3000);
@@ -320,7 +332,6 @@ void IconView::mousePressEvent(QMouseEvent *e)
             m_editValid = false;
         }
     }
-
 }
 
 void IconView::mouseReleaseEvent(QMouseEvent *e)

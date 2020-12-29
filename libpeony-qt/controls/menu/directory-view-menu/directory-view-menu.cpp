@@ -124,6 +124,10 @@ void DirectoryViewMenu::fillActions()
         m_is_favorite = true;
     }
 
+    if (m_directory.startsWith("kydroid:///")) {
+        m_is_kydroid = true;
+    }
+
     QString desktop = QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
 
     for (auto uriIndex = 0; uriIndex < m_selections.count(); ++uriIndex) {
@@ -141,15 +145,17 @@ void DirectoryViewMenu::fillActions()
     if (!openActions.isEmpty())
         addSeparator();
 
-    //create template actions
-    auto templateActions = constructCreateTemplateActions();
-    if (!templateActions.isEmpty())
-        addSeparator();
+    if (! m_is_kydroid){
+        //create template actions
+        auto templateActions = constructCreateTemplateActions();
+        if (!templateActions.isEmpty())
+            addSeparator();
 
-    //add view actions
-    auto viewActions = constructViewOpActions();
-    if (!viewActions.isEmpty())
-        addSeparator();
+        //add view actions
+        auto viewActions = constructViewOpActions();
+        if (!viewActions.isEmpty())
+            addSeparator();
+    }
 
     //add multiselect action
     auto multiselectAction = constructMultiSelectActions();
@@ -161,28 +167,32 @@ void DirectoryViewMenu::fillActions()
     if (!fileOpActions.isEmpty())
         addSeparator();
 
-    //add plugin actions
-    auto pluginActions = constructMenuPluginActions();
-    if (!pluginActions.isEmpty())
-        addSeparator();
+    if (! m_is_kydroid){
+        //add plugin actions
+        auto pluginActions = constructMenuPluginActions();
+        if (!pluginActions.isEmpty())
+            addSeparator();
+    }
 
     //add propertries actions
     auto propertiesAction = constructFilePropertiesActions();
     if (!propertiesAction.isEmpty())
         addSeparator();
 
-    //add actions in computer:///
-    auto computerActions = constructComputerActions();
-    if (!computerActions.isEmpty())
-        addSeparator();
+    if (! m_is_kydroid){
+        //add actions in computer:///
+        auto computerActions = constructComputerActions();
+        if (!computerActions.isEmpty())
+            addSeparator();
 
-    //add actions in trash:///
-    auto trashActions = constructTrashActions();
-    if (!trashActions.isEmpty())
-        addSeparator();
+        //add actions in trash:///
+        auto trashActions = constructTrashActions();
+        if (!trashActions.isEmpty())
+            addSeparator();
 
-    //add actions in search:///
-    auto searchActions = constructSearchActions();
+        //add actions in search:///
+        auto searchActions = constructSearchActions();
+    }
 }
 
 const QList<QAction *> DirectoryViewMenu::constructOpenOpActions()
@@ -226,7 +236,7 @@ const QList<QAction *> DirectoryViewMenu::constructOpenOpActions()
             }
             if (info->isDir()) {
                 //add to bookmark option
-                if (!info->isVirtual() &&  !info->uri().startsWith("smb://"))
+                if (!info->isVirtual() &&  !info->uri().startsWith("smb://") && !m_is_kydroid)
                 {
                     l<<addAction(QIcon::fromTheme("bookmark-add-symbolic"), tr("Add to bookmark"));
                     connect(l.last(), &QAction::triggered, [=]() {
@@ -238,13 +248,38 @@ const QList<QAction *> DirectoryViewMenu::constructOpenOpActions()
                     });
                 }
 
-                l<<addAction(QIcon::fromTheme("document-open-symbolic"), tr("&Open \"%1\"").arg(displayName));
+                l<<addAction(QIcon::fromTheme("document-open-symbolic"), tr("&Open"));
                 connect(l.last(), &QAction::triggered, [=]() {
                     if (!m_top_window)
                         return;
                     m_top_window->goToUri(m_selections.first(), true);
                 });
-                l<<addAction(QIcon::fromTheme("window-new-symbolic"), tr("Open \"%1\" in &New Window").arg(displayName));
+
+                auto recommendActions = FileLaunchManager::getRecommendActions(m_selections.first());
+                if (recommendActions.count() >1)
+                {
+                    auto openWithAction = addAction(tr("Open &with..."));
+                    QMenu *openWithMenu = new QMenu(this);
+                    // do not highlight application icons.
+                    openWithMenu->setProperty("skipHighlightIconEffect", true);
+                    for (auto action : recommendActions) {
+                        action->setParent(openWithMenu);
+                        openWithMenu->addAction(static_cast<QAction*>(action));
+                    }
+                    auto fallbackActions = FileLaunchManager::getFallbackActions(m_selections.first());
+                    for (auto action : fallbackActions) {
+                        action->setParent(openWithMenu);
+                        openWithMenu->addAction(static_cast<QAction*>(action));
+                    }
+                    openWithMenu->addSeparator();
+                    openWithMenu->addAction(tr("&More applications..."), [=]() {
+                        FileLauchDialog d(m_selections.first());
+                        d.exec();
+                    });
+                    openWithAction->setMenu(openWithMenu);
+                }
+
+                l<<addAction(QIcon::fromTheme("window-new-symbolic"), tr("Open in &New Window"));
                 connect(l.last(), &QAction::triggered, [=]() {
                     auto windowIface = m_top_window->create(m_selections.first());
                     auto newWindow = dynamic_cast<QWidget *>(windowIface);
@@ -252,19 +287,19 @@ const QList<QAction *> DirectoryViewMenu::constructOpenOpActions()
                     //FIXME: show when prepared?
                     newWindow->show();
                 });
-                l<<addAction(QIcon::fromTheme("tab-new-symbolic"), tr("Open \"%1\" in New &Tab").arg(displayName));
+                l<<addAction(QIcon::fromTheme("tab-new-symbolic"), tr("Open in New &Tab"));
                 connect(l.last(), &QAction::triggered, [=]() {
                     if (!m_top_window)
                         return;
                     m_top_window->addNewTabs(m_selections);
                 });
             } else if (!info->isVolume()) {
-                l<<addAction(QIcon::fromTheme("document-open-symbolic"), tr("&Open \"%1\"").arg(displayName));
+                l<<addAction(QIcon::fromTheme("document-open-symbolic"), tr("&Open"));
                 connect(l.last(), &QAction::triggered, [=]() {
                     auto uri = m_selections.first();
                     FileLaunchManager::openAsync(uri, false, false);
                 });
-                auto openWithAction = addAction(tr("Open \"%1\" with...").arg(displayName));
+                auto openWithAction = addAction(tr("Open &with..."));
                 QMenu *openWithMenu = new QMenu(this);
                 // do not highlight application icons.
                 openWithMenu->setProperty("skipHighlightIconEffect", true);
@@ -569,11 +604,34 @@ const QList<QAction *> DirectoryViewMenu::constructFileOpActions()
         //qDebug() << "constructFileOpActions hasStandardPath:" <<hasStandardPath;
         if (!m_selections.isEmpty() && !m_selections.contains(homeUri) && !m_is_recent) {
             if (!m_is_favorite) {
-                l<<addAction(QIcon::fromTheme("edit-copy-symbolic"), tr("&Copy"));
-                connect(l.last(), &QAction::triggered, [=]() {
-                    ClipboardUtils::setClipboardFiles(m_selections, false);
-                });
+                //code from lixiang for kydroid menu
+                if (m_is_kydroid) {
+                    bool hasDir = false;
+                    for (auto uri : m_selections) {
+                        auto info = FileInfo::fromUri(uri);
+                        if (info->isDir()) {
+                            hasDir = true;
+                            break;
+                        }
+                    }
+                    if (!hasDir) {
+                        l<<addAction(QIcon::fromTheme("edit-copy-symbolic"), tr("&Copy"));
+                        connect(l.last(), &QAction::triggered, [=]() {
+                            ClipboardUtils::setClipboardFiles(m_selections, false);
+                        });
+                    }
+                }
+                else {
+                    l<<addAction(QIcon::fromTheme("edit-copy-symbolic"), tr("&Copy"));
+                    connect(l.last(), &QAction::triggered, [=]() {
+                        ClipboardUtils::setClipboardFiles(m_selections, false);
+                    });
+                }
             }
+
+            //kydroid has no cut,delete,rename option
+            if (m_is_kydroid)
+                return l;
 
             if (!hasStandardPath && !m_is_recent && !m_is_favorite)
             {
@@ -604,7 +662,7 @@ const QList<QAction *> DirectoryViewMenu::constructFileOpActions()
                 });
             }
         } else {
-            if (!m_is_recent && !m_is_favorite)
+            if (!m_is_recent && !m_is_favorite && !m_is_kydroid)
             {
                 auto pasteAction = addAction(QIcon::fromTheme("edit-paste-symbolic"), tr("&Paste"));
                 l<<pasteAction;
@@ -642,7 +700,7 @@ const QList<QAction *> DirectoryViewMenu::constructFileOpActions()
             m_view->invertSelections();
         });
     }
-    else
+    else if(! m_is_kydroid)
     {
         l<<addAction(tr("Reverse Select"));
         connect(l.last(), &QAction::triggered, [=]() {

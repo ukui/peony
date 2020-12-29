@@ -52,15 +52,7 @@ void ListViewStyle::drawPrimitive(QStyle::PrimitiveElement element, const QStyle
         bool isActive = option->state & State_Active;
         bool isEnable = option->state & State_Enabled;
         auto baseColor = option->palette.color(isEnable? (isActive? QPalette::Active: QPalette::Inactive): QPalette::Disabled, QPalette::Window);
-        QPainterPath path;
-        path.setFillRule(Qt::WindingFill);
-        path.addRect(option->rect);
-        if(widget){
-            if(qobject_cast<const QTextEdit *>(widget)){
-                path.addRect(QRect(option->rect.width()-16,option->rect.height()-16,16,16));
-            }
-        }
-        painter->fillPath(path, option->palette.base().color());
+        painter->fillRect(widget->rect(), baseColor);
         painter->restore();
         return;
     }

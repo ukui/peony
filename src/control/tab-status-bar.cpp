@@ -95,7 +95,8 @@ void TabStatusBar::update()
 
     //fix select special item issue
     if (selections.count() == 1 && (selections.first()->uri().isNull()
-        || selections.first()->uri() == "network:///"))
+        || (selections.first()->uri() == "network:///"
+        || selections.first()->uri() == "computer:///")))
     {
         m_label->setText("");
         return;
@@ -106,8 +107,17 @@ void TabStatusBar::update()
         int directoryCount = 0;
         QString filesString="";
         int fileCount = 0;
+        int specialCount = 0;
         goffset size = 0;
         for (auto selection : selections) {
+            //not count special path
+            if (selection->uri() == "network:///"
+               || selection->uri() == "computer:///")
+            {
+                specialCount++;
+                continue;
+            }
+
             if(selection->isDir()) {
 //                directoryCount++;
             } else if (!selection->isVolume()) {
