@@ -470,21 +470,8 @@ const QStringList FileUtils::toDisplayUris(const QStringList &args)
             auto absPath = currentDir.absoluteFilePath(path);
             path = absPath;
             url = QUrl::fromLocalFile(absPath);
-        } else if (path.startsWith ("computer:///") && path.endsWith(".link")) {
-            GFile* file = g_file_new_for_uri(url.toString().toUtf8().constData());
-            if (nullptr != file) {
-                GFileInfo* info = g_file_query_info(file, G_FILE_ATTRIBUTE_STANDARD_TARGET_URI, G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, NULL, NULL);
-                if (nullptr != info) {
-                    url = g_file_info_get_attribute_string(info, G_FILE_ATTRIBUTE_STANDARD_TARGET_URI);
-                    g_object_unref(info);
-                }
-                g_object_unref(file);
-            }
         }
-
-        if (FileUtils::isFileExsit(url.toString())) {
-            uris << url.toDisplayString();
-        }
+        uris << url.toDisplayString();
     }
     return uris;
 }

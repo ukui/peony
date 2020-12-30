@@ -51,11 +51,11 @@ public:
     explicit PeonyDbusService(DesktopIconView *view, QObject *parent=nullptr);
     ~PeonyDbusService();
 
-   void dbusServerRegister();
+   void DbusServerRegister();
 
 public Q_SLOTS:
-    QString getSecurityConfigPath();
-    int reloadSecurityConfig();
+    QString GetSecurityConfigPath();
+    int ReloadSecurityConfig();
 
 private:
     DesktopIconView *m_desktopIconView = nullptr;

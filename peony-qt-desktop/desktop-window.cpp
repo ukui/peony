@@ -104,22 +104,12 @@ DesktopWindow::DesktopWindow(QScreen *screen, bool is_primary, QWidget *parent)
     if(tabletMode){
         setAttribute(Qt::WA_X11NetWmWindowTypeDesktop,false);
         this->hide();
-    }
-    else
+    } else {
         setAttribute(Qt::WA_X11NetWmWindowTypeDesktop);
+    }
 
-    connect(qApp, &QApplication::paletteChanged, this, [=](){
-        bool tabletMode = Peony::GlobalSettings::getInstance()->getValue(TABLET_MODE).toBool();
-        m_tabletmode = tabletMode;
-        if(tabletMode){
-            this->hide();
-            setAttribute(Qt::WA_X11NetWmWindowTypeDesktop,false);
-        }
-        else{
-            this->setVisible(true);
-            setAttribute(Qt::WA_X11NetWmWindowTypeDesktop);
-        }
-    });
+    connect(qApp, &QApplication::paletteChanged, this, &DesktopWindow::updateScreenVisible);
+
     connect(m_opacity, &QVariantAnimation::valueChanged, this, [=]() {
         this->update();
     });
@@ -184,15 +174,6 @@ DesktopWindow::DesktopWindow(QScreen *screen, bool is_primary, QWidget *parent)
                 connect(action, &QAction::triggered, [=]() {
                     //go to control center set background
                     gotoSetBackground();
-//                    QFileDialog dlg;
-//                    dlg.setNameFilters(QStringList() << "*.jpg"
-//                                       << "*.png");
-//                    if (dlg.exec()) {
-//                        auto url = dlg.selectedUrls().first();
-//                        this->setBg(url.path());
-//                        // qDebug()<<url;
-//                        Q_EMIT this->changeBg(url.path());
-//                    }
                 });
             }
             menu.exec(QCursor::pos());
@@ -688,31 +669,34 @@ void DesktopWindow::updateWinGeometry() {
     auto vg = getScreen()->virtualGeometry();
     auto ag = getScreen()->availableGeometry();
 
-//    this->move(m_screen->geometry().topLeft());
-//    this->setFixedSize(m_screen->geometry().size());
-//    /*!
-//      \bug
-//      can not set window geometry correctly in kwin.
-//      strangely it works in ukwm.
-//      */
-//    this->setGeometry(m_screen->geometry());
-//    Q_EMIT this->checkWindow();
-
     scaleBg(g);
 
-    auto name = m_screen->name();
-    if (m_screen == qApp->primaryScreen()) {
-        if (auto view = qobject_cast<DesktopIconView *>(centralWidget())) {
-            if(!m_tabletmode)
-            this->show();
-        }
+    updateScreenVisible();
+}
+
+void DesktopWindow::updateScreenVisible()
+{
+    m_tabletmode = Peony::GlobalSettings::getInstance()->getValue(TABLET_MODE).toBool();
+
+    if (true == m_tabletmode) {
+        //pad mode desktop should hide, pla
+        hide();
     } else {
-        if (m_screen->geometry() == qApp->primaryScreen()->geometry())
-            this->hide();
-        else
-            if(!m_tabletmode)
-            this->show();
+        //PC mode desktop will show,
+        if (m_screen == qApp->primaryScreen()) {
+            //primary screen must be show
+            if (auto view = qobject_cast<DesktopIconView *>(centralWidget())) {
+                show();
+            }
+        } else {
+            // if desktop is mirror mode the slave screen will hide, or show empty desktop.
+            if (m_screen->geometry() == qApp->primaryScreen()->geometry()) {
+                hide();
+            } else {
+                show();
+            }
+        }
     }
 
-    //updateView();
+    return;
 }

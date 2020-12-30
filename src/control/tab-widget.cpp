@@ -150,7 +150,7 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
 //    m_header_bar_layout->addWidget(previewButtons);
 
     //trash quick operate buttons
-    QHBoxLayout *trash = new QHBoxLayout(this);
+    QHBoxLayout *trash = new QHBoxLayout();
     m_trash_bar_layout = trash;
     QToolBar *trashButtons = new QToolBar(this);
     m_trash_bar = trashButtons;
@@ -239,7 +239,7 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
 void TabWidget::initAdvanceSearch()
 {
     //advance search bar
-    QHBoxLayout *search = new QHBoxLayout(this);
+    QHBoxLayout *search = new QHBoxLayout();
     m_search_bar_layout = search;
     // Maybe it is unused
     QToolBar *searchButtons = new QToolBar(this);
@@ -335,7 +335,7 @@ void TabWidget::browsePath()
 
 void TabWidget::addNewConditionBar()
 {
-    QHBoxLayout *layout = new QHBoxLayout(this);
+    QHBoxLayout *layout = new QHBoxLayout();
     m_layout_list.append(layout);
 
     QToolBar *optionBar = new QToolBar(this);

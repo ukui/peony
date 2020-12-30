@@ -38,6 +38,9 @@ ConnectServerDialog::ConnectServerDialog(QWidget *parent) : QDialog(parent)
     setFixedSize(m_widget_size);
     setWindowIcon(QIcon::fromTheme("network-server"));
     setWindowTitle(tr("connect to server"));
+    setBackgroundRole(QPalette::Base);
+    setAutoFillBackground(true);
+
     m_main_layout = new QVBoxLayout(this);
 
     m_remote_type_edit      = new QComboBox;
@@ -225,6 +228,8 @@ ConnectServerLogin::ConnectServerLogin(QString remoteIP, QWidget *parent) : QDia
     setFixedSize(m_widget_size);
     setWindowIcon(QIcon::fromTheme("network-server"));
     setWindowTitle(tr("The login user"));
+    setBackgroundRole(QPalette::Base);
+    setAutoFillBackground(true);
     m_main_layout = new QVBoxLayout(this);
     m_main_layout->addSpacing(12);
     m_main_layout->setMargin(m_widget_margin);

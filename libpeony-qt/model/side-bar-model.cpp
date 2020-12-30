@@ -212,15 +212,22 @@ QVariant SideBarModel::data(const QModelIndex &index, int role) const
     SideBarAbstractItem *item = static_cast<SideBarAbstractItem*>(index.internalPointer());
 
     //! Delete the second column to fit the topic
-//    if (index.column() == 1 && role == Qt::DecorationRole) {
-//        if (role == Qt::DecorationRole && item->isRemoveable())
-//            if (item->isMounted())
+//    if (index.column() == 1) {
+//        if(role == Qt::DecorationRole){
+//            bool unmountAble,ejectAble;
+//            unmountAble = item->isMountable();
+//            ejectAble = item->isEjectable();
+//            if(unmountAble && ejectAble)
 //                return QVariant(QIcon::fromTheme("media-eject"));
-//            else//if volume has been unmounted,doesn't show icon.
+//            else if(unmountAble){
+//                if(item->isMounted())
+//                    return QVariant(QIcon::fromTheme("media-eject"));
+//                else
+//                    return QVariant();
+//            }else
 //                return QVariant();
-//        else {
+//        }else
 //            return QVariant();
-//        }
 //    }
 
     switch (role) {

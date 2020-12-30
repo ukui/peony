@@ -77,6 +77,7 @@ public Q_SLOTS:
     void scaleBg(const QRect &geometry);
     void updateView();
     void updateWinGeometry();
+    void updateScreenVisible();
 
     void connectSignal();
     void disconnectSignal();

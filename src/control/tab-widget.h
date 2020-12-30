@@ -264,7 +264,7 @@ private:
 
     //Button size macro definition
     const int TRASH_BUTTON_HEIGHT = 28;
-    const int TRASH_BUTTON_WIDTH = 60;
+    const int TRASH_BUTTON_WIDTH = 65;
 
     //advance search filter options
     QStringList m_option_list = {tr("name"), tr("type"), tr("modify time"), tr("file size")};

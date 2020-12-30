@@ -178,6 +178,11 @@ public Q_SLOTS:
     void ensureItemPosByUri(const QString &uri);
 
     void setShowHidden();
+    /**
+     * @brief Rearrange the desktop icon position
+     * @param screenSize: The value of the screen size is the resolution minus the height of the control panel
+     */
+    void resolutionChange(const QRect &screenSize);
     void setEditFlag(bool edit);
 
 protected:
@@ -238,6 +243,8 @@ private:
 
     QModelIndexList m_drag_indexes;
 
+    QMap<QScreen*, bool> m_screens;
+    PeonyDbusService *m_peonyDbusSer;
     QMap<QString, QRect> m_item_rect_hash;
 };
 

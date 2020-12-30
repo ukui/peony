@@ -38,21 +38,21 @@ PeonyDbusService::~PeonyDbusService()
     m_desktopIconView = nullptr;
 }
 
-void PeonyDbusService::dbusServerRegister()
+void PeonyDbusService::DbusServerRegister()
 {
     QDBusConnection::sessionBus().unregisterService("org.ukui.peony.service");
     QDBusConnection::sessionBus().registerService("org.ukui.peony.service");
     QDBusConnection::sessionBus().registerObject("/org/ukui/peony", this, QDBusConnection :: ExportAllSlots);
 }
 
-QString PeonyDbusService::getSecurityConfigPath()
+QString PeonyDbusService::GetSecurityConfigPath()
 {
     QString jsonPath=QDir::homePath()+"/.config/peony-security-config.json";
 
     return jsonPath;
 }
 
-int PeonyDbusService::reloadSecurityConfig()
+int PeonyDbusService::ReloadSecurityConfig()
 {
     //m_desktopIconView->updateBWList();
     return 0;

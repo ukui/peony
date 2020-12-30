@@ -232,6 +232,7 @@ end:
             for (auto child : *m_children) {
                 if (child->uri() == uri) {
                     SideBarFileSystemItem *changedItem = static_cast<SideBarFileSystemItem*>(child);
+                    updateFileInfo(changedItem);
                     //FIXME: replace BLOCKING api in ui thread.
                     if (FileUtils::getTargetUri(uri).isEmpty()) {
                         changedItem->m_is_mounted = false;
@@ -242,7 +243,6 @@ end:
 
                     //why it would failed when send changed signal for newly mounted item?
                     //m_model->dataChanged(changedItem->firstColumnIndex(), changedItem->firstColumnIndex());
-                    updateFileInfo(changedItem);
                     m_model->dataChanged(changedItem->firstColumnIndex(), changedItem->lastColumnIndex());
                     break;
                 }
@@ -307,6 +307,9 @@ bool SideBarFileSystemItem::isMountable()
 
 bool SideBarFileSystemItem::isMounted()
 {
+    if(!FileUtils::getTargetUri(m_uri).isEmpty())
+        m_is_mounted = true;
+
     return m_is_mounted;
 }
 
@@ -358,6 +361,16 @@ static void unmount_finished(GFile* file, GAsyncResult* result, gpointer udata)
     GError *err = nullptr;
     g_file_unmount_mountable_with_operation_finish (file, result, &err);
     if (err) {
+        if(!strcmp(err->message,"Not authorized to perform operation")){//umount /data need permissions.
+            g_error_free(err);
+            return;
+        }
+        if(strstr(err->message,"umount: ")){
+            QMessageBox::warning(nullptr,QObject::tr("Unmount failed"),QObject::tr("Unable to unmount it, you may need to close some programs, such as: GParted etc."),QMessageBox::Yes);
+            g_error_free(err);
+            return;
+        }
+
         auto button = QMessageBox::warning(nullptr, QObject::tr("Unmount failed"), QObject::tr("Error: %1\n"
                                                                                                "Do you want to unmount forcely?").arg(err->message),
                                            QMessageBox::Yes, QMessageBox::No);
@@ -523,16 +536,16 @@ GAsyncReadyCallback SideBarFileSystemItem::eject_cb(GFile *file, GAsyncResult *r
 
 //update udisk file info
 void SideBarFileSystemItem::updateFileInfo(SideBarFileSystemItem *pThis){
+        auto fileInfo = FileInfo::fromUri(pThis->m_uri,false);
+        FileInfoJob fileJob(fileInfo);
+        fileJob.querySync();
+
         QString tmpName = FileUtils::getFileDisplayName(pThis->m_uri);
 
         //old's drive name -> now's volume name. fix #17968
         FileUtils::queryVolumeInfo(pThis->m_uri,pThis->m_volume_name,pThis->m_unix_device,tmpName);
         //icon name.
         pThis->m_icon_name = FileUtils::getFileIconName(pThis->m_uri);
-        //mountable state. fix #19172
-        auto fileInfo = FileInfo::fromUri(pThis->m_uri,false);
-        FileInfoJob fileJob(fileInfo);
-        fileJob.querySync();
 }
 
 /* Eject some device by stop it's drive. Such as: mobile harddisk.

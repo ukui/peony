@@ -78,6 +78,8 @@ using namespace Peony;
 
 #define ITEM_POS_ATTRIBUTE "metadata::peony-qt-desktop-item-position"
 
+static bool iconSizeLessThan (QPair<QRect, QString>& p1, QPair<QRect, QString>& p2);
+
 DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
 {
     //m_refresh_timer.setInterval(500);
@@ -150,6 +152,40 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
 //            }
 //        });
 //    });
+
+    auto screens = qApp->screens();
+    connect(qApp->primaryScreen(), &QScreen::availableGeometryChanged, this, &DesktopIconView::resolutionChange);
+    connect(qApp, &QGuiApplication::screenAdded, [=] (QScreen* screen) {
+        m_screens[screen] = false;
+        for (auto it = m_screens.constBegin(); it != m_screens.constEnd(); ++it) {
+            m_screens[screen] = (screen == qApp->primaryScreen()) ? true : false;
+        }
+    });
+
+    connect(qApp, &QGuiApplication::screenRemoved, [=] (QScreen* screen) {
+        m_screens.remove(screen);
+        for (auto it = m_screens.constBegin(); it != m_screens.constEnd(); ++it) {
+            m_screens[screen] = (screen == qApp->primaryScreen()) ? true : false;
+        }
+    });
+
+    connect(qApp, &QGuiApplication::primaryScreenChanged, [=] (QScreen* screen) {
+        for (auto it = m_screens.constBegin(); it != m_screens.constEnd(); ++it) {
+            if (it.value()) {
+                disconnect(it.key(), &QScreen::availableGeometryChanged, this, &DesktopIconView::resolutionChange);
+            }
+            m_screens[it.key()] = false;
+        }
+
+        m_screens[screen] = true;
+        connect(screen, &QScreen::availableGeometryChanged, this, &DesktopIconView::resolutionChange);
+        resolutionChange(screen->availableGeometry());
+//        qDebug() << "name: " << screen->name() << " --- " << screen->availableGeometry();
+    });
+
+    for (auto i = screens.constBegin(); i != screens.constEnd(); ++i) {
+        m_screens[*i] = (*i == qApp->primaryScreen()) ? true : false;
+    }
 
     m_model = new DesktopItemModel(this);
     m_proxy_model = new DesktopItemProxyModel(m_model);
@@ -236,6 +272,9 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
 
     setModel(m_proxy_model);
     //m_proxy_model->sort(0);
+
+    m_peonyDbusSer = new PeonyDbusService(this);
+    m_peonyDbusSer->DbusServerRegister();
 
     this->refresh();
 }
@@ -506,6 +545,74 @@ void DesktopIconView::setShowHidden()
     });
 }
 
+void DesktopIconView::resolutionChange(const QRect &screenSize)
+{
+    int row = 0;
+    int column = 0;
+    float iconWidth = 0;
+    float iconHeigth = 0;
+
+    // icon size
+    QSize icon = gridSize();
+    iconWidth = icon.width();
+    iconHeigth = icon.height();
+
+    QList<QPair<QRect, QString>> newPosition;
+
+    for (auto i = m_item_rect_hash.constBegin(); i != m_item_rect_hash.constEnd(); ++i) {
+        // FIXME:// more than one screen
+//        if (i.value().x() >= screenSize.x() && i.value().y() >= screenSize.y()
+//                && i.value().x() <= screenSize.width() && i.value().y() <= screenSize.height()) {
+            newPosition << QPair<QRect, QString>(i.value(), i.key());
+//        }
+    }
+
+    // not get current size
+    if (iconWidth == 0 || iconHeigth == 0) {
+        qDebug() << "Unable to get icon size, need to get it another way!";
+        return;
+    }
+
+//    qDebug() << "icon width: " << iconWidth << " icon heigth: " << iconHeigth;
+//    qDebug() << "width:" << screenSize.width() << " height:" << screenSize.height();
+
+    std::sort(newPosition.begin(), newPosition.end(), iconSizeLessThan);
+
+    m_item_rect_hash.clear();
+
+    for (auto i = newPosition.constBegin(); i != newPosition.constEnd(); ++i) {
+        int posX = 0;
+        int posY = 0;
+
+        Q_FOREVER {
+            // icon pos x, y
+            posX = column * iconWidth;
+            posY = row * iconHeigth;
+            // Check to see if the screen size is exceeded
+            if (posY + iconHeigth <= screenSize.height()
+                    && posX + iconWidth <= screenSize.width()) {
+                ++row;
+                break;
+            } else if (posY + iconHeigth > screenSize.height()
+                       && posX + iconWidth < screenSize.width()) {
+                row = 0;
+                ++column;
+                continue;
+            } else {
+                // The desktop is full of ICONS
+                posX = 0;
+                posY = 0;
+                break;
+            }
+        }
+
+        updateItemPosByUri(i->second, QPoint(posX, posY));
+        setFileMetaInfoPos(i->second, QPoint(posX, posY));
+//        qDebug() << "uri: " << i->second << " --- pos: " << QPoint(posX, posY);
+    }
+    this->saveAllItemPosistionInfos();
+}
+
 void DesktopIconView::openFileByUri(QString uri)
 {
     auto info = FileInfo::fromUri(uri, false);
@@ -648,7 +755,7 @@ QPoint DesktopIconView::getFileMetaInfoPos(const QString &uri)
             if (list.count() == 2) {
                 int top = list.first().toInt();
                 int left = list.at(1).toInt();
-                if (top > 0 && left >= 0) {
+                if (top >= 0 && left >= 0) {
                     QPoint p(left, top);
                     return p;
                 }
@@ -990,8 +1097,9 @@ void DesktopIconView::rowsInserted(const QModelIndex &parent, int start, int end
     QListView::rowsInserted(parent, start, end);
     for (auto uri : getAllFileUris()) {
         auto pos = getFileMetaInfoPos(uri);
-        if (pos.x() >= 0)
+        if (pos.x() >= 0) {
             updateItemPosByUri(uri, pos);
+        }
     }
 }
 
@@ -1237,20 +1345,21 @@ void DesktopIconView::mousePressEvent(QMouseEvent *e)
             if (! m_is_edit)
                clearAllIndexWidgets();
             m_last_index = index;
-//            if (!indexWidget(m_last_index)) {
-
-                auto indexWidget = new DesktopIndexWidget(qobject_cast<DesktopIconViewDelegate *>(itemDelegate()), viewOptions(), m_last_index);
-                setIndexWidget(m_last_index,
-                               indexWidget);
-                indexWidget->move(visualRect(m_last_index).topLeft());
+            //force to recreate new DesktopIndexWidget, to fix not show name issue
+            if (indexWidget(m_last_index))
+                setIndexWidget(m_last_index, nullptr);
+            //if (!indexWidget(m_last_index)) {
+            auto indexWidget = new DesktopIndexWidget(qobject_cast<DesktopIconViewDelegate *>(itemDelegate()), viewOptions(), m_last_index);
+            setIndexWidget(m_last_index,
+                           indexWidget);
+            indexWidget->move(visualRect(m_last_index).topLeft());
 #if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
-                for (auto uri : getAllFileUris()) {
-                    auto pos = getFileMetaInfoPos(uri);
-                    if (pos.x() >= 0)
-                        updateItemPosByUri(uri, pos);
-                }
+            for (auto uri : getAllFileUris()) {
+                auto pos = getFileMetaInfoPos(uri);
+                if (pos.x() >= 0)
+                    updateItemPosByUri(uri, pos);
+            }
 #endif
-//            }
         }
     }
 
@@ -1572,3 +1681,17 @@ QRect DesktopIconView::visualRect(const QModelIndex &index) const
     return rect;
 }
 
+static bool iconSizeLessThan (QPair<QRect, QString>& p1, QPair<QRect, QString>& p2)
+{
+    if (p1.first.x() < p2.first.x())
+        return true;
+
+    if ((p1.first.x() == p2.first.x()) && (p1.first.y() <= p2.first.y())) {
+        return true;
+    } else if ((p1.first.y() == p2.first.y()) && (p1.first.x() <= p2.first.x())) {
+        return true;
+    } else if (p1.first.x() <= p2.first.x() && p1.first.y() <= p2.first.y()) {
+        return true;
+    }
+    return false;
+}

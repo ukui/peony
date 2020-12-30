@@ -153,6 +153,8 @@ private:
     std::shared_ptr<FileWatcher> m_thumbnail_watcher = nullptr;
 
     QStringList m_ending_uris;
+    QStringList m_waiting_add_queue;
+
 
     /*!
      * \brief m_async_count

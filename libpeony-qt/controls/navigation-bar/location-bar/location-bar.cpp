@@ -239,6 +239,10 @@ void LocationBar::addButton(const QString &uri, bool setIcon, bool setMenu)
         auto suburis = m.stringList();
         if (!suburis.isEmpty()) {
             QMenu *menu = new QMenu(this);
+            const int WIDTH_EXTEND = 5;
+            connect(menu, &QMenu::aboutToShow, this, [=](){
+                menu->setMinimumWidth(button->width() + WIDTH_EXTEND);
+            });
             QList<QAction *> actions;
             for (auto uri : suburis) {
                 QUrl url = uri;
@@ -249,7 +253,8 @@ void LocationBar::addButton(const QString &uri, bool setIcon, bool setMenu)
                     int  charWidth = fontMetrics().averageCharWidth();
                     displayName = fontMetrics().elidedText(displayName, Qt::ElideRight, ELIDE_TEXT_LENGTH * charWidth);
                 }
-                QAction *action = new QAction(displayName, this);
+                QIcon icon = QIcon::fromTheme(Peony::FileUtils::getFileIconName(uri), QIcon::fromTheme("folder"));
+                QAction *action = new QAction(icon, displayName, this);
                 actions<<action;
                 connect(action, &QAction::triggered, [=]() {
                     Q_EMIT groupChangedRequest(tmp);
