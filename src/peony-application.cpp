@@ -368,7 +368,7 @@ void PeonyApplication::parseCmd(quint32 id, QByteArray msg)
             connect(enumerator, &Peony::FileEnumerator::prepared, enumerator, [tmp](std::shared_ptr<Peony::GErrorWrapper> err, const QString &targetUri, bool critical){
                 auto uris = *tmp;
                 delete tmp;
-                qApp->setQuitOnLastWindowClosed(Peony::GlobalSettings::getInstance()->getValue(RESIDENT_IN_BACKEND).toBool());
+                qApp->setQuitOnLastWindowClosed(!Peony::GlobalSettings::getInstance()->getValue(RESIDENT_IN_BACKEND).toBool());
                 if (!targetUri.isEmpty()) {
                     auto window = new MainWindow(targetUri);
                     uris.removeAt(0);
