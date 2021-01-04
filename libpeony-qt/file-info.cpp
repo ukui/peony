@@ -199,9 +199,14 @@ bool FileInfo::isOfficeFile()
 
 bool FileInfo::isExecDisable()
 {
-     int nRet = m_meta_info->getMetaInfoInt("exec_disable");
-     if(1==nRet) return true;
-     return false;
+    if (m_meta_info) {
+        int nRet = m_meta_info->getMetaInfoInt("exec_disable");
+        if(1 == nRet) {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 const QString FileInfo::targetUri()
