@@ -164,6 +164,9 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
     recover->setFixedWidth(TRASH_BUTTON_WIDTH);
     recover->setFixedHeight(TRASH_BUTTON_HEIGHT);
     m_recover_button = recover;
+    //hide trash button to fix bug 31322, according to designer advice
+    m_recover_button->hide();
+
     //trash->addSpacing(10);
     trash->addWidget(Label, Qt::AlignLeft);
     trash->setContentsMargins(10, 0, 10, 0);
@@ -550,7 +553,7 @@ void TabWidget::updateTrashBarVisible(const QString &uri)
     m_trash_bar->setVisible(visible);
     m_trash_label->setVisible(visible);
     m_clear_button->setVisible(visible);
-    m_recover_button->setVisible(visible);
+    //m_recover_button->setVisible(visible);
 
     if (uri.startsWith("trash://") || uri.startsWith("recent://"))
         m_tool_bar->setVisible(false);
