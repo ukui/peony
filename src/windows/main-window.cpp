@@ -1329,14 +1329,22 @@ void MainWindow::initUI(const QString &uri)
 
 void MainWindow::cleanTrash()
 {
+    auto uris = getCurrentAllFileUris();
     Peony::AudioPlayManager::getInstance()->playWarningAudio();
-    auto result = QMessageBox::question(nullptr, tr("Delete Permanently"),
-                                        tr("Are you sure that you want to delete these files? "
-                                           "Once you start a deletion, the files deleting will never be "
-                                           "restored again."));
-    if (result == QMessageBox::Yes) {
-        auto uris = getCurrentAllFileUris();
-        Peony::FileOperationUtils::remove(uris);
+    if (uris.count() >0)
+    {
+        auto result = QMessageBox::question(nullptr, tr("Delete Permanently"),
+                                            tr("Are you sure that you want to delete these files? "
+                                               "Once you start a deletion, the files deleting will never be "
+                                               "restored again."));
+        if (result == QMessageBox::Yes) {
+            Peony::FileOperationUtils::remove(uris);
+        }
+    }
+    else
+    {
+        QMessageBox::information(nullptr, tr("Tips info"),
+                                 tr("Trash has no file need to be cleaned."));
     }
 }
 

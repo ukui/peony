@@ -128,16 +128,26 @@
         <translation>İleri</translation>
     </message>
     <message>
+        <location filename="../../src/windows/main-window.cpp" line="1344"/>
+        <source>Tips info</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/windows/main-window.cpp" line="1345"/>
+        <source>Trash has no file need to be cleaned.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Delete file Warning</source>
         <translation type="obsolete">Dosya Silme Uyarısı</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1331"/>
+        <location filename="../../src/windows/main-window.cpp" line="1334"/>
         <source>Delete Permanently</source>
         <translation>Kalıcı Olarak Sil</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1332"/>
+        <location filename="../../src/windows/main-window.cpp" line="1335"/>
         <source>Are you sure that you want to delete these files? Once you start a deletion, the files deleting will never be restored again.</source>
         <translation>Bu dosyaları silmek istediğinizden emin misiniz? Bir silme işlemini başlattığınızda, silinen dosyalar bir daha geri yüklenmeyecektir.</translation>
     </message>
@@ -265,22 +275,22 @@
         <translation type="vanished">Dosya Yöneticisi</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.cpp" line="142"/>
+        <location filename="../../src/peony-application.cpp" line="145"/>
         <source>Files or directories to open</source>
         <translation>Açılacak dosyalar veya dizinler</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.cpp" line="142"/>
+        <location filename="../../src/peony-application.cpp" line="145"/>
         <source>[FILE1, FILE2,...]</source>
         <translation>[DOSYA1, DOSYA2,...]</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.cpp" line="179"/>
+        <location filename="../../src/peony-application.cpp" line="182"/>
         <source>Warning</source>
         <translation>Uyarı</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.cpp" line="179"/>
+        <location filename="../../src/peony-application.cpp" line="182"/>
         <source>Peony-Qt can not get the system&apos;s icon theme. There are 2 reasons might lead to this problem:
 
 1. Peony-Qt might be running as root, that means you have the higher permission and can do some things which normally forbidden. But, you should learn that if you were in a root, the virtual file system will lose some featrue such as you can not use &quot;My Computer&quot;, the theme and icons might also went wrong. So, run peony-qt in a root is not recommended.
@@ -293,12 +303,12 @@
 2. Sisteminiz için qt olmayan bir tema kullanıyorsunuz ancak qt uygulamaları için platform tema eklentisini yüklemediniz. Gtk-theme kullanıyorsanız, bu sorunu çözmek için qt5-gtk2-platformtheme paketini yüklemeyi deneyin.</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.cpp" line="387"/>
+        <location filename="../../src/peony-application.cpp" line="429"/>
         <source>Peony Qt</source>
         <translation>Dosya Yöneticisi</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.cpp" line="388"/>
+        <location filename="../../src/peony-application.cpp" line="430"/>
         <source>Author:
 	Yue Lan &lt;lanyue@kylinos.cn&gt;
 	Meihong He &lt;hemeihong@kylinos.cn&gt;
@@ -380,6 +390,19 @@ Telif (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</translatio
     </message>
 </context>
 <context>
+    <name>QObject</name>
+    <message>
+        <location filename="../../src/peony-application.cpp" line="403"/>
+        <source>Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/peony-application.cpp" line="403"/>
+        <source>Can not open %1.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>SortTypeMenu</name>
     <message>
         <location filename="../../src/control/sort-type-menu.cpp" line="33"/>
@@ -419,34 +442,34 @@ Telif (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</translatio
 <context>
     <name>TabStatusBar</name>
     <message>
-        <location filename="../../src/control/tab-status-bar.cpp" line="133"/>
-        <location filename="../../src/control/tab-status-bar.cpp" line="141"/>
+        <location filename="../../src/control/tab-status-bar.cpp" line="143"/>
+        <location filename="../../src/control/tab-status-bar.cpp" line="151"/>
         <source>; %1 folders</source>
         <translation>; %1 klasör</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-status-bar.cpp" line="135"/>
-        <location filename="../../src/control/tab-status-bar.cpp" line="143"/>
+        <location filename="../../src/control/tab-status-bar.cpp" line="145"/>
+        <location filename="../../src/control/tab-status-bar.cpp" line="153"/>
         <source>; %1 files, %2 total</source>
         <translation>; %1 dosya, %2 toplam</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-status-bar.cpp" line="137"/>
+        <location filename="../../src/control/tab-status-bar.cpp" line="147"/>
         <source>; %1 folder</source>
         <translation>; %1 klasör</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-status-bar.cpp" line="139"/>
+        <location filename="../../src/control/tab-status-bar.cpp" line="149"/>
         <source>; %1 file, %2</source>
         <translation>; %1 dosya, %2</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-status-bar.cpp" line="148"/>
+        <location filename="../../src/control/tab-status-bar.cpp" line="158"/>
         <source>%1 selected</source>
         <translation>%1 seçildi</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-status-bar.cpp" line="160"/>
+        <location filename="../../src/control/tab-status-bar.cpp" line="170"/>
         <source>Search &quot;%1&quot; in &quot;%2&quot;</source>
         <translation>%1 de %1 bul</translation>
     </message>
@@ -469,48 +492,48 @@ Telif (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</translatio
         <translation>Geri Yükle</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="241"/>
+        <location filename="../../src/control/tab-widget.cpp" line="244"/>
         <source>Close advance search.</source>
         <translation>Gelişmiş aramayı kapat.</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="249"/>
+        <location filename="../../src/control/tab-widget.cpp" line="252"/>
         <source>Search</source>
         <translation>Ara</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="258"/>
+        <location filename="../../src/control/tab-widget.cpp" line="261"/>
         <source>Choose other path to search.</source>
         <translation>Aramak için başka bir yol seçin.</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="267"/>
+        <location filename="../../src/control/tab-widget.cpp" line="270"/>
         <source>Search recursively</source>
         <translation>Yinelemeli olarak ara</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="276"/>
+        <location filename="../../src/control/tab-widget.cpp" line="279"/>
         <source>more options</source>
         <translation>Daha fazla seçenek</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="280"/>
+        <location filename="../../src/control/tab-widget.cpp" line="283"/>
         <source>Show/hide advance search</source>
         <translation>Gelişmiş aramayı göster/gizle</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="340"/>
+        <location filename="../../src/control/tab-widget.cpp" line="343"/>
         <source>Select path</source>
         <translation type="unfinished">Yol seç</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="375"/>
-        <location filename="../../src/control/tab-widget.cpp" line="459"/>
+        <location filename="../../src/control/tab-widget.cpp" line="378"/>
+        <location filename="../../src/control/tab-widget.cpp" line="462"/>
         <source>is</source>
         <translation>de</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="393"/>
+        <location filename="../../src/control/tab-widget.cpp" line="396"/>
         <source>Please input key words...</source>
         <translation>Lütfen anahtar kelimeler girin ...</translation>
     </message>
@@ -519,8 +542,8 @@ Telif (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</translatio
         <translation type="vanished">Lütfen anahtar kelimeler girin ...</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="428"/>
-        <location filename="../../src/control/tab-widget.cpp" line="446"/>
+        <location filename="../../src/control/tab-widget.cpp" line="431"/>
+        <location filename="../../src/control/tab-widget.cpp" line="449"/>
         <source>contains</source>
         <translation>İçerik</translation>
     </message>

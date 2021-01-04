@@ -128,16 +128,26 @@
         <translation>重做</translation>
     </message>
     <message>
+        <location filename="../../src/windows/main-window.cpp" line="1344"/>
+        <source>Tips info</source>
+        <translation>温馨提示</translation>
+    </message>
+    <message>
+        <location filename="../../src/windows/main-window.cpp" line="1345"/>
+        <source>Trash has no file need to be cleaned.</source>
+        <translation>回收站没有文件需要被清空！</translation>
+    </message>
+    <message>
         <source>Delete file Warning</source>
         <translation type="vanished">删除文件警告</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1331"/>
+        <location filename="../../src/windows/main-window.cpp" line="1334"/>
         <source>Delete Permanently</source>
         <translation>永久删除</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1332"/>
+        <location filename="../../src/windows/main-window.cpp" line="1335"/>
         <source>Are you sure that you want to delete these files? Once you start a deletion, the files deleting will never be restored again.</source>
         <translation>您确定要删除这些文件吗？一旦开始删除，这些文件将不可再恢复。</translation>
     </message>
@@ -265,22 +275,22 @@
         <translation type="vanished">文件管理器</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.cpp" line="142"/>
+        <location filename="../../src/peony-application.cpp" line="145"/>
         <source>Files or directories to open</source>
         <translation>需要打开的文件或文件夹</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.cpp" line="142"/>
+        <location filename="../../src/peony-application.cpp" line="145"/>
         <source>[FILE1, FILE2,...]</source>
         <translation>[文件1，文件2...]</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.cpp" line="179"/>
+        <location filename="../../src/peony-application.cpp" line="182"/>
         <source>Warning</source>
         <translation>警告</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.cpp" line="179"/>
+        <location filename="../../src/peony-application.cpp" line="182"/>
         <source>Peony-Qt can not get the system&apos;s icon theme. There are 2 reasons might lead to this problem:
 
 1. Peony-Qt might be running as root, that means you have the higher permission and can do some things which normally forbidden. But, you should learn that if you were in a root, the virtual file system will lose some featrue such as you can not use &quot;My Computer&quot;, the theme and icons might also went wrong. So, run peony-qt in a root is not recommended.
@@ -293,12 +303,12 @@
 2.你使用的系统主题不是qt默认支持的主题，并且你没有安装相关的平台插件。如果你正在使用Gtk主题作为系统主题，尝试安装qt5-gtk2-platformtheme以解决此问题。</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.cpp" line="387"/>
+        <location filename="../../src/peony-application.cpp" line="429"/>
         <source>Peony Qt</source>
         <translation>文件管理器</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.cpp" line="388"/>
+        <location filename="../../src/peony-application.cpp" line="430"/>
         <source>Author:
 	Yue Lan &lt;lanyue@kylinos.cn&gt;
 	Meihong He &lt;hemeihong@kylinos.cn&gt;
@@ -380,6 +390,19 @@ Copyright (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</source
     </message>
 </context>
 <context>
+    <name>QObject</name>
+    <message>
+        <location filename="../../src/peony-application.cpp" line="403"/>
+        <source>Error</source>
+        <translation>错误</translation>
+    </message>
+    <message>
+        <location filename="../../src/peony-application.cpp" line="403"/>
+        <source>Can not open %1.</source>
+        <translation>无法打开 %1.</translation>
+    </message>
+</context>
+<context>
     <name>SortTypeMenu</name>
     <message>
         <location filename="../../src/control/sort-type-menu.cpp" line="33"/>
@@ -419,34 +442,34 @@ Copyright (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</source
 <context>
     <name>TabStatusBar</name>
     <message>
-        <location filename="../../src/control/tab-status-bar.cpp" line="133"/>
-        <location filename="../../src/control/tab-status-bar.cpp" line="141"/>
+        <location filename="../../src/control/tab-status-bar.cpp" line="143"/>
+        <location filename="../../src/control/tab-status-bar.cpp" line="151"/>
         <source>; %1 folders</source>
         <translation>; %1 个文件夹</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-status-bar.cpp" line="135"/>
-        <location filename="../../src/control/tab-status-bar.cpp" line="143"/>
+        <location filename="../../src/control/tab-status-bar.cpp" line="145"/>
+        <location filename="../../src/control/tab-status-bar.cpp" line="153"/>
         <source>; %1 files, %2 total</source>
         <translation>; %1 个文件, 共%2</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-status-bar.cpp" line="137"/>
+        <location filename="../../src/control/tab-status-bar.cpp" line="147"/>
         <source>; %1 folder</source>
         <translation>; %1 个文件夹</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-status-bar.cpp" line="139"/>
+        <location filename="../../src/control/tab-status-bar.cpp" line="149"/>
         <source>; %1 file, %2</source>
         <translation>; %1 个文件, %2</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-status-bar.cpp" line="148"/>
+        <location filename="../../src/control/tab-status-bar.cpp" line="158"/>
         <source>%1 selected</source>
         <translation>选中%1个</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-status-bar.cpp" line="160"/>
+        <location filename="../../src/control/tab-status-bar.cpp" line="170"/>
         <source>Search &quot;%1&quot; in &quot;%2&quot;</source>
         <translation>在%2中搜索%1</translation>
     </message>
@@ -469,48 +492,48 @@ Copyright (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</source
         <translation>还原</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="241"/>
+        <location filename="../../src/control/tab-widget.cpp" line="244"/>
         <source>Close advance search.</source>
         <translation>关闭高级搜索。</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="249"/>
+        <location filename="../../src/control/tab-widget.cpp" line="252"/>
         <source>Search</source>
         <translation>搜索</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="258"/>
+        <location filename="../../src/control/tab-widget.cpp" line="261"/>
         <source>Choose other path to search.</source>
         <translation>选择其他搜索路径。</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="267"/>
+        <location filename="../../src/control/tab-widget.cpp" line="270"/>
         <source>Search recursively</source>
         <translation>递归搜索</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="276"/>
+        <location filename="../../src/control/tab-widget.cpp" line="279"/>
         <source>more options</source>
         <translation>更多选项</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="280"/>
+        <location filename="../../src/control/tab-widget.cpp" line="283"/>
         <source>Show/hide advance search</source>
         <translation>显示/隐藏高级搜索</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="340"/>
+        <location filename="../../src/control/tab-widget.cpp" line="343"/>
         <source>Select path</source>
         <translation>选择路径</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="375"/>
-        <location filename="../../src/control/tab-widget.cpp" line="459"/>
+        <location filename="../../src/control/tab-widget.cpp" line="378"/>
+        <location filename="../../src/control/tab-widget.cpp" line="462"/>
         <source>is</source>
         <translation>是</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="393"/>
+        <location filename="../../src/control/tab-widget.cpp" line="396"/>
         <source>Please input key words...</source>
         <translation>请输入关键词...</translation>
     </message>
@@ -519,8 +542,8 @@ Copyright (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</source
         <translation type="vanished">请输入关键词...</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="428"/>
-        <location filename="../../src/control/tab-widget.cpp" line="446"/>
+        <location filename="../../src/control/tab-widget.cpp" line="431"/>
+        <location filename="../../src/control/tab-widget.cpp" line="449"/>
         <source>contains</source>
         <translation>包含</translation>
     </message>

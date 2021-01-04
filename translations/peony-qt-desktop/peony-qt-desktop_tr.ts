@@ -64,8 +64,8 @@
         <translation type="vanished">&quot;%1&quot; &amp;ile aç...</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="153"/>
-        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="178"/>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="156"/>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="182"/>
         <source>&amp;More applications...</source>
         <translation>&amp;Daha fazla uygulama...</translation>
     </message>
@@ -75,25 +75,25 @@
     </message>
     <message>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="135"/>
-        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="159"/>
-        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="184"/>
-        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="195"/>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="163"/>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="188"/>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="199"/>
         <source>&amp;Open</source>
         <translation>&amp;Aç</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="140"/>
-        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="164"/>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="143"/>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="168"/>
         <source>Open &amp;with...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="198"/>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="202"/>
         <source>&amp;Open %1 selected files</source>
         <translation>Seçilen %1 dosyasını aç</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="222"/>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="226"/>
         <source>Reverse Select</source>
         <translation>Seçimi Ters Çevir</translation>
     </message>
@@ -102,72 +102,72 @@
         <translation type="vanished">&amp;Yeni...</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="236"/>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="240"/>
         <source>New...</source>
         <translation type="unfinished">Yeni...</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="298"/>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="302"/>
         <source>Empty &amp;File</source>
         <translation>&amp;Boş Dosya</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="308"/>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="312"/>
         <source>&amp;Folder</source>
         <translation>&amp;Klasör</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="312"/>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="316"/>
         <source>New Folder</source>
         <translation>Yeni Klasör</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="329"/>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="333"/>
         <source>View Type...</source>
         <translation>Görünüm Türü...</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="335"/>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="339"/>
         <source>&amp;Small</source>
         <translation>&amp;Küçük</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="338"/>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="342"/>
         <source>&amp;Normal</source>
         <translation>&amp;Normal</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="341"/>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="345"/>
         <source>&amp;Large</source>
         <translation>&amp;Büyük</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="344"/>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="348"/>
         <source>&amp;Huge</source>
         <translation>&amp;Daha Büyük</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="372"/>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="376"/>
         <source>Sort By...</source>
         <translation>Sırala...</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="377"/>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="381"/>
         <source>Name</source>
         <translation>İsim</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="379"/>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="383"/>
         <source>File Type</source>
         <translation>Dosya Türü</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="380"/>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="384"/>
         <source>File Size</source>
         <translation>Dosya Boyutu</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="378"/>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="382"/>
         <source>Modified Date</source>
         <translation>Düzenleme Tarihi</translation>
     </message>
@@ -176,12 +176,12 @@
         <translation type="obsolete">Dosyayı Sil Uyarısı</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="470"/>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="474"/>
         <source>Cut</source>
         <translation type="unfinished">Kes</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="476"/>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="480"/>
         <source>&amp;Delete to trash</source>
         <translation>Çöp Kutusuna Taşı</translation>
     </message>
@@ -190,12 +190,12 @@
         <translation type="vanished">Kalıcı olarak sil</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="489"/>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="493"/>
         <source>Rename</source>
         <translation type="unfinished">Yeniden Adlandır</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="516"/>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="520"/>
         <source>Properties</source>
         <translation type="unfinished">Özellikler</translation>
     </message>
@@ -228,22 +228,22 @@
         <translation type="vanished">Tümünü Onar</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="452"/>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="456"/>
         <source>&amp;Clean the trash</source>
         <translation>Çöpü Temizle</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="454"/>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="458"/>
         <source>Delete Permanently</source>
         <translation>Kalıcı Olarak Sil</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="454"/>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="458"/>
         <source>Are you sure that you want to delete these files? Once you start a deletion, the files deleting will never be restored again.</source>
         <translation>Bu dosyaları silmek istediğinizden emin misiniz? Bir silme işlemini başlattığınızda, silinen dosyalar bir daha geri yüklenmeyecektir.</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="466"/>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="470"/>
         <source>&amp;Copy</source>
         <translation>&amp;Kopyala</translation>
     </message>
@@ -260,12 +260,12 @@
         <translation type="vanished">Yeniden Adlandır</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="496"/>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="500"/>
         <source>&amp;Paste</source>
         <translation>Yapıştır</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="502"/>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="506"/>
         <source>&amp;Refresh</source>
         <translation>Yenile</translation>
     </message>
