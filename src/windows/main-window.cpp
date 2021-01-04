@@ -192,6 +192,8 @@ QSize MainWindow::sizeHint() const
 {
     auto screenSize = QApplication::primaryScreen()->size();
     QSize defaultSize = (Peony::GlobalSettings::getInstance()->getValue(DEFAULT_WINDOW_SIZE)).toSize();
+    if (!defaultSize.isValid())
+        return screenSize*2/3;
     int width = qMin(defaultSize.width(), screenSize.width());
     int height = qMin(defaultSize.height(), screenSize.height());
     //return screenSize*2/3;
@@ -978,7 +980,7 @@ void MainWindow::resizeEvent(QResizeEvent *e)
     validBorder();
     update();
 
-    if (m_resize_handler->isButtonDown()) {
+    if (!isMaximized()) {
         // set save window size flag
         last_resize_window = this;
     }
