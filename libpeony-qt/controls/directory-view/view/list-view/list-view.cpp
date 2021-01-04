@@ -198,8 +198,8 @@ void ListView::mousePressEvent(QMouseEvent *e)
         else
         {
             this->selectionModel()->setCurrentIndex(index, QItemSelectionModel::Deselect|QItemSelectionModel::Rows);
-            return;
         }
+        return;
     }
 
     QTreeView::mousePressEvent(e);
