@@ -89,7 +89,7 @@ NavigationTabBar::NavigationTabBar(QWidget *parent) : QTabBar(parent)
     addPageButton->setProperty("iconHighlightEffectMode", 1);
     addPageButton->setProperty("fillIconSymbolicColor", true);
     addPageButton->setFixedSize(QSize(32 ,32));
-//    addPageButton->setIcon(QIcon::fromTheme("list-add-symbolic"));
+    addPageButton->setIcon(QIcon::fromTheme("list-add-symbolic"));
     addPageButton->setAutoRaise(true);
 
     connect(addPageButton, &QToolButton::clicked, this, [=]() {
