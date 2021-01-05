@@ -238,7 +238,8 @@ void LocationBar::addButton(const QString &uri, bool setIcon, bool setMenu)
 
         auto suburis = m.stringList();
         if (!suburis.isEmpty()) {
-            QMenu *menu = new QMenu(this);
+            QMenu *menu = new QMenu;
+            connect(button, &QToolButton::destroyed, menu, &QMenu::deleteLater);
             const int WIDTH_EXTEND = 5;
             connect(menu, &QMenu::aboutToShow, this, [=](){
                 menu->setMinimumWidth(button->width() + WIDTH_EXTEND);
