@@ -1,3 +1,13 @@
+peony (3.0.3-1+210106) v101; urgency=medium
+
+  * Fix the desktop app can not be add to desktop in right place[31525]
+  * Fix there is not icon of "+" in table bar[29873]
+  * Fix can not select when the win of file manager is small in list mode[30944]
+  * Fix the file manager is crash, when open not exsit in recent[27278]
+
+ -- wangweinan <wangweinan@kylinos.cn>  Thu, 06 Jan 2020 8:44:46 +0800
+
+
 peony (3.0.3-1+1230) v101; urgency=medium
 
   * Modify check index is valid
