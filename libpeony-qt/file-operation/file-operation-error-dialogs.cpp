@@ -36,159 +36,121 @@ Peony::FileOperationErrorDialogConflict::FileOperationErrorDialogConflict(FileOp
     setFixedSize(m_fix_width, m_fix_height);
     setContentsMargins(9, 9, 9, 9);
 
+    // file icon
+    m_file_icon = new QLabel(this);
+    m_file_icon->setGeometry(m_file_x, m_file_y, m_file_size, m_file_size);
+    m_file_icon->setPixmap(QIcon::fromTheme(m_file_icon_name.isEmpty()?"text-x-plain":m_file_icon_name).pixmap(QSize(m_file_size, m_file_size)));
+
+
     m_tip = new QLabel(this);
     m_tip->setTextFormat(Qt::RichText);
     m_tip->setBackgroundRole(QPalette::Link);
-    m_tip->setText(QString("<p>%1</p><br/><small>%2</small>")
-                   .arg(tr("This location already contains a file with the same name."))
-                   .arg(tr("Please select the file to keep")));
-    m_tip->setGeometry(m_margin_lr, m_tip_y, width() - 2 * m_margin_lr, m_tip_height);
+    m_tip->setText(QString("<p>%1 %3</p>")
+                   .arg(tr("This location already contains the file,"))
+                   .arg(tr("Do you want to override it?")));
+    m_tip->setWordWrap(true);
+    m_tip->setGeometry(m_tip_x, m_tip_y, m_tip_width, m_tip_height);
 
-    m_file_label1 = new FileInformationLabel(this);
-    m_file_label1->setOpName(tr("Replace"));
-    m_file_label1->setPixmap(QIcon::fromTheme("ukui-replace-doc").pixmap(m_file_label1->getIconSize(), m_file_label1->getIconSize()));
+    // replace
+    m_rp_btn = new QPushButton(this);
+    m_rp_btn->setText(tr("Replace"));
+    m_rp_btn->setBackgroundRole(QPalette::Button);
+    m_rp_btn->setGeometry(m_rp_btn_x, m_rp_btn_y, m_rp_btn_width, m_rp_btn_height);
 
+    // ignore
+    m_ig_btn = new QPushButton(this);
+    m_ig_btn->setText(tr("Ignore"));
+    m_ig_btn->setGeometry(m_ig_btn_x, m_ig_btn_y, m_ig_btn_width, m_ig_btn_height);
 
-    m_file_label1->setGeometry(m_margin_lr, m_file_info1_top, width() - 2 * m_margin_lr, m_file_info_height);
+    // backup
+    m_bk_btn = new QPushButton(this);
+    m_bk_btn->setText(tr("Backup"));
+    m_bk_btn->setGeometry(m_bk_btn_x, m_bk_btn_y, m_bk_btn_width, m_bk_btn_height);
 
-    m_file_label2 = new FileInformationLabel(this);
-    m_file_label2->setOpName(tr("Ignore"));
-    m_file_label2->setPixmap(QIcon::fromTheme("ukui-ellipsis-doc").pixmap(m_file_label1->getIconSize(), m_file_label1->getIconSize()));
+    // Then do the same thing
+    m_sm_ck = new QCheckBox(this);
+    m_sm_ck->setText(tr("Do the same"));
+    m_sm_ck->setGeometry(m_sm_btn_x, m_sm_btn_y, m_sm_btn_width, m_sm_btn_height);
 
-    m_file_label2->setGeometry(m_margin_lr, m_file_info2_top, width() - 2 * m_margin_lr, m_file_info_height);
-
-    m_is_replace = false;
-    m_file_label2->setActive(true);
-    m_file_label1->setActive(false);
-
-    m_ck_box = new QCheckBox(this);
-    m_ck_box->setChecked(m_do_same_operation);
-    m_ck_box->setGeometry(m_margin_lr, m_ck_btn_top, m_ck_btn_heigth, m_ck_btn_heigth);
-
-    m_ck_label = new QLabel(this);
-    m_ck_label->setText(tr("Then do the same thing in a similar situation"));
-    m_ck_label->setGeometry(m_margin_lr + m_ck_btn_heigth + 6, m_ck_btn_top, width() - m_margin_lr * 2 - m_ck_btn_heigth, m_ck_btn_heigth);
-
-    m_rename = new QPushButton(this);
-    m_rename->setText(tr("Backup"));
-    m_rename->setGeometry(m_margin_lr, m_btn_top, m_btn_width, m_btn_heigth);
-
-    m_cancel = new QPushButton(this);
-    m_cancel->setText(tr("Cancel"));
-    m_cancel->setGeometry(m_btn_cancel_margin_left, m_btn_top, m_btn_width, m_btn_heigth);
-
-    m_ok = new QPushButton(this);
-    m_ok->setText(tr("OK"));
-    m_ok->setGeometry(m_btn_ok_margin_left, m_btn_top, m_btn_width, m_btn_heigth);
-
-    // rename dialog
-    m_rename_dialog = new FileRenameDialog();
-
-    connect(m_file_label1, &FileInformationLabel::active, [=]() {
-        m_is_replace = true;
-        m_file_label1->setActive(true);
-        m_file_label2->setActive(false);
+    connect(m_bk_btn, &QCheckBox::clicked, [=](bool chose) {
+        m_do_same = chose;
     });
-    connect(m_file_label2, &FileInformationLabel::active, [=]() {
-        m_is_replace = false;
-        m_file_label2->setActive(true);
-        m_file_label1->setActive(false);
-    });
-    connect(m_file_label1, &FileInformationLabel::choosed, [=]() {
-        done (QDialog::Accepted);
-    });
-    connect(m_file_label2, &FileInformationLabel::choosed, [=]() {
-        done (QDialog::Accepted);
-    });
-    connect(m_ck_box, &QCheckBox::clicked, [=](bool chose) {
-        m_do_same_operation = chose;
-    });
-    connect(m_cancel, &QPushButton::clicked, [=] (bool) {
-        done(QDialog::Rejected);
-    });
-    connect(m_ok, &QPushButton::clicked, [=] (bool) {
+
+    connect(m_rp_btn, &QPushButton::clicked, [=] (bool) {
+        m_ignore = false;
+        m_backup = false;
+        m_replace = true;
         done(QDialog::Accepted);
     });
 
-    connect(m_rename, &QPushButton::clicked, [=] (bool) {
-        if (QDialog::Accepted == m_rename_dialog->exec()) {
-            if (m_is_backup) {
-                if (!m_error->respValue.contains("name")) {
-                    m_is_backup_all = true;
-                }
-            }
-            done (QDialog::Accepted);
-        } else {
-            m_is_backup = false;
-            m_is_backup_all = false;
-        }
+    connect(m_ig_btn, &QPushButton::clicked, [=] (bool) {
+        m_ignore = true;
+        m_backup = false;
+        m_replace = false;
+        done(QDialog::Accepted);
     });
 
-    connect(m_rename_dialog, &FileRenameDialog::customRename, [=](FileRenameDialog::RenameType nameType, QString name) {
-        m_is_backup = true;
-        switch (nameType) {
-        case FileRenameDialog::USER_INPUT:
-            m_error->respValue["name"] = QVariant(name);
-            break;
-        case FileRenameDialog::AUTO_INSCREASE:
-            if (m_error->respValue.contains("name")) {
-                m_error->respValue.remove("name");
-            }
-            break;
-        }
+    connect(m_bk_btn, &QPushButton::clicked, [=] (bool) {
+        m_ignore = false;
+        m_backup = true;
+        m_replace = false;
+        done(QDialog::Accepted);
     });
 }
 
 Peony::FileOperationErrorDialogConflict::~FileOperationErrorDialogConflict()
 {
-    delete m_ok;
     delete m_tip;
-    delete m_ck_box;
-    delete m_rename;
-    delete m_cancel;
-    delete m_file_label1;
-    delete m_file_label2;
-    delete m_rename_dialog;
+}
+
+void Peony::FileOperationErrorDialogConflict::setTipFilename(QString name)
+{
+    if (!name.isEmpty()) {
+        m_file_name = name;
+        m_tip->setText(QString(tr("<p>This location already contains the file '%1', Do you want to override it?</p>"))
+                       .arg(m_file_name));
+    }
+}
+
+void Peony::FileOperationErrorDialogConflict::setTipFileicon(QString icon)
+{
+    if (!icon.isEmpty()) {
+        m_file_icon_name = icon;
+        m_file_icon->setPixmap(QIcon::fromTheme(m_file_icon_name.isEmpty()?"text-x-plain":m_file_icon_name).pixmap(QSize(m_file_size, m_file_size)));
+    }
 }
 
 void Peony::FileOperationErrorDialogConflict::handle (FileOperationError& error)
 {
     m_error = &error;
-    FileInfoJob file(error.srcUri, nullptr);
+    FileInfoJob file(error.destDirUri, nullptr);
     file.querySync();
 
-    m_file_label1->setFileSize(file.getInfo()->fileSize());
-    m_file_label1->setFileName(file.getInfo()->displayName());
-    m_file_label1->setFileLocation(file.getInfo()->filePath());
-    m_file_label1->setFileModifyTime (file.getInfo()->modifiedDate());
-
-    m_file_label2->setFileSize(file.getInfo()->fileSize());
-    m_file_label2->setFileName(file.getInfo()->displayName());
-    m_file_label2->setFileLocation(file.getInfo()->filePath());
-    m_file_label2->setFileModifyTime (file.getInfo()->modifiedDate());
+    setTipFileicon(file.getInfo()->iconName());
+    setTipFilename(file.getInfo()->displayName());
 
     error.respCode = Retry;
     int ret = exec();
     if (QDialog::Accepted == ret) {
-        if (m_do_same_operation) {
-            if (m_is_replace) {
+        if (m_do_same) {
+            if (m_replace) {
                 error.respCode = OverWriteAll;
-            } else {
+            } else if (m_backup) {
+                error.respCode = BackupAll;
+            } else if (m_ignore) {
                 error.respCode = IgnoreAll;
+            } else {
+                error.respCode = Cancel;
             }
         } else {
-            if (m_is_replace) {
+            if (m_replace) {
                 error.respCode = OverWriteOne;
-            } else {
-                error.respCode = IgnoreOne;
-            }
-        }
-
-        if (m_is_backup) {
-            if (m_is_backup_all) {
-                error.respCode = BackupAll;
-            } else {
+            } else if (m_backup) {
                 error.respCode = BackupOne;
+            } else if (m_ignore) {
+                error.respCode = IgnoreOne;
+            } else {
+                error.respCode = Cancel;
             }
         }
     } else if (QDialog::Rejected == ret) {
@@ -196,142 +158,22 @@ void Peony::FileOperationErrorDialogConflict::handle (FileOperationError& error)
     }
 }
 
-Peony::FileInformationLabel::FileInformationLabel(QWidget *parent) : QFrame(parent)
-{
-    setObjectName("peony-frame");
-    setFixedSize(m_fix_width, m_fix_heigth);
-    setContentsMargins(0, 0, 0, 0);
-    setFrameShadow(QFrame::Plain);
-    setFrameShape(QFrame::StyledPanel);
-    setStyleSheet("QWidget#peony-frame:hover{border:1px solid gray;}");
-
-    m_file_information = new QLabel (this);
-    m_file_information->setAlignment(Qt::AlignTop | Qt::AlignLeft);
-    m_file_information->setTextFormat(Qt::RichText);
-    m_file_information->setGeometry(m_file_name_x, m_file_name_y, m_file_name_w, m_file_name_h);
-}
-
-Peony::FileInformationLabel::~FileInformationLabel()
-{
-    delete m_file_information;
-}
-
-float Peony::FileInformationLabel::getIconSize()
-{
-    return m_pic_size;
-}
-
-void Peony::FileInformationLabel::setActive(bool active)
-{
-    m_active = active;
-    update();
-}
-
-void Peony::FileInformationLabel::setOpName(QString name)
-{
-    m_op_name = name;
-    update();
-}
-
-void Peony::FileInformationLabel::setPixmap(QPixmap pixmap)
-{
-    m_icon = pixmap;
-}
-
-void Peony::FileInformationLabel::setFileSize(QString fileSize)
-{
-    m_file_size = fileSize;
-}
-
-void Peony::FileInformationLabel::setFileName(QString fileName)
-{
-    m_file_name = fileName;
-    update();
-}
-
-void Peony::FileInformationLabel::setFileLocation(QString path)
-{
-    m_file_location = path;
-    update();
-}
-
-void Peony::FileInformationLabel::setFileModifyTime(QString modify)
-{
-    m_modify_time = modify;
-    update();
-}
-
-
-void Peony::FileInformationLabel::paintEvent(QPaintEvent *event)
-{
-    QPushButton btn;
-    QPainter painter (this);
-    painter.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing);
-
-    // paint frame
-    painter.setPen(Qt::NoPen);
-    if (m_active) {
-        painter.setBrush(QBrush(btn.palette().color(QPalette::Highlight).light(150)));
-    } else {
-        painter.setBrush(Qt::NoBrush);
-    }
-    painter.drawRect(0, 0, width(), height());
-    painter.setPen(Qt::blue);
-    painter.setBrush(Qt::NoBrush);
-
-    // paint picture
-    painter.save();
-    QRect pictureArea (m_pic_x, m_pic_y, m_pic_size, m_pic_size);
-    painter.drawPixmap(pictureArea, m_icon);
-
-    QRect picNameArea (m_pic_name_x, m_pic_name_y, m_pic_name_w, m_pic_name_h);
-    QFont font = painter.font();
-    font.setPixelSize(10);
-    painter.setFont(font);
-    painter.setPen(QPen(btn.palette().color(QPalette::WindowText)));
-    painter.drawText(picNameArea, Qt::AlignVCenter | Qt::AlignHCenter, m_op_name);
-
-    painter.restore();
-
-    // draw info
-    QString htmlString = QString("<style>"
-                                 "  p{font-size:10px;line-height:60%;}"
-                                 "  .bold{text-align: left;font-size:13px;font-wight:500;}"
-                                 "</style>"
-                                 "<p class='bold'>%1</p>"
-                                 "<p>%2 %3</p>"
-                                 "<p>%4 %5</p>"
-                                 "<p>%6 %7</p>")
-            .arg(m_file_name).arg(tr("File location:")).arg(m_file_location)
-            .arg(tr("File size:")).arg(m_file_size).arg(tr("Modify time:")).arg(m_modify_time);
-    m_file_information->setText(htmlString);
-
-    Q_UNUSED(event);
-}
-
-void Peony::FileInformationLabel::mousePressEvent(QMouseEvent *event)
-{
-    Q_EMIT active();
-    Q_UNUSED(event);
-}
-
-void Peony::FileInformationLabel::mouseDoubleClickEvent(QMouseEvent *event)
-{
-    Q_EMIT active();
-    Q_EMIT choosed();
-
-    Q_UNUSED(event);
-}
 
 Peony::FileOperationErrorHandler *Peony::FileOperationErrorDialogFactory::getDialog(Peony::FileOperationError &errInfo)
 {
+    FileOperationErrorDialogBase* dlg = nullptr;
+
     switch (errInfo.dlgType) {
     case ED_CONFLICT:
-        return new FileOperationErrorDialogConflict();
+        dlg = new FileOperationErrorDialogConflict();
+        dlg->setHeaderIcon("dialog-error");
+        break;
     case ED_WARNING:
-        return new FileOperationErrorDialogWarning();
+        dlg = new FileOperationErrorDialogWarning();
+        dlg->setHeaderIcon("dialog-warning");
+        break;
     }
-    return nullptr;
+    return dlg;
 }
 
 Peony::FileOperationErrorDialogWarning::FileOperationErrorDialogWarning(Peony::FileOperationErrorDialogBase *parent)
@@ -420,139 +262,6 @@ void Peony::FileOperationErrorDialogWarning::handle(Peony::FileOperationError &e
             error.respCode = IgnoreOne;
             break;
     }
-}
-
-Peony::FileRenameDialog::FileRenameDialog(QWidget *parent) : QDialog(parent)
-{
-    setMouseTracking(true);
-    setContentsMargins(0, 0, 0, 0);
-    setWindowFlags(Qt::FramelessWindowHint);
-
-    m_tip = new QLabel(this);
-    m_name = new QLineEdit(this);
-    m_ok = new QPushButton(this);
-    m_name_label = new QLabel(this);
-    m_cancel = new QPushButton(this);
-    m_if_custom = new QCheckBox(this);
-
-    setFixedSize(m_fix_width, m_fix_heigth);
-
-    m_if_custom->setChecked(true);
-    m_if_custom->setGeometry(m_margin + 16, 65, 24, 24);
-
-    m_tip->setText(tr("Names automatically add serial Numbers (e.g., 1,2,3...)"));
-    m_tip->setGeometry(m_margin * 2 + 16 + 24, 65, width() - m_margin * 3 - 16 - 24, 26);
-
-    m_cancel->setText(tr("Cancel"));
-    m_cancel->setGeometry(274, 132, 120, 36);
-
-    m_name_label->setHidden(true);
-    m_name_label->setGeometry(26, 113, 98, 20);
-    m_name_label->setText(tr("New file name"));
-
-    m_name->setHidden(true);
-    m_name->setGeometry(130, 107, 400, 32);
-    m_name->setPlaceholderText(tr("Please enter the file name"));
-
-    m_ok->setText(tr("OK"));
-    m_ok->setGeometry(410, 132, 120, 36);
-
-    connect(m_if_custom, &QCheckBox::toggled, [=](bool status) {
-        if (!status) {
-            m_name->setHidden(false);
-            m_name_label->setHidden(false);
-            setFixedSize(m_fix_width, m_fix_heigth_2);
-            m_ok->setGeometry(410, 132 + 40, 120, 36);
-            m_cancel->setGeometry(274, 132 + 40, 120, 36);
-        } else {
-            m_name->setHidden(true);
-            m_name_label->setHidden(true);
-            setFixedSize(m_fix_width, m_fix_heigth);
-            m_ok->setGeometry(410, 132, 120, 36);
-            m_cancel->setGeometry(274, 132, 120, 36);
-        }
-        update();
-    });
-
-    connect(m_cancel, &QPushButton::clicked, [=](bool) {
-        done(QDialog::Rejected);
-    });
-    connect(m_ok, &QPushButton::clicked, [=](bool) {
-        if (true == m_if_custom->isChecked() || "" == m_name->text()) {
-            Q_EMIT customRename (AUTO_INSCREASE, "");
-        } else {
-            Q_EMIT customRename (USER_INPUT, m_name->text());
-        }
-        done(QDialog::Accepted);
-    });
-}
-
-Peony::FileRenameDialog::~FileRenameDialog()
-{
-    delete m_ok;
-    delete m_tip;
-    delete m_name;
-    delete m_cancel;
-    delete m_if_custom;
-}
-
-void Peony::FileRenameDialog::paintEvent(QPaintEvent *event)
-{
-    QPainter painter(this);
-
-    painter.save();
-
-    QPushButton btn;
-    // paint title
-//    QRect textArea (m_margin_lr, 0, width() - m_margin_lr * 2 - 2 * m_btn_size, m_header_height);
-//    QFont font = painter.font();
-//    font.setPixelSize(12);
-//    painter.setFont(font);
-//    painter.setBrush(QBrush(btn.palette().color(QPalette::Highlight).lighter(150)));
-//    if (nullptr != m_error && nullptr != m_error->title) {
-//        painter.drawText(textArea, Qt::AlignVCenter | Qt::AlignHCenter, m_error->title);
-//    }
-
-    // paint close button
-    QPen pen;
-    pen.setStyle(Qt::SolidLine);
-    painter.setBrush(Qt::NoBrush);
-    painter.setPen(pen);
-    painter.drawPixmap(width() - m_margin - m_header_btn_size, m_margin, m_header_btn_size, m_header_btn_size,
-                           drawSymbolicColoredPixmap(QIcon::fromTheme("window-close-symbolic").pixmap(m_header_btn_size, m_header_btn_size)));
-
-    painter.restore();
-    Q_UNUSED(event);
-}
-
-void Peony::FileRenameDialog::mouseMoveEvent(QMouseEvent *event)
-{
-    // minilize button
-    QPoint pos = event->pos();
-    if ((pos.x() >= width() - m_margin - m_header_btn_size)
-               && (pos.x() <= width() - m_margin)
-               && (pos.y() >= m_margin)
-               && (pos.y() <= m_margin + m_header_btn_size)) {
-        setCursor(Qt::PointingHandCursor);
-    } else {
-        setCursor(Qt::ArrowCursor);
-        QWidget::mouseMoveEvent(event);
-    }
-}
-
-void Peony::FileRenameDialog::mousePressEvent(QMouseEvent *event)
-{
-    // minilize button
-    QPoint pos = event->pos();
-    if ((pos.x() >= width() - m_margin - m_header_btn_size)
-               && (pos.x() <= width() - m_margin)
-               && (pos.y() >= m_margin)
-               && (pos.y() <= m_margin + m_header_btn_size)) {
-        Q_EMIT customRename (AUTO_INSCREASE, "");
-        done(QDialog::Rejected);
-    }
-
-    QWidget::mouseReleaseEvent(event);
 }
 
 static QPixmap drawSymbolicColoredPixmap (const QPixmap& source)

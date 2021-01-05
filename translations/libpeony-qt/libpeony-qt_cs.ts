@@ -1197,24 +1197,6 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</translation
     </message>
 </context>
 <context>
-    <name>Peony::FileInformationLabel</name>
-    <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="305"/>
-        <source>File location:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="306"/>
-        <source>File size:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="306"/>
-        <source>Modify time:</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>Peony::FileItem</name>
     <message>
         <location filename="../../libpeony-qt/model/file-item.cpp" line="151"/>
@@ -1577,56 +1559,51 @@ Do you want to delete the link file?</source>
 <context>
     <name>Peony::FileOperationErrorDialogConflict</name>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="43"/>
-        <source>This location already contains a file with the same name.</source>
+        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="49"/>
+        <source>This location already contains the file,</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="44"/>
-        <source>Please select the file to keep</source>
+        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="50"/>
+        <source>Do you want to override it?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="48"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="56"/>
         <source>Replace</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="55"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="62"/>
         <source>Ignore</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="69"/>
-        <source>Then do the same thing in a similar situation</source>
+        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="72"/>
+        <source>Do the same</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="73"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="110"/>
+        <source>&lt;p&gt;This location already contains the file &apos;%1&apos;, Do you want to override it?&lt;/p&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="67"/>
         <source>Backup</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="77"/>
-        <source>Cancel</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="81"/>
-        <source>OK</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>Peony::FileOperationErrorDialogWarning</name>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="363"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="205"/>
         <source>OK</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="390"/>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="398"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="232"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="240"/>
         <source>Make sure the disk is not full or write protected and that the file is not protected</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1831,34 +1808,6 @@ Do you want to delete the link file?</source>
     </message>
 </context>
 <context>
-    <name>Peony::FileRenameDialog</name>
-    <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="443"/>
-        <source>Names automatically add serial Numbers (e.g., 1,2,3...)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="446"/>
-        <source>Cancel</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="451"/>
-        <source>New file name</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="455"/>
-        <source>Please enter the file name</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="457"/>
-        <source>OK</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>Peony::FileRenameOperation</name>
     <message>
         <source>Rename file</source>
@@ -1918,17 +1867,17 @@ Do you want to delete the link file?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp" line="276"/>
+        <location filename="../../libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp" line="277"/>
         <source>&amp;Copy Directory</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp" line="278"/>
+        <location filename="../../libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp" line="279"/>
         <source>Open In New &amp;Tab</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp" line="282"/>
+        <location filename="../../libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp" line="283"/>
         <source>Open In &amp;New Window</source>
         <translation type="unfinished"></translation>
     </message>
