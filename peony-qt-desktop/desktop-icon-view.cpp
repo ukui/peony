@@ -1169,12 +1169,12 @@ void DesktopIconView::relayoutExsitingItems(const QStringList &uris)
 
     // aligin exsited rect
     int marginTop = notEmptyRegion.boundingRect().top();
-    while (marginTop - grid.height() > 0) {
+    while (marginTop - grid.height() >= 0) {
         marginTop -= grid.height();
     }
 
     int marginLeft = notEmptyRegion.boundingRect().left();
-    while (marginLeft - grid.width() > 0) {
+    while (marginLeft - grid.width() >= 0) {
         marginLeft -= grid.width();
     }
 
