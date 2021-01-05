@@ -40,6 +40,7 @@ Q_SIGNALS:
     void closeWindowRequest();
     void addPageRequest(const QString &uri, bool jumpTo);
     void locationUpdated(const QString &uri);
+    void floatButtonVisibleChanged(bool visible, int yoffset);
 
 public Q_SLOTS:
     void addPage(const QString &uri = nullptr, bool jumpToNewTab = false);

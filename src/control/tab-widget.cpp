@@ -109,6 +109,30 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
     t->setContentsMargins(0, 0, 5, 0);
     t->addWidget(m_tab_bar_bg);
 
+    auto spacer = new QWidget(this);
+    spacer->setFixedWidth(qApp->style()->pixelMetric(QStyle::PM_ToolBarItemSpacing) * 2 + 36);
+    t->addWidget(spacer);
+    auto addPageButton = new QToolButton(this);
+    addPageButton->setIcon(QIcon::fromTheme("list-add-symbolic"));
+    spacer->setVisible(false);
+    addPageButton->setVisible(false);
+    addPageButton->setFixedSize(m_tab_bar->height() + 2, m_tab_bar->height() + 2);
+    addPageButton->setProperty("useIconHighlightEffect", true);
+    addPageButton->setProperty("iconHighlightEffectMode", 1);
+    addPageButton->setProperty("fillIconSymbolicColor", true);
+
+    connect(m_tab_bar, &NavigationTabBar::floatButtonVisibleChanged, addPageButton, [=](bool visible, int yoffset){
+        spacer->setVisible(!visible);
+        addPageButton->setVisible(!visible);
+        addPageButton->raise();
+        if (!visible)
+            addPageButton->move(m_tab_bar->width() + qApp->style()->pixelMetric(QStyle::PM_ToolBarItemSpacing), yoffset + 4);
+    });
+
+    connect(addPageButton, &QPushButton::clicked, this, [=](){
+        m_tab_bar->addPageRequest(m_tab_bar->tabData(m_tab_bar->currentIndex()).toString(), true);
+    });
+
     updateTabBarGeometry();
 
     auto manager = Peony::PreviewPageFactoryManager::getInstance();

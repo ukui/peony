@@ -56,6 +56,7 @@ NavigationTabBar::NavigationTabBar(QWidget *parent) : QTabBar(parent)
     setStyle(TabBarStyle::getStyle());
 
     setContentsMargins(0, 0, 0, 0);
+    //setUsesScrollButtons(false);
     //setFixedHeight(36);
 
     setProperty("useStyleWindowManager", false);
@@ -188,6 +189,13 @@ void NavigationTabBar::relayoutFloatButton(bool insterted)
     m_float_button->move(fixedX, fixedY);
     setFixedHeight(lastTabRect.height());
     m_float_button->raise();
+
+    bool floaltButtonVisible = false;
+    if (lastTabRect.right() + m_float_button->width() < this->width()) {
+        floaltButtonVisible = true;
+    }
+    m_float_button->setVisible(floaltButtonVisible);
+    Q_EMIT floatButtonVisibleChanged(floaltButtonVisible, fixedY);
 }
 
 void NavigationTabBar::dragEnterEvent(QDragEnterEvent *e)
