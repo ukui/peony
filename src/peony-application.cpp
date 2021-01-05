@@ -116,7 +116,7 @@ static bool m_resident = false;
 
 PeonyApplication::PeonyApplication(int &argc, char *argv[], const char *applicationName) : SingleApplication (argc, argv, applicationName, true)
 {
-    setApplicationVersion("v3.0.0");
+    setApplicationVersion(QString("v%1").arg(VERSION));
     setApplicationName("peony-qt");
     //setApplicationDisplayName(tr("Peony-Qt"));
 

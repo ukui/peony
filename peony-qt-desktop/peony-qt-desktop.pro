@@ -8,7 +8,7 @@ QT       += core gui x11extras dbus concurrent
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-VERSION = 3.0.0
+include(../common.pri)
 
 TARGET = peony-qt-desktop
 TEMPLATE = app
