@@ -46,6 +46,11 @@ Peony::FileOperationErrorDialogBase::~FileOperationErrorDialogBase()
 
 }
 
+void Peony::FileOperationErrorDialogBase::setHeaderIcon(QString icon)
+{
+    m_header_icon = icon;
+}
+
 void Peony::FileOperationErrorDialogBase::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
@@ -53,14 +58,20 @@ void Peony::FileOperationErrorDialogBase::paintEvent(QPaintEvent *)
     painter.save();
 
     QPushButton btn;
+
+    // paint icon
+    if (!m_header_icon.isEmpty()) {
+    }
+    painter.drawPixmap(m_margin_lr, (m_header_height - m_header_icon_size) / 2, m_header_icon_size, m_header_icon_size, QIcon::fromTheme(m_header_icon.isEmpty()?"dialog-error":m_header_icon).pixmap(QSize(m_header_icon_size, m_header_icon_size)));
+
     // paint title
-    QRect textArea (m_margin_lr, 0, width() - m_margin_lr * 2 - 2 * m_btn_size, m_header_height);
+    QRect textArea (m_margin_lr + m_header_icon_size + m_btn_margin, 0, width() - m_margin_lr * 2 - 2 * m_btn_size, m_header_height);
     QFont font = painter.font();
     font.setPixelSize(14);
     painter.setFont(font);
     painter.setBrush(QBrush(btn.palette().color(QPalette::Highlight).lighter(150)));
     if (nullptr != m_error && nullptr != m_error->title) {
-        painter.drawText(textArea, Qt::AlignVCenter | Qt::AlignHCenter, m_error->title);
+        painter.drawText(textArea, Qt::AlignLeft | Qt::AlignVCenter, m_error->title);
     }
 
     // paint minilize button
