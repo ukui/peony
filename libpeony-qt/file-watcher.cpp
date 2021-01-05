@@ -273,7 +273,6 @@ void FileWatcher::dir_changed_callback(GFileMonitor *monitor,
     Q_UNUSED(other_file);
     switch (event_type) {
     case G_FILE_MONITOR_EVENT_ATTRIBUTE_CHANGED: {
-        qDebug() << "11111111";
         break;
     }
     case G_FILE_MONITOR_EVENT_CHANGED: {
