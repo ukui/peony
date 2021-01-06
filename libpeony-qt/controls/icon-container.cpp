@@ -26,6 +26,8 @@
 
 #include <QStyleOptionButton>
 
+#include <QGraphicsDropShadowEffect>
+
 using namespace Peony;
 
 IconContainer::IconContainer(QWidget *parent) : QPushButton(parent)
@@ -40,6 +42,12 @@ IconContainer::IconContainer(QWidget *parent) : QPushButton(parent)
 
     //fix push button use as icon caused color issues
     this->setProperty("isIcon", true);
+    setAttribute(Qt::WA_TranslucentBackground);
+
+    auto shadowEffect = new QGraphicsDropShadowEffect;
+    shadowEffect->setBlurRadius(20);
+    shadowEffect->setOffset(0, 0);
+    setGraphicsEffect(shadowEffect);
 }
 
 IconContainer::~IconContainer()
@@ -49,9 +57,9 @@ IconContainer::~IconContainer()
 
 void IconContainer::paintEvent(QPaintEvent *e)
 {
-    QPainter p(this);
-    p.fillRect(this->rect(), this->palette().base());
-    p.setPen(this->palette().dark().color());
+    //QPainter p(this);
+    //p.fillRect(this->rect(), this->palette().base());
+    //p.setPen(this->palette().dark().color());
     //p.drawRect(this->rect().adjusted(0, 0, -1, -1));
     QPushButton::paintEvent(e);
 }
