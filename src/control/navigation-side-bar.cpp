@@ -295,6 +295,26 @@ void NavigationSideBar::keyPressEvent(QKeyEvent *event)
     }
 }
 
+void NavigationSideBar::focusInEvent(QFocusEvent *event)
+{
+    QTreeView::focusInEvent(event);
+    if (event->reason() == Qt::TabFocus) {
+        if (selectedIndexes().isEmpty()) {
+            selectionModel()->select(model()->index(0, 0), QItemSelectionModel::Select);
+            selectionModel()->select(model()->index(0, 1), QItemSelectionModel::Select);
+        } else {
+            scrollTo(selectedIndexes().first(), QTreeView::PositionAtCenter);
+            auto selections = selectedIndexes();
+            clearSelection();
+            QTimer::singleShot(100, this, [=](){
+                for (auto index : selections) {
+                    selectionModel()->select(index, QItemSelectionModel::Select);
+                }
+            });
+        }
+    }
+}
+
 NavigationSideBarItemDelegate::NavigationSideBarItemDelegate(QObject *parent)
 {
 

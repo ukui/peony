@@ -57,6 +57,7 @@ Q_SIGNALS:
 
 protected:
     void keyPressEvent(QKeyEvent *event);
+    void focusInEvent(QFocusEvent *event);
 
 private:
     Peony::SideBarProxyFilterSortModel *m_proxy_model;

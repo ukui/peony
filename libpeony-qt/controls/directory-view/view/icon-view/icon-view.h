@@ -152,6 +152,8 @@ protected:
 
     void updateGeometries() override;
 
+    void focusInEvent(QFocusEvent *e) override;
+
     bool getIgnore_mouse_move_event() const;
     void setIgnore_mouse_move_event(bool ignore_mouse_move_event);
 

@@ -57,6 +57,7 @@ TabStatusBar::TabStatusBar(TabWidget *tab, QWidget *parent) : QStatusBar(parent)
     addWidget(m_label, 1);
 
     m_slider = new QSlider(Qt::Horizontal, this);
+    m_slider->setFocusPolicy(Qt::FocusPolicy(Qt::WheelFocus & ~Qt::TabFocus));
     m_slider->setRange(0, 100);
 
     auto mainWindow = qobject_cast<MainWindow *>(this->topLevelWidget());
