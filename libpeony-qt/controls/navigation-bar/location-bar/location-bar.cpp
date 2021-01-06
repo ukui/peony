@@ -87,6 +87,7 @@ LocationBar::LocationBar(QWidget *parent) : QWidget(parent)
     setLayout(m_layout);
 
     m_indicator = new QToolButton(this);
+    m_indicator->setFocusPolicy(Qt::FocusPolicy(m_indicator->focusPolicy() & ~Qt::TabFocus));
     m_indicator->setAutoRaise(true);
     m_indicator->setStyle(LocationBarButtonStyle::getStyle());
     m_indicator->setPopupMode(QToolButton::InstantPopup);
@@ -170,6 +171,7 @@ void LocationBar::addButton(const QString &uri, bool setIcon, bool setMenu)
 {
     setIcon = true;
     QToolButton *button = new QToolButton(this);
+    button->setFocusPolicy(Qt::FocusPolicy(button->focusPolicy() & ~Qt::TabFocus));
     button->setAutoRaise(true);
     button->setStyle(LocationBarButtonStyle::getStyle());
     button->setProperty("uri", uri);

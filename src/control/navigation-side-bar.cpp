@@ -354,6 +354,8 @@ void NavigationSideBarContainer::addSideBar(NavigationSideBar *sidebar)
     m_label_button->setProperty("fillIconSymbolicColor", true);
     m_label_button->setCheckable(true);
 
+    m_label_button->setFocusPolicy(Qt::FocusPolicy(m_label_button->focusPolicy() & ~Qt::TabFocus));
+
     l->addWidget(m_label_button);
 
     connect(m_label_button, &QPushButton::clicked, m_sidebar, &NavigationSideBar::labelButtonClicked);

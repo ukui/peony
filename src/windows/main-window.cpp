@@ -142,6 +142,8 @@ MainWindow::MainWindow(const QString &uri, QWidget *parent) : QMainWindow(parent
     //init UI
     initUI(uri);
 
+    // set tab order
+
     if (QX11Info::isPlatformX11()) {
         XAtomHelper::getInstance()->setUKUIDecoraiontHint(this->winId(), true);
         MotifWmHints hints;
@@ -1325,6 +1327,20 @@ void MainWindow::initUI(const QString &uri)
 //    connect(m_tab, &TabWidget::currentSelectionChanged, this, [=](){
 //        m_status_bar->update();
 //    });
+
+    addFocusWidgetToFocusList(m_side_bar);
+    addFocusWidgetToFocusList(m_tab);
+
+    setTabOrder(nullptr, this);
+
+    QWidget *oldWidget = this;
+    for (auto widget : m_focus_list) {
+        setTabOrder(oldWidget, widget);
+        oldWidget = widget;
+        if (m_focus_list.last() == widget) {
+            setTabOrder(widget, m_focus_list.first());
+        }
+    }
 }
 
 void MainWindow::cleanTrash()
@@ -1370,6 +1386,16 @@ QRect MainWindow::sideBarRect()
 {
     auto pos = m_transparent_area_widget->mapTo(this, QPoint());
     return QRect(pos, m_transparent_area_widget->size());
+}
+
+void MainWindow::addFocusWidgetToFocusList(QWidget *widget)
+{
+    m_focus_list<<widget;
+}
+
+QWidgetList MainWindow::focusWidgetsList()
+{
+    return m_focus_list;
 }
 
 const QList<std::shared_ptr<Peony::FileInfo>> MainWindow::getCurrentSelectionFileInfos()

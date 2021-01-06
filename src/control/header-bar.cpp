@@ -70,6 +70,7 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
 
     setMouseTracking(true);
     setStyle(HeaderBarStyle::getStyle());
+    setFocusPolicy(Qt::TabFocus);
 
     m_window = parent;
     //disable default menu
@@ -131,6 +132,7 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
 
     auto locationBar = new Peony::AdvancedLocationBar(this);
     m_location_bar = locationBar;
+    m_location_bar->setFocusPolicy(Qt::FocusPolicy(m_location_bar->focusPolicy() & ~Qt::TabFocus));
     addWidget(locationBar);
 
     connect(goBack, &QPushButton::clicked, m_window, [=]() {
@@ -257,6 +259,15 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
             w->setProperty("useIconHighlightEffect", 2);
         }
     }
+
+    m_focus_list<<(createFolder);
+    m_focus_list<<(openTerminal);
+    m_focus_list<<(goBack);
+    m_focus_list<<(goForward);
+    m_focus_list<<(search);
+    m_focus_list<<(viewType);
+    m_focus_list<<(sortType);
+    m_focus_list<<(popMenu);
 }
 
 void HeaderBar::findDefaultTerminal()
@@ -345,6 +356,14 @@ void HeaderBar::closeSearch()
 {
     m_search_mode = false;
     setSearchMode(false);
+}
+
+void HeaderBar::initFocus()
+{
+    for (auto widget : m_focus_list) {
+        widget->setFocusPolicy(Qt::StrongFocus);
+        m_window->addFocusWidgetToFocusList(widget);
+    }
 }
 
 void HeaderBar::updateSearchRecursive(bool recursive)
@@ -559,6 +578,8 @@ void HeaderBarContainer::addHeaderBar(HeaderBar *headerBar)
     headerBar->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     m_layout->addWidget(headerBar);
 
+    headerBar->initFocus();
+
     addWindowButtons();
 
     m_internal_widget->setLayout(m_layout);
@@ -662,6 +683,10 @@ void HeaderBarContainer::addWindowButtons()
         close->setVisible(false);
         m_layout->removeItem(layout);
     }
+
+    m_header_bar->m_window->addFocusWidgetToFocusList(minimize);
+    m_header_bar->m_window->addFocusWidgetToFocusList(maximizeAndRestore);
+    m_header_bar->m_window->addFocusWidgetToFocusList(close);
 }
 
 void HeaderBarContainer::paintEvent(QPaintEvent *e)

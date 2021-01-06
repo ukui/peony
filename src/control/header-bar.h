@@ -94,6 +94,7 @@ private Q_SLOTS:
     void tryOpenAgain();
     void setSearchMode(bool mode);
     void closeSearch();
+    void initFocus();
 
 private:
     const QString m_uri;
@@ -113,6 +114,8 @@ private:
 
     bool m_search_mode = false;
     bool m_search_recursive = true;
+
+    QWidgetList m_focus_list;
 };
 
 class HeaderBarToolButton : public QToolButton

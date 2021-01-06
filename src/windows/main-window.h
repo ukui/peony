@@ -82,6 +82,9 @@ public:
     int currentViewZoomLevel();
     bool currentViewSupportZoom();
 
+    void addFocusWidgetToFocusList(QWidget *widget);
+    QWidgetList focusWidgetsList();
+
 Q_SIGNALS:
     void windowSelectionChanged();
     void locationChanged(const QString &uri);
@@ -184,6 +187,8 @@ private:
     bool m_should_save_window_size = false;
 
     QPoint m_offset;
+
+    QWidgetList m_focus_list;
 };
 
 #endif // MAINWINDOW_H
