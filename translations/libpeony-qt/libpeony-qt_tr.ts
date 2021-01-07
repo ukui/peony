@@ -1239,19 +1239,16 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</translation
 <context>
     <name>Peony::FileInformationLabel</name>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="305"/>
         <source>File location:</source>
-        <translation type="unfinished">Dosya konumu:</translation>
+        <translation type="obsolete">Dosya konumu:</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="306"/>
         <source>File size:</source>
-        <translation type="unfinished">Dosya boyutu:</translation>
+        <translation type="obsolete">Dosya boyutu:</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="306"/>
         <source>Modify time:</source>
-        <translation type="unfinished">Değiştirme zamanı:</translation>
+        <translation type="obsolete">Değiştirme zamanı:</translation>
     </message>
 </context>
 <context>
@@ -1626,56 +1623,71 @@ Bağlantı dosyasını silmek istiyor musunuz?</translation>
 <context>
     <name>Peony::FileOperationErrorDialogConflict</name>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="43"/>
         <source>This location already contains a file with the same name.</source>
-        <translation type="unfinished">Bu konum zaten aynı ada sahip bir dosya içeriyor.</translation>
+        <translation type="obsolete">Bu konum zaten aynı ada sahip bir dosya içeriyor.</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="44"/>
         <source>Please select the file to keep</source>
-        <translation type="unfinished">Lütfen saklanacak dosyayı seçin</translation>
+        <translation type="obsolete">Lütfen saklanacak dosyayı seçin</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="48"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="49"/>
+        <source>This location already contains the file,</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="50"/>
+        <source>Do you want to override it?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="56"/>
         <source>Replace</source>
         <translation type="unfinished">Değiştir</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="55"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="62"/>
         <source>Ignore</source>
         <translation type="unfinished">Görmezden Gel</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="69"/>
-        <source>Then do the same thing in a similar situation</source>
-        <translation type="unfinished">Sonra benzer bir durumda aynı şeyi yapın</translation>
+        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="72"/>
+        <source>Do the same</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="73"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="110"/>
+        <source>&lt;p&gt;This location already contains the file &apos;%1&apos;, Do you want to override it?&lt;/p&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Then do the same thing in a similar situation</source>
+        <translation type="obsolete">Sonra benzer bir durumda aynı şeyi yapın</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="67"/>
         <source>Backup</source>
         <translation type="unfinished">Yedekle</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="77"/>
         <source>Cancel</source>
-        <translation type="unfinished">İptal</translation>
+        <translation type="obsolete">İptal</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="81"/>
         <source>OK</source>
-        <translation type="unfinished">Tamam</translation>
+        <translation type="obsolete">Tamam</translation>
     </message>
 </context>
 <context>
     <name>Peony::FileOperationErrorDialogWarning</name>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="363"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="205"/>
         <source>OK</source>
         <translation type="unfinished">Tamam</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="390"/>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="398"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="232"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="240"/>
         <source>Make sure the disk is not full or write protected and that the file is not protected</source>
         <translation type="unfinished">Diskin dolu olmadığından veya yazma korumalı olmadığından ve dosyanın korumalı olmadığından emin olun.</translation>
     </message>
@@ -1886,29 +1898,24 @@ Bağlantı dosyasını silmek istiyor musunuz?</translation>
 <context>
     <name>Peony::FileRenameDialog</name>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="443"/>
         <source>Names automatically add serial Numbers (e.g., 1,2,3...)</source>
-        <translation type="unfinished">İsimler otomatik olarak seri Numaralar ekler (ör. 1,2,3 ...)</translation>
+        <translation type="obsolete">İsimler otomatik olarak seri Numaralar ekler (ör. 1,2,3 ...)</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="446"/>
         <source>Cancel</source>
-        <translation type="unfinished">İptal</translation>
+        <translation type="obsolete">İptal</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="451"/>
         <source>New file name</source>
-        <translation type="unfinished">Yeni dosya adı</translation>
+        <translation type="obsolete">Yeni dosya adı</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="455"/>
         <source>Please enter the file name</source>
-        <translation type="unfinished">Lütfen dosya adını girin</translation>
+        <translation type="obsolete">Lütfen dosya adını girin</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="457"/>
         <source>OK</source>
-        <translation type="unfinished">Tamam</translation>
+        <translation type="obsolete">Tamam</translation>
     </message>
 </context>
 <context>
@@ -1971,17 +1978,17 @@ Bağlantı dosyasını silmek istiyor musunuz?</translation>
         <translation>Dosya Sistemi</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp" line="276"/>
+        <location filename="../../libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp" line="277"/>
         <source>&amp;Copy Directory</source>
         <translation>Dizini Kopyala</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp" line="278"/>
+        <location filename="../../libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp" line="279"/>
         <source>Open In New &amp;Tab</source>
         <translation>Yeni Sekmede Aç</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp" line="282"/>
+        <location filename="../../libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp" line="283"/>
         <source>Open In &amp;New Window</source>
         <translation>Yeni Pencerede Aç</translation>
     </message>
