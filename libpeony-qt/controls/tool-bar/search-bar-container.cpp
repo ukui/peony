@@ -39,20 +39,20 @@ SearchBarContainer::SearchBarContainer(QWidget *parent): QWidget(parent)
     m_layout = layout;
     layout->setContentsMargins(0,0,0,0);
 
-    QComboBox *filter = new QComboBox(this);
-    m_filter_box = filter;
-    filter->setToolTip(tr("Choose File Type"));
+//    QComboBox *filter = new QComboBox(this);
+//    m_filter_box = filter;
+//    filter->setToolTip(tr("Choose File Type"));
     auto model = new QStringListModel(this);
     model->setStringList(m_file_type_list);
-    filter->setModel(model);
-    filter->setFixedWidth(80);
-    filter->setFixedHeight(parent->height());
+//    filter->setModel(model);
+//    filter->setFixedWidth(80);
+//    filter->setFixedHeight(parent->height());
 
     QLineEdit *edit = new QLineEdit(this);
     m_search_box = edit;
     edit->setFixedHeight(parent->height());
 
-    layout->addWidget(filter, Qt::AlignLeft);
+//    layout->addWidget(filter, Qt::AlignLeft);
     layout->addWidget(edit, Qt::AlignLeft);
 
     //search history
@@ -96,10 +96,10 @@ SearchBarContainer::SearchBarContainer(QWidget *parent): QWidget(parent)
         else
             m_clear_action = false;
     });
-    connect(m_filter_box, &QComboBox::currentTextChanged, [=]()
-    {
-        Q_EMIT this->filterUpdate(m_filter_box->currentIndex());
-    });
+//    connect(m_filter_box, &QComboBox::currentTextChanged, [=]()
+//    {
+//        Q_EMIT this->filterUpdate(m_filter_box->currentIndex());
+//    });
 
     QAction *searchAction = m_search_box->addAction(QIcon::fromTheme("go-down"), QLineEdit::TrailingPosition);
     connect(searchAction, &QAction::triggered, this, [=]() {

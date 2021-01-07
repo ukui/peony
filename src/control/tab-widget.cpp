@@ -304,13 +304,13 @@ void TabWidget::initAdvanceSearch()
     m_search_child->setChecked(m_search_child_flag);
     m_search_child->setDown(m_search_child_flag);;
 
-    QPushButton *moreButton = new QPushButton(tr("more options"),searchButtons);
-    m_search_more = moreButton;
-    moreButton->setFixedHeight(TRASH_BUTTON_HEIGHT);
-    moreButton->setFixedWidth(TRASH_BUTTON_WIDTH *2);
-    moreButton->setToolTip(tr("Show/hide advance search"));
+//    QPushButton *moreButton = new QPushButton(tr("more options"),searchButtons);
+//    m_search_more = moreButton;
+//    moreButton->setFixedHeight(TRASH_BUTTON_HEIGHT);
+//    moreButton->setFixedWidth(TRASH_BUTTON_WIDTH *2);
+//    moreButton->setToolTip(tr("Show/hide advance search"));
 
-    connect(moreButton, &QPushButton::clicked, this, &TabWidget::updateSearchList);
+//    connect(moreButton, &QPushButton::clicked, this, &TabWidget::updateSearchList);
 
     search->addWidget(closeButton, Qt::AlignLeft);
     search->addSpacing(10);
@@ -319,8 +319,8 @@ void TabWidget::initAdvanceSearch()
     search->addWidget(tabButton, Qt::AlignLeft);
     search->addSpacing(10);
     search->addWidget(childButton, Qt::AlignLeft);
-    search->addSpacing(10);
-    search->addWidget(moreButton, Qt::AlignLeft);
+//    search->addSpacing(10);
+//    search->addWidget(moreButton, Qt::AlignLeft);
     search->addSpacing(10);
     search->addWidget(searchButtons);
     search->setContentsMargins(10, 0, 10, 0);
@@ -329,7 +329,7 @@ void TabWidget::initAdvanceSearch()
     closeButton->setVisible(false);
     title->setVisible(false);
     childButton->setVisible(false);
-    moreButton->setVisible(false);
+//    moreButton->setVisible(false);
 }
 
 //search conditions changed, update filter
@@ -422,6 +422,7 @@ void TabWidget::addNewConditionBar()
     inputBox->setFixedHeight(TRASH_BUTTON_HEIGHT);
     inputBox->setFixedWidth(TRASH_BUTTON_WIDTH *4);
     inputBox->setPlaceholderText(tr("Please input key words..."));
+    inputBox->setText("");
 
     QPushButton *addButton = new QPushButton(QIcon::fromTheme("add"), "", optionBar);
     m_add_button_list.append(addButton);
@@ -440,7 +441,11 @@ void TabWidget::addNewConditionBar()
     connect(signalMapper, SIGNAL(mapped(int)), this, SLOT(removeConditionBar(int)));
     m_remove_mapper_list.append(signalMapper);
 
-    layout->addSpacing(TRASH_BUTTON_WIDTH + 40);
+    layout->addWidget(addButton, Qt::AlignRight);
+    layout->addSpacing(10);
+    layout->addWidget(removeButton, Qt::AlignRight);
+    layout->addSpacing(10);
+    layout->addSpacing(TRASH_BUTTON_WIDTH - 20);
     layout->addWidget(conditionCombox, Qt::AlignLeft);
     layout->addSpacing(10);
     layout->addWidget(linkLabel, Qt::AlignLeft);
@@ -448,12 +453,9 @@ void TabWidget::addNewConditionBar()
     layout->addWidget(classifyCombox, Qt::AlignLeft);
     layout->addWidget(inputBox, Qt::AlignLeft);
     layout->addWidget(optionBar);
-    layout->addWidget(addButton, Qt::AlignRight);
-    layout->addSpacing(10);
-    layout->addWidget(removeButton, Qt::AlignRight);
     layout->setContentsMargins(10, 0, 10, 5);
 
-    if (index == 0)
+    if (index%4 >= 3)
     {
         classifyCombox->hide();
         linkLabel->setText(tr("contains"));
@@ -465,12 +467,15 @@ void TabWidget::addNewConditionBar()
             linkLabel->setFixedWidth(TRASH_BUTTON_WIDTH);
     }
     else
-        inputBox->hide();
+    {
+       inputBox->hide();
+    }
+
 
     connect(conditionCombox, &QComboBox::currentTextChanged, [=]()
     {
         auto cur = conditionCombox->currentIndex();
-        if (cur == 0)
+        if (cur%4 >= 3)
         {
             classifyCombox->hide();
             inputBox->show();
@@ -553,12 +558,12 @@ QStringList TabWidget::getCurrentClassify(int rowCount)
 {
     QStringList currentList;
     currentList.clear();
-    if (rowCount >= m_option_list.size()-1)
-        return m_file_size_list;
 
-    switch (rowCount) {
-    case 1:
+    switch (rowCount%4) {
+    case 0:
         return m_file_type_list;
+    case 1:
+        return m_file_size_list;
     case 2:
         return m_file_mtime_list;
     default:
@@ -620,14 +625,16 @@ void TabWidget::updateSearchBar(bool showSearch)
     m_show_search_bar = showSearch;
     if (showSearch)
     {
+        //default add one bar
+        updateSearchList();
         m_search_path->show();
         m_search_close->show();
         m_search_title->show();
         m_search_bar->show();
         m_search_child->show();
-        m_search_more->show();
+        //m_search_more->show();
         m_search_bar_layout->setContentsMargins(10, 5, 10, 5);
-        m_search_more->setIcon(QIcon::fromTheme("go-down"));
+        //m_search_more->setIcon(QIcon::fromTheme("go-down"));
         updateSearchPathButton();
     }
     else
@@ -637,7 +644,7 @@ void TabWidget::updateSearchBar(bool showSearch)
         m_search_title->hide();
         m_search_bar->hide();
         m_search_child->hide();
-        m_search_more->hide();
+        //m_search_more->hide();
         m_search_bar_layout->setContentsMargins(10, 0, 10, 0);
     }
 
@@ -693,9 +700,10 @@ void TabWidget::updateSearchList()
 {
     m_show_search_list = !m_show_search_list;
     //if not show search bar, then don't show search list
-    if (m_show_search_list && m_show_search_bar)
+    qDebug() << "updateSearchList:" <<m_show_search_list <<m_show_search_bar;
+    if (m_show_search_bar)
     {
-        m_search_more->setIcon(QIcon::fromTheme("go-up"));
+        //m_search_more->setIcon(QIcon::fromTheme("go-up"));
         //first click to show advance serach
         if(m_search_bar_list.count() ==0)
         {
@@ -708,7 +716,7 @@ void TabWidget::updateSearchList()
         {
             m_conditions_list[i]->show();
             m_link_label_list[i]->show();
-            if (m_conditions_list[i]->currentIndex() >0)
+            if (m_conditions_list[i]->currentIndex()%4 < 3)
                 m_classify_list[i]->show();
             else
                 m_input_list[i]->show();
@@ -721,7 +729,7 @@ void TabWidget::updateSearchList()
     else
     {
         //hide search list
-        m_search_more->setIcon(QIcon::fromTheme("go-down"));
+        //m_search_more->setIcon(QIcon::fromTheme("go-down"));
         for(int i=0; i<m_search_bar_list.count(); i++)
         {
             m_conditions_list[i]->hide();
@@ -1000,17 +1008,18 @@ void TabWidget::updateAdvanceConditions()
     clearConditions();
 
     //get key list for proxy-filter
+    //input name not show, must be empty
     QStringList keyList;
     for(int i=0; i<m_layout_list.count(); i++)
     {
         QString input = m_input_list[i]->text();
-        if (m_conditions_list[i]->currentIndex() > 0)
-        {
-            addFilterCondition(m_conditions_list[i]->currentIndex(), m_classify_list[i]->currentIndex());
-        }
-        else if(input != "" && ! keyList.contains(input))
+        if(input != "" && ! keyList.contains(input))
         {
             keyList.append(input);
+        }
+        else
+        {
+            addFilterCondition(m_conditions_list[i]->currentIndex(), m_classify_list[i]->currentIndex());
         }
     }
 

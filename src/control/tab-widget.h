@@ -254,7 +254,7 @@ private:
     const int TRASH_BUTTON_WIDTH = 65;
 
     //advance search filter options
-    QStringList m_option_list = {tr("name"), tr("type"), tr("modify time"), tr("file size")};
+    QStringList m_option_list = {tr("type"), tr("file size"), tr("modify time"), tr("name")};
     QStringList m_file_type_list = {tr("all"), tr("file folder"), tr("image"), tr("video"),
                                     tr("text file"), tr("audio"), tr("wps file"), tr("others")};
     QStringList m_file_mtime_list = {tr("all"), tr("today"), tr("this week"), tr("this month"), tr("this year"), tr("year ago")};
