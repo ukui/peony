@@ -148,14 +148,12 @@ private:
     float           m_btn_ok_margin_left = 434;
     float           m_btn_cancel_margin_left = 298;
 
-    QLabel*         m_title = nullptr;
     QLabel*         m_tip = nullptr;
+    QLabel*         m_title = nullptr;
+    QLabel*         m_file_icon = nullptr;
+
     QString         m_file_name;
     QString         m_file_icon_name;
-    QLabel*         m_file_icon = nullptr;  //??
-    QPushButton*    m_mini = nullptr;  // ??
-    QPushButton*    m_close = nullptr;  // ??
-
 
     QPushButton*    m_rp_btn = nullptr;
     QPushButton*    m_ig_btn = nullptr;
