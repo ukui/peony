@@ -316,7 +316,7 @@ bool SideBarModel::dropMimeData(const QMimeData *data, Qt::DropAction action, in
         auto bookmark = BookMarkManager::getInstance();
         if (bookmark->isLoaded()) {
             for (auto url : data->urls()) {
-                auto info = FileInfo::fromUri(url.toDisplayString(), false);
+                auto info = FileInfo::fromUri(url.toDisplayString());
                 if (info->displayName().isNull()) {
                     FileInfoJob j(info);
                     j.querySync();

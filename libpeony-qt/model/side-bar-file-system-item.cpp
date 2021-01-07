@@ -522,7 +522,7 @@ GAsyncReadyCallback SideBarFileSystemItem::eject_cb(GFile *file, GAsyncResult *r
 
 //update udisk file info
 void SideBarFileSystemItem::updateFileInfo(SideBarFileSystemItem *pThis){
-        auto fileInfo = FileInfo::fromUri(pThis->m_uri,false);
+        auto fileInfo = FileInfo::fromUri(pThis->m_uri);
         FileInfoJob fileJob(fileInfo);
         fileJob.querySync();
 

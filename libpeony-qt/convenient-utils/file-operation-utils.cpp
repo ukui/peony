@@ -100,7 +100,7 @@ FileOperation *FileOperationUtils::trash(const QStringList &uris, bool addHistor
             QUrl url(uri);
             QFile file(url.path());
             //fix iso symbolLink delete prompt can not trash issue
-            auto info = FileInfo::fromUri(uri, false);
+            auto info = FileInfo::fromUri(uri);
             if (info->isSymbolLink())
                 continue;
             if (file.size() > 1024*1024*1024) {

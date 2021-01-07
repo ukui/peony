@@ -188,7 +188,7 @@ void FileLaunchManager::openAsync(const QStringList &files, bool forceWithArg, b
 
 void FileLaunchManager::setDefaultLauchAction(const QString &uri, FileLaunchAction *action)
 {
-    auto info = FileInfo::fromUri(uri, false);
+    auto info = FileInfo::fromUri(uri);
     if (info->mimeType().isEmpty()) {
         FileInfoJob job(info);
         job.querySync();

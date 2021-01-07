@@ -101,7 +101,7 @@ QList<QAction *> CreateLinkInternalPlugin::menuActions(MenuPluginInterface::Type
     if (types == MenuPluginInterface::DesktopWindow || types == MenuPluginInterface::DirectoryView) {
         if (selectionUris.count() == 1) {
             auto createLinkToDesktop = new QAction(QIcon::fromTheme("emblem-link-symbolic"), tr("Create Link to Desktop"), nullptr);
-            auto info = FileInfo::fromUri(selectionUris.first(), false);
+            auto info = FileInfo::fromUri(selectionUris.first());
             QString desktopPath = QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
             QString originPath = QUrl(selectionUris.first()).path();
             //special type mountable, or isVirtual then return

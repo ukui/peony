@@ -199,7 +199,7 @@ void DesktopIconViewDelegate::paint(QPainter *painter, const QStyleOptionViewIte
     painter->restore();
 
     //paint link icon and locker icon
-    FileInfo* file = FileInfo::fromUri(index.data(Qt::UserRole).toString(), true).get();
+    FileInfo* file = FileInfo::fromUri(index.data(Qt::UserRole).toString()).get();
     if ((index.data(Qt::UserRole).toString() != "computer:///") && (index.data(Qt::UserRole).toString() != "trash:///")) {
         QSize lockerIconSize = QSize(16, 16);
         int offset = 8;

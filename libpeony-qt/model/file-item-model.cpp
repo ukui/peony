@@ -484,7 +484,7 @@ bool FileItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action, i
         return false;
     }
 
-    auto info = Peony::FileInfo::fromUri(destDirUri, false);
+    auto info = Peony::FileInfo::fromUri(destDirUri);
     //qDebug() << "FileItemModel::dropMimeData:" <<info->isDir() <<info->type();
     //if (!FileUtils::getFileIsFolder(destDirUri))
     //fix drag file to folder symbolic fail issue

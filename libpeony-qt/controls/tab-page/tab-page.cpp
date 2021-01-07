@@ -108,7 +108,7 @@ void TabPage::rebindContainer()
         m_double_click_limiter.start(500);
 
         qDebug()<<"tab page double clicked"<<uri;
-        auto info = Peony::FileInfo::fromUri(uri, false);
+        auto info = Peony::FileInfo::fromUri(uri);
         if (info->uri().startsWith("trash://")) {
             auto w = new PropertiesWindow(QStringList()<<uri);
             w->show();
@@ -117,7 +117,7 @@ void TabPage::rebindContainer()
         if (info->isDir() || info->isVolume() || info->isVirtual()) {
             //process open symbolic link
             QString targetUri = uri;
-            auto info = FileInfo::fromUri(uri, false);
+            auto info = FileInfo::fromUri(uri);
             if (info->isSymbolLink() && uri.startsWith("file://") && info->isValid())
                 targetUri = "file://" + FileUtils::getSymbolicTarget(uri);
             Q_EMIT this->updateWindowLocationRequest(targetUri);

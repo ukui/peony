@@ -199,7 +199,7 @@ void FileItem::findChildrenAsync()
                 else
                     m_model->setRootUri(FileUtils::getParentUri(this->uri()));
 
-                auto fileInfo = FileInfo::fromUri(this->uri(), false);
+                auto fileInfo = FileInfo::fromUri(this->uri());
                 if (err.get()->code() == G_IO_ERROR_NOT_FOUND && fileInfo->isSymbolLink())
                 {
                     auto result = QMessageBox::question(nullptr, tr("Open Link failed"),
@@ -301,7 +301,7 @@ void FileItem::findChildrenAsync()
             });
             connect(m_watcher.get(), &FileWatcher::fileDeleted, this, [=](QString uri) {
                 //check bookmark and delete
-                auto info = FileInfo::fromUri(uri, false);
+                auto info = FileInfo::fromUri(uri);
                 if (info->isDir())
                 {
                     BookMarkManager::getInstance()->removeBookMark(uri);
@@ -420,7 +420,7 @@ void FileItem::findChildrenAsync()
             });
             connect(m_watcher.get(), &FileWatcher::fileDeleted, this, [=](QString uri) {
                 //check bookmark and delete
-                auto info = FileInfo::fromUri(uri, false);
+                auto info = FileInfo::fromUri(uri);
                 if (info->isDir())
                 {
                     BookMarkManager::getInstance()->removeBookMark(uri);

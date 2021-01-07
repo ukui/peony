@@ -76,7 +76,7 @@ const QString FileLaunchAction::getUri()
 
 bool FileLaunchAction::isDesktopFileAction()
 {
-    auto info = FileInfo::fromUri(m_uri, false);
+    auto info = FileInfo::fromUri(m_uri);
     if (info->isEmptyInfo()) {
         FileInfoJob j(info);
         j.querySync();
@@ -104,7 +104,7 @@ bool FileLaunchAction::isExcuteableFile(QString fileType)
 
 void FileLaunchAction::lauchFileSync(bool forceWithArg, bool skipDialog)
 {
-    auto fileInfo = FileInfo::fromUri(m_uri, false);
+    auto fileInfo = FileInfo::fromUri(m_uri);
     if (fileInfo->isEmptyInfo()) {
         FileInfoJob j(fileInfo);
         j.querySync();
@@ -192,7 +192,7 @@ void FileLaunchAction::lauchFileSync(bool forceWithArg, bool skipDialog)
 
 void FileLaunchAction::lauchFileAsync(bool forceWithArg, bool skipDialog)
 {
-    auto fileInfo = FileInfo::fromUri(m_uri, false);
+    auto fileInfo = FileInfo::fromUri(m_uri);
     if (fileInfo->isEmptyInfo()) {
         FileInfoJob j(fileInfo);
         j.querySync();
@@ -351,7 +351,7 @@ void FileLaunchAction::lauchFilesAsync(const QStringList files, bool forceWithAr
     if(files.isEmpty())
         return;
 
-    auto fileInfo = FileInfo::fromUri(m_uri, false);
+    auto fileInfo = FileInfo::fromUri(m_uri);
     if (fileInfo->isEmptyInfo()) {
         FileInfoJob j(fileInfo);
         j.querySync();

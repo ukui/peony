@@ -112,7 +112,7 @@ const QList<QAction *> SideBarMenu::constructFileSystemItemActions()
 {
     QList<QAction *> l;
 
-    auto info = FileInfo::fromUri(m_uri, false);
+    auto info = FileInfo::fromUri(m_uri);
     if (info->displayName().isEmpty()) {
         FileInfoJob j(info);
         j.querySync();

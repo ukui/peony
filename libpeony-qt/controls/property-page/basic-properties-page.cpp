@@ -244,7 +244,7 @@ void BasicPropertiesPage::onSingleFileChanged(const QString &oldUri, const QStri
 {
     //QMessageBox::information(0, 0, "on single file changed");
     qDebug()<<"onSingleFileChanged:"<<oldUri<<newUri;
-    m_info = FileInfo::fromUri(newUri, false);
+    m_info = FileInfo::fromUri(newUri);
     FileInfoJob *j = new FileInfoJob(m_info);
     j->setAutoDelete();
     j->querySync();
