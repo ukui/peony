@@ -189,6 +189,8 @@ DesktopWindow::DesktopWindow(QScreen *screen, bool is_primary, QWidget *parent)
 
     if (!m_is_primary || true) {
         setBg(getCurrentBgPath());
+        // do not animate while window first create.
+        m_opacity->setCurrentTime(m_opacity->totalDuration());
         return;
     }
 

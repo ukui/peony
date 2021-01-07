@@ -90,6 +90,7 @@ protected Q_SLOTS:
 private:
     FileEnumerator *m_enumerator;
     QList<std::shared_ptr<FileInfo>> m_files;
+    QList<std::shared_ptr<FileInfo>> m_querying_files;
     std::shared_ptr<FileWatcher> m_trash_watcher;
     std::shared_ptr<FileWatcher> m_desktop_watcher;
     std::shared_ptr<FileWatcher> m_thumbnail_watcher; //just handle the thumbnail created.

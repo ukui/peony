@@ -154,7 +154,7 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
 //    });
 
     auto screens = qApp->screens();
-    connect(qApp->primaryScreen(), &QScreen::availableGeometryChanged, this, &DesktopIconView::resolutionChange);
+    connect(qApp->primaryScreen(), &QScreen::geometryChanged, this, &DesktopIconView::resolutionChange);
     connect(qApp, &QGuiApplication::screenAdded, [=] (QScreen* screen) {
         m_screens[screen] = false;
         for (auto it = m_screens.constBegin(); it != m_screens.constEnd(); ++it) {
@@ -172,14 +172,14 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
     connect(qApp, &QGuiApplication::primaryScreenChanged, [=] (QScreen* screen) {
         for (auto it = m_screens.constBegin(); it != m_screens.constEnd(); ++it) {
             if (it.value()) {
-                disconnect(it.key(), &QScreen::availableGeometryChanged, this, &DesktopIconView::resolutionChange);
+                disconnect(it.key(), &QScreen::geometryChanged, this, &DesktopIconView::resolutionChange);
             }
             m_screens[it.key()] = false;
         }
 
         m_screens[screen] = true;
-        connect(screen, &QScreen::availableGeometryChanged, this, &DesktopIconView::resolutionChange);
-        resolutionChange(screen->availableGeometry());
+        connect(screen, &QScreen::geometryChanged, this, &DesktopIconView::resolutionChange);
+        resolutionChange();
 //        qDebug() << "name: " << screen->name() << " --- " << screen->availableGeometry();
     });
 
@@ -546,8 +546,9 @@ void DesktopIconView::setShowHidden()
     });
 }
 
-void DesktopIconView::resolutionChange(const QRect &screenSize)
+void DesktopIconView::resolutionChange()
 {
+    QSize screenSize = qApp->primaryScreen()->availableSize();
     int row = 0;
     int column = 0;
     float iconWidth = 0;

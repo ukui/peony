@@ -183,7 +183,7 @@ public Q_SLOTS:
      * @brief Rearrange the desktop icon position
      * @param screenSize: The value of the screen size is the resolution minus the height of the control panel
      */
-    void resolutionChange(const QRect &screenSize);
+    void resolutionChange();
     void setEditFlag(bool edit);
 
 protected:

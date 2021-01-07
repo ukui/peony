@@ -405,6 +405,7 @@ void DesktopItemModel::refresh()
             } else {
                 m_enumerator = new FileEnumerator(this);
                 m_enumerator->setAutoDelete();
+                m_enumerator->setEnumerateWithInfoJob();
                 m_enumerator->setEnumerateDirectory(desktopUri);
                 m_enumerator->connect(m_enumerator, &FileEnumerator::enumerateFinished, this, &DesktopItemModel::onEnumerateFinished);
                 m_enumerator->enumerateAsync();
@@ -481,46 +482,54 @@ void DesktopItemModel::onEnumerateFinished()
     infos<<personal;
 
     infos<<m_enumerator->getChildren();
+    m_querying_files = infos;
+    m_files = infos;
 
     //qDebug()<<m_files.count();
     //this->endResetModel();
     for (auto info : infos) {
-        beginInsertRows(QModelIndex(), m_files.count(), m_files.count());
-        auto syncJob = new FileInfoJob(info);
-        syncJob->querySync();
-        syncJob->deleteLater();
-        m_files<<info;
-        endInsertRows();
+        auto asyncJob = new FileInfoJob(info);
+        connect(asyncJob, &FileInfoJob::queryAsyncFinished, this, [=](){
+            m_querying_files.removeOne(info);
+            if (m_querying_files.isEmpty()) {
+                beginInsertRows(QModelIndex(), 0, m_files.count() - 1);
+                endInsertRows();
 
-        if (info->isDesktopFile()) {
-            ThumbnailManager::getInstance()->updateDesktopFileThumbnail(info->uri(), m_thumbnail_watcher);
-        } else {
-            ThumbnailManager::getInstance()->createThumbnail(info->uri(), m_thumbnail_watcher);
-        }
-    }
-    for (auto info : m_files) {
-        auto uri = info->uri();
-        auto view = PeonyDesktopApplication::getIconView();
-        auto pos = view->getFileMetaInfoPos(info->uri());
-        if (pos.x() >= 0) {
-            view->updateItemPosByUri(info->uri(), pos);
-        } else {
-            view->ensureItemPosByUri(uri);
-        }
-    }
+                for (auto info : m_files) {
+                    auto uri = info->uri();
+                    auto view = PeonyDesktopApplication::getIconView();
+                    auto pos = view->getFileMetaInfoPos(info->uri());
+                    if (pos.x() >= 0) {
+                        view->updateItemPosByUri(info->uri(), pos);
+                    } else {
+                        view->ensureItemPosByUri(uri);
+                    }
 
-    Q_EMIT refreshed();
+                    if (info->isDesktopFile()) {
+                        ThumbnailManager::getInstance()->updateDesktopFileThumbnail(info->uri(), m_thumbnail_watcher);
+                    } else {
+                        ThumbnailManager::getInstance()->createThumbnail(info->uri(), m_thumbnail_watcher);
+                    }
+                }
 
-    //qDebug()<<"startMornitor";
-    m_trash_watcher->startMonitor();
-    if (m_desktop_watcher->currentUri() != "file://" + QStandardPaths::writableLocation(QStandardPaths::DesktopLocation)) {
-        m_desktop_watcher->stopMonitor();
-        m_desktop_watcher->forceChangeMonitorDirectory("file://" + QStandardPaths::writableLocation(QStandardPaths::DesktopLocation));
-        m_desktop_watcher->setMonitorChildrenChange(true);
+                //qDebug()<<"startMornitor";
+                m_trash_watcher->startMonitor();
+                if (m_desktop_watcher->currentUri() != "file://" + QStandardPaths::writableLocation(QStandardPaths::DesktopLocation)) {
+                    m_desktop_watcher->stopMonitor();
+                    m_desktop_watcher->forceChangeMonitorDirectory("file://" + QStandardPaths::writableLocation(QStandardPaths::DesktopLocation));
+                    m_desktop_watcher->setMonitorChildrenChange(true);
+                }
+                m_desktop_watcher->startMonitor();
+                m_system_app_watcher->startMonitor();
+                m_andriod_app_watcher->startMonitor();
+
+                Q_EMIT refreshed();
+
+                asyncJob->deleteLater();
+            }
+        });
+        asyncJob->queryAsync();
     }
-    m_desktop_watcher->startMonitor();
-    m_system_app_watcher->startMonitor();
-    m_andriod_app_watcher->startMonitor();
 }
 
 const QModelIndex DesktopItemModel::indexFromUri(const QString &uri)
