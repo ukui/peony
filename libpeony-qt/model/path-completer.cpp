@@ -52,7 +52,6 @@ QStringList PathCompleter::splitPath(const QString &path) const
         }
         model->setRootUri(tmp);
     }
-
     return QCompleter::splitPath(path);
 }
 

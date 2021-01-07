@@ -67,7 +67,6 @@ PathEdit::PathEdit(QWidget *parent) : QLineEdit(parent)
             this->editCancelled();
             return;
         } else {
-            qDebug()<<"change dir request"<<this->text();
             Q_EMIT this->uriChangeRequest(this->text());
             //NOTE: we have send the signal for location change.
             //so we can use editCancelled hide the path edit.
@@ -85,8 +84,9 @@ void PathEdit::setUri(const QString &uri)
 void PathEdit::focusOutEvent(QFocusEvent *e)
 {
     QLineEdit::focusOutEvent(e);
-    if (! m_right_click)
+    if (! m_right_click) {
         Q_EMIT editCancelled();
+    }
 }
 
 void PathEdit::focusInEvent(QFocusEvent *e)
@@ -94,6 +94,11 @@ void PathEdit::focusInEvent(QFocusEvent *e)
     QLineEdit::focusInEvent(e);
     m_model->setRootUri(this->text());
     m_completer->complete();
+}
+
+void PathEdit::cancelList()
+{
+    m_completer->activated(m_completer->currentIndex());
 }
 
 void PathEdit::keyPressEvent(QKeyEvent *e)
@@ -107,7 +112,6 @@ void PathEdit::keyPressEvent(QKeyEvent *e)
 void PathEdit::mousePressEvent(QMouseEvent *e)
 {
     QLineEdit::mousePressEvent(e);
-    //qDebug() << "mousePressEvent"<<e->button();
     if (e->button() == Qt::RightButton)
         m_right_click = true;
     else

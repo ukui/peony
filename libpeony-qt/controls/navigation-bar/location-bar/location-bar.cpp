@@ -124,12 +124,8 @@ void LocationBar::setRootUri(const QString &uri)
     clearButtons();
 
     if (m_current_uri.startsWith("search://")) {
-        //qDebug() <<"location-bar setRootUri:" <<uri;
-        //QString nameRegexp = SearchVFSUriParser::getSearchUriNameRegexp(m_current_uri);
-        //QString targetDirectory = SearchVFSUriParser::getSearchUriTargetDirectory(m_current_uri);
         m_indicator->setArrowType(Qt::NoArrow);
         addButton(m_current_uri, false, false);
-        //addAction(QIcon::fromTheme("edit-find-symbolic"), tr("Search \"%1\" in \"%2\"").arg(nameRegexp).arg(targetDirectory));
         return;
     }
 
@@ -142,15 +138,11 @@ void LocationBar::setRootUri(const QString &uri)
         if (FileUtils::isMountRoot(tmp))
             break;
 
-//        if (url.path() == QStandardPaths::writableLocation(QStandardPaths::HomeLocation)) {
-//            break;
-//        }
         tmp = Peony::FileUtils::getParentUri(tmp);
     }
 
     m_indicator->setArrowType(Qt::RightArrow);
     for (auto uri : uris) {
-        //addButton(uri, uri != uris.last());
         addButton(uri, uris.first() == uri);
     }
 
@@ -229,7 +221,6 @@ void LocationBar::addButton(const QString &uri, bool setIcon, bool setMenu)
     button->setText(displayName);
 
     connect(button, &QToolButton::clicked, [=]() {
-        //this->setRootUri(uri);
         Q_EMIT this->groupChangedRequest(uri);
     });
 
@@ -248,9 +239,8 @@ void LocationBar::addButton(const QString &uri, bool setIcon, bool setMenu)
             });
             QList<QAction *> actions;
             for (auto uri : suburis) {
-                QUrl url = uri;
                 QString tmp = uri;
-                displayName = url.fileName();
+                displayName = Peony::FileUtils::getFileDisplayName(uri);
                 if (displayName.length() > ELIDE_TEXT_LENGTH)
                 {
                     int  charWidth = fontMetrics().averageCharWidth();
@@ -302,7 +292,6 @@ void LocationBar::mousePressEvent(QMouseEvent *e)
 {
     //eat this event.
     //QToolBar::mousePressEvent(e);
-    qDebug()<<"black clicked";
     if (e->button() == Qt::LeftButton) {
         Q_EMIT blankClicked();
     }
@@ -332,7 +321,6 @@ void LocationBar::paintEvent(QPaintEvent *e)
 void LocationBar::resizeEvent(QResizeEvent *event)
 {
     QWidget::resizeEvent(event);
-
     doLayout();
 }
 
