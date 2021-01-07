@@ -72,25 +72,32 @@ Peony::FileOperationErrorDialogConflict::FileOperationErrorDialogConflict(FileOp
     m_sm_ck->setText(tr("Do the same"));
     m_sm_ck->setGeometry(m_sm_btn_x, m_sm_btn_y, m_sm_btn_width, m_sm_btn_height);
 
-    connect(m_bk_btn, &QCheckBox::clicked, [=](bool chose) {
-        m_do_same = chose;
+    connect(m_sm_ck, &QCheckBox::stateChanged, this, [=](int chose) {
+        switch (chose) {
+        case Qt::Checked:
+            m_do_same = true;
+            break;
+        case Qt::Unchecked:
+        default:
+            m_do_same = false;
+        }
     });
 
-    connect(m_rp_btn, &QPushButton::clicked, [=] (bool) {
+    connect(m_rp_btn, &QPushButton::pressed, this, [=] () {
         m_ignore = false;
         m_backup = false;
         m_replace = true;
         done(QDialog::Accepted);
     });
 
-    connect(m_ig_btn, &QPushButton::clicked, [=] (bool) {
+    connect(m_ig_btn, &QPushButton::pressed, this, [=] () {
         m_ignore = true;
         m_backup = false;
         m_replace = false;
         done(QDialog::Accepted);
     });
 
-    connect(m_bk_btn, &QPushButton::clicked, [=] (bool) {
+    connect(m_bk_btn, &QPushButton::pressed, this, [=] () {
         m_ignore = false;
         m_backup = true;
         m_replace = false;
@@ -100,7 +107,7 @@ Peony::FileOperationErrorDialogConflict::FileOperationErrorDialogConflict(FileOp
 
 Peony::FileOperationErrorDialogConflict::~FileOperationErrorDialogConflict()
 {
-    delete m_tip;
+
 }
 
 void Peony::FileOperationErrorDialogConflict::setTipFilename(QString name)
@@ -153,7 +160,7 @@ void Peony::FileOperationErrorDialogConflict::handle (FileOperationError& error)
                 error.respCode = Cancel;
             }
         }
-    } else if (QDialog::Rejected == ret) {
+    } else {
         error.respCode = Cancel;
     }
 }
@@ -205,16 +212,14 @@ Peony::FileOperationErrorDialogWarning::FileOperationErrorDialogWarning(Peony::F
     m_ok->setText(tr("OK"));
     m_ok->setGeometry(m_ok_x, m_ok_y, m_ok_w, m_ok_h);
 
-    connect(m_ok, &QPushButton::pressed, [=](){
+    connect(m_ok, &QPushButton::pressed, this, [=](){
         done(QDialog::Accepted);
     });
 }
 
 Peony::FileOperationErrorDialogWarning::~FileOperationErrorDialogWarning()
 {
-    delete m_ok;
-    delete m_icon;
-    delete m_text;
+
 }
 
 void Peony::FileOperationErrorDialogWarning::handle(Peony::FileOperationError &error)
