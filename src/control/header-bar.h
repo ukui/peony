@@ -83,6 +83,7 @@ protected:
 
 private Q_SLOTS:
     void setLocation(const QString &uri);
+    void cancelEdit();
     void updateIcons();
     void updateSearchRecursive(bool recursive);
     void updateMaximizeState();

@@ -42,7 +42,6 @@ AdvancedLocationBar::AdvancedLocationBar(QWidget *parent) : QWidget(parent)
     m_bar = new Peony::LocationBar(this);
     m_edit = new Peony::PathEdit(this);
     m_search_bar = new Peony::SearchBarContainer(this);
-    //bar->connect(bar, &Peony::LocationBar::groupChangedRequest, bar, &Peony::LocationBar::setRootUri);
     m_bar->connect(m_bar, &Peony::LocationBar::blankClicked, [=]() {
         auto curUri = m_bar->getCurentUri();
         if (! curUri.startsWith("trash:///"))
@@ -54,11 +53,6 @@ AdvancedLocationBar::AdvancedLocationBar(QWidget *parent) : QWidget(parent)
     });
 
     m_edit->connect(m_edit, &Peony::PathEdit::uriChangeRequest, [=](const QString uri) {
-
-//        if (m_text == uri) {
-//            Q_EMIT this->refreshRequest();
-//            return;
-//        }
         m_bar->setRootUri(uri);
         layout->setCurrentWidget(m_bar);
         Q_EMIT this->updateWindowLocationRequest(uri);
@@ -86,7 +80,6 @@ AdvancedLocationBar::AdvancedLocationBar(QWidget *parent) : QWidget(parent)
         auto key = m_search_bar->text();
         if (key != m_last_key)
         {
-            qDebug() << "start search" << key;
             Q_EMIT searchRequest(m_last_non_search_path, key);
             m_last_key = key;
         }
@@ -108,7 +101,6 @@ AdvancedLocationBar::AdvancedLocationBar(QWidget *parent) : QWidget(parent)
 
 void AdvancedLocationBar::updateLocation(const QString &uri)
 {
-    //qDebug() << "AdvancedLocationBar updateLocation:"<<uri;
     m_bar->setRootUri(uri);
     m_edit->setUri(uri);
     m_text = uri;
@@ -128,6 +120,11 @@ void AdvancedLocationBar::startEdit()
     m_layout->setCurrentWidget(m_edit);
     m_edit->setFocus();
     m_edit->setUri(m_bar->getCurentUri());
+}
+
+void AdvancedLocationBar::cancelEdit()
+{
+    m_edit->cancelList();
 }
 
 void AdvancedLocationBar::finishEdit()

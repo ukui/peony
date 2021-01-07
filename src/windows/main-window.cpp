@@ -474,6 +474,7 @@ void MainWindow::setShortCuts()
     maxAction->setShortcut(QKeySequence(Qt::Key_F11));
     connect(maxAction, &QAction::triggered, this, [=]() {
         //showFullScreen has some issue, change to showMaximized, fix #20043
+        m_header_bar->cancelEdit();
         if (!this->isMaximized()) {
             this->showMaximized();
         } else {
