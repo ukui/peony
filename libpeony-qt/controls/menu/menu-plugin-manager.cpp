@@ -149,6 +149,7 @@ QList<QAction *> FileLabelInternalMenuPlugin::menuActions(MenuPluginInterface::T
 {
     QList<QAction *> l;
     //fix virtual path add label fail issue
+    //FIXME: replace BLOCKING api in ui thread.
     auto info = FileInfo::fromUri(uri);
     if (info->isVirtual())
         return l;

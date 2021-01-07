@@ -842,6 +842,7 @@ void TabWidget::setPreviewPage(Peony::PreviewPageIface *previewPage)
 
 void TabWidget::addPage(const QString &uri, bool jumpTo)
 {
+    //FIXME: replace BLOCKING api in ui thread.
     auto info = Peony::FileInfo::fromUri(uri);
     if (! info->isDir())
         return;

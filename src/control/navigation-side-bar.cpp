@@ -263,6 +263,7 @@ void NavigationSideBar::dropEvent(QDropEvent *e)
         auto bookmark = Peony::BookMarkManager::getInstance();
         if (bookmark->isLoaded()) {
             for (auto url : data->urls()) {
+                //FIXME: replace BLOCKING api in ui thread.
                 auto info = Peony::FileInfo::fromUri(url.toDisplayString());
                 if (info->displayName().isNull()) {
                     Peony::FileInfoJob j(info);

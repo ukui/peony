@@ -71,6 +71,7 @@ void FileItemModel::setRootUri(const QString &uri)
         setRootUri("file:///");
         return;
     }
+    //FIXME: replace BLOCKING api in ui thread.
     auto info = FileInfo::fromUri(uri);
     auto item = new FileItem(info, nullptr, this);
     setRootItem(item);
@@ -415,6 +416,7 @@ void FileItemModel::setRootIndex(const QModelIndex &index)
     //NOTE: if we use proxy model, we might get the wrong item from index.
     //add the new data role save the file's uri to resolve this problem.
     if (index.isValid()) {
+        //FIXME: replace BLOCKING api in ui thread.
         auto new_root_info = FileInfo::fromUri(index.data(UriRole).toString());
         auto new_root_item = new FileItem(new_root_info,
                                           nullptr,
@@ -484,6 +486,7 @@ bool FileItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action, i
         return false;
     }
 
+    //FIXME: replace BLOCKING api in ui thread.
     auto info = Peony::FileInfo::fromUri(destDirUri);
     //qDebug() << "FileItemModel::dropMimeData:" <<info->isDir() <<info->type();
     //if (!FileUtils::getFileIsFolder(destDirUri))

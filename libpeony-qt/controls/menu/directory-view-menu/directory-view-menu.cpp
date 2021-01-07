@@ -375,6 +375,7 @@ const QList<QAction *> DirectoryViewMenu::constructCreateTemplateActions()
         //fix create folder fail issue in special path
         auto info = FileInfo::fromUri(m_directory);
         if (info.get()->isEmptyInfo()) {
+            //FIXME: replace BLOCKING api in ui thread.
             FileInfoJob job(info);
             job.querySync();
         }

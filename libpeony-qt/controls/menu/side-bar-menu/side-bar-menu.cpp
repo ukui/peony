@@ -112,6 +112,7 @@ const QList<QAction *> SideBarMenu::constructFileSystemItemActions()
 {
     QList<QAction *> l;
 
+    //FIXME: replace BLOCKING api in ui thread.
     auto info = FileInfo::fromUri(m_uri);
     if (info->displayName().isEmpty()) {
         FileInfoJob j(info);

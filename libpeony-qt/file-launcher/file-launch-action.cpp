@@ -76,6 +76,7 @@ const QString FileLaunchAction::getUri()
 
 bool FileLaunchAction::isDesktopFileAction()
 {
+    //FIXME: replace BLOCKING api in ui thread.
     auto info = FileInfo::fromUri(m_uri);
     if (info->isEmptyInfo()) {
         FileInfoJob j(info);
@@ -104,6 +105,7 @@ bool FileLaunchAction::isExcuteableFile(QString fileType)
 
 void FileLaunchAction::lauchFileSync(bool forceWithArg, bool skipDialog)
 {
+    //FIXME: replace BLOCKING api in ui thread.
     auto fileInfo = FileInfo::fromUri(m_uri);
     if (fileInfo->isEmptyInfo()) {
         FileInfoJob j(fileInfo);
@@ -192,6 +194,7 @@ void FileLaunchAction::lauchFileSync(bool forceWithArg, bool skipDialog)
 
 void FileLaunchAction::lauchFileAsync(bool forceWithArg, bool skipDialog)
 {
+    //FIXME: replace BLOCKING api in ui thread.
     auto fileInfo = FileInfo::fromUri(m_uri);
     if (fileInfo->isEmptyInfo()) {
         FileInfoJob j(fileInfo);
@@ -351,6 +354,7 @@ void FileLaunchAction::lauchFilesAsync(const QStringList files, bool forceWithAr
     if(files.isEmpty())
         return;
 
+    //FIXME: replace BLOCKING api in ui thread.
     auto fileInfo = FileInfo::fromUri(m_uri);
     if (fileInfo->isEmptyInfo()) {
         FileInfoJob j(fileInfo);

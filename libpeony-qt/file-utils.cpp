@@ -113,6 +113,7 @@ bool FileUtils::getFileIsFolder(const GFileWrapperPtr &file)
 
 bool FileUtils::getFileIsFolder(const QString &uri)
 {
+    //FIXME: replace BLOCKING api in ui thread.
     auto info = FileInfo::fromUri(uri);
     if (!info.get()->isEmptyInfo()) {
         return info.get()->isDir();
@@ -127,6 +128,7 @@ bool FileUtils::getFileIsFolder(const QString &uri)
 
 bool FileUtils::getFileIsSymbolicLink(const QString &uri)
 {
+    //FIXME: replace BLOCKING api in ui thread.
     auto info = FileInfo::fromUri(uri);
     if (!info.get()->isEmptyInfo()) {
         return info.get()->isSymbolLink();
@@ -211,6 +213,7 @@ QString FileUtils::getNonSuffixedBaseNameFromUri(const QString &uri)
 
 QString FileUtils::getFileDisplayName(const QString &uri)
 {
+    //FIXME: replace BLOCKING api in ui thread.
     auto fileInfo = FileInfo::fromUri(uri);
     if (!fileInfo.get()->isEmptyInfo()) {
         return fileInfo.get()->displayName();
@@ -229,6 +232,7 @@ QString FileUtils::getFileDisplayName(const QString &uri)
 
 QString FileUtils::getFileIconName(const QString &uri, bool checkValid)
 {
+    //FIXME: replace BLOCKING api in ui thread.
     auto fileInfo = FileInfo::fromUri(uri);
     if (!fileInfo.get()->isEmptyInfo()) {
         return fileInfo.get()->iconName();
@@ -291,6 +295,7 @@ GErrorWrapperPtr FileUtils::getEnumerateError(const QString &uri)
 
 QString FileUtils::getTargetUri(const QString &uri)
 {
+    //FIXME: replace BLOCKING api in ui thread.
     auto fileInfo = FileInfo::fromUri(uri);
     if (!fileInfo.get()->isEmptyInfo()) {
         return fileInfo.get()->targetUri();
@@ -318,6 +323,7 @@ QString FileUtils::getEncodedUri(const QString &uri)
 
 QString FileUtils::getSymbolicTarget(const QString &uri)
 {
+    //FIXME: replace BLOCKING api in ui thread.
     auto fileInfo = FileInfo::fromUri(uri);
     if (!fileInfo.get()->isEmptyInfo()) {
         return fileInfo.get()->symlinkTarget();

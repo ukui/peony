@@ -252,6 +252,7 @@ void SideBarFileSystemItem::findChildrenAsync()
 bool SideBarFileSystemItem::isRemoveable()
 {
     if (m_uri.contains("computer:///") && m_uri != "computer:///") {
+        //FIXME: replace BLOCKING api in ui thread.
         auto info = FileInfo::fromUri(m_uri);
         if (info->displayName().isEmpty()) {
             FileInfoJob j(info);
@@ -265,6 +266,7 @@ bool SideBarFileSystemItem::isRemoveable()
 bool SideBarFileSystemItem::isEjectable()
 {
     if (m_uri.contains("computer:///") && m_uri != "computer:///") {
+        //FIXME: replace BLOCKING api in ui thread.
         auto info = FileInfo::fromUri(m_uri);
         if (info->displayName().isEmpty()) {
             FileInfoJob j(info);
@@ -281,6 +283,7 @@ bool SideBarFileSystemItem::isMountable()
         //some mountable item can be unmounted but can't be mounted.
         //the most of them is remote servers and shared directories.
         //they should be seemed as mountable items.
+        //FIXME: replace BLOCKING api in ui thread.
         auto info = FileInfo::fromUri(m_uri);
         if (info->displayName().isEmpty()) {
             FileInfoJob j(info);
@@ -522,6 +525,7 @@ GAsyncReadyCallback SideBarFileSystemItem::eject_cb(GFile *file, GAsyncResult *r
 
 //update udisk file info
 void SideBarFileSystemItem::updateFileInfo(SideBarFileSystemItem *pThis){
+    //FIXME: replace BLOCKING api in ui thread.
         auto fileInfo = FileInfo::fromUri(pThis->m_uri);
         FileInfoJob fileJob(fileInfo);
         fileJob.querySync();

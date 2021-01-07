@@ -316,6 +316,7 @@ bool SideBarModel::dropMimeData(const QMimeData *data, Qt::DropAction action, in
         auto bookmark = BookMarkManager::getInstance();
         if (bookmark->isLoaded()) {
             for (auto url : data->urls()) {
+                //FIXME: replace BLOCKING api in ui thread.
                 auto info = FileInfo::fromUri(url.toDisplayString());
                 if (info->displayName().isNull()) {
                     FileInfoJob j(info);

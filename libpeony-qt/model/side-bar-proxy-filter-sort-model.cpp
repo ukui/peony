@@ -56,6 +56,7 @@ bool SideBarProxyFilterSortModel::filterAcceptsRow(int sourceRow, const QModelIn
         if (sourceParent.data(Qt::UserRole).toString() == "computer:///") {
             if (item->uri() != "computer:///root.link") {
 
+                //FIXME: replace BLOCKING api in ui thread.
                 auto gvfsFileInfo = FileInfo::fromUri(item->uri());
                 if (gvfsFileInfo->displayName().isEmpty()) {
                         FileInfoJob j(gvfsFileInfo);
