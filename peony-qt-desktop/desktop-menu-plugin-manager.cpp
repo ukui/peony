@@ -83,7 +83,8 @@ void DesktopMenuPluginManager::loadAsync()
             qDebug()<<pluginLoader.load();
 
             // version check
-            if (pluginLoader.metaData().value("MetaData").toObject().value("version").toString() != VERSION)
+            //FIXME comment version check in commercial version
+            if (!COMMERCIAL_VERSION && pluginLoader.metaData().value("MetaData").toObject().value("version").toString() != VERSION)
                 continue;
 
             QObject *plugin = pluginLoader.instance();
