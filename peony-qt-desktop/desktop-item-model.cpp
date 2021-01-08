@@ -60,6 +60,8 @@
 
 using namespace Peony;
 
+static bool uriLittleThan(std::shared_ptr<FileInfo> &p1, std::shared_ptr<FileInfo> &p2);
+
 DesktopItemModel::DesktopItemModel(QObject *parent)
     : QAbstractListModel(parent)
 {
@@ -503,12 +505,15 @@ void DesktopItemModel::onEnumerateFinished()
     auto trash = FileInfo::fromUri("trash:///", true);
 
     QList<std::shared_ptr<FileInfo>> infos;
+    QList<std::shared_ptr<FileInfo>> tmp_infos;
 
     infos<<computer;
     infos<<trash;
     infos<<personal;
 
-    infos<<m_enumerator->getChildren();
+    tmp_infos<<m_enumerator->getChildren();
+    std::sort(tmp_infos.begin(), tmp_infos.end(), uriLittleThan);
+    infos<<tmp_infos;
 
     //qDebug()<<m_files.count();
     //this->endResetModel();
@@ -762,7 +767,7 @@ void DesktopItemModel::enabelChange(QString exec, bool execenable)
         }
     }
     if (appid == "") {
-        qDebug() << "without this desktop file please check out input";
+        //qDebug() << "without this desktop file please check out input";
         return;
     }
     QString uri = "file://" + desktop + "/" + appid;
@@ -779,4 +784,9 @@ void DesktopItemModel::enabelChange(QString exec, bool execenable)
 
     auto view = PeonyDesktopApplication::getIconView();
     view->viewport()->update(view->viewport()->rect());
+}
+
+static bool uriLittleThan(std::shared_ptr<FileInfo> &p1, std::shared_ptr<FileInfo> &p2)
+{
+    return QString::compare(p1->uri(), p2->uri()) <= 0;
 }
