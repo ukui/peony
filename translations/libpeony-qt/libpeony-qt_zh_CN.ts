@@ -2151,6 +2151,28 @@ Do you want to delete the link file?</source>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
+
+    <message>
+        <location filename="../../libpeony-qt/windows/properties-window.cpp" line="113"/>
+        <source>Selected</source>
+        <translation>选中</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/windows/properties-window.cpp" line="113"/>
+        <source>Recent</source>
+        <translation>最近</translation>
+    </message>
+
+    <message>
+        <location filename="../../libpeony-qt/windows/properties-window.cpp" line="113"/>
+        <source>Trash</source>
+        <translation>回收站</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/windows/properties-window.cpp" line="113"/>
+        <source> %1 Files</source>
+        <translation>%1 个文件</translation>
+    </message>
     <message>
         <source>Close</source>
         <translation type="vanished">关闭</translation>

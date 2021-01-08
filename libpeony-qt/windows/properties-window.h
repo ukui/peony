@@ -63,7 +63,7 @@ class PEONYCORESHARED_EXPORT PropertiesWindow : public QMainWindow
 public:
     explicit PropertiesWindow(const QStringList &uris, QWidget *parent = nullptr);
 
-    void setWindowTitleText();
+    void setWindowTitleTextAndIcon();
     bool notDir();
     void gotoAboutComputer();
     void saveAllChanged();

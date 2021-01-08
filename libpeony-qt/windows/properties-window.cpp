@@ -119,13 +119,13 @@ PropertiesWindow::PropertiesWindow(const QStringList &uris, QWidget *parent) : Q
 {
     this->setContextMenuPolicy(Qt::CustomContextMenu);
     m_uris = uris;
+    qDebug() << "进入窗口创建!";
 
     if (uris.contains("computer:///"))
         gotoAboutComputer();
     else {
-        this->setWindowIcon(QIcon::fromTheme("system-file-manager"));
 
-        this->setWindowTitleText();
+        this->setWindowTitleTextAndIcon();
 
         this->setAttribute(Qt::WA_DeleteOnClose);
         this->setContentsMargins(0, 5, 0, 0);
@@ -145,21 +145,46 @@ PropertiesWindow::PropertiesWindow(const QStringList &uris, QWidget *parent) : Q
     }
 }
 
-void PropertiesWindow::setWindowTitleText()
+/*!
+ * recent:///  : 最近
+ * trash:///   : 回收站
+ *
+ * \brief PropertiesWindow::setWindowTitleText
+ */
+void PropertiesWindow::setWindowTitleTextAndIcon()
 {
-    QString l_windowTitle;
-    qint32 l_fileNum = this->m_uris.count();
-    qDebug() << "选中文件数量" << l_fileNum << m_uris.at(0);
+    QString l_windowTitle = "";
+    QString l_iconName = "system-file-manager";
 
-    if(l_fileNum > 1)
-        l_windowTitle += QString::number(l_fileNum) + "个文件";
-    else
-        l_windowTitle += FileInfo::fromUri(m_uris.at(0)).get()->displayName();
+    if(m_uris.contains("trash:///")) {
+        l_windowTitle = tr("Trash");
+        l_iconName = "trash";
 
+    }else if(m_uris.contains("recent:///")) {
+        l_windowTitle = tr("Recent");
+        l_iconName = "recent";
+
+    }else {
+        qint32 l_fileNum = this->m_uris.count();
+
+        if(l_fileNum > 1)
+            //use default icon ***
+            l_windowTitle = tr("Selected") + QString(tr(" %1 Files")).arg(l_fileNum);
+
+        else {
+            std::shared_ptr<FileInfo> l_fineInfo = FileInfo::fromUri(m_uris.at(0));
+            qDebug() << "文件信息为空?" << (l_fineInfo.get() == nullptr);
+            if(l_fineInfo) {
+                l_windowTitle = l_fineInfo.get()->displayName();
+                l_iconName = l_fineInfo.get()->iconName();
+            }
+        }
+    }
     l_windowTitle += " " + tr("Properties");
 
-    qDebug() << "title :" << l_windowTitle << FileInfo::fromUri(m_uris.at(0)).get()->displayName();
+    qDebug() << "图标名称:" << l_iconName << "";
 
+    this->setWindowIcon(QIcon::fromTheme(l_iconName));
     this->setWindowTitle(l_windowTitle);
 }
 
