@@ -24,6 +24,7 @@
 #include "file-enumerator.h"
 #include "file-info.h"
 #include "file-utils.h"
+#include "file-info-job.h"
 
 #include <QUrl>
 
@@ -31,7 +32,38 @@ using namespace Peony;
 
 PathBarModel::PathBarModel(QObject *parent) : QStringListModel (parent)
 {
+    m_enumerator = new FileEnumerator(this);
+    m_enumerator->setEnumerateWithInfoJob();
 
+    connect(m_enumerator, &FileEnumerator::enumerateFinished, this, [=](bool successed){
+        if (successed) {
+            m_childrens = m_enumerator->getChildren();
+
+            QStringList list;
+            for (auto info : m_childrens) {
+                if (!(info->isDir() || info->isVolume()))
+                    continue;
+
+                if (info.get()->displayName().startsWith("."))
+                    continue;
+
+                QUrl url = info.get()->uri();
+                list<<url.toDisplayString();
+                m_uri_display_name_hash.insert(info.get()->uri(), info.get()->displayName());
+            }
+
+            beginResetModel();
+            setStringList(list);
+            sort(0);
+            endResetModel();
+
+            Q_EMIT updated();
+        } else {
+            beginResetModel();
+            setStringList(QStringList());
+            endResetModel();
+        }
+    });
 }
 
 void PathBarModel::setRootPath(const QString &path, bool force)
@@ -41,6 +73,31 @@ void PathBarModel::setRootPath(const QString &path, bool force)
 
 void PathBarModel::setRootUri(const QString &uri, bool force)
 {
+    if (!force) {
+        if (uri.contains("////"))
+            return;
+
+        if (m_current_uri == uri)
+            return;
+    }
+
+    m_current_uri = uri;
+
+    m_enumerator->cancel();
+    m_uri_display_name_hash.clear();
+
+    m_info = FileInfo::fromUri(uri);
+    auto infoJob = new FileInfoJob(m_info);
+    infoJob->setAutoDelete();
+    connect(infoJob, &FileInfoJob::queryAsyncFinished, this, [=](bool successed){
+        if (successed) {
+            m_enumerator->cancel();
+            m_enumerator->setEnumerateDirectory(m_info.get()->uri());
+            m_enumerator->enumerateAsync();
+        }
+    });
+    infoJob->queryAsync();
+
     return;
     //FIXME: replace BLOCKING api in ui thread.
     if (!force) {
