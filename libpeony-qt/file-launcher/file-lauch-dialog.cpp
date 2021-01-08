@@ -63,8 +63,10 @@ FileLauchDialog::FileLauchDialog(const QString &uri, QWidget *parent) : QDialog(
     auto actions = FileLaunchManager::getAllActions(uri);
     for (auto action : actions) {
         //fix show no icon app in list issue, bug#18171
-        if (action->icon().isNull())
+        if (action->icon().isNull() ||
+                "org.gnome.font-viewer" == action->icon().name())
             continue;
+
         action->setParent(this);
         //qDebug() << "lauch actions:" <<action->icon() <<action->iconText() <<action->text();
         auto item = new QListWidgetItem(!action->icon().isNull()? action->icon(): QIcon::fromTheme("application-x-desktop"),
