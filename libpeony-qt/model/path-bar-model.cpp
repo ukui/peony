@@ -41,6 +41,8 @@ void PathBarModel::setRootPath(const QString &path, bool force)
 
 void PathBarModel::setRootUri(const QString &uri, bool force)
 {
+    return;
+    //FIXME: replace BLOCKING api in ui thread.
     if (!force) {
         if (uri.contains("////"))
             return;
@@ -49,6 +51,7 @@ void PathBarModel::setRootUri(const QString &uri, bool force)
             return;
 
         auto file = wrapGFile(g_file_new_for_uri(uri.toUtf8().constData()));
+        //FIXME: replace BLOCKING api in ui thread.
         if (!g_file_query_exists(file.get()->get(), nullptr)) {
             return;
         }
@@ -67,6 +70,7 @@ void PathBarModel::setRootUri(const QString &uri, bool force)
 
     m_current_uri = uri;
 
+    //FIXME: replace BLOCKING api in ui thread.
     FileEnumerator e;
     e.setEnumerateDirectory(uri);
     e.enumerateSync();

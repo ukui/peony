@@ -100,18 +100,20 @@ std::shared_ptr<FileInfo> FileInfo::fromUri(QString uri)
 
         newly_info->m_parent = g_file_get_parent(newly_info->m_file);
         newly_info->m_is_remote = !g_file_is_native(newly_info->m_file);
-        GFileType type = g_file_query_file_type(newly_info->m_file, G_FILE_QUERY_INFO_NONE, nullptr);
-        switch (type) {
-        case G_FILE_TYPE_DIRECTORY:
-            //qDebug()<<"dir";
-            newly_info->m_is_dir = true;
-            break;
-        case G_FILE_TYPE_MOUNTABLE:
-            //qDebug()<<"mountable";
-            newly_info->m_is_volume = true;
-            break;
-        default:
-            break;
+        if (!newly_info->m_is_remote && false) {
+            GFileType type = g_file_query_file_type(newly_info->m_file, G_FILE_QUERY_INFO_NONE, nullptr);
+            switch (type) {
+            case G_FILE_TYPE_DIRECTORY:
+                //qDebug()<<"dir";
+                newly_info->m_is_dir = true;
+                break;
+            case G_FILE_TYPE_MOUNTABLE:
+                //qDebug()<<"mountable";
+                newly_info->m_is_volume = true;
+                break;
+            default:
+                break;
+            }
         }
 
         newly_info = info_manager->insertFileInfo(newly_info);

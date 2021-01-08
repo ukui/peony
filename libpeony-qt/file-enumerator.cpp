@@ -300,14 +300,15 @@ void FileEnumerator::handleError(GError *err)
         }
 
         bool isMountable = false;
-        //FIXME: replace BLOCKING api in ui thread.
-        GFileInfo *file_mount_info = g_file_query_info(m_root_file, G_FILE_ATTRIBUTE_MOUNTABLE_CAN_MOUNT,
-                                     G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, nullptr, nullptr);
+        //FIXME: replace BLOCKING api in ui thread. Done
+        isMountable = FileInfo::fromGFile(m_root_file).get()->canMount();
+//        GFileInfo *file_mount_info = g_file_query_info(m_root_file, G_FILE_ATTRIBUTE_MOUNTABLE_CAN_MOUNT,
+//                                     G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, nullptr, nullptr);
 
-        if (file_mount_info) {
-            isMountable = g_file_info_get_attribute_boolean(file_mount_info, G_FILE_ATTRIBUTE_MOUNTABLE_CAN_MOUNT);
-            g_object_unref(file_mount_info);
-        }
+//        if (file_mount_info) {
+//            isMountable = g_file_info_get_attribute_boolean(file_mount_info, G_FILE_ATTRIBUTE_MOUNTABLE_CAN_MOUNT);
+//            g_object_unref(file_mount_info);
+//        }
 
         if (isMountable) {
             g_file_mount_mountable(m_root_file,

@@ -437,8 +437,8 @@ void HeaderBar::updateIcons()
     auto curUri = m_window->getCurrentUri();
     //FIXME: replace BLOCKING api in ui thread.
     auto info = Peony::FileInfo::fromUri(curUri);
-    Peony::FileInfoJob job(info);
-    job.querySync();
+    //Peony::FileInfoJob job(info);
+    //job.querySync();
     if (info->canWrite())
         m_create_folder->setEnabled(true);
     else
