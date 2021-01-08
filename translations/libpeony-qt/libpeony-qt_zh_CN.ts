@@ -2142,6 +2142,16 @@ Do you want to delete the link file?</source>
         <translation>属性</translation>
     </message>
     <message>
+        <location filename="../../libpeony-qt/windows/properties-window.cpp" line="113"/>
+        <source>Ok</source>
+        <translation>确定</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/windows/properties-window.cpp" line="113"/>
+        <source>Cancel</source>
+        <translation>取消</translation>
+    </message>
+    <message>
         <source>Close</source>
         <translation type="vanished">关闭</translation>
     </message>

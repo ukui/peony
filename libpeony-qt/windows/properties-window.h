@@ -29,6 +29,7 @@
 
 #include <QMap>
 #include <QMutex>
+#include <QSize>
 
 namespace Peony {
 
@@ -62,11 +63,23 @@ class PEONYCORESHARED_EXPORT PropertiesWindow : public QMainWindow
 public:
     explicit PropertiesWindow(const QStringList &uris, QWidget *parent = nullptr);
 
+    void setWindowTitleText();
+    bool notDir();
     void gotoAboutComputer();
+    void saveAllChanged();
     void show();
+    void initStatusBar();
 
 public:
     QStringList m_uris;
+
+public:
+    //init in properties-window.cpp
+    static const qint32 s_windowWidth;
+    static const qint32 s_windowHeightFolder;
+    static const qint32 s_windowHeightOther;
+    static const QSize  s_bottomButtonSize;
+    static const QSize  s_topButtonSize;
 };
 
 class PropertiesWindowPrivate : public QTabWidget

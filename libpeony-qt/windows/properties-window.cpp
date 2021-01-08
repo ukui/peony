@@ -33,6 +33,12 @@
 #include <QDialogButtonBox>
 #include <QPushButton>
 #include <QProcess>
+#include <QDebug>
+#include <QStatusBar>
+#include <QString>
+#include <QHBoxLayout>
+
+#include "file-info.h"
 
 using namespace Peony;
 
@@ -99,40 +105,71 @@ PropertiesWindowTabPagePluginIface *PropertiesWindowPluginManager::getFactory(co
     return m_factory_hash.value(id);
 }
 
+/*!
+ * init PropertiesWindows`s static member
+ * \brief PropertiesWindow::s_windowWidth
+ */
+const qint32 PropertiesWindow::s_windowWidth        = 460;
+const qint32 PropertiesWindow::s_windowHeightFolder = 600;
+const qint32 PropertiesWindow::s_windowHeightOther  = 652;
+const QSize  PropertiesWindow::s_bottomButtonSize   = QSize(100,32);
+const QSize  PropertiesWindow::s_topButtonSize      = QSize(65,30);
+
 PropertiesWindow::PropertiesWindow(const QStringList &uris, QWidget *parent) : QMainWindow (parent)
 {
-    setContextMenuPolicy(Qt::CustomContextMenu);
+    this->setContextMenuPolicy(Qt::CustomContextMenu);
     m_uris = uris;
+
     if (uris.contains("computer:///"))
-    {
         gotoAboutComputer();
-    }
-    else
-    {
-        setWindowIcon(QIcon::fromTheme("system-file-manager"));
-        setWindowTitle(tr("Properties"));
+    else {
+        this->setWindowIcon(QIcon::fromTheme("system-file-manager"));
 
-        setAttribute(Qt::WA_DeleteOnClose);
-        setContentsMargins(0, 15, 0, 0);
-        setMinimumSize(360, 480);
+        this->setWindowTitleText();
+
+        this->setAttribute(Qt::WA_DeleteOnClose);
+        this->setContentsMargins(0, 5, 0, 0);
+
+        this->setWindowFlags(Qt::WindowCloseButtonHint);
+
+        if(this->notDir())
+            //如果含有文件夹，那么高度是600，如果是其他文件，那么高度是652
+            this->setFixedSize(PropertiesWindow::s_windowWidth,PropertiesWindow::s_windowHeightOther);
+        else
+            this->setFixedSize(PropertiesWindow::s_windowWidth,PropertiesWindow::s_windowHeightFolder);
+
         auto w = new PropertiesWindowPrivate(uris, this);
-        setCentralWidget(w);
+        this->setCentralWidget(w);
 
-        QToolBar *buttonToolBar = new QToolBar(this);
-        addToolBar(Qt::BottomToolBarArea, buttonToolBar);
-
-        //comment close button in bottom
-//        QDialogButtonBox *box = new QDialogButtonBox(QDialogButtonBox::Close,
-//                buttonToolBar);
-//        box->setContentsMargins(0, 5, 5, 5);
-//        //get close button and do translate operation
-//        box->button(QDialogButtonBox::Close)->setText(tr("Close"));
-//        buttonToolBar->addWidget(box);
-
-//        connect(box, &QDialogButtonBox::rejected, [=]() {
-//            this->close();
-//        });
+        this->initStatusBar();
     }
+}
+
+void PropertiesWindow::setWindowTitleText()
+{
+    QString l_windowTitle;
+    qint32 l_fileNum = this->m_uris.count();
+    qDebug() << "选中文件数量" << l_fileNum << m_uris.at(0);
+
+    if(l_fileNum > 1)
+        l_windowTitle += QString::number(l_fileNum) + "个文件";
+    else
+        l_windowTitle += FileInfo::fromUri(m_uris.at(0)).get()->displayName();
+
+    l_windowTitle += " " + tr("Properties");
+
+    qDebug() << "title :" << l_windowTitle << FileInfo::fromUri(m_uris.at(0)).get()->displayName();
+
+    this->setWindowTitle(l_windowTitle);
+}
+
+bool PropertiesWindow::notDir()
+{
+    for(QString uri : m_uris) {
+        if(FileInfo::fromUri(uri).get()->isDir())
+            return false;
+    }
+    return true;
 }
 
 void PropertiesWindow::show()
@@ -157,11 +194,52 @@ void PropertiesWindow::gotoAboutComputer()
 #endif
 }
 
+/*!
+ *
+ * \brief PropertiesWindow::initStatusBar
+ */
+void PropertiesWindow::initStatusBar(){
+    QStatusBar *statusBar = new QStatusBar(this);
+
+    statusBar->setFixedSize(PropertiesWindow::s_windowWidth,64);
+
+    QHBoxLayout *bottomToolLayout = new QHBoxLayout(statusBar);
+
+    QPushButton *okButton = new QPushButton(tr("Ok"),statusBar);
+    QPushButton *cancelButton = new QPushButton(QObject::tr("Cancel"),statusBar);
+
+    okButton->setFixedSize(PropertiesWindow::s_bottomButtonSize);
+    cancelButton->setFixedSize(PropertiesWindow::s_bottomButtonSize);
+
+    bottomToolLayout->addWidget(cancelButton);
+    bottomToolLayout->addWidget(okButton);
+
+    okButton->move(344,16);
+    cancelButton->move(236,16);
+
+    statusBar->setLayout(bottomToolLayout);
+
+    this->setStatusBar(statusBar);
+
+    //set cancelButton event process
+    connect(cancelButton,&QPushButton::clicked,this,&QMainWindow::close);
+}
+
+/*!
+ * save all changed settings when 'ok' is clicked
+ * \brief PropertiesWindow::saveAllChanged
+ */
+void PropertiesWindow::saveAllChanged()
+{
+
+}
+
 //properties window
 PropertiesWindowPrivate::PropertiesWindowPrivate(const QStringList &uris, QWidget *parent) : QTabWidget(parent)
 {
     setTabsClosable(false);
     setMovable(false);
+    setContentsMargins(0,0,0,0);
 
     auto manager = PropertiesWindowPluginManager::getInstance();
     auto names = manager->getFactoryNames();
