@@ -75,12 +75,11 @@ SideBarModel::SideBarModel(QObject *parent)
 //    SideBarSeparatorItem *separator3 = new SideBarSeparatorItem(SideBarSeparatorItem::Small, nullptr, this, this);
 //    m_root_children->append(separator3);
 
-    SideBarCloudItem *cloudItem = new SideBarCloudItem(nullptr, nullptr, this);
-    m_root_children->append(cloudItem);
+    //! \note Temporarily hidden cloud
+//    SideBarCloudItem *cloudItem = new SideBarCloudItem(nullptr, nullptr, this);
+//    m_root_children->append(cloudItem);
 
-    SideBarFileSystemItem *computerItem = new SideBarFileSystemItem(nullptr,
-            nullptr,
-            this);
+    SideBarFileSystemItem *computerItem = new SideBarFileSystemItem(nullptr, nullptr, this);
     m_root_children->append(computerItem);
     //computerItem->findChildren();
 
