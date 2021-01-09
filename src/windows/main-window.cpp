@@ -1293,9 +1293,9 @@ void MainWindow::initUI(const QString &uri)
 
     setCentralWidget(views);
 
-    // check slider zoom level
-    if (currentViewSupportZoom())
-        setCurrentViewZoomLevel(currentViewZoomLevel());
+//    // check slider zoom level
+//    if (currentViewSupportZoom())
+//        setCurrentViewZoomLevel(currentViewZoomLevel());
 
     //bind signals
     connect(m_tab, &TabWidget::searchRecursiveChanged, headerBar, &HeaderBar::updateSearchRecursive);

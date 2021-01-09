@@ -41,6 +41,7 @@ FileLaunchManager::FileLaunchManager(QObject *parent) : QObject(parent)
 
 FileLaunchAction *FileLaunchManager::getDefaultAction(const QString &uri)
 {
+    //FIXME: replace BLOCKING api in ui thread.
     auto info = FileInfo::fromUri(uri);
     QString mimeType = info->mimeType();
 
@@ -67,6 +68,7 @@ FileLaunchAction *FileLaunchManager::getDefaultAction(const QString &uri)
 
 const QList<FileLaunchAction*> FileLaunchManager::getRecommendActions(const QString &uri)
 {
+    //FIXME: replace BLOCKING api in ui thread.
     auto info = FileInfo::fromUri(uri);
     QString mimeType = info->mimeType();
     if (mimeType.isEmpty()) {
@@ -88,6 +90,7 @@ const QList<FileLaunchAction*> FileLaunchManager::getRecommendActions(const QStr
 
 const QList<FileLaunchAction*> FileLaunchManager::getFallbackActions(const QString &uri)
 {
+    //FIXME: replace BLOCKING api in ui thread.
     auto info = FileInfo::fromUri(uri);
     QString mimeType = info->mimeType();
     if (mimeType.isEmpty()) {
@@ -109,6 +112,7 @@ const QList<FileLaunchAction*> FileLaunchManager::getFallbackActions(const QStri
 
 const QList<FileLaunchAction*> FileLaunchManager::getAllActionsForType(const QString &uri)
 {
+    //FIXME: replace BLOCKING api in ui thread.
     auto info = FileInfo::fromUri(uri);
     QString mimeType = info->mimeType();
     if (mimeType.isEmpty()) {
@@ -188,7 +192,8 @@ void FileLaunchManager::openAsync(const QStringList &files, bool forceWithArg, b
 
 void FileLaunchManager::setDefaultLauchAction(const QString &uri, FileLaunchAction *action)
 {
-    auto info = FileInfo::fromUri(uri, false);
+    //FIXME: replace BLOCKING api in ui thread.
+    auto info = FileInfo::fromUri(uri);
     if (info->mimeType().isEmpty()) {
         FileInfoJob job(info);
         job.querySync();

@@ -42,15 +42,9 @@ public:
         return SideBarAbstractItem::PersonalItem;
     }
 
-    QString uri() override {
-        return m_uri;
-    }
-    QString displayName() override {
-        return m_display_name;
-    }
-    QString iconName() override {
-        return m_icon_name;
-    }
+    QString uri() override;
+    QString displayName();
+    QString iconName();
     bool hasChildren() override {
         return m_is_root_child;
     }

@@ -610,7 +610,6 @@ QModelIndexList FileItemProxyFilterSortModel::getAllFileIndexes()
             auto disyplayName = index.data(Qt::DisplayRole).toString();
             if (disyplayName.isEmpty()) {
                 auto uri = this->index(i, 0, QModelIndex()).data(FileItemModel::UriRole).toString();
-                //FIXME: replace BLOCKING api in ui thread.
                 disyplayName = FileUtils::getFileDisplayName(uri);
             }
             if (!disyplayName.startsWith(".")) {

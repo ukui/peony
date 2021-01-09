@@ -620,7 +620,7 @@ void DesktopIconView::resolutionChange()
 
 void DesktopIconView::openFileByUri(QString uri)
 {
-    auto info = FileInfo::fromUri(uri, false);
+    auto info = FileInfo::fromUri(uri);
     auto job = new FileInfoJob(info);
     job->setAutoDelete();
     job->connect(job, &FileInfoJob::queryAsyncFinished, [=]() {
@@ -682,7 +682,7 @@ void DesktopIconView::initDoubleClick()
         qDebug() << "double click" << index.data(FileItemModel::UriRole);
         auto uri = index.data(FileItemModel::UriRole).toString();
         //process open symbolic link
-        auto info = FileInfo::fromUri(uri, false);
+        auto info = FileInfo::fromUri(uri);
         if (info->isSymbolLink() && uri.startsWith("file://") && info->isValid())
             uri = "file://" + FileUtils::getSymbolicTarget(uri);
         openFileByUri(uri);

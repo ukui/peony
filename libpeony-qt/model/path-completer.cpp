@@ -39,19 +39,24 @@ PathCompleter::PathCompleter(QAbstractItemModel *model, QObject *parent) : QComp
 
 QStringList PathCompleter::splitPath(const QString &path) const
 {
-    QAbstractItemModel *m = model();
-    PathBarModel* model = static_cast<PathBarModel*>(m);
-    if (path.endsWith("/")) {
-        model->setRootUri(path);
-    } else {
-        QString tmp0 = path;
-        QString tmp = path;
-        tmp.chop(path.size() - path.lastIndexOf("/"));
-        if (tmp.endsWith("/")) {
-            tmp.append("/");
-        }
-        model->setRootUri(tmp);
-    }
+//    QAbstractItemModel *m = model();
+//    PathBarModel* model = static_cast<PathBarModel*>(m);
+
+//    auto l = model->stringList();
+
+//    if (path.endsWith("/")) {
+//        model->setRootUri(path);
+//    } else {
+//        QString tmp0 = path;
+//        QString tmp = path;
+//        tmp.chop(path.size() - path.lastIndexOf("/"));
+//        if (tmp.endsWith("/")) {
+//            tmp.append("/");
+//        }
+//        model->setRootUri(tmp);
+//    }
+
+//    auto splitPath = QCompleter::splitPath(path);
     return QCompleter::splitPath(path);
 }
 

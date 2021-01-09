@@ -77,7 +77,7 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
 
     this->connect(m_trash_watcher.get(), &FileWatcher::fileCreated, [=]() {
         //qDebug()<<"trash changed";
-        auto trash = FileInfo::fromUri("trash:///", true);
+        auto trash = FileInfo::fromUri("trash:///");
         auto job = new FileInfoJob(trash);
         job->setAutoDelete();
         connect(job, &FileInfoJob::infoUpdated, [=]() {
@@ -90,7 +90,7 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
 
     this->connect(m_trash_watcher.get(), &FileWatcher::fileDeleted, [=]() {
         //qDebug()<<"trash changed";
-        auto trash = FileInfo::fromUri("trash:///", true);
+        auto trash = FileInfo::fromUri("trash:///");
         auto job = new FileInfoJob(trash);
         job->setAutoDelete();
         connect(job, &FileInfoJob::infoUpdated, [=]() {
@@ -106,7 +106,7 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
     this->connect(m_desktop_watcher.get(), &FileWatcher::fileCreated, [=](const QString &uri) {
         qDebug()<<"desktop file created"<<uri;
 
-        auto info = FileInfo::fromUri(uri, true);
+        auto info = FileInfo::fromUri(uri);
         bool exsited = false;
         for (auto file : m_files) {
             if (file->uri() == info->uri()) {
@@ -471,9 +471,9 @@ void DesktopItemModel::onEnumerateFinished()
     m_files.clear();
     endRemoveRows();
 
-    auto computer = FileInfo::fromUri("computer:///", true);
-    auto personal = FileInfo::fromPath(QStandardPaths::writableLocation(QStandardPaths::HomeLocation), true);
-    auto trash = FileInfo::fromUri("trash:///", true);
+    auto computer = FileInfo::fromUri("computer:///");
+    auto personal = FileInfo::fromPath(QStandardPaths::writableLocation(QStandardPaths::HomeLocation));
+    auto trash = FileInfo::fromUri("trash:///");
 
     QList<std::shared_ptr<FileInfo>> infos;
 
@@ -581,7 +581,7 @@ bool DesktopItemModel::removeRow(int row, const QModelIndex &parent)
 Qt::ItemFlags DesktopItemModel::flags(const QModelIndex &index) const
 {
     auto uri = index.data(UriRole).toString();
-    auto info = FileInfo::fromUri(uri, false);
+    auto info = FileInfo::fromUri(uri);
     if (index.isValid()) {
         Qt::ItemFlags flags = QAbstractItemModel::flags(index);
         flags |= Qt::ItemIsDragEnabled;

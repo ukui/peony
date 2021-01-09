@@ -472,7 +472,6 @@ bool FileItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action, i
         //we have to set the dest dir uri as its mount point.
         //maybe i should do this when set model root item.
         destDirUri = m_root_item->m_info->uri();
-        //FIXME: replace BLOCKING api in ui thread.
         auto targetUri = FileUtils::getTargetUri(destDirUri);
         if (!targetUri.isEmpty()) {
             destDirUri = targetUri;
@@ -484,7 +483,7 @@ bool FileItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action, i
         return false;
     }
 
-    auto info = Peony::FileInfo::fromUri(destDirUri, false);
+    auto info = Peony::FileInfo::fromUri(destDirUri);
     //qDebug() << "FileItemModel::dropMimeData:" <<info->isDir() <<info->type();
     //if (!FileUtils::getFileIsFolder(destDirUri))
     //fix drag file to folder symbolic fail issue

@@ -28,6 +28,7 @@
 #include <QUrl>
 #include "file-utils.h"
 #include "file-operation-manager.h"
+#include "file-info.h"
 
 #include <QDebug>
 
@@ -112,24 +113,15 @@ FileWatcher::~FileWatcher()
  */
 void FileWatcher::prepare()
 {
-    //FIXME: replace BLOCKING api in ui thread.
-    GFileInfo *info = g_file_query_info(m_file,
-                                        G_FILE_ATTRIBUTE_STANDARD_TARGET_URI,
-                                        G_FILE_QUERY_INFO_NONE,
-                                        m_cancellable,
-                                        nullptr);
+    auto fileInfo = FileInfo::fromGFile(m_file);
+    auto targetUri = fileInfo.get()->targetUri();
 
-    char *uri = g_file_info_get_attribute_as_string(info,
-                G_FILE_ATTRIBUTE_STANDARD_TARGET_URI);
-
-    if (uri) {
+    if (!targetUri.isNull()) {
         g_object_unref(m_file);
-        m_file = g_file_new_for_uri(uri);
-        m_target_uri = uri;
-        g_free(uri);
+        m_file = g_file_new_for_uri(targetUri.toUtf8().constData());
+        m_target_uri = targetUri;
     }
-
-    g_object_unref(info);
+    return;
 }
 
 void FileWatcher::cancel()
