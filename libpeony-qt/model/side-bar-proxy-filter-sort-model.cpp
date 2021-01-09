@@ -34,7 +34,7 @@ using namespace Peony;
 
 SideBarProxyFilterSortModel::SideBarProxyFilterSortModel(QObject *parent) : QSortFilterProxyModel(parent)
 {
-
+    setDynamicSortFilter(true);
 }
 
 bool SideBarProxyFilterSortModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const
