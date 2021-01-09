@@ -177,25 +177,6 @@ void LocationBar::setRootUri(const QString &uri)
     }
 
     return;
-
-//    QStringList uris;
-//    QString tmp = uri;
-//    while (!tmp.isEmpty()) {
-//        uris.prepend(tmp);
-//        QUrl url = tmp;
-//        //FIXME: replace BLOCKING api in ui thread.
-//        if (FileUtils::isMountRoot(tmp))
-//            break;
-
-//        tmp = Peony::FileUtils::getParentUri(tmp);
-//    }
-
-//    m_indicator->setArrowType(Qt::RightArrow);
-//    for (auto uri : uris) {
-//        addButton(uri, uris.first() == uri);
-//    }
-
-//    doLayout();
 }
 
 void LocationBar::clearButtons()
@@ -221,7 +202,6 @@ void LocationBar::addButton(const QString &uri, bool setIcon, bool setMenu)
     button->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
     button->setPopupMode(QToolButton::MenuButtonPopup);
 
-    //FIXME: replace BLOCKING api in ui thread.
     auto displayName = FileUtils::getFileDisplayName(uri);
     m_buttons.insert(uri, button);
     if (m_current_uri.startsWith("search://")) {
@@ -238,7 +218,6 @@ void LocationBar::addButton(const QString &uri, bool setIcon, bool setMenu)
 
     auto parent = FileUtils::getParentUri(uri);
     if (setIcon) {
-        //FIXME: replace BLOCKING api in ui thread.
         QIcon icon = QIcon::fromTheme(Peony::FileUtils::getFileIconName(uri), QIcon::fromTheme("folder"));
         button->setIcon(icon);
     }

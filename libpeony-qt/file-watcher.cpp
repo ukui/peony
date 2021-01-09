@@ -122,25 +122,6 @@ void FileWatcher::prepare()
         m_target_uri = targetUri;
     }
     return;
-
-    //FIXME: replace BLOCKING api in ui thread.
-    GFileInfo *info = g_file_query_info(m_file,
-                                        G_FILE_ATTRIBUTE_STANDARD_TARGET_URI,
-                                        G_FILE_QUERY_INFO_NONE,
-                                        m_cancellable,
-                                        nullptr);
-
-    char *uri = g_file_info_get_attribute_as_string(info,
-                G_FILE_ATTRIBUTE_STANDARD_TARGET_URI);
-
-    if (uri) {
-        g_object_unref(m_file);
-        m_file = g_file_new_for_uri(uri);
-        m_target_uri = uri;
-        g_free(uri);
-    }
-
-    g_object_unref(info);
 }
 
 void FileWatcher::cancel()

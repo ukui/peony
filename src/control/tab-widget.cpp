@@ -683,7 +683,6 @@ void TabWidget::updateSearchPathButton(const QString &uri)
         if (! getCurrentUri().isNull())
             curUri = getCurrentUri();
     }
-    //FIXME: replace BLOCKING api in ui thread.
     auto iconName = Peony::FileUtils::getFileIconName(curUri);
     auto displayName = Peony::FileUtils::getFileDisplayName(curUri);
     qDebug() << "iconName:" <<iconName <<displayName<<curUri;
@@ -844,7 +843,6 @@ void TabWidget::setPreviewPage(Peony::PreviewPageIface *previewPage)
 
 void TabWidget::addPage(const QString &uri, bool jumpTo)
 {
-    //FIXME: replace BLOCKING api in ui thread. Done
     auto info = Peony::FileInfo::fromUri(uri);
     auto infoJob = new Peony::FileInfoJob(info);
     infoJob->setAutoDelete();

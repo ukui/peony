@@ -115,7 +115,6 @@ void NavigationTabBar::updateLocation(int index, const QString &uri)
     infoJob->setAutoDelete();
 
     connect(infoJob, &Peony::FileInfoJob::queryAsyncFinished, this, [=](){
-        //FIXME: replace BLOCKING api in ui thread.
         auto iconName = Peony::FileUtils::getFileIconName(uri);
         auto displayName = Peony::FileUtils::getFileDisplayName(uri);
         //qDebug() << "updateLocation text:" <<displayName <<uri;
@@ -148,7 +147,6 @@ void NavigationTabBar::addPage(const QString &uri, bool jumpToNewTab)
 {
     m_info = Peony::FileInfo::fromUri(uri);
     if (!uri.isNull()) {
-        //FIXME: replace BLOCKING api in ui thread.
         auto iconName = Peony::FileUtils::getFileIconName(uri);
         auto displayName = Peony::FileUtils::getFileDisplayName(uri);
         addTab(QIcon::fromTheme(iconName), displayName);
@@ -231,14 +229,12 @@ void NavigationTabBar::dropEvent(QDropEvent *e)
     if (e->source() != this) {
         if (e->mimeData()->hasUrls()) {
             for (auto url : e->mimeData()->urls()) {
-                //FIXME: replace BLOCKING api in ui thread.
                 if (Peony::FileUtils::isFileDirectory(url.url())) {
                     addPageRequest(url.url(), true);
                 }
             }
         } else if (e->mimeData()->hasFormat("peony/tab-index")) {
             auto uri = e->mimeData()->data("peony/tab-index");
-            //FIXME: replace BLOCKING api in ui thread.
             if (Peony::FileUtils::isFileDirectory(uri)) {
                 addPageRequest(uri, true);
             }

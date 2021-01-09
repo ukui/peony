@@ -435,7 +435,6 @@ void HeaderBar::updateIcons()
 
     //fix create folder fail issue in special path
     auto curUri = m_window->getCurrentUri();
-    //FIXME: replace BLOCKING api in ui thread.
     auto info = Peony::FileInfo::fromUri(curUri);
     //Peony::FileInfoJob job(info);
     //job.querySync();

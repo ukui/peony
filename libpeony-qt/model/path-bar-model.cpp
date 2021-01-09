@@ -99,73 +99,12 @@ void PathBarModel::setRootUri(const QString &uri, bool force)
     infoJob->queryAsync();
 
     return;
-    //FIXME: replace BLOCKING api in ui thread.
-    if (!force) {
-        if (uri.contains("////"))
-            return;
-
-        if (m_current_uri == uri)
-            return;
-
-        auto file = wrapGFile(g_file_new_for_uri(uri.toUtf8().constData()));
-        //FIXME: replace BLOCKING api in ui thread.
-        if (!g_file_query_exists(file.get()->get(), nullptr)) {
-            return;
-        }
-    }
-
-    //do not enumerate a search:/// directory
-    if (uri.startsWith("search://"))
-        return;
-
-    if (uri.startsWith("trash://"))
-        return;
-
-    //qDebug()<<"setUri"<<uri<<"raw"<<m_current_uri;
-
-    beginResetModel();
-
-    m_current_uri = uri;
-
-    //FIXME: replace BLOCKING api in ui thread.
-    FileEnumerator e;
-    e.setEnumerateDirectory(uri);
-    e.enumerateSync();
-    auto infos = e.getChildren();
-    if (infos.isEmpty()) {
-        endResetModel();
-        Q_EMIT updated();
-        return;
-    }
-
-    m_uri_display_name_hash.clear();
-    QStringList l;
-    for (auto info : infos) {
-        //skip the independent file.
-        if (!(info->isDir() || info->isVolume()))
-            continue;
-
-        //skip the hidden file.
-        //FIXME: replace BLOCKING api in ui thread.
-        QString display_name = FileUtils::getFileDisplayName(info->uri());
-        if (display_name.startsWith("."))
-            continue;
-
-        QUrl url = info->uri();
-        l<<url.toDisplayString();
-        m_uri_display_name_hash.insert(info->uri(), display_name);
-    }
-    setStringList(l);
-    sort(0);
-    endResetModel();
-    Q_EMIT updated();
 }
 
 QString PathBarModel::findDisplayName(const QString &uri)
 {
     QUrl url = uri;
     if (m_uri_display_name_hash.find(url.toDisplayString())->isNull()) {
-        //FIXME: replace BLOCKING api in ui thread.
         return FileUtils::getFileDisplayName(uri);
     } else {
         return m_uri_display_name_hash.value(url.toDisplayString());

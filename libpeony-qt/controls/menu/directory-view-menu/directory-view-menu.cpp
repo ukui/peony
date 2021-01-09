@@ -217,7 +217,6 @@ const QList<QAction *> DirectoryViewMenu::constructOpenOpActions()
             auto info = FileInfo::fromUri(m_selections.first());
             auto displayName = info->displayName();
 
-            //FIXME: replace BLOCKING api in ui thread.
             if (displayName.isEmpty())
                 displayName = FileUtils::getFileDisplayName(info->uri());
             //when name is too long, show elideText
@@ -824,7 +823,6 @@ const QList<QAction *> DirectoryViewMenu::constructSearchActions()
         l<<addAction(QIcon::fromTheme("new-window-symbolc"), tr("Open Parent Folder in New Window"));
         connect(l.last(), &QAction::triggered, [=]() {
             for (auto uri : m_selections) {
-                //FIXME: replace BLOCKING api in ui thread.
                 if (m_is_recent)
                     uri = FileUtils::getTargetUri(uri);
                 auto parentUri = FileUtils::getParentUri(uri);
