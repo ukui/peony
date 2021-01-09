@@ -35,10 +35,17 @@
 #include <QProcess>
 #include <QDebug>
 #include <QStatusBar>
+
+#include <QStringList>
 #include <QString>
 #include <QHBoxLayout>
+#include <QDialogButtonBox>
+#include <QSpacerItem>
+#include <QTimer>
+
 
 #include "file-info.h"
+#include "file-info-manager.h"
 
 using namespace Peony;
 
@@ -119,7 +126,6 @@ PropertiesWindow::PropertiesWindow(const QStringList &uris, QWidget *parent) : Q
 {
     this->setContextMenuPolicy(Qt::CustomContextMenu);
     m_uris = uris;
-    qDebug() << "进入窗口创建!";
 
     if (uris.contains("computer:///"))
         gotoAboutComputer();
@@ -129,8 +135,8 @@ PropertiesWindow::PropertiesWindow(const QStringList &uris, QWidget *parent) : Q
 
         this->setAttribute(Qt::WA_DeleteOnClose);
         this->setContentsMargins(0, 5, 0, 0);
-
-        this->setWindowFlags(Qt::WindowCloseButtonHint);
+        //only show closs button
+        this->setWindowFlags(this->windowFlags() &~ Qt::WindowMinMaxButtonsHint);
 
         if(this->notDir())
             //如果含有文件夹，那么高度是600，如果是其他文件，那么高度是652
@@ -168,22 +174,28 @@ void PropertiesWindow::setWindowTitleTextAndIcon()
         qint32 l_fileNum = this->m_uris.count();
 
         if(l_fileNum > 1)
-            //use default icon ***
+            //use default icon
             l_windowTitle = tr("Selected") + QString(tr(" %1 Files")).arg(l_fileNum);
 
         else {
             std::shared_ptr<FileInfo> l_fineInfo = FileInfo::fromUri(m_uris.at(0));
-            qDebug() << "文件信息为空?" << (l_fineInfo.get() == nullptr);
+            qDebug() << "PropertiesWindow::setWindowTitleTextAndIcon():文件信息为空?" << (l_fineInfo.get() == nullptr);
             if(l_fineInfo) {
                 l_windowTitle = l_fineInfo.get()->displayName();
+                //从桌面进入会找不到名称... 未知原因  解决一下
+                qDebug() << "PropertiesWindow::setWindowTitleTextAndIcon():displayName:" << l_windowTitle;
+                if(l_windowTitle == "") {
+                    l_windowTitle = (m_uris.at(0)).split("/").last();
+
+                    if(l_windowTitle.endsWith(".desktop"))
+                        l_windowTitle = l_windowTitle.split(".").first();
+                }
                 l_iconName = l_fineInfo.get()->iconName();
             }
         }
     }
+
     l_windowTitle += " " + tr("Properties");
-
-    qDebug() << "图标名称:" << l_iconName << "";
-
     this->setWindowIcon(QIcon::fromTheme(l_iconName));
     this->setWindowTitle(l_windowTitle);
 }
@@ -226,18 +238,33 @@ void PropertiesWindow::gotoAboutComputer()
 void PropertiesWindow::initStatusBar(){
     QStatusBar *statusBar = new QStatusBar(this);
 
-    statusBar->setFixedSize(PropertiesWindow::s_windowWidth,64);
+//    statusBar->setFixedSize(PropertiesWindow::s_windowWidth,64);
+    statusBar->setMinimumSize(PropertiesWindow::s_windowWidth,64);
 
+    // use button-box
+//    QDialogButtonBox *buttonBox = new QDialogButtonBox(Qt::Horizontal,statusBar);
+//    buttonBox->setMinimumSize(PropertiesWindow::s_windowWidth,64);
+//    buttonBox->setContentsMargins(0,0,16,0);
+
+//    QPushButton *cancelButton = buttonBox->addButton(tr("Cancel"),QDialogButtonBox::RejectRole);
+//    QPushButton *okButton = buttonBox->addButton(tr("Ok"),QDialogButtonBox::AcceptRole);
+
+//    okButton->setMinimumSize(PropertiesWindow::s_bottomButtonSize);
+//    cancelButton->setMinimumSize(PropertiesWindow::s_bottomButtonSize);
+
+//    statusBar->addWidget(buttonBox);
+
+    //use HBox-layout
     QHBoxLayout *bottomToolLayout = new QHBoxLayout(statusBar);
 
     QPushButton *okButton = new QPushButton(tr("Ok"),statusBar);
-    QPushButton *cancelButton = new QPushButton(QObject::tr("Cancel"),statusBar);
+    QPushButton *cancelButton = new QPushButton(tr("Cancel"),statusBar);
 
-    okButton->setFixedSize(PropertiesWindow::s_bottomButtonSize);
-    cancelButton->setFixedSize(PropertiesWindow::s_bottomButtonSize);
+    okButton->setMinimumSize(PropertiesWindow::s_bottomButtonSize);
+    cancelButton->setMinimumSize(PropertiesWindow::s_bottomButtonSize);
 
-    bottomToolLayout->addWidget(cancelButton);
     bottomToolLayout->addWidget(okButton);
+    bottomToolLayout->addWidget(cancelButton);
 
     okButton->move(344,16);
     cancelButton->move(236,16);
@@ -248,6 +275,7 @@ void PropertiesWindow::initStatusBar(){
 
     //set cancelButton event process
     connect(cancelButton,&QPushButton::clicked,this,&QMainWindow::close);
+    connect(okButton,&QPushButton::clicked,this,&PropertiesWindow::saveAllChanged);
 }
 
 /*!
