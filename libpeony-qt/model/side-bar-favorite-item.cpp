@@ -24,6 +24,9 @@
 #include "side-bar-model.h"
 #include "file-utils.h"
 
+#include "file-info.h"
+#include "file-info-job.h"
+
 #include "bookmark-manager.h"
 
 #include <QStandardPaths>
@@ -69,6 +72,14 @@ SideBarFavoriteItem::SideBarFavoriteItem(QString uri,
     //FIXME: replace BLOCKING api in ui thread.
     m_display_name = FileUtils::getFileDisplayName(uri);
     m_icon_name = FileUtils::getFileIconName(uri);
+
+    m_info = FileInfo::fromUri(uri);
+    auto infoJob = new FileInfoJob(m_info);
+    infoJob->setAutoDelete();
+    connect(infoJob, &FileInfoJob::queryAsyncFinished, this, [=](){
+        Q_EMIT this->queryInfoFinished();
+    });
+    infoJob->queryAsync();
 }
 
 SideBarAbstractItem::Type SideBarFavoriteItem::type() {
@@ -82,12 +93,16 @@ QString SideBarFavoriteItem::uri()
 
 QString SideBarFavoriteItem::displayName()
 {
-    return m_display_name;
+    if (!m_info)
+        return m_display_name;
+    return m_info.get()->displayName();
 }
 
 QString SideBarFavoriteItem::iconName()
 {
-    return m_icon_name;
+    if (!m_info)
+        return m_icon_name;
+    return m_info.get()->iconName();
 }
 
 bool SideBarFavoriteItem::hasChildren()

@@ -23,6 +23,7 @@
 #include "path-edit.h"
 #include "path-bar-model.h"
 #include "path-completer.h"
+#include "file-utils.h"
 
 #include <QKeyEvent>
 #include <QAction>
@@ -41,6 +42,7 @@ PathEdit::PathEdit(QWidget *parent) : QLineEdit(parent)
     m_model = new PathBarModel(this);
     m_completer = new PathCompleter(this);
     m_completer->setModel(m_model);
+    //m_completer->setCompletionMode(QCompleter::CompletionMode::UnfilteredPopupCompletion);
 
     m_completer->popup()->setAttribute(Qt::WA_TranslucentBackground);
 
@@ -73,6 +75,32 @@ PathEdit::PathEdit(QWidget *parent) : QLineEdit(parent)
             this->editCancelled();
         }
     });
+
+    connect(this, &PathEdit::textChanged, this, [=](){
+        if (!isVisible())
+            return;
+
+        auto uri = text();
+        if (uri.endsWith("/")) {
+            m_model->setRootUri(uri);
+        }
+//        auto parentUri = FileUtils::getParentUri(uri);
+//        if (parentUri == m_model->currentDirUri() && !m_model->stringList().isEmpty())
+//            return;
+
+//        if (uri.endsWith("/")) {
+//            //m_model->setRootUri(uri);
+//        } else {
+//            m_model->setRootUri(parentUri);
+//        }
+    });
+
+    connect(m_model, &PathBarModel::updated, this, [=](){
+        if (m_model->stringList().isEmpty())
+            return;
+
+        m_completer->complete();
+    });
 }
 
 void PathEdit::setUri(const QString &uri)
@@ -92,8 +120,6 @@ void PathEdit::focusOutEvent(QFocusEvent *e)
 void PathEdit::focusInEvent(QFocusEvent *e)
 {
     QLineEdit::focusInEvent(e);
-    m_model->setRootUri(this->text());
-    m_completer->complete();
 }
 
 void PathEdit::cancelList()

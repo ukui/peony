@@ -23,6 +23,8 @@
 #include "side-bar-personal-item.h"
 #include "side-bar-model.h"
 #include "file-utils.h"
+#include "file-info.h"
+#include "file-info-job.h"
 #include <QStandardPaths>
 
 using namespace Peony;
@@ -79,6 +81,33 @@ SideBarPersonalItem::SideBarPersonalItem(QString uri,
     //FIXME: replace BLOCKING api in ui thread.
     m_display_name = FileUtils::getFileDisplayName(uri);
     m_icon_name = FileUtils::getFileIconName(uri);
+
+    m_info = FileInfo::fromUri(uri);
+    auto infoJob = new FileInfoJob(m_info);
+    infoJob->setAutoDelete();
+    connect(infoJob, &FileInfoJob::queryAsyncFinished, this, [=](){
+        Q_EMIT this->queryInfoFinished();
+    });
+    infoJob->queryAsync();
+}
+
+QString SideBarPersonalItem::uri()
+{
+    return m_uri;
+}
+
+QString SideBarPersonalItem::displayName()
+{
+    if (!m_info)
+        return m_display_name;
+    return m_info.get()->displayName();
+}
+
+QString SideBarPersonalItem::iconName()
+{
+    if (!m_info)
+        return m_icon_name;
+    return m_info.get()->iconName();
 }
 
 QModelIndex SideBarPersonalItem::firstColumnIndex()

@@ -44,6 +44,8 @@
 
 #include "FMWindowIface.h"
 #include "main-window.h"
+#include "file-info.h"
+#include "file-info-job.h"
 
 static TabBarStyle *global_instance = nullptr;
 
@@ -108,36 +110,43 @@ void NavigationTabBar::addPages(const QStringList &uri)
 
 void NavigationTabBar::updateLocation(int index, const QString &uri)
 {
-    //FIXME: replace BLOCKING api in ui thread.
-    auto iconName = Peony::FileUtils::getFileIconName(uri);
-    auto displayName = Peony::FileUtils::getFileDisplayName(uri);
-    //qDebug() << "updateLocation text:" <<displayName <<uri;
-    if (uri.startsWith("search:///"))
-    {
-        QString nameRegexp = Peony::SearchVFSUriParser::getSearchUriNameRegexp(uri);
-        QString targetDirectory = Peony::SearchVFSUriParser::getSearchUriTargetDirectory(uri);
-        displayName = tr("Search \"%1\" in \"%2\"").arg(nameRegexp).arg(targetDirectory);
-    }
+    auto info = Peony::FileInfo::fromUri(uri);
+    auto infoJob = new Peony::FileInfoJob(info);
+    infoJob->setAutoDelete();
 
-    //elide text if it is too long
-    if (displayName.length() > ELIDE_TEXT_LENGTH)
-    {
-        int  charWidth = fontMetrics().averageCharWidth();
-        displayName = fontMetrics().elidedText(displayName, Qt::ElideRight, ELIDE_TEXT_LENGTH * charWidth);
-    }
+    connect(infoJob, &Peony::FileInfoJob::queryAsyncFinished, this, [=](){
+        auto iconName = Peony::FileUtils::getFileIconName(uri);
+        auto displayName = Peony::FileUtils::getFileDisplayName(uri);
+        //qDebug() << "updateLocation text:" <<displayName <<uri;
+        if (uri.startsWith("search:///"))
+        {
+            QString nameRegexp = Peony::SearchVFSUriParser::getSearchUriNameRegexp(uri);
+            QString targetDirectory = Peony::SearchVFSUriParser::getSearchUriTargetDirectory(uri);
+            displayName = tr("Search \"%1\" in \"%2\"").arg(nameRegexp).arg(targetDirectory);
+        }
 
-    setTabText(index, displayName);
-    setTabIcon(index, QIcon::fromTheme(iconName));
-    setTabData(index, uri);
-    relayoutFloatButton(false);
+        //elide text if it is too long
+        if (displayName.length() > ELIDE_TEXT_LENGTH)
+        {
+            int  charWidth = fontMetrics().averageCharWidth();
+            displayName = fontMetrics().elidedText(displayName, Qt::ElideRight, ELIDE_TEXT_LENGTH * charWidth);
+        }
 
-    Q_EMIT this->locationUpdated(uri);
+        setTabText(index, displayName);
+        setTabIcon(index, QIcon::fromTheme(iconName));
+        setTabData(index, uri);
+        relayoutFloatButton(false);
+
+        Q_EMIT this->locationUpdated(uri);
+    });
+
+    infoJob->queryAsync();
 }
 
 void NavigationTabBar::addPage(const QString &uri, bool jumpToNewTab)
 {
+    m_info = Peony::FileInfo::fromUri(uri);
     if (!uri.isNull()) {
-        //FIXME: replace BLOCKING api in ui thread.
         auto iconName = Peony::FileUtils::getFileIconName(uri);
         auto displayName = Peony::FileUtils::getFileDisplayName(uri);
         addTab(QIcon::fromTheme(iconName), displayName);
@@ -220,14 +229,12 @@ void NavigationTabBar::dropEvent(QDropEvent *e)
     if (e->source() != this) {
         if (e->mimeData()->hasUrls()) {
             for (auto url : e->mimeData()->urls()) {
-                //FIXME: replace BLOCKING api in ui thread.
                 if (Peony::FileUtils::isFileDirectory(url.url())) {
                     addPageRequest(url.url(), true);
                 }
             }
         } else if (e->mimeData()->hasFormat("peony/tab-index")) {
             auto uri = e->mimeData()->data("peony/tab-index");
-            //FIXME: replace BLOCKING api in ui thread.
             if (Peony::FileUtils::isFileDirectory(uri)) {
                 addPageRequest(uri, true);
             }

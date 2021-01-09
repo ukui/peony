@@ -30,6 +30,10 @@ SideBarAbstractItem::SideBarAbstractItem(SideBarModel *model, QObject *parent) :
 {
     m_model = model;
     m_children = new QVector<SideBarAbstractItem*>();
+
+    connect(this, &SideBarAbstractItem::queryInfoFinished, m_model, [=](){
+        m_model->dataChanged(firstColumnIndex(), lastColumnIndex());
+    });
 }
 
 SideBarAbstractItem::~SideBarAbstractItem()

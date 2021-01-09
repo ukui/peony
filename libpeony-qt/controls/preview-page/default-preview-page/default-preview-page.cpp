@@ -282,6 +282,7 @@ void FilePreviewPage::countAsync(const QString &uri)
 
     QStringList uris;
     uris<<uri;
+    //FIXME: replace BLOCKING api in ui thread.
     auto info = FileInfo::fromUri(uri);
     m_count_op = new FileCountOperation(uris, !info->isDir());
     connect(m_count_op, &FileOperation::operationStarted, this, &FilePreviewPage::resetCount, Qt::BlockingQueuedConnection);

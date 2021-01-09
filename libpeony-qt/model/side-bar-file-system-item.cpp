@@ -42,9 +42,9 @@
 using namespace Peony;
 
 SideBarFileSystemItem::SideBarFileSystemItem(QString uri,
-        SideBarFileSystemItem *parentItem,
-        SideBarModel *model,
-        QObject *parent) : SideBarAbstractItem (model, parent)
+                                             SideBarFileSystemItem *parentItem,
+                                             SideBarModel *model,
+                                             QObject *parent) : SideBarAbstractItem (model, parent)
 {
     m_parent = parentItem;
 
@@ -60,10 +60,19 @@ SideBarFileSystemItem::SideBarFileSystemItem(QString uri,
         //connect(m_watcher.get(), &FileWatcher::fileChanged, [=]())
     } else {
         m_uri = uri;
+        m_info = FileInfo::fromUri(uri);
+        auto infoJob = new FileInfoJob(m_info);
+        infoJob->setAutoDelete();
+        connect(infoJob, &FileInfoJob::queryAsyncFinished, this, [=](){
+            m_display_name = FileUtils::getFileDisplayName(uri);
+            m_icon_name = FileUtils::getFileIconName(uri);
+            FileUtils::queryVolumeInfo(m_uri, m_volume_name, m_unix_device, m_display_name);
+            Q_EMIT this->queryInfoFinished();
+        });
+        infoJob->queryAsync();
         //FIXME: replace BLOCKING api in ui thread.
         m_display_name = FileUtils::getFileDisplayName(uri);
         m_icon_name = FileUtils::getFileIconName(uri);
-        FileUtils::queryVolumeInfo(m_uri, m_volume_name, m_unix_device, m_display_name);
     }
 }
 
@@ -114,6 +123,7 @@ void SideBarFileSystemItem::findChildren()
 
     FileEnumerator *e = new FileEnumerator;
     e->setEnumerateDirectory(m_uri);
+    e->setEnumerateWithInfoJob();
     connect(e, &FileEnumerator::prepared, this, [=](const GErrorWrapperPtr &err, const QString &targetUri) {
         if (targetUri != nullptr) {
             if (targetUri != this->uri()) {
@@ -121,122 +131,125 @@ void SideBarFileSystemItem::findChildren()
             }
         }
 
-        e->enumerateSync();
-        auto infos = e->getChildren();
-        bool isEmpty = true;
-        int real_children_count = infos.count();
-        if (infos.isEmpty()) {
-            auto separator = new SideBarSeparatorItem(SideBarSeparatorItem::EmptyFile, this, m_model);
-            this->m_children->prepend(separator);
-            m_model->insertRows(0, 1, this->firstColumnIndex());
-            goto end;
-        }
-
-        for (auto info: infos) {
-            if (!info->displayName().startsWith(".") && (info->isDir() || info->isVolume())) {
-                isEmpty = false;
-            }
-            //skip the independent files
-            if (!(info->isDir() || info->isVolume())) {
-                real_children_count--;
-                continue;
+        connect(e, &FileEnumerator::enumerateFinished, this, [=](){
+            auto infos = e->getChildren();
+            bool isEmpty = true;
+            int real_children_count = infos.count();
+            if (infos.isEmpty()) {
+                auto separator = new SideBarSeparatorItem(SideBarSeparatorItem::EmptyFile, this, m_model);
+                this->m_children->prepend(separator);
+                m_model->insertRows(0, 1, this->firstColumnIndex());
+                goto end;
             }
 
-            SideBarFileSystemItem *item = new SideBarFileSystemItem(info->uri(),
-                    this,
-                    m_model,
-                    this);
-            //check is mounted.
-            //FIXME: replace BLOCKING api in ui thread.
-            auto targetUri = FileUtils::getTargetUri(info->uri());
-            bool isUmountable = FileUtils::isFileUnmountable(info->uri());
-            item->m_is_mounted = (!targetUri.isEmpty() && (targetUri != "file:///")) || isUmountable;
-            m_children->append(item);
-            //qDebug()<<info->uri();
-        }
-        m_model->insertRows(0, real_children_count, firstColumnIndex());
+            for (auto info: infos) {
+                if (!info->displayName().startsWith(".") && (info->isDir() || info->isVolume())) {
+                    isEmpty = false;
+                }
+                //skip the independent files
+                if (!(info->isDir() || info->isVolume())) {
+                    real_children_count--;
+                    continue;
+                }
 
-        if (isEmpty) {
-            auto separator = new SideBarSeparatorItem(SideBarSeparatorItem::EmptyFile, this, m_model);
-            this->m_children->prepend(separator);
-            m_model->insertRows(0, 1, this->firstColumnIndex());
-        }
+                SideBarFileSystemItem *item = new SideBarFileSystemItem(info->uri(),
+                                                                        this,
+                                                                        m_model,
+                                                                        this);
+                //check is mounted.
+                //FIXME: replace BLOCKING api in ui thread.
+                auto targetUri = FileUtils::getTargetUri(info->uri());
+                bool isUmountable = FileUtils::isFileUnmountable(info->uri());
+                item->m_is_mounted = (!targetUri.isEmpty() && (targetUri != "file:///")) || isUmountable;
+                m_children->append(item);
+                //qDebug()<<info->uri();
+            }
+            m_model->insertRows(0, real_children_count, firstColumnIndex());
+
+            if (isEmpty) {
+                auto separator = new SideBarSeparatorItem(SideBarSeparatorItem::EmptyFile, this, m_model);
+                this->m_children->prepend(separator);
+                m_model->insertRows(0, 1, this->firstColumnIndex());
+            }
 end:
-        Q_EMIT this->findChildrenFinished();
-        if (err != nullptr) {
-            //qDebug()<<"prepared:"<<err.get()->message();
-        }
-        delete e;
+            Q_EMIT this->findChildrenFinished();
+            if (err != nullptr) {
+                //qDebug()<<"prepared:"<<err.get()->message();
+            }
+            delete e;
 
-        //NOTE: init watcher after prepared.
-        this->initWatcher();
-        this->m_watcher->setMonitorChildrenChange();
-        /*
-        if (this->uri() == "computer:///") {
+            //NOTE: init watcher after prepared.
+            this->initWatcher();
             this->m_watcher->setMonitorChildrenChange();
-        }
-        */
-
-        //start listening.
-        connect(m_watcher.get(), &FileWatcher::fileCreated, this, [=](const QString &uri) {
-            //qDebug()<<"created:"<<uri;
-            for (auto item : *m_children) {
-                if (item->uri() == uri) {
-                    return;
-                }
+            /*
+            if (this->uri() == "computer:///") {
+                this->m_watcher->setMonitorChildrenChange();
             }
+            */
 
-            SideBarFileSystemItem *item = new SideBarFileSystemItem(uri,
-                    this,
-                    m_model);
-            m_model->beginInsertRows(this->firstColumnIndex(), m_children->count(), m_children->count());
-            m_children->append(item);
-            m_model->endInsertRows();
-            m_model->indexUpdated(this->firstColumnIndex());
-            m_model->dataChanged(item->firstColumnIndex(), item->lastColumnIndex());
-        });
-
-        connect(m_watcher.get(), &FileWatcher::fileDeleted, this, [=](const QString &uri) {
-            //qDebug()<<"deleted:"<<uri;
-            for (auto child : *m_children) {
-                if (child->uri() == uri) {
-                    int index = m_children->indexOf(child);
-                    m_model->beginRemoveRows(firstColumnIndex(), index, index);
-                    m_children->removeOne(child);
-                    m_model->endRemoveRows();
-                    child->deleteLater();
-                    break;
-                }
-            }
-            m_model->indexUpdated(this->firstColumnIndex());
-        });
-
-        connect(m_watcher.get(), &FileWatcher::fileChanged, this, [=](const QString &uri) {
-            //FIXME: maybe i have to remove this changed item then add it again to avoid
-            //qt's view expander cannot show correctly after the volume item unmounted.
-            //qDebug()<<"side bar fs item changed:"<<uri;
-            for (auto child : *m_children) {
-                if (child->uri() == uri) {
-                    SideBarFileSystemItem *changedItem = static_cast<SideBarFileSystemItem*>(child);
-                    updateFileInfo(changedItem);
-                    //FIXME: replace BLOCKING api in ui thread.
-                    if (FileUtils::getTargetUri(uri).isEmpty()) {
-                        changedItem->m_is_mounted = false;
-                        changedItem->clearChildren();
-                    } else {
-                        changedItem->m_is_mounted = true;
+            //start listening.
+            connect(m_watcher.get(), &FileWatcher::fileCreated, this, [=](const QString &uri) {
+                //qDebug()<<"created:"<<uri;
+                for (auto item : *m_children) {
+                    if (item->uri() == uri) {
+                        return;
                     }
-
-                    //why it would failed when send changed signal for newly mounted item?
-                    //m_model->dataChanged(changedItem->firstColumnIndex(), changedItem->firstColumnIndex());
-                    m_model->dataChanged(changedItem->firstColumnIndex(), changedItem->lastColumnIndex());
-                    break;
                 }
-            }
+
+                SideBarFileSystemItem *item = new SideBarFileSystemItem(uri,
+                                                                        this,
+                                                                        m_model);
+                m_model->beginInsertRows(this->firstColumnIndex(), m_children->count(), m_children->count());
+                m_children->append(item);
+                m_model->endInsertRows();
+                m_model->indexUpdated(this->firstColumnIndex());
+                m_model->dataChanged(item->firstColumnIndex(), item->lastColumnIndex());
+            });
+
+            connect(m_watcher.get(), &FileWatcher::fileDeleted, this, [=](const QString &uri) {
+                //qDebug()<<"deleted:"<<uri;
+                for (auto child : *m_children) {
+                    if (child->uri() == uri) {
+                        int index = m_children->indexOf(child);
+                        m_model->beginRemoveRows(firstColumnIndex(), index, index);
+                        m_children->removeOne(child);
+                        m_model->endRemoveRows();
+                        child->deleteLater();
+                        break;
+                    }
+                }
+                m_model->indexUpdated(this->firstColumnIndex());
+            });
+
+            connect(m_watcher.get(), &FileWatcher::fileChanged, this, [=](const QString &uri) {
+                //FIXME: maybe i have to remove this changed item then add it again to avoid
+                //qt's view expander cannot show correctly after the volume item unmounted.
+                //qDebug()<<"side bar fs item changed:"<<uri;
+                for (auto child : *m_children) {
+                    if (child->uri() == uri) {
+                        SideBarFileSystemItem *changedItem = static_cast<SideBarFileSystemItem*>(child);
+                        updateFileInfo(changedItem);
+                        //FIXME: replace BLOCKING api in ui thread.
+                        if (FileUtils::getTargetUri(uri).isEmpty()) {
+                            changedItem->m_is_mounted = false;
+                            changedItem->clearChildren();
+                        } else {
+                            changedItem->m_is_mounted = true;
+                        }
+
+                        //why it would failed when send changed signal for newly mounted item?
+                        //m_model->dataChanged(changedItem->firstColumnIndex(), changedItem->firstColumnIndex());
+                        m_model->dataChanged(changedItem->firstColumnIndex(), changedItem->lastColumnIndex());
+                        break;
+                    }
+                }
+            });
+
+            this->startWatcher();
+            //m_model->setData(lastColumnIndex(), QVariant(QIcon::fromTheme("media-eject")), Qt::DecorationRole);
         });
 
-        this->startWatcher();
-        //m_model->setData(lastColumnIndex(), QVariant(QIcon::fromTheme("media-eject")), Qt::DecorationRole);
+        e->enumerateAsync();
     });
     e->prepare();
 
@@ -252,6 +265,7 @@ void SideBarFileSystemItem::findChildrenAsync()
 bool SideBarFileSystemItem::isRemoveable()
 {
     if (m_uri.contains("computer:///") && m_uri != "computer:///") {
+        //FIXME: replace BLOCKING api in ui thread.
         auto info = FileInfo::fromUri(m_uri);
         if (info->displayName().isEmpty()) {
             FileInfoJob j(info);
@@ -265,6 +279,7 @@ bool SideBarFileSystemItem::isRemoveable()
 bool SideBarFileSystemItem::isEjectable()
 {
     if (m_uri.contains("computer:///") && m_uri != "computer:///") {
+        //FIXME: replace BLOCKING api in ui thread.
         auto info = FileInfo::fromUri(m_uri);
         if (info->displayName().isEmpty()) {
             FileInfoJob j(info);
@@ -281,6 +296,7 @@ bool SideBarFileSystemItem::isMountable()
         //some mountable item can be unmounted but can't be mounted.
         //the most of them is remote servers and shared directories.
         //they should be seemed as mountable items.
+        //FIXME: replace BLOCKING api in ui thread.
         auto info = FileInfo::fromUri(m_uri);
         if (info->displayName().isEmpty()) {
             FileInfoJob j(info);
@@ -321,11 +337,11 @@ void SideBarFileSystemItem::eject(GMountUnmountFlags ejectFlag)
 
     if(g_drive_can_eject(gdrive)){//for udisk or DVD.
         g_file_eject_mountable_with_operation(file.get()->get(),
-                                          ejectFlag,
-                                          nullptr,
-                                          nullptr,
-                                          GAsyncReadyCallback(eject_cb),
-                                          this);
+                                              ejectFlag,
+                                              nullptr,
+                                              nullptr,
+                                              GAsyncReadyCallback(eject_cb),
+                                              this);
     }else if(g_drive_can_stop(gdrive)){//for mobile harddisk.
         g_drive_stop(gdrive,ejectFlag,NULL,NULL,
                      GAsyncReadyCallback(ejectDevicebyDrive),
@@ -385,11 +401,11 @@ static void unmount_finished(GFile* file, GAsyncResult* result, gpointer udata)
 
     //SideBarFileSystemItem* th = (SideBarFileSystemItem*)udata;
 
-//    if (FileUtils::isMountPoint(FileUtils::getTargetUri(th->uri()))) {
-//        QMessageBox::warning(nullptr, QObject::tr("eject device failed"),
-//                             QObject::tr("Please check whether the device is occupied and then eject the device again"),
-//                             QMessageBox::Ok);
-//    }
+    //    if (FileUtils::isMountPoint(FileUtils::getTargetUri(th->uri()))) {
+    //        QMessageBox::warning(nullptr, QObject::tr("eject device failed"),
+    //                             QObject::tr("Please check whether the device is occupied and then eject the device again"),
+    //                             QMessageBox::Ok);
+    //    }
 }
 
 static UDisksObject *get_object_from_block_device (UDisksClient *client,const gchar *block_device)
@@ -437,24 +453,24 @@ void SideBarFileSystemItem::unmount()
 
       */
 
-//    UDisksObject *object;
-//    UDisksClient *client;
-//    UDisksBlock *block;
-//    client = udisks_client_new_sync(NULL,NULL);
+    //    UDisksObject *object;
+    //    UDisksClient *client;
+    //    UDisksBlock *block;
+    //    client = udisks_client_new_sync(NULL,NULL);
 
-//    object = get_object_from_block_device(client,m_unix_device.toUtf8().constData());
-//    block = udisks_object_get_block(object);
+    //    object = get_object_from_block_device(client,m_unix_device.toUtf8().constData());
+    //    block = udisks_object_get_block(object);
 
-//    // if device type is disc , Eject optical drive
-//    if(g_strcmp0(udisks_block_get_id_type(block),"iso9660")==0 || strlen(udisks_block_get_id_type(block))==0){
+    //    // if device type is disc , Eject optical drive
+    //    if(g_strcmp0(udisks_block_get_id_type(block),"iso9660")==0 || strlen(udisks_block_get_id_type(block))==0){
 
-//        // if can eject ,eject it
-//        if(isEjectable()){
-//            this->eject();
-//        }
+    //        // if can eject ,eject it
+    //        if(isEjectable()){
+    //            this->eject();
+    //        }
 
-//        return;
-//    }
+    //        return;
+    //    }
 
     auto file = wrapGFile(g_file_new_for_uri(this->uri().toUtf8().constData()));
     g_file_unmount_mountable_with_operation(file.get()->get(),
@@ -500,8 +516,8 @@ GAsyncReadyCallback SideBarFileSystemItem::eject_cb(GFile *file, GAsyncResult *r
     qDebug()<<successed;
     if (err) {
         qDebug()<<err->message;
-	/*fix #18957*/
-	QMessageBox warningBox(QMessageBox::Warning,QObject::tr("Eject failed"),QString(err->message));
+        /*fix #18957*/
+        QMessageBox warningBox(QMessageBox::Warning,QObject::tr("Eject failed"),QString(err->message));
         QPushButton *cancelBtn = (warningBox.addButton(QObject::tr("Cancel"),QMessageBox::RejectRole));
         QPushButton *ensureBtn = (warningBox.addButton(QObject::tr("Eject Anyway"),QMessageBox::YesRole));
         warningBox.exec();
@@ -522,16 +538,17 @@ GAsyncReadyCallback SideBarFileSystemItem::eject_cb(GFile *file, GAsyncResult *r
 
 //update udisk file info
 void SideBarFileSystemItem::updateFileInfo(SideBarFileSystemItem *pThis){
-        auto fileInfo = FileInfo::fromUri(pThis->m_uri,false);
-        FileInfoJob fileJob(fileInfo);
-        fileJob.querySync();
+    //FIXME: replace BLOCKING api in ui thread.
+    auto fileInfo = FileInfo::fromUri(pThis->m_uri);
+    FileInfoJob fileJob(fileInfo);
+    fileJob.querySync();
 
-        QString tmpName = FileUtils::getFileDisplayName(pThis->m_uri);
+    QString tmpName = FileUtils::getFileDisplayName(pThis->m_uri);
 
-        //old's drive name -> now's volume name. fix #17968
-        FileUtils::queryVolumeInfo(pThis->m_uri,pThis->m_volume_name,pThis->m_unix_device,tmpName);
-        //icon name.
-        pThis->m_icon_name = FileUtils::getFileIconName(pThis->m_uri);
+    //old's drive name -> now's volume name. fix #17968
+    FileUtils::queryVolumeInfo(pThis->m_uri,pThis->m_volume_name,pThis->m_unix_device,tmpName);
+    //icon name.
+    pThis->m_icon_name = FileUtils::getFileIconName(pThis->m_uri);
 }
 
 /* Eject some device by stop it's drive. Such as: mobile harddisk.
@@ -543,17 +560,17 @@ void SideBarFileSystemItem::ejectDevicebyDrive(GObject* object,GAsyncResult* res
 
     error = NULL;
     if(!g_drive_poll_for_media_finish(G_DRIVE(object),res,&error)){
-         if((NULL != error) && (G_IO_ERROR_FAILED_HANDLED != error->code)){
-             errorMsg = QObject::tr("Unable to eject %1").arg(pThis->m_display_name);
+        if((NULL != error) && (G_IO_ERROR_FAILED_HANDLED != error->code)){
+            errorMsg = QObject::tr("Unable to eject %1").arg(pThis->m_display_name);
 
-             QMessageBox warningBox(QMessageBox::Warning,QObject::tr("Eject failed"),errorMsg);
-             QPushButton *cancelBtn = (warningBox.addButton(QObject::tr("Cancel"),QMessageBox::RejectRole));
-             QPushButton *ensureBtn = (warningBox.addButton(QObject::tr("Eject Anyway"),QMessageBox::YesRole));
-             warningBox.exec();
-             if(warningBox.clickedButton() == ensureBtn)
-                 pThis->eject(G_MOUNT_UNMOUNT_FORCE);
+            QMessageBox warningBox(QMessageBox::Warning,QObject::tr("Eject failed"),errorMsg);
+            QPushButton *cancelBtn = (warningBox.addButton(QObject::tr("Cancel"),QMessageBox::RejectRole));
+            QPushButton *ensureBtn = (warningBox.addButton(QObject::tr("Eject Anyway"),QMessageBox::YesRole));
+            warningBox.exec();
+            if(warningBox.clickedButton() == ensureBtn)
+                pThis->eject(G_MOUNT_UNMOUNT_FORCE);
 
-             g_error_free(error);
-         }
+            g_error_free(error);
+        }
     }
 }

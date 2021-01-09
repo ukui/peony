@@ -38,6 +38,7 @@ RecentAndTrashPropertiesPage::RecentAndTrashPropertiesPage(const QStringList &ur
     m_uri = uris.first();
     bool startWithTrash = m_uri.startsWith("trash:///");
 
+    //FIXME: replace BLOCKING api in ui thread.
     auto info = FileInfo::fromUri(m_uri);
     if (info->displayName().isEmpty()) {
         FileInfoJob job(info);

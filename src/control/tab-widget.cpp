@@ -53,6 +53,8 @@
 #include "global-settings.h"
 #include "main-window.h"
 
+#include "file-info-job.h"
+
 #include <QApplication>
 #include <QStandardPaths>
 
@@ -681,7 +683,6 @@ void TabWidget::updateSearchPathButton(const QString &uri)
         if (! getCurrentUri().isNull())
             curUri = getCurrentUri();
     }
-    //FIXME: replace BLOCKING api in ui thread.
     auto iconName = Peony::FileUtils::getFileIconName(curUri);
     auto displayName = Peony::FileUtils::getFileDisplayName(curUri);
     qDebug() << "iconName:" <<iconName <<displayName<<curUri;
@@ -842,48 +843,59 @@ void TabWidget::setPreviewPage(Peony::PreviewPageIface *previewPage)
 
 void TabWidget::addPage(const QString &uri, bool jumpTo)
 {
-    auto info = Peony::FileInfo::fromUri(uri, false);
-    if (! info->isDir())
-        return;
+    auto info = Peony::FileInfo::fromUri(uri);
+    auto infoJob = new Peony::FileInfoJob(info);
+    infoJob->setAutoDelete();
 
-    QCursor c;
-    c.setShape(Qt::WaitCursor);
-    this->setCursor(c);
+    connect(infoJob, &Peony::FileInfoJob::queryAsyncFinished, this, [=](){
+        if (! info->isDir() && !info.get()->isVolume() && !info.get()->isVirtual())
+            return;
 
-    m_tab_bar->addPage(uri, jumpTo);
-    int zoomLevel = -1;
+        QCursor c;
+        c.setShape(Qt::WaitCursor);
+        this->setCursor(c);
 
-    bool hasCurrentPage = false;
+        int zoomLevel = -1;
 
-    if (currentPage()) {
-        hasCurrentPage = true;
-        zoomLevel = currentPage()->getView()->currentZoomLevel();
-    }
+        bool hasCurrentPage = false;
 
-    auto viewContainer = new Peony::DirectoryViewContainer(m_stack);
-    viewContainer->setSortType(Peony::FileItemModel::FileName);
-    viewContainer->setSortOrder(Qt::AscendingOrder);
+        if (currentPage()) {
+            hasCurrentPage = true;
+            zoomLevel = currentPage()->getView()->currentZoomLevel();
+        }
 
-    m_stack->addWidget(viewContainer);
-    viewContainer->goToUri(uri, false, true);
-    if (jumpTo) {
-        m_stack->setCurrentWidget(viewContainer);
-    }
+        auto viewContainer = new Peony::DirectoryViewContainer(m_stack);
+        viewContainer->setSortType(Peony::FileItemModel::FileName);
+        viewContainer->setSortOrder(Qt::AscendingOrder);
 
-    bindContainerSignal(viewContainer);
-    updateTrashBarVisible(uri);
+        m_stack->addWidget(viewContainer);
+        viewContainer->goToUri(uri, false, true);
+        if (jumpTo) {
+            m_stack->setCurrentWidget(viewContainer);
+        }
 
-    if (hasCurrentPage) {
-        // perfer to use current page view type
-        auto internalViews = Peony::DirectoryViewFactoryManager2::getInstance()->internalViews();
-        if (internalViews.contains(currentPage()->getView()->viewId()))
-            viewContainer->switchViewType(currentPage()->getView()->viewId());
-    }
+        bindContainerSignal(viewContainer);
+        updateTrashBarVisible(uri);
 
-    if (zoomLevel > 0)
-        viewContainer->getView()->setCurrentZoomLevel(zoomLevel);
-    else
-        viewContainer->getView()->setCurrentZoomLevel(Peony::GlobalSettings::getInstance()->getValue(DEFAULT_VIEW_ZOOM_LEVEL).toInt());
+        if (hasCurrentPage) {
+            // perfer to use current page view type
+            auto internalViews = Peony::DirectoryViewFactoryManager2::getInstance()->internalViews();
+            if (internalViews.contains(currentPage()->getView()->viewId()))
+                viewContainer->switchViewType(currentPage()->getView()->viewId());
+        } else {
+            viewContainer->switchViewType(Peony::GlobalSettings::getInstance()->getValue(DEFAULT_VIEW_ID).toString());
+        }
+
+        if (zoomLevel > 0)
+            viewContainer->getView()->setCurrentZoomLevel(zoomLevel);
+        else
+            viewContainer->getView()->setCurrentZoomLevel(Peony::GlobalSettings::getInstance()->getValue(DEFAULT_VIEW_ZOOM_LEVEL).toInt());
+
+        m_tab_bar->addPage(uri, jumpTo);
+        updateTabBarGeometry();
+    });
+
+    infoJob->queryAsync();
 }
 
 void TabWidget::goToUri(const QString &uri, bool addHistory, bool forceUpdate)
@@ -1052,7 +1064,7 @@ void TabWidget::editUris(const QStringList &uris)
 void TabWidget::onViewDoubleClicked(const QString &uri)
 {
     qDebug()<<"tab widget double clicked"<<uri;
-    auto info = Peony::FileInfo::fromUri(uri, false);
+    auto info = Peony::FileInfo::fromUri(uri);
     if (info->uri().startsWith("trash://")) {
         auto w = new Peony::PropertiesWindow(QStringList()<<uri);
         w->show();
@@ -1060,7 +1072,7 @@ void TabWidget::onViewDoubleClicked(const QString &uri)
     }
     if (info->isDir() || info->isVolume() || info->isVirtual()) {
         //process open symbolic link
-        auto info = Peony::FileInfo::fromUri(uri, false);
+        auto info = Peony::FileInfo::fromUri(uri);
         QString targetUri = info.get()->targetUri();
         if (targetUri.isEmpty())
             targetUri = uri;

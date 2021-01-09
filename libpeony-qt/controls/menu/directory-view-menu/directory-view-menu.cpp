@@ -217,7 +217,6 @@ const QList<QAction *> DirectoryViewMenu::constructOpenOpActions()
             auto info = FileInfo::fromUri(m_selections.first());
             auto displayName = info->displayName();
 
-            //FIXME: replace BLOCKING api in ui thread.
             if (displayName.isEmpty())
                 displayName = FileUtils::getFileDisplayName(info->uri());
             //when name is too long, show elideText
@@ -373,8 +372,9 @@ const QList<QAction *> DirectoryViewMenu::constructCreateTemplateActions()
             createAction->setEnabled(false);
         }
         //fix create folder fail issue in special path
-        auto info = FileInfo::fromUri(m_directory, false);
+        auto info = FileInfo::fromUri(m_directory);
         if (info.get()->isEmptyInfo()) {
+            //FIXME: replace BLOCKING api in ui thread.
             FileInfoJob job(info);
             job.querySync();
         }
@@ -823,11 +823,11 @@ const QList<QAction *> DirectoryViewMenu::constructSearchActions()
         l<<addAction(QIcon::fromTheme("new-window-symbolc"), tr("Open Parent Folder in New Window"));
         connect(l.last(), &QAction::triggered, [=]() {
             for (auto uri : m_selections) {
-                //FIXME: replace BLOCKING api in ui thread.
                 if (m_is_recent)
                     uri = FileUtils::getTargetUri(uri);
                 auto parentUri = FileUtils::getParentUri(uri);
-                bool exist = FileUtils::isFileExsit(uri);
+                //bool exist = FileUtils::isFileExsit(uri);
+                bool exist = true;
                 if (exist && ! parentUri.isNull()) {
                     auto *windowIface = m_top_window->create(parentUri);
                     auto newWindow = dynamic_cast<QWidget *>(windowIface);

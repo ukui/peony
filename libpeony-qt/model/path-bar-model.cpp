@@ -24,6 +24,7 @@
 #include "file-enumerator.h"
 #include "file-info.h"
 #include "file-utils.h"
+#include "file-info-job.h"
 
 #include <QUrl>
 
@@ -31,7 +32,38 @@ using namespace Peony;
 
 PathBarModel::PathBarModel(QObject *parent) : QStringListModel (parent)
 {
+    m_enumerator = new FileEnumerator(this);
+    m_enumerator->setEnumerateWithInfoJob();
 
+    connect(m_enumerator, &FileEnumerator::enumerateFinished, this, [=](bool successed){
+        if (successed) {
+            m_childrens = m_enumerator->getChildren();
+
+            QStringList list;
+            for (auto info : m_childrens) {
+                if (!(info->isDir() || info->isVolume()))
+                    continue;
+
+                if (info.get()->displayName().startsWith("."))
+                    continue;
+
+                QUrl url = info.get()->uri();
+                list<<url.toDisplayString();
+                m_uri_display_name_hash.insert(info.get()->uri(), info.get()->displayName());
+            }
+
+            beginResetModel();
+            setStringList(list);
+            sort(0);
+            endResetModel();
+
+            Q_EMIT updated();
+        } else {
+            beginResetModel();
+            setStringList(QStringList());
+            endResetModel();
+        }
+    });
 }
 
 void PathBarModel::setRootPath(const QString &path, bool force)
@@ -47,64 +79,32 @@ void PathBarModel::setRootUri(const QString &uri, bool force)
 
         if (m_current_uri == uri)
             return;
-
-        auto file = wrapGFile(g_file_new_for_uri(uri.toUtf8().constData()));
-        if (!g_file_query_exists(file.get()->get(), nullptr)) {
-            return;
-        }
     }
-
-    //do not enumerate a search:/// directory
-    if (uri.startsWith("search://"))
-        return;
-
-    if (uri.startsWith("trash://"))
-        return;
-
-    //qDebug()<<"setUri"<<uri<<"raw"<<m_current_uri;
-
-    beginResetModel();
 
     m_current_uri = uri;
 
-    FileEnumerator e;
-    e.setEnumerateDirectory(uri);
-    e.enumerateSync();
-    auto infos = e.getChildren();
-    if (infos.isEmpty()) {
-        endResetModel();
-        Q_EMIT updated();
-        return;
-    }
-
+    m_enumerator->cancel();
     m_uri_display_name_hash.clear();
-    QStringList l;
-    for (auto info : infos) {
-        //skip the independent file.
-        if (!(info->isDir() || info->isVolume()))
-            continue;
 
-        //skip the hidden file.
-        //FIXME: replace BLOCKING api in ui thread.
-        QString display_name = FileUtils::getFileDisplayName(info->uri());
-        if (display_name.startsWith("."))
-            continue;
+    m_info = FileInfo::fromUri(uri);
+    auto infoJob = new FileInfoJob(m_info);
+    infoJob->setAutoDelete();
+    connect(infoJob, &FileInfoJob::queryAsyncFinished, this, [=](bool successed){
+        if (successed) {
+            m_enumerator->cancel();
+            m_enumerator->setEnumerateDirectory(m_info.get()->uri());
+            m_enumerator->enumerateAsync();
+        }
+    });
+    infoJob->queryAsync();
 
-        QUrl url = info->uri();
-        l<<url.toDisplayString();
-        m_uri_display_name_hash.insert(info->uri(), display_name);
-    }
-    setStringList(l);
-    sort(0);
-    endResetModel();
-    Q_EMIT updated();
+    return;
 }
 
 QString PathBarModel::findDisplayName(const QString &uri)
 {
     QUrl url = uri;
     if (m_uri_display_name_hash.find(url.toDisplayString())->isNull()) {
-        //FIXME: replace BLOCKING api in ui thread.
         return FileUtils::getFileDisplayName(uri);
     } else {
         return m_uri_display_name_hash.value(url.toDisplayString());

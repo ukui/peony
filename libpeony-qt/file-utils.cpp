@@ -113,7 +113,9 @@ bool FileUtils::getFileIsFolder(const GFileWrapperPtr &file)
 
 bool FileUtils::getFileIsFolder(const QString &uri)
 {
+    //FIXME: replace BLOCKING api in ui thread.
     auto info = FileInfo::fromUri(uri);
+    return info.get()->isDir();
     if (!info.get()->isEmptyInfo()) {
         return info.get()->isDir();
     }
@@ -127,7 +129,9 @@ bool FileUtils::getFileIsFolder(const QString &uri)
 
 bool FileUtils::getFileIsSymbolicLink(const QString &uri)
 {
+    //FIXME: replace BLOCKING api in ui thread.
     auto info = FileInfo::fromUri(uri);
+    return info.get()->isSymbolLink();
     if (!info.get()->isEmptyInfo()) {
         return info.get()->isSymbolLink();
     }
@@ -211,7 +215,9 @@ QString FileUtils::getNonSuffixedBaseNameFromUri(const QString &uri)
 
 QString FileUtils::getFileDisplayName(const QString &uri)
 {
+    //FIXME: replace BLOCKING api in ui thread.
     auto fileInfo = FileInfo::fromUri(uri);
+    return fileInfo.get()->displayName();
     if (!fileInfo.get()->isEmptyInfo()) {
         return fileInfo.get()->displayName();
     }
@@ -229,7 +235,9 @@ QString FileUtils::getFileDisplayName(const QString &uri)
 
 QString FileUtils::getFileIconName(const QString &uri, bool checkValid)
 {
+    //FIXME: replace BLOCKING api in ui thread.
     auto fileInfo = FileInfo::fromUri(uri);
+    return fileInfo.get()->iconName();
     if (!fileInfo.get()->isEmptyInfo()) {
         return fileInfo.get()->iconName();
     }
@@ -291,7 +299,9 @@ GErrorWrapperPtr FileUtils::getEnumerateError(const QString &uri)
 
 QString FileUtils::getTargetUri(const QString &uri)
 {
+    //FIXME: replace BLOCKING api in ui thread.
     auto fileInfo = FileInfo::fromUri(uri);
+    return fileInfo.get()->targetUri();
     if (!fileInfo.get()->isEmptyInfo()) {
         return fileInfo.get()->targetUri();
     }
@@ -318,7 +328,9 @@ QString FileUtils::getEncodedUri(const QString &uri)
 
 QString FileUtils::getSymbolicTarget(const QString &uri)
 {
+    //FIXME: replace BLOCKING api in ui thread.
     auto fileInfo = FileInfo::fromUri(uri);
+    return fileInfo.get()->symlinkTarget();
     if (!fileInfo.get()->isEmptyInfo()) {
         return fileInfo.get()->symlinkTarget();
     }
@@ -446,6 +458,7 @@ bool FileUtils::containsStandardPath(const QStringList &list)
 
 bool FileUtils::isFileExsit(const QString &uri)
 {
+    //FIXME: replace BLOCKING api in ui thread.
     bool exist = false;
     GFile *file = g_file_new_for_uri(uri.toUtf8().constData());
     exist = g_file_query_exists(file, nullptr);
@@ -474,6 +487,8 @@ const QStringList FileUtils::toDisplayUris(const QStringList &args)
 
 bool FileUtils::isMountRoot(const QString &uri)
 {
+    //FIXME: replace BLOCKING api in ui thread.
+    return false;
     GFile *file = g_file_new_for_uri(uri.toUtf8().constData());
     GFileInfo *info = g_file_query_info(file,
                                         "unix::is-mountpoint",

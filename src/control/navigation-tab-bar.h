@@ -26,8 +26,12 @@
 #include <QTabBar>
 #include <QProxyStyle>
 #include <QTimer>
+#include <memory>
 
 class QToolButton;
+namespace Peony {
+class FileInfo;
+}
 
 class NavigationTabBar : public QTabBar
 {
@@ -70,6 +74,8 @@ private:
     bool m_start_drag = false;
 
     const int ELIDE_TEXT_LENGTH = 16;
+
+    std::shared_ptr<Peony::FileInfo> m_info;
 };
 
 class TabBarStyle : public QProxyStyle

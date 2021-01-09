@@ -29,6 +29,10 @@
 
 #include "fm-window.h"
 
+#include "file-info.h"
+#include "file-info-job.h"
+#include "file-enumerator.h"
+
 #include <QUrl>
 #include <QMenu>
 
@@ -98,6 +102,7 @@ LocationBar::LocationBar(QWidget *parent) : QWidget(parent)
 
     m_indicator_menu = new QMenu(m_indicator);
     m_indicator->setMenu(m_indicator_menu);
+    m_indicator->setArrowType(Qt::RightArrow);
 
     connect(m_indicator_menu, &QMenu::aboutToShow, this, [=](){
         m_indicator->setArrowType(Qt::DownArrow);
@@ -129,24 +134,49 @@ void LocationBar::setRootUri(const QString &uri)
         return;
     }
 
-    QStringList uris;
-    QString tmp = uri;
-    while (!tmp.isEmpty()) {
-        uris.prepend(tmp);
-        QUrl url = tmp;
-        //FIXME: replace BLOCKING api in ui thread.
-        if (FileUtils::isMountRoot(tmp))
-            break;
-
-        tmp = Peony::FileUtils::getParentUri(tmp);
+    m_current_info = FileInfo::fromUri(uri);
+    m_buttons_info.clear();
+    auto tmpUri = uri;
+    while (!tmpUri.isEmpty() && tmpUri != "") {
+        m_buttons_info.prepend(FileInfo::fromUri(tmpUri));
+        tmpUri = FileUtils::getParentUri(tmpUri);
     }
 
-    m_indicator->setArrowType(Qt::RightArrow);
-    for (auto uri : uris) {
-        addButton(uri, uris.first() == uri);
+    m_querying_buttons_info = m_buttons_info;
+
+    for (auto info : m_buttons_info) {
+        auto infoJob = new FileInfoJob(info);
+        infoJob->setAutoDelete();
+        connect(infoJob, &FileInfoJob::queryAsyncFinished, this, [=](){
+            // enumerate buttons info directory
+            auto enumerator = new FileEnumerator;
+            enumerator->setEnumerateDirectory(info.get()->uri());
+            enumerator->setEnumerateWithInfoJob();
+
+            connect(enumerator, &FileEnumerator::enumerateFinished, this, [=](bool successed){
+                if (successed) {
+                    auto infos = enumerator->getChildren();
+                    m_infos_hash.insert(info.get()->uri(), infos);
+                    m_querying_buttons_info.removeOne(info);
+                    if (m_querying_buttons_info.isEmpty()) {
+                        // add buttons
+                        clearButtons();
+                        for (auto info : m_buttons_info) {
+                            addButton(info.get()->uri(), true, true);
+                        }
+                        doLayout();
+                    }
+                }
+
+                enumerator->deleteLater();
+            });
+
+            enumerator->enumerateAsync();
+        });
+        infoJob->queryAsync();
     }
 
-    doLayout();
+    return;
 }
 
 void LocationBar::clearButtons()
@@ -172,7 +202,6 @@ void LocationBar::addButton(const QString &uri, bool setIcon, bool setMenu)
     button->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
     button->setPopupMode(QToolButton::MenuButtonPopup);
 
-    //FIXME: replace BLOCKING api in ui thread.
     auto displayName = FileUtils::getFileDisplayName(uri);
     m_buttons.insert(uri, button);
     if (m_current_uri.startsWith("search://")) {
@@ -189,7 +218,6 @@ void LocationBar::addButton(const QString &uri, bool setIcon, bool setMenu)
 
     auto parent = FileUtils::getParentUri(uri);
     if (setIcon) {
-        //FIXME: replace BLOCKING api in ui thread.
         QIcon icon = QIcon::fromTheme(Peony::FileUtils::getFileIconName(uri), QIcon::fromTheme("folder"));
         button->setIcon(icon);
     }
@@ -225,8 +253,16 @@ void LocationBar::addButton(const QString &uri, bool setIcon, bool setMenu)
     });
 
     if (setMenu) {
+        auto infos = m_infos_hash.value(uri);
+        QStringList uris;
+        for (auto info : infos) {
+            if (info.get()->isDir() && !info.get()->displayName().startsWith("."))
+                uris<<info.get()->uri();
+        }
+        if (uris.isEmpty())
+            button->setPopupMode(QToolButton::InstantPopup);
         Peony::PathBarModel m;
-        m.setRootUri(uri);
+        m.setStringList(uris);
         m.sort(0);
 
         auto suburis = m.stringList();

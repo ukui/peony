@@ -435,9 +435,9 @@ void HeaderBar::updateIcons()
 
     //fix create folder fail issue in special path
     auto curUri = m_window->getCurrentUri();
-    auto info = Peony::FileInfo::fromUri(curUri, false);
-    Peony::FileInfoJob job(info);
-    job.querySync();
+    auto info = Peony::FileInfo::fromUri(curUri);
+    //Peony::FileInfoJob job(info);
+    //job.querySync();
     if (info->canWrite())
         m_create_folder->setEnabled(true);
     else
