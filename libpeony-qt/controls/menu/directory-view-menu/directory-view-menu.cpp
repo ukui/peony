@@ -828,7 +828,8 @@ const QList<QAction *> DirectoryViewMenu::constructSearchActions()
                 if (m_is_recent)
                     uri = FileUtils::getTargetUri(uri);
                 auto parentUri = FileUtils::getParentUri(uri);
-                bool exist = FileUtils::isFileExsit(uri);
+                //bool exist = FileUtils::isFileExsit(uri);
+                bool exist = true;
                 if (exist && ! parentUri.isNull()) {
                     auto *windowIface = m_top_window->create(parentUri);
                     auto newWindow = dynamic_cast<QWidget *>(windowIface);
