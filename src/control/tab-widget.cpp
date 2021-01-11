@@ -755,51 +755,71 @@ Peony::DirectoryViewContainer *TabWidget::currentPage()
 
 const QString TabWidget::getCurrentUri()
 {
+    if (!currentPage())
+        return nullptr;
     return currentPage()->getCurrentUri();
 }
 
 const QStringList TabWidget::getCurrentSelections()
 {
+    if (!currentPage())
+        return QStringList();
     return currentPage()->getCurrentSelections();
 }
 
 const QStringList TabWidget::getAllFileUris()
 {
+    if (!currentPage())
+        return QStringList();
     return currentPage()->getAllFileUris();
 }
 
 const QStringList TabWidget::getBackList()
 {
+    if (!currentPage())
+        return QStringList();
     return currentPage()->getBackList();
 }
 
 const QStringList TabWidget::getForwardList()
 {
+    if (!currentPage())
+        return QStringList();
     return currentPage()->getForwardList();
 }
 
 bool TabWidget::canGoBack()
 {
+    if (!currentPage())
+        return false;
     return currentPage()->canGoBack();
 }
 
 bool TabWidget::canGoForward()
 {
+    if (!currentPage())
+        return false;
     return currentPage()->canGoForward();
 }
 
 bool TabWidget::canCdUp()
 {
+    if (!currentPage())
+        return false;
     return currentPage()->canCdUp();
 }
 
 int TabWidget::getSortType()
 {
+    if (!currentPage())
+        return 0;
     return currentPage()->getSortType();
 }
 
 Qt::SortOrder TabWidget::getSortOrder()
 {
+    if (!currentPage())
+        return Qt::AscendingOrder;
     return currentPage()->getSortOrder();
 }
 

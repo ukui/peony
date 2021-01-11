@@ -189,6 +189,8 @@ private:
     QPoint m_offset;
 
     QWidgetList m_focus_list;
+
+    bool m_shortcuts_set = false;
 };
 
 #endif // MAINWINDOW_H

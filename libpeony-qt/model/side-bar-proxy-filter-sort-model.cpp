@@ -42,7 +42,7 @@ bool SideBarProxyFilterSortModel::filterAcceptsRow(int sourceRow, const QModelIn
     auto index = sourceModel()->index(sourceRow, 0, sourceParent);
     auto item = static_cast<SideBarAbstractItem*>(index.internalPointer());
     if (item->type() != SideBarAbstractItem::SeparatorItem) {
-        if (item->displayName().isNull())
+        if (item->displayName().isNull() && item->type() == SideBarAbstractItem::FileSystemItem)
             return false;
     }
     if (item) {
