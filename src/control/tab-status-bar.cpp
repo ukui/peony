@@ -136,17 +136,16 @@ void TabStatusBar::update()
         //in computer, only show selected count
         if (uri != "computer:///")
         {
-
-              if (selections.count() == 1) {
-                  if (selections.first()->displayName() != "")
-                      directoriesString = QString("1/%1").arg(count);
-                  if (size >0)
-                      filesString = QString(", %1").arg(format_size);
-              }
-              else
-              {
-                  directoriesString = QString("%1/%2").arg(selections.count()).arg(count);
-              }
+            if (selections.count() == 1) {
+                if (selections.first()->displayName() != "")
+                    directoriesString = QString("1/%1").arg(count);
+                if (size >0)
+                    filesString = QString(", %1").arg(format_size);
+            }
+            else
+            {
+                directoriesString = QString("%1/%2").arg(selections.count()).arg(count);
+            }
         }
 
         //qDebug() << "directoriesString:" <<directoriesString <<filesString;

@@ -557,58 +557,59 @@ void DesktopIconView::resolutionChange(const QRect &screenSize)
     iconWidth = icon.width();
     iconHeigth = icon.height();
 
-    QList<QPair<QRect, QString>> newPosition;
+    if (!m_item_rect_hash.isEmpty()) {
+        QList<QPair<QRect, QString>> newPosition;
 
-    for (auto i = m_item_rect_hash.constBegin(); i != m_item_rect_hash.constEnd(); ++i) {
-        // FIXME:// more than one screen
-//        if (i.value().x() >= screenSize.x() && i.value().y() >= screenSize.y()
-//                && i.value().x() <= screenSize.width() && i.value().y() <= screenSize.height()) {
-            newPosition << QPair<QRect, QString>(i.value(), i.key());
-//        }
-    }
-
-    // not get current size
-    if (iconWidth == 0 || iconHeigth == 0) {
-        qDebug() << "Unable to get icon size, need to get it another way!";
-        return;
-    }
-
-//    qDebug() << "icon width: " << iconWidth << " icon heigth: " << iconHeigth;
-//    qDebug() << "width:" << screenSize.width() << " height:" << screenSize.height();
-
-    std::sort(newPosition.begin(), newPosition.end(), iconSizeLessThan);
-
-    m_item_rect_hash.clear();
-
-    for (auto i = newPosition.constBegin(); i != newPosition.constEnd(); ++i) {
-        int posX = 0;
-        int posY = 0;
-
-        Q_FOREVER {
-            // icon pos x, y
-            posX = column * iconWidth;
-            posY = row * iconHeigth;
-            // Check to see if the screen size is exceeded
-            if (posY + iconHeigth <= screenSize.height()
-                    && posX + iconWidth <= screenSize.width()) {
-                ++row;
-                break;
-            } else if (posY + iconHeigth > screenSize.height()
-                       && posX + iconWidth < screenSize.width()) {
-                row = 0;
-                ++column;
-                continue;
-            } else {
-                // The desktop is full of ICONS
-                posX = 0;
-                posY = 0;
-                break;
-            }
+        for (auto i = m_item_rect_hash.constBegin(); i != m_item_rect_hash.constEnd(); ++i) {
+            // FIXME:// more than one screen
+    //        if (i.value().x() >= screenSize.x() && i.value().y() >= screenSize.y()
+    //                && i.value().x() <= screenSize.width() && i.value().y() <= screenSize.height()) {
+                newPosition << QPair<QRect, QString>(i.value(), i.key());
+    //        }
         }
 
-        updateItemPosByUri(i->second, QPoint(posX, posY));
-        setFileMetaInfoPos(i->second, QPoint(posX, posY));
-//        qDebug() << "uri: " << i->second << " --- pos: " << QPoint(posX, posY);
+        // not get current size
+        if (iconWidth == 0 || iconHeigth == 0) {
+            qDebug() << "Unable to get icon size, need to get it another way!";
+            return;
+        }
+
+        //    qDebug() << "icon width: " << iconWidth << " icon heigth: " << iconHeigth;
+        //    qDebug() << "width:" << screenSize.width() << " height:" << screenSize.height();
+
+        std::sort(newPosition.begin(), newPosition.end(), iconSizeLessThan);
+
+        m_item_rect_hash.clear();
+
+        for (auto i = newPosition.constBegin(); i != newPosition.constEnd(); ++i) {
+            int posX = 0;
+            int posY = 0;
+
+            Q_FOREVER {
+                // icon pos x, y
+                posX = column * iconWidth;
+                posY = row * iconHeigth;
+                // Check to see if the screen size is exceeded
+                if (posY + iconHeigth <= screenSize.height()
+                    && posX + iconWidth <= screenSize.width()) {
+                    ++row;
+                    break;
+                } else if (posY + iconHeigth > screenSize.height()
+                           && posX + iconWidth < screenSize.width()) {
+                    row = 0;
+                    ++column;
+                    continue;
+                } else {
+                    // The desktop is full of ICONS
+                    posX = 0;
+                    posY = 0;
+                    break;
+                }
+            }
+            updateItemPosByUri(i->second, QPoint(posX, posY));
+            setFileMetaInfoPos(i->second, QPoint(posX, posY));
+        //        qDebug() << "uri: " << i->second << " --- pos: " << QPoint(posX, posY);
+        }
     }
     this->saveAllItemPosistionInfos();
 }
