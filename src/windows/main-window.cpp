@@ -206,8 +206,11 @@ QSize MainWindow::sizeHint() const
 Peony::FMWindowIface *MainWindow::create(const QString &uri)
 {
     auto window = new MainWindow(uri);
-    if (currentViewSupportZoom())
-        window->setCurrentViewZoomLevel(this->currentViewZoomLevel());
+    connect(window, &MainWindow::locationChanged, this, [=](){
+        if (currentViewSupportZoom())
+            window->setCurrentViewZoomLevel(this->currentViewZoomLevel());
+    });
+
     return window;
 }
 
@@ -1268,7 +1271,7 @@ void MainWindow::initUI(const QString &uri)
         m_tab->addPage(home, true);
     } else {
         m_tab->addPage(uri, true);
-        m_header_bar->setLocation(uri);
+        //m_header_bar->setLocation(uri);
     }
     QTimer::singleShot(1, this, [=]() {
         // FIXME:
