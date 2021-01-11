@@ -42,10 +42,11 @@
 #include <QDialogButtonBox>
 #include <QSpacerItem>
 #include <QTimer>
-
+#include <QPainter>
+#include <QStyleOptionTab>
 
 #include "file-info.h"
-#include "file-info-manager.h"
+#include "file-info-job.h"
 
 using namespace Peony;
 
@@ -134,9 +135,9 @@ PropertiesWindow::PropertiesWindow(const QStringList &uris, QWidget *parent) : Q
         this->setWindowTitleTextAndIcon();
 
         this->setAttribute(Qt::WA_DeleteOnClose);
-        this->setContentsMargins(0, 5, 0, 0);
+        this->setContentsMargins(0, 0, 0, 0);
         //only show closs button
-        this->setWindowFlags(this->windowFlags() &~ Qt::WindowMinMaxButtonsHint);
+        this->setWindowFlags(this->windowFlags() &~ Qt::WindowMinMaxButtonsHint &~ Qt::WindowSystemMenuHint);
 
         if(this->notDir())
             //如果含有文件夹，那么高度是600，如果是其他文件，那么高度是652
@@ -144,9 +145,7 @@ PropertiesWindow::PropertiesWindow(const QStringList &uris, QWidget *parent) : Q
         else
             this->setFixedSize(PropertiesWindow::s_windowWidth,PropertiesWindow::s_windowHeightFolder);
 
-        auto w = new PropertiesWindowPrivate(uris, this);
-        this->setCentralWidget(w);
-
+        this->initTabPage(uris);
         this->initStatusBar();
     }
 }
@@ -178,18 +177,14 @@ void PropertiesWindow::setWindowTitleTextAndIcon()
             l_windowTitle = tr("Selected") + QString(tr(" %1 Files")).arg(l_fileNum);
 
         else {
-            std::shared_ptr<FileInfo> l_fineInfo = FileInfo::fromUri(m_uris.at(0));
+            auto l_fineInfo = FileInfo::fromUri(m_uris.at(0));
+            FileInfoJob *j = new FileInfoJob(l_fineInfo);
+            j->setAutoDelete();
+            j->querySync();
+
             qDebug() << "PropertiesWindow::setWindowTitleTextAndIcon():文件信息为空?" << (l_fineInfo.get() == nullptr);
             if(l_fineInfo) {
                 l_windowTitle = l_fineInfo.get()->displayName();
-                //从桌面进入会找不到名称... 未知原因  解决一下
-                qDebug() << "PropertiesWindow::setWindowTitleTextAndIcon():displayName:" << l_windowTitle;
-                if(l_windowTitle == "") {
-                    l_windowTitle = (m_uris.at(0)).split("/").last();
-
-                    if(l_windowTitle.endsWith(".desktop"))
-                        l_windowTitle = l_windowTitle.split(".").first();
-                }
                 l_iconName = l_fineInfo.get()->iconName();
             }
         }
@@ -238,21 +233,21 @@ void PropertiesWindow::gotoAboutComputer()
 void PropertiesWindow::initStatusBar(){
     QStatusBar *statusBar = new QStatusBar(this);
 
-//    statusBar->setFixedSize(PropertiesWindow::s_windowWidth,64);
+    //    statusBar->setFixedSize(PropertiesWindow::s_windowWidth,64);
     statusBar->setMinimumSize(PropertiesWindow::s_windowWidth,64);
 
     // use button-box
-//    QDialogButtonBox *buttonBox = new QDialogButtonBox(Qt::Horizontal,statusBar);
-//    buttonBox->setMinimumSize(PropertiesWindow::s_windowWidth,64);
-//    buttonBox->setContentsMargins(0,0,16,0);
+    //    QDialogButtonBox *buttonBox = new QDialogButtonBox(Qt::Horizontal,statusBar);
+    //    buttonBox->setMinimumSize(PropertiesWindow::s_windowWidth,64);
+    //    buttonBox->setContentsMargins(0,0,16,0);
 
-//    QPushButton *cancelButton = buttonBox->addButton(tr("Cancel"),QDialogButtonBox::RejectRole);
-//    QPushButton *okButton = buttonBox->addButton(tr("Ok"),QDialogButtonBox::AcceptRole);
+    //    QPushButton *cancelButton = buttonBox->addButton(tr("Cancel"),QDialogButtonBox::RejectRole);
+    //    QPushButton *okButton = buttonBox->addButton(tr("Ok"),QDialogButtonBox::AcceptRole);
 
-//    okButton->setMinimumSize(PropertiesWindow::s_bottomButtonSize);
-//    cancelButton->setMinimumSize(PropertiesWindow::s_bottomButtonSize);
+    //    okButton->setMinimumSize(PropertiesWindow::s_bottomButtonSize);
+    //    cancelButton->setMinimumSize(PropertiesWindow::s_bottomButtonSize);
 
-//    statusBar->addWidget(buttonBox);
+    //    statusBar->addWidget(buttonBox);
 
     //use HBox-layout
     QHBoxLayout *bottomToolLayout = new QHBoxLayout(statusBar);
@@ -276,6 +271,15 @@ void PropertiesWindow::initStatusBar(){
     //set cancelButton event process
     connect(cancelButton,&QPushButton::clicked,this,&QMainWindow::close);
     connect(okButton,&QPushButton::clicked,this,&PropertiesWindow::saveAllChanged);
+}
+
+void PropertiesWindow::initTabPage(const QStringList &uris)
+{
+    auto w = new PropertiesWindowPrivate(uris, this);
+    w->tabBar()->setStyle(new tabStyle);
+
+    w->tabBar()->setMinimumSize(PropertiesWindow::s_windowWidth,72);
+    this->setCentralWidget(w);
 }
 
 /*!
@@ -304,4 +308,48 @@ PropertiesWindowPrivate::PropertiesWindowPrivate(const QStringList &uris, QWidge
             addTab(tabPage, factory->name());
         }
     }
+}
+
+void tabStyle::drawControl(QStyle::ControlElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget) const
+{
+        if (element == CE_TabBarTab)
+        {
+            if (const QStyleOptionTab *tab = qstyleoption_cast<const QStyleOptionTab *>(option))
+            {
+                QRect allRect = (tab->rect).adjusted(1,5,-1,5);
+                //选中状态
+                if (tab->state & QStyle::State_Selected)
+                {
+                    //save用以保护坐标，restore用来退出状态
+                    painter->save();
+                    painter->setBrush(QBrush(0x3D6BE5));
+                    //矩形
+                    painter->drawRect(allRect);
+//                    painter->drawRoundedRect(allRect, 5, 5);
+                    painter->restore();
+                }
+                QTextOption option;
+                option.setAlignment(Qt::AlignCenter);
+                painter->drawText(allRect, tab->text, option);
+                return;
+            }
+        }
+        if (element == CE_TabBarTabLabel)
+        {
+            QProxyStyle::drawControl(element, option, painter, widget);
+        }
+}
+
+QSize tabStyle::sizeFromContents(QStyle::ContentsType ct, const QStyleOption *opt, const QSize &contentsSize, const QWidget *w) const
+{
+    QSize s = QProxyStyle::sizeFromContents(ct,opt,contentsSize,w);
+
+    if(ct == QStyle::CT_TabBarTab){
+        s.transpose();
+//        s.rwidth() = 100;
+//        s.rheight() = 30;
+        s.setWidth(67);
+        s.setHeight(40);
+    }
+    return s;
 }

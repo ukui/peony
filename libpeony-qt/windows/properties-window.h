@@ -30,6 +30,7 @@
 #include <QMap>
 #include <QMutex>
 #include <QSize>
+#include <QProxyStyle>
 
 namespace Peony {
 
@@ -69,6 +70,7 @@ public:
     void saveAllChanged();
     void show();
     void initStatusBar();
+    void initTabPage(const QStringList &uris);
 
 public:
     QStringList m_uris;
@@ -80,6 +82,13 @@ public:
     static const qint32 s_windowHeightOther;
     static const QSize  s_bottomButtonSize;
     static const QSize  s_topButtonSize;
+};
+
+class tabStyle : public QProxyStyle {
+    // QStyle interface
+public:
+    void drawControl(QStyle::ControlElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget) const;
+    QSize sizeFromContents(QStyle::ContentsType ct, const QStyleOption *opt, const QSize &contentsSize, const QWidget *w) const;
 };
 
 class PropertiesWindowPrivate : public QTabWidget
