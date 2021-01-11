@@ -136,9 +136,6 @@ MainWindow::MainWindow(const QString &uri, QWidget *parent) : QMainWindow(parent
     //disable style window manager
     setProperty("useStyleWindowManager", false);
 
-    //short cut settings
-    setShortCuts();
-
     //init UI
     initUI(uri);
 
@@ -293,364 +290,368 @@ void MainWindow::checkSettings()
 
 void MainWindow::setShortCuts()
 {
-    //stop loading action
-    QAction *stopLoadingAction = new QAction(this);
-    stopLoadingAction->setShortcut(QKeySequence(Qt::Key_Escape));
-    addAction(stopLoadingAction);
-    connect(stopLoadingAction, &QAction::triggered, this, &MainWindow::forceStopLoading);
+    if (!m_shortcuts_set) {
+        //stop loading action
+        QAction *stopLoadingAction = new QAction(this);
+        stopLoadingAction->setShortcut(QKeySequence(Qt::Key_Escape));
+        addAction(stopLoadingAction);
+        connect(stopLoadingAction, &QAction::triggered, this, &MainWindow::forceStopLoading);
 
-    //show hidden action
-    QAction *showHiddenAction = new QAction(this);
-    showHiddenAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_H));
-    addAction(showHiddenAction);
-    connect(showHiddenAction, &QAction::triggered, this, [=]() {
-        //qDebug() << "show hidden";
-        this->setShowHidden();
-    });
+        //show hidden action
+        QAction *showHiddenAction = new QAction(this);
+        showHiddenAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_H));
+        addAction(showHiddenAction);
+        connect(showHiddenAction, &QAction::triggered, this, [=]() {
+            //qDebug() << "show hidden";
+            this->setShowHidden();
+        });
 
-    auto undoAction = new QAction(QIcon::fromTheme("edit-undo-symbolic"), tr("Undo"), this);
-    undoAction->setShortcut(QKeySequence::Undo);
-    addAction(undoAction);
-    connect(undoAction, &QAction::triggered, [=]() {
-        Peony::FileOperationManager::getInstance()->undo();
-    });
+        auto undoAction = new QAction(QIcon::fromTheme("edit-undo-symbolic"), tr("Undo"), this);
+        undoAction->setShortcut(QKeySequence::Undo);
+        addAction(undoAction);
+        connect(undoAction, &QAction::triggered, [=]() {
+            Peony::FileOperationManager::getInstance()->undo();
+        });
 
-    auto redoAction = new QAction(QIcon::fromTheme("edit-redo-symbolic"), tr("Redo"), this);
-    redoAction->setShortcut(QKeySequence::Redo);
-    addAction(redoAction);
-    connect(redoAction, &QAction::triggered, [=]() {
-        Peony::FileOperationManager::getInstance()->redo();
-    });
+        auto redoAction = new QAction(QIcon::fromTheme("edit-redo-symbolic"), tr("Redo"), this);
+        redoAction->setShortcut(QKeySequence::Redo);
+        addAction(redoAction);
+        connect(redoAction, &QAction::triggered, [=]() {
+            Peony::FileOperationManager::getInstance()->redo();
+        });
 
-    //add CTRL+D for delete operation
-    auto trashAction = new QAction(this);
-    trashAction->setShortcuts(QList<QKeySequence>()<<Qt::Key_Delete<<QKeySequence(Qt::CTRL + Qt::Key_D));
-    connect(trashAction, &QAction::triggered, [=]() {
-        auto currentUri = getCurrentUri();
-        if (currentUri.startsWith("search://"))
-            return;
-
-        auto uris = this->getCurrentSelections();
-        QString desktopPath = "file://" +  QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
-        QString desktopUri = Peony::FileUtils::getEncodedUri(desktopPath);
-        QString homeUri = "file://" +  QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
-        if (!uris.isEmpty() && !uris.contains(desktopUri) && !uris.contains(homeUri)) {
-            bool isTrash = this->getCurrentUri() == "trash:///";
-            if (!isTrash) {
-                Peony::FileOperationUtils::trash(uris, true);
-            } else {
-                Peony::FileOperationUtils::executeRemoveActionWithDialog(uris);
-            }
-        }
-    });
-    addAction(trashAction);
-
-    auto deleteAction = new QAction(this);
-    deleteAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::SHIFT + Qt::Key_Delete));
-    addAction(deleteAction);
-    connect(deleteAction, &QAction::triggered, [=]() {
-        auto currentUri = getCurrentUri();
-        if (currentUri.startsWith("search://"))
-            return;
-
-        auto uris = this->getCurrentSelections();
-        QString desktopPath = "file://" +  QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
-        QString desktopUri = Peony::FileUtils::getEncodedUri(desktopPath);
-        QString homeUri = "file://" +  QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
-        if (! uris.contains(desktopUri) && !uris.contains(homeUri))
-           Peony::FileOperationUtils::executeRemoveActionWithDialog(uris);
-    });
-
-    auto searchAction = new QAction(this);
-    searchAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::CTRL + Qt::Key_F));
-    connect(searchAction, &QAction::triggered, this, [=]() {
-        m_is_search = ! m_is_search;
-        m_header_bar->startEdit(m_is_search);
-    });
-    addAction(searchAction);
-
-    //F4 or Alt+D, change to address
-    auto locationAction = new QAction(this);
-    locationAction->setShortcuts(QList<QKeySequence>()<<Qt::Key_F4<<QKeySequence(Qt::ALT + Qt::Key_D));
-    connect(locationAction, &QAction::triggered, this, [=]() {
-        m_header_bar->startEdit();
-    });
-    addAction(locationAction);
-
-    auto newWindowAction = new QAction(this);
-    newWindowAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_N));
-    connect(newWindowAction, &QAction::triggered, this, [=]() {
-        MainWindow *newWindow = new MainWindow(getCurrentUri());
-        newWindow->show();
-    });
-    addAction(newWindowAction);
-
-    auto closeWindowAction = new QAction(this);
-    closeWindowAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::ALT + Qt::Key_F4));
-    connect(closeWindowAction, &QAction::triggered, this, [=]() {
-        this->close();
-    });
-    addAction(closeWindowAction);
-
-    auto aboutAction = new QAction(this);
-    aboutAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_F2));
-    connect(aboutAction, &QAction::triggered, this, [=]() {
-        PeonyApplication::about();
-    });
-    addAction(aboutAction);
-
-    auto newTabAction = new QAction(this);
-    newTabAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_T));
-    connect(newTabAction, &QAction::triggered, this, [=]() {
-        this->addNewTabs(QStringList()<<this->getCurrentUri());
-    });
-    addAction(newTabAction);
-
-    auto closeTabAction = new QAction(this);
-    closeTabAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_W));
-    connect(closeTabAction, &QAction::triggered, this, [=]() {
-        if (m_tab->count() <= 1) {
-            this->close();
-        } else {
-            m_tab->removeTab(m_tab->currentIndex());
-        }
-    });
-    addAction(closeTabAction);
-
-    auto nextTabAction = new QAction(this);
-    nextTabAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Tab));
-    connect(nextTabAction, &QAction::triggered, this, [=]() {
-        int currentIndex = m_tab->currentIndex();
-        if (currentIndex + 1 < m_tab->count()) {
-            m_tab->setCurrentIndex(currentIndex + 1);
-        } else {
-            m_tab->setCurrentIndex(0);
-        }
-    });
-    addAction(nextTabAction);
-
-    auto previousTabAction = new QAction(this);
-    previousTabAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_Tab));
-    connect(previousTabAction, &QAction::triggered, this, [=]() {
-        int currentIndex = m_tab->currentIndex();
-        if (currentIndex > 0) {
-            m_tab->setCurrentIndex(currentIndex - 1);
-        } else {
-            m_tab->setCurrentIndex(m_tab->count() - 1);
-        }
-    });
-    addAction(previousTabAction);
-
-    auto newFolderAction = new QAction(this);
-    newFolderAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_N));
-    connect(newFolderAction, &QAction::triggered, this, &MainWindow::createFolderOperation);
-    addAction(newFolderAction);
-
-    //show selected item's properties
-    auto propertiesWindowAction = new QAction(this);
-    propertiesWindowAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::ALT + Qt::Key_Return)
-                                         <<QKeySequence(Qt::ALT + Qt::Key_Enter));
-    connect(propertiesWindowAction, &QAction::triggered, this, [=]() {
-        //Fixed issue:when use this shortcut without any selections, this will crash
-        QStringList uris;
-        if (getCurrentSelections().count() > 0)
-        {
-            uris<<getCurrentSelections();
-        }
-        else
-        {
-            uris<<getCurrentUri();
-        }
-
-        Peony::PropertiesWindow *w = new Peony::PropertiesWindow(uris);
-        w->setAttribute(Qt::WA_DeleteOnClose);
-        w->show();
-    });
-    addAction(propertiesWindowAction);
-
-    auto helpAction = new QAction(this);
-    helpAction->setShortcut(QKeySequence(Qt::Key_F1));
-    connect(helpAction, &QAction::triggered, this, [=]() {
-        PeonyApplication::help();
-    });
-    addAction(helpAction);
-
-    auto maxAction = new QAction(this);
-    maxAction->setShortcut(QKeySequence(Qt::Key_F11));
-    connect(maxAction, &QAction::triggered, this, [=]() {
-        //showFullScreen has some issue, change to showMaximized, fix #20043
-        m_header_bar->cancelEdit();
-        if (!this->isMaximized()) {
-            this->showMaximized();
-        } else {
-            this->showNormal();
-        }
-    });
-    addAction(maxAction);
-
-    auto previewPageAction = new QAction(this);
-    previewPageAction->setShortcuts(QList<QKeySequence>()<<Qt::Key_F3<<QKeySequence(Qt::ALT + Qt::Key_P));
-    connect(previewPageAction, &QAction::triggered, this, [=]() {
-        auto triggered = m_tab->getTriggeredPreviewPage();
-        if (triggered)
-        {
-            m_tab->setPreviewPage(nullptr);
-        }
-        else
-        {
-            auto instance = Peony::PreviewPageFactoryManager::getInstance();
-            auto lastPreviewPageId  = instance->getLastPreviewPageId();
-            auto *page = instance->getPlugin(lastPreviewPageId)->createPreviewPage();
-            m_tab->setPreviewPage(page);
-        }
-        m_tab->setTriggeredPreviewPage(! triggered);
-    });
-    addAction(previewPageAction);
-
-    auto refreshWindowAction = new QAction(this);
-    refreshWindowAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_R));
-    connect(refreshWindowAction, &QAction::triggered, this, [=]() {
-        this->refresh();
-    });
-    addAction(refreshWindowAction);
-
-    auto listToIconViewAction = new QAction(this);
-    listToIconViewAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_1));
-    connect(listToIconViewAction, &QAction::triggered, this, [=]() {
-        this->beginSwitchView(QString("Icon View"));
-    });
-    addAction(listToIconViewAction);
-
-    auto iconToListViewAction = new QAction(this);
-    iconToListViewAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_2));
-    connect(iconToListViewAction, &QAction::triggered, this, [=]() {
-        this->beginSwitchView(QString("List View"));
-    });
-    addAction(iconToListViewAction);
-
-    auto reverseSelectAction = new QAction(this);
-    reverseSelectAction->setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_L));
-    connect(reverseSelectAction, &QAction::triggered, this, [=]() {
-        this->getCurrentPage()->getView()->invertSelections();
-    });
-    addAction(reverseSelectAction);
-
-    auto remodelViewAction = new QAction(this);
-    remodelViewAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_0));
-    connect(remodelViewAction, &QAction::triggered, this, [=]() {
-        this->getCurrentPage()->setZoomLevelRequest(25);
-    });
-    addAction(remodelViewAction);
-
-    auto enlargViewAction = new QAction(this);
-    enlargViewAction->setShortcut(QKeySequence::ZoomIn);
-    connect(enlargViewAction, &QAction::triggered, this, [=]() {
-        int defaultZoomLevel = this->currentViewZoomLevel();
-        if(defaultZoomLevel <= 95){ defaultZoomLevel+=5; }
-        for (int i = 0; i < 5; i++) {
-            this->getCurrentPage()->setZoomLevelRequest(defaultZoomLevel);
-        }
-
-    });
-    addAction(enlargViewAction);
-
-    auto shrinkViewAction = new QAction(this);
-    shrinkViewAction->setShortcut(QKeySequence::ZoomOut);
-    connect(shrinkViewAction, &QAction::triggered, this, [=]() {
-        int defaultZoomLevel = this->currentViewZoomLevel();
-        if(defaultZoomLevel > 6){ defaultZoomLevel-=5; }
-        this->getCurrentPage()->setZoomLevelRequest(defaultZoomLevel);
-    });
-    addAction(shrinkViewAction);
-
-    auto quitAllAction = new QAction(this);
-    quitAllAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Q));
-    connect(quitAllAction, &QAction::triggered, this, [=]() {
-        QProcess p(0);
-        p.start("peony", QStringList()<<"-q");
-        p.waitForStarted();
-        p.waitForFinished();
-    });
-    addAction(quitAllAction);
-
-    auto refreshAction = new QAction(this);
-    refreshAction->setShortcut(Qt::Key_F5);
-    connect(refreshAction, &QAction::triggered, this, [=]() {
-        this->refresh();
-    });
-    addAction(refreshAction);
-
-    //file operations
-    auto *copyAction = new QAction(this);
-    copyAction->setShortcut(QKeySequence::Copy);
-    connect(copyAction, &QAction::triggered, [=]() {
-        if (!this->getCurrentSelections().isEmpty())
-        {
-            if (this->getCurrentSelections().first().startsWith("trash://", Qt::CaseInsensitive)) {
-                return ;
-            }
-            if (this->getCurrentSelections().first().startsWith("recent://", Qt::CaseInsensitive)) {
-                return ;
-            }
-            if (this->getCurrentSelections().first().startsWith("favorite://", Qt::CaseInsensitive)) {
-                return ;
-            }
-        }
-        Peony::ClipboardUtils::setClipboardFiles(this->getCurrentSelections(), false);
-    });
-    addAction(copyAction);
-
-    auto *pasteAction = new QAction(this);
-    pasteAction->setShortcut(QKeySequence::Paste);
-    connect(pasteAction, &QAction::triggered, [=]() {
-        auto currentUri = getCurrentUri();
-        if (currentUri.startsWith("trash://") || currentUri.startsWith("recent://")
-            || currentUri.startsWith("computer://") || currentUri.startsWith("favorite://")
-            || currentUri.startsWith("search://"))
-        {
-            return;
-        }
-        if (Peony::ClipboardUtils::isClipboardHasFiles()) {
-            //FIXME: how about duplicated copy?
-            //FIXME: how to deal with a failed move?
-            auto op = Peony::ClipboardUtils::pasteClipboardFiles(this->getCurrentUri());
-            if (op) {
-                connect(op, &Peony::FileOperation::operationFinished, this, [=](){
-                    auto opInfo = op->getOperationInfo();
-                    auto targetUirs = opInfo->dests();
-                    setCurrentSelectionUris(targetUirs);
-                }, Qt::BlockingQueuedConnection);
-            }
-        }
-    });
-    addAction(pasteAction);
-
-    auto *cutAction = new QAction(this);
-    cutAction->setShortcut(QKeySequence::Cut);
-    connect(cutAction, &QAction::triggered, [=]() {
-        if (!this->getCurrentSelections().isEmpty()) {
-            if (this->getCurrentSelections().first().startsWith("trash://", Qt::CaseInsensitive)) {
-                return ;
-            }
-            if (this->getCurrentSelections().first().startsWith("recent://", Qt::CaseInsensitive)) {
-                return ;
-            }
-            if (this->getCurrentSelections().first().startsWith("favorite://", Qt::CaseInsensitive)) {
-                return ;
-            }
-
+        //add CTRL+D for delete operation
+        auto trashAction = new QAction(this);
+        trashAction->setShortcuts(QList<QKeySequence>()<<Qt::Key_Delete<<QKeySequence(Qt::CTRL + Qt::Key_D));
+        connect(trashAction, &QAction::triggered, [=]() {
             auto currentUri = getCurrentUri();
             if (currentUri.startsWith("search://"))
                 return;
 
+            auto uris = this->getCurrentSelections();
             QString desktopPath = "file://" +  QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
             QString desktopUri = Peony::FileUtils::getEncodedUri(desktopPath);
             QString homeUri = "file://" +  QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
-            if (! this->getCurrentSelections().contains(desktopUri) && ! this->getCurrentSelections().contains(homeUri))
-                Peony::ClipboardUtils::setClipboardFiles(this->getCurrentSelections(), true);
-        }
-    });
-    addAction(cutAction);
+            if (!uris.isEmpty() && !uris.contains(desktopUri) && !uris.contains(homeUri)) {
+                bool isTrash = this->getCurrentUri() == "trash:///";
+                if (!isTrash) {
+                    Peony::FileOperationUtils::trash(uris, true);
+                } else {
+                    Peony::FileOperationUtils::executeRemoveActionWithDialog(uris);
+                }
+            }
+        });
+        addAction(trashAction);
+
+        auto deleteAction = new QAction(this);
+        deleteAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::SHIFT + Qt::Key_Delete));
+        addAction(deleteAction);
+        connect(deleteAction, &QAction::triggered, [=]() {
+            auto currentUri = getCurrentUri();
+            if (currentUri.startsWith("search://"))
+                return;
+
+            auto uris = this->getCurrentSelections();
+            QString desktopPath = "file://" +  QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
+            QString desktopUri = Peony::FileUtils::getEncodedUri(desktopPath);
+            QString homeUri = "file://" +  QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
+            if (! uris.contains(desktopUri) && !uris.contains(homeUri))
+               Peony::FileOperationUtils::executeRemoveActionWithDialog(uris);
+        });
+
+        auto searchAction = new QAction(this);
+        searchAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::CTRL + Qt::Key_F));
+        connect(searchAction, &QAction::triggered, this, [=]() {
+            m_is_search = ! m_is_search;
+            m_header_bar->startEdit(m_is_search);
+        });
+        addAction(searchAction);
+
+        //F4 or Alt+D, change to address
+        auto locationAction = new QAction(this);
+        locationAction->setShortcuts(QList<QKeySequence>()<<Qt::Key_F4<<QKeySequence(Qt::ALT + Qt::Key_D));
+        connect(locationAction, &QAction::triggered, this, [=]() {
+            m_header_bar->startEdit();
+        });
+        addAction(locationAction);
+
+        auto newWindowAction = new QAction(this);
+        newWindowAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_N));
+        connect(newWindowAction, &QAction::triggered, this, [=]() {
+            MainWindow *newWindow = new MainWindow(getCurrentUri());
+            newWindow->show();
+        });
+        addAction(newWindowAction);
+
+        auto closeWindowAction = new QAction(this);
+        closeWindowAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::ALT + Qt::Key_F4));
+        connect(closeWindowAction, &QAction::triggered, this, [=]() {
+            this->close();
+        });
+        addAction(closeWindowAction);
+
+        auto aboutAction = new QAction(this);
+        aboutAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_F2));
+        connect(aboutAction, &QAction::triggered, this, [=]() {
+            PeonyApplication::about();
+        });
+        addAction(aboutAction);
+
+        auto newTabAction = new QAction(this);
+        newTabAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_T));
+        connect(newTabAction, &QAction::triggered, this, [=]() {
+            this->addNewTabs(QStringList()<<this->getCurrentUri());
+        });
+        addAction(newTabAction);
+
+        auto closeTabAction = new QAction(this);
+        closeTabAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_W));
+        connect(closeTabAction, &QAction::triggered, this, [=]() {
+            if (m_tab->count() <= 1) {
+                this->close();
+            } else {
+                m_tab->removeTab(m_tab->currentIndex());
+            }
+        });
+        addAction(closeTabAction);
+
+        auto nextTabAction = new QAction(this);
+        nextTabAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Tab));
+        connect(nextTabAction, &QAction::triggered, this, [=]() {
+            int currentIndex = m_tab->currentIndex();
+            if (currentIndex + 1 < m_tab->count()) {
+                m_tab->setCurrentIndex(currentIndex + 1);
+            } else {
+                m_tab->setCurrentIndex(0);
+            }
+        });
+        addAction(nextTabAction);
+
+        auto previousTabAction = new QAction(this);
+        previousTabAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_Tab));
+        connect(previousTabAction, &QAction::triggered, this, [=]() {
+            int currentIndex = m_tab->currentIndex();
+            if (currentIndex > 0) {
+                m_tab->setCurrentIndex(currentIndex - 1);
+            } else {
+                m_tab->setCurrentIndex(m_tab->count() - 1);
+            }
+        });
+        addAction(previousTabAction);
+
+        auto newFolderAction = new QAction(this);
+        newFolderAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_N));
+        connect(newFolderAction, &QAction::triggered, this, &MainWindow::createFolderOperation);
+        addAction(newFolderAction);
+
+        //show selected item's properties
+        auto propertiesWindowAction = new QAction(this);
+        propertiesWindowAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::ALT + Qt::Key_Return)
+                                             <<QKeySequence(Qt::ALT + Qt::Key_Enter));
+        connect(propertiesWindowAction, &QAction::triggered, this, [=]() {
+            //Fixed issue:when use this shortcut without any selections, this will crash
+            QStringList uris;
+            if (getCurrentSelections().count() > 0)
+            {
+                uris<<getCurrentSelections();
+            }
+            else
+            {
+                uris<<getCurrentUri();
+            }
+
+            Peony::PropertiesWindow *w = new Peony::PropertiesWindow(uris);
+            w->setAttribute(Qt::WA_DeleteOnClose);
+            w->show();
+        });
+        addAction(propertiesWindowAction);
+
+        auto helpAction = new QAction(this);
+        helpAction->setShortcut(QKeySequence(Qt::Key_F1));
+        connect(helpAction, &QAction::triggered, this, [=]() {
+            PeonyApplication::help();
+        });
+        addAction(helpAction);
+
+        auto maxAction = new QAction(this);
+        maxAction->setShortcut(QKeySequence(Qt::Key_F11));
+        connect(maxAction, &QAction::triggered, this, [=]() {
+            //showFullScreen has some issue, change to showMaximized, fix #20043
+            m_header_bar->cancelEdit();
+            if (!this->isMaximized()) {
+                this->showMaximized();
+            } else {
+                this->showNormal();
+            }
+        });
+        addAction(maxAction);
+
+        auto previewPageAction = new QAction(this);
+        previewPageAction->setShortcuts(QList<QKeySequence>()<<Qt::Key_F3<<QKeySequence(Qt::ALT + Qt::Key_P));
+        connect(previewPageAction, &QAction::triggered, this, [=]() {
+            auto triggered = m_tab->getTriggeredPreviewPage();
+            if (triggered)
+            {
+                m_tab->setPreviewPage(nullptr);
+            }
+            else
+            {
+                auto instance = Peony::PreviewPageFactoryManager::getInstance();
+                auto lastPreviewPageId  = instance->getLastPreviewPageId();
+                auto *page = instance->getPlugin(lastPreviewPageId)->createPreviewPage();
+                m_tab->setPreviewPage(page);
+            }
+            m_tab->setTriggeredPreviewPage(! triggered);
+        });
+        addAction(previewPageAction);
+
+        auto refreshWindowAction = new QAction(this);
+        refreshWindowAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_R));
+        connect(refreshWindowAction, &QAction::triggered, this, [=]() {
+            this->refresh();
+        });
+        addAction(refreshWindowAction);
+
+        auto listToIconViewAction = new QAction(this);
+        listToIconViewAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_1));
+        connect(listToIconViewAction, &QAction::triggered, this, [=]() {
+            this->beginSwitchView(QString("Icon View"));
+        });
+        addAction(listToIconViewAction);
+
+        auto iconToListViewAction = new QAction(this);
+        iconToListViewAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_2));
+        connect(iconToListViewAction, &QAction::triggered, this, [=]() {
+            this->beginSwitchView(QString("List View"));
+        });
+        addAction(iconToListViewAction);
+
+        auto reverseSelectAction = new QAction(this);
+        reverseSelectAction->setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_L));
+        connect(reverseSelectAction, &QAction::triggered, this, [=]() {
+            this->getCurrentPage()->getView()->invertSelections();
+        });
+        addAction(reverseSelectAction);
+
+        auto remodelViewAction = new QAction(this);
+        remodelViewAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_0));
+        connect(remodelViewAction, &QAction::triggered, this, [=]() {
+            this->getCurrentPage()->setZoomLevelRequest(25);
+        });
+        addAction(remodelViewAction);
+
+        auto enlargViewAction = new QAction(this);
+        enlargViewAction->setShortcut(QKeySequence::ZoomIn);
+        connect(enlargViewAction, &QAction::triggered, this, [=]() {
+            int defaultZoomLevel = this->currentViewZoomLevel();
+            if(defaultZoomLevel <= 95){ defaultZoomLevel+=5; }
+            for (int i = 0; i < 5; i++) {
+                this->getCurrentPage()->setZoomLevelRequest(defaultZoomLevel);
+            }
+
+        });
+        addAction(enlargViewAction);
+
+        auto shrinkViewAction = new QAction(this);
+        shrinkViewAction->setShortcut(QKeySequence::ZoomOut);
+        connect(shrinkViewAction, &QAction::triggered, this, [=]() {
+            int defaultZoomLevel = this->currentViewZoomLevel();
+            if(defaultZoomLevel > 6){ defaultZoomLevel-=5; }
+            this->getCurrentPage()->setZoomLevelRequest(defaultZoomLevel);
+        });
+        addAction(shrinkViewAction);
+
+        auto quitAllAction = new QAction(this);
+        quitAllAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Q));
+        connect(quitAllAction, &QAction::triggered, this, [=]() {
+            QProcess p(0);
+            p.start("peony", QStringList()<<"-q");
+            p.waitForStarted();
+            p.waitForFinished();
+        });
+        addAction(quitAllAction);
+
+        auto refreshAction = new QAction(this);
+        refreshAction->setShortcut(Qt::Key_F5);
+        connect(refreshAction, &QAction::triggered, this, [=]() {
+            this->refresh();
+        });
+        addAction(refreshAction);
+
+        //file operations
+        auto *copyAction = new QAction(this);
+        copyAction->setShortcut(QKeySequence::Copy);
+        connect(copyAction, &QAction::triggered, [=]() {
+            if (!this->getCurrentSelections().isEmpty())
+            {
+                if (this->getCurrentSelections().first().startsWith("trash://", Qt::CaseInsensitive)) {
+                    return ;
+                }
+                if (this->getCurrentSelections().first().startsWith("recent://", Qt::CaseInsensitive)) {
+                    return ;
+                }
+                if (this->getCurrentSelections().first().startsWith("favorite://", Qt::CaseInsensitive)) {
+                    return ;
+                }
+            }
+            Peony::ClipboardUtils::setClipboardFiles(this->getCurrentSelections(), false);
+        });
+        addAction(copyAction);
+
+        auto *pasteAction = new QAction(this);
+        pasteAction->setShortcut(QKeySequence::Paste);
+        connect(pasteAction, &QAction::triggered, [=]() {
+            auto currentUri = getCurrentUri();
+            if (currentUri.startsWith("trash://") || currentUri.startsWith("recent://")
+                || currentUri.startsWith("computer://") || currentUri.startsWith("favorite://")
+                || currentUri.startsWith("search://"))
+            {
+                return;
+            }
+            if (Peony::ClipboardUtils::isClipboardHasFiles()) {
+                //FIXME: how about duplicated copy?
+                //FIXME: how to deal with a failed move?
+                auto op = Peony::ClipboardUtils::pasteClipboardFiles(this->getCurrentUri());
+                if (op) {
+                    connect(op, &Peony::FileOperation::operationFinished, this, [=](){
+                        auto opInfo = op->getOperationInfo();
+                        auto targetUirs = opInfo->dests();
+                        setCurrentSelectionUris(targetUirs);
+                    }, Qt::BlockingQueuedConnection);
+                }
+            }
+        });
+        addAction(pasteAction);
+
+        auto *cutAction = new QAction(this);
+        cutAction->setShortcut(QKeySequence::Cut);
+        connect(cutAction, &QAction::triggered, [=]() {
+            if (!this->getCurrentSelections().isEmpty()) {
+                if (this->getCurrentSelections().first().startsWith("trash://", Qt::CaseInsensitive)) {
+                    return ;
+                }
+                if (this->getCurrentSelections().first().startsWith("recent://", Qt::CaseInsensitive)) {
+                    return ;
+                }
+                if (this->getCurrentSelections().first().startsWith("favorite://", Qt::CaseInsensitive)) {
+                    return ;
+                }
+
+                auto currentUri = getCurrentUri();
+                if (currentUri.startsWith("search://"))
+                    return;
+
+                QString desktopPath = "file://" +  QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
+                QString desktopUri = Peony::FileUtils::getEncodedUri(desktopPath);
+                QString homeUri = "file://" +  QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
+                if (! this->getCurrentSelections().contains(desktopUri) && ! this->getCurrentSelections().contains(homeUri))
+                    Peony::ClipboardUtils::setClipboardFiles(this->getCurrentSelections(), true);
+            }
+        });
+        addAction(cutAction);
+
+        m_shortcuts_set = true;
+    }
 }
 
 void MainWindow::updateTabPageTitle()
@@ -1184,6 +1185,8 @@ void MainWindow::initUI(const QString &uri)
         //function for UKUI3.1, update window icon
         //updateWindowIcon();
         //m_status_bar->update();
+
+        setShortCuts();
     });
 
     //HeaderBar
