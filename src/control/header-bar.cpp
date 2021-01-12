@@ -148,6 +148,7 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
         m_window->getCurrentPage()->setSortFilter(index);
     });
     connect(m_location_bar, &Peony::AdvancedLocationBar::searchRequest, [=](const QString &path, const QString &key){
+        m_window->forceStopLoading();
         //key is null, clean search content, show all files
         if (key == "" || key.isNull())
             Q_EMIT this->updateLocationRequest(path, false);
@@ -445,6 +446,14 @@ void HeaderBar::updateIcons()
 
     //maximize & restore
     updateMaximizeState();
+}
+
+void HeaderBar::updateHeaderState()
+{
+    if (! m_window->getFilterWorking())
+        m_create_folder->setEnabled(true);
+    else
+        m_create_folder->setEnabled(false);
 }
 
 void HeaderBar::updateMaximizeState()

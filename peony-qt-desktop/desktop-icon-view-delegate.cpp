@@ -29,6 +29,8 @@
 #include "file-rename-operation.h"
 
 #include "icon-view-delegate.h"
+#include "clipboard-utils.h"
+#include "desktop-item-model.h"
 
 #include <QPushButton>
 #include <QWidget>
@@ -78,6 +80,16 @@ void DesktopIconViewDelegate::paint(QPainter *painter, const QStyleOptionViewIte
     } else if (opt.state.testFlag(QStyle::State_Selected)) {
         if (view->indexWidget(index)) {
             opt.text = nullptr;
+        }
+    }
+
+    if (QUrl(ClipboardUtils::getClipedFilesParentUri()).path() == QUrl(view->getDirectoryUri()).path()) {
+        if (ClipboardUtils::isClipboardFilesBeCut()) {
+            auto clipedUris = ClipboardUtils::getClipboardFilesUris();
+            if (clipedUris.contains(index.data(DesktopItemModel::UriRole).toString())) {
+                painter->setOpacity(0.5);
+                qDebug()<<"cut item in desktop"<<index.data();
+            }
         }
     }
 

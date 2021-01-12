@@ -383,6 +383,11 @@ const QList<QAction *> DirectoryViewMenu::constructCreateTemplateActions()
         {
             createAction->setEnabled(false);
         }
+
+        if(m_top_window->getFilterWorking())
+        {
+            createAction->setEnabled(false);
+        }
         l<<createAction;
         QMenu *subMenu = new QMenu(this);
         createAction->setMenu(subMenu);

@@ -101,6 +101,10 @@ void TabStatusBar::update()
         return;
     }
 
+    //not update search result in status bar
+    if (uri.startsWith("search://") && selections.count() ==0)
+        return;
+
     if (! selections.isEmpty()) {
         QString directoriesString = "";
         int directoryCount = 0;

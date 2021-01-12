@@ -86,8 +86,8 @@ void BookMarkManager::addBookMark(const QString &uri)
         QUrl url = uri;
         QString origin_path = "favorite://" + url.path() + "?schema=" + url.scheme();
         //desktop uri is fixed in favorite item
-        QString desktopUri = "file://" + QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
-        if (origin_path == desktopUri)
+        QString desktopPath = QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
+        if (url.path() == desktopPath)
             return;
         if (m_mutex.tryLock(1000)) {
             bool successed = !m_uris.contains(origin_path);

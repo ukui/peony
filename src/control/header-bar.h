@@ -96,6 +96,7 @@ private Q_SLOTS:
     void setSearchMode(bool mode);
     void closeSearch();
     void initFocus();
+    void updateHeaderState();
 
 private:
     const QString m_uri;
