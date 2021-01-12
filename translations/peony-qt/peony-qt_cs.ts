@@ -2,24 +2,78 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="cs">
 <context>
+    <name>AboutDialog</name>
+    <message>
+        <location filename="../../src/windows/about-dialog.ui" line="26"/>
+        <source>Dialog</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/windows/about-dialog.ui" line="82"/>
+        <location filename="../../src/windows/about-dialog.ui" line="133"/>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Noto Sans CJK SC&apos;; font-size:11pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/windows/about-dialog.cpp" line="29"/>
+        <source>Offical Website: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/windows/about-dialog.cpp" line="30"/>
+        <source>Service &amp; Technology Support: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/windows/about-dialog.cpp" line="31"/>
+        <source>Hot Service: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/windows/about-dialog.cpp" line="46"/>
+        <location filename="../../src/windows/about-dialog.cpp" line="58"/>
+        <source>File Manager</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/windows/about-dialog.cpp" line="62"/>
+        <source>Version number: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/windows/about-dialog.cpp" line="68"/>
+        <source>File manager is a graphical software to help users manage system files. It provides common file operation functions for users, such as file viewing, file copy, paste, cut, delete, rename, file selection, application opening, file search, file sorting, file preview, etc. it is convenient for users to manage system files intuitively on the interface.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/windows/about-dialog.cpp" line="94"/>
+        <source>none</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>FileLabelBox</name>
     <message>
-        <location filename="../../src/control/file-label-box.cpp" line="57"/>
+        <location filename="../../src/control/file-label-box.cpp" line="68"/>
         <source>Rename</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/file-label-box.cpp" line="62"/>
+        <location filename="../../src/control/file-label-box.cpp" line="73"/>
         <source>Edit Color</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/file-label-box.cpp" line="70"/>
+        <location filename="../../src/control/file-label-box.cpp" line="81"/>
         <source>Delete</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/file-label-box.cpp" line="75"/>
+        <location filename="../../src/control/file-label-box.cpp" line="86"/>
         <source>Create New Label</source>
         <translation type="unfinished"></translation>
     </message>
@@ -27,52 +81,52 @@
 <context>
     <name>HeaderBar</name>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="86"/>
+        <location filename="../../src/control/header-bar.cpp" line="87"/>
         <source>Create Folder</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="100"/>
+        <location filename="../../src/control/header-bar.cpp" line="101"/>
         <source>Open Terminal</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="114"/>
+        <location filename="../../src/control/header-bar.cpp" line="115"/>
         <source>Go Back</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="122"/>
+        <location filename="../../src/control/header-bar.cpp" line="123"/>
         <source>Go Forward</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="162"/>
+        <location filename="../../src/control/header-bar.cpp" line="165"/>
         <source>Search</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="172"/>
+        <location filename="../../src/control/header-bar.cpp" line="175"/>
         <source>View Type</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="199"/>
+        <location filename="../../src/control/header-bar.cpp" line="202"/>
         <source>Sort Type</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="225"/>
+        <location filename="../../src/control/header-bar.cpp" line="228"/>
         <source>Option</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="288"/>
+        <location filename="../../src/control/header-bar.cpp" line="300"/>
         <source>Operate Tips</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="289"/>
+        <location filename="../../src/control/header-bar.cpp" line="301"/>
         <source>Don&apos;t find any terminal, please install at least one terminal!</source>
         <translation type="unfinished"></translation>
     </message>
@@ -88,12 +142,12 @@
 <context>
     <name>HeaderBarContainer</name>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="581"/>
+        <location filename="../../src/control/header-bar.cpp" line="616"/>
         <source>Minimize</source>
         <translation type="unfinished">Küçült</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="593"/>
+        <location filename="../../src/control/header-bar.cpp" line="628"/>
         <source>Maximize/Restore</source>
         <translation type="unfinished"></translation>
     </message>
@@ -106,7 +160,7 @@
         <translation type="vanished">Büyüt</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="614"/>
+        <location filename="../../src/control/header-bar.cpp" line="649"/>
         <source>Close</source>
         <translation type="unfinished">Kapat</translation>
     </message>
@@ -114,32 +168,32 @@
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="304"/>
+        <location filename="../../src/windows/main-window.cpp" line="309"/>
         <source>Undo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="311"/>
+        <location filename="../../src/windows/main-window.cpp" line="316"/>
         <source>Redo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1334"/>
+        <location filename="../../src/windows/main-window.cpp" line="1365"/>
         <source>Delete Permanently</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1335"/>
+        <location filename="../../src/windows/main-window.cpp" line="1366"/>
         <source>Are you sure that you want to delete these files? Once you start a deletion, the files deleting will never be restored again.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1344"/>
+        <location filename="../../src/windows/main-window.cpp" line="1375"/>
         <source>Tips info</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1345"/>
+        <location filename="../../src/windows/main-window.cpp" line="1376"/>
         <source>Trash has no file need to be cleaned.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -148,7 +202,7 @@
         <translation type="vanished">Peony Qt</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="666"/>
+        <location filename="../../src/windows/main-window.cpp" line="675"/>
         <source>New Folder</source>
         <translation type="unfinished"></translation>
     </message>
@@ -173,7 +227,7 @@
 <context>
     <name>NavigationSideBarContainer</name>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="331"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="352"/>
         <source>All tags...</source>
         <translation type="unfinished">Tüm etiketler...</translation>
     </message>
@@ -181,7 +235,7 @@
 <context>
     <name>NavigationTabBar</name>
     <message>
-        <location filename="../../src/control/navigation-tab-bar.cpp" line="118"/>
+        <location filename="../../src/control/navigation-tab-bar.cpp" line="125"/>
         <source>Search &quot;%1&quot; in &quot;%2&quot;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -218,12 +272,12 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/operation-menu.cpp" line="108"/>
+        <location filename="../../src/control/operation-menu.cpp" line="109"/>
         <source>Help</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/operation-menu.cpp" line="112"/>
+        <location filename="../../src/control/operation-menu.cpp" line="113"/>
         <source>About</source>
         <translation type="unfinished"></translation>
     </message>
@@ -231,27 +285,27 @@
 <context>
     <name>OperationMenuEditWidget</name>
     <message>
-        <location filename="../../src/control/operation-menu.cpp" line="141"/>
+        <location filename="../../src/control/operation-menu.cpp" line="146"/>
         <source>Edit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/operation-menu.cpp" line="152"/>
+        <location filename="../../src/control/operation-menu.cpp" line="157"/>
         <source>copy</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/operation-menu.cpp" line="161"/>
+        <location filename="../../src/control/operation-menu.cpp" line="166"/>
         <source>paste</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/operation-menu.cpp" line="170"/>
+        <location filename="../../src/control/operation-menu.cpp" line="175"/>
         <source>cut</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/operation-menu.cpp" line="179"/>
+        <location filename="../../src/control/operation-menu.cpp" line="184"/>
         <source>trash</source>
         <translation type="unfinished"></translation>
     </message>
@@ -426,34 +480,34 @@ Telif (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</translatio
 <context>
     <name>TabStatusBar</name>
     <message>
-        <location filename="../../src/control/tab-status-bar.cpp" line="143"/>
-        <location filename="../../src/control/tab-status-bar.cpp" line="151"/>
+        <location filename="../../src/control/tab-status-bar.cpp" line="148"/>
+        <location filename="../../src/control/tab-status-bar.cpp" line="156"/>
         <source>; %1 folders</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-status-bar.cpp" line="145"/>
-        <location filename="../../src/control/tab-status-bar.cpp" line="153"/>
+        <location filename="../../src/control/tab-status-bar.cpp" line="150"/>
+        <location filename="../../src/control/tab-status-bar.cpp" line="158"/>
         <source>; %1 files, %2 total</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-status-bar.cpp" line="147"/>
+        <location filename="../../src/control/tab-status-bar.cpp" line="152"/>
         <source>; %1 folder</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-status-bar.cpp" line="149"/>
+        <location filename="../../src/control/tab-status-bar.cpp" line="154"/>
         <source>; %1 file, %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-status-bar.cpp" line="158"/>
+        <location filename="../../src/control/tab-status-bar.cpp" line="163"/>
         <source>%1 selected</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-status-bar.cpp" line="170"/>
+        <location filename="../../src/control/tab-status-bar.cpp" line="174"/>
         <source>Search &quot;%1&quot; in &quot;%2&quot;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -461,63 +515,53 @@ Telif (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</translatio
 <context>
     <name>TabWidget</name>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="155"/>
+        <location filename="../../src/control/tab-widget.cpp" line="181"/>
         <source>Trash</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="159"/>
+        <location filename="../../src/control/tab-widget.cpp" line="185"/>
         <source>Clear</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="163"/>
+        <location filename="../../src/control/tab-widget.cpp" line="189"/>
         <source>Recover</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="244"/>
+        <location filename="../../src/control/tab-widget.cpp" line="274"/>
         <source>Close advance search.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="252"/>
+        <location filename="../../src/control/tab-widget.cpp" line="282"/>
         <source>Search</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="261"/>
+        <location filename="../../src/control/tab-widget.cpp" line="291"/>
         <source>Choose other path to search.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="270"/>
+        <location filename="../../src/control/tab-widget.cpp" line="300"/>
         <source>Search recursively</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="279"/>
-        <source>more options</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/control/tab-widget.cpp" line="283"/>
-        <source>Show/hide advance search</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/control/tab-widget.cpp" line="343"/>
+        <location filename="../../src/control/tab-widget.cpp" line="373"/>
         <source>Select path</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="378"/>
-        <location filename="../../src/control/tab-widget.cpp" line="462"/>
+        <location filename="../../src/control/tab-widget.cpp" line="408"/>
+        <location filename="../../src/control/tab-widget.cpp" line="497"/>
         <source>is</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="396"/>
+        <location filename="../../src/control/tab-widget.cpp" line="426"/>
         <source>Please input key words...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -526,8 +570,8 @@ Telif (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</translatio
         <translation type="vanished">Lütfen anahtar kelimeler girin ...</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="431"/>
-        <location filename="../../src/control/tab-widget.cpp" line="449"/>
+        <location filename="../../src/control/tab-widget.cpp" line="463"/>
+        <location filename="../../src/control/tab-widget.cpp" line="484"/>
         <source>contains</source>
         <translation type="unfinished"></translation>
     </message>

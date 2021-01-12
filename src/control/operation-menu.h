@@ -23,6 +23,7 @@
 #ifndef OPERATIONMENU_H
 #define OPERATIONMENU_H
 
+#include "about-dialog.h"
 #include <QMenu>
 
 class MainWindow;
@@ -46,6 +47,7 @@ private:
 private:
     MainWindow *m_window;
     OperationMenuEditWidget *m_edit_widget;
+    AboutDialog *m_aboutDialog = nullptr;
 };
 
 class OperationMenuEditWidget : public QWidget
