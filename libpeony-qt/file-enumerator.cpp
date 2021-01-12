@@ -518,7 +518,7 @@ GAsyncReadyCallback FileEnumerator::find_children_async_ready_callback(GFile *fi
         if (err->code == G_IO_ERROR_NOT_MOUNTED) {
             g_object_unref(p_this->m_root_file);
             p_this->m_root_file = g_file_dup(file);
-            p_this->prepare();
+            //p_this->prepare();
             g_error_free(err);
             return nullptr;
         }
