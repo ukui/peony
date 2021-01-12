@@ -130,28 +130,29 @@ void SearchBar::initTableModel()
 
 void SearchBar::updateTableModel()
 {
-    if (!this->text().isEmpty()) {
-        bool contained = false;
-        for(int i=0; i<m_model->rowCount(); i++)
-        {
-            if(m_model->item(i)->text() == this->text())
-            {
-                contained = true;
-                break;
-            }
-        }
-        if (! contained)
-        {
-            QStandardItem *key = new QStandardItem(this->text());
-            QList<QStandardItem*> row;
-            m_model->insertRow(0, row<<key);
-        }
+    //comment unused code
+//    if (!this->text().isEmpty()) {
+//        bool contained = false;
+//        for(int i=0; i<m_model->rowCount(); i++)
+//        {
+//            if(m_model->item(i)->text() == this->text())
+//            {
+//                contained = true;
+//                break;
+//            }
+//        }
+//        if (! contained)
+//        {
+//            QStandardItem *key = new QStandardItem(this->text());
+//            QList<QStandardItem*> row;
+//            m_model->insertRow(0, row<<key);
+//        }
 
-        m_table_view->setMinimumHeight(m_model->rowCount() * 25);
-        Q_EMIT this->searchRequest(this->text());
-        this->clear();
-        this->clearFocus();
-    }
+//        m_table_view->setMinimumHeight(m_model->rowCount() * 25);
+//        Q_EMIT this->searchRequest(this->text());
+//        this->clear();
+//        this->clearFocus();
+//    }
 }
 
 void SearchBar::onTableClicked(const QModelIndex &index)

@@ -78,6 +78,7 @@ AdvancedLocationBar::AdvancedLocationBar(QWidget *parent) : QWidget(parent)
 
     m_search_bar->connect(m_search_bar, &Peony::SearchBarContainer::returnPressed, [=]() {
         auto key = m_search_bar->text();
+        qDebug() << "search key:" <<key <<m_last_key;
         if (key != m_last_key)
         {
             Q_EMIT searchRequest(m_last_non_search_path, key);
