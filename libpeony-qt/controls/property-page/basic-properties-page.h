@@ -26,6 +26,9 @@
 #include <QWidget>
 #include "peony-core_global.h"
 
+#include <QFrame>
+#include <QGridLayout>
+#include <QThread>
 #include <memory>
 
 class QVBoxLayout;
@@ -40,6 +43,20 @@ class FileInfo;
 class FileWatcher;
 class FileCountOperation;
 
+class FileNameThread : public QThread {
+    Q_OBJECT
+private:
+    const QStringList &m_uris;
+public:
+    FileNameThread(const QStringList &uris) : m_uris(uris){}
+
+Q_SIGNALS:
+    void fileNameReady(QString fileName);
+
+protected:
+    void run();
+};
+
 /*!
  * \brief The BasicPropertiesPage class
  * \todo
@@ -49,11 +66,23 @@ class BasicPropertiesPage : public QWidget
 {
     Q_OBJECT
 public:
+
+    enum FileType{
+        BP_Folder = 1,
+        BP_File,
+        BP_Application,
+        BP_MultipleFIle /*选中多个文件*/
+    };
+
     explicit BasicPropertiesPage(const QStringList &uris, QWidget *parent = nullptr);
     ~BasicPropertiesPage();
 
 protected:
     void addSeparator();
+    void initFloorOne(const QStringList &uris,FileType fileType);
+    void initFloorTwo(const QStringList &uris,FileType fileType);
+
+    FileType checkFileType(const QStringList &uris);
 
 protected Q_SLOTS:
     void onSingleFileChanged(const QString &oldUri, const QString &newUri);
@@ -61,29 +90,70 @@ protected Q_SLOTS:
     void onFileCountOne(const QString &uri, quint64 size);
     void cancelCount();
 
+    void changeFileIcon();
+
     void updateInfo(const QString &uri);
 
 private:
-    QVBoxLayout *m_layout = nullptr;
-    std::shared_ptr<FileInfo> m_info;
+    QVBoxLayout                 *m_layout = nullptr;
+    std::shared_ptr<FileInfo>    m_info;
     std::shared_ptr<FileWatcher> m_watcher;
     std::shared_ptr<FileWatcher> m_thumbnail_watcher;
 
     void updateCountInfo();
 
     //floor1
-    QPushButton *m_icon;
-    QLabel *m_type;
-    QLineEdit *m_display_name;
-    QLabel *m_location;
+    QPushButton *m_icon;        //文件图标
+    //**new version
+    QLineEdit   *m_displayName; //文件名称
+    QLineEdit   *m_location;    //文件路径
+    QPushButton *m_moveButton;  //移动位置按钮
 
-    //floor2
-    QLabel *m_total_size_label;
-    QLabel *m_file_count_label;
+    //floor2  --  public
+    QLabel *m_fileType;         //文件类型
+    QLabel *m_fileSize;         //文件大小
+    QLabel *m_fileTotalSize;    //文件占用空间
+    quint64 m_fileSizeCount        = 0;
+    quint64 m_fileTotalSizeCount   = 0;
 
-    quint64 m_file_count = 0;
-    quint64 m_hidden_file_count = 0;
-    quint64 m_total_size = 0;
+    //folder type
+    QLabel *m_folderContain;    //文件夹下文件统计Label
+
+    quint64 m_folderContainFiles   = 0; //文件夹下文件数量
+    quint64 m_folderContainFolders = 0; //文件夹下文件夹数量
+
+    //file , zip
+    QHBoxLayout *m_openWith;    //文件打开方式
+
+    //application
+    QLabel *m_descrption;       //应用程序描述
+    /*
+
+                auto recommendActions = FileLaunchManager::getRecommendActions(m_selections.first());
+                if (recommendActions.count() > 1)
+                {
+                    auto openWithAction = addAction(tr("Open &with..."));
+                    QMenu *openWithMenu = new QMenu(this);
+
+                    for (auto action : recommendActions) {
+                        action->setParent(openWithMenu);
+                        openWithMenu->addAction(static_cast<QAction*>(action));
+                    }
+                    auto fallbackActions = FileLaunchManager::getFallbackActions(m_selections.first());
+                    for (auto action : fallbackActions) {
+                        action->setParent(openWithMenu);
+                        openWithMenu->addAction(static_cast<QAction*>(action));
+                    }
+                    openWithMenu->addSeparator();
+                    openWithMenu->addAction(tr("&More applications..."), [=]() {
+                        FileLauchDialog d(m_selections.first());
+                        d.exec();
+                    });
+                    openWithAction->setMenu(openWithMenu);
+                }
+
+     */
+
 
     //floor3
     QFormLayout *m_form3;
@@ -98,8 +168,6 @@ private:
     //floor4
 
     //
-
-
     FileCountOperation *m_count_op = nullptr;
 };
 

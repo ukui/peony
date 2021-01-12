@@ -42,6 +42,7 @@
 
 #include <QThreadPool>
 #include <QFileInfo>
+#include <QGraphicsOpacityEffect>
 
 //#include <QMessageBox>
 
@@ -57,8 +58,10 @@ using namespace Peony;
 
 BasicPropertiesPage::BasicPropertiesPage(const QStringList &uris, QWidget *parent) : QWidget(parent)
 {
+    //check file type and search fileinfo
+    FileType l_fileType = this->checkFileType(uris);
     //qDebug() << "BasicPropertiesPage:" <<uris.count() <<uris.first();
-    if (uris.count() == 1) {
+    if (l_fileType != BP_MultipleFIle) {
         m_watcher = std::make_shared<FileWatcher>(uris.first());
         m_watcher->connect(m_watcher.get(), &FileWatcher::locationChanged, this, &BasicPropertiesPage::onSingleFileChanged);
         m_watcher->startMonitor();
@@ -72,138 +75,45 @@ BasicPropertiesPage::BasicPropertiesPage(const QStringList &uris, QWidget *paren
     }
 
     //FIXME: complete the content
-    QVBoxLayout *layout = new QVBoxLayout(this);
-    m_layout = layout;
-    layout->setMargin(0);
-    layout->setSpacing(0);
+    m_layout = new QVBoxLayout(this);
+    m_layout->setMargin(0);
+    m_layout->setSpacing(0);
 
-    setLayout(layout);
+    this->setLayout(m_layout);
 
-    QFrame *f1 = new QFrame(this);
-    auto l1 = new QGridLayout(f1);
-    f1->setLayout(l1);
-    QPushButton *icon = new QPushButton(f1);
-    m_icon = icon;
+    this->initFloorOne(uris,l_fileType);
+    this->addSeparator();
 
-    if (uris.count() == 1) {
-        m_icon->connect(m_icon, &QPushButton::clicked, this, [=](){
-            QUrl iconPathUrl;
-            iconPathUrl.setPath("/usr/share/icons");
-            auto picture = QFileDialog::getOpenFileName(nullptr, tr("Choose a custom icon"), "/usr/share/icons", "*.png *.jpg *.jpeg *.svg");
-            auto metaInfo = FileMetaInfo::fromUri(uris.first());
-            QFileInfo fileInfo(picture);
-            if (!QIcon::fromTheme(fileInfo.baseName()).isNull())
-                metaInfo.get()->setMetaInfoString("custom-icon", fileInfo.baseName());
-            else
-                metaInfo.get()->setMetaInfoString("custom-icon", picture);
+    this->initFloorTwo(uris,l_fileType);
+    this->addSeparator();
 
-            ThumbnailManager::getInstance()->createThumbnail(uris.first(), m_thumbnail_watcher, true);
-        });
-    }
+    //    countFilesAsync(uris);
 
-    m_type = new QLabel(f1);
-    QLineEdit *edit = new QLineEdit(f1);
-    m_display_name = edit;
-    QLabel *location = new QLabel(f1);
-    m_location = location;
+    //    if (uris.count() == 1) {
+    //        addSeparator();
+    //    }
 
-    icon->setFixedSize(QSize(72, 72));
-    icon->setIconSize(QSize(64, 64));
-    icon->setProperty("isIcon", true);
-    bool singleUri = uris.count() == 1;
-    if (singleUri) {
-        this->onSingleFileChanged(nullptr, uris.first());
-    } else {
-        icon->setIcon(QIcon::fromTheme("text-x-generic"));
-    }
-    l1->addWidget(icon, 0, 0, 2, 1);
+    //    auto f3 = new QFrame(this);
+    //    QFormLayout *form = new QFormLayout(f3);
+    //    m_form3 = form;
+    //    f3->setLayout(form);
+    //    m_time_created_label = new QLabel(f3);
+    //    m_time_modified_label = new QLabel(f3);
+    //    m_time_access_label = new QLabel(f3);
+    //    form->addRow(tr("Time Created:"), m_time_created_label);
+    //    form->addRow(tr("Time Modified:"), m_time_modified_label);
+    //    form->addRow(tr("Time Access:"), m_time_access_label);
+    //    m_layout->addWidget(f3);
+    //    f3->setVisible(uris.count() == 1);
+    //    updateInfo(uris.first());
+    //    connect(m_watcher.get(), &FileWatcher::locationChanged, [=](const QString&, const QString &uri) {
+    //        this->updateInfo(uri);
+    //    });
 
-    auto form = new QFormLayout(f1);
-    l1->addLayout(form, 0, 1);
+    //    addSeparator();
 
-    form->addRow(tr("Type:"), m_type);
-    form->addRow(tr("Display Name:"), m_display_name);
-    form->addRow(tr("Location:"), m_location);
-
-    if (singleUri) {
-        edit->setText(m_info->displayName());
-    } else {
-        QStringList l;
-        for (auto uri : uris) {
-            //FIXME: replace BLOCKING api in ui thread.
-            l<<FileUtils::getFileDisplayName(uri);
-        }
-        auto text = l.join(",");
-        edit->setText(text);
-    }
-    edit->setReadOnly(!singleUri);
-    //edit->setContentsMargins(10, 10, 10, 5);
-    //l1->addWidget(edit, 0, 1);
-
-    connect(edit, &QLineEdit::returnPressed, [=]() {
-        if (!edit->isReadOnly() && !edit->text().isEmpty()) {
-            FileOperationUtils::rename(m_info->uri(), edit->text(), true);
-        }
-    });
-
-    location->setTextInteractionFlags(Qt::TextSelectableByMouse);
-    QUrl url = FileUtils::getParentUri(uris.first());
-    location->setText(url.toDisplayString());
-    //location->setContentsMargins(15, 5, 10, 10);
-    //l1->addWidget(location, 1, 1);
-
-    layout->addWidget(f1);
-    addSeparator();
-
-    /*
-    QLabel *l2 = new QLabel("FIXME:\n"
-                            "type\n"
-                            "open\n"
-                            "size\n", this);
-                            */
-    QFrame *f2 = new QFrame(this);
-    QVBoxLayout *l2 = new QVBoxLayout(f2);
-    f2->setLayout(l2);
-    m_file_count_label = new QLabel(f2);
-    m_total_size_label = new QLabel(f2);
-    l2->addWidget(new QLabel(tr("Overview:")));
-    l2->addWidget(m_file_count_label);
-    l2->addWidget(m_total_size_label);
-
-    layout->addWidget(f2);
-
-    countFilesAsync(uris);
-
-    if (uris.count() == 1) {
-        addSeparator();
-    }
-    /*
-    QLabel *l3 = new QLabel("FIXME:\n"
-                            "created\n"
-                            "modified\n"
-                            "accessed", this);
-                            */
-    auto f3 = new QFrame(this);
-    form = new QFormLayout(f3);
-    m_form3 = form;
-    f3->setLayout(form);
-    m_time_created_label = new QLabel(f3);
-    m_time_modified_label = new QLabel(f3);
-    m_time_access_label = new QLabel(f3);
-    form->addRow(tr("Time Created:"), m_time_created_label);
-    form->addRow(tr("Time Modified:"), m_time_modified_label);
-    form->addRow(tr("Time Access:"), m_time_access_label);
-    layout->addWidget(f3);
-    f3->setVisible(uris.count() == 1);
-    updateInfo(uris.first());
-    connect(m_watcher.get(), &FileWatcher::locationChanged, [=](const QString&, const QString &uri) {
-        this->updateInfo(uri);
-    });
-
-    addSeparator();
-
-    QLabel *l4 = new QLabel(this);
-    layout->addWidget(l4, 1);
+    //    QLabel *l4 = new QLabel(this);
+    //    m_layout->addWidget(l4, 1);
 }
 
 BasicPropertiesPage::~BasicPropertiesPage()
@@ -217,6 +127,157 @@ void BasicPropertiesPage::addSeparator()
     QFrame *separator = new QFrame(this);
     separator->setFrameShape(QFrame::HLine);
     m_layout->addWidget(separator);
+}
+
+/*!
+ *
+ * \brief BasicPropertiesPage::initFloorOne
+ */
+void BasicPropertiesPage::initFloorOne(const QStringList &uris,FileType fileType)
+{
+    QFrame      *floor1  = new QFrame(this);
+    QGridLayout *layout1 = new QGridLayout(floor1);
+    floor1->setMaximumHeight(100);
+    floor1->setLayout(layout1);
+
+    m_icon = new QPushButton(floor1);
+    m_displayName = new QLineEdit(floor1);
+    m_location    = new QLineEdit(floor1);
+
+    m_icon->setFixedSize(QSize(60,60));
+    m_icon->setIconSize(QSize(32,32));
+    m_icon->setProperty("isIcon", true);
+
+    auto form1 = new QFormLayout(floor1);
+    form1->setContentsMargins(8,6,8,0);
+    layout1->addLayout(form1,0,0);
+
+    form1->addRow(m_icon);
+
+    //icon area
+    if (fileType != BP_MultipleFIle) {
+        connect(m_icon, &QPushButton::clicked, this, &BasicPropertiesPage::changeFileIcon);
+        this->onSingleFileChanged(nullptr, uris.first());
+    } else {
+        m_icon->setIcon(QIcon::fromTheme("text-x-generic"));
+    }
+
+    //text area
+    auto form2 = new QFormLayout(floor1);
+    layout1->addLayout(form2, 0, 1);
+
+    m_displayName->setMinimumHeight(32);
+    m_location->setMinimumHeight(32);
+
+    form2->addRow(tr("Display Name"), m_displayName);
+    form2->addRow(tr("Location"), m_location);
+
+    if (fileType == BP_MultipleFIle)
+        m_displayName->setReadOnly(true);
+
+    //new thread get fileName
+    FileNameThread *l_thread = new FileNameThread(uris);
+    l_thread->start();
+
+    connect(l_thread,&FileNameThread::fileNameReady,this,[=](QString fileName){
+        m_displayName->setText(fileName);
+        delete l_thread;
+    });
+
+    connect(m_displayName, &QLineEdit::returnPressed, [=]() {
+        if (!m_displayName->isReadOnly() && !m_displayName->text().isEmpty()) {
+            FileOperationUtils::rename(m_info->uri(), m_displayName->text(), true);
+        }
+    });
+
+    m_location->setReadOnly(true);
+    QUrl url = FileUtils::getParentUri(uris.first());
+    m_location->setText(url.toDisplayString());
+
+    //move -button
+    if(fileType == BP_Folder) {
+        m_moveButton = new QPushButton(floor1);
+
+        auto form3 = new QFormLayout(floor1);
+        form3->setContentsMargins(0,2,0,0);
+
+        m_moveButton->setText("移动");
+        m_moveButton->setFixedSize(70,32);
+
+        QPushButton *hiddenButton = new QPushButton(floor1);
+        hiddenButton->setFixedSize(70,32);
+        //设置透明隐藏按钮
+        QGraphicsOpacityEffect *op = new QGraphicsOpacityEffect(floor1);
+        op->setOpacity(0);
+        hiddenButton->setGraphicsEffect(op);
+
+        form3->addRow(hiddenButton);
+        form3->addRow(m_moveButton);
+
+        layout1->addLayout(form3,0,2);
+    }
+    //add floor1 to context
+    m_layout->addWidget(floor1);
+}
+
+void BasicPropertiesPage::initFloorTwo(const QStringList &uris,FileType fileType)
+{
+    QFrame      *floor2  = new QFrame(this);
+    QFormLayout *layout2 = new QFormLayout(floor2);
+    layout2->setContentsMargins(16,16,0,0);
+    floor2->setLayout(layout2);
+
+    m_fileType      = new QLabel(floor2);
+    m_fileSize      = new QLabel(floor2);
+    m_fileTotalSize = new QLabel(floor2);
+
+    layout2->addRow(tr("Type:"),m_fileType);
+
+    //根据文件类型添加组件
+    switch (fileType) {
+    case BP_Folder:
+        m_folderContain = new QLabel(floor2);
+        layout2->addRow(tr("Type:"),m_folderContain);
+        //异步统计文件夹数量
+        this->countFilesAsync(uris);
+        break;
+    case BP_File:
+        m_openWith = new QHBoxLayout(floor2);
+        layout2->addRow(tr("Open with:"),m_openWith);
+        break;
+    case BP_Application:
+        m_descrption = new QLabel(floor2);
+        layout2->addRow(tr("Descrption:"),m_descrption);
+        break;
+    case BP_MultipleFIle:
+    default:
+        break;
+    }
+
+    layout2->addRow(tr("Size:"),m_fileSize);
+    layout2->addRow(tr("Total size:"),m_fileTotalSize);
+
+    m_layout->addWidget(floor2);
+}
+
+BasicPropertiesPage::FileType BasicPropertiesPage::checkFileType(const QStringList &uris)
+{
+    if(uris.count() != 1){
+        return BP_MultipleFIle;
+    } else {
+        std::shared_ptr<FileInfo> fileInfo = FileInfo::fromUri(uris.first());
+        FileInfoJob *j = new FileInfoJob(fileInfo);
+        j->setAutoDelete();
+        j->querySync();
+
+        m_info = fileInfo;
+
+        if(fileInfo.get()->isDir())
+            return BP_Folder;
+        if(fileInfo.get()->isDesktopFile())
+            return BP_Application;
+        return BP_File;
+    }
 }
 
 QIcon generateThumbnail(const QString &uri)
@@ -244,53 +305,54 @@ void BasicPropertiesPage::onSingleFileChanged(const QString &oldUri, const QStri
 {
     //QMessageBox::information(0, 0, "on single file changed");
     qDebug()<<"onSingleFileChanged:"<<oldUri<<newUri;
-    //FIXME: replace BLOCKING api in ui thread.
-    m_info = FileInfo::fromUri(newUri);
-    FileInfoJob *j = new FileInfoJob(m_info);
-    j->setAutoDelete();
-    j->querySync();
-    ThumbnailManager::getInstance()->createThumbnail(m_info->uri(), m_thumbnail_watcher);
+    //    //FIXME: replace BLOCKING api in ui thread.
+    if(oldUri != nullptr){
+        m_info = FileInfo::fromUri(newUri);
+        FileInfoJob *j = new FileInfoJob(m_info);
+        j->setAutoDelete();
+        j->querySync();
+    }
 
-    auto icon = QIcon::fromTheme(m_info->iconName(), QIcon::fromTheme("text-x-generic"));
-    auto thumbnail = ThumbnailManager::getInstance()->tryGetThumbnail(m_info->uri());
+    ThumbnailManager::getInstance()->createThumbnail(m_info.get()->uri(), m_thumbnail_watcher);
+    auto icon = QIcon::fromTheme(m_info.get()->iconName(), QIcon::fromTheme("text-x-generic"));
+    auto thumbnail = ThumbnailManager::getInstance()->tryGetThumbnail(m_info.get()->uri());
 
-    //qDebug() << "infoupdate set Icon:" <<thumbnail.isNull() <<thumbnail;
     m_icon->setIcon(thumbnail.isNull()? icon: thumbnail);
-    m_display_name->setText(m_info->displayName());
-    m_type->setText(m_info->fileType());
-    //auto icon = QIcon::fromTheme(m_info->iconName(), QIcon::fromTheme("text-x-generic"));
-    //auto thumbnail = ThumbnailManager::getInstance()->tryGetThumbnail(m_info->uri());
+    m_displayName->setText(m_info.get()->displayName());
+
     if (thumbnail.isNull())
     {
-        ThumbnailManager::getInstance()->createThumbnail(m_info->uri(), m_thumbnail_watcher);
+        ThumbnailManager::getInstance()->createThumbnail(m_info.get()->uri(), m_thumbnail_watcher);
     }
-    //qDebug() << "set Icon:" <<thumbnail.isNull() <<thumbnail;
-    m_icon->setIcon(thumbnail.isNull()? icon: thumbnail);
-    QUrl url = FileUtils::getParentUri(m_info->uri());
 
-    qDebug() << "=========================new uri:" << newUri << "  ---  " << oldUri << "  " << m_info->uri() << "  " << url.toDisplayString();
+    m_icon->setIcon(thumbnail.isNull()? icon : thumbnail);
+    QUrl url = FileUtils::getParentUri(m_info.get()->uri());
+
     m_location->setText(url.toDisplayString());
 }
 
 void BasicPropertiesPage::countFilesAsync(const QStringList &uris)
 {
+    return;
     //old op will delete later
     if (m_count_op) {
         m_count_op->disconnect();
         m_count_op->cancel();
     }
     //clear old data
-    m_file_count = 0;
-    m_hidden_file_count = 0;
-    m_total_size = 0;
+    m_folderContainFiles   = 0;
+    m_folderContainFolders = 0;
+    m_fileSizeCount        = 0;
+    m_fileTotalSizeCount   = 0;
+
     m_count_op = new FileCountOperation(uris);
     m_count_op->setAutoDelete(true);
+
     connect(m_count_op, &FileOperation::operationPreparedOne, this, &BasicPropertiesPage::onFileCountOne, Qt::BlockingQueuedConnection);
     connect(m_count_op, &FileCountOperation::countDone, [=](quint64 file_count, quint64 hidden_file_count, quint64 total_size) {
         m_count_op = nullptr;
-        m_file_count = file_count;
-        m_hidden_file_count = hidden_file_count;
-        m_total_size = total_size;
+        m_folderContainFiles = file_count;
+        m_fileSizeCount = total_size;
         this->updateCountInfo();
     });
 
@@ -299,12 +361,10 @@ void BasicPropertiesPage::countFilesAsync(const QStringList &uris)
 
 void BasicPropertiesPage::onFileCountOne(const QString &uri, quint64 size)
 {
-    m_file_count++;
-    if (uri.contains("/.")) {
-        m_hidden_file_count++;
-    }
-    m_total_size += size;
-    updateCountInfo();
+//    return;
+        m_folderContainFiles++;
+        m_fileSizeCount += size;
+        updateCountInfo();
 }
 
 void BasicPropertiesPage::cancelCount()
@@ -313,15 +373,33 @@ void BasicPropertiesPage::cancelCount()
         m_count_op->cancel();
 }
 
+void BasicPropertiesPage::changeFileIcon(){
+    QUrl iconPathUrl;
+    iconPathUrl.setPath("/usr/share/icons");
+    auto picture = QFileDialog::getOpenFileName(nullptr, tr("Choose a custom icon"), "/usr/share/icons", "*.png *.jpg *.jpeg *.svg");
+    auto metaInfo = FileMetaInfo::fromUri(m_info.get()->uri());
+    QFileInfo fileInfo(picture);
+    if (!QIcon::fromTheme(fileInfo.baseName()).isNull())
+        metaInfo.get()->setMetaInfoString("custom-icon", fileInfo.baseName());
+    else
+        metaInfo.get()->setMetaInfoString("custom-icon", picture);
+
+    ThumbnailManager::getInstance()->createThumbnail(m_info.get()->uri(), m_thumbnail_watcher, true);
+}
+
 void BasicPropertiesPage::updateCountInfo()
 {
-    m_file_count_label->setText(tr("%1 files (include root files), %2 hidden").arg(m_file_count).arg(m_hidden_file_count));
-   // auto format = g_format_size(m_total_size);
-   
-   //Calculated by 1024 bytes
-    auto format = g_format_size_full(m_total_size,G_FORMAT_SIZE_IEC_UNITS);
-    m_total_size_label->setText(tr("%1 total").arg(format));
-    g_free(format);
+//    return;
+    QString str = QString::number(m_fileSizeCount/1024/1024) + " MB" + "("+m_fileSizeCount+" 字节)";
+    m_fileSize->setText(str);
+
+//    m_file_count_label->setText(tr("%1 files (include root files), %2 hidden").arg(m_file_count).arg(m_hidden_file_count));
+//    // auto format = g_format_size(m_total_size);
+
+//    //Calculated by 1024 bytes
+//    auto format = g_format_size_full(m_total_size,G_FORMAT_SIZE_IEC_UNITS);
+//    m_total_size_label->setText(tr("%1 total").arg(format));
+//    g_free(format);
 }
 
 void BasicPropertiesPage::updateInfo(const QString &uri)
@@ -338,7 +416,7 @@ void BasicPropertiesPage::updateInfo(const QString &uri)
     g_object_unref(file);
 
     m_time_created = g_file_info_get_attribute_uint64(info,
-                     G_FILE_ATTRIBUTE_TIME_CREATED);
+                                                      G_FILE_ATTRIBUTE_TIME_CREATED);
     QDateTime date1 = QDateTime::fromMSecsSinceEpoch(m_time_created*1000);
     QString time1 = date1.toString(Qt::SystemLocaleShortDate);
     m_time_created_label->setText(time1);
@@ -353,16 +431,43 @@ void BasicPropertiesPage::updateInfo(const QString &uri)
     }
 
     m_time_modified = g_file_info_get_attribute_uint64(info,
-                      "time::modified");
+                                                       "time::modified");
     QDateTime date2 = QDateTime::fromMSecsSinceEpoch(m_time_modified*1000);
     QString time2 = date2.toString(Qt::SystemLocaleShortDate);
     m_time_modified_label->setText(time2);
 
     m_time_access = g_file_info_get_attribute_uint64(info,
-                    "time::access");
+                                                     "time::access");
     QDateTime date3 = QDateTime::fromMSecsSinceEpoch(m_time_access*1000);
     QString time3 = date3.toString(Qt::SystemLocaleShortDate);
     m_time_access_label->setText(time3);
 
     g_object_unref(info);
+}
+
+void FileNameThread::run()
+{
+
+    QString fileName = "";
+    if (m_uris.count() == 1) {
+        std::shared_ptr<FileInfo> fileInfo = FileInfo::fromUri(m_uris.first());
+        FileInfoJob *j = new FileInfoJob(fileInfo);
+        j->setAutoDelete();
+        j->querySync();
+        fileName = fileInfo.get()->displayName();
+    } else {
+        QStringList l;
+        for (auto uri : m_uris) {
+            //FIXME: replace BLOCKING api in ui thread.(finish) **
+            std::shared_ptr<FileInfo> fileInfo = FileInfo::fromUri(uri);
+            FileInfoJob *j = new FileInfoJob(fileInfo);
+            j->setAutoDelete();
+            j->querySync();
+            l<< fileInfo.get()->displayName();
+        }
+        auto text = l.join(",");
+        fileName = QString(text);
+    }
+
+    this->fileNameReady(fileName);
 }

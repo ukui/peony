@@ -483,18 +483,23 @@
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/property-page/basic-properties-page.cpp" line="125"/>
-        <source>Display Name:</source>
-        <translation>名称：</translation>
+        <source>Display Name</source>
+        <translation>名称</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/property-page/basic-properties-page.cpp" line="126"/>
-        <source>Location:</source>
-        <translation>路径：</translation>
+        <source>Location</source>
+        <translation>位置</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/property-page/basic-properties-page.cpp" line="169"/>
         <source>Overview:</source>
         <translation>概览：</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/controls/property-page/basic-properties-page.cpp" line="92"/>
+        <source>Open with:</source>
+        <translation>打开方式：</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/property-page/basic-properties-page.cpp" line="193"/>
@@ -513,13 +518,23 @@
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/property-page/basic-properties-page.cpp" line="317"/>
-        <source>%1 files (include root files), %2 hidden</source>
-        <translation>共%1个文件（包括顶层目录），有%2个隐藏文件</translation>
+        <source>%1 files, %2 folders</source>
+        <translation>%1个文件，%2个文件夹</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/property-page/basic-properties-page.cpp" line="322"/>
-        <source>%1 total</source>
-        <translation>共%1</translation>
+        <source>Size:</source>
+        <translation>大小：</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/controls/property-page/basic-properties-page.cpp" line="322"/>
+        <source>Total size:</source>
+        <translation>占用空间：</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/controls/property-page/basic-properties-page.cpp" line="322"/>
+        <source>Descrption:</source>
+        <translation>描述：</translation>
     </message>
 </context>
 <context>

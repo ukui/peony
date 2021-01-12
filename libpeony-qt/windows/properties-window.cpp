@@ -276,9 +276,9 @@ void PropertiesWindow::initStatusBar(){
 void PropertiesWindow::initTabPage(const QStringList &uris)
 {
     auto w = new PropertiesWindowPrivate(uris, this);
-    w->tabBar()->setStyle(new tabStyle);
+//    w->tabBar()->setStyle(new tabStyle);
 
-    w->tabBar()->setMinimumSize(PropertiesWindow::s_windowWidth,72);
+//    w->tabBar()->setMinimumSize(PropertiesWindow::s_windowWidth,72);
     this->setCentralWidget(w);
 }
 
