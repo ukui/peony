@@ -293,10 +293,6 @@ Files: peony-qt-desktop/desktop-icon-view.cpp
 Copyright: 2019, 2020, Tianjin KYLIN Information Technology Co., Ltd.
 License: GPL-3+
 
-Files: peony-qt-desktop/desktop-screen.cpp
-Copyright: 2020, KylinSoft Co., Ltd.
-License: LGPL-3+
-
 Files: peony-qt-desktop/man/*
 Copyright: 2019, Tianjin KYLIN Information Technology Co., Ltd.
 License: GPL-3.0+
