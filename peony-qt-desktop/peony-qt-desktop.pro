@@ -1,4 +1,10 @@
-QT       += core gui x11extras dbus concurrent
+#-------------------------------------------------
+#
+# Project created by QtCreator 2019-10-28T14:12:53
+#
+#-------------------------------------------------
+
+QT       += core gui x11extras dbus concurrent KWindowSystem
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 

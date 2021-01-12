@@ -77,6 +77,8 @@
 #include <X11/Xatom.h>
 #include <X11/Xproto.h>
 
+#include <KWindowSystem>
+
 #include <QDateTime>
 #include <QDebug>
 
@@ -492,6 +494,14 @@ void DesktopWindow::virtualGeometryChangedProcess(const QRect &geometry) {
 void DesktopWindow::geometryChangedProcess(const QRect &geometry) {
     // screen resolution ratio change
     updateWinGeometry();
+    KWindowSystem::setState(topLevelWidget()->winId(), NET::States(NET::Desktop|NET::KeepBelow));
+    QTimer::singleShot(500, this, [=](){
+        auto view = PeonyDesktopApplication::getIconView();
+        if (view->topLevelWidget()->isVisible()) {
+            KWindowSystem::raiseWindow(view->topLevelWidget()->winId());
+            KWindowSystem::setState(view->topLevelWidget()->winId(), NET::States(NET::Desktop|NET::KeepAbove));
+        }
+    });
 }
 
 void DesktopWindow::updateView() {
