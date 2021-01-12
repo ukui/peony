@@ -447,6 +447,14 @@ void HeaderBar::updateIcons()
     updateMaximizeState();
 }
 
+void HeaderBar::updateHeaderState()
+{
+    if (! m_window->getFilterWorking())
+        m_create_folder->setEnabled(true);
+    else
+        m_create_folder->setEnabled(false);
+}
+
 void HeaderBar::updateMaximizeState()
 {
     //maximize & restore

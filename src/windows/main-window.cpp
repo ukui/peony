@@ -918,6 +918,12 @@ void MainWindow::filterUpdate(int type_index, int time_index, int size_index)
 
 void MainWindow::setLabelNameFilter(QString name)
 {
+    //update filter flag
+    if (name == "")
+        m_filter_working = false;
+    else
+        m_filter_working = true;
+    m_header_bar->updateHeaderState();
     getCurrentPage()->setFilterLabelConditions(name);
 }
 

@@ -140,6 +140,7 @@ public Q_SLOTS:
     //trash quick operations
     void cleanTrash();
     void recoverFromTrash();
+    bool getFilterWorking(){return m_filter_working;}
 
     void setCurrentSelectionUris(const QStringList &uris);
     void setCurrentSortOrder (Qt::SortOrder order);
@@ -179,6 +180,7 @@ private:
 
     bool m_is_draging = false;
     bool m_is_search = false;
+    bool m_filter_working = false;
     bool m_show_hidden_file;
     bool m_use_default_name_sort_order;
     bool m_folder_first;
