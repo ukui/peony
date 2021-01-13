@@ -145,6 +145,9 @@ void FileItem::findChildrenAsync()
     //NOTE: entry a new root might destroyed the current enumeration work.
     //the root item will be delete, so we should cancel the previous enumeration.
     enumerator->connect(this, &FileItem::cancelFindChildren, enumerator, &FileEnumerator::cancel);
+    enumerator->connect(enumerator, &FileEnumerator::cancelled, m_model, [=](){
+        m_model->findChildrenFinished();
+    });
     enumerator->connect(enumerator, &FileEnumerator::prepared, this, [=](std::shared_ptr<GErrorWrapper> err, const QString &targetUri, bool critical) {
         if (critical) {
             Peony::AudioPlayManager::getInstance()->playWarningAudio();

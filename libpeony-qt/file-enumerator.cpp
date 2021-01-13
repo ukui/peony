@@ -186,6 +186,7 @@ void FileEnumerator::cancel()
 
     m_children_uris->clear();
 
+    Q_EMIT this->cancelled();
     //Q_EMIT enumerateFinished(false);
 }
 
