@@ -77,8 +77,11 @@ public:
     explicit BasicPropertiesPage(const QStringList &uris, QWidget *parent = nullptr);
     ~BasicPropertiesPage();
 
+
+
 protected:
     void addSeparator();
+    void addOpenWithMenu(QWidget *parent = nullptr);
     void initFloorOne(const QStringList &uris,FileType fileType);
     void initFloorTwo(const QStringList &uris,FileType fileType);
 

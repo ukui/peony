@@ -29,6 +29,7 @@
 #include <QPushButton>
 #include <QLineEdit>
 #include <QFormLayout>
+#include <file-launch-action.h>
 
 #include <QDateTime>
 
@@ -43,6 +44,7 @@
 #include <QThreadPool>
 #include <QFileInfo>
 #include <QGraphicsOpacityEffect>
+#include <file-launch-manager.h>
 
 //#include <QMessageBox>
 
@@ -127,6 +129,17 @@ void BasicPropertiesPage::addSeparator()
     QFrame *separator = new QFrame(this);
     separator->setFrameShape(QFrame::HLine);
     m_layout->addWidget(separator);
+}
+
+void BasicPropertiesPage::addOpenWithMenu(QWidget *parent)
+{
+    auto recommendActions = FileLaunchManager::getRecommendActions(m_info.get()->uri());
+    if (m_openWith && recommendActions.count() >= 1)
+    {
+        QLabel *appName = new QLabel(parent);
+        appName->setText(recommendActions.first()->getAppInfoDisplayName());
+        m_openWith->addWidget(appName);
+    }
 }
 
 /*!
@@ -236,20 +249,23 @@ void BasicPropertiesPage::initFloorTwo(const QStringList &uris,FileType fileType
     //根据文件类型添加组件
     switch (fileType) {
     case BP_Folder:
+        m_fileType->setText("文件夹");
         m_folderContain = new QLabel(floor2);
-        layout2->addRow(tr("Type:"),m_folderContain);
-        //异步统计文件夹数量
-        this->countFilesAsync(uris);
+        layout2->addRow(tr("Include:"),m_folderContain);
         break;
     case BP_File:
         m_openWith = new QHBoxLayout(floor2);
         layout2->addRow(tr("Open with:"),m_openWith);
+        this->addOpenWithMenu(floor2);
         break;
     case BP_Application:
+        m_fileType->setText("应用程序");
         m_descrption = new QLabel(floor2);
         layout2->addRow(tr("Descrption:"),m_descrption);
+        m_descrption->setText(m_info.get()->displayName());
         break;
     case BP_MultipleFIle:
+        m_fileType->setText("选中多个文件");
     default:
         break;
     }
@@ -257,12 +273,14 @@ void BasicPropertiesPage::initFloorTwo(const QStringList &uris,FileType fileType
     layout2->addRow(tr("Size:"),m_fileSize);
     layout2->addRow(tr("Total size:"),m_fileTotalSize);
 
+    this->countFilesAsync(uris);
+
     m_layout->addWidget(floor2);
 }
 
 BasicPropertiesPage::FileType BasicPropertiesPage::checkFileType(const QStringList &uris)
 {
-    if(uris.count() != 1){
+    if(uris.count() != 1) {
         return BP_MultipleFIle;
     } else {
         std::shared_ptr<FileInfo> fileInfo = FileInfo::fromUri(uris.first());
@@ -333,7 +351,7 @@ void BasicPropertiesPage::onSingleFileChanged(const QString &oldUri, const QStri
 
 void BasicPropertiesPage::countFilesAsync(const QStringList &uris)
 {
-    return;
+//    return;
     //old op will delete later
     if (m_count_op) {
         m_count_op->disconnect();
@@ -349,9 +367,14 @@ void BasicPropertiesPage::countFilesAsync(const QStringList &uris)
     m_count_op->setAutoDelete(true);
 
     connect(m_count_op, &FileOperation::operationPreparedOne, this, &BasicPropertiesPage::onFileCountOne, Qt::BlockingQueuedConnection);
-    connect(m_count_op, &FileCountOperation::countDone, [=](quint64 file_count, quint64 hidden_file_count, quint64 total_size) {
+
+    //old version
+//    connect(m_count_op, &FileCountOperation::countDone, [=](quint64 file_count, quint64 hidden_file_count, quint64 total_size) {
+    //new version
+    connect(m_count_op, &FileCountOperation::countDoneTwo, [=](quint64 file_count, quint64 total_size, quint64 folder_count) {
         m_count_op = nullptr;
         m_folderContainFiles = file_count;
+        m_folderContainFolders = folder_count;
         m_fileSizeCount = total_size;
         this->updateCountInfo();
     });
@@ -362,6 +385,7 @@ void BasicPropertiesPage::countFilesAsync(const QStringList &uris)
 void BasicPropertiesPage::onFileCountOne(const QString &uri, quint64 size)
 {
 //    return;
+    qDebug() << "统计到一个文件，大小："<<uri << size;
         m_folderContainFiles++;
         m_fileSizeCount += size;
         updateCountInfo();
@@ -390,8 +414,13 @@ void BasicPropertiesPage::changeFileIcon(){
 void BasicPropertiesPage::updateCountInfo()
 {
 //    return;
-    QString str = QString::number(m_fileSizeCount/1024/1024) + " MB" + "("+m_fileSizeCount+" 字节)";
-    m_fileSize->setText(str);
+    QString fileSizeStr = QString::number(m_fileSizeCount/1024/1024) + " MB" + "(" + QString::number(m_fileSizeCount) + " 字节)";
+    m_fileSize->setText(fileSizeStr);
+
+    if(m_folderContain){
+        QString fileNumStr = tr("%1 files, %2 folders").arg(m_folderContainFiles).arg((m_folderContainFolders ==0 ? 0 : (m_folderContainFolders - 1)));
+        m_folderContain->setText(fileNumStr);
+    }
 
 //    m_file_count_label->setText(tr("%1 files (include root files), %2 hidden").arg(m_file_count).arg(m_hidden_file_count));
 //    // auto format = g_format_size(m_total_size);

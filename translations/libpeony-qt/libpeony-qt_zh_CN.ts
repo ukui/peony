@@ -508,8 +508,8 @@
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/property-page/basic-properties-page.cpp" line="194"/>
-        <source>Time Modified:</source>
-        <translation>修改时间：</translation>
+        <source>Include:</source>
+        <translation>包含：</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/property-page/basic-properties-page.cpp" line="195"/>
@@ -519,7 +519,7 @@
     <message>
         <location filename="../../libpeony-qt/controls/property-page/basic-properties-page.cpp" line="317"/>
         <source>%1 files, %2 folders</source>
-        <translation>%1个文件，%2个文件夹</translation>
+        <translation>%1 个文件，%2 个文件夹</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/property-page/basic-properties-page.cpp" line="322"/>
