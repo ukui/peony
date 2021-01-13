@@ -354,15 +354,26 @@ void PeonyApplication::parseCmd(quint32 id, QByteArray msg)
         }
     } else {
         if (!parser.positionalArguments().isEmpty()) {
-            QStringList uris = Peony::FileUtils::toDisplayUris(parser.positionalArguments());
-            auto window = new MainWindow(uris.first());
-            uris.removeAt(0);
+            auto arguments = parser.positionalArguments();
+            arguments.removeOne("%U");
+            arguments.removeOne("%U&");
+            QStringList uris = Peony::FileUtils::toDisplayUris(arguments);
+
             if (!uris.isEmpty()) {
-                window->addNewTabs(uris);
+                auto window = new MainWindow(uris.first());
+                uris.removeAt(0);
+                if (!uris.isEmpty()) {
+                    window->addNewTabs(uris);
+                }
+                window->setAttribute(Qt::WA_DeleteOnClose);
+                window->show();
+                KWindowSystem::raiseWindow(window->winId());
+            } else {
+                auto window = new MainWindow();
+                window->setAttribute(Qt::WA_DeleteOnClose);
+                window->show();
+                KWindowSystem::raiseWindow(window->winId());
             }
-            window->setAttribute(Qt::WA_DeleteOnClose);
-            window->show();
-            KWindowSystem::raiseWindow(window->winId());
         } else {
             auto window = new MainWindow;
             //auto window = new Peony::FMWindow;
