@@ -1,3 +1,12 @@
+peony (3.0.3-2+0113) v101; urgency=medium
+
+  * Fix if there is no item in item rect hash, skip items relocation
+  * Fix default app order when add new user.
+  * Fix fonts app can not close, when it opens txt file failed. 
+  * Fix hidden cloud #30313
+
+ -- wangweinan <wangweinan@kylinos.cn>  Thu, 13 Jan 2020 8:44:46 +0800
+
 peony (3.0.3-1+210106) v101; urgency=medium
 
   * Fix the desktop app can not be add to desktop in right place[31525]
