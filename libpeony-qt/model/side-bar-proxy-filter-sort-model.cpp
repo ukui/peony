@@ -28,6 +28,8 @@
 #include "file-info.h"
 #include "file-info-job.h"
 
+#include <QUrl>
+#include <QDir>
 #include <QDebug>
 
 using namespace Peony;
@@ -42,10 +44,16 @@ bool SideBarProxyFilterSortModel::filterAcceptsRow(int sourceRow, const QModelIn
     auto index = sourceModel()->index(sourceRow, 0, sourceParent);
     auto item = static_cast<SideBarAbstractItem*>(index.internalPointer());
     if (item->type() != SideBarAbstractItem::SeparatorItem) {
-        if (item->displayName().isNull() &&
-           (item->type() == SideBarAbstractItem::FileSystemItem ||
-            item->type() == SideBarAbstractItem::FavoriteItem))
+        if (item->displayName().isNull() && item->type() == SideBarAbstractItem::FileSystemItem)
             return false;
+
+        //not exist path filter
+        if (item->type() == SideBarAbstractItem::FavoriteItem && ! item->uri().isEmpty())
+        {
+            QDir dir(QUrl(item->uri()).path());
+            if (! dir.exists())
+                return false;
+        }
     }
     if (item) {
         if (!item->displayName().isEmpty()) {
