@@ -890,7 +890,7 @@ void TabWidget::addPage(const QString &uri, bool jumpTo)
     infoJob->setAutoDelete();
 
     connect(infoJob, &Peony::FileInfoJob::queryAsyncFinished, this, [=](){
-        if (! info->isDir() && !info.get()->isVolume() && !info.get()->isVirtual())
+        if (!info->isEmptyInfo() && ! info->isDir() && !info.get()->isVolume() && !info.get()->isVirtual())
             return;
 
         QCursor c;
