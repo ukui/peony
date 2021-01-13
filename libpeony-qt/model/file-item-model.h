@@ -207,6 +207,8 @@ public:
 
     Qt::DropActions supportedDropActions() const override;
 
+    void sendPathChangeRequest(const QString& uri);
+
 Q_SIGNALS:
     /*!
      * \brief findChildrenStarted
@@ -237,6 +239,13 @@ Q_SIGNALS:
     void updated();
 
     void selectRequest(const QStringList &uris);
+
+    /*!
+     * \brief changePathRequest
+     * \note request path change from window to fix direct setRootUri() prevents
+     * view switch error
+    */
+    void changePathRequest(const QString& uri, bool addHistory, bool forceUpdate);
 
 public Q_SLOTS:
     /*!
