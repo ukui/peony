@@ -182,7 +182,7 @@ void FileItem::findChildrenAsync()
             enumerator->cancel();
             //enumerator->deleteLater();
 
-            //! fix direct setRootUri() prevents view switch error
+            //! \todo fix direct setRootUri() prevents view switch error
             m_model->setRootUri(target);
             // m_model->sendPathChangeRequest(target);
             return;
@@ -197,12 +197,12 @@ void FileItem::findChildrenAsync()
                 {
                     //check bookmark and delete
                     BookMarkManager::getInstance()->removeBookMark(this->uri());
-                    //! fix direct setRootUri() prevents view switch error
+                    //! \todo fix direct setRootUri() prevents view switch error
                     m_model->setRootUri("computer:///");
                     // m_model->sendPathChangeRequest("computer:///");
                 }
                 else
-                    //! fix direct setRootUri() prevents view switch error
+                    //! \todo fix direct setRootUri() prevents view switch error
                     m_model->setRootUri(FileUtils::getParentUri(this->uri()));
                     // m_model->sendPathChangeRequest(FileUtils::getParentUri(this->uri()));
 
@@ -353,9 +353,9 @@ void FileItem::findChildrenAsync()
             });
 
             connect(m_watcher.get(), &FileWatcher::directoryUnmounted, this, [=]() {
-                //! fix direct setRootUri() prevents view switch error
-                // m_model->setRootUri("computer:///");
-                m_model->sendPathChangeRequest("computer:///");
+                //! \todo fix direct setRootUri() prevents view switch error
+                m_model->setRootUri("computer:///");
+                // m_model->sendPathChangeRequest("computer:///");
             });
             //qDebug()<<"startMonitor";
             connect(m_watcher.get(), &FileWatcher::requestUpdateDirectory, this, &FileItem::onUpdateDirectoryRequest);
@@ -470,9 +470,9 @@ void FileItem::findChildrenAsync()
             });
 
             connect(m_watcher.get(), &FileWatcher::directoryUnmounted, this, [=]() {
-                //! Fix direct setRootUri() prevents view switch error
-                // m_model->setRootUri("computer:///");
-                m_model->sendPathChangeRequest("computer:///");
+                //! \todo Fix direct setRootUri() prevents view switch error
+                m_model->setRootUri("computer:///");
+                // m_model->sendPathChangeRequest("computer:///");
             });
             //qDebug()<<"startMonitor";
             connect(m_watcher.get(), &FileWatcher::requestUpdateDirectory, this, &FileItem::onUpdateDirectoryRequest);
@@ -601,11 +601,11 @@ void FileItem::onDeleted(const QString &thisUri)
             tmpItem = tmpItem->m_parent;
         }
         if (!tmpUri.isNull()) {
-            //! Fix direct setRootUri() prevents view switch error
+            //! \todo Fix direct setRootUri() prevents view switch error
             m_model->setRootUri(tmpUri);
             // m_model->sendPathChangeRequest(tmpUri);
         } else {
-            //! Fix direct setRootUri() prevents view switch error
+            //! \todo Fix direct setRootUri() prevents view switch error
             m_model->setRootUri("file:///");
             // m_model->sendPathChangeRequest("file:///");
         }
