@@ -122,8 +122,8 @@ void DirectoryViewMenu::fillActions()
         m_is_favorite = true;
     }
 
-    if (m_directory.startsWith("kydroid:///")) {
-        m_is_kydroid = true;
+    if (m_directory.startsWith("kmre:///")) {
+        m_is_kmre = true;
     }
 
     QString desktop = QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
@@ -143,7 +143,7 @@ void DirectoryViewMenu::fillActions()
     if (!openActions.isEmpty())
         addSeparator();
 
-    if (! m_is_kydroid){
+    if (! m_is_kmre){
         //create template actions
         auto templateActions = constructCreateTemplateActions();
         if (!templateActions.isEmpty())
@@ -160,7 +160,7 @@ void DirectoryViewMenu::fillActions()
     if (!fileOpActions.isEmpty())
         addSeparator();
 
-    if (! m_is_kydroid){
+    if (! m_is_kmre){
         //add plugin actions
         auto pluginActions = constructMenuPluginActions();
         if (!pluginActions.isEmpty())
@@ -172,7 +172,7 @@ void DirectoryViewMenu::fillActions()
     if (!propertiesAction.isEmpty())
         addSeparator();
 
-    if (! m_is_kydroid){
+    if (! m_is_kmre){
         //add actions in computer:///
         auto computerActions = constructComputerActions();
         if (!computerActions.isEmpty())
@@ -228,7 +228,7 @@ const QList<QAction *> DirectoryViewMenu::constructOpenOpActions()
             }
             if (info->isDir()) {
                 //add to bookmark option
-                if (!info->isVirtual() &&  !info->uri().startsWith("smb://") && !m_is_kydroid)
+                if (!info->isVirtual() &&  !info->uri().startsWith("smb://") && !m_is_kmre)
                 {
                     l<<addAction(QIcon::fromTheme("bookmark-add-symbolic"), tr("Add to bookmark"));
                     connect(l.last(), &QAction::triggered, [=]() {
@@ -602,8 +602,8 @@ const QList<QAction *> DirectoryViewMenu::constructFileOpActions()
         //qDebug() << "constructFileOpActions hasStandardPath:" <<hasStandardPath;
         if (!m_selections.isEmpty() && !m_selections.contains(homeUri) && !m_is_recent) {
             if (!m_is_favorite) {
-                //code from lixiang for kydroid menu
-                if (m_is_kydroid) {
+                //code from lixiang for kmre menu
+                if (m_is_kmre) {
                     bool hasDir = false;
                     for (auto uri : m_selections) {
                         auto info = FileInfo::fromUri(uri);
@@ -627,8 +627,8 @@ const QList<QAction *> DirectoryViewMenu::constructFileOpActions()
                 }
             }
 
-            //kydroid has no cut,delete,rename option
-            if (m_is_kydroid)
+            //kmre has no cut,delete,rename option
+            if (m_is_kmre)
                 return l;
 
             if (!hasStandardPath && !m_is_recent && !m_is_favorite)
@@ -660,7 +660,7 @@ const QList<QAction *> DirectoryViewMenu::constructFileOpActions()
                 });
             }
         } else {
-            if (!m_is_recent && !m_is_favorite && !m_is_kydroid)
+            if (!m_is_recent && !m_is_favorite && !m_is_kmre)
             {
                 auto pasteAction = addAction(QIcon::fromTheme("edit-paste-symbolic"), tr("&Paste"));
                 l<<pasteAction;
@@ -695,7 +695,7 @@ const QList<QAction *> DirectoryViewMenu::constructFileOpActions()
             m_view->invertSelections();
         });
     }
-    else if(! m_is_kydroid)
+    else if(! m_is_kmre)
     {
         l<<addAction(tr("Reverse Select"));
         connect(l.last(), &QAction::triggered, [=]() {
