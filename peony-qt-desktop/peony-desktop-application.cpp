@@ -526,6 +526,10 @@ void guessContentTypeCallback(GObject* object,GAsyncResult *res,gpointer data)
                 if(!strcmp(guessType[n],"x-content/blank-dvd") || !strcmp(guessType[n],"x-content/blank-cd"))
                     openFolder = false;
 
+                QString uri = mountUri;
+                if (uri.startsWith("gphoto") || uri.startsWith("mtp"))
+                    break;
+
                 if(openFolder)
                     process.startDetached(openFolderCmd);
 
