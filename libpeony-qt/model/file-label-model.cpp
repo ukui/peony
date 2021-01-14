@@ -96,7 +96,6 @@ const QList<QColor> FileLabelModel::getColors()
 
 int FileLabelModel::lastLabelId()
 {
-    m_label_settings = new QSettings(QSettings::UserScope, "org.ukui", "peony-qt", this);
     if (m_label_settings->value("lastid").isNull()) {
         return 0;
     } else {
@@ -162,7 +161,7 @@ void FileLabelModel::removeLabel(int id)
         }
     }
 
-    m_label_settings->beginWriteArray("labels");
+    m_label_settings->beginWriteArray("labels", lastLabelId() + 1);
     m_label_settings->setArrayIndex(id);
     m_label_settings->setValue("visible", false);
     m_label_settings->endArray();
@@ -369,7 +368,7 @@ bool FileLabelModel::removeRows(int row, int count, const QModelIndex &parent)
 
 void FileLabelModel::setName(FileLabelItem *item, const QString &name)
 {
-    m_label_settings->beginWriteArray("labels");
+    m_label_settings->beginWriteArray("labels", lastLabelId() + 1);
     m_label_settings->setArrayIndex(item->id());
     m_label_settings->setValue("label", name);
     m_label_settings->endArray();
@@ -378,7 +377,7 @@ void FileLabelModel::setName(FileLabelItem *item, const QString &name)
 
 void FileLabelModel::setColor(FileLabelItem *item, const QColor &color)
 {
-    m_label_settings->beginWriteArray("labels");
+    m_label_settings->beginWriteArray("labels", lastLabelId() + 1);
     m_label_settings->setArrayIndex(item->id());
     m_label_settings->setValue("color", color);
     m_label_settings->endArray();
@@ -398,8 +397,8 @@ void FileLabelModel::initLabelItems()
 
             auto item = new FileLabelItem(this);
             item->m_id = i;
-            item->setName(name);
-            item->setColor(color);
+            item->m_name = name;
+            item->m_color = color;
 
             m_labels.append(item);
         }
