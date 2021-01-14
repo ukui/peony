@@ -535,7 +535,9 @@ void FileItem::onChildAdded(const QString &uri)
         m_waiting_add_queue.removeOne(uri);
         //Q_EMIT m_model->dataChanged(item->firstColumnIndex(), item->lastColumnIndex());
         //Q_EMIT m_model->updated();
-        ThumbnailManager::getInstance()->createThumbnail(info->uri(), m_thumbnail_watcher);
+        QTimer::singleShot(1000, this, [=](){
+            ThumbnailManager::getInstance()->createThumbnail(info->uri(), m_thumbnail_watcher);
+        });
     });
     infoJob->queryAsync();
 
