@@ -9,6 +9,7 @@ Exec=/usr/bin/peony-qt-desktop -w -d
 Icon=user-desktop
 Terminal=false
 Type=Application
+Categories=System;Settings;Security;
 Keywords=file;desktop;
 OnlyShowIn=UKUI;
 NoDisplay=true;
