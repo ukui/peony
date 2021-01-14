@@ -380,7 +380,7 @@ DesktopItemModel::~DesktopItemModel()
 
 }
 
-void DesktopItemModel::refresh()
+void DesktopItemModel::refreshInternal()
 {
     ThumbnailManager::getInstance()->syncThumbnailPreferences();
     beginResetModel();
@@ -705,4 +705,14 @@ Qt::DropActions DesktopItemModel::supportedDropActions() const
 {
     //return Qt::MoveAction|Qt::CopyAction;
     return QAbstractItemModel::supportedDropActions();
+}
+
+void DesktopItemModel::refresh()
+{
+    m_desktop_info = FileInfo::fromPath(QStandardPaths::writableLocation(QStandardPaths::DesktopLocation));
+    auto infoJob = new FileInfoJob(m_desktop_info);
+    connect(infoJob, &FileInfoJob::queryAsyncFinished, this, [=](){
+        refreshInternal();
+    });
+    infoJob->queryAsync();
 }
