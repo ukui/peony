@@ -446,6 +446,12 @@ void FileLabelItem::setName(const QString &name)
 
 void FileLabelItem::setColor(const QColor &color)
 {
+    if (color.blackF() == 1) {
+        auto black = color;
+        black.setRgbF(0.01, 0.01, 0.01);
+        setColor(black);
+        return;
+    }
     m_color = color;
     if (m_id >= 0) {
         if (global_instance)
