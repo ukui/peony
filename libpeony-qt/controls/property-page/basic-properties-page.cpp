@@ -48,6 +48,9 @@
 
 //#include <QMessageBox>
 
+#include <QMessageBox>
+#include <QProcess>
+#include <QStandardPaths>
 #include <QUrl>
 
 #include <QFileDialog>
@@ -62,7 +65,8 @@ BasicPropertiesPage::BasicPropertiesPage(const QStringList &uris, QWidget *paren
 {
     //check file type and search fileinfo
     FileType l_fileType = this->checkFileType(uris);
-    //qDebug() << "BasicPropertiesPage:" <<uris.count() <<uris.first();
+    qDebug() << "BasicPropertiesPage:" <<uris.count() <<uris.first();
+    //单个文件才能换icon
     if (l_fileType != BP_MultipleFIle) {
         m_watcher = std::make_shared<FileWatcher>(uris.first());
         m_watcher->connect(m_watcher.get(), &FileWatcher::locationChanged, this, &BasicPropertiesPage::onSingleFileChanged);
@@ -82,40 +86,22 @@ BasicPropertiesPage::BasicPropertiesPage(const QStringList &uris, QWidget *paren
     m_layout->setSpacing(0);
 
     this->setLayout(m_layout);
-
+qDebug() << "BasicPropertiesPage::BasicPropertiesPage" << "1111";
     this->initFloorOne(uris,l_fileType);
     this->addSeparator();
-
+qDebug() << "BasicPropertiesPage::BasicPropertiesPage" << "2222";
     this->initFloorTwo(uris,l_fileType);
     this->addSeparator();
+qDebug() << "BasicPropertiesPage::BasicPropertiesPage" << "3333";
+    if(l_fileType != BP_MultipleFIle ) {
 
-    //    countFilesAsync(uris);
-
-    //    if (uris.count() == 1) {
-    //        addSeparator();
-    //    }
-
-    //    auto f3 = new QFrame(this);
-    //    QFormLayout *form = new QFormLayout(f3);
-    //    m_form3 = form;
-    //    f3->setLayout(form);
-    //    m_time_created_label = new QLabel(f3);
-    //    m_time_modified_label = new QLabel(f3);
-    //    m_time_access_label = new QLabel(f3);
-    //    form->addRow(tr("Time Created:"), m_time_created_label);
-    //    form->addRow(tr("Time Modified:"), m_time_modified_label);
-    //    form->addRow(tr("Time Access:"), m_time_access_label);
-    //    m_layout->addWidget(f3);
-    //    f3->setVisible(uris.count() == 1);
-    //    updateInfo(uris.first());
-    //    connect(m_watcher.get(), &FileWatcher::locationChanged, [=](const QString&, const QString &uri) {
-    //        this->updateInfo(uri);
-    //    });
-
-    //    addSeparator();
-
-    //    QLabel *l4 = new QLabel(this);
-    //    m_layout->addWidget(l4, 1);
+        this->initFloorThree(l_fileType);
+        this->addSeparator();
+qDebug() << "BasicPropertiesPage::BasicPropertiesPage" << "4444";
+        this->initFloorFour();
+    }
+    QLabel *l4 = new QLabel(this);
+    m_layout->addWidget(l4, 1);
 }
 
 BasicPropertiesPage::~BasicPropertiesPage()
@@ -131,11 +117,19 @@ void BasicPropertiesPage::addSeparator()
     m_layout->addWidget(separator);
 }
 
+QLabel *BasicPropertiesPage::createFixedLable(QWidget *parent)
+{
+    QLabel *l = new QLabel(parent);
+    l->setFixedHeight(1);
+    return l;
+}
+
 void BasicPropertiesPage::addOpenWithMenu(QWidget *parent)
 {
     auto recommendActions = FileLaunchManager::getRecommendActions(m_info.get()->uri());
     if (m_openWith && recommendActions.count() >= 1)
     {
+        //修改为打开方式及应用名称 加上图标
         QLabel *appName = new QLabel(parent);
         appName->setText(recommendActions.first()->getAppInfoDisplayName());
         m_openWith->addWidget(appName);
@@ -150,20 +144,22 @@ void BasicPropertiesPage::initFloorOne(const QStringList &uris,FileType fileType
 {
     QFrame      *floor1  = new QFrame(this);
     QGridLayout *layout1 = new QGridLayout(floor1);
-    floor1->setMaximumHeight(100);
+    layout1->setContentsMargins(16,16,8,16);
+
+    floor1->setMinimumHeight(100);
     floor1->setLayout(layout1);
 
-    m_icon = new QPushButton(floor1);
+    m_icon        = new QPushButton(floor1);
     m_displayName = new QLineEdit(floor1);
     m_location    = new QLineEdit(floor1);
 
     m_icon->setFixedSize(QSize(60,60));
-    m_icon->setIconSize(QSize(32,32));
+    m_icon->setIconSize(QSize(48,48));
     m_icon->setProperty("isIcon", true);
 
     auto form1 = new QFormLayout(floor1);
-    form1->setContentsMargins(8,6,8,0);
     layout1->addLayout(form1,0,0);
+    form1->setContentsMargins(0,6,20,0);
 
     form1->addRow(m_icon);
 
@@ -185,6 +181,7 @@ void BasicPropertiesPage::initFloorOne(const QStringList &uris,FileType fileType
     form2->addRow(tr("Display Name"), m_displayName);
     form2->addRow(tr("Location"), m_location);
 
+    //select multiplefiles
     if (fileType == BP_MultipleFIle)
         m_displayName->setReadOnly(true);
 
@@ -226,7 +223,13 @@ void BasicPropertiesPage::initFloorOne(const QStringList &uris,FileType fileType
 
         form3->addRow(hiddenButton);
         form3->addRow(m_moveButton);
+        //home目录不支持移动和重命名
+        if(m_info.get()->uri() == ("file://"+QStandardPaths::standardLocations(QStandardPaths::HomeLocation).first())) {
+            m_displayName->setReadOnly(true);
+            m_moveButton->setDisabled(true);
+        }
 
+        connect(m_moveButton,&QPushButton::clicked,this,&BasicPropertiesPage::moveFile);
         layout1->addLayout(form3,0,2);
     }
     //add floor1 to context
@@ -237,31 +240,44 @@ void BasicPropertiesPage::initFloorTwo(const QStringList &uris,FileType fileType
 {
     QFrame      *floor2  = new QFrame(this);
     QFormLayout *layout2 = new QFormLayout(floor2);
-    layout2->setContentsMargins(16,16,0,0);
+    layout2->setContentsMargins(16,16,0,16);
     floor2->setLayout(layout2);
+
+    if( fileType == BP_MultipleFIle )
+        floor2->setMaximumHeight(180);
+    else
+        floor2->setMinimumHeight(160);
 
     m_fileType      = new QLabel(floor2);
     m_fileSize      = new QLabel(floor2);
     m_fileTotalSize = new QLabel(floor2);
 
+    qDebug() << "BasicPropertiesPage::initFloorTwo" << "1111" << "filetype:" << fileType;
+
     layout2->addRow(tr("Type:"),m_fileType);
+    //重写文件类型获取函数
+    layout2->addWidget(this->createFixedLable(floor2));
+
+    if(fileType != BP_MultipleFIle)
+        m_fileType->setText(m_info.get()->type());
 
     //根据文件类型添加组件
     switch (fileType) {
     case BP_Folder:
-        m_fileType->setText("文件夹");
         m_folderContain = new QLabel(floor2);
         layout2->addRow(tr("Include:"),m_folderContain);
+        layout2->addWidget(this->createFixedLable(floor2));
         break;
     case BP_File:
         m_openWith = new QHBoxLayout(floor2);
         layout2->addRow(tr("Open with:"),m_openWith);
+        layout2->addWidget(this->createFixedLable(floor2));
         this->addOpenWithMenu(floor2);
         break;
     case BP_Application:
-        m_fileType->setText("应用程序");
         m_descrption = new QLabel(floor2);
         layout2->addRow(tr("Descrption:"),m_descrption);
+        layout2->addWidget(this->createFixedLable(floor2));
         m_descrption->setText(m_info.get()->displayName());
         break;
     case BP_MultipleFIle:
@@ -269,13 +285,85 @@ void BasicPropertiesPage::initFloorTwo(const QStringList &uris,FileType fileType
     default:
         break;
     }
-
+qDebug() << "BasicPropertiesPage::initFloorTwo" << "222";
     layout2->addRow(tr("Size:"),m_fileSize);
+    layout2->addWidget(this->createFixedLable(floor2));
     layout2->addRow(tr("Total size:"),m_fileTotalSize);
 
     this->countFilesAsync(uris);
 
     m_layout->addWidget(floor2);
+}
+
+void BasicPropertiesPage::initFloorThree(BasicPropertiesPage::FileType fileType)
+{
+    auto floor3 = new QFrame(this);
+    QFormLayout *layout3 = new QFormLayout(floor3);
+    floor3->setLayout(layout3);
+
+    if(fileType == BP_Folder)
+        floor3->setMaximumHeight(140);
+    else
+        floor3->setMinimumHeight(120);
+
+    layout3->setContentsMargins(16,16,0,16);
+
+    qDebug() << "BasicPropertiesPage::initFloorThree对齐方式:" << layout3->formAlignment();
+    m_time_created_label  = new QLabel(floor3);
+
+    layout3->addRow(tr("Time Created:"), m_time_created_label);
+
+    switch (fileType) {
+    case BP_File:
+    case BP_Application:
+        m_time_modified_label = new QLabel(floor3);
+        m_time_access_label   = new QLabel(floor3);
+        layout3->addWidget(createFixedLable(floor3));
+        layout3->addRow(tr("Time Modified:"), m_time_modified_label);
+        layout3->addWidget(createFixedLable(floor3));
+        layout3->addRow(tr("Time Access:"), m_time_access_label);
+        break;
+    case BP_MultipleFIle:
+    case BP_Folder:
+    default:
+        break;
+    }
+
+    m_layout->addWidget(floor3);
+
+    updateInfo(m_info.get()->uri());
+    connect(m_watcher.get(), &FileWatcher::locationChanged, [=](const QString&, const QString &uri) {
+        this->updateInfo(uri);
+    });
+
+}
+
+/*!
+ * 底部隐藏多选框和只读选择框
+ * \brief BasicPropertiesPage::initFloorFour
+ */
+void BasicPropertiesPage::initFloorFour()
+{
+    QFrame      *floor4  = new QFrame(this);
+    QFormLayout *layout4 = new QFormLayout(floor4);
+    layout4->setContentsMargins(16,16,0,16);
+    m_readOnly = new QCheckBox(tr("Readonly"), floor4);
+    m_hidden   = new QCheckBox(tr("Hidden"), floor4);
+
+    QHBoxLayout *proLayout = new QHBoxLayout(floor4);
+    proLayout->addWidget(m_readOnly);
+    proLayout->addWidget(m_hidden);
+    proLayout->addWidget(this->createFixedLable(floor4));
+
+    if(!m_info.get()->canRead())
+        m_readOnly->setCheckState(Qt::Checked);
+
+    if(m_info.get()->displayName().startsWith("."))
+        m_hidden->setCheckState(Qt::Checked);
+
+    layout4->addRow(tr("FileProperties:"),proLayout);
+
+    m_layout->addWidget(floor4);
 }
 
 BasicPropertiesPage::FileType BasicPropertiesPage::checkFileType(const QStringList &uris)
@@ -296,6 +384,17 @@ BasicPropertiesPage::FileType BasicPropertiesPage::checkFileType(const QStringLi
             return BP_Application;
         return BP_File;
     }
+}
+
+//异步获取数据
+void BasicPropertiesPage::getFIleInfo(const QStringList &uris)
+{
+    //    if(oldUri != nullptr && (m_info.get()->uri() != newUri)) {
+    //        m_info = FileInfo::fromUri(newUri);
+    //        FileInfoJob *j = new FileInfoJob(m_info);
+    //        j->setAutoDelete();
+    //        j->querySync();
+    //    }
 }
 
 QIcon generateThumbnail(const QString &uri)
@@ -324,7 +423,7 @@ void BasicPropertiesPage::onSingleFileChanged(const QString &oldUri, const QStri
     //QMessageBox::information(0, 0, "on single file changed");
     qDebug()<<"onSingleFileChanged:"<<oldUri<<newUri;
     //    //FIXME: replace BLOCKING api in ui thread.
-    if(oldUri != nullptr){
+    if(oldUri != nullptr && (m_info.get()->uri() != newUri)) {
         m_info = FileInfo::fromUri(newUri);
         FileInfoJob *j = new FileInfoJob(m_info);
         j->setAutoDelete();
@@ -351,7 +450,6 @@ void BasicPropertiesPage::onSingleFileChanged(const QString &oldUri, const QStri
 
 void BasicPropertiesPage::countFilesAsync(const QStringList &uris)
 {
-//    return;
     //old op will delete later
     if (m_count_op) {
         m_count_op->disconnect();
@@ -368,15 +466,11 @@ void BasicPropertiesPage::countFilesAsync(const QStringList &uris)
 
     connect(m_count_op, &FileOperation::operationPreparedOne, this, &BasicPropertiesPage::onFileCountOne, Qt::BlockingQueuedConnection);
 
-    //old version
-//    connect(m_count_op, &FileCountOperation::countDone, [=](quint64 file_count, quint64 hidden_file_count, quint64 total_size) {
-    //new version
-    connect(m_count_op, &FileCountOperation::countDoneTwo, [=](quint64 file_count, quint64 total_size, quint64 folder_count) {
+    connect(m_count_op, &FileCountOperation::countDone, [=](quint64 file_count, quint64 hidden_file_count, quint64 total_size) {
         m_count_op = nullptr;
-        m_folderContainFiles = file_count;
-        m_folderContainFolders = folder_count;
+        m_folderContainFiles = file_count - m_folderContainFolders;
         m_fileSizeCount = total_size;
-        this->updateCountInfo();
+        this->updateCountInfo(true);
     });
 
     QThreadPool::globalInstance()->start(m_count_op);
@@ -384,17 +478,68 @@ void BasicPropertiesPage::countFilesAsync(const QStringList &uris)
 
 void BasicPropertiesPage::onFileCountOne(const QString &uri, quint64 size)
 {
-//    return;
-    qDebug() << "统计到一个文件，大小："<<uri << size;
-        m_folderContainFiles++;
-        m_fileSizeCount += size;
-        updateCountInfo();
+    //...FIX:第一版本在当前位置对文件夹进行统计，希望得到底层支持
+    std::shared_ptr<FileInfo> l_fileInfo = FileInfo::fromUri(uri);
+    FileInfoJob *j = new FileInfoJob(l_fileInfo);
+    j->setAutoDelete();
+    j->querySync();
+    bool a = l_fileInfo.get()->isDir();
+
+    if(a)
+        m_folderContainFolders ++;
+    else
+        m_folderContainFiles ++;
+
+    m_fileSizeCount += size;
+    m_fileDoneCount ++;
+    //500 files update ui
+    updateCountInfo((m_fileDoneCount % 500 == 0));
 }
 
 void BasicPropertiesPage::cancelCount()
 {
     if (m_count_op)
         m_count_op->cancel();
+}
+
+void BasicPropertiesPage::moveFile(){
+//    auto picture = QFileDialog::getOpenFileUrl(nullptr, tr("Choose a new folder:"),m_info.get()->uri(),"");
+    auto newDirPath = QFileDialog::getExistingDirectoryUrl(nullptr, tr("Choose a new folder:"),m_info.get()->uri());
+//    auto newDirPath1 = QFileDialog::getExistingDirectory(nullptr, tr("Choose a new folder:"),m_info.get()->uri());
+    qDebug() << "new path:" << newDirPath.toString() ;
+
+    if(newDirPath.isEmpty())
+        return;
+
+    if(newDirPath.toString() == m_info.get()->uri()) {
+        QMessageBox::critical(nullptr, tr("Error"), tr("cannot move a folder to itself !"), QMessageBox::Yes, QMessageBox::Yes);
+        return;
+    }
+
+    if(newDirPath.toString().startsWith(m_info.get()->uri())) {
+        QMessageBox::critical(nullptr, tr("Error"), tr("cannot move a folder to itself !"), QMessageBox::Yes, QMessageBox::Yes);
+        return;
+    }
+
+    QStringList uriList;
+    uriList << m_info.get()->uri();
+
+    if(!FileOperationUtils::move(uriList,newDirPath.toString(),true)->hasError()){
+//        this->updateInfo((newDirPath.toString() + "/" + m_info.get()->displayName()));
+        //move to peony
+
+//        QUrl url = uri;
+        QProcess p;
+    #if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
+        p.setProgram("peony");
+        p.setArguments(QStringList()<<"--show-folders" << newDirPath.toEncoded());
+        p.startDetached();
+    #else
+        p.startDetached("peony", QStringList()<<"--show-folders"<< newDirPath.toEncoded());
+    #endif
+
+        this->close();
+    }
 }
 
 void BasicPropertiesPage::changeFileIcon(){
@@ -411,30 +556,40 @@ void BasicPropertiesPage::changeFileIcon(){
     ThumbnailManager::getInstance()->createThumbnail(m_info.get()->uri(), m_thumbnail_watcher, true);
 }
 
-void BasicPropertiesPage::updateCountInfo()
+void BasicPropertiesPage::updateCountInfo(bool isDone)
 {
-//    return;
-    QString fileSizeStr = QString::number(m_fileSizeCount/1024/1024) + " MB" + "(" + QString::number(m_fileSizeCount) + " 字节)";
-    m_fileSize->setText(fileSizeStr);
+    if(isDone) {
+        //qreal = double
+        m_fileSizeMB = m_fileSizeCount / 1048576;
+        m_fileSize->setText(tr("%1 MB (%2 Bytes)").arg(QString::number(m_fileSizeMB)).arg(m_fileSizeCount));
 
-    if(m_folderContain){
-        QString fileNumStr = tr("%1 files, %2 folders").arg(m_folderContainFiles).arg((m_folderContainFolders ==0 ? 0 : (m_folderContainFolders - 1)));
-        m_folderContain->setText(fileNumStr);
+        if(m_folderContain)
+            m_folderContain->setText(tr("%1 files, %2 folders").arg(m_folderContainFiles).arg(m_folderContainFolders));
+
+        //假的4k对齐 unReal
+        qint64 a = m_fileSizeCount % 1024;
+        qint64 b = m_fileSizeCount / 1024;
+        qint64 cell4k = (a == 0) ? b : (b + 1);
+
+        qDebug() << "4k对齐：a:" << a << "b:" << b << cell4k;
+
+        m_fileTotalSizeCount = cell4k * 1024;
+
+        //        qreal c = (qreal)m_fileTotalSizeCount / (qreal)(1048576);
+
+        m_fileTotalSize ->setText(tr("%1 MB (%2 Bytes)").arg(m_fileSizeMB).arg(m_fileTotalSizeCount));
     }
-
-//    m_file_count_label->setText(tr("%1 files (include root files), %2 hidden").arg(m_file_count).arg(m_hidden_file_count));
-//    // auto format = g_format_size(m_total_size);
-
-//    //Calculated by 1024 bytes
-//    auto format = g_format_size_full(m_total_size,G_FORMAT_SIZE_IEC_UNITS);
-//    m_total_size_label->setText(tr("%1 total").arg(format));
-//    g_free(format);
 }
 
 void BasicPropertiesPage::updateInfo(const QString &uri)
 {
     //FIXME: replace BLOCKING api in ui thread.
     m_info = FileInfo::fromUri(uri);
+    FileInfoJob *j = new FileInfoJob(m_info);
+    j->setAutoDelete();
+    j->querySync();
+
+    //    m_info = FileInfo::fromUri(uri);
 
     GFile *file = g_file_new_for_uri(uri.toUtf8().constData());
     GFileInfo *info = g_file_query_info(file,
@@ -444,39 +599,43 @@ void BasicPropertiesPage::updateInfo(const QString &uri)
                                         nullptr);
     g_object_unref(file);
 
-    m_time_created = g_file_info_get_attribute_uint64(info,
-                                                      G_FILE_ATTRIBUTE_TIME_CREATED);
+    //    m_time_created = g_file_info_get_attribute_uint64(info,
+    //                                                      G_FILE_ATTRIBUTE_TIME_CREATED);
+    m_time_created = g_file_info_get_attribute_uint64(info, "time::created");
     QDateTime date1 = QDateTime::fromMSecsSinceEpoch(m_time_created*1000);
-    QString time1 = date1.toString(Qt::SystemLocaleShortDate);
+    QString time1 = date1.toString(tr("yyyy-MM-dd, HH:mm:ss"));
     m_time_created_label->setText(time1);
-    m_form3->itemAt(0, QFormLayout::LabelRole)->widget()->setVisible(m_time_created != 0);
-    m_form3->itemAt(0, QFormLayout::FieldRole)->widget()->setVisible(m_time_created != 0);
 
-    //folder don't show access time
-    if (m_info->isDir())
-    {
-        m_form3->itemAt(2, QFormLayout::LabelRole)->widget()->setVisible(false);
-        m_form3->itemAt(2, QFormLayout::FieldRole)->widget()->setVisible(false);
+    //    m_form3->itemAt(0, QFormLayout::LabelRole)->widget()->setVisible(m_time_created != 0);
+    //    m_form3->itemAt(0, QFormLayout::FieldRole)->widget()->setVisible(m_time_created != 0);
+
+    //    //folder don't show access time
+    //    if (m_info->isDir())
+    //    {
+    //        m_form3->itemAt(2, QFormLayout::LabelRole)->widget()->setVisible(false);
+    //        m_form3->itemAt(2, QFormLayout::FieldRole)->widget()->setVisible(false);
+    //    }
+    if(m_time_modified_label) {
+        m_time_modified = g_file_info_get_attribute_uint64(info,
+                                                           "time::modified");
+        QDateTime date2 = QDateTime::fromMSecsSinceEpoch(m_time_modified*1000);
+        QString time2 = date2.toString(tr("yyyy-MM-dd, HH:mm:ss"));
+
+        m_time_modified_label->setText(time2);
     }
-
-    m_time_modified = g_file_info_get_attribute_uint64(info,
-                                                       "time::modified");
-    QDateTime date2 = QDateTime::fromMSecsSinceEpoch(m_time_modified*1000);
-    QString time2 = date2.toString(Qt::SystemLocaleShortDate);
-    m_time_modified_label->setText(time2);
-
-    m_time_access = g_file_info_get_attribute_uint64(info,
-                                                     "time::access");
-    QDateTime date3 = QDateTime::fromMSecsSinceEpoch(m_time_access*1000);
-    QString time3 = date3.toString(Qt::SystemLocaleShortDate);
-    m_time_access_label->setText(time3);
+    if(m_time_access_label) {
+        m_time_access = g_file_info_get_attribute_uint64(info,
+                                                         "time::access");
+        QDateTime date3 = QDateTime::fromMSecsSinceEpoch(m_time_access*1000);
+        QString time3 = date3.toString(tr("yyyy-MM-dd, HH:mm:ss"));
+        m_time_access_label->setText(time3);
+    }
 
     g_object_unref(info);
 }
 
 void FileNameThread::run()
 {
-
     QString fileName = "";
     if (m_uris.count() == 1) {
         std::shared_ptr<FileInfo> fileInfo = FileInfo::fromUri(m_uris.first());
@@ -498,5 +657,5 @@ void FileNameThread::run()
         fileName = QString(text);
     }
 
-    this->fileNameReady(fileName);
+    Q_EMIT fileNameReady(fileName);
 }

@@ -508,8 +508,29 @@
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/property-page/basic-properties-page.cpp" line="194"/>
+        <source>yyyy-MM-dd, HH:mm:ss</source>
+        <translation>yyyy年MM月dd日, HH:mm:ss</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/controls/property-page/basic-properties-page.cpp" line="194"/>
         <source>Include:</source>
         <translation>包含：</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/controls/property-page/basic-properties-page.cpp" line="194"/>
+        <source>Error</source>
+        <translation>错误</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/controls/property-page/basic-properties-page.cpp" line="194"/>
+        <source>cannot move a folder to itself !</source>
+        <translation>不能将文件夹移动到它自身中 ！</translation>
+    </message>
+
+    <message>
+        <location filename="../../libpeony-qt/controls/property-page/basic-properties-page.cpp" line="194"/>
+        <source>Choose a new folder:</source>
+        <translation>选择一个新的文件夹：</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/property-page/basic-properties-page.cpp" line="195"/>
@@ -517,9 +538,19 @@
         <translation>访问时间：</translation>
     </message>
     <message>
+        <location filename="../../libpeony-qt/controls/property-page/basic-properties-page.cpp" line="195"/>
+        <source>Time Modified:</source>
+        <translation>修改时间：</translation>
+    </message>
+    <message>
         <location filename="../../libpeony-qt/controls/property-page/basic-properties-page.cpp" line="317"/>
         <source>%1 files, %2 folders</source>
         <translation>%1 个文件，%2 个文件夹</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/controls/property-page/basic-properties-page.cpp" line="317"/>
+        <source>%1 MB (%2 Bytes)</source>
+        <translation>%1 MB (%2 字节)</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/property-page/basic-properties-page.cpp" line="322"/>
@@ -535,6 +566,21 @@
         <location filename="../../libpeony-qt/controls/property-page/basic-properties-page.cpp" line="322"/>
         <source>Descrption:</source>
         <translation>描述：</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/controls/property-page/basic-properties-page.cpp" line="322"/>
+        <source>Readonly</source>
+        <translation>只读</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/controls/property-page/basic-properties-page.cpp" line="322"/>
+        <source>Hidden</source>
+        <translation>隐藏</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/controls/property-page/basic-properties-page.cpp" line="322"/>
+        <source>FileProperties:</source>
+        <translation>文件属性：</translation>
     </message>
 </context>
 <context>

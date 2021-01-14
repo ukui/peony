@@ -135,17 +135,19 @@ PropertiesWindow::PropertiesWindow(const QStringList &uris, QWidget *parent) : Q
         this->setWindowTitleTextAndIcon();
 
         this->setAttribute(Qt::WA_DeleteOnClose);
-        this->setContentsMargins(0, 0, 0, 0);
+        this->setContentsMargins(0, 5, 0, 0);
         //only show closs button
         this->setWindowFlags(this->windowFlags() &~ Qt::WindowMinMaxButtonsHint &~ Qt::WindowSystemMenuHint);
+        qDebug() << "PropertiesWindow::PropertiesWindow" << "1111";
 
         if(this->notDir())
             //如果含有文件夹，那么高度是600，如果是其他文件，那么高度是652
             this->setFixedSize(PropertiesWindow::s_windowWidth,PropertiesWindow::s_windowHeightOther);
         else
             this->setFixedSize(PropertiesWindow::s_windowWidth,PropertiesWindow::s_windowHeightFolder);
-
+qDebug() << "PropertiesWindow::PropertiesWindow" << "1.5-1.5";
         this->initTabPage(uris);
+        qDebug() << "PropertiesWindow::PropertiesWindow" << "2222";
         this->initStatusBar();
     }
 }
@@ -158,30 +160,31 @@ PropertiesWindow::PropertiesWindow(const QStringList &uris, QWidget *parent) : Q
  */
 void PropertiesWindow::setWindowTitleTextAndIcon()
 {
+    qDebug() << "PropertiesWindow::setWindowTitleTextAndIcon" << "1111";
     QString l_windowTitle = "";
     QString l_iconName = "system-file-manager";
 
+    auto l_fineInfo = FileInfo::fromUri(m_uris.at(0));
+    FileInfoJob *j = new FileInfoJob(l_fineInfo);
+    j->setAutoDelete();
+    j->querySync();
+
     if(m_uris.contains("trash:///")) {
         l_windowTitle = tr("Trash");
-        l_iconName = "trash";
+        l_iconName = l_fineInfo.get()->iconName();
 
-    }else if(m_uris.contains("recent:///")) {
+    } else if(m_uris.contains("recent:///")) {
         l_windowTitle = tr("Recent");
-        l_iconName = "recent";
+        l_iconName = l_fineInfo.get()->iconName();
 
-    }else {
+    } else {
         qint32 l_fileNum = this->m_uris.count();
 
-        if(l_fileNum > 1)
+        if(l_fileNum > 1) {
             //use default icon
+             qDebug() << "PropertiesWindow::setWindowTitleTextAndIcon" << "2222";
             l_windowTitle = tr("Selected") + QString(tr(" %1 Files")).arg(l_fileNum);
-
-        else {
-            auto l_fineInfo = FileInfo::fromUri(m_uris.at(0));
-            FileInfoJob *j = new FileInfoJob(l_fineInfo);
-            j->setAutoDelete();
-            j->querySync();
-
+        } else {
             qDebug() << "PropertiesWindow::setWindowTitleTextAndIcon():文件信息为空?" << (l_fineInfo.get() == nullptr);
             if(l_fineInfo) {
                 l_windowTitle = l_fineInfo.get()->displayName();
@@ -189,6 +192,7 @@ void PropertiesWindow::setWindowTitleTextAndIcon()
             }
         }
     }
+    qDebug() << "PropertiesWindow::setWindowTitleTextAndIcon" << "3333";
 
     l_windowTitle += " " + tr("Properties");
     this->setWindowIcon(QIcon::fromTheme(l_iconName));
@@ -198,7 +202,11 @@ void PropertiesWindow::setWindowTitleTextAndIcon()
 bool PropertiesWindow::notDir()
 {
     for(QString uri : m_uris) {
-        if(FileInfo::fromUri(uri).get()->isDir())
+        auto l_fineInfo = FileInfo::fromUri(uri);
+        FileInfoJob *j = new FileInfoJob(l_fineInfo);
+        j->setAutoDelete();
+        j->querySync();
+        if(l_fineInfo.get()->isDir())
             return false;
     }
     return true;
@@ -276,9 +284,9 @@ void PropertiesWindow::initStatusBar(){
 void PropertiesWindow::initTabPage(const QStringList &uris)
 {
     auto w = new PropertiesWindowPrivate(uris, this);
-//    w->tabBar()->setStyle(new tabStyle);
+    //    w->tabBar()->setStyle(new tabStyle);
 
-//    w->tabBar()->setMinimumSize(PropertiesWindow::s_windowWidth,72);
+    //    w->tabBar()->setMinimumSize(PropertiesWindow::s_windowWidth,72);
     this->setCentralWidget(w);
 }
 
@@ -312,32 +320,32 @@ PropertiesWindowPrivate::PropertiesWindowPrivate(const QStringList &uris, QWidge
 
 void tabStyle::drawControl(QStyle::ControlElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget) const
 {
-        if (element == CE_TabBarTab)
+    if (element == CE_TabBarTab)
+    {
+        if (const QStyleOptionTab *tab = qstyleoption_cast<const QStyleOptionTab *>(option))
         {
-            if (const QStyleOptionTab *tab = qstyleoption_cast<const QStyleOptionTab *>(option))
+            QRect allRect = (tab->rect).adjusted(1,5,-1,5);
+            //选中状态
+            if (tab->state & QStyle::State_Selected)
             {
-                QRect allRect = (tab->rect).adjusted(1,5,-1,5);
-                //选中状态
-                if (tab->state & QStyle::State_Selected)
-                {
-                    //save用以保护坐标，restore用来退出状态
-                    painter->save();
-                    painter->setBrush(QBrush(0x3D6BE5));
-                    //矩形
-                    painter->drawRect(allRect);
-//                    painter->drawRoundedRect(allRect, 5, 5);
-                    painter->restore();
-                }
-                QTextOption option;
-                option.setAlignment(Qt::AlignCenter);
-                painter->drawText(allRect, tab->text, option);
-                return;
+                //save用以保护坐标，restore用来退出状态
+                painter->save();
+                painter->setBrush(QBrush(0x3D6BE5));
+                //矩形
+                painter->drawRect(allRect);
+                //                    painter->drawRoundedRect(allRect, 5, 5);
+                painter->restore();
             }
+            QTextOption option;
+            option.setAlignment(Qt::AlignCenter);
+            painter->drawText(allRect, tab->text, option);
+            return;
         }
-        if (element == CE_TabBarTabLabel)
-        {
-            QProxyStyle::drawControl(element, option, painter, widget);
-        }
+    }
+    if (element == CE_TabBarTabLabel)
+    {
+        QProxyStyle::drawControl(element, option, painter, widget);
+    }
 }
 
 QSize tabStyle::sizeFromContents(QStyle::ContentsType ct, const QStyleOption *opt, const QSize &contentsSize, const QWidget *w) const
@@ -346,8 +354,8 @@ QSize tabStyle::sizeFromContents(QStyle::ContentsType ct, const QStyleOption *op
 
     if(ct == QStyle::CT_TabBarTab){
         s.transpose();
-//        s.rwidth() = 100;
-//        s.rheight() = 30;
+        //        s.rwidth() = 100;
+        //        s.rheight() = 30;
         s.setWidth(67);
         s.setHeight(40);
     }
