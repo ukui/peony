@@ -1316,14 +1316,14 @@ DesktopIconView::ZoomLevel DesktopIconView::zoomLevel() const
         //qDebug()<<"======================no zoom level meta info\n\n\n";
         g_object_unref(info);
         g_object_unref(computer);
-        return Normal;
+        return Large;
     }
     g_object_unref(info);
     g_object_unref(computer);
     QString zoomLevel = zoom_level;
     g_free(zoom_level);
     //qDebug()<<ZoomLevel(QString(zoomLevel).toInt())<<"\n\n\n\n\n\n\n\n";
-    return ZoomLevel(zoomLevel.toInt()) == Invalid? Normal: ZoomLevel(QString(zoomLevel).toInt());
+    return ZoomLevel(zoomLevel.toInt()) == Invalid? Large: ZoomLevel(QString(zoomLevel).toInt());
 }
 
 void DesktopIconView::setEditFlag(bool edit)

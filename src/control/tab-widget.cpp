@@ -577,7 +577,7 @@ void TabWidget::updateSearchBar(bool showSearch)
         m_current_search->show();
         m_home_search->show();
         m_search_bar_layout->setContentsMargins(10, 5, 10, 5);
-        updateCurrentSearchPath();
+        //updateCurrentSearchPath();
         updateSearchPathButton();
         switchSearchPath(true);
     }
@@ -660,8 +660,8 @@ void TabWidget::updateSearchPathButton(const QString &uri)
     //FIXME: replace BLOCKING api in ui thread.
     auto iconName = Peony::FileUtils::getFileIconName(curUri);
     auto displayName = Peony::FileUtils::getFileDisplayName(curUri);
-    qDebug() << "iconName:" <<iconName <<displayName<<curUri;
-//    m_search_path->setIcon(QIcon::fromTheme(iconName));
+    qDebug() << "goToUri iconName:" <<iconName <<displayName<<curUri;
+    m_current_search->setIcon(QIcon::fromTheme(iconName));
 
     //elide text if it is too long
     if (displayName.length() > ELIDE_TEXT_LENGTH)
@@ -669,7 +669,7 @@ void TabWidget::updateSearchPathButton(const QString &uri)
         int  charWidth = fontMetrics().averageCharWidth();
         displayName = fontMetrics().elidedText(displayName, Qt::ElideRight, ELIDE_TEXT_LENGTH * charWidth);
     }
-//    m_search_path->setText(displayName);
+    m_current_search->setText(displayName);
 }
 
 void TabWidget::updateSearchList()
@@ -872,9 +872,9 @@ void TabWidget::goToUri(const QString &uri, bool addHistory, bool forceUpdate)
     currentPage()->goToUri(uri, addHistory, forceUpdate);
     m_tab_bar->updateLocation(m_tab_bar->currentIndex(), uri);
     updateTrashBarVisible(uri);
-    if (uri.indexOf("search:///") == -1) {
-        updateCurrentSearchPath();
-    }
+ //   if (uri.indexOf("search:///") == -1) {
+ //       updateCurrentSearchPath();
+//    }
 }
 
 void TabWidget::updateTabPageTitle()
