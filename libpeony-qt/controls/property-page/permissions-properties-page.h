@@ -25,7 +25,9 @@
 
 #include <QWidget>
 
+#include "properties-window-tab-page-plugin-save-iface.h"
 #include "peony-core_global.h"
+
 #include <memory>
 #include <gio/gio.h>
 
@@ -37,7 +39,7 @@ namespace Peony {
 
 class FileWatcher;
 
-class PEONYCORESHARED_EXPORT PermissionsPropertiesPage : public QWidget
+class PEONYCORESHARED_EXPORT PermissionsPropertiesPage : public PropertiesWindowTabPagePluginSaveIface
 {
     Q_OBJECT
 public:
@@ -66,6 +68,10 @@ private:
     QTableWidget *m_table;
 
     bool m_permissions[3][3];
+
+    // PropertiesWindowTabPagePluginSaveIface interface
+public:
+    void saveAllChange();
 };
 
 }

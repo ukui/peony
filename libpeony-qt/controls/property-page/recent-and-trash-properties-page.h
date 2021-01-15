@@ -24,13 +24,15 @@
 #define RECENTANDTRASHPROPERTIESPAGE_H
 
 #include <QWidget>
+
+#include "properties-window-tab-page-plugin-save-iface.h"
 #include "peony-core_global.h"
 
 class QFormLayout;
 
 namespace Peony {
 
-class PEONYCORESHARED_EXPORT RecentAndTrashPropertiesPage : public QWidget
+class PEONYCORESHARED_EXPORT RecentAndTrashPropertiesPage : public PropertiesWindowTabPagePluginSaveIface
 {
     Q_OBJECT
 public:
@@ -42,6 +44,10 @@ protected:
 private:
     QString m_uri;
     QFormLayout *m_layout;
+
+    // PropertiesWindowTabPagePluginSaveIface interface
+public:
+    void saveAllChange();
 };
 
 }

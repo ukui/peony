@@ -523,6 +523,11 @@
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/property-page/basic-properties-page.cpp" line="194"/>
+        <source>move</source>
+        <translation>移动</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/controls/property-page/basic-properties-page.cpp" line="194"/>
         <source>cannot move a folder to itself !</source>
         <translation>不能将文件夹移动到它自身中 ！</translation>
     </message>
@@ -2676,7 +2681,7 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/property-page/basic-properties-page-factory.h" line="40"/>
-        <source>Basic Preview Page</source>
+        <source>Basic</source>
         <translation>基本</translation>
     </message>
     <message>

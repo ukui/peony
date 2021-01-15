@@ -53,7 +53,7 @@ using namespace Peony;
 #define WRITEABLE 3
 #define EXECUTEABLE 4
 
-PermissionsPropertiesPage::PermissionsPropertiesPage(const QStringList &uris, QWidget *parent) : QWidget(parent)
+PermissionsPropertiesPage::PermissionsPropertiesPage(const QStringList &uris, QWidget *parent) : PropertiesWindowTabPagePluginSaveIface(parent)
 {
     m_uri = uris.first();
 
@@ -375,4 +375,9 @@ void PermissionsPropertiesPage::changePermission(int row, int column, bool check
         g_chmod(url.path().toUtf8(), mod);
         qDebug()<<mod;
     }
+}
+
+void PermissionsPropertiesPage::saveAllChange()
+{
+    qDebug() << "权限窗口！保存设置";
 }

@@ -60,7 +60,7 @@ public:
         return 1000-3;
     }
     bool supportUris(const QStringList &uris) override;
-    QWidget *createTabPage(const QStringList &uris) override;
+    PropertiesWindowTabPagePluginSaveIface *createTabPage(const QStringList &uris) override;
 
     void closeFactory() override {}
 

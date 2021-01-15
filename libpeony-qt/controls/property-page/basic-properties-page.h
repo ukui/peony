@@ -32,6 +32,8 @@
 #include <QThread>
 #include <memory>
 
+#include "properties-window-tab-page-plugin-save-iface.h"
+
 class QVBoxLayout;
 class QFormLayout;
 class QPushButton;
@@ -63,7 +65,7 @@ protected:
  * \todo
  * handle special files, such as divice or remote server.
  */
-class BasicPropertiesPage : public QWidget
+class BasicPropertiesPage : public PropertiesWindowTabPagePluginSaveIface
 {
     Q_OBJECT
 public:
@@ -79,6 +81,9 @@ public:
     ~BasicPropertiesPage();
 
 
+    // PropertiesWindowTabPagePluginSaveIface interface
+public:
+    void saveAllChange();
 
 protected:
     void addSeparator();
@@ -112,47 +117,48 @@ private:
     qint64 m_fileDoneCount     = 0;
 
     //floor1
-    QPushButton *m_icon        = nullptr;    //文件图标
+    QPushButton *m_iconButton       = nullptr;    //文件图标
     //**new version
-    QLineEdit   *m_displayName = nullptr;    //文件名称
-    QLineEdit   *m_location    = nullptr;    //文件路径
-    QPushButton *m_moveButton  = nullptr;    //移动位置按钮
+    QLineEdit   *m_displayNameEdit  = nullptr;    //文件名称
+    QLineEdit   *m_locationEdit     = nullptr;    //文件路径
+    QPushButton *m_moveButtonButton = nullptr;    //移动位置按钮
 
     //floor2  --  public
-    QLabel *m_fileType         = nullptr;    //文件类型
-    QLabel *m_fileSize         = nullptr;    //文件大小
-    QLabel *m_fileTotalSize    = nullptr;    //文件占用空间
+    QLabel *m_fileTypeLabel         = nullptr;    //文件类型
+    QLabel *m_fileSizeLabel         = nullptr;    //文件大小
+    QLabel *m_fileTotalSizeLabel    = nullptr;    //文件占用空间
 
     quint64 m_fileSizeCount        = 0;
     quint64 m_fileTotalSizeCount   = 0;
     quint64 m_fileSizeMB = 0.0;
 
     //folder type
-    QLabel *m_folderContain = nullptr;       //文件夹下文件统计Label
+    QLabel *m_folderContainLabel = nullptr;       //文件夹下文件统计Label
 
     quint64 m_folderContainFiles   = 0;      //文件夹下文件数量
     quint64 m_folderContainFolders = 0;      //文件夹下文件夹数量
 
     //file , zip
-    QHBoxLayout *m_openWith = nullptr;    //文件打开方式
+    QHBoxLayout *m_openWithLayout = nullptr;    //文件打开方式
 
     //application
-    QLabel *m_descrption = nullptr;       //应用程序描述
+    QLabel *m_descrptionLabel = nullptr;       //应用程序描述
 
     //floor3
-    QLabel *m_time_created_label  = nullptr;
-    QLabel *m_time_modified_label = nullptr;
-    QLabel *m_time_access_label   = nullptr;
+    QLabel *m_timeCreatedLabel  = nullptr;
+    QLabel *m_timeModifiedLabel = nullptr;
+    QLabel *m_timeAccessLabel   = nullptr;
 
-    quint64 m_time_created  = 0;
-    quint64 m_time_modified = 0;
-    quint64 m_time_access   = 0;
+    quint64 m_timeCreated  = 0;
+    quint64 m_timeModified = 0;
+    quint64 m_timeAccess   = 0;
 
     //floor4
     QCheckBox *m_readOnly = nullptr;
     QCheckBox *m_hidden   = nullptr;
     //
-    FileCountOperation *m_count_op = nullptr;
+    FileCountOperation *m_countOp = nullptr;
+
 };
 
 }
