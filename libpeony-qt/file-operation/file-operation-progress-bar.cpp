@@ -555,6 +555,7 @@ ProgressBar::ProgressBar(QWidget *parent) : QWidget(parent)
     setMouseTracking(true);
     m_is_stopping = false;
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    m_dest_uri = tr("starting ...");
     connect(this, &ProgressBar::cancelled, this, &ProgressBar::onCancelled);
 }
 
