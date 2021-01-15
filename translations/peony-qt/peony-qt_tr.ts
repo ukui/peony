@@ -35,72 +35,72 @@
         <translation type="vanished">Uçbirim Aç</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="118"/>
+        <location filename="../../src/control/header-bar.cpp" line="120"/>
         <source>Go Back</source>
         <translation>Geri</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="132"/>
+        <location filename="../../src/control/header-bar.cpp" line="134"/>
         <source>Go Forward</source>
         <translation>İleri</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="197"/>
+        <location filename="../../src/control/header-bar.cpp" line="199"/>
         <source>Search</source>
         <translation>Ara</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="209"/>
+        <location filename="../../src/control/header-bar.cpp" line="211"/>
         <source>View Type</source>
         <translation>Görünüm Türü</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="218"/>
+        <location filename="../../src/control/header-bar.cpp" line="220"/>
         <source>Details</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="259"/>
+        <location filename="../../src/control/header-bar.cpp" line="263"/>
         <source>Sort Type</source>
         <translation>Sıralama Türü</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="287"/>
+        <location filename="../../src/control/header-bar.cpp" line="291"/>
         <source>&amp;Copy</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="290"/>
+        <location filename="../../src/control/header-bar.cpp" line="294"/>
         <source>Copy</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="303"/>
+        <location filename="../../src/control/header-bar.cpp" line="307"/>
         <source>&amp;Cut</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="306"/>
+        <location filename="../../src/control/header-bar.cpp" line="310"/>
         <source>Cut</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="313"/>
+        <location filename="../../src/control/header-bar.cpp" line="317"/>
         <source>&amp;Select All</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="317"/>
+        <location filename="../../src/control/header-bar.cpp" line="321"/>
         <source>Select All</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="324"/>
+        <location filename="../../src/control/header-bar.cpp" line="328"/>
         <source>&amp;Delete to trash</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="327"/>
+        <location filename="../../src/control/header-bar.cpp" line="331"/>
         <source>Delete to trash</source>
         <translation type="unfinished"></translation>
     </message>
@@ -109,12 +109,12 @@
         <translation type="vanished">Seçenek</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="371"/>
+        <location filename="../../src/control/header-bar.cpp" line="375"/>
         <source>Operate Tips</source>
         <translation>İşlet İpuçları</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="372"/>
+        <location filename="../../src/control/header-bar.cpp" line="376"/>
         <source>Don&apos;t find any terminal, please install at least one terminal!</source>
         <translation>Herhangi bir uçbirim bulunamadı, lütfen en az bir uçbirim kurun!</translation>
     </message>
@@ -153,18 +153,16 @@
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="109"/>
-        <location filename="../../src/windows/main-window.cpp" line="613"/>
         <source>File Manager</source>
-        <translation>Dosya Yöneticisi</translation>
+        <translation type="vanished">Dosya Yöneticisi</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="297"/>
+        <location filename="../../src/windows/main-window.cpp" line="296"/>
         <source>Undo</source>
         <translation>Geri</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="304"/>
+        <location filename="../../src/windows/main-window.cpp" line="303"/>
         <source>Redo</source>
         <translation>İleri</translation>
     </message>
@@ -173,12 +171,12 @@
         <translation type="obsolete">Dosya Silme Uyarısı</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1290"/>
+        <location filename="../../src/windows/main-window.cpp" line="1349"/>
         <source>Delete Permanently</source>
         <translation>Kalıcı Olarak Sil</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1291"/>
+        <location filename="../../src/windows/main-window.cpp" line="1350"/>
         <source>Are you sure that you want to delete these files? Once you start a deletion, the files deleting will never be restored again.</source>
         <translation>Bu dosyaları silmek istediğinizden emin misiniz? Bir silme işlemini başlattığınızda, silinen dosyalar bir daha geri yüklenmeyecektir.</translation>
     </message>
@@ -187,7 +185,7 @@
         <translation type="vanished">Peony Qt</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="626"/>
+        <location filename="../../src/windows/main-window.cpp" line="661"/>
         <source>New Folder</source>
         <translation>Yeni Klasör</translation>
     </message>
@@ -197,6 +195,16 @@
     <message>
         <source>All tags...</source>
         <translation type="vanished">Tüm etiketler...</translation>
+    </message>
+    <message>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="177"/>
+        <source>Open In &amp;New Window</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="200"/>
+        <source>Open In New &amp;Tab</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -209,7 +217,7 @@
 <context>
     <name>NavigationTabBar</name>
     <message>
-        <location filename="../../src/control/navigation-tab-bar.cpp" line="123"/>
+        <location filename="../../src/control/navigation-tab-bar.cpp" line="124"/>
         <source>Search &quot;%1&quot; in &quot;%2&quot;</source>
         <translation>&quot;%2&quot; de &quot;%1&quot; ara</translation>
     </message>
@@ -226,32 +234,32 @@
         <translation>İzin Ver</translation>
     </message>
     <message>
-        <location filename="../../src/control/operation-menu.cpp" line="82"/>
+        <location filename="../../src/control/operation-menu.cpp" line="75"/>
         <source>Show Hidden</source>
         <translation>Gizlileri Göster</translation>
     </message>
     <message>
-        <location filename="../../src/control/operation-menu.cpp" line="89"/>
+        <location filename="../../src/control/operation-menu.cpp" line="82"/>
         <source>Forbid thumbnailing</source>
         <translation>Küçük Resimleri Yasakla</translation>
     </message>
     <message>
-        <location filename="../../src/control/operation-menu.cpp" line="98"/>
+        <location filename="../../src/control/operation-menu.cpp" line="91"/>
         <source>Resident in Backend</source>
         <translation>Arka Uçta Yerleşik</translation>
     </message>
     <message>
-        <location filename="../../src/control/operation-menu.cpp" line="107"/>
+        <location filename="../../src/control/operation-menu.cpp" line="100"/>
         <source>Parallel Operations</source>
         <translation>Paralel İşlemler</translation>
     </message>
     <message>
-        <location filename="../../src/control/operation-menu.cpp" line="115"/>
+        <location filename="../../src/control/operation-menu.cpp" line="108"/>
         <source>Help</source>
         <translation>Yardım</translation>
     </message>
     <message>
-        <location filename="../../src/control/operation-menu.cpp" line="119"/>
+        <location filename="../../src/control/operation-menu.cpp" line="112"/>
         <source>About</source>
         <translation>Hakkında</translation>
     </message>
@@ -259,27 +267,27 @@
 <context>
     <name>OperationMenuEditWidget</name>
     <message>
-        <location filename="../../src/control/operation-menu.cpp" line="148"/>
+        <location filename="../../src/control/operation-menu.cpp" line="141"/>
         <source>Edit</source>
         <translation>Düzenle</translation>
     </message>
     <message>
-        <location filename="../../src/control/operation-menu.cpp" line="159"/>
+        <location filename="../../src/control/operation-menu.cpp" line="152"/>
         <source>copy</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/operation-menu.cpp" line="168"/>
+        <location filename="../../src/control/operation-menu.cpp" line="161"/>
         <source>paste</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/operation-menu.cpp" line="177"/>
+        <location filename="../../src/control/operation-menu.cpp" line="170"/>
         <source>cut</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/operation-menu.cpp" line="186"/>
+        <location filename="../../src/control/operation-menu.cpp" line="179"/>
         <source>trash</source>
         <translation type="unfinished"></translation>
     </message>
@@ -642,12 +650,12 @@
         <translation>[DOSYA1, DOSYA2,...]</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.cpp" line="182"/>
+        <location filename="../../src/peony-application.cpp" line="185"/>
         <source>Warning</source>
         <translation>Uyarı</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.cpp" line="182"/>
+        <location filename="../../src/peony-application.cpp" line="185"/>
         <source>Peony-Qt can not get the system&apos;s icon theme. There are 2 reasons might lead to this problem:
 
 1. Peony-Qt might be running as root, that means you have the higher permission and can do some things which normally forbidden. But, you should learn that if you were in a root, the virtual file system will lose some featrue such as you can not use &quot;My Computer&quot;, the theme and icons might also went wrong. So, run peony-qt in a root is not recommended.
@@ -660,12 +668,12 @@
 2. Sisteminiz için qt olmayan bir tema kullanıyorsunuz ancak qt uygulamaları için platform tema eklentisini yüklemediniz. Gtk-theme kullanıyorsanız, bu sorunu çözmek için qt5-gtk2-platformtheme paketini yüklemeyi deneyin.</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.cpp" line="588"/>
+        <location filename="../../src/peony-application.cpp" line="432"/>
         <source>Peony Qt</source>
         <translation>Dosya Yöneticisi</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.cpp" line="589"/>
+        <location filename="../../src/peony-application.cpp" line="433"/>
         <source>Author:
 	Yue Lan &lt;lanyue@kylinos.cn&gt;
 	Meihong He &lt;hemeihong@kylinos.cn&gt;
@@ -726,22 +734,22 @@ Copyright (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</source
 Telif (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.h" line="60"/>
+        <location filename="../../src/peony-application.h" line="64"/>
         <source>Close all peony-qt windows and quit</source>
         <translation>Tüm peony-qt pencerelerini kapatın ve çıkın</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.h" line="61"/>
+        <location filename="../../src/peony-application.h" line="65"/>
         <source>Show items</source>
         <translation>Öğeleri göster</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.h" line="62"/>
+        <location filename="../../src/peony-application.h" line="66"/>
         <source>Show folders</source>
         <translation>Klasörleri göster</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.h" line="63"/>
+        <location filename="../../src/peony-application.h" line="67"/>
         <source>Show properties</source>
         <translation>Seçenekleri göster</translation>
     </message>
@@ -755,6 +763,16 @@ Telif (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</translatio
     <message>
         <source>File Manager</source>
         <translation type="obsolete">Dosya Yöneticisi</translation>
+    </message>
+    <message>
+        <location filename="../../src/peony-application.cpp" line="406"/>
+        <source>Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/peony-application.cpp" line="406"/>
+        <source>Can not open %1.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -817,12 +835,12 @@ Telif (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</translatio
         <translation type="vanished">%1 seçildi</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-status-bar.cpp" line="129"/>
+        <location filename="../../src/control/tab-status-bar.cpp" line="152"/>
         <source>selected%1%2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-status-bar.cpp" line="141"/>
+        <location filename="../../src/control/tab-status-bar.cpp" line="164"/>
         <source>Search &quot;%1&quot; in &quot;%2&quot;</source>
         <translation>%1 de %1 bul</translation>
     </message>
@@ -830,22 +848,22 @@ Telif (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</translatio
 <context>
     <name>TabWidget</name>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="159"/>
+        <location filename="../../src/control/tab-widget.cpp" line="158"/>
         <source>Trash</source>
         <translation>Çöp</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="163"/>
+        <location filename="../../src/control/tab-widget.cpp" line="162"/>
         <source>Clear</source>
         <translation>Temizle</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="167"/>
+        <location filename="../../src/control/tab-widget.cpp" line="166"/>
         <source>Recover</source>
         <translation>Geri Yükle</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="259"/>
+        <location filename="../../src/control/tab-widget.cpp" line="258"/>
         <source>Computer</source>
         <translation type="unfinished"></translation>
     </message>
@@ -854,7 +872,7 @@ Telif (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</translatio
         <translation type="vanished">Gelişmiş aramayı kapat.</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="249"/>
+        <location filename="../../src/control/tab-widget.cpp" line="248"/>
         <source>Search</source>
         <translation>Ara</translation>
     </message>
@@ -875,18 +893,18 @@ Telif (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</translatio
         <translation type="vanished">Gelişmiş aramayı göster/gizle</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="324"/>
+        <location filename="../../src/control/tab-widget.cpp" line="323"/>
         <source>Select path</source>
         <translation type="unfinished">Yol seç</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="359"/>
-        <location filename="../../src/control/tab-widget.cpp" line="443"/>
+        <location filename="../../src/control/tab-widget.cpp" line="358"/>
+        <location filename="../../src/control/tab-widget.cpp" line="442"/>
         <source>is</source>
         <translation>de</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="377"/>
+        <location filename="../../src/control/tab-widget.cpp" line="376"/>
         <source>Please input key words...</source>
         <translation>Lütfen anahtar kelimeler girin ...</translation>
     </message>
@@ -895,8 +913,8 @@ Telif (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</translatio
         <translation type="vanished">Lütfen anahtar kelimeler girin ...</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="412"/>
-        <location filename="../../src/control/tab-widget.cpp" line="430"/>
+        <location filename="../../src/control/tab-widget.cpp" line="411"/>
+        <location filename="../../src/control/tab-widget.cpp" line="429"/>
         <source>contains</source>
         <translation>İçerik</translation>
     </message>
@@ -1016,7 +1034,7 @@ Telif (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</translatio
 <context>
     <name>TitleLabel</name>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="377"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="480"/>
         <source>Files</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1024,17 +1042,17 @@ Telif (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</translatio
 <context>
     <name>TopMenuBar</name>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="711"/>
+        <location filename="../../src/control/header-bar.cpp" line="715"/>
         <source>Minimize</source>
         <translation type="unfinished">Küçült</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="724"/>
+        <location filename="../../src/control/header-bar.cpp" line="728"/>
         <source>Maximize/Restore</source>
         <translation type="unfinished">Büyüt/Onar</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="746"/>
+        <location filename="../../src/control/header-bar.cpp" line="750"/>
         <source>Close</source>
         <translation type="unfinished">Kapat</translation>
     </message>
