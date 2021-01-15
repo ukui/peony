@@ -235,11 +235,13 @@ QString FileUtils::getFileDisplayName(const QString &uri)
 
 QString FileUtils::getFileIconName(const QString &uri, bool checkValid)
 {
-    //FIXME: replace BLOCKING api in ui thread.
-    auto fileInfo = FileInfo::fromUri(uri);
-    return fileInfo.get()->iconName();
-    if (!fileInfo.get()->isEmptyInfo()) {
+    if (checkValid) {
+        //FIXME: replace BLOCKING api in ui thread.
+        auto fileInfo = FileInfo::fromUri(uri);
         return fileInfo.get()->iconName();
+        if (!fileInfo.get()->isEmptyInfo()) {
+            return fileInfo.get()->iconName();
+        }
     }
 
     auto file = wrapGFile(g_file_new_for_uri(uri.toUtf8().constData()));
