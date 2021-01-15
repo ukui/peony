@@ -37,7 +37,7 @@ public:
 
     //plugin iface
     const QString name() override {
-        return QObject::tr("Trash and Recent Properties Page");
+        return QObject::tr("Trash and Recent Properties");
     }
     PluginType pluginType() override {
         return PluginType::PropertiesWindowPlugin;

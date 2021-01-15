@@ -312,14 +312,11 @@ bool PropertiesWindow::checkUriIsOpen(QStringList &uris, PropertiesWindow *newWi
     std::sort(uris.begin(), uris.end(), [](QString a, QString b) {
         return a < b;
     });
-        for(QString uri : uris) {
-            qDebug() << "PropertiesWindow::checkUriIsOpen排序结果" << uri;
-        }
+
     //2.检查是否已经打开
     if(PropertiesWindow::getOpenUriIndex(uris) != -1)
         return true;
 
-    qDebug() << "m_uris" << newWindow->getUris();
     openPropertiesWindows->append(newWindow);
 
     return false;

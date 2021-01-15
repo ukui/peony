@@ -38,7 +38,7 @@ public:
 
     //plugin iface
     const QString name() override {
-        return QObject::tr("Permissions Page");
+        return QObject::tr("Permissions");
     }
     PluginType pluginType() override {
         return PluginType::PropertiesWindowPlugin;

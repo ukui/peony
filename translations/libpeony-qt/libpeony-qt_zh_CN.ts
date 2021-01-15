@@ -2691,7 +2691,7 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/property-page/permissions-properties-page-factory.h" line="41"/>
-        <source>Permissions Page</source>
+        <source>Permissions</source>
         <translation>权限</translation>
     </message>
     <message>
@@ -2727,7 +2727,7 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/property-page/computer-properties-page-factory.h" line="41"/>
-        <source>Computer Properties Page</source>
+        <source>Computer Properties</source>
         <translation>计算机</translation>
     </message>
     <message>
@@ -2737,7 +2737,7 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/property-page/recent-and-trash-properties-page-factory.h" line="40"/>
-        <source>Trash and Recent Properties Page</source>
+        <source>Trash and Recent Properties</source>
         <translation>最近/回收</translation>
     </message>
     <message>

@@ -30,6 +30,10 @@
 #include <QLineEdit>
 #include <QFormLayout>
 #include <file-launch-action.h>
+#include <fcntl.h>
+#include <sys/types.h>
+#include <glib/gstdio.h>
+#include <gio/gdesktopappinfo.h>
 
 #include <QDateTime>
 
@@ -52,10 +56,9 @@
 #include <QUrl>
 
 #include <QFileDialog>
-#include "file-meta-info.h"
 
+#include "file-meta-info.h"
 #include "generic-thumbnailer.h"
-#include <gio/gdesktopappinfo.h>
 
 using namespace Peony;
 
@@ -97,6 +100,7 @@ BasicPropertiesPage::BasicPropertiesPage(const QStringList &uris, QWidget *paren
         this->addSeparator();
         this->initFloorFour();
     }
+
     QLabel *l4 = new QLabel(this);
     m_layout->addWidget(l4, 1);
 }
@@ -349,7 +353,7 @@ void BasicPropertiesPage::initFloorFour()
     proLayout->addWidget(m_hidden);
     proLayout->addWidget(this->createFixedLable(floor4));
 
-    if(!m_info.get()->canRead())
+    if(m_info.get()->canRead() && !m_info.get()->canWrite() && !m_info.get()->canExecute())
         m_readOnly->setCheckState(Qt::Checked);
 
     if(m_info.get()->displayName().startsWith("."))
@@ -417,12 +421,10 @@ void BasicPropertiesPage::onSingleFileChanged(const QString &oldUri, const QStri
     //QMessageBox::information(0, 0, "on single file changed");
     qDebug()<<"onSingleFileChanged:"<<oldUri<<newUri;
     //    //FIXME: replace BLOCKING api in ui thread.
-    if(oldUri != nullptr && (m_info.get()->uri() != newUri)) {
-        m_info = FileInfo::fromUri(newUri);
-        FileInfoJob *j = new FileInfoJob(m_info);
-        j->setAutoDelete();
-        j->querySync();
-    }
+    m_info = FileInfo::fromUri(newUri);
+    FileInfoJob *j = new FileInfoJob(m_info);
+    j->setAutoDelete();
+    j->querySync();
 
     ThumbnailManager::getInstance()->createThumbnail(m_info.get()->uri(), m_thumbnail_watcher);
     auto icon = QIcon::fromTheme(m_info.get()->iconName(), QIcon::fromTheme("text-x-generic"));
@@ -472,7 +474,7 @@ void BasicPropertiesPage::countFilesAsync(const QStringList &uris)
 
 void BasicPropertiesPage::onFileCountOne(const QString &uri, quint64 size)
 {
-    //...FIX:第一版本在当前位置对文件夹进行统计，希望得到底层支持
+    //...FIX:第一版本在当前位置对文件夹进行统计,慢
     std::shared_ptr<FileInfo> l_fileInfo = FileInfo::fromUri(uri);
     FileInfoJob *j = new FileInfoJob(l_fileInfo);
     j->setAutoDelete();
@@ -518,15 +520,15 @@ void BasicPropertiesPage::moveFile(){
 
     if(!FileOperationUtils::move(uriList,newDirPath.toString(),true)->hasError()){
         //move to peony
-//        QUrl url = uri;
+        //        QUrl url = uri;
         QProcess p;
-    #if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
+#if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
         p.setProgram("peony");
         p.setArguments(QStringList()<<"--show-folders" << newDirPath.toEncoded());
         p.startDetached();
-    #else
+#else
         p.startDetached("peony", QStringList()<<"--show-folders"<< newDirPath.toEncoded());
-    #endif
+#endif
 
         this->close();
     }
@@ -538,30 +540,53 @@ void BasicPropertiesPage::moveFile(){
 void BasicPropertiesPage::saveAllChange()
 {
     qDebug() << "BasicPropertiesPage::saveAllChange() save all ";
-    return;
-    //save displayName
-    if (!m_displayNameEdit->isReadOnly() && !m_displayNameEdit->text().isEmpty()) {
-        FileOperationUtils::rename(m_info.get()->uri(), m_displayNameEdit->text(), true);
-    }
+    //    return;
 
+    qDebug() << "m_displayNameEdit->text()" << m_displayNameEdit->text() << "m_info.get()" << m_info.get()->displayName();
     if(m_readOnly) {
-//        if(m_readOnly->isChecked()) {
-//            FileOperationUtils::
-//        } else {
+        mode_t mod = 0;
 
-//        }
+        if(m_readOnly->isChecked()) {
+            mod |= S_IRUSR;
+            mod |= S_IRGRP;
+            mod |= S_IROTH;
+        } else {
+            mod |= S_IRUSR;
+            mod |= S_IRGRP;
+            mod |= S_IROTH;
+
+            mod |= S_IWUSR;
+            mod |= S_IWGRP;
+            mod |= S_IWOTH;
+        }
+        QUrl url = m_info.get()->uri();
+        g_chmod(url.path().toUtf8(), mod);
+
     }
 
     if(m_hidden) {
-        QString l_reName = "";
-        if(m_info.get()->displayName().startsWith("."))
-            l_reName = m_info.get()->displayName().mid(1,-1);
+        QString l_reName = m_info.get()->displayName();
 
-        if(m_hidden->isChecked())
+        bool isHidden = m_info.get()->displayName().startsWith(".");
+
+        //以前没隐藏，并且选中隐藏框
+        if(!isHidden && m_hidden->isChecked()) {
             FileOperationUtils::rename(m_info.get()->uri(), ("." + l_reName), true);
-        else
+
+        } else if(isHidden && !m_hidden->isChecked()) {
+            //以前已经隐藏，并且取消选中隐藏框
+            l_reName = m_info.get()->displayName().mid(1,-1);
             FileOperationUtils::rename(m_info.get()->uri(), l_reName, true);
+
+        }
     }
+
+    //save displayName
+    if (!m_displayNameEdit->isReadOnly() && !m_displayNameEdit->text().isEmpty()) {
+        if(m_info.get()->displayName() != m_displayNameEdit->text())
+            FileOperationUtils::rename(m_info.get()->uri(), m_displayNameEdit->text(), true);
+    }
+
 }
 
 void BasicPropertiesPage::changeFileIcon(){
@@ -621,9 +646,9 @@ void BasicPropertiesPage::updateInfo(const QString &uri)
                                         nullptr);
     g_object_unref(file);
 
-    //    m_timeCreated = g_file_info_get_attribute_uint64(info,
-    //                                                      G_FILE_ATTRIBUTE_TIME_CREATED);
-    m_timeCreated = g_file_info_get_attribute_uint64(info, "time::created");
+    m_timeCreated = g_file_info_get_attribute_uint64(info,
+                                                     G_FILE_ATTRIBUTE_TIME_CREATED);
+    //    m_timeCreated = g_file_info_get_attribute_uint64(info, "time::created");
     QDateTime date1 = QDateTime::fromMSecsSinceEpoch(m_timeCreated*1000);
     QString time1 = date1.toString(tr("yyyy-MM-dd, HH:mm:ss"));
     m_timeCreatedLabel->setText(time1);
@@ -639,7 +664,7 @@ void BasicPropertiesPage::updateInfo(const QString &uri)
     //    }
     if(m_timeModifiedLabel) {
         m_timeModified = g_file_info_get_attribute_uint64(info,
-                                                           "time::modified");
+                                                          "time::modified");
         QDateTime date2 = QDateTime::fromMSecsSinceEpoch(m_timeModified*1000);
         QString time2 = date2.toString(tr("yyyy-MM-dd, HH:mm:ss"));
 
@@ -647,7 +672,7 @@ void BasicPropertiesPage::updateInfo(const QString &uri)
     }
     if(m_timeAccessLabel) {
         m_timeAccess = g_file_info_get_attribute_uint64(info,
-                                                         "time::access");
+                                                        "time::access");
         QDateTime date3 = QDateTime::fromMSecsSinceEpoch(m_timeAccess*1000);
         QString time3 = date3.toString(tr("yyyy-MM-dd, HH:mm:ss"));
         m_timeAccessLabel->setText(time3);
