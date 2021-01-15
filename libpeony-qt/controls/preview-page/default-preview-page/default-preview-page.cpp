@@ -270,7 +270,11 @@ void FilePreviewPage::updateInfo(FileInfo *info)
 
     }
 
-    countAsync(info->uri());
+    if (!info->symlinkTarget().isEmpty()) {
+        countAsync("file:///" + info->symlinkTarget());
+    } else {
+        countAsync(info->uri());
+    }
 }
 
 void FilePreviewPage::countAsync(const QString &uri)
