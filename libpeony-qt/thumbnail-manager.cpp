@@ -216,6 +216,15 @@ void ThumbnailManager::createDesktopFileThumbnail(const QString &uri, std::share
         else if(QFile::exists(path_svg)){
             thumbnail=QIcon(path_svg);
         }
+        else{
+            //search /usr/share/icons/hicolor/scalable/apps
+            //fix installed app desktop icon not loaded in time issue
+            path_svg = QString("/usr/share/icons/hicolor/scalable/apps/%1.%2").arg(_icon_string).arg("svg");
+            if(QFile::exists(path_svg))
+            {
+               thumbnail=QIcon(path_svg);
+            }
+        }
     }
 
     g_free(_icon_string);
