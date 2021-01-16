@@ -88,6 +88,8 @@ ProgressBar *FileOperationProgressBar::addFileOperation()
         mainProgressChange(li);
     }
 
+    setWindowState(windowState() & ~Qt::WindowMinimized | Qt::WindowActive);
+
     showMore();
 
     return proc;
