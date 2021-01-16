@@ -481,8 +481,10 @@ const QStringList FileUtils::toDisplayUris(const QStringList &args)
             auto absPath = currentDir.absoluteFilePath(path);
             path = absPath;
             url = QUrl::fromLocalFile(absPath);
+            uris << url.toDisplayString();
+        } else {
+            uris << args;
         }
-        uris << url.toDisplayString();
     }
     return uris;
 }
