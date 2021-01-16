@@ -130,6 +130,11 @@ void AdvancedLocationBar::startEdit()
     m_edit->setUri(m_bar->getCurentUri());
 }
 
+void AdvancedLocationBar::cancelEdit()
+{
+    m_edit->cancelList();
+}
+
 void AdvancedLocationBar::finishEdit()
 {
     Q_EMIT m_edit->returnPressed();

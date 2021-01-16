@@ -245,9 +245,8 @@ void LocationBar::addButton(const QString &uri, bool setIcon, bool setMenu)
             });
             QList<QAction *> actions;
             for (auto uri : suburis) {
-                QUrl url = uri;
                 QString tmp = uri;
-                displayName = url.fileName();
+                displayName = Peony::FileUtils::getFileDisplayName(uri);
                 if (displayName.length() > ELIDE_TEXT_LENGTH)
                 {
                     int  charWidth = fontMetrics().averageCharWidth();

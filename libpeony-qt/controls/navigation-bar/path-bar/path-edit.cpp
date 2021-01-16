@@ -96,6 +96,11 @@ void PathEdit::focusInEvent(QFocusEvent *e)
     m_completer->complete();
 }
 
+void PathEdit::cancelList()
+{
+    m_completer->activated(m_completer->currentIndex());
+}
+
 void PathEdit::keyPressEvent(QKeyEvent *e)
 {
     QLineEdit::keyPressEvent(e);

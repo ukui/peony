@@ -50,6 +50,7 @@ Q_SIGNALS:
 public Q_SLOTS:
     void updateLocation(const QString &uri);
     void startEdit();
+    void cancelEdit();
     void finishEdit();
     void switchEditMode(bool bSearchMode);
     void clearSearchBox();
