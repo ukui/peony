@@ -484,6 +484,11 @@ void HeaderBar::setLocation(const QString &uri)
     m_location_bar->updateLocation(uri);
 }
 
+void HeaderBar::cancelEdit()
+{
+    m_location_bar->cancelEdit();
+}
+
 void HeaderBar::startEdit(bool bSearch)
 {
     //qDebug() << "bSearch" <<bSearch <<m_search_mode;

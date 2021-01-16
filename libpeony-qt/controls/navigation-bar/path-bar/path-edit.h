@@ -36,6 +36,7 @@ class PEONYCORESHARED_EXPORT PathEdit : public QLineEdit
     Q_OBJECT
 public:
     explicit PathEdit(QWidget *parent = nullptr);
+    void cancelList();
 
 Q_SIGNALS:
     void uriChangeRequest(const QString &uri);
