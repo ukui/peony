@@ -76,10 +76,16 @@ private:
     float m_ok_w = 120;
     float m_ok_h = 36;
 
+    float m_cancel_x = 280;
+    float m_cancel_y = 132;
+    float m_cancel_w = 120;
+    float m_cancel_h = 36;
+
     QLabel* m_icon = nullptr;
     QLabel* m_text = nullptr;
     QScrollArea* m_text_scroll = nullptr;
     QPushButton* m_ok = nullptr;
+    QPushButton* m_cancel = nullptr;
 };
 
 /*!
