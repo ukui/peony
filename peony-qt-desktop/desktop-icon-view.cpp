@@ -1472,6 +1472,12 @@ void DesktopIconView::dropEvent(QDropEvent *e)
         if (bmoved) {
             //move file to desktop folder
             qDebug() << "DesktopIconView move file to folder";
+            for (auto uuri : e->mimeData()->urls()) {
+                if ("trash:///" == uuri.toDisplayString() || "computer:///" == uuri.toDisplayString()) {
+                    return;
+                }
+            }
+
             m_model->dropMimeData(e->mimeData(), action, -1, -1, this->indexAt(e->pos()));
         } else {
             QListView::dropEvent(e);
