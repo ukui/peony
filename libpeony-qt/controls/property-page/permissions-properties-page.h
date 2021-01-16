@@ -23,6 +23,7 @@
 #ifndef PERMISSIONSPROPERTIESPAGE_H
 #define PERMISSIONSPROPERTIESPAGE_H
 
+#include <QVBoxLayout>
 #include <QWidget>
 
 #include "properties-window-tab-page-plugin-save-iface.h"
@@ -46,6 +47,14 @@ public:
     explicit PermissionsPropertiesPage(const QStringList &uris, QWidget *parent = nullptr);
     ~PermissionsPropertiesPage();
 
+    /*!
+     * init the main Widget
+     * \brief initTabWidget
+     */
+    void initTableWidget();
+
+    void savePermissions();
+
 protected:
     static GAsyncReadyCallback async_query_permisson_callback(GObject *obj,
             GAsyncResult *res,
@@ -63,11 +72,16 @@ private:
     QString m_uri;
     std::shared_ptr<FileWatcher> m_watcher;
 
+    QVBoxLayout *m_layout = nullptr;
+
     QLabel *m_label;
     QLabel *m_message;
     QTableWidget *m_table;
 
-    bool m_permissions[3][3];
+    //防止错误修改权限
+    bool m_enable = false;
+
+    bool m_permissions[3][2];
 
     // PropertiesWindowTabPagePluginSaveIface interface
 public:

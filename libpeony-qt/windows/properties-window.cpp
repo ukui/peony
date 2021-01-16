@@ -314,8 +314,11 @@ bool PropertiesWindow::checkUriIsOpen(QStringList &uris, PropertiesWindow *newWi
     });
 
     //2.检查是否已经打开
-    if(PropertiesWindow::getOpenUriIndex(uris) != -1)
+    qint64 index = PropertiesWindow::getOpenUriIndex(uris);
+    if(index != -1) {
+        openPropertiesWindows->at(index)->raise();
         return true;
+    }
 
     openPropertiesWindows->append(newWindow);
 

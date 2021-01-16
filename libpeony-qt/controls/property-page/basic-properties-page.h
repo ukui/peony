@@ -89,8 +89,8 @@ protected:
     void addSeparator();
     QLabel *createFixedLable(QWidget *parent = nullptr);
     void addOpenWithMenu(QWidget *parent = nullptr);
-    void initFloorOne(const QStringList &uris,FileType fileType);
-    void initFloorTwo(const QStringList &uris,FileType fileType);
+    void initFloorOne(const QStringList &uris,BasicPropertiesPage::FileType fileType);
+    void initFloorTwo(const QStringList &uris,BasicPropertiesPage::FileType fileType);
     void initFloorThree(BasicPropertiesPage::FileType fileType);
     void initFloorFour();
     FileType checkFileType(const QStringList &uris);
@@ -130,7 +130,6 @@ private:
 
     quint64 m_fileSizeCount        = 0;
     quint64 m_fileTotalSizeCount   = 0;
-    quint64 m_fileSizeMB = 0.0;
 
     //folder type
     QLabel *m_folderContainLabel = nullptr;       //文件夹下文件统计Label

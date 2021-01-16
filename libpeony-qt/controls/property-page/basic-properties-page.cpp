@@ -57,6 +57,7 @@
 
 #include <QFileDialog>
 
+#include "file-lauch-dialog.h"
 #include "file-meta-info.h"
 #include "generic-thumbnailer.h"
 
@@ -130,10 +131,22 @@ void BasicPropertiesPage::addOpenWithMenu(QWidget *parent)
     auto recommendActions = FileLaunchManager::getRecommendActions(m_info.get()->uri());
     if (m_openWithLayout && recommendActions.count() >= 1)
     {
+        m_openWithLayout->setContentsMargins(0,0,56,0);
         //修改为打开方式及应用名称 加上图标
         QLabel *appName = new QLabel(parent);
         appName->setText(recommendActions.first()->getAppInfoDisplayName());
         m_openWithLayout->addWidget(appName);
+        m_openWithLayout->addStretch(1);
+
+        QPushButton *moreAppButton = new QPushButton(parent);
+        moreAppButton->setText(tr("Change"));
+        moreAppButton->setMinimumSize(70,32);
+        m_openWithLayout->addWidget(moreAppButton);
+
+        connect(moreAppButton,&QPushButton::clicked,this,[=](){
+            FileLauchDialog d(m_info.get()->uri());
+            d.exec();
+        });
     }
 }
 
@@ -141,11 +154,11 @@ void BasicPropertiesPage::addOpenWithMenu(QWidget *parent)
  *
  * \brief BasicPropertiesPage::initFloorOne
  */
-void BasicPropertiesPage::initFloorOne(const QStringList &uris,FileType fileType)
+void BasicPropertiesPage::initFloorOne(const QStringList &uris,BasicPropertiesPage::FileType fileType)
 {
     QFrame      *floor1  = new QFrame(this);
     QGridLayout *layout1 = new QGridLayout(floor1);
-    layout1->setContentsMargins(16,16,8,16);
+    layout1->setContentsMargins(14,16,0,16);
 
     floor1->setMinimumHeight(100);
     floor1->setLayout(layout1);
@@ -232,16 +245,21 @@ void BasicPropertiesPage::initFloorOne(const QStringList &uris,FileType fileType
 
         connect(m_moveButtonButton,&QPushButton::clicked,this,&BasicPropertiesPage::moveFile);
         layout1->addLayout(form3,0,2);
+    } else {
+        auto form4 = new QFormLayout(floor1);
+        form4->setContentsMargins(0,0,56,0);
+
+        layout1->addLayout(form4,0,2);
     }
     //add floor1 to context
     m_layout->addWidget(floor1);
 }
 
-void BasicPropertiesPage::initFloorTwo(const QStringList &uris,FileType fileType)
+void BasicPropertiesPage::initFloorTwo(const QStringList &uris,BasicPropertiesPage::FileType fileType)
 {
     QFrame      *floor2  = new QFrame(this);
     QFormLayout *layout2 = new QFormLayout(floor2);
-    layout2->setContentsMargins(16,16,0,16);
+    layout2->setContentsMargins(16,24,0,24);
     floor2->setLayout(layout2);
 
     if( fileType == BP_MultipleFIle )
@@ -305,7 +323,7 @@ void BasicPropertiesPage::initFloorThree(BasicPropertiesPage::FileType fileType)
     else
         floor3->setMinimumHeight(120);
 
-    layout3->setContentsMargins(16,16,0,16);
+    layout3->setContentsMargins(16,24,0,24);
 
     m_timeCreatedLabel  = new QLabel(floor3);
 
@@ -344,7 +362,7 @@ void BasicPropertiesPage::initFloorFour()
 {
     QFrame      *floor4  = new QFrame(this);
     QFormLayout *layout4 = new QFormLayout(floor4);
-    layout4->setContentsMargins(16,16,0,16);
+    layout4->setContentsMargins(16,24,0,24);
     m_readOnly = new QCheckBox(tr("Readonly"), floor4);
     m_hidden   = new QCheckBox(tr("Hidden"), floor4);
 
@@ -353,7 +371,7 @@ void BasicPropertiesPage::initFloorFour()
     proLayout->addWidget(m_hidden);
     proLayout->addWidget(this->createFixedLable(floor4));
 
-    if(m_info.get()->canRead() && !m_info.get()->canWrite() && !m_info.get()->canExecute())
+    if(m_info.get()->canRead() && !m_info.get()->canWrite())
         m_readOnly->setCheckState(Qt::Checked);
 
     if(m_info.get()->displayName().startsWith("."))
@@ -539,13 +557,13 @@ void BasicPropertiesPage::moveFile(){
  */
 void BasicPropertiesPage::saveAllChange()
 {
-    qDebug() << "BasicPropertiesPage::saveAllChange() save all ";
-    //    return;
+    //拒绝修改home目录
+    if(m_info.get()->uri() == ("file://"+QStandardPaths::standardLocations(QStandardPaths::HomeLocation).first())) {
+        return;
+    }
 
-    qDebug() << "m_displayNameEdit->text()" << m_displayNameEdit->text() << "m_info.get()" << m_info.get()->displayName();
     if(m_readOnly) {
         mode_t mod = 0;
-
         if(m_readOnly->isChecked()) {
             mod |= S_IRUSR;
             mod |= S_IRGRP;
@@ -577,7 +595,6 @@ void BasicPropertiesPage::saveAllChange()
             //以前已经隐藏，并且取消选中隐藏框
             l_reName = m_info.get()->displayName().mid(1,-1);
             FileOperationUtils::rename(m_info.get()->uri(), l_reName, true);
-
         }
     }
 
@@ -589,7 +606,8 @@ void BasicPropertiesPage::saveAllChange()
 
 }
 
-void BasicPropertiesPage::changeFileIcon(){
+void BasicPropertiesPage::changeFileIcon()
+{
     QUrl iconPathUrl;
     iconPathUrl.setPath("/usr/share/icons");
     auto picture = QFileDialog::getOpenFileName(nullptr, tr("Choose a custom icon"), "/usr/share/icons", "*.png *.jpg *.jpeg *.svg");
@@ -606,25 +624,44 @@ void BasicPropertiesPage::changeFileIcon(){
 void BasicPropertiesPage::updateCountInfo(bool isDone)
 {
     if(isDone) {
-        //qreal = double
-        m_fileSizeMB = m_fileSizeCount / 1048576;
-        m_fileSizeLabel->setText(tr("%1 MB (%2 Bytes)").arg(QString::number(m_fileSizeMB)).arg(m_fileSizeCount));
-
-        if(m_folderContainLabel)
-            m_folderContainLabel->setText(tr("%1 files, %2 folders").arg(m_folderContainFiles).arg(m_folderContainFolders));
 
         //假的4k对齐 unReal
         qint64 a = m_fileSizeCount % 1024;
         qint64 b = m_fileSizeCount / 1024;
         qint64 cell4k = (a == 0) ? b : (b + 1);
-
-        qDebug() << "4k对齐：a:" << a << "b:" << b << cell4k;
-
         m_fileTotalSizeCount = cell4k * 1024;
 
-        //        qreal c = (qreal)m_fileTotalSizeCount / (qreal)(1048576);
+        QString fileSizeText;
+        QString fileTotalSizeText;
 
-        m_fileTotalSizeLabel ->setText(tr("%1 MB (%2 Bytes)").arg(m_fileSizeMB).arg(m_fileTotalSizeCount));
+        qreal fileSizeKMGB = 0.0;
+
+        // 1024 KB
+        if(b < 1024) {
+            fileSizeKMGB = b;
+            fileSizeText = tr("%1 KB (%2 Bytes)").arg(QString::number(fileSizeKMGB,'f',2)).arg(m_fileSizeCount);
+            fileSizeKMGB = (qreal)m_fileTotalSizeCount / (qreal)1024;
+            fileTotalSizeText = tr("%1 KB (%2 Bytes)").arg(QString::number(fileSizeKMGB,'f',2)).arg(m_fileTotalSizeCount);
+        } else {
+            //1024 MB
+            fileSizeKMGB = (qreal)m_fileSizeCount / (qreal)1048576;
+            if(fileSizeKMGB < 1024) {
+                fileSizeText = tr("%1 MB (%2 Bytes)").arg(QString::number(fileSizeKMGB,'f',2)).arg(m_fileSizeCount);
+                fileSizeKMGB = (qreal)m_fileTotalSizeCount / (qreal)1048576;
+                fileTotalSizeText = tr("%1 MB (%2 Bytes)").arg(QString::number(fileSizeKMGB,'f',2)).arg(m_fileTotalSizeCount);
+            } else {
+                fileSizeKMGB = (qreal)m_fileSizeCount / (qreal)1073741824;
+                fileSizeText = tr("%1 GB (%2 Bytes)").arg(QString::number(fileSizeKMGB,'f',2)).arg(m_fileSizeCount);
+                fileSizeKMGB = (qreal)m_fileTotalSizeCount / (qreal)1073741824;
+                fileTotalSizeText = tr("%1 GB (%2 Bytes)").arg(QString::number(fileSizeKMGB,'f',2)).arg(m_fileTotalSizeCount);
+            }
+        }
+
+        m_fileSizeLabel->setText(fileSizeText);
+        m_fileTotalSizeLabel ->setText(fileTotalSizeText);
+
+        if(m_folderContainLabel)
+            m_folderContainLabel->setText(tr("%1 files, %2 folders").arg(m_folderContainFiles).arg(m_folderContainFolders));
     }
 }
 
