@@ -113,6 +113,7 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
 
     auto spacer = new QWidget(this);
     spacer->setFixedWidth(qApp->style()->pixelMetric(QStyle::PM_ToolBarItemSpacing) * 2 + 36);
+    spacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     t->addWidget(spacer);
     auto addPageButton = new QToolButton(this);
     addPageButton->setIcon(QIcon::fromTheme("list-add-symbolic"));
