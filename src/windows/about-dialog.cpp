@@ -45,15 +45,15 @@ AboutDialog::~AboutDialog()
 void AboutDialog::initUI()
 {
 	QPalette palette;
-    QFont font14,font18;
+//    QFont font14,font18;
 	QTextCursor textCursor;
 	QTextBlockFormat blockFormat;
-	QString addressLabel = tr("Offical Website: ");
-	QString supportLabel = tr("Service & Technology Support: ");
-	QString phoneLabel = tr("Hot Service: ");
+//	QString addressLabel = tr("Offical Website: ");
+    QString supportLabel = tr("Service & Support: ");
+//	QString phoneLabel = tr("Hot Service: ");
 
-    font18.setPointSize(18);
-    font14.setPointSize(14);
+//    font18.setPointSize(18);
+//    font14.setPointSize(14);
 	palette.setColor(QPalette::Highlight, QColor("#E54A50"));
 	blockFormat.setLineHeight(24, QTextBlockFormat::SingleHeight);//font-line-hight
 
@@ -64,7 +64,7 @@ void AboutDialog::initUI()
 
     ui->logoLabel->setPixmap(QIcon::fromTheme("system-file-manager").pixmap(24,24));
 
-    ui->titleLabel->setFont(font14);
+//    ui->titleLabel->setFont(font14);
     ui->titleLabel->setText(tr("File Manager"));
 
     ui->closeBtn->setFlat(true);
@@ -76,14 +76,14 @@ void AboutDialog::initUI()
 	
     ui->iconLabel->setPixmap(QIcon::fromTheme("system-file-manager").pixmap(96,96));
 
-    ui->nameLabel->setFont(font18);
+//    ui->nameLabel->setFont(font18);
     ui->nameLabel->setText(tr("File Manager"));
 
-    ui->versionLabel->setFont(font14);
+//    ui->versionLabel->setFont(font14);
     ui->versionLabel->setStyleSheet("color:#595959;");
     ui->versionLabel->setText(QString(tr("Version number: %1")).arg(getCurrentVersion()));
 
-	ui->briefTextedit->setFont(font14);
+//	ui->briefTextedit->setFont(font14);
 	ui->briefTextedit->setReadOnly(true);
     ui->briefTextedit->setStyleSheet("color:#595959;");
 	textCursor = ui->briefTextedit->textCursor();	//before the setText().
@@ -95,13 +95,11 @@ void AboutDialog::initUI()
 	textCursor.setBlockFormat(blockFormat);
     ui->briefTextedit->setTextCursor(textCursor);
 
-	ui->developTextedit->setFont(font14);
+//	ui->developTextedit->setFont(font14);
 	ui->developTextedit->setReadOnly(true);
     ui->developTextedit->setStyleSheet("color:#595959;");
 	textCursor = ui->developTextedit->textCursor();//before the setText();
-    ui->developTextedit->setText(addressLabel + "<a href=\"http://www.kylinos.cn\">www.kylinos.cn</a><br/>" +
-							     supportLabel + "<a href=\"mailto://support@kylinos.cn\">support@kylinos.cn</a><br/>" +
-								 phoneLabel + "<a href=#>400-089-1870</a>");
+    ui->developTextedit->setText(supportLabel + "<a href=\"mailto://support@kylinos.cn\">support@kylinos.cn</a><br/>");
 	textCursor.setBlockFormat(blockFormat);
     ui->developTextedit->setTextCursor(textCursor);
 }

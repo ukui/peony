@@ -19,38 +19,38 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/windows/about-dialog.cpp" line="29"/>
+        <location filename="../../src/windows/about-dialog.cpp" line="51"/>
         <source>Offical Website: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/windows/about-dialog.cpp" line="30"/>
-        <source>Service &amp; Technology Support: </source>
+        <location filename="../../src/windows/about-dialog.cpp" line="52"/>
+        <source>Service &amp; Support: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/windows/about-dialog.cpp" line="31"/>
+        <location filename="../../src/windows/about-dialog.cpp" line="53"/>
         <source>Hot Service: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/windows/about-dialog.cpp" line="46"/>
-        <location filename="../../src/windows/about-dialog.cpp" line="58"/>
+        <location filename="../../src/windows/about-dialog.cpp" line="68"/>
+        <location filename="../../src/windows/about-dialog.cpp" line="80"/>
         <source>File Manager</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/windows/about-dialog.cpp" line="62"/>
+        <location filename="../../src/windows/about-dialog.cpp" line="84"/>
         <source>Version number: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/windows/about-dialog.cpp" line="68"/>
+        <location filename="../../src/windows/about-dialog.cpp" line="90"/>
         <source>File manager is a graphical software to help users manage system files. It provides common file operation functions for users, such as file viewing, file copy, paste, cut, delete, rename, file selection, application opening, file search, file sorting, file preview, etc. it is convenient for users to manage system files intuitively on the interface.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/windows/about-dialog.cpp" line="94"/>
+        <location filename="../../src/windows/about-dialog.cpp" line="116"/>
         <source>none</source>
         <translation type="unfinished"></translation>
     </message>
@@ -345,12 +345,12 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.cpp" line="429"/>
+        <location filename="../../src/peony-application.cpp" line="397"/>
         <source>Peony Qt</source>
         <translation type="unfinished">Peony Qt</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.cpp" line="430"/>
+        <location filename="../../src/peony-application.cpp" line="398"/>
         <source>Author:
 	Yue Lan &lt;lanyue@kylinos.cn&gt;
 	Meihong He &lt;hemeihong@kylinos.cn&gt;
@@ -424,19 +424,6 @@ Telif (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</translatio
     <message>
         <location filename="../../src/peony-application.h" line="67"/>
         <source>Show properties</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>QObject</name>
-    <message>
-        <location filename="../../src/peony-application.cpp" line="403"/>
-        <source>Error</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/peony-application.cpp" line="403"/>
-        <source>Can not open %1.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

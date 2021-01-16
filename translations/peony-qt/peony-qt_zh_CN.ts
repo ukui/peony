@@ -6,7 +6,7 @@
     <message>
         <location filename="../../src/windows/about-dialog.ui" line="26"/>
         <source>Dialog</source>
-        <translation type="unfinished"></translation>
+        <translation>窗口</translation>
     </message>
     <message>
         <location filename="../../src/windows/about-dialog.ui" line="82"/>
@@ -19,38 +19,42 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/windows/about-dialog.cpp" line="29"/>
+        <location filename="../../src/windows/about-dialog.cpp" line="51"/>
         <source>Offical Website: </source>
         <translation>官方网站: </translation>
     </message>
     <message>
-        <location filename="../../src/windows/about-dialog.cpp" line="30"/>
         <source>Service &amp; Technology Support: </source>
-        <translation>服务与技术支持: </translation>
+        <translation type="vanished">服务与技术支持: </translation>
     </message>
     <message>
-        <location filename="../../src/windows/about-dialog.cpp" line="31"/>
+        <location filename="../../src/windows/about-dialog.cpp" line="52"/>
+        <source>Service &amp; Support: </source>
+        <translation>服务与支持团队: </translation>
+    </message>
+    <message>
+        <location filename="../../src/windows/about-dialog.cpp" line="53"/>
         <source>Hot Service: </source>
         <translation>服务热线: </translation>
     </message>
     <message>
-        <location filename="../../src/windows/about-dialog.cpp" line="46"/>
-        <location filename="../../src/windows/about-dialog.cpp" line="58"/>
+        <location filename="../../src/windows/about-dialog.cpp" line="68"/>
+        <location filename="../../src/windows/about-dialog.cpp" line="80"/>
         <source>File Manager</source>
         <translation>文件管理器</translation>
     </message>
     <message>
-        <location filename="../../src/windows/about-dialog.cpp" line="62"/>
+        <location filename="../../src/windows/about-dialog.cpp" line="84"/>
         <source>Version number: %1</source>
         <translation>版本号: %1</translation>
     </message>
     <message>
-        <location filename="../../src/windows/about-dialog.cpp" line="68"/>
+        <location filename="../../src/windows/about-dialog.cpp" line="90"/>
         <source>File manager is a graphical software to help users manage system files. It provides common file operation functions for users, such as file viewing, file copy, paste, cut, delete, rename, file selection, application opening, file search, file sorting, file preview, etc. it is convenient for users to manage system files intuitively on the interface.</source>
         <translation>文件管理器是一款帮助用户管理系统文件的图形化的软件，为用户提供常用的文件操作功能，比如文件查看，文件复制、粘贴、剪切、删除、重命名，文件选用应用打开，文件搜索，文件排序，文件预览等，方便用户在界面上直观地管理系统文件。</translation>
     </message>
     <message>
-        <location filename="../../src/windows/about-dialog.cpp" line="94"/>
+        <location filename="../../src/windows/about-dialog.cpp" line="116"/>
         <source>none</source>
         <translation>无</translation>
     </message>
@@ -357,12 +361,12 @@ p, li { white-space: pre-wrap; }
 2.你使用的系统主题不是qt默认支持的主题，并且你没有安装相关的平台插件。如果你正在使用Gtk主题作为系统主题，尝试安装qt5-gtk2-platformtheme以解决此问题。</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.cpp" line="429"/>
+        <location filename="../../src/peony-application.cpp" line="397"/>
         <source>Peony Qt</source>
         <translation>文件管理器</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.cpp" line="430"/>
+        <location filename="../../src/peony-application.cpp" line="398"/>
         <source>Author:
 	Yue Lan &lt;lanyue@kylinos.cn&gt;
 	Meihong He &lt;hemeihong@kylinos.cn&gt;
@@ -446,14 +450,12 @@ Copyright (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</source
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../../src/peony-application.cpp" line="403"/>
         <source>Error</source>
-        <translation>错误</translation>
+        <translation type="vanished">错误</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.cpp" line="403"/>
         <source>Can not open %1.</source>
-        <translation>无法打开 %1.</translation>
+        <translation type="vanished">无法打开 %1.</translation>
     </message>
 </context>
 <context>
