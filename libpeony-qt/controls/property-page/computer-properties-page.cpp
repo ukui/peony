@@ -40,7 +40,7 @@
 
 using namespace Peony;
 
-ComputerPropertiesPage::ComputerPropertiesPage(const QString &uri, QWidget *parent) : QWidget(parent)
+ComputerPropertiesPage::ComputerPropertiesPage(const QString &uri, QWidget *parent) : PropertiesWindowTabPagePluginSaveIface(parent)
 {
     m_uri = uri;
     m_layout = new QFormLayout(this);
@@ -194,4 +194,9 @@ void ComputerPropertiesPage::addSeparator()
     auto separator = new QFrame(this);
     separator->setFrameShape(QFrame::HLine);
     m_layout->addRow(separator);
+}
+
+void ComputerPropertiesPage::saveAllChange()
+{
+
 }
