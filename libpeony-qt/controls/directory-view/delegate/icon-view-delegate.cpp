@@ -120,7 +120,7 @@ void IconViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
     style->drawPrimitive(QStyle::PE_PanelItemViewItem, &opt, painter, nullptr);
     opt.decorationSize = rawDecoSize;
 
-    if (ClipboardUtils::getClipedFilesParentUri() == view->getDirectoryUri()) {
+    if (FileUtils::isSamePath(ClipboardUtils::getClipedFilesParentUri(), view->getDirectoryUri())) {
         if (ClipboardUtils::isClipboardFilesBeCut()) {
             auto clipedUris = ClipboardUtils::getClipboardFilesUris();
             if (clipedUris.contains(index.data(FileItemModel::UriRole).toString())) {

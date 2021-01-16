@@ -27,6 +27,7 @@
 
 #include "file-operation-manager.h"
 #include "file-rename-operation.h"
+#include "file-utils.h"
 
 #include "icon-view-delegate.h"
 #include "clipboard-utils.h"
@@ -83,7 +84,7 @@ void DesktopIconViewDelegate::paint(QPainter *painter, const QStyleOptionViewIte
         }
     }
 
-    if (QUrl(ClipboardUtils::getClipedFilesParentUri()).path() == QUrl(view->getDirectoryUri()).path()) {
+    if (Peony::FileUtils::isSamePath(ClipboardUtils::getClipedFilesParentUri(), view->getDirectoryUri())){
         if (ClipboardUtils::isClipboardFilesBeCut()) {
             auto clipedUris = ClipboardUtils::getClipboardFilesUris();
             if (clipedUris.contains(index.data(DesktopItemModel::UriRole).toString())) {

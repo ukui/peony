@@ -447,6 +447,11 @@ bool FileUtils::isStandardPath(const QString &uri)
     return false;
 }
 
+bool FileUtils::isSamePath(const QString &uri, const QString &targetUri)
+{
+    return QUrl(uri).path() == QUrl(targetUri).path();
+}
+
 bool FileUtils::containsStandardPath(const QStringList &list)
 {
     for(auto uri:list)
