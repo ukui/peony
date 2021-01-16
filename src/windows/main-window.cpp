@@ -325,7 +325,8 @@ void MainWindow::setShortCuts()
         trashAction->setShortcuts(QList<QKeySequence>()<<Qt::Key_Delete<<QKeySequence(Qt::CTRL + Qt::Key_D));
         connect(trashAction, &QAction::triggered, [=]() {
             auto currentUri = getCurrentUri();
-            if (currentUri.startsWith("search://"))
+            if (currentUri.startsWith("search://")
+                    || currentUri.startsWith("favorite://"))
                 return;
 
             auto uris = this->getCurrentSelections();
