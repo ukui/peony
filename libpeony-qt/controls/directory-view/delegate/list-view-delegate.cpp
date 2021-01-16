@@ -26,6 +26,7 @@
 #include "file-item-model.h"
 
 #include "list-view.h"
+#include "clipboard-utils.h"
 
 #include "file-info.h"
 
@@ -57,10 +58,8 @@ void ListViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
     initStyleOption(&opt, index);
     opt.displayAlignment = Qt::Alignment(Qt::AlignLeft|Qt::AlignVCenter);
 
-    QApplication::style()->drawControl(QStyle::CE_ItemViewItem, &opt, painter);
-
+    auto view = qobject_cast<DirectoryView::ListView *>(parent());
     if (index.column() == 0) {
-        auto view = qobject_cast<DirectoryView::ListView *>(parent());
         if (!view->isDragging() || !view->selectionModel()->selectedIndexes().contains(index)) {
             auto info = FileInfo::fromUri(index.data(Qt::UserRole).toString());
             auto colors = info->getColors();
@@ -78,6 +77,18 @@ void ListViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
             }
         }
     }
+
+    if (FileUtils::isSamePath(ClipboardUtils::getClipedFilesParentUri(), view->getDirectoryUri())) {
+        if (ClipboardUtils::isClipboardFilesBeCut()) {
+            auto clipedUris = ClipboardUtils::getClipboardFilesUris();
+            if (clipedUris.contains(index.data(Qt::UserRole).toString())) {
+                painter->setOpacity(0.5);
+                qDebug()<<"cut item in list view"<<index.data();
+            }
+        }
+    }
+
+    QApplication::style()->drawControl(QStyle::CE_ItemViewItem, &opt, painter);
 }
 
 QWidget *ListViewDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const

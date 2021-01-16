@@ -231,10 +231,8 @@ void Peony::FileOperationErrorDialogWarning::handle(Peony::FileOperationError &e
                                      "  p{font-size:14px;line-height:100%;}"
                                      "  .bold{text-align: left;font-size:13px;font-wight:500;}"
                                      "</style>"
-                                     "<p class='bold'>%1</p>"
-                                     "<p>%2</p>")
-                .arg(m_error->errorStr)
-                .arg(tr("Make sure the disk is not full or write protected and that the file is not protected"));
+                                     "<p class='bold'>%1</p>")
+                .arg(m_error->errorStr);
         m_text->setText(htmlString);
     } else {
         QString htmlString = QString("<style>"

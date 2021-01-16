@@ -60,7 +60,7 @@ public:
     std::shared_ptr<FileInfo> findFileInfoByUri(const QString &uri); //{return global_info_list->value(uri);}
 
     void lock() {
-        m_mutex.tryLock();
+        m_mutex.lock();
     }
     void unlock() {
         m_mutex.unlock();

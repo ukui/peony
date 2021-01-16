@@ -76,7 +76,7 @@ retry:
         except.destDirUri = m_dest_uri;
         auto responseType = Invalid;
         if (G_IO_ERROR_EXISTS == err->code) {
-            except.dlgType = ED_CONFLICT;
+            except.dlgType = ED_WARNING;
             Q_EMIT errored(except);
             responseType = except.respCode;
         } else {

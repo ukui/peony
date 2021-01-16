@@ -403,6 +403,7 @@ void IconView::slotRename()
     //special path like trash path not allow rename
     if (getDirectoryUri().startsWith("trash://")
         || getDirectoryUri().startsWith("recent://")
+        || getDirectoryUri().startsWith("favorite://")
         || getDirectoryUri().startsWith("search://"))
         return;
 

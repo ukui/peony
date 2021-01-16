@@ -236,6 +236,12 @@ void FileWatcher::file_changed_callback(GFileMonitor *monitor,
         break;
     }
     case G_FILE_MONITOR_EVENT_DELETED: {
+        auto uri = g_file_get_uri(file);
+        bool shouldSendSignal = p_this->m_target_uri == uri;
+        if (uri)
+            g_free(uri);
+        if (!shouldSendSignal)
+            return;
         p_this->stopMonitor();
         p_this->cancel();
         //qDebug()<<p_this->m_target_uri;

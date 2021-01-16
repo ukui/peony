@@ -163,7 +163,6 @@ public:
     void setErrorResponse(ExceptionResponse type) {
         m_err_response = type;
     }
-
     void setDestFileName(const QString &name) {
         m_dest_basename = name;
 

@@ -68,9 +68,7 @@ FileOperationManager::FileOperationManager(QObject *parent) : QObject(parent)
 
     //
     connect(m_progressbar, &FileOperationProgressBar::canceled, [=] () {
-        if (!m_allow_parallel) {
-            m_progressbar->removeAllProgressbar();
-        }
+        m_progressbar->removeAllProgressbar();
     });
 }
 

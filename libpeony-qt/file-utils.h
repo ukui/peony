@@ -67,6 +67,7 @@ public:
     NO_BLOCKING static const QString getOriginalUri(const QString &uri);
 
     NO_BLOCKING static bool isStandardPath(const QString &uri);
+    NO_BLOCKING static bool isSamePath(const QString &uri, const QString &targetUri);
     NO_BLOCKING static bool containsStandardPath(const QStringList &list);
 
     BLOCKING static bool isFileExsit(const QString &uri);

@@ -280,7 +280,7 @@ fallback_retry:
                 goto fallback_retry;
             }
             case Cancel: {
-                node->setState(FileNode::Handled);
+                node->setState(FileNode::Unhandled);
                 cancel();
                 break;
             }
@@ -418,7 +418,7 @@ fallback_retry:
                 goto fallback_retry;
             }
             case Cancel: {
-                node->setState(FileNode::Handled);
+                node->setState(FileNode::Unhandled);
                 cancel();
                 break;
             }

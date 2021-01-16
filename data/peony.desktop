@@ -10,4 +10,5 @@ MimeType=inode/directory
 Icon=system-file-manager
 Terminal=false
 Type=Application
+Categories=System;Settings;Security;
 Keywords=file;home;folder;browser;disk;computer;

@@ -380,7 +380,7 @@ DesktopItemModel::~DesktopItemModel()
 
 }
 
-void DesktopItemModel::refresh()
+void DesktopItemModel::refreshInternal()
 {
     ThumbnailManager::getInstance()->syncThumbnailPreferences();
     beginResetModel();
@@ -600,12 +600,17 @@ QMimeData *DesktopItemModel::mimeData(const QModelIndexList &indexes) const
     QMimeData* data = QAbstractItemModel::mimeData(indexes);
     //set urls data URLs correspond to the MIME type text/uri-list.
     QList<QUrl> urls;
+    QStringList uris;
     for (auto index : indexes) {
         QUrl url = index.data(UriRole).toString();
         if (!urls.contains(url))
             urls<<url;
+        uris<<index.data(UriRole).toString();
     }
     data->setUrls(urls);
+    auto string = uris.join(" ");
+    data->setData("peony-qt/encoded-uris", string.toUtf8());
+    data->setText(string);
     return data;
 }
 
@@ -639,11 +644,19 @@ bool DesktopItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action
     }
 
     QStringList srcUris;
-    for (auto url : urls) {
-        //can not drag file from recent
-        if (url.url().startsWith("recent://"))
-            return false;
-        srcUris<<url.url();
+    if (data->hasFormat("peony-qt/encoded-uris")) {
+        srcUris = data->text().split(" ");
+        for (QString uri : srcUris) {
+            if (uri.startsWith("recent://"))
+                srcUris.removeOne(uri);
+        }
+    } else {
+        for (auto url : urls) {
+            //can not drag file from recent
+            if (url.url().startsWith("recent://"))
+                return false;
+            srcUris<<url.url();
+        }
     }
     srcUris.removeDuplicates();
 
@@ -705,4 +718,14 @@ Qt::DropActions DesktopItemModel::supportedDropActions() const
 {
     //return Qt::MoveAction|Qt::CopyAction;
     return QAbstractItemModel::supportedDropActions();
+}
+
+void DesktopItemModel::refresh()
+{
+    m_desktop_info = FileInfo::fromPath(QStandardPaths::writableLocation(QStandardPaths::DesktopLocation));
+    auto infoJob = new FileInfoJob(m_desktop_info);
+    connect(infoJob, &FileInfoJob::queryAsyncFinished, this, [=](){
+        refreshInternal();
+    });
+    infoJob->queryAsync();
 }

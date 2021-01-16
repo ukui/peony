@@ -145,6 +145,9 @@ void FileItem::findChildrenAsync()
     //NOTE: entry a new root might destroyed the current enumeration work.
     //the root item will be delete, so we should cancel the previous enumeration.
     enumerator->connect(this, &FileItem::cancelFindChildren, enumerator, &FileEnumerator::cancel);
+    enumerator->connect(enumerator, &FileEnumerator::cancelled, m_model, [=](){
+        m_model->findChildrenFinished();
+    });
     enumerator->connect(enumerator, &FileEnumerator::prepared, this, [=](std::shared_ptr<GErrorWrapper> err, const QString &targetUri, bool critical) {
         if (critical) {
             Peony::AudioPlayManager::getInstance()->playWarningAudio();
@@ -532,7 +535,9 @@ void FileItem::onChildAdded(const QString &uri)
         m_waiting_add_queue.removeOne(uri);
         //Q_EMIT m_model->dataChanged(item->firstColumnIndex(), item->lastColumnIndex());
         //Q_EMIT m_model->updated();
-        ThumbnailManager::getInstance()->createThumbnail(info->uri(), m_thumbnail_watcher);
+        QTimer::singleShot(1000, this, [=](){
+            ThumbnailManager::getInstance()->createThumbnail(info->uri(), m_thumbnail_watcher);
+        });
     });
     infoJob->queryAsync();
 

@@ -113,6 +113,7 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
 
     auto spacer = new QWidget(this);
     spacer->setFixedWidth(qApp->style()->pixelMetric(QStyle::PM_ToolBarItemSpacing) * 2 + 36);
+    spacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     t->addWidget(spacer);
     auto addPageButton = new QToolButton(this);
     addPageButton->setIcon(QIcon::fromTheme("list-add-symbolic"));
@@ -863,48 +864,49 @@ void TabWidget::setPreviewPage(Peony::PreviewPageIface *previewPage)
 
 void TabWidget::addPage(const QString &uri, bool jumpTo)
 {
+    auto viewContainer = new Peony::DirectoryViewContainer(m_stack);
+    bool hasCurrentPage = currentPage();
+    int zoomLevel = -1;
+
+    if (hasCurrentPage) {
+        // perfer to use current page view type
+        auto internalViews = Peony::DirectoryViewFactoryManager2::getInstance()->internalViews();
+        if (internalViews.contains(currentPage()->getView()->viewId()))
+            viewContainer->switchViewType(currentPage()->getView()->viewId());
+
+        if (currentPage()) {
+            hasCurrentPage = true;
+            zoomLevel = currentPage()->getView()->currentZoomLevel();
+        }
+    } else {
+        viewContainer->switchViewType(Peony::GlobalSettings::getInstance()->getValue(DEFAULT_VIEW_ID).toString());
+    }
+    m_stack->addWidget(viewContainer);
+    if (jumpTo) {
+        m_stack->setCurrentWidget(viewContainer);
+    }
+
     auto info = Peony::FileInfo::fromUri(uri);
     auto infoJob = new Peony::FileInfoJob(info);
     infoJob->setAutoDelete();
 
     connect(infoJob, &Peony::FileInfoJob::queryAsyncFinished, this, [=](){
-        if (! info->isDir() && !info.get()->isVolume() && !info.get()->isVirtual())
+        if (!info->isEmptyInfo() && ! info->isDir() && !info.get()->isVolume() && !info.get()->isVirtual())
             return;
 
         QCursor c;
         c.setShape(Qt::WaitCursor);
         this->setCursor(c);
 
-        int zoomLevel = -1;
-
-        bool hasCurrentPage = false;
-
-        if (currentPage()) {
-            hasCurrentPage = true;
-            zoomLevel = currentPage()->getView()->currentZoomLevel();
-        }
-
-        auto viewContainer = new Peony::DirectoryViewContainer(m_stack);
+        //auto viewContainer = new Peony::DirectoryViewContainer(m_stack);
         viewContainer->setSortType(Peony::FileItemModel::FileName);
         viewContainer->setSortOrder(Qt::AscendingOrder);
 
-        m_stack->addWidget(viewContainer);
+        //m_stack->addWidget(viewContainer);
         viewContainer->goToUri(uri, false, true);
-        if (jumpTo) {
-            m_stack->setCurrentWidget(viewContainer);
-        }
 
         bindContainerSignal(viewContainer);
         updateTrashBarVisible(uri);
-
-        if (hasCurrentPage) {
-            // perfer to use current page view type
-            auto internalViews = Peony::DirectoryViewFactoryManager2::getInstance()->internalViews();
-            if (internalViews.contains(currentPage()->getView()->viewId()))
-                viewContainer->switchViewType(currentPage()->getView()->viewId());
-        } else {
-            viewContainer->switchViewType(Peony::GlobalSettings::getInstance()->getValue(DEFAULT_VIEW_ID).toString());
-        }
 
         if (zoomLevel > 0)
             viewContainer->getView()->setCurrentZoomLevel(zoomLevel);
