@@ -84,28 +84,53 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
 
     setMovable(false);
 
-    auto a = addAction(QIcon::fromTheme("folder-new-symbolic"), tr("Create Folder"), [=]() {
+//    auto a = addAction(QIcon::fromTheme("folder-new-symbolic"), tr("Create Folder"), [=]() {
+//        //use the same function
+//        m_window->createFolderOperation();
+//    });
+//    auto createFolder = qobject_cast<QToolButton *>(widgetForAction(a));
+//    createFolder->setAutoRaise(false);
+//    createFolder->setFixedSize(QSize(40, 40));
+//    createFolder->setIconSize(QSize(16, 16));
+//    m_create_folder = createFolder;
+
+    //use theme buttons
+    auto createFolder = new HeadBarPushButton(this);
+    m_create_folder = createFolder;
+    createFolder->setFixedSize(QSize(40, 40));
+    createFolder->setIconSize(QSize(16, 16));
+    createFolder->setIcon(QIcon::fromTheme("folder-new-symbolic"));
+    createFolder->setToolTip(tr("Create Folder"));
+    addWidget(createFolder);
+    connect(createFolder, &QPushButton::clicked, m_window, [=]() {
         //use the same function
         m_window->createFolderOperation();
     });
-    auto createFolder = qobject_cast<QToolButton *>(widgetForAction(a));
-    createFolder->setAutoRaise(false);
-    createFolder->setFixedSize(QSize(40, 40));
-    createFolder->setIconSize(QSize(16, 16));
-    m_create_folder = createFolder;
 
     addSpacing(2);
 
     //find a terminal when init
     findDefaultTerminal();
-    a = addAction(QIcon::fromTheme("terminal-app-symbolic"), tr("Open Terminal"), [=]() {
+//    a = addAction(QIcon::fromTheme("terminal-app-symbolic"), tr("Open Terminal"), [=]() {
+//        //open the default terminal
+//        openDefaultTerminal();
+//    });
+//    auto openTerminal = qobject_cast<QToolButton *>(widgetForAction(a));
+//    openTerminal->setAutoRaise(false);
+//    openTerminal->setFixedSize(QSize(40, 40));
+//    openTerminal->setIconSize(QSize(16, 16));
+
+    //use theme buttons
+    auto openTerminal = new HeadBarPushButton(this);
+    openTerminal->setFixedSize(QSize(40, 40));
+    openTerminal->setIconSize(QSize(16, 16));
+    openTerminal->setIcon(QIcon::fromTheme("terminal-app-symbolic"));
+    openTerminal->setToolTip(tr("Open Terminal"));
+    addWidget(openTerminal);
+    connect(openTerminal, &QPushButton::clicked, m_window, [=]() {
         //open the default terminal
         openDefaultTerminal();
     });
-    auto openTerminal = qobject_cast<QToolButton *>(widgetForAction(a));
-    openTerminal->setAutoRaise(false);
-    openTerminal->setFixedSize(QSize(40, 40));
-    openTerminal->setIconSize(QSize(16, 16));
 
     addSpacing(9 - 4);
 
@@ -162,17 +187,27 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
     connect(m_location_bar, &Peony::AdvancedLocationBar::updateWindowLocationRequest, this, &HeaderBar::updateLocationRequest);
 
     addSpacing(9 - 7);
-    a = addAction(QIcon::fromTheme("edit-find-symbolic"), tr("Search"));
-    connect(a, &QAction::triggered, this, &HeaderBar::searchButtonClicked);
-    auto search = qobject_cast<QToolButton *>(widgetForAction(a));
-    search->setAutoRaise(false);
-    search->setFixedSize(QSize(40, 40));
-    setIconSize(QSize(16, 16));
+//    auto a = addAction(QIcon::fromTheme("edit-find-symbolic"), tr("Search"));
+//    connect(a, &QAction::triggered, this, &HeaderBar::searchButtonClicked);
+//    auto search = qobject_cast<QToolButton *>(widgetForAction(a));
+//    search->setAutoRaise(false);
+//    search->setFixedSize(QSize(40, 40));
+//    setIconSize(QSize(16, 16));
+//    m_search_button = search;
+
+    //use theme buttons
+    auto search = new HeadBarPushButton(this);
     m_search_button = search;
+    search->setFixedSize(QSize(40, 40));
+    search->setIconSize(QSize(16, 16));
+    search->setIcon(QIcon::fromTheme("edit-find-symbolic"));
+    search->setToolTip(tr("Search"));
+    addWidget(search);
+    connect(search, &QPushButton::clicked, this, &HeaderBar::searchButtonClicked);
 
     addSpacing(9);
 
-    a = addAction(QIcon::fromTheme("view-grid-symbolic"), tr("View Type"));
+    auto a = addAction(QIcon::fromTheme("view-grid-symbolic"), tr("View Type"));
     auto viewType = qobject_cast<QToolButton *>(widgetForAction(a));
     viewType->setAutoRaise(false);
     viewType->setFixedSize(QSize(57, 40));
@@ -236,9 +271,20 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
     m_operation_menu = new OperationMenu(m_window, this);
     a->setMenu(m_operation_menu);
 
-    search->setAutoRaise(true);
-    search->setProperty("useIconHighlightEffect", true);
-    search->setProperty("iconHighlightEffectMode", 1);
+    createFolder->setFlat(true);
+    createFolder->setProperty("isWindowButton", 1);
+    createFolder->setProperty("useIconHighlightEffect", 2);
+    createFolder->setProperty("isIcon", true);
+
+    openTerminal->setFlat(true);
+    openTerminal->setProperty("isWindowButton", 1);
+    openTerminal->setProperty("useIconHighlightEffect", 2);
+    openTerminal->setProperty("isIcon", true);
+
+    search->setFlat(true);
+    search->setProperty("isWindowButton", 1);
+    search->setProperty("useIconHighlightEffect", 2);
+    search->setProperty("isIcon", true);
 
     goBack->setFlat(true);
     goBack->setProperty("isWindowButton", 1);
