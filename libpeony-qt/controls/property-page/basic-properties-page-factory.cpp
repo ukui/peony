@@ -57,7 +57,7 @@ void BasicPropertiesPageFactory::closeFactory()
     deleteLater();
 }
 
-QWidget *BasicPropertiesPageFactory::createTabPage(const QStringList &uris)
+PropertiesWindowTabIface *BasicPropertiesPageFactory::createTabPage(const QStringList &uris)
 {
     BasicPropertiesPage *p = new BasicPropertiesPage(uris);
     return p;

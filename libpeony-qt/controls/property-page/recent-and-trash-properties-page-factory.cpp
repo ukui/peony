@@ -52,7 +52,7 @@ bool RecentAndTrashPropertiesPageFactory::supportUris(const QStringList &uris)
     return false;
 }
 
-QWidget *RecentAndTrashPropertiesPageFactory::createTabPage(const QStringList &uris)
+PropertiesWindowTabIface *RecentAndTrashPropertiesPageFactory::createTabPage(const QStringList &uris)
 {
     return new RecentAndTrashPropertiesPage(uris);
 }

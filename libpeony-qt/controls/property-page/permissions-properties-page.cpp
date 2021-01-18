@@ -53,33 +53,27 @@ using namespace Peony;
 #define WRITEABLE 3
 #define EXECUTEABLE 4
 
-PermissionsPropertiesPage::PermissionsPropertiesPage(const QStringList &uris, QWidget *parent) : QWidget(parent)
+PermissionsPropertiesPage::PermissionsPropertiesPage(const QStringList &uris, QWidget *parent) : PropertiesWindowTabIface(parent)
 {
     m_uri = uris.first();
 
-    auto layout = new QVBoxLayout(this);
-    this->setLayout(layout);
-    m_table = new QTableWidget(this);
-    m_table->setRowCount(4);
-    m_table->setColumnCount(5);
-    m_table->verticalHeader()->setVisible(false);
-    m_table->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    m_table->horizontalHeader()->setFrameShape(QFrame::NoFrame);
-    m_table->horizontalHeader()->setSelectionMode(QTableWidget::NoSelection);
-    m_table->setSelectionMode(QTableWidget::NoSelection);
-    m_table->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-    auto l = QStringList();
-    l<<tr("User or Group")<<tr("Type")<<tr("Readable")<<tr("Writeable")<<tr("Excuteable");
-    m_table->setHorizontalHeaderLabels(l);
-    m_table->setEditTriggers(QTableWidget::NoEditTriggers);
+    m_layout = new QVBoxLayout(this);
+    m_layout->setContentsMargins(0,0,0,0);
+    this->setLayout(m_layout);
 
-    m_label = new QLabel(tr("File: %1").arg(m_uri), this);
+
+    m_label = new QLabel(tr("Target Object: %1").arg(m_uri), this);
+    m_label->setMinimumHeight(64);
+
+    m_label->setContentsMargins(20,20,20,20);
+
     m_message = new QLabel(this);
     m_message->setAlignment(Qt::AlignCenter);
-    layout->addWidget(m_label);
-    layout->addWidget(m_table);
-    layout->addWidget(m_message);
+    m_layout->addWidget(m_label);
 
+    this->initTableWidget();
+
+    m_layout->addWidget(m_message);
     m_message->setVisible(false);
 
     m_watcher = std::make_shared<FileWatcher>(m_uri);
@@ -94,11 +88,39 @@ PermissionsPropertiesPage::~PermissionsPropertiesPage()
 
 }
 
+void PermissionsPropertiesPage::initTableWidget()
+{
+    m_table = new QTableWidget(this);
+    m_table->setRowCount(3);
+    m_table->setColumnCount(4);
+    m_table->verticalHeader()->setVisible(false);
+    m_table->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    m_table->horizontalHeader()->setFrameShape(QFrame::NoFrame);
+    m_table->horizontalHeader()->setSelectionMode(QTableWidget::NoSelection);
+    m_table->setSelectionMode(QTableWidget::NoSelection);
+    m_table->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    m_table->setShowGrid(false);
+
+    m_table->horizontalHeader()->setMinimumHeight(34);
+    m_table->rowHeight(34);
+
+    m_table->setAlternatingRowColors(true);
+
+    auto l = QStringList();
+    l<<tr("User or Group")<<tr("Type")<<tr("Read and Write")<<tr("Readonly");
+    m_table->setHorizontalHeaderLabels(l);
+    m_table->setEditTriggers(QTableWidget::NoEditTriggers);
+
+    m_layout->addWidget(m_table);
+}
+
 void PermissionsPropertiesPage::queryPermissionsAsync(const QString &, const QString &uri)
 {
     m_uri = uri;
     QUrl url = uri;
-    m_label->setText(url.toDisplayString());
+    m_label->setText(tr("Target Object: %1").arg(url.toDisplayString()));
+    QString text = tr("Target Object: %1").arg(url.toDisplayString());
+    qDebug() << "PermissionsPropertiesPage::queryPermissionsAsync text:" << text;
     m_table->setEnabled(false);
 
     GFile *file = g_file_new_for_uri(m_uri.toUtf8().constData());
@@ -157,25 +179,32 @@ GAsyncReadyCallback PermissionsPropertiesPage::async_query_permisson_callback(GO
                 mode = g_file_info_get_attribute_uint32(info, G_FILE_ATTRIBUTE_UNIX_MODE);
 
             auto owner_readable = mode & S_IRUSR;
-            p_this->m_permissions[0][0] = owner_readable;
             auto owner_writeable = mode & S_IWUSR;
-            p_this->m_permissions[0][1] = owner_writeable;
-            auto owner_executeable = mode & S_IXUSR;
-            p_this->m_permissions[0][2] = owner_executeable;
 
-            auto group_readable = mode & S_IRGRP;
-            p_this->m_permissions[1][0] = group_readable;
+            //read and write
+            p_this->m_permissions[0][0] = owner_readable && owner_writeable;
+            //read only
+            p_this->m_permissions[0][1] = owner_readable && !owner_writeable;
+
+//            auto owner_executeable = mode & S_IXUSR;
+//            p_this->m_permissions[0][2] = owner_executeable;
+
+            auto group_readable  = mode & S_IRGRP;
             auto group_writeable = mode & S_IWGRP;
-            p_this->m_permissions[1][1] = group_writeable;
-            auto group_executeable = mode & S_IXGRP;
-            p_this->m_permissions[1][2] = group_executeable;
+
+            p_this->m_permissions[1][0] = group_readable && group_writeable;
+            p_this->m_permissions[1][1] = group_readable && !group_writeable;
+
+//            auto group_executeable = mode & S_IXGRP;
+//            p_this->m_permissions[1][2] = group_executeable;
 
             auto other_readable = mode & S_IROTH;
-            p_this->m_permissions[2][0] = other_readable;
             auto other_writeable = mode & S_IWOTH;
-            p_this->m_permissions[2][1] = other_writeable;
-            auto other_executeable = mode & S_IXOTH;
-            p_this->m_permissions[2][2] = other_executeable;
+
+            p_this->m_permissions[2][0] = other_readable && other_writeable;
+            p_this->m_permissions[2][1] = other_readable && !other_writeable;
+//            auto other_executeable = mode & S_IXOTH;
+//            p_this->m_permissions[2][2] = other_executeable;
 
             qDebug()<<current_user_readable<<current_user_writeable<<current_user_executeable;
 
@@ -212,7 +241,7 @@ GAsyncReadyCallback PermissionsPropertiesPage::async_query_permisson_callback(GO
                 table->setRowCount(3);
 
                 for (int i = 0; i < 3; i++) {
-                    for (int j = 0; j < 3; j++) {
+                    for (int j = 0; j < 2; j++) {
                         table->setCellWidget(i, j + 2, nullptr);
                         QWidget *w = new QWidget(table);
                         QHBoxLayout *l = new QHBoxLayout(w);
@@ -242,6 +271,7 @@ GAsyncReadyCallback PermissionsPropertiesPage::async_query_permisson_callback(GO
                 QTableWidgetItem *itemR0C0 = new QTableWidgetItem(QIcon::fromTheme("emblem-personal"), userNameDisplayString);
                 table->setItem(0, 0, nullptr);
                 table->setItem(0, 0, itemR0C0);
+                table->setContentsMargins(22,0,0,0);
 
                 QTableWidgetItem *itemR1C0 = new QTableWidgetItem(QIcon::fromTheme("emblem-people"), groupName);
                 table->setItem(1, 0, nullptr);
@@ -255,7 +285,7 @@ GAsyncReadyCallback PermissionsPropertiesPage::async_query_permisson_callback(GO
                 itemR0C1->setTextAlignment(Qt::AlignCenter);
                 auto itemR1C1 = new QTableWidgetItem(tr("Group"));
                 itemR1C1->setTextAlignment(Qt::AlignCenter);
-                auto itemR2C1 = new QTableWidgetItem(tr("Other Users"));
+                auto itemR2C1 = new QTableWidgetItem(tr("Other"));
                 itemR2C1->setTextAlignment(Qt::AlignCenter);
 
                 table->setItem(0, 1, itemR0C1);
@@ -279,7 +309,7 @@ GAsyncReadyCallback PermissionsPropertiesPage::async_query_permisson_callback(GO
 
                 table->setItem(0, 1, itemR0C1);
 
-                for (int i = 0; i < 3; i++) {
+                for (int i = 0; i < 2; i++) {
                     table->setCellWidget(0, i + 2, nullptr);
                     QWidget *w = new QWidget(table);
                     QHBoxLayout *l = new QHBoxLayout(w);
@@ -292,19 +322,21 @@ GAsyncReadyCallback PermissionsPropertiesPage::async_query_permisson_callback(GO
 
                     switch (i) {
                     case 0:
-                        checkbox->setChecked(current_user_readable);
+                        checkbox->setChecked(current_user_readable && current_user_writeable);
                         break;
                     case 1:
-                        checkbox->setChecked(current_user_writeable);
+                        checkbox->setChecked(current_user_readable && !current_user_writeable);
                         break;
-                    case 2:
-                        checkbox->setChecked(current_user_executeable);
-                        break;
+//                    case 2:
+//                        checkbox->setChecked(current_user_executeable);
+//                        break;
                     }
                 }
             }
 
             table->setEnabled(enable);
+            //防止误修改
+            p_this->m_enable = enable;
         }
 
         g_object_unref(info);
@@ -320,51 +352,73 @@ void PermissionsPropertiesPage::changePermission(int row, int column, bool check
       model request updated the data, the view doesn't paint the current emblems correctly.
       */
     //FIXME: should use g_file_set_attribute() with mode info?
+    if(!m_enable)
+        return;
+    int l_column = (column == 0 ? 1 : 0);
     m_permissions[row][column] = checked;
+    m_permissions[row][l_column] = !checked;
+
+//    savePermissions();
+}
+
+/*!
+ * update file ermissions
+ * \brief PermissionsPropertiesPage::savePermissions
+ */
+void PermissionsPropertiesPage::savePermissions()
+{
+    if(!m_enable)
+        return;
 
     mode_t mod = 0;
     for (int i = 0; i < 3; i++) {
-        for (int j = 0; j < 3; j++) {
+        for (int j = 0; j < 2; j++) {
             bool b = m_permissions[i][j];
             if (b) {
                 int rc = i*10 + j;
                 switch (rc) {
                 case 0: {
+                    //read and write
                     mod |= S_IRUSR;
-                    break;
-                }
-                case 1: {
                     mod |= S_IWUSR;
                     break;
                 }
-                case 2: {
-                    mod |= S_IXUSR;
+                case 1: {
+                    //read only
+                    mod |= S_IRUSR;
                     break;
                 }
+//                case 2: {
+//                    mod |= S_IXUSR;
+//                    break;
+//                }
+
                 case 10: {
                     mod |= S_IRGRP;
-                    break;
-                }
-                case 11: {
                     mod |= S_IWGRP;
                     break;
                 }
-                case 12: {
-                    mod |= S_IXGRP;
+                case 11: {
+                    mod |= S_IRGRP;
                     break;
                 }
+//                case 12: {
+//                    mod |= S_IXGRP;
+//                    break;
+//                }
                 case 20: {
                     mod |= S_IROTH;
-                    break;
-                }
-                case 21: {
                     mod |= S_IWOTH;
                     break;
                 }
-                case 22: {
-                    mod |= S_IXOTH;
+                case 21: {
+                    mod |= S_IROTH;
                     break;
                 }
+//                case 22: {
+//                    mod |= S_IXOTH;
+//                    break;
+//                }
                 }
             }
         }
@@ -374,5 +428,12 @@ void PermissionsPropertiesPage::changePermission(int row, int column, bool check
     if (url.isLocalFile()) {
         g_chmod(url.path().toUtf8(), mod);
         qDebug()<<mod;
+        queryPermissionsAsync(nullptr, m_uri);
     }
+}
+
+void PermissionsPropertiesPage::saveAllChange()
+{
+    savePermissions();
+    qDebug() << "权限窗口！保存设置";
 }

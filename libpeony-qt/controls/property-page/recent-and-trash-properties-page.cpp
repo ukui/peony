@@ -33,7 +33,7 @@
 
 using namespace Peony;
 
-RecentAndTrashPropertiesPage::RecentAndTrashPropertiesPage(const QStringList &uris, QWidget *parent) : QWidget(parent)
+RecentAndTrashPropertiesPage::RecentAndTrashPropertiesPage(const QStringList &uris, QWidget *parent) : PropertiesWindowTabIface(parent)
 {
     m_uri = uris.first();
     bool startWithTrash = m_uri.startsWith("trash:///");
@@ -99,4 +99,9 @@ void RecentAndTrashPropertiesPage::addSeparator()
     auto separator = new QFrame(this);
     separator->setFrameShape(QFrame::HLine);
     m_layout->addRow(separator);
+}
+
+void RecentAndTrashPropertiesPage::saveAllChange()
+{
+
 }

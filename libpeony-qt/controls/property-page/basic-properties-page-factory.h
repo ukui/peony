@@ -37,7 +37,7 @@ public:
 
     //plugin iface
     const QString name() override {
-        return QObject::tr("Basic Preview Page");
+        return QObject::tr("Basic");
     }
     PluginType pluginType() override {
         return PluginType::PropertiesWindowPlugin;
@@ -60,13 +60,14 @@ public:
         return 1000;
     }
     bool supportUris(const QStringList &uris) override;
-    QWidget *createTabPage(const QStringList &uris) override;
+    PropertiesWindowTabIface *createTabPage(const QStringList &uris) override;
 
     void closeFactory() override;
 
 private:
     explicit BasicPropertiesPageFactory(QObject *parent = nullptr);
     ~BasicPropertiesPageFactory() override;
+
 };
 
 }
