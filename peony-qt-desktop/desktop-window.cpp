@@ -102,11 +102,11 @@ DesktopWindow::DesktopWindow(QScreen *screen, bool is_primary, QWidget *parent)
     bool tabletMode = Peony::GlobalSettings::getInstance()->getValue(TABLET_MODE).toBool();
     m_tabletmode = tabletMode;
     if(tabletMode){
-        setAttribute(Qt::WA_X11NetWmWindowTypeDesktop,false);
+    //    setAttribute(Qt::WA_X11NetWmWindowTypeDesktop,false);
         this->hide();
-    } else {
-        setAttribute(Qt::WA_X11NetWmWindowTypeDesktop);
     }
+
+    setAttribute(Qt::WA_X11NetWmWindowTypeDesktop);
 
     connect(qApp, &QApplication::paletteChanged, this, &DesktopWindow::updateScreenVisible);
 

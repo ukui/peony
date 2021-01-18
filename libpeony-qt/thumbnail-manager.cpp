@@ -207,15 +207,26 @@ void ThumbnailManager::createDesktopFileThumbnail(const QString &uri, std::share
     //add special path search /use/share/pixmaps
     if (thumbnail.isNull())
     {
-        QString path = QString("/usr/share/pixmaps/%1.%2").arg(_icon_string).arg("png");
-        QString path_svg = QString("/usr/share/pixmaps/%1.%2").arg(_icon_string).arg("svg");
-        //qDebug() << "createDesktopFileThumbnail path:" <<path;
-        if(QFile::exists(path)){
-            thumbnail=QIcon(path);
-        }
-        else if(QFile::exists(path_svg)){
-            thumbnail=QIcon(path_svg);
-        }
+        if(QFile::exists(QString("/usr/share/icons/hicolor/scalable/apps/%1.%2").arg(_icon_string).arg("svg")))
+            thumbnail = QIcon(QString("/usr/share/icons/hicolor/scalable/apps/%1.%2").arg(_icon_string).arg("svg"));
+        else if(QFile::exists(QString("/usr/share/icons/hicolor/scalable/apps/%1.%2").arg(_icon_string).arg("png")))
+            thumbnail = QIcon(QString("/usr/share/icons/hicolor/scalable/apps/%1.%2").arg(_icon_string).arg("png"));
+        else if(QFile::exists(QString("/usr/share/icons/hicolor/96x96/apps/%1.%2").arg(_icon_string).arg("png")))
+            thumbnail = QIcon(QString("/usr/share/icons/hicolor/96x96/apps/%1.%2").arg(_icon_string).arg("png"));
+        else if(QFile::exists(QString("/usr/share/icons/hicolor/96x96/apps/%1.%2").arg(_icon_string).arg("svg")))
+            thumbnail = QIcon(QString("/usr/share/icons/hicolor/96x96/apps/%1.%2").arg(_icon_string).arg("svg"));
+        else if(QFile::exists(QString("/usr/share/icons/hicolor/64x64/apps/%1.%2").arg(_icon_string).arg("png")))
+            thumbnail = QIcon(QString("/usr/share/icons/hicolor/64x64/apps/%1.%2").arg(_icon_string).arg("png"));
+        else if(QFile::exists(QString("/usr/share/icons/hicolor/64x64/apps/%1.%2").arg(_icon_string).arg("svg")))
+            thumbnail = QIcon(QString("/usr/share/icons/hicolor/64x64/apps/%1.%2").arg(_icon_string).arg("svg"));
+        else if(QFile::exists(QString("/usr/share/icons/hicolor/48x48/apps/%1.%2").arg(_icon_string).arg("png")))
+            thumbnail = QIcon(QString("/usr/share/icons/hicolor/48x48/apps/%1.%2").arg(_icon_string).arg("png"));
+        else if(QFile::exists(QString("/usr/share/icons/hicolor/48x48/apps/%1.%2").arg(_icon_string).arg("svg")))
+            thumbnail = QIcon(QString("/usr/share/icons/hicolor/48x48/apps/%1.%2").arg(_icon_string).arg("svg"));
+        else if(QFile::exists(QString("/usr/share/icons/hicolor/32x32/apps/%1.%2").arg(_icon_string).arg("png")))
+            thumbnail = QIcon(QString("/usr/share/icons/hicolor/32x32/apps/%1.%2").arg(_icon_string).arg("png"));
+        else if(QFile::exists(QString("/usr/share/icons/hicolor/32x32/apps/%1.%2").arg(_icon_string).arg("svg")))
+            thumbnail = QIcon(QString("/usr/share/icons/hicolor/32x32/apps/%1.%2").arg(_icon_string).arg("svg"));
     }
 
     g_free(_icon_string);
