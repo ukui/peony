@@ -279,11 +279,12 @@ void MainWindow::checkSettings()
         QGSettings *fontSetting = new QGSettings(FONT_SETTINGS, QByteArray(), this);
         connect(fontSetting, &QGSettings::changed, this, [=](const QString &key){
             qDebug() << "fontSetting changed:" << key;
-            if (key == "systemFont" || key == "systemFontSize")
-            {
+            if (key == "systemFont" || key == "systemFontSize") {
                 QFont font = this->font();
                 for(auto widget : qApp->allWidgets())
                     widget->setFont(font);
+            } else if ("iconThemeName" == key) {
+                setWindowIcon(QIcon::fromTheme("system-file-manager"));
             }
         });
     }
