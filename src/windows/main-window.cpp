@@ -334,7 +334,13 @@ void MainWindow::setShortCuts()
             QString desktopPath = "file://" +  QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
             QString desktopUri = Peony::FileUtils::getEncodedUri(desktopPath);
             QString homeUri = "file://" +  QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
-            if (!uris.isEmpty() && !uris.contains(desktopUri) && !uris.contains(homeUri)) {
+            QString documentPath = Peony::FileUtils::getEncodedUri("file://" +  QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation));
+            QString musicPath = Peony::FileUtils::getEncodedUri("file://" +  QStandardPaths::writableLocation(QStandardPaths::MusicLocation));
+            QString moviesPath = Peony::FileUtils::getEncodedUri("file://" +  QStandardPaths::writableLocation(QStandardPaths::MoviesLocation));
+            QString picturespPath = Peony::FileUtils::getEncodedUri("file://" +  QStandardPaths::writableLocation(QStandardPaths::PicturesLocation));
+            QString downloadPath = Peony::FileUtils::getEncodedUri("file://" +  QStandardPaths::writableLocation(QStandardPaths::DownloadLocation));
+            if (!uris.isEmpty() && !uris.contains(desktopUri) && !uris.contains(homeUri) && !uris.contains(documentPath) && !uris.contains(musicPath)
+                    && !uris.contains(moviesPath) && !uris.contains(picturespPath) && !uris.contains(downloadPath)) {
                 bool isTrash = this->getCurrentUri() == "trash:///";
                 if (!isTrash) {
                     Peony::FileOperationUtils::trash(uris, true);
@@ -355,10 +361,17 @@ void MainWindow::setShortCuts()
 
             auto uris = this->getCurrentSelections();
             QString desktopPath = "file://" +  QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
+            QString documentPath = Peony::FileUtils::getEncodedUri("file://" +  QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation));
+            QString musicPath = Peony::FileUtils::getEncodedUri("file://" +  QStandardPaths::writableLocation(QStandardPaths::MusicLocation));
+            QString moviesPath = Peony::FileUtils::getEncodedUri("file://" +  QStandardPaths::writableLocation(QStandardPaths::MoviesLocation));
+            QString picturespPath = Peony::FileUtils::getEncodedUri("file://" +  QStandardPaths::writableLocation(QStandardPaths::PicturesLocation));
+            QString downloadPath = Peony::FileUtils::getEncodedUri("file://" +  QStandardPaths::writableLocation(QStandardPaths::DownloadLocation));
             QString desktopUri = Peony::FileUtils::getEncodedUri(desktopPath);
             QString homeUri = "file://" +  QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
-            if (! uris.contains(desktopUri) && !uris.contains(homeUri))
-               Peony::FileOperationUtils::executeRemoveActionWithDialog(uris);
+            if (! uris.contains(desktopUri) && !uris.contains(homeUri) && !uris.contains(documentPath) && !uris.contains(musicPath)
+                    && !uris.contains(moviesPath) && !uris.contains(picturespPath) && !uris.contains(downloadPath)) {
+                Peony::FileOperationUtils::executeRemoveActionWithDialog(uris);
+            }
         });
 
         auto searchAction = new QAction(this);
