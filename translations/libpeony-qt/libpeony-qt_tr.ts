@@ -199,38 +199,38 @@
 <context>
     <name>MainProgressBar</name>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-progress-bar.cpp" line="282"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-bar.cpp" line="284"/>
         <source>File operation</source>
         <translation type="unfinished">Dosya işlemi</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-progress-bar.cpp" line="291"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-bar.cpp" line="293"/>
         <location filename="../../libpeony-qt/file-operation/file-operation-progress-bar.h" line="218"/>
         <source>starting ...</source>
         <translation type="unfinished">Başlatılıyor...</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-progress-bar.cpp" line="350"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-bar.cpp" line="352"/>
         <source>cancel all file operations</source>
         <translation type="unfinished">Tüm dosya işlemlerini iptal et</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-progress-bar.cpp" line="351"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-bar.cpp" line="353"/>
         <source>Are you sure want to cancel all file operations</source>
         <translation type="unfinished">Tüm dosya işlemlerini iptal etmek istediğinizden emin misiniz?</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-progress-bar.cpp" line="431"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-bar.cpp" line="433"/>
         <source>canceling ...</source>
         <translation type="unfinished">İptal ediliyor...</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-progress-bar.cpp" line="353"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-bar.cpp" line="355"/>
         <source>OK</source>
         <translation type="unfinished">Tamam</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-progress-bar.cpp" line="354"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-bar.cpp" line="356"/>
         <source>Cancel</source>
         <translation type="unfinished">İptal</translation>
     </message>
@@ -1684,7 +1684,12 @@ Bağlantı dosyasını silmek istiyor musunuz?</translation>
         <translation type="unfinished">Tamam</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="243"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="216"/>
+        <source>Cancel</source>
+        <translation type="unfinished">İptal</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="251"/>
         <source>Make sure the disk is not full or write protected and that the file is not protected</source>
         <translation type="unfinished">Diskin dolu olmadığından veya yazma korumalı olmadığından ve dosyanın korumalı olmadığından emin olun.</translation>
     </message>
@@ -1696,8 +1701,8 @@ Bağlantı dosyasını silmek istiyor musunuz?</translation>
 <context>
     <name>Peony::FileOperationInfo</name>
     <message>
+        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="521"/>
         <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="523"/>
-        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="525"/>
         <source>Symbolic Link</source>
         <translation>Sembolik Bağ</translation>
     </message>
@@ -1713,22 +1718,22 @@ Bağlantı dosyasını silmek istiyor musunuz?</translation>
         <translation type="obsolete">Dosyayı Sil Uyarısı</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="157"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="155"/>
         <source>Can&apos;t delete.</source>
         <translation>Silinmedi</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="158"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="156"/>
         <source>You can&apos;t delete a file whenthe file is doing another operation</source>
         <translation>Dosya başka bir işlem yaparken dosyayı silemezsiniz</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="218"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="216"/>
         <source>File Operation is Busy</source>
         <translation>Dosya İşlemi Meşgul</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="219"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="217"/>
         <source>There have been one or more fileoperation(s) executing before. Youroperation will wait for executinguntil it/them done. If you really want to execute file operations parallelly anyway, you can change the default option &quot;Allow Parallel&quot; in option menu.</source>
         <translation>Daha önce bir veya daha fazla dosya işlemi yürütülüyor. İşleminiz gerçekleşene kadar yürütülmesini bekleyecektir. Gerçekten de dosya işlemlerini paralel olarak yürütmek istiyorsanız, seçenek menüsünde varsayılan &quot;Paralele İzin Ver&quot; seçeneğini değiştirebilirsiniz.</translation>
     </message>
@@ -1887,7 +1892,7 @@ Bağlantı dosyasını silmek istiyor musunuz?</translation>
         <translation>%1x%2</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/preview-page/default-preview-page/default-preview-page.cpp" line="296"/>
+        <location filename="../../libpeony-qt/controls/preview-page/default-preview-page/default-preview-page.cpp" line="300"/>
         <source>%1 total, %2 hidden</source>
         <translation>toplam %1, %2 gizli</translation>
     </message>
@@ -2515,32 +2520,32 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</translation
 <context>
     <name>ProgressBar</name>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-progress-bar.cpp" line="558"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-bar.cpp" line="560"/>
         <source>starting ...</source>
         <translation type="unfinished">Başlatılıyor...</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-progress-bar.cpp" line="619"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-bar.cpp" line="621"/>
         <source>canceling ...</source>
         <translation type="unfinished">İptal ediliyor...</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-progress-bar.cpp" line="667"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-bar.cpp" line="669"/>
         <source>cancel file operation</source>
         <translation type="unfinished">Dosya işlemini iptal et</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-progress-bar.cpp" line="668"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-bar.cpp" line="670"/>
         <source>Are you sure want to cancel the current selected file operation</source>
         <translation type="unfinished">Mevcut seçili dosya işlemini iptal etmek istediğinizden emin misiniz?</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-progress-bar.cpp" line="670"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-bar.cpp" line="672"/>
         <source>OK</source>
         <translation type="unfinished">Tamam</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-progress-bar.cpp" line="671"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-progress-bar.cpp" line="673"/>
         <source>Cancel</source>
         <translation type="unfinished">İptal</translation>
     </message>

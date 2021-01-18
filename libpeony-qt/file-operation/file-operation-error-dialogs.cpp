@@ -212,8 +212,16 @@ Peony::FileOperationErrorDialogWarning::FileOperationErrorDialogWarning(Peony::F
     m_ok->setText(tr("OK"));
     m_ok->setGeometry(m_ok_x, m_ok_y, m_ok_w, m_ok_h);
 
+    m_cancel = new QPushButton(this);
+    m_cancel->setText(tr("Cancel"));
+    m_cancel->setGeometry(m_cancel_x, m_cancel_y, m_cancel_w, m_cancel_h);
+
     connect(m_ok, &QPushButton::pressed, this, [=](){
-        done(QDialog::Accepted);
+        done (QDialog::Accepted);
+    });
+
+    connect(m_cancel, &QPushButton::pressed, this, [=] () {
+        done (QDialog::Rejected);
     });
 }
 
@@ -247,7 +255,7 @@ void Peony::FileOperationErrorDialogWarning::handle(Peony::FileOperationError &e
     m_text->adjustSize();
     m_text->setAlignment(Qt::AlignLeft | Qt::AlignBottom);
 
-    exec();
+    int ret = exec();
 
     switch (m_error->errorCode) {
         case G_IO_ERROR_BUSY:
@@ -264,6 +272,10 @@ void Peony::FileOperationErrorDialogWarning::handle(Peony::FileOperationError &e
         default:
             error.respCode = IgnoreOne;
             break;
+    }
+
+    if (QDialog::Rejected == ret) {
+        error.respCode = Cancel;
     }
 }
 
