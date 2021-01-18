@@ -90,6 +90,7 @@ protected Q_SLOTS:
 private:
     FileEnumerator *m_enumerator;
     QList<std::shared_ptr<FileInfo>> m_files;
+    QList<std::shared_ptr<FileInfo>> m_querying_files;
     std::shared_ptr<FileWatcher> m_trash_watcher;
     std::shared_ptr<FileWatcher> m_desktop_watcher;
     std::shared_ptr<FileWatcher> m_thumbnail_watcher; //just handle the thumbnail created.
@@ -103,6 +104,9 @@ private:
     QString m_last_deleted_item_uri;
     QStringList m_items_need_relayout;
     UserdirManager * m_dir_manager;
+
+    std::shared_ptr<FileInfo> m_desktop_info;
+    void refreshInternal();
 };
 
 }

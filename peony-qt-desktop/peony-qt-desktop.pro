@@ -4,11 +4,11 @@
 #
 #-------------------------------------------------
 
-QT       += core gui x11extras dbus concurrent
+QT       += core gui x11extras dbus concurrent KWindowSystem
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-VERSION = 3.0.0
+include(../common.pri)
 
 TARGET = peony-qt-desktop
 TEMPLATE = app
@@ -16,15 +16,7 @@ QMAKE_CXXFLAGS += -Werror=return-type -Werror=return-local-addr -Werror=uninitia
 PLUGIN_INSTALL_DIRS = $$[QT_INSTALL_LIBS]/peony-extensions
 DEFINES += PLUGIN_INSTALL_DIRS='\\"$${PLUGIN_INSTALL_DIRS}\\"'
 
-# The following define makes your compiler emit warnings if you use
-# any feature of Qt which has been marked as deprecated (the exact warnings
-# depend on your compiler). Please consult the documentation of the
-# deprecated API in order to know how to port your code away from it.
 DEFINES += QT_DEPRECATED_WARNINGS
-
-# You can also make your code fail to compile if you use deprecated APIs.
-# In order to do so, uncomment the following line.
-# You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 include(../libpeony-qt/libpeony-qt-header.pri)
@@ -41,7 +33,6 @@ TRANSLATIONS += ../translations/peony-qt-desktop/peony-qt-desktop_zh_CN.ts \
                 ../translations/peony-qt-desktop/peony-qt-desktop_cs.ts
 
 SOURCES += \
-    desktop-screen.cpp \
     main.cpp \
     desktop-window.cpp \
     peony-desktop-application.cpp \
@@ -59,7 +50,6 @@ SOURCES += \
     user-dir-manager.cpp
 
 HEADERS += \
-    desktop-screen.h \
     desktop-window.h \
     peony-desktop-application.h \
     fm-dbus-service.h \

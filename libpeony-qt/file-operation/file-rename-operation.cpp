@@ -111,6 +111,12 @@ void FileRenameOperation::run()
 {
     QString destUri;
     Q_EMIT operationStarted();
+
+    if (m_new_name == "/" || m_new_name == ".") {
+        Q_EMIT operationFinished();
+        return;
+    }
+
     auto file = wrapGFile(g_file_new_for_uri(m_uri.toUtf8().constData()));
     auto info = wrapGFileInfo(g_file_query_info(file.get()->get(), "*",
                               G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,

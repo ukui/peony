@@ -496,18 +496,18 @@ void FileItemProxyFilterSortModel::addFileNameFilter(QString key, bool updateNow
 void FileItemProxyFilterSortModel::addFilterCondition(int option, int classify, bool updateNow)
 {
     switch (option) {
-    case 1:
+    case 0:
         if (! m_file_type_list.contains(classify))
             m_file_type_list.append(classify);
 
         break;
+    case 1:
+        if (! m_file_size_list.contains(classify))
+            m_file_size_list.append(classify);
+        break;
     case 2:
         if (! m_modify_time_list.contains(classify))
             m_modify_time_list.append(classify);
-        break;
-    case 3:
-        if (! m_file_size_list.contains(classify))
-            m_file_size_list.append(classify);
         break;
     default:
         break;
@@ -610,7 +610,6 @@ QModelIndexList FileItemProxyFilterSortModel::getAllFileIndexes()
             auto disyplayName = index.data(Qt::DisplayRole).toString();
             if (disyplayName.isEmpty()) {
                 auto uri = this->index(i, 0, QModelIndex()).data(FileItemModel::UriRole).toString();
-                //FIXME: replace BLOCKING api in ui thread.
                 disyplayName = FileUtils::getFileDisplayName(uri);
             }
             if (!disyplayName.startsWith(".")) {

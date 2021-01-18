@@ -61,6 +61,8 @@ using namespace Peony;
 
 DefaultPreviewPage::DefaultPreviewPage(QWidget *parent) : QStackedWidget (parent)
 {
+    setContentsMargins(10, 0, 10, 0);
+
     auto label = new QLabel(tr("Select the file you want to preview..."), this);
     label->setWordWrap(true);
     label->setAlignment(Qt::AlignCenter);
@@ -92,9 +94,10 @@ bool DefaultPreviewPage::eventFilter(QObject *obj, QEvent *ev)
         if (ev->type() == QEvent::Resize) {
             auto e = static_cast<QResizeEvent*>(ev);
             auto page = qobject_cast<FilePreviewPage*>(m_preview_tab_widget);
-            int width = e->size().width()/3;
-            width = width>96? width: 96;
-            page->resizeIcon(QSize(width, width));
+            int width = e->size().width() - 50;
+            width = qMax(width, 96);
+            width = qMin(width, 256);
+            page->resizeIcon(QSize(width, width * 2/3));
         }
     }
     return QStackedWidget::eventFilter(obj, ev);
@@ -271,7 +274,11 @@ void FilePreviewPage::updateInfo(FileInfo *info)
 
     }
 
-    countAsync(info->uri());
+    if (!info->symlinkTarget().isEmpty()) {
+        countAsync("file:///" + info->symlinkTarget());
+    } else {
+        countAsync(info->uri());
+    }
 }
 
 void FilePreviewPage::countAsync(const QString &uri)
@@ -283,6 +290,7 @@ void FilePreviewPage::countAsync(const QString &uri)
 
     QStringList uris;
     uris<<uri;
+    //FIXME: replace BLOCKING api in ui thread.
     auto info = FileInfo::fromUri(uri);
     m_count_op = new FileCountOperation(uris, !info->isDir());
     connect(m_count_op, &FileOperation::operationStarted, this, &FilePreviewPage::resetCount, Qt::BlockingQueuedConnection);

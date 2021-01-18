@@ -100,7 +100,8 @@ FileOperation *FileOperationUtils::trash(const QStringList &uris, bool addHistor
             QUrl url(uri);
             QFile file(url.path());
             //fix iso symbolLink delete prompt can not trash issue
-            auto info = FileInfo::fromUri(uri, false);
+            //FIXME: replace BLOCKING api in ui thread. and no type.
+            auto info = FileInfo::fromUri(uri);
             if (info->isSymbolLink())
                 continue;
             if (file.size() > 1024*1024*1024) {
@@ -164,6 +165,7 @@ FileOperation *FileOperationUtils::link(const QString &srcUri, const QString &de
 
 std::shared_ptr<FileInfo> FileOperationUtils::queryFileInfo(const QString &uri)
 {
+    //FIXME: replace BLOCKING api in ui thread.
     auto info = FileInfo::fromUri(uri);
     auto job = new FileInfoJob(info);
     job->querySync();

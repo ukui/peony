@@ -890,15 +890,15 @@ void FileMoveOperation::deleteRecursively(FileNode *node)
         for (auto child : *(node->children())) {
             deleteRecursively(child);
         }
-        g_file_delete(file,
-                      getCancellable().get()->get(),
-                      nullptr);
-        node->setState(FileNode::Handled);
+        if (node->state() != FileNode::Unhandled) {
+            g_file_delete(file, getCancellable().get()->get(), nullptr);
+            node->setState(FileNode::Handled);
+        }
     } else {
-        g_file_delete(file,
-                      getCancellable().get()->get(),
-                      nullptr);
-        node->setState(FileNode::Handled);
+        if (node->state() != FileNode::Unhandled) {
+            g_file_delete(file, getCancellable().get()->get(), nullptr);
+            node->setState(FileNode::Handled);
+        }
     }
     g_object_unref(file);
     qDebug()<<"deleted";

@@ -28,13 +28,15 @@
 #include "file-info.h"
 #include "file-info-job.h"
 
+#include <QUrl>
+#include <QDir>
 #include <QDebug>
 
 using namespace Peony;
 
 SideBarProxyFilterSortModel::SideBarProxyFilterSortModel(QObject *parent) : QSortFilterProxyModel(parent)
 {
-
+    setDynamicSortFilter(true);
 }
 
 bool SideBarProxyFilterSortModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const
@@ -42,8 +44,16 @@ bool SideBarProxyFilterSortModel::filterAcceptsRow(int sourceRow, const QModelIn
     auto index = sourceModel()->index(sourceRow, 0, sourceParent);
     auto item = static_cast<SideBarAbstractItem*>(index.internalPointer());
     if (item->type() != SideBarAbstractItem::SeparatorItem) {
-        if (item->displayName().isNull())
+        if (item->displayName().isNull() && item->type() == SideBarAbstractItem::FileSystemItem)
             return false;
+
+        //not exist path filter
+        if (item->type() == SideBarAbstractItem::FavoriteItem && ! item->uri().isEmpty())
+        {
+            QDir dir(QUrl(item->uri()).path());
+            if (! dir.exists())
+                return false;
+        }
     }
     if (item) {
         if (!item->displayName().isEmpty()) {
@@ -56,6 +66,7 @@ bool SideBarProxyFilterSortModel::filterAcceptsRow(int sourceRow, const QModelIn
         if (sourceParent.data(Qt::UserRole).toString() == "computer:///") {
             if (item->uri() != "computer:///root.link") {
 
+                //FIXME: replace BLOCKING api in ui thread.
                 auto gvfsFileInfo = FileInfo::fromUri(item->uri());
                 if (gvfsFileInfo->displayName().isEmpty()) {
                         FileInfoJob j(gvfsFileInfo);

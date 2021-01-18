@@ -40,8 +40,8 @@ PeonyDbusService::~PeonyDbusService()
 
 void PeonyDbusService::DbusServerRegister()
 {
-    QDBusConnection::sessionBus().unregisterService("org.ukui.peony.service");
-    QDBusConnection::sessionBus().registerService("org.ukui.peony.service");
+    QDBusConnection::sessionBus().unregisterService("org.ukui.peony");
+    QDBusConnection::sessionBus().registerService("org.ukui.peony");
     QDBusConnection::sessionBus().registerObject("/org/ukui/peony", this, QDBusConnection :: ExportAllSlots);
 }
 

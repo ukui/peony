@@ -30,16 +30,27 @@
 #include <QColorDialog>
 #include <QMouseEvent>
 
+#include <QPainter>
+#include <QPainterPath>
+#include <QPixmap>
+#include <QMap>
+
+#include <QStyleOptionViewItem>
+
 #include <QApplication>
 #include <QDebug>
 
 static LabelBoxStyle *global_instance = nullptr;
 
+static QMap<QString, QIcon> color_icons;
+
 FileLabelBox::FileLabelBox(QWidget *parent) : QListView(parent)
 {
-    //setItemDelegate(new LabelBoxDelegate(this));
+    setItemDelegate(new LabelBoxDelegate(this));
     setStyle(LabelBoxStyle::getStyle());
     viewport()->setStyle(LabelBoxStyle::getStyle());
+    viewport()->setAutoFillBackground(true);
+    viewport()->setBackgroundRole(QPalette::AlternateBase);
     setModel(FileLabelModel::getGlobalModel());
 
     setContextMenuPolicy(Qt::CustomContextMenu);
@@ -123,5 +134,45 @@ LabelBoxStyle *LabelBoxStyle::getStyle()
 
 void LabelBoxStyle::drawPrimitive(QStyle::PrimitiveElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget) const
 {
+    if (element == QStyle::PE_Frame)
+        return;
+
     return QApplication::style()->drawPrimitive(element, option, painter, widget);
+}
+
+void LabelBoxStyle::drawControl(QStyle::ControlElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget) const
+{
+    if (element == CE_ItemViewItem) {
+        if (auto tmp = qstyleoption_cast<const QStyleOptionViewItem*>(option)) {
+            QStyleOptionViewItem opt = *tmp;
+            auto color = qvariant_cast<QColor>(opt.index.data(Qt::DecorationRole));
+            auto icon = color_icons.value(color.name());
+            if (icon.isNull()) {
+                QPixmap pic(QSize(12, 12));
+                pic.fill(Qt::transparent);
+                QPainter p(&pic);
+                p.setRenderHint(QPainter::Antialiasing);
+                p.setPen(QPen(Qt::gray, 0.5, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+                p.setBrush(color);
+                p.drawEllipse(QRect(0, 0, 12, 12));
+                p.end();
+                icon.addPixmap(pic);
+                color_icons.insert(color.name(), icon);
+            }
+            opt.icon = icon;
+            return QApplication::style()->drawControl(element, &opt, painter, widget);
+        }
+
+    }
+    return QApplication::style()->drawControl(element, option, painter, widget);
+}
+
+QSize LabelBoxStyle::sizeFromContents(QStyle::ContentsType type, const QStyleOption *option, const QSize &size, const QWidget *widget) const
+{
+    if (type == CT_ItemViewItem) {
+        QSize size = QApplication::style()->sizeFromContents(type, option, size, widget);
+        size += QSize(0, 8);
+        return size;
+    }
+    return QApplication::style()->sizeFromContents(type, option, size, widget);
 }

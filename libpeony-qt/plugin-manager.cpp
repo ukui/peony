@@ -59,8 +59,8 @@ PluginManager::PluginManager(QObject *parent) : QObject(parent)
     VFSPluginManager::getInstance();
 
     QDir pluginsDir(PLUGIN_INSTALL_DIRS);
-    if (COMMERCIAL_VERSION)
-        pluginsDir = QDir("/usr/lib/peony-qt-extensions");
+//    if (COMMERCIAL_VERSION)
+//        pluginsDir = QDir("/usr/lib/peony-qt-extensions");
     pluginsDir.setFilter(QDir::Files);
 
     qDebug()<<pluginsDir.entryList().count();
@@ -70,6 +70,11 @@ PluginManager::PluginManager(QObject *parent) : QObject(parent)
         qDebug()<<pluginLoader.fileName();
         qDebug()<<pluginLoader.metaData();
         qDebug()<<pluginLoader.load();
+
+        // version check
+        if (pluginLoader.metaData().value("MetaData").toObject().value("version").toString() != VERSION)
+            continue;
+
         QObject *plugin = pluginLoader.instance();
         if (!plugin)
             continue;

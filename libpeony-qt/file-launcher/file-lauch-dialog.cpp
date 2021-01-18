@@ -89,6 +89,7 @@ FileLauchDialog::FileLauchDialog(const QString &uri, QWidget *parent) : QDialog(
     connect(m_button_box, &QDialogButtonBox::accepted, this, &QDialog::accept);
     connect(m_button_box, &QDialogButtonBox::rejected, this, &QDialog::reject);
 
+    //FIXME: replace BLOCKING api in ui thread.
     auto info = FileInfo::fromUri(uri);
     if (info->isDir() || info->isDesktopFile()) {
         m_check_box->setEnabled(false);

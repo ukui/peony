@@ -26,8 +26,12 @@
 #include "peony-core_global.h"
 #include <QStringListModel>
 #include <QHash>
+#include <memory>
 
 namespace Peony {
+
+class FileInfo;
+class FileEnumerator;
 
 /*!
  * \brief The PathBarModel class
@@ -62,6 +66,11 @@ public Q_SLOTS:
 private:
     QString m_current_uri = nullptr;
     QHash<QString, QString> m_uri_display_name_hash;
+
+    std::shared_ptr<FileInfo> m_info;
+    QList<std::shared_ptr<FileInfo>> m_childrens;
+
+    FileEnumerator *m_enumerator = nullptr;
 };
 
 }

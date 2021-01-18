@@ -53,6 +53,8 @@
 #include "global-settings.h"
 #include "main-window.h"
 
+#include "file-info-job.h"
+
 #include <QApplication>
 #include <QStandardPaths>
 
@@ -112,6 +114,29 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
     //m_header_bar_layout->setContentsMargins(0, 0, 5, 0);
     //t->addWidget(m_header_bar_bg);
 
+    auto spacer = new QWidget(this);
+    spacer->setFixedWidth(qApp->style()->pixelMetric(QStyle::PM_ToolBarItemSpacing) * 2 + 36);
+    auto addPageButton = new QToolButton(this);
+    addPageButton->setIcon(QIcon::fromTheme("list-add-symbolic"));
+    spacer->setVisible(false);
+    addPageButton->setVisible(false);
+    addPageButton->setFixedSize(m_tab_bar->height() + 2, m_tab_bar->height() + 2);
+    addPageButton->setProperty("useIconHighlightEffect", true);
+    addPageButton->setProperty("iconHighlightEffectMode", 1);
+    addPageButton->setProperty("fillIconSymbolicColor", true);
+
+    connect(m_tab_bar, &NavigationTabBar::floatButtonVisibleChanged, addPageButton, [=](bool visible, int yoffset){
+        spacer->setVisible(!visible);
+        addPageButton->setVisible(!visible);
+        addPageButton->raise();
+        if (!visible)
+            addPageButton->move(m_tab_bar->width() + qApp->style()->pixelMetric(QStyle::PM_ToolBarItemSpacing), yoffset + 4);
+    });
+
+    connect(addPageButton, &QPushButton::clicked, this, [=](){
+        m_tab_bar->addPageRequest(m_tab_bar->tabData(m_tab_bar->currentIndex()).toString(), true);
+    });
+
     updateTabBarGeometry();
 
 //    auto manager = Peony::PreviewPageFactoryManager::getInstance();
@@ -167,6 +192,9 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
     recover->setFixedWidth(TRASH_BUTTON_WIDTH);
     recover->setFixedHeight(TRASH_BUTTON_HEIGHT);
     m_recover_button = recover;
+    //hide trash button to fix bug 31322, according to designer advice
+    m_recover_button->hide();
+
     //trash->addSpacing(10);
     trash->addWidget(Label, Qt::AlignLeft);
     trash->setContentsMargins(10, 0, 10, 0);
@@ -208,11 +236,15 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
     s->setChildrenCollapsible(false);
     s->setContentsMargins(0, 0, 0, 0);
     s->setHandleWidth(1);
-    s->setStretchFactor(0, 1);
+
     s->addWidget(m_stack);
     m_stack->installEventFilter(this);
     s->addWidget(m_preview_page_container);
     m_preview_page_container->hide();
+
+    s->setStretchFactor(0, 3);
+    s->setStretchFactor(1, 2);
+
     vbox->addWidget(s);
     w->setLayout(vbox);
     setCentralWidget(w);
@@ -282,13 +314,13 @@ void TabWidget::initAdvanceSearch()
     m_search_child->setChecked(m_search_child_flag);
     m_search_child->setDown(m_search_child_flag);;
 
-    QPushButton *moreButton = new QPushButton(tr("more options"),searchButtons);
-    m_search_more = moreButton;
-    moreButton->setFixedHeight(TRASH_BUTTON_HEIGHT);
-    moreButton->setFixedWidth(TRASH_BUTTON_WIDTH *2);
-    moreButton->setToolTip(tr("Show/hide advance search"));
+//    QPushButton *moreButton = new QPushButton(tr("more options"),searchButtons);
+//    m_search_more = moreButton;
+//    moreButton->setFixedHeight(TRASH_BUTTON_HEIGHT);
+//    moreButton->setFixedWidth(TRASH_BUTTON_WIDTH *2);
+//    moreButton->setToolTip(tr("Show/hide advance search"));
 
-    connect(moreButton, &QPushButton::clicked, this, &TabWidget::updateSearchList);
+//    connect(moreButton, &QPushButton::clicked, this, &TabWidget::updateSearchList);
 
     search->addWidget(closeButton, Qt::AlignLeft);
     search->addSpacing(10);
@@ -297,8 +329,8 @@ void TabWidget::initAdvanceSearch()
     search->addWidget(tabButton, Qt::AlignLeft);
     search->addSpacing(10);
     search->addWidget(childButton, Qt::AlignLeft);
-    search->addSpacing(10);
-    search->addWidget(moreButton, Qt::AlignLeft);
+//    search->addSpacing(10);
+//    search->addWidget(moreButton, Qt::AlignLeft);
     search->addSpacing(10);
     search->addWidget(searchButtons);
     search->setContentsMargins(10, 0, 10, 0);
@@ -307,7 +339,7 @@ void TabWidget::initAdvanceSearch()
     closeButton->setVisible(false);
     title->setVisible(false);
     childButton->setVisible(false);
-    moreButton->setVisible(false);
+//    moreButton->setVisible(false);
 }
 
 //search conditions changed, update filter
@@ -400,6 +432,7 @@ void TabWidget::addNewConditionBar()
     inputBox->setFixedHeight(TRASH_BUTTON_HEIGHT);
     inputBox->setFixedWidth(TRASH_BUTTON_WIDTH *4);
     inputBox->setPlaceholderText(tr("Please input key words..."));
+    inputBox->setText("");
 
     QPushButton *addButton = new QPushButton(QIcon::fromTheme("add"), "", optionBar);
     m_add_button_list.append(addButton);
@@ -418,7 +451,11 @@ void TabWidget::addNewConditionBar()
     connect(signalMapper, SIGNAL(mapped(int)), this, SLOT(removeConditionBar(int)));
     m_remove_mapper_list.append(signalMapper);
 
-    layout->addSpacing(TRASH_BUTTON_WIDTH + 40);
+    layout->addWidget(addButton, Qt::AlignRight);
+    layout->addSpacing(10);
+    layout->addWidget(removeButton, Qt::AlignRight);
+    layout->addSpacing(10);
+    layout->addSpacing(TRASH_BUTTON_WIDTH - 20);
     layout->addWidget(conditionCombox, Qt::AlignLeft);
     layout->addSpacing(10);
     layout->addWidget(linkLabel, Qt::AlignLeft);
@@ -426,12 +463,9 @@ void TabWidget::addNewConditionBar()
     layout->addWidget(classifyCombox, Qt::AlignLeft);
     layout->addWidget(inputBox, Qt::AlignLeft);
     layout->addWidget(optionBar);
-    layout->addWidget(addButton, Qt::AlignRight);
-    layout->addSpacing(10);
-    layout->addWidget(removeButton, Qt::AlignRight);
     layout->setContentsMargins(10, 0, 10, 5);
 
-    if (index == 0)
+    if (index%4 >= 3)
     {
         classifyCombox->hide();
         linkLabel->setText(tr("contains"));
@@ -443,12 +477,15 @@ void TabWidget::addNewConditionBar()
             linkLabel->setFixedWidth(TRASH_BUTTON_WIDTH);
     }
     else
-        inputBox->hide();
+    {
+       inputBox->hide();
+    }
+
 
     connect(conditionCombox, &QComboBox::currentTextChanged, [=]()
     {
         auto cur = conditionCombox->currentIndex();
-        if (cur == 0)
+        if (cur%4 >= 3)
         {
             classifyCombox->hide();
             inputBox->show();
@@ -531,12 +568,12 @@ QStringList TabWidget::getCurrentClassify(int rowCount)
 {
     QStringList currentList;
     currentList.clear();
-    if (rowCount >= m_option_list.size()-1)
-        return m_file_size_list;
 
-    switch (rowCount) {
-    case 1:
+    switch (rowCount%4) {
+    case 0:
         return m_file_type_list;
+    case 1:
+        return m_file_size_list;
     case 2:
         return m_file_mtime_list;
     default:
@@ -559,7 +596,7 @@ void TabWidget::updateTrashBarVisible(const QString &uri)
     m_trash_bar->setVisible(visible);
     m_trash_label->setVisible(visible);
     m_clear_button->setVisible(visible);
-    m_recover_button->setVisible(visible);
+    //m_recover_button->setVisible(visible);
 
 //    if (uri.startsWith("trash://") || uri.startsWith("recent://"))
 //        m_tool_bar->setVisible(false);
@@ -598,14 +635,16 @@ void TabWidget::updateSearchBar(bool showSearch)
     m_show_search_bar = showSearch;
     if (showSearch)
     {
+        //default add one bar
+        updateSearchList();
         m_search_path->show();
         m_search_close->show();
         m_search_title->show();
         m_search_bar->show();
         m_search_child->show();
-        m_search_more->show();
+        //m_search_more->show();
         m_search_bar_layout->setContentsMargins(10, 5, 10, 5);
-        m_search_more->setIcon(QIcon::fromTheme("go-down"));
+        //m_search_more->setIcon(QIcon::fromTheme("go-down"));
         updateSearchPathButton();
     }
     else
@@ -615,7 +654,7 @@ void TabWidget::updateSearchBar(bool showSearch)
         m_search_title->hide();
         m_search_bar->hide();
         m_search_child->hide();
-        m_search_more->hide();
+        //m_search_more->hide();
         m_search_bar_layout->setContentsMargins(10, 0, 10, 0);
     }
 
@@ -652,7 +691,6 @@ void TabWidget::updateSearchPathButton(const QString &uri)
         if (! getCurrentUri().isNull())
             curUri = getCurrentUri();
     }
-    //FIXME: replace BLOCKING api in ui thread.
     auto iconName = Peony::FileUtils::getFileIconName(curUri);
     auto displayName = Peony::FileUtils::getFileDisplayName(curUri);
     qDebug() << "iconName:" <<iconName <<displayName<<curUri;
@@ -671,9 +709,10 @@ void TabWidget::updateSearchList()
 {
     m_show_search_list = !m_show_search_list;
     //if not show search bar, then don't show search list
-    if (m_show_search_list && m_show_search_bar)
+    qDebug() << "updateSearchList:" <<m_show_search_list <<m_show_search_bar;
+    if (m_show_search_bar)
     {
-        m_search_more->setIcon(QIcon::fromTheme("go-up"));
+        //m_search_more->setIcon(QIcon::fromTheme("go-up"));
         //first click to show advance serach
         if(m_search_bar_list.count() ==0)
         {
@@ -686,7 +725,7 @@ void TabWidget::updateSearchList()
         {
             m_conditions_list[i]->show();
             m_link_label_list[i]->show();
-            if (m_conditions_list[i]->currentIndex() >0)
+            if (m_conditions_list[i]->currentIndex()%4 < 3)
                 m_classify_list[i]->show();
             else
                 m_input_list[i]->show();
@@ -699,7 +738,7 @@ void TabWidget::updateSearchList()
     else
     {
         //hide search list
-        m_search_more->setIcon(QIcon::fromTheme("go-down"));
+        //m_search_more->setIcon(QIcon::fromTheme("go-down"));
         for(int i=0; i<m_search_bar_list.count(); i++)
         {
             m_conditions_list[i]->hide();
@@ -724,11 +763,15 @@ Peony::DirectoryViewContainer *TabWidget::currentPage()
 
 const QString TabWidget::getCurrentUri()
 {
+    if (!currentPage())
+        return nullptr;
     return currentPage()->getCurrentUri();
 }
 
 const QStringList TabWidget::getCurrentSelections()
 {
+    if (!currentPage())
+        return QStringList();
     return currentPage()->getCurrentSelections();
 }
 
@@ -739,41 +782,57 @@ const int TabWidget::getCurrentRowcount()
 
 const QStringList TabWidget::getAllFileUris()
 {
+    if (!currentPage())
+        return QStringList();
     return currentPage()->getAllFileUris();
 }
 
 const QStringList TabWidget::getBackList()
 {
+    if (!currentPage())
+        return QStringList();
     return currentPage()->getBackList();
 }
 
 const QStringList TabWidget::getForwardList()
 {
+    if (!currentPage())
+        return QStringList();
     return currentPage()->getForwardList();
 }
 
 bool TabWidget::canGoBack()
 {
+    if (!currentPage())
+        return false;
     return currentPage()->canGoBack();
 }
 
 bool TabWidget::canGoForward()
 {
+    if (!currentPage())
+        return false;
     return currentPage()->canGoForward();
 }
 
 bool TabWidget::canCdUp()
 {
+    if (!currentPage())
+        return false;
     return currentPage()->canCdUp();
 }
 
 int TabWidget::getSortType()
 {
+    if (!currentPage())
+        return 0;
     return currentPage()->getSortType();
 }
 
 Qt::SortOrder TabWidget::getSortOrder()
 {
+    if (!currentPage())
+        return Qt::AscendingOrder;
     return currentPage()->getSortOrder();
 }
 
@@ -817,48 +876,60 @@ void TabWidget::setPreviewPage(Peony::PreviewPageIface *previewPage)
 
 void TabWidget::addPage(const QString &uri, bool jumpTo)
 {
-    auto info = Peony::FileInfo::fromUri(uri, false);
-    if (! info->isDir())
-        return;
-
-    QCursor c;
-    c.setShape(Qt::WaitCursor);
-    this->setCursor(c);
-
-    m_tab_bar->addPage(uri, jumpTo);
-    int zoomLevel = -1;
-
-    bool hasCurrentPage = false;
-
-    if (currentPage()) {
-        hasCurrentPage = true;
-        zoomLevel = currentPage()->getView()->currentZoomLevel();
-    }
-
     auto viewContainer = new Peony::DirectoryViewContainer(m_stack);
-    viewContainer->setSortType(Peony::FileItemModel::FileName);
-    viewContainer->setSortOrder(Qt::AscendingOrder);
-
-    m_stack->addWidget(viewContainer);
-    viewContainer->goToUri(uri, false, true);
-    if (jumpTo) {
-        m_stack->setCurrentWidget(viewContainer);
-    }
-
-    bindContainerSignal(viewContainer);
-    updateTrashBarVisible(uri);
+    bool hasCurrentPage = currentPage();
+    int zoomLevel = -1;
 
     if (hasCurrentPage) {
         // perfer to use current page view type
         auto internalViews = Peony::DirectoryViewFactoryManager2::getInstance()->internalViews();
         if (internalViews.contains(currentPage()->getView()->viewId()))
             viewContainer->switchViewType(currentPage()->getView()->viewId());
+
+        if (currentPage()) {
+            hasCurrentPage = true;
+            zoomLevel = currentPage()->getView()->currentZoomLevel();
+        }
+    } else {
+        viewContainer->switchViewType(Peony::GlobalSettings::getInstance()->getValue(DEFAULT_VIEW_ID).toString());
+    }
+    m_stack->addWidget(viewContainer);
+    if (jumpTo) {
+        m_stack->setCurrentWidget(viewContainer);
     }
 
-    if (zoomLevel > 0)
-        viewContainer->getView()->setCurrentZoomLevel(zoomLevel);
-    else
-        viewContainer->getView()->setCurrentZoomLevel(Peony::GlobalSettings::getInstance()->getValue(DEFAULT_VIEW_ZOOM_LEVEL).toInt());
+    auto info = Peony::FileInfo::fromUri(uri);
+    auto infoJob = new Peony::FileInfoJob(info);
+    infoJob->setAutoDelete();
+
+    connect(infoJob, &Peony::FileInfoJob::queryAsyncFinished, this, [=](){
+        if (!info->isEmptyInfo() && ! info->isDir() && !info.get()->isVolume() && !info.get()->isVirtual())
+            return;
+
+        QCursor c;
+        c.setShape(Qt::WaitCursor);
+        this->setCursor(c);
+
+        //auto viewContainer = new Peony::DirectoryViewContainer(m_stack);
+        viewContainer->setSortType(Peony::FileItemModel::FileName);
+        viewContainer->setSortOrder(Qt::AscendingOrder);
+
+        //m_stack->addWidget(viewContainer);
+        viewContainer->goToUri(uri, false, true);
+
+        bindContainerSignal(viewContainer);
+        updateTrashBarVisible(uri);
+
+        if (zoomLevel > 0)
+            viewContainer->getView()->setCurrentZoomLevel(zoomLevel);
+        else
+            viewContainer->getView()->setCurrentZoomLevel(Peony::GlobalSettings::getInstance()->getValue(DEFAULT_VIEW_ZOOM_LEVEL).toInt());
+
+        m_tab_bar->addPage(uri, jumpTo);
+        updateTabBarGeometry();
+    });
+
+    infoJob->queryAsync();
 }
 
 void TabWidget::goToUri(const QString &uri, bool addHistory, bool forceUpdate)
@@ -983,17 +1054,18 @@ void TabWidget::updateAdvanceConditions()
     clearConditions();
 
     //get key list for proxy-filter
+    //input name not show, must be empty
     QStringList keyList;
     for(int i=0; i<m_layout_list.count(); i++)
     {
         QString input = m_input_list[i]->text();
-        if (m_conditions_list[i]->currentIndex() > 0)
-        {
-            addFilterCondition(m_conditions_list[i]->currentIndex(), m_classify_list[i]->currentIndex());
-        }
-        else if(input != "" && ! keyList.contains(input))
+        if(input != "" && ! keyList.contains(input))
         {
             keyList.append(input);
+        }
+        else
+        {
+            addFilterCondition(m_conditions_list[i]->currentIndex(), m_classify_list[i]->currentIndex());
         }
     }
 
@@ -1026,7 +1098,7 @@ void TabWidget::editUris(const QStringList &uris)
 void TabWidget::onViewDoubleClicked(const QString &uri)
 {
     qDebug()<<"tab widget double clicked"<<uri;
-    auto info = Peony::FileInfo::fromUri(uri, false);
+    auto info = Peony::FileInfo::fromUri(uri);
     if (info->uri().startsWith("trash://")) {
         auto w = new Peony::PropertiesWindow(QStringList()<<uri);
         w->show();
@@ -1034,7 +1106,7 @@ void TabWidget::onViewDoubleClicked(const QString &uri)
     }
     if (info->isDir() || info->isVolume() || info->isVirtual()) {
         //process open symbolic link
-        auto info = Peony::FileInfo::fromUri(uri, false);
+        auto info = Peony::FileInfo::fromUri(uri);
         QString targetUri = info.get()->targetUri();
         if (targetUri.isEmpty())
             targetUri = uri;

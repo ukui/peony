@@ -116,7 +116,7 @@ static bool m_resident = false;
 
 PeonyApplication::PeonyApplication(int &argc, char *argv[], const char *applicationName) : SingleApplication (argc, argv, applicationName, true)
 {
-    setApplicationVersion("v3.0.0");
+    setApplicationVersion(QString("v%1").arg(VERSION));
     setApplicationName("peony-qt");
     //setApplicationDisplayName(tr("Peony-Qt"));
 
@@ -354,58 +354,26 @@ void PeonyApplication::parseCmd(quint32 id, QByteArray msg)
         }
     } else {
         if (!parser.positionalArguments().isEmpty()) {
-            QStringList uris = Peony::FileUtils::toDisplayUris(parser.positionalArguments());
-            auto tmp = new QStringList;
-            *tmp = uris;
-            if (uris.isEmpty()) {
-                return;
-            }
-            //auto window = new Peony::FMWindow(uris.first());
-            qApp->setQuitOnLastWindowClosed(false);
-            auto enumerator = new Peony::FileEnumerator;
-            enumerator->setEnumerateDirectory(uris.first());
-            enumerator->setAutoDelete();
-            connect(enumerator, &Peony::FileEnumerator::prepared, enumerator, [tmp](std::shared_ptr<Peony::GErrorWrapper> err, const QString &targetUri, bool critical){
-                auto uris = *tmp;
-                delete tmp;
-                qApp->setQuitOnLastWindowClosed(Peony::GlobalSettings::getInstance()->getValue(RESIDENT_IN_BACKEND).toBool());
-                if (!targetUri.isEmpty()) {
-                    auto window = new MainWindow(targetUri);
-                    uris.removeAt(0);
-                    if (!uris.isEmpty()) {
-                        window->addNewTabs(uris);
-                    }
-                    window->setAttribute(Qt::WA_DeleteOnClose);
-                    window->show();
-                    KWindowSystem::raiseWindow(window->winId());
-                } else {
-                    if (Peony::FileUtils::isFileDirectory(uris.first())) {
-                        auto window = new MainWindow(uris.first());
-                        uris.removeAt(0);
-                        if (!uris.isEmpty()) {
-                            window->addNewTabs(uris);
-                        }
-                        window->setAttribute(Qt::WA_DeleteOnClose);
-                        window->show();
-                        KWindowSystem::raiseWindow(window->winId());
-                    } else {
-                        auto targetUri = Peony::FileUtils::getTargetUri(uris.first());
-                        if (!targetUri.isEmpty()) {
-                            auto window = new MainWindow(targetUri);
-                            uris.removeAt(0);
-                            if (!uris.isEmpty()) {
-                                window->addNewTabs(uris);
-                            }
-                            window->setAttribute(Qt::WA_DeleteOnClose);
-                            window->show();
-                            KWindowSystem::raiseWindow(window->winId());
-                        } else {
-                            QMessageBox::critical(nullptr, QObject::tr("Error"), QObject::tr("Can not open %1.").arg(uris.first()));
-                        }
-                    }
+            auto arguments = parser.positionalArguments();
+            arguments.removeOne("%U");
+            arguments.removeOne("%U&");
+            QStringList uris = Peony::FileUtils::toDisplayUris(arguments);
+
+            if (!uris.isEmpty()) {
+                auto window = new MainWindow(uris.first());
+                uris.removeAt(0);
+                if (!uris.isEmpty()) {
+                    window->addNewTabs(uris);
                 }
-            });
-            enumerator->prepare();
+                window->setAttribute(Qt::WA_DeleteOnClose);
+                window->show();
+                KWindowSystem::raiseWindow(window->winId());
+            } else {
+                auto window = new MainWindow();
+                window->setAttribute(Qt::WA_DeleteOnClose);
+                window->show();
+                KWindowSystem::raiseWindow(window->winId());
+            }
         } else {
             auto window = new MainWindow;
             //auto window = new Peony::FMWindow;

@@ -145,6 +145,9 @@ void FileItem::findChildrenAsync()
     //NOTE: entry a new root might destroyed the current enumeration work.
     //the root item will be delete, so we should cancel the previous enumeration.
     enumerator->connect(this, &FileItem::cancelFindChildren, enumerator, &FileEnumerator::cancel);
+    enumerator->connect(enumerator, &FileEnumerator::cancelled, m_model, [=](){
+        m_model->findChildrenFinished();
+    });
     enumerator->connect(enumerator, &FileEnumerator::prepared, this, [=](std::shared_ptr<GErrorWrapper> err, const QString &targetUri, bool critical) {
         if (critical) {
             Peony::AudioPlayManager::getInstance()->playWarningAudio();
@@ -176,7 +179,6 @@ void FileItem::findChildrenAsync()
             return;
         }
 
-        //FIXME: replace BLOCKING api in ui thread.
         auto target = FileUtils::getTargetUri(m_info->uri());
         if (!target.isEmpty()) {
             enumerator->cancel();
@@ -199,7 +201,7 @@ void FileItem::findChildrenAsync()
                 else
                     m_model->setRootUri(FileUtils::getParentUri(this->uri()));
 
-                auto fileInfo = FileInfo::fromUri(this->uri(), false);
+                auto fileInfo = FileInfo::fromUri(this->uri());
                 if (err.get()->code() == G_IO_ERROR_NOT_FOUND && fileInfo->isSymbolLink())
                 {
                     auto result = QMessageBox::question(nullptr, tr("Open Link failed"),
@@ -301,7 +303,7 @@ void FileItem::findChildrenAsync()
             });
             connect(m_watcher.get(), &FileWatcher::fileDeleted, this, [=](QString uri) {
                 //check bookmark and delete
-                auto info = FileInfo::fromUri(uri, false);
+                auto info = FileInfo::fromUri(uri);
                 if (info->isDir())
                 {
                     BookMarkManager::getInstance()->removeBookMark(uri);
@@ -420,7 +422,7 @@ void FileItem::findChildrenAsync()
             });
             connect(m_watcher.get(), &FileWatcher::fileDeleted, this, [=](QString uri) {
                 //check bookmark and delete
-                auto info = FileInfo::fromUri(uri, false);
+                auto info = FileInfo::fromUri(uri);
                 if (info->isDir())
                 {
                     BookMarkManager::getInstance()->removeBookMark(uri);
@@ -533,7 +535,9 @@ void FileItem::onChildAdded(const QString &uri)
         m_waiting_add_queue.removeOne(uri);
         //Q_EMIT m_model->dataChanged(item->firstColumnIndex(), item->lastColumnIndex());
         //Q_EMIT m_model->updated();
-        ThumbnailManager::getInstance()->createThumbnail(info->uri(), m_thumbnail_watcher);
+        QTimer::singleShot(1000, this, [=](){
+            ThumbnailManager::getInstance()->createThumbnail(info->uri(), m_thumbnail_watcher);
+        });
     });
     infoJob->queryAsync();
 

@@ -110,7 +110,7 @@ void trySetDefaultFolderUrlHandler() {
 
 PeonyDesktopApplication::PeonyDesktopApplication(int &argc, char *argv[], const char *applicationName) : SingleApplication (argc, argv, applicationName, true)
 {
-    setApplicationVersion("v3.0.0");
+    setApplicationVersion(QString("v%1").arg(VERSION));
     setApplicationName("peony-qt-desktop");
     //setApplicationDisplayName(tr("Peony-Qt Desktop"));
 
@@ -525,6 +525,10 @@ void guessContentTypeCallback(GObject* object,GAsyncResult *res,gpointer data)
                     openFolder = false;
                 if(!strcmp(guessType[n],"x-content/blank-dvd") || !strcmp(guessType[n],"x-content/blank-cd"))
                     openFolder = false;
+
+                QString uri = mountUri;
+                if (uri.startsWith("gphoto") || uri.startsWith("mtp"))
+                    break;
 
                 if(openFolder)
                     process.startDetached(openFolderCmd);

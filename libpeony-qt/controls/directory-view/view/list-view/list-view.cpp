@@ -424,6 +424,25 @@ void ListView::paintEvent(QPaintEvent *e)
     QTreeView::paintEvent(e);
 }
 
+void ListView::focusInEvent(QFocusEvent *e)
+{
+    QTreeView::focusInEvent(e);
+    if (e->reason() == Qt::TabFocus) {
+        if (selectedIndexes().isEmpty()) {
+            selectionModel()->select(model()->index(0, 0), QItemSelectionModel::SelectCurrent|QItemSelectionModel::Rows);
+        } else {
+            QTreeView::scrollTo(selectedIndexes().first(), QTreeView::PositionAtCenter);
+            auto selections = selectedIndexes();
+            clearSelection();
+            QTimer::singleShot(100, this, [=](){
+                for (auto index : selections) {
+                    selectionModel()->select(index, QItemSelectionModel::Select);
+                }
+            });
+        }
+    }
+}
+
 void ListView::slotRename()
 {
     //special path like trash path not allow rename

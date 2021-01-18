@@ -186,7 +186,8 @@ void FileEnumerator::cancel()
 
     m_children_uris->clear();
 
-    Q_EMIT enumerateFinished(false);
+    Q_EMIT this->cancelled();
+    //Q_EMIT enumerateFinished(false);
 }
 
 void FileEnumerator::prepare()
@@ -202,7 +203,6 @@ void FileEnumerator::prepare()
 
 GFile *FileEnumerator::enumerateTargetFile()
 {
-    //FIXME: replace BLOCKING api in ui thread.
     GFileInfo *info = g_file_query_info(m_root_file,
                                         G_FILE_ATTRIBUTE_STANDARD_TARGET_URI,
                                         G_FILE_QUERY_INFO_NONE,
@@ -300,14 +300,15 @@ void FileEnumerator::handleError(GError *err)
         }
 
         bool isMountable = false;
-        //FIXME: replace BLOCKING api in ui thread.
-        GFileInfo *file_mount_info = g_file_query_info(m_root_file, G_FILE_ATTRIBUTE_MOUNTABLE_CAN_MOUNT,
-                                     G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, nullptr, nullptr);
+        //FIXME: replace BLOCKING api in ui thread. Done
+        isMountable = FileInfo::fromGFile(m_root_file).get()->canMount();
+//        GFileInfo *file_mount_info = g_file_query_info(m_root_file, G_FILE_ATTRIBUTE_MOUNTABLE_CAN_MOUNT,
+//                                     G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, nullptr, nullptr);
 
-        if (file_mount_info) {
-            isMountable = g_file_info_get_attribute_boolean(file_mount_info, G_FILE_ATTRIBUTE_MOUNTABLE_CAN_MOUNT);
-            g_object_unref(file_mount_info);
-        }
+//        if (file_mount_info) {
+//            isMountable = g_file_info_get_attribute_boolean(file_mount_info, G_FILE_ATTRIBUTE_MOUNTABLE_CAN_MOUNT);
+//            g_object_unref(file_mount_info);
+//        }
 
         if (isMountable) {
             g_file_mount_mountable(m_root_file,
@@ -346,7 +347,8 @@ void FileEnumerator::handleError(GError *err)
         break;
     case G_IO_ERROR_NOT_FOUND:
         Q_EMIT prepared(GErrorWrapper::wrapFrom(g_error_new(G_IO_ERROR, G_IO_ERROR_NOT_FOUND, "file not found")));
-        QMessageBox::critical(nullptr, tr("Error"), tr("Did not find target path, do you move or deleted it?"));
+        //processed in file-item, comment to fix duplicated prompt
+        //QMessageBox::critical(nullptr, tr("Error"), tr("Did not find target path, do you move or deleted it?"));
         break;
     default:
         Q_EMIT prepared(GErrorWrapper::wrapFrom(g_error_copy(err)), nullptr, true);
@@ -361,7 +363,7 @@ void FileEnumerator::enumerateAsync()
     //auto uri = g_file_get_uri(m_root_file);
     //auto path = g_file_get_path(m_root_file);
     g_file_enumerate_children_async(m_root_file,
-                                    m_with_info_job? "*::*": G_FILE_ATTRIBUTE_STANDARD_NAME,
+                                    m_with_info_job? "*": G_FILE_ATTRIBUTE_STANDARD_NAME,
                                     G_FILE_QUERY_INFO_NONE,
                                     G_PRIORITY_DEFAULT,
                                     m_cancellable,
@@ -517,7 +519,7 @@ GAsyncReadyCallback FileEnumerator::find_children_async_ready_callback(GFile *fi
         if (err->code == G_IO_ERROR_NOT_MOUNTED) {
             g_object_unref(p_this->m_root_file);
             p_this->m_root_file = g_file_dup(file);
-            p_this->prepare();
+            //p_this->prepare();
             g_error_free(err);
             return nullptr;
         }

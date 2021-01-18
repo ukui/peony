@@ -1,0 +1,2 @@
+VERSION = 3.1.0
+DEFINES += VERSION='\\"$${VERSION}\\"'

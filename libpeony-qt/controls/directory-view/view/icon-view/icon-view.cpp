@@ -397,6 +397,25 @@ void IconView::updateGeometries()
     verticalScrollBar()->setMaximum(verticalScrollBar()->maximum() + BOTTOM_STATUS_MARGIN);
 }
 
+void IconView::focusInEvent(QFocusEvent *e)
+{
+    QListView::focusInEvent(e);
+    if (e->reason() == Qt::TabFocus) {
+        if (selectedIndexes().isEmpty()) {
+            selectionModel()->select(model()->index(0, 0), QItemSelectionModel::SelectCurrent|QItemSelectionModel::Rows);
+        } else {
+            scrollTo(selectedIndexes().first(), QListView::PositionAtCenter);
+            auto selections = selectedIndexes();
+            clearSelection();
+            QTimer::singleShot(100, this, [=](){
+                for (auto index : selections) {
+                    selectionModel()->select(index, QItemSelectionModel::Select);
+                }
+            });
+        }
+    }
+}
+
 void IconView::slotRename()
 {
     //special path like trash path not allow rename
@@ -497,7 +516,7 @@ void IconView::setProxy(DirectoryViewProxyIface *proxy)
             return;
         auto uri = index.data(FileItemModel::UriRole).toString();
         //process open symbolic link
-        auto info = FileInfo::fromUri(uri, false);
+        auto info = FileInfo::fromUri(uri);
         if (info->isSymbolLink() && uri.startsWith("file://") && info->isValid())
             uri = "file://" + FileUtils::getSymbolicTarget(uri);
         if(!m_multi_select)
@@ -663,7 +682,7 @@ void IconView2::bindModel(FileItemModel *model, FileItemProxyFilterSortModel *pr
             return;
         auto uri = index.data(Qt::UserRole).toString();
         //process open symbolic link
-        auto info = FileInfo::fromUri(uri, false);
+        auto info = FileInfo::fromUri(uri);
         if (info->isSymbolLink() && uri.startsWith("file://") && info->isValid())
             uri = "file://" +  FileUtils::getSymbolicTarget(uri);
         if(!m_view->m_multi_select)

@@ -139,6 +139,8 @@ Q_SIGNALS:
      */
     void enumerateFinished(bool successed = false);
 
+    void cancelled();
+
 public Q_SLOTS:
     void enumerateAsync();
     /*!

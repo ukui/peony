@@ -23,6 +23,7 @@
 #include "path-edit.h"
 #include "path-bar-model.h"
 #include "path-completer.h"
+#include "file-utils.h"
 
 #include <QKeyEvent>
 #include <QAction>
@@ -41,6 +42,7 @@ PathEdit::PathEdit(QWidget *parent) : QLineEdit(parent)
     m_model = new PathBarModel(this);
     m_completer = new PathCompleter(this);
     m_completer->setModel(m_model);
+    //m_completer->setCompletionMode(QCompleter::CompletionMode::UnfilteredPopupCompletion);
 
     m_completer->popup()->setAttribute(Qt::WA_TranslucentBackground);
 
@@ -67,12 +69,37 @@ PathEdit::PathEdit(QWidget *parent) : QLineEdit(parent)
             this->editCancelled();
             return;
         } else {
-            qDebug()<<"change dir request"<<this->text();
             Q_EMIT this->uriChangeRequest(this->text());
             //NOTE: we have send the signal for location change.
             //so we can use editCancelled hide the path edit.
             this->editCancelled();
         }
+    });
+
+    connect(this, &PathEdit::textChanged, this, [=](){
+        if (!isVisible())
+            return;
+
+        auto uri = text();
+        if (uri.endsWith("/")) {
+            m_model->setRootUri(uri);
+        }
+//        auto parentUri = FileUtils::getParentUri(uri);
+//        if (parentUri == m_model->currentDirUri() && !m_model->stringList().isEmpty())
+//            return;
+
+//        if (uri.endsWith("/")) {
+//            //m_model->setRootUri(uri);
+//        } else {
+//            m_model->setRootUri(parentUri);
+//        }
+    });
+
+    connect(m_model, &PathBarModel::updated, this, [=](){
+        if (m_model->stringList().isEmpty())
+            return;
+
+        m_completer->complete();
     });
 }
 
@@ -85,15 +112,19 @@ void PathEdit::setUri(const QString &uri)
 void PathEdit::focusOutEvent(QFocusEvent *e)
 {
     QLineEdit::focusOutEvent(e);
-    if (! m_right_click)
+    if (! m_right_click) {
         Q_EMIT editCancelled();
+    }
 }
 
 void PathEdit::focusInEvent(QFocusEvent *e)
 {
     QLineEdit::focusInEvent(e);
-    m_model->setRootUri(this->text());
-    m_completer->complete();
+}
+
+void PathEdit::cancelList()
+{
+    m_completer->activated(m_completer->currentIndex());
 }
 
 void PathEdit::keyPressEvent(QKeyEvent *e)
@@ -107,7 +138,6 @@ void PathEdit::keyPressEvent(QKeyEvent *e)
 void PathEdit::mousePressEvent(QMouseEvent *e)
 {
     QLineEdit::mousePressEvent(e);
-    //qDebug() << "mousePressEvent"<<e->button();
     if (e->button() == Qt::RightButton)
         m_right_click = true;
     else

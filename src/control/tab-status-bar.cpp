@@ -57,6 +57,7 @@ TabStatusBar::TabStatusBar(TabWidget *tab, QWidget *parent) : QStatusBar(parent)
     addWidget(m_label, 1);
 
     m_slider = new QSlider(Qt::Horizontal, this);
+    m_slider->setFocusPolicy(Qt::FocusPolicy(Qt::WheelFocus & ~Qt::TabFocus));
     m_slider->setRange(0, 100);
     m_slider->hide();
 
@@ -101,6 +102,10 @@ void TabStatusBar::update()
         m_label->setText("");
         return;
     }
+
+    //not update search result in status bar
+    if (uri.startsWith("search://") && selections.count() ==0)
+        return;
 
     if (! selections.isEmpty()) {
         QString directoriesString = "";
@@ -155,7 +160,6 @@ void TabStatusBar::update()
         g_free(format_size);
     }
     else {
-        //FIXME: replace BLOCKING api in ui thread.
         auto displayName = Peony::FileUtils::getFileDisplayName(uri);
         //qDebug() << "status bar text:" <<displayName <<uri;
         if (uri.startsWith("search:///"))

@@ -53,8 +53,9 @@ using namespace Peony;
 
 DesktopMenu::DesktopMenu(DirectoryViewIface *view, QWidget *parent) : QMenu(parent)
 {
-    setProperty("useIconHighlightEffect", true);
-    setProperty("iconHighlightEffectMode", 1);
+    //comment old highlight effect
+//    setProperty("useIconHighlightEffect", true);
+//    setProperty("iconHighlightEffectMode", 1);
     setProperty("fillIconSymbolicColor", true);
 
     m_view = view;
@@ -255,6 +256,7 @@ const QList<QAction *> DesktopMenu::constructCreateTemplateActions()
                     QFileInfo qinfo(templateDir, t);
                     GFile *gtk_file = g_file_new_for_path(qinfo.filePath().toUtf8().data());
                     char *uri_str = g_file_get_uri(gtk_file);
+                    //FIXME: replace BLOCKING api in ui thread.
                     std::shared_ptr<FileInfo> info = FileInfo::fromUri(uri_str);
 
                     QString mimeType = info->mimeType();

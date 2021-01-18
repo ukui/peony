@@ -29,6 +29,8 @@
 #include "file-rename-operation.h"
 
 #include "icon-view-delegate.h"
+#include "clipboard-utils.h"
+#include "desktop-item-model.h"
 
 #include <QPushButton>
 #include <QWidget>
@@ -78,6 +80,16 @@ void DesktopIconViewDelegate::paint(QPainter *painter, const QStyleOptionViewIte
     } else if (opt.state.testFlag(QStyle::State_Selected)) {
         if (view->indexWidget(index)) {
             opt.text = nullptr;
+        }
+    }
+
+    if (QUrl(ClipboardUtils::getClipedFilesParentUri()).path() == QUrl(view->getDirectoryUri()).path()) {
+        if (ClipboardUtils::isClipboardFilesBeCut()) {
+            auto clipedUris = ClipboardUtils::getClipboardFilesUris();
+            if (clipedUris.contains(index.data(DesktopItemModel::UriRole).toString())) {
+                painter->setOpacity(0.5);
+                qDebug()<<"cut item in desktop"<<index.data();
+            }
         }
     }
 
@@ -199,7 +211,7 @@ void DesktopIconViewDelegate::paint(QPainter *painter, const QStyleOptionViewIte
     painter->restore();
 
     //paint link icon and locker icon
-    FileInfo* file = FileInfo::fromUri(index.data(Qt::UserRole).toString(), true).get();
+    FileInfo* file = FileInfo::fromUri(index.data(Qt::UserRole).toString()).get();
     if ((index.data(Qt::UserRole).toString() != "computer:///") && (index.data(Qt::UserRole).toString() != "trash:///")) {
         QSize lockerIconSize = QSize(16, 16);
         int offset = 8;

@@ -78,6 +78,8 @@
 #include <X11/Xatom.h>
 #include <X11/Xproto.h>
 
+#include <KWindowSystem>
+
 #include <QDateTime>
 #include <QDebug>
 
@@ -193,6 +195,8 @@ DesktopWindow::DesktopWindow(QScreen *screen, bool is_primary, QWidget *parent)
 
     if (!m_is_primary || true) {
         setBg(getCurrentBgPath());
+        // do not animate while window first create.
+        m_opacity->setCurrentTime(m_opacity->totalDuration());
         return;
     }
 
@@ -644,6 +648,14 @@ void DesktopWindow::virtualGeometryChangedProcess(const QRect &geometry) {
 void DesktopWindow::geometryChangedProcess(const QRect &geometry) {
     // screen resolution ratio change
     updateWinGeometry();
+    KWindowSystem::setState(topLevelWidget()->winId(), NET::States(NET::Desktop|NET::KeepBelow));
+    QTimer::singleShot(500, this, [=](){
+        auto view = PeonyDesktopApplication::getIconView();
+        if (view->topLevelWidget()->isVisible()) {
+            KWindowSystem::raiseWindow(view->topLevelWidget()->winId());
+            KWindowSystem::setState(view->topLevelWidget()->winId(), NET::States(NET::Desktop|NET::KeepAbove));
+        }
+    });
 }
 
 void DesktopWindow::updateView() {

@@ -57,8 +57,8 @@ void DesktopMenuPluginManager::loadAsync()
 {
     qDebug()<<"test start";
     QDir pluginsDir(PLUGIN_INSTALL_DIRS);
-    if (COMMERCIAL_VERSION)
-        pluginsDir = QDir("/usr/lib/peony-qt-extensions");
+//    if (COMMERCIAL_VERSION)
+//        pluginsDir = QDir("/usr/lib/peony-qt-extensions");
     pluginsDir.setFilter(QDir::Files);
     Q_FOREACH(QString fileName, pluginsDir.entryList(QDir::Files)) {
         QPluginLoader pluginLoader(pluginsDir.absoluteFilePath(fileName));
@@ -81,6 +81,11 @@ void DesktopMenuPluginManager::loadAsync()
             qDebug()<<pluginLoader.fileName();
             qDebug()<<pluginLoader.metaData();
             qDebug()<<pluginLoader.load();
+
+            // version check
+            if (pluginLoader.metaData().value("MetaData").toObject().value("version").toString() != VERSION)
+                continue;
+
             QObject *plugin = pluginLoader.instance();
             if (!plugin)
                 continue;

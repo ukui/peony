@@ -29,6 +29,10 @@
 
 #include "fm-window.h"
 
+#include "file-info.h"
+#include "file-info-job.h"
+#include "file-enumerator.h"
+
 #include <QUrl>
 #include <QMenu>
 
@@ -87,6 +91,7 @@ LocationBar::LocationBar(QWidget *parent) : QWidget(parent)
     setLayout(m_layout);
 
     m_indicator = new QToolButton(this);
+    m_indicator->setFocusPolicy(Qt::FocusPolicy(m_indicator->focusPolicy() & ~Qt::TabFocus));
     m_indicator->setAutoRaise(true);
     m_indicator->setStyle(LocationBarButtonStyle::getStyle());
     m_indicator->setPopupMode(QToolButton::InstantPopup);
@@ -97,6 +102,7 @@ LocationBar::LocationBar(QWidget *parent) : QWidget(parent)
 
     m_indicator_menu = new QMenu(m_indicator);
     m_indicator->setMenu(m_indicator_menu);
+    m_indicator->setArrowType(Qt::RightArrow);
 
     connect(m_indicator_menu, &QMenu::aboutToShow, this, [=](){
         m_indicator->setArrowType(Qt::DownArrow);
@@ -123,37 +129,54 @@ void LocationBar::setRootUri(const QString &uri)
     clearButtons();
 
     if (m_current_uri.startsWith("search://")) {
-        //qDebug() <<"location-bar setRootUri:" <<uri;
-        //QString nameRegexp = SearchVFSUriParser::getSearchUriNameRegexp(m_current_uri);
-        //QString targetDirectory = SearchVFSUriParser::getSearchUriTargetDirectory(m_current_uri);
         m_indicator->setArrowType(Qt::NoArrow);
         addButton(m_current_uri, false, false);
-        //addAction(QIcon::fromTheme("edit-find-symbolic"), tr("Search \"%1\" in \"%2\"").arg(nameRegexp).arg(targetDirectory));
         return;
     }
 
-    QStringList uris;
-    QString tmp = uri;
-    while (!tmp.isEmpty()) {
-        uris.prepend(tmp);
-        QUrl url = tmp;
-        //FIXME: replace BLOCKING api in ui thread.
-        if (FileUtils::isMountRoot(tmp))
-            break;
-
-//        if (url.path() == QStandardPaths::writableLocation(QStandardPaths::HomeLocation)) {
-//            break;
-//        }
-        tmp = Peony::FileUtils::getParentUri(tmp);
+    m_current_info = FileInfo::fromUri(uri);
+    m_buttons_info.clear();
+    auto tmpUri = uri;
+    while (!tmpUri.isEmpty() && tmpUri != "") {
+        m_buttons_info.prepend(FileInfo::fromUri(tmpUri));
+        tmpUri = FileUtils::getParentUri(tmpUri);
     }
 
-    m_indicator->setArrowType(Qt::RightArrow);
-    for (auto uri : uris) {
-        //addButton(uri, uri != uris.last());
-        addButton(uri, uris.first() == uri);
+    m_querying_buttons_info = m_buttons_info;
+
+    for (auto info : m_buttons_info) {
+        auto infoJob = new FileInfoJob(info);
+        infoJob->setAutoDelete();
+        connect(infoJob, &FileInfoJob::queryAsyncFinished, this, [=](){
+            // enumerate buttons info directory
+            auto enumerator = new FileEnumerator;
+            enumerator->setEnumerateDirectory(info.get()->uri());
+            enumerator->setEnumerateWithInfoJob();
+
+            connect(enumerator, &FileEnumerator::enumerateFinished, this, [=](bool successed){
+                if (successed) {
+                    auto infos = enumerator->getChildren();
+                    m_infos_hash.insert(info.get()->uri(), infos);
+                    m_querying_buttons_info.removeOne(info);
+                    if (m_querying_buttons_info.isEmpty()) {
+                        // add buttons
+                        clearButtons();
+                        for (auto info : m_buttons_info) {
+                            addButton(info.get()->uri(), true, true);
+                        }
+                        doLayout();
+                    }
+                }
+
+                enumerator->deleteLater();
+            });
+
+            enumerator->enumerateAsync();
+        });
+        infoJob->queryAsync();
     }
 
-    doLayout();
+    return;
 }
 
 void LocationBar::clearButtons()
@@ -170,6 +193,7 @@ void LocationBar::addButton(const QString &uri, bool setIcon, bool setMenu)
 {
     setIcon = true;
     QToolButton *button = new QToolButton(this);
+    button->setFocusPolicy(Qt::FocusPolicy(button->focusPolicy() & ~Qt::TabFocus));
     button->setAutoRaise(true);
     button->setStyle(LocationBarButtonStyle::getStyle());
     button->setProperty("uri", uri);
@@ -178,7 +202,6 @@ void LocationBar::addButton(const QString &uri, bool setIcon, bool setMenu)
     button->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
     button->setPopupMode(QToolButton::MenuButtonPopup);
 
-    //FIXME: replace BLOCKING api in ui thread.
     auto displayName = FileUtils::getFileDisplayName(uri);
     m_buttons.insert(uri, button);
     if (m_current_uri.startsWith("search://")) {
@@ -195,7 +218,6 @@ void LocationBar::addButton(const QString &uri, bool setIcon, bool setMenu)
 
     auto parent = FileUtils::getParentUri(uri);
     if (setIcon) {
-        //FIXME: replace BLOCKING api in ui thread.
         QIcon icon = QIcon::fromTheme(Peony::FileUtils::getFileIconName(uri), QIcon::fromTheme("folder"));
         button->setIcon(icon);
     }
@@ -227,27 +249,34 @@ void LocationBar::addButton(const QString &uri, bool setIcon, bool setMenu)
     button->setText(displayName);
 
     connect(button, &QToolButton::clicked, [=]() {
-        //this->setRootUri(uri);
         Q_EMIT this->groupChangedRequest(uri);
     });
 
     if (setMenu) {
+        auto infos = m_infos_hash.value(uri);
+        QStringList uris;
+        for (auto info : infos) {
+            if (info.get()->isDir() && !info.get()->displayName().startsWith("."))
+                uris<<info.get()->uri();
+        }
+        if (uris.isEmpty())
+            button->setPopupMode(QToolButton::InstantPopup);
         Peony::PathBarModel m;
-        m.setRootUri(uri);
+        m.setStringList(uris);
         m.sort(0);
 
         auto suburis = m.stringList();
         if (!suburis.isEmpty()) {
-            QMenu *menu = new QMenu(this);
+            QMenu *menu = new QMenu;
+            connect(button, &QToolButton::destroyed, menu, &QMenu::deleteLater);
             const int WIDTH_EXTEND = 5;
             connect(menu, &QMenu::aboutToShow, this, [=](){
                 menu->setMinimumWidth(button->width() + WIDTH_EXTEND);
             });
             QList<QAction *> actions;
             for (auto uri : suburis) {
-                QUrl url = uri;
                 QString tmp = uri;
-                displayName = url.fileName();
+                displayName = Peony::FileUtils::getFileDisplayName(uri);
                 if (displayName.length() > ELIDE_TEXT_LENGTH)
                 {
                     int  charWidth = fontMetrics().averageCharWidth();
@@ -299,7 +328,6 @@ void LocationBar::mousePressEvent(QMouseEvent *e)
 {
     //eat this event.
     //QToolBar::mousePressEvent(e);
-    qDebug()<<"black clicked";
     if (e->button() == Qt::LeftButton) {
         Q_EMIT blankClicked();
     }
@@ -329,7 +357,6 @@ void LocationBar::paintEvent(QPaintEvent *e)
 void LocationBar::resizeEvent(QResizeEvent *event)
 {
     QWidget::resizeEvent(event);
-
     doLayout();
 }
 

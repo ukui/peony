@@ -8,7 +8,7 @@ QT       += core widgets gui concurrent xml KWindowSystem
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += printsupport
 
-VERSION = 3.0.0
+include(../common.pri)
 
 TARGET = peony
 TEMPLATE = lib

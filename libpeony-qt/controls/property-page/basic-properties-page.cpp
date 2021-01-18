@@ -244,7 +244,8 @@ void BasicPropertiesPage::onSingleFileChanged(const QString &oldUri, const QStri
 {
     //QMessageBox::information(0, 0, "on single file changed");
     qDebug()<<"onSingleFileChanged:"<<oldUri<<newUri;
-    m_info = FileInfo::fromUri(newUri, false);
+    //FIXME: replace BLOCKING api in ui thread.
+    m_info = FileInfo::fromUri(newUri);
     FileInfoJob *j = new FileInfoJob(m_info);
     j->setAutoDelete();
     j->querySync();
@@ -325,6 +326,7 @@ void BasicPropertiesPage::updateCountInfo()
 
 void BasicPropertiesPage::updateInfo(const QString &uri)
 {
+    //FIXME: replace BLOCKING api in ui thread.
     m_info = FileInfo::fromUri(uri);
 
     GFile *file = g_file_new_for_uri(uri.toUtf8().constData());

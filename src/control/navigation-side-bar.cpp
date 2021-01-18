@@ -264,7 +264,7 @@ void NavigationSideBar::dropEvent(QDropEvent *e)
         auto bookmark = Peony::BookMarkManager::getInstance();
         if (bookmark->isLoaded()) {
             for (auto url : data->urls()) {
-                auto info = Peony::FileInfo::fromUri(url.toDisplayString(), false);
+                auto info = Peony::FileInfo::fromUri(url.toDisplayString());
                 if (info->displayName().isNull()) {
                     Peony::FileInfoJob j(info);
                     j.querySync();
