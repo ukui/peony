@@ -111,7 +111,6 @@ void trySetDefaultFolderUrlHandler() {
 PeonyDesktopApplication::PeonyDesktopApplication(int &argc, char *argv[], const char *applicationName) : SingleApplication (argc, argv, applicationName, true)
 {
     setApplicationVersion(QString("v%1").arg(VERSION));
-    setApplicationName("peony-qt-desktop");
     //setApplicationDisplayName(tr("Peony-Qt Desktop"));
 
     QTranslator *t = new QTranslator(this);
@@ -123,6 +122,7 @@ PeonyDesktopApplication::PeonyDesktopApplication(int &argc, char *argv[], const 
     QTranslator *t3 = new QTranslator(this);
     t3->load("/usr/share/qt5/translations/qt_"+QLocale::system().name());
     QApplication::installTranslator(t3);
+    setApplicationName(tr("peony-qt-desktop"));
 
     if (this->isPrimary()) {
         qDebug()<<"isPrimary screen";

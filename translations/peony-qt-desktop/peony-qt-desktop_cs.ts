@@ -274,8 +274,9 @@
         <translation type="vanished">Masaüstünü kapatın ve çıkın</translation>
     </message>
     <message>
+        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="125"/>
         <source>peony-qt-desktop</source>
-        <translation type="vanished">Masaüstü</translation>
+        <translation>Masaüstü</translation>
     </message>
     <message>
         <source>Peony-Qt Desktop</source>
