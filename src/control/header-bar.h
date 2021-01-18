@@ -118,6 +118,10 @@ private:
     bool m_search_recursive = true;
 
     QWidgetList m_focus_list;
+
+    const int ADDRESS_BAR_MINIMUN_WIDTH = 250;
+    const int DRAG_AREA_MINIMUN_WIDTH = 64;
+    const int DRAG_AREA_DEFAULT_WIDTH = 98;
 };
 
 class HeaderBarToolButton : public QToolButton

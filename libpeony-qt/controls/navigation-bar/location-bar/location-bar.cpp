@@ -440,6 +440,10 @@ void LocationBar::doLayout()
         spaceCount++;
     }
     m_indicator_menu->addActions(actions);
+    //add some space for switch to edit
+    for (int i = 0; i < 10; i++) {
+         m_indicator_menu->addSeparator();
+    }
 }
 
 void LocationBarButtonStyle::polish(QWidget *widget)

@@ -70,7 +70,7 @@ GlobalSettings::GlobalSettings(QObject *parent) : QObject(parent)
         m_cache.insert(SIDEBAR_BG_OPACITY, m_gsettings->get("peonySideBarTransparency").toString());
     }
 
-    if (m_cache.value(DEFAULT_WINDOW_SIZE).isNull() || m_cache.value(DEFAULT_WINDOW_SIZE) <= 0) {
+    if (m_cache.value(DEFAULT_WINDOW_SIZE).isNull() || m_cache.value(DEFAULT_SIDEBAR_WIDTH) <= 0) {
         setValue(DEFAULT_WINDOW_SIZE, QSize(850, 850*0.618));
         setValue(DEFAULT_SIDEBAR_WIDTH, 195);
         qDebug() << "deafult set DEFAULT_SIDEBAR_WIDTH:"<<195;

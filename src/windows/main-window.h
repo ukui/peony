@@ -193,6 +193,8 @@ private:
     QWidgetList m_focus_list;
 
     bool m_shortcuts_set = false;
+
+    const int WINDOW_MINIMUM_WIDTH = 550;
 };
 
 #endif // MAINWINDOW_H

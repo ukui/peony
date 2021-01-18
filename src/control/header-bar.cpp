@@ -95,22 +95,22 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
 //    m_create_folder = createFolder;
 
     //use theme buttons
-    auto createFolder = new HeadBarPushButton(this);
-    m_create_folder = createFolder;
-    createFolder->setFixedSize(QSize(40, 40));
-    createFolder->setIconSize(QSize(16, 16));
-    createFolder->setIcon(QIcon::fromTheme("folder-new-symbolic"));
-    createFolder->setToolTip(tr("Create Folder"));
-    addWidget(createFolder);
-    connect(createFolder, &QPushButton::clicked, m_window, [=]() {
-        //use the same function
-        m_window->createFolderOperation();
-    });
+//    auto createFolder = new HeadBarPushButton(this);
+//    m_create_folder = createFolder;
+//    createFolder->setFixedSize(QSize(40, 40));
+//    createFolder->setIconSize(QSize(16, 16));
+//    createFolder->setIcon(QIcon::fromTheme("folder-new-symbolic"));
+//    createFolder->setToolTip(tr("Create Folder"));
+//    addWidget(createFolder);
+//    connect(createFolder, &QPushButton::clicked, m_window, [=]() {
+//        //use the same function
+//        m_window->createFolderOperation();
+//    });
 
-    addSpacing(2);
+//    addSpacing(2);
 
     //find a terminal when init
-    findDefaultTerminal();
+//    findDefaultTerminal();
 //    a = addAction(QIcon::fromTheme("terminal-app-symbolic"), tr("Open Terminal"), [=]() {
 //        //open the default terminal
 //        openDefaultTerminal();
@@ -121,18 +121,18 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
 //    openTerminal->setIconSize(QSize(16, 16));
 
     //use theme buttons
-    auto openTerminal = new HeadBarPushButton(this);
-    openTerminal->setFixedSize(QSize(40, 40));
-    openTerminal->setIconSize(QSize(16, 16));
-    openTerminal->setIcon(QIcon::fromTheme("terminal-app-symbolic"));
-    openTerminal->setToolTip(tr("Open Terminal"));
-    addWidget(openTerminal);
-    connect(openTerminal, &QPushButton::clicked, m_window, [=]() {
-        //open the default terminal
-        openDefaultTerminal();
-    });
+//    auto openTerminal = new HeadBarPushButton(this);
+//    openTerminal->setFixedSize(QSize(40, 40));
+//    openTerminal->setIconSize(QSize(16, 16));
+//    openTerminal->setIcon(QIcon::fromTheme("terminal-app-symbolic"));
+//    openTerminal->setToolTip(tr("Open Terminal"));
+//    addWidget(openTerminal);
+//    connect(openTerminal, &QPushButton::clicked, m_window, [=]() {
+//        //open the default terminal
+//        openDefaultTerminal();
+//    });
 
-    addSpacing(9 - 4);
+//    addSpacing(9 - 4);
 
     auto goBack = new HeadBarPushButton(this);
     m_go_back = goBack;
@@ -156,6 +156,7 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
     addSpacing(9);
 
     auto locationBar = new Peony::AdvancedLocationBar(this);
+    locationBar->setMinimumWidth(ADDRESS_BAR_MINIMUN_WIDTH);
     m_location_bar = locationBar;
     m_location_bar->setFocusPolicy(Qt::FocusPolicy(m_location_bar->focusPolicy() & ~Qt::TabFocus));
     addWidget(locationBar);
@@ -205,7 +206,7 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
     addWidget(search);
     connect(search, &QPushButton::clicked, this, &HeaderBar::searchButtonClicked);
 
-    addSpacing(9);
+    addSpacing(DRAG_AREA_DEFAULT_WIDTH);
 
     auto a = addAction(QIcon::fromTheme("view-grid-symbolic"), tr("View Type"));
     auto viewType = qobject_cast<QToolButton *>(widgetForAction(a));
@@ -271,15 +272,15 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
     m_operation_menu = new OperationMenu(m_window, this);
     a->setMenu(m_operation_menu);
 
-    createFolder->setFlat(true);
-    createFolder->setProperty("isWindowButton", 1);
-    createFolder->setProperty("useIconHighlightEffect", 2);
-    createFolder->setProperty("isIcon", true);
+//    createFolder->setFlat(true);
+//    createFolder->setProperty("isWindowButton", 1);
+//    createFolder->setProperty("useIconHighlightEffect", 2);
+//    createFolder->setProperty("isIcon", true);
 
-    openTerminal->setFlat(true);
-    openTerminal->setProperty("isWindowButton", 1);
-    openTerminal->setProperty("useIconHighlightEffect", 2);
-    openTerminal->setProperty("isIcon", true);
+//    openTerminal->setFlat(true);
+//    openTerminal->setProperty("isWindowButton", 1);
+//    openTerminal->setProperty("useIconHighlightEffect", 2);
+//    openTerminal->setProperty("isIcon", true);
 
     search->setFlat(true);
     search->setProperty("isWindowButton", 1);
@@ -307,8 +308,8 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
         }
     }
 
-    m_focus_list<<(createFolder);
-    m_focus_list<<(openTerminal);
+//    m_focus_list<<(createFolder);
+//    m_focus_list<<(openTerminal);
     m_focus_list<<(goBack);
     m_focus_list<<(goForward);
     m_focus_list<<(search);
@@ -481,14 +482,14 @@ void HeaderBar::updateIcons()
     m_go_forward->setEnabled(m_window->getCurrentPage()->canGoForward());
 
     //fix create folder fail issue in special path
-    auto curUri = m_window->getCurrentUri();
-    auto info = Peony::FileInfo::fromUri(curUri);
+//    auto curUri = m_window->getCurrentUri();
+//    auto info = Peony::FileInfo::fromUri(curUri);
     //Peony::FileInfoJob job(info);
     //job.querySync();
-    if (info->canWrite())
-        m_create_folder->setEnabled(true);
-    else
-        m_create_folder->setEnabled(false);
+//    if (info->canWrite())
+//        m_create_folder->setEnabled(true);
+//    else
+//        m_create_folder->setEnabled(false);
 
     //maximize & restore
     updateMaximizeState();
@@ -496,10 +497,10 @@ void HeaderBar::updateIcons()
 
 void HeaderBar::updateHeaderState()
 {
-    if (! m_window->getFilterWorking())
-        m_create_folder->setEnabled(true);
-    else
-        m_create_folder->setEnabled(false);
+//    if (! m_window->getFilterWorking())
+//        m_create_folder->setEnabled(true);
+//    else
+//        m_create_folder->setEnabled(false);
 }
 
 void HeaderBar::updateMaximizeState()

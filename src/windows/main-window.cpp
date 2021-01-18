@@ -136,6 +136,9 @@ MainWindow::MainWindow(const QString &uri, QWidget *parent) : QMainWindow(parent
     //disable style window manager
     setProperty("useStyleWindowManager", false);
 
+    //set minimum width by design request
+    setMinimumWidth(WINDOW_MINIMUM_WIDTH);
+
     //init UI
     initUI(uri);
 
@@ -196,6 +199,7 @@ QSize MainWindow::sizeHint() const
         return screenSize*2/3;
     int width = qMin(defaultSize.width(), screenSize.width());
     int height = qMin(defaultSize.height(), screenSize.height());
+
     //return screenSize*2/3;
     //qreal dpr = qApp->devicePixelRatio();
     return QSize(width, height);
