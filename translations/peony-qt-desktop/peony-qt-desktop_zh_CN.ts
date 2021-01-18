@@ -306,8 +306,9 @@
         <translation type="vanished">关闭桌面并退出</translation>
     </message>
     <message>
+        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="125"/>
         <source>peony-qt-desktop</source>
-        <translation type="vanished">桌面</translation>
+        <translation>桌面</translation>
     </message>
     <message>
         <source>Peony-Qt Desktop</source>
