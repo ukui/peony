@@ -180,6 +180,7 @@ bool MainWindow::eventFilter(QObject *watched, QEvent *event)
             // real set default side bar width
             auto settings = Peony::GlobalSettings::getInstance();
             settings->setValue(DEFAULT_SIDEBAR_WIDTH, m_side_bar->width());
+            qDebug() << "main window set DEFAULT_SIDEBAR_WIDTH:" << m_side_bar->width();
         }
         m_should_save_side_bar_width = false;
     }

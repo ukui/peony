@@ -372,6 +372,10 @@ QSize NavigationSideBarContainer::sizeHint() const
 {
     auto size = QWidget::sizeHint();
     auto width = Peony::GlobalSettings::getInstance()->getValue(DEFAULT_SIDEBAR_WIDTH).toInt();
+    qDebug() << "sizeHint set DEFAULT_SIDEBAR_WIDTH:"<<width;
+    //fix width value abnormal issue
+    if (width <= 0)
+        width = 195;
     size.setWidth(width);
     return size;
 }

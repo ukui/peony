@@ -52,6 +52,7 @@
 //TEMPLATES standard path
 #define TEMPLATES_DIR               "templates-dir"
 
+
 class QGSettings;
 
 namespace Peony {
