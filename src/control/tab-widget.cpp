@@ -164,12 +164,21 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
     }
     previewButtons->addActions(group->actions());
     for (auto action : group->actions()) {
-        auto button = qobject_cast<QToolButton *>(previewButtons->widgetForAction(action));
-        button->setFixedSize(26, 26);
+//        auto button = qobject_cast<QToolButton *>(previewButtons->widgetForAction(action));
+//        button->setFixedSize(26, 26);
+//        button->setIconSize(QSize(16, 16));
+//        button->setProperty("useIconHighlightEffect", true);
+//        button->setProperty("iconHighlightEffectMode", 1);
+//        button->setProperty("fillIconSymbolicColor", true);
+
+        //use theme buttons
+        auto button = new QPushButton(this);
+        button->setFixedSize(QSize(26, 26));
         button->setIconSize(QSize(16, 16));
-        button->setProperty("useIconHighlightEffect", true);
-        button->setProperty("iconHighlightEffectMode", 1);
-        button->setProperty("fillIconSymbolicColor", true);
+        button->setFlat(true);
+        button->setProperty("isWindowButton", 1);
+        button->setProperty("useIconHighlightEffect", 2);
+        button->setProperty("isIcon", true);
     }
     t->addWidget(previewButtons);
 
