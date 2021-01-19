@@ -369,7 +369,16 @@ bool SideBarModel::dropMimeData(const QMimeData *data, Qt::DropAction action, in
             if (uri.startsWith("recent://"))
                 return false;
         }
-        FileOperationUtils::move(uris, item->uri(), true, true);
+        if (action == Qt::MoveAction)
+        {
+            FileOperationUtils::move(uris, item->uri(), true, true);
+            //qDebug() << "sideBarModel moveOp";
+        }
+        else if (action == Qt::CopyAction)
+        {
+            FileOperationUtils::copy(uris, item->uri(), true);
+            //qDebug() << "sideBarModel CopyOp";
+        }
         break;
     }
     }
