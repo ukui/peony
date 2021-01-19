@@ -194,7 +194,7 @@ private:
 
     bool m_shortcuts_set = false;
 
-    const int WINDOW_MINIMUM_WIDTH = 550;
+    const int WINDOW_MINIMUM_WIDTH = 596;
 };
 
 #endif // MAINWINDOW_H
