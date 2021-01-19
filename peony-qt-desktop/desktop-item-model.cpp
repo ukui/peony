@@ -495,7 +495,9 @@ QVariant DesktopItemModel::data(const QModelIndex &index, int role) const
 
 void DesktopItemModel::onEnumerateFinished()
 {
-    //beginResetModel();
+    auto view = PeonyDesktopApplication::getIconView();
+    view->desktopViewItemClear();
+
     beginRemoveRows(QModelIndex(), 0, m_files.count() - 1);
     m_files.clear();
     endRemoveRows();
@@ -533,7 +535,6 @@ void DesktopItemModel::onEnumerateFinished()
     }
     for (auto info : m_files) {
         auto uri = info->uri();
-        auto view = PeonyDesktopApplication::getIconView();
         auto pos = view->getFileMetaInfoPos(info->uri());
         if (pos.x() >= 0) {
             view->updateItemPosByUri(info->uri(), pos);

@@ -97,6 +97,10 @@ public:
     QRect visualRect(const QModelIndex &index) const;
     const QFont getViewItemFont(QStyleOptionViewItem *item);
 
+    void desktopViewItemClear() {
+        m_item_rect_hash.clear();
+    }
+
 Q_SIGNALS:
     void zoomLevelChanged(ZoomLevel level);
 
