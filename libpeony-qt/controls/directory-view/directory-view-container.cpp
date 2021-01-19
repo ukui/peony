@@ -122,7 +122,10 @@ void DirectoryViewContainer::goForward()
     int count = m_back_list.count();
     if (! getCurrentUri().contains("search://") &&
         (count <= 0 || m_back_list.at(count-1) != getCurrentUri()))
+    {
         m_back_list.append(getCurrentUri());
+        qDebug() << "m_back_list add:" <<getCurrentUri();
+    }
 
     Q_EMIT updateWindowLocationRequest(uri, false);
 }
@@ -219,7 +222,10 @@ update:
         int count = m_back_list.count();
         if (! getCurrentUri().contains("search://")
             && (count <= 0 || m_back_list.at(count-1) != getCurrentUri()))
+        {
             m_back_list.append(getCurrentUri());
+            qDebug() << "goToUri m_back_list add:" <<getCurrentUri();
+        }
     }
 
     auto viewId = DirectoryViewFactoryManager2::getInstance()->getDefaultViewId(zoomLevel, uri);

@@ -177,11 +177,11 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
         m_window->forceStopLoading();
         //key is null, clean search content, show all files
         if (key == "" || key.isNull())
-            Q_EMIT this->updateLocationRequest(path, false);
+            Q_EMIT this->updateLocationRequest(path, true);
         else
         {
             auto targetUri = Peony::SearchVFSUriParser::parseSearchKey(path, key, true, false, "", m_search_recursive);
-            Q_EMIT this->updateLocationRequest(targetUri, false);
+            Q_EMIT this->updateLocationRequest(targetUri, true);
         }
     });
 
