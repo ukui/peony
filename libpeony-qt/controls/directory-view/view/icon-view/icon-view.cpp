@@ -299,20 +299,30 @@ void IconView::mousePressEvent(QMouseEvent *e)
     m_allow_set_index_widget = true;
 
     qDebug()<<"moursePressEvent";
-//    m_editValid = true;
-    QListView::mousePressEvent(e);
-
-    if(getSelections().count()>1)
-        multiSelect();
-    viewport()->update(viewport()->rect());
-
-    if(!indexAt(e->pos()).isValid())
-    {
-        disableMultiSelect();
+    QModelIndex itemIndex = indexAt(e->pos());
+    if (itemIndex.isValid() && true == m_multi_select) {
+        m_mouse_release_unselect = selectedIndexes().contains(itemIndex);
+    } else {
+        m_mouse_release_unselect = false;
     }
+
+    QListView::mousePressEvent(e);
 
     if (e->button() != Qt::LeftButton) {
         return;
+    }
+
+    if (true == m_mouse_release_unselect) {
+        selectionModel()->setCurrentIndex(itemIndex, QItemSelectionModel::Select|QItemSelectionModel::Rows);
+    }
+
+    if(getSelections().count()>1)
+        multiSelect();
+
+    viewport()->update(viewport()->rect());
+
+    if (!itemIndex.isValid()) {
+        disableMultiSelect();
     }
 
     //m_renameTimer
@@ -341,6 +351,13 @@ void IconView::mouseReleaseEvent(QMouseEvent *e)
 
     if (e->button() != Qt::LeftButton) {
         return;
+    }
+
+    if (true == m_mouse_release_unselect) {
+        QModelIndex itemIndex = indexAt(e->pos());
+        if (itemIndex.isValid()) {
+            selectionModel()->setCurrentIndex(itemIndex, QItemSelectionModel::Deselect|QItemSelectionModel::Rows);
+        }
     }
 }
 
