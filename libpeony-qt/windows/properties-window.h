@@ -129,6 +129,7 @@ public:
         if(tabPage) {
             this->m_openTabPage.append(tabPage);
             connect(tabPage,&PropertiesWindowTabIface::requestCloseMainWindow,this,[=](){
+                Q_ASSERT(tabPage);
                 this->close();
             });
         }

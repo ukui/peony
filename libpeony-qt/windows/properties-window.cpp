@@ -28,6 +28,7 @@
 #include "permissions-properties-page-factory.h"
 #include "computer-properties-page-factory.h"
 #include "recent-and-trash-properties-page-factory.h"
+#include "mark-properties-page-factory.h"
 
 #include <QToolBar>
 #include <QDialogButtonBox>
@@ -77,6 +78,7 @@ PropertiesWindowPluginManager::PropertiesWindowPluginManager(QObject *parent) : 
     registerFactory(PermissionsPropertiesPageFactory::getInstance());
     registerFactory(ComputerPropertiesPageFactory::getInstance());
     registerFactory(RecentAndTrashPropertiesPageFactory::getInstance());
+    registerFactory(MarkPropertiesPageFactory::getInstance());
 }
 
 PropertiesWindowPluginManager::~PropertiesWindowPluginManager()
@@ -297,7 +299,8 @@ void PropertiesWindow::initTabPage(const QStringList &uris)
 {
     auto w = new PropertiesWindowPrivate(uris, this);
     w->tabBar()->setStyle(new tabStyle);
-    w->tabBar()->setMinimumHeight(72);
+    //Warning: 不要设置tab高度，否则会导致tab页切换上下跳动
+    //w->tabBar()->setMinimumHeight(72);
 
     //    w->tabBar()->setMinimumSize(PropertiesWindow::s_windowWidth,72);
     this->setCentralWidget(w);
@@ -372,11 +375,10 @@ void PropertiesWindow::closeEvent(QCloseEvent *event)
 void PropertiesWindow::saveAllChanged()
 {
     qDebug() << "PropertiesWindow::saveAllChanged()" << "count" << m_openTabPage.count();
-    if(m_openTabPage.count() == 0)
-        return;
-
-    for(auto tabPage : m_openTabPage) {
-        tabPage->saveAllChange();
+    if(!m_openTabPage.count() == 0){
+        for(auto tabPage : m_openTabPage) {
+            tabPage->saveAllChange();
+        }
     }
 
     this->close();

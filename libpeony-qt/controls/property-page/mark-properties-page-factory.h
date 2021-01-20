@@ -16,12 +16,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <https://www.gnu.org/licenses/>.
  *
- * Authors: Yue Lan <lanyue@kylinos.cn>
+ * Authors: Wenfei He <hewenfei@kylinos.cn>
  *
  */
 
-#ifndef RECENTANDTRASHPROPERTIESPAGEFACTORY_H
-#define RECENTANDTRASHPROPERTIESPAGEFACTORY_H
+#ifndef MARKPROPERTIESPAGEFACTORY_H
+#define MARKPROPERTIESPAGEFACTORY_H
 
 #include <QObject>
 #include "peony-core_global.h"
@@ -29,21 +29,21 @@
 
 namespace Peony {
 
-class PEONYCORESHARED_EXPORT RecentAndTrashPropertiesPageFactory : public QObject, public PropertiesWindowTabPagePluginIface
+class MarkPropertiesPageFactory : public QObject, public PropertiesWindowTabPagePluginIface
 {
     Q_OBJECT
 public:
-    static RecentAndTrashPropertiesPageFactory *getInstance();
+    static MarkPropertiesPageFactory *getInstance();
 
     //plugin iface
     const QString name() override {
-        return QObject::tr("Trash and Recent");
+        return QObject::tr("Mark");
     }
     PluginType pluginType() override {
         return PluginType::PropertiesWindowPlugin;
     }
     const QString description() override {
-        return QObject::tr("Show the file properties or items in trash or recent.");
+        return QObject::tr("mark this file.");
     }
     const QIcon icon() override {
         return QIcon::fromTheme("view-paged-symbolic", QIcon::fromTheme("folder"));
@@ -57,20 +57,18 @@ public:
 
     //properties plugin iface
     int tabOrder() override {
-        return 1000-3;
+        return 900;
     }
     bool supportUris(const QStringList &uris) override;
     PropertiesWindowTabIface *createTabPage(const QStringList &uris) override;
 
-    void closeFactory() override {
-        this->deleteLater();
-    }
+    void closeFactory() override;
 
 private:
-    explicit RecentAndTrashPropertiesPageFactory(QObject *parent = nullptr);
-    ~RecentAndTrashPropertiesPageFactory() override {}
+    explicit MarkPropertiesPageFactory(QObject *parent = nullptr);
+    ~MarkPropertiesPageFactory() override;
 };
 
 }
 
-#endif // RECENTANDTRASHPROPERTIESPAGEFACTORY_H
+#endif //MARKPROPERTIESPAGEFACTORY_H

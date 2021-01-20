@@ -54,7 +54,7 @@ bool BasicPropertiesPageFactory::supportUris(const QStringList &uri)
 
 void BasicPropertiesPageFactory::closeFactory()
 {
-    deleteLater();
+    this->deleteLater();
 }
 
 PropertiesWindowTabIface *BasicPropertiesPageFactory::createTabPage(const QStringList &uris)
