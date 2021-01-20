@@ -59,6 +59,7 @@
 #include "create-template-operation.h"
 #include "file-operation-error-dialog.h"
 #include "clipboard-utils.h"
+#include "search-vfs-uri-parser.h"
 
 #include "directory-view-menu.h"
 #include "directory-view-widget.h"
@@ -867,9 +868,50 @@ void MainWindow::goToUri(const QString &uri, bool addHistory, bool force)
         }
     }
 
+    //if in search mode and key is not null, need quit search mode
+    if (m_is_search && m_last_key != "" && !uri.startsWith("search://"))
+    {
+        m_tab->updateSearchBar(false);
+        m_is_search = false;
+        m_header_bar->startEdit(false);
+    }
+
     locationChangeStart();
     m_tab->goToUri(realUri, addHistory, force);
     m_header_bar->setLocation(uri);
+}
+
+void MainWindow::updateSearch(const QString &uri, const QString &key, bool updateKey)
+{
+    qDebug() << "updateSearch:" <<uri <<key <<updateKey;
+    bool needUpdate = false;
+    if (m_last_search_path == "" || ! Peony::FileUtils::isSamePath(uri, m_last_search_path))
+    {
+       //qDebug() << "updateSearch:" <<uri;
+       m_last_search_path = uri;
+       needUpdate = true;
+    }
+
+    if (updateKey)
+    {
+        needUpdate = true;
+        m_last_key = key;
+    }
+
+    if (needUpdate)
+    {
+        //qDebug() << "updateSearch needUpdate:" <<m_last_key<<m_last_search_path;
+        forceStopLoading();
+        if (m_last_key == "")
+            goToUri(m_last_search_path, true);
+        else
+        {
+            auto targetUri = Peony::SearchVFSUriParser::parseSearchKey(m_last_search_path,
+                                                         m_last_key, true, false, "", true);
+            //qDebug() << "updateSearch targetUri:" <<targetUri;
+            goToUri(targetUri, true);
+        }
+    }
 }
 
 void MainWindow::addNewTabs(const QStringList &uris)
@@ -1318,7 +1360,12 @@ void MainWindow::initUI(const QString &uri)
             maximizeOrRestore();
     });
     connect(views, &TabWidget::closeWindowRequest, this, &QWidget::close);
-    connect(m_header_bar, &HeaderBar::updateSearchRequest, m_tab, &TabWidget::updateSearchBar);
+    connect(m_header_bar, &HeaderBar::updateSearchRequest, this, [=](bool showSearch)
+    {
+        m_tab->updateSearchBar(showSearch);
+        m_is_search = showSearch;
+    });
+    connect(m_header_bar, &HeaderBar::updateSearch, this, &MainWindow::updateSearch);
 
     X11WindowManager *tabBarHandler = X11WindowManager::getInstance();
     tabBarHandler->registerWidget(views->tabBar());
@@ -1335,6 +1382,7 @@ void MainWindow::initUI(const QString &uri)
     connect(m_tab, &TabWidget::clearTrash, this, &MainWindow::cleanTrash);
     connect(m_tab, &TabWidget::recoverFromTrash, this, &MainWindow::recoverFromTrash);
     connect(m_tab, &TabWidget::updateWindowLocationRequest, this, &MainWindow::goToUri);
+    connect(m_tab, &TabWidget::updateSearch, this, &MainWindow::updateSearch);
     connect(m_tab, &TabWidget::activePageLocationChanged, this, &MainWindow::locationChangeEnd);
     connect(m_tab, &TabWidget::activePageViewTypeChanged, this, &MainWindow::updateHeaderBar);
     connect(m_tab, &TabWidget::activePageChanged, this, &MainWindow::updateHeaderBar);

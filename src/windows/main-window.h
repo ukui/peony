@@ -112,6 +112,7 @@ public Q_SLOTS:
     void syncControlsLocation(const QString &uri);
     void updateHeaderBar();
     void updateWindowIcon();
+    void updateSearch(const QString &uri, const QString &key="", bool updateKey=false);
     void createFolderOperation();
     void goToUri(const QString &uri, bool addHistory = false, bool force = false);
 
@@ -177,6 +178,9 @@ private:
     QStackedWidget *m_side_bar_container;
     TabWidget *m_tab;
     Peony::StatusBar *m_status_bar;
+
+    QString m_last_search_path = "";
+    QString m_last_key = "";
 
     bool m_is_draging = false;
     bool m_is_search = false;

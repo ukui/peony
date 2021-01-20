@@ -73,6 +73,7 @@ private:
 
 Q_SIGNALS:
     void updateLocationRequest(const QString &uri, bool addHistory = true, bool force = true);
+    void updateSearch(const QString &uri, const QString &key="", bool updateKey=false);
     void viewTypeChangeRequest(const QString &viewId);
     void updateZoomLevelHintRequest(int zoomLevelHint);
     void updateSearchRequest(bool showSearch);

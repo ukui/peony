@@ -34,7 +34,6 @@
 
 #include "directory-view-factory-manager.h"
 #include "directory-view-plugin-iface2.h"
-#include "search-vfs-uri-parser.h"
 #include "file-info.h"
 #include "file-info-job.h"
 
@@ -174,15 +173,19 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
         m_window->getCurrentPage()->setSortFilter(index);
     });
     connect(m_location_bar, &Peony::AdvancedLocationBar::searchRequest, [=](const QString &path, const QString &key){
+//        m_window->forceStopLoading();
+//        //key is null, clean search content, show all files
+//        if (key == "" || key.isNull())
+//            Q_EMIT this->updateLocationRequest(path, true);
+//        else
+//        {
+//            auto targetUri = Peony::SearchVFSUriParser::parseSearchKey(path, key, true, false, "", m_search_recursive);
+//            Q_EMIT this->updateLocationRequest(targetUri, true);
+//        }
+
+        //search update all in main window
         m_window->forceStopLoading();
-        //key is null, clean search content, show all files
-        if (key == "" || key.isNull())
-            Q_EMIT this->updateLocationRequest(path, true);
-        else
-        {
-            auto targetUri = Peony::SearchVFSUriParser::parseSearchKey(path, key, true, false, "", m_search_recursive);
-            Q_EMIT this->updateLocationRequest(targetUri, true);
-        }
+        Q_EMIT this->updateSearch(path, key, true);
     });
 
     connect(m_location_bar, &Peony::AdvancedLocationBar::updateWindowLocationRequest, this, &HeaderBar::updateLocationRequest);

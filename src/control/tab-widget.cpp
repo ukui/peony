@@ -389,7 +389,7 @@ void TabWidget::browsePath()
     if (target_path != "" && target_path != getCurrentUri())
     {
         updateSearchPathButton(target_path);
-        Q_EMIT this->updateWindowLocationRequest(target_path, true);
+        Q_EMIT this->updateSearch(target_path);
     }
 }
 
