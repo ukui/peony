@@ -38,7 +38,7 @@ public:
 
     //plugin iface
     const QString name() override {
-        return QObject::tr("Computer Properties Page");
+        return QObject::tr("Computer Properties");
     }
     PluginType pluginType() override {
         return PluginType::PropertiesWindowPlugin;

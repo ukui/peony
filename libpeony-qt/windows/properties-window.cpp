@@ -219,7 +219,7 @@ bool PropertiesWindow::notDir()
 }
 
 void PropertiesWindow::show()
-{   
+{
     if(m_destroyThis) {
         this->close();
         return;
@@ -308,6 +308,7 @@ bool PropertiesWindow::checkUriIsOpen(QStringList &uris, PropertiesWindow *newWi
     if(!openPropertiesWindows)
         openPropertiesWindows = new QList<PropertiesWindow*>();
 
+    qDebug() << "PropertiesWindow::checkUriIsOpen uri:" << uris.first();
     //1.对uris进行排序
     std::sort(uris.begin(), uris.end(), [](QString a, QString b) {
         return a < b;
@@ -404,10 +405,15 @@ PropertiesWindowPrivate::PropertiesWindowPrivate(const QStringList &uris, QWidge
 
 void tabStyle::drawControl(QStyle::ControlElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget) const
 {
+    /**
+     * FIX:需要修复颜色不能跟随主题的问题
+     * \brief
+     */
     if (element == CE_TabBarTab) {
         if (const QStyleOptionTab *tab = qstyleoption_cast<const QStyleOptionTab *>(option)) {
             //设置按钮的左右上下偏移
             QRect rect = (tab->rect).adjusted(4,0,1,-12);
+//            QPalette palette = tab->palette;
 
             if (tab->state & QStyle::State_Selected) {
                 painter->save();
@@ -416,7 +422,7 @@ void tabStyle::drawControl(QStyle::ControlElement element, const QStyleOption *o
 
                 painter->drawRect(rect);
                 //FIX:圆角矩形绘制问题
-                //                painter->drawRoundRect(rect,10,17);
+                //painter->drawRoundRect(rect,10,17);
                 painter->restore();
             }
 

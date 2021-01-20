@@ -55,6 +55,8 @@ public:
 
     void savePermissions();
 
+    void updateCheckBox();
+
 protected:
     static GAsyncReadyCallback async_query_permisson_callback(GObject *obj,
             GAsyncResult *res,
@@ -74,14 +76,16 @@ private:
 
     QVBoxLayout *m_layout = nullptr;
 
-    QLabel *m_label;
-    QLabel *m_message;
-    QTableWidget *m_table;
+    QLabel *m_label         = nullptr;
+    QLabel *m_message       = nullptr;
+    QTableWidget *m_table   = nullptr;
 
     //防止错误修改权限
     bool m_enable = false;
 
     bool m_permissions[3][2];
+public:
+    void thisPageChanged() override;
 
     // PropertiesWindowTabIface interface
 public:

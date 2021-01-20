@@ -62,7 +62,7 @@ PermissionsPropertiesPage::PermissionsPropertiesPage(const QStringList &uris, QW
     this->setLayout(m_layout);
 
 
-    m_label = new QLabel(tr("Target Object: %1").arg(m_uri), this);
+    m_label = new QLabel(tr("Target: %1").arg(m_uri), this);
     m_label->setMinimumHeight(64);
 
     m_label->setContentsMargins(20,20,20,20);
@@ -91,7 +91,7 @@ PermissionsPropertiesPage::~PermissionsPropertiesPage()
 void PermissionsPropertiesPage::initTableWidget()
 {
     m_table = new QTableWidget(this);
-    m_table->setRowCount(3);
+    m_table->setRowCount(4);
     m_table->setColumnCount(4);
     m_table->verticalHeader()->setVisible(false);
     m_table->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -105,6 +105,7 @@ void PermissionsPropertiesPage::initTableWidget()
     m_table->rowHeight(34);
 
     m_table->setAlternatingRowColors(true);
+    m_table->setContentsMargins(24,0,0,0);
 
     auto l = QStringList();
     l<<tr("User or Group")<<tr("Type")<<tr("Read and Write")<<tr("Readonly");
@@ -118,9 +119,7 @@ void PermissionsPropertiesPage::queryPermissionsAsync(const QString &, const QSt
 {
     m_uri = uri;
     QUrl url = uri;
-    m_label->setText(tr("Target Object: %1").arg(url.toDisplayString()));
-    QString text = tr("Target Object: %1").arg(url.toDisplayString());
-    qDebug() << "PermissionsPropertiesPage::queryPermissionsAsync text:" << text;
+    m_label->setText(tr("Target: %1").arg(url.toDisplayString()));
     m_table->setEnabled(false);
 
     GFile *file = g_file_new_for_uri(m_uri.toUtf8().constData());
@@ -137,9 +136,7 @@ void PermissionsPropertiesPage::queryPermissionsAsync(const QString &, const QSt
 GAsyncReadyCallback PermissionsPropertiesPage::async_query_permisson_callback(GObject *obj, GAsyncResult *res, PermissionsPropertiesPage *p_this)
 {
     GError *err = nullptr;
-    auto info = g_file_query_info_finish(G_FILE(obj),
-                                         res,
-                                         &err);
+    auto info = g_file_query_info_finish(G_FILE(obj), res, &err);
 
     if (!info) {
         if (p_this) {
@@ -178,7 +175,7 @@ GAsyncReadyCallback PermissionsPropertiesPage::async_query_permisson_callback(GO
             if (has_unix_mode)
                 mode = g_file_info_get_attribute_uint32(info, G_FILE_ATTRIBUTE_UNIX_MODE);
 
-            auto owner_readable = mode & S_IRUSR;
+            auto owner_readable  = mode & S_IRUSR;
             auto owner_writeable = mode & S_IWUSR;
 
             //read and write
@@ -198,7 +195,7 @@ GAsyncReadyCallback PermissionsPropertiesPage::async_query_permisson_callback(GO
 //            auto group_executeable = mode & S_IXGRP;
 //            p_this->m_permissions[1][2] = group_executeable;
 
-            auto other_readable = mode & S_IROTH;
+            auto other_readable  = mode & S_IROTH;
             auto other_writeable = mode & S_IWOTH;
 
             p_this->m_permissions[2][0] = other_readable && other_writeable;
@@ -239,39 +236,12 @@ GAsyncReadyCallback PermissionsPropertiesPage::async_query_permisson_callback(GO
 
             if (enable) {
                 table->setRowCount(3);
-
-                for (int i = 0; i < 3; i++) {
-                    for (int j = 0; j < 2; j++) {
-                        table->setCellWidget(i, j + 2, nullptr);
-                        QWidget *w = new QWidget(table);
-                        QHBoxLayout *l = new QHBoxLayout(w);
-                        l->setMargin(0);
-                        w->setLayout(l);
-                        l->setAlignment(Qt::AlignCenter);
-                        auto checkbox = new QCheckBox(w);
-                        l->addWidget(checkbox);
-                        table->setCellWidget(i, j + 2, w);
-
-                        checkbox->setChecked(p_this->m_permissions[i][j]);
-
-                        //disable home path
-                        QString homeUri = "file://" +  QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
-                        if (p_this->m_uri == homeUri)
-                            checkbox->setDisabled(true);
-                        else
-                            checkbox->setDisabled(false);
-
-                        connect(checkbox, &QCheckBox::clicked, p_this, [=]() {
-                            qDebug()<<"clicked"<<i<<j<<checkbox->isChecked();
-                            p_this->checkBoxChanged(i, j, checkbox->isChecked());
-                        });
-                    }
-                }
+                //更新表格选中情况
+                p_this->updateCheckBox();
 
                 QTableWidgetItem *itemR0C0 = new QTableWidgetItem(QIcon::fromTheme("emblem-personal"), userNameDisplayString);
                 table->setItem(0, 0, nullptr);
                 table->setItem(0, 0, itemR0C0);
-                table->setContentsMargins(22,0,0,0);
 
                 QTableWidgetItem *itemR1C0 = new QTableWidgetItem(QIcon::fromTheme("emblem-people"), groupName);
                 table->setItem(1, 0, nullptr);
@@ -346,19 +316,15 @@ GAsyncReadyCallback PermissionsPropertiesPage::async_query_permisson_callback(GO
 
 void PermissionsPropertiesPage::changePermission(int row, int column, bool checked)
 {
-    /*!
-      \bug
-      even though directory know the file's attributes have been changed, and
-      model request updated the data, the view doesn't paint the current emblems correctly.
-      */
-    //FIXME: should use g_file_set_attribute() with mode info?
     if(!m_enable)
         return;
     int l_column = (column == 0 ? 1 : 0);
     m_permissions[row][column] = checked;
     m_permissions[row][l_column] = !checked;
 
-//    savePermissions();
+    this->thisPageChanged();
+
+    this->updateCheckBox();
 }
 
 /*!
@@ -367,6 +333,12 @@ void PermissionsPropertiesPage::changePermission(int row, int column, bool check
  */
 void PermissionsPropertiesPage::savePermissions()
 {
+    /*!
+      \bug
+      even though directory know the file's attributes have been changed, and
+      model request updated the data, the view doesn't paint the current emblems correctly.
+    */
+    //FIXME: should use g_file_set_attribute() with mode info?
     if(!m_enable)
         return;
 
@@ -428,12 +400,48 @@ void PermissionsPropertiesPage::savePermissions()
     if (url.isLocalFile()) {
         g_chmod(url.path().toUtf8(), mod);
         qDebug()<<mod;
-        queryPermissionsAsync(nullptr, m_uri);
     }
 }
 
 void PermissionsPropertiesPage::saveAllChange()
 {
-    savePermissions();
-    qDebug() << "权限窗口！保存设置";
+    if(this->m_thisPageChanged)
+        this->savePermissions();
+    qDebug() << "PermissionsPropertiesPage::saveAllChange()" << this->m_thisPageChanged;
+}
+
+void PermissionsPropertiesPage::thisPageChanged()
+{
+    this->m_thisPageChanged = true;
+}
+
+void PermissionsPropertiesPage::updateCheckBox()
+{
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 2; j++) {
+            m_table->setCellWidget(i, j + 2, nullptr);
+            QWidget *w = new QWidget(m_table);
+            QHBoxLayout *l = new QHBoxLayout(w);
+            l->setMargin(0);
+            w->setLayout(l);
+            l->setAlignment(Qt::AlignCenter);
+            auto checkbox = new QCheckBox(w);
+            l->addWidget(checkbox);
+            m_table->setCellWidget(i, j + 2, w);
+
+            checkbox->setChecked(this->m_permissions[i][j]);
+
+            //disable home path
+            QString homeUri = "file://" +  QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
+            if (this->m_uri == homeUri)
+                checkbox->setDisabled(true);
+            else
+                checkbox->setDisabled(false);
+
+            connect(checkbox, &QCheckBox::clicked, this, [=]() {
+                qDebug()<<"clicked"<<i<<j<<checkbox->isChecked();
+                this->checkBoxChanged(i, j, checkbox->isChecked());
+            });
+        }
+    }
 }

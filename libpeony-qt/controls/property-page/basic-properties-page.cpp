@@ -119,7 +119,7 @@ void BasicPropertiesPage::addSeparator()
     m_layout->addWidget(separator);
 }
 
-QLabel *BasicPropertiesPage::createFixedLable(QWidget *parent)
+QLabel *BasicPropertiesPage::createFixedLabel(QWidget *parent)
 {
     QLabel *l = new QLabel(parent);
     l->setFixedHeight(1);
@@ -158,12 +158,12 @@ void BasicPropertiesPage::initFloorOne(const QStringList &uris,BasicPropertiesPa
 {
     QFrame      *floor1  = new QFrame(this);
     QGridLayout *layout1 = new QGridLayout(floor1);
-    layout1->setContentsMargins(14,16,0,16);
+    layout1->setContentsMargins(22,16,0,16);
 
     floor1->setMinimumHeight(100);
     floor1->setLayout(layout1);
 
-    m_iconButton        = new QPushButton(floor1);
+    m_iconButton      = new QPushButton(floor1);
     m_displayNameEdit = new QLineEdit(floor1);
     m_locationEdit    = new QLineEdit(floor1);
 
@@ -173,7 +173,7 @@ void BasicPropertiesPage::initFloorOne(const QStringList &uris,BasicPropertiesPa
 
     auto form1 = new QFormLayout(floor1);
     layout1->addLayout(form1,0,0);
-    form1->setContentsMargins(0,6,20,0);
+    form1->setContentsMargins(0,6,22,0);
 
     form1->addRow(m_iconButton);
 
@@ -192,7 +192,7 @@ void BasicPropertiesPage::initFloorOne(const QStringList &uris,BasicPropertiesPa
     m_displayNameEdit->setMinimumHeight(32);
     m_locationEdit->setMinimumHeight(32);
 
-    form2->addRow(tr("Display Name"), m_displayNameEdit);
+    form2->addRow(tr("Name"), m_displayNameEdit);
     form2->addRow(tr("Location"), m_locationEdit);
 
     //select multiplefiles
@@ -208,9 +208,10 @@ void BasicPropertiesPage::initFloorOne(const QStringList &uris,BasicPropertiesPa
         delete l_thread;
     });
 
-    connect(m_displayNameEdit, &QLineEdit::returnPressed, [=]() {
+    connect(m_displayNameEdit, &QLineEdit::textChanged, [=]() {
         if (!m_displayNameEdit->isReadOnly() && !m_displayNameEdit->text().isEmpty()) {
-            FileOperationUtils::rename(m_info->uri(), m_displayNameEdit->text(), true);
+            this->thisPageChanged();
+//            FileOperationUtils::rename(m_info->uri(), m_displayNameEdit->text(), true);
         }
     });
 
@@ -223,7 +224,7 @@ void BasicPropertiesPage::initFloorOne(const QStringList &uris,BasicPropertiesPa
         m_moveButtonButton = new QPushButton(floor1);
 
         auto form3 = new QFormLayout(floor1);
-        form3->setContentsMargins(0,2,0,0);
+        form3->setContentsMargins(0,2,16,0);
 
         m_moveButtonButton->setText(tr("move"));
         m_moveButtonButton->setFixedSize(70,32);
@@ -238,6 +239,7 @@ void BasicPropertiesPage::initFloorOne(const QStringList &uris,BasicPropertiesPa
         form3->addRow(hiddenButton);
         form3->addRow(m_moveButtonButton);
         //home目录不支持移动和重命名
+        //其他根目录文件夹虽然没有屏蔽，但是没有权限依旧无法改名
         if(m_info.get()->uri() == ("file://"+QStandardPaths::standardLocations(QStandardPaths::HomeLocation).first())) {
             m_displayNameEdit->setReadOnly(true);
             m_moveButtonButton->setDisabled(true);
@@ -259,7 +261,7 @@ void BasicPropertiesPage::initFloorTwo(const QStringList &uris,BasicPropertiesPa
 {
     QFrame      *floor2  = new QFrame(this);
     QFormLayout *layout2 = new QFormLayout(floor2);
-    layout2->setContentsMargins(16,24,0,24);
+    layout2->setContentsMargins(22,24,0,24);
     floor2->setLayout(layout2);
 
     if( fileType == BP_MultipleFIle )
@@ -273,7 +275,7 @@ void BasicPropertiesPage::initFloorTwo(const QStringList &uris,BasicPropertiesPa
 
     layout2->addRow(tr("Type:"),m_fileTypeLabel);
     //FIX:重写文件类型获取函数
-    layout2->addWidget(this->createFixedLable(floor2));
+    layout2->addWidget(this->createFixedLabel(floor2));
 
     if(fileType != BP_MultipleFIle)
         m_fileTypeLabel->setText(m_info.get()->type());
@@ -282,19 +284,19 @@ void BasicPropertiesPage::initFloorTwo(const QStringList &uris,BasicPropertiesPa
     switch (fileType) {
     case BP_Folder:
         m_folderContainLabel = new QLabel(floor2);
-        layout2->addRow(tr("Include:"),m_folderContainLabel);
-        layout2->addWidget(this->createFixedLable(floor2));
+        layout2->addRow(this->createFixedLabel(76,0,tr("Include:"),floor2),m_folderContainLabel);
+        layout2->addWidget(this->createFixedLabel(floor2));
         break;
     case BP_File:
         m_openWithLayout = new QHBoxLayout(floor2);
-        layout2->addRow(tr("Open with:"),m_openWithLayout);
-        layout2->addWidget(this->createFixedLable(floor2));
+        layout2->addRow(this->createFixedLabel(76,0,tr("Open with:"),floor2),m_openWithLayout);
+        layout2->addWidget(this->createFixedLabel(floor2));
         this->addOpenWithMenu(floor2);
         break;
     case BP_Application:
         m_descrptionLabel = new QLabel(floor2);
-        layout2->addRow(tr("Descrption:"),m_descrptionLabel);
-        layout2->addWidget(this->createFixedLable(floor2));
+        layout2->addRow(this->createFixedLabel(76,0,tr("Description:"),floor2),m_descrptionLabel);
+        layout2->addWidget(this->createFixedLabel(floor2));
         m_descrptionLabel->setText(m_info.get()->displayName());
         break;
     case BP_MultipleFIle:
@@ -304,7 +306,7 @@ void BasicPropertiesPage::initFloorTwo(const QStringList &uris,BasicPropertiesPa
     }
 
     layout2->addRow(tr("Size:"),m_fileSizeLabel);
-    layout2->addWidget(this->createFixedLable(floor2));
+    layout2->addWidget(this->createFixedLabel(floor2));
     layout2->addRow(tr("Total size:"),m_fileTotalSizeLabel);
 
     this->countFilesAsync(uris);
@@ -323,21 +325,21 @@ void BasicPropertiesPage::initFloorThree(BasicPropertiesPage::FileType fileType)
     else
         floor3->setMinimumHeight(120);
 
-    layout3->setContentsMargins(16,24,0,24);
+    layout3->setContentsMargins(22,24,0,24);
 
     m_timeCreatedLabel  = new QLabel(floor3);
 
-    layout3->addRow(tr("Time Created:"), m_timeCreatedLabel);
+    layout3->addRow(this->createFixedLabel(76,0,tr("Time Created:"),floor3), m_timeCreatedLabel);
 
     switch (fileType) {
     case BP_File:
     case BP_Application:
         m_timeModifiedLabel = new QLabel(floor3);
         m_timeAccessLabel   = new QLabel(floor3);
-        layout3->addWidget(createFixedLable(floor3));
-        layout3->addRow(tr("Time Modified:"), m_timeModifiedLabel);
-        layout3->addWidget(createFixedLable(floor3));
-        layout3->addRow(tr("Time Access:"), m_timeAccessLabel);
+        layout3->addWidget(createFixedLabel(floor3));
+        layout3->addRow(this->createFixedLabel(76,0,tr("Time Modified:"),floor3), m_timeModifiedLabel);
+        layout3->addWidget(createFixedLabel(floor3));
+        layout3->addRow(this->createFixedLabel(76,0,tr("Time Access:"),floor3), m_timeAccessLabel);
         break;
     case BP_MultipleFIle:
     case BP_Folder:
@@ -362,14 +364,14 @@ void BasicPropertiesPage::initFloorFour()
 {
     QFrame      *floor4  = new QFrame(this);
     QFormLayout *layout4 = new QFormLayout(floor4);
-    layout4->setContentsMargins(16,24,0,24);
+    layout4->setContentsMargins(22,24,0,24);
     m_readOnly = new QCheckBox(tr("Readonly"), floor4);
     m_hidden   = new QCheckBox(tr("Hidden"), floor4);
 
     QHBoxLayout *proLayout = new QHBoxLayout(floor4);
     proLayout->addWidget(m_readOnly);
     proLayout->addWidget(m_hidden);
-    proLayout->addWidget(this->createFixedLable(floor4));
+    proLayout->addWidget(this->createFixedLabel(floor4));
 
     if(m_info.get()->canRead() && !m_info.get()->canWrite())
         m_readOnly->setCheckState(Qt::Checked);
@@ -377,7 +379,11 @@ void BasicPropertiesPage::initFloorFour()
     if(m_info.get()->displayName().startsWith("."))
         m_hidden->setCheckState(Qt::Checked);
 
-    layout4->addRow(tr("FileProperties:"),proLayout);
+    layout4->addRow(this->createFixedLabel(76,0,tr("FileProperty:"),floor4),proLayout);
+
+    //确认被修改
+    connect(m_readOnly,&QCheckBox::stateChanged,this,&BasicPropertiesPage::thisPageChanged);
+    connect(m_hidden,&QCheckBox::stateChanged,this,&BasicPropertiesPage::thisPageChanged);
 
     m_layout->addWidget(floor4);
 }
@@ -517,38 +523,39 @@ void BasicPropertiesPage::cancelCount()
 }
 
 void BasicPropertiesPage::moveFile(){
-    auto newDirPath = QFileDialog::getExistingDirectoryUrl(nullptr, tr("Choose a new folder:"),m_info.get()->uri());
-    qDebug() << "new path:" << newDirPath.toString() ;
+    auto newDirPath = QString(QFileDialog::getExistingDirectoryUrl(nullptr, tr("Choose a new folder:"),m_info.get()->uri()).toEncoded());
+    qDebug() << "new path:" << newDirPath ;
 
     if(newDirPath.isEmpty())
         return;
 
-    if(newDirPath.toString() == m_info.get()->uri()) {
+    if(newDirPath == m_info.get()->uri()) {
         QMessageBox::critical(nullptr, tr("Error"), tr("cannot move a folder to itself !"), QMessageBox::Yes, QMessageBox::Yes);
         return;
     }
 
-    if(newDirPath.toString().startsWith(m_info.get()->uri())) {
+    if(newDirPath.startsWith(m_info.get()->uri())) {
         QMessageBox::critical(nullptr, tr("Error"), tr("cannot move a folder to itself !"), QMessageBox::Yes, QMessageBox::Yes);
         return;
     }
+
+    qDebug() << "oldPath:" << m_info.get()->uri() << newDirPath;
 
     QStringList uriList;
     uriList << m_info.get()->uri();
 
-    if(!FileOperationUtils::move(uriList,newDirPath.toString(),true)->hasError()){
+    if(!FileOperationUtils::move(uriList,newDirPath,true)->hasError()){
         //move to peony
         //        QUrl url = uri;
         QProcess p;
 #if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
         p.setProgram("peony");
-        p.setArguments(QStringList()<<"--show-folders" << newDirPath.toEncoded());
+        p.setArguments(QStringList()<<"--show-folders" << newDirPath);
         p.startDetached();
 #else
-        p.startDetached("peony", QStringList()<<"--show-folders"<< newDirPath.toEncoded());
+        p.startDetached("peony", QStringList()<<"--show-folders"<< newDirPath);
 #endif
-
-        this->close();
+        Q_EMIT this->requestCloseMainWindow();
     }
 }
 /*!
@@ -557,6 +564,9 @@ void BasicPropertiesPage::moveFile(){
  */
 void BasicPropertiesPage::saveAllChange()
 {
+    //未发生修改
+    if(!this->m_thisPageChanged)
+        return;
     //拒绝修改home目录
     if(m_info.get()->uri() == ("file://"+QStandardPaths::standardLocations(QStandardPaths::HomeLocation).first())) {
         return;
@@ -611,14 +621,19 @@ void BasicPropertiesPage::changeFileIcon()
     QUrl iconPathUrl;
     iconPathUrl.setPath("/usr/share/icons");
     auto picture = QFileDialog::getOpenFileName(nullptr, tr("Choose a custom icon"), "/usr/share/icons", "*.png *.jpg *.jpeg *.svg");
-    auto metaInfo = FileMetaInfo::fromUri(m_info.get()->uri());
-    QFileInfo fileInfo(picture);
-    if (!QIcon::fromTheme(fileInfo.baseName()).isNull())
-        metaInfo.get()->setMetaInfoString("custom-icon", fileInfo.baseName());
-    else
-        metaInfo.get()->setMetaInfoString("custom-icon", picture);
 
-    ThumbnailManager::getInstance()->createThumbnail(m_info.get()->uri(), m_thumbnail_watcher, true);
+    qDebug() << "BasicPropertiesPage::changeFileIcon()" << picture << picture.isEmpty();
+
+    if (!picture.isEmpty()) {
+        auto metaInfo = FileMetaInfo::fromUri(m_info.get()->uri());
+        QFileInfo fileInfo(picture);
+        if (!QIcon::fromTheme(fileInfo.baseName()).isNull())
+            metaInfo.get()->setMetaInfoString("custom-icon", fileInfo.baseName());
+        else
+            metaInfo.get()->setMetaInfoString("custom-icon", picture);
+
+        ThumbnailManager::getInstance()->createThumbnail(m_info.get()->uri(), m_thumbnail_watcher, true);
+    }
 }
 
 void BasicPropertiesPage::updateCountInfo(bool isDone)
@@ -716,6 +731,17 @@ void BasicPropertiesPage::updateInfo(const QString &uri)
     }
 
     g_object_unref(info);
+}
+
+QLabel *BasicPropertiesPage::createFixedLabel(quint64 minWidth, quint64 minHeight, QString text, QWidget *parent)
+{
+    QLabel *l = new QLabel(parent);
+    if(minWidth != 0)
+        l->setMinimumWidth(minWidth);
+    if(minHeight != 0)
+        l->setMinimumHeight(minHeight);
+    l->setText(text);
+    return l;
 }
 
 void FileNameThread::run()

@@ -126,8 +126,12 @@ public:
      */
     void addTabPage(PropertiesWindowTabIface* tabPage) {
 
-        if(tabPage)
+        if(tabPage) {
             this->m_openTabPage.append(tabPage);
+            connect(tabPage,&PropertiesWindowTabIface::requestCloseMainWindow,this,[=](){
+                this->close();
+            });
+        }
     }
 
     /*!

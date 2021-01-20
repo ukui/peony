@@ -87,13 +87,35 @@ public:
 
 protected:
     void addSeparator();
-    QLabel *createFixedLable(QWidget *parent = nullptr);
+    /*!
+     * 创建空白占位组件
+     * \brief
+     * \param parent
+     * \return
+     */
+    QLabel *createFixedLabel(QWidget *parent = nullptr);
+    /*!
+     *
+     * \brief formLayout 左侧label栏
+     * \param minWidth
+     * \param minHeight
+     * \param text
+     * \param parent
+     * \return
+     */
+    QLabel *createFixedLabel(quint64 minWidth, quint64 minHeight,QString text, QWidget *parent = nullptr);
     void addOpenWithMenu(QWidget *parent = nullptr);
+    /*!
+     * 初始化第一层显示区域
+     * \brief
+     * \param uris
+     * \param fileType
+     */
     void initFloorOne(const QStringList &uris,BasicPropertiesPage::FileType fileType);
     void initFloorTwo(const QStringList &uris,BasicPropertiesPage::FileType fileType);
     void initFloorThree(BasicPropertiesPage::FileType fileType);
     void initFloorFour();
-    FileType checkFileType(const QStringList &uris);
+    BasicPropertiesPage::FileType checkFileType(const QStringList &uris);
     void changeFileIcon();
     void moveFile();
 
@@ -105,6 +127,13 @@ protected Q_SLOTS:
     void cancelCount();
 
     void updateInfo(const QString &uri);
+    /*!
+     * 当前页面发生改变
+     * \brief
+     */
+    void thisPageChanged() {
+        this->m_thisPageChanged = true;
+    }
 
 private:
     QVBoxLayout                 *m_layout = nullptr;

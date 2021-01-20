@@ -15,7 +15,23 @@ public:
     virtual ~PropertiesWindowTabIface() {}
     PropertiesWindowTabIface();
 
+    bool m_thisPageChanged = false;
+    /*!
+     * 作为当前页面是否改变的依据
+     * \brief
+     */
+    virtual void thisPageChanged() {
+        this->m_thisPageChanged = true;
+    }
     virtual void saveAllChange() = 0;
+
+Q_SIGNALS:
+    /*!
+     * 当前tab页面请求关闭窗口
+     * \brief
+     */
+    void requestCloseMainWindow();
+
 };
 
 }
