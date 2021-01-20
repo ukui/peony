@@ -1,3 +1,13 @@
+peony (3.0.3-2+0120) v101; urgency=medium
+
+  * Fix eject flash drive jump to icon view. bug #30746
+  * Fix the file or folder can not be draged,when mosue on it in multi select mode. bug #29768
+  * Fix icon of desktop position changes,when language changes. #32954
+  * Fix the task bar has black area when when panel to pc. #32937
+  * Fix chinese and english translate bug. #33491 #33497
+
+ -- wangweinan <wangweinan@kylinos.cn>  Thu, 20 Jan 2020 8:44:46 +0800
+
 peony (3.0.3-2+0113) v101; urgency=medium
 
   * Fix if there is no item in item rect hash, skip items relocation
