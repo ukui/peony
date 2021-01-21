@@ -273,7 +273,9 @@ void Format_Dialog::formatloop(){
         cost = 100;
 
     if (m_simulate_progress >= pre){
-        m_simulate_progress += (cost - pre)/100;
+        //fix waiting in 100% issue
+        if (m_simulate_progress < 99)
+           m_simulate_progress += (cost - pre)/100;
     }
     else{
         m_simulate_progress = pre;
