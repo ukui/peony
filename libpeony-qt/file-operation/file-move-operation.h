@@ -178,7 +178,6 @@ private:
     bool m_copy_move = false;
 
     GFileCopyFlags m_default_copy_flag = GFileCopyFlags(G_FILE_COPY_NOFOLLOW_SYMLINKS|
-                                         G_FILE_COPY_ALL_METADATA|
                                          G_FILE_COPY_NO_FALLBACK_FOR_MOVE);
 
     FileNodeReporter *m_reporter = nullptr;
