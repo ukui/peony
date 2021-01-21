@@ -288,16 +288,16 @@ void FileEnumerator::handleError(GError *err)
     qDebug()<<"handleError"<<err->code<<err->message;
     switch (err->code) {
     case G_IO_ERROR_NOT_DIRECTORY: {
-        auto uri = g_file_get_uri(m_root_file);
-        //FIXME: replace BLOCKING api in ui thread.
-        auto targetUri = FileUtils::getTargetUri(uri);
-        if (uri) {
-            g_free(uri);
-        }
-        if (!targetUri.isEmpty()) {
-            prepared(nullptr, targetUri);
-            return;
-        }
+//        auto uri = g_file_get_uri(m_root_file);
+//        //FIXME: replace BLOCKING api in ui thread.
+//        auto targetUri = FileUtils::getTargetUri(uri);
+//        if (uri) {
+//            g_free(uri);
+//        }
+//        if (!targetUri.isEmpty()) {
+//            prepared(nullptr, targetUri);
+//            return;
+//        }
 
         bool isMountable = false;
         //FIXME: replace BLOCKING api in ui thread. Done
