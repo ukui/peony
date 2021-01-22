@@ -283,7 +283,15 @@ void BasicPropertiesPage::countFilesAsync(const QStringList &uris)
     m_file_count = 0;
     m_hidden_file_count = 0;
     m_total_size = 0;
-    m_count_op = new FileCountOperation(uris);
+    QStringList realUris;
+    if (uris.count() == 1) {
+        auto uri = uris.first();
+        auto info = FileInfo::fromUri(uri);
+        if (!info.get()->symlinkTarget().isEmpty()) {
+            realUris<<"file:///"<<info.get()->symlinkTarget();
+        }
+    }
+    m_count_op = new FileCountOperation(realUris.isEmpty()? uris: realUris);
     m_count_op->setAutoDelete(true);
     connect(m_count_op, &FileOperation::operationPreparedOne, this, &BasicPropertiesPage::onFileCountOne, Qt::BlockingQueuedConnection);
     connect(m_count_op, &FileCountOperation::countDone, [=](quint64 file_count, quint64 hidden_file_count, quint64 total_size) {
