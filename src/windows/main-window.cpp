@@ -1231,7 +1231,8 @@ void MainWindow::validBorder()
 void MainWindow::initUI(const QString &uri)
 {
     connect(this, &MainWindow::locationChangeStart, this, [=]() {
-        m_side_bar->blockSignals(true);
+        //comment to fix bug 33527
+        //m_side_bar->blockSignals(true);
         m_header_bar->blockSignals(true);
         QCursor c;
         c.setShape(Qt::WaitCursor);
@@ -1242,7 +1243,8 @@ void MainWindow::initUI(const QString &uri)
     });
 
     connect(this, &MainWindow::locationChangeEnd, this, [=]() {
-        m_side_bar->blockSignals(false);
+        //comment to fix bug 33527
+        //m_side_bar->blockSignals(false);
         m_header_bar->blockSignals(false);
         QCursor c;
         c.setShape(Qt::ArrowCursor);
