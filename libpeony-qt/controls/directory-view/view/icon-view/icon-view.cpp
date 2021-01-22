@@ -497,7 +497,7 @@ void IconView::setProxy(DirectoryViewProxyIface *proxy)
         //when selections is more than 1, let mainwindow to process
         if (getSelections().count() != 1)
             return;
-        auto uri = index.data(FileItemModel::UriRole).toString();
+        auto uri = getSelections().first();
         //process open symbolic link
         auto info = FileInfo::fromUri(uri);
         if (info->isSymbolLink() && uri.startsWith("file://") && info->isValid())
@@ -649,7 +649,7 @@ void IconView2::bindModel(FileItemModel *model, FileItemProxyFilterSortModel *pr
         //when selections is more than 1, let mainwindow to process
         if (getSelections().count() != 1)
             return;
-        auto uri = index.data(Qt::UserRole).toString();
+        auto uri = getSelections().first();
         Q_EMIT this->viewDoubleClicked(uri);
     });
 
