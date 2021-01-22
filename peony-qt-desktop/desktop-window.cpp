@@ -494,10 +494,12 @@ void DesktopWindow::virtualGeometryChangedProcess(const QRect &geometry) {
 void DesktopWindow::geometryChangedProcess(const QRect &geometry) {
     // screen resolution ratio change
     updateWinGeometry();
+    qDebug() << "geometryChangedProcess:" <<geometry <<topLevelWidget()->winId();
     KWindowSystem::setState(topLevelWidget()->winId(), NET::States(NET::Desktop|NET::KeepBelow));
     QTimer::singleShot(500, this, [=](){
         auto view = PeonyDesktopApplication::getIconView();
         if (view->topLevelWidget()->isVisible()) {
+            qDebug() << "geometryChangedProcess visible view:" <<view->topLevelWidget()->winId();
             KWindowSystem::raiseWindow(view->topLevelWidget()->winId());
             KWindowSystem::setState(view->topLevelWidget()->winId(), NET::States(NET::Desktop|NET::KeepAbove));
         }
@@ -507,6 +509,7 @@ void DesktopWindow::geometryChangedProcess(const QRect &geometry) {
 void DesktopWindow::updateView() {
     auto avaliableGeometry = m_screen->availableGeometry();
     auto geomerty = m_screen->geometry();
+    qDebug() << "updateView:" <<avaliableGeometry<<geomerty;
     int top = qAbs(avaliableGeometry.top() - geomerty.top());
     int left = qAbs(avaliableGeometry.left() - geomerty.left());
     int bottom = qAbs(avaliableGeometry.bottom() - geomerty.bottom());
@@ -526,6 +529,8 @@ void DesktopWindow::updateWinGeometry() {
     auto vg = getScreen()->virtualGeometry();
     auto ag = getScreen()->availableGeometry();
 
+    qDebug() << "updateWinGeometry: args:" <<screenName <<screenSize<<g<<vg<<ag<<this->geometry();
+
 //    this->move(m_screen->geometry().topLeft());
 //    this->setFixedSize(m_screen->geometry().size());
 //    /*!
@@ -544,8 +549,12 @@ void DesktopWindow::updateWinGeometry() {
             this->show();
         }
     } else {
+        qDebug() << "non primaryScreen:" <<m_screen->geometry() <<qApp->primaryScreen()->geometry();
         if (m_screen->geometry() == qApp->primaryScreen()->geometry())
+        {
             this->hide();
+            qWarning() << "error: non primaryScreen geometry same with primaryScreen ! " <<m_screen->geometry();
+        }
         else
             this->show();
     }
