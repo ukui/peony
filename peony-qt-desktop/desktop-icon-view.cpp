@@ -574,8 +574,8 @@ void DesktopIconView::resolutionChange(const QRect &screenSize)
             return;
         }
 
-        //    qDebug() << "icon width: " << iconWidth << " icon heigth: " << iconHeigth;
-        //    qDebug() << "width:" << screenSize.width() << " height:" << screenSize.height();
+        qDebug() << "icon width: " << iconWidth << " icon heigth: " << iconHeigth;
+        qDebug() << "width:" << screenSize.width() << " height:" << screenSize.height();
 
         std::sort(newPosition.begin(), newPosition.end(), iconSizeLessThan);
 
@@ -608,9 +608,11 @@ void DesktopIconView::resolutionChange(const QRect &screenSize)
             }
             updateItemPosByUri(i->second, QPoint(posX, posY));
             setFileMetaInfoPos(i->second, QPoint(posX, posY));
-        //        qDebug() << "uri: " << i->second << " --- pos: " << QPoint(posX, posY);
+            qDebug() << "uri: " << i->second << " --- pos: " << QPoint(posX, posY);
         }
     }
+    qDebug()<<"file"<<__FILE__<<"fun"<<__FUNCTION__ <<"line"<< __LINE__
+            <<"begin save all item position";
     this->saveAllItemPosistionInfos();
 }
 
@@ -808,6 +810,8 @@ void DesktopIconView::ensureItemPosByUri(const QString &uri)
     auto srcIndex = m_model->indexFromUri(uri);
     auto index = m_proxy_model->mapFromSource(srcIndex);
     auto rect = QListView::visualRect(index);
+    qDebug()<<"uri"<<uri;
+    qDebug()<<"topleft"<<rect.topLeft();
     if (index.isValid()) {
         m_item_rect_hash.remove(uri);
         m_item_rect_hash.insert(uri, rect);
