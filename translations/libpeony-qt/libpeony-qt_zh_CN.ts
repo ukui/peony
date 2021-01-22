@@ -1393,6 +1393,26 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
     </message>
 </context>
 <context>
+    <name>Peony::FileInfo</name>
+    <message>
+        <location filename="../../libpeony-qt/file-info.cpp" line="232"/>
+        <source>folder</source>
+        <translation>文件夹</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/file-info.cpp" line="239"/>
+        <source>text file</source>
+        <translation>文本文件</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/file-info.cpp" line="236"/>
+        <location filename="../../libpeony-qt/file-info.cpp" line="244"/>
+        <location filename="../../libpeony-qt/file-info.cpp" line="246"/>
+        <source>file</source>
+        <translation>文件</translation>
+    </message>
+</context>
+<context>
     <name>Peony::FileInformationLabel</name>
     <message>
         <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="305"/>
@@ -1452,48 +1472,44 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
 <context>
     <name>Peony::FileItemModel</name>
     <message>
-        <location filename="../../libpeony-qt/model/file-item-model.cpp" line="199"/>
         <source>folder</source>
-        <translation>文件夹</translation>
+        <translation type="vanished">文件夹</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/model/file-item-model.cpp" line="205"/>
         <source>text file</source>
-        <translation>文本文件</translation>
+        <translation type="vanished">文本文件</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/model/file-item-model.cpp" line="210"/>
-        <location filename="../../libpeony-qt/model/file-item-model.cpp" line="212"/>
         <source>file</source>
-        <translation>文件</translation>
+        <translation type="vanished">文件</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/model/file-item-model.cpp" line="288"/>
+        <location filename="../../libpeony-qt/model/file-item-model.cpp" line="264"/>
         <source>child(ren)</source>
         <translation>个子项</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/model/file-item-model.cpp" line="302"/>
+        <location filename="../../libpeony-qt/model/file-item-model.cpp" line="278"/>
         <source>Symbol Link, </source>
         <translation>快捷方式，</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/model/file-item-model.cpp" line="324"/>
+        <location filename="../../libpeony-qt/model/file-item-model.cpp" line="299"/>
         <source>File Name</source>
         <translation>名称</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/model/file-item-model.cpp" line="328"/>
+        <location filename="../../libpeony-qt/model/file-item-model.cpp" line="303"/>
         <source>File Size</source>
         <translation>大小</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/model/file-item-model.cpp" line="330"/>
+        <location filename="../../libpeony-qt/model/file-item-model.cpp" line="305"/>
         <source>File Type</source>
         <translation>类型</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/model/file-item-model.cpp" line="326"/>
+        <location filename="../../libpeony-qt/model/file-item-model.cpp" line="301"/>
         <source>Modified Date</source>
         <translation>修改时间</translation>
     </message>

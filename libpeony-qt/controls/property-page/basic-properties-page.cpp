@@ -256,7 +256,7 @@ void BasicPropertiesPage::onSingleFileChanged(const QString &oldUri, const QStri
     //qDebug() << "infoupdate set Icon:" <<thumbnail.isNull() <<thumbnail;
     m_icon->setIcon(thumbnail.isNull()? icon: thumbnail);
     m_display_name->setText(m_info->displayName());
-    m_type->setText(m_info->fileType());
+    m_type->setText(m_info->displayFileType());
     //auto icon = QIcon::fromTheme(m_info->iconName(), QIcon::fromTheme("text-x-generic"));
     //auto thumbnail = ThumbnailManager::getInstance()->tryGetThumbnail(m_info->uri());
     if (thumbnail.isNull())

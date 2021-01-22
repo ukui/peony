@@ -193,30 +193,6 @@ int FileItemModel::rowCount(const QModelIndex &parent) const
     return parent_item->m_children->count();
 }
 
-QString FileItemModel::getFileType(FileItem *item) const
-{
-    if (item->m_info->isDir()) {
-        return tr("folder");
-    } else if (item->m_info->isOfficeFile()) {
-        return item->m_info->fileType();
-    } else {
-        QString fileType = item->m_info->fileType();
-        if (fileType.contains("plain text document")) {
-            return tr("text file");
-        } else {
-            QString fileName = item->m_info->displayName();
-            if (fileName.contains(".")) {
-                QStringList strElement = fileName.split(".");
-                return QString(strElement.last()).toUpper() + tr("file");
-            } else {
-                return tr("file");
-            }
-        }
-    }
-
-    return item->m_info->fileType();
-}
-
 QVariant FileItemModel::data(const QModelIndex &index, int role) const
 {
     if (!index.isValid()) {
@@ -301,8 +277,7 @@ QVariant FileItemModel::data(const QModelIndex &index, int role) const
             if (item->m_info->isSymbolLink()) {
                 return QVariant(tr("Symbol Link, ") + item->m_info->fileType());
             }
-
-            return QVariant(getFileType(item));
+            return QVariant(item->m_info->displayFileType());
         }
         default:
             return QVariant();

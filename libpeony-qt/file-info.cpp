@@ -225,3 +225,28 @@ const QString FileInfo::customIcon()
         return nullptr;
     return m_meta_info.get()->getMetaInfoString("custom-icon");
 }
+
+QString FileInfo::displayFileType()
+{
+    if (isDir()) {
+        return tr("folder");
+    } else if (isOfficeFile()) {
+        return m_file_type;
+    } else if (isDesktopFile()) {
+        return "DESKTOP" + tr("file");
+    } else {
+        if (m_file_type.contains("plain text document")) {
+            return tr("text file");
+        } else {
+            QString fileName = displayName();
+            if (fileName.contains(".")) {
+                QStringList strElement = fileName.split(".");
+                return QString(strElement.last()).toUpper() + tr("file");
+            } else {
+                return tr("file");
+            }
+        }
+    }
+
+    return m_file_type;
+}

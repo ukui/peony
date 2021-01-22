@@ -191,6 +191,9 @@ public:
     QString mimeType() {
         return m_mime_type_string;
     }
+
+    QString displayFileType();
+
     QString fileType() {
         return m_file_type;
     }

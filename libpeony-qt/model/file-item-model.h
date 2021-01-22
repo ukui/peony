@@ -272,9 +272,6 @@ public Q_SLOTS:
     void setRootIndex(const QModelIndex &index);
 
 private:
-    QString getFileType(FileItem *item)const;
-
-private:
     FileItem *m_root_item = nullptr;
     bool m_is_positive = false;
     bool m_can_expand = false;

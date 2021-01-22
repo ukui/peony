@@ -56,22 +56,22 @@
         <translation type="vanished">删除文件警告</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="644"/>
+        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="646"/>
         <source>Open failed</source>
         <translation>打开失败</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="645"/>
+        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="647"/>
         <source>Open directory failed, you have no permission!</source>
         <translation>打开文件夹失败，您没有该目录的权限！</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="628"/>
+        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="630"/>
         <source>Open Link failed</source>
         <translation>打开快捷方式失败</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="629"/>
+        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="631"/>
         <source>File not exist, do you want to delete the link file?</source>
         <translation>目标文件夹不存在，是否删除该无效快捷方式？</translation>
     </message>
