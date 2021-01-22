@@ -80,6 +80,14 @@ GlobalSettings::GlobalSettings(QObject *parent) : QObject(parent)
         setValue(DEFAULT_VIEW_ID, "Icon View");
     }
 
+    if (m_cache.value(SORT_ORDER).isNull()){
+        setValue(SORT_ORDER, Qt::AscendingOrder);
+    }
+
+    if (m_cache.value(SORT_COLUMN).isNull()){
+        setValue(SORT_COLUMN, 0);
+    }
+
     if (m_cache.value(DEFAULT_VIEW_ZOOM_LEVEL).isNull()) {
         setValue(DEFAULT_VIEW_ZOOM_LEVEL, 25);
     }

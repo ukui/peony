@@ -908,8 +908,11 @@ void TabWidget::addPage(const QString &uri, bool jumpTo)
         this->setCursor(c);
 
         //auto viewContainer = new Peony::DirectoryViewContainer(m_stack);
-        viewContainer->setSortType(Peony::FileItemModel::FileName);
-        viewContainer->setSortOrder(Qt::AscendingOrder);
+        auto settings = Peony::GlobalSettings::getInstance();
+        auto sortType = settings->isExist(SORT_COLUMN)? settings->getValue(SORT_COLUMN).toInt(): 0;
+        auto sortOrder = settings->isExist(SORT_ORDER)? settings->getValue(SORT_ORDER).toInt(): 0;
+        viewContainer->setSortType(Peony::FileItemModel::ColumnType(sortType));
+        viewContainer->setSortOrder(Qt::SortOrder(sortOrder));
 
         //m_stack->addWidget(viewContainer);
         viewContainer->goToUri(uri, false, true);
