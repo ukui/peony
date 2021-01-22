@@ -535,15 +535,19 @@ void FileItem::onChildAdded(const QString &uri)
     infoJob->setAutoDelete();
     m_waiting_add_queue.append(uri);
     infoJob->connect(infoJob, &FileInfoJob::infoUpdated, this, [=]() {
-        auto item = new FileItem(info, this, m_model);
-        m_model->beginInsertRows(firstColumnIndex(), m_children->count(), m_children->count());
-        m_children->append(item);
-        m_model->endInsertRows();
-        qDebug() <<"successfully added child:" <<uri;
-        m_waiting_add_queue.removeOne(uri);
-        //Q_EMIT m_model->dataChanged(item->firstColumnIndex(), item->lastColumnIndex());
-        //Q_EMIT m_model->updated();
-        ThumbnailManager::getInstance()->createThumbnail(info->uri(), m_thumbnail_watcher);
+        if (m_waiting_add_queue.contains(uri)) {
+            auto item = new FileItem(info, this, m_model);
+            m_model->beginInsertRows(firstColumnIndex(), m_children->count(), m_children->count());
+            m_children->append(item);
+            m_model->endInsertRows();
+            qDebug() <<"successfully added child:" <<uri;
+            m_waiting_add_queue.removeOne(uri);
+            //Q_EMIT m_model->dataChanged(item->firstColumnIndex(), item->lastColumnIndex());
+            //Q_EMIT m_model->updated();
+            ThumbnailManager::getInstance()->createThumbnail(info->uri(), m_thumbnail_watcher);
+        } else {
+            qDebug()<<"the file is delete.............";
+        }
     });
     infoJob->queryAsync();
 
@@ -566,6 +570,8 @@ void FileItem::onChildRemoved(const QString &uri)
         qDebug() <<"successfully removed child:" <<uri;
         delete child;
         m_model->endRemoveRows();
+    } else {
+        m_waiting_add_queue.removeOne(uri);
     }
     m_model->updated();
 }
