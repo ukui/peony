@@ -85,12 +85,14 @@ void ListViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
                 painter->setOpacity(0.5);
                 qDebug()<<"cut item in list view"<<index.data();
             }
+            else{
+                painter->setOpacity(1);
+            }
         }
     }
 
     QApplication::style()->drawControl(QStyle::CE_ItemViewItem, &opt, painter);
 
-    //painter->save();
     //add link and read only icon support
     if (index.column() == 0) {
         auto rect = view->visualRect(index);
@@ -120,7 +122,6 @@ void ListViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
             }
         }
     }
-    //painter->restore();
 }
 
 QWidget *ListViewDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const
