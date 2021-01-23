@@ -88,13 +88,7 @@ public:
 
 protected:
     void addSeparator();
-    /*!
-     * 创建空白占位组件
-     * \brief
-     * \param parent
-     * \return
-     */
-    QLabel *createFixedLabel(QWidget *parent = nullptr);
+
     /*!
      *
      * \brief formLayout 左侧label栏
@@ -104,7 +98,8 @@ protected:
      * \param parent
      * \return
      */
-    QLabel *createFixedLabel(quint64 minWidth, quint64 minHeight,QString text, QWidget *parent = nullptr);
+    QLabel *createFixedLabel(quint64 minWidth, quint64 minHeight, QString text, QWidget *parent = nullptr);
+    QLabel *createFixedLabel(quint64 minWidth, quint64 minHeight, QWidget *parent = nullptr);
     void addOpenWithMenu(QWidget *parent = nullptr);
     /*!
      * 初始化第一层显示区域
@@ -117,6 +112,7 @@ protected:
     void initFloorThree(BasicPropertiesPage::FileType fileType);
     void initFloorFour();
     BasicPropertiesPage::FileType checkFileType(const QStringList &uris);
+    void chooseFileIcon();
     void changeFileIcon();
     void moveFile();
 
@@ -148,6 +144,7 @@ private:
 
     //floor1
     QPushButton *m_iconButton       = nullptr;    //文件图标
+    QString     m_newFileIconPath;                //文件新图标
     //**new version
     QLineEdit   *m_displayNameEdit  = nullptr;    //文件名称
     QLineEdit   *m_locationEdit     = nullptr;    //文件路径

@@ -56,9 +56,7 @@
 #include <QUrl>
 
 #include <QFileDialog>
-#include <QListWidgetItem>
 
-#include "file-lauch-dialog.h"
 #include "file-meta-info.h"
 #include "generic-thumbnailer.h"
 #include "open-with-properties-page.h"
@@ -121,25 +119,18 @@ void BasicPropertiesPage::addSeparator()
     m_layout->addWidget(separator);
 }
 
-QLabel *BasicPropertiesPage::createFixedLabel(QWidget *parent)
-{
-    QLabel *l = new QLabel(parent);
-    l->setFixedHeight(1);
-    return l;
-}
-
 void BasicPropertiesPage::addOpenWithMenu(QWidget *parent)
 {
     auto recommendActions = FileLaunchManager::getRecommendActions(m_info.get()->uri());
     if (m_openWithLayout && recommendActions.count() >= 1) {
-        m_openWithLayout->setContentsMargins(0,0,56,0);
-
+        m_openWithLayout->setContentsMargins(0,0,24,0);
+        m_openWithLayout->setAlignment(Qt::AlignVCenter);
         m_openWithLayout->addWidget(OpenWithPropertiesPage::createDefaultLaunchListWidget(m_info->uri(),parent));
         m_openWithLayout->addStretch(1);
 
         QPushButton *moreAppButton = new QPushButton(parent);
         moreAppButton->setText(tr("Change"));
-        moreAppButton->setMinimumSize(70,32);
+        moreAppButton->setMinimumSize(70,30);
         m_openWithLayout->addWidget(moreAppButton);
 
         connect(moreAppButton,&QPushButton::clicked,this,[=](){
@@ -159,7 +150,7 @@ void BasicPropertiesPage::initFloorOne(const QStringList &uris,BasicPropertiesPa
     QGridLayout *layout1 = new QGridLayout(floor1);
     layout1->setContentsMargins(22,16,0,16);
 
-    floor1->setMinimumHeight(100);
+    floor1->setMaximumHeight(100);
     floor1->setLayout(layout1);
 
     m_iconButton      = new QPushButton(floor1);
@@ -172,13 +163,13 @@ void BasicPropertiesPage::initFloorOne(const QStringList &uris,BasicPropertiesPa
 
     auto form1 = new QFormLayout(floor1);
     layout1->addLayout(form1,0,0);
-    form1->setContentsMargins(0,6,22,0);
+    form1->setContentsMargins(0,6,30,0);
 
     form1->addRow(m_iconButton);
 
     //icon area
     if (fileType != BP_MultipleFIle) {
-        connect(m_iconButton, &QPushButton::clicked, this, &BasicPropertiesPage::changeFileIcon);
+        connect(m_iconButton, &QPushButton::clicked, this, &BasicPropertiesPage::chooseFileIcon);
         this->onSingleFileChanged(nullptr, uris.first());
     } else {
         m_iconButton->setIcon(QIcon::fromTheme("text-x-generic"));
@@ -216,20 +207,23 @@ void BasicPropertiesPage::initFloorOne(const QStringList &uris,BasicPropertiesPa
 
     m_locationEdit->setReadOnly(true);
     QUrl url = FileUtils::getParentUri(uris.first());
-    m_locationEdit->setText(url.toDisplayString());
+    QString location = url.toDisplayString();
+    if (location.startsWith("file://"))
+        location = location.split("file://").last();
+    m_locationEdit->setText(location);
 
     //move -button
     if(fileType == BP_Folder) {
         m_moveButtonButton = new QPushButton(floor1);
 
         auto form3 = new QFormLayout(floor1);
-        form3->setContentsMargins(0,2,16,0);
+        form3->setContentsMargins(0,0,16,0);
 
         m_moveButtonButton->setText(tr("move"));
-        m_moveButtonButton->setFixedSize(70,32);
+        m_moveButtonButton->setMinimumSize(70,32);
 
         QPushButton *hiddenButton = new QPushButton(floor1);
-        hiddenButton->setFixedSize(70,32);
+        hiddenButton->setMinimumSize(70,32);
         //设置透明隐藏按钮
         QGraphicsOpacityEffect *op = new QGraphicsOpacityEffect(floor1);
         op->setOpacity(0);
@@ -248,8 +242,7 @@ void BasicPropertiesPage::initFloorOne(const QStringList &uris,BasicPropertiesPa
         layout1->addLayout(form3,0,2);
     } else {
         auto form4 = new QFormLayout(floor1);
-        form4->setContentsMargins(0,0,56,0);
-
+        form4->setContentsMargins(0,0,22,0);
         layout1->addLayout(form4,0,2);
     }
     //add floor1 to context
@@ -260,42 +253,36 @@ void BasicPropertiesPage::initFloorTwo(const QStringList &uris,BasicPropertiesPa
 {
     QFrame      *floor2  = new QFrame(this);
     QFormLayout *layout2 = new QFormLayout(floor2);
-    layout2->setContentsMargins(22,24,0,24);
+    layout2->setContentsMargins(22,16,0,16);
+    layout2->setVerticalSpacing(8);
     floor2->setLayout(layout2);
 
-    if( fileType == BP_MultipleFIle )
-        floor2->setMaximumHeight(180);
-    else
-        floor2->setMinimumHeight(160);
+    floor2->setMinimumHeight(144);
 
-    m_fileTypeLabel      = new QLabel(floor2);
-    m_fileSizeLabel      = new QLabel(floor2);
-    m_fileTotalSizeLabel = new QLabel(floor2);
+    m_fileTypeLabel      = this->createFixedLabel(0,32,floor2);
+    m_fileSizeLabel      = this->createFixedLabel(0,32,floor2);
+    m_fileTotalSizeLabel = this->createFixedLabel(0,32,floor2);
 
     layout2->addRow(tr("Type:"),m_fileTypeLabel);
-    //FIX:重写文件类型获取函数
-    layout2->addWidget(this->createFixedLabel(floor2));
 
+    //FIX:重写文件类型获取函数
     if(fileType != BP_MultipleFIle)
         m_fileTypeLabel->setText(m_info.get()->type());
 
     //根据文件类型添加组件
     switch (fileType) {
     case BP_Folder:
-        m_folderContainLabel = new QLabel(floor2);
-        layout2->addRow(this->createFixedLabel(76,32,tr("Include:"),floor2),m_folderContainLabel);
-        layout2->addWidget(this->createFixedLabel(floor2));
+        m_folderContainLabel = this->createFixedLabel(0,32,floor2);
+        layout2->addRow(this->createFixedLabel(90,32,tr("Include:"),floor2),m_folderContainLabel);
         break;
     case BP_File:
         m_openWithLayout = new QHBoxLayout(floor2);
-        layout2->addRow(this->createFixedLabel(76,32,tr("Open with:"),floor2),m_openWithLayout);
-        layout2->addWidget(this->createFixedLabel(floor2));
+        layout2->addRow(this->createFixedLabel(90,32,tr("Open with:"),floor2),m_openWithLayout);
         this->addOpenWithMenu(floor2);
         break;
     case BP_Application:
-        m_descrptionLabel = new QLabel(floor2);
-        layout2->addRow(this->createFixedLabel(76,32,tr("Description:"),floor2),m_descrptionLabel);
-        layout2->addWidget(this->createFixedLabel(floor2));
+        m_descrptionLabel = this->createFixedLabel(0,32,floor2);
+        layout2->addRow(this->createFixedLabel(90,32,tr("Description:"),floor2),m_descrptionLabel);
         m_descrptionLabel->setText(m_info.get()->displayName());
         break;
     case BP_MultipleFIle:
@@ -304,9 +291,8 @@ void BasicPropertiesPage::initFloorTwo(const QStringList &uris,BasicPropertiesPa
         break;
     }
 
-    layout2->addRow(tr("Size:"),m_fileSizeLabel);
-    layout2->addWidget(this->createFixedLabel(floor2));
-    layout2->addRow(tr("Total size:"),m_fileTotalSizeLabel);
+    layout2->addRow(this->createFixedLabel(90,32,tr("Size:"),floor2),m_fileSizeLabel);
+    layout2->addRow(this->createFixedLabel(90,32,tr("Total size:"),floor2),m_fileTotalSizeLabel);
 
     this->countFilesAsync(uris);
 
@@ -317,28 +303,25 @@ void BasicPropertiesPage::initFloorThree(BasicPropertiesPage::FileType fileType)
 {
     auto floor3 = new QFrame(this);
     QFormLayout *layout3 = new QFormLayout(floor3);
+    layout3->setVerticalSpacing(8);
     floor3->setLayout(layout3);
 
-    if(fileType == BP_Folder)
-        floor3->setMaximumHeight(140);
-    else
-        floor3->setMinimumHeight(120);
+    floor3->setMinimumHeight(64);
 
-    layout3->setContentsMargins(22,24,0,24);
+    layout3->setContentsMargins(22,16,0,16);
 
-    m_timeCreatedLabel  = new QLabel(floor3);
+    m_timeCreatedLabel  = this->createFixedLabel(0,32,floor3);
 
-    layout3->addRow(this->createFixedLabel(76,0,tr("Time Created:"),floor3), m_timeCreatedLabel);
+    layout3->addRow(this->createFixedLabel(90,32,tr("Time Created:"),floor3), m_timeCreatedLabel);
 
+    //设计稿上文件夹只显示创建时间
     switch (fileType) {
     case BP_File:
     case BP_Application:
-        m_timeModifiedLabel = new QLabel(floor3);
-        m_timeAccessLabel   = new QLabel(floor3);
-        layout3->addWidget(createFixedLabel(floor3));
-        layout3->addRow(this->createFixedLabel(76,0,tr("Time Modified:"),floor3), m_timeModifiedLabel);
-        layout3->addWidget(createFixedLabel(floor3));
-        layout3->addRow(this->createFixedLabel(76,0,tr("Time Access:"),floor3), m_timeAccessLabel);
+        m_timeModifiedLabel = this->createFixedLabel(0,32,floor3);
+        m_timeAccessLabel   = this->createFixedLabel(0,32,floor3);
+        layout3->addRow(this->createFixedLabel(90,32,tr("Time Modified:"),floor3), m_timeModifiedLabel);
+        layout3->addRow(this->createFixedLabel(90,32,tr("Time Access:"),floor3), m_timeAccessLabel);
         break;
     case BP_MultipleFIle:
     case BP_Folder:
@@ -363,14 +346,15 @@ void BasicPropertiesPage::initFloorFour()
 {
     QFrame      *floor4  = new QFrame(this);
     QFormLayout *layout4 = new QFormLayout(floor4);
-    layout4->setContentsMargins(22,24,0,24);
+    floor4->setMaximumHeight(64);
+    layout4->setContentsMargins(22,16,0,0);
     m_readOnly = new QCheckBox(tr("Readonly"), floor4);
     m_hidden   = new QCheckBox(tr("Hidden"), floor4);
 
-    QHBoxLayout *proLayout = new QHBoxLayout(floor4);
-    proLayout->addWidget(m_readOnly);
-    proLayout->addWidget(m_hidden);
-    proLayout->addWidget(this->createFixedLabel(floor4));
+    QHBoxLayout *hBoxLayout = new QHBoxLayout(floor4);
+    hBoxLayout->addWidget(m_readOnly);
+    hBoxLayout->addWidget(m_hidden);
+    hBoxLayout->addWidget(new QLabel(floor4));
 
     if(m_info.get()->canRead() && !m_info.get()->canWrite())
         m_readOnly->setCheckState(Qt::Checked);
@@ -378,7 +362,7 @@ void BasicPropertiesPage::initFloorFour()
     if(m_info.get()->displayName().startsWith("."))
         m_hidden->setCheckState(Qt::Checked);
 
-    layout4->addRow(this->createFixedLabel(76,0,tr("FileProperty:"),floor4),proLayout);
+    layout4->addRow(this->createFixedLabel(90,32,tr("Property:"),floor4),hBoxLayout);
 
     //确认被修改
     connect(m_readOnly,&QCheckBox::stateChanged,this,&BasicPropertiesPage::thisPageChanged);
@@ -570,6 +554,8 @@ void BasicPropertiesPage::saveAllChange()
     if(m_info.get()->uri() == ("file://"+QStandardPaths::standardLocations(QStandardPaths::HomeLocation).first())) {
         return;
     }
+    //修改图标
+    this->changeFileIcon();
 
     if(m_readOnly) {
         mode_t mod = 0;
@@ -586,6 +572,8 @@ void BasicPropertiesPage::saveAllChange()
             mod |= S_IWGRP;
             mod |= S_IWOTH;
         }
+        //FIX:如果该文件之前就是可执行，那么应该保留可执行权限
+
         //.desktop文件给予可执行
         if (m_info.get()->isDesktopFile() || m_info.get()->displayName().endsWith(".desktop")) {
             //FIX:可执行范围 目前只给拥有者执行权限
@@ -622,21 +610,31 @@ void BasicPropertiesPage::saveAllChange()
 
 }
 
-void BasicPropertiesPage::changeFileIcon()
+
+void BasicPropertiesPage::chooseFileIcon()
 {
     QUrl iconPathUrl;
     iconPathUrl.setPath("/usr/share/icons");
     auto picture = QFileDialog::getOpenFileName(nullptr, tr("Choose a custom icon"), "/usr/share/icons", "*.png *.jpg *.jpeg *.svg");
 
-    qDebug() << "BasicPropertiesPage::changeFileIcon()" << picture << picture.isEmpty();
+    qDebug() << "BasicPropertiesPage::chooseFileIcon()" << picture << picture.isEmpty();
 
     if (!picture.isEmpty()) {
+        this->m_newFileIconPath = picture;
+        this->thisPageChanged();
+    }
+
+}
+
+void BasicPropertiesPage::changeFileIcon()
+{
+    if (!m_newFileIconPath.isEmpty()) {
         auto metaInfo = FileMetaInfo::fromUri(m_info.get()->uri());
-        QFileInfo fileInfo(picture);
+        QFileInfo fileInfo(m_newFileIconPath);
         if (!QIcon::fromTheme(fileInfo.baseName()).isNull())
             metaInfo.get()->setMetaInfoString("custom-icon", fileInfo.baseName());
         else
-            metaInfo.get()->setMetaInfoString("custom-icon", picture);
+            metaInfo.get()->setMetaInfoString("custom-icon", m_newFileIconPath);
 
         ThumbnailManager::getInstance()->createThumbnail(m_info.get()->uri(), m_thumbnail_watcher, true);
     }
@@ -746,7 +744,18 @@ QLabel *BasicPropertiesPage::createFixedLabel(quint64 minWidth, quint64 minHeigh
         l->setMinimumWidth(minWidth);
     if(minHeight != 0)
         l->setMinimumHeight(minHeight);
+
     l->setText(text);
+    return l;
+}
+
+QLabel *BasicPropertiesPage::createFixedLabel(quint64 minWidth, quint64 minHeight, QWidget *parent)
+{
+    QLabel *l = new QLabel(parent);
+    if(minWidth != 0)
+        l->setMinimumWidth(minWidth);
+    if(minHeight != 0)
+        l->setMinimumHeight(minHeight);
     return l;
 }
 
