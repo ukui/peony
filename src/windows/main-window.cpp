@@ -848,6 +848,12 @@ void MainWindow::goToUri(const QString &uri, bool addHistory, bool force)
 {
     QUrl url(uri);
     auto realUri = uri;
+    //process open symbolic link
+    auto info = Peony::FileInfo::fromUri(uri);
+    if (info->isSymbolLink() && info->symlinkTarget().length() >0 &&
+    (uri.startsWith("file://") || uri.startsWith("favorite://")))
+        realUri = "file://" + info->symlinkTarget();
+
     if (url.scheme().isEmpty()) {
         if (uri.startsWith("/")) {
             realUri = "file://" + uri;

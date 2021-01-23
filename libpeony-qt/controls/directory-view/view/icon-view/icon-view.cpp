@@ -498,10 +498,6 @@ void IconView::setProxy(DirectoryViewProxyIface *proxy)
         if (getSelections().count() != 1)
             return;
         auto uri = getSelections().first();
-        //process open symbolic link
-        auto info = FileInfo::fromUri(uri);
-        if (info->isSymbolLink() && uri.startsWith("file://") && info->isValid())
-            uri = "file://" + FileUtils::getSymbolicTarget(uri);
         Q_EMIT m_proxy->viewDoubleClicked(uri);
     });
 

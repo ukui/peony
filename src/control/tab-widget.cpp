@@ -914,8 +914,13 @@ void TabWidget::addPage(const QString &uri, bool jumpTo)
         viewContainer->setSortType(Peony::FileItemModel::ColumnType(sortType));
         viewContainer->setSortOrder(Qt::SortOrder(sortOrder));
 
+        //process open symbolic link
+        auto realUri = uri;
+        if (info->isSymbolLink() && info->symlinkTarget().length() >0 && uri.startsWith("file://"))
+            realUri = "file://" + info->symlinkTarget();
+
         //m_stack->addWidget(viewContainer);
-        viewContainer->goToUri(uri, false, true);
+        viewContainer->goToUri(realUri, false, true);
 
         bindContainerSignal(viewContainer);
         updateTrashBarVisible(uri);
@@ -925,7 +930,7 @@ void TabWidget::addPage(const QString &uri, bool jumpTo)
         else
             viewContainer->getView()->setCurrentZoomLevel(Peony::GlobalSettings::getInstance()->getValue(DEFAULT_VIEW_ZOOM_LEVEL).toInt());
 
-        m_tab_bar->addPage(uri, jumpTo);
+        m_tab_bar->addPage(realUri, jumpTo);
         updateTabBarGeometry();
     });
 
@@ -1105,12 +1110,7 @@ void TabWidget::onViewDoubleClicked(const QString &uri)
         return;
     }
     if (info->isDir() || info->isVolume() || info->isVirtual()) {
-        //process open symbolic link
-        auto info = Peony::FileInfo::fromUri(uri);
-        QString targetUri = info.get()->targetUri();
-        if (targetUri.isEmpty())
-            targetUri = uri;
-        Q_EMIT this->updateWindowLocationRequest(targetUri, true);
+        Q_EMIT this->updateWindowLocationRequest(uri, true);
     } else {
         Peony::FileLaunchManager::openAsync(uri, false, false);
     }
