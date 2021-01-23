@@ -1,3 +1,10 @@
+peony (3.0.3-2+0123) v101; urgency=medium
+
+  * Fix when decompressing files, extra files will appear #32109
+  * Fix chinese and english translate in property page #35521
+
+ -- wangweinan <wangweinan@kylinos.cn>  Thu, 23 Jan 2020 8:44:46 +0800
+
 peony (3.0.3-2+0120) v101; urgency=medium
 
   * Fix eject flash drive jump to icon view. bug #30746
