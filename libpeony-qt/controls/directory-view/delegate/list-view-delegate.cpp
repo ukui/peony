@@ -59,9 +59,9 @@ void ListViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
     opt.displayAlignment = Qt::Alignment(Qt::AlignLeft|Qt::AlignVCenter);
 
     auto view = qobject_cast<DirectoryView::ListView *>(parent());
+    auto info = FileInfo::fromUri(index.data(Qt::UserRole).toString());
     if (index.column() == 0) {
         if (!view->isDragging() || !view->selectionModel()->selectedIndexes().contains(index)) {
-            auto info = FileInfo::fromUri(index.data(Qt::UserRole).toString());
             auto colors = info->getColors();
             int offset = 0;
             for (auto color : colors) {
@@ -89,6 +89,38 @@ void ListViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
     }
 
     QApplication::style()->drawControl(QStyle::CE_ItemViewItem, &opt, painter);
+
+    //painter->save();
+    //add link and read only icon support
+    if (index.column() == 0) {
+        auto rect = view->visualRect(index);
+        auto iconSize = view->iconSize();
+        auto size = iconSize.width()/2;
+        bool isSymbolicLink = info->isSymbolLink();
+        auto loc_x = rect.x() + iconSize.width() - size/2;
+        auto loc_y =rect.y();
+        //paint symbolic link emblems
+        if (isSymbolicLink) {
+            QIcon icon = QIcon::fromTheme("emblem-symbolic-link");
+            //qDebug()<<info->symbolicIconName();
+            icon.paint(painter, loc_x, loc_y, size, size);
+            //painter->restore();
+        }
+
+        //paint access emblems
+        //NOTE: we can not query the file attribute in smb:///(samba) and network:///.
+        loc_x = rect.x();
+        if (info->uri().startsWith("file:")) {
+            if (!info->canRead()) {
+                QIcon icon = QIcon::fromTheme("emblem-unreadable");
+                icon.paint(painter, loc_x, loc_y, size, size);
+            } else if (!info->canWrite() && !info->canExecute()) {
+                QIcon icon = QIcon::fromTheme("emblem-readonly");
+                icon.paint(painter, loc_x, loc_y, size, size);
+            }
+        }
+    }
+    //painter->restore();
 }
 
 QWidget *ListViewDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const
