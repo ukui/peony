@@ -36,12 +36,14 @@ MarkPropertiesPage::MarkPropertiesPage(const QString &uri, QWidget *parent) : Pr
     this->m_uri = uri;
 
     this->m_layout = new QVBoxLayout(this);
-    m_layout->setContentsMargins(20,20,20,20);
+    //表格自带一部分高度，所以手动删减一部分
+    m_layout->setContentsMargins(16,16,16,20);
 
     this->initTableWidget();
 
     this->initTableData();
 
+    this->setLayout(m_layout);
 }
 
 void MarkPropertiesPage::initTableWidget()
@@ -52,6 +54,7 @@ void MarkPropertiesPage::initTableWidget()
     m_tableWidget->setRowCount(4);
     m_tableWidget->setColumnCount(2);
     m_tableWidget->setSelectionMode(QTableWidget::NoSelection);
+    m_tableWidget->setFrameShape(QFrame::NoFrame);
     m_tableWidget->horizontalHeader()->setVisible(false);
     m_tableWidget->verticalHeader()->setVisible(false);
     m_tableWidget->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);

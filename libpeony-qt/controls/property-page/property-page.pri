@@ -10,7 +10,9 @@ HEADERS += \
     $$PWD/recent-and-trash-properties-page-factory.h \
     $$PWD/recent-and-trash-properties-page.h \
     $$PWD/mark-properties-page-factory.h \
-    $$PWD/mark-properties-page.h
+    $$PWD/mark-properties-page.h \
+    $$PWD/open-with-properties-page-factory.h \
+    $$PWD/open-with-properties-page.h
 
 SOURCES += \
     $$PWD/basic-properties-page.cpp \
@@ -22,4 +24,6 @@ SOURCES += \
     $$PWD/recent-and-trash-properties-page-factory.cpp \
     $$PWD/recent-and-trash-properties-page.cpp \
     $$PWD/mark-properties-page-factory.cpp \
-    $$PWD/mark-properties-page.cpp
+    $$PWD/mark-properties-page.cpp \
+    $$PWD/open-with-properties-page-factory.cpp \
+    $$PWD/open-with-properties-page.cpp

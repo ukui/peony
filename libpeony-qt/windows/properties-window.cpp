@@ -29,9 +29,9 @@
 #include "computer-properties-page-factory.h"
 #include "recent-and-trash-properties-page-factory.h"
 #include "mark-properties-page-factory.h"
+#include "open-with-properties-page-factory.h"
 
 #include <QToolBar>
-#include <QDialogButtonBox>
 #include <QPushButton>
 #include <QProcess>
 #include <QDebug>
@@ -40,7 +40,6 @@
 #include <QStringList>
 #include <QString>
 #include <QHBoxLayout>
-#include <QDialogButtonBox>
 #include <QSpacerItem>
 #include <QTimer>
 #include <QPainter>
@@ -79,6 +78,7 @@ PropertiesWindowPluginManager::PropertiesWindowPluginManager(QObject *parent) : 
     registerFactory(ComputerPropertiesPageFactory::getInstance());
     registerFactory(RecentAndTrashPropertiesPageFactory::getInstance());
     registerFactory(MarkPropertiesPageFactory::getInstance());
+    registerFactory(OpenWithPropertiesPageFactory::getInstance());
 }
 
 PropertiesWindowPluginManager::~PropertiesWindowPluginManager()

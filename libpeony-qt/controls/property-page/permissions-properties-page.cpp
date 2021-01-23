@@ -24,6 +24,8 @@
 
 #include "linux-pwd-helper.h"
 #include "file-watcher.h"
+#include "file-info.h"
+#include "file-info-job.h"
 
 #include <glib.h>
 #include <glib/gstdio.h>
@@ -61,11 +63,9 @@ PermissionsPropertiesPage::PermissionsPropertiesPage(const QStringList &uris, QW
     m_layout->setContentsMargins(0,0,0,0);
     this->setLayout(m_layout);
 
-
     m_label = new QLabel(tr("Target: %1").arg(m_uri), this);
-    m_label->setMinimumHeight(64);
-
-    m_label->setContentsMargins(20,20,20,20);
+    m_label->setMinimumHeight(60);
+    m_label->setContentsMargins(22,0,22,0);
 
     m_message = new QLabel(this);
     m_message->setAlignment(Qt::AlignCenter);
@@ -96,6 +96,7 @@ void PermissionsPropertiesPage::initTableWidget()
     m_table->verticalHeader()->setVisible(false);
     m_table->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     m_table->horizontalHeader()->setFrameShape(QFrame::NoFrame);
+    m_table->setFrameShape(QFrame::NoFrame);
     m_table->horizontalHeader()->setSelectionMode(QTableWidget::NoSelection);
     m_table->setSelectionMode(QTableWidget::NoSelection);
     m_table->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
@@ -240,6 +241,10 @@ GAsyncReadyCallback PermissionsPropertiesPage::async_query_permisson_callback(GO
                 p_this->updateCheckBox();
 
                 QTableWidgetItem *itemR0C0 = new QTableWidgetItem(QIcon::fromTheme("emblem-personal"), userNameDisplayString);
+//                QVBoxLayout *layoutR0C0 = new QVBoxLayout(table);
+//                layoutR0C0->addWidget(itemR0C0);
+//                table->setCellWidget();
+//                QWidget().setic
                 table->setItem(0, 0, nullptr);
                 table->setItem(0, 0, itemR0C0);
 
@@ -394,6 +399,21 @@ void PermissionsPropertiesPage::savePermissions()
                 }
             }
         }
+    }
+
+    //保存阶段，不用在意ui卡顿.
+    auto fileInfo = FileInfo::fromUri(m_uri);
+    FileInfoJob *job = new FileInfoJob(fileInfo);
+    job->setAutoDelete(true);
+    job->querySync();
+
+    //.desktop文件给予可执行
+    //.desktop在不可执行的条件下 isDesktopFile() = false
+    if (fileInfo.get()->isDesktopFile() || fileInfo.get()->displayName().endsWith(".desktop")) {
+        //FIX:可执行范围 目前只给拥有者执行权限
+        mod |= S_IXUSR;
+        //mod |= S_IXGRP;
+        //mod |= S_IXOTH;
     }
 
     QUrl url = m_uri;

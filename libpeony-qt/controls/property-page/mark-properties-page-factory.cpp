@@ -49,7 +49,7 @@ bool MarkPropertiesPageFactory::supportUris(const QStringList &uris)
     if (uris.count() != 1)
         return false;
 
-    if (uris.first().contains("computer:///") && uris.first().contains("recent:///") && uris.first().contains("trash:///"))
+    if (uris.first().contains("computer:///") || uris.first().contains("recent:///") || uris.first().contains("trash:///"))
         return false;
 
     return true;

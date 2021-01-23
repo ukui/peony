@@ -28,6 +28,7 @@
 
 #include <QTableWidget>
 #include <QVBoxLayout>
+
 namespace Peony {
 
 class MarkPropertiesPage : public PropertiesWindowTabIface

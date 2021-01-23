@@ -56,10 +56,12 @@
 #include <QUrl>
 
 #include <QFileDialog>
+#include <QListWidgetItem>
 
 #include "file-lauch-dialog.h"
 #include "file-meta-info.h"
 #include "generic-thumbnailer.h"
+#include "open-with-properties-page.h"
 
 using namespace Peony;
 
@@ -129,13 +131,10 @@ QLabel *BasicPropertiesPage::createFixedLabel(QWidget *parent)
 void BasicPropertiesPage::addOpenWithMenu(QWidget *parent)
 {
     auto recommendActions = FileLaunchManager::getRecommendActions(m_info.get()->uri());
-    if (m_openWithLayout && recommendActions.count() >= 1)
-    {
+    if (m_openWithLayout && recommendActions.count() >= 1) {
         m_openWithLayout->setContentsMargins(0,0,56,0);
-        //修改为打开方式及应用名称 加上图标
-        QLabel *appName = new QLabel(parent);
-        appName->setText(recommendActions.first()->getAppInfoDisplayName());
-        m_openWithLayout->addWidget(appName);
+
+        m_openWithLayout->addWidget(OpenWithPropertiesPage::createDefaultLaunchListWidget(m_info->uri(),parent));
         m_openWithLayout->addStretch(1);
 
         QPushButton *moreAppButton = new QPushButton(parent);
@@ -144,8 +143,8 @@ void BasicPropertiesPage::addOpenWithMenu(QWidget *parent)
         m_openWithLayout->addWidget(moreAppButton);
 
         connect(moreAppButton,&QPushButton::clicked,this,[=](){
-            FileLauchDialog d(m_info.get()->uri());
-            d.exec();
+            NewFileLaunchDialog dialog(m_info.get()->uri());
+            dialog.exec();
         });
     }
 }
@@ -284,18 +283,18 @@ void BasicPropertiesPage::initFloorTwo(const QStringList &uris,BasicPropertiesPa
     switch (fileType) {
     case BP_Folder:
         m_folderContainLabel = new QLabel(floor2);
-        layout2->addRow(this->createFixedLabel(76,0,tr("Include:"),floor2),m_folderContainLabel);
+        layout2->addRow(this->createFixedLabel(76,32,tr("Include:"),floor2),m_folderContainLabel);
         layout2->addWidget(this->createFixedLabel(floor2));
         break;
     case BP_File:
         m_openWithLayout = new QHBoxLayout(floor2);
-        layout2->addRow(this->createFixedLabel(76,0,tr("Open with:"),floor2),m_openWithLayout);
+        layout2->addRow(this->createFixedLabel(76,32,tr("Open with:"),floor2),m_openWithLayout);
         layout2->addWidget(this->createFixedLabel(floor2));
         this->addOpenWithMenu(floor2);
         break;
     case BP_Application:
         m_descrptionLabel = new QLabel(floor2);
-        layout2->addRow(this->createFixedLabel(76,0,tr("Description:"),floor2),m_descrptionLabel);
+        layout2->addRow(this->createFixedLabel(76,32,tr("Description:"),floor2),m_descrptionLabel);
         layout2->addWidget(this->createFixedLabel(floor2));
         m_descrptionLabel->setText(m_info.get()->displayName());
         break;
@@ -586,6 +585,13 @@ void BasicPropertiesPage::saveAllChange()
             mod |= S_IWUSR;
             mod |= S_IWGRP;
             mod |= S_IWOTH;
+        }
+        //.desktop文件给予可执行
+        if (m_info.get()->isDesktopFile() || m_info.get()->displayName().endsWith(".desktop")) {
+            //FIX:可执行范围 目前只给拥有者执行权限
+            mod |= S_IXUSR;
+            //mod |= S_IXGRP;
+            //mod |= S_IXOTH;
         }
         QUrl url = m_info.get()->uri();
         g_chmod(url.path().toUtf8(), mod);

@@ -33,6 +33,7 @@
 #include <memory>
 
 #include "properties-window-tab-iface.h"
+#include "open-with-properties-page.h"
 
 class QVBoxLayout;
 class QFormLayout;
@@ -167,7 +168,7 @@ private:
     quint64 m_folderContainFolders = 0;      //文件夹下文件夹数量
 
     //file , zip
-    QHBoxLayout *m_openWithLayout = nullptr;    //文件打开方式
+    QHBoxLayout        *m_openWithLayout   = nullptr;    //文件打开方式
 
     //application
     QLabel *m_descrptionLabel = nullptr;       //应用程序描述
