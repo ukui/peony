@@ -102,6 +102,7 @@ IconView::IconView(QWidget *parent) : QListView(parent)
 
     m_renameTimer = new QTimer(this);
     m_renameTimer->setInterval(3000);
+    m_renameTimer->setSingleShot(true);
     m_editValid = false;
 }
 
