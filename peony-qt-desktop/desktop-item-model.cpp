@@ -514,7 +514,9 @@ void DesktopItemModel::onEnumerateFinished()
     infos<<personal;
 
     tmp_infos<<m_enumerator->getChildren();
+
     std::sort(tmp_infos.begin(), tmp_infos.end(), uriLittleThan);
+
     infos<<tmp_infos;
 
     //qDebug()<<m_files.count();
@@ -789,5 +791,25 @@ void DesktopItemModel::enabelChange(QString exec, bool execenable)
 
 static bool uriLittleThan(std::shared_ptr<FileInfo> &p1, std::shared_ptr<FileInfo> &p2)
 {
-    return QString::compare(p1->uri(), p2->uri()) <= 0;
+    /*!
+     * \brief Record the default sort of desktop icon
+     * The first startup is sorted in this order
+     * \value desktopDefaultSort
+     * Larger index appears at the front of the desktop icon queue,
+     * and apps that are not in the queue are queued
+     */
+    QStringList desktopDefaultSort;
+    QString     p1FileName = p1->uri().mid(p1->uri().lastIndexOf("/") + 1);
+    QString     p2FileName = p2->uri().mid(p2->uri().lastIndexOf("/") + 1);
+
+    desktopDefaultSort << "mdm-acpanel.desktop"
+                       << "eye-protection-center.desktop"
+                       << "tencent-chinese-composition-correction.desktop"
+                       << "tencent-english-composition-correction.desktop"
+                       << "tencent-course-center.desktop"
+                       << "tencent-precise-practice.desktop";
+
+    return desktopDefaultSort.indexOf(p1FileName) > desktopDefaultSort.indexOf(p2FileName);
+
+//    return QString::compare(p1->uri(), p2->uri()) <= 0;
 }
