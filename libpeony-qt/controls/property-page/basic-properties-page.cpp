@@ -1,7 +1,7 @@
 /*
  * Peony-Qt's Library
  *
- * Copyright (C) 2020, KylinSoft Co., Ltd.
+ * Copyright (C) 2021, KylinSoft Co., Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -29,7 +29,6 @@
 #include <QPushButton>
 #include <QLineEdit>
 #include <QFormLayout>
-#include <file-launch-action.h>
 #include <fcntl.h>
 #include <sys/types.h>
 #include <glib/gstdio.h>
@@ -56,6 +55,7 @@
 #include <QUrl>
 
 #include <QFileDialog>
+#include <QtConcurrent>
 
 #include "file-meta-info.h"
 #include "generic-thumbnailer.h"
@@ -221,6 +221,7 @@ void BasicPropertiesPage::initFloorOne(const QStringList &uris,BasicPropertiesPa
 
         m_moveButtonButton->setText(tr("move"));
         m_moveButtonButton->setMinimumSize(70,32);
+        m_moveButtonButton->setMaximumWidth(70);
 
         QPushButton *hiddenButton = new QPushButton(floor1);
         hiddenButton->setMinimumSize(70,32);
@@ -267,7 +268,7 @@ void BasicPropertiesPage::initFloorTwo(const QStringList &uris,BasicPropertiesPa
 
     //FIX:重写文件类型获取函数
     if(fileType != BP_MultipleFIle)
-        m_fileTypeLabel->setText(m_info.get()->type());
+        m_fileTypeLabel->setText(m_info.get()->fileType());
 
     //根据文件类型添加组件
     switch (fileType) {
@@ -286,7 +287,7 @@ void BasicPropertiesPage::initFloorTwo(const QStringList &uris,BasicPropertiesPa
         m_descrptionLabel->setText(m_info.get()->displayName());
         break;
     case BP_MultipleFIle:
-        m_fileTypeLabel->setText("选中多个文件");
+        m_fileTypeLabel->setText(tr("Select multiple files"));
     default:
         break;
     }
@@ -643,12 +644,12 @@ void BasicPropertiesPage::changeFileIcon()
 void BasicPropertiesPage::updateCountInfo(bool isDone)
 {
     if(isDone) {
-
+        //FIX:多选文件情况下，文件占用空间大小不准确
         //假的4k对齐 unReal
-        qint64 a = m_fileSizeCount % 1024;
-        qint64 b = m_fileSizeCount / 1024;
+        qint64 a = m_fileSizeCount % 4096;
+        qint64 b = m_fileSizeCount / 4096;
         qint64 cell4k = (a == 0) ? b : (b + 1);
-        m_fileTotalSizeCount = cell4k * 1024;
+        m_fileTotalSizeCount = cell4k * 4096;
 
         QString fileSizeText;
         QString fileTotalSizeText;
@@ -656,6 +657,7 @@ void BasicPropertiesPage::updateCountInfo(bool isDone)
         qreal fileSizeKMGB = 0.0;
 
         // 1024 KB
+        b *= 4;
         if(b < 1024) {
             fileSizeKMGB = b;
             fileSizeText = tr("%1 KB (%2 Bytes)").arg(QString::number(fileSizeKMGB,'f',2)).arg(m_fileSizeCount);
@@ -686,39 +688,72 @@ void BasicPropertiesPage::updateCountInfo(bool isDone)
 
 void BasicPropertiesPage::updateInfo(const QString &uri)
 {
-    //FIXME: replace BLOCKING api in ui thread.
-    m_info = FileInfo::fromUri(uri);
-    FileInfoJob *j = new FileInfoJob(m_info);
-    j->setAutoDelete();
-    j->querySync();
+    //QT获取文件相关时间 ,
+    QtConcurrent::run([=](){
+        m_info = FileInfo::fromUri(uri);
+        FileInfoJob *j = new FileInfoJob(m_info);
+        j->setAutoDelete();
+        j->querySync();
 
-    //    m_info = FileInfo::fromUri(uri);
+        QUrl url(uri);
+        //FIXME:暂时不处理除了本地文件外的文件信息,希望添加对其他文件的支持
+        if (url.isLocalFile()) {
+            QString path = url.path();
+            QFileInfo qFileInfo(path);
 
-    GFile *file = g_file_new_for_uri(uri.toUtf8().constData());
-    GFileInfo *info = g_file_query_info(file,
-                                        "time::*",
-                                        G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
-                                        nullptr,
-                                        nullptr);
-    g_object_unref(file);
+            //FIXME:文件的创建时间会随着文件被修改而发生改变，甚至会出现创建时间晚于修改时间问题
+            QDateTime date1 = qFileInfo.birthTime();
+            QString time1 = date1.toString(tr("yyyy-MM-dd, HH:mm:ss"));
+            m_timeCreatedLabel->setText(time1);
 
-    m_timeCreated = g_file_info_get_attribute_uint64(info,
-                                                     G_FILE_ATTRIBUTE_TIME_CREATED);
-    //    m_timeCreated = g_file_info_get_attribute_uint64(info, "time::created");
+//            if(m_timeModifiedLabel) {
+//                QDateTime date2 = qFileInfo.lastModified();
+//                QString time2 = date2.toString(tr("yyyy-MM-dd, HH:mm:ss"));
+//                m_timeModifiedLabel->setText(time2);
+//            }
+//            if(m_timeAccessLabel) {
+//                QDateTime date3 = qFileInfo.lastRead();
+//                QString time3 = date3.toString(tr("yyyy-MM-dd, HH:mm:ss"));
+//                m_timeAccessLabel->setText(time3);
+//            }
+
+            GFile     *file = g_file_new_for_uri(uri.toUtf8().constData());
+            GFileInfo *info = g_file_query_info(file,
+                                                "time::*",
+                                                G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
+                                                nullptr,
+                                                nullptr);
+            g_object_unref(file);
+
+            if(m_timeModifiedLabel) {
+                m_timeModified = g_file_info_get_attribute_uint64(info,"time::modified");
+                QDateTime date2 = QDateTime::fromMSecsSinceEpoch(m_timeModified*1000);
+                QString time2 = date2.toString(tr("yyyy-MM-dd, HH:mm:ss"));
+                m_timeModifiedLabel->setText(time2);
+            }
+            if(m_timeAccessLabel) {
+                m_timeAccess = g_file_info_get_attribute_uint64(info,"time::access");
+                QDateTime date3 = QDateTime::fromMSecsSinceEpoch(m_timeAccess*1000);
+                QString time3 = date3.toString(tr("yyyy-MM-dd, HH:mm:ss"));
+                m_timeAccessLabel->setText(time3);
+            }
+            g_object_unref(info);
+
+        } else {
+            m_timeCreatedLabel->setText(tr("Can't get remote file information"));
+        }
+
+    });
+
+    //FIXME:GVFS底层暂未实现文件创建时间获取API,暂时使用QT获取文件创建时间
+    /*
+     m_timeCreated = g_file_info_get_attribute_uint64(info,G_FILE_ATTRIBUTE_TIME_CREATED);
+    //m_timeCreated = g_file_info_get_attribute_uint64(info, "time::created");
     QDateTime date1 = QDateTime::fromMSecsSinceEpoch(m_timeCreated*1000);
     QString time1 = date1.toString(tr("yyyy-MM-dd, HH:mm:ss"));
     m_timeCreatedLabel->setText(time1);
 
-    //    m_form3->itemAt(0, QFormLayout::LabelRole)->widget()->setVisible(m_timeCreated != 0);
-    //    m_form3->itemAt(0, QFormLayout::FieldRole)->widget()->setVisible(m_timeCreated != 0);
-
-    //    //folder don't show access time
-    //    if (m_info->isDir())
-    //    {
-    //        m_form3->itemAt(2, QFormLayout::LabelRole)->widget()->setVisible(false);
-    //        m_form3->itemAt(2, QFormLayout::FieldRole)->widget()->setVisible(false);
-    //    }
-    if(m_timeModifiedLabel) {
+     if(m_timeModifiedLabel) {
         m_timeModified = g_file_info_get_attribute_uint64(info,
                                                           "time::modified");
         QDateTime date2 = QDateTime::fromMSecsSinceEpoch(m_timeModified*1000);
@@ -735,6 +770,8 @@ void BasicPropertiesPage::updateInfo(const QString &uri)
     }
 
     g_object_unref(info);
+
+     */
 }
 
 QLabel *BasicPropertiesPage::createFixedLabel(quint64 minWidth, quint64 minHeight, QString text, QWidget *parent)
