@@ -124,7 +124,10 @@ void SideBarFileSystemItem::findChildren()
     FileEnumerator *e = new FileEnumerator;
     e->setEnumerateDirectory(m_uri);
     e->setEnumerateWithInfoJob();
-    connect(e, &FileEnumerator::prepared, this, [=](const GErrorWrapperPtr &err, const QString &targetUri) {
+    connect(e, &FileEnumerator::prepared, this, [=](const GErrorWrapperPtr &err/*, const QString &targetUri*/) {
+        // fix can not enumerate children in computer:///xxx, related to 0708ebd30a3ee3f397592f9c64edba263e900a37
+        auto info = FileInfo::fromUri(m_uri);
+        auto targetUri = info.get()->targetUri();
         if (targetUri != nullptr) {
             if (targetUri != this->uri()) {
                 e->setEnumerateDirectory(targetUri);
