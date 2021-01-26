@@ -16,35 +16,34 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <https://www.gnu.org/licenses/>.
  *
- * Authors: Yue Lan <lanyue@kylinos.cn>
+ * Authors: Wenfei He <hewenfei@kylinos.cn>
  *
  */
 
-#ifndef PERMISSIONSPROPERTIESPAGEFACTORY_H
-#define PERMISSIONSPROPERTIESPAGEFACTORY_H
+#ifndef OPENWITHPROPERTIESPAGEFACTORY_H
+#define OPENWITHPROPERTIESPAGEFACTORY_H
 
 #include <QObject>
-
 #include "peony-core_global.h"
 #include "properties-window-tab-page-plugin-iface.h"
 
 namespace Peony {
 
-class PEONYCORESHARED_EXPORT PermissionsPropertiesPageFactory : public QObject, public PropertiesWindowTabPagePluginIface
+class OpenWithPropertiesPageFactory : public QObject, public PropertiesWindowTabPagePluginIface
 {
     Q_OBJECT
 public:
-    static PermissionsPropertiesPageFactory *getInstance();
+    static OpenWithPropertiesPageFactory *getInstance();
 
     //plugin iface
     const QString name() override {
-        return QObject::tr("Permissions");
+        return QObject::tr("Open With");
     }
     PluginType pluginType() override {
         return PluginType::PropertiesWindowPlugin;
     }
     const QString description() override {
-        return QObject::tr("Show and modify file's permission, owner and group.");
+        return QObject::tr("open with.");
     }
     const QIcon icon() override {
         return QIcon::fromTheme("view-paged-symbolic", QIcon::fromTheme("folder"));
@@ -58,7 +57,7 @@ public:
 
     //properties plugin iface
     int tabOrder() override {
-        return 800;
+        return 700;
     }
     bool supportUris(const QStringList &uris) override;
     PropertiesWindowTabIface *createTabPage(const QStringList &uris) override;
@@ -66,10 +65,11 @@ public:
     void closeFactory() override;
 
 private:
-    explicit PermissionsPropertiesPageFactory(QObject *parent = nullptr);
+    explicit OpenWithPropertiesPageFactory(QObject *parent = nullptr);
 
+    ~OpenWithPropertiesPageFactory();
 };
 
 }
 
-#endif // PERMISSIONSPROPERTIESPAGEFACTORY_H
+#endif //OPENWITHPROPERTIESPAGEFACTORY_H

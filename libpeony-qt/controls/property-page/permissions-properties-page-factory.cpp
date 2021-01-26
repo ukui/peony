@@ -45,7 +45,7 @@ bool PermissionsPropertiesPageFactory::supportUris(const QStringList &uris)
     return true;
 }
 
-QWidget *PermissionsPropertiesPageFactory::createTabPage(const QStringList &uris)
+PropertiesWindowTabIface *PermissionsPropertiesPageFactory::createTabPage(const QStringList &uris)
 {
     return new PermissionsPropertiesPage(uris);
 }
