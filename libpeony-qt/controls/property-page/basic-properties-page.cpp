@@ -84,7 +84,6 @@ BasicPropertiesPage::BasicPropertiesPage(const QStringList &uris, QWidget *paren
         });
     }
 
-    //FIXME: complete the content
     m_layout = new QVBoxLayout(this);
     m_layout->setMargin(0);
     m_layout->setSpacing(0);
@@ -268,7 +267,7 @@ void BasicPropertiesPage::initFloorTwo(const QStringList &uris,BasicPropertiesPa
 
     layout2->addRow(tr("Type:"),m_fileTypeLabel);
 
-    //FIX:重写文件类型获取函数
+    //FIXME:重写文件类型获取函数
     if(fileType != BP_MultipleFIle)
         m_fileTypeLabel->setText(m_info.get()->fileType());
 
@@ -314,7 +313,7 @@ void BasicPropertiesPage::initFloorThree(BasicPropertiesPage::FileType fileType)
 //            // 24 小时制时间hh:mm:ss
 //            this->setSysTimeFormat(tr("yyyy-MM-dd, HH:mm:ss"));
 //        }
-//        this->updateInfo(m_info.get()->uri());
+        this->updateInfo(m_info.get()->uri());
 //    });
 
     auto floor3 = new QFrame(this);
@@ -443,7 +442,7 @@ void BasicPropertiesPage::onSingleFileChanged(const QString &oldUri, const QStri
 {
     //QMessageBox::information(0, 0, "on single file changed");
     qDebug()<<"onSingleFileChanged:"<<oldUri<<newUri;
-    //    //FIXME: replace BLOCKING api in ui thread.
+    //FIXME: replace BLOCKING api in ui thread.
     m_info = FileInfo::fromUri(newUri);
     FileInfoJob *j = new FileInfoJob(m_info);
     j->setAutoDelete();

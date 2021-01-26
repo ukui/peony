@@ -47,6 +47,8 @@ DetailsPropertiesPageFactory::~DetailsPropertiesPageFactory()
 
 bool DetailsPropertiesPageFactory::supportUris(const QStringList &uris)
 {
+    //FIXME: 需要明确支持范围
+    //FIXME: Need to clarify the scope of support
     //只支持文件和应用
     //Only supports files and applications
     if (uris.count() != 1)

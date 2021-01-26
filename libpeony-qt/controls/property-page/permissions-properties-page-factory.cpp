@@ -36,10 +36,14 @@ PermissionsPropertiesPageFactory::PermissionsPropertiesPageFactory(QObject *pare
 
 bool PermissionsPropertiesPageFactory::supportUris(const QStringList &uris)
 {
+    //FIXME: 需要明确支持范围
+    //FIXME: Need to clarify the scope of support
     if (uris.count() != 1)
         return false;
 
-    if (uris.first().contains("computer:///") || uris.first().contains("trash:///") || uris.first().contains("recent:///"))
+    QString uri = uris.first();
+
+    if (uri.startsWith("computer://") || uri.startsWith("recent://") || uri.startsWith("trash://"))
         return false;
 
     return true;

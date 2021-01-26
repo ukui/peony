@@ -241,10 +241,6 @@ GAsyncReadyCallback PermissionsPropertiesPage::async_query_permisson_callback(GO
                 p_this->updateCheckBox();
 
                 QTableWidgetItem *itemR0C0 = new QTableWidgetItem(QIcon::fromTheme("emblem-personal"), userNameDisplayString);
-//                QVBoxLayout *layoutR0C0 = new QVBoxLayout(table);
-//                layoutR0C0->addWidget(itemR0C0);
-//                table->setCellWidget();
-//                QWidget().setic
                 table->setItem(0, 0, nullptr);
                 table->setItem(0, 0, itemR0C0);
 

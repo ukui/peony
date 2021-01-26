@@ -47,8 +47,14 @@ OpenWithPropertiesPageFactory::~OpenWithPropertiesPageFactory()
 
 bool OpenWithPropertiesPageFactory::supportUris(const QStringList &uris)
 {
-    //FIX:正确设置需要打开的文件
+    //FIXME: 需要明确支持范围
+    //FIXME: Need to clarify the scope of support
     if (uris.count() != 1)
+        return false;
+
+    QString uri = uris.first();
+
+    if (uri.startsWith("computer://") || uri.startsWith("recent://") || uri.startsWith("trash://"))
         return false;
 
     auto fileInfo = FileInfo::fromUri(uris.first());
@@ -56,15 +62,7 @@ bool OpenWithPropertiesPageFactory::supportUris(const QStringList &uris)
     job->setAutoDelete(true);
     job->querySync();
 
-    qDebug() << "file is :::" << fileInfo.get()->isDir() << fileInfo.get()->isDesktopFile();
-
-    if (fileInfo.get()->displayName().endsWith(".desktop"))
-        return false;
-
-    if (fileInfo.get()->isDir() || fileInfo.get()->isDesktopFile() || fileInfo.get()->isVolume() || fileInfo.get()->isVirtual())
-        return false;
-
-    if (uris.first().contains("computer:///") || uris.first().contains("recent:///") || uris.first().contains("trash:///"))
+    if (fileInfo.get()->isDir() || fileInfo.get()->isDesktopFile() || fileInfo.get()->isVolume() || fileInfo.get()->isVirtual() || fileInfo->canExecute())
         return false;
 
     return true;
