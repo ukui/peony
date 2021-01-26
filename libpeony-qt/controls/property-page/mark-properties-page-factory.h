@@ -16,35 +16,34 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <https://www.gnu.org/licenses/>.
  *
- * Authors: Yue Lan <lanyue@kylinos.cn>
+ * Authors: Wenfei He <hewenfei@kylinos.cn>
  *
  */
 
-#ifndef PERMISSIONSPROPERTIESPAGEFACTORY_H
-#define PERMISSIONSPROPERTIESPAGEFACTORY_H
+#ifndef MARKPROPERTIESPAGEFACTORY_H
+#define MARKPROPERTIESPAGEFACTORY_H
 
 #include <QObject>
-
 #include "peony-core_global.h"
 #include "properties-window-tab-page-plugin-iface.h"
 
 namespace Peony {
 
-class PEONYCORESHARED_EXPORT PermissionsPropertiesPageFactory : public QObject, public PropertiesWindowTabPagePluginIface
+class MarkPropertiesPageFactory : public QObject, public PropertiesWindowTabPagePluginIface
 {
     Q_OBJECT
 public:
-    static PermissionsPropertiesPageFactory *getInstance();
+    static MarkPropertiesPageFactory *getInstance();
 
     //plugin iface
     const QString name() override {
-        return QObject::tr("Permissions");
+        return QObject::tr("Mark");
     }
     PluginType pluginType() override {
         return PluginType::PropertiesWindowPlugin;
     }
     const QString description() override {
-        return QObject::tr("Show and modify file's permission, owner and group.");
+        return QObject::tr("mark this file.");
     }
     const QIcon icon() override {
         return QIcon::fromTheme("view-paged-symbolic", QIcon::fromTheme("folder"));
@@ -58,7 +57,7 @@ public:
 
     //properties plugin iface
     int tabOrder() override {
-        return 800;
+        return 900;
     }
     bool supportUris(const QStringList &uris) override;
     PropertiesWindowTabIface *createTabPage(const QStringList &uris) override;
@@ -66,10 +65,10 @@ public:
     void closeFactory() override;
 
 private:
-    explicit PermissionsPropertiesPageFactory(QObject *parent = nullptr);
-
+    explicit MarkPropertiesPageFactory(QObject *parent = nullptr);
+    ~MarkPropertiesPageFactory() override;
 };
 
 }
 
-#endif // PERMISSIONSPROPERTIESPAGEFACTORY_H
+#endif //MARKPROPERTIESPAGEFACTORY_H

@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <https://www.gnu.org/licenses/>.
  *
- * Authors: renpeijia <hemeihong@kylinos.cn>
+ * Authors: MeihongHe <hemeihong@kylinos.cn>
  *
  */
 

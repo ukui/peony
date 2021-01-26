@@ -25,10 +25,14 @@
 
 #include <QTabWidget>
 #include <QMainWindow>
+
 #include "peony-core_global.h"
+#include "properties-window-tab-iface.h"
 
 #include <QMap>
 #include <QMutex>
+#include <QSize>
+#include <QProxyStyle>
 
 namespace Peony {
 
@@ -62,11 +66,111 @@ class PEONYCORESHARED_EXPORT PropertiesWindow : public QMainWindow
 public:
     explicit PropertiesWindow(const QStringList &uris, QWidget *parent = nullptr);
 
+    void setWindowTitleTextAndIcon();
+    /*!
+     * 判断当前的uris中是否'不存在'目录
+     * 不存在目录返回true,
+     * 存在目录返回false
+     * \brief notDir
+     * \return
+     */
+    bool notDir();
     void gotoAboutComputer();
     void show();
 
-public:
+    /*!
+     * 初始化底部按钮栏
+     * \brief initStatusBar
+     */
+    void initStatusBar();
+
+    /*!
+     * 设置tab栏的样式。
+     * FIX:目前tab样式不能跟随主题
+     * \brief initTabPage
+     * \param uris
+     */
+    void initTabPage(const QStringList &uris);
+
+    QStringList &getUris(){
+        return m_uris;
+    }
+
+    /*!
+     * 检查当前的uris是否已经在窗口中打开
+     * 如果已经打开，那么返回true,
+     * 如果没有打开，那么返回false
+     * \brief checkUriIsOpen
+     * \param uris
+     * \return
+     */
+    static bool checkUriIsOpen(QStringList &uris, PropertiesWindow *newWindow);
+    /*!
+     * 返回指定uris在 openPropertiesWindows 中的索引，如果不存在，返回 -1
+     * \brief getOpenUriIndex
+     * \return
+     */
+    static qint64 getOpenUriIndex(QStringList &uris);
+
+    /*!
+     * 从已打开窗口列表中删除索引的窗口
+     * \brief removeThisWindow
+     * \param index
+     */
+    static void removeThisWindow(qint64 index);
+
+    /*!
+     * 存放当前窗口的所有tab页面
+     * \brief addTabPage
+     * \param tabPage
+     */
+    void addTabPage(PropertiesWindowTabIface* tabPage) {
+
+        if(tabPage) {
+            this->m_openTabPage.append(tabPage);
+            connect(tabPage,&PropertiesWindowTabIface::requestCloseMainWindow,this,[=](){
+                Q_ASSERT(tabPage);
+                this->close();
+            });
+        }
+    }
+
+    /*!
+     * 响应确认按钮
+     * \brief saveAllChanged
+     */
+    void saveAllChanged();
+
+protected:
+    /**
+     * 在窗口关闭时，将存储的窗口指针从openPropertiesWindows中删除
+     * @brief closeEvent
+     * @param event
+     */
+    void closeEvent(QCloseEvent *event);
+
+private:
+    bool        m_destroyThis = false;
     QStringList m_uris;
+    QList<PropertiesWindowTabIface*> m_openTabPage;
+
+public:
+    //init in properties-window.cpp
+    static const qint32 s_windowWidth;
+    static const qint32 s_windowHeightFolder;
+    static const qint32 s_windowHeightOther;
+    static const QSize  s_bottomButtonSize;
+    static const QSize  s_topButtonSize;
+
+    // QWidget interface
+
+};
+
+class tabStyle : public QProxyStyle {
+    // QStyle interface
+public:
+    void drawControl(QStyle::ControlElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget) const;
+    QSize sizeFromContents(QStyle::ContentsType ct, const QStyleOption *opt, const QSize &contentsSize, const QWidget *w) const;
 };
 
 class PropertiesWindowPrivate : public QTabWidget

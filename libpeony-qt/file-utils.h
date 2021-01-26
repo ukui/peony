@@ -85,6 +85,7 @@ public:
     BLOCKING static bool isFileDirectory(const QString &uri);
 
     BLOCKING static bool isFileUnmountable(const QString &uri);
+    BLOCKING static double getDeviceSize(const gchar * device_name);
 
     static void handleVolumeLabelForFat32(QString &volumeName,const QString &unixDevcieName);
     static QString getUnixDevice(const QString &uri);

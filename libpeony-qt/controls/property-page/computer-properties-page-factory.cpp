@@ -51,7 +51,7 @@ bool ComputerPropertiesPageFactory::supportUris(const QStringList &uris)
     return true;
 }
 
-QWidget *ComputerPropertiesPageFactory::createTabPage(const QStringList &uris)
+PropertiesWindowTabIface *ComputerPropertiesPageFactory::createTabPage(const QStringList &uris)
 {
     return new ComputerPropertiesPage(uris.first());
 }

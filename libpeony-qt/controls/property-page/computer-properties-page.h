@@ -24,13 +24,15 @@
 #define COMPUTERPROPERTIESPAGE_H
 
 #include <QWidget>
+
+#include "properties-window-tab-iface.h"
 #include "peony-core_global.h"
 
 class QFormLayout;
 
 namespace Peony {
 
-class PEONYCORESHARED_EXPORT ComputerPropertiesPage : public QWidget
+class PEONYCORESHARED_EXPORT ComputerPropertiesPage : public PropertiesWindowTabIface
 {
     Q_OBJECT
 public:
@@ -42,6 +44,10 @@ protected:
 private:
     QString m_uri;
     QFormLayout *m_layout;
+
+    // PropertiesWindowTabIface interface
+public:
+    void saveAllChange();
 };
 
 }
