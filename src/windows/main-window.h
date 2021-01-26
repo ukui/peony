@@ -112,6 +112,7 @@ public Q_SLOTS:
     void syncControlsLocation(const QString &uri);
     void updateHeaderBar();
     void updateWindowIcon();
+    void updateSearch(const QString &uri, const QString &key="", bool updateKey=false);
     void createFolderOperation();
     void goToUri(const QString &uri, bool addHistory = false, bool force = false);
 
@@ -178,6 +179,9 @@ private:
     TabWidget *m_tab;
     Peony::StatusBar *m_status_bar;
 
+    QString m_last_search_path = "";
+    QString m_last_key = "";
+
     bool m_is_draging = false;
     bool m_is_search = false;
     bool m_filter_working = false;
@@ -193,6 +197,8 @@ private:
     QWidgetList m_focus_list;
 
     bool m_shortcuts_set = false;
+
+    const int WINDOW_MINIMUM_WIDTH = 596;
 };
 
 #endif // MAINWINDOW_H

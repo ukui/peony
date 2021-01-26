@@ -27,6 +27,7 @@
 #include "directory-view-widget.h"
 #include "directory-view-factory-manager.h"
 #include "file-utils.h"
+#include "global-settings.h"
 
 #include "directory-view-factory-manager.h"
 
@@ -122,7 +123,10 @@ void DirectoryViewContainer::goForward()
     int count = m_back_list.count();
     if (! getCurrentUri().contains("search://") &&
         (count <= 0 || m_back_list.at(count-1) != getCurrentUri()))
+    {
         m_back_list.append(getCurrentUri());
+        qDebug() << "m_back_list add:" <<getCurrentUri();
+    }
 
     Q_EMIT updateWindowLocationRequest(uri, false);
 }
@@ -219,11 +223,15 @@ update:
         int count = m_back_list.count();
         if (! getCurrentUri().contains("search://")
             && (count <= 0 || m_back_list.at(count-1) != getCurrentUri()))
+        {
             m_back_list.append(getCurrentUri());
+            qDebug() << "goToUri m_back_list add:" <<getCurrentUri();
+        }
     }
 
     auto viewId = DirectoryViewFactoryManager2::getInstance()->getDefaultViewId(zoomLevel, uri);
     switchViewType(viewId);
+
     //update status bar zoom level
     updateStatusBarSliderStateRequest();
     if (zoomLevel < 0)
@@ -271,8 +279,9 @@ void DirectoryViewContainer::switchViewType(const QString &viewId)
     if (!factory)
         return;
 
-    auto sortType = 0;
-    auto sortOrder = 0;
+    auto settings = GlobalSettings::getInstance();
+    auto sortType = settings->isExist(SORT_COLUMN)? settings->getValue(SORT_COLUMN).toInt() : 0;
+    auto sortOrder = settings->isExist(SORT_ORDER)? settings->getValue(SORT_ORDER).toInt() : 0;
 
     auto oldView = m_view;
     QStringList selection;
@@ -430,6 +439,7 @@ void DirectoryViewContainer::setSortType(FileItemModel::ColumnType type)
     if (!m_view)
         return;
     m_view->setSortType(type);
+    Peony::GlobalSettings::getInstance()->setValue(SORT_COLUMN, type);
 }
 
 Qt::SortOrder DirectoryViewContainer::getSortOrder()
@@ -446,6 +456,7 @@ void DirectoryViewContainer::setSortOrder(Qt::SortOrder order)
         return;
     if (!m_view)
         return;
+    Peony::GlobalSettings::getInstance()->setValue(SORT_ORDER, order);
     m_view->setSortOrder(order);
 }
 

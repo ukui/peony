@@ -84,6 +84,7 @@ private:
 
 class PEONYCORESHARED_EXPORT ConnectServerLogin : public QDialog
 {
+    friend class MountOperation;
     Q_OBJECT
 public:
     explicit ConnectServerLogin(QString remoteIP, QWidget* parent = nullptr);

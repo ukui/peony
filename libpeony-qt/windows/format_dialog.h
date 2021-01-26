@@ -79,6 +79,7 @@ public:
     UDisksObject *get_object_from_block_device 	(UDisksClient *client,
                                                  const gchar *block_device);
 
+    double get_device_size(const gchar * device_name);
 
     void kdisk_format(const gchar * device_name,const gchar *format_type,
                       const gchar * erase_type,const gchar * filesystem_name,int *format_finish);

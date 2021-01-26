@@ -73,6 +73,7 @@ private:
 
 Q_SIGNALS:
     void updateLocationRequest(const QString &uri, bool addHistory = true, bool force = true);
+    void updateSearch(const QString &uri, const QString &key="", bool updateKey=false);
     void viewTypeChangeRequest(const QString &viewId);
     void updateZoomLevelHintRequest(int zoomLevelHint);
     void updateSearchRequest(bool showSearch);
@@ -118,6 +119,10 @@ private:
     bool m_search_recursive = true;
 
     QWidgetList m_focus_list;
+
+    const int ADDRESS_BAR_MINIMUN_WIDTH = 250;
+    const int DRAG_AREA_MINIMUN_WIDTH = 32;
+    const int DRAG_AREA_DEFAULT_WIDTH = 49;
 };
 
 class HeaderBarToolButton : public QToolButton

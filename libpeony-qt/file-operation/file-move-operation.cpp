@@ -251,7 +251,6 @@ retry:
                 g_file_move(srcFile.get()->get(),
                             destFile.get()->get(),
                             GFileCopyFlags(G_FILE_COPY_NOFOLLOW_SYMLINKS|
-                                           G_FILE_COPY_ALL_METADATA|
                                            G_FILE_COPY_OVERWRITE),
                             getCancellable().get()->get(),
                             GFileProgressCallback(progress_callback),
@@ -265,7 +264,6 @@ retry:
                 g_file_move(srcFile.get()->get(),
                             destFile.get()->get(),
                             GFileCopyFlags(G_FILE_COPY_NOFOLLOW_SYMLINKS|
-                                           G_FILE_COPY_ALL_METADATA|
                                            G_FILE_COPY_OVERWRITE),
                             getCancellable().get()->get(),
                             GFileProgressCallback(progress_callback),

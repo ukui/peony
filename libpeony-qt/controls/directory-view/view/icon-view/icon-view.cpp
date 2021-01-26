@@ -102,6 +102,7 @@ IconView::IconView(QWidget *parent) : QListView(parent)
 
     m_renameTimer = new QTimer(this);
     m_renameTimer->setInterval(3000);
+    m_renameTimer->setSingleShot(true);
     m_editValid = false;
 }
 
@@ -497,11 +498,7 @@ void IconView::setProxy(DirectoryViewProxyIface *proxy)
         //when selections is more than 1, let mainwindow to process
         if (getSelections().count() != 1)
             return;
-        auto uri = index.data(FileItemModel::UriRole).toString();
-        //process open symbolic link
-        auto info = FileInfo::fromUri(uri);
-        if (info->isSymbolLink() && uri.startsWith("file://") && info->isValid())
-            uri = "file://" + FileUtils::getSymbolicTarget(uri);
+        auto uri = getSelections().first();
         Q_EMIT m_proxy->viewDoubleClicked(uri);
     });
 
@@ -649,7 +646,7 @@ void IconView2::bindModel(FileItemModel *model, FileItemProxyFilterSortModel *pr
         //when selections is more than 1, let mainwindow to process
         if (getSelections().count() != 1)
             return;
-        auto uri = index.data(Qt::UserRole).toString();
+        auto uri = getSelections().first();
         Q_EMIT this->viewDoubleClicked(uri);
     });
 

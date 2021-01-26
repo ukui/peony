@@ -104,6 +104,7 @@ Q_SIGNALS:
     void activePageViewSortTypeChanged();
 
     void viewDoubleClicked(const QString &uri);
+    void updateSearch(const QString &uri, const QString &key="", bool updateKey=false);
     void updateWindowLocationRequest(const QString &uri, bool addHistory, bool forceUpdate = false);
 
     void updateWindowSelectionRequest(const QStringList &uris);

@@ -59,6 +59,7 @@
 #include "create-template-operation.h"
 #include "file-operation-error-dialog.h"
 #include "clipboard-utils.h"
+#include "search-vfs-uri-parser.h"
 
 #include "directory-view-menu.h"
 #include "directory-view-widget.h"
@@ -136,6 +137,9 @@ MainWindow::MainWindow(const QString &uri, QWidget *parent) : QMainWindow(parent
     //disable style window manager
     setProperty("useStyleWindowManager", false);
 
+    //set minimum width by design request
+    setMinimumWidth(WINDOW_MINIMUM_WIDTH);
+
     //init UI
     initUI(uri);
 
@@ -196,6 +200,7 @@ QSize MainWindow::sizeHint() const
         return screenSize*2/3;
     int width = qMin(defaultSize.width(), screenSize.width());
     int height = qMin(defaultSize.height(), screenSize.height());
+
     //return screenSize*2/3;
     //qreal dpr = qApp->devicePixelRatio();
     return QSize(width, height);
@@ -279,11 +284,12 @@ void MainWindow::checkSettings()
         QGSettings *fontSetting = new QGSettings(FONT_SETTINGS, QByteArray(), this);
         connect(fontSetting, &QGSettings::changed, this, [=](const QString &key){
             qDebug() << "fontSetting changed:" << key;
-            if (key == "systemFont" || key == "systemFontSize")
-            {
+            if (key == "systemFont" || key == "systemFontSize") {
                 QFont font = this->font();
                 for(auto widget : qApp->allWidgets())
                     widget->setFont(font);
+            } else if ("iconThemeName" == key) {
+                setWindowIcon(QIcon::fromTheme("system-file-manager"));
             }
         });
     }
@@ -334,7 +340,13 @@ void MainWindow::setShortCuts()
             QString desktopPath = "file://" +  QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
             QString desktopUri = Peony::FileUtils::getEncodedUri(desktopPath);
             QString homeUri = "file://" +  QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
-            if (!uris.isEmpty() && !uris.contains(desktopUri) && !uris.contains(homeUri)) {
+            QString documentPath = Peony::FileUtils::getEncodedUri("file://" +  QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation));
+            QString musicPath = Peony::FileUtils::getEncodedUri("file://" +  QStandardPaths::writableLocation(QStandardPaths::MusicLocation));
+            QString moviesPath = Peony::FileUtils::getEncodedUri("file://" +  QStandardPaths::writableLocation(QStandardPaths::MoviesLocation));
+            QString picturespPath = Peony::FileUtils::getEncodedUri("file://" +  QStandardPaths::writableLocation(QStandardPaths::PicturesLocation));
+            QString downloadPath = Peony::FileUtils::getEncodedUri("file://" +  QStandardPaths::writableLocation(QStandardPaths::DownloadLocation));
+            if (!uris.isEmpty() && !uris.contains(desktopUri) && !uris.contains(homeUri) && !uris.contains(documentPath) && !uris.contains(musicPath)
+                    && !uris.contains(moviesPath) && !uris.contains(picturespPath) && !uris.contains(downloadPath)) {
                 bool isTrash = this->getCurrentUri() == "trash:///";
                 if (!isTrash) {
                     Peony::FileOperationUtils::trash(uris, true);
@@ -355,10 +367,17 @@ void MainWindow::setShortCuts()
 
             auto uris = this->getCurrentSelections();
             QString desktopPath = "file://" +  QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
+            QString documentPath = Peony::FileUtils::getEncodedUri("file://" +  QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation));
+            QString musicPath = Peony::FileUtils::getEncodedUri("file://" +  QStandardPaths::writableLocation(QStandardPaths::MusicLocation));
+            QString moviesPath = Peony::FileUtils::getEncodedUri("file://" +  QStandardPaths::writableLocation(QStandardPaths::MoviesLocation));
+            QString picturespPath = Peony::FileUtils::getEncodedUri("file://" +  QStandardPaths::writableLocation(QStandardPaths::PicturesLocation));
+            QString downloadPath = Peony::FileUtils::getEncodedUri("file://" +  QStandardPaths::writableLocation(QStandardPaths::DownloadLocation));
             QString desktopUri = Peony::FileUtils::getEncodedUri(desktopPath);
             QString homeUri = "file://" +  QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
-            if (! uris.contains(desktopUri) && !uris.contains(homeUri))
-               Peony::FileOperationUtils::executeRemoveActionWithDialog(uris);
+            if (! uris.contains(desktopUri) && !uris.contains(homeUri) && !uris.contains(documentPath) && !uris.contains(musicPath)
+                    && !uris.contains(moviesPath) && !uris.contains(picturespPath) && !uris.contains(downloadPath)) {
+                Peony::FileOperationUtils::executeRemoveActionWithDialog(uris);
+            }
         });
 
         auto searchAction = new QAction(this);
@@ -829,6 +848,12 @@ void MainWindow::goToUri(const QString &uri, bool addHistory, bool force)
 {
     QUrl url(uri);
     auto realUri = uri;
+    //process open symbolic link
+    auto info = Peony::FileInfo::fromUri(uri);
+    if (info->isSymbolLink() && info->symlinkTarget().length() >0 &&
+    (uri.startsWith("file://") || uri.startsWith("favorite://")))
+        realUri = "file://" + info->symlinkTarget();
+
     if (url.scheme().isEmpty()) {
         if (uri.startsWith("/")) {
             realUri = "file://" + uri;
@@ -849,9 +874,50 @@ void MainWindow::goToUri(const QString &uri, bool addHistory, bool force)
         }
     }
 
+    //if in search mode and key is not null, need quit search mode
+    if (m_is_search && m_last_key != "" && !uri.startsWith("search://"))
+    {
+        m_tab->updateSearchBar(false);
+        m_is_search = false;
+        m_header_bar->startEdit(false);
+    }
+
     locationChangeStart();
     m_tab->goToUri(realUri, addHistory, force);
     m_header_bar->setLocation(uri);
+}
+
+void MainWindow::updateSearch(const QString &uri, const QString &key, bool updateKey)
+{
+    qDebug() << "updateSearch:" <<uri <<key <<updateKey;
+    bool needUpdate = false;
+    if (m_last_search_path == "" || ! Peony::FileUtils::isSamePath(uri, m_last_search_path))
+    {
+       //qDebug() << "updateSearch:" <<uri;
+       m_last_search_path = uri;
+       needUpdate = true;
+    }
+
+    if (updateKey)
+    {
+        needUpdate = true;
+        m_last_key = key;
+    }
+
+    if (needUpdate)
+    {
+        //qDebug() << "updateSearch needUpdate:" <<m_last_key<<m_last_search_path;
+        forceStopLoading();
+        if (m_last_key == "")
+            goToUri(m_last_search_path, true);
+        else
+        {
+            auto targetUri = Peony::SearchVFSUriParser::parseSearchKey(m_last_search_path,
+                                                         m_last_key, true, false, "", true);
+            //qDebug() << "updateSearch targetUri:" <<targetUri;
+            goToUri(targetUri, true);
+        }
+    }
 }
 
 void MainWindow::addNewTabs(const QStringList &uris)
@@ -1171,7 +1237,8 @@ void MainWindow::validBorder()
 void MainWindow::initUI(const QString &uri)
 {
     connect(this, &MainWindow::locationChangeStart, this, [=]() {
-        m_side_bar->blockSignals(true);
+        //comment to fix bug 33527
+        //m_side_bar->blockSignals(true);
         m_header_bar->blockSignals(true);
         QCursor c;
         c.setShape(Qt::WaitCursor);
@@ -1182,7 +1249,8 @@ void MainWindow::initUI(const QString &uri)
     });
 
     connect(this, &MainWindow::locationChangeEnd, this, [=]() {
-        m_side_bar->blockSignals(false);
+        //comment to fix bug 33527
+        //m_side_bar->blockSignals(false);
         m_header_bar->blockSignals(false);
         QCursor c;
         c.setShape(Qt::ArrowCursor);
@@ -1300,7 +1368,12 @@ void MainWindow::initUI(const QString &uri)
             maximizeOrRestore();
     });
     connect(views, &TabWidget::closeWindowRequest, this, &QWidget::close);
-    connect(m_header_bar, &HeaderBar::updateSearchRequest, m_tab, &TabWidget::updateSearchBar);
+    connect(m_header_bar, &HeaderBar::updateSearchRequest, this, [=](bool showSearch)
+    {
+        m_tab->updateSearchBar(showSearch);
+        m_is_search = showSearch;
+    });
+    connect(m_header_bar, &HeaderBar::updateSearch, this, &MainWindow::updateSearch);
 
     X11WindowManager *tabBarHandler = X11WindowManager::getInstance();
     tabBarHandler->registerWidget(views->tabBar());
@@ -1317,6 +1390,7 @@ void MainWindow::initUI(const QString &uri)
     connect(m_tab, &TabWidget::clearTrash, this, &MainWindow::cleanTrash);
     connect(m_tab, &TabWidget::recoverFromTrash, this, &MainWindow::recoverFromTrash);
     connect(m_tab, &TabWidget::updateWindowLocationRequest, this, &MainWindow::goToUri);
+    connect(m_tab, &TabWidget::updateSearch, this, &MainWindow::updateSearch);
     connect(m_tab, &TabWidget::activePageLocationChanged, this, &MainWindow::locationChangeEnd);
     connect(m_tab, &TabWidget::activePageViewTypeChanged, this, &MainWindow::updateHeaderBar);
     connect(m_tab, &TabWidget::activePageChanged, this, &MainWindow::updateHeaderBar);

@@ -164,12 +164,21 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
     }
     previewButtons->addActions(group->actions());
     for (auto action : group->actions()) {
-        auto button = qobject_cast<QToolButton *>(previewButtons->widgetForAction(action));
-        button->setFixedSize(26, 26);
+//        auto button = qobject_cast<QToolButton *>(previewButtons->widgetForAction(action));
+//        button->setFixedSize(26, 26);
+//        button->setIconSize(QSize(16, 16));
+//        button->setProperty("useIconHighlightEffect", true);
+//        button->setProperty("iconHighlightEffectMode", 1);
+//        button->setProperty("fillIconSymbolicColor", true);
+
+        //use theme buttons
+        auto button = new QPushButton(this);
+        button->setFixedSize(QSize(26, 26));
         button->setIconSize(QSize(16, 16));
-        button->setProperty("useIconHighlightEffect", true);
-        button->setProperty("iconHighlightEffectMode", 1);
-        button->setProperty("fillIconSymbolicColor", true);
+        button->setFlat(true);
+        button->setProperty("isWindowButton", 1);
+        button->setProperty("useIconHighlightEffect", 2);
+        button->setProperty("isIcon", true);
     }
     t->addWidget(previewButtons);
 
@@ -380,7 +389,7 @@ void TabWidget::browsePath()
     if (target_path != "" && target_path != getCurrentUri())
     {
         updateSearchPathButton(target_path);
-        Q_EMIT this->updateWindowLocationRequest(target_path, true);
+        Q_EMIT this->updateSearch(target_path);
     }
 }
 
@@ -899,11 +908,19 @@ void TabWidget::addPage(const QString &uri, bool jumpTo)
         this->setCursor(c);
 
         //auto viewContainer = new Peony::DirectoryViewContainer(m_stack);
-        viewContainer->setSortType(Peony::FileItemModel::FileName);
-        viewContainer->setSortOrder(Qt::AscendingOrder);
+        auto settings = Peony::GlobalSettings::getInstance();
+        auto sortType = settings->isExist(SORT_COLUMN)? settings->getValue(SORT_COLUMN).toInt(): 0;
+        auto sortOrder = settings->isExist(SORT_ORDER)? settings->getValue(SORT_ORDER).toInt(): 0;
+        viewContainer->setSortType(Peony::FileItemModel::ColumnType(sortType));
+        viewContainer->setSortOrder(Qt::SortOrder(sortOrder));
+
+        //process open symbolic link
+        auto realUri = uri;
+        if (info->isSymbolLink() && info->symlinkTarget().length() >0 && uri.startsWith("file://"))
+            realUri = "file://" + info->symlinkTarget();
 
         //m_stack->addWidget(viewContainer);
-        viewContainer->goToUri(uri, false, true);
+        viewContainer->goToUri(realUri, false, true);
 
         bindContainerSignal(viewContainer);
         updateTrashBarVisible(uri);
@@ -913,7 +930,7 @@ void TabWidget::addPage(const QString &uri, bool jumpTo)
         else
             viewContainer->getView()->setCurrentZoomLevel(Peony::GlobalSettings::getInstance()->getValue(DEFAULT_VIEW_ZOOM_LEVEL).toInt());
 
-        m_tab_bar->addPage(uri, jumpTo);
+        m_tab_bar->addPage(realUri, jumpTo);
         updateTabBarGeometry();
     });
 
@@ -1093,12 +1110,7 @@ void TabWidget::onViewDoubleClicked(const QString &uri)
         return;
     }
     if (info->isDir() || info->isVolume() || info->isVirtual()) {
-        //process open symbolic link
-        auto info = Peony::FileInfo::fromUri(uri);
-        QString targetUri = info.get()->targetUri();
-        if (targetUri.isEmpty())
-            targetUri = uri;
-        Q_EMIT this->updateWindowLocationRequest(targetUri, true);
+        Q_EMIT this->updateWindowLocationRequest(uri, true);
     } else {
         Peony::FileLaunchManager::openAsync(uri, false, false);
     }

@@ -47,15 +47,26 @@ Format_Dialog::Format_Dialog(const QString &m_uris,SideBarAbstractItem *m_item,Q
        GFileInfo *fm_info = g_file_query_filesystem_info(fm_file, "*", nullptr, nullptr);
        quint64 total = g_file_info_get_attribute_uint64(fm_info, G_FILE_ATTRIBUTE_FILESYSTEM_SIZE);
 
-       //get the rom size
-       //char *total_format = g_format_size(total);
-
-       //Calculated by 1024 bytes
-       char *total_format = strtok(g_format_size_full(total,G_FORMAT_SIZE_IEC_UNITS),"iB");
-
        //add the rom size value into  rom_size combox
-       ui->comboBox_rom_size->addItem(total_format);
-
+       //fix system Udisk calculate size wrong issue
+       QString m_volume_name, m_unix_device, m_display_name;
+       FileUtils::queryVolumeInfo(m_uris, m_volume_name, m_unix_device, m_display_name);
+       if (! m_unix_device.isEmpty())
+       {
+          char dev_name[256] ={0};
+          strncpy(dev_name, m_unix_device.toUtf8().constData(),sizeof(m_unix_device.toUtf8().constData()-1));
+          auto size = get_device_size(dev_name);
+          QString sizeInfo = QString::number(size, 'f', 1);
+          qDebug() << "size:" <<size;
+          sizeInfo += "G";
+          ui->comboBox_rom_size->addItem(sizeInfo);
+       }
+       else
+       {
+           //Calculated by 1024 bytes
+           char *total_format = strtok(g_format_size_full(total,G_FORMAT_SIZE_IEC_UNITS),"iB");
+           ui->comboBox_rom_size->addItem(total_format);
+       }
 
        auto mount = VolumeManager::getMountFromUri(targetUri);
        ui->lineEdit_device_name->setText(mount->name());
@@ -243,6 +254,21 @@ double Format_Dialog::get_format_bytes_done(const gchar * device_name)
     return 0;
 }
 
+double Format_Dialog::get_device_size(const gchar * device_name)
+{
+    UDisksObject *object ;
+    UDisksBlock *block;
+    UDisksClient *client =udisks_client_new_sync (NULL,NULL);
+    object = get_object_from_block_device(client,device_name);
+    block = udisks_object_get_block (object);
+    guint64 size = udisks_block_get_size(block);
+    double volume_size =(double)size/1000/1000/1000;
+
+    g_clear_object(&client);
+    g_object_unref(object);
+    g_object_unref(block);
+    return volume_size;
+}
 
 void Format_Dialog::formatloop(){
 
@@ -273,7 +299,9 @@ void Format_Dialog::formatloop(){
         cost = 100;
 
     if (m_simulate_progress >= pre){
-        m_simulate_progress += (cost - pre)/100;
+        //fix waiting in 100% issue
+        if (m_simulate_progress < 99)
+           m_simulate_progress += (cost - pre)/100;
     }
     else{
         m_simulate_progress = pre;
@@ -582,10 +610,6 @@ void Format_Dialog::ensure_format_disk(CreateformatData *data){
                         data);
 
 }
-
-
-
-
 
 UDisksObject *Format_Dialog::get_object_from_block_device (UDisksClient *client,const gchar *block_device)
 {

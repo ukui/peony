@@ -75,6 +75,10 @@ private:
     void createOfficeFileThumbnail(const QString &uri, std::shared_ptr<FileWatcher> watcher);
     void createDesktopFileThumbnail(const QString &uri, std::shared_ptr<FileWatcher> watcher);
 
+    //djvu file process
+    void findAtril();
+    void createImagePdfFileThumbnail(const QString &uri, std::shared_ptr<FileWatcher> watcher);
+
     QHash<QString, QIcon> m_hash;
     //QMutex m_mutex;
 

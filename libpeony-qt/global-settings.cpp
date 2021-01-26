@@ -70,7 +70,7 @@ GlobalSettings::GlobalSettings(QObject *parent) : QObject(parent)
         m_cache.insert(SIDEBAR_BG_OPACITY, m_gsettings->get("peonySideBarTransparency").toString());
     }
 
-    if (m_cache.value(DEFAULT_WINDOW_SIZE).isNull() || m_cache.value(DEFAULT_WINDOW_SIZE) <= 0) {
+    if (m_cache.value(DEFAULT_WINDOW_SIZE).isNull() || m_cache.value(DEFAULT_SIDEBAR_WIDTH) <= 0) {
         setValue(DEFAULT_WINDOW_SIZE, QSize(850, 850*0.618));
         setValue(DEFAULT_SIDEBAR_WIDTH, 195);
         qDebug() << "deafult set DEFAULT_SIDEBAR_WIDTH:"<<195;
@@ -78,6 +78,14 @@ GlobalSettings::GlobalSettings(QObject *parent) : QObject(parent)
 
     if (m_cache.value(DEFAULT_VIEW_ID).isNull()) {
         setValue(DEFAULT_VIEW_ID, "Icon View");
+    }
+
+    if (m_cache.value(SORT_ORDER).isNull()){
+        setValue(SORT_ORDER, Qt::AscendingOrder);
+    }
+
+    if (m_cache.value(SORT_COLUMN).isNull()){
+        setValue(SORT_COLUMN, 0);
     }
 
     if (m_cache.value(DEFAULT_VIEW_ZOOM_LEVEL).isNull()) {

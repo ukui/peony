@@ -263,11 +263,14 @@ public:
 
     bool isPdfFile(){
         return m_mime_type_string.contains("pdf");
-
     }
 
     bool isImageFile(){
         return m_mime_type_string.startsWith("image/");
+    }
+
+    bool isImagePdfFile(){
+        return m_mime_type_string.contains("djvu");
     }
 
     bool isVideoFile();

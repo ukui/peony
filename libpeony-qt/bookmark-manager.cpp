@@ -115,7 +115,7 @@ void BookMarkManager::removeBookMark(const QString &uri)
             g_usleep(100);
         }
         QUrl url = uri;
-        QString origin_path = uri;
+        QString origin_path = "favorite://" + url.path() + "?schema=" + url.scheme();
         if (m_mutex.tryLock(1000)) {
             bool successed = m_uris.contains(origin_path);
             if (successed) {

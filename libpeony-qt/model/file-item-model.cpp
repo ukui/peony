@@ -498,10 +498,6 @@ bool FileItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action, i
     //NOTE:
     //do not allow drop on it self.
     auto urls = data->urls();
-    if (urls.isEmpty()) {
-        qDebug() << "urls isEmpty return" <<urls;
-        return false;
-    }
 
     QStringList srcUris;
     if (data->hasFormat("peony-qt/encoded-uris")) {
@@ -520,6 +516,8 @@ bool FileItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action, i
     }
 
     srcUris.removeDuplicates();
+    if (srcUris.isEmpty())
+        return false;
 
     //can not drag file to recent
     if (destDirUri.startsWith("recent://"))

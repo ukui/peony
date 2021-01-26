@@ -697,7 +697,7 @@ void ListView2::bindModel(FileItemModel *model, FileItemProxyFilterSortModel *pr
         //when selections is more than 1, let mainwindow to process
         if (getSelections().count() != 1)
             return;
-        auto uri = index.data(Qt::UserRole).toString();
+        auto uri = getSelections().first();
         Q_EMIT this->viewDoubleClicked(uri);
     });
 

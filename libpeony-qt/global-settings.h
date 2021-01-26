@@ -33,6 +33,8 @@
 #define SHOW_HIDDEN_PREFERENCE      "show-hidden"
 #define SORT_CHINESE_FIRST          "chinese-first"
 #define SORT_FOLDER_FIRST           "folder-first"
+#define SORT_ORDER                  "sort-order"
+#define SORT_COLUMN                 "sort-column"
 #define RESIDENT_IN_BACKEND         "resident"
 #define LAST_DESKTOP_SORT_ORDER     "last-desktop-sort-order"
 #define ALLOW_FILE_OP_PARALLEL      "allow-file-op-parallel"

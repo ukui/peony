@@ -32,6 +32,7 @@
 
 namespace Peony {
 
+class ConnectServerLogin;
 class GErrorWrapper;
 
 /*!
@@ -96,6 +97,8 @@ private:
      * \deprecated use GErrorWrapper.
      */
     GList *m_errs = nullptr;
+
+    ConnectServerLogin *m_dlg = nullptr;
 };
 
 }
