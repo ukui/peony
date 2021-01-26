@@ -201,16 +201,20 @@ const QList<QAction *> DirectoryViewMenu::constructOpenOpActions()
     if (m_is_trash)
         return l;
 
+    bool tabletMode = Peony::GlobalSettings::getInstance()->getValue(TABLET_MODE).toBool();
+
     bool isBackgroundMenu = m_selections.isEmpty();
     if (isBackgroundMenu) {
-        l<<addAction(QIcon::fromTheme("window-new-symbolic"), tr("Open in &New Window"));
-        connect(l.last(), &QAction::triggered, [=]() {
-            auto windowIface = m_top_window->create(m_directory);
-            auto newWindow = dynamic_cast<QWidget *>(windowIface);
-            newWindow->setAttribute(Qt::WA_DeleteOnClose);
-            //FIXME: show when prepared?
-            newWindow->show();
-        });
+        if (!tabletMode) {
+            l<<addAction(QIcon::fromTheme("window-new-symbolic"), tr("Open in &New Window"));
+            connect(l.last(), &QAction::triggered, [=]() {
+                auto windowIface = m_top_window->create(m_directory);
+                auto newWindow = dynamic_cast<QWidget *>(windowIface);
+                newWindow->setAttribute(Qt::WA_DeleteOnClose);
+                //FIXME: show when prepared?
+                newWindow->show();
+            });
+        }
         l<<addAction(QIcon::fromTheme("tab-new-symbolic"), tr("Open in New &Tab"));
         connect(l.last(), &QAction::triggered, [=]() {
             if (!m_top_window)
@@ -279,14 +283,16 @@ const QList<QAction *> DirectoryViewMenu::constructOpenOpActions()
                     openWithAction->setMenu(openWithMenu);
                 }
 
-                l<<addAction(QIcon::fromTheme("window-new-symbolic"), tr("Open in &New Window"));
-                connect(l.last(), &QAction::triggered, [=]() {
-                    auto windowIface = m_top_window->create(m_selections.first());
-                    auto newWindow = dynamic_cast<QWidget *>(windowIface);
-                    newWindow->setAttribute(Qt::WA_DeleteOnClose);
-                    //FIXME: show when prepared?
-                    newWindow->show();
-                });
+                if (!tabletMode) {
+                    l<<addAction(QIcon::fromTheme("window-new-symbolic"), tr("Open in &New Window"));
+                    connect(l.last(), &QAction::triggered, [=]() {
+                        auto windowIface = m_top_window->create(m_selections.first());
+                        auto newWindow = dynamic_cast<QWidget *>(windowIface);
+                        newWindow->setAttribute(Qt::WA_DeleteOnClose);
+                        //FIXME: show when prepared?
+                        newWindow->show();
+                    });
+                }
                 l<<addAction(QIcon::fromTheme("tab-new-symbolic"), tr("Open in New &Tab"));
                 connect(l.last(), &QAction::triggered, [=]() {
                     if (!m_top_window)
@@ -374,7 +380,7 @@ const QList<QAction *> DirectoryViewMenu::constructOpenOpActions()
 const QList<QAction *> DirectoryViewMenu::constructCreateTemplateActions()
 {
     QList<QAction *> l;
-    if (!m_is_favorite && m_selections.isEmpty()) {
+    if (!m_is_trash && !m_is_favorite && m_selections.isEmpty()) {
         auto createAction = new QAction(tr("New..."), this);
         if (m_is_cd) {
             createAction->setEnabled(false);
