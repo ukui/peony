@@ -29,6 +29,7 @@
 #include "file-utils.h"
 #include "file-operation-manager.h"
 #include "file-info.h"
+#include "volume-manager.h"
 
 #include <QDebug>
 
@@ -43,15 +44,6 @@ FileWatcher::FileWatcher(QString uri, QObject *parent) : QObject(parent)
     m_target_uri = uri;
     m_file = g_file_new_for_uri(uri.toUtf8().constData());
     m_cancellable = g_cancellable_new();
-
-    connect(FileLabelModel::getGlobalModel(), &FileLabelModel::fileLabelChanged, this, [=](const QString &uri) {
-        auto parentUri = FileUtils::getParentUri(uri);
-        QUrl parentUrl = parentUri;
-        if (parentUri == m_uri || parentUri == m_target_uri || parentUrl.toDisplayString() == m_uri || parentUrl.toDisplayString() == m_target_uri) {
-            Q_EMIT fileChanged(uri);
-            qDebug()<<"file label changed"<<uri;
-        }
-    });
 
     //monitor target file if existed.
     prepare();
@@ -139,10 +131,29 @@ void FileWatcher::startMonitor()
     stopMonitor();
     m_file_handle = g_signal_connect(m_monitor, "changed", G_CALLBACK(file_changed_callback), this);
     m_dir_handle = g_signal_connect(m_dir_monitor, "changed", G_CALLBACK(dir_changed_callback), this);
+
+    connect(FileLabelModel::getGlobalModel(), &FileLabelModel::fileLabelChanged, this, [=](const QString &uri) {
+        auto parentUri = FileUtils::getParentUri(uri);
+        QUrl parentUrl = parentUri;
+        if (parentUri == m_uri || parentUri == m_target_uri || parentUrl.toDisplayString() == m_uri || parentUrl.toDisplayString() == m_target_uri) {
+            Q_EMIT fileChanged(uri);
+            qDebug()<<"file label changed"<<uri;
+        }
+    });
+
+    connect(VolumeManager::getInstance(), &VolumeManager::fileUnmounted, this, [=](const QString &uri){
+        auto fixedUri = uri;
+        if (m_uri == uri || m_target_uri == uri || m_uri + "/" == fixedUri) {
+            Q_EMIT directoryUnmounted(uri);
+        }
+    });
 }
 
 void FileWatcher::stopMonitor()
 {
+    disconnect(FileLabelModel::getGlobalModel(), &FileLabelModel::fileLabelChanged, this, 0);
+    disconnect(VolumeManager::getInstance(), &VolumeManager::fileUnmounted, this, 0);
+
     if (m_file_handle > 0) {
         g_signal_handler_disconnect(m_monitor, m_file_handle);
         m_file_handle = 0;

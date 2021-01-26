@@ -353,16 +353,21 @@ void SideBarFileSystemItem::eject(GMountUnmountFlags ejectFlag)
 }
 
 static void unmount_force_cb(GFile* file, GAsyncResult* result, gpointer udata) {
+    auto targetUri = static_cast<QString *>(udata);
     GError *err = nullptr;
     g_file_unmount_mountable_with_operation_finish (file, result, &err);
     if (err) {
         QMessageBox::warning(nullptr, QObject::tr("Force unmount failed"), QObject::tr("Error: %1\n").arg(err->message));
         g_error_free(err);
+    } else {
+        VolumeManager::getInstance()->fileUnmounted(*targetUri);
     }
+    delete targetUri;
 }
 
 static void unmount_finished(GFile* file, GAsyncResult* result, gpointer udata)
 {
+    auto targetUri = static_cast<QString *>(udata);
     GError *err = nullptr;
     g_file_unmount_mountable_with_operation_finish (file, result, &err);
     if (err) {
@@ -380,17 +385,20 @@ static void unmount_finished(GFile* file, GAsyncResult* result, gpointer udata)
                                                                                                "Do you want to unmount forcely?").arg(err->message),
                                            QMessageBox::Yes, QMessageBox::No);
         if (button == QMessageBox::Yes) {
+            QString *string = new QString;
+            *string = *targetUri;
             g_file_unmount_mountable_with_operation(file,
                                                     G_MOUNT_UNMOUNT_FORCE,
                                                     nullptr,
                                                     nullptr,
                                                     GAsyncReadyCallback(unmount_force_cb),
-                                                    udata);
+                                                    string);
         }
         g_error_free(err);
     } else {
-        // do nothing.
+        VolumeManager::getInstance()->fileUnmounted(*targetUri);
     }
+    delete targetUri;
 
     /*!
       \note
@@ -476,12 +484,14 @@ void SideBarFileSystemItem::unmount()
     //    }
 
     auto file = wrapGFile(g_file_new_for_uri(this->uri().toUtf8().constData()));
+    QString *targetUri = new QString;
+    *targetUri = this->m_info.get()->targetUri();
     g_file_unmount_mountable_with_operation(file.get()->get(),
                                             G_MOUNT_UNMOUNT_NONE,
                                             nullptr,
                                             nullptr,
                                             GAsyncReadyCallback(unmount_finished),
-                                            this);
+                                            targetUri);
 }
 
 void SideBarFileSystemItem::ejectOrUnmount()
@@ -529,6 +539,10 @@ GAsyncReadyCallback SideBarFileSystemItem::eject_cb(GFile *file, GAsyncResult *r
 
         g_error_free(err);
     } else {
+        char *uri = g_file_get_uri(file);
+        VolumeManager::getInstance()->fileUnmounted(uri);
+        if (uri)
+            g_free(uri);
         // remove item anyway
         /*int index = p_this->parent()->m_children->indexOf(p_this);
         p_this->m_model->beginRemoveRows(p_this->parent()->firstColumnIndex(), index, index);
