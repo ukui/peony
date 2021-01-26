@@ -713,6 +713,59 @@ void FileUtils::handleVolumeLabelForFat32(QString &volumeName,const QString &uni
     }
 }
 
+
+/* @Func: return abstract device path
+ * @uri : such as "computer:///xxx.drive"
+ * @return: nullptr or such as "/dev/sdb1"
+ */
+QString FileUtils::getUnixDevice(const QString &uri)
+{
+    GFile* file;
+    GFileInfo* fileInfo;
+    GCancellable* cancel;
+    QString devicePath,targetUri;
+    const char *tmpPath;
+    char *mountPoint;
+
+    if(uri.isEmpty())
+        return nullptr;
+
+    cancel = g_cancellable_new();
+    file = g_file_new_for_uri(uri.toUtf8().data());
+    if(!file ||!cancel)
+        return nullptr;
+
+    //query device path by "mountable::unix-device-file"
+    fileInfo = g_file_query_info(file,"*",G_FILE_QUERY_INFO_NONE,cancel,NULL);
+    tmpPath = g_file_info_get_attribute_as_string(fileInfo,G_FILE_ATTRIBUTE_MOUNTABLE_UNIX_DEVICE_FILE);
+    devicePath = tmpPath;
+    if(!devicePath.isEmpty()){
+        g_object_unref(fileInfo);
+        g_cancellable_cancel(cancel);
+        g_object_unref(cancel);
+        g_object_unref(file);
+        return devicePath;
+    }
+
+    //query device path by "standard::target-uri"
+    targetUri = getTargetUri(uri);
+    if(targetUri.isEmpty())
+        return nullptr;
+
+    mountPoint = g_filename_from_uri(targetUri.toUtf8().data(),NULL,NULL);
+    if(mountPoint)
+        tmpPath = Peony::VolumeManager::getUnixDeviceFileFromMountPoint(mountPoint);
+    devicePath = tmpPath;
+
+    g_free(mountPoint);
+    g_object_unref(fileInfo);
+    g_cancellable_cancel(cancel);
+    g_object_unref(cancel);
+    g_object_unref(file);
+
+    return devicePath;
+}
+
 double FileUtils::getDeviceSize(const gchar * device_name)
 {
     struct stat statbuf;

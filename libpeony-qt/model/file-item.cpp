@@ -686,3 +686,27 @@ void FileItem::clearChildren()
     m_watcher.reset();
     m_watcher = nullptr;
 }
+
+/* Func: if it isn't a vaild volume device,it should not be displayed.
+ */
+bool FileItem::shouldShow()
+{
+    QString uri,unixDevice,displayName;
+
+    uri = m_info->uri();
+    if(uri.isEmpty())
+        return false;
+    if("computer:///root.link" == uri)
+        return true;
+
+    unixDevice = FileUtils::getUnixDevice(uri);
+    displayName = FileUtils::getFileDisplayName(uri);
+
+    if(displayName.isEmpty())
+        return false;
+    if(!unixDevice.isEmpty() && !displayName.contains(":")){
+        if(uri.endsWith(".drive"))
+            return false;
+    }
+    return true;
+}

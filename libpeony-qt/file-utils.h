@@ -88,6 +88,7 @@ public:
     BLOCKING static double getDeviceSize(const gchar * device_name);
 
     static void handleVolumeLabelForFat32(QString &volumeName,const QString &unixDevcieName);
+    static QString getUnixDevice(const QString &uri);
 private:
     FileUtils();
 };
