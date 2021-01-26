@@ -80,6 +80,7 @@
 #include <KWindowSystem>
 
 #include <QDateTime>
+#include <QDBusInterface>
 #include <QDebug>
 
 #define BACKGROUND_SETTINGS "org.mate.background"
@@ -190,7 +191,16 @@ DesktopWindow::DesktopWindow(QScreen *screen, bool is_primary, QWidget *parent)
             &DesktopWindow::virtualGeometryChangedProcess);
 
     if (!m_is_primary || true) {
-        setBg(getCurrentBgPath());
+        //use account background first
+        auto accountBack = getAccountBackground();
+        if (accountBack != "" && QFile::exists(accountBack))
+            setBg(accountBack);
+        else
+        {
+            setBg(getCurrentBgPath());
+            //update user background
+            setAccountBackground();
+        }
         // do not animate while window first create.
         m_opacity->setCurrentTime(m_opacity->totalDuration());
         return;
@@ -255,6 +265,10 @@ void DesktopWindow::initGSettings() {
                     return;
                 qDebug() << "set a new bg picture:" <<bg_path;
                 this->setBg(bg_path);
+                if (getAccountBackground() != m_current_bg_path)
+                {
+                    setAccountBackground();
+                }
                 return;
             }
 
@@ -340,9 +354,67 @@ void DesktopWindow::paintEvent(QPaintEvent *e)
     QMainWindow::paintEvent(e);
 }
 
-const QString DesktopWindow::getCurrentBgPath() {
+QString DesktopWindow::getAccountBackground()
+{
+    uid_t uid = getuid();
+    QDBusInterface iface("org.freedesktop.Accounts", "/org/freedesktop/Accounts",
+                         "org.freedesktop.Accounts",QDBusConnection::systemBus());
+
+    QDBusReply<QDBusObjectPath> userPath = iface.call("FindUserById", (qint64)uid);
+    if(!userPath.isValid())
+        qWarning() << "Get UserPath error:" << userPath.error();
+    else {
+        QDBusInterface userIface("org.freedesktop.Accounts", userPath.value().path(),
+                                 "org.freedesktop.DBus.Properties", QDBusConnection::systemBus());
+        QDBusReply<QDBusVariant> backgroundReply = userIface.call("Get", "org.freedesktop.Accounts.User", "BackgroundFile");
+        if(backgroundReply.isValid())
+            return  backgroundReply.value().variant().toString();
+    }
+    return "";
+}
+
+void DesktopWindow::setAccountBackground()
+{
+    QDBusInterface * interface = new QDBusInterface("org.freedesktop.Accounts",
+                                     "/org/freedesktop/Accounts",
+                                     "org.freedesktop.Accounts",
+                                     QDBusConnection::systemBus());
+
+    if (!interface->isValid()){
+        qCritical() << "Create /org/freedesktop/Accounts Client Interface Failed " << QDBusConnection::systemBus().lastError();
+        return;
+    }
+
+    QDBusReply<QDBusObjectPath> reply =  interface->call("FindUserByName", g_get_user_name());
+    QString userPath;
+    if (reply.isValid()){
+        userPath = reply.value().path();
+    }
+    else {
+        qCritical() << "Call 'GetComputerInfo' Failed!" << reply.error().message();
+        return;
+    }
+
+    QDBusInterface * useriFace = new QDBusInterface("org.freedesktop.Accounts",
+                                                    userPath,
+                                                    "org.freedesktop.Accounts.User",
+                                                    QDBusConnection::systemBus());
+
+    if (!useriFace->isValid()){
+        qCritical() << QString("Create %1 Client Interface Failed").arg(userPath) << QDBusConnection::systemBus().lastError();
+        return;
+    }
+
+    QDBusMessage msg = useriFace->call("SetBackgroundFile", m_current_bg_path);
+    qDebug() << "setAccountBackground path:" <<m_current_bg_path;
+    if (!msg.errorMessage().isEmpty())
+        qDebug() << "update user background file error: " << msg.errorMessage();
+}
+
+const QString DesktopWindow::getCurrentBgPath()
+{
     // FIXME: implement custom bg settings storage
-    if (m_current_bg_path.isEmpty()) {
+    if (m_current_bg_path.isEmpty() || m_current_bg_path == "") {
         if (m_bg_settings)
             m_current_bg_path = m_bg_settings->get("pictureFilename").toString();
         else

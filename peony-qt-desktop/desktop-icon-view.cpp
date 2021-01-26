@@ -511,15 +511,6 @@ void DesktopIconView::initMenu()
                 connect(action, &QAction::triggered, [=]() {
                     //go to control center set background
                     DesktopWindow::gotoSetBackground();
-//                    QFileDialog dlg;
-//                    dlg.setNameFilters(QStringList() << "*.jpg"
-//                                       << "*.png");
-//                    if (dlg.exec()) {
-//                        auto url = dlg.selectedUrls().first();
-//                        this->setBg(url.path());
-//                        // qDebug()<<url;
-//                        Q_EMIT this->changeBg(url.path());
-//                    }
                 });
             }
             menu.exec(QCursor::pos());
