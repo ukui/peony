@@ -50,6 +50,7 @@
 #include <QStyleHints>
 #include <QPainter>
 
+#include <QToolTip>
 #include <QDebug>
 
 using namespace Peony;
@@ -57,7 +58,6 @@ using namespace Peony::DirectoryView;
 
 ListView::ListView(QWidget *parent) : QTreeView(parent)
 {
-//    this->verticalScrollBar()->setProperty("drawScrollBarGroove", false);
     this->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setStyle(Peony::DirectoryView::ListViewStyle::getStyle());
 
@@ -88,6 +88,7 @@ ListView::ListView(QWidget *parent) : QTreeView(parent)
     setIconSize(QSize(40, 40));
 
     m_rubberBand = new QRubberBand(QRubberBand::Shape::Rectangle, this);
+    setMouseTracking(true);
 }
 
 void ListView::scrollTo(const QModelIndex &index, QAbstractItemView::ScrollHint hint)
@@ -265,6 +266,17 @@ void ListView::mouseReleaseEvent(QMouseEvent *e)
 
 void ListView::mouseMoveEvent(QMouseEvent *e)
 {
+    QModelIndex itemIndex = indexAt(e->pos());
+    if (!itemIndex.isValid()) {
+        if (QToolTip::isVisible()) {
+            QToolTip::hideText();
+        }
+    } else {
+        if (0 != itemIndex.column() && QToolTip::isVisible()) {
+            QToolTip::hideText();
+        }
+    }
+
     QTreeView::mouseMoveEvent(e);
 
     if (m_isLeftButtonPressed) {
