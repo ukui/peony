@@ -74,7 +74,7 @@ FileLabelBox::FileLabelBox(QWidget *parent) : QListView(parent)
                 QColorDialog d;
                 if (d.exec()) {
                     auto color = d.selectedColor();
-                    item->setColor(color);
+                    FileLabelModel::getGlobalModel()->setLabelColor(item->id(), color);
                 }
             });
 
