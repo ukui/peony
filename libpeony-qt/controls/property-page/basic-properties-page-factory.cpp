@@ -48,9 +48,15 @@ bool BasicPropertiesPageFactory::supportUris(const QStringList &uris)
 {
     //FIXME: 需要明确支持范围
     //FIXME: Need to clarify the scope of support
+    qDebug() << "BasicPropertiesPageFactory::supportUris trace:" << uris.contains("computer:///") << uris;
 
     if (uris.contains("computer:///") || uris.contains("recent:///") || uris.contains("trash:///") || uris.contains("network:///"))
         return false;
+
+    for (auto uri : uris) {
+        if (uri.startsWith("computer://"))
+            return false;
+    }
 
     return true;
 }
