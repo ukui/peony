@@ -32,6 +32,8 @@
 
 #include <QLocale>
 #include <QCollator>
+#include <QStandardPaths>
+#include <QUrl>
 
 using namespace Peony;
 
@@ -87,6 +89,10 @@ bool DesktopItemProxyModel::filterAcceptsRow(int source_row, const QModelIndex &
     if (! m_show_hidden && info->displayName().startsWith(".")) {
         return false;
     }
+
+    //fix desktop show Desktop folder issue, bug#20293
+    if (QUrl(uri).path() == QStandardPaths::writableLocation(QStandardPaths::DesktopLocation + "/Desktop"))
+        return false;
 
     if (info->isDesktopFile() && nullptr != info->desktopName()){
         if (m_bwListInfo->isBlackListMode()){
