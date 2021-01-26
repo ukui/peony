@@ -488,7 +488,7 @@ void BasicPropertiesPage::countFilesAsync(const QStringList &uris)
             realUris<<"file:///"<<info.get()->symlinkTarget();
         }
     }
-    m_count_op = new FileCountOperation(realUris.isEmpty()? uris: realUris);
+    m_countOp = new FileCountOperation(realUris.isEmpty()? uris: realUris);
     m_countOp->setAutoDelete(true);
 
     connect(m_countOp, &FileOperation::operationPreparedOne, this, &BasicPropertiesPage::onFileCountOne, Qt::BlockingQueuedConnection);
