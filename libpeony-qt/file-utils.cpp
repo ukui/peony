@@ -31,6 +31,8 @@
 #include <QStandardPaths>
 #include <QDir>
 #include <QIcon>
+#include <sys/stat.h>
+#include <udisks/udisks.h>
 
 using namespace Peony;
 
@@ -575,7 +577,6 @@ bool FileUtils::isReadonly(const QString& uri)
         bool read = g_file_info_get_attribute_boolean(info, G_FILE_ATTRIBUTE_ACCESS_CAN_READ);
         bool write = g_file_info_get_attribute_boolean(info, G_FILE_ATTRIBUTE_ACCESS_CAN_WRITE);
         bool execute = g_file_info_get_attribute_boolean(info, G_FILE_ATTRIBUTE_ACCESS_CAN_EXECUTE);
-
         if (read && !write && !execute) {
             return true;
         }
@@ -710,4 +711,46 @@ void FileUtils::handleVolumeLabelForFat32(QString &volumeName,const QString &uni
                 volumeName = finalName;
         }
     }
+}
+
+double FileUtils::getDeviceSize(const gchar * device_name)
+{
+    struct stat statbuf;
+    const gchar *crypto_backing_device;
+    UDisksObject *object, *crypto_backing_object;
+    UDisksBlock *block;
+    UDisksClient *client =udisks_client_new_sync (NULL,NULL);
+
+    object = NULL;
+    if (stat (device_name, &statbuf) != 0)
+    {
+        return -1;
+    }
+
+    block = udisks_client_get_block_for_dev (client, statbuf.st_rdev);
+    if (block == NULL)
+    {
+        return -1;
+    }
+
+    object = UDISKS_OBJECT (g_dbus_interface_dup_object (G_DBUS_INTERFACE (block)));
+    g_object_unref (block);
+
+    crypto_backing_device = udisks_block_get_crypto_backing_device ((udisks_object_peek_block (object)));
+    crypto_backing_object = udisks_client_get_object (client, crypto_backing_device);
+    if (crypto_backing_object != NULL)
+    {
+        g_object_unref (object);
+        object = crypto_backing_object;
+    }
+
+    block = udisks_object_get_block (object);
+    guint64 size = udisks_block_get_size(block);
+    double volume_size =(double)size/1024/1024/1024;
+
+    g_clear_object(&client);
+    g_object_unref(object);
+    g_object_unref(block);
+
+    return volume_size;
 }

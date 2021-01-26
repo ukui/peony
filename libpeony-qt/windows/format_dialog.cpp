@@ -51,17 +51,24 @@ Format_Dialog::Format_Dialog(const QString &m_uris,SideBarAbstractItem *m_item,Q
        //fix system Udisk calculate size wrong issue
        QString m_volume_name, m_unix_device, m_display_name;
        FileUtils::queryVolumeInfo(m_uris, m_volume_name, m_unix_device, m_display_name);
-       if (! m_unix_device.isEmpty())
+       bool hasSetRomSize = false;
+       //U disk or other mobile device
+       if (! m_unix_device.isEmpty() && ! m_uris.startsWith("computer:///WDC"))
        {
           char dev_name[256] ={0};
           strncpy(dev_name, m_unix_device.toUtf8().constData(),sizeof(m_unix_device.toUtf8().constData()-1));
-          auto size = get_device_size(dev_name);
-          QString sizeInfo = QString::number(size, 'f', 1);
-          qDebug() << "size:" <<size;
-          sizeInfo += "G";
-          ui->comboBox_rom_size->addItem(sizeInfo);
+          auto size = FileUtils::getDeviceSize(dev_name);
+          if (size > 0)
+          {
+              QString sizeInfo = QString::number(size, 'f', 1);
+              qDebug() << "size:" <<size;
+              sizeInfo += "G";
+              ui->comboBox_rom_size->addItem(sizeInfo);
+              hasSetRomSize = true;
+          }
        }
-       else
+
+       if (! hasSetRomSize)
        {
            //Calculated by 1024 bytes
            char *total_format = strtok(g_format_size_full(total,G_FORMAT_SIZE_IEC_UNITS),"iB");
@@ -252,22 +259,6 @@ double Format_Dialog::get_format_bytes_done(const gchar * device_name)
     }
 
     return 0;
-}
-
-double Format_Dialog::get_device_size(const gchar * device_name)
-{
-    UDisksObject *object ;
-    UDisksBlock *block;
-    UDisksClient *client =udisks_client_new_sync (NULL,NULL);
-    object = get_object_from_block_device(client,device_name);
-    block = udisks_object_get_block (object);
-    guint64 size = udisks_block_get_size(block);
-    double volume_size =(double)size/1000/1000/1000;
-
-    g_clear_object(&client);
-    g_object_unref(object);
-    g_object_unref(block);
-    return volume_size;
 }
 
 void Format_Dialog::formatloop(){
