@@ -71,6 +71,7 @@
 #include <QStringList>
 #include <QMessageBox>
 #include <QDir>
+#include <QToolTip>
 
 #include <QDebug>
 
@@ -127,31 +128,6 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
 
     auto zoomLevel = this->zoomLevel();
     setDefaultZoomLevel(zoomLevel);
-
-//#if QT_VERSION > QT_VERSION_CHECK(5, 12, 0)
-//    QTimer::singleShot(500, this, [=](){
-//#else
-//    QTimer::singleShot(500, [=](){
-//#endif
-//        connect(this->selectionModel(), &QItemSelectionModel::selectionChanged, [=](const QItemSelection &selection, const QItemSelection &deselection){
-//            //qDebug()<<"selection changed";
-//            m_real_do_edit = false;
-//            this->setIndexWidget(m_last_index, nullptr);
-//            auto currentSelections = this->selectionModel()->selection().indexes();
-
-//            if (currentSelections.count() == 1) {
-//                //qDebug()<<"set index widget";
-//                m_last_index = currentSelections.first();
-//                auto delegate = qobject_cast<DesktopIconViewDelegate *>(itemDelegate());
-//                this->setIndexWidget(m_last_index, new DesktopIndexWidget(delegate, viewOptions(), m_last_index, this));
-//            } else {
-//                m_last_index = QModelIndex();
-//                for (auto index : deselection.indexes()) {
-//                    this->setIndexWidget(index, nullptr);
-//                }
-//            }
-//        });
-//    });
 
     auto screens = qApp->screens();
     connect(qApp->primaryScreen(), &QScreen::availableGeometryChanged, this, &DesktopIconView::resolutionChange);
@@ -275,6 +251,8 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
 
     m_peonyDbusSer = new PeonyDbusService(this);
     m_peonyDbusSer->DbusServerRegister();
+
+    setMouseTracking(true);
 
     this->refresh();
 }
@@ -1381,6 +1359,18 @@ void DesktopIconView::mouseReleaseEvent(QMouseEvent *e)
     QListView::mouseReleaseEvent(e);
 
     this->viewport()->update(viewport()->rect());
+}
+
+void DesktopIconView::mouseMoveEvent(QMouseEvent *e)
+{
+    QModelIndex itemIndex = indexAt(e->pos());
+    if (!itemIndex.isValid()) {
+        if (QToolTip::isVisible()) {
+            QToolTip::hideText();
+        }
+    }
+
+    QListView::mouseMoveEvent(e);
 }
 
 void DesktopIconView::mouseDoubleClickEvent(QMouseEvent *event)
