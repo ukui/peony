@@ -113,11 +113,12 @@ void OpenWithPropertiesPage::initFloorTwo()
     //自定义列表属性
     m_launchHashList->m_actionList->setFrameShape(QListWidget::NoFrame);
     m_launchHashList->m_actionList->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    m_launchHashList->m_actionList->setContentsMargins(22,0,0,0);
+//    m_launchHashList->m_actionList->setContentsMargins(22,0,0,0);
     m_launchHashList->m_actionList->setFixedHeight(180);
     m_launchHashList->m_actionList->setAlternatingRowColors(true);
     m_launchHashList->m_actionList->setIconSize(QSize(44, 44));
-
+//    m_launchHashList->m_actionList->setStyleSheet("QListWidget::Item{padding-left:22px;}");
+    m_launchHashList->m_actionList->setStyleSheet("QListWidget::Item{margin-left:22px;}");
     //m_newAction
     connect(m_launchHashList->m_actionList, &QListWidget::currentItemChanged, [=](QListWidgetItem *current) {
         if (!current)
@@ -143,10 +144,14 @@ void OpenWithPropertiesPage::initFloorThree()
     floor3->setMaximumHeight(122);
     layout3->setContentsMargins(22,0,0,0);
 
+    QLabel *allOpenLabel = new QLabel(floor3);
+    allOpenLabel->setAlignment(Qt::AlignTop | Qt::AlignLeft);
+    allOpenLabel->setText(tr("Choose other application"));
+
+    layout3->addWidget(allOpenLabel);
+
     QLabel *otherOpenLabel = new QLabel(floor3);
     otherOpenLabel->setAlignment(Qt::AlignTop | Qt::AlignLeft);
-    otherOpenLabel->setPixmap(FileLaunchManager::getDefaultAction(m_fileInfo.get()->uri())->icon().pixmap(QSize(44,44)));
-
     otherOpenLabel->setText(tr("Go to application center"));
 
     layout3->addWidget(otherOpenLabel);
@@ -195,7 +200,6 @@ NewFileLaunchDialog::~NewFileLaunchDialog()
 {
     if (m_launchHashList)
         delete m_launchHashList;
-    qDebug() << "弹窗删除！！！";
 }
 
 QListWidget *OpenWithPropertiesPage::createDefaultLaunchListWidget(const QString &uri, QWidget *parent)

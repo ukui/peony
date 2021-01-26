@@ -28,10 +28,9 @@ static MarkPropertiesPageFactory *global_instance = nullptr;
 
 MarkPropertiesPageFactory *MarkPropertiesPageFactory::getInstance()
 {
-    if (global_instance)
-        return global_instance;
-
-    return new MarkPropertiesPageFactory;
+    if (!global_instance)
+        global_instance = new MarkPropertiesPageFactory;
+    return global_instance;
 }
 
 MarkPropertiesPageFactory::MarkPropertiesPageFactory(QObject *parent) : QObject(parent)

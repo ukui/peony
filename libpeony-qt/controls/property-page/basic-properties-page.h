@@ -115,6 +115,9 @@ protected:
     void chooseFileIcon();
     void changeFileIcon();
     void moveFile();
+    void setSysTimeFormat(QString format) {
+        this->m_systemTimeFormat = format;
+    }
 
 protected Q_SLOTS:
     void getFIleInfo(const QStringList &uris);
@@ -171,6 +174,7 @@ private:
     QLabel *m_descrptionLabel = nullptr;       //应用程序描述
 
     //floor3
+    QString m_systemTimeFormat  = "";
     QLabel *m_timeCreatedLabel  = nullptr;
     QLabel *m_timeModifiedLabel = nullptr;
     QLabel *m_timeAccessLabel   = nullptr;

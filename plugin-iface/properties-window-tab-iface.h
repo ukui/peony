@@ -24,11 +24,13 @@
 #define PROPERTIESWINDOWTABIFACE_H
 
 #include <QWidget>
+#include "peony-core_global.h"
 
 #define PropertiesWindowTabIface_iid "org.ukui.peony-qt.plugin-iface.PropertiesWindowTabInterface"
+
 namespace Peony {
 
-class PropertiesWindowTabIface : public QWidget
+class PEONYCORESHARED_EXPORT PropertiesWindowTabIface : public QWidget
 {
     Q_OBJECT
 
@@ -48,7 +50,7 @@ public:
     /*!
      * \brief 响应确认按钮保存全部数据
      */
-    virtual void saveAllChange() = 0;
+    virtual void saveAllChange() {};
 
 Q_SIGNALS:
     /*!

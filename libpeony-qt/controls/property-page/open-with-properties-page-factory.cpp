@@ -30,10 +30,9 @@ static OpenWithPropertiesPageFactory *global_instance = nullptr;
 
 OpenWithPropertiesPageFactory *OpenWithPropertiesPageFactory::getInstance()
 {
-    if (global_instance)
-        return global_instance;
-
-    return new OpenWithPropertiesPageFactory;
+    if (!global_instance)
+        global_instance = new OpenWithPropertiesPageFactory;
+    return global_instance;
 }
 
 OpenWithPropertiesPageFactory::OpenWithPropertiesPageFactory(QObject *parent) : QObject(parent)

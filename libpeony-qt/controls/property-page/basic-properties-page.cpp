@@ -48,6 +48,7 @@
 #include <QFileInfo>
 #include <QGraphicsOpacityEffect>
 #include <file-launch-manager.h>
+#include <global-settings.h>
 
 #include <QMessageBox>
 #include <QProcess>
@@ -57,6 +58,7 @@
 #include <QFileDialog>
 #include <QtConcurrent>
 
+#include "file-operation-manager.h"
 #include "file-meta-info.h"
 #include "generic-thumbnailer.h"
 #include "open-with-properties-page.h"
@@ -302,6 +304,19 @@ void BasicPropertiesPage::initFloorTwo(const QStringList &uris,BasicPropertiesPa
 
 void BasicPropertiesPage::initFloorThree(BasicPropertiesPage::FileType fileType)
 {
+    this->setSysTimeFormat(tr("yyyy-MM-dd, HH:mm:ss"));
+    // set time
+//    connect(GlobalSettings::getInstance(), &GlobalSettings::valueChanged, [=] (QString key) {
+//        if ("12" == key) {
+//            // 12 小时制时间
+//            this->setSysTimeFormat(tr("yyyy-MM-dd, hh:mm:ss AP"));
+//        } else if ("24" == key) {
+//            // 24 小时制时间hh:mm:ss
+//            this->setSysTimeFormat(tr("yyyy-MM-dd, HH:mm:ss"));
+//        }
+//        this->updateInfo(m_info.get()->uri());
+//    });
+
     auto floor3 = new QFrame(this);
     QFormLayout *layout3 = new QFormLayout(floor3);
     layout3->setVerticalSpacing(8);
@@ -528,19 +543,21 @@ void BasicPropertiesPage::moveFile(){
     QStringList uriList;
     uriList << m_info.get()->uri();
 
-    if(!FileOperationUtils::move(uriList,newDirPath,true)->hasError()){
-        //move to peony
-        //        QUrl url = uri;
-        QProcess p;
+    auto fileOpe = FileOperationUtils::move(uriList,newDirPath,true);
+
+    connect(fileOpe,&FileOperation::operationFinished,[=](){
+        if (!fileOpe->hasError()) {
+            QProcess p;
 #if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
-        p.setProgram("peony");
-        p.setArguments(QStringList()<<"--show-folders" << newDirPath);
-        p.startDetached();
+            p.setProgram("peony");
+            p.setArguments(QStringList()<<"--show-folders" << newDirPath);
+            p.startDetached();
 #else
-        p.startDetached("peony", QStringList()<<"--show-folders"<< newDirPath);
+            p.startDetached("peony", QStringList()<<"--show-folders"<< newDirPath);
 #endif
-        Q_EMIT this->requestCloseMainWindow();
-    }
+            Q_EMIT this->requestCloseMainWindow();
+        }
+    });
 }
 /*!
  * 响应窗口确定按钮
@@ -703,17 +720,17 @@ void BasicPropertiesPage::updateInfo(const QString &uri)
 
             //FIXME:文件的创建时间会随着文件被修改而发生改变，甚至会出现创建时间晚于修改时间问题
             QDateTime date1 = qFileInfo.birthTime();
-            QString time1 = date1.toString(tr("yyyy-MM-dd, HH:mm:ss"));
+            QString time1 = date1.toString(m_systemTimeFormat);
             m_timeCreatedLabel->setText(time1);
 
 //            if(m_timeModifiedLabel) {
 //                QDateTime date2 = qFileInfo.lastModified();
-//                QString time2 = date2.toString(tr("yyyy-MM-dd, HH:mm:ss"));
+//                QString time2 = date2.toString(m_systemTimeFormat);
 //                m_timeModifiedLabel->setText(time2);
 //            }
 //            if(m_timeAccessLabel) {
 //                QDateTime date3 = qFileInfo.lastRead();
-//                QString time3 = date3.toString(tr("yyyy-MM-dd, HH:mm:ss"));
+//                QString time3 = date3.toString(m_systemTimeFormat);
 //                m_timeAccessLabel->setText(time3);
 //            }
 
@@ -728,13 +745,13 @@ void BasicPropertiesPage::updateInfo(const QString &uri)
             if(m_timeModifiedLabel) {
                 m_timeModified = g_file_info_get_attribute_uint64(info,"time::modified");
                 QDateTime date2 = QDateTime::fromMSecsSinceEpoch(m_timeModified*1000);
-                QString time2 = date2.toString(tr("yyyy-MM-dd, HH:mm:ss"));
+                QString time2 = date2.toString(m_systemTimeFormat);
                 m_timeModifiedLabel->setText(time2);
             }
             if(m_timeAccessLabel) {
                 m_timeAccess = g_file_info_get_attribute_uint64(info,"time::access");
                 QDateTime date3 = QDateTime::fromMSecsSinceEpoch(m_timeAccess*1000);
-                QString time3 = date3.toString(tr("yyyy-MM-dd, HH:mm:ss"));
+                QString time3 = date3.toString(m_systemTimeFormat);
                 m_timeAccessLabel->setText(time3);
             }
             g_object_unref(info);
@@ -750,14 +767,14 @@ void BasicPropertiesPage::updateInfo(const QString &uri)
      m_timeCreated = g_file_info_get_attribute_uint64(info,G_FILE_ATTRIBUTE_TIME_CREATED);
     //m_timeCreated = g_file_info_get_attribute_uint64(info, "time::created");
     QDateTime date1 = QDateTime::fromMSecsSinceEpoch(m_timeCreated*1000);
-    QString time1 = date1.toString(tr("yyyy-MM-dd, HH:mm:ss"));
+    QString time1 = date1.toString(m_systemTimeFormat);
     m_timeCreatedLabel->setText(time1);
 
      if(m_timeModifiedLabel) {
         m_timeModified = g_file_info_get_attribute_uint64(info,
                                                           "time::modified");
         QDateTime date2 = QDateTime::fromMSecsSinceEpoch(m_timeModified*1000);
-        QString time2 = date2.toString(tr("yyyy-MM-dd, HH:mm:ss"));
+        QString time2 = date2.toString(m_systemTimeFormat);
 
         m_timeModifiedLabel->setText(time2);
     }
@@ -765,7 +782,7 @@ void BasicPropertiesPage::updateInfo(const QString &uri)
         m_timeAccess = g_file_info_get_attribute_uint64(info,
                                                         "time::access");
         QDateTime date3 = QDateTime::fromMSecsSinceEpoch(m_timeAccess*1000);
-        QString time3 = date3.toString(tr("yyyy-MM-dd, HH:mm:ss"));
+        QString time3 = date3.toString(m_systemTimeFormat);
         m_timeAccessLabel->setText(time3);
     }
 
