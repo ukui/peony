@@ -119,7 +119,6 @@ static bool m_resident = false;
 PeonyApplication::PeonyApplication(int &argc, char *argv[], const char *applicationName) : SingleApplication (argc, argv, applicationName, true)
 {
     setApplicationVersion(QString("v%1").arg(VERSION));
-    setApplicationName("peony-qt");
     //setApplicationDisplayName(tr("Peony-Qt"));
 
     QFile file(":/data/libpeony-qt-styled.qss");
@@ -138,6 +137,8 @@ PeonyApplication::PeonyApplication(int &argc, char *argv[], const char *applicat
     t3->load("/usr/share/qt5/translations/qt_"+QLocale::system().name());
     QApplication::installTranslator(t3);
     setStyle(Peony::ComplementaryStyle::getStyle());
+
+    setApplicationName(tr("peony-qt"));
 
     parser.addOption(quitOption);
     parser.addOption(showItemsOption);
