@@ -30,6 +30,7 @@
 #include "recent-and-trash-properties-page-factory.h"
 #include "mark-properties-page-factory.h"
 #include "open-with-properties-page-factory.h"
+#include "details-properties-page-factory.h"
 
 #include <QToolBar>
 #include <QPushButton>
@@ -79,6 +80,7 @@ PropertiesWindowPluginManager::PropertiesWindowPluginManager(QObject *parent) : 
     registerFactory(RecentAndTrashPropertiesPageFactory::getInstance());
     registerFactory(MarkPropertiesPageFactory::getInstance());
     registerFactory(OpenWithPropertiesPageFactory::getInstance());
+    registerFactory(DetailsPropertiesPageFactory::getInstance());
 }
 
 PropertiesWindowPluginManager::~PropertiesWindowPluginManager()

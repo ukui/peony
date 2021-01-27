@@ -21,7 +21,6 @@
  */
 
 #include "basic-properties-page.h"
-#include "thumbnail-manager.h"
 
 #include <QVBoxLayout>
 #include <QFrame>
@@ -35,15 +34,6 @@
 #include <gio/gdesktopappinfo.h>
 
 #include <QDateTime>
-
-#include "file-info.h"
-#include "file-info-job.h"
-#include "file-utils.h"
-#include "file-operation-utils.h"
-#include "file-watcher.h"
-
-#include "file-count-operation.h"
-
 #include <QThreadPool>
 #include <QFileInfo>
 #include <QGraphicsOpacityEffect>
@@ -58,6 +48,14 @@
 #include <QFileDialog>
 #include <QtConcurrent>
 
+#include "file-info.h"
+#include "file-info-job.h"
+#include "file-utils.h"
+#include "thumbnail-manager.h"
+#include "file-operation-utils.h"
+#include "file-watcher.h"
+#include "file-count-operation.h"
+#include "file-operation-manager.h"
 #include "file-meta-info.h"
 #include "global-settings.h"
 #include "generic-thumbnailer.h"
@@ -70,7 +68,7 @@ BasicPropertiesPage::BasicPropertiesPage(const QStringList &uris, QWidget *paren
 {
     //check file type and search fileinfo
     FileType l_fileType = this->checkFileType(uris);
-    qDebug() << "BasicPropertiesPage:" <<uris.count() <<uris.first();
+    DEBUG <<uris.count() <<uris.first();
     //单个文件才能换icon
     if (l_fileType != BP_MultipleFIle) {
         m_watcher = std::make_shared<FileWatcher>(uris.first());
@@ -85,7 +83,6 @@ BasicPropertiesPage::BasicPropertiesPage(const QStringList &uris, QWidget *paren
         });
     }
 
-    //FIXME: complete the content
     m_layout = new QVBoxLayout(this);
     m_layout->setMargin(0);
     m_layout->setSpacing(0);
@@ -269,7 +266,7 @@ void BasicPropertiesPage::initFloorTwo(const QStringList &uris,BasicPropertiesPa
 
     layout2->addRow(tr("Type:"),m_fileTypeLabel);
 
-    //FIX:重写文件类型获取函数
+    //FIXME:重写文件类型获取函数
     if(fileType != BP_MultipleFIle)
         m_fileTypeLabel->setText(m_info.get()->fileType());
 
@@ -393,9 +390,9 @@ BasicPropertiesPage::FileType BasicPropertiesPage::checkFileType(const QStringLi
         return BP_MultipleFIle;
     } else {
         std::shared_ptr<FileInfo> fileInfo = FileInfo::fromUri(uris.first());
-        FileInfoJob *j = new FileInfoJob(fileInfo);
-        j->setAutoDelete();
-        j->querySync();
+        FileInfoJob *fileInfoJob = new FileInfoJob(fileInfo);
+        fileInfoJob->setAutoDelete();
+        fileInfoJob->querySync();
 
         m_info = fileInfo;
 
@@ -412,9 +409,9 @@ void BasicPropertiesPage::getFIleInfo(const QStringList &uris)
 {
     //    if(oldUri != nullptr && (m_info.get()->uri() != newUri)) {
     //        m_info = FileInfo::fromUri(newUri);
-    //        FileInfoJob *j = new FileInfoJob(m_info);
-    //        j->setAutoDelete();
-    //        j->querySync();
+    //        FileInfoJob *fileInfoJob = new FileInfoJob(m_info);
+    //        fileInfoJob->setAutoDelete();
+    //        fileInfoJob->querySync();
     //    }
 }
 
@@ -432,7 +429,7 @@ QIcon generateThumbnail(const QString &uri)
     if (thumbnail.isNull() && string.startsWith("/")) {
         thumbnail = GenericThumbnailer::generateThumbnail(_icon_string, true);
     }
-    qDebug() <<"BasicPropertiesPage generateThumbnail thumbnail:" <<thumbnail <<_icon_string;
+    DEBUG << "thumbnail" << thumbnail <<_icon_string;
     g_free(_icon_string);
     g_object_unref(_desktop_file);
 
@@ -442,12 +439,12 @@ QIcon generateThumbnail(const QString &uri)
 void BasicPropertiesPage::onSingleFileChanged(const QString &oldUri, const QString &newUri)
 {
     //QMessageBox::information(0, 0, "on single file changed");
-    qDebug()<<"onSingleFileChanged:"<<oldUri<<newUri;
-    //    //FIXME: replace BLOCKING api in ui thread.
+    DEBUG <<"onSingleFileChanged:"<<oldUri<<newUri;
+    //FIXME: replace BLOCKING api in ui thread.
     m_info = FileInfo::fromUri(newUri);
-    FileInfoJob *j = new FileInfoJob(m_info);
-    j->setAutoDelete();
-    j->querySync();
+    FileInfoJob *fileInfoJob = new FileInfoJob(m_info);
+    fileInfoJob->setAutoDelete();
+    fileInfoJob->querySync();
 
     ThumbnailManager::getInstance()->createThumbnail(m_info.get()->uri(), m_thumbnail_watcher);
     auto icon = QIcon::fromTheme(m_info.get()->iconName(), QIcon::fromTheme("text-x-generic"));
@@ -480,15 +477,22 @@ void BasicPropertiesPage::countFilesAsync(const QStringList &uris)
     m_fileSizeCount        = 0;
     m_fileTotalSizeCount   = 0;
 
-    QStringList realUris;
     if (uris.count() == 1) {
         auto uri = uris.first();
         auto info = FileInfo::fromUri(uri);
-        if (!info.get()->symlinkTarget().isEmpty()) {
-            realUris<<"file:///"<<info.get()->symlinkTarget();
+
+        QStringList realUris;
+        //判断是不是快捷方式 - Determine if it is a shortcut
+        if (info->isSymbolLink()) {
+            if (!info.get()->symlinkTarget().isEmpty())
+                realUris << ("file://" + info.get()->symlinkTarget());
         }
+        m_countOp = new FileCountOperation(realUris.isEmpty() ? uris : realUris);
+        DEBUG << "symlinkTarget:" << info.get()->symlinkTarget();
+    } else {
+        m_countOp = new FileCountOperation(uris);
     }
-    m_countOp = new FileCountOperation(realUris.isEmpty()? uris: realUris);
+
     m_countOp->setAutoDelete(true);
 
     connect(m_countOp, &FileOperation::operationPreparedOne, this, &BasicPropertiesPage::onFileCountOne, Qt::BlockingQueuedConnection);
@@ -507,12 +511,12 @@ void BasicPropertiesPage::onFileCountOne(const QString &uri, quint64 size)
 {
     //...FIX:第一版本在当前位置对文件夹进行统计,慢
     std::shared_ptr<FileInfo> l_fileInfo = FileInfo::fromUri(uri);
-    FileInfoJob *j = new FileInfoJob(l_fileInfo);
-    j->setAutoDelete();
-    j->querySync();
+    FileInfoJob *fileInfoJob = new FileInfoJob(l_fileInfo);
+    fileInfoJob->setAutoDelete();
+    fileInfoJob->querySync();
     bool a = l_fileInfo.get()->isDir();
 
-    if(a)
+    if (a)
         m_folderContainFolders ++;
     else
         m_folderContainFiles ++;
@@ -531,7 +535,7 @@ void BasicPropertiesPage::cancelCount()
 
 void BasicPropertiesPage::moveFile(){
     auto newDirPath = QString(QFileDialog::getExistingDirectoryUrl(nullptr, tr("Choose a new folder:"),m_info.get()->uri()).toEncoded());
-    qDebug() << "new path:" << newDirPath ;
+    DEBUG << "new path:" << newDirPath ;
 
     if(newDirPath.isEmpty())
         return;
@@ -546,7 +550,7 @@ void BasicPropertiesPage::moveFile(){
         return;
     }
 
-    qDebug() << "oldPath:" << m_info.get()->uri() << newDirPath;
+    DEBUG << "old Path:" << m_info.get()->uri() << newDirPath;
 
     QStringList uriList;
     uriList << m_info.get()->uri();
@@ -574,16 +578,16 @@ void BasicPropertiesPage::moveFile(){
 void BasicPropertiesPage::saveAllChange()
 {
     //未发生修改
-    if(!this->m_thisPageChanged)
+    if (!this->m_thisPageChanged)
         return;
     //拒绝修改home目录
-    if(m_info.get()->uri() == ("file://"+QStandardPaths::standardLocations(QStandardPaths::HomeLocation).first())) {
+    if (m_info.get()->uri() == ("file://"+QStandardPaths::standardLocations(QStandardPaths::HomeLocation).first())) {
         return;
     }
     //修改图标
     this->changeFileIcon();
 
-    if(m_readOnly) {
+    if (m_readOnly) {
         mode_t mod = 0;
         if(m_readOnly->isChecked()) {
             mod |= S_IRUSR;
@@ -612,7 +616,7 @@ void BasicPropertiesPage::saveAllChange()
 
     }
 
-    if(m_hidden) {
+    if (m_hidden) {
         QString l_reName = m_info.get()->displayName();
 
         bool isHidden = m_info.get()->displayName().startsWith(".");
@@ -643,8 +647,6 @@ void BasicPropertiesPage::chooseFileIcon()
     iconPathUrl.setPath("/usr/share/icons");
     auto picture = QFileDialog::getOpenFileName(nullptr, tr("Choose a custom icon"), "/usr/share/icons", "*.png *.jpg *.jpeg *.svg");
 
-    qDebug() << "BasicPropertiesPage::chooseFileIcon()" << picture << picture.isEmpty();
-
     if (!picture.isEmpty()) {
         this->m_newFileIconPath = picture;
         this->thisPageChanged();
@@ -668,13 +670,13 @@ void BasicPropertiesPage::changeFileIcon()
 
 void BasicPropertiesPage::updateCountInfo(bool isDone)
 {
-    if(isDone) {
-        //FIX:多选文件情况下，文件占用空间大小不准确
-        //假的4k对齐 unReal
-        qint64 a = m_fileSizeCount % 4096;
-        qint64 b = m_fileSizeCount / 4096;
+    if (isDone) {
+        //FIXME:多选文件情况下，文件占用空间大小不准确
+        //FIXME: In the case of multiple selection of files, the space occupied by the files is not accurate
+        qint64 a = m_fileSizeCount % CELL4K;
+        qint64 b = m_fileSizeCount / CELL4K;
         qint64 cell4k = (a == 0) ? b : (b + 1);
-        m_fileTotalSizeCount = cell4k * 4096;
+        m_fileTotalSizeCount = cell4k * CELL4K;
 
         QString fileSizeText;
         QString fileTotalSizeText;
@@ -683,22 +685,22 @@ void BasicPropertiesPage::updateCountInfo(bool isDone)
 
         // 1024 KB
         b *= 4;
-        if(b < 1024) {
+        if (b < CELL1K) {
             fileSizeKMGB = b;
             fileSizeText = tr("%1 KB (%2 Bytes)").arg(QString::number(fileSizeKMGB,'f',2)).arg(m_fileSizeCount);
-            fileSizeKMGB = (qreal)m_fileTotalSizeCount / (qreal)1024;
+            fileSizeKMGB = (qreal)m_fileTotalSizeCount / (qreal)CELL1K;
             fileTotalSizeText = tr("%1 KB (%2 Bytes)").arg(QString::number(fileSizeKMGB,'f',2)).arg(m_fileTotalSizeCount);
         } else {
             //1024 MB
-            fileSizeKMGB = (qreal)m_fileSizeCount / (qreal)1048576;
-            if(fileSizeKMGB < 1024) {
+            fileSizeKMGB = (qreal)m_fileSizeCount / (qreal)CELL1M;
+            if (fileSizeKMGB < CELL1K) {
                 fileSizeText = tr("%1 MB (%2 Bytes)").arg(QString::number(fileSizeKMGB,'f',2)).arg(m_fileSizeCount);
-                fileSizeKMGB = (qreal)m_fileTotalSizeCount / (qreal)1048576;
+                fileSizeKMGB = (qreal)m_fileTotalSizeCount / (qreal)CELL1M;
                 fileTotalSizeText = tr("%1 MB (%2 Bytes)").arg(QString::number(fileSizeKMGB,'f',2)).arg(m_fileTotalSizeCount);
             } else {
-                fileSizeKMGB = (qreal)m_fileSizeCount / (qreal)1073741824;
+                fileSizeKMGB = (qreal)m_fileSizeCount / (qreal)CELL1G;
                 fileSizeText = tr("%1 GB (%2 Bytes)").arg(QString::number(fileSizeKMGB,'f',2)).arg(m_fileSizeCount);
-                fileSizeKMGB = (qreal)m_fileTotalSizeCount / (qreal)1073741824;
+                fileSizeKMGB = (qreal)m_fileTotalSizeCount / (qreal)CELL1G;
                 fileTotalSizeText = tr("%1 GB (%2 Bytes)").arg(QString::number(fileSizeKMGB,'f',2)).arg(m_fileTotalSizeCount);
             }
         }
@@ -716,9 +718,9 @@ void BasicPropertiesPage::updateInfo(const QString &uri)
     //QT获取文件相关时间 ,
     QtConcurrent::run([=](){
         m_info = FileInfo::fromUri(uri);
-        FileInfoJob *j = new FileInfoJob(m_info);
-        j->setAutoDelete();
-        j->querySync();
+        FileInfoJob *fileInfoJob = new FileInfoJob(m_info);
+        fileInfoJob->setAutoDelete();
+        fileInfoJob->querySync();
 
         QUrl url(uri);
         //FIXME:暂时不处理除了本地文件外的文件信息,希望添加对其他文件的支持
@@ -801,24 +803,24 @@ void BasicPropertiesPage::updateInfo(const QString &uri)
 
 QLabel *BasicPropertiesPage::createFixedLabel(quint64 minWidth, quint64 minHeight, QString text, QWidget *parent)
 {
-    QLabel *l = new QLabel(parent);
-    if(minWidth != 0)
-        l->setMinimumWidth(minWidth);
-    if(minHeight != 0)
-        l->setMinimumHeight(minHeight);
+    QLabel *label = new QLabel(parent);
+    if (minWidth != 0)
+        label->setMinimumWidth(minWidth);
+    if (minHeight != 0)
+        label->setMinimumHeight(minHeight);
 
-    l->setText(text);
-    return l;
+    label->setText(text);
+    return label;
 }
 
 QLabel *BasicPropertiesPage::createFixedLabel(quint64 minWidth, quint64 minHeight, QWidget *parent)
 {
-    QLabel *l = new QLabel(parent);
-    if(minWidth != 0)
-        l->setMinimumWidth(minWidth);
-    if(minHeight != 0)
-        l->setMinimumHeight(minHeight);
-    return l;
+    QLabel *label = new QLabel(parent);
+    if (minWidth != 0)
+        label->setMinimumWidth(minWidth);
+    if (minHeight != 0)
+        label->setMinimumHeight(minHeight);
+    return label;
 }
 
 void FileNameThread::run()
@@ -826,21 +828,21 @@ void FileNameThread::run()
     QString fileName = "";
     if (m_uris.count() == 1) {
         std::shared_ptr<FileInfo> fileInfo = FileInfo::fromUri(m_uris.first());
-        FileInfoJob *j = new FileInfoJob(fileInfo);
-        j->setAutoDelete();
-        j->querySync();
+        FileInfoJob *fileInfoJob = new FileInfoJob(fileInfo);
+        fileInfoJob->setAutoDelete();
+        fileInfoJob->querySync();
         fileName = fileInfo.get()->displayName();
     } else {
-        QStringList l;
+        QStringList stringList;
         for (auto uri : m_uris) {
             //FIXME: replace BLOCKING api in ui thread.(finish) **
             std::shared_ptr<FileInfo> fileInfo = FileInfo::fromUri(uri);
-            FileInfoJob *j = new FileInfoJob(fileInfo);
-            j->setAutoDelete();
-            j->querySync();
-            l<< fileInfo.get()->displayName();
+            FileInfoJob *fileInfoJob = new FileInfoJob(fileInfo);
+            fileInfoJob->setAutoDelete();
+            fileInfoJob->querySync();
+            stringList<< fileInfo.get()->displayName();
         }
-        auto text = l.join(",");
+        auto text = stringList.join(",");
         fileName = QString(text);
     }
 

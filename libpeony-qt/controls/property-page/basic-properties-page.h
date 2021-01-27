@@ -35,6 +35,12 @@
 #include "properties-window-tab-iface.h"
 #include "open-with-properties-page.h"
 
+#define DEBUG qDebug() << "[" << __FILE__ << ":" << __FUNCTION__ << ":" << __LINE__ << "]"
+#define CELL1K 1024
+#define CELL4K 4096
+#define CELL1M 1048576
+#define CELL1G 1073741824
+
 class QVBoxLayout;
 class QFormLayout;
 class QPushButton;

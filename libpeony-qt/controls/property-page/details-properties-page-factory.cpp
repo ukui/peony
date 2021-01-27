@@ -1,7 +1,7 @@
 /*
  * Peony-Qt's Library
  *
- * Copyright (C) 2020, KylinSoft Co., Ltd.
+ * Copyright (C) 2021, KylinSoft Co., Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -19,36 +19,38 @@
  * Authors: Wenfei He <hewenfei@kylinos.cn>
  *
  */
-#include "open-with-properties-page-factory.h"
-#include "open-with-properties-page.h"
+
+#include "details-properties-page-factory.h"
+#include "details-properties-page.h"
 #include "file-info.h"
-#include "file-info-job.h"
 
 using namespace Peony;
 
-static OpenWithPropertiesPageFactory *global_instance = nullptr;
+static DetailsPropertiesPageFactory *global_instance = nullptr;
 
-OpenWithPropertiesPageFactory *OpenWithPropertiesPageFactory::getInstance()
+DetailsPropertiesPageFactory *DetailsPropertiesPageFactory::getInstance()
 {
     if (!global_instance)
-        global_instance = new OpenWithPropertiesPageFactory;
+        global_instance = new DetailsPropertiesPageFactory;
     return global_instance;
 }
 
-OpenWithPropertiesPageFactory::OpenWithPropertiesPageFactory(QObject *parent) : QObject(parent)
+DetailsPropertiesPageFactory::DetailsPropertiesPageFactory()
 {
 
 }
 
-OpenWithPropertiesPageFactory::~OpenWithPropertiesPageFactory()
+DetailsPropertiesPageFactory::~DetailsPropertiesPageFactory()
 {
 
 }
 
-bool OpenWithPropertiesPageFactory::supportUris(const QStringList &uris)
+bool DetailsPropertiesPageFactory::supportUris(const QStringList &uris)
 {
     //FIXME: 需要明确支持范围
     //FIXME: Need to clarify the scope of support
+    //只支持文件和应用
+    //Only supports files and applications
     if (uris.count() != 1)
         return false;
 
@@ -57,24 +59,27 @@ bool OpenWithPropertiesPageFactory::supportUris(const QStringList &uris)
     if (uri.startsWith("computer://") || uri.startsWith("recent://") || uri.startsWith("trash://"))
         return false;
 
-    auto fileInfo = FileInfo::fromUri(uris.first());
+    //FIXME: 替换ui线程中的阻塞API
+    //FIXME: replace BLOCKING api in ui thread.
+    auto fileInfo = FileInfo::fromUri(uri);
     FileInfoJob *job = new FileInfoJob(fileInfo);
     job->setAutoDelete(true);
     job->querySync();
 
-    if (fileInfo.get()->isDir() || fileInfo.get()->isDesktopFile() || fileInfo.get()->isVolume() || fileInfo.get()->isVirtual() || fileInfo->canExecute())
+    //排除文件夹和卷
+    //Exclude folders and volumes
+    if (fileInfo.get()->isDir() || fileInfo.get()->isVolume())
         return false;
 
     return true;
 }
 
-PropertiesWindowTabIface *OpenWithPropertiesPageFactory::createTabPage(const QStringList &uris)
+PropertiesWindowTabIface *DetailsPropertiesPageFactory::createTabPage(const QStringList &uris)
 {
-    return new OpenWithPropertiesPage(uris.first());
+    return new DetailsPropertiesPage(uris.first());
 }
 
-void OpenWithPropertiesPageFactory::closeFactory()
+void DetailsPropertiesPageFactory::closeFactory()
 {
     this->deleteLater();
 }
-
