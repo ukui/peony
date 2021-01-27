@@ -196,6 +196,8 @@ const QString FileInfo::targetUri()
 
 const QString FileInfo::symlinkTarget()
 {
+    if (m_symlink_target == ".")
+        return "";
     return m_symlink_target;
 }
 

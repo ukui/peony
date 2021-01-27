@@ -50,6 +50,8 @@ public:
 public:
     const QString getCurrentBgPath();
     const QColor getCurrentColor();
+    QString getAccountBackground();
+    void setAccountBackground();
     bool getIsPrimary() {
         return m_is_primary;
     }

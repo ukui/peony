@@ -29,6 +29,8 @@
 #include "file-utils.h"
 #include "global-settings.h"
 
+#include "file-label-model.h"
+
 #include "directory-view-factory-manager.h"
 
 #include "file-item-proxy-filter-sort-model.h"
@@ -63,6 +65,9 @@ DirectoryViewContainer::DirectoryViewContainer(QWidget *parent) : QWidget(parent
 
 //    connect(m_proxy, &DirectoryViewProxyIface::menuRequest,
 //            this, &DirectoryViewContainer::menuRequest);
+    connect(FileLabelModel::getGlobalModel(), &FileLabelModel::dataChanged, this, [=](){
+        refresh();
+    });
 }
 
 DirectoryViewContainer::~DirectoryViewContainer()

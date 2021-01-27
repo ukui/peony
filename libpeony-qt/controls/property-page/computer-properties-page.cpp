@@ -163,11 +163,34 @@ ComputerPropertiesPage::ComputerPropertiesPage(const QString &uri, QWidget *pare
             //Calculated by 1024 bytes
             char *total_format = strtok(g_format_size_full(total,G_FORMAT_SIZE_IEC_UNITS),"iB");
             char *used_format = strtok(g_format_size_full(used,G_FORMAT_SIZE_IEC_UNITS),"iB");
-            char *aviliable_format = strtok(g_format_size_full(aviliable,G_FORMAT_SIZE_IEC_UNITS),"iB");           
+            char *aviliable_format = strtok(g_format_size_full(aviliable,G_FORMAT_SIZE_IEC_UNITS),"iB");
+
+            //fix system Udisk calculate size wrong issue
+            QString m_volume_name, m_unix_device, m_display_name, sizeInfo;
+            FileUtils::queryVolumeInfo(uri, m_volume_name, m_unix_device, m_display_name);
+            bool bMobileDevice = false;
+            //U disk or other mobile device
+            if (! m_unix_device.isEmpty() && ! uri.startsWith("computer:///WDC"))
+            {
+               char dev_name[256] ={0};
+               strncpy(dev_name, m_unix_device.toUtf8().constData(),sizeof(m_unix_device.toUtf8().constData()-1));
+               auto size = FileUtils::getDeviceSize(dev_name);
+               if (size > 0)
+               {
+                   sizeInfo = QString::number(size, 'f', 1);
+                   qDebug() << "size:" <<size;
+                   sizeInfo += "G";
+                   bMobileDevice = true;
+               }
+            }
 
             char *fs_type = g_file_info_get_attribute_as_string(info, G_FILE_ATTRIBUTE_FILESYSTEM_TYPE);
             m_layout->addRow(tr("Name: "), new QLabel(mount->name(), this));
-            m_layout->addRow(tr("Total Space: "), new QLabel(total_format, this));
+            if (bMobileDevice)
+                m_layout->addRow(tr("Total Space: "), new QLabel(sizeInfo, this));
+            else
+                m_layout->addRow(tr("Total Space: "), new QLabel(total_format, this));
+
             m_layout->addRow(tr("Used Space: "), new QLabel(used_format, this));
             m_layout->addRow(tr("Free Space: "), new QLabel(aviliable_format, this));
             m_layout->addRow(tr("Type: "), new QLabel(fs_type, this));

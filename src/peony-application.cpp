@@ -90,6 +90,8 @@
 
 #include "complementary-style.h"
 
+#include "volume-manager.h"
+
 #include "file-enumerator.h"
 #include "gerror-wrapper.h"
 
@@ -217,6 +219,10 @@ static void unmount_finished(GFile* file, GAsyncResult* result, gpointer udata)
 
     if (g_file_unmount_mountable_with_operation_finish (file, result, &err) == TRUE){
         flags = 1;
+        char *uri = g_file_get_uri(file);
+        Peony::VolumeManager::getInstance()->fileUnmounted(uri);
+        if (uri)
+            g_free(uri);
     }
 
     if (! m_resident)

@@ -57,7 +57,9 @@
 #include "file-count-operation.h"
 #include "file-operation-manager.h"
 #include "file-meta-info.h"
+#include "global-settings.h"
 #include "generic-thumbnailer.h"
+#include "file-operation-manager.h"
 #include "open-with-properties-page.h"
 
 using namespace Peony;
@@ -302,16 +304,16 @@ void BasicPropertiesPage::initFloorThree(BasicPropertiesPage::FileType fileType)
 {
     this->setSysTimeFormat(tr("yyyy-MM-dd, HH:mm:ss"));
     // set time
-//    connect(GlobalSettings::getInstance(), &GlobalSettings::valueChanged, [=] (QString key) {
-//        if ("12" == key) {
-//            // 12 小时制时间
-//            this->setSysTimeFormat(tr("yyyy-MM-dd, hh:mm:ss AP"));
-//        } else if ("24" == key) {
-//            // 24 小时制时间hh:mm:ss
-//            this->setSysTimeFormat(tr("yyyy-MM-dd, HH:mm:ss"));
-//        }
-        this->updateInfo(m_info.get()->uri());
-//    });
+    connect(GlobalSettings::getInstance(), &GlobalSettings::valueChanged, this, [=] (const QString& key) {
+        if (UKUI_CONTROL_CENTER_PANEL_PLUGIN_TIME == key) {
+            if ("12" == GlobalSettings::getInstance()->getValue(key)) {
+                setSysTimeFormat(tr("yyyy-MM-dd, hh:mm:ss AP"));
+            } else if ("24" == GlobalSettings::getInstance()->getValue(key)) {
+                setSysTimeFormat(tr("yyyy-MM-dd, HH:mm:ss"));
+            }
+            updateInfo(m_info.get()->uri());
+        }
+    });
 
     auto floor3 = new QFrame(this);
     QFormLayout *layout3 = new QFormLayout(floor3);
@@ -347,7 +349,6 @@ void BasicPropertiesPage::initFloorThree(BasicPropertiesPage::FileType fileType)
     connect(m_watcher.get(), &FileWatcher::locationChanged, [=](const QString&, const QString &uri) {
         this->updateInfo(uri);
     });
-
 }
 
 /*!

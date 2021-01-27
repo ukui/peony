@@ -91,6 +91,7 @@ public:
     QModelIndex lastColumnIndex();
 
     bool hasChildren();
+    bool shouldShow();
 
 Q_SIGNALS:
     void cancelFindChildren();

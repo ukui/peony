@@ -943,6 +943,7 @@ void TabWidget::goToUri(const QString &uri, bool addHistory, bool forceUpdate)
     currentPage()->goToUri(uri, addHistory, forceUpdate);
     m_tab_bar->updateLocation(m_tab_bar->currentIndex(), uri);
     updateTrashBarVisible(uri);
+    updatePreviewPage();
 }
 
 void TabWidget::updateTabPageTitle()

@@ -55,6 +55,10 @@
 #define TEMPLATES_DIR               "templates-dir"
 
 
+// control center
+#define UKUI_CONTROL_CENTER_PANEL_PLUGIN            "org.ukui.control-center.panel.plugins"                 // schema
+#define UKUI_CONTROL_CENTER_PANEL_PLUGIN_TIME       "org.ukui.control-center.panel.plugins.time"            // date format key, value is '12' or '24'
+
 class QGSettings;
 
 namespace Peony {
@@ -98,12 +102,13 @@ private:
     explicit GlobalSettings(QObject *parent = nullptr);
     ~GlobalSettings();
 
-    QSettings *m_settings;
-    QMap<QString, QVariant> m_cache;
+    QSettings*                  m_settings;
+    QMap<QString, QVariant>     m_cache;
 
-    QGSettings *m_gsettings = nullptr;
+    QGSettings*                 m_gsettings = nullptr;
+    QGSettings*                 m_control_center_plugin = nullptr;
 
-    QMutex m_mutex;
+    QMutex                      m_mutex;
 };
 
 }
