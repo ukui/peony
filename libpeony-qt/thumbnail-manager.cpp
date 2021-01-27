@@ -182,7 +182,6 @@ void ThumbnailManager::createDesktopFileThumbnail(const QString &uri, std::share
 
     if (!uri.startsWith("file:///")) {
         url = FileUtils::getTargetUri(uri);
-        //qDebug()<<url;
     }
 
     auto _desktop_file = g_desktop_app_info_new_from_filename(url.path().toUtf8().constData());
@@ -323,7 +322,7 @@ void ThumbnailManager::createThumbnail(const QString &uri, std::shared_ptr<FileW
         else if (info->isOfficeFile()) {
             needThumbnail = true;
         }
-        else if (info->isDesktopFile()) {
+        else if (info->uri().endsWith(".desktop")) {
             if (thumbnail.isNull())
             {
                 needThumbnail = false;
@@ -345,7 +344,7 @@ void ThumbnailManager::createThumbnail(const QString &uri, std::shared_ptr<FileW
 void ThumbnailManager::updateDesktopFileThumbnail(const QString &uri, std::shared_ptr<FileWatcher> watcher)
 {
     auto info = FileInfo::fromUri(uri);
-    if (info->isDesktopFile() && info->canExecute()) {
+    if (info->uri().endsWith(".desktop")) {
         //qDebug()<<"is desktop file"<<uri;
         //get desktop file icon.
         //async
