@@ -1,3 +1,11 @@
+peony (3.0.3-2+0127) v101; urgency=medium
+
+  * Fix: 光标从图标移走，不经过说明内容，图标的说明内容还存在一段时间
+  * Fix: blank CD cannot be unmount
+  * Modify: Custom desktop default sort
+
+ -- weinan1 <wangweinan@kylinos.cn>  Wed, 27 Jan 2021 09:29:31 +0800
+
 peony (3.0.3-2+0123) v101; urgency=medium
 
   * Fix when decompressing files, extra files will appear #32109
