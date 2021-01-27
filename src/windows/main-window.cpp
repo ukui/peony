@@ -52,7 +52,6 @@
 
 #include "peony-main-window-style.h"
 
-#include "file-label-box.h"
 #include "file-operation-manager.h"
 #include "file-operation-utils.h"
 #include "file-utils.h"
@@ -1312,6 +1311,7 @@ void MainWindow::initUI(const QString &uri)
 
     auto labelDialog = new FileLabelBox(this);
     labelDialog->hide();
+    m_label_box = labelDialog;
 
     auto splitter = new QSplitter(this);
     splitter->setChildrenCollapsible(false);
@@ -1335,7 +1335,17 @@ void MainWindow::initUI(const QString &uri)
         setLabelNameFilter("");
     });
 
-    connect(sidebar, &NavigationSideBar::labelButtonClicked, labelDialog, &QWidget::setVisible);
+    connect(sidebar, &NavigationSideBar::labelButtonClicked, this, [=]()
+    {
+        bool visible = m_label_box->isVisible();
+        //quit label filter, clear conditions
+        if (visible)
+        {
+           setLabelNameFilter("");
+           m_label_box->clearSelection();
+        }
+        m_label_box->setVisible(! visible);
+    });
 
     sidebarContainer->setWidget(splitter);
     addDockWidget(Qt::LeftDockWidgetArea, sidebarContainer);

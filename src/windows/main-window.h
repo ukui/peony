@@ -25,6 +25,7 @@
 
 #include <QMainWindow>
 #include "FMWindowIface.h"
+#include "file-label-box.h"
 
 class MainWindowPrivate;
 class BorderShadowEffect;
@@ -178,6 +179,7 @@ private:
     QStackedWidget *m_side_bar_container;
     TabWidget *m_tab;
     Peony::StatusBar *m_status_bar;
+    FileLabelBox *m_label_box;
 
     QString m_last_search_path = "";
     QString m_last_key = "";
