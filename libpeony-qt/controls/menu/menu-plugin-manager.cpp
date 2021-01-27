@@ -108,6 +108,7 @@ QList<QAction *> CreateLinkInternalPlugin::menuActions(MenuPluginInterface::Type
             if (selectionUris.first().startsWith("computer:///") || info->isVirtual()
                 || selectionUris.first().startsWith("trash:///")
                 || selectionUris.first().startsWith("recent:///")
+                || selectionUris.first().startsWith("mtp://")
                 || originPath.startsWith(desktopPath))
                 return l;
 
