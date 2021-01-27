@@ -50,6 +50,7 @@
 #include <QStyleHints>
 
 #include <QDebug>
+#include <QToolTip>
 
 using namespace Peony;
 using namespace Peony::DirectoryView;
@@ -87,6 +88,7 @@ ListView::ListView(QWidget *parent) : QTreeView(parent)
     m_editValid = false;
 
     setIconSize(QSize(40, 40));
+    setMouseTracking(true);//追踪鼠标
 
     m_rubberBand = new QRubberBand(QRubberBand::Shape::Rectangle, this);
 }
@@ -276,6 +278,17 @@ void ListView::mouseReleaseEvent(QMouseEvent *e)
 
 void ListView::mouseMoveEvent(QMouseEvent *e)
 {
+    QModelIndex itemIndex = indexAt(e->pos());
+    if (!itemIndex.isValid()) {
+        if (QToolTip::isVisible()) {
+             QToolTip::hideText();
+         }
+    } else {
+        if (0 != itemIndex.column() && QToolTip::isVisible()) {
+            QToolTip::hideText();
+        }
+    }
+
     QTreeView::mouseMoveEvent(e);
 
     if (m_isLeftButtonPressed) {
@@ -754,6 +767,7 @@ void ListView2::setCurrentZoomLevel(int zoomLevel)
 {
     int base = 16;
     int adjusted = base + zoomLevel;
+
     m_view->setIconSize(QSize(adjusted, adjusted));
     m_zoom_level = zoomLevel;
 }
