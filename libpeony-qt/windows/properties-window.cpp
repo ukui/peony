@@ -38,6 +38,7 @@
 #include <QDebug>
 #include <QStatusBar>
 
+#include <QList>
 #include <QStringList>
 #include <QString>
 #include <QHBoxLayout>
@@ -46,14 +47,14 @@
 #include <QPainter>
 #include <QStyleOptionTab>
 
-#include "file-info.h"
 #include "file-info-job.h"
 
 using namespace Peony;
 
+#define WINDOW_NOT_OPEN -1
 //single properties-window
 //static QHash<QString,PropertiesWindow> openPropertiesWindow = nullptr;
-static QList<PropertiesWindow *> *openPropertiesWindows = nullptr;
+static QList<PropertiesWindow *> *openedPropertiesWindows = nullptr;
 
 //plugin manager
 
@@ -71,7 +72,7 @@ void PropertiesWindowPluginManager::release()
     deleteLater();
 }
 
-PropertiesWindowPluginManager::PropertiesWindowPluginManager(QObject *parent) : QObject (parent)
+PropertiesWindowPluginManager::PropertiesWindowPluginManager(QObject *parent) : QObject(parent)
 {
     //register internal factories.
     registerFactory(BasicPropertiesPageFactory::getInstance());
@@ -109,11 +110,11 @@ bool PropertiesWindowPluginManager::registerFactory(PropertiesWindowTabPagePlugi
 
 const QStringList PropertiesWindowPluginManager::getFactoryNames()
 {
-    QStringList l;
+    QStringList list;
     for (auto factoryId : m_sorted_factory_map) {
-        l<<factoryId;
+        list << factoryId;
     }
-    return l;
+    return list;
 }
 
 PropertiesWindowTabPagePluginIface *PropertiesWindowPluginManager::getFactory(const QString &id)
@@ -128,41 +129,52 @@ PropertiesWindowTabPagePluginIface *PropertiesWindowPluginManager::getFactory(co
 const qint32 PropertiesWindow::s_windowWidth        = 460;
 const qint32 PropertiesWindow::s_windowHeightFolder = 600;
 const qint32 PropertiesWindow::s_windowHeightOther  = 652;
-const QSize  PropertiesWindow::s_bottomButtonSize   = QSize(100,32);
-const QSize  PropertiesWindow::s_topButtonSize      = QSize(65,30);
+const QSize  PropertiesWindow::s_bottomButtonSize   = QSize(100, 32);
 
-PropertiesWindow::PropertiesWindow(const QStringList &uris, QWidget *parent) : QMainWindow (parent)
+PropertiesWindow::PropertiesWindow(const QStringList &uris, QWidget *parent) : QMainWindow(parent)
 {
     m_uris = uris;
+    m_uris.removeDuplicates();
+    qDebug() << __FUNCTION__ << m_uris.count() << m_uris;
 
-    if(!PropertiesWindow::checkUriIsOpen(m_uris,this)) {
-
-        this->setContextMenuPolicy(Qt::CustomContextMenu);
-
-        if (uris.contains("computer:///"))
+    //FIX:BUG #17809
+    if (m_uris.contains("computer:///")) {
+        QtConcurrent::run([=]() {
             gotoAboutComputer();
-        else {
-
-            this->setWindowTitleTextAndIcon();
-
-            this->setAttribute(Qt::WA_DeleteOnClose);
-            this->setContentsMargins(0, 18, 0, 0);
-            //only show closs button
-            this->setWindowFlags(this->windowFlags() &~ Qt::WindowMinMaxButtonsHint &~ Qt::WindowSystemMenuHint);
-            qDebug() << "PropertiesWindow::PropertiesWindow" << "运行追踪 1111";
-
-            if(this->notDir())
-                //如果含有文件夹，那么高度是600，如果是其他文件，那么高度是652
-                this->setFixedSize(PropertiesWindow::s_windowWidth,PropertiesWindow::s_windowHeightOther);
-            else
-                this->setFixedSize(PropertiesWindow::s_windowWidth,PropertiesWindow::s_windowHeightFolder);
-
-            this->initTabPage(uris);
-            this->initStatusBar();
-        }
-    }else {
-        this->m_destroyThis = true;
+        });
+        m_uris.removeAt(m_uris.indexOf("computer:///"));
     }
+
+    if (!PropertiesWindow::checkUriIsOpen(m_uris, this)) {
+        this->init();
+    } else {
+        m_destroyThis = true;
+    }
+}
+
+void PropertiesWindow::init()
+{
+    this->setContextMenuPolicy(Qt::CustomContextMenu);
+    this->setAttribute(Qt::WA_DeleteOnClose);
+    this->setContentsMargins(0, 18, 0, 0);
+    //only show close button
+    this->setWindowFlags(this->windowFlags() & ~Qt::WindowMinMaxButtonsHint & ~Qt::WindowSystemMenuHint);
+
+    //不能更改执行顺序 - Cannot change execution order
+    this->notDir();
+
+    this->setWindowTitleTextAndIcon();
+
+    if (m_notDir) {
+        //如果含有文件夹，那么高度是600，如果是其他文件，那么高度是652
+        //If there are folders, the height is 600, if it is other files, the height is 652
+        this->setFixedSize(PropertiesWindow::s_windowWidth, PropertiesWindow::s_windowHeightOther);
+    } else {
+        this->setFixedSize(PropertiesWindow::s_windowWidth, PropertiesWindow::s_windowHeightFolder);
+    }
+    this->initStatusBar();
+
+    this->initTabPage(m_uris);
 }
 
 /*!
@@ -173,67 +185,70 @@ PropertiesWindow::PropertiesWindow(const QStringList &uris, QWidget *parent) : Q
  */
 void PropertiesWindow::setWindowTitleTextAndIcon()
 {
-    QString l_windowTitle = "";
-    QString l_iconName = "system-file-manager";
+    QString windowTitle = "";
+    QString iconName = "system-file-manager";
 
-    auto l_fineInfo = FileInfo::fromUri(m_uris.at(0));
-    FileInfoJob *j = new FileInfoJob(l_fineInfo);
-    j->setAutoDelete();
-    j->querySync();
+    /**
+     * \brief Trash 和 Recent 情况下，uris中只有一个uri - In the case of Trash and Recent, there is only one uri in the uris
+     */
+    if (m_uris.contains("trash:///")) {
+        windowTitle = tr("Trash");
+        iconName = m_fileInfo.get()->iconName();
 
-    if(m_uris.contains("trash:///")) {
-        l_windowTitle = tr("Trash");
-        l_iconName = l_fineInfo.get()->iconName();
-        //新版本似乎没有最近？
-    } else if(m_uris.contains("recent:///")) {
-        l_windowTitle = tr("Recent");
-        l_iconName = l_fineInfo.get()->iconName();
+    } else if (m_uris.contains("recent:///")) {
+        windowTitle = tr("Recent");
+        iconName = m_fileInfo.get()->iconName();
 
     } else {
-        qint32 l_fileNum = this->m_uris.count();
+        qint32 fileNum = m_uris.count();
 
-        if(l_fileNum > 1) {
+        if (fileNum > 1) {
             //use default icon
-            l_windowTitle = tr("Selected") + QString(tr(" %1 Files")).arg(l_fileNum);
+            windowTitle = tr("Selected") + QString(tr(" %1 Files")).arg(fileNum);
         } else {
-            qDebug() << "PropertiesWindow::setWindowTitleTextAndIcon():文件信息为空?" << (l_fineInfo.get() == nullptr);
-            if(l_fineInfo) {
-                l_windowTitle = l_fineInfo.get()->displayName();
-                l_iconName = l_fineInfo.get()->iconName();
+            qDebug() << __FILE__ << __FUNCTION__ << "fileInfo is null :" << (m_fileInfo.get() == nullptr);
+            if (m_fileInfo) {
+                windowTitle = m_fileInfo.get()->displayName();
+                iconName = m_fileInfo.get()->iconName();
             }
         }
     }
 
-    l_windowTitle += " " + tr("Properties");
-    this->setWindowIcon(QIcon::fromTheme(l_iconName));
-    this->setWindowTitle(l_windowTitle);
+    windowTitle += " " + tr("Properties");
+    this->setWindowIcon(QIcon::fromTheme(iconName));
+    this->setWindowTitle(windowTitle);
 }
 
-bool PropertiesWindow::notDir()
+void PropertiesWindow::notDir()
 {
-    for(QString uri : m_uris) {
-        auto l_fineInfo = FileInfo::fromUri(uri);
-        FileInfoJob *j = new FileInfoJob(l_fineInfo);
-        j->setAutoDelete();
-        j->querySync();
-        if(l_fineInfo.get()->isDir())
-            return false;
+    //FIXME:请尝试使用非阻塞方式获取 FIleInfo - Please try to obtain FIleInfo in a non-blocking way
+    quint64 index = 0;
+    for (QString uri : m_uris) {
+        auto fileInfo = FileInfo::fromUri(uri);
+        FileInfoJob *fileInfoJob = new FileInfoJob(fileInfo);
+        fileInfoJob->setAutoDelete();
+        fileInfoJob->querySync();
+
+        if (index == 0) {
+            m_fileInfo = fileInfo;
+            index ++;
+        }
+
+        if (fileInfo.get()->isDir()) {
+            m_notDir = false;
+            break;
+        }
     }
-    return true;
 }
 
 void PropertiesWindow::show()
 {
-    if(m_destroyThis) {
+    if (m_destroyThis) {
         this->close();
         return;
     }
 
-    //跳转到关于电脑
-    if (m_uris.contains("computer:///"))
-        this->close();
-    else
-        return QWidget::show();
+    return QWidget::show();
 }
 
 void PropertiesWindow::gotoAboutComputer()
@@ -241,7 +256,7 @@ void PropertiesWindow::gotoAboutComputer()
     QProcess p;
     p.setProgram("ukui-control-center");
     //-a para to show about computer infos
-    p.setArguments(QStringList()<<"-a");
+    p.setArguments(QStringList() << "-a");
 #if (QT_VERSION >= QT_VERSION_CHECK(5, 10, 0))
     p.startDetached();
 #else
@@ -254,11 +269,12 @@ void PropertiesWindow::gotoAboutComputer()
  *
  * \brief PropertiesWindow::initStatusBar
  */
-void PropertiesWindow::initStatusBar(){
+void PropertiesWindow::initStatusBar()
+{
     QStatusBar *statusBar = new QStatusBar(this);
 
     //    statusBar->setFixedSize(PropertiesWindow::s_windowWidth,64);
-    statusBar->setMinimumSize(PropertiesWindow::s_windowWidth,64);
+    statusBar->setMinimumSize(PropertiesWindow::s_windowWidth, 64);
 
     // use button-box  暂时不能使用button box实现底部按钮
     //    QDialogButtonBox *buttonBox = new QDialogButtonBox(Qt::Horizontal,statusBar);
@@ -276,8 +292,8 @@ void PropertiesWindow::initStatusBar(){
     //use HBox-layout
     QHBoxLayout *bottomToolLayout = new QHBoxLayout(statusBar);
 
-    QPushButton *okButton = new QPushButton(tr("Ok"),statusBar);
-    QPushButton *cancelButton = new QPushButton(tr("Cancel"),statusBar);
+    QPushButton *okButton = new QPushButton(tr("Ok"), statusBar);
+    QPushButton *cancelButton = new QPushButton(tr("Cancel"), statusBar);
 
     okButton->setMinimumSize(PropertiesWindow::s_bottomButtonSize);
     cancelButton->setMinimumSize(PropertiesWindow::s_bottomButtonSize);
@@ -285,48 +301,49 @@ void PropertiesWindow::initStatusBar(){
     bottomToolLayout->addWidget(okButton);
     bottomToolLayout->addWidget(cancelButton);
 
-    okButton->move(344,16);
-    cancelButton->move(236,16);
+    okButton->move(344, 16);
+    cancelButton->move(236, 16);
 
     statusBar->setLayout(bottomToolLayout);
 
     this->setStatusBar(statusBar);
 
     //set cancelButton event process
-    connect(cancelButton,&QPushButton::clicked,this,&QMainWindow::close);
-    connect(okButton,&QPushButton::clicked,this,&PropertiesWindow::saveAllChanged);
+    connect(cancelButton, &QPushButton::clicked, this, &QMainWindow::close);
+    connect(okButton, &QPushButton::clicked, this, &PropertiesWindow::saveAllChanged);
 }
 
 void PropertiesWindow::initTabPage(const QStringList &uris)
 {
-    auto w = new PropertiesWindowPrivate(uris, this);
-    w->tabBar()->setStyle(new tabStyle);
+    auto window = new PropertiesWindowPrivate(uris, this);
+    window->tabBar()->setStyle(new tabStyle);
     //Warning: 不要设置tab高度，否则会导致tab页切换上下跳动
-    //w->tabBar()->setMinimumHeight(72);
+    //Do not set the tab height, otherwise it will cause the tab page to switch up and down
+    //window->tabBar()->setMinimumHeight(72);
 
-    //    w->tabBar()->setMinimumSize(PropertiesWindow::s_windowWidth,72);
-    this->setCentralWidget(w);
+    window->tabBar()->setContentsMargins(0,0,0,0);
+    this->setCentralWidget(window);
 }
 
 bool PropertiesWindow::checkUriIsOpen(QStringList &uris, PropertiesWindow *newWindow)
 {
-    if(!openPropertiesWindows)
-        openPropertiesWindows = new QList<PropertiesWindow*>();
+    if (!openedPropertiesWindows)
+        openedPropertiesWindows = new QList<PropertiesWindow *>();
 
     qDebug() << "PropertiesWindow::checkUriIsOpen uri:" << uris.first();
-    //1.对uris进行排序
+    //1.对uris进行排序 - Sort uris
     std::sort(uris.begin(), uris.end(), [](QString a, QString b) {
         return a < b;
     });
 
-    //2.检查是否已经打开
+    //2.检查是否已经打开 - Check if it is open
     qint64 index = PropertiesWindow::getOpenUriIndex(uris);
-    if(index != -1) {
-        openPropertiesWindows->at(index)->raise();
+    if (index != WINDOW_NOT_OPEN) {
+        openedPropertiesWindows->at(index)->raise();
         return true;
     }
 
-    openPropertiesWindows->append(newWindow);
+    openedPropertiesWindows->append(newWindow);
 
     return false;
 }
@@ -334,37 +351,40 @@ bool PropertiesWindow::checkUriIsOpen(QStringList &uris, PropertiesWindow *newWi
 qint64 PropertiesWindow::getOpenUriIndex(QStringList &uris)
 {
     //strong !
-    if(!openPropertiesWindows)
-        return -1;
+    if (!openedPropertiesWindows)
+        return WINDOW_NOT_OPEN;
 
     quint64 index = 0;
-    for(PropertiesWindow *window : *openPropertiesWindows) {
-        if(window->getUris() == uris) {
-            //当前的uris已经存在打开的窗口
+    for (PropertiesWindow *window : *openedPropertiesWindows) {
+        if (window->getUris() == uris) {
+            //当前的uris已经存在打开的窗口 - The current uris already exists in the open window
             return index;
         }
-        index ++;
+        index++;
     }
 
-    return -1;
+    return WINDOW_NOT_OPEN;
 }
 
 void PropertiesWindow::removeThisWindow(qint64 index)
 {
-    if(index == -1)
+    if (index == WINDOW_NOT_OPEN)
         return;
 
-    if(!openPropertiesWindows)
+    if (!openedPropertiesWindows)
         return;
 
-    openPropertiesWindows->removeAt(index);
+    openedPropertiesWindows->removeAt(index);
 
 }
 
 void PropertiesWindow::closeEvent(QCloseEvent *event)
 {
-    //如果该窗口已经打开，那么不能移除
-    if(this->m_destroyThis)
+    /**
+     * \brief 如果当前uris窗口已经打开，那么不能移除全局的记录，只需要关闭当前窗口即可
+     * If the current uris window is already open, then the global record cannot be removed, just close the current window
+     */
+    if (m_destroyThis)
         return;
 
     PropertiesWindow::removeThisWindow(PropertiesWindow::getOpenUriIndex(this->getUris()));
@@ -377,8 +397,8 @@ void PropertiesWindow::closeEvent(QCloseEvent *event)
 void PropertiesWindow::saveAllChanged()
 {
     qDebug() << "PropertiesWindow::saveAllChanged()" << "count" << m_openTabPage.count();
-    if(!m_openTabPage.count() == 0){
-        for(auto tabPage : m_openTabPage) {
+    if (!m_openTabPage.count() == 0) {
+        for (auto tabPage : m_openTabPage) {
             tabPage->saveAllChange();
         }
     }
@@ -391,7 +411,7 @@ PropertiesWindowPrivate::PropertiesWindowPrivate(const QStringList &uris, QWidge
 {
     setTabsClosable(false);
     setMovable(false);
-    setContentsMargins(0,0,0,0);
+    setContentsMargins(0, 0, 0, 0);
 
     auto manager = PropertiesWindowPluginManager::getInstance();
     auto names = manager->getFactoryNames();
@@ -402,12 +422,13 @@ PropertiesWindowPrivate::PropertiesWindowPrivate(const QStringList &uris, QWidge
             tabPage->setParent(this);
             addTab(tabPage, factory->name());
 
-            (qobject_cast<PropertiesWindow*>(parent))->addTabPage(tabPage);
+            (qobject_cast<PropertiesWindow *>(parent))->addTabPage(tabPage);
         }
     }
 }
 
-void tabStyle::drawControl(QStyle::ControlElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget) const
+void tabStyle::drawControl(QStyle::ControlElement element, const QStyleOption *option, QPainter *painter,
+                           const QWidget *widget) const
 {
     /**
      * FIX:需要修复颜色不能跟随主题的问题
@@ -416,7 +437,7 @@ void tabStyle::drawControl(QStyle::ControlElement element, const QStyleOption *o
     if (element == CE_TabBarTab) {
         if (const QStyleOptionTab *tab = qstyleoption_cast<const QStyleOptionTab *>(option)) {
             //设置按钮的左右上下偏移
-            QRect rect = (tab->rect).adjusted(4,0,1,-12);
+            QRect rect = (tab->rect).adjusted(4, 0, 1, -12);
 //            QPalette palette = tab->palette;
 
             if (tab->state & QStyle::State_Selected) {
@@ -433,7 +454,7 @@ void tabStyle::drawControl(QStyle::ControlElement element, const QStyleOption *o
             if (tab->state & QStyle::State_Selected) {
                 painter->setPen(0xffffff);
             } else {
-                QColor color(0,0,0);
+                QColor color(0, 0, 0);
                 painter->setPen(color);
             }
 
@@ -449,33 +470,35 @@ void tabStyle::drawControl(QStyle::ControlElement element, const QStyleOption *o
     }
 }
 
-QSize tabStyle::sizeFromContents(QStyle::ContentsType ct, const QStyleOption *opt, const QSize &contentsSize, const QWidget *w) const
+QSize tabStyle::sizeFromContents(QStyle::ContentsType ct, const QStyleOption *opt, const QSize &contentsSize,
+                                 const QWidget *widget) const
 {
-    QSize barSize = QProxyStyle::sizeFromContents(ct,opt,contentsSize,w);
+    QSize barSize = QProxyStyle::sizeFromContents(ct, opt, contentsSize, widget);
 
-    if(ct == QStyle::CT_TabBarTab) {
+    if (ct == QStyle::CT_TabBarTab) {
         barSize.transpose();
         const QStyleOptionTab *tab = qstyleoption_cast<const QStyleOptionTab *>(opt);
         //解决按钮不能自适应的问题
         int fontWidth = tab->fontMetrics.width(tab->text);
-        if(fontWidth <= 65)
+        if (fontWidth <= 65) {
             //数值大于设计稿的65是因为在左侧偏移了4px
             barSize.setWidth(70);
-        else
+        } else {
             //同上所述
             barSize.setWidth(fontWidth + 10);
-
+        }
         //保证底部距离为设计稿上的8px
 
         int fontHeight = tab->fontMetrics.height();
-        if(fontHeight <= 30)
+        if (fontHeight <= 30) {
             //数值大于设计稿的30是因为在下方偏移了12px
             barSize.setHeight(42);
-        else
+        } else {
             //同上所述
             barSize.setHeight(fontHeight + 12);
-
-        qDebug() << "tabStyle::sizeFromContents font width:" << fontWidth << "height:" << fontHeight << "text:" << tab->text;
+        }
+        qDebug() << "tabStyle::sizeFromContents font width:" << fontWidth << "height:" << fontHeight << "text:"
+                 << tab->text;
     }
 
     return barSize;
