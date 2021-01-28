@@ -164,10 +164,6 @@ public:
         return m_is_valid;
     }
 
-    QString displayName() {
-        return m_display_name;
-    }
-
     QString desktopName(){
         return m_desktop_name;
     }
@@ -253,9 +249,6 @@ public:
     bool canStop() {
         return m_can_stop;
     }
-    QString unixDeviceFile() {
-        return QString(m_unix_device_file);
-    }
 
     bool isDesktopFile() {
         return m_can_excute && m_uri.endsWith(".desktop");
@@ -312,7 +305,9 @@ public:
     }
 
     const QString targetUri();
+    const QString displayName();
     const QString symlinkTarget();
+    const QString unixDeviceFile();
 
     const QString customIcon();
 
