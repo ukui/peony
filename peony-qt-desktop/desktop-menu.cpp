@@ -44,6 +44,7 @@
 #include <QProcess>
 #include <QStandardPaths>
 #include <QMessageBox>
+#include <QtConcurrent>
 
 #include <QUrl>
 #include <QDir>
@@ -615,25 +616,37 @@ void DesktopMenu::showProperties(const QStringList &uris)
     QStringList args;
     for (auto arg : uris) {
         QUrl url = arg;
-        args<<url.toEncoded();
+        args << url.toEncoded();
     }
 
-    if (uris.contains("computer:///"))
-    {
-        gotoAboutComputer();
-        return;
+    args.removeDuplicates();
+
+    //注释掉这里以修复BUG#17809
+    if (uris.contains("computer:///")) {
+        args.removeAt(args.indexOf("computer:///"));
+        QtConcurrent::run([=]() {
+            gotoAboutComputer();
+        });
     }
 
-    if (uris.contains("trash:///") && uris.count() >1)
-    {
-        args.clear();
-        args << "trash:///";
+    if (uris.contains("trash:///") && uris.count() > 1) {
+        args.removeAt(args.indexOf("trash:///"));
+        QtConcurrent::run([=]() {
+            QProcess p;
+#if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
+            p.setProgram("peony");
+            p.setArguments(QStringList() << "--show-properties" << "trash:///");
+            p.startDetached();
+#else
+            p.startDetached("peony", QStringList()<<"--show-properties"<<args);
+#endif
+        });
     }
 
     QProcess p;
 #if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
     p.setProgram("peony");
-    p.setArguments(QStringList()<<"--show-properties"<<args);
+    p.setArguments(QStringList() << "--show-properties" << args);
     p.startDetached();
 #else
     p.startDetached("peony", QStringList()<<"--show-properties"<<args);
