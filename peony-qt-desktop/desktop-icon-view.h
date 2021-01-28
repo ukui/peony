@@ -189,6 +189,7 @@ public Q_SLOTS:
 protected:
     void mousePressEvent(QMouseEvent *e);
     void mouseReleaseEvent(QMouseEvent *e);
+    void mouseMoveEvent(QMouseEvent *e);
     void mouseDoubleClickEvent(QMouseEvent *event);
 
     void dragEnterEvent(QDragEnterEvent *e);

@@ -73,6 +73,7 @@
 #include <QDir>
 
 #include <QDebug>
+#include <QToolTip>
 
 using namespace Peony;
 
@@ -275,6 +276,8 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
 
     m_peonyDbusSer = new PeonyDbusService(this);
     m_peonyDbusSer->DbusServerRegister();
+
+    setMouseTracking(true);//追踪鼠标
 
     this->refresh();
 }
@@ -540,6 +543,13 @@ void DesktopIconView::setShowHidden()
 void DesktopIconView::resolutionChange()
 {
     QSize screenSize = qApp->primaryScreen()->availableSize();
+    // note: sometimes primary screen avaliable size will be invalid.
+    // for example, hot plug in a screen, then put the primary screen
+    // below the sencondary screnn.
+    // to avoid this problem, check if avaliable size is valid.
+    if (screenSize == QSize(0, 0)) {
+        screenSize = qApp->primaryScreen()->size();
+    }
     int row = 0;
     int column = 0;
     float iconWidth = 0;
@@ -1367,6 +1377,18 @@ void DesktopIconView::mouseReleaseEvent(QMouseEvent *e)
     QListView::mouseReleaseEvent(e);
 
     this->viewport()->update(viewport()->rect());
+}
+
+void DesktopIconView::mouseMoveEvent(QMouseEvent *e)
+{
+    QModelIndex itemIndex = indexAt(e->pos());
+    if (!itemIndex.isValid()) {
+        if (QToolTip::isVisible()) {
+            QToolTip::hideText();
+        }
+    }
+
+    QListView::mouseMoveEvent(e);
 }
 
 void DesktopIconView::mouseDoubleClickEvent(QMouseEvent *event)
