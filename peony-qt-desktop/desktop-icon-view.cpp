@@ -540,6 +540,13 @@ void DesktopIconView::setShowHidden()
 void DesktopIconView::resolutionChange()
 {
     QSize screenSize = qApp->primaryScreen()->availableSize();
+    // note: sometimes primary screen avaliable size will be invalid.
+    // for example, hot plug in a screen, then put the primary screen
+    // below the sencondary screnn.
+    // to avoid this problem, check if avaliable size is valid.
+    if (screenSize == QSize(0, 0)) {
+        screenSize = qApp->primaryScreen()->size();
+    }
     int row = 0;
     int column = 0;
     float iconWidth = 0;
