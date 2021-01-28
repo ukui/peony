@@ -125,7 +125,7 @@ public:
     DirectoryViewWidget *create() override;
 
     int zoom_level_hint() override {
-        return 0;
+        return 20;
     }
     int minimumSupportedZoomLevel() override {
         return 0;
