@@ -226,7 +226,8 @@ void LocationBar::addButton(const QString &uri, bool setIcon, bool setMenu)
         if (FileUtils::getParentUri(uri).isNull()) {
             setMenu = false;
         }
-        button->setText(url.fileName());
+        button->setText(displayName);
+        m_current_uri = uri.left(uri.lastIndexOf("/")+1) + displayName;
     } else {
         if (uri == "file:///") {
             auto text = FileUtils::getFileDisplayName("computer:///root.link");
