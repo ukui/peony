@@ -73,6 +73,7 @@
 #include <QDir>
 
 #include <QDebug>
+#include <QToolTip>
 
 using namespace Peony;
 
@@ -275,6 +276,8 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
 
     m_peonyDbusSer = new PeonyDbusService(this);
     m_peonyDbusSer->DbusServerRegister();
+
+    setMouseTracking(true);//追踪鼠标
 
     this->refresh();
 }
@@ -1374,6 +1377,18 @@ void DesktopIconView::mouseReleaseEvent(QMouseEvent *e)
     QListView::mouseReleaseEvent(e);
 
     this->viewport()->update(viewport()->rect());
+}
+
+void DesktopIconView::mouseMoveEvent(QMouseEvent *e)
+{
+    QModelIndex itemIndex = indexAt(e->pos());
+    if (!itemIndex.isValid()) {
+        if (QToolTip::isVisible()) {
+            QToolTip::hideText();
+        }
+    }
+
+    QListView::mouseMoveEvent(e);
 }
 
 void DesktopIconView::mouseDoubleClickEvent(QMouseEvent *event)

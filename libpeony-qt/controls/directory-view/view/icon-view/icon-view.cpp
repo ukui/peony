@@ -57,6 +57,7 @@
 #include <QStyleHints>
 
 #include <QDebug>
+#include <QToolTip>
 
 using namespace Peony;
 using namespace Peony::DirectoryView;
@@ -104,6 +105,8 @@ IconView::IconView(QWidget *parent) : QListView(parent)
     m_renameTimer->setInterval(3000);
     m_renameTimer->setSingleShot(true);
     m_editValid = false;
+
+    setMouseTracking(true);//追踪鼠标
 }
 
 IconView::~IconView()
@@ -277,6 +280,13 @@ void IconView::dropEvent(QDropEvent *e)
 
 void IconView::mouseMoveEvent(QMouseEvent *e)
 {
+    QModelIndex itemIndex = indexAt(e->pos());
+    if (!itemIndex.isValid()) {
+        if (QToolTip::isVisible()) {
+            QToolTip::hideText();
+        }
+    }
+
     if (m_ignore_mouse_move_event) {
         return;
     }
