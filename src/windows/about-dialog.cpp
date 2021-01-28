@@ -27,6 +27,7 @@
 #include <QDebug>
 #include <QPushButton>
 #include <QPainter>
+#include <QPainterPath>
 #include <QtMath>
 
 AboutDialog::AboutDialog(QWidget *parent) :
