@@ -92,7 +92,7 @@ void PermissionsPropertiesPage::initTableWidget()
 {
     m_table = new QTableWidget(this);
     m_table->setRowCount(4);
-    m_table->setColumnCount(4);
+    m_table->setColumnCount(5);
     m_table->verticalHeader()->setVisible(false);
     m_table->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     m_table->horizontalHeader()->setFrameShape(QFrame::NoFrame);
@@ -109,7 +109,7 @@ void PermissionsPropertiesPage::initTableWidget()
     m_table->setContentsMargins(24,0,0,0);
 
     auto l = QStringList();
-    l<<tr("User or Group")<<tr("Type")<<tr("Read and Write")<<tr("Readonly");
+    l<<tr("User or Group")<<tr("Type")<<tr("Read")<<tr("Write")<<tr("Executable");
     m_table->setHorizontalHeaderLabels(l);
     m_table->setEditTriggers(QTableWidget::NoEditTriggers);
 
@@ -169,7 +169,7 @@ GAsyncReadyCallback PermissionsPropertiesPage::async_query_permisson_callback(GO
 
             bool current_user_readable = g_file_info_get_attribute_boolean(info, G_FILE_ATTRIBUTE_ACCESS_CAN_READ);
             bool current_user_writeable = g_file_info_get_attribute_boolean(info, G_FILE_ATTRIBUTE_ACCESS_CAN_WRITE);
-            bool current_user_executeable = g_file_info_get_attribute_boolean(info, G_FILE_ATTRIBUTE_ACCESS_CAN_EXECUTE);
+            bool current_user_executable = g_file_info_get_attribute_boolean(info, G_FILE_ATTRIBUTE_ACCESS_CAN_EXECUTE);
 
             bool has_unix_mode = g_file_info_has_attribute(info, G_FILE_ATTRIBUTE_UNIX_MODE);
             guint32 mode = 0;
@@ -178,33 +178,32 @@ GAsyncReadyCallback PermissionsPropertiesPage::async_query_permisson_callback(GO
 
             auto owner_readable  = mode & S_IRUSR;
             auto owner_writeable = mode & S_IWUSR;
+            auto owner_executable = mode & S_IXUSR;
 
-            //read and write
-            p_this->m_permissions[0][0] = owner_readable && owner_writeable;
-            //read only
-            p_this->m_permissions[0][1] = owner_readable && !owner_writeable;
-
-//            auto owner_executeable = mode & S_IXUSR;
-//            p_this->m_permissions[0][2] = owner_executeable;
+            //read
+            p_this->m_permissions[0][0] = owner_readable;
+            //write
+            p_this->m_permissions[0][1] = owner_writeable;
+            //executable
+            p_this->m_permissions[0][2] = owner_executable;
 
             auto group_readable  = mode & S_IRGRP;
             auto group_writeable = mode & S_IWGRP;
+            auto group_executable = mode & S_IXGRP;
 
-            p_this->m_permissions[1][0] = group_readable && group_writeable;
-            p_this->m_permissions[1][1] = group_readable && !group_writeable;
-
-//            auto group_executeable = mode & S_IXGRP;
-//            p_this->m_permissions[1][2] = group_executeable;
+            p_this->m_permissions[1][0] = group_readable;
+            p_this->m_permissions[1][1] = group_writeable;
+            p_this->m_permissions[1][2] = group_executable;
 
             auto other_readable  = mode & S_IROTH;
             auto other_writeable = mode & S_IWOTH;
+            auto other_executable = mode & S_IXOTH;
 
-            p_this->m_permissions[2][0] = other_readable && other_writeable;
-            p_this->m_permissions[2][1] = other_readable && !other_writeable;
-//            auto other_executeable = mode & S_IXOTH;
-//            p_this->m_permissions[2][2] = other_executeable;
+            p_this->m_permissions[2][0] = other_readable;
+            p_this->m_permissions[2][1] = other_writeable;
+            p_this->m_permissions[2][2] = other_executable;
 
-            qDebug()<<current_user_readable<<current_user_writeable<<current_user_executeable;
+            qDebug()<<current_user_readable<<current_user_writeable<<current_user_executable;
 
             uid_t uid = geteuid();
             struct passwd *pw = getpwuid(uid);
@@ -280,7 +279,7 @@ GAsyncReadyCallback PermissionsPropertiesPage::async_query_permisson_callback(GO
 
                 table->setItem(0, 1, itemR0C1);
 
-                for (int i = 0; i < 2; i++) {
+                for (int i = 0; i < 3; i++) {
                     table->setCellWidget(0, i + 2, nullptr);
                     QWidget *w = new QWidget(table);
                     QHBoxLayout *l = new QHBoxLayout(w);
@@ -293,14 +292,14 @@ GAsyncReadyCallback PermissionsPropertiesPage::async_query_permisson_callback(GO
 
                     switch (i) {
                     case 0:
-                        checkbox->setChecked(current_user_readable && current_user_writeable);
+                        checkbox->setChecked(current_user_readable);
                         break;
                     case 1:
-                        checkbox->setChecked(current_user_readable && !current_user_writeable);
+                        checkbox->setChecked(current_user_writeable);
                         break;
-//                    case 2:
-//                        checkbox->setChecked(current_user_executeable);
-//                        break;
+                    case 2:
+                        checkbox->setChecked(current_user_executable);
+                        break;
                     }
                 }
             }
@@ -319,9 +318,8 @@ void PermissionsPropertiesPage::changePermission(int row, int column, bool check
 {
     if(!m_enable)
         return;
-    int l_column = (column == 0 ? 1 : 0);
+
     m_permissions[row][column] = checked;
-    m_permissions[row][l_column] = !checked;
 
     this->thisPageChanged();
 
@@ -345,71 +343,51 @@ void PermissionsPropertiesPage::savePermissions()
 
     mode_t mod = 0;
     for (int i = 0; i < 3; i++) {
-        for (int j = 0; j < 2; j++) {
+        for (int j = 0; j < 3; j++) {
             bool b = m_permissions[i][j];
             if (b) {
                 int rc = i*10 + j;
                 switch (rc) {
                 case 0: {
-                    //read and write
                     mod |= S_IRUSR;
-                    mod |= S_IWUSR;
                     break;
                 }
                 case 1: {
-                    //read only
-                    mod |= S_IRUSR;
+                    mod |= S_IWUSR;
                     break;
                 }
-//                case 2: {
-//                    mod |= S_IXUSR;
-//                    break;
-//                }
+                case 2: {
+                    mod |= S_IXUSR;
+                    break;
+                }
 
                 case 10: {
                     mod |= S_IRGRP;
-                    mod |= S_IWGRP;
                     break;
                 }
                 case 11: {
-                    mod |= S_IRGRP;
+                    mod |= S_IWGRP;
                     break;
                 }
-//                case 12: {
-//                    mod |= S_IXGRP;
-//                    break;
-//                }
+                case 12: {
+                    mod |= S_IXGRP;
+                    break;
+                }
                 case 20: {
                     mod |= S_IROTH;
-                    mod |= S_IWOTH;
                     break;
                 }
                 case 21: {
-                    mod |= S_IROTH;
+                    mod |= S_IWOTH;
                     break;
                 }
-//                case 22: {
-//                    mod |= S_IXOTH;
-//                    break;
-//                }
+                case 22: {
+                    mod |= S_IXOTH;
+                    break;
+                }
                 }
             }
         }
-    }
-
-    //保存阶段，不用在意ui卡顿.
-    auto fileInfo = FileInfo::fromUri(m_uri);
-    FileInfoJob *job = new FileInfoJob(fileInfo);
-    job->setAutoDelete(true);
-    job->querySync();
-
-    //.desktop文件给予可执行
-    //.desktop在不可执行的条件下 isDesktopFile() = false
-    if (fileInfo.get()->isDesktopFile() || fileInfo.get()->displayName().endsWith(".desktop")) {
-        //FIX:可执行范围 目前只给拥有者执行权限
-        mod |= S_IXUSR;
-        //mod |= S_IXGRP;
-        //mod |= S_IXOTH;
     }
 
     QUrl url = m_uri;
@@ -434,7 +412,7 @@ void PermissionsPropertiesPage::thisPageChanged()
 void PermissionsPropertiesPage::updateCheckBox()
 {
     for (int i = 0; i < 3; i++) {
-        for (int j = 0; j < 2; j++) {
+        for (int j = 0; j < 3; j++) {
             m_table->setCellWidget(i, j + 2, nullptr);
             QWidget *w = new QWidget(m_table);
             QHBoxLayout *l = new QHBoxLayout(w);
