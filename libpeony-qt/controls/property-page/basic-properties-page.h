@@ -106,7 +106,7 @@ protected:
      */
     QLabel *createFixedLabel(quint64 minWidth, quint64 minHeight, QString text, QWidget *parent = nullptr);
     QLabel *createFixedLabel(quint64 minWidth, quint64 minHeight, QWidget *parent = nullptr);
-    void addOpenWithMenu(QWidget *parent = nullptr);
+    void addOpenWithLayout(QWidget *parent = nullptr);
     /*!
      * 初始化第一层显示区域
      * \brief

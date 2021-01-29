@@ -102,8 +102,7 @@ BasicPropertiesPage::BasicPropertiesPage(const QStringList &uris, QWidget *paren
         this->initFloorFour();
     }
 
-    QLabel *l4 = new QLabel(this);
-    m_layout->addWidget(l4, 1);
+    m_layout->addStretch(1);
 }
 
 BasicPropertiesPage::~BasicPropertiesPage()
@@ -119,11 +118,11 @@ void BasicPropertiesPage::addSeparator()
     m_layout->addWidget(separator);
 }
 
-void BasicPropertiesPage::addOpenWithMenu(QWidget *parent)
+void BasicPropertiesPage::addOpenWithLayout(QWidget *parent)
 {
     auto recommendActions = FileLaunchManager::getRecommendActions(m_info.get()->uri());
     if (m_openWithLayout && recommendActions.count() >= 1) {
-        m_openWithLayout->setContentsMargins(0,0,24,0);
+        m_openWithLayout->setContentsMargins(0,0,16,0);
         m_openWithLayout->setAlignment(Qt::AlignVCenter);
         m_openWithLayout->addWidget(OpenWithPropertiesPage::createDefaultLaunchListWidget(m_info->uri(),parent));
         m_openWithLayout->addStretch(1);
@@ -150,7 +149,7 @@ void BasicPropertiesPage::initFloorOne(const QStringList &uris,BasicPropertiesPa
     QGridLayout *layout1 = new QGridLayout(floor1);
     layout1->setContentsMargins(22,16,0,16);
 
-    floor1->setMaximumHeight(100);
+    floor1->setMinimumHeight(100);
     floor1->setLayout(layout1);
 
     m_iconButton      = new QPushButton(floor1);
@@ -163,8 +162,8 @@ void BasicPropertiesPage::initFloorOne(const QStringList &uris,BasicPropertiesPa
 
     auto form1 = new QFormLayout(floor1);
     layout1->addLayout(form1,0,0);
-    form1->setContentsMargins(0,6,30,0);
-
+    form1->setContentsMargins(0,0,30,0);
+    form1->setFormAlignment(Qt::AlignVCenter);
     form1->addRow(m_iconButton);
 
     //icon area
@@ -218,19 +217,12 @@ void BasicPropertiesPage::initFloorOne(const QStringList &uris,BasicPropertiesPa
 
         auto form3 = new QFormLayout(floor1);
         form3->setContentsMargins(0,0,16,0);
+        form3->setFormAlignment(Qt::AlignBottom);
 
         m_moveButtonButton->setText(tr("move"));
         m_moveButtonButton->setMinimumSize(70,32);
         m_moveButtonButton->setMaximumWidth(70);
 
-        QPushButton *hiddenButton = new QPushButton(floor1);
-        hiddenButton->setMinimumSize(70,32);
-        //设置透明隐藏按钮
-        QGraphicsOpacityEffect *op = new QGraphicsOpacityEffect(floor1);
-        op->setOpacity(0);
-        hiddenButton->setGraphicsEffect(op);
-
-        form3->addRow(hiddenButton);
         form3->addRow(m_moveButtonButton);
         //home目录不支持移动和重命名
         //其他根目录文件夹虽然没有屏蔽，但是没有权限依旧无法改名
@@ -242,9 +234,7 @@ void BasicPropertiesPage::initFloorOne(const QStringList &uris,BasicPropertiesPa
         connect(m_moveButtonButton,&QPushButton::clicked,this,&BasicPropertiesPage::moveFile);
         layout1->addLayout(form3,0,2);
     } else {
-        auto form4 = new QFormLayout(floor1);
-        form4->setContentsMargins(0,0,22,0);
-        layout1->addLayout(form4,0,2);
+        layout1->setContentsMargins(22,16,16,16);
     }
     //add floor1 to context
     m_layout->addWidget(floor1);
@@ -257,7 +247,7 @@ void BasicPropertiesPage::initFloorTwo(const QStringList &uris,BasicPropertiesPa
     layout2->setContentsMargins(22,16,0,16);
     layout2->setVerticalSpacing(8);
     floor2->setLayout(layout2);
-
+    //144px 为多选文件情况下占用的最大高度 - 144px is the maximum height occupied in the case of multiple selection files
     floor2->setMinimumHeight(144);
 
     m_fileTypeLabel      = this->createFixedLabel(0,32,floor2);
@@ -266,7 +256,6 @@ void BasicPropertiesPage::initFloorTwo(const QStringList &uris,BasicPropertiesPa
 
     layout2->addRow(tr("Type:"),m_fileTypeLabel);
 
-    //FIXME:重写文件类型获取函数
     if(fileType != BP_MultipleFIle)
         m_fileTypeLabel->setText(m_info.get()->fileType());
 
@@ -279,7 +268,7 @@ void BasicPropertiesPage::initFloorTwo(const QStringList &uris,BasicPropertiesPa
     case BP_File:
         m_openWithLayout = new QHBoxLayout(floor2);
         layout2->addRow(this->createFixedLabel(90,32,tr("Open with:"),floor2),m_openWithLayout);
-        this->addOpenWithMenu(floor2);
+        this->addOpenWithLayout(floor2);
         break;
     case BP_Application:
         m_descrptionLabel = this->createFixedLabel(0,32,floor2);
@@ -360,7 +349,7 @@ void BasicPropertiesPage::initFloorFour()
     QFrame      *floor4  = new QFrame(this);
     QFormLayout *layout4 = new QFormLayout(floor4);
     floor4->setMaximumHeight(64);
-    layout4->setContentsMargins(22,16,0,0);
+    layout4->setContentsMargins(22,16,0,16);
     m_readOnly = new QCheckBox(tr("Readonly"), floor4);
     m_hidden   = new QCheckBox(tr("Hidden"), floor4);
 
@@ -567,7 +556,7 @@ void BasicPropertiesPage::moveFile(){
 #else
             p.startDetached("peony", QStringList()<<"--show-folders"<< newDirPath);
 #endif
-            Q_EMIT this->requestCloseMainWindow();
+            Q_EMIT requestCloseMainWindow();
         }
     });
 }
@@ -599,10 +588,12 @@ void BasicPropertiesPage::saveAllChange()
             mod |= S_IROTH;
 
             mod |= S_IWUSR;
-            mod |= S_IWGRP;
-            mod |= S_IWOTH;
+//            mod |= S_IWGRP;
+//            mod |= S_IWOTH;
         }
         //FIX:如果该文件之前就是可执行，那么应该保留可执行权限
+        if (m_info->canExecute())
+            mod |= S_IXUSR;
 
         //.desktop文件给予可执行
         if (m_info.get()->isDesktopFile() || m_info.get()->displayName().endsWith(".desktop")) {
@@ -616,30 +607,41 @@ void BasicPropertiesPage::saveAllChange()
 
     }
 
+    FileOperation *hiddenOpt = nullptr;
     if (m_hidden) {
-        QString l_reName = m_info.get()->displayName();
+        QString newName = m_info.get()->displayName();
+
+        if (!m_displayNameEdit->isReadOnly() && !m_displayNameEdit->text().isEmpty()) {
+            if (m_info.get()->displayName() != m_displayNameEdit->text()) {
+                newName = m_displayNameEdit->text();
+            }
+        }
+
+        if (newName.startsWith("."))
+            newName = newName.mid(1,-1);
 
         bool isHidden = m_info.get()->displayName().startsWith(".");
 
         //以前没隐藏，并且选中隐藏框
         if(!isHidden && m_hidden->isChecked()) {
-            FileOperationUtils::rename(m_info.get()->uri(), ("." + l_reName), true);
+            newName = "." + newName;
+            hiddenOpt = FileOperationUtils::rename(m_info.get()->uri(), newName, true);
 
         } else if(isHidden && !m_hidden->isChecked()) {
             //以前已经隐藏，并且取消选中隐藏框
-            l_reName = m_info.get()->displayName().mid(1,-1);
-            FileOperationUtils::rename(m_info.get()->uri(), l_reName, true);
+            hiddenOpt = FileOperationUtils::rename(m_info.get()->uri(), newName, true);
         }
     }
 
-    //save displayName
-    if (!m_displayNameEdit->isReadOnly() && !m_displayNameEdit->text().isEmpty()) {
-        if(m_info.get()->displayName() != m_displayNameEdit->text())
-            FileOperationUtils::rename(m_info.get()->uri(), m_displayNameEdit->text(), true);
+    if (!hiddenOpt) {
+        if (!m_displayNameEdit->isReadOnly() && !m_displayNameEdit->text().isEmpty()) {
+            if (m_info.get()->displayName() != m_displayNameEdit->text()) {
+                FileOperationUtils::rename(m_info.get()->uri(), m_displayNameEdit->text(), true);
+            }
+        }
     }
 
 }
-
 
 void BasicPropertiesPage::chooseFileIcon()
 {

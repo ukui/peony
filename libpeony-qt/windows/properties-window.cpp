@@ -480,14 +480,8 @@ QSize tabStyle::sizeFromContents(QStyle::ContentsType ct, const QStyleOption *op
         const QStyleOptionTab *tab = qstyleoption_cast<const QStyleOptionTab *>(opt);
         //解决按钮不能自适应的问题
         int fontWidth = tab->fontMetrics.width(tab->text);
-        if (fontWidth <= 65) {
-            //数值大于设计稿的65是因为在左侧偏移了4px
-            barSize.setWidth(70);
-        } else {
-            //同上所述
-            barSize.setWidth(fontWidth + 10);
-        }
-        //保证底部距离为设计稿上的8px
+        //宽度统一加上30px
+        barSize.setWidth(fontWidth + 30);
 
         int fontHeight = tab->fontMetrics.height();
         if (fontHeight <= 30) {
