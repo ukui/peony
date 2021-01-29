@@ -535,6 +535,13 @@ void DesktopIconView::resolutionChange(const QRect &screenSize)
     iconWidth = icon.width();
     iconHeigth = icon.height();
 
+    // not get current size
+    if (0 == screenSize.width() || 0 == screenSize.height() || 0 == iconWidth|| 0 == iconHeigth) {
+        qWarning()<<"desktop icon width"<<iconWidth << "icon height" << iconHeigth;
+        qWarning()<<"desktop width" << screenSize.width() << "height" << screenSize.height();
+        return;
+    }
+
     if (!m_item_rect_hash.isEmpty()) {
         QList<QPair<QRect, QString>> newPosition;
 
@@ -544,12 +551,6 @@ void DesktopIconView::resolutionChange(const QRect &screenSize)
     //                && i.value().x() <= screenSize.width() && i.value().y() <= screenSize.height()) {
                 newPosition << QPair<QRect, QString>(i.value(), i.key());
     //        }
-        }
-
-        // not get current size
-        if (iconWidth == 0 || iconHeigth == 0) {
-            qDebug() << "Unable to get icon size, need to get it another way!";
-            return;
         }
 
         qDebug() << "icon width: " << iconWidth << " icon heigth: " << iconHeigth;
