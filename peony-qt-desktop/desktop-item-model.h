@@ -103,6 +103,7 @@ private:
     QString m_last_deleted_item_uri;
     QStringList m_items_need_relayout;
     UserdirManager * m_dir_manager;
+    QString m_userName;
 };
 
 }
