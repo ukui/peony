@@ -58,12 +58,14 @@ using namespace Peony;
 PermissionsPropertiesPage::PermissionsPropertiesPage(const QStringList &uris, QWidget *parent) : PropertiesWindowTabIface(parent)
 {
     m_uri = uris.first();
-
+    QUrl url = m_uri;
     m_layout = new QVBoxLayout(this);
     m_layout->setContentsMargins(0,0,0,0);
     this->setLayout(m_layout);
 
-    m_label = new QLabel(tr("Target: %1").arg(m_uri), this);
+    m_label = new QLabel(this);
+    m_label->setText(m_label->fontMetrics().elidedText(tr("Target: %1").arg(url.path()), Qt::ElideMiddle,410));
+
     m_label->setMinimumHeight(60);
     m_label->setContentsMargins(22,0,22,0);
 
@@ -119,8 +121,8 @@ void PermissionsPropertiesPage::initTableWidget()
 void PermissionsPropertiesPage::queryPermissionsAsync(const QString &, const QString &uri)
 {
     m_uri = uri;
-    QUrl url = uri;
-    m_label->setText(tr("Target: %1").arg(url.toDisplayString()));
+    QUrl url = m_uri;
+    m_label->setText(m_label->fontMetrics().elidedText(tr("Target: %1").arg(url.toDisplayString()), Qt::ElideMiddle,410));
     m_table->setEnabled(false);
 
     GFile *file = g_file_new_for_uri(m_uri.toUtf8().constData());

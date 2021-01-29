@@ -145,6 +145,11 @@ PropertiesWindow::PropertiesWindow(const QStringList &uris, QWidget *parent) : Q
         m_uris.removeAt(m_uris.indexOf("computer:///"));
     }
 
+    if (m_uris.count() == 0) {
+        m_destroyThis = true;
+        return;
+    }
+
     if (!PropertiesWindow::checkUriIsOpen(m_uris, this)) {
         this->init();
     } else {
@@ -327,6 +332,9 @@ void PropertiesWindow::initTabPage(const QStringList &uris)
 
 bool PropertiesWindow::checkUriIsOpen(QStringList &uris, PropertiesWindow *newWindow)
 {
+    if (uris.count() == 0)
+        return false;
+
     if (!openedPropertiesWindows)
         openedPropertiesWindows = new QList<PropertiesWindow *>();
 
