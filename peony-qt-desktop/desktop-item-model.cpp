@@ -65,6 +65,9 @@ static bool uriLittleThan(std::shared_ptr<FileInfo> &p1, std::shared_ptr<FileInf
 DesktopItemModel::DesktopItemModel(QObject *parent)
     : QAbstractListModel(parent)
 {
+    QString userPath = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
+    m_userName = userPath.section("/", -1, -1);
+
     // do not redo layout new items while we start an operation with peony's api.
     connect(FileOperationManager::getInstance(), &FileOperationManager::operationStarted, this, [=](){
         m_new_file_info_query_queue.clear();
@@ -461,7 +464,11 @@ QVariant DesktopItemModel::data(const QModelIndex &index, int role) const
     auto info = m_files.at(index.row());
     switch (role) {
     case Qt::DisplayRole:
-        return info->displayName();
+        if (m_userName == info->displayName()) {
+            return tr("My Document");
+        } else {
+            return info->displayName();
+        }
     case Qt::ToolTipRole:
         return info->displayName();
     case Qt::DecorationRole: {

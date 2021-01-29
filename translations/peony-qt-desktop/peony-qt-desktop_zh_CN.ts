@@ -82,6 +82,14 @@
     </message>
 </context>
 <context>
+    <name>Peony::DesktopItemModel</name>
+    <message>
+        <location filename="../../peony-qt-desktop/desktop-item-model.cpp" line="469"/>
+        <source>My Document</source>
+        <translation>我的文档</translation>
+    </message>
+</context>
+<context>
     <name>Peony::DesktopMenu</name>
     <message>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="107"/>
