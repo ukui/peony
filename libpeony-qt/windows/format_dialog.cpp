@@ -76,6 +76,8 @@ Format_Dialog::Format_Dialog(const QString &m_uris,SideBarAbstractItem *m_item,Q
        }
 
        auto mount = VolumeManager::getMountFromUri(targetUri);
+       //fix name not show complete in bottom issue, bug#36887
+       ui->lineEdit_device_name->setFixedHeight(40);
        ui->lineEdit_device_name->setText(mount->name());
 
        ui->progressBar_process->setValue(0);
