@@ -683,12 +683,12 @@
 2.你使用的系统主题不是qt默认支持的主题，并且你没有安装相关的平台插件。如果你正在使用Gtk主题作为系统主题，尝试安装qt5-gtk2-platformtheme以解决此问题。</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.cpp" line="432"/>
+        <location filename="../../src/peony-application.cpp" line="400"/>
         <source>Peony Qt</source>
         <translation>文件管理器</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.cpp" line="433"/>
+        <location filename="../../src/peony-application.cpp" line="401"/>
         <source>Author:
 	Yue Lan &lt;lanyue@kylinos.cn&gt;
 	Meihong He &lt;hemeihong@kylinos.cn&gt;
@@ -780,14 +780,12 @@ Copyright (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</source
         <translation type="obsolete">文件管理器</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.cpp" line="406"/>
         <source>Error</source>
-        <translation>错误</translation>
+        <translation type="vanished">错误</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.cpp" line="406"/>
         <source>Can not open %1.</source>
-        <translation>无法打开%1</translation>
+        <translation type="vanished">无法打开%1</translation>
     </message>
 </context>
 <context>

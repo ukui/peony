@@ -662,9 +662,15 @@ void DesktopIconView::initDoubleClick()
         auto uri = index.data(FileItemModel::UriRole).toString();
         //process open symbolic link
         auto info = FileInfo::fromUri(uri, false);
-        if (info->isSymbolLink() && uri.startsWith("file://") && info->isValid())
-            uri = "file://" + FileUtils::getSymbolicTarget(uri);
-        openFileByUri(uri);
+        if (!info->canRead() && info->isDir()) {
+            QUrl url = info->uri();
+            QString errorInfo = tr("Can not open path \"%1\"，permission denied.").arg(url.path().unicode());
+            QMessageBox::critical(nullptr, QObject::tr("Error"), errorInfo);
+        } else {
+            if (info->isSymbolLink() && uri.startsWith("file://") && info->isValid())
+                uri = "file://" + FileUtils::getSymbolicTarget(uri);
+            openFileByUri(uri);
+        }
     }, Qt::UniqueConnection);
 }
 

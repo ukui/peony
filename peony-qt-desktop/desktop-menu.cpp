@@ -134,7 +134,13 @@ const QList<QAction *> DesktopMenu::constructOpenOpActions()
             if (info->isDir()) {
                 l<<addAction(QIcon::fromTheme("document-open-symbolic"), tr("&Open"));
                 connect(l.last(), &QAction::triggered, [=]() {
-                    this->openWindow(m_selections);
+                    if (!info->canRead()) {
+                        QUrl url = m_selections.first();
+                        QString errorInfo = tr("Can not open path \"%1\"，permission denied.").arg(url.path().unicode());
+                        QMessageBox::critical(nullptr, QObject::tr("Error"), errorInfo);
+                    } else {
+                        this->openWindow(m_selections);
+                    }
                 });
 
                 auto recommendActions = FileLaunchManager::getRecommendActions(m_selections.first());
@@ -205,19 +211,33 @@ const QList<QAction *> DesktopMenu::constructOpenOpActions()
                 qDebug()<<"triggered:"<<m_selections.count();
                 QStringList dirs;
                 QStringList files;
+                QStringList readRefuseList;
                 for (auto uri : m_selections) {
                     auto info = FileInfo::fromUri(uri);
                     if (info->isDir() || info->isVolume()) {
-                        dirs<<uri;
+                        if (!info->canRead()) {
+                            readRefuseList << uri;
+                        } else {
+                            dirs<<uri;
+                        }
                     } else {
                         files<<uri;
                     }
                 }
                 if (!dirs.isEmpty())
                     this->openWindow(dirs);
+
                 if (!files.isEmpty()) {
                     for (auto uri : files) {
                         FileLaunchManager::openAsync(uri);
+                    }
+                }
+
+                if (!readRefuseList.isEmpty()) {
+                    for (auto uri : readRefuseList) {
+                        QUrl url = uri;
+                        QString errorInfo = tr("Can not open path \"%1\"，permission denied.").arg(url.path().unicode());
+                        QMessageBox::critical(nullptr, QObject::tr("Error"), errorInfo);
                     }
                 }
             });
