@@ -137,12 +137,17 @@ PropertiesWindow::PropertiesWindow(const QStringList &uris, QWidget *parent) : Q
     m_uris.removeDuplicates();
     qDebug() << __FUNCTION__ << m_uris.count() << m_uris;
 
-    //FIX:BUG #17809
+    //FIX:BUG #31635
     if (m_uris.contains("computer:///")) {
         QtConcurrent::run([=]() {
             gotoAboutComputer();
         });
         m_uris.removeAt(m_uris.indexOf("computer:///"));
+    }
+
+    if (m_uris.count() == 0) {
+        m_destroyThis = true;
+        return;
     }
 
     if (!PropertiesWindow::checkUriIsOpen(m_uris, this)) {
@@ -330,7 +335,6 @@ bool PropertiesWindow::checkUriIsOpen(QStringList &uris, PropertiesWindow *newWi
     if (!openedPropertiesWindows)
         openedPropertiesWindows = new QList<PropertiesWindow *>();
 
-    qDebug() << "PropertiesWindow::checkUriIsOpen uri:" << uris.first();
     //1.对uris进行排序 - Sort uris
     std::sort(uris.begin(), uris.end(), [](QString a, QString b) {
         return a < b;
@@ -375,6 +379,9 @@ void PropertiesWindow::removeThisWindow(qint64 index)
         return;
 
     openedPropertiesWindows->removeAt(index);
+
+    if (openedPropertiesWindows->count() == 0)
+        delete openedPropertiesWindows;
 
 }
 

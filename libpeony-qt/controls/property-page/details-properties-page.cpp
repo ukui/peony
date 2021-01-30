@@ -29,9 +29,9 @@
 #include <QtConcurrent>
 #include <QHeaderView>
 #include <QHBoxLayout>
-#include <QImage>
 #include <QImageReader>
 #include <QtNetwork/QHostInfo>
+#include "global-settings.h"
 
 using namespace Peony;
 
@@ -154,7 +154,8 @@ void DetailsPropertiesPage::initDetailsPropertiesPage()
         return;
 
     //name
-    this->addRow(tr("Name:"),m_fileInfo->displayName());
+    QString fileName =  m_tableWidget->fontMetrics().elidedText(m_fileInfo->displayName(), Qt::ElideMiddle,270);
+    this->addRow(tr("Name:"),fileName);
 
     //type
     this->addRow(tr("File type:"),m_fileInfo->fileType());
@@ -164,21 +165,9 @@ void DetailsPropertiesPage::initDetailsPropertiesPage()
     QString location = url.toDisplayString();
     if (location.startsWith("file://"))
         location = location.split("file://").last();
-    this->addRow(tr("Location:"),location);
+    location =  m_tableWidget->fontMetrics().elidedText(location, Qt::ElideMiddle,270);
 
-    //default format
-    this->setSystemTimeFormat(tr("yyyy-MM-dd, HH:mm:ss"));
-    // set time
-//    connect(GlobalSettings::getInstance(), &GlobalSettings::valueChanged, [=] (QString key) {
-//        if ("12" == key) {
-//            // 12 小时制时间
-//            this->setSysTimeFormat(tr("yyyy-MM-dd, hh:mm:ss AP"));
-//        } else if ("24" == key) {
-//            // 24 小时制时间hh:mm:ss
-//            this->setSysTimeFormat(tr("yyyy-MM-dd, HH:mm:ss"));
-//        }
-//        this->updateFileInfo(m_fileInfo.get()->uri());
-//    });
+    this->addRow(tr("Location:"),location);
 
     //createTime
     m_createDateLabel = this->createFixedLabel(0,0,"",m_tableWidget);
@@ -187,6 +176,20 @@ void DetailsPropertiesPage::initDetailsPropertiesPage()
     //modifiedTime
     m_modifyDateLabel = this->createFixedLabel(0,0,"",m_tableWidget);
     this->addRow(tr("Modify time:"),m_modifyDateLabel);
+
+    //default format
+    this->setSystemTimeFormat(tr("yyyy-MM-dd, HH:mm:ss"));
+    // set time
+    connect(GlobalSettings::getInstance(), &GlobalSettings::valueChanged, this, [=] (const QString& key) {
+        if (UKUI_CONTROL_CENTER_PANEL_PLUGIN_TIME == key) {
+            if ("12" == GlobalSettings::getInstance()->getValue(key)) {
+                setSystemTimeFormat(tr("yyyy-MM-dd, hh:mm:ss AP"));
+            } else if ("24" == GlobalSettings::getInstance()->getValue(key)) {
+                setSystemTimeFormat(tr("yyyy-MM-dd, HH:mm:ss"));
+            }
+            updateFileInfo(m_fileInfo.get()->uri());
+        }
+    });
 
     //size
     this->addRow(tr("File size:"),m_fileInfo->fileSize());
