@@ -126,8 +126,8 @@ void FileRenameOperation::run()
     bool is_local_desktop_file = false;
     QUrl url = m_uri;
     //change the content of .desktop file;
-    if (url.isLocalFile()) {
-        GDesktopAppInfo *desktop_info = g_desktop_app_info_new_from_filename(url.path().toUtf8().constData());
+    if (url.isLocalFile() && g_file_info_get_attribute_uint64(info->get(), G_FILE_ATTRIBUTE_STANDARD_SIZE) < 1<<30) {
+        GDesktopAppInfo *desktop_info = g_desktop_app_info_new_from_filename(url.path().toUtf8().constData());          // if file too big, progress will crash
         if (G_IS_DESKTOP_APP_INFO(desktop_info)) {
             bool is_executable = g_file_test (url.path().toUtf8().constData(), G_FILE_TEST_IS_EXECUTABLE);
             is_local_desktop_file = is_executable;
@@ -183,6 +183,7 @@ void FileRenameOperation::run()
     //move the file. normally means 'rename'.
     auto parent = FileUtils::getFileParent(file);
     auto newFile = FileUtils::resolveRelativePath(parent, m_new_name);
+
     if (is_local_desktop_file) {
 fallback_retry:
         GError *err = nullptr;
@@ -284,12 +285,13 @@ retry:
             default:
                 break;
             }
-        }
-        else
+        } else {
            g_file_delete(newFile.get()->get(), nullptr, nullptr);
+        }
 
         char* newName = g_file_get_basename(newFile.get()->get());
         g_file_set_display_name(file.get()->get(), newName, nullptr, &err);
+
         if (nullptr != newName) {
             g_free(newName);
         }
