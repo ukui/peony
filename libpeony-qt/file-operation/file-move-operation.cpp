@@ -459,7 +459,7 @@ void FileMoveOperation::rollbackNodeRecursively(FileNode *node)
             break;
         }
         case FileNode::Handling: {
-            if (node->responseType() == OverWriteOne || node->responseType() == OverWriteAll) {
+            if (node->responseType() == OverWriteOne || node->responseType() == OverWriteAll || node->responseType() == Cancel) {
                 break;
             }
             auto destFile = wrapGFile(g_file_new_for_uri(node->destUri().toUtf8().constData()));
@@ -858,7 +858,7 @@ fallback_retry:
                 goto fallback_retry;
             }
             case Cancel: {
-                //node->setState(FileNode::Unhandled);
+                node->setErrorResponse(Cancel);
                 cancel();
                 break;
             }
@@ -899,7 +899,6 @@ void FileMoveOperation::deleteRecursively(FileNode *node)
         }
     }
     g_object_unref(file);
-    qDebug()<<"deleted";
     operationAfterProgressedOne(node->uri());
 }
 
