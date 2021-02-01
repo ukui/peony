@@ -87,6 +87,7 @@ ListView::ListView(QWidget *parent) : QTreeView(parent)
     m_renameTimer->setInterval(3000);
     m_editValid = false;
 
+    setUniformRowHeights(true);
     setIconSize(QSize(40, 40));
     setMouseTracking(true);//追踪鼠标
 
