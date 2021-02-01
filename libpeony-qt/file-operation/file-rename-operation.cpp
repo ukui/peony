@@ -183,6 +183,7 @@ void FileRenameOperation::run()
     //move the file. normally means 'rename'.
     auto parent = FileUtils::getFileParent(file);
     auto newFile = FileUtils::resolveRelativePath(parent, m_new_name);
+
     if (is_local_desktop_file) {
 fallback_retry:
         GError *err = nullptr;
@@ -284,12 +285,13 @@ retry:
             default:
                 break;
             }
-        }
-        else
+        } else {
            g_file_delete(newFile.get()->get(), nullptr, nullptr);
+        }
 
         char* newName = g_file_get_basename(newFile.get()->get());
         g_file_set_display_name(file.get()->get(), newName, nullptr, &err);
+
         if (nullptr != newName) {
             g_free(newName);
         }

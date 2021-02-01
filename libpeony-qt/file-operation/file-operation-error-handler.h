@@ -65,6 +65,7 @@ enum ExceptionResponse {
     BackupAll,
     OverWriteOne,
     OverWriteAll,
+    Force,          // Force operation
 };
 
 typedef enum{

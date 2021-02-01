@@ -74,6 +74,7 @@ retry:
                 g_error_free(err);
                 continue;
             }
+            setErrorMessage (&err);
             FileOperationError except;
             except.srcUri = src;
             except.destDirUri = tr("trash:///");
@@ -134,6 +135,9 @@ retry:
                 case IgnoreAll:
                     response = IgnoreAll;
                     break;
+                case Force:
+                    forceDelete(src);
+                    break;
                 default:
                     break;
                 }
@@ -163,4 +167,29 @@ retry:
 
     Q_EMIT operationFinished();
     //notifyFileWatcherOperationFinished();
+}
+
+void FileTrashOperation::forceDelete(QString uri)
+{
+    auto deleteFile = wrapGFile(g_file_new_for_uri(uri.toUtf8().constData()));
+    g_file_delete(deleteFile.get()->get(), nullptr, nullptr);
+}
+
+void FileTrashOperation::setErrorMessage(GError** err)
+{
+    if (nullptr == *err) {
+        return;
+    }
+
+    GError* peonyError = nullptr;
+
+    switch ((*err)->code) {
+    case G_IO_ERROR_FILENAME_TOO_LONG:
+        g_set_error(&peonyError, (*err)->domain, (*err)->code, "%s%s", (*err)->message, tr(". Are you sure you want to permanently delete the file").toUtf8().constData());
+        g_error_free(*err);
+        *err = peonyError;
+        break;
+    default:
+        break;
+    }
 }
