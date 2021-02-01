@@ -189,7 +189,7 @@ void ListViewDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, 
     if (text == index.data(Qt::DisplayRole).toString())
         return;
     //process special name . or .. or only space
-    if (text == "." || text == ".." || text.trimmed() == "")
+    if (text == "." || text == ".." || text.trimmed() == "" || text.contains("\\"))
         return;
 
     auto view = qobject_cast<DirectoryView::ListView *>(parent());

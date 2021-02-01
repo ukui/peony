@@ -325,7 +325,7 @@ void IconViewDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, 
     if (newName.isNull())
         return;
     //process special name . or .. or only space
-    if (newName == "." || newName == ".." || newName.trimmed() == "")
+    if (newName == "." || newName == ".." || newName.trimmed() == "" || newName.contains("\\"))
         newName = "";
     if (newName.length() >0 && newName != oldName && newName != suffix) {
         auto fileOpMgr = FileOperationManager::getInstance();
