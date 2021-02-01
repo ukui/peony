@@ -44,7 +44,7 @@ AdvancedLocationBar::AdvancedLocationBar(QWidget *parent) : QWidget(parent)
     m_search_bar = new Peony::SearchBarContainer(this);
     m_bar->connect(m_bar, &Peony::LocationBar::blankClicked, [=]() {
         auto curUri = m_bar->getCurentUri();
-        if (! curUri.startsWith("trash:///"))
+        if (! curUri.startsWith("trash:///") && ! curUri.startsWith("recent:///"))
         {
             layout->setCurrentWidget(m_edit);
             m_edit->setFocus();
