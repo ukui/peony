@@ -270,7 +270,7 @@ public:
     bool isOfficeFile();
 
     bool isEmptyInfo() {
-        return m_display_name == nullptr;
+        return m_display_name == nullptr || m_display_name == "";
     }
 
     AccessFlags accesses() {

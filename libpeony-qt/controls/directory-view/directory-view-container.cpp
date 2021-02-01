@@ -35,6 +35,8 @@
 
 #include "file-item-proxy-filter-sort-model.h"
 
+#include "file-info.h"
+
 #include <QVBoxLayout>
 #include <QAction>
 
@@ -311,7 +313,19 @@ void DirectoryViewContainer::switchViewType(const QString &viewId)
     view->setSortOrder(sortOrder);
 
     connect(m_view, &DirectoryViewWidget::menuRequest, this, &DirectoryViewContainer::menuRequest);
-    connect(m_view, &DirectoryViewWidget::viewDirectoryChanged, this, &DirectoryViewContainer::directoryChanged);
+    connect(m_view, &DirectoryViewWidget::viewDirectoryChanged, this, [=](){
+        if (DirectoryViewFactoryManager2::getInstance()->internalViews().contains(m_view->viewId())) {
+            auto dirInfo = FileInfo::fromUri(m_current_uri);
+            if (dirInfo.get()->isEmptyInfo()) {
+                goBack();
+                m_forward_list.takeFirst();
+            } else {
+                Q_EMIT this->directoryChanged();
+            }
+        } else {
+            Q_EMIT this->directoryChanged();
+        }
+    });
     connect(m_view, &DirectoryViewWidget::viewDoubleClicked, this, &DirectoryViewContainer::viewDoubleClicked);
     connect(m_view, &DirectoryViewWidget::viewDoubleClicked, this, &DirectoryViewContainer::onViewDoubleClicked);
     connect(m_view, &DirectoryViewWidget::viewSelectionChanged, this, &DirectoryViewContainer::selectionChanged);
