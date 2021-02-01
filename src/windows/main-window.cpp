@@ -576,7 +576,11 @@ void MainWindow::setShortCuts()
         shrinkViewAction->setShortcut(QKeySequence::ZoomOut);
         connect(shrinkViewAction, &QAction::triggered, this, [=]() {
             int defaultZoomLevel = this->currentViewZoomLevel();
-            if(defaultZoomLevel > 6){ defaultZoomLevel-=5; }
+            if (defaultZoomLevel >= 5) {
+                defaultZoomLevel-=5;
+            } else {
+                defaultZoomLevel = 0;
+            }
             this->getCurrentPage()->setZoomLevelRequest(defaultZoomLevel);
         });
         addAction(shrinkViewAction);
