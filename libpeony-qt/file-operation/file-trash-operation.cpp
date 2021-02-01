@@ -101,13 +101,33 @@ retry:
                     break;
                 }
             } else {
-                except.dlgType = ED_WARNING;
-                Q_EMIT errored(except);
+                if (err->code == G_IO_ERROR_NOT_SUPPORTED) {
+                    except.dlgType = ED_NOT_SUPPORTED;
+                    except.errorStr = tr("Can not trash %1, would you like to delete this file permanently?");
+                } else {
+                    except.dlgType = ED_WARNING;
+                }
+                if (response == Invalid)
+                    Q_EMIT errored(except);
                 auto responseType = except.respCode;
                 auto responseData = responseType;
+                if (response != Invalid)
+                    responseData = response;
                 switch (responseData) {
                 case Retry:
                     goto retry;
+                case OverWriteOne: {
+                    GError *err1 = nullptr;
+                    g_file_delete(srcFile.get()->get(), getCancellable().get()->get(), &err1);
+                    if (err1) {
+                        g_error_free(err1);
+                    }
+                    break;
+                }
+                case OverWriteAll: {
+                    response = OverWriteOne;
+                    goto retry;
+                }
                 case Cancel:
                     cancel();
                     break;

@@ -171,6 +171,56 @@ private:
     bool            m_replace = false;
     bool            m_do_same = false;
 };
+
+/*!
+ * \brief Error warning pop-up box
+ * ED_NOT_SUPPORTED
+ */
+class PEONYCORESHARED_EXPORT FileOperationErrorDialogNotSupported : public FileOperationErrorDialogBase
+{
+    Q_OBJECT
+    Q_INTERFACES(Peony::FileOperationErrorHandler)
+public:
+    explicit FileOperationErrorDialogNotSupported(FileOperationErrorDialogBase *parent = nullptr);
+    ~FileOperationErrorDialogNotSupported()override;
+
+    virtual void handle (FileOperationError& error) override;
+
+private:
+    float m_margin = 9;
+    float m_pic_top = 63;
+    float m_margin_lr = 26;
+    float m_pic_size = 48;
+    float m_fix_width = 550;
+    float m_fix_height = 188;
+
+    float m_text_y = 65;
+    float m_text_heigth = 60;
+
+    float m_ok_x = 410;
+    float m_ok_y = 132;
+    float m_ok_w = 120;
+    float m_ok_h = 36;
+
+    float m_cancel_x = 280;
+    float m_cancel_y = 132;
+    float m_cancel_w = 120;
+    float m_cancel_h = 36;
+
+    float           m_sm_btn_x = 16;
+    float           m_sm_btn_y = 150;
+    float           m_sm_btn_width = 200;
+    float           m_sm_btn_height = 20;
+
+    QLabel* m_icon = nullptr;
+    QLabel* m_text = nullptr;
+    QScrollArea* m_text_scroll = nullptr;
+    QPushButton* m_ok = nullptr;
+    QPushButton* m_cancel = nullptr;
+
+    QCheckBox*      m_sm_ck = nullptr;
+};
+
 };
 
 #endif // FILEOPERATIONERRORDIALOGREGULAR_H

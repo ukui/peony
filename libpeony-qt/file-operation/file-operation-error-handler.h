@@ -47,6 +47,7 @@ enum ExceptionType
 enum ExceptionDialogType {
     ED_WARNING,
     ED_CONFLICT,
+    ED_NOT_SUPPORTED
 };
 
 /*!
