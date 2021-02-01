@@ -1239,6 +1239,9 @@ void MainWindow::validBorder()
 
 void MainWindow::initUI(const QString &uri)
 {
+    auto size = sizeHint();
+    resize(size);
+
     connect(this, &MainWindow::locationChangeStart, this, [=]() {
         //comment to fix bug 33527
         //m_side_bar->blockSignals(true);
