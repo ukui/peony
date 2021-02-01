@@ -40,6 +40,10 @@ public:
     void run() override;
 
 private:
+    void forceDelete (QString uri);
+    void setErrorMessage (GError** err);
+
+private:
     QStringList m_src_uris;
     std::shared_ptr<FileOperationInfo> m_info = nullptr;
 };

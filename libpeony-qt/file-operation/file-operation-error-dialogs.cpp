@@ -276,6 +276,11 @@ void Peony::FileOperationErrorDialogWarning::handle(Peony::FileOperationError &e
             break;
     }
 
+    // Delete file to the Recycle Bin error, prompt whether to force deletion
+    if (QDialog::Accepted == ret && m_error->op == FileOpTrash && m_error->errorCode == G_IO_ERROR_FILENAME_TOO_LONG) {
+        error.respCode = Force;
+    }
+
     if (QDialog::Rejected == ret) {
         error.respCode = Cancel;
     }
