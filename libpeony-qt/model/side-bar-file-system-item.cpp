@@ -65,6 +65,10 @@ SideBarFileSystemItem::SideBarFileSystemItem(QString uri,
         infoJob->setAutoDelete();
         connect(infoJob, &FileInfoJob::queryAsyncFinished, this, [=](){
             m_display_name = FileUtils::getFileDisplayName(uri);
+            if (m_info.get()->targetUri() == "file:///") {
+                m_display_name = tr("File System");
+                return;
+            }
             m_icon_name = FileUtils::getFileIconName(uri);
             FileUtils::queryVolumeInfo(m_uri, m_volume_name, m_unix_device, m_display_name);
             Q_EMIT this->queryInfoFinished();
