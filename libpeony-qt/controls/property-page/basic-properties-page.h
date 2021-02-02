@@ -31,6 +31,7 @@
 #include <QGridLayout>
 #include <QThread>
 #include <memory>
+#include <QtConcurrent>
 
 #include "properties-window-tab-iface.h"
 #include "open-with-properties-page.h"
@@ -86,6 +87,7 @@ public:
 
     explicit BasicPropertiesPage(const QStringList &uris, QWidget *parent = nullptr);
     ~BasicPropertiesPage();
+    void init();
 
 
     // PropertiesWindowTabIface interface
@@ -106,7 +108,7 @@ protected:
      */
     QLabel *createFixedLabel(quint64 minWidth, quint64 minHeight, QString text, QWidget *parent = nullptr);
     QLabel *createFixedLabel(quint64 minWidth, quint64 minHeight, QWidget *parent = nullptr);
-    void addOpenWithMenu(QWidget *parent = nullptr);
+    void addOpenWithLayout(QWidget *parent = nullptr);
     /*!
      * 初始化第一层显示区域
      * \brief
@@ -126,24 +128,19 @@ protected:
     }
 
 protected Q_SLOTS:
-    void getFIleInfo(const QStringList &uris);
+    void getFIleInfo(QString uri);
     void onSingleFileChanged(const QString &oldUri, const QString &newUri);
     void countFilesAsync(const QStringList &uris);
     void onFileCountOne(const QString &uri, quint64 size);
     void cancelCount();
 
     void updateInfo(const QString &uri);
-    /*!
-     * 当前页面发生改变
-     * \brief
-     */
-    void thisPageChanged() {
-        this->m_thisPageChanged = true;
-    }
 
 private:
     QVBoxLayout                 *m_layout = nullptr;
     std::shared_ptr<FileInfo>    m_info   = nullptr;
+    QStringList                  m_uris;
+//    QFutureWatcher<void>        *m_futureWatcher = nullptr;
     std::shared_ptr<FileWatcher> m_watcher;
     std::shared_ptr<FileWatcher> m_thumbnail_watcher;
 

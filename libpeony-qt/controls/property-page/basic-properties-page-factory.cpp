@@ -54,7 +54,7 @@ bool BasicPropertiesPageFactory::supportUris(const QStringList &uris)
         return false;
 
     for (auto uri : uris) {
-        if (uri.startsWith("computer://"))
+        if (uri.startsWith("computer://") || uri.startsWith("trash://") || uri.startsWith("recent://"))
             return false;
     }
 
