@@ -137,12 +137,17 @@ PropertiesWindow::PropertiesWindow(const QStringList &uris, QWidget *parent) : Q
     m_uris.removeDuplicates();
     qDebug() << __FUNCTION__ << m_uris.count() << m_uris;
 
-    //FIX:BUG #17809
+    //FIX:BUG #31635
     if (m_uris.contains("computer:///")) {
         QtConcurrent::run([=]() {
             gotoAboutComputer();
         });
         m_uris.removeAt(m_uris.indexOf("computer:///"));
+    }
+
+    if (m_uris.count() == 0) {
+        m_destroyThis = true;
+        return;
     }
 
     if (!PropertiesWindow::checkUriIsOpen(m_uris, this)) {
@@ -327,10 +332,10 @@ void PropertiesWindow::initTabPage(const QStringList &uris)
 
 bool PropertiesWindow::checkUriIsOpen(QStringList &uris, PropertiesWindow *newWindow)
 {
-    if (!openedPropertiesWindows)
+    if (!openedPropertiesWindows) {
         openedPropertiesWindows = new QList<PropertiesWindow *>();
-
-    qDebug() << "PropertiesWindow::checkUriIsOpen uri:" << uris.first();
+        qDebug() << __FILE__ << __FUNCTION__ << "new->openedPropertiesWindows";
+    }
     //1.对uris进行排序 - Sort uris
     std::sort(uris.begin(), uris.end(), [](QString a, QString b) {
         return a < b;
@@ -375,6 +380,12 @@ void PropertiesWindow::removeThisWindow(qint64 index)
         return;
 
     openedPropertiesWindows->removeAt(index);
+
+    if (openedPropertiesWindows->count() == 0) {
+        delete openedPropertiesWindows;
+        openedPropertiesWindows = nullptr;
+        qDebug() << __FILE__ << __FUNCTION__ << "delete->openedPropertiesWindows";
+    }
 
 }
 
@@ -480,14 +491,8 @@ QSize tabStyle::sizeFromContents(QStyle::ContentsType ct, const QStyleOption *op
         const QStyleOptionTab *tab = qstyleoption_cast<const QStyleOptionTab *>(opt);
         //解决按钮不能自适应的问题
         int fontWidth = tab->fontMetrics.width(tab->text);
-        if (fontWidth <= 65) {
-            //数值大于设计稿的65是因为在左侧偏移了4px
-            barSize.setWidth(70);
-        } else {
-            //同上所述
-            barSize.setWidth(fontWidth + 10);
-        }
-        //保证底部距离为设计稿上的8px
+        //宽度统一加上30px
+        barSize.setWidth(fontWidth + 30);
 
         int fontHeight = tab->fontMetrics.height();
         if (fontHeight <= 30) {
@@ -497,8 +502,8 @@ QSize tabStyle::sizeFromContents(QStyle::ContentsType ct, const QStyleOption *op
             //同上所述
             barSize.setHeight(fontHeight + 12);
         }
-        qDebug() << "tabStyle::sizeFromContents font width:" << fontWidth << "height:" << fontHeight << "text:"
-                 << tab->text;
+//        qDebug() << "tabStyle::sizeFromContents font width:" << fontWidth << "height:" << fontHeight << "text:"
+//                 << tab->text;
     }
 
     return barSize;
