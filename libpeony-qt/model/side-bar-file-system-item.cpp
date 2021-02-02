@@ -69,14 +69,14 @@ SideBarFileSystemItem::SideBarFileSystemItem(QString uri,
                 m_display_name = tr("File System");
                 return;
             }
-            m_icon_name = FileUtils::getFileIconName(uri);
+            m_icon_name = FileUtils::getFileIconName(uri,false);
             FileUtils::queryVolumeInfo(m_uri, m_volume_name, m_unix_device, m_display_name);
             Q_EMIT this->queryInfoFinished();
         });
         infoJob->queryAsync();
         //FIXME: replace BLOCKING api in ui thread.
         m_display_name = FileUtils::getFileDisplayName(uri);
-        m_icon_name = FileUtils::getFileIconName(uri);
+        m_icon_name = FileUtils::getFileIconName(uri,false);
     }
 }
 
@@ -569,7 +569,7 @@ void SideBarFileSystemItem::updateFileInfo(SideBarFileSystemItem *pThis){
     //old's drive name -> now's volume name. fix #17968
     FileUtils::queryVolumeInfo(pThis->m_uri,pThis->m_volume_name,pThis->m_unix_device,tmpName);
     //icon name.
-    pThis->m_icon_name = FileUtils::getFileIconName(pThis->m_uri);
+    pThis->m_icon_name = FileUtils::getFileIconName(pThis->m_uri,false);
 }
 
 /* Eject some device by stop it's drive. Such as: mobile harddisk.
