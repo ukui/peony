@@ -91,13 +91,14 @@ NavigationSideBar::NavigationSideBar(QWidget *parent) : QTreeView(parent)
     setAttribute(Qt::WA_TranslucentBackground);
     viewport()->setAttribute(Qt::WA_TranslucentBackground);
     header()->setSectionResizeMode(QHeaderView::Custom);
+    header()->setStretchLastSection(false);
     header()->hide();
 
     setContextMenuPolicy(Qt::CustomContextMenu);
 
     setExpandsOnDoubleClick(false);
 
-    setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
 
     m_model = new Peony::SideBarModel(this);
     m_proxy_model = new Peony::SideBarProxyFilterSortModel(this);
@@ -250,8 +251,10 @@ void NavigationSideBar::paintEvent(QPaintEvent *event)
 void NavigationSideBar::resizeEvent(QResizeEvent *e)
 {
     QTreeView::resizeEvent(e);
-    if (header()->count() > 0)
-        header()->resizeSection(0, this->viewport()->width() - 30);
+    if (header()->count() > 0) {
+        this->setColumnWidth(1, 20);
+        header()->resizeSection(0, this->viewport()->width() - this->columnWidth(1));
+    }
 }
 
 void NavigationSideBar::dropEvent(QDropEvent *e)
@@ -350,6 +353,10 @@ QSize NavigationSideBarContainer::sizeHint() const
 {
     auto size = QWidget::sizeHint();
     auto width = Peony::GlobalSettings::getInstance()->getValue(DEFAULT_SIDEBAR_WIDTH).toInt();
+    qDebug() << "sizeHint set DEFAULT_SIDEBAR_WIDTH:"<<width;
+    //fix width value abnormal issue
+    if (width <= 0)
+        width = 195;
     size.setWidth(width);
     return size;
 }

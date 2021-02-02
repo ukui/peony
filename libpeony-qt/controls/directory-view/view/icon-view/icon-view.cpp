@@ -58,6 +58,7 @@
 #include <QPoint>
 
 #include <QDebug>
+#include <QToolTip>
 
 using namespace Peony;
 using namespace Peony::DirectoryView;
@@ -105,7 +106,10 @@ IconView::IconView(QWidget *parent) : QListView(parent)
 
     m_renameTimer = new QTimer(this);
     m_renameTimer->setInterval(3000);
+    m_renameTimer->setSingleShot(true);
     m_editValid = false;
+
+    setMouseTracking(true);//追踪鼠标
 }
 
 IconView::~IconView()
@@ -284,6 +288,13 @@ void IconView::dropEvent(QDropEvent *e)
 
 void IconView::mouseMoveEvent(QMouseEvent *e)
 {
+    QModelIndex itemIndex = indexAt(e->pos());
+    if (!itemIndex.isValid()) {
+        if (QToolTip::isVisible()) {
+            QToolTip::hideText();
+        }
+    }
+
     if (m_ignore_mouse_move_event) {
         return;
     }
@@ -421,6 +432,7 @@ void IconView::slotRename()
     //special path like trash path not allow rename
     if (getDirectoryUri().startsWith("trash://")
         || getDirectoryUri().startsWith("recent://")
+        || getDirectoryUri().startsWith("favorite://")
         || getDirectoryUri().startsWith("search://"))
         return;
 
@@ -514,13 +526,8 @@ void IconView::setProxy(DirectoryViewProxyIface *proxy)
         //when selections is more than 1, let mainwindow to process
         if (getSelections().count() != 1)
             return;
-        auto uri = index.data(FileItemModel::UriRole).toString();
-        //process open symbolic link
-        auto info = FileInfo::fromUri(uri);
-        if (info->isSymbolLink() && uri.startsWith("file://") && info->isValid())
-            uri = "file://" + FileUtils::getSymbolicTarget(uri);
-        if(!m_multi_select)
-            Q_EMIT m_proxy->viewDoubleClicked(uri);
+        auto uri = getSelections().first();
+        Q_EMIT m_proxy->viewDoubleClicked(uri);
     });
 
 
@@ -680,13 +687,8 @@ void IconView2::bindModel(FileItemModel *model, FileItemProxyFilterSortModel *pr
         //when selections is more than 1, let mainwindow to process
         if (getSelections().count() != 1)
             return;
-        auto uri = index.data(Qt::UserRole).toString();
-        //process open symbolic link
-        auto info = FileInfo::fromUri(uri);
-        if (info->isSymbolLink() && uri.startsWith("file://") && info->isValid())
-            uri = "file://" +  FileUtils::getSymbolicTarget(uri);
-        if(!m_view->m_multi_select)
-            Q_EMIT this->viewDoubleClicked(uri);
+        auto uri = getSelections().first();
+        Q_EMIT this->viewDoubleClicked(uri);
     });
 
     connect(m_view, &IconView::customContextMenuRequested, this, [=](const QPoint &pos) {

@@ -90,6 +90,8 @@
 
 #include "complementary-style.h"
 
+#include "volume-manager.h"
+
 #include "file-enumerator.h"
 #include "gerror-wrapper.h"
 
@@ -117,7 +119,6 @@ static bool m_resident = false;
 PeonyApplication::PeonyApplication(int &argc, char *argv[], const char *applicationName) : SingleApplication (argc, argv, applicationName, true)
 {
     setApplicationVersion(QString("v%1").arg(VERSION));
-    setApplicationName("peony-qt");
     //setApplicationDisplayName(tr("Peony-Qt"));
 
     QFile file(":/data/libpeony-qt-styled.qss");
@@ -136,6 +137,8 @@ PeonyApplication::PeonyApplication(int &argc, char *argv[], const char *applicat
     t3->load("/usr/share/qt5/translations/qt_"+QLocale::system().name());
     QApplication::installTranslator(t3);
     setStyle(Peony::ComplementaryStyle::getStyle());
+
+    setApplicationName(tr("peony-qt"));
 
     parser.addOption(quitOption);
     parser.addOption(showItemsOption);
@@ -217,6 +220,10 @@ static void unmount_finished(GFile* file, GAsyncResult* result, gpointer udata)
 
     if (g_file_unmount_mountable_with_operation_finish (file, result, &err) == TRUE){
         flags = 1;
+        char *uri = g_file_get_uri(file);
+        Peony::VolumeManager::getInstance()->fileUnmounted(uri);
+        if (uri)
+            g_free(uri);
     }
 
     if (! m_resident)

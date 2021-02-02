@@ -164,10 +164,6 @@ public:
         return m_is_valid;
     }
 
-    QString displayName() {
-        return m_display_name;
-    }
-
     QString desktopName(){
         return m_desktop_name;
     }
@@ -253,9 +249,6 @@ public:
     bool canStop() {
         return m_can_stop;
     }
-    QString unixDeviceFile() {
-        return QString(m_unix_device_file);
-    }
 
     bool isDesktopFile() {
         return m_can_excute && m_uri.endsWith(".desktop");
@@ -263,18 +256,21 @@ public:
 
     bool isPdfFile(){
         return m_mime_type_string.contains("pdf");
-
     }
 
     bool isImageFile(){
         return m_mime_type_string.startsWith("image/");
     }
 
+    bool isImagePdfFile(){
+        return m_mime_type_string.contains("djvu");
+    }
+
     bool isVideoFile();
     bool isOfficeFile();
 
     bool isEmptyInfo() {
-        return m_display_name == nullptr;
+        return m_display_name == nullptr || m_display_name == "";
     }
 
     AccessFlags accesses() {
@@ -309,7 +305,9 @@ public:
     }
 
     const QString targetUri();
+    const QString displayName();
     const QString symlinkTarget();
+    const QString unixDeviceFile();
 
     const QString customIcon();
 

@@ -94,6 +94,13 @@ void TabStatusBar::update()
     auto uri = m_tab->getCurrentUri();
     auto count = m_tab->getCurrentRowcount();
 
+    //not show path, to design request
+    if (selections.count() ==0)
+    {
+        m_label->setText("");
+        return;
+    }
+
     //fix select special item issue
     if (selections.count() == 1 && (selections.first()->uri().isNull()
         || (selections.first()->uri() == "network:///"

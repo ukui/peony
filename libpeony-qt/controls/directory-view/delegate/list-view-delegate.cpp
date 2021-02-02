@@ -26,6 +26,7 @@
 #include "file-item-model.h"
 
 #include "list-view.h"
+#include "clipboard-utils.h"
 
 #include "file-info.h"
 
@@ -56,6 +57,7 @@ ListViewDelegate::~ListViewDelegate()
 void ListViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
     auto view = qobject_cast<DirectoryView::ListView *>(parent());
+    auto info = FileInfo::fromUri(index.data(Qt::UserRole).toString());
 
     QStyleOptionViewItem opt = option;
     initStyleOption(&opt, index);
@@ -82,6 +84,51 @@ void ListViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
         }
     }
     auto rect = view->visualRect(index);
+
+    if (FileUtils::isSamePath(ClipboardUtils::getClipedFilesParentUri(), view->getDirectoryUri())) {
+        if (ClipboardUtils::isClipboardFilesBeCut()) {
+            auto clipedUris = ClipboardUtils::getClipboardFilesUris();
+            if (clipedUris.contains(index.data(Qt::UserRole).toString())) {
+                painter->setOpacity(0.5);
+                qDebug()<<"cut item in list view"<<index.data();
+            }
+            else{
+                painter->setOpacity(1);
+            }
+        }
+    }
+
+    QApplication::style()->drawControl(QStyle::CE_ItemViewItem, &opt, painter);
+
+    //add link and read only icon support
+    if (index.column() == 0) {
+        auto rect = view->visualRect(index);
+        auto iconSize = view->iconSize();
+        auto size = iconSize.width()/2;
+        bool isSymbolicLink = info->isSymbolLink();
+        auto loc_x = rect.x() + iconSize.width() - size/2;
+        auto loc_y =rect.y();
+        //paint symbolic link emblems
+        if (isSymbolicLink) {
+            QIcon icon = QIcon::fromTheme("emblem-symbolic-link");
+            //qDebug()<<info->symbolicIconName();
+            icon.paint(painter, loc_x, loc_y, size, size);
+            //painter->restore();
+        }
+
+        //paint access emblems
+        //NOTE: we can not query the file attribute in smb:///(samba) and network:///.
+        loc_x = rect.x();
+        if (info->uri().startsWith("file:")) {
+            if (!info->canRead()) {
+                QIcon icon = QIcon::fromTheme("emblem-unreadable");
+                icon.paint(painter, loc_x, loc_y, size, size);
+            } else if (!info->canWrite() && !info->canExecute()) {
+                QIcon icon = QIcon::fromTheme("emblem-readonly");
+                icon.paint(painter, loc_x, loc_y, size, size);
+            }
+        }
+    }
 
     int selectBox = 0;
     //get current checkbox positon and draw them.

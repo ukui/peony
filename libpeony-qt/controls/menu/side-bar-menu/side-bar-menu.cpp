@@ -118,13 +118,21 @@ const QList<QAction *> SideBarMenu::constructFileSystemItemActions()
         FileInfoJob j(info);
         j.querySync();
     }
+
     if (info->canUnmount() || info->canMount()) {
         l<<addAction(QIcon::fromTheme("media-eject"), tr("&Unmount"), [=]() {
             m_item->unmount();
         });
-        auto targetUri = FileUtils::getTargetUri(m_item->uri());
         bool isUmountable = FileUtils::isFileUnmountable(m_item->uri());
-        bool isMounted = (!targetUri.isEmpty() && (targetUri != "file:///")) || isUmountable;
+        bool isMounted = isUmountable;
+        auto targetUri = FileUtils::getTargetUri(m_item->uri());
+        if (!targetUri.isEmpty()) {
+            if (targetUri == "burn:///") {
+                isMounted = false;
+            } else {
+                isMounted = (targetUri != "file:///") || isUmountable;
+            }
+        }
 
         l.last()->setEnabled(isMounted);
     }

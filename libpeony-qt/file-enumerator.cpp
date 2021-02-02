@@ -288,16 +288,16 @@ void FileEnumerator::handleError(GError *err)
     qDebug()<<"handleError"<<err->code<<err->message;
     switch (err->code) {
     case G_IO_ERROR_NOT_DIRECTORY: {
-        auto uri = g_file_get_uri(m_root_file);
-        //FIXME: replace BLOCKING api in ui thread.
-        auto targetUri = FileUtils::getTargetUri(uri);
-        if (uri) {
-            g_free(uri);
-        }
-        if (!targetUri.isEmpty()) {
-            prepared(nullptr, targetUri);
-            return;
-        }
+//        auto uri = g_file_get_uri(m_root_file);
+//        //FIXME: replace BLOCKING api in ui thread.
+//        auto targetUri = FileUtils::getTargetUri(uri);
+//        if (uri) {
+//            g_free(uri);
+//        }
+//        if (!targetUri.isEmpty()) {
+//            prepared(nullptr, targetUri);
+//            return;
+//        }
 
         bool isMountable = false;
         //FIXME: replace BLOCKING api in ui thread. Done
@@ -339,14 +339,15 @@ void FileEnumerator::handleError(GError *err)
         break;
     case G_IO_ERROR_NOT_SUPPORTED:
         Peony::AudioPlayManager::getInstance()->playWarningAudio();
-        QMessageBox::critical(nullptr, tr("Error"), err->message);
+        Q_EMIT prepared(GErrorWrapper::wrapFrom(g_error_copy(err)), nullptr, true);
+        //QMessageBox::critical(nullptr, tr("Error"), err->message);
         break;
     case G_IO_ERROR_PERMISSION_DENIED:
         //emit error message to upper levels to process
-        Q_EMIT prepared(GErrorWrapper::wrapFrom(g_error_new(G_IO_ERROR, G_IO_ERROR_PERMISSION_DENIED, "permission denied")));
+        Q_EMIT prepared(GErrorWrapper::wrapFrom(g_error_new(G_IO_ERROR, G_IO_ERROR_PERMISSION_DENIED, "permission denied")), nullptr, true);
         break;
     case G_IO_ERROR_NOT_FOUND:
-        Q_EMIT prepared(GErrorWrapper::wrapFrom(g_error_new(G_IO_ERROR, G_IO_ERROR_NOT_FOUND, "file not found")));
+        Q_EMIT prepared(GErrorWrapper::wrapFrom(g_error_new(G_IO_ERROR, G_IO_ERROR_NOT_FOUND, "file not found")), nullptr, true);
         //processed in file-item, comment to fix duplicated prompt
         //QMessageBox::critical(nullptr, tr("Error"), tr("Did not find target path, do you move or deleted it?"));
         break;

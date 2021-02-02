@@ -65,6 +65,10 @@ SideBarFileSystemItem::SideBarFileSystemItem(QString uri,
         infoJob->setAutoDelete();
         connect(infoJob, &FileInfoJob::queryAsyncFinished, this, [=](){
             m_display_name = FileUtils::getFileDisplayName(uri);
+            if (m_info.get()->targetUri() == "file:///") {
+                m_display_name = tr("File System");
+                return;
+            }
             m_icon_name = FileUtils::getFileIconName(uri);
             FileUtils::queryVolumeInfo(m_uri, m_volume_name, m_unix_device, m_display_name);
             Q_EMIT this->queryInfoFinished();
@@ -124,7 +128,10 @@ void SideBarFileSystemItem::findChildren()
     FileEnumerator *e = new FileEnumerator;
     e->setEnumerateDirectory(m_uri);
     e->setEnumerateWithInfoJob();
-    connect(e, &FileEnumerator::prepared, this, [=](const GErrorWrapperPtr &err, const QString &targetUri) {
+    connect(e, &FileEnumerator::prepared, this, [=](const GErrorWrapperPtr &err/*, const QString &targetUri*/) {
+        // fix can not enumerate children in computer:///xxx, related to 0708ebd30a3ee3f397592f9c64edba263e900a37
+        auto info = FileInfo::fromUri(m_uri);
+        auto targetUri = info.get()->targetUri();
         if (targetUri != nullptr) {
             if (targetUri != this->uri()) {
                 e->setEnumerateDirectory(targetUri);
@@ -350,16 +357,21 @@ void SideBarFileSystemItem::eject(GMountUnmountFlags ejectFlag)
 }
 
 static void unmount_force_cb(GFile* file, GAsyncResult* result, gpointer udata) {
+    auto targetUri = static_cast<QString *>(udata);
     GError *err = nullptr;
     g_file_unmount_mountable_with_operation_finish (file, result, &err);
     if (err) {
         QMessageBox::warning(nullptr, QObject::tr("Force unmount failed"), QObject::tr("Error: %1\n").arg(err->message));
         g_error_free(err);
+    } else {
+        VolumeManager::getInstance()->fileUnmounted(*targetUri);
     }
+    delete targetUri;
 }
 
 static void unmount_finished(GFile* file, GAsyncResult* result, gpointer udata)
 {
+    auto targetUri = static_cast<QString *>(udata);
     GError *err = nullptr;
     g_file_unmount_mountable_with_operation_finish (file, result, &err);
     if (err) {
@@ -377,17 +389,20 @@ static void unmount_finished(GFile* file, GAsyncResult* result, gpointer udata)
                                                                                                "Do you want to unmount forcely?").arg(err->message),
                                            QMessageBox::Yes, QMessageBox::No);
         if (button == QMessageBox::Yes) {
+            QString *string = new QString;
+            *string = *targetUri;
             g_file_unmount_mountable_with_operation(file,
                                                     G_MOUNT_UNMOUNT_FORCE,
                                                     nullptr,
                                                     nullptr,
                                                     GAsyncReadyCallback(unmount_force_cb),
-                                                    udata);
+                                                    string);
         }
         g_error_free(err);
     } else {
-        // do nothing.
+        VolumeManager::getInstance()->fileUnmounted(*targetUri);
     }
+    delete targetUri;
 
     /*!
       \note
@@ -473,12 +488,14 @@ void SideBarFileSystemItem::unmount()
     //    }
 
     auto file = wrapGFile(g_file_new_for_uri(this->uri().toUtf8().constData()));
+    QString *targetUri = new QString;
+    *targetUri = this->m_info.get()->targetUri();
     g_file_unmount_mountable_with_operation(file.get()->get(),
                                             G_MOUNT_UNMOUNT_NONE,
                                             nullptr,
                                             nullptr,
                                             GAsyncReadyCallback(unmount_finished),
-                                            this);
+                                            targetUri);
 }
 
 void SideBarFileSystemItem::ejectOrUnmount()
@@ -526,6 +543,10 @@ GAsyncReadyCallback SideBarFileSystemItem::eject_cb(GFile *file, GAsyncResult *r
 
         g_error_free(err);
     } else {
+        char *uri = g_file_get_uri(file);
+        VolumeManager::getInstance()->fileUnmounted(uri);
+        if (uri)
+            g_free(uri);
         // remove item anyway
         /*int index = p_this->parent()->m_children->indexOf(p_this);
         p_this->m_model->beginRemoveRows(p_this->parent()->firstColumnIndex(), index, index);

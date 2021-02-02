@@ -19,17 +19,17 @@
  * Authors: Yue Lan <lanyue@kylinos.cn>
  *
  */
-
+#include <gio/gunixmounts.h>
 #include "file-info.h"
 
 #include "file-info-manager.h"
 #include "file-info-job.h"
 #include "file-meta-info.h"
-
+#include "file-utils.h"
 #include "thumbnail-manager.h"
 
 #include <QUrl>
-
+#include <QDir>
 #include <QDebug>
 
 using namespace Peony;
@@ -196,6 +196,8 @@ const QString FileInfo::targetUri()
 
 const QString FileInfo::symlinkTarget()
 {
+    if (m_symlink_target == ".")
+        return "";
     return m_symlink_target;
 }
 
@@ -204,4 +206,69 @@ const QString FileInfo::customIcon()
     if (!m_meta_info)
         return nullptr;
     return m_meta_info.get()->getMetaInfoString("custom-icon");
+}
+
+const QString FileInfo::unixDeviceFile()
+{
+    GFile* file;
+    const char *path;
+    bool isMountPoint;
+    GUnixMountEntry* entry;
+    char* device = nullptr;
+    QString unixDevice = nullptr;
+
+    isMountPoint = FileUtils::isMountPoint(m_uri);
+    //return from here if @m_uri is like "computer:///xxx"
+    if(!isMountPoint)
+        return m_unix_device_file;
+
+    //query device path if @m_uri is like "file:///media/user/xxx"
+    file = g_file_new_for_uri(m_uri.toUtf8().constData());
+    if(!file)
+        return unixDevice;
+
+    path = g_file_peek_path(file);
+    if(path){
+        entry = g_unix_mount_at(path,NULL);
+        if(!entry)
+            entry = g_unix_mount_for(path,NULL);
+
+        if(entry){
+            device = g_strescape(g_unix_mount_get_device_path(entry),NULL);
+            g_unix_mount_free(entry);
+        }
+    }
+
+    unixDevice = device;
+    g_object_unref(file);
+    if(device)
+        g_free(device);
+
+    return unixDevice;
+}
+
+const QString FileInfo::displayName()
+{
+    QDir mountDir;
+    bool isMountPoint;
+    QString unixDevice,deviceName;
+
+    unixDevice = unixDeviceFile();
+    isMountPoint = FileUtils::isMountPoint(m_uri);
+
+    if(!isMountPoint ||                /*@m_uri is like "computer:///xxx"*/
+       unixDevice.isEmpty() ||
+       !unixDevice.contains("/dev") || /*audio-cd*/
+       unixDevice.contains("/dev/sr")) /*blank-cd or blank-dvd*/
+        return m_display_name;
+
+    mountDir.setPath(m_uri.mid(7));
+    deviceName = m_uri.mid(m_uri.lastIndexOf("/")+1);
+    //@m_uri is not garbled,directly returns the directory name.
+    if(mountDir.exists())
+        return deviceName;
+
+    //@deviceName transcoding
+    FileUtils::handleVolumeLabelForFat32(deviceName,unixDevice);
+    return deviceName;
 }

@@ -44,8 +44,7 @@ GlobalSettings::GlobalSettings(QObject *parent) : QObject(parent)
 {
     m_settings = new QSettings("org.ukui", "peony-qt-preferences", this);
     //set default allow parallel
-    if (! m_settings->allKeys().contains(ALLOW_FILE_OP_PARALLEL))
-    {
+    if (! m_settings->allKeys().contains(ALLOW_FILE_OP_PARALLEL)) {
         qDebug() << "default ALLOW_FILE_OP_PARALLEL:true";
         setValue(ALLOW_FILE_OP_PARALLEL, true);
     }
@@ -55,6 +54,20 @@ GlobalSettings::GlobalSettings(QObject *parent) : QObject(parent)
     for (auto key : m_settings->allKeys()) {
         m_cache.insert(key, m_settings->value(key));
     }
+
+    if (QGSettings::isSchemaInstalled("org.ukui.control-center.panel.plugins")) {
+        m_control_center_plugin = new QGSettings("org.ukui.control-center.panel.plugins", QByteArray(), this);
+        connect(m_control_center_plugin, &QGSettings::changed, this, [=](const QString &key) {
+            if ("hoursystem" == key) {
+                m_cache.remove(UKUI_CONTROL_CENTER_PANEL_PLUGIN_TIME);
+                m_cache.insert(UKUI_CONTROL_CENTER_PANEL_PLUGIN_TIME, m_control_center_plugin->get(key).toString());
+                Q_EMIT valueChanged(UKUI_CONTROL_CENTER_PANEL_PLUGIN_TIME);
+            }
+        });
+
+        m_cache.insert(UKUI_CONTROL_CENTER_PANEL_PLUGIN_TIME, m_control_center_plugin->get("time").toString());
+    }
+
 
     m_cache.insert(SIDEBAR_BG_OPACITY, 50);
     if (QGSettings::isSchemaInstalled("org.ukui.style")) {
@@ -77,6 +90,14 @@ GlobalSettings::GlobalSettings(QObject *parent) : QObject(parent)
 
     if (m_cache.value(DEFAULT_VIEW_ID).isNull()) {
         setValue(DEFAULT_VIEW_ID, "Icon View");
+    }
+
+    if (m_cache.value(SORT_ORDER).isNull()){
+        setValue(SORT_ORDER, Qt::AscendingOrder);
+    }
+
+    if (m_cache.value(SORT_COLUMN).isNull()){
+        setValue(SORT_COLUMN, 0);
     }
 
     if (m_cache.value(DEFAULT_VIEW_ZOOM_LEVEL).isNull()) {

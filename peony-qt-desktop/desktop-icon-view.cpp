@@ -73,12 +73,13 @@
 #include <QDir>
 
 #include <QDebug>
+#include <QToolTip>
 
 using namespace Peony;
 
 #define ITEM_POS_ATTRIBUTE "metadata::peony-qt-desktop-item-position"
 
-static bool iconSizeLessThan (QPair<QRect, QString>& p1, QPair<QRect, QString>& p2);
+static bool iconSizeLessThan (const QPair<QRect, QString> &p1, const QPair<QRect, QString> &p2);
 
 DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
 {
@@ -275,6 +276,8 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
 
     m_peonyDbusSer = new PeonyDbusService(this);
     m_peonyDbusSer->DbusServerRegister();
+
+    setMouseTracking(true);//追踪鼠标
 
     this->refresh();
 }
@@ -510,15 +513,6 @@ void DesktopIconView::initMenu()
                 connect(action, &QAction::triggered, [=]() {
                     //go to control center set background
                     DesktopWindow::gotoSetBackground();
-//                    QFileDialog dlg;
-//                    dlg.setNameFilters(QStringList() << "*.jpg"
-//                                       << "*.png");
-//                    if (dlg.exec()) {
-//                        auto url = dlg.selectedUrls().first();
-//                        this->setBg(url.path());
-//                        // qDebug()<<url;
-//                        Q_EMIT this->changeBg(url.path());
-//                    }
                 });
             }
             menu.exec(QCursor::pos());
@@ -548,6 +542,18 @@ void DesktopIconView::setShowHidden()
 void DesktopIconView::resolutionChange()
 {
     QSize screenSize = qApp->primaryScreen()->availableSize();
+    // note: sometimes primary screen avaliable size will be invalid.
+    // for example, hot plug in a screen, then put the primary screen
+    // below the sencondary screnn.
+    // to avoid this problem, check if avaliable size is valid.
+    if (screenSize == QSize(0, 0)) {
+        screenSize = qApp->primaryScreen()->size();
+        // if the primary screen size is invalid, do not re-layout items
+        if (screenSize == QSize(0, 0)) {
+            return;
+        }
+    }
+
     int row = 0;
     int column = 0;
     float iconWidth = 0;
@@ -578,7 +584,7 @@ void DesktopIconView::resolutionChange()
     //    qDebug() << "icon width: " << iconWidth << " icon heigth: " << iconHeigth;
     //    qDebug() << "width:" << screenSize.width() << " height:" << screenSize.height();
 
-        std::sort(newPosition.begin(), newPosition.end(), iconSizeLessThan);
+        std::stable_sort(newPosition.begin(), newPosition.end(), iconSizeLessThan);
 
         m_item_rect_hash.clear();
 
@@ -648,6 +654,7 @@ void DesktopIconView::openFileByUri(QString uri)
                                       tr("Open directory failed, you have no permission!"));
                 return;
             }
+
 #if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
             QProcess p;
             QUrl url = uri;
@@ -680,10 +687,6 @@ void DesktopIconView::initDoubleClick()
     connect(this, &QListView::activated, this, [=](const QModelIndex &index) {
         qDebug() << "double click" << index.data(FileItemModel::UriRole);
         auto uri = index.data(FileItemModel::UriRole).toString();
-        //process open symbolic link
-        auto info = FileInfo::fromUri(uri);
-        if (info->isSymbolLink() && uri.startsWith("file://") && info->isValid())
-            uri = "file://" + FileUtils::getSymbolicTarget(uri);
         openFileByUri(uri);
     }, Qt::UniqueConnection);
 }
@@ -1379,6 +1382,18 @@ void DesktopIconView::mouseReleaseEvent(QMouseEvent *e)
     this->viewport()->update(viewport()->rect());
 }
 
+void DesktopIconView::mouseMoveEvent(QMouseEvent *e)
+{
+    QModelIndex itemIndex = indexAt(e->pos());
+    if (!itemIndex.isValid()) {
+        if (QToolTip::isVisible()) {
+            QToolTip::hideText();
+        }
+    }
+
+    QListView::mouseMoveEvent(e);
+}
+
 void DesktopIconView::mouseDoubleClickEvent(QMouseEvent *event)
 {
     QListView::mouseDoubleClickEvent(event);
@@ -1470,6 +1485,12 @@ void DesktopIconView::dropEvent(QDropEvent *e)
         if (bmoved) {
             //move file to desktop folder
             qDebug() << "DesktopIconView move file to folder";
+            for (auto uuri : e->mimeData()->urls()) {
+                if ("trash:///" == uuri.toDisplayString() || "computer:///" == uuri.toDisplayString()) {
+                    return;
+                }
+            }
+
             m_model->dropMimeData(e->mimeData(), action, -1, -1, this->indexAt(e->pos()));
         } else {
             QListView::dropEvent(e);
@@ -1682,7 +1703,7 @@ QRect DesktopIconView::visualRect(const QModelIndex &index) const
     return rect;
 }
 
-static bool iconSizeLessThan (QPair<QRect, QString>& p1, QPair<QRect, QString>& p2)
+static bool iconSizeLessThan (const QPair<QRect, QString>& p1, const QPair<QRect, QString>& p2)
 {
     if (p1.first.x() > p2.first.x())
         return false;

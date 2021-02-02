@@ -33,6 +33,8 @@
 #define SHOW_HIDDEN_PREFERENCE "show-hidden"
 #define SORT_CHINESE_FIRST "chinese-first"
 #define SORT_FOLDER_FIRST "folder-first"
+#define SORT_ORDER                  "sort-order"
+#define SORT_COLUMN                 "sort-column"
 #define RESIDENT_IN_BACKEND "resident"
 #define LAST_DESKTOP_SORT_ORDER "last-desktop-sort-order"
 #define ALLOW_FILE_OP_PARALLEL "allow-file-op-parallel"
@@ -52,6 +54,11 @@
 #define COMMERCIAL_VERSION          false
 //TEMPLATES standard path
 #define TEMPLATES_DIR               "templates-dir"
+
+
+// control center
+#define UKUI_CONTROL_CENTER_PANEL_PLUGIN            "org.ukui.control-center.panel.plugins"                 // schema
+#define UKUI_CONTROL_CENTER_PANEL_PLUGIN_TIME       "org.ukui.control-center.panel.plugins.time"            // date format key, value is '12' or '24'
 
 class QGSettings;
 
@@ -96,13 +103,14 @@ private:
     explicit GlobalSettings(QObject *parent = nullptr);
     ~GlobalSettings();
 
-    QSettings *m_settings;
-    QMap<QString, QVariant> m_cache;
+    QSettings*                  m_settings;
+    QMap<QString, QVariant>     m_cache;
 
     QGSettings *m_gsettings = nullptr;
     QGSettings *m_gsettings_tablet_mode;
+    QGSettings*                 m_control_center_plugin = nullptr;
 
-    QMutex m_mutex;
+    QMutex                      m_mutex;
 };
 
 }

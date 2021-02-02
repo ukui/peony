@@ -27,6 +27,7 @@
 #include <QtPlugin>
 #include <QStringList>
 #include "plugin-iface.h"
+#include "properties-window-tab-iface.h"
 
 class QWidget;
 
@@ -41,9 +42,11 @@ public:
 
     virtual int tabOrder() = 0;
     virtual bool supportUris(const QStringList &uris) = 0;
-    virtual QWidget *createTabPage(const QStringList &uris) = 0;
+//    virtual QWidget *createTabPage(const QStringList &uris) = 0;
+    virtual PropertiesWindowTabIface *createTabPage(const QStringList &uris) = 0;
 
     virtual void closeFactory() = 0;
+
 };
 
 }

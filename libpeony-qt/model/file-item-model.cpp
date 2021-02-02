@@ -217,17 +217,8 @@ QVariant FileItemModel::data(const QModelIndex &index, int role) const
             return QVariant(item->m_info->displayName());
         }
         case Qt::DecorationRole: {
-            /*
-            auto thumbnail = item->info()->thumbnail();
-            if (!thumbnail.isNull()) {
-                return thumbnail;
-            }
-            */
             auto thumbnail = ThumbnailManager::getInstance()->tryGetThumbnail(item->m_info->uri());
             if (!thumbnail.isNull()) {
-                if (item->m_info->uri().endsWith(".desktop") && !item->m_info->canExecute()) {
-                    return QIcon::fromTheme(item->m_info->iconName(), QIcon::fromTheme("text-x-generic"));
-                }
                 return thumbnail;
             }
             QIcon icon = QIcon::fromTheme(item->m_info->iconName(), QIcon::fromTheme("text-x-generic"));
@@ -499,10 +490,6 @@ bool FileItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action, i
     //NOTE:
     //do not allow drop on it self.
     auto urls = data->urls();
-    if (urls.isEmpty()) {
-        qDebug() << "urls isEmpty return" <<urls;
-        return false;
-    }
 
     QStringList srcUris;
     if (data->hasFormat("peony-qt/encoded-uris")) {
@@ -521,6 +508,8 @@ bool FileItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action, i
     }
 
     srcUris.removeDuplicates();
+    if (srcUris.isEmpty())
+        return false;
 
     //can not drag file to recent
     if (destDirUri.startsWith("recent://"))

@@ -27,10 +27,15 @@
 #include "directory-view-widget.h"
 #include "directory-view-factory-manager.h"
 #include "file-utils.h"
+#include "global-settings.h"
+
+#include "file-label-model.h"
 
 #include "directory-view-factory-manager.h"
 
 #include "file-item-proxy-filter-sort-model.h"
+
+#include "file-info.h"
 
 #include <QVBoxLayout>
 #include <QAction>
@@ -41,8 +46,6 @@ using namespace Peony;
 
 DirectoryViewContainer::DirectoryViewContainer(QWidget *parent) : QWidget(parent)
 {
-    setAttribute(Qt::WA_TranslucentBackground);
-
     m_model = new FileItemModel(this);
     m_proxy_model = new FileItemProxyFilterSortModel(this);
     m_proxy_model->setSourceModel(m_model);
@@ -64,6 +67,9 @@ DirectoryViewContainer::DirectoryViewContainer(QWidget *parent) : QWidget(parent
 
 //    connect(m_proxy, &DirectoryViewProxyIface::menuRequest,
 //            this, &DirectoryViewContainer::menuRequest);
+    connect(FileLabelModel::getGlobalModel(), &FileLabelModel::dataChanged, this, [=](){
+        refresh();
+    });
 }
 
 DirectoryViewContainer::~DirectoryViewContainer()
@@ -124,7 +130,10 @@ void DirectoryViewContainer::goForward()
     int count = m_back_list.count();
     if (! getCurrentUri().contains("search://") &&
         (count <= 0 || m_back_list.at(count-1) != getCurrentUri()))
+    {
         m_back_list.append(getCurrentUri());
+        qDebug() << "m_back_list add:" <<getCurrentUri();
+    }
 
     Q_EMIT updateWindowLocationRequest(uri, false);
 }
@@ -221,11 +230,15 @@ update:
         int count = m_back_list.count();
         if (! getCurrentUri().contains("search://")
             && (count <= 0 || m_back_list.at(count-1) != getCurrentUri()))
+        {
             m_back_list.append(getCurrentUri());
+            qDebug() << "goToUri m_back_list add:" <<getCurrentUri();
+        }
     }
 
     auto viewId = DirectoryViewFactoryManager2::getInstance()->getDefaultViewId(zoomLevel, uri);
     switchViewType(viewId);
+
     //update status bar zoom level
     updateStatusBarSliderStateRequest();
     if (zoomLevel < 0)
@@ -256,7 +269,6 @@ void DirectoryViewContainer::switchViewType(const QString &viewId)
     /*
     if (!m_proxy)
         return;
-
     if (m_proxy->getView()) {
         if (viewId == m_proxy->getView()->viewId())
             return;
@@ -273,8 +285,9 @@ void DirectoryViewContainer::switchViewType(const QString &viewId)
     if (!factory)
         return;
 
-    auto sortType = 0;
-    auto sortOrder = 0;
+    auto settings = GlobalSettings::getInstance();
+    auto sortType = settings->isExist(SORT_COLUMN)? settings->getValue(SORT_COLUMN).toInt() : 0;
+    auto sortOrder = settings->isExist(SORT_ORDER)? settings->getValue(SORT_ORDER).toInt() : 0;
 
     auto oldView = m_view;
     QStringList selection;
@@ -299,7 +312,19 @@ void DirectoryViewContainer::switchViewType(const QString &viewId)
     view->setSortOrder(sortOrder);
 
     connect(m_view, &DirectoryViewWidget::menuRequest, this, &DirectoryViewContainer::menuRequest);
-    connect(m_view, &DirectoryViewWidget::viewDirectoryChanged, this, &DirectoryViewContainer::directoryChanged);
+    connect(m_view, &DirectoryViewWidget::viewDirectoryChanged, this, [=](){
+        if (DirectoryViewFactoryManager2::getInstance()->internalViews().contains(m_view->viewId())) {
+            auto dirInfo = FileInfo::fromUri(m_current_uri);
+            if (dirInfo.get()->isEmptyInfo()) {
+                goBack();
+                m_forward_list.takeFirst();
+            } else {
+                Q_EMIT this->directoryChanged();
+            }
+        } else {
+            Q_EMIT this->directoryChanged();
+        }
+    });
     connect(m_view, &DirectoryViewWidget::viewDoubleClicked, this, &DirectoryViewContainer::viewDoubleClicked);
     connect(m_view, &DirectoryViewWidget::viewDoubleClicked, this, &DirectoryViewContainer::onViewDoubleClicked);
     connect(m_view, &DirectoryViewWidget::viewSelectionChanged, this, &DirectoryViewContainer::selectionChanged);
@@ -376,10 +401,12 @@ const QStringList DirectoryViewContainer::getCurrentSelections()
     return QStringList();
 }
 
+
 const int DirectoryViewContainer::getCurrentRowcount()
 {
     return m_view->getRowcount();
 }
+
 
 const QString DirectoryViewContainer::getCurrentUri()
 {
@@ -437,6 +464,7 @@ void DirectoryViewContainer::setSortType(FileItemModel::ColumnType type)
     if (!m_view)
         return;
     m_view->setSortType(type);
+    Peony::GlobalSettings::getInstance()->setValue(SORT_COLUMN, type);
 }
 
 Qt::SortOrder DirectoryViewContainer::getSortOrder()
@@ -453,6 +481,7 @@ void DirectoryViewContainer::setSortOrder(Qt::SortOrder order)
         return;
     if (!m_view)
         return;
+    Peony::GlobalSettings::getInstance()->setValue(SORT_ORDER, order);
     m_view->setSortOrder(order);
 }
 

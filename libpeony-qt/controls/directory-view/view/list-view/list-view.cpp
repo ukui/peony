@@ -51,6 +51,7 @@
 #include <QPainter>
 
 #include <QDebug>
+#include <QToolTip>
 
 using namespace Peony;
 using namespace Peony::DirectoryView;
@@ -85,7 +86,9 @@ ListView::ListView(QWidget *parent) : QTreeView(parent)
     m_renameTimer->setInterval(3000);
     m_editValid = false;
 
+    setUniformRowHeights(true);
     setIconSize(QSize(40, 40));
+    setMouseTracking(true);//追踪鼠标
 
     m_rubberBand = new QRubberBand(QRubberBand::Shape::Rectangle, this);
 }
@@ -265,6 +268,17 @@ void ListView::mouseReleaseEvent(QMouseEvent *e)
 
 void ListView::mouseMoveEvent(QMouseEvent *e)
 {
+    QModelIndex itemIndex = indexAt(e->pos());
+    if (!itemIndex.isValid()) {
+        if (QToolTip::isVisible()) {
+             QToolTip::hideText();
+         }
+    } else {
+        if (0 != itemIndex.column() && QToolTip::isVisible()) {
+            QToolTip::hideText();
+        }
+    }
+
     QTreeView::mouseMoveEvent(e);
 
     if (m_isLeftButtonPressed) {
@@ -448,6 +462,7 @@ void ListView::slotRename()
     //special path like trash path not allow rename
     if (getDirectoryUri().startsWith("trash://")
         || getDirectoryUri().startsWith("recent://")
+        || getDirectoryUri().startsWith("favorite://")
         || getDirectoryUri().startsWith("search://"))
         return;
 
@@ -731,7 +746,7 @@ void ListView2::bindModel(FileItemModel *model, FileItemProxyFilterSortModel *pr
         //when selections is more than 1, let mainwindow to process
         if (getSelections().count() != 1)
             return;
-        auto uri = index.data(Qt::UserRole).toString();
+        auto uri = getSelections().first();
         Q_EMIT this->viewDoubleClicked(uri);
     });
 
@@ -788,6 +803,7 @@ void ListView2::setCurrentZoomLevel(int zoomLevel)
 {
     int base = 16;
     int adjusted = base + zoomLevel;
+
     m_view->setIconSize(QSize(adjusted, adjusted));
     m_zoom_level = zoomLevel;
 }
