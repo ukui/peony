@@ -62,7 +62,7 @@ bool OpenWithPropertiesPageFactory::supportUris(const QStringList &uris)
     job->setAutoDelete(true);
     job->querySync();
 
-    if (fileInfo.get()->isDir() || fileInfo.get()->isDesktopFile() || fileInfo.get()->isVolume() || fileInfo.get()->isVirtual() || fileInfo->canExecute())
+    if (fileInfo.get()->isDir() || fileInfo.get()->isDesktopFile() || fileInfo.get()->isVolume() || fileInfo.get()->isVirtual() || fileInfo->isSymbolLink())
         return false;
 
     return true;

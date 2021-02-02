@@ -33,11 +33,26 @@ using namespace Peony;
 
 OpenWithPropertiesPage::OpenWithPropertiesPage(const QString &uri, QWidget *parent) : PropertiesWindowTabIface(parent)
 {
-    m_fileInfo = FileInfo::fromUri(uri);
-    FileInfoJob *job = new FileInfoJob(m_fileInfo);
-    job->setAutoDelete(true);
-    job->querySync();
+    QFuture<void> future = QtConcurrent::run([=]() {
+        m_fileInfo = FileInfo::fromUri(uri);
+        FileInfoJob *job = new FileInfoJob(m_fileInfo);
+        job->setAutoDelete(true);
+        job->querySync();
+    });
 
+    m_futureWatcher = new QFutureWatcher<void>();
+    m_futureWatcher->setFuture(future);
+
+    connect(m_futureWatcher, &QFutureWatcher<void>::finished, this, &OpenWithPropertiesPage::init);
+
+}
+
+void OpenWithPropertiesPage::init()
+{
+    if (m_futureWatcher) {
+        delete m_futureWatcher;
+        m_futureWatcher = nullptr;
+    }
     m_layout = new QVBoxLayout(this);
     m_layout->setContentsMargins(0,0,0,0);
 
@@ -59,10 +74,10 @@ OpenWithPropertiesPage::~OpenWithPropertiesPage()
 
 void OpenWithPropertiesPage::saveAllChange()
 {
-    if (!this->m_thisPageChanged)
+    if (!m_thisPageChanged)
         return;
 
-    if (this->m_newAction) {
+    if (m_newAction) {
         FileLaunchManager::setDefaultLauchAction(m_fileInfo.get()->uri(), m_newAction);
     }
 }
@@ -144,17 +159,42 @@ void OpenWithPropertiesPage::initFloorThree()
     floor3->setMaximumHeight(122);
     layout3->setContentsMargins(22,0,0,0);
 
-    QLabel *allOpenLabel = new QLabel(floor3);
+    QString str1;
+    str1 = "<a href=\"ukui-software-center\" style=\"color: #3D6BE5;text-underline: none;\">"
+          + tr("Choose other application")
+          + "</a>";
+    QLabel *allOpenLabel = new QLabel(str1, floor3);
     allOpenLabel->setAlignment(Qt::AlignTop | Qt::AlignLeft);
-    allOpenLabel->setText(tr("Choose other application"));
+
+    connect(allOpenLabel, &QLabel::linkActivated, this, [=]() {
+        AllFileLaunchDialog dialog(m_fileInfo.get()->uri());
+        dialog.exec();
+    });
 
     layout3->addWidget(allOpenLabel);
 
-    QLabel *otherOpenLabel = new QLabel(floor3);
+    QString str2;
+    str2 = "<a href=\"ukui-software-center\" style=\"color: #3D6BE5;text-underline: none;\">"
+          + tr("Go to application center")
+          + "</a>";
+    QLabel *otherOpenLabel = new QLabel(str2, floor3);
     otherOpenLabel->setAlignment(Qt::AlignTop | Qt::AlignLeft);
-    otherOpenLabel->setText(tr("Go to application center"));
+
+    connect(otherOpenLabel, &QLabel::linkActivated, this, [=]() {
+        QtConcurrent::run([=]() {
+            QProcess p;
+            p.setProgram("ubuntu-kylin-software-center");
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 10, 0))
+            p.startDetached();
+#else
+            p.startDetached("ukui-control-center", QStringList()<<"-a");
+    p.waitForFinished(-1);
+#endif
+        });
+    });
 
     layout3->addWidget(otherOpenLabel);
+    layout3->addStretch(1);
 
     this->m_layout->addWidget(floor3);
 }
@@ -187,7 +227,6 @@ NewFileLaunchDialog::NewFileLaunchDialog(const QString &uri, QWidget *parent) : 
             return ;
         FileLaunchAction *action = m_launchHashList->m_actionHash->value(m_launchHashList->m_actionList->currentItem());
         if (action) {
-            qDebug() << "选中：：" << action->getAppInfoDisplayName();
             FileLaunchManager::setDefaultLauchAction(uri, action);
         }
     });
@@ -198,8 +237,10 @@ NewFileLaunchDialog::NewFileLaunchDialog(const QString &uri, QWidget *parent) : 
 
 NewFileLaunchDialog::~NewFileLaunchDialog()
 {
-    if (m_launchHashList)
+    if (m_launchHashList) {
         delete m_launchHashList;
+        m_launchHashList = nullptr;
+    }
 }
 
 QListWidget *OpenWithPropertiesPage::createDefaultLaunchListWidget(const QString &uri, QWidget *parent)
@@ -232,12 +273,13 @@ LaunchHashList::LaunchHashList(const QString &uri, QWidget *parent)
 
     if (allLaunchActions.count() >= 1) {
         auto defaultLaunchAction = FileLaunchManager::getDefaultAction(uri);
-        auto defaultItem = new QListWidgetItem(!defaultLaunchAction->icon().isNull()? defaultLaunchAction->icon(): QIcon::fromTheme("application-x-desktop"),
+        auto defaultItem = new QListWidgetItem(!defaultLaunchAction->icon().isNull()? defaultLaunchAction->icon() : QIcon::fromTheme("application-x-desktop"),
                                         defaultLaunchAction->text(),
                                         m_actionList);
         m_actionList->addItem(defaultItem);
         m_actionList->setCurrentItem(defaultItem);
-        m_actionList->setItemHidden(defaultItem, true);
+        //NOTE:是否需要在列表中显示默认的打开方式 - Do you need to display the default opening method in the list
+//        m_actionList->setItemHidden(defaultItem, true);
         for (auto action : allLaunchActions) {
             if (action->getAppInfoDisplayName() == defaultLaunchAction->getAppInfoDisplayName())
                 continue;
@@ -246,9 +288,93 @@ LaunchHashList::LaunchHashList(const QString &uri, QWidget *parent)
                                             action->text(),
                                             m_actionList);
 
-            action->setParent(parent);
+            action->setParent(m_actionList);
             m_actionList->addItem(item);
             m_actionHash->insert(item, action);
         }
+    }
+}
+
+LaunchHashList *LaunchHashList::getAllLaunchHashList(const QString &uri, QWidget *parent)
+{
+    LaunchHashList *launchHashList = new LaunchHashList();
+
+    launchHashList->m_actionHash = new QHash<QListWidgetItem*,FileLaunchAction*>();
+    launchHashList->m_actionList = new QListWidget(parent);
+    auto allLaunchActions = FileLaunchManager::getAllActions(uri);
+
+    if (allLaunchActions.count() >= 1) {
+        for (auto action : allLaunchActions) {
+            auto item = new QListWidgetItem(!action->icon().isNull()? action->icon(): QIcon::fromTheme("application-x-desktop"),
+                                            action->text(),
+                                            launchHashList->m_actionList);
+
+            action->setParent(launchHashList->m_actionList);
+            launchHashList->m_actionHash->insert(item, action);
+            launchHashList->m_actionList->addItem(item);
+        }
+    }
+
+    return launchHashList;
+}
+
+LaunchHashList::LaunchHashList()
+{
+
+}
+
+LaunchHashList::~LaunchHashList()
+{
+    if (m_actionHash) {
+        for (auto key : m_actionHash->keys()) {
+            delete m_actionHash->value(key);
+        }
+
+        delete m_actionHash;
+    }
+    m_actionList->deleteLater();
+}
+
+AllFileLaunchDialog::AllFileLaunchDialog(const QString &uri, QWidget *parent) : QDialog(parent)
+{
+    m_launchHashList = LaunchHashList::getAllLaunchHashList(uri, this);
+    m_layout = new QVBoxLayout(this);
+    setLayout(m_layout);
+    setWindowTitle(tr("Choose new application"));
+
+    m_layout->addWidget(new QLabel(tr("Choose an Application to open this file"), this));
+
+    m_launchHashList->m_actionList->setIconSize(QSize(48, 48));
+    m_launchHashList->m_actionList->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+
+    m_layout->addWidget(m_launchHashList->m_actionList, 1);
+
+    m_layout->addWidget(new QLabel(tr("apply now"), this));
+    m_button_box = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel,this);
+
+    m_layout->addWidget(m_button_box);
+
+    //add button translate
+    m_button_box->button(QDialogButtonBox::Ok)->setText(tr("OK"));
+    m_button_box->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
+
+    connect(this, &QDialog::accepted, [=]() {
+        if (!m_launchHashList->m_actionList->currentItem())
+            return ;
+        FileLaunchAction *action = m_launchHashList->m_actionHash->value(m_launchHashList->m_actionList->currentItem());
+        if (action) {
+            FileLaunchManager::setDefaultLauchAction(uri, action);
+        }
+    });
+
+    connect(m_button_box, &QDialogButtonBox::accepted, this, &QDialog::accept);
+    connect(m_button_box, &QDialogButtonBox::rejected, this, &QDialog::reject);
+}
+
+AllFileLaunchDialog::~AllFileLaunchDialog()
+{
+    if (m_launchHashList) {
+        delete m_launchHashList;
+        m_launchHashList = nullptr;
     }
 }
