@@ -79,7 +79,7 @@ using namespace Peony;
 
 #define ITEM_POS_ATTRIBUTE "metadata::peony-qt-desktop-item-position"
 
-static bool iconSizeLessThan (QPair<QRect, QString>& p1, QPair<QRect, QString>& p2);
+static bool iconSizeLessThan (const QPair<QRect, QString> &p1, const QPair<QRect, QString> &p2);
 
 DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
 {
@@ -549,7 +549,12 @@ void DesktopIconView::resolutionChange()
     // to avoid this problem, check if avaliable size is valid.
     if (screenSize == QSize(0, 0)) {
         screenSize = qApp->primaryScreen()->size();
+        // if the primary screen size is invalid, do not re-layout items
+        if (screenSize == QSize(0, 0)) {
+            return;
+        }
     }
+
     int row = 0;
     int column = 0;
     float iconWidth = 0;
@@ -580,7 +585,7 @@ void DesktopIconView::resolutionChange()
     //    qDebug() << "icon width: " << iconWidth << " icon heigth: " << iconHeigth;
     //    qDebug() << "width:" << screenSize.width() << " height:" << screenSize.height();
 
-        std::sort(newPosition.begin(), newPosition.end(), iconSizeLessThan);
+        std::stable_sort(newPosition.begin(), newPosition.end(), iconSizeLessThan);
 
         m_item_rect_hash.clear();
 
@@ -1711,7 +1716,7 @@ int DesktopIconView::updateBWList()
     return 0;
 }
 
-static bool iconSizeLessThan (QPair<QRect, QString>& p1, QPair<QRect, QString>& p2)
+static bool iconSizeLessThan (const QPair<QRect, QString>& p1, const QPair<QRect, QString>& p2)
 {
     if (p1.first.x() > p2.first.x())
         return false;
