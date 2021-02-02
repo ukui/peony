@@ -19,28 +19,28 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/windows/about-dialog.cpp" line="52"/>
+        <location filename="../../src/windows/about-dialog.cpp" line="53"/>
         <source>Service &amp; Support: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/windows/about-dialog.cpp" line="68"/>
-        <location filename="../../src/windows/about-dialog.cpp" line="80"/>
+        <location filename="../../src/windows/about-dialog.cpp" line="69"/>
+        <location filename="../../src/windows/about-dialog.cpp" line="81"/>
         <source>File Manager</source>
         <translation type="unfinished">Dosya Yöneticisi</translation>
     </message>
     <message>
-        <location filename="../../src/windows/about-dialog.cpp" line="84"/>
+        <location filename="../../src/windows/about-dialog.cpp" line="85"/>
         <source>Version number: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/windows/about-dialog.cpp" line="90"/>
+        <location filename="../../src/windows/about-dialog.cpp" line="91"/>
         <source>File manager is a graphical software to help users manage system files. It provides common file operation functions for users, such as file viewing, file copy, paste, cut, delete, rename, file selection, application opening, file search, file sorting, file preview, etc. it is convenient for users to manage system files intuitively on the interface.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/windows/about-dialog.cpp" line="114"/>
+        <location filename="../../src/windows/about-dialog.cpp" line="115"/>
         <source>none</source>
         <translation type="unfinished"></translation>
     </message>
@@ -160,22 +160,22 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">Dosya Yöneticisi</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="316"/>
+        <location filename="../../src/windows/main-window.cpp" line="315"/>
         <source>Undo</source>
         <translation>Geri</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="323"/>
+        <location filename="../../src/windows/main-window.cpp" line="322"/>
         <source>Redo</source>
         <translation>İleri</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1451"/>
+        <location filename="../../src/windows/main-window.cpp" line="1468"/>
         <source>Tips info</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1452"/>
+        <location filename="../../src/windows/main-window.cpp" line="1469"/>
         <source>Trash has no file need to be cleaned.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -184,12 +184,12 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Dosya Silme Uyarısı</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1441"/>
+        <location filename="../../src/windows/main-window.cpp" line="1458"/>
         <source>Delete Permanently</source>
         <translation>Kalıcı Olarak Sil</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1442"/>
+        <location filename="../../src/windows/main-window.cpp" line="1459"/>
         <source>Are you sure that you want to delete these files? Once you start a deletion, the files deleting will never be restored again.</source>
         <translation>Bu dosyaları silmek istediğinizden emin misiniz? Bir silme işlemini başlattığınızda, silinen dosyalar bir daha geri yüklenmeyecektir.</translation>
     </message>
@@ -198,7 +198,7 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">Peony Qt</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="696"/>
+        <location filename="../../src/windows/main-window.cpp" line="699"/>
         <source>New Folder</source>
         <translation>Yeni Klasör</translation>
     </message>
@@ -210,12 +210,12 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">Tüm etiketler...</translation>
     </message>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="166"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="167"/>
         <source>Open In &amp;New Window</source>
         <translation type="unfinished">Yeni Pencerede Aç</translation>
     </message>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="189"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="190"/>
         <source>Open In New &amp;Tab</source>
         <translation type="unfinished">Yeni Sekmede Aç</translation>
     </message>
@@ -223,7 +223,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>NavigationSideBarContainer</name>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="352"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="355"/>
         <source>All tags...</source>
         <translation>Tüm etiketler...</translation>
     </message>

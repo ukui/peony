@@ -27,7 +27,7 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">服务与技术支持: </translation>
     </message>
     <message>
-        <location filename="../../src/windows/about-dialog.cpp" line="52"/>
+        <location filename="../../src/windows/about-dialog.cpp" line="53"/>
         <source>Service &amp; Support: </source>
         <translation>服务与支持团队: </translation>
     </message>
@@ -36,23 +36,23 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">服务热线: </translation>
     </message>
     <message>
-        <location filename="../../src/windows/about-dialog.cpp" line="68"/>
-        <location filename="../../src/windows/about-dialog.cpp" line="80"/>
+        <location filename="../../src/windows/about-dialog.cpp" line="69"/>
+        <location filename="../../src/windows/about-dialog.cpp" line="81"/>
         <source>File Manager</source>
         <translation>文件管理器</translation>
     </message>
     <message>
-        <location filename="../../src/windows/about-dialog.cpp" line="84"/>
+        <location filename="../../src/windows/about-dialog.cpp" line="85"/>
         <source>Version number: %1</source>
         <translation>版本号: %1</translation>
     </message>
     <message>
-        <location filename="../../src/windows/about-dialog.cpp" line="90"/>
+        <location filename="../../src/windows/about-dialog.cpp" line="91"/>
         <source>File manager is a graphical software to help users manage system files. It provides common file operation functions for users, such as file viewing, file copy, paste, cut, delete, rename, file selection, application opening, file search, file sorting, file preview, etc. it is convenient for users to manage system files intuitively on the interface.</source>
         <translation>文件管理器是一款帮助用户管理系统文件的图形化的软件，为用户提供常用的文件操作功能，比如文件查看，文件复制、粘贴、剪切、删除、重命名，文件选用应用打开，文件搜索，文件排序，文件预览等，方便用户在界面上直观地管理系统文件。</translation>
     </message>
     <message>
-        <location filename="../../src/windows/about-dialog.cpp" line="114"/>
+        <location filename="../../src/windows/about-dialog.cpp" line="115"/>
         <source>none</source>
         <translation>无</translation>
     </message>
@@ -172,22 +172,22 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">文件管理器</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="316"/>
+        <location filename="../../src/windows/main-window.cpp" line="315"/>
         <source>Undo</source>
         <translation>撤销</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="323"/>
+        <location filename="../../src/windows/main-window.cpp" line="322"/>
         <source>Redo</source>
         <translation>重做</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1451"/>
+        <location filename="../../src/windows/main-window.cpp" line="1468"/>
         <source>Tips info</source>
         <translation>温馨提示</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1452"/>
+        <location filename="../../src/windows/main-window.cpp" line="1469"/>
         <source>Trash has no file need to be cleaned.</source>
         <translation>回收站没有文件需要被清空！</translation>
     </message>
@@ -196,12 +196,12 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">删除文件警告</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1441"/>
+        <location filename="../../src/windows/main-window.cpp" line="1458"/>
         <source>Delete Permanently</source>
         <translation>永久删除</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1442"/>
+        <location filename="../../src/windows/main-window.cpp" line="1459"/>
         <source>Are you sure that you want to delete these files? Once you start a deletion, the files deleting will never be restored again.</source>
         <translation>您确定要删除这些文件吗？一旦开始删除，这些文件将不可再恢复。</translation>
     </message>
@@ -210,7 +210,7 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">文件管理器</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="696"/>
+        <location filename="../../src/windows/main-window.cpp" line="699"/>
         <source>New Folder</source>
         <translation>新建文件夹</translation>
     </message>
@@ -222,12 +222,12 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">所有标记...</translation>
     </message>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="166"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="167"/>
         <source>Open In &amp;New Window</source>
         <translation>在新窗口中打开(&amp;N)</translation>
     </message>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="189"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="190"/>
         <source>Open In New &amp;Tab</source>
         <translation>在新标签页中打开(&amp;T)</translation>
     </message>
@@ -235,7 +235,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>NavigationSideBarContainer</name>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="352"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="355"/>
         <source>All tags...</source>
         <translation>所有标记...</translation>
     </message>
