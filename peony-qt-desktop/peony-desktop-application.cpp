@@ -497,11 +497,13 @@ void guessContentTypeCallback(GObject* object,GAsyncResult *res,gpointer data)
     char *mountUri;
     bool openFolder;
     QProcess process;
+    static QString lastMountUri;
 
     error = NULL;
     openFolder = true;
     root = g_mount_get_default_location(G_MOUNT(object));
     mountUri = g_file_get_uri(root);
+
     openFolderCmd = "peony " + QString(mountUri);
     guessType = g_mount_guess_content_type_finish(G_MOUNT(object),res,&error);
 
@@ -525,6 +527,13 @@ void guessContentTypeCallback(GObject* object,GAsyncResult *res,gpointer data)
                     openFolder = false;
                 if(!strcmp(guessType[n],"x-content/blank-dvd") || !strcmp(guessType[n],"x-content/blank-cd"))
                     openFolder = false;
+                if(strstr(guessType[n],"x-content/audio-")){
+                    if(!lastMountUri.compare(mountUri)){
+                        lastMountUri.clear();
+                        break;
+                    }
+                    lastMountUri = mountUri;
+                }
 
                 QString uri = mountUri;
                 if (uri.startsWith("gphoto") || uri.startsWith("mtp"))
