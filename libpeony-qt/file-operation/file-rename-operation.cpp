@@ -343,23 +343,23 @@ cancel:
     if (src_first_mount) {
         needSync = g_mount_can_unmount(src_first_mount);
         g_object_unref(src_first_mount);
-    } else {
+    } /*else {
         // maybe a vfs file.
+        // root filesystem
         needSync = true;
-    }
+    }*/
     g_object_unref(src_first_file);
 
+    GError* err = NULL;
     GFile *dest_dir_file = g_file_new_for_uri(destUri.toUtf8().constData());
-    GMount *dest_dir_mount = g_file_find_enclosing_mount(dest_dir_file, nullptr, nullptr);
-    if (src_first_mount) {
+    GMount *dest_dir_mount = g_file_find_enclosing_mount(dest_dir_file, nullptr, &err);
+    if (dest_dir_mount) {
         needSync = g_mount_can_unmount(dest_dir_mount);
         g_object_unref(dest_dir_mount);
-    } else {
+    } /*else {
         needSync = true;
-    }
+    }*/
     g_object_unref(dest_dir_file);
-
-    //needSync = true;
 
     if (needSync) {
         char *path = g_file_get_path(dest_dir_file);

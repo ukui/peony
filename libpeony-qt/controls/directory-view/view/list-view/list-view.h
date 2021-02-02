@@ -126,7 +126,7 @@ protected:
 
     void resizeEvent(QResizeEvent *e) override;
 
-    void updateGeometries() override;
+//    void updateGeometries() override;
 
     void wheelEvent (QWheelEvent *e) override;
 

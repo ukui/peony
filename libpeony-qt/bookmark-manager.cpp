@@ -24,7 +24,7 @@
 
 #include <QtConcurrent>
 #include <glib.h>
-
+#include <gio/gio.h>
 #include <QDebug>
 
 using namespace Peony;
@@ -115,7 +115,21 @@ void BookMarkManager::removeBookMark(const QString &uri)
             g_usleep(100);
         }
         QUrl url = uri;
+
+        if ("favorite" == url.scheme()) {
+            GFile* file = g_file_new_for_uri (uri.toUtf8().constData());
+            if (nullptr != file) {
+                GFileInfo* fileInfo = g_file_query_info(file, "*", G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, nullptr, nullptr);
+                if (nullptr != fileInfo) {
+                    url = QString(g_file_info_get_attribute_as_string(fileInfo, G_FILE_ATTRIBUTE_STANDARD_TARGET_URI));
+                    g_object_unref(fileInfo);
+                }
+                g_object_unref(file);
+            }
+        }
+
         QString origin_path = "favorite://" + url.path() + "?schema=" + url.scheme();
+
         if (m_mutex.tryLock(1000)) {
             bool successed = m_uris.contains(origin_path);
             if (successed) {

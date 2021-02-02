@@ -102,8 +102,8 @@ void ListView::scrollTo(const QModelIndex &index, QAbstractItemView::ScrollHint 
     // the fast keyboard locating of default tree view will be disabled
     // due to the function is overrided, too.
 
-    //QTreeView::scrollTo(index, hint);
-    //updateGeometries();
+    QTreeView::scrollTo(index, hint);
+//    updateGeometries();
 }
 
 bool ListView::isDragging()
@@ -411,22 +411,22 @@ void ListView::resizeEvent(QResizeEvent *e)
     }
 }
 
-void ListView::updateGeometries()
-{
-    QTreeView::updateGeometries();
-    if (!model())
-        return;
+//void ListView::updateGeometries()
+//{
+//    QTreeView::updateGeometries();
+//    if (!model())
+//        return;
 
-    if (model()->columnCount() == 0 || model()->rowCount() == 0)
-        return;
+//    if (model()->columnCount() == 0 || model()->rowCount() == 0)
+//        return;
 
-    header()->setFixedWidth(this->width());
+//    header()->setFixedWidth(this->width());
 
-    QStyleOptionViewItem opt = viewOptions();
-    int height = itemDelegate()->sizeHint(opt, QModelIndex()).height();
-    verticalScrollBar()->setMaximum(verticalScrollBar()->maximum() + 2);
-    //setViewportMargins(0, header()->height(), 0, height);
-}
+//    QStyleOptionViewItem opt = viewOptions();
+//    int height = itemDelegate()->sizeHint(opt, QModelIndex()).height();
+//    verticalScrollBar()->setMaximum(verticalScrollBar()->maximum() + 2);
+//    //setViewportMargins(0, header()->height(), 0, height);
+//}
 
 void ListView::wheelEvent(QWheelEvent *e)
 {
@@ -587,6 +587,7 @@ QRect ListView::visualRect(const QModelIndex &index) const
 //    if (index.column() == 0) {
 //        rect.setX(0);
 //    }
+
     return rect;
 }
 
