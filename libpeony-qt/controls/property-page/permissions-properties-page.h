@@ -83,7 +83,7 @@ private:
     //防止错误修改权限
     bool m_enable = false;
 
-    bool m_permissions[3][2];
+    bool m_permissions[3][3];
 public:
     void thisPageChanged() override;
 
