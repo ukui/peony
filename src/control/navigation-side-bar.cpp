@@ -258,7 +258,9 @@ void NavigationSideBar::resizeEvent(QResizeEvent *e)
 
 void NavigationSideBar::dropEvent(QDropEvent *e)
 {
-    if (dropIndicatorPosition() == QAbstractItemView::AboveItem || dropIndicatorPosition() == QAbstractItemView::BelowItem) {
+    QString destUri = m_proxy_model->itemFromIndex(indexAt(e->pos()))->uri();
+
+    if (dropIndicatorPosition() == QAbstractItemView::AboveItem || dropIndicatorPosition() == QAbstractItemView::BelowItem || "favorite:///" == destUri) {
         // add to bookmark
         e->setAccepted(true);
 
@@ -278,6 +280,7 @@ void NavigationSideBar::dropEvent(QDropEvent *e)
             }
         }
     }
+
     QTreeView::dropEvent(e);
 }
 
