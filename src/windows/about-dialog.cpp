@@ -72,7 +72,7 @@ void AboutDialog::initUI()
 	ui->closeBtn->setPalette(palette);
     ui->closeBtn->setIconSize(QSize(24,24));
     ui->closeBtn->setProperty("isWindowButton",0x2);
-    ui->closeBtn->setProperty("useIconHighlightEffect",0x8);
+    ui->closeBtn->setProperty("useIconHighlightEffect",0x2);
     ui->closeBtn->setIcon(QIcon::fromTheme("window-close-symbolic"));
 	
     ui->iconLabel->setPixmap(QIcon::fromTheme("system-file-manager").pixmap(96,96));
