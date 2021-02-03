@@ -24,7 +24,9 @@
 #define RECENTANDTRASHPROPERTIESPAGE_H
 
 #include <QWidget>
+#include <QtConcurrent>
 
+#include "file-info.h"
 #include "properties-window-tab-iface.h"
 #include "peony-core_global.h"
 
@@ -40,10 +42,13 @@ public:
 
 protected:
     void addSeparator();
+    void init();
 
 private:
     QString m_uri;
     QFormLayout *m_layout;
+    std::shared_ptr<FileInfo> m_fileInfo = nullptr;
+    QFutureWatcher<void> *m_futureWatcher = nullptr;
 
     // PropertiesWindowTabIface interface
 public:
