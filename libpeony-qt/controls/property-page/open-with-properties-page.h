@@ -34,16 +34,20 @@
 #include <QDebug>
 #include <QDialog>
 #include <QDialogButtonBox>
+#include <QtConcurrent>
 
 namespace Peony {
 
 class LaunchHashList {
 public:
+    static LaunchHashList *getAllLaunchHashList(const QString &uri, QWidget *parent = nullptr);
+    LaunchHashList();
     LaunchHashList(const QString &uri, QWidget *parent = nullptr);
+    ~LaunchHashList();
 public:
-    //保存该文件的全部打开方式
+    //保存该文件的全部打开方式 - Save all open methods of the file
     QListWidget *m_actionList = nullptr;
-    //每个listItem对应的launchAction
+    //每个listItem对应的launchAction - Launch Action corresponding to each list Item
     QHash<QListWidgetItem*,FileLaunchAction*> *m_actionHash = nullptr;
 };
 
@@ -54,6 +58,23 @@ public:
     explicit NewFileLaunchDialog(const QString &uri, QWidget *parent = nullptr);
 
     virtual ~NewFileLaunchDialog();
+
+    QSize sizeHint() const override {
+        return QSize(400, 600);
+    }
+private:
+    QVBoxLayout      *m_layout     = nullptr;
+    QDialogButtonBox *m_button_box = nullptr;
+    LaunchHashList *m_launchHashList = nullptr;
+};
+
+class AllFileLaunchDialog : public QDialog
+{
+Q_OBJECT
+public:
+    explicit AllFileLaunchDialog(const QString &uri, QWidget *parent = nullptr);
+
+    virtual ~AllFileLaunchDialog();
 
     QSize sizeHint() const override {
         return QSize(400, 600);
@@ -102,11 +123,14 @@ public:
     explicit OpenWithPropertiesPage(const QString &uri, QWidget *parent = nullptr);
     ~OpenWithPropertiesPage();
 
+    void init();
     void saveAllChange() override;
 
 private:
     QVBoxLayout *m_layout = nullptr;
+
     std::shared_ptr<FileInfo> m_fileInfo  = nullptr;
+    QFutureWatcher<void> *m_futureWatcher = nullptr;
     //新的打开方式
     FileLaunchAction *m_newAction      = nullptr;
     LaunchHashList   *m_launchHashList = nullptr;
